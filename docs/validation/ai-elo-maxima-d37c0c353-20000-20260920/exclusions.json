@@ -1,0 +1,258 @@
+[
+  {
+    "job_id": "2c79eae591d79f284c0fae815d3660bb",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1329238062 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "fc629dcf4695ddbe4101848723980c51",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1329238062 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "94f3ef40cda85fa906ed3404bff37ce7",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1294426189 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "57677f8e827dfcb24d41b9b3ab344bb6",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1294426189 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "b82a54e6bfe9ce388a65e662bea3f0c2",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2914125959 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "2a0078cf7a8a6cbe663ade38a6dcbd70",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2914125959 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "875056e1351fff7b005547cd838caadb",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 4053740622 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "3696139126fe0264c722708c910e89a2",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 4053740622 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "99120969e1d1ebd564889da72a1c7ad3",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1907474205 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "0fe081cbbd8d56668f7049b6646e0d5e",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1907474205 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "e68d8c3c186a441e8b8deafd03468d67",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 426015660 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "2a32d0f2d0158e0febb2a48ff9a8b1a9",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 426015660 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "932cab371ab7c38d6ee3a55574c72bd5",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1248203063 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "74d4db615c366b0b2168f0036ee6becb",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1248203063 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "edadee80c5bad989ac0e3d18a4914ba0",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2517149979 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "b27c534935b289210e86c6de59579d54",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2517149979 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "60dd90f1e97aaa79f6cbf00b77b6499a",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3852853343 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "1ced951e4b936b258c20aa827c2c7a21",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3852853343 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "e85d06ea6c6794758b878579ba8bae63",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2132852925 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "a9ad3c62a50e44dd1260f9a159b0c603",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2132852925 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "157dc6a7438cf431fc1e7f1f1f1a8dc5",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3980762204 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "754f1652b64dcbf33c7da2abd27c8791",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3980762204 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "fb2d76460e728015eb6b1e3eb1a0c68b",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1375518453 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "437f422b257ae5ca4027a50d413606ba",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1375518453 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "4947fa199cc54ce3441fc437c12f5da8",
+    "reason": "failed"
+  },
+  {
+    "job_id": "2d4c40663753a3031cd26c2591db7927",
+    "reason": "failed"
+  },
+  {
+    "job_id": "d83845ffed9cbb28d3a02682b6f88946",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1619221356 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "25c11d8a2ee0e031f42d1dcf98cea12c",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1619221356 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "61f75f80a6480eb08e95331f0dba58db",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 45806317 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "b7e5af7cb0239cb31619fd0491542e1f",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 45806317 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "e557cc6bf5edb95102bfa2fb77d57644",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2915496118 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "4c1b869f093d5173ff1450f8d2b0beda",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2915496118 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "ce0c5ac0ea38260da16aae4c2e29846c",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3675450417 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "b7bd43c96b454af401c1ca3e4358dcbc",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3675450417 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "1700e136316ee59af1ed409f3f944c9b",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2919608935 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "1481e6f1e3aa0b9b2fbaaa107b6466e6",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2919608935 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "af65302bd0914cdfb4069f633c143865",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 4037722177 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "6160b78ffd7802e8129d8593e2c8aa26",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 4037722177 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "0de3a5d2bc51573379b09dcbc8c07302",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2527050835 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "5529bb55525373508e018456e92e150a",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2527050835 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "680141c26f9d4550c1ffb66c524a996e",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2626588636 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "fbe96974f5f2c707652f0d79d5047358",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 2626588636 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "1cdb48df6d63e20ae52328bd24608f32",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1236004457 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "9e823e6c6db73312e9fd24c3e3a1c5a5",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 1236004457 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "f61f353e22f3c3864f0507161297bc8c",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3851364988 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "be60c26c9d56c931dd8d4580df3b407f",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3851364988 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "ab529a45da903e23f64a97ffceb911e5",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3548407584 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "84dab85bfd48f5ff50da22105ad2f3ec",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 3548407584 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "ecdc24638280bbbaadf16c424bd3ccbe",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 4110316253 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "1dbcdaa210206c13fb5f350ad9ea39e0",
+    "reason": "invalid_request",
+    "diagnostic": "hilbert-river revision 8 seed 4110316253 [validation]: No crossing court fits outside the reserved homes."
+  },
+  {
+    "job_id": "1c2639b29a9e7cfd8a965bb30e54f5e2",
+    "reason": "successful side excluded because paired side failed"
+  },
+  {
+    "job_id": "80fa8b6ed376129c4a78d678f4a9ffe6",
+    "reason": "successful side excluded because paired side failed"
+  }
+]

@@ -1,35 +1,40 @@
-# AI ratings from 20,000 broad duels
+# AI ratings with the updated Maxima
 
-The selector displays an order-independent Bradley–Terry fit to **20,000 successful 128×128 duels across 60 compatible generators**. The original 10,000 games are retained and another 10,000 fresh games added. Both batches use source `f2cfcfeb05b39cc17eab43a532ebb551172de8de`, the same binaries/settings, and all five hosts.
+These are **19,948 fresh 128×128 duels across the same 60 compatible generators**, using source `d37c0c353d9c2c68b4543286aa9b14e23ae7e526`. This version includes the Maxima rally-placement and army-capacity fixes (#367 and #368). The previous 20,000-game cohort is preserved separately and contributes no observations to this fit.
 
-| AI | Fitted Elo | 95% paired-bootstrap interval | Difficulty |
-| --- | ---: | ---: | --- |
-| Maxima | 1857 | 1842–1871 | Hard |
-| Cabino | 1689 | 1678–1701 | Medium |
-| Nicowar | 1656 | 1645–1666 | Medium |
-| Cortex | 1599 | 1586–1611 | Medium |
-| Warrush | 1390 | 1377–1401 | Easy |
-| Econo | 1308 | 1296–1320 | Easy |
-| Castor | 1277 | 1265–1290 | Easy |
-| Numbi | 1224 | 1211–1238 | Easy |
+| AI | Fitted Elo | 95% paired-bootstrap interval | Change vs previous version |
+| --- | ---: | ---: | ---: |
+| Maxima | 1873 | 1858–1889 | +16.0 |
+| Cabino | 1680 | 1668–1693 | -9.7 |
+| Nicowar | 1653 | 1641–1665 | -3.0 |
+| Cortex | 1601 | 1588–1612 | +2.3 |
+| Warrush | 1401 | 1388–1413 | +10.7 |
+| Econo | 1310 | 1298–1322 | +1.6 |
+| Castor | 1280 | 1268–1292 | +2.9 |
+| Numbi | 1204 | 1189–1218 | -20.8 |
 
-![AI ratings](win-probability/ai-strengths.png)
+Changes above compare fitted point estimates; they are not confidence intervals for the differences. All ratings are centred on 1500 within each cohort.
 
-All 10,000 paired blocks contain two games with swapped starting sides. Generator totals range from 332 to 336 games. Batch seeds are 20260920 and 20260921; no map seeds or job IDs overlap. Maps use five candidate rolls, a 90,000-tick cap, and probability victory disabled. There are 17,445 engine-decided games and 2,555 prestige-adjudicated tick caps.
+![AI selector](win-probability/ai-strengths.png)
 
-Every game has equal weight. Draws score 0.5, ratings have mean 1500 and 400 points per tenfold odds, and there is no K factor or regularization. Input order has no effect. Intervals refit 1,000 bootstrap samples of whole swapped-side pairs within each generator (seed 1), preserving generator quotas. These are sampling intervals conditional on the chosen map mix and adjudication policy; eliminating order weighting does not eliminate model or map-selection bias.
+The original schedule targeted 20,000 games in 10,000 swapped-side pairs, with 332 or 334 games per generator. At the user’s request, this final analysis uses the 9,974 complete successful pairs available when the run stopped. Of 19,950 successful games, two successful counterparts to engine crashes are excluded to preserve side balance. The other 50 scheduled games comprise 48 invalid-map results and two repeated memory crashes. No failures count as losses and no replacement games were run. The retained generator counts are in summary.json; planned coverage.json describes the original schedule, not achieved quotas. Missing outcomes may introduce selection bias that the bootstrap intervals do not capture. The fresh sample seed is 20260922. No map seeds or job IDs overlap the reference cohort. All six requested hosts participated initially, including therig.local (68 slots). Localhost was then withdrawn at the user’s request; the remaining five Linux hosts supplied 60 slots. Unfinished macOS pairs were rescheduled together with the same seeds and settings on the existing Linux build; the host-reassignment audit preserves the originals. The original 240-game preflight passed on both platform binaries and all six hosts.
 
-The compatible pool is unchanged: Emoji, Gauntlet, Comb, Encircled Kingdom, Faulted City and Bastion Keys require larger maps or more colonies. Rice Terraces uses `slant=0`; other controls retain defaults. Uniform is editor-only. The Last Treeline arrived after the frozen source and is not included. Pre-play rejected Hilbert River maps are replaced with fresh seeds as complete pairs, retaining the same generator, matchup, binary and settings. Rejected requests, duplicate attempts, smoke tests and older unrelated tournaments do not count.
+Maps use five candidate rolls, a 90,000-tick cap, prestige adjudication and probability victory disabled. 17,591 games were engine-decided; 2,355 reached the cap. Pre-play map rejections and the two incomplete crash pairs are excluded, with every omitted job recorded in exclusions.json. Raw attempts remain preserved.
 
-The selector sorts weakest first, inactive last. Difficulty bands remain below 1450 Easy, 1450–1699 Medium and 1700+ Hard. AI behavior and saved IDs are unchanged. Pooling platform builds does not establish per-tick checksum equivalence.
+Every game has equal weight in an unregularized Bradley–Terry fit, with no K factor or input-order weighting. Draws score 0.5; 400 rating points represent tenfold odds. The 95% intervals refit 1,000 resamples of whole paired blocks within generators, seed 1, preserving the retained generator counts. This removes order weighting, not model assumptions or map-selection effects.
 
-## Reproduction and evidence
+The pool matches the reference tournament: Emoji, Gauntlet, Comb, Encircled Kingdom, Faulted City and Bastion Keys remain excluded for format incompatibility; Uniform is editor-only. Last Treeline is deliberately excluded to retain the same map pool. Rice Terraces uses `slant=0`; other controls retain defaults. The other seven AIs and existing generators are unchanged between the reference and new source revisions.
 
-[Summary](validation/ai-elo-20000-20260920/summary.json), [all outcomes](validation/ai-elo-20000-20260920/outcomes.json.gz), [coverage](validation/ai-elo-20000-20260920/coverage.json), [batch-two replacements](validation/ai-elo-20000-20260920/replacements-batch2.json), and [validation](validation/ai-elo-20000-20260920/validation.md) are retained. The [first 10,000-game evidence](validation/ai-elo-10000-20260920/summary.json), including its historical sequential calculation and replacement audit, remains intact.
+The selector sorts weakest first and inactive last. Difficulty bands remain below 1450 Easy, 1450–1699 Medium and 1700+ Hard. This PR changes labels/ordering; the Maxima gameplay fixes are already on master. Saved AI IDs are unchanged.
+
+## Evidence and reproduction
+
+[Summary](validation/ai-elo-maxima-d37c0c353-20000-20260920/summary.json), [all outcomes](validation/ai-elo-maxima-d37c0c353-20000-20260920/outcomes.json.gz), [coverage](validation/ai-elo-maxima-d37c0c353-20000-20260920/coverage.json), [exclusion audit](validation/ai-elo-maxima-d37c0c353-20000-20260920/exclusions.json), [source/configuration](validation/ai-elo-maxima-d37c0c353-20000-20260920/source.json), [preflight](validation/ai-elo-maxima-d37c0c353-20000-20260920/preflight-summary.json) and [validation](validation/ai-elo-maxima-d37c0c353-20000-20260920/validation.md) are retained.
 
 ```sh
-python3 docs/validation/ai-elo-20000-20260920/reproduce.py
-python3 docs/validation/ai-elo-20000-20260920/test_rating_model.py
+python3 docs/validation/ai-elo-maxima-d37c0c353-20000-20260920/reproduce.py
+python3 docs/validation/ai-elo-maxima-d37c0c353-20000-20260920/test_rating_model.py
+python3 docs/validation/ai-elo-maxima-d37c0c353-20000-20260920/independent_check.py
 ```
 
-The model follows the [Bradley–Terry likelihood](https://stat.ethz.ch/CRAN/web/packages/BradleyTerry2/vignettes/BradleyTerry.html). The solver passed analytic tests and an independent optimizer comparison on the first batch. A larger cohort can be added by passing compatible outcome archives to `reproduce.py`; duplicate IDs and incomplete paired blocks are errors. The previous [Symmetric Arena](ai-strength-symmetric-arena-20260919.md) and [mixed-format](ai-strength-20260917.md) studies are preserved but excluded.
+The [previous-version 20,000-game results](validation/ai-elo-20000-20260920/summary.json), [original 10,000-game evidence](validation/ai-elo-10000-20260920/summary.json), and historical studies remain preserved. Do not pool outcomes across Maxima versions. Platform pooling does not establish per-tick checksum equivalence.

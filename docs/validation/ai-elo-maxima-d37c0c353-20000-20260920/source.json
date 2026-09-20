@@ -1,0 +1,11 @@
+{
+  "source_revision": "d37c0c353d9c2c68b4543286aa9b14e23ae7e526",
+  "previous_source_revision": "f2cfcfeb05b39cc17eab43a532ebb551172de8de",
+  "new_games": 20000,
+  "sample_seed": 20260922,
+  "cohort": "fresh; do not pool previous Maxima version",
+  "build_assignment_weights": {
+    "darwin": 1,
+    "linux": 5
+  }
+}

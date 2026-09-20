@@ -30,17 +30,17 @@ namespace AINames
 		// Displayed values are rounded once, after the full tournament.
 		// Difficulty tiers: below 1450 Easy, 1450-1699 Medium, 1700+ Hard.
 		// These describe this duel cohort, not every map, format or human game.
-		// See docs/ai-strength.md and docs/validation/ai-elo-20000-20260920/.
+		// See docs/ai-strength.md and docs/validation/ai-elo-maxima-d37c0c353-20000-20260920/.
 		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
 			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
-			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1224},
-			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1277},
-			{AI::WARRUSH,         "warrush",         "AIWarrush", "Easy", 1390},
-			{AI::ECONO, "econo", "AIEcono", "Easy", 1308},
-			{AI::NICOWAR,         "nicowar",         "AINicowar", "Medium", 1656},
-			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1857},
-			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1599},
-			{AI::CABINO,          "cabino",          "AICabino", "Medium", 1689},
+			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1204},
+			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1280},
+			{AI::WARRUSH,         "warrush",         "AIWarrush", "Easy", 1401},
+			{AI::ECONO, "econo", "AIEcono", "Easy", 1310},
+			{AI::NICOWAR,         "nicowar",         "AINicowar", "Medium", 1653},
+			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1873},
+			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1601},
+			{AI::CABINO,          "cabino",          "AICabino", "Medium", 1680},
 		};
 	}
 

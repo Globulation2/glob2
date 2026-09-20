@@ -1,0 +1,79 @@
+PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
+PASS preferences keep every generator option, and older files still load
+PASS landscape picker Random order is a real shuffle drawn once per process run, Alphabetical stays stable
+PASS all 67 playable generator landscapes
+PASS model: defaults, alliances, restoration, shared control, human movement, limits, presets
+PASS generated snapshot round trip: all terrain, resources, and starts identical
+PASS order routing: mode 0, every AI once, no duplicate polls
+PASS save/load: human/shared
+nox::game started
+nox::gui.game.checkSum() = 64fef115
+automaticEndingGame ended: 500 ticks, 0 minutes, 20 seconds
+GLOB2_GAME_END ticks=500 winner_team=-1 seed=1789942127 map="Random test" orders=10 players=team0:local,team1:Numbi,team2:Numbi,team3:Numbi
+nox::game started
+nox::gui.game.checkSum() = da62ad39
+automaticEndingGame ended: 250 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=250 winner_team=-1 seed=1789942127 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+PASS real match and replay playback: control 0 solo 0
+PASS order routing: mode 2, every AI once, no duplicate polls
+PASS save/load: human/shared
+nox::game started
+nox::gui.game.checkSum() = 14367c0a
+automaticEndingGame ended: 500 ticks, 0 minutes, 20 seconds
+GLOB2_GAME_END ticks=500 winner_team=-1 seed=1789942128 map="Random test" orders=12 players=team0:local,team0:Numbi,team1:Numbi,team2:Numbi,team3:Numbi
+nox::game started
+nox::gui.game.checkSum() = 1c847a63
+automaticEndingGame ended: 250 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=250 winner_team=-1 seed=1789942128 map="replayHeader" orders=0 players=team0:None,team0:None,team1:None,team2:None,team3:None
+PASS real match and replay playback: control 2 solo 0
+PASS order routing: mode 1, every AI once, no duplicate polls
+PASS save/load: AI-only
+nox::game started
+nox::gui.game.checkSum() = dc589815
+automaticEndingGame ended: 500 ticks, 0 minutes, 20 seconds
+GLOB2_GAME_END ticks=500 winner_team=-1 seed=1789942128 map="Random test" orders=12 players=team0:Numbi,team1:Numbi,team2:Numbi,team3:Numbi
+nox::game started
+nox::gui.game.checkSum() = cd68b4c7
+automaticEndingGame ended: 250 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=250 winner_team=-1 seed=1789942128 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+PASS real match and replay playback: control 1 solo 0
+nox::game started
+nox::gui.localTeam has won
+automaticEndingGame ended: 2 ticks, 0 minutes, 0 seconds
+GLOB2_GAME_END ticks=2 winner_team=0 seed=1789942129 map="FourSquares1" orders=0 players=team0:local
+nox::game started
+nox::gui.localTeam has won
+automaticEndingGame ended: 2 ticks, 0 minutes, 0 seconds
+GLOB2_GAME_END ticks=2 winner_team=0 seed=1789942129 map="replayHeader" orders=0 players=team0:None
+PASS real match and replay playback: control 0 solo 1
+nox::game started
+nox::gui.game.checkSum() = 7e923b05
+automaticEndingGame ended: 500 ticks, 0 minutes, 20 seconds
+GLOB2_GAME_END ticks=500 winner_team=-1 seed=1789942129 map="sierpinski-gardens" orders=10 players=team0:Numbi,team1:Numbi,team2:Numbi,team3:Numbi
+nox::game started
+nox::gui.game.checkSum() = 7b383305
+automaticEndingGame ended: 250 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=250 winner_team=-1 seed=1789942129 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+PASS real match and replay playback: control 1 solo 0
+PASS generated landscape replay: sierpinski-gardens
+nox::game started
+nox::gui.game.checkSum() = d3e7a4fa
+automaticEndingGame ended: 500 ticks, 0 minutes, 20 seconds
+GLOB2_GAME_END ticks=500 winner_team=-1 seed=1789942129 map="hilbert-river" orders=8 players=team0:Numbi,team1:Numbi,team2:Numbi,team3:Numbi
+nox::game started
+nox::gui.game.checkSum() = d16e3b04
+automaticEndingGame ended: 250 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=250 winner_team=-1 seed=1789942129 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+PASS real match and replay playback: control 1 solo 0
+PASS generated landscape replay: hilbert-river
+nox::game started
+nox::gui.game.checkSum() = 082cc5db
+automaticEndingGame ended: 500 ticks, 0 minutes, 20 seconds
+GLOB2_GAME_END ticks=500 winner_team=-1 seed=1789942130 map="drowned-forest" orders=20 players=team0:Numbi,team1:Numbi,team2:Numbi,team3:Numbi
+nox::game started
+nox::gui.game.checkSum() = 058a25db
+automaticEndingGame ended: 250 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=250 winner_team=-1 seed=1789942130 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+PASS real match and replay playback: control 1 solo 0
+PASS generated landscape replay: drowned-forest
+ALL CUSTOM SETUP TESTS PASSED
