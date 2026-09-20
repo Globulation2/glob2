@@ -335,6 +335,8 @@ host. Generator defaults/ranges are always discoverable in its pinned catalog.
 * `ai_comparison`: ais defaults to all active selectable implementations. The standard
   Elo cohort defaults to 1v1 on generated 128x128 maps (`width` and `height` are
   both exponent 7), which keeps ratings directly comparable while minimizing CPU.
+  It records only each game's result by default; request `outputs.telemetry`
+  explicitly when a study needs per-tick AI or team history.
   `formats` and `generator_params` can explicitly request another study design. Duels
   pair every AI; 2v2 defaults to homogeneous
   pairs and accepts explicit two-player `rosters`; four-colony FFA balances AI

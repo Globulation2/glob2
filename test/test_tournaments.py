@@ -343,7 +343,7 @@ class AnalysisTests(unittest.TestCase):
             block=[j for j in games if j['labels']['map_seed']==seed]
             self.assertEqual(sum(j['config']['players'][0]=='numbi' for j in block),2)
         for j in games:
-            self.assertEqual(j['outputs'], {'telemetry': ['team-timeline']})  # default for ai_comparison, exhaustive path too
+            self.assertEqual(j['outputs'], {})  # standard Elo needs only the result
         explicit=Planner('ai_comparison',{**config,'outputs':{}},[bundle]).plan()
         for j in explicit['jobs']:
             if j['type']=='game': self.assertEqual(j['outputs'], {})  # caller's own outputs, not overridden
@@ -403,7 +403,7 @@ class AnalysisTests(unittest.TestCase):
             self.assertNotIn('map', j['inputs'])  # inline generation, no generate_map dependency
             self.assertEqual(j['depends_on'], [])
             self.assertIn('generator', j['config'])
-            self.assertEqual(j['outputs'], {'telemetry': ['team-timeline']})  # AI decisions on by default
+            self.assertEqual(j['outputs'], {})  # standard Elo needs only the result
             formats.add(j['labels']['format'])
             generators.add(j['config']['generator'])
             n = 2 if j['labels']['format'] == '1v1' else 4
