@@ -2962,3 +2962,7 @@ Az éhező határvidék
 Kezdő élelemkészlet
 [Central concentration]
 Központi koncentráció
+[The Last Treeline]
+Az utolsó erdősáv
+[Woodland depth]
+Ligetek szélessége

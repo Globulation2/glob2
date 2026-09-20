@@ -2962,3 +2962,7 @@ Las Marcas Hambrientas
 Ración inicial
 [Central concentration]
 Concentración central
+[The Last Treeline]
+La última franja de bosque
+[Woodland depth]
+Anchura de las arboledas

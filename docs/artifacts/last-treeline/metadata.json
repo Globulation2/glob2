@@ -1,0 +1,12 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "generator": "last-treeline",
+  "legacy_id": 61,
+  "revision": 1,
+  "date": "2026-09-19",
+  "supported_successes": 3017,
+  "supported_failures": 0,
+  "expected_unsupported_refusals": 1236,
+  "frozen_preoptimization_sha256": "0078ac4bb68fdb8b2b2fbe20f2c6572ba473eaf0654e1ce73a87093f437a9545",
+  "optimized_binary_sha256": "d44af0e346b3506a3538a301f876747ae9e5966b3caeb68d169871514d0d3347"
+}

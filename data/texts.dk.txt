@@ -3038,3 +3038,7 @@ De sultne grænseegne
 Startration
 [Central concentration]
 Koncentration i midten
+[The Last Treeline]
+Det sidste skovbælte
+[Woodland depth]
+Lundenes bredde

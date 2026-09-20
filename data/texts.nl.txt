@@ -2986,3 +2986,7 @@ De hongerige grenslanden
 Beginrantsoen
 [Central concentration]
 Concentratie in het midden
+[The Last Treeline]
+De laatste bosstrook
+[Woodland depth]
+Breedte van de bosjes

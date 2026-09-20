@@ -2972,3 +2972,7 @@ Mugalde Gosetiak
 Hasierako anoa
 [Central concentration]
 Erdialdeko kontzentrazioa
+[The Last Treeline]
+Azken baso-zerrenda
+[Woodland depth]
+Basoen zabalera

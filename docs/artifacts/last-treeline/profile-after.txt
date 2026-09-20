@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+PROFILE last-treeline telemetry=0 mean_seconds=0.101148 cpu_seconds=0.099885
+PROFILE last-treeline telemetry=1 mean_seconds=0.101077 cpu_seconds=0.099882
+PROFILE orchard-commons telemetry=0 mean_seconds=0.190031 cpu_seconds=0.181573
+PROFILE orchard-commons telemetry=1 mean_seconds=0.219456 cpu_seconds=0.209408

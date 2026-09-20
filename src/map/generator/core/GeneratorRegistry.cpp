@@ -62,6 +62,7 @@
 #include "EvenGroundGenerator.h"
 #include "MarchlandGenerator.h"
 #include "OrchardCommonsGenerator.h"
+#include "LastTreelineGenerator.h"
 #include "GauntletGenerator.h"
 #include "CombGenerator.h"
 #include "EncircledKingdomGenerator.h"
@@ -183,7 +184,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 honeycombIsleDefinition(),
 											 karstTowersDefinition(), bajadaDefinition(),
 											 centralQuarryDefinition(), hiddenOasisDefinition(), drownedForestDefinition(), portageLakesDefinition(),
-											 orchardCommonsDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(), bastionKeysDefinition(),
+											 orchardCommonsDefinition(), lastTreelineDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(), bastionKeysDefinition(),
 											 evenGroundDefinition(), marchlandDefinition(),
 											 whoAteTheMapDefinition(), ruggedArchipelagoDefinition(),
 											 hungryMarchesDefinition(),

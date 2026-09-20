@@ -3024,3 +3024,7 @@ Le Marche Affamate
 Razione iniziale
 [Central concentration]
 Concentrazione centrale
+[The Last Treeline]
+L’ultima fascia boschiva
+[Woodland depth]
+Larghezza dei boschetti

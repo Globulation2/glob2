@@ -2958,3 +2958,7 @@ Miền Biên Ải Đói Kém
 Khẩu phần ban đầu
 [Central concentration]
 Mức tập trung ở trung tâm
+[The Last Treeline]
+Dải rừng cuối cùng
+[Woodland depth]
+Bề rộng lùm cây

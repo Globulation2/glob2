@@ -2972,3 +2972,7 @@ De hungriga gränsmarkerna
 Startranson
 [Central concentration]
 Koncentration i mitten
+[The Last Treeline]
+Det sista skogsbältet
+[Woodland depth]
+Skogsdungarnas bredd

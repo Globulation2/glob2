@@ -2958,3 +2958,7 @@ Perbatasan Kelaparan
 Jatah awal
 [Central concentration]
 Pemusatan di tengah
+[The Last Treeline]
+Sabuk hutan terakhir
+[Woodland depth]
+Lebar hutan

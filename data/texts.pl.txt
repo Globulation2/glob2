@@ -2962,3 +2962,7 @@ Głodne Pogranicze
 Początkowy przydział
 [Central concentration]
 Koncentracja w centrum
+[The Last Treeline]
+Ostatni pas lasu
+[Woodland depth]
+Szerokość zagajników

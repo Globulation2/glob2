@@ -2968,3 +2968,7 @@ As Fronteiras Famintas
 Ração inicial
 [Central concentration]
 Concentração central
+[The Last Treeline]
+A última faixa de floresta
+[Woodland depth]
+Largura dos bosques

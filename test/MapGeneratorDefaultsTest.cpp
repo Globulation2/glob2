@@ -714,5 +714,15 @@ int main(int argc, char **argv)
 		GeneratorContracts::portageLakesContracts();
 		return 0;
 	}
+	if (argc == 3 && std::string(argv[2]) == "--treeline-only")
+	{
+		LastTreelineChecks::run();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--treeline-profile")
+	{
+		LastTreelineChecks::profile();
+		return 0;
+	}
 	MapGeneratorDefaultsTest::run(argc == 3 ? argv[2] : nullptr);
 }

@@ -2962,3 +2962,7 @@ Lačno obmejno ozemlje
 Začetna zaloga hrane
 [Central concentration]
 Zgoščenost v središču
+[The Last Treeline]
+Zadnji gozdni pas
+[Woodland depth]
+Širina gozdičkov

@@ -2958,3 +2958,7 @@ Emoji
 초기 식량
 [Central concentration]
 중앙 집중도
+[The Last Treeline]
+마지막 산림 지대
+[Woodland depth]
+숲의 너비

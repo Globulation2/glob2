@@ -2958,3 +2958,7 @@ Emoji
 起始口粮
 [Central concentration]
 中央集中度
+[The Last Treeline]
+最后的林带
+[Woodland depth]
+树林宽度

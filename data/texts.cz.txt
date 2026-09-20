@@ -2962,3 +2962,7 @@ Hladové pohraničí
 Počáteční příděl
 [Central concentration]
 Soustředění ve středu
+[The Last Treeline]
+Poslední pás lesa
+[Woodland depth]
+Šířka hájů
