@@ -27,13 +27,32 @@ after the change. The combat suite exercises:
 `archive.txt` records the binary/text continuation archive regression. No new
 saved fields or version gates are introduced. Existing saved strategies keep their
 resolved radius; new default strategies use four tiles. Rally policy changes the
-AI's future orders, not engine order execution or replay playback. No cross-platform
-per-tick simulation checksum comparison or full-match strength comparison was run;
-Bradley play-tested the standalone PR GUI build and explicitly approved merging.
-This is author play-test approval, not independent review.
+AI's future orders, not engine order execution or replay playback. No full-match
+strength comparison was run. Bradley play-tested the standalone PR GUI build and
+explicitly approved merging. This is author play-test approval, not independent
+review.
 
-The initial Ubuntu 22.04 CI run failed the movement test's stricter requirement
-that fifteen warriors enter the four-tile flag itself. The test now uses the
-approved two-tile readiness margin, while still requiring distinct legal positions
-and a real transition to advancing. Ubuntu 24.04 and macOS passed the original
-check. The updated local regression log is retained in `regressions.txt`.
+The movement fixture skips normal `setGameHeader` setup, leaving the player-wait
+flag uninitialized. On Ubuntu 22.04 no warriors arrived because `syncStep` could
+be skipped. The fixture now explicitly clears the wait state and asserts that
+every requested tick advances. The arrival check also uses the approved two-tile
+readiness margin; widening that assertion alone did not resolve the CI failure.
+
+The movement regression resets the simulation RNG to seed 5489 for each of its
+two scenarios (ordinary placement and a 52-tile toroidal translation). It compares
+every tick's heavy engine checksum with the retained macOS baseline in
+[`rally-movement-checksums.txt`](../../../test/maxima/fixtures/rally-movement-checksums.txt).
+Each row contains translation, simulation tick, and checksum. Both Linux CI jobs
+run this comparison, so a pass requires the same checksum at every simulated tick,
+not merely the same eventual launch. Windows CI builds the game but does not run
+this native Maxima harness; Windows checksum equivalence remains unverified.
+
+To deliberately regenerate the baseline after reviewing a simulation change:
+
+```sh
+GLOB2_RECORD_RALLY_CHECKSUMS=1 python3 test/maxima/run_maxima_implementation_regressions.py \
+  --reuse-built-objects --test MaximaCombatIntegrationTest
+```
+
+Normal test runs must leave that variable unset. `regressions.txt` retains the
+local comparison and related regression results.

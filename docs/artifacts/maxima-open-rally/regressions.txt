@@ -20,7 +20,7 @@ MaximaLifecycleTest: PASS
 MaximaTacticsStandaloneTest: PASS
 ..............
 ----------------------------------------------------------------------
-Ran 14 tests in 14.099s
+Ran 14 tests in 12.851s
 
 OK
 MaximaStrategyConfigTest: PASS

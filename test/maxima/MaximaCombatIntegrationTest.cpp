@@ -8,6 +8,7 @@
 #include "../../src/Order.h"
 #include "../../src/ai/maxima/AIMaximaContinuation.h"
 #include "../../src/Player.h"
+#include "../../src/Utilities.h"
 #include "../../src/TeamStat.h"
 #include <memory>
 #include <boost/tuple/tuple.hpp>
@@ -31,6 +32,8 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <cassert>
+#include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <memory>
 
@@ -49,6 +52,9 @@ struct Fixture
 
     Fixture() : game(NULL)
     {
+        // This fixture skips setGameHeader, which normally initializes the
+        // player-wait state. syncStep must actually advance the simulation.
+        game.setWaitingOnMask(0);
         game.map.setSize(6,6,GRASS);
         game.map.setGame(&game);
         for(int team=0; team<3; ++team) {
@@ -432,7 +438,15 @@ static void rallyRejectsBlockedGround()
 
 static void rallyAssemblesByMovement()
 {
+    const char* tracePath="test/maxima/fixtures/rally-movement-checksums.txt";
+    const bool record=std::getenv("GLOB2_RECORD_RALLY_CHECKSUMS")!=nullptr;
+    std::ifstream expected;
+    std::ofstream output;
+    if(record)output.open(tracePath);
+    else expected.open(tracePath);
+    assert(record ? output.good() : expected.good());
     for(int shift:{0,52}) {
+        setSyncRandSeed(5489);
         Fixture f;
         const auto wrap=[&](int v){return (v+shift)%64;};
         f.game.gameHeader.setHungerDisabled(true);
@@ -455,7 +469,21 @@ static void rallyAssemblesByMovement()
         const int arrivalRadius=flag->unitStayRange+2;
         int arrived=0;
         for(int tick=0;tick<2000 && arrived<15;++tick) {
+            const auto previousStep=f.game.stepCounter;
             f.game.syncStep(0);
+            assert(f.game.stepCounter==previousStep+1);
+            const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true);
+            if(record)output << shift << ' ' << f.game.stepCounter << ' ' << checksum << '\n';
+            else {
+                int expectedShift;
+                Uint32 expectedStep,expectedChecksum;
+                assert(expected >> expectedShift >> expectedStep >> expectedChecksum);
+                if(expectedShift!=shift || expectedStep!=f.game.stepCounter || expectedChecksum!=checksum)
+                    std::cerr << "Rally checksum mismatch: shift=" << shift
+                        << " step=" << f.game.stepCounter << " actual=" << checksum
+                        << " expected=" << expectedChecksum << '\n';
+                assert(expectedShift==shift && expectedStep==f.game.stepCounter && expectedChecksum==checksum);
+            }
             arrived=0;
             for(auto* warrior:warriors)
                 arrived+=f.game.map.warpDistSquare(warrior->posX,warrior->posY,flag->posX,flag->posY)
@@ -473,6 +501,10 @@ static void rallyAssemblesByMovement()
         a.timer+=100;
         a.plan_offense(c);a.control_offense(c);
         assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
+    }
+    if(!record) {
+        expected >> std::ws;
+        assert(expected.eof());
     }
 }
 
