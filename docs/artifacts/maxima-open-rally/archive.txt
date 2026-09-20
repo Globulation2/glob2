@@ -1,0 +1,1 @@
+Binary bytes, SHA1, text fallback, nested records, signed limits, 64-bit low/high order, strings, container boundaries and interleaved direct writes: identical
