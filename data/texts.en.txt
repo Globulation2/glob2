@@ -2332,6 +2332,18 @@ Off (no timer)
 60 minutes
 [Sudden-death timer]
 Sudden-death timer
+[Probability victory]
+Probability victory
+[Off (play it out)]
+Off (play it out)
+[95% sure]
+95% sure
+[97% sure]
+97% sure
+[99% sure]
+99% sure
+[Ends the match once the result is no longer in doubt. Spectators can always see each player's chance of winning in the statistics.]
+Ends the match once the result is no longer in doubt. Spectators can always see each player's chance of winning in the statistics.
 [Stats births]
 Births
 [Stats deaths]

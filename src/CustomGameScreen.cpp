@@ -1087,6 +1087,8 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				setup.buildingHpLevel = value;
 			if (index == 17)
 				setup.suddenDeathMinutes = value;
+			if (index == 18)
+				setup.winProbabilityPermille = value;
 			setup.ruleset = "Custom";
 		};
 		std::string help;
@@ -1213,7 +1215,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 									 "generated map."
 								   : "Premade maps retain their authored starting units.");
 		}
-		else
+		else if (index == 17)
 		{
 			std::vector<std::string> options =
 				localized({"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"});
@@ -1224,6 +1226,19 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 						current < int(minutes.size()) ? current : 0,
 						[apply, minutes](int v) { apply(minutes[v]); });
 			help = tr("Match ends at the timer; highest prestige at that instant wins.");
+		}
+		else
+		{
+			std::vector<std::string> options = localized(
+				{"Off (play it out)", "95% sure", "97% sure", "99% sure"});
+			const auto &choices = CustomGameSetup::winProbabilityChoices;
+			const int current = int(std::find(choices.begin(), choices.end(),
+											  setup.winProbabilityPermille) - choices.begin());
+			ui.dropdown("rule/winProbability", {fieldX, yy + 5, fieldW, 29}, options,
+						current < int(choices.size()) ? current : 0,
+						[apply, choices](int v) { apply(choices[v]); });
+			help = tr("Ends the match once the result is no longer in doubt. Spectators "
+					  "can always see each player's chance of winning in the statistics.");
 		}
 		ui.text(x + 10, yy + 39, help, "little", w - 40, true);
 		yy += 65;
