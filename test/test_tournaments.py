@@ -16,7 +16,7 @@ from tools.tournaments.common import atomic_json, digest, file_hash, read_json, 
 from tools.tournaments.coordinator import Coordinator
 from tools.tournaments.model import job, validate_experiment
 from tools.tournaments.transfer import put_chunk, offset
-from tools.tournaments.worker import Worker
+from tools.tournaments.worker import Worker, pack
 
 FAKE = '''#!/usr/bin/env python3
 import json, pathlib, sys
@@ -167,6 +167,26 @@ class Fixture(unittest.TestCase):
             worker.configure({'disk_reserve_bytes': 10**30})
             self.assertFalse(worker.status()['accepting'])
         finally: worker.close()
+
+    def test_standard_elo_pack_omits_incidental_outputs(self):
+        import shutil
+        worker = Worker(self.root / 'lightweight-worker')
+        try:
+            attempt = self.coordinator.dispatch('one', self.status)[0]
+            shutil.copytree(self.root / 'bundles' / self.bundle['id'], worker.root / 'bundles' / self.bundle['id'])
+            worker.enqueue(attempt)
+            directory = worker.root / 'attempts' / attempt['id']
+            output = directory / 'output'; output.mkdir()
+            (output / 'incidental.log').write_text('not an explicit output')
+            atomic_json(directory / 'execution.json', {
+                'category': 'success',
+                'result': {'schema_version': 1, 'status': 'completed'},
+            })
+            root = worker.root
+        finally:
+            worker.close()
+        pack(root, attempt['id'])
+        self.assertEqual(read_json(root / 'attempts' / attempt['id'] / 'record.json')['artifacts'], [])
 
     def test_persistent_daemon_hot_reloads_configure(self):
         """A `configure` RPC (used by `doctor`) runs against a fresh, short-lived

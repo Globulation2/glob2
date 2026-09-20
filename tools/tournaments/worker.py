@@ -369,15 +369,21 @@ def pack(root, identity):
             return
         attempt = read_json(directory / 'attempt.json')
         execution = read_json(directory / 'execution.json')
+        # A completed result is carried by execution.json, so an Elo job with no
+        # requested outputs need not copy incidental maps, logs and reports back
+        # to the coordinator. They can dominate a short duel's wall time and
+        # leave otherwise idle worker slots waiting for collection.
+        retain_incidental = bool(attempt['job']['outputs'])
         artifacts = []
-        for path in sorted(directory.rglob('*')):
-            relative = path.relative_to(directory).as_posix()
-            if not path.is_file() or path.is_symlink() or relative.startswith(('home/', 'inputs/', 'output/profile/')) or '/profile/' in relative or relative in ('attempt.json', 'execution.json', 'record.json') or path.suffix == '.lock':
-                continue
-            # A packing restart replaces objects atomically with identical bytes.
-            meta = store_artifact(path, worker.root / 'spool', compress=path.stat().st_size > 4096 and path.suffix not in ('.json',))
-            meta['path'] = relative[7:] if relative.startswith('output/') else relative
-            artifacts.append(meta)
+        if retain_incidental:
+            for path in sorted(directory.rglob('*')):
+                relative = path.relative_to(directory).as_posix()
+                if not path.is_file() or path.is_symlink() or relative.startswith(('home/', 'inputs/', 'output/profile/')) or '/profile/' in relative or relative in ('attempt.json', 'execution.json', 'record.json') or path.suffix == '.lock':
+                    continue
+                # A packing restart replaces objects atomically with identical bytes.
+                meta = store_artifact(path, worker.root / 'spool', compress=path.stat().st_size > 4096 and path.suffix not in ('.json',))
+                meta['path'] = relative[7:] if relative.startswith('output/') else relative
+                artifacts.append(meta)
         present = {a['path'] for a in artifacts}
         requested = list(attempt['job']['outputs'].get('required', []))
         requested += [f'{s}.game' for s in attempt['job']['outputs'].get('saves', []) if s in ('initial', 'final')]
