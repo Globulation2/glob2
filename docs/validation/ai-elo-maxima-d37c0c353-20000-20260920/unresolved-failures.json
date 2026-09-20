@@ -1,0 +1,162 @@
+{
+  "detected_at": 1789934653.084749,
+  "status": "Repeated SIGKILL with extreme memory usage; retain seeds, do not count as losses or silently replace",
+  "jobs": [
+    {
+      "job": {
+        "build": "1bb971834afa0c8d445415fada27e5663744e1e79fa40e466cae26dbe5412df1",
+        "config": {
+          "ai_params": {},
+          "candidates": 5,
+          "generator": 14,
+          "params": {
+            "height": 7,
+            "teams": 2,
+            "width": 7
+          },
+          "players": [
+            "nicowar",
+            "cortex"
+          ],
+          "ticks": 90000
+        },
+        "depends_on": [],
+        "id": "4947fa199cc54ce3441fc437c12f5da8",
+        "inputs": {},
+        "labels": {
+          "block": "14:26548682:3569792794",
+          "format": "1v1",
+          "generator": 14,
+          "map": "14:26548682",
+          "map_seed": 26548682,
+          "rotation": 0,
+          "subject_player": 0,
+          "symmetric_control": false,
+          "variant": "baseline"
+        },
+        "limits": {
+          "timeout_seconds": 3600
+        },
+        "outputs": {},
+        "schema_version": 1,
+        "seeds": {
+          "game": 3569792794,
+          "map": 26548682
+        },
+        "type": "game"
+      },
+      "attempts": [
+        {
+          "id": "b0cea18b988e41dfb8b88d11694e90bb",
+          "host": "pharaoh-dev-1.local",
+          "category": "crash",
+          "exit_code": -9,
+          "seconds": 108.13126611709595,
+          "resource_usage": {
+            "peak_rss_bytes": 14577070080,
+            "system_seconds": 9.258727,
+            "user_seconds": 75.152992
+          },
+          "last_progress": {
+            "schema_version": 1,
+            "tick": 38144
+          }
+        },
+        {
+          "id": "d6d1c756e19541f5bfed211b0e4f5723",
+          "host": "therig.local",
+          "category": "crash",
+          "exit_code": -9,
+          "seconds": 1299.0174407958984,
+          "resource_usage": {
+            "peak_rss_bytes": 113009872896,
+            "system_seconds": 288.317136,
+            "user_seconds": 706.683721
+          },
+          "last_progress": {
+            "schema_version": 1,
+            "tick": 38144
+          }
+        }
+      ]
+    },
+    {
+      "job": {
+        "build": "1bb971834afa0c8d445415fada27e5663744e1e79fa40e466cae26dbe5412df1",
+        "config": {
+          "ai_params": {},
+          "candidates": 5,
+          "generator": 3,
+          "params": {
+            "height": 7,
+            "teams": 2,
+            "width": 7
+          },
+          "players": [
+            "cabino",
+            "nicowar"
+          ],
+          "ticks": 90000
+        },
+        "depends_on": [],
+        "id": "2d4c40663753a3031cd26c2591db7927",
+        "inputs": {},
+        "labels": {
+          "block": "3:2703998184:3590718497",
+          "format": "1v1",
+          "generator": 3,
+          "map": "3:2703998184",
+          "map_seed": 2703998184,
+          "rotation": 0,
+          "subject_player": 0,
+          "symmetric_control": false,
+          "variant": "baseline"
+        },
+        "limits": {
+          "timeout_seconds": 3600
+        },
+        "outputs": {},
+        "schema_version": 1,
+        "seeds": {
+          "game": 3590718497,
+          "map": 2703998184
+        },
+        "type": "game"
+      },
+      "attempts": [
+        {
+          "id": "72a3fc4a80ea42519ec9042cb5ab2742",
+          "host": "pharaoh-dev-1.local",
+          "category": "crash",
+          "exit_code": -9,
+          "seconds": 160.2822208404541,
+          "resource_usage": {
+            "peak_rss_bytes": 14448267264,
+            "system_seconds": 10.176169,
+            "user_seconds": 101.431309
+          },
+          "last_progress": {
+            "schema_version": 1,
+            "tick": 50944
+          }
+        },
+        {
+          "id": "bddb46ede9e141de98bca18816ce8831",
+          "host": "devlaptop.local",
+          "category": "crash",
+          "exit_code": -9,
+          "seconds": 341.0407044887543,
+          "resource_usage": {
+            "peak_rss_bytes": 62190641152,
+            "system_seconds": 63.820126,
+            "user_seconds": 224.831031
+          },
+          "last_progress": {
+            "schema_version": 1,
+            "tick": 50944
+          }
+        }
+      ]
+    }
+  ]
+}
