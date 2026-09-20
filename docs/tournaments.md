@@ -160,9 +160,12 @@ flowchart LR
 ```
 
 The coordinator owns lease and acceptance decisions. Worker process and queue
-state survive independent interruptions. Artifact packaging runs in separate
-processes from simulation slots; each host synchronizes independently so one
-unreachable host does not stall dispatch to another.
+state survive independent interruptions. Artifact packaging runs in separate processes from simulation slots. Continuous
+`run` has independent bounded lanes for host control/lease renewal, input delivery,
+and result collection. Every host has a control lane; bulk transfers cannot block
+its heartbeats or wait for another host's transfer slot. Finished-but-uncollected
+attempts retain their leases but no longer occupy compute prefetch capacity.
+Worker disk/spool limits and a separate result-backlog cap bound storage pressure.
 
 ## Protocol and manifest fields
 
@@ -194,7 +197,10 @@ retains compression metadata needed for transparent decoding.
 Coordinator settings (omitted fields use these defaults): heartbeat_seconds 15,
 lease_seconds 300 (at least two heartbeats), prefetch 2 queued jobs per execution
 slot in addition to active games, infrastructure_attempts 5, process_attempts 2,
-transfer_slots 4. Optional prefetch_seconds limits estimated buffered dispatch.
+transfer_slots 4 for bounded `--once` synchronization. Continuous `run` uses
+input_transfer_slots 8, result_transfer_slots 8, and poll_seconds 1 (no longer than
+heartbeat_seconds). Each transfer stage limits both running and queued tasks;
+partial transfers rotate among available attempts. Optional prefetch_seconds limits estimated buffered dispatch.
 Leases use coordinator time; running and queued attempts both renew while connected.
 Each dispatch has a new attempt ID and random lease token. A disconnected worker
 continues its buffer and spools results. Expired leases can be reassigned; old tokens
@@ -217,12 +223,31 @@ Each host has `name`, `directory`, optional `transport` (ssh default, or local),
 | Field | Default |
 | --- | --- |
 | slots | logical CPUs minus one, minimum one; one process per slot |
-| collect_slots | 1 separate artifact packaging process |
+| collect_slots | 2 separate artifact packaging processes |
+| result_backlog_limit | 128 executed/packing/done attempts before admission stops |
+| input_slots | 2 concurrent input deliveries per host (coordinator-side) |
+| result_slots | 2 concurrent result collections per host (coordinator-side) |
 | builds | empty: every platform-compatible, capable build |
 | disk_reserve_bytes | 1 GiB |
 | spool_budget_bytes | 10 GiB |
 | cache_budget_bytes | 20 GiB |
 | memory_mb | null (optional process address-space limit) |
+
+Worker `slots`, `collect_slots`, backlog and storage limits reload on every daemon
+tick; reconfiguration no longer requires restarting the daemon. Packaging compresses
+into private attempt staging in parallel. A short shared lock publishes objects and
+the record atomically with respect to acknowledgement cleanup, preserving shared
+artifacts needed by other attempts. `collect_slots` therefore controls actual
+compression concurrency. Packing records retain queue and compression durations.
+`reports/pipeline.json` records active control/input/result lane counts and the latest
+worker queue/storage snapshots; snapshots are observations, not promises that every
+configured slot is busy.
+
+Each lane uses its own persistent SSH/Python RPC stream, with bounded messages and
+a timeout covering request writes and response reads. Broken streams are discarded;
+retry/reconnect uses the existing idempotent operations and lease rules, never an
+unconditional replay of an unknown mutation. Old experiments retain their original
+worker package; resume those with their preserved `worker.pyz`.
 
 Use explicit conservative slots initially. Inspect peak RSS, process seconds and
 throughput before increasing concurrency. Generation, execution, packaging and
@@ -377,6 +402,7 @@ planning/statistics, not SSH, process pools, retries or transfers.
 
 ```sh
 python3 test/test_tournaments.py
+python3 test/test_tournament_pipeline.py
 python3 test/test_map_fairness_tournament.py
 scons -j4 release=1 server=0 tournament-compatibility-test
 build/src/TournamentCompatibilityTest
@@ -483,3 +509,25 @@ See [gameplay metric definitions](gameplay-statistics.md),
 The rebased save formats are 105 (gameplay) and 106 (AI), above master's 104;
 released save support still starts at 58. Master's network/YOG gate 33 and replay
 floor 99 are preserved. Existing exported logs need no conversion.
+
+
+## Pipeline throughput benchmark
+
+`test/tournament_pipeline_benchmark.py` runs identical seeded Maxima/Nicowar games
+through a selected checkout's worker package, retaining the full experiment and
+`benchmark.json`. Use the same bundle, map, seeds, slots and idle host for before/after
+runs. Bundle/input warm-up is excluded from timing; final artifact collection is
+included. The report separates occupied execution-slot time from actual engine CPU
+seconds, and includes game results plus raw replay/save hashes for comparison.
+
+```sh
+python3 test/tournament_pipeline_benchmark.py --package-root /path/to/checkout \
+  --bundle /path/to/bundle --map /path/to/map-r0.map \
+  --output /path/to/new-results --jobs 24 --slots 4 --ticks 20000
+```
+
+Optional `--hosts hosts.json` supports SSH hosts with dedicated worker directories;
+the supplied bundle must match those hosts. Do not benchmark two variants concurrently
+on the same CPU resources. Short jobs emphasize scheduling overhead; report the map,
+ticks, workload size, platform, and all commands rather than extrapolating one result
+to every tournament.
