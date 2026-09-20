@@ -345,13 +345,138 @@ static ::Building* materializeFlag(Fixture& f)
     return flag;
 }
 
+// Place synthetic policy-test arrivals on distinct legal cells and keep map
+// occupancy consistent. Real movement to the rally is tested separately below.
+static void placeAtRally(Fixture& f, ::Building* flag, const std::vector<Unit*>& units, int count)
+{
+    for(int i=0;i<count;++i) {
+        auto* unit=units[i];
+        f.game.map.setGroundUnit(unit->posX,unit->posY,NOGUID);
+        bool placed=false;
+        for(int dy=-flag->unitStayRange;dy<=flag->unitStayRange && !placed;++dy)
+            for(int dx=-flag->unitStayRange;dx<=flag->unitStayRange && !placed;++dx) {
+                if(dx*dx+dy*dy>flag->unitStayRange*flag->unitStayRange)continue;
+                const int x=f.game.map.normalizeX(flag->posX+dx),y=f.game.map.normalizeY(flag->posY+dy);
+                if(!f.game.map.isFreeForGroundUnit(x,y,false,f.player.team->me))continue;
+                unit->posX=x;unit->posY=y;
+                f.game.map.setGroundUnit(x,y,unit->gid);placed=true;
+            }
+        assert(placed);
+    }
+}
+
+static void nearbyWarriorsCountAsRallied()
+{
+    for(bool withinTolerance:{false,true}) {
+        Fixture f;
+        f.building(10,10,0);
+        auto target=f.building(35,30,1);
+        std::vector<Unit*> warriors;
+        for(int i=0;i<20;++i)warriors.push_back(f.warrior(i%5,i/5,3));
+        auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+        a.plan_offense(c);a.control_offense(c);
+        auto* flag=materializeFlag(f);
+        for(auto* warrior:warriors)f.attach(warrior,flag);
+        const int inner=flag->unitStayRange+(withinTolerance?0:2),outer=inner+2;
+        int placed=0;
+        for(int dy=-outer;dy<=outer && placed<15;++dy)
+            for(int dx=-outer;dx<=outer && placed<15;++dx) {
+                if(dx*dx+dy*dy<=inner*inner || dx*dx+dy*dy>outer*outer)continue;
+                const int x=f.game.map.normalizeX(flag->posX+dx),y=f.game.map.normalizeY(flag->posY+dy);
+                if(!f.game.map.isFreeForGroundUnit(x,y,false,f.player.team->me))continue;
+                auto* unit=warriors[placed++];
+                f.game.map.setGroundUnit(unit->posX,unit->posY,NOGUID);
+                unit->posX=x;unit->posY=y;f.game.map.setGroundUnit(x,y,unit->gid);
+            }
+        assert(placed==15);
+        a.timer+=100;
+        a.plan_offense(c);a.control_offense(c);
+        assert((a.offense_waves[0].phase==Tactics::WaveAdvance)==withinTolerance);
+    }
+}
+
+static void rallyRejectsBlockedGround()
+{
+    Fixture f;
+    f.building(10,10,0);
+    auto target=f.building(35,30,1);
+    for(int i=0;i<20;++i)f.warrior(i%5,i/5,3);
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    for(int y=4;y<22;++y)for(int x=4;x<22;++x)f.game.map.addForbidden(x,y,0);
+    // A reachable nine-tile pocket is still too small for the wave.
+    for(int y=7;y<10;++y)for(int x=7;x<10;++x)f.game.map.removeForbidden(x,y,0);
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves.empty());
+    // No room to muster must not fall through to an ungathered attack flag.
+    assert(c.buildingOrders.empty());
+    f.building(40,40,0);
+    c.buildings.tick();
+    a.plan_offense(c);a.control_offense(c);
+    assert(a.offense_waves.size()==1);
+    auto* flag=materializeFlag(f);
+    assert(f.game.map.warpDistMax(flag->posX,flag->posY,40,40)<=10);
+    assert(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
+    const int oldX=flag->posX,oldY=flag->posY;
+    f.building(oldX,oldY,0);
+    a.timer+=100;
+    a.plan_offense(c);a.control_offense(c);
+    bool moved=false;
+    for(auto order:c.managementOrders)
+        if(auto move=dynamic_cast<Management::ChangeFlagPosition*>(order.get())) {
+            assert(f.game.map.getBuilding(move->x,move->y)==NOGBID);
+            assert(!f.game.map.isForbidden(move->x,move->y,f.player.team->me));
+            moved=true;
+        }
+    assert(moved && a.offense_waves[0].phase==Tactics::WaveMuster);
+}
+
+static void rallyAssemblesByMovement()
+{
+    for(int shift:{0,52}) {
+        Fixture f;
+        const auto wrap=[&](int v){return (v+shift)%64;};
+        f.game.gameHeader.setHungerDisabled(true);
+        f.building(wrap(10),wrap(10),0);
+        auto target=f.building(wrap(35),wrap(30),1);
+        std::vector<Unit*> warriors;
+        for(int i=0;i<20;++i)warriors.push_back(f.warrior(wrap(2+i%5),wrap(2+i/5),3));
+        auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+        a.plan_offense(c);a.control_offense(c);
+        assert(a.offense_waves.size()==1);
+        auto* flag=materializeFlag(f);
+        assert(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
+        assert(flag->unitStayRange==4);
+        for(auto* warrior:warriors) {
+            warrior->subscriptionSuccess(flag,false);
+            flag->unitsWorking.push_back(warrior);
+        }
+        int arrived=0;
+        for(int tick=0;tick<2000 && arrived<15;++tick) {
+            f.game.syncStep(0);
+            arrived=0;
+            for(auto* warrior:warriors)
+                arrived+=f.game.map.warpDistSquare(warrior->posX,warrior->posY,flag->posX,flag->posY)
+                    <=flag->unitStayRange*flag->unitStayRange;
+        }
+        assert(arrived>=15);
+        std::set<std::pair<int,int>> occupied;
+        for(auto* warrior:warriors) {
+            assert(f.game.map.getBuilding(warrior->posX,warrior->posY)==NOGBID);
+            assert(occupied.insert({warrior->posX,warrior->posY}).second);
+        }
+        a.timer+=100;
+        a.plan_offense(c);a.control_offense(c);
+        assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
+    }
+}
+
 static void waveAssemblyAndPipeline()
 {
     Fixture f;
     f.building(10,10,0);
     auto target=f.building(35,30,1);
     std::vector<Unit*> warriors;
-    for(int i=0;i<40;++i)warriors.push_back(f.warrior(15+i%10,15+i/10,3));
+    for(int i=0;i<40;++i)warriors.push_back(f.warrior(i%10,i/10,3));
     auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
     a.director.dirty=false;
     a.budget.tactical_kind=Tactics::MissionNone;
@@ -364,14 +489,15 @@ static void waveAssemblyAndPipeline()
     assert(a.offense_waves[0].requestedForce==20);
     const int first=a.offense_waves[0].flagId;
     auto flag=materializeFlag(f);
-    assert(flag->posX==10 && flag->posY==10);
+    assert(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
+    assert(f.game.map.warpDistMax(flag->posX,flag->posY,10,10)<=10);
     for(int i=0;i<20;++i)f.attach(warriors[i],flag);
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
     // Enrollment alone must not release the cohort; nobody has arrived.
     assert(a.offense_waves.size()==1);
     assert(a.offense_waves[0].phase==Tactics::WaveMuster);
-    for(int i=0;i<15;++i){warriors[i]->posX=10;warriors[i]->posY=10;}
+    placeAtRally(f,flag,warriors,15);
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
     assert(a.offense_waves.size()==2);
@@ -421,12 +547,13 @@ static void smallWaveKeepsRecruiting()
     f.building(10,10,0);
     auto target=f.building(35,30,1);
     std::vector<Unit*> warriors;
-    for(int i=0;i<4;++i)warriors.push_back(f.warrior(15+i,15,3));
+    for(int i=0;i<4;++i)warriors.push_back(f.warrior(i,0,3));
     auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
     a.plan_offense(c);a.control_offense(c);
     assert(a.offense_waves.size()==1 && a.offense_waves[0].requestedForce==4);
     auto flag=materializeFlag(f);
-    for(auto warrior:warriors){f.attach(warrior,flag);warrior->posX=10;warrior->posY=10;}
+    for(auto warrior:warriors)f.attach(warrior,flag);
+    placeAtRally(f,flag,warriors,4);
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
     // Four of four present is not a full wave: allow time for the army to grow.
@@ -441,7 +568,7 @@ static void smallWaveKeepsRecruiting()
     a.plan_offense(c);a.control_offense(c);
     // A timeout cannot launch four arrived warriors with sixteen stragglers.
     assert(a.offense_waves[0].phase==Tactics::WaveMuster);
-    for(int i=0;i<15;++i){warriors[i]->posX=10;warriors[i]->posY=10;}
+    placeAtRally(f,flag,warriors,15);
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
     assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
@@ -975,6 +1102,9 @@ static void run()
     fittedForceUsesOnlyVisibleUnits();
     fittedPowerControlsAttackGate();
     fittedHistorySurvivesSave();
+    nearbyWarriorsCountAsRallied();
+    rallyRejectsBlockedGround();
+    rallyAssemblesByMovement();
     waveAssemblyAndPipeline();
     smallWaveKeepsRecruiting();
     defenseWrapsBuildingOrigins();

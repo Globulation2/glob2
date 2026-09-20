@@ -169,6 +169,38 @@ namespace
 		}
 	};
 
+	bool rally_walkable(const Map* map, Uint32 team, int x, int y)
+	{
+		return map->getBuilding(x,y)==NOGBID && !map->isResource(x,y)
+			&& !map->isWater(x,y) && !map->isForbidden(x,y,team);
+	}
+
+	// Count distinct connected standing tiles inside the engine's circular flag
+	// range. Mobile units do not make a permanent obstacle to their own rally.
+	int rally_space(Map* map, Uint32 team, int x, int y, int radius, int needed)
+	{
+		if(!rally_walkable(map,team,x,y))return 0;
+		std::set<int> visited;
+		std::vector<std::pair<int,int>> queue;
+		queue.push_back(std::make_pair(x,y));visited.insert(map->coordToIndex(x,y));
+		for(size_t head=0;head<queue.size();++head)
+		{
+			const auto point=queue[head];
+			for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
+			{
+				const int px=map->normalizeX(point.first+dx),py=map->normalizeY(point.second+dy);
+				if(map->warpDistSquare(px,py,x,y)>radius*radius
+				   || !visited.insert(map->coordToIndex(px,py)).second)continue;
+				if(rally_walkable(map,team,px,py))
+				{
+					queue.push_back(std::make_pair(px,py));
+					if(int(queue.size())>=needed)return needed;
+				}
+			}
+		}
+		return int(queue.size());
+	}
+
 	struct PreemptiveBuilding
 	{
 		PreemptiveBuilding(int team, Building* building)
@@ -649,23 +681,49 @@ bool Maxima::control_offense_waves(Context& echo)
 	routeInfo.add_obstacle(new Entities::AnyResource);
 	routeInfo.add_obstacle(new Entities::Water);
 	Gradient& route=echo.get_gradient_manager().get_gradient(routeInfo);
-	int rallyX=-1,rallyY=-1,bestDistance=INT_MAX;
-	// A completed food building supplies a stable, fed rally. Choose the nearest
-	// land-connected one with deterministic building-index tie breaking.
+	const auto& policy=strategy.assault;
+	const int capacity=strategy.military.attack_unit_cap;
+	int rallyX=-1,rallyY=-1,bestDistance=INT_MAX,bestSpace=-1;
+	bool landHome=false;
+	// Search connected ground around each food building, rather than using its
+	// occupied origin. Prefer room for two cohorts' worth of standing tiles so
+	// arrivals and workers can pass one another, then proximity to the objective.
 	for(int id=0;id<Building::MAX_COUNT;++id)
 	{
 		const Building* home=echo.player->team->myBuildings[id];
 		if(!home || home->type->isBuildingSite
 		   || (home->type->shortTypeNum!=IntBuildingType::SWARM_BUILDING
 			&& home->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING))continue;
-		const int x=map->normalizeX(home->posX),y=map->normalizeY(home->posY);
-		const int distance=route.get_height(x,y);
-		if(distance>=0 && distance<bestDistance)
+		landHome=landHome || route.get_height(map->normalizeX(home->posX),map->normalizeY(home->posY))>=0;
+		const int margin=std::max(6,policy.muster_radius+2);
+		const int width=home->type->width+2*margin,height=home->type->height+2*margin;
+		std::vector<unsigned char> visited(width*height,0);
+		std::vector<std::pair<int,int>> queue;
+		const auto add=[&](int px,int py) {
+			if(px<0 || py<0 || px>=width || py>=height || visited[py*width+px])return;
+			visited[py*width+px]=1;
+			const int x=map->normalizeX(home->posX+px-margin);
+			const int y=map->normalizeY(home->posY+py-margin);
+			if(rally_walkable(map,echo.player->team->me,x,y))queue.push_back(std::make_pair(px,py));
+		};
+		for(int y=margin-1;y<=margin+home->type->height;++y)
+			for(int x=margin-1;x<=margin+home->type->width;++x)add(x,y);
+		for(size_t head=0;head<queue.size();++head)
 		{
-			rallyX=x;rallyY=y;bestDistance=distance;
+			const auto point=queue[head];
+			for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)add(point.first+dx,point.second+dy);
+			const int x=map->normalizeX(home->posX+point.first-margin);
+			const int y=map->normalizeY(home->posY+point.second-margin);
+			const int distance=route.get_height(x,y);
+			if(distance<0)continue;
+			landHome=true;
+			if(bestSpace==2*capacity && distance>=bestDistance)continue;
+			const int space=rally_space(map,echo.player->team->me,x,y,policy.muster_radius,2*capacity);
+			if(space<capacity || space<bestSpace || (space==bestSpace && distance>=bestDistance))continue;
+			rallyX=x;rallyY=y;bestDistance=distance;bestSpace=space;
 		}
 	}
-	if(rallyX<0)
+	if(rallyX<0 && !landHome)
 	{
 		if(!offense_waves.empty())end_offense(echo,"amphibious_handoff");
 		return false;
@@ -673,7 +731,6 @@ bool Maxima::control_offense_waves(Context& echo)
 	if(offense_waves.empty() && tactical_mission.flagId>=0)
 		end_offense(echo,"wave_handoff");
 
-	const auto& policy=strategy.assault;
 	const int minimum=std::max(1,strategy.tactics.min_force);
 	const int targetX=budget.tactical_target_x,targetY=budget.tactical_target_y;
 	const bool changed=tactical_mission.kind!=budget.tactical_kind
@@ -706,13 +763,30 @@ bool Maxima::control_offense_waves(Context& echo)
 			it=offense_waves.erase(it);
 			continue;
 		}
+		if(flag && wave.phase==Tactics::WaveMuster
+		   && rally_space(map,echo.player->team->me,flag->posX,flag->posY,policy.muster_radius,capacity)<capacity
+		   && rallyX>=0)
+		{
+			wave.rallyX=rallyX;wave.rallyY=rallyY;wave.bestArrived=0;
+			echo.add_management_order(new ChangeFlagPosition(rallyX,rallyY,wave.flagId));
+			++it;
+			committed+=wave.requestedForce;mustering=true;
+			continue;
+		}
 		int arrived=0;
+		// Nearby warriors can join the departing wave without first squeezing
+		// into the flag itself. Advancing waves retain their existing arrival test.
+		const int arrivalRadius=flag ? flag->unitStayRange
+			+(wave.phase==Tactics::WaveMuster ? 2 : 0) : 0;
 		const int cohort=flag ? int(flag->unitsWorking.size()) : 0;
 		if(flag)
 			for(const Unit* warrior:flag->unitsWorking)
 				if(warrior && !warrior->isDead && warrior->medical==Unit::MED_FREE
-				   && map->warpDistMax(warrior->posX,warrior->posY,flag->posX,flag->posY)
-					<=flag->unitStayRange)++arrived;
+				   && (wave.phase==Tactics::WaveMuster
+					? map->warpDistSquare(warrior->posX,warrior->posY,flag->posX,flag->posY)
+						<=arrivalRadius*arrivalRadius
+					: map->warpDistMax(warrior->posX,warrior->posY,flag->posX,flag->posY)
+						<=flag->unitStayRange))++arrived;
 		bool retire=false;
 		if(wave.phase==Tactics::WaveMuster)
 		{
@@ -775,7 +849,7 @@ bool Maxima::control_offense_waves(Context& echo)
 		++it;
 	}
 	const int available=budget.tactical_requested_force-committed;
-	if(!mustering && !assemblyFailed && int(offense_waves.size())<policy.max_waves
+	if(rallyX>=0 && !mustering && !assemblyFailed && int(offense_waves.size())<policy.max_waves
 	   && available>=minimum)
 	{
 		Tactics::Wave wave;
