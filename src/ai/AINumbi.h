@@ -22,6 +22,7 @@ public:
   {
 	  return AITelemetry::schema(1);
   }
+  Uint32 telemetrySchemaVersion() const override { return 2; }
 	AINumbi(Player *player);
 	AINumbi(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AINumbi();

@@ -341,6 +341,14 @@ namespace Cortex
 		// commit gate compares this against the tuned attack range; reading our OWN
 		// buildings is not a fog cheat.
 		Sint32 flagTargetSupportDist[CORTEX_FLAG_TARGETS];
+		// Owning enemy team index for flagTargets[i] (telemetry only -- never read
+		// by scoring/ranking, so it cannot change which slot wins or affect
+		// checksums). -1 for invalid slots. placeFlagTargets() discards team
+		// identity once a spot is ranked into BuildCandidate; this parallel array
+		// is filled alongside it from the same scan so the AI's own offense-target
+		// choice can be exported without threading a field through the shared
+		// BuildCandidate/ScoredSpot structs also used by own-building placement.
+		Sint32 flagTargetTeam[CORTEX_FLAG_TARGETS];
 		// DEFENSE targets (v18, multi-point): up to CORTEX_MAX_DEFENSE_FLAGS friendly
 		// buildings currently taking fire, worst-first (highest underAttackTimer in
 		// slot 0 — the old single defenseTarget), each at least
