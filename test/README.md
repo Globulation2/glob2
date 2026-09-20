@@ -2,45 +2,13 @@
 
 CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exceptions are `GameGUISelectionHarness` and `TerrainResourcesHarness`, which use the top-level `selection-test` and `terrain-test` targets described below.
 
-## Maxima food ledger
 
-From the repository root, build with `scons release=1 server=0 maxima-food-ledger-test`
-and run `build/src/MaximaFoodLedgerStandaloneTest`. Linux CI runs this existing
-standalone suite through the top-level alias. It checks claim allocation, route
-bounds against a wrapped cell-by-cell oracle, equal-total supply relocation,
-result copies and reset/resize behavior.
 
-Pass `--benchmark` to measure process CPU time for evaluation and a full-map pass
-of bound queries at 128², 256² and 512². The output includes deterministic result
-digests; timing is informational and is never a CI assertion. Compile the same
-driver against both revisions when comparing performance.
 
-## Maxima relocation regression
+## Maxima
 
-Build `scons release=1 server=0 maxima-relocation-test` and run
-`build/src/MaximaRelocationIntegrationTest`. Linux CI runs this harness against
-the real runtime and engine buildings. It checks same-pass relocation/retirement
-deletions, last-swarm and inn-seat protection with pending deletions, replacement
-loss during a deferred handover, and fresh attempts after abandonment. Save/load
-round trips cover pending handovers and detached historical actions. The queued
-delete orders are executed against real buildings to verify the replacement survives.
-
-`MaximaEconomyRegressionTest` also checks City States fractional starter supply:
-the measured Q16 values fund nonzero ratios through the real swarm management
-path, while true zero supply still pauses births. Equivalent whole-tile and Q16
-inputs produce the same budget. It also checks that Maxima requests schools
-without known or accessible algae and passes those requests to placement without
-a discovered-algae prerequisite. Workers still need to deliver construction
-materials to complete the schools. Run it with
-`python3 test/run_maxima_implementation_regressions.py --test MaximaEconomyRegressionTest`.
-
-## Maxima sand-bridge routing regression
-
-`MaximaPlacementStandaloneTest` checks that a colony can route builders across a
-sand bridge without swimmers, then reserve and revalidate that route. Flooding a
-route tile must reject it. Building parcels still require grass; circulation
-arteries accept dry sand, matching ground-unit traversal. Run with
-`python3 test/run_maxima_implementation_regressions.py --test MaximaPlacementStandaloneTest`.
+See [Maxima tests](maxima/README.md) for policy, configuration, integration and
+saved-game continuation coverage.
 
 ## Selection lifetime regression
 
@@ -646,13 +614,6 @@ counts, export-on/off per-tick checksums, and repeated save/load telemetry
 continuation. Host entries need absolute `bundle` paths; workers are stopped after
 collection. See [tournament telemetry](../docs/tournaments.md#gameplay-ai-and-performance-telemetry).
 
-## Maxima continuation serialization
-
-Build `scons release=1 server=0 maxima-continuation-test`, then run
-`build/src/MaximaContinuationTest` (`.exe` on Windows). It compares the buffered
-binary archive with the scalar path, including SHA1, nested records, signed
-limits, 64-bit ordering, strings, buffer boundaries and interleaved direct writes.
-Text output is also checked. Linux and Windows CI run it.
 
 ## Nicowar farming wood clearance
 
@@ -666,3 +627,33 @@ wheat disappear, and preservation of building clearing strips.
 scons release=1 server=0 nicowar-farming-test
 python3 test/run-savegame-safety-tests.py build/src/NicowarFarmingHarness .
 ```
+
+
+
+## Engine save continuation
+
+Build `scons release=1 server=0 unit-continuation-test`, then run
+`build/src/UnitContinuationHarness`. Five checkpoints compare 256 subsequent
+simulation ticks and the RNG state, including idle timers, clearing reservations,
+service-list ordering, building worker membership and a nonzero construction
+cooldown. Format 114 preserves that cooldown; older formats remain readable.
+Linux and Windows CI run
+this harness. New saved games preserve live state without running building updates
+during load; legacy formats keep their historical reconstruction path.
+
+For full games, compare an uninterrupted sidecar with one or more resumed traces:
+
+```sh
+python3 test/compare_save_continuation.py uninterrupted/game.replay.checksums \
+  resumed/game.replay.checksums
+```
+
+The comparator checks every consecutive team/entity record, reports the first
+mismatch, rejects missing/truncated records, and excludes the aggregate checksum
+because it includes the save header/version. Run the retained late-game regression
+with `python3 test/maxima/check_save_continuation_fixture.py build/src/glob2`.
+
+The retained Maxima format-115 checkpoint compares all 512 ticks from 30000
+through 30511 against uninterrupted execution. Its compressed save, expected
+per-tick hashes, and reproduction commands are in
+[maxima/fixtures/save-continuation](maxima/fixtures/save-continuation/README.md).

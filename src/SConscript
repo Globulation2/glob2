@@ -6,16 +6,19 @@ ai/castor/Maps.cpp
 ai/castor/Placement.cpp
 ai/castor/Projects.cpp
 ai/castor/State.cpp
-AIMaxima.cpp
-AIMaximaDefense.cpp
-AIMaximaFarming.cpp
-AIMaximaFarmingPolicy.cpp
-AIMaximaFoodLedger.cpp
-AIMaximaPlacement.cpp
-AIMaximaRecon.cpp
-AIMaximaRuntime.cpp
-AIMaximaStrategy.cpp
-AIMaximaTactics.cpp
+ai/maxima/AIMaxima.cpp
+ai/maxima/AIMaximaState.cpp
+ai/maxima/AIMaximaCombat.cpp
+ai/maxima/AIMaximaDefense.cpp
+ai/maxima/AIMaximaFarming.cpp
+ai/maxima/AIMaximaFarmingPolicy.cpp
+ai/maxima/AIMaximaFoodLedger.cpp
+ai/maxima/AIMaximaPlacement.cpp
+ai/maxima/AIMaximaRecon.cpp
+ai/maxima/AIMaximaForceModel.cpp
+ai/maxima/AIMaximaRuntime.cpp
+ai/maxima/AIMaximaStrategy.cpp
+ai/maxima/AIMaximaTactics.cpp
 ai/AI.cpp
 ai/AITelemetry.cpp
 ai/AITelemetryAdapters.cpp
@@ -499,7 +502,7 @@ yog/YOGServerRouterPlayer.cpp
 """)
 server_source_files=Split("""
 ai/AINames.cpp
-AIMaximaStrategy.cpp
+ai/maxima/AIMaximaStrategy.cpp
 BasePlayer.cpp
 BaseTeam.cpp
 BitArray.cpp
@@ -605,8 +608,8 @@ if not env['server']:
     ledger_env = local.Clone()
     ledger_env.Append(CCFLAGS=['-UNDEBUG'])
     ledger_test = local.Program('MaximaFoodLedgerStandaloneTest', [
-        ledger_env.Object('MaximaFoodLedgerStandaloneTest.o', '#test/MaximaFoodLedgerStandaloneTest.cpp'),
-        local.Object('AIMaximaFoodLedger.cpp')])
+        ledger_env.Object('MaximaFoodLedgerStandaloneTest.o', '#test/maxima/MaximaFoodLedgerStandaloneTest.cpp'),
+        local.Object('ai/maxima/AIMaximaFoodLedger.cpp')])
     local.Alias('maxima-food-ledger-test', ledger_test)
 
 if not env['server']:
@@ -614,7 +617,7 @@ if not env['server']:
     continuation_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
     continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     continuation_test = continuation_env.Program('MaximaContinuationTest', [
-        local.Object('MaximaContinuationTest.o', '#test/MaximaContinuationTest.cpp'),
+        local.Object('MaximaContinuationTest.o', '#test/maxima/MaximaContinuationTest.cpp'),
         '../libgag/src/libgag.a'])
     local.Alias('maxima-continuation-test', continuation_test)
 
@@ -628,7 +631,7 @@ if not env['server']:
 if not env['server']:
     relocation_test = local.Program("MaximaRelocationIntegrationTest",
         [source for source in source_files if source != "Glob2.cpp"] +
-        [local.Object("MaximaRelocationIntegrationTest", "#test/MaximaRelocationIntegrationTest.cpp")])
+        [local.Object("MaximaRelocationIntegrationTest", "#test/maxima/MaximaRelocationIntegrationTest.cpp")])
     local.Alias("maxima-relocation-test", relocation_test)
     render_test = local.Program("torus-render-test",
         [source for source in source_files if source != "Glob2.cpp"] +
@@ -936,3 +939,14 @@ if not env['server']:
     comb_generator_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     comb_generator_test = comb_generator_env.Program('CombGeneratorTest', comb_generator_sources)
     local.Alias('comb-generator-test', comb_generator_test)
+
+# Saved unit arbitration and activity state, linked without SDL's GUI entry point.
+if not env['server']:
+    unit_continuation_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    unit_continuation_sources += [source for source in source_files if not source.endswith('.cpp')]
+    unit_continuation_sources += local.Object('UnitContinuationHarness.o', '#test/UnitContinuationHarness.cpp')
+    unit_continuation_env = local.Clone()
+    unit_continuation_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    unit_continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    unit_continuation_test = unit_continuation_env.Program('UnitContinuationHarness', unit_continuation_sources)
+    local.Alias('unit-continuation-test', unit_continuation_test)

@@ -194,8 +194,8 @@ economy.sustainable_inn_floor = 4
 economy.sustainable_inn_corn_divisor = 3
 economy.sustainable_inn_offset = 2
 economy.inn_target_floor = 2
-economy.inn_target_cap = 11
-economy.abundance_inn_target_cap = 12
+economy.inn_target_cap = 24
+economy.abundance_inn_target_cap = 24
 economy.abundance_inn_population_offset = 18
 economy.abundance_inn_population_divisor = 20
 economy.early_population_threshold = 35
@@ -215,8 +215,8 @@ economy.first_pool_target = 1
 economy.second_pool_target = 2
 economy.abundance_pool_population_min = 18
 economy.abundance_pool_school_min = 2
-economy.explorer_cap = 14
-economy.explorer_floor = 3
+economy.explorer_cap = 3
+economy.explorer_floor = 2
 economy.explorer_population_divisor = 14
 economy.explorer_population_offset = 3
 economy.explorer_utility_divisor = 30
@@ -318,7 +318,6 @@ military.defender_explorer_percent = 8
 military.defender_explorer_cap = 32
 military.defense_reserve_floor = 2
 military.defense_enemy_percent = 20
-military.offense_warrior_base_percent = 45
 military.reserve_enemy_bonus = 1
 military.reserve_force_divisor = 6
 military.endgame_enemy_count = 2
@@ -331,26 +330,18 @@ military.readiness_demand_divisor = 5
 military.campaign_worker_floor = 20
 military.campaign_food_percent = 25
 military.campaign_worker_population_ratio = 3
-military.campaign_sustainable_food_percent = 20
 military.defense_utility_floor_bonus = 25
 military.explorer_defense_utility_bonus = 20
-military.warrior_cap = 90
 military.warrior_floor = 12
-military.warrior_enemy_margin = 8
-military.warrior_population_percent = 35
-military.warrior_utility_divisor = 5
 military.first_barracks_population_min = 18
 military.second_barracks_population_min = 35
 military.second_barracks_enemy_min = 6
 military.third_barracks_backlog_min = 12
 military.third_barracks_enemy_min = 35
 military.emergency_barracks_threat_min = 4
-military.hospital_warrior_min = 10
-military.hospital_cap = 8
-military.hospital_units_per_building = 15
+military.hospital_beds_per_warrior_percent = 60
 military.bomb_attack_explorers_min = 10
 military.bomb_colony_explorers_min = 4
-military.offense_warrior_floor = 16
 military.offense_explorer_floor = 30
 military.offense_explorer_cap = 70
 military.warrior_ratio_high_utility = 50
@@ -358,10 +349,8 @@ military.warrior_ratio_low_utility = 25
 military.warrior_ratio_high = 3
 military.warrior_ratio_low = 2
 military.training_backlog_floor = 8
-military.training_backlog_per_barracks = 10
 military.defender_explorer_floor = 8
 military.defender_explorer_ratio = 2
-military.offense_utility_divisor = 4
 military.preemptive_defense_enabled = true
 military.preemptive_warriors_min = 4
 military.preemptive_warriors_per_zone = 3
@@ -562,14 +551,14 @@ explorer_campaign.multi_flag_trained_min = 20
 explorer_campaign.max_flags = 2
 explorer_campaign.units_per_flag = 10
 
-# Fruit operations: population gate and flag staffing.
+# Maintain reachable fruit varieties at inns, including during defense/recovery.
 fruit.enabled = true
-fruit.population_min = 50
 fruit.units_per_flag = 2
 fruit.flag_radius = 4
 
 # Reconnaissance: memory, mission demand, watch patrols, retasking, and enemy
 # building valuation.
+recon.active_min_explored_percent = 80
 recon.enabled = true
 recon.scouting_missions_enabled = true
 recon.economic_watch_enabled = true
@@ -605,6 +594,8 @@ recon.mission_population_divisor = 30
 
 # Farming: review cadence, fertility preservation, buffer sizing, wood pressure,
 # and proactive resource clearing.
+farming.wheat_stock_horizon_ticks = 15000
+farming.wild_wheat_yield_percent = 50
 farming.enabled = true
 farming.farm_protection_enabled = true
 farming.maintenance_clearing_enabled = true
@@ -721,8 +712,6 @@ emergencies.colony_enabled = true
 emergencies.food_unserved_percent = 30
 emergencies.food_critical_percent = 20
 emergencies.food_combined_percent = 40
-emergencies.population_trend_threshold = -5
-emergencies.food_trend_threshold = 2
 emergencies.colony_threat_threshold = 10
 emergencies.buildings_under_attack_threshold = 2
 emergencies.units_under_attack_threshold = 8
@@ -741,3 +730,11 @@ economy.swarm_workers_per_building = 5
 # Initial colony thresholds; calibrate across resource densities.
 colonization.minimum_new_food = 8
 colonization.minimum_value = 5
+
+# Army growth and gathered assault waves.
+assault.force_growth_ticks = 1000
+assault.max_waves = 16
+assault.muster_radius = 3
+assault.muster_ready_percent = 75
+assault.muster_stall_ticks = 500
+assault.muster_max_ticks = 3000

@@ -11,6 +11,8 @@
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FileFormatVersions.h"
+#include <BinaryStream.h>
+#include <stdexcept>
 #include "Game.h"
 #include "Team.h"
 #include "Unit.h"
@@ -79,7 +81,10 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 	// building specific :
 	for(int i=0; i<MAX_NB_RESOURCES; i++)
+	{
 		localResource[i]=0;
+		wishedResources[i]=0;
+	}
 	updateResourcesPointer();
 
 	// quality parameters
@@ -431,7 +436,8 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		oss << "unitsWorking[" << i << "]";
 		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 		assert(unit);
-		unitsWorking.push_front(unit);
+		if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION) unitsWorking.push_back(unit);
+		else unitsWorking.push_front(unit);
 	}
 
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
@@ -469,7 +475,8 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 		oss << "unitsInside[" << i << "]";
 		Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 		assert(unit);
-		unitsInside.push_front(unit);
+		if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION) unitsInside.push_back(unit);
+		else unitsInside.push_front(unit);
 	}
 	
 	if (versionMinor>=FILE_FORMAT_VERSION_UNITS_HARVESTING_LIST)
@@ -482,7 +489,36 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 			oss << "unitsHarvesting[" << i << "]";
 			Unit *unit = owner->myUnits[Unit::GIDtoID(stream->readUint16(oss.str().c_str()))];
 			assert(unit);
-			unitsHarvesting.push_front(unit);
+			if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION) unitsHarvesting.push_back(unit);
+			else unitsHarvesting.push_front(unit);
+		}
+	}
+
+	if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION)
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		desiredMaxUnitWorking = stream->readSint32("desiredMaxUnitWorking");
+		oldPriority = stream->readSint32("oldPriority");
+		callListState = stream->readUint8("callListState");
+		if (callListState > 1) throw std::runtime_error("Invalid building call list state");
+		auto readListState = [&](const char* name) {
+			const Uint8 value = stream->readUint8(name);
+			if (value > LS_OUT) throw std::runtime_error("Invalid building service list state");
+			return static_cast<InListState>(value);
+		};
+		inCanFeedUnit = readListState("inCanFeedUnit");
+		inCanHealUnit = readListState("inCanHealUnit");
+		for (int i=0; i<NB_ABILITY; ++i)
+		{
+			stream->readEnterSection(i);
+			inUpgrade[i] = readListState("inUpgrade");
+			stream->readLeaveSection();
+		}
+		for (int i=0; i<MAX_NB_RESOURCES; ++i)
+		{
+			stream->readEnterSection(i);
+			wishedResources[i] = stream->readSint32("wishedResource");
+			stream->readLeaveSection();
 		}
 	}
 
@@ -547,6 +583,24 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		std::ostringstream oss;
 		oss << "unitsHarvesting[" << i++ << "]";
 		stream->writeUint16((*it)->gid, oss.str().c_str());
+	}
+
+	stream->writeSint32(desiredMaxUnitWorking, "desiredMaxUnitWorking");
+	stream->writeSint32(oldPriority, "oldPriority");
+	stream->writeUint8(callListState, "callListState");
+	stream->writeUint8(inCanFeedUnit, "inCanFeedUnit");
+	stream->writeUint8(inCanHealUnit, "inCanHealUnit");
+	for (int i=0; i<NB_ABILITY; ++i)
+	{
+		stream->writeEnterSection(i);
+		stream->writeUint8(inUpgrade[i], "inUpgrade");
+		stream->writeLeaveSection();
+	}
+	for (int i=0; i<MAX_NB_RESOURCES; ++i)
+	{
+		stream->writeEnterSection(i);
+		stream->writeSint32(wishedResources[i], "wishedResource");
+		stream->writeLeaveSection();
 	}
 
 	stream->writeLeaveSection();

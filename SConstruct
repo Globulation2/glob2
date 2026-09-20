@@ -335,7 +335,7 @@ def main():
 
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
-    env.Append(CPPPATH=['#src', '#src/yog', '#src/ai', '#src/building',
+    env.Append(CPPPATH=['#src', '#src/yog', '#src/ai', '#src/ai/maxima', '#src/building',
                         '#src/game/entities',
                         '#src/gui',
                         '#src/map', '#src/map/edit', '#src/map/generator',

@@ -229,11 +229,12 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_PLAYER, "signatureAfterPlayers"))
 		return false;
 
-	// We have to finish Team's loading
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-	{
-		teams[i]->update();
-	}
+	// Legacy saves reconstruct service lists by running building updates. That
+	// changes tie-breaking order and can even advance construction. New saved
+	// games carry the live lists and bookkeeping instead.
+	if (versionMinor < FILE_FORMAT_VERSION_SIMULATION_CONTINUATION || !mapHeader.getIsSavedGame())
+		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+			teams[i]->update();
 
 	// Check integrity of loaded game
 	if (!integrity())

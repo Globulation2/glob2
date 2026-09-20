@@ -500,7 +500,7 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_budget_desired_schools, budget.desired_schools);
 	telemetry.set(AITrace::AI7::state_budget_desired_pools, budget.desired_pools);
 	telemetry.set(AITrace::AI7::state_budget_desired_racetracks, budget.desired_racetracks);
-	telemetry.set(AITrace::AI7::state_budget_desired_hospitals, budget.desired_hospitals);
+	telemetry.set(AITrace::AI7::state_budget_desired_hospital_beds, budget.desired_hospital_beds);
 	telemetry.set(AITrace::AI7::state_budget_desired_towers, budget.desired_towers);
 	telemetry.set(AITrace::AI7::state_budget_swarm_workers, budget.swarm_workers);
 	telemetry.set(AITrace::AI7::state_budget_worker_ratio, budget.worker_ratio);
@@ -765,8 +765,8 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_policy_bids_0_desired_pools, policy_bids[0].desired_pools);
 	telemetry.set(AITrace::AI7::state_policy_bids_0_desired_racetracks,
 				  policy_bids[0].desired_racetracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_0_desired_hospitals,
-				  policy_bids[0].desired_hospitals);
+	telemetry.set(AITrace::AI7::state_policy_bids_0_desired_hospital_beds,
+				  policy_bids[0].desired_hospital_beds);
 	telemetry.set(AITrace::AI7::state_policy_bids_0_desired_towers, policy_bids[0].desired_towers);
 	telemetry.set(AITrace::AI7::state_policy_bids_0_swarm_workers, policy_bids[0].swarm_workers);
 	telemetry.set(AITrace::AI7::state_policy_bids_0_worker_ratio, policy_bids[0].worker_ratio);
@@ -794,8 +794,8 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_policy_bids_1_desired_pools, policy_bids[1].desired_pools);
 	telemetry.set(AITrace::AI7::state_policy_bids_1_desired_racetracks,
 				  policy_bids[1].desired_racetracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_1_desired_hospitals,
-				  policy_bids[1].desired_hospitals);
+	telemetry.set(AITrace::AI7::state_policy_bids_1_desired_hospital_beds,
+				  policy_bids[1].desired_hospital_beds);
 	telemetry.set(AITrace::AI7::state_policy_bids_1_desired_towers, policy_bids[1].desired_towers);
 	telemetry.set(AITrace::AI7::state_policy_bids_1_swarm_workers, policy_bids[1].swarm_workers);
 	telemetry.set(AITrace::AI7::state_policy_bids_1_worker_ratio, policy_bids[1].worker_ratio);
@@ -823,8 +823,8 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_policy_bids_2_desired_pools, policy_bids[2].desired_pools);
 	telemetry.set(AITrace::AI7::state_policy_bids_2_desired_racetracks,
 				  policy_bids[2].desired_racetracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_2_desired_hospitals,
-				  policy_bids[2].desired_hospitals);
+	telemetry.set(AITrace::AI7::state_policy_bids_2_desired_hospital_beds,
+				  policy_bids[2].desired_hospital_beds);
 	telemetry.set(AITrace::AI7::state_policy_bids_2_desired_towers, policy_bids[2].desired_towers);
 	telemetry.set(AITrace::AI7::state_policy_bids_2_swarm_workers, policy_bids[2].swarm_workers);
 	telemetry.set(AITrace::AI7::state_policy_bids_2_worker_ratio, policy_bids[2].worker_ratio);
@@ -852,8 +852,8 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_policy_bids_3_desired_pools, policy_bids[3].desired_pools);
 	telemetry.set(AITrace::AI7::state_policy_bids_3_desired_racetracks,
 				  policy_bids[3].desired_racetracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_3_desired_hospitals,
-				  policy_bids[3].desired_hospitals);
+	telemetry.set(AITrace::AI7::state_policy_bids_3_desired_hospital_beds,
+				  policy_bids[3].desired_hospital_beds);
 	telemetry.set(AITrace::AI7::state_policy_bids_3_desired_towers, policy_bids[3].desired_towers);
 	telemetry.set(AITrace::AI7::state_policy_bids_3_swarm_workers, policy_bids[3].swarm_workers);
 	telemetry.set(AITrace::AI7::state_policy_bids_3_worker_ratio, policy_bids[3].worker_ratio);
@@ -881,8 +881,8 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_policy_bids_4_desired_pools, policy_bids[4].desired_pools);
 	telemetry.set(AITrace::AI7::state_policy_bids_4_desired_racetracks,
 				  policy_bids[4].desired_racetracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_4_desired_hospitals,
-				  policy_bids[4].desired_hospitals);
+	telemetry.set(AITrace::AI7::state_policy_bids_4_desired_hospital_beds,
+				  policy_bids[4].desired_hospital_beds);
 	telemetry.set(AITrace::AI7::state_policy_bids_4_desired_towers, policy_bids[4].desired_towers);
 	telemetry.set(AITrace::AI7::state_policy_bids_4_swarm_workers, policy_bids[4].swarm_workers);
 	telemetry.set(AITrace::AI7::state_policy_bids_4_worker_ratio, policy_bids[4].worker_ratio);
@@ -910,8 +910,8 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_policy_bids_5_desired_pools, policy_bids[5].desired_pools);
 	telemetry.set(AITrace::AI7::state_policy_bids_5_desired_racetracks,
 				  policy_bids[5].desired_racetracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_5_desired_hospitals,
-				  policy_bids[5].desired_hospitals);
+	telemetry.set(AITrace::AI7::state_policy_bids_5_desired_hospital_beds,
+				  policy_bids[5].desired_hospital_beds);
 	telemetry.set(AITrace::AI7::state_policy_bids_5_desired_towers, policy_bids[5].desired_towers);
 	telemetry.set(AITrace::AI7::state_policy_bids_5_swarm_workers, policy_bids[5].swarm_workers);
 	telemetry.set(AITrace::AI7::state_policy_bids_5_worker_ratio, policy_bids[5].worker_ratio);
@@ -939,8 +939,8 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_pools, policy_bids[6].desired_pools);
 	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_racetracks,
 				  policy_bids[6].desired_racetracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_hospitals,
-				  policy_bids[6].desired_hospitals);
+	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_hospital_beds,
+				  policy_bids[6].desired_hospital_beds);
 	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_towers, policy_bids[6].desired_towers);
 	telemetry.set(AITrace::AI7::state_policy_bids_6_swarm_workers, policy_bids[6].swarm_workers);
 	telemetry.set(AITrace::AI7::state_policy_bids_6_worker_ratio, policy_bids[6].worker_ratio);
