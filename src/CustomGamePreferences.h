@@ -71,10 +71,16 @@ struct CustomGamePreferences
 		// stay unchanged regardless of which generator module is selected.
 		const auto legacy = toLegacyDescriptor(setup.generator);
 		std::ostringstream out;
-		out << "glob2-custom-game 2\n"
+		out << "glob2-custom-game 3\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' '
 			<< setup.prestige << ' ' << setup.revealed << ' ' << setup.locked << ' '
 			<< setup.speed << ' ' << userMaps << '\n'
+			<< "rules " << setup.noResourceGrowth << ' ' << setup.resourceScarcity << ' '
+			<< setup.instantConstruction << ' ' << setup.stockpileStart << ' ' << setup.noHunger << ' '
+			<< setup.unitUpgradesDisabled << ' ' << setup.glassCannonLevel << ' '
+			<< setup.unitsFearless << ' ' << setup.permadeathDisabled << ' ' << setup.peacefulMode << ' '
+			<< setup.buildingHpLevel << ' ' << setup.startingUnitLevel << ' '
+			<< setup.suddenDeathMinutes << '\n'
 			<< "labels " << std::quoted(setup.format) << ' ' << std::quoted(setup.ruleset) << '\n'
 			<< "map " << std::quoted(setup.premadeMap) << '\n'
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
@@ -115,12 +121,29 @@ struct CustomGamePreferences
 		auto number = [&](int &value, int lo, int hi) {
 			return bool(in >> value) && value >= lo && value <= hi;
 		};
+		auto boolean = [&](bool &value) {
+			int parsed;
+			if (!number(parsed, 0, 1)) return false;
+			value = parsed;
+			return true;
+		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
-		if (!word("glob2-custom-game") || !number(version, 1, 2) || !word("setup") ||
+		if (!word("glob2-custom-game") || !number(version, 1, 3) || !word("setup") ||
 			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
-			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1) ||
-			!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(s.ruleset))) return false;
+			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1)) return false;
+		// Older preferences did not store these rules; retain their normal defaults.
+		if (version >= 3) {
+			if (!word("rules") || !boolean(s.noResourceGrowth) || !number(s.resourceScarcity, 0, 3) ||
+				!boolean(s.instantConstruction) || !number(s.stockpileStart, 0, 3) || !boolean(s.noHunger) ||
+				!boolean(s.unitUpgradesDisabled) || !number(s.glassCannonLevel, 0, 2) ||
+				!boolean(s.unitsFearless) || !boolean(s.permadeathDisabled) || !boolean(s.peacefulMode) ||
+				!number(s.buildingHpLevel, 0, 2) || !number(s.startingUnitLevel, 0, 3) ||
+				!number(s.suddenDeathMinutes, 0, 90)) return false;
+			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
+			if (std::find(minutes.begin(), minutes.end(), s.suddenDeathMinutes) == minutes.end()) return false;
+		}
+		if (!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(s.ruleset))) return false;
 		if (s.format != "FFA" && s.format != "2 vs 2" && s.format != "You vs all" && s.format != "Custom teams") return false;
 		if (s.ruleset != "Standard" && s.ruleset != "Quick clash" && s.ruleset != "Open book" && s.ruleset != "Last colony standing" && s.ruleset != "Custom") return false;
 		if (!word("map") || !(in >> std::quoted(s.premadeMap)) || !word("libraries") ||
