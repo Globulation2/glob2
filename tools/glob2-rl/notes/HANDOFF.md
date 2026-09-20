@@ -25,7 +25,7 @@ Standing constraints for any future run:
 
 ## Where the code lives
 
-Branch `atlas-desired-state-m0`, 61 commits ahead of `master`.
+Branch `ai-neurotica`, renamed 2026-09-20 from `atlas-desired-state-m0`.
 
 | Piece | Path |
 | --- | --- |
