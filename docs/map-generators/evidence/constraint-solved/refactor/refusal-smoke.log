@@ -1,6 +1,0 @@
-Execution errors: 0
-marchland lakes, 1 seeds at 128x128 teams=3
-
-   lakes | refused | rate  | exec errors | mean water% | mean sites4x4 | commonest refusal
-       0 |       0 |    0% |           0 |         1.6 |          4833 | 
-      40 |       0 |    0% |           0 |        23.2 |          1759 | 

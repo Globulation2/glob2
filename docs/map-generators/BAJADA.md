@@ -8,8 +8,6 @@ out in sand washes. A belt of gravel runs along the foot of the ranges and gives
 sand; in the middle of each basin lies the playa, a chain of shallow lakes with salt-flat rims and
 meadows. Every colony's home is a fan of its own with its town on the fan's dry shoulder.
 
-![Four maps at 256×256 with four colonies, seeds 1–4](../artifacts/bajada/256-4-seeds-1-4.png)
-
 ## How it plays
 
 - **A fan is a farm.** Crops regrow only where the growth probe finds water, so a fan's streams are
@@ -42,9 +40,6 @@ review rounds) and the comments on the constants record why each choice was made
 | Homes stamped | Every home's footprint is erased (lakes, neutral halos, dunes) and the stencil drawn over it, tile for tile, turned half a turn for homes below the far face. |
 | Terrain and resources | Dune sand covers 48% of the open desert in bands along the contour that gather towards the playa. Stone on the ranges; the stencil crops; farmland on neutral fans and meadows (`furnishGround`); rock outcrops and lone scrub on dry gravel; fruit on the meadows; algae in the lakes. |
 
-![A home in each design (seed 11): ring town, garden with the kit's wheat, garden pond, fan](../artifacts/bajada/home-close-ups-seed11.png)
-![The three home designs on one seed](../artifacts/bajada/home-designs-seed11.png)
-
 ## Controls
 
 Effects measured over 6 seeds at 256×256 with 4 colonies (low / default / high), from a 516-map study.
@@ -60,8 +55,6 @@ Effects measured over 6 seeds at 256×256 with 4 colonies (low / default / high)
 | Home design | Random, Broad fan, Long fan, Twin springs | The one home stencil every colony gets. |
 | Wheat amount | 0–200% (100) | Neutral fan, meadow and home farmland; above 200% everything fertile is already sown. The kit is guaranteed. |
 | Wood, stone, algae, fruit amount | 0–300% (100) | Linear. The ranges are structural and not scaled. |
-
-![A single range (range spacing 256), a dry map (playa 0, stream reach 70), a wet map (playa 100, stream reach 150, 8 fans)](../artifacts/bajada/controls-single-range-dry-wet.png)
 
 ## Verification
 
@@ -134,5 +127,3 @@ so these are a sanity check, not a balance measurement.
 - Some lakes pinch into a bow tie; twin-spring homes show their springs and garden pond as round
   pools.
 - No rotation tournament or human playtest has been recorded.
-
-![Eight colonies at 512×512](../artifacts/bajada/512-8-seed5.png)

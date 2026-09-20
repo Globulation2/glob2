@@ -7,8 +7,6 @@ stone outlines broken open onto the street and filled with overgrown rubble, wit
 crater gardens round flooded craters, and the shell of a landmark at the middle with an orchard in it.
 Every colony's home is two blocks with a cistern garden.
 
-![Four maps at 256×256 with four colonies, one of each home design and landmark](../artifacts/honeycomb-isle/revision1-256-4-seeds-2-6-10-23.png)
-
 ## How it plays
 
 - **Crowded by design.** The city is only as big as the colonies need (`blocks-per-colony`), and the
@@ -38,8 +36,6 @@ vision, how it evolved and the tradeoffs.
 
 On a small map the river can leave too few blocks away from its banks for the homes; the layout
 then runs again without the river, and the lagoon still supplies the water.
-
-![Eight colonies at 256×256](../artifacts/honeycomb-isle/revision1-256-8-seed5.png)
 
 ## Controls
 
@@ -92,9 +88,6 @@ run from a session scratchpad and are summarised here.
   generator's golden rows are unchanged.
 - **AI games** — see [AI games](#ai-games).
 
-![A home: the cistern garden with its wheat half facing the swarm](../artifacts/honeycomb-isle/revision1-home-zoom-seed10.png)
-![The middle: the stadium landmark, ruins, the river and a bridge](../artifacts/honeycomb-isle/revision1-centre-zoom-seed10.png)
-
 ## AI games
 
 Local calibration games on the final code: the map the lobby would pick for map seed 101 (256×256,
@@ -126,6 +119,3 @@ colonies starved out.
 - Numbi and Castor stall on this map (they harvest wheat but barely breed); by the maintainer's
   decision maps are not tuned for the older AIs.
 - No human playtest of the final version has been recorded.
-
-![Six colonies at 512×512](../artifacts/honeycomb-isle/revision1-512-6-seed6.png)
-![Square blocks](../artifacts/honeycomb-isle/revision1-256-4-squares-seed7.png)

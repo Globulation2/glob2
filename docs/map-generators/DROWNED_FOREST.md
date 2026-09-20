@@ -137,6 +137,7 @@ No adjacent control step was unchanged on all eight seeds. Connections 90→100 
 the same overall mean, with individual changes; discrete edges and layout retries
 prevent a strict per-seed monotonicity promise.
 
-A compact, committed evidence bundle is in [evidence/drowned-forest](evidence/drowned-forest/README.md).
+Run-specific evidence belongs in the ignored `artifacts/drowned-forest/`
+workspace or in pull-request attachments.
 Earlier local artifacts used provisional generator ID 58. Integration assigns ID 67
 because upstream allocated 58 while development was in progress.

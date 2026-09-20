@@ -1,9 +1,0 @@
-mode,team,tick,harvested_1,harvested_0,shots_2,consumed_2_3,delivered_3,deaths_0_0,deaths_2_0,deaths_0_1
-guarded,0,24576,701,107,95,27,36,3,8,3
-guarded,1,24576,1336,119,64,21,22,0,0,0
-guarded,2,24576,652,146,1,4,39,2,1,8
-guarded,3,24576,332,47,24,7,3,0,2,3
-no-starting-towers,0,24576,600,81,0,0,11,2,11,30
-no-starting-towers,1,24576,1752,138,0,0,1,0,0,0
-no-starting-towers,2,24576,649,167,29,21,35,0,2,0
-no-starting-towers,3,24576,453,104,0,0,25,2,4,0

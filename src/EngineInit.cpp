@@ -172,7 +172,7 @@ int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, st
 namespace
 {
 	// GLOB2_TEST_RULES turns custom-game rules on for -test-games(-nox) matches, as
-	// comma-separated name=value pairs (docs/headless-replays.md), so AI matches can exercise
+	// comma-separated name=value pairs (docs/development/headless-replays.md), so AI matches can exercise
 	// the rules without the lobby. An unknown name or out-of-range value stops the run.
 	void applyTestRules(GameHeader& header)
 	{

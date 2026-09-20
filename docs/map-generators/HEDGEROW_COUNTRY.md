@@ -157,7 +157,6 @@ of the ringed plot it harvests, not how much could regrow. Whether the map is me
 at that pace, or its plots should open toward the village, is the design question to settle in
 play.
 
-
 The bulk study generated every supported request (2,098, including 512 fresh seeds) and
 rejected every unsupported one (133) with no crashes, timeouts, disconnected starts or
 cramped-start flags; twelve layouts needed one warp contraction. Eighty AI matchups compared
@@ -169,8 +168,8 @@ The complete bulk plans and rows, the playtest records, sample replays, saved ma
 immutable build identities and the analysis scripts live on the
 [evidence/hedgerow-country branch](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/artifacts/hedgerow-country/README.md), with the
 [bulk validation](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/map-generators/HEDGEROW_BULK_VALIDATION.md) and
-[playtest](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/map-generators/HEDGEROW_PLAYTEST.md) write-ups; the previews stay in
-[docs/artifacts/hedgerow-country](../artifacts/hedgerow-country/README.md).
+[playtest](https://github.com/Globulation2/glob2/blob/evidence/hedgerow-country/docs/map-generators/HEDGEROW_PLAYTEST.md) write-ups. New local previews belong in the ignored
+`artifacts/hedgerow-country/` workspace.
 
 Human play remains necessary to judge whether roughly five tiles of wood feels
 worth clearing. Static walking/clearing costs suggest useful shortcuts but do not

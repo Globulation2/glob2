@@ -204,14 +204,13 @@ plot however fast it regrows. The defaults stand unchanged; the finding is that 
 sealed-plot economy needs a farmer that will work it, which the current AIs are not, and human
 play is the test that remains.
 
-
 The existing CI defaults harness includes seam containment, deliberately broken
 containment, fertility filtering, planting limits and repeatable jitter checks.
 Savannah contracts cover supported rectangles, odd/solo colonies, invalid dimensions
 and crowding, zero/maximum terrain stability, and 4,096 unattended engine growth calls.
 The all-generator golden and telemetry harnesses cover existing helper callers.
 
-Review evidence and measured tuning results are on the [evidence/savannah branch](https://github.com/Globulation2/glob2/blob/evidence/savannah/artifacts/savannah/SUMMARY.md); the sample previews are under `docs/artifacts/savannah/`.
+Review evidence and measured tuning results are on the [evidence/savannah branch](https://github.com/Globulation2/glob2/blob/evidence/savannah/artifacts/savannah/SUMMARY.md). New local previews belong in the ignored `artifacts/savannah/` workspace.
 See that run's summary for exact commands, seeds, platform, generated maps, previews,
 telemetry, save/reload and populated-game coverage. Generation success and static
 room checks do not establish enjoyable pacing, conflict around ponds or useful

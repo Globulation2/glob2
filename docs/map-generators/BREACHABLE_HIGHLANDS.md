@@ -230,7 +230,7 @@ python3 tools/map_telemetry.py collect --generators breachable-highlands \
 
 Use absolute map and output paths with the structured `--run-game` interface,
 which works inside its isolated profile. See [CLI](CLI.md) and
-[tournaments](../tournaments.md) for game, save and replay commands.
+[tournaments](../tools/tournaments.md) for game, save and replay commands.
 
 ## Initial validation and tuning
 

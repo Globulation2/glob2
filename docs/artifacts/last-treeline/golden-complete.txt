@@ -1,9 +1,0 @@
-Settings::load("preferences.txt") : error, can't open file.
-last-treeline (61) 256x256 4 colonies seed 1 changed at unchanged revision 1
-last-treeline (61) 256x256 4 colonies seed 2 changed at unchanged revision 1
-last-treeline (61) 256x256 4 colonies seed 3 changed at unchanged revision 1
-last-treeline (61) 512x512 4 colonies seed 1 changed at unchanged revision 1
-last-treeline (61) 512x256 4 colonies seed 1 changed at unchanged revision 1
-last-treeline (61) 256x256 2 colonies seed 1 changed at unchanged revision 1
-last-treeline (61) 256x256 8 colonies seed 1 changed at unchanged revision 1
-Wrote 456 rows for macos-arm64 to test/map-generator-golden.txt

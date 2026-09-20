@@ -1,6 +1,6 @@
 # Implementing and verifying the design
 
-Source anchors: [adding a generator](../../../../docs/map-generators/ADDING_A_GENERATOR.md), [framework](../../../../docs/map-generators/MAP_GENERATOR_FRAMEWORK.md), [development conventions](../../../../docs/development-notes.md). Consult these for full interfaces; the guidance below connects them to design decisions.
+Source anchors: [adding a generator](../../../../docs/map-generators/ADDING_A_GENERATOR.md), [framework](../../../../docs/map-generators/MAP_GENERATOR_FRAMEWORK.md), [development conventions](../../../../docs/development/reference.md). Consult these for full interfaces; the guidance below connects them to design decisions.
 
 ## Worked design: a city around contested gardens
 

@@ -322,12 +322,11 @@ visual check is not a human playtest or tournament balance claim. The zero-
 ambient-resource/one-worker cases produced the lowest generic scores, while
 retaining reachable guaranteed starter supplies.
 
-The PR includes default 256×256/four-colony engine screenshots in
-`docs/map-generators/images/` and the compact reviewer-visible
-`docs/map-generators/evidence/` summaries. The indexed local artifact directory
-retains submitted manifests, reports, reconstructed `.map` files, previews,
-logs, initial/final saves, replays, and gameplay timelines. Reproduce the bulk
-summary and previews with:
+The durable default 256×256/four-colony engine screenshots are in
+`docs/map-generators/images/`. Keep submitted manifests, reports, reconstructed
+`.map` files, additional previews, logs, saves, replays and gameplay timelines in
+the ignored `artifacts/` workspace or in pull-request attachments. Reproduce the
+bulk summary and previews with:
 
 ```sh
 python3 -m tools.fractal_maps.plan --bundle artifacts/fractal-maps/bundles/75e3ede47341117101794d5fd357252844585626914a56ae1e36783c38921102 --output artifacts/fractal-maps/service-bulk-plans

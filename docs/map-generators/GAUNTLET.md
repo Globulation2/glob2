@@ -63,8 +63,8 @@ build/src/glob2 --generate-map gauntlet --seed 1 --width 256 --height 256 --team
   --preview gauntlet.png --json gauntlet.json --output gauntlet.map
 ```
 
-Review and measurement findings, including the remaining limits, are recorded in
-[the evidence summary](../artifacts/gauntlet/README.md). The addition changes no
+Keep run-specific review and measurement evidence in the ignored
+`artifacts/gauntlet/` workspace or in pull-request attachments. The addition changes no
 simulation rules, save format, replay gate, network protocol, or existing generator.
 Human play remains necessary to judge pacing and whether the two-front tradeoffs
 are enjoyable; AI games establish economy and contact, not human fun.
