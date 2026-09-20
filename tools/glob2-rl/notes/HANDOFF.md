@@ -252,6 +252,34 @@ All processes stopped: learner, policy server, self-play driver, evaluation
 harness, and stray `glob2` games. Both GPUs idle at 0%. Working data, logs,
 rollouts, snapshots and evaluation results removed.
 
+## What was deleted, and what that costs you
+
+At shutdown `~/neurotica` (36 GB) was removed from therig at the maintainer's
+request. Only the weights were kept, outside the tree:
+`~/neurotica-final-policy.pt` and `~/neurotica-best-snapshot-621.pt`.
+
+Gone and **not recoverable**: the rollouts, the PPO snapshot series, the 28 GB
+BC corpus, `ppo/episodes.csv`, `eval/results.csv`, the recorded replays, and
+`eval/manifest.json`.
+
+Two consequences worth knowing before you trust anything above:
+
+- **Every number in this file is a summary of deleted data.** The tables were
+  computed before the delete and transcribed here; nobody can re-derive them
+  from artifacts. Treat them as a record of what was observed, not as evidence
+  a reviewer can independently check.
+- **The paired manifest cannot be reproduced exactly.** `paired_eval.py make`
+  is deterministic given `--seed 20260917`, but it draws generators from
+  `$ROOT/generators.txt`, which lived only on the rig and is not in this
+  repository. The generator registry has also gained entries since the list was
+  built (it had 46), so regenerating it today yields a different list and
+  therefore a different manifest. A future run must build a fresh manifest,
+  **re-measure the inert baseline on it**, and compare only within that
+  manifest. The 23.0% inert figure above is not portable to a new manifest.
+
+If this project restarts, commit `generators.txt` alongside the manifest so the
+evaluation is reproducible from the repository alone.
+
 ## If you restart this
 
 Do these before resuming training, in this order:
