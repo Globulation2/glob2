@@ -21,9 +21,13 @@
 #include "IntBuildingType.h"
 #include "Map.h"
 #include "Order.h"
+#include "Brush.h"
 #include "Player.h"
 #include "Team.h"
 #include "ai/neurotica/NeuroticaFieldSource.h"
+#include "ai/neurotica/NeuroticaActions.h"
+#include <fstream>
+#include <cstring>
 #include "ai/neurotica/NeuroticaReconciler.h"
 
 #include <cstdio>
@@ -433,6 +437,82 @@ int main()
 		      "repeating the type on a covered non-anchor cell asks for a further building");
 	}
 
+	// NPS6 round-trips typed controls through the same codec used by BC.
+	auto roundTrip = [&](std::shared_ptr<Order> original)
+	{
+		auto a = Neurotica::encodeAction(team, *original);
+		auto bytes = Neurotica::packAction(a);
+		auto decoded = Neurotica::decodeAction(team, Neurotica::unpackAction(bytes));
+		check(original->getOrderType() == decoded->getOrderType(), "semantic opcode round trip");
+		check(original->getDataLength() == decoded->getDataLength(),
+			  "semantic payload size round trip");
+		check(std::memcmp(original->getData(), decoded->getData(), original->getDataLength()) == 0,
+			  "semantic payload round trip");
+	};
+	roundTrip(std::make_shared<NullOrder>());
+	roundTrip(std::make_shared<OrderModifyBuilding>(inn->gid, 20));
+	roundTrip(std::make_shared<OrderChangePriority>(inn->gid, 1));
+	roundTrip(std::make_shared<OrderDelete>(inn->gid));
+	roundTrip(std::make_shared<OrderCancelDelete>(inn->gid));
+	roundTrip(std::make_shared<OrderCancelConstruction>(inn->gid, 12));
+	for (int i = 0; i < Building::MAX_COUNT; ++i)
+	{
+		auto *b = team->myBuildings[i];
+		if (!b || !b->type)
+			continue;
+		if (b->type->shortTypeNum == 0)
+		{
+			Sint32 r[3] = {3, 0, 1};
+			roundTrip(std::make_shared<OrderModifySwarm>(b->gid, r));
+			break;
+		}
+	}
+	auto *flag = addBuilding(1, 1, IntBuildingType::WAR_FLAG, 0, false);
+	roundTrip(std::make_shared<OrderMoveFlag>(flag->gid, 24, 24, true));
+	roundTrip(std::make_shared<OrderModifyFlag>(flag->gid, 9));
+	roundTrip(std::make_shared<OrderModifyMinLevelToFlag>(flag->gid, 2));
+	roundTrip(std::make_shared<SetAllianceOrder>(0, team->allies, team->enemies, 1, 3, 1));
+	roundTrip(std::make_shared<OrderCreate>(
+		0, 27, 27, globals.buildingsTypes.getPlaceableTypeNum("warflag"), 4, 4, 7));
+	for (int i = 0; i < Building::MAX_COUNT; ++i)
+	{
+		auto *b = team->myBuildings[i];
+		if (b && b->type->shortTypeNum == 0)
+		{
+			Sint32 stopped[3] = {0, 0, 0};
+			roundTrip(std::make_shared<OrderModifySwarm>(b->gid, stopped));
+			break;
+		}
+	}
+	{
+		auto original = std::make_shared<OrderAlterForbidden>();
+		original->teamNumber = 0;
+		original->type = BrushTool::MODE_ADD;
+		original->centerX = original->centerY = 31;
+		original->minX = original->minY = 0;
+		original->maxX = original->maxY = 2;
+		original->mask = Utilities::BitArray(4, false);
+		for (size_t i = 0; i < 4; ++i)
+			original->mask.set(i, true);
+		auto a = Neurotica::encodeAction(team, *original);
+		check(a.area[31 * 32 + 31] && a.area[0] && a.area[31] && a.area[31 * 32],
+			  "area codec preserves wrapped cells");
+		auto decoded = Neurotica::decodeAction(team, a);
+		check(Neurotica::packAction(a) ==
+				  Neurotica::packAction(Neurotica::encodeAction(team, *decoded)),
+			  "area semantics round trip");
+	}
+	// Export an actual C++ observation/action fixture for Python's wire test.
+	if (const char *dir = std::getenv("NEUROTICA_FIXTURE_DIR"))
+	{
+		auto bytes = Neurotica::actionContext(team);
+		std::ofstream file(std::string(dir) + "/context.bin", std::ios::binary);
+		file.write(reinterpret_cast<const char *>(bytes.data()), bytes.size());
+		auto order = std::make_shared<OrderModifyBuilding>(inn->gid, 20);
+		bytes = Neurotica::packAction(Neurotica::encodeAction(team, *order));
+		std::ofstream af(std::string(dir) + "/action.bin", std::ios::binary);
+		af.write(reinterpret_cast<const char *>(bytes.data()), bytes.size());
+	}
 	std::printf("Neurotica reconciler: %d checks, %d failures\n", checks, failures);
 	return failures == 0 ? 0 : 1;
 }

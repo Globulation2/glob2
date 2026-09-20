@@ -6,16 +6,10 @@
 /*
   Neurotica observation planes — the network's input side.
 
-  An observation is one team's fog-limited view of the map, encoded as a stack
-  of w*h uint8 planes. It pairs with the desired-state label in NeuroticaTrace.h to
-  form a behaviour-cloning example:
-
-      input  = observation at tick t
-      label  = that team's state at tick t + delta   (from the trace)
-
-  The two are recorded into separate files on purpose. The label is a property
-  of the FUTURE, so it cannot be written at time t; keeping them apart lets
-  delta be swept offline without re-recording anything.
+  The active NAC1 order protocol embeds these planes plus exact building
+  entities and action masks. BC labels are actual orders, captured before engine
+  execution (NeuroticaActions.h). The separate AOB2 format below is a diagnostic
+  recorder; historical future-state ATR/AOB corpora are not training labels.
 
   Fog is honoured: enemy buildings, enemy units and resources are written only
   where the team can see them, and a discovery plane says which cells are
@@ -27,16 +21,15 @@
   once in the header rather than in every record — at one record per team per
   ten seconds they would otherwise be most of the file.
 
-  Gradients. Several planes are the engine's own BFS distance fields
-  (Map::getResourceGradient and friends). They are the single highest-value
-  input here: a convolutional net needs depth proportional to map diameter to
-  work out "is that wheat reachable from my base", and these answer it directly
-  for free. Stored as 255/(1+d) so near is large and unreachable is zero.
+  Gradients are fog-limited toroidal BFS proximity fields, blocked by water
+  and physical buildings. Values are 255-distance, clipped at 255 tiles; zero
+  means unreachable or outside that range. They are approximate navigation
+  features, not exact engine routing for every unit capability.
 
   Format (little-endian, zlib-compressed payloads):
 
     HEADER
-      [4B]  magic "AOB1"
+      [4B]  magic "AOB2"
       [4B]  u32 num_records        (patched by close())
       [2B]  u16 map_w
       [2B]  u16 map_h
@@ -119,6 +112,12 @@ namespace Neurotica
 		DP_GRAD_FORBIDDEN,
 		DP_GRAD_GUARD,
 		DP_GRAD_CLEAR,
+
+		DP_MY_UNIT_HP,
+		DP_MY_UNIT_FOOD,
+		DP_MY_UNIT_BUILD_LEVEL,
+		DP_MY_UNIT_ATTACK_LEVEL,
+		DP_MY_UNIT_SWIM_LEVEL,
 
 		DP_COUNT
 	};

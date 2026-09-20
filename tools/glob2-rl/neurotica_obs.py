@@ -29,7 +29,7 @@ from typing import List, Optional
 
 import numpy as np
 
-MAGIC = b"AOB1"
+MAGIC = b"AOB2"
 
 STATIC_PLANES = ["terrain_grass", "terrain_sand", "terrain_water", "fertility"]
 
@@ -48,7 +48,8 @@ DYNAMIC_PLANES = (
        "area_guard", "area_clear", "area_forbidden",
        "discovery",
        "grad_wood", "grad_wheat", "grad_stone",
-       "grad_forbidden", "grad_guard", "grad_clear"]
+       "grad_forbidden", "grad_guard", "grad_clear",
+       "my_unit_hp", "my_unit_food", "my_unit_build_level", "my_unit_attack_level", "my_unit_swim_level"]
 )
 
 # Planes that must be zero wherever the team has never seen the cell. Own

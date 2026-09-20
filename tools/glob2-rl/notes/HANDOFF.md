@@ -1,3 +1,5 @@
+> Historical field-controller handoff. The active order-based pipeline and restart instructions are now in [../README.md](../README.md); commands and checkpoints below describe the superseded experiment.
+
 # AI Neurotica — handoff
 
 Written 2026-09-20, when training was stopped and the rig cleaned. This is the

@@ -79,6 +79,7 @@ ai/cortex/CortexWheat.cpp
 ai/cortex/CortexWater.cpp
 ai/cortex/CortexNet.cpp
 ai/neurotica/AINeurotica.cpp
+ai/neurotica/NeuroticaActions.cpp
 ai/neurotica/NeuroticaFieldSource.cpp
 ai/neurotica/NeuroticaTrace.cpp
 ai/neurotica/NeuroticaObservation.cpp

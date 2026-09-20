@@ -4,6 +4,9 @@
 #include "NeuroticaPolicySocket.h"
 
 #include "WinProbability.h"
+#include "NeuroticaActions.h"
+#include "Order.h"
+#include <stdexcept>
 #include <algorithm>
 
 #include "Game.h"
@@ -21,13 +24,6 @@
 
 namespace Neurotica
 {
-	namespace
-	{
-		//! Bytes per cell in a policy reply (NPS4): building class, score,
-		//! area bits, staffing, then the swarm production mix as three
-		//! worker/explorer/warrior weights.
-		constexpr size_t kReplyStride = 7;
-	}
 	PolicySocketSource::PolicySocketSource(Team *team, const std::string &socketPath)
 		: team_(team), path_(socketPath)
 	{
@@ -50,7 +46,11 @@ namespace Neurotica
 		const char *p = static_cast<const char *>(data);
 		while (bytes)
 		{
+#ifdef MSG_NOSIGNAL
+			const ssize_t n = ::send(fd_, p, bytes, MSG_NOSIGNAL);
+#else
 			const ssize_t n = ::write(fd_, p, bytes);
+#endif
 			if (n <= 0)
 			{
 				if (n < 0 && errno == EINTR)
@@ -85,157 +85,54 @@ namespace Neurotica
 	{
 		if (fd_ >= 0)
 			return true;
-		if (gaveUp_ || !team_ || !team_->game)
-			return false;
-
 		sockaddr_un addr{};
 		addr.sun_family = AF_UNIX;
-		if (path_.size() + 1 > sizeof(addr.sun_path))
-		{
-			std::cerr << "Neurotica: policy socket path too long: " << path_ << std::endl;
-			gaveUp_ = true;
-			return false;
-		}
-		std::strncpy(addr.sun_path, path_.c_str(), sizeof(addr.sun_path) - 1);
-
+		if (path_.size() >= sizeof(addr.sun_path))
+			throw std::runtime_error("NEUROTICA_POLICY_FAILURE socket path too long");
+		std::strcpy(addr.sun_path, path_.c_str());
 		fd_ = ::socket(AF_UNIX, SOCK_STREAM, 0);
-		if (fd_ < 0)
-		{
-			gaveUp_ = true;
-			return false;
-		}
-		if (::connect(fd_, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) != 0)
-		{
-			std::cerr << "Neurotica: cannot reach policy server at " << path_ << ": "
-			          << std::strerror(errno) << std::endl;
-			disconnect();
-			gaveUp_ = true;
-			return false;
-		}
-
-		const Map *map = &team_->game->map;
-		std::vector<Uint8> statics;
-		if (!encodeStaticPlanes(map, statics))
-		{
-			disconnect();
-			gaveUp_ = true;
-			return false;
-		}
-
-		Uint8 header[16];
-		std::memcpy(header, "NPS5", 4);
-		const Uint16 w = Uint16(map->getW()), h = Uint16(map->getH());
-		std::memcpy(header + 4, &w, 2);
-		std::memcpy(header + 6, &h, 2);
-		header[8] = Uint8(SP_COUNT);
-		header[9] = Uint8(DP_COUNT);
-		header[10] = header[11] = 0;
-		Uint32 gameId = 0;
-		if (const char *env = getenv("GLOB2_NEUROTICA_GAME_ID"))
-			gameId = Uint32(strtoul(env, nullptr, 10));
-		std::memcpy(header + 12, &gameId, 4);
-		if (!writeAll(header, sizeof(header)) || !writeAll(statics.data(), statics.size()))
-		{
-			std::cerr << "Neurotica: policy handshake failed" << std::endl;
-			disconnect();
-			gaveUp_ = true;
-			return false;
-		}
+		if (fd_ < 0 || ::connect(fd_, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)))
+			throw std::runtime_error("NEUROTICA_POLICY_FAILURE cannot connect");
+		timeval timeout{60, 0};
+		setsockopt(fd_, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+		setsockopt(fd_, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
+#ifdef SO_NOSIGPIPE
+		int yes = 1;
+		setsockopt(fd_, SOL_SOCKET, SO_NOSIGPIPE, &yes, sizeof(yes));
+#endif
+		if (!writeAll("NPS6", 4))
+			throw std::runtime_error("NEUROTICA_POLICY_FAILURE handshake");
 		return true;
 	}
-
-	bool PolicySocketSource::field(Uint32 tick, DesiredState &out)
+	std::shared_ptr<Order> PolicySocketSource::actionOrder(Uint32 tick)
 	{
-		if (!ensureConnected() || !team_ || !team_->game)
-			return false;
-		const Map *map = &team_->game->map;
-		const Sint32 w = map->getW(), h = map->getH();
-		const size_t cells = size_t(w) * size_t(h);
-
-		if (!encodeDynamicPlanes(team_, planes_))
-			return false;
-
-		// Win probability for this team's alliance, in permille, from the
-		// fitted model in WinProbability.h (PR #339). It rides in the request
-		// so the learner can use it as a shaping potential: the server cannot
-		// compute it, because the observation is fogged and the model needs
-		// both sides' true state. Shaping reads the reward, never the policy
-		// input, so using unfogged state here does not let the AI see through
-		// fog -- it only makes the credit assignment honest.
-		//
-		// Before MINIMUM_DECISION_TICK the model declines to judge (the opening
-		// samples are lopsided for reasons that mean nothing), so report even
-		// odds there: a constant potential contributes exactly zero shaping.
-		Uint16 permille = 500;
-		if (Sint32(tick) >= WinProbability::MINIMUM_DECISION_TICK)
-		{
-			std::vector<int> allianceOf;
-			const std::vector<WinProbability::Slot> slots =
-				WinProbability::slotsOf(*team_->game, allianceOf);
-			const int mine = allianceOf[team_->teamNumber];
-			const std::vector<int> odds = WinProbability::permille(slots);
-			if (mine >= 0 && size_t(mine) < odds.size())
-				permille = Uint16(std::max(0, std::min(1000, odds[mine])));
-		}
-
-		Uint8 header[8];
-		std::memcpy(header, &tick, 4);
-		header[4] = Uint8(team_->teamNumber);
-		std::memcpy(header + 5, &permille, 2);
-		header[7] = 0;
-		if (!writeAll(header, sizeof(header)) || !writeAll(planes_.data(), planes_.size()))
-		{
-			std::cerr << "Neurotica: policy request failed; going inert" << std::endl;
-			disconnect();
-			gaveUp_ = true;
-			return false;
-		}
-
-		// 4 bytes per cell since NPS3: class, score, area bits, staffing.
-		reply_.resize(cells * kReplyStride);
-		if (!readAll(reply_.data(), reply_.size()))
-		{
-			std::cerr << "Neurotica: policy reply truncated; going inert" << std::endl;
-			disconnect();
-			gaveUp_ = true;
-			return false;
-		}
-
-		out.reset(w, h);
-		for (size_t i = 0; i < cells; i++)
-		{
-			const Uint8 cls = reply_[i * kReplyStride + 0];
-			// A class the engine does not have is treated as "nothing wanted"
-			// rather than clamped: a policy emitting garbage should be inert at
-			// that cell, not build something arbitrary.
-			// DONT_CARE passes through: it means "not mine to decide", which
-			// is what a policy that can see a building's footprint but not its
-			// anchor must say about the non-anchor cells. Folding it to 0 would
-			// turn that into "want empty here".
-			out.building[i] = (cls <= IntBuildingTypeCount || cls == DONT_CARE)
-			                  ? cls : Uint8(0);
-			out.buildingScore[i] = reply_[i * kReplyStride + 1];
-			out.areas[i] = reply_[i * kReplyStride + 2] & (AREA_GUARD | AREA_CLEAR | AREA_FORBIDDEN);
-			// Staffing: how many units the policy wants working this building.
-			// DONT_CARE leaves it alone, which is what every cell said before
-			// NPS3 -- the plane existed in the schema from the start but no
-			// policy could reach it, so the network could not allocate labour
-			// at all.
-			out.workers[i] = reply_[i * kReplyStride + 3];
-			// Swarm unit mix. A swarm is created with ratio[0]=1 and zero
-			// elsewhere (Building Lifecycle.cpp), so without this plane a
-			// Neurotica team produces workers and never a single warrior --
-			// it cannot win by force, only outlast. DONT_CARE in the worker
-			// slot leaves the whole ratio alone, per the schema.
-			const size_t ratioBase = i * SWARM_RATIO_STRIDE;
-			out.swarmRatio[ratioBase + 0] = reply_[i * kReplyStride + 4];
-			out.swarmRatio[ratioBase + 1] = reply_[i * kReplyStride + 5];
-			out.swarmRatio[ratioBase + 2] = reply_[i * kReplyStride + 6];
-			// Urgency follows the score until the policy learns a head for it,
-			// so the reconciler still prioritises the cells the net is most
-			// confident about rather than acting in scan order.
-			out.urgency[i] = reply_[i * kReplyStride + 1];
-		}
-		return true;
+		if (tick < nextTick_)
+			return std::make_shared<NullOrder>();
+		ensureConnected();
+		auto context = actionContext(team_);
+		auto length = [](Uint32 n)
+		{ return std::array<Uint8, 4>{{Uint8(n), Uint8(n >> 8), Uint8(n >> 16), Uint8(n >> 24)}}; };
+		auto size = length(context.size());
+		if (!writeAll(size.data(), 4) || !writeAll(context.data(), context.size()) ||
+			!readAll(size.data(), 4))
+			throw std::runtime_error("NEUROTICA_POLICY_FAILURE request/response");
+		Uint32 n = Uint32(size[0]) | (Uint32(size[1]) << 8) | (Uint32(size[2]) << 16) |
+				   (Uint32(size[3]) << 24);
+		if (n < FIELD_COUNT * 4 ||
+			n > FIELD_COUNT * 4 + size_t(team_->game->map.getW()) * team_->game->map.getH())
+			throw std::runtime_error("NEUROTICA_POLICY_FAILURE response length");
+		reply_.resize(n);
+		if (!readAll(reply_.data(), n))
+			throw std::runtime_error("NEUROTICA_POLICY_FAILURE truncated response");
+		auto action = unpackAction(reply_);
+		auto order = decodeAction(team_, action);
+		nextTick_ = tick + action.v[DELAY];
+		std::cerr << "NEUROTICA_ACTION tick=" << tick << " team=" << int(team_->teamNumber)
+				  << " op=" << action.v[OP] << " delay=" << action.v[DELAY] << std::endl;
+		return order;
+	}
+	bool PolicySocketSource::field(Uint32, DesiredState &)
+	{
+		throw std::runtime_error("Neurotica NPS6 uses semantic orders, not fields");
 	}
 } // namespace Neurotica

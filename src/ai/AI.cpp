@@ -10,6 +10,7 @@
 #include "Order.h"
 #include "TeamStat.h"
 #include <assert.h>
+#include <cstdlib>
 #include <stdexcept>
 #include <Stream.h>
 
@@ -23,6 +24,7 @@
 #include "cortex/AICortex.h"
 #include "AICabino.h"
 #include "neurotica/AINeurotica.h"
+#include "neurotica/NeuroticaActions.h"
 
 using std::shared_ptr;
 
@@ -102,6 +104,10 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 												implementationID, telemetrySeries->generation));
 	auto order = aiImplementation->getOrder();
 	aiTime.stop();
+	Neurotica::recordAction(player->team, player->number, *order);
+	if (std::getenv("GLOB2_NEUROTICA_ACTION_ROUNDTRIP"))
+		order =
+			Neurotica::decodeAction(player->team, Neurotica::encodeAction(player->team, *order));
 	const auto type = order->getOrderType();
 	aiImplementation->telemetry.count(AITelemetry::OrderTypes + type);
 	aiImplementation->telemetry.count(type == ORDER_NULL ? AITelemetry::NullOrders

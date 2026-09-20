@@ -6,28 +6,15 @@
 # supplies the missing half: it starts a policy server on therig's GPU, forwards
 # its Unix socket here over SSH, and launches the game pointed at that socket.
 #
-# Inference runs on therig, so nothing needs installing locally. One policy step
-# per 25 ticks per Neurotica team is roughly one request per second at normal
-# speed, so LAN latency is irrelevant.
+# Inference runs on therig. The model chooses a delay of 1–25 ticks between
+# orders, so network latency can affect interactive speed.
 #
-# Two traps this script exists to avoid, both of which fail silently:
-#
-#   * The server must run with --top-k (or --sample). A per-cell argmax over the
-#     building head is empty in practice -- "no building" wins almost everywhere
-#     because buildings are ~0.1% of cells -- so the desired field comes out
-#     blank and the AI sits on its starting base for the whole game.
-#   * The tunnel must bypass SSH connection multiplexing. With an auto-mux
-#     master active, `ssh -N -L` hands the forward to the master and exits
-#     immediately, so the socket disappears and the AI silently gets no field.
-#
-# Usage:
-#   play.sh                       # launch the game with Neurotica available
-#   CKPT=~/neurotica/ppo/policy.pt play.sh    # use the live self-play policy
-#   play.sh -test-games --map foo --matchup neurotica,nicowar   # args pass through
+# Uses the same NPS6 semantic-order decoder as BC, PPO and evaluation.
+# Set CKPT to a new order checkpoint on the rig; old field checkpoints fail.
 set -eu
-CKPT=${CKPT:-'$HOME/neurotica/ckpt_full/best.pt'}
+CKPT=${CKPT:?set CKPT to a new semantic-order checkpoint on the rig}
+printf -v CKPT_ARG '%q' "$CKPT"
 RIG=${RIG:-therig.local}
-PLACEMENTS=${PLACEMENTS:-12}
 SOCK=/tmp/neurotica_gui.sock
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 GLOB2=$ROOT/build/src/glob2
@@ -49,8 +36,8 @@ ssh -o ConnectTimeout=20 "$RIG" "
   for p in \$(pgrep -f 'neurotica_serve.py.*neurotica_gui'); do [ \"\$p\" != \"\$\$\" ] && kill \"\$p\" 2>/dev/null; done
   sleep 1; rm -f $SOCK
   CUDA_VISIBLE_DEVICES=1 setsid nohup \$HOME/neurotica/.venv/bin/python \$HOME/neurotica/rl/neurotica_serve.py \
-    --checkpoint $CKPT --socket $SOCK --device cuda --max-batch 8 \
-    --top-k --placements $PLACEMENTS > /tmp/gui_serve.log 2>&1 < /dev/null &
+    --checkpoint $CKPT_ARG --socket $SOCK --device cuda \
+    --seed 0 > /tmp/gui_serve.log 2>&1 < /dev/null &
   sleep 15
   test -S $SOCK" \
   || { echo "policy server failed to start; try: ssh $RIG 'cat /tmp/gui_serve.log'" >&2; exit 1; }

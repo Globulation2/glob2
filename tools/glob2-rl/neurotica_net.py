@@ -1,52 +1,14 @@
-#!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""The Neurotica policy network: a circular U-Net over the whole map.
-
-Design notes that are load-bearing rather than taste:
-
-* CIRCULAR padding everywhere. Glob2 maps wrap (Map::coordToIndex masks the
-  coordinates), so the map is a torus. Zero padding would invent an edge that
-  does not exist and break translation equivariance at the seam.
-
-* Depthwise-separable convolutions at full resolution. A dense 3x3 at 48
-  channels on 128x128 is ~300 MFLOP; the separable equivalent is roughly a
-  seventh of that for nearly the same capacity on what is mostly local
-  structure. Dense convs are kept at the low-resolution levels where they are
-  cheap and where the long-range reasoning lives.
-
-* U-Net depth is tied to the map size so the bottleneck is always 16x16. Maps
-  are powers of two (Map::setSize takes log2 dimensions), so this is exact.
-
-* The output is a set of full-resolution planes, not a coordinate. The
-  reconciler turns those planes into orders (see NeuroticaReconciler.cpp), and
-  placement is the argmax of the score over cells the engine says are legal —
-  the same score/feasibility split AIEcho used, with the score learned.
+"""Circular U-Net plus an autoregressive distribution over executable orders.
+BC and PPO call the same score_action function. All executed choices have a
+likelihood, including building type, entity identity, parameters and delay.
 """
-
-from __future__ import annotations
 
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
-NUM_BUILDING_CLASSES = 14  # none + 13 building types
-
-# Swarm production mixes the policy may choose between, as
-# (worker, explorer, warrior) weights. A discrete choice rather than a free
-# proportion because PPO needs a log-prob it can trust, and because the real
-# decision here is coarse: economy, or army, or the balance teachers strike
-# (~1/3 warriors, measured). Cloning the teacher mix outright lost games in a
-# small economy -- the affordability of a split is a precondition the ratio
-# does not carry -- so the mix has to be chosen from the state, by something
-# that learns from outcomes.
-MIX_PRESETS = [
-    (1, 0, 0),   # all workers: fastest economy, cannot ever win by force
-    (3, 0, 1),   # light military
-    (2, 0, 1),   # roughly the teacher split
-    (1, 0, 1),   # heavy military
-    (2, 1, 1),   # with explorers, for map control
-]
+from torch import nn
+from torch.nn import functional as F
+from neurotica_actions import PARAMS, SIZES, SCHEMA, validate_action, checkpoint_id
 
 
 def circ_pad(x: torch.Tensor, p: int) -> torch.Tensor:
@@ -91,338 +53,253 @@ class Block(nn.Module):
         return x + self.b(self.a(x))
 
 
-class FiLM(nn.Module):
-    """Feature-wise modulation of a plane stack by a global vector.
-
-    Used to condition the decoder on the exploration latent. Modulating
-    channels rather than concatenating a tiled vector keeps the latent's
-    influence global and coherent — it shifts what KIND of map the decoder
-    draws, rather than perturbing individual cells.
-    """
-
-    def __init__(self, latent_dim: int, ch: int):
-        super().__init__()
-        self.to_scale_shift = nn.Linear(latent_dim, ch * 2)
-        nn.init.zeros_(self.to_scale_shift.weight)
-        nn.init.zeros_(self.to_scale_shift.bias)
-
-    def forward(self, x, z):
-        scale, shift = self.to_scale_shift(z).chunk(2, dim=-1)
-        scale = scale[:, :, None, None]
-        shift = shift[:, :, None, None]
-        return x * (1 + scale) + shift
-
-
 class NeuroticaNet(nn.Module):
-    """Policy and value for Neurotica.
-
-    Behaviour cloning uses only the field heads. Self-play additionally uses
-    the latent and the value head:
-
-      * The field is a DETERMINISTIC function of (observation, z). Exploration
-        happens by sampling z from the policy's own Gaussian, not by sampling
-        each cell. Per-cell sampling would make log pi(a|s) a sum over ~16k
-        terms, so PPO's importance ratio exp(sum of log-prob deltas) explodes
-        on essentially every update — and it explores in a direction that is
-        not strategically meaningful anyway. Flipping one tile is noise;
-        shifting the latent is "expand north instead of teching".
-
-      * That makes the RL action space `latent_dim` continuous dimensions
-        rather than 13 x H x W discrete ones, which is what makes PPO
-        tractable here at all.
-    """
-
-    def __init__(self, in_planes: int, width: int = 48, levels: int = 3,
-                 latent_dim: int = 32):
+    def __init__(self, in_planes=65, width=32, hidden=128):
         super().__init__()
-        self.levels = levels
-        self.latent_dim = latent_dim
-        chans = [width * (2 ** i) for i in range(levels + 1)]
+        self.config = dict(
+            in_planes=in_planes, width=width, hidden=hidden, schema=SCHEMA
+        )
+        self.stem = nn.Conv2d(in_planes * 2, width, 1)
+        self.enc = nn.ModuleList(
+            [Block(width, True), Block(width * 2, True), Block(width * 4, False)]
+        )
+        self.down = nn.ModuleList(
+            [nn.Conv2d(width * 2**i, width * 2 ** (i + 1), 2, 2) for i in range(3)]
+        )
+        self.mid = Block(width * 8, False)
+        self.up = nn.ModuleList(
+            [
+                nn.ConvTranspose2d(width * 2 ** (i + 1), width * 2**i, 2, 2)
+                for i in (2, 1, 0)
+            ]
+        )
+        self.dec = nn.ModuleList(
+            [Block(width * 4, False), Block(width * 2, True), Block(width, True)]
+        )
+        self.global_fc = nn.Linear(width * 8, hidden)
+        self.entity = nn.Sequential(
+            nn.Linear(29, hidden), nn.SiLU(), nn.Linear(hidden, hidden)
+        )
+        self.global_extra = nn.Linear(hidden + 3, hidden)
+        self.position = nn.Linear(4, hidden, bias=False)
+        self.source_query = nn.Linear(hidden, hidden)
+        self.spatial = nn.Conv2d(width, hidden, 1)
+        self.target_query = nn.Linear(hidden, hidden)
+        self.area_query = nn.Linear(hidden, hidden)
+        self.heads = nn.ModuleDict(
+            {"f_" + k: nn.Linear(hidden, n) for k, n in SIZES.items()}
+        )
+        self.embeddings = nn.ModuleDict(
+            {"f_" + k: nn.Embedding(n, hidden) for k, n in SIZES.items()}
+        )
+        self.update = nn.GRUCell(hidden, hidden)
+        self.value = nn.Linear(hidden, 1)
 
-        self.stem = nn.Sequential(nn.Conv2d(in_planes, chans[0], 1, bias=False),
-                                  nn.GroupNorm(8, chans[0]), nn.SiLU())
-        self.enc = nn.ModuleList()
-        self.down = nn.ModuleList()
-        for i in range(levels):
-            # Separable only at the two highest resolutions, where dense convs
-            # would dominate the FLOP budget.
-            self.enc.append(Block(chans[i], separable=(i < 2)))
-            self.down.append(nn.Conv2d(chans[i], chans[i + 1], 2, stride=2, bias=False))
-
-        self.mid = nn.Sequential(Block(chans[levels], separable=False),
-                                 Block(chans[levels], separable=False))
-
-        self.up = nn.ModuleList()
-        self.dec = nn.ModuleList()
-        for i in reversed(range(levels)):
-            self.up.append(nn.ConvTranspose2d(chans[i + 1], chans[i], 2, stride=2, bias=False))
-            self.dec.append(Block(chans[i], separable=(i < 2)))
-
-        # Policy over the latent, and the critic, both read the pooled
-        # bottleneck: they are global judgements, not per-cell ones.
-        bottleneck = chans[levels]
-        self.latent_mu = nn.Sequential(nn.Linear(bottleneck, 128), nn.SiLU(),
-                                       nn.Linear(128, latent_dim))
-        self.latent_logstd = nn.Parameter(torch.zeros(latent_dim))
-        self.value = nn.Sequential(nn.Linear(bottleneck, 128), nn.SiLU(),
-                                   nn.Linear(128, 1))
-        self.film = nn.ModuleList([FiLM(latent_dim, chans[i]) for i in reversed(range(levels))])
-
-        head_ch = chans[0]
-        # One logit per building class per cell, plus the score that ranks
-        # cells for the chosen class, plus the three area layers.
-        self.head_building = nn.Conv2d(head_ch, NUM_BUILDING_CLASSES, 1)
-        self.head_score = nn.Conv2d(head_ch, 1, 1)
-        self.head_areas = nn.Conv2d(head_ch, 3, 1)
-        # Desired staffing (Building::maxUnitWorking) per cell. This is how the
-        # teachers concentrate labour, and labour is what the early economy
-        # turns on: a swarm only produces when wheat reaches it, so workers
-        # spread across every building are workers not feeding the swarm.
-        # Predicted in units, supervised only at building anchors.
-        self.head_workers = nn.Conv2d(head_ch, 1, 1)
-        # Swarm unit-production mix: worker / explorer / warrior, as logits
-        # over the three. A swarm defaults to workers-only and the policy had
-        # no way to change it, so Neurotica could never field an army --
-        # warriors=0 in every telemetry read regardless of checkpoint. Unlike
-        # absolute staffing, a ratio is scale-free and should survive being
-        # applied to a much smaller economy than the teachers had.
-        self.head_ratio = nn.Conv2d(head_ch, 3, 1)
-        # Which production mix to run, as a global choice off the pooled
-        # bottleneck. This is an ACTION, not a prediction: the per-cell ratio
-        # head above receives no policy gradient, because PPO only credits the
-        # placements, so it can never be improved by playing. Making the mix a
-        # sampled action is what lets RL discover the economy/army tradeoff the
-        # way it discovered to stop building flags.
-        self.head_mix = nn.Sequential(nn.Linear(bottleneck, 64), nn.SiLU(),
-                                      nn.Linear(64, len(MIX_PRESETS)))
-        # How many of each building type the team should HOLD. The per-cell
-        # building head is a marginal -- it says where inn-ness is high, never
-        # how many inns to own -- so decoding it by threshold or top-k turns
-        # "inn-ness everywhere" into dozens of inns. Measured: swarm=48 inn=57
-        # against a teacher's 4 and 7. Count is a global judgement, so it reads
-        # the pooled bottleneck like value does, and is trained on log1p counts
-        # so the loss is not dominated by the commonest types.
-        self.head_count = nn.Sequential(nn.Linear(bottleneck, 128), nn.SiLU(),
-                                        nn.Linear(128, NUM_BUILDING_CLASSES - 1))
-
-    def encode(self, x):
+    def encode_context(self, c, previous=None):
+        device = next(self.parameters()).device
+        planes = c.planes()
+        prev = previous.planes() if previous is not None else planes
+        if prev.shape != planes.shape:
+            raise ValueError("history shape mismatch")
+        x = torch.from_numpy(np.concatenate([planes, prev])).unsqueeze(0).to(device)
         x = self.stem(x)
         skips = []
-        for i in range(self.levels):
-            x = self.enc[i](x)
+        for enc, down in zip(self.enc, self.down):
+            x = enc(x)
             skips.append(x)
-            x = self.down[i](x)
-        return self.mid(x), skips
+            x = down(x)
+        x = self.mid(x)
+        state = torch.tanh(self.global_fc(x.mean((2, 3))))
+        for up, dec, skip in zip(self.up, self.dec, reversed(skips)):
+            x = dec(up(x) + skip)
+        spatial = self.spatial(x).flatten(2).squeeze(0).T
+        yy, xx = torch.meshgrid(
+            torch.arange(c.h, device=device),
+            torch.arange(c.w, device=device),
+            indexing="ij",
+        )
+        coords = torch.stack(
+            [
+                (xx * 2 * torch.pi / c.w).sin(),
+                (xx * 2 * torch.pi / c.w).cos(),
+                (yy * 2 * torch.pi / c.h).sin(),
+                (yy * 2 * torch.pi / c.h).cos(),
+            ],
+            -1,
+        ).reshape(-1, 4)
+        spatial = spatial + self.position(coords)
+        e = c.entities.astype(np.float32).copy()
+        if len(e):
+            e[:, 0] = 0  # identity is a pointer, not a numerical feature
+            e[:, 1] /= c.w
+            e[:, 2] /= c.h
+            # Signed log preserves inventories, health and exact staffing ranges.
+            e[:, 3:] = np.sign(e[:, 3:]) * np.log1p(np.abs(e[:, 3:]))
+        entities = self.entity(torch.from_numpy(e).to(device))
+        pooled = entities.mean(0, keepdim=True) if len(e) else torch.zeros_like(state)
+        # Entity controls and elapsed time must reach the opcode/value heads,
+        # not only the source pointer after an operation is already selected.
+        time = torch.tensor(
+            [
+                [
+                    c.tick / 60000,
+                    np.log1p(c.tick) / 10,
+                    (c.tick - previous.tick) / 25 if previous else 0,
+                ]
+            ],
+            device=device,
+            dtype=state.dtype,
+        )
+        state = torch.tanh(state + self.global_extra(torch.cat([pooled, time], 1)))
+        return state, spatial, entities
 
-    def decode(self, x, skips, z):
-        for j, i in enumerate(reversed(range(self.levels))):
-            x = self.up[j](x)
-            x = x + skips[i]
-            x = self.film[j](x, z)
-            x = self.dec[j](x)
-        return {
-            "building": self.head_building(x),
-            "score": self.head_score(x),
-            "areas": self.head_areas(x),
-            "workers": self.head_workers(x).squeeze(1),
-            "ratio": self.head_ratio(x),
-        }
-
-    def forward(self, x, z=None):
-        """z=None means the zero latent, which is what behaviour cloning uses:
-        FiLM is zero-initialised, so a zero latent is exactly the unconditioned
-        network and a BC checkpoint stays a valid starting point for RL."""
-        mid, skips = self.encode(x)
-        pooled = mid.mean(dim=(2, 3))
-        if z is None:
-            z = torch.zeros(x.shape[0], self.latent_dim, device=x.device, dtype=x.dtype)
-        out = self.decode(mid, skips, z)
-        out["latent_mu"] = self.latent_mu(pooled.float())
-        out["latent_logstd"] = self.latent_logstd.expand_as(out["latent_mu"])
-        out["value"] = self.value(pooled.float()).squeeze(-1)
-        # Detached: the count head is auxiliary, and must not reshape the
-        # trunk. Trained attached at count_weight=1.0 it dominated the shared
-        # encoder -- its loss is ~0.1 against the building head's ~0.004 -- and
-        # drove novel_precision from 0.185 down to 0.035 while learning counts
-        # almost exactly (count_mae 0.116). Counts are worth having only if
-        # placement survives them.
-        out["count"] = self.head_count(pooled.float().detach())
-        out["mix"] = self.head_mix(pooled.float())
-        return out
-
-    def act(self, x, deterministic: bool = False):
-        """Sample a latent from the policy and decode the field it implies."""
-        mid, skips = self.encode(x)
-        pooled = mid.mean(dim=(2, 3))
-        mu = self.latent_mu(pooled.float())
-        logstd = self.latent_logstd.expand_as(mu)
-        std = logstd.exp()
-        z = mu if deterministic else mu + std * torch.randn_like(mu)
-        logp = (-0.5 * (((z - mu) / std) ** 2) - logstd
-                - 0.5 * float(np.log(2 * np.pi))).sum(dim=-1)
-        out = self.decode(mid, skips, z.to(x.dtype))
-        out.update(latent=z, logp=logp, value=self.value(pooled.float()).squeeze(-1),
-                   latent_mu=mu, latent_logstd=logstd)
-        return out
-
-    # --- placement actions -------------------------------------------------
-    #
-    # The action is WHICH PLACEMENTS TO MAKE, not the whole field and not the
-    # latent.
-    #
-    # Sampling every cell independently makes log pi(a|s) a sum over ~200k
-    # terms and PPO's ratio explodes. Making the latent the action avoids that
-    # but is worse: the decoder never appears in log pi(a|s), so it receives no
-    # gradient at all and the policy's PLAY can never change. Verified — the
-    # policy loss sent exactly 0.0 gradient to FiLM, the decoder and the
-    # building head.
-    #
-    # The reconciler never acts on the whole field anyway: it ranks cells by
-    # score and drains a capped queue, so a handful of placements per step is
-    # what actually happens. Sampling k of them gives a k-term log-prob, which
-    # is tractable, and the gradient flows through the building head into the
-    # decoder — the part that plays.
-    #
-    # Cells the team already occupies are excluded from the draw. Reproducing
-    # an existing building is a copy, not a decision, and BC already does it at
-    # 0.999 recall; leaving it deterministic keeps the sampled action pure
-    # novelty.
-
-    @staticmethod
-    def placement_distribution(building_logits, existing_mask, allowed=None,
-                               temperature=1.0):
-        """Categorical over cells, from the PLACEMENT MARGIN.
-
-        The margin is logit[best building type] - logit[none]: how much better
-        "put something here" is than "leave it empty", compared ACROSS cells.
-
-        It used to weight cells by 1 - P(none), which is not a distribution
-        over *where*. The per-cell softmax is over the 14 classes -- it answers
-        "if something is here, what is it" -- and P(none) is tiny almost
-        everywhere, so 1 - P(none) is ~1 on most of the map. Measured on a live
-        checkpoint: median 0.9988, 84% of legal cells above 0.99, and the
-        resulting draw had entropy 9.7014 against ln(n_legal) = 9.7031. That is
-        uniform to four decimals. **Every PPO run so far optimised a uniform
-        random placer**, which is why 58 updates moved nothing. The same
-        forward pass, decoded by margin, gives entropy 3.6-7.0 and top-64 mass
-        0.36-0.92: the information was always in the network, the decode threw
-        it away.
-
-        temperature divides the logits in the usual sense: >1 explores, <1
-        sharpens toward greedy. Note this reverses the old flag's meaning,
-        where <1 was the sharpening direction on a quantity that could not be
-        sharpened at all.
+    def score_action(
+        self, c, action=None, previous=None, deterministic=False, generator=None
+    ):
+        """Teacher-forcing and sampling share every distribution and mask.
+        Entropy is summed over active factors; report separately for diagnostics.
+        A single order is emitted, so the next context includes its consequences.
         """
-        margin = (building_logits[:, 1:].max(dim=1).values
-                  - building_logits[:, 0]).float().flatten(1)
-        blocked = existing_mask.flatten(1)
-        if allowed is not None:
-            blocked = blocked | ~allowed
-        # If the budget blocks everything, fall back to the empty cells rather
-        # than to every cell: a draw on a covered non-anchor cell is a request
-        # for a further building, which is the anchor hazard.
-        all_blocked = blocked.all(dim=1, keepdim=True)
-        blocked = torch.where(all_blocked, existing_mask.flatten(1), blocked)
-        blocked = torch.where(blocked.all(dim=1, keepdim=True),
-                              torch.zeros_like(blocked), blocked)
-        t = torch.as_tensor(temperature, dtype=margin.dtype,
-                            device=margin.device).reshape(-1, 1)
-        logits = (margin / t.clamp(min=1e-6)).masked_fill(blocked, float("-inf"))
-        return torch.distributions.Categorical(logits=logits)
+        if action is not None:
+            validate_action(c, action)
+        state, spatial, entities = self.encode_context(c, previous)
+        value = self.value(state).squeeze()
+        device = state.device
+        chosen = {} if action is None else dict(action)
+        terms = {}
+        entropies = {}
 
-    def act_placements(self, x, existing_mask, k: int = 8, allowed=None,
-                       decide_mix=None, out=None, temperature=1.0):
-        """Sample the joint action.
+        def categorical(key, logits, mask=None, label=None):
+            nonlocal state
+            logits = logits.flatten().float()
+            if mask is not None:
+                m = torch.as_tensor(mask, dtype=torch.bool, device=device)
+                if not bool(m.any()):
+                    raise ValueError(f"empty {key} support")
+                logits = logits.masked_fill(~m, -torch.inf)
+            dist = torch.distributions.Categorical(logits=logits)
+            if label is None:
+                index = (
+                    logits.argmax()
+                    if deterministic
+                    else torch.multinomial(dist.probs, 1, generator=generator).squeeze(
+                        0
+                    )
+                )
+            else:
+                index = torch.tensor(int(label), device=device)
+            terms[key] = dist.log_prob(index)
+            entropies[key] = dist.entropy()
+            return int(index)
 
-        allowed: (B, H*W) bool, computed by the caller from the observation and
-        stored with the trajectory, so evaluation scores exactly the
-        distribution that acted. decide_mix: (B,) bool -- on steps where the
-        mix is held rather than re-chosen, no mix term enters the log-prob.
-        out: a forward already computed on x, to avoid running the trunk twice.
-        """
-        if out is None:
-            out = self.forward(x)
-        dist = self.placement_distribution(out["building"], existing_mask, allowed,
-                                           temperature)
-        idx = dist.sample((k,)).T.contiguous()            # (B, k)
-        mix_dist = torch.distributions.Categorical(logits=out["mix"].float())
-        mix = mix_dist.sample()                           # (B,)
-        if decide_mix is None:
-            decide_mix = torch.ones_like(mix, dtype=torch.bool)
-        zero = torch.zeros(mix.shape[0], device=mix.device)
-        out["placements"] = idx
-        out["mix_choice"] = mix
-        out["logp"] = (dist.log_prob(idx.T).sum(dim=0)
-                       + torch.where(decide_mix, mix_dist.log_prob(mix), zero))
-        # Reported separately: the placement entropy runs to ~9.7 nats over
-        # ~16k cells while the mix entropy caps at ln 5 = 1.6, so a single
-        # coefficient on the sum leaves the mix almost unregularised and it
-        # collapses (measured: explorer preset .23 -> .52, heavy-military
-        # .21 -> .06, and the paired score fell 30.7% -> 19.8%).
-        out["entropy_place"] = dist.entropy()
-        out["entropy_mix"] = torch.where(decide_mix, mix_dist.entropy(), zero)
-        out["entropy"] = out["entropy_place"] + out["entropy_mix"]
-        return out
+        op = categorical(
+            "op",
+            self.heads["f_op"](state),
+            c.op_mask(),
+            None if action is None else action["op"],
+        )
+        chosen["op"] = op
+        state = self.update(
+            self.embeddings["f_op"](torch.tensor([op], device=device)), state
+        )
+        for key in PARAMS[op] + ["delay"]:
+            if key == "source":
+                label = (
+                    None
+                    if action is None
+                    else int(np.flatnonzero(c.entities[:, 0] == action["source"])[0])
+                )
+                i = categorical(
+                    key,
+                    entities @ self.source_query(state).squeeze(0),
+                    c.source_mask(op),
+                    label,
+                )
+                chosen[key] = int(c.entities[i, 0])
+                embedding = entities[i : i + 1]
+            elif key == "target":
+                mask = c.legal[chosen["type"]] if op == 1 else c.discovered
+                label = None if action is None else action["y"] * c.w + action["x"]
+                i = categorical(
+                    key, spatial @ self.target_query(state).squeeze(0), mask, label
+                )
+                chosen["x"] = i % c.w
+                chosen["y"] = i // c.w
+                embedding = spatial[i : i + 1]
+            elif key == "area":
+                logits = (spatial @ self.area_query(state).squeeze(0)).float()
+                dist = torch.distributions.Bernoulli(logits=logits)
+                if action is None:
+                    bits = (
+                        (logits > 0).float()
+                        if deterministic
+                        else (
+                            torch.rand(logits.shape, device=device, generator=generator)
+                            < dist.probs
+                        ).float()
+                    )
+                else:
+                    bits = torch.as_tensor(
+                        action["area"], device=device, dtype=torch.float32
+                    )
+                terms[key] = dist.log_prob(bits).sum()
+                entropies[key] = dist.entropy().sum()
+                chosen[key] = bits.detach().cpu().numpy().astype(np.uint8)
+                embedding = (spatial * bits[:, None]).sum(
+                    0, keepdim=True
+                ) / bits.sum().clamp(min=1)
+            else:
+                mask = None
+                if key == "workers" and op == 6:
+                    mask = np.arange(256) <= 20
+                if key == "type":
+                    mask = c.legal.any(axis=1)
+                if key == "radius" and op == 1 and chosen["type"] not in (8, 9, 10):
+                    mask = np.arange(257) == 256
+                if key == "radius" and op == 8:
+                    mask = np.arange(257) < 256
+                if op == 17 and key in ("r0", "r1", "r2"):
+                    mask = np.arange(256) < 4
+                label = (
+                    None
+                    if action is None
+                    else action[key] - (1 if key == "delay" else 0)
+                )
+                i = categorical(key, self.heads["f_" + key](state), mask, label)
+                chosen[key] = i + (1 if key == "delay" else 0)
+                embedding = self.embeddings["f_" + key](
+                    torch.tensor([i], device=device)
+                )
+            state = self.update(embedding, state)
+        if op not in (14, 15, 16):
+            chosen["area"] = np.zeros(0, np.uint8)
+        validate_action(c, chosen)
+        return dict(
+            action=chosen,
+            logp=torch.stack(list(terms.values())).sum(),
+            entropy=torch.stack(list(entropies.values())).sum(),
+            terms=terms,
+            entropies=entropies,
+            value=value,
+        )
 
-    def evaluate_placements(self, x, idx, existing_mask, allowed=None,
-                            mix=None, decide_mix=None, temperature=1.0):
-        """Re-score stored placements under the current policy, for PPO.
+    def checkpoint(self, **extra):
+        state = self.state_dict()
+        return dict(
+            model=state,
+            config=self.config,
+            policy_id=checkpoint_id(state, self.config),
+            **extra,
+        )
 
-        allowed and decide_mix must be the STORED values from when the action
-        was taken. Recomputing the mask here from the current trunk scores a
-        different distribution than the one that acted: a stored cell that has
-        since become disallowed gets probability ~0, its ratio ~0, and it drops
-        out of the gradient silently.
-        """
-        out = self.forward(x)
-        dist = self.placement_distribution(out["building"], existing_mask, allowed,
-                                           temperature)
-        logp = dist.log_prob(idx.T).sum(dim=0)
-        entropy = dist.entropy()
-        entropy_mix = torch.zeros_like(logp)
-        if mix is not None:
-            mix_dist = torch.distributions.Categorical(logits=out["mix"].float())
-            if decide_mix is None:
-                decide_mix = torch.ones_like(mix, dtype=torch.bool)
-            zero = torch.zeros_like(logp)
-            logp = logp + torch.where(decide_mix, mix_dist.log_prob(mix), zero)
-            entropy_mix = torch.where(decide_mix, mix_dist.entropy(), zero)
-        return dict(logp=logp, entropy=entropy + entropy_mix,
-                    entropy_place=entropy, entropy_mix=entropy_mix,
-                    value=out["value"])
-
-    def evaluate_latent(self, x, z):
-        """Re-score a stored latent under the current policy, for PPO."""
-        mid, skips = self.encode(x)
-        pooled = mid.mean(dim=(2, 3))
-        mu = self.latent_mu(pooled.float())
-        logstd = self.latent_logstd.expand_as(mu)
-        std = logstd.exp()
-        logp = (-0.5 * (((z - mu) / std) ** 2) - logstd
-                - 0.5 * float(np.log(2 * np.pi))).sum(dim=-1)
-        entropy = (logstd + 0.5 * float(np.log(2 * np.pi * np.e))).sum(dim=-1)
-        return dict(logp=logp, entropy=entropy,
-                    value=self.value(pooled.float()).squeeze(-1))
-
-
-def count_params(model: nn.Module) -> int:
-    return sum(p.numel() for p in model.parameters())
-
-
-if __name__ == "__main__":
-    import time
-    net = NeuroticaNet(60).cuda().to(memory_format=torch.channels_last)
-    print(f"params: {count_params(net)/1e6:.2f} M")
-    x = torch.randn(8, 60, 128, 128, device="cuda").to(memory_format=torch.channels_last)
-    for dtype in (torch.float16, torch.bfloat16):
-        with torch.autocast("cuda", dtype=dtype):
-            for _ in range(3):
-                net(x)
-            torch.cuda.synchronize()
-            t0 = time.time()
-            for _ in range(20):
-                net(x)
-            torch.cuda.synchronize()
-        dt = (time.time() - t0) / 20
-        print(f"{str(dtype):>16}: {dt*1000:6.1f} ms/batch8  "
-              f"{8/dt:7.0f} samples/s")
+    @classmethod
+    def load(cls, path, device="cpu"):
+        ck = torch.load(path, map_location=device, weights_only=False)
+        config = dict(ck.get("config", {}))
+        if config.pop("schema", None) != SCHEMA:
+            raise ValueError("legacy field checkpoint: retrain with the order corpus")
+        net = cls(**config).to(device)
+        net.load_state_dict(ck["model"], strict=True)
+        if checkpoint_id(ck["model"], ck["config"]) != ck["policy_id"]:
+            raise ValueError("checkpoint hash mismatch")
+        return net, ck

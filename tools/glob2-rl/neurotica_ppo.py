@@ -1,381 +1,315 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""PPO learner for Neurotica self-play.
-
-The action is the set of k sampled placements plus a production-mix preset
-held for a number of steps (see neurotica_net.act_placements). Each step's
-stored context -- the allowed-cell mask and whether the mix was re-chosen --
-is loaded back and used to re-score, so the distribution scored is exactly
-the one that acted.
-
-Rewards are sparse win/loss plus POTENTIAL-BASED shaping. Potential shaping
-(gamma*Phi(s') - Phi(s)) is provably policy-invariant, so the shaping cannot
-introduce a strategy that wins the shaping rather than the game.
+"""One synchronized PPO generation over complete, versioned semantic orders.
+The task is a finite game: win=1, loss/cap=0. A cap is a terminal outcome, NOT
+an infrastructure timeout or a continuing trajectory with a missing bootstrap.
 """
 
-from __future__ import annotations
-
 import argparse
-import glob
+import copy
 import json
-import os
-import time
-from dataclasses import dataclass
-from typing import List
-
+from pathlib import Path
+import zlib
 import numpy as np
 import torch
-import torch.nn.functional as F
-
+from neurotica_actions import SCHEMA, parse_context, unpack_action
 from neurotica_net import NeuroticaNet
+from neurotica_bc import atomic_save, imitation_loss
+from neurotica_data import OrderCorpus
 
 
-@dataclass
-class Trajectory:
-    obs_path: str          # .npy memmap of DYNAMIC planes for this episode
-    placements: np.ndarray # (T, k) flat cell indices that were acted on
-    logps: np.ndarray      # (T,)
-    values: np.ndarray     # (T,)
-    potentials: np.ndarray # (T,)
-    mixes: np.ndarray      # (T,) chosen production-mix preset, part of the action
-    ticks: np.ndarray      # (T,)
-    static: np.ndarray     # (n_static, H, W) uint8, constant for the episode
-    outcome: float         # +1 win, -1 loss, 0 undecided
-    opponent: str = "?"    # for the per-episode log; not used in the update
-    mix_decided: np.ndarray = None  # (T,) bool: mix re-chosen this step (term in logp)
-    allowed: np.ndarray = None      # (T, ceil(HW/8)) packbits of the placement mask
-    temperature: np.ndarray = None  # (T,) sampling temperature used to act
+def compute_rewards(
+    potentials, outcome, discounts, shaping=1.0, terminal=True, next_potential=None
+):
+    phi = np.asarray(potentials, dtype=np.float64)
+    if not len(phi):
+        raise ValueError("empty trajectory")
+    if not terminal and next_potential is None:
+        raise ValueError("truncation requires next potential")
+    endpoint = 0.0 if terminal else next_potential
+    reward = shaping * (np.asarray(discounts) * np.r_[phi[1:], endpoint] - phi)
+    if terminal:
+        reward[-1] += outcome
+    return reward.astype(np.float32)
 
 
-class CompressedObs:
-    """Per-step zlib chunks with an offset table; obs[i] decompresses one step.
-
-    Matches the corpus format and the server's flush. Only the requested step
-    is ever decompressed, so a minibatch costs a dozen small inflates rather
-    than a memmap of gigabytes.
-    """
-
-    def __init__(self, blob: np.ndarray, offsets: np.ndarray, shape: np.ndarray):
-        self.blob = blob.tobytes()
-        self.offsets = offsets
-        self.shape = tuple(int(v) for v in shape)
-
-    def __len__(self):
-        return len(self.offsets) - 1
-
-    def __getitem__(self, i: int) -> np.ndarray:
-        import zlib
-        raw = zlib.decompress(self.blob[self.offsets[i]:self.offsets[i + 1]])
-        return np.frombuffer(raw, dtype=np.uint8).reshape(self.shape)
-
-
-def load_obs(traj):
-    """Compressed chunks from the npz when present; the legacy raw memmap
-    otherwise, so episodes recorded before the format change still train."""
-    arrays = np.load(traj.obs_path[:-8] + ".npz")
-    if "obs_blob" in arrays.files and arrays["obs_blob"].size:
-        return CompressedObs(arrays["obs_blob"], arrays["obs_offsets"], arrays["obs_shape"])
-    return np.load(traj.obs_path, mmap_mode="r")
-
-
-def build_observation(static: np.ndarray, dynamic: np.ndarray,
-                      tick: int) -> np.ndarray:
-    """Reassemble the exact network input from a stored transition.
-
-    Must match neurotica_data.py and neurotica_serve.py exactly: static planes,
-    then dynamic, then the two tick planes. A mismatch here trains the policy on
-    a different input than it acted on, which is the kind of bug that shows up
-    as "PPO mysteriously does not learn".
-    """
-    h, w = dynamic.shape[-2:]
-    t = np.float32(min(int(tick), 60000) / 60000.0)
-    tick_planes = np.stack([
-        np.full((h, w), t, dtype=np.float32),
-        np.full((h, w), np.float32(np.sqrt(t)), dtype=np.float32)])
-    return np.concatenate([static.astype(np.float32) / 255.0,
-                           dynamic.astype(np.float32) / 255.0,
-                           tick_planes], axis=0)
-
-
-def compute_rewards(traj: Trajectory, gamma: float, shaping: float,
-                    truncated: bool = False) -> np.ndarray:
-    """Terminal win/loss plus potential-based shaping on win probability.
-
-    Phi is the fitted win probability of this alliance (WinProbability.h),
-    sent by the engine with every policy request. Potential-based shaping,
-    gamma*Phi(s') - Phi(s), is policy-invariant: it cannot introduce a
-    strategy that wins the shaping instead of the game, so a calibrated Phi
-    buys dense credit for free. It is the answer to a sparse terminal reward
-    on 1600-step episodes, where an advantage horizon of 1/(1-gamma*lam) ~ 20
-    steps means the outcome reaches early steps only through the value head.
-
-    The terminal term matters and was missing. Shaping telescopes to
-    Phi(terminal) - Phi(start); without the last step the sum is left short by
-    gamma*Phi(s_T) - Phi(s_{T-1}), which is exactly the credit for the final
-    swing, and the policy-invariance argument does not hold. For a DECIDED
-    game Phi(terminal) is 1 for a win and 0 for a loss, by definition. For a
-    game stopped by the tick cap there is no terminal state -- the episode is
-    truncated, not finished -- so the last potential stands in for the value
-    of continuing, which is what makes a capped game score its position
-    rather than a flat zero.
-    """
-    T = len(traj.logps)
-    rewards = np.zeros(T, dtype=np.float32)
-    if shaping > 0 and T > 1:
-        phi = traj.potentials.astype(np.float32)
-        rewards[:-1] += shaping * (gamma * phi[1:] - phi[:-1])
-        if truncated:
-            phi_terminal = float(phi[-1])
-        else:
-            phi_terminal = 1.0 if traj.outcome > 0 else (
-                0.0 if traj.outcome < 0 else float(phi[-1]))
-        rewards[-1] += shaping * (gamma * phi_terminal - float(phi[-1]))
-    rewards[-1] += traj.outcome
-    return rewards
-
-
-def gae(rewards: np.ndarray, values: np.ndarray, gamma: float, lam: float):
-    T = len(rewards)
-    adv = np.zeros(T, dtype=np.float32)
-    last = 0.0
-    for t in reversed(range(T)):
-        next_v = values[t + 1] if t + 1 < T else 0.0
-        delta = rewards[t] + gamma * next_v - values[t]
-        last = delta + gamma * lam * last
-        adv[t] = last
+def gae(rewards, values, discounts, trace_discounts, terminal=True, next_value=None):
+    if not terminal and next_value is None:
+        raise ValueError("truncation requires next-state value")
+    adv = np.zeros(len(rewards), np.float32)
+    carry = 0.0
+    bootstrap = 0.0 if terminal else float(next_value)
+    for t in reversed(range(len(rewards))):
+        nv = values[t + 1] if t + 1 < len(values) else bootstrap
+        delta = rewards[t] + discounts[t] * nv - values[t]
+        carry = delta + discounts[t] * trace_discounts[t] * carry
+        adv[t] = carry
     return adv, adv + values
 
 
-def load_trajectories(run_dir: str, max_episodes: int = 8) -> List[Trajectory]:
-    out = []
-    for meta_path in sorted(glob.glob(os.path.join(run_dir, "*.json"))):
-        try:
-            with open(meta_path) as fh:
-                meta = json.load(fh)
-            if meta.get("outcome") is None:
-                continue  # game still running, or no result recorded
-            base = meta_path[:-5]
-            arrays = np.load(base + ".npz")
-            out.append(Trajectory(
-                obs_path=base + ".obs.npy",
-                placements=arrays["placements"], logps=arrays["logps"],
-                mixes=(arrays["mixes"] if "mixes" in arrays.files else None),
-                mix_decided=(arrays["mix_decided"] if "mix_decided" in arrays.files else None),
-                allowed=(arrays["allowed"] if "allowed" in arrays.files
-                         and arrays["allowed"].size else None),
-                temperature=(arrays["temperature"] if "temperature" in arrays.files
-                             and arrays["temperature"].size else None),
-                values=arrays["values"], potentials=arrays["potentials"],
-                ticks=arrays["ticks"], static=arrays["static"],
-                outcome=float(meta["outcome"]),
-                opponent=str(meta.get("opponent", "?"))))
-        except Exception:
-            continue  # a partially written episode; skip rather than crash
-    # Newest first, and only the newest few. PPO is on-policy: a backlog of
-    # episodes played by a policy many updates old is not training data, it
-    # is drift -- and one such backlog (51 episodes, ~100k samples) turned a
-    # single iteration into a 35+ minute grind on stale actions. Stale ones
-    # are deleted here so they are not reloaded next time.
-    out.sort(key=lambda t: os.path.getmtime(t.obs_path[:-8] + ".json"), reverse=True)
-    stale = out[max_episodes:]
-    for t in stale:
-        for suffix in (".json", ".npz", ".obs.npy"):
-            try:
-                os.unlink(t.obs_path[:-8] + suffix)
-            except OSError:
-                pass
-    if stale:
-        print(f"discarding {len(stale)} stale episodes beyond the newest {max_episodes}",
-              flush=True)
-    return out[:max_episodes]
+class Episode:
+    def __init__(self, path, policy_id):
+        self.path = Path(path)
+        self.meta = json.loads(self.path.read_text())
+        m = self.meta
+        if m.get("schema") != SCHEMA or m.get("policy_id") != policy_id:
+            raise ValueError(f"stale/incompatible rollout: {path}")
+        if (
+            m.get("status") != "complete"
+            or m.get("outcome") not in (0, 1)
+            or m.get("end_reason") not in ("win", "loss", "cap", "draw")
+            or not m.get("sample")
+        ):
+            raise ValueError(f"incomplete/invalid/greedy rollout: {path}")
+        with np.load(self.path.with_suffix(".npz")) as a:
+            self.a = {k: a[k] for k in a.files}
+        n = len(self.a["logps"])
+        if (
+            n != m["steps"]
+            or not n
+            or not all(
+                np.isfinite(self.a[k]).all() for k in ("logps", "values", "potentials")
+            )
+        ):
+            raise ValueError("corrupt rollout")
+        if np.any(np.diff(self.a["ticks"]) <= 0) or m["end_tick"] < self.a["ticks"][-1]:
+            raise ValueError("invalid rollout timing")
+        self.actions = []
+        for i in range(n):
+            off = self.a["action_offsets"]
+            self.actions.append(
+                unpack_action(self.a["actions"][off[i] : off[i + 1]].tobytes())
+            )
+        self.durations = (
+            np.diff(np.r_[self.a["ticks"], m["end_tick"]]).clip(min=1) / 25.0
+        )
+
+    def context(self, i):
+        off = self.a["offsets"]
+        return parse_context(
+            zlib.decompress(self.a["contexts"][off[i] : off[i + 1]].tobytes())
+        )
+
+    def sample(self, i):
+        return self.context(i), self.actions[i], self.context(i - 1) if i else None
 
 
-def ppo_update(net, opt, scaler, trajs: List[Trajectory], args, device) -> dict:
-    if not trajs:
-        return {}
-    # An episode recorded without its action context (mask, mix, decide flag)
-    # cannot be scored against the distribution that acted. Drop it. The old
-    # guard dropped the MIX TERM for the whole batch instead, which scored
-    # episodes whose stored logp included the term against a distribution
-    # without it -- ratios inflated ~5x for exactly those samples.
-    complete = [t for t in trajs
-                if t.mixes is not None and t.mix_decided is not None
-                and t.allowed is not None and len(t.mixes) == len(t.logps)]
-    if len(complete) < len(trajs):
-        print(f"dropping {len(trajs) - len(complete)} episodes without action context",
-              flush=True)
-    trajs = complete
-    if not trajs:
-        return {}
-    all_adv, all_ret, all_act, all_logp, obs_refs = [], [], [], [], []
-    all_mix, all_dec, all_allow, all_temp = [], [], [], []
-    for traj in trajs:
-        # A tick-capped game is truncated, not terminated: the outcome is 0
-        # only because the clock ran out.
-        rewards = compute_rewards(traj, args.gamma, args.shaping,
-                                  truncated=(traj.outcome == 0))
-        adv, ret = gae(rewards, traj.values, args.gamma, args.lam)
-        all_adv.append(adv)
-        all_ret.append(ret)
-        all_act.append(traj.placements)
-        all_logp.append(traj.logps)
-        all_mix.append(traj.mixes)
-        all_dec.append(traj.mix_decided)
-        all_allow.append(traj.allowed)
-        all_temp.append(traj.temperature if traj.temperature is not None
-                        else np.ones(len(traj.logps), dtype=np.float32))
-        obs = load_obs(traj)
-        obs_refs.extend([(obs, i, traj) for i in range(len(traj.logps))])
-
-    adv = np.concatenate(all_adv)
-    ret = np.concatenate(all_ret)
-    acts = np.concatenate(all_act)
-    logp_old = np.concatenate(all_logp)
-    # Only score the mix when every episode in the batch carries one, so a
-    # mixed batch of old and new trajectories cannot silently score a joint
-    # action against a placements-only log-prob.
-    mix_all = np.concatenate(all_mix)
-    dec_all = np.concatenate(all_dec)
-    allow_all = np.concatenate(all_allow)          # (N, ceil(HW/8)) uint8
-    temp_all = np.concatenate(all_temp).astype(np.float32)
-    adv = (adv - adv.mean()) / (adv.std() + 1e-8)
-
-    n = len(adv)
-    stats = dict(n=n, mean_return=float(ret.mean()),
-                 win_rate=float(np.mean([t.outcome > 0 for t in trajs])))
-    idx_all = np.arange(n)
-    for _ in range(args.ppo_epochs):
-        np.random.shuffle(idx_all)
-        for start in range(0, n, args.minibatch):
-            idx = idx_all[start:start + args.minibatch]
-            obs_batch = np.stack([
-                build_observation(obs_refs[i][2].static, obs_refs[i][0][obs_refs[i][1]],
-                                  obs_refs[i][2].ticks[obs_refs[i][1]])
-                for i in idx])
-            x = torch.from_numpy(obs_batch).to(device).to(memory_format=torch.channels_last)
-            ab = torch.from_numpy(acts[idx]).to(device)
-            # Rebuild the same "already occupied" mask the server used, or the
-            # re-scored distribution would not be the one that acted.
-            existing = x[:, 4 + 8:4 + 8 + 13].amax(dim=1) > 0.5
-            with torch.autocast("cuda", dtype=torch.float16):
-                # Budget planes are the team's own building planes. The mask is
-                # recomputed from the observation, so it is identical to the one
-                # the server applied when the action was sampled -- otherwise
-                # the re-scored distribution is not the one that acted.
-                mb = torch.from_numpy(mix_all[idx]).to(device)
-                db = torch.from_numpy(dec_all[idx]).to(device)
-                hw = x.shape[2] * x.shape[3]
-                allow_b = torch.from_numpy(
-                    np.unpackbits(allow_all[idx], axis=1)[:, :hw].astype(bool)).to(device)
-                tb = torch.from_numpy(temp_all[idx]).to(device)
-                ev = net.evaluate_placements(x, ab, existing, allowed=allow_b,
-                                             mix=mb, decide_mix=db, temperature=tb)
-            ratio = (ev["logp"] - torch.from_numpy(logp_old[idx]).to(device)).exp()
-            a = torch.from_numpy(adv[idx]).to(device)
-            pg = -torch.min(ratio * a,
-                            ratio.clamp(1 - args.clip, 1 + args.clip) * a).mean()
-            vloss = F.mse_loss(ev["value"], torch.from_numpy(ret[idx]).to(device))
-            # Separate coefficients. The placement entropy dominates the sum,
-            # so one coefficient on the total regularises placements and
-            # leaves the 5-way mix choice to collapse.
-            loss = (pg + args.vf_coef * vloss
-                    - args.ent_coef * ev["entropy_place"].mean()
-                    - args.mix_ent_coef * ev["entropy_mix"].mean())
-            opt.zero_grad(set_to_none=True)
-            scaler.scale(loss).backward()
-            scaler.unscale_(opt)
-            torch.nn.utils.clip_grad_norm_(net.parameters(), 0.5)
-            scaler.step(opt)
-            scaler.update()
-            stats["pg"] = float(pg.item())
-            stats["vloss"] = float(vloss.item())
-            stats["ent_mix"] = float(ev["entropy_mix"].mean().item())
-    return stats
-
-
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--init", required=True, help="BC checkpoint to start from")
-    ap.add_argument("--rollouts", required=True, help="directory of episodes")
-    ap.add_argument("--out", default=os.path.expanduser("~/neurotica/ppo"))
-    ap.add_argument("--gamma", type=float, default=0.999)
-    ap.add_argument("--lam", type=float, default=0.95)
-    ap.add_argument("--clip", type=float, default=0.2)
-    ap.add_argument("--vf-coef", type=float, default=0.5)
-    ap.add_argument("--ent-coef", type=float, default=0.003)
-    ap.add_argument("--mix-ent-coef", type=float, default=0.05,
-                    help="entropy bonus on the production-mix choice, held "
-                         "separate because its entropy is ~6x smaller than "
-                         "the placement entropy it used to share a coefficient "
-                         "with")
-    ap.add_argument("--shaping", type=float, default=0.1)
-    ap.add_argument("--max-episodes", type=int, default=8,
-                    help="episodes per update; older pending ones are discarded")
-    ap.add_argument("--snapshot-every", type=int, default=25,
-                    help="keep a copy of policy.pt every N iterations")
-    ap.add_argument("--ppo-epochs", type=int, default=2)
-    ap.add_argument("--minibatch", type=int, default=16)
-    ap.add_argument("--lr", type=float, default=1e-5)
-    ap.add_argument("--iterations", type=int, default=1000)
-    args = ap.parse_args()
-
-    device = "cuda"
-    ckpt = torch.load(args.init, map_location="cpu", weights_only=False)
-    net = NeuroticaNet(ckpt.get("in_planes", 60),
-                       width=ckpt.get("args", {}).get("width", 48)).to(device)
-    net.load_state_dict(ckpt["model"], strict=False)
-    net.to(memory_format=torch.channels_last)
-    # A low learning rate on purpose: the BC prior is the only thing keeping
-    # early self-play from wandering into strategies that have never built an
-    # inn, and a large step destroys it before the value head is worth
-    # anything.
+def update(net, episodes, args, reference=None, bc=None):
     opt = torch.optim.AdamW(net.parameters(), lr=args.lr, weight_decay=0.0)
-    scaler = torch.amp.GradScaler("cuda")
-    os.makedirs(args.out, exist_ok=True)
+    samples = []
+    advantages = []
+    returns = []
+    old = []
+    for e in episodes:
+        discounts = args.gamma**e.durations
+        rewards = compute_rewards(
+            e.a["potentials"], e.meta["outcome"], discounts, args.shaping
+        )
+        adv, ret = gae(rewards, e.a["values"], discounts, args.lam**e.durations)
+        advantages.extend(adv)
+        returns.extend(ret)
+        old.extend(e.a["logps"])
+        samples.extend((e, i) for i in range(len(adv)))
 
+    def sample_at(i):
+        e, j = samples[i]
+        return e.sample(j)
+
+    advantages = np.array(advantages)
+    advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+    # Prove actor/learner agreement before the FIRST optimization step.
+    with torch.no_grad():
+        for i in range(len(samples)):
+            c, a, p = sample_at(i)
+            got = float(net.score_action(c, a, p)["logp"])
+            if not np.isclose(got, old[i], atol=2e-3, rtol=1e-5):
+                raise ValueError(
+                    f"behavior likelihood mismatch at {i}: {got} != {old[i]}"
+                )
+    rng = np.random.default_rng(args.seed)
+    stats = []
+    stopped = False
+    backtracks = 0
     updates = 0
+    for epoch in range(args.epochs):
+        indices = rng.permutation(len(samples))
+        for start in range(0, len(indices), args.batch):
+            batch = indices[start : start + args.batch]
+            opt.zero_grad(set_to_none=True)
+            batch_kl = []
+            for i in batch:
+                c, a, p = sample_at(i)
+                ev = net.score_action(c, a, p)
+                delta = ev["logp"] - float(old[i])
+                # Clamp only the numerical exponent, never silently accept
+                # large drift: the KL gate below stops before the update.
+                ratio = delta.clamp(-20, 20).exp()
+                adv = float(advantages[i])
+                pg = -torch.minimum(
+                    ratio * adv, ratio.clamp(1 - args.clip, 1 + args.clip) * adv
+                )
+                vl = (ev["value"] - float(returns[i])).square()
+                ent = torch.stack(
+                    [
+                        v / (c.w * c.h if k == "area" else 1)
+                        for k, v in ev["entropies"].items()
+                    ]
+                ).mean()
+                loss = pg + args.vf_coef * vl - args.ent_coef * ent
+                # A BC reference on learner-visited states, using common random
+                # numbers to estimate forward KL without storing dense logits.
+                if reference is not None and args.kl_coef:
+                    with torch.no_grad():
+                        ref = reference.score_action(c, previous=p)
+                    new = net.score_action(c, ref["action"], p)
+                    loss += args.kl_coef * (ref["logp"].detach() - new["logp"])
+                (loss / len(batch)).backward()
+                kl = float(((ratio - 1) - delta).detach())
+                batch_kl.append(kl)
+                stats.append(
+                    [
+                        float(pg.detach()),
+                        float(vl.detach()),
+                        float(ent.detach()),
+                        kl,
+                        float(abs(float(ratio.detach()) - 1) > args.clip),
+                    ]
+                )
+            if np.mean(batch_kl) > args.target_kl:
+                stopped = True
+                opt.zero_grad(set_to_none=True)
+                break
+            if bc is not None and args.bc_coef:
+                c, a, p = bc.sample(int(rng.integers(len(bc.records))))
+                (args.bc_coef * imitation_loss(net.score_action(c, a, p), c)).backward()
+            torch.nn.utils.clip_grad_norm_(
+                net.parameters(), 0.5, error_if_nonfinite=True
+            )
+            # A pre-update KL check cannot prevent THIS step overshooting,
+            # especially for a joint distribution containing an area mask.
+            # Backtrack the actual Adam step before accepting new weights.
+            before = copy.deepcopy(net.state_dict())
+            before_opt = copy.deepcopy(opt.state_dict())
+            base_lr = opt.param_groups[0]["lr"]
+            accepted = False
+            for retry in range(12):
+                if retry:
+                    net.load_state_dict(before)
+                    opt.load_state_dict(before_opt)
+                    opt.param_groups[0]["lr"] = base_lr * (0.5**retry)
+                    backtracks += 1
+                opt.step()
+                with torch.no_grad():
+                    ds = [
+                        float(net.score_action(*sample_at(i))["logp"]) - float(old[i])
+                        for i in batch
+                    ]
+                post_kl = float(
+                    np.mean(np.expm1(np.clip(ds, -20, 20)) - np.asarray(ds))
+                )
+                if np.isfinite(post_kl) and post_kl <= args.target_kl:
+                    accepted = True
+                    updates += 1
+                    break
+            if not accepted:
+                net.load_state_dict(before)
+                opt.load_state_dict(before_opt)
+                stopped = True
+                break
+        if stopped:
+            break
+    with torch.no_grad():
+        final_delta = np.array(
+            [
+                float(net.score_action(*sample_at(i))["logp"]) - float(lp)
+                for i, lp in enumerate(old)
+            ]
+        )
+    final_kl = float(np.mean(np.expm1(np.clip(final_delta, -20, 20)) - final_delta))
+    if not np.isfinite(final_kl) or final_kl > args.target_kl * 2:
+        raise ValueError(
+            f"global KL {final_kl} exceeds trust region; update not saved; reduce learning rate"
+        )
+    mean = np.mean(stats, axis=0)
+    return dict(
+        zip(
+            ("policy_loss", "value_loss", "entropy", "approx_kl", "clip_fraction"),
+            map(float, mean),
+        ),
+        samples=len(samples),
+        episodes=len(episodes),
+        kl_stopped=stopped,
+        updates=updates,
+        backtracks=backtracks,
+        final_kl=final_kl,
+        learning_rate=opt.param_groups[0]["lr"],
+        win_rate=float(np.mean([e.meta["outcome"] for e in episodes])),
+    )
 
-    for it in range(args.iterations):
-        trajs = load_trajectories(args.rollouts, args.max_episodes)
-        if len(trajs) < 4:
-            time.sleep(10)
-            continue
-        stats = ppo_update(net, opt, scaler, trajs, args, device)
-        print(f"iter {it}: {stats}", flush=True)
-        state = {"model": net.state_dict(), "in_planes": ckpt.get("in_planes", 60),
-                 "args": ckpt.get("args", {}), "metrics": stats, "iter": it}
-        torch.save(state, f"{args.out}/policy.pt")
-        # policy.pt is overwritten every iteration; without snapshots a run
-        # that degrades (measured: 22.6% -> 6.9% over 2200 episodes) leaves
-        # nothing to roll back to.
-        # Count UPDATES, not iterations: iterations with no episodes `continue`
-        # before reaching here, so `it % N == 0` only snapshots when a
-        # multiple of N happens to land on a non-empty iteration -- the loop
-        # ran to iter 160 with nothing saved past 75.
-        updates += 1
-        if args.snapshot_every > 0 and updates % args.snapshot_every == 0:
-            os.makedirs(f"{args.out}/snapshots", exist_ok=True)
-            torch.save(state, f"{args.out}/snapshots/policy_{it:06d}.pt")
-        # Episodes are deleted once consumed, so anything worth analysing
-        # later has to be recorded here. One line per episode: which mixes it
-        # played and how it ended, which is the only way to answer "does the
-        # military preset actually win" over a long run.
-        with open(f"{args.out}/episodes.csv", "a") as fh:
-            for traj in trajs:
-                mx = traj.mixes
-                share = ([float(np.mean(mx == k)) for k in range(5)]
-                         if mx is not None and len(mx) else [float("nan")] * 5)
-                fh.write(f"{it},{traj.opponent},{traj.outcome},{len(traj.logps)},"
-                         + ",".join(f"{v:.3f}" for v in share) + "\n")
-        for traj in trajs:
-            base = traj.obs_path[:-8]
-            for suffix in (".json", ".npz", ".obs.npy"):
-                try:
-                    os.unlink(base + suffix)
-                except OSError:
-                    pass
-    return 0
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--init", required=True)
+    ap.add_argument("--rollouts", required=True)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--reference", required=True, help="immutable BC prior")
+    ap.add_argument("--bc-corpus")
+    ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    for name, default in [
+        ("gamma", 1.0),
+        ("lam", 0.99),
+        ("shaping", 1.0),
+        ("lr", 1e-5),
+        ("clip", 0.2),
+        ("vf-coef", 0.5),
+        ("ent-coef", 0.001),
+        ("target-kl", 0.02),
+        ("kl-coef", 0.01),
+        ("bc-coef", 0.1),
+    ]:
+        ap.add_argument("--" + name, type=float, default=default)
+    ap.add_argument("--epochs", type=int, default=2)
+    ap.add_argument("--batch", type=int, default=16)
+    ap.add_argument("--seed", type=int, default=0)
+    args = ap.parse_args()
+    torch.manual_seed(args.seed)
+    if not (0 < args.gamma <= 1 and 0 < args.lam <= 1):
+        raise ValueError("discounts must be in (0,1]")
+    net, ck = NeuroticaNet.load(args.init, args.device)
+    ref, ref_ck = NeuroticaNet.load(args.reference, args.device)
+    ref.eval()
+    for p in ref.parameters():
+        p.requires_grad = False
+    episodes = [
+        Episode(p, ck["policy_id"]) for p in sorted(Path(args.rollouts).glob("*.json"))
+    ]
+    if not episodes:
+        raise ValueError("no completed rollouts")
+    stats = update(
+        net,
+        episodes,
+        args,
+        ref,
+        OrderCorpus(args.bc_corpus) if args.bc_corpus else None,
+    )
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    atomic_save(
+        net.checkpoint(
+            training=dict(
+                kind="ppo",
+                args=vars(args),
+                parent=ck["policy_id"],
+                reference=ref_ck["policy_id"],
+            ),
+            metrics=stats,
+        ),
+        out / "policy.pt",
+    )
+    (out / "metrics.json").write_text(json.dumps(stats, indent=2))
+    print(json.dumps(stats), flush=True)
+    # Retain all source episodes and their exact configuration for audit.
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

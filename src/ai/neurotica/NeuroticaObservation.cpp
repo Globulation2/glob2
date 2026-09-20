@@ -21,7 +21,7 @@ namespace Neurotica
 {
 	namespace
 	{
-		const char OBS_MAGIC[4] = {'A', 'O', 'B', '1'};
+		const char OBS_MAGIC[4] = {'A', 'O', 'B', '2'};
 
 		template <typename T> void put(std::FILE *f, T value)
 		{
@@ -94,7 +94,8 @@ namespace Neurotica
 						const size_t n = size_t(ny) * size_t(w) + size_t(nx);
 						if (out[n] <= next)
 							continue;
-						if (map->getTerrainType(nx, ny) == WATER)
+						if (map->getTerrainType(nx, ny) == WATER ||
+							map->getBuilding(nx, ny) != NOGBID)
 							continue;
 						out[n] = next;
 						queue.push_back(Uint32(n));
@@ -107,7 +108,7 @@ namespace Neurotica
 		{
 			if (distance >= 0xFFFF)
 				return 0; // unreachable
-			return Uint8(std::max<int>(1, 255 - std::min<int>(254, int(distance) * 8)));
+			return Uint8(std::max<int>(1, 255 - std::min<int>(254, int(distance))));
 		}
 	} // namespace
 
@@ -161,9 +162,9 @@ namespace Neurotica
 				const bool visible = map->isFOWDiscovered(x, y, vision);
 				plane(DP_DISCOVERY)[i] = visible ? 255 : (known ? 128 : 0);
 
-				// Resources are remembered once seen: the team knows a forest
-				// is there even when not currently looking at it.
-				if (known)
+				// Read current resource amounts only while visible; reading
+				// unseen live values would not be a remembered observation.
+				if (visible)
 				{
 					const Resource &res = map->getResource(x, y);
 					if (res.type != NO_RES_TYPE && res.type < OBSERVED_RESOURCES)
@@ -203,7 +204,7 @@ namespace Neurotica
 					for (int dx = 0; dx < building->type->width; dx++)
 					{
 						const Sint32 cx = building->posX + dx, cy = building->posY + dy;
-						if (!mine && !map->isMapDiscovered(cx, cy, vision))
+						if (!mine && !map->isFOWDiscovered(cx, cy, vision))
 							continue;
 						const size_t i = at(cx, cy);
 						if (mine)
@@ -214,7 +215,7 @@ namespace Neurotica
 							plane(DP_MY_BUILDING_SITE)[i] =
 								building->type->isBuildingSite ? 255 : 0;
 							plane(DP_MY_BUILDING_WORKERS)[i] =
-								Uint8(std::min<int>(255, building->maxUnitWorking * 20));
+								Uint8(std::min<int>(255, building->maxUnitWorking));
 						}
 						else if (ally)
 							plane(DP_ALLY_BUILDING)[i] = 255;
@@ -239,6 +240,11 @@ namespace Neurotica
 			else if (unit->typeNum == WARRIOR)
 				p = DP_MY_UNIT_WARRIOR;
 			plane(p)[i] = Uint8(std::min<int>(255, int(plane(p)[i]) + 64));
+			plane(DP_MY_UNIT_HP)[i] = Uint8(std::min<int>(255, unit->hp));
+			plane(DP_MY_UNIT_FOOD)[i] = Uint8(std::min<int>(255, unit->hungry / 16));
+			plane(DP_MY_UNIT_BUILD_LEVEL)[i] = Uint8(unit->level[BUILD] * 60);
+			plane(DP_MY_UNIT_ATTACK_LEVEL)[i] = Uint8(unit->level[ATTACK_SPEED] * 60);
+			plane(DP_MY_UNIT_SWIM_LEVEL)[i] = Uint8(unit->level[SWIM] * 60);
 		}
 
 		for (Sint32 y = 0; y < h; y++)
@@ -285,7 +291,7 @@ namespace Neurotica
 				for (Sint32 y = 0; y < h; y++)
 					for (Sint32 x = 0; x < w; x++)
 					{
-						if (!map->isMapDiscovered(x, y, vision))
+						if (!map->isFOWDiscovered(x, y, vision))
 							continue; // never reveal unexplored resources
 						const Resource &res = map->getResource(x, y);
 						if (res.type == entry.second)

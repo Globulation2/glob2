@@ -12,6 +12,7 @@
 #include "Team.h"
 
 #include <cstdlib>
+#include <algorithm>
 #include <iostream>
 
 AINeurotica::AINeurotica(Player *player)
@@ -39,6 +40,8 @@ void AINeurotica::init(Player *player)
 		if (parsed > 0 && parsed < 100000)
 			config.policyPeriodTicks = int(parsed);
 	}
+	// Legacy oracle fields must finish draining before the next plan.
+	config.maxQueuedOrders = std::min(config.maxQueuedOrders, size_t(config.policyPeriodTicks));
 	reconciler_.init(team_, config);
 
 	if (team_)
@@ -118,6 +121,8 @@ std::shared_ptr<Order> AINeurotica::getOrder(void)
 		return std::make_shared<NullOrder>();
 
 	const Sint64 tick = Sint64(game_->stepCounter);
+	if (auto *socket = dynamic_cast<Neurotica::PolicySocketSource *>(source_.get()))
+		return socket->actionOrder(Uint32(tick));
 	const int period = reconciler_.config().policyPeriodTicks;
 
 	if (lastPlanTick_ < 0 || tick - lastPlanTick_ >= Sint64(period))

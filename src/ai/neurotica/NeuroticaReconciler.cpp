@@ -338,7 +338,16 @@ namespace Neurotica
 					const Sint32 cx = map_->normalizeX(x + dx);
 					const Sint32 cy = map_->normalizeY(y + dy);
 					const size_t cell = desired.index(cx, cy);
-					if (claimed.count(cell) || observed_.count(cell))
+					Sint32 typeNum = -1;
+					BuildingType *type = placeableType(shortType, &typeNum);
+					bool overlaps = false;
+					if (type && !type->isVirtual)
+						for (int fy = 0; fy < type->height; ++fy)
+							for (int fx = 0; fx < type->width; ++fx)
+								overlaps |=
+									claimed.count(desired.index(map_->normalizeX(cx + fx),
+																map_->normalizeY(cy + fy))) != 0;
+					if (overlaps || claimed.count(cell) || observed_.count(cell))
 						continue;
 					if (!canPlace(shortType, cx, cy))
 						continue;
@@ -447,7 +456,6 @@ namespace Neurotica
 					continue;
 				}
 
-				emptyStreak_[i] = 0;
 				const int shortType = int(wanted) - 1;
 
 				if (!have)
@@ -473,7 +481,16 @@ namespace Neurotica
 				if (!have)
 				{
 					Sint32 placeX = x, placeY = y;
-					if (!canPlace(shortType, x, y))
+					Sint32 candidateTypeNum = -1;
+					BuildingType *candidateType = placeableType(shortType, &candidateTypeNum);
+					bool overlaps = false;
+					if (candidateType && !candidateType->isVirtual)
+						for (int fy = 0; fy < candidateType->height; ++fy)
+							for (int fx = 0; fx < candidateType->width; ++fx)
+								overlaps |=
+									claimed.count(desired.index(map_->normalizeX(x + fx),
+																map_->normalizeY(y + fy))) != 0;
+					if (overlaps || !canPlace(shortType, x, y))
 					{
 						// Preferred cell is not buildable. Relocate rather than
 						// drop the desire — see the placement note above.
@@ -486,6 +503,11 @@ namespace Neurotica
 					}
 					const size_t placedCell = desired.index(placeX, placeY);
 					claimed.insert(placedCell);
+					if (candidateType && !candidateType->isVirtual)
+						for (int fy = 0; fy < candidateType->height; ++fy)
+							for (int fx = 0; fx < candidateType->width; ++fx)
+								claimed.insert(desired.index(map_->normalizeX(placeX + fx),
+															 map_->normalizeY(placeY + fy)));
 					bindings_[i] = Binding{placedCell, shortType, planTick_};
 					boundCells_.insert(placedCell);
 					Sint32 typeNum = -1;
@@ -528,6 +550,7 @@ namespace Neurotica
 					continue;
 				}
 
+				emptyStreak_[i] = 0;
 				// Right type in the right place: reconcile its attributes.
 				const Uint8 wantLevel = desired.level[i];
 				if (wantLevel != DONT_CARE && have->type &&
@@ -751,6 +774,23 @@ namespace Neurotica
 			candidates.resize(config_.maxQueuedOrders);
 		}
 
+		// A binding may only outlive this plan if its create was retained.
+		std::unordered_set<size_t> retainedCreates;
+		for (const auto &candidate : candidates)
+			if (candidate.order->getOrderType() == ORDER_CREATE)
+			{
+				auto *create = static_cast<OrderCreate *>(candidate.order.get());
+				retainedCreates.insert(desired.index(create->posX, create->posY));
+			}
+		for (auto it = bindings_.begin(); it != bindings_.end();)
+			if (it->second.issuedTick == tick && !observed_.count(it->second.actualCell) &&
+				!retainedCreates.count(it->second.actualCell))
+			{
+				boundCells_.erase(it->second.actualCell);
+				it = bindings_.erase(it);
+			}
+			else
+				++it;
 		result.reserve(candidates.size());
 		for (auto &candidate : candidates)
 			result.push_back(std::move(candidate.order));

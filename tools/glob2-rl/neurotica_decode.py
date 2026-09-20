@@ -62,20 +62,24 @@ def anchors(my_buildings: np.ndarray, level_plane: np.ndarray):
     next_id = 1
     for t in range(T):
         ys, xs = np.nonzero(marked[t])
-        for y, x in zip(ys, xs):                   # nonzero is row-major
-            if claimed[y, x]:
-                continue
-            up = marked[t, (y - 1) % H, x] and not claimed[(y - 1) % H, x]
-            left = marked[t, y, (x - 1) % W] and not claimed[y, (x - 1) % W]
-            if up or left:
-                continue                           # continuation of an unclaimed run
-            size = int(FOOTPRINT[t, level[y, x]])
-            yy = (y + np.arange(size)) % H
-            xx = (x + np.arange(size)) % W
-            claimed[np.ix_(yy, xx)] = next_id
-            anchor[t, y, x] = True
-            counts[t] += 1
-            next_id += 1
+        while np.any(marked[t] & (claimed == 0)):
+            before = int(counts[t])
+            for y, x in zip(ys, xs):                   # nonzero is row-major
+                if claimed[y, x]:
+                    continue
+                up = marked[t, (y - 1) % H, x] and not claimed[(y - 1) % H, x]
+                left = marked[t, y, (x - 1) % W] and not claimed[y, (x - 1) % W]
+                if up or left:
+                    continue                           # continuation of an unclaimed run
+                size = int(FOOTPRINT[t, level[y, x]])
+                yy = (y + np.arange(size)) % H
+                xx = (x + np.arange(size)) % W
+                claimed[np.ix_(yy, xx)] = next_id
+                anchor[t, y, x] = True
+                counts[t] += 1
+                next_id += 1
+            if counts[t] == before:
+                raise ValueError("ambiguous footprint anchors; use engine entity identities")
     return anchor, counts
 
 
@@ -95,11 +99,11 @@ if __name__ == "__main__":
     put(1, 4, 2, 2)        # inn B, touching A on the right  (naive rule misses)
     put(1, 2, 4, 2)        # inn C, touching A below         (naive rule misses)
     put(0, 8, 8, 4)        # swarm
-    put(6, 14, 14, 2)      # school wrapping both map edges  (naive rule mis-anchors)
+    put(6, 15, 15, 2)      # school wrapping both map edges  (naive rule mis-anchors)
     put(1, 10, 1, 3, 2)    # level-2 inn, 3x3
     a, c = anchors(mb, lv)
     got = {t: sorted(zip(*np.nonzero(a[t])[::-1])) for t in range(13) if c[t]}
-    exp = {1: [(2, 2), (2, 4), (4, 2), (10, 1)], 0: [(8, 8)], 6: [(14, 14)]}
+    exp = {1: [(2, 2), (2, 4), (4, 2), (10, 1)], 0: [(8, 8)], 6: [(15, 15)]}
     ok = all(got.get(t) == sorted(v) for t, v in exp.items()) and c[1] == 4 and c[0] == 1 and c[6] == 1
     print("anchors:", {t: [tuple(map(int, p)) for p in v] for t, v in got.items()})
     print("counts :", {t: int(c[t]) for t in range(13) if c[t]})
