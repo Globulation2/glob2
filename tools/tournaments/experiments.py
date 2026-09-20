@@ -150,8 +150,7 @@ class Planner:
                 # every AI x format x generator x seed x size (which can reach
                 # hundreds of thousands of games -- see docs/tournaments.md).
                 rng = random.Random(config.get('sample_seed', 1))
-                sample_methods = config.get('generators') or [
-                    g['method'] for g in self.bundles[self.builds[0]]['capabilities']['generators'] if not g.get('editorOnly')]
+                sample_methods = config.get('generators') or [15]
                 default_params = {'width': 7, 'height': 7}
                 sizes = config.get('sizes') or [config.get('generator_params', default_params)]
                 for _ in range(config['sample_games']):

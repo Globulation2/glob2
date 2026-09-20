@@ -180,6 +180,7 @@ class Fixture(unittest.TestCase):
             (output / 'incidental.log').write_text('not an explicit output')
             atomic_json(directory / 'execution.json', {
                 'category': 'success',
+                'finished': time.time(),
                 'result': {'schema_version': 1, 'status': 'completed'},
             })
             root = worker.root
@@ -429,7 +430,7 @@ class AnalysisTests(unittest.TestCase):
             n = 2 if j['labels']['format'] == '1v1' else 4
             self.assertEqual(len(j['config']['players']), n)
         self.assertEqual(formats, {'1v1'})
-        self.assertEqual(generators, {15, 21})  # editor-only generator never drawn
+        self.assertEqual(generators, {15})  # default generator supports 128x128
         for j in games:
             self.assertEqual(j['config']['params']['width'], 7)
             self.assertEqual(j['config']['params']['height'], 7)

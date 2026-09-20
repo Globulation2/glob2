@@ -384,8 +384,9 @@ host. Generator defaults/ranges are always discoverable in its pinned catalog.
   1) makes the draw reproducible; `sizes` is a list of `generator_params`-shaped
   dicts to choose from per sample (defaulting to one 128x128 size, or to an
   explicit `generator_params` value); `generators` still
-  restricts the pool as in the exhaustive design, defaulting to every non-editor-only
-  generator in the bundle's catalog rather than the exhaustive design's `[15]`.
+  restricts the pool as in the exhaustive design, defaulting to `[15]` (the
+  random symmetric arena, which supports 128x128 maps). Other generators must
+  be explicitly selected with sizes they support.
   `ais`/`formats`/`ticks`/`candidates` are shared with the exhaustive path and mean
   the same thing. This is the *only* sampling path for `ai_comparison` -- do not
   add a second, separate script that reimplements job construction outside this
