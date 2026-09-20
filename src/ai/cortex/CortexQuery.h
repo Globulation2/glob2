@@ -129,6 +129,7 @@ namespace Cortex
 			obs.flagTargets[i].score = 0;
 			obs.flagTargets[i].wheatDist = -1;
 			obs.flagTargetSupportDist[i] = -1;
+			obs.flagTargetTeam[i] = -1;
 		}
 		for (int i = 0; i < CORTEX_MAX_DEFENSE_FLAGS; i++)
 		{

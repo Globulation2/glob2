@@ -41,6 +41,7 @@ public:
   {
 	  return AITelemetry::schema(6);
   }
+  Uint32 telemetrySchemaVersion() const override { return 2; }
 	explicit AICortex(Player* player);
 	AICortex(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor);
 	~AICortex();
@@ -432,6 +433,12 @@ private:
 	/// flagPosture is one of FlagPosture; offenseHoldUntil == 0 means no hold is active.
 	int flagPosture;
 	int offenseHoldUntil;
+
+	/// Enemy team index of the offense target translateActionPlaceWarFlag most
+	/// recently committed to (mirrors obs.flagTargetTeam[slot] at the moment the
+	/// war-flag action is translated); -1 when offense currently has no target.
+	/// Telemetry only -- read by captureTelemetry(), never by decide()/policy.
+	Sint32 lastOffenseTargetTeam;
 
 	/// Per-game wheat open-margin N: the first N rows of wheat nearest the harvest
 	/// source stay unpainted; the checkerboard starts at depth N+1. Drawn ONCE via

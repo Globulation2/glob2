@@ -62,7 +62,13 @@ namespace Cortex
 		// K == CORTEX_FLAG_TARGETS (8) whereas insertTopK is hardwired to
 		// CORTEX_BUILD_CANDIDATES (4); rather than retune the build path we keep a
 		// parallel, parameterized version so both K values stay deterministic.
-		void insertTopKBounded(ScoredSpot* heap, int& count, int k, const ScoredSpot& spot)
+		//
+		// teamHeap/spotTeam ride alongside heap/spot purely as telemetry metadata
+		// (the owning enemy team of each ranked spot): shifted in lockstep here so
+		// a slot's team index always matches its ScoredSpot, but never read by the
+		// score/tie-break comparisons above, so it cannot affect which spots rank
+		// or any simulation checksum.
+		void insertTopKBounded(ScoredSpot* heap, Sint32* teamHeap, int& count, int k, const ScoredSpot& spot, Sint32 spotTeam)
 		{
 			// First slot whose score is strictly less than the new spot's. Ties
 			// keep the incumbent (earlier scan order), so we only move past >= score.
@@ -82,9 +88,13 @@ namespace Cortex
 			// Shift lower-ranked entries down by one, dropping the tail if full.
 			int last = (count < k) ? count : (k - 1);
 			for (int i = last; i > pos; i--)
+			{
 				heap[i] = heap[i - 1];
+				teamHeap[i] = teamHeap[i - 1];
+			}
 
 			heap[pos] = spot;
+			teamHeap[pos] = spotTeam;
 			if (count < k)
 				count++;
 		}
@@ -197,7 +207,7 @@ namespace Cortex
 	// index over other->myBuildings[] (never an std::set); ties break first by scan
 	// order (strict-greater insert) and finally by syncRand() — never rand(), never
 	// wall-clock — exactly as placeCandidates does.
-	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS])
+	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
 	{
 		// Always leave the output well-defined, even on the error paths below.
 		for (int i = 0; i < CORTEX_FLAG_TARGETS; i++)
@@ -206,12 +216,14 @@ namespace Cortex
 			out[i].x = 0;
 			out[i].y = 0;
 			out[i].score = 0;
+			outTeam[i] = -1;
 		}
 
 		if (game == NULL || team == NULL)
 			return 0;
 
 		ScoredSpot heap[CORTEX_FLAG_TARGETS];
+		Sint32 teamHeap[CORTEX_FLAG_TARGETS];
 		int count = 0;
 
 		// Enumerate enemy teams strictly by index.
@@ -246,7 +258,7 @@ namespace Cortex
 				spot.y = b->posY;
 				spot.score = score;
 				spot.distToColony = distToColony;
-				insertTopKBounded(heap, count, CORTEX_FLAG_TARGETS, spot);
+				insertTopKBounded(heap, teamHeap, count, CORTEX_FLAG_TARGETS, spot, other->teamNumber);
 			}
 		}
 
@@ -264,6 +276,9 @@ namespace Cortex
 					ScoredSpot tmp = heap[i];
 					heap[i] = heap[i + 1];
 					heap[i + 1] = tmp;
+					Sint32 teamTmp = teamHeap[i];
+					teamHeap[i] = teamHeap[i + 1];
+					teamHeap[i + 1] = teamTmp;
 				}
 			}
 		}
@@ -274,6 +289,7 @@ namespace Cortex
 			out[i].x = heap[i].x;
 			out[i].y = heap[i].y;
 			out[i].score = heap[i].score;
+			outTeam[i] = teamHeap[i];
 		}
 
 		return count;

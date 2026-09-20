@@ -62,7 +62,7 @@ namespace Cortex
 	///
 	/// Returns the number of valid targets written (0..CORTEX_FLAG_TARGETS); 0 when
 	/// we have not yet discovered any enemy building.
-	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS]);
+	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS]);
 
 	/// Chebyshev distance from tile (x, y) to the nearest wheat tile, found
 	/// by an outward radial scan bounded at `cap` rings. Returns the distance in
