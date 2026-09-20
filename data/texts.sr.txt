@@ -2962,3 +2962,7 @@ Emoji
 Почетне залихе хране
 [Central concentration]
 Концентрација у средишту
+[The Last Treeline]
+Последњи шумски појас
+[Woodland depth]
+Ширина шумарака

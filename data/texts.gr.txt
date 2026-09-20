@@ -3032,3 +3032,7 @@ Emoji
 Αρχικό σιτηρέσιο
 [Central concentration]
 Συγκέντρωση στο κέντρο
+[The Last Treeline]
+Η τελευταία δασική ζώνη
+[Woodland depth]
+Πλάτος των αλσυλλίων

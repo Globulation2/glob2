@@ -2970,3 +2970,7 @@ Hladné pohraničie
 Počiatočný prídel
 [Central concentration]
 Sústredenie v strede
+[The Last Treeline]
+Posledný pás lesa
+[Woodland depth]
+Šírka hájov

@@ -2960,3 +2960,7 @@ La Malsataj Limlandoj
 Komenca porcio
 [Central concentration]
 Koncentriĝo en la centro
+[The Last Treeline]
+La lasta arbara strio
+[Woodland depth]
+Larĝo de la arbaretoj

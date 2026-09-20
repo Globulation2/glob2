@@ -2962,3 +2962,7 @@ Insule periferice
 Rație inițială
 [Central concentration]
 Concentrare în centru
+[The Last Treeline]
+Ultima fâșie de pădure
+[Woodland depth]
+Lățimea pâlcurilor de copaci

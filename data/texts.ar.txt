@@ -2960,3 +2960,7 @@ Emoji
 المؤونة الأولية
 [Central concentration]
 تركيز الغذاء في الوسط
+[The Last Treeline]
+الحزام الشجري الأخير
+[Woodland depth]
+عرض الغابة

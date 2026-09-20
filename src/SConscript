@@ -225,6 +225,7 @@ map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
+map/generator/generators/LastTreelineGenerator.cpp
 map/generator/generators/BastionKeysGenerator.cpp
 map/generator/generators/DrownedForestGenerator.cpp
 map/generator/generators/WhoAteTheMapGenerator.cpp

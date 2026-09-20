@@ -8,6 +8,7 @@
 #include "Contact.h"
 #include "FertilityField.h"
 #include "Game.h"
+#include "LastTreelineChecks.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
@@ -2141,6 +2142,7 @@ inline void generatorContracts()
 	rebuiltLandscapeContracts();
 	savannahContracts();
 	locustFoodChecks();
+	LastTreelineChecks::run();
 	hedgerowContracts();
 	breachableHighlandsContracts();
 	braidedDeltaChecks();

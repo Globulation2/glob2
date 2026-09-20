@@ -167,6 +167,7 @@ restores whatever landscape it had.
 | `polder` | 30 | Polder | Its own — see below |
 | `carousel` | 22 | Carousel | Its own — see below |
 | `old-growth` | 28 | Old growth | Its own — see below |
+| `last-treeline` | 70 | The Last Treeline | [Finite home wood and contested renewable shoreline groves](LAST_TREELINE.md) |
 | `locust` | 47 | Locust | Dry, finite wheat fields and shoreline wood — see [design and verification](LOCUST.md) (named Vultures until 2026-09-16) |
 | `anthill` | 32 | Anthill | Its own — see below |
 | `glacis` | 39 | The Glacis | The country's forest, fields, outcrops and groves, the prizes at every contested ford (three fruit groves and a quarry on both banks) and the water's algae; every fort's gardens are planted to a share of their ground scaled by the wheat and wood amounts but never below the floors that feed an opening, and the walls are unscaled | None |

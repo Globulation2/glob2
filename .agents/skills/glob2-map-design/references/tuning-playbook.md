@@ -151,6 +151,33 @@ What the measurement found, and what fixed it:
 - **Every new water source needs its fields sealed.** Unbunded wheat round Karst towers' doline lakes filled a halo 6–10 tiles wide in 50,000 ticks, on the ground between neighbouring homes; the lakes accounted for half of all the tiles that changed in the game. Water makes the ground fertile, so anything planted near it must be contained (see the overgrowth section of [gameplay and playability](gameplay-and-playability.md)).
 - **Water takes building room.** Two pools beside the swarm halved the bowl's 4×4 sites. Measure building room again after every water change, and move water to the rim before shrinking the clearing.
 
+## Contested renewable resources: stock, access and survival
+
+The Last Treeline separated three budgets that initially looked like one: finite home
+wood, initial neutral trees, and the groves' sustainable growth potential. Wood is
+nongranular: collecting a tree clears its tile, so mature appearance does not multiply
+the opening budget. A completely cleared isolated grove has no seeds left to renew.
+State these rules in the design and measure all three budgets independently.
+
+- Seed both competing approaches before filling a grove by fertility. Ranking every
+  seed by fertility alone can move the opening harvest front to one end of an otherwise
+  fair bank. Deduct these frontage seeds from the stock budget; do not quietly add wood.
+- Protect minimum irrigated area when shrinking a landform. Fixed beaches, water offsets
+  and edge noise consume proportionally more of a narrow bank; scaling its outline is
+  not equivalent to scaling its productive core. Retain failing narrow-bank seeds.
+- Validate access after the whole crop footprint fills, including the walk from each
+  town to that network and the standing tiles beside both gathering edges. An isolated
+  outpost clearing or a count of perimeter tiles does not prove usable access.
+- Test finite timber using finished terrain, then deliberately irrigate it and require
+  rejection. Also remove renewable trees while retaining starter timber, and rerun the
+  validator after unattended growth. These mutations check the economic mechanism,
+  rather than only its initial picture. Give tiny test ponds a sand rim and verify that
+  pure water and positive fertility actually survived terrain rebuilding.
+- Compare rotations by physical start and AI. A colony that fails under one AI while
+  other AIs develop at the same start is not enough evidence to redesign the geography.
+  Report consistent positional advantages as well as deaths; successful AI games do
+  not establish human enjoyment or competitive balance.
+
 ## Fair by construction, fair by search, or fair by measurement
 
 Three fairness models are in use. Choose one deliberately and validate the thing it promises:

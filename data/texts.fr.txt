@@ -2972,3 +2972,7 @@ Les Marches affamées
 Ration de départ
 [Central concentration]
 Concentration centrale
+[The Last Treeline]
+La dernière bande boisée
+[Woodland depth]
+Largeur des bosquets

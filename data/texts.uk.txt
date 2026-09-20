@@ -2958,3 +2958,7 @@ Emoji
 Початковий пайок
 [Central concentration]
 Зосередження в центрі
+[The Last Treeline]
+Остання лісосмуга
+[Woodland depth]
+Ширина гаїв
