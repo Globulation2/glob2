@@ -30,7 +30,7 @@ namespace AINames
 		// Displayed values are rounded once, after the full tournament.
 		// Difficulty tiers: below 1450 Easy, 1450-1699 Medium, 1700+ Hard.
 		// These describe this duel cohort, not every map, format or human game.
-		// See docs/ai-strength.md and docs/validation/ai-elo-maxima-d37c0c353-20000-20260920/.
+		// See docs/ai-strength.md and docs/ai/ratings.md.
 		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
 			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
 			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1204},
