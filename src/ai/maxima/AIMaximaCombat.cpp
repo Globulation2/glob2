@@ -661,10 +661,58 @@ void Maxima::end_offense(Context& echo, const char* reason)
 	director.invalidate();
 }
 
-// Returns false for a purely amphibious objective: the existing swimmer-aware
-// executor remains responsible until wave recruitment can express swim training.
+void Maxima::observe_wave_delivery()
+{
+	if(failed_waves>=4)return;
+	const auto score=[&](Tactics::WaveDelivery& delivery) {
+		if(delivery.scored || delivery.launched==0 || failed_waves>=4)return;
+		delivery.scored=true;
+		failed_waves=delivery.arrived*100<delivery.launched*33 ? failed_waves+1 : 0;
+	};
+	for(const auto& wave:offense_waves)
+	{
+		if(wave.phase!=Tactics::WaveAdvance)continue;
+		auto& registry=context.get_building_register();
+		Building* flag=registry.is_building_found(wave.flagId)
+			? registry.get_building(wave.flagId) : NULL;
+		if(!flag)continue;
+		auto inserted=wave_delivery.emplace(wave.flagId,Tactics::WaveDelivery{});
+		auto& delivery=inserted.first->second;
+		const int enrolled=flag->unitsWorking.size();
+		if(inserted.second)delivery.launched=enrolled;
+		if(delivery.scored)continue;
+		int arrived=0;
+		for(const Unit* warrior:flag->unitsWorking)
+			if(warrior && !warrior->isDead && warrior->medical==Unit::MED_FREE
+			   && context.player->map->warpDistMax(warrior->posX,warrior->posY,
+				wave.targetX,wave.targetY)<=budget.tactical_siege_radius)++arrived;
+		delivery.arrived=std::max(delivery.arrived,arrived);
+		// Assess a spent wave once, retaining its peak simultaneous delivery.
+		if(enrolled*4<=delivery.launched)score(delivery);
+	}
+	for(auto it=wave_delivery.begin();it!=wave_delivery.end();)
+		if(std::none_of(offense_waves.begin(),offense_waves.end(),
+			[&](const Tactics::Wave& wave){return wave.flagId==it->first;}))
+		{
+			score(it->second);
+			it=wave_delivery.erase(it);
+		}
+		else ++it;
+	if(failed_waves>=4)fall_back_to_streaming();
+}
+
+void Maxima::fall_back_to_streaming()
+{
+	end_offense(context,"wave_failed");
+	wave_delivery.clear();
+	emit_telemetry(context,"wave_fallback","\tfailed_waves=4");
+}
+
+// The existing streaming executor handles amphibious objectives and the
+// permanent fallback after repeated poor wave delivery.
 bool Maxima::control_offense_waves(Context& echo)
 {
+	if(failed_waves>=4)return false;
 	if(!budget.tactics_enabled || severe_colony_emergency())
 	{
 		end_offense(echo,"wave_emergency");
@@ -815,6 +863,11 @@ bool Maxima::control_offense_waves(Context& echo)
 			else if(timer-wave.startedTick>=policy.muster_max_ticks)
 			{
 				retire=true;assemblyFailed=true;
+				if(++failed_waves>=4)
+				{
+					fall_back_to_streaming();
+					return false;
+				}
 			}
 			else mustering=true;
 		}

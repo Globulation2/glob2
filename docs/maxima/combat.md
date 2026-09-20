@@ -67,6 +67,20 @@ expire after remaining empty for the inactivity interval. Travel and assembly
 do not consume the siege-stall allowance. An amphibious attack uses the
 single-flag controller when no connected land rally is available.
 
+After four consecutive failed waves, Maxima switches to its existing
+streaming attack controller for the rest of the game. A wave is assessed once its
+enrollment falls to at most one quarter of its launch force, or it is retired.
+Its peak simultaneous healthy enrollment within the objective's siege radius must
+reach 33% of the launch force; success resets the failure counter. A rally that
+reaches the existing maximum assembly time without launching also counts as a
+failure toward the same counter. Streaming keeps
+recruiting into an objective flag. No map-specific checks or extra timeouts apply.
+
+Delivery observations, the counter and the permanent switch survive save/reload.
+When loading a format-115 save, already advancing waves are excluded because their
+launch force is unknown. This fallback does not detect attacks blocked before
+a rally is created.
+
 ## Fruit supply
 
 For each known fruit variety, Maxima searches for a reachable deposit near each

@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "Map.h"
+#include "Unit.h"
 #include "FormatableString.h"
 
 #include <stdexcept>
@@ -213,6 +214,8 @@ void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
     executionState(archive);
     development_planner.saveExecutionState(stream);
     context.saveExecutionState(stream);
+    archive("wave_delivery",wave_delivery);
+    archive("failed_waves",failed_waves);
     stream->writeLeaveSection();
 }
 void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
@@ -240,6 +243,23 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
             throw std::runtime_error("Invalid saved Maxima offense wave");
     development_planner.loadExecutionState(stream,versionMinor);
     context.loadExecutionState(stream, versionMinor);
+    wave_delivery.clear();
+    failed_waves=0;
+    if(versionMinor>=116)
+    {
+        archive("wave_delivery",wave_delivery);
+        archive("failed_waves",failed_waves);
+        if(wave_delivery.size()>64 || failed_waves<0 || failed_waves>4)
+            throw std::runtime_error("Invalid saved Maxima wave delivery state");
+        for(const auto& entry:wave_delivery)
+            if(entry.first<0 || entry.second.launched<0 || entry.second.launched>Unit::MAX_COUNT
+               || entry.second.arrived<0 || entry.second.arrived>Unit::MAX_COUNT)
+                throw std::runtime_error("Invalid saved Maxima wave delivery counts");
+    }
+    else
+        // A pre-116 advancing wave has no known launch force; exclude it.
+        for(const auto& wave:offense_waves)
+            if(wave.phase==Tactics::WaveAdvance)wave_delivery[wave.flagId].scored=true;
     stream->readLeaveSection();
 
 }
@@ -256,6 +276,7 @@ std::string Maxima::auditStrategyJson() const
 
 std::shared_ptr<Order> Maxima::getOrder()
 {
+	observe_wave_delivery();
 	ensure_strategy();
 	context.telemetry = telemetry;
 	return context.getOrder(*this);

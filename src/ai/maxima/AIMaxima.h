@@ -541,6 +541,11 @@ private:
 	Tactics::Program tactics;
 	Tactics::Mission tactical_mission;
 	std::vector<Tactics::Wave> offense_waves;
+	std::map<int, Tactics::WaveDelivery> wave_delivery;
+	// Four consecutive failures permanently select the streaming controller.
+	int failed_waves=0;
+	void observe_wave_delivery();
+	void fall_back_to_streaming();
 	bool control_offense_waves(AIMaximaRuntime::Context& echo);
 	OffenseDiagnostics offense_diagnostics;
 	std::vector<ClearedEnemySite> cleared_enemy_sites;
