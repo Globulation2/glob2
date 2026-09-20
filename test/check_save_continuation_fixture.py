@@ -14,15 +14,16 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "test/fixtures/save-continuation"
 
 
-def main(binary):
-    expected = json.loads((FIXTURES / "expected-30000-30512.json").read_text())
+def check(binary, checkpoint_name, expected_name, stop_tick):
+    expected = json.loads((FIXTURES / expected_name).read_text())
+    expected = {tick: value for tick, value in expected.items() if int(tick) < stop_tick}
     with tempfile.TemporaryDirectory(prefix="glob2-save-continuation-") as directory:
         output = Path(directory)
         checkpoint = output / "checkpoint.game"
-        checkpoint.write_bytes(gzip.decompress((FIXTURES / "checkpoint-30000-v113.game.gz").read_bytes()))
+        checkpoint.write_bytes(gzip.decompress((FIXTURES / checkpoint_name).read_bytes()))
         result = subprocess.run(
             [str(Path(binary).resolve()), "--run-game", "--load-game", str(checkpoint),
-             "--ticks", "30512", "--telemetry", "checksums", "--output-dir", str(output / "run")],
+             "--ticks", str(stop_tick), "--telemetry", "checksums", "--output-dir", str(output / "run")],
             cwd=ROOT, capture_output=True, text=True,
         )
         if result.returncode:
@@ -35,7 +36,14 @@ def main(binary):
         for tick in expected:
             if actual[tick] != expected[tick]:
                 raise SystemExit(f"FAIL: continuation diverges at tick {tick}")
-        print(f"PASS: late-game checkpoint matches all {len(expected)} uninterrupted team/entity state hashes")
+        print(f"PASS: {checkpoint_name} matches all {len(expected)} uninterrupted team/entity state hashes")
+
+
+def main(binary):
+    # Preserve the legacy-format load boundary before changed AI hospital policy
+    # can issue new decisions; the current-policy checkpoint checks all 512 ticks.
+    check(binary, "checkpoint-30000-v113.game.gz", "expected-30000-30512.json", 30001)
+    check(binary, "checkpoint-30000-v114.game.gz", "expected-30000-30512-v114.json", 30512)
 
 
 if __name__ == "__main__":

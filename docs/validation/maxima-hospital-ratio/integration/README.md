@@ -37,6 +37,61 @@ inside `../game-evidence.tar.xz`. Run commands from the corresponding built
 checkout's root, replacing recorded machine-specific paths with local paths.
 
 The 240-game ablation predates the upstream integration. These integration checks
-do **not** re-estimate the combined branch's win rate. Windows remains untested,
-and the separately documented late-game save/resume divergence is not resolved
-by these cross-platform checks.
+do **not** re-estimate the combined branch's win rate. Windows remains untested.
+The results in `comparison.json` describe the first integration stage above.
+
+
+## Subsequent upstream save repair and integration fix
+
+Merged upstream `be37a5d4c` (continuation state, format 113), followed by
+`26b9788be` (documentation cleanup). Refreshing the golden fixture for the
+confirmed hospital policy exposed one additional omitted field:
+`Team::noMoreBuildingSitesCountdown`. At checkpoint 30,000 its value was 91;
+the missing countdown explained the immediate team-only checksum difference.
+This field controls acceptance of construction orders. Format 114 saves it and
+loads it with a version gate and range validation. Earlier formats remain
+readable, with their historical reconstruction behavior. The save floor remains
+58 and replay floor 99; the network protocol is 39 to reject incompatible peers.
+
+All 19 Maxima suites pass again. The unit continuation harness now exercises a
+nonzero construction cooldown at five checkpoints, comparing 256 subsequent
+ticks and RNG state each on Mac and Linux. Tournament/network, replay acceptance,
+team save safety and entering-unit checks pass. Logs and `save-continuation.json`
+retain the results.
+
+With the selected 0.6 policy on Mac, saving at 24,576 and resuming through 32,768
+matches all **8,192** uninterrupted team/entity records. A second scenario saves
+at 30,000 and matches all **512** subsequent records. Its new version-114 fixture
+passes on both Mac and Linux. The expected hashes come from uninterrupted
+execution, not the resumed run. The version-113 fixture remains as a one-tick
+legacy load check: its old 512-tick reference used the previous hospital policy,
+so it is no longer a valid full-trajectory reference for current AI decisions.
+The current 512-tick fixture replaces that trajectory check. Comparing the
+uninterrupted format-113 and format-114 runs matches all 30,512 records, showing
+that preserving the cooldown did not change this uninterrupted trajectory.
+
+**Remaining portability failure:** loading the same version-114 hospital
+checkpoint on Mac arm64 and Linux x86_64 matches the first 3,469 ticks, then
+first differs at tick 28,045 in team 1 unit 1292's movement. All 4,723 remaining
+ticks differ. Checked source files are identical; the first differing entity
+is a diagnostic location, not a demonstrated cause. This longer check does not
+pass, despite the shorter cross-platform and same-platform continuation checks
+above. The branch needs this investigated before claiming cross-platform
+simulation equivalence. Windows was not tested.
+
+The `cooldown-*.tsv.gz` files retain both per-tick platform traces and source
+stream hashes; `cooldown-platform-first-difference.json` retains the first
+state difference. To reproduce, decompress `cooldown-checkpoint-24576-v114.game.gz`
+and run the built game with absolute input/output paths:
+
+```sh
+build/src/glob2 --run-game --load-game /absolute/checkpoint.game \
+  --ticks 32768 --telemetry checksums --output-dir /absolute/output
+```
+
+Commands and results for the uninterrupted and resumed Mac runs are retained
+as compressed JSON. The hospital initial input is
+`../compatibility/old-initial.game.gz`; the separate golden-fixture initial input
+is `cooldown-fixture-initial-v112.game.gz`. The fixture checkpoint and expected
+hashes are in `test/fixtures/save-continuation/`. The upstream removal of its old
+investigation write-up and unused test fixture is preserved.

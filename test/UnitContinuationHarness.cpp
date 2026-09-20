@@ -110,6 +110,7 @@ static void checkContinuation(int checkpoint)
     first->previousClearingAreaDistance = 5;
     second->previousClearingAreaDistance = UNIT_CLEAR_AREA_DISTANCE_NONE;
     game.map.setClearingAreaClaimed(12, 12, 0, first->gid);
+    game.teams[0]->noMoreBuildingSitesCountdown = 91;
     for (int i = 0; i < checkpoint; ++i) game.syncStep(0);
     const auto before = state(game);
     auto* storage = new GAGCore::MemoryStreamBackend;

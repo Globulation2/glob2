@@ -197,6 +197,12 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		}
 	}
 
+	if (versionMinor >= FILE_FORMAT_VERSION_CONSTRUCTION_COOLDOWN)
+	{
+		noMoreBuildingSitesCountdown = stream->readSint32("noMoreBuildingSitesCountdown");
+		if (noMoreBuildingSitesCountdown < 0 || noMoreBuildingSitesCountdown > noMoreBuildingSitesCountdownMax)
+			throw std::runtime_error("Invalid construction cooldown");
+	}
 
 	stream->readLeaveSection();
 	return true;
@@ -334,6 +340,7 @@ void Team::save(GAGCore::OutputStream *stream)
 		stream->writeLeaveSection();
 	}
 
+	stream->writeSint32(noMoreBuildingSitesCountdown, "noMoreBuildingSitesCountdown");
 
 	stream->writeLeaveSection();
 }

@@ -145,8 +145,14 @@ failure establishes an existing limitation; the differing trajectories do not
 rule out an additional issue in the candidate. The first candidate difference is Maxima worker 1162
 (position/direction/movement); the control first differs in Cabino worker 69 and
 building 18. These are diagnostic locations, not established root causes.
-Full late-game continuation is **not verified**. All ablation games run continuously and are unaffected by this
-save/resume check.
+These are historical, pre-integration failures. After upstream's continuation
+repair and the version-114 construction-cooldown fix, the selected 0.6 policy
+passes an 8,192-tick Mac save/resume comparison and a separate 512-tick golden
+fixture on both Mac and Linux. Missing historical state cannot be recovered from
+old checkpoints. A longer cross-platform resumed run still diverges at tick
+28,045 (team 1 unit 1292); its cause remains unresolved. See
+[integration evidence](integration/README.md). All ablation games run continuously
+and are unaffected by this save/resume check.
 
 The implementation, director, labour, strategy and lifecycle native regressions
 pass, including target rounding, duplicate-capacity prevention, pending upgrade

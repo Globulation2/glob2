@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 113
+#define VERSION_MINOR 114
+// version 114 preserves the team construction cooldown.
 // version 113 preserves unit clearing/idle state and ordered building/service lists.
 // version 112 persists Maxima offensive waves and their strategy controls.
 // version 111 persists Maxima fitted force beliefs and their observation cadence.
@@ -140,9 +141,9 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 38
+#define NET_PROTOCOL_VERSION 39
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 38
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 39
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
@@ -164,3 +165,5 @@
 // version 37 adds Maxima army growth and gathered attack waves; peers run AIs locally.
 
 // version 38 transfers the complete continuation state when joining saved games.
+
+// version 39 transfers construction cooldown state when joining saved games.

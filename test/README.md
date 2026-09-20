@@ -691,7 +691,9 @@ See [attack strategy](../doc/MaximaAttacks.md).
 Build `scons release=1 server=0 unit-continuation-test`, then run
 `build/src/UnitContinuationHarness`. Five checkpoints compare 256 subsequent
 simulation ticks and the RNG state, including idle timers, clearing reservations,
-service-list ordering and building worker membership. Linux and Windows CI run
+service-list ordering, building worker membership and a nonzero construction
+cooldown. Format 114 preserves that cooldown; older formats remain readable.
+Linux and Windows CI run
 this harness. New saved games preserve live state without running building updates
 during load; legacy formats keep their historical reconstruction path.
 
@@ -706,3 +708,8 @@ The comparator checks every consecutive team/entity record, reports the first
 mismatch, rejects missing/truncated records, and excludes the aggregate checksum
 because it includes the save header/version. Run the retained late-game regression
 with `python3 test/check_save_continuation_fixture.py build/src/glob2`.
+
+The retained version-114 checkpoint compares 512 ticks against uninterrupted
+execution using the current Maxima hospital policy. The version-113 checkpoint
+also checks its first tick as a legacy load boundary; its longer historical
+trajectory predates the current hospital policy.

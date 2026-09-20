@@ -149,3 +149,6 @@ static constexpr int SHA1_BYTE_LEN = 20;
 
 //! Unit clearing/idle state, building service state and ordered team/unit lists.
 static constexpr int FILE_FORMAT_VERSION_SIMULATION_CONTINUATION = 113;
+
+//! Team cooldown that temporarily blocks new construction orders.
+static constexpr int FILE_FORMAT_VERSION_CONSTRUCTION_COOLDOWN = 114;
