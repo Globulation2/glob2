@@ -7,8 +7,6 @@ ground on their banks is terraced into paddies: strips of wheat between flooded 
 colony's home is a bowl in the karst, a clearing walled by a ring of towers with gates, and a doline
 lake in a ring of fields lies between neighbouring homes.
 
-![Four maps at 256×256 with four colonies, seeds 1–4](../artifacts/karst-towers/revision2-256-4-seeds-1-4.png)
-
 ## How it plays
 
 - **Gates are the only ways home.** Stone never runs out and cannot be cleared, so a bowl's ring is
@@ -48,10 +46,6 @@ A crowded map whose big homes or wide rivers leave a river no way through is not
 the design shrinks the homes two tiles at a time to the smallest home size, then narrows the rivers
 to the narrowest, and telemetry records each step.
 
-![A home bowl: paddy and channel, rim pond, gate pools, open middle](../artifacts/karst-towers/revision2-home-zoom-seed1.png)
-![River terraces: wheat and flooded strips following the river](../artifacts/karst-towers/revision2-terraces-zoom-seed1.png)
-![A doline lake in its ring of sealed fields](../artifacts/karst-towers/revision2-lake-zoom-seed1.png)
-
 ## Controls
 
 | Control | Range (default) | Effect (6 seeds, 256×256, 4 colonies: low / default / high) |
@@ -69,8 +63,6 @@ to the narrowest, and telemetry records each step.
 | Home size | 12–22 (15) | Clearing radius; crowded maps shrink it. |
 | Wheat amount | 0–200% (100) | Sown share of the dry terraces and lake fields (terraces are fully sown by 200). Home paddies and the starter kit are guaranteed. |
 | Wood, algae, fruit amount | 0–300% (100) | Linear. Towers are structural and not scaled by any amount. |
-
-![Each control at its two ends (seed 3)](../artifacts/karst-towers/revision2-control-extremes-seed3.png)
 
 ## Verification
 
@@ -122,5 +114,3 @@ with the colonies' buildings included. Forts on the same map seed reached 2–73
 - Two colonies on a non-square map can score low on the start-fairness model (0.51 at worst in the
   random rolls).
 - No rotation tournament or human playtest has been recorded.
-
-![Six colonies at 512×512](../artifacts/karst-towers/revision2-512-6-seed5.png)

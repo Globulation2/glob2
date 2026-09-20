@@ -19,20 +19,45 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Network and multiplayer service | `src/net/`, `src/yog/` |
 | Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/sgsl/` |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
-| Tests and replay usage | [test/README.md](test/README.md), [docs/headless-replays.md](docs/headless-replays.md) |
-| Build pitfalls, verification and conventions | [Development reference](docs/development-notes.md) |
-| Architecture background | [Source-code overview](doc/sourceCodeUnderstanding.txt) |
+| Documentation index | [docs/README.md](docs/README.md) |
+| Tests and replay usage | [test/README.md](test/README.md), [docs/development/headless-replays.md](docs/development/headless-replays.md) |
+| Build pitfalls, verification and conventions | [Development reference](docs/development/reference.md) |
+| Architecture background | [Historical source-code overview](docs/development/legacy-architecture.txt) |
 
 Use these pointers to find the current implementation, rather than treating this
 guide as a substitute for reading it. Update affected documentation in the same PR
 when changing described behavior, commands, paths or policies.
+
+## Documentation and temporary evidence
+
+Curate committed documentation deliberately. A file being written in the working
+tree, useful during development, or referenced in a pull request is not by itself
+a reason to commit it. Add a document only when it has a clear long-term audience,
+belongs in a category listed in `docs/README.md`, and will be maintained with the
+behavior it describes. Prefer updating an existing guide over adding a new report.
+
+Do not commit development artifacts, validation dumps, dated benchmark reports,
+working notes or PR narratives. Use these ignored local directories instead:
+
+- `artifacts/` for generated screenshots, maps, saves, replays, logs, datasets,
+  profiles, archives and other review evidence;
+- `docs/.work/` for temporary Markdown notes, validation narratives and draft PR
+  material.
+
+Before committing a documentation file, remove transient command output, local
+paths, dated status reports and redundant screenshots. Attach evidence needed for
+review to the pull request or keep it on a dedicated evidence branch. Summarize
+durable conclusions in the relevant guide. The legacy
+`artifacts/`, `evidence/`, `validation/` and `.work/` directories anywhere under
+`docs/` are also ignored to prevent accidental recommits; do not use them for
+permanent docs.
 
 ## Compatibility reminders
 
 - Preserve engine compatibility and identical simulation execution across supported
   platforms. For changes that can affect simulation results or portability, run the
   same initial state, seed and orders on affected platforms and compare per-tick
-  simulation checksums; they must match. See [replay verification](docs/headless-replays.md).
+  simulation checksums; they must match. See [replay verification](docs/development/headless-replays.md).
   CI builds and matching replay orders alone do not establish equivalent execution;
   report any platform coverage that could not be verified.
 - Save-state backward compatibility is deliberately durable and has broken for real

@@ -104,7 +104,8 @@ python3 tools/map_telemetry.py collect --generators hills --seed-start 20001 --c
 python3 tools/map_telemetry.py summarize artifacts/hills/held-out
 ```
 
-[Verification results, previews, native maps, replays and study evidence](evidence/rice-terraces/README.md) are retained with this implementation, under its former name and for revisions before the valley roads and wild crops.
+Keep verification results, previews, native maps, replays and study evidence in
+the ignored `artifacts/hills/` workspace or in pull-request attachments.
 The primitive regressions cover translated/wrapped contours, diagonal crossing cores,
 future growth components, and nearest-site tie/sentinel behavior. The generator
 regression includes resource extremes, rectangles, vacant hills and 12,000 unattended
@@ -129,10 +130,9 @@ Revision 4 retains three default stairs and the original terrain geometry. It su
 starting tower reserves, distributes starter wheat near all inner stair mouths,
 and gives each summit a small inn stocked only with wheat.
 These changes target opening worker diversion and the first feeding deadline; they
-do not alter AI or simulation rules. [Playtest results and evidence](evidence/rice-terraces/PLAYTEST.md)
+do not alter AI or simulation rules. Playtest results
 compare the original, four-stair, reserve-only and nearby-food variants on paired
-seeds, with prospective validation of the stocked-inn opening. The revision-1 archive above remains
-available as the original implementation baseline.
+seeds, with prospective validation of the stocked-inn opening.
 
 ## Bulk generation repair
 
@@ -140,6 +140,5 @@ Revision 5 keeps the same layout and opening supplies. A broad control study fou
 that the unconstrained crop rescue could put wood in a dry summit when dense wheat
 made the original wood inaccessible. The shared placement mask and bounded crop
 trade above repair that case. The original failed seed/settings requests, the
-corrected reports, broad validation and generation timing are recorded in
-[bulk generation evidence](evidence/rice-terraces/BULK_GENERATION.md). The AI
-playtest archive describes revision 4 before this generation-only repair.
+corrected reports, broad validation, generation timing and AI playtest records
+belong in the ignored `artifacts/hills/` workspace or in pull-request attachments.

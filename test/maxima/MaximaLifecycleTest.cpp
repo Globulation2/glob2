@@ -5,6 +5,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "AINames.h"
+#include "YOGConsts.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <cassert>
@@ -69,6 +70,8 @@ static void rejectedStateThrows(Game& game)
 
 static void run(Uint32 seed)
 {
+    assert(!isSupportedYOGClientVersion(39));
+    assert(isSupportedYOGClientVersion(40));
     GameGUI original;
     auto map=Engine::loadMapHeader("maps/balanced.map");
     GameHeader header;

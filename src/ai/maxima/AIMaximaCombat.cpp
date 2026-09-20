@@ -64,7 +64,7 @@ namespace
 
 	bool tactical_warrior_available(const Unit* warrior,
 		const Building* continuingFlag, int minimumLevel,
-		const std::vector<const Building*>* waveFlags=NULL)
+		const std::vector<const Building*>* offenseFlags=NULL)
 	{
 		// Match the engine's flag subscription rule: the lower of the two combat
 		// abilities must reach the flag's minimum level (user level minus one).
@@ -73,8 +73,8 @@ namespace
 		   || std::min(warrior->level[ATTACK_SPEED],
 			warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
 			return false;
-		if(waveFlags && warrior->attachedBuilding
-		   && std::find(waveFlags->begin(),waveFlags->end(),warrior->attachedBuilding)!=waveFlags->end())
+		if(offenseFlags && warrior->attachedBuilding
+		   && std::find(offenseFlags->begin(),offenseFlags->end(),warrior->attachedBuilding)!=offenseFlags->end())
 			return true;
 		if(continuingFlag && warrior->attachedBuilding==continuingFlag)
 			return true;
@@ -88,8 +88,8 @@ namespace
 	{
 	public:
 		TacticalReachability(Map* map, int minimumLevel,
-			const std::vector<const Building*>* waveFlags=NULL)
-			: map(map), minimumLevel(minimumLevel), waveFlags(waveFlags) {}
+			const std::vector<const Building*>* offenseFlags=NULL)
+			: map(map), minimumLevel(minimumLevel), offenseFlags(offenseFlags) {}
 		std::vector<int> powersAt(Team* team, const Building* continuingFlag,
 			int x, int y, int cap, bool swimmersOnly=false,
 			std::map<std::string, int>* diagnostics=NULL)
@@ -105,7 +105,7 @@ namespace
 						++(*diagnostics)["untrained"];
 					else if(warrior->medical!=Unit::MED_FREE)
 						++(*diagnostics)["medical"];
-					else if(!tactical_warrior_available(warrior,continuingFlag,minimumLevel,waveFlags))
+					else if(!tactical_warrior_available(warrior,continuingFlag,minimumLevel,offenseFlags))
 					{
 						++(*diagnostics)["busy"];
 						if(warrior->attachedBuilding)
@@ -117,7 +117,7 @@ namespace
 							++(*diagnostics)["busy_attacking"];
 					}
 				}
-				if(!tactical_warrior_available(warrior,continuingFlag,minimumLevel,waveFlags)) continue;
+				if(!tactical_warrior_available(warrior,continuingFlag,minimumLevel,offenseFlags)) continue;
 				const bool swimming=warrior->performance[SWIM]>0;
 				if(swimmersOnly && !swimming)
 				{
@@ -141,7 +141,7 @@ namespace
 	private:
 		Map* map;
 		int minimumLevel;
-		const std::vector<const Building*>* waveFlags;
+		const std::vector<const Building*>* offenseFlags;
 		std::vector<int> components[2];
 		void label(bool swimming)
 		{
@@ -321,10 +321,13 @@ void Maxima::plan_offense(Context& echo)
 		return learned_power ? own_power>=believed_power
 			: Labour::attackStrengthSufficient(own_power,believed_defenders);
 	};
-	std::vector<const Building*> waveFlags;
+	std::vector<const Building*> offenseFlags;
 	for(const auto& wave:offense_waves)
 		if(echo.get_building_register().is_building_found(wave.flagId))
-			waveFlags.push_back(echo.get_building_register().get_building(wave.flagId));
+			offenseFlags.push_back(echo.get_building_register().get_building(wave.flagId));
+	for(int id:attack_flags)
+		if(echo.get_building_register().is_building_found(id))
+			offenseFlags.push_back(echo.get_building_register().get_building(id));
 	int eligible=0;
 	long long eligible_damage_rate=0;
 	// Warriors eating, healing or training are away from the flag but not lost
@@ -337,7 +340,7 @@ void Maxima::plan_offense(Context& echo)
 		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
 			const Unit* warrior=echo.player->team->myUnits[id];
-			if(tactical_warrior_available(warrior, flag, level, &waveFlags))
+			if(tactical_warrior_available(warrior, flag, level, &offenseFlags))
 			{
 				++eligible;
 				eligible_damage_rate+=learned_power ? warrior_power(warrior) : Labour::WarriorDamageRate[std::max(0, std::min(3,
@@ -373,7 +376,7 @@ void Maxima::plan_offense(Context& echo)
 		}
 	}
 	budget.tactical_flag_level=flag_level;
-	TacticalReachability reachability(map, flag_level, &waveFlags);
+	TacticalReachability reachability(map, flag_level, &offenseFlags);
 	offense_diagnostics.eligibleWarriors=eligible;
 	// Reserve training only for available warriors who can learn there.
 	// Match trainees to capacity so overlapping barracks do not reserve the
@@ -640,9 +643,10 @@ void Maxima::plan_offense(Context& echo)
 
 void Maxima::end_offense(Context& echo, const char* reason)
 {
-	for(const auto& wave:offense_waves)
-		if(wave.flagId!=tactical_mission.flagId)
-			echo.cancel_or_destroy_building(wave.flagId);
+	std::set<int> flags(attack_flags.begin(),attack_flags.end());
+	for(const auto& wave:offense_waves)flags.insert(wave.flagId);
+	flags.erase(tactical_mission.flagId);
+	for(int id:flags)echo.cancel_or_destroy_building(id);
 	offense_waves.clear();
 	if(tactical_mission.flagId>=0)
 	{
@@ -661,10 +665,58 @@ void Maxima::end_offense(Context& echo, const char* reason)
 	director.invalidate();
 }
 
-// Returns false for a purely amphibious objective: the existing swimmer-aware
-// executor remains responsible until wave recruitment can express swim training.
+void Maxima::observe_wave_delivery()
+{
+	if(failed_waves>=4)return;
+	const auto score=[&](Tactics::WaveDelivery& delivery) {
+		if(delivery.scored || delivery.launched==0 || failed_waves>=4)return;
+		delivery.scored=true;
+		failed_waves=delivery.arrived*100<delivery.launched*33 ? failed_waves+1 : 0;
+	};
+	for(const auto& wave:offense_waves)
+	{
+		if(wave.phase!=Tactics::WaveAdvance)continue;
+		auto& registry=context.get_building_register();
+		Building* flag=registry.is_building_found(wave.flagId)
+			? registry.get_building(wave.flagId) : NULL;
+		if(!flag)continue;
+		auto inserted=wave_delivery.emplace(wave.flagId,Tactics::WaveDelivery{});
+		auto& delivery=inserted.first->second;
+		const int enrolled=flag->unitsWorking.size();
+		if(inserted.second)delivery.launched=enrolled;
+		if(delivery.scored)continue;
+		int arrived=0;
+		for(const Unit* warrior:flag->unitsWorking)
+			if(warrior && !warrior->isDead && warrior->medical==Unit::MED_FREE
+			   && context.player->map->warpDistMax(warrior->posX,warrior->posY,
+				wave.targetX,wave.targetY)<=budget.tactical_siege_radius)++arrived;
+		delivery.arrived=std::max(delivery.arrived,arrived);
+		// Assess a spent wave once, retaining its peak simultaneous delivery.
+		if(enrolled*4<=delivery.launched)score(delivery);
+	}
+	for(auto it=wave_delivery.begin();it!=wave_delivery.end();)
+		if(std::none_of(offense_waves.begin(),offense_waves.end(),
+			[&](const Tactics::Wave& wave){return wave.flagId==it->first;}))
+		{
+			score(it->second);
+			it=wave_delivery.erase(it);
+		}
+		else ++it;
+	if(failed_waves>=4)fall_back_to_streaming();
+}
+
+void Maxima::fall_back_to_streaming()
+{
+	end_offense(context,"wave_failed");
+	wave_delivery.clear();
+	emit_telemetry(context,"wave_fallback","\tfailed_waves=4");
+}
+
+// The existing streaming executor handles amphibious objectives and the
+// permanent fallback after repeated poor wave delivery.
 bool Maxima::control_offense_waves(Context& echo)
 {
+	if(failed_waves>=4)return false;
 	if(!budget.tactics_enabled || severe_colony_emergency())
 	{
 		end_offense(echo,"wave_emergency");
@@ -815,6 +867,11 @@ bool Maxima::control_offense_waves(Context& echo)
 			else if(timer-wave.startedTick>=policy.muster_max_ticks)
 			{
 				retire=true;assemblyFailed=true;
+				if(++failed_waves>=4)
+				{
+					fall_back_to_streaming();
+					return false;
+				}
 			}
 			else mustering=true;
 		}
@@ -906,16 +963,21 @@ void Maxima::control_offense(Context& echo)
 {
 	if(control_offense_waves(echo))
 		return;
-	// Keep only the active amphibious mission flag after a controller handoff.
-	for(std::vector<int>::const_iterator extra=attack_flags.begin();
-		extra!=attack_flags.end(); ++extra)
-		if(*extra!=tactical_mission.flagId
-		   && (echo.get_building_register().is_building_found(*extra)
-			|| echo.get_building_register().is_building_pending(*extra)))
-			echo.add_management_order(new DestroyBuilding(*extra));
-	attack_flags.clear();
-	if(tactical_mission.flagId>=0)
-		attack_flags.push_back(tactical_mission.flagId);
+	auto& registry=echo.get_building_register();
+	const auto live=[&](int id) {
+		return registry.is_building_found(id) || registry.is_building_pending(id);
+	};
+	attack_flags.erase(std::remove_if(attack_flags.begin(),attack_flags.end(),
+		[&](int id){return !live(id);}),attack_flags.end());
+	if(tactical_mission.flagId>=0 && live(tactical_mission.flagId)
+	   && std::find(attack_flags.begin(),attack_flags.end(),tactical_mission.flagId)==attack_flags.end())
+		attack_flags.insert(attack_flags.begin(),tactical_mission.flagId);
+	if(!attack_flags.empty() && tactical_mission.flagId!=attack_flags.front())
+	{
+		tactical_mission.flagId=attack_flags.front();
+		if(tactical_mission.targetGid>=0)
+			attack_flag_targets[tactical_mission.flagId]=tactical_mission.targetGid;
+	}
 
 	if(!budget.tactics_enabled || severe_colony_emergency())
 	{
@@ -955,47 +1017,78 @@ void Maxima::control_offense(Context& echo)
 		&& echo.player->map->warpDistSquare(tactical_mission.targetX,
 			tactical_mission.targetY, budget.tactical_target_x, budget.tactical_target_y)
 			<=budget.raid_flag_radius*budget.raid_flag_radius*16;
+	const int radius=budget.tactical_kind==Tactics::MissionRaid
+		? budget.raid_flag_radius : budget.tactical_siege_radius;
+	const bool new_mission=tactical_mission.flagId<0;
+	const int capacity=std::max(1,strategy.military.attack_unit_cap);
+	const int requested=std::max(0,budget.tactical_requested_force);
+	const int wanted=std::max(1,(requested+capacity-1)/capacity);
+	const bool reallocate=requested!=tactical_mission.requestedForce
+		|| int(attack_flags.size())!=wanted;
+	while(int(attack_flags.size())>wanted)
+	{
+		echo.cancel_or_destroy_building(attack_flags.back());
+		attack_flags.pop_back();
+	}
+	const int retained=attack_flags.size();
+	while(int(attack_flags.size())<wanted)
+	{
+		const int force=std::min(capacity,requested-int(attack_flags.size())*capacity);
+		BuildingOrder* order=new BuildingOrder(IntBuildingType::WAR_FLAG,force);
+		// Creation cannot overlap another flag. Use the nearest free anchor;
+		// every flag's attack radius still covers the planned objective.
+		if(attack_flags.empty())
+			order->add_constraint(new Construction::SinglePosition(
+				budget.tactical_target_x,budget.tactical_target_y));
+		else
+		{
+			GradientInfo objective;
+			objective.add_source(new Entities::Position(budget.tactical_target_x,budget.tactical_target_y));
+			order->add_constraint(new Construction::MaximumDistance(objective,std::max(1,radius/2)));
+			order->add_constraint(new Construction::MinimizedDistance(objective,1));
+		}
+		const int flag=echo.add_building_order(order);
+		echo.add_management_order(new ChangeFlagMinimumLevel(budget.tactical_flag_level,flag));
+		echo.add_management_order(new ChangeFlagSize(radius,flag));
+		ManagementOrder* deleted=new Notify(RuntimeEvent(RuntimeEvent::AttackFinished,flag));
+		deleted->add_condition(new BuildingDestroyed(flag));
+		echo.add_management_order(deleted);
+		attack_flags.push_back(flag);
+		attack_flag_started_ticks[flag]=timer;
+	}
+	for(int i=0;i<retained;++i)
+	{
+		const int flag=attack_flags[i];
+		const int force=std::min(capacity,requested-i*capacity);
+		if(reallocate || (registry.is_building_found(flag) && registry.get_assigned(flag)!=force))
+			echo.add_management_order(new AssignWorkers(force,flag));
+		if(!same_target)
+		{
+			echo.add_management_order(new ChangeFlagSize(radius,flag));
+			echo.add_management_order(new ChangeFlagPosition(budget.tactical_target_x,
+				budget.tactical_target_y,flag));
+		}
+	}
 	if(same_raid_moved)
 	{
 		tactical_mission.targetX=budget.tactical_target_x;
 		tactical_mission.targetY=budget.tactical_target_y;
 		tactical_mission.candidateScore=budget.tactical_candidate_score;
-		echo.add_management_order(new ChangeFlagPosition(budget.tactical_target_x,
-			budget.tactical_target_y, tactical_mission.flagId));
+		tactical_mission.requestedForce=requested;
 		return;
 	}
-	const int radius=budget.tactical_kind==Tactics::MissionRaid
-		? budget.raid_flag_radius : budget.tactical_siege_radius;
-	if(tactical_mission.flagId<0)
+	if(new_mission)
 	{
-		BuildingOrder* order=new BuildingOrder(IntBuildingType::WAR_FLAG,
-			budget.tactical_requested_force);
-		order->add_constraint(new Construction::SinglePosition(
-			budget.tactical_target_x, budget.tactical_target_y));
-		const int flag=echo.add_building_order(order);
-		echo.add_management_order(new ChangeFlagMinimumLevel(
-			budget.tactical_flag_level, flag));
-		echo.add_management_order(new ChangeFlagSize(radius, flag));
-		ManagementOrder* deleted=new Notify(RuntimeEvent(RuntimeEvent::AttackFinished, flag));
-		deleted->add_condition(new BuildingDestroyed(flag));
-		echo.add_management_order(deleted);
 		tactical_mission.reset();
-		tactical_mission.flagId=flag;
+		tactical_mission.flagId=attack_flags.front();
 		tactical_mission.phase=Tactics::PhaseEngage;
 		tactical_mission.startedTick=timer;
-		attack_flags.push_back(flag);
-		attack_flag_started_ticks[flag]=timer;
 	}
 	else if(same_target)
 	{
 		// The request follows the training surplus, releasing warriors to the
 		// barracks or admitting newly free ones.
-		if(budget.tactical_requested_force!=tactical_mission.requestedForce)
-		{
-			tactical_mission.requestedForce=budget.tactical_requested_force;
-			echo.add_management_order(new AssignWorkers(
-				tactical_mission.requestedForce, tactical_mission.flagId));
-		}
+		tactical_mission.requestedForce=requested;
 		// Progress watch: a visible target that stops losing hit points for
 		// the stall period is quarantined so the next plan looks elsewhere.
 		if(tactical_mission.kind==Tactics::MissionSiege)
@@ -1014,8 +1107,8 @@ void Maxima::control_offense(Context& echo)
 				tactical_mission.lastProgressTick=timer;
 				campaign.last_progress_tick=timer;
 			}
-			const int enrolled=echo.get_building_register().get_enrolled(
-				tactical_mission.flagId);
+			int enrolled=0;
+			for(int id:attack_flags)enrolled+=registry.get_enrolled(id);
 			if(enrolled>0 && budget.tactical_quarantine_enabled
 			   && timer-tactical_mission.lastProgressTick
 				>=budget.tactical_stall_ticks)
@@ -1046,11 +1139,6 @@ void Maxima::control_offense(Context& echo)
 				campaign.last_progress_tick=timer;
 			}
 		}
-		echo.add_management_order(new ChangeFlagSize(radius, tactical_mission.flagId));
-		echo.add_management_order(new ChangeFlagPosition(budget.tactical_target_x,
-			budget.tactical_target_y, tactical_mission.flagId));
-		echo.add_management_order(new AssignWorkers(budget.tactical_requested_force,
-			tactical_mission.flagId));
 		emit_telemetry(echo, "mission_retargeted",
 			"\tkind="+std::string(Tactics::missionKindName(budget.tactical_kind))
 			+"\ttarget_team="+diagnostic_value(budget.tactical_target_team)

@@ -96,14 +96,12 @@ Two 20,000-tick games on seed 401 (Cortex and Cabino) established 8–21 buildin
 colony, with no worker starvation. The reviewer checked the updated visual density
 and sand-rim containment. The 512-square/eight-colony benchmark measured 464 ms/map
 of process CPU time across 24 seeds, including the new decorative terrain work.
-See the updated [preview](../artifacts/comb/preview.png) and
-[scatter results](../artifacts/comb/scatter-validation.json).
 
 ## Revision 1 baseline results
 
-The [evidence bundle](../artifacts/comb/README.md) contains previews, aggregate
-statistics, test output, gameplay summaries and reproduction commands. Full raw
-requests, reports, frozen binaries and saves are in `artifacts/comb/`.
+Keep previews, aggregate statistics, test output, gameplay summaries, raw
+requests, reports, frozen binaries and saves in the ignored `artifacts/comb/`
+workspace or in pull-request attachments.
 
 - **4,256 successful maps:** 192 shape/team/peninsula cases, 272 slider cases,
   1,152 resource-extreme combinations, 2,000 random settings, 128 starting-worker

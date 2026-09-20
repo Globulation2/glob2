@@ -1,6 +1,0 @@
-Settings::load("preferences.txt") : error, can't open file.
-PASS Comb full-save repeatability, telemetry, save/load, food-loss and invalid requests
-PASS feeding courts at wheat 0/300, both harvest parities, three seeds
-PASS cross-channel fire tower=(141,55) target=(149,63) range=7 stone-consumed=1 shots=1; empty-ammo control=pass damage=pass target=unit
-SUPPLY ticks=918 harvested=3 delivered=1 new-shots=1
-PASS cross-channel fire tower=(105,64) target=(113,72) range=7 stone-consumed=1 shots=1; empty-ammo control=pass damage=pass target=building

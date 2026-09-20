@@ -280,9 +280,12 @@ struct DevelopmentLimits
 	bool allowLevel2Upgrades;
 	bool allowRepairs;
 	// Missing entries retain the planner's generic upgrade demand. Zero vetoes
-	// the upgrade; positive values supply its director demand score.
+	// the upgrade; positive values supply its director demand score. Level zero
+	// is reserved for a repair veto, sharing the existing saved priority map.
 	std::map<std::pair<int, int>, int> upgradePriorities;
 	int upgradePriority(int buildingType, int fromLevel) const;
+	bool repairAllowed(int buildingType) const
+	{ return allowRepairs && upgradePriority(buildingType,0)!=0; }
 	int totalCapacity() const;
 };
 

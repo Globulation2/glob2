@@ -2,8 +2,6 @@
 
 All 16 recovered building XCFs have been compared with current game sprites, including hidden base/team layers. The family and level match is confirmed. Completed school and first/second racetrack exports are now verified; other state/anchor/layer combinations still require validation. See [runtime recipes](RECOVERED-RUNTIME.md). Levels in folder names are human-facing (1–3); runtime suffixes use 0–2.
 
-![Original source beside current game sprite](../../docs/original-artwork/building-matches.jpg)
-
 Each pair shows the recovered source preview on the left and the current classic game sprite on the right. Images are fitted to equal comparison boxes to compare geometry, not to imply equal native resolution. Selected hidden layers are enabled only in disposable previews; no XCF is resaved.
 
 | Historical source | Game reference | Identification evidence |

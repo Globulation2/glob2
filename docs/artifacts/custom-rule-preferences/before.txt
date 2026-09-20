@@ -1,1 +1,0 @@
-Assertion failed: (s.noResourceGrowth && s.instantConstruction && s.noHunger), function checkExtraRules, file CustomGameSetupHarness.cpp, line 71.

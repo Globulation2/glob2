@@ -82,7 +82,6 @@ The [fixture guide](../../test/fixtures/hungry-marches/README.md) gives the cont
 studies, rotated AI games and profiling commands. Local evidence is indexed in
 `artifacts/hungry-marches/VERIFICATION.md`, including completed saves and logs.
 
-
 See `test/HungryMarchesContracts.h` for telemetry repeatability, supported shapes,
 resource extremes, late growth and deliberate corruption checks. Reproduce with:
 

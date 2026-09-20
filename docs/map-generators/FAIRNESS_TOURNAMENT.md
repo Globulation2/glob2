@@ -77,7 +77,7 @@ statistics against synthetic engine output and known values. It needs no build a
    holds the map, so it never touches `~/.glob2`. Winning conditions are the lobby's free-for-all
    defaults, prestige victory included. Structured results preserve outcomes, elimination
    ticks, starts, prestige, units and buildings; `--ticks` sets the unresolved engine cap.
-   See [distributed tournaments](../tournaments.md) for the worker/artifact protocol.
+   See [distributed tournaments](../tools/tournaments.md) for the worker/artifact protocol.
 
 Per game, `games.csv` has the winner's start and team, the winning start's coordinates, how the
 game ended (`elimination`, `prestige` or `cap`), elimination order with ticks, placements, wall time

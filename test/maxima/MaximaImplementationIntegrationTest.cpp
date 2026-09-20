@@ -1464,6 +1464,94 @@ static void repairLaborContractRegressions()
     }
 }
 
+static void schoolPopulationScalingRegressions()
+{
+    Game game(NULL);game.map.setSize(6,6,GRASS);game.map.setGame(&game);
+    game.addTeam();game.teams[0]->race.loadDefault();
+    Player player;player.setTeam(game.teams[0]);AIMaxima::Maxima ai(&player);
+    ai.environment.connected_abundance=50;ai.environment.mobility_opportunity=0;
+    ai.demands.technology=100;
+    for(const auto& test:std::vector<std::pair<int,int>>{{47,0},{48,3},{279,3},{280,4},{350,5},{700,10}})
+    {
+        ai.snapshot.population=test.first;ai.build_policy_bids();
+        assert(ai.policy_bids[AIMaxima::Maxima::PolicyTechnology].desired_schools==test.second);
+    }
+    ai.snapshot.population=100;ai.demands.technology=25;ai.build_policy_bids();
+    assert(ai.policy_bids[AIMaxima::Maxima::PolicyTechnology].desired_schools==1);
+}
+
+// Upgrade commitments count before orders reach the engine, independently
+// for every category; unfinished new buildings cannot inflate the allowance.
+static void categoryMaintenanceCapacityRegressions()
+{
+    using namespace AIMaximaPlacement;
+    for(const char* name:{"inn","racetrack","swimmingpool",
+                         "barracks","school","hospital","defencetower"})
+    for(int count=1;count<=6;++count)
+    for(bool repairFirst:{false,true})
+    {
+        Game game(NULL);game.map.setSize(6,6,GRASS);game.map.setGame(&game);
+        game.addTeam();game.teams[0]->race.loadDefault();
+        Player player;player.setTeam(game.teams[0]);
+        const int engineType=globalContainer->buildingsTypes.getTypeNum(name,0,false);
+        for(int i=0;i<count;++i)assert(game.addBuilding(4+i*9,20,engineType,0));
+        AIMaxima::Maxima ai(&player);Context& c=ai.context;c.initialize();
+        ai.budget.allow_upgrades=true;
+        ai.budget.upgrade_level1_inn_weight=10;
+        ai.budget.upgrade_level1_hospital_weight=10;
+        ai.budget.upgrade_level1_racetrack_weight=10;
+        ai.budget.upgrade_level1_pool_weight=10;
+        ai.budget.upgrade_level1_barracks_weight=10;
+        ai.snapshot.warriors=100;ai.snapshot.trained_warriors=0;
+        const int type=globalContainer->buildingsTypes.get(engineType)->shortTypeNum;
+        std::vector<int> ids;for(const auto& entry:c.buildings.found())ids.push_back(entry.first);
+        const int allowed=std::max(1,count/2);
+        for(int i=0;i<allowed;++i)
+        {
+            assert(ai.collect_development_limits(c).upgradePriority(type,1)!=0);
+            const bool repair=(i%2==0)==repairFirst;
+            if(repair)--c.buildings.get_building(ids[i])->hp;
+            assert(ai.collect_development_limits(c).repairAllowed(type));
+            DevelopmentAction action;action.id=100+i;
+            action.type=repair?RepairBuilding:UpgradeBuilding;
+            action.buildingType=type;action.buildingId=ids[i];
+            action.fromLevel=1;action.targetLevel=repair?1:2;action.workers=4;
+            const bool issued=ai.issue_development_action(c,action);
+            if(!issued)std::cerr << "category " << name << " count " << count << " index " << i << "\n";
+            assert(issued);
+        }
+        if(count==1)continue;
+        assert(ai.collect_development_limits(c).upgradePriority(type,1)==0);
+        DevelopmentAction next;next.id=200;next.type=UpgradeBuilding;
+        next.buildingType=type;next.buildingId=ids[allowed];
+        next.fromLevel=1;next.targetLevel=2;
+        assert(!ai.issue_development_action(c,next));
+        --c.buildings.get_building(ids[allowed])->hp;
+        next.type=RepairBuilding;next.targetLevel=1;
+        assert(!ai.collect_development_limits(c).repairAllowed(type));
+        assert(!ai.issue_development_action(c,next));
+        // Adding a new site must not permit another simultaneous upgrade.
+        const int siteType=globalContainer->buildingsTypes.getTypeNum(name,0,true);
+        assert(game.addBuilding(4,40,siteType,0));
+        assert(ai.collect_development_limits(c).upgradePriority(type,1)==0);
+        // The pending flag survives a saved registry round trip.
+        GAGCore::MemoryStreamBackend* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory);c.buildings.save(&output);
+        std::string bytes(memory->getBuffer(),memory->getPosition());
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);c.buildings.load(&input);
+        assert(ai.collect_development_limits(c).upgradePriority(type,1)==0);
+        assert(!ai.collect_development_limits(c).repairAllowed(type));
+        // A rejected order frees its slot when the registry observes rejection.
+        c.orders.clear();c.buildings.tick();
+        // The independent barracks-seat safeguard also credits the new site;
+        // clear its training backlog to isolate the category commitment here.
+        ai.snapshot.trained_warriors=ai.snapshot.warriors;
+        assert(ai.collect_development_limits(c).upgradePriority(type,1)!=0);
+        assert(ai.collect_development_limits(c).repairAllowed(type));
+    }
+}
+
 // An upgrade only pays off once it finishes, so the site outranks its equals
 // for workers while it is live and hands that advantage back on completion.
 void upgradeWorkerPriorityRegressions()
@@ -1634,5 +1722,7 @@ int main(int argc,char** argv)
     directorExecutionRegressions();
     directorUpgradeRegressions();
     upgradeWorkerPriorityRegressions();
+    categoryMaintenanceCapacityRegressions();
+    schoolPopulationScalingRegressions();
     std::cout << "save, gradient refresh, farming restoration, reused GID and defense reserve regressions passed\n";
 }

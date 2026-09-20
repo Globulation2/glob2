@@ -103,5 +103,5 @@ build/src/glob2 --generate-map encircled-kingdom --seed 7 \
 ```
 
 Evidence and measured limitations are recorded in the accompanying validation
-[report](../artifacts/encircled-kingdom/README.md). Generation repeatability is a per-platform contract; no cross-platform
+report. Generation repeatability is a per-platform contract; no cross-platform
 simulation checksum comparison is claimed for this map-only addition.

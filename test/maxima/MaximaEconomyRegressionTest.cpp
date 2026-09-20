@@ -33,6 +33,7 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <cassert>
+#include <bit>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -538,7 +539,10 @@ void armyBirthsMatchPlatformChecksums()
     assert(record?output.good():expected.good());
     for(int tick=1;tick<=512;++tick) {
         f.game.syncStep(0);assert(f.game.stepCounter==unsigned(tick));
-        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true);
+        // Preserve the format-115 baseline across save-format bumps. With one
+        // team and no players, the header version is rotated six times.
+        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true)
+            ^ std::rotr(Uint32(f.game.mapHeader.getVersionMinor()^115),6);
         if(record)output<<tick<<' '<<checksum<<'\n';
         else {
             int expectedTick;Uint32 expectedChecksum;
@@ -762,6 +766,36 @@ static void schoolsDoNotRequireKnownAlgae()
     assert(schoolRequested);
 }
 
+static void strandedAlgaeKeepsPoolDemand()
+{
+    Fixture f;
+    auto& ai=*f.ai;
+    ai.context.initialize();
+    ai.ensure_strategy();
+    ai.environment.mobility_opportunity=5;
+    ai.known_algae_units=100;
+    ai.walk_accessible_algae_units=20;
+    auto& access=ai.policy_bids[AIMaxima::Maxima::PolicyAccess];
+    access.utility=100;
+    access.desired_pools=1;
+
+    assert(ai.labour_swimming_matters());
+    ai.arbitrate_policy_bids();
+    assert(ai.budget.desired_pools==1);
+
+    // Connected maps without stranded water resources retain the cheap
+    // suppression that avoids spending labour on useless swimming lessons.
+    ai.walk_accessible_algae_units=ai.known_algae_units;
+    assert(!ai.labour_swimming_matters());
+    ai.arbitrate_policy_bids();
+    assert(ai.budget.desired_pools==0);
+
+    // Fragmented terrain remains sufficient even before algae is discovered.
+    ai.environment.mobility_opportunity=15;
+    ai.known_algae_units=ai.walk_accessible_algae_units=0;
+    assert(ai.labour_swimming_matters());
+}
+
 static void labourContinuation()
 {
     Fixture f;
@@ -812,6 +846,7 @@ int main()
 
 
     labourContinuation();
+    strandedAlgaeKeepsPoolDemand();
     schoolsDoNotRequireKnownAlgae();
     birthBudgetScalesBeyondTwenty();
     growingFoodFundsCapacity();

@@ -99,7 +99,7 @@ python3 tools/fairness_model.py extend artifacts/fairness-model --hosts hosts.js
 python3 tools/fairness_model.py play artifacts/fairness-model --hosts hosts.json
 ```
 
-`hosts.json` is the ordinary [distributed tournament](../tournaments.md) host list. Rounds
+`hosts.json` is the ordinary [distributed tournament](../tools/tournaments.md) host list. Rounds
 live side by side under one directory and every round counts towards the fit; a round pinned
 to an older worker package is still read, it just cannot be played further from here.
 

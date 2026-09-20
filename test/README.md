@@ -395,7 +395,7 @@ save traces against outputs from the original loader. Linux and Windows CI run
 it in disposable profiles and check that preferences remain unchanged.
 See [fixtures and reproduction steps](fixtures/team-stats/README.md).
 
-The harness also covers [gameplay measurements](../docs/gameplay-statistics.md):
+The harness also covers [gameplay measurements](../docs/ai/gameplay-statistics.md):
 real production, resource, damage, death, treatment, construction and training
 paths; 64-bit totals; timestamped coverage; pending projectile/death attribution;
 and malformed new fields. `SavegameSafetyHarness` compares measurement totals
@@ -516,7 +516,7 @@ For native software captures, run
 headless Linux). Linux CI builds and runs both modes. Fixtures exercise rectangular
 placement, toroidal dragging, legacy/new codecs, malformed input, network frame
 bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.
-See [pre-game preview behavior and compatibility](../docs/pre-game-map-preview.md).
+See [pre-game preview behavior and compatibility](../docs/features/pre-game-map-preview.md).
 
 ## Tournament execution and configuration
 
@@ -540,7 +540,7 @@ directory. `--initial FILE --ticks N` runs a retained initial state on another p
 `test/tournament_reliability_pilot.py` is an opt-in localhost/SSH integration pilot.
 It requires immutable macOS/Linux bundles and explicitly configured disposable
 worker directories, and kills only processes belonging to that pilot. See
-[the tournament guide](../docs/tournaments.md) for commands and validation policy.
+[the tournament guide](../docs/tools/tournaments.md) for commands and validation policy.
 ## Map CLI
 
 Build the normal client with `scons release=1 server=0`, then run
@@ -583,7 +583,7 @@ after collection. Retained validation is linked in the tournament validation gui
 The team-statistics harness also checks the AI telemetry schema interface for every
 built-in implementation, shared-team player identities, controller generations,
 reassignment, exact numeric persistence, replay availability, and truncated fields.
-See [AI telemetry](../docs/ai-telemetry.md) for the capture/extension contract.
+See [AI telemetry](../docs/ai/telemetry.md) for the capture/extension contract.
 
 ## Performance telemetry
 
@@ -596,7 +596,7 @@ The injected-clock harness checks online variance, nested timings, exclusion of 
 presentation from work, budgets, jitter, sampling rotation, actor generations, capture
 boundaries, and the disabled control. SavegameSafetyHarness additionally checks background
 write timing counts and completed/failed/superseded accounting. See
-[metric definitions and export records](../docs/performance-telemetry.md).
+[metric definitions and export records](../docs/development/performance-telemetry.md).
 
 `MapGeneratorGoldenTest PROFILE --performance` compares all built-in generators with timing
 off/on (serialized worlds, outcomes, RNG, and generation telemetry) and emits generation
@@ -612,7 +612,7 @@ runs all eight AIs on supplied registered bundles through real workers and the
 coordinator. It checks log transfer, complete final telemetry, offline record
 counts, export-on/off per-tick checksums, and repeated save/load telemetry
 continuation. Host entries need absolute `bundle` paths; workers are stopped after
-collection. See [tournament telemetry](../docs/tournaments.md#gameplay-ai-and-performance-telemetry).
+collection. See [tournament telemetry](../docs/tools/tournaments.md#gameplay-ai-and-performance-telemetry).
 
 
 ## Nicowar farming wood clearance

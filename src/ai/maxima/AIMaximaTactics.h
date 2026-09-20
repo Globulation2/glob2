@@ -50,6 +50,21 @@ struct Wave
 	int targetY=0;
 };
 
+// Delivery is observed separately so a retired wave can still be assessed.
+struct WaveDelivery
+{
+	int launched=0;
+	int arrived=0;
+	bool scored=false;
+};
+
+template<class Archive> void fields(Archive& a, WaveDelivery& delivery)
+{
+	a("launched",delivery.launched);
+	a("arrived",delivery.arrived);
+	a("scored",delivery.scored);
+}
+
 template<class Archive> void fields(Archive& a, Wave& wave)
 {
 	a("flag",wave.flagId); a("phase",wave.phase);
