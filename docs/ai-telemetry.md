@@ -118,7 +118,7 @@ shadow AIs. This telemetry is local diagnostic state, not network traffic.
 ## Offense-engagement target (added 2026-09-17)
 
 For studying how much an FFA/2v2 outcome comes down to who got targeted first
-rather than skill, six of the eight AIs expose which enemy team they most
+rather than skill, seven of the eight AIs expose which enemy team they most
 recently chose to engage **offensively** (never defensive/reactive combat, and
 never fed back into any decision -- read-only telemetry, verified by checking
 every assignment site):
@@ -134,16 +134,14 @@ every assignment site):
 | Warrush | `AIWarrush.last_guard_area_team` | New, and different in kind from the others: `placeGuardAreas()` can guard several enemy teams' buildings in one call, so there is no single "chosen enemy" to expose -- this is only the last team touched that tick, not a prioritized target |
 | Econo | none | Confirmed zero offensive capability (`AI_ECHO_RTI_SWARM_RATIO_WARRIOR` is hardcoded 0; it never produces warriors) |
 
-All six new/verified fields report `na` (never observed) or `-1` (offense
+These new/verified fields report `na` (never observed) or `-1` (offense
 currently has no target) rather than a stale value when offense hasn't fired
 yet. Numbi, Cabino, Warrush and Cortex bumped `telemetrySchemaVersion()` to 2
 for the new fields; Maxima, Nicowar and Castor are unchanged since their
 existing fields already answered this without new plumbing.
 
-`tools/tournaments`'s `ai_comparison` experiments (including `sample_games`)
-default `outputs` to `{"telemetry": ["team-timeline"]}` so these fields are
-captured automatically; pass an explicit `outputs` in the experiment config to
-opt back out.
+Request `"outputs": {"telemetry": ["team-timeline"]}` in an experiment
+configuration to capture these fields. This telemetry is optional.
 
 ## Adding fields or an AI
 
