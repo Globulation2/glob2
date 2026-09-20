@@ -272,6 +272,19 @@ def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=Non
               'attempt_counts': dict(Counter(record['category'] for record in attempts)),
               'failure_rates': {category: count/len(attempts) for category,count in Counter(r['category'] for r in attempts).items()} if attempts else {},
               'configurations': [{'id':j['id'],'build':j['build'],'config':j['config'],'seeds':j['seeds'],'labels':j['labels']} for j in source.manifest['jobs']]}
+    # Standard duels use all outcomes equally; keep sequential values only as
+    # historical diagnostics. Other formats retain their established estimator.
+    from .duel_ratings import report as duel_report
+    batch = duel_report(rows, draws, seed)
+    report['legacy_sequential_elo'] = report.pop('elo')
+    report['rating_methods'] = {'1v1':'bradley_terry_batch', 'other_formats':'sequential_elo'}
+    report['legacy_sequential_ratings'] = report['ratings']
+    report['legacy_sequential_uncertainty'] = report['uncertainty']
+    report['ratings'] = {key:value for key,value in report['ratings'].items() if key.split(':')[0] != '1v1'} | batch['ratings']
+    report['duel_rating_fit'] = batch
+    report['uncertainty'] = {key:value for key,value in report['uncertainty'].items() if key != 'intervals'} | {
+        'intervals': {key:value for key,value in report['uncertainty']['intervals'].items() if not key.startswith('1v1:')},
+        'duels': batch['cohorts']}
     from .map_telemetry import summarize
     report['map_telemetry'] = summarize(records, draws, seed)
     out = Path(output) if output else Path(directory) / 'reports' / policy
@@ -286,12 +299,13 @@ def reanalyze(directory, policy='prestige', draws=1000, seed=1, k=32, output=Non
     for name in ('observations','matchups','map_start_breakdown','paired_effects','generators','configurations'):
         write_csv(out/(name+'.csv'),report[name])
     lines = [f'# {source.manifest["id"]}', '', f'Policy: {policy}, version {POLICY_VERSION}. Results: {len(records)}/{len(source.manifest["jobs"])}.',
-             '', 'Elo starts at 1500, K='+str(k)+', in manifest order. FFA updates are simultaneous and normalized by opponent count.',
+             '', 'Duels: order-independent Bradley–Terry fit, mean 1500, 400 points per tenfold odds, draws scored 0.5. No prior or K factor. Other formats retain sequential Elo with K='+str(k)+'.',
              '', '| Format | Competitor | Elo |', '| --- | --- | ---: |']
     for fmt, ratings in sorted(report['ratings'].items()):
         for competitor, rating in sorted(ratings.items(),key=lambda item:(-item[1],item[0])):
             lines.append(f'| {fmt} | {competitor} | {rating:.1f} |')
     lines += ['', f'Uncertainty uses {report["uncertainty"]["complete_blocks"]} complete map/seed blocks, seed {seed}.',
+              'Duel intervals resample whole swapped-side pairs within each generator. Missing/unidentifiable fits are explicit in duel_rating_fit; sequential diagnostics are retained separately.',
               'Raw observations, failures, configurations, pairing and distribution summaries are in the adjacent JSON and CSV files.']
     if report['map_telemetry']['groups']:
         lines += ['', '## Map telemetry', '',

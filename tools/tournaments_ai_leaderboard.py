@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Pool several AI-comparison results directories into one leaderboard per format.
 
-Reports two numbers per competitor, because they answer different questions.
+Duels use an order-independent, unregularized Bradley–Terry fit and matching
+paired-block uncertainty. Other formats retain the two legacy estimators below.
+Only pool directories with compatible AI source, settings and map distribution.
 
 `elo` is the existing iterative rating from tools.tournaments.analysis, kept
 unchanged. It is what the tournament reports as it goes, but it understates how
@@ -32,6 +34,7 @@ import math
 
 from tools.tournaments.analysis import observations, rate, bootstrap_ratings, POLICIES
 from tools.tournaments.results import Results
+from tools.tournaments.duel_ratings import report as duel_report
 
 # Elo's scale: a rating difference of this many points is a factor of ten in the
 # odds, which is what turns a fitted log-odds strength into Elo-comparable points.
@@ -105,6 +108,8 @@ def main():
         engine_decided += sum(row['engine_outcome'] for row in directory_rows)
         capped += sum(row['cap'] for row in directory_rows)
 
+    if len({row['job_id'] for row in rows}) != len(rows):
+        raise ValueError('Duplicate job IDs across result directories')
     ratings = rate(rows, args.k)
     total = len(rows)
     report = {
@@ -115,14 +120,22 @@ def main():
         'capped_and_adjudicated': capped,
         'ratings': ratings,
     }
-    fitted = strengths(rows, args.ridge) if total else None
-    if fitted is None and total:
+    other_rows = [row for row in rows if row['format'] != '1v1']
+    fitted = strengths(other_rows, args.ridge) if other_rows else None
+    if fitted is None and other_rows:
         print('strength fit skipped: needs numpy and scipy', file=sys.stderr)
     elif fitted:
         report['strengths'] = fitted
     if total:
         report['uncertainty'] = bootstrap_ratings(rows, {'jobs': all_jobs}, args.draws, args.seed, args.k)
 
+    # Duels use a pooled all-outcome fit and matching paired-block intervals.
+    # Pooling here is explicit; only combine matching source/settings cohorts.
+    batch = duel_report(rows, args.draws, args.seed, pool_builds=True)
+    report['legacy_sequential_ratings'] = report['ratings']
+    report['legacy_sequential_uncertainty'] = report.pop('uncertainty', None)
+    report['ratings'] = {key:value for key,value in ratings.items() if key.split(':')[0] != '1v1'} | batch['ratings']
+    report['duel_rating_fit'] = batch
     text = json.dumps(report, indent=2)
     if args.output:
         Path(args.output).write_text(text)
@@ -132,10 +145,10 @@ def main():
           file=sys.stderr)
     print('| Format | Competitor | Elo | Strength |', file=sys.stderr)
     print('| --- | --- | ---: | ---: |', file=sys.stderr)
-    for fmt, fmt_ratings in sorted(ratings.items()):
+    for fmt, fmt_ratings in sorted(report['ratings'].items()):
         # rate() keys each cohort as "format:build"; the fit deliberately pools
         # the builds, so the strength is looked up by the bare format.
-        fitted_fmt = (report.get('strengths') or {}).get(fmt.split(':', 1)[0], {})
+        fitted_fmt = fmt_ratings if fmt == '1v1' else (report.get('strengths') or {}).get(fmt.split(':', 1)[0], {})
         order = sorted(fmt_ratings, key=lambda name: (-fitted_fmt.get(name, fmt_ratings[name]), name))
         for competitor in order:
             strength = fitted_fmt.get(competitor)

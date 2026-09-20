@@ -430,12 +430,22 @@ survivors by prestige, unit count, then finished buildings; exact ties stay tied
 Alternatives draw all survivors or rank warrior attack strength, HP, count.
 Eliminated colonies rank by elimination tick. 2v2 aggregates surviving roster
 statistics. Reports record policy name/version/options and engine/adjudicated status.
-Elo starts at 1500, K=32; manifest order determines updates, never completion order.
-2v2 rosters are competitors. FFA updates all pairwise scores simultaneously,
-normalizing by opponent count. Formats and build cohorts have separate ratings.
-Seeded uncertainty resamples complete map/seed blocks, preserving within-block
-manifest order; incomplete blocks contribute observations but not block uncertainty.
-Ablation intervals resample paired effects. Sparse/empty estimates are explicit nulls.
+Standard 1v1 ratings fit all observed outcomes at once with the Bradley–Terry
+logistic model: each game has equal weight, ties score 0.5, and input/completion
+order has no effect. Ratings are centred on 1500 with 400 points per tenfold odds;
+there is no K factor or regularization. Disconnected or undefeated groups have no
+finite maximum-likelihood fit and are reported as unavailable, not assigned a
+fabricated finite score. Formats/builds remain separate unless pooling is explicit.
+
+Duel intervals resample complete swapped-side pairs within each generator, retaining
+its quota. Incomplete pairs contribute to the point fit, but not uncertainty; both
+counts and unavailable intervals are explicit. These are sampling intervals for
+the chosen generator mix and adjudication policy, not a guarantee of unbiased
+strength on every map. `tools/tournaments/duel_ratings.py` is the standard-library
+implementation, also usable to refit retained outcomes without running games.
+Historical sequential Elo/uncertainty remain separately labelled diagnostics;
+non-duel formats retain K=32 pairwise updates. Ablation intervals resample paired
+effects.
 
 Legacy entry points remain: `ai-benchmark.sh` delegates to this package (its legacy
 capped-game summary remains a draw); `cortex-knob-search.py` invokes that benchmark;
@@ -520,11 +530,13 @@ raw termination through, so analysis can pool, exclude or compare them but can
 never mistake the model's opinion for a win the rules declared. Do not compare
 ratings gathered with the condition on against ratings gathered without it.
 
-`tools/tournaments_ai_leaderboard.py` reports two numbers per competitor: the
-existing iterative `elo`, and a `strength` fitted to every game at once by
-maximum likelihood over the finishing orders. Prefer `strength` for how far apart
-competitors are — iterative Elo cannot reach the spread implied by a matchup one
-side never loses, and depends on the order the games were played.
+`tools/tournaments_ai_leaderboard.py` pools compatible directories explicitly and
+uses the same batch duel estimator and paired-block intervals. It rejects duplicate
+job IDs; keep AI source/settings and map distributions comparable yourself. Other
+formats retain their earlier sequential Elo and penalized finishing-order fits.
+For another batch, choose a new sample seed, audit map-seed/job-ID overlap, retain
+both side-swapped games, and refit the concatenated outcomes. Never average the
+batch ratings or restart from the old rounded UI scores.
 
 ## Gameplay, AI and performance telemetry
 
