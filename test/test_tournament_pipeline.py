@@ -175,6 +175,58 @@ class PipelineTests(unittest.TestCase):
             self.assertFalse(future.result(timeout=5))
         self.assertEqual(calls,['has_bundle'])
 
+    def test_terminal_cancellation_is_sent_after_last_running_poll(self):
+        c=self.coordinator
+        h={'name':'local','transport':'local','directory':str(self.root/'cancel-worker')}
+        original=Coordinator.poll_host
+        modes=[]
+        def poll(coordinator,*args,**kwargs):
+            status=original(coordinator,*args,**kwargs)
+            modes.append(coordinator.mode)
+            if len(modes)==1:coordinator.control('cancelled')
+            return status
+        t=Transport(h,c.root/'worker.pyz')
+        try:
+            with patch.object(Coordinator,'poll_host',poll):c.run([h])
+            w=Worker(t.root)
+            try:
+                mode=w.db.execute("SELECT mode FROM controls WHERE experiment='fixture'").fetchone()[0]
+                self.assertEqual(mode,'cancelled')
+                self.assertEqual(modes[0],'running')
+                self.assertIn('cancelled',modes[1:])
+            finally:w.close()
+        finally:t.rpc('stop');t.close()
+
+    def test_worker_rejects_input_arriving_after_durable_cancellation(self):
+        a=self.coordinator.dispatch('local',self.status)[0]
+        w=Worker(self.root/'cancel-enqueue-worker')
+        try:
+            shutil.copytree(self.root/'bundles'/self.bundle['id'],w.root/'bundles'/self.bundle['id'])
+            w.control(a['experiment'],'cancelled')
+            self.assertEqual(w.enqueue(a),{'enqueued':False,'reason':'cancelled'})
+            self.assertEqual(w.db.execute('SELECT count(*) FROM queue').fetchone()[0],0)
+        finally:w.close()
+
+    def test_transfer_capacity_smaller_than_host_count_does_not_starve_hosts(self):
+        c=self.expand(28)
+        hosts=[{'name':'host'+str(i),'transport':'local','directory':str(self.root/('host'+str(i))),
+                'input_slots':1} for i in range(7)]
+        for h in hosts:self.assertEqual(len(c.dispatch(h['name'],self.status|{'slots':4})),4)
+        seen=[];mutex=threading.Lock()
+        def poll(coordinator,host,*args):
+            return self.status|{'slots':4,'counts':{},'spool_bytes':0,'attempts':[]}
+        def deliver(coordinator,transport,identity):
+            host=coordinator.db.execute('SELECT host FROM attempts WHERE id=?',(identity,)).fetchone()[0]
+            with mutex:
+                seen.append(host)
+                if len(seen)>=14:coordinator.control('cancelled')
+            return True
+        with patch.object(Coordinator,'poll_host',poll), patch.object(Coordinator,'deliver_attempt',deliver):
+            c.run(hosts)
+        # Seven continuously backlogged hosts share only two transfer slots.
+        # New work from early hosts must not displace hosts still awaiting service.
+        self.assertEqual(set(seen[:8]),{h['name'] for h in hosts},seen)
+
     def test_paused_delivery_is_not_marked_enqueued(self):
         c=self.coordinator;a=c.dispatch('local',self.status)[0];c.control('paused')
         self.assertFalse(c.deliver_attempt(None,a['id']))

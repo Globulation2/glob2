@@ -1,0 +1,27 @@
+{
+  "command": [
+    "test/tournament_pipeline_benchmark.py",
+    "--package-root",
+    "/Users/bradley/glob2-tournament-pipeline",
+    "--bundle",
+    "/Users/bradley/glob2-pr-help-4/artifacts/maxima-duels-20260919/bundles/09545ff11d99bdede4296dca3c33b63fa8476ebb7f79514be738842c4a32ec4d",
+    "--map",
+    "/Users/bradley/glob2-pr-help-4/artifacts/maxima-duels-20260919/pilot-map/map-r0.map",
+    "--output",
+    "/Users/bradley/glob2-tournament-pipeline/artifacts/pipeline-ssh-after",
+    "--hosts",
+    "artifacts/ssh-after-hosts.json",
+    "--jobs",
+    "12"
+  ],
+  "engine_cpu_utilization": 0.6235110850111936,
+  "execution_slot_occupancy": 0.672256480740762,
+  "games_per_minute": 30.172094300303538,
+  "jobs": 12,
+  "package_id": "44e2386d9da91ed98d79e4ea76bd21f3ee37e2c4130766d5e323a59bf8a4eba4",
+  "raw_bytes": 157319414,
+  "slots": 4,
+  "started": 1789865384.3211331,
+  "transfer_bytes": 12396853,
+  "wall_seconds": 23.863109827041626
+}

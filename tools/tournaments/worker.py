@@ -103,6 +103,10 @@ class Worker:
         if bundle['platform'] != platform_identity() or (self.config['builds'] and bundle['id'] not in self.config['builds']):
             raise ValueError('ineligible build')
         with transaction(self.db):
+            control = self.db.execute('SELECT mode FROM controls WHERE experiment=?',
+                                      (attempt['experiment'],)).fetchone()
+            if control and control['mode'] == 'cancelled':
+                return {'enqueued': False, 'reason': 'cancelled'}
             old = self.db.execute('SELECT token,job FROM queue WHERE id=?', (attempt['id'],)).fetchone()
             if old:
                 if old['token'] != attempt['token'] or json.loads(old['job']) != attempt:

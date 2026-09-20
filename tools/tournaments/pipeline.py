@@ -20,7 +20,7 @@ def run(coordinator, hosts, collect_only=False):
     snapshots, next_poll = {}, {}
     polling, uploading, collecting = {}, {}, {}
     delivered, collected = set(), set()
-    serviced, sequence = {}, 0
+    serviced, host_serviced, sequence = {}, {}, 0
     next_sample = 0
     interval = min(coordinator.settings.get('poll_seconds', 1), coordinator.settings['heartbeat_seconds'])
     errors = (OSError, ValueError, subprocess.TimeoutExpired)
@@ -96,7 +96,8 @@ def run(coordinator, hosts, collect_only=False):
                                                if a['experiment'] == coordinator.manifest['id'] and a['state'] == 'done']
                         # Round robin among hosts and partial large transfers; a slow
                         # artifact does not monopolize the next available slot.
-                        candidates.sort(key=lambda pair: serviced.get((direction, pair[1]['id']), -1))
+                        candidates.sort(key=lambda pair: (host_serviced.get((direction, pair[0]), -1),
+                                                         serviced.get((direction, pair[1]['id']), -1)))
                         for name, item in candidates:
                             identity = item['id']
                             if len(pending) >= limit: break
@@ -106,6 +107,7 @@ def run(coordinator, hosts, collect_only=False):
                             pending[identity] = (name, pool.submit(transfer, name, item, direction))
                             sequence += 1
                             serviced[(direction, identity)] = sequence
+                            host_serviced[(direction, name)] = sequence
                     if time.monotonic() >= next_sample:
                         atomic_json(root / 'reports' / 'pipeline.json', {
                             'time': time.time(), 'control_active': len(polling),
@@ -116,6 +118,21 @@ def run(coordinator, hosts, collect_only=False):
                         next_sample = time.monotonic() + 1
                     states = dict(coordinator.db.execute('SELECT state,count(*) FROM jobs GROUP BY state'))
                     if not states.get('active') and not states.get('pending') and not uploading and not collecting:
+                        # Cancellation can make every job terminal just after the
+                        # last running-mode poll. Drain those polls, then send the
+                        # final durable control before releasing the coordinator.
+                        for name, future in polling.items():
+                            try:
+                                future.result()
+                            except errors as error:
+                                coordinator.host_status(name, error=str(error))
+                                controls[name].close()
+                        final_polls = {name: control_pool.submit(poll, name) for name in configs}
+                        for name, future in final_polls.items():
+                            try:
+                                future.result()
+                            except errors as error:
+                                coordinator.host_status(name, error=str(error))
                         break
                     time.sleep(.05)
         finally:

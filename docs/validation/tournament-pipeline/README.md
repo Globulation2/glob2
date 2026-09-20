@@ -8,12 +8,12 @@ sequential; bundle and input warm-up is excluded, final collection is included.
 
 | Measurement | Before | Pipelined |
 |---|---:|---:|
-| Wall seconds | 92.600 | 47.572 |
-| Games/minute | 15.55 | 30.27 |
-| Occupied execution slots | 45.0% | 83.7% |
-| Engine CPU / four reserved cores | 39.0% | 67.7% |
+| Wall seconds | 92.600 | 37.338 |
+| Games/minute | 15.55 | 38.57 |
+| Occupied execution slots | 45.0% | 79.8% |
+| Engine CPU / four reserved cores | 39.0% | 67.2% |
 
-This is **1.95× throughput** on this short-job workload, not a universal speedup.
+This is **2.48× throughput** on this short-job workload, not a universal speedup.
 Each game result and the raw initial-save, final-save and replay hashes matched
 exactly between variants; `before-outcomes.json.gz` and `after-outcomes.json.gz`
 retain all 24 comparisons. The tiny difference in total log bytes comes from output
@@ -22,7 +22,7 @@ this benchmark, so repeat on idle dedicated hardware for capacity planning.
 
 `before.json` and `after.json` retain package IDs, commands, timestamps, sizes, and
 measurements. Original complete results and worker artifacts remain under
-`/Users/bradley/glob2-tournament-pipeline/artifacts/pipeline-{before,after}`.
+`/Users/bradley/glob2-tournament-pipeline/artifacts/pipeline-{before,final}`.
 The baseline tools came from master 05207be36; both runs use the Maxima tournament
 bundle 1393313332d34faef1e0ba5b02805471d76df2ad9ac7ae11f5d0d5b6a4863a76,
 source revision 86ad59ffe. No engine or AI code is changed by this PR.
@@ -32,9 +32,36 @@ JSON reports and separate package roots/output directories. Compare decoded
 `outcomes` and raw game artifact hashes, rather than timestamp/path-bearing logs.
 
 Reliability checks: `python3 test/test_tournaments.py` (20 tests) and
-`python3 test/test_tournament_pipeline.py` (8 tests). Coverage includes bounded
+`python3 test/test_tournament_pipeline.py` (11 tests). Coverage includes bounded
 concurrent stages; execution and lease renewal while both collectors block beyond
-the lease; pause/cancel during input delivery; actual simultaneous compression and
+the lease; pause/cancel during input delivery, final cancellation propagation and rejection of late enqueues;
+host fairness when transfer capacity is smaller than host count; actual simultaneous compression and
 shared-artifact acknowledgement; live limits and result-backlog backpressure;
 persistent RPC reconnect and blocked-stdin timeout. Existing tests retain corrupt
 chunk, expiry, lost-ack, duplicate acceptance, retry budget and restart coverage.
+
+## SSH comparison
+
+A separate pair uses devlaptop.local (Linux), four execution slots, two packers,
+12 games with seeds 23000–23011, the same map and 20,000-tick cap, and pinned Linux
+bundle `09545ff11d99bdede4296dca3c33b63fa8476ebb7f79514be738842c4a32ec4d`.
+The coordinator runs on macOS; bundle and map warm-up is excluded.
+
+| Measurement | Before | Pipelined |
+|---|---:|---:|
+| Wall seconds | 107.584 | 25.972 |
+| Games/minute | 6.69 | 27.72 |
+| Occupied execution slots | 14.1% | 61.4% |
+| Engine CPU / four reserved cores | 13.1% | 56.7% |
+
+This pair shows **4.14× throughput**; all 12 complete game results and raw
+initial-save/final-save/replay hashes match exactly. `ssh-*.json` and
+`ssh-*-outcomes.json.gz` retain the reports and comparisons. Full artifacts are in
+`artifacts/pipeline-ssh-{before,final}`. Both final candidates include the
+cancellation and host-fairness review fixes. The final local and SSH candidate
+runs overlapped; the SSH game engine executes on a different machine.
+
+An earlier candidate trial measured 47.572 seconds locally and 23.863 seconds over
+SSH (1.95× and 4.51× against the same baselines). Its reports are retained as
+`initial-local-candidate.json` and `initial-ssh-candidate.json`. This variation
+reinforces that these are workload observations, not controlled capacity claims.
