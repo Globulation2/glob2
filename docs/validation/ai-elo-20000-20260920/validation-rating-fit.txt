@@ -1,0 +1,4 @@
+Independent MM vs Newton maximum difference: 9.89075488178e-10 Elo
+MM iterations: 169
+10 input shuffles: identical ratings
+All 20000 original games retained.

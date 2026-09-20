@@ -1,40 +1,35 @@
-# AI ratings from the completed broad duel tournament
+# AI ratings from 20,000 broad duels
 
-The AI selector displays combined Elo from **10,000 successful 128×128 duels across 60 map generators**, involving all eight AIs. The tournament uses source `f2cfcfeb05b39cc17eab43a532ebb551172de8de` on both platforms.
+The selector displays an order-independent Bradley–Terry fit to **20,000 successful 128×128 duels across 60 compatible generators**. The original 10,000 games are retained and another 10,000 fresh games added. Both batches use source `f2cfcfeb05b39cc17eab43a532ebb551172de8de`, the same binaries/settings, and all five hosts.
 
 | AI | Fitted Elo | 95% paired-bootstrap interval | Difficulty |
 | --- | ---: | ---: | --- |
-| Maxima | 1860 | 1841–1881 | Hard |
-| Cabino | 1696 | 1678–1712 | Medium |
-| Nicowar | 1659 | 1644–1676 | Medium |
-| Cortex | 1594 | 1578–1612 | Medium |
-| Warrush | 1389 | 1371–1405 | Easy |
-| Econo | 1297 | 1280–1314 | Easy |
-| Castor | 1280 | 1264–1298 | Easy |
-| Numbi | 1224 | 1204–1242 | Easy |
+| Maxima | 1857 | 1842–1871 | Hard |
+| Cabino | 1689 | 1678–1701 | Medium |
+| Nicowar | 1656 | 1645–1666 | Medium |
+| Cortex | 1599 | 1586–1611 | Medium |
+| Warrush | 1390 | 1377–1401 | Easy |
+| Econo | 1308 | 1296–1320 | Easy |
+| Castor | 1277 | 1265–1290 | Easy |
+| Numbi | 1224 | 1211–1238 | Easy |
 
-![Final AI ratings in the selector](win-probability/ai-strengths.png)
+![AI ratings](win-probability/ai-strengths.png)
 
-Each generator contributes 166 or 168 games, and each of the 28 AI pairings contributes 356 or 358. The 5,000 paired map/game-seed blocks each contain two games with swapped starting sides. The two builds contribute 2,224 macOS and 7,776 Linux games; all five requested hosts participated. Seed 20260920, five candidate rolls per map, 90,000-tick cap, and probability victory disabled.
+All 10,000 paired blocks contain two games with swapped starting sides. Generator totals range from 332 to 336 games. Batch seeds are 20260920 and 20260921; no map seeds or job IDs overlap. Maps use five candidate rolls, a 90,000-tick cap, and probability victory disabled. There are 17,445 engine-decided games and 2,555 prestige-adjudicated tick caps.
 
-The engine decided 8,740 games; 1,260 reached the tick cap and use the existing prestige adjudication policy. Ratings use an unregularized Bradley–Terry fit to all outcomes, pooling both platform builds. Every game has equal weight and input order has no effect. Draws score 0.5; mean rating is fixed at 1500, with 400 points per tenfold odds. Only the final displayed integers are rounded. This removes recency/order weighting; it does not eliminate model or map-selection bias.
+Every game has equal weight. Draws score 0.5, ratings have mean 1500 and 400 points per tenfold odds, and there is no K factor or regularization. Input order has no effect. Intervals refit 1,000 bootstrap samples of whole swapped-side pairs within each generator (seed 1), preserving generator quotas. These are sampling intervals conditional on the chosen map mix and adjudication policy; eliminating order weighting does not eliminate model or map-selection bias.
 
-Nine Hilbert River map seeds were rejected before play, affecting 18 games. They were replaced with new seeds of the same generator, AI matchup, build and settings, retaining both swapped-side games and the original schedule positions. The [replacement audit](validation/ai-elo-10000-20260920/replacements.json) records every rejected and replacement job. Failed requests, smoke tests, old campaigns and duplicate attempts are excluded from the 10,000 successful games.
+The compatible pool is unchanged: Emoji, Gauntlet, Comb, Encircled Kingdom, Faulted City and Bastion Keys require larger maps or more colonies. Rice Terraces uses `slant=0`; other controls retain defaults. Uniform is editor-only. The Last Treeline arrived after the frozen source and is not included. Pre-play rejected Hilbert River maps are replaced with fresh seeds as complete pairs, retaining the same generator, matchup, binary and settings. Rejected requests, duplicate attempts, smoke tests and older unrelated tournaments do not count.
 
-## Coverage and uncertainty
+The selector sorts weakest first, inactive last. Difficulty bands remain below 1450 Easy, 1450–1699 Medium and 1700+ Hard. AI behavior and saved IDs are unchanged. Pooling platform builds does not establish per-tick checksum equivalence.
 
-The compatible pool was drawn from the 66 playable generators present at tournament launch. Emoji, Gauntlet, Comb, Encircled Kingdom, Faulted City and Bastion Keys require larger maps or more colonies and are explicitly excluded. Rice Terraces uses its existing `slant=0` setting; other controls retain their defaults. The editor-only Uniform tool is excluded. The Last Treeline was added to master after the tournament source was frozen and is not represented in these results.
+## Reproduction and evidence
 
-The 95% intervals use 1,000 bootstrap resamples of whole paired blocks **within each generator**, seed 1, retaining generator quotas. Each sample refits all selected outcomes. They reflect sampling uncertainty conditional on this map mix, not guarantees for every map, multiplayer format or human opponent. Maxima and Cabino’s fitted intervals are separated in this cohort. Disconnected or undefeated comparison groups cannot produce a finite unregularized fit and are reported as unavailable. Pooling builds does not establish cross-platform per-tick checksum equivalence.
-
-The selector sorts weakest first and keeps inactive last. Difficulty bands are below 1450 Easy, 1450–1699 Medium, and 1700+ Hard. This changes labels and selection order; AI behavior and saved IDs are unchanged.
-
-## Reproducible evidence
-
-[Retained outcomes](validation/ai-elo-10000-20260920/outcomes.json.gz), [final summary](validation/ai-elo-10000-20260920/summary.json), [configuration](validation/ai-elo-10000-20260920/comparison.json), [coverage](validation/ai-elo-10000-20260920/coverage.json), and [compatibility/exclusions](validation/ai-elo-10000-20260920/compatibility.json) are committed. Recalculate the pooled scores and intervals with Python’s standard library:
+[Summary](validation/ai-elo-20000-20260920/summary.json), [all outcomes](validation/ai-elo-20000-20260920/outcomes.json.gz), [coverage](validation/ai-elo-20000-20260920/coverage.json), [batch-two replacements](validation/ai-elo-20000-20260920/replacements-batch2.json), and [validation](validation/ai-elo-20000-20260920/validation.md) are retained. The [first 10,000-game evidence](validation/ai-elo-10000-20260920/summary.json), including its historical sequential calculation and replacement audit, remains intact.
 
 ```sh
-python3 docs/validation/ai-elo-10000-20260920/reproduce.py
+python3 docs/validation/ai-elo-20000-20260920/reproduce.py
+python3 docs/validation/ai-elo-20000-20260920/test_rating_model.py
 ```
 
-The standard-library solver matches an independent MM optimizer within 1e-7 Elo; shuffling games leaves results unchanged. The model follows the [Bradley–Terry paired-comparison likelihood](https://stat.ethz.ch/CRAN/web/packages/BradleyTerry2/vignettes/BradleyTerry.html). The former [sequential summary](validation/ai-elo-10000-20260920/summary-sequential-legacy.json) and reproduction script remain preserved for audit. An additional 10,000-game batch is running with fresh seeds and the same binaries/settings; these displayed values currently use only the completed first batch. The [Symmetric Arena-only study](ai-strength-symmetric-arena-20260919.md) and [earlier mixed-format study](ai-strength-20260917.md) remain preserved as historical evidence. Neither supplies the current UI scores.
+The model follows the [Bradley–Terry likelihood](https://stat.ethz.ch/CRAN/web/packages/BradleyTerry2/vignettes/BradleyTerry.html). The solver passed analytic tests and an independent optimizer comparison on the first batch. A larger cohort can be added by passing compatible outcome archives to `reproduce.py`; duplicate IDs and incomplete paired blocks are errors. The previous [Symmetric Arena](ai-strength-symmetric-arena-20260919.md) and [mixed-format](ai-strength-20260917.md) studies are preserved but excluded.
