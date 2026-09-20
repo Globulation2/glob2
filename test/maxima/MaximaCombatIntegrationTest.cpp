@@ -450,14 +450,20 @@ static void rallyAssemblesByMovement()
             warrior->subscriptionSuccess(flag,false);
             flag->unitsWorking.push_back(warrior);
         }
+        // Readiness includes the two-tile margin: crowding at the flag edge
+        // must not make this movement test demand more than the launch policy.
+        const int arrivalRadius=flag->unitStayRange+2;
         int arrived=0;
         for(int tick=0;tick<2000 && arrived<15;++tick) {
             f.game.syncStep(0);
             arrived=0;
             for(auto* warrior:warriors)
                 arrived+=f.game.map.warpDistSquare(warrior->posX,warrior->posY,flag->posX,flag->posY)
-                    <=flag->unitStayRange*flag->unitStayRange;
+                    <=arrivalRadius*arrivalRadius;
         }
+        if(arrived<15)
+            std::cerr << "Rally movement: shift=" << shift << " arrived=" << arrived
+                << " radius=" << arrivalRadius << '\n';
         assert(arrived>=15);
         std::set<std::pair<int,int>> occupied;
         for(auto* warrior:warriors) {

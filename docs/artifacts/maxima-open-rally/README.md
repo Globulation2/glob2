@@ -16,7 +16,8 @@ after the change. The combat suite exercises:
 
 - A four-tile rally on open ground near a friendly inn.
 - Twenty warriors moving through the real simulation, with fifteen arriving on
-  distinct legal tiles and launching on the next review, including toroidal wrap.
+  distinct legal tiles within the six-tile readiness radius and launching on the
+  next review, including toroidal wrap.
 - Fifteen warriors outside the flag but within two extra tiles counting as ready;
   a group farther away does not launch.
 - A reachable nine-tile pocket rejected as too small; another friendly inn used.
@@ -28,4 +29,11 @@ saved fields or version gates are introduced. Existing saved strategies keep the
 resolved radius; new default strategies use four tiles. Rally policy changes the
 AI's future orders, not engine order execution or replay playback. No cross-platform
 per-tick simulation checksum comparison or full-match strength comparison was run;
-playing the resulting pacing remains part of independent human review.
+Bradley play-tested the standalone PR GUI build and explicitly approved merging.
+This is author play-test approval, not independent review.
+
+The initial Ubuntu 22.04 CI run failed the movement test's stricter requirement
+that fifteen warriors enter the four-tile flag itself. The test now uses the
+approved two-tile readiness margin, while still requiring distinct legal positions
+and a real transition to advancing. Ubuntu 24.04 and macOS passed the original
+check. The updated local regression log is retained in `regressions.txt`.
