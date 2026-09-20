@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 离开了游戏
 [%0 level %1]
@@ -51,11 +57,11 @@ AI 说明
 [ai]
 人工智能
 [AICastor-Description]
-AICastor-描述
+
 [AICastor]
 AICastor
 [AINicowar-Description]
-AINicowar-描述
+
 [AINicowar]
 AINicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ AINone-描述
 [AINone]
 AINone
 [AINumbi-Description]
-AINumbi-描述
+
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-AIEcono-描述
+
 [AIEcono]
 AIEcono
 [AIWarrush-Description]
-AIWarrush-描述
+
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino 将防御、进攻和建设作为各自独立的部门来运作，但都汇聚于同一个计划：快速壮大，然后向对手投入庞大的军队。难度：困难。
+
 [AICabino]
 Cabino
 [Alga]
@@ -1219,9 +1225,9 @@ Ysagoon 线上游戏
 [game speed help]
 仅限单人游戏和录像回放。多人游戏固定为1x速度。
 [AICortex-Description]
-Cortex向新的麦田扩张，利用前线食堂和医院支援一波又一波的战士进攻。难度中等，仍处于实验阶段。
+
 [AIMaxima-Description]
-Maxima 发展粮食充足的殖民地，持续侦察，并以每一名可调度的战士不停进攻。难度高。
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1237,37 +1243,37 @@ Cortex
 [AI strategy & counterplay]
 AI策略与对抗
 [AICastor-Profile]
-核心策略:稳健发展，擅长应对资源稀少的地图。\n\n优势:克制的扩张方式适合资源匮乏的对局。\n\n可尝试的对策:尽早占领空间，不要以为资源匮乏就能削弱它。
+
 [AICastor-Summary]
-谨慎扩张；在稀缺资源下表现良好。
+
 [AICortex-Profile]
-核心策略:管理粮食供应，向新的麦田扩张，集结一波又一波的战士。前线食堂和医院为远距离进攻提供支援。\n\n优势:集中增援、持续施压，并能应对粮食短缺。\n\n可尝试的对策:争夺新的麦田，打击前线支援设施，在其部队集结前施加压力。\n\n实验阶段的人工智能，难度中等。这些对策建议并非基准测试的评定结果。
+
 [AICortex-Summary]
-保障粮食供应，并以支援设施维持多波进攻。
+
 [AINicowar-Profile]
-策略:迅速扩张，以庞大的军队攻击对手。\n\n优势:快速扩张支持侵略性的军事攻击。\n\n建议对策:防止其扩张。利用地形来减少可以同时作战的敌军数量。
+
 [AINicowar-Summary]
-迅速扩张并建立庞大的军队进行侵略性攻击。
+
 [AINone-Profile]
 核心策略:不发出任何人工智能命令。\n\n优势:行为可预测、保持不动的实验对手。\n\n弱点:不会扩张或适应局势。
 [AINone-Summary]
 用于实验的闲置殖民地。
 [AINumbi-Profile]
-核心策略:小规模快速扩张，适合练习殖民地管理。\n\n优势:让你有余地同时学习经济管理和战斗。\n\n可尝试的对策:先壮大经济、训练军队，再发动进攻。
+
 [AINumbi-Summary]
-小规模快速扩张。
+
 [AIEcono-Profile]
-策略:不攻击，但建立巨大的基地并积极地将敌方部队转变为己方。\n\n优点:扩张和单位转换无需直接攻击即可威胁对手。\n\n建议的对策:尽早发展你的殖民地，避免将部队派遣到敌人可以转换的地方。
+
 [AIEcono-Summary]
-不主动进攻，以巨大基地和招降敌军施压。
+
 [AIWarrush-Profile]
-核心策略:在对手完成建设前，发动迅速而猛烈的进攻。\n\n优势:善于打击无防备的扩张和缓慢的备战。\n\n可尝试的对策:维持经济，撑过首轮进攻后再反击。
+
 [AIWarrush-Summary]
-快速攻击考验你的早期防御能力。
+
 [AICabino-Profile]
-核心策略：由独立的专职部门（防御、进攻、建设、升级、单位管理）组成的内阁，各部门自行其是，却共同汇聚于一个计划：快速壮大，然后向对手投入庞大的军队。\n\n优势：快速扩张支撑起进攻性的军事压力；独立部门无需等待中央计划即可迅速应对当地威胁。\n\n应对策略：尽早遏制其扩张，并利用地形限制其能同时投入交战的部队数量。
+
 [AICabino-Summary]
-相互协作的独立部门，追求快速壮大和庞大的军队。
+
 [Algae]
 海藻
 [Alliances]

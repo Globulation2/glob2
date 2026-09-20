@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0 level %1]
@@ -51,11 +57,11 @@ KI
 [ai]
 KI
 [AICastor-Description]
-Castor ist eine mittelstarke KI, die nicht versucht zu konvertieren oder aus der Luft angreift.
+
 [AICastor]
 Castor
 [AINicowar-Description]
-Nicowar greift bevorzugt seinen stärksten Gegner als erstes an und zieht alle Register - von Konvertierung mit Früchten bis zu Luftangriffen darf man mit allem rechnen.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ KINone tut nichts und kommt eigentlich nur in Zusammenhang mit Skripten zum Eins
 [AINone]
 KINone
 [AINumbi-Description]
-Numbi ist auch für Anfänger keine große Gefahr.
+
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Reach-To-Infinity ist mehr eine Machbarkeitsstudie. Er wirtschaftet und wirtschaftet und wirtschaftet, greift aber nicht an.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush ist der schnellste Angreifer. Ohne zu schummeln schafft er es, den Kampf vor der Haustür seiner Gegner stattfinden zu lassen
+
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino führt Verteidigung, Angriff und Bau als unabhängige Abteilungen, die auf einen gemeinsamen Plan hinarbeiten: schnell wachsen und dann riesige Armeen auf die Gegner werfen. Schwierigkeitsgrad: Schwer.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1223,9 +1229,9 @@ Tempo: 1x (Mehrspieler)
 [game speed help]
 Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
 [AICortex-Description]
-Cortex expandiert in Richtung neuer Weizenfelder und schickt Gruppen von Kriegern in die Schlacht, unterstützt von Gasthöfen und Krankenhäusern in der Nähe der Frontlinie. Mittlerer Schwierigkeitsgrad. Experimentell.
+
 [AIMaxima-Description]
-Maxima baut eine gut ernährte Kolonie auf, erkundet ständig die Karte und greift ohne Pause mit jedem Krieger an, den sie entbehren kann. Hoher Schwierigkeitsgrad.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1241,37 +1247,37 @@ Arbeiten noch: %0
 [AI strategy & counterplay]
 KI-Strategie und Gegenspiel
 [AICastor-Profile]
-Strategie: Expandiert vorsichtig und kommt auf Karten mit wenigen Ressourcen gut zurecht.\n\nStärken: Maßvolles Wachstum eignet sich für Partien mit knappen Ressourcen.\n\nGegenspiel zum Ausprobieren: Sichere früh Gebiete; verlasse dich nicht darauf, dass Ressourcenknappheit diese KI schwächt.
+
 [AICastor-Summary]
-Vorsichtige Expansion; kommt mit knappen Ressourcen gut zurecht.
+
 [AICortex-Profile]
-Strategie: Verwaltet die Nahrungsvorräte, expandiert zu frischen Weizenfeldern und sammelt Krieger für aufeinanderfolgende Angriffswellen. Vorgeschobene Gasthöfe und Krankenhäuser unterstützen entfernte Angriffe.\n\nStärken: Gebündelte Verstärkung, anhaltender Druck und Reaktionen auf Nahrungsknappheit.\n\nGegenspiel zum Ausprobieren: Mache ihr Weizenfelder streitig und greife vorgeschobene Versorgungsgebäude an. Übe Druck aus, bevor ihre Angriffswellen bereit sind.\n\nExperimentelle KI. Mittlerer Schwierigkeitsgrad; die Gegenspielvorschläge sind keine gemessenen Leistungsbewertungen.
+
 [AICortex-Summary]
-Nahrungsbewusste Expansion und unterstützte Angriffswellen.
+
 [AINicowar-Profile]
-Strategie: Wächst schnell und schickt riesige Armeen gegen seine Gegner.\n\nStärken: Schnelle Expansion ermöglicht hohen militärischen Druck.\n\nGegenspiel zum Ausprobieren: Behindere seine Expansion und nutze das Gelände, um die Zahl gleichzeitig kämpfender Gegner zu begrenzen.
+
 [AINicowar-Summary]
-Erweitert sich schnell und baut große Armeen für aggressive Angriffe auf.
+
 [AINone-Profile]
 Strategie: Die KI erteilt keine Befehle.\n\nStärken: Ein berechenbarer, untätiger Gegner für Experimente.\n\nSchwächen: Expandiert nicht und passt sich nicht an.
 [AINone-Summary]
 Eine untätige Kolonie für Experimente.
 [AINumbi-Profile]
-Strategie: Expandiert schnell, aber in kleinem Umfang. Ein leichterer Gegner zum Üben des Kolonieaufbaus.\n\nStärken: Lässt Raum, Wirtschaft und Kampf zugleich zu lernen.\n\nGegenspiel zum Ausprobieren: Baue eine stärkere Wirtschaft auf und bilde deine Armee aus, bevor du angreifst.
+
 [AINumbi-Summary]
-Schnelle Expansion in kleinem Umfang.
+
 [AIEcono-Profile]
-Strategie: Greift nicht an, baut aber riesige Basen und bekehrt aktiv gegnerische Einheiten.\n\nStärken: Wachstum und Bekehrung erzeugen Druck ohne herkömmliche Angriffe.\n\nGegenspiel zum Ausprobieren: Nutze die Anfangsphase zum Aufbau und schicke keine Einheiten dorthin, wo sie bekehrt werden können.
+
 [AIEcono-Summary]
-Riesige Stützpunkte und Konvertierung statt Angriffe.
+
 [AIWarrush-Profile]
-Strategie: Greift früh und hart an, bevor Gegner ihren Aufbau abgeschlossen haben.\n\nStärken: Nutzt ungeschützte Expansion und langsame militärische Vorbereitung aus.\n\nGegenspiel zum Ausprobieren: Überstehe den ersten Angriff, halte deine Wirtschaft am Laufen und greife dann selbst an.
+
 [AIWarrush-Summary]
-Schnelle Angriffe, die deine frühe Verteidigung prüfen.
+
 [AICabino-Profile]
-Kernstrategie: Ein Kabinett unabhängiger Fachabteilungen (Verteidigung, Angriff, Bau, Aufwertungen, Einheitenverwaltung), die jeweils auf eigene Initiative handeln, aber auf einen gemeinsamen Plan hinarbeiten: schnell wachsen und dann riesige Armeen auf die Gegner werfen.\n\nStärken: Schnelles Wachstum ermöglicht aggressiven militärischen Druck; die unabhängigen Abteilungen reagieren schnell auf lokale Bedrohungen, ohne auf einen zentralen Plan zu warten.\n\nGegenstrategie: Seine Expansion früh angreifen und das Gelände nutzen, um zu begrenzen, wie viele seiner Truppen gleichzeitig kämpfen können.
+
 [AICabino-Summary]
-Unabhängige Abteilungen, die für schnelles Wachstum und gewaltige Armeen zusammenarbeiten.
+
 [Algae]
 Algen
 [Alliances]

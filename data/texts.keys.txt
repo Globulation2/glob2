@@ -1480,3 +1480,6 @@
 [Central concentration]
 [The Last Treeline]
 [Woodland depth]
+[AI strategy]
+[AIMaxima-Summary]
+[AIMaxima-Profile]

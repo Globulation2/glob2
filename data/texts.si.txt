@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 je zapustil igro.
 [%0 level %1]
@@ -51,11 +57,11 @@ UI
 [ai]
 UI
 [AICastor-Description]
-Castor igra previdno in se dobro obnese na zemljevidih z malo surovin. Srednja težavnost.
+
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar igra napadalno, se hitro širi in nad nasprotnike pošilja ogromne vojske. Visoka težavnost.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Brez – ne naredi ničesar.
 [AINone]
 Brez UI
 [AINumbi-Description]
-Numbi se širi v manjšem obsegu, a hitro. Nizka težavnost.
+
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo ne napada, a gradi ogromne baze in vztrajno pridobiva tuje enote na svojo stran. Nizka težavnost.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush napada hitro in silovito ter branilca pogosto potisne do meja njegovih zmožnosti. Srednja težavnost.
+
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino upravlja obrambo, napad in gradnjo kot neodvisne oddelke, ki delujejo po enotnem načrtu: hitro se širi in nad nasprotnike pošilja ogromne vojske. Visoka težavnost.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1221,9 +1227,9 @@ Hitrost: 1x (več igralcev)
 [game speed help]
 Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
 [AICortex-Description]
-Cortex se širi proti novim pšeničnim poljem in v boj pošilja skupine bojevnikov, ki jih podpirajo restavracije in bolnišnice blizu frontne črte. Srednja težavnost. Eksperimentalno.
+
 [AIMaxima-Description]
-Maxima razvija dobro prehranjeno kolonijo, nenehno izviduje in napada brez premora z vsakim bojevnikom, ki ga lahko pogreša. Visoka zahtevnost.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1241,37 +1247,37 @@ Znotraj: %0
 [AI strategy & counterplay]
 Strategija UI in protiigra
 [AICastor-Profile]
-Strategija: širi se previdno in dobro deluje na zemljevidih z malo viri.\n\nPrednosti: Omejena razširitev je učinkovita v igrah z omejenimi viri.\n\nPredlagana protiigra: zgodaj zasedite ozemlje. Ne domnevajte, da bo pomanjkanje virov oslabilo to umetno inteligenco.
+
 [AICastor-Summary]
-Previdna širitev; dobro deluje z omejenimi viri.
+
 [AICortex-Profile]
-Strategija: upravlja z zalogami hrane, se širi proti novim pšeničnim poljem in sestavlja zaporedne skupine bojevnikov. Restavracije in bolnišnice blizu prve črte podpirajo napade daleč od baze.\n\nPrednosti: Pošlje okrepitve skupaj, vzdržuje vojaški pritisk in se odzove na pomanjkanje hrane.\n\nPredlagana protiigra: Borite se za nadzor nad novimi pšeničnimi polji in napadite njihove podporne zgradbe blizu frontne črte. Napadite, preden so njegove skupine bojevnikov pripravljene.\n\nEksperimentalna UI. Srednja težavnost; predlogi protiigre niso ocene iz primerjalnih preizkusov.
+
 [AICortex-Summary]
-Razširi se z mislijo na zaloge hrane in podpira svoje napadalne čete.
+
 [AINicowar-Profile]
-Strategija: hitro se širi in napada nasprotnike z ogromnimi vojskami.\n\nPrednosti: Hitra širitev podpira agresivne vojaške napade.\n\nPredlagana protiigra: Preprečite njeno širitev. Uporabite teren, da zmanjšate število sovražnih čet, ki se lahko borijo hkrati.
+
 [AINicowar-Summary]
-Hitro se širi in gradi velike vojske za agresivne napade.
+
 [AINone-Profile]
 Strategija: AI ne daje nobenih ukazov.\n\nPrednosti: predvidljiv, neaktiven nasprotnik za eksperimente.\n\nSlabosti: Ne širi se ali prilagaja.
 [AINone-Summary]
 Nedejavna kolonija za eksperimente.
 [AINumbi-Profile]
-Strategija: Hitro se širi, vendar v majhnem obsegu. Lažji nasprotnik za vadbo upravljanja kolonije.\n\nPrednosti: Omogoča vam, da se naučite ekonomskega upravljanja in bojevanja.\n\nPredlagana protiigra: Razvijte močnejše gospodarstvo in izurite svojo vojsko pred napadom.
+
 [AINumbi-Summary]
-Hitra širitev v majhnem obsegu.
+
 [AIEcono-Profile]
-Strategija: Ne napada, ampak gradi ogromne baze in aktivno spreminja sovražne enote na svojo stran.\n\nPrednosti: Razširitev in pretvorba enot ogrožata nasprotnike brez neposrednih napadov.\n\nPredlagana protiigra: zgodaj razvijte svojo kolonijo in se izogibajte pošiljanju enot, kamor jih lahko sovražnik spremeni.
+
 [AIEcono-Summary]
-Ogromne baze in pretvorba namesto napadov.
+
 [AIWarrush-Profile]
-Strategija: Napade zgodaj in odločno, preden se nasprotniki končajo s pripravami.\n\nPrednosti: izkorišča nebranjeno širitev in počasne vojaške priprave.\n\nPredlagana protiigra: Preživite prvi napad in hkrati ohranite gospodarstvo, nato pa izvedite protinapad.
+
 [AIWarrush-Summary]
-Hitri napadi, ki preizkusijo vašo zgodnjo obrambo.
+
 [AICabino-Profile]
-Osnovna strategija: kabinet neodvisnih specializiranih oddelkov (obramba, napad, gradnja, nadgradnje, upravljanje enot), od katerih vsak deluje na lastno pobudo, a se vsi stekajo v en načrt: hitra rast in nato ogromne vojske proti nasprotnikom.\n\nPrednosti: hitra širitev podpira agresiven vojaški pritisk; neodvisni oddelki hitro odreagirajo na lokalne grožnje, ne da bi čakali na centralni načrt.\n\nProtiukrep: zgodaj izpodbijajte njegovo širitev in uporabite teren, da omejite, koliko njegovih enot se lahko hkrati bojuje.
+
 [AICabino-Summary]
-Neodvisni oddelki, ki sodelujejo za hitro rast in ogromne vojske.
+
 [Algae]
 Alge
 [Alliances]

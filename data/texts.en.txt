@@ -51,19 +51,19 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor plays a conservative game and does very well on maps with few resources. Medium Difficulty.
+Builds and trains steadily; struggles on Rice Terraces and Hills.
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex expands toward fresh wheat and sends supported warrior waves, using forward inns and hospitals. Medium difficulty. Experimental.
+Gathered warrior waves with food and healing support.
 [AIMaxima-Description]
-Maxima grows a well-fed colony, scouts constantly and attacks without pause, sending every warrior it can spare. Hard Difficulty.
+Scouts, builds its food supply and gathers warrior waves.
 [AIMaxima]
 Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
-Nicowar plays aggressively, grows large fast and throws huge armies at its opponents. Hard Difficulty.
+Builds up its population, trains warriors, then attacks.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -71,19 +71,19 @@ None - Doesn't do anything.
 [AINone]
 None
 [AINumbi-Description]
-Numbi - Expands lightly, and swiftly. Easy Difficulty.
+A forgiving opponent that still expands and attacks.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - Does not attack, but builds monstrous bases and aggressively converts units. Easy Difficulty.
+Expands and competes for converts without producing warriors.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
+Fast attacks that test your early defenses.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino runs its defense, offense and construction as independent departments that each act on their own initiative, but together they pursue one plan: grow large fast and throw huge armies at its opponents. Hard Difficulty.
+A strong builder that fields trained attacking forces.
 [AICabino]
 Cabino
 [Alga]
@@ -1239,37 +1239,37 @@ Still working: %0
 [AI strategy & counterplay]
 AI strategy & counterplay
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+What to expect: Builds and upgrades its colony while training an army.\n\nStrengths: More competitive on Contested Commons.\n\nWeaknesses: Struggles on Rice Terraces and Hills.\n\nCounterplay to try: Claim expansion ground early, then attack with trained warriors and reserves.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Builds and trains steadily; struggles on Rice Terraces and Hills.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+What to expect: Gathers warrior waves and supports them with forward inns and hospitals.\n\nStrengths: Dangerous on open ground, where its waves can fight together.\n\nWeaknesses: Struggles on Allotments, Canals and Islands.\n\nCounterplay to try: Contest its forward inns and wheat. Keep defenders together against each wave.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Gathered warrior waves with food and healing support.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+What to expect: Expands its colony and trains warriors before launching attacks.\n\nStrengths: A strong opponent once its economy and army are established.\n\nWeaknesses: Less effective on Tidal Flats and Hedgerow Country.\n\nCounterplay to try: Contest new food sources during its buildup. Meet its army with a supplied, trained force.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Builds up its population, trains warriors, then attacks.
 [AINone-Profile]
 Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
 [AINone-Summary]
 An idle colony for experiments.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+What to expect: Builds up a colony, trains units and sends attacks.\n\nStrengths: More competitive on Allotments, Hills and Hedgerow Country.\n\nWeaknesses: Less threatening overall than the other active AIs.\n\nCounterplay to try: Develop food production and training together, then attack without leaving home undefended.
 [AINumbi-Summary]
-Light, swift expansion.
+A forgiving opponent that still expands and attacks.
 [AIEcono-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+What to expect: Builds food and birth capacity while explorers visit fruit and enemy colonies.\n\nStrengths: Can be troublesome on Contested Commons.\n\nWeaknesses: Does not produce warriors to stop a direct military attack.\n\nCounterplay to try: Pressure exposed expansion. Keep your inns supplied with food and fruit to retain your units.
 [AIEcono-Summary]
-Huge bases and conversion instead of attacks.
+Expands and competes for converts without producing warriors.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+What to expect: Sends early attacks before you have time for a long buildup.\n\nStrengths: Especially dangerous on Caravanserai, Tidal Flats and Hidden Oasis.\n\nWeaknesses: Less reliable on river-heavy maps.\n\nCounterplay to try: Protect food and birth buildings early. Keep producing workers while replacing defenders, then counterattack.
 [AIWarrush-Summary]
 Fast attacks that test your early defenses.
 [AICabino-Profile]
-Core strategy: A cabinet of independent specialist departments — defense, offense, construction, upgrades, unit management — that each act on their own initiative but converge on one plan: grow large fast, then throw huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure; independent departments react quickly to local threats without waiting on a central plan.\n\nCounterplay to try: Contest its expansion early and use terrain to limit how much of its army can engage at once.
+What to expect: Expands, trains warriors and attacks buildings while assigning defenders at home.\n\nStrengths: Can turn an established colony into sustained military pressure.\n\nWeaknesses: Less effective on Hidden Oasis, Canals, Contested Commons and Plantations.\n\nCounterplay to try: Pressure exposed expansion before its army gathers. Target food and training buildings when you can.
 [AICabino-Summary]
-Independent departments that cooperate toward rapid growth and overwhelming armies.
+A strong builder that fields trained attacking forces.
 [Algae]
 Algae
 [Alliances]
@@ -2964,3 +2964,9 @@ Central concentration
 The Last Treeline
 [Woodland depth]
 Woodland depth
+[AI strategy]
+AI strategy
+[AIMaxima-Summary]
+Scouts, builds its food supply and gathers warrior waves.
+[AIMaxima-Profile]
+What to expect: Scouts for targets and gathers attack waves while keeping warriors for defense and training.\n\nStrengths: Combines colony growth, trained attacks and local defense.\n\nWeaknesses: Needs food, training capacity and room to gather its forces.\n\nCounterplay to try: Contest exposed food and training buildings before waves gather. Keep a supplied defensive force together.

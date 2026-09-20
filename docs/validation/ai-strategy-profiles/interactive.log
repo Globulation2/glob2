@@ -1,0 +1,94 @@
+$ ./build/src/CustomGameSetupHarness artifacts/strategy-profiles/flows ui
+PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
+PASS preferences keep every generator option, and older files still load
+PASS landscape picker Random order is a real shuffle drawn once per process run, Alphabetical stays stable
+UI step 1: Premade maps
+UI step 2: Players tab
+UI step 3: Inline controller
+UI step 4: key 1073741905
+UI step 5: key 13
+UI step 6: Shared control
+UI step 7: key 1073741905
+UI step 8: key 13
+UI step 9: 2 vs 2 preset
+UI step 10: Second colony AI
+UI step 11: key 1073741905
+UI step 12: key 13
+UI step 13: Second colony profile
+UI step 14: key 1073741906
+UI step 15: key 13
+UI step 16: key 51
+UI step 17: Quick clash tile
+UI step 18: key 49
+UI step 19: Random mode (automatic preview)
+Map generation: fingerprint revision 3 seed 674521428 [complete]: 
+UI step 20: key 50
+UI step 21: Final controller
+UI step 22: key 1073741906
+UI step 23: key 13
+UI step 24: Launch
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 817ec2c8
+automaticEndingGame ended: 30 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789925264 map="Random map" orders=0 players=team0:Numbi,team1:Nicowar,team2:Numbi,team3:Numbi
+PASS full SDL UI flow mode 1: clicks, nested choices, shared control, presets, profiles, random preview, match launch and speed restoration
+UI step 1: Premade maps
+UI step 2: Players tab
+UI step 3: Inline controller
+UI step 4: key 1073741905
+UI step 5: key 13
+UI step 6: Shared control
+UI step 7: key 1073741905
+UI step 8: key 13
+UI step 9: 2 vs 2 preset
+UI step 10: Second colony AI
+UI step 11: key 1073741905
+UI step 12: key 13
+UI step 13: Second colony profile
+UI step 14: key 1073741906
+UI step 15: key 13
+UI step 16: key 51
+UI step 17: Quick clash tile
+UI step 18: key 49
+UI step 19: Random mode (automatic preview)
+Map generation: fingerprint revision 3 seed 1810111304 [complete]: 
+UI step 20: key 50
+UI step 21: Final controller
+UI step 22: key 1073741906
+UI step 23: key 13
+UI step 24: Launch
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 72c26fb7
+automaticEndingGame ended: 30 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789925272 map="Random map" orders=0 players=team0:local,team1:Nicowar,team2:Numbi,team3:Numbi
+PASS full SDL UI flow mode 0: clicks, nested choices, shared control, presets, profiles, random preview, match launch and speed restoration
+UI step 1: Premade maps
+UI step 2: Players tab
+UI step 3: Inline controller
+UI step 4: key 1073741905
+UI step 5: key 13
+UI step 6: Shared control
+UI step 7: key 1073741905
+UI step 8: key 13
+UI step 9: 2 vs 2 preset
+UI step 10: Second colony AI
+UI step 11: key 1073741905
+UI step 12: key 13
+UI step 13: Second colony profile
+UI step 14: key 1073741906
+UI step 15: key 13
+UI step 16: key 51
+UI step 17: Quick clash tile
+UI step 18: key 49
+UI step 19: Random mode (automatic preview)
+Map generation: fingerprint revision 3 seed 3026971704 [complete]: 
+UI step 20: key 50
+UI step 21: Launch
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = fc371250
+automaticEndingGame ended: 30 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=30 winner_team=-1 seed=1789925281 map="Random map" orders=0 players=team0:local,team0:Numbi,team1:Nicowar,team2:Numbi,team3:Numbi
+PASS full SDL UI flow mode 2: clicks, nested choices, shared control, presets, profiles, random preview, match launch and speed restoration

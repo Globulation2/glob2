@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 odišiel z hry.
 [%0 level %1]
@@ -51,11 +57,11 @@ UI
 [ai]
 UI
 [AICastor-Description]
-Castor hrá opatrne a darí sa mu na mapách s malým množstvom zdrojov. Stredná náročnosť.
+
 [AICastor]
 UICastor
 [AINicowar-Description]
-Nicowar hrá útočne, rýchlo sa rozrastá a posiela na súperov obrovské armády. Vysoká náročnosť.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Nicowar
 [AINone]
 Žiadna UI
 [AINumbi-Description]
-Numbi sa rozrastá v malom rozsahu, ale rýchlo. Nízka náročnosť.
+
 [AINumbi]
 UINumbi
 [AIEcono-Description]
-Econo neútočí, ale buduje obrovské základne a usilovne získava cudzie jednotky na svoju stranu. Nízka náročnosť.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush útočí rýchlo a tvrdo a často zatlačí obrancu na hranicu jeho možností. Stredná náročnosť.
+
 [AIWarrush]
 UIWarrush
 [AICabino-Description]
-Cabino riadi obranu, útok a výstavbu ako nezávislé oddelenia, ktoré smerujú k jednému plánu: rýchlo sa rozrastá a posiela na súperov obrovské armády. Vysoká náročnosť.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1229,9 +1235,9 @@ Rýchlosť: 1x (viac hráčov)
 [game speed help]
 Iba pre jedného hráča a záznamy. Hra viacerých hráčov beží rýchlosťou 1x.
 [AICortex-Description]
-Cortex sa rozširuje smerom k novým obilným poliam a posiela do boja skupiny bojovníkov, podporovaných jedálňami a nemocnicami v blízkosti frontovej línie. Stredná náročnosť. Experimentálne.
+
 [AIMaxima-Description]
-Maxima rozvíja dobre nasýtenú kolóniu, neustále prieskumuje a útočí bez prestávky s každým bojovníkom, ktorého môže uvolniť. Vysoká obtiažnosť.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1249,37 +1255,37 @@ Ešte v práci: %0
 [AI strategy & counterplay]
 Stratégia AI a protihra
 [AICastor-Profile]
-Stratégia: Opatrne sa rozširuje a funguje dobre na mapách s malým množstvom zdrojov.\n\nSilné stránky: Obmedzená expanzia je účinná v hrách s obmedzenými zdrojmi.\n\nOdporúčaná protihra: Obsaďte územie skôr. Nepredpokladajte, že nedostatok zdrojov oslabí túto AI.
+
 [AICastor-Summary]
-Opatrná expanzia; funguje dobre s obmedzenými zdrojmi.
+
 [AICortex-Profile]
-Stratégia: Riadi zásoby jedla, rozširuje sa smerom k novým pšeničným poliam a zostavuje po sebe nasledujúce skupiny bojovníkov. Jedálne a nemocnice v blízkosti frontovej línie podporujú útoky ďaleko od základne.\n\nSilné stránky: Posiela posily, udržiava vojenský tlak a reaguje na nedostatok potravín.\n\nOdporúčaná protihra: Bojujte o kontrolu nad novými pšeničnými poliami a zaútočte na ich podporné budovy v blízkosti prednej línie. Zaútočte skôr, ako budú jeho skupiny bojovníkov pripravené.\n\nExperimentálna AI. Stredná obtiažnosť; odporúčania k protihre nie sú hodnotením z porovnávacích testov.
+
 [AICortex-Summary]
-Rozširuje sa s ohľadom na zásoby potravín a podporuje svoje útočiace jednotky.
+
 [AINicowar-Profile]
-Stratégia: Rýchlo expanduje a útočí na protivníkov obrovskými armádami.\n\nSilné stránky: Rýchla expanzia podporuje agresívne vojenské útoky.\n\nOdporúčaná protihra: Zabráňte jej rozširovaniu. Použite terén na zníženie počtu nepriateľských jednotiek, ktoré môžu naraz bojovať.
+
 [AINicowar-Summary]
-Rýchlo expanduje a buduje veľké armády pre agresívne útoky.
+
 [AINone-Profile]
 Stratégia: AI nedáva žiadne príkazy.\n\nSilné stránky: Predvídateľný, neaktívny protivník na experimenty.\n\nSlabé stránky: Nerozširuje sa ani sa neprispôsobuje.
 [AINone-Summary]
 Nečinná kolónia na experimenty.
 [AINumbi-Profile]
-Stratégia: Rozširuje sa rýchlo, ale v malom rozsahu. Ľahší súper pre precvičovanie manažmentu kolónií.\n\nSilné stránky: Umožňuje vám naučiť sa ekonomické riadenie aj boj.\n\nOdporúčaná protihra: Pred útokom vyviňte silnejšiu ekonomiku a vycvičte svoju armádu.
+
 [AINumbi-Summary]
-Rýchla expanzia v malom meradle.
+
 [AIEcono-Profile]
-Stratégia: Neútočí, ale buduje obrovské základne a aktívne konvertuje nepriateľské jednotky na svoju stranu.\n\nSilné stránky: Rozšírenie a konverzia jednotiek ohrozujú protivníkov bez priamych útokov.\n\nOdporúčaná protihra: Rozvíjajte svoju kolóniu včas a vyhnite sa posielaniu jednotiek tam, kde ich môže nepriateľ premeniť.
+
 [AIEcono-Summary]
-Obrovské základne a konverzia namiesto útokov.
+
 [AIWarrush-Profile]
-Stratégia: Útočí skoro a rázne, skôr ako súper dokončí prípravu.\n\nSilné stránky: Využíva nebránenú expanziu a pomalú vojenskú prípravu.\n\nOdporúčaná protihra: Prežite prvý útok pri zachovaní svojej ekonomiky, potom zaútočte.
+
 [AIWarrush-Summary]
-Rýchle útoky, ktoré otestujú vašu skorú obranu.
+
 [AICabino-Profile]
-Základná stratégia: kabinet nezávislých špecializovaných oddelení (obrana, útok, výstavba, vylepšenia, správa jednotiek), z ktorých každé koná z vlastnej iniciatívy, ale smeruje k jednému plánu: rýchly rast a potom vyslanie obrovských armád proti súperom.\n\nSilné stránky: rýchla expanzia podporuje agresívny vojenský tlak; nezávislé oddelenia rýchlo reagujú na miestne hrozby bez čakania na centrálny plán.\n\nProtiťah, ktorý treba skúsiť: napadnite jeho expanziu včas a využite terén na obmedzenie počtu jednotiek, ktoré môže naraz nasadiť.
+
 [AICabino-Summary]
-Nezávislé oddelenia spolupracujúce na rýchlom raste a obrovských armádach.
+
 [Algae]
 Riasy
 [Alliances]

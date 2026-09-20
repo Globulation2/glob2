@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 har forladt spillet
 [%0 level %1]
@@ -51,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor spiller forsigtigt og klarer sig godt på kort med få ressourcer. Middel sværhedsgrad.
+
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar spiller aggressivt, vokser hurtigt og sender enorme hære mod sine modstandere. Høj sværhedsgrad.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,11 +69,11 @@ Ingen – foretager sig intet.
 [AINone]
 Ingen
 [AINumbi-Description]
-Numbi udvider sig lidt, men hurtigt. Lav sværhedsgrad.
+
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo angriber ikke, men bygger enorme baser og omvender ihærdigt enheder. Lav sværhedsgrad.
+
 [AIEcono]
 Econo
 [AIToubib-Description]
@@ -75,11 +81,11 @@ Econo
 [AIToubib]
 AIToubib
 [AIWarrush-Description]
-Warrush angriber hurtigt og hårdt og presser ofte den forsvarende spiller til det yderste. Middel sværhedsgrad.
+
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino styrer forsvar, angreb og opbygning som uafhængige afdelinger, der arbejder mod én plan: vokser hurtigt og sender enorme hære mod sine modstandere. Høj sværhedsgrad.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1297,9 +1303,9 @@ Hastighed: 1x (flerspiller)
 [game speed help]
 Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
 [AICortex-Description]
-Cortex udvider sig mod nye hvedemarker og sender grupper af krigere i kamp, støttet af kroer og hospitaler nær frontlinjen. Middel sværhedsgrad. Eksperimentel.
+
 [AIMaxima-Description]
-Maxima opbygger en velnæret koloni, spejder konstant og angriber uden pause med hver kriger, den kan undvære. Høj sværhedsgrad.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1317,37 +1323,37 @@ Arbejder stadig: %0
 [AI strategy & counterplay]
 AI-strategi og modspil
 [AICastor-Profile]
-Strategi: Udvider sig forsigtigt og klarer sig godt på kort med få ressourcer.\n\nStyrker: Begrænset udvidelse er effektiv i spil med knappe ressourcer.\n\nForeslået modspil: Indtag territorium tidligt. Antag ikke, at mangel på ressourcer vil svække denne AI.
+
 [AICastor-Summary]
-Forsigtig udvidelse; klarer sig godt med knappe ressourcer.
+
 [AICortex-Profile]
-Strategi: Styrer fødevareforsyninger, ekspanderer mod nye hvedemarker og samler successive grupper af krigere. Kroer og hospitaler nær frontlinjen støtter angreb langt fra basen.\n\nStyrker: Sender forstærkninger sammen, opretholder militært pres og reagerer på fødevaremangel.\n\nForeslået modspil: Kæmp om kontrol over nye hvedemarker og angrib dens støttebygninger nær frontlinjen. Angrib før dets grupper af krigere er klar.\n\nEksperimentel AI. Middel sværhedsgrad; forslag til modspil er ikke bedømmelser fra sammenlignende test.
+
 [AICortex-Summary]
-Udvider med fødevareforsyninger i tankerne og støtter sine angribende tropper.
+
 [AINicowar-Profile]
-Strategi: Ekspanderer hurtigt og angriber modstandere med enorme hære.\n\nStyrker: Hurtig ekspansion understøtter aggressive militærangreb.\n\nForeslået modspil: Forhindr dens udvidelse. Brug terræn til at reducere antallet af fjendtlige tropper, der kan kæmpe på én gang.
+
 [AINicowar-Summary]
-Ekspanderer hurtigt og bygger store hære til aggressive angreb.
+
 [AINone-Profile]
 Strategi: AI'en giver ingen kommandoer.\n\nStyrker: En forudsigelig, inaktiv modstander til eksperimenter.\n\nSvagheder: Udvider eller tilpasser sig ikke.
 [AINone-Summary]
 En inaktiv koloni til eksperimenter.
 [AINumbi-Profile]
-Strategi: Udvider sig hurtigt, men i lille skala. En lettere modstander til at praktisere kolonistyring.\n\nStyrker: Lader dig lære både økonomisk ledelse og kamp.\n\nForeslået modspil: Udvikl en stærkere økonomi og træn din hær, før du angriber.
+
 [AINumbi-Summary]
-Hurtig udvidelse i lille skala.
+
 [AIEcono-Profile]
-Strategi: Angriber ikke, men bygger enorme baser og konverterer aktivt fjendtlige enheder til sin egen side.\n\nStyrker: Udvidelse og enhedskonvertering truer modstandere uden direkte angreb.\n\nForeslået modspil: Udvikl din koloni tidligt og undgå at sende enheder, hvor fjenden kan konvertere dem.
+
 [AIEcono-Summary]
-Kæmpe baser og konvertering i stedet for angreb.
+
 [AIWarrush-Profile]
-Strategi: Angriber tidligt og kraftigt, før modstanderne er færdige med at forberede sig.\n\nStyrker: Udnytter uforsvaret ekspansion og langsom militær forberedelse.\n\nForeslået modspil: Overlev det første angreb, mens du bevarer din økonomi, og gå derefter til modangreb.
+
 [AIWarrush-Summary]
-Hurtige angreb, der tester dit tidlige forsvar.
+
 [AICabino-Profile]
-Grundstrategi: Et kabinet af uafhængige specialistafdelinger (forsvar, angreb, opbygning, opgraderinger, enhedsstyring), der hver handler på eget initiativ, men arbejder mod én plan: vokse hurtigt og derefter sende enorme hære mod modstanderne.\n\nStyrker: Hurtig ekspansion understøtter aggressivt militært pres; de uafhængige afdelinger reagerer hurtigt på lokale trusler uden at vente på en central plan.\n\nModtræk at prøve: Bekæmp dets ekspansion tidligt, og brug terrænet til at begrænse, hvor mange af dets tropper der kan kæmpe på én gang.
+
 [AICabino-Summary]
-Uafhængige afdelinger, der samarbejder om hurtig vækst og enorme hære.
+
 [Algae]
 Alger
 [Alliances]

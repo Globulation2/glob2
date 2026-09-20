@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 telah keluar dari permainan.
 [%0 level %1]
@@ -51,19 +57,19 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor bermain dengan hati-hati dan sangat tangguh di peta dengan sedikit sumber daya. Tingkat kesulitan sedang.
+
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex berekspansi ke ladang gandum baru dan mengirimkan kelompok prajurit ke medan perang, didukung oleh penginapan dan rumah sakit di dekat garis depan. Kesulitan sedang. Eksperimental.
+
 [AIMaxima-Description]
-Maxima mengembangkan koloni yang tercukupi pangannya, terus menjelajah, dan menyerang tanpa henti dengan setiap prajurit yang bisa dikerahkan. Tingkat kesulitan tinggi.
+
 [AIMaxima]
 Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
-Nicowar bermain agresif, berkembang pesat, dan mengerahkan pasukan besar untuk menyerang lawan. Tingkat kesulitan sulit.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -71,19 +77,19 @@ Tidak ada - Tidak melakukan apa pun.
 [AINone]
 Tidak ada
 [AINumbi-Description]
-Numbi - Berkembang secara terbatas dan cepat. Tingkat kesulitan mudah.
+
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Menyerang dengan cepat dan keras, sering kali membuat pemain yang bertahan kewalahan. Tingkat kesulitan sedang.
+
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino menjalankan pertahanan, serangan, dan pembangunan sebagai departemen independen yang menuju satu rencana: berkembang pesat lalu mengerahkan pasukan besar untuk menyerang lawan. Tingkat kesulitan sulit.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1237,37 +1243,37 @@ Masih bekerja: %0
 [AI strategy & counterplay]
 Strategi AI & cara melawannya
 [AICastor-Profile]
-Strategi: Berkembang dengan hati-hati dan mampu bertahan di peta dengan sedikit sumber daya.\n\nKekuatan: Pertumbuhan terkendali cocok untuk pertandingan dengan sumber daya langka.\n\nSaran melawan: Kuasai wilayah lebih awal; jangan beranggapan bahwa sumber daya langka akan melumpuhkannya.
+
 [AICastor-Summary]
-Ekspansi yang hati-hati; berkinerja baik dengan sumber daya yang terbatas.
+
 [AICortex-Profile]
-Strategi: Mengelola persediaan makanan, memperluas ke ladang gandum baru, dan mengumpulkan kelompok pejuang secara berurutan. Penginapan dan rumah sakit di dekat garis depan mendukung serangan yang jauh dari pangkalan.\n\nKekuatan: Mengirim bala bantuan bersama-sama, mempertahankan tekanan militer, dan bereaksi terhadap kekurangan pangan.\n\nSaran melawan: Berjuang untuk menguasai ladang gandum baru dan serang bangunan pendukungnya di dekat garis depan. Serang sebelum kelompok prajuritnya siap.\n\nAI eksperimental. Kesulitan sedang; saran melawan bukan penilaian tolok ukur kinerja.
+
 [AICortex-Summary]
-Menjaga pangan sambil melancarkan gelombang serangan dengan dukungan.
+
 [AINicowar-Profile]
-Strategi: Berekspansi dengan cepat dan menyerang lawan dengan pasukan yang sangat besar.\n\nKekuatan: Ekspansi yang cepat mendukung serangan militer yang agresif.\n\nSaran melawan: Cegah perluasannya. Gunakan medan untuk mengurangi jumlah pasukan musuh yang bisa bertarung sekaligus.
+
 [AINicowar-Summary]
-Berkembang dengan cepat dan membangun pasukan besar untuk serangan agresif.
+
 [AINone-Profile]
 Strategi: AI tidak memberikan perintah.\n\nKekuatan: Lawan eksperimen yang dapat diprediksi dan tidak aktif.\n\nKelemahan: Tidak berkembang atau beradaptasi.
 [AINone-Summary]
 Koloni yang diam untuk eksperimen.
 [AINumbi-Profile]
-Strategi: Berkembang dengan cepat namun dalam skala kecil. Lawan yang lebih mudah untuk mempraktikkan manajemen koloni.\n\nKekuatan: Memungkinkan Anda mempelajari manajemen ekonomi dan pertempuran.\n\nSaran melawan: Kembangkan ekonomi yang lebih kuat dan latih pasukan Anda sebelum menyerang.
+
 [AINumbi-Summary]
-Ekspansi cepat dalam skala kecil.
+
 [AIEcono-Profile]
-Strategi: Tidak menyerang, tetapi membangun markas besar dan giat mengubah unit musuh menjadi sekutu.\n\nKekuatan: Pertumbuhan dan pengalihan unit menekan lawan tanpa serangan biasa.\n\nSaran melawan: Manfaatkan awal permainan untuk berkembang, dan hindari mengirim unit ke tempat musuh bisa mengambil alihnya.
+
 [AIEcono-Summary]
-Basis besar dan konversi, bukan serangan.
+
 [AIWarrush-Profile]
-Strategi: Menyerang dengan cepat dan keras sebelum lawan selesai bersiap.\n\nKekuatan: Menghukum ekspansi tanpa pertahanan dan persiapan militer yang lambat.\n\nSaran melawan: Pertahankan ekonomi sambil bertahan dari serangan pertama, lalu serang balik.
+
 [AIWarrush-Summary]
-Serangan cepat yang menguji pertahanan awal Anda.
+
 [AICabino-Profile]
-Strategi inti: sebuah kabinet departemen spesialis independen (pertahanan, serangan, pembangunan, peningkatan, manajemen unit) yang masing-masing bertindak atas inisiatifnya sendiri tetapi menuju satu rencana: berkembang pesat lalu mengerahkan pasukan besar melawan lawan.\n\nKekuatan: ekspansi cepat mendukung tekanan militer yang agresif; departemen independen bereaksi cepat terhadap ancaman lokal tanpa menunggu rencana terpusat.\n\nCara melawan: hadapi ekspansinya sejak awal dan gunakan medan untuk membatasi berapa banyak pasukannya yang bisa bertempur sekaligus.
+
 [AICabino-Summary]
-Departemen independen yang bekerja sama untuk pertumbuhan cepat dan pasukan besar.
+
 [Algae]
 Ganggang
 [Alliances]

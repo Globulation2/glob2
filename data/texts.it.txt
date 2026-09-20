@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 ha lasciato la partita.
 [%0 level %1]
@@ -51,11 +57,11 @@ IA
 [ai]
 ia
 [AICastor-Description]
-Castor gioca in modo prudente e si comporta molto bene su mappe con poche risorse. Difficoltà media.
+
 [AICastor]
 IACastor
 [AINicowar-Description]
-Nicowar gioca in modo aggressivo, si espande rapidamente e manda enormi eserciti contro gli avversari. Difficoltà alta.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Nessuna - Non fa nulla.
 [AINone]
 NienteIA
 [AINumbi-Description]
-Numbi - Si espande poco e rapidamente. Difficoltà bassa.
+
 [AINumbi]
 IANumbi
 [AIEcono-Description]
-Econo - Non attacca, ma costruisce basi enormi e converte le unità in modo aggressivo. Difficoltà bassa.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Attacca rapidamente e con forza, mettendo spesso a dura prova chi si difende. Difficoltà media.
+
 [AIWarrush]
 IAWarrush
 [AICabino-Description]
-Cabino gestisce difesa, attacco e costruzione come dipartimenti indipendenti che convergono su un solo piano: si espande rapidamente e manda enormi eserciti contro gli avversari. Difficoltà alta.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1283,9 +1289,9 @@ Velocità: 1x (multigiocatore)
 [game speed help]
 Solo per giocatore singolo e replay. Le partite multigiocatore si svolgono a 1x.
 [AICortex-Description]
-Cortex si espande verso nuovi campi di grano e manda in battaglia gruppi di guerrieri, supportati da mense e ospedali vicini al fronte. Difficoltà media. Sperimentale.
+
 [AIMaxima-Description]
-Maxima sviluppa una colonia ben nutrita, esplora costantemente e attacca senza sosta, inviando ogni guerriero di cui può fare a meno. Difficoltà alta.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1303,37 +1309,37 @@ Ancora al lavoro: %0
 [AI strategy & counterplay]
 Strategia e contromisure dell’IA
 [AICastor-Profile]
-Strategia: si espande con cautela e funziona bene su mappe con poche risorse.\n\nPunti di forza: l'espansione limitata è efficace nei giochi con risorse scarse.\n\nContromisure suggerite: occupa il territorio in anticipo. Non dare per scontato che la mancanza di risorse indebolirà questa IA.
+
 [AICastor-Summary]
-Espansione cauta; funziona bene con risorse scarse.
+
 [AICortex-Profile]
-Strategia: gestisce le scorte di cibo, si espande verso nuovi campi di grano e riunisce gruppi successivi di guerrieri. Mense e ospedali vicino alla linea del fronte supportano gli attacchi lontani dalla base.\n\nPunti di forza: invia rinforzi insieme, mantiene la pressione militare e reagisce alla scarsità di cibo.\n\nContromisure suggerite: combatti per il controllo di nuovi campi di grano e attacca gli edifici di supporto vicino alla linea del fronte. Attacca prima che i suoi gruppi di guerrieri siano pronti.\n\nIA sperimentale. Difficoltà media; le contromisure suggerite non sono valutazioni basate su test comparativi.
+
 [AICortex-Summary]
-Espansione attenta al cibo e ondate d’attacco supportate.
+
 [AINicowar-Profile]
-Strategia: si espande rapidamente e attacca gli avversari con eserciti enormi.\n\nPunti di forza: la rapida espansione supporta attacchi militari aggressivi.\n\nContromisure suggerite: Ostacola la sua espansione. Usa il terreno per ridurre il numero di truppe nemiche che possono combattere contemporaneamente.
+
 [AINicowar-Summary]
-Si espande rapidamente e costruisce grandi eserciti per attacchi aggressivi.
+
 [AINone-Profile]
 Strategia: l'IA non dà comandi.\n\nPunti di forza: un avversario prevedibile e inattivo per gli esperimenti.\n\nPunti deboli: Non si espande né si adatta.
 [AINone-Summary]
 Una colonia inattiva per gli esperimenti.
 [AINumbi-Profile]
-Strategia: si espande rapidamente ma su piccola scala. Un avversario più facile per praticare la gestione della colonia.\n\nPunti di forza: ti consente di apprendere sia la gestione economica che il combattimento.\n\nContromisure suggerite: sviluppa un'economia più forte e addestra il tuo esercito prima di attaccare.
+
 [AINumbi-Summary]
-Espansione rapida su piccola scala.
+
 [AIEcono-Profile]
-Strategia: non attacca, ma costruisce basi enormi e converte attivamente le unità nemiche dalla propria parte.\n\nPunti di forza: l'espansione e la conversione delle unità minacciano gli avversari senza attacchi diretti.\n\nContromisure suggerite: sviluppa presto la tua colonia ed evita di inviare unità dove il nemico può convertirle.
+
 [AIEcono-Summary]
-Basi enormi e conversione invece di attacchi.
+
 [AIWarrush-Profile]
-Strategia: attacca presto e con forza, prima che gli avversari finiscano di prepararsi.\n\nPunti di forza: sfrutta l'espansione indifesa e la lenta preparazione militare.\n\nContromisure suggerite: sopravvivi al primo attacco mantenendo la tua economia, quindi contrattacca.
+
 [AIWarrush-Summary]
-Attacchi rapidi che mettono alla prova le tue difese iniziali.
+
 [AICabino-Profile]
-Strategia principale: un gabinetto di dipartimenti specialisti indipendenti (difesa, attacco, costruzione, miglioramenti, gestione delle unità) che agiscono ciascuno di propria iniziativa ma convergono su un solo piano: crescere rapidamente e poi scagliare enormi eserciti contro gli avversari.\n\nPunti di forza: l'espansione rapida sostiene una pressione militare aggressiva; i dipartimenti indipendenti reagiscono velocemente alle minacce locali senza attendere un piano centrale.\n\nContromossa da provare: contrasta la sua espansione presto e usa il terreno per limitare quante truppe può impegnare contemporaneamente.
+
 [AICabino-Summary]
-Dipartimenti indipendenti che collaborano per una crescita rapida ed eserciti enormi.
+
 [Algae]
 alghe
 [Alliances]

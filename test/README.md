@@ -657,3 +657,15 @@ The retained Maxima format-115 checkpoint compares all 512 ticks from 30000
 through 30511 against uninterrupted execution. Its compressed save, expected
 per-tick hashes, and reproduction commands are in
 [maxima/fixtures/save-continuation](maxima/fixtures/save-continuation/README.md).
+
+### AI strategy profile captures
+
+Build `scons release=1 server=0 custom-setup-test`, then run:
+
+```sh
+mkdir -p artifacts/ai-profiles-small artifacts/ai-profiles-large
+./build/src/CustomGameSetupHarness artifacts/ai-profiles-small profiles
+./build/src/CustomGameSetupHarness artifacts/ai-profiles-large profiles-large
+```
+
+These focused modes capture the Players & Teams strategy button and every AI profile at its top and bottom, at 640×480 and 1000×700. They check that profile/summary keys resolve, including Maxima. The existing `ui` mode exercises opening the strategy screen from the lobby and choosing an AI before launching each controller mode. The harness uses its dedicated `glob2-custom-setup-tests` profile.

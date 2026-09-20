@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 opuścił grę.
 [%0 level %1]
@@ -51,11 +57,11 @@ SI
 [ai]
 SI
 [AICastor-Description]
-Castor gra konserwatywnie i radzi sobie bardzo dobrze na mapach z małą ilością zasobów. Średnia trudność.
+
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar gra agresywnie, rozwija się szybko i wysyła ogromne armie na swoich przeciwników. Duża trudność.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ None - Nic nie robi.
 [AINone]
 AINone
 [AINumbi-Description]
-Numbi - Rozszerza się lekko i szybko. Mała trudność.
+
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo - Nie atakuje, ale buduje ogromne bazy i agresywnie konwertuje jednostki. Mała trudność.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Atakuje szybko i skutecznie, często spychając broniącego się gracza na straconą pozycję. Średnia trudność.
+
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino zarządza obroną, atakiem i budową jako niezależnymi departamentami, które dążą do jednego planu: rozwija się szybko i wysyła ogromne armie na swoich przeciwników. Duża trudność.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1223,9 +1229,9 @@ Szybkość: 1x (gra sieciowa)
 [game speed help]
 Tylko gra jednoosobowa i powtórki. Gra wieloosobowa działa z szybkością 1x.
 [AICortex-Description]
-Cortex rozszerza się w kierunku nowych pól pszenicy i wysyła do bitwy grupy wojowników, wspieranych przez gospody i szpitale w pobliżu linii frontu. Średni poziom trudności. Eksperymentalny.
+
 [AIMaxima-Description]
-Maxima rozwija dobrze odżywioną kolonię, nieustannie zwiaduje i atakuje bez przerwy każdym wojownikiem, którego może wysłać. Wysoki poziom trudności.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1241,37 +1247,37 @@ Nadal pracują: %0
 [AI strategy & counterplay]
 Strategia SI i przeciwdziałanie
 [AICastor-Profile]
-Strategia: rozwija się ostrożnie i dobrze radzi sobie na mapach z niewielką ilością zasobów.\n\nMocne strony: Ograniczona ekspansja jest skuteczna w grach z ograniczonymi zasobami.\n\nJak przeciwdziałać: Zajmij terytorium wcześnie. Nie zakładaj, że brak zasobów osłabi tę sztuczną inteligencję.
+
 [AICastor-Summary]
-Ostrożna ekspansja; radzi sobie dobrze przy ograniczonych zasobach.
+
 [AICortex-Profile]
-Strategia: Zarządza zapasami żywności, rozszerza się w kierunku nowych pól pszenicy i gromadzi kolejne grupy wojowników. Gospody i szpitale w pobliżu linii frontu wspierają ataki z dala od bazy.\n\nMocne strony: Wysyła posiłki w grupach, utrzymuje presję militarną i reaguje na niedobory żywności.\n\nJak przeciwdziałać: Walcz o kontrolę nad nowymi polami pszenicy i atakuj ich budynki pomocnicze w pobliżu linii frontu. Atakuj, zanim grupy wojowników będą gotowe.\n\nEksperymentalna SI. Średni poziom trudności; sugestie przeciwdziałania nie są ocenami z testów porównawczych.
+
 [AICortex-Summary]
-Rozwija się z myślą o zapasach żywności i wspiera atakujące oddziały.
+
 [AINicowar-Profile]
-Strategia: Szybko się rozwija i atakuje przeciwników ogromnymi armiami.\n\nMocne strony: Szybka ekspansja wspiera agresywne ataki militarne.\n\nJak przeciwdziałać: Zapobiegnij jego ekspansji. Wykorzystaj teren, aby zmniejszyć liczbę oddziałów wroga, które mogą walczyć jednocześnie.
+
 [AINicowar-Summary]
-Szybko się rozwija i buduje duże armie do agresywnych ataków.
+
 [AINone-Profile]
 Strategia: AI nie wydaje żadnych poleceń.\n\nMocne strony: Przewidywalny, nieaktywny przeciwnik do eksperymentów.\n\nSłabe strony: Nie rozwija się i nie dostosowuje.
 [AINone-Summary]
 Bezczynna kolonia do eksperymentów.
 [AINumbi-Profile]
-Strategia: Rozwija się szybko, ale na małą skalę. Łatwiejszy przeciwnik do ćwiczenia zarządzania kolonią.\n\nMocne strony: Pozwala nauczyć się zarówno zarządzania ekonomicznego, jak i walki.\n\nJak przeciwdziałać: Rozwiń silniejszą gospodarkę i wytrenuj swoją armię przed atakiem.
+
 [AINumbi-Summary]
-Szybka rozbudowa na małą skalę.
+
 [AIEcono-Profile]
-Strategia: Nie atakuje, ale buduje ogromne bazy i aktywnie konwertuje jednostki wroga na swoją stronę.\n\nMocne strony: Ekspansja i konwersja jednostek zagrażają przeciwnikom bez bezpośrednich ataków.\n\nJak przeciwdziałać: Rozwijaj swoją kolonię już na wczesnym etapie i unikaj wysyłania jednostek tam, gdzie wróg może je skonwertować.
+
 [AIEcono-Summary]
-Ogromne bazy i konwersja zamiast ataków.
+
 [AIWarrush-Profile]
-Strategia: Atakuje wcześnie i mocno, zanim przeciwnicy zakończą przygotowania.\n\nMocne strony: Wykorzystuje niebronioną ekspansję i powolne przygotowanie wojskowe.\n\nJak przeciwdziałać: Przetrwaj pierwszy atak, utrzymując gospodarkę, a następnie kontratakuj.
+
 [AIWarrush-Summary]
-Szybkie ataki, które sprawdzają twoją wczesną obronę.
+
 [AICabino-Profile]
-Podstawowa strategia: gabinet niezależnych wyspecjalizowanych departamentów (obrona, atak, budowa, ulepszenia, zarządzanie jednostkami), z których każdy działa z własnej inicjatywy, ale wszystkie dążą do jednego planu: szybki rozwój, a potem wysłanie ogromnych armii na przeciwników.\n\nMocne strony: szybka ekspansja wspiera agresywną presję militarną; niezależne departamenty szybko reagują na lokalne zagrożenia, nie czekając na centralny plan.\n\nJak przeciwdziałać: zwalczaj jego ekspansję wcześnie i wykorzystaj teren, by ograniczyć liczbę oddziałów, które może zaangażować naraz.
+
 [AICabino-Summary]
-Niezależne departamenty współpracujące dla szybkiego wzrostu i ogromnych armii.
+
 [Algae]
 Algi
 [Alliances]

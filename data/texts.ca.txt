@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 ha marxat
 [%0 level %1]
@@ -51,11 +57,11 @@ IA
 [ai]
 IA
 [AICastor-Description]
-Castor juga de manera conservadora i se'n surt molt bé en mapes amb pocs recursos. Dificultat mitjana.
+
 [AICastor]
 IACastor
 [AINicowar-Description]
-Nicowar juga agressivament, creix de pressa i envia exèrcits enormes contra els rivals. Dificultat alta.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Cap: no fa res.
 [AINone]
 Cap
 [AINumbi-Description]
-Numbi s'expandeix poc, però de pressa. Dificultat baixa.
+
 [AINumbi]
 IANumbi
 [AIEcono-Description]
-Econo no ataca, però construeix bases enormes i intenta fer passar moltes unitats al seu bàndol. Dificultat baixa.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush ataca de pressa i amb duresa, sovint portant el defensor al límit. Dificultat mitjana.
+
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino gestiona la defensa, l'atac i la construcció com a departaments independents que cooperen en un sol pla: creix de pressa i envia exèrcits enormes contra els rivals. Dificultat alta.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1229,9 +1235,9 @@ Velocitat: 1x (multijugador)
 [game speed help]
 Només per a un jugador i repeticions. Les partides multijugador van a 1x.
 [AICortex-Description]
-Cortex s'expandeix cap a nous camps de blat i envia grups de guerrers a la batalla, recolzats per fondes i hospitals prop de la línia del front. Dificultat mitjana. Experimental.
+
 [AIMaxima-Description]
-Maxima fa créixer una colònia bé alimentada, explora constantment i ataca sense pausa, enviant tots els guerrers que pot alliberar. Dificultat alta.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1249,37 +1255,37 @@ Encara treballant: %0
 [AI strategy & counterplay]
 Estratègia d'IA i contrajoc
 [AICastor-Profile]
-Estratègia: s'expandeix amb precaució i funciona bé en mapes amb pocs recursos.\n\nPunts forts: l'expansió limitada és efectiva en jocs amb recursos escassos.\n\nContrajoc suggerit: ocupar el territori abans d'hora. No assumeixis que la manca de recursos debilitarà aquesta IA.
+
 [AICastor-Summary]
-Expansió prudent; funciona bé amb recursos escassos.
+
 [AICortex-Profile]
-Estratègia: Gestiona els subministraments d'aliments, s'expandeix cap a nous camps de blat i reuneix grups successius de guerrers. Fondes i hospitals propers a la primera línia donen suport als atacs lluny de la base.\n\nPunts forts: envia reforços junts, manté la pressió militar i reacciona davant l'escassetat d'aliments.\n\nContrajoc suggerit: lluita pel control de nous camps de blat i ataca els seus edificis de suport a prop de la primera línia. Ataca abans que els seus grups de guerrers estiguin preparats.\n\nIA experimental. Dificultat mitjana; les tàctiques suggerides no són valoracions basades en proves comparatives.
+
 [AICortex-Summary]
-Expansió atenta als aliments i onades d’atac amb suport.
+
 [AINicowar-Profile]
-Estratègia: s'expandeix ràpidament i ataca els oponents amb exèrcits enormes.\n\nPunts forts: l'expansió ràpida afavoreix atacs militars agressius.\n\nContrajoc suggerit: evita la seva expansió. Utilitza el terreny per reduir el nombre de tropes enemigues que poden lluitar alhora.
+
 [AINicowar-Summary]
-S'expandeix ràpidament i construeix grans exèrcits per a atacs agressius.
+
 [AINone-Profile]
 Estratègia: la IA no dóna ordres.\n\nPunts forts: un oponent previsible i inactiu per als experiments.\n\nDebilitats: No s'expandeix ni s'adapta.
 [AINone-Summary]
 Una colònia ociosa per a experiments.
 [AINumbi-Profile]
-Estratègia: s'expandeix ràpidament però a petita escala. Un oponent més fàcil per practicar la gestió de colònies.\n\nPunts forts: et permet aprendre tant la gestió econòmica com el combat.\n\nContrajoc suggerit: desenvolupa una economia més forta i entrena el teu exèrcit abans d'atacar.
+
 [AINumbi-Summary]
-Expansió ràpida a petita escala.
+
 [AIEcono-Profile]
-Estratègia: no ataca, però construeix bases enormes i converteix activament les unitats enemigues al seu propi bàndol.\n\nPunts forts: l'expansió i la conversió d'unitats amenacen els oponents sense atacs directes.\n\nContrajoc suggerit: desenvolupa la teva colònia aviat i evita enviar unitats on l'enemic les pugui convertir.
+
 [AIEcono-Summary]
-Bases enormes i conversió en lloc d'atacs.
+
 [AIWarrush-Profile]
-Estratègia: ataca aviat i amb força, abans que els oponents s'acabin de preparar.\n\nPunts forts: aprofita l'expansió sense defensa i la preparació militar lenta.\n\nContrajoc suggerit: sobreviu al primer atac mantenint la teva economia i després contraataca.
+
 [AIWarrush-Summary]
-Atacs ràpids que posen a prova les teves primeres defenses.
+
 [AICabino-Profile]
-Estratègia principal: un gabinet de departaments especialistes independents (defensa, atac, construcció, millores, gestió d'unitats) que actuen per iniciativa pròpia però convergeixen en un sol pla: créixer de pressa i després llançar exèrcits enormes contra els rivals.\n\nPunts forts: l'expansió ràpida sosté una pressió militar agressiva; els departaments independents reaccionen de seguida a les amenaces locals sense esperar un pla central.\n\nContrajoc a provar: disputa la seva expansió d'hora i fes servir el terreny per limitar quantes tropes pot fer servir alhora.
+
 [AICabino-Summary]
-Departaments independents que cooperen per créixer ràpid i enviar exèrcits enormes.
+
 [Algae]
 algues
 [Alliances]

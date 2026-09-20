@@ -919,7 +919,7 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 		ui.text(x + 470, y + 9,
 				std::to_string(setup.controllerCount()) + " / 12 " + tr("controllers"), "little",
 				w - 475, true);
-	int top = y + 42, rowH = w < 760 ? 64 : 88;
+	int top = y + 42, rowH = w < 760 ? 80 : 100;
 	ui.beginRegion(1, {x, top, w, h - 42});
 	int offset = ui.regions[1].offset;
 	for (int i = 0; i < setup.capacity; ++i)
@@ -965,8 +965,10 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 				[this, i](int value)
 				{ setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[value]; });
 			ui.button(
-				id + "/info", {x + w - 66, ry + 38, 44, 18}, tr("Info"),
-				[this, i] { showAIProfile(i); }, false, true, true, "little");
+				id + "/info", {x + w - 150, ry + 42, 128, 28}, tr("AI strategy"),
+				[this, i] { showAIProfile(i); }, false, true, false, "standard");
+			gfx->drawRect(x + w - 150, ry + 42, 128, 28,
+						  ui.focus == id + "/info" ? ui.ink : ui.line);
 		}
 		else
 			ui.text(
@@ -986,9 +988,9 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 					   : c.controller == CustomGameSetup::Closed
 						   ? tr("This colony will not join the match.")
 						   : AINames::getAISummary(c.ai);
-		ui.text(cx, ry + 45, summary, "little", w - 196, true);
-		if (c.controller == CustomGameSetup::Shared && rowH > 64)
-			ui.text(cx, ry + 62, tr("You and the AI both issue orders. Uses two controller slots."),
+		ui.text(cx, ry + 49, summary, "little", w - 278, true);
+		if (c.controller == CustomGameSetup::Shared && rowH > 80)
+			ui.text(cx, ry + 76, tr("You and the AI both issue orders. Uses two controller slots."),
 					"little", w - 150, true);
 	}
 	ui.endRegion(setup.capacity * rowH);

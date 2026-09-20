@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 kilépett a játékból.
 [%0 level %1]
@@ -51,11 +57,11 @@ MI
 [ai]
 MI
 [AICastor-Description]
-Castor óvatosan játszik, és nagyon jól boldogul a nyersanyagban szegény pályákon. Közepes nehézség.
+
 [AICastor]
 MICastor
 [AINicowar-Description]
-Nicowar agresszívan játszik, gyorsan terjeszkedik, és hatalmas seregeket küld ellenfeleire. Nehéz.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Nincs MI — nem csinál semmit.
 [AINone]
 Nincs MI
 [AINumbi-Description]
-Numbi kis lépésekben, gyorsan terjeszkedik. Könnyű.
+
 [AINumbi]
 MINumbi
 [AIEcono-Description]
-Econo nem támad, de óriási bázisokat épít, és tömegesen térít át egységeket. Könnyű.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush gyorsan és kíméletlenül támad, gyakran a végsőkig szorítva a védekező játékost. Közepes nehézség.
+
 [AIWarrush]
 MIWarrush
 [AICabino-Description]
-A Cabino önálló osztályokként irányítja a védelmet, a támadást és az építkezést, amelyek egyetlen terv felé haladnak: gyorsan terjeszkedik, és hatalmas seregeket küld ellenfeleire. Nehéz.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1221,9 +1227,9 @@ Sebesség: 1x (többjátékos)
 [game speed help]
 Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
 [AICortex-Description]
-A Cortex új búzamezők felé terjeszkedik, és harcba küldi a harcosok csoportjait, akiket étkezdék és kórházak támogatnak a frontvonal közelében. Közepes nehézségű. Kísérleti.
+
 [AIMaxima-Description]
-A Maxima jól ellátott kolóniát épít, folyamatosan felderít, és szünet nélkül támad minden harcossal, akit el tud engedni. Nehéz.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1241,37 +1247,37 @@ Még dolgozó egységek: %0
 [AI strategy & counterplay]
 MI-stratégia és ellenjáték
 [AICastor-Profile]
-Stratégia: Óvatosan bővül, és kevés erőforrással rendelkező térképeken jól teljesít.\n\nErősségek: A korlátozott bővítés hatékony a szűkös erőforrásokkal rendelkező játékokban.\n\nJavasolt ellenjáték: Foglald el a területet korán. Ne feltételezd, hogy az erőforrások hiánya gyengíti ezt az AI-t.
+
 [AICastor-Summary]
-Óvatos terjeszkedés; szűkös erőforrásokkal jól teljesít.
+
 [AICortex-Profile]
-Stratégia: Kezeli az élelmiszerellátást, terjeszkedik új búzaföldek felé, és egymás utáni harcoscsoportokat állít össze. A frontvonal közelében található étkezdék és kórházak támogatják a támadásokat a bázistól távol.\n\nErősségek: Erősítést küld együtt, fenntartja a katonai nyomást, és reagál az élelmiszerhiányra.\n\nJavasolt ellenjáték: Harcolj az új búzatáblák felett, és támadd meg a frontvonal közelében lévő támogató épületeket. Támadj, mielőtt a harcosok csoportjai készen állnak.\n\nKísérleti MI. Közepes nehézség; az ellenjátékra vonatkozó javaslatok nem összehasonlító teszteken alapuló értékelések.
+
 [AICortex-Summary]
-Az élelmiszer-ellátást szem előtt tartva terjeszkedik, és támogatja támadó csapatait.
+
 [AINicowar-Profile]
-Stratégia: Gyorsan terjeszkedik, és hatalmas seregekkel támadja meg az ellenfeleket.\n\nErősségek: A gyors terjeszkedés támogatja az agresszív katonai támadásokat.\n\nJavasolt ellenjáték: Akadályozd a terjeszkedését. Használd a terepet az egyszerre harcra képes ellenséges csapatok számának csökkentésére.
+
 [AINicowar-Summary]
-Gyorsan terjeszkedik és nagy hadseregeket épít fel az agresszív támadásokhoz.
+
 [AINone-Profile]
 Stratégia: Az AI nem ad parancsokat.\n\nErősségek: Kiszámítható, inaktív ellenfél a kísérletekben.\n\nGyengeségek: Nem terjeszkedik és nem alkalmazkodik.
 [AINone-Summary]
 Tétlen kolónia kísérletekhez.
 [AINumbi-Profile]
-Stratégia: Gyorsan, de kis léptékben bővül. Könnyebb ellenfél a telepkezelés gyakorlásához.\n\nErősségek: Lehetővé teszi a gazdaságirányítás és a harc elsajátítását.\n\nJavasolt ellenjáték: Fejlessz erősebb gazdaságot, és képezd ki a hadseregedet, mielőtt támadsz.
+
 [AINumbi-Summary]
-Gyors bővítés kis léptékben.
+
 [AIEcono-Profile]
-Stratégia: Nem támad, hanem hatalmas bázisokat épít fel, és aktívan a saját oldalára fordítja az ellenséges egységeket.\n\nErősségek: A terjeszkedés és az egységátalakítás közvetlen támadások nélkül fenyegeti az ellenfeleket.\n\nJavasolt ellenjáték: Fejleszd korán a kolóniádat, és ne küldj egységeket oda, ahol az ellenség átalakíthatja őket.
+
 [AIEcono-Summary]
-Hatalmas bázisok és átalakítások támadások helyett.
+
 [AIWarrush-Profile]
-Stratégia: Korán és erőteljesen támad, mielőtt az ellenfél befejezné a felkészülést.\n\nErősségek: Kiaknázza a védtelen terjeszkedést és a lassú katonai felkészülést.\n\nJavasolt ellenjáték: Vészeld át az első támadást a gazdaságod fenntartásával, majd indíts ellentámadást.
+
 [AIWarrush-Summary]
-Gyors támadások, amelyek tesztelik a korai védekezést.
+
 [AICabino-Profile]
-Alapstratégia: önálló szakosztályok kabinetje (védelem, támadás, építkezés, fejlesztések, egységkezelés), amelyek saját kezdeményezésre cselekszenek, de egyetlen terv felé haladnak: gyors növekedés, majd hatalmas seregek küldése az ellenfelekre.\n\nErősségek: a gyors terjeszkedés agresszív katonai nyomást tesz lehetővé; az önálló osztályok gyorsan reagálnak a helyi fenyegetésekre, központi terv nélkül.\n\nEllenjáték: támadd meg korán a terjeszkedését, és használd a terepet, hogy korlátozd, hány egysége tud egyszerre harcolni.
+
 [AICabino-Summary]
-Önálló osztályok, amelyek együttműködnek a gyors növekedés és hatalmas seregek érdekében.
+
 [Algae]
 Alga
 [Alliances]

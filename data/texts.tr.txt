@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 oyundan çıktı.
 [%0 level %1]
@@ -51,11 +57,11 @@ yapay zeka
 [ai]
 yapay zeka
 [AICastor-Description]
-Castor temkinli oynar ve kaynakları az olan haritalarda çok başarılıdır. Orta zorluk.
+
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar saldırgan oynar, hızla büyür ve rakiplerine dev ordular gönderir. Zor.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Yapay zekâ yok — hiçbir şey yapmaz.
 [AINone]
 Yapay zekâ yok
 [AINumbi-Description]
-Numbi küçük adımlarla, hızla genişler. Kolay.
+
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo saldırmaz, ancak dev üsler kurar ve çok sayıda birimi kendi tarafına çeker. Kolay.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush hızlı ve sert saldırır, savunmadaki oyuncuyu sıklıkla yenilginin eşiğine getirir. Orta zorluk.
+
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino savunma, saldırı ve inşayı bağımsız departmanlar olarak yönetir, ama hepsi tek bir plana yönelir: hızla büyür ve rakiplerine dev ordular gönderir. Zor.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1229,9 +1235,9 @@ Hız: 1x (çok oyunculu)
 [game speed help]
 Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
 [AICortex-Description]
-Cortex yeni buğday tarlalarına doğru genişliyor ve ön cepheye yakın hanlar ve hastaneler tarafından desteklenen savaşçı gruplarını savaşa gönderiyor. Orta zorluk. Deneysel.
+
 [AIMaxima-Description]
-Maxima iyi beslenen bir koloni büyütür, sürekli keşif yapar ve ayırabildiği her savaşçıyla durmaksızın saldırır. Yüksek zorluk.
+
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1249,37 +1255,37 @@ Hâlâ çalışıyor: %0
 [AI strategy & counterplay]
 Yapay zekâ stratejisi ve karşı taktikler
 [AICastor-Profile]
-Strateji: Dikkatli bir şekilde genişler ve az sayıda kaynağa sahip haritalarda iyi performans gösterir.\n\nGüçlü Yönler: Sınırlı genişleme, kıt kaynaklara sahip oyunlarda etkilidir.\n\nKarşı taktik önerisi: Bölgeyi erken işgal edin. Kaynak eksikliğinin bu yapay zekâyı zayıflatacağını varsaymayın.
+
 [AICastor-Summary]
-Dikkatli genişleme; kıt kaynaklarla iyi performans gösterir.
+
 [AICortex-Profile]
-Strateji: Yiyecek tedarikini yönetir, yeni buğday tarlalarına doğru genişler ve birbirini izleyen savaşçı gruplarını bir araya getirir. Cephe hattı yakınındaki hanlar ve hastaneler, üsten uzaktaki saldırıları destekliyor.\n\nGüçlü Yönleri: Birlikte takviye gönderir, askeri baskıyı sürdürür ve yiyecek kıtlığına tepki verir.\n\nKarşı taktik önerisi: Yeni buğday tarlalarının kontrolü için savaşın ve ön cephe yakınındaki destek binalarına saldırın. Savaşçı grupları hazır olmadan saldırın.\n\nDeneysel yapay zekâ. Orta zorluk; karşı taktik önerileri kıyaslama puanları değildir.
+
 [AICortex-Summary]
-Gıdayı gözeten büyüme ve destekli saldırı dalgaları.
+
 [AINicowar-Profile]
-Strateji: Hızla genişler ve devasa ordularla rakiplere saldırır.\n\nGüçlü Yönler: Hızlı genişleme agresif askeri saldırıları destekler.\n\nKarşı taktik önerisi: Genişlemesini önleyin. Aynı anda savaşabilecek düşman birliklerinin sayısını azaltmak için araziyi kullanın.
+
 [AINicowar-Summary]
-Hızla genişler ve agresif saldırılar için büyük ordular oluşturur.
+
 [AINone-Profile]
 Strateji: Yapay zeka hiçbir komut vermez.\n\nGüçlü Yönleri: Deneyler için tahmin edilebilir, aktif olmayan bir rakip.\n\nZayıf Yönler: Genişlemez veya uyum sağlamaz.
 [AINone-Summary]
 Denemeler için hareketsiz bir koloni.
 [AINumbi-Profile]
-Strateji: Hızlı ama küçük ölçekte genişler. Koloni yönetimini uygulamak için daha kolay bir rakip.\n\nGüçlü Yönler: Hem ekonomik yönetimi hem de savaşı öğrenmenizi sağlar.\n\nKarşı taktik önerisi: Daha güçlü bir ekonomi geliştirin ve saldırmadan önce ordunuzu eğitin.
+
 [AINumbi-Summary]
-Küçük ölçekte hızlı genişleme.
+
 [AIEcono-Profile]
-Strateji: Saldırmaz ancak devasa üsler inşa eder ve düşman birimlerini aktif olarak kendi tarafına çeker.\n\nGüçlü Yönler: Genişleme ve birim dönüştürme, doğrudan saldırı olmadan rakipleri tehdit eder.\n\nKarşı taktik önerisi: Koloninizi erkenden geliştirin ve düşmanın onları dönüştürebileceği yerlere birimleri göndermekten kaçının.
+
 [AIEcono-Summary]
-Saldırmak yerine dev üsler kurar ve düşman birimlerini tarafına çeker.
+
 [AIWarrush-Profile]
-Strateji: Rakipler hazırlıklarını bitirmeden önce erken ve güçlü saldırılar.\n\nGüçlü Yönler: Savunmasız genişlemeden ve yavaş askeri hazırlıktan yararlanır.\n\nKarşı taktik önerisi: İlk saldırıda ekonominizi koruyarak hayatta kalın, ardından karşı saldırı yapın.
+
 [AIWarrush-Summary]
-Erken savunmanızı test eden hızlı saldırılar.
+
 [AICabino-Profile]
-Temel strateji: her biri kendi inisiyatifiyle hareket eden ama tek bir plana yönelen bağımsız uzman departmanlardan (savunma, saldırı, inşa, yükseltmeler, birim yönetimi) oluşan bir kabine: hızlı büyüme, ardından rakiplere dev ordular gönderme.\n\nGüçlü yönler: hızlı yayılma saldırgan askeri baskıyı destekler; bağımsız departmanlar merkezi bir planı beklemeden yerel tehditlere hızla tepki verir.\n\nDenenecek karşı oyun: yayılmasına erken karşı çıkın ve aynı anda çarpışabilecek birlik sayısını sınırlamak için araziyi kullanın.
+
 [AICabino-Summary]
-Hızlı büyüme ve devasa ordular için iş birliği yapan bağımsız departmanlar.
+
 [Algae]
 Yosun
 [Alliances]

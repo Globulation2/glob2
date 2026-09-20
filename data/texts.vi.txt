@@ -1,3 +1,9 @@
+[AI strategy]
+
+[AIMaxima-Summary]
+
+[AIMaxima-Profile]
+
 [%0 has left the game]
 %0 đã rời trận đấu.
 [%0 level %1]
@@ -51,19 +57,19 @@ trí tuệ nhân tạo
 [ai]
 trí tuệ nhân tạo
 [AICastor-Description]
-Castor chơi thận trọng và rất giỏi trên các bản đồ ít tài nguyên. Độ khó trung bình.
+
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex mở rộng tới những cánh đồng lúa mì mới và gửi các nhóm chiến binh vào trận chiến, được hỗ trợ bởi các nhà trọ và bệnh viện gần tiền tuyến. Độ khó trung bình. Thực nghiệm.
+
 [AIMaxima-Description]
-Maxima phát triển một thuộc địa được cung cấp đủ lương thực, liên tục trinh sát và tấn công không ngừng bằng mọi chiến binh có thể điều động. Độ khó cao.
+
 [AIMaxima]
 Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
-Nicowar chơi quyết liệt, phát triển nhanh và tung những đạo quân lớn vào đối thủ. Độ khó cao.
+
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -71,19 +77,19 @@ Không - Không thực hiện hành động nào.
 [AINone]
 Không
 [AINumbi-Description]
-Numbi - Mở rộng vừa phải và nhanh chóng. Độ khó thấp.
+
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - Không tấn công, nhưng xây căn cứ khổng lồ và ra sức thu phục đơn vị. Độ khó thấp.
+
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Tấn công nhanh và dữ dội, thường khiến người phòng thủ phải chống đỡ hết sức. Độ khó trung bình.
+
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino điều hành phòng thủ, tấn công và xây dựng như những bộ phận độc lập nhưng cùng hướng đến một kế hoạch: phát triển nhanh và tung những đạo quân lớn vào đối thủ. Độ khó cao.
+
 [AICabino]
 Cabino
 [Alga]
@@ -1237,37 +1243,37 @@ Còn làm việc: %0
 [AI strategy & counterplay]
 Chiến lược và phản đòn AI
 [AICastor-Profile]
-Chiến lược: Mở rộng một cách thận trọng và hoạt động tốt trên các bản đồ có ít tài nguyên.\n\nĐiểm mạnh: Việc mở rộng hạn chế có hiệu quả trong các trò chơi có nguồn tài nguyên khan hiếm.\n\nGợi ý đối phó: Chiếm lãnh thổ sớm. Đừng cho rằng việc thiếu tài nguyên sẽ làm suy yếu AI này.
+
 [AICastor-Summary]
-Mở rộng thận trọng; hoạt động tốt với nguồn lực khan hiếm.
+
 [AICortex-Profile]
-Chiến lược: Quản lý nguồn cung cấp lương thực, mở rộng sang các cánh đồng lúa mì mới và tập hợp các nhóm chiến binh liên tiếp. Các nhà trọ và bệnh viện gần tiền tuyến hỗ trợ các cuộc tấn công ở xa căn cứ.\n\nĐiểm mạnh: Cùng nhau gửi quân tiếp viện, duy trì áp lực quân sự và ứng phó với tình trạng thiếu lương thực.\n\nGợi ý đối phó: Chiến đấu để giành quyền kiểm soát các cánh đồng lúa mì mới và tấn công các tòa nhà hỗ trợ của nó gần tiền tuyến. Tấn công trước khi nhóm chiến binh của nó sẵn sàng.\n\nAI thử nghiệm. Độ khó trung bình; các gợi ý đối phó không phải là đánh giá từ phép đo hiệu năng.
+
 [AICortex-Summary]
-Bảo đảm lương thực và hỗ trợ các đợt tấn công liên tiếp.
+
 [AINicowar-Profile]
-Chiến lược: Mở rộng nhanh chóng và tấn công đối thủ với đội quân khổng lồ.\n\nĐiểm mạnh: Mở rộng nhanh chóng hỗ trợ các cuộc tấn công quân sự tích cực.\n\nGợi ý đối phó: Ngăn chặn sự mở rộng của nó. Sử dụng địa hình để giảm số lượng quân địch có thể chiến đấu cùng một lúc.
+
 [AINicowar-Summary]
-Mở rộng nhanh chóng và xây dựng đội quân lớn để tấn công mạnh mẽ.
+
 [AINone-Profile]
 Chiến lược: AI không đưa ra mệnh lệnh.\n\nĐiểm mạnh: Một đối thủ không hoạt động, có thể đoán trước được để thử nghiệm.\n\nĐiểm yếu: Không mở rộng và thích ứng được.
 [AINone-Summary]
 Một thuộc địa nhàn rỗi cho các thí nghiệm.
 [AINumbi-Profile]
-Chiến lược: Mở rộng nhanh chóng nhưng ở quy mô nhỏ. Một đối thủ dễ dàng hơn để thực hành quản lý thuộc địa.\n\nĐiểm mạnh: Cho phép bạn học cả quản lý kinh tế và chiến đấu.\n\nGợi ý đối phó: Phát triển nền kinh tế mạnh hơn và huấn luyện quân đội của bạn trước khi tấn công.
+
 [AINumbi-Summary]
-Mở rộng nhanh chóng ở quy mô nhỏ.
+
 [AIEcono-Profile]
-Chiến lược: Không tấn công, nhưng xây dựng những căn cứ khổng lồ và chủ động chuyển đổi các đơn vị quân địch về phía mình.\n\nĐiểm mạnh: Mở rộng và chuyển đổi đơn vị đe dọa đối thủ mà không cần tấn công trực tiếp.\n\nGợi ý đối phó: Phát triển thuộc địa của bạn sớm và tránh gửi các đơn vị đến nơi kẻ thù có thể chuyển đổi chúng.
+
 [AIEcono-Summary]
-Xây căn cứ lớn và chiêu dụ quân địch thay vì tấn công.
+
 [AIWarrush-Profile]
-Chiến lược: Tấn công nhanh và mạnh trước khi đối thủ xây dựng lực lượng xong.\n\nĐiểm mạnh: Trừng phạt việc mở rộng thiếu phòng thủ và chuẩn bị quân sự chậm.\n\nGợi ý đối phó: Duy trì kinh tế, chống đỡ đợt tấn công đầu rồi phản công.
+
 [AIWarrush-Summary]
-Các cuộc tấn công nhanh kiểm tra khả năng phòng thủ sớm của bạn.
+
 [AICabino-Profile]
-Chiến lược cốt lõi: một nội các gồm các bộ phận chuyên trách độc lập (phòng thủ, tấn công, xây dựng, nâng cấp, quản lý đơn vị), mỗi bộ phận tự hành động theo sáng kiến riêng nhưng cùng hướng đến một kế hoạch: phát triển nhanh rồi tung những đạo quân lớn vào đối thủ.\n\nĐiểm mạnh: mở rộng nhanh hỗ trợ áp lực quân sự mạnh mẽ; các bộ phận độc lập phản ứng nhanh với các mối đe dọa cục bộ mà không cần chờ một kế hoạch trung tâm.\n\nCách đối phó: ngăn chặn sự mở rộng của nó sớm và dùng địa hình để hạn chế số quân nó có thể huy động cùng lúc.
+
 [AICabino-Summary]
-Các bộ phận độc lập hợp tác để phát triển nhanh và tạo ra những đạo quân khổng lồ.
+
 [Algae]
 Tảo
 [Alliances]
