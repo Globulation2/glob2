@@ -8,9 +8,12 @@ Generated terrain combines selected generated materials with deterministic masks
 
 | Source category | Frames |
 | --- | ---: |
+| AI upscale with constrained finishing | 116 |
+| Generated material with deterministic tiling | 273 |
+| Non-AI mask resampling | 38 |
 | Recovered original | 60 |
 
-Total: **60 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../data/highres/v1/manifest.json). See [original export recipes](../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.
+Total: **487 frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in [the pack manifest](../../data/highres/v1/manifest.json). See [original export recipes](../../datasrc/gfx/RECOVERED-RUNTIME.md) for limitations.
 
 | Frame | Source category | Logical canvas | Native canvas/source | Recipe |
 | --- | --- | --- | --- | --- |
@@ -38,39 +41,466 @@ Total: **60 frames**. Source/output SHA-256 hashes, native sizes and selected la
 | `area-guard5` | Recovered original | 32×32 | 128×128 ([source](../../datasrc/gfx/reference-exports/overlays/g5-archive-2026.png)) | recovered original area marker: native RGBA; original eight-frame sequence |
 | `area-guard6` | Recovered original | 32×32 | 128×128 ([source](../../datasrc/gfx/reference-exports/overlays/g6-archive-2026.png)) | recovered original area marker: native RGBA; original eight-frame sequence |
 | `area-guard7` | Recovered original | 32×32 | 128×128 ([source](../../datasrc/gfx/reference-exports/overlays/g7-archive-2026.png)) | recovered original area marker: native RGBA; original eight-frame sequence |
+| `barracks0b0` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
+| `barracks1b0` | AI upscale with constrained finishing | 128×138 | — | outline_repair |
+| `barracks2b0` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
+| `black0` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black1` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black10` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black11` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black12` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black13` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black14` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black15` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black2` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black3` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black4` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black5` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black6` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black7` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black8` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `black9` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `buildingsite0` | AI upscale with constrained finishing | 32×32 | — | outline_repair |
 | `buildingsite1` | Recovered original | 64×64 | 256×256 ([source](../../datasrc/gfx/reference-exports/buildings/construction/Construction64c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
 | `buildingsite2` | Recovered original | 96×96 | 384×384 ([source](../../datasrc/gfx/reference-exports/buildings/construction/Construction96c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
 | `buildingsite3` | Recovered original | 128×128 | 512×512 ([source](../../datasrc/gfx/reference-exports/buildings/construction/Construction128c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
 | `buildingsite4` | Recovered original | 192×192 | 384×384 ([source](../../datasrc/gfx/reference-exports/buildings/construction/Construction192c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
 | `buildingsite5` | Recovered original | 196×196 | 512×512 ([source](../../datasrc/gfx/reference-exports/buildings/construction/Construction256c.png)) | recovered original: native matching construction matte; white-background unpremultiplication |
+| `bullet0` | AI upscale with constrained finishing | 8×8 | — | world constrained |
+| `bullet1` | AI upscale with constrained finishing | 8×8 | — | world constrained |
 | `clearingflag0` | Recovered original | 32×32 | 128×128 ([source](../../datasrc/gfx/reference-exports/buildings/flags/RemoveFlag.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
+| `cloud0` | Non-AI mask resampling | 512×512 | — | soft mask resampling |
+| `defencetower0b0` | AI upscale with constrained finishing | 68×59 | — | painted_repair |
+| `defencetower1b0` | AI upscale with constrained finishing | 64×108 | — | crystal_repair |
+| `defencetower1b1` | AI upscale with constrained finishing | 64×108 | — | crystal_repair |
+| `defencetower1b2` | AI upscale with constrained finishing | 64×108 | — | crystal_repair |
+| `defencetower2b0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
 | `explorationflag0` | Recovered original | 32×32 | 128×128 ([source](../../datasrc/gfx/reference-exports/buildings/flags/ExploFlag.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
+| `explosion0` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `explosion1` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `explosion2` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `explosion3` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `explosion4` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `explosion5` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `hosp0b0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
+| `hosp0b1` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
+| `hosp0c0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
+| `hosp1b0` | AI upscale with constrained finishing | 64×76 | — | painted_repair |
+| `hosp1c0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
+| `hosp2b0` | AI upscale with constrained finishing | 64×77 | — | painted_repair |
+| `hosp2c0` | AI upscale with constrained finishing | 64×77 | — | painted_repair |
+| `inn0b0` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
+| `inn0b1` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
+| `inn0c0` | AI upscale with constrained finishing | 64×64 | — | painted_repair |
+| `inn1b0` | AI upscale with constrained finishing | 64×69 | — | outline_repair |
+| `inn1b1` | AI upscale with constrained finishing | 64×69 | — | outline_repair |
+| `inn1c0` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
+| `inn2b0` | AI upscale with constrained finishing | 96×96 | — | outline_repair |
+| `inn2c0` | AI upscale with constrained finishing | 96×96 | — | outline_repair |
+| `inn3c0` | AI upscale with constrained finishing | 96×96 | — | outline_repair |
+| `magiceffect0` | AI upscale with constrained finishing | 256×256 | — | world constrained |
+| `market0b0` | AI upscale with constrained finishing | 96×115 | — | outline_repair |
+| `particle0` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `particle1` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `particle2` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `particle3` | AI upscale with constrained finishing | 32×32 | — | world constrained |
+| `pool0b0` | AI upscale with constrained finishing | 128×128 | — | current |
+| `pool0b1` | AI upscale with constrained finishing | 128×128 | — | current |
+| `pool0c0` | AI upscale with constrained finishing | 128×128 | — | current |
+| `pool1b0` | AI upscale with constrained finishing | 192×174 | — | current |
+| `pool2b0` | AI upscale with constrained finishing | 192×203 | — | current |
 | `racetrack0b0` | Recovered original | 128×128 | 192×192 ([source](../../datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf)) | recovered original building: selected GIMP base/team groups; saved opacity and native alpha |
+| `racetrack0b1` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
+| `racetrack0b2` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
+| `racetrack0c0` | AI upscale with constrained finishing | 128×128 | — | outline_repair |
 | `racetrack1b0` | Recovered original | 192×192 | 256×256 ([source](../../datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf)) | recovered original building: selected GIMP base/team groups; saved opacity and native alpha |
+| `racetrack1b1` | AI upscale with constrained finishing | 192×192 | — | outline_repair |
+| `racetrack1b2` | AI upscale with constrained finishing | 192×192 | — | outline_repair |
+| `racetrack2b0` | AI upscale with constrained finishing | 192×192 | — | outline_repair |
 | `ressource0` | Recovered original | 32×32 | 128×128 ([source](../../datasrc/gfx/originals/resources/tree/trees_1_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource1` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/tree/trees_2_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource10` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/wheat/wheat_1_1.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource11` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/wheat/wheat_2_1.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource12` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/wheat/wheat_3_1.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource13` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/wheat/wheat_4_1.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
+| `ressource14` | AI upscale with constrained finishing | 34×34 | — | resource constrained |
 | `ressource15` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/wheat/wheat_1_2.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource16` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/wheat/wheat_2_2.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource17` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/wheat/wheat_3_2.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource18` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/wheat/wheat_4_2.xcf)) | recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize |
+| `ressource19` | AI upscale with constrained finishing | 34×34 | — | resource constrained |
 | `ressource2` | Recovered original | 36×39 | 128×140 ([source](../../datasrc/gfx/originals/resources/tree/trees_3_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource20` | Recovered original | 32×32 | 199×199 ([source](../../datasrc/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
 | `ressource21` | Recovered original | 32×32 | 199×199 ([source](../../datasrc/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
 | `ressource22` | Recovered original | 32×32 | 199×199 ([source](../../datasrc/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
 | `ressource23` | Recovered original | 32×32 | 199×199 ([source](../../datasrc/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
 | `ressource24` | Recovered original | 32×32 | 199×199 ([source](../../datasrc/gfx/originals/terrain/papyrus.xcf)) | recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize |
+| `ressource25` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource26` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource27` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource28` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource29` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
 | `ressource3` | Recovered original | 36×39 | 128×140 ([source](../../datasrc/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
+| `ressource30` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource31` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource32` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource33` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource34` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource35` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource36` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource37` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource38` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource39` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
 | `ressource4` | Recovered original | 40×44 | 128×140 ([source](../../datasrc/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
+| `ressource40` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource41` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource42` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource43` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource44` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource45` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource46` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource47` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource48` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource49` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
 | `ressource5` | Recovered original | 32×32 | 128×128 ([source](../../datasrc/gfx/originals/resources/tree/trees_1_2.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
+| `ressource50` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource51` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource52` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource53` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource54` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource55` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource56` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource57` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource58` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource59` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
 | `ressource6` | Recovered original | 34×34 | 128×128 ([source](../../datasrc/gfx/originals/resources/tree/trees_2_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
+| `ressource60` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource61` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource62` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource63` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
+| `ressource64` | AI upscale with constrained finishing | 32×32 | — | resource constrained |
 | `ressource7` | Recovered original | 36×39 | 128×140 ([source](../../datasrc/gfx/originals/resources/tree/trees_3_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource8` | Recovered original | 36×39 | 128×140 ([source](../../datasrc/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
 | `ressource9` | Recovered original | 40×44 | 128×140 ([source](../../datasrc/gfx/originals/resources/tree/trees_4_1.xcf)) | recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize |
+| `school0b0` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
+| `school0b1` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
 | `school1b0` | Recovered original | 64×70 | 512×562 ([source](../../datasrc/gfx/originals/buildings/school/level-2/science.xcf)) | recovered original building: selected GIMP base/team groups; saved opacity and native alpha |
+| `school1b1` | AI upscale with constrained finishing | 64×70 | — | current |
+| `school1b2` | AI upscale with constrained finishing | 64×70 | — | current |
+| `school1c0` | AI upscale with constrained finishing | 59×70 | — | outline_repair |
+| `school2b0` | AI upscale with constrained finishing | 64×64 | — | outline_repair |
+| `shade0` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade1` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade10` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade11` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade12` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade13` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade14` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade15` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade16` | Non-AI mask resampling | 32×16 | — | soft mask resampling |
+| `shade17` | Non-AI mask resampling | 8×16 | — | soft mask resampling |
+| `shade18` | Non-AI mask resampling | 8×16 | — | soft mask resampling |
+| `shade19` | Non-AI mask resampling | 8×32 | — | soft mask resampling |
+| `shade2` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade20` | Non-AI mask resampling | 8×32 | — | soft mask resampling |
+| `shade3` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade4` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade5` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade6` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade7` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade8` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
+| `shade9` | Non-AI mask resampling | 32×32 | — | soft mask resampling |
 | `swarm0b0` | Recovered original | 128×128 | 256×256 ([source](../../datasrc/gfx/reference-exports/buildings/swarm/Ruche.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
 | `swarm0c0` | Recovered original | 128×128 | 512×512 ([source](../../datasrc/gfx/reference-exports/buildings/swarm/Morph128c.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
+| `terrain0` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain1` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain10` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain100` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain101` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain102` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain103` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain104` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain105` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain106` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain107` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain108` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain109` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain11` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain110` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain111` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain112` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain113` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain114` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain115` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain116` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain117` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain118` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain119` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain12` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain120` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain121` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain122` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain123` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain124` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain125` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain126` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain127` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain128` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain129` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain13` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain130` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain131` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain132` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain133` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain134` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain135` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain136` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain137` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain138` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain139` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain14` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain140` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain141` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain142` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain143` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain144` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain145` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain146` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain147` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain148` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain149` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain15` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain150` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain151` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain152` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain153` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain154` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain155` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain156` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain157` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain158` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain159` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain16` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain160` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain161` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain162` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain163` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain164` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain165` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain166` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain167` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain168` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain169` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain17` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain170` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain171` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain172` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain173` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain174` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain175` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain176` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain177` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain178` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain179` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain18` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain180` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain181` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain182` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain183` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain184` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain185` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain186` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain187` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain188` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain189` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain19` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain190` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain191` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain192` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain193` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain194` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain195` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain196` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain197` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain198` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain199` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain2` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain20` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain200` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain201` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain202` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain203` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain204` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain205` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain206` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain207` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain208` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain209` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain21` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain210` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain211` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain212` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain213` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain214` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain215` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain216` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain217` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain218` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain219` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain22` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain220` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain221` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain222` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain223` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain224` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain225` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain226` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain227` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain228` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain229` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain23` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain230` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain231` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain232` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain233` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain234` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain235` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain236` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain237` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain238` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain239` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain24` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain240` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain241` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain242` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain243` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain244` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain245` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain246` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain247` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain248` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain249` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain25` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain250` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain251` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain252` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain253` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain254` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain255` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain256` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain257` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain258` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain259` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain26` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain260` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain261` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain262` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain263` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain264` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain265` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain266` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain267` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain268` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain269` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain27` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain270` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain271` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain28` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain29` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain3` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain30` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain31` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain32` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain33` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain34` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain35` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain36` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain37` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain38` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain39` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain4` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain40` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain41` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain42` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain43` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain44` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain45` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain46` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain47` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain48` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain49` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain5` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain50` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain51` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain52` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain53` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain54` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain55` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain56` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain57` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain58` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain59` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain6` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain60` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain61` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain62` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain63` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain64` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain65` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain66` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain67` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain68` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain69` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain7` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain70` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain71` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain72` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain73` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain74` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain75` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain76` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain77` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain78` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain79` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain8` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain80` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain81` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain82` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain83` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain84` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain85` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain86` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain87` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain88` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain89` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain9` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain90` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain91` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain92` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain93` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain94` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain95` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain96` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain97` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain98` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `terrain99` | Generated material with deterministic tiling | 32×32 | — | shared-material rugged corner masks v5; quiet flat grass |
+| `wall0` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall1` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall10` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall11` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall12` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall13` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall14` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall15` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall2` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall3` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall4` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall5` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall6` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall7` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall8` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wall9` | AI upscale with constrained finishing | 32×32 | — | current |
+| `wallc0` | AI upscale with constrained finishing | 32×32 | — | current |
 | `warflag0` | Recovered original | 32×32 | 128×128 ([source](../../datasrc/gfx/reference-exports/buildings/flags/WarFlag.png)) | recovered original: native white-matte removal; green team / neutral shadow separation |
+| `water0` | Generated material with deterministic tiling | 512×512 | — | quiet ripples; periodic material v3 |
+| `water1` | AI upscale with constrained finishing | 512×512 | — | world constrained |
