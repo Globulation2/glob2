@@ -61,3 +61,7 @@ Keep version cohorts separate. When the new Maxima results are complete, rerun t
 ![Cortex at 1000×700](cortex-large.png)
 
 These screenshots intentionally show master's existing labels; rating values and ordering belong to #364. Only UI/text and its harness changed, so no simulation equivalence claim is inferred from this validation. Windows/Linux builds have not been run locally for this UI change; CI remains to be checked.
+
+### Strategic strengths wording
+
+The strengths sections describe strategic capabilities rather than naming favorable maps. Castor's food-capacity birth controls are in `castor/Control.cpp::controlSwarms`; Numbi's food/healing/training progression is in `AINumbi.cpp::getOrder`. The other strengths refer to the previously cross-checked production, conversion, wave-support, recruitment and scouting mechanisms. Map associations do not establish that these mechanisms caused the outcomes; no such causal claim is made. The revised wording is descriptive and does not claim superior efficiency or guaranteed resilience. Map-specific weaknesses remain separate.

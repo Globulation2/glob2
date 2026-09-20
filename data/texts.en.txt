@@ -1239,15 +1239,15 @@ Still working: %0
 [AI strategy & counterplay]
 AI strategy & counterplay
 [AICastor-Profile]
-What to expect: Builds and upgrades its colony while training an army.\n\nStrengths: More competitive on Contested Commons.\n\nWeaknesses: Struggles on Rice Terraces and Hills.\n\nCounterplay to try: Claim expansion ground early, then attack with trained warriors and reserves.
+What to expect: Builds and upgrades its colony while training an army.\n\nStrengths: Adjusts births to feeding capacity, helping limit overgrowth.\n\nWeaknesses: Struggles on Rice Terraces and Hills.\n\nCounterplay to try: Claim expansion ground early, then attack with trained warriors and reserves.
 [AICastor-Summary]
 Builds and trains steadily; struggles on Rice Terraces and Hills.
 [AICortex-Profile]
-What to expect: Gathers warrior waves and supports them with forward inns and hospitals.\n\nStrengths: Dangerous on open ground, where its waves can fight together.\n\nWeaknesses: Struggles on Allotments, Canals and Islands.\n\nCounterplay to try: Contest its forward inns and wheat. Keep defenders together against each wave.
+What to expect: Gathers warrior waves and supports them with forward inns and hospitals.\n\nStrengths: Concentrates warriors into waves, with nearby food and healing to sustain attacks.\n\nWeaknesses: Struggles on Allotments, Canals and Islands.\n\nCounterplay to try: Contest its forward inns and wheat. Keep defenders together against each wave.
 [AICortex-Summary]
 Gathered warrior waves with food and healing support.
 [AINicowar-Profile]
-What to expect: Expands its colony and trains warriors before launching attacks.\n\nStrengths: A strong opponent once its economy and army are established.\n\nWeaknesses: Less effective on Tidal Flats and Hedgerow Country.\n\nCounterplay to try: Contest new food sources during its buildup. Meet its army with a supplied, trained force.
+What to expect: Expands its colony and trains warriors before launching attacks.\n\nStrengths: Turns population growth and training into a steady supply of attackers.\n\nWeaknesses: Less effective on Tidal Flats and Hedgerow Country.\n\nCounterplay to try: Contest new food sources during its buildup. Meet its army with a supplied, trained force.
 [AINicowar-Summary]
 Builds up its population, trains warriors, then attacks.
 [AINone-Profile]
@@ -1255,19 +1255,19 @@ Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent fo
 [AINone-Summary]
 An idle colony for experiments.
 [AINumbi-Profile]
-What to expect: Builds up a colony, trains units and sends attacks.\n\nStrengths: More competitive on Allotments, Hills and Hedgerow Country.\n\nWeaknesses: Less threatening overall than the other active AIs.\n\nCounterplay to try: Develop food production and training together, then attack without leaving home undefended.
+What to expect: Builds up a colony, trains units and sends attacks.\n\nStrengths: Builds up food, healing and training to support a growing colony.\n\nWeaknesses: Less threatening overall than the other active AIs.\n\nCounterplay to try: Develop food production and training together, then attack without leaving home undefended.
 [AINumbi-Summary]
 A forgiving opponent that still expands and attacks.
 [AIEcono-Profile]
-What to expect: Builds food and birth capacity while explorers visit fruit and enemy colonies.\n\nStrengths: Can be troublesome on Contested Commons.\n\nWeaknesses: Does not produce warriors to stop a direct military attack.\n\nCounterplay to try: Pressure exposed expansion. Keep your inns supplied with food and fruit to retain your units.
+What to expect: Builds food and birth capacity while explorers visit fruit and enemy colonies.\n\nStrengths: Uses growth and conversion to pressure opponents without producing warriors.\n\nWeaknesses: Does not produce warriors to stop a direct military attack.\n\nCounterplay to try: Pressure exposed expansion. Keep your inns supplied with food and fruit to retain your units.
 [AIEcono-Summary]
 Expands and competes for converts without producing warriors.
 [AIWarrush-Profile]
-What to expect: Sends early attacks before you have time for a long buildup.\n\nStrengths: Especially dangerous on Caravanserai, Tidal Flats and Hidden Oasis.\n\nWeaknesses: Less reliable on river-heavy maps.\n\nCounterplay to try: Protect food and birth buildings early. Keep producing workers while replacing defenders, then counterattack.
+What to expect: Sends early attacks before you have time for a long buildup.\n\nStrengths: Early warrior production puts pressure on opponents before they finish building up.\n\nWeaknesses: Less reliable on river-heavy maps.\n\nCounterplay to try: Protect food and birth buildings early. Keep producing workers while replacing defenders, then counterattack.
 [AIWarrush-Summary]
 Fast attacks that test your early defenses.
 [AICabino-Profile]
-What to expect: Expands, trains warriors and attacks buildings while assigning defenders at home.\n\nStrengths: Can turn an established colony into sustained military pressure.\n\nWeaknesses: Less effective on Hidden Oasis, Canals, Contested Commons and Plantations.\n\nCounterplay to try: Pressure exposed expansion before its army gathers. Target food and training buildings when you can.
+What to expect: Expands, trains warriors and attacks buildings while assigning defenders at home.\n\nStrengths: Supports trained attacks with continued expansion and defenders at home.\n\nWeaknesses: Less effective on Hidden Oasis, Canals, Contested Commons and Plantations.\n\nCounterplay to try: Pressure exposed expansion before its army gathers. Target food and training buildings when you can.
 [AICabino-Summary]
 A strong builder that fields trained attacking forces.
 [Algae]
@@ -2969,4 +2969,4 @@ AI strategy
 [AIMaxima-Summary]
 Scouts, builds its food supply and gathers warrior waves.
 [AIMaxima-Profile]
-What to expect: Scouts for targets and gathers attack waves while keeping warriors for defense and training.\n\nStrengths: Combines colony growth, trained attacks and local defense.\n\nWeaknesses: Needs food, training capacity and room to gather its forces.\n\nCounterplay to try: Contest exposed food and training buildings before waves gather. Keep a supplied defensive force together.
+What to expect: Scouts for targets and gathers attack waves while keeping warriors for defense and training.\n\nStrengths: Scouting helps it choose targets while balancing attacks with defense and training.\n\nWeaknesses: Needs food, training capacity and room to gather its forces.\n\nCounterplay to try: Contest exposed food and training buildings before waves gather. Keep a supplied defensive force together.
