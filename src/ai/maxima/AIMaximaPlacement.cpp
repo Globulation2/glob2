@@ -1870,7 +1870,7 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 
 		if(building.hp<building.hpMax)
 		{
-			if(!limits.allowRepairs)
+			if(!limits.repairAllowed(building.buildingType))
 				continue;
 			Candidate candidate;candidate.action.type=RepairBuilding;
 			candidate.action.buildingId=building.id;candidate.action.buildingType=building.buildingType;
@@ -2732,7 +2732,7 @@ bool Planner::revalidateSelection(const WorldState& world,
 			authorized=intent && limits.activeNewConstruction<limits.newConstruction;
 		}
 		else if(action.type==RepairBuilding)
-			authorized=limits.allowRepairs;
+			authorized=limits.repairAllowed(action.buildingType);
 		else if(action.type==UpgradeBuilding)
 			authorized=limits.allowUpgrades
 				&& limits.upgradePriority(action.buildingType,action.fromLevel)!=0

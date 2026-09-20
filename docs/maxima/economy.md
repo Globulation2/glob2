@@ -66,14 +66,14 @@ Positive-scoring upgrades receive a preference when no viable emergency
 construction candidate is present. An active upgrade receives high worker
 priority until completion.
 
-For every building category, new upgrades leave at least half of the existing
-buildings operational, rounded up: two or three buildings permit one upgrade;
-four or five permit two. A category with only one building may upgrade it.
-Unfinished new construction does not increase this allowance. Reserved and
-queued upgrades count before the engine starts their sites, and the check runs
-again when issuing the order. Buildings already offline for repairs also reduce
-available service; repairs themselves remain allowed. Existing upgrades are not
-cancelled when loading a save or losing another building reduces the allowance.
+For every building category, repairs and upgrades share an allowance that leaves
+at least half the existing buildings operational, rounded up: two or three
+buildings permit one maintenance job; four or five permit two. A lone building
+may be repaired or upgraded. Unfinished new construction does not increase the
+allowance. Reserved and queued jobs count before the engine starts their sites;
+both repair and upgrade permissions are checked during selection and again
+before issue. Existing jobs are not cancelled when loading a save or losing
+another building reduces the allowance.
 
 With multiple barracks and warriors awaiting training, upgrades additionally
 preserve at least half of the

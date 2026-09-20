@@ -4537,7 +4537,7 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 	for(const auto& entry:development_planner.actions())
 	{
 		const DevelopmentAction& a=entry.second;
-		if(a.id==excludedAction || a.type!=UpgradeBuilding
+		if(a.id==excludedAction || (a.type!=UpgradeBuilding && a.type!=RepairBuilding)
 		   || a.state!=ParcelReserved
 		   || !echo.get_building_register().is_building_found(a.buildingId))continue;
 		const Building* b=echo.get_building_register().get_building(a.buildingId);
@@ -4618,7 +4618,7 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 	}
 	for(const auto& entry:categories)
 		if(entry.second.second>=2 && entry.second.first-1<(entry.second.second+1)/2)
-			for(int level=1;level<=2;++level)
+			for(int level=0;level<=2;++level)
 				limits.upgradePriorities[std::make_pair(entry.first,level)]=0;
 	limits.activeNewConstruction=std::max(limits.activeNewConstruction,
 		snapshot.building_sites);
@@ -4661,6 +4661,9 @@ bool Maxima::issue_development_action(Context& echo,
 			   || limits.upgradePriority(action.buildingType,action.fromLevel)==0)
 				return false;
 		}
+		else if(action.type==RepairBuilding
+		        && !collect_development_limits(echo,action.id).repairAllowed(action.buildingType))
+			return false;
 		if(!echo.issue_upgrade_repair(buildingId,action.type==RepairBuilding))return false;
 		// Repairs execute the labor allocation used to score their cost and
 		// downtime; upgrade staffing still follows the current director plan.
@@ -4847,7 +4850,7 @@ void Maxima::development_cycle(Context& echo)
 			development_planner.actions().find(reservedActions[i]);
 		if(found==development_planner.actions().end())continue;
 		DevelopmentAction pending=found->second;RejectionReason reason=RejectedReservation;
-		if(pending.type==UpgradeBuilding
+		if((pending.type==UpgradeBuilding || pending.type==RepairBuilding)
 		   &&!development_planner.revalidateSelection(refreshedWorld,{},
 			collect_development_limits(echo,pending.id),pending,&reason))
 		{
