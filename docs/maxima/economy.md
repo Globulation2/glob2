@@ -54,6 +54,11 @@ Controller state belongs to the building's lifetime and is saved with Maxima.
 
 ## Development
 
+Schools retain their early population and technology gates. Once the higher
+technology gate passes, their target is the greater of the configured advanced
+school target (three by default) and population divided by 50, rounded down:
+four schools at 200 population, five at 250, and so on.
+
 The placement planner compares legal construction and upgrades incrementally,
 then revalidates the selected action against the live world. Demand, labour,
 food backing, health, reserved space and construction quotas constrain both.
@@ -61,7 +66,17 @@ Positive-scoring upgrades receive a preference when no viable emergency
 construction candidate is present. An active upgrade receives high worker
 priority until completion.
 
-While warriors await training, barracks upgrades preserve at least half of the
+For every building category, new upgrades leave at least half of the existing
+buildings operational, rounded up: two or three buildings permit one upgrade;
+four or five permit two. A category with only one building may upgrade it.
+Unfinished new construction does not increase this allowance. Reserved and
+queued upgrades count before the engine starts their sites, and the check runs
+again when issuing the order. Buildings already offline for repairs also reduce
+available service; repairs themselves remain allowed. Existing upgrades are not
+cancelled when loading a save or losing another building reduces the allowance.
+
+With multiple barracks and warriors awaiting training, upgrades additionally
+preserve at least half of the
 committed training seats in operation. Already-issued upgrades count as offline
 before the engine observes the new site. If an upgrade quota shrinks, existing
 upgrades retain their commitments without consuming the separately authorized

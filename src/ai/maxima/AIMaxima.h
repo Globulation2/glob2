@@ -628,7 +628,7 @@ private:
 	std::pair<int,int> barracks_capacity(AIMaximaRuntime::Context& echo,
 		int excludedAction=-1) const;
 	AIMaximaPlacement::DevelopmentLimits collect_development_limits(
-		AIMaximaRuntime::Context& echo, int excludedHospitalAction=-1) const;
+		AIMaximaRuntime::Context& echo, int excludedAction=-1) const;
 	bool issue_development_action(AIMaximaRuntime::Context& echo,
 		AIMaximaPlacement::DevelopmentAction& action);
 	void emit_placement_diagnostics(AIMaximaRuntime::Context& echo,
