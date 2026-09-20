@@ -23,24 +23,24 @@ namespace AINames
 		//               nullptr when the AI can't be picked from the CLI (NONE).
 		//   stringKey — StringTable base key: the display name is "[<key>]"
 		//               and the description "[<key>-Description]".
-		//   strength — combined Elo from the completed 3,000-game duel tournament.
-		// All games use random 128x128 symmetric-arena maps, with probability
+		//   strength — combined Elo from the completed 10,000-game duel tournament.
+		// All games use random 128x128 maps across 60 generators, with probability
 		// victory disabled. Ratings start at 1500, use K=32 in manifest order,
 		// and pool the macOS and Linux builds of the same source revision.
 		// Displayed values are rounded once, after the full tournament.
 		// Difficulty tiers: below 1450 Easy, 1450-1699 Medium, 1700+ Hard.
 		// These describe this duel cohort, not every map, format or human game.
-		// See docs/ai-strength.md and docs/validation/ai-elo-20260919/.
+		// See docs/ai-strength.md and docs/validation/ai-elo-10000-20260920/.
 		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
 			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
-			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1269},
-			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1073},
-			{AI::WARRUSH,         "warrush",         "AIWarrush", "Easy", 1222},
-			{AI::ECONO, "econo", "AIEcono", "Easy", 1184},
-			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard", 1759},
-			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1938},
-			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1656},
-			{AI::CABINO,          "cabino",          "AICabino", "Hard", 1899},
+			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1196},
+			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1241},
+			{AI::WARRUSH,         "warrush",         "AIWarrush", "Medium", 1452},
+			{AI::ECONO, "econo", "AIEcono", "Easy", 1338},
+			{AI::NICOWAR,         "nicowar",         "AINicowar", "Medium", 1631},
+			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1847},
+			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1488},
+			{AI::CABINO,          "cabino",          "AICabino", "Hard", 1809},
 		};
 	}
 
@@ -48,7 +48,7 @@ namespace AINames
 	{
 		// Weakest first, by measured strength rather than by guess, so the list
 		// a player scrolls reads as a ladder.
-		static const std::vector<int> order = {AI::CASTOR, AI::ECONO, AI::WARRUSH, AI::NUMBI, AI::CORTEX, AI::NICOWAR, AI::CABINO, AI::MAXIMA, AI::NONE};
+		static const std::vector<int> order = {AI::NUMBI, AI::CASTOR, AI::ECONO, AI::WARRUSH, AI::CORTEX, AI::NICOWAR, AI::CABINO, AI::MAXIMA, AI::NONE};
 		return order;
 	}
 	int selectionIndex(int id)

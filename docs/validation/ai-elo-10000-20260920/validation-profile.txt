@@ -1,0 +1,3 @@
+PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
+PASS preferences keep every generator option, and older files still load
+PASS landscape picker Random order is a real shuffle drawn once per process run, Alphabetical stays stable
