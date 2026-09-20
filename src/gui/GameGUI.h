@@ -531,6 +531,9 @@ private:
 	TeamStats *teamStats;
 	int measurementPage = 0;
 	void drawStatisticsPage(int y);
+	//! Each side's chance of winning, under the statistics. Drawn for live
+	//! spectators, independently of the game's winning conditions.
+	void drawWinProbabilities(int x, int y);
 	Team *localTeam;
 
 	Uint32 chatMask;
@@ -701,4 +704,3 @@ private:
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
-
