@@ -1,9 +1,9 @@
 [AI strategy]
-
+Stratégie IA
 [AIMaxima-Summary]
-
+Explore, développe ses réserves de nourriture et regroupe des vagues de guerriers.
 [AIMaxima-Profile]
-
+Comportement: Repère des cibles et regroupe des vagues d’attaque tout en gardant des guerriers pour la défense et l’entraînement.\n\nPoints forts: L’exploration l’aide à choisir ses cibles tout en équilibrant attaque, défense et entraînement.\n\nPoints faibles: A besoin de nourriture, de capacités d’entraînement et d’espace pour regrouper ses forces.\n\nComment réagir: Contestez les bâtiments de nourriture et d’entraînement exposés avant que les vagues se regroupent. Gardez une force défensive groupée et ravitaillée.
 [%0 has left the game]
 %0 a quitté la partie.
 [%0 level %1]
@@ -57,11 +57,11 @@ IA
 [ai]
 IA
 [AICastor-Description]
-
+Construit et entraîne ses unités en adaptant sa croissance aux réserves de nourriture.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Développe sa population, entraîne des guerriers, puis attaque.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ Description de AINone
 [AINone]
 AINone
 [AINumbi-Description]
-
+Un adversaire indulgent qui continue à s’étendre et à attaquer.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-
+S’étend et cherche à convertir des unités sans produire de guerriers.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Des attaques rapides qui mettent vos premières défenses à l’épreuve.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-
+Un bâtisseur solide qui déploie des forces d’attaque entraînées.
 [AICabino]
 Cabino
 [Alga]
@@ -1239,9 +1239,9 @@ Réduire la vitesse du jeu
 [increase game speed]
 Augmenter la vitesse du jeu
 [AICortex-Description]
-
+Des vagues de guerriers regroupés, soutenues par la nourriture et les soins.
 [AIMaxima-Description]
-
+Explore, développe ses réserves de nourriture et regroupe des vagues de guerriers.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1257,37 +1257,37 @@ Travaillent encore : %0
 [AI strategy & counterplay]
 Stratégie et contre-jeu de l'IA
 [AICastor-Profile]
-
+Comportement: Construit et améliore sa colonie tout en entraînant une armée.\n\nPoints forts: Adapte les naissances à sa capacité à nourrir les unités, ce qui limite la surpopulation.\n\nPoints faibles: Les pénuries de nourriture peuvent arrêter sa production d’unités.\n\nComment réagir: Prenez tôt les terrains d’expansion, puis attaquez avec des guerriers entraînés et des réserves.
 [AICastor-Summary]
-
+Construit et entraîne ses unités en adaptant sa croissance aux réserves de nourriture.
 [AICortex-Profile]
-
+Comportement: Regroupe des vagues de guerriers et les soutient avec des auberges et des hôpitaux avancés.\n\nPoints forts: Concentre ses guerriers en vagues, avec de la nourriture et des soins à proximité pour prolonger les attaques.\n\nPoints faibles: Ses attaques dépendent du ravitaillement des auberges et hôpitaux avancés.\n\nComment réagir: Contestez ses auberges avancées et son blé. Gardez vos défenseurs groupés face à chaque vague.
 [AICortex-Summary]
-
+Des vagues de guerriers regroupés, soutenues par la nourriture et les soins.
 [AINicowar-Profile]
-
+Comportement: Agrandit sa colonie et entraîne des guerriers avant de lancer ses attaques.\n\nPoints forts: Transforme la croissance de sa population et l’entraînement en un flux régulier d’attaquants.\n\nPoints faibles: A besoin de temps et de capacités d’entraînement avant ses grandes attaques.\n\nComment réagir: Contestez les nouvelles sources de nourriture pendant ses préparatifs. Affrontez son armée avec des troupes entraînées et ravitaillées.
 [AINicowar-Summary]
-
+Développe sa population, entraîne des guerriers, puis attaque.
 [AINone-Profile]
 Stratégie : L'IA ne donne aucun ordre.\n\nPoints forts : Un adversaire prévisible et inactif pour les expériences.\n\nFaiblesses : Ne s’étend pas et ne s’adapte pas.
 [AINone-Summary]
 Une colonie inactive pour expérimenter.
 [AINumbi-Profile]
-
+Comportement: Développe sa colonie, entraîne ses unités et lance des attaques.\n\nPoints forts: Développe la nourriture, les soins et l’entraînement pour soutenir une colonie en croissance.\n\nPoints faibles: Son développement progressif laisse une occasion d’exercer une pression précoce.\n\nComment réagir: Développez ensemble la nourriture et l’entraînement, puis attaquez sans laisser votre colonie sans défense.
 [AINumbi-Summary]
-
+Un adversaire indulgent qui continue à s’étendre et à attaquer.
 [AIEcono-Profile]
-
+Comportement: Développe ses capacités de production de nourriture et de naissance tandis que ses explorateurs visitent les fruits et les colonies ennemies.\n\nPoints forts: Exerce une pression par la croissance et la conversion, sans produire de guerriers.\n\nPoints faibles: Ne produit pas de guerriers pour arrêter une attaque militaire directe.\n\nComment réagir: Mettez la pression sur ses extensions exposées. Approvisionnez vos auberges en nourriture et en fruits pour garder vos unités.
 [AIEcono-Summary]
-
+S’étend et cherche à convertir des unités sans produire de guerriers.
 [AIWarrush-Profile]
-
+Comportement: Lance des attaques précoces avant que vous ayez le temps de vous développer longuement.\n\nPoints forts: Produit tôt des guerriers pour mettre la pression avant que ses adversaires aient fini de se développer.\n\nPoints faibles: Moins fiable sur les terrains riches en rivières.\n\nComment réagir: Protégez tôt vos bâtiments de nourriture et de naissance. Continuez à produire des ouvriers tout en remplaçant les défenseurs, puis contre-attaquez.
 [AIWarrush-Summary]
-
+Des attaques rapides qui mettent vos premières défenses à l’épreuve.
 [AICabino-Profile]
-
+Comportement: S’étend, entraîne des guerriers et attaque les bâtiments tout en affectant des défenseurs à sa colonie.\n\nPoints forts: Soutient ses attaques entraînées par une expansion continue et des défenseurs à domicile.\n\nPoints faibles: A besoin de casernes opérationnelles et d’assez de guerriers entraînés pour attaquer.\n\nComment réagir: Mettez la pression sur ses extensions exposées avant que son armée se regroupe. Visez les bâtiments de nourriture et d’entraînement quand vous le pouvez.
 [AICabino-Summary]
-
+Un bâtisseur solide qui déploie des forces d’attaque entraînées.
 [Algae]
 Algues
 [Alliances]

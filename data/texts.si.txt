@@ -1,9 +1,9 @@
 [AI strategy]
-
+Strategija UI
 [AIMaxima-Summary]
-
+Izviduje, razvija oskrbo s hrano in zbira valove bojevnikov.
 [AIMaxima-Profile]
-
+Kaj pričakovati: Išče tarče in zbira napadalne valove, pri tem pa ohranja bojevnike za obrambo in urjenje.\n\nPrednosti: Izvidovanje pomaga izbirati tarče ter uravnotežiti napade, obrambo in urjenje.\n\nSlabosti: Potrebuje hrano, zmogljivosti za urjenje in prostor za zbiranje sil.\n\nKako se zoperstaviti: Napadajte nezaščitene stavbe za hrano in urjenje, preden se valovi zberejo. Oskrbljene branilce držite skupaj.
 [%0 has left the game]
 %0 je zapustil igro.
 [%0 level %1]
@@ -57,11 +57,11 @@ UI
 [ai]
 UI
 [AICastor-Description]
-
+Gradi in uri vojsko, rast pa prilagaja zalogam hrane.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Povečuje prebivalstvo, uri bojevnike in nato napade.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ Brez – ne naredi ničesar.
 [AINone]
 Brez UI
 [AINumbi-Description]
-
+Prizanesljiv nasprotnik, ki se vseeno širi in napada.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-
+Širi se in pridobiva tuje enote brez ustvarjanja bojevnikov.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Hitri napadi preverijo vašo zgodnjo obrambo.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-
+Spreten graditelj, ki uporablja izurjene napadalne sile.
 [AICabino]
 Cabino
 [Alga]
@@ -1227,9 +1227,9 @@ Hitrost: 1x (več igralcev)
 [game speed help]
 Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
 [AICortex-Description]
-
+Strnjeni valovi bojevnikov s podporo hrane in zdravljenja.
 [AIMaxima-Description]
-
+Izviduje, razvija oskrbo s hrano in zbira valove bojevnikov.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1247,37 +1247,37 @@ Znotraj: %0
 [AI strategy & counterplay]
 Strategija UI in protiigra
 [AICastor-Profile]
-
+Kaj pričakovati: Gradi in nadgrajuje kolonijo ter hkrati uri vojsko.\n\nPrednosti: Rojstva prilagaja zmogljivosti oskrbe s hrano in tako omejuje pretirano rast.\n\nSlabosti: Pomanjkanje hrane lahko ustavi ustvarjanje enot.\n\nKako se zoperstaviti: Zgodaj zavzemite prostor za širitev, nato napadite z izurjenimi bojevniki in rezervami.
 [AICastor-Summary]
-
+Gradi in uri vojsko, rast pa prilagaja zalogam hrane.
 [AICortex-Profile]
-
+Kaj pričakovati: Zbira valove bojevnikov ter jih podpira s prednjimi gostilnami in bolnišnicami.\n\nPrednosti: Združuje bojevnike v valove, ki jih med napadi podpirata bližnja hrana in zdravljenje.\n\nSlabosti: Napadi so odvisni od oskrbe prednjih gostiln in bolnišnic.\n\nKako se zoperstaviti: Borite se za prednje gostilne in pšenico. Branilce držite skupaj proti vsakemu valu.
 [AICortex-Summary]
-
+Strnjeni valovi bojevnikov s podporo hrane in zdravljenja.
 [AINicowar-Profile]
-
+Kaj pričakovati: Širi kolonijo in uri bojevnike pred začetkom napadov.\n\nPrednosti: Rast prebivalstva in urjenje zagotavljata stalen dotok napadalcev.\n\nSlabosti: Pred glavnimi napadi potrebuje čas in zmogljivosti za urjenje.\n\nKako se zoperstaviti: Med njegovimi pripravami se borite za nove vire hrane. Njegovo vojsko pričakajte z oskrbljenimi in izurjenimi silami.
 [AINicowar-Summary]
-
+Povečuje prebivalstvo, uri bojevnike in nato napade.
 [AINone-Profile]
 Strategija: AI ne daje nobenih ukazov.\n\nPrednosti: predvidljiv, neaktiven nasprotnik za eksperimente.\n\nSlabosti: Ne širi se ali prilagaja.
 [AINone-Summary]
 Nedejavna kolonija za eksperimente.
 [AINumbi-Profile]
-
+Kaj pričakovati: Razvija kolonijo, uri enote in izvaja napade.\n\nPrednosti: Razvija oskrbo s hrano, zdravljenje in urjenje za rastočo kolonijo.\n\nSlabosti: Postopen razvoj odpira priložnost za zgodnji pritisk.\n\nKako se zoperstaviti: Hkrati razvijajte pridelavo hrane in urjenje, nato napadite, ne da bi dom pustili brez obrambe.
 [AINumbi-Summary]
-
+Prizanesljiv nasprotnik, ki se vseeno širi in napada.
 [AIEcono-Profile]
-
+Kaj pričakovati: Razvija oskrbo in rojstva, medtem ko raziskovalci obiskujejo sadje in sovražne kolonije.\n\nPrednosti: Z rastjo in pridobivanjem tujih enot pritiska na nasprotnike brez bojevnikov.\n\nSlabosti: Ne ustvarja bojevnikov za zaustavitev neposrednega vojaškega napada.\n\nKako se zoperstaviti: Pritiskajte na nezaščiteno širitev. Gostilne oskrbujte s hrano in sadjem, da obdržite svoje enote.
 [AIEcono-Summary]
-
+Širi se in pridobiva tuje enote brez ustvarjanja bojevnikov.
 [AIWarrush-Profile]
-
+Kaj pričakovati: Napade zgodaj, preden imate čas za dolgotrajne priprave.\n\nPrednosti: Zgodnje ustvarjanje bojevnikov pritiska na nasprotnike še pred zaključkom njihovega razvoja.\n\nSlabosti: Manj zanesljiv je na območjih z veliko rekami.\n\nKako se zoperstaviti: Že zgodaj varujte stavbe za hrano in rojstva. Ustvarjajte delavce in nadomeščajte branilce, nato udarite nazaj.
 [AIWarrush-Summary]
-
+Hitri napadi preverijo vašo zgodnjo obrambo.
 [AICabino-Profile]
-
+Kaj pričakovati: Širi se, uri bojevnike in napada stavbe, doma pa razporeja branilce.\n\nPrednosti: Izurjene napade podpira z nadaljnjo širitvijo in domačo obrambo.\n\nSlabosti: Za napade potrebuje delujoče vojašnice in dovolj izurjenih bojevnikov.\n\nKako se zoperstaviti: Pritiskajte na nezaščiteno širitev, preden zbere vojsko. Kadar lahko, napadajte stavbe za hrano in urjenje.
 [AICabino-Summary]
-
+Spreten graditelj, ki uporablja izurjene napadalne sile.
 [Algae]
 Alge
 [Alliances]

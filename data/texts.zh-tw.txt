@@ -1,9 +1,9 @@
 [AI strategy]
-
+AI 戰術
 [AIMaxima-Summary]
-
+偵察目標，發展食物供應，並集結戰士分波進攻。
 [AIMaxima-Profile]
-
+預期行為: 偵察目標並集結攻勢，同時保留戰士用於防守和訓練。\n\n優勢: 偵察有助於選擇目標，同時兼顧進攻、防守和訓練。\n\n弱點: 需要食物、訓練能力及集結部隊的空間。\n\n應對建議: 在攻勢集結前爭奪暴露的食物和訓練設施。保持守軍集中且補給充足。
 [%0 has left the game]
 %0 已離開遊戲
 [%0 level %1]
@@ -57,11 +57,11 @@ AI 說明
 [ai]
 人工智慧
 [AICastor-Description]
-
+建設與訓練的同時，讓人口成長配合食物供應。
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+發展人口，訓練戰士，再發動進攻。
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ Nicowar
 [AINone]
 無 AI
 [AINumbi-Description]
-
+較為寬容的對手，但仍會擴張與進攻。
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-
+透過擴張和爭取敵方單位投靠來競爭，不生產戰士。
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+快速進攻，考驗你的早期防禦。
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-
+擅長建設，並派出訓練有素的進攻部隊。
 [AICabino]
 Cabino
 [Alga]
@@ -1299,9 +1299,9 @@ Ysagoon 線上遊戲
 [game speed help]
 僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
 [AICortex-Description]
-
+集結戰士分波進攻，並提供食物和治療支援。
 [AIMaxima-Description]
-
+偵察目標，發展食物供應，並集結戰士分波進攻。
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1319,37 +1319,37 @@ Cortex
 [AI strategy & counterplay]
 AI策略與對抗
 [AICastor-Profile]
-
+預期行為: 建設並升級殖民地，同時訓練軍隊。\n\n優勢: 依供餐能力調整出生數量，減少人口過度成長。\n\n弱點: 食物短缺可能使單位生產停擺。\n\n應對建議: 及早佔領擴張區域，再帶著訓練有素的戰士和後備兵力進攻。
 [AICastor-Summary]
-
+建設與訓練的同時，讓人口成長配合食物供應。
 [AICortex-Profile]
-
+預期行為: 集結戰士分波進攻，以前線旅館和醫院提供支援。\n\n優勢: 集中戰士形成攻勢，利用附近的食物和治療維持進攻。\n\n弱點: 進攻仰賴前線食物和治療設施持續獲得補給。\n\n應對建議: 爭奪前線旅館和麥田。集中守軍，抵禦每一波攻勢。
 [AICortex-Summary]
-
+集結戰士分波進攻，並提供食物和治療支援。
 [AINicowar-Profile]
-
+預期行為: 擴張殖民地並訓練戰士，隨後發動進攻。\n\n優勢: 將人口成長和訓練轉化為持續補充的進攻兵力。\n\n弱點: 主要攻勢需要時間與足夠的訓練能力才能展開。\n\n應對建議: 在其發展期間爭奪新的食物來源。以補給充足、訓練有素的部隊迎戰。
 [AINicowar-Summary]
-
+發展人口，訓練戰士，再發動進攻。
 [AINone-Profile]
 核心策略:不發出任何人工智慧命令。\n\n優勢:行為可預測、保持不動的實驗對手。\n\n弱點:不會擴張或適應局勢。
 [AINone-Summary]
 用於實驗的閒置殖民地。
 [AINumbi-Profile]
-
+預期行為: 發展殖民地，訓練單位並發動進攻。\n\n優勢: 發展食物、治療與訓練設施，支撐持續壯大的殖民地。\n\n弱點: 發展較慢，容易受到早期施壓。\n\n應對建議: 同步發展食物生產和訓練能力，進攻時也要守好家園。
 [AINumbi-Summary]
-
+較為寬容的對手，但仍會擴張與進攻。
 [AIEcono-Profile]
-
+預期行為: 發展食物與出生設施，同時派探索者前往果樹和敵方殖民地。\n\n優勢: 利用人口成長與招攬敵方單位施壓，無需生產戰士。\n\n弱點: 不生產戰士，難以阻擋直接的軍事進攻。\n\n應對建議: 對暴露的擴張據點施壓。為旅館供應充足的食物和水果，防止己方單位投靠敵人。
 [AIEcono-Summary]
-
+透過擴張和爭取敵方單位投靠來競爭，不生產戰士。
 [AIWarrush-Profile]
-
+預期行為: 在你有時間長期發展之前發動早期進攻。\n\n優勢: 較早生產戰士，在對手完成發展前施壓。\n\n弱點: 在河流密集的地形上表現較不穩定。\n\n應對建議: 及早保護食物和出生設施。一邊補充守軍，一邊持續生產工人，再展開反擊。
 [AIWarrush-Summary]
-
+快速進攻，考驗你的早期防禦。
 [AICabino-Profile]
-
+預期行為: 擴張、訓練戰士並攻擊建築，同時安排兵力守家。\n\n優勢: 持續擴張並留兵防守，支撐訓練有素的部隊進攻。\n\n弱點: 需要運作中的兵營和足夠的受訓戰士才能進攻。\n\n應對建議: 在其軍隊集結前對暴露的擴張據點施壓。有機會就攻擊食物和訓練設施。
 [AICabino-Summary]
-
+擅長建設，並派出訓練有素的進攻部隊。
 [Algae]
 海藻
 [Alliances]

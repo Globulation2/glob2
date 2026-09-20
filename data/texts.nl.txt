@@ -1,9 +1,9 @@
 [AI strategy]
-
+AI-strategie
 [AIMaxima-Summary]
-
+Verkent, bouwt de voedselvoorziening uit en verzamelt golven krijgers.
 [AIMaxima-Profile]
-
+Wat je kunt verwachten: Verkent doelen en verzamelt aanvalsgolven, maar houdt krijgers achter voor verdediging en training.\n\nSterke punten: Verkenning helpt bij de doelkeuze en bij het evenwicht tussen aanvallen, verdediging en training.\n\nZwakke punten: Heeft voedsel, trainingscapaciteit en ruimte nodig om troepen te verzamelen.\n\nMogelijke tegenzet: Bestrijd onbeschermde voedsel- en trainingsgebouwen voordat de golven zich verzamelen. Houd een bevoorrade verdedigingsmacht bij elkaar.
 [%0 has left the game]
 %0 heeft het spel verlaten
 [%0 level %1]
@@ -57,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-
+Bouwt en traint, met groei afgestemd op de voedselvoorziening.
 [AICastor]
 Castor
 [AINicowar-Description]
-
+Vergroot zijn bevolking, traint krijgers en valt dan aan.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ Zoals de naam zegt: deze AI doet niets.
 [AINone]
 Geen AI
 [AINumbi-Description]
-
+Een vergevingsgezinde tegenstander die toch uitbreidt en aanvalt.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-
+Breidt uit en probeert eenheden te bekeren zonder krijgers te maken.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Snelle aanvallen die je vroege verdediging op de proef stellen.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-
+Een sterke bouwer die getrainde aanvalstroepen inzet.
 [AICabino]
 Cabino
 [Alga]
@@ -1253,9 +1253,9 @@ Snelheid: 1x (multiplayer)
 [game speed help]
 Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
 [AICortex-Description]
-
+Verzamelde golven krijgers met voedsel en genezing als steun.
 [AIMaxima-Description]
-
+Verkent, bouwt de voedselvoorziening uit en verzamelt golven krijgers.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1271,37 +1271,37 @@ Nog aan het werk: %0
 [AI strategy & counterplay]
 AI-strategie en tegenspel
 [AICastor-Profile]
-
+Wat je kunt verwachten: Bouwt zijn kolonie uit en verbetert deze terwijl het een leger traint.\n\nSterke punten: Stemt geboorten af op de voedingscapaciteit en beperkt zo overmatige groei.\n\nZwakke punten: Voedseltekorten kunnen de productie van eenheden stilleggen.\n\nMogelijke tegenzet: Claim vroeg ruimte om uit te breiden en val daarna aan met getrainde krijgers en reserves.
 [AICastor-Summary]
-
+Bouwt en traint, met groei afgestemd op de voedselvoorziening.
 [AICortex-Profile]
-
+Wat je kunt verwachten: Verzamelt golven krijgers en steunt ze met vooruitgeschoven herbergen en ziekenhuizen.\n\nSterke punten: Bundelt krijgers in golven, met voedsel en genezing dichtbij om aanvallen vol te houden.\n\nZwakke punten: Aanvallen hangen af van de bevoorrading van vooruitgeschoven voedsel- en genezingsvoorzieningen.\n\nMogelijke tegenzet: Bestrijd de vooruitgeschoven herbergen en tarwevoorziening. Houd verdedigers bij elkaar tegen elke golf.
 [AICortex-Summary]
-
+Verzamelde golven krijgers met voedsel en genezing als steun.
 [AINicowar-Profile]
-
+Wat je kunt verwachten: Breidt zijn kolonie uit en traint krijgers voordat het aanvallen inzet.\n\nSterke punten: Zet bevolkingsgroei en training om in een gestage stroom aanvallers.\n\nZwakke punten: Heeft tijd en trainingscapaciteit nodig voordat de grote aanvallen beginnen.\n\nMogelijke tegenzet: Bestrijd nieuwe voedselbronnen tijdens de opbouw. Vang zijn leger op met een getrainde, bevoorrade strijdmacht.
 [AINicowar-Summary]
-
+Vergroot zijn bevolking, traint krijgers en valt dan aan.
 [AINone-Profile]
 Strategie: De AI geeft geen commando's.\n\nSterke punten: Een voorspelbare, inactieve tegenstander voor experimenten.\n\nZwakke punten: breidt zich niet uit en past zich niet aan.
 [AINone-Summary]
 Een inactieve kolonie voor experimenten.
 [AINumbi-Profile]
-
+Wat je kunt verwachten: Bouwt een kolonie op, traint eenheden en zet aanvallen in.\n\nSterke punten: Bouwt voedselvoorziening, genezing en training op om een groeiende kolonie te ondersteunen.\n\nZwakke punten: De geleidelijke opbouw biedt een opening voor vroege druk.\n\nMogelijke tegenzet: Ontwikkel voedselproductie en training samen en val daarna aan zonder je thuisbasis onverdedigd te laten.
 [AINumbi-Summary]
-
+Een vergevingsgezinde tegenstander die toch uitbreidt en aanvalt.
 [AIEcono-Profile]
-
+Wat je kunt verwachten: Vergroot de voedsel- en geboortecapaciteit terwijl verkenners fruit en vijandelijke kolonies bezoeken.\n\nSterke punten: Zet tegenstanders onder druk met groei en bekering, zonder krijgers te maken.\n\nZwakke punten: Maakt geen krijgers om een directe militaire aanval te stoppen.\n\nMogelijke tegenzet: Zet onbeschermde uitbreidingen onder druk. Bevoorraad je herbergen met voedsel en fruit om je eenheden te behouden.
 [AIEcono-Summary]
-
+Breidt uit en probeert eenheden te bekeren zonder krijgers te maken.
 [AIWarrush-Profile]
-
+Wat je kunt verwachten: Valt vroeg aan, voordat je tijd hebt voor een lange opbouw.\n\nSterke punten: Vroege productie van krijgers zet tegenstanders onder druk voordat hun opbouw klaar is.\n\nZwakke punten: Minder betrouwbaar op terrein met veel rivieren.\n\nMogelijke tegenzet: Bescherm voedsel- en geboortegebouwen vroeg. Blijf arbeiders maken terwijl je verdedigers vervangt en val daarna terug aan.
 [AIWarrush-Summary]
-
+Snelle aanvallen die je vroege verdediging op de proef stellen.
 [AICabino-Profile]
-
+Wat je kunt verwachten: Breidt uit, traint krijgers en valt gebouwen aan, terwijl het verdedigers thuis inzet.\n\nSterke punten: Ondersteunt getrainde aanvallen met voortdurende uitbreiding en verdedigers thuis.\n\nZwakke punten: Heeft werkende kazernes en genoeg getrainde krijgers nodig om aan te vallen.\n\nMogelijke tegenzet: Zet onbeschermde uitbreidingen onder druk voordat het leger zich verzamelt. Val voedsel- en trainingsgebouwen aan wanneer je kunt.
 [AICabino-Summary]
-
+Een sterke bouwer die getrainde aanvalstroepen inzet.
 [Algae]
 zeewier
 [Alliances]

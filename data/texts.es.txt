@@ -1,9 +1,9 @@
 [AI strategy]
-
+Estrategia IA
 [AIMaxima-Summary]
-
+Explora, desarrolla su suministro de comida y reúne oleadas de guerreros.
 [AIMaxima-Profile]
-
+Qué esperar: Explora en busca de objetivos y reúne oleadas de ataque, reservando guerreros para defensa y entrenamiento.\n\nPuntos fuertes: La exploración le ayuda a elegir objetivos y a equilibrar ataques, defensa y entrenamiento.\n\nPuntos débiles: Necesita comida, capacidad de entrenamiento y espacio para reunir sus fuerzas.\n\nCómo contrarrestarla: Disputa los edificios expuestos de comida y entrenamiento antes de que reúna las oleadas. Mantén unida una fuerza defensiva abastecida.
 [%0 has left the game]
 %0 ha abandonado el juego.
 [%0 level %1]
@@ -57,11 +57,11 @@ IA
 [ai]
 IA
 [AICastor-Description]
-
+Construye y entrena, ajustando el crecimiento al suministro de comida.
 [AICastor]
 Castor
 [AINicowar-Description]
-
+Aumenta su población, entrena guerreros y luego ataca.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ Ninguna - No hace nada.
 [AINone]
 Ninguna
 [AINumbi-Description]
-
+Un rival indulgente que aun así se expande y ataca.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-
+Se expande y busca conversiones sin producir guerreros.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Ataques rápidos que ponen a prueba tus primeras defensas.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-
+Un constructor eficaz que despliega fuerzas de ataque entrenadas.
 [AICabino]
 Cabino
 [Alga]
@@ -1229,9 +1229,9 @@ Velocidad: 1x (multijugador)
 [game speed help]
 Solo para un jugador y repeticiones. Las partidas multijugador van a 1x.
 [AICortex-Description]
-
+Oleadas de guerreros agrupados con apoyo de comida y curación.
 [AIMaxima-Description]
-
+Explora, desarrolla su suministro de comida y reúne oleadas de guerreros.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1247,37 +1247,37 @@ Aún trabajando: %0
 [AI strategy & counterplay]
 Estrategia de IA y contrajuego
 [AICastor-Profile]
-
+Qué esperar: Construye y mejora su colonia mientras entrena un ejército.\n\nPuntos fuertes: Ajusta los nacimientos a su capacidad de alimentar unidades, limitando el crecimiento excesivo.\n\nPuntos débiles: La escasez de comida puede detener la producción de unidades.\n\nCómo contrarrestarla: Ocupa pronto terreno para expandirte y luego ataca con guerreros entrenados y reservas.
 [AICastor-Summary]
-
+Construye y entrena, ajustando el crecimiento al suministro de comida.
 [AICortex-Profile]
-
+Qué esperar: Agrupa oleadas de guerreros y las apoya con posadas y hospitales avanzados.\n\nPuntos fuertes: Concentra guerreros en oleadas, con comida y curación cercanas para sostener los ataques.\n\nPuntos débiles: Los ataques dependen del suministro de las instalaciones avanzadas de comida y curación.\n\nCómo contrarrestarla: Disputa sus posadas avanzadas y su trigo. Mantén unidos a los defensores ante cada oleada.
 [AICortex-Summary]
-
+Oleadas de guerreros agrupados con apoyo de comida y curación.
 [AINicowar-Profile]
-
+Qué esperar: Expande su colonia y entrena guerreros antes de lanzar ataques.\n\nPuntos fuertes: Convierte el crecimiento de la población y el entrenamiento en un flujo constante de atacantes.\n\nPuntos débiles: Necesita tiempo y capacidad de entrenamiento antes de sus ataques principales.\n\nCómo contrarrestarla: Disputa nuevas fuentes de comida durante sus preparativos. Enfrenta a su ejército con tropas entrenadas y abastecidas.
 [AINicowar-Summary]
-
+Aumenta su población, entrena guerreros y luego ataca.
 [AINone-Profile]
 Estrategia: La IA no da órdenes.\n\nPuntos fuertes: Un oponente predecible e inactivo para los experimentos.\n\nDebilidades: No se expande ni se adapta.
 [AINone-Summary]
 Una colonia ociosa para experimentos.
 [AINumbi-Profile]
-
+Qué esperar: Desarrolla una colonia, entrena unidades y lanza ataques.\n\nPuntos fuertes: Desarrolla comida, curación y entrenamiento para sostener una colonia en crecimiento.\n\nPuntos débiles: Su desarrollo gradual ofrece una oportunidad para presionar pronto.\n\nCómo contrarrestarla: Desarrolla a la vez la producción de comida y el entrenamiento, y luego ataca sin dejar tu colonia indefensa.
 [AINumbi-Summary]
-
+Un rival indulgente que aun así se expande y ataca.
 [AIEcono-Profile]
-
+Qué esperar: Aumenta su capacidad de alimentación y nacimientos mientras los exploradores visitan frutas y colonias enemigas.\n\nPuntos fuertes: Usa el crecimiento y la conversión para presionar sin producir guerreros.\n\nPuntos débiles: No produce guerreros para detener un ataque militar directo.\n\nCómo contrarrestarla: Presiona sus expansiones expuestas. Abastece tus posadas de comida y fruta para conservar tus unidades.
 [AIEcono-Summary]
-
+Se expande y busca conversiones sin producir guerreros.
 [AIWarrush-Profile]
-
+Qué esperar: Ataca pronto, antes de que tengas tiempo para un desarrollo prolongado.\n\nPuntos fuertes: La producción temprana de guerreros presiona antes de que sus rivales terminen de desarrollarse.\n\nPuntos débiles: Menos fiable en terrenos con muchos ríos.\n\nCómo contrarrestarla: Protege pronto los edificios de comida y nacimientos. Sigue produciendo trabajadores mientras repones defensores y luego contraataca.
 [AIWarrush-Summary]
-
+Ataques rápidos que ponen a prueba tus primeras defensas.
 [AICabino-Profile]
-
+Qué esperar: Se expande, entrena guerreros y ataca edificios mientras asigna defensores a su colonia.\n\nPuntos fuertes: Apoya sus ataques con tropas entrenadas, expansión continua y defensores en casa.\n\nPuntos débiles: Necesita cuarteles operativos y suficientes guerreros entrenados para atacar.\n\nCómo contrarrestarla: Presiona las expansiones expuestas antes de que reúna su ejército. Ataca edificios de comida y entrenamiento cuando puedas.
 [AICabino-Summary]
-
+Un constructor eficaz que despliega fuerzas de ataque entrenadas.
 [Algae]
 algas
 [Alliances]

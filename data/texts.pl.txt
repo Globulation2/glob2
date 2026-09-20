@@ -1,9 +1,9 @@
 [AI strategy]
-
+Strategia SI
 [AIMaxima-Summary]
-
+Zwiaduje, rozwija wyżywienie i zbiera fale wojowników.
 [AIMaxima-Profile]
-
+Czego oczekiwać: Szuka celów i zbiera fale ataku, pozostawiając wojowników do obrony i szkolenia.\n\nMocne strony: Zwiad pomaga wybierać cele i równoważyć atak, obronę oraz szkolenie.\n\nSłabe strony: Potrzebuje żywności, zaplecza szkoleniowego i miejsca na zebranie sił.\n\nJak przeciwdziałać: Atakuj odsłonięte budynki żywienia i szkolenia, zanim zbierze fale. Trzymaj zaopatrzonych obrońców razem.
 [%0 has left the game]
 %0 opuścił grę.
 [%0 level %1]
@@ -57,11 +57,11 @@ SI
 [ai]
 SI
 [AICastor-Description]
-
+Buduje i szkoli, dostosowując wzrost do zapasów żywności.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Zwiększa populację, szkoli wojowników, a potem atakuje.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ None - Nic nie robi.
 [AINone]
 AINone
 [AINumbi-Description]
-
+Łagodny przeciwnik, który mimo to rozbudowuje się i atakuje.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-
+Rozbudowuje się i przejmuje jednostki bez tworzenia wojowników.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Szybkie ataki sprawdzają twoją wczesną obronę.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-
+Sprawny budowniczy wystawiający wyszkolone siły szturmowe.
 [AICabino]
 Cabino
 [Alga]
@@ -1229,9 +1229,9 @@ Szybkość: 1x (gra sieciowa)
 [game speed help]
 Tylko gra jednoosobowa i powtórki. Gra wieloosobowa działa z szybkością 1x.
 [AICortex-Description]
-
+Zwarte fale wojowników ze wsparciem żywności i leczenia.
 [AIMaxima-Description]
-
+Zwiaduje, rozwija wyżywienie i zbiera fale wojowników.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1247,37 +1247,37 @@ Nadal pracują: %0
 [AI strategy & counterplay]
 Strategia SI i przeciwdziałanie
 [AICastor-Profile]
-
+Czego oczekiwać: Buduje i ulepsza kolonię, jednocześnie szkoląc armię.\n\nMocne strony: Dostosowuje narodziny do możliwości wyżywienia, ograniczając nadmierny wzrost.\n\nSłabe strony: Brak żywności może zatrzymać tworzenie jednostek.\n\nJak przeciwdziałać: Wcześnie zajmuj tereny pod rozbudowę, potem atakuj wyszkolonymi wojownikami z rezerwą.
 [AICastor-Summary]
-
+Buduje i szkoli, dostosowując wzrost do zapasów żywności.
 [AICortex-Profile]
-
+Czego oczekiwać: Zbiera fale wojowników i wspiera je wysuniętymi gospodami i szpitalami.\n\nMocne strony: Skupia wojowników w fale, podtrzymując ataki pobliską żywnością i leczeniem.\n\nSłabe strony: Ataki zależą od zaopatrzenia wysuniętych gospód i szpitali.\n\nJak przeciwdziałać: Walcz o wysunięte gospody i pszenicę. Trzymaj obrońców razem przeciw każdej fali.
 [AICortex-Summary]
-
+Zwarte fale wojowników ze wsparciem żywności i leczenia.
 [AINicowar-Profile]
-
+Czego oczekiwać: Rozbudowuje kolonię i szkoli wojowników przed rozpoczęciem ataków.\n\nMocne strony: Wzrost populacji i szkolenie zapewniają stały dopływ napastników.\n\nSłabe strony: Przed głównymi atakami potrzebuje czasu i zaplecza szkoleniowego.\n\nJak przeciwdziałać: Podczas jego przygotowań walcz o nowe źródła żywności. Przeciwstaw jego armii wyszkolone i zaopatrzone siły.
 [AINicowar-Summary]
-
+Zwiększa populację, szkoli wojowników, a potem atakuje.
 [AINone-Profile]
 Strategia: AI nie wydaje żadnych poleceń.\n\nMocne strony: Przewidywalny, nieaktywny przeciwnik do eksperymentów.\n\nSłabe strony: Nie rozwija się i nie dostosowuje.
 [AINone-Summary]
 Bezczynna kolonia do eksperymentów.
 [AINumbi-Profile]
-
+Czego oczekiwać: Buduje kolonię, szkoli jednostki i przeprowadza ataki.\n\nMocne strony: Rozwija żywność, leczenie i szkolenie dla rosnącej kolonii.\n\nSłabe strony: Stopniowy rozwój daje okazję do wczesnego nacisku.\n\nJak przeciwdziałać: Rozwijaj produkcję żywności razem ze szkoleniem, potem atakuj, nie zostawiając domu bez obrony.
 [AINumbi-Summary]
-
+Łagodny przeciwnik, który mimo to rozbudowuje się i atakuje.
 [AIEcono-Profile]
-
+Czego oczekiwać: Rozwija wyżywienie i narodziny, gdy zwiadowcy odwiedzają owoce i wrogie kolonie.\n\nMocne strony: Naciska wzrostem i przejmowaniem jednostek bez tworzenia wojowników.\n\nSłabe strony: Nie tworzy wojowników, którzy zatrzymaliby bezpośredni atak wojskowy.\n\nJak przeciwdziałać: Naciskaj na odsłoniętą rozbudowę. Zaopatruj gospody w żywność i owoce, aby utrzymać swoje jednostki.
 [AIEcono-Summary]
-
+Rozbudowuje się i przejmuje jednostki bez tworzenia wojowników.
 [AIWarrush-Profile]
-
+Czego oczekiwać: Atakuje wcześnie, zanim zdążysz długo się przygotowywać.\n\nMocne strony: Wczesna produkcja wojowników naciska na przeciwników przed ukończeniem rozbudowy.\n\nSłabe strony: Mniej niezawodny na terenach z licznymi rzekami.\n\nJak przeciwdziałać: Od początku chroń budynki żywienia i narodzin. Produkuj robotników, uzupełniaj obrońców, a potem kontratakuj.
 [AIWarrush-Summary]
-
+Szybkie ataki sprawdzają twoją wczesną obronę.
 [AICabino-Profile]
-
+Czego oczekiwać: Rozbudowuje się, szkoli wojowników i atakuje budynki, wyznaczając obrońców w domu.\n\nMocne strony: Wspiera wyszkolone ataki dalszą rozbudową i obroną domu.\n\nSłabe strony: Do ataków potrzebuje działających koszar i wystarczającej liczby wyszkolonych wojowników.\n\nJak przeciwdziałać: Naciskaj na odsłoniętą rozbudowę, zanim zbierze armię. W miarę możliwości atakuj budynki żywienia i szkolenia.
 [AICabino-Summary]
-
+Sprawny budowniczy wystawiający wyszkolone siły szturmowe.
 [Algae]
 Algi
 [Alliances]

@@ -1,9 +1,9 @@
 [AI strategy]
-
+AI-strategi
 [AIMaxima-Summary]
-
+Spanar, bygger ut matförsörjningen och samlar krigarvågor.
 [AIMaxima-Profile]
-
+Förväntat beteende: Spanar efter mål och samlar anfallsvågor men behåller krigare för försvar och träning.\n\nStyrkor: Spaning hjälper till med målvalet samtidigt som anfall, försvar och träning balanseras.\n\nSvagheter: Behöver mat, träningskapacitet och utrymme för att samla styrkorna.\n\nMöjliga motdrag: Utmana utsatta mat- och träningsbyggnader innan vågorna samlas. Håll en försörjd försvarsstyrka samlad.
 [%0 has left the game]
 %0 har lämnat spelet.
 [%0 level %1]
@@ -57,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-
+Bygger och tränar, med tillväxten anpassad till mattillgången.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Ökar befolkningen, tränar krigare och anfaller sedan.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ Ingen – gör ingenting.
 [AINone]
 Ingen
 [AINumbi-Description]
-
+En förlåtande motståndare som ändå expanderar och anfaller.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-
+Expanderar och värvar omvända enheter utan att producera krigare.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Snabba anfall som prövar ditt tidiga försvar.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-
+En stark byggare som sätter in tränade anfallsstyrkor.
 [AICabino]
 Cabino
 [Alga]
@@ -1237,9 +1237,9 @@ Hastighet: 1x (flerspelarläge)
 [game speed help]
 Endast för en spelare och repriser. Flerspelarpartier körs med hastigheten 1x.
 [AICortex-Description]
-
+Samlade krigarvågor med stöd av mat och läkning.
 [AIMaxima-Description]
-
+Spanar, bygger ut matförsörjningen och samlar krigarvågor.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1257,37 +1257,37 @@ Arbetar ännu: %0
 [AI strategy & counterplay]
 AI-strategi & motspel
 [AICastor-Profile]
-
+Förväntat beteende: Bygger ut och uppgraderar kolonin samtidigt som en armé tränas.\n\nStyrkor: Anpassar födelsetakten till hur många enheter som kan mättas och begränsar därmed alltför snabb tillväxt.\n\nSvagheter: Matbrist kan stoppa produktionen av enheter.\n\nMöjliga motdrag: Säkra expansionsutrymme tidigt och anfall sedan med tränade krigare och reserver.
 [AICastor-Summary]
-
+Bygger och tränar, med tillväxten anpassad till mattillgången.
 [AICortex-Profile]
-
+Förväntat beteende: Samlar krigarvågor och stöder dem med framskjutna värdshus och sjukhus.\n\nStyrkor: Samlar krigare i vågor, med mat och läkning i närheten för uthålliga anfall.\n\nSvagheter: Anfallen är beroende av att framskjutna mat- och vårdanläggningar får försörjning.\n\nMöjliga motdrag: Utmana de framskjutna värdshusen och veteförråden. Håll försvararna samlade mot varje våg.
 [AICortex-Summary]
-
+Samlade krigarvågor med stöd av mat och läkning.
 [AINicowar-Profile]
-
+Förväntat beteende: Utökar kolonin och tränar krigare innan anfallen inleds.\n\nStyrkor: Omvandlar befolkningstillväxt och träning till ett stadigt flöde av anfallare.\n\nSvagheter: Behöver tid och träningskapacitet innan huvudanfallen kommer igång.\n\nMöjliga motdrag: Utmana nya matkällor under uppbyggnaden. Möt armén med en tränad och försörjd styrka.
 [AINicowar-Summary]
-
+Ökar befolkningen, tränar krigare och anfaller sedan.
 [AINone-Profile]
 Strategi: AI ger inga kommandon.\n\nStyrkor: En förutsägbar, inaktiv motståndare för experiment.\n\nSvagheter: expanderar eller anpassar sig inte.
 [AINone-Summary]
 En inaktiv koloni för experiment.
 [AINumbi-Profile]
-
+Förväntat beteende: Bygger upp en koloni, tränar enheter och anfaller.\n\nStyrkor: Bygger ut mat, vård och träning för att stödja en växande koloni.\n\nSvagheter: Den gradvisa uppbyggnaden ger en öppning för tidig press.\n\nMöjliga motdrag: Utveckla matproduktion och träning tillsammans och anfall sedan utan att lämna hemmet oskyddat.
 [AINumbi-Summary]
-
+En förlåtande motståndare som ändå expanderar och anfaller.
 [AIEcono-Profile]
-
+Förväntat beteende: Ökar mat- och födelsekapaciteten medan utforskare besöker frukt och fiendekolonier.\n\nStyrkor: Pressar motståndare med tillväxt och omvändning utan att producera krigare.\n\nSvagheter: Producerar inga krigare för att stoppa ett direkt militärt anfall.\n\nMöjliga motdrag: Pressa utsatta utbyggnader. Förse värdshusen med mat och frukt för att behålla dina enheter.
 [AIEcono-Summary]
-
+Expanderar och värvar omvända enheter utan att producera krigare.
 [AIWarrush-Profile]
-
+Förväntat beteende: Anfaller tidigt, innan du hinner med en lång uppbyggnad.\n\nStyrkor: Tidig krigarproduktion pressar motståndare innan de byggt färdigt.\n\nSvagheter: Mindre pålitlig i terräng med många floder.\n\nMöjliga motdrag: Skydda mat- och födelsebyggnader tidigt. Fortsätt producera arbetare medan du ersätter försvarare och gå sedan till motanfall.
 [AIWarrush-Summary]
-
+Snabba anfall som prövar ditt tidiga försvar.
 [AICabino-Profile]
-
+Förväntat beteende: Expanderar, tränar krigare och anfaller byggnader samtidigt som försvarare avdelas hemma.\n\nStyrkor: Stöder tränade anfall med fortsatt expansion och försvarare hemma.\n\nSvagheter: Behöver fungerande kaserner och tillräckligt många tränade krigare för att anfalla.\n\nMöjliga motdrag: Pressa utsatta utbyggnader innan armén samlas. Slå mot mat- och träningsbyggnader när du kan.
 [AICabino-Summary]
-
+En stark byggare som sätter in tränade anfallsstyrkor.
 [Algae]
 Alger
 [Alliances]

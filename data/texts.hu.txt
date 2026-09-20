@@ -1,9 +1,9 @@
 [AI strategy]
-
+MI-stratégia
 [AIMaxima-Summary]
-
+Felderít, fejleszti élelemellátását és harcoshullámokat gyűjt.
 [AIMaxima-Profile]
-
+Mire számíts: Célpontokat derít fel és támadóhullámokat gyűjt, miközben harcosokat tart vissza védelemre és képzésre.\n\nErősségek: A felderítés segíti a célválasztást és a támadás, védelem, képzés egyensúlyát.\n\nGyengeségek: Élelemre, képzési kapacitásra és gyülekezőhelyre van szüksége.\n\nLehetséges ellenszer: Támadd a védtelen élelmező és képző épületeket a hullámok gyülekezése előtt. Tartsd együtt az ellátott védőerőt.
 [%0 has left the game]
 %0 kilépett a játékból.
 [%0 level %1]
@@ -57,11 +57,11 @@ MI
 [ai]
 MI
 [AICastor-Description]
-
+Épít és képez, a növekedést az élelemellátáshoz igazítva.
 [AICastor]
 MICastor
 [AINicowar-Description]
-
+Növeli népességét, harcosokat képez, majd támad.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ Nincs MI — nem csinál semmit.
 [AINone]
 Nincs MI
 [AINumbi-Description]
-
+Megengedő ellenfél, amely azért terjeszkedik és támad.
 [AINumbi]
 MINumbi
 [AIEcono-Description]
-
+Terjeszkedik és egységeket csábít át, harcosok nélkül.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Gyors támadásai próbára teszik a korai védelmet.
 [AIWarrush]
 MIWarrush
 [AICabino-Description]
-
+Erős építő, amely képzett támadóerőket állít ki.
 [AICabino]
 Cabino
 [Alga]
@@ -1227,9 +1227,9 @@ Sebesség: 1x (többjátékos)
 [game speed help]
 Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
 [AICortex-Description]
-
+Összegyűjtött harcoshullámok élelmezési és gyógyítási támogatással.
 [AIMaxima-Description]
-
+Felderít, fejleszti élelemellátását és harcoshullámokat gyűjt.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1247,37 +1247,37 @@ Még dolgozó egységek: %0
 [AI strategy & counterplay]
 MI-stratégia és ellenjáték
 [AICastor-Profile]
-
+Mire számíts: Építi és fejleszti kolóniáját, miközben sereget képez.\n\nErősségek: Az élelmezési kapacitáshoz igazítja a születéseket, így fékezi a túlnépesedést.\n\nGyengeségek: Az élelemhiány leállíthatja az egységek létrehozását.\n\nLehetséges ellenszer: Korán foglalj területet a terjeszkedéshez, majd támadj képzett harcosokkal és tartalékokkal.
 [AICastor-Summary]
-
+Épít és képez, a növekedést az élelemellátáshoz igazítva.
 [AICortex-Profile]
-
+Mire számíts: Harcoshullámokat gyűjt, és előretolt fogadókkal, kórházakkal támogatja őket.\n\nErősségek: Hullámokba tömöríti a harcosokat, a támadást közeli élelemmel és gyógyítással tartja fenn.\n\nGyengeségek: Támadásai az előretolt élelmező és gyógyító épületek ellátásától függenek.\n\nLehetséges ellenszer: Küzdj az előretolt fogadókért és a búzáért. Tartsd együtt a védőket minden hullám ellen.
 [AICortex-Summary]
-
+Összegyűjtött harcoshullámok élelmezési és gyógyítási támogatással.
 [AINicowar-Profile]
-
+Mire számíts: Bővíti kolóniáját és harcosokat képez a támadások előtt.\n\nErősségek: A népességnövekedés és a képzés folyamatos utánpótlást ad a támadóknak.\n\nGyengeségek: Fő támadásaihoz idő és képzési kapacitás kell.\n\nLehetséges ellenszer: Felkészülése alatt küzdj az új élelemforrásokért. Ellátott, képzett sereggel fogadd.
 [AINicowar-Summary]
-
+Növeli népességét, harcosokat képez, majd támad.
 [AINone-Profile]
 Stratégia: Az AI nem ad parancsokat.\n\nErősségek: Kiszámítható, inaktív ellenfél a kísérletekben.\n\nGyengeségek: Nem terjeszkedik és nem alkalmazkodik.
 [AINone-Summary]
 Tétlen kolónia kísérletekhez.
 [AINumbi-Profile]
-
+Mire számíts: Kolóniát épít, egységeket képez és támadásokat indít.\n\nErősségek: Élelmezést, gyógyítást és képzést fejleszt növekvő kolóniájának.\n\nGyengeségek: Fokozatos fejlődése teret ad a korai nyomásgyakorlásnak.\n\nLehetséges ellenszer: Fejleszd együtt az élelemtermelést és a képzést, majd támadj úgy, hogy otthon is maradjon védelem.
 [AINumbi-Summary]
-
+Megengedő ellenfél, amely azért terjeszkedik és támad.
 [AIEcono-Profile]
-
+Mire számíts: Bővíti élelmezési és születési kapacitását, miközben felderítői gyümölcsöket és ellenséges kolóniákat keresnek fel.\n\nErősségek: Növekedéssel és átcsábítással gyakorol nyomást, harcosok létrehozása nélkül.\n\nGyengeségek: Nem hoz létre harcosokat a közvetlen katonai támadás megállítására.\n\nLehetséges ellenszer: Támadd a védtelen terjeszkedést. Lásd el fogadóidat élelemmel és gyümölccsel, hogy megtartsd egységeidet.
 [AIEcono-Summary]
-
+Terjeszkedik és egységeket csábít át, harcosok nélkül.
 [AIWarrush-Profile]
-
+Mire számíts: Korán támad, mielőtt hosszasan felkészülhetnél.\n\nErősségek: Korai harcosai nyomást gyakorolnak az ellenfelekre a fejlődésük befejezése előtt.\n\nGyengeségek: Sok folyóval tagolt terepen kevésbé megbízható.\n\nLehetséges ellenszer: Korán védd az élelmező és születési épületeket. Termelj munkásokat, pótold a védőket, majd támadj vissza.
 [AIWarrush-Summary]
-
+Gyors támadásai próbára teszik a korai védelmet.
 [AICabino-Profile]
-
+Mire számíts: Terjeszkedik, harcosokat képez és épületeket támad, miközben otthon védőket oszt be.\n\nErősségek: A képzett támadásokat folyamatos terjeszkedéssel és otthoni védelemmel támogatja.\n\nGyengeségek: A támadáshoz működő laktanyák és elegendő képzett harcos kellenek.\n\nLehetséges ellenszer: Támadd a védtelen terjeszkedést, mielőtt összegyűlik a serege. Célozd az élelmező és képző épületeket, amikor lehet.
 [AICabino-Summary]
-
+Erős építő, amely képzett támadóerőket állít ki.
 [Algae]
 Alga
 [Alliances]

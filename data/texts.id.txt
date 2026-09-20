@@ -1,9 +1,9 @@
 [AI strategy]
-
+Strategi AI
 [AIMaxima-Summary]
-
+Mengintai, menambah pasokan makanan, dan mengumpulkan gelombang prajurit.
 [AIMaxima-Profile]
-
+Perilaku: Mengintai sasaran dan mengumpulkan gelombang serangan sambil menyisihkan prajurit untuk pertahanan dan pelatihan.\n\nKekuatan: Pengintaian membantu memilih sasaran sambil menyeimbangkan serangan, pertahanan, dan pelatihan.\n\nKelemahan: Membutuhkan makanan, kapasitas pelatihan, dan ruang untuk mengumpulkan pasukan.\n\nCara menghadapi: Perebutkan bangunan makanan dan pelatihan yang terbuka sebelum gelombang terkumpul. Satukan pasukan bertahan dan jaga perbekalannya.
 [%0 has left the game]
 %0 telah keluar dari permainan.
 [%0 level %1]
@@ -57,19 +57,19 @@ AI
 [ai]
 AI
 [AICastor-Description]
-
+Membangun dan melatih sambil menyesuaikan pertumbuhan dengan pasokan makanan.
 [AICastor]
 Castor
 [AICortex-Description]
-
+Mengumpulkan gelombang prajurit dengan dukungan makanan dan pengobatan.
 [AIMaxima-Description]
-
+Mengintai, menambah pasokan makanan, dan mengumpulkan gelombang prajurit.
 [AIMaxima]
 Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
-
+Menambah populasi, melatih prajurit, lalu menyerang.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -77,19 +77,19 @@ Tidak ada - Tidak melakukan apa pun.
 [AINone]
 Tidak ada
 [AINumbi-Description]
-
+Lawan yang cukup mudah, tetapi tetap meluas dan menyerang.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-
+Meluas dan berebut pengikut tanpa menghasilkan prajurit.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Serangan cepat yang menguji pertahanan awalmu.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-
+Pembangun kuat yang menurunkan pasukan penyerang terlatih.
 [AICabino]
 Cabino
 [Alga]
@@ -1243,37 +1243,37 @@ Masih bekerja: %0
 [AI strategy & counterplay]
 Strategi AI & cara melawannya
 [AICastor-Profile]
-
+Perilaku: Membangun dan meningkatkan koloni sambil melatih pasukan.\n\nKekuatan: Menyesuaikan kelahiran dengan kemampuan menyediakan makanan agar populasi tidak berlebihan.\n\nKelemahan: Kekurangan makanan dapat menghentikan produksi unit.\n\nCara menghadapi: Kuasai lahan perluasan sejak awal, lalu serang dengan prajurit terlatih dan pasukan cadangan.
 [AICastor-Summary]
-
+Membangun dan melatih sambil menyesuaikan pertumbuhan dengan pasokan makanan.
 [AICortex-Profile]
-
+Perilaku: Mengumpulkan gelombang prajurit dan mendukungnya dengan penginapan serta rumah sakit di garis depan.\n\nKekuatan: Memusatkan prajurit dalam gelombang serangan, dengan makanan dan pengobatan di dekatnya untuk menopang serangan.\n\nKelemahan: Serangan bergantung pada kelancaran pasokan fasilitas makanan dan pengobatan di garis depan.\n\nCara menghadapi: Perebutkan penginapan depan dan gandumnya. Satukan pertahanan untuk menghadapi setiap gelombang.
 [AICortex-Summary]
-
+Mengumpulkan gelombang prajurit dengan dukungan makanan dan pengobatan.
 [AINicowar-Profile]
-
+Perilaku: Memperluas koloni dan melatih prajurit sebelum menyerang.\n\nKekuatan: Mengubah pertumbuhan populasi dan pelatihan menjadi pasokan penyerang yang berkelanjutan.\n\nKelemahan: Membutuhkan waktu dan kapasitas pelatihan sebelum serangan utamanya dimulai.\n\nCara menghadapi: Perebutkan sumber makanan baru saat ia membangun. Hadapi pasukannya dengan pasukan terlatih yang cukup perbekalan.
 [AINicowar-Summary]
-
+Menambah populasi, melatih prajurit, lalu menyerang.
 [AINone-Profile]
 Strategi: AI tidak memberikan perintah.\n\nKekuatan: Lawan eksperimen yang dapat diprediksi dan tidak aktif.\n\nKelemahan: Tidak berkembang atau beradaptasi.
 [AINone-Summary]
 Koloni yang diam untuk eksperimen.
 [AINumbi-Profile]
-
+Perilaku: Membangun koloni, melatih unit, dan menyerang.\n\nKekuatan: Mengembangkan makanan, pengobatan, dan pelatihan untuk mendukung koloni yang tumbuh.\n\nKelemahan: Perkembangan yang bertahap membuka peluang untuk tekanan awal.\n\nCara menghadapi: Kembangkan produksi makanan dan pelatihan bersamaan, lalu serang tanpa meninggalkan markas tanpa pertahanan.
 [AINumbi-Summary]
-
+Lawan yang cukup mudah, tetapi tetap meluas dan menyerang.
 [AIEcono-Profile]
-
+Perilaku: Membangun kapasitas makanan dan kelahiran sementara penjelajah mengunjungi buah serta koloni musuh.\n\nKekuatan: Menggunakan pertumbuhan dan perpindahan pihak untuk menekan lawan tanpa menghasilkan prajurit.\n\nKelemahan: Tidak menghasilkan prajurit untuk menghentikan serangan militer langsung.\n\nCara menghadapi: Tekan perluasan yang terbuka. Pasok penginapan dengan makanan dan buah agar unitmu tidak berpindah pihak.
 [AIEcono-Summary]
-
+Meluas dan berebut pengikut tanpa menghasilkan prajurit.
 [AIWarrush-Profile]
-
+Perilaku: Menyerang sejak awal sebelum kamu sempat membangun lama.\n\nKekuatan: Produksi prajurit sejak awal menekan lawan sebelum persiapannya selesai.\n\nKelemahan: Kurang andal di medan dengan banyak sungai.\n\nCara menghadapi: Lindungi bangunan makanan dan kelahiran sejak awal. Terus hasilkan pekerja sambil mengganti pasukan bertahan, lalu serang balik.
 [AIWarrush-Summary]
-
+Serangan cepat yang menguji pertahanan awalmu.
 [AICabino-Profile]
-
+Perilaku: Meluas, melatih prajurit, dan menyerang bangunan sambil menempatkan pertahanan di markas.\n\nKekuatan: Mendukung serangan terlatih dengan perluasan berkelanjutan dan pertahanan markas.\n\nKelemahan: Membutuhkan barak yang berfungsi dan cukup prajurit terlatih untuk menyerang.\n\nCara menghadapi: Tekan perluasan yang terbuka sebelum pasukannya berkumpul. Sasar bangunan makanan dan pelatihan jika ada kesempatan.
 [AICabino-Summary]
-
+Pembangun kuat yang menurunkan pasukan penyerang terlatih.
 [Algae]
 Ganggang
 [Alliances]

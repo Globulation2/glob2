@@ -1,9 +1,9 @@
 [AI strategy]
-
+KI-Strategie
 [AIMaxima-Summary]
-
+Erkundet, baut die Nahrungsversorgung aus und sammelt Kriegerwellen.
 [AIMaxima-Profile]
-
+Verhalten: Späht Ziele aus und sammelt Angriffswellen, behält aber Krieger für Verteidigung und Ausbildung zurück.\n\nStärken: Aufklärung hilft bei der Zielwahl, während Angriff, Verteidigung und Ausbildung im Gleichgewicht bleiben.\n\nSchwächen: Braucht Nahrung, Ausbildungskapazität und Platz zum Sammeln seiner Truppen.\n\nMögliche Gegenstrategie: Mache ihm ungeschützte Nahrungs- und Ausbildungsgebäude streitig, bevor sich die Wellen sammeln. Halte eine versorgte Verteidigungstruppe zusammen.
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0 level %1]
@@ -57,11 +57,11 @@ KI
 [ai]
 KI
 [AICastor-Description]
-
+Baut und trainiert, während das Wachstum an die Nahrungsversorgung angepasst bleibt.
 [AICastor]
 Castor
 [AINicowar-Description]
-
+Vergrößert seine Bevölkerung, bildet Krieger aus und greift dann an.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ KINone tut nichts und kommt eigentlich nur in Zusammenhang mit Skripten zum Eins
 [AINone]
 KINone
 [AINumbi-Description]
-
+Ein nachsichtiger Gegner, der sich trotzdem ausbreitet und angreift.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-
+Breitet sich aus und wirbt Einheiten ab, ohne Krieger zu produzieren.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Schnelle Angriffe, die deine frühe Verteidigung auf die Probe stellen.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-
+Ein starker Baumeister mit ausgebildeten Angriffstruppen.
 [AICabino]
 Cabino
 [Alga]
@@ -1229,9 +1229,9 @@ Tempo: 1x (Mehrspieler)
 [game speed help]
 Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
 [AICortex-Description]
-
+Gesammelte Kriegerwellen mit Nahrung und Heilung zur Unterstützung.
 [AIMaxima-Description]
-
+Erkundet, baut die Nahrungsversorgung aus und sammelt Kriegerwellen.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1247,37 +1247,37 @@ Arbeiten noch: %0
 [AI strategy & counterplay]
 KI-Strategie und Gegenspiel
 [AICastor-Profile]
-
+Verhalten: Baut seine Kolonie aus und verbessert sie, während es eine Armee ausbildet.\n\nStärken: Passt Geburten an die Versorgungskapazität an und begrenzt so übermäßiges Wachstum.\n\nSchwächen: Nahrungsmangel kann die Produktion neuer Einheiten stoppen.\n\nMögliche Gegenstrategie: Sichere dir früh Platz zur Ausbreitung und greife dann mit ausgebildeten Kriegern und Reserven an.
 [AICastor-Summary]
-
+Baut und trainiert, während das Wachstum an die Nahrungsversorgung angepasst bleibt.
 [AICortex-Profile]
-
+Verhalten: Sammelt Kriegerwellen und unterstützt sie mit vorgeschobenen Gasthäusern und Krankenhäusern.\n\nStärken: Bündelt Krieger zu Wellen und hält Angriffe durch nahe Nahrung und Heilung aufrecht.\n\nSchwächen: Angriffe hängen von der Versorgung der vorgeschobenen Gasthäuser und Krankenhäuser ab.\n\nMögliche Gegenstrategie: Mache ihm vorgeschobene Gasthäuser und Weizen streitig. Halte deine Verteidiger gegen jede Welle zusammen.
 [AICortex-Summary]
-
+Gesammelte Kriegerwellen mit Nahrung und Heilung zur Unterstützung.
 [AINicowar-Profile]
-
+Verhalten: Erweitert seine Kolonie und bildet Krieger aus, bevor es angreift.\n\nStärken: Verwandelt Bevölkerungswachstum und Ausbildung in stetigen Nachschub an Angreifern.\n\nSchwächen: Braucht Zeit und Ausbildungskapazität, bevor seine Hauptangriffe beginnen.\n\nMögliche Gegenstrategie: Mache ihm während des Aufbaus neue Nahrungsquellen streitig. Stelle seiner Armee eine versorgte, ausgebildete Truppe entgegen.
 [AINicowar-Summary]
-
+Vergrößert seine Bevölkerung, bildet Krieger aus und greift dann an.
 [AINone-Profile]
 Strategie: Die KI erteilt keine Befehle.\n\nStärken: Ein berechenbarer, untätiger Gegner für Experimente.\n\nSchwächen: Expandiert nicht und passt sich nicht an.
 [AINone-Summary]
 Eine untätige Kolonie für Experimente.
 [AINumbi-Profile]
-
+Verhalten: Baut eine Kolonie auf, bildet Einheiten aus und startet Angriffe.\n\nStärken: Baut Nahrung, Heilung und Ausbildung aus, um eine wachsende Kolonie zu versorgen.\n\nSchwächen: Sein allmählicher Aufbau bietet eine Gelegenheit für frühen Druck.\n\nMögliche Gegenstrategie: Entwickle Nahrungsproduktion und Ausbildung gemeinsam und greife dann an, ohne die Heimat ungeschützt zu lassen.
 [AINumbi-Summary]
-
+Ein nachsichtiger Gegner, der sich trotzdem ausbreitet und angreift.
 [AIEcono-Profile]
-
+Verhalten: Baut Nahrungs- und Geburtenkapazität aus, während Entdecker Früchte und feindliche Kolonien aufsuchen.\n\nStärken: Setzt Gegner mit Wachstum und Bekehrung unter Druck, ohne Krieger zu produzieren.\n\nSchwächen: Produziert keine Krieger, um einen direkten militärischen Angriff aufzuhalten.\n\nMögliche Gegenstrategie: Setze ungeschützte Erweiterungen unter Druck. Versorge deine Gasthäuser mit Nahrung und Früchten, um deine Einheiten zu behalten.
 [AIEcono-Summary]
-
+Breitet sich aus und wirbt Einheiten ab, ohne Krieger zu produzieren.
 [AIWarrush-Profile]
-
+Verhalten: Greift früh an, bevor du Zeit für einen langen Aufbau hast.\n\nStärken: Frühe Kriegerproduktion setzt Gegner unter Druck, bevor sie ihren Aufbau abgeschlossen haben.\n\nSchwächen: Auf Gelände mit vielen Flüssen weniger zuverlässig.\n\nMögliche Gegenstrategie: Schütze Nahrungs- und Geburtengebäude früh. Produziere weiter Arbeiter, während du Verteidiger ersetzt, und greife dann zurück an.
 [AIWarrush-Summary]
-
+Schnelle Angriffe, die deine frühe Verteidigung auf die Probe stellen.
 [AICabino-Profile]
-
+Verhalten: Breitet sich aus, bildet Krieger aus und greift Gebäude an, während es Verteidiger zu Hause einteilt.\n\nStärken: Unterstützt ausgebildete Angriffstruppen durch fortgesetzte Ausbreitung und Verteidiger zu Hause.\n\nSchwächen: Braucht funktionierende Kasernen und genügend ausgebildete Krieger für Angriffe.\n\nMögliche Gegenstrategie: Setze ungeschützte Erweiterungen unter Druck, bevor sich die Armee sammelt. Greife Nahrungs- und Ausbildungsgebäude an, wenn möglich.
 [AICabino-Summary]
-
+Ein starker Baumeister mit ausgebildeten Angriffstruppen.
 [Algae]
 Algen
 [Alliances]

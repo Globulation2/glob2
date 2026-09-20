@@ -1,9 +1,9 @@
 [AI strategy]
-
+Strategie AI
 [AIMaxima-Summary]
-
+Provádí průzkum, rozvíjí zásobování a shromažďuje vlny bojovníků.
 [AIMaxima-Profile]
-
+Co očekávat: Vyhledává cíle a shromažďuje útočné vlny, přičemž ponechává bojovníky na obranu a výcvik.\n\nSilné stránky: Průzkum pomáhá vybírat cíle a vyvažovat útoky, obranu a výcvik.\n\nSlabé stránky: Potřebuje jídlo, výcvikovou kapacitu a prostor ke shromáždění sil.\n\nMožná protihra: Napadejte nechráněné zásobovací a výcvikové budovy, než se vlny shromáždí. Držte zásobené obránce pohromadě.
 [%0 has left the game]
 %0 opustil hru.
 [%0 level %1]
@@ -57,11 +57,11 @@ Počítač
 [ai]
 Počítač
 [AICastor-Description]
-
+Staví a cvičí armádu, přičemž růst přizpůsobuje zásobám jídla.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Zvyšuje počet obyvatel, cvičí bojovníky a potom útočí.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -69,19 +69,19 @@ Nicowar
 [AINone]
 Žádná AI
 [AINumbi-Description]
-
+Shovívavý soupeř, který se přesto rozšiřuje a útočí.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-
+Rozšiřuje se a přetahuje jednotky bez tvorby bojovníků.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-
+Rychlé útoky prověří vaši počáteční obranu.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-
+Silný stavitel, který nasazuje vycvičené útočné síly.
 [AICabino]
 Cabino
 [Alga]
@@ -1227,9 +1227,9 @@ Rychlost: 1x (více hráčů)
 [game speed help]
 Pouze pro jednoho hráče a záznamy. Hra více hráčů běží rychlostí 1x.
 [AICortex-Description]
-
+Soustředěné vlny bojovníků s podporou zásobování a léčení.
 [AIMaxima-Description]
-
+Provádí průzkum, rozvíjí zásobování a shromažďuje vlny bojovníků.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1247,37 +1247,37 @@ Ještě v práci: %0
 [AI strategy & counterplay]
 AI strategie a protihra
 [AICastor-Profile]
-
+Co očekávat: Staví a vylepšuje kolonii a zároveň cvičí armádu.\n\nSilné stránky: Přizpůsobuje porodnost možnostem zásobování a omezuje přelidnění.\n\nSlabé stránky: Nedostatek jídla může zastavit tvorbu jednotek.\n\nMožná protihra: Včas obsaďte prostor pro expanzi a pak zaútočte vycvičenými bojovníky se zálohami.
 [AICastor-Summary]
-
+Staví a cvičí armádu, přičemž růst přizpůsobuje zásobám jídla.
 [AICortex-Profile]
-
+Co očekávat: Shromažďuje vlny bojovníků a podporuje je předsunutými hostinci a nemocnicemi.\n\nSilné stránky: Soustředí bojovníky do vln, které udržuje v boji blízkým jídlem a léčením.\n\nSlabé stránky: Útoky závisejí na zásobování předsunutých hostinců a nemocnic.\n\nMožná protihra: Bojujte o předsunuté hostince a pšenici. Proti každé vlně držte obránce pohromadě.
 [AICortex-Summary]
-
+Soustředěné vlny bojovníků s podporou zásobování a léčení.
 [AINicowar-Profile]
-
+Co očekávat: Rozšiřuje kolonii a cvičí bojovníky, než zahájí útoky.\n\nSilné stránky: Růst populace a výcvik zajišťují stálý přísun útočníků.\n\nSlabé stránky: Před hlavními útoky potřebuje čas a dostatečnou výcvikovou kapacitu.\n\nMožná protihra: Během jeho příprav bojujte o nové zdroje jídla. Jeho armádě postavte zásobenou a vycvičenou sílu.
 [AINicowar-Summary]
-
+Zvyšuje počet obyvatel, cvičí bojovníky a potom útočí.
 [AINone-Profile]
 Strategie: AI nedává žádné příkazy.\n\nSilné stránky: Předvídatelný, neaktivní protivník pro experimenty.\n\nSlabé stránky: Nerozšiřuje se ani se nepřizpůsobuje.
 [AINone-Summary]
 Nečinná kolonie pro experimenty.
 [AINumbi-Profile]
-
+Co očekávat: Buduje kolonii, cvičí jednotky a podniká útoky.\n\nSilné stránky: Rozvíjí zásobování, léčení a výcvik pro rostoucí kolonii.\n\nSlabé stránky: Pomalý rozvoj dává příležitost k časnému nátlaku.\n\nMožná protihra: Rozvíjejte současně výrobu jídla a výcvik, pak zaútočte, aniž byste nechali domov bez obrany.
 [AINumbi-Summary]
-
+Shovívavý soupeř, který se přesto rozšiřuje a útočí.
 [AIEcono-Profile]
-
+Co očekávat: Rozvíjí zásobování a porodnost, zatímco průzkumníci navštěvují ovoce a nepřátelské kolonie.\n\nSilné stránky: Růstem a přetahováním jednotek vytváří tlak i bez bojovníků.\n\nSlabé stránky: Nevytváří bojovníky, kteří by zastavili přímý vojenský útok.\n\nMožná protihra: Napadejte nechráněnou expanzi. Zásobujte hostince jídlem a ovocem, aby vám jednotky zůstaly věrné.
 [AIEcono-Summary]
-
+Rozšiřuje se a přetahuje jednotky bez tvorby bojovníků.
 [AIWarrush-Profile]
-
+Co očekávat: Útočí brzy, než stihnete dlouhé přípravy.\n\nSilné stránky: Časná tvorba bojovníků tlačí na soupeře ještě před dokončením rozvoje.\n\nSlabé stránky: Je méně spolehlivý v terénu s mnoha řekami.\n\nMožná protihra: Od začátku chraňte zásobovací a porodní budovy. Doplňujte obránce i dělníky a pak přejděte do protiútoku.
 [AIWarrush-Summary]
-
+Rychlé útoky prověří vaši počáteční obranu.
 [AICabino-Profile]
-
+Co očekávat: Rozšiřuje se, cvičí bojovníky a útočí na budovy, přičemž doma ponechává obránce.\n\nSilné stránky: Podporuje vycvičené útočníky další expanzí a domácí obranou.\n\nSlabé stránky: K zahájení útoků potřebuje funkční kasárna a dostatek vycvičených bojovníků.\n\nMožná protihra: Napadejte nechráněnou expanzi, než shromáždí armádu. Zaměřujte se na zásobovací a výcvikové budovy.
 [AICabino-Summary]
-
+Silný stavitel, který nasazuje vycvičené útočné síly.
 [Algae]
 Řasy
 [Alliances]
