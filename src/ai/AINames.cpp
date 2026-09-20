@@ -23,28 +23,54 @@ namespace AINames
 		//               nullptr when the AI can't be picked from the CLI (NONE).
 		//   stringKey — StringTable base key: the display name is "[<key>]"
 		//               and the description "[<key>-Description]".
-		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; } aiTable[] = {
-			{AI::NONE,            nullptr,           "AINone", "No AI orders"},
-			{AI::NUMBI,           "numbi",           "AINumbi", "Easy"},
-			{AI::CASTOR,          "castor",          "AICastor", "Medium"},
-			{AI::WARRUSH,         "warrush",         "AIWarrush", "Medium"},
-			{AI::ECONO, "econo", "AIEcono", "Easy"},
-			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard"},
-			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard"},
-			{AI::CORTEX,          "cortex",          "AICortex", "Medium"},
-			{AI::CABINO,          "cabino",          "AICabino", "Medium"},
+		//   strength  — measured, not judged: see the note below. 0 for NONE.
+		//
+		// Difficulty and strength both come from a tournament of 2,391 randomly
+		// drawn games covering every AI, all three formats and every map generator
+		// and size, rated by maximum likelihood over the finishing orders
+		// (tools/tournaments_ai_leaderboard.py). Strength is on Elo's scale --
+		// 400 points is a factor of ten in the odds -- averaged over the formats:
+		//
+		//   nicowar 1684 | maxima 1665 | cabino 1649 || cortex 1538 ||
+		//   econo 1411 | castor 1390 | warrush 1371 | numbi 1293
+		//
+		// The two widest gaps in that ladder are the 111 points below cabino and
+		// the 127 below cortex, and those are where the labels are cut, which is
+		// why Medium holds one AI and Easy four. Earlier labels were assigned by
+		// judgement and had cabino, castor and warrush all as Medium; the games
+		// put cabino among the strongest and the other two near the bottom.
+		// See docs/ai-strength.md for the evidence, including the raw results.
+		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
+			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
+			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1293},
+			{AI::CASTOR,          "castor",          "AICastor", "Easy", 1390},
+			{AI::WARRUSH,         "warrush",         "AIWarrush", "Easy", 1371},
+			{AI::ECONO, "econo", "AIEcono", "Easy", 1411},
+			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard", 1684},
+			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard", 1665},
+			{AI::CORTEX,          "cortex",          "AICortex", "Medium", 1538},
+			{AI::CABINO,          "cabino",          "AICabino", "Hard", 1649},
 		};
 	}
 
 	const std::vector<int>& selectionOrder()
 	{
-		static const std::vector<int> order = {AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE};
+		// Weakest first, by measured strength rather than by guess, so the list
+		// a player scrolls reads as a ladder.
+		static const std::vector<int> order = {AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::ECONO, AI::CORTEX, AI::CABINO, AI::MAXIMA, AI::NICOWAR, AI::NONE};
 		return order;
 	}
 	int selectionIndex(int id)
 	{
 		const auto& order = selectionOrder();
 		return int(std::find(order.begin(), order.end(), id) - order.begin());
+	}
+
+	int getAIStrength(int id)
+	{
+		for (const auto& entry : aiTable)
+			if (entry.id == id) return entry.strength;
+		return 0;
 	}
 
 	std::string getCLIName(int id)
@@ -76,6 +102,9 @@ namespace AINames
             if (entry.id == id)
                 return (id == AI::NONE ? Toolkit::getStringTable()->getString("[Inactive]") : getAIText(id))
                     + std::string(" - ") + Toolkit::getStringTable()->getString("[" + std::string(entry.difficulty) + "]")
+                    // The number behind the label, so a player can see that two
+                    // AIs sharing one can still be far apart.
+                    + (entry.strength ? " (" + std::to_string(entry.strength) + ")" : "")
                     + (id == AI::ECONO ? std::string(" - ") + Toolkit::getStringTable()->getString("[No warriors]") : "");
         return "unknown AI";
     }
