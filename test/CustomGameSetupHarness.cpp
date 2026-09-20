@@ -57,6 +57,23 @@ struct CustomGameSetupHarness
 		legacy.logRepeatAreaTimes = repeat;
 		return legacy;
 	}
+	static void setExtraRules(CustomGameSetup &s)
+	{
+		s.noResourceGrowth = s.instantConstruction = s.noHunger = true;
+		s.resourceScarcity = s.stockpileStart = 3;
+		s.unitUpgradesDisabled = s.unitsFearless = s.permadeathDisabled = s.peacefulMode = true;
+		s.glassCannonLevel = s.buildingHpLevel = 2;
+		s.startingUnitLevel = 3;
+		s.suddenDeathMinutes = 90;
+	}
+	static void checkExtraRules(const CustomGameSetup &s)
+	{
+		assert(s.noResourceGrowth && s.instantConstruction && s.noHunger);
+		assert(s.resourceScarcity == 3 && s.stockpileStart == 3);
+		assert(s.unitUpgradesDisabled && s.unitsFearless && s.permadeathDisabled && s.peacefulMode);
+		assert(s.glassCannonLevel == 2 && s.buildingHpLevel == 2);
+		assert(s.startingUnitLevel == 3 && s.suddenDeathMinutes == 90);
+	}
 	static void preferencesModel()
 	{
 		CustomGamePreferences original;
@@ -78,6 +95,7 @@ struct CustomGameSetupHarness
 		original.setup.revealed = true;
 		original.setup.locked = false;
 		original.setup.ruleset = "Custom";
+		setExtraRules(original.setup);
 		original.setup.colonies[11].controller = CustomGameSetup::Closed;
 		assert(original.setup.setController(3, CustomGameSetup::Shared));
 		original.setup.colonies[3].ai = AI::CORTEX;
@@ -86,18 +104,27 @@ struct CustomGameSetupHarness
 		CustomGamePreferences restored;
 		const auto encoded = original.encode();
 		assert(restored.decode(encoded) && restored.encode() == encoded);
+		checkExtraRules(restored.setup);
 		assert(restored.setup.mapRevision == 0);
 		assert(restored.landscapeSortOrder == 1);
-		// A version-1 file (written before the landscape picker's sort order existed) has no
-		// "picker" line; it still loads, defaulting that order to random.
+		// Both older formats still load; omitted rules take their normal defaults.
+		for (int version : {1, 2})
 		{
-			const auto at = encoded.find("\npicker "), eol = encoded.find('\n', at + 1);
-			assert(at != std::string::npos && eol != std::string::npos);
-			auto asVersion1 = encoded.substr(0, at) + encoded.substr(eol);
-			asVersion1.replace(asVersion1.find("glob2-custom-game 2"), 20, "glob2-custom-game 1");
+			auto old = encoded;
+			auto removeLine = [&](const std::string &prefix) {
+				const auto at = old.find("\n" + prefix), eol = old.find('\n', at + 1);
+				assert(at != std::string::npos && eol != std::string::npos);
+				old.erase(at, eol - at);
+			};
+			removeLine("rules ");
+			if (version == 1) removeLine("picker ");
+			old.replace(0, std::string("glob2-custom-game 3").size(),
+				"glob2-custom-game " + std::to_string(version));
 			CustomGamePreferences fromOld;
-			assert(fromOld.decode(asVersion1) && fromOld.landscapeSortOrder == 0);
+			assert(fromOld.decode(old) && fromOld.landscapeSortOrder == version - 1);
 			assert(fromOld.setup.premadeMap == original.setup.premadeMap);
+			assert(!fromOld.setup.unitUpgradesDisabled && !fromOld.setup.noHunger);
+			assert(fromOld.setup.startingUnitLevel == 0 && fromOld.setup.suddenDeathMinutes == 0);
 		}
 		for (size_t length : {size_t(0), size_t(10), encoded.size() / 2, encoded.size() - 5})
 		{
@@ -105,7 +132,10 @@ struct CustomGameSetupHarness
 			assert(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-			{"glob2-custom-game 2", "glob2-custom-game 3"},
+			{"glob2-custom-game 3", "glob2-custom-game 4"},
+			{"rules 1 3", "rules 2 3"}, {"rules 1 3", "rules 1 4"},
+			{"2 3 90\nlabels", "2 4 90\nlabels"},
+			{"2 3 90\nlabels", "2 3 31\nlabels"},
 			{"wDec 9", "wDec 31"}, {"nbWorkers 8", "nbWorkers -1"},
 			{"generator 4 5", "generator 0 5"}, {"generator 4 5", "generator 4 100"},
 			{"colonies\n1 1 0", "colonies\n99 1 0"}})
@@ -266,6 +296,7 @@ struct CustomGameSetupHarness
 			screen.setup.colonies[11].ai = AI::NICOWAR;
 			screen.setup.colonies[11].alliance = 7;
 			screen.setup.presetRules(1);
+			setExtraRules(screen.setup);
 			screen.setup.generator = fromLegacyDescriptor(maxedLegacy(MapGenerationDescriptor::eISLANDS, 3), 0);
 			screen.expanded[1] = true;
 			screen.userMaps = screen.separateMapLibraries;
@@ -286,6 +317,7 @@ struct CustomGameSetupHarness
 				assert(screen.setup.colonies[0].alliance == 2);
 				assert(screen.setup.colonies[11].ai == AI::NICOWAR && screen.setup.colonies[11].alliance == 7);
 				assert(screen.setup.speed == 3 && screen.setup.ruleset == "Quick clash");
+				checkExtraRules(screen.setup);
 				assert(screen.expanded[1]);
 				assert(screen.userMaps == screen.separateMapLibraries);
 				assert(screen.librarySelection[1] == "maps/favorite-user-map.map");
@@ -646,10 +678,13 @@ struct CustomGameSetupHarness
     paint();
     clickControl("rule/1/1");
     assert(screen.setup.revealed && screen.setup.ruleset == "Custom");
+    assert(!screen.setup.unitUpgradesDisabled);
+    screen.setup.unitUpgradesDisabled = true;
     int rulesOffset = screen.controls->regions[2].offset;
     clickControl("rule/1/0");
     assert(!screen.setup.revealed &&
            screen.controls->regions[2].offset == rulesOffset);
+    assert(screen.setup.unitUpgradesDisabled);
     clickControl("ruleset/1");
     assert(screen.setup.speed == 3 && screen.setup.generator.nbWorkers == 8);
     screen.setup = CustomGameSetup();

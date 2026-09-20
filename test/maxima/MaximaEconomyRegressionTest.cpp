@@ -8,6 +8,7 @@
 #include "../../src/Order.h"
 #include "../../src/Player.h"
 #include "../../src/TeamStat.h"
+#include "../../src/Utilities.h"
 #include <memory>
 #include <boost/tuple/tuple.hpp>
 #include <boost/tuple/tuple_comparison.hpp>
@@ -32,6 +33,8 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <cassert>
+#include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <memory>
 
@@ -47,6 +50,7 @@ struct Fixture
     std::unique_ptr<AIMaxima::Maxima> ai;
     Fixture() : game(NULL)
     {
+        game.setWaitingOnMask(0);
         game.map.setSize(6,6,GRASS);
         game.map.setGame(&game);
         game.addTeam();
@@ -424,6 +428,135 @@ void explorerTargetAlwaysGetsProduction()
     }
 }
 
+void armyDemandFundsTrainingAndBirthMix()
+{
+    for(bool foodEmergency:{false,true}) {
+        Fixture f;
+        auto* swarm=f.swarm(40,40,6);f.supply(40,40);
+        // The saved colony had one working barracks and four upgrade sites.
+        for(int i=0;i<5;++i)
+            assert(f.game.addBuilding(4+6*i,4,globalContainer->buildingsTypes
+                .getTypeNum("barracks",i<3?2:1,i!=0),0));
+        auto& a=*f.ai;auto& c=a.context;c.initialize();
+        a.snapshot.population=533;a.snapshot.workers=491;
+        a.snapshot.warriors=30;a.snapshot.trained_warriors=2;
+        a.snapshot.barracks=5;a.snapshot.worker_jobs_open=43;
+        a.snapshot.unserved_food=foodEmergency?300:0;
+        a.labour_observation=a.observe_labour(c);
+        a.labour_observation.workers=491;
+        a.labour_observation.innCarriers=141;
+        a.labour_observation.swarmCarriers=82;
+        a.labour_observation.builders=53;
+        auto& growth=a.policy_bids[AIMaxima::Maxima::PolicyGrowth];
+        auto& defense=a.policy_bids[AIMaxima::Maxima::PolicyDefense];
+        growth.worker_ratio=5;growth.swarm_workers=30;
+        defense.desired_warriors=120;defense.desired_barracks=3;
+        defense.utility=100;defense.warrior_ratio=3;
+        a.arbitrate_policy_bids();
+        assert(a.budget.desired_barracks>5);
+        assert(a.budget.worker_ratio==0 && a.budget.warrior_ratio==3);
+        f.player.team->stats.getLatestStat()->numberUnitPerType[WARRIOR]=30;
+        a.manage_swarm(c,0);f.applyStaffing();
+        assert(swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]==3);
+        // Backpressure must pause surplus-worker births too, not redirect
+        // all funded food into workers when the training queue fills.
+        a.snapshot.warriors=60;
+        a.arbitrate_policy_bids();
+        assert(a.budget.worker_ratio==0 && a.budget.warrior_ratio==0);
+        // Genuine job growth still funds replacements and expansion.
+        a.snapshot.worker_jobs_open=400;
+        a.arbitrate_policy_bids();
+        assert(a.budget.worker_ratio==5);
+        // The military preference ends when its target is met.
+        a.snapshot.worker_jobs_open=43;a.snapshot.warriors=120;
+        a.arbitrate_policy_bids();
+        assert(a.budget.worker_ratio==5);
+    }
+}
+
+void barracksUpgradesKeepTrainingOpen()
+{
+    using namespace AIMaximaPlacement;
+    Fixture f;
+    for(int i=0;i<2;++i)
+        assert(f.game.addBuilding(4+6*i,4,globalContainer->buildingsTypes
+            .getTypeNum("barracks",0,false),0));
+    auto& a=*f.ai;auto& c=a.context;c.initialize();
+    a.snapshot.warriors=20;a.snapshot.trained_warriors=0;
+    a.budget.upgrade_level1_barracks_weight=50;
+    auto limits=a.collect_development_limits(c);
+    assert(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    DevelopmentAction action;
+    action.id=7;action.type=UpgradeBuilding;action.state=CreateIssued;
+    action.buildingType=IntBuildingType::ATTACK_BUILDING;
+    action.buildingId=0;action.fromLevel=1;action.targetLevel=2;
+    auto& actions=const_cast<std::map<int,DevelopmentAction>&>(a.development_planner.actions());
+    actions[action.id]=action;
+    const auto seats=a.barracks_capacity(c);
+    assert(seats.first==2 && seats.second==6);
+    limits=a.collect_development_limits(c);
+    assert(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)==0);
+    // An unissued reservation must not prevent its own first upgrade.
+    actions[action.id].state=ParcelReserved;
+    limits=a.collect_development_limits(c,action.id);
+    assert(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    // Once the army is trained, this queue-protection gate no longer applies.
+    actions[action.id].state=CreateIssued;
+    a.snapshot.trained_warriors=20;
+    limits=a.collect_development_limits(c);
+    assert(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+}
+
+void armyBirthsMatchPlatformChecksums()
+{
+    setSyncRandSeed(5489);
+    Fixture f;
+    f.game.gameHeader.setHungerDisabled(true);
+    auto* swarm=f.swarm(10,10,6);f.supply(10,10);
+    assert(f.game.addBuilding(18,10,globalContainer->buildingsTypes
+        .getTypeNum("barracks",0,false),0));
+    for(int i=0;i<50;++i)assert(f.game.addUnit(24+i%10,24+i/10,0,WORKER,0,0,0,0));
+    // addBuilding is the editor path; a playable map also builds team lists.
+    f.player.team->playersMask=1;
+    f.player.team->createLists();
+    auto& a=*f.ai;auto& c=a.context;c.initialize();
+    a.snapshot.population=50;a.snapshot.workers=50;a.snapshot.barracks=1;
+    a.labour_observation=a.observe_labour(c);
+    auto& growth=a.policy_bids[AIMaxima::Maxima::PolicyGrowth];
+    auto& defense=a.policy_bids[AIMaxima::Maxima::PolicyDefense];
+    growth.worker_ratio=5;growth.swarm_workers=6;
+    defense.desired_warriors=12;defense.warrior_ratio=3;defense.utility=100;
+    a.arbitrate_policy_bids();a.manage_swarm(c,0);f.applyStaffing();
+    assert(swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]>0);
+    swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
+    swarm->productionTimeout=-1;
+    const char* path="test/maxima/fixtures/army-birth-checksums.txt";
+    const bool record=std::getenv("GLOB2_RECORD_ARMY_CHECKSUMS")!=nullptr;
+    std::ifstream expected;
+    std::ofstream output;
+    if(record)output.open(path);else expected.open(path);
+    assert(record?output.good():expected.good());
+    for(int tick=1;tick<=512;++tick) {
+        f.game.syncStep(0);assert(f.game.stepCounter==unsigned(tick));
+        const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true);
+        if(record)output<<tick<<' '<<checksum<<'\n';
+        else {
+            int expectedTick;Uint32 expectedChecksum;
+            assert(expected>>expectedTick>>expectedChecksum);
+            if(expectedTick!=tick || expectedChecksum!=checksum)
+                std::cerr<<"Army birth checksum mismatch: tick="<<tick
+                    <<" actual="<<checksum<<" expected="<<expectedChecksum<<'\n';
+            assert(expectedTick==tick && expectedChecksum==checksum);
+        }
+    }
+    int workers=0,warriors=0;
+    for(int i=0;i<Unit::MAX_COUNT;++i)if(auto* u=f.player.team->myUnits[i]) {
+        workers+=u->typeNum==WORKER;warriors+=u->typeNum==WARRIOR;
+    }
+    assert(workers==50 && warriors>0);
+    if(!record){expected>>std::ws;assert(expected.eof());}
+}
+
 void crisisProductionPause()
 {
     for(int expiredTimer : {0,-1})
@@ -689,6 +822,9 @@ int main()
     nearbyCornDeterminesStaffing();
     cornPileInteriorIsSupply();
     explorerTargetAlwaysGetsProduction();
+    armyDemandFundsTrainingAndBirthMix();
+    barracksUpgradesKeepTrainingOpen();
+    armyBirthsMatchPlatformChecksums();
     crisisProductionPause();
     completionReallocatesColony();
     trackerLogicalCadence();

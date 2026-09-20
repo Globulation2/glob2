@@ -15,6 +15,19 @@ Production demand also accounts for the backlog of warriors awaiting barracks
 training. Explorer production remains available while the colony is below its
 target; a zero birth budget pauses all production ratios.
 
+While the army is below target, an established workforce that covers staffed
+jobs and outstanding requests, plus one relief worker per three jobs and the
+training reserve, stops adding workers. Food-funded births then prefer warriors.
+If the military training backlog is full, that pause does not redirect production
+back into surplus workers. A genuine workforce shortfall restores worker births.
+
+Training capacity scales toward one seat per four desired warriors once the
+workforce reaches `military.second_barracks_population_min`. Existing barracks
+sites receive credit for their finished capacity; the old five-barracks ceiling
+does not apply. Births allow two untrained warriors per committed seat, subject
+to `military.training_backlog_floor`. Food still funds the total birth allowance
+and construction still competes with food service and other development.
+
 Food funding retains fractional fertility until the final worker allowance is
 rounded. Positive funding keeps at least one producer. If every local food
 catchment is empty, a shared search from completed inns and swarms looks for
@@ -47,6 +60,12 @@ food backing, health, reserved space and construction quotas constrain both.
 Positive-scoring upgrades receive a preference when no viable emergency
 construction candidate is present. An active upgrade receives high worker
 priority until completion.
+
+While warriors await training, barracks upgrades preserve at least half of the
+committed training seats in operation. Already-issued upgrades count as offline
+before the engine observes the new site. If an upgrade quota shrinks, existing
+upgrades retain their commitments without consuming the separately authorized
+new-building slots; this does not authorize additional upgrades above their quota.
 
 Hospital construction and upgrades share a target of
 `military.hospital_beds_per_warrior_percent` beds per live warrior, rounded up.

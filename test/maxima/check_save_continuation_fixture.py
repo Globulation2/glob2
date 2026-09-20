@@ -10,7 +10,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "test"))
-from compare_save_continuation import records
+from compare_save_continuation import records, compare
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures/save-continuation"
 
@@ -24,7 +24,7 @@ def check(binary, checkpoint_name, expected_name, stop_tick):
         checkpoint.write_bytes(gzip.decompress((FIXTURES / checkpoint_name).read_bytes()))
         result = subprocess.run(
             [str(Path(binary).resolve()), "--run-game", "--load-game", str(checkpoint),
-             "--ticks", str(stop_tick), "--telemetry", "checksums", "--output-dir", str(output / "run")],
+             "--ticks", str(stop_tick), "--save", "every:30256", "--telemetry", "checksums", "--output-dir", str(output / "run")],
             cwd=ROOT, capture_output=True, text=True,
         )
         if result.returncode:
@@ -37,7 +37,18 @@ def check(binary, checkpoint_name, expected_name, stop_tick):
         for tick in expected:
             if actual[tick] != expected[tick]:
                 raise SystemExit(f"FAIL: continuation diverges at tick {tick}")
-        print(f"PASS: {checkpoint_name} matches all {len(expected)} uninterrupted team/entity state hashes")
+        print(f"PASS: {checkpoint_name} matches all {len(expected)} current-policy team/entity state hashes")
+        resumed = output / "resumed"
+        result = subprocess.run(
+            [str(Path(binary).resolve()), "--run-game", "--load-game",
+             str(output / "run/checkpoint-30256.game"), "--ticks", str(stop_tick),
+             "--telemetry", "checksums", "--output-dir", str(resumed)],
+            cwd=ROOT, capture_output=True, text=True,
+        )
+        if result.returncode:
+            raise SystemExit(result.stdout + result.stderr)
+        count = compare(output / "run/game.replay.checksums", resumed / "game.replay.checksums")
+        print(f"PASS: save/reload at tick 30256 preserves all {count} continuation records")
 
 
 def main(binary):

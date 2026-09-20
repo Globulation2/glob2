@@ -1,0 +1,22 @@
+MaximaCombatIntegrationTest: PASS
+MaximaEconomyRegressionTest: PASS
+MaximaDirectorRegressionTest: PASS
+In file included from test/maxima/MaximaLifecycleTest.cpp:3:
+In file included from src/Engine.h:8:
+In file included from /Users/bradley/glob2-pr-help-4/src/gui/GameGUI.h:22:
+In file included from /Users/bradley/glob2-pr-help-4/src/gui/GameGUIMessageManager.h:8:
+libgag/include/GUIBase.h:372:15: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  372 |                 virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);
+      |                             ^
+libgag/include/GUIBase.h:329:15: note: overridden virtual function is here
+  329 |                 virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);
+      |                             ^
+libgag/include/GUIBase.h:379:16: warning: 'paint' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+  379 |                 virtual void paint(void);
+      |                              ^
+libgag/include/GUIBase.h:326:16: note: overridden virtual function is here
+  326 |                 virtual void paint(void);
+      |                              ^
+2 warnings generated.
+MaximaLifecycleTest: PASS
+MaximaPlacementStandaloneTest: PASS

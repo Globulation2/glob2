@@ -47,11 +47,18 @@ building or visible worker cluster. Target value, nearby towers, route distance
 and persistence govern selection. An eliminated opponent releases its siege
 progress lock.
 
-Land attacks gather at a completed friendly building connected to the objective.
+Land attacks gather on connected open ground near a completed friendly inn or
+swarm. Rally placement excludes buildings, resources, water and forbidden tiles,
+requires space for a full wave, and prefers spare room for arrivals and workers.
+The default gathering radius is four tiles; saved strategies retain their stored
+radius. If construction blocks a gathering point, the next review relocates it
+when another suitable site exists. A land colony with no room waits rather than
+sending an ungathered wave directly to the target.
 One cohort recruits at a time while earlier waves advance. Recruiting flags have
 higher priority. A wave launches when its configured share has arrived within
-the rally radius. After stalled progress or the maximum assembly time, a smaller
-wave may launch if it has enough force and enough of its enrolled warriors have
+the circular rally radius plus a two-tile arrival tolerance. The tolerance counts
+nearby warriors without expanding the flag or the attack objective radius. After
+stalled progress or the maximum assembly time, a smaller wave may launch if it has enough force and enough of its enrolled warriors have
 arrived; otherwise it is released. Recruitment budgets may grow during assembly.
 These clocks use Maxima's AI ticks.
 

@@ -619,6 +619,9 @@ private:
 	int committed_hospital_beds(
 		const std::vector<AIMaximaPlacement::WorldBuilding>& buildings,
 		int excludedAction=-1) const;
+	// Operational seats, then seats after observed/issued upgrades finish.
+	std::pair<int,int> barracks_capacity(AIMaximaRuntime::Context& echo,
+		int excludedAction=-1) const;
 	AIMaximaPlacement::DevelopmentLimits collect_development_limits(
 		AIMaximaRuntime::Context& echo, int excludedHospitalAction=-1) const;
 	bool issue_development_action(AIMaximaRuntime::Context& echo,

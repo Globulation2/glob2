@@ -734,7 +734,7 @@ colonization.minimum_value = 5
 # Army growth and gathered assault waves.
 assault.force_growth_ticks = 1000
 assault.max_waves = 16
-assault.muster_radius = 3
+assault.muster_radius = 4
 assault.muster_ready_percent = 75
 assault.muster_stall_ticks = 500
 assault.muster_max_ticks = 3000
