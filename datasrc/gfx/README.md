@@ -109,7 +109,7 @@ flags, construction and direction templates. White/black-background renders and
 separate matte files are preserved unchanged. They require transparency extraction
 before runtime use; the 32-pixel direction templates are references, not new HD art.
 
-[Current per-frame original/upscaled inventory](../../docs/high-resolution/ASSET-PROVENANCE.md).
+[Current per-frame original/upscaled inventory](../../docs/assets/high-resolution/ASSET-PROVENANCE.md).
 
 ## Production directory separation
 

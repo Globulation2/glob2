@@ -1,2 +1,0 @@
-FourSquares1.map byte-identical copy, uncached selection ms: 5.74883
-20 cached selections ms: 0.374709

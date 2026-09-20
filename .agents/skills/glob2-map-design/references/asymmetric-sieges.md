@@ -2,7 +2,7 @@
 
 Read this when a map gives one colony a special role, when a perimeter has several
 promised approaches, or when a rich-looking start stalls in AI games. These lessons
-come from [Encircled Kingdom's implementation and evidence](../../../../docs/artifacts/encircled-kingdom/README.md).
+come from [Encircled Kingdom's durable design guide](../../../../docs/map-generators/ENCIRCLED_KINGDOM.md).
 Its numerical budgets are examples, not new requirements for other generators.
 
 ## Preserve roles while varying the map
@@ -51,7 +51,7 @@ concave outlines and rectangular maps expose assumptions hidden by square previe
 ## Resource access has several meanings
 
 A resource can be reachable by a worker yet fall outside an AI's local observation
-area. Inspect the relevant [AI code](../../../../src/AIMaxima.cpp) and
+area. Inspect the relevant [AI code](../../../../src/ai/maxima/AIMaxima.cpp) and
 [strategy](../../../../data/maxima/base.strategy) for the distance metric, radius,
 and coordinate origin: a scan from a building's top-left is different from one
 from its centre, and neither is a walking-distance test.

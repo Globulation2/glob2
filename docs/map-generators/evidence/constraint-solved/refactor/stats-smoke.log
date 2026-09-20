@@ -1,7 +1,0 @@
-Execution errors: 0
-Default settings, 128x128, 3 colonies, mean of 1 seeds (failed seeds excluded)
-
-| generator | ok | grass | sand | water | wheat | wood | stone | fruit | sites4x4 | fertility | land_regions | fairness | worst_fit |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| even-ground | 1/1 | 89.1 | 0.0 | 6.0 | 725.0 | 492.0 | 75.0 | 0.0 | 10664.0 | 1448.4 | 1.0 | 0.750 | 0.224 |
-| marchland | 1/1 | 62.9 | 12.4 | 7.4 | 1311.0 | 850.0 | 56.0 | 78.0 | 4361.0 | 1499.6 | 2.0 | 0.895 | 0.016 |

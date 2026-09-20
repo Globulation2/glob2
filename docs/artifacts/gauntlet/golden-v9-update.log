@@ -1,2 +1,0 @@
-Settings::load("preferences.txt") : error, can't open file.
-Wrote 448 rows for macos-arm64 to test/map-generator-golden.txt

@@ -55,9 +55,10 @@ Support limits and numeric tuning are recorded below. Seed sweeps, held-out seed
 preview comparisons, resource extremes and actual AI expansion inform the defaults.
 Generation repeatability, static viability, AI performance and human enjoyment are
 separate claims. Missing platform and human-play coverage remains explicit.
-The [504-request paired bulk study](LAVA_SHIELD_BULK_20260915.md) records
-the final starter-field fallback, complete control coverage, compact and
-rectangular results, translation audit and committed review artifacts.
+The findings below summarize a 504-request paired bulk study covering the final
+starter-field fallback, complete control range, compact and rectangular results,
+and translation audit. Run-specific evidence belongs in `artifacts/lava-shield/`
+or in pull-request attachments.
 
 ### Review previews
 
@@ -285,7 +286,6 @@ a successfully scored proposal, and a protected corridor in which the atomic
 three-tile attempt fails but a one-tile route fits, and an unchanged mixed beach
 passage that cannot legally be repainted beside water and stone.
 
-
 ### Tuning findings retained for review
 
 - Empty maps need **potential** fertility: `Fertility::forMap(map, false)` bypasses
@@ -302,7 +302,6 @@ passage that cannot legally be repainted beside water and stone.
 - Cardinal-only approaches looked mechanically rectangular. Smooth costs followed
   by eight-neighbour routing improved the paths without changing water or rock.
   Initial and final previews are retained so that this judgement is reviewable.
-
 
 ### Telemetry interpretation
 
@@ -451,7 +450,6 @@ budget for compact towns. It does not reduce home size, crop guarantees, separat
 or approach width, and does not make secret layout repairs. The separate
 `final-validation/` cohort checks this revised request boundary and fresh seeds.
 
-
 The envelope-validation cohort then exposed three failures among four new
 512-square/twelve-colony/nine-tongue/widest-rim seeds. A one-tile *pure-sand*
 retry also failed the retained seed 30001: the beach bypass existed, but repainting
@@ -517,7 +515,6 @@ it remains an opening smoke test, not a measurement of late army congestion.
 The map, replay, initial/final saves and final native analysis are retained in
 `maxima-beach-30001/` and `maxima-beach-30001.json`.
 
-
 ### Linux and cross-platform compatibility evidence
 
 An isolated source/build directory on the configured Linux x86-64 host compiled
@@ -543,8 +540,8 @@ generation is identical. Windows execution and human balance play were not teste
 
 ### Follow-up AI playtesting and default tuning, 2026-09-15
 
-[Checked-in playtest summary and telemetry](evidence/lava-shield/playtest/README.md)
-contains the 512-tick economy series, game summaries and a finished preview.
+The follow-up playtest covered a 512-tick economy series, game summaries and a
+finished preview.
 The exact Linux bundle, verified saves/replays/logs and full native reports
 remain in this checkout's local `artifacts/lava-shield/playtest/` directory. Three AI
 mirror games on a default 256-square map and three on the supported 128-square
@@ -570,7 +567,7 @@ walk-connected at 16,384 ticks. Eleven survived the final tick cap; one was
 eliminated at tick 27,644 amid combat and food-service loss. Wheat and wood still
 grew, and all eleven surviving colonies remained mutually walk-connected. The
 final map reporter's 22 unreachable directed pairs refer only to the eliminated
-colony, which had no unit source. The [32,768-tick preview](evidence/lava-shield/playtest/dense-32768.png)
+colony, which had no unit source. The 32,768-tick preview
 and telemetry record the crowded variant's late hunger; human pacing and beach
 throughput are still review questions.
 

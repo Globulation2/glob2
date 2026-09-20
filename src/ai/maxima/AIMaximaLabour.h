@@ -1,5 +1,5 @@
 /*
-  Labour economy for Maxima. See docs/maxima/economy.md.
+  Labour economy for Maxima. See docs/ai/maxima/economy.md.
 
   Worker time is the resource every stage of the colony competes for, so it is
   the one currency here: a flow is worker-ticks per tick, and an investment has

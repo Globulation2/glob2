@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-OUTPUT = ROOT / 'docs/high-resolution/ASSET-PROVENANCE.md'
+OUTPUT = ROOT / 'docs/assets/high-resolution/ASSET-PROVENANCE.md'
 CATEGORIES = {
     'current': 'AI upscale with constrained finishing',
     'outline_repair': 'AI upscale with constrained finishing',

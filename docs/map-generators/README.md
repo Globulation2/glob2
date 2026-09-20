@@ -23,7 +23,7 @@ plain and renewable woodland on a shared, retreating lake shore.
 
 Build the study executable with `scons release=1 map-generator-study`.
 `build/src/glob2 --headless-catalog` exports current control definitions and production
-execution capabilities. Bulk runners use [shared tournament execution](../tournaments.md);
+execution capabilities. Bulk runners use [shared tournament execution](../tools/tournaments.md);
 `MapGeneratorStudy --catalog` remains a regression-compatible entry point.
 Use `python3 tools/map_generator_study.py --help` for seeded generation studies.
 Use the normal executable's [map CLI](CLI.md) to generate maps and PNG previews,
@@ -58,8 +58,8 @@ reservoirs and folded roads. Keep hierarchy and validate the finished movement g
 
 [Lava shield](LAVA_SHIELD.md) documents the volcanic island, its broad coastal gaps
 and narrow beach detours, scored towns, crater-rim prize and validation evidence.
-Its [paired 504-request bulk study](LAVA_SHIELD_BULK_20260915.md) covers the
-control range, smallest layouts, rectangles and dense colony counts.
+Its documented bulk-study findings cover the control range, smallest layouts,
+rectangles and dense colony counts.
 
 [Honeycomb isle](HONEYCOMB_ISLE.md) documents the hexagon city on an island: street-sealed blocks,
 the river and its bridges, wheat edges and ruins, how an urban-combat concept became it, and its

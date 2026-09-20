@@ -5,7 +5,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 ROOT=Path(__file__).resolve().parents[2]
 PACK=ROOT/'data/highres/v1'
-OUT=ROOT/'docs/high-resolution/images'
+OUT=ROOT/'artifacts/artwork-comparisons'
 frames=json.loads((PACK/'manifest.json').read_text())['frames']
 
 def display_size(f):
@@ -51,4 +51,4 @@ for f in frames:
 if group:pages.append(group)
 for page,items in enumerate(pages):sheet(items,f'all-{page+1:02}.png')
 intro="# Final artwork comparisons\n\nLeft: original enlarged 4× with nearest-neighbor sampling. Right: final runtime artwork at identical pixel dimensions. Each pair uses the same background. Click to inspect at full size. No intermediate candidates are shown. Fog and soft masks use faithful resampling rather than generated detail.\n\n"
-(ROOT/'docs/high-resolution/COMPARISONS.md').write_text(intro+'\n\n'.join(f"![Final comparison sheet {i+1}: {page[0]['id']} through {page[-1]['id']}](images/all-{i+1:02}.png)" for i,page in enumerate(pages))+'\n')
+(OUT/'README.md').write_text(intro+'\n\n'.join(f"![Final comparison sheet {i+1}: {page[0]['id']} through {page[-1]['id']}](all-{i+1:02}.png)" for i,page in enumerate(pages))+'\n')

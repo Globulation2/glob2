@@ -7,8 +7,6 @@ only way in. Every colony starts with a defence tower over the gorge. It is
 [Central Quarry](CENTRAL_QUARRY.md)'s game with algae as the prize and the colonies themselves as the
 lock.
 
-![Four maps at 256×256 with four colonies, seeds 1, 2, 3 and 5](../artifacts/hidden-oasis/256-4-seeds-1-2-3-5.png)
-
 ## How it plays
 
 - **Algae is the prize.** Even a level-0 school costs 2 algae (its upgrades 12 and 10, a level-2 pool
@@ -38,8 +36,6 @@ lock.
   therefore starts with one finished level-0 school; the pond still gates more schools, every school
   upgrade, the level-2 pool and the top tower. Turning `Starting school` off gives the total lock.
 
-![Plateau close-ups with four, six, eight and two colonies: the gorge, the ledges and towers, the lanes of box canyons, the basin](../artifacts/hidden-oasis/plateau-close-ups.png)
-
 ## How it is built
 
 `src/map/generator/generators/HiddenOasisGenerator.cpp`; the header comment and the comments on the
@@ -58,16 +54,11 @@ constants record why each choice was made, round by round of review.
 | Finish | Kits facing the nearest water, topped up if crowded; pond algae from the shore inwards; the garden; the towers (`placeTower`, level 1, stocked); the granted school; trails to the mouth and to each colony's own ledge; routes; the crop guarantee. |
 | Redraw | A design whose gorge left no room for a ledge, or whose country left the band no room, is drawn again (up to four times) before the request is refused. |
 
-![128×128 with three colonies (seed 7)](../artifacts/hidden-oasis/128-3-seed7.png)
-![256×256 with eight colonies (seed 5)](../artifacts/hidden-oasis/256-8-seed5.png)
-![512×512 with eight colonies (seed 2)](../artifacts/hidden-oasis/512-8-seed2.png)
-![512×256 with five colonies (seed 6)](../artifacts/hidden-oasis/512x256-5-seed6.png)
-
 ## Controls
 
 Effects measured over 8 seeds at 256×256 with 4 colonies (lowest / default / highest), every value of
-every control, 975 maps with the other sizes' extremes; the full tables are in
-[the control study](evidence/hidden-oasis/CONTROL_STUDY_TABLES.md).
+every control, 975 maps with the other sizes' extremes. Keep full study tables in
+the ignored `artifacts/hidden-oasis/` workspace or in pull-request attachments.
 
 | Control | Range (default) | Effect |
 | --- | --- | --- |
@@ -94,7 +85,7 @@ counting outcrops and groves as whole numbers per 1,000 tiles, so the kit gained
 - **Reliability.** Every control at every value alone (975 maps: 256×256 with 4 colonies on 8 seeds,
   and each control's extremes on 128×128/3, 512×512/6 and 512×256/5): all generated and validated.
   2,000 random requests (seven shapes, 2–8 colonies, every control random;
-  [rows](evidence/hidden-oasis/random-requests.jsonl)): 1,948 generated and validated; the other 52
+  rows): 1,948 generated and validated; the other 52
   were one refusal at the request check, "The massif does not fit this map", all eight colonies with
   pond size 10 or more on a map 256 tiles wide or tall. No validation failures. About one map in
   twelve had its design drawn twice (a ledge that would not fit), and a trail was re-cut after the
@@ -132,7 +123,7 @@ Three rounds with one independent reviewer on frozen builds (2026-09-17), and 48
   cliff fixed both with one search. The reviewer also found a rival's tower outside the cliff could
   reach the shallowest ledge, so the first pinch moved deeper and the plateau is padded.
 
-[Game summaries](evidence/hidden-oasis/AI_GAMES.txt) for the last two rounds. With towers on and no
+Game summaries for the last two rounds. With towers on and no
 granted school, towers were resupplied (Nicowar: 29–74 stone and 98–224 shots a tower), AIs destroyed
 some (Cortex three of four), towers cost Nicowar 5–26 workers a colony, and no colony completed a
 school in any game. With the granted school, builders trained in every colony and 0–13 buildings a

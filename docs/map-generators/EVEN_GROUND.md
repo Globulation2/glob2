@@ -17,8 +17,8 @@ point a search at a decision rather than at a landscape.
 > generator's random streams moved every map it makes, so the numbers below — control
 > correlations, fairness scores, refusal rates, river rates and the tournament — were measured
 > on the previous maps. Revision 2 also corrects the crop-clustering objective. Treat the historical conclusions
-> as hypotheses until remeasured. Current checks and results are recorded in the
-> [review evidence](evidence/constraint-solved/review/README.md).
+> as hypotheses until remeasured. Keep new checks and results in the ignored
+> `artifacts/even-ground/` workspace or in pull-request attachments.
 
 ## The play contract
 
@@ -182,8 +182,7 @@ allowed to plant on runs out — which is a ceiling on the map rather than a dea
 ## Historical tournament: position bias before the rename
 
 The historical build was played and **failed its fairness premise.** Six maps, every rotation, two engine
-seeds each — 48 games with `nicowar` in all four slots, against Symmetric arena as the control
-([full report](evidence/constraint-solved/fairness-tournament.md)).
+seeds each — 48 games with `nicowar` in all four slots, against Symmetric arena as the control.
 
 | | Position bias | Biased maps (BH) | Any-bias p | Best start / fair |
 | --- | ---: | ---: | ---: | ---: |

@@ -38,5 +38,5 @@ harness checks pending deletions, capacity protection, failed replacements and
 saved handovers against real buildings. The continuation harness checks binary
 and text archives, signed limits, nested records and buffered writes.
 
-See [Maxima](../../docs/maxima/README.md) for current strategy behaviour and
+See [Maxima](../../docs/ai/maxima/README.md) for current strategy behaviour and
 [engine tests](../README.md) for shared save, replay and simulation harnesses.

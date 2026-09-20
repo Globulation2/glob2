@@ -69,8 +69,6 @@ smallest maps can have little or none of this extra terrain. Lakes also supply
 ordinary algae, controlled by the algae amount. The surplus land carries no extra
 fruit, and only the contained home woodlots provide renewable wood.
 
-See the [landscape gallery and published validation](../artifacts/orchard-commons/README.md).
-
 ## Verification
 
 Build and exercise the real-engine mechanism test:
@@ -93,8 +91,10 @@ after loading; it does not claim immediate continuation equivalence.
 
 Native thumbnails omit fruit. Use the terrain dump renderer from the map-design
 skill when checking grove shapes and gathering lanes, and inspect a played save
-as well as the initial map. The [measurement summary and evidence archive](../artifacts/orchard-commons/README.md) distinguish controlled mechanism tests from
-unmodified AI games, seed reliability, and human play assessment.
+as well as the initial map. Keep measurement reports and review media in the
+ignored `artifacts/orchard-commons/` workspace or in pull-request attachments;
+distinguish controlled mechanism tests from unmodified AI games, seed reliability,
+and human play assessment.
 
 No engine, save-format, replay or network version changes are introduced. Existing
 generators retain their definitions and behavior. Cross-platform simulation checks
