@@ -65,7 +65,7 @@ These clocks use Maxima's AI ticks.
 Advancing flags follow the objective, reduce recruitment as members leave and
 expire after remaining empty for the inactivity interval. Travel and assembly
 do not consume the siege-stall allowance. An amphibious attack uses the
-single-flag controller when no connected land rally is available.
+streaming controller when no connected land rally is available.
 
 After four consecutive failed waves, Maxima switches to its existing
 streaming attack controller for the rest of the game. A wave is assessed once its
@@ -73,8 +73,15 @@ enrollment falls to at most one quarter of its launch force, or it is retired.
 Its peak simultaneous healthy enrollment within the objective's siege radius must
 reach 33% of the launch force; success resets the failure counter. A rally that
 reaches the existing maximum assembly time without launching also counts as a
-failure toward the same counter. Streaming keeps
-recruiting into an objective flag. No map-specific checks or extra timeouts apply.
+failure toward the same counter. No map-specific checks or extra timeouts apply.
+
+Streaming divides the same available attack force across persistent flags, using
+the configured per-flag troop cap (20 by default): 45 available warriors request
+three flags with 20, 20 and 5 places. It adds or removes flags as the force changes,
+and continuously replaces departing warriors. Additional flags are created near
+the objective with overlapping attack ranges. Target changes move all retained
+flags; losing one flag does not end the other flags' attack. Training and defense
+reservations still apply.
 
 Delivery observations, the counter and the permanent switch survive save/reload.
 When loading a format-115 save, already advancing waves are excluded because their

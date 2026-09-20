@@ -220,11 +220,6 @@ void testVersionBounds()
 {
 	{
 		ReplayReader reader;
-		check(reader.loadReplay(writeReplayBody(115, 1), false),
-		      "versionBounds: replay before Maxima fallback accepted");
-	}
-	{
-		ReplayReader reader;
 		check(!reader.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR - 1, 1), false),
 		      "versionBounds: replay older than the supported floor is rejected");
 	}

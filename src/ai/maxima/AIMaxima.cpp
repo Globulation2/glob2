@@ -3920,8 +3920,17 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 			tactical_mission.flagId=offense_waves.front().flagId;
 		if(tactical_flag && offense_waves.empty())
 		{
-			tactical_mission.reset();
-			campaign.state=CampaignIdle;
+			if(!attack_flags.empty())
+			{
+				tactical_mission.flagId=attack_flags.front();
+				if(tactical_mission.targetGid>=0)
+					attack_flag_targets[tactical_mission.flagId]=tactical_mission.targetGid;
+			}
+			else
+			{
+				tactical_mission.reset();
+				campaign.state=CampaignIdle;
+			}
 		}
 	}
 	if(event.type == RuntimeEvent::GuardFlagDeleted)

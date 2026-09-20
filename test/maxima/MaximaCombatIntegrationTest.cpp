@@ -690,6 +690,90 @@ static void waveAssemblyFallback()
     std::cout << "wave assembly: full timeout, four failures and streaming handoff PASS\n";
 }
 
+static void streamingScalesWithArmy()
+{
+    Fixture f;f.building(10,10,0);
+    auto target=f.building(35,30,1);
+    std::vector<Unit*> army;
+    for(int i=0;i<45;++i)army.push_back(f.warrior(i,0,3));
+    f.game.gameHeader.setNumberOfPlayers(1);
+    f.game.players[0]=new Player;
+    f.game.players[0]->setTeam(f.player.team);
+    auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
+    a.failed_waves=4;
+    const auto apply=[&] {
+        // Exercise real creation, registration and management orders, including
+        // the bounded search used to place additional flags near the objective.
+        const auto drain=[&] {
+            while(!c.orders.empty()) {
+                auto order=c.orders.front();c.orders.pop_front();
+                order->sender=0;f.game.executeOrder(order,0);
+            }
+        };
+        for(int pass=0;pass<128;++pass) {
+            c.gradients.update(++f.game.stepCounter);
+            c.update_building_orders();drain();c.buildings.tick();
+            c.update_management_orders();drain();
+        }
+        assert(c.buildingOrders.empty());
+    };
+    const auto allocation=[&](int total) {
+        int assigned=0;std::set<int> gids;
+        for(int id:a.attack_flags) {
+            auto* flag=c.buildings.get_building(id);assert(flag);
+            assert(flag->maxUnitWorking<=a.strategy.military.attack_unit_cap);
+            assigned+=flag->maxUnitWorking;gids.insert(flag->gid);
+            assert(f.game.map.warpDistMax(flag->posX,flag->posY,
+                a.budget.tactical_target_x,a.budget.tactical_target_y)<=flag->unitStayRange);
+        }
+        assert(assigned==total && gids.size()==a.attack_flags.size());
+    };
+    a.plan_offense(c);assert(a.budget.tactical_requested_force==45);
+    a.control_offense(c);apply();assert(a.attack_flags.size()==3);allocation(45);
+    const auto first=a.attack_flags;
+    for(int i=0;i<45;++i)f.attach(army[i],c.buildings.get_building(first[i/20]));
+    a.plan_offense(c);
+    assert(a.offense_diagnostics.eligibleWarriors==45 && a.budget.tactical_requested_force==45);
+    a.control_offense(c);assert(a.attack_flags==first && c.buildingOrders.empty());
+    for(int i=0;i<20;++i)army.push_back(f.warrior(i,2,3));
+    a.plan_offense(c);assert(a.budget.tactical_requested_force==65);
+    a.control_offense(c);apply();assert(a.attack_flags.size()==4);allocation(65);
+    assert(std::equal(first.begin(),first.end(),a.attack_flags.begin()));
+    for(int i=25;i<65;++i)army[i]->medical=Unit::MED_DAMAGED;
+    a.plan_offense(c);assert(a.budget.tactical_requested_force==25);
+    a.control_offense(c);apply();assert(a.attack_flags.size()==2);allocation(25);
+    assert(a.attack_flags[0]==first[0] && a.attack_flags[1]==first[1]);
+    // A lost primary must promote a survivor without cancelling the mission.
+    c.buildings.get_building(first[0])->kill();c.buildings.tick();
+    a.handle_event(c,RuntimeEvent(RuntimeEvent::AttackFinished,first[0]));
+    assert(a.tactical_mission.flagId==first[1] && a.campaign.state==Maxima::CampaignActive);
+    a.control_offense(c);apply();assert(a.attack_flags.size()==2);allocation(25);
+    assert(a.attack_flags.front()==first[1]);
+    a.budget.tactical_target_x=40;a.budget.tactical_target_y=40;
+    a.control_offense(c);apply();allocation(25);
+    for(int id:a.attack_flags) {
+        auto* flag=c.buildings.get_building(id);
+        assert(flag->posX==40 && flag->posY==40);
+    }
+    auto* saved=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(saved);a.save(&output);
+    const std::string bytes(saved->getBuffer(),saved->getPosition());
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0);Maxima restored(&input,&f.player,VERSION_MINOR);
+    assert(restored.attack_flags==a.attack_flags && restored.failed_waves==4);
+    restored.control_offense(restored.context);
+    assert(restored.attack_flags==a.attack_flags && restored.context.buildingOrders.empty());
+    const auto active=a.attack_flags;a.end_offense(c,"test");
+    assert(a.attack_flags.empty());
+    for(int id:active) {
+        bool cancelled=false;
+        for(auto order:c.managementOrders)
+            if(auto* destroy=dynamic_cast<Management::DestroyBuilding*>(order.get()))cancelled|=destroy->id==id;
+        assert(cancelled);
+    }
+    std::cout << "streaming: real flags, full army, growth, shrink, loss, retarget and reload PASS\n";
+}
+
 static void smallWaveKeepsRecruiting()
 {
     Fixture f;
@@ -1257,6 +1341,7 @@ static void run()
     waveAssemblyAndPipeline();
     waveDeliveryFallback();
     waveAssemblyFallback();
+    streamingScalesWithArmy();
     smallWaveKeepsRecruiting();
     defenseWrapsBuildingOrigins();
     defenseCoverage();
