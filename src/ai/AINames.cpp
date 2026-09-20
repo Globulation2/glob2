@@ -23,14 +23,14 @@ namespace AINames
 		//               nullptr when the AI can't be picked from the CLI (NONE).
 		//   stringKey — StringTable base key: the display name is "[<key>]"
 		//               and the description "[<key>-Description]".
-		//   strength — combined Elo from the completed 20,000-game duel tournament.
+		//   strength — Elo from 19,948 completed duels at source d37c0c353.
 		// All games use random 128x128 maps across 60 generators, with probability
 		// victory disabled. Ratings fit all outcomes equally (Bradley-Terry),
 		// are centred on 1500, and pool builds of the same source revision.
 		// Displayed values are rounded once, after the full tournament.
 		// Difficulty tiers: below 1450 Easy, 1450-1699 Medium, 1700+ Hard.
 		// These describe this duel cohort, not every map, format or human game.
-		// See docs/ai-strength.md and docs/ai/ratings.md.
+		// See docs/ai/ratings.md for exclusions and measurement scope.
 		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; int strength; } aiTable[] = {
 			{AI::NONE,            nullptr,           "AINone", "No AI orders", 0},
 			{AI::NUMBI,           "numbi",           "AINumbi", "Easy", 1204},
