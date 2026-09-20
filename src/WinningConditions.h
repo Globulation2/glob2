@@ -27,6 +27,7 @@ enum WinningConditionType
 	WCScript,
 	WCOpponentsDefeated,
 	WCSuddenDeath,
+	WCWinProbability,
 };
 
 ///This represents a generic winning condition. Each condition may specify which teams have won,
@@ -78,6 +79,13 @@ public:
 	///re-adding it, so its list position (end, by construction) never moves.
 	///An empty optional disables it; disabling when absent is a no-op.
 	static void setSuddenDeathWinCondition(std::list<std::shared_ptr<WinningCondition> >& conditions, std::optional<Uint32> endStepTick);
+	///Enables, retunes or disables the win-probability rule, editing `conditions`
+	///in place. Like setSuddenDeathWinCondition a newly-enabled instance is
+	///appended at the very end: it is a last resort, so an actual elimination or
+	///prestige win always speaks first. `thresholdPermille` is the confidence at
+	///which the game is called; an empty optional disables the rule, and
+	///disabling when absent is a no-op.
+	static void setWinProbabilityWinCondition(std::list<std::shared_ptr<WinningCondition> >& conditions, std::optional<Uint32> thresholdPermille);
 
 };
 
@@ -155,6 +163,35 @@ public:
 	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
 
 	Uint32 endStepTick = 0;
+};
+
+///Optional custom-game rule: the game ends as soon as the fitted win
+///probability model is `thresholdPermille` sure of the result, so a match that
+///is already decided does not have to be played out.
+///
+///Off unless a player turns it on -- a normal game is unaffected. It is
+///evaluated only on the 512-tick sample boundary TeamStats already measures at,
+///which is the cadence the model was fitted on, and never before
+///WinProbability::MINIMUM_DECISION_TICK, since the opening samples can look
+///lopsided for reasons that mean nothing.
+///
+///The whole evaluation is integer arithmetic (see WinProbability.h): this runs
+///inside the synchronised simulation and decides the outcome, so every platform
+///has to reach the same answer on the same tick or a network game desynchronises.
+class WinningConditionWinProbability : public WinningCondition
+{
+public:
+	bool hasTeamWon(int team, const Game* game) const override;
+	bool hasTeamLost(int team, const Game* game) const override;
+	WinningConditionType getType() const override;
+	void encodeData(GAGCore::OutputStream* stream) const override;
+	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor) override;
+
+	///Confidence the model must reach, in permille. 970 is the default the
+	///custom-game rule offers; measured on games already played it ended about a
+	///tenth of the tournament's compute early and named the eventual winner in
+	///over 99% of the games it called.
+	Uint32 thresholdPermille = 970;
 };
 
 
