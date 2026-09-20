@@ -61,6 +61,6 @@ Target it with `MapGeneratorDefaultsTest PROFILE --treeline-only`; it also runs
 as part of the regular defaults harness. `--treeline-profile` compares large-map
 generation with Orchard Commons, with and without telemetry.
 
-See [the attached review and measurement record](../artifacts/last-treeline/README.md)
-for parameter studies, AI rotations, reproducible saves and profiling. Static access
+Keep parameter studies, AI rotations, reproducible saves and profiling in the
+ignored `artifacts/last-treeline/` workspace or in pull-request attachments. Static access
 checks and AI games are not proof of human enjoyment or competitive balance.

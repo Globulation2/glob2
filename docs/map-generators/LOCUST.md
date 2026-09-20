@@ -80,7 +80,7 @@ deadline, that probe left **35% base field cover** in place. Maintainer review o
 then asked for the fields filled in, with passages cleared by workers rather than found: the
 base cover is now **65%**, the open ground the exception rather than the rule, and the trails
 the only routes that come cleared. The control still runs 0 to 200%. The raw map, save, result, and gameplay telemetry records
-are retained in [the playtest evidence](../artifacts/vultures/PLAYTEST.md).
+belong in the ignored `artifacts/locust/` workspace or in pull-request attachments.
 
 ### Bulk generation and rectangular tuning
 
@@ -99,8 +99,8 @@ failures, crashes, timeouts or missing reports. Eight formerly rejected cases be
 all 398 previously successful cases still completed. In the complete parameter sweep,
 **268/268** completed after the repair. Shapes too small for a pond, swarm and separate
 homes still reject honestly, especially 64-tile squares with multiple colonies. The full
-case list, reports, telemetry, transition table and reproduction runner are retained in
-[bulk validation evidence](../artifacts/vultures/BULK.md). No control range was narrowed
+case list, reports, telemetry, transition table and reproduction runner belong in
+the ignored `artifacts/locust/` workspace or in pull-request attachments. No control range was narrowed
 to hide difficult maps.
 
 ## Generate a playable example
@@ -114,8 +114,8 @@ GLOB2_USER_DIR=/tmp/glob2-locust-profile build/src/glob2 --generate-map locust \
   --json artifacts/locust/locust-7.json
 ```
 
-Verification results and retained examples are recorded in
-[the evidence notes](../artifacts/vultures/README.md).
+Keep verification results and examples in the ignored `artifacts/locust/`
+workspace or in pull-request attachments.
 
 ## Budgets and tuning rationale
 

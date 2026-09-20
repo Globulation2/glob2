@@ -1,4 +1,4 @@
-// Frozen forward model; provenance and feature contract: docs/maxima-force-model.md.
+// Frozen forward model; provenance and feature contract: docs/ai/maxima/combat.md.
 // SHA256 of uncompressed training export: 7e8fdbc8b2c0b2b413d1203574f5b23e7e61a9744e0633d6a3574d9ebbf8e6eb
 static constexpr Node nodes[] = {
     {15,-13,1,2},

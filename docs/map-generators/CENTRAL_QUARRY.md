@@ -6,8 +6,6 @@ island, and on the island is the only stone in the world: a small grey outcrop e
 only one can hold. There are no home plots and no symmetry; colonies start wherever the country lets
 them, all at about the same walk from the stone.
 
-![Four maps at 256×256 with four colonies, seeds 1–4](../artifacts/central-quarry/256-4-seeds-1-4.png)
-
 ## How it plays
 
 - **Stone is the prize.** Stone never runs out and cannot be cleared, so the quarry is permanent and
@@ -42,12 +40,6 @@ constants record why each choice was made, round by round of review.
 | Resources | Biome kits without stone; field edges frayed and bounded by distance from water (never within 20 tiles of a home); an open common round the lake; algae; starter kits facing the nearest water, topped up if crowded. |
 | Quarry | A compact outcrop grown in the largest piece of island ground inset from the shore and clear of the garden. |
 | Routes | A trail from every colony to the isle (re-cut with less bend, then straight, if it wanders), routes between colonies, the crop guarantee, and removal of one-tile crop slivers; the kits, the garden and the quarry are never cleared. |
-
-![Island close-ups, seeds 1–4: the quarry, the landing and its bars, the garden on the far shore](../artifacts/central-quarry/isle-close-ups-seeds-1-4.png)
-
-![128×128 with three colonies (seed 5): one stream](../artifacts/central-quarry/128-3-seed5.png)
-![512×512 with eight colonies (seed 2)](../artifacts/central-quarry/512-8-seed2.png)
-![512×256 with five colonies (seed 6)](../artifacts/central-quarry/512x256-5-seed6.png)
 
 ## Controls
 

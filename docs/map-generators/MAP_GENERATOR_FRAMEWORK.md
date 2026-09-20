@@ -1867,7 +1867,6 @@ shrinks the homes and then narrows the rivers before refusing. Like Honeycomb is
 design per thread and replays its telemetry (`GenerationTelemetry::replay`); it also winds every named
 stream the design drew from (`GenerationContext::namedStreams`) on to where building it left them.
 
-
 ## Bajada
 
 See [the design and verification notes](BAJADA.md). Ranges are centre lines that sway along the map
@@ -1896,7 +1895,6 @@ off every shortest route to the island. The garden is an oval sealed by sand cor
 island's shore; the quarry grows compactly in the largest piece of inset island ground. The request
 check (`validateRequest`) uses only the request; seed-dependent refusals surface at generation. The
 design is cached per thread for `generate` and `validateWorld` (telemetry replayed, streams wound on).
-
 
 ## Hidden Oasis
 

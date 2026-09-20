@@ -15,8 +15,8 @@ limitation rather than a design: see [what has not been done](#what-has-not-been
 > **These figures predate the stream rename and describe different maps.** Renaming the
 > generator's random streams moved every map it makes, so the numbers below — control
 > correlations, fairness scores, refusal rates, river rates and the tournament — were measured
-> on the previous maps. Treat their conclusions as hypotheses until remeasured. Current revision-2 checks and
-> results are recorded in the [review evidence](evidence/constraint-solved/review/README.md).
+> on the previous maps. Treat their conclusions as hypotheses until remeasured. Keep new checks
+> and results in the ignored `artifacts/marchland/` workspace or in pull-request attachments.
 
 ## The play contract
 
@@ -224,8 +224,7 @@ because a map that was never promised a level rope is not a broken one.
 ## Historical tournament
 
 Played: six maps, every rotation, two engine seeds each — 48 games with `nicowar` in all four
-slots, against Symmetric arena as the control
-([full report](evidence/constraint-solved/fairness-tournament.md)).
+slots, against Symmetric arena as the control.
 
 | | Position bias | Biased maps (BH) | Any-bias p |
 | --- | ---: | ---: | ---: |
