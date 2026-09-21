@@ -369,7 +369,8 @@ static void fruitSupplyRoutes()
     for(auto& tile:wrapped.tiles)tile.passable=true;
     wrapped.tiles[wrapped.index(127,10)]=cherry;wrapped.build();
     assert(wrapped.assessBuilding(1,10,1,1).distance[0]==1);
-    assert(wrapped.assessBuilding(64,64,1,1).available==0);
+    auto distant=wrapped.assessBuilding(64,64,1,1);
+    assert(distant.available==1 && distant.distance[0]>32);
 }
 
 static void fruitStrategyRegressions()

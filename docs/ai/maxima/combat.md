@@ -91,12 +91,12 @@ a rally is created.
 
 ## Fruit supply
 
-For each known fruit variety, Maxima searches for a reachable deposit near each
-completed inn. Routes wrap, include diagonal moves, and respect buildings,
-resources, forbidden areas and current swimming capability. The field is rebuilt
-at each fruit-management pass. Distinct varieties count once; inns with more
-reachable varieties take priority, with stable iteration order breaking ties.
-The nearest-deposit approximation can miss a farther patch already in vision.
+For each known fruit variety, Maxima searches for a reachable deposit from each
+completed inn. Routes span the map, wrap, include diagonal moves, and respect
+buildings, resources, forbidden areas and current swimming capability. The field
+is rebuilt at each fruit-management pass. Distinct varieties count once; inns
+with more reachable varieties take priority, with stable iteration order breaking
+ties. The nearest-deposit approximation can miss a farther patch already in vision.
 
 At most one explorer flag serves each useful variety lacking completed-building
 vision. Pending missions are reused, moved when sources change and released when
