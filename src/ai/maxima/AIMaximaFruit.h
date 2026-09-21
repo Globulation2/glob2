@@ -27,7 +27,6 @@ struct Supply
 
 struct Field
 {
-	static constexpr int collectionRange=32;
 	int width=0, height=0;
 	std::vector<Tile> tiles;
 	std::array<std::vector<int>,3> distances, sources;
@@ -55,7 +54,6 @@ struct Field
 			for(std::size_t head=0;head<queue.size();++head)
 			{
 				const int at=queue[head], x=at%width, y=at/width;
-				if(distances[variety][at]>=collectionRange)continue;
 				for(int dy=-1;dy<=1;++dy)
 					for(int dx=-1;dx<=1;++dx)
 					{
