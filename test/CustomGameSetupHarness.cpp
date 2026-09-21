@@ -1592,7 +1592,7 @@ int main(int argc, char **argv)
 	assert(AINames::parseAIName("Econo") == AI::ECONO);
 	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
 	assert(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);
-	assert(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths:") != std::string::npos);
+	assert(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths and weaknesses:") != std::string::npos);
 	const auto dir =
 		std::filesystem::temp_directory_path() / ("glob2-setup-test-" + std::to_string(getpid()));
 	std::filesystem::create_directory(dir);
