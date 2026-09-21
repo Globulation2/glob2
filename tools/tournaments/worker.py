@@ -43,6 +43,29 @@ def usage(directory):
     return total
 
 
+def installed_bundle(path):
+    """Read an immutable bundle after install() has verified and published it."""
+    path = Path(path)
+    if not path.is_dir():
+        raise ValueError('bundle is not installed')
+    manifest = read_json(path / 'bundle.json')
+    if manifest.get('id') != path.name:
+        raise ValueError('installed bundle identity mismatch')
+    return manifest | {'directory': str(path.resolve())}
+
+
+def outcome_only(result):
+    """Retain the authoritative outcome and every supported adjudication field."""
+    team_fields = ('team', 'alliance', 'outcome', 'alive', 'eliminated_tick',
+                   'prestige', 'units', 'buildings', 'warrior_attack', 'warrior_hp', 'warriors')
+    player_fields = ('player', 'team', 'ai')
+    return {key: result[key] for key in ('schema_version', 'status', 'ticks', 'termination', 'winning_teams')
+            if key in result} | {
+        'teams': [{key: team[key] for key in team_fields if key in team} for team in result.get('teams', [])],
+        'players': [{key: player[key] for key in player_fields if key in player} for player in result.get('players', [])],
+    }
+
+
 class Worker:
     def __init__(self, root):
         self.root = Path(root).resolve()
@@ -116,7 +139,7 @@ class Worker:
         validate_job(attempt['job'])
         if attempt['package_id'] != package_identity():
             raise ValueError('worker package mismatch')
-        bundle = inspect_bundle(self.root / 'bundles' / attempt['job']['build'])
+        bundle = installed_bundle(self.root / 'bundles' / attempt['job']['build'])
         if bundle['platform'] != platform_identity() or (self.config['builds'] and bundle['id'] not in self.config['builds']):
             raise ValueError('ineligible build')
         with transaction(self.db):
@@ -161,7 +184,7 @@ class Worker:
         hash_id(bundle_id)
         final = self.root / 'bundles' / bundle_id
         if final.exists():
-            inspect_bundle(final)
+            installed_bundle(final)
             return {'installed': True}
         if file_hash(archive) != identity:
             raise ValueError('corrupted bundle archive')
@@ -169,7 +192,7 @@ class Worker:
             raise ValueError('bundle cache budget reached; explicit cleanup required')
         with lock(self.root / ('bundle-' + bundle_id + '.lock'), blocking=True):
             if final.exists():
-                inspect_bundle(final)
+                installed_bundle(final)
                 return {'installed': True}
             temporary = self.root / 'bundles' / ('.' + bundle_id)
             if temporary.exists():
@@ -289,7 +312,7 @@ def execute(root, identity):
                   'diagnostics': {'core_requested': bool(job['outputs'].get('core')), 'stack_available': False}}
         process = None
         try:
-            bundle = inspect_bundle(worker.root / 'bundles' / job['build'])
+            bundle = installed_bundle(worker.root / 'bundles' / job['build'])
             inputs = {}
             for name, artifact in attempt['resolved_inputs'].items():
                 target = directory / 'inputs' / identifier(name)
@@ -342,6 +365,8 @@ def execute(root, identity):
                         record['category'] = status
                     elif code == 0 and status != 'completed':
                         record['category'] = 'invalid_result'
+                    elif code == 0 and job['outputs'].get('result') == 'outcome':
+                        record['result'] = outcome_only(record['result'])
                 except (OSError, ValueError) as error:
                     record['diagnostic'] = str(error)
                     if code == 0:
@@ -387,9 +412,11 @@ def pack(root, identity):
         # requested outputs need not copy incidental maps, logs and reports back
         # to the coordinator. They can dominate a short duel's wall time and
         # leave otherwise idle worker slots waiting for collection.
+        artifact_outputs = {key: value for key, value in attempt['job']['outputs'].items()
+                            if key != 'result' and value}
         retain_incidental = (attempt['job']['type'] != 'game' or
                              execution['category'] != 'success' or
-                             bool(attempt['job']['outputs']))
+                             bool(artifact_outputs))
         artifacts = []
         if retain_incidental:
             for path in sorted(directory.rglob('*')):
@@ -464,7 +491,12 @@ def rpc(root, request):
         if op == 'record': return read_json(worker.root / 'attempts' / identifier(args['identity']) / 'record.json')
         if op == 'has_bundle':
             path = worker.root / 'bundles' / hash_id(args['identity'])
-            return {'present': path.exists() and bool(inspect_bundle(path))}
+            # install() verifies the content-addressed archive, extracts into a
+            # private directory, verifies every manifest entry, and only then
+            # atomically renames it to this final path. Re-hashing the complete
+            # installed bundle for every job starves short-game pipelines: the
+            # presence of the published directory is the durable install marker.
+            return {'present': path.is_dir()}
         if op == 'cleanup':
             # Objects may be referenced by queued jobs or unacknowledged results.
             active = worker.db.execute("SELECT count(*) FROM queue WHERE state NOT IN ('acknowledged','cancelled')").fetchone()[0]

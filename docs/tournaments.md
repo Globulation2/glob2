@@ -166,6 +166,10 @@ and result collection. Every host has a control lane; bulk transfers cannot bloc
 its heartbeats or wait for another host's transfer slot. Finished-but-uncollected
 attempts retain their leases but no longer occupy compute prefetch capacity.
 Worker disk/spool limits and a separate result-backlog cap bound storage pressure.
+Pipeline lanes share the already-loaded immutable manifest and open the existing
+ledger without replaying job initialization or export repair. Dispatch streams
+pending rows only until a host is full, so large manifests do not become a
+per-heartbeat Python allocation.
 
 ## Protocol and manifest fields
 
@@ -186,7 +190,7 @@ Every job has these fields:
 | `depends_on` | Job IDs; every input dependency must appear; cycles rejected |
 | `seeds` | `{"game":N}` or `{"map":N}`; empty on saved games |
 | `config` | Game: players, ticks, ai_params (player-string to key/value object), alliances, winning_conditions. Generator: generator, params, candidates, rotations. Defaults follow CLI |
-| `outputs` | replay false; saves/telemetry/reports empty lists; map false; core/stack false; required empty list of relative output paths |
+| `outputs` | replay false; saves/telemetry/reports empty lists; map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
 | `limits` | timeout_seconds 3600, memory_mb host default, estimated_seconds 60 (buffer planning only) |
 | `labels` | Opaque JSON object preserved unchanged |
 
@@ -367,6 +371,12 @@ host. Generator defaults/ranges are always discoverable in its pinned catalog.
   explicitly when a study needs per-tick AI or team history. Incidental maps,
   logs and reports are omitted for successful game jobs with no requested outputs;
   failed jobs and map-generation jobs retain their diagnostic artifacts.
+  For rating-only runs, set `outputs.result` to `outcome`. The retained payload
+  includes termination, winners, team/player identity, survival, prestige and
+  military totals needed by every supported adjudication policy, while omitting
+  per-tick histories and other bulky result details. Installed bundles are fully
+  hashed before atomic publication and then treated as immutable; workers do not
+  rehash the complete bundle before every queued game.
   `formats` and `generator_params` can explicitly request another study design. Duels
   pair every AI; 2v2 defaults to homogeneous
   pairs and accepts explicit two-player `rosters`; four-colony FFA balances AI

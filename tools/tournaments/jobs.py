@@ -57,8 +57,10 @@ class EngineJob:
                 raise ValueError('win_probability_permille must be a permille between 0 and 1000')
         elif 'map' not in seeds or type(config.get('generator')) is not int:
             raise ValueError('generation requires map seed and integer generator')
-        if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack'}:
+        if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack', 'result'}:
             raise ValueError('unknown requested output')
+        if job['outputs'].get('result', 'full') not in ('full', 'outcome'):
+            raise ValueError('result output must be full or outcome')
 
     def command(self, job, bundle, attempt_dir, inputs):
         root = Path(bundle['directory'])

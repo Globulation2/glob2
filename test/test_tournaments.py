@@ -9,14 +9,15 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.tournaments.bundles import package_identity, platform_identity, register_bundle
-from tools.tournaments.common import atomic_json, digest, file_hash, read_json, store_artifact
+from tools.tournaments.common import atomic_json, canonical, digest, file_hash, read_json, store_artifact
 from tools.tournaments.coordinator import Coordinator
-from tools.tournaments.model import job, validate_experiment
+from tools.tournaments.model import job, validate_experiment, validate_job
 from tools.tournaments.transfer import put_chunk, offset
-from tools.tournaments.worker import Worker, pack
+from tools.tournaments.worker import Worker, installed_bundle, outcome_only, pack
 
 FAKE = '''#!/usr/bin/env python3
 import json, pathlib, sys
@@ -120,6 +121,28 @@ class Fixture(unittest.TestCase):
         item = dict(self.job, depends_on=[self.job['id']])
         with self.assertRaises(ValueError): validate_experiment(dict(self.manifest, jobs=[item]))
 
+    def test_pipeline_connection_does_not_reseed_or_repair_ledger(self):
+        self.coordinator.db.execute('DELETE FROM jobs WHERE id=?', (self.job['id'],))
+        with patch.object(Coordinator, 'repair_exports', side_effect=AssertionError('lane repaired exports')):
+            lane = Coordinator(self.coordinator.root, repair=False, manifest=self.coordinator.manifest)
+        try:
+            self.assertIs(lane.manifest, self.coordinator.manifest)
+            self.assertEqual(lane.db.execute('SELECT count(*) FROM jobs').fetchone()[0], 0)
+        finally:
+            lane.close()
+
+    def test_dispatch_streams_past_long_ineligible_prefix(self):
+        fake_build = 'b' * 64
+        self.coordinator.bundles[fake_build] = {'id': fake_build}
+        for ordinal in range(300):
+            blocked = job('generate_map', fake_build, seeds={'map': ordinal + 2}, config={'generator': 15})
+            self.coordinator.db.execute("INSERT INTO jobs VALUES (?,?,?,'pending',NULL,NULL)",
+                                        (blocked['id'], ordinal - 300, canonical(blocked).decode()))
+        with patch('tools.tournaments.coordinator.eligible',
+                   side_effect=lambda bundle, status, kind: bundle['id'] == self.bundle['id']):
+            dispatched = self.coordinator.dispatch('one', self.status)
+        self.assertEqual([attempt['job']['id'] for attempt in dispatched], [self.job['id']])
+
     def test_chunk_resume_lost_ack_corruption(self):
         root = self.root / 'chunks'
         content = b'first-second'
@@ -191,6 +214,31 @@ class Fixture(unittest.TestCase):
             worker.close()
         pack(root, attempt['id'])
         self.assertEqual(read_json(root / 'attempts' / attempt['id'] / 'record.json')['artifacts'], [])
+
+    def test_installed_bundle_is_not_rehashed_per_job(self):
+        path = self.root / 'bundles' / self.bundle['id']
+        with patch('tools.tournaments.worker.inspect_bundle', side_effect=AssertionError('bundle rehashed')):
+            manifest = installed_bundle(path)
+        self.assertEqual(manifest['id'], self.bundle['id'])
+        self.assertEqual(manifest['directory'], str(path.resolve()))
+
+    def test_outcome_result_keeps_elo_and_adjudication_evidence(self):
+        validate_job(dict(self.job, outputs={'result': 'outcome'}))
+        full = {
+            'schema_version': 1, 'status': 'completed', 'ticks': 42,
+            'termination': 'tick_cap', 'winning_teams': [],
+            'teams': [{'team': 0, 'alliance': 1, 'outcome': 'unresolved', 'alive': True,
+                       'eliminated_tick': -1, 'prestige': 7, 'units': 3, 'buildings': 2,
+                       'warrior_attack': 4, 'warrior_hp': 5, 'warriors': 1,
+                       'history': [1, 2, 3]}],
+            'players': [{'player': 0, 'team': 0, 'ai': 'numbi', 'history': [4, 5]}],
+            'telemetry': {'large': [0] * 100},
+        }
+        compact = outcome_only(full)
+        self.assertEqual(compact['teams'][0]['prestige'], 7)
+        self.assertEqual(compact['players'], [{'player': 0, 'team': 0, 'ai': 'numbi'}])
+        self.assertNotIn('history', compact['teams'][0])
+        self.assertNotIn('telemetry', compact)
 
     def test_persistent_daemon_hot_reloads_configure(self):
         """A `configure` RPC (used by `doctor`) runs against a fresh, short-lived
