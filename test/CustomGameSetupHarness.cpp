@@ -21,6 +21,7 @@
 #include <FileManager.h>
 #include <GUIList.h>
 #include <Toolkit.h>
+#include <StringTable.h>
 #include <atomic>
 #include <cassert>
 #include <filesystem>
@@ -544,7 +545,7 @@ struct CustomGameSetupHarness
 			auto text = AINames::getAIProfile(id);
 			assert(text.find("-Profile]") == std::string::npos);
 			assert(text.find("-Summary]") == std::string::npos);
-			CustomGameChoiceScreen profile("AI strategy & counterplay", labels,
+			CustomGameChoiceScreen profile(Toolkit::getStringTable()->getString("[AI strategy & counterplay]"), labels,
 				AINames::selectionIndex(id), true, {});
 			profile.dispatchInit();
 			profile.dispatchPaint(false);
@@ -1523,6 +1524,8 @@ int main(int argc, char **argv)
 	globals.settings.screenHeight = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 700 : 480;
 	globals.settings.screenFlags = GraphicContext::USEGPU;
 	globals.settings.mute = true;
+	if (argc > 3 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
+		globals.settings.language = argv[3];
 	globals.load();
 	if (argc > 1 && (std::string(argv[1]) == "preferences-write" || std::string(argv[1]) == "preferences-read"))
 	{
@@ -1543,6 +1546,7 @@ int main(int argc, char **argv)
 	}
 	if (argc > 2 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
 	{
+		assert(Toolkit::getStringTable()->getString("[language-code]") == globals.settings.language);
 		CustomGameSetupHarness::strategyVisual(argv[1]);
 		return 0;
 	}
@@ -1588,7 +1592,7 @@ int main(int argc, char **argv)
 	assert(AINames::parseAIName("Econo") == AI::ECONO);
 	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
 	assert(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);
-	assert(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths:") != std::string::npos);
+	assert(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths and weaknesses:") != std::string::npos);
 	const auto dir =
 		std::filesystem::temp_directory_path() / ("glob2-setup-test-" + std::to_string(getpid()));
 	std::filesystem::create_directory(dir);

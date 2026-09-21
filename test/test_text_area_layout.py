@@ -90,6 +90,59 @@ int main() {
 }
 '''
 
+LOBBY_MAIN = r'''
+#include "GUITextArea.h"
+#include <algorithm>
+#include <iostream>
+namespace GAGCore {
+struct Font : GAGGUI::TextArea {
+    int getStringHeight(const std::string&) { return 10; }
+};
+struct Toolkit {
+    static Font* getFont(const char*) { static Font font; return &font; }
+};
+}
+class LobbyParagraph {
+public:
+    std::vector<std::string> rows;
+    void text(int, int, const std::string& value, const char*, int width, bool) {
+        // Production text() would truncate an overflowing row with ellipses.
+        assert(GAGCore::Toolkit::getFont("")->getStringWidth(value) <= width);
+        rows.push_back(value);
+    }
+    PRODUCTION_PARAGRAPH
+};
+int main() {
+    for (const auto& input : {"日本語設定画面", "한국어설정화면", "абвгдеж",
+                              "😀😁😂😃", "abcdefg", "日本語設定\n画面"}) {
+        LobbyParagraph layout;
+        int height = layout.paragraph(0, 0, 30, input);
+        std::string joined;
+        for (const auto& row : layout.rows) joined += row;
+        std::string expected = input;
+        expected.erase(std::remove(expected.begin(), expected.end(), '\n'), expected.end());
+        assert(joined == expected);
+        assert(height == int(layout.rows.size()) * 13);
+    }
+    LobbyParagraph words;
+    words.paragraph(0, 0, 30, "ab cd ef");
+    assert((words.rows == std::vector<std::string>{"ab", "cd", "ef"}));
+    LobbyParagraph mixed;
+    mixed.paragraph(0, 0, 30, "ab 日本語設定");
+    assert((mixed.rows == std::vector<std::string>{"ab", "日本語", "設定"}));
+    LobbyParagraph heading;
+    heading.paragraph(0, 0, 30, "長い翻訳見出し", "standard", false, false);
+    assert(heading.rows.size() == 3);
+    LobbyParagraph closing;
+    closing.paragraph(0, 0, 30, "日本語。設定");
+    assert((closing.rows == std::vector<std::string>{"日本", "語。設", "定"}));
+    LobbyParagraph opening;
+    opening.paragraph(0, 0, 30, "日本「語設定」");
+    assert((opening.rows == std::vector<std::string>{"日本", "「語設", "定」"}));
+    std::cout << "Lobby UTF-8 paragraphs: 11 cases passed\n";
+}
+'''
+
 with tempfile.TemporaryDirectory(prefix='glob2-text-layout-') as directory:
     work = Path(directory)
     (work / 'GUITextArea.h').write_text(HEADER, encoding='utf-8')
@@ -100,3 +153,12 @@ with tempfile.TemporaryDirectory(prefix='glob2-text-layout-') as directory:
         str(ROOT / 'libgag/src/GUITextAreaLayout.cpp'), '-o', str(binary)
     ], check=True)
     subprocess.run([str(binary)], check=True)
+    source = (ROOT / 'src/LobbyControls.h').read_text(encoding='utf-8')
+    paragraph = source[source.index('\tint paragraph('):source.index('\tvoid button(')]
+    (work / 'lobby.cpp').write_text(
+        LOBBY_MAIN.replace('PRODUCTION_PARAGRAPH', paragraph), encoding='utf-8')
+    lobby_binary = work / 'lobby-layout-test'
+    subprocess.run(shlex.split(os.environ.get('CXX', 'c++')) + [
+        '-std=c++17', '-I' + str(work), str(work / 'lobby.cpp'), '-o', str(lobby_binary)
+    ], check=True)
+    subprocess.run([str(lobby_binary)], check=True)

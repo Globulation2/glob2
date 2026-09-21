@@ -100,10 +100,10 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 			auto part =
 				content.substr(pos, end == std::string::npos ? std::string::npos : end - pos);
 			auto colon = part.find(':');
-			if (colon != std::string::npos && colon < 40)
+			if (colon != std::string::npos)
 			{
-				ui.text(right, yy, part.substr(0, colon), "standard", rightW - 15);
-				yy += 25;
+				yy += ui.paragraph(right, yy, rightW - 18, part.substr(0, colon),
+								   "standard", false, false) + 8;
 				part = part.substr(colon + 1);
 			}
 			yy += ui.paragraph(right, yy, rightW - 18, part, "standard") + 20;

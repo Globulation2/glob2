@@ -85,7 +85,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		f->popStyle();
 	}
 	int paragraph(int x, int y, int width, const std::string &value, const char *font = "little",
-				  bool centered = false)
+				  bool centered = false, bool quiet = true)
 	{
 		auto f = GAGCore::Toolkit::getFont(font);
 		int row = f->getStringHeight("Ag") + 3, start = y;
@@ -93,7 +93,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		auto flush = [&]
 		{
 			const int offset = centered ? std::max(0, (width - f->getStringWidth(lineText)) / 2) : 0;
-			text(x + offset, y, lineText, font, width - offset, true);
+			text(x + offset, y, lineText, font, width - offset, quiet);
 			y += row;
 			lineText.clear();
 		};
@@ -108,7 +108,43 @@ class LobbyControls : public GAGGUI::RectangularWidget
 						flush();
 					if (!lineText.empty())
 						lineText += ' ';
-					lineText += word;
+					if (f->getStringWidth(word) <= width)
+						lineText += word;
+					else
+					{
+						// Unspaced prose and long words must wrap, not be ellipsized.
+						for (size_t at = 0; at < word.size();)
+						{
+							size_t end = at + 1;
+							while (end < word.size() &&
+								   (static_cast<unsigned char>(word[end]) & 0xc0) == 0x80)
+								++end;
+							auto glyph = word.substr(at, end - at);
+							if (!lineText.empty() && f->getStringWidth(lineText + glyph) > width)
+							{
+								// Keep common CJK closing punctuation with the preceding
+								// character, and opening brackets with the following one.
+								size_t last = lineText.size() - 1;
+								while (last > 0 &&
+									   (static_cast<unsigned char>(lineText[last]) & 0xc0) == 0x80)
+									--last;
+								auto tail = lineText.substr(last);
+								const std::string closing = "。、，．！？：；）］｝〉》」』】〕〗〙〛";
+								const std::string opening = "（［｛〈《「『【〔〖〘〚";
+								if (last > 0 && (closing.find(glyph) != std::string::npos ||
+												 opening.find(tail) != std::string::npos))
+								{
+									lineText.resize(last);
+									flush();
+									lineText = tail;
+								}
+								else
+									flush();
+							}
+							lineText += glyph;
+							at = end;
+						}
+					}
 					word.clear();
 				}
 				if (c == '\n')
