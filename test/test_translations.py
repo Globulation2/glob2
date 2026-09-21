@@ -34,6 +34,10 @@ class TranslationAuditTest(unittest.TestCase):
                     if key.endswith('-Profile]'):
                         self.assertEqual(value.count(r'\n\n'), source.count(r'\n\n'))
                         self.assertTrue(all(part.strip() for part in value.split(r'\n\n')))
+                        for section in value.split(r'\n\n'):
+                            heading, separator, body = section.partition(':')
+                            self.assertTrue(separator and heading.strip() and body.strip(),
+                                            'Profile sections need a heading and body separated by ASCII colon')
 
     def test_duplicate_values_are_reported_without_rewriting(self):
         with tempfile.TemporaryDirectory() as directory:
