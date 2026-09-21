@@ -9,14 +9,15 @@ import sys
 import tempfile
 import time
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools.tournaments.bundles import package_identity, platform_identity, register_bundle
-from tools.tournaments.common import atomic_json, digest, file_hash, read_json, store_artifact
+from tools.tournaments.common import atomic_json, canonical, digest, file_hash, read_json, store_artifact
 from tools.tournaments.coordinator import Coordinator
-from tools.tournaments.model import job, validate_experiment
+from tools.tournaments.model import job, validate_experiment, validate_job
 from tools.tournaments.transfer import put_chunk, offset
-from tools.tournaments.worker import Worker
+from tools.tournaments.worker import Worker, installed_bundle, outcome_only, pack
 
 FAKE = '''#!/usr/bin/env python3
 import json, pathlib, sys
@@ -120,6 +121,28 @@ class Fixture(unittest.TestCase):
         item = dict(self.job, depends_on=[self.job['id']])
         with self.assertRaises(ValueError): validate_experiment(dict(self.manifest, jobs=[item]))
 
+    def test_pipeline_connection_does_not_reseed_or_repair_ledger(self):
+        self.coordinator.db.execute('DELETE FROM jobs WHERE id=?', (self.job['id'],))
+        with patch.object(Coordinator, 'repair_exports', side_effect=AssertionError('lane repaired exports')):
+            lane = Coordinator(self.coordinator.root, repair=False, manifest=self.coordinator.manifest)
+        try:
+            self.assertIs(lane.manifest, self.coordinator.manifest)
+            self.assertEqual(lane.db.execute('SELECT count(*) FROM jobs').fetchone()[0], 0)
+        finally:
+            lane.close()
+
+    def test_dispatch_streams_past_long_ineligible_prefix(self):
+        fake_build = 'b' * 64
+        self.coordinator.bundles[fake_build] = {'id': fake_build}
+        for ordinal in range(300):
+            blocked = job('generate_map', fake_build, seeds={'map': ordinal + 2}, config={'generator': 15})
+            self.coordinator.db.execute("INSERT INTO jobs VALUES (?,?,?,'pending',NULL,NULL)",
+                                        (blocked['id'], ordinal - 300, canonical(blocked).decode()))
+        with patch('tools.tournaments.coordinator.eligible',
+                   side_effect=lambda bundle, status, kind: bundle['id'] == self.bundle['id']):
+            dispatched = self.coordinator.dispatch('one', self.status)
+        self.assertEqual([attempt['job']['id'] for attempt in dispatched], [self.job['id']])
+
     def test_chunk_resume_lost_ack_corruption(self):
         root = self.root / 'chunks'
         content = b'first-second'
@@ -167,6 +190,164 @@ class Fixture(unittest.TestCase):
             worker.configure({'disk_reserve_bytes': 10**30})
             self.assertFalse(worker.status()['accepting'])
         finally: worker.close()
+
+    def test_standard_elo_pack_omits_incidental_outputs(self):
+        import shutil
+        worker = Worker(self.root / 'lightweight-worker')
+        try:
+            attempt = self.coordinator.dispatch('one', self.status)[0]
+            attempt['job']['type'] = 'game'
+            attempt['job']['config']['players'] = ['numbi', 'castor']
+            attempt['job']['seeds']['game'] = 1
+            shutil.copytree(self.root / 'bundles' / self.bundle['id'], worker.root / 'bundles' / self.bundle['id'])
+            worker.enqueue(attempt)
+            directory = worker.root / 'attempts' / attempt['id']
+            output = directory / 'output'; output.mkdir()
+            (output / 'incidental.log').write_text('not an explicit output')
+            atomic_json(directory / 'execution.json', {
+                'category': 'success',
+                'finished': time.time(),
+                'result': {'schema_version': 1, 'status': 'completed'},
+            })
+            root = worker.root
+        finally:
+            worker.close()
+        pack(root, attempt['id'])
+        self.assertEqual(read_json(root / 'attempts' / attempt['id'] / 'record.json')['artifacts'], [])
+
+    def test_installed_bundle_is_not_rehashed_per_job(self):
+        path = self.root / 'bundles' / self.bundle['id']
+        with patch('tools.tournaments.worker.inspect_bundle', side_effect=AssertionError('bundle rehashed')):
+            manifest = installed_bundle(path)
+        self.assertEqual(manifest['id'], self.bundle['id'])
+        self.assertEqual(manifest['directory'], str(path.resolve()))
+
+    def test_outcome_result_keeps_elo_and_adjudication_evidence(self):
+        validate_job(dict(self.job, outputs={'result': 'outcome'}))
+        full = {
+            'schema_version': 1, 'status': 'completed', 'ticks': 42,
+            'termination': 'tick_cap', 'winning_teams': [],
+            'teams': [{'team': 0, 'alliance': 1, 'outcome': 'unresolved', 'alive': True,
+                       'eliminated_tick': -1, 'prestige': 7, 'units': 3, 'buildings': 2,
+                       'warrior_attack': 4, 'warrior_hp': 5, 'warriors': 1,
+                       'history': [1, 2, 3]}],
+            'players': [{'player': 0, 'team': 0, 'ai': 'numbi', 'history': [4, 5]}],
+            'telemetry': {'large': [0] * 100},
+        }
+        compact = outcome_only(full)
+        self.assertEqual(compact['teams'][0]['prestige'], 7)
+        self.assertEqual(compact['players'], [{'player': 0, 'team': 0, 'ai': 'numbi'}])
+        self.assertNotIn('history', compact['teams'][0])
+        self.assertNotIn('telemetry', compact)
+
+    def test_persistent_daemon_hot_reloads_configure(self):
+        """A `configure` RPC (used by `doctor`) runs against a fresh, short-lived
+        Worker instance, distinct from the one a long-running `daemon` process
+        holds for its whole lifetime. Without reload_config(), the daemon's own
+        copy of self.config never saw the change -- slots silently stayed at
+        whatever they were when the daemon started, no matter how many times
+        `doctor` rewrote host.json (this is exactly what happened in production
+        on 2026-09-17: three `doctor` redeploys never took effect until the
+        daemon processes were manually killed and restarted)."""
+        daemon_side = Worker(self.root / 'reload-worker')
+        try:
+            self.assertEqual(daemon_side.config['slots'], daemon_side.config['slots'])
+            original_slots = daemon_side.config['slots']
+            rpc_side = Worker(self.root / 'reload-worker')
+            try:
+                rpc_side.configure({'slots': original_slots + 7})
+            finally:
+                rpc_side.close()
+            # The persistent instance must not have silently mutated in lockstep.
+            self.assertEqual(daemon_side.config['slots'], original_slots)
+            daemon_side.tick()
+            self.assertEqual(daemon_side.config['slots'], original_slots + 7)
+        finally:
+            daemon_side.close()
+
+
+class InventoryTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def install(self, name, pid, package_id='pkg', slots=3, running=0, queued=0):
+        from tools.tournaments.common import database
+        directory = self.root / name
+        worker_root = directory / 'workers' / package_id
+        worker_root.mkdir(parents=True)
+        atomic_json(worker_root / 'daemon.json', {'pid': pid, 'package_id': package_id})
+        atomic_json(worker_root / 'host.json', {'slots': slots})
+        db = database(worker_root / 'queue.sqlite')
+        db.executescript('CREATE TABLE queue (state TEXT NOT NULL)')
+        db.executemany('INSERT INTO queue VALUES (?)', [('running',)] * running + [('queued',)] * queued)
+        db.commit(); db.close()
+        return directory
+
+    def test_discover_finds_installs_and_reports_liveness(self):
+        from tools.tournaments.inventory import discover
+        from tools.tournaments.transport import Transport
+        import os
+        live = self.install('mine', os.getpid(), running=2, queued=5)
+        dead_pid = 2**30 - 1  # exceedingly unlikely to be a real running pid
+        dead = self.install('abandoned', dead_pid)
+        transport = Transport({'name': 'localhost', 'transport': 'local', 'directory': str(live)}, '/dev/null')
+        found = {entry['directory']: entry for entry in discover(transport, root=str(self.root))}
+        self.assertEqual(set(found), {str(live), str(dead)})
+        self.assertTrue(found[str(live)]['alive'])
+        self.assertEqual(found[str(live)]['running'], 2)
+        self.assertEqual(found[str(live)]['queued'], 5)
+        self.assertFalse(found[str(dead)]['alive'])
+
+    def test_audit_flags_dead_and_idle_installs_as_stale(self):
+        from tools.tournaments.inventory import audit
+        import os
+        self.install('mine', os.getpid(), running=2)
+        dead = self.install('abandoned', 2**30 - 1)
+        old = time.time() - 999999
+        os.utime(dead / 'workers' / 'pkg' / 'queue.sqlite', (old, old))
+        # Alive but idle for days: the coordinator that owned it is gone, but
+        # nothing killed the daemon itself -- exactly the "orphaned run that
+        # never recovers" case, distinct from an outright-dead process.
+        idle_alive = self.install('idle-forever', os.getpid())
+        os.utime(idle_alive / 'workers' / 'pkg' / 'queue.sqlite', (old, old))
+        hosts = [{'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}]
+        report = audit(hosts, stale_hours=1, root=str(self.root))
+        installs = {i['directory']: i for i in report[0]['installs']}
+        self.assertFalse(installs[str(self.root / 'mine')]['stale'])
+        self.assertTrue(installs[str(dead)]['stale'])
+        self.assertTrue(installs[str(idle_alive)]['stale'])
+        self.assertTrue(installs[str(idle_alive)]['alive'])  # stale despite being alive
+        self.assertTrue(installs[str(self.root / 'mine')]['own'])
+        self.assertFalse(installs[str(dead)]['own'])
+
+    def test_reap_requires_confirm_and_only_stops_named_pid(self):
+        from tools.tournaments.inventory import reap
+        import subprocess, sys
+        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])
+        try:
+            directory = self.install('other-session', process.pid)
+            host = {'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}
+            dry_run = reap(host, str(directory), confirm=False, root=str(self.root))
+            self.assertEqual(dry_run['action'], 'dry-run')
+            self.assertIsNone(process.poll())  # still alive: dry run touched nothing
+            result = reap(host, str(directory), confirm=True, root=str(self.root))
+            self.assertEqual(result['action'], 'signalled')
+            process.wait(timeout=5)
+            self.assertIsNotNone(process.poll())
+        finally:
+            if process.poll() is None:
+                process.kill(); process.wait()
+
+    def test_reap_unknown_directory_raises(self):
+        from tools.tournaments.inventory import reap
+        self.install('mine', 999999999)
+        host = {'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}
+        with self.assertRaises(ValueError):
+            reap(host, str(self.root / 'never-existed'), confirm=True, root=str(self.root))
 
 
 class AnalysisTests(unittest.TestCase):
@@ -225,7 +406,7 @@ class AnalysisTests(unittest.TestCase):
 
     def test_planning_balance_and_ablations(self):
         from tools.tournaments.experiments import Planner
-        bundle={'id':'a'*64,'capabilities':{'ais':[{'id':1,'name':'numbi'},{'id':2,'name':'castor'}]}}
+        bundle={'id':'a'*64,'capabilities':{'ais':[{'id':1,'name':'numbi'},{'id':2,'name':'castor'}], 'generators':[{'method':15,'editorOnly':False}]}}
         config={'id':'balance','ais':['numbi','castor'],'formats':['1v1'],'map_seeds':[1,2]}
         manifest=Planner('ai_comparison',config,[bundle]).plan()
         games=[j for j in manifest['jobs'] if j['type']=='game']
@@ -233,6 +414,11 @@ class AnalysisTests(unittest.TestCase):
         for seed in (1,2):
             block=[j for j in games if j['labels']['map_seed']==seed]
             self.assertEqual(sum(j['config']['players'][0]=='numbi' for j in block),2)
+        for j in games:
+            self.assertEqual(j['outputs'], {})  # standard Elo needs only the result
+        explicit=Planner('ai_comparison',{**config,'outputs':{}},[bundle]).plan()
+        for j in explicit['jobs']:
+            if j['type']=='game': self.assertEqual(j['outputs'], {})  # caller's own outputs, not overridden
         config={'id':'paired','map_seeds':[1],'held_out_map_seeds':[2],
                 'players':['cortex','nicowar'],'one_parameter':{'swarmWorkerCap':[4,7]}}
         manifest=Planner('ablations',config,[bundle]).plan()
@@ -243,6 +429,106 @@ class AnalysisTests(unittest.TestCase):
         for paired in pairs.values():
             self.assertEqual(len(paired),3)
             self.assertEqual(len({j['inputs']['map']['job'] for j in paired}),1)
+
+    def test_the_win_probability_rule_is_off_unless_the_design_asks(self):
+        """It changes the outcome that gets measured, so it must never arrive by
+        default -- and when it is asked for it has to reach the engine."""
+        from tools.tournaments.experiments import Planner
+        from tools.tournaments.jobs import EngineJob
+        bundle = {'id': 'a'*64, 'capabilities': {
+            'ais': [{'id': 1, 'name': 'numbi'}, {'id': 2, 'name': 'castor'}],
+            'generators': [{'method': 15, 'editorOnly': False}]}}
+        base = {'id': 'sample', 'sample_games': 5, 'sample_seed': 3}
+        plain = Planner('ai_comparison', dict(base), [bundle]).plan()
+        for job in plain['jobs']:
+            self.assertNotIn('win_probability_permille', job['config'])
+        asked = Planner('ai_comparison', dict(base, win_probability_permille=970), [bundle]).plan()
+        games = [j for j in asked['jobs'] if j['type'] == 'game']
+        self.assertTrue(games)
+        for job in games:
+            self.assertEqual(job['config']['win_probability_permille'], 970)
+        # And the flag has to survive the trip into the engine's command line,
+        # which is the only part the engine actually sees.
+        bundle_directory = {'directory': '/bundle', 'executable': 'glob2'}
+        arguments = EngineJob('game').command(games[0], bundle_directory, '/tmp/attempt', {})
+        self.assertIn('--win-probability', arguments)
+        self.assertEqual(arguments[arguments.index('--win-probability') + 1], '970')
+        plain_game = next(j for j in plain['jobs'] if j['type'] == 'game')
+        self.assertNotIn('--win-probability',
+                         EngineJob('game').command(plain_game, bundle_directory, '/tmp/attempt', {}))
+
+    def test_sample_games_uses_standard_duels_via_inline_generation(self):
+        """The standard Elo cohort uses 128x128 duels. Sampling remains the one
+        place ai_comparison departs from an exhaustive cross product."""
+        from tools.tournaments.experiments import Planner
+        bundle = {'id': 'a'*64, 'capabilities': {
+            'ais': [{'id': 1, 'name': 'numbi'}, {'id': 2, 'name': 'castor'},
+                    {'id': 3, 'name': 'warrush'}, {'id': 4, 'name': 'econo'}],
+            'generators': [{'method': 15, 'editorOnly': False}, {'method': 21, 'editorOnly': False},
+                           {'method': 0, 'editorOnly': True}]}}
+        config = {'id': 'sample', 'sample_games': 40, 'sample_seed': 7}
+        manifest = Planner('ai_comparison', config, [bundle]).plan()
+        games = [j for j in manifest['jobs'] if j['type'] == 'game']
+        self.assertEqual(len(games), 40)
+        formats, generators = set(), set()
+        for j in games:
+            self.assertNotIn('map', j['inputs'])  # inline generation, no generate_map dependency
+            self.assertEqual(j['depends_on'], [])
+            self.assertIn('generator', j['config'])
+            self.assertEqual(j['outputs'], {})  # standard Elo needs only the result
+            formats.add(j['labels']['format'])
+            generators.add(j['config']['generator'])
+            n = 2 if j['labels']['format'] == '1v1' else 4
+            self.assertEqual(len(j['config']['players']), n)
+        self.assertEqual(formats, {'1v1'})
+        self.assertEqual(generators, {15, 21})  # all playable generators, never editor-only
+        for j in games:
+            self.assertEqual(j['config']['params']['width'], 7)
+            self.assertEqual(j['config']['params']['height'], 7)
+        # Same seed is reproducible; a different one draws a different sample.
+        again = Planner('ai_comparison', config, [bundle]).plan()
+        self.assertEqual([j['id'] for j in manifest['jobs']], [j['id'] for j in again['jobs']])
+        different = Planner('ai_comparison', {**config, 'sample_seed': 8}, [bundle]).plan()
+        self.assertNotEqual([j['id'] for j in manifest['jobs']], [j['id'] for j in different['jobs']])
+        # Restricting generators/sizes/formats is respected.
+        narrow = Planner('ai_comparison', {**config, 'generators': [21], 'sizes': [{'width': 7, 'height': 8}],
+                                           'formats': ['ffa'], 'sample_games': 5}, [bundle]).plan()
+        for j in [job for job in narrow['jobs'] if job['type'] == 'game']:
+            self.assertEqual(j['config']['generator'], 21)
+            self.assertEqual(j['config']['params']['width'], 7)
+            self.assertEqual(j['config']['params']['height'], 8)
+            self.assertEqual(j['labels']['format'], 'ffa')
+
+    def test_balanced_duels_cover_all_generators_and_swapped_pairs(self):
+        from collections import Counter, defaultdict
+        from tools.tournaments.experiments import Planner
+        bundle = {'id': 'a'*64, 'capabilities': {
+            'ais': [{'id': i+1, 'name': name} for i, name in enumerate(
+                ['numbi', 'castor', 'warrush', 'econo', 'cortex', 'cabino', 'nicowar', 'maxima'])],
+            'generators': [{'method': i, 'editorOnly': i == 0} for i in range(67)]}}
+        config = {'id': 'balanced', 'sample_games': 10000, 'sample_seed': 20260920,
+                  'balanced_duels': True, 'generator_overrides': {'52': {'slant': 0}}}
+        games = Planner('ai_comparison', config, [bundle]).plan()['jobs']
+        self.assertEqual(len(games), 10000)
+        counts = Counter(g['config']['generator'] for g in games)
+        self.assertEqual(set(counts), set(range(1, 67)))
+        self.assertEqual(Counter(counts.values()), {150: 16, 152: 50})
+        matchups = Counter(tuple(sorted(g['config']['players'])) for g in games)
+        self.assertEqual(len(matchups), 28)
+        self.assertEqual(set(matchups.values()), {356, 358})
+        blocks = defaultdict(list)
+        for game in games:
+            blocks[game['labels']['block']].append(game)
+            self.assertEqual(game['config']['params'], {'width': 7, 'height': 7, 'teams': 2,
+                **({'slant': 0} if game['config']['generator'] == 52 else {})})
+        self.assertEqual(len(blocks), 5000)
+        for a, b in blocks.values():
+            self.assertEqual(a['seeds'], b['seeds'])
+            self.assertEqual(a['build'], b['build'])
+            self.assertEqual(a['config']['players'], b['config']['players'][::-1])
+        self.assertEqual(games, Planner('ai_comparison', config, [bundle]).plan()['jobs'])
+        with self.assertRaises(ValueError):
+            Planner('ai_comparison', dict(config, sample_games=9999), [bundle]).plan()
 
     def test_manifest_order_offline_reanalysis(self):
         from tools.tournaments.analysis import rate,observations

@@ -166,6 +166,10 @@ and result collection. Every host has a control lane; bulk transfers cannot bloc
 its heartbeats or wait for another host's transfer slot. Finished-but-uncollected
 attempts retain their leases but no longer occupy compute prefetch capacity.
 Worker disk/spool limits and a separate result-backlog cap bound storage pressure.
+Pipeline lanes share the already-loaded immutable manifest and open the existing
+ledger without replaying job initialization or export repair. Dispatch streams
+pending rows only until a host is full, so large manifests do not become a
+per-heartbeat Python allocation.
 
 ## Protocol and manifest fields
 
@@ -186,7 +190,7 @@ Every job has these fields:
 | `depends_on` | Job IDs; every input dependency must appear; cycles rejected |
 | `seeds` | `{"game":N}` or `{"map":N}`; empty on saved games |
 | `config` | Game: players, ticks, ai_params (player-string to key/value object), alliances, winning_conditions. Generator: generator, params, candidates, rotations. Defaults follow CLI |
-| `outputs` | replay false; saves/telemetry/reports empty lists; map false; core/stack false; required empty list of relative output paths |
+| `outputs` | replay false; saves/telemetry/reports empty lists; map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
 | `limits` | timeout_seconds 3600, memory_mb host default, estimated_seconds 60 (buffer planning only) |
 | `labels` | Opaque JSON object preserved unchanged |
 
@@ -287,6 +291,28 @@ outbound SSH sessions. No port or service is opened on the coordinator.
 | diagnose RESULTS JOB --output MANIFEST | New one-job manifest with retained dependency artifacts, expanded saves/telemetry/core/stack |
 | cleanup RESULTS --reports/--transfers | Remove regenerable reports or inactive transfer staging |
 | cleanup RESULTS --worker-hosts FILE --objects/--bundles | Remove idle worker input caches and/or installed bundles |
+| audit --hosts FILE [--stale-hours N] | Discover every worker install found under each host's home directory, not just the ones named in FILE; read-only |
+| reap --hosts FILE --host NAME --directory DIR [--confirm] | Stop one stale install's daemon by exact PID; never deletes files; omit --confirm for a dry run |
+
+`audit` walks each host for the fixed `<directory>/workers/<package_id>/` layout
+every install shares (regardless of which package/protocol version it runs, since
+it only reads on-disk state, never that install's RPC) and flags an install stale
+when its daemon isn't running, or when it's still running but has had no
+running/queued work for `--stale-hours` (default 24) — a coordinator that died or
+a session that ended without cancelling leaves its worker idling indefinitely
+otherwise, invisible to anyone not already looking for it. `reap` stops exactly
+the PID `audit` reported for that directory, never a pattern match against
+process listings — a broad `pkill -f` risks matching its own invoking shell and
+killing the wrong session's work, which is how this tooling was actually being
+operated by hand before `audit`/`reap` existed. Deleting a stale install's files
+is a separate, deliberate decision left to a human; reap only frees the slot.
+
+A `doctor`/`run` deployment's `configure` RPC updates a worker's `host.json` but,
+before this, had no effect on an already-running daemon: the daemon holds its own
+`Worker` instance for its whole lifetime and never re-read the file, so slot/build/
+budget changes silently didn't take effect until something else caused the daemon
+to restart. The daemon now reloads `host.json` on every tick (sub-second), so
+raising `slots` (for example) takes effect on the next tick, no restart required.
 
 Continue `run` or invoke `collect` after changing controls so connected workers
 receive them. Disconnected workers may finish before learning cancellation; those
@@ -333,16 +359,64 @@ All four modules support `plan CONFIG --bundle DIR --output FILE`,
 Shared design fields: id; builds (all supplied by default); map_build (first build);
 generators [15]; map_seeds [1001]; game_seeds [1]; generator_params {}; candidates 5
 for reusable maps; ticks 90000; timeout_seconds 3600; generation_timeout_seconds
-1800; outputs {}; settings {}; labels {}. Build cohorts use common generated maps
+1800; outputs {}; settings {}; labels {}; win_probability_permille 0 (off). Build
+cohorts use common generated maps
 unless generator variation itself is the experiment. Each build needs an eligible
 host. Generator defaults/ranges are always discoverable in its pinned catalog.
 
-* `ai_comparison`: ais defaults to all active selectable implementations;
-  formats defaults to 1v1, 2v2, ffa. Duels pair every AI; 2v2 defaults to homogeneous
+* `ai_comparison`: ais defaults to all active selectable implementations. The standard
+  Elo cohort defaults to 1v1 on generated 128x128 maps (`width` and `height` are
+  both exponent 7), which keeps ratings directly comparable while minimizing CPU.
+  It records only each game's result by default; request `outputs.telemetry`
+  explicitly when a study needs per-tick AI or team history. Incidental maps,
+  logs and reports are omitted for successful game jobs with no requested outputs;
+  failed jobs and map-generation jobs retain their diagnostic artifacts.
+  For rating-only runs, set `outputs.result` to `outcome`. The retained payload
+  includes termination, winners, team/player identity, survival, prestige and
+  military totals needed by every supported adjudication policy, while omitting
+  per-tick histories and other bulky result details. Installed bundles are fully
+  hashed before atomic publication and then treated as immutable; workers do not
+  rehash the complete bundle before every queued game.
+  `formats` and `generator_params` can explicitly request another study design. Duels
+  pair every AI; 2v2 defaults to homogeneous
   pairs and accepts explicit two-player `rosters`; four-colony FFA balances AI
   participation through combinations and cyclic player orders. Map rotations and
   player-order rotations balance team indices and starts. Identical logical jobs
   are deduplicated, not counted as independent evidence.
+
+  An exhaustive `ai_comparison` sweep is a cross product of every dimension --
+  AIs x formats x generators x map seeds x sizes -- which reaches into the
+  hundreds of thousands of games for a broad generator sweep. Set `sample_games`
+  (an integer count) to draw a bounded random sample instead: each sample game
+  independently draws its AI matchup and generator; the standard format and size
+  remain 1v1 and 128x128 unless the configuration overrides them. Games are submitted
+  as a single inline-generation job (`--generator`/`--map-seed` embedded directly
+  in `--run-game`, no separate `generate_map` dependency). `sample_seed` (default
+  1) makes the draw reproducible; `sizes` is a list of `generator_params`-shaped
+  dicts to choose from per sample (defaulting to one 128x128 size, or to an
+  explicit `generator_params` value); `generators` still
+  restricts the pool as in the exhaustive design. By default, **all playable
+  generators** in the supplied build are included; editor-only generators are
+  excluded. Catalog controls are not a compatibility guarantee: preflight the
+  chosen size and colony count against the engine, publish exclusions, and use
+  `generator_overrides` for documented generator-specific settings (for example,
+  `{"52": {"slant": 0}}` for Rice Terraces at 128x128). Never silently replace a
+  failed generator with another one. A single-generator cohort is a specialized experiment and must not
+  be presented as general AI strength.
+
+  Set `balanced_duels: true` for a balanced 1v1 sample: `sample_games` must be
+  even, with one map size and at least two AIs. Each block plays the same map and
+  game seed twice, swapping the AI starting sides. Generator quotas differ by at
+  most two games, as do total AI-pair quotas. Block order and build assignment are
+  shuffled reproducibly. For 10,000 games across 66 generators and eight AIs,
+  this means 150 or 152 games per generator and 356 or 358 games per AI pairing.
+  Bootstrap uncertainty must resample whole paired blocks. Build IDs repeated
+  in `builds` retain their weighting for heterogeneous worker capacity.
+  `ais`/`formats`/`ticks`/`candidates` are shared with the exhaustive path and mean
+  the same thing. This is the *only* sampling path for `ai_comparison` -- do not
+  add a second, separate script that reimplements job construction outside this
+  Planner; `reanalyze` and every other analysis entry point already work on
+  either design unchanged, since both produce the same job/label shape.
 * `fairness`: colonies 4, ai nicowar. Reuses each identical map across every team
   rotation. Generator 15 supplies symmetric controls. Preserves the legacy tested
   multinomial/Fisher methods, unbiased squared-bias estimator, sampling floor,
@@ -366,12 +440,22 @@ survivors by prestige, unit count, then finished buildings; exact ties stay tied
 Alternatives draw all survivors or rank warrior attack strength, HP, count.
 Eliminated colonies rank by elimination tick. 2v2 aggregates surviving roster
 statistics. Reports record policy name/version/options and engine/adjudicated status.
-Elo starts at 1500, K=32; manifest order determines updates, never completion order.
-2v2 rosters are competitors. FFA updates all pairwise scores simultaneously,
-normalizing by opponent count. Formats and build cohorts have separate ratings.
-Seeded uncertainty resamples complete map/seed blocks, preserving within-block
-manifest order; incomplete blocks contribute observations but not block uncertainty.
-Ablation intervals resample paired effects. Sparse/empty estimates are explicit nulls.
+Standard 1v1 ratings fit all observed outcomes at once with the Bradley–Terry
+logistic model: each game has equal weight, ties score 0.5, and input/completion
+order has no effect. Ratings are centred on 1500 with 400 points per tenfold odds;
+there is no K factor or regularization. Disconnected or undefeated groups have no
+finite maximum-likelihood fit and are reported as unavailable, not assigned a
+fabricated finite score. Formats/builds remain separate unless pooling is explicit.
+
+Duel intervals resample complete swapped-side pairs within each generator, retaining
+its quota. Incomplete pairs contribute to the point fit, but not uncertainty; both
+counts and unavailable intervals are explicit. These are sampling intervals for
+the chosen generator mix and adjudication policy, not a guarantee of unbiased
+strength on every map. `tools/tournaments/duel_ratings.py` is the standard-library
+implementation, also usable to refit retained outcomes without running games.
+Historical sequential Elo/uncertainty remain separately labelled diagnostics;
+non-duel formats retain K=32 pairwise updates. Ablation intervals resample paired
+effects.
 
 Legacy entry points remain: `ai-benchmark.sh` delegates to this package (its legacy
 capped-game summary remains a draw); `cortex-knob-search.py` invokes that benchmark;
@@ -441,6 +525,29 @@ Native `--generate-map NAME --json FILE` uses tile dimensions; the structured
 `--generate-map --output-dir DIR` interface uses exponent dimensions as documented
 above. Both use the same production report serializer.
 
+## Ending decided games early
+
+`"win_probability_permille": 970` in an experiment design turns on the optional
+[win probability](win-probability-model.md) winning condition for its games, so a
+match that is already decided is not played out. It is off by default, because it
+changes the outcome that gets measured and so must be asked for.
+
+On the campaign it was fitted from, 970 returned about a fifth of the compute and
+named a different winner than the full game would have in 2.3% of the games it
+ended; 990 returns about a tenth for 0.8%. Games it ended report a `termination`
+of `win_probability` rather than `engine_end`, and `observations()` carries the
+raw termination through, so analysis can pool, exclude or compare them but can
+never mistake the model's opinion for a win the rules declared. Do not compare
+ratings gathered with the condition on against ratings gathered without it.
+
+`tools/tournaments_ai_leaderboard.py` pools compatible directories explicitly and
+uses the same batch duel estimator and paired-block intervals. It rejects duplicate
+job IDs; keep AI source/settings and map distributions comparable yourself. Other
+formats retain their earlier sequential Elo and penalized finishing-order fits.
+For another batch, choose a new sample seed, audit map-seed/job-ID overlap, retain
+both side-swapped games, and refit the concatenated outcomes. Never average the
+batch ratings or restart from the old rounded UI scores.
+
 ## Gameplay, AI and performance telemetry
 
 Add `"outputs":{"telemetry":["team-timeline"]}` to an experiment configuration
@@ -450,7 +557,11 @@ schemas/current/history/final values, and engine performance samples/final total
 Collection remains automatic; export remains opt-in. No extra worker service,
 transport option or result-schema migration is needed. The catalog advertises
 `gameplay_telemetry_version`, `ai_telemetry_version`, and
-`performance_telemetry_version` (gameplay 2, AI 1, performance 1). Old bundles can still run and their
+`performance_telemetry_version` (gameplay 2, AI 1, performance 1). The typed
+reader also covers the per-team `GLOB2_ECON`/`GLOB2_TL` timeline and the
+`GLOB2_WINPROB` trace as a `team_state` family; unlike the gameplay measurements
+these come straight off `TeamStat`, which is what makes them usable as model
+inputs for something the simulation itself reads. Old bundles can still run and their
 missing new record families are reported as unavailable.
 
 Workers already retain `stdout.log`, compress it, checksum it and transfer it with
