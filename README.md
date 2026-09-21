@@ -1,6 +1,8 @@
 # AI profile localization validation
 
-Source commit: `e4ef8c4d7` in Globulation2/glob2.
+Source commit: `72bdd3162` in Globulation2/glob2 (screenshots and initial checks at `e4ef8c4d7`; follow-up updates a stale section-heading assertion only).
+
+`harness-build.log` and `harness-run.log` record the follow-up rebuild and full no-argument CustomGameSetupHarness execution. All custom setup tests passed, including actual matches and replay playback.
 
 This evidence branch is intentionally separate from the product branch.
 
