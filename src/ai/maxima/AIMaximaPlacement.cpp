@@ -1597,12 +1597,14 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 	if(originCursor==0)for(size_t c=0;c<campusList.size();++c)
 	{
 		Campus& campus=campusList[c]; const DevelopmentTemplate* t=findTemplate(campus.templateId);
-		if(!t||t->buildingType!=intent.buildingType)continue;
+		if(!t)continue;
 		for(size_t s=0;s<campus.slots.size();++s)
 		{
 			if(campus.slots[s].unusable||campus.slots[s].buildingId>=0
 			   ||campus.slots[s].actionId>=0)continue;
-			const PlannedSlot& slot=t->slots[s]; Candidate candidate;
+			PlannedSlot slot;
+			if(!campusMemberSlot(*t,s,intent.buildingType,slot))continue;
+			Candidate candidate;
 			candidate.action.type=BuildCampusMember;candidate.action.templateId=t->id;
 			candidate.action.purpose=intent.purpose;
 			candidate.action.replacesBuildingId=intent.replacesBuildingId;
@@ -1689,6 +1691,9 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				candidate.action.workers=intent.workers;candidate.action.targetLevel=1;
 				candidate.action.initialFootprint=t.slots[0].initialFootprint;
 				candidate.action.terminalFootprint=t.slots[0].terminalFootprint;
+				std::vector<int> sharedEdge,neighborFootprint;
+				const int adjoining=adjoiningBarracks(world,candidate.action,
+					sharedEdge,neighborFootprint);
 				RejectionReason reason=RejectedTerrain;
 				// Reject illegal rectangles before allocating their parcel vector.
 				// Most origins fail this inexpensive pass, so materialize tile lists
@@ -1709,7 +1714,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 						{reason=RejectedPermanentResource;parcelLegal=false;break;}
 						if(isFootprintReserved(index))
 						{reason=RejectedReservation;parcelLegal=false;break;}
-						if(isCirculationReserved(index))
+						if(isCirculationReserved(index)&&!contains(sharedEdge,index))
 						{reason=RejectedCirculation;parcelLegal=false;break;}
 					}
 				if(!parcelLegal)
@@ -1731,6 +1736,11 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				if(!initialClear)
 				{lastDiagnostics.rejected[RejectedClearableResource]++;continue;}
 				candidate.action.accessTiles=parcelRingTiles(world,originX,originY,t);
+				if(adjoining>=0)
+					candidate.action.accessTiles.erase(std::remove_if(
+						candidate.action.accessTiles.begin(),candidate.action.accessTiles.end(),
+						[&](int index){return contains(neighborFootprint,index);}),
+						candidate.action.accessTiles.end());
 				bool ringLegal=true;
 				for(size_t i=0;i<candidate.action.accessTiles.size();++i)
 				{
@@ -1824,6 +1834,93 @@ int Planner::findCampusIndex(int id) const
 { for(size_t i=0;i<campusList.size();++i)if(campusList[i].id==id)return int(i);return -1; }
 int Planner::findStandaloneIndex(int buildingId) const
 { for(size_t i=0;i<standaloneList.size();++i)if(standaloneList[i].buildingId==buildingId)return int(i);return -1; }
+int Planner::adjoiningBarracks(const WorldState& world,const DevelopmentAction& action,
+	std::vector<int>& sharedEdge,std::vector<int>& neighborFootprint) const
+{
+	sharedEdge.clear();neighborFootprint.clear();
+	if(action.type!=BuildStandalone||action.buildingType!=configuredBarracksType)
+		return -1;
+	const Footprint& f=action.terminalFootprint;
+	const BuildingProfile* profile=configuredProfile(configuredBarracksType);
+	if(!profile||f.empty())return -1;
+	// Only fixed-size barracks can share an edge without sacrificing upgrades.
+	for(const auto& level:profile->levels)
+		if(level.footprint.left!=f.left||level.footprint.top!=f.top
+		   ||level.footprint.width!=f.width||level.footprint.height!=f.height)return -1;
+	for(const auto& contract:standaloneList)
+	{
+		if(contract.buildingType!=configuredBarracksType)continue;
+		const WorldBuilding* building=world.building(contract.buildingId);
+		if(!building||building->site||building->upgrading)continue;
+		const bool horizontal=world.normalizeY(action.centerY)==world.normalizeY(building->centerY)
+			&&(world.normalizeX(action.centerX-building->centerX)==f.width
+			   ||world.normalizeX(building->centerX-action.centerX)==f.width);
+		const bool vertical=world.normalizeX(action.centerX)==world.normalizeX(building->centerX)
+			&&(world.normalizeY(action.centerY-building->centerY)==f.height
+			   ||world.normalizeY(building->centerY-action.centerY)==f.height);
+		if(!horizontal&&!vertical)continue;
+		const auto reservation=reservationMap.find(contract.reservationId);
+		if(reservation==reservationMap.end())continue;
+		const auto footprint=footprintTiles(world,building->centerX,building->centerY,f);
+		if(footprint!=reservation->second.footprintTiles)continue;
+		const auto parcel=footprintTiles(world,action.centerX,action.centerY,f);
+		const auto ring=ringTiles(world,footprint);
+		std::vector<int> edge;bool legal=true;
+		for(int index:ring)
+		{
+			if(contains(parcel,index))
+			{
+				// Never consume another building's access or a shared artery.
+				if(!contains(reservation->second.circulationTiles,index)
+				   ||circulationRefs[index]!=1){legal=false;break;}
+				edge.push_back(index);
+			}
+			else
+			{
+				const auto& tile=world.tiles[index];
+				// Preserve three complete sides of access on the older barracks.
+				if(!contains(reservation->second.circulationTiles,index)
+				   ||!tile.discovered||!tile.grass||tile.occupied||tile.permanentResource
+				   ||isFootprintReserved(index)){legal=false;break;}
+			}
+		}
+		if(!legal||edge.size()!=size_t(horizontal?f.height:f.width))continue;
+		sharedEdge=edge;neighborFootprint=footprint;return contract.reservationId;
+	}
+	return -1;
+}
+bool Planner::campusMemberSlot(const DevelopmentTemplate& campus, size_t slotIndex,
+	int buildingType, PlannedSlot& slot) const
+{
+	if(slotIndex>=campus.slots.size())return false;
+	slot=campus.slots[slotIndex];
+	if(campus.buildingType==buildingType)return true;
+	// The saved template owns the parcel geometry; each member keeps its own
+	// upgrade limits and location scoring regardless of who founded the campus.
+	if(campus.id!=InnCompact&&campus.id!=HospitalCompact
+	   &&campus.id!=SchoolProtectedCampus)return false;
+	if(buildingType!=configuredInnType&&buildingType!=configuredHospitalType
+	   &&buildingType!=configuredTowerType&&buildingType!=configuredSchoolType)return false;
+	const BuildingProfile* profile=configuredProfile(buildingType);
+	if(!profile)return false;
+	const int maximum=buildingType==configuredInnType
+		?std::min(2,profile->maximumLevel()):profile->maximumLevel();
+	const Footprint reserved=slot.terminalFootprint;
+	for(int level=1;level<=maximum;++level)
+	{
+		const BuildingLevelProfile* geometry=profile->atLevel(level);
+		if(!geometry)return false;
+		const Footprint& footprint=geometry->footprint;
+		if(footprint.empty()||footprint.left<reserved.left||footprint.top<reserved.top
+		   ||footprint.left+footprint.width>reserved.left+reserved.width
+		   ||footprint.top+footprint.height>reserved.top+reserved.height)return false;
+	}
+	if(maximum<1)return false;
+	slot.initialLevel=1;slot.maximumLevel=maximum;
+	slot.initialFootprint=profile->atLevel(1)->footprint;
+	slot.terminalFootprint=profile->atLevel(maximum)->footprint;
+	return true;
+}
 int Planner::contractMaximumLevel(int buildingId, int buildingType) const
 {
 	const int standalone=findStandaloneIndex(buildingId);
@@ -1831,9 +1928,13 @@ int Planner::contractMaximumLevel(int buildingId, int buildingType) const
 	for(size_t c=0;c<campusList.size();++c)
 	{
 		const DevelopmentTemplate* t=findTemplate(campusList[c].templateId);
-		if(!t||t->buildingType!=buildingType)continue;
+		if(!t)continue;
 		for(size_t s=0;s<campusList[c].slots.size();++s)
-			if(campusList[c].slots[s].buildingId==buildingId)return t->slots[s].maximumLevel;
+			if(campusList[c].slots[s].buildingId==buildingId)
+			{
+				PlannedSlot slot;
+				return campusMemberSlot(*t,s,buildingType,slot)?slot.maximumLevel:0;
+			}
 	}
 	return 0;
 }
@@ -1844,11 +1945,15 @@ int Planner::contractReservationId(int buildingId, int buildingType) const
 	for(size_t c=0;c<campusList.size();++c)
 	{
 		const DevelopmentTemplate* t=findTemplate(campusList[c].templateId);
-		if(!t||t->buildingType!=buildingType)continue;
+		if(!t)continue;
 		for(size_t s=0;s<campusList[c].slots.size();++s)
 			if(campusList[c].slots[s].buildingId==buildingId)
+			{
+				PlannedSlot slot;
+				if(!campusMemberSlot(*t,s,buildingType,slot))continue;
 				for(std::map<int,Reservation>::const_iterator r=reservationMap.begin();r!=reservationMap.end();++r)
 					if(r->second.campusId==campusList[c].id&&r->second.permanent)return r->first;
+			}
 	}
 	return -1;
 }
@@ -2037,8 +2142,12 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	{threat/=locationTiles->size();protection/=locationTiles->size();}
 	u.threatExposure=clamp100(threat);u.defendedness=clamp100(protection-threat/2);
 	int spacingQuality=100;
+	const int barracksRing=2*action.terminalFootprint.width+2*action.terminalFootprint.height;
+	const bool packedBarracks=action.type==BuildStandalone
+		&&action.buildingType==configuredBarracksType
+		&&!action.accessTiles.empty()&&int(action.accessTiles.size())<barracksRing;
 	const bool opensNewParcel=(candidate.newCampus
-		||action.type==BuildStandalone)&&purpose!=ColonySeed;
+		||action.type==BuildStandalone)&&purpose!=ColonySeed&&!packedBarracks;
 	if(opensNewParcel&&!locationTiles->empty()&&!footprintDistanceCache.empty())
 	{
 		int distance=INT_MAX;
@@ -2146,6 +2255,10 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 		const int campus=t->parcel.area()+t->accessRing.count();
 		u.compactness=clamp100((standalone-campus)*100/std::max(1,standalone));
 	}
+	else if(packedBarracks)
+		// Reward the access land saved, with no promise of future buildings.
+		u.compactness=clamp100((barracksRing-int(action.accessTiles.size()))*100
+			/std::max(1,action.terminalFootprint.area()+barracksRing));
 
 	// These buffers are temporary working sets and never escape scoreCandidate.
 	// Reusing their capacity avoids thousands of allocator calls during a map scan.
@@ -2793,6 +2906,21 @@ bool Planner::reserve(const WorldState& world, DevelopmentAction& action)
 		blockedIntentSignatures[std::make_pair(action.buildingType,
 			int(action.purpose))]=stateSignature(world);
 	 lastDiagnostics.rejected[reason]++;return false;}
+	if(action.type==BuildStandalone&&action.buildingType==configuredBarracksType
+	   &&action.reservationId<0)
+	{
+		std::vector<int> edge,neighbor;
+		const int adjoining=adjoiningBarracks(world,action,edge,neighbor);
+		if(adjoining>=0)
+		{
+			Reservation adjusted=reservationMap.at(adjoining);
+			removeReservation(adjoining);
+			adjusted.circulationTiles.erase(std::remove_if(adjusted.circulationTiles.begin(),
+				adjusted.circulationTiles.end(),[&](int index){return contains(edge,index);}),
+				adjusted.circulationTiles.end());
+			reservationMap[adjoining]=adjusted;addReservationReferences(adjusted);
+		}
+	}
 	Reservation reservation;reservation.id=nextReservationId++;reservation.actionId=action.id;
 	reservation.footprintTiles=action.parcelTiles;
 	if(action.type==UpgradeBuilding)
@@ -2920,6 +3048,22 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 	// same valid slot to be selected, rejected and retried every eight ticks.
 	if(!fillsExistingCampus)
 	{
+		std::vector<int> sharedEdge,neighbor;
+		if(action.type==BuildStandalone&&action.buildingType==configuredBarracksType)
+		{
+			auto expected=ringTiles(world,action.parcelTiles);
+			if(action.reservationId<0)
+			{
+				adjoiningBarracks(world,action,sharedEdge,neighbor);
+				expected.erase(std::remove_if(expected.begin(),expected.end(),
+					[&](int index){return contains(neighbor,index);}),expected.end());
+				if(expected!=action.accessTiles)
+				{if(rejected)*rejected=RejectedAccess;return false;}
+			}
+			for(int index:action.parcelTiles)
+				if(isCirculationReserved(index)&&!contains(sharedEdge,index))
+				{if(rejected)*rejected=RejectedCirculation;return false;}
+		}
 		for(size_t i=0;i<action.parcelTiles.size();++i)
 		{
 			const WorldTile& t=world.tiles[action.parcelTiles[i]];

@@ -9,6 +9,20 @@ Policy modules execute those decisions through Maxima's private runtime using
 the engine's ordinary orders. Building lifetime identities keep pending work
 from attaching to a different building that reuses a slot.
 
+Compact inn, hospital and school campuses share their four reserved building slots:
+inns, hospitals, schools and towers can fill any free slot when their ordinary location
+scoring and food-capacity checks support it. Inns in these campuses stop at
+level 2; hospitals, schools and towers can reach level 3. Towers can also choose
+standalone sites and do not reserve new four-slot campuses themselves. Expandable
+inns retain their larger upgrade reservations.
+
+Barracks can form directly adjoining pairs without reserving future building
+slots. The planner retains three protected access sides per barracks, refuses
+to consume circulation shared with other reservations, and keeps normal location
+scoring. Such placements receive a small compactness bonus for saved access land
+and are exempt from the general spacing penalty. Standalone sites remain available;
+no barracks campus is reserved.
+
 - [Economy and staffing](economy.md): worker allocation, production and development.
 - [Farming](farming.md): renewable resources, access and clearing.
 - [Food capacity](food.md): supply claims, placement, retirement and relocation.

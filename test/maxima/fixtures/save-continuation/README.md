@@ -4,8 +4,9 @@
 30000 on a 128×128 symmetric arena (map seed 42, game seed 19). The expected
 JSON maps each of the 512 ticks from 30000 through 30511 to the SHA-256 of its
 ordered team/entity checksum record when continuing that retained checkpoint with
-the current AI policy. The stranded-algae pool fix first alters these records at
-tick 30141; its baseline was regenerated on macOS. The original v115 checkpoint
+the current AI policy. Shared small-building campuses and adjoining barracks
+first alter the previous baseline at tick 30149; the current baseline was
+regenerated on macOS. The original v115 checkpoint
 is retained to keep testing older-save loading. The test also saves at tick 30256,
 reloads, and compares all remaining records against the uninterrupted continuation
 to verify save/load continuity independently of the fixed baseline. Aggregate hashes
