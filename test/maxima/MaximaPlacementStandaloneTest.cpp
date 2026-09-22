@@ -463,8 +463,147 @@ static void placementContinuationRegression()
     }
 }
 
+static void adjoiningBarracksRegression()
+{
+	for(bool wrapped:{false,true})
+	{
+		WorldState world=makeWorld();Planner planner;
+		planner.configure(world.profiles,1,2,6,5,7);
+		WorldBuilding older;older.id=20;older.buildingType=5;older.level=1;
+		older.centerX=wrapped?30:14;older.centerY=10;older.hp=older.hpMax=100;
+		world.buildings.push_back(older);
+		DevelopmentAction footprint;footprint.centerX=older.centerX;footprint.centerY=10;
+		footprint.initialFootprint=world.profile(5)->atLevel(1)->footprint;
+		occupy(world,footprint);
+		if(wrapped)
+		{
+			for(auto& tile:world.tiles)tile.discovered=false;
+			for(int y=7;y<=12;++y)for(int x=27;x<=36;++x)
+				world.tile(world.normalizeX(x),y).discovered=true;
+		}
+		planner.adoptStartingBuildings(world);
+		DevelopmentIntent intent;intent.buildingType=5;intent.priority=100;intent.unmetCount=1;
+		DevelopmentLimits limits;limits.newConstruction=1;
+		DevelopmentAction action;assert(planner.selectAction(world,{intent},limits,action));
+		assert(action.type==BuildStandalone&&action.parcelTiles.size()==16);
+		assert(action.accessTiles.size()==12&&action.utility.compactness==12);
+		assert(world.wrappedManhattan(action.centerX,action.centerY,older.centerX,10)==4);
+		if(wrapped)assert(action.centerX==2&&action.centerY==10);
+		if(!wrapped)
+		{
+			// Compactness must not force a new barracks into an exposed site.
+			WorldState exposed=world;
+			for(int y=4;y<=16;++y)for(int x=8;x<=20;++x)
+			{exposed.tile(x,y).threat=100;exposed.tile(x,y).protectedness=0;}
+			Planner alternative=planner;DevelopmentAction safer;
+			assert(alternative.selectAction(exposed,{intent},limits,safer));
+			assert(safer.accessTiles.size()==16&&safer.utility.compactness==0);
+		}
+		// Incremental selection must make the same choice.
+		Planner incremental=planner;DevelopmentAction chunked;SelectionProgress progress;
+		do {progress=incremental.selectActionIncremental(world,{intent},limits,chunked,
+			world.computeSignature(),128);}while(progress==SelectionPending);
+		assert(progress==SelectionFound&&chunked.centerX==action.centerX
+			&&chunked.centerY==action.centerY&&chunked.utility.total==action.utility.total);
+		// Losing access after selection must veto the shared-edge conversion.
+		WorldState blocked=world;
+		for(int index:planner.reservations().begin()->second.circulationTiles)
+			if(std::find(action.parcelTiles.begin(),action.parcelTiles.end(),index)==action.parcelTiles.end())
+			{blocked.tiles[index].occupied=true;break;}
+		assert(!planner.revalidate(blocked,action));
+		assert(planner.reserve(world,action));
+		assert(planner.campuses().empty());
+		assert(planner.reservations().size()==2);
+		int reserved=0;
+		for(size_t index=0;index<planner.footprintReferences().size();++index)
+		{
+			reserved+=planner.footprintReferences()[index]!=0;
+			assert(!(planner.footprintReferences()[index]&&planner.circulationReferences()[index]));
+		}
+		assert(reserved==32); // Exactly two actual barracks; no future slots.
+		auto backend=new GAGCore::MemoryStreamBackend;
+		auto output=new GAGCore::BinaryOutputStream(backend);planner.save(output);
+		backend->seekFromStart(0);
+		auto inputBackend=new GAGCore::MemoryStreamBackend(*backend);delete output;
+		GAGCore::BinaryInputStream input(inputBackend);Planner restored;
+		restored.configure(world.profiles,1,2,6,5,7);assert(restored.load(&input,VERSION_MINOR));
+		assert(restored.revalidate(world,action,NULL,true));
+		assert(restored.footprintReferences()==planner.footprintReferences());
+		assert(restored.circulationReferences()==planner.circulationReferences());
+		restored.markIssued(action.id,21,0);WorldBuilding newer=older;newer.id=21;
+		newer.centerX=action.centerX;newer.centerY=action.centerY;
+		world.buildings.push_back(newer);occupy(world,action);restored.observe(world);
+		for(auto& building:world.buildings)
+		{
+			DevelopmentAction upgrade;upgrade.type=UpgradeBuilding;upgrade.buildingType=5;
+			upgrade.buildingId=building.id;upgrade.centerX=building.centerX;upgrade.centerY=building.centerY;
+			upgrade.fromLevel=1;upgrade.targetLevel=2;assert(restored.revalidate(world,upgrade));
+			building.level=2;upgrade.fromLevel=2;upgrade.targetLevel=3;
+			assert(restored.revalidate(world,upgrade));
+		}
+	}
+}
+
+static void mixedCampusRegression()
+{
+	for(int founder:{1,2,6})
+	{
+		WorldState world=makeWorld();Planner planner;
+		planner.configure(world.profiles,1,2,6,5,7);
+		DevelopmentLimits limits;limits.newConstruction=4;
+		int campusId=-1;
+		std::vector<int> types={founder,7};
+		for(int type:{1,2,6})if(type!=founder)types.push_back(type);
+		for(int member=0;member<4;++member)
+		{
+			DevelopmentIntent intent;intent.buildingType=types[member];
+			intent.unmetCount=4;intent.priority=100;
+			DevelopmentAction action;
+			assert(planner.selectAction(world,{intent},limits,action));
+			assert(action.type==BuildCampusMember);
+			if(member)assert(action.campusId==campusId);
+			assert(planner.reserve(world,action));campusId=action.campusId;
+			assert(planner.revalidate(world,action,NULL,true));
+			planner.markIssued(action.id,100+member,member);
+			WorldBuilding building;building.id=100+member;
+			building.buildingType=types[member];building.level=1;
+			building.centerX=action.centerX;building.centerY=action.centerY;
+			building.hp=building.hpMax=100;
+			world.buildings.push_back(building);occupy(world,action);
+			world.tick=member+1;planner.observe(world);
+			// A partially filled mixed campus must retain both its free slots
+			// and each occupant's upgrade contract across a save.
+			auto backend=new GAGCore::MemoryStreamBackend;
+			auto output=new GAGCore::BinaryOutputStream(backend);
+			planner.save(output);backend->seekFromStart(0);
+			auto inputBackend=new GAGCore::MemoryStreamBackend(*backend);delete output;
+			GAGCore::BinaryInputStream input(inputBackend);
+			Planner restored;restored.configure(world.profiles,1,2,6,5,7);
+			assert(restored.load(&input,VERSION_MINOR));planner=restored;
+		}
+		assert(planner.campuses().size()==1);
+		for(WorldBuilding& building:world.buildings)
+		{
+			DevelopmentAction upgrade;upgrade.type=UpgradeBuilding;
+			upgrade.buildingId=building.id;upgrade.buildingType=building.buildingType;
+			upgrade.centerX=building.centerX;upgrade.centerY=building.centerY;
+			upgrade.fromLevel=1;upgrade.targetLevel=2;
+			assert(planner.revalidate(world,upgrade));
+			building.level=2;upgrade.fromLevel=2;upgrade.targetLevel=3;
+			assert(planner.revalidate(world,upgrade)==(building.buildingType!=1));
+		}
+		// The founding member dying must not release surviving mixed members.
+		world.buildings.erase(world.buildings.begin());planner.observe(world);
+		assert(planner.campuses().size()==1);
+		world.buildings.clear();planner.observe(world);
+		assert(planner.campuses().empty()&&planner.reservations().empty());
+	}
+}
+
 int main()
 {
+	adjoiningBarracksRegression();
+	mixedCampusRegression();
 	placementReviewRegressions();
 	upgradesUsuallyBeatNewConstruction();
 	fortificationIsLastResort();

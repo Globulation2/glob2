@@ -683,6 +683,10 @@ private:
 	UtilityComponents scoreCandidate(const WorldState& world,
 		const DevelopmentIntent* intent, const Candidate& candidate) const;
 	bool candidateBetter(const Candidate& lhs, const Candidate& rhs) const;
+	int adjoiningBarracks(const WorldState& world, const DevelopmentAction& action,
+		std::vector<int>& sharedEdge, std::vector<int>& neighborFootprint) const;
+	bool campusMemberSlot(const DevelopmentTemplate& campus, size_t slotIndex,
+		int buildingType, PlannedSlot& slot) const;
 	int contractMaximumLevel(int buildingId, int buildingType) const;
 	int contractReservationId(int buildingId, int buildingType) const;
 	int findCampusIndex(int campusId) const;
