@@ -1,0 +1,21 @@
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:25:44] "GET / HTTP/1.1" 200 -
+
+Running 3 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:25:45] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:25:45] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:25:45] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:25:45] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  1 [chromium] › tests/session-reload.spec.js:34:1 › an active match can load the same saved game repeatedly through the scheduled loader (29.9s)
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:26:15] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:26:15] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:26:15] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:26:15] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  2 [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match (25.7s)
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:26:40] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:26:40] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:26:40] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:26:40] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  3 [chromium] › tests/session-reload.spec.js:70:1 › an active replay can be loaded again through the scheduled loader (20.3s)
+
+  3 passed (1.3m)

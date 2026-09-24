@@ -1,0 +1,47 @@
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:27:24] "GET / HTTP/1.1" 200 -
+
+Running 1 test using 1 worker
+
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:27:24] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:27:24] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:27:24] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 17:27:24] "GET /index.wasm HTTP/1.1" 200 -
+  ✘  1 [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match (48.2s)
+
+
+  1) [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "MessageScreen"
+    Received string:    "match"
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      3 | const path=require('node:path');
+      4 | const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
+    > 5 | const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+        |                                                                            ^
+      6 | const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
+      7 |
+      8 | async function startAndSave(page) {
+        at screen (/Users/bradley/glob2/browser/tests/session-reload.spec.js:5:76)
+        at /Users/bradley/glob2/browser/tests/session-reload.spec.js:57:43
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../build/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../build/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match 

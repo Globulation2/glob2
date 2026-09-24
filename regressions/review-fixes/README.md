@@ -1,4 +1,4 @@
-# Review fixes at 8fd3e8e2a
+# Review fixes at 262e63ec0
 
 All three review findings have regression coverage. Production changes do not alter simulation orders, state, save formats, or protocol versions.
 
@@ -9,6 +9,10 @@ All three review findings have regression coverage. Production changes do not al
 
 The settings-race script and screenshot capture the original bug; its relative imports expect the script in artifacts/pr379-review in the source checkout. Logs retain the injected failures and missing-translation diagnostics from the native settings harness.
 
-CI for the updated head: https://github.com/Globulation2/glob2/actions/runs/36055163263
+CI for the updated head: https://github.com/Globulation2/glob2/actions/runs/36061582543
 
 The follow-up commit keeps server-only ApplicationHost polling independent of graphics. The complete standalone test build, TestsRunner, and CampaignLoadHarness pass locally; the client resize and screen harnesses still pass.
+
+The rebuilt macOS client at `8fd3e8e2a` produces the same 1,500-tick trace as the master baseline: `110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48`. Compressed trace, replay, and manifest are retained here.
+
+The final commit corrects the session-load test to retain the named save instead of selecting the first row, which can become an autosave. The damaged-load test now waits past the initial autosave. Restoring the old first-row selection fails with a successful match instead of the expected error; all three corrected WebGL session tests pass locally with SwiftShader. Logs are included.
