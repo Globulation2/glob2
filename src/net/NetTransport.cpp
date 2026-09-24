@@ -51,7 +51,8 @@ class TcpTransport final : public NetTransport
 				if (!bytes.empty() &&
 					SDLNet_TCP_Send(socket, bytes.data(), bytes.size()) != int(bytes.size()))
 					break;
-				const int ready = SDLNet_CheckSockets(set, 10);
+				// Drain output promptly while still checking input between writes.
+				const int ready = SDLNet_CheckSockets(set, bytes.empty() ? 10 : 0);
 				if (ready < 0)
 					break;
 				if (ready && SDLNet_SocketReady(socket))

@@ -126,8 +126,9 @@ and browser use the same screen transition. A browser transaction failure or
 quota exhaustion retains Settings with Retry and Continue and a visible failure
 message. Continue retains the live changes without claiming a durable save;
 it does not roll back files already written to the local filesystem, and later
-background persistence may save them. While a flush is pending, Settings ignores
-completion/cancellation actions.
+background persistence may save them. Done waits for an acknowledgement covering
+the latest preferences and keyboard writes, including edits made during an earlier
+flush. Completion of that earlier flush cannot close the screen.
 
 Each local file replacement is atomic; the three local files are not a single
 filesystem transaction. The durable IndexedDB flush uses the existing storage

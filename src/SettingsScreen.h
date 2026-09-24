@@ -79,8 +79,7 @@ private:
     bool failed=false, settingsDirty=false;
     std::array<bool,2> keyboardDirty{};
     Uint32 saveAt=0, displayDeadline=0;
-    // Background flush to durable browser storage; a native build's writes are
-    // already durable, so this stays unset there. See persist() in the .cpp.
+    // Acknowledges the latest writes; native persistence completes immediately.
     std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
     // done() was called and is waiting on persistence to resolve before endExecute().
     bool closing=false;

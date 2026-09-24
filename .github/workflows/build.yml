@@ -145,6 +145,7 @@ jobs:
             map-render-resize-test \
             menu-colony-harness \
             speed-tests \
+            settings-tests \
             screen-test \
             session-test
 
@@ -393,6 +394,11 @@ jobs:
         run: |
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
+
+      - name: Check native settings persistence and retry
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py --quick
 
       - name: Build and run the window resize regression
         env:

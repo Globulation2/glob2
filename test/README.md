@@ -499,7 +499,9 @@ sequence/conflict handling. The shared dropdown checks cover anchoring, mouse an
 keyboard selection, dismissal, wrapping, and scrolling without committing a value.
 It runs at 640×480, 800×600, 1000×700, and 1280×900,
 plus software rendering and doubled English strings. `--quick` runs only 1000×700
-OpenGL. Window and drawable dimensions are logged so 1× runs are not mistaken
+OpenGL; Linux CI runs this quick case. Persistence failures use a directory at the
+destination path so both settings and shortcut retries exercise the atomic writer.
+Window and drawable dimensions are logged so 1× runs are not mistaken
 for physical HiDPI validation.
 
 The redesigned screen exposes semantic row IDs (for example `gameplay.speed`)

@@ -122,6 +122,18 @@ int main(int argc, char** argv) {
                     SDL_Delay(1);
                 }
                 require(accepted && echoed, "Native TCP message round trip failed");
+                // A one-way burst must drain without waiting for replies between frames.
+                const auto burstStart = SDL_GetTicks64();
+                for (unsigned i = 0; i < 200; ++i) client.sendMessage(original);
+                unsigned delivered = 0;
+                while (delivered < 200 && SDL_GetTicks64() - burstStart < 1000) {
+                    while (auto message = server.getMessage()) {
+                        require(*message == *original, "TCP burst changed a message");
+                        ++delivered;
+                    }
+                    SDL_Delay(1);
+                }
+                require(delivered == 200, "TCP burst stalled waiting for unrelated incoming traffic");
             }
             SDLNet_Quit(); SDL_Quit();
         }

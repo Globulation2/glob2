@@ -98,3 +98,47 @@ test('settings can continue after failure without claiming a durable save',async
   const restored=await context.newPage();await restored.goto(gameURL());await screen(restored,'MainMenuScreen');
   expect(await preferences(restored)).toEqual({optionFlags:1,mute:1});
 });
+
+for (const failLatest of [false,true]) test(`Done waits for the latest settings write (${failLatest?'failure':'success'})`,async({page})=>{
+  await page.goto(gameURL());await screen(page,'MainMenuScreen');
+  await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
+  await clickSettingsDone(page);await screen(page,'MainMenuScreen');
+  await expect.poll(async()=>(await state(page)).persistence).toBe('persisted');
+  await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
+  await AUDIO_TAB(page);
+  await page.evaluate(()=>{
+    const sync=FS.syncfs;
+    let writes=0;
+    FS.syncfs=function(populate,callback){
+      if(populate)return sync.call(FS,populate,callback);
+      if(++writes===1){
+        // The first value is durable, but its completion has not reached C++.
+        sync.call(FS,false,error=>{window.releaseFirstSettingsWrite=()=>callback(error);});
+      }else{
+        window.releaseLatestSettingsWrite=fail=>{
+          FS.syncfs=sync;
+          if(fail)callback(new Error('Injected latest settings write failure'));
+          else sync.call(FS,false,callback);
+        };
+      }
+    };
+  });
+  await MUTE_ROW(page);
+  await expect.poll(()=>page.evaluate(()=>typeof window.releaseFirstSettingsWrite)).toBe('function');
+  await MUTE_ROW(page);
+  await clickSettingsDone(page);
+  await page.evaluate(()=>window.releaseFirstSettingsWrite());
+  await expect.poll(()=>page.evaluate(()=>typeof window.releaseLatestSettingsWrite)).toBe('function');
+  // Give the screen several frames to consume the stale acknowledgement.
+  await page.waitForTimeout(300);
+  expect((await state(page)).screen).toContain('SettingsScreen');
+  await page.evaluate(fail=>window.releaseLatestSettingsWrite(fail),failLatest);
+  if(failLatest){
+    await page.waitForTimeout(300);
+    expect((await state(page)).screen).toContain('SettingsScreen');
+    await clickSettingsDone(page);
+  }
+  await screen(page,'MainMenuScreen');
+  await page.reload();await screen(page,'MainMenuScreen');
+  expect((await preferences(page)).mute).toBe(1);
+});

@@ -106,7 +106,10 @@ bool SettingsScreen::persist()
         // The write above is already durable on native builds. In the browser it
         // lands in Emscripten's virtual filesystem first and needs this separate
         // flush to survive a reload; poll it from onTimer rather than block here.
-        if(!failed && !persistence) {
+        // Every write needs an acknowledgement for its own storage generation.
+        // An earlier request may finish while these newer writes are pending.
+        persistence.reset();
+        if(!failed) {
             if(GAGCore::ApplicationHost::storageRestoreFailed()) failed=true;
             else {
                 persistence=GAGCore::ApplicationHost::persistStorage();
@@ -178,7 +181,9 @@ void SettingsScreen::onTimer(Uint32 tick)
                 saveAt=tick+300;
             }
             persistence.reset();
-            if(closing && !failed) { closing=false; endExecute(1); }
+            if(closing && !failed && !settingsDirty && !keyboardDirty[0] && !keyboardDirty[1]) {
+                closing=false; endExecute(1);
+            }
         }
     }
 }

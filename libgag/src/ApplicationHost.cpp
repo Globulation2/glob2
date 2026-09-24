@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <GraphicContext.h>
 #include <SDL.h>
 
 namespace GAGCore::ApplicationHost
@@ -10,7 +11,7 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 	{
 		std::vector<SDL_Event> events;
 		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		while (GraphicContext::pollEvent(&event))
 			events.push_back(event);
 		if (!loop->frame(SDL_GetTicks(), events))
 			break;
