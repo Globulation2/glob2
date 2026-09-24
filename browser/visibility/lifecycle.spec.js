@@ -3,7 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const {spawn} = require('node:child_process');
-const {clickMainMenu, gameURL} = require('../tests/main-menu');
+const {clickMainMenu, clickCustomGameStart, gameURL} = require('../tests/main-menu');
 
 // Playwright's normal focus override keeps background documents visible.
 // Use a real browser window and the default context without that override.
@@ -55,7 +55,7 @@ test('background single-player suspends and returns without catching up', async 
     if (process.env.GLOB2_TEST_RENDERER)
       expect((await snapshot()).renderer).toBe(process.env.GLOB2_TEST_RENDERER);
     await clickMainMenu(page,'custom'); await screen('CustomGameScreen');
-    await click(100,70); await click(530,380);
+    await clickCustomGameStart(page);
     await expect.poll(async ()=>(await snapshot()).tick).toBeGreaterThan(25);
     const other=await context.newPage();
     await other.bringToFront();
@@ -83,6 +83,7 @@ test('background single-player suspends and returns without catching up', async 
     await expect.poll(async ()=>(await snapshot()).frames).toBeGreaterThan(frames+2);
     await click(320,290); await screen('EndGameScreen');
   } catch (error) {
+    console.log('Browser process diagnostics:', launchLog);
     if (page && !page.isClosed()) {
       await page.screenshot({path:info.outputPath('visibility-failure.png')}).catch(()=>{});
       await info.attach('visibility-state', {body:JSON.stringify(await page.evaluate(()=>glob2Diagnostics.snapshot()).catch(()=>null)),contentType:'application/json'});
