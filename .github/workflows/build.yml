@@ -286,7 +286,7 @@ jobs:
 
       - name: Test Cortex placement equivalence
         run: |
-          scons -j$(nproc) release=1 server=0 cortex-geometry-test
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 cortex-geometry-test
           ./build/linux/client/release/src/CortexGeometryHarness
 
       - name: Test Maxima relocation handovers and recovery
@@ -295,7 +295,7 @@ jobs:
 
       - name: Test Maxima strategy and implementation
         run: |
-          GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/run_maxima_implementation_regressions.py --build-dir build --reuse-built-objects
+          GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/run_maxima_implementation_regressions.py --build-dir build/linux/client/release --reuse-built-objects
 
       - name: Test clearing flag resource bounds
         run: |

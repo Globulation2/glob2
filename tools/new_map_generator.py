@@ -15,9 +15,9 @@ each, the starter kit and the crop guarantee, and three controls to start from. 
 
 What is left is the map itself and the verification the docs ask for:
 
-  scons release=1 -j12 map-generator-golden-test map-generator-defaults-test map-generator-study build/src/glob2
-  build/src/MapGeneratorGoldenTest <profile> --update     # records its golden rows
-  build/src/glob2 --generate-map <id> --preview artifacts/<id>.png
+  scons --build=build/native-tests release=1 -j12 map-generator-golden-test map-generator-defaults-test map-generator-study build/native-tests/src/glob2
+  build/native-tests/src/MapGeneratorGoldenTest <profile> --update     # records its golden rows
+  build/native-tests/src/glob2 --generate-map <id> --preview artifacts/<id>.png
   See docs/map-generators/CLI.md for comparisons with nearest generators.
 """
 import argparse

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run native Maxima regressions using an existing game build for engine objects.
 
-Usage: python3 test/maxima/run_maxima_implementation_regressions.py --build-dir build
+Usage: python3 test/maxima/run_maxima_implementation_regressions.py --reuse-built-objects
 Recompiles Maxima and its AI factory; leaves the game
 binary and existing build objects untouched. Requires the game's pkg-config deps.
 """

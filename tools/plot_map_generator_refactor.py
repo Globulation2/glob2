@@ -13,6 +13,11 @@ import shutil
 import subprocess
 from pathlib import Path
 
+if __package__:
+    from .build_paths import native_binary
+else:
+    from build_paths import native_binary
+
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -34,7 +39,7 @@ def main():
     args = parser.parse_args()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=True)
-    binary = ROOT/'build/src/MapGeneratorStudy'
+    binary = native_binary('MapGeneratorStudy')
     catalog = json.loads(subprocess.check_output([binary, '--catalog'], text=True))
     methods = [c for c in catalog if not c.get('editorOnly', c['method'] == 0)]
     frozen_catalog = args.baseline.parent/'catalog.json'
