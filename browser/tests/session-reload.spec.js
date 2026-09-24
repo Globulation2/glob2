@@ -20,10 +20,12 @@ async function startAndSave(page) {
   await expect.poll(async()=>(await state(page)).persistence).toBe('persisted');
   return (await page.evaluate(()=>glob2Diagnostics.saves())).find(name=>!existing.includes(name));
 }
-async function loadFirst(page,replay=false,observeLoading=true) {
+async function loadSaved(page,replay=false,observeLoading=true) {
   await page.locator('#canvas').press('Escape',{delay:80});
   await click(page,600,replay?375:350);
-  await click(page,500,360);
+  // Game loads retain the last saved name; the first row may be an autosave.
+  // The imported replay is selected explicitly because it has a different name.
+  if(replay) await click(page,500,360);
   // Start observing before the click so a fast cooperative load is not missed.
   const loading=observeLoading ? page.waitForFunction(()=>glob2Diagnostics.snapshot().screenClass.includes('GameLoadScreen')) : Promise.resolve();
   await click(page,520,555);await loading;
@@ -36,7 +38,7 @@ test('an active match can load the same saved game repeatedly through the schedu
   for(let repeat=0;repeat<2;++repeat) {
     const before=(await state(page)).tick;
     await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(before+25);
-    await loadFirst(page);await screen(page,'match');
+    await loadSaved(page);await screen(page,'match');
     expect((await state(page)).screenClass).toContain('GameSessionScreen');
     const loaded=(await state(page)).tick;
     await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(loaded+25);
@@ -48,9 +50,11 @@ test('an active match can load the same saved game repeatedly through the schedu
 test('a damaged in-game load returns through a scheduled error notice and permits another match',async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
   const name=await startAndSave(page);
+  // Let the initial autosave appear first so loading cannot accidentally select it.
+  await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(85);
   // Damage the stored bytes at the filesystem boundary; all loading uses UI input.
   await page.evaluate(name=>FS.writeFile('/home/web_user/.glob2/games/'+name,new Uint8Array([1,2,3])),name);
-  await loadFirst(page,false,false);await screen(page,'MessageScreen');
+  await loadSaved(page,false,false);await screen(page,'MessageScreen');
   await page.setViewportSize({width:800,height:600});
   await expect.poll(async()=>(await state(page)).width).toBe(800);
   await page.locator('#canvas').press('Escape',{delay:80});await screen(page,'CustomGameScreen');
@@ -74,7 +78,7 @@ test('an active replay can be loaded again through the scheduled loader',async({
   await click(page,380,280);await click(page,810,590);await screen(page,'match');
   const original=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(original+25);
-  await loadFirst(page,true);await screen(page,'match');
+  await loadSaved(page,true);await screen(page,'match');
   const loaded=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(loaded+25);
   expect(errors).toEqual([]);
