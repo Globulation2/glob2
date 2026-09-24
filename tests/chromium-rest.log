@@ -1,0 +1,33 @@
+
+Running 27 tests using 1 worker
+
+  ✓   1 [chromium] › tests/multiplayer.spec.js:57:1 › browser YOG login exchanges the native protocol through the real gateway (3.8s)
+  ✓   2 [chromium] › tests/multiplayer.spec.js:94:1 › registered browser player enters and leaves the native YOG lobby (4.4s)
+  ✓   3 [chromium] › tests/multiplayer.spec.js:131:1 › YOG registration remains scheduled through resize and cancellation (4.1s)
+  ✓   4 [chromium] › tests/multiplayer.spec.js:148:1 › YOG map selection and upload screens resize and return to their owning tabs (6.0s)
+  ✓   5 [chromium] › tests/multiplayer.spec.js:165:1 › YOG match settings resize and return to their room (6.5s)
+  ✓   6 [chromium] › tests/multiplayer.spec.js:183:1 › YOG disconnect message remains scheduled and returns cleanly after resize (5.0s)
+  ✓   7 [chromium] › tests/multiplayer.spec.js:236:1 › two browser players create, join and start a YOG match (no AI) (21.2s)
+  ✓   8 [chromium] › tests/multiplayer.spec.js:236:1 › two browser players create, join and start a YOG match (Cortex) (21.0s)
+  ✓   9 [chromium] › tests/multiplayer.spec.js:298:1 › browser and native players complete matching simulation checkpoints (TCP) (20.4s)
+  ✓  10 [chromium] › tests/multiplayer.spec.js:298:1 › browser and native players complete matching simulation checkpoints (WSS) (19.8s)
+  ✓  11 [chromium] › tests/multiplayer.spec.js:377:1 › YOG admission enforces greeting, exact version, authentication and retry order (3.8s)
+  ✓  12 [chromium] › tests/multiplayer.spec.js:448:1 › browser reports incompatible release before transmitting credentials (client version) (4.7s)
+  ✓  13 [chromium] › tests/multiplayer.spec.js:448:1 › browser reports incompatible release before transmitting credentials (legacy server) (4.3s)
+  ✓  14 [chromium] › tests/multiplayer.spec.js:448:1 › browser reports incompatible release before transmitting credentials (server version) (4.8s)
+  ✓  15 [chromium] › tests/team-colors.spec.js:27:3 › software preserves the red tutorial team before and after resize (5.2s)
+  ✓  16 [chromium] › tests/team-colors.spec.js:27:3 › webgl2 preserves the red tutorial team before and after resize (6.5s)
+  ✓  17 [chromium] › tests/torus.spec.js:46:1 › WebGL2 switches between the flat map and the torus overview (26.0s)
+  ✓  18 [chromium] › tests/torus.spec.js:68:1 › the torus overview recovers after WebGL context loss (21.8s)
+  ✓  19 [chromium] › tests/torus.spec.js:88:1 › the software renderer keeps the flat map (9.4s)
+  ✓  20 [chromium] › tests/viewport.spec.js:15:1 › menus follow the viewport and keep their controls clickable (7.2s)
+  ✓  21 [chromium] › tests/viewport.spec.js:24:1 › a running match survives resize and its open menu follows the new center (10.7s)
+  ✓  22 [chromium] › tests/viewport.spec.js:46:1 › editor dialogs and discard controls follow viewport changes (7.2s)
+  ✓  23 [chromium] › tests/viewport.spec.js:57:1 › small viewports retain the active screen and continue rendering (6.5s)
+  ✓  24 [chromium] › tests/viewport.spec.js:67:3 › initial small viewport › starts at the actual browser dimensions (3.0s)
+  ✓  25 [chromium] › tests/viewport.spec.js:77:3 › initial wide viewport › fills the page before any resize (3.0s)
+  ✓  26 [chromium] › tests/viewport.spec.js:86:3 › high density display › uses the renderer-appropriate backing resolution (4.0s)
+  -  27 [chromium] › tests/viewport.spec.js:94:1 › interface scale survives resizing and keeps settings controls clickable
+
+  1 skipped
+  26 passed (4.1m)

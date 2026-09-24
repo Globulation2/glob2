@@ -1,0 +1,3 @@
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+PASS 17 main-binary cases; retained artifacts: /Users/bradley/glob2/artifacts/browser-platform/tournament-cli

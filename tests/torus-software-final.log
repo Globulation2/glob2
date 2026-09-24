@@ -1,0 +1,8 @@
+
+Running 3 tests using 1 worker
+
+  ✓  1 [chromium] › browser/tests/torus.spec.js:46:1 › WebGL2 switches between the flat map and the torus overview (2.5m)
+  ✓  2 [chromium] › browser/tests/torus.spec.js:68:1 › the torus overview recovers after WebGL context loss (2.1m)
+  ✓  3 [chromium] › browser/tests/torus.spec.js:88:1 › the software renderer keeps the flat map (6.2s)
+
+  3 passed (4.8m)

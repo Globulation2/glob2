@@ -1,0 +1,85 @@
+TAP version 13
+# Subtest: audio activation ignores missing, running and closed contexts
+ok 1 - audio activation ignores missing, running and closed contexts
+  ---
+  duration_ms: 1.502875
+  ...
+# Subtest: closing audio during a pending resume does not reject the gesture handler
+ok 2 - closing audio during a pending resume does not reject the gesture handler
+  ---
+  duration_ms: 0.258875
+  ...
+# Subtest: activation failures are reported and the next gesture can retry
+ok 3 - activation failures are reported and the next gesture can retry
+  ---
+  duration_ms: 0.86475
+  ...
+# Subtest: only Firefox closed-resume rejection is suppressed after game exit
+ok 4 - only Firefox closed-resume rejection is suppressed after game exit
+  ---
+  duration_ms: 0.386458
+  ...
+# Subtest: accepts selected bytes without treating the extension as format validation
+ok 5 - accepts selected bytes without treating the extension as format validation
+  ---
+  duration_ms: 0.841459
+  ...
+# Subtest: rejects paths, control characters, unsupported extensions and oversized inputs before reading
+ok 6 - rejects paths, control characters, unsupported extensions and oversized inputs before reading
+  ---
+  duration_ms: 0.322833
+  ...
+# Subtest: rejects changed sizes and read failures
+ok 7 - rejects changed sizes and read failures
+  ---
+  duration_ms: 0.164917
+  ...
+# Subtest: cancellation and disposal cannot publish late file contents
+ok 8 - cancellation and disposal cannot publish late file contents
+  ---
+  duration_ms: 0.101708
+  ...
+# Subtest: a second selection cannot replace an in-flight read
+ok 9 - a second selection cannot replace an in-flight read
+  ---
+  duration_ms: 0.087042
+  ...
+# Subtest: picker uses accepted extensions and releases its input on cancellation
+ok 10 - picker uses accepted extensions and releases its input on cancellation
+  ---
+  duration_ms: 0.145875
+  ...
+# Subtest: disposing an open picker ignores its late change event
+ok 11 - disposing an open picker ignores its late change event
+  ---
+  duration_ms: 0.070416
+  ...
+# Subtest: coalesces writes and acknowledges only the completed generation
+ok 12 - coalesces writes and acknowledges only the completed generation
+  ---
+  duration_ms: 0.834083
+  ...
+# Subtest: quota failure is retained, rejects completion, and allows an explicit retry
+ok 13 - quota failure is retained, rejects completion, and allows an explicit retry
+  ---
+  duration_ms: 0.255541
+  ...
+# Subtest: restore failure cannot overwrite existing storage
+ok 14 - restore failure cannot overwrite existing storage
+  ---
+  duration_ms: 0.146375
+  ...
+# Subtest: synchronous adapter errors reject the operation
+ok 15 - synchronous adapter errors reject the operation
+  ---
+  duration_ms: 0.087458
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 66.687708

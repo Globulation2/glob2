@@ -1,0 +1,12 @@
+test_credential_and_path_urls_are_rejected (test_wss.WssTests.test_credential_and_path_urls_are_rejected) ... ok
+test_stalled_tls_can_be_cancelled (test_wss.WssTests.test_stalled_tls_can_be_cancelled) ... ok
+test_stalled_tls_times_out (test_wss.WssTests.test_stalled_tls_times_out) ... ok
+test_text_and_oversized_messages_close (test_wss.WssTests.test_text_and_oversized_messages_close) ... ok
+test_untrusted_certificate (test_wss.WssTests.test_untrusted_certificate) ... ok
+test_verified_echo_and_fixed_routes (test_wss.WssTests.test_verified_echo_and_fixed_routes) ... ok
+test_wrong_hostname (test_wss.WssTests.test_wrong_hostname) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 14.920s
+
+OK

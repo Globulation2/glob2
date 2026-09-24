@@ -1,0 +1,3 @@
+Settings::load("preferences.txt") : error, can't open file.
+Landscape preview: Could not place every colony
+PASS preview restart joins superseded workers safely

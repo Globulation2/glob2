@@ -1,0 +1,13 @@
+PASS script GC roots, live frames, bytecode constants and interpreter isolation
+Settings::load("preferences.txt") : error, can't open file.
+ChooseMapScreen::onAction() : error, can't open file maps/browser_missing_fixture.map
+Map thumbnail load: Incomplete binary field: signature: unspecified iostream_category error
+ChooseMapScreen: Incomplete binary field: signature: unspecified iostream_category error
+PASS map selection clears stale data and recovers from missing/corrupt files without a modal loop
+PASS settings close only after persistence completion
+PASS application quit waits for final persistence
+PASS protocol rejection provides an actionable translated status
+PASS deferred multiplayer launch and invalid local-player rejection
+PASS owned tab destruction preserves surviving tabs
+FileManager::writeAtomically: /Users/bradley/.glob2-replay-export-before/replays/Blocked.replay: File replacement failed: unspecified iostream_category error
+libc++abi: terminating due to uncaught exception of type std::runtime_error: Replay save dropped its trailing idle ticks

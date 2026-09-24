@@ -1,0 +1,7 @@
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › browser/tests/replay-save.spec.js:19:1 › end-game replay save remains scheduled during resize and durable persistence (33.2s)
+  ✓  2 [chromium] › browser/tests/replay-save.spec.js:55:1 › end-game replay save offers export and retry after quota failure (13.3s)
+
+  2 passed (47.1s)

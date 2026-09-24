@@ -1,0 +1,13 @@
+test_binary_stream_both_backends (test_gateway.GatewayTests.test_binary_stream_both_backends) ... ok
+test_fragmented_message_and_consecutive_messages (test_gateway.GatewayTests.test_fragmented_message_and_consecutive_messages) ... ok
+test_health_and_metrics (test_gateway.GatewayTests.test_health_and_metrics) ... ok
+test_http_input_cannot_be_forwarded_as_websocket_payload (test_gateway.GatewayTests.test_http_input_cannot_be_forwarded_as_websocket_payload) ... ok
+test_native_without_origin (test_gateway.GatewayTests.test_native_without_origin) ... ok
+test_oversized_message (test_gateway.GatewayTests.test_oversized_message) ... ok
+test_reject_origin_and_arbitrary_backend (test_gateway.GatewayTests.test_reject_origin_and_arbitrary_backend) ... ok
+test_text_is_not_forwarded (test_gateway.GatewayTests.test_text_is_not_forwarded) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.953s
+
+OK

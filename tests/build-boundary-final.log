@@ -1,0 +1,15 @@
+test_all_supported_configurations_have_distinct_directories (test_layout.BuildLayoutTests.test_all_supported_configurations_have_distinct_directories) ... ok
+test_identical_generated_header_does_not_invalidate_objects (test_layout.BuildLayoutTests.test_identical_generated_header_does_not_invalidate_objects) ... ok
+test_incompatible_explicit_directory_is_rejected (test_layout.BuildLayoutTests.test_incompatible_explicit_directory_is_rejected) ... ok
+test_invalid_combinations_fail_before_toolchain_initialization (test_layout.BuildLayoutTests.test_invalid_combinations_fail_before_toolchain_initialization) ... ok
+test_legacy_server_and_mingw_options_select_separate_identities (test_layout.BuildLayoutTests.test_legacy_server_and_mingw_options_select_separate_identities) ... ok
+test_same_identity_cannot_have_two_concurrent_writers (test_layout.BuildLayoutTests.test_same_identity_cannot_have_two_concurrent_writers) ... ok
+test_shared_manifests_are_valid_and_unique (test_layout.BuildLayoutTests.test_shared_manifests_are_valid_and_unique) ... ok
+test_no_delay_macro_redefines_sdl_behavior (test_platform_boundary.PlatformBoundaryTests.test_no_delay_macro_redefines_sdl_behavior) ... ok
+test_shared_code_does_not_embed_browser_api_calls (test_platform_boundary.PlatformBoundaryTests.test_shared_code_does_not_embed_browser_api_calls) ... ok
+test_shared_code_uses_target_owned_configuration (test_platform_boundary.PlatformBoundaryTests.test_shared_code_uses_target_owned_configuration) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.699s
+
+OK

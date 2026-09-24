@@ -1,0 +1,9 @@
+
+Running 4 tests using 1 worker
+
+  ✓  1 [chromium] › tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (8.1s)
+  ✓  2 [chromium] › tests/torus.spec.js:46:1 › WebGL2 switches between the flat map and the torus overview (11.5s)
+  ✓  3 [chromium] › tests/torus.spec.js:68:1 › the torus overview recovers after WebGL context loss (9.3s)
+  ✓  4 [chromium] › tests/torus.spec.js:88:1 › the software renderer keeps the flat map (5.9s)
+
+  4 passed (35.3s)

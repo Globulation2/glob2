@@ -1,0 +1,80 @@
+Settings::load("preferences.txt") : error, can't open file.
+Landscape preview: Could not place every colony
+=================================================================
+==51424==ERROR: AddressSanitizer: container-overflow on address 0x60b000055b88 at pc 0x00010464aa78 bp 0x00016bb5ec30 sp 0x00016bb5ec28
+READ of size 4 at 0x60b000055b88 thread T1
+    #0 0x00010464aa74 in LandscapePreviewer::work() LandscapePreviewer-before.cpp:187
+    #1 0x00010464c808 in LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0::operator()() const LandscapePreviewer-before.cpp:24
+    #2 0x00010464c808 in std::__1::__invoke_result_impl<void, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>::type std::__1::__invoke[abi:nqe220106]<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&) invoke.h:90
+    #3 0x00010464c808 in void std::__1::__thread_execute[abi:nqe220106]<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0, 0ul>(std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>&, std::__1::__integer_sequence<unsigned long, 0ul>) thread.h:161
+    #4 0x00010464c808 in void* std::__1::__thread_proxy[abi:nqe220106]<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct>>, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>>(void*) thread.h:169
+    #5 0x00010668de64 in asan_thread_start(void*)+0x4c (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x3de64)
+    #6 0x000186b07c54 in _pthread_start+0x84 (libsystem_pthread.dylib:arm64e+0x6c54)
+    #7 0x000186b02c18 in thread_start+0x4 (libsystem_pthread.dylib:arm64e+0x1c18)
+
+0x60b000055b88 is located 104 bytes inside of 112-byte region [0x60b000055b20,0x60b000055b90)
+allocated by thread T0 here:
+    #0 0x0001066a0150 in _Znwm+0x74 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x50150)
+    #1 0x000104646a00 in LandscapePreviewer::Preview* std::__1::__libcpp_allocate[abi:nqe220106]<LandscapePreviewer::Preview>(std::__1::__element_count, unsigned long) allocate.h:60
+    #2 0x000104646a00 in std::__1::allocator<LandscapePreviewer::Preview>::allocate[abi:nqe220106](unsigned long) allocator.h:92
+    #3 0x000104646a00 in std::__1::__allocation_result<std::__1::allocator_traits<std::__1::allocator<LandscapePreviewer::Preview>>::pointer, std::__1::allocator_traits<std::__1::allocator<LandscapePreviewer::Preview>>::size_type> std::__1::__allocate_at_least[abi:nqe220106]<std::__1::allocator<LandscapePreviewer::Preview>, std::__1::allocator_traits<std::__1::allocator<LandscapePreviewer::Preview>>>(std::__1::allocator<LandscapePreviewer::Preview>&, unsigned long) allocate_at_least.h:46
+    #4 0x000104646a00 in std::__1::__split_buffer<LandscapePreviewer::Preview, std::__1::allocator<LandscapePreviewer::Preview>&>::__split_buffer(unsigned long, unsigned long, std::__1::allocator<LandscapePreviewer::Preview>&) __split_buffer:330
+    #5 0x000104646a00 in std::__1::__split_buffer<LandscapePreviewer::Preview, std::__1::allocator<LandscapePreviewer::Preview>&>::__split_buffer(unsigned long, unsigned long, std::__1::allocator<LandscapePreviewer::Preview>&) __split_buffer:326
+    #6 0x000104646a00 in std::__1::vector<LandscapePreviewer::Preview, std::__1::allocator<LandscapePreviewer::Preview>>::resize(unsigned long) vector.h:1363
+    #7 0x0001046463f4 in LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int) LandscapePreviewer-before.cpp:12
+    #8 0x000104c96130 in checkPreviewRestart() CustomGameSetupHarness.cpp:1552
+    #9 0x000104c92aa4 in main CustomGameSetupHarness.cpp:1578
+    #10 0x00018673c4e0 in start+0x1b4c (dyld:arm64e+0x204e0)
+
+Thread T1 created by T0 here:
+    #0 0x00010668926c in pthread_create+0x60 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x3926c)
+    #1 0x00010464c48c in std::__1::__libcpp_thread_create[abi:nqe220106](_opaque_pthread_t**, void* (*)(void*), void*) pthread.h:182
+    #2 0x00010464c48c in std::__1::thread::thread[abi:nqe220106]<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0, 0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&) thread.h:221
+    #3 0x00010464c48c in std::__1::thread::thread[abi:nqe220106]<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0, 0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&) thread.h:212
+    #4 0x00010464c48c in std::__1::thread* std::__1::construct_at[abi:nqe220106]<std::__1::thread, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0, std::__1::thread*>(std::__1::thread*, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&) construct_at.h:37
+    #5 0x00010464c48c in std::__1::thread* std::__1::__construct_at[abi:nqe220106]<std::__1::thread, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0, std::__1::thread*>(std::__1::thread*, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&) construct_at.h:45
+    #6 0x00010464c48c in void std::__1::allocator_traits<std::__1::allocator<std::__1::thread>>::construct[abi:nqe220106]<std::__1::thread, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0, 0>(std::__1::allocator<std::__1::thread>&, std::__1::thread*, LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&) allocator_traits.h:302
+    #7 0x00010464c18c in std::__1::thread* std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::__emplace_back_slow_path<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&) vector.h:1109
+    #8 0x00010464c18c in std::__1::thread& std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::emplace_back<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&)::'lambda0'()::operator()() const vector.h:1149
+    #9 0x000104646600 in void std::__1::__if_likely_else[abi:nqe220106]<std::__1::thread& std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::emplace_back<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&)::'lambda'(), std::__1::thread& std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::emplace_back<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&)::'lambda0'()>(bool, std::__1::thread& std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::emplace_back<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&)::'lambda'(), std::__1::thread& std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::emplace_back<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&)::'lambda0'()) vector.h:1129
+    #10 0x000104646600 in std::__1::thread& std::__1::vector<std::__1::thread, std::__1::allocator<std::__1::thread>>::emplace_back<LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0>(LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int)::$_0&&) vector.h:1143
+    #11 0x000104646600 in LandscapePreviewer::LandscapePreviewer(std::__1::vector<GenerationRequest, std::__1::allocator<GenerationRequest>>, int) LandscapePreviewer-before.cpp:24
+    #12 0x000104c96130 in checkPreviewRestart() CustomGameSetupHarness.cpp:1552
+    #13 0x000104c92aa4 in main CustomGameSetupHarness.cpp:1578
+    #14 0x00018673c4e0 in start+0x1b4c (dyld:arm64e+0x204e0)
+
+HINT: if you don't care about these errors you may set ASAN_OPTIONS=detect_container_overflow=0.
+If you suspect a false positive see also: https://github.com/google/sanitizers/wiki/AddressSanitizerContainerOverflow.
+SUMMARY: AddressSanitizer: container-overflow LandscapePreviewer-before.cpp:187 in LandscapePreviewer::work()
+Shadow bytes around the buggy address:
+  0x60b000055900: fa fa 00 00 00 00 00 00 00 00 00 00 00 00 00 fa
+  0x60b000055980: fa fa fa fa fa fa fa fa fd fd fd fd fd fd fd fd
+  0x60b000055a00: fd fd fd fd fd fa fa fa fa fa fa fa fa fa fd fd
+  0x60b000055a80: fd fd fd fd fd fd fd fd fd fd fd fd fa fa fa fa
+  0x60b000055b00: fa fa fa fa fc fc fc fc fc fc fc fc fc fc fc fc
+=>0x60b000055b80: fc[fc]fa fa fa fa fa fa fa fa 00 00 00 00 00 00
+  0x60b000055c00: 00 00 00 00 00 00 05 fa fa fa fa fa fa fa fa fa
+  0x60b000055c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 02 fa fa
+  0x60b000055d00: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x60b000055d80: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x60b000055e00: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==51424==ABORTING
