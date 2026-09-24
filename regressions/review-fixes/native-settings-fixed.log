@@ -1,0 +1,9 @@
+1000x700 gl: exit 0
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-dd6b30f67df44c5f839f7ae67d291e2d/preferences.txt: File replacement failed: unspecified iostream_category error
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-dd6b30f67df44c5f839f7ae67d291e2d/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization

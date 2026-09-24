@@ -1,0 +1,48 @@
+Before release: {
+  state: {
+    version: 1,
+    renderer: 'software',
+    contextLost: false,
+    contextRestores: 0,
+    screen: '14SettingsScreen',
+    screenClass: '14SettingsScreen',
+    roomCanStart: false,
+    tick: 0,
+    frames: 0,
+    paused: false,
+    torus: false,
+    width: 1200,
+    height: 900,
+    restore: 'ready',
+    import: 'idle',
+    persisting: true,
+    persistence: 'writing',
+    audio: 'running'
+  },
+  preferences: { optionFlags: 1, mute: 1 }
+}
+Closed with pending newer save: {
+  state: {
+    version: 1,
+    renderer: 'software',
+    contextLost: false,
+    contextRestores: 0,
+    screen: '14MainMenuScreen',
+    screenClass: '14MainMenuScreen',
+    roomCanStart: false,
+    tick: 0,
+    frames: 0,
+    paused: false,
+    torus: false,
+    width: 1200,
+    height: 900,
+    restore: 'ready',
+    import: 'idle',
+    persisting: true,
+    persistence: 'writing',
+    audio: 'running'
+  },
+  preferences: { optionFlags: 1, mute: 1 },
+  blockedSecondWrite: true
+}
+Reloaded preferences: { optionFlags: 1, mute: 0 }

@@ -1,0 +1,79 @@
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:08] "GET / HTTP/1.1" 200 -
+
+Running 2 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:08] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:08] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:08] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:08] "GET /index.wasm HTTP/1.1" 200 -
+  ✘  1 [chromium] › tests/settings-storage.spec.js:102:40 › Done waits for the latest settings write (success) (3.6s)
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:13] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:13] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:13] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [24/Sep/2026 16:22:13] "GET /index.wasm HTTP/1.1" 200 -
+  ✘  2 [chromium] › tests/settings-storage.spec.js:102:40 › Done waits for the latest settings write (failure) (3.6s)
+
+
+  1) [chromium] › tests/settings-storage.spec.js:102:40 › Done waits for the latest settings write (success) 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "SettingsScreen"
+    Received string:    "14MainMenuScreen"
+
+      132 |   // Give the screen several frames to consume the stale acknowledgement.
+      133 |   await page.waitForTimeout(300);
+    > 134 |   expect((await state(page)).screen).toContain('SettingsScreen');
+          |                                      ^
+      135 |   await page.evaluate(fail=>window.releaseLatestSettingsWrite(fail),failLatest);
+      136 |   if(failLatest){
+      137 |     await page.waitForTimeout(300);
+        at /Users/bradley/glob2/browser/tests/settings-storage.spec.js:134:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../build/browser-test-results/settings-storage-Done-wait-aca63-est-settings-write-success--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../build/browser-test-results/settings-storage-Done-wait-aca63-est-settings-write-success--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/settings-storage-Done-wait-aca63-est-settings-write-success--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/settings-storage-Done-wait-aca63-est-settings-write-success--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/settings-storage.spec.js:102:40 › Done waits for the latest settings write (failure) 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "SettingsScreen"
+    Received string:    "14MainMenuScreen"
+
+      132 |   // Give the screen several frames to consume the stale acknowledgement.
+      133 |   await page.waitForTimeout(300);
+    > 134 |   expect((await state(page)).screen).toContain('SettingsScreen');
+          |                                      ^
+      135 |   await page.evaluate(fail=>window.releaseLatestSettingsWrite(fail),failLatest);
+      136 |   if(failLatest){
+      137 |     await page.waitForTimeout(300);
+        at /Users/bradley/glob2/browser/tests/settings-storage.spec.js:134:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../build/browser-test-results/settings-storage-Done-wait-c3bd7-est-settings-write-failure--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../build/browser-test-results/settings-storage-Done-wait-c3bd7-est-settings-write-failure--chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/settings-storage-Done-wait-c3bd7-est-settings-write-failure--chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/settings-storage-Done-wait-c3bd7-est-settings-write-failure--chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/settings-storage.spec.js:102:40 › Done waits for the latest settings write (success) 
+    [chromium] › tests/settings-storage.spec.js:102:40 › Done waits for the latest settings write (failure) 

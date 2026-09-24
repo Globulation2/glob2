@@ -2,6 +2,10 @@
 
 Evidence for [Globulation2/glob2#379](https://github.com/Globulation2/glob2/pull/379), rebased onto master `a494a331929c6104c44be1bf395ef1c445bbd4c2`. Runtime build revision, review head, and scenario hashes are in [checksums/manifest.json](checksums/manifest.json). This branch contains review artifacts only; it is not part of the implementation diff.
 
+## Latest review fixes
+
+[Review-fix regressions](regressions/review-fixes/) contain before/after failures and passing local tests for commit `30aa48d12`: latest-generation settings persistence, prompt TCP burst delivery, and native graphics event polling. The earlier results below remain evidence for their recorded revisions. Updated-head CI is linked in that directory.
+
 ## Simulation and compatibility
 
 The master macOS arm64 build, rebased native macOS arm64 build, and compiled WebAssembly client produced identical binary per-tick traces for `games/cross-replay.game`, seed 42, 1,500 ticks. Each decompressed trace has SHA-256 `110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48`. The final aggregate checksum is `16791a66`.
