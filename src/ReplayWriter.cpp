@@ -13,6 +13,9 @@
 #include "FileManager.h"
 
 #include <stdio.h>
+#include <algorithm>
+#include <array>
+#include <ios>
 
 // Write an Order to the stream, with the given checksum
 inline void writeOrder(GAGCore::OutputStream *stream, std::shared_ptr<Order> order, Uint32 checksum = 0)
@@ -140,12 +143,17 @@ bool ReplayWriter::write(const std::string &filename) const
     const size_t pos = bufferBackend->getPosition();
     const bool saved = Toolkit::getFileManager()->writeAtomically(filename, [&](GAGCore::OutputStream& file) {
         bufferBackend->seekFromStart(0);
-        while (!bufferBackend->isEndOfStream()) {
-            const int c = bufferBackend->getChar();
-            if (bufferBackend->isEndOfStream()) break;
-            file.writeUint8(static_cast<Uint8>(c), "replayByte");
+        // EOF becomes true at different times for memory and FILE backends.
+        // Copy the known recording length so neither drops its final byte.
+        std::array<Uint8, 4096> bytes;
+        for (size_t remaining = pos; remaining;) {
+            const auto count = std::min(remaining, bytes.size());
+            if (!bufferBackend->readExact(bytes.data(), count))
+                throw std::ios_base::failure("Incomplete replay recording");
+            file.write(bytes.data(), count, "replayBytes");
+            remaining -= count;
         }
-        file.writeUint32(0, "replayStepsSinceLastOrder");
+        file.writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
         writeOrder(&file, std::shared_ptr<Order>(new NullOrder()), 0);
     });
     // Atomic writer failures must not leave the live recording's cursor moved.

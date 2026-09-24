@@ -40,7 +40,7 @@ test('click coordinates stay correct when browser motion delivery is missing',as
   await page.evaluate(()=>document.addEventListener('mousemove',event=>{
     if(event.isTrusted)event.stopImmediatePropagation();
   },true));
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.setViewportSize({width:1000,height:700});
   await expect.poll(async()=>(await state(page)).width).toBe(1000);

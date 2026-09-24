@@ -7,8 +7,8 @@ const toggle = page => page.locator('#canvas').press('g', {delay: 80});
 // the fitted ring in the overview, fog or ground on the flat map.
 const corner = {x: 20, y: 760, width: 200, height: 100};
 // The 1.8 s transition advances at most 0.1 s per frame. SwiftShader draws the
-// overview at about 3 fps, where the transition takes several seconds.
-const transition = {timeout: 45000};
+// overview slowly, especially while capturing screenshots on shared CI CPUs.
+const transition = {timeout: 120000};
 
 function urlWith(renderer) {
   const url = new URL(gameURL(), 'http://localhost');
@@ -19,7 +19,7 @@ function urlWith(renderer) {
 async function startMatch(page, renderer) {
   await page.goto(urlWith(renderer)); await screen(page, 'MainMenuScreen');
   await clickMainMenu(page, 'custom'); await screen(page, 'CustomGameScreen');
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick, {timeout: 60000}).toBeGreaterThan(25);
 }
 
@@ -44,7 +44,7 @@ async function skyShare(page, clip) {
 const glError = page => page.evaluate(() => document.querySelector('#canvas').getContext('webgl2').getError());
 
 test('WebGL2 switches between the flat map and the torus overview', async ({page}, info) => {
-  test.setTimeout(180000);
+  test.setTimeout(360000);
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await startMatch(page, 'webgl2');
   expect(await state(page)).toMatchObject({renderer: 'webgl2', torus: false});
@@ -66,7 +66,7 @@ test('WebGL2 switches between the flat map and the torus overview', async ({page
 });
 
 test('the torus overview recovers after WebGL context loss', async ({page}) => {
-  test.setTimeout(180000);
+  test.setTimeout(360000);
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await startMatch(page, 'webgl2');
   await toggle(page);

@@ -34,6 +34,8 @@
 #include <limits>
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
+#include "ReplayReader.h"
+#include "Order.h"
 #include "native.h"
 #include "code.h"
 #include <SDL_net.h>
@@ -367,8 +369,22 @@ int main(int argc, char** argv)
         require(writer.getBuffer()->getPosition() == position, "Failed replay save moved the recording cursor");
         require(writer.write(destination.string()) && read(destination) == bytes && !bytes.empty(),
             "Replay retry did not preserve the complete recording");
+        GameGUI replayGui;
+        BinaryInputStream header(globalContainer->fileManager->openInputStreamBackend(destination.string()));
+        require(replayGui.load(&header), "Could not load replay header for the memory recording");
+        ReplayWriter memory;
+        memory.init("", replayGui);
+        for (ReplayWriter* recording : {&writer, &memory}) {
+            recording->setCheckSum(0xa1b2c3d4);
+            recording->pushOrder(std::make_shared<PauseGameOrder>(true));
+            for (int tick = 0; tick < 37; ++tick) recording->advanceStep();
+            require(recording->write(destination.string()), "Short replay save failed");
+            ReplayReader reader;
+            require(reader.loadReplay(destination.string()), "Saved short replay is malformed");
+            require(reader.getNumStepsTotal() == 37, "Replay save dropped its trailing idle ticks");
+        }
         globalContainer->replayWriter.reset();
-        std::cout << "PASS atomic replay save, failed destination and retry" << std::endl;
+        std::cout << "PASS atomic replay save, complete file/memory recordings and trailing ticks" << std::endl;
     }
     for (int outcome : {0, 1, 2}) {
         auto previous = std::make_unique<Engine>();

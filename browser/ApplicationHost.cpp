@@ -70,6 +70,10 @@ void wait(std::uint32_t)
 bool takeVisibilityChange(bool& hidden)
 {
     const int state = EM_ASM_INT({
+        // WebGL becomes lost before its DOM event is dispatched. Do not let
+        // a scheduled frame query invalid GPU capabilities in that interval.
+        if (typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost())
+            Module.gpuLost = true;
         const current = Boolean(document.hidden || Module.gpuLost);
         // Querying the current state as well as the event latch makes the host
         // resilient to a visibility edge delivered between browser callbacks.

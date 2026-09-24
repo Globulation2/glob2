@@ -8,7 +8,7 @@ const digest=page=>page.evaluate(()=>glob2Diagnostics.replayDigest('AAA_review_r
 async function endMatch(page) {
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(50);
   await page.locator('#canvas').press('Escape');await click(page,600,500);
   await screen(page,'EndGameScreen');
@@ -16,7 +16,7 @@ async function endMatch(page) {
   await click(page,600,515);await page.locator('#canvas').pressSequentially('AAA review replay',{delay:20});
 }
 
-test('end-game replay save remains scheduled during resize and durable persistence',async({page})=>{
+test('end-game replay save remains scheduled during resize and durable persistence',async({page},info)=>{
   const errors=[];page.on('pageerror',e=>errors.push(String(e)));
   await endMatch(page);
   await page.setViewportSize({width:800,height:600});
@@ -33,13 +33,20 @@ test('end-game replay save remains scheduled during resize and durable persisten
   await page.locator('#canvas').press('Escape');await screen(page,'LoadSaveScreen');
   await page.evaluate(()=>releaseReplaySave());await screen(page,'EndGameScreen');
   const saved=await digest(page);expect(saved).not.toBeNull();
+  for (const name of ['AAA_review_replay.replay']) {
+    const bytes = await page.evaluate(name => Array.from(FS.readFile('/home/web_user/.glob2/replays/' + name)), name);
+    const file = info.outputPath(name);
+    require('node:fs').writeFileSync(file, Buffer.from(bytes));
+    await info.attach(name, {path:file, contentType:'application/octet-stream'});
+  }
   await page.reload();await screen(page,'MainMenuScreen');expect(await digest(page)).toEqual(saved);
   // Load the file through the real replay chooser after a fresh browser startup.
   await page.setViewportSize({width:1200,height:900});
   await page.reload();await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');
   await click(page,620,650); // Switch the chooser from saved games to replays.
-  await click(page,370,290);await click(page,810,590);
+  // The first row is the named export; the next is the unfinished live recording.
+  await click(page,370,280);await click(page,810,590);
   await screen(page,'match');
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
   expect(errors).toEqual([]);

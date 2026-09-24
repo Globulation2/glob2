@@ -25,7 +25,7 @@ test('a running match survives resize and its open menu follows the new center',
   // Cold texture creation on a headless software GPU can dominate startup.
   test.setTimeout(120000);
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await snapshot(page)).tick, {timeout:60000}).toBeGreaterThan(25);
   const before=(await snapshot(page)).tick;
   await resize(page,1400,800); await resize(page,900,650);

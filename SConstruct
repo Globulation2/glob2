@@ -11,7 +11,7 @@ import ccache
 import dmg
 import nsis
 from sources import INCLUDE_DIRECTORIES
-from build_layout import build_identity, default_directory, prepare_directory, write_if_changed, BuildLock
+from build_layout import build_identity, default_directory, prepare_directory, write_if_changed, BuildLock, PACKAGE_VERSION
 
 isWindowsPlatform = sys.platform=='win32'
 isLinuxPlatform = sys.platform.startswith('linux')
@@ -318,7 +318,7 @@ def main():
     env['BUILDDIR'] = bdir
     env.Prepend(CPPPATH=[env.Dir(bdir + '/include')])
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
-    env["VERSION"] = "0.9.5.0"
+    env["VERSION"] = PACKAGE_VERSION
     establish_options(env)
     # Release builds outside macOS link with -s, which strips debug information
     # from every binary, so compiling it in only slows the build and multiplies

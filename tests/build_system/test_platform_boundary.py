@@ -13,6 +13,13 @@ class PlatformBoundaryTests(unittest.TestCase):
                 if path.suffix in ('.cpp', '.h'):
                     self.assertIsNone(forbidden.search(path.read_text()), str(path.relative_to(root)))
 
+    def test_shared_code_uses_target_owned_configuration(self):
+        root = Path(__file__).resolve().parents[2]
+        for directory in ('src', 'libgag', 'libusl'):
+            for path in (root / directory).rglob('*'):
+                if path.suffix in ('.cpp', '.h'):
+                    self.assertNotRegex(path.read_text(), r'#\s*include\s*[<"]config\.h[>"]', str(path))
+
     def test_no_delay_macro_redefines_sdl_behavior(self):
         root = Path(__file__).resolve().parents[2]
         for directory in ('src', 'libgag', 'browser'):

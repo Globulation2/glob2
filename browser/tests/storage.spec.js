@@ -34,7 +34,7 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   }, fault);
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async ()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('p',{delay:80});
   await expect.poll(async ()=>(await state(page)).paused).toBe(true);

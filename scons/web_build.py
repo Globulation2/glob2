@@ -4,7 +4,7 @@ import json
 import os
 import subprocess
 from SCons.Script import Environment, Default, Value, GetOption, Action
-from build_layout import write_if_changed
+from build_layout import write_if_changed, PACKAGE_VERSION
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
 PORTS = ['--use-port=sdl2', '--use-port=sdl2_image:formats=png,jpg',
@@ -35,12 +35,12 @@ def build_web(directory, identity, arguments):
                       LINK=str(compiler), AR=str(emscripten / 'emar'), RANLIB=str(emscripten / 'emranlib'))
     env['PROGSUFFIX'] = '.html'
     config = output / 'include/glob2/BuildConfig.h'
-    write_if_changed(config, '''#pragma once
+    write_if_changed(config, f'''#pragma once
 #define HAVE_OPENGL 1
 #define GLOB2_WEBGL2 1
 #define PACKAGE "glob2"
 #define PACKAGE_NAME "Globulation 2"
-#define PACKAGE_VERSION "Browser development"
+#define PACKAGE_VERSION "{PACKAGE_VERSION}"
 #define PACKAGE_DATA_DIR "/"
 #define PACKAGE_SOURCE_DIR "/"
 #define PRIMARY_FONT "sans.ttf"

@@ -9,7 +9,7 @@ async function startAndSave(page) {
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   const existing=await page.evaluate(()=>glob2Diagnostics.saves());
   await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('Escape',{delay:80});
   await click(page,600,400);await click(page,520,555);
@@ -56,7 +56,7 @@ test('a damaged in-game load returns through a scheduled error notice and permit
   await page.locator('#canvas').press('Escape',{delay:80});await screen(page,'CustomGameScreen');
   await page.setViewportSize({width:1200,height:900});
   await expect.poll(async()=>(await state(page)).width).toBe(1200);
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await screen(page,'match');
   const restarted=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(restarted+25);

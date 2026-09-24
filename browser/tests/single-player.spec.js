@@ -113,7 +113,7 @@ test('game rules and AI descriptions return to setup, and a finished game return
   await click(page, 213, 201); // Warrush row.
   await click(page, 728, 862); // "Use Warrush".
   await screen(page, 'CustomGameScreen');
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('Escape');
   await click(page, 600, 500);
@@ -130,7 +130,7 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');
-  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
+  await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('p', {delay:80});
   await expect.poll(async () => (await state(page)).paused).toBe(true);
