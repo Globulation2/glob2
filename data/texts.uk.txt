@@ -2968,3 +2968,91 @@ Emoji
 Остання лісосмуга
 [Woodland depth]
 Ширина гаїв
+[Fertility]
+Родючість
+[Deposits]
+Запаси
+[Room]
+Простір
+[Isolation]
+Віддаленість
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Старт кожної колонії вимірюється на готовій карті: шлях до пшениці та до лісу, наскільки добре відновлюється її земля, запаси та місця для будівництва в межах досяжності й відстань до суперників. Кожен чинник оцінюється від 0 до 1 відносно сталої планки, підсумок їх зважує, справедливість — це підсумок найгіршої колонії, поділений на підсумок найкращої, а оцінка — найгірший підсумок, помножений на справедливість.
+[ERROR_CANT_SAVE_MAP]
+Не вдалося зберегти карту. Перевірте місце призначення та вільний простір. Ваші зміни досі відкриті.
+[Loading headers]
+Завантаження заголовків...
+[Loading teams]
+Завантаження команд...
+[Loading terrain]
+Завантаження місцевості...
+[Building gradients]
+Побудова градієнтів...
+[Loading players]
+Завантаження гравців...
+[Loading scripts]
+Завантаження скриптів...
+[Generating map]
+Створення карти...
+[ERROR_CANT_GENERATE_MAP]
+Не вдалося створити карту. Спробуйте інші параметри генерації.
+[Loading units]
+Завантаження підрозділів...
+[Loading buildings]
+Завантаження будівель...
+[Resolving team links]
+Визначення зв'язків команд...
+[saving to storage]
+Збереження...
+[save failed retry]
+Помилка збереження. Повторіть спробу.
+[export save]
+Експортувати збереження
+[storage restore failed]
+Не вдалося відновити сховище браузера. Наявні збережені дані не змінено. Ви можете продовжити цей сеанс, але локальні зміни неможливо буде зберегти. Експортуйте важливі збереження з вікна помилки збереження. Перезавантажте сторінку, щоб повторити спробу відновлення сховища.
+[continue]
+Продовжити
+[export file]
+Експортувати файл
+[export failed]
+Не вдалося експортувати файл
+[import file]
+Імпорт
+[select import file]
+Виберіть файл для імпорту
+[validating import]
+Перевірка файлу...
+[import succeeded]
+Файл імпортовано
+[import cancelled]
+Імпорт скасовано
+[import failed]
+Помилка імпорту: недійсний або непідтримуваний файл
+[import persistence failed]
+Не збережено: виберіть «Імпорт», щоб повторити спробу, або «Експортувати файл»
+[import progress]
+Хід імпорту
+[export progress]
+Хід експорту
+[retry save]
+Повторити збереження
+[campaign save failed]
+Прогрес кампанії не збережено. Повторіть спробу або експортуйте резервну копію.
+[leave without saving]
+Вийти без збереження
+[campaign import failed]
+Недійсний файл прогресу або інша версія кампанії
+[network release mismatch]
+Протоколи клієнта й сервера відрізняються. Установіть таку саму версію Glob2, як на сервері.
+[settings continue]
+Продовжити
+[settings save failed]
+Збереження налаштувань не підтверджено. Повторіть спробу або продовжте.
+[shutdown save failed]
+Підсумкове збереження не підтверджено. Повторіть спробу або вийдіть без збереження.
+[quit without saving]
+Вийти без збереження
+[game closed]
+Гру закрито. Можете закрити це вікно або перезавантажити сторінку, щоб зіграти знову.
+[campaign editor save failed]
+Збереження не підтверджено. «Гаразд» повторює спробу; «Скасувати» повертає до меню редактора.

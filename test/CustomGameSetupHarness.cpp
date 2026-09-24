@@ -3,6 +3,7 @@
 #include "AIImplementation.h"
 #include "AINames.h"
 #include "CustomGameScreen.h"
+#include <ScreenStack.h>
 #include "CustomGameSetup.h"
 #include "CustomGamePreferences.h"
 #include "Engine.h"
@@ -30,6 +31,7 @@
 #include <memory>
 #include <numeric>
 #include <set>
+#include <optional>
 #include <unistd.h>
 
 GlobalContainer *globalContainer = nullptr;
@@ -285,7 +287,8 @@ struct CustomGameSetupHarness
 		if (write) files->remove(CustomGamePreferences::filename);
 		if (write)
 		{
-			CustomGameScreen screen;
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
+			CustomGameScreen screen(screens);
 			// Nothing saved: a random map (FEEDBACK 2026-09-14). The premade library is what this
 			// file is written with, so switch to it first.
 			assert(screen.setup.random && screen.previewPending && screen.setup.capacity == 4);
@@ -311,7 +314,8 @@ struct CustomGameSetupHarness
 		{
 			std::string premade;
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.validMap && !screen.setup.random && screen.setup.capacity == 4);
 				assert(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
 				assert(screen.setup.colonies[2].ai == AI::CORTEX);
@@ -336,7 +340,8 @@ struct CustomGameSetupHarness
 				assert(screen.previewPending);
 			}
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap);
 				assert(screen.snapshot.empty() && screen.source.empty());
 				assert(screen.setup.premadeMap == premade);
@@ -346,7 +351,8 @@ struct CustomGameSetupHarness
 				screen.setup.premadeMap = "/missing/saved-map.map";
 			}
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(!screen.validMap && !screen.setup.random && !screen.message.empty());
 				assert(screen.setup.colonies[2].ai == AI::CORTEX && screen.setup.speed == 3);
 				assert(screen.setup.premadeMap == "/missing/saved-map.map");
@@ -358,7 +364,8 @@ struct CustomGameSetupHarness
 			{
 				// A file the lobby cannot read is the same as none: a random map at four colonies,
 				// its preview pending (FEEDBACK 2026-09-14: random maps are the default tab).
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap &&
 					   screen.setup.capacity == 4 && screen.setup.speed == 0);
 			}
@@ -465,67 +472,86 @@ struct CustomGameSetupHarness
 		}
 		click("Launch", 540, 445);
 
-    globalContainer->settings.gameSpeed = 7;
-    {
-      Engine engine;
-      auto timer = SDL_AddTimer(500, Driver::tick, &driver);
-      assert(timer);
-      auto watchdog = SDL_AddTimer(
-          20000,
-          [](Uint32, void *) -> Uint32 {
-            SDL_Event event = {};
-            event.type = SDL_QUIT;
-            SDL_PushEvent(&event);
-            return 0;
-          },
-          nullptr);
-      int result = engine.initCustom();
-      SDL_RemoveTimer(timer);
-      SDL_RemoveTimer(watchdog);
-      assert(result == Engine::EE_NO_ERROR);
-      assert(driver.next == driver.steps.size());
-      assert(globalContainer->liveSpectating ==
-             (control == CustomGameSetup::Computer));
-      assert(globalContainer->settings.gameSpeed == 3);
-      assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
-             (control == CustomGameSetup::Shared ? 5 : 4));
-      assert(
-          engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
-              ->ai->implementationID == AI::NICOWAR);
-      assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
-             engine.gui.game.gameHeader.getAllyTeamNumber(1));
-      assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
-             engine.gui.game.gameHeader.getAllyTeamNumber(2));
-      if (globalContainer->liveSpectating) {
-        SDL_Event pause = {};
-        pause.type = SDL_KEYDOWN;
-        pause.key.keysym.sym = SDLK_p;
-        engine.gui.processEvent(&pause);
-        assert(engine.gui.hardPause);
-        engine.gui.processEvent(&pause);
-        assert(!engine.gui.hardPause);
-      }
-      globalContainer->settings.save(); // Simulate persisting in-game options.
-      globalContainer->automaticEndingGame = true;
-      globalContainer->automaticEndingSteps = 30;
-      globalContainer->automaticGameGlobalEndConditions = true;
-      engine.run();
-      {
-        FrontendScope gameplay(false);
-        engine.gui.drawAll(engine.gui.localTeamNo);
-        globalContainer->gfx->printScreen(output + "/live-control-" +
-                                          std::to_string(control) + ".bmp");
-      }
-    }
-    assert(globalContainer->settings.gameSpeed == 7);
-    Settings persisted;
-    persisted.load();
-    assert(persisted.gameSpeed == 7);
-    std::cout << "PASS full SDL UI flow mode " << control
-              << ": clicks, nested choices, shared control, presets, profiles, "
-                 "random preview, "
-                 "match launch and speed restoration\n";
-  }
+		globalContainer->settings.gameSpeed = 7;
+		{
+			Engine engine;
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
+			std::optional<GAGCore::CooperativeTask> load;
+			std::shared_ptr<void> mapFile;
+			std::string source;
+			screens.push(std::make_unique<CustomGameScreen>(screens),
+				[&](GAGGUI::Screen &screen, int result)
+				{
+					if (result != CustomGameScreen::OK) return;
+					auto &selected = static_cast<CustomGameScreen &>(screen);
+					// Like SinglePlayerFlow, read the generated map only after the
+					// stack has destroyed this screen.
+					source = selected.sourceFile();
+					load.emplace(engine.initCustomTask(selected.getMapHeader(), selected.getGameHeader(),
+						selected.getSelectedColor(0), selected.selectedSpeed(), source));
+					mapFile = selected.releaseSnapshot();
+				});
+			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
+			assert(timer);
+			auto watchdog = SDL_AddTimer(
+				20000,
+				[](Uint32, void *) -> Uint32
+				{
+					SDL_Event event = {};
+					event.type = SDL_QUIT;
+					SDL_PushEvent(&event);
+					return 0;
+				},
+				nullptr);
+			screens.execute();
+			SDL_RemoveTimer(timer);
+			SDL_RemoveTimer(watchdog);
+			const bool loaded = load && load->run();
+			mapFile.reset();
+			assert(loaded);
+			assert(!std::filesystem::exists(std::filesystem::path(source).parent_path()));
+			assert(driver.next == driver.steps.size());
+			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
+			assert(globalContainer->settings.gameSpeed == 3);
+			assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
+				   (control == CustomGameSetup::Shared ? 5 : 4));
+			assert(engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
+					   ->ai->implementationID == AI::NICOWAR);
+			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
+				   engine.gui.game.gameHeader.getAllyTeamNumber(1));
+			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
+				   engine.gui.game.gameHeader.getAllyTeamNumber(2));
+			if (globalContainer->liveSpectating)
+			{
+				SDL_Event pause = {};
+				pause.type = SDL_KEYDOWN;
+				pause.key.keysym.sym = SDLK_p;
+				engine.gui.processEvent(&pause);
+				assert(engine.gui.hardPause);
+				engine.gui.processEvent(&pause);
+				assert(!engine.gui.hardPause);
+			}
+			globalContainer->settings.save(); // Simulate persisting in-game options.
+			globalContainer->automaticEndingGame = true;
+			globalContainer->automaticEndingSteps = 30;
+			globalContainer->automaticGameGlobalEndConditions = true;
+			engine.run();
+			{
+				FrontendScope gameplay(false);
+				engine.gui.drawAll(engine.gui.localTeamNo);
+				globalContainer->gfx->printScreen(output + "/live-control-" +
+												  std::to_string(control) + ".bmp");
+			}
+		}
+		assert(globalContainer->settings.gameSpeed == 7);
+		Settings persisted;
+		persisted.load();
+		assert(persisted.gameSpeed == 7);
+		std::cout << "PASS full SDL UI flow mode " << control
+				  << ": clicks, nested choices, shared control, presets, profiles, "
+					 "random preview, "
+					 "match launch and speed restoration\n";
+	}
 
 	static void strategyVisual(const std::string &output)
 	{
@@ -577,7 +603,9 @@ struct CustomGameSetupHarness
 		if (onlyAIProfile)
 			return;
 
-    CustomGameScreen screen;
+    GAGGUI::ScreenStack screens(*globalContainer->gfx);
+
+    CustomGameScreen screen(screens);
     screen.gfx = globalContainer->gfx;
     screen.dispatchInit();
     // With nothing saved the lobby opens on a random map (FEEDBACK 2026-09-14); the premade

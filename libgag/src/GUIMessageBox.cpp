@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <ApplicationHost.h>
 #include <GUIMessageBox.h>
 #include <GUIBase.h>
 #include <GUIText.h>
@@ -132,7 +133,7 @@ namespace GAGGUI
 			parentCtx->drawSurface(mbs->decX, mbs->decY, mbs->getSurface());
 			parentCtx->nextFrame();
 			Uint64 newTime = SDL_GetTicks64();
-			SDL_Delay(std::max<Sint64>(40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time), 0));
+			GAGCore::ApplicationHost::wait(std::max<Sint64>(40ll - static_cast<Sint64>(newTime) + static_cast<Sint64>(time), 0));
 		}
 	
 		int retVal;

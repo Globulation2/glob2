@@ -50,7 +50,7 @@ void SettingsScreen::focusNext(bool backward)
         else for(int i=0;i<6;++i)ids.push_back("nav."+std::to_string(i));
     }
     for(const auto& r:form)if(!r.id.empty() && r.enabled){ids.push_back(r.id);if(!r.extraId.empty())ids.push_back(r.extraId);}
-    if(failed && modal==Modal::None)ids.push_back("retry");ids.push_back("done");
+    if(modal==Modal::None)ids.push_back("cancel");ids.push_back("done");
     auto it=std::find(ids.begin(),ids.end(),focus);int at=it==ids.end()?(backward?0:-1):int(it-ids.begin());
     at=(at+int(ids.size())+(backward?-1:1))%int(ids.size());focus=ids[at];ensureFocusVisible();
 }
@@ -101,7 +101,7 @@ void SettingsScreen::onSDLEvent(SDL_Event* event)
         if(y>=footer.y && y<footer.y+footer.h){
             commitText();finishInteraction();
             if(x>=footer.x+footer.w-112){dismiss();return;}
-            if(failed && modal==Modal::None && x>=footer.x+footer.w-208){persist();return;}
+            if(modal==Modal::None && x>=footer.x+footer.w-208){abandon();return;}
         }
         if(modal==Modal::None && compactNavigation && categoryControl.contains(x,y)){focus="nav.current";openCategoryPicker();return;}
         if(modal==Modal::None && !compactNavigation && x>=panel.x && x<panel.x+sidebar){
@@ -171,7 +171,7 @@ void SettingsScreen::onSDLEvent(SDL_Event* event)
     const bool activate=key==SDLK_RETURN || key==SDLK_KP_ENTER || key==SDLK_SPACE;
     if(activate){
         if(focus=="done"){dismiss();return;}
-        if(focus=="retry"){persist();return;}
+        if(focus=="cancel"){abandon();return;}
         if(focus=="nav.current"){openCategoryPicker();return;}
         if(focus.rfind("nav.",0)==0){int i=std::stoi(focus.substr(4));selectCategory(Category(i));focus="nav."+std::to_string(i);return;}
     }

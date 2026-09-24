@@ -65,7 +65,7 @@ void GameGUIToolManager::deactivateTool()
 
 
 
-void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
+void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers)
 {
 	if(mode == PlaceBuilding)
 	{
@@ -79,7 +79,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 		
 		
-		SDL_Keymod modState = SDL_GetModState();
+		const int modState = modifiers;
 		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
 		{
 			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
@@ -185,7 +185,7 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 
 
 
-void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
+void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers)
 {
 	if(mode == PlaceZone)
 	{
@@ -200,7 +200,7 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		int mapX, mapY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
-		SDL_Keymod modState = SDL_GetModState();
+		const int modState = modifiers;
 		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
 		{
 			placeBuildingAt(mapX, mapY, localteam);
@@ -622,6 +622,11 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 }
 
 void GameGUIToolManager::finishPointerGesture(int localteam)
+{
+	cancelDrag(localteam);
+}
+
+void GameGUIToolManager::cancelDrag(int localteam)
 {
     if (mode == PlaceZone) flushBrushOrders(localteam);
     firstPlacement.reset();

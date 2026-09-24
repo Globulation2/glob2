@@ -164,7 +164,7 @@ void YOGRegisterScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> eve
 		}
 		else if(reason == YOGClientVersionTooOld)
 		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]"));
+			statusText->setText(Toolkit::getStringTable()->getString("[network release mismatch]"));
 		}
 		else if(reason == YOGAlreadyAuthenticated)
 		{

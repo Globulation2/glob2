@@ -7,6 +7,13 @@
 #include <algorithm>
 #include <cmath>
 
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
+#if defined(HAVE_OPENGL)
+#define GLOB2_TORUS_OPENGL
+#endif
+
 namespace
 {
 float clamp(float x, float a, float b) { return std::max(a, std::min(b, x)); }
@@ -35,7 +42,7 @@ void TorusView::reset()
 
 bool TorusView::available() const
 {
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     if (!globalContainer->gfx ||
         !(globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU) ||
         !SDL_GL_GetCurrentContext())

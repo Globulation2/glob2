@@ -92,6 +92,7 @@ enum YOGServerGameCreateRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGCreateRefusalUnknown,
+	YOGCreateRefusalNoRouter,
 };
 
 ///This is used to represent the types of messages that can be sent through YOG

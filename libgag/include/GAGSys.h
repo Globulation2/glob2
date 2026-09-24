@@ -30,7 +30,7 @@
 #endif
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include <glob2/BuildConfig.h>
 #endif
 // This is the only one which should be left... In theory :-)
 // Remove this comment once all other SDL deps have been removed.

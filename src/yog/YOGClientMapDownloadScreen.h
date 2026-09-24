@@ -16,6 +16,7 @@ namespace GAGGUI
 	class Widget;
 	class Number;
 	class MultiTextButton;
+	class ScreenStack;
 }
 
 class YOGClient;
@@ -28,7 +29,7 @@ using namespace GAGGUI;
 class YOGClientMapDownloadScreen : public TabScreenWindow, public YOGClientDownloadableMapListener
 {
 public:
-	YOGClientMapDownloadScreen(TabScreen* parent, std::shared_ptr<YOGClient> client);
+	YOGClientMapDownloadScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<YOGClient> client);
 	~YOGClientMapDownloadScreen();
 	///Responds to timer events
 	virtual void onTimer(Uint32 tick);
@@ -64,6 +65,7 @@ private:
 
 
 	std::shared_ptr<YOGClient> client;
+	ScreenStack& screens;
 	List* mapList;
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
@@ -114,5 +116,4 @@ public:
 private:
 	SortMethod sortMethod;
 };
-
 

@@ -2970,3 +2970,91 @@ AI strategy
 Balances sustainable growth and training, then gathers armies into waves.
 [AIMaxima-Profile]
 Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.\n\nEconomy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.\n\nScouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.\n\nAttack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.\n\nWhen attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.\n\nCompared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.\n\nStrengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.\n\nCounterplay to try: Contest exposed wheat, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.\n\nScouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals.
+[Fertility]
+Fertility
+[Deposits]
+Deposits
+[Room]
+Room
+[Isolation]
+Isolation
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.
+[ERROR_CANT_SAVE_MAP]
+The map could not be saved. Check the destination and available space. Your edits are still open.
+[Loading headers]
+Loading headers...
+[Loading teams]
+Loading teams...
+[Loading terrain]
+Loading terrain...
+[Building gradients]
+Building gradients...
+[Loading players]
+Loading players...
+[Loading scripts]
+Loading scripts...
+[Generating map]
+Generating map...
+[ERROR_CANT_GENERATE_MAP]
+The map could not be generated. Try different generation settings.
+[Loading units]
+Loading units...
+[Loading buildings]
+Loading buildings...
+[Resolving team links]
+Resolving team links...
+[saving to storage]
+Saving...
+[save failed retry]
+Save failed. Retry.
+[export save]
+Export save
+[storage restore failed]
+Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+[continue]
+Continue
+[export file]
+Export file
+[export failed]
+File export failed
+[import file]
+Import
+[select import file]
+Choose a file to import
+[validating import]
+Validating file...
+[import succeeded]
+File imported
+[import cancelled]
+Import cancelled
+[import failed]
+Import failed: invalid or unsupported file
+[import persistence failed]
+Not saved: select Import to retry or Export file
+[import progress]
+Import progress
+[export progress]
+Export progress
+[retry save]
+Retry save
+[campaign save failed]
+Campaign progress not saved. Retry or export a backup.
+[leave without saving]
+Leave without saving
+[campaign import failed]
+Invalid progress file or different campaign version
+[network release mismatch]
+Client and server protocols differ. Install the same Glob2 release as the server.
+[settings continue]
+Continue
+[settings save failed]
+Settings save not confirmed. Retry, or continue.
+[shutdown save failed]
+Final save not confirmed. Retry, or quit without saving.
+[quit without saving]
+Quit without saving
+[game closed]
+Game closed. You can close this window or reload to play again.
+[campaign editor save failed]
+Save not confirmed. OK retries; Cancel returns to the editor menu.

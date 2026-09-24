@@ -12,6 +12,7 @@ LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, 
 	slots.resize(this->requests.size());
 	seeds.resize(this->requests.size());
 	passes.resize(this->requests.size());
+#ifndef __EMSCRIPTEN__
 	if (threads <= 0)
 	{
 		const unsigned cores = std::thread::hardware_concurrency();
@@ -21,6 +22,9 @@ LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, 
 	regenerate();
 	for (int i = 0; i < threads; ++i)
 		workers.emplace_back([this] { work(); });
+#else
+	regenerate();
+#endif
 }
 
 LandscapePreviewer::~LandscapePreviewer()
@@ -183,4 +187,18 @@ void LandscapePreviewer::work()
 		result.revision = slots[index].revision + 1;
 		slots[index] = std::move(result);
 	}
+}
+
+void LandscapePreviewer::poll()
+{
+#ifdef __EMSCRIPTEN__
+	// The browser host calls this once per frame; native workers own their queue.
+	if (queue.empty()) return;
+	const auto index = queue.front();
+	queue.erase(queue.begin());
+	slots[index].state = State::Generating;
+	auto result = roll(requests[index], seeds[index]);
+	result.revision = slots[index].revision + 1;
+	slots[index] = std::move(result);
+#endif
 }

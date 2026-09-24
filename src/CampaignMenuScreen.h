@@ -4,6 +4,8 @@
 #pragma once
 
 #include "Campaign.h"
+#include <ApplicationHost.h>
+#include <ScreenStack.h>
 #include "Glob2Screen.h"
 #include "GUIButton.h"
 #include "GUICheckList.h"
@@ -17,9 +19,10 @@ class MapPreview;
 class CampaignMenuScreen : public Glob2Screen
 {
 public:
-	CampaignMenuScreen(const std::string& name);
+	CampaignMenuScreen(const std::string& name, GAGGUI::ScreenStack& screens);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void setNewCampaign();
+    void onTimer(Uint32) override;
 	enum
 	{
 		EXIT,
@@ -27,11 +30,25 @@ public:
 	};
 private:
 	Campaign campaign;
+    bool dirty = false, saveFailed = false, leaveAfterSave = false;
+    std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
+    std::unique_ptr<GAGCore::ApplicationHost::FileSelection> fileSelection;
+    TextButton *importButton = nullptr, *exportButton = nullptr, *retryButton = nullptr;
+    void saveProgress(bool leave = false);
+    void saveFailure();
+    void exportProgress();
+    std::vector<unsigned char> previousFile;
+    bool previousCaptured = false, previousExisted = false;
+    std::string progressPath() const;
+    bool readProgressFile(std::vector<unsigned char>& bytes) const;
+    void capturePrevious();
+    bool restorePrevious();
+    GAGGUI::ScreenStack& screens;
 
 	/// Title of the screen
 	Text* title;
 	/// The exit to menu screen button
-	Button* exitButton;
+	TextButton* exitButton;
 	/// The "start mission" button
 	Button* startMission;
 

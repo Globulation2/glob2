@@ -34,3 +34,10 @@ Glob2-*.dmg
 /docs/**/artifacts/
 /docs/**/evidence/
 /docs/**/validation/
+/tools/browser-emsdk/
+/build-browser/
+/build-browser.log
+/build-*-support.log
+/test/build/
+/build-*.log
+/browser/node_modules
