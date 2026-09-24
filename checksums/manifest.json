@@ -8,5 +8,5 @@
   "implementation": "3b99e41b86d822de8944ed49cc913efc7bf6f0d4",
   "native": "macOS arm64",
   "browser": "Chromium, Emscripten 4.0.15",
-  "review_head": "e954ae5ed2c4af4c907718dbf6e44e7b946fca59"
+  "review_head": "79e0c1df9d83c34c8cfc5b15449d38c53437b66f"
 }
