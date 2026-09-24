@@ -1,0 +1,3 @@
+# Build-driver versions used by mobile CI. SDK/NDK/dependency pins are separate.
+scons==4.11.1
+cmake==3.30.1

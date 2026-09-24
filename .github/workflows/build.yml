@@ -149,7 +149,10 @@ jobs:
             screen-test \
             session-test \
             portable-renderer-test \
-            mobile-input-test
+            mobile-input-test \
+            mobile-documents-test \
+            mobile-certificate-test \
+            mobile-temporary-files-test
 
       - name: Test Maxima food ledger
         run: build/linux/client/release/src/MaximaFoodLedgerStandaloneTest
@@ -274,6 +277,9 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
           ./build/linux/client/release/libgag/src/MobileInputHarness
+          ./build/linux/client/release/libgag/src/MobileDocumentsHarness
+          python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness
+          python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness
           xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
 
       - name: Test incremental engine sessions

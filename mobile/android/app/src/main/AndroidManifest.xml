@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
     <application android:label="Globulation 2" android:allowBackup="false" android:usesCleartextTraffic="false" android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen">
-        <activity android:name=".Glob2Activity" android:exported="true"
+        <activity android:name=".Glob2Activity" android:exported="true" android:windowSoftInputMode="adjustNothing"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

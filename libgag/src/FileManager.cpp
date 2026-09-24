@@ -91,7 +91,7 @@ namespace GAGCore
 			mkdir(gameLocal.c_str(), S_IRWXU);
 			addDir(gameLocal.c_str());
 		}
-		else if ((!profile || !*profile) && (!homeDir || !*homeDir))
+		else if ((!profile || !*profile) && homeDir.empty())
 			std::cerr << "FileManager::FileManager : warning, can't get home directory by using getenv(\"HOME\")" << std::endl;
 		#endif
 #ifdef __APPLE__

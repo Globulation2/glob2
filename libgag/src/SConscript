@@ -30,6 +30,11 @@ if not env['server']:
     mobile_input_test = env.Program('MobileInputHarness',
         [env.Object('MobileInputHarness.o', '#test/MobileInputHarness.cpp')])
     env.Alias('mobile-input-test', mobile_input_test)
+    document_test = env.Program('MobileDocumentsHarness', [
+        env.Object('MobileDocumentsHarness.o', '#test/MobileDocumentsHarness.cpp'),
+        env.Object('MobileDocuments.o', '#mobile/Documents.cpp')])
+    env.Alias('mobile-documents-test', document_test)
+
     screen_test = env.Program('ScreenExecutionHarness',
         [env.Object('ScreenExecutionHarness.o', '#test/ScreenExecutionHarness.cpp'), l1])
     env.Alias('screen-test', screen_test)

@@ -379,3 +379,15 @@ if not env['server']:
     unit_continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     unit_continuation_test = unit_continuation_env.Program('UnitContinuationHarness', unit_continuation_sources)
     local.Alias('unit-continuation-test', unit_continuation_test)
+
+if not env['server'] and env.get('wss', True):
+    certificate_test = local.Program('MobileCertificateHarness', [
+        local.Object('MobileCertificateHarness.o', '#test/MobileCertificateHarness.cpp'),
+        local.Object('MobileCertificateTrust.o', '#mobile/CertificateTrust.cpp')])
+    local.Alias('mobile-certificate-test', certificate_test)
+
+if not env['server'] and not env.get('mingw'):
+    temporary_test = local.Program('MobileTemporaryFilesHarness', [
+        local.Object('MobileTemporaryFilesHarness.o', '#test/MobileTemporaryFilesHarness.cpp'),
+        local.Object('MobileTemporaryFiles.o', '#mobile/TemporaryFiles.cpp')])
+    local.Alias('mobile-temporary-files-test', temporary_test)

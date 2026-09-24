@@ -426,7 +426,6 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-        if (renderer) { renderer->outputSize(drawableW, drawableH); return; }
 		if (windowW <= 0 || windowH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
 		// A resizable window keeps the interface at its scale: the logical surface
 		// follows the window divided by uiScale, not the window itself.
@@ -453,8 +452,10 @@ namespace GAGCore
 				glLoadIdentity();
 			}
 			#endif
+			if (renderer) renderer->logicalSize(logicalW, logicalH);
 			setClipRect();
 		}
+		if (renderer) renderer->outputSize(drawableW, drawableH);
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
@@ -795,8 +796,10 @@ namespace GAGCore
 			#endif
 
 			eventThread = SDL_ThreadID();
-			SDL_AddEventWatch(watchWindow, this);
-			watchingEvents = true;
+			if (!renderer) {
+				SDL_AddEventWatch(watchWindow, this);
+				watchingEvents = true;
+			}
 			return true;
 		}
 	}

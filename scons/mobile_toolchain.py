@@ -36,7 +36,7 @@ def discover(identity, arguments):
         cxx = binaries / (triple + identity['api'] + '-clang++' + suffix)
         ar = binaries / ('llvm-ar.exe' if platform.system() == 'Windows' else 'llvm-ar')
         flags = ['-fPIC']
-        links = ['-Wl,--no-undefined']
+        links = ['-Wl,--no-undefined', '-Wl,--build-id=sha1']
         if identity['arch'] != 'armeabi-v7a':
             links += ['-Wl,-z,max-page-size=16384']
         sdk_id = revision

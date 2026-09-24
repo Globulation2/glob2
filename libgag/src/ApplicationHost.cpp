@@ -4,6 +4,14 @@
 #include <GraphicContext.h>
 #endif
 #include <SDL.h>
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
+#ifdef GLOB2_MOBILE
+#include "../../mobile/Documents.h"
+#include <Toolkit.h>
+#include <StringTable.h>
+#endif
 
 namespace GAGCore::ApplicationHost
 {
@@ -40,6 +48,14 @@ bool takeViewportSize(int &, int &)
 {
 	return false;
 }
+#ifdef GLOB2_MOBILE
+bool canImportFiles() { return true; }
+std::unique_ptr<FileSelection> selectFile(const std::string &extension) { return MobileDocuments::select(extension); }
+bool canExportFiles() { return true; }
+bool exportFile(const std::string &name, const std::vector<unsigned char> &bytes) {
+    return MobileDocuments::exportFile(name, bytes, Toolkit::getStringTable()->getString("[export failed]"));
+}
+#else
 bool canImportFiles()
 {
 	return false;
@@ -47,10 +63,6 @@ bool canImportFiles()
 std::unique_ptr<FileSelection> selectFile(const std::string &)
 {
 	return {};
-}
-bool storageRestoreFailed()
-{
-	return false;
 }
 bool canExportFiles()
 {
@@ -60,6 +72,9 @@ bool exportFile(const std::string &, const std::vector<unsigned char> &)
 {
 	return false;
 }
+#endif
+bool storageRestoreFailed() { return false; }
+
 namespace
 {
 class NativePersistence : public Persistence
@@ -72,7 +87,11 @@ std::unique_ptr<Persistence> persistStorage()
 	return std::make_unique<NativePersistence>();
 }
 void importChanged(const char *) {}
-void screenChanged(const char *) {}
+void screenChanged(const char *name) {
+#ifdef GLOB2_MOBILE
+    SDL_Log("Glob2 screen ready: %s", name);
+#endif
+}
 void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}
 void overviewDrawn(bool) {}
