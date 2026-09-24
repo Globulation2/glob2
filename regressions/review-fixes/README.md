@@ -18,3 +18,5 @@ The rebuilt macOS client at `8fd3e8e2a` produces the same 1,500-tick trace as th
 The final commit corrects the session-load test to retain the named save instead of selecting the first row, which can become an autosave. The damaged-load test now waits past the initial autosave. Restoring the old first-row selection fails with a successful match instead of the expected error; all three corrected WebGL session tests pass locally with SwiftShader. Logs are included.
 
 Final-head CI replay artifacts are retained in `final-ci-determinism.tar.gz`. Both Linux toolchains, Windows, and WebAssembly produce the master-baseline checksum hash above.
+
+All nine jobs in CI run 36061582543 passed on `262e63ec0`: native Linux/Windows, variants and generators, browser/deployment, and simulation equivalence. The complete run log is retained as `final-ci.log.gz`.
