@@ -62,12 +62,12 @@ void ReplayWriter::init(const std::string &backend, GameGUI &gui)
 	}
 	else if (!backend.empty() && backend[0] == '/')
 	{
-		FILE* fp = fopen(backend.c_str(), "w+");
+		FILE* fp = fopen(backend.c_str(), "w+b");
 		bufferBackend = new FileStreamBackend(fp);
 	}
 	else
 	{
-		FILE* fp = Toolkit::getFileManager()->openFP(backend, "w+");
+		FILE* fp = Toolkit::getFileManager()->openFP(backend, "w+b");
 		bufferBackend = new FileStreamBackend(fp);
 	}
 
