@@ -15,6 +15,10 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 
+import sys
+sys.path.insert(0, str(ROOT / 'tools'))
+from build_paths import native_binary, native_build_directory
+
 
 def run(command):
     subprocess.run(command, cwd=ROOT, check=True)
@@ -22,7 +26,7 @@ def run(command):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--build-dir", type=Path, default=Path("build"))
+    parser.add_argument("--build-dir", type=Path, default=native_build_directory())
     parser.add_argument("--test", action="append", choices=[
         "MaximaCombatIntegrationTest", "MaximaImplementationIntegrationTest",
         "MaximaFarmingIntegrationTest",
@@ -54,9 +58,18 @@ def main():
     elif sys.platform.startswith("linux"):
         libs += ["-lGL", "-lGLU"]
     compiler = shlex.split(os.environ.get("CXX", "c++"))
-    flags = ["-std=gnu++20", "-O1", "-UNDEBUG", "-I.", "-Isrc",
+    flags = ["-I" + str(build / "include"), "-std=gnu++20", "-O1", "-UNDEBUG", "-I.", "-Isrc",
              "-Ilibgag/include", "-Ilibusl/src", *["-I"+str(p) for p in (ROOT/"src").rglob("*") if p.is_dir()], *cflags]
-    sources = (ROOT / "src/SConscript").read_text().split('"""')[1].split()
+    sys.path.insert(0, str(ROOT / 'scons'))
+    from sources import CLIENT_SOURCES
+    sources = list(CLIENT_SOURCES)
+    if (build / 'identity.json').is_file():
+        import json
+        identity = json.loads((build / 'identity.json').read_text())
+        if not identity['native_wss']:
+            sources.remove('net/WssTransport.cpp')
+        else:
+            libs += ['-lssl', '-lcrypto']
     rebuilt = [s for s in sources if s.startswith("ai/maxima/") or s == "ai/AI.cpp"]
     objects = [build / "src" / Path(s).with_suffix(".o") for s in sources
                if s not in rebuilt and s != "Glob2.cpp"]
@@ -118,7 +131,7 @@ def main():
             run([*compiler, *flags, "test/maxima/MaximaStrategyDump.cpp",
                  *map(str, objects), *libs, "-o", str(dump)])
             subprocess.run([sys.executable, "test/maxima/MaximaStrategyConfigTest.py"], cwd=ROOT,
-                           env=dict(os.environ, MAXIMA_STRATEGY_DUMP=str(dump)), check=True)
+                           env=dict(os.environ, MAXIMA_STRATEGY_DUMP=str(dump), GLOB2_BUILD_DIR=str(build)), check=True)
             print("MaximaStrategyConfigTest: PASS", flush=True)
         if not args.test or "MaximaStrategyPolicyTest" in args.test:
             # Schema completeness and director ownership need no native build.

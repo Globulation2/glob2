@@ -8,7 +8,7 @@ shape (design, generate, validateWorld; docs/map-generators/ADDING_A_GENERATOR.m
 colonies on the roomiest lattice the torus holds (Orbits.h), a round home and pond for
 each, the starter kit and the crop guarantee, and three controls to start from. Then:
 
-  * adds its definition to GeneratorRegistry::builtins() and its source to src/SConscript,
+  * adds its definition to GeneratorRegistry::builtins() and its source to scons/sources.py,
   * adds its translation keys to data/texts.keys.txt and, with the English text as a
     placeholder, to every table (translate them before merging),
   * picks the next unused legacy id (or --legacy-id).
@@ -28,7 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 GENERATORS = ROOT / 'src' / 'map' / 'generator' / 'generators'
 REGISTRY = ROOT / 'src' / 'map' / 'generator' / 'core' / 'GeneratorRegistry.cpp'
-SCONSCRIPT = ROOT / 'src' / 'SConscript'
+SCONSCRIPT = ROOT / 'scons' / 'sources.py'
 TEXTS = ROOT / 'data'
 
 HEADER = '''// SPDX-License-Identifier: GPL-3.0-or-later
@@ -284,15 +284,15 @@ def main():
     REGISTRY.write_text(registry)
 
     sconscript = SCONSCRIPT.read_text()
-    anchor = 'map/generator/generators/WatershedGenerator.cpp\n'
+    anchor = "    'map/generator/generators/WatershedGenerator.cpp',\n"
     if anchor not in sconscript:
-        sys.exit('src/SConscript no longer lists WatershedGenerator.cpp; add the source by hand')
-    SCONSCRIPT.write_text(sconscript.replace(anchor, anchor + f'map/generator/generators/{name}Generator.cpp\n', 1))
+        sys.exit('scons/sources.py no longer lists WatershedGenerator.cpp; add the source by hand')
+    SCONSCRIPT.write_text(sconscript.replace(anchor, anchor + f"    'map/generator/generators/{name}Generator.cpp',\n", 1))
 
     append_keys([args.display, 'Home size', 'Too many colonies for this map; use a bigger map or fewer colonies.',
                  'The homes are too small; use a bigger home size.'])
     print(f'Created {header.relative_to(ROOT)} and {source.relative_to(ROOT)} (legacy id {legacy}).')
-    print('Registered it, added its source to src/SConscript and its keys to the translation tables')
+    print('Registered it, added its source to scons/sources.py and its keys to the translation tables')
     print('(English placeholders: translate them). Next:')
     print('  scons release=1 -j12 map-generator-golden-test map-generator-defaults-test map-generator-study build/src/glob2')
     print('  build/src/MapGeneratorGoldenTest <profile> --update')

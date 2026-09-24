@@ -86,7 +86,7 @@ void LandscapePreviewer::reroll(std::size_t index, GenerationRequest request)
 		++pass;
 		requests[index] = std::move(request);
 		seeds[index] = GenerationContext::deriveSeed(GenerationContext::randomSeed(),
-													  "landscape/" + std::to_string(index));
+													 "landscape/" + std::to_string(index));
 		passes[index] = pass;
 		slots[index].state = State::Pending;
 		++slots[index].revision;
@@ -193,7 +193,8 @@ void LandscapePreviewer::poll()
 {
 #ifdef __EMSCRIPTEN__
 	// The browser host calls this once per frame; native workers own their queue.
-	if (queue.empty()) return;
+	if (queue.empty())
+		return;
 	const auto index = queue.front();
 	queue.erase(queue.begin());
 	slots[index].state = State::Generating;

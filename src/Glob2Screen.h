@@ -12,28 +12,26 @@ using namespace GAGGUI;
 
 class Glob2Screen : public Screen
 {
-public:
+  public:
 	Glob2Screen();
 	virtual ~Glob2Screen();
 	void paint(void) override;
-	int execute(GAGCore::DrawableSurface* gfx, int stepLength) override;
+	int execute(GAGCore::DrawableSurface *gfx, int stepLength) override;
 
-private:
+  private:
 	// Scheduled and blocking menus share the same presentation.
 	FrontendScope theme{true};
 };
 
 class Glob2TabScreen : public TabScreen
 {
-public:
-	Glob2TabScreen(bool fullScreen, bool longerButtons=false);
+  public:
+	Glob2TabScreen(bool fullScreen, bool longerButtons = false);
 	virtual ~Glob2TabScreen();
 	void paint(void) override;
-	int execute(GAGCore::DrawableSurface* gfx, int stepLength) override;
+	int execute(GAGCore::DrawableSurface *gfx, int stepLength) override;
 
-private:
+  private:
 	// See Glob2Screen for why this needs to be a long-lived member.
 	FrontendScope theme{true};
 };
-
-

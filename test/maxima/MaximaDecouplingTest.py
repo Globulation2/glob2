@@ -7,6 +7,10 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+import sys
+sys.path.insert(0, str(ROOT / 'tools'))
+from build_paths import native_binary, native_build_directory
 MAXIMA_FILES = [
     ROOT / "src/ai/maxima/AIMaxima.h",
     ROOT / "src/ai/maxima/AIMaxima.cpp",
@@ -39,11 +43,11 @@ class MaximaDecouplingTest(unittest.TestCase):
 
     def test_built_objects_have_no_undefined_echo_symbols(self):
         objects = [
-            ROOT / "build/src/ai/maxima/AIMaxima.o",
-            ROOT / "build/src/ai/maxima/AIMaximaState.o",
-            ROOT / "build/src/ai/maxima/AIMaximaCombat.o",
-            ROOT / "build/src/ai/maxima/AIMaximaRecon.o",
-            ROOT / "build/src/ai/maxima/AIMaximaRuntime.o",
+            native_build_directory() / "src/ai/maxima/AIMaxima.o",
+            native_build_directory() / "src/ai/maxima/AIMaximaState.o",
+            native_build_directory() / "src/ai/maxima/AIMaximaCombat.o",
+            native_build_directory() / "src/ai/maxima/AIMaximaRecon.o",
+            native_build_directory() / "src/ai/maxima/AIMaximaRuntime.o",
         ]
         if not all(path.exists() for path in objects):
             self.skipTest("optimized Maxima objects have not been built")

@@ -27,7 +27,7 @@ class MaximaNamingTest(unittest.TestCase):
             (ROOT / name).read_text()
             for name in (
                 "SConstruct",
-                "src/SConscript",
+                "scons/sources.py",
                 "test/SConstruct",
             )
         )
@@ -61,7 +61,7 @@ class MaximaNamingTest(unittest.TestCase):
                 "src/ai/AI.h",
                 "src/ai/AI.cpp",
                 "src/ai/AINames.cpp",
-                "src/SConscript",
+                "scons/sources.py",
             )
         )
         self.assertNotIn("AINicowarV2", active)

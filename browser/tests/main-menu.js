@@ -80,11 +80,20 @@ exports.clickSettingsCancel = (page) => {
 };
 
 // Mirrors CustomGameScreen::renderLobby()'s "start" button rect
-// (src/CustomGameScreen.cpp). A fresh profile auto-selects a valid premade
-// map (FourSquares1), so this alone is enough to launch a match — no map
-// or player pick required first.
+// (src/CustomGameScreen.cpp). Starting also prepares the selected landscape
+// if its preview is still pending.
 exports.clickCustomGameStart = (page) => {
   const {width, height} = page.viewportSize();
   const w = Math.min(width - 32, 1120), x = Math.floor((width - w) / 2);
   return page.locator('#canvas').click({position: {x: x + w - 165 + 82, y: height - 52 + 17}, delay: 80});
+};
+
+// The unscrolled Players & Teams rows share this geometry at every viewport.
+exports.clickCustomAIProfile = (page, colony) => {
+  const {width} = page.viewportSize();
+  const w = Math.min(width - 32, 1120), x = Math.floor((width - w) / 2);
+  const rowHeight = w < 760 ? 80 : 100;
+  return page.locator('#canvas').click({
+    position: {x: x + w - 150 + 64, y: 85 + 42 + colony * rowHeight + 42 + 14}, delay: 80,
+  });
 };

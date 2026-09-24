@@ -10,12 +10,14 @@ class Engine;
 // simulation and file formats remain in Engine.
 class SinglePlayerFlow
 {
-public:
-    explicit SinglePlayerFlow(GAGGUI::ScreenStack& screens) : screens(screens) {}
-    void custom();
-    void load();
-    void replay(const std::string& filename);
-private:
-    GAGGUI::ScreenStack& screens;
-    void launch(GameLoadScreen::Initializer initialize, bool repeatCustom, std::shared_ptr<void> mapFile = nullptr);
+  public:
+	explicit SinglePlayerFlow(GAGGUI::ScreenStack &screens) : screens(screens) {}
+	void custom();
+	void load();
+	void replay(const std::string &filename);
+
+  private:
+	GAGGUI::ScreenStack &screens;
+	void launch(GameLoadScreen::Initializer initialize, bool repeatCustom,
+				std::shared_ptr<void> mapFile = nullptr);
 };

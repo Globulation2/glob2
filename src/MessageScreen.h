@@ -7,7 +7,7 @@
 // An in-game decision with explicit completion (caption index, or app quit).
 class MessageScreen : public Glob2Screen
 {
-public:
-    MessageScreen(const std::string& message, const std::vector<std::string>& captions);
-    void onAction(GAGGUI::Widget*, GAGGUI::Action action, int choice, int) override;
+  public:
+	MessageScreen(const std::string &message, const std::vector<std::string> &captions);
+	void onAction(GAGGUI::Widget *, GAGGUI::Action action, int choice, int) override;
 };

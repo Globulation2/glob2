@@ -1,4 +1,4 @@
-const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile}=require('./main-menu');
 const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
 
@@ -108,7 +108,7 @@ test('game rules and AI descriptions return to setup, and a finished game return
   // no Asyncify, so the old choose()/Screen::execute() pattern this replaced
   // threw and froze the page (docs/browser/adr-003-screen-execution.md).
   await click(page, 593, 35); // Players & Teams tab.
-  await click(page, 1113, 438); // Colony 4's Info button (AI by default).
+  await clickCustomAIProfile(page, 3);
   await screen(page, 'CustomGameChoiceScreen');
   await click(page, 213, 201); // Warrush row.
   await click(page, 728, 862); // "Use Warrush".

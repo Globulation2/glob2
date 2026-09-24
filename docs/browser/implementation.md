@@ -67,3 +67,11 @@ host or its tests; ordinary pull requests and pushes still run every platform jo
 The operational commands live in [the browser README](../../browser/README.md).
 WebKit automation is not a substitute for manual testing in shipping Safari, and
 Chromium automation is not a substitute for shipping Edge qualification.
+
+CI retains the same 1,500-tick `games/cross-replay.game` trace from two Linux
+compiler environments, Windows, and WebAssembly, then compares every byte in a
+separate required job. The fixture uses seed 42. Run a native trace locally with
+`python3 test/run-browser-determinism.py BINARY OUTPUT`; the browser counterpart
+is `browser/tests/determinism.spec.js`. Artifacts include logs, fixture hashes,
+and trace hashes. This scenario complements the save-continuation harnesses;
+it does not establish equivalence for every game or generator.

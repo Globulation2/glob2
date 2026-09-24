@@ -434,6 +434,13 @@ jobs:
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s -v
 
+      - name: Retain browser/native simulation trace
+        run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-determinism-${{ matrix.runner }}
+          path: artifacts/browser-determinism/native/
+
       # Keep only what this run compiled or reused (a hit refreshes an entry's
       # timestamp), so a save never carries older commits' objects forward.
       - name: Drop cache entries this run did not use
@@ -501,7 +508,7 @@ jobs:
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
@@ -537,7 +544,7 @@ jobs:
 
       - name: Build without OpenGL
         run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software build-software/src/glob2 torus-render-test
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 wss=0 --build=build-software build-software/src/glob2 torus-render-test
           python3 test/SoftwareStartupTest.py build-software/src/glob2
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             build-software/src/torus-render-test -g -F -m -s 1120x720
@@ -613,7 +620,7 @@ jobs:
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
@@ -826,6 +833,13 @@ jobs:
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s -v
 
+      - name: Retain browser/native simulation trace
+        run: python3 test/run-browser-determinism.py build/mingw/client/release/src/glob2.exe artifacts/browser-determinism/native
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-determinism-windows
+          path: artifacts/browser-determinism/native/
+
       # Keep only what this run compiled or reused (a hit refreshes an entry's
       # timestamp), so a save never carries older commits' objects forward.
       - name: Drop cache entries this run did not use
@@ -898,6 +912,11 @@ jobs:
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js --project=chromium
           xvfb-run -a npx playwright test --config visibility.config.js
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-determinism-wasm
+          path: artifacts/browser-determinism/wasm/
+          if-no-files-found: error
       - name: Test self-hosting with real TLS and persistent volumes
         run: |
           docker compose -f deploy/compose.yaml build lobby
@@ -920,3 +939,25 @@ jobs:
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
             build/emscripten/client/release/index.data
+
+  browser-determinism:
+    name: browser/native simulation equivalence
+    needs: [linux, windows, web]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: browser-determinism-*
+          path: traces
+      - name: Compare every per-tick trace across Linux, Windows and WebAssembly
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          traces = sorted(Path('traces').rglob('*.checksums'))
+          assert len(traces) == 4, f'Expected four platform traces, got {traces}'
+          reference = traces[0].read_bytes()
+          assert len(reference) > 1000
+          for trace in traces[1:]:
+              assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
+          print('All four per-tick simulation traces match')
+          PY

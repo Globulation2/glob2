@@ -11,26 +11,32 @@ namespace GAGGUI
 // visible at the next frame boundary; a child never receives its opening input.
 class ScreenStack
 {
-public:
-    using Completion = std::function<void(Screen&, int)>;
-    explicit ScreenStack(GAGCore::DrawableSurface& surface) : surface(surface) {}
-    ~ScreenStack();
-    void push(std::unique_ptr<Screen> screen, Completion completed = {});
-    void frame(Uint32 tick, const std::vector<SDL_Event>& events);
-    bool running() const { return !stopped && (!screens.empty() || !pending.empty()); }
-    Uint32 delay(Uint32 now, Uint32 fallback);
-    int result() const { return lastResult; }
-    // Transitional SDL host. Browser scheduling will call frame directly.
-    int execute(unsigned stepLength = 40);
-    void stop();
-    void suspendExecution();
-    void viewportResized(int oldWidth, int oldHeight, int width, int height);
-private:
-    struct Entry { Completion completed; std::unique_ptr<Screen> screen; Screen* owner; };
-    GAGCore::DrawableSurface& surface;
-    std::vector<Entry> screens, pending;
-    int lastResult = 0;
-    bool stopped = false, dispatching = false;
-    void boundary();
+  public:
+	using Completion = std::function<void(Screen &, int)>;
+	explicit ScreenStack(GAGCore::DrawableSurface &surface) : surface(surface) {}
+	~ScreenStack();
+	void push(std::unique_ptr<Screen> screen, Completion completed = {});
+	void frame(Uint32 tick, const std::vector<SDL_Event> &events);
+	bool running() const { return !stopped && (!screens.empty() || !pending.empty()); }
+	Uint32 delay(Uint32 now, Uint32 fallback);
+	int result() const { return lastResult; }
+	// Transitional SDL host. Browser scheduling will call frame directly.
+	int execute(unsigned stepLength = 40);
+	void stop();
+	void suspendExecution();
+	void viewportResized(int oldWidth, int oldHeight, int width, int height);
+
+  private:
+	struct Entry
+	{
+		Completion completed;
+		std::unique_ptr<Screen> screen;
+		Screen *owner;
+	};
+	GAGCore::DrawableSurface &surface;
+	std::vector<Entry> screens, pending;
+	int lastResult = 0;
+	bool stopped = false, dispatching = false;
+	void boundary();
 };
-}
+} // namespace GAGGUI

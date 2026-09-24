@@ -48,8 +48,8 @@ class LandscapePreviewer
 	/// Rolls every request again with fresh seeds. Rolls already under way finish, then are
 	/// dropped rather than shown.
 	void regenerate();
-    /// Advance a queued preview on hosts without worker threads.
-    void poll();
+	/// Advance a queued preview on hosts without worker threads.
+	void poll();
 	/// Replaces the requests and rolls them with fresh seeds, on the same workers; rolls of the
 	/// old requests already under way finish, then are dropped.
 	void restart(std::vector<GenerationRequest> requests);
