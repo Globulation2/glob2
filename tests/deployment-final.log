@@ -1,0 +1,7 @@
+test_account_survives_recreation_and_router_loss_is_refused (test_compose.ComposeTests.test_account_survives_recreation_and_router_loss_is_refused) ... ok
+test_assets_tls_and_private_routes (test_compose.ComposeTests.test_assets_tls_and_private_routes) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 76.658s
+
+OK

@@ -1,0 +1,5 @@
+
+Running 1 test using 1 worker
+
+[1/1] [chromium-visibility] › visibility/lifecycle.spec.js:11:1 › background single-player suspends and returns without catching up
+  1 passed (9.4s)

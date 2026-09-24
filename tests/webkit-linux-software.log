@@ -1,0 +1,19 @@
+
+Running 10 tests using 1 worker
+
+[1/10] [webkit] › tests/runtime-build.spec.js:4:1 › loading page presents branded progress before the runtime is ready
+[2/10] [webkit] › tests/runtime-build.spec.js:25:1 › browser runtime does not instrument stacks with Asyncify
+[3/10] [webkit] › tests/viewport.spec.js:15:1 › menus follow the viewport and keep their controls clickable
+[4/10] [webkit] › tests/viewport.spec.js:24:1 › a running match survives resize and its open menu follows the new center
+[5/10] [webkit] › tests/viewport.spec.js:46:1 › editor dialogs and discard controls follow viewport changes
+[6/10] [webkit] › tests/viewport.spec.js:57:1 › small viewports retain the active screen and continue rendering
+[7/10] [webkit] › tests/viewport.spec.js:67:3 › initial small viewport › starts at the actual browser dimensions
+[8/10] [webkit] › tests/viewport.spec.js:77:3 › initial wide viewport › fills the page before any resize
+[9/10] [webkit] › tests/viewport.spec.js:86:3 › high density display › uses the renderer-appropriate backing resolution
+[10/10] [webkit] › tests/viewport.spec.js:94:1 › interface scale survives resizing and keeps settings controls clickable
+  10 passed (1.4m)
+npm notice
+npm notice New major version of npm available! 11.19.0 -> 12.1.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.1.0
+npm notice To update run: npm install -g npm@12.1.0
+npm notice
