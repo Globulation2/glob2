@@ -905,8 +905,8 @@ jobs:
           # Chromium carries the complete behavior suite. The other engines
           # exercise startup, gameplay and viewport integration without
           # repeating every persistence and multiplayer scenario.
-          xvfb-run -a npx playwright test --project=chromium
-          xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js --project=firefox --project=webkit
+          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --project=chromium
+          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js --project=firefox --project=webkit
           # WebGL2 shares the game behavior above; keep focused adapter,
           # lifecycle, persistence and rendering coverage in Chromium.
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js --project=chromium

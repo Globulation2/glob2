@@ -130,8 +130,13 @@ under `build/browser-test-results`. WebKit automation does not substitute for
 release testing in actual Safari, nor Chromium for Edge.
 
 Run the suite with `GLOB2_TEST_RENDERER=webgl2` or `software` to force a renderer
-throughout. Otherwise tests get the default selection, which is software in
-headless browsers that emulate WebGL2.
+throughout. CI selects software explicitly for the full Chromium behavior suite
+and focused Firefox/WebKit checks, then runs the focused Chromium WebGL2 suite
+separately. Otherwise tests use automatic selection; some headless WebKit builds
+conceal the GPU identity and can select emulated WebGL2. Linux WebKit WebGL2
+high-density resizing has shown intermittent stalls and graphics-process exits;
+that combination is not covered by the passing software checks. Use
+`?renderer=software` if affected.
 On macOS, `GLOB2_CHROMIUM_ANGLE=metal` runs Chromium checks on the actual
 Metal GPU instead of its headless SwiftShader backend. Record which backend was
 used when reporting graphics results; emulated-GPU timings are not desktop
