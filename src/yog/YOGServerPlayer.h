@@ -69,6 +69,7 @@ private:
 	{
 		///Means this is waiting for the client to send version information to the server.
 		WaitingForClientInformation,
+        IncompatibleClient,
 		///Server information, such as the IRC server and server policies, needs to be sent
 		NeedToSendServerInformation,
 		///Means its waiting for a login attempt by the client.

@@ -24,15 +24,20 @@ scons -C test                 # rebuild the separate test suite
 - Top-level `scons` does not rebuild the separate `test/` suite. Rebuild there
   before trusting its binaries; explicit real-engine harness targets are listed
   in `test/README.md` and CI. Extend an existing relevant harness where practical.
-- `options_cache.py` retains build options: specify `release` and `server` when
-  switching configurations. A bare `build/src/glob2-server` target does not enable
-  `YOG_SERVER_ONLY`; use `server=1`. Use `release=1` for headless measurements: the
-  unoptimized build can be substantially slower. Use `release=0` for debugging.
-  `scons -c` cleans; `--build=/tmp/out` selects an out-of-source build directory;
-  `BINDIR=/path/bin INSTALLDIR=/path/share` selects installation locations.
+- Options are explicit on each invocation; there is no cross-invocation
+  `options.py`. Outputs and generated configuration are isolated under
+  `build/<toolchain>/<role>/<mode>`: `darwin`, `linux`, or `mingw` for native
+  toolchains; `client`, `server`, or `router` for the role. Use `server=1`
+  to enable `YOG_SERVER_ONLY`. Use `release=1` for headless
+  measurements: the unoptimized build can be substantially slower. Use `release=0`
+  for debugging. `scons -c` cleans; `--build=/tmp/out` selects an out-of-source
+  build directory; `BINDIR=/path/bin INSTALLDIR=/path/share` selects installation
+  locations.
 - `mingw=1` builds natively on Windows; `mingwcross=1` cross-compiles. Dependencies
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
+- `scons target=web release=1` builds the WebAssembly browser client; see
+  `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
   Boost date_time, zlib, fribidi and pcre; PortAudio is optional.
 - `CCACHE=1` opts into the shared compiler cache. Unset it when generating
@@ -60,6 +65,11 @@ The client also offers `--generate-map`, `--preview-map`, and
 settings, PNG output, and previews of existing maps and saves. PNG export uses
 the shared `MapPreview` widget on an offscreen software surface; all map CLI
 outputs can run headlessly. Preview scale defaults to 2×; 4× and 8× are available.
+
+Test runners use the current host’s native release directory. Set
+`GLOB2_BUILD_DIR` when using `--build`, a debug build, or `wss=0` (whose client
+role directory is `client-tcp`). Pass explicit binary paths to CLI tools when
+comparing builds; do not pick an old binary by modification time.
 
 ## Simulation verification and diagnostics
 

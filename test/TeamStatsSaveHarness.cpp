@@ -769,8 +769,8 @@ static void measurementAttributionFields()
 
 static void measurementReplayBoundaries()
 {
-	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 40 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 40,
+	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 41 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 41,
 			"current save format preserves replay floor and uses current network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, VERSION_MINOR, VERSION_MINOR+1})
 	{

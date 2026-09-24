@@ -20,11 +20,26 @@
 #include "YOGClientOptionsScreen.h"
 #include "YOGLoginScreen.h"
 #include "YOGRegisterScreen.h"
+#include <ScreenStack.h>
 
 using std::static_pointer_cast;
 
-YOGLoginScreen::YOGLoginScreen(std::shared_ptr<YOGClient> client)
-	: YOGConnectionScreen(client)
+namespace {
+// Tabs must outlive their asynchronous children and be destroyed before their
+// parent removes the remaining widgets. No tab lives on a modal call stack.
+class YOGSessionScreen final : public Glob2TabScreen {
+    YOGClientLobbyScreen lobby;
+    YOGClientOptionsScreen options;
+    YOGClientMapDownloadScreen maps;
+public:
+    YOGSessionScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client)
+        : Glob2TabScreen(true), lobby(this, screens, client), options(this, client),
+          maps(this, screens, client) {}
+};
+}
+
+YOGLoginScreen::YOGLoginScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client)
+	: YOGConnectionScreen(client), screens(screens)
 {
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
@@ -83,17 +98,11 @@ void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
 		else if (par1==REGISTER)
 		{
 			client->removeEventListener(this);
-			YOGRegisterScreen screen(client);
-			int rc = screen.execute(globalContainer->gfx, 40);
-			client->addEventListener(this);
-			if(rc == -1)
-			{
-				endExecute(-1);
-			}
-			else if(rc == YOGRegisterScreen::Connected)
-			{
-				showLobby();
-			}
+			screens.push(std::make_unique<YOGRegisterScreen>(client), [this](Screen&, int rc) {
+				client->addEventListener(this);
+				if(rc == -1) endExecute(-1);
+				else if(rc == YOGRegisterScreen::Connected) showLobby();
+			});
 		}
 	}
 	if (action==TEXT_ACTIVATED)
@@ -129,6 +138,7 @@ void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 	}
 	else if(type == YEConnectionLost)
 	{ 
+		lobbyRequested = false;
 		animation->visible=false;
 		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));
 	}
@@ -156,7 +166,7 @@ void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 		}
 		else if(reason == YOGClientVersionTooOld)
 		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]"));
+			statusText->setText(Toolkit::getStringTable()->getString("[network release mismatch]"));
 		}
 		else if(reason == YOGAlreadyAuthenticated)
 		{
@@ -201,15 +211,20 @@ void YOGLoginScreen::submitLoginCredentials()
 
 void YOGLoginScreen::showLobby()
 {
-	Glob2TabScreen screen(true);
-	YOGClientLobbyScreen lobby(&screen, client);
-	YOGClientOptionsScreen options(&screen, client);
-	YOGClientMapDownloadScreen maps(&screen, client);
-	int rc = screen.execute(globalContainer->gfx, 40);
-	if(rc == YOGClientLobbyScreen::ConnectionLost)
-		endExecute(ConnectionLost);
-	else if(rc == -1)
-		endExecute(-1);
-	else
-		endExecute(LoggedIn);
+	lobbyRequested = true;
+}
+
+void YOGLoginScreen::onTimer(Uint32 tick)
+{
+	YOGConnectionScreen::onTimer(tick);
+	if(!lobbyRequested) return;
+	lobbyRequested = false;
+	// Login acceptance arrives during listener iteration. Defer changing
+	// listeners and constructing lobby tabs until the network update returns.
+	client->removeEventListener(this);
+	screens.push(std::make_unique<YOGSessionScreen>(screens, client), [this](Screen&, int rc) {
+		if(rc == YOGClientLobbyScreen::ConnectionLost) endExecute(ConnectionLost);
+		else if(rc == -1) endExecute(-1);
+		else endExecute(LoggedIn);
+	});
 }

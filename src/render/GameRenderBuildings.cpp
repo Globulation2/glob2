@@ -27,7 +27,6 @@
 
 
 #include "Brush.h"
-#include "FertilityCalculatorDialog.h"
 
 
 // Building rendering. Split from Game_render.cpp.

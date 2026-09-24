@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
+#include <ApplicationHost.h>
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -40,6 +41,24 @@ public:
 	int cachedPresentations = 0;
 	Context(bool gpu) : GraphicContext(640, 480, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
 	void nextFrame() override { ++frames; GraphicContext::nextFrame(); }
+	void checkHostPolling()
+	{
+		struct Probe : ApplicationHost::Loop
+		{
+			Context &context;
+			int frames = 0;
+			explicit Probe(Context &context) : context(context) {}
+			bool frame(std::uint32_t, const std::vector<SDL_Event> &) override
+			{
+				if (frames++ == 0) { context.resize(800, 600); return true; }
+				require(context.getW() == 800 && context.getH() == 600,
+					"Native host did not apply the window size before dispatching a frame");
+				return false;
+			}
+			std::uint32_t delay(std::uint32_t) override { return 0; }
+		};
+		ApplicationHost::run(std::make_unique<Probe>(*this), [] {});
+	}
 	void benchmark()
 	{
 		readback = false; // Pixel readback would dominate the work being measured.
@@ -236,6 +255,7 @@ int main(int argc, char **argv)
 			gfx.expose();
 			require(gfx.pixel(size.first-5, size.second-5).r > 240, "New frame does not cover resized window");
 		}
+		gfx.checkHostPolling();
 		gfx.resize(300, 200); gfx.applyResize();
 		require(gfx.getW() >= 640 && gfx.getH() >= 480, "Minimum size not enforced");
 		{

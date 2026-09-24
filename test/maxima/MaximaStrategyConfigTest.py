@@ -11,14 +11,14 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 
+import sys
+sys.path.insert(0, str(ROOT / 'tools'))
+from build_paths import native_binary, native_build_directory
+
 
 def find_game_binary() -> Path | None:
-    candidates = [candidate for candidate in (
-        ROOT / "build-tournament/src/glob2",
-        ROOT / "build/src/glob2",
-    ) if candidate.is_file()]
-    return max(candidates, key=lambda candidate: candidate.stat().st_mtime) \
-        if candidates else None
+    candidate = native_binary()
+    return candidate if candidate.is_file() else None
 
 
 def find_dump_binary() -> Path | None:

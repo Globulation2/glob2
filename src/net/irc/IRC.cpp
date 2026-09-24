@@ -17,7 +17,7 @@
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
-	#include <config.h>
+	#include <glob2/BuildConfig.h>
 #endif
 #ifndef PACKAGE_TARNAME
 	#define PACKAGE_TARNAME "glob2"

@@ -76,6 +76,7 @@ int main(int, char**)
 		}
 		require(!isSupportedYOGClientVersion(NET_PROTOCOL_VERSION-1),"old client rejected at protocol boundary");
 		require(isSupportedYOGClientVersion(NET_PROTOCOL_VERSION),"current client accepted at protocol boundary");
+		require(!isSupportedYOGClientVersion(NET_PROTOCOL_VERSION+1),"future client rejected at protocol boundary");
 		Cortex::CortexTuning values;std::string error;
 		require(!Cortex::applyTuning(values,"tierMidDiv=0",error),"invalid Cortex divisor rejected");
 		require(!Cortex::applyTuning(values,"unknown=1",error),"unknown Cortex parameter rejected");

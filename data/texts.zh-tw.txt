@@ -3044,3 +3044,91 @@ Emoji
 最後的林帶
 [Woodland depth]
 樹林寬度
+[Fertility]
+肥沃度
+[Deposits]
+儲量
+[Room]
+空間
+[Isolation]
+隔離度
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+每個殖民地的開局都在完成的地圖上測量：到小麥和木材的路程、土地的再生能力、可及範圍內的儲量和建築用地，以及與對手的距離。每項因素按固定標準計 0 到 1 分，總分對其加權，公平度是最低殖民地的總分除以最高者，評分是最低總分乘以公平度。
+[ERROR_CANT_SAVE_MAP]
+無法儲存地圖。請檢查目的位置與可用空間。您的編輯內容仍為開啟狀態。
+[Loading headers]
+正在載入標頭...
+[Loading teams]
+正在載入隊伍...
+[Loading terrain]
+正在載入地形...
+[Building gradients]
+正在建立漸層...
+[Loading players]
+正在載入玩家...
+[Loading scripts]
+正在載入腳本...
+[Generating map]
+正在產生地圖...
+[ERROR_CANT_GENERATE_MAP]
+無法產生地圖。請嘗試其他產生設定。
+[Loading units]
+正在載入單位...
+[Loading buildings]
+正在載入建築...
+[Resolving team links]
+正在解析隊伍連結...
+[saving to storage]
+正在儲存...
+[save failed retry]
+儲存失敗，請重試。
+[export save]
+匯出存檔
+[storage restore failed]
+無法還原瀏覽器儲存空間。現有已儲存的資料未被變更。您可以繼續這個工作階段，但本機變更將無法保留。請從儲存失敗對話方塊匯出重要存檔。重新載入以再次嘗試還原儲存空間。
+[continue]
+繼續
+[export file]
+匯出檔案
+[export failed]
+檔案匯出失敗
+[import file]
+匯入
+[select import file]
+選擇要匯入的檔案
+[validating import]
+正在驗證檔案...
+[import succeeded]
+檔案已匯入
+[import cancelled]
+已取消匯入
+[import failed]
+匯入失敗：檔案無效或不受支援
+[import persistence failed]
+未儲存：選擇「匯入」重試，或「匯出檔案」
+[import progress]
+匯入進度
+[export progress]
+匯出進度
+[retry save]
+重試儲存
+[campaign save failed]
+戰役進度未儲存。請重試或匯出備份。
+[leave without saving]
+不儲存離開
+[campaign import failed]
+進度檔案無效或戰役版本不同
+[network release mismatch]
+用戶端與伺服器通訊協定不一致。請安裝與伺服器相同的 Glob2 版本。
+[settings continue]
+繼續
+[settings save failed]
+設定儲存尚未確認。請重試，或繼續。
+[shutdown save failed]
+最終儲存尚未確認。請重試，或不儲存離開。
+[quit without saving]
+不儲存離開
+[game closed]
+遊戲已結束。您可以關閉此視窗，或重新載入以再次遊玩。
+[campaign editor save failed]
+尚未確認儲存。「確定」重試；「取消」返回編輯器選單。

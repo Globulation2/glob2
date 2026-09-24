@@ -1,0 +1,12 @@
+{$GLOB2_SITE:http://localhost} {
+    @gameSockets path /yog /router
+    reverse_proxy @gameSockets gateway:8080
+    @private path /metrics /healthz
+    respond @private 404
+    root * /srv
+    header Cache-Control "no-cache"
+    file_server
+}
+http://127.0.0.1:2015 {
+    respond /healthz 200
+}

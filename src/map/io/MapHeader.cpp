@@ -3,9 +3,11 @@
 
 #include "Version.h"
 #include "MapHeader.h"
-#include "Game.h"
 #include <algorithm>
+#include <cassert>
+#include <cstring>
 #include "FileManager.h"
+#include <BinaryStream.h>
 
 MapHeader::MapHeader()
 {
@@ -29,9 +31,20 @@ void MapHeader::reset()
 
 bool MapHeader::load(GAGCore::InputStream *stream)
 {
+	// The same header is read from local files, imports and network messages.
+	// Do not expose partially read fields if validation fails.
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
+	MapHeader candidate;
+	if (!candidate.loadFields(stream)) return false;
+	*this = candidate;
+	return true;
+}
+
+bool MapHeader::loadFields(GAGCore::InputStream *stream)
+{
 	///First, check if its an old format map
 	Uint32 pos = stream->getPosition();
-	char* signature[4];
+	char signature[4];
 	stream->read(signature, 4, "signature");
 	if(memcmp(signature, "SEGb",4) == 0)
 	{
@@ -43,12 +56,16 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	mapName = stream->readText("mapName");
 	versionMajor = stream->readSint32("versionMajor");
 	versionMinor = stream->readSint32("versionMinor");
+	if (versionMajor != VERSION_MAJOR || versionMinor < MINIMUM_VERSION_MINOR || versionMinor > VERSION_MINOR)
+		return false;
 
 	numberOfTeams = stream->readSint32("numberOfTeams");
 	mapOffset = stream->readUint32("mapOffset");
-	isSavedGame = stream->readUint8("isSavedGame");
+	const Uint8 saved = stream->readUint8("isSavedGame");
+	if (saved > 1) return false;
+	isSavedGame = saved != 0;
 
-	if(numberOfTeams > Team::MAX_COUNT)
+	if(numberOfTeams < 0 || numberOfTeams > Team::MAX_COUNT)
 	{
 		return false;
 	}

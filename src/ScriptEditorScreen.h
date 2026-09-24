@@ -4,6 +4,7 @@
 #pragma once
 
 #include <GUIBase.h>
+#include <memory>
 namespace GAGGUI
 {
 	class TextArea;
@@ -13,6 +14,7 @@ namespace GAGGUI
 }
 using namespace GAGGUI;
 class Game;
+class LoadSaveScreen;
 class MapScript;
 class MapScriptSGSL;
 
@@ -62,12 +64,17 @@ protected:
 	
 public:
 	ScriptEditorScreen(Game *game);
-	virtual ~ScriptEditorScreen() { }
+	~ScriptEditorScreen() override;
+    void translateAndProcessEvent(SDL_Event *event) override;
+    void drawFileDialog();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void onTimer(Uint32 tick);
 
 private:
 	void loadSave(bool isLoad, const char *dir, const char *ext);
+    void finishFileDialog();
+    std::unique_ptr<LoadSaveScreen> fileDialog;
+    bool loadingScript = false;
 };
 

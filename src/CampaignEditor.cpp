@@ -6,13 +6,12 @@
 #include "StringTable.h"
 #include "ChooseMapScreen.h"
 #include "GlobalContainer.h"
-#include "GUIMessageBox.h"
 #include <set>
 #include <algorithm>
 #include "GUICheckList.h"
 
 
-CampaignEditor::CampaignEditor(const std::string& name)
+CampaignEditor::CampaignEditor(const std::string& name, GAGGUI::ScreenStack& screens) : screens(screens)
 {
 	if (name != "" && !campaign.load(name))
 		campaign.setName(name);
@@ -35,6 +34,9 @@ CampaignEditor::CampaignEditor(const std::string& name)
 	addWidget(ok);
 	addWidget(cancel);
 	addWidget(description);
+	saveStatus = new TextArea(320, 330, 310, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+		"standard", true, "");
+	addWidget(saveStatus);
 	syncMapList();
 }
 
@@ -43,16 +45,12 @@ CampaignEditor::CampaignEditor(const std::string& name)
 
 void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 {
+	if (persistence) return;
 	if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{
 		if (source == ok)
 		{
-			if (campaign.save())
-				endExecute(OK);
-			else
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
-					Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
-					Toolkit::getStringTable()->getString("[ok]"));
+			saveCampaign();
 		}
 		else if (source == cancel)
 		{
@@ -60,58 +58,36 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (source == addMap)
 		{
-			ChooseMapScreen cms("campaigns", "map", false);
-			int rcms=cms.execute(gfx, 40);
-			if(rcms==ChooseMapScreen::OK)
-			{
-				MapHeader& mapHeader = cms.getMapHeader();
-				CampaignMapEntry cme(mapHeader.getMapName(), glob2NameToFilename("campaigns", mapHeader.getMapName(), "map"));
-				CampaignMapEntryEditor cmee(campaign, cme);
-				int rcmee = cmee.execute(gfx, 40);
-				if(rcmee==CampaignMapEntryEditor::OK)
-				{
-					campaign.appendMap(cme);
-					mapList->addText(mapHeader.getMapName());
-				}
-				else if(rcmee==CampaignMapEntryEditor::CANCEL)
-				{
-
-				}
-				else if(rcmee == -1)
-				{
-					endExecute(-1);
-				}
-			}
-			else if(rcms==ChooseMapScreen::CANCEL)
-			{
-			}
-			else if(rcms==-1)
-			{
-				endExecute(-1);
-			}
-		}
-		else if (source == editMap)
-		{
-			auto sel = mapList->selection();
-			if (sel)
-			{
-				for(unsigned i=0; i<campaign.getMapCount(); ++i)
-				{
-					if(campaign.getMap(i).getMapName()==mapList->get())
-					{
-						CampaignMapEntryEditor cmee(campaign, campaign.getMap(i));
-						int rcmee = cmee.execute(gfx, 40);
-						if(rcmee==CampaignMapEntryEditor::OK)
-						{
-							mapList->setText(*sel, campaign.getMap(i).getMapName());
-						}
-						else if(rcmee==CampaignMapEntryEditor::CANCEL)
-						{
-						}
-					}
-				}
-			}
-		}
+            screens.push(std::make_unique<ChooseMapScreen>("campaigns", "map", false),
+                [this](Screen& screen, int result) {
+                    if (result != ChooseMapScreen::OK) return;
+                    const auto name = static_cast<ChooseMapScreen&>(screen).getMapHeader().getMapName();
+                    auto draft = std::make_shared<CampaignMapEntry>(name, glob2NameToFilename("campaigns", name, "map"));
+                    screens.push(std::make_unique<CampaignMapEntryEditor>(campaign, *draft),
+                        [this, draft](Screen&, int result) {
+                            if (result == CampaignMapEntryEditor::OK) {
+                                campaign.appendMap(*draft);
+                                mapList->addText(draft->getMapName());
+                            }
+                        });
+                });
+        }
+        else if (source == editMap)
+        {
+            auto selected = mapList->selection();
+            if (selected) {
+                for (unsigned i = 0; i < campaign.getMapCount(); ++i) {
+                    if (campaign.getMap(i).getMapName() == mapList->get()) {
+                        screens.push(std::make_unique<CampaignMapEntryEditor>(campaign, campaign.getMap(i)),
+                            [this, i, index = *selected](Screen&, int result) {
+                                if (result == CampaignMapEntryEditor::OK)
+                                    mapList->setText(index, campaign.getMap(i).getMapName());
+                            });
+                        break;
+                    }
+                }
+            }
+        }
 		else if (source == removeMap)
 		{
 			auto sel = mapList->selection();
@@ -144,6 +120,36 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 }
 
 
+
+void CampaignEditor::saveFailed()
+{
+	persistence.reset();
+	for (Widget* widget : std::initializer_list<Widget*>{ok, cancel, addMap, editMap, removeMap, nameEditor, description, mapList}) widget->visible = true;
+	saveStatus->setText(Toolkit::getStringTable()->getString("[campaign editor save failed]"));
+}
+
+void CampaignEditor::saveCampaign()
+{
+	try {
+		if (GAGCore::ApplicationHost::storageRestoreFailed() || !campaign.save()) { saveFailed(); return; }
+		persistence = GAGCore::ApplicationHost::persistStorage();
+		if (!persistence) { saveFailed(); return; }
+		for (Widget* widget : std::initializer_list<Widget*>{ok, cancel, addMap, editMap, removeMap, nameEditor, description, mapList}) widget->visible = false;
+		saveStatus->setText(Toolkit::getStringTable()->getString("[saving to storage]"));
+	} catch (const std::exception&) { saveFailed(); }
+}
+
+void CampaignEditor::onTimer(Uint32 tick)
+{
+	Glob2Screen::onTimer(tick);
+	if (!persistence) return;
+	const auto state = persistence->state();
+	if (state == GAGCore::ApplicationHost::PersistenceState::Failed) saveFailed();
+	else if (state == GAGCore::ApplicationHost::PersistenceState::Succeeded) {
+		persistence.reset();
+		endExecute(OK);
+	}
+}
 
 void CampaignEditor::syncMapList()
 {
@@ -248,6 +254,3 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 			nameEditor->deactivate();
 	}
 }
-
-
-

@@ -6,11 +6,15 @@
 #include "CampaignEditor.h"
 #include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
-#include "FrontendTheme.h"
-#include "GenerationContext.h"
-#include "GenerationService.h"
+#include "EditorMainMenu.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "MapEditorScreen.h"
+#include "EditorLoadScreen.h"
+#include "EditorGenerateScreen.h"
+#include <ctime>
+#include "MessageScreen.h"
+#include "MapGenerator.h"
 #include "NewMapScreen.h"
 #include "Utilities.h"
 #include <GUIButton.h>
@@ -21,7 +25,7 @@
 
 using namespace GAGGUI;
 
-EditorMainMenu::EditorMainMenu()
+EditorMainMenu::EditorMainMenu(GAGGUI::ScreenStack& screens) : screens(screens)
 {
 	addWidget(new TextButton(0, 70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
 							 Toolkit::getStringTable()->getString("[new map]"), NEWMAP, 13));
@@ -38,102 +42,52 @@ EditorMainMenu::EditorMainMenu()
 					   Toolkit::getStringTable()->getString("[editor]")));
 }
 
-void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
+void EditorMainMenu::newMap()
 {
-	if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
-	{
-		if (par1 == NEWMAP)
-		{
-			bool retryNewMapScreen = true;
-			while (retryNewMapScreen)
-			{
-				NewMapScreen newMapScreen;
-				int rc_nms = newMapScreen.execute(globalContainer->gfx, 40);
-				if (rc_nms == NewMapScreen::OK)
-				{
-					GenerationService generator;
-					// MapEdit owns its Game, so the candidates are rolled into a scratch one
-					// and the winner regenerated here. Generation is deterministic, so that
-					// second run reproduces the roll that was scored.
-					newMapScreen.descriptor.seed =
-						generator.bestSeed(newMapScreen.descriptor, GenerationContext::randomSeed());
-					MapEdit mapEdit;
-					auto result = generator.generate(mapEdit.game, newMapScreen.descriptor);
-					if (result)
-					{
-						mapEdit.mapHasBeenModified(); // make all map as modified by default
-						mapEdit.regenerateGameHeader();
-						if (mapEdit.run() == -1)
-							endExecute(-1);
-						retryNewMapScreen = false;
-					}
-					else
-					{
-						GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
-										   result.diagnostic(),
-										   Toolkit::getStringTable()->getString("[ok]"));
-						retryNewMapScreen = true;
-					}
-				}
-				else if (rc_nms == -1)
-				{
-					endExecute(-1);
-					retryNewMapScreen = false;
-				}
-				else
-				{
-					retryNewMapScreen = false;
-				}
-			}
-		}
-		else if (par1 == LOADMAP)
-		{
-			ChooseMapScreen chooseMapScreen("maps", "map", false, "games", "game", false);
-			int rc = chooseMapScreen.execute(globalContainer->gfx, 40);
-			if (rc == ChooseMapScreen::OK)
-			{
-				MapEdit mapEdit;
-				std::string filename = chooseMapScreen.getMapHeader().getFileName();
-				mapEdit.load(filename.c_str());
-				if (mapEdit.run() == -1)
-					endExecute(-1);
-			}
-			else if (rc == -1)
-				endExecute(-1);
-		}
-		else if (par1 == NEWCAMPAIGN)
-		{
-			FrontendScope editor(false);
-			CampaignEditor ce("");
-			int rc = ce.execute(globalContainer->gfx, 40);
-			if (rc == -1)
-				endExecute(-1);
-		}
-		else if (par1 == LOADCAMPAIGN)
-		{
-			CampaignSelectorScreen css;
-			int rc_css = css.execute(globalContainer->gfx, 40);
-			if (rc_css == CampaignSelectorScreen::OK)
-			{
-				FrontendScope editor(false);
-				CampaignEditor ce(css.getCampaignName());
-				int rc_ce = ce.execute(globalContainer->gfx, 40);
-				if (rc_ce == -1)
-				{
-					endExecute(-1);
-				}
-			}
-			else if (rc_css == CampaignSelectorScreen::CANCEL)
-			{
-			}
-			else if (rc_css == -1)
-			{
-				endExecute(-1);
-			}
-		}
-		else if (par1 == CANCEL)
-		{
-			endExecute(CANCEL);
-		}
-	}
+    screens.push(std::make_unique<NewMapScreen>(), [this](Screen& screen, int result) {
+        if (result != NewMapScreen::OK) return;
+        screens.push(std::make_unique<EditorGenerateScreen>(static_cast<NewMapScreen&>(screen).descriptor,
+            static_cast<Uint32>(std::time(nullptr))), [this](Screen& generated, int result) {
+                if (result == 1)
+                    screens.push(std::make_unique<MapEditorScreen>(screens, static_cast<EditorGenerateScreen&>(generated).takeEditor()));
+                else if (result == 2) {
+                    auto& strings = *Toolkit::getStringTable();
+                    screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_GENERATE_MAP]"),
+                        std::vector<std::string>{strings.getString("[ok]")}), [this](Screen&, int) { newMap(); });
+                } else newMap();
+            });
+    });
+}
+
+void EditorMainMenu::onAction(Widget*, Action action, int choice, int)
+{
+    if (action != BUTTON_RELEASED && action != BUTTON_SHORTCUT) return;
+    switch (choice) {
+    case NEWMAP: newMap(); break;
+    case LOADMAP:
+        screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false, "games", "game", false),
+            [this](Screen& screen, int result) {
+                if (result != ChooseMapScreen::OK) return;
+                const auto filename = static_cast<ChooseMapScreen&>(screen).getMapHeader().getFileName();
+                screens.push(std::make_unique<EditorLoadScreen>(filename), [this](Screen& loading, int result) {
+                    if (result == 1)
+                        screens.push(std::make_unique<MapEditorScreen>(screens,
+                            static_cast<EditorLoadScreen&>(loading).takeEditor()));
+                    else if (result == 2) {
+                        auto& strings = *Toolkit::getStringTable();
+                        screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_LOAD_MAP]"),
+                            std::vector<std::string>{strings.getString("[ok]")}));
+                    }
+                });
+            });
+        break;
+    case NEWCAMPAIGN: screens.push(std::make_unique<CampaignEditor>("", screens)); break;
+    case LOADCAMPAIGN:
+        screens.push(std::make_unique<CampaignSelectorScreen>(), [this](Screen& screen, int result) {
+            if (result == CampaignSelectorScreen::OK)
+                screens.push(std::make_unique<CampaignEditor>(static_cast<CampaignSelectorScreen&>(screen).getCampaignName(), screens));
+        });
+        break;
+    case CANCEL: endExecute(CANCEL); break;
+    }
 }

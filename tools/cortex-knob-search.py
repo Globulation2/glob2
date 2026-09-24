@@ -37,6 +37,8 @@ State is checkpointed to <run-dir>/state.json after every benchmark; rerunning
 the same command resumes where it left off.
 """
 
+from build_paths import native_binary
+
 import argparse
 import json
 import os
@@ -385,7 +387,7 @@ def main():
                    help="RNG seed for config sampling (reproducible population)")
     p.add_argument("--jobs", type=int, default=0,
                    help="parallel games per benchmark (default: ai-benchmark.sh's)")
-    p.add_argument("--bin", default=os.path.join(REPO_DIR, "build", "src", "glob2"))
+    p.add_argument("--bin", default=str(native_binary()))
     p.add_argument("--include-secondary", action="store_true",
                    help="also search tierMidDiv/workerRatioTier2")
     p.add_argument("--no-hypotheses", action="store_true",

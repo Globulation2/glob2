@@ -5,34 +5,33 @@
 
 #include <GUIBase.h>
 #include <GUITabScreen.h>
+#include "FrontendTheme.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;
 
 class Glob2Screen : public Screen
 {
-public:
+  public:
 	Glob2Screen();
 	virtual ~Glob2Screen();
 	void paint(void) override;
-	int execute(GAGCore::DrawableSurface* gfx, int stepLength) override;
-	
-private:
-	unsigned getNextTerrain(void);
-	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
+	int execute(GAGCore::DrawableSurface *gfx, int stepLength) override;
+
+  private:
+	// Scheduled and blocking menus share the same presentation.
+	FrontendScope theme{true};
 };
 
 class Glob2TabScreen : public TabScreen
 {
-public:
-	Glob2TabScreen(bool fullScreen, bool longerButtons=false);
+  public:
+	Glob2TabScreen(bool fullScreen, bool longerButtons = false);
 	virtual ~Glob2TabScreen();
 	void paint(void) override;
-	int execute(GAGCore::DrawableSurface* gfx, int stepLength) override;
-	
-private:
-	unsigned getNextTerrain(void);
-	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
+	int execute(GAGCore::DrawableSurface *gfx, int stepLength) override;
+
+  private:
+	// See Glob2Screen for why this needs to be a long-lived member.
+	FrontendScope theme{true};
 };
-
-

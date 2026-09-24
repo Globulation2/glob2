@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Bounded parameter search with fresh-process samples and held-out seeds."""
+if __package__:
+    from .build_paths import native_binary
+else:
+    from build_paths import native_binary
 import argparse, atexit, csv, itertools, json, os, random, shutil, subprocess, threading, time
 from pathlib import Path
 from tournaments.local import run_job, parallel_map
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/map-generator-validation'
-BINARY=ROOT/'build/src/glob2'
+BINARY=native_binary()
 FIELDS=['method','seed','success','tiles','grass_tiles','sand_tiles','water_tiles','shore','free','fit4','um_grass','um_sand','um_water','seconds','hash']
 EXTRA=['min_local_fit4','worst_wheat_distance','worst_wood_distance','viable_teams','wheat_tiles','wood_tiles','stone_tiles','algae_tiles','best_wheat_distance','best_wood_distance']
 PROFILES=set()

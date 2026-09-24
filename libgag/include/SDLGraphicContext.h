@@ -411,6 +411,11 @@ namespace GAGCore
 
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
+        // Resize a software render target without replacing its window or assets.
+        bool resizeViewport(int w, int h);
+#ifdef GLOB2_WEBGL2
+        static void restoreBrowserContext();
+#endif
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
 		//! the resolution asked of setRes(), which the interface scale then divides
 		int getRequestedW(void) const { return requestedW; }

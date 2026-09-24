@@ -56,7 +56,7 @@ public:
 	void deactivateTool();
 
 	///Draws the tool on the map
-	void drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
+	void drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers);
 	
 	///Returns the name of the current building
 	std::string getBuildingName() const;
@@ -68,7 +68,8 @@ public:
 	void handleMouseDown(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
 	
 	///Handles a mouse up
-	void handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
+	void handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers);
+    void cancelDrag(int localteam);
 	
 	///Ends a pointer gesture without placing a building; keeps painted zones.
 	void finishPointerGesture(int localteam);

@@ -35,6 +35,7 @@ import sys
 import threading
 import time
 from pathlib import Path
+from build_paths import native_binary
 from tournaments.local import run_job as shared_job, export_artifacts, parallel_map
 from tournaments.fairness_statistics import (
     MIN_MAPS_FOR_INTERVAL, benjamini_hochberg, bias_interval, bootstrap, chi_square_uniform,
@@ -1056,8 +1057,8 @@ def main():
     summarize_parser = sub.add_parser('summarize', help='recompute the summary of an existing run')
     summarize_parser.add_argument('out', help='run directory')
     for p in (run, summarize_parser):
-        p.add_argument('--bin', default=str(ROOT / 'build' / 'src' / 'glob2'))
-        p.add_argument('--study', default=str(ROOT / 'build' / 'src' / 'MapGeneratorStudy'), help='deprecated compatibility argument; generation uses --bin')
+        p.add_argument('--bin', default=str(native_binary()))
+        p.add_argument('--study', default=str(native_binary('MapGeneratorStudy')), help='deprecated compatibility argument; generation uses --bin')
     args = parser.parse_args()
     return command_run(args) if args.command == 'run' else command_summarize(args)
 

@@ -7,11 +7,12 @@ from pathlib import Path
 import shutil
 import subprocess
 from tools.tournaments.bundles import register_bundle
+from tools.build_paths import native_binary
 
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('output');p.add_argument('--executable',default='build/src/glob2')
+    p.add_argument('output');p.add_argument('--executable',default=str(native_binary()))
     args=p.parse_args();root=Path(args.output).resolve();root.mkdir(parents=True,exist_ok=False)
     paths=subprocess.check_output(['git','diff','--name-only'],text=True).splitlines()
     paths+=subprocess.check_output(['git','ls-files','--others','--exclude-standard'],text=True).splitlines()

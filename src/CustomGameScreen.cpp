@@ -186,7 +186,7 @@ std::string colorName(Color c)
 }
 } // namespace
 
-CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
+CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack& screens) : Glob2TabScreen(false, true), screens(screens)
 {
 	gfx = globalContainer->gfx;
 	username = globalContainer->settings.getUsername();
@@ -259,6 +259,19 @@ CustomGameScreen::~CustomGameScreen()
 		std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path(), error);
 	}
 }
+std::shared_ptr<void> CustomGameScreen::releaseSnapshot()
+{
+	if (snapshot.empty())
+		return nullptr;
+	const auto directory = std::filesystem::path(snapshot).parent_path();
+	snapshot.clear();
+	return std::shared_ptr<void>(nullptr,
+								 [directory](void *)
+								 {
+									 std::error_code error;
+									 std::filesystem::remove_all(directory, error);
+								 });
+}
 void CustomGameScreen::savePreferences()
 {
 	CustomGamePreferences preferences;
@@ -275,15 +288,6 @@ void CustomGameScreen::savePreferences()
 		lastSavedPreferences = text;
 	else
 		preferencesRetryAt = SDL_GetTicks() + 5000;
-}
-int CustomGameScreen::choose(const std::string &title, const std::vector<std::string> &values,
-							 int selected, bool profiles, const std::vector<bool> &enabled)
-{
-	CustomGameChoiceScreen screen(title, values, selected, profiles, enabled);
-	int result = screen.execute(globalContainer->gfx, 40);
-	if (result == QUIT_APPLICATION)
-		endExecute(QUIT_APPLICATION);
-	return result;
 }
 void CustomGameScreen::onGroupActivated(int group)
 {
@@ -319,9 +323,10 @@ void CustomGameScreen::chooseLandscape()
 			entry.tags = definition->tags;
 		shown.push_back(std::move(entry));
 	}
-	LandscapePickerScreen picker(tr("Landscape"), std::move(shown), selected,
-								 LandscapePickerScreen::SortOrder(landscapeSortOrder));
-	const int result = picker.execute(globalContainer->gfx, 40);
+	screens.push(std::make_unique<LandscapePickerScreen>(tr("Landscape"), std::move(shown), selected,
+        LandscapePickerScreen::SortOrder(landscapeSortOrder)),
+        [this, entries](GAGGUI::Screen& screen, int result) {
+            auto& picker = static_cast<LandscapePickerScreen&>(screen);
 	// Persisted the next time preferences save, the way any other lobby choice on this screen is.
 	landscapeSortOrder = int(picker.currentSortOrder());
 	// Size and colony count are shared lobby settings the picker can also change (FEEDBACK
@@ -344,6 +349,7 @@ void CustomGameScreen::chooseLandscape()
 		const GenerationRequest request = picker.chosenRequest();
 		applyLandscape(entries[result].first, picker.chosenSeed(), &request);
 	}
+        });
 }
 void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> seed,
 									  const GenerationRequest *shown)
@@ -416,9 +422,10 @@ void CustomGameScreen::showStartQuality()
 		colors.push_back(i < preview->starts.size() ? preview->starts[i].color
 													: Color(160, 172, 149));
 	}
-	StartQualityScreen screen(quality, labels, colors);
-	if (screen.execute(globalContainer->gfx, 40) == QUIT_APPLICATION)
-		endExecute(QUIT_APPLICATION);
+	screens.push(std::make_unique<StartQualityScreen>(quality, labels, colors),
+		[this](GAGGUI::Screen&, int result) {
+			if (result == QUIT_APPLICATION) endExecute(QUIT_APPLICATION);
+		});
 }
 void CustomGameScreen::invalidate()
 {
@@ -716,8 +723,8 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 }
 void CustomGameScreen::onTimer(Uint32 tick)
 {
-	if (controls->pressed.empty() && !controls->popup.open &&
-		Sint32(tick - preferencesRetryAt) >= 0)
+	if (candidates) candidates->poll();
+	if (controls->pressed.empty() && !controls->popup.open && Sint32(tick - preferencesRetryAt) >= 0)
 		savePreferences();
 	// Wait until the last edit settles and a dragged control/menu is released.
 	if (previewPending && setup.random && Sint32(tick - previewDue) >= 0 &&
@@ -795,7 +802,10 @@ bool CustomGameScreen::collectCandidates()
 void CustomGameScreen::finishPreview()
 {
 	while (candidates && candidates->busy())
+	{
+		candidates->poll();
 		SDL_Delay(5);
+	}
 	if (candidates)
 		collectCandidates();
 }
@@ -838,10 +848,24 @@ void CustomGameScreen::showAIProfile(int colony)
 	std::vector<std::string> labels;
 	for (int i : AINames::selectionOrder())
 		labels.push_back(AINames::getAISelectorText(i));
-	int result = choose(colonyLabel(colony) + " / " + tr("AI strategy & counterplay"), labels,
-						AINames::selectionIndex(setup.colonies[colony].ai), true);
-	if (result >= 0)
-		setup.colonies[colony].ai = (AI::ImplementationID)AINames::selectionOrder()[result];
+	// CustomGameChoiceScreen must be pushed, not blocking-executed: the
+	// browser host has no Asyncify and ApplicationHost::wait is a hard
+	// error there (docs/browser/adr-003-screen-execution.md).
+	screens.push(std::make_unique<CustomGameChoiceScreen>(
+					 colonyLabel(colony) + " / " + tr("AI strategy & counterplay"), labels,
+					 AINames::selectionIndex(setup.colonies[colony].ai), true, std::vector<bool>{}),
+				 [this, colony](GAGGUI::Screen &, int result)
+				 {
+					 if (result >= 0)
+						 setup.colonies[colony].ai = (AI::ImplementationID)AINames::selectionOrder()[result];
+				 });
+}
+
+void CustomGameScreen::paint()
+{
+	// The lobby draws its own panel; a full-window widget is not another panel.
+	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
+	else Glob2TabScreen::paint();
 }
 
 void CustomGameScreen::renderLobby()

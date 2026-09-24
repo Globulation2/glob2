@@ -23,6 +23,7 @@
 #include "GameGUI.h"
 #include "Engine.h"
 #include "MapEdit.h"
+#include "MapEditorScreen.h"
 #include "EndGameScreen.h"
 #include "CampaignMenuScreen.h"
 #include "CampaignSelectorScreen.h"
@@ -42,6 +43,7 @@
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <Toolkit.h>
+#include <ScreenStack.h>
 #include <SDL_image.h>
 #include <cassert>
 #include <cstdlib>
@@ -53,7 +55,6 @@ GlobalContainer* globalContainer=nullptr;
 using namespace GAGCore;
 std::string replayFilenameToName(const std::string&);
 
-std::string getSyncRandState() { std::ostringstream out; out << syncRandEngine(); return out.str(); }
 
 void require(bool condition, const char* message)
 {
@@ -78,6 +79,45 @@ void checkMenuPainting()
 		void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {}
 	} screen(&surface);
 	FrontendScope scope;
+	{
+		FrontendScope game(false);
+		{
+			struct Menu : Glob2Screen { void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {} } menu;
+			require(Style::style == FrontendTheme::current, "menu created during game teardown activates theme");
+		}
+		require(Style::style != FrontendTheme::current, "menu destruction restores game presentation");
+		{
+			struct Menu : Glob2TabScreen { Menu() : Glob2TabScreen(false) {} void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {} } menu;
+			require(Style::style == FrontendTheme::current, "tab menu created during game teardown activates theme");
+		}
+	}
+	// A menu background must not change when a pending gameplay screen acquires its scope.
+	auto checkBackground = [](auto& menu) {
+		menu.beginExecution(globalContainer->gfx);
+		auto raster = [] {
+			DrawableSurface image(globalContainer->gfx->getW(), globalContainer->gfx->getH());
+			image.drawSurface(0, 0, globalContainer->gfx);
+			auto* pixels = image.getSDLSurface();
+			return std::string(static_cast<const char*>(pixels->pixels), pixels->pitch * pixels->h);
+		};
+		menu.paint();
+		const auto expected = raster();
+		{
+			FrontendScope pendingGame(false);
+			menu.paint();
+			require(raster() == expected, "pending game cannot restore the legacy grass background");
+		}
+		menu.endExecute(0);
+		menu.finishExecution();
+	};
+	{
+		struct Menu : Glob2Screen { void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {} } menu;
+		checkBackground(menu);
+	}
+	{
+		struct Menu : Glob2TabScreen { Menu() : Glob2TabScreen(false) {} void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {} } menu;
+		checkBackground(menu);
+	}
 	screen.dispatchPaint(false);
 	require(surface.presentations == 0, "modal background is not presented separately");
 	surface.nextFrame();
@@ -180,7 +220,7 @@ template<class T> class Preview : public T
 public:
 	using T::T;
 	void prepare() { if(!prepared) { this->gfx=globalContainer->gfx; this->dispatchInit(); prepared=true; } }
-	void render() { prepare(); this->paint(); for(auto* w:this->widgets) if(w->visible) w->paint(); }
+	void render() { prepare(); this->dispatchPaint(); }
 	void advance(unsigned frames) { prepare(); for(unsigned i=0;i<frames;++i) this->dispatchTimer(i*40); }
 	void checkBounds()
 	{
@@ -259,10 +299,11 @@ private:
 void capture(const std::string& name,const std::string& path)
 {
 	FrontendScope scope;
+	GAGGUI::ScreenStack screens(*globalContainer->gfx);
 	if(name=="colony") { FrontendTheme::current->colony->draw(globalContainer->gfx->getW(),globalContainer->gfx->getH()); }
 	else if(name=="main" || name=="fallback") { Preview<MainMenuScreen> s; s.render(); s.checkBounds(); }
-	else if(name=="options") { Preview<CustomGameScreen> parent; parent.selectFirstListItem(); Preview<CustomGameOtherOptions> s(parent.getGameHeader(),parent.getMapHeader(),false); s.render(); s.checkBounds(); }
-	else if(name=="save-replay") { Preview<CampaignMainMenu> parent; parent.render(); LoadSaveScreen s("replays","replay",false,"Save replay","",replayFilenameToName,glob2NameToFilename); s.dispatchPaint(); globalContainer->gfx->drawSurface(s.decX,s.decY,s.getSurface()); }
+	else if(name=="options") { Preview<CustomGameScreen> parent(screens); parent.selectFirstListItem(); Preview<CustomGameOtherOptions> s(parent.getGameHeader(),parent.getMapHeader(),false); s.render(); s.checkBounds(); }
+	else if(name=="save-replay") { Preview<CampaignMainMenu> parent(screens); parent.render(); LoadSaveScreen s("replays","replay",false,"Save replay","",replayFilenameToName,glob2NameToFilename); s.dispatchPaint(); globalContainer->gfx->drawSurface(s.decX,s.decY,s.getSurface()); }
 	else if(name=="settings" || name=="settings-buildings" || name=="settings-keys")
 	{
 		Preview<SettingsScreen> s;
@@ -270,16 +311,16 @@ void capture(const std::string& name,const std::string& path)
 		if(name=="settings-keys") s.selectCategory(SettingsScreen::Category::Controls);
 		s.render(); s.checkBounds();
 	}
-	else if(name=="lan") { Preview<LANMenuScreen> s; s.render(); s.checkBounds(); }
-	else if(name=="campaign") { Preview<CampaignMainMenu> s; s.render(); s.checkBounds(); }
-	else if(name=="editor") { Preview<EditorMainMenu> s; s.render(); s.checkBounds(); }
+	else if(name=="lan") { Preview<LANMenuScreen> s(screens); s.render(); s.checkBounds(); }
+	else if(name=="campaign") { Preview<CampaignMainMenu> s(screens); s.render(); s.checkBounds(); }
+	else if(name=="editor") { Preview<EditorMainMenu> s(screens); s.render(); s.checkBounds(); }
 	else if(name=="credits") { Preview<CreditScreen> s; s.advance(450); s.render(); s.checkBounds(); }
 	else if(name=="load") { Preview<ChooseMapScreen> s("games","game",true); s.render(); s.checkBounds(); }
-	else if(name=="missions") { Preview<CampaignMenuScreen> s("campaigns/Tutorial_Campaign.txt"); s.render(); s.checkBounds(); }
+	else if(name=="missions") { Preview<CampaignMenuScreen> s("campaigns/Tutorial_Campaign.txt",screens); s.render(); s.checkBounds(); }
 	else if(name=="campaign-select") { Preview<CampaignSelectorScreen> s; s.render(); s.checkBounds(); }
 	else if(name=="new-map") { Preview<NewMapScreen> s; s.render(); s.checkBounds(); }
-	else if(name=="lan-find") { Preview<LANFindScreen> s; s.render(); s.checkBounds(); }
-	else if(name=="login") { Preview<YOGLoginScreen> s(std::make_shared<YOGClient>()); s.render(); s.checkBounds(); }
+	else if(name=="lan-find") { Preview<LANFindScreen> s(screens); s.render(); s.checkBounds(); }
+	else if(name=="login") { Preview<YOGLoginScreen> s(screens,std::make_shared<YOGClient>()); s.render(); s.checkBounds(); }
 	else if(name=="register") { Preview<YOGRegisterScreen> s(std::make_shared<YOGClient>()); s.render(); s.checkBounds(); }
 	else if(name=="results")
 	{
@@ -291,7 +332,7 @@ void capture(const std::string& name,const std::string& path)
 	}
 	else if(name=="custom" || name=="custom-players" || name=="custom-rules")
 	{
-		Preview<CustomGameScreen> s; s.prepare();
+		Preview<CustomGameScreen> s(screens); s.prepare();
 		if(name=="custom-players") s.activateGroup(1);
 		if(name=="custom-rules") s.activateGroup(2);
 		s.render(); s.checkBounds();
@@ -343,6 +384,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 		capture(argv[2],argv[3]);
 		return 0;
 	}
+	if(mode=="presentation") { checkMenuPainting(); return 0; }
 	if(mode=="check")
 	{
 		checkMenuPainting();
@@ -441,6 +483,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 		}
 		{
 			FrontendScope scope;
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
 			LoadSaveScreen dialog("replays","replay",false,"Save replay","",replayFilenameToName,glob2NameToFilename);
 			dialog.dispatchPaint();
 			SDL_Event text{}; text.type=SDL_TEXTINPUT; SDL_strlcpy(text.text.text,"colony-review",sizeof(text.text.text));
@@ -450,7 +493,9 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			require(std::string(dialog.getName())=="colony-revie","replay dialog editing");
 			key.key.keysym.sym=SDLK_ESCAPE; dialog.dispatchEvents(&key);
 			require(dialog.endValue==LoadSaveScreen::CANCEL,"replay dialog cancellation");
-			Preview<CustomGameScreen> custom; custom.selectFirstListItem(); custom.render();
+			Preview<CustomGameScreen> custom(screens); custom.selectFirstListItem(); custom.render();
+			// Premade maps use LobbyControls rather than a GAG List now.
+			key.key.keysym.sym=SDLK_DOWN; custom.onSDLEvent(&key);
 			// The lobby opens on a random map (2026-09-14) and previews it on worker threads; drive
 			// its timer as the event loop would until the preview's map is loaded.
 			for(Uint32 start=SDL_GetTicks(); custom.getMapHeader().getNumberOfTeams()==0 && SDL_GetTicks()-start<120000;) { SDL_Delay(10); custom.dispatchTimer(SDL_GetTicks()); }
@@ -478,11 +523,13 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 		}
 		globals.replaying=false; globals.replayFastForward=false;
 		{
-			MapEdit editor;
-			require(editor.load("maps/balanced.map"),"load editor fixture");
+			auto editor=std::make_unique<MapEdit>();
+			require(editor->load("maps/balanced.map"),"load editor fixture");
+			GAGGUI::ScreenStack screens(*globals.gfx);
+			screens.push(std::make_unique<MapEditorScreen>(screens,std::move(editor)));
 			SessionExit sequence{0,globals.gfx->getW()/2,globals.gfx->getH()/2+75};
 			const auto timer=SDL_AddTimer(500,exitSession,&sequence); require(timer,"editor input timer");
-			const int result=editor.run(); SDL_RemoveTimer(timer);
+			const int result=screens.execute(40); SDL_RemoveTimer(timer);
 			require(result==0,"return from editor");
 			require(GAGGUI::Style::style==&theme && FrontendTheme::allowed,"editor restores menu theme");
 		}
@@ -516,18 +563,19 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 	}
 	if(mode=="navigation")
 	{
+		GAGGUI::ScreenStack screens(*globals.gfx);
 		{ Preview<MainMenuScreen> s; s.executeCancellation(); }
-		{ Preview<CampaignMainMenu> s; s.executeCancellation(); }
+		{ Preview<CampaignMainMenu> s(screens); s.executeCancellation(); }
 		{ Preview<CampaignSelectorScreen> s; s.executeCancellation(); }
-		{ Preview<CampaignMenuScreen> s("campaigns/Tutorial_Campaign.txt"); s.executeCancellation(); }
-		{ Preview<CustomGameScreen> s; s.selectFirstListItem(); s.executeKeyboardCancellation(); }
+		{ Preview<CampaignMenuScreen> s("campaigns/Tutorial_Campaign.txt",screens); s.executeCancellation(); }
+		{ Preview<CustomGameScreen> s(screens); s.selectFirstListItem(); s.executeKeyboardCancellation(); }
 		{ Preview<ChooseMapScreen> s("games","game",true); s.executeCancellation(); }
 		{ Preview<SettingsScreen> s; s.executeEscape(); }
-		{ Preview<EditorMainMenu> s; s.executeCancellation(); }
+		{ Preview<EditorMainMenu> s(screens); s.executeCancellation(); }
 		{ Preview<NewMapScreen> s; s.executeCancellation(); }
-		{ Preview<LANMenuScreen> s; s.executeCancellation(); }
-		{ Preview<LANFindScreen> s; s.executeCancellation(); }
-		{ Preview<YOGLoginScreen> s(std::make_shared<YOGClient>()); s.executeCancellation(); }
+		{ Preview<LANMenuScreen> s(screens); s.executeCancellation(); }
+		{ Preview<LANFindScreen> s(screens); s.executeCancellation(); }
+		{ Preview<YOGLoginScreen> s(screens,std::make_shared<YOGClient>()); s.executeCancellation(); }
 		{ Preview<YOGRegisterScreen> s(std::make_shared<YOGClient>()); s.executeCancellation(); }
 		{ Preview<CreditScreen> s; s.executeCancellation(); }
 		std::cout << "PASS: actual screen loops, mouse/keyboard exits, theme restoration\n";

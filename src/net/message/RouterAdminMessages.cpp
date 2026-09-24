@@ -40,7 +40,7 @@ void NetRouterAdministratorLogin::decodeData(GAGCore::InputStream* stream)
 std::string NetRouterAdministratorLogin::format() const
 {
 	std::ostringstream s;
-	s<<"NetRouterAdministratorLogin("<<"password="<<password<<"; "<<")";
+	s<<"NetRouterAdministratorLogin("<<"password="<<"[redacted]"<<"; "<<")";
 	return s.str();
 }
 

@@ -503,7 +503,27 @@ void ScriptEditorScreen::onSDLEvent(SDL_Event *event)
 
 void ScriptEditorScreen::onTimer(Uint32 timer)
 {
-	changeTabAgain=true;
+    if (fileDialog) fileDialog->dispatchTimer(timer);
+    else changeTabAgain=true;
+}
+
+ScriptEditorScreen::~ScriptEditorScreen() = default;
+
+void ScriptEditorScreen::translateAndProcessEvent(SDL_Event *event)
+{
+    if (!fileDialog) {
+        OverlayScreen::translateAndProcessEvent(event);
+        return;
+    }
+    fileDialog->translateAndProcessEvent(event);
+    if (fileDialog->endValue >= 0) finishFileDialog();
+}
+
+void ScriptEditorScreen::drawFileDialog()
+{
+    if (!fileDialog) return;
+    fileDialog->dispatchPaint();
+    globalContainer->gfx->drawSurface(fileDialog->decX, fileDialog->decY, fileDialog->getSurface());
 }
 
 
@@ -524,34 +544,18 @@ std::string filenameToName(const std::string& fullfilename)
 
 void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 {
-	// create dialog box
-	std::string title=Toolkit::getStringTable()->getString(isLoad ? "[load script]" : "[save script]");
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, isLoad, title, game->mapHeader.getMapName().c_str(), filenameToName, glob2NameToFilename);
-	loadSaveScreen->dispatchPaint();
+    if (fileDialog) return;
+    loadingScript = isLoad;
+    const std::string title = Toolkit::getStringTable()->getString(isLoad ? "[load script]" : "[save script]");
+    fileDialog = std::make_unique<LoadSaveScreen>(dir, ext, isLoad, title,
+        game->mapHeader.getMapName().c_str(), filenameToName, glob2NameToFilename);
+}
 
-	// save screen
-	globalContainer->gfx->setClipRect();
-	
-	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
-	background->drawSurface(0, 0, globalContainer->gfx);
-
-	SDL_Event event;
-	while(loadSaveScreen->endValue<0)
-	{
-		Uint64 time = SDL_GetTicks64();
-		while (GAGCore::GraphicContext::pollEvent(&event))
-		{
-			GAGCore::GraphicContext::translateMouseEvent(&event);
-			loadSaveScreen->translateAndProcessEvent(&event);
-		}
-		loadSaveScreen->dispatchPaint();
-		
-		globalContainer->gfx->drawSurface(0, 0, background);
-		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
-		globalContainer->gfx->nextFrame();
-		Uint64 ntime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
-	}
+void ScriptEditorScreen::finishFileDialog()
+{
+    // The editor stays alive and suspended while its owned child handles input.
+    auto loadSaveScreen = std::move(fileDialog);
+    const bool isLoad = loadingScript;
 
 	if (loadSaveScreen->endValue==0)
 	{
@@ -578,9 +582,4 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		}
 	}
 
-	// clean up
-	delete loadSaveScreen;
-	
-	// destroy temporary surface
-	delete background;
 }
