@@ -4,7 +4,7 @@ Evidence for [Globulation2/glob2#379](https://github.com/Globulation2/glob2/pull
 
 ## Latest review fixes
 
-[Review-fix regressions](regressions/review-fixes/) contain before/after failures and passing local tests for commit `30aa48d12`: latest-generation settings persistence, prompt TCP burst delivery, and native graphics event polling. The earlier results below remain evidence for their recorded revisions. Updated-head CI is linked in that directory.
+[Review-fix regressions](regressions/review-fixes/) contain before/after failures and passing local tests for commits `30aa48d12` and `8fd3e8e2a`: latest-generation settings persistence, prompt TCP burst delivery, and native graphics event polling. The earlier results below remain evidence for their recorded revisions. Updated-head CI is linked in that directory.
 
 ## Simulation and compatibility
 

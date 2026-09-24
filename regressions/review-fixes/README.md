@@ -1,4 +1,4 @@
-# Review fixes at 30aa48d12
+# Review fixes at 8fd3e8e2a
 
 All three review findings have regression coverage. Production changes do not alter simulation orders, state, save formats, or protocol versions.
 
@@ -9,4 +9,6 @@ All three review findings have regression coverage. Production changes do not al
 
 The settings-race script and screenshot capture the original bug; its relative imports expect the script in artifacts/pr379-review in the source checkout. Logs retain the injected failures and missing-translation diagnostics from the native settings harness.
 
-CI for the updated head: https://github.com/Globulation2/glob2/actions/runs/36054885321
+CI for the updated head: https://github.com/Globulation2/glob2/actions/runs/36055163263
+
+The follow-up commit keeps server-only ApplicationHost polling independent of graphics. The complete standalone test build, TestsRunner, and CampaignLoadHarness pass locally; the client resize and screen harnesses still pass.

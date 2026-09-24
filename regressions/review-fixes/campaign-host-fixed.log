@@ -1,0 +1,7 @@
+# CampaignLoadHarness golden output
+valid        ok=1 name="TestCampaign" maps=2
+missing      ok=0 name="No Name" maps=0
+empty        ok=0 name="No Name" maps=0
+garbage      ok=0 name="No Name" maps=0
+version0     ok=0 name="No Name" maps=0
+version+     ok=0 name="No Name" maps=0
