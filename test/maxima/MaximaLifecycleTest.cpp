@@ -71,7 +71,7 @@ static void rejectedStateThrows(Game& game)
 static void run(Uint32 seed)
 {
     assert(!isSupportedYOGClientVersion(39));
-    assert(isSupportedYOGClientVersion(40));
+    assert(isSupportedYOGClientVersion(NET_PROTOCOL_VERSION));
     GameGUI original;
     auto map=Engine::loadMapHeader("maps/balanced.map");
     GameHeader header;

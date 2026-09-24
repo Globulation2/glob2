@@ -4,9 +4,6 @@
 #include "Glob2Screen.h"
 #include "FrontendTheme.h"
 #include <GUIText.h>
-#include <algorithm>
-#include "GlobalContainer.h"
-#include "DynamicClouds.h"
 
 
 namespace
@@ -50,34 +47,10 @@ int Glob2Screen::execute(DrawableSurface* surface, int stepLength)
 
 void Glob2Screen::paint(void)
 {
-	if (FrontendTheme::current && Style::style == FrontendTheme::current)
-	{
-		drawFrontend(gfx,widgets);
-		return;
-	}
-	static int time = 0;
-	time++;
-	randomSeed = 1;
-
-	// grass
-	for (int y = 0; y < getH(); y += 32)
-		for (int x = 0; x < getW(); x += 32)
-			gfx->drawSprite(x, y, globalContainer->terrain, getNextTerrain());
-	dynamic_cast<GraphicContext*>(gfx)->finishDrawingSprite(globalContainer->terrain, 255);
-
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
-	{
-		static DynamicClouds ds(&globalContainer->settings);
-		ds.compute(0, 0, getW(), getH(), time, (getW()+31)/32, (getH()+31)/32);
-		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::SHADOW);
-		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::CLOUD);
-	}
-}
-
-unsigned Glob2Screen::getNextTerrain(void)
-{
-	randomSeed = randomSeed * 69069;
-	return ((randomSeed >> 16) & 0xF);
+	if (FrontendTheme::current)
+		drawFrontend(gfx, widgets);
+	else
+		gfx->drawFilledRect(0, 0, getW(), getH(), Color(17, 35, 32));
 }
 
 
@@ -101,32 +74,8 @@ int Glob2TabScreen::execute(DrawableSurface* surface, int stepLength)
 
 void Glob2TabScreen::paint(void)
 {
-	if (FrontendTheme::current && Style::style == FrontendTheme::current)
-	{
-		drawFrontend(gfx,widgets);
-		return;
-	}
-	static int time = 0;
-	time++;
-	randomSeed = 1;
-
-	// grass
-	for (int y = 0; y < getH(); y += 32)
-		for (int x = 0; x < getW(); x += 32)
-			gfx->drawSprite(x, y, globalContainer->terrain, getNextTerrain());
-	dynamic_cast<GraphicContext*>(gfx)->finishDrawingSprite(globalContainer->terrain, 255);
-
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
-	{
-		static DynamicClouds ds(&globalContainer->settings);
-		ds.compute(0, 0, getW(), getH(), time, (getW()+31)/32, (getH()+31)/32);
-		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::SHADOW);
-		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::CLOUD);
-	}
-}
-
-unsigned Glob2TabScreen::getNextTerrain(void)
-{
-	randomSeed = randomSeed * 69069;
-	return ((randomSeed >> 16) & 0xF);
+	if (FrontendTheme::current)
+		drawFrontend(gfx, widgets);
+	else
+		gfx->drawFilledRect(0, 0, getW(), getH(), Color(17, 35, 32));
 }

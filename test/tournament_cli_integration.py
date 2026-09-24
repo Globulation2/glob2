@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Real main-binary CLI/save integration; retains exact inputs, logs and tick traces."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+from build_paths import native_binary
 import argparse
 import hashlib
 import platform
 import json
 import os
-from pathlib import Path
 import struct
 import subprocess
 import tempfile
@@ -31,7 +34,7 @@ def tick_records(path):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--binary',default='build/src/glob2');parser.add_argument('--output')
+    parser.add_argument('--binary',default=str(native_binary()));parser.add_argument('--output')
     parser.add_argument('--initial',help='retained .game input for cross-platform trace comparison')
     parser.add_argument('--ticks',type=int,default=2048)
     args=parser.parse_args()

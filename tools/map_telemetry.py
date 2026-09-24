@@ -6,6 +6,10 @@ Each collect run requires a new directory. Raw reports, logs and per-attempt man
 are retained even on failure. Summary metrics are record-weighted; fallback rates count
 attempts, never repeated events. Missing measurements are absent, not zero.
 """
+if __package__:
+    from .build_paths import native_binary
+else:
+    from build_paths import native_binary
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import json
@@ -148,7 +152,7 @@ def main(argv=None):
     collect.add_argument('--out', type=Path, required=True)
     collect.add_argument('--jobs', type=int, default=3)
     collect.add_argument('--timeout', type=float, default=60)
-    collect.add_argument('--binary', type=Path, default=ROOT / 'build/src/glob2')
+    collect.add_argument('--binary', type=Path, default=native_binary())
     summary = commands.add_parser('summarize')
     summary.add_argument('out', type=Path)
     args = parser.parse_args(argv)

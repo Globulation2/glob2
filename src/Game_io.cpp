@@ -145,12 +145,12 @@ namespace
 
 bool Game::load(GAGCore::InputStream *stream)
 {
+	PERF_SCOPE_TIME(Load);
     return loadTask(stream).run();
 }
 
 GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 {
-	PERF_SCOPE_TIME(Load);
 	assert(stream);
     co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
 

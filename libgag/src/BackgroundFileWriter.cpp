@@ -33,6 +33,9 @@ namespace GAGCore
 			return; // the running worker takes the newest snapshot next
 		writing = true;
 		lock.unlock();
+#ifdef __EMSCRIPTEN__
+        drain();
+#else
 		// A previous worker cleared writing before exiting, so this join is short.
 		if (worker.joinable())
 			worker.join();
@@ -44,6 +47,7 @@ namespace GAGCore
 		{
 			drain(); // no thread available: write on this one instead
 		}
+#endif
 	}
 
 	void BackgroundFileWriter::waitUntilIdle()

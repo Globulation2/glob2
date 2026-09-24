@@ -7,6 +7,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <iostream>
+#include <PerformanceTelemetry.h>
 GameLoadScreen::GameLoadScreen(Initializer initialize, GAGCore::CooperativeSlice slice)
     : GameLoadScreen(std::make_unique<Engine>(), std::move(initialize), std::move(slice)) {}
 GameLoadScreen::GameLoadScreen(std::unique_ptr<Engine> engine, Initializer initialize, GAGCore::CooperativeSlice slice)
@@ -36,6 +37,7 @@ std::unique_ptr<Engine> GameLoadScreen::takeEngine()
 }
 void GameLoadScreen::onTimer(Uint32)
 {
+    PERF_SCOPE_TIME(Load);
     try {
         if (slice.advance(*task)) { endExecute(task->result() ? 1 : 2); return; }
         const char* stage = task->stage();

@@ -1,13 +1,13 @@
 # Browser platform development
 
 Globulation 2 runs in a full-page browser client with campaigns, tutorials,
-custom games, map editing, local saves and experimental YOG cross-play.
+custom games, map editing, local saves and YOG cross-play.
 WebGL2 is the default where the browser accelerates it; otherwise the game uses
 the software renderer. `?renderer=webgl2` or `?renderer=software` forces either
 one. The pinned Emscripten 4.0.15 build
-shares game logic and the GPU renderer with desktop. The browser host schedules frames and cooperative jobs without Asyncify. This is a development target, not a supported stable release.
+shares game logic and the GPU renderer with desktop. The browser host schedules frames and cooperative jobs without Asyncify. Build and verification instructions below cover the desktop browser target.
 The browser ADRs under `docs/browser` describe the implementation boundaries and
-remaining release gates.
+platform boundaries.
 
 The desktop browser uses the system mouse cursor, including when an older profile
 had enabled the game cursor. Menus retain their colony background after leaving
@@ -35,7 +35,7 @@ from the SDK's checksum-verified Boost port. `emsdk=/path/to/emsdk` selects an
 already installed matching SDK. Omit `release=1` for a debug build.
 `python3 browser/build.py` remains a compatibility wrapper for the release build.
 See [delivery contracts](../docs/browser/implementation.md) for output paths and
-remaining release gates.
+platform boundaries.
 
 ## Playing and saving
 
@@ -64,16 +64,16 @@ Continue on failure; Continue does not confirm a saved copy.
 
 ## Scope
 
-This is a desktop-browser experiment with mouse and keyboard controls.
+The browser client uses mouse and keyboard controls.
 The YOG entry uses the WebSocket gateway; LAN remains unavailable in browsers.
 The lobby uses YOG chat; the separate native IRC bridge is unavailable.
-See `docs/browser/gateway.md` for routing. Full matches and recovery remain experimental. Voice chat is a no-op; music uses the
+See `docs/browser/gateway.md` for routing. Refreshing or disconnecting during a match ends that player's participation. Voice chat is a no-op; music uses the
 existing Vorbis mixer. Map fertility is staged privately before publication. Landscape previews run
 one candidate per UI timer; an individual generator roll remains synchronous. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
 there is no mobile UI adaptation.
 
 Browser and desktop multiplayer clients and YOG must use the same protocol
-(version 29). Update all components together. See the [admission contract](../docs/browser/protocol.md).
+(version 41). Update all components together. See the [admission contract](../docs/browser/protocol.md).
 Guests, invitations and coordinated refresh/reconnect recovery remain unfinished.
 
 ## Compatibility note

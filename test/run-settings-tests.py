@@ -2,9 +2,12 @@
 """Native settings integration and visual captures; never uses the real profile.
 Build with: scons -j6 release=1 settings-tests
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+from build_paths import native_binary
 import argparse
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import tempfile
@@ -30,7 +33,7 @@ for width, height, renderer, expanded in cases:
                     lines[i+1] += ' — ' + lines[i+1]
             destination.write_text('\n'.join(lines)+'\n')
         with tempfile.TemporaryDirectory(prefix=profile) as work:
-            result = subprocess.run([str(root/'build/src/settings-screen-tests'), profile, str(width), str(height), renderer, str(output)],
+            result = subprocess.run([str(native_binary('settings-screen-tests')), profile, str(width), str(height), renderer, str(output)],
                 cwd=work, env=dict(os.environ, SDL_AUDIODRIVER='dummy'), timeout=120,
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
             (output/'test.log').write_text(result.stdout)

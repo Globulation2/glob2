@@ -4,10 +4,13 @@
 Requires a display with OpenGL (on Linux CI, use xvfb-run) and game data.
 All preferences, saves and replays go into a disposable profile.
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+from build_paths import native_binary
 import argparse
 import os
 import platform
-from pathlib import Path
 import re
 import shutil
 import subprocess
@@ -21,7 +24,7 @@ args = parser.parse_args()
 profile = 'glob2-speed-test-' + uuid.uuid4().hex
 try:
     with tempfile.TemporaryDirectory(prefix=profile) as work:
-        binary = root / os.environ.get('GLOB2_BUILD_DIR', 'build/' + platform.system().lower() + '/client/release') / 'src/game-speed-tests'
+        binary = native_binary('game-speed-tests')
         try:
             result = subprocess.run(
                 [str(binary), profile] + (['--settings-only'] if args.settings_only else []), cwd=work,

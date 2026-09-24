@@ -183,7 +183,7 @@ jobs:
           python3 test/test_map_generation_study.py
           python3 test/test_fairness_model.py
           ./build/linux/client/release/src/TournamentCompatibilityTest
-          GLOB2_BUILD_DIR=build/linux/client/release python3 test/tournament_cli_integration.py --output artifacts/tournament-cli
+          python3 test/tournament_cli_integration.py --binary build/linux/client/release/src/glob2 --output artifacts/tournament-cli
 
       - name: Retain tournament CLI compatibility evidence
         if: always()
@@ -524,9 +524,7 @@ jobs:
       - name: Build and run the tests
         working-directory: test
         run: |
-          # test/ reads the root config.h a client configure writes; the server and
-          # software builds below rewrite it. build/data has nothing to build.
-          (cd .. && scons release=1 server=0 build/data)
+          # The standalone suite owns its generated configuration.
           scons CXX=${{ matrix.compiler }} -j$(nproc)
           ./TestsRunner
           for harness in ./*Harness ./*Test; do

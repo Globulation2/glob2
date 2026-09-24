@@ -31,6 +31,10 @@ Commands:
 transforms and reports what predicts winning. `fit --mode final` fits the
 screened, hand-checked feature list and writes the C++ coefficient header.
 """
+if __package__:
+    from .build_paths import native_binary
+else:
+    from build_paths import native_binary
 import argparse
 import itertools
 import json
@@ -2009,14 +2013,14 @@ def main():
     p.add_argument('--once', action='store_true')
     p = sub.add_parser('remeasure', help='rebuild the played maps and test new measurements')
     p.add_argument('directory')
-    p.add_argument('--binary', default='build/src/glob2')
+    p.add_argument('--binary', default=str(native_binary()))
     p.add_argument('--maps', default='artifacts/fairness-remeasure')
     p.add_argument('--jobs', type=int, default=3)
     p.add_argument('--folds', type=int, default=5)
     p.add_argument('--output')
     p = sub.add_parser('sampling', help='measure what extra candidate rolls buy')
     p.add_argument('directory')
-    p.add_argument('--binary', default='build/src/glob2')
+    p.add_argument('--binary', default=str(native_binary()))
     p.add_argument('--catalog', required=True)
     p.add_argument('--seeds', type=int, default=24)
     p.add_argument('--candidates', type=int, default=32)

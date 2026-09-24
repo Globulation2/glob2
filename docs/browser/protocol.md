@@ -18,8 +18,8 @@ replace an authenticated identity. Room and file operations cannot run before
 successful authentication. Invalid transitions close the connection. A rejected
 password leaves the client able to retry; rejection is not authentication.
 
-Protocol version 29 identifies the updated browser/desktop simulation and
-admission contract. Both older and newer protocol numbers are refused before
+Protocol version 41 adds the versioned server greeting and symmetric admission.
+This transport change leaves the save and replay format versions unchanged. Both older and newer protocol numbers are refused before
 server information and before a legitimate client sends credentials. Server information now carries the server protocol as well. Updated clients
 decode the shorter legacy greeting as version zero solely to report the
 mismatch; they do not submit credentials to it. The legacy stable refusal

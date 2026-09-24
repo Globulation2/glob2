@@ -19,17 +19,8 @@ public:
 	int execute(GAGCore::DrawableSurface* gfx, int stepLength) override;
 
 private:
-	// Menus opt into their own theme even when constructed while a finished
-	// game still holds its disabled scope during a completion callback.
-	// execute() only covers the old blocking loop; screens driven through
-	// ScreenStack::push() (browser cooperative scheduling) never call it, so
-	// they'd never get the theme's widget colors otherwise. A member (alive
-	// for the whole screen, not just one paint() call) covers both paths,
-	// same as GameSessionScreen/MapEditorScreen/CampaignEditor already do to
-	// opt out. Declared first so it's active before anything else runs.
+	// Scheduled and blocking menus share the same presentation.
 	FrontendScope theme{true};
-	unsigned getNextTerrain(void);
-	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
 };
 
 class Glob2TabScreen : public TabScreen
@@ -43,8 +34,6 @@ public:
 private:
 	// See Glob2Screen for why this needs to be a long-lived member.
 	FrontendScope theme{true};
-	unsigned getNextTerrain(void);
-	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
 };
 
 

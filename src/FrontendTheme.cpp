@@ -87,8 +87,7 @@ void FrontendTheme::background(DrawableSurface* s, bool panel, const SDL_Rect* c
 	if (colony->ready()) colony->draw(w,h);
 	else if (fallback)
 	{
-		// Software drawing has no stretched-surface overload. Fit only when
-		// the logical resolution changes, then use an ordinary blit.
+		// Cache the cropped fallback at the logical viewport size.
 		if(!fittedFallback || fittedFallback->getW()!=w || fittedFallback->getH()!=h)
 		{
 			const double scale=std::max(double(w)/fallback->getW(),double(h)/fallback->getH());

@@ -384,7 +384,8 @@ struct MapPreviewHarness
 		preview->retry = [] {};
 		preview->setState(MapPreview::State::Failed);
 		capture("online-failed");
-		CustomGameScreen custom;
+		GAGGUI::ScreenStack screens(*globalContainer->gfx);
+		CustomGameScreen custom(screens);
 		custom.dispatchInit();
 		custom.updateLayout();
 		MapPreview *lobby = nullptr;

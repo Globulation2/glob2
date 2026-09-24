@@ -182,7 +182,7 @@ void LandscapePreviewer::work()
 		lock.unlock();
 		Preview result = roll(request, seed);
 		lock.lock();
-		if (passes[index] != myPass)
+		if (index >= passes.size() || passes[index] != myPass)
 			continue; // regenerate(), restart() or reroll() superseded this roll while it ran
 		result.revision = slots[index].revision + 1;
 		slots[index] = std::move(result);

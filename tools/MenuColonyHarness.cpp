@@ -91,6 +91,33 @@ void checkMenuPainting()
 			require(Style::style == FrontendTheme::current, "tab menu created during game teardown activates theme");
 		}
 	}
+	// A menu background must not change when a pending gameplay screen acquires its scope.
+	auto checkBackground = [](auto& menu) {
+		menu.beginExecution(globalContainer->gfx);
+		auto raster = [] {
+			DrawableSurface image(globalContainer->gfx->getW(), globalContainer->gfx->getH());
+			image.drawSurface(0, 0, globalContainer->gfx);
+			auto* pixels = image.getSDLSurface();
+			return std::string(static_cast<const char*>(pixels->pixels), pixels->pitch * pixels->h);
+		};
+		menu.paint();
+		const auto expected = raster();
+		{
+			FrontendScope pendingGame(false);
+			menu.paint();
+			require(raster() == expected, "pending game cannot restore the legacy grass background");
+		}
+		menu.endExecute(0);
+		menu.finishExecution();
+	};
+	{
+		struct Menu : Glob2Screen { void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {} } menu;
+		checkBackground(menu);
+	}
+	{
+		struct Menu : Glob2TabScreen { Menu() : Glob2TabScreen(false) {} void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {} } menu;
+		checkBackground(menu);
+	}
 	screen.dispatchPaint(false);
 	require(surface.presentations == 0, "modal background is not presented separately");
 	surface.nextFrame();
@@ -357,6 +384,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 		capture(argv[2],argv[3]);
 		return 0;
 	}
+	if(mode=="presentation") { checkMenuPainting(); return 0; }
 	if(mode=="check")
 	{
 		checkMenuPainting();

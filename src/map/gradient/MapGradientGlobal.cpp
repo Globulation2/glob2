@@ -38,12 +38,12 @@
 // throttle. On correct code the loop exits in a handful of passes.
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
+	PERF_SCOPE_TIME(Propagation);
     updateGlobalGradientTask(gradient).run();
 }
 
 GAGCore::CooperativeTask Map::updateGlobalGradientTask(Uint8 *gradient)
 {
-	PERF_SCOPE_TIME(Propagation);
 	// Values below 3 cannot raise a free cell above its seed of 1.
 	// Without a stronger source, the initialized buffer is already the final field.
 	if (std::none_of(gradient, gradient + size, [](Uint8 value) { return value >= 3; }))

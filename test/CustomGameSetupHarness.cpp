@@ -557,7 +557,8 @@ struct CustomGameSetupHarness
 	{
 		FrontendTheme theme;
 		FrontendScope scope;
-		CustomGameScreen screen;
+		GAGGUI::ScreenStack screens(*globalContainer->gfx);
+		CustomGameScreen screen(screens);
 		screen.gfx = globalContainer->gfx;
 		screen.dispatchInit();
 		screen.activateGroup(screen.groups[1]);
@@ -1542,11 +1543,28 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
 		std::cout << "PASS save/load: " << (watching ? "AI-only" : "human/shared") << "\n";
 	}
 };
+static void checkPreviewRestart()
+{
+    GenerationRequest request;
+    request.setMethodDefaults(0);
+    request.wDec = request.hDec = 8;
+    request.nbTeams = 4;
+    LandscapePreviewer previewer({request}, 1);
+    const auto started = SDL_GetTicks64();
+    while (previewer.preview(0).state == LandscapePreviewer::State::Pending &&
+           SDL_GetTicks64() - started < 10000)
+        SDL_Delay(1);
+    assert(previewer.preview(0).state == LandscapePreviewer::State::Generating);
+    previewer.restart({});
+    assert(!previewer.busy() && previewer.finished() == 0);
+    // Destruction joins the in-flight worker after restart has removed its slot.
+}
+
 int main(int argc, char **argv)
 {
 	GlobalContainer globals("glob2-custom-setup-tests");
 	globalContainer = &globals;
-	globals.runNoX = argc < 2;
+	globals.runNoX = argc < 2 || std::string(argv[1]) == "preview-restart";
 	globals.settings.rememberUnit = false;
 	globals.settings.screenWidth = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 1000 : 640;
 	globals.settings.screenHeight = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 700 : 480;
@@ -1555,6 +1573,12 @@ int main(int argc, char **argv)
 	if (argc > 3 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
 		globals.settings.language = argv[3];
 	globals.load();
+	if (argc > 1 && std::string(argv[1]) == "preview-restart")
+	{
+		checkPreviewRestart();
+		std::cout << "PASS preview restart joins superseded workers safely\n";
+		return 0;
+	}
 	if (argc > 1 && (std::string(argv[1]) == "preferences-write" || std::string(argv[1]) == "preferences-read"))
 	{
 		CustomGameSetupHarness::preferencesScreen(std::string(argv[1]) == "preferences-write");
@@ -1584,6 +1608,7 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	assert(SDLNet_Init() == 0);
+	checkPreviewRestart();
 	const auto playableMethods = GeneratorRegistry::builtins().methods(false);
 	for (int method : playableMethods)
 	{

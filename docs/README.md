@@ -24,6 +24,10 @@ dated reports and pull-request artifacts do not belong here.
 - **Map generators:** [design and implementation index](map-generators/README.md).
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
+- **Browser platform:** [build and play](../browser/README.md),
+  [architecture](browser/implementation.md), [storage](browser/storage.md),
+  [viewport](browser/viewport.md), and [YOG deployment](browser/gateway.md).
+
 ## Temporary work
 
 Use the ignored root `artifacts/` directory for screenshots, logs,

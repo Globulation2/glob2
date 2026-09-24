@@ -7,6 +7,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <iostream>
+#include <PerformanceTelemetry.h>
 EditorLoadScreen::EditorLoadScreen(const std::string& filename, GAGCore::CooperativeSlice slice)
     : EditorLoadScreen([filename](MapEdit& editor) { return editor.loadTask(filename); }, "[Loading headers]", std::move(slice)) {}
 EditorLoadScreen::EditorLoadScreen(Initializer initialize, const char* caption, GAGCore::CooperativeSlice slice)
@@ -35,6 +36,7 @@ std::unique_ptr<MapEdit> EditorLoadScreen::takeEditor()
 }
 void EditorLoadScreen::onTimer(Uint32)
 {
+    PERF_SCOPE_TIME(Load);
     try {
         if (slice.advance(*task)) { endExecute(task->result() ? 1 : 2); return; }
         status->setText(GAGCore::Toolkit::getStringTable()->getString(task->stage()));

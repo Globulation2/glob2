@@ -90,7 +90,9 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event>& events)
     }
     // Admit queued cancellation before advancing a potentially expensive load.
     if (!stopped && pending.empty() && screen.isExecutionRunning()) screen.updateExecution(tick);
-    if (!stopped) screen.drawExecution();
+    // Constructing a child can change presentation immediately. Keep the last
+    // completed frame until the child is admitted at the next boundary.
+    if (!stopped && pending.empty() && screen.isExecutionRunning()) screen.drawExecution();
     if (stopped) boundary();
 }
 
