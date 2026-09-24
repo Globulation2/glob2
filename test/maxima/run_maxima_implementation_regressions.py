@@ -15,9 +15,8 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 
-import sys
 sys.path.insert(0, str(ROOT / 'tools'))
-from build_paths import native_binary, native_build_directory
+from build_paths import native_build_directory
 
 
 def run(command):

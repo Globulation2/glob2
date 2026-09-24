@@ -450,7 +450,7 @@ def main():
     if isDarwinPlatform and env["release"] and "package" in COMMAND_LINE_TARGETS:
         bundle.generate(env)
         dmg.generate(env)
-        env.Replace( 
+        env.Replace(
             BUNDLE_NAME=bdir+"/Glob2",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
