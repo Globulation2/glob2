@@ -16,3 +16,5 @@ The follow-up commit keeps server-only ApplicationHost polling independent of gr
 The rebuilt macOS client at `8fd3e8e2a` produces the same 1,500-tick trace as the master baseline: `110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48`. Compressed trace, replay, and manifest are retained here.
 
 The final commit corrects the session-load test to retain the named save instead of selecting the first row, which can become an autosave. The damaged-load test now waits past the initial autosave. Restoring the old first-row selection fails with a successful match instead of the expected error; all three corrected WebGL session tests pass locally with SwiftShader. Logs are included.
+
+Final-head CI replay artifacts are retained in `final-ci-determinism.tar.gz`. Both Linux toolchains, Windows, and WebAssembly produce the master-baseline checksum hash above.
