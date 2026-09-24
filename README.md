@@ -1,6 +1,6 @@
 # Browser platform review evidence
 
-Evidence for [Globulation2/glob2#379](https://github.com/Globulation2/glob2/pull/379), rebased onto master `a494a331929c6104c44be1bf395ef1c445bbd4c2`. Implementation revision and scenario hashes are in [checksums/manifest.json](checksums/manifest.json). This branch contains review artifacts only; it is not part of the implementation diff.
+Evidence for [Globulation2/glob2#379](https://github.com/Globulation2/glob2/pull/379), rebased onto master `a494a331929c6104c44be1bf395ef1c445bbd4c2`. Runtime build revision, review head, and scenario hashes are in [checksums/manifest.json](checksums/manifest.json). This branch contains review artifacts only; it is not part of the implementation diff.
 
 ## Simulation and compatibility
 
@@ -28,6 +28,8 @@ Save safety and five save/continuation checkpoints of 256 ticks each passed. Net
 The [tests/](tests/) directory retains raw test output. The final Chromium suite passed 91 tests with one intentional skip (live interface scaling is software-only); Firefox and WebKit passed 28 focused checks. The same scaling behavior passed in their software-renderer runs. The full final Chromium run uses macOS Metal WebGL2; the Firefox and WebKit startup, menu, cursor and viewport checks use the software renderer. Focused torus checks exercise actual WebGL context loss and restoration on both Metal and SwiftShader. The emulated-GPU transition allowance is two minutes; these results do not establish hardware-like performance on SwiftShader. WebKit automation does not establish shipping Safari compatibility.
 
 [screenshots/](screenshots/) shows the modern colony menu background, the custom-game panel, and the campaign menu after returning from a match. The legacy grass/cloud menu renderer has been removed. Actual map terrain and optional gameplay clouds remain part of the game.
+
+The later review-head change corrects native test commands, the explicit protocol assertion, and developer-tool build paths; the tested game/runtime source is unchanged. The complete Maxima implementation runner and team-statistics compatibility harness also pass locally.
 
 Native validation includes screen and session ownership, map preview and custom setup, save safety and unit continuation, protocol admission, TCP/WSS transport, gateway tests, shared build layout, Maxima lifecycle/structural tests, and tournament CLI regressions. Native client, server/router, gateway and WebAssembly release builds completed locally.
 
