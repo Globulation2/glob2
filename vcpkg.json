@@ -19,6 +19,7 @@
     "boost-logic",
     "boost-lambda",
     "speex",
+    "openssl",
     "opengl",
     "libepoxy",
     "pcre"
