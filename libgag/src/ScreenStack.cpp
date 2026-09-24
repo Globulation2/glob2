@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ScreenStack.h>
 #include <ApplicationHost.h>
+#include <GraphicContext.h>
 #include <stdexcept>
 #include <typeinfo>
 #include <algorithm>
@@ -39,6 +40,17 @@ void ScreenStack::viewportResized(int oldWidth, int oldHeight, int width, int he
 		entry.screen->viewportResized(oldWidth, oldHeight, width, height);
 }
 
+void ScreenStack::configureViewport(Screen& screen)
+{
+    if (auto* context = dynamic_cast<GAGCore::GraphicContext*>(&surface)) {
+        const int oldWidth=context->getW(), oldHeight=context->getH();
+        const auto [minimumWidth,minimumHeight]=screen.minimumViewportSize();
+        context->setResponsiveViewport(screen.usesResponsiveViewport(),minimumWidth,minimumHeight);
+        if (oldWidth!=context->getW() || oldHeight!=context->getH())
+            viewportResized(oldWidth,oldHeight,context->getW(),context->getH());
+    }
+}
+
 void ScreenStack::stop()
 {
 	stopped = true;
@@ -63,6 +75,7 @@ void ScreenStack::boundary()
 		if (!screens.empty())
 		{
 			Screen &resumed = *screens.back().screen;
+            configureViewport(resumed);
 			GAGCore::ApplicationHost::screenChanged(typeid(resumed).name());
 		}
 	}
@@ -83,7 +96,9 @@ void ScreenStack::boundary()
 	pending.clear();
 	for (auto &entry : additions)
 	{
-		screens.push_back(std::move(entry));
+		if (!screens.empty()) screens.back().screen->cancelExecutionInput();
+        screens.push_back(std::move(entry));
+        configureViewport(*screens.back().screen);
 		screens.back().screen->beginExecution(&surface);
 	}
 }
@@ -98,6 +113,18 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 		Guard(bool &f) : flag(f) { flag = true; }
 		~Guard() { flag = false; }
 	} guard(dispatching);
+    for (const auto& event:events) {
+        if (event.type==SDL_APP_WILLENTERBACKGROUND || event.type==SDL_APP_DIDENTERBACKGROUND) {
+            backgrounded=true; suspendExecution();
+            for (auto& entry:screens) entry.screen->cancelExecutionInput();
+        } else if (event.type==SDL_APP_DIDENTERFOREGROUND) {
+            backgrounded=false; suspendExecution();
+        }
+        if (event.type==SDL_RENDER_DEVICE_RESET || event.type==SDL_RENDER_TARGETS_RESET || event.type==SDL_APP_LOWMEMORY) resetGraphics=true;
+        if (event.type==SDL_APP_TERMINATING || event.type==SDL_QUIT) stop();
+    }
+    if (backgrounded) { if(stopped) boundary(); return; }
+    if (resetGraphics) { SDL_Event reset{};reset.type=SDL_RENDER_DEVICE_RESET;GAGCore::GraphicContext::translateMouseEvent(&reset);resetGraphics=false; }
 	if (std::any_of(events.begin(), events.end(),
 					[](const SDL_Event &e) { return e.type == SDL_QUIT; }))
 		stop();
@@ -105,6 +132,15 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 	if (screens.empty() || stopped)
 		return;
 	Screen &screen = *screens.back().screen;
+    for (auto event:events) if(event.type==SDL_WINDOWEVENT && (event.window.event==SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event==SDL_WINDOWEVENT_RESIZED)) {
+        const int oldWidth=surface.getW(),oldHeight=surface.getH();
+        GAGCore::GraphicContext::translateMouseEvent(&event);
+        if(oldWidth!=surface.getW() || oldHeight!=surface.getH()) viewportResized(oldWidth,oldHeight,surface.getW(),surface.getH());
+    }
+    configureViewport(screen);
+    for (const auto& event : events)
+        if ((event.type==SDL_WINDOWEVENT && (event.window.event==SDL_WINDOWEVENT_FOCUS_LOST || event.window.event==SDL_WINDOWEVENT_SIZE_CHANGED)) || event.type==SDL_APP_WILLENTERBACKGROUND)
+            screen.cancelExecutionInput();
 	// Pending child transitions suspend the parent immediately.
 	for (const auto &event : events)
 	{
@@ -130,7 +166,8 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 
 Uint32 ScreenStack::delay(Uint32 now, Uint32 fallback)
 {
-	return screens.empty() ? fallback : screens.back().screen->executionDelay(now, fallback);
+	if (backgrounded) return 100;
+    return screens.empty() ? fallback : screens.back().screen->executionDelay(now, fallback);
 }
 
 int ScreenStack::execute(unsigned stepLength)

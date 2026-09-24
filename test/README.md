@@ -683,3 +683,14 @@ An optional language code after the mode (for example, `profiles ja` or
 Use `GLOB2_USER_DIR` to isolate captures in a disposable profile. The
 `test_text_area_layout.py` checks also cover lobby paragraph wrapping for unspaced
 CJK text and long words, preserving complete UTF-8 characters.
+
+## Phone interface verification
+
+The native portable-renderer checks exercise real SDL touch dispatch in portrait
+and landscape, including placement/confirmation, camera gestures, building
+controls, replay actions, setup/settings navigation and modal viewport changes.
+Build and run commands are in [Mobile development](../docs/mobile/development.md#verification).
+The harnesses require a windowing display (Xvfb on Linux), use isolated
+`GLOB2_USER_DATA_DIR` profiles, and capture screenshots there. They complement
+Android/iOS device playtesting; they do not establish device lifecycle,
+performance, keyboard or cross-platform simulation compatibility.

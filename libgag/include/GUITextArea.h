@@ -93,7 +93,8 @@ namespace GAGGUI
 		virtual bool load(const std::string filename);
 		//! save content to filename. If file exists, it is overriden
 		virtual bool save(const std::string filename);
-		void deactivate(void) { activated = false; }
+		bool isReadOnly() const { return readOnly; }
+        void deactivate(void) { activated = false; }
 		void activate(void) { activated = true; }
 	
 	protected:

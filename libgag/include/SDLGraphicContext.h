@@ -337,6 +337,9 @@ namespace GAGCore
 		int minW, minH;
 		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
 		int windowW = 0, windowH = 0;
+        int fixedLogicalW=0, fixedLogicalH=0;
+        bool responsiveViewport=false;
+        int responsiveMinW=0, responsiveMinH=0;
 		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
 		int drawableW = 0, drawableH = 0;
 		//! resolution asked of setRes(), before the interface scale divides it
@@ -417,6 +420,12 @@ namespace GAGCore
 		virtual bool setRes(int w, int h, Uint32 flags);
         // Resize a software render target without replacing its window or assets.
         bool resizeViewport(int w, int h);
+        bool setResponsiveViewport(bool enabled, int minimumWidth=0, int minimumHeight=0);
+        bool isResponsiveViewport() const { return responsiveViewport; }
+        bool hasPortableRenderer() const { return bool(renderer); }
+        double logicalUnitsPerPoint() const;
+        void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
+        Uint32 windowID() const { return SDL_GetWindowID(window); }
 #ifdef GLOB2_WEBGL2
         static void restoreBrowserContext();
 #endif

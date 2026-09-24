@@ -6,6 +6,7 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
+#include <InterfacePresentation.h>
 #include <algorithm>
 #include <assert.h>
 #include <cstdlib>
@@ -179,6 +180,7 @@ namespace GAGCore
 	// interface out on 366x274, narrower than the 368px main menu panel.
 	void GraphicContext::applyWindowMinimumSize(void)
 	{
+        if (renderer && phonePresentationRequested()) { SDL_SetWindowMinimumSize(window,1,1); return; }
 		if (!window) return;
 		#ifdef GLOB2_WEBGL2
 		return;
@@ -426,6 +428,11 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
+        if (renderer && responsiveViewport) {
+            renderer->outputSize(drawableW, drawableH);
+            setResponsiveViewport(true, responsiveMinW, responsiveMinH);
+            return;
+        }
 		if (windowW <= 0 || windowH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
 		// A resizable window keeps the interface at its scale: the logical surface
 		// follows the window divided by uiScale, not the window itself.
@@ -615,10 +622,11 @@ namespace GAGCore
         const char* selectedRenderer = SDL_getenv("GLOB2_RENDERER");
         if (selectedRenderer && std::string(selectedRenderer) == "sdl") flags |= PORTABLEGPU;
 #ifdef GLOB2_MOBILE
-        flags |= PORTABLEGPU;
+        flags |= PORTABLEGPU | RESIZABLE;
 #endif
         if (flags & PORTABLEGPU) flags &= ~USEGPU;
 		optionFlags = flags;
+        fixedLogicalW=logicalW; fixedLogicalH=logicalH; responsiveViewport=false;
 		Uint32 sdlFlags = (flags & PORTABLEGPU) ? SDL_WINDOW_ALLOW_HIGHDPI : 0;
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.

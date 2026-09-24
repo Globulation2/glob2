@@ -3,6 +3,7 @@
 
 #include "MainMenuScreen.h"
 #include "FrontendTheme.h"
+#include <InterfacePresentation.h>
 #include "GlobalContainer.h"
 #include <GUIButton.h>
 #include <Toolkit.h>
@@ -108,6 +109,7 @@ public:
 
 MainMenuScreen::MainMenuScreen()
 {
+    if (phonePresentationRequested()) enableResponsiveMenu();
 	const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
 	compact = height < 640;
 	panelX = std::clamp(width / 20, 20, 72);
@@ -230,6 +232,7 @@ void MainMenuScreen::layout(int width, int height)
 
 void MainMenuScreen::viewportResized(int, int, int width, int height)
 {
+    cancelExecutionInput();
 	layout(width, height);
 }
 
@@ -242,6 +245,7 @@ MainMenuScreen::~MainMenuScreen()
 void MainMenuScreen::paint()
 {
 	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
+    if (phonePresentationRequested() && globalContainer->gfx->isResponsiveViewport()) return;
 	fillRounded(gfx, panelX + 2, panelY + 3, panelW, panelH, 10, Color(15, 39, 25, 35));
 	fillRounded(gfx, panelX, panelY, panelW, panelH, 10, Color(230, 231, 210, 248));
 	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, gold);

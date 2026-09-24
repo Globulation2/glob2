@@ -51,17 +51,18 @@ void SettingsScreen::layout()
     panel={std::max(0,(w-960)/2),std::max(0,(h-720)/2),std::min(w-32,960),std::min(h-32,720)};
     panel.x=(w-panel.w)/2;panel.y=(h-panel.h)/2;
     padding=panel.w<800?16:24;sidebar=panel.w<800?148:176;
-    const int footH=std::max(64,wrappedHeight(tr("Changes saved automatically"),panel.w-240)+24);
+    const bool narrow=panel.w<480;
+    const int footH=narrow?96:std::max(64,wrappedHeight(tr("Changes saved automatically"),panel.w-240)+24);
     footer={panel.x,panel.y+panel.h-footH,panel.w,footH};
     const char* names[]={"Display & graphics","Audio","Gameplay","Building defaults","Controls","Language & player"};
     int navigationHeight=0;
     for(auto name:names)navigationHeight+=std::max(42,wrappedHeight(tr(name),sidebar-32)+20)+4;
-    compactNavigation=navigationHeight-4>footer.y-panel.y-76;
+    compactNavigation=narrow || navigationHeight-4>footer.y-panel.y-76;
     int headerHeight=64;
-    categoryControl={panel.x+156,panel.y+12,panel.w-172,40};
+    categoryControl=narrow?Rect{panel.x+padding,panel.y+48,panel.w-2*padding,44}:Rect{panel.x+156,panel.y+12,panel.w-172,40};
     if(compactNavigation && modal==Modal::None){
         categoryControl.h=std::max(40,wrappedHeight(tr(names[int(current)]),categoryControl.w-36)+16);
-        headerHeight=std::max(64,categoryControl.h+24);
+        headerHeight=std::max(narrow?104:64,categoryControl.h+(narrow?60:24));
     }
     const int railWidth=modal==Modal::None && !compactNavigation?sidebar:0;
     viewport={panel.x+railWidth+padding,panel.y+headerHeight+4,
@@ -85,7 +86,7 @@ void SettingsScreen::layout()
             if(table){controlW=std::min(180,cw);textW=cw;stacked=true;}
             int labelH=wrappedHeight(r.label,stacked?cw:textW);
             int helpH=r.help.empty()?0:8+wrappedHeight(r.help,stacked?cw:textW);
-            int controlH=std::max(34,wrappedHeight(r.value,controlW-20-(r.extraId.empty()?0:40)-(r.kind==Kind::Choice?16:0))+16);
+            int controlH=std::max(phonePresentationRequested()?44:34,wrappedHeight(r.value,controlW-20-(r.extraId.empty()?0:40)-(r.kind==Kind::Choice?16:0))+16);
             if(r.kind==Kind::Slider)controlH=48;
             int height=0;
             if(r.kind==Kind::Section)height=24+wrappedHeight(r.label,cw)+8;
@@ -142,7 +143,7 @@ void SettingsScreen::paintRow(const Row& r)
         gfx->drawFilledRect(c.x,c.y,c.w,c.h,r.enabled?field:rail);
         gfx->drawRect(c.x,c.y,c.w,c.h,focused?ink:line);
         if(r.kind==Kind::Number){
-            const int segment=std::min(32,c.w/4);
+            const int segment=std::min(phonePresentationRequested()?48:32,c.w/(phonePresentationRequested()?3:4));
             drawText(c.x+8,c.y+8,"−");drawText(c.x+c.w-20,c.y+8,"+");
             gfx->drawLine(c.x+segment,c.y,c.x+segment,c.y+c.h,line);
             gfx->drawLine(c.x+c.w-segment,c.y,c.x+c.w-segment,c.y+c.h,line);
@@ -207,7 +208,7 @@ void SettingsScreen::paint()
     }
     gfx->drawLine(footer.x,footer.y,footer.x+footer.w,footer.y,line);
     std::string status=failed?tr("Could not save"):settingsDirty?tr("Saving…"):restartRequired()?tr("Saved — restart required"):tr("Changes saved automatically");
-    drawWrapped(footer.x+padding,footer.y+16,footer.w-240,status,true);
+    drawWrapped(footer.x+padding,footer.y+(panel.w<480?68:16),panel.w<480?footer.w-2*padding:footer.w-240,status,true);
     dropdown.paint(gfx,ink,field,gold,line);
     const Rect doneRect={footer.x+footer.w-112,footer.y+12,96,40};
     gfx->drawFilledRect(doneRect.x,doneRect.y,doneRect.w,doneRect.h,gold);

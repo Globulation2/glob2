@@ -391,3 +391,9 @@ if not env['server'] and not env.get('mingw'):
         local.Object('MobileTemporaryFilesHarness.o', '#test/MobileTemporaryFilesHarness.cpp'),
         local.Object('MobileTemporaryFiles.o', '#mobile/TemporaryFiles.cpp')])
     local.Alias('mobile-temporary-files-test', temporary_test)
+
+if not env['server']:
+    for alias, harness in [('gameplay-touch-test', 'GameGUITouchHarness'), ('responsive-menu-test', 'ResponsiveMenuHarness'), ('mobile-presentation-test', 'MobilePresentationHarness')]:
+        sources = [source for source in source_files if source != 'Glob2.cpp']
+        sources += local.Object(harness + '.o', '#test/' + harness + '.cpp')
+        local.Alias(alias, local.Program(alias, sources))

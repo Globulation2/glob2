@@ -27,6 +27,7 @@ constexpr Uint32 A = ALIGN_SCREEN_CENTERED;
 
 NewMapScreen::NewMapScreen(const GeneratorRegistry &registry) : registry(registry)
 {
+    enablePhoneForm();
 	descriptor.setMethodDefaults(registry.methods().front(), registry);
 	methods = new List(20, 100, 280, 300, A, A, "menu");
 	for (int m : registry.methods())

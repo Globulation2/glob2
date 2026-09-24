@@ -14,6 +14,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
@@ -189,6 +190,11 @@ void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height
 
 void GameGUI::suspendInput()
 {
+    if (touch) touch->cancel();
+    panPushed=false;
+    torusView.stopMoving();
+    torusPointerDown=false;
+    torusView.setPointerHeld(false);
     inputState.clearHeld();
     viewportSpeedX = viewportSpeedY = 0;
     lastMouseButtonState = 0;

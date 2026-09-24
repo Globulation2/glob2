@@ -50,6 +50,8 @@ class LandscapePickerScreen : public Glob2Screen
 	LandscapePickerScreen(const std::string &title, std::vector<Entry> entries, int selected,
 						  SortOrder sortOrder = SortOrder::Random);
 	~LandscapePickerScreen() override;
+    bool usesResponsiveViewport() const override;
+    void cancelExecutionInput() override;
 	void onAction(Widget *, Action, int, int) override;
 	void onSDLEvent(SDL_Event *) override;
 	void onTimer(Uint32 tick) override;
@@ -97,6 +99,7 @@ class LandscapePickerScreen : public Glob2Screen
 	};
 	static std::vector<GenerationRequest> requestsOf(const std::vector<Entry> &);
 	void render();
+    void renderPhone();
 	void refresh();
 	void select(int index);
 	void confirm();

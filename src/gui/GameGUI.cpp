@@ -14,6 +14,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameGUILoadSave.h"
@@ -87,6 +88,7 @@ void GameGUI::init()
 	torusPointerDown = false;
 	camera=MapCamera();zoomControlPushed=false;
 	if (!globalContainer->runNoX) Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
+    touch = std::make_unique<GameGUITouch>(*this);
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;
@@ -317,7 +319,7 @@ void GameGUI::updateCamera()
 {
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
-    camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
+    camera.resize(globalContainer->gfx->getW()-(touch && touch->usesHUD() ? 0 : RIGHT_MENU_WIDTH),globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
     if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());

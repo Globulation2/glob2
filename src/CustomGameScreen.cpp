@@ -12,6 +12,7 @@
 #include "GenerationService.h"
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
+#include <InterfacePresentation.h>
 #include "LobbyMapCatalog.h"
 #include "Player.h"
 #include "Unit.h"
@@ -58,7 +59,13 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 		ui.setDimensions(gfx->getW(), height);
 		ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
 		ui.text(x + 8, 20, this->title, "standard", w - 16);
-		int left = w < 800 ? 174 : 235, right = x + left + 22, rightW = w - left - 22;
+		const bool phone=GAGCore::phonePresentationRequested();
+        int left = w < 800 ? 174 : 235, right = x + left + 22, rightW = w - left - 22;
+        if(phone) {
+            ui.dropdown("profile/select",{x,56,w,48},this->choices,this->selected,[this](int v){this->selected=v;controls->regions[21].offset=0;});
+            right=x;rightW=w;
+        }
+        if(!phone) {
 		ui.beginRegion(20, {x, 60, left, height - 135});
 		int yy = 60 - ui.regions[20].offset;
 		for (size_t i = 0; i < this->choices.size(); ++i)
@@ -83,8 +90,10 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 			ui.text(x + 9, yy + int(i) * 58 + 31, full, "little", left - 25, true);
 		}
 		ui.endRegion(this->choices.size() * 58);
-		ui.beginRegion(21, {right, 60, rightW, height - 135});
-		yy = 60 - ui.regions[21].offset;
+        }
+        const int detailTop=phone?116:60;
+        ui.beginRegion(21, {right, detailTop, rightW, height - detailTop-75});
+        int yy = detailTop - ui.regions[21].offset;
 		int start = yy;
 		ui.text(right, yy, this->choices[this->selected], "standard", rightW - 15);
 		yy += 32;
@@ -870,6 +879,7 @@ void CustomGameScreen::paint()
 
 void CustomGameScreen::renderLobby()
 {
+    if (GAGCore::phonePresentationRequested()) {renderPhoneLobby();return;}
 	auto &ui = *controls;
 	int width = gfx->getW(), height = gfx->getH();
 	int w = std::min(width - 32, 1120), x = (width - w) / 2;
@@ -1023,6 +1033,8 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 void CustomGameScreen::renderRules(int x, int y, int w, int h)
 {
 	auto &ui = *controls;
+    const bool phone=GAGCore::phonePresentationRequested();
+    const int controlH=phone?48:29;
 	ui.beginRegion(2, {x, y, w, h});
 	int yy = y - ui.regions[2].offset, startY = yy;
 	ui.text(x, yy, tr("Try a ruleset, then make it your own."), "standard", w - 20);
@@ -1033,7 +1045,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		localized({"Classic colony building",
 				   setup.random ? "8 workers / 2x speed" : "Premade: only speed changes (2x)",
 				   "Start with terrain known", "Win through conquest"});
-	int columns = w >= 800 ? 4 : 2, tileW = (w - 12) / columns;
+	int columns = w >= 800 ? 4 : w<420 ? 1 : 2, tileW = (w - 12) / columns;
 	for (int i = 0; i < 4; ++i)
 	{
 		int tx = x + (i % columns) * tileW, ty = yy + (i / columns) * 54;
@@ -1078,8 +1090,9 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		}
 		ui.box({x, yy, w - 12, 58}, ui.panel);
 		ui.text(x + 10, yy + 8, tr(definition.label) + (setup.ruleChanged(index) ? " *" : ""),
-				"standard", 170);
-		int fieldX = x + 182, fieldW = w - 208;
+				"standard", phone?w-24:170);
+		if(phone) yy+=36;
+        int fieldX = phone?x+8:x+182, fieldW = phone?w-32:w-208;
 		auto apply = [this, index](int value)
 		{
 			if (index == 0)
@@ -1122,7 +1135,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			auto options = index == 0   ? localized({"Conquest or prestige", "Conquest only"})
 						   : index == 1 ? localized({"Explore as you play", "Terrain revealed"})
 										: localized({"Locked teams", "Can change in game"});
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH}, options,
 						index == 0   ? !setup.prestige
 						: index == 1 ? setup.revealed
 									 : !setup.locked,
@@ -1141,13 +1154,13 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				settings.gameSpeed = i;
 				options.push_back(settings.getGameSpeedText());
 			}
-			ui.dropdown("rule/speed", {fieldX, yy + 5, fieldW, 29}, options, setup.speed, apply);
+			ui.dropdown("rule/speed", {fieldX, yy + 5, fieldW, controlH}, options, setup.speed, apply);
 			help = tr("Changes the pace of the whole simulation.");
 		}
 		else if (index == 4)
 		{
 			if (setup.random)
-				ui.stepper("rule/workers", {fieldX, yy + 5, 130, 29}, setup.generator.nbWorkers,
+				ui.stepper("rule/workers", {fieldX, yy + 5, 130, controlH}, setup.generator.nbWorkers,
 						   GenerationRequest::control(setup.generator.method, "workers").minimum,
 						   GenerationRequest::control(setup.generator.method, "workers").maximum,
 						   [this](int v)
@@ -1171,7 +1184,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			bool current = index == 5	 ? setup.noResourceGrowth
 						   : index == 7 ? setup.instantConstruction
 										: setup.noHunger;
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH}, options,
 						current, apply, {}, w < 800 ? "little" : "standard");
 			help = tr(index == 5	? "Resources never grow or spread across the map."
 					  : index == 7 ? "Building sites complete immediately, skipping delivery."
@@ -1185,7 +1198,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 						   : localized({"None (today's default)", "Small (+50 each)",
 										"Medium (+150 each)", "Large (+300 each)"});
 			int current = index == 6 ? setup.resourceScarcity : setup.stockpileStart;
-			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH}, options,
 						current, apply);
 			help = tr(index == 6 ? "Slows how often resources grow or spread across the map."
 								  : "Seeds each team's shared market/exchange resource pool at "
@@ -1201,7 +1214,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 						   : index == 12 ? setup.unitsFearless
 						   : index == 13 ? setup.permadeathDisabled
 										: setup.peacefulMode;
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH}, options,
 						current, apply, {}, w < 800 ? "little" : "standard");
 			help = tr(index == 10	? "Units still visit schools but never gain a level."
 					  : index == 12 ? "Units fight to the death instead of retreating to heal."
@@ -1214,7 +1227,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				index == 11 ? localized({"Off (today's balance)", "Glass cannon x2", "Glass cannon x3"})
 						   : localized({"Off (today's HP)", "Fortress x5", "Fortress x10"});
 			int current = index == 11 ? setup.glassCannonLevel : setup.buildingHpLevel;
-			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH}, options,
 						current, apply);
 			help = tr(index == 11 ? "Higher tiers deal more damage but have less HP and armor."
 								  : "Higher tiers give every building much more HP.");
@@ -1224,7 +1237,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			if (setup.random)
 			{
 				std::vector<std::string> options = localized({"Standard", "Veteran", "Elite", "Legendary"});
-				ui.dropdown("rule/startingLevel", {fieldX, yy + 5, fieldW, 29}, options,
+				ui.dropdown("rule/startingLevel", {fieldX, yy + 5, fieldW, controlH}, options,
 					setup.startingUnitLevel,
 					[this](int v)
 					{
@@ -1247,13 +1260,13 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
 			const int current = int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) -
 									minutes.begin());
-			ui.dropdown("rule/suddenDeath", {fieldX, yy + 5, fieldW, 29}, options,
+			ui.dropdown("rule/suddenDeath", {fieldX, yy + 5, fieldW, controlH}, options,
 						current < int(minutes.size()) ? current : 0,
 						[apply, minutes](int v) { apply(minutes[v]); });
 			help = tr("Match ends at the timer; highest prestige at that instant wins.");
 		}
-		ui.text(x + 10, yy + 39, help, "little", w - 40, true);
-		yy += 65;
+		if(phone) {yy+=60;yy+=ui.paragraph(x+10,yy,w-40,help,"standard")+20;}
+        else {ui.text(x + 10, yy + 39, help, "little", w - 40, true);yy+=65;}
 	}
 	ui.button(
 		"rules/restore", {x, yy, 230, 30}, tr("Restore standard rules"),

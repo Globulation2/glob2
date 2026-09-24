@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <GUIBase.h>
+#include <InterfacePresentation.h>
 #include <ScreenStack.h>
 #include "FrontendTheme.h"
 #include <memory>
@@ -21,6 +22,10 @@ class GameSessionScreen : public GAGGUI::Screen
 	void handleExecutionEvent(SDL_Event event) override;
 	void drawExecution() override;
 	Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
+
+    bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
+    std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
+    void cancelExecutionInput() override { suspendExecution(); }
 
   private:
 	FrontendScope theme{false};

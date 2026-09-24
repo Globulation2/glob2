@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GraphicContext.h>
 #include <RenderBackend.h>
+#include <ScreenStack.h>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
@@ -9,7 +10,7 @@ using namespace GAGCore;
 class Context : public GraphicContext
 {
 public:
-    Context() : GraphicContext(320, 240, PORTABLEGPU, "Glob2 portable renderer test") {}
+    Context() : GraphicContext(320, 240, PORTABLEGPU | RESIZABLE, "Glob2 portable renderer test") {}
     SDL_Surface* capture() { return renderer->capture(); }
     void resetTextures() { renderer->reset(); }
     void resizeWindow(int width,int height) { SDL_SetWindowSize(window,width,height); updateWindowSize(); }
@@ -34,6 +35,20 @@ int main()
 {
     try {
         Context context;
+        {
+            context.drawFilledRect(0,0,320,240,Color(0,0,0));
+            SDL_Rect bounds{100,50,20,20};
+            context.setUITransform(2,100,50,&bounds);
+            context.setClipRect(0,0,8,8);
+            context.drawFilledRect(0,0,30,30,Color(255,0,0));
+            context.setUITransform(); context.setClipRect();
+            context.drawFilledRect(10,10,4,4,Color(0,255,0));
+            auto* pixels=context.capture();
+            const double density=pixels->w/320.0;
+            expect(pixels,int(110*density),int(60*density),255,0,0);
+            expect(pixels,int(118*density),int(60*density),0,0,0);
+            expect(pixels,int(12*density),int(12*density),0,255,0); SDL_FreeSurface(pixels);
+        }
         DrawableSurface sprite(16,16);
         sprite.drawFilledRect(0,0,16,16,Color(0,255,0));
         for(int pass=0;pass<3;++pass) {
@@ -72,7 +87,7 @@ int main()
                 if(event.type==type) {
                     int x=type==SDL_MOUSEMOTION?event.motion.x:event.button.x;
                     int y=type==SDL_MOUSEMOTION?event.motion.y:event.button.y;
-                    require(x==120 && y==80,"Renderer mouse events must be mapped exactly once");
+                    require(x==240 && y==160,"Desktop resize keeps logical input aligned with master");
                     observed=true;
                 }
             }
@@ -80,7 +95,100 @@ int main()
         }
         int x=240,y=160;
         GraphicContext::translateMouseCoordinates(x,y);
-        require(x==120 && y==80,"Raw mouse coordinates must use the same logical mapping");
+        require(x==240 && y==160,"Raw mouse coordinates must use the same logical mapping");
+        {
+            struct ResourceScreen : GAGGUI::Screen {
+                Context& context; DrawableSurface& sprite;
+                int draws=0, red=255, green=255;
+                ResourceScreen(Context& context,DrawableSurface& sprite):context(context),sprite(sprite) {}
+                void onAction(GAGGUI::Widget*,GAGGUI::Action,int,int) override {}
+                void updateExecution(Uint32) override {}
+                void drawExecution() override {
+                    context.setClipRect();
+                    context.drawFilledRect(0,0,320,240,Color(0,0,0));
+                    context.drawSurface(40,40,32,32,&sprite);
+                    auto* pixels=context.capture();
+                    expect(pixels,50*pixels->w/320,50*pixels->h/240,red,green,0);
+                    SDL_FreeSurface(pixels);context.nextFrame();++draws;
+                }
+            };
+            GAGGUI::ScreenStack stack(context);
+            auto owned=std::make_unique<ResourceScreen>(context,sprite);auto* probe=owned.get();
+            stack.push(std::move(owned));stack.frame(0,{});
+            SDL_Event background{};background.type=SDL_APP_WILLENTERBACKGROUND;
+            SDL_Event reset{};reset.type=SDL_RENDER_DEVICE_RESET;
+            stack.frame(40,{background,reset});
+            require(probe->draws==1,"No rendering while backgrounded with a lost device");
+            // Change CPU pixels without the normal dirty notification: the
+            // deferred reset must recreate the previously cached texture.
+            auto* source=sprite.getSDLSurface();
+            SDL_FillRect(source,nullptr,SDL_MapRGB(source->format,255,0,0));
+            probe->green=0;
+            SDL_Event foreground{};foreground.type=SDL_APP_DIDENTERFOREGROUND;
+            stack.frame(100000,{foreground});
+            require(probe->draws==2,"Resource restoration precedes the first resumed draw");
+            SDL_FillRect(source,nullptr,SDL_MapRGB(source->format,0,255,0));
+            probe->red=0;probe->green=255;
+            reset.type=SDL_APP_LOWMEMORY;
+            stack.frame(100040,{reset});
+            stack.frame(100080,{background});
+            SDL_Event quit{};quit.type=SDL_QUIT;stack.frame(100120,{quit});
+            require(!stack.running(),"Quit must be honored while backgrounded");
+        }
+        SDL_setenv("GLOB2_RESPONSIVE_UI", "1", 1);
+        context.setResponsiveViewport(true);
+        require(context.getW()==640 && context.getH()==480,"Responsive viewport must fill window points");
+        context.resizeWindow(320,568);
+        require(context.getW()==320 && context.getH()==568,"Portrait resize must update logical dimensions");
+        context.drawFilledRect(0,0,320,568,Color(90,30,150));
+        auto* portrait=context.capture();
+        expect(portrait,portrait->w/2,portrait->h-2,90,30,150);
+        SDL_FreeSurface(portrait);
+        context.setResponsiveViewport(true,800,600);
+        require(context.getW()==800 && context.getH()==1420,"Portrait game must extend to the full window height");
+        context.drawFilledRect(0,0,800,1420,Color(90,30,150));
+        auto* full=context.capture();
+        expect(full,full->w/2,2,90,30,150);expect(full,full->w/2,full->h-2,90,30,150);
+        SDL_FreeSurface(full);context.nextFrame();
+        context.resizeWindow(568,320);
+        require(context.getW()==1065 && context.getH()==600,"Landscape game must extend to the full window width");
+        context.drawFilledRect(0,0,1065,600,Color(90,30,150));
+        full=context.capture();
+        expect(full,2,full->h/2,90,30,150);expect(full,full->w-2,full->h/2,90,30,150);
+        SDL_FreeSurface(full);context.nextFrame();
+        context.resizeWindow(320,568);
+        context.setResponsiveViewport(false);
+        require(context.getW()==320 && context.getH()==240,"Legacy logical dimensions must be restored");
+        auto* letterbox=context.capture();
+        expect(letterbox,letterbox->w/2,2,0,0,0);
+        SDL_FreeSurface(letterbox);
+        {
+            struct ViewportScreen : GAGGUI::Screen {
+                int changes=0;
+                void onAction(GAGGUI::Widget*,GAGGUI::Action,int,int) override {}
+                bool usesResponsiveViewport() const override { return true; }
+                std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
+                void updateExecution(Uint32) override {}
+                void drawExecution() override {}
+                void viewportResized(int,int,int,int) override { ++changes; }
+            };
+            struct Child : GAGGUI::Screen {
+                void onAction(GAGGUI::Widget*,GAGGUI::Action,int,int) override {}
+                void updateExecution(Uint32) override { endExecute(0); }
+                void drawExecution() override {}
+            };
+            GAGGUI::ScreenStack stack(context);
+            auto parent=std::make_unique<ViewportScreen>();auto* probe=parent.get();
+            stack.push(std::move(parent));stack.frame(0,{});
+            require(context.getH()==1420 && probe->changes==1,"Entering gameplay must notify its expanded viewport");
+            stack.push(std::make_unique<Child>());stack.frame(40,{});stack.frame(80,{});
+            require(context.getH()==1420 && probe->changes==3,"A modal round trip must restore and notify the game viewport");
+            SDL_SetWindowSize(SDL_GetWindowFromID(context.windowID()),568,320);
+            SDL_Event resize{};resize.type=SDL_WINDOWEVENT;resize.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+            stack.frame(120,{resize});
+            require(context.getW()==1065 && context.getH()==600 && probe->changes==4,"Rotation must notify the retained game");
+        }
+        SDL_setenv("GLOB2_RESPONSIVE_UI", "0", 1);
         std::puts("PASS portable renderer: clipping, texture scaling, alpha, device reset, dirty textures, resized input");
     } catch(const std::exception& error) {
         std::fprintf(stderr,"FAIL: %s\n",error.what()); return 1;

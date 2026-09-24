@@ -3058,3 +3058,53 @@ Quit without saving
 Game closed. You can close this window or reload to play again.
 [campaign editor save failed]
 Save not confirmed. OK retries; Cancel returns to the editor menu.
+[Actions]
+Actions
+[Minimap]
+Minimap
+[Fast forward]
+Fast forward
+[Hide keyboard]
+Hide keyboard
+[Dialog text size]
+Dialog text size
+[Player slot]
+Player slot
+[Team color]
+Team color
+[Alliance group]
+Alliance group
+[menu]
+Menu
+[Editor tools]
+Tools
+[Pan map]
+Pan map
+[Edit map]
+Edit map
+[Editor map]
+Map
+[Flags]
+Flags
+[Pause]
+Pause
+[Speed]
+Speed
+[Objectives]
+Objectives
+[Menu]
+Menu
+[Goals]
+Goals
+[Teams]
+Teams
+[Use this landscape]
+Use this landscape
+[Reset]
+Reset
+[Generating...]
+Generating...
+[Players]
+Players
+[Rules]
+Rules

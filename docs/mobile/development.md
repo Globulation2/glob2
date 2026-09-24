@@ -1,14 +1,30 @@
-# Mobile build foundations
+# Mobile builds and interface
 
 Android and iOS use the shared game sources and SDL renderer. The mobile targets
 have isolated toolchains, dependency archives and output directories; they do not
 use host libraries or install into the desktop application's directories.
 
-The shared menus, game UI, simulation and screen lifecycle follow the desktop and
-browser implementation. Phone-specific layouts, touch gameplay gestures,
-safe-area integration and background/foreground recovery still need integration
-with that implementation. The packaging and smoke tools do not establish that
-these interactions are ready for release. Voice capture is disabled on mobile.
+The phone presentation shares simulation, game orders, settings persistence and
+lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
+`GameGUITouch` owns gameplay gestures and phone panels, while `PhoneForm` adapts
+legacy widget forms. Composed settings and lobby screens supply their own phone
+layouts. Mobile builds enable these automatically; `GLOB2_MOBILE_UI=1` enables
+them in a native portable-renderer build for development.
+
+The gameplay toolbar opens build choices, flags/zones, inspection, objectives,
+alliances and the game menu. Drag the map to pan, pinch to zoom, tap to select.
+Building placement has a movable preview followed by explicit confirmation.
+Scrollable drawers keep secondary controls out of the map; rotation, loss of
+focus and child screens cancel pending gestures. ScreenStack restores each
+screen's viewport policy and suspends rendering during SDL background events.
+
+Shared actions belong in GameGUI or the existing setup/settings model, not in
+phone coordinate emulation. Construction, destruction, worker allocation,
+priority and flag range use shared action methods. Some information/editor
+panels still adapt legacy controls; these are candidates for further phone
+layout work. Voice capture is disabled on mobile. Native phone-size checks do
+not establish Android/iOS release readiness; device gameplay and lifecycle
+validation remain necessary.
 
 ## Toolchains and output isolation
 
@@ -72,9 +88,13 @@ are retained alongside the application.
 
 ```sh
 python3 -m unittest discover -s tests/build_system -v
-scons release=1 portable-renderer-test mobile-input-test
+scons release=1 portable-renderer-test mobile-input-test gameplay-touch-test responsive-menu-test mobile-presentation-test
 build/darwin/client/release/libgag/src/MobileInputHarness
 build/darwin/client/release/libgag/src/PortableRendererHarness
+mkdir -p artifacts/mobile-ui/gameplay artifacts/mobile-ui/menu artifacts/mobile-ui/presentation
+GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/gameplay" build/darwin/client/release/src/gameplay-touch-test
+GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/menu" build/darwin/client/release/src/responsive-menu-test
+GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/presentation" build/darwin/client/release/src/mobile-presentation-test
 ```
 
 Substitute the host toolchain directory on Linux or Windows. The renderer harness

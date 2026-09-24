@@ -10,6 +10,12 @@ namespace GAGCore
 {
 	void GraphicContext::beginMapTransform(float zoom,float x,float y,int cx,int cy,int cw,int ch)
 	{
+        if (renderer) {
+            assert(!mapTransformActive);
+            mapTranslateX=x; mapTranslateY=y; mapTransformActive=true; mapScale=zoom;
+            mapClipX=cx; mapClipY=cy; mapClipW=cw; mapClipH=ch;
+            SDL_Rect bounds{cx,cy,cw,ch}; renderer->transform(zoom,x,y,&bounds); return;
+        }
 #ifdef HAVE_OPENGL
 		if(!(optionFlags & USEGPU))return;
 		assert(!mapTransformActive);
@@ -20,6 +26,7 @@ namespace GAGCore
 	}
 	void GraphicContext::endMapTransform()
 	{
+        if (renderer) { renderer->transform(1,0,0,nullptr); mapTransformActive=false; mapScale=1; setClipRect(); return; }
 #ifdef HAVE_OPENGL
 		if(!mapTransformActive)return;
 		Sprite::flushBatches(this);
@@ -30,6 +37,16 @@ namespace GAGCore
     void GraphicContext::drawMapCopies(int pw,int ph,int vw,int vh,const std::function<void()> &draw)
     {
         draw();
+        if (renderer && pw>0 && ph>0) {
+            SDL_Rect bounds{mapClipX,mapClipY,mapClipW,mapClipH};
+            periodicCopy=true;
+            for(int y=-1;y<=vh/ph+1;++y) for(int x=-1;x<=vw/pw+1;++x) {
+                if(x==0 && y==0) continue;
+                renderer->transform(mapScale,mapTranslateX+x*pw*mapScale,mapTranslateY+y*ph*mapScale,&bounds);
+                draw();
+            }
+            renderer->transform(mapScale,mapTranslateX,mapTranslateY,&bounds); periodicCopy=false; return;
+        }
 #ifdef HAVE_OPENGL
         if(!(optionFlags & USEGPU) || pw<=0 || ph<=0)return;
         Sprite::flushBatches(this);
@@ -46,6 +63,12 @@ namespace GAGCore
 
     void GraphicContext::beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh)
     {
+        if (renderer && mapTransformActive) {
+            x=x*mapScale+mapTranslateX; y=y*mapScale+mapTranslateY;
+            sx=mapClipX; sy=mapClipY; sw=mapClipW; sh=mapClipH;
+            SDL_Rect bounds{sx,sy,sw,sh}; renderer->transform(1,0,0,&bounds);
+            overlayScale=mapScale; mapScale=1; return;
+        }
 #ifdef HAVE_OPENGL
         if(!mapTransformActive)return;
         Sprite::flushBatches(this);
@@ -57,6 +80,10 @@ namespace GAGCore
     }
     void GraphicContext::endScreenOverlay()
     {
+        if (renderer && mapTransformActive) {
+            mapScale=overlayScale; SDL_Rect bounds{mapClipX,mapClipY,mapClipW,mapClipH};
+            renderer->transform(mapScale,mapTranslateX,mapTranslateY,&bounds); return;
+        }
 #ifdef HAVE_OPENGL
         if(!mapTransformActive)return;
         Sprite::flushBatches(this);glPopMatrix();mapScale=overlayScale;
@@ -76,7 +103,7 @@ namespace GAGCore
 	{
 		if(mapTransformActive){x=mapClipX;y=mapClipY;w=mapClipW;h=mapClipH;}
 		DrawableSurface::setClipRect(x, y, w, h);
-        if (renderer) renderer->clip(&clipRect);
+        if (renderer) renderer->clip(mapTransformActive ? nullptr : &clipRect);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{

@@ -16,6 +16,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
@@ -118,6 +119,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
+    if (touch && touch->process(*event)) return;
     if ((event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_MIDDLE) ||
         (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST))
         panPushed = false;
@@ -126,6 +128,7 @@ void GameGUI::processEvent(SDL_Event *event)
         lastMouseButtonState = 0;
         viewportSpeedX = viewportSpeedY = 0;
         selectionPushed = false;
+        if (touch) touch->cancel();
         torusView.stopMoving();
         toolManager.cancelDrag(localTeamNo);
         torusPointerDown = false;

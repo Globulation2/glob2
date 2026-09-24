@@ -56,6 +56,7 @@ class MapMarkOrder;
 /*!
 	Handle all user input during game, draw & handle menu.
 */
+class GameGUITouch;
 class GameGUI
 {
 	friend struct CustomGameSetupHarness;
@@ -83,12 +84,12 @@ public:
 	void step(void);
     // Host-supplied events and monotonic time; no event polling in this phase.
     void step(const std::vector<SDL_Event>& events, Uint64 now);
+    void suspendInput();
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
 	void configureLiveSpectatorView();
 	//! Return position on x
 	int getViewportX() { return viewportX; }
-    void suspendInput();
     void viewportResized(int oldWidth, int oldHeight, int width, int height);
 	//! Return position on y
 	int getViewportY() { return viewportY; }
@@ -249,6 +250,9 @@ private:
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
 	bool persistPreferences;
+    friend class GameGUITouch;
+    friend class GameGUITouchHarness;
+    std::unique_ptr<GameGUITouch> touch;
 
 	//! Serializes the game and hands the bytes to autosaveWriter.
 	void autosave();
@@ -676,6 +680,11 @@ private:
 	Sint32 displayedPosX(const Building& b) const;
 	Sint32 displayedPosY(const Building& b) const;
 	Sint32 displayedMaxUnitWorking(const Building& b) const;
+    void requestBuildingConstruction(Building& building);
+    void requestBuildingDestruction(Building& building);
+    bool requestWorkerAllocation(Building& building, int requested);
+    bool requestBuildingPriority(Building& building, int requested);
+    bool requestFlagRange(Building& building, int requested);
 	Sint32 displayedUnitStayRange(const Building& b) const;
 	Sint32 displayedPriority(const Building& b) const;
 	bool displayedClearingResource(const Building& b, int i) const;

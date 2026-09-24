@@ -63,6 +63,28 @@ void SettingsScreen::adjustSlider(const std::string& id,int x)
 }
 void SettingsScreen::onSDLEvent(SDL_Event* event)
 {
+    if (phonePresentationRequested()) {
+        if ((event->type==SDL_MOUSEMOTION && event->motion.which==SDL_TOUCH_MOUSEID) ||
+            ((event->type==SDL_MOUSEBUTTONDOWN || event->type==SDL_MOUSEBUTTONUP) && event->button.which==SDL_TOUCH_MOUSEID)) return;
+        if (event->type==SDL_FINGERDOWN || event->type==SDL_FINGERMOTION || event->type==SDL_FINGERUP) {
+            GAGCore::ViewPoint p{event->tfinger.x*getW(),event->tfinger.y*getH()};
+            const auto& f=event->tfinger;
+            auto actions=event->type==SDL_FINGERDOWN?phoneGesture.down(f.touchId,f.fingerId,p):
+                event->type==SDL_FINGERMOTION?phoneGesture.move(f.touchId,f.fingerId,p):phoneGesture.up(f.touchId,f.fingerId,p);
+            for (const auto& action:actions) {
+                if (action.kind==GAGCore::TouchActionKind::Pan) {
+                    if (dropdown.isOpen()) { SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=action.point.y>0?1:-1;onSDLEvent(&wheel); }
+                    else scrollOffset()=std::clamp(scrollOffset()-int(action.point.y),0,std::max(0,contentHeight-viewport.h));
+                } else if (action.kind==GAGCore::TouchActionKind::Select) {
+                    SDL_Event click{};click.type=SDL_MOUSEBUTTONDOWN;click.button.button=SDL_BUTTON_LEFT;
+                    click.button.x=int(action.point.x);click.button.y=int(action.point.y);onSDLEvent(&click);
+                    click.type=SDL_MOUSEBUTTONUP;onSDLEvent(&click);
+                }
+            }
+            return;
+        }
+    }
+
     layout();buildRows();layout();
     if(dropdown.isOpen()){
         int selected=dropdown.handleEvent(*event);
@@ -125,7 +147,7 @@ void SettingsScreen::onSDLEvent(SDL_Event* event)
             if(r.kind==Kind::Binding && !r.extraId.empty() && x>=r.control.x+r.control.w-36){focus=r.extraId;r.change(0);return;}
             if(r.kind==Kind::Slider){dragging=r.id;adjustSlider(r.id,x);return;}
             int direction=0;
-            if(r.kind==Kind::Number){int segment=std::min(32,r.control.w/4);
+            if(r.kind==Kind::Number){int segment=std::min(phonePresentationRequested()?48:32,r.control.w/(phonePresentationRequested()?3:4));
                 if(x<r.control.x+segment)direction=-1;else if(x>=r.control.x+r.control.w-segment)direction=1;else return;
             }
             invoke(r,direction);return;

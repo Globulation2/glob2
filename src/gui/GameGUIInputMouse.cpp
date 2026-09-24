@@ -13,6 +13,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"

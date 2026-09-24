@@ -150,6 +150,9 @@ jobs:
             session-test \
             portable-renderer-test \
             mobile-input-test \
+            gameplay-touch-test \
+            responsive-menu-test \
+            mobile-presentation-test \
             mobile-documents-test \
             mobile-certificate-test \
             mobile-temporary-files-test
@@ -409,6 +412,25 @@ jobs:
         run: |
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
+
+      - name: Check phone layouts and gameplay touch input
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+          SDL_AUDIODRIVER: dummy
+        run: |
+          build/linux/client/release/libgag/src/MobileInputHarness
+          timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
+          for harness in gameplay-touch-test responsive-menu-test mobile-presentation-test; do
+            mkdir -p "artifacts/mobile-ui/$harness"
+            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 120s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness"
+          done
+
+      - name: Upload phone UI verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-ui-verification
+          path: artifacts/mobile-ui/
 
       - name: Check native settings persistence and retry
         env:

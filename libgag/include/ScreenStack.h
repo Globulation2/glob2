@@ -37,6 +37,8 @@ class ScreenStack
 	std::vector<Entry> screens, pending;
 	int lastResult = 0;
 	bool stopped = false, dispatching = false;
-	void boundary();
+	bool backgrounded=false, resetGraphics=false;
+    void boundary();
+    void configureViewport(Screen& screen);
 };
 } // namespace GAGGUI

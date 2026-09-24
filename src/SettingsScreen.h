@@ -7,6 +7,8 @@
 #include "Settings.h"
 #include "KeyboardManager.h"
 #include <ApplicationHost.h>
+#include <InterfacePresentation.h>
+#include <TouchInput.h>
 #include <GUIDropdown.h>
 #include <array>
 #include <functional>
@@ -36,6 +38,9 @@ public:
         // Table entries share a line only when the viewport is wide enough.
         int columns=1, column=0;
     };
+    bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
+    void cancelExecutionInput() override { phoneGesture.cancel(); }
+    GAGCore::TouchInput phoneGesture;
     SettingsScreen();
     ~SettingsScreen() override;
     void paint() override;
