@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <TouchInput.h>
+#include <MapCamera.h>
+#include <InterfacePresentation.h>
 #include <ResponsiveMenu.h>
 #include <cstdio>
 #include <stdexcept>
@@ -9,6 +11,50 @@ void near(double a,double b) { require(std::abs(a-b)<0.000001,"Coordinate mismat
 int main()
 {
     try {
+        require(parsePresentationPreference("")==PresentationPreference::Automatic,"Missing preference defaults to Automatic");
+        require(parsePresentationPreference("garbage")==PresentationPreference::Automatic,"Invalid preference defaults to Automatic");
+        for (bool touch : {false,true}) {
+            InputCapabilities input{touch,true,true,true};
+            const double boundary=480+(touch?288:160);
+            for (double scale : {1.,1.5,2.}) {
+                ViewportMetrics metrics{boundary*scale,480*scale,scale};
+                auto resolve=[&](PresentationPreference preference=PresentationPreference::Automatic) {
+                    return resolvePresentation(preference,metrics,input);
+                };
+                require(resolve().layout==PresentationLayout::Spacious,"Exact fit must be Spacious");
+                require(resolve(PresentationPreference::Compact).layout==PresentationLayout::Compact,"Compact preference must win");
+                metrics.width-=1;
+                require(resolve(PresentationPreference::Spacious).layout==PresentationLayout::Compact,"Spacious must fall back when narrow");
+                metrics.width+=1;metrics.height-=1;
+                require(resolve().layout==PresentationLayout::Compact,"Short viewport must be Compact");
+                metrics.height+=1;metrics.safe.left=1;
+                require(resolve().layout==PresentationLayout::Compact,"Safe area participates in fit");
+                metrics.width+=1;
+                require(resolve().layout==PresentationLayout::Spacious,"Inset-adjusted boundary fits");
+                metrics.keyboardInset=200*scale;
+                require(resolve().layout==PresentationLayout::Spacious,"Keyboard cannot change underlying layout");
+                near(resolve().dialog.h,280);
+                require(resolve().minimumTargetHeight==(touch?48:32),"Target size follows capabilities");
+                input.hover=false;
+                require(resolve().layout==PresentationLayout::Spacious && !resolve().hover,"Hover cannot switch layout");
+                input.hover=true;
+            }
+        }
+        SDL_setenv("GLOB2_TOUCH_HUD","1",1);SDL_setenv("GLOB2_MOBILE_UI","0",1);
+        require(presentationOverride()==PresentationPreference::Spacious,"Primary override takes precedence");
+        SDL_setenv("GLOB2_MOBILE_UI","1",1);
+        require(presentationOverride()==PresentationPreference::Compact,"Primary override requests Compact");
+        MapCamera camera;camera.resize(960,720,4096,4096);camera.originX=4080.25;camera.originY=4000.5;
+        camera.setZoom(1.5,317,283);
+        auto cameraCenter=camera.screenToWorld(480,360);
+        camera.resize(480,600,4096,4096,24,48);
+        auto cameraResized=camera.screenToWorld(264,348);
+        near(MapCamera::wrap(cameraCenter.first,4096),MapCamera::wrap(cameraResized.first,4096));
+        near(MapCamera::wrap(cameraCenter.second,4096),MapCamera::wrap(cameraResized.second,4096));
+        require(camera.contains(24,48) && !camera.contains(23,48) && !camera.contains(504,48),"Camera excludes safe areas and side panels");
+        auto anchor=camera.screenToWorld(200,300);camera.wheel(.3,200,300);auto zoomed=camera.screenToWorld(200,300);
+        near(MapCamera::wrap(anchor.first,4096),MapCamera::wrap(zoomed.first,4096));
+        near(MapCamera::wrap(anchor.second,4096),MapCamera::wrap(zoomed.second,4096));
         ViewportTransform view({0,48,320,472},{4096,4096});
         view.moveTo({4090,4});
         auto at=view.screenToWorld({215,110});

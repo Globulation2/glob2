@@ -2,9 +2,13 @@
 #include <GraphicContext.h>
 #include <RenderBackend.h>
 #include <ScreenStack.h>
+#include <InterfacePresentation.h>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#ifdef HAVE_OPENGL
+#include <SDL_opengl.h>
+#endif
 
 using namespace GAGCore;
 class Context : public GraphicContext
@@ -31,9 +35,51 @@ void expect(SDL_Surface* pixels, int x, int y, int r, int g, int b)
         throw std::runtime_error("Unexpected renderer pixel");
     }
 }
+void verifyUITransform(unsigned flags)
+{
+    GraphicContext context(320,240,flags,"Glob2 shared UI transform test");
+    context.drawFilledRect(0,0,320,240,Color(0,0,0));
+    context.setClipRect(90,40,50,50);
+    SDL_Rect bounds{100,50,20,20};
+    context.setUITransform(2,100,50,&bounds);
+    context.setClipRect(0,0,8,8);
+    context.drawFilledRect(0,0,30,30,Color(255,0,0));
+    context.setUITransform();
+    int x,y,w,h;context.getClipRect(&x,&y,&w,&h);
+    require(x==90 && y==40 && w==50 && h==50,"Transform must restore the caller's clip");
+    context.setClipRect();context.drawFilledRect(10,10,4,4,Color(0,255,0));
+    SDL_Surface* pixels=context.getSDLSurface();
+#ifdef HAVE_OPENGL
+    if (flags & GraphicContext::USEGPU) {
+        int width,height;SDL_GL_GetDrawableSize(SDL_GetWindowFromID(context.windowID()),&width,&height);
+        pixels=SDL_CreateRGBSurfaceWithFormat(0,width,height,32,SDL_PIXELFORMAT_RGBA32);
+        glReadPixels(0,0,width,height,GL_RGBA,GL_UNSIGNED_BYTE,pixels->pixels);
+        // GL's first row is the bottom of the drawable.
+        expect(pixels,110*width/320,height-1-60*height/240,255,0,0);
+        expect(pixels,118*width/320,height-1-60*height/240,0,0,0);
+        expect(pixels,12*width/320,height-1-12*height/240,0,255,0);
+        SDL_FreeSurface(pixels);return;
+    }
+#endif
+    expect(pixels,110,60,255,0,0);expect(pixels,118,60,0,0,0);expect(pixels,12,12,0,255,0);
+}
 int main()
 {
     try {
+        verifyUITransform(0);
+#ifdef HAVE_OPENGL
+        verifyUITransform(GraphicContext::USEGPU);
+#endif
+        {
+            GraphicContext::setRequestedUiScale(2);
+            GraphicContext scaled(640,480,GraphicContext::RESIZABLE,"Glob2 responsive scale test");
+            scaled.setCompactWindowAllowed(true);scaled.refreshPresentation();
+            scaled.setResponsiveViewport(true);
+            require(scaled.getUiScale()==2 && scaled.getW()==320 && scaled.getH()==240,
+                "Responsive first launch must honor user scale below the legacy layout floor");
+            require(presentationState.layout==PresentationLayout::Compact,"User scale must participate in fit");
+            GraphicContext::setRequestedUiScale(1);
+        }
         Context context;
         {
             context.drawFilledRect(0,0,320,240,Color(0,0,0));

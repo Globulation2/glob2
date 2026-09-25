@@ -86,6 +86,7 @@ public:
     }
     void clear() { check(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)); check(SDL_RenderClear(renderer)); }
     void logicalSize(int width, int height) override { check(SDL_RenderSetLogicalSize(renderer, width, height)); clear(); }
+    void flush() override { check(SDL_RenderFlush(renderer)); }
     void present() override { SDL_RenderPresent(renderer); clear(); }
     void outputSize(int& width, int& height) override { check(SDL_GetRendererOutputSize(renderer, &width, &height)); }
     SDL_Surface* capture() override
@@ -111,4 +112,12 @@ std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window* window, int widt
     check(SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND));
     return backend;
 }
+std::unique_ptr<RenderBackend> makeSoftwareRenderBackend(SDL_Surface* surface)
+{
+    auto* renderer=SDL_CreateSoftwareRenderer(surface);
+    if (!renderer) throw std::runtime_error(SDL_GetError());
+    check(SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND));
+    return std::make_unique<SDLRenderBackend>(renderer);
+}
+
 }

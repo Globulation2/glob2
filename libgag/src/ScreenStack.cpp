@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ScreenStack.h>
+#include <BrowserTextInput.h>
 #include <ApplicationHost.h>
 #include <GraphicContext.h>
 #include <stdexcept>
@@ -43,6 +44,7 @@ void ScreenStack::viewportResized(int oldWidth, int oldHeight, int width, int he
 void ScreenStack::configureViewport(Screen& screen)
 {
     if (auto* context = dynamic_cast<GAGCore::GraphicContext*>(&surface)) {
+        context->setCompactWindowAllowed(screen.supportsCompactViewport());
         const int oldWidth=context->getW(), oldHeight=context->getH();
         const auto [minimumWidth,minimumHeight]=screen.minimumViewportSize();
         context->setResponsiveViewport(screen.usesResponsiveViewport(),minimumWidth,minimumHeight);
@@ -128,9 +130,13 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 	if (std::any_of(events.begin(), events.end(),
 					[](const SDL_Event &e) { return e.type == SDL_QUIT; }))
 		stop();
+    const int frameWidth=surface.getW(), frameHeight=surface.getH();
+    GAGCore::beginBrowserTextFrame();
+    bool presentationChanged=false;
+    if (auto* context=dynamic_cast<GAGCore::GraphicContext*>(&surface))
+        presentationChanged=context->refreshPresentation();
 	boundary();
-	if (screens.empty() || stopped)
-		return;
+	if (screens.empty() || stopped) { GAGCore::endBrowserTextFrame(); return; }
 	Screen &screen = *screens.back().screen;
     for (auto event:events) if(event.type==SDL_WINDOWEVENT && (event.window.event==SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event==SDL_WINDOWEVENT_RESIZED)) {
         const int oldWidth=surface.getW(),oldHeight=surface.getH();
@@ -138,6 +144,11 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
         if(oldWidth!=surface.getW() || oldHeight!=surface.getH()) viewportResized(oldWidth,oldHeight,surface.getW(),surface.getH());
     }
     configureViewport(screen);
+    if (presentationChanged) {
+        for (auto& entry:screens) entry.screen->cancelExecutionInput();
+        if (frameWidth==surface.getW() && frameHeight==surface.getH())
+            viewportResized(surface.getW(),surface.getH(),surface.getW(),surface.getH());
+    }
     for (const auto& event : events)
         if ((event.type==SDL_WINDOWEVENT && (event.window.event==SDL_WINDOWEVENT_FOCUS_LOST || event.window.event==SDL_WINDOWEVENT_SIZE_CHANGED)) || event.type==SDL_APP_WILLENTERBACKGROUND)
             screen.cancelExecutionInput();
@@ -151,6 +162,8 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event> &events)
 		}
 		if (stopped || !pending.empty() || !screen.isExecutionRunning())
 			break;
+        if ((event.type==SDL_MOUSEMOTION && event.motion.which==SDL_TOUCH_MOUSEID) ||
+            ((event.type==SDL_MOUSEBUTTONDOWN || event.type==SDL_MOUSEBUTTONUP) && event.button.which==SDL_TOUCH_MOUSEID)) continue;
 		screen.handleExecutionEvent(event);
 	}
 	// Admit queued cancellation before advancing a potentially expensive load.

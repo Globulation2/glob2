@@ -58,7 +58,7 @@ struct MobileLayout {
     ViewRect safe, status, world, actions, panel;
     bool persistentPanel=false;
     static MobileLayout calculate(double width,double height,SafeInsets inset={},double keyboardHeight=0,
-                                  double uiScale=1,bool panelOpen=false)
+                                  double uiScale=1,bool panelOpen=false,bool allowPersistent=true,double sidebarWidth=288)
     {
         MobileLayout out;
         double scale=std::clamp(uiScale,1.0,2.0), control=48*scale;
@@ -71,8 +71,8 @@ struct MobileLayout {
         double actionsHeight=std::min(control,area.h);
         out.actions={area.x,area.y+area.h-actionsHeight,area.w,actionsHeight};
         area.h-=actionsHeight;
-        double panelWidth=288*scale;
-        out.persistentPanel=area.w-panelWidth>=480;
+        double panelWidth=sidebarWidth*scale;
+        out.persistentPanel=allowPersistent && out.safe.h>=480*scale && area.w-panelWidth>=480*scale;
         out.world=area;
         if(out.persistentPanel) {
             out.world.w-=panelWidth;

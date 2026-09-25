@@ -46,6 +46,15 @@ public final class Glob2Activity extends SDLActivity {
 
     private static volatile int[] uiInsets = new int[] {0, 0, 0, 0};
     public static int[] getUiInsets() { return uiInsets; }
+    private static volatile int keyboardInset = 0;
+    public static int getKeyboardInset() { return keyboardInset; }
+    public static boolean hasPointer() {
+        for (int id : android.view.InputDevice.getDeviceIds()) {
+            android.view.InputDevice device = android.view.InputDevice.getDevice(id);
+            if (device != null && device.supportsSource(android.view.InputDevice.SOURCE_MOUSE)) return true;
+        }
+        return false;
+    }
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
@@ -54,11 +63,13 @@ public final class Glob2Activity extends SDLActivity {
             int left, top, right, bottom;
             if (Build.VERSION.SDK_INT >= 30) {
                 Insets safe = insets.getInsets(WindowInsets.Type.systemBars()
-                    | WindowInsets.Type.displayCutout() | WindowInsets.Type.ime());
+                    | WindowInsets.Type.displayCutout());
+                keyboardInset = insets.getInsets(WindowInsets.Type.ime()).bottom;
                 left = safe.left; top = safe.top; right = safe.right; bottom = safe.bottom;
             } else {
                 left = insets.getSystemWindowInsetLeft(); top = insets.getSystemWindowInsetTop();
-                right = insets.getSystemWindowInsetRight(); bottom = insets.getSystemWindowInsetBottom();
+                right = insets.getSystemWindowInsetRight(); bottom = insets.getStableInsetBottom();
+                keyboardInset = insets.getSystemWindowInsetBottom() > bottom ? insets.getSystemWindowInsetBottom() : 0;
                 if (Build.VERSION.SDK_INT >= 28 && insets.getDisplayCutout() != null) {
                     left = Math.max(left, insets.getDisplayCutout().getSafeInsetLeft());
                     top = Math.max(top, insets.getDisplayCutout().getSafeInsetTop());

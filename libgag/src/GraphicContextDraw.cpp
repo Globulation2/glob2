@@ -10,6 +10,7 @@ namespace GAGCore
 {
 	void GraphicContext::beginMapTransform(float zoom,float x,float y,int cx,int cy,int cw,int ch)
 	{
+        if (zoom!=1 || x!=0 || y!=0) beginSoftwareTransform();
         if (renderer) {
             assert(!mapTransformActive);
             mapTranslateX=x; mapTranslateY=y; mapTransformActive=true; mapScale=zoom;
@@ -26,7 +27,7 @@ namespace GAGCore
 	}
 	void GraphicContext::endMapTransform()
 	{
-        if (renderer) { renderer->transform(1,0,0,nullptr); mapTransformActive=false; mapScale=1; setClipRect(); return; }
+        if (renderer) { renderer->transform(1,0,0,nullptr); mapTransformActive=false; mapScale=1; endSoftwareTransform(); setClipRect(); return; }
 #ifdef HAVE_OPENGL
 		if(!mapTransformActive)return;
 		Sprite::flushBatches(this);
@@ -101,6 +102,14 @@ namespace GAGCore
 
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
+#ifdef HAVE_OPENGL
+        if (uiTransformActive && !renderer && (optionFlags & USEGPU)) {
+            SDL_Rect transformed{int(std::floor(x*uiTransformScale+uiTransformX)),int(std::floor(y*uiTransformScale+uiTransformY)),
+                int(std::ceil(w*uiTransformScale)),int(std::ceil(h*uiTransformScale))};
+            SDL_Rect clipped{}; SDL_IntersectRect(&transformed,&uiBounds,&clipped);
+            x=clipped.x;y=clipped.y;w=clipped.w;h=clipped.h;
+        }
+#endif
 		if(mapTransformActive){x=mapClipX;y=mapClipY;w=mapClipW;h=mapClipH;}
 		DrawableSurface::setClipRect(x, y, w, h);
         if (renderer) renderer->clip(mapTransformActive ? nullptr : &clipRect);
@@ -128,6 +137,13 @@ namespace GAGCore
 
 	void GraphicContext::setClipRect(void)
 	{
+#ifdef HAVE_OPENGL
+        if (uiTransformActive && !renderer && (optionFlags & USEGPU)) {
+            uiTransformActive=false;
+            setClipRect(uiBounds.x,uiBounds.y,uiBounds.w,uiBounds.h);
+            uiTransformActive=true; return;
+        }
+#endif
 		if(mapTransformActive){setClipRect(mapClipX,mapClipY,mapClipW,mapClipH);return;}
 		DrawableSurface::setClipRect();
         if (renderer) renderer->clip(nullptr);

@@ -163,6 +163,8 @@ void GlobalContainer::loadClient(void)
 		// create graphic context
 		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+		gfx->setCompactWindowAllowed(true);
+        gfx->refreshPresentation();
 		gfx->setMinRes(640, 480);
 		
 		// load data required for drawing progress screen

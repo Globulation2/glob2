@@ -2,6 +2,9 @@
 #include "SafeArea.h"
 #include <SDL_syswm.h>
 #include <UIKit/UIKit.h>
+#include <GameController/GameController.h>
+
+bool GAGCore::iosGameHasPointer() { return [GCMouse current] != nil; }
 
 GAGCore::SafeInsets GAGCore::iosGameSafeInsets(SDL_Window* window)
 {

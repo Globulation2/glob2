@@ -20,9 +20,11 @@ public:
     virtual void forget(const void* key) = 0;
     virtual void reset() = 0;
     virtual void present() = 0;
+    virtual void flush() = 0;
     virtual void logicalSize(int width, int height) = 0;
     virtual SDL_Surface* capture() = 0;
     virtual void outputSize(int& width, int& height) = 0;
 };
+std::unique_ptr<RenderBackend> makeSoftwareRenderBackend(SDL_Surface* surface);
 std::unique_ptr<RenderBackend> makeSDLRenderBackend(SDL_Window* window, int width, int height);
 }

@@ -7,6 +7,7 @@
 #include <FileManager.h>
 #include <SupportFunctions.h>
 #include <InterfacePresentation.h>
+#include <BrowserTextInput.h>
 #include <algorithm>
 #include <assert.h>
 #include <cstdlib>
@@ -180,7 +181,7 @@ namespace GAGCore
 	// interface out on 366x274, narrower than the 368px main menu panel.
 	void GraphicContext::applyWindowMinimumSize(void)
 	{
-        if (renderer && phonePresentationRequested()) { SDL_SetWindowMinimumSize(window,1,1); return; }
+        if (window && (compactWindowAllowed || (renderer && phonePresentationRequested()))) { SDL_SetWindowMinimumSize(window,1,1); return; }
 		if (!window) return;
 		#ifdef GLOB2_WEBGL2
 		return;
@@ -383,6 +384,7 @@ namespace GAGCore
 
 	void GraphicContext::freeOwnedSurface(void)
 	{
+        softwareRasterizer.reset();
 		if (ownsSurface && sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		sdlsurface = NULL;
@@ -428,8 +430,8 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-        if (renderer && responsiveViewport) {
-            renderer->outputSize(drawableW, drawableH);
+        if (responsiveViewport) {
+            if (renderer) renderer->outputSize(drawableW, drawableH);
             setResponsiveViewport(true, responsiveMinW, responsiveMinH);
             return;
         }
@@ -814,6 +816,7 @@ namespace GAGCore
 
 	void GraphicContext::nextFrame(void)
 	{
+        endBrowserTextFrame();
 		DrawableSurface::nextFrame();
 		if (sdlsurface)
 		{

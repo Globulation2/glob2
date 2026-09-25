@@ -338,7 +338,10 @@ namespace GAGCore
 		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
 		int windowW = 0, windowH = 0;
         int fixedLogicalW=0, fixedLogicalH=0;
-        bool responsiveViewport=false;
+        bool responsiveViewport=false, compactWindowAllowed=false;
+        bool uiTransformActive=false;
+        SDL_Rect uiSavedClip{}, uiBounds{};
+        float uiTransformScale=1, uiTransformX=0, uiTransformY=0;
         int responsiveMinW=0, responsiveMinH=0;
 		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
 		int drawableW = 0, drawableH = 0;
@@ -401,6 +404,11 @@ namespace GAGCore
 		virtual void swapBuffers();
 		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
 		std::unique_ptr<RenderBackend> renderer;
+        // Rasterizes transformed passes into the existing software framebuffer.
+        std::unique_ptr<RenderBackend> softwareRasterizer;
+        bool softwareTransform=false;
+        void beginSoftwareTransform();
+        void endSoftwareTransform();
 		std::string pendingScreenshot;
 		friend class DrawableSurface;
 		//! option flags
@@ -421,6 +429,11 @@ namespace GAGCore
         // Resize a software render target without replacing its window or assets.
         bool resizeViewport(int w, int h);
         bool setResponsiveViewport(bool enabled, int minimumWidth=0, int minimumHeight=0);
+        bool refreshPresentation();
+        void setCompactWindowAllowed(bool allowed) {
+            if (compactWindowAllowed==allowed) return;
+            compactWindowAllowed=allowed;applyWindowMinimumSize();
+        }
         bool isResponsiveViewport() const { return responsiveViewport; }
         bool hasPortableRenderer() const { return bool(renderer); }
         double logicalUnitsPerPoint() const;

@@ -75,6 +75,7 @@ namespace GAGCore
 	DrawableSurface::~DrawableSurface(void)
 	{
 		if (_gc && _gc->renderer) _gc->renderer->forget(this);
+        if (_gc && _gc->softwareRasterizer) _gc->softwareRasterizer->forget(this);
 		SDL_FreeSurface(sdlsurface);
 		freeGPUTexture();
 	}

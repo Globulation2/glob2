@@ -344,6 +344,7 @@ namespace GAGGUI
         // Called between frames before host interruption or a child transition.
         // Discard held/queued input without synthesizing release actions.
         virtual bool usesResponsiveViewport() const { return false; }
+        virtual bool supportsCompactViewport() const { return usesResponsiveViewport(); }
         virtual std::pair<int,int> minimumViewportSize() const { return {0,0}; }
         virtual void cancelExecutionInput() {}
 		virtual void drawExecution();
@@ -395,6 +396,7 @@ namespace GAGGUI
 		OverlayScreen(GAGCore::GraphicContext *parentCtx, unsigned w, unsigned h);
 		//! Destructor
 		virtual ~OverlayScreen();
+        GAGCore::GraphicContext* getParentContext() const { return parentContext; }
         void updateLayout() override;
         void viewportResized(int, int, int width, int height) override;
 	
