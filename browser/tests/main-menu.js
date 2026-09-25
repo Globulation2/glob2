@@ -115,8 +115,9 @@ exports.editTextField = async (page, value, password = false) => {
   const field = page.locator(password ? 'input[aria-label="Password"]' : 'input[aria-label="Game text field"]');
   await field.click();
   await expect(field).toBeFocused();
-  await field.press('Home');
-  await field.press('Shift+End');
+  // Use the platform's native Select All shortcut; Home/End caret behavior
+  // differs between macOS Firefox and the other browser/platform pairs.
+  await field.press('ControlOrMeta+A');
   await field.press('Delete');
   await expect(field).toHaveValue('');
   await field.pressSequentially(value);
