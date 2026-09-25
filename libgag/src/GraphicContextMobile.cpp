@@ -6,9 +6,7 @@
 #include <stdexcept>
 #include <cassert>
 #include <HostViewport.h>
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#endif
+#include <ApplicationHost.h>
 namespace GAGCore {
     double GraphicContext::logicalUnitsPerPoint() const
     {
@@ -46,21 +44,7 @@ namespace GAGCore {
             metrics.width/=density;metrics.height/=density;
         }
 #endif
-#ifdef __EMSCRIPTEN__
-        double values[10]{};
-        EM_ASM({
-            const v=Module.presentationMetrics;
-            if (!v) return;
-            const values=Array.of(v.width,v.height,v.safe.left,v.safe.top,v.safe.right,v.safe.bottom,
-                v.keyboardInset,+v.touch,+v.pointer,+v.hover);
-            for (let i=0;i<values.length;++i) HEAPF64[($0>>3)+i]=values[i];
-        },values);
-        if (values[0]>0 && values[1]>0) {
-            metrics.width=values[0];metrics.height=values[1];
-            metrics.safe={values[2],values[3],values[4],values[5]};metrics.keyboardInset=values[6];
-            input.touch=values[7];input.pointer=values[8];input.hover=values[9];
-        }
-#endif
+        ApplicationHost::presentationMetrics(metrics,input);
         updatePresentation(metrics,input);
         return old.layout!=presentationState.layout || old.touch!=presentationState.touch ||
             old.usable.x!=presentationState.usable.x || old.usable.y!=presentationState.usable.y ||

@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <BrowserTextInput.h>
+#include <InterfacePresentation.h>
+#include <map>
+#include <set>
+#include <cstdlib>
 #include <GraphicContext.h>
 #include <emscripten.h>
 #include <stdexcept>
@@ -85,6 +90,24 @@ bool takeVisibilityChange(bool& hidden)
     if (state < 0) return false;
     hidden = state != 0;
     return true;
+}
+bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
+{
+    double values[10]{};
+    EM_ASM({
+        const v=Module.presentationMetrics;
+        if (!v) return;
+        const values=Array.of(v.width,v.height,v.safe.left,v.safe.top,v.safe.right,v.safe.bottom,
+            v.keyboardInset,+v.touch,+v.pointer,+v.hover);
+        for (let i=0;i<values.length;++i) HEAPF64[($0>>3)+i]=values[i];
+    },values);
+    if (values[0]>0 && values[1]>0) {
+        metrics.width=values[0];metrics.height=values[1];
+        metrics.safe={values[2],values[3],values[4],values[5]};metrics.keyboardInset=values[6];
+        input.touch=values[7];input.pointer=values[8];input.hover=values[9];
+        return true;
+    }
+    return false;
 }
 bool takeViewportSize(int& width, int& height)
 {
@@ -213,4 +236,44 @@ void overviewDrawn(bool drawn)
     published = drawn;
     EM_ASM({ Module['glob2Torus'] = Boolean($0); }, drawn);
 }
+}
+
+namespace GAGCore {
+namespace {
+std::map<const void*,BrowserTextChange> browserTextCallbacks;
+std::set<const void*> browserTextVisible;
+}
+void forgetBrowserTextInput(const void* owner) {
+    browserTextCallbacks.erase(owner);browserTextVisible.erase(owner);
+    EM_ASM({ Module.textBridge?.remove($0); },owner);
+}
+void beginBrowserTextFrame() {
+    // DOM editing is synchronized before any dialog action can read its model.
+    auto callbacks=browserTextCallbacks;
+    for (const auto& [owner,changed]:callbacks) {
+        size_t cursor=0;int action=0;
+        char* value=reinterpret_cast<char*>(EM_ASM_PTR({
+            const change=Module.textBridge?.take($0);
+            if (!change) return 0;
+            HEAPU32[$1>>2]=lengthBytesUTF8(change.value.slice(0,change.cursor));
+            HEAP32[$2>>2]=change.action || 0;
+            const size=lengthBytesUTF8(change.value)+1;
+            const pointer=_malloc(size);stringToUTF8(change.value,pointer,size);return pointer;
+        },owner,&cursor,&action));
+        if (value) { std::string text(value);std::free(value);if(browserTextCallbacks.count(owner)) changed(text,cursor,action); }
+    }
+}
+void endBrowserTextFrame() {
+    std::erase_if(browserTextCallbacks,[](const auto& item){return !browserTextVisible.count(item.first);});
+    EM_ASM({ Module.textBridge?.end();Module.textBridge?.begin(); });
+    browserTextVisible.clear();
+}
+void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
+    bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip) {
+    browserTextVisible.insert(owner);browserTextCallbacks[owner]=std::move(changed);
+    const SDL_Rect visible=clip ? *clip : SDL_Rect{0,0,width,height};
+    EM_ASM({ Module.textBridge?.field($0,{x:$1,y:$2,w:$3,h:$4},$5,$6,UTF8ToString($7),!!$8,$9,{x:$10,y:$11,w:$12,h:$13}); },
+        owner,rect.x,rect.y,rect.w,rect.h,width,height,value.c_str(),password,maximum,visible.x,visible.y,visible.w,visible.h);
+}
+bool hasBrowserTextInput(const void* owner) { return browserTextCallbacks.count(owner)>0; }
 }

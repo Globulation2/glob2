@@ -28,7 +28,7 @@ namespace GAGGUI
                 text=value;cursPos=std::min(cursor,text.size());activated=true;recomputeTextInfos();
                 parent->onAction(this,TEXT_MODIFIED,0,0);
 #ifdef __EMSCRIPTEN__
-                if (action && browserTextCallbacks.count(this))
+                if (action && hasBrowserTextInput(this))
                     parent->onAction(this,action==1 ? TEXT_VALIDATED : TEXT_CANCELED,0,0);
 #endif
             },clip);

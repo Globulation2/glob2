@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <BrowserTextInput.h>
 #ifndef YOG_SERVER_ONLY
 #include <GraphicContext.h>
 #endif
@@ -44,6 +45,7 @@ bool takeVisibilityChange(bool &)
 {
 	return false;
 }
+bool presentationMetrics(ViewportMetrics&,InputCapabilities&) { return false; }
 bool takeViewportSize(int &, int &)
 {
 	return false;
@@ -98,3 +100,11 @@ void overviewDrawn(bool) {}
 void roomReady(bool) {}
 void exited(int) {}
 } // namespace GAGCore::ApplicationHost
+
+namespace GAGCore {
+void forgetBrowserTextInput(const void*) {}
+bool hasBrowserTextInput(const void*) { return false; }
+void beginBrowserTextFrame() {}
+void endBrowserTextFrame() {}
+void browserTextInput(const void*,SDL_Rect,int,int,const std::string&,bool,size_t,BrowserTextChange,const SDL_Rect*) {}
+}
