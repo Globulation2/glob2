@@ -17,10 +17,10 @@ test_incomplete_device_requests_fail_before_sdk_or_build (test_mobile.IOSCommand
 test_simulator_install_uses_task_device_set (test_mobile.IOSCommandTests.test_simulator_install_uses_task_device_set) ... ok
 test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps (test_mobile.IOSSmokeFailureTests.test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps) ... simctl list devices --json
 simctl spawn owned-test launchctl list
-simctl launch --stdout=/Users/bradley/glob2/build/test-profiles/tmp7w78ilx6/diagnostics/startup-stdout.txt --stderr=/Users/bradley/glob2/build/test-profiles/tmp7w78ilx6/diagnostics/startup-stderr.txt owned-test org.globulation.glob2
+simctl launch --stdout=/Users/bradley/glob2/build/test-profiles/tmprvtuinh_/diagnostics/startup-stdout.txt --stderr=/Users/bradley/glob2/build/test-profiles/tmprvtuinh_/diagnostics/startup-stderr.txt owned-test org.globulation.glob2
 simctl spawn owned-test launchctl list
 simctl spawn owned-test log show --last 3m --style compact --predicate process == "Glob2" OR eventMessage CONTAINS "org.globulation.glob2"
-simctl io owned-test screenshot /Users/bradley/glob2/build/test-profiles/tmp7w78ilx6/diagnostics/failure.png
+simctl io owned-test screenshot /Users/bradley/glob2/build/test-profiles/tmprvtuinh_/diagnostics/failure.png
 ok
 test_checks_every_archive_member (test_mobile.MobileArtifactTests.test_checks_every_archive_member) ... ok
 test_packaged_shared_libraries_require_aligned_load_segments (test_mobile.MobileArtifactTests.test_packaged_shared_libraries_require_aligned_load_segments) ... ok
@@ -36,6 +36,6 @@ test_shared_code_does_not_embed_browser_api_calls (test_platform_boundary.Platfo
 test_shared_code_uses_target_owned_configuration (test_platform_boundary.PlatformBoundaryTests.test_shared_code_uses_target_owned_configuration) ... ok
 
 ----------------------------------------------------------------------
-Ran 30 tests in 1.469s
+Ran 30 tests in 0.372s
 
 OK

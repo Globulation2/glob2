@@ -25,6 +25,12 @@ extend the earlier [responsive evidence](../responsive/README.md).
   but failed macOS Firefox because those native caret commands differ; the platform's
   Select All shortcut passes the Firefox recheck.
 
+The [original baseline CI run](https://github.com/Globulation2/glob2/actions/runs/36078336281)
+for `458dc357968118d30ee8030b1dcc3227dd66c022` already failed the identical picker
+zoom assertion on both Linux jobs. Its revision/job metadata and Ubuntu 22.04
+[failure excerpt](logs/baseline-linux-failure-excerpt.log) are attached. This establishes
+that the picker test mismatch predates the responsive commits.
+
 No save/map fixtures, golden outputs, simulation rules, or format/version gates changed.
 The only production change in this follow-up is the first-draw camera fallback.
 
@@ -124,3 +130,17 @@ npx playwright test tests/determinism.spec.js
 [Browser screenshots](browser-screenshots.zip) include wide desktop and responsive
 views from these runs. Cross-platform CI and physical-device qualification are
 separate from these local results; the PR remains a draft.
+
+## Platform CI confirmation
+
+Both **Ubuntu 22.04 and Ubuntu 24.04 desktop jobs pass** on revision `7b6f7e565`,
+including the formerly failing setup harness, session/camera tests, full settings
+matrix and GL/software map rendering under Xvfb. Both Linux variants and map-generator
+jobs also pass, as do all three Android builds. Windows and browser CI were still
+running when this evidence was published; the PR remains draft.
+
+[Job/step results](ci-jobs.json) and [check snapshot](ci-checks.json) link to the
+[CI run](https://github.com/Globulation2/glob2/actions/runs/36182887703).
+The native checksum artifacts downloaded from both successful Ubuntu jobs match
+macOS and all three browser traces byte-for-byte. Both Linux traces are included
+in the simulation archive and checksum manifest above.

@@ -18,5 +18,17 @@
       "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
       "matches_native": true
     }
+  },
+  "linux_ubuntu_24_04": {
+    "bytes": 3601608,
+    "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+    "matches_native": true,
+    "workflow_run": 36182887703
+  },
+  "linux_ubuntu_22_04": {
+    "bytes": 3601608,
+    "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+    "matches_native": true,
+    "workflow_run": 36182887703
   }
 }
