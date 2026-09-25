@@ -1,0 +1,14 @@
+PASS: roundTrip: loadWinningConditions returns true
+PASS: roundTrip: list size preserved
+PASS: roundTrip: no null entries
+PASS: roundTrip: types preserved in order
+PASS: suddenDeathRoundTrip: loadWinningConditions returns true
+PASS: suddenDeathRoundTrip: type preserved
+PASS: suddenDeathRoundTrip: endStepTick preserved
+PASS: unknownTag: loadWinningConditions returns false
+PASS: unknownTag: no null entries
+PASS: unknownTag: entries before the bad tag survive
+PASS: truncated: loadWinningConditions returns false
+PASS: truncated: no null entries
+PASS: truncated: nothing decoded
+ALL PASS

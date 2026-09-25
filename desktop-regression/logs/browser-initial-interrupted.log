@@ -1,0 +1,461 @@
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:04] "GET / HTTP/1.1" 200 -
+
+Running 132 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:05] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:05] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:05] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:05] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:08] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:08] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:08] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    1 [chromium] › tests/campaign-editor-storage.spec.js:15:1 › campaign authoring waits for durable persistence before closing (4.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:09] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:09] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:09] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:09] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:11] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:11] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:13] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:13] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:13] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    2 [chromium] › tests/campaign-editor-storage.spec.js:36:1 › campaign authoring retains the editor on quota failure and can retry (5.0s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:14] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:14] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:14] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:14] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:18] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:18] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:20] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:20] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:20] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    3 [chromium] › tests/editor-storage.spec.js:10:53 › editor save before quit survives quota with export and retry (7.7s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:22] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:22] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:22] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:22] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:26] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:26] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:28] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:28] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:28] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    4 [chromium] › tests/editor-storage.spec.js:10:53 › editor save before quit survives aborted transaction with export and retry (7.9s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:29] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:29] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:29] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:29] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:35] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:35] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:35] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:46] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:46] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:46] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    5 [chromium] › tests/import.spec.js:45:1 › imports an exported save, preserves duplicate names, rejects corruption and reloads the imported game (22.7s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:52] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:52] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:52] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:45:52] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    6 [chromium] › tests/import.spec.js:69:1 › imports a custom map and starts it through the normal setup screen (9.5s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:02] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:02] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:02] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:02] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    7 [chromium] › tests/import.spec.js:91:1 › imports a complete replay and rejects a truncated command stream (8.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:10] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:10] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:10] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:10] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:18] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:18] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:18] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:26] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:26] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:29] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:29] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:29] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    8 [chromium] › tests/import.spec.js:106:1 › failed import persistence offers export and retry without overwriting a save (21.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:31] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:31] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:31] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:31] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:51] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:51] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:51] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:51] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:51] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:51] "GET /index.wasm HTTP/1.1" 200 -
+  ✓    9 [chromium] › tests/replay-save.spec.js:20:1 › end-game replay save remains scheduled during resize and durable persistence (24.6s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:55] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:55] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:55] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:46:55] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:02] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:02] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:02] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   10 [chromium] › tests/replay-save.spec.js:56:1 › end-game replay save offers export and retry after quota failure (8.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:03] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:03] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:03] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:03] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   11 [chromium] › tests/single-player.spec.js:45:1 › starts with a full-page game and restored local storage (1.9s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:05] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:05] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:05] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:05] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   12 [chromium] › tests/single-player.spec.js:52:1 › application host returns from settings and credits and shuts down cleanly (3.3s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:09] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:09] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:09] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:09] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   13 [chromium] › tests/single-player.spec.js:68:1 › campaign selector returns to its suspended parent and can reopen (3.0s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:12] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:12] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:12] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:12] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   14 [chromium] › tests/single-player.spec.js:81:1 › tutorial sessions quit through the end screen and can restart (7.8s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:20] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:20] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:20] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:20] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   15 [chromium] › tests/single-player.spec.js:97:1 › game rules and AI descriptions return to setup, and a finished game returns there too (8.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:28] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:28] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:28] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:28] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:35] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:35] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:35] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   16 [chromium] › tests/single-player.spec.js:129:1 › custom match pauses, persists and resumes after reload (12.5s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:40] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:40] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:40] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:40] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   17 [chromium] › tests/single-player.spec.js:176:1 › editor setup and campaign entry dialogs return to their retained parents (4.8s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:45] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:45] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:45] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:45] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   18 [chromium] › tests/single-player.spec.js:206:1 › map editor frames resume after cancelling quit and can discard a new map (4.6s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:50] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:50] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:50] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:50] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:54] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:54] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:54] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   19 [chromium] › tests/single-player.spec.js:229:1 › editor save cancellation keeps edits open and completed fertility saves the map (6.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:56] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:56] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:56] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:47:56] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   20 [chromium] › tests/single-player.spec.js:261:1 › editor map loading can be cancelled and restarted (4.4s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:00] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:00] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:00] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:00] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   21 [chromium] › tests/single-player.spec.js:284:1 › custom and tutorial startup can be cancelled and retried (7.3s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:07] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:07] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:07] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:07] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   22 [chromium] › tests/single-player.spec.js:308:1 › a generated custom map loads after its setup screen closes (6.5s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:14] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:14] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:14] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:14] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   23 [chromium] › tests/single-player.spec.js:325:1 › the custom game preview draws the selected map (4.5s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:18] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:18] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:18] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:18] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   24 [chromium] › tests/single-player.spec.js:338:1 › cancelling an editor replacement preserves edits and a completed load replaces the map (5.8s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:24] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:24] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:24] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:24] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   25 [chromium] › tests/single-player.spec.js:372:1 › map generation can be cancelled before retrying (swamp) (5.4s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:30] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:30] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:30] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:30] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   26 [chromium] › tests/single-player.spec.js:372:1 › map generation can be cancelled before retrying (concrete islands) (4.8s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:34] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:34] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:34] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:34] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:36] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:36] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   27 [chromium] › tests/single-player.spec.js:399:1 › landscape picker and start-quality details return to the retained custom setup (9.3s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:44] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:44] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:44] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:44] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:53] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:53] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:54] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:54] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:54] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   28 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (11.7s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:55] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:55] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:55] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:48:55] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:04] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:04] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:06] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:06] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:06] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   29 [chromium] › tests/storage.spec.js:17:40 › quota failure retains the previous durable save and can retry (11.2s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:07] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:07] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:07] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:07] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:09] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:09] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:09] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   30 [chromium] › tests/storage.spec.js:75:1 › restore failure is explained before entering the game (3.3s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:11] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:11] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:11] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:11] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   31 [chromium] › tests/multiplayer.spec.js:58:1 › browser YOG login exchanges the native protocol through the real gateway (2.4s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:13] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:13] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:13] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:13] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   32 [chromium] › tests/multiplayer.spec.js:92:1 › registered browser player enters and leaves the native YOG lobby (2.8s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:16] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:16] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:16] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:16] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   33 [chromium] › tests/multiplayer.spec.js:120:1 › YOG registration remains scheduled through resize and cancellation (3.3s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:19] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:19] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:19] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:19] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   34 [chromium] › tests/multiplayer.spec.js:137:1 › YOG map selection and upload screens resize and return to their owning tabs (4.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:23] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:23] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:23] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:23] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   35 [chromium] › tests/multiplayer.spec.js:154:1 › YOG match settings resize and return to their room (4.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:27] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:27] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:27] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:27] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   36 [chromium] › tests/multiplayer.spec.js:172:1 › YOG disconnect message remains scheduled and returns cleanly after resize (2.9s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:30] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:30] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:30] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:30] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:32] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:32] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:32] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:32] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   37 [chromium] › tests/multiplayer.spec.js:225:1 › two browser players create, join and start a YOG match (no AI) (13.9s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:44] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:44] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:44] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:44] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:46] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:46] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:46] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:46] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   38 [chromium] › tests/multiplayer.spec.js:225:1 › two browser players create, join and start a YOG match (Cortex) (14.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:58] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:58] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:58] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:49:58] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   39 [chromium] › tests/multiplayer.spec.js:287:1 › browser and native players complete matching simulation checkpoints (TCP) (14.6s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:13] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:13] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:13] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:13] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   40 [chromium] › tests/multiplayer.spec.js:287:1 › browser and native players complete matching simulation checkpoints (WSS) (14.6s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:28] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:28] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:28] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:28] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   41 [chromium] › tests/multiplayer.spec.js:366:1 › YOG admission enforces greeting, exact version, authentication and retry order (2.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:30] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:30] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:30] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:30] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   42 [chromium] › tests/multiplayer.spec.js:437:1 › browser reports incompatible release before transmitting credentials (client version) (2.5s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:32] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:32] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:32] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:32] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   43 [chromium] › tests/multiplayer.spec.js:437:1 › browser reports incompatible release before transmitting credentials (legacy server) (2.7s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:35] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:35] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:35] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:35] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   44 [chromium] › tests/multiplayer.spec.js:437:1 › browser reports incompatible release before transmitting credentials (server version) (2.5s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:39] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:39] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:39] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:50:39] "GET /index.wasm HTTP/1.1" 200 -
+  ✘   45 [firefox] › tests/campaign-editor-storage.spec.js:15:1 › campaign authoring waits for durable persistence before closing (33.3s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:13] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:13] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:13] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:13] "GET /index.wasm HTTP/1.1" 200 -
+  ✘   46 [firefox] › tests/campaign-editor-storage.spec.js:36:1 › campaign authoring retains the editor on quota failure and can retry (33.4s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:48] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:48] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:48] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:48] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:56] "GET /?renderer=software HTTP/1.1" 304 -
+  ✓   47 [firefox] › tests/editor-storage.spec.js:10:53 › editor save before quit survives quota with export and retry (9.5s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:57] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:57] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:57] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:51:57] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:52:05] "GET /?renderer=software HTTP/1.1" 304 -
+  ✓   48 [firefox] › tests/editor-storage.spec.js:10:53 › editor save before quit survives aborted transaction with export and retry (9.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:52:06] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:52:07] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:52:07] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:52:07] "GET /index.wasm HTTP/1.1" 200 -
+  ✘   49 [firefox] › tests/import.spec.js:45:1 › imports an exported save, preserves duplicate names, rejects corruption and reloads the imported game (36.3s)
+
+
+  1) [firefox] › tests/campaign-editor-storage.spec.js:15:1 › campaign authoring waits for durable persistence before closing 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  locator('input[aria-label="Game text field"]')
+    Expected: ""
+    Received: "No Name"
+    Timeout:  30000ms
+
+    Call log:
+      - Expect "toHaveValue" locator('input[aria-label="Game text field"]') with timeout 30000ms
+      - waiting for locator('input[aria-label="Game text field"]')
+        63 × locator resolved to <input type="text" autocomplete="off" spellcheck="false" aria-label="Game text field"/>
+           - unexpected value "No Name"
+
+
+       at main-menu.js:121
+
+      119 |   await field.press('Shift+End');
+      120 |   await field.press('Delete');
+    > 121 |   await expect(field).toHaveValue('');
+          |                       ^
+      122 |   await field.pressSequentially(value);
+      123 |   await expect(field).toHaveValue(value);
+      124 |   if (password) await expect(field).toHaveAttribute('type', 'password');
+        at exports.editTextField (/Users/bradley/glob2/browser/tests/main-menu.js:121:23)
+        at edit (/Users/bradley/glob2/browser/tests/campaign-editor-storage.spec.js:12:3)
+        at /Users/bradley/glob2/browser/tests/campaign-editor-storage.spec.js:16:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/desktop-regression/browser-results/campaign-editor-storage-ca-b6bfb--persistence-before-closing-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/desktop-regression/browser-results/campaign-editor-storage-ca-b6bfb--persistence-before-closing-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/desktop-regression/browser-results/campaign-editor-storage-ca-b6bfb--persistence-before-closing-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/desktop-regression/browser-results/campaign-editor-storage-ca-b6bfb--persistence-before-closing-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [firefox] › tests/campaign-editor-storage.spec.js:36:1 › campaign authoring retains the editor on quota failure and can retry 
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  locator('input[aria-label="Game text field"]')
+    Expected: ""
+    Received: "No Name"
+    Timeout:  30000ms
+
+    Call log:
+      - Expect "toHaveValue" locator('input[aria-label="Game text field"]') with timeout 30000ms
+      - waiting for locator('input[aria-label="Game text field"]')
+        63 × locator resolved to <input type="text" autocomplete="off" spellcheck="false" aria-label="Game text field"/>
+           - unexpected value "No Name"
+
+
+       at main-menu.js:121
+
+      119 |   await field.press('Shift+End');
+      120 |   await field.press('Delete');
+    > 121 |   await expect(field).toHaveValue('');
+          |                       ^
+      122 |   await field.pressSequentially(value);
+      123 |   await expect(field).toHaveValue(value);
+      124 |   if (password) await expect(field).toHaveAttribute('type', 'password');
+        at exports.editTextField (/Users/bradley/glob2/browser/tests/main-menu.js:121:23)
+        at edit (/Users/bradley/glob2/browser/tests/campaign-editor-storage.spec.js:12:3)
+        at /Users/bradley/glob2/browser/tests/campaign-editor-storage.spec.js:37:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/desktop-regression/browser-results/campaign-editor-storage-ca-ce90a-quota-failure-and-can-retry-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/desktop-regression/browser-results/campaign-editor-storage-ca-ce90a-quota-failure-and-can-retry-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/desktop-regression/browser-results/campaign-editor-storage-ca-ce90a-quota-failure-and-can-retry-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/desktop-regression/browser-results/campaign-editor-storage-ca-ce90a-quota-failure-and-can-retry-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [firefox] › tests/import.spec.js:45:1 › imports an exported save, preserves duplicate names, rejects corruption and reloads the imported game 
+
+    Test was interrupted.
+
+    Error: expect(locator).toHaveValue(expected) failed
+
+    Locator:  locator('input[aria-label="Game text field"]')
+    Expected: ""
+    Received: "Random map"
+
+    Call log:
+      - Expect "toHaveValue" locator('input[aria-label="Game text field"]') with timeout 30000ms
+      - waiting for locator('input[aria-label="Game text field"]')
+        62 × locator resolved to <input type="text" autocomplete="off" spellcheck="false" aria-label="Game text field"/>
+           - unexpected value "Random map"
+      - Test ended.
+
+
+       at main-menu.js:121
+
+      119 |   // differs between macOS Firefox and the other browser/platform pairs.
+      120 |   await field.press('ControlOrMeta+A');
+    > 121 |   await field.press('Delete');
+          |                       ^
+      122 |   await expect(field).toHaveValue('');
+      123 |   await field.pressSequentially(value);
+      124 |   await expect(field).toHaveValue(value);
+        at exports.editTextField (/Users/bradley/glob2/browser/tests/main-menu.js:121:23)
+        at exportedSave (/Users/bradley/glob2/browser/tests/import.spec.js:32:3)
+        at /Users/bradley/glob2/browser/tests/import.spec.js:47:15
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/desktop-regression/browser-results/import-imports-an-exported-93d1e-d-reloads-the-imported-game-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/desktop-regression/browser-results/import-imports-an-exported-93d1e-d-reloads-the-imported-game-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/desktop-regression/browser-results/import-imports-an-exported-93d1e-d-reloads-the-imported-game-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/desktop-regression/browser-results/import-imports-an-exported-93d1e-d-reloads-the-imported-game-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [firefox] › tests/campaign-editor-storage.spec.js:15:1 › campaign authoring waits for durable persistence before closing 
+    [firefox] › tests/campaign-editor-storage.spec.js:36:1 › campaign authoring retains the editor on quota failure and can retry 
+  1 interrupted
+    [firefox] › tests/import.spec.js:45:1 › imports an exported save, preserves duplicate names, rejects corruption and reloads the imported game 
+  83 did not run
+  46 passed (7.7m)

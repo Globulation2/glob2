@@ -1,0 +1,26 @@
+OrderAlterateAreaTest — BH-195 regression
+  PASS  TC1 — well-formed 10x10 brush accepted
+  PASS  TC1 — sideX round-trips
+  PASS  TC1 — sideY round-trips
+OrderAlterArea::setData(dataLength=13) failure
+data[0]=0
+data[1]=0
+data[2]=0
+data[3]=0
+data[4]=0
+data[5]=0
+data[6]=0
+data[7]=0
+data[8]=0
+data[9]=0
+data[10]=0
+data[11]=0
+data[12]=0
+  PASS  TC2 — dataLength<14 rejected
+  PASS  TC3 — negative side rejected
+  PASS  TC4 — side > ORDER_AREA_BRUSH_MAX_SIDE rejected
+  PASS  TC5 — overflow-attack header rejected without UB
+  PASS  TC6 — payload-too-short rejected (was OOB read)
+  PASS  TC7 — payload-too-long rejected
+
+9 passed, 0 failed

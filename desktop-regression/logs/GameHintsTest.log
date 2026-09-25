@@ -1,0 +1,9 @@
+PASS: addNewHint clamps values above 255 to MaxScriptNumber
+PASS: addNewHint clamps negative values to 0
+PASS: setScriptNumber clamps values above 255 to MaxScriptNumber
+PASS: setScriptNumber clamps negative values to 0
+PASS: setScriptNumber stores 255 unchanged
+PASS: setScriptNumber stores in-domain values unchanged
+PASS: round-trip preserves the hint count
+PASS: round-trip preserves every field, including clamped script numbers
+all tests passed

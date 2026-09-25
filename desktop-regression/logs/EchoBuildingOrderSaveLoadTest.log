@@ -1,0 +1,13 @@
+PASS: roundTrip: id preserved
+PASS: roundTrip: building_type preserved
+PASS: roundTrip: number_of_workers preserved
+PASS: roundTrip: constraint list decodes
+PASS: roundTrip: condition list decodes
+PASS: unregistered: id round-trips as -1 through Uint32
+PASS: unregistered: building_type preserved
+PASS: pre96: id left at the -1 sentinel for Echo::load to replace
+PASS: pre96: building_type still aligned
+PASS: pre96: number_of_workers still aligned
+PASS: pre96: constraint list still aligned
+PASS: pre96: condition list still aligned
+ALL PASS

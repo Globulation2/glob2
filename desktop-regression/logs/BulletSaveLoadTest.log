@@ -1,0 +1,12 @@
+PASS: roundTrip: position preserved
+PASS: roundTrip: speed preserved
+PASS: roundTrip: ticksLeft preserved
+PASS: roundTrip: ticksInitial preserved
+PASS: roundTrip: shootDamage preserved
+PASS: roundTrip: target preserved
+PASS: roundTrip: reveal area preserved
+PASS: pre85: ticksInitial defaults to ticksLeft
+PASS: pre85: ticksLeft read
+PASS: pre85: shootDamage still aligned
+PASS: pre85: reveal area still aligned
+ALL PASS

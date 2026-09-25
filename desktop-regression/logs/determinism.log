@@ -1,0 +1,8 @@
+
+Running 3 tests using 1 worker
+
+  ✓  1 [chromium] › tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (25.1s)
+  ✓  2 [firefox] › tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (30.4s)
+  ✓  3 [webkit] › tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (22.6s)
+
+  3 passed (1.4m)

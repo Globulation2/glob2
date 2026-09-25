@@ -1,0 +1,7 @@
+PASS: roundTrip: every team array allocated
+PASS: roundTrip: every team array byte-identical
+PASS: roundTrip: teams past the count stay unallocated
+PASS: roundTrip: stream positioned after the section
+PASS: discard: no team array allocated
+PASS: discard: stream positioned after the section
+ALL PASS

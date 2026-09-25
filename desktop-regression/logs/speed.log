@@ -1,0 +1,58 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS: all presets, bounds, legacy settings, persistence
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+Camera distances: 12/12
+PASS: supplied input, held-key scrolling and focus cleanup
+PASS: multiplayer controls, replay eligibility, camera cadence 12/12 cells
+PASS: main menu presets, language refresh, categories, automatic saving, reopening, in-game slider, shortcuts
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+Engine speed=0 elapsed=2001ms
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+Engine speed=10 elapsed=21ms
+PASS: live engine runs faster at Maximum
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+Pause key=112 elapsed=334ms
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+Pause key=1073741893 elapsed=334ms
+PASS: pause and hard pause accept resume input at Maximum
+Replay length: 50
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 56d11274
+automaticEndingGame ended: 25 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=25 winner_team=-1 seed=1241274047 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+Replay length: 50
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 56d11274
+automaticEndingGame ended: 25 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=25 winner_team=-1 seed=1241274047 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+Replay length: 50
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 56d11274
+automaticEndingGame ended: 25 ticks, 0 minutes, 1 seconds
+GLOB2_GAME_END ticks=25 winner_team=-1 seed=1241274047 map="replayHeader" orders=0 players=team0:None,team1:None,team2:None,team3:None
+PASS: replay playback at 1x, Maximum and fast-forward

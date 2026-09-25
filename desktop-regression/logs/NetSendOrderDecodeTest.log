@@ -1,0 +1,11 @@
+NetSendOrderDecodeTest — BH-207 regression
+  PASS  TC1 — no std::bad_alloc escapes decodeData (pre-fix would on a 64-bit host without overcommit)
+  PASS  TC1 — no unexpected exception type escapes
+  PASS  TC1 — ios_base::failure thrown on oversized size
+  PASS  TC1 — rejection message cites the size cap (proves bound-check fired, not the downstream 'bad format' throw)
+  PASS  TC2 — valid envelope decoded without exception
+  PASS  TC2 — decoded order is NullOrder
+  PASS  TC2 — sender round-trips
+  PASS  TC2 — checksum round-trips
+
+8 passed, 0 failed

@@ -1,0 +1,10 @@
+PASS: human color 0 joins ally team 1
+PASS: AI colors 1 and 2 join ally team 2
+PASS: unassigned teams keep the free-for-all default
+PASS: AI sharing the human's color stays on the human's ally team
+PASS: AI on color 0 is an enemy when the human is elsewhere
+PASS: unassigned teams keep the free-for-all default
+PASS: no human -> every team keeps its singleton ally group
+PASS: new layout applied over a stale one
+PASS: stale ally numbers reset to the free-for-all default
+All GameHeaderDefaultAlliancesTest checks passed

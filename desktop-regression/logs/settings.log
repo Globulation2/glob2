@@ -1,0 +1,54 @@
+640x480 gl: exit 0
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-61e5320f8dc94a65a1d540755c4d3558/preferences.txt: File replacement failed: unspecified iostream_category error
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-61e5320f8dc94a65a1d540755c4d3558/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+800x600 gl: exit 0
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-b8ebdae95ec34d5599ee1db716f2b4f8/preferences.txt: File replacement failed: unspecified iostream_category error
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-b8ebdae95ec34d5599ee1db716f2b4f8/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+1000x700 gl: exit 0
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-5362807f15714590a7f904c97ca56cce/preferences.txt: File replacement failed: unspecified iostream_category error
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-5362807f15714590a7f904c97ca56cce/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+1280x900 gl: exit 0
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-c4e6e43a8d2d4d78addfd6edb7518393/preferences.txt: File replacement failed: unspecified iostream_category error
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-c4e6e43a8d2d4d78addfd6edb7518393/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+1000x700 software: exit 0
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-dc293b1e01f948239838a6faf96180c4/preferences.txt: File replacement failed: unspecified iostream_category error
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-dc293b1e01f948239838a6faf96180c4/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+640x480 gl: exit 0
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-6d7c9cc0e1a542cebf42cd450e6baa0e/preferences.txt: File replacement failed: unspecified iostream_category error
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-6d7c9cc0e1a542cebf42cd450e6baa0e/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization

@@ -1,0 +1,8 @@
+
+Running 3 tests using 1 worker
+
+  ✓  1 [chromium] › tests/viewport.spec.js:94:1 › interface scale survives resizing and keeps settings controls clickable (5.0s)
+  ✓  2 [firefox] › tests/viewport.spec.js:94:1 › interface scale survives resizing and keeps settings controls clickable (15.8s)
+  ✓  3 [webkit] › tests/viewport.spec.js:94:1 › interface scale survives resizing and keeps settings controls clickable (5.2s)
+
+  3 passed (31.5s)

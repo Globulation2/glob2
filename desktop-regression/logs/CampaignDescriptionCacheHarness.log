@@ -1,0 +1,6 @@
+# CampaignDescriptionCacheHarness golden output
+valid    -> "first description"
+missing  -> ""
+cached   -> "first description"
+fresh    -> "second description"
+result: 0 failure(s)

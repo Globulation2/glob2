@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+Rendering fixture requires an unscaled 1800x1100 drawable; got 2940x1620. Use a sufficiently large desktop or Xvfb.

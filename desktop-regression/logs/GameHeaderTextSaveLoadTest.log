@@ -1,0 +1,32 @@
+PASS: full: load succeeds
+PASS: full: numberOfPlayers preserved
+PASS: full: gameLatency preserved
+PASS: full: orderRate preserved
+PASS: full: seed preserved
+PASS: full: mapDiscovered preserved
+PASS: full: allyTeamsFixed preserved
+PASS: full: resourceGrowthDisabled preserved
+PASS: full: resourceScarcityLevel preserved
+PASS: full: instantConstruction preserved
+PASS: full: stockpileStartLevel preserved
+PASS: full: hungerDisabled preserved
+PASS: full: unitUpgradesDisabled preserved
+PASS: full: glassCannonLevel preserved
+PASS: full: unitsFearless preserved
+PASS: full: permadeathDisabled preserved
+PASS: full: peacefulMode preserved
+PASS: full: buildingHpLevel preserved
+PASS: full: players preserved
+PASS: full: winning-condition count preserved
+PASS: playerInfo: load succeeds
+PASS: playerInfo: numberOfPlayers preserved
+PASS: playerInfo: players preserved
+PASS: binary full/partial resolved player configuration
+PASS: version 100 full/partial header loads without reading extension bytes
+PASS: version 101 header loads without rule bytes, rules off
+PASS: binary full/partial resolved player configuration
+PASS: version 100 full/partial header loads without reading extension bytes
+PASS: binary full/partial resolved player configuration
+PASS: version 100 full/partial header loads without reading extension bytes
+PASS: version 101 header loads without rule bytes, rules off
+ALL PASS

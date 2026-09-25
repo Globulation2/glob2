@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS responsive menu: portrait layout, actual touch dispatch, duplicate suppression, scrolling, cancellation, legacy restoration

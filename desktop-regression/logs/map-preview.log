@@ -1,0 +1,24 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS rectangular placement, positive/negative multi-period drags and inverse drags
+Map thumbnail decode: Incomplete binary field: lastW: unspecified iostream_category error
+Map thumbnail decode: Incomplete binary field: lastH: unspecified iostream_category error
+Map thumbnail decode: Incomplete binary field: compressed: unspecified iostream_category error
+Map thumbnail decode: Incomplete binary field: compressed: unspecified iostream_category error
+Map thumbnail decode: Incomplete binary field: compressed: unspecified iostream_category error
+Map thumbnail decode: Invalid map preview pixels
+Map thumbnail decode: Map preview length
+Map thumbnail decode: Invalid map preview pixels
+Map thumbnail decode: Invalid map preview pixels
+Map thumbnail decode: Invalid map preview pixels
+PASS sharp terrain, legacy/new codecs, frame limit, malformed/short/oversized inputs and missing files
+PASS online deduplication, timeout/retry, failure, refresh cache, revision invalidation and eviction
+PASS first-image fade, terrain/marker cross-fade, rapid replacement and frame release
+Map generation: swamp revision 3 seed 3072758504 [complete]: 
+Map generation: swamp revision 3 seed 107604888 [complete]: 
+Map generation: swamp revision 3 seed 2834273143 [complete]: 
+Map generation: swamp revision 3 seed 1689737511 [complete]: 
+Map generation: swamp revision 3 seed 3574587907 [complete]: 
+PASS reroll preserves image, rectangle and scores without status-text flashes
+Map thumbnail load: String mapName length > 1048576: unspecified iostream_category error
+PASS native widget events and custom lobby captures: artifacts/desktop-regression/map-preview
+ALL PRE-GAME MAP PREVIEW TESTS PASSED

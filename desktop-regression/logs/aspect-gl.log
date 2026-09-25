@@ -1,0 +1,5 @@
+PASS GL 640x480: presentation, clipping, capture, mouse events and polling
+PASS GL 1280x800: presentation, clipping, capture, mouse events and polling
+PASS GL 800x1280: presentation, clipping, capture, mouse events and polling
+PASS GL 853x641: presentation, clipping, capture, mouse events and polling
+PASS GL 480x270: presentation, clipping, capture, mouse events and polling

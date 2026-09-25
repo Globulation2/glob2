@@ -1,0 +1,9 @@
+# CampaignBoundsHarness golden output
+removeMap(1): count=2
+removeMap(3) on size 3: count=3
+removeMap(UINT_MAX): count=3
+removeMap(2) on size 3: count=2
+getMap(0)="Map1" getMap(2)="Map3"
+getMap(3) on size 3: threw=1
+getMap(UINT_MAX): threw=1
+result: 0 failure(s)

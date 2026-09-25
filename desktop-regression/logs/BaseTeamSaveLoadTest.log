@@ -1,0 +1,10 @@
+PASS: roundTrip: load succeeds
+PASS: roundTrip: type preserved
+PASS: roundTrip: teamNumber preserved
+PASS: roundTrip: numberOfPlayer preserved
+PASS: roundTrip: rgb preserved
+PASS: roundTrip: alpha pinned opaque
+PASS: roundTrip: playersMask still aligned after pad byte
+PASS: byteStable: load succeeds
+PASS: byteStable: save->load->save byte-identical
+ALL PASS

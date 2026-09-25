@@ -1,0 +1,9 @@
+PASS default order sanity
+PASS disable removes only prestige
+PASS disable twice is idempotent
+PASS disable then enable restores default order
+PASS enable when present is idempotent
+PASS custom list survives toggle
+PASS inserted before later-ranked condition
+PASS appended after earlier-ranked conditions
+all tests passed

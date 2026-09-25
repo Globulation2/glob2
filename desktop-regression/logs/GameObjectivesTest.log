@@ -1,0 +1,29 @@
+PASS: fresh GameObjectives has the one default objective
+PASS: removeObjective past the end is a no-op
+PASS: removeObjective with negative index is a no-op
+PASS: default objective text survives out-of-range removals
+PASS: in-range removeObjective shrinks the list
+PASS: remaining objective keeps its text
+PASS: remaining objective keeps its type
+PASS: remaining objective keeps its script number
+PASS: remaining objective keeps its hidden flag
+PASS: remaining objective keeps its completed flag
+PASS: draining the list leaves it empty
+PASS: removeObjective on an empty list is a no-op
+PASS: setGameObjectiveText ignores out-of-range indices
+PASS: setObjectiveType ignores out-of-range indices
+PASS: setScriptNumber ignores out-of-range indices
+PASS: getScriptNumber returns InvalidScriptNumber for negative index
+PASS: getScriptNumber returns InvalidScriptNumber past the end
+PASS: getGameObjectiveText returns the invalid marker out of range
+PASS: getObjectiveType returns Invalid out of range
+PASS: isObjectiveVisible is false out of range
+PASS: isObjectiveComplete is false out of range
+PASS: isObjectiveFailed is false out of range
+PASS: setScriptNumber clamps values above 255 to MaxScriptNumber
+PASS: setScriptNumber clamps negative values to 0
+PASS: addNewObjective clamps values above 255 to MaxScriptNumber
+PASS: setScriptNumber stores 255 unchanged
+PASS: round-trip preserves the objective count
+PASS: round-trip preserves every field, including clamped script numbers
+all tests passed

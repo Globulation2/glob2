@@ -1,0 +1,19 @@
+{
+  "aspect-gl": 0,
+  "aspect-software": 0,
+  "resize-gl": 1,
+  "resize-software": 0,
+  "text": 0,
+  "map-render-software": -6,
+  "map-render-gl": 1,
+  "map-preview": 0,
+  "selection": 0,
+  "screen": 0,
+  "resize-gl-final": 0,
+  "resize-software-final": 0,
+  "map-render-dummy": 0,
+  "setup-final": 0,
+  "settings-six-configurations": 0,
+  "game-speed-and-replay": 0,
+  "engine-session-final": 0
+}

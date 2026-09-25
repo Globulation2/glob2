@@ -1,0 +1,13 @@
+Settings::load("preferences.txt") : error, can't open file.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+Map generation: fingerprint revision 3 seed 2470831215 [complete]: 
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+PASS phone presentation: setup touch dispatch, scrolling, dropdown bounds, settings categories, modal viewport restoration in both orientations

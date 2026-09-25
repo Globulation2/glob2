@@ -1,0 +1,27 @@
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:10] "GET / HTTP/1.1" 200 -
+
+Running 2 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:12] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:12] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:12] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:12] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:14] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:14] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:14] "GET /index.data HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:14] "GET /index.wasm HTTP/1.1" 304 -
+  ✓  1 [firefox] › tests/campaign-editor-storage.spec.js:15:1 › campaign authoring waits for durable persistence before closing (4.9s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:16] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:16] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:16] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:16] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:19] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:19] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:19] "GET /index.data HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:19] "GET /index.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:21] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:21] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 15:53:21] "GET /index.wasm HTTP/1.1" 304 -
+  ✓  2 [firefox] › tests/campaign-editor-storage.spec.js:36:1 › campaign authoring retains the editor on quota failure and can retry (6.3s)
+
+  2 passed (12.0s)

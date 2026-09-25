@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+GameGUI selection lifetime regressions passed

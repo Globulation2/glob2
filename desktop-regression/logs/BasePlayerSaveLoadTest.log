@@ -1,0 +1,27 @@
+BasePlayer::load: invalid player type 14 (must be below 14)
+BasePlayer::load: invalid player type 4294967295 (must be below 14)
+BasePlayer::load: out-of-range player number 12 (must be in [0, 12))
+BasePlayer::load: out-of-range player number -1 (must be in [0, 12))
+BasePlayer::load: out-of-range teamNumber 12 (must be in [0, 12))
+BasePlayer::load: stream invalid or exhausted before BasePlayer record
+PASS: roundTrip: load succeeds
+PASS: roundTrip: type preserved
+PASS: roundTrip: number preserved
+PASS: roundTrip: playerID > 0xFFFF preserved
+PASS: roundTrip: name preserved
+PASS: roundTrip: teamNumber preserved
+PASS: pre86: load succeeds
+PASS: pre86: type read
+PASS: pre86: number read
+PASS: pre86: playerID read as Uint16
+PASS: pre86: name still aligned
+PASS: pre86: teamNumber still aligned
+PASS: typeValidation: first out-of-range type rejected
+PASS: typeValidation: hostile 0xFFFFFFFF type rejected
+PASS: typeValidation: highest P_AI+n type accepted
+PASS: typeValidation: type value preserved
+PASS: rangeValidation: number == Team::MAX_COUNT rejected
+PASS: rangeValidation: negative number rejected
+PASS: rangeValidation: teamNumber == Team::MAX_COUNT rejected
+PASS: exhausted: empty stream rejected
+ALL PASS

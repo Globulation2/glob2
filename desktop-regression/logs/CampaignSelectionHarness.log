@@ -1,0 +1,10 @@
+# CampaignSelectionHarness golden output
+fixture: maps=3 displayed=2
+  displayed[0] = "Map1"
+  displayed[1] = "Map3"
+user clicks displayed[1] = "Map3"
+[old]  campaign.getMap(1)              -> name="Map2" file="fake2.map"
+[new]  campaign.findUnlockedMap("Map3") -> name="Map3" file="fake3.map"
+[new]  findUnlockedMap("DoesNotExist") -> nullptr
+[new]  findUnlockedMap("Map2" locked)   -> nullptr
+result: 0 failure(s)

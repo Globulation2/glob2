@@ -1,0 +1,8 @@
+PASS disable when absent is a no-op
+PASS enable appends at the end
+PASS: enable sets the configured tick
+PASS retune keeps the same position
+PASS: retune updates the tick
+PASS disable removes only sudden death
+PASS appended after a custom list
+all tests passed

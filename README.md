@@ -1,3 +1,5 @@
+Latest desktop regression follow-up: [desktop-regression/README.md](desktop-regression/README.md).
+
 Current responsive extension evidence is in [responsive/README.md](responsive/README.md).
 The original mobile-port evidence below describes its earlier source revision.
 

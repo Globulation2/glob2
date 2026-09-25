@@ -1,0 +1,56 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
+PASS preferences keep every generator option, and older files still load
+PASS landscape picker Random order is a real shuffle drawn once per process run, Alphabetical stays stable
+PASS canonical map catalog, selection stability, inline controls, popup cancel, focus preservation and rules
+Map generation: river revision 3 seed 1295506682 [complete]: 
+Map generation: river revision 3 seed 1329202475 [complete]: 
+Map generation: river revision 3 seed 2224245718 [complete]: 
+Map generation: river revision 3 seed 307242895 [complete]: 
+Map generation: river revision 3 seed 2318099277 [complete]: 
+Map generation: river revision 3 seed 1194592540 [complete]: 
+Map generation: river revision 3 seed 1902228966 [complete]: 
+Map generation: river revision 3 seed 347454473 [complete]: 
+Map generation: river revision 3 seed 3289757555 [complete]: 
+Map generation: river revision 3 seed 3026677784 [complete]: 
+Map generation: river revision 3 seed 3548549158 [complete]: 
+Map generation: fjord-continent revision 13 seed 1685272630 [complete]: 
+Map generation: fjord-continent revision 13 seed 3269512473 [complete]: 
+Map generation: contested-commons revision 3 seed 929826752 [complete]: 
+Map generation: contested-commons revision 3 seed 874392492 [complete]: 
+Map generation: contested-commons revision 3 seed 753326779 [complete]: 
+Map generation: contested-commons revision 3 seed 2570133630 [complete]: 
+Map generation: contested-commons revision 3 seed 2227895704 [complete]: 
+Map generation: contested-commons revision 3 seed 790569851 [complete]: 
+Map generation: contested-commons revision 3 seed 3756058344 [complete]: 
+Map generation: contested-commons revision 3 seed 850999491 [complete]: 
+Map generation: contested-commons revision 3 seed 3207453754 [complete]: 
+Map generation: contested-commons revision 3 seed 2120083343 [complete]: 
+Map generation: contested-commons revision 3 seed 1287006341 [complete]: 
+Map generation: contested-commons revision 3 seed 1069822500 [complete]: 
+Map generation: contested-commons revision 3 seed 387852512 [complete]: 
+Map generation: contested-commons revision 3 seed 2168403168 [complete]: 
+Map generation: contested-commons revision 3 seed 3088737931 [complete]: 
+Map generation: contested-commons revision 3 seed 815965552 [complete]: 
+Map generation: contested-commons revision 3 seed 42733504 [complete]: 
+Map generation: contested-commons revision 3 seed 3307169158 [complete]: 
+Map generation: contested-commons revision 3 seed 1064457815 [complete]: 
+Map generation: contested-commons revision 3 seed 3891171353 [complete]: 
+PASS rectangular aspect ratios, cropped terrain and colony marker pixels
+Landscape preview: swamp revision 3 seed 611955444 [generator validation]: Colony 0 has only 0 reachable 4x4 building origins; 16 required within 24 steps.
+Landscape preview: river revision 3 seed 1628541553 [generator validation]: Colony 0 cannot harvest wheat within 24 steps (observed -1; -1 means unreachable).
+Landscape preview: islands revision 3 seed 3959357641 [generator validation]: Colony 0 has only 0 reachable 4x4 building origins; 16 required within 24 steps.
+Landscape preview: river revision 3 seed 733159259 [starting locations]: Could not place the requested map layout
+Landscape preview: islands revision 3 seed 623638735 [generator validation]: Colony 0 has only 0 reachable 4x4 building origins; 16 required within 24 steps.
+Landscape preview: islands revision 3 seed 4115868595 [generator validation]: Colony 0 cannot harvest wheat within 24 steps (observed 28; -1 means unreachable).
+Landscape preview: islands revision 3 seed 3022242651 [starting locations]: Could not place the requested map layout
+Landscape preview: islands revision 3 seed 2623236136 [generator validation]: Colony 2 has only 0 reachable 4x4 building origins; 16 required within 24 steps.
+Map generation: rain-shadow revision 4 seed 3105820632 [complete]: 
+Map generation: rain-shadow revision 4 seed 2383216156 [complete]: 
+PASS landscape picker: 67 previews on 4 threads, selection, regeneration and the shown map played
+Map generation: river revision 3 seed 3416291250 [complete]: 
+Map generation: river revision 3 seed 2620890580 [complete]: 
+Map generation: river revision 3 seed 2948476347 [complete]: 
+Map generation: river revision 3 seed 349047872 [complete]: 
+Map generation: river revision 3 seed 2738841475 [complete]: 
+PASS native rendering, snapshot reroll ownership, invalidation, failure recovery, preserved alliances

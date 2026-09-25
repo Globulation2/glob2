@@ -1,0 +1,25 @@
+muted start leaves the device closed                       OK
+closed device: Intro then Menu selects Menu                OK
+closed device: Menu is also what follows                   OK
+closed device: entering a game selects the game track      OK
+unmuting opens the device                                  OK
+unmute resumes the game track, not the intro               OK
+unmute does not queue a stale track behind it              OK
+crossfade still running one callback short of the end      OK
+crossfade lands after exactly 16 callbacks                 OK
+crossfade hands over to the incoming track                 OK
+mid-fade request is queued                                 OK
+mid-fade request does not displace the incoming track      OK
+mid-fade request does not displace the outgoing track      OK
+mid-fade request does not rewind the running fade          OK
+queued change: first fade still completes normally         OK
+queued change: the queued track becomes the incoming one   OK
+queued change: a second fade starts rather than MODE_NORMAL OK
+queued change: the second fade starts at zero              OK
+queued change: the queue is emptied                        OK
+queued change: the second fade lands on the queued track   OK
+queued change: back to normal playback afterwards          OK
+stopMusic clears a queued change                           OK
+stopMusic starts the fade out                              OK
+
+All checks passed

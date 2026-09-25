@@ -1,0 +1,22 @@
+{
+  "ticks": 1500,
+  "seed": 42,
+  "native_sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+  "browsers": {
+    "chromium": {
+      "bytes": 3601608,
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_native": true
+    },
+    "firefox": {
+      "bytes": 3601608,
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_native": true
+    },
+    "webkit": {
+      "bytes": 3601608,
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_native": true
+    }
+  }
+}

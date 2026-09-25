@@ -1,0 +1,9 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS repeated unit/building sprites
+PASS building, worker and resource selection copies
+PASS repeated path lines and short seam crossings
+PASS repeated bullets, explosions and deaths
+PASS pause freezes particle emission and physics; resume restarts both
+PASS ghosts, map markers and particles; one particle update
+PASS virtual flags and ranges in complete map frames
+Assertion failed: (gfx->getW()==width && gfx->getH()==1100), function operator(), file MapRenderResizeHarness.cpp, line 127.

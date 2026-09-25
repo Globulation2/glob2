@@ -1,0 +1,3 @@
+     a fractional interface scale: scale 3.398, glyphs pixel-exact
+     a resolution the screen cannot deliver: scale 0.641, glyphs pixel-exact
+PASS text raster: scale 4.00, metrics unchanged across 5 samples, glyphs pixel-exact, overlay text drawn, 2314 detailed 4x4 blocks
