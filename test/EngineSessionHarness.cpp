@@ -257,6 +257,19 @@ int main(int argc, char** argv)
         minimap.setGame(view.game);
         minimap.resizeViewport(1200);
         require(minimap.insideMinimap(1100, 74) && !minimap.insideMinimap(700, 74), "Minimap hit area did not follow the viewport");
+        require(view.zoomMap(3, 300, 200), "Could not zoom the desktop camera");
+        const auto center = view.camera.screenToWorld(view.camera.offsetX + view.camera.width / 2,
+                                                      view.camera.offsetY + view.camera.height / 2);
+        const auto zoom = view.camera.zoom;
+        require(gfx.resizeViewport(800, 600), "Could not resize the zoomed gameplay viewport");
+        view.viewportResized(1200, 800, 800, 600);
+        const auto resizedCenter = view.camera.screenToWorld(view.camera.offsetX + view.camera.width / 2,
+                                                             view.camera.offsetY + view.camera.height / 2);
+        require(view.camera.zoom == zoom &&
+                std::abs(MapCamera::wrap(center.first, view.camera.mapWidth) - MapCamera::wrap(resizedCenter.first, view.camera.mapWidth)) < 1e-9 &&
+                std::abs(MapCamera::wrap(center.second, view.camera.mapHeight) - MapCamera::wrap(resizedCenter.second, view.camera.mapHeight)) < 1e-9,
+                "Zoomed resize changed the exact camera center or zoom");
+        require(view.game.checkSum() == checksum, "Zoomed resize changed simulation state");
         require(gfx.resizeViewport(800, 600), "Could not restore the fixture viewport");
     }
 
