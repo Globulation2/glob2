@@ -147,7 +147,15 @@ jobs:
             speed-tests \
             settings-tests \
             screen-test \
-            session-test
+            session-test \
+            portable-renderer-test \
+            mobile-input-test \
+            gameplay-touch-test \
+            responsive-menu-test \
+            mobile-presentation-test \
+            mobile-documents-test \
+            mobile-certificate-test \
+            mobile-temporary-files-test
 
       - name: Test Maxima food ledger
         run: build/linux/client/release/src/MaximaFoodLedgerStandaloneTest
@@ -266,6 +274,16 @@ jobs:
       - name: Test nonblocking screen execution
         run: |
           ./build/linux/client/release/libgag/src/ScreenExecutionHarness
+
+      - name: Test portable rendering and mobile input
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          ./build/linux/client/release/libgag/src/MobileInputHarness
+          ./build/linux/client/release/libgag/src/MobileDocumentsHarness
+          python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness
+          python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness
+          xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
 
       - name: Test incremental engine sessions
         run: |
@@ -395,10 +413,29 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
 
+      - name: Check phone layouts and gameplay touch input
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+          SDL_AUDIODRIVER: dummy
+        run: |
+          build/linux/client/release/libgag/src/MobileInputHarness
+          timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
+          for harness in gameplay-touch-test responsive-menu-test mobile-presentation-test; do
+            mkdir -p "artifacts/mobile-ui/$harness"
+            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 120s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness"
+          done
+
+      - name: Upload phone UI verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-ui-verification
+          path: artifacts/mobile-ui/
+
       - name: Check native settings persistence and retry
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
-        run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py --quick
+        run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py
 
       - name: Build and run the window resize regression
         env:
@@ -909,13 +946,13 @@ jobs:
           pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
           node --test unit/*.test.js
           # Chromium carries the complete behavior suite. The other engines
-          # exercise startup, gameplay and viewport integration without
+          # exercise startup, gameplay, viewport and native text editing without
           # repeating every persistence and multiplayer scenario.
           GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --project=chromium
-          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js --project=firefox --project=webkit
+          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox --project=webkit
           # WebGL2 shares the game behavior above; keep focused adapter,
           # lifecycle, persistence and rendering coverage in Chromium.
-          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js --project=chromium
+          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js responsive-presentation.spec.js --project=chromium
           xvfb-run -a npx playwright test --config visibility.config.js
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
       - uses: actions/upload-artifact@v4

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GUIDropdown.h>
 #include <algorithm>
+#include <InterfacePresentation.h>
 
 using namespace GAGCore;
 namespace GAGGUI
@@ -35,7 +36,7 @@ void Dropdown::open(SDL_Rect anchor,SDL_Rect available,const std::vector<std::st
     width=std::min(width,available.w);
     for(const auto& option:options){
         Item item;item.lines=wrap(font,option,std::max(1,width-36));
-        item.top=total;item.height=std::max(36,int(item.lines.size())*lineHeight+16);
+        item.top=total;item.height=std::max(phonePresentationRequested()?48:36,int(item.lines.size())*lineHeight+16);
         total+=item.height;items.push_back(std::move(item));
     }
     const int below=std::max(0,available.y+available.h-anchor.y-anchor.h-2);

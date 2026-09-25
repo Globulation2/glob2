@@ -2,6 +2,8 @@
 #pragma once
 #include "FrontendTheme.h"
 #include <GUIBase.h>
+#include <TouchInput.h>
+#include <InterfacePresentation.h>
 #include <Toolkit.h>
 #include <algorithm>
 #include <functional>
@@ -13,6 +15,10 @@
 class LobbyControls : public GAGGUI::RectangularWidget
 {
   public:
+    GAGCore::TouchInput touchNavigation;
+    int touchRegion=-1;
+    std::string touchTarget;
+    void cancelTouch() {touchNavigation.cancel();pressed.clear();touchTarget.clear();}
 	using Callback = std::function<void()>;
 	struct Hit
 	{
@@ -239,12 +245,13 @@ class LobbyControls : public GAGGUI::RectangularWidget
 	void stepper(const std::string &id, SDL_Rect r, int value, int lo, int hi,
 				 std::function<void(int)> apply, int step = 1)
 	{
+        const int side=GAGCore::phonePresentationRequested()?48:30;
 		button(
-			id + "/-", {r.x, r.y, 30, r.h}, "-", [=] { apply(std::max(lo, value - step)); }, false,
+			id + "/-", {r.x, r.y, side, r.h}, "-", [=] { apply(std::max(lo, value - step)); }, false,
 			value > lo);
-		text(r.x + 42, r.y + 5, std::to_string(value));
+		text(r.x + side+12, r.y + 5, std::to_string(value));
 		button(
-			id + "/+", {r.x + r.w - 30, r.y, 30, r.h}, "+",
+			id + "/+", {r.x + r.w - side, r.y, side, r.h}, "+",
 			[=] { apply(std::min(hi, value + step)); }, false, value < hi);
 	}
 	void slider(const std::string &id, SDL_Rect r, int value, int lo, int hi,
@@ -296,9 +303,11 @@ class LobbyControls : public GAGGUI::RectangularWidget
 							-1});
 		}
 	}
+    int popupRowHeight() const {return GAGCore::phonePresentationRequested()?48:30;}
+    int popupRows() {return std::max(1,std::min({8,int(popup.options.size()),(surface()->getH()-36-(popup.help.empty()?0:48))/popupRowHeight()}));}
 	void revealPopup()
 	{
-		popup.first = std::clamp(popup.first, std::max(0, popup.selected - 7), popup.selected);
+		popup.first = std::clamp(popup.first, std::max(0, popup.selected - popupRows()+1), popup.selected);
 	}
 	SDL_Rect popupRect()
 	{
@@ -306,7 +315,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		for (auto &s : popup.options)
 			pw = std::max(pw, GAGCore::Toolkit::getFont("standard")->getStringWidth(s) + 30);
 		pw = std::min(pw, surface()->getW() - 32);
-		int ph = std::min(8, int(popup.options.size())) * 30 + 12 + (popup.help.empty() ? 0 : 48);
+		int ph = popupRows() * popupRowHeight() + 12 + (popup.help.empty() ? 0 : 48);
 		int px = std::clamp(popup.anchor.x, 16, surface()->getW() - pw - 16);
 		int py = popup.anchor.y + popup.anchor.h + 4;
 		if (py + ph > surface()->getH() - 12)
@@ -328,20 +337,20 @@ class LobbyControls : public GAGGUI::RectangularWidget
 			box({r.x + 3, r.y + 4, r.w, r.h}, GAGCore::Color(34, 54, 36, 100));
 			box(r, panel);
 			surface()->drawRect(r.x, r.y, r.w, r.h, muted);
-			for (int n = 0; n < 8 && n + popup.first < int(popup.options.size()); ++n)
+			for (int n = 0; n < popupRows() && n + popup.first < int(popup.options.size()); ++n)
 			{
 				int i = n + popup.first;
 				bool ok = popup.enabled.empty() || popup.enabled[i];
 				if (i == popup.selected)
-					box({r.x + 4, r.y + 6 + n * 30, r.w - 8, 29}, gold, 3);
-				text(r.x + 10, r.y + 12 + n * 30, popup.options[i], "standard", r.w - 20, !ok);
+					box({r.x + 4, r.y + 6 + n * popupRowHeight(), r.w - 8, popupRowHeight()-1}, gold, 3);
+				text(r.x + 10, r.y + 12 + n * popupRowHeight(), popup.options[i], "standard", r.w - 20, !ok);
 			}
-			if (popup.options.size() > 8)
+			if (int(popup.options.size()) > popupRows())
 			{
-				int thumb = 240 * 8 / int(popup.options.size());
-				box({r.x + r.w - 5, r.y + 6, 3, 240}, line, 1);
+				int thumb = popupRows()*popupRowHeight() * popupRows() / int(popup.options.size());
+				box({r.x + r.w - 5, r.y + 6, 3, popupRows()*popupRowHeight()}, line, 1);
 				box({r.x + r.w - 5,
-					 r.y + 6 + (240 - thumb) * popup.first / (int(popup.options.size()) - 8), 3,
+					 r.y + 6 + (popupRows()*popupRowHeight() - thumb) * popup.first / (int(popup.options.size()) - popupRows()), 3,
 					 thumb},
 					muted, 1);
 			}
@@ -360,8 +369,38 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		auto &r = regions[id];
 		r.offset = std::clamp(r.offset + delta, 0, r.maximum);
 	}
+    std::string targetAt(int x,int y) {
+        if(popup.open) {auto r=popupRect();return inside(r,x,y)?"popup/"+std::to_string((y-r.y-6)/popupRowHeight()+popup.first):"outside";}
+        for(auto it=hits.rbegin();it!=hits.rend();++it)if(it->enabled && inside(it->box,x,y) && inside(it->clip,x,y))return it->id;
+        return {};
+    }
 	bool handle(SDL_Event *e)
 	{
+        if (GAGCore::phonePresentationRequested()) {
+            if ((e->type==SDL_MOUSEMOTION && e->motion.which==SDL_TOUCH_MOUSEID) ||
+                ((e->type==SDL_MOUSEBUTTONDOWN || e->type==SDL_MOUSEBUTTONUP) && e->button.which==SDL_TOUCH_MOUSEID)) return true;
+            if(e->type==SDL_FINGERDOWN || e->type==SDL_FINGERMOTION || e->type==SDL_FINGERUP) {
+                auto f=e->tfinger;GAGCore::ViewPoint p{f.x*surface()->getW(),f.y*surface()->getH()};
+                if(e->type==SDL_FINGERDOWN) {
+                    touchTarget=targetAt(int(p.x),int(p.y));
+                    touchRegion=-1;for(auto& [id,region]:regions)if(inside(region.box,int(p.x),int(p.y)))touchRegion=id;
+                }
+                auto actions=e->type==SDL_FINGERDOWN?touchNavigation.down(f.touchId,f.fingerId,p):
+                    e->type==SDL_FINGERMOTION?touchNavigation.move(f.touchId,f.fingerId,p):touchNavigation.up(f.touchId,f.fingerId,p);
+                for(const auto& action:actions) {
+                    if(action.kind==GAGCore::TouchActionKind::Pan) {
+                        if(popup.open)popup.first=std::clamp(popup.first+(action.point.y<0?1:-1),0,std::max(0,int(popup.options.size())-popupRows()));
+                        else if(touchRegion>=0)scroll(touchRegion,-int(action.point.y));
+                    } else if(action.kind==GAGCore::TouchActionKind::Select && touchTarget==targetAt(int(p.x),int(p.y))) {
+                        SDL_Event click{};click.type=SDL_MOUSEBUTTONDOWN;click.button.button=SDL_BUTTON_LEFT;
+                        click.button.x=int(p.x);click.button.y=int(p.y);handle(&click);click.type=SDL_MOUSEBUTTONUP;handle(&click);
+                    }
+                }
+                return true;
+            }
+            if((e->type==SDL_WINDOWEVENT && (e->window.event==SDL_WINDOWEVENT_FOCUS_LOST || e->window.event==SDL_WINDOWEVENT_SIZE_CHANGED)) || e->type==SDL_APP_WILLENTERBACKGROUND)cancelTouch();
+        }
+
 		if (popup.open)
 		{
 			if (e->type == SDL_KEYDOWN)
@@ -390,7 +429,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 			if (e->type == SDL_MOUSEWHEEL)
 			{
 				popup.first = std::clamp(popup.first - e->wheel.y, 0,
-										 std::max(0, int(popup.options.size()) - 8));
+										 std::max(0, int(popup.options.size()) - popupRows()));
 				return true;
 			}
 			if (e->type == SDL_MOUSEBUTTONDOWN)
@@ -406,9 +445,9 @@ class LobbyControls : public GAGGUI::RectangularWidget
 			if (e->type == SDL_MOUSEBUTTONUP)
 			{
 				auto r = popupRect();
-				int i = (e->button.y - r.y - 6) / 30 + popup.first;
+				int i = (e->button.y - r.y - 6) / popupRowHeight() + popup.first;
 				if (inside(r, e->button.x, e->button.y) && e->button.y >= r.y + 6 && i >= 0 &&
-					i < int(popup.options.size()) && i < popup.first + 8 &&
+					i < int(popup.options.size()) && i < popup.first + popupRows() &&
 					(popup.enabled.empty() || popup.enabled[i]))
 				{
 					auto apply = popup.apply;

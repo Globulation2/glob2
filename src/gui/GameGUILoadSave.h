@@ -61,6 +61,7 @@ public:
     void showSaveFailure();
     void beginPersistence(std::unique_ptr<GAGCore::ApplicationHost::Persistence> operation);
     bool pollPersistence();
+    bool isPersisting() const { return bool(persistence); }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
 	const char *getFileName(void);

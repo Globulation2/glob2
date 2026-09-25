@@ -22,6 +22,7 @@
 
 namespace GAGCore
 {
+    class RenderBackend;
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{
@@ -328,6 +329,7 @@ namespace GAGCore
 			//! Allow windowed logical dimensions to follow the window size
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
+			PORTABLEGPU = 32,
 		};
 		
 	protected:
@@ -335,6 +337,12 @@ namespace GAGCore
 		int minW, minH;
 		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
 		int windowW = 0, windowH = 0;
+        int fixedLogicalW=0, fixedLogicalH=0;
+        bool responsiveViewport=false, compactWindowAllowed=false;
+        bool uiTransformActive=false;
+        SDL_Rect uiSavedClip{}, uiBounds{};
+        float uiTransformScale=1, uiTransformX=0, uiTransformY=0;
+        int responsiveMinW=0, responsiveMinH=0;
 		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
 		int drawableW = 0, drawableH = 0;
 		//! resolution asked of setRes(), before the interface scale divides it
@@ -395,6 +403,13 @@ namespace GAGCore
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
 		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
+		std::unique_ptr<RenderBackend> renderer;
+        // Rasterizes transformed passes into the existing software framebuffer.
+        std::unique_ptr<RenderBackend> softwareRasterizer;
+        bool softwareTransform=false;
+        void beginSoftwareTransform();
+        void endSoftwareTransform();
+		std::string pendingScreenshot;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -413,6 +428,17 @@ namespace GAGCore
 		virtual bool setRes(int w, int h, Uint32 flags);
         // Resize a software render target without replacing its window or assets.
         bool resizeViewport(int w, int h);
+        bool setResponsiveViewport(bool enabled, int minimumWidth=0, int minimumHeight=0);
+        bool refreshPresentation();
+        void setCompactWindowAllowed(bool allowed) {
+            if (compactWindowAllowed==allowed) return;
+            compactWindowAllowed=allowed;applyWindowMinimumSize();
+        }
+        bool isResponsiveViewport() const { return responsiveViewport; }
+        bool hasPortableRenderer() const { return bool(renderer); }
+        double logicalUnitsPerPoint() const;
+        void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
+        Uint32 windowID() const { return SDL_GetWindowID(window); }
 #ifdef GLOB2_WEBGL2
         static void restoreBrowserContext();
 #endif
@@ -470,7 +496,7 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum) { }
 		
 		// reimplemented drawing commands for HW (GPU / GL) accelerated version
-		virtual bool canDrawStretchedSprite(void) { return (optionFlags & USEGPU) != 0; }
+		virtual bool canDrawStretchedSprite(void) { return renderer || (optionFlags & USEGPU) != 0; }
 		
 		virtual void drawPixel(int x, int y, const Color& color);
 		virtual void drawPixel(float x, float y, const Color& color);

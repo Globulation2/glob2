@@ -3056,3 +3056,63 @@ Thoát mà không lưu
 Trò chơi đã đóng. Bạn có thể đóng cửa sổ này hoặc tải lại để chơi tiếp.
 [campaign editor save failed]
 Chưa xác nhận lưu. Đồng ý sẽ thử lại; Hủy sẽ quay về menu trình chỉnh sửa.
+[Actions]
+Thao tác
+[Minimap]
+Bản đồ nhỏ
+[Fast forward]
+Tua nhanh
+[Hide keyboard]
+Ẩn bàn phím
+[Dialog text size]
+Cỡ chữ hộp thoại
+[Player slot]
+Vị trí người chơi
+[Team color]
+Màu đội
+[Alliance group]
+Nhóm liên minh
+[menu]
+Trình đơn
+[Editor tools]
+Công cụ
+[Pan map]
+Di chuyển bản đồ
+[Edit map]
+Sửa bản đồ
+[Editor map]
+Bản đồ
+[Flags]
+Cờ
+[Pause]
+Tạm dừng
+[Speed]
+Tốc độ
+[Objectives]
+Mục tiêu
+[Menu]
+Trình đơn
+[Goals]
+Mục tiêu
+[Teams]
+Đội
+[Use this landscape]
+Dùng địa hình này
+[Reset]
+Đặt lại
+[Generating...]
+Đang tạo...
+[Players]
+Người chơi
+[Rules]
+Luật chơi
+[settings Interface layout]
+Bố cục giao diện
+[settings Automatic]
+Tự động
+[settings Compact]
+Gần nhau
+[settings Spacious]
+Rộng rãi
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Bố cục rộng rãi dùng bảng bên khi đủ chỗ. Bố cục gọn dùng thanh công cụ và các bảng có thể mở rộng.

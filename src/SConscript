@@ -161,6 +161,10 @@ if not env['server']:
     session_sources += local.Object('EngineSessionHarness.o', '#test/EngineSessionHarness.cpp')
     session_test = local.Program('engine-session-test', session_sources)
     local.Alias('session-test', session_test)
+    portable_game_sources = [source for source in source_files if source != 'Glob2.cpp']
+    portable_game_sources += local.Object('PortableGameHarness.o', '#test/PortableGameHarness.cpp')
+    portable_game_test = local.Program('portable-game-test', portable_game_sources)
+    local.Alias('portable-game-test', portable_game_test)
 
 if not env['server']:
     # Compile with local, not trapped_env, to avoid rebuilding shared objects under a second environment.
@@ -375,3 +379,21 @@ if not env['server']:
     unit_continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     unit_continuation_test = unit_continuation_env.Program('UnitContinuationHarness', unit_continuation_sources)
     local.Alias('unit-continuation-test', unit_continuation_test)
+
+if not env['server'] and env.get('wss', True):
+    certificate_test = local.Program('MobileCertificateHarness', [
+        local.Object('MobileCertificateHarness.o', '#test/MobileCertificateHarness.cpp'),
+        local.Object('MobileCertificateTrust.o', '#mobile/CertificateTrust.cpp')])
+    local.Alias('mobile-certificate-test', certificate_test)
+
+if not env['server'] and not env.get('mingw'):
+    temporary_test = local.Program('MobileTemporaryFilesHarness', [
+        local.Object('MobileTemporaryFilesHarness.o', '#test/MobileTemporaryFilesHarness.cpp'),
+        local.Object('MobileTemporaryFiles.o', '#mobile/TemporaryFiles.cpp')])
+    local.Alias('mobile-temporary-files-test', temporary_test)
+
+if not env['server']:
+    for alias, harness in [('gameplay-touch-test', 'GameGUITouchHarness'), ('responsive-menu-test', 'ResponsiveMenuHarness'), ('mobile-presentation-test', 'MobilePresentationHarness')]:
+        sources = [source for source in source_files if source != 'Glob2.cpp']
+        sources += local.Object(harness + '.o', '#test/' + harness + '.cpp')
+        local.Alias(alias, local.Program(alias, sources))

@@ -3132,3 +3132,63 @@ Emoji
 遊戲已結束。您可以關閉此視窗，或重新載入以再次遊玩。
 [campaign editor save failed]
 尚未確認儲存。「確定」重試；「取消」返回編輯器選單。
+[Actions]
+操作
+[Minimap]
+小地圖
+[Fast forward]
+快轉
+[Hide keyboard]
+隱藏鍵盤
+[Dialog text size]
+對話框文字大小
+[Player slot]
+玩家欄位
+[Team color]
+隊伍顏色
+[Alliance group]
+同盟群組
+[menu]
+選單
+[Editor tools]
+工具
+[Pan map]
+平移地圖
+[Edit map]
+編輯地圖
+[Editor map]
+地圖
+[Flags]
+旗幟
+[Pause]
+暫停
+[Speed]
+速度
+[Objectives]
+目標
+[Menu]
+選單
+[Goals]
+目標
+[Teams]
+隊伍
+[Use this landscape]
+使用此地形
+[Reset]
+重設
+[Generating...]
+產生中...
+[Players]
+玩家
+[Rules]
+規則
+[settings Interface layout]
+介面配置
+[settings Automatic]
+自動
+[settings Compact]
+緊湊
+[settings Spacious]
+寬敞
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+寬敞配置會在空間足夠時使用側邊面板。精簡配置使用工具列和可展開的面板。

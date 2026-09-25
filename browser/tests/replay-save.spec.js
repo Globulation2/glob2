@@ -1,3 +1,4 @@
+const {editTextField}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
@@ -13,7 +14,7 @@ async function endMatch(page) {
   await page.locator('#canvas').press('Escape');await click(page,600,500);
   await screen(page,'EndGameScreen');
   await click(page,1060,815);await screen(page,'LoadSaveScreen');
-  await click(page,600,515);await page.locator('#canvas').pressSequentially('AAA review replay',{delay:20});
+  await editTextField(page,'AAA review replay');
 }
 
 test('end-game replay save remains scheduled during resize and durable persistence',async({page},info)=>{

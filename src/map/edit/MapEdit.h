@@ -26,6 +26,7 @@
 
 
 class MapEdit;
+class PhoneEditor;
 
 ///This is a map editor widget, which is a widget that works within the map editor. Now to answer the crucial question, why not
 ///use libgag? Indeed, I had pondered on the use of libgag for quite some time, considering all of the odds and ends that would
@@ -56,6 +57,7 @@ public:
 	///and area.y to get the coordinates.
 	virtual void draw()=0;
 	friend class MapEdit;
+    friend class PhoneEditor;
 protected:
 	MapEdit& me;
 	RightAnchoredWidgetRectangle area;
@@ -366,6 +368,10 @@ private:
 class MapEdit
 {
 	friend class HighResolutionIntegrationHarness;
+    friend class PhoneEditor;
+    friend class GameGUITouchHarness;
+    std::unique_ptr<PhoneEditor> phone;
+    int menuWidth() const { return phone ? 0 : RIGHT_MENU_WIDTH; }
     bool editing = false, quitDecision = false;
     int editingResult = 0;
     GAGCore::InputState inputState;
@@ -383,6 +389,7 @@ public:
 	///Updates the editor after map generation
 	void update();
 
+    bool usesPhone() const { return bool(phone); }
     void beginEditing();
     void viewportResized(int oldWidth, int oldHeight, int width, int height);
     void requestLoad(std::string filename) { pendingLoadFilename = std::move(filename); }

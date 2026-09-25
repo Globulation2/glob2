@@ -3130,3 +3130,63 @@ Emoji
 Το παιχνίδι έκλεισε. Μπορείτε να κλείσετε αυτό το παράθυρο ή να επαναφορτώσετε τη σελίδα για να παίξετε ξανά.
 [campaign editor save failed]
 Η αποθήκευση δεν επιβεβαιώθηκε. Το OK ξαναδοκιμάζει· η Ακύρωση επιστρέφει στο μενού του επεξεργαστή.
+[Actions]
+Ενέργειες
+[Minimap]
+Μικρός χάρτης
+[Fast forward]
+Γρήγορη προώθηση
+[Hide keyboard]
+Απόκρυψη πληκτρολογίου
+[Dialog text size]
+Μέγεθος κειμένου διαλόγων
+[Player slot]
+Θέση παίκτη
+[Team color]
+Χρώμα ομάδας
+[Alliance group]
+Ομάδα συμμαχίας
+[menu]
+Μενού
+[Editor tools]
+Εργαλεία
+[Pan map]
+Μετακίνηση χάρτη
+[Edit map]
+Επεξεργασία Χάρτη
+[Editor map]
+Χάρτης
+[Flags]
+Σημαίες
+[Pause]
+Παύση
+[Speed]
+Ταχύτητα
+[Objectives]
+Στόχοι
+[Menu]
+Μενού
+[Goals]
+Στόχοι
+[Teams]
+Ομάδες
+[Use this landscape]
+Χρήση αυτού του τοπίου
+[Reset]
+Επαναφορά
+[Generating...]
+Δημιουργία...
+[Players]
+Παίκτες
+[Rules]
+Κανόνες
+[settings Interface layout]
+Διάταξη διεπαφής
+[settings Automatic]
+Αυτόματο
+[settings Compact]
+Κοντινοί
+[settings Spacious]
+Ευρύχωρη
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Η ευρύχωρη διάταξη χρησιμοποιεί πλευρικό πίνακα όταν υπάρχει χώρος. Η συμπαγής χρησιμοποιεί γραμμή εργαλείων και αναπτυσσόμενους πίνακες.

@@ -4,7 +4,7 @@
 #include "GlobalContainer.h"
 
 // Fixed screen-space controls shared by gameplay, replays, and the editor.
-inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false)
+inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false, bool softwareMap = false)
 {
     auto gfx = globalContainer->gfx;
     const int x = sidebar ? int(camera.width) + 8 : 8;
@@ -18,18 +18,18 @@ inline void drawMapZoomControls(const MapCamera &camera, bool sidebar = false)
     gfx->drawString(x + 30, y + 3, globalContainer->littleFont, "100%");
     gfx->drawString(x + 76, y + 3, globalContainer->littleFont, "+");
     gfx->drawString(x + 100, y + 3, globalContainer->littleFont,
-        gfx->canDrawStretchedSprite()
+        (softwareMap || gfx->canDrawStretchedSprite())
             ? std::to_string(int(std::round(camera.zoom * 100))) + "%"
             : "GL only");
 }
 
-inline bool clickMapZoomControls(MapCamera &camera, int x, int y, bool sidebar = false)
+inline bool clickMapZoomControls(MapCamera &camera, int x, int y, bool sidebar = false, bool softwareMap = false)
 {
     x -= sidebar ? int(camera.width) + 8 : 8;
     if (x < 0 || x >= 144 || y < globalContainer->gfx->getH() - 26 ||
         y >= globalContainer->gfx->getH() - 4)
         return false;
-    if (x < 92 && globalContainer->gfx->canDrawStretchedSprite())
+    if (x < 92 && (softwareMap || globalContainer->gfx->canDrawStretchedSprite()))
     {
         const double zoom = x < 24 ? camera.zoom / 1.1
                           : x >= 68 ? camera.zoom * 1.1 : 1.0;

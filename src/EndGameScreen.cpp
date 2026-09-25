@@ -4,6 +4,8 @@
 
 #include <ApplicationHost.h>
 #include "EndGameScreen.h"
+#include "gui/PhoneForm.h"
+#include <InterfacePresentation.h>
 #include <FormatableString.h>
 #include <GUIStyle.h>
 #include <GUIText.h>
@@ -93,6 +95,14 @@ void EndGameStat::setStatType(int type)
 void EndGameStat::setEnabledState(int teamNum, bool isEnabled)
 {
 	isTeamEnabled[teamNum]=isEnabled;
+}
+
+void EndGameStat::paintPhone(int width,int height)
+{
+    const auto oldX=x,oldY=y,oldW=w,oldH=h;
+    const auto horizontal=hAlignFlag,vertical=vAlignFlag;
+    setScreenRectangle(0,0,width,height);paint();
+    x=oldX;y=oldY;w=oldW;h=oldH;hAlignFlag=horizontal;vAlignFlag=vertical;
 }
 
 void EndGameStat::paint(void)
@@ -336,6 +346,7 @@ struct MoreScore
 
 EndGameScreen::EndGameScreen(GameGUI *gui)
 {
+    enablePhoneForm();
 	// We're no longer replaying a game
 	globalContainer->replaying = false;
 
@@ -615,6 +626,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
     replaySave = std::make_unique<LoadSaveScreen>(dir, ext, false,
         Toolkit::getStringTable()->getString("[save replay]"), "",
         replayFilenameToName, glob2NameToFilename);
+    replayForm=std::make_unique<PhoneForm>(*replaySave,[](auto*){return std::string{};},[](auto*){return true;});
     GAGCore::ApplicationHost::screenChanged(typeid(*replaySave).name());
 }
 
@@ -623,7 +635,7 @@ void EndGameScreen::updateExecution(Uint32 tick)
     if (!replaySave) { Glob2Screen::updateExecution(tick); return; }
     replaySave->dispatchTimer(tick);
     if (replaySave->pollPersistence() || replaySave->endValue == LoadSaveScreen::CANCEL) {
-        replaySave.reset();
+        replayForm.reset();replaySave.reset();
         GAGCore::ApplicationHost::screenChanged(typeid(*this).name());
     } else if (replaySave->endValue == LoadSaveScreen::OK) {
         if (!globalContainer->replayWriter ||
@@ -637,12 +649,17 @@ void EndGameScreen::handleExecutionEvent(SDL_Event event)
 {
     if (!replaySave) { Glob2Screen::handleExecutionEvent(event); return; }
     GAGCore::GraphicContext::translateMouseEvent(&event);
+    if (GAGCore::phonePresentationRequested() && replayForm && replayForm->event(event)) return;
     replaySave->translateAndProcessEvent(&event);
 }
 
 void EndGameScreen::drawExecution()
 {
     if (!isExecutionRunning()) return;
+    if (GAGCore::phonePresentationRequested()) {
+        if (!replaySave) { Glob2Screen::drawExecution();return; }
+        Glob2Screen::paint();replayForm->draw();gfx->nextFrame();return;
+    }
     // Present the completed composition, including the replay-save dialog.
     dispatchPaint(false);
     if (replaySave) {
@@ -655,6 +672,7 @@ void EndGameScreen::drawExecution()
 void EndGameScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
     Glob2Screen::viewportResized(oldWidth, oldHeight, width, height);
+    if (replayForm) replayForm->cancel();
     if (replaySave) replaySave->viewportResized(oldWidth, oldHeight, width, height);
 }
 

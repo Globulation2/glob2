@@ -3060,3 +3060,63 @@ Poistu tallentamatta
 Peli suljettu. Voit sulkea tämän ikkunan tai ladata sivun uudelleen pelataksesi taas.
 [campaign editor save failed]
 Tallennusta ei vahvistettu. OK yrittää uudelleen; Peruuta palaa editorin valikkoon.
+[Actions]
+Toiminnot
+[Minimap]
+Pienoiskartta
+[Fast forward]
+Pikakelaus
+[Hide keyboard]
+Piilota näppäimistö
+[Dialog text size]
+Valintaikkunoiden tekstikoko
+[Player slot]
+Pelaajapaikka
+[Team color]
+Joukkueen väri
+[Alliance group]
+Liittoumaryhmä
+[menu]
+Valikko
+[Editor tools]
+Työkalut
+[Pan map]
+Siirrä karttaa
+[Edit map]
+Muokkaa
+[Editor map]
+Kartta
+[Flags]
+Liput
+[Pause]
+Tauko
+[Speed]
+Nopeus
+[Objectives]
+Tavoitteet
+[Menu]
+Valikko
+[Goals]
+Tavoitteet
+[Teams]
+Joukkueet
+[Use this landscape]
+Käytä tätä maisemaa
+[Reset]
+Palauta
+[Generating...]
+Luodaan...
+[Players]
+Pelaajat
+[Rules]
+Säännöt
+[settings Interface layout]
+Käyttöliittymän asettelu
+[settings Automatic]
+Automaattinen
+[settings Compact]
+Tiivis
+[settings Spacious]
+Väljä
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Väljä asettelu käyttää sivupaneelia, kun tilaa on riittävästi. Tiivis asettelu käyttää työkalupalkkia ja avattavia paneeleja.

@@ -17,6 +17,8 @@ void SettingsScreen::buildGeneral()
     auto& s=globalContainer->settings;
     if(current==Category::Display) {
         info(tr("Choose how the game looks on your screen."));
+#ifndef GLOB2_MOBILE
+        // Mobile uses the OS-managed viewport and portable renderer.
         section("Display");
         choice("display.mode","Window mode","Choose a window or fill the screen.",bool(s.screenFlags & GraphicContext::FULLSCREEN),
             {tr("Windowed"),tr("Fullscreen")},[this](int v){changeDisplay([v](Settings& s){
@@ -62,12 +64,14 @@ void SettingsScreen::buildGeneral()
              " · "+tr(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN?"Fullscreen":"Windowed"));
         if(restartRequired()) info(tr("Saved — restart required"));
         if(displayError)info(tr("Could not change display mode. The previous mode was restored."));
+#endif
         section("Artwork & effects");
         choice("graphics.detail","Graphics detail","Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.",
             bool(s.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX),{tr("Full"),tr("Reduced")},[this](int v){
                 auto& flags=globalContainer->settings.optionFlags;
                 if(v)flags|=GlobalContainer::OPTION_LOW_SPEED_GFX;else flags&=~GlobalContainer::OPTION_LOW_SPEED_GFX;commit();
             });
+#ifndef GLOB2_MOBILE
         toggle("graphics.artwork","High-resolution artwork","Apply artwork on the next game or editor load (OpenGL).",s.highResolutionArtwork,[this](int v){globalContainer->settings.highResolutionArtwork=v;commit();});
         toggle("graphics.torus","Automatic torus view","Automatically show the torus overview while moving around the map (OpenGL).",s.automaticTorus,[this](int v){globalContainer->settings.automaticTorus=v;commit();});
         choice("graphics.renderer","Renderer","Changing the renderer requires a restart.",bool(s.screenFlags & GraphicContext::USEGPU),
@@ -76,6 +80,13 @@ void SettingsScreen::buildGeneral()
         form.back().enabled=false;
         form.back().help=tr("OpenGL is not available in this build.");
 #endif
+#endif
+        choice("display.presentation","Interface layout","Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
+            int(parsePresentationPreference(s.interfacePresentation)),{tr("Automatic"),tr("Compact"),tr("Spacious")},[this](int v){
+                presentationPreference=static_cast<PresentationPreference>(std::clamp(v,0,2));
+                globalContainer->settings.interfacePresentation=presentationPreferenceName(presentationPreference);
+                commit();
+            });
     } else if(current==Category::Audio) {
         info(tr("Adjust music and voice volume."));
         toggle("audio.mute","Mute audio","Keep your volume levels while silencing audio.",s.mute,[this](int v){

@@ -5,6 +5,7 @@
 #include <typeinfo>
 #include <stdexcept>
 #include <GUIBase.h>
+#include <InterfacePresentation.h>
 #include <GUIStyle.h>
 #include <assert.h>
 #include <GraphicContext.h>
@@ -155,7 +156,7 @@ namespace GAGGUI
 	void Widget::displayTooltip()
 	{
 		// We have a tooltip and the mouse is idle on our widget for some ticks (1 SDL tick = 1ms)
-		if(tooltipFontPtr != NULL && !tooltip.empty() && (currentTick - lastIdleTick) > 1000 && isOnWidget(mx, my))
+		if(GAGCore::presentationState.hover && tooltipFontPtr != NULL && !tooltip.empty() && (currentTick - lastIdleTick) > 1000 && isOnWidget(mx, my))
 		{
 			DrawableSurface *gfx = parent->getSurface();
 			assert(gfx);
@@ -531,6 +532,7 @@ namespace GAGGUI
 	
 	void Screen::dispatchEvents(SDL_Event *event)
 	{
+        updateLayout();
 		onSDLEvent(event);
 		// We put the switch here in order to avoid
 		// a switch in each specific onSDLEvent method
@@ -682,16 +684,23 @@ namespace GAGGUI
 		: parentContext(parentCtx)
 	{
 		gfx = new DrawableSurface(w, h);
-		decX = (parentCtx->getW()-w)>>1;
-		decY = (parentCtx->getH()-h)>>1;
+		decX = std::max(0, (parentCtx->getW()-static_cast<int>(w))/2);
+		decY = std::max(0, (parentCtx->getH()-static_cast<int>(h))/2);
 		endValue = -1;
 	}
 	
-	void OverlayScreen::updateLayout(void)
-	{
-		decX = std::max(0, std::min(decX, parentContext->getW() - getW()));
-		decY = std::max(0, std::min(decY, parentContext->getH() - getH()));
-	}
+    void OverlayScreen::updateLayout()
+    {
+        decX = std::max(0, std::min(decX, parentContext->getW() - getW()));
+        decY = std::max(0, std::min(decY, parentContext->getH() - getH()));
+    }
+
+    void OverlayScreen::viewportResized(int, int, int width, int height)
+    {
+        // Preserve the mobile/browser host's recenter-on-rotation policy.
+        decX = std::max(0, (width - getW()) / 2);
+        decY = std::max(0, (height - getH()) / 2);
+    }
 
 	OverlayScreen::~OverlayScreen()
 	{

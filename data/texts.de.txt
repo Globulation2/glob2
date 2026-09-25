@@ -3060,3 +3060,63 @@ Beenden ohne zu speichern
 Spiel beendet. Sie können dieses Fenster schließen oder neu laden, um erneut zu spielen.
 [campaign editor save failed]
 Speichern nicht bestätigt. OK versucht es erneut; Abbrechen kehrt zum Editor-Menü zurück.
+[Actions]
+Aktionen
+[Minimap]
+Minikarte
+[Fast forward]
+Vorspulen
+[Hide keyboard]
+Tastatur ausblenden
+[Dialog text size]
+Dialogschriftgröße
+[Player slot]
+Spielerplatz
+[Team color]
+Teamfarbe
+[Alliance group]
+Bündnisgruppe
+[menu]
+Menü
+[Editor tools]
+Werkzeuge
+[Pan map]
+Karte verschieben
+[Edit map]
+Karte bearbeiten
+[Editor map]
+Karte
+[Flags]
+Flaggen
+[Pause]
+Pause
+[Speed]
+Tempo
+[Objectives]
+Aufgaben
+[Menu]
+Menü
+[Goals]
+Ziele
+[Teams]
+Teams
+[Use this landscape]
+Diese Landschaft verwenden
+[Reset]
+Zurücksetzen
+[Generating...]
+Wird erzeugt...
+[Players]
+Spieler
+[Rules]
+Regeln
+[settings Interface layout]
+Oberflächenlayout
+[settings Automatic]
+Automatisch
+[settings Compact]
+Eng
+[settings Spacious]
+Geräumig
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Geräumig verwendet bei genügend Platz eine Seitenleiste. Kompakt verwendet eine Werkzeugleiste und ausklappbare Bereiche.

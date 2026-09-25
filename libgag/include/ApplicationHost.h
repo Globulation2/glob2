@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 
+namespace GAGCore { struct ViewportMetrics; struct InputCapabilities; }
 namespace GAGCore::ApplicationHost
 {
 class Loop
@@ -26,6 +27,8 @@ void wait(std::uint32_t milliseconds);
 
 // Consume the newest host viewport request at an application frame boundary.
 bool takeViewportSize(int &width, int &height);
+// Read current host points, safe areas, keyboard occlusion and input capabilities.
+bool presentationMetrics(ViewportMetrics& metrics, InputCapabilities& input);
 // Visibility edges are retained even when no frame ran while hidden.
 bool takeVisibilityChange(bool &hidden);
 

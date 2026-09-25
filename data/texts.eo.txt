@@ -3058,3 +3058,63 @@ Eliri sen konservi
 La ludo fermiĝis. Vi povas fermi ĉi tiun fenestron aŭ reŝargi por denove ludi.
 [campaign editor save failed]
 Konservado ne konfirmita. Bone reprovas; Nuligi revenas al la redaktila menuo.
+[Actions]
+Agoj
+[Minimap]
+Mapeto
+[Fast forward]
+Rapide antaŭen
+[Hide keyboard]
+Kaŝi klavaron
+[Dialog text size]
+Dialoga tekstogrando
+[Player slot]
+Ludantloko
+[Team color]
+Teamkoloro
+[Alliance group]
+Alianca grupo
+[menu]
+Menuo
+[Editor tools]
+Iloj
+[Pan map]
+Movi mapon
+[Edit map]
+Redakti Karton
+[Editor map]
+Mapo
+[Flags]
+Flagoj
+[Pause]
+Paŭzo
+[Speed]
+Rapido
+[Objectives]
+Celtabulo
+[Menu]
+Menuo
+[Goals]
+Celoj
+[Teams]
+Teamoj
+[Use this landscape]
+Uzi ĉi tiun pejzaĝon
+[Reset]
+Restarigi
+[Generating...]
+Generado...
+[Players]
+Ludantoj
+[Rules]
+Reguloj
+[settings Interface layout]
+Interfaca aranĝo
+[settings Automatic]
+Aŭtomata
+[settings Compact]
+Proksimaj
+[settings Spacious]
+Vasta
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La vasta aranĝo uzas flankan panelon kiam estas spaco. La kompakta uzas ilobreton kaj malfermeblajn panelojn.

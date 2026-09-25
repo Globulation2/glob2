@@ -3058,3 +3058,63 @@ Emoji
 تم إغلاق اللعبة. يمكنك إغلاق هذه النافذة أو إعادة التحميل للعب مرة أخرى.
 [campaign editor save failed]
 الحفظ غير مؤكد. موافق يعيد المحاولة؛ إلغاء يعود إلى قائمة المحرر.
+[Actions]
+إجراءات
+[Minimap]
+خريطة مصغرة
+[Fast forward]
+تقديم سريع
+[Hide keyboard]
+إخفاء لوحة المفاتيح
+[Dialog text size]
+حجم نص الحوار
+[Player slot]
+خانة اللاعب
+[Team color]
+لون الفريق
+[Alliance group]
+مجموعة التحالف
+[menu]
+القائمة
+[Editor tools]
+أدوات
+[Pan map]
+تحريك الخريطة
+[Edit map]
+ﺣﺮِّﺭ ﺍﻟﺨﺎﺭﻃﺔ
+[Editor map]
+خريطة
+[Flags]
+أعلام
+[Pause]
+إيقاف مؤقت
+[Speed]
+السرعة
+[Objectives]
+ﺍﻷﻫﺪﺍﻑ
+[Menu]
+القائمة
+[Goals]
+الأهداف
+[Teams]
+الفرق
+[Use this landscape]
+استخدام هذه التضاريس
+[Reset]
+إعادة تعيين
+[Generating...]
+جارٍ التوليد...
+[Players]
+ﺍﻟﻼﻋﺒﻮﻥ
+[Rules]
+القواعد
+[settings Interface layout]
+تخطيط الواجهة
+[settings Automatic]
+تلقائي
+[settings Compact]
+متقاربة
+[settings Spacious]
+واسع
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+يستخدم التخطيط الواسع لوحة جانبية عند توفر مساحة. يستخدم التخطيط المضغوط شريط أدوات ولوحات قابلة للفتح.

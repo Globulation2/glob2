@@ -47,6 +47,16 @@ exports.gameURL = () => {
 
 exports.clickMainMenu = async (page, action) => {
   const {width, height} = page.viewportSize();
+  const touch = await page.evaluate(() => Boolean(Module.presentationMetrics?.touch));
+  if (touch || width < 640 || height < 480) {
+    const names=['custom','campaign','load','tutorial','yog','settings','editor','credits','quit'];
+    const index=names.indexOf(action),available=Math.min(width,640)-16;
+    const columns=available>=456 ? 2 : 1;
+    const buttonWidth=(available-(columns-1)*8)/columns;
+    return page.locator('#canvas').click({position:{
+      x:(width-Math.min(width,640))/2+8+(index%columns)*(buttonWidth+8)+buttonWidth/2,
+      y:56+Math.floor(index/columns)*56+24},delay:80});
+  }
   return page.locator('#canvas').click({position: point(width, height, action), delay: 80});
 };
 
@@ -96,4 +106,21 @@ exports.clickCustomAIProfile = (page, colony) => {
   return page.locator('#canvas').click({
     position: {x: x + w - 150 + 64, y: 85 + 42 + colony * rowHeight + 42 + 14}, delay: 80,
   });
+};
+
+// Exercise the visible editing surface with actual mouse and keyboard events.
+// Filling the DOM value directly would miss focus, deletion and key routing bugs.
+exports.editTextField = async (page, value, password = false) => {
+  const {expect} = require('@playwright/test');
+  const field = page.locator(password ? 'input[aria-label="Password"]' : 'input[aria-label="Game text field"]');
+  await field.click();
+  await expect(field).toBeFocused();
+  // Use the platform's native Select All shortcut; Home/End caret behavior
+  // differs between macOS Firefox and the other browser/platform pairs.
+  await field.press('ControlOrMeta+A');
+  await field.press('Delete');
+  await expect(field).toHaveValue('');
+  await field.pressSequentially(value);
+  await expect(field).toHaveValue(value);
+  if (password) await expect(field).toHaveAttribute('type', 'password');
 };

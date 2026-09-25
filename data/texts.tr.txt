@@ -3068,3 +3068,63 @@ Kaydetmeden çık
 Oyun kapatıldı. Bu pencereyi kapatabilir veya yeniden oynamak için sayfayı yenileyebilirsiniz.
 [campaign editor save failed]
 Kayıt onaylanmadı. Tamam yeniden dener; İptal düzenleyici menüsüne döner.
+[Actions]
+Eylemler
+[Minimap]
+Mini harita
+[Fast forward]
+İleri sar
+[Hide keyboard]
+Klavyeyi gizle
+[Dialog text size]
+İletişim kutusu yazı boyutu
+[Player slot]
+Oyuncu yuvası
+[Team color]
+Takım rengi
+[Alliance group]
+İttifak grubu
+[menu]
+Menü
+[Editor tools]
+Araçlar
+[Pan map]
+Haritayı kaydır
+[Edit map]
+Haritayı Düzenle
+[Editor map]
+Harita
+[Flags]
+Bayraklar
+[Pause]
+Duraklat
+[Speed]
+Hız
+[Objectives]
+Hedefler
+[Menu]
+Menü
+[Goals]
+Hedefler
+[Teams]
+Takımlar
+[Use this landscape]
+Bu manzarayı kullan
+[Reset]
+Sıfırla
+[Generating...]
+Oluşturuluyor...
+[Players]
+Oyuncular
+[Rules]
+Kurallar
+[settings Interface layout]
+Arayüz düzeni
+[settings Automatic]
+Otomatik
+[settings Compact]
+Yakın
+[settings Spacious]
+Geniş
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Geniş düzen, yer olduğunda yan panel kullanır. Kompakt düzen, araç çubuğu ve açılır paneller kullanır.

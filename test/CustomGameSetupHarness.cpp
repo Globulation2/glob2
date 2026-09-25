@@ -1236,22 +1236,41 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
         e.button.x = -20; e.button.y = -20;
         picker.dispatchEvents(&e);
         assert(!widget->dragging && picker.activePreview == -1 && picker.returnCode == 0);
-        const auto before = widget->worldArea();
-        const double anchor = MapPreviewGeometry::wrap(double(widget->mouseX - before.x) / before.w - widget->view.offsetX);
-        e = {}; e.type = SDL_MOUSEWHEEL; e.wheel.y = 1;
+        // The picker intentionally reserves the wheel for grid scrolling, even
+        // above a preview. MapPreviewHarness separately checks anchored zoom.
+        e = {}; e.type = SDL_MOUSEMOTION;
+        e.motion.x = area.x + area.w / 2; e.motion.y = area.y + area.h / 2;
         picker.dispatchEvents(&e);
-        const auto after = widget->worldArea();
-        assert(widget->zoom > 1 && std::abs(anchor - MapPreviewGeometry::wrap(double(widget->mouseX - after.x) / after.w - widget->view.offsetX)) < 1e-12);
+        const auto previewZoom = widget->zoom;
+        const auto previewX = widget->view.offsetX, previewY = widget->view.offsetY;
+        auto &grid = picker.controls->regions[30];
+        assert(grid.maximum > 0);
+        bool scrolled = false;
+        for (int direction : {-1, 1}) {
+          const int before = grid.offset;
+          e = {}; e.type = SDL_MOUSEWHEEL; e.wheel.y = direction;
+          picker.dispatchEvents(&e);
+          assert(grid.offset == std::clamp(before - direction * 36, 0, grid.maximum));
+          scrolled |= grid.offset != before;
+          assert(widget->zoom == previewZoom && widget->view.offsetX == previewX &&
+                 widget->view.offsetY == previewY && picker.returnCode == 0);
+        }
+        assert(scrolled);
         e = {}; e.type = SDL_MOUSEBUTTONDOWN; e.button.button = SDL_BUTTON_RIGHT;
         e.button.x = area.x + area.w / 2; e.button.y = area.y + area.h / 2;
         picker.dispatchEvents(&e);
         assert(widget->zoom == 1 && widget->view.offsetX == 0 && picker.returnCode == 0);
       }
+      // Keyboard navigation follows the displayed sort/filter order, not the
+      // registry identity of a landscape (these differ in Random order).
+      const auto position = std::find(picker.visible.begin(), picker.visible.end(), other);
+      assert(position != picker.visible.end());
+      const int left = std::max(0, int(position - picker.visible.begin()) - 1);
       pickerKey(SDLK_LEFT);
-      assert(picker.selection() == std::max(0, other - 1));
+      assert(picker.selection() == picker.visible[left]);
       pickerKey(SDLK_DOWN);
-      assert(picker.selection() ==
-             std::min(int(shown.size()) - 1, std::max(0, other - 1) + picker.columns));
+      assert(picker.selection() == picker.visible[
+          std::min(int(picker.visible.size()) - 1, left + picker.columns)]);
       pickerKey(SDLK_ESCAPE);
       assert(picker.returnCode == LandscapePickerScreen::CANCEL);
       // Regenerate all rolls every landscape again with fresh seeds.

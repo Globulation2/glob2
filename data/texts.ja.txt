@@ -3056,3 +3056,63 @@ Emoji
 ゲームが終了しました。このウィンドウを閉じるか、再読み込みして再度プレイできます。
 [campaign editor save failed]
 保存が確認されていません。OKで再試行、キャンセルでエディタメニューに戻ります。
+[Actions]
+操作
+[Minimap]
+ミニマップ
+[Fast forward]
+早送り
+[Hide keyboard]
+キーボードを隠す
+[Dialog text size]
+ダイアログの文字サイズ
+[Player slot]
+プレイヤー枠
+[Team color]
+チームの色
+[Alliance group]
+同盟グループ
+[menu]
+メニュー
+[Editor tools]
+ツール
+[Pan map]
+マップを移動
+[Edit map]
+マップを編集
+[Editor map]
+マップ
+[Flags]
+旗
+[Pause]
+一時停止
+[Speed]
+速度
+[Objectives]
+目標
+[Menu]
+メニュー
+[Goals]
+目標
+[Teams]
+チーム
+[Use this landscape]
+この地形を使用
+[Reset]
+リセット
+[Generating...]
+生成中...
+[Players]
+プレイヤー
+[Rules]
+ルール
+[settings Interface layout]
+インターフェースの配置
+[settings Automatic]
+自動
+[settings Compact]
+狭い
+[settings Spacious]
+ゆったり
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+ゆったり配置は十分な空間があるときにサイドパネルを使います。コンパクト配置はツールバーと開閉式パネルを使います。

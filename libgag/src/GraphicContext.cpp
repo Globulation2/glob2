@@ -6,6 +6,8 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
+#include <InterfacePresentation.h>
+#include <BrowserTextInput.h>
 #include <algorithm>
 #include <assert.h>
 #include <cstdlib>
@@ -179,6 +181,7 @@ namespace GAGCore
 	// interface out on 366x274, narrower than the 368px main menu panel.
 	void GraphicContext::applyWindowMinimumSize(void)
 	{
+        if (window && (compactWindowAllowed || (renderer && phonePresentationRequested()))) { SDL_SetWindowMinimumSize(window,1,1); return; }
 		if (!window) return;
 		#ifdef GLOB2_WEBGL2
 		return;
@@ -277,11 +280,13 @@ namespace GAGCore
 		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
 		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
 		cursorManager.releaseNativeCursor();
+		renderer.reset();
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
 		releaseFrameCache();
 		freeOwnedSurface();
 		if (context) SDL_GL_DeleteContext(context);
 		if (window) SDL_DestroyWindow(window);
+		window = nullptr;
 		_gc = nullptr;
 		TTF_Quit();
 		SDL_Quit();
@@ -379,6 +384,7 @@ namespace GAGCore
 
 	void GraphicContext::freeOwnedSurface(void)
 	{
+        softwareRasterizer.reset();
 		if (ownsSurface && sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		sdlsurface = NULL;
@@ -424,6 +430,11 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
+        if (responsiveViewport) {
+            if (renderer) renderer->outputSize(drawableW, drawableH);
+            setResponsiveViewport(true, responsiveMinW, responsiveMinH);
+            return;
+        }
 		if (windowW <= 0 || windowH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
 		// A resizable window keeps the interface at its scale: the logical surface
 		// follows the window divided by uiScale, not the window itself.
@@ -450,8 +461,10 @@ namespace GAGCore
 				glLoadIdentity();
 			}
 			#endif
+			if (renderer) renderer->logicalSize(logicalW, logicalH);
 			setClipRect();
 		}
+		if (renderer) renderer->outputSize(drawableW, drawableH);
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
@@ -501,12 +514,19 @@ namespace GAGCore
             case SDL_KEYDOWN:
                 if(event->key.keysym.sym==SDLK_F11 && !event->key.repeat)_gc->toggleFullscreen();
                 break;
+            case SDL_RENDER_DEVICE_RESET:
+            case SDL_RENDER_TARGETS_RESET:
+                if (_gc->renderer) _gc->renderer->reset();
+                break;
 			case SDL_MOUSEMOTION:
-				_gc->windowToLogical(event->motion.x, event->motion.y);
+                // SDL's renderer event watch already maps polled events to its
+                // logical size. Raw SDL_GetMouseState coordinates still need
+                // translateMouseCoordinates below.
+				if (!_gc->renderer) _gc->windowToLogical(event->motion.x, event->motion.y);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				_gc->windowToLogical(event->button.x, event->button.y);
+				if (!_gc->renderer) _gc->windowToLogical(event->button.x, event->button.y);
 				break;
 			case SDL_WINDOWEVENT:
 				#ifndef GLOB2_WEBGL2
@@ -601,8 +621,15 @@ namespace GAGCore
 		const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
 
 		// set flags
+        const char* selectedRenderer = SDL_getenv("GLOB2_RENDERER");
+        if (selectedRenderer && std::string(selectedRenderer) == "sdl") flags |= PORTABLEGPU;
+#ifdef GLOB2_MOBILE
+        flags |= PORTABLEGPU | RESIZABLE;
+#endif
+        if (flags & PORTABLEGPU) flags &= ~USEGPU;
 		optionFlags = flags;
-		Uint32 sdlFlags = 0;
+        fixedLogicalW=logicalW; fixedLogicalH=logicalH; responsiveViewport=false;
+		Uint32 sdlFlags = (flags & PORTABLEGPU) ? SDL_WINDOW_ALLOW_HIGHDPI : 0;
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.
 			sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -631,6 +658,7 @@ namespace GAGCore
 		releaseFrameCache();
 		if (context) SDL_GL_DeleteContext(context);
 		context = nullptr;
+		renderer.reset();
 		freeOwnedSurface();
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -649,6 +677,14 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
+		if (flags & PORTABLEGPU) {
+            renderer = makeSDLRenderBackend(window, logicalW, logicalH);
+            if (!renderer) {
+                std::cerr << "Cannot initialize portable renderer: " << SDL_GetError() << std::endl;
+                return false;
+            }
+            renderer->outputSize(drawableW, drawableH);
+        }
 		applyWindowMinimumSize();
 		// Own the drawing surface: SDL invalidates its window surface during resizing.
 		sdlsurface = SDL_CreateRGBSurface(0, logicalW, logicalH, 32,
@@ -770,14 +806,17 @@ namespace GAGCore
 			#endif
 
 			eventThread = SDL_ThreadID();
-			SDL_AddEventWatch(watchWindow, this);
-			watchingEvents = true;
+			if (!renderer) {
+				SDL_AddEventWatch(watchWindow, this);
+				watchingEvents = true;
+			}
 			return true;
 		}
 	}
 
 	void GraphicContext::nextFrame(void)
 	{
+        endBrowserTextFrame();
 		DrawableSurface::nextFrame();
 		if (sdlsurface)
 		{
@@ -795,6 +834,21 @@ namespace GAGCore
 					cursorScale = std::min(float(windowW) / getW(), float(windowH) / getH());
 				cursorManager.update(cursorScale);
 			}
+
+
+            if (renderer) {
+                if (!pendingScreenshot.empty()) {
+                    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> pixels(renderer->capture(), SDL_FreeSurface);
+                    bool saved=false;
+                    for (size_t i=0;i<Toolkit::getFileManager()->getDirCount();++i) {
+                        auto path=Toolkit::getFileManager()->getDir(i)+DIR_SEPARATOR_S+pendingScreenshot;
+                        if(SDL_SaveBMP(pixels.get(),path.c_str())==0) {saved=true;break;}
+                    }
+                    if(!saved) std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
+                    pendingScreenshot.clear();
+                }
+                renderer->present(); return;
+            }
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();
 			#endif
@@ -808,6 +862,7 @@ namespace GAGCore
 	{
 		PERF_SCOPE_TIME(Screenshot);
 		SDL_Surface *toPrintSurface = NULL;
+        if (renderer) { pendingScreenshot=filename; return; }
 
 		// Fetch the surface to print
 		#ifdef HAVE_OPENGL

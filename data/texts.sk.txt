@@ -3068,3 +3068,63 @@ Ukončiť bez uloženia
 Hra bola ukončená. Toto okno môžete zavrieť alebo znova načítať stránku a hrať znova.
 [campaign editor save failed]
 Uloženie nepotvrdené. OK to skúsi znova; Zrušiť sa vráti do ponuky editora.
+[Actions]
+Akcie
+[Minimap]
+Minimapa
+[Fast forward]
+Rýchly posun
+[Hide keyboard]
+Skryť klávesnicu
+[Dialog text size]
+Veľkosť textu dialógov
+[Player slot]
+Miesto hráča
+[Team color]
+Farba tímu
+[Alliance group]
+Skupina aliancie
+[menu]
+Ponuka
+[Editor tools]
+Nástroje
+[Pan map]
+Posun mapy
+[Edit map]
+Upraviť mapu
+[Editor map]
+Mapa
+[Flags]
+Vlajky
+[Pause]
+Pozastaviť
+[Speed]
+Rýchlosť
+[Objectives]
+Ciele
+[Menu]
+Ponuka
+[Goals]
+Ciele
+[Teams]
+Tímy
+[Use this landscape]
+Použiť túto krajinu
+[Reset]
+Obnoviť
+[Generating...]
+Generovanie...
+[Players]
+Hráči
+[Rules]
+Pravidlá
+[settings Interface layout]
+Rozloženie rozhrania
+[settings Automatic]
+Automatický
+[settings Compact]
+Blízko seba
+[settings Spacious]
+Priestranné
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Priestranné rozloženie používa bočný panel, ak je dosť miesta. Kompaktné používa panel nástrojov a vysúvacie panely.

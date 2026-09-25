@@ -3056,3 +3056,63 @@ Sair sem salvar
 Jogo encerrado. Você pode fechar esta janela ou recarregar para jogar de novo.
 [campaign editor save failed]
 Salvamento não confirmado. OK tenta de novo; Cancelar volta ao menu do editor.
+[Actions]
+Ações
+[Minimap]
+Minimapa
+[Fast forward]
+Avançar rápido
+[Hide keyboard]
+Ocultar teclado
+[Dialog text size]
+Tamanho do texto dos diálogos
+[Player slot]
+Vaga de jogador
+[Team color]
+Cor da equipe
+[Alliance group]
+Grupo de aliança
+[menu]
+Menu
+[Editor tools]
+Ferramentas
+[Pan map]
+Mover mapa
+[Edit map]
+Editar mapa
+[Editor map]
+Mapa
+[Flags]
+Bandeiras
+[Pause]
+Pausar
+[Speed]
+Velocidade
+[Objectives]
+objetivos
+[Menu]
+Menu
+[Goals]
+Objetivos
+[Teams]
+Equipes
+[Use this landscape]
+Usar esta paisagem
+[Reset]
+Redefinir
+[Generating...]
+Gerando...
+[Players]
+Jogadores
+[Rules]
+Regras
+[settings Interface layout]
+Layout da interface
+[settings Automatic]
+Automática
+[settings Compact]
+Próximos
+[settings Spacious]
+Espaçoso
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+O modo espaçoso usa um painel lateral quando há espaço. O modo compacto usa uma barra de ferramentas e painéis retráteis.

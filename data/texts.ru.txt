@@ -3058,3 +3058,63 @@ Emoji
 Игра закрыта. Можно закрыть это окно или перезагрузить страницу, чтобы сыграть снова.
 [campaign editor save failed]
 Сохранение не подтверждено. «ОК» повторяет попытку; «Отмена» возвращает в меню редактора.
+[Actions]
+Действия
+[Minimap]
+Мини-карта
+[Fast forward]
+Перемотка вперёд
+[Hide keyboard]
+Скрыть клавиатуру
+[Dialog text size]
+Размер текста диалогов
+[Player slot]
+Место игрока
+[Team color]
+Цвет команды
+[Alliance group]
+Группа союзников
+[menu]
+Меню
+[Editor tools]
+Инструменты
+[Pan map]
+Перемещение карты
+[Edit map]
+Ред. карту
+[Editor map]
+Карта
+[Flags]
+Флаги
+[Pause]
+Пауза
+[Speed]
+Скорость
+[Objectives]
+Цели
+[Menu]
+Меню
+[Goals]
+Цели
+[Teams]
+Команды
+[Use this landscape]
+Использовать этот ландшафт
+[Reset]
+Сбросить
+[Generating...]
+Создание...
+[Players]
+Игроки
+[Rules]
+Правила
+[settings Interface layout]
+Компоновка интерфейса
+[settings Automatic]
+Автоматически
+[settings Compact]
+Близко
+[settings Spacious]
+Просторная
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Просторная компоновка использует боковую панель, если хватает места. Компактная — панель инструментов и выдвижные панели.

@@ -3084,3 +3084,63 @@ Afsluiten zonder op te slaan
 Spel gesloten. U kunt dit venster sluiten of herladen om opnieuw te spelen.
 [campaign editor save failed]
 Opslaan niet bevestigd. OK probeert opnieuw; Annuleren gaat terug naar het editormenu.
+[Actions]
+Acties
+[Minimap]
+Minikaart
+[Fast forward]
+Vooruitspoelen
+[Hide keyboard]
+Toetsenbord verbergen
+[Dialog text size]
+Tekstgrootte dialoogvensters
+[Player slot]
+Spelersplaats
+[Team color]
+Teamkleur
+[Alliance group]
+Alliantiegroep
+[menu]
+Menu
+[Editor tools]
+Gereedschap
+[Pan map]
+Kaart verschuiven
+[Edit map]
+Bewerken
+[Editor map]
+Kaart
+[Flags]
+Vlaggen
+[Pause]
+Pauze
+[Speed]
+Snelheid
+[Objectives]
+Doelen
+[Menu]
+Menu
+[Goals]
+Doelen
+[Teams]
+Teams
+[Use this landscape]
+Dit landschap gebruiken
+[Reset]
+Herstellen
+[Generating...]
+Genereren...
+[Players]
+Spelers
+[Rules]
+Regels
+[settings Interface layout]
+Interface-indeling
+[settings Automatic]
+Automatisch
+[settings Compact]
+Dicht bijeen
+[settings Spacious]
+Ruim
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+De ruime indeling gebruikt een zijpaneel als er plaats is. De compacte indeling gebruikt een werkbalk en uitklapbare panelen.

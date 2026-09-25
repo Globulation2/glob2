@@ -3058,3 +3058,63 @@ Emoji
 بازی بسته شد. می‌توانید این پنجره را ببندید یا صفحه را دوباره بارگذاری کنید تا دوباره بازی کنید.
 [campaign editor save failed]
 ذخیره تأیید نشد. تأیید دوباره تلاش می‌کند؛ لغو به منوی ویرایشگر بازمی‌گردد.
+[Actions]
+عملیات
+[Minimap]
+نقشه کوچک
+[Fast forward]
+جلو بردن سریع
+[Hide keyboard]
+پنهان کردن صفحه‌کلید
+[Dialog text size]
+اندازه متن گفتگو
+[Player slot]
+جایگاه بازیکن
+[Team color]
+رنگ تیم
+[Alliance group]
+گروه اتحاد
+[menu]
+منو
+[Editor tools]
+ابزارها
+[Pan map]
+جابه‌جایی نقشه
+[Edit map]
+ویرایش نقشه
+[Editor map]
+نقشه
+[Flags]
+پرچم ها
+[Pause]
+مکث
+[Speed]
+سرعت
+[Objectives]
+هدفهای بازی
+[Menu]
+منو
+[Goals]
+اهداف
+[Teams]
+تیم‌ها
+[Use this landscape]
+استفاده از این چشم‌انداز
+[Reset]
+بازنشانی
+[Generating...]
+در حال تولید...
+[Players]
+بازیکنان
+[Rules]
+قوانین
+[settings Interface layout]
+چیدمان رابط
+[settings Automatic]
+خودکار
+[settings Compact]
+نزدیک
+[settings Spacious]
+جادار
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+چیدمان جادار در صورت وجود فضا از پنل کناری استفاده می‌کند. چیدمان فشرده از نوار ابزار و پنل‌های بازشو استفاده می‌کند.

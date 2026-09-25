@@ -3070,3 +3070,63 @@ Irten gorde gabe
 Jokoa itxi da. Leiho hau itxi dezakezu edo orria berritu berriro jolasteko.
 [campaign editor save failed]
 Gordetzea ez da berretsi. Ados-ek berriro saiatzen du; Utzi-k editorearen menura itzultzen du.
+[Actions]
+Ekintzak
+[Minimap]
+Minimapa
+[Fast forward]
+Aurreratu azkar
+[Hide keyboard]
+Ezkutatu teklatua
+[Dialog text size]
+Elkarrizketako testuaren tamaina
+[Player slot]
+Jokalariaren lekua
+[Team color]
+Taldearen kolorea
+[Alliance group]
+Aliantza taldea
+[menu]
+Menua
+[Editor tools]
+Tresnak
+[Pan map]
+Mugitu mapa
+[Edit map]
+Editatu mapa
+[Editor map]
+Mapa
+[Flags]
+Banderak
+[Pause]
+Pausatu
+[Speed]
+Abiadura
+[Objectives]
+Helburuak
+[Menu]
+Menua
+[Goals]
+Helburuak
+[Teams]
+Taldeak
+[Use this landscape]
+Erabili paisaia hau
+[Reset]
+Berrezarri
+[Generating...]
+Sortzen...
+[Players]
+Jokalariak
+[Rules]
+Arauak
+[settings Interface layout]
+Interfazearen diseinua
+[settings Automatic]
+Automatikoa
+[settings Compact]
+Hurbil
+[settings Spacious]
+Zabala
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Diseinu zabalak alboko panela erabiltzen du lekua dagoenean. Trinkoak tresna-barra eta panel zabalgarriak erabiltzen ditu.

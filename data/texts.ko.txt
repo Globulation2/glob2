@@ -3056,3 +3056,63 @@ Emoji
 게임이 종료되었습니다. 이 창을 닫거나 새로고침하여 다시 플레이할 수 있습니다.
 [campaign editor save failed]
 저장이 확인되지 않았습니다. 확인은 다시 시도하고, 취소는 편집기 메뉴로 돌아갑니다.
+[Actions]
+작업
+[Minimap]
+미니맵
+[Fast forward]
+빨리 감기
+[Hide keyboard]
+키보드 숨기기
+[Dialog text size]
+대화 상자 글자 크기
+[Player slot]
+플레이어 슬롯
+[Team color]
+팀 색상
+[Alliance group]
+동맹 그룹
+[menu]
+메뉴
+[Editor tools]
+도구
+[Pan map]
+지도 이동
+[Edit map]
+지도 편집
+[Editor map]
+지도
+[Flags]
+깃발
+[Pause]
+일시 정지
+[Speed]
+속도
+[Objectives]
+목표
+[Menu]
+메뉴
+[Goals]
+목표
+[Teams]
+팀
+[Use this landscape]
+이 지형 사용
+[Reset]
+초기화
+[Generating...]
+생성 중...
+[Players]
+플레이어
+[Rules]
+규칙
+[settings Interface layout]
+인터페이스 배치
+[settings Automatic]
+자동
+[settings Compact]
+좁게
+[settings Spacious]
+여유롭게
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+여유로운 배치는 공간이 충분하면 측면 패널을 사용합니다. 간결한 배치는 도구 모음과 펼칠 수 있는 패널을 사용합니다.

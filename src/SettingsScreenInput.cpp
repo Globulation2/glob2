@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
+#include <BrowserTextInput.h>
 #include <Toolkit.h>
 #include <algorithm>
 
@@ -24,7 +25,7 @@ void SettingsScreen::invoke(Row row,int direction)
     }else if(row.kind==Kind::Number && row.change){row.change(std::clamp(row.number+(direction?direction:1),row.minimum,row.maximum));}
     else if(row.kind==Kind::Slider && row.change){row.change(std::clamp(row.number+(direction?direction:1)*3,row.minimum,row.maximum));}
     else if(row.kind==Kind::Text){
-        if(!editingText){textDraft=globalContainer->settings.getUsername();editingText=true;textCursor=textDraft.size();selectAllText=false;SDL_StartTextInput();}
+        if(!editingText){textDraft=globalContainer->settings.getUsername();editingText=true;textCursor=textDraft.size();selectAllText=false;SDL_StartTextInput();focusBrowserTextInput(this);}
     }
 }
 void SettingsScreen::ensureFocusVisible()
@@ -63,6 +64,28 @@ void SettingsScreen::adjustSlider(const std::string& id,int x)
 }
 void SettingsScreen::onSDLEvent(SDL_Event* event)
 {
+    if (phonePresentationRequested()) {
+        if ((event->type==SDL_MOUSEMOTION && event->motion.which==SDL_TOUCH_MOUSEID) ||
+            ((event->type==SDL_MOUSEBUTTONDOWN || event->type==SDL_MOUSEBUTTONUP) && event->button.which==SDL_TOUCH_MOUSEID)) return;
+        if (event->type==SDL_FINGERDOWN || event->type==SDL_FINGERMOTION || event->type==SDL_FINGERUP) {
+            GAGCore::ViewPoint p{event->tfinger.x*getW(),event->tfinger.y*getH()};
+            const auto& f=event->tfinger;
+            auto actions=event->type==SDL_FINGERDOWN?phoneGesture.down(f.touchId,f.fingerId,p):
+                event->type==SDL_FINGERMOTION?phoneGesture.move(f.touchId,f.fingerId,p):phoneGesture.up(f.touchId,f.fingerId,p);
+            for (const auto& action:actions) {
+                if (action.kind==GAGCore::TouchActionKind::Pan) {
+                    if (dropdown.isOpen()) { SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=action.point.y>0?1:-1;onSDLEvent(&wheel); }
+                    else scrollOffset()=std::clamp(scrollOffset()-int(action.point.y),0,std::max(0,contentHeight-viewport.h));
+                } else if (action.kind==GAGCore::TouchActionKind::Select) {
+                    SDL_Event click{};click.type=SDL_MOUSEBUTTONDOWN;click.button.button=SDL_BUTTON_LEFT;
+                    click.button.x=int(action.point.x);click.button.y=int(action.point.y);onSDLEvent(&click);
+                    click.type=SDL_MOUSEBUTTONUP;onSDLEvent(&click);
+                }
+            }
+            return;
+        }
+    }
+
     layout();buildRows();layout();
     if(dropdown.isOpen()){
         int selected=dropdown.handleEvent(*event);
@@ -107,7 +130,7 @@ void SettingsScreen::onSDLEvent(SDL_Event* event)
         if(modal==Modal::None && !compactNavigation && x>=panel.x && x<panel.x+sidebar){
             const char* names[]={"Display & graphics","Audio","Gameplay","Building defaults","Controls","Language & player"};
             int ny=panel.y+76;
-            for(int i=0;i<6;++i){int height=std::max(42,wrappedHeight(tr(names[i]),sidebar-32)+20);
+            for(int i=0;i<6;++i){int height=std::max(phonePresentationRequested()?48:42,wrappedHeight(tr(names[i]),sidebar-32)+20);
                 if(y>=ny && y<ny+height){selectCategory(Category(i));focus="nav."+std::to_string(i);return;}ny+=height+4;
             }
         }
@@ -125,7 +148,7 @@ void SettingsScreen::onSDLEvent(SDL_Event* event)
             if(r.kind==Kind::Binding && !r.extraId.empty() && x>=r.control.x+r.control.w-36){focus=r.extraId;r.change(0);return;}
             if(r.kind==Kind::Slider){dragging=r.id;adjustSlider(r.id,x);return;}
             int direction=0;
-            if(r.kind==Kind::Number){int segment=std::min(32,r.control.w/4);
+            if(r.kind==Kind::Number){int segment=std::min(phonePresentationRequested()?48:32,r.control.w/(phonePresentationRequested()?3:4));
                 if(x<r.control.x+segment)direction=-1;else if(x>=r.control.x+r.control.w-segment)direction=1;else return;
             }
             invoke(r,direction);return;

@@ -380,6 +380,7 @@ void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
 
 void LandscapePickerScreen::render()
 {
+    if(GAGCore::phonePresentationRequested()) {renderPhone();return;}
 	auto &ui = *controls;
 	const int width = gfx->getW(), height = gfx->getH();
 	const int w = std::min(width - 32, 1120), x = (width - w) / 2;
@@ -616,4 +617,37 @@ void LandscapePickerScreen::render()
 		"landscape/use", {useX, height - 55, x + w - useX, 34},
 		tr("Use") + (valid ? " " + entries[selected].name : ""), [this] { confirm(); }, true,
 		valid && chosenSeed().has_value());
+}
+
+bool LandscapePickerScreen::usesResponsiveViewport() const {return GAGCore::phonePresentationRequested();}
+void LandscapePickerScreen::cancelExecutionInput() {controls->cancelTouch();}
+void LandscapePickerScreen::renderPhone()
+{
+    auto& ui=*controls;const int w=gfx->getW()-24,x=12,h=gfx->getH();
+    ui.setDimensions(gfx->getW(),h);
+    ui.box({4,4,gfx->getW()-8,h-8},Color(232,237,218));
+    ui.text(x,12,title,"standard",w);
+    ui.beginRegion(30,{x,44,w,h-108});
+    int y=44-ui.regions[30].offset,start=y;
+    ui.dropdown("landscape/sort",{x,y,w-12,48},{"Random","Alphabetical"},int(sortOrder),[this](int v){sortOrder=SortOrder(v);rebuild();});y+=56;
+    for(const auto& control:GenerationRequest::sharedControls())if(control.id=="width" || control.id=="height" || control.id=="teams") {
+        ui.text(x,y,tr(control.label),"standard",w-12);y+=28;
+        std::vector<std::string> options;for(int v:control.values())options.push_back(std::to_string(control.displayValue(v)));
+        ui.dropdown("landscape/"+control.id,{x,y,w-12,48},options,control.indexOf(control.get(entries.front().request)),[this,control](int v){setShared(control,control.valueAt(v));});y+=60;
+    }
+    ui.button("randomize",{x,y,w-12,48},tr("Randomize"),[this]{randomizeParameters();});y+=56;
+    ui.button("reset",{x,y,w-12,48},tr("Reset"),[this]{resetParameters();});y+=64;
+    for(int i:visible) {
+        const bool enabled=incompatible[i].empty();auto& tile=tiles[i];
+        const int image=std::min(w-28,160);
+        ui.button("landscape/"+std::to_string(i),{x,y,w-12,image+56},"",[this,i]{select(i);},i==selected,enabled);
+        if(tile.widget && tile.widget->isThumbnailLoaded() && enabled) {
+            tile.widget->setScreenPosition(x+(w-12-image)/2,y+8);tile.widget->setDimensions(image,image);
+            if(y+image+8>44 && y<h-64)tile.widget->paint();
+        } else ui.paragraph(x+12,y+16,w-40,enabled?tr("Generating..."):incompatible[i],"standard");
+        ui.text(x+12,y+image+20,entries[i].name,"standard",w-40);y+=image+64;
+    }
+    ui.endRegion(y-start);gfx->setClipRect();
+    ui.button("cancel",{x,h-56,88,48},tr("Back"),[this]{endExecute(CANCEL);});
+    ui.button("confirm",{x+96,h-56,w-96,48},tr("Use this landscape"),[this]{confirm();},true,selected>=0 && incompatible[selected].empty());
 }

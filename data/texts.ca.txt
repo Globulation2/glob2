@@ -3068,3 +3068,63 @@ Surt sense desar
 Partida tancada. Podeu tancar aquesta finestra o tornar a carregar per jugar de nou.
 [campaign editor save failed]
 Desat no confirmat. D'acord ho reintenta; Cancel·la torna al menú de l'editor.
+[Actions]
+Accions
+[Minimap]
+Minimapa
+[Fast forward]
+Avanç ràpid
+[Hide keyboard]
+Amaga el teclat
+[Dialog text size]
+Mida del text dels diàlegs
+[Player slot]
+Plaça de jugador
+[Team color]
+Color de l’equip
+[Alliance group]
+Grup d’aliança
+[menu]
+Menú
+[Editor tools]
+Eines
+[Pan map]
+Desplaça el mapa
+[Edit map]
+Edita el mapa
+[Editor map]
+Mapa
+[Flags]
+Banderes
+[Pause]
+Pausa
+[Speed]
+Velocitat
+[Objectives]
+Objectius
+[Menu]
+Menú
+[Goals]
+Objectius
+[Teams]
+Equips
+[Use this landscape]
+Fes servir aquest paisatge
+[Reset]
+Restableix
+[Generating...]
+S’està generant...
+[Players]
+Jugadors
+[Rules]
+Regles
+[settings Interface layout]
+Disposició de la interfície
+[settings Automatic]
+Automàtica
+[settings Compact]
+Propers
+[settings Spacious]
+Espaiosa
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d’eines i panells desplegables.

@@ -3056,3 +3056,63 @@ Emoji
 Гру закрито. Можете закрити це вікно або перезавантажити сторінку, щоб зіграти знову.
 [campaign editor save failed]
 Збереження не підтверджено. «Гаразд» повторює спробу; «Скасувати» повертає до меню редактора.
+[Actions]
+Дії
+[Minimap]
+Мінімапа
+[Fast forward]
+Перемотування вперед
+[Hide keyboard]
+Сховати клавіатуру
+[Dialog text size]
+Розмір тексту діалогів
+[Player slot]
+Місце гравця
+[Team color]
+Колір команди
+[Alliance group]
+Група союзників
+[menu]
+Меню
+[Editor tools]
+Інструменти
+[Pan map]
+Переміщення мапи
+[Edit map]
+Редагувати мапу
+[Editor map]
+Карта
+[Flags]
+Прапори
+[Pause]
+Пауза
+[Speed]
+Швидкість
+[Objectives]
+Цілі
+[Menu]
+Меню
+[Goals]
+Цілі
+[Teams]
+Команди
+[Use this landscape]
+Використати цей ландшафт
+[Reset]
+Скинути
+[Generating...]
+Створення...
+[Players]
+Гравці
+[Rules]
+Правила
+[settings Interface layout]
+Компонування інтерфейсу
+[settings Automatic]
+Автоматично
+[settings Compact]
+Близько
+[settings Spacious]
+Просторе
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Просторе компонування використовує бічну панель, якщо вистачає місця. Компактне — панель інструментів і висувні панелі.

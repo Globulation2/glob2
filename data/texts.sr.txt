@@ -3060,3 +3060,63 @@ Emoji
 Игра је затворена. Можете затворити овај прозор или поново учитати страницу да бисте опет играли.
 [campaign editor save failed]
 Чување није потврђено. У реду поново покушава; Откажи се враћа у мени едитора.
+[Actions]
+Радње
+[Minimap]
+Мини-мапа
+[Fast forward]
+Премотај унапред
+[Hide keyboard]
+Сакриј тастатуру
+[Dialog text size]
+Величина текста дијалога
+[Player slot]
+Место играча
+[Team color]
+Боја тима
+[Alliance group]
+Група савезника
+[menu]
+Мени
+[Editor tools]
+Алатке
+[Pan map]
+Померање мапе
+[Edit map]
+Уреди мапу
+[Editor map]
+Мапа
+[Flags]
+Заставе
+[Pause]
+Пауза
+[Speed]
+Брзина
+[Objectives]
+Циљеви
+[Menu]
+Мени
+[Goals]
+Циљеви
+[Teams]
+Тимови
+[Use this landscape]
+Користи овај предео
+[Reset]
+Ресетуј
+[Generating...]
+Генерисање...
+[Players]
+Играчи
+[Rules]
+Правила
+[settings Interface layout]
+Распоред интерфејса
+[settings Automatic]
+Аутоматски
+[settings Compact]
+Мали
+[settings Spacious]
+Простран
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Простран распоред користи бочну таблу када има места. Компактан користи траку алатки и табле на извлачење.

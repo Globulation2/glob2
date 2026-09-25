@@ -9,6 +9,7 @@
 
 CampaignSelectorScreen::CampaignSelectorScreen(bool isSelectingSave)
 {
+    enablePhoneForm();
 	StringTable& table=*Toolkit::getStringTable();
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", table.getString("[choose campaign]"));
 	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK, 13);
@@ -48,7 +49,8 @@ void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, i
 	{
 		if (fileList->selection())
 		{
-			description->setText(Toolkit::getStringTable()->getString(descriptionCache.getDescription(getCampaignName())));
+			const auto caption=descriptionCache.getDescription(getCampaignName());
+			description->setText(caption.empty() ? "" : Toolkit::getStringTable()->getString(caption));
 		}
 		else
 		{
