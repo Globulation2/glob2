@@ -31,8 +31,9 @@ validation remain necessary.
 Run commands from the repository root. Versions and checksums are pinned in
 `mobile/toolchain.json`, `mobile/android-tools.json` and `mobile/vcpkg.json`.
 Use `python3 mobile/doctor.py android` or `python3 mobile/doctor.py ios` to inspect
-SDK availability. iOS requires full Xcode; `--developer-dir` on the packaging
-command selects it without changing the machine's Xcode selection.
+SDK availability. iOS requires the pinned full Xcode 27.0 toolchain;
+`--developer-dir` on the packaging command selects it without changing the
+machine's Xcode selection.
 
 Build outputs live under
 `build/<android|ios>/<device|simulator>/<arch>/<api>/<client>/<debug|release>`.
@@ -102,9 +103,13 @@ needs an accelerated SDL display. These checks cover build isolation, artifact
 validation, rendering and input geometry; they do not replace device gameplay,
 background recovery, document-picker or cross-platform simulation checks.
 
-`mobile/smoke.py`, `mobile/ios_smoke.py` and `mobile/android_trust_test.py` retain
-platform diagnostics under `artifacts/`. Their legacy UI sequences may require
-updating as the shared interface evolves. Native document picker and certificate
+`mobile/ios_smoke.py` checks startup, background/resume and fresh-process relaunch
+on a booted simulator named `Glob2-Mobile` in the isolated device set. Pass its
+UUID with `--device`; diagnostics default to `build/mobile-smoke-ios`.
+`mobile/smoke.py` and `mobile/android_trust_test.py` provide Android diagnostics;
+their UI sequences may require updating as the shared interface evolves.
+Keep screenshots and logs under ignored `build/` or `artifacts/` directories.
+Native document picker and certificate
 trust adapters are selected only for mobile builds. Simulation, replay and save
 compatibility must be checked with the shared replay-verification workflow before
 shipping a mobile client.

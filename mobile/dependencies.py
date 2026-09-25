@@ -34,6 +34,7 @@ def main():
         prepare_directory(output,identity)
         vcpkg=ROOT/'build/mobile-tools/vcpkg'
         revision=json.loads((ROOT/'mobile/vcpkg.json').read_text())['builtin-baseline']
+        (ROOT/'build/mobile-tools').mkdir(parents=True, exist_ok=True)
         with BuildLock(ROOT/'build/mobile-tools'):
             if not (vcpkg/'.git').is_dir():
                 subprocess.run(['git','clone','--filter=blob:none','--no-checkout','https://github.com/microsoft/vcpkg.git',str(vcpkg)],check=True)
