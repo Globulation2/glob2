@@ -3070,3 +3070,53 @@ Quitter sans sauvegarder
 Partie terminée. Vous pouvez fermer cette fenêtre ou recharger pour rejouer.
 [campaign editor save failed]
 Sauvegarde non confirmée. OK réessaie ; Annuler revient au menu de l'éditeur.
+[Actions]
+Actions
+[Minimap]
+Minicarte
+[Fast forward]
+Avance rapide
+[Hide keyboard]
+Masquer le clavier
+[Dialog text size]
+Taille du texte des dialogues
+[Player slot]
+Place de joueur
+[Team color]
+Couleur de l’équipe
+[Alliance group]
+Groupe d’alliance
+[menu]
+Menu
+[Editor tools]
+Outils
+[Pan map]
+Déplacer la carte
+[Edit map]
+Editer la carte
+[Editor map]
+Carte
+[Flags]
+Drapeaux
+[Pause]
+Pause
+[Speed]
+Vitesse
+[Objectives]
+Objectifs
+[Menu]
+Menu
+[Goals]
+Objectifs
+[Teams]
+Équipes
+[Use this landscape]
+Utiliser ce paysage
+[Reset]
+Réinitialiser
+[Generating...]
+Génération...
+[Players]
+Joueurs
+[Rules]
+Règles

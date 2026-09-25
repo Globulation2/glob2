@@ -3056,3 +3056,53 @@ Keluar tanpa menyimpan
 Permainan ditutup. Anda dapat menutup jendela ini atau memuat ulang untuk bermain lagi.
 [campaign editor save failed]
 Penyimpanan belum dikonfirmasi. OK akan mencoba lagi; Batal kembali ke menu editor.
+[Actions]
+Tindakan
+[Minimap]
+Peta mini
+[Fast forward]
+Percepat
+[Hide keyboard]
+Sembunyikan papan ketik
+[Dialog text size]
+Ukuran teks dialog
+[Player slot]
+Slot pemain
+[Team color]
+Warna tim
+[Alliance group]
+Grup aliansi
+[menu]
+Menu
+[Editor tools]
+Alat
+[Pan map]
+Geser peta
+[Edit map]
+Edit Peta
+[Editor map]
+Peta
+[Flags]
+Bendera
+[Pause]
+Jeda
+[Speed]
+Kecepatan
+[Objectives]
+Sasaran
+[Menu]
+Menu
+[Goals]
+Tujuan
+[Teams]
+Tim
+[Use this landscape]
+Gunakan lanskap ini
+[Reset]
+Atur ulang
+[Generating...]
+Membuat...
+[Players]
+Pemain
+[Rules]
+Aturan

@@ -3060,3 +3060,53 @@ Ieși fără a salva
 Joc închis. Puteți închide această fereastră sau reîncărca pentru a juca din nou.
 [campaign editor save failed]
 Salvare neconfirmată. OK reîncearcă; Anulare revine la meniul editorului.
+[Actions]
+Acțiuni
+[Minimap]
+Minihartă
+[Fast forward]
+Derulare rapidă
+[Hide keyboard]
+Ascunde tastatura
+[Dialog text size]
+Dimensiunea textului din dialoguri
+[Player slot]
+Loc de jucător
+[Team color]
+Culoarea echipei
+[Alliance group]
+Grup de alianță
+[menu]
+Meniu
+[Editor tools]
+Unelte
+[Pan map]
+Deplasează harta
+[Edit map]
+Editează harta
+[Editor map]
+Hartă
+[Flags]
+Steaguri
+[Pause]
+Pauză
+[Speed]
+Viteză
+[Objectives]
+Obiective
+[Menu]
+Meniu
+[Goals]
+Obiective
+[Teams]
+Echipe
+[Use this landscape]
+Folosește acest peisaj
+[Reset]
+Resetează
+[Generating...]
+Se generează...
+[Players]
+Jucători
+[Rules]
+Reguli

@@ -3060,3 +3060,53 @@ Izhod brez shranjevanja
 Igra je zaprta. To okno lahko zaprete ali stran znova naložite, da igrate še enkrat.
 [campaign editor save failed]
 Shranjevanje ni potrjeno. V redu poskusi znova; Prekliči se vrne v meni urejevalnika.
+[Actions]
+Dejanja
+[Minimap]
+Mini zemljevid
+[Fast forward]
+Hitro naprej
+[Hide keyboard]
+Skrij tipkovnico
+[Dialog text size]
+Velikost besedila pogovornih oken
+[Player slot]
+Mesto igralca
+[Team color]
+Barva ekipe
+[Alliance group]
+Skupina zavezništva
+[menu]
+Meni
+[Editor tools]
+Orodja
+[Pan map]
+Premakni zemljevid
+[Edit map]
+Uredi zemljevid
+[Editor map]
+Zemljevid
+[Flags]
+Zastave
+[Pause]
+Premor
+[Speed]
+Hitrost
+[Objectives]
+Cilji
+[Menu]
+Meni
+[Goals]
+Cilji
+[Teams]
+Ekipe
+[Use this landscape]
+Uporabi to pokrajino
+[Reset]
+Ponastavi
+[Generating...]
+Ustvarjanje...
+[Players]
+Igralci
+[Rules]
+Pravila

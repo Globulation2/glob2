@@ -3066,3 +3066,53 @@ Sair sem gravar
 Jogo fechado. Pode fechar esta janela ou recarregar para jogar novamente.
 [campaign editor save failed]
 Gravação não confirmada. OK repete a tentativa; Cancelar volta ao menu do editor.
+[Actions]
+Ações
+[Minimap]
+Minimapa
+[Fast forward]
+Avançar rapidamente
+[Hide keyboard]
+Ocultar teclado
+[Dialog text size]
+Tamanho do texto dos diálogos
+[Player slot]
+Lugar de jogador
+[Team color]
+Cor da equipa
+[Alliance group]
+Grupo de aliança
+[menu]
+Menu
+[Editor tools]
+Ferramentas
+[Pan map]
+Mover mapa
+[Edit map]
+Editar mapa
+[Editor map]
+Mapa
+[Flags]
+Bandeiras
+[Pause]
+Pausa
+[Speed]
+Velocidade
+[Objectives]
+Objetivos
+[Menu]
+Menu
+[Goals]
+Objetivos
+[Teams]
+Equipas
+[Use this landscape]
+Usar esta paisagem
+[Reset]
+Repor
+[Generating...]
+A gerar...
+[Players]
+Jogadores
+[Rules]
+Regras

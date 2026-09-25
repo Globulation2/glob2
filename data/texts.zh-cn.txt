@@ -3056,3 +3056,53 @@ Emoji
 游戏已关闭。您可以关闭此窗口，或重新加载以再次游戏。
 [campaign editor save failed]
 尚未确认保存。“确定”重试；“取消”返回编辑器菜单。
+[Actions]
+操作
+[Minimap]
+小地图
+[Fast forward]
+快进
+[Hide keyboard]
+隐藏键盘
+[Dialog text size]
+对话框文字大小
+[Player slot]
+玩家槽位
+[Team color]
+队伍颜色
+[Alliance group]
+同盟分组
+[menu]
+菜单
+[Editor tools]
+工具
+[Pan map]
+平移地图
+[Edit map]
+编辑地图
+[Editor map]
+地图
+[Flags]
+旗帜
+[Pause]
+暂停
+[Speed]
+速度
+[Objectives]
+目标
+[Menu]
+菜单
+[Goals]
+目标
+[Teams]
+队伍
+[Use this landscape]
+使用此地形
+[Reset]
+重置
+[Generating...]
+生成中...
+[Players]
+玩家
+[Rules]
+规则

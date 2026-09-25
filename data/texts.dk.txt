@@ -3136,3 +3136,53 @@ Afslut uden at gemme
 Spillet er lukket. Du kan lukke dette vindue eller genindlæse for at spille igen.
 [campaign editor save failed]
 Lagring ikke bekræftet. OK prøver igen; Annuller går tilbage til editormenuen.
+[Actions]
+Handlinger
+[Minimap]
+Minikort
+[Fast forward]
+Spol frem
+[Hide keyboard]
+Skjul tastatur
+[Dialog text size]
+Dialogtekststørrelse
+[Player slot]
+Spillerplads
+[Team color]
+Holdfarve
+[Alliance group]
+Alliancegruppe
+[menu]
+Menu
+[Editor tools]
+Værktøjer
+[Pan map]
+Flyt kort
+[Edit map]
+Rediger kort
+[Editor map]
+Kort
+[Flags]
+Flag
+[Pause]
+Pause
+[Speed]
+Hastighed
+[Objectives]
+Mål
+[Menu]
+Menu
+[Goals]
+Mål
+[Teams]
+Hold
+[Use this landscape]
+Brug dette landskab
+[Reset]
+Nulstil
+[Generating...]
+Genererer...
+[Players]
+Spillere
+[Rules]
+Regler

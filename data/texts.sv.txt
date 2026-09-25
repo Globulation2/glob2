@@ -3070,3 +3070,53 @@ Avsluta utan att spara
 Spelet stängt. Du kan stänga det här fönstret eller ladda om för att spela igen.
 [campaign editor save failed]
 Sparning ej bekräftad. OK försöker igen; Avbryt återgår till redigerarmenyn.
+[Actions]
+Åtgärder
+[Minimap]
+Minikarta
+[Fast forward]
+Spola framåt
+[Hide keyboard]
+Dölj tangentbordet
+[Dialog text size]
+Dialogtextstorlek
+[Player slot]
+Spelarplats
+[Team color]
+Lagfärg
+[Alliance group]
+Alliansgrupp
+[menu]
+Meny
+[Editor tools]
+Verktyg
+[Pan map]
+Flytta kartan
+[Edit map]
+Editera Karta
+[Editor map]
+Karta
+[Flags]
+Flaggor
+[Pause]
+Paus
+[Speed]
+Hastighet
+[Objectives]
+Mål
+[Menu]
+Meny
+[Goals]
+Mål
+[Teams]
+Lag
+[Use this landscape]
+Använd detta landskap
+[Reset]
+Återställ
+[Generating...]
+Genererar...
+[Players]
+Spelare
+[Rules]
+Regler

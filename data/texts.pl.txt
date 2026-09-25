@@ -3060,3 +3060,53 @@ Wyjdź bez zapisywania
 Gra zamknięta. Możesz zamknąć to okno lub przeładować stronę, aby zagrać ponownie.
 [campaign editor save failed]
 Zapis niepotwierdzony. OK ponawia próbę; Anuluj wraca do menu edytora.
+[Actions]
+Działania
+[Minimap]
+Minimapa
+[Fast forward]
+Przewiń do przodu
+[Hide keyboard]
+Ukryj klawiaturę
+[Dialog text size]
+Rozmiar tekstu okien dialogowych
+[Player slot]
+Miejsce gracza
+[Team color]
+Kolor drużyny
+[Alliance group]
+Grupa sojuszu
+[menu]
+Menu
+[Editor tools]
+Narzędzia
+[Pan map]
+Przesuń mapę
+[Edit map]
+Edytuj Mapę
+[Editor map]
+Mapa
+[Flags]
+Flagi
+[Pause]
+Pauza
+[Speed]
+Prędkość
+[Objectives]
+Cele
+[Menu]
+Menu
+[Goals]
+Cele
+[Teams]
+Drużyny
+[Use this landscape]
+Użyj tego krajobrazu
+[Reset]
+Resetuj
+[Generating...]
+Generowanie...
+[Players]
+Gracze
+[Rules]
+Zasady

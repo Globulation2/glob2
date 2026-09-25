@@ -65,6 +65,7 @@
       "Elite",
       "Hospital",
       "Magenta",
+      "Menu",
       "Oceania",
       "Total",
       "Tutorial"
@@ -105,6 +106,8 @@
       "Magenta",
       "Maximum",
       "Name",
+      "Normal",
+      "Pause",
       "Polder",
       "Prestige",
       "Radius",
@@ -112,9 +115,9 @@
       "Standard",
       "Start",
       "Team",
+      "Teams",
       "Version",
-      "Veteran",
-      "Normal"
+      "Veteran"
     ],
     "texts.dk.txt": [
       "Alliance",
@@ -127,6 +130,9 @@
       "Lobby",
       "Magenta",
       "Medium",
+      "Menu",
+      "Normal",
+      "Pause",
       "Pink",
       "Polder",
       "Prestige",
@@ -138,8 +144,7 @@
       "Team",
       "Total",
       "Version",
-      "Veteran",
-      "Normal"
+      "Veteran"
     ],
     "texts.eo.txt": [
       "Info",
@@ -172,6 +177,7 @@
       "45 minutes",
       "60 minutes",
       "90 minutes",
+      "Actions",
       "Alliance",
       "Alliances",
       "Audio",
@@ -181,13 +187,16 @@
       "Continent",
       "Continents",
       "Cyan",
-      "Forts",
       "Europe",
+      "Forts",
       "Grain",
       "Magenta",
+      "Menu",
+      "Normal",
       "Options",
       "Orange",
       "Orientation",
+      "Pause",
       "Plantations",
       "Polder",
       "Prestige",
@@ -197,8 +206,7 @@
       "Total",
       "Version",
       "colonies",
-      "options",
-      "Normal"
+      "options"
     ],
     "texts.gr.txt": [],
     "texts.hu.txt": [
@@ -213,13 +221,14 @@
       "Diagonal",
       "Editor",
       "Elite",
+      "Menu",
+      "Normal",
       "Polder",
       "Radius",
       "Spiral",
       "Total",
       "Tutorial",
-      "Veteran",
-      "Normal"
+      "Veteran"
     ],
     "texts.it.txt": [
       "Africa",
@@ -228,6 +237,7 @@
       "Briefing",
       "Editor",
       "Magenta",
+      "Menu",
       "No",
       "Oceania",
       "Polder",
@@ -245,9 +255,11 @@
       "Info",
       "Lobby",
       "Magenta",
+      "Menu",
       "Polder",
       "School",
       "Team",
+      "Teams",
       "Tutorial",
       "Water",
       "element"
@@ -255,6 +267,7 @@
     "texts.pl.txt": [
       "Audio",
       "Magenta",
+      "Menu",
       "Oceania",
       "Polder"
     ],
@@ -264,9 +277,10 @@
       "Elite",
       "Hospital",
       "Magenta",
+      "Menu",
+      "Normal",
       "Total",
-      "Tutorial",
-      "Normal"
+      "Tutorial"
     ],
     "texts.ro.txt": [
       "Africa",

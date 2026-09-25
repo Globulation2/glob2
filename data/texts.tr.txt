@@ -3068,3 +3068,53 @@ Kaydetmeden çık
 Oyun kapatıldı. Bu pencereyi kapatabilir veya yeniden oynamak için sayfayı yenileyebilirsiniz.
 [campaign editor save failed]
 Kayıt onaylanmadı. Tamam yeniden dener; İptal düzenleyici menüsüne döner.
+[Actions]
+Eylemler
+[Minimap]
+Mini harita
+[Fast forward]
+İleri sar
+[Hide keyboard]
+Klavyeyi gizle
+[Dialog text size]
+İletişim kutusu yazı boyutu
+[Player slot]
+Oyuncu yuvası
+[Team color]
+Takım rengi
+[Alliance group]
+İttifak grubu
+[menu]
+Menü
+[Editor tools]
+Araçlar
+[Pan map]
+Haritayı kaydır
+[Edit map]
+Haritayı Düzenle
+[Editor map]
+Harita
+[Flags]
+Bayraklar
+[Pause]
+Duraklat
+[Speed]
+Hız
+[Objectives]
+Hedefler
+[Menu]
+Menü
+[Goals]
+Hedefler
+[Teams]
+Takımlar
+[Use this landscape]
+Bu manzarayı kullan
+[Reset]
+Sıfırla
+[Generating...]
+Oluşturuluyor...
+[Players]
+Oyuncular
+[Rules]
+Kurallar

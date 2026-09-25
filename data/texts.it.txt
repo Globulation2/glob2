@@ -3122,3 +3122,53 @@ Esci senza salvare
 Partita chiusa. Puoi chiudere questa finestra o ricaricare per giocare di nuovo.
 [campaign editor save failed]
 Salvataggio non confermato. Ok riprova; Annulla torna al menu dell'editor.
+[Actions]
+Azioni
+[Minimap]
+Minimappa
+[Fast forward]
+Avanti veloce
+[Hide keyboard]
+Nascondi tastiera
+[Dialog text size]
+Dimensione testo dei dialoghi
+[Player slot]
+Posto giocatore
+[Team color]
+Colore squadra
+[Alliance group]
+Gruppo di alleanza
+[menu]
+Menu
+[Editor tools]
+Strumenti
+[Pan map]
+Sposta mappa
+[Edit map]
+Modifica mappa
+[Editor map]
+Mappa
+[Flags]
+Bandiere
+[Pause]
+Pausa
+[Speed]
+Velocità
+[Objectives]
+Obiettivi
+[Menu]
+Menu
+[Goals]
+Obiettivi
+[Teams]
+Squadre
+[Use this landscape]
+Usa questo paesaggio
+[Reset]
+Ripristina
+[Generating...]
+Generazione...
+[Players]
+Giocatori
+[Rules]
+Regole

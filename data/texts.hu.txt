@@ -3060,3 +3060,53 @@ Kilépés mentés nélkül
 A játék bezárult. Bezárhatja ezt az ablakot, vagy újratöltheti az oldalt az ismételt játékhoz.
 [campaign editor save failed]
 A mentés nincs megerősítve. Az OK újra próbálkozik; a Mégse visszatér a szerkesztő menüjébe.
+[Actions]
+Műveletek
+[Minimap]
+Minitérkép
+[Fast forward]
+Gyors előretekerés
+[Hide keyboard]
+Billentyűzet elrejtése
+[Dialog text size]
+Párbeszédszöveg mérete
+[Player slot]
+Játékoshely
+[Team color]
+Csapatszín
+[Alliance group]
+Szövetségi csoport
+[menu]
+Menü
+[Editor tools]
+Eszközök
+[Pan map]
+Térkép mozgatása
+[Edit map]
+Pálya szerkesztése
+[Editor map]
+Térkép
+[Flags]
+Zászlók
+[Pause]
+Szünet
+[Speed]
+Sebesség
+[Objectives]
+Célok
+[Menu]
+Menü
+[Goals]
+Célok
+[Teams]
+Csapatok
+[Use this landscape]
+Táj használata
+[Reset]
+Visszaállítás
+[Generating...]
+Generálás...
+[Players]
+Játékosok
+[Rules]
+Szabályok
