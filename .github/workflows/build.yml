@@ -435,7 +435,7 @@ jobs:
       - name: Check native settings persistence and retry
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
-        run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py --quick
+        run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py
 
       - name: Build and run the window resize regression
         env:
@@ -946,13 +946,13 @@ jobs:
           pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
           node --test unit/*.test.js
           # Chromium carries the complete behavior suite. The other engines
-          # exercise startup, gameplay and viewport integration without
+          # exercise startup, gameplay, viewport and native text editing without
           # repeating every persistence and multiplayer scenario.
           GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --project=chromium
-          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js --project=firefox --project=webkit
+          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox --project=webkit
           # WebGL2 shares the game behavior above; keep focused adapter,
           # lifecycle, persistence and rendering coverage in Chromium.
-          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js --project=chromium
+          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js responsive-presentation.spec.js --project=chromium
           xvfb-run -a npx playwright test --config visibility.config.js
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
       - uses: actions/upload-artifact@v4
