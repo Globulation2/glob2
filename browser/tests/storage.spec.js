@@ -1,3 +1,4 @@
+const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsCancel,clickCustomGameStart}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
@@ -10,7 +11,7 @@ async function save(page) {
   const frames=(await state(page)).frames;
   await expect.poll(async ()=>(await state(page)).frames).toBeGreaterThan(frames+2);
   await click(page,600,400);
-  await page.locator('input[aria-label="Game text field"]').fill('Durability regression');
+  await editTextField(page,'Durability regression');
   await click(page,520,555);
 }
 for (const fault of ['abort','quota']) test(`${fault} failure retains the previous durable save and can retry`,async ({page,context},info)=>{

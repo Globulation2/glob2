@@ -1,3 +1,4 @@
+const {editTextField}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL}=require('./main-menu');
 const fs=require('node:fs/promises');
@@ -14,7 +15,7 @@ for(const fault of ['quota','aborted transaction']) test(`editor save before qui
   await page.locator('#canvas').press('Escape',{delay:80});
   await click(page,600,525);await screen(page,'MessageScreen');
   await click(page,390,570);await screen(page,'MapEditorScreen');
-  await page.locator('input[aria-label="Game text field"]').fill('Editor durability');
+  await editTextField(page,'Editor durability');
   await page.evaluate(fault=>{
     window.editorStorageFault=true;
     const put=IDBObjectStore.prototype.put;

@@ -1,3 +1,4 @@
+const {editTextField}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
 const fs = require('node:fs/promises');
@@ -28,7 +29,7 @@ async function exportedSave(page) {
   await expect.poll(async () => (await state(page)).paused).toBe(true);
   await page.locator('#canvas').press('Escape',{delay:80});
   await click(page,600,400);
-  await page.locator('input[aria-label="Game text field"]').fill('Original');
+  await editTextField(page,'Original');
   await click(page,520,555);
   await expect.poll(() => page.evaluate(() => glob2Diagnostics.saveDigest('Original.game'))).not.toBeNull();
   await expect.poll(async () => (await state(page)).persistence).toBe('persisted');

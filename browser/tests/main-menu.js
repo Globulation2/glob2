@@ -107,3 +107,19 @@ exports.clickCustomAIProfile = (page, colony) => {
     position: {x: x + w - 150 + 64, y: 85 + 42 + colony * rowHeight + 42 + 14}, delay: 80,
   });
 };
+
+// Exercise the visible editing surface with actual mouse and keyboard events.
+// Filling the DOM value directly would miss focus, deletion and key routing bugs.
+exports.editTextField = async (page, value, password = false) => {
+  const {expect} = require('@playwright/test');
+  const field = page.locator(password ? 'input[aria-label="Password"]' : 'input[aria-label="Game text field"]');
+  await field.click();
+  await expect(field).toBeFocused();
+  await field.press('Home');
+  await field.press('Shift+End');
+  await field.press('Delete');
+  await expect(field).toHaveValue('');
+  await field.pressSequentially(value);
+  await expect(field).toHaveValue(value);
+  if (password) await expect(field).toHaveAttribute('type', 'password');
+};

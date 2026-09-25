@@ -1,3 +1,4 @@
+const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile}=require('./main-menu');
 const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
@@ -140,7 +141,7 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
 
   await page.locator('#canvas').press('Escape', {delay:80});
   await click(page, 600, 400);
-  await page.locator('input[aria-label="Game text field"]').fill('Browser regression');
+  await editTextField(page,'Browser regression');
   await click(page, 520, 555);
   const digest = () => page.evaluate(() => glob2Diagnostics.saveDigest('Browser_regression.game'));
   await expect.poll(digest).not.toBeNull();
@@ -243,7 +244,7 @@ test('editor save cancellation keeps edits open and completed fertility saves th
   await screen(page, 'MessageScreen'); // Unsaved edits are still present.
   await menu(page, 110, 360);
   await screen(page, 'MapEditorScreen');
-  await page.locator('input[aria-label="Game text field"]').fill('Browser editor');
+  await editTextField(page,'Browser editor');
   await click(page, 520, 555);
   await screen(page, 'EditorMainMenu'); // Returns only after job and map write complete.
   const digest = () => page.evaluate(() => glob2Diagnostics.mapDigest('Browser_editor.map'));

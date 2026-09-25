@@ -1,3 +1,4 @@
+const {editTextField}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
@@ -8,7 +9,7 @@ async function edit(page){
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
   await click(page,600,420);await screen(page,'CampaignEditor');
-  await page.locator('input[aria-label="Game text field"]').fill('Browser Campaign');
+  await editTextField(page,'Browser Campaign');
 }
 
 test('campaign authoring waits for durable persistence before closing',async({page})=>{
