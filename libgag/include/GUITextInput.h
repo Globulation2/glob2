@@ -42,7 +42,7 @@ namespace GAGGUI
 		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, const std::string text="", bool activated=false, size_t maxLength=0, bool password=false) : HighlightableWidget(tooltip, tooltipFont)
 		 { constructor(x, y, w, h, hAlign, vAlign, font, text, activated, maxLength, password); }
 		virtual ~TextInput();
-        void presentBrowserInput(SDL_Rect bounds,int width=0,int height=0);
+        void presentBrowserInput(SDL_Rect bounds,int width=0,int height=0,const SDL_Rect* clip=nullptr);
 	
 		// methods inherited from widget
 		virtual void onTimer(Uint32 tick);

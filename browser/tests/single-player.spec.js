@@ -140,10 +140,7 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
 
   await page.locator('#canvas').press('Escape', {delay:80});
   await click(page, 600, 400);
-  await click(page, 600, 515);
-  await page.locator('#canvas').press('Home');
-  for (let i=0;i<40;i++) await page.locator('#canvas').press('Delete');
-  await page.locator('#canvas').pressSequentially('Browser regression', {delay:20});
+  await page.locator('input[aria-label="Game text field"]').fill('Browser regression');
   await click(page, 520, 555);
   const digest = () => page.evaluate(() => glob2Diagnostics.saveDigest('Browser_regression.game'));
   await expect.poll(digest).not.toBeNull();
@@ -246,10 +243,7 @@ test('editor save cancellation keeps edits open and completed fertility saves th
   await screen(page, 'MessageScreen'); // Unsaved edits are still present.
   await menu(page, 110, 360);
   await screen(page, 'MapEditorScreen');
-  await click(page, 600, 515);
-  await page.locator('#canvas').press('Home');
-  for (let i=0; i<40; ++i) await page.locator('#canvas').press('Delete');
-  await page.locator('#canvas').pressSequentially('Browser editor', {delay:20});
+  await page.locator('input[aria-label="Game text field"]').fill('Browser editor');
   await click(page, 520, 555);
   await screen(page, 'EditorMainMenu'); // Returns only after job and map write complete.
   const digest = () => page.evaluate(() => glob2Diagnostics.mapDigest('Browser_editor.map'));

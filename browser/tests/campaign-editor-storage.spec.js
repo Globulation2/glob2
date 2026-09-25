@@ -8,10 +8,7 @@ async function edit(page){
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
   await click(page,600,420);await screen(page,'CampaignEditor');
-  await click(page,750,280);
-  await page.locator('#canvas').press('Home');
-  for(let i=0;i<7;i++)await page.locator('#canvas').press('Delete');
-  await page.keyboard.type('Browser Campaign',{delay:30});
+  await page.locator('input[aria-label="Game text field"]').fill('Browser Campaign');
 }
 
 test('campaign authoring waits for durable persistence before closing',async({page})=>{

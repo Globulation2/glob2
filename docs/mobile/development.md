@@ -8,8 +8,22 @@ The phone presentation shares simulation, game orders, settings persistence and
 lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
 `GameGUITouch` owns gameplay gestures and phone panels, while `PhoneForm` adapts
 legacy widget forms. Composed settings and lobby screens supply their own phone
-layouts. Mobile builds enable these automatically; `GLOB2_MOBILE_UI=1` enables
-them in a native portable-renderer build for development.
+layouts. Automatic presentation uses available logical space and touch capability
+on every host. Settings offers Automatic, Compact and Spacious. Spacious requires
+480 points of map width beside the panel and 480 points of usable height;
+the panel is 288 points for touch and the existing 160 points for mouse controls.
+Spacious falls back to Compact when it cannot fit. Safe areas and interface scale
+participate in fit; the onscreen keyboard only reduces dialog space.
+Touch-capable hosts use targets at least 48 points tall. Pointer availability
+controls hover hints without switching layouts. Resize preserves the camera,
+selection, tool, panel, scroll position and text while cancelling held input.
+
+`GLOB2_MOBILE_UI=1` forces the compact presentation for development; `0` forces
+legacy controls. It takes precedence over the legacy `GLOB2_PHONE_FORMS`,
+`GLOB2_RESPONSIVE_UI` and `GLOB2_TOUCH_HUD` opt-ins. Rendering backend and mouse
+motion do not select a presentation. SDL, OpenGL/WebGL and software rendering
+share UI transforms and clipping. Mouse clicks use the same controls as touch;
+Tab and Enter navigate adapted forms, and Page Up/Down scroll gameplay panels.
 Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
 options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
@@ -18,7 +32,8 @@ The gameplay toolbar opens build choices, flags/zones, inspection, objectives,
 alliances and the game menu. Drag the map to pan, pinch to zoom, tap to select.
 Building placement has a movable preview followed by explicit confirmation.
 Scrollable drawers keep secondary controls out of the map; rotation, loss of
-focus and child screens cancel pending gestures. ScreenStack restores each
+focus and child screens cancel held gestures. Resize retains the placement preview
+and requires a new confirmation gesture. ScreenStack restores each
 screen's viewport policy and suspends rendering during SDL background events.
 
 Shared actions belong in GameGUI or the existing setup/settings model, not in

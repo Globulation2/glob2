@@ -128,12 +128,13 @@ void SettingsScreen::paintRow(const Row& r)
     if(r.kind==Kind::Section){drawWrapped(b.x,b.y+24,b.w,r.label);return;}
     if(r.kind==Kind::Info){drawWrapped(b.x,b.y+(r.columns>1?std::max(0,(b.h-wrappedHeight(r.label,b.w))/2):0),b.w,r.label,true);return;}
     if (r.kind==Kind::Text) {
+        const SDL_Rect clip{viewport.x,viewport.y,viewport.w,viewport.h};
         browserTextInput(this,{c.x,c.y,c.w,c.h},gfx->getW(),gfx->getH(),r.value,false,BasePlayer::MAX_NAME_LENGTH+1,
             [this](const std::string& value,size_t cursor,int action){
                 textDraft=value;textCursor=cursor;editingText=true;focus="player.name";
                 globalContainer->settings.setUsername(value);commit(true);
                 if(action) commitText();
-            });
+            },&clip);
     }
     bool focused=focus==r.id;
     if(r.kind==Kind::Button){

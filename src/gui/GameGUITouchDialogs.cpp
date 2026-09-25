@@ -137,9 +137,9 @@ bool GameGUITouch::drawDialog()
         labelClip=row.footer ? std::optional<ViewRect>{} : dialogContent;
         const auto r=row.rect;
         if (!row.footer && (r.y+r.h<=dialogContent.y || r.y>=dialogContent.y+dialogContent.h)) continue;
-        if (auto* input=dynamic_cast<TextInput*>(row.widget))
-            input->presentBrowserInput({int(r.x),int(r.y),int(r.w),int(r.h)},gfx->getW(),gfx->getH());
         SDL_Rect clip{int(dialogContent.x),int(dialogContent.y),int(dialogContent.w),int(dialogContent.h)};
+        if (auto* input=dynamic_cast<TextInput*>(row.widget))
+            input->presentBrowserInput({int(r.x),int(r.y),int(r.w),int(r.h)},gfx->getW(),gfx->getH(),row.footer ? nullptr : &clip);
         if (!row.footer) gfx->setClipRect(clip.x,clip.y,clip.w,clip.h); else gfx->setClipRect();
         if (row.kind) gfx->drawFilledRect(int(r.x),int(r.y),int(r.w),int(r.h),row.selected ? PhoneTheme::selected : PhoneTheme::field);
         if (row.kind==3) {

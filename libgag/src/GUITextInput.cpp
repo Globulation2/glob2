@@ -13,7 +13,7 @@ using namespace GAGCore;
 namespace GAGGUI
 {
     TextInput::~TextInput() { forgetBrowserTextInput(this); }
-    void TextInput::presentBrowserInput(SDL_Rect bounds,int width,int height) {
+    void TextInput::presentBrowserInput(SDL_Rect bounds,int width,int height,const SDL_Rect* clip) {
         if (!width || !height) {
             auto* surface=parent->getSurface();
             if (auto* overlay=dynamic_cast<OverlayScreen*>(parent)) {
@@ -31,7 +31,7 @@ namespace GAGGUI
                 if (action && browserTextCallbacks.count(this))
                     parent->onAction(this,action==1 ? TEXT_VALIDATED : TEXT_CANCELED,0,0);
 #endif
-            });
+            },clip);
     }
 
 	void TextInput::constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, bool activated, size_t maxLength, bool password)
@@ -418,4 +418,3 @@ namespace GAGGUI
 		return std::string("");
 	}
 }
-

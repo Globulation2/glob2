@@ -14,9 +14,7 @@ for(const fault of ['quota','aborted transaction']) test(`editor save before qui
   await page.locator('#canvas').press('Escape',{delay:80});
   await click(page,600,525);await screen(page,'MessageScreen');
   await click(page,390,570);await screen(page,'MapEditorScreen');
-  await click(page,600,515);await page.locator('#canvas').press('Home');
-  for(let i=0;i<40;i++)await page.locator('#canvas').press('Delete');
-  await page.locator('#canvas').pressSequentially('Editor durability',{delay:20});
+  await page.locator('input[aria-label="Game text field"]').fill('Editor durability');
   await page.evaluate(fault=>{
     window.editorStorageFault=true;
     const put=IDBObjectStore.prototype.put;

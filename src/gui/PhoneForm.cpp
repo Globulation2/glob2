@@ -140,9 +140,9 @@ void PhoneForm::draw() {
     for(const auto& row:rows) {
         const auto r=row.rect;auto clip=row.footer ? r : placement.content;
         if(r.y+r.h<=clip.y || r.y>=clip.y+clip.h) continue;
-        if (auto* input=dynamic_cast<TextInput*>(row.widget))
-            input->presentBrowserInput({int(r.x),int(r.y),int(r.w),int(r.h)},gfx->getW(),gfx->getH());
         SDL_Rect scissor{int(clip.x),int(clip.y),int(clip.w),int(clip.h)};
+        if (auto* input=dynamic_cast<TextInput*>(row.widget))
+            input->presentBrowserInput({int(r.x),int(r.y),int(r.w),int(r.h)},gfx->getW(),gfx->getH(),&scissor);
         gfx->setClipRect(scissor.x,scissor.y,scissor.w,scissor.h);
         gfx->drawFilledRect(int(r.x),int(r.y),int(r.w),int(r.h),row.selected ? PhoneTheme::selected : PhoneTheme::field);
         if(row.kind==13) {

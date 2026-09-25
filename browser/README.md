@@ -11,8 +11,11 @@ platform boundaries.
 
 The desktop browser uses the system mouse cursor, including when an older profile
 had enabled the game cursor. Menus retain their colony background after leaving
-a match; the custom-game lobby draws its own panel over that background. Mobile
-playability is outside this PR.
+a match; the custom-game lobby draws its own panel over that background. Menus
+and gameplay share the native responsive presentation. Touch capability,
+logical viewport size, safe areas and interface scale determine the layout;
+device-pixel ratio only determines rendering resolution. Physical phone and tablet
+review remains necessary before release.
 
 ## Build
 
@@ -49,8 +52,12 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
-With WebGL2, press G in a match for the torus overview, and the map zoom controls
-work; the software renderer keeps the flat, unzoomed map.
+With WebGL2, press G in a match for the torus overview. Both rendering paths
+support the flat map camera's zoom and picking. Native HTML text fields handle
+browser keyboard editing, selection, paste, composition and password masking;
+visual-viewport changes occlude dialogs without changing the gameplay layout.
+Interface settings offer Automatic, Compact and Spacious. Compact remains usable
+with a mouse and keyboard; attaching a mouse does not replace touch-sized controls.
 High-quality graphics (including clouds) default to off for new browser profiles.
 You can enable them in Settings; existing saved preferences are preserved.
 

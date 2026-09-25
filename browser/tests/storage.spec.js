@@ -9,10 +9,8 @@ async function save(page) {
   await page.locator('#canvas').press('Escape',{delay:80});
   const frames=(await state(page)).frames;
   await expect.poll(async ()=>(await state(page)).frames).toBeGreaterThan(frames+2);
-  await click(page,600,400); await click(page,600,515);
-  await page.locator('#canvas').press('Home');
-  for(let i=0;i<50;i++) await page.locator('#canvas').press('Delete');
-  await page.locator('#canvas').pressSequentially('Durability regression');
+  await click(page,600,400);
+  await page.locator('input[aria-label="Game text field"]').fill('Durability regression');
   await click(page,520,555);
 }
 for (const fault of ['abort','quota']) test(`${fault} failure retains the previous durable save and can retry`,async ({page,context},info)=>{

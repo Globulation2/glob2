@@ -5,7 +5,7 @@ const crypto = require('node:crypto');
 
 // Run the compiled engine with the same fixture and orders as the native CI
 // lanes. A minimal host supplies CLI arguments without changing the game shell.
-test('WebAssembly produces a complete per-tick simulation trace', async ({page}) => {
+test('WebAssembly produces a complete per-tick simulation trace', async ({page}, info) => {
   const root = path.resolve(__dirname, '../..');
   const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game'));
   await page.route('**/determinism.html', route => route.fulfill({
@@ -33,6 +33,8 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page})
   await page.waitForFunction(() => Array.isArray(window.simulationTrace));
   const trace = Buffer.from(await page.evaluate(() => window.simulationTrace));
   expect(trace.length).toBeGreaterThan(1000);
+  fs.mkdirSync(info.outputDir, {recursive: true});
+  fs.writeFileSync(info.outputPath('wasm.replay.checksums'), trace);
   const output = path.join(root, 'artifacts/browser-determinism/wasm');
   fs.mkdirSync(output, {recursive: true});
   fs.writeFileSync(path.join(output, 'wasm.replay.checksums'), trace);

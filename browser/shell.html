@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-visual">
 <link rel="icon" href="data:,">
 <title>Globulation 2</title>
 <style>
@@ -41,9 +41,8 @@ const loading = document.getElementById('loading');
 const loadingStatus = document.getElementById('loading-status');
 function fitCanvas() {
   if (!canvas.width || !canvas.height) return;
-  const scale = Math.min(innerWidth / canvas.width, innerHeight / canvas.height);
-  canvas.style.width = canvas.width * scale + 'px';
-  canvas.style.height = canvas.height * scale + 'px';
+  canvas.style.width = innerWidth + 'px';
+  canvas.style.height = innerHeight + 'px';
 }
 addEventListener('resize', fitCanvas);
 new MutationObserver(fitCanvas).observe(canvas, {attributes:true,attributeFilter:['width','height']});
@@ -165,9 +164,98 @@ function activateAudio() {
 addEventListener('unhandledrejection', event => {
   glob2ActivateAudio.ignoreClosedRejection(event, Module.glob2Screen === 'exited');
 });
-addEventListener('resize', () => {
-  Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
-});
+// Real inputs exist before a tap: Safari requires focus in the DOM gesture itself.
+Module.textBridge = (() => {
+  const fields = new Map();
+  const encoder = new TextEncoder();
+  function remove(id) { fields.get(id)?.element.remove(); fields.delete(id); }
+  return {
+    remove,
+    begin() { for (const field of fields.values()) field.seen=false; },
+    end() { for (const [id,field] of fields) if (!field.seen) remove(id); },
+    take(id) {
+      const field=fields.get(id);
+      if (!field?.dirty || field.composing) return null;
+      field.dirty=false;
+      const action=field.action || 0;field.action=0;
+      return {value:field.element.value,cursor:field.element.selectionEnd ?? 0,action};
+    },
+    field(id,rect,width,height,value,password,maximum,clip) {
+      let field=fields.get(id);
+      if (!field) {
+        const element=document.createElement('input');
+        element.type=password ? 'password' : 'text';
+        element.autocomplete='off';element.spellcheck=false;
+        element.setAttribute('aria-label',password ? 'Password' : 'Game text field');
+        element.style.cssText='position:fixed;z-index:2;box-sizing:border-box;min-width:0;border:1px solid #657363;border-radius:3px;padding:4px 8px;background:#e8edcf;color:#173226;font:16px system-ui';
+        field={element,dirty:false,composing:false,seen:true,maximum};fields.set(id,field);
+        const update=() => {
+          if (!field.composing && field.maximum) {
+            let text=element.value;
+            while (text && encoder.encode(text).length>=field.maximum) text=Array.from(text).slice(0,-1).join('');
+            if (text!==element.value) element.value=text;
+          }
+          field.dirty=true;
+        };
+        element.addEventListener('focus',update);
+        element.addEventListener('input',update);
+        element.addEventListener('select',update);
+        element.addEventListener('compositionstart',()=>{field.composing=true;});
+        element.addEventListener('compositionend',()=>{field.composing=false;update();});
+        for (const type of ['keydown','keyup','keypress','pointerdown','pointerup','mousedown','mouseup','touchstart','touchend'])
+          element.addEventListener(type,event=>{
+            event.stopPropagation();
+            if(type==='keydown' && !event.isComposing && (event.key==='Enter' || event.key==='Escape')) {
+              event.preventDefault();field.action=event.key==='Enter' ? 1 : 2;field.dirty=true;element.blur();
+            }
+          });
+        document.body.appendChild(element);element.value=value;
+      }
+      field.seen=true;field.maximum=maximum;
+      const element=field.element;
+      if (!field.dirty && !field.composing && element.value!==value) element.value=value;
+      const bounds=canvas.getBoundingClientRect();
+      element.style.left=(bounds.left+rect.x*bounds.width/width)+'px';
+      element.style.top=(bounds.top+rect.y*bounds.height/height)+'px';
+      element.style.width=(rect.w*bounds.width/width)+'px';
+      element.style.height=(rect.h*bounds.height/height)+'px';
+      // Clipped fields must not intercept taps on fixed dialog actions.
+      const sx=bounds.width/width,sy=bounds.height/height;
+      element.style.fontSize=Math.max(16,16*Math.min(sx,sy))+'px';
+      element.style.clipPath=`inset(${Math.max(0,clip.y-rect.y)*sy}px ${Math.max(0,rect.x+rect.w-clip.x-clip.w)*sx}px ${Math.max(0,rect.y+rect.h-clip.y-clip.h)*sy}px ${Math.max(0,clip.x-rect.x)*sx}px)`;
+    }
+  };
+})();
+const safeAreaProbe = document.createElement('div');
+safeAreaProbe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';
+document.body.appendChild(safeAreaProbe);
+const pointerMedia = matchMedia('(any-pointer: fine)');
+const hoverMedia = matchMedia('(any-hover: hover)');
+const touchMedia = matchMedia('(any-pointer: coarse)');
+function publishPresentationMetrics() {
+  const style = getComputedStyle(safeAreaProbe);
+  const visual = window.visualViewport;
+  const width = document.documentElement.clientWidth;
+  const height = document.documentElement.clientHeight;
+  Module.presentationMetrics = {
+    width, height,
+    safe: {left:parseFloat(style.paddingLeft)||0, top:parseFloat(style.paddingTop)||0,
+      right:parseFloat(style.paddingRight)||0, bottom:parseFloat(style.paddingBottom)||0},
+    keyboardInset:visual ? Math.max(0,height-visual.height-visual.offsetTop) : 0,
+    touch:navigator.maxTouchPoints>0 || touchMedia.matches,
+    pointer:pointerMedia.matches, hover:hoverMedia.matches
+  };
+  const previous = Module.layoutViewport;
+  if (!previous || previous.width!==width || previous.height!==height) {
+    Module.pendingViewport = {width,height};
+    Module.layoutViewport = {width,height};
+  }
+}
+for (const media of [pointerMedia,hoverMedia,touchMedia]) media.addEventListener('change',publishPresentationMetrics);
+addEventListener('resize',publishPresentationMetrics);
+window.visualViewport?.addEventListener('resize',publishPresentationMetrics);
+window.visualViewport?.addEventListener('scroll',publishPresentationMetrics);
+publishPresentationMetrics();
 Module.visibilityPending = true;
 canvas.addEventListener('webglcontextlost', event => {
   event.preventDefault();
