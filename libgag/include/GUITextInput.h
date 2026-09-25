@@ -41,7 +41,8 @@ namespace GAGGUI
 		 { constructor(x, y, w, h, hAlign, vAlign, font, text.c_str(), activated, maxLength, password); }
 		TextInput(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string& tooltip, const std::string &tooltipFont, const std::string text="", bool activated=false, size_t maxLength=0, bool password=false) : HighlightableWidget(tooltip, tooltipFont)
 		 { constructor(x, y, w, h, hAlign, vAlign, font, text, activated, maxLength, password); }
-		virtual ~TextInput() { }
+		virtual ~TextInput();
+        void presentBrowserInput(SDL_Rect bounds,int width=0,int height=0);
 	
 		// methods inherited from widget
 		virtual void onTimer(Uint32 tick);
@@ -59,6 +60,12 @@ namespace GAGGUI
 		}
 		
 		const std::string &getText(void) { return text; }
+        std::string displayText() const {
+            if (!password) return text;
+            std::string masked;
+            for (unsigned char c:text) if ((c & 0xc0)!=0x80) masked+='*';
+            return masked;
+        }
 		template<typename T>
 		T getText(void)
 		{

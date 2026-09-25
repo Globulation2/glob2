@@ -727,7 +727,7 @@ void GameGUI::drawAll(int team)
 	drawOverlayInfos();
     touch->drawHUD();
 
-	if (!torusView.active()) drawMapZoomControls(camera, true);
+	if (!torusView.active() && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
 	// draw menu if any
 	if (inGameMenu)
 	{
@@ -750,7 +750,7 @@ void GameGUI::drawAll(int team)
 		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
 
 	}
-    if (touch) touch->drawControls();
+    if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

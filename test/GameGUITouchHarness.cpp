@@ -144,8 +144,8 @@ public:
         // The first point is in Confirm, the second just outside the strip.
         finger(SDL_FINGERDOWN,1,100,554);finger(SDL_FINGERUP,1,100,550);noOrder();
         require(gui.touch->hasPreview(),"Crossing a control boundary must not place or cancel");
-        gui.suspendInput();tap(100,576);noOrder();
-        require(!gui.touch->hasPreview(),"Suspension must invalidate placement confirmation");
+        finger(SDL_FINGERDOWN,1,100,576);gui.suspendInput();finger(SDL_FINGERUP,1,100,576);noOrder();
+        require(gui.touch->hasPreview(),"Suspension retains preview but cancels held confirmation");
         tap(220,220);gui.localTeam->noMoreBuildingSitesCountdown=1;tap(100,576);noOrder();
         require(gui.touch->hasPreview(),"Failed validation must retain the preview");
         gui.localTeam->noMoreBuildingSitesCountdown=0;
@@ -169,8 +169,9 @@ public:
         finger(SDL_FINGERUP,1,240,240);noOrder();
         flag();tap(220,220);globalContainer->replaying=true;tap(100,576);noOrder();globalContainer->replaying=false;
         gui.suspendInput();flag();tap(200,200);
-        gui.viewportResized(800,600,600,800);tap(100,576);noOrder();
-        require(!gui.touch->hasPreview(),"Rotation must invalidate the preview");
+        finger(SDL_FINGERDOWN,1,100,576);
+        gui.viewportResized(800,600,600,800);finger(SDL_FINGERUP,1,100,576);noOrder();
+        require(gui.touch->hasPreview(),"Rotation retains preview but cancels held confirmation");
         finger(SDL_FINGERDOWN,1,200,200);
         SDL_Event focus{};focus.type=SDL_WINDOWEVENT;focus.window.event=SDL_WINDOWEVENT_FOCUS_LOST;
         gui.processEvent(&focus);finger(SDL_FINGERUP,1,200,200);noOrder();
@@ -330,7 +331,9 @@ public:
             SDL_Event mouse{};mouse.type=SDL_MOUSEBUTTONDOWN;mouse.button.button=SDL_BUTTON_LEFT;
             mouse.button.x=int(returnX);mouse.button.y=int(returnY);
             gui.processEvent(&mouse);mouse.type=SDL_MOUSEBUTTONUP;gui.processEvent(&mouse);
-            require(gui.inGameMenu==GameGUI::IGM_MAIN,"Switching to mouse cannot activate unseen desktop-menu geometry");
+            require(!gui.inGameMenu,"Mouse activates the same visible Return control");
+            tap(gfx->getW()*5.5f/6,gfx->getH()-24*unit);
+            gui.drawAll(0);
             finger(SDL_FINGERDOWN,1,returnX,returnY);
             finger(SDL_FINGERDOWN,2,returnX,returnY);
             finger(SDL_FINGERUP,2,returnX,returnY);

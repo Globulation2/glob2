@@ -16,10 +16,11 @@ public:
     explicit GameGUITouch(GameGUI& gui);
     ~GameGUITouch();
     bool process(SDL_Event& event);
-    void cancel();
+    void cancel(bool preservePreview=false);
     void prepareDraw();
     void drawControls();
-    bool active() const { return touchActive; }
+    void drawKeyboardFocus();
+    bool active() const { return touchActive || usesHUD(); }
     bool usesHUD() const;
     GAGCore::ViewRect worldBounds() const { return world(); }
     void drawHUD();
@@ -92,6 +93,8 @@ private:
     std::string ownerTool;
     int interfaceRegion(GAGCore::ViewPoint point) const;
     double scale=1, panX=0, panY=0;
+    int keyboardFocus=-1;
+    std::vector<GAGCore::ViewRect> keyboardTargets();
     std::optional<GAGCore::ViewPoint> preview;
     std::string previewType;
     std::unique_ptr<GAGCore::DrawableSurface> confirmLabel, cancelLabel;

@@ -109,7 +109,7 @@ public:
 
 MainMenuScreen::MainMenuScreen()
 {
-    if (phonePresentationRequested()) enableResponsiveMenu();
+    enableResponsiveMenu();
 	const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
 	compact = height < 640;
 	panelX = std::clamp(width / 20, 20, 72);
@@ -230,9 +230,9 @@ void MainMenuScreen::layout(int width, int height)
 			y + (i / 2) * (utilityH + 4), w / 2 - 4, utilityH);
 }
 
-void MainMenuScreen::viewportResized(int, int, int width, int height)
+void MainMenuScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
-    cancelExecutionInput();
+    Glob2Screen::viewportResized(oldWidth,oldHeight,width,height);
 	layout(width, height);
 }
 

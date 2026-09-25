@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SettingsScreen.h"
+#include <BrowserTextInput.h>
+#include "gui/MobileSafeArea.h"
 #include "GlobalContainer.h"
 #include <Toolkit.h>
 #include <algorithm>
@@ -47,24 +49,26 @@ void SettingsScreen::drawWrapped(int x,int y,int width,const std::string& text,b
 int& SettingsScreen::scrollOffset() { return modal==Modal::None?scroll[int(current)]:modalScroll; }
 void SettingsScreen::layout()
 {
-    const int w=globalContainer->gfx->getW(),h=globalContainer->gfx->getH();
-    panel={std::max(0,(w-960)/2),std::max(0,(h-720)/2),std::min(w-32,960),std::min(h-32,720)};
-    panel.x=(w-panel.w)/2;panel.y=(h-panel.h)/2;
+    const auto safe=mobileDialogSafe(globalContainer->gfx);
+    const int w=int(safe.w),h=int(safe.h);
+    const bool keyboard=editingText && mobileKeyboardInset(globalContainer->gfx)>0;
+    panel={0,0,std::max(1,std::min(w-32,960)),std::max(1,std::min(h-(keyboard?0:32),720))};
+    panel.x=int(safe.x)+(w-panel.w)/2;panel.y=int(safe.y)+(h-panel.h)/2;
     padding=panel.w<800?16:24;sidebar=panel.w<800?148:176;
     const bool narrow=panel.w<480;
-    const int footH=narrow?96:std::max(64,wrappedHeight(tr("Changes saved automatically"),panel.w-240)+24);
+    const int footH=keyboard?64:narrow?96:std::max(64,wrappedHeight(tr("Changes saved automatically"),panel.w-240)+24);
     footer={panel.x,panel.y+panel.h-footH,panel.w,footH};
     const char* names[]={"Display & graphics","Audio","Gameplay","Building defaults","Controls","Language & player"};
     int navigationHeight=0;
-    for(auto name:names)navigationHeight+=std::max(42,wrappedHeight(tr(name),sidebar-32)+20)+4;
+    for(auto name:names)navigationHeight+=std::max(phonePresentationRequested()?48:42,wrappedHeight(tr(name),sidebar-32)+20)+4;
     compactNavigation=narrow || navigationHeight-4>footer.y-panel.y-76;
-    int headerHeight=64;
+    int headerHeight=keyboard?0:64;
     categoryControl=narrow?Rect{panel.x+padding,panel.y+48,panel.w-2*padding,44}:Rect{panel.x+156,panel.y+12,panel.w-172,40};
-    if(compactNavigation && modal==Modal::None){
-        categoryControl.h=std::max(40,wrappedHeight(tr(names[int(current)]),categoryControl.w-36)+16);
+    if(!keyboard && compactNavigation && modal==Modal::None){
+        categoryControl.h=std::max(phonePresentationRequested()?48:40,wrappedHeight(tr(names[int(current)]),categoryControl.w-36)+16);
         headerHeight=std::max(narrow?104:64,categoryControl.h+(narrow?60:24));
     }
-    const int railWidth=modal==Modal::None && !compactNavigation?sidebar:0;
+    const int railWidth=!keyboard && modal==Modal::None && !compactNavigation?sidebar:0;
     viewport={panel.x+railWidth+padding,panel.y+headerHeight+4,
         panel.w-railWidth-2*padding-16,footer.y-panel.y-headerHeight-16};
     int y=0;
@@ -86,12 +90,12 @@ void SettingsScreen::layout()
             if(table){controlW=std::min(180,cw);textW=cw;stacked=true;}
             int labelH=wrappedHeight(r.label,stacked?cw:textW);
             int helpH=r.help.empty()?0:8+wrappedHeight(r.help,stacked?cw:textW);
-            int controlH=std::max(phonePresentationRequested()?44:34,wrappedHeight(r.value,controlW-20-(r.extraId.empty()?0:40)-(r.kind==Kind::Choice?16:0))+16);
+            int controlH=std::max(phonePresentationRequested()?48:34,wrappedHeight(r.value,controlW-20-(r.extraId.empty()?0:40)-(r.kind==Kind::Choice?16:0))+16);
             if(r.kind==Kind::Slider)controlH=48;
             int height=0;
             if(r.kind==Kind::Section)height=24+wrappedHeight(r.label,cw)+8;
             else if(r.kind==Kind::Info)height=wrappedHeight(r.label,cw)+16;
-            else if(r.kind==Kind::Button){height=std::max(40,wrappedHeight(r.label,cw-24)+20)+8;controlW=cw;controlH=height-8;}
+            else if(r.kind==Kind::Button){height=std::max(phonePresentationRequested()?48:40,wrappedHeight(r.label,cw-24)+20)+8;controlW=cw;controlH=height-8;}
             else height=(stacked?labelH+helpH+(labelH?12:0)+controlH:std::max(labelH+helpH,controlH))+24;
             r.bounds={x,y,cw,height};
             if(r.kind==Kind::Button)r.control={x,y,cw,controlH};
@@ -107,6 +111,12 @@ void SettingsScreen::layout()
     }
     contentHeight=y;
     scrollOffset()=std::clamp(scrollOffset(),0,std::max(0,contentHeight-viewport.h));
+    if (keyboard) for (const auto& row:form) if (row.kind==Kind::Text) {
+        if (row.control.y<scrollOffset()) scrollOffset()=row.control.y;
+        else if (row.control.y+row.control.h>scrollOffset()+viewport.h)
+            scrollOffset()=row.control.y+row.control.h-viewport.h;
+        scrollOffset()=std::clamp(scrollOffset(),0,std::max(0,contentHeight-viewport.h));
+    }
     for(auto& r:form){r.bounds.y+=viewport.y-scrollOffset();r.control.y+=viewport.y-scrollOffset();}
     scrollbar={viewport.x+viewport.w+6,viewport.y,10,viewport.h};
 
@@ -117,6 +127,14 @@ void SettingsScreen::paintRow(const Row& r)
     const Rect& b=r.bounds;const Rect& c=r.control;
     if(r.kind==Kind::Section){drawWrapped(b.x,b.y+24,b.w,r.label);return;}
     if(r.kind==Kind::Info){drawWrapped(b.x,b.y+(r.columns>1?std::max(0,(b.h-wrappedHeight(r.label,b.w))/2):0),b.w,r.label,true);return;}
+    if (r.kind==Kind::Text) {
+        browserTextInput(this,{c.x,c.y,c.w,c.h},gfx->getW(),gfx->getH(),r.value,false,BasePlayer::MAX_NAME_LENGTH+1,
+            [this](const std::string& value,size_t cursor,int action){
+                textDraft=value;textCursor=cursor;editingText=true;focus="player.name";
+                globalContainer->settings.setUsername(value);commit(true);
+                if(action) commitText();
+            });
+    }
     bool focused=focus==r.id;
     if(r.kind==Kind::Button){
         gfx->drawFilledRect(c.x,c.y,c.w,c.h,r.selected?gold:field);
@@ -177,9 +195,10 @@ void SettingsScreen::paint()
     gfx->drawFilledRect(0,0,getW(),getH(),Color(20,32,22,200));
     gfx->drawFilledRect(panel.x,panel.y,panel.w,panel.h,paper);
     gfx->drawRect(panel.x,panel.y,panel.w,panel.h,line);
-    drawText(panel.x+padding,panel.y+20,tr("Settings"),false,true);
+    const bool keyboard=editingText && mobileKeyboardInset(globalContainer->gfx)>0;
+    if (!keyboard) drawText(panel.x+padding,panel.y+20,tr("Settings"),false,true);
     const char* categories[]={"Display & graphics","Audio","Gameplay","Building defaults","Controls","Language & player"};
-    if(modal==Modal::None && compactNavigation){
+    if(!keyboard && modal==Modal::None && compactNavigation){
         const auto& c=categoryControl;
         gfx->drawFilledRect(c.x,c.y,c.w,c.h,field);
         gfx->drawRect(c.x,c.y,c.w,c.h,focus=="nav.current"?ink:line);
@@ -187,11 +206,11 @@ void SettingsScreen::paint()
         gfx->drawLine(c.x+c.w-20,c.y+c.h/2-2,c.x+c.w-15,c.y+c.h/2+3,ink);
         gfx->drawLine(c.x+c.w-15,c.y+c.h/2+3,c.x+c.w-10,c.y+c.h/2-2,ink);
     }
-    if(modal==Modal::None && !compactNavigation){
+    if(!keyboard && modal==Modal::None && !compactNavigation){
         gfx->drawFilledRect(panel.x+1,panel.y+64,sidebar-1,footer.y-panel.y-64,rail);
         int ny=panel.y+76;
         for(int i=0;i<6;++i){
-            int height=std::max(42,wrappedHeight(tr(categories[i]),sidebar-32)+20);
+            int height=std::max(phonePresentationRequested()?48:42,wrappedHeight(tr(categories[i]),sidebar-32)+20);
             if(i==int(current))gfx->drawFilledRect(panel.x+8,ny,sidebar-16,height,gold);
             if(focus=="nav."+std::to_string(i))gfx->drawRect(panel.x+8,ny,sidebar-16,height,ink);
             drawWrapped(panel.x+16,ny+10,sidebar-32,tr(categories[i]));ny+=height+4;
@@ -208,9 +227,9 @@ void SettingsScreen::paint()
     }
     gfx->drawLine(footer.x,footer.y,footer.x+footer.w,footer.y,line);
     std::string status=failed?tr("Could not save"):settingsDirty?tr("Saving…"):restartRequired()?tr("Saved — restart required"):tr("Changes saved automatically");
-    drawWrapped(footer.x+padding,footer.y+(panel.w<480?68:16),panel.w<480?footer.w-2*padding:footer.w-240,status,true);
+    if (!keyboard) drawWrapped(footer.x+padding,footer.y+(panel.w<480?68:16),panel.w<480?footer.w-2*padding:footer.w-240,status,true);
     dropdown.paint(gfx,ink,field,gold,line);
-    const Rect doneRect={footer.x+footer.w-112,footer.y+12,96,40};
+    const Rect doneRect={footer.x+footer.w-112,footer.y+12,96,phonePresentationRequested()?48:40};
     gfx->drawFilledRect(doneRect.x,doneRect.y,doneRect.w,doneRect.h,gold);
     gfx->drawRect(doneRect.x,doneRect.y,doneRect.w,doneRect.h,focus=="done"?ink:line);
     drawText(doneRect.x+12,doneRect.y+10,tr(modal==Modal::None?"Done":modal==Modal::Display?"Revert":"Cancel"));
@@ -218,5 +237,5 @@ void SettingsScreen::paint()
     // already live and auto-saved, so there is nothing left to discard. Done
     // retries the durable flush on every click while failed; this is the
     // escape hatch for leaving without insisting that retry succeed first.
-    if(modal==Modal::None){gfx->drawRect(doneRect.x-96,doneRect.y,88,40,focus=="cancel"?ink:line);drawText(doneRect.x-84,doneRect.y+10,tr(failed?"continue":"Cancel"));}
+    if(modal==Modal::None){gfx->drawRect(doneRect.x-96,doneRect.y,88,doneRect.h,focus=="cancel"?ink:line);drawText(doneRect.x-84,doneRect.y+10,tr(failed?"continue":"Cancel"));}
 }

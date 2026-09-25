@@ -23,6 +23,7 @@ class GameSessionScreen : public GAGGUI::Screen
 	void drawExecution() override;
 	Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
 
+    bool supportsCompactViewport() const override { return true; }
     bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
     std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
     void cancelExecutionInput() override { suspendExecution(); }

@@ -15,8 +15,10 @@ struct Menu : MainMenuScreen {
             button->setText("Très longue description traduite du menu et de toutes les possibilités disponibles");
             const auto lines=button->wrappedLines(180);
             require(lines.size()>1 && button->wrappedHeight(204)>48,"Long translated labels must wrap and grow");
-            for (const auto& line : lines)
-                require(GAGCore::Toolkit::getFont("front-action")->getStringWidth(line)<=180,"Wrapped translation exceeds its button");
+            for (const auto& line : lines) {
+                button->setText(line);
+                require(button->textWidth()<=180,"Wrapped translation exceeds its button");
+            }
             break;
         }
     }

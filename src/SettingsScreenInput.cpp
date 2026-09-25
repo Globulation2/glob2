@@ -129,7 +129,7 @@ void SettingsScreen::onSDLEvent(SDL_Event* event)
         if(modal==Modal::None && !compactNavigation && x>=panel.x && x<panel.x+sidebar){
             const char* names[]={"Display & graphics","Audio","Gameplay","Building defaults","Controls","Language & player"};
             int ny=panel.y+76;
-            for(int i=0;i<6;++i){int height=std::max(42,wrappedHeight(tr(names[i]),sidebar-32)+20);
+            for(int i=0;i<6;++i){int height=std::max(phonePresentationRequested()?48:42,wrappedHeight(tr(names[i]),sidebar-32)+20);
                 if(y>=ny && y<ny+height){selectCategory(Category(i));focus="nav."+std::to_string(i);return;}ny+=height+4;
             }
         }

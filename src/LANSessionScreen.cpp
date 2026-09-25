@@ -25,6 +25,7 @@ class LANGameScreen final : public Glob2TabScreen
 				  std::shared_ptr<MultiplayerGame> game)
 		: Glob2TabScreen(true), client(client), game(game), lobby(this, screens, game, client)
 	{
+        enablePhoneForm();
 	}
 	~LANGameScreen() override
 	{
@@ -39,6 +40,7 @@ LANSessionScreen::LANSessionScreen(ScreenStack &screens, std::shared_ptr<YOGClie
 	: screens(screens), client(std::move(client)), username(std::move(username)),
 	  hostedMap(std::move(hostedMap))
 {
+    enablePhoneForm();
 	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard",
 					   Toolkit::getStringTable()->getString("[connecting to game]")));
 	addWidget(new TextButton(240, 280, 160, 35, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,

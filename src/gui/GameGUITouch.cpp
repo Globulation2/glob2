@@ -30,16 +30,18 @@ GameGUITouch::GameGUITouch(GameGUI& gui) : gui(gui) {
 }
 bool GameGUITouch::usesHUD() const
 {
-    auto* gfx=globalContainer->gfx;
-    return touchActive && gfx->hasPortableRenderer() &&
-        (SDL_getenv("GLOB2_TOUCH_HUD") || std::min(gfx->getW(),gfx->getH())/gfx->logicalUnitsPerPoint()<600);
+    return phonePresentationRequested();
 }
 MobileLayout GameGUITouch::layout() const
 {
     auto* gfx=globalContainer->gfx;
     const double unit=gfx->logicalUnitsPerPoint();
-    const auto insets=mobileSafeInsets(gfx);
-    auto result=MobileLayout::calculate(gfx->getW()/unit,gfx->getH()/unit,insets,0,1,panelOpen);
+    const auto insets=presentationSafeInsets(gfx);
+    const auto resolved=resolvePresentation(presentationOverride().value_or(presentationPreference),
+        {gfx->getW()/unit,gfx->getH()/unit,1,insets},presentationInput);
+    auto result=MobileLayout::calculate(gfx->getW()/unit,gfx->getH()/unit,insets,0,1,panelOpen,
+        resolved.layout==PresentationLayout::Spacious,
+        resolved.layout==PresentationLayout::Spacious ? resolved.panelWidth : 288);
     for (auto* rect : {&result.safe,&result.status,&result.world,&result.actions,&result.panel}) {
         rect->x*=unit; rect->y*=unit; rect->w*=unit; rect->h*=unit;
     }
@@ -78,10 +80,10 @@ ViewPoint GameGUITouch::previewCursor() const
     auto wrap=[](double v,double n) { return v-std::floor(v/n)*n; };
     return {wrap(preview->x-gui.viewportX*32,map.getW()*32),wrap(preview->y-gui.viewportY*32,map.getH()*32)};
 }
-void GameGUITouch::cancel()
+void GameGUITouch::cancel(bool preservePreview)
 {
     gui.toolManager.cancelDrag(gui.localTeamNo);
-    gesture.cancel(); fingers.clear(); ignoreTouchSequence=false; confirmDestroy=false; preview.reset(); previewType.clear(); panX=panY=0;
+    gesture.cancel(); fingers.clear(); ignoreTouchSequence=false; confirmDestroy=false; if (!preservePreview) { preview.reset(); previewType.clear(); } panX=panY=0;
 }
 
 int GameGUITouch::interfaceRegion(ViewPoint point) const
@@ -111,22 +113,94 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
     return world().contains(point) ? 0 : 6;
 }
 
+std::vector<ViewRect> GameGUITouch::keyboardTargets()
+{
+    std::vector<ViewRect> targets;
+    if (activeDialog()) {
+        prepareDialog();
+        for (const auto& row:dialogRows)
+            if (row.kind && (row.footer || dialogContent.contains({row.rect.x+row.rect.w/2,row.rect.y+row.rect.h/2}))) targets.push_back(row.rect);
+        return targets;
+    }
+    const auto ui=layout();
+    for (int i=0;i<6;++i) targets.push_back({ui.actions.x+i*ui.actions.w/6,ui.actions.y,ui.actions.w/6,ui.actions.h});
+    if (gui.selectionMode==GameGUI::TOOL_SELECTION) {
+        const auto rect=controls();
+        targets={{rect.x,rect.y,rect.w/2,rect.h},{rect.x+rect.w/2,rect.y,rect.w/2,rect.h}};
+    }
+    const auto content=panelContent();const double unit=globalContainer->gfx->logicalUnitsPerPoint();
+    if (showsBuildPalette()) {
+        for (size_t i=0;i<gui.buildingsChoiceName.size();++i) {
+            ViewRect rect{content.x,content.y+(i*64-panelScroll)*unit,content.w,48*unit};
+            if (content.contains({rect.x+rect.w/2,rect.y+rect.h/2})) targets.push_back(rect);
+        }
+    } else if (inspectedBuilding()) {
+        for (size_t i=0;i<allocationTabs().size();++i) targets.push_back(allocationTabRect(i));
+        const auto allocation=allocationRect();
+        targets.push_back({allocation.x,allocation.y,48*unit,allocation.h});
+        targets.push_back({allocation.x+allocation.w-48*unit,allocation.y,48*unit,allocation.h});
+        if (activeAllocationTab()==3) for (size_t i=0;i<buildingActions().size();++i) {
+            ViewRect rect{content.x,content.y+(i*56-actionScroll)*unit,content.w,48*unit};
+            if (content.contains({rect.x+rect.w/2,rect.y+rect.h/2})) targets.push_back(rect);
+        }
+    }
+    return targets;
+}
+
 bool GameGUITouch::process(SDL_Event& event)
 {
-    if (dispatching || !globalContainer->gfx->hasPortableRenderer()) return false;
+    if (dispatching) return false;
+    if (usesHUD() && event.type==SDL_KEYDOWN) {
+        const auto key=event.key.keysym.sym;
+        if (key==SDLK_TAB) {
+            const auto targets=keyboardTargets();
+            if (!targets.empty()) keyboardFocus=(keyboardFocus+((event.key.keysym.mod & KMOD_SHIFT)?-1:1)+int(targets.size()))%int(targets.size());
+            return true;
+        }
+        if ((key==SDLK_RETURN || key==SDLK_SPACE) && keyboardFocus>=0 && !editingDialogWidget && !gui.typingInputScreen && !event.key.repeat) {
+            const auto targets=keyboardTargets();
+            if (keyboardFocus<int(targets.size())) {
+                const auto rect=targets[keyboardFocus];
+                SDL_Event pointer{};pointer.type=SDL_MOUSEBUTTONDOWN;pointer.button.button=SDL_BUTTON_LEFT;
+                pointer.button.x=int(rect.x+rect.w/2);pointer.button.y=int(rect.y+rect.h/2);
+                process(pointer);pointer.type=SDL_MOUSEBUTTONUP;process(pointer);
+            }
+            return true;
+        }
+        if (key==SDLK_PAGEDOWN || key==SDLK_PAGEUP) {
+            const double delta=key==SDLK_PAGEDOWN ? 144 : -144;
+            if (activeDialog()) dialogScroll=std::clamp(dialogScroll+delta,0.0,dialogMaximum);
+            else { panelScroll+=delta;actionScroll+=delta;clampScroll(); }
+            return true;
+        }
+    }
     if ((event.type==SDL_MOUSEMOTION && event.motion.which==SDL_TOUCH_MOUSEID) ||
         ((event.type==SDL_MOUSEBUTTONDOWN || event.type==SDL_MOUSEBUTTONUP) && event.button.which==SDL_TOUCH_MOUSEID)) return true;
     if (event.type==SDL_MOUSEBUTTONUP && swallowMouseRelease) {
         swallowMouseRelease=false; return true;
     }
-    if (event.type==SDL_MOUSEMOTION || event.type==SDL_MOUSEBUTTONDOWN) {
-        if (touchActive) cancel();
-        touchActive=false;
-        // Until the next paint, the screen still shows touch-menu coordinates.
-        if (event.type==SDL_MOUSEBUTTONDOWN && dialogHUDDrawn && gui.inGameMenu) {
-            swallowMouseRelease=true; return true;
+    if (usesHUD() && event.type==SDL_MOUSEWHEEL) {
+        int x,y; SDL_GetMouseState(&x,&y);
+        GraphicContext::translateMouseCoordinates(x,y);
+        const int region=interfaceRegion({double(x),double(y)});
+        const double delta=event.wheel.y*(event.wheel.direction==SDL_MOUSEWHEEL_FLIPPED ? -48 : 48);
+        if (region==3) {
+            if (activeAllocationTab()==3 && inspectedBuilding()) actionScroll-=delta;
+            else panelScroll-=delta;
+            clampScroll(); return true;
         }
-        return false;
+        if (activeDialog()) { dialogScroll=std::clamp(dialogScroll-delta,0.0,dialogMaximum);return true; }
+    }
+    if (usesHUD() && (event.type==SDL_MOUSEBUTTONDOWN || event.type==SDL_MOUSEBUTTONUP || event.type==SDL_MOUSEMOTION)) {
+        if (event.type!=SDL_MOUSEMOTION && event.button.button!=SDL_BUTTON_LEFT) return false;
+        const bool motion=event.type==SDL_MOUSEMOTION;
+        if (motion && !(event.motion.state & SDL_BUTTON_LMASK)) return false;
+        SDL_Event pointer{};
+        pointer.type=motion ? SDL_FINGERMOTION : event.type==SDL_MOUSEBUTTONDOWN ? SDL_FINGERDOWN : SDL_FINGERUP;
+        pointer.tfinger.touchId=-1; pointer.tfinger.fingerId=0;
+        pointer.tfinger.x=float(motion ? event.motion.x : event.button.x)/globalContainer->gfx->getW();
+        pointer.tfinger.y=float(motion ? event.motion.y : event.button.y)/globalContainer->gfx->getH();
+        return process(pointer);
     }
     if (event.type!=SDL_FINGERDOWN && event.type!=SDL_FINGERUP && event.type!=SDL_FINGERMOTION) return false;
     if (!gui.inputState.hasFocus()) return true;
@@ -150,12 +224,7 @@ bool GameGUITouch::process(SDL_Event& event)
     const auto key=std::make_pair(event.tfinger.touchId,event.tfinger.fingerId);
     if (event.type==SDL_FINGERDOWN) {
         if (fingers.empty()) {
-            const bool changedDevice=!touchActive;
             touchActive=true;
-            if (changedDevice && usesHUD() && gui.inGameMenu) {
-                cancel(); ignoreTouchSequence=true; fingers.push_back(key);
-                return true; // Consume the whole gesture before accepting the new layout.
-            }
             gui.viewportSpeedX=gui.viewportSpeedY=0;
             gui.lastMouseButtonState=0; gui.selectionPushed=gui.panPushed=gui.miniMapPushed=false;
             scale=globalContainer->gfx->logicalUnitsPerPoint();
@@ -356,7 +425,7 @@ void GameGUITouch::select(ViewPoint point)
 
 void GameGUITouch::prepareDraw()
 {
-    if (!touchActive) return;
+    if (!active()) return;
     if (usesHUD() && gui.typingInputScreen && gui.typingInputScreenInc<0) {
         delete gui.typingInputScreen; gui.typingInputScreen=nullptr;
     }
@@ -377,7 +446,7 @@ void GameGUITouch::prepareDraw()
 
 void GameGUITouch::drawControls()
 {
-    if (!touchActive || gui.selectionMode!=GameGUI::TOOL_SELECTION || gui.inGameMenu || gui.typingInputScreen || gui.scrollableText) return;
+    if (!active() || gui.selectionMode!=GameGUI::TOOL_SELECTION || gui.inGameMenu || gui.typingInputScreen || gui.scrollableText) return;
     auto* gfx=globalContainer->gfx;
     auto rect=controls(); const int half=int(rect.w/2);
     gfx->setClipRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h));
@@ -430,6 +499,16 @@ void GameGUITouch::drawPanel()
     const double height=gfx->getH()*panelScale(), thumb=content.h*content.h/height;
     gfx->drawFilledRect(int(content.x+content.w-4),int(content.y+panelScroll*panelScale()*content.h/height),3,int(thumb),Color(170,185,190));
     drawAllocation();
+}
+
+void GameGUITouch::drawKeyboardFocus()
+{
+    if (!usesHUD() || keyboardFocus<0) return;
+    const auto targets=keyboardTargets();
+    if (keyboardFocus>=int(targets.size())) return;
+    const auto rect=targets[keyboardFocus];
+    auto* gfx=globalContainer->gfx;gfx->setClipRect();
+    gfx->drawRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h),Color(180,110,20));
 }
 
 void GameGUITouch::drawHUD()

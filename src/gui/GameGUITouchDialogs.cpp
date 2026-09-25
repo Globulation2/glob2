@@ -60,7 +60,10 @@ void GameGUITouch::prepareDialog()
         } else if (auto* selector=dynamic_cast<Selector*>(widget)) {
             row.kind=3; row.text=std::to_string(selector->getValue());
         } else if (auto* input=dynamic_cast<TextInput*>(widget)) {
-            row.kind=4; row.text=input->getText(); row.selected=input->isActivated();
+            row.kind=4; row.text=input->displayText(); row.selected=input->isActivated();
+#ifdef __EMSCRIPTEN__
+            if (input->isActivated()) editingDialogWidget=input;
+#endif
             if (row.text.empty()) row.text="…";
         } else if (auto* list=dynamic_cast<List*>(widget)) {
             for (size_t i=0;i<list->getCount();++i) dialogRows.push_back({widget,list->getText(i),5,int(i),list->getSelectionIndex()==int(i)});
@@ -104,7 +107,7 @@ void GameGUITouch::prepareDialog()
     auto height=[&](size_t index,double width) {
         const auto& row=dialogRows[index];
         const double textWidth=std::max(unit,row.kind==3 ? width-96*unit : width);
-        return std::max(40*unit,pointLines((row.kind==2 ? (row.selected ? "[x] " : "[ ] ") : "")+row.text,textWidth,textScale).size()*16*textScale*unit+8*unit);
+        return std::max(48*unit,pointLines((row.kind==2 ? (row.selected ? "[x] " : "[ ] ") : "")+row.text,textWidth,textScale).size()*16*textScale*unit+8*unit);
     };
     auto placement=ResponsiveDialog::calculate(safe,footer,height,dialogScroll*unit,unit);
     if(editingDialogWidget && lastDialogHeight!=placement.content.h)
@@ -134,6 +137,8 @@ bool GameGUITouch::drawDialog()
         labelClip=row.footer ? std::optional<ViewRect>{} : dialogContent;
         const auto r=row.rect;
         if (!row.footer && (r.y+r.h<=dialogContent.y || r.y>=dialogContent.y+dialogContent.h)) continue;
+        if (auto* input=dynamic_cast<TextInput*>(row.widget))
+            input->presentBrowserInput({int(r.x),int(r.y),int(r.w),int(r.h)},gfx->getW(),gfx->getH());
         SDL_Rect clip{int(dialogContent.x),int(dialogContent.y),int(dialogContent.w),int(dialogContent.h)};
         if (!row.footer) gfx->setClipRect(clip.x,clip.y,clip.w,clip.h); else gfx->setClipRect();
         if (row.kind) gfx->drawFilledRect(int(r.x),int(r.y),int(r.w),int(r.h),row.selected ? PhoneTheme::selected : PhoneTheme::field);

@@ -214,6 +214,17 @@ int main(int argc,char** argv)
         screen.changeSetting("graphics.torus",!previousTorus);
         saved.load();assert(saved.automaticTorus==!previousTorus);
         screen.changeSetting("graphics.torus",previousTorus);
+        for (const auto& [value,name] : std::vector<std::pair<int,std::string>>{{1,"compact"},{2,"spacious"},{0,"automatic"}}) {
+            assert(screen.changeSetting("display.presentation",value));
+            saved.load();assert(saved.interfacePresentation==name);
+        }
+        const auto sample=profile+"/presentation-preference.txt";
+        for (const char* contents : {"interfacePresentation=invalid\n", "username=Legacy profile\n"}) {
+            {std::ofstream file(sample);file<<contents;}
+            saved.interfacePresentation="compact";saved.load(sample);
+            assert(saved.interfacePresentation=="automatic");
+        }
+        std::filesystem::remove(sample);
         screen.done();
     }
     std::cout<<"PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization\n";

@@ -32,6 +32,7 @@ private:
     GAGGUI::Widget* editing=nullptr;
     GAGGUI::Widget* held=nullptr;
     int heldKind=-1,heldIndex=0;
+    int keyboardFocus=-1;
     std::string heldText;
     double offset=0,lastHeight=0;
     void prepare();

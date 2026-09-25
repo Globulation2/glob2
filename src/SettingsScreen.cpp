@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
+#include <BrowserTextInput.h>
 #include "GlobalContainer.h"
 #include "SoundMixer.h"
 #include <Toolkit.h>
@@ -13,6 +14,7 @@ using namespace GAGCore;
 SettingsScreen::SettingsScreen() : gameKeys(GameGUIShortcuts), editorKeys(MapEditShortcuts) {}
 SettingsScreen::~SettingsScreen()
 {
+    GAGCore::forgetBrowserTextInput(this);
     if (modal==Modal::Display) confirmDisplay(false);
     commitText();
     if (settingsDirty || keyboardDirty[0] || keyboardDirty[1]) persist();

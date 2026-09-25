@@ -80,20 +80,20 @@ void Glob2TabScreen::paint(void)
 bool Glob2Screen::phoneFormActive() const
 {
     const bool requested=phonePresentationRequested();
-    return phoneFormEnabled && requested && globalContainer->gfx && globalContainer->gfx->hasPortableRenderer();
+    return phoneFormEnabled && requested && globalContainer->gfx;
 }
-bool Glob2Screen::usesResponsiveViewport() const { return responsiveMenu || phoneFormActive(); }
+bool Glob2Screen::usesResponsiveViewport() const { return (responsiveMenu && phonePresentationRequested()) || phoneFormActive(); }
 
 bool Glob2Screen::responsiveActive() const
 {
     auto* context = dynamic_cast<GraphicContext*>(gfx);
-    return responsiveMenu && context && context->isResponsiveViewport();
+    return responsiveMenu && phonePresentationRequested() && context && context->isResponsiveViewport();
 }
 
 void Glob2Screen::beginExecution(DrawableSurface* surface)
 {
     Screen::beginExecution(surface);
-    if(phoneFormActive()) {phoneForm=std::make_unique<PhoneForm>(*this,[this](auto* w){return phoneLabel(w);},[this](auto* w){return phoneVisible(w);},[this](auto* w){return phoneFooter(w);},[this](auto* w){return phoneColor(w);});return;}
+    if(phoneFormEnabled) {phoneForm=std::make_unique<PhoneForm>(*this,[this](auto* w){return phoneLabel(w);},[this](auto* w){return phoneVisible(w);},[this](auto* w){return phoneFooter(w);},[this](auto* w){return phoneColor(w);});return;}
     if (!responsiveMenu) return;
     if (menuButtons.empty()) {
         for (auto* widget : widgets)
@@ -113,7 +113,7 @@ if (phonePresentationRequested()) {
     // Keep phone menus compact instead of stretching across the landscape display.
     const double width=std::min(safe.w,640.0);
     safe.x+=(safe.w-width)/2;safe.w=width;
-    minimumHeight=44;
+    minimumHeight=48;
 }
     double minimumWidth = 224;
     for (auto* button : menuButtons) minimumWidth = std::max(minimumWidth, button->textWidth() + 32.0);
@@ -161,6 +161,20 @@ void Glob2Screen::handleExecutionEvent(SDL_Event event)
 {
     if(phoneFormActive() && phoneForm) {if(!phoneForm->event(event)) Screen::handleExecutionEvent(event);return;}
     if (!responsiveActive()) { Screen::handleExecutionEvent(event); return; }
+    if (event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_TAB && !menuButtons.empty()) {
+        const int count=int(menuButtons.size());
+        menuKeyboardFocus=(menuKeyboardFocus+((event.key.keysym.mod & KMOD_SHIFT)?-1:1)+count)%count;
+        const auto rect=menuLayout.buttons[menuKeyboardFocus];
+        if (rect.y<menuLayout.content.y) layoutMenu(menuLayout.offset+rect.y-menuLayout.content.y);
+        else if (rect.y+rect.h>menuLayout.content.y+menuLayout.content.h)
+            layoutMenu(menuLayout.offset+rect.y+rect.h-menuLayout.content.y-menuLayout.content.h);
+        return;
+    }
+    if (event.type==SDL_KEYDOWN && menuKeyboardFocus>=0 && !event.key.repeat &&
+        (event.key.keysym.sym==SDLK_RETURN || event.key.keysym.sym==SDLK_SPACE)) {
+        const auto rect=menuLayout.buttons[menuKeyboardFocus];
+        menuActions({{TouchActionKind::Select,{rect.x+rect.w/2,rect.y+rect.h/2}}});return;
+    }
     switch (event.type) {
     case SDL_FINGERDOWN:
         menuActions(menuTouch.down(event.tfinger.touchId, event.tfinger.fingerId, {event.tfinger.x * getW(), event.tfinger.y * getH()})); return;
@@ -212,6 +226,8 @@ void Glob2Screen::drawExecution()
         const auto& rect = menuLayout.buttons[i];
         if (rect.y + rect.h > clip.y && rect.y < clip.y + clip.h) if(menuButtons[i]->textWidth()<=menuLayout.buttons[i].w-24) menuButtons[i]->paint();
         else menuButtons[i]->paintResponsive();
+        if (int(i)==menuKeyboardFocus)
+            gfx->drawRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h),Color(180,110,20));
     }
     context->setClipRect();
     if (menuLayout.maximumOffset > 0) {
@@ -226,12 +242,12 @@ void Glob2Screen::drawExecution()
 bool Glob2TabScreen::usesResponsiveViewport() const
 {
     const bool requested=phonePresentationRequested();
-    return phoneEnabled && requested && globalContainer->gfx && globalContainer->gfx->hasPortableRenderer();
+    return phoneEnabled && requested && globalContainer->gfx;
 }
 void Glob2TabScreen::beginExecution(DrawableSurface* surface)
 {
     TabScreen::beginExecution(surface);
-    if(phoneEnabled && usesResponsiveViewport()) phoneForm=std::make_unique<PhoneForm>(*this,
+    if(phoneEnabled) phoneForm=std::make_unique<PhoneForm>(*this,
         [this](auto* w){auto i=phoneLabels.find(w);return i==phoneLabels.end() ? std::string{} : i->second->getText();},
         [this](auto* w){if(phoneHidden.count(w)) return false;for(const auto& entry:phoneLabels) if(entry.second==w) return false;return true;},
         [this](auto* w){return phoneFooters.count(w)>0;},
@@ -240,12 +256,12 @@ void Glob2TabScreen::beginExecution(DrawableSurface* surface)
 }
 void Glob2TabScreen::handleExecutionEvent(SDL_Event event)
 {
-    if(phoneForm && phoneForm->event(event)) return;
+    if(usesResponsiveViewport() && phoneForm && phoneForm->event(event)) return;
     TabScreen::handleExecutionEvent(event);
 }
 void Glob2TabScreen::drawExecution()
 {
-    if(!phoneForm) {TabScreen::drawExecution();return;}
+    if(!usesResponsiveViewport() || !phoneForm) {TabScreen::drawExecution();return;}
     if(isExecutionRunning()) {paint();phoneForm->draw();globalContainer->gfx->nextFrame();}
 }
 void Glob2TabScreen::cancelExecutionInput()

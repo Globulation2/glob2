@@ -81,7 +81,7 @@ struct MobilePresentationHarness
                 form->selectCategory(SettingsScreen::Category(category));stack.frame(tick+=40,{});
                 for(const auto& row:form->rows())if(row.kind!=SettingsScreen::Kind::Section && row.kind!=SettingsScreen::Kind::Info) {
                     require(row.control.x>=0 && row.control.x+row.control.w<=width,"Settings control extends outside screen");
-                    require(row.control.h>=40,"Settings touch control is too short");
+                    require(row.control.h>=48,"Settings touch control is too short");
                 }
                 snapshot("settings-"+std::to_string(category));
             }

@@ -182,15 +182,14 @@ void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height
     minimap.resizeViewport(width);
     suspendInput();
     const int oldX = viewportX, oldY = viewportY;
-    viewportX = (viewportX + (oldWidth - 160) / 64 - (width - 160) / 64) & game.map.wMask;
-    viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
+    updateCamera();
     viewportChanged(oldX, viewportX, oldY, viewportY);
     if (gameMenuScreen) gameMenuScreen->viewportResized(oldWidth, oldHeight, width, height);
 }
 
 void GameGUI::suspendInput()
 {
-    if (touch) touch->cancel();
+    if (touch) touch->cancel(true);
     panPushed=false;
     torusView.stopMoving();
     torusPointerDown=false;

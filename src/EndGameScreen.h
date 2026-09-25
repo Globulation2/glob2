@@ -7,6 +7,7 @@
 #include "GameGUI.h"
 #include "Glob2Screen.h"
 #include "FrontendTheme.h"
+#include "gui/PhoneGraphic.h"
 
 class LoadSaveScreen;
 
@@ -18,13 +19,15 @@ namespace GAGGUI
 }
 
 //! Widget to display stats at end of game
-class EndGameStat: public RectangularWidget
+class EndGameStat: public RectangularWidget, public PhoneGraphic
 {
 public:
 	//! Constructor, takes position and initial map name
 	EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game);
 	//! Destructor
 	virtual ~EndGameStat();
+    void paintPhone(int width,int height) override;
+    void inspectPhone(int x,int y) override { mouse_x=x;mouse_y=y; }
 	//! Set the type of stats (units, buildings, prestige) to draw
 	void setStatType(int type);
 	void paintMeasurements();
@@ -111,5 +114,6 @@ public:
 
 private:
     std::unique_ptr<LoadSaveScreen> replaySave;
+    std::unique_ptr<PhoneForm> replayForm;
 	void saveReplay(const char *dir, const char *ext);
 };

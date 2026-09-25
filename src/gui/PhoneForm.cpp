@@ -60,7 +60,10 @@ void PhoneForm::prepare() {
             }
             continue;
         } else if(auto* input=dynamic_cast<TextInput*>(widget)) {
-            row.text=input->getText();row.kind=3;row.selected=input->isActivated();
+            row.text=input->displayText();row.kind=3;row.selected=input->isActivated();
+#ifdef __EMSCRIPTEN__
+            if (input->isActivated()) editing=input;
+#endif
             if(row.text.empty()) row.text="…";
         } else if(auto* text=dynamic_cast<Text*>(widget)) row.text=text->getText();
         else if(auto* text=dynamic_cast<TextArea*>(widget)) {
@@ -117,7 +120,7 @@ void PhoneForm::prepare() {
     auto height=[&](size_t i,double width) {
         if(rows[i].kind==13) return 240*unit;
         if(rows[i].kind==4) return std::min(160*unit,width);
-        return std::max(40*unit,wrapTouchText(globalContainer->standardFont,rows[i].text,((rows[i].kind>=9 && rows[i].kind<=11) ? width-96*unit : rows[i].kind==8 ? width-48*unit : width)/(scale*unit)-8).size()*16*scale*unit+8*unit);
+        return std::max(48*unit,wrapTouchText(globalContainer->standardFont,rows[i].text,((rows[i].kind>=9 && rows[i].kind<=11) ? width-96*unit : rows[i].kind==8 ? width-48*unit : width)/(scale*unit)-8).size()*16*scale*unit+8*unit);
     };
     placement=ResponsiveDialog::calculate(safe,fixed,height,offset,unit);
     if(lastHeight && lastHeight!=placement.content.h) cancel();
@@ -137,6 +140,8 @@ void PhoneForm::draw() {
     for(const auto& row:rows) {
         const auto r=row.rect;auto clip=row.footer ? r : placement.content;
         if(r.y+r.h<=clip.y || r.y>=clip.y+clip.h) continue;
+        if (auto* input=dynamic_cast<TextInput*>(row.widget))
+            input->presentBrowserInput({int(r.x),int(r.y),int(r.w),int(r.h)},gfx->getW(),gfx->getH());
         SDL_Rect scissor{int(clip.x),int(clip.y),int(clip.w),int(clip.h)};
         gfx->setClipRect(scissor.x,scissor.y,scissor.w,scissor.h);
         gfx->drawFilledRect(int(r.x),int(r.y),int(r.w),int(r.h),row.selected ? PhoneTheme::selected : PhoneTheme::field);
@@ -172,6 +177,11 @@ void PhoneForm::draw() {
         gfx->setUITransform();
     }
     gfx->setClipRect();
+    if (keyboardFocus>=0 && keyboardFocus<int(rows.size())) {
+        const auto& row=rows[keyboardFocus];const auto r=row.rect;
+        if (!row.footer) gfx->setClipRect(int(placement.content.x),int(placement.content.y),int(placement.content.w),int(placement.content.h));
+        gfx->drawRect(int(r.x),int(r.y),int(r.w),int(r.h),Color(180,110,20));gfx->setClipRect();
+    }
     if(placement.maximum>0) {
         const auto c=placement.content;const double total=c.h+placement.maximum;
         gfx->drawFilledRect(int(c.x+c.w-3*unit),int(c.y+placement.offset*c.h/total),std::max(1,int(2*unit)),int(c.h*c.h/total),Color(180,195,195));
@@ -245,6 +255,36 @@ void PhoneForm::act(const std::vector<TouchAction>& actions) {
 }
 bool PhoneForm::event(SDL_Event event) {
     auto* gfx=globalContainer->gfx;prepare();ViewPoint point;int phase=-1;Sint64 device=-1,pointer=0;
+    if (event.type==SDL_KEYDOWN && event.key.keysym.sym==SDLK_TAB) {
+        if (auto* input=dynamic_cast<TextInput*>(editing)) input->deactivate();
+        if (auto* text=dynamic_cast<TextArea*>(editing)) text->deactivate();
+        editing=nullptr;SDL_StopTextInput();
+        prepare();
+        const int count=int(rows.size()),direction=(event.key.keysym.mod & KMOD_SHIFT) ? -1 : 1;
+        for (int i=0;i<count;++i) {
+            keyboardFocus=(keyboardFocus+direction+count)%count;
+            const auto& row=rows[keyboardFocus];
+            if (!row.kind || row.kind==4) continue;
+            if (!row.footer) {
+                if (row.rect.y<placement.content.y) offset-=placement.content.y-row.rect.y;
+                else if (row.rect.y+row.rect.h>placement.content.y+placement.content.h)
+                    offset+=row.rect.y+row.rect.h-placement.content.y-placement.content.h;
+                prepare();
+            }
+            break;
+        }
+        return true;
+    }
+    if (event.type==SDL_KEYDOWN && keyboardFocus>=0 && keyboardFocus<int(rows.size()) &&
+        (event.key.keysym.sym==SDLK_RETURN || event.key.keysym.sym==SDLK_SPACE ||
+         event.key.keysym.sym==SDLK_LEFT || event.key.keysym.sym==SDLK_RIGHT) && !editing) {
+        const auto row=rows[keyboardFocus];
+        held=row.widget;heldKind=row.kind;heldIndex=row.index;heldText=row.text;
+        const double unit=gfx->logicalUnitsPerPoint();
+        const double x=event.key.keysym.sym==SDLK_LEFT ? row.rect.x+unit :
+            event.key.keysym.sym==SDLK_RIGHT ? row.rect.x+row.rect.w-unit : row.rect.x+row.rect.w/2;
+        act({{TouchActionKind::Select,{x/unit,(row.rect.y+row.rect.h/2)/unit}}});return true;
+    }
     switch(event.type) {
     case SDL_FINGERDOWN:case SDL_FINGERMOTION:case SDL_FINGERUP:
         point={event.tfinger.x*gfx->getW(),event.tfinger.y*gfx->getH()};device=event.tfinger.touchId;pointer=event.tfinger.fingerId;

@@ -319,8 +319,10 @@ void GameGUI::updateCamera()
 {
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
-    camera.resize(globalContainer->gfx->getW()-(touch && touch->usesHUD() ? 0 : RIGHT_MENU_WIDTH),globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
-    if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
+    if (touch && touch->usesHUD()) {
+        const auto bounds=touch->worldBounds();
+        camera.resize(bounds.w,bounds.h,game.map.getW()*32.0,game.map.getH()*32.0,bounds.x,bounds.y);
+    } else camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
@@ -329,9 +331,8 @@ void GameGUI::updateCamera()
 bool GameGUI::zoomMap(double steps,int x,int y)
 {
     updateCamera();
-    if (torusView.active() || !globalContainer->gfx->canDrawStretchedSprite() || y<16 || !camera.contains(x,y)) return false;
+    if (torusView.active() || y<16 || !camera.contains(x,y)) return false;
     camera.wheel(steps,x,y);
-    if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());

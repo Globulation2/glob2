@@ -24,6 +24,7 @@ class CustomGameChoiceScreen : public Glob2Screen
 	std::vector<bool> enabled;
 
   public:
+    bool supportsCompactViewport() const override { return true; }
     bool usesResponsiveViewport() const override;
     void cancelExecutionInput() override;
 	CustomGameChoiceScreen(const std::string &, const std::vector<std::string> &, int, bool,
@@ -37,6 +38,7 @@ class CustomGameScreen : public Glob2TabScreen
 {
   public:
 	void paint() override;
+    bool supportsCompactViewport() const override { return true; }
     bool usesResponsiveViewport() const override;
     friend struct MobilePresentationHarness;
     void cancelExecutionInput() override;

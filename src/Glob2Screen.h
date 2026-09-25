@@ -26,6 +26,7 @@ class Glob2Screen : public Screen
 	virtual ~Glob2Screen();
 	virtual void paint(void);
     bool usesResponsiveViewport() const override;
+    bool supportsCompactViewport() const override { return phoneFormEnabled || responsiveMenu; }
     bool phoneVisible(GAGGUI::Widget* widget) const {auto it=phoneVisibility.find(widget);return it==phoneVisibility.end() || it->second;}
     std::string phoneLabel(GAGGUI::Widget* widget) const { auto it=phoneLabels.find(widget);return it==phoneLabels.end() ? std::string{} : it->second; }
     void beginExecution(GAGCore::DrawableSurface* surface) override;
@@ -33,7 +34,7 @@ class Glob2Screen : public Screen
     void handleExecutionEvent(SDL_Event event) override;
     void drawExecution() override;
     void cancelExecutionInput() override;
-    void viewportResized(int,int,int,int) override { cancelExecutionInput(); }
+    void viewportResized(int,int,int,int) override { cancelExecutionInput(); layoutW=layoutH=0; }
 protected:
     void setPhoneVisible(GAGGUI::Widget* widget,bool visible) {phoneVisibility[widget]=visible;}
     void setPhoneLabel(GAGGUI::Widget* widget,const std::string& label) { phoneLabels[widget]=label; }
@@ -54,7 +55,7 @@ private:
     std::vector<GAGGUI::TextButton*> menuButtons;
     GAGCore::ResponsiveMenu menuLayout;
     GAGCore::TouchInput menuTouch;
-    int layoutW = 0, layoutH = 0;
+    int layoutW = 0, layoutH = 0, menuKeyboardFocus=-1;
     bool responsiveActive() const;
     void layoutMenu(double offset);
     void menuActions(const std::vector<GAGCore::TouchAction>& actions);
@@ -71,6 +72,7 @@ class Glob2TabScreen : public TabScreen
 {
 public:
     bool usesResponsiveViewport() const override;
+    bool supportsCompactViewport() const override { return phoneEnabled; }
     void beginExecution(GAGCore::DrawableSurface* surface) override;
     void handleExecutionEvent(SDL_Event event) override;
     void drawExecution() override;

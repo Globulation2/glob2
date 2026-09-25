@@ -21,6 +21,7 @@ using std::shared_ptr;
 
 LANFindScreen::LANFindScreen(ScreenStack& screens) : screens(screens)
 {
+    enablePhoneForm();
 	serverName=new TextInput(20, 170, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "localhost", true);
 	addWidget(serverName);
 
