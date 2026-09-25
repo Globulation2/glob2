@@ -78,7 +78,7 @@ namespace GAGGUI
 		// cursor / activation
 		void setCursorPos(size_t pos){ cursPos = pos;};
 		void deactivate(void) { activated = false; recomputeTextInfos(); }
-		void activate(void) { activated = true; recomputeTextInfos(); }
+		void activate(void);
 		
 		// autocompletion
 		void addAutoCompletableWord(const std::string &word);

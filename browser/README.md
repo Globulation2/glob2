@@ -8,6 +8,9 @@ one. The pinned Emscripten 4.0.15 build
 shares game logic and the GPU renderer with desktop. The browser host schedules frames and cooperative jobs without Asyncify. Build and verification instructions below cover the desktop browser target.
 The browser ADRs under `docs/browser` describe the implementation boundaries and
 platform boundaries.
+Browser SDK calls for viewport metrics and text editing live in
+`browser/ApplicationHost.cpp`; shared UI code uses the `ApplicationHost` and
+`BrowserTextInput` interfaces, with native implementations in libgag.
 
 The desktop browser uses the system mouse cursor, including when an older profile
 had enabled the game cursor. Menus retain their colony background after leaving

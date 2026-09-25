@@ -247,6 +247,9 @@ void forgetBrowserTextInput(const void* owner) {
     browserTextCallbacks.erase(owner);browserTextVisible.erase(owner);
     EM_ASM({ Module.textBridge?.remove($0); },owner);
 }
+void focusBrowserTextInput(const void* owner) {
+    EM_ASM({ Module.textBridge?.focus($0); },owner);
+}
 void beginBrowserTextFrame() {
     // DOM editing is synchronized before any dialog action can read its model.
     auto callbacks=browserTextCallbacks;

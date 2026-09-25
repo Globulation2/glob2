@@ -7,6 +7,7 @@ namespace GAGCore {
 using BrowserTextChange=std::function<void(const std::string&,size_t,int)>;
 // Optional host-native editing; native SDL hosts provide no-op implementations.
 void forgetBrowserTextInput(const void* owner);
+void focusBrowserTextInput(const void* owner);
 bool hasBrowserTextInput(const void* owner);
 void beginBrowserTextFrame();
 void endBrowserTextFrame();

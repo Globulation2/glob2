@@ -13,6 +13,7 @@ using namespace GAGCore;
 namespace GAGGUI
 {
     TextInput::~TextInput() { forgetBrowserTextInput(this); }
+    void TextInput::activate() { activated=true;recomputeTextInfos();focusBrowserTextInput(this); }
     void TextInput::presentBrowserInput(SDL_Rect bounds,int width,int height,const SDL_Rect* clip) {
         if (!width || !height) {
             auto* surface=parent->getSurface();
@@ -28,8 +29,16 @@ namespace GAGGUI
                 text=value;cursPos=std::min(cursor,text.size());activated=true;recomputeTextInfos();
                 parent->onAction(this,TEXT_MODIFIED,0,0);
 #ifdef __EMSCRIPTEN__
-                if (action && hasBrowserTextInput(this))
-                    parent->onAction(this,action==1 ? TEXT_VALIDATED : TEXT_CANCELED,0,0);
+                if (action && hasBrowserTextInput(this)) {
+                    // Use the same field validation and dialog shortcuts as SDL input.
+                    SDL_Event key{};key.type=SDL_KEYDOWN;key.key.state=SDL_PRESSED;
+                    key.key.keysym.sym=action==1 ? SDLK_RETURN : SDLK_ESCAPE;
+                    parent->dispatchEvents(&key);
+                    // Wake the owning game loop to consume the dialog result;
+                    // the DOM key event itself never enters SDL's event queue.
+                    SDL_Event wake{};wake.type=SDL_USEREVENT;
+                    SDL_PushEvent(&wake);
+                }
 #endif
             },clip);
     }

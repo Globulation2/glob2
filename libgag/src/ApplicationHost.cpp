@@ -103,6 +103,7 @@ void exited(int) {}
 
 namespace GAGCore {
 void forgetBrowserTextInput(const void*) {}
+void focusBrowserTextInput(const void*) {}
 bool hasBrowserTextInput(const void*) { return false; }
 void beginBrowserTextFrame() {}
 void endBrowserTextFrame() {}

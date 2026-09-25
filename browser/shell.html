@@ -171,6 +171,7 @@ Module.textBridge = (() => {
   function remove(id) { fields.get(id)?.element.remove(); fields.delete(id); }
   return {
     remove,
+    focus(id) { fields.get(id)?.element.focus({preventScroll:true}); },
     begin() { for (const field of fields.values()) field.seen=false; },
     end() { for (const [id,field] of fields) if (!field.seen) remove(id); },
     take(id) {

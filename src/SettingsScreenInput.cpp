@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
+#include <BrowserTextInput.h>
 #include <Toolkit.h>
 #include <algorithm>
 
@@ -24,7 +25,7 @@ void SettingsScreen::invoke(Row row,int direction)
     }else if(row.kind==Kind::Number && row.change){row.change(std::clamp(row.number+(direction?direction:1),row.minimum,row.maximum));}
     else if(row.kind==Kind::Slider && row.change){row.change(std::clamp(row.number+(direction?direction:1)*3,row.minimum,row.maximum));}
     else if(row.kind==Kind::Text){
-        if(!editingText){textDraft=globalContainer->settings.getUsername();editingText=true;textCursor=textDraft.size();selectAllText=false;SDL_StartTextInput();}
+        if(!editingText){textDraft=globalContainer->settings.getUsername();editingText=true;textCursor=textDraft.size();selectAllText=false;SDL_StartTextInput();focusBrowserTextInput(this);}
     }
 }
 void SettingsScreen::ensureFocusVisible()

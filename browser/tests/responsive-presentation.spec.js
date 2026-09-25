@@ -72,7 +72,7 @@ test.describe('responsive mixed input',()=>{
     const field=page.locator('input[aria-label="Game text field"]');
     await expect(field).toBeVisible();await field.fill('Responsive phone');
     await page.screenshot({path:info.outputPath('phone-save-dialog.png')});
-    await page.touchscreen.tap(260,302);
+    await field.press('Enter'); // Native input validates through the dialog's shared shortcut.
     const digest=()=>page.evaluate(()=>glob2Diagnostics.saveDigest('Responsive_phone.game'));
     await expect.poll(digest).not.toBeNull();
     await expect.poll(async()=>(await snapshot(page)).persisting).toBe(false);
