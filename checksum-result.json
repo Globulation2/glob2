@@ -1,0 +1,14 @@
+{
+  "platforms": [
+    "macOS arm64",
+    "iOS 26.5 arm64 simulator (Xcode 27.0)"
+  ],
+  "fixture": "games/cross-replay.game",
+  "seed": 42,
+  "ticks": 1500,
+  "orders": 47,
+  "final_checksum": "16791a66",
+  "per_tick_sidecars_identical": true,
+  "bytes": 3601608,
+  "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48"
+}

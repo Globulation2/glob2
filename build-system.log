@@ -1,0 +1,11 @@
+.................simctl list devices --json
+simctl spawn owned-test launchctl list
+simctl launch --stdout=/Users/bradley/glob2/build/test-profiles/tmpujbnswf9/diagnostics/startup-stdout.txt --stderr=/Users/bradley/glob2/build/test-profiles/tmpujbnswf9/diagnostics/startup-stderr.txt owned-test org.globulation.glob2
+simctl spawn owned-test launchctl list
+simctl spawn owned-test log show --last 3m --style compact --predicate process == "Glob2" OR eventMessage CONTAINS "org.globulation.glob2"
+simctl io owned-test screenshot /Users/bradley/glob2/build/test-profiles/tmpujbnswf9/diagnostics/failure.png
+.............
+----------------------------------------------------------------------
+Ran 30 tests in 5.654s
+
+OK
