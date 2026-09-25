@@ -38,6 +38,17 @@ struct MobilePresentationHarness
             auto snapshot=[&](const std::string& name) {gfx->printScreen(name+"-"+orientation+".bmp");stack.frame(tick+=40,{});};
             require(gfx->getW()==width && gfx->getH()==height,"Setup must use phone dimensions");
             snapshot("setup-map");
+            auto profile=std::make_unique<CustomGameChoiceScreen>("AI profile",std::vector<std::string>{"One","Two"},0,false,std::vector<bool>{});
+            auto* profileScreen=profile.get();stack.push(std::move(profile));stack.frame(tick+=40,{});
+            auto profileHit=[&](const std::string& id) {
+                for(const auto& item:profileScreen->controls->hits)if(item.id==id)return item.box;
+                throw std::runtime_error("Missing profile control: "+id);
+            };
+            const auto back=profileHit("profile/back"),use=profileHit("profile/use");
+            require(back.x+back.w<=use.x,"Phone profile Back and Use must not overlap");
+            require(back.h>=48 && use.h>=48,"Phone profile actions need touch-sized targets");
+            snapshot("ai-profile");
+            tap(back.x+back.w/2,back.y+back.h/2);stack.frame(tick+=40,{});
             lobby->setMapMode(true);stack.frame(tick+=40,{});
             press("landscape");stack.frame(tick+=40,{});
             require(gfx->getW()==width && gfx->getH()==height,"Landscape picker retains phone dimensions");

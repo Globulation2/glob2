@@ -15,6 +15,7 @@ class LandscapePreviewer;
 class CustomGameChoiceScreen : public Glob2Screen
 {
 	friend struct CustomGameSetupHarness;
+	friend struct MobilePresentationHarness;
 	LobbyControls *controls;
 	std::string title;
 	std::vector<std::string> choices;

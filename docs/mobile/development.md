@@ -10,6 +10,9 @@ lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
 legacy widget forms. Composed settings and lobby screens supply their own phone
 layouts. Mobile builds enable these automatically; `GLOB2_MOBILE_UI=1` enables
 them in a native portable-renderer build for development.
+Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
+options because the operating system manages the viewport and the mobile build
+uses the portable renderer.
 
 The gameplay toolbar opens build choices, flags/zones, inspection, objectives,
 alliances and the game menu. Drag the map to pan, pinch to zoom, tap to select.

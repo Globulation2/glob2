@@ -190,6 +190,10 @@ void SettingsScreen::onTimer(Uint32 tick)
 bool SettingsScreen::displayConfirmationPending() const { return modal==Modal::Display; }
 bool SettingsScreen::restartRequired() const
 {
+#ifdef GLOB2_MOBILE
+    // The OS controls the mobile viewport; desktop display preferences are unused.
+    return false;
+#else
     const auto& s=globalContainer->settings;auto* g=globalContainer->gfx;
     const Uint32 mask=GraphicContext::USEGPU|GraphicContext::FULLSCREEN|GraphicContext::CUSTOMCURSOR;
     return (s.screenFlags & mask)!=(g->getOptionFlags() & mask) ||
@@ -197,6 +201,7 @@ bool SettingsScreen::restartRequired() const
            // The preference is resolved against the desktop, and the window floor may
            // have reduced the scale in use, so compare what setRes() was asked for.
            GraphicContext::effectiveUiScale(s.uiScale/100.0f)!=g->getWantedUiScale();
+#endif
 }
 void SettingsScreen::changeUiScale(int percent)
 {

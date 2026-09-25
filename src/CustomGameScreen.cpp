@@ -13,6 +13,7 @@
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
 #include <InterfacePresentation.h>
+#include "gui/MobileSafeArea.h"
 #include "LobbyMapCatalog.h"
 #include "Player.h"
 #include "Unit.h"
@@ -55,14 +56,20 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 	controls->render = [this]
 	{
 		auto &ui = *controls;
-		int w = std::min(gfx->getW() - 32, 1000), x = (gfx->getW() - w) / 2, height = gfx->getH();
-		ui.setDimensions(gfx->getW(), height);
-		ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
-		ui.text(x + 8, 20, this->title, "standard", w - 16);
 		const bool phone=GAGCore::phonePresentationRequested();
+		int w = std::min(gfx->getW() - 32, 1000), x = (gfx->getW() - w) / 2, height = gfx->getH();
+		int top=0;
+		if(phone) {
+			const auto safe=GAGCore::mobileDialogSafe(globalContainer->gfx);
+			x=int(safe.x)+16; w=int(safe.w)-32;
+			top=int(safe.y); height=int(safe.y+safe.h);
+		}
+		ui.setDimensions(gfx->getW(), gfx->getH());
+		ui.box({x - 8, top+8, w + 16, height - top-16}, Color(232, 237, 218), 8);
+		ui.text(x + 8, top+20, this->title, "standard", w - 16);
         int left = w < 800 ? 174 : 235, right = x + left + 22, rightW = w - left - 22;
         if(phone) {
-            ui.dropdown("profile/select",{x,56,w,48},this->choices,this->selected,[this](int v){this->selected=v;controls->regions[21].offset=0;});
+            ui.dropdown("profile/select",{x,top+56,w,48},this->choices,this->selected,[this](int v){this->selected=v;controls->regions[21].offset=0;});
             right=x;rightW=w;
         }
         if(!phone) {
@@ -91,7 +98,7 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 		}
 		ui.endRegion(this->choices.size() * 58);
         }
-        const int detailTop=phone?116:60;
+        const int detailTop=phone?top+116:60;
         ui.beginRegion(21, {right, detailTop, rightW, height - detailTop-75});
         int yy = detailTop - ui.regions[21].offset;
 		int start = yy;
@@ -122,10 +129,10 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 		}
 		ui.endRegion(yy - start);
 		ui.button(
-			"profile/back", {x, height - 55, 100, 34}, tr("Back"), [this] { endExecute(-2); },
+			"profile/back", {x, height - (phone?64:55), 100, phone?48:34}, tr("Back"), [this] { endExecute(-2); },
 			false, true, true);
 		ui.button(
-			"profile/use", {right, height - 55, rightW, 34},
+			"profile/use", {phone?x+108:right, height - (phone?64:55), phone?w-108:rightW, phone?48:34},
 			tr("Use") + " " +
 				this->choices[this->selected].substr(0, this->choices[this->selected].find(" - ")),
 			[this] { endExecute(this->selected); }, true);
