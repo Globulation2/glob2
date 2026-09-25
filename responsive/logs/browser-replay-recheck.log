@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 [firefox] › tests/replay-save.spec.js:19:1 › end-game replay save remains scheduled during resize and durable persistence (35.4s)
+
+  1 passed (36.5s)

@@ -1,0 +1,2 @@
+FileManager::writeAtomically: /Users/bradley/glob2/artifacts/responsive-ui/gameplay/replays/blocked.replay: File replacement failed: unspecified iostream_category error
+PASS: actual gameplay touch, toroidal pan, preview, confirmation, validation, cancellation and duplicate suppression

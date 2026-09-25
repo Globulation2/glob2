@@ -1,0 +1,24 @@
+{
+  "fixture": "games/cross-replay.game",
+  "fixture_sha256": "91cbeadd0fce2ec3bc3cb620ce1bea2ac2fc78d9763ce07ddce583342482ee68",
+  "seed": 42,
+  "ticks": 1500,
+  "native_sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+  "browser_traces": {
+    "firefox": {
+      "bytes": 3601608,
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_native": true
+    },
+    "chromium": {
+      "bytes": 3601608,
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_native": true
+    },
+    "webkit": {
+      "bytes": 3601608,
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_native": true
+    }
+  }
+}

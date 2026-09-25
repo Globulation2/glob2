@@ -1,3 +1,6 @@
+Current responsive extension evidence is in [responsive/README.md](responsive/README.md).
+The original mobile-port evidence below describes its earlier source revision.
+
 # PR 208 mobile verification evidence
 
 Source: `458dc357968118d30ee8030b1dcc3227dd66c022` (the simulation/UI port began at `2c05b4d86`; the final commits fix translations, toolchain bootstrap and phone layouts).

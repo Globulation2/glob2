@@ -1,0 +1,11 @@
+
+Running 6 tests using 1 worker
+
+  ✓  1 [chromium] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (5.2s)
+  ✓  2 [chromium] › tests/responsive-presentation.spec.js:42:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (12.9s)
+  ✓  3 [firefox] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (5.8s)
+  ✓  4 [firefox] › tests/responsive-presentation.spec.js:42:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (19.0s)
+  ✓  5 [webkit] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (3.8s)
+  ✓  6 [webkit] › tests/responsive-presentation.spec.js:42:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (11.0s)
+
+  6 passed (59.6s)

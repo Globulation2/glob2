@@ -1,0 +1,68 @@
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:53:55] "GET / HTTP/1.1" 200 -
+
+Running 9 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:53:55] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:53:56] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:53:56] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  1 [chromium] › tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (8.9s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:04] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:04] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:04] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:04] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:07] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:07] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:07] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:07] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  2 [chromium] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (3.7s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:08] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:08] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:08] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:08] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:30] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:30] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:30] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:30] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  3 [chromium] › tests/responsive-presentation.spec.js:44:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (25.3s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:35] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:35] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:35] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  4 [firefox] › tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (9.6s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:44] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:44] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:44] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:44] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:48] "GET /?renderer=software HTTP/1.1" 304 -
+  ✓  5 [firefox] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (5.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:49] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:49] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:49] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:54:49] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:13] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:13] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:13] "GET /index.data HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:13] "GET /index.wasm HTTP/1.1" 304 -
+  ✓  6 [firefox] › tests/responsive-presentation.spec.js:44:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (30.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:20] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:20] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:20] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  7 [webkit] › tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (7.7s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:28] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:28] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:28] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:28] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:30] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:30] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:30] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  8 [webkit] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (3.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:31] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:31] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:31] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:31] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:51] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:51] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:51] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:55:51] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  9 [webkit] › tests/responsive-presentation.spec.js:44:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (22.7s)
+
+  9 passed (2.0m)

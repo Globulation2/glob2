@@ -1,0 +1,54 @@
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:21] "GET / HTTP/1.1" 200 -
+
+Running 6 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:22] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:22] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:22] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:22] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:25] "GET /?renderer=webgl2 HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:25] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:25] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  1 [chromium] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (4.4s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:26] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:26] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:26] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:26] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:51] "GET /?renderer=webgl2 HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:51] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:51] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:51] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  2 [chromium] › tests/responsive-presentation.spec.js:44:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (28.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:56] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:56] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:56] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:56:56] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:00] "GET /?renderer=webgl2 HTTP/1.1" 304 -
+  ✓  3 [firefox] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (6.1s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:01] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:01] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:01] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:01] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:26] "GET /?renderer=webgl2 HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:26] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:26] "GET /index.data HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:26] "GET /index.wasm HTTP/1.1" 304 -
+  ✓  4 [firefox] › tests/responsive-presentation.spec.js:44:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (32.9s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:35] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:35] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:35] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:35] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:38] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:38] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:38] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  5 [webkit] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (3.7s)
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:39] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:39] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:39] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:39] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:58] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:58] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [25/Sep/2026 09:57:58] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  6 [webkit] › tests/responsive-presentation.spec.js:44:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (22.8s)
+
+  6 passed (1.7m)

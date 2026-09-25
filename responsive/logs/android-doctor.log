@@ -1,0 +1,1 @@
+Android NDK 28.2.13676358 missing at $REPO/build/mobile-tools/android-sdk/ndk/28.2.13676358. Install it in $REPO/build/mobile-tools/android-sdk or pass android_sdk=PATH. See docs/mobile/development.md.

@@ -1,0 +1,16 @@
+Settings::load("preferences.txt") : error, can't open file.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/glob2/artifacts/responsive-ui/settings-final-profile/preferences.txt: File replacement failed: unspecified iostream_category error
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+StringTable::getString("[settings Save the game automatically about every minute.], -1") : error, no such key.
+FileManager::writeAtomically: /Users/bradley/glob2/artifacts/responsive-ui/settings-final-profile/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
