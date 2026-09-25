@@ -3118,3 +3118,13 @@ Generovanie...
 Hráči
 [Rules]
 Pravidlá
+[settings Interface layout]
+Rozloženie rozhrania
+[settings Automatic]
+Automatický
+[settings Compact]
+Blízko seba
+[settings Spacious]
+Priestranné
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Priestranné rozloženie používa bočný panel, ak je dosť miesta. Kompaktné používa panel nástrojov a vysúvacie panely.

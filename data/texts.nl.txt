@@ -3134,3 +3134,13 @@ Genereren...
 Spelers
 [Rules]
 Regels
+[settings Interface layout]
+Interface-indeling
+[settings Automatic]
+Automatisch
+[settings Compact]
+Dicht bijeen
+[settings Spacious]
+Ruim
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+De ruime indeling gebruikt een zijpaneel als er plaats is. De compacte indeling gebruikt een werkbalk en uitklapbare panelen.

@@ -3108,3 +3108,13 @@ Emoji
 Игроки
 [Rules]
 Правила
+[settings Interface layout]
+Компоновка интерфейса
+[settings Automatic]
+Автоматически
+[settings Compact]
+Близко
+[settings Spacious]
+Просторная
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Просторная компоновка использует боковую панель, если хватает места. Компактная — панель инструментов и выдвижные панели.

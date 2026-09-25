@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Settings.h"
+#include <InterfacePresentation.h>
 #include "GUIBase.h"
 #include "Utilities.h"
 #include <Stream.h>
@@ -84,6 +85,7 @@ void Settings::setPasswd(std::string s) { password = s; }
 
 void Settings::load(std::string filename)
 {
+    interfacePresentation="automatic";
 	std::map<std::string, std::string> parsed;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
@@ -114,6 +116,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(uiScale);
+        READ_PARSED_STRING(interfacePresentation);
+        interfacePresentation=presentationPreferenceName(parsePresentationPreference(interfacePresentation));
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
@@ -161,6 +165,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(version);
 	}
 	delete stream;
+    presentationPreference=parsePresentationPreference(interfacePresentation);
 	
 	if(version < SETTINGS_VERSION)
 	{
@@ -183,6 +188,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
+        Utilities::streamprintf(stream, "interfacePresentation=%s\n", interfacePresentation.c_str());
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());

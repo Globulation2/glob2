@@ -3106,3 +3106,13 @@ Emoji
 玩家
 [Rules]
 规则
+[settings Interface layout]
+界面布局
+[settings Automatic]
+自动
+[settings Compact]
+紧凑
+[settings Spacious]
+宽敞
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+宽敞布局在空间足够时使用侧边面板。紧凑布局使用工具栏和可展开的面板。

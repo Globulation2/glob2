@@ -3120,3 +3120,13 @@ Genererar...
 Spelare
 [Rules]
 Regler
+[settings Interface layout]
+Gränssnittets layout
+[settings Automatic]
+Automatisk
+[settings Compact]
+Tätt
+[settings Spacious]
+Rymlig
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Rymlig layout använder en sidopanel när det finns plats. Kompakt layout använder ett verktygsfält och utfällbara paneler.

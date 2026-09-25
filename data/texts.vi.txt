@@ -3106,3 +3106,13 @@ Dùng địa hình này
 Người chơi
 [Rules]
 Luật chơi
+[settings Interface layout]
+Bố cục giao diện
+[settings Automatic]
+Tự động
+[settings Compact]
+Gần nhau
+[settings Spacious]
+Rộng rãi
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Bố cục rộng rãi dùng bảng bên khi đủ chỗ. Bố cục gọn dùng thanh công cụ và các bảng có thể mở rộng.

@@ -81,6 +81,12 @@ void SettingsScreen::buildGeneral()
         form.back().help=tr("OpenGL is not available in this build.");
 #endif
 #endif
+        choice("display.presentation","Interface layout","Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
+            int(parsePresentationPreference(s.interfacePresentation)),{tr("Automatic"),tr("Compact"),tr("Spacious")},[this](int v){
+                presentationPreference=static_cast<PresentationPreference>(std::clamp(v,0,2));
+                globalContainer->settings.interfacePresentation=presentationPreferenceName(presentationPreference);
+                commit();
+            });
     } else if(current==Category::Audio) {
         info(tr("Adjust music and voice volume."));
         toggle("audio.mute","Mute audio","Keep your volume levels while silencing audio.",s.mute,[this](int v){

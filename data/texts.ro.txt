@@ -3110,3 +3110,13 @@ Se generează...
 Jucători
 [Rules]
 Reguli
+[settings Interface layout]
+Aranjarea interfeței
+[settings Automatic]
+Automat
+[settings Compact]
+Apropiate
+[settings Spacious]
+Spațioasă
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Aranjarea spațioasă folosește un panou lateral când există loc. Cea compactă folosește o bară de instrumente și panouri extensibile.

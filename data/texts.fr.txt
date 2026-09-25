@@ -3120,3 +3120,13 @@ Génération...
 Joueurs
 [Rules]
 Règles
+[settings Interface layout]
+Disposition de l’interface
+[settings Automatic]
+Automatique
+[settings Compact]
+Rapprochés
+[settings Spacious]
+Spacieuse
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La disposition spacieuse utilise un panneau latéral si la place le permet. La disposition compacte utilise une barre d’outils et des panneaux escamotables.

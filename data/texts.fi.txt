@@ -3110,3 +3110,13 @@ Luodaan...
 Pelaajat
 [Rules]
 Säännöt
+[settings Interface layout]
+Käyttöliittymän asettelu
+[settings Automatic]
+Automaattinen
+[settings Compact]
+Tiivis
+[settings Spacious]
+Väljä
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Väljä asettelu käyttää sivupaneelia, kun tilaa on riittävästi. Tiivis asettelu käyttää työkalupalkkia ja avattavia paneeleja.

@@ -3186,3 +3186,13 @@ Genererer...
 Spillere
 [Rules]
 Regler
+[settings Interface layout]
+Grænsefladens layout
+[settings Automatic]
+Automatisk
+[settings Compact]
+Tæt
+[settings Spacious]
+Rummelig
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Rummelig bruger et sidepanel, når der er plads. Kompakt bruger en værktøjslinje og paneler, der kan foldes ud.

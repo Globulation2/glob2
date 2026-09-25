@@ -3182,3 +3182,13 @@ Emoji
 玩家
 [Rules]
 規則
+[settings Interface layout]
+介面配置
+[settings Automatic]
+自動
+[settings Compact]
+緊湊
+[settings Spacious]
+寬敞
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+寬敞配置會在空間足夠時使用側邊面板。精簡配置使用工具列和可展開的面板。

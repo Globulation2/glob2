@@ -3118,3 +3118,13 @@ Oluşturuluyor...
 Oyuncular
 [Rules]
 Kurallar
+[settings Interface layout]
+Arayüz düzeni
+[settings Automatic]
+Otomatik
+[settings Compact]
+Yakın
+[settings Spacious]
+Geniş
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Geniş düzen, yer olduğunda yan panel kullanır. Kompakt düzen, araç çubuğu ve açılır paneller kullanır.

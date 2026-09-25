@@ -3110,3 +3110,13 @@ Generando...
 Jugadores
 [Rules]
 Reglas
+[settings Interface layout]
+Disposición de la interfaz
+[settings Automatic]
+Automática
+[settings Compact]
+Cercanos
+[settings Spacious]
+Amplia
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La disposición amplia usa un panel lateral cuando hay espacio. La compacta usa una barra de herramientas y paneles desplegables.

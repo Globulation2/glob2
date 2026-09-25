@@ -3106,3 +3106,13 @@ Emoji
 플레이어
 [Rules]
 규칙
+[settings Interface layout]
+인터페이스 배치
+[settings Automatic]
+자동
+[settings Compact]
+좁게
+[settings Spacious]
+여유롭게
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+여유로운 배치는 공간이 충분하면 측면 패널을 사용합니다. 간결한 배치는 도구 모음과 펼칠 수 있는 패널을 사용합니다.

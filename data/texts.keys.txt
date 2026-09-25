@@ -1552,3 +1552,8 @@
 [Generating...]
 [Players]
 [Rules]
+[settings Interface layout]
+[settings Automatic]
+[settings Compact]
+[settings Spacious]
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]

@@ -3180,3 +3180,13 @@ Emoji
 Παίκτες
 [Rules]
 Κανόνες
+[settings Interface layout]
+Διάταξη διεπαφής
+[settings Automatic]
+Αυτόματο
+[settings Compact]
+Κοντινοί
+[settings Spacious]
+Ευρύχωρη
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Η ευρύχωρη διάταξη χρησιμοποιεί πλευρικό πίνακα όταν υπάρχει χώρος. Η συμπαγής χρησιμοποιεί γραμμή εργαλείων και αναπτυσσόμενους πίνακες.

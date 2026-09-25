@@ -3108,3 +3108,13 @@ Generado...
 Ludantoj
 [Rules]
 Reguloj
+[settings Interface layout]
+Interfaca aranĝo
+[settings Automatic]
+Aŭtomata
+[settings Compact]
+Proksimaj
+[settings Spacious]
+Vasta
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La vasta aranĝo uzas flankan panelon kiam estas spaco. La kompakta uzas ilobreton kaj malfermeblajn panelojn.

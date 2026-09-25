@@ -3110,3 +3110,13 @@ Generálás...
 Játékosok
 [Rules]
 Szabályok
+[settings Interface layout]
+Felület elrendezése
+[settings Automatic]
+Automatikus
+[settings Compact]
+Közeli
+[settings Spacious]
+Tágas
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+A tágas elrendezés oldalsó panelt használ, ha van elég hely. A kompakt elrendezés eszköztárat és kinyitható paneleket használ.

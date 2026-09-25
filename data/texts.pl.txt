@@ -3110,3 +3110,13 @@ Generowanie...
 Gracze
 [Rules]
 Zasady
+[settings Interface layout]
+Układ interfejsu
+[settings Automatic]
+Automatyczny
+[settings Compact]
+Bliski
+[settings Spacious]
+Przestronny
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Przestronny układ używa panelu bocznego, gdy jest miejsce. Kompaktowy używa paska narzędzi i wysuwanych paneli.

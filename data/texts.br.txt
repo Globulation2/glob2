@@ -3106,3 +3106,13 @@ Gerando...
 Jogadores
 [Rules]
 Regras
+[settings Interface layout]
+Layout da interface
+[settings Automatic]
+Automática
+[settings Compact]
+Próximos
+[settings Spacious]
+Espaçoso
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+O modo espaçoso usa um painel lateral quando há espaço. O modo compacto usa uma barra de ferramentas e painéis retráteis.

@@ -3118,3 +3118,13 @@ S’està generant...
 Jugadors
 [Rules]
 Regles
+[settings Interface layout]
+Disposició de la interfície
+[settings Automatic]
+Automàtica
+[settings Compact]
+Propers
+[settings Spacious]
+Espaiosa
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d’eines i panells desplegables.

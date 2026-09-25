@@ -3108,3 +3108,13 @@ Emoji
 ﺍﻟﻼﻋﺒﻮﻥ
 [Rules]
 القواعد
+[settings Interface layout]
+تخطيط الواجهة
+[settings Automatic]
+تلقائي
+[settings Compact]
+متقاربة
+[settings Spacious]
+واسع
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+يستخدم التخطيط الواسع لوحة جانبية عند توفر مساحة. يستخدم التخطيط المضغوط شريط أدوات ولوحات قابلة للفتح.

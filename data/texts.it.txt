@@ -3172,3 +3172,13 @@ Generazione...
 Giocatori
 [Rules]
 Regole
+[settings Interface layout]
+Disposizione dell’interfaccia
+[settings Automatic]
+Automatica
+[settings Compact]
+Ravvicinati
+[settings Spacious]
+Spaziosa
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La disposizione spaziosa usa un pannello laterale quando c’è spazio. Quella compatta usa una barra degli strumenti e pannelli a scomparsa.

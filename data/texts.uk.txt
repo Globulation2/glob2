@@ -3106,3 +3106,13 @@ Emoji
 Гравці
 [Rules]
 Правила
+[settings Interface layout]
+Компонування інтерфейсу
+[settings Automatic]
+Автоматично
+[settings Compact]
+Близько
+[settings Spacious]
+Просторе
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Просторе компонування використовує бічну панель, якщо вистачає місця. Компактне — панель інструментів і висувні панелі.

@@ -3116,3 +3116,13 @@ A gerar...
 Jogadores
 [Rules]
 Regras
+[settings Interface layout]
+Disposição da interface
+[settings Automatic]
+Automática
+[settings Compact]
+Próximos
+[settings Spacious]
+Espaçosa
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+A disposição espaçosa usa um painel lateral quando há espaço. A compacta usa uma barra de ferramentas e painéis retráteis.

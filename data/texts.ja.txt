@@ -3106,3 +3106,13 @@ Emoji
 プレイヤー
 [Rules]
 ルール
+[settings Interface layout]
+インターフェースの配置
+[settings Automatic]
+自動
+[settings Compact]
+狭い
+[settings Spacious]
+ゆったり
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+ゆったり配置は十分な空間があるときにサイドパネルを使います。コンパクト配置はツールバーと開閉式パネルを使います。

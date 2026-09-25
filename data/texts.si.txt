@@ -3110,3 +3110,13 @@ Ustvarjanje...
 Igralci
 [Rules]
 Pravila
+[settings Interface layout]
+Postavitev vmesnika
+[settings Automatic]
+Samodejno
+[settings Compact]
+Majhen
+[settings Spacious]
+Prostorna
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Prostorna postavitev uporablja stransko ploščo, kadar je dovolj prostora. Strnjena uporablja orodno vrstico in izvlečne plošče.
