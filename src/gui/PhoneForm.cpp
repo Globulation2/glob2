@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PhoneTheme.h"
+#include "FrontendTheme.h"
 #include "PhoneForm.h"
 #include "PhoneGraphic.h"
 #include "Glob2Screen.h"
@@ -53,7 +54,9 @@ void PhoneForm::prepare() {
         } else if(auto* button=dynamic_cast<TextButton*>(widget)) {
             row.text=button->caption();row.kind=1;row.footer=footer(widget);
         } else if(auto* list=dynamic_cast<List*>(widget)) {
-            for(size_t i=0;i<list->getCount();++i) {
+			if (frontendLayout && !list->getCount())
+				rows.push_back({widget, Toolkit::getStringTable()->getString("[No items]"), 0});
+			for(size_t i=0;i<list->getCount();++i) {
                 std::string text=list->getText(i);
                 if(auto* checks=dynamic_cast<CheckList*>(list)) text=(checks->isChecked(i) ? "[x] " : "[ ] ")+text;
                 rows.push_back({widget,text,2,int(i),list->getSelectionIndex()==int(i)});
@@ -115,14 +118,29 @@ void PhoneForm::prepare() {
     if(editing) rows.push_back({nullptr,Toolkit::getStringTable()->getString("[Hide keyboard]"),5,0,false,true});
     auto* gfx=globalContainer->gfx;const double unit=gfx->logicalUnitsPerPoint();
     const double scale=PhoneTheme::textScale*globalContainer->settings.mobileDialogTextPercent/100.0;
-    const auto safe=mobileDialogSafe(gfx);
-    std::vector<bool> fixed;for(const auto& row:rows) fixed.push_back(row.footer);
+	auto safe = mobileDialogSafe(gfx);
+	std::vector<bool> fixed;for(const auto& row:rows) fixed.push_back(row.footer);
     auto height=[&](size_t i,double width) {
         if(rows[i].kind==13) return 240*unit;
         if(rows[i].kind==4) return std::min(160*unit,width);
         return std::max(48*unit,wrapTouchText(globalContainer->standardFont,rows[i].text,((rows[i].kind>=9 && rows[i].kind<=11) ? width-96*unit : rows[i].kind==8 ? width-48*unit : width)/(scale*unit)-8).size()*16*scale*unit+8*unit);
     };
-    placement=ResponsiveDialog::calculate(safe,fixed,height,offset,unit);
+	if (frontendLayout)
+	{
+		// A dialog's surface and its controls use the same measured rectangle.
+		// Keep footer actions in reading order; a short menu must not leave its
+		// actions stranded at the bottom of a full-screen empty panel.
+		std::fill(fixed.begin(), fixed.end(), false);
+		const double width = std::max(1.0, std::min(safe.w - 16 * unit, 640 * unit));
+		double natural = 16 * unit;
+		for (size_t i = 0; i < rows.size(); ++i)
+			natural += height(i, width) + 8 * unit;
+		const double h = std::min(safe.h, natural);
+		safe.y += (safe.h - h) / 2;
+		safe.h = h;
+		surfaceBounds = {safe.x + (safe.w - width) / 2 - 8 * unit, safe.y, width + 16 * unit, h};
+	}
+	placement=ResponsiveDialog::calculate(safe,fixed,height,offset,unit);
     if(lastHeight && lastHeight!=placement.content.h) cancel();
     if(lastHeight!=placement.content.h && editing) for(size_t i=0;i<rows.size();++i) if(rows[i].widget==editing && (rows[i].kind!=14 || rows[i].selected)) {
         const auto r=placement.rows[i].rect;
@@ -133,10 +151,39 @@ void PhoneForm::prepare() {
     lastHeight=placement.content.h;offset=placement.offset;
     for(size_t i=0;i<rows.size();++i) {rows[i].rect=placement.rows[i].rect;rows[i].footer=placement.rows[i].footer;}
 }
+// Enter identifies the owning screen's affirmative action. Layout order is
+// only a fallback for simple menus/messages without a selection list; a list
+// can place destructive or utility actions before its actual confirmation.
+Widget *PhoneForm::primaryAction() const
+{
+    Widget *fallback = nullptr;
+    bool hasList = false;
+    for (const auto &row : rows)
+    {
+        hasList |= dynamic_cast<List *>(row.widget) != nullptr;
+        if (auto *button = dynamic_cast<TextButton *>(row.widget); row.kind == 1 && button)
+        {
+            if (button->shortcut() == SDLK_RETURN) return row.widget;
+            if (!fallback && button->shortcut() != SDLK_ESCAPE) fallback = row.widget;
+        }
+    }
+    return hasList ? nullptr : fallback;
+}
+
 void PhoneForm::draw() {
     prepare();auto* gfx=globalContainer->gfx;const double unit=gfx->logicalUnitsPerPoint();
     const double scale=PhoneTheme::textScale*globalContainer->settings.mobileDialogTextPercent/100.0*unit;
-    auto* font=globalContainer->standardFont; PhoneTheme::TextStyle textStyle(font);
+	if (frontendLayout && FrontendTheme::current)
+	{
+		gfx->setClipRect();
+		const SDL_Rect panel{int(surfaceBounds.x), int(surfaceBounds.y), int(surfaceBounds.w),
+							 int(surfaceBounds.h)};
+		FrontendTheme::current->background(gfx, false);
+		FrontendTheme::rounded(gfx, panel.x, panel.y, panel.w, panel.h, 10,
+							   Color(230, 231, 210, 248));
+	}
+	auto* font=globalContainer->standardFont; PhoneTheme::TextStyle textStyle(font);
+    const Widget *primary = frontendLayout ? primaryAction() : nullptr;
     for(const auto& row:rows) {
         const auto r=row.rect;auto clip=row.footer ? r : placement.content;
         if(r.y+r.h<=clip.y || r.y>=clip.y+clip.h) continue;
@@ -144,7 +191,9 @@ void PhoneForm::draw() {
         if (auto* input=dynamic_cast<TextInput*>(row.widget))
             input->presentBrowserInput({int(r.x),int(r.y),int(r.w),int(r.h)},gfx->getW(),gfx->getH(),&scissor);
         gfx->setClipRect(scissor.x,scissor.y,scissor.w,scissor.h);
-        gfx->drawFilledRect(int(r.x),int(r.y),int(r.w),int(r.h),row.selected ? PhoneTheme::selected : PhoneTheme::field);
+        if (!frontendLayout || row.kind != 0)
+            gfx->drawFilledRect(int(r.x),int(r.y),int(r.w),int(r.h),
+                frontendLayout && row.widget == primary ? Color(228,199,121) : row.selected ? PhoneTheme::selected : PhoneTheme::field);
         if(row.kind==13) {
             gfx->setUITransform(scale,r.x+8*unit,r.y+8*unit,&scissor);
             dynamic_cast<PhoneGraphic*>(row.widget)->paintPhone(int((r.w-16*unit)/scale),int((r.h-16*unit)/scale));

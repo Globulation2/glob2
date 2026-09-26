@@ -397,3 +397,9 @@ if not env['server']:
         sources = [source for source in source_files if source != 'Glob2.cpp']
         sources += local.Object(harness + '.o', '#test/' + harness + '.cpp')
         local.Alias(alias, local.Program(alias, sources))
+
+# Offline production-screen capture for the mobile design review gallery.
+if not env['server']:
+    gallery_sources = [source for source in source_files if source != 'Glob2.cpp']
+    gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
+    local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))

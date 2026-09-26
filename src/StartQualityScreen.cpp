@@ -3,6 +3,7 @@
 #include "FairnessModel.h"
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
+#include "gui/FrontendLayout.h"
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -68,6 +69,11 @@ void StartQualityScreen::onSDLEvent(SDL_Event *event)
 // the map's fairness.
 void StartQualityScreen::render()
 {
+	if (FrontendLayout::resolve(globalContainer->gfx).phone)
+	{
+		renderCards();
+		return;
+	}
 	using namespace MapGeneration;
 	auto &ui = *controls;
 	const int width = gfx->getW(), height = gfx->getH();
@@ -89,52 +95,55 @@ void StartQualityScreen::render()
 	const int terms = FAIRNESS_MODEL_FEATURE_COUNT;
 	const int columns = terms + 3; // colony, every term, fitness, win chance
 	const int labelW = compact ? 80 : 110;
-	const int cellW = (w - 16 - labelW) / (columns - 1);
+	const int cellW = std::max(112, (w - 16 - labelW) / (columns - 1));
+	const int tableWidth = labelW + (columns - 1) * cellW + 16;
+	tableOffset = std::clamp(tableOffset, 0, std::max(0, tableWidth - w));
+	const int tableX = x - tableOffset;
 	ui.beginRegion(40, {x, yy, w, height - yy - 100});
 	int rowY = yy - ui.regions[40].offset;
 	const int startY = rowY;
-	ui.text(x + 8, rowY, tr("Colony"), "standard", labelW - 8);
+	ui.text(tableX + 8, rowY, tr("Colony"), "standard", labelW - 8);
 	// A term's heading is the model's own phrase for the measurement, generated with the
 	// coefficients rather than held in the string table: a refit can introduce a heading no
 	// translator has ever seen, and a missing key would show as "[...]". It wraps, because
 	// these are phrases rather than the single words the old fixed columns had.
 	int headingH = 0;
 	for (int c = 0; c < terms; ++c)
-		headingH = std::max(headingH, ui.paragraph(x + 8 + labelW + c * cellW, rowY, cellW - 6,
+		headingH = std::max(headingH, ui.paragraph(tableX + 8 + labelW + c * cellW, rowY, cellW - 6,
 												   fairnessModelTerms()[c].label));
 	// Same wrapping for the two result columns, which narrow as the model gains terms.
-	headingH = std::max(headingH, ui.paragraph(x + 8 + labelW + terms * cellW, rowY, cellW - 6,
+	headingH = std::max(headingH, ui.paragraph(tableX + 8 + labelW + terms * cellW, rowY, cellW - 6,
 											   tr("Fitness")));
-	headingH = std::max(headingH, ui.paragraph(x + 8 + labelW + (terms + 1) * cellW, rowY,
+	headingH = std::max(headingH, ui.paragraph(tableX + 8 + labelW + (terms + 1) * cellW, rowY,
 											   cellW - 6, tr("Win chance")));
 	rowY += std::max(34, headingH + 6);
 	// The fitted coefficient, so the reader sees which way each measurement pushes.
-	ui.text(x + 8, rowY, tr("Coefficient"), "little", labelW - 8, true);
+	ui.text(tableX + 8, rowY, tr("Coefficient"), "standard", labelW - 8, true);
 	for (int c = 0; c < terms; ++c)
-		ui.text(x + 8 + labelW + c * cellW, rowY, signed_(fairnessModelTerms()[c].coefficient),
-				"little", cellW - 6, true);
+		ui.text(tableX + 8 + labelW + c * cellW, rowY, signed_(fairnessModelTerms()[c].coefficient),
+				"standard", cellW - 6, true);
 	rowY += 22;
-	const int rowH = 52;
+	const int rowH = 60;
 	for (size_t i = 0; i < report.colonies.size(); ++i)
 	{
 		const auto &q = report.colonies[i];
-		ui.box({x, rowY - 4, w - 12, rowH - 4}, ui.panel);
+		ui.box({tableX, rowY - 4, tableWidth - 12, rowH - 4}, ui.panel);
 		if (i < colors.size())
-			ui.box({x + 6, rowY + 2, 14, 14}, colors[i], 3);
-		ui.text(x + 26, rowY, i < labels.size() ? labels[i] : std::to_string(i + 1), "little",
-				labelW - 30);
+			ui.box({tableX + 6, rowY + 2, 14, 14}, colors[i], 3);
+		ui.text(tableX + 26, rowY, i < labels.size() ? labels[i] : std::to_string(i + 1),
+				"standard", labelW - 30);
 		// Measured on the top line, what it contributed to the fitness under it.
 		for (int c = 0; c < terms; ++c)
 		{
-			const int cx = x + 8 + labelW + c * cellW;
-			ui.text(cx, rowY, fixed(fairnessModelMeasurement(report.colonies, i, c), 0), "little",
+			const int cx = tableX + 8 + labelW + c * cellW;
+			ui.text(cx, rowY, fixed(fairnessModelMeasurement(report.colonies, i, c), 0), "standard",
 					cellW - 6);
-			ui.text(cx, rowY + 18, signed_(fairnessModelContribution(report.colonies, i, c)),
-					"little", cellW - 6, true);
+			ui.text(cx, rowY + 24, signed_(fairnessModelContribution(report.colonies, i, c)),
+					"standard", cellW - 6, true);
 		}
-		ui.text(x + 8 + labelW + terms * cellW, rowY + 6, signed_(q.fitness), "standard",
+		ui.text(tableX + 8 + labelW + terms * cellW, rowY + 6, signed_(q.fitness), "standard",
 				cellW - 6);
-		ui.text(x + 8 + labelW + (terms + 1) * cellW, rowY + 6, percent(q.winProbability),
+		ui.text(tableX + 8 + labelW + (terms + 1) * cellW, rowY + 6, percent(q.winProbability),
 				"standard", cellW - 6);
 		rowY += rowH;
 	}
@@ -151,7 +160,92 @@ void StartQualityScreen::render()
 	std::snprintf(fitted, sizeof fitted, "%s %d", tr("Fitted on games:").c_str(),
 				  FAIRNESS_MODEL_GAMES);
 	ui.text(x + 8, height - 68, fitted, "little", w - 16);
+	if (tableWidth > w)
+	{
+		ui.button(
+			"quality/left", {x + 112, height - 55, 64, 48}, "←",
+			[this] { tableOffset = std::max(0, tableOffset - 224); }, false, tableOffset > 0);
+		ui.button(
+			"quality/right", {x + 184, height - 55, 64, 48}, "→", [this] { tableOffset += 224; },
+			false, tableOffset < tableWidth - w);
+	}
 	ui.button(
-		"quality/back", {x, height - 55, 100, 34}, tr("Back"), [this] { endExecute(BACK); }, false,
+		"quality/back", {x, height - 55, 100, 48}, tr("Back"), [this] { endExecute(BACK); }, false,
 		true, true);
+}
+
+void StartQualityScreen::renderCards()
+{
+	using namespace MapGeneration;
+	auto &ui = *controls;
+	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
+	const int x = int(safe.x) + 12, w = int(safe.w) - 24, top = int(safe.y) + 12,
+			  bottom = int(safe.y + safe.h) - 12;
+	ui.setScreenPosition(0, 0);
+	ui.setDimensions(getW(), getH());
+	ui.box({x, top, w, bottom - top}, ui.panel);
+	ui.button("quality/back", {x + 8, top + 8, w - 16, 48}, tr("Back"),
+			  [this] { endExecute(BACK); });
+	ui.beginRegion(40, {x + 8, top + 64, w - 16, std::max(0, bottom - top - 72)});
+	int y = top + 64 - ui.regions[40].offset, start = y;
+	y += ui.paragraph(x + 16, y, w - 32, tr("Start quality"), "menu", false, false) + 12;
+	y += ui.paragraph(x + 16, y, w - 32, tr("Fairness") + ": " + fixed(report.fairness), "standard",
+					  false, false) +
+		 16;
+	for (size_t i = 0; i < report.colonies.size(); ++i)
+	{
+		const auto &q = report.colonies[i];
+		const auto name =
+			i < labels.size() ? labels[i] : tr("Colony") + " " + std::to_string(i + 1);
+		const auto summary = tr("Win chance") + ": " + percent(q.winProbability) + " · " +
+							 tr("Fitness") + ": " + signed_(q.fitness);
+		const int summaryH = ui.paragraph(0, 0, w - 48, summary, "little", false, false, false);
+		const int headerH = 40 + summaryH + 12;
+		int detailH = 0;
+		if (expanded.count(i))
+			for (int c = 0; c < FAIRNESS_MODEL_FEATURE_COUNT; ++c)
+				detailH +=
+					ui.paragraph(0, 0, w - 48, fairnessModelTerms()[c].label, "standard", false,
+								 false, false) +
+					4 +
+					ui.paragraph(0, 0, w - 48,
+								 fixed(fairnessModelMeasurement(report.colonies, i, c), 0) + " · " +
+									 tr("Contribution") + ": " +
+									 signed_(fairnessModelContribution(report.colonies, i, c)),
+								 "standard", false, false, false) +
+					16;
+		// Measure the entire disclosure before painting its enclosing surface.
+		ui.box({x + 8, y, w - 16, headerH + detailH}, Color(225, 231, 209), 8);
+		ui.button("quality/colony/" + std::to_string(i), {x + 8, y, w - 16, headerH}, "",
+				  [this, i]
+				  {
+					  if (!expanded.erase(i))
+						  expanded.insert(i);
+				  });
+		gfx->drawRect(x + 8, y, w - 16, headerH + detailH, ui.line);
+		if (i < colors.size())
+			ui.box({x + 16, y + 12, 20, 20}, colors[i], 3);
+		ui.text(x + 44, y + 12, name, "standard", w - 88);
+		const int cx = x + w - 30, cy = y + 22;
+		gfx->drawLine(cx - 5, cy, cx + 5, cy, ui.ink);
+		if (!expanded.count(i))
+			gfx->drawLine(cx, cy - 5, cx, cy + 5, ui.ink);
+		ui.paragraph(x + 20, y + 40, w - 48, summary, "little", false, false);
+		y += headerH;
+		if (expanded.count(i))
+			for (int c = 0; c < FAIRNESS_MODEL_FEATURE_COUNT; ++c)
+			{
+				y += ui.paragraph(x + 20, y, w - 48, fairnessModelTerms()[c].label, "standard",
+								  false, false) +
+					 4;
+				y += ui.paragraph(x + 20, y, w - 48,
+								  fixed(fairnessModelMeasurement(report.colonies, i, c), 0) +
+									  " · " + tr("Contribution") + ": " +
+									  signed_(fairnessModelContribution(report.colonies, i, c)),
+								  "standard", false, false) +
+					 16;
+			}
+		y += 12;
+	}
+	ui.endRegion(y - start);
 }

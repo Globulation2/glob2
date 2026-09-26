@@ -40,6 +40,12 @@ class MapPreview : public RectangularWidget
 	int getLastWidth() const { return thumbnail.getMapWidth(); }
 	int getLastHeight() const { return thumbnail.getMapHeight(); }
 	bool isThumbnailLoaded() const { return thumbnail.isLoaded(); }
+	// Readiness includes the real-time crossfade, not just thumbnail delivery.
+	bool isPresentationSettled() const
+	{
+		return state == State::Ready && !transitionPending &&
+			   (!transitioning || transitionAlpha() == 0);
+	}
 	std::function<void()> retry;
 	bool handlePreviewEvent(SDL_Event *event);
 	void onSDLMouseButtonDown(SDL_Event *e) override { handlePreviewEvent(e); }

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "LandscapePickerScreen.h"
+#include "gui/FrontendLayout.h"
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
 #include "GenerationContext.h"
@@ -380,7 +381,11 @@ void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
 
 void LandscapePickerScreen::render()
 {
-    if(GAGCore::phonePresentationRequested()) {renderPhone();return;}
+	if (FrontendLayout::resolve(globalContainer->gfx).singleColumn())
+	{
+		renderPhone();
+		return;
+	}
 	auto &ui = *controls;
 	const int width = gfx->getW(), height = gfx->getH();
 	const int w = std::min(width - 32, 1120), x = (width - w) / 2;
@@ -403,7 +408,7 @@ void LandscapePickerScreen::render()
 	// carrying its chosen value (AND across categories; "Any" leaves a category unfiltered).
 	// These are plain catalog labels, not translated (the tags themselves are not localized
 	// strings), unlike the rest of this screen's chrome.
-	const int barH = 28;
+	const int barH = FrontendLayout::resolve(globalContainer->gfx).touch ? 48 : 28;
 	int barX = x + 8;
 	const int sortW = compact ? 130 : 160;
 	{
@@ -600,8 +605,10 @@ void LandscapePickerScreen::render()
 	const auto place = [&](const std::string &id, int width, const std::string &label,
 						   std::function<void()> action)
 	{
-		ui.button(id, {bx, height - 55, width, 34}, label, std::move(action), false, true, false,
-				  fitting(label, width));
+		ui.button(
+			id,
+			{bx, height - 55, width, FrontendLayout::resolve(globalContainer->gfx).touch ? 48 : 34},
+			label, std::move(action), false, true, false, fitting(label, width));
 		bx += width + 10;
 	};
 	place("landscape/back", compact ? 80 : 100, tr("Back"), [this] { endExecute(CANCEL); });
@@ -614,7 +621,9 @@ void LandscapePickerScreen::render()
 	const int useX = bx;
 	const bool valid = selected >= 0 && selected < int(entries.size());
 	ui.button(
-		"landscape/use", {useX, height - 55, x + w - useX, 34},
+		"landscape/use",
+		{useX, height - 55, x + w - useX,
+		 FrontendLayout::resolve(globalContainer->gfx).touch ? 48 : 34},
 		tr("Use") + (valid ? " " + entries[selected].name : ""), [this] { confirm(); }, true,
 		valid && chosenSeed().has_value());
 }
@@ -626,28 +635,92 @@ void LandscapePickerScreen::renderPhone()
     auto& ui=*controls;const int w=gfx->getW()-24,x=12,h=gfx->getH();
     ui.setDimensions(gfx->getW(),h);
     ui.box({4,4,gfx->getW()-8,h-8},Color(232,237,218));
-    ui.text(x,12,title,"standard",w);
-    ui.beginRegion(30,{x,44,w,h-108});
-    int y=44-ui.regions[30].offset,start=y;
-    ui.dropdown("landscape/sort",{x,y,w-12,48},{"Random","Alphabetical"},int(sortOrder),[this](int v){sortOrder=SortOrder(v);rebuild();});y+=56;
-    for(const auto& control:GenerationRequest::sharedControls())if(control.id=="width" || control.id=="height" || control.id=="teams") {
-        ui.text(x,y,tr(control.label),"standard",w-12);y+=28;
-        std::vector<std::string> options;for(int v:control.values())options.push_back(std::to_string(control.displayValue(v)));
-        ui.dropdown("landscape/"+control.id,{x,y,w-12,48},options,control.indexOf(control.get(entries.front().request)),[this,control](int v){setShared(control,control.valueAt(v));});y+=60;
-    }
-    ui.button("randomize",{x,y,w-12,48},tr("Randomize"),[this]{randomizeParameters();});y+=56;
-    ui.button("reset",{x,y,w-12,48},tr("Reset"),[this]{resetParameters();});y+=64;
-    for(int i:visible) {
-        const bool enabled=incompatible[i].empty();auto& tile=tiles[i];
-        const int image=std::min(w-28,160);
-        ui.button("landscape/"+std::to_string(i),{x,y,w-12,image+56},"",[this,i]{select(i);},i==selected,enabled);
-        if(tile.widget && tile.widget->isThumbnailLoaded() && enabled) {
-            tile.widget->setScreenPosition(x+(w-12-image)/2,y+8);tile.widget->setDimensions(image,image);
-            if(y+image+8>44 && y<h-64)tile.widget->paint();
-        } else ui.paragraph(x+12,y+16,w-40,enabled?tr("Generating..."):incompatible[i],"standard");
-        ui.text(x+12,y+image+20,entries[i].name,"standard",w-40);y+=image+64;
-    }
-    ui.endRegion(y-start);gfx->setClipRect();
+	ui.text(x, 12, title, "standard", w - 116);
+	ui.button("landscape/settings", {x + w - 112, 8, 112, 48},
+			  tr(settingsOpen ? "Done" : "Settings"),
+			  [this]
+			  {
+				  settingsOpen = !settingsOpen;
+				  controls->regions[30].offset = 0;
+			  });
+	ui.beginRegion(30, {x, 64, w, h - 128});
+	int y = 64 - ui.regions[30].offset, start = y;
+	if (settingsOpen)
+	{
+		ui.dropdown("landscape/sort", {x, y, w - 12, 48}, {"Random", "Alphabetical"},
+					int(sortOrder),
+					[this](int v)
+					{
+						sortOrder = SortOrder(v);
+						rebuild();
+					});
+		y += 56;
+		for (const auto &control : GenerationRequest::sharedControls())
+			if (control.id == "width" || control.id == "height" || control.id == "teams")
+			{
+				ui.text(x, y, tr(control.label), "standard", w - 12);
+				y += 28;
+				std::vector<std::string> options;
+				for (int v : control.values())
+					options.push_back(std::to_string(control.displayValue(v)));
+				ui.dropdown("landscape/" + control.id, {x, y, w - 12, 48}, options,
+							control.indexOf(control.get(entries.front().request)),
+							[this, control](int v) { setShared(control, control.valueAt(v)); });
+				y += 60;
+			}
+		ui.button("randomize", {x, y, w - 12, 48}, tr("Randomize"),
+				  [this] { randomizeParameters(); });
+		y += 56;
+		ui.button("reset", {x, y, w - 12, 48}, tr("Reset"), [this] { resetParameters(); });
+		y += 64;
+	}
+	else
+		for (int i : visible)
+		{
+			const bool enabled = incompatible[i].empty();
+			auto &tile = tiles[i];
+			const int image = std::min(w - 28, 160);
+			ui.button(
+				"landscape/" + std::to_string(i), {x, y, w - 12, image + 56}, "",
+				[this, i] { select(i); }, i == selected, enabled);
+			if (tile.widget && tile.widget->isThumbnailLoaded() && enabled)
+			{
+				tile.widget->setScreenPosition(x + (w - 12 - image) / 2, y + 8);
+				tile.widget->setDimensions(image, image);
+				if (y + image + 8 > 64 && y < h - 64)
+					tile.widget->paint();
+			}
+			else
+				ui.paragraph(x + 12, y + 16, w - 40,
+							 enabled ? tr("Generating...") : incompatible[i], "standard");
+			ui.text(x + 12, y + image + 20, entries[i].name, "standard", w - 40);
+			y += image + 64;
+		}
+	ui.endRegion(y-start);gfx->setClipRect();
     ui.button("cancel",{x,h-56,88,48},tr("Back"),[this]{endExecute(CANCEL);});
     ui.button("confirm",{x+96,h-56,w-96,48},tr("Use this landscape"),[this]{confirm();},true,selected>=0 && incompatible[selected].empty());
+}
+
+// Completion and visual settling are separate: a delivered thumbnail may still
+// be crossfading. Failed/incompatible cards are terminal, explicitly labeled UI.
+bool LandscapePickerScreen::presentationSettled() const
+{
+	if (busy())
+		return false;
+	for (int i : visible)
+		if (incompatible[i].empty() && tiles[i].widget)
+		{
+			auto *widget = tiles[i].widget;
+			const auto bounds = widget->getScreenRect();
+			const auto region = controls->regions.find(30);
+			if (region != controls->regions.end())
+			{
+				const auto clip = region->second.box;
+				if (bounds.y + bounds.h <= clip.y || bounds.y >= clip.y + clip.h)
+					continue;
+			}
+			if (widget->getState() != MapPreview::State::Failed && !widget->isPresentationSettled())
+				return false;
+		}
+	return true;
 }

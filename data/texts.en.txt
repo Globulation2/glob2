@@ -3118,3 +3118,33 @@ Compact
 Spacious
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.
+[More]
+More
+[No items]
+No items
+[Opponents]
+Opponents
+[Review]
+Review
+[Review & Play]
+Review & Play
+[Edit opponents]
+Edit opponents
+[Map settings]
+Map settings
+[Next]
+Next
+[Done]
+Done
+[Contribution]
+Contribution
+[Choose who controls this colony]
+Choose who controls this colony
+[Settings]
+Settings
+[settings Back]
+Back
+[settings Save the game automatically about every minute.]
+Save the game automatically about every minute.
+[AI opponents]
+AI opponents

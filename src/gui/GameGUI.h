@@ -252,7 +252,8 @@ private:
 	bool persistPreferences;
     friend class GameGUITouch;
     friend class GameGUITouchHarness;
-    std::unique_ptr<GameGUITouch> touch;
+	friend class MobileGalleryGameplay;
+	std::unique_ptr<GameGUITouch> touch;
 
 	//! Serializes the game and hands the bytes to autosaveWriter.
 	void autosave();

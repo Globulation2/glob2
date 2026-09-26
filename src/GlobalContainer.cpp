@@ -225,6 +225,9 @@ void GlobalContainer::loadClient(void)
 		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
 		Toolkit::loadFont(fontfile.c_str(), 13, "standard");
 		Toolkit::loadFont(fontfile.c_str(), 10, "little");
+        // Separate frontend aliases avoid changing gameplay/editor font metrics.
+        Toolkit::loadFont(fontfile.c_str(), 16, "frontend-body");
+        Toolkit::loadFont(fontfile.c_str(), 14, "frontend-support");
 		menuFont = Toolkit::getFont("menu");
 		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		standardFont = Toolkit::getFont("standard");

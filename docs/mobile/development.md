@@ -131,3 +131,125 @@ Native document picker and certificate
 trust adapters are selected only for mobile builds. Simulation, replay and save
 compatibility must be checked with the shared replay-verification workflow before
 shipping a mobile client.
+
+## Mobile design review gallery
+
+The offline gallery captures production screen classes at eight logical viewport
+sizes: 320×568, 568×320, 390×844, 844×390, 768×1024 and 1024×768 in Compact
+mode (with adaptive frontend tablet composition), plus 1280×800 and 1920×1080 with desktop mouse controls. It includes
+named menu, settings, setup, gameplay, dialog and editor states. The gallery lets
+reviewers compare any two sizes, inspect full-resolution images, search by screen
+name or stable ID, and record/export/import feedback per view.
+
+```sh
+scons release=1 mobile-gallery
+python3 tools/mobile_gallery/capture.py
+open artifacts/mobile-gallery/review/index.html
+```
+
+The Python runner requires Pillow. Pass `--binary` for another host build path
+and `--output artifacts/mobile-gallery/another-review` for a new capture. Output
+profiles must be fresh: the runner refuses to combine existing profiles with a
+new capture. `--reuse` rebuilds the gallery from existing raw captures after
+editing its HTML, CSS, JavaScript or catalog; it does not update the screenshots.
+Use `--extend --output EXISTING_GALLERY` to add newly registered sizes without
+recapturing the existing ones. Existing image hashes are checked before reuse,
+and the manifest records revision, binary hash and source evidence per size.
+The gallery works offline without a web server. Browser storage retains notes
+where available; **Export feedback** creates the portable JSON copy to share or
+keep. Import merges nonempty review entries by stable screen ID.
+
+`tools/MobileGalleryHarness.cpp` selects fixture states and renders through the
+normal screen stack, `GameGUI` and `MapEdit`. It uses bundled maps/campaigns,
+a fixed generated-map seed, and a disposable profile for each viewport. No
+gameplay simulation ticks, chat submission, account creation, uploads or manual
+saves are performed. Screen fixtures may select internal state directly; this is a visual
+capture tool, not proof that every state is reachable through touch navigation.
+Existing interaction harnesses remain separate. The decorative menu colony does
+advance: the responsive-menu harness checks both one theme callback per frame
+and increasing simulation ticks over elapsed wall time.
+
+Generated preview captures wait for both worker completion and the real-time
+crossfade. Landscape captures wait for visible cards to settle; their offscreen
+cards do not need to animate before capture. Waits are bounded and fail the run
+rather than silently presenting an unfinished preview as the ready state.
+Loading and error preview fixtures have separate, explicitly named views.
+
+The runner selects SDL's dummy video driver and software renderer to avoid the
+host window manager constraining tall phone windows. Screenshots come from the
+renderer **before presentation**, which clears the backbuffer. They record the
+final viewport, including any legacy scaling or letterboxing, rather than merely
+copying the logical drawing surface. The runner rejects missing, undocumented,
+blank or incorrectly sized images. It retains raw BMPs, PNGs, capture logs,
+source revision/diff, tool sources and image/binary hashes under the output
+folder for review and reproducibility.
+
+These are **native host captures**: Compact on phones/tablets and desktop mouse
+presentation on desktop sizes. Desktop captures set the logical canvas to the
+requested dimensions, rather than magnifying an 800×600 surface. Mobile drawers
+and inspector tabs can share a desktop sidebar, so repeated desktop images for
+those states are intentional. They are not Android/iOS device screenshots. Desktop-only settings are omitted
+on phone/tablet; retired views retain their feedback IDs and show an explicit
+unavailable notice. Native keyboards, safe areas, document pickers and lifecycle
+behavior still require simulator/device checks.
+The gallery's coverage panel explicitly lists connected multiplayer and remaining state variants that are not captured.
+Do not interpret the screenshot count as exhaustive coverage of all UI states.
+
+To add a view, give it a stable capture name in the relevant C++ screen-family
+function and an entry in `tools/mobile_gallery/catalog.json`, including its
+fixture context. Optional `availability` values (`phone`, `mobile`, `desktop`,
+`retired`) explicitly identify views that should not have an image at every size. Capture the actual production screen; do not redraw or repair
+its appearance in the gallery. Add new sizes to the runner's `SIZES` matrix.
+Map fixtures must select a known premade map or fixed-seed generated map and wait
+for actual preview pixels and the fade to settle. Loading/error states discard
+preview pixels: restore the snapshot, not just the Ready flag, before capturing
+subsequent pages. Pass production colony names/colors into quality-report fixtures.
+Keep screenshots, profiles, feedback and review notes in `artifacts/`; maintain
+only the reusable tool and its documentation in Git.
+
+
+### Frontend layout and interaction policy
+
+`src/gui/FrontendLayout.h` owns frontend device classification. Touch phones have
+a logical short edge below 600 points. Tablets may use two panes at safe widths
+of at least 720 points and heights of at least 480 points. Keyboard occlusion
+reduces the usable rectangle without changing phone classification. This policy
+is separate from the compact gameplay HUD policy and preserves keyboard settings
+on narrow desktop windows.
+
+Frontend `PhoneForm` adapters opt into content-sized surfaces; gameplay/editor
+adapters retain their default layout. The measured row geometry controls drawing,
+clipping and hit testing. Dialog text is distinct from interactive fields; the
+Enter-bound action receives primary emphasis rather than the first button in
+layout order (which may be Delete). Stacked settings fields fill their row width. Phone
+settings scroll their heading, category selector, fields, save status and actions;
+a separate Back control commits pending text through the existing save path.
+Category IDs and building-default slots remain stable across presentations.
+
+Phone custom setup keeps its draft in `CustomGameScreen` while navigating Map,
+Opponents and Review. Map settings and Rules are subpages, not new drafts.
+Launch is disabled until the preview represents the current validated revision;
+keyboard launch follows the same guard. Tablet and desktop share the existing
+model and composed controls. Additional Game Options remains multiplayer-only;
+the obsolete AI Descriptions implementation has been removed.
+
+The mobile presentation harness covers touch dispatch, clipped/scrolling controls,
+whole-row containment, full-width stacked fields, category filtering, narrow
+desktop behavior, keyboard classification, integer slider limits and draft
+preservation. First-viewport checks require visible building entries, an editable
+building slider, and a complete colony row even on small landscape phones. The whole map preview
+must also fit its initial viewport; short landscape uses preview beside actions.
+Building details use the fixed Back control to return to the list; test this
+hierarchy as well as exiting settings. Run it alongside the responsive-menu, gameplay-touch, settings and
+custom-setup harnesses after shared frontend changes. Preserve the previous
+gallery directory as the visual baseline; feedback keys must never be renumbered.
+
+The capture run also creates `checkpoints/foundation/`, `checkpoints/settings/`
+and `checkpoints/setup/` indexes using the same images and feedback IDs. The
+single-player Setup checkpoint excludes multiplayer Additional Game Options.
+Missing runtime translation keys fail the capture run. Register new keys in
+`data/texts.keys.txt`, provide English fallback text, and keep every language
+table structurally complete; run `python3 data/check_translations.py` as well.
+Languages with pending translations remain marked incomplete and use the runtime
+English fallback. Frontend touch text uses separate 16/14-point font aliases so
+changes to menu readability do not alter in-game/editor metrics.

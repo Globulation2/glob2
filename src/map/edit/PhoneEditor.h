@@ -20,7 +20,8 @@ public:
     bool hasOverlay() const;
 private:
     friend class GameGUITouchHarness;
-    struct Row { MapEditorWidget* widget; GAGCore::ViewRect rect; double scale; bool fixed=false; };
+	friend class MobileGalleryGameplay;
+	struct Row { MapEditorWidget* widget; GAGCore::ViewRect rect; double scale; bool fixed=false; };
     MapEdit& editor;
     GAGCore::TouchInput touch;
     std::vector<Row> rows;

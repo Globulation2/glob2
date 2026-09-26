@@ -3128,5 +3128,35 @@ Automatikoa
 Hurbil
 [settings Spacious]
 Zabala
+[More]
+
+[No items]
+
+[Opponents]
+
+[Review]
+
+[Review & Play]
+
+[Edit opponents]
+
+[Map settings]
+
+[Next]
+
+[Done]
+
+[Contribution]
+
+[Choose who controls this colony]
+
+[Settings]
+
+[settings Back]
+
+[settings Save the game automatically about every minute.]
+
+[AI opponents]
+
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Diseinu zabalak alboko panela erabiltzen du lekua dagoenean. Trinkoak tresna-barra eta panel zabalgarriak erabiltzen ditu.

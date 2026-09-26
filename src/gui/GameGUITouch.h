@@ -29,7 +29,8 @@ public:
     bool hasPreview() const { return preview.has_value(); }
 private:
     friend class GameGUITouchHarness;
-    GameGUI& gui;
+	friend class MobileGalleryGameplay;
+	GameGUI& gui;
     GAGGUI::OverlayScreen* activeDialog() const;
     void menuAction(int action);
     struct DialogRow { GAGGUI::Widget* widget; std::string text; int kind=0, index=0; bool selected=false, footer=false; GAGCore::ViewRect rect; };

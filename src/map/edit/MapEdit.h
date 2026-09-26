@@ -370,7 +370,8 @@ class MapEdit
 	friend class HighResolutionIntegrationHarness;
     friend class PhoneEditor;
     friend class GameGUITouchHarness;
-    std::unique_ptr<PhoneEditor> phone;
+	friend class MobileGalleryGameplay;
+	std::unique_ptr<PhoneEditor> phone;
     int menuWidth() const { return phone ? 0 : RIGHT_MENU_WIDTH; }
     bool editing = false, quitDecision = false;
     int editingResult = 0;

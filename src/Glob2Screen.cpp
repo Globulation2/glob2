@@ -93,8 +93,16 @@ bool Glob2Screen::responsiveActive() const
 void Glob2Screen::beginExecution(DrawableSurface* surface)
 {
     Screen::beginExecution(surface);
-    if(phoneFormEnabled) {phoneForm=std::make_unique<PhoneForm>(*this,[this](auto* w){return phoneLabel(w);},[this](auto* w){return phoneVisible(w);},[this](auto* w){return phoneFooter(w);},[this](auto* w){return phoneColor(w);});return;}
-    if (!responsiveMenu) return;
+	if (phoneFormEnabled)
+	{
+		phoneForm = std::make_unique<PhoneForm>(
+			*this, [this](auto *w) { return phoneLabel(w); },
+			[this](auto *w) { return phoneVisible(w); }, [this](auto *w) { return phoneFooter(w); },
+			[this](auto *w) { return phoneColor(w); });
+		phoneForm->useFrontendLayout();
+		return;
+	}
+	if (!responsiveMenu) return;
     if (menuButtons.empty()) {
         for (auto* widget : widgets)
             if (auto* button = dynamic_cast<TextButton*>(widget)) menuButtons.push_back(button);
@@ -203,13 +211,20 @@ void Glob2Screen::handleExecutionEvent(SDL_Event event)
 void Glob2Screen::drawExecution()
 {
     if(phoneFormActive() && phoneForm) {
-        if(isExecutionRunning()) {paint();phoneForm->draw();globalContainer->gfx->nextFrame();}return;
-    }
+		if (isExecutionRunning())
+		{
+			Style::style->onFrame();
+			phoneForm->draw();
+			globalContainer->gfx->nextFrame();
+		}
+		return;
+	}
     if (!responsiveActive()) { Screen::drawExecution(); return; }
     if (!isExecutionRunning()) return;
     auto* context = dynamic_cast<GraphicContext*>(gfx);
     context->setClipRect();
-    paint();
+	Style::style->onFrame();
+	paint();
     const auto safe=mobileDialogSafe(context);
     if (menuTitle.empty()) {
         auto* title = globalContainer->title.get();
@@ -253,6 +268,8 @@ void Glob2TabScreen::beginExecution(DrawableSurface* surface)
         [this](auto* w){return phoneFooters.count(w)>0;},
         [](auto*){return std::optional<GAGCore::Color>{};},
         [this](auto* w){return phoneValueLabels.count(w)>0;});
+	if (phoneForm)
+		phoneForm->useFrontendLayout();
 }
 void Glob2TabScreen::handleExecutionEvent(SDL_Event event)
 {
@@ -262,7 +279,12 @@ void Glob2TabScreen::handleExecutionEvent(SDL_Event event)
 void Glob2TabScreen::drawExecution()
 {
     if(!usesResponsiveViewport() || !phoneForm) {TabScreen::drawExecution();return;}
-    if(isExecutionRunning()) {paint();phoneForm->draw();globalContainer->gfx->nextFrame();}
+	if (isExecutionRunning())
+	{
+		Style::style->onFrame();
+		phoneForm->draw();
+		globalContainer->gfx->nextFrame();
+	}
 }
 void Glob2TabScreen::cancelExecutionInput()
 {

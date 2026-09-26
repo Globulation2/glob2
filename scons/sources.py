@@ -24,7 +24,6 @@ CLIENT_SOURCES = (
     'ai/AI.cpp',
     'ai/AITelemetry.cpp',
     'ai/AITelemetryAdapters.cpp',
-    'ai/AIDescriptionScreen.cpp',
     'ai/echo/BuildingOrder.cpp',
     'ai/echo/BuildingRegister.cpp',
     'ai/echo/Conditions.cpp',

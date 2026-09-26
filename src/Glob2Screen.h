@@ -45,7 +45,8 @@ protected:
     void enableResponsiveMenu(const std::string& title = "") { responsiveMenu = true; menuTitle = title; }
 private:
     friend class GameGUITouchHarness;
-    bool responsiveMenu = false;
+	friend struct MobilePresentationHarness;
+	bool responsiveMenu = false;
     bool phoneFormEnabled=false;
     std::map<GAGGUI::Widget*,std::string> phoneLabels;
     std::map<GAGGUI::Widget*,bool> phoneVisibility;

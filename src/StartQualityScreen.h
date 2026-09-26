@@ -2,6 +2,8 @@
 #pragma once
 #include "Glob2Screen.h"
 #include "StartQuality.h"
+#include <InterfacePresentation.h>
+#include <set>
 #include <string>
 #include <vector>
 class LobbyControls;
@@ -14,12 +16,15 @@ class LobbyControls;
 class StartQualityScreen : public Glob2Screen
 {
 	friend struct CustomGameSetupHarness;
+	friend struct MobileGallerySetup;
 
   public:
 	enum
 	{
 		BACK = -2
 	};
+	bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
+	bool supportsCompactViewport() const override { return true; }
 	StartQualityScreen(const MapGeneration::StartQualityReport &report,
 					   std::vector<std::string> colonyLabels, std::vector<Color> colonyColors);
 	~StartQualityScreen() override;
@@ -27,6 +32,9 @@ class StartQualityScreen : public Glob2Screen
 	void onSDLEvent(SDL_Event *) override;
 
   private:
+	void renderCards();
+	std::set<size_t> expanded;
+	int tableOffset = 0;
 	void render();
 	MapGeneration::StartQualityReport report;
 	std::vector<std::string> labels;

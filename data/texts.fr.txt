@@ -3130,3 +3130,33 @@ Rapprochés
 Spacieuse
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposition spacieuse utilise un panneau latéral si la place le permet. La disposition compacte utilise une barre d’outils et des panneaux escamotables.
+[More]
+Plus
+[No items]
+Aucun élément
+[Opponents]
+Adversaires
+[Review]
+Récapitulatif
+[Review & Play]
+Récapitulatif et lancement
+[Edit opponents]
+Modifier les adversaires
+[Map settings]
+Paramètres de la carte
+[Next]
+Suivant
+[Done]
+Terminé
+[Contribution]
+Contribution
+[Choose who controls this colony]
+Choisir qui contrôle cette colonie
+[Settings]
+Paramètres
+[settings Back]
+Retour
+[settings Save the game automatically about every minute.]
+Enregistrer automatiquement la partie environ toutes les minutes.
+[AI opponents]
+Adversaires IA

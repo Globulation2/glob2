@@ -16,6 +16,7 @@ class CustomGameChoiceScreen : public Glob2Screen
 {
 	friend struct CustomGameSetupHarness;
 	friend struct MobilePresentationHarness;
+	friend struct MobileGallerySetup;
 	LobbyControls *controls;
 	std::string title;
 	std::vector<std::string> choices;
@@ -41,7 +42,8 @@ class CustomGameScreen : public Glob2TabScreen
     bool supportsCompactViewport() const override { return true; }
     bool usesResponsiveViewport() const override;
     friend struct MobilePresentationHarness;
-    void cancelExecutionInput() override;
+	friend struct MobileGallerySetup;
+	void cancelExecutionInput() override;
 	enum
 	{
 		OK = 1,
@@ -113,6 +115,14 @@ class CustomGameScreen : public Glob2TabScreen
 	bool expanded[3] = {false, false, false};
 	void renderLobby();
     void renderPhoneLobby();
+	enum class PhonePage
+	{
+		Main,
+		Maps,
+		MapSettings,
+		Rules
+	};
+	PhonePage phonePage = PhonePage::Main;
 	void renderPlayers(int x, int y, int w, int h);
 	void renderRules(int x, int y, int w, int h);
 	void renderMap(int x, int y, int w, int h);
@@ -122,7 +132,7 @@ class CustomGameScreen : public Glob2TabScreen
 	bool loadMap(const std::string &path);
 	bool generateMap();
 	std::vector<std::pair<int, GenerationRequest>> landscapeEntries() const;
-	void chooseLandscape();
+	LandscapePickerScreen *chooseLandscape();
 	void applyLandscape(int method, std::optional<std::uint32_t> seed,
 						const GenerationRequest *shown = nullptr);
 	void resetParameters();

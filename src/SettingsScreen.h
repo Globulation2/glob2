@@ -5,6 +5,7 @@
 
 #include "Glob2Screen.h"
 #include "Settings.h"
+#include "gui/FrontendLayout.h"
 #include "KeyboardManager.h"
 #include <ApplicationHost.h>
 #include <InterfacePresentation.h>
@@ -30,7 +31,8 @@ public:
         std::string id, label, help, value, extraId;
         Kind kind=Kind::Info;
         int number=0, minimum=0, maximum=1;
-        bool enabled=true, selected=false;
+		int buildingIcon = -1;
+		bool enabled=true, selected=false;
         std::vector<std::string> choices;
         std::function<void(int)> change;
         std::function<void()> action;
@@ -52,7 +54,8 @@ public:
 
     // Stable semantic interface, also used by native integration tests.
     void selectCategory(Category category);
-    Category category() const { return current; }
+	std::vector<Category> visibleCategories() const;
+	Category category() const { return current; }
     const std::vector<Row>& rows();
     bool changeSetting(const std::string& id,int value);
     void activateSetting(const std::string& id);
@@ -73,12 +76,16 @@ private:
     Modal modal=Modal::None;
     std::vector<Row> form;
     std::array<int,6> scroll{};
-    int modalScroll=0, contentHeight=0, buildingTab=0, scrollbarGrab=0;
+	int selectedBuilding = -1;
+	void buildBuildingDetail(int type);
+	int modalScroll=0, contentHeight=0, buildingTab=0, scrollbarGrab=0;
     GAGGUI::Dropdown dropdown;
     std::function<void(int)> dropdownChange;
     Rect panel, viewport, footer, scrollbar, categoryControl;
     bool compactNavigation=false;
-    int padding=24, sidebar=176;
+	bool phonePage() const;
+	Rect backControl;
+	int padding=24, sidebar=176;
     std::string focus, dragging, textDraft;
     bool editingText=false, selectAllText=false, scrollingBar=false;
     size_t textCursor=0;
@@ -129,6 +136,7 @@ private:
     void changeUiScale(int percent);
     int& scrollOffset();
     void focusNext(bool backward);
+    void navigateBack();
     void openCategoryPicker();
     void ensureFocusVisible();
     void invoke(Row row,int direction=0);

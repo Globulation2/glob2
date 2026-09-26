@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "FrontendTheme.h"
+#include "gui/FrontendLayout.h"
 #include <GUIBase.h>
 #include <TouchInput.h>
 #include <InterfacePresentation.h>
@@ -15,10 +16,15 @@
 class LobbyControls : public GAGGUI::RectangularWidget
 {
   public:
-    GAGCore::TouchInput touchNavigation;
-    int touchRegion=-1;
-    std::string touchTarget;
-    void cancelTouch() {touchNavigation.cancel();pressed.clear();touchTarget.clear();}
+	GAGCore::TouchInput touchNavigation;
+	int touchRegion = -1;
+	std::string touchTarget;
+	void cancelTouch()
+	{
+		touchNavigation.cancel();
+		pressed.clear();
+		touchTarget.clear();
+	}
 	using Callback = std::function<void()>;
 	struct Hit
 	{
@@ -74,7 +80,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 	void text(int x, int y, std::string value, const char *font = "standard", int width = 10000,
 			  bool quiet = false)
 	{
-		auto f = GAGCore::Toolkit::getFont(font);
+		auto f = FrontendLayout::font(font);
 		if (f->getStringWidth(value) > width)
 		{
 			while (!value.empty() && f->getStringWidth(value + "...") > width)
@@ -91,15 +97,17 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		f->popStyle();
 	}
 	int paragraph(int x, int y, int width, const std::string &value, const char *font = "little",
-				  bool centered = false, bool quiet = true)
+				  bool centered = false, bool quiet = true, bool paint = true)
 	{
-		auto f = GAGCore::Toolkit::getFont(font);
+		auto f = FrontendLayout::font(font);
 		int row = f->getStringHeight("Ag") + 3, start = y;
 		std::string lineText, word;
 		auto flush = [&]
 		{
-			const int offset = centered ? std::max(0, (width - f->getStringWidth(lineText)) / 2) : 0;
-			text(x + offset, y, lineText, font, width - offset, quiet);
+			const int offset =
+				centered ? std::max(0, (width - f->getStringWidth(lineText)) / 2) : 0;
+			if (paint)
+				text(x + offset, y, lineText, font, width - offset, quiet);
 			y += row;
 			lineText.clear();
 		};
@@ -135,7 +143,8 @@ class LobbyControls : public GAGGUI::RectangularWidget
 									   (static_cast<unsigned char>(lineText[last]) & 0xc0) == 0x80)
 									--last;
 								auto tail = lineText.substr(last);
-								const std::string closing = "。、，．！？：；）］｝〉》」』】〕〗〙〛";
+								const std::string closing =
+									"。、，．！？：；）］｝〉》」』】〕〗〙〛";
 								const std::string opening = "（［｛〈《「『【〔〖〘〚";
 								if (last > 0 && (closing.find(glyph) != std::string::npos ||
 												 opening.find(tail) != std::string::npos))
@@ -161,6 +170,21 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		}
 		return y - start;
 	}
+	// Measure with the same frontend font used for painting. Two-line touch
+	// captions retain their full wording without shrinking text or hit targets.
+	void buttonLabel(SDL_Rect r, const std::string &label, const char *font = "standard",
+					 bool quiet = false, int left = 6, int right = 6)
+	{
+		const int width = std::max(1, r.w - left - right);
+		const int measured = paragraph(0, 0, width, label, font, false, quiet, false);
+		if (GAGCore::phonePresentationRequested() && measured <= r.h - 4)
+			paragraph(r.x + left, r.y + (r.h - measured) / 2, width, label, font, false, quiet);
+		else
+		{
+			const int height = FrontendLayout::font(font)->getStringHeight("Ag");
+			text(r.x + left, r.y + (r.h - height) / 2, label, font, width, quiet);
+		}
+	}
 	void button(const std::string &id, SDL_Rect r, const std::string &label, Callback action,
 				bool selected = false, bool enabled = true, bool quiet = false,
 				const char *font = "standard")
@@ -174,8 +198,8 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		if (focus == id ||
 			(!popup.open && inside(r, hoverX, hoverY) && inside(clipping, hoverX, hoverY)))
 			surface()->drawRect(r.x, r.y, r.w, r.h, focus == id ? ink : line);
-		int fh = GAGCore::Toolkit::getFont(font)->getStringHeight("Ag");
-		text(r.x + 9, r.y + (r.h - fh) / 2, label, font, r.w - 18, !enabled || quiet);
+		if (!label.empty())
+			buttonLabel(r, label, font, !enabled || quiet);
 	}
 	// A whole-row toggle: clicking anywhere on the row, or Space or Return while it has focus,
 	// flips it.
@@ -200,21 +224,25 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		if (focus == id ||
 			(!popup.open && inside(r, hoverX, hoverY) && inside(clipping, hoverX, hoverY)))
 			surface()->drawRect(r.x, r.y, r.w, r.h, focus == id ? ink : line);
-		int fh = GAGCore::Toolkit::getFont(font)->getStringHeight("Ag");
+		int fh = FrontendLayout::font(font)->getStringHeight("Ag");
 		text(mark.x + side + 9, r.y + (r.h - fh) / 2, label, font, r.w - side - 22, !enabled);
 	}
 	void dropdown(const std::string &id, SDL_Rect r, const std::vector<std::string> &options,
 				  int selected, std::function<void(int)> apply,
-				  const std::vector<bool> &enabled = {}, const std::string &help = "")
+				  const std::vector<bool> &enabled = {}, const std::string &help = "",
+				  const std::string &compactLabel = "")
 	{
-		auto label = selected >= 0 && selected < int(options.size()) ? options[selected] : "";
-		button(id, r, label,
+		auto label = !compactLabel.empty()                             ? compactLabel
+					 : selected >= 0 && selected < int(options.size()) ? options[selected]
+																	   : "";
+		button(id, r, "",
 			   [=, this]
 			   {
 				   popup = {true, r, options, enabled, apply, std::max(0, selected), 0, help};
 				   revealPopup();
 			   });
 		surface()->drawRect(r.x, r.y, r.w, r.h, line);
+		buttonLabel(r, label, "standard", false, 9, compactLabel.empty() ? 25 : 15);
 		// The right edge is reserved for the disclosure chevron.
 		box({r.x + r.w - 18, r.y + 4, 14, r.h - 8}, panel, 2);
 		text(r.x + r.w - 15, r.y + (r.h - 12) / 2, "v", "little", 12, true);
@@ -225,7 +253,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 				 bool enabled = true)
 	{
 		button(id, r, "", std::move(action), false, enabled);
-		int fh = GAGCore::Toolkit::getFont("standard")->getStringHeight("Ag");
+		int fh = FrontendLayout::font("standard")->getStringHeight("Ag");
 		text(r.x + 9, r.y + (r.h - fh) / 2, label, "standard", r.w - 44, !enabled);
 		surface()->drawRect(r.x, r.y, r.w, r.h, line);
 		box({r.x + r.w - 26, r.y + 4, 22, r.h - 8}, panel, 2);
@@ -245,11 +273,11 @@ class LobbyControls : public GAGGUI::RectangularWidget
 	void stepper(const std::string &id, SDL_Rect r, int value, int lo, int hi,
 				 std::function<void(int)> apply, int step = 1)
 	{
-        const int side=GAGCore::phonePresentationRequested()?48:30;
+		const int side = GAGCore::phonePresentationRequested() ? 48 : 30;
 		button(
-			id + "/-", {r.x, r.y, side, r.h}, "-", [=] { apply(std::max(lo, value - step)); }, false,
-			value > lo);
-		text(r.x + side+12, r.y + 5, std::to_string(value));
+			id + "/-", {r.x, r.y, side, r.h}, "-", [=] { apply(std::max(lo, value - step)); },
+			false, value > lo);
+		text(r.x + side + 12, r.y + 5, std::to_string(value));
 		button(
 			id + "/+", {r.x + r.w - side, r.y, side, r.h}, "+",
 			[=] { apply(std::min(hi, value + step)); }, false, value < hi);
@@ -303,17 +331,23 @@ class LobbyControls : public GAGGUI::RectangularWidget
 							-1});
 		}
 	}
-    int popupRowHeight() const {return GAGCore::phonePresentationRequested()?48:30;}
-    int popupRows() {return std::max(1,std::min({8,int(popup.options.size()),(surface()->getH()-36-(popup.help.empty()?0:48))/popupRowHeight()}));}
+	int popupRowHeight() const { return GAGCore::phonePresentationRequested() ? 48 : 30; }
+	int popupRows()
+	{
+		return std::max(1, std::min({8, int(popup.options.size()),
+									 (surface()->getH() - 36 - (popup.help.empty() ? 0 : 48)) /
+										 popupRowHeight()}));
+	}
 	void revealPopup()
 	{
-		popup.first = std::clamp(popup.first, std::max(0, popup.selected - popupRows()+1), popup.selected);
+		popup.first =
+			std::clamp(popup.first, std::max(0, popup.selected - popupRows() + 1), popup.selected);
 	}
 	SDL_Rect popupRect()
 	{
 		int pw = popup.help.empty() ? popup.anchor.w : std::max(330, popup.anchor.w);
 		for (auto &s : popup.options)
-			pw = std::max(pw, GAGCore::Toolkit::getFont("standard")->getStringWidth(s) + 30);
+			pw = std::max(pw, FrontendLayout::font("standard")->getStringWidth(s) + 30);
 		pw = std::min(pw, surface()->getW() - 32);
 		int ph = popupRows() * popupRowHeight() + 12 + (popup.help.empty() ? 0 : 48);
 		int px = std::clamp(popup.anchor.x, 16, surface()->getW() - pw - 16);
@@ -342,16 +376,21 @@ class LobbyControls : public GAGGUI::RectangularWidget
 				int i = n + popup.first;
 				bool ok = popup.enabled.empty() || popup.enabled[i];
 				if (i == popup.selected)
-					box({r.x + 4, r.y + 6 + n * popupRowHeight(), r.w - 8, popupRowHeight()-1}, gold, 3);
-				text(r.x + 10, r.y + 12 + n * popupRowHeight(), popup.options[i], "standard", r.w - 20, !ok);
+					box({r.x + 4, r.y + 6 + n * popupRowHeight(), r.w - 8, popupRowHeight() - 1},
+						gold, 3);
+				text(r.x + 10, r.y + 12 + n * popupRowHeight(), popup.options[i], "standard",
+					 r.w - 20, !ok);
 			}
 			if (int(popup.options.size()) > popupRows())
 			{
-				int thumb = popupRows()*popupRowHeight() * popupRows() / int(popup.options.size());
-				box({r.x + r.w - 5, r.y + 6, 3, popupRows()*popupRowHeight()}, line, 1);
+				int thumb =
+					popupRows() * popupRowHeight() * popupRows() / int(popup.options.size());
+				box({r.x + r.w - 5, r.y + 6, 3, popupRows() * popupRowHeight()}, line, 1);
 				box({r.x + r.w - 5,
-					 r.y + 6 + (popupRows()*popupRowHeight() - thumb) * popup.first / (int(popup.options.size()) - popupRows()), 3,
-					 thumb},
+					 r.y + 6 +
+						 (popupRows() * popupRowHeight() - thumb) * popup.first /
+							 (int(popup.options.size()) - popupRows()),
+					 3, thumb},
 					muted, 1);
 			}
 			if (!popup.help.empty())
@@ -369,37 +408,75 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		auto &r = regions[id];
 		r.offset = std::clamp(r.offset + delta, 0, r.maximum);
 	}
-    std::string targetAt(int x,int y) {
-        if(popup.open) {auto r=popupRect();return inside(r,x,y)?"popup/"+std::to_string((y-r.y-6)/popupRowHeight()+popup.first):"outside";}
-        for(auto it=hits.rbegin();it!=hits.rend();++it)if(it->enabled && inside(it->box,x,y) && inside(it->clip,x,y))return it->id;
-        return {};
-    }
+	std::string targetAt(int x, int y)
+	{
+		if (popup.open)
+		{
+			auto r = popupRect();
+			return inside(r, x, y)
+					   ? "popup/" + std::to_string((y - r.y - 6) / popupRowHeight() + popup.first)
+					   : "outside";
+		}
+		for (auto it = hits.rbegin(); it != hits.rend(); ++it)
+			if (it->enabled && inside(it->box, x, y) && inside(it->clip, x, y))
+				return it->id;
+		return {};
+	}
 	bool handle(SDL_Event *e)
 	{
-        if (GAGCore::phonePresentationRequested()) {
-            if ((e->type==SDL_MOUSEMOTION && e->motion.which==SDL_TOUCH_MOUSEID) ||
-                ((e->type==SDL_MOUSEBUTTONDOWN || e->type==SDL_MOUSEBUTTONUP) && e->button.which==SDL_TOUCH_MOUSEID)) return true;
-            if(e->type==SDL_FINGERDOWN || e->type==SDL_FINGERMOTION || e->type==SDL_FINGERUP) {
-                auto f=e->tfinger;GAGCore::ViewPoint p{f.x*surface()->getW(),f.y*surface()->getH()};
-                if(e->type==SDL_FINGERDOWN) {
-                    touchTarget=targetAt(int(p.x),int(p.y));
-                    touchRegion=-1;for(auto& [id,region]:regions)if(inside(region.box,int(p.x),int(p.y)))touchRegion=id;
-                }
-                auto actions=e->type==SDL_FINGERDOWN?touchNavigation.down(f.touchId,f.fingerId,p):
-                    e->type==SDL_FINGERMOTION?touchNavigation.move(f.touchId,f.fingerId,p):touchNavigation.up(f.touchId,f.fingerId,p);
-                for(const auto& action:actions) {
-                    if(action.kind==GAGCore::TouchActionKind::Pan) {
-                        if(popup.open)popup.first=std::clamp(popup.first+(action.point.y<0?1:-1),0,std::max(0,int(popup.options.size())-popupRows()));
-                        else if(touchRegion>=0)scroll(touchRegion,-int(action.point.y));
-                    } else if(action.kind==GAGCore::TouchActionKind::Select && touchTarget==targetAt(int(p.x),int(p.y))) {
-                        SDL_Event click{};click.type=SDL_MOUSEBUTTONDOWN;click.button.button=SDL_BUTTON_LEFT;
-                        click.button.x=int(p.x);click.button.y=int(p.y);handle(&click);click.type=SDL_MOUSEBUTTONUP;handle(&click);
-                    }
-                }
-                return true;
-            }
-            if((e->type==SDL_WINDOWEVENT && (e->window.event==SDL_WINDOWEVENT_FOCUS_LOST || e->window.event==SDL_WINDOWEVENT_SIZE_CHANGED)) || e->type==SDL_APP_WILLENTERBACKGROUND)cancelTouch();
-        }
+		if (GAGCore::phonePresentationRequested())
+		{
+			if ((e->type == SDL_MOUSEMOTION && e->motion.which == SDL_TOUCH_MOUSEID) ||
+				((e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) &&
+				 e->button.which == SDL_TOUCH_MOUSEID))
+				return true;
+			if (e->type == SDL_FINGERDOWN || e->type == SDL_FINGERMOTION || e->type == SDL_FINGERUP)
+			{
+				auto f = e->tfinger;
+				GAGCore::ViewPoint p{f.x * surface()->getW(), f.y * surface()->getH()};
+				if (e->type == SDL_FINGERDOWN)
+				{
+					touchTarget = targetAt(int(p.x), int(p.y));
+					touchRegion = -1;
+					for (auto &[id, region] : regions)
+						if (inside(region.box, int(p.x), int(p.y)))
+							touchRegion = id;
+				}
+				auto actions =
+					e->type == SDL_FINGERDOWN     ? touchNavigation.down(f.touchId, f.fingerId, p)
+					: e->type == SDL_FINGERMOTION ? touchNavigation.move(f.touchId, f.fingerId, p)
+												  : touchNavigation.up(f.touchId, f.fingerId, p);
+				for (const auto &action : actions)
+				{
+					if (action.kind == GAGCore::TouchActionKind::Pan)
+					{
+						if (popup.open)
+							popup.first =
+								std::clamp(popup.first + (action.point.y < 0 ? 1 : -1), 0,
+										   std::max(0, int(popup.options.size()) - popupRows()));
+						else if (touchRegion >= 0)
+							scroll(touchRegion, -int(action.point.y));
+					}
+					else if (action.kind == GAGCore::TouchActionKind::Select &&
+							 touchTarget == targetAt(int(p.x), int(p.y)))
+					{
+						SDL_Event click{};
+						click.type = SDL_MOUSEBUTTONDOWN;
+						click.button.button = SDL_BUTTON_LEFT;
+						click.button.x = int(p.x);
+						click.button.y = int(p.y);
+						handle(&click);
+						click.type = SDL_MOUSEBUTTONUP;
+						handle(&click);
+					}
+				}
+				return true;
+			}
+			if ((e->type == SDL_WINDOWEVENT && (e->window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
+												e->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)) ||
+				e->type == SDL_APP_WILLENTERBACKGROUND)
+				cancelTouch();
+		}
 
 		if (popup.open)
 		{

@@ -14,19 +14,23 @@ public:
         std::function<bool(GAGGUI::Widget*)> labelIncludesValue = [](auto*){return false;})
         : screen(screen), label(label), visible(visible), footer(footer), color(color), labelIncludesValue(labelIncludesValue) {}
     ~PhoneForm();
-    void draw();
+	// Opt in only for frontend dialogs; gameplay/editor adapters retain their layout.
+	void useFrontendLayout() { frontendLayout = true; }
+	void draw();
     bool event(SDL_Event event);
     void cancel();
     void scrollToTop() { offset=0; cancel(); }
 private:
     friend class GameGUITouchHarness;
-    struct Row { GAGGUI::Widget* widget; std::string text; int kind=0,index=0;bool selected=false,footer=false; GAGCore::ViewRect rect; };
+	friend struct MobilePresentationHarness;
+	struct Row { GAGGUI::Widget* widget; std::string text; int kind=0,index=0;bool selected=false,footer=false; GAGCore::ViewRect rect; };
     GAGGUI::Screen& screen;
     std::function<std::string(GAGGUI::Widget*)> label;
     std::function<bool(GAGGUI::Widget*)> visible, footer;
     std::function<std::optional<GAGCore::Color>(GAGGUI::Widget*)> color;
     std::function<bool(GAGGUI::Widget*)> labelIncludesValue;
     std::vector<Row> rows;
+    GAGGUI::Widget *primaryAction() const;
     GAGCore::ResponsiveDialog placement;
     GAGCore::TouchInput touch;
     GAGGUI::Widget* editing=nullptr;
@@ -34,7 +38,9 @@ private:
     int heldKind=-1,heldIndex=0;
     int keyboardFocus=-1;
     std::string heldText;
-    double offset=0,lastHeight=0;
+	bool frontendLayout = false;
+	GAGCore::ViewRect surfaceBounds;
+	double offset=0,lastHeight=0;
     void prepare();
     void act(const std::vector<GAGCore::TouchAction>& actions);
     Row* hit(GAGCore::ViewPoint point);
