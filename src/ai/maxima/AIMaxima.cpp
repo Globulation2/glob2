@@ -4168,6 +4168,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	world.profiles=collect_building_profiles();
 	const bool cachedFertility=fertility_cache.validFor(world.width,world.height);
 	const std::vector<uint32_t>& fertilityValues=fertility_cache.values();
+	const WoodReserve wood_reserve=select_wood_reserve(echo);
 	for(int y=0;y<world.height;++y)for(int x=0;x<world.width;++x)
 	{
 		const int index=y*world.width+x;
@@ -4178,6 +4179,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		tile.water=cell.terrain>=256 && cell.terrain<272;
 		tile.sand=cell.terrain>=128 && cell.terrain<144;
 		tile.grass=cell.terrain<16;tile.occupied=cell.building!=NOGBID;
+		tile.woodReserve=wood_reserve.cells[index]!=0;
 		tile.foodTraversable=!(cell.forbidden&echo.player->team->me)
 			|| applied_farm_protection_mask[index];
 		tile.ownOccupied=tile.occupied
@@ -4192,7 +4194,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		const Uint32 flags=(tile.discovered?1u:0u)|(tile.grass?2u:0u)
 			|(tile.water?4u:0u)|(tile.sand?8u:0u)
 			|(tile.permanentResource?16u:0u)
-			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u);
+			|(tile.clearableResource?32u:0u)|(tile.occupied?64u:0u)|(tile.foodTraversable?128u:0u)|(tile.woodReserve?256u:0u);
 		add_preemptive_hash(worldSignature,flags);
 		add_preemptive_hash(worldSignature,Uint32(tile.resourceType+1));
 		// Resource amounts fluctuate on virtually every harvest. Placement routes,

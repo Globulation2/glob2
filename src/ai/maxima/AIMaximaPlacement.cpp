@@ -153,7 +153,7 @@ int BuildingProfile::maximumLevel() const
 
 WorldTile::WorldTile()
 	: discovered(false), foodTraversable(true), grass(false), water(false), sand(false),
-	  permanentResource(false), clearableResource(false), occupied(false),
+	  permanentResource(false), woodReserve(false), clearableResource(false), occupied(false),
 	  ownOccupied(false), resourceType(-1), resourceAmount(0), fertility(0),
 	  farmCapacity(0), foodOpportunity(0), protectedYield(0), threat(0),
 	  protectedness(50), conqueredOpportunity(0) {}
@@ -203,7 +203,7 @@ uint32_t WorldState::computeSignature() const
 		const WorldTile& t=tiles[i];
 		uint32_t flags=(t.discovered?1u:0u)|(t.grass?2u:0u)|(t.water?4u:0u)
 			|(t.sand?8u:0u)|(t.permanentResource?16u:0u)
-			|(t.clearableResource?32u:0u)|(t.occupied?64u:0u)|(t.foodTraversable?128u:0u);
+			|(t.clearableResource?32u:0u)|(t.occupied?64u:0u)|(t.foodTraversable?128u:0u)|(t.woodReserve?256u:0u);
 		hashValue(result, flags); hashValue(result, uint32_t(t.resourceType+1));
 	}
 	for(size_t i=0; i<buildings.size(); ++i)
@@ -643,7 +643,7 @@ bool Planner::legalTiles(const WorldState& world, const std::vector<int>& tiles,
 		if(!t.discovered){reason=RejectedUndiscovered;return false;}
 		if(!t.grass){reason=RejectedTerrain;return false;}
 		if(t.occupied && ignored.count(index)==0){reason=RejectedBuilding;return false;}
-		if(t.permanentResource){reason=RejectedPermanentResource;return false;}
+		if(t.blocksConstruction()){reason=t.woodReserve?RejectedReservation:RejectedPermanentResource;return false;}
 		if(t.clearableResource && !allowClearable){reason=RejectedClearableResource;return false;}
 		const bool ownFootprint=existing!=reservationMap.end()
 			&&contains(existing->second.footprintTiles,index);
@@ -1441,7 +1441,7 @@ void Planner::prepareRouteCache(const WorldState& world,int orientation) const
 			{
 				const WorldTile& tile=world.tiles[pair[k]];
 				// Circulation needs walkable land, not a buildable grass tile.
-				if(!tile.discovered||tile.water||tile.occupied||tile.permanentResource
+				if(!tile.discovered||tile.water||tile.occupied||tile.blocksConstruction()
 				   ||isFootprintReserved(pair[k])) {pass=false;break;}
 				pairAlreadyNetwork=pairAlreadyNetwork&&isCirculationReserved(pair[k]);
 				if(!isCirculationReserved(pair[k]))
@@ -1643,7 +1643,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				if(!tile.discovered){reason=RejectedUndiscovered;legal=false;break;}
 				if(!tile.grass){reason=RejectedTerrain;legal=false;break;}
 				if(tile.occupied){reason=RejectedBuilding;legal=false;break;}
-				if(tile.permanentResource){reason=RejectedPermanentResource;legal=false;break;}
+				if(tile.blocksConstruction()){reason=tile.woodReserve?RejectedReservation:RejectedPermanentResource;legal=false;break;}
 				bool conflict=false;
 				for(std::map<int,Reservation>::const_iterator reservation=
 					reservationMap.begin(); reservation!=reservationMap.end(); ++reservation)
@@ -1710,8 +1710,8 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 						{reason=RejectedTerrain;parcelLegal=false;break;}
 						if(tile.occupied)
 						{reason=RejectedBuilding;parcelLegal=false;break;}
-						if(tile.permanentResource)
-						{reason=RejectedPermanentResource;parcelLegal=false;break;}
+						if(tile.blocksConstruction())
+						{reason=tile.woodReserve?RejectedReservation:RejectedPermanentResource;parcelLegal=false;break;}
 						if(isFootprintReserved(index))
 						{reason=RejectedReservation;parcelLegal=false;break;}
 						if(isCirculationReserved(index)&&!contains(sharedEdge,index))
@@ -1746,7 +1746,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				{
 					const int index=candidate.action.accessTiles[i];const WorldTile& tile=world.tiles[index];
 					if(!tile.discovered){reason=RejectedUndiscovered;ringLegal=false;break;}
-					if(!tile.grass||tile.occupied||tile.permanentResource
+					if(!tile.grass||tile.occupied||tile.blocksConstruction()
 					   ||isFootprintReserved(index)){reason=RejectedAccess;ringLegal=false;break;}
 				}
 				if(!ringLegal){lastDiagnostics.rejected[reason]++;continue;}
@@ -1880,7 +1880,7 @@ int Planner::adjoiningBarracks(const WorldState& world,const DevelopmentAction& 
 				const auto& tile=world.tiles[index];
 				// Preserve three complete sides of access on the older barracks.
 				if(!contains(reservation->second.circulationTiles,index)
-				   ||!tile.discovered||!tile.grass||tile.occupied||tile.permanentResource
+				   ||!tile.discovered||!tile.grass||tile.occupied||tile.blocksConstruction()
 				   ||isFootprintReserved(index)){legal=false;break;}
 			}
 		}
@@ -2985,7 +2985,7 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 				const WorldTile& tile=world.tiles[promised[i]];
 				if(!contains(reservation->second.footprintTiles,promised[i])
 				   ||(tile.occupied&&!contains(own,promised[i]))
-				   ||!tile.discovered||!tile.grass||tile.permanentResource)
+				   ||!tile.discovered||!tile.grass||tile.blocksConstruction())
 				{reason=RejectedUpgradeContract;if(rejected)*rejected=reason;return false;}
 				if(tile.clearableResource&&beforeIssue)
 				{if(rejected)*rejected=RejectedClearableResource;return false;}
@@ -3030,7 +3030,7 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 		if(!t.discovered){reason=RejectedUndiscovered;valid=false;break;}
 		if(!t.grass){reason=RejectedTerrain;valid=false;break;}
 		if(t.occupied){reason=RejectedBuilding;valid=false;break;}
-		if(t.permanentResource){reason=RejectedPermanentResource;valid=false;break;}
+		if(t.blocksConstruction()){reason=t.woodReserve?RejectedReservation:RejectedPermanentResource;valid=false;break;}
 		if(t.clearableResource&&beforeIssue){reason=RejectedClearableResource;valid=false;break;}
 		bool conflict=false;
 		for(std::map<int,Reservation>::const_iterator r=reservationMap.begin();r!=reservationMap.end();++r)
@@ -3067,19 +3067,19 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 		for(size_t i=0;i<action.parcelTiles.size();++i)
 		{
 			const WorldTile& t=world.tiles[action.parcelTiles[i]];
-			if(!t.discovered||!t.grass||t.occupied||t.permanentResource)
+			if(!t.discovered||!t.grass||t.occupied||t.blocksConstruction())
 			{reason=t.occupied?RejectedBuilding:RejectedTerrain;if(rejected)*rejected=reason;return false;}
 		}
 		for(size_t i=0;i<action.accessTiles.size();++i)
 		{
 			const WorldTile& t=world.tiles[action.accessTiles[i]];
-			if(!t.discovered||!t.grass||t.occupied||t.permanentResource)
+			if(!t.discovered||!t.grass||t.occupied||t.blocksConstruction())
 			{reason=RejectedAccess;if(rejected)*rejected=reason;return false;}
 		}
 		for(size_t i=0;i<action.arteryTiles.size();++i)
 		{
 			const int index=action.arteryTiles[i];const WorldTile& tile=world.tiles[index];
-			if(!tile.discovered||tile.water||tile.occupied||tile.permanentResource
+			if(!tile.discovered||tile.water||tile.occupied||tile.blocksConstruction()
 			   ||isFootprintReserved(index))
 			{
 				reason=RejectedCirculation;
@@ -3239,7 +3239,7 @@ void Planner::adoptStartingBuildings(const WorldState& world)
 				const auto own=reservationMap.find(contract.reservationId);
 				const bool ownFootprint=own!=reservationMap.end()
 					&&contains(own->second.footprintTiles,terminalRing[i]);
-				if(!tile.discovered||!tile.grass||tile.occupied||tile.permanentResource
+				if(!tile.discovered||!tile.grass||tile.occupied||tile.blocksConstruction()
 				   ||(isFootprintReserved(terminalRing[i])
 				      &&footprintRefs[terminalRing[i]]>unsigned(ownFootprint)))
 				{ringLegal=false;break;}
@@ -3254,7 +3254,7 @@ void Planner::adoptStartingBuildings(const WorldState& world)
 		for(size_t i=0;i<access.size();++i)
 		{
 			const WorldTile& tile=world.tiles[access[i]];
-			if(tile.discovered&&tile.grass&&!tile.occupied&&!tile.permanentResource
+			if(tile.discovered&&tile.grass&&!tile.occupied&&!tile.blocksConstruction()
 			   &&!contains(promised,access[i])&&!isFootprintReserved(access[i]))
 				usableAccess.push_back(access[i]);
 		}

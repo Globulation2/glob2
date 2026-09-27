@@ -9,7 +9,8 @@ The runtime policy follows a plan/reconcile pipeline rather than incrementally
 editing shared masks:
 
 1. `build_farming_protection_plan` classifies wheat and wood roles and resolves
-   their priority against reservations and firebreaks.
+   their priority against reservations and firebreaks, including the minimum
+   renewable wood reserve.
 2. Temporary wheat expansion support augments eligible empty frontier targets
    after the management-radius filter.
 3. `resolve_wheat_invasion_clearing` gives wood beside the final protected wheat
@@ -105,7 +106,8 @@ to wheat or wood, is evaluated in this order:
 5. Other resources remain harvestable.
 
 Wood next to protected wheat yields its protection to the wheat-invasion
-clearing contract when that sub-policy is on. This final precedence also
+clearing contract when that sub-policy is on, except inside the minimum wood
+reserve. This final precedence also
 applies to temporary fallback wood anchors.
 
 The moving wheat and wood perimeters are forbidden before the resource spreads
@@ -160,6 +162,39 @@ eligibility also releases the extra protection. There is no new saved state.
 This temporarily trades harvestable food and some open space for more surviving
 sources of expansion; faster establishment is an intended effect, not a guarantee.
 
+## Minimum renewable wood reserve
+
+While farm protection is enabled, Maxima retains up to two live wood seeds across
+its managed area, with one distinct neighboring harvest outlet per seed. This is
+a small standing minimum, not a quota for every forest patch or building. A seed
+needs positive exact fertility; the ordinary wood-farm fertility cutoff does not
+apply. Sterile wood alone cannot establish a renewable reserve.
+
+Selection prefers the aligned expansion lattice, then greater fertility, then
+map index. Scores do not depend on fluctuating resource amounts. A replacement
+must already contain live wood and have a usable outlet. No new save fields or
+historical selection cache are required; the policy derives the same selection
+from the current map, workers, and building reservations after loading.
+
+An outlet is growth-enabled grass beside the seed, off the expansion lattice,
+with an approach reachable by workers after harvesting unprotected wheat/wood.
+A local connectivity check rejects seeds that would cut this access. Seeds and
+outlets must lie within the farm-management radius and outside committed building
+footprints and circulation. Unknown terrain, buildings, and permanent resources
+cannot be outlets. If no viable location exists, the policy cannot create wood.
+
+Seeds stay forbidden to harvesting; outlets stay harvestable even if wheat grows
+there. Neither receives wheat-invasion clearing or the ordinary wood firebreak.
+Temporary wheat expansion support cannot reserve an outlet. Discretionary wood
+clearing flags avoid the reserve; an overlapping active campaign retires. Existing
+building/access contracts retain priority. New building parcels and circulation
+routes avoid both seeds and outlets, so future construction uses another location.
+Losing a seed, growth eligibility, or usable access causes selection to be rebuilt.
+
+This deliberately trades a few cells of wheat or building capacity for continued
+wood regeneration. It preserves a source and harvesting space, not a guaranteed
+wood delivery rate: fertility, competing growth and available workers still matter.
+
 ## Wood pressure
 
 The default integer scores are:
@@ -192,7 +227,8 @@ permanent resources are excluded; newly grown wood joins on the next policy pass
 
 Wheat and its pre-growth frontier have priority over this ordinary firebreak.
 Wood uses the same farming policy everywhere else, but the wood-only inner
-firebreak deliberately overrides wood protection inside its fertility band.
+firebreak deliberately overrides ordinary wood protection inside its fertility
+band. The minimum wood reserve is exempt.
 Hard building and path reservations still have higher priority.
 
 ## Maintenance clearing areas and emergency flag
@@ -238,7 +274,7 @@ remain standing spatial invariants.
 The complete policy normally runs every 512 ticks, and every 64 ticks while an
 urgent farming condition holds. Derived masks are reused and only real
 forbidden-area deltas produce orders. The `farming_policy` record reports
-`microseconds`, `protected_seeds`, `protected_frontier`, `protected_wheat_edges`,
+`microseconds`, `wood_reserve_seeds`, `protected_seeds`, `protected_frontier`, `protected_wheat_edges`,
 `protected_wheat_bootstraps`, `protected_wheat_support`, `protected_wood_edges`, `protected_wood_bootstraps`,
 `protected_interior_seeds`, `expected_capacity`, `blocked_directions`,
 `wood_pressure`, `wood_fertility`, `added` and `removed`. Clearing emits

@@ -336,6 +336,91 @@ void temporaryExpansionSupport()
     }
 }
 
+void woodReserveSurvivesWheatPincer()
+{
+    for(int offset:{0,44})
+    {
+        Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
+        auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
+        for(int i=0;i<64*64;++i)map.getTile(i%64,i/64).canResourcesGrow=0;
+        for(int y=0;y<64;++y)for(int x=0;x<12;++x)
+        {int i=index(x,y);map.getTile(i%64,i/64).terrain=256;}
+        const int seed=index(20,20),outlet=index(20,19),worker=index(21,18);
+        for(int y=19;y<=21;++y)for(int x=19;x<=21;++x)
+        {int i=index(x,y);map.setResource(i%64,i/64,WHEAT,1);}
+        map.setNoResource(seed%64,seed/64,0);
+        map.setResource(seed%64,seed/64,WOOD,1);
+        map.setNoResource(outlet%64,outlet/64,0);
+        for(int i:{seed,outlet})map.getTile(i%64,i/64).canResourcesGrow=1;
+        assert(f.game.addUnit(worker%64,worker/64,0,WORKER,0,0,0,0));
+        configurePattern(f);
+        ai.budget.farming_minimum_wood_fertility=65536;
+        ai.budget.farming_maintenance_clearing_enabled=true;
+        ai.budget.farming_wheat_invasion_clearing_enabled=true;
+        ai.budget.farming_wood_firebreak_enabled=true;
+        ai.strategy.farming.wood_firebreak_fertility_min_percent=0;
+        ai.strategy.farming.wood_firebreak_fertility_max_percent=100;
+        auto update=[&]() {
+            ai.update_farming(ai.context);applyAreaContracts(f);
+            ai.update_maintenance_clearing_areas(ai.context);applyAreaContracts(f);
+        };
+        for(int cycle=0;cycle<4;++cycle)
+        {
+            update();
+            auto reserve=ai.select_wood_reserve(ai.context);
+            assert(reserve.cells[seed]==1 && reserve.cells[outlet]==2);
+            assert(map.isForbidden(seed%64,seed/64,f.player.team->me));
+            assert(!map.isForbidden(outlet%64,outlet/64,f.player.team->me));
+            assert(!map.isClearArea(seed%64,seed/64,f.player.team->me));
+            // The seed can keep producing harvestable wood despite wheat on
+            // either flank and an otherwise universal wood firebreak.
+            assert(map.incResource(outlet%64,outlet/64,WOOD,0));
+            update();
+            assert(!map.isClearArea(outlet%64,outlet/64,f.player.team->me));
+            assert(!map.isForbidden(outlet%64,outlet/64,f.player.team->me));
+            while(map.isResourceTakeable(outlet%64,outlet/64,WOOD))
+                map.decResource(outlet%64,outlet/64);
+        }
+        // Competing wheat in the outlet remains harvestable, never a new seed.
+        assert(map.incResource(outlet%64,outlet/64,WHEAT,0));
+        update();assert(!ai.wheat_farm_protection_mask[outlet]);
+        const auto before=ai.select_wood_reserve(ai.context).cells;
+        ai.applied_farm_protection_mask.clear();
+        update();assert(ai.select_wood_reserve(ai.context).cells==before);
+        const auto world=ai.collect_development_world(ai.context);
+        assert(world.tiles[seed].woodReserve && world.tiles[outlet].woodReserve);
+        assert(world.tiles[outlet].clearableResource); // harvestable is not buildable
+        // Exact committed building/access reservations retain priority.
+        ai.development_planner.footprintRefs.assign(64*64,0);
+        ai.development_planner.footprintRefs[seed]=1;
+        update();assert(!ai.farm_protection_mask[seed]);
+        assert(ai.select_wood_reserve(ai.context).seeds==0);
+        ai.development_planner.footprintRefs[seed]=0;
+        ai.budget.farming_management_radius=1; // no physical home nearby
+        update();assert(ai.select_wood_reserve(ai.context).seeds==0);
+        ai.budget.farming_management_radius=0;
+        ai.budget.farming_protection_enabled=false;
+        update();assert(ai.select_wood_reserve(ai.context).seeds==0);
+        ai.budget.farming_protection_enabled=true;
+        // More eligible wood does not expand the reserve beyond two donors.
+        for(int x:{24,26})
+        {
+            int i=index(x,x);map.setResource(i%64,i/64,WOOD,1);
+            map.getTile(i%64,i/64).canResourcesGrow=1;
+            i=index(x,x-1);map.getTile(i%64,i/64).canResourcesGrow=1;
+        }
+        update();
+        auto stable=ai.select_wood_reserve(ai.context);
+        assert(stable.seeds==2);
+        for(int cycle=0;cycle<3;++cycle)
+        {update();assert(ai.select_wood_reserve(ai.context).cells==stable.cells);}
+        map.setNoResource(seed%64,seed/64,0);
+        update();
+        auto replacement=ai.select_wood_reserve(ai.context);
+        assert(replacement.seeds==2 && !replacement.cells[seed]);
+    }
+}
+
 void alignedPatternTransitions()
 {
     for(int resource:{WHEAT,WOOD}) for(int offset:{0,42})
@@ -532,7 +617,7 @@ int main()
 
     firebreakManagementRadius();farmManagementRadius();coastalWheatCrossesFertilityDips();
         seedSurvival();initialFlagStaffing();
-    temporaryExpansionSupport();alignedPatternTransitions();maintenanceProtectionAgreement();
+    woodReserveSurvivesWheatPincer();temporaryExpansionSupport();alignedPatternTransitions();maintenanceProtectionAgreement();
 
     archipelagoHarvestDoesNotSealWheat();seedStabilityAcrossMaps();farmingIgnoresDiscovery();
     std::cout<<"aligned farming, maintenance agreement, seed survival and flag staffing passed\n";
