@@ -44,7 +44,7 @@ public:
         if(suppress) return {};
         if(fingers.size()==2) {
             dragging=true;
-            if(painting) {painting=false;return {{TouchActionKind::EndStroke,point}};}
+            if(painting) {painting=false;return {{TouchActionKind::Cancel,point}};}
             return {};
         }
         dragging=false;

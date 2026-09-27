@@ -32,6 +32,7 @@ namespace GAGGUI
 		//! Cached variables, do not serialise, reconstructed on paint() call
 		//! Length of the scroll box, this is a cache
 		unsigned blockLength, blockPos, textHeight;
+        unsigned minimumRowHeight = 0;
 		//! Pointer to font, this is a cache
 		GAGCore::Font *fontPtr;
 		
@@ -64,6 +65,9 @@ namespace GAGGUI
 	
 		virtual void onTimer(Uint32 tick);
 		virtual void internalInit(void);
+        // Opt-in touch target policy. Rendering, scrolling and hit testing all
+        // share textHeight; desktop lists retain their natural font height.
+        void setMinimumRowHeight(unsigned height);
 		virtual void paint(void);
 	
 		//! Add text to pos in the list

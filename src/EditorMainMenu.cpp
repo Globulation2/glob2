@@ -27,7 +27,7 @@ using namespace GAGGUI;
 
 EditorMainMenu::EditorMainMenu(GAGGUI::ScreenStack& screens) : screens(screens)
 {
-    enableResponsiveMenu();
+    enableResponsiveMenu(Toolkit::getStringTable()->getString("[editor]"));
 	addWidget(new TextButton(0, 70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
 							 Toolkit::getStringTable()->getString("[new map]"), NEWMAP, 13));
 	addWidget(new TextButton(0, 130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
@@ -37,7 +37,7 @@ EditorMainMenu::EditorMainMenu(GAGGUI::ScreenStack& screens) : screens(screens)
 	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
 							 Toolkit::getStringTable()->getString("[load campaign]"),
 							 LOADCAMPAIGN));
-	addWidget(new TextButton(0, 415, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
+	addWidget(new TextButton(0, 310, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
 							 Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27));
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu",
 					   Toolkit::getStringTable()->getString("[editor]")));
@@ -45,7 +45,7 @@ EditorMainMenu::EditorMainMenu(GAGGUI::ScreenStack& screens) : screens(screens)
 
 void EditorMainMenu::newMap()
 {
-    screens.push(std::make_unique<NewMapScreen>(), [this](Screen& screen, int result) {
+    screens.push(std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &screens), [this](Screen& screen, int result) {
         if (result != NewMapScreen::OK) return;
         screens.push(std::make_unique<EditorGenerateScreen>(static_cast<NewMapScreen&>(screen).descriptor,
             static_cast<Uint32>(std::time(nullptr))), [this](Screen& generated, int result) {

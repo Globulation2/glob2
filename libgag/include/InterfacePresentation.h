@@ -66,7 +66,8 @@ inline ResolvedPresentation resolvePresentation(PresentationPreference preferenc
 inline std::optional<PresentationPreference> presentationOverride()
 {
     if (const char* value=SDL_getenv("GLOB2_MOBILE_UI"))
-        return std::string_view(value)=="1" ? PresentationPreference::Compact : PresentationPreference::Spacious;
+        return std::string_view(value)=="1" ? PresentationPreference::Compact :
+            std::string_view(value)=="touch-auto" ? PresentationPreference::Automatic : PresentationPreference::Spacious;
     for (const char* name : {"GLOB2_PHONE_FORMS", "GLOB2_RESPONSIVE_UI", "GLOB2_TOUCH_HUD"})
         if (const char* value=SDL_getenv(name); value && std::string_view(value)=="1")
             return PresentationPreference::Compact;
@@ -85,6 +86,7 @@ inline void updatePresentation(const ViewportMetrics& viewport, const InputCapab
 // Transitional name for screens using the shared responsive form adapter.
 inline bool phonePresentationRequested()
 {
+    if (const char* value=SDL_getenv("GLOB2_MOBILE_UI"); value && std::string_view(value).starts_with("touch-")) return true;
     if (const auto forced=presentationOverride())
         return *forced==PresentationPreference::Compact;
     return presentationState.adaptedControls();

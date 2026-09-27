@@ -19,6 +19,8 @@
 #include "YOGClientEvent.h"
 #include "GameLaunchMessages.h"
 #include <GUITextArea.h>
+#include <GUITextInput.h>
+#include "EditorTouchWidgets.h"
 #include <GUITabScreenWindow.h>
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
@@ -33,6 +35,7 @@
 #include "FertilityField.h"
 #include <limits>
 #include "GlobalContainer.h"
+#include "CampaignEditor.h"
 #include "ReplayWriter.h"
 #include "ReplayReader.h"
 #include "Order.h"
@@ -46,21 +49,81 @@
 
 GlobalContainer* globalContainer = nullptr;
 void require(bool value, const char* message) { if (!value) throw std::runtime_error(message); }
+// Inspect composition bounds, without a global keyboard mock or a platform
+// override. Real hosts pass the same reduced rectangle after native insets.
+struct ScriptEditorTouchTestAccess
+{
+	static void validate(ScriptEditorScreen &screen, GAGCore::ViewRect available)
+	{
+		require(screen.compactKeyboardWorkspace,
+				"Short keyboard viewport did not select the editing workspace");
+		require(screen.touchControls.size() == 1 &&
+					screen.touchControls[0].action == ScriptEditorScreen::HIDE_KEYBOARD,
+				"Short keyboard workspace must show only its dismissal action");
+		auto contains = [&](GAGCore::ViewRect r)
+		{
+			return r.x >= available.x && r.y >= available.y &&
+				   r.x + r.w <= available.x + available.w && r.y + r.h <= available.y + available.h;
+		};
+		require(contains(screen.touchBounds) && contains(screen.touchContent) &&
+					contains(screen.touchControls[0].bounds),
+				"Keyboard workspace escaped its usable viewport");
+		const auto bar = screen.touchControls[0].bounds;
+		require(bar.y + bar.h <= screen.touchContent.y,
+				"Keyboard toolbar overlaps the editing canvas");
+		require(screen.touchContent.h > 0, "Keyboard workspace lost its editing canvas");
+	}
+	static void validateEntryNavigation(ScriptEditorScreen &screen)
+	{
+		screen.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::TAB_HINTS, 0);
+		screen.prepareTouch({0, 0, 320, 568}, false);
+		for (const auto &control : screen.touchControls)
+			require(control.bounds.w >= 44 && control.bounds.h >= 44,
+					"Phone entry navigation has undersized touch targets");
+		screen.touchAction(ScriptEditorScreen::NEXT_ENTRY);
+		require(screen.touchItem == 1, "Next entry did not advance stable hint ID");
+		screen.touchAction(ScriptEditorScreen::PREVIOUS_ENTRY);
+		require(screen.touchItem == 0, "Previous entry did not restore stable hint ID");
+		screen.prepareTouch();
+		const auto target=screen.touchControls[2].bounds;
+		auto finger=[&](Uint32 type, SDL_FingerID id) {
+			SDL_Event event{}; event.type=type; event.tfinger.touchId=1; event.tfinger.fingerId=id;
+			event.tfinger.x=float(target.x+target.w/2)/globalContainer->gfx->getW();
+			event.tfinger.y=float(target.y+target.h/2)/globalContainer->gfx->getH();
+			screen.eventTouch(event);
+		};
+		finger(SDL_FINGERDOWN,1); finger(SDL_FINGERDOWN,2);
+		finger(SDL_FINGERUP,1); finger(SDL_FINGERUP,2);
+		require(screen.touchTab==ScriptEditorScreen::TAB_HINTS,
+				"Second-finger interruption activated a script tab");
+		finger(SDL_FINGERDOWN,1); screen.cancelTouch(); finger(SDL_FINGERUP,1);
+		require(screen.touchTab==ScriptEditorScreen::TAB_HINTS,
+				"Cancelled script gesture activated on release");
+
+	}
+	static bool compact(const ScriptEditorScreen &screen)
+	{
+		return screen.compactKeyboardWorkspace;
+	}
+};
 GAGCore::CooperativeSlice fixedSlice()
 {
-    return GAGCore::CooperativeSlice([] { return GAGCore::CooperativeSlice::Time{}; },
-                                   std::chrono::milliseconds(4), 8);
+	return GAGCore::CooperativeSlice([] { return GAGCore::CooperativeSlice::Time{}; },
+									 std::chrono::milliseconds(4), 8);
 }
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    require(argc == 2, "A disposable profile is required");
-    {
-        struct TrackedValue : Value {
-            bool& destroyed;
-            TrackedValue(Heap* heap, bool& destroyed) : Value(heap, nullptr), destroyed(destroyed) {}
-            ~TrackedValue() override { destroyed = true; }
-        };
-        bool rootDestroyed = false, instructionDestroyed = false, garbageDestroyed = false;
+	require(argc == 2, "A disposable profile is required");
+	{
+		struct TrackedValue : Value
+		{
+			bool &destroyed;
+			TrackedValue(Heap *heap, bool &destroyed) : Value(heap, nullptr), destroyed(destroyed)
+			{
+			}
+			~TrackedValue() override { destroyed = true; }
+		};
+		bool rootDestroyed = false, instructionDestroyed = false, garbageDestroyed = false;
         {
             Usl interpreter;
             interpreter.setConstant("tracked", new TrackedValue(&interpreter.heap, rootDestroyed));
@@ -93,8 +156,8 @@ int main(int argc, char** argv)
         }
         require(rootDestroyed, "Destroying an interpreter must release its retained heap");
         std::cout << "PASS script GC roots, live frames, bytecode constants and interpreter isolation" << std::endl;
-    }
-    SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
+	}
+	SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
     SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
     globalContainer = new GlobalContainer(argv[1]);
     globalContainer->settings.screenWidth = 800;
@@ -576,8 +639,128 @@ int main(int argc, char** argv)
             script.translateAndProcessEvent(&click);
             require(script.endValue == ScriptEditorScreen::CANCEL, "Script editor must remain usable after child cancellation");
         }
-        const auto originalRng = getSyncRandState();
-        for (const char* stage : {"[Loading units]", "[Loading buildings]", "[Resolving team links]"}) {
+		// The touch workspace must edit the retained draft, not a flattened
+		// label. Composition stays provisional and switching entry slots flushes
+		// multiline text without changing the live mission until OK.
+		{
+			struct InspectScript : ScriptEditorScreen
+			{
+				using ScriptEditorScreen::ScriptEditorScreen;
+				GAGGUI::TextArea *code() { return scriptEditor; }
+				std::string hint(int slot) { return hints[slot]->getText(); }
+			} script(&editor.game);
+			script.drawTouch();
+			const auto canvas =
+				static_cast<EditorTouch::TextCanvas *>(script.code())->canvasRectangle();
+			auto tap = [&](int x, int y)
+			{
+				SDL_Event event{};
+				event.type = SDL_MOUSEBUTTONDOWN;
+				event.button.button = SDL_BUTTON_LEFT;
+				event.button.x = x;
+				event.button.y = y;
+				script.eventTouch(event);
+				event.type = SDL_MOUSEBUTTONUP;
+				script.eventTouch(event);
+			};
+			tap(canvas.x + 8, canvas.y + 8);
+			const auto before = script.code()->getText();
+			SDL_Event composition{};
+			composition.type = SDL_TEXTEDITING;
+			SDL_strlcpy(composition.edit.text, "provisional", sizeof(composition.edit.text));
+			script.eventTouch(composition);
+			SDL_Event key{};
+			key.type = SDL_KEYDOWN;
+			key.key.keysym.sym = SDLK_RETURN;
+			script.eventTouch(key);
+			require(script.code()->getText() == before,
+					"IME preedit or confirmation leaked into the script draft");
+			SDL_Event text{};
+			text.type = SDL_TEXTINPUT;
+			SDL_strlcpy(text.text.text, "draft", sizeof(text.text.text));
+			script.eventTouch(text);
+			require(script.code()->getText().find("draft") != std::string::npos,
+					"Touch script canvas did not accept committed text");
+			script.eventTouch(key);
+			require(script.code()->getText().size() == before.size() + 6,
+					"Touch script canvas lost multiline editing");
+			script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::TAB_HINTS, 0);
+			script.drawTouch();
+			tap(globalContainer->gfx->getW() / 2, globalContainer->gfx->getH() / 2);
+			SDL_strlcpy(text.text.text, "First line", sizeof(text.text.text));
+			script.eventTouch(text);
+			script.eventTouch(key);
+			SDL_strlcpy(text.text.text, "Second line", sizeof(text.text.text));
+			script.eventTouch(text);
+			script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::TAB_BRIEFING, 0);
+			require(script.hint(0).find("First line\nSecond line") != std::string::npos,
+					"Hint workspace did not preserve its multiline entry on tab change");
+			const auto retainedCode = script.code()->getText();
+			const auto retainedHint = script.hint(0);
+			ScriptEditorTouchTestAccess::validateEntryNavigation(script);
+			const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+			for (double height : {96., 144., 220.})
+			{
+				const GAGCore::ViewRect reduced{
+					8 * unit, 8 * unit, globalContainer->gfx->getW() - 16 * unit, height * unit};
+				script.drawTouchInViewport(reduced, true);
+				ScriptEditorTouchTestAccess::validate(script, reduced);
+				require(script.code()->getText() == retainedCode && script.hint(0) == retainedHint,
+						"Keyboard viewport change modified an editing draft");
+			}
+			script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::HIDE_KEYBOARD, 0);
+			require(!SDL_IsTextInputActive(), "Hide keyboard did not stop native text input");
+			script.drawTouch();
+			require(!ScriptEditorTouchTestAccess::compact(script),
+					"Keyboard dismissal did not restore the full workspace");
+			script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::CANCEL, 0);
+			require(script.endValue == ScriptEditorScreen::CANCEL,
+					"Touch workspace cancellation failed");
+			std::cout << "PASS touch script and hint canvases, provisional IME, multiline drafts "
+						 "and tab retention"
+					  << std::endl;
+		}
+		{
+			struct EntryProbe : CampaignMapEntryEditor {
+				using CampaignMapEntryEditor::CampaignMapEntryEditor;
+				GAGGUI::TextArea *canvas() {
+					for (auto *widget : widgets)
+						if (auto *area = dynamic_cast<GAGGUI::TextArea *>(widget); area && !area->isReadOnly()) return area;
+					throw std::runtime_error("Missing campaign description canvas");
+				}
+			};
+			Campaign campaign;
+			CampaignMapEntry entry("Test", "maps/balanced.map");
+			entry.setDescription("First line\nSecond line");
+			EntryProbe editor(campaign, entry);
+			editor.beginExecution(globalContainer->gfx);
+			editor.drawExecution();
+			auto *area = editor.canvas();
+			const auto bounds = area->getScreenRect();
+			const int x = bounds.x, y = bounds.y, h = bounds.h;
+			auto finger = [&](Uint32 type, int py) {
+				SDL_Event event{}; event.type=type; event.tfinger.fingerId=1;
+				event.tfinger.x=float(x+4)/globalContainer->gfx->getW();
+				event.tfinger.y=float(py)/globalContainer->gfx->getH();
+				editor.handleExecutionEvent(event);
+			};
+			finger(SDL_FINGERDOWN,y+5); finger(SDL_FINGERUP,y+5);
+			require(SDL_IsTextInputActive(), "Campaign description tap did not open text input");
+			SDL_Event composition{}; composition.type=SDL_TEXTEDITING;
+			SDL_strlcpy(composition.edit.text,"provisional",sizeof(composition.edit.text));
+			editor.handleExecutionEvent(composition);
+			require(area->getText()=="First line\nSecond line", "Campaign preedit changed the draft");
+			SDL_Event text{}; text.type=SDL_TEXTINPUT;
+			SDL_strlcpy(text.text.text,"New\n",sizeof(text.text.text)); editor.handleExecutionEvent(text);
+			require(area->getText()=="New\nFirst line\nSecond line", "Campaign touch cursor or multiline insertion failed");
+			require(entry.getDescription()=="First line\nSecond line", "Campaign entry changed before confirmation");
+			const auto draft=area->getText();
+			finger(SDL_FINGERDOWN,y+h-5); finger(SDL_FINGERMOTION,y+5); finger(SDL_FINGERUP,y+5);
+			require(area->getText()==draft, "Campaign scroll altered its draft");
+			SDL_StopTextInput();
+		}
+		const auto originalRng = getSyncRandState();
+		for (const char* stage : {"[Loading units]", "[Loading buildings]", "[Resolving team links]"}) {
             for (unsigned extraSteps : {1u, 3u}) {
                 {
                     MapEdit partial;

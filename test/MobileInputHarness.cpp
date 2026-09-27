@@ -107,7 +107,7 @@ int main()
         require(touch.up(1,1,{20,20}).empty(),"Placement committed on release");
         touch.setMode(TouchMode::Paint);actions=touch.down(1,1,{20,20});
         require(actions[0].kind==TouchActionKind::BeginStroke,"Paint did not start");
-        actions=touch.down(1,2,{40,40});require(actions[0].kind==TouchActionKind::EndStroke,"Pinch did not end paint");
+        actions=touch.down(1,2,{40,40});require(actions[0].kind==TouchActionKind::Cancel,"Pinch must cancel the unfinished stroke");
         touch.cancel();require(touch.move(1,1,{30,30}).empty(),"Canceled finger still active");
         touch.setMode(TouchMode::Navigate);touch.down(1,1,{10,10});touch.down(2,1,{30,10});
         actions=touch.move(2,1,{40,10});require(actions.size()==2,"Device finger IDs collided");

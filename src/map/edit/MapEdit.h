@@ -53,6 +53,8 @@ public:
 	///This function handles a click with mouse positions relative to the widget. It can be overridden, but derived classes
 	///should be careful to call the base class version after there customized code
 	virtual void handleClick(int relMouseX, int relMouseY);
+    /// Invoke this widget's named action without desktop hit-test coordinates.
+    void activate();
 	///This function must be implemented by all derived classes. This is where the widget draws itself. It should use area.x
 	///and area.y to get the coordinates.
 	virtual void draw()=0;
@@ -285,6 +287,10 @@ public:
 	void draw();
 	void handleClick(int relMouseX, int relMouseY);
 	void setValues(Sint32* value, Sint32* max);
+    // Semantic value access shared by desktop and touch presentations.
+    int currentValue() const { return *value; }
+    int maximumValue() const { return *max; }
+    void setValue(int requested);
 	void setValues(Sint32* value);
 private:
 	Sint32* value;
@@ -483,6 +489,7 @@ private:
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
 	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
+    void selectActiveTeam(int selected);
 	///Handles view, scrolling, minimap and screen/dialog actions. Returns true if the action was handled.
 	bool performViewAction(const std::string& action, int relMouseX, int relMouseY);
 	///Handles building placement, terrain, zone, area and team-selection actions. Returns true if the action was handled.

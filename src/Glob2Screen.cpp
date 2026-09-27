@@ -17,7 +17,8 @@ void drawFrontend(DrawableSurface *surface, const std::set<Widget *> &widgets)
 {
 	// Most menus use the centered 640x480 canvas. Expand for full-window
 	// lists/charts, while keeping centered ALIGN_FILL titles inside the common canvas.
-	SDL_Rect content{(surface->getW() - 640) / 2, (surface->getH() - 480) / 2, 640, 480};
+	SDL_Rect content{};
+	bool hasContent = false;
 	for (auto *widget : widgets)
 	{
 		if (!widget->visible)
@@ -28,12 +29,14 @@ void drawFrontend(DrawableSurface *surface, const std::set<Widget *> &widgets)
 		SDL_Rect bounds = rectangle->getScreenRect();
 		if (dynamic_cast<Text *>(widget) && bounds.w == surface->getW())
 		{
-			bounds.x = (surface->getW() - 640) / 2;
-			bounds.w = 640;
+			const auto *text = static_cast<Text *>(widget);
+			bounds.w = std::min(surface->getW(), Toolkit::getFont("menu")->getStringWidth(text->getText()));
+			bounds.x = (surface->getW() - bounds.w) / 2;
 		}
-		SDL_UnionRect(&content, &bounds, &content);
+		if (!hasContent) { content = bounds; hasContent = true; }
+		else SDL_UnionRect(&content, &bounds, &content);
 	}
-	FrontendTheme::current->background(surface, true, &content);
+	FrontendTheme::current->background(surface, hasContent, &content);
 }
 } // namespace
 
@@ -224,8 +227,17 @@ void Glob2Screen::drawExecution()
     auto* context = dynamic_cast<GraphicContext*>(gfx);
     context->setClipRect();
 	Style::style->onFrame();
-	paint();
     const auto safe=mobileDialogSafe(context);
+    // Responsive menus own their composed bounds. Hidden legacy title coordinates
+    // and the old 640x480 canvas must not enlarge the surface around the controls.
+    SDL_Rect content{int(menuLayout.content.x), int(safe.y), int(menuLayout.content.w), 48};
+    for (const auto& button : menuLayout.buttons) {
+        SDL_Rect r{int(button.x), int(std::max(button.y, menuLayout.content.y)), int(button.w),
+            int(std::max(0.0, std::min(button.y + button.h, menuLayout.content.y + menuLayout.content.h) - std::max(button.y, menuLayout.content.y)))};
+        if (r.h > 0) SDL_UnionRect(&content, &r, &content);
+    }
+    if (FrontendTheme::current) FrontendTheme::current->background(gfx, true, &content);
+    else paint();
     if (menuTitle.empty()) {
         auto* title = globalContainer->title.get();
         const double scale = std::min((safe.w - 16.0) / title->getW(), 40.0 / title->getH());

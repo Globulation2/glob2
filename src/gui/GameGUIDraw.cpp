@@ -527,7 +527,7 @@ void GameGUI::drawOverlayInfos(void)
 	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, game, &camera);
 
 	// display text if placing a building
-	if(selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
+	if(!touch->usesHUD() && selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
 	{
 		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255)));
 		globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[Building Tool Line Explanation]"), 0, 75);
@@ -720,7 +720,7 @@ void GameGUI::drawAll(int team)
 	minimap.draw(localTeamNo, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
 
 	// draw the progress bar if this is a replay
-	if (globalContainer->replaying) drawReplayProgressBar();
+	if (globalContainer->replaying && !touch->usesHUD()) drawReplayProgressBar();
 
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();

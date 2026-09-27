@@ -222,7 +222,7 @@
     {
       "id": "game-flags",
       "title": "Flags & zones",
-      "description": "Legacy flags/zone controls in the mobile drawer.",
+      "description": "Dedicated icon palette for flags and zone tools; the minimap is a separate HUD component.",
       "group": "Gameplay"
     },
     {
@@ -233,56 +233,74 @@
     },
     {
       "id": "game-inspector-0",
-      "title": "Inspector \u00b7 workers",
-      "description": "Worker allocation on the first building in the fixture.",
+      "title": "Inspector \u00b7 workers \u00b7 unified replacement",
+      "description": "Replaced by the unified contextual inspector on touch. Stable feedback ID retained; desktop keeps its original sidebar.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-1",
-      "title": "Inspector \u00b7 priority",
-      "description": "Priority controls on the same building.",
+      "title": "Inspector \u00b7 priority \u00b7 unified replacement",
+      "description": "Replaced by the unified contextual inspector on touch. Stable feedback ID retained; desktop keeps its original sidebar.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-3",
-      "title": "Inspector \u00b7 actions",
-      "description": "Available building actions on the same building.",
+      "title": "Inspector \u00b7 actions \u00b7 unified replacement",
+      "description": "Replaced by the unified contextual inspector on touch. Stable feedback ID retained; desktop keeps its original sidebar.",
       "group": "Gameplay"
     },
     {
       "id": "game-inspector-4",
-      "title": "Inspector \u00b7 information",
-      "description": "Building information in the adapted panel.",
+      "title": "Inspector \u00b7 information \u00b7 unified replacement",
+      "description": "Replaced by the unified contextual inspector on touch. Stable feedback ID retained; desktop keeps its original sidebar.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-production",
+      "title": "Inspector \u00b7 production",
+      "description": "A real swarm selected to review production ratios and shared allocation controls.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-enemy",
+      "title": "Inspector \u00b7 enemy",
+      "description": "An opposing colony building; the touch inspector is read-only.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-damaged",
+      "title": "Inspector \u00b7 damaged building",
+      "description": "The selected building has half health in this explicit repair fixture.",
       "group": "Gameplay"
     },
     {
       "id": "game-pause",
       "title": "Game menu",
-      "description": "All in-game menu actions, including dialog text scaling.",
+      "description": "Session actions only; tactical tools and text size have separate destinations.",
       "group": "Gameplay"
     },
     {
       "id": "game-options",
       "title": "In-game options",
-      "description": "Sound, speed and runtime options.",
+      "description": "Sound, speed, runtime options, and dialog text size.",
       "group": "Gameplay"
     },
     {
       "id": "game-alliances",
       "title": "Alliances",
-      "description": "Alliance dialog using the bundled map teams.",
+      "description": "Three named players with editable alliance, vision, and chat controls.",
       "group": "Gameplay"
     },
     {
       "id": "game-objectives",
       "title": "Objectives & hints",
-      "description": "Generic match fixture without authored objectives.",
+      "description": "Primary and secondary objectives with completed and pending states.",
       "group": "Gameplay"
     },
     {
       "id": "game-briefing",
       "title": "Mission briefing",
-      "description": "Generic match fixture without authored briefing text.",
+      "description": "Authored fixture briefing explaining the colony mission.",
       "group": "Gameplay"
     },
     {
@@ -312,13 +330,13 @@
     {
       "id": "game-results",
       "title": "End-game statistics",
-      "description": "Results UI over a newly loaded fixture; no match history has accumulated.",
+      "description": "Simulation-generated history for three colonies; metric dropdown and team filters.",
       "group": "Gameplay"
     },
     {
       "id": "replay-menu",
       "title": "Replay menu",
-      "description": "Production replay variant of the pause menu; no playback is running.",
+      "description": "Replay session actions using a recorded and loaded match fixture.",
       "group": "Gameplay"
     },
     {
@@ -330,13 +348,49 @@
     {
       "id": "new-map",
       "title": "Create map",
-      "description": "Generator configuration form.",
+      "description": "Blank terrain canvas with visual preview, starting terrain and secondary size controls.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "new-map-generated",
+      "title": "Create generated map",
+      "description": "Selected landscape preview with parameters kept secondary.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "new-map-parameters",
+      "title": "Map generation parameters",
+      "description": "Scrollable generation controls bounded above the pinned creation actions.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "editor-landscapes",
+      "title": "Choose editor landscape",
+      "description": "Shared visual landscape browser with populated generated terrain previews.",
       "group": "Map & campaign editor"
     },
     {
       "id": "load-map",
       "title": "Choose map",
       "description": "Bundled map chooser.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "campaign-editor-maps",
+      "title": "Campaign editor \u00b7 mission list",
+      "description": "Populated campaign mission list with overflow for finger scrolling.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "campaign-map-unlocking",
+      "title": "Campaign mission \u00b7 prerequisites",
+      "description": "Unlocking controls and populated prerequisite list.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "campaign-description-editing",
+      "title": "Campaign mission \u00b7 editing description",
+      "description": "Native multiline description canvas after a touch tap. Native operating-system keyboard is not captured by the host renderer.",
       "group": "Map & campaign editor"
     },
     {
@@ -370,6 +424,18 @@
       "group": "Map & campaign editor"
     },
     {
+      "id": "editor-area-name-keyboard",
+      "title": "Editor area name · keyboard clearance",
+      "description": "Simulated 120-point usable height; no OS keyboard is rendered. Actual Android/iOS keyboard testing is still required.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "editor-area-name",
+      "title": "Editor area name",
+      "description": "Bounded child dialog for naming script areas.",
+      "group": "Map & campaign editor"
+    },
+    {
       "id": "editor-teams",
       "title": "Map editor \u00b7 teams",
       "description": "Team settings overlay.",
@@ -379,6 +445,12 @@
       "id": "editor-script",
       "title": "Map editor \u00b7 script",
       "description": "Script editor overview, including objectives, briefing and hints.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "editor-script-keyboard",
+      "title": "Script editor \u00b7 keyboard clearance",
+      "description": "Touch workspace with a simulated keyboard inset leaving 160 points of usable height. No OS keyboard is rendered; desktop shows its normal workspace. Actual Android/iOS keyboard behavior still requires device testing.",
       "group": "Map & campaign editor"
     },
     {
@@ -527,6 +599,72 @@
       "description": "Exact unit and radius values; radius zero retains its Default meaning.",
       "group": "Settings",
       "availability": "phone"
+    },
+    {
+      "id": "game-zone-paint",
+      "title": "Zone painting",
+      "description": "Zone brush mode with Paint/Erase and Done; completed strokes remain applied.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-tactical-tools",
+      "title": "Tactical tools",
+      "description": "Map overlays, allied markers, statistics and message history, separate from session actions.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "replay-controls",
+      "title": "Replay playback controls",
+      "description": "Playback speed, pause, viewing team, fog, flags and zones using the recorded-match fixture.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-results-filters",
+      "title": "Results \u00b7 team filters",
+      "description": "Open team controls over the chart on phones; persistent filters on larger layouts.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "game-results-value",
+      "title": "Results \u00b7 value inspection",
+      "description": "Populated historical curve with a selected time/value.",
+      "group": "Gameplay"
+    },
+    {
+      "id": "editor-palette-resources",
+      "title": "Editor \u00b7 resource palette",
+      "group": "Map & campaign editor",
+      "description": "Persistent resource choices beside the editable map; select a resource and paint a completed stroke."
+    },
+    {
+      "id": "editor-inspector-building",
+      "title": "Editor \u00b7 selected building",
+      "description": "Existing building identity and grouped editable properties.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "editor-inspector-unit",
+      "title": "Editor \u00b7 selected unit",
+      "description": "Existing unit identity and grouped editable properties.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "editor-brush-choices",
+      "title": "Editor \u00b7 brush choices",
+      "description": "Visual brush mask choices above the persistent palette. Desktop shows its existing brush selector.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "editor-script-load",
+      "title": "Script editor \u00b7 load file",
+      "description": "Child script file dialog using the same persistence model and explicit touch file view.",
+      "group": "Map & campaign editor"
+    },
+    {
+      "id": "editor-script-save",
+      "title": "Script editor \u00b7 save file",
+      "description": "Child script file dialog using the same persistence model and explicit touch file view.",
+      "group": "Map & campaign editor"
     }
   ],
   "gaps": [
@@ -544,7 +682,7 @@
     },
     {
       "title": "Additional state variants",
-      "reason": "This covers named views, not every permutation: alternate building/flag types, populated message history, replay HUD, script file dialogs, additional dropdowns and intermediate scroll positions remain to be captured."
+      "reason": "This covers named views, not every permutation: alternate building/flag types, populated message history, additional dropdowns and intermediate scroll positions remain to be captured."
     },
     {
       "title": "Presentation modes",

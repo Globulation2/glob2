@@ -129,6 +129,19 @@ function compare() {
     button.append(image);
     stage.append(button);
     figure.append(caption, stage);
+    const stroke = ["game-zone-paint", "editor-palette-terrain", "editor-palette-resources"].includes(current.id);
+    const recordingPath = current.id.startsWith("editor-") ?
+      (stroke ? data.editorStrokeRecordings?.[id] : ["editor-map", "editor-tools"].includes(current.id) ? data.editorRecordings?.[id] : null) :
+      stroke ? data.strokeRecordings?.[id] :
+      ["game-build", "game-placement"].includes(current.id) ? data.recordings?.[id] : null;
+    if (recordingPath) {
+      const recording = document.createElement("a");
+      recording.href = recordingPath;
+      recording.target = "_blank";
+      recording.rel = "noopener";
+      recording.textContent = `Watch ${stroke ? "paint stroke" : "drag placement"} · native SDL input recording`;
+      figure.append(recording);
+    }
     holder.append(figure);
   }
 }
@@ -229,7 +242,7 @@ for (const message of [
   `Source commit: ${data.commit}${data.dirty ? " (working tree changes included)" : ""}`,
   `Captured: ${data.generated}`,
   "These are real production screens with offline review fixtures. Screenshots preserve layout flaws. They do not establish Android/iOS device behavior, touch feel, safe areas, or onscreen-keyboard behavior.",
-  "Every size uses a fresh profile. Map, campaign and editor screens use bundled content; gameplay is paused fixture state. Blank objectives and offline lists are intentional. Tutorial, chat and generic message text are illustrative fixture content. Desktop-only settings are explicitly omitted from phone/tablet captures. Phone/tablet views use Compact mode. Desktop views use mouse controls at their native logical resolution. Mobile drawers and inspector tabs may share the same desktop sidebar; repeated desktop images in those views are intentional. Frontend tablets use the shared spacious composition when space permits.",
+  "Each viewport uses a fresh profile. Gameplay uses a seeded, populated match with objectives and recorded history. Inspector replacement IDs preserve earlier feedback. Tablet Automatic/Spacious touch views and desktop mouse views are labeled separately. Building recordings dispatch SDL pointer events through production controls; they are native-host demonstrations, not physical-device recordings. Real keyboards, device safe areas, and play comfort still require Android/iOS validation.",
 ]) {
   const p = document.createElement("p");
   p.textContent = message;

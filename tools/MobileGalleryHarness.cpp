@@ -14,6 +14,7 @@
 #include "EditorMainMenu.h"
 #include "NewMapScreen.h"
 #include "ChooseMapScreen.h"
+#include "GUIGlob2FileList.h"
 #include "CreditScreen.h"
 #include "LANMenuScreen.h"
 #include "LANFindScreen.h"
@@ -38,6 +39,11 @@
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
 #include "EndGameScreen.h"
+#include "ReplayWriter.h"
+#include "ReplayReader.h"
+#include "Utilities.h"
+#include "Order.h"
+#include "Unit.h"
 // Both legacy headers define these macros; neither definition is used by this tool.
 #undef RIGHT_MENU_WIDTH
 #undef RIGHT_MENU_OFFSET
@@ -106,12 +112,131 @@ struct MobileGallerySetup
 	static void run()
 	{
 		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		if (SDL_getenv("GLOB2_GALLERY_EDITOR_ONLY"))
+		{
+			stack.push(std::make_unique<MainMenuScreen>());
+			frame(stack);
+			screenShot(stack, "editor-menu", std::make_unique<EditorMainMenu>(stack));
+			captureMapCreation(stack);
+			captureMapLibrary(stack);
+			captureCampaigns(stack);
+			return;
+		}
 		captureMenus(stack);
 		captureSettings(stack);
 		captureLobby(stack);
 	}
 
   private:
+	static void captureCampaigns(GAGGUI::ScreenStack &stack)
+	{
+		auto owned = std::make_unique<CampaignEditor>("campaigns/Tutorial_Campaign.txt", stack);
+		auto *editor = owned.get();
+		// Extra missions make list navigation and prerequisite overflow visible.
+		for (int i = 0; i < 10; ++i)
+		{
+			const auto name = "Frontier mission " + std::to_string(i + 1);
+			CampaignMapEntry extra(name, "maps/balanced.map");
+			editor->campaign.appendMap(extra);
+			editor->mapList->addText(name);
+		}
+		stack.push(std::move(owned));
+		frame(stack);
+		stackShot(stack, "campaign-editor");
+		editor->onAction(editor->mapsTab, BUTTON_RELEASED, 101, 0);
+		stackShot(stack, "campaign-editor-maps");
+		Campaign campaign = editor->campaign;
+		editor->endExecute(CampaignEditor::CANCEL);
+		frame(stack);
+		if (!campaign.getMapCount())
+			return;
+		auto &entry = campaign.getMap(0);
+		entry.setDescription(
+			"Guide your colony into the frontier.\n\nPlace an inn, assign workers, and gather "
+			"enough food for your first expansion.\n\nKeep the village supplied while scouts find "
+			"a safe route to the next valley.");
+		entry.getUnlockedByMaps().push_back(campaign.getMap(1).getMapName());
+		auto mission = std::make_unique<CampaignMapEntryEditor>(campaign, entry);
+		auto *view = mission.get();
+		stack.push(std::move(mission));
+		frame(stack);
+		stackShot(stack, "campaign-map-entry");
+		view->onAction(view->unlockTab, BUTTON_RELEASED, 101, 0);
+		stackShot(stack, "campaign-map-unlocking");
+		view->onAction(view->detailsTab, BUTTON_RELEASED, 100, 0);
+		frame(stack);
+		if (!desktopPresentation)
+		{
+			const auto bounds = view->descriptionEditor->getScreenRect();
+			const int x = bounds.x, y = bounds.y;
+			SDL_Event down{};
+			down.type = SDL_FINGERDOWN;
+			down.tfinger.fingerId = 1;
+			down.tfinger.x = float(x + 12) / globalContainer->gfx->getW();
+			down.tfinger.y = float(y + 12) / globalContainer->gfx->getH();
+			auto up = down;
+			up.type = SDL_FINGERUP;
+			stack.frame(tick += frameMilliseconds, {down, up});
+		}
+		stackShot(stack, "campaign-description-editing");
+		SDL_StopTextInput();
+		view->endExecute(CampaignMapEntryEditor::CANCEL);
+		frame(stack);
+	}
+
+	static void captureMapLibrary(GAGGUI::ScreenStack &stack)
+	{
+		auto chooser = std::make_unique<ChooseMapScreen>("maps", "map", true);
+		auto *screen = chooser.get();
+		stack.push(std::move(chooser));
+		frame(stack);
+		if (screen->fileList->getCount() > 0)
+		{
+			int index = 0;
+			for (unsigned i = 0; i < screen->fileList->getCount(); ++i)
+				if (screen->fileList->getText(i) == "balanced")
+					index = int(i);
+			screen->fileList->setSelectionIndex(index);
+			screen->onAction(screen->fileList, LIST_ELEMENT_SELECTED, index, 0);
+		}
+		stackShot(stack, "load-map");
+		screen->endExecute(ChooseMapScreen::CANCEL);
+		frame(stack);
+	}
+	static void captureMapCreation(GAGGUI::ScreenStack &stack)
+	{
+		auto blank = std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &stack);
+		blank->descriptor.setMethodDefaults(GenerationRequest::eUNIFORM);
+		blank->updateControls();
+		screenShot(stack, "new-map", std::move(blank));
+		auto screen = std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &stack);
+		auto *creation = screen.get();
+		creation->descriptor.setMethodDefaults(GenerationRequest::eRIVER);
+		creation->updateControls();
+		stack.push(std::move(screen));
+		frame(stack);
+		frame(stack);
+		stackShot(stack, "new-map-generated");
+		creation->parameters = true;
+		stackShot(stack, "new-map-parameters");
+		creation->parameters = false;
+		auto *picker = creation->chooseLandscape();
+		frame(stack);
+		const auto started = SDL_GetTicks();
+		do
+		{
+			frame(stack);
+			SDL_Delay(16);
+		} while (!picker->presentationSettled() && SDL_GetTicks() - started < 45000);
+		if (!picker->presentationSettled())
+			throw std::runtime_error("Editor landscape previews did not settle");
+		stackShot(stack, "editor-landscapes");
+		picker->endExecute(LandscapePickerScreen::CANCEL);
+		frame(stack);
+		creation->endExecute(NewMapScreen::CANCEL);
+		frame(stack);
+	}
+
 	static void captureMenus(GAGGUI::ScreenStack &stack)
 	{
 		// Keep a real menu beneath modal screens, matching the application's theme lifecycle.
@@ -131,17 +256,11 @@ struct MobileGallerySetup
 		screenShot(stack, "campaign-saves", std::make_unique<CampaignSelectorScreen>(true));
 		screenShot(stack, "tutorial-missions",
 				   std::make_unique<CampaignMenuScreen>("campaigns/Tutorial_Campaign.txt", stack));
-		screenShot(stack, "campaign-editor",
-				   std::make_unique<CampaignEditor>("campaigns/Tutorial_Campaign.txt", stack));
-		Campaign campaign;
-		campaign.load("campaigns/Tutorial_Campaign.txt");
-		if (campaign.getMapCount())
-			screenShot(stack, "campaign-map-entry",
-					   std::make_unique<CampaignMapEntryEditor>(campaign, campaign.getMap(0)));
+		captureCampaigns(stack);
 		screenShot(stack, "editor-menu", std::make_unique<EditorMainMenu>(stack));
-		screenShot(stack, "new-map", std::make_unique<NewMapScreen>());
+		captureMapCreation(stack);
 		screenShot(stack, "load-game", std::make_unique<ChooseMapScreen>("games", "game", true));
-		screenShot(stack, "load-map", std::make_unique<ChooseMapScreen>("maps", "map", true));
+		captureMapLibrary(stack);
 		screenShot(stack, "load-replay",
 				   std::make_unique<ChooseMapScreen>("replays", "replay", true));
 		screenShot(stack, "credits", std::make_unique<CreditScreen>());
@@ -376,14 +495,21 @@ struct MobileGallerySetup
 	}
 };
 // Gameplay/editor fixtures select otherwise hard-to-reach panels directly.
-// They never advance simulation, submit saves, or execute queued game orders.
+// Gameplay advances a deterministic match to populate history and exports a replay
+// into the disposable profile. It never submits chat or writes personal saves.
 class MobileGalleryGameplay
 {
   public:
 	static void run()
 	{
+		if (SDL_getenv("GLOB2_GALLERY_EDITOR_ONLY"))
+		{
+			captureEditor();
+			return;
+		}
 		captureGame();
-		captureEditor();
+		if (!SDL_getenv("GLOB2_GALLERY_GAME_ONLY"))
+			captureEditor();
 	}
 
   private:
@@ -392,18 +518,49 @@ class MobileGalleryGameplay
 		auto *gfx = globalContainer->gfx;
 		gfx->setResponsiveViewport(true, 800, 600);
 		// Use bundled content, so the tool does not depend on personal saves.
+		setSyncRandSeed(0x474c4f42);
 		GameGUI gui;
 		auto map = Engine::loadMapHeader("maps/balanced.map");
 		GameHeader players;
-		players.setNumberOfPlayers(1);
-		players.getBasePlayer(0) = BasePlayer(0, "Review colony", 0, BasePlayer::P_LOCAL);
+		players.setNumberOfPlayers(3);
+		players.setAllyTeamsFixed(false);
+		players.setRandomSeed(0x474c4f42);
+		players.getBasePlayer(0) = BasePlayer(0, "Amber colony", 0, BasePlayer::P_LOCAL);
+		players.getBasePlayer(1) = BasePlayer(1, "Violet colony", 1, BasePlayer::P_LOCAL);
+		players.getBasePlayer(2) = BasePlayer(2, "Jade colony", 2, BasePlayer::P_LOCAL);
 		if (!gui.loadFromHeaders(map, players, true, true))
 			throw std::runtime_error("Map fixture failed");
 		gui.localTeamNo = 0;
 		gui.localPlayer = 0;
 		gui.adjustLocalTeam();
+		// Real simulation history avoids misleading empty chart captures. Each
+		// viewport starts from the same bundled map and executes the same ticks.
+		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
+		globalContainer->replayWriter->init("", gui);
+		for (int tick = 0; tick < 4096; ++tick)
+		{
+			gui.game.syncStep(0);
+			globalContainer->replayWriter->advanceStep();
+		}
+		globalContainer->replayWriter->finish();
+		if (!globalContainer->replayWriter->write("replays/gallery-match.replay"))
+			throw std::runtime_error("Replay fixture write failed");
+		gui.game.missionBriefing =
+			"Establish a sustainable colony, then secure the northern crossing. Coordinate with "
+			"Violet while protecting the food supply.";
+		gui.game.objectives.addNewObjective("Establish an inn", false, true, false,
+											GameObjectives::Primary, 1);
+		gui.game.objectives.addNewObjective("Secure the northern crossing", false, false, false,
+											GameObjectives::Primary, 2);
+		gui.game.objectives.addNewObjective("Explore the eastern island", false, false, false,
+											GameObjectives::Secondary, 3);
 		gui.game.map.setMapDiscovered();
-		gui.viewportX = gui.viewportY = 0;
+		gui.updateCamera();
+		gui.viewportX =
+			(gui.localTeam->startPosX - int(gui.camera.visibleW() / 64)) & gui.game.map.getMaskW();
+		gui.viewportY =
+			(gui.localTeam->startPosY - int(gui.camera.visibleH() / 64)) & gui.game.map.getMaskH();
+		gui.updateCamera();
 		auto capture = [&](const std::string &name)
 		{
 			queueShot(name);
@@ -413,6 +570,7 @@ class MobileGalleryGameplay
 		gui.clearSelection();
 		gui.touch->panelOpen = false;
 		capture("game-map");
+		std::cout << "FIXTURE_CHECKSUM " << gui.game.checkSum() << std::endl;
 		gui.scriptText = "Build an inn to feed your workers. Select Build, choose an inn, then "
 						 "place it beside your colony. Confirm the preview to begin construction.";
 		capture("game-tutorial");
@@ -426,15 +584,47 @@ class MobileGalleryGameplay
 		gui.displayMode = GameGUI::FLAG_VIEW;
 		gui.touch->panelScroll = 0;
 		capture("game-flags");
+		gui.setSelection(GameGUI::BRUSH_SELECTION);
+		gui.brush.defaultSelection();
+		gui.toolManager.activateZoneTool(GameGUIToolManager::ZoneType(1));
+		gui.touch->panelOpen = false;
+		if (!desktopPresentation)
+		{
+			// Capture a real, unfinished paint gesture. Cancelling afterwards
+			// keeps later comparison states identical and emits no zone orders.
+			for (int step = 0; step <= 8; ++step)
+			{
+				SDL_Event event{};
+				event.type = step ? SDL_FINGERMOTION : SDL_FINGERDOWN;
+				event.tfinger.touchId = 8;
+				event.tfinger.fingerId = 1;
+				event.tfinger.x = .20f + step * .035f;
+				event.tfinger.y = .50f + std::sin(step * .4f) * .08f;
+				gui.processEvent(&event);
+				capture("gesture-zone-0" + std::to_string(step));
+			}
+		}
+		capture("game-zone-paint");
+		gui.touch->cancel();
+		gui.clearSelection();
+		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+		gui.touch->panelOpen = true;
+		capture("game-tactical-tools");
+		gui.displayMode = GameGUI::FLAG_VIEW;
 		gui.touch->panelOpen = false;
 		gui.setSelection(GameGUI::TOOL_SELECTION, const_cast<char *>("inn"));
-		gui.touch->preview = GAGCore::ViewPoint{192, 192};
+		const auto mapBounds = gui.touch->worldBounds();
+		const GAGCore::ViewPoint previewPoint{mapBounds.x + mapBounds.w / 3,
+											  mapBounds.y + mapBounds.h / 2};
+		gui.touch->preview =
+			GAGCore::ViewPoint{double(gui.mapMouseX(previewPoint.x) + gui.viewportX * 32),
+							   double(gui.mapMouseY(previewPoint.y) + gui.viewportY * 32)};
 		gui.touch->previewType = "inn";
 		// Desktop previews follow the pointer rather than the touch confirmation UI.
 		if (desktopPresentation)
 		{
-			gui.mouseX = 192;
-			gui.mouseY = 192;
+			gui.mouseX = int(previewPoint.x);
+			gui.mouseY = int(previewPoint.y);
 		}
 		capture("game-placement");
 		gui.touch->cancel();
@@ -450,18 +640,45 @@ class MobileGalleryGameplay
 		{
 			gui.setSelection(GameGUI::BUILDING_SELECTION, building);
 			gui.touch->panelOpen = true;
-			for (int i : gui.touch->allocationTabs())
+			// Stable review IDs now compare the same unified inspector.
+			for (int i : {0, 1, 3, 4})
 			{
-				gui.touch->allocationTab = i;
 				capture("game-inspector-" + std::to_string(i));
 			}
 		}
+		auto inspect = [&](const std::string &name, Building *selected)
+		{
+			if (!selected)
+				throw std::runtime_error("Missing inspector fixture: " + name);
+			gui.setSelection(GameGUI::BUILDING_SELECTION, selected);
+			gui.touch->panelOpen = true;
+			gui.touch->actionScroll = 0;
+			capture(name);
+		};
+		Building *production = nullptr;
+		Building *enemy = nullptr;
+		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		{
+			auto *own = gui.localTeam->myBuildings[i];
+			if (own && own->type->unitProductionTime)
+				production = own;
+			if (gui.game.teams[1]->myBuildings[i])
+				enemy = gui.game.teams[1]->myBuildings[i];
+		}
+		inspect("game-inspector-production", production);
+		inspect("game-inspector-enemy", enemy);
+		const int hp = building->hp;
+		building->hp = std::max(1, hp / 2);
+		inspect("game-inspector-damaged", building);
+		building->hp = hp;
 		gui.clearSelection();
 		gui.touch->panelOpen = false;
 		auto dialog = [&](const std::string &name, GameGUI::InGameMenu mode,
 						  std::unique_ptr<GAGGUI::OverlayScreen> screen)
 		{
 			gui.inGameMenu = mode;
+			if (mode == GameGUI::IGM_OBJECTIVES)
+				gui.touch->objectivePage = name == "game-briefing" ? 0 : 1;
 			gui.gameMenuScreen = std::move(screen);
 			gui.touch->dialogScroll = 0;
 			capture(name);
@@ -482,9 +699,24 @@ class MobileGalleryGameplay
 		dialog("game-load", GameGUI::IGM_LOAD,
 			   std::make_unique<LoadSaveScreen>("games", "game", true, "Load game", "",
 												glob2FilenameToName, glob2NameToFilename));
+		gui.localTeam->hasWon = true;
 		dialog("game-victory", GameGUI::IGM_END_OF_GAME,
 			   std::make_unique<InGameEndOfGameScreen>("Victory", true));
+		gui.localTeam->hasWon = false;
+		globalContainer->replayReader = std::make_unique<ReplayReader>();
+		if (!globalContainer->replayReader->loadReplay("replays/gallery-match.replay"))
+			throw std::runtime_error("Replay fixture read failed");
+		for (int tick = 0; tick < 4096; ++tick)
+			globalContainer->replayReader->advanceStep();
+		globalContainer->replaying = true;
+		globalContainer->replayVisibleTeams = gui.localTeam->me;
 		dialog("replay-menu", GameGUI::IGM_MAIN, std::make_unique<InGameMainScreen>(true));
+		gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+		gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+		gui.touch->panelOpen = true;
+		capture("replay-controls");
+		gui.touch->panelOpen = false;
+		globalContainer->replaying = false;
 		gui.typingInputScreen = new InGameTextInput(gfx);
 		gui.typingInputScreen->setText("Meet at the northern crossing.");
 		// Desktop normally animates this panel into view over several frames.
@@ -493,9 +725,101 @@ class MobileGalleryGameplay
 		capture("game-chat");
 		delete gui.typingInputScreen;
 		gui.typingInputScreen = nullptr;
+		if (!desktopPresentation)
 		{
+			// Record actual SDL pointer dispatch through production placement.
+			// This is native-host evidence, not a claim of physical-device input.
+			gui.clearSelection();
+			gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+			gui.touch->panelOpen = true;
+			gui.touch->panelScroll = 0;
+			gui.updateCamera();
+			const auto bounds = gui.touch->worldBounds(), palette = gui.touch->layout().panel;
+			const double unit = gfx->logicalUnitsPerPoint();
+			std::optional<GAGCore::ViewPoint> drop;
+			const auto *type = globalContainer->buildingsTypes.get(
+				globalContainer->buildingsTypes.getPlaceableTypeNum("inn"));
+			for (double y = bounds.y + 104 * unit; y < bounds.y + bounds.h - 8 * unit && !drop;
+				 y += 16 * unit)
+				for (double x = bounds.x + 32 * unit; x < bounds.x + bounds.w - 16 * unit && !drop;
+					 x += 16 * unit)
+				{
+					const GAGCore::ViewPoint p{x, y};
+					if (palette.contains(p) || gui.touch->minimapRect().contains(p))
+						continue;
+					int mx, my;
+					gui.game.map.cursorToBuildingPos(gui.mapMouseX(x), gui.mapMouseY(y - 48 * unit),
+													 type->width, type->height, &mx, &my,
+													 gui.viewportX, gui.viewportY);
+					if (gui.game.checkHardRoomForBuilding(mx, my, type, &mx, &my))
+						drop = p;
+				}
+			if (!drop)
+				throw std::runtime_error("No visible construction site for gesture fixture");
+			const auto index =
+				std::find(gui.buildingsChoiceName.begin(), gui.buildingsChoiceName.end(), "inn") -
+				gui.buildingsChoiceName.begin();
+			const auto icon = gui.touch->paletteItemRect(index);
+			const GAGCore::ViewPoint start{icon.x + icon.w / 2, icon.y + icon.h / 2};
+			auto pointer = [&](Uint32 eventType, GAGCore::ViewPoint p)
+			{
+				SDL_Event event{};
+				event.type = eventType;
+				event.tfinger.touchId = 19;
+				event.tfinger.fingerId = 1;
+				event.tfinger.x = p.x / gfx->getW();
+				event.tfinger.y = p.y / gfx->getH();
+				gui.processEvent(&event);
+			};
+			pointer(SDL_FINGERDOWN, start);
+			for (int frame = 0; frame < 12; ++frame)
+			{
+				const double progress = frame / 11.0;
+				const GAGCore::ViewPoint p{start.x + (drop->x - start.x) * progress,
+										   start.y + (drop->y - start.y) * progress};
+				if (frame)
+					pointer(SDL_FINGERMOTION, p);
+				const auto name =
+					std::string("gesture-build-") + (frame < 10 ? "0" : "") + std::to_string(frame);
+				queueShot(name);
+				gui.drawAll(0);
+				gfx->drawCircle(int(p.x), int(p.y), int(10 * unit), GAGCore::Color(255, 220, 100));
+				gfx->nextFrame();
+			}
+			pointer(SDL_FINGERUP, *drop);
+			auto order = std::dynamic_pointer_cast<OrderCreate>(gui.toolManager.getOrder());
+			if (!order || gui.toolManager.getOrder())
+				throw std::runtime_error(
+					"Gesture fixture did not produce exactly one construction order");
+			capture("gesture-build-12");
+			gui.ghostManager.removeBuilding(order->posX, order->posY);
+			gui.clearSelection();
+			gui.touch->panelOpen = false;
+		}
+		{
+			class ResultsFixture : public EndGameScreen
+			{
+			  public:
+				using EndGameScreen::EndGameScreen;
+				void showFilters() { teamFiltersOpen = true; }
+				void inspectValue()
+				{
+					teamFiltersOpen = false;
+					statWidget->inspectScreenPoint(globalContainer->gfx->getW() / 2,
+												   globalContainer->gfx->getH() / 2);
+				}
+			};
 			GAGGUI::ScreenStack stack(*gfx);
-			screenShot(stack, "game-results", std::make_unique<EndGameScreen>(&gui));
+			auto results = std::make_unique<ResultsFixture>(&gui);
+			auto *view = results.get();
+			stack.push(std::move(results));
+			stackShot(stack, "game-results");
+			view->showFilters();
+			stackShot(stack, "game-results-filters");
+			view->inspectValue();
+			stackShot(stack, "game-results-value");
+			view->endExecute(0);
+			frame(stack);
 		}
 	}
 
@@ -506,6 +830,17 @@ class MobileGalleryGameplay
 		MapEdit editor;
 		if (!editor.load("maps/balanced.map"))
 			throw std::runtime_error("Editor fixture failed");
+		// Populated editable content distinguishes real text canvases from
+		// empty placeholders. These fixtures are never saved to user maps.
+		editor.game.missionBriefing = "Restore the valley\n\nBuild a sustainable colony near the "
+									  "river.\nKeep a route open to the northern grove.";
+		editor.game.objectives.addNewObjective("Establish a colony beside the river.", false, false,
+											   false, GameObjectives::Primary, 1);
+		editor.game.gameHints.addNewHint("Paint a narrow crossing through the shallows.\nLeave "
+										 "room for workers to reach the trees.",
+										 false, 1);
+		editor.game.sgslScript.sourceCode =
+			"# Valley introduction\nGuiDisable(AllianceScreen)\nGuiDisable(FlagTab)\n";
 		editor.beginEditing();
 		if (bool(editor.phone) == desktopPresentation)
 			throw std::runtime_error("Unexpected editor presentation");
@@ -530,6 +865,172 @@ class MobileGalleryGameplay
 				editor.phone->offset = 0;
 			editCapture(std::string("editor-palette-") + category);
 		}
+		if (editor.phone)
+		{
+			auto &phone = *editor.phone;
+			auto *gfx = globalContainer->gfx;
+			const double unit = gfx->logicalUnitsPerPoint();
+			auto pointer = [&](Uint32 kind, GAGCore::ViewPoint p)
+			{
+				SDL_Event event{};
+				event.type = kind;
+				event.tfinger.touchId = 27;
+				event.tfinger.fingerId = 1;
+				event.tfinger.x = p.x / gfx->getW();
+				event.tfinger.y = p.y / gfx->getH();
+				editor.advanceEditing({event}, 0);
+			};
+			phone.chooseMode(2);
+			phone.prepare();
+			editor.updateCamera();
+			const auto icon = phone.rows.at(1).rect; // inn, stable production palette order
+			const GAGCore::ViewPoint from{icon.x + icon.w / 2, icon.y + icon.h / 2};
+			std::optional<GAGCore::ViewPoint> drop;
+			const auto *type = globalContainer->buildingsTypes.get(
+				globalContainer->buildingsTypes.getTypeNum("inn", 0, false));
+			// Bring an existing legal footprint into the map window. A fixed
+			// camera can open over sea at narrow aspect ratios.
+			bool room = false;
+			for (int y = 0; y < editor.game.map.getH() && !room; ++y)
+				for (int x = 0; x < editor.game.map.getW(); ++x)
+				{
+					int tx, ty;
+					if (editor.game.checkRoomForBuilding(x, y, type, &tx, &ty, editor.team, false))
+					{
+						int dx, dy;
+						editor.game.map.cursorToBuildingPos(
+							editor.mapMouseX(phone.content.x + phone.content.w / 2),
+							editor.mapMouseY(phone.content.y + phone.content.h / 2 - 40 * unit),
+							type->width, type->height, &dx, &dy, 0, 0);
+						editor.viewportX = (x - dx) & editor.game.map.wMask;
+						editor.viewportY = (y - dy) & editor.game.map.hMask;
+						room = true;
+						break;
+					}
+				}
+			if (!room)
+				throw std::runtime_error("No legal editor building footprint");
+			editor.updateCamera();
+			const GAGCore::ViewPoint centered{phone.content.x + phone.content.w / 2,
+											  phone.content.y + phone.content.h / 2};
+			int cx, cy, tx, ty;
+			editor.game.map.cursorToBuildingPos(
+				editor.mapMouseX(centered.x), editor.mapMouseY(centered.y - 40 * unit), type->width,
+				type->height, &cx, &cy, editor.viewportX, editor.viewportY);
+			if (editor.game.checkRoomForBuilding(cx, cy, type, &tx, &ty, editor.team, false))
+				drop = centered;
+			for (double y = phone.content.y + 48 * unit;
+				 y < phone.content.y + phone.content.h - 8 * unit && !drop; y += 12 * unit)
+				for (double x = phone.content.x + 24 * unit;
+					 x < phone.content.x + phone.content.w - 16 * unit && !drop; x += 12 * unit)
+				{
+					int mx, my, tx, ty;
+					editor.game.map.cursorToBuildingPos(
+						editor.mapMouseX(x), editor.mapMouseY(y - 40 * unit), type->width,
+						type->height, &mx, &my, editor.viewportX, editor.viewportY);
+					if (editor.game.checkRoomForBuilding(mx, my, type, &tx, &ty, editor.team,
+														 false))
+						drop = GAGCore::ViewPoint{x, y};
+				}
+			if (!drop)
+				throw std::runtime_error("No editor drag fixture site");
+			auto buildingCount = [&]
+			{
+				int count = 0;
+				for (int team = 0; team < editor.game.teamsCount(); ++team)
+					for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+						count += editor.game.teams[team]->myBuildings[slot] != nullptr;
+				return count;
+			};
+			const int beforeDrop = buildingCount();
+			pointer(SDL_FINGERDOWN, from);
+			for (int frame = 0; frame < 12; ++frame)
+			{
+				const double t = frame / 11.;
+				pointer(SDL_FINGERMOTION,
+						{from.x + (drop->x - from.x) * t, from.y + (drop->y - from.y) * t});
+				editCapture("gesture-editor-build-" + std::to_string(10 + frame));
+			}
+			pointer(SDL_FINGERUP, *drop);
+			if (buildingCount() != beforeDrop + 1)
+				throw std::runtime_error(
+					"Editor gesture recording did not place exactly one building");
+			editCapture("gesture-editor-build-22");
+			phone.chooseMode(0);
+			editor.performAction("select water");
+			phone.prepare();
+			const GAGCore::ViewPoint a{phone.content.x + phone.content.w * .3,
+									   phone.content.y + phone.content.h * .55};
+			const auto beforePaint = editor.game.checkSum(nullptr, nullptr, nullptr, true);
+			pointer(SDL_FINGERDOWN, a);
+			GAGCore::ViewPoint b = a;
+			for (int frame = 0; frame < 12; ++frame)
+			{
+				b = {a.x + phone.content.w * .3 * frame / 11., a.y};
+				pointer(SDL_FINGERMOTION, b);
+				editCapture("gesture-editor-paint-" + std::to_string(10 + frame));
+			}
+			pointer(SDL_FINGERUP, b);
+			if (editor.game.checkSum(nullptr, nullptr, nullptr, true) == beforePaint)
+				throw std::runtime_error("Editor paint recording did not change terrain");
+			editCapture("gesture-editor-paint-22");
+			phone.chooseMode(1);
+			editCapture("editor-palette-resources");
+		}
+		else
+		{
+			editor.performAction("switch to terrain view");
+			editCapture("editor-palette-resources");
+		}
+
+		// Existing-object inspection has its own composition, separate from the
+		// placement palette. Build controlled editable examples on legal cells.
+		auto focusObject = [&](int x, int y, const char *action)
+		{
+			editor.viewportX = (x - 3) & editor.game.map.wMask;
+			editor.viewportY = (y - 3) & editor.game.map.hMask;
+			editor.updateCamera();
+			editor.mouseX = int((3 * 32 + 16 - editor.camera.fractionX()) * editor.camera.zoom +
+								editor.camera.offsetX);
+			editor.mouseY = int((3 * 32 + 16 - editor.camera.fractionY()) * editor.camera.zoom +
+								editor.camera.offsetY);
+			editor.performAction(action);
+		};
+		Building *inspectedBuilding = nullptr;
+		const int innType = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
+		for (int y = 0; y < editor.game.map.getH() && !inspectedBuilding; ++y)
+			for (int x = 0; x < editor.game.map.getW() && !inspectedBuilding; ++x)
+				if (editor.game.checkRoomForBuilding(
+						x, y, globalContainer->buildingsTypes.get(innType), 0, false))
+					inspectedBuilding = editor.game.addBuilding(x, y, innType, 0, 1, 0);
+		if (!inspectedBuilding)
+			throw std::runtime_error("No editor inspector building fixture");
+		inspectedBuilding->hp = std::max(1, inspectedBuilding->type->hpMax * 2 / 3);
+		focusObject(inspectedBuilding->posX, inspectedBuilding->posY, "select map building");
+		editCapture("editor-inspector-building");
+		Unit *inspectedUnit = nullptr;
+		for (int y = 0; y < editor.game.map.getH() && !inspectedUnit; ++y)
+			for (int x = 0; x < editor.game.map.getW() && !inspectedUnit; ++x)
+				if (editor.game.map.isFreeForGroundUnit(x, y, false, Team::teamNumberToMask(0)))
+					inspectedUnit = editor.game.addUnit(x, y, 0, WORKER, 0, 0, 0, 0);
+		if (!inspectedUnit)
+			throw std::runtime_error("No editor inspector unit fixture");
+		focusObject(inspectedUnit->posX, inspectedUnit->posY, "select map unit");
+		editCapture("editor-inspector-unit");
+		editor.performAction("switch to terrain view");
+		if (editor.phone)
+			editor.phone->chooseMode(0);
+		editor.performAction("select water");
+		if (editor.phone)
+		{
+			editor.phone->tools = true;
+			editor.phone->prepare();
+			editor.phone->brushOpen = true;
+		}
+		editCapture("editor-brush-choices");
+		if (editor.phone)
+			editor.phone->brushOpen = false;
+
 		if (editor.phone)
 			editor.phone->tools = false;
 		// MapEdit's legacy overlay fields borrow raw pointers. Keep ownership here
@@ -556,6 +1057,16 @@ class MobileGalleryGameplay
 		};
 		withOverlay(std::make_unique<MapEditMenuScreen>(), editor.menuScreen,
 					editor.showingMenuScreen, [&] { editCapture("editor-pause"); });
+		withOverlay(std::make_unique<AskForTextInput>("[Change Area Name]", "Northern passage"), editor.areaName,
+					editor.isShowingAreaName, [&] {
+                        editCapture("editor-area-name");
+                        if(editor.phone) {
+                            auto *gfx=globalContainer->gfx;
+                            editor.drawMap(0,0,gfx->getW(),gfx->getH());
+                            editor.areaName->drawTouchInViewport({0,0,double(gfx->getW()),120*gfx->logicalUnitsPerPoint()});
+                            queueShot("editor-area-name-keyboard");gfx->nextFrame();
+                        } else editCapture("editor-area-name-keyboard");
+                    });
 		withOverlay(std::make_unique<TeamsEditor>(&editor.game), editor.teamsEditor,
 					editor.showingTeamsEditor, [&] { editCapture("editor-teams"); });
 		withOverlay(std::make_unique<ScriptEditorScreen>(&editor.game), editor.scriptEditor,
@@ -563,6 +1074,39 @@ class MobileGalleryGameplay
 					[&]
 					{
 						editCapture("editor-script");
+						for (auto [action, name] :
+							 {std::pair{ScriptEditorScreen::LOAD, "editor-script-load"},
+							  std::pair{ScriptEditorScreen::SAVE, "editor-script-save"}})
+						{
+							editor.scriptEditor->onAction(nullptr, GAGGUI::BUTTON_RELEASED, action,
+														  0);
+							editCapture(name);
+							auto *child =
+								dynamic_cast<LoadSaveScreen *>(editor.scriptEditor->phoneDialog());
+							if (!child)
+								throw std::runtime_error("Missing script file dialog fixture");
+							if (editor.phone)
+								editor.phone->closeOverlay();
+							child->cancelPresentedFile();
+							SDL_Event idle{};
+							editor.scriptEditor->translateAndProcessEvent(&idle);
+						}
+
+						if (editor.phone)
+						{
+							auto *gfx = globalContainer->gfx;
+							const double unit = gfx->logicalUnitsPerPoint();
+							// Host-only clearance fixture: intentionally no fake
+							// OS keyboard. The gallery labels the simulated inset.
+							editor.drawMap(0, 0, gfx->getW(), gfx->getH());
+							editor.scriptEditor->drawTouchInViewport(
+								{0, 0, double(gfx->getW()), 160 * unit}, true);
+							queueShot("editor-script-keyboard");
+							gfx->nextFrame();
+						}
+						else
+							editCapture("editor-script-keyboard");
+
 						for (auto [tab, name] :
 							 {std::pair{ScriptEditorScreen::TAB_OBJECTIVES, "objectives"},
 							  {ScriptEditorScreen::TAB_BRIEFING, "briefing"},
@@ -603,12 +1147,17 @@ int main(int argc, char **argv)
 		return 2;
 	}
 	desktopPresentation = argc == 4 && std::string_view(argv[3]) == "desktop";
-	if (argc == 4 && !desktopPresentation && std::string_view(argv[3]) != "compact")
+	if (argc == 4 && !desktopPresentation && std::string_view(argv[3]) != "compact" &&
+		std::string_view(argv[3]) != "touch-spacious" && std::string_view(argv[3]) != "touch-auto")
 	{
 		std::cerr << "Presentation must be compact or desktop\n";
 		return 2;
 	}
-	SDL_setenv("GLOB2_MOBILE_UI", desktopPresentation ? "0" : "1", 1);
+	SDL_setenv("GLOB2_MOBILE_UI",
+			   desktopPresentation                                            ? "0"
+			   : argc == 4 && std::string_view(argv[3]).starts_with("touch-") ? argv[3]
+																			  : "1",
+			   1);
 	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
 	try
 	{
@@ -634,7 +1183,8 @@ int main(int argc, char **argv)
 		GAGCore::GraphicContext::translateMouseEvent(&resize);
 		{
 			FrontendTheme theme;
-			MobileGallerySetup::run();
+			if (!SDL_getenv("GLOB2_GALLERY_GAME_ONLY"))
+				MobileGallerySetup::run();
 			MobileGalleryGameplay::run();
 		}
 		globals.reset();

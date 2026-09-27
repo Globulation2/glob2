@@ -5,6 +5,8 @@
 #include "LobbyControls.h"
 #include <ScreenStack.h>
 #include <Toolkit.h>
+#include <GUIList.h>
+#include <GUICheckList.h>
 #include <cstdio>
 #include <stdexcept>
 
@@ -70,6 +72,28 @@ SDL_Event finger(Uint32 type, float x, float y, SDL_FingerID id = 1)
 	event.tfinger.y = y / 568;
 	return event;
 }
+// Opt-in list row sizing must affect hit testing as well as pixels. Otherwise
+// roomy touch rows can still select their old, tightly spaced desktop indices.
+void verifyTouchListRows(GAGCore::GraphicContext *gfx)
+{
+    struct ListScreen : GAGGUI::Screen {
+        void onAction(GAGGUI::Widget *,GAGGUI::Action,int,int) override {}
+    } screen;
+    auto *list=new GAGGUI::List(8,8,240,140,ALIGN_LEFT,ALIGN_TOP,"standard");
+    auto *checks=new GAGGUI::CheckList(8,160,240,140,ALIGN_LEFT,ALIGN_TOP,"standard",false);
+    for(const char *value:{"First","Second","Third"}) {list->addText(value);checks->addItem(value,false);}
+    list->setMinimumRowHeight(44);checks->setMinimumRowHeight(44);
+    screen.addWidget(list);screen.addWidget(checks);screen.beginExecution(gfx);screen.drawExecution();
+    SDL_Event click{};click.type=SDL_MOUSEBUTTONDOWN;click.button.button=SDL_BUTTON_LEFT;
+    click.button.x=100;click.button.y=8+44+20;screen.handleExecutionEvent(click);
+    require(list->getSelectionIndex()==1,"Touch list hit testing must use the displayed row height");
+    click.button.y=160+20;screen.handleExecutionEvent(click);
+    require(checks->isChecked(0),"Touch checklist must toggle from its whole row");
+    list->setMinimumRowHeight(0);screen.drawExecution();
+    click.button.y=8+GAGCore::Toolkit::getFont("standard")->getStringHeight(" ")+5;
+    screen.handleExecutionEvent(click);
+    require(list->getSelectionIndex()==1,"Default list row height must restore desktop hit testing");
+}
 int main()
 {
 	if (!SDL_getenv("GLOB2_USER_DATA_DIR"))
@@ -93,6 +117,7 @@ int main()
 		resize.type = SDL_WINDOWEVENT;
 		resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
 		GAGCore::GraphicContext::translateMouseEvent(&resize);
+        verifyTouchListRows(globalContainer->gfx);
 		{
 			GAGGUI::ScreenStack stack(*globalContainer->gfx);
 			auto owned = std::make_unique<Menu>();

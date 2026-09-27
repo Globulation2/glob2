@@ -60,6 +60,13 @@ namespace GAGGUI
 		}
 		
 		const std::string &getText(void) { return text; }
+        // A presentation may show native IME preedit without committing it to
+        // the field. Cursor positions remain UTF-8 byte offsets, as in editing.
+        std::string displayPreedit(const std::string& preedit) const {
+            if (password) return displayText();
+            const auto at=std::min<size_t>(cursPos,text.size());
+            return text.substr(0,at)+preedit+text.substr(at);
+        }
         std::string displayText() const {
             if (!password) return text;
             std::string masked;
@@ -77,6 +84,7 @@ namespace GAGGUI
 		
 		// cursor / activation
 		void setCursorPos(size_t pos){ cursPos = pos;};
+        size_t cursorPosition() const { return cursPos; }
 		void deactivate(void) { activated = false; recomputeTextInfos(); }
 		void activate(void);
 		

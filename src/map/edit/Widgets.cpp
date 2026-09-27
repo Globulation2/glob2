@@ -49,6 +49,11 @@ void MapEditorWidget::enable()
 
 
 
+void MapEditorWidget::activate()
+{
+    me.performAction(action);
+}
+
 void MapEditorWidget::handleClick(int relMouseX, int relMouseY)
 {
 	me.performAction(action, relMouseX, relMouseY);

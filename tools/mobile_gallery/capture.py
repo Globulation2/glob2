@@ -29,6 +29,8 @@ SIZES = [
     ("phone-landscape", "Phone · landscape", 844, 390),
     ("tablet-portrait", "Tablet · portrait", 768, 1024),
     ("tablet-landscape", "Tablet · landscape", 1024, 768),
+    ("tablet-automatic", "Tablet · portrait · Automatic touch", 768, 1024),
+    ("tablet-spacious", "Tablet · landscape · Spacious touch", 1024, 768),
     ("desktop-laptop", "Desktop · laptop", 1280, 800),
     ("desktop-fullhd", "Desktop · Full HD", 1920, 1080),
 ]
@@ -40,6 +42,8 @@ def git(*args: str) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--editor-only", action="store_true", help="Capture only map and campaign editor screens")
+    parser.add_argument("--game-only", action="store_true", help="Capture only gameplay and replay screens")
     parser.add_argument("--binary", type=Path, default=ROOT / "build/darwin/client/release/src/mobile-gallery")
     parser.add_argument("--output", type=Path, default=ROOT / "artifacts/mobile-gallery/review")
     modes = parser.add_mutually_exclusive_group()
@@ -55,12 +59,16 @@ def main() -> None:
             parser.error("--extend and --reuse require an existing capture manifest")
         original = json.loads(manifest_path.read_text())
     catalog = json.loads((ASSETS / "catalog.json").read_text())
+    if args.editor_only:
+        catalog["screens"] = [entry for entry in catalog["screens"] if entry["group"] == "Map & campaign editor"]
+    if args.game_only:
+        catalog["screens"] = [entry for entry in catalog["screens"] if entry["group"] == "Gameplay"]
     manifest = {
         "generated": datetime.now(timezone.utc).isoformat(),
         "commit": git("rev-parse", "HEAD"),
         "dirty": bool(git("status", "--porcelain")),
-        "renderer": "Native shared UI · SDL software renderer · Compact phones/tablets + desktop mouse presentation · English · 100% UI scale",
-        "sizes": [dict(id=id, label=label, width=w, height=h, presentation="desktop" if id.startswith("desktop-") else "compact") for id, label, w, h in SIZES],
+        "renderer": "Native shared UI · SDL software renderer · Compact phones/tablets + Spacious touch tablet + desktop mouse presentation · English · 100% UI scale",
+        "sizes": [dict(id=id, label=label, width=w, height=h, presentation="desktop" if id.startswith("desktop-") else "touch-spacious" if id=="tablet-spacious" else "touch-auto" if id=="tablet-automatic" else "compact") for id, label, w, h in SIZES],
         "screens": [], "gaps": catalog["gaps"],
     }
     binary = args.binary.resolve()
@@ -83,6 +91,14 @@ def main() -> None:
         source_dir = output / "capture-sources" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
         source_dir.mkdir(parents=True)
         (source_dir / "source.patch").write_text(git("diff", "--binary"))
+        # A diff omits newly introduced components until they are staged. Preserve
+        # those source files as well so a dirty-tree capture is reproducible.
+        for name in git("ls-files", "--others", "--exclude-standard").splitlines():
+            source = ROOT / name
+            if source.is_file():
+                target = source_dir / "untracked" / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, target)
         shutil.copytree(ASSETS, source_dir / "tool", ignore=shutil.ignore_patterns("__pycache__"))
         shutil.copyfile(ROOT / "tools/MobileGalleryHarness.cpp", source_dir / "MobileGalleryHarness.cpp")
         current_provenance["sourceDirectory"] = source_dir.relative_to(output).as_posix()
@@ -103,7 +119,7 @@ def main() -> None:
     captures: dict[str, dict] = {id: {} for id in known}
     for id, label, width, height in SIZES:
         profile = output / "raw" / id
-        presentation = "desktop" if id.startswith("desktop-") else "compact"
+        presentation = "desktop" if id.startswith("desktop-") else "touch-spacious" if id=="tablet-spacious" else "touch-auto" if id=="tablet-automatic" else "compact"
         retaining = args.reuse or (args.extend and id in previous_sizes)
         if not retaining:
             # Never silently mix a new capture with stale images or preferences.
@@ -111,6 +127,10 @@ def main() -> None:
                 parser.error(f"Capture profile already exists: {profile}. Choose a new --output or use --reuse.")
             profile.mkdir(parents=True)
             env = os.environ.copy()
+            if args.editor_only:
+                env["GLOB2_GALLERY_EDITOR_ONLY"] = "1"
+            if args.game_only:
+                env["GLOB2_GALLERY_GAME_ONLY"] = "1"
             env.update(GLOB2_USER_DATA_DIR=str(profile), SDL_VIDEODRIVER="dummy", SDL_RENDER_DRIVER="software")
             print(f"Capturing {label} ({width} × {height})", flush=True)
             with (output / f"{id}.log").open("w") as log:
@@ -120,7 +140,21 @@ def main() -> None:
             if missing_strings:
                 raise RuntimeError(f"Missing translation keys for {id}: {', '.join(missing_strings)}")
             manifest["captureProvenance"][id] = dict(current_provenance)
-        images = sorted(profile.glob("*.bmp"))
+            fixture = re.search(r"FIXTURE_CHECKSUM (\d+)", (output / f"{id}.log").read_text())
+            if fixture:
+                manifest["captureProvenance"][id]["fixtureChecksum"] = fixture.group(1)
+        for prefix, label, field in (("build", "building-drag", "recordings"),
+                                     ("zone", "zone-stroke", "strokeRecordings"),
+                                     ("editor-build", "editor-building-drag", "editorRecordings"),
+                                     ("editor-paint", "editor-paint-stroke", "editorStrokeRecordings")):
+            gesture_frames = sorted(profile.glob(f"gesture-{prefix}-*.bmp"))
+            if gesture_frames:
+                animation = output / "recordings" / f"{id}-{label}.gif"
+                animation.parent.mkdir(exist_ok=True)
+                frames = [Image.open(path).convert("RGB") for path in gesture_frames]
+                frames[0].save(animation, save_all=True, append_images=frames[1:], duration=[500]+[90]*(len(frames)-2)+[1000], loop=0)
+                manifest.setdefault(field, {})[id] = animation.relative_to(output).as_posix()
+        images = sorted(path for path in profile.glob("*.bmp") if not path.stem.startswith("gesture-"))
         if not images:
             raise RuntimeError(f"No captures found for {id}")
         for path in images:
@@ -168,6 +202,8 @@ def main() -> None:
         folder.mkdir(parents=True, exist_ok=True)
         checkpoint = json.loads(json.dumps(manifest))
         checkpoint["screens"] = [screen for screen in checkpoint["screens"] if include(screen)]
+        if not checkpoint["screens"]:
+            continue
         for screen in checkpoint["screens"]:
             for capture in screen["captures"].values():
                 capture["src"] = "../../" + capture["src"]

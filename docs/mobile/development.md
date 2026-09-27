@@ -19,7 +19,8 @@ controls hover hints without switching layouts. Resize preserves the camera,
 selection, tool, panel, scroll position and text while cancelling held input.
 
 `GLOB2_MOBILE_UI=1` forces the compact presentation for development; `0` forces
-legacy controls. It takes precedence over the legacy `GLOB2_PHONE_FORMS`,
+legacy controls. `touch-auto` and `touch-spacious` exercise touch presentation
+with Automatic and Spacious layout policies on a native development host. It takes precedence over the legacy `GLOB2_PHONE_FORMS`,
 `GLOB2_RESPONSIVE_UI` and `GLOB2_TOUCH_HUD` opt-ins. Rendering backend and mouse
 motion do not select a presentation. SDL, OpenGL/WebGL and software rendering
 share UI transforms and clipping. Mouse clicks use the same controls as touch;
@@ -28,21 +29,114 @@ Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
 options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
-The gameplay toolbar opens build choices, flags/zones, inspection, objectives,
-alliances and the game menu. Drag the map to pan, pinch to zoom, tap to select.
-Building placement has a movable preview followed by explicit confirmation.
-Scrollable drawers keep secondary controls out of the map; rotation, loss of
-focus and child screens cancel held gestures. Resize retains the placement preview
-and requires a new confirmation gesture. ScreenStack restores each
-screen's viewport policy and suspends rendering during SDL background events.
+The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
+alliances and the session menu. The minimap is a separate top-right HUD component;
+phone palettes float over the camera, while spacious touch layouts keep a
+content-sized palette open at the right. Both preserve the camera framing and
+leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
+independent.
 
-Shared actions belong in GameGUI or the existing setup/settings model, not in
-phone coordinate emulation. Construction, destruction, worker allocation,
-priority and flag range use shared action methods. Some information/editor
-panels still adapt legacy controls; these are candidates for further phone
-layout work. Voice capture is disabled on mobile. Native phone-size checks do
-not establish Android/iOS release readiness; device gameplay and lifecycle
-validation remain necessary.
+### Gameplay responsibilities and action flow
+
+- `GameGUITouch` composes explicit bounds, routes input ownership, presents the HUD,
+  and restores the previous palette after inspection. It never draws the desktop
+  sidebar or forwards touch controls to its pixel hit tests.
+- `GameGUITouchPalette.cpp` reads available building/flag choices and draws artwork
+  in a content-sized grid. Zone entries enter painting mode instead of placement.
+- `GameGUITouchView.cpp` draws independently bounded HUD components, the minimap,
+  tutorial, tactical panel and contextual headers. It shares primitives, not the
+  desktop sidebar composition.
+- `TouchInteractionSession.h` holds pointer identity, the originating palette,
+  preview ownership, and buffered world-space stroke points. It contains no artwork,
+  layout rules, or simulation mutations.
+- `GameGUITouchPlacement.cpp` interprets palette taps and drags. Both commit through
+  `GameGUIToolManager::confirmBuilding`, including its existing validation, defaults,
+  ghost suppression, and order serialization. A valid drag release places once and
+  restores the palette; a tap selects a movable preview with Confirm/Cancel.
+- `GameGUITouchActions.cpp` presents the selected building identity and actions,
+  reading pending values through `GameGUI::displayed*` and using shared request
+  methods for allocation, priority, range, construction and destruction. Enemy
+  and replay selections are read-only. Specialized controls share the same panel.
+  Worker-slider drags own a local allocation session and emit one command on release;
+  a second contact, selection change, focus loss or rotation cancels the preview.
+- `GameGUITouchDialogs.cpp` explicitly composes menu, objectives, alliances, chat
+  and outcome views. The remaining compatibility adapter is limited to unmigrated
+  Options, Save/Load, and message history. File operations keep their existing
+  persistence and error/retry state machines.
+- `EndGameScreen` owns a chart, metric dropdown, team filters, expansion and replay
+  export on both desktop and touch. `EndGameStat` retains history interpretation,
+  including explanations for missing measurement coverage. Compact layouts put metric
+  and team-filter entry points in one row, with scrollable filters over the plot.
+  Axis labels stay outside the curves.
+
+A session cannot commit after a second finger, focus loss, rotation, selection
+change, or release over UI. Drag previews are lifted above the finger; edge panning
+continues while held. Tap previews survive ordinary input suspension and require a
+new confirmation gesture. Painting buffers an unfinished stroke; release applies
+its existing brush operations, while interruption discards it. Completed strokes
+are never undone by leaving the tool. Two fingers navigate instead of painting.
+
+To add another interaction pattern, make it update the owned preview and call the
+same commit operation. Keep gesture thresholds and sizing policies in the in-game
+theme, add cancellation/order-equivalence cases to `GameGUITouchHarness`, and
+capture the result through the production renderer. Do not duplicate construction
+rules or adapt another presentation's composed screen.
+
+### Map and campaign editor
+
+`PhoneEditor` owns the touch editor's map bounds, compact header, bottom mode
+strip and horizontally scrolling artwork palette. Terrain and Resources share
+brush operations; Buildings and Flags expose team and level beside the map.
+Individual artwork widgets are reused, never the composed desktop sidebar or
+its minimap. Done leaves the active tool and returns to object selection; Pan
+switches one-finger navigation. Brush opens a visual mask chooser. Pending
+strokes draw their coverage before release without changing the map. Presentation measurements and drag thresholds are point-based
+policies at the top of `PhoneEditor.cpp`.
+
+A palette drag owns one pointer. Moving into the map lifts a placement preview;
+release calls the existing named `place building` or `place unit` action once.
+Horizontal movement within the tray browses choices. A tap selects the tool for
+subsequent map taps. Brush strokes buffer points until release, then invoke the
+existing editor brush actions. Leaving the map, losing focus, resizing or adding
+a second finger cancels unfinished work. Two fingers navigate without painting.
+`PhoneEditorView.cpp` renders pending gestures and contextual object inspectors.
+Inspector rows bind a named property to its value and step controls; closing an
+inspector restores the palette. `ValueScrollBox::setValue` invokes the existing
+semantic action without desktop hit-test coordinates.
+These gestures do not change map serialization or construction rules. New input
+patterns should feed the same placement/brush operations and explicitly define
+pointer ownership and cancellation.
+
+Script, briefing and hints use a shared multiline `EditorTouch::TextCanvas`
+with a separate IME composition buffer. When the keyboard leaves little vertical
+space, a compact section/Hide keyboard bar gives the remaining space to the
+canvas; dismissal restores the tabs and commands without losing the draft.
+`ScriptEditorScreen` composes tabs, text
+canvas and command bars; `TeamsEditor` composes parallel rows and real color
+swatches. `MapEditMenuScreen` composes a bounded session menu. These views do not
+scrape desktop widget positions. `EditorFileView` renders bounded file lists and filename editing from the
+`LoadSaveScreen::FilePresentation` model, including busy, retry and export states.
+The same view handles child script-file dialogs; persistence stays in
+`LoadSaveScreen`. Area naming uses `AskForTextInput`’s bounded touch view and native
+UTF-8 input. IME preedit is displayed separately; only explicit confirmation commits
+the draft, and cancellation retains the original name. These editor workflows no
+longer use `PhoneForm`; desktop editor composition remains available independently.
+
+`NewMapScreen` presents Blank/Generated choices and shares the production
+landscape browser with Custom Game. A chosen landscape retains its explicit seed
+and generation parameters. Campaign views and map loading own preview/details
+bounds; `Glob2Screen` fits the shared frontend surface to visible content.
+Campaign descriptions own touch cursor placement, swipe scrolling and provisional
+IME text. Campaign lists distinguish completed taps from scrolls. Narrow script
+entry navigation uses large Previous/entry/Next controls with stable script IDs;
+multiple contacts cancel pending actions.
+The editor menu uses the colony background and omits the main-menu logo. Native
+lists opt into a shared minimum touch-row height so painting, hit testing and
+scrolling use the same geometry; desktop retains its default row sizing.
+
+Voice capture is disabled on mobile. Native phone-size checks do not establish
+Android/iOS release readiness; real keyboard composition, safe areas, lifecycle,
+and phone/tablet play sessions remain necessary.
 
 ## Toolchains and output isolation
 
@@ -108,6 +202,7 @@ are retained alongside the application.
 ```sh
 python3 -m unittest discover -s tests/build_system -v
 scons release=1 portable-renderer-test mobile-input-test gameplay-touch-test responsive-menu-test mobile-presentation-test
+python3 test/TouchPresentationStructureTest.py
 build/darwin/client/release/libgag/src/MobileInputHarness
 build/darwin/client/release/libgag/src/PortableRendererHarness
 mkdir -p artifacts/mobile-ui/gameplay artifacts/mobile-ui/menu artifacts/mobile-ui/presentation
@@ -134,9 +229,10 @@ shipping a mobile client.
 
 ## Mobile design review gallery
 
-The offline gallery captures production screen classes at eight logical viewport
+The offline gallery captures production screen classes at ten logical viewport
 sizes: 320×568, 568×320, 390×844, 844×390, 768×1024 and 1024×768 in Compact
-mode (with adaptive frontend tablet composition), plus 1280×800 and 1920×1080 with desktop mouse controls. It includes
+mode (with adaptive frontend tablet composition), tablet Automatic at 768×1024,
+tablet Spacious at 1024×768, plus 1280×800 and 1920×1080 with desktop mouse controls. It includes
 named menu, settings, setup, gameplay, dialog and editor states. The gallery lets
 reviewers compare any two sizes, inspect full-resolution images, search by screen
 name or stable ID, and record/export/import feedback per view.
@@ -144,6 +240,10 @@ name or stable ID, and record/export/import feedback per view.
 ```sh
 scons release=1 mobile-gallery
 python3 tools/mobile_gallery/capture.py
+# Faster in-game-only iteration, with the same IDs and comparison sizes:
+python3 tools/mobile_gallery/capture.py --game-only --output artifacts/mobile-gallery/gameplay-review
+# Editor-only comparison, including map creation and campaign forms:
+python3 tools/mobile_gallery/capture.py --editor-only --output artifacts/mobile-gallery/editor-review
 open artifacts/mobile-gallery/review/index.html
 ```
 
@@ -161,11 +261,13 @@ keep. Import merges nonempty review entries by stable screen ID.
 
 `tools/MobileGalleryHarness.cpp` selects fixture states and renders through the
 normal screen stack, `GameGUI` and `MapEdit`. It uses bundled maps/campaigns,
-a fixed generated-map seed, and a disposable profile for each viewport. No
-gameplay simulation ticks, chat submission, account creation, uploads or manual
-saves are performed. Screen fixtures may select internal state directly; this is a visual
+a fixed generated-map seed, and a disposable profile for each viewport. The gameplay fixture advances 4,096 simulation ticks, populates three named
+players and authored objectives, and records/loads a replay in its disposable
+profile. No chat submission, account creation, uploads or personal saves occur. Screen fixtures may select internal state directly; this is a visual
 capture tool, not proof that every state is reachable through touch navigation.
-Existing interaction harnesses remain separate. The decorative menu colony does
+Existing interaction harnesses remain separate. The gallery also records native SDL building drags and
+unfinished zone strokes, and exposes tactical tools, replay controls, open team
+filters and chart-value inspection as separate review states. The decorative menu colony does
 advance: the responsive-menu harness checks both one theme callback per frame
 and increasing simulation ticks over elapsed wall time.
 
@@ -184,10 +286,10 @@ blank or incorrectly sized images. It retains raw BMPs, PNGs, capture logs,
 source revision/diff, tool sources and image/binary hashes under the output
 folder for review and reproducibility.
 
-These are **native host captures**: Compact on phones/tablets and desktop mouse
+These are **native host captures**: Compact on phones/tablets, Automatic/Spacious touch on tablets, and desktop mouse
 presentation on desktop sizes. Desktop captures set the logical canvas to the
-requested dimensions, rather than magnifying an 800×600 surface. Mobile drawers
-and inspector tabs can share a desktop sidebar, so repeated desktop images for
+requested dimensions, rather than magnifying an 800×600 surface. Historical inspector IDs now show the unified touch inspector and preserve
+feedback. Desktop retains its original sidebar, so repeated desktop images for
 those states are intentional. They are not Android/iOS device screenshots. Desktop-only settings are omitted
 on phone/tablet; retired views retain their feedback IDs and show an explicit
 unavailable notice. Native keyboards, safe areas, document pickers and lifecycle
