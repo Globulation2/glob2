@@ -62,8 +62,7 @@ namespace GAGCore
 			// free cache
 			clearCache();
 			// close fonts
-			if (renderFont && renderFont != font)
-				TTF_CloseFont(renderFont);
+            for (const auto& [size, raster] : rasterFonts) TTF_CloseFont(raster);
 			TTF_CloseFont(font);
 		}
 	}
@@ -112,31 +111,24 @@ namespace GAGCore
 			clearCache();
 			textureGeneration = generation;
 		}
-		// Font sizes are integers: only a scale that changes the raster size is worth reopening
-		const unsigned wantedSize = std::max(1u, static_cast<unsigned>(std::lround(baseSize * wanted)));
-		const unsigned currentSize = std::max(1u, static_cast<unsigned>(std::lround(baseSize * renderScale)));
-		if (wantedSize == currentSize)
-		{
-			renderScale = wanted;
-			return;
-		}
-
-		TTF_Font *replacement = NULL;
-		if (wantedSize != baseSize)
-		{
-			if (SDL_RWops *fontStream = Toolkit::getFileManager()->open(fontFilename, "rb"))
-				replacement = TTF_OpenFontRW(fontStream, 1, wantedSize);
-			if (!replacement && verbose)
-				std::cerr << "TrueTypeFont : cannot reopen " << fontFilename << " at size " << wantedSize
-					<< ", keeping the authored raster" << std::endl;
-		}
-
-		clearCache();
-		if (renderFont && renderFont != font)
-			TTF_CloseFont(renderFont);
-		// Falling back to the authored raster only costs sharpness, so a failed reopen is not fatal
-		renderFont = replacement ? replacement : font;
-		renderScale = replacement ? wanted : 1.0f;
+        // Quantize once to the font's actual raster size; cached geometry must
+        // not depend on which nearly identical transform first requested it.
+        const unsigned wantedSize = std::max(1u, static_cast<unsigned>(std::lround(baseSize * wanted)));
+        renderFont = font;
+        renderScale = 1.0f;
+        if (wantedSize != baseSize) {
+            auto found = rasterFonts.find(wantedSize);
+            if (found == rasterFonts.end()) {
+                TTF_Font* replacement = nullptr;
+                if (SDL_RWops* stream = Toolkit::getFileManager()->open(fontFilename, "rb"))
+                    replacement = TTF_OpenFontRW(stream, 1, wantedSize);
+                if (replacement) found = rasterFonts.emplace(wantedSize, replacement).first;
+            }
+            if (found != rasterFonts.end()) {
+                renderFont = found->second;
+                renderScale = float(wantedSize) / baseSize;
+            }
+        }
 		applyStyle();
 	}
 
@@ -151,10 +143,10 @@ namespace GAGCore
 
 	bool TrueTypeFont::targetScalesText(const DrawableSurface *surface) const
 	{
-		// Only the screen carries a scaled GL viewport. An offscreen surface, for instance the
+		// Only the screen carries the drawable and local UI scales. An offscreen surface, for instance the
 		// one an overlay dialog composes itself on, stores logical pixels and would have to
 		// resample a raster made for the screen before anything reaches it.
-		return renderFont != font && _gc != NULL && surface == static_cast<const DrawableSurface *>(_gc);
+		return _gc != NULL && surface == static_cast<const DrawableSurface *>(_gc);
 	}
 
 	std::string TrueTypeFont::shapeText(const std::string &text) const
@@ -171,7 +163,7 @@ namespace GAGCore
 	
 	int TrueTypeFont::getStringWidth(const std::string string)
 	{
-		const CacheData *data = getStringCached(string, renderFont != font);
+		const CacheData *data = getStringCached(string, false);
 		int w;
 		if (data)
 		{
@@ -188,7 +180,7 @@ namespace GAGCore
 		int h;
 		if (!string.empty())
 		{
-			const CacheData *data = getStringCached(string, renderFont != font);
+			const CacheData *data = getStringCached(string, false);
 			if (data)
 			{
 				h = data->h;
@@ -268,13 +260,13 @@ namespace GAGCore
 		assert(font);
 		assert(styleStack.size()>0);
 		
-		updateRenderScale();
+		if (scaled) updateRenderScale();
 		scaled = scaled && (renderFont != font);
 
 		CacheKey key;
 		key.text = text;
 		key.style = styleStack.top();
-		key.scaled = scaled;
+		key.rasterSize = scaled ? static_cast<unsigned>(std::lround(baseSize * renderScale)) : baseSize;
 		
 		std::map<CacheKey, CacheData>::iterator keyIt = cache.find(key);
 		if (keyIt == cache.end())

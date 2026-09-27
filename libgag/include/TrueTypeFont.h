@@ -42,15 +42,15 @@ namespace GAGCore
 		{
 			std::string text;
 			Style style;
-			//! Whether this entry holds the raster made for the screen, which only the screen can use
-			bool scaled;
+			//! Raster size, including the authored size for offscreen text and metrics
+			unsigned rasterSize;
 
 			bool operator<(const CacheKey &o) const
 			{
 				if (text != o.text) return (text < o.text);
 				if (style < o.style) return true;
 				if (o.style < style) return false;
-				return (scaled < o.scaled);
+				return (rasterSize < o.rasterSize);
 			}
 		};
 
@@ -83,7 +83,7 @@ namespace GAGCore
 		void cleanupCache(void);
 		//! Drop every rendered string, for instance when their raster or textures went stale
 		void clearCache(void);
-		//! Reopen the rasterisation font when the screen started scaling text differently
+		//! Select a cached rasterisation font for the current drawable/UI scale
 		void updateRenderScale(void);
 		//! Apply the current style to both the metrics and the rasterisation font
 		void applyStyle(void);
@@ -98,6 +98,9 @@ namespace GAGCore
 		TTF_Font *font;
 		//! Rasterisation at size * renderScale; the same object as font while renderScale is 1
 		TTF_Font *renderFont;
+        // UI transforms alternate within a frame. Retain font sizes and key
+        // string rasters by size instead of reopening/clearing on every label.
+        std::map<unsigned, TTF_Font*> rasterFonts;
 		//! Where font was loaded from, so the raster can be reopened at another size
 		std::string fontFilename;
 		//! The size the layout was authored in

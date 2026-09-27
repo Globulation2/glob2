@@ -302,17 +302,15 @@ namespace GAGCore
 
 	float GraphicContext::textRenderScale(void)
 	{
-		// Only the GL path magnifies each texture on its way to the screen, so only there
-		// does a finer glyph raster reach more pixels. The software path composes the whole
-		// frame in the logical surface, which caps every glyph at its logical size.
-		if (!(optionFlags & USEGPU))
-			return 1.0f;
-		// Any scale resamples the glyphs, including the slight reduction a fullscreen
-		// resolution the display cannot deliver exactly produces.
-		const float scale = drawableScale();
-		if (std::fabs(scale - 1.0f) < 0.01f)
-			return 1.0f;
-		return std::clamp(scale, 0.25f, 4.0f);
+        // Both GPU backends draw glyph textures directly to the output. Include
+        // the local UI transform: touch controls can enlarge text independently
+        // of the window's logical-to-drawable scale. Pure software composition
+        // still cannot preserve more pixels than its destination surface.
+        if (!renderer && !(optionFlags & USEGPU)) return 1.0f;
+        const float outputScale = softwareTransform ? 1.0f : drawableScale();
+        const float scale = outputScale * (uiTransformActive ? uiTransformScale : 1.0f);
+        if (std::fabs(scale - 1.0f) < 0.01f) return 1.0f;
+        return std::clamp(scale, 0.25f, 8.0f);
 	}
 
 	float GraphicContext::requestedUiScale = 0.0f;

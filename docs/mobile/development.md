@@ -152,6 +152,18 @@ Build outputs live under
 Dependency manifests bind archive hashes to the target and compiler. SDKs,
 emulators, generated projects, signing keys and caches stay under `build/`.
 
+### Text raster resolution
+
+Screen text uses the drawable pixel scale multiplied by the active UI transform,
+including the SDL portable renderer on Android/iOS. Font layout measurements stay
+at their authored size; only glyph rasterization changes. Offscreen surfaces keep
+logical-resolution text because they cannot retain extra screen pixels. Raster
+fonts and string caches are keyed by integer font size so alternating HUD/control
+scales do not reopen fonts or discard other labels each frame. Verify sharpness
+on device screenshots: a density-1 emulator can hide an enlarged-glyph defect.
+`GameGUITouchHarness` checks first-draw resolution, stable metrics, offscreen text
+and cache reuse under alternating transforms.
+
 ## Android
 
 Install Python, SCons, Git, make, autotools and pkg-config. Bootstrap the pinned

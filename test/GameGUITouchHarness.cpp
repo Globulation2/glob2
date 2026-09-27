@@ -10,6 +10,7 @@
 #include <GUIButton.h>
 #include <GUISelector.h>
 #include <Toolkit.h>
+#include <TrueTypeFont.h>
 #include <StringTable.h>
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -47,6 +48,39 @@
 
 GlobalContainer* globalContainer=nullptr;
 static void require(bool condition,const char* message) { if(!condition) throw std::runtime_error(message); }
+
+// Exercise the portable renderer's first draw and alternating touch transforms.
+// Layout metrics stay authored; raster/font caches must survive scale changes.
+static void verifyTouchFontRaster()
+{
+    struct Probe : GAGCore::TrueTypeFont {
+        Probe() : TrueTypeFont("data/fonts/sans.ttf", 13) {}
+        float scale() const { return renderScale; }
+        unsigned misses() const { return cacheMiss; }
+        size_t fonts() const { return rasterFonts.size(); }
+    } font;
+    auto* gfx = globalContainer->gfx;
+    const std::string text = "Workers 123";
+    const int width = font.getStringWidth(text), height = font.getStringHeight(text);
+    auto draw = [&](float scale) {
+        gfx->setUITransform(scale, 10, 10);
+        gfx->drawString(0, 0, &font, text);
+        require(font.getStringWidth(text) == width && font.getStringHeight(text) == height,
+                "Sharper font raster must not change layout metrics");
+        gfx->setUITransform();
+    };
+    draw(2);
+    require(font.scale() >= 2, "First portable draw must rasterize at the transformed resolution");
+    draw(1); draw(2);
+    const auto misses = font.misses();
+    const auto fonts = font.fonts();
+    draw(1); draw(2);
+    require(font.misses() == misses && font.fonts() == fonts,
+            "Alternating UI scales must reuse glyph and font caches");
+    GAGCore::DrawableSurface offscreen(width, height);
+    offscreen.drawString(0, 0, &font, text);
+    require(font.misses() == misses, "Logical offscreen text must reuse the authored raster");
+}
 class GameGUITouchHarness
 {
 public:
@@ -1313,6 +1347,7 @@ int main()
         globalContainer->settings.screenFlags=GAGCore::GraphicContext::PORTABLEGPU;
         globalContainer->settings.mute=true;globalContainer->load();
         require(SDLNet_Init()==0,"SDL networking init failed");
+        verifyTouchFontRaster();
         GameGUITouchHarness::run();
         delete globalContainer;globalContainer=nullptr;SDLNet_Quit();
         std::puts("PASS: actual gameplay touch, toroidal pan, preview, confirmation, validation, cancellation and duplicate suppression");
