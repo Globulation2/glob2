@@ -164,8 +164,14 @@ int main()
 			auto *childProbe = child.get();
 			stack.push(std::move(child));
 			stack.frame(320, {});
+#ifdef GLOB2_MOBILE
+            // Native mobile expands the legacy canvas to the device aspect ratio.
+            require(globalContainer->gfx->getW() == 800 && globalContainer->gfx->getH() == 1420,
+                    "Legacy child must retain its minimum size and portrait aspect ratio");
+#else
 			require(globalContainer->gfx->getW() == 800 && globalContainer->gfx->getH() == 600,
 					"Child needs legacy coordinates before initialization");
+#endif
 			childProbe->endExecute(0);
 			stack.frame(360, {});
 			require(globalContainer->gfx->getW() == 320 && globalContainer->gfx->getH() == 568,
@@ -187,8 +193,13 @@ int main()
 					"Responsive frontend must advance the live colony over wall time");
 		}
 		globalContainer->gfx->setResponsiveViewport(false);
+#ifdef GLOB2_MOBILE
+        require(globalContainer->gfx->getW() == 1065 && globalContainer->gfx->getH() == 600,
+                "Legacy viewport must preserve the landscape aspect ratio");
+#else
 		require(globalContainer->gfx->getW() == 800 && globalContainer->gfx->getH() == 600,
 				"Legacy viewport was not restored");
+#endif
 		theme.reset();
 		delete globalContainer;
 		globalContainer = nullptr;

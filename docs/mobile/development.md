@@ -180,6 +180,39 @@ signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.
 Omit `--release` consistently from both dependency and application commands for
 debug builds. An explicit `JAVA_HOME` takes precedence over the task-local JDK.
 
+The asset packager excludes local caches and metadata before writing its index.
+The completed APK is checked against that index and its content digest, so an
+AAPT-filtered or missing file fails the build instead of failing on first launch.
+Native startup failures are also written to Android logcat under `SDL/APP`.
+
+### Native tests on a connected Android device
+
+After configuring the release project above, build the isolated CppUnit dependency
+and cross-compile the unit suite and client integration harnesses:
+
+```sh
+python3 mobile/dependencies.py --arch arm64-v8a --release --tests
+scons target=android arch=arm64-v8a release=1 android-tests android-unit-tests -j4
+python3 mobile/android_device_tests.py --serial DEVICE_SERIAL \
+  --android-sdk "$ANDROID_SDK_ROOT" --output artifacts/android/device-tests
+```
+
+For an SDK outside the default task-local directory, pass `--android-sdk PATH`
+to the Python build commands and `android_sdk=PATH` to SCons. Keep the dependency,
+project and test architecture consistent. `--harness NAME` runs a selected suite.
+The runner checks the device ABI, stages stripped binaries and packaged assets in
+an isolated `/data/local/tmp` directory, and records each exit code and log. It
+retains those fixtures for diagnosis and never clears the installed app's data.
+
+The CppUnit source list is shared with the host suite. Integration harnesses reuse
+the production client objects. `mobile/NativeTestMain.cpp` supplies only the
+shell platform bridges: filesystem assets, SDL main readiness, absent Activity,
+and unavailable audio. SDL dummy video runs without a Java UI. These tests execute
+on the device CPU but do **not** establish real rendering, audio, native keyboard,
+IME composition, lifecycle or physical gesture comfort. Test those separately in
+the installed APK, including rotation, background/resume, save/load and editor
+text entry. Keep device screenshots and logs with the test results.
+
 ## iOS
 
 Build dependencies and the generated Xcode project with the same configuration:

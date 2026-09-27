@@ -34,7 +34,8 @@ namespace GAGGUI
 		unsigned blockLength, blockPos, textHeight;
         unsigned minimumRowHeight = 0;
 		//! Pointer to font, this is a cache
-		GAGCore::Font *fontPtr;
+		// Row sizing can be configured before internalInit attaches the font.
+		GAGCore::Font *fontPtr = nullptr;
 		
 		//! Possible states of selection inside this widget
 		enum SelectionState

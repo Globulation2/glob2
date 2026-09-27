@@ -21,7 +21,10 @@ def main():
     parser.add_argument('--developer-dir')
     parser.add_argument('--android-sdk', default=str(ROOT/'build/mobile-tools/android-sdk'))
     parser.add_argument('--release', action='store_true')
+    parser.add_argument('--tests', action='store_true', help='Also build isolated Android CppUnit dependencies')
     args = parser.parse_args()
+    if args.tests and args.target != "android":
+        parser.error("--tests currently supports Android only")
     args.arch = args.arch or ('arm64-v8a' if args.target=='android' else 'arm64')
     options = {'target':args.target, 'arch':args.arch, 'environment':args.environment,
                'release':int(args.release), 'android_sdk':args.android_sdk}
@@ -71,6 +74,19 @@ def main():
                   for path in sorted(library_directory.iterdir()) if path.suffix in ('.a','.so')}
         write_if_changed(prefix/'manifest.json',json.dumps({'identity':identity,'toolchain':toolchain['fingerprint'],
             'registry':revision,'archives':archives},indent=2)+'\n')
+        if args.tests:
+            # Test-only libraries must not enter the application's dependency
+            # manifest or APK. Keep the same registry/toolchain for both builds.
+            test_manifest=output/'test-deps-manifest'
+            test_manifest.mkdir(exist_ok=True)
+            write_if_changed(test_manifest/'vcpkg.json',json.dumps({
+                'name':'glob2-device-tests','version':'1',
+                'builtin-baseline':revision,'dependencies':['cppunit']},indent=2)+'\n')
+            subprocess.run([str(vcpkg/'vcpkg'),'install','--triplet='+triplet,
+                '--overlay-triplets='+str(ROOT/'mobile/triplets'),
+                '--x-manifest-root='+str(test_manifest),'--x-install-root='+str(output/'test-deps'),
+                '--x-buildtrees-root='+str(output/'test-buildtrees'),
+                '--x-packages-root='+str(output/'test-packages')],env=env,check=True)
         print('Dependency prefix:',prefix)
     return 0
 

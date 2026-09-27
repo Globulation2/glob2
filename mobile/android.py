@@ -13,6 +13,7 @@ from build_layout import build_identity, default_directory, BuildLock
 from mobile_toolchain import ROOT, LOCK
 from mobile_artifacts import verify_android_shared_library, verify_android_symbols
 import developer_apk
+from asset_bundle import include_asset, verify_apk_assets
 
 
 def main():
@@ -76,7 +77,7 @@ def main():
         digest=hashlib.sha256();names=[]
         for directory in ('data','maps','campaigns','scripts'):
             for source in sorted((ROOT/directory).rglob('*')):
-                if source.is_file():
+                if source.is_file() and include_asset(source.relative_to(ROOT).as_posix()):
                     relative=source.relative_to(ROOT);names.append(relative.as_posix())
                     digest.update(relative.as_posix().encode()+b'\0'+hashlib.sha256(source.read_bytes()).digest())
                     target=assets/relative;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source,target)
@@ -93,6 +94,7 @@ def main():
         subprocess.run([gradle,'--no-daemon','--project-dir',str(project),'assembleRelease' if args.release else 'assembleDebug'],env=env,check=True)
         apk=project/('app/build/outputs/apk/release/app-release-unsigned.apk' if args.release else 'app/build/outputs/apk/debug/app-debug.apk')
         developer_apk.verify_alignment(ROOT,sdk,apk)
+        verify_apk_assets(apk)
         readelf = prebuilt / 'bin' / ('llvm-readelf.exe' if os.name == 'nt' else 'llvm-readelf')
         build_id = verify_android_symbols(apk, output/'lib/libmain.so', args.arch, readelf)
         apk.with_suffix('.symbols.json').write_text(json.dumps({'build_id':build_id, 'architecture':args.arch}, indent=2)+'\n')

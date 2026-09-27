@@ -11,6 +11,8 @@
 #include "mobile/ios/SafeArea.h"
 #endif
 namespace GAGCore {
+// Native shell tests and hosts without an attached Activity have no Java UI.
+// Keep neutral viewport defaults until the Android bridge is available.
 inline SafeInsets mobileSafeInsets(GraphicContext* gfx) {
     SafeInsets insets;
     [[maybe_unused]] const double unit=gfx->logicalUnitsPerPoint();
@@ -19,7 +21,9 @@ inline SafeInsets mobileSafeInsets(GraphicContext* gfx) {
 #endif
 #ifdef __ANDROID__
     auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    if (!env) return insets;
     auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    if (!activity) return insets;
     auto cls=env->GetObjectClass(activity);
     auto method=env->GetStaticMethodID(cls,"getUiInsets","()[I");
     if (method) {
@@ -45,7 +49,9 @@ inline double mobileKeyboardInset(GraphicContext* gfx) {
     return iosGameKeyboardInset(SDL_GetWindowFromID(gfx->windowID()));
 #elif defined(__ANDROID__)
     auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    if (!env) return 0;
     auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    if (!activity) return 0;
     auto cls=env->GetObjectClass(activity);
     auto method=env->GetStaticMethodID(cls,"getKeyboardInset","()I");
     double inset=method ? env->CallStaticIntMethod(cls,method) : 0;
@@ -66,7 +72,9 @@ inline bool mobilePointerAvailable() {
     return iosGameHasPointer();
 #elif defined(__ANDROID__)
     auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    if (!env) return false;
     auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    if (!activity) return false;
     auto cls=env->GetObjectClass(activity);
     auto method=env->GetStaticMethodID(cls,"hasPointer","()Z");
     bool available=method && env->CallStaticBooleanMethod(cls,method);

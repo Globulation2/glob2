@@ -15,6 +15,7 @@
 #ifdef GLOB2_MOBILE
 #include "mobile/MobilePaths.h"
 #include <exception>
+#include <SDL_log.h>
 #endif
 #include "Glob2.h"
 #include "GlobalContainer.h"
@@ -503,7 +504,13 @@ int main(int argc, char *argv[])
 {
 #ifdef GLOB2_MOBILE
     try { initializeMobilePaths(); }
-    catch(const std::exception& error) { fprintf(stderr,"Mobile startup: %s\n",error.what()); return 1; }
+    catch(const std::exception& error) {
+        // Android does not expose native stderr in logcat. Keep early asset and
+        // storage failures diagnosable even before the game logger is available.
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Mobile startup: %s", error.what());
+        fprintf(stderr,"Mobile startup: %s\n",error.what());
+        return 1;
+    }
 #endif
 	// Line-buffer stderr/stdout so abort() and assert failures don't swallow
 	// the last log line. macOS block-buffers redirected stdio, and abort()

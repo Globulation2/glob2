@@ -51,7 +51,10 @@ struct MobilePresentationHarness
 		}
 		strings->setLang(originalLanguage);
 		auto *gfx = globalContainer->gfx;
-		Uint32 tick = 0;
+		Uint32 tick = SDL_GetTicks();
+        // Preview debounce deadlines use SDL's wall clock. Slow device drawing
+        // must not leave synthetic frame times behind those deadlines forever.
+        auto nextTick = [&]() { return tick = std::max(tick + 40, SDL_GetTicks()); };
 		for (auto [width, height] :
 			 {std::pair{320, 568}, std::pair{568, 320}, std::pair{390, 844}, std::pair{844, 390}})
 		{
@@ -65,7 +68,7 @@ struct MobilePresentationHarness
 			auto owned = std::make_unique<CustomGameScreen>(stack);
 			auto *lobby = owned.get();
 			stack.push(std::move(owned));
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			auto tap = [&](int x, int y)
 			{
 				SDL_Event down{};
@@ -76,7 +79,7 @@ struct MobilePresentationHarness
 				down.tfinger.y = float(y) / gfx->getH();
 				auto up = down;
 				up.type = SDL_FINGERUP;
-				stack.frame(tick += 40, {down, up});
+				stack.frame(nextTick(), {down, up});
 			};
 			auto hit = [&](const std::string &id)
 			{
@@ -99,15 +102,15 @@ struct MobilePresentationHarness
 							region.offset += item.box.y + item.box.h - region.box.y - region.box.h;
 						break;
 					}
-				stack.frame(tick += 40, {});
+				stack.frame(nextTick(), {});
 				auto r = hit(id);
 				tap(r.x + r.w / 2, r.y + r.h / 2);
-				stack.frame(tick += 40, {});
+				stack.frame(nextTick(), {});
 			};
 			auto snapshot = [&](const std::string &name)
 			{
 				gfx->printScreen(name + "-" + orientation + ".bmp");
-				stack.frame(tick += 40, {});
+				stack.frame(nextTick(), {});
 			};
 			require(gfx->getW() == width && gfx->getH() == height,
 					"Setup must use phone dimensions");
@@ -127,7 +130,7 @@ struct MobilePresentationHarness
 			dialog->addWidget(affirmative);
 			auto *dialogPtr = dialog.get();
 			stack.push(std::move(dialog));
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			auto *adapter = dialogPtr->phoneForm.get();
 			require(adapter != nullptr, "Frontend dialog uses the responsive adapter");
 			require(adapter->primaryAction() == affirmative,
@@ -144,13 +147,13 @@ struct MobilePresentationHarness
 					require(row.rect.h >= 48, "Dialog actions keep minimum touch height");
 			}
 			dialogPtr->endExecute(0);
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			auto profile = std::make_unique<CustomGameChoiceScreen>(
 				"AI profile", std::vector<std::string>{"One", "Two"}, 0, false,
 				std::vector<bool>{});
 			auto *profileScreen = profile.get();
 			stack.push(std::move(profile));
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			auto profileHit = [&](const std::string &id)
 			{
 				for (const auto &item : profileScreen->controls->hits)
@@ -163,16 +166,16 @@ struct MobilePresentationHarness
 			require(back.h >= 48 && use.h >= 48, "Phone profile actions need touch-sized targets");
 			snapshot("ai-profile");
 			tap(back.x + back.w / 2, back.y + back.h / 2);
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			lobby->setMapMode(true);
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			press("landscape");
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			require(gfx->getW() == width && gfx->getH() == height,
 					"Landscape picker retains phone dimensions");
 			snapshot("landscape-picker");
 			tap(40, height - 32);
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 
 			press("tab/1");
 			const auto firstTeam = hit("colony/0/team");
@@ -194,7 +197,7 @@ struct MobilePresentationHarness
 			const auto settleStarted = SDL_GetTicks();
 			do
 			{
-				stack.frame(tick += 40, {});
+				stack.frame(nextTick(), {});
 				SDL_Delay(16);
 			} while (lobby->previewBusy() && SDL_GetTicks() - settleStarted < 30000);
 			require(!lobby->previewBusy() && lobby->validMap,
@@ -236,12 +239,12 @@ struct MobilePresentationHarness
 			move.tfinger.y = .30f;
 			auto up = move;
 			up.type = SDL_FINGERUP;
-			stack.frame(tick += 40, {down, move, up});
+			stack.frame(nextTick(), {down, move, up});
 			require(lobby->setup.ruleset == rules, "Scrolling must not select a rules preset");
 			auto settings = std::make_unique<SettingsScreen>();
 			auto *form = settings.get();
 			stack.push(std::move(settings));
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			const auto visible = form->visibleCategories();
 			require(std::find(visible.begin(), visible.end(), SettingsScreen::Category::Controls) ==
 						visible.end(),
@@ -252,7 +255,7 @@ struct MobilePresentationHarness
 			for (int category = 0; category < 6; ++category)
 			{
 				form->selectCategory(SettingsScreen::Category(category));
-				stack.frame(tick += 40, {});
+				stack.frame(nextTick(), {});
 				for (const auto &row : form->rows())
 					if (row.kind != SettingsScreen::Kind::Section &&
 						row.kind != SettingsScreen::Kind::Info)
@@ -331,25 +334,25 @@ struct MobilePresentationHarness
 						globalContainer->settings.defaultUnitsAssigned[0][1],
 					"Building changes persist using the existing slots");
 			tap(48, 24);
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			require(form->isExecutionRunning(), "Back from building detail returns to its list");
 			bool returnedToList = false;
 			for (const auto &row : form->rows())
 				returnedToList |= row.id == "buildings.open.0";
 			require(returnedToList, "A single fixed Back control follows the building hierarchy");
 			form->selectCategory(SettingsScreen::Category::Audio);
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			const bool originalMute = globalContainer->settings.mute;
 			SDL_Event key{};
 			key.type = SDL_KEYDOWN;
 			key.key.keysym.sym = SDLK_TAB;
-			stack.frame(tick += 40, {key});
-			stack.frame(tick += 40, {key});
+			stack.frame(nextTick(), {key});
+			stack.frame(nextTick(), {key});
 			key.key.keysym.sym = SDLK_SPACE;
-			stack.frame(tick += 40, {key});
+			stack.frame(nextTick(), {key});
 			require(globalContainer->settings.mute != originalMute,
 					"Tab must progress past the scrollable category selector to the first field");
-			stack.frame(tick += 40, {key});
+			stack.frame(nextTick(), {key});
 			require(globalContainer->settings.mute == originalMute,
 					"Keyboard activation restores the same setting without duplicate focus IDs");
 			for (const auto &row : form->rows())
@@ -368,17 +371,17 @@ struct MobilePresentationHarness
 					break;
 				}
 			form->selectCategory(SettingsScreen::Category::Gameplay);
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			snapshot("settings-gameplay");
 			form->endExecute(0);
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			require(gfx->getW() == width && gfx->getH() == height,
 					"Returning to setup preserves phone viewport");
 			press("page/done");
 			const auto launchWait = SDL_GetTicks();
 			do
 			{
-				stack.frame(tick += 40, {});
+				stack.frame(nextTick(), {});
 				SDL_Delay(16);
 			} while (lobby->previewBusy() && SDL_GetTicks() - launchWait < 30000);
 			require(lobby->validMap && !lobby->previewBusy(),
@@ -389,7 +392,7 @@ struct MobilePresentationHarness
 			lobby->onAction(nullptr, GAGGUI::BUTTON_SHORTCUT, CustomGameScreen::OK, 0);
 			require(!lobby->isExecutionRunning() && lobby->sourceFile() == launchSource,
 					"Launching a generated draft must not replace the preview");
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			auto premade = std::make_unique<CustomGameScreen>(stack);
 			lobby = premade.get();
 			std::string launchedPremade;
@@ -400,11 +403,11 @@ struct MobilePresentationHarness
 						   launchResult = result;
 						   launchedPremade = static_cast<CustomGameScreen &>(screen).sourceFile();
 					   });
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			lobby->setMapMode(false);
 			require(lobby->loadMap("maps/balanced.map"), "Premade journey loads a bundled map");
 			const auto premadeSource = lobby->sourceFile();
-			stack.frame(tick += 40, {});
+			stack.frame(nextTick(), {});
 			press("next");
 			press("next");
 			press("start");

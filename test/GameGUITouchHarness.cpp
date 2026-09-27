@@ -573,6 +573,7 @@ public:
 	  gui.clearSelection();
 	  gui.suspendInput();
 	  SDL_setenv("GLOB2_TOUCH_HUD", "1", 1);
+	  SDL_setenv("GLOB2_MOBILE_UI", "1", 1);
 	  auto *gfx = globalContainer->gfx;
 	  SDL_setenv("GLOB2_RESPONSIVE_UI", "1", 1);
 	  gfx->setResponsiveViewport(true, 800, 600);
@@ -1303,6 +1304,9 @@ int main()
 {
     if(!SDL_getenv("GLOB2_USER_DATA_DIR")) return 2;
     SDL_setenv("SDL_AUDIODRIVER","dummy",1);
+    // Exercise the legacy mouse sidebar first, even on touch-capable hosts;
+    // run() explicitly switches to the phone presentation for the touch cases.
+    SDL_setenv("GLOB2_MOBILE_UI","0",1);
     try {
         globalContainer=new GlobalContainer("glob2-touch-test");
         globalContainer->settings.screenWidth=800;globalContainer->settings.screenHeight=600;

@@ -113,6 +113,9 @@ GAGCore::CooperativeSlice fixedSlice()
 }
 int main(int argc, char **argv)
 {
+    // Session regressions use desktop menu coordinates and camera geometry.
+    // GameGUITouchHarness covers the touch presentation with the same engine.
+    SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
 	require(argc == 2, "A disposable profile is required");
 	{
 		struct TrackedValue : Value
@@ -295,11 +298,15 @@ int main(int argc, char **argv)
         require(gfx.getW() == 1200 && gfx.getH() == 800, "Logical resolution did not follow viewport");
         require(SDL_GetWindowFromID(windowID) == window, "Resize replaced the SDL window");
         gfx.drawFilledRect(0, 0, gfx.getW(), gfx.getH(), GAGCore::Color(255, 0, 0));
+        gfx.printScreen("resize-check.bmp");
         gfx.nextFrame();
-        auto* presented = SDL_GetWindowSurface(window);
+        // Mobile uses the portable renderer, not SDL_GetWindowSurface. Capture
+        // the actual presentation backend on both platforms.
+        auto* presented = SDL_LoadBMP((std::string(globalContainer->fileManager->getDir(0)) + "/resize-check.bmp").c_str());
         require(presented && presented->pixels && presented->format->BytesPerPixel == 4, "No presented test surface");
         Uint8 red, green, blue;
         SDL_GetRGB(*static_cast<Uint32*>(presented->pixels), presented->format, &red, &green, &blue);
+        SDL_FreeSurface(presented);
         require(red == 255 && green == 0 && blue == 0, "Resized surface was not presented to the window");
         require(!gfx.resizeViewport(0, 0) && gfx.getW() == 1200, "Zero viewport invalidated the render target");
         require(gfx.resizeViewport(800, 600), "Could not restore test viewport");

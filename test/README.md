@@ -110,6 +110,15 @@ count also make it a quick way to compare a shared primitive's before/after cost
 counts per generator repeat exactly across a behavior-preserving change, so a diff there is a
 signal something changed, not just an optimization's timing.
 
+## Android device execution
+
+The same CppUnit source list and selected client harnesses can run as native
+Android executables on a connected device. See the [device build and runner
+commands](../docs/mobile/development.md#native-tests-on-a-connected-android-device).
+Shell tests use SDL dummy video and have no audio or Java Activity; installed-APK
+interaction and lifecycle tests are separate. `python3 test/test_mobile_asset_bundle.py`
+checks the asset-index packaging regression independently of an Android SDK.
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
