@@ -805,6 +805,8 @@ private:
 	void release_farming_protection(AIMaximaRuntime::Context& echo);
 	FarmProtectionPlan build_farming_protection_plan(
 		AIMaximaRuntime::Context& echo);
+	void add_wheat_expansion_support(AIMaximaRuntime::Context& echo,
+		FarmProtectionPlan& plan);
 	void restore_passive_coastal_access(AIMaximaRuntime::Context& echo,
 		FarmProtectionPlan& plan);
 	void apply_farming_protection(AIMaximaRuntime::Context& echo,

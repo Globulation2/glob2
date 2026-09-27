@@ -244,6 +244,7 @@ struct Maxima::FarmProtectionPlan
 	std::vector<Uint8> protected_wheat;
 	int protected_seeds;
 	int protected_frontier;
+	int protected_wheat_support;
 	int protected_wheat_edges;
 	int protected_wheat_bootstraps;
 	int protected_wood_edges;
@@ -256,7 +257,7 @@ struct Maxima::FarmProtectionPlan
 
 	explicit FarmProtectionPlan(int size): forbidden(size, 0),
 		protected_wheat(size, 0), protected_seeds(0),
-		protected_frontier(0), protected_wheat_edges(0),
+		protected_frontier(0), protected_wheat_support(0), protected_wheat_edges(0),
 		protected_wheat_bootstraps(0), protected_wood_edges(0),
 		protected_wood_bootstraps(0), protected_interior_seeds(0),
 		blocked_directions(0), expected_capacity(0), wood_pressure(0),
@@ -1171,6 +1172,96 @@ void Maxima::resolve_wheat_invasion_clearing(Context& echo,
 			plan.forbidden[index]=0;
 }
 
+void Maxima::add_wheat_expansion_support(Context& echo, FarmProtectionPlan& plan)
+{
+	if(budget.recovery_active || budget.food_emergency) return;
+	Map* map=echo.player->map;
+	const int w=map->getW(), h=map->getH();
+	const Uint32 team=echo.player->team->me;
+	const auto nearby=farm_management_area(echo, budget.farming_management_radius);
+	// Snapshot normal targets: support must not recursively create obligations.
+	const auto targets=plan.protected_wheat;
+	std::vector<Uint8> open(w*h,0);
+	int harvestable=0;
+	for(int i=0; i<w*h; ++i)
+	{
+		const Tile& cell=map->getTile(i%w,i/w);
+		const bool external=map->isForbidden(i%w,i/w,team)
+			&& !applied_farm_protection_mask[i];
+		// Harvestable crops are potential lanes; permanent resources are not.
+		open[i]=!plan.forbidden[i] && !external && !map->isWater(i%w,i/w)
+			&& cell.building==NOGBID && (cell.resource.type==NO_RES_TYPE
+				|| cell.resource.type==WHEAT || cell.resource.type==WOOD);
+		if(open[i] && nearby[i] && cell.resource.type==WHEAT
+		   && cell.resource.amount>0) ++harvestable;
+	}
+	int live_budget=harvestable/4;
+	for(int target=0; target<w*h; ++target)
+	{
+		if(!targets[target] || !is_empty_growth_cell(map->getTile(target%w,target/w)))
+			continue;
+		std::vector<std::pair<Uint64,int>> candidates;
+		for(int dy=-1; dy<=1; ++dy)for(int dx=-1; dx<=1; ++dx)
+		{
+			if(!dx && !dy) continue;
+			const int x=map->normalizeX(target%w+dx), y=map->normalizeY(target/w+dy);
+			const int i=y*w+x;
+			const Tile& cell=map->getTile(x,y);
+			const bool live=cell.resource.type==WHEAT && cell.resource.amount>0;
+			// Odd/odd protection promises permanent seed survival. Temporary
+			// support must not establish a seed below the normal fertility cutoff.
+			if(Farming::isInteriorSeed(x,y) || plan.forbidden[i]
+			   || !open[i] || !nearby[i] || has_hard_farming_contract(i)
+			   || cell.groundUnit!=NOGUID || cell.airUnit!=NOGUID
+			   || !cell.canResourcesGrow || cell.terrain>=16
+			   || (!live && !is_empty_growth_cell(cell)) || !fertility_cache.at(x,y)) continue;
+			Uint64 incoming=0;
+			if(!live)
+				for(int sy=-1; sy<=1; ++sy)for(int sx=-1; sx<=1; ++sx)
+				{
+					if(!sx && !sy) continue;
+					const Tile& source=map->getTile(x+sx,y+sy);
+					if(source.resource.type==WHEAT)
+						incoming+=Uint64(fertility_cache.at(x+sx,y+sy))*source.resource.amount;
+				}
+			if(!live && !incoming) continue;
+			// Direct donors first, then viable two-step routes. Integer scores
+			// and cell-index ties keep decisions identical on every platform.
+			const Uint64 score=live ? (Uint64(1)<<40)
+				+Uint64(fertility_cache.at(x,y))*cell.resource.amount
+				: incoming*fertility_cache.at(x,y);
+			candidates.emplace_back(score,i);
+		}
+		std::sort(candidates.begin(),candidates.end(),[](const auto& a,const auto& b) {
+			return a.first!=b.first ? a.first>b.first : a.second<b.second;
+		});
+		int added=0;
+		for(const auto& candidate:candidates)
+		{
+			if(added==2) break;
+			const int i=candidate.second, x=i%w, y=i/w;
+			const bool live=map->getTile(x,y).resource.type==WHEAT;
+			if(live && !live_budget) continue;
+			uint16_t ring=0, empty_ring=0;
+			for(int dy=-1; dy<=1; ++dy)for(int dx=-1; dx<=1; ++dx)
+				if(open[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)])
+				{
+					const uint16_t bit=1<<((dy+1)*3+dx+1);
+					ring|=bit;
+					if(map->getTile(x+dx,y+dy).resource.type==NO_RES_TYPE)
+						empty_ring|=bit;
+				}
+			if(!Farming::canProtectWithoutSplittingAccess(ring)) continue;
+			if(!live && !Farming::canProtectWithoutSplittingAccess(empty_ring)) continue;
+			plan.forbidden[i]=plan.protected_wheat[i]=1;
+			open[i]=0;
+			live_budget-=live;
+			++added;
+			++plan.protected_wheat_support;
+		}
+	}
+}
+
 void Maxima::apply_farming_protection(Context& echo,
 	const FarmProtectionPlan& plan, int& added, int& removed)
 {
@@ -1249,6 +1340,7 @@ void Maxima::update_farming(Context& echo)
 		}
 	}
 
+	add_wheat_expansion_support(echo, plan);
 	resolve_wheat_invasion_clearing(echo, plan);
 	int added=0;
 	int removed=0;
@@ -1269,6 +1361,7 @@ void Maxima::update_farming(Context& echo)
 		"\tmicroseconds="+boost::lexical_cast<std::string>(elapsed)
 		+"\tprotected_seeds="+boost::lexical_cast<std::string>(plan.protected_seeds)
 		+"\tprotected_frontier="+boost::lexical_cast<std::string>(plan.protected_frontier)
+		+"\tprotected_wheat_support="+boost::lexical_cast<std::string>(plan.protected_wheat_support)
 		+"\tprotected_wheat_edges="+boost::lexical_cast<std::string>(plan.protected_wheat_edges)
 		+"\tprotected_wheat_bootstraps="+boost::lexical_cast<std::string>(plan.protected_wheat_bootstraps)
 		+"\tprotected_wood_edges="+boost::lexical_cast<std::string>(plan.protected_wood_edges)

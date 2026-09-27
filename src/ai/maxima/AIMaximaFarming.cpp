@@ -251,6 +251,21 @@ bool fertilityWithinPercentBand(uint32_t fertility, int minimumPercent,
 		&& scaled<=uint64_t(maximumPercent)*65536u;
 }
 
+bool canProtectWithoutSplittingAccess(uint16_t openNeighborhood)
+{
+	const uint16_t ring=openNeighborhood & 0x1ef;
+	if(!ring) return false;
+	uint16_t reached=ring & -ring;
+	for(int pass=0; pass<8; ++pass)
+		for(int i=0; i<9; ++i)
+			if(reached & (1<<i))
+				for(int j=0; j<9; ++j)
+					if((ring & (1<<j)) && std::abs(i%3-j%3)<=1
+					   && std::abs(i/3-j/3)<=1)
+						reached|=1<<j;
+	return reached==ring;
+}
+
 bool hasAdjacentProtectedWheat(const std::vector<uint8_t>& protectedWheat,
 	int width, int height, int x, int y)
 {
