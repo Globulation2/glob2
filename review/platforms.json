@@ -1,0 +1,49 @@
+{
+  "source_commit": "8efd999b9e07759a4140138e4cb7d78f0134d9b5",
+  "hosts": {
+    "localhost": [
+      {
+        "case": "arena",
+        "checksum_sha256": "809f90941dc6e7e4f540335e7eb29ef81a1006245fe4f1c738be4fe7442411c4",
+        "result": 8192
+      },
+      {
+        "case": "rice",
+        "checksum_sha256": "cba523ba6ebe3e6d5c1316e12bee7ecd32db7a31d8d49e97fbc8a0315e81d8d7",
+        "result": 8192
+      },
+      {
+        "case": "both-maxima",
+        "checksum_sha256": "e7f44f40309ded3288add5fa5089c9944e418e0f973cc9095739a8b42e9cdf9c",
+        "result": 8192
+      },
+      {
+        "case": "old-save",
+        "checksum_sha256": "809e2c68b63bd78a18a9276fa0b8936f7475144ca2b1300cdafb36ce4ff8a83a",
+        "result": 30512
+      }
+    ],
+    "devlaptop.local": [
+      {
+        "case": "arena",
+        "checksum_sha256": "809f90941dc6e7e4f540335e7eb29ef81a1006245fe4f1c738be4fe7442411c4",
+        "result": 8192
+      },
+      {
+        "case": "rice",
+        "checksum_sha256": "cba523ba6ebe3e6d5c1316e12bee7ecd32db7a31d8d49e97fbc8a0315e81d8d7",
+        "result": 8192
+      },
+      {
+        "case": "both-maxima",
+        "checksum_sha256": "e7f44f40309ded3288add5fa5089c9944e418e0f973cc9095739a8b42e9cdf9c",
+        "result": 8192
+      },
+      {
+        "case": "old-save",
+        "checksum_sha256": "809e2c68b63bd78a18a9276fa0b8936f7475144ca2b1300cdafb36ce4ff8a83a",
+        "result": 30512
+      }
+    ]
+  }
+}

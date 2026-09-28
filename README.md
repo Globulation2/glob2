@@ -21,3 +21,7 @@ Repeat with rice.map. The both-maxima case uses rice.map with both players set t
 `tournament-report.md`, `tournament-statistics.json` and `tournament-protocol.json` retain the six-policy paired follow-up. The selected policy is layout_mature4. The experiment comprised 2304 game outputs over 192 maps, with 1152 new games and 1152 accepted matched controls. The selected prototype source is preserved in selected-prototype.cpp.gz. Production generalized it to all Maxima teams; the two Maxima-vs-Nicowar validation cases matched the prototype's complete per-tick sidecars.
 
 The experiment showed increased harvest alongside higher starvation; late-game evidence remains inconclusive. This is not a blanket safety or performance claim. Raw full tournament logs, replays, saves and immutable bundles remain in the author's retained workspace; they are not all uploaded in this compact review package. The included reproducible inputs and checksum traces cover the production compatibility checks.
+
+## Post-review fixes
+
+See [current-head review validation](review/README.md) for the later wood-reserve fixes and their new regression/cross-platform evidence. Earlier results above describe the original production-policy commit.
