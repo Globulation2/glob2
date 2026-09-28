@@ -3332,3 +3332,59 @@ Detalii
 Numele campaniei
 [Unlocking]
 Deblocare
+[Parameters]
+Parametri
+[Blank map]
+Hartă goală
+[Generated]
+Generată
+[Preview]
+Previzualizare
+[Selected landscape]
+Peisaj selectat
+[Representative preview]
+Previzualizare reprezentativă
+[Starting terrain]
+Teren inițial
+[Hide parameters]
+Ascunde parametrii
+[Size and parameters]
+Dimensiune și parametri
+[Choose a landscape]
+Alege un peisaj
+[%0 / Browse]
+%0 / Răsfoiește
+[%0 colonies · %1]
+%0 colonii · %1
+[%0 · Team %1]
+%0 · Echipa %1
+[Colonies: %0]
+Colonii: %0
+[%0 colonies · %1 AI]
+%0 colonii · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unităţi
+[settings Level %0]
+Nivel %0
+[settings Match the desktop %0]
+La fel ca desktopul (%0)
+[settings Current display %0 %1 %2 %3]
+Modul de afișare curent: %0 × %1 · %2 · %3
+[Fairness: %0]
+Echitate: %0
+[Colony %0]
+Colonie %0
+[Win chance: %0 · Fitness: %1]
+Șansă de câștig: %0 · Putere: %1
+[%0 · Contribution: %1]
+%0 · Contribuție: %1
+[Min required level %0]
+Nivel minim necesar: %0
+[Confirm %0]
+Acceptă: %0
+[Dialog text size %0]
+Dimensiunea textului din dialoguri: %0%
+[%0 %1]
+%0 %1

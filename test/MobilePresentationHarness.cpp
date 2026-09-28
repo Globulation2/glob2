@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GlobalContainer.h"
+#include "NewMapScreen.h"
 #include "CustomGameScreen.h"
 #include "SettingsScreen.h"
 #include "LandscapePickerScreen.h"
@@ -97,6 +98,21 @@ struct MobilePresentationHarness
 																std::vector<GAGCore::Color>{});
 			auto *qualityControls = quality->controls;
 			exercise(std::move(quality), qualityControls, "quality");
+			struct NewMapFixture : NewMapScreen
+			{
+				LobbyControls *composedControls()
+				{
+					for (auto *widget : widgets)
+						if (auto *ui = dynamic_cast<LobbyControls *>(widget))
+							return ui;
+					return nullptr;
+				}
+			};
+			auto newMap = std::make_unique<NewMapFixture>();
+			newMap->descriptor = request;
+			auto *newMapControls = newMap->composedControls();
+			require(newMapControls != nullptr, "Editor setup exposes composed controls");
+			exercise(std::move(newMap), newMapControls, "new-map");
 			GAGGUI::ScreenStack owner(*gfx);
 			auto lobby = std::make_unique<CustomGameScreen>(owner);
 			auto *lobbyControls = lobby->controls;

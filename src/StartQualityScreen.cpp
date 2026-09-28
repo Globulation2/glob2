@@ -5,6 +5,7 @@
 #include "LobbyControls.h"
 #include "gui/FrontendLayout.h"
 #include <StringTable.h>
+#include <FormatableString.h>
 #include <Toolkit.h>
 #include <algorithm>
 #include <cstdio>
@@ -190,31 +191,33 @@ void StartQualityScreen::renderCards()
 	ui.beginRegion(40, {x + 8, top + 64, w - 16, std::max(0, bottom - top - 72)});
 	int y = top + 64 - ui.regions[40].offset, start = y;
 	y += ui.paragraph(x + 16, y, w - 32, tr("Start quality"), "menu", false, false) + 12;
-	y += ui.paragraph(x + 16, y, w - 32, tr("Fairness") + ": " + fixed(report.fairness), "standard",
-					  false, false) +
+	y += ui.paragraph(x + 16, y, w - 32,
+					  GAGCore::FormattableString(tr("Fairness: %0")).arg(fixed(report.fairness)),
+					  "standard", false, false) +
 		 16;
 	for (size_t i = 0; i < report.colonies.size(); ++i)
 	{
 		const auto &q = report.colonies[i];
 		const auto name =
-			i < labels.size() ? labels[i] : tr("Colony") + " " + std::to_string(i + 1);
-		const auto summary = tr("Win chance") + ": " + percent(q.winProbability) + " · " +
-							 tr("Fitness") + ": " + signed_(q.fitness);
+			i < labels.size() ? labels[i] : GAGCore::FormattableString(tr("Colony %0")).arg(i + 1);
+		const auto summary = GAGCore::FormattableString(tr("Win chance: %0 · Fitness: %1"))
+								 .arg(percent(q.winProbability))
+								 .arg(signed_(q.fitness));
 		const int summaryH = ui.paragraph(0, 0, w - 48, summary, "little", false, false, false);
 		const int headerH = 40 + summaryH + 12;
 		int detailH = 0;
 		if (expanded.count(i))
 			for (int c = 0; c < FAIRNESS_MODEL_FEATURE_COUNT; ++c)
-				detailH +=
-					ui.paragraph(0, 0, w - 48, fairnessModelTerms()[c].label, "standard", false,
-								 false, false) +
-					4 +
-					ui.paragraph(0, 0, w - 48,
-								 fixed(fairnessModelMeasurement(report.colonies, i, c), 0) + " · " +
-									 tr("Contribution") + ": " +
-									 signed_(fairnessModelContribution(report.colonies, i, c)),
-								 "standard", false, false, false) +
-					16;
+				detailH += ui.paragraph(0, 0, w - 48, fairnessModelTerms()[c].label, "standard",
+										false, false, false) +
+						   4 +
+						   ui.paragraph(
+							   0, 0, w - 48,
+							   GAGCore::FormattableString(tr("%0 · Contribution: %1"))
+								   .arg(fixed(fairnessModelMeasurement(report.colonies, i, c), 0))
+								   .arg(signed_(fairnessModelContribution(report.colonies, i, c))),
+							   "standard", false, false, false) +
+						   16;
 		// Measure the entire disclosure before painting its enclosing surface.
 		ui.box({x + 8, y, w - 16, headerH + detailH}, Color(225, 231, 209), 8);
 		ui.button("quality/colony/" + std::to_string(i), {x + 8, y, w - 16, headerH}, "",
@@ -239,11 +242,12 @@ void StartQualityScreen::renderCards()
 				y += ui.paragraph(x + 20, y, w - 48, fairnessModelTerms()[c].label, "standard",
 								  false, false) +
 					 4;
-				y += ui.paragraph(x + 20, y, w - 48,
-								  fixed(fairnessModelMeasurement(report.colonies, i, c), 0) +
-									  " · " + tr("Contribution") + ": " +
-									  signed_(fairnessModelContribution(report.colonies, i, c)),
-								  "standard", false, false) +
+				y += ui.paragraph(
+						 x + 20, y, w - 48,
+						 GAGCore::FormattableString(tr("%0 · Contribution: %1"))
+							 .arg(fixed(fairnessModelMeasurement(report.colonies, i, c), 0))
+							 .arg(signed_(fairnessModelContribution(report.colonies, i, c))),
+						 "standard", false, false) +
 					 16;
 			}
 		y += 12;

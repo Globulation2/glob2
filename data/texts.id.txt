@@ -3328,3 +3328,59 @@ Rincian
 Nama kampanye
 [Unlocking]
 Pembukaan
+[Parameters]
+Parameter
+[Blank map]
+Peta kosong
+[Generated]
+Dihasilkan
+[Preview]
+Pratinjau
+[Selected landscape]
+Bentang alam terpilih
+[Representative preview]
+Pratinjau contoh
+[Starting terrain]
+Medan awal
+[Hide parameters]
+Sembunyikan parameter
+[Size and parameters]
+Ukuran dan parameter
+[Choose a landscape]
+Pilih bentang alam
+[%0 / Browse]
+%0 / Jelajahi
+[%0 colonies · %1]
+%0 koloni · %1
+[%0 · Team %1]
+%0 · Tim %1
+[Colonies: %0]
+Koloni: %0
+[%0 colonies · %1 AI]
+%0 koloni · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unit
+[settings Level %0]
+Tingkat %0
+[settings Match the desktop %0]
+Ikuti desktop (%0)
+[settings Current display %0 %1 %2 %3]
+Setelan tampilan saat ini: %0 × %1 · %2 · %3
+[Fairness: %0]
+Keadilan: %0
+[Colony %0]
+Koloni %0
+[Win chance: %0 · Fitness: %1]
+Peluang menang: %0 · Kekuatan: %1
+[%0 · Contribution: %1]
+%0 · Kontribusi: %1
+[Min required level %0]
+Tingkat minimum: %0
+[Confirm %0]
+Oke: %0
+[Dialog text size %0]
+Ukuran teks dialog: %0%
+[%0 %1]
+%0 %1

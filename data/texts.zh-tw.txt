@@ -3404,3 +3404,59 @@ CPU %0%
 戰役名稱
 [Unlocking]
 解鎖
+[Parameters]
+參數
+[Blank map]
+空白地圖
+[Generated]
+已產生
+[Preview]
+預覽
+[Selected landscape]
+所選地形
+[Representative preview]
+示例預覽
+[Starting terrain]
+初始地形
+[Hide parameters]
+隱藏參數
+[Size and parameters]
+大小與參數
+[Choose a landscape]
+選擇地形
+[%0 / Browse]
+%0 / 瀏覽
+[%0 colonies · %1]
+%0個殖民地 · %1
+[%0 · Team %1]
+%0 · 隊伍 %1
+[Colonies: %0]
+殖民地: %0
+[%0 colonies · %1 AI]
+%0個殖民地 · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 單位
+[settings Level %0]
+等級 %0
+[settings Match the desktop %0]
+與桌面相同 (%0)
+[settings Current display %0 %1 %2 %3]
+目前顯示設定: %0 × %1 · %2 · %3
+[Fairness: %0]
+公平度: %0
+[Colony %0]
+殖民地 %0
+[Win chance: %0 · Fitness: %1]
+勝率: %0 · 強度: %1
+[%0 · Contribution: %1]
+%0 · 貢獻: %1
+[Min required level %0]
+最小等級需求: %0
+[Confirm %0]
+確定: %0
+[Dialog text size %0]
+對話框文字大小: %0%
+[%0 %1]
+%0 %1

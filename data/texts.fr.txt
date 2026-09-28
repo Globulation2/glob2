@@ -3342,3 +3342,59 @@ Détails
 Nom de la campagne
 [Unlocking]
 Déverrouillage
+[Parameters]
+Paramètres
+[Blank map]
+Carte vide
+[Generated]
+Générée
+[Preview]
+Aperçu
+[Selected landscape]
+Paysage sélectionné
+[Representative preview]
+Aperçu représentatif
+[Starting terrain]
+Terrain initial
+[Hide parameters]
+Masquer les paramètres
+[Size and parameters]
+Taille et paramètres
+[Choose a landscape]
+Choisir un paysage
+[%0 / Browse]
+%0 / Parcourir
+[%0 colonies · %1]
+%0 colonies · %1
+[%0 · Team %1]
+%0 · Équipe %1
+[Colonies: %0]
+Colonies: %0
+[%0 colonies · %1 AI]
+%0 colonies · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unités
+[settings Level %0]
+Niveau %0
+[settings Match the desktop %0]
+Comme le bureau (%0)
+[settings Current display %0 %1 %2 %3]
+Affichage actuel: %0 × %1 · %2 · %3
+[Fairness: %0]
+Équité: %0
+[Colony %0]
+Colonie %0
+[Win chance: %0 · Fitness: %1]
+Chance de victoire: %0 · Aptitude: %1
+[%0 · Contribution: %1]
+%0 · Contribution: %1
+[Min required level %0]
+Niveau minimum requis: %0
+[Confirm %0]
+Accepter: %0
+[Dialog text size %0]
+Taille du texte des dialogues: %0%
+[%0 %1]
+%0 %1

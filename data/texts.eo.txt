@@ -3330,3 +3330,59 @@ Detaloj
 Kampanja nomo
 [Unlocking]
 Malŝlosado
+[Parameters]
+Parametroj
+[Blank map]
+Malplena mapo
+[Generated]
+Generita
+[Preview]
+Antaŭrigardo
+[Selected landscape]
+Elektita pejzaĝo
+[Representative preview]
+Ekzempla antaŭrigardo
+[Starting terrain]
+Komenca tereno
+[Hide parameters]
+Kaŝi parametrojn
+[Size and parameters]
+Grando kaj parametroj
+[Choose a landscape]
+Elektu pejzaĝon
+[%0 / Browse]
+%0 / Foliumi
+[%0 colonies · %1]
+%0 kolonioj · %1
+[%0 · Team %1]
+%0 · Teamo %1
+[Colonies: %0]
+Kolonioj: %0
+[%0 colonies · %1 AI]
+%0 kolonioj · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Globuloj
+[settings Level %0]
+Nivelo %0
+[settings Match the desktop %0]
+Kiel la labortablo (%0)
+[settings Current display %0 %1 %2 %3]
+Nunaj ekranagordoj: %0 × %1 · %2 · %3
+[Fairness: %0]
+Justeco: %0
+[Colony %0]
+Kolonio %0
+[Win chance: %0 · Fitness: %1]
+Ŝanco venki: %0 · Taŭgeco: %1
+[%0 · Contribution: %1]
+%0 · Kontribuo: %1
+[Min required level %0]
+Minimuma bezonata nivelo: %0
+[Confirm %0]
+Bone!: %0
+[Dialog text size %0]
+Dialoga tekstogrando: %0%
+[%0 %1]
+%0 %1

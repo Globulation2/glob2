@@ -59,8 +59,8 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 	if (b->type->type == "warflag")
 	{
 		for (int i = 0; i < NB_UNIT_LEVELS; ++i)
-			result.push_back({tr("[Min required level:]") + " " + std::to_string(i + 1), 2, i,
-							  gui.displayedMinLevelToFlag(*b) == i});
+			result.push_back({GAGCore::FormattableString(tr("[Min required level %0]")).arg(i + 1),
+							  2, i, gui.displayedMinLevelToFlag(*b) == i});
 	}
 	if (b->type->type == "explorationflag")
 	{
@@ -87,7 +87,10 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 		result.push_back({tr("[cancel destroy]"), 4});
 	else if (b->buildingState == Building::ALIVE)
 	{
-		result.push_back({(confirmDestroy ? tr("[ok]") + ": " : "") + tr("[destroy]"), 4});
+		result.push_back({confirmDestroy
+							  ? GAGCore::FormattableString(tr("[Confirm %0]")).arg(tr("[destroy]"))
+							  : tr("[destroy]"),
+						  4});
 		if (confirmDestroy)
 			result.push_back({tr("[Cancel]"), 5});
 	}

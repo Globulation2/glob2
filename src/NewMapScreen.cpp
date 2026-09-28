@@ -6,6 +6,7 @@
 
 #include "GlobalContainer.h"
 #include "NewMapScreen.h"
+#include <FormatableString.h>
 #include "LobbyControls.h"
 #include "LandscapePickerScreen.h"
 #include "GUIMapPreview.h"
@@ -207,7 +208,8 @@ void NewMapScreen::compose()
 	const int height = std::min(int(safe.h) - 24, parameters ? int(safe.h) - 24 : overviewHeight);
 	const int top = int(safe.y) + (int(safe.h) - height) / 2, bottom = top + height;
 	ui.box({x - 8, top - 8, w + 16, bottom - top + 16}, Color(232, 237, 218));
-	ui.text(x, top, parameters ? "Parameters" : tr("create map"), "menu", parameters ? w - 144 : w);
+	ui.text(x, top, parameters ? tr("Parameters") : tr("create map"), "menu",
+			parameters ? w - 144 : w);
 	const int tabs = top + 32;
 	auto choose = [this](int method)
 	{
@@ -219,11 +221,11 @@ void NewMapScreen::compose()
 	if (!parameters)
 	{
 		ui.button(
-			"blank", {x, tabs, w / 2 - 4, 44}, "Blank map",
+			"blank", {x, tabs, w / 2 - 4, 44}, tr("Blank map"),
 			[choose] { choose(GenerationRequest::eUNIFORM); },
 			descriptor.method == GenerationRequest::eUNIFORM);
 		ui.button(
-			"generated", {x + w / 2 + 4, tabs, w / 2 - 4, 44}, "Generated",
+			"generated", {x + w / 2 + 4, tabs, w / 2 - 4, 44}, tr("Generated"),
 			[this, choose]
 			{
 				if (descriptor.method == GenerationRequest::eUNIFORM)
@@ -233,7 +235,7 @@ void NewMapScreen::compose()
 			descriptor.method != GenerationRequest::eUNIFORM);
 	}
 	else
-		ui.button("preview", {x + w - 132, top - 4, 132, 44}, "Preview",
+		ui.button("preview", {x + w - 132, top - 4, 132, 44}, tr("Preview"),
 				  [this]
 				  {
 					  parameters = false;
@@ -252,7 +254,7 @@ void NewMapScreen::compose()
 									contentTop, previewSize, previewSize);
 		preview->paint();
 		ui.text(x, contentTop + previewSize + 4,
-				descriptor.seed ? "Selected landscape" : "Representative preview", "little",
+				descriptor.seed ? tr("Selected landscape") : tr("Representative preview"), "little",
 				wide ? w / 2 : w);
 	}
 	ui.beginRegion(1, {right, fieldsTop, fieldsW, std::max(1, footer - fieldsTop - 8)});
@@ -262,13 +264,14 @@ void NewMapScreen::compose()
 		if (descriptor.method != GenerationRequest::eUNIFORM)
 		{
 			ui.button("landscape", {right, row, fieldsW - 8, 48},
-					  tr(registry.at(descriptor.method).nameKey) + "  /  Browse",
+					  GAGCore::FormattableString(tr("%0 / Browse"))
+						  .arg(tr(registry.at(descriptor.method).nameKey)),
 					  [this] { chooseLandscape(); });
 			row += 56;
 		}
 		else
 		{
-			ui.text(right, row, "Starting terrain", "standard", fieldsW);
+			ui.text(right, row, tr("Starting terrain"), "standard", fieldsW);
 			row += 24;
 			std::vector<std::string> names{tr("water"), tr("sand"), tr("grass")};
 			ui.dropdown("terrain", {right, row, fieldsW - 8, 48}, names, descriptor.terrainType,
@@ -281,7 +284,7 @@ void NewMapScreen::compose()
 		}
 		ui.button(
 			"parameters", {right, row, fieldsW - 8, 44},
-			parameters ? "Hide parameters" : "Size and parameters",
+			parameters ? tr("Hide parameters") : tr("Size and parameters"),
 			[this]
 			{
 				parameters = !parameters;
@@ -383,8 +386,8 @@ LandscapePickerScreen *NewMapScreen::chooseLandscape()
 		entries.push_back(
 			{tr(registry.at(method).nameKey), request, method, registry.at(method).tags});
 	}
-	auto picker =
-		std::make_unique<LandscapePickerScreen>("Choose a landscape", std::move(entries), selected);
+	auto picker = std::make_unique<LandscapePickerScreen>(tr("Choose a landscape"),
+														  std::move(entries), selected);
 	auto *result = picker.get();
 	screens->push(std::move(picker),
 				  [this](Screen &screen, int result)

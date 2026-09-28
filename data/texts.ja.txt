@@ -3328,3 +3328,59 @@ CPU %0%
 キャンペーン名
 [Unlocking]
 解放条件
+[Parameters]
+パラメーター
+[Blank map]
+空の地図
+[Generated]
+自動生成
+[Preview]
+プレビュー
+[Selected landscape]
+選択した地形
+[Representative preview]
+代表的なプレビュー
+[Starting terrain]
+初期地形
+[Hide parameters]
+パラメーターを隠す
+[Size and parameters]
+サイズとパラメーター
+[Choose a landscape]
+地形を選択
+[%0 / Browse]
+%0 / 参照
+[%0 colonies · %1]
+%0コロニー · %1
+[%0 · Team %1]
+%0 · チーム %1
+[Colonies: %0]
+コロニー: %0
+[%0 colonies · %1 AI]
+%0コロニー · AI %1
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 ユニット
+[settings Level %0]
+レベル %0
+[settings Match the desktop %0]
+デスクトップに合わせる (%0)
+[settings Current display %0 %1 %2 %3]
+現在の表示設定: %0 × %1 · %2 · %3
+[Fairness: %0]
+公平性: %0
+[Colony %0]
+コロニー %0
+[Win chance: %0 · Fitness: %1]
+勝率: %0 · 強さ: %1
+[%0 · Contribution: %1]
+%0 · 寄与度: %1
+[Min required level %0]
+最低必要レベル： %0
+[Confirm %0]
+OK: %0
+[Dialog text size %0]
+ダイアログの文字サイズ: %0%
+[%0 %1]
+%0 %1

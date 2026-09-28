@@ -3330,3 +3330,59 @@ Emoji
 نام کارزار
 [Unlocking]
 باز کردن قفل
+[Parameters]
+پارامترها
+[Blank map]
+نقشهٔ خالی
+[Generated]
+تولیدشده
+[Preview]
+پیش‌نمایش
+[Selected landscape]
+چشم‌انداز انتخاب‌شده
+[Representative preview]
+پیش‌نمایش نمونه
+[Starting terrain]
+زمین اولیه
+[Hide parameters]
+پنهان کردن پارامترها
+[Size and parameters]
+اندازه و پارامترها
+[Choose a landscape]
+چشم‌اندازی انتخاب کنید
+[%0 / Browse]
+%0 / مرور
+[%0 colonies · %1]
+%0 مستعمرات · %1
+[%0 · Team %1]
+%0 · تیم %1
+[Colonies: %0]
+مستعمرات: %0
+[%0 colonies · %1 AI]
+%0 مستعمرات · %1 هوش مصنوعی
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 واحدها
+[settings Level %0]
+سطح %0
+[settings Match the desktop %0]
+مطابق با میزکار (%0)
+[settings Current display %0 %1 %2 %3]
+تنظیمات نمایش فعلی: %0 × %1 · %2 · %3
+[Fairness: %0]
+انصاف: %0
+[Colony %0]
+مستعمره %0
+[Win chance: %0 · Fitness: %1]
+احتمال پیروزی: %0 · توان: %1
+[%0 · Contribution: %1]
+%0 · سهم: %1
+[Min required level %0]
+حداقل رتبه‌ی لازم: %0
+[Confirm %0]
+قبول!: %0
+[Dialog text size %0]
+اندازه متن گفتگو: %0%
+[%0 %1]
+%0 %1

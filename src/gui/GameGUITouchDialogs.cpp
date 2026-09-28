@@ -299,8 +299,9 @@ void GameGUITouch::prepareDialog()
 		for (int i = 0; i < 3; ++i)
 			dialogRows.push_back(
 				{nullptr,
-				 Toolkit::getStringTable()->getString("[Dialog text size]") + std::string(": ") +
-					 std::to_string(100 + i * 25) + "%",
+				 GAGCore::FormattableString(
+					 Toolkit::getStringTable()->getString("[Dialog text size %0]"))
+					 .arg(100 + i * 25),
 				 100, 90 + i, globalContainer->settings.mobileDialogTextPercent == 100 + i * 25});
 	if (gui.typingInputScreen)
 	{

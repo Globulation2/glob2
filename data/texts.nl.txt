@@ -3356,3 +3356,59 @@ Details
 Campagnenaam
 [Unlocking]
 Ontgrendeling
+[Parameters]
+Parameters
+[Blank map]
+Lege kaart
+[Generated]
+Gegenereerd
+[Preview]
+Voorbeeld
+[Selected landscape]
+Gekozen landschap
+[Representative preview]
+Representatief voorbeeld
+[Starting terrain]
+Beginterrein
+[Hide parameters]
+Parameters verbergen
+[Size and parameters]
+Grootte en parameters
+[Choose a landscape]
+Kies een landschap
+[%0 / Browse]
+%0 / Bladeren
+[%0 colonies · %1]
+%0 kolonies · %1
+[%0 · Team %1]
+%0 · Team %1
+[Colonies: %0]
+Kolonies: %0
+[%0 colonies · %1 AI]
+%0 kolonies · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Eenheden
+[settings Level %0]
+Niveau %0
+[settings Match the desktop %0]
+Zoals het bureaublad (%0)
+[settings Current display %0 %1 %2 %3]
+Huidige weergave: %0 × %1 · %2 · %3
+[Fairness: %0]
+Eerlijkheid: %0
+[Colony %0]
+Kolonie %0
+[Win chance: %0 · Fitness: %1]
+Winkans: %0 · Sterkte: %1
+[%0 · Contribution: %1]
+%0 · Bijdrage: %1
+[Min required level %0]
+Minimaal vereist niveau: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Tekstgrootte dialoogvensters: %0%
+[%0 %1]
+%0 %1

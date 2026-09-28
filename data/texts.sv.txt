@@ -3342,3 +3342,59 @@ Detaljer
 Kampanjnamn
 [Unlocking]
 Upplåsning
+[Parameters]
+Parametrar
+[Blank map]
+Tom karta
+[Generated]
+Genererad
+[Preview]
+Förhandsvisning
+[Selected landscape]
+Valt landskap
+[Representative preview]
+Representativ förhandsvisning
+[Starting terrain]
+Startterräng
+[Hide parameters]
+Dölj parametrar
+[Size and parameters]
+Storlek och parametrar
+[Choose a landscape]
+Välj ett landskap
+[%0 / Browse]
+%0 / Bläddra
+[%0 colonies · %1]
+%0 kolonier · %1
+[%0 · Team %1]
+%0 · Lag %1
+[Colonies: %0]
+Kolonier: %0
+[%0 colonies · %1 AI]
+%0 kolonier · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Enheter
+[settings Level %0]
+Nivå %0
+[settings Match the desktop %0]
+Följ skrivbordet (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuella visningsinställningar: %0 × %1 · %2 · %3
+[Fairness: %0]
+Rättvisa: %0
+[Colony %0]
+Koloni %0
+[Win chance: %0 · Fitness: %1]
+Vinstchans: %0 · Styrka: %1
+[%0 · Contribution: %1]
+%0 · Bidrag: %1
+[Min required level %0]
+Lägsta tillåtna nivå: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Dialogtextstorlek: %0%
+[%0 %1]
+%0 %1

@@ -3342,3 +3342,59 @@ Xehetasunak
 Kanpainaren izena
 [Unlocking]
 Desblokeatzea
+[Parameters]
+Parametroak
+[Blank map]
+Mapa hutsa
+[Generated]
+Sortua
+[Preview]
+Aurrebista
+[Selected landscape]
+Hautatutako paisaia
+[Representative preview]
+Adibidezko aurrebista
+[Starting terrain]
+Hasierako lurra
+[Hide parameters]
+Ezkutatu parametroak
+[Size and parameters]
+Tamaina eta parametroak
+[Choose a landscape]
+Aukeratu paisaia bat
+[%0 / Browse]
+%0 / Arakatu
+[%0 colonies · %1]
+%0 koloniak · %1
+[%0 · Team %1]
+%0 · %1 taldea
+[Colonies: %0]
+Koloniak: %0
+[%0 colonies · %1 AI]
+%0 koloniak · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unitateak
+[settings Level %0]
+Maila %0
+[settings Match the desktop %0]
+Mahaigainaren arabera (%0)
+[settings Current display %0 %1 %2 %3]
+Uneko pantaila-ezarpenak: %0 × %1 · %2 · %3
+[Fairness: %0]
+Zuzentasuna: %0
+[Colony %0]
+Kolonia %0
+[Win chance: %0 · Fitness: %1]
+Irabazteko aukera: %0 · Egokitasuna: %1
+[%0 · Contribution: %1]
+%0 · Ekarpena: %1
+[Min required level %0]
+Gutxienezko maila: %0
+[Confirm %0]
+Ados: %0
+[Dialog text size %0]
+Elkarrizketako testuaren tamaina: %0%
+[%0 %1]
+%0 %1

@@ -6,6 +6,7 @@
 #include "SoundMixer.h"
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <FormatableString.h>
 #include <algorithm>
 #include <cmath>
 #include <iterator>
@@ -94,8 +95,8 @@ void SettingsScreen::buildGeneral()
 				std::vector<std::string> labels;
 				for (int p : percents)
 					labels.push_back(p ? std::to_string(p) + " %"
-									   : tr("Match the desktop") + " (" +
-											 std::to_string(desktopPercent) + " %)");
+									   : FormattableString(tr("Match the desktop %0"))
+											 .arg(std::to_string(desktopPercent) + " %"));
 				int selected = std::find(std::begin(percents), std::end(percents), s.uiScale) -
 							   std::begin(percents);
 				if (selected >= int(std::size(percents)))
@@ -109,15 +110,15 @@ void SettingsScreen::buildGeneral()
 							   changeUiScale(percents[v]);
 					   });
 			}
-			info(tr("Current display") + ": " + std::to_string(globalContainer->gfx->getW()) +
-				 " × " + std::to_string(globalContainer->gfx->getH()) + " · " +
-				 ((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-					  ? "OpenGL"
-					  : tr("Software")) +
-				 " · " +
-				 tr(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN
-						? "Fullscreen"
-						: "Windowed"));
+			info(FormattableString(tr("Current display %0 %1 %2 %3"))
+					 .arg(globalContainer->gfx->getW())
+					 .arg(globalContainer->gfx->getH())
+					 .arg((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
+							  ? "OpenGL"
+							  : tr("Software"))
+					 .arg(tr(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN
+								 ? "Fullscreen"
+								 : "Windowed")));
 			if (restartRequired())
 				info(tr("Saved — restart required"));
 			if (displayError)

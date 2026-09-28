@@ -3332,3 +3332,59 @@ Podrobnosti
 Název kampaně
 [Unlocking]
 Odemykání
+[Parameters]
+Parametry
+[Blank map]
+Prázdná mapa
+[Generated]
+Vygenerovaná
+[Preview]
+Náhled
+[Selected landscape]
+Vybraná krajina
+[Representative preview]
+Ukázkový náhled
+[Starting terrain]
+Výchozí terén
+[Hide parameters]
+Skrýt parametry
+[Size and parameters]
+Velikost a parametry
+[Choose a landscape]
+Vyberte krajinu
+[%0 / Browse]
+%0 / Procházet
+[%0 colonies · %1]
+%0 kolonie · %1
+[%0 · Team %1]
+%0 · Tým %1
+[Colonies: %0]
+Kolonie: %0
+[%0 colonies · %1 AI]
+%0 kolonie · %1 Počítač
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Jednotky
+[settings Level %0]
+Úroveň %0
+[settings Match the desktop %0]
+Podle plochy (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuální režim zobrazení: %0 × %1 · %2 · %3
+[Fairness: %0]
+Spravedlnost: %0
+[Colony %0]
+Kolonie %0
+[Win chance: %0 · Fitness: %1]
+Šance na výhru: %0 · Síla: %1
+[%0 · Contribution: %1]
+%0 · Příspěvek: %1
+[Min required level %0]
+Min. úroveň jednotek: %0
+[Confirm %0]
+Budiž: %0
+[Dialog text size %0]
+Velikost textu dialogů: %0%
+[%0 %1]
+%0 %1

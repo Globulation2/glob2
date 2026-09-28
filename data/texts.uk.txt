@@ -3328,3 +3328,59 @@ Emoji
 Назва кампанії
 [Unlocking]
 Розблокування
+[Parameters]
+Параметри
+[Blank map]
+Порожня мапа
+[Generated]
+Згенерована
+[Preview]
+Попередній перегляд
+[Selected landscape]
+Вибраний ландшафт
+[Representative preview]
+Приблизний вигляд
+[Starting terrain]
+Початковий рельєф
+[Hide parameters]
+Приховати параметри
+[Size and parameters]
+Розмір і параметри
+[Choose a landscape]
+Виберіть ландшафт
+[%0 / Browse]
+%0 / Огляд
+[%0 colonies · %1]
+%0 колонії · %1
+[%0 · Team %1]
+%0 · Команда %1
+[Colonies: %0]
+Колонії: %0
+[%0 colonies · %1 AI]
+%0 колонії · %1 ШІ
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Істоти
+[settings Level %0]
+Рівень %0
+[settings Match the desktop %0]
+Як у системі (%0)
+[settings Current display %0 %1 %2 %3]
+Поточний режим екрана: %0 × %1 · %2 · %3
+[Fairness: %0]
+Справедливість: %0
+[Colony %0]
+Колонія %0
+[Win chance: %0 · Fitness: %1]
+Шанс перемоги: %0 · Сила: %1
+[%0 · Contribution: %1]
+%0 · Внесок: %1
+[Min required level %0]
+Мін. рівень: %0
+[Confirm %0]
+Гаразд: %0
+[Dialog text size %0]
+Розмір тексту діалогів: %0%
+[%0 %1]
+%0 %1

@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <FormatableString.h>
 
 using namespace GAGCore;
 
@@ -24,13 +25,14 @@ void SettingsScreen::buildBuildings()
 		{
 			const auto name = Toolkit::getStringTable()->getString(
 				"[" + IntBuildingType::typeFromShortNumber(t) + "]");
-			button("buildings.open." + std::to_string(t),
-				   name + " · " + std::to_string(s.defaultUnitsAssigned[t][1]) + " " + tr("Units"),
-				   [this, t]
-				   {
-					   selectedBuilding = t;
-					   scroll[int(current)] = 0;
-				   });
+			button(
+				"buildings.open." + std::to_string(t),
+				FormattableString(tr("%0 · %1 Units")).arg(name).arg(s.defaultUnitsAssigned[t][1]),
+				[this, t]
+				{
+					selectedBuilding = t;
+					scroll[int(current)] = 0;
+				});
 			form.back().buildingIcon = t;
 		}
 		toggle("buildings.remember", "Remember assignments between games",
@@ -134,7 +136,7 @@ void SettingsScreen::buildBuildings()
 		for (int col = 1; col < columns; ++col)
 		{
 			auto &r = add("", Kind::Info,
-						  tr("Level") + " " + std::to_string(buildingTab == 2 ? col + 1 : col));
+						  FormattableString(tr("Level %0")).arg(buildingTab == 2 ? col + 1 : col));
 			r.columns = columns;
 			r.column = col;
 		}
@@ -171,7 +173,8 @@ void SettingsScreen::buildBuildings()
 			int slot = slots[i];
 			if (slot >= 0)
 			{
-				std::string label = table ? "" : tr("Level") + " " + std::to_string(slot / 2 + 1);
+				std::string label =
+					table ? "" : FormattableString(tr("Level %0")).arg(slot / 2 + 1);
 				number("units." + std::to_string(t) + "." + std::to_string(slot), label,
 					   s.defaultUnitsAssigned[t][slot], 1, 20,
 					   [this, t, slot](int v)
@@ -239,7 +242,8 @@ void SettingsScreen::buildBuildingDetail(int t)
 				section(sections[phase]);
 				hasSection = true;
 			}
-			units(level * 2 + (phase == 0 ? 1 : 0), tr("Level") + " " + std::to_string(level + 1));
+			units(level * 2 + (phase == 0 ? 1 : 0),
+				  FormattableString(tr("Level %0")).arg(level + 1));
 		}
 	}
 }

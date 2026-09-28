@@ -3332,3 +3332,59 @@ Tiedot
 Kampanjan nimi
 [Unlocking]
 Avaaminen
+[Parameters]
+Parametrit
+[Blank map]
+Tyhjä kartta
+[Generated]
+Luotu
+[Preview]
+Esikatselu
+[Selected landscape]
+Valittu maisema
+[Representative preview]
+Esimerkkiesikatselu
+[Starting terrain]
+Aloitusmaasto
+[Hide parameters]
+Piilota parametrit
+[Size and parameters]
+Koko ja parametrit
+[Choose a landscape]
+Valitse maisema
+[%0 / Browse]
+%0 / Selaa
+[%0 colonies · %1]
+%0 siirtokuntia · %1
+[%0 · Team %1]
+%0 · Joukkue %1
+[Colonies: %0]
+Siirtokunnat: %0
+[%0 colonies · %1 AI]
+%0 siirtokuntia · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Yksiköt
+[settings Level %0]
+Taso %0
+[settings Match the desktop %0]
+Työpöydän mukaan (%0)
+[settings Current display %0 %1 %2 %3]
+Nykyiset näyttöasetukset: %0 × %1 · %2 · %3
+[Fairness: %0]
+Tasapuolisuus: %0
+[Colony %0]
+Siirtokunta %0
+[Win chance: %0 · Fitness: %1]
+Voittomahdollisuus: %0 · Vahvuus: %1
+[%0 · Contribution: %1]
+%0 · Osuus: %1
+[Min required level %0]
+Alin vaadittu taso: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Valintaikkunoiden tekstikoko: %0%
+[%0 %1]
+%0 %1

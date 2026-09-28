@@ -3394,3 +3394,59 @@ Dettagli
 Nome della campagna
 [Unlocking]
 Sblocco
+[Parameters]
+Parametri
+[Blank map]
+Mappa vuota
+[Generated]
+Generata
+[Preview]
+Anteprima
+[Selected landscape]
+Paesaggio selezionato
+[Representative preview]
+Anteprima rappresentativa
+[Starting terrain]
+Terreno iniziale
+[Hide parameters]
+Nascondi parametri
+[Size and parameters]
+Dimensioni e parametri
+[Choose a landscape]
+Scegli un paesaggio
+[%0 / Browse]
+%0 / Sfoglia
+[%0 colonies · %1]
+%0 colonie · %1
+[%0 · Team %1]
+%0 · Squadra %1
+[Colonies: %0]
+Colonie: %0
+[%0 colonies · %1 AI]
+%0 colonie · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unità
+[settings Level %0]
+Livello %0
+[settings Match the desktop %0]
+Come il desktop (%0)
+[settings Current display %0 %1 %2 %3]
+Impostazioni video attuali: %0 × %1 · %2 · %3
+[Fairness: %0]
+Equità: %0
+[Colony %0]
+Colonia %0
+[Win chance: %0 · Fitness: %1]
+Probabilità di vittoria: %0 · Idoneità: %1
+[%0 · Contribution: %1]
+%0 · Contributo: %1
+[Min required level %0]
+Livello min.richiesto: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Dimensione testo dei dialoghi: %0%
+[%0 %1]
+%0 %1

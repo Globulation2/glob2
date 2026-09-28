@@ -9,6 +9,7 @@
 #include "gui/FrontendLayout.h"
 #include <InterfacePresentation.h>
 #include <StringTable.h>
+#include <FormatableString.h>
 
 namespace
 {
@@ -95,8 +96,9 @@ void CustomGameScreen::renderPhoneLobby()
 			ui.button("review/map", {x + 112, row + cardH - 56, w - 132, 48}, tr("Edit map"),
 					  [this] { activateGroup(groups[0]); });
 			row += cardH + 16;
-			label(std::to_string(setup.activeColonies()) + " " + tr("colonies") + " · " +
-				  tr(setup.format));
+			label(GAGCore::FormattableString(tr("%0 colonies · %1"))
+					  .arg(setup.activeColonies())
+					  .arg(tr(setup.format)));
 			const auto controllers = translated({"You", "AI", "You + AI", "Closed"});
 			for (int i = 0; i < setup.capacity; ++i)
 			{
@@ -105,13 +107,15 @@ void CustomGameScreen::renderPhoneLobby()
 					continue;
 				const auto color = i < int(preview->starts.size()) ? preview->starts[i].color
 																   : Color(160, 172, 149);
-				const auto name =
-					(colony.controller == CustomGameSetup::Computer ||
-					 colony.controller == CustomGameSetup::Shared)
-						? controllers[colony.controller] + " · " + AINames::getAIText(colony.ai)
-						: controllers[colony.controller];
-				const std::string summary =
-					name + " · " + tr("Team") + " " + std::to_string(colony.alliance + 1);
+				const auto name = (colony.controller == CustomGameSetup::Computer ||
+								   colony.controller == CustomGameSetup::Shared)
+									  ? GAGCore::FormattableString(tr("%0 · %1"))
+											.arg(controllers[colony.controller])
+											.arg(AINames::getAIText(colony.ai))
+									  : controllers[colony.controller];
+				const std::string summary = GAGCore::FormattableString(tr("%0 · Team %1"))
+												.arg(name)
+												.arg(colony.alliance + 1);
 				const int rh = std::max(
 					44, ui.paragraph(0, 0, w - 64, summary, "standard", false, false, false) + 16);
 				ui.box({x, row, w - 12, rh}, ui.panel, 6);
@@ -122,9 +126,11 @@ void CustomGameScreen::renderPhoneLobby()
 			button("review/players", tr("Edit opponents"), [this] { activateGroup(groups[1]); });
 			auto speed = globalContainer->settings;
 			speed.gameSpeed = setup.speed;
-			label(tr("Rules") + " · " + tr(setup.ruleset));
-			label(tr(setup.prestige ? "Conquest or prestige" : "Conquest only") + " · " +
-				  speed.getGameSpeedText());
+			label(
+				GAGCore::FormattableString(tr("%0 · %1")).arg(tr("Rules")).arg(tr(setup.ruleset)));
+			label(GAGCore::FormattableString(tr("%0 · %1"))
+					  .arg(tr(setup.prestige ? "Conquest or prestige" : "Conquest only"))
+					  .arg(speed.getGameSpeedText()));
 			button("review/rules", tr("Rules"), [this] { phonePage = PhonePage::Rules; });
 			if (setup.random && validMap)
 				button("review/quality", tr("Start quality"), [this] { showStartQuality(); });
@@ -142,7 +148,7 @@ void CustomGameScreen::renderPhoneLobby()
 				const auto count = GenerationRequest::control(setup.generator.method, "teams");
 				std::vector<std::string> counts;
 				for (int value : count.values())
-					counts.push_back(tr("Colonies") + ": " + std::to_string(value));
+					counts.push_back(GAGCore::FormattableString(tr("Colonies: %0")).arg(value));
 				ui.dropdown(
 					"players/capacity", {x, row, (w - 20) / 2, 48}, counts,
 					count.indexOf(setup.capacity),
@@ -154,8 +160,9 @@ void CustomGameScreen::renderPhoneLobby()
 						invalidate();
 					},
 					{}, "",
-					std::to_string(setup.capacity) + " " + tr("colonies") + " · " +
-						std::to_string(aiCount) + " " + tr("AI"));
+					GAGCore::FormattableString(tr("%0 colonies · %1 AI"))
+						.arg(setup.capacity)
+						.arg(aiCount));
 			}
 			ui.dropdown("format",
 						{setup.random ? x + (w - 20) / 2 + 8 : x, row,
@@ -218,7 +225,7 @@ void CustomGameScreen::renderPhoneLobby()
 				}
 				std::vector<std::string> teams;
 				for (int j = 0; j < setup.capacity; ++j)
-					teams.push_back(tr("Team") + " " + std::to_string(j + 1));
+					teams.push_back(GAGCore::FormattableString(tr("Team %0")).arg(j + 1));
 				ui.dropdown(id + "/team",
 							{x + w - (hasAI ? (inlineRow ? 236 : 116) : 180), fieldY, 104, 48},
 							teams, colony.alliance,

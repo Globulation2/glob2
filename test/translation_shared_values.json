@@ -55,7 +55,9 @@
     "tab",
     "test",
     "Cabino",
-    "Emoji"
+    "Emoji",
+    "%0 · %1",
+    "%0 %1"
   ],
   "shared_vocabulary": {
     "texts.ar.txt": [],
@@ -68,6 +70,7 @@
       "Magenta",
       "Menu",
       "Oceania",
+      "Ok: %0",
       "P %0/%1/%2",
       "Script",
       "Total",
@@ -108,6 +111,7 @@
     ],
     "texts.de.txt": [
       "%0 Level %1",
+      "%0 · Team %1",
       "= Normal",
       "Audio",
       "Briefing",
@@ -124,6 +128,7 @@
       "Maximum",
       "Name",
       "Normal",
+      "Ok: %0",
       "P %0/%1/%2",
       "Pause",
       "Polder",
@@ -155,6 +160,7 @@
       "Medium",
       "Menu",
       "Normal",
+      "Ok: %0",
       "P %0/%1/%2",
       "Pause",
       "Pink",
@@ -209,9 +215,12 @@
       "Audio",
       "CPU %0%",
       "Magenta",
+      "Ok: %0",
       "P %0/%1/%2"
     ],
     "texts.fr.txt": [
+      "%0 colonies · %1",
+      "%0 · Contribution: %1",
       "30 minutes",
       "45 minutes",
       "60 minutes",
@@ -222,6 +231,7 @@
       "Audio",
       "CPU %0%",
       "Colonies",
+      "Colonies: %0",
       "Combat",
       "Construction",
       "Continent",
@@ -296,6 +306,7 @@
       "Menu",
       "No",
       "Oceania",
+      "Ok: %0",
       "P %0/%1/%2",
       "Polder",
       "Script",
@@ -313,6 +324,7 @@
     "texts.nl.txt": [
       " teams",
       "%0 teams",
+      "%0 · Team %1",
       "Briefing",
       "CPU %0%",
       "Chat",
@@ -324,7 +336,9 @@
       "Lobby",
       "Magenta",
       "Menu",
+      "Ok: %0",
       "P %0/%1/%2",
+      "Parameters",
       "Polder",
       "School",
       "Script",
@@ -342,6 +356,7 @@
       "Magenta",
       "Menu",
       "Oceania",
+      "Ok: %0",
       "P %0/%1/%2",
       "Polder"
     ],
@@ -399,6 +414,7 @@
       "Chat",
       "Editor",
       "Info",
+      "Ok: %0",
       "P %0/%1/%2",
       "Polder"
     ],
@@ -417,6 +433,7 @@
       "Magenta",
       "Medium",
       "Normal",
+      "Ok: %0",
       "P %0/%1/%2",
       "Polder",
       "Prestige",

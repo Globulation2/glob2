@@ -3332,3 +3332,59 @@ Podrobnosti
 Ime kampanje
 [Unlocking]
 Odklepanje
+[Parameters]
+Parametri
+[Blank map]
+Prazen zemljevid
+[Generated]
+Ustvarjen
+[Preview]
+Predogled
+[Selected landscape]
+Izbrana pokrajina
+[Representative preview]
+Vzorčni predogled
+[Starting terrain]
+Začetni teren
+[Hide parameters]
+Skrij parametre
+[Size and parameters]
+Velikost in parametri
+[Choose a landscape]
+Izberite pokrajino
+[%0 / Browse]
+%0 / Prebrskaj
+[%0 colonies · %1]
+%0 kolonije · %1
+[%0 · Team %1]
+%0 · Ekipa %1
+[Colonies: %0]
+Kolonije: %0
+[%0 colonies · %1 AI]
+%0 kolonije · %1 UI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Enote
+[settings Level %0]
+Stopnja %0
+[settings Match the desktop %0]
+Kot namizje (%0)
+[settings Current display %0 %1 %2 %3]
+Trenutni način prikaza: %0 × %1 · %2 · %3
+[Fairness: %0]
+Pravičnost: %0
+[Colony %0]
+Kolonija %0
+[Win chance: %0 · Fitness: %1]
+Možnost zmage: %0 · Moč: %1
+[%0 · Contribution: %1]
+%0 · Prispevek: %1
+[Min required level %0]
+Najnižja zahtevana stopnja %0
+[Confirm %0]
+Potrdi: %0
+[Dialog text size %0]
+Velikost besedila pogovornih oken: %0%
+[%0 %1]
+%0 %1

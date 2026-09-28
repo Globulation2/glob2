@@ -3340,3 +3340,59 @@ Ayrıntılar
 Sefer adı
 [Unlocking]
 Kilidi açma
+[Parameters]
+Parametreler
+[Blank map]
+Boş harita
+[Generated]
+Oluşturulmuş
+[Preview]
+Önizleme
+[Selected landscape]
+Seçilen arazi
+[Representative preview]
+Örnek önizleme
+[Starting terrain]
+Başlangıç arazisi
+[Hide parameters]
+Parametreleri gizle
+[Size and parameters]
+Boyut ve parametreler
+[Choose a landscape]
+Bir arazi seçin
+[%0 / Browse]
+%0 / Göz at
+[%0 colonies · %1]
+%0 koloniler · %1
+[%0 · Team %1]
+%0 · Takım %1
+[Colonies: %0]
+Koloniler: %0
+[%0 colonies · %1 AI]
+%0 koloniler · %1 yapay zeka
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Birimler
+[settings Level %0]
+Seviye %0
+[settings Match the desktop %0]
+Masaüstüyle aynı (%0)
+[settings Current display %0 %1 %2 %3]
+Geçerli görüntüleme modu: %0 × %1 · %2 · %3
+[Fairness: %0]
+Adalet: %0
+[Colony %0]
+Koloni %0
+[Win chance: %0 · Fitness: %1]
+Kazanma şansı: %0 · Güç: %1
+[%0 · Contribution: %1]
+%0 · Katkı: %1
+[Min required level %0]
+Gerekli en düşük seviye: %0
+[Confirm %0]
+Tamam: %0
+[Dialog text size %0]
+İletişim kutusu yazı boyutu: %0%
+[%0 %1]
+%0 %1

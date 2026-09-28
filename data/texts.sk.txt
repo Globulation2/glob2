@@ -3340,3 +3340,59 @@ Podrobnosti
 Názov kampane
 [Unlocking]
 Odomykanie
+[Parameters]
+Parametre
+[Blank map]
+Prázdna mapa
+[Generated]
+Vygenerovaná
+[Preview]
+Náhľad
+[Selected landscape]
+Vybraná krajina
+[Representative preview]
+Ukážkový náhľad
+[Starting terrain]
+Počiatočný terén
+[Hide parameters]
+Skryť parametre
+[Size and parameters]
+Veľkosť a parametre
+[Choose a landscape]
+Vyberte krajinu
+[%0 / Browse]
+%0 / Prehľadávať
+[%0 colonies · %1]
+%0 kolónie · %1
+[%0 · Team %1]
+%0 · Tím %1
+[Colonies: %0]
+Kolónie: %0
+[%0 colonies · %1 AI]
+%0 kolónie · %1 UI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Jednotky
+[settings Level %0]
+Úroveň %0
+[settings Match the desktop %0]
+Podľa plochy (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuálny režim zobrazenia: %0 × %1 · %2 · %3
+[Fairness: %0]
+Spravodlivosť: %0
+[Colony %0]
+Kolónia %0
+[Win chance: %0 · Fitness: %1]
+Šanca na výhru: %0 · Sila: %1
+[%0 · Contribution: %1]
+%0 · Príspevok: %1
+[Min required level %0]
+Najnižšia potrebná úroveň: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Veľkosť textu dialógov: %0%
+[%0 %1]
+%0 %1

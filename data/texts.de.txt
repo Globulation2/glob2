@@ -3332,3 +3332,59 @@ Details
 Kampagnenname
 [Unlocking]
 Freischaltung
+[Parameters]
+Parameter
+[Blank map]
+Leere Karte
+[Generated]
+Generiert
+[Preview]
+Vorschau
+[Selected landscape]
+Gewählte Landschaft
+[Representative preview]
+Beispielvorschau
+[Starting terrain]
+Anfangsgelände
+[Hide parameters]
+Parameter ausblenden
+[Size and parameters]
+Größe und Parameter
+[Choose a landscape]
+Landschaft auswählen
+[%0 / Browse]
+%0 / Durchsuchen
+[%0 colonies · %1]
+%0 Kolonien · %1
+[%0 · Team %1]
+%0 · Team %1
+[Colonies: %0]
+Kolonien: %0
+[%0 colonies · %1 AI]
+%0 Kolonien · %1 KI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Einheiten
+[settings Level %0]
+Stufe %0
+[settings Match the desktop %0]
+Wie der Desktop (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuelle Anzeigeeinstellungen: %0 × %1 · %2 · %3
+[Fairness: %0]
+Ausgeglichenheit: %0
+[Colony %0]
+Kolonie %0
+[Win chance: %0 · Fitness: %1]
+Siegchance: %0 · Stärke: %1
+[%0 · Contribution: %1]
+%0 · Beitrag: %1
+[Min required level %0]
+Mindestlevel: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Dialogschriftgröße: %0%
+[%0 %1]
+%0 %1

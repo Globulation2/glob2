@@ -3328,3 +3328,59 @@ CPU %0%
 캠페인 이름
 [Unlocking]
 잠금 해제
+[Parameters]
+매개변수
+[Blank map]
+빈 지도
+[Generated]
+생성됨
+[Preview]
+미리 보기
+[Selected landscape]
+선택한 지형
+[Representative preview]
+대표 미리 보기
+[Starting terrain]
+시작 지형
+[Hide parameters]
+매개변수 숨기기
+[Size and parameters]
+크기 및 매개변수
+[Choose a landscape]
+지형 선택
+[%0 / Browse]
+%0 / 찾아보기
+[%0 colonies · %1]
+%0 식민지 · %1
+[%0 · Team %1]
+%0 · 팀 %1
+[Colonies: %0]
+식민지: %0
+[%0 colonies · %1 AI]
+%0 식민지 · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 유닛
+[settings Level %0]
+레벨 %0
+[settings Match the desktop %0]
+바탕 화면에 맞춤 (%0)
+[settings Current display %0 %1 %2 %3]
+현재 화면 설정: %0 × %1 · %2 · %3
+[Fairness: %0]
+공정성: %0
+[Colony %0]
+식민지 %0
+[Win chance: %0 · Fitness: %1]
+승리 확률: %0 · 강도: %1
+[%0 · Contribution: %1]
+%0 · 기여도: %1
+[Min required level %0]
+최소 레벨: %0
+[Confirm %0]
+확인: %0
+[Dialog text size %0]
+대화 상자 글자 크기: %0%
+[%0 %1]
+%0 %1

@@ -3330,3 +3330,59 @@ Emoji
 اسم الحملة
 [Unlocking]
 فتح القفل
+[Parameters]
+المعلمات
+[Blank map]
+خريطة فارغة
+[Generated]
+مولّدة
+[Preview]
+معاينة
+[Selected landscape]
+التضاريس المختارة
+[Representative preview]
+معاينة تمثيلية
+[Starting terrain]
+التضاريس الأولية
+[Hide parameters]
+إخفاء المعلمات
+[Size and parameters]
+الحجم والمعلمات
+[Choose a landscape]
+اختر تضاريس
+[%0 / Browse]
+%0 / تصفح
+[%0 colonies · %1]
+%0 مستعمرات · %1
+[%0 · Team %1]
+%0 · الفريق %1
+[Colonies: %0]
+المستعمرات: %0
+[%0 colonies · %1 AI]
+%0 مستعمرات · %1 ﺁﻟﻲ
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 وحدات
+[settings Level %0]
+ﺍﻟﻤﺴﺘﻮﻯ %0
+[settings Match the desktop %0]
+مطابقة سطح المكتب (%0)
+[settings Current display %0 %1 %2 %3]
+إعدادات العرض الحالية: %0 × %1 · %2 · %3
+[Fairness: %0]
+الإنصاف: %0
+[Colony %0]
+مستعمرة %0
+[Win chance: %0 · Fitness: %1]
+فرصة الفوز: %0 · القوة: %1
+[%0 · Contribution: %1]
+%0 · المساهمة: %1
+[Min required level %0]
+ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ: %0
+[Confirm %0]
+ﻧﻌﻢ: %0
+[Dialog text size %0]
+حجم نص الحوار: %0%
+[%0 %1]
+%0 %1

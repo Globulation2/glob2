@@ -275,8 +275,9 @@ std::string TeamsEditor::phoneLabel(Widget *widget) const
 		else if (widget == aiSelector[slot])
 			key = "[AI]";
 		if (key)
-			return std::string(Toolkit::getStringTable()->getString(key)) + " " +
-				   std::to_string(slot + 1);
+			return GAGCore::FormattableString(Toolkit::getStringTable()->getString("[%0 %1]"))
+				.arg(Toolkit::getStringTable()->getString(key))
+				.arg(slot + 1);
 	}
 	return {};
 }

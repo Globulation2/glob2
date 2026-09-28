@@ -3402,3 +3402,59 @@ CPU %0%
 Όνομα εκστρατείας
 [Unlocking]
 Ξεκλείδωμα
+[Parameters]
+Παράμετροι
+[Blank map]
+Κενός χάρτης
+[Generated]
+Δημιουργημένος
+[Preview]
+Προεπισκόπηση
+[Selected landscape]
+Επιλεγμένο τοπίο
+[Representative preview]
+Ενδεικτική προεπισκόπηση
+[Starting terrain]
+Αρχικό έδαφος
+[Hide parameters]
+Απόκρυψη παραμέτρων
+[Size and parameters]
+Μέγεθος και παράμετροι
+[Choose a landscape]
+Επιλέξτε τοπίο
+[%0 / Browse]
+%0 / Περιήγηση
+[%0 colonies · %1]
+%0 αποικίες · %1
+[%0 · Team %1]
+%0 · Ομάδα %1
+[Colonies: %0]
+Αποικίες: %0
+[%0 colonies · %1 AI]
+%0 αποικίες · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Μονάδες
+[settings Level %0]
+Επίπεδο %0
+[settings Match the desktop %0]
+Όπως η επιφάνεια εργασίας (%0)
+[settings Current display %0 %1 %2 %3]
+Τρέχουσα λειτουργία προβολής: %0 × %1 · %2 · %3
+[Fairness: %0]
+Δικαιοσύνη: %0
+[Colony %0]
+Αποικία %0
+[Win chance: %0 · Fitness: %1]
+Πιθανότητα νίκης: %0 · Ισχύς: %1
+[%0 · Contribution: %1]
+%0 · Συνεισφορά: %1
+[Min required level %0]
+Ελάχιστο απαιτούμενο επίπεδο: %0
+[Confirm %0]
+Εντάξει: %0
+[Dialog text size %0]
+Μέγεθος κειμένου διαλόγων: %0%
+[%0 %1]
+%0 %1

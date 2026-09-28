@@ -3332,3 +3332,59 @@ Emoji
 Назив кампање
 [Unlocking]
 Откључавање
+[Parameters]
+Параметри
+[Blank map]
+Празна мапа
+[Generated]
+Генерисана
+[Preview]
+Преглед
+[Selected landscape]
+Изабрани предео
+[Representative preview]
+Пример прегледа
+[Starting terrain]
+Почетни терен
+[Hide parameters]
+Сакриј параметре
+[Size and parameters]
+Величина и параметри
+[Choose a landscape]
+Изаберите предео
+[%0 / Browse]
+%0 / Прегледај
+[%0 colonies · %1]
+%0 колоније · %1
+[%0 · Team %1]
+%0 · Тим %1
+[Colonies: %0]
+Колоније: %0
+[%0 colonies · %1 AI]
+%0 колоније · %1 ВИ
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Јединице
+[settings Level %0]
+Ниво %0
+[settings Match the desktop %0]
+Као радна површина (%0)
+[settings Current display %0 %1 %2 %3]
+Тренутни режим приказа: %0 × %1 · %2 · %3
+[Fairness: %0]
+Правичност: %0
+[Colony %0]
+Колонија %0
+[Win chance: %0 · Fitness: %1]
+Шанса за победу: %0 · Снага: %1
+[%0 · Contribution: %1]
+%0 · Допринос: %1
+[Min required level %0]
+Најмањи потребни ниво: %0
+[Confirm %0]
+У реду: %0
+[Dialog text size %0]
+Величина текста дијалога: %0%
+[%0 %1]
+%0 %1

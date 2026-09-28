@@ -3332,3 +3332,59 @@ Részletek
 Hadjárat neve
 [Unlocking]
 Feloldás
+[Parameters]
+Paraméterek
+[Blank map]
+Üres pálya
+[Generated]
+Generált
+[Preview]
+Előnézet
+[Selected landscape]
+Kiválasztott táj
+[Representative preview]
+Mintaelőnézet
+[Starting terrain]
+Kezdeti terep
+[Hide parameters]
+Paraméterek elrejtése
+[Size and parameters]
+Méret és paraméterek
+[Choose a landscape]
+Válassz tájat
+[%0 / Browse]
+%0 / Tallózás
+[%0 colonies · %1]
+%0 kolóniák · %1
+[%0 · Team %1]
+%0 · Csapat %1
+[Colonies: %0]
+Kolóniák: %0
+[%0 colonies · %1 AI]
+%0 kolóniák · %1 MI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Egységek
+[settings Level %0]
+Szint %0
+[settings Match the desktop %0]
+Az asztalhoz igazítva (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuális megjelenítési mód: %0 × %1 · %2 · %3
+[Fairness: %0]
+Méltányosság: %0
+[Colony %0]
+Kolónia %0
+[Win chance: %0 · Fitness: %1]
+Nyerési esély: %0 · Erősség: %1
+[%0 · Contribution: %1]
+%0 · Hozzájárulás: %1
+[Min required level %0]
+Minimális szükséges szint: %0
+[Confirm %0]
+Rendben: %0
+[Dialog text size %0]
+Párbeszédszöveg mérete: %0%
+[%0 %1]
+%0 %1

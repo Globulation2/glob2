@@ -3328,3 +3328,59 @@ Chi tiết
 Tên chiến dịch
 [Unlocking]
 Mở khóa
+[Parameters]
+Tham số
+[Blank map]
+Bản đồ trống
+[Generated]
+Đã tạo
+[Preview]
+Xem trước
+[Selected landscape]
+Địa hình đã chọn
+[Representative preview]
+Bản xem trước mẫu
+[Starting terrain]
+Địa hình ban đầu
+[Hide parameters]
+Ẩn tham số
+[Size and parameters]
+Kích thước và tham số
+[Choose a landscape]
+Chọn địa hình
+[%0 / Browse]
+%0 / Duyệt
+[%0 colonies · %1]
+%0 thuộc địa · %1
+[%0 · Team %1]
+%0 · Đội %1
+[Colonies: %0]
+Thuộc địa: %0
+[%0 colonies · %1 AI]
+%0 thuộc địa · %1 trí tuệ nhân tạo
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Đơn vị
+[settings Level %0]
+Cấp %0
+[settings Match the desktop %0]
+Theo màn hình nền (%0)
+[settings Current display %0 %1 %2 %3]
+Thiết lập hiển thị hiện tại: %0 × %1 · %2 · %3
+[Fairness: %0]
+Công bằng: %0
+[Colony %0]
+Thuộc địa %0
+[Win chance: %0 · Fitness: %1]
+Khả năng thắng: %0 · Sức mạnh: %1
+[%0 · Contribution: %1]
+%0 · Đóng góp: %1
+[Min required level %0]
+Cấp tối thiểu: %0
+[Confirm %0]
+Đồng ý: %0
+[Dialog text size %0]
+Cỡ chữ hộp thoại: %0%
+[%0 %1]
+%0 %1

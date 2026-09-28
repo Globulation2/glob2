@@ -3340,3 +3340,59 @@ Detalls
 Nom de la campanya
 [Unlocking]
 Desbloqueig
+[Parameters]
+Paràmetres
+[Blank map]
+Mapa buit
+[Generated]
+Generat
+[Preview]
+Previsualització
+[Selected landscape]
+Paisatge seleccionat
+[Representative preview]
+Previsualització representativa
+[Starting terrain]
+Terreny inicial
+[Hide parameters]
+Amaga els paràmetres
+[Size and parameters]
+Mida i paràmetres
+[Choose a landscape]
+Tria un paisatge
+[%0 / Browse]
+%0 / Explora
+[%0 colonies · %1]
+%0 colònies · %1
+[%0 · Team %1]
+%0 · Equip %1
+[Colonies: %0]
+Colònies: %0
+[%0 colonies · %1 AI]
+%0 colònies · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unitats
+[settings Level %0]
+Nivell %0
+[settings Match the desktop %0]
+Segueix l'escriptori (%0)
+[settings Current display %0 %1 %2 %3]
+Configuració de pantalla actual: %0 × %1 · %2 · %3
+[Fairness: %0]
+Equitat: %0
+[Colony %0]
+Colònia %0
+[Win chance: %0 · Fitness: %1]
+Probabilitat de guanyar: %0 · Aptitud: %1
+[%0 · Contribution: %1]
+%0 · Contribució: %1
+[Min required level %0]
+Nivell mínim requerit: %0
+[Confirm %0]
+OK: %0
+[Dialog text size %0]
+Mida del text dels diàlegs: %0%
+[%0 %1]
+%0 %1

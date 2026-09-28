@@ -471,7 +471,10 @@ void GameGUITouch::drawAllocation()
 	const std::string name = Toolkit::getStringTable()->getString("[" + type->type + "]");
 	drawPointLabel(
 		{rect.x + 60 * unit, rect.y, std::max(0.0, rect.w - 108 * unit), rect.h},
-		name + " · " + std::to_string(type->level + 1) + "\n" +
+		GAGCore::FormattableString(Toolkit::getStringTable()->getString("[%0 · %1]"))
+				.arg(name)
+				.arg(type->level + 1) +
+			"\n" +
 			GAGCore::FormattableString(
 				GAGCore::Toolkit::getStringTable()->getString("[%0 / %1 HP · %2]"))
 				.arg(building->hp)

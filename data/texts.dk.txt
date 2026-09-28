@@ -3408,3 +3408,59 @@ Detaljer
 Kampagnenavn
 [Unlocking]
 Oplåsning
+[Parameters]
+Parametre
+[Blank map]
+Tomt kort
+[Generated]
+Genereret
+[Preview]
+Forhåndsvisning
+[Selected landscape]
+Valgt landskab
+[Representative preview]
+Repræsentativ forhåndsvisning
+[Starting terrain]
+Startterræn
+[Hide parameters]
+Skjul parametre
+[Size and parameters]
+Størrelse og parametre
+[Choose a landscape]
+Vælg et landskab
+[%0 / Browse]
+%0 / Gennemse
+[%0 colonies · %1]
+%0 kolonier · %1
+[%0 · Team %1]
+%0 · Hold %1
+[Colonies: %0]
+Kolonier: %0
+[%0 colonies · %1 AI]
+%0 kolonier · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Enheder
+[settings Level %0]
+Niveau %0
+[settings Match the desktop %0]
+Følg skrivebordet (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuelle skærmindstillinger: %0 × %1 · %2 · %3
+[Fairness: %0]
+Retfærdighed: %0
+[Colony %0]
+Koloni %0
+[Win chance: %0 · Fitness: %1]
+Vinderchance: %0 · Styrke: %1
+[%0 · Contribution: %1]
+%0 · Bidrag: %1
+[Min required level %0]
+Minimum krævede niveau: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Dialogtekststørrelse: %0%
+[%0 %1]
+%0 %1
