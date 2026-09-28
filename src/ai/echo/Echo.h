@@ -131,11 +131,12 @@ namespace AIEcho
 		friend class AIEcho::Management::SendMessage;
 
 
-		Uint32 allies;
-		Uint32 enemies;
-		Uint32 inn_view;
-		Uint32 market_view;
-		Uint32 other_view;
+		// These fields are serialized even before the first AI tick.
+		Uint32 allies = 0;
+		Uint32 enemies = 0;
+		Uint32 inn_view = 0;
+		Uint32 market_view = 0;
+		Uint32 other_view = 0;
 
 		void update_management_orders();
 		void pause_resource_tracker(int building_id);
@@ -160,7 +161,7 @@ namespace AIEcho
 		///Before the next building is constructed, the previous building must be
 		///found on the BuildingRegister
 		int previous_building_id;
-		bool update_gm;
+		bool update_gm = false;
 		bool is_fruit;
 
 		int from_load_timer;

@@ -927,35 +927,14 @@ void AIMaxima::Maxima::captureTelemetry()
 	telemetry.set(AITrace::AI7::state_policy_bids_5_attack_units, policy_bids[5].attack_units);
 	telemetry.set(AITrace::AI7::state_policy_bids_5_request_upgrades,
 				  policy_bids[5].request_upgrades);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_utility, policy_bids[6].utility);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_construction_sites,
-				  policy_bids[6].construction_sites);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_inns, policy_bids[6].desired_inns);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_swarms, policy_bids[6].desired_swarms);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_barracks,
-				  policy_bids[6].desired_barracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_schools,
-				  policy_bids[6].desired_schools);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_pools, policy_bids[6].desired_pools);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_racetracks,
-				  policy_bids[6].desired_racetracks);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_hospital_beds,
-				  policy_bids[6].desired_hospital_beds);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_towers, policy_bids[6].desired_towers);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_swarm_workers, policy_bids[6].swarm_workers);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_worker_ratio, policy_bids[6].worker_ratio);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_explorer_ratio, policy_bids[6].explorer_ratio);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_warrior_ratio, policy_bids[6].warrior_ratio);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_explorers,
-				  policy_bids[6].desired_explorers);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_warriors,
-				  policy_bids[6].desired_warriors);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_defense_reserve,
-				  policy_bids[6].defense_reserve);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_attack_flags, policy_bids[6].attack_flags);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_attack_units, policy_bids[6].attack_units);
-	telemetry.set(AITrace::AI7::state_policy_bids_6_request_upgrades,
-				  policy_bids[6].request_upgrades);
+	// Keep the legacy columns so saved telemetry remains readable, but never read
+	// a seventh policy: Maxima has only six. Clear stale values loaded from saves.
+	static_assert(PolicyCount == 6);
+	if (telemetry.series)
+		for (unsigned field = AITrace::AI7::state_policy_bids_6_utility;
+			 field <= AITrace::AI7::state_policy_bids_6_request_upgrades; ++field)
+			telemetry.series->current.values[field] = {};
+
 }
 
 void Cabino::AICabino::captureTelemetry()

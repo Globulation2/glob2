@@ -475,6 +475,26 @@ python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests
 
 The harness runs headlessly in disposable profile directories in Linux and Windows CI.
 
+## AI save portability
+
+`AISavePortabilityHarness` checks Echo's serialized fields before its first tick,
+round-trips asymmetric AddArea/RemoveArea coordinates through the binary stream,
+and executes the restored orders on their intended tiles. It also loads legacy
+Maxima telemetry with values in the nonexistent seventh-policy columns and checks
+that capture marks those columns unavailable while still sampling the six real
+policies. The legacy columns and historical samples remain readable.
+
+```sh
+scons release=1 server=0 ai-save-portability-test
+python3 test/run-savegame-safety-tests.py build/native-tests/src/AISavePortabilityHarness .
+```
+
+The Linux CI regression job runs this harness. For portability changes, also run
+it with Clang and GCC and compare full-game per-tick traces using the same saved
+input. Correct coordinate loading preserves the x/y order written in existing
+saves; a save containing pending area orders can resume differently from older
+GCC builds that transposed those coordinates. The saved layout is unchanged.
+
 ## Echo building-order id save compatibility
 
 `EchoBuildingOrderSaveLoadTest` covers `AIEcho::Construction::BuildingOrder::id`,
