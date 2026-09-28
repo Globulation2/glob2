@@ -1,0 +1,706 @@
+{
+  "seed": 20260928,
+  "source_commit": "d50968d06125dc10fbf4b247e35d0526fe69af0b",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "cpu": "Apple M3",
+  "memory_bytes": "25769803776",
+  "power_settings": "Battery Power:\n Sleep On Power Button 1\n lowpowermode         0\n standby              1\n ttyskeepawake        1\n hibernatemode        3\n powernap             1\n hibernatefile        /var/vm/sleepimage\n displaysleep         10\n womp                 0\n networkoversleep     0\n sleep                1\n lessbright           1\n tcpkeepalive         1\n disksleep            10\nAC Power:\n Sleep On Power Button 1\n lowpowermode         0\n standby              1\n ttyskeepawake        1\n hibernatemode        3\n powernap             1\n hibernatefile        /var/vm/sleepimage\n displaysleep         10\n womp                 1\n networkoversleep     0\n sleep                0\n tcpkeepalive         1\n disksleep            10",
+  "binaries": {
+    "base": {
+      "path": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/glob2-base",
+      "sha256": "32e762fb78ed1aa503dd04bf649aa8ba920ae58bc2858db552b40e2368b682bf"
+    },
+    "eager": {
+      "path": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-cleanup/glob2",
+      "sha256": "8cae74a042f1030e51ce3a8094a0c67bcf7f2f016a35b2888b586a269b8dbc86"
+    },
+    "lazy": {
+      "path": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-cleanup/glob2",
+      "sha256": "8cae74a042f1030e51ce3a8094a0c67bcf7f2f016a35b2888b586a269b8dbc86"
+    }
+  },
+  "cases": [
+    {
+      "name": "arena128-2",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 7,
+        "height": 7,
+        "teams": 2
+      },
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "ticks": 16384,
+      "map_file": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena128-2/generated/map-r0.map",
+      "repetitions": 12,
+      "family": "original",
+      "save_every": 0,
+      "map_sha256": "46a3c461da2d0c753a47c58cab1964259417436a0b9aacab673493817aa51baf"
+    },
+    {
+      "name": "arena256-2",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 2
+      },
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "ticks": 16384,
+      "map_file": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena256-2/generated/map-r0.map",
+      "repetitions": 12,
+      "family": "original",
+      "save_every": 0,
+      "map_sha256": "315d2129fa202c5983277564f7abdca0fac21c5ec4f05f4e38fffe9be932e9f1"
+    },
+    {
+      "name": "arena512-4",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 9,
+        "height": 9,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 16384,
+      "map_file": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena512-4/generated/map-r0.map",
+      "repetitions": 6,
+      "family": "original",
+      "save_every": 0,
+      "map_sha256": "2eba46d9ba04ce5056e00175043fa584af7cfb368183475f282129cce580ee6d"
+    },
+    {
+      "name": "lakes256-4",
+      "generator": 4,
+      "map_seed": 97,
+      "game_seed": 19,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 16384,
+      "map_file": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/lakes256-4/generated/map-r0.map",
+      "repetitions": 6,
+      "family": "original",
+      "save_every": 0,
+      "map_sha256": "276f30abdc42b49d2fa0f5a3f82a6908d141bbe08d3a70b48593ce0d97b4186c"
+    },
+    {
+      "name": "arena256-seed73",
+      "generator": 15,
+      "map_seed": 73,
+      "game_seed": 31,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 8192,
+      "repetitions": 6,
+      "family": "additional-seed",
+      "save_every": 0,
+      "generation_command": [
+        "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/glob2-base",
+        "--generate-map",
+        "--generator",
+        "15",
+        "--map-seed",
+        "73",
+        "--write-map",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-timing-study/maps/arena256-seed73",
+        "--param",
+        "width=8",
+        "--param",
+        "height=8",
+        "--param",
+        "teams=4"
+      ],
+      "map_file": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-timing-study/maps/arena256-seed73/map-r0.map",
+      "map_sha256": "9e6439407b4fc9852cfe2240b290833c287e088ca225a56a0ae3b221ee06add1"
+    },
+    {
+      "name": "lakes256-seed131",
+      "generator": 4,
+      "map_seed": 131,
+      "game_seed": 31,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 8192,
+      "repetitions": 6,
+      "family": "additional-seed",
+      "save_every": 0,
+      "generation_command": [
+        "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/glob2-base",
+        "--generate-map",
+        "--generator",
+        "4",
+        "--map-seed",
+        "131",
+        "--write-map",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-timing-study/maps/lakes256-seed131",
+        "--param",
+        "width=8",
+        "--param",
+        "height=8",
+        "--param",
+        "teams=4"
+      ],
+      "map_file": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-timing-study/maps/lakes256-seed131/map-r0.map",
+      "map_sha256": "8e8b47c054750c36b311613f341468d42cc45ca750ba8767fcb55947d013c2de"
+    },
+    {
+      "name": "lakes256-checkpoints",
+      "generator": 4,
+      "map_seed": 97,
+      "game_seed": 19,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 16384,
+      "map_file": "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/lakes256-4/generated/map-r0.map",
+      "repetitions": 6,
+      "family": "checkpoint",
+      "save_every": 4096,
+      "map_sha256": "276f30abdc42b49d2fa0f5a3f82a6908d141bbe08d3a70b48593ce0d97b4186c"
+    }
+  ],
+  "blocks": [
+    {
+      "case": "lakes256-4",
+      "repeat": 0,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "lakes256-seed131",
+      "repeat": 0,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 0,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 0,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    },
+    {
+      "case": "lakes256-checkpoints",
+      "repeat": 0,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena256-seed73",
+      "repeat": 0,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 0,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 1,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 1,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 1,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 1,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena256-seed73",
+      "repeat": 1,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "lakes256-checkpoints",
+      "repeat": 1,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "lakes256-seed131",
+      "repeat": 1,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 2,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena256-seed73",
+      "repeat": 2,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 2,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 2,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 2,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "lakes256-seed131",
+      "repeat": 2,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "lakes256-checkpoints",
+      "repeat": 2,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 3,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "lakes256-seed131",
+      "repeat": 3,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 3,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "lakes256-checkpoints",
+      "repeat": 3,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 3,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 3,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena256-seed73",
+      "repeat": 3,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 4,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 4,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "lakes256-checkpoints",
+      "repeat": 4,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "arena256-seed73",
+      "repeat": 4,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 4,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "lakes256-seed131",
+      "repeat": 4,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 4,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 5,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 5,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "lakes256-seed131",
+      "repeat": 5,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 5,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 5,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "arena256-seed73",
+      "repeat": 5,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "lakes256-checkpoints",
+      "repeat": 5,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 6,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 6,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 7,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 7,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 8,
+      "order": [
+        "lazy",
+        "base",
+        "eager"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 8,
+      "order": [
+        "lazy",
+        "eager",
+        "base"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 9,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 9,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 10,
+      "order": [
+        "eager",
+        "lazy",
+        "base"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 10,
+      "order": [
+        "base",
+        "eager",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 11,
+      "order": [
+        "eager",
+        "base",
+        "lazy"
+      ]
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 11,
+      "order": [
+        "base",
+        "lazy",
+        "eager"
+      ]
+    }
+  ],
+  "policy": "Serial, no compilation or compression during timings. Six permutations balanced per six blocks; case order shuffled per round. No outcome-based exclusions or stopping. Primary CPU user+system; paired log-ratio t intervals by block. Flag source transitions, thermal warnings, and large wall/CPU gaps; report sensitivity separately. Stop before starting another block if battery falls below 12%. Three arena128 warmups excluded. Checkpoints are synchronous headless saves, not GUI asynchronous autosaves."
+}

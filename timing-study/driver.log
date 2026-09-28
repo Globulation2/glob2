@@ -1,0 +1,385 @@
+RUN warmup-base power=ac battery=30
+DONE warmup-base cpu=3.287s wall=3.365s rss=35.2MiB
+RUN warmup-eager power=ac battery=30
+DONE warmup-eager cpu=3.215s wall=3.276s rss=35.3MiB
+RUN warmup-lazy power=ac battery=30
+DONE warmup-lazy cpu=3.135s wall=3.152s rss=35.6MiB
+RUN lakes256-4-r00-eager power=ac battery=30
+DONE lakes256-4-r00-eager cpu=15.716s wall=15.923s rss=97.9MiB
+RUN lakes256-4-r00-lazy power=ac battery=31
+DONE lakes256-4-r00-lazy cpu=14.554s wall=14.759s rss=100.3MiB
+RUN lakes256-4-r00-base power=ac battery=31
+DONE lakes256-4-r00-base cpu=15.798s wall=16.055s rss=96.5MiB
+BLOCK 1/54 complete
+RUN lakes256-seed131-r00-base power=ac battery=32
+DONE lakes256-seed131-r00-base cpu=6.735s wall=6.813s rss=74.9MiB
+RUN lakes256-seed131-r00-eager power=ac battery=32
+DONE lakes256-seed131-r00-eager cpu=6.818s wall=6.954s rss=75.2MiB
+RUN lakes256-seed131-r00-lazy power=ac battery=32
+DONE lakes256-seed131-r00-lazy cpu=6.519s wall=6.642s rss=76.2MiB
+BLOCK 2/54 complete
+RUN arena512-4-r00-lazy power=ac battery=32
+DONE arena512-4-r00-lazy cpu=43.380s wall=43.559s rss=241.7MiB
+RUN arena512-4-r00-eager power=ac battery=33
+DONE arena512-4-r00-eager cpu=46.635s wall=46.646s rss=233.0MiB
+RUN arena512-4-r00-base power=ac battery=35
+DONE arena512-4-r00-base cpu=46.587s wall=46.603s rss=232.7MiB
+BLOCK 3/54 complete
+RUN arena128-2-r00-base power=ac battery=36
+DONE arena128-2-r00-base cpu=3.120s wall=3.124s rss=35.3MiB
+RUN arena128-2-r00-lazy power=ac battery=36
+DONE arena128-2-r00-lazy cpu=2.975s wall=2.980s rss=35.7MiB
+RUN arena128-2-r00-eager power=ac battery=36
+DONE arena128-2-r00-eager cpu=3.120s wall=3.126s rss=35.3MiB
+BLOCK 4/54 complete
+RUN lakes256-checkpoints-r00-base power=ac battery=36
+DONE lakes256-checkpoints-r00-base cpu=15.537s wall=15.595s rss=96.0MiB
+RUN lakes256-checkpoints-r00-lazy power=ac battery=37
+DONE lakes256-checkpoints-r00-lazy cpu=14.312s wall=14.359s rss=99.7MiB
+RUN lakes256-checkpoints-r00-eager power=ac battery=37
+DONE lakes256-checkpoints-r00-eager cpu=15.600s wall=15.638s rss=96.3MiB
+BLOCK 5/54 complete
+RUN arena256-seed73-r00-eager power=ac battery=38
+DONE arena256-seed73-r00-eager cpu=5.103s wall=5.108s rss=70.1MiB
+RUN arena256-seed73-r00-lazy power=ac battery=38
+DONE arena256-seed73-r00-lazy cpu=4.934s wall=4.939s rss=70.5MiB
+RUN arena256-seed73-r00-base power=ac battery=38
+DONE arena256-seed73-r00-base cpu=5.054s wall=5.061s rss=69.8MiB
+BLOCK 6/54 complete
+RUN arena256-2-r00-lazy power=ac battery=38
+DONE arena256-2-r00-lazy cpu=9.059s wall=9.064s rss=47.7MiB
+RUN arena256-2-r00-base power=ac battery=39
+DONE arena256-2-r00-base cpu=9.289s wall=9.294s rss=47.0MiB
+RUN arena256-2-r00-eager power=ac battery=39
+DONE arena256-2-r00-eager cpu=9.353s wall=9.395s rss=47.1MiB
+BLOCK 7/54 complete
+RUN arena512-4-r01-base power=ac battery=39
+DONE arena512-4-r01-base cpu=46.632s wall=46.712s rss=233.9MiB
+RUN arena512-4-r01-lazy power=ac battery=41
+DONE arena512-4-r01-lazy cpu=42.672s wall=42.684s rss=239.2MiB
+RUN arena512-4-r01-eager power=ac battery=42
+DONE arena512-4-r01-eager cpu=46.744s wall=46.755s rss=233.2MiB
+BLOCK 8/54 complete
+RUN arena128-2-r01-base power=ac battery=43
+DONE arena128-2-r01-base cpu=3.122s wall=3.126s rss=35.3MiB
+RUN arena128-2-r01-eager power=ac battery=43
+DONE arena128-2-r01-eager cpu=3.126s wall=3.131s rss=35.2MiB
+RUN arena128-2-r01-lazy power=ac battery=43
+DONE arena128-2-r01-lazy cpu=2.998s wall=3.002s rss=35.7MiB
+BLOCK 9/54 complete
+RUN arena256-2-r01-eager power=ac battery=43
+DONE arena256-2-r01-eager cpu=9.338s wall=9.341s rss=47.0MiB
+RUN arena256-2-r01-lazy power=ac battery=44
+DONE arena256-2-r01-lazy cpu=9.054s wall=9.058s rss=47.5MiB
+RUN arena256-2-r01-base power=ac battery=44
+DONE arena256-2-r01-base cpu=9.323s wall=9.329s rss=46.8MiB
+BLOCK 10/54 complete
+RUN lakes256-4-r01-base power=ac battery=44
+DONE lakes256-4-r01-base cpu=15.206s wall=15.212s rss=95.9MiB
+RUN lakes256-4-r01-eager power=ac battery=45
+DONE lakes256-4-r01-eager cpu=15.221s wall=15.227s rss=96.2MiB
+RUN lakes256-4-r01-lazy power=ac battery=45
+DONE lakes256-4-r01-lazy cpu=13.982s wall=14.010s rss=99.9MiB
+BLOCK 11/54 complete
+RUN arena256-seed73-r01-eager power=ac battery=46
+DONE arena256-seed73-r01-eager cpu=5.103s wall=5.111s rss=70.2MiB
+RUN arena256-seed73-r01-base power=ac battery=46
+DONE arena256-seed73-r01-base cpu=5.053s wall=5.059s rss=70.0MiB
+RUN arena256-seed73-r01-lazy power=ac battery=46
+DONE arena256-seed73-r01-lazy cpu=4.928s wall=4.933s rss=70.5MiB
+BLOCK 12/54 complete
+RUN lakes256-checkpoints-r01-lazy power=ac battery=46
+DONE lakes256-checkpoints-r01-lazy cpu=14.353s wall=14.390s rss=100.2MiB
+RUN lakes256-checkpoints-r01-base power=ac battery=47
+DONE lakes256-checkpoints-r01-base cpu=15.487s wall=15.518s rss=96.0MiB
+RUN lakes256-checkpoints-r01-eager power=ac battery=47
+DONE lakes256-checkpoints-r01-eager cpu=15.524s wall=15.566s rss=96.2MiB
+BLOCK 13/54 complete
+RUN lakes256-seed131-r01-eager power=ac battery=48
+DONE lakes256-seed131-r01-eager cpu=6.579s wall=6.584s rss=74.7MiB
+RUN lakes256-seed131-r01-lazy power=ac battery=48
+DONE lakes256-seed131-r01-lazy cpu=6.287s wall=6.292s rss=76.4MiB
+RUN lakes256-seed131-r01-base power=ac battery=48
+DONE lakes256-seed131-r01-base cpu=6.502s wall=6.509s rss=74.3MiB
+BLOCK 14/54 complete
+RUN lakes256-4-r02-base power=ac battery=48
+DONE lakes256-4-r02-base cpu=15.186s wall=15.193s rss=96.2MiB
+RUN lakes256-4-r02-lazy power=ac battery=49
+DONE lakes256-4-r02-lazy cpu=13.952s wall=13.963s rss=99.5MiB
+RUN lakes256-4-r02-eager power=ac battery=49
+DONE lakes256-4-r02-eager cpu=15.176s wall=15.184s rss=96.1MiB
+BLOCK 15/54 complete
+RUN arena256-seed73-r02-base power=ac battery=49
+DONE arena256-seed73-r02-base cpu=5.036s wall=5.041s rss=69.8MiB
+RUN arena256-seed73-r02-eager power=ac battery=50
+DONE arena256-seed73-r02-eager cpu=5.090s wall=5.094s rss=70.1MiB
+RUN arena256-seed73-r02-lazy power=ac battery=50
+DONE arena256-seed73-r02-lazy cpu=4.924s wall=4.928s rss=70.5MiB
+BLOCK 16/54 complete
+RUN arena256-2-r02-base power=ac battery=50
+DONE arena256-2-r02-base cpu=9.288s wall=9.293s rss=46.9MiB
+RUN arena256-2-r02-lazy power=ac battery=50
+DONE arena256-2-r02-lazy cpu=9.053s wall=9.057s rss=47.6MiB
+RUN arena256-2-r02-eager power=ac battery=50
+DONE arena256-2-r02-eager cpu=9.323s wall=9.329s rss=47.0MiB
+BLOCK 17/54 complete
+RUN arena512-4-r02-eager power=ac battery=51
+DONE arena512-4-r02-eager cpu=46.310s wall=46.321s rss=233.2MiB
+RUN arena512-4-r02-lazy power=ac battery=52
+DONE arena512-4-r02-lazy cpu=42.458s wall=42.469s rss=239.2MiB
+RUN arena512-4-r02-base power=ac battery=53
+DONE arena512-4-r02-base cpu=46.401s wall=46.413s rss=233.1MiB
+BLOCK 18/54 complete
+RUN arena128-2-r02-eager power=ac battery=54
+DONE arena128-2-r02-eager cpu=3.120s wall=3.125s rss=35.3MiB
+RUN arena128-2-r02-lazy power=ac battery=54
+DONE arena128-2-r02-lazy cpu=2.979s wall=2.983s rss=35.8MiB
+RUN arena128-2-r02-base power=ac battery=55
+DONE arena128-2-r02-base cpu=3.114s wall=3.119s rss=35.1MiB
+BLOCK 19/54 complete
+RUN lakes256-seed131-r02-lazy power=ac battery=55
+DONE lakes256-seed131-r02-lazy cpu=6.274s wall=6.279s rss=76.0MiB
+RUN lakes256-seed131-r02-base power=ac battery=55
+DONE lakes256-seed131-r02-base cpu=6.537s wall=6.543s rss=74.4MiB
+RUN lakes256-seed131-r02-eager power=ac battery=55
+DONE lakes256-seed131-r02-eager cpu=6.556s wall=6.561s rss=74.6MiB
+BLOCK 20/54 complete
+RUN lakes256-checkpoints-r02-eager power=ac battery=55
+DONE lakes256-checkpoints-r02-eager cpu=15.501s wall=15.552s rss=96.3MiB
+RUN lakes256-checkpoints-r02-lazy power=ac battery=56
+DONE lakes256-checkpoints-r02-lazy cpu=14.303s wall=14.424s rss=99.8MiB
+RUN lakes256-checkpoints-r02-base power=ac battery=56
+DONE lakes256-checkpoints-r02-base cpu=15.535s wall=15.613s rss=96.1MiB
+BLOCK 21/54 complete
+RUN lakes256-4-r03-eager power=ac battery=56
+DONE lakes256-4-r03-eager cpu=15.185s wall=15.192s rss=96.3MiB
+RUN lakes256-4-r03-base power=ac battery=57
+DONE lakes256-4-r03-base cpu=15.193s wall=15.199s rss=96.0MiB
+RUN lakes256-4-r03-lazy power=ac battery=57
+DONE lakes256-4-r03-lazy cpu=13.943s wall=13.953s rss=99.6MiB
+BLOCK 22/54 complete
+RUN lakes256-seed131-r03-eager power=ac battery=58
+DONE lakes256-seed131-r03-eager cpu=6.555s wall=6.560s rss=74.5MiB
+RUN lakes256-seed131-r03-base power=ac battery=58
+DONE lakes256-seed131-r03-base cpu=6.506s wall=6.512s rss=74.4MiB
+RUN lakes256-seed131-r03-lazy power=ac battery=58
+DONE lakes256-seed131-r03-lazy cpu=6.285s wall=6.290s rss=75.7MiB
+BLOCK 23/54 complete
+RUN arena512-4-r03-base power=ac battery=58
+DONE arena512-4-r03-base cpu=46.402s wall=46.420s rss=239.8MiB
+RUN arena512-4-r03-eager power=ac battery=59
+DONE arena512-4-r03-eager cpu=46.310s wall=46.323s rss=233.0MiB
+RUN arena512-4-r03-lazy power=ac battery=61
+DONE arena512-4-r03-lazy cpu=42.610s wall=42.624s rss=239.6MiB
+BLOCK 24/54 complete
+RUN lakes256-checkpoints-r03-eager power=ac battery=62
+DONE lakes256-checkpoints-r03-eager cpu=15.527s wall=15.581s rss=96.1MiB
+RUN lakes256-checkpoints-r03-base power=ac battery=62
+DONE lakes256-checkpoints-r03-base cpu=15.494s wall=15.533s rss=96.2MiB
+RUN lakes256-checkpoints-r03-lazy power=ac battery=62
+DONE lakes256-checkpoints-r03-lazy cpu=14.316s wall=14.358s rss=99.8MiB
+BLOCK 25/54 complete
+RUN arena128-2-r03-eager power=ac battery=63
+DONE arena128-2-r03-eager cpu=3.122s wall=3.135s rss=35.2MiB
+RUN arena128-2-r03-base power=ac battery=63
+DONE arena128-2-r03-base cpu=3.119s wall=3.128s rss=35.3MiB
+RUN arena128-2-r03-lazy power=ac battery=63
+DONE arena128-2-r03-lazy cpu=2.971s wall=2.975s rss=35.7MiB
+BLOCK 26/54 complete
+RUN arena256-2-r03-base power=ac battery=63
+DONE arena256-2-r03-base cpu=9.287s wall=9.293s rss=46.9MiB
+RUN arena256-2-r03-eager power=ac battery=63
+DONE arena256-2-r03-eager cpu=9.334s wall=9.339s rss=47.0MiB
+RUN arena256-2-r03-lazy power=ac battery=63
+DONE arena256-2-r03-lazy cpu=9.056s wall=9.065s rss=47.6MiB
+BLOCK 27/54 complete
+RUN arena256-seed73-r03-lazy power=ac battery=64
+DONE arena256-seed73-r03-lazy cpu=4.940s wall=4.946s rss=70.5MiB
+RUN arena256-seed73-r03-eager power=ac battery=64
+DONE arena256-seed73-r03-eager cpu=5.098s wall=5.104s rss=70.1MiB
+RUN arena256-seed73-r03-base power=ac battery=64
+DONE arena256-seed73-r03-base cpu=5.050s wall=5.068s rss=71.6MiB
+BLOCK 28/54 complete
+RUN arena256-2-r04-eager power=ac battery=64
+DONE arena256-2-r04-eager cpu=9.333s wall=9.338s rss=47.2MiB
+RUN arena256-2-r04-base power=ac battery=64
+DONE arena256-2-r04-base cpu=9.276s wall=9.284s rss=46.8MiB
+RUN arena256-2-r04-lazy power=ac battery=64
+DONE arena256-2-r04-lazy cpu=9.030s wall=9.037s rss=47.7MiB
+BLOCK 29/54 complete
+RUN lakes256-4-r04-lazy power=ac battery=65
+DONE lakes256-4-r04-lazy cpu=13.906s wall=13.917s rss=99.6MiB
+RUN lakes256-4-r04-base power=ac battery=65
+DONE lakes256-4-r04-base cpu=15.189s wall=15.199s rss=95.9MiB
+RUN lakes256-4-r04-eager power=ac battery=65
+DONE lakes256-4-r04-eager cpu=15.203s wall=15.217s rss=96.1MiB
+BLOCK 30/54 complete
+RUN lakes256-checkpoints-r04-lazy power=ac battery=65
+DONE lakes256-checkpoints-r04-lazy cpu=14.317s wall=14.380s rss=99.7MiB
+RUN lakes256-checkpoints-r04-eager power=ac battery=66
+DONE lakes256-checkpoints-r04-eager cpu=15.522s wall=15.558s rss=96.4MiB
+RUN lakes256-checkpoints-r04-base power=ac battery=66
+DONE lakes256-checkpoints-r04-base cpu=15.529s wall=15.592s rss=96.0MiB
+BLOCK 31/54 complete
+RUN arena256-seed73-r04-base power=ac battery=66
+DONE arena256-seed73-r04-base cpu=5.048s wall=5.057s rss=69.9MiB
+RUN arena256-seed73-r04-lazy power=ac battery=66
+DONE arena256-seed73-r04-lazy cpu=4.932s wall=4.938s rss=70.5MiB
+RUN arena256-seed73-r04-eager power=ac battery=67
+DONE arena256-seed73-r04-eager cpu=5.096s wall=5.102s rss=70.1MiB
+BLOCK 32/54 complete
+RUN arena128-2-r04-lazy power=ac battery=67
+DONE arena128-2-r04-lazy cpu=2.968s wall=2.972s rss=35.6MiB
+RUN arena128-2-r04-base power=ac battery=67
+DONE arena128-2-r04-base cpu=3.120s wall=3.124s rss=35.3MiB
+RUN arena128-2-r04-eager power=ac battery=67
+DONE arena128-2-r04-eager cpu=3.117s wall=3.122s rss=35.3MiB
+BLOCK 33/54 complete
+RUN lakes256-seed131-r04-lazy power=ac battery=67
+DONE lakes256-seed131-r04-lazy cpu=6.273s wall=6.280s rss=75.8MiB
+RUN lakes256-seed131-r04-eager power=ac battery=67
+DONE lakes256-seed131-r04-eager cpu=6.576s wall=6.583s rss=74.8MiB
+RUN lakes256-seed131-r04-base power=ac battery=67
+DONE lakes256-seed131-r04-base cpu=6.539s wall=6.557s rss=74.7MiB
+BLOCK 34/54 complete
+RUN arena512-4-r04-lazy power=ac battery=67
+DONE arena512-4-r04-lazy cpu=42.400s wall=42.413s rss=239.3MiB
+RUN arena512-4-r04-base power=ac battery=68
+DONE arena512-4-r04-base cpu=46.451s wall=46.466s rss=232.7MiB
+RUN arena512-4-r04-eager power=ac battery=69
+DONE arena512-4-r04-eager cpu=46.427s wall=46.440s rss=233.0MiB
+BLOCK 35/54 complete
+RUN arena256-2-r05-lazy power=ac battery=70
+DONE arena256-2-r05-lazy cpu=9.073s wall=9.081s rss=47.7MiB
+RUN arena256-2-r05-eager power=ac battery=70
+DONE arena256-2-r05-eager cpu=9.304s wall=9.309s rss=47.0MiB
+RUN arena256-2-r05-base power=ac battery=70
+DONE arena256-2-r05-base cpu=9.264s wall=9.269s rss=46.9MiB
+BLOCK 36/54 complete
+RUN lakes256-4-r05-lazy power=ac battery=70
+DONE lakes256-4-r05-lazy cpu=13.965s wall=13.974s rss=100.0MiB
+RUN lakes256-4-r05-eager power=ac battery=71
+DONE lakes256-4-r05-eager cpu=15.187s wall=15.192s rss=96.2MiB
+RUN lakes256-4-r05-base power=ac battery=71
+DONE lakes256-4-r05-base cpu=15.183s wall=15.190s rss=96.0MiB
+BLOCK 37/54 complete
+RUN lakes256-seed131-r05-base power=ac battery=71
+DONE lakes256-seed131-r05-base cpu=6.498s wall=6.504s rss=74.4MiB
+RUN lakes256-seed131-r05-lazy power=ac battery=71
+DONE lakes256-seed131-r05-lazy cpu=6.282s wall=6.287s rss=75.9MiB
+RUN lakes256-seed131-r05-eager power=ac battery=71
+DONE lakes256-seed131-r05-eager cpu=6.569s wall=6.575s rss=74.7MiB
+BLOCK 38/54 complete
+RUN arena512-4-r05-eager power=ac battery=72
+DONE arena512-4-r05-eager cpu=46.353s wall=46.364s rss=234.3MiB
+RUN arena512-4-r05-base power=ac battery=73
+DONE arena512-4-r05-base cpu=46.483s wall=46.502s rss=233.2MiB
+RUN arena512-4-r05-lazy power=ac battery=73
+DONE arena512-4-r05-lazy cpu=42.417s wall=42.430s rss=239.1MiB
+BLOCK 39/54 complete
+RUN arena128-2-r05-lazy power=ac battery=74
+DONE arena128-2-r05-lazy cpu=2.990s wall=2.994s rss=35.6MiB
+RUN arena128-2-r05-eager power=ac battery=74
+DONE arena128-2-r05-eager cpu=3.114s wall=3.117s rss=35.3MiB
+RUN arena128-2-r05-base power=ac battery=74
+DONE arena128-2-r05-base cpu=3.111s wall=3.118s rss=35.2MiB
+BLOCK 40/54 complete
+RUN arena256-seed73-r05-lazy power=ac battery=74
+DONE arena256-seed73-r05-lazy cpu=4.956s wall=4.964s rss=70.9MiB
+RUN arena256-seed73-r05-base power=ac battery=75
+DONE arena256-seed73-r05-base cpu=5.054s wall=5.060s rss=70.5MiB
+RUN arena256-seed73-r05-eager power=ac battery=75
+DONE arena256-seed73-r05-eager cpu=5.095s wall=5.103s rss=70.2MiB
+BLOCK 41/54 complete
+RUN lakes256-checkpoints-r05-base power=ac battery=75
+DONE lakes256-checkpoints-r05-base cpu=15.511s wall=15.558s rss=96.1MiB
+RUN lakes256-checkpoints-r05-eager power=ac battery=75
+DONE lakes256-checkpoints-r05-eager cpu=15.539s wall=15.667s rss=96.4MiB
+RUN lakes256-checkpoints-r05-lazy power=ac battery=75
+DONE lakes256-checkpoints-r05-lazy cpu=14.298s wall=14.412s rss=99.7MiB
+BLOCK 42/54 complete
+RUN arena128-2-r06-eager power=ac battery=76
+DONE arena128-2-r06-eager cpu=3.104s wall=3.112s rss=35.3MiB
+RUN arena128-2-r06-base power=ac battery=76
+DONE arena128-2-r06-base cpu=3.126s wall=3.136s rss=35.2MiB
+RUN arena128-2-r06-lazy power=ac battery=76
+DONE arena128-2-r06-lazy cpu=2.991s wall=2.996s rss=35.7MiB
+BLOCK 43/54 complete
+RUN arena256-2-r06-base power=ac battery=76
+DONE arena256-2-r06-base cpu=9.263s wall=9.269s rss=46.8MiB
+RUN arena256-2-r06-lazy power=ac battery=76
+DONE arena256-2-r06-lazy cpu=9.056s wall=9.075s rss=47.8MiB
+RUN arena256-2-r06-eager power=ac battery=76
+DONE arena256-2-r06-eager cpu=9.324s wall=9.331s rss=47.1MiB
+BLOCK 44/54 complete
+RUN arena256-2-r07-lazy power=ac battery=76
+DONE arena256-2-r07-lazy cpu=9.057s wall=9.066s rss=47.8MiB
+RUN arena256-2-r07-eager power=ac battery=77
+DONE arena256-2-r07-eager cpu=9.328s wall=9.334s rss=47.0MiB
+RUN arena256-2-r07-base power=ac battery=77
+DONE arena256-2-r07-base cpu=9.298s wall=9.309s rss=46.7MiB
+BLOCK 45/54 complete
+RUN arena128-2-r07-lazy power=ac battery=77
+DONE arena128-2-r07-lazy cpu=2.987s wall=2.997s rss=35.5MiB
+RUN arena128-2-r07-base power=ac battery=77
+DONE arena128-2-r07-base cpu=3.118s wall=3.128s rss=35.2MiB
+RUN arena128-2-r07-eager power=ac battery=77
+DONE arena128-2-r07-eager cpu=3.123s wall=3.132s rss=35.2MiB
+BLOCK 46/54 complete
+RUN arena256-2-r08-lazy power=ac battery=77
+DONE arena256-2-r08-lazy cpu=9.048s wall=9.053s rss=47.6MiB
+RUN arena256-2-r08-base power=ac battery=77
+DONE arena256-2-r08-base cpu=9.290s wall=9.298s rss=46.8MiB
+RUN arena256-2-r08-eager power=ac battery=77
+DONE arena256-2-r08-eager cpu=9.325s wall=9.332s rss=47.0MiB
+BLOCK 47/54 complete
+RUN arena128-2-r08-lazy power=ac battery=78
+DONE arena128-2-r08-lazy cpu=3.008s wall=3.018s rss=35.6MiB
+RUN arena128-2-r08-eager power=ac battery=78
+DONE arena128-2-r08-eager cpu=3.117s wall=3.127s rss=35.3MiB
+RUN arena128-2-r08-base power=ac battery=78
+DONE arena128-2-r08-base cpu=3.118s wall=3.127s rss=35.2MiB
+BLOCK 48/54 complete
+RUN arena128-2-r09-eager power=ac battery=78
+DONE arena128-2-r09-eager cpu=3.118s wall=3.125s rss=35.3MiB
+RUN arena128-2-r09-lazy power=ac battery=78
+DONE arena128-2-r09-lazy cpu=2.974s wall=2.980s rss=35.7MiB
+RUN arena128-2-r09-base power=ac battery=78
+DONE arena128-2-r09-base cpu=3.127s wall=3.133s rss=35.2MiB
+BLOCK 49/54 complete
+RUN arena256-2-r09-base power=ac battery=78
+DONE arena256-2-r09-base cpu=9.254s wall=9.264s rss=46.8MiB
+RUN arena256-2-r09-eager power=ac battery=78
+DONE arena256-2-r09-eager cpu=9.317s wall=9.324s rss=47.0MiB
+RUN arena256-2-r09-lazy power=ac battery=78
+DONE arena256-2-r09-lazy cpu=9.042s wall=9.048s rss=47.6MiB
+BLOCK 50/54 complete
+RUN arena256-2-r10-eager power=ac battery=78
+DONE arena256-2-r10-eager cpu=9.347s wall=9.354s rss=47.1MiB
+RUN arena256-2-r10-lazy power=ac battery=79
+DONE arena256-2-r10-lazy cpu=9.038s wall=9.046s rss=47.8MiB
+RUN arena256-2-r10-base power=ac battery=79
+DONE arena256-2-r10-base cpu=9.263s wall=9.270s rss=46.8MiB
+BLOCK 51/54 complete
+RUN arena128-2-r10-base power=ac battery=79
+DONE arena128-2-r10-base cpu=3.103s wall=3.110s rss=35.3MiB
+RUN arena128-2-r10-eager power=ac battery=79
+DONE arena128-2-r10-eager cpu=3.124s wall=3.130s rss=35.4MiB
+RUN arena128-2-r10-lazy power=ac battery=79
+DONE arena128-2-r10-lazy cpu=2.968s wall=2.973s rss=35.7MiB
+BLOCK 52/54 complete
+RUN arena256-2-r11-eager power=ac battery=79
+DONE arena256-2-r11-eager cpu=9.323s wall=9.328s rss=47.1MiB
+RUN arena256-2-r11-base power=ac battery=79
+DONE arena256-2-r11-base cpu=9.294s wall=9.297s rss=46.9MiB
+RUN arena256-2-r11-lazy power=ac battery=79
+DONE arena256-2-r11-lazy cpu=9.057s wall=9.064s rss=47.9MiB
+BLOCK 53/54 complete
+RUN arena128-2-r11-base power=ac battery=80
+DONE arena128-2-r11-base cpu=3.109s wall=3.112s rss=35.1MiB
+RUN arena128-2-r11-lazy power=ac battery=80
+DONE arena128-2-r11-lazy cpu=2.984s wall=2.989s rss=35.8MiB
+RUN arena128-2-r11-eager power=ac battery=80
+DONE arena128-2-r11-eager cpu=3.103s wall=3.108s rss=35.4MiB
+BLOCK 54/54 complete
+STUDY COMPLETE

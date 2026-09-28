@@ -1,5 +1,7 @@
 # Lazy building gradient validation evidence
 
+**Updated timing evidence:** the [162-run controlled study](timing-study/README.md) supersedes the small-sample CPU estimates and unmeasured-save-latency status below. It finds 2–8% net CPU savings across seven workloads and measures the synchronous-save tradeoff. The earlier raw measurements remain intact for comparison.
+
 Implementation: [d50968d06](https://github.com/Globulation2/glob2/commit/d50968d06), based on [1c49596f5](https://github.com/Globulation2/glob2/commit/1c49596f5195188e7f078768f610454f7068d7c6). This branch contains review evidence only and is not intended to merge into master.
 
 The opt-in implementation shares one bucket-expansion kernel between eager and resumable searches. Building initialization and seed scanning remain eager. Round-trip construction, forbidden-area escape, debug display and serialization finish cached fields. Frozen obstacles/water costs and existing cache refresh/eviction timing preserve routing semantics; the save format remains unchanged.

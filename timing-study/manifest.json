@@ -1,0 +1,122 @@
+{
+  "implementation": "d50968d06125dc10fbf4b247e35d0526fe69af0b",
+  "baseline": "1c49596f5195188e7f078768f610454f7068d7c6",
+  "files": {
+    "README.md": {
+      "bytes": 11140,
+      "sha256": "28708fda2b7484c097168d653fda32fbcc441c7a2f3bfbab19c74afba751cbe1"
+    },
+    "analysis.json": {
+      "bytes": 38915,
+      "sha256": "2cbc9a5103b1237384bdcb4e281f27cebc54714183121c9b37b6189b2e090013"
+    },
+    "analyze.py": {
+      "bytes": 4760,
+      "sha256": "4fba29bc79fa3765a569fe431ae82203f4b0068efd6b22ef2cc211ec367a4e71"
+    },
+    "completed.json": {
+      "bytes": 71,
+      "sha256": "d3e635c76f9b572af140fcb4c91b0694ec6045bc79e8b7da46d61eb86a26010a"
+    },
+    "cpu-comparison.png": {
+      "bytes": 128817,
+      "sha256": "96781977af4ab364471ec273338909524f658c7e4639ba9042fbb55f36bf3dab"
+    },
+    "cpu-comparison.svg": {
+      "bytes": 115677,
+      "sha256": "bdf7d2b79d1c0c571c7331f38c2e203af30847b5c19f7512b47174c252210f75"
+    },
+    "driver.log": {
+      "bytes": 19247,
+      "sha256": "d469f229819d64907b8fc9117b269029f632eb52b09acc199f4f51ecef4f0d18"
+    },
+    "fixtures/arena128-2.map": {
+      "bytes": 1003791,
+      "sha256": "46a3c461da2d0c753a47c58cab1964259417436a0b9aacab673493817aa51baf"
+    },
+    "fixtures/arena256-2.map": {
+      "bytes": 2675727,
+      "sha256": "315d2129fa202c5983277564f7abdca0fac21c5ec4f05f4e38fffe9be932e9f1"
+    },
+    "fixtures/arena256-seed73.map": {
+      "bytes": 3120599,
+      "sha256": "9e6439407b4fc9852cfe2240b290833c287e088ca225a56a0ae3b221ee06add1"
+    },
+    "fixtures/arena512-4.map": {
+      "bytes": 9808343,
+      "sha256": "2eba46d9ba04ce5056e00175043fa584af7cfb368183475f282129cce580ee6d"
+    },
+    "fixtures/lakes256-4.map": {
+      "bytes": 3120598,
+      "sha256": "276f30abdc42b49d2fa0f5a3f82a6908d141bbe08d3a70b48593ce0d97b4186c"
+    },
+    "fixtures/lakes256-checkpoints.map": {
+      "bytes": 3120598,
+      "sha256": "276f30abdc42b49d2fa0f5a3f82a6908d141bbe08d3a70b48593ce0d97b4186c"
+    },
+    "fixtures/lakes256-seed131.map": {
+      "bytes": 3120599,
+      "sha256": "8e8b47c054750c36b311613f341468d42cc45ca750ba8767fcb55947d013c2de"
+    },
+    "measurements.jsonl": {
+      "bytes": 6197436,
+      "sha256": "f08cee148648ed76642d98e9c3f3071b69dd56a721c15896c11ff6a4f480c0dc"
+    },
+    "plan.json": {
+      "bytes": 14998,
+      "sha256": "88c676a75e6f678adc495a8bcd31701ae03292733024dad7ddef14bddd293530"
+    },
+    "plot.py": {
+      "bytes": 2027,
+      "sha256": "8e63c4477d5a6699a617b5b22ff55dfbb25b93868acb07a0871d848c108186a3"
+    },
+    "raw-arena128-2.tar.gz": {
+      "bytes": 12119759,
+      "sha256": "d888ded25759cbbb824fa8d7cb98382d2a6af8718dc45dc6b75ce4a64d8fc11e"
+    },
+    "raw-arena256-2.tar.gz": {
+      "bytes": 11830473,
+      "sha256": "1cf0d8ef1879698cab54e257dfb3280d580621f7a085e9f8f0d3f80bb1d90b54"
+    },
+    "raw-arena256-seed73.tar.gz": {
+      "bytes": 10610034,
+      "sha256": "b90977ce1e8a32145baaf5531e29741497e6d9f3203466804e314d8dad165bbf"
+    },
+    "raw-arena512-4.tar.gz": {
+      "bytes": 20534142,
+      "sha256": "be419ef5fb8cfb53b7a8f26821ed29815110a13145dba7b52b072757da3f4a86"
+    },
+    "raw-lakes256-4.tar.gz": {
+      "bytes": 20850697,
+      "sha256": "0eab98c75fb731ad0420a9021c7a84772ee42baea2f0731d312991993f03fab7"
+    },
+    "raw-lakes256-checkpoints.tar.gz": {
+      "bytes": 20865565,
+      "sha256": "9bb0f50b40728508d795d60715ffc92a83794e84c2504fe8c682eef26d86d0a7"
+    },
+    "raw-lakes256-seed131.tar.gz": {
+      "bytes": 10756943,
+      "sha256": "75dba754ccfc1742023c462247cd030cf22bcfb6fec831faea369c9e0e9e8b47"
+    },
+    "raw-warmups.tar.gz": {
+      "bytes": 1011666,
+      "sha256": "b2f7ac1519fb2062d7c8324ce817f95e76c4c681ce84d1ab27998dffe82da837"
+    },
+    "reproduce.py": {
+      "bytes": 4320,
+      "sha256": "3eb4343894cff3125e0e364415774fba41391b0d8c77a939400897c96c1ad289"
+    },
+    "study.py": {
+      "bytes": 8875,
+      "sha256": "4cb3daaa787f9764a1ad75e71f6080ba35bbe612e1baeb1cbd620272db1cee26"
+    },
+    "warmups.jsonl": {
+      "bytes": 64795,
+      "sha256": "84503b3ae88e67885d17b2b6df77a28b608a135d268b923eb1dade51a18164ed"
+    },
+    "write_report.py": {
+      "bytes": 11058,
+      "sha256": "4c5eed1f2541b8a8444101bb81e9fc585a49e2a3f2b5c83b9a269fcb7a97d547"
+    }
+  }
+}
