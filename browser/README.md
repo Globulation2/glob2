@@ -129,10 +129,15 @@ test runner and its browser revisions. Failures retain traces and screenshots
 under `build/browser-test-results`. WebKit automation does not substitute for
 release testing in actual Safari, nor Chromium for Edge.
 
-Run the suite with `GLOB2_TEST_RENDERER=webgl2` or `software` to force a renderer
-throughout. CI selects software explicitly for the full Chromium behavior suite
-and focused Firefox/WebKit checks, then runs the focused Chromium WebGL2 suite
-separately. Otherwise tests use automatic selection; some headless WebKit builds
+Use `GLOB2_TEST_RENDERER=webgl2` or `software` for renderer-sensitive tests.
+Dedicated renderer-contract tests select their own renderer explicitly.
+CI selects software for the full Chromium behavior suite
+and focused Firefox/WebKit startup and viewport checks, then repeats the
+renderer-sensitive startup, input, viewport and reload checks in Chromium WebGL2.
+`rendering.spec.js` selects its own renderer and runs only in the full suite;
+`build-artifact.spec.js` checks the shared WASM binary once, without repeating it
+for each browser. Both renderers retain the separate visibility check. Otherwise
+tests use automatic selection; some headless WebKit builds
 conceal the GPU identity and can select emulated WebGL2. Linux WebKit WebGL2
 high-density resizing has shown intermittent stalls and graphics-process exits;
 that combination is not covered by the passing software checks. Use
@@ -147,3 +152,18 @@ New multiplayer features, including reconnect recovery, are outside this change.
 Build outputs and the SDK are ignored local files. Serve the output directory;
 opening the HTML as a `file:` URL is unsupported. The SDL audio backend still
 uses deprecated ScriptProcessorNode.
+
+### CI compiler caches
+
+The browser job restores the main Ubuntu 24.04 native compiler cache read-only
+for its router and transport fixtures. Emscripten uses a separate bounded cache
+through `EM_COMPILER_WRAPPER=ccache`, keyed by runner OS/architecture and the
+pinned toolchain. Only master saves that cache, after pruning unused entries;
+the first run for a new toolchain starts cold.
+Compiler contents and input files remain validated; no timestamp or time-macro
+sloppiness is enabled. Cache statistics are printed for native and WASM builds.
+The Emscripten ports/system-library directory and linked output are rebuilt on
+fresh runners; compiler caching does not replace the browser or determinism tests.
+The determinism test transfers its checksum file as Base64 to avoid serializing
+millions of individual byte values through Playwright. The decoded bytes still
+feed the same per-tick comparison against native platforms.

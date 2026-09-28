@@ -217,9 +217,6 @@ jobs:
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             build/linux/client/release/src/torus-render-test -G -F -m -s 1120x720
 
-      - name: Build the YOG server
-        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
-
       - name: Build and run pre-game map preview regressions
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapPreviewHarness
@@ -867,6 +864,11 @@ jobs:
     name: browser
     runs-on: ubuntu-24.04
     timeout-minutes: 90
+    env:
+      CCACHE: 1
+      CCACHE_DIR: /tmp/glob2-ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 500M
     steps:
       - uses: actions/checkout@v4
       - name: Install native and build dependencies
@@ -877,19 +879,55 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y scons libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
         run: python3 browser/setup.py
       - name: Test build identities
         run: python3 -m unittest discover -s tests/build_system -v
+      # Reuse the native client objects already populated by the main Linux job.
+      # This job only reads that cache; transport-specific misses stay local.
+      - name: Restore native compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-main-ubuntu-24.04-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-main-ubuntu-24.04-
+      - name: Restore WebAssembly compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/glob2-wasm-ccache
+          key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-
       - name: Build WebAssembly client
-        run: scons target=web release=1 -j$(nproc)
+        id: build_web
+        env:
+          # Emscripten wraps its underlying clang, not the Python compiler driver.
+          EM_COMPILER_WRAPPER: ccache
+          CCACHE_DIR: /tmp/glob2-wasm-ccache
+        run: |
+          ccache -z
+          echo "WASM_CACHE_START=$(date +%s)" >> "$GITHUB_ENV"
+          scons target=web release=1 -j$(nproc)
+          ccache -s -v
+      - name: Prune WebAssembly compiler cache
+        if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        env:
+          CCACHE_DIR: /tmp/glob2-wasm-ccache
+        run: ccache --evict-older-than "$(( $(date +%s) - WASM_CACHE_START + 60 ))s"
+      - name: Save WebAssembly compiler cache
+        if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/glob2-wasm-ccache
+          key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Reset native compiler cache statistics
+        run: ccache -z
       - name: Build and test gateway
         run: |
           scons role=gateway release=1 -j$(nproc)
           python3 -m unittest discover -s tests/gateway -v
       - name: Build headless router
-        run: scons role=router release=1 -j$(nproc)
+        run: scons CXX=g++-13 role=router release=1 -j$(nproc)
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -897,30 +935,44 @@ jobs:
           cache-dependency-path: browser/package-lock.json
       - name: Build transport integration fixture
         run: |
-          scons release=1 transport-test -j$(nproc)
+          scons CXX=g++-13 release=1 transport-test -j$(nproc)
           python3 test/run-network-transport-tests.py
           python3 -m unittest discover -s tests/transport -v
-      - name: Test browser lifecycle, renderers and multiplayer
+          ccache -s -v
+      - name: Install browser test dependencies
         working-directory: browser
-        env:
-          GLOB2_FIREFOX_HEADED: '1'
         run: |
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium firefox webkit
-          # Firefox needs an X display for WebGL2 and a real audio service to
-          # complete AudioContext.resume(). A null sink keeps CI silent.
+          # Firefox needs an X display and an audio service. A null sink is silent.
           sudo apt-get install -y pulseaudio
           pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
-          node --test unit/*.test.js
-          # Chromium carries the complete behavior suite. The other engines
-          # exercise startup, gameplay and viewport integration without
-          # repeating every persistence and multiplayer scenario.
-          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --project=chromium
-          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js --project=firefox --project=webkit
-          # WebGL2 shares the game behavior above; keep focused adapter,
-          # lifecycle, persistence and rendering coverage in Chromium.
-          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js --project=chromium
-          xvfb-run -a npx playwright test --config visibility.config.js
+      - name: Test browser shell units
+        working-directory: browser
+        run: node --test unit/*.test.js
+      - name: Test Chromium behavior and renderer contracts
+        working-directory: browser
+        env:
+          GLOB2_TEST_RENDERER: software
+        # Includes rendering.spec.js, which explicitly selects its own renderers,
+        # and build-artifact.spec.js, which checks the shared WASM binary once.
+        run: xvfb-run -a npx playwright test --project=chromium
+      - name: Smoke-test Firefox and WebKit startup and viewport integration
+        working-directory: browser
+        env:
+          GLOB2_FIREFOX_HEADED: '1'
+          GLOB2_TEST_RENDERER: software
+        run: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js --project=firefox --project=webkit
+      - name: Test Chromium WebGL2 integration
+        working-directory: browser
+        env:
+          GLOB2_TEST_RENDERER: webgl2
+        # Repeat only tests whose gameURL() changes with the renderer setting.
+        run: xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js input.spec.js --project=chromium
+      - name: Test foreground and background lifecycle on both renderers
+        working-directory: browser
+        run: |
+          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
       - uses: actions/upload-artifact@v4
         with:
