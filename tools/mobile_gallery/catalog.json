@@ -198,7 +198,7 @@
     {
       "id": "game-map",
       "title": "Map & toolbar",
-      "description": "Bundled balanced map, revealed for review, with no simulation ticks advanced.",
+      "description": "Bundled balanced map, revealed for review after 4,096 simulation ticks.",
       "group": "Gameplay"
     },
     {

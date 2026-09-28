@@ -20,8 +20,9 @@ selection, tool, panel, scroll position and text while cancelling held input.
 
 `GLOB2_MOBILE_UI=1` forces the compact presentation for development; `0` forces
 legacy controls. `touch-auto` and `touch-spacious` exercise touch presentation
-with Automatic and Spacious layout policies on a native development host. It takes precedence over the legacy `GLOB2_PHONE_FORMS`,
-`GLOB2_RESPONSIVE_UI` and `GLOB2_TOUCH_HUD` opt-ins. Rendering backend and mouse
+with Automatic and Spacious layout policies on a native development host. This is
+the single development override; leave it unset for normal saved preferences and
+host capabilities. Rendering backend and mouse
 motion do not select a presentation. SDL, OpenGL/WebGL and software rendering
 share UI transforms and clipping. Mouse clicks use the same controls as touch;
 Tab and Enter navigate adapted forms, and Page Up/Down scroll gameplay panels.
@@ -424,6 +425,12 @@ Launch is disabled until the preview represents the current validated revision;
 keyboard launch follows the same guard. Tablet and desktop share the existing
 model and composed controls. Additional Game Options remains multiplayer-only;
 the obsolete AI Descriptions implementation has been removed.
+
+The gameplay touch harness also exercises German and Japanese inspectors and
+editor actions in small portrait and landscape views, including constrained
+keyboard layouts. Its localized captures stay in the isolated test profile. The
+mobile presentation harness checks safe-area layouts in those languages as well
+as English.
 
 The mobile presentation harness covers touch dispatch, clipped/scrolling controls,
 whole-row containment, full-width stacked fields, category filtering, narrow
