@@ -7,18 +7,23 @@ const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80})
 
 async function startAndSave(page) {
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
-  const existing=await page.evaluate(()=>glob2Diagnostics.saves());
   await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,600,400);await click(page,520,555);
+  await click(page,600,400);
+  // Name the manual save explicitly: an autosave can arrive while persistence
+  // completes, so selecting the first newly appearing file races with it.
+  await click(page,600,515);
+  await page.locator('#canvas').press('Home');
+  await page.keyboard.type('Reload regression ',{delay:30});
+  await click(page,520,555);
   await expect.poll(async()=>{
     const saves=await page.evaluate(()=>glob2Diagnostics.saves());
-    return saves.filter(name=>!existing.includes(name)).length;
+    return saves.filter(name=>name.startsWith('Reload_regression_')).length;
   }).toBe(1);
   await expect.poll(async()=>(await state(page)).persistence).toBe('persisted');
-  return (await page.evaluate(()=>glob2Diagnostics.saves())).find(name=>!existing.includes(name));
+  return (await page.evaluate(()=>glob2Diagnostics.saves())).find(name=>name.startsWith('Reload_regression_'));
 }
 async function loadSaved(page,replay=false,observeLoading=true) {
   await page.locator('#canvas').press('Escape',{delay:80});
