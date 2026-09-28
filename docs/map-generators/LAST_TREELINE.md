@@ -1,6 +1,6 @@
 # The Last Treeline
 
-`last-treeline` (numeric ID 70, revision 1) is a retreating lake basin whose surviving
+`last-treeline` (numeric ID 70, revision 2) is a retreating lake basin whose surviving
 woodland is the contested construction resource. Dry outer settlements feed themselves;
 a broken wooded shoreline supplies continued building. The open lakebed and outer
 plain offer alternate approaches, so losing one gathering front leaves another.
@@ -19,13 +19,17 @@ keeps wheat apart from trees, and leaves the lakebed open even after groves fill
 Two construction shoulders stand outside each woodland's sand margin.
 
 Each home receives 48 finite wood tiles on verified zero-growth ground and a
-pond-fed wheat plot. No extra timber is scattered across the outer country.
+pond-fed wheat crescent with a larger opening seed reserve. Its broad bank stays
+close to the opening colony.
+No extra timber is scattered across the outer country.
 The 48 harvests are an opening budget, not 48 mature-tree stock multiples:
 wood is nongranular, so collecting it clears the tile irrespective of tree size.
 
 The generator accepts 256 and 512 tile sides, including rectangles, and 2–8
 colonies. Larger maps retain compact first contact and add outer land for
-flanking and construction. Starting sites are randomly dealt to colony indices.
+flanking and construction among irregular wetlands and sandy terraces. Open wheat
+sections on verified dry ground add finite harvest reserves without farm borders. No extra
+timber is planted there: wood remains the reason to contest the shoreline. Starting sites are randomly dealt to colony indices.
 Alliances are a game/lobby choice; the generator request does not carry alliances
 and does not automatically group allied starts. Duels, FFA and team games use the
 same resource geography.
@@ -37,8 +41,10 @@ same resource geography.
   around each remnant pool, changing growing room and clearing effort.
 - **Wood amount:** scales the neutral groves' initial tree population. Each keeps
   40 initial renewable tree tiles at zero. The 48 finite home trees are unscaled.
-- **Wheat amount:** scales additional home seeds; each home retains 64 renewable
-  wheat tiles at zero. Unplanted grass reserves growth room.
+- **Wheat amount:** scales additional home seeds; each home retains 96 renewable
+  wheat tiles at zero, with 192 requested at the default. Unplanted grass reserves
+  growth room. The same control scales the open countryside grain, which disappears
+  at zero and does not contribute renewable capacity.
 - **Stone amount:** each home retains four quarry tiles, plus scaled deposits.
 - **Fruit amount:** scales home fruit, with no guaranteed minimum. Fruit is not
   concentrated on the contested timber shoreline.

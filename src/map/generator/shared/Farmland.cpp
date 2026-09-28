@@ -62,9 +62,10 @@ int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
 }
 
 std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::vector<int> &plotOf,
-								   const Fertility::Field *dry)
+								   const Fertility::Field *dry,
+								   const std::vector<unsigned char> *finiteWheat)
 {
-	if (int(plotOf.size()) != t.size())
+	if (int(plotOf.size()) != t.size() || (finiteWheat && int(finiteWheat->size()) != t.size()))
 		return "Contained plot labels have the wrong dimensions.";
 	for (int i = 0; i < t.size(); ++i)
 	{
@@ -72,8 +73,10 @@ std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::ve
 		const int type = map.getResource(x, y).type;
 		if (plotOf[i] < 0)
 		{
-			const bool loneTree = type == WOOD && dry && dry->at(x, y) == 0;
-			if ((type == WHEAT || type == WOOD) && !loneTree)
+			const bool finiteCrop =
+				dry && dry->at(x, y) == 0 &&
+				(type == WOOD || (type == WHEAT && finiteWheat && (*finiteWheat)[i]));
+			if ((type == WHEAT || type == WOOD) && !finiteCrop)
 				return "A spreading crop was planted outside its contained plot.";
 			continue;
 		}

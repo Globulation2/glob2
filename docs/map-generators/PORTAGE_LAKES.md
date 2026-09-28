@@ -1,6 +1,6 @@
 # Portage Lakes
 
-Portage Lakes is natural lake country: crooked lakes, dry wooded ridges,
+Portage Lakes (ID 65, revision 2) is natural lake country: crooked lakes, dry wooded ridges,
 pale trails and farms in sheltered bays. Its two investments change different
 connections. Cutting opens a public land shortcut through a ridge; swimming
 opens a crossing between opposite shores. Initial land routes connect every
@@ -19,8 +19,8 @@ than the opening town.
 
 Wheat and renewable timber occupy irregular sand-contained shore plots. Full-size
 wheat fields are larger than compact fields; crowded maps use an intermediate
-size. Candidate fields must meet seed and productive-fertility floors before being accepted.
-Every starter wheat field leaves an unseeded 4×4 opening for an inn and a short
+size. Their footprints stay fixed while sowing uses more of the available ground. Candidate fields must meet seed and productive-fertility floors before being accepted.
+Every substantial wheat field leaves an unseeded 4×4 opening for an inn and a short
 entrance to its edge. Both checkerboard harvesting parities must have an available
 3×3 inn site beside planted wheat, and workers must initially reach the court.
 On long compact maps the opening faces home and grain is sown around its rim,
@@ -30,6 +30,9 @@ These are opening construction sites: unused courts can grow over naturally.
 Their area and entrances are excluded from the productive-fertility floor. Dry
 ridge wood remains at every abundance: its zero growth probability is checked
 against the completed terrain. No generated tile disables resource growth.
+Open gaps in the dry woodland carry additional wheat sections, without new sand
+rims or ponds. These are finite harvest reserves, scaled by wheat amount; trails,
+landing clearings, their cleared approaches and the structural portage plugs remain protected.
 Algae occupies separate small pools, so the main swimming lakes remain clear.
 Stone outcrops shape some woodland crossings without enclosing every clearing.
 Full maps guarantee two designated portages; the largest maps target up to four
@@ -52,7 +55,7 @@ may contain more than 70% of their water.
   woodland and structural rock are independent guarantees. Renewable plots
   saturate at their available fertile area without invading roads or towns.
   Wheat keeps 20 starter tiles per compact colony or 32 per full-size colony,
-  plus up to 64 scaled tiles at 100%. Timber keeps 12 starter tiles plus 12
+  plus up to 96 compact or 128 full-size scaled tiles at 100%. Timber keeps 12 starter tiles plus 12
   scaled tiles. High algae settings can saturate their isolated pools; small stone
   patches change in whole-tile steps. Increasing a resource can select a different
   scored settlement proposal, so whole-map totals need not be strictly monotonic.
@@ -65,8 +68,10 @@ Seed-dependent geometry failures return a diagnostic rather than a partial map.
 
 ## Verification and retained evidence
 
-The new generator is optional, registered as ID 65/revision 1. It changes no
-existing generator, simulation rule, save format, replay version or network gate.
+The historical validation below describes revision 1. Revision 2 increases wheat
+in existing shore farms and open woodland gaps, and preserves inn openings in
+neutral wheat fields. It changes newly generated maps; simulation rules, save
+formats, replay versions and network gates are unchanged.
 The full control domain is exposed in the editor and landscape picker. All 33
 translation catalogs include the new name, labels and request diagnostics.
 

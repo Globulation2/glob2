@@ -47,9 +47,10 @@ int plantContainedPlot(Map &, const Torus &, const std::vector<int> &tiles,
 /// labelled plots. `plotOf` labels pure grass tiles (-1 outside); also reject wheat/wood planted
 /// outside them, except a tree on a tile whose crop growth chance in `dry` is zero (the engine's
 /// water probe never lets it spread). Empty means sealed. Does not assume a particular outline or
-/// sand graphic.
+/// sand graphic. `finiteWheat` additionally permits dry wheat on the marked tiles.
 std::string containedPlotsMismatch(const Map &, const Torus &, const std::vector<int> &plotOf,
-								   const Fertility::Field *dry = nullptr);
+								   const Fertility::Field *dry = nullptr,
+								   const std::vector<unsigned char> *finiteWheat = nullptr);
 
 /// The widths of a farm's crop rows and water rows, measured across the rows in tiles.
 struct FarmRows

@@ -22,7 +22,7 @@ int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
 	return seeds;
 }
 
-Flood cropSpreadEnvelope(const Map &map)
+Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 {
 	const Torus t(map);
 	std::vector<unsigned char> seeds(t.size(), 0), grass(t.size(), 0);
@@ -30,13 +30,24 @@ Flood cropSpreadEnvelope(const Map &map)
 	{
 		const int x = i % t.w, y = i / t.w;
 		const int type = map.getResource(x, y).type;
-		seeds[i] = type == WHEAT || type == WOOD;
+		seeds[i] = (type == WHEAT || type == WOOD) && (!fertility || fertility->at(x, y) > 0);
 		// A tile whose growth flag is off never takes a crop, so the envelope stops at it as
 		// the engine does. No generated map sets the flag; loaded scenario maps may.
 		grass[i] = map.isGrass(x, y) && map.canResourcesGrow(x, y);
 	}
 	// Reuse the same toroidal eight-neighbour topology as the other region operations.
-	return floodFrom(t, seeds, grass);
+	auto result = floodFrom(t, seeds, grass);
+	if (fertility)
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const int type = map.getResource(i % t.w, i / t.w).type;
+			if ((type == WHEAT || type == WOOD) && result.steps[i] < 0)
+			{
+				result.steps[i] = 0;
+				result.visited.push_back(i);
+			}
+		}
+	return result;
 }
 
 Fertility::Field cropGrowthField(const TerrainSketch &sketch, const Torus &t)
@@ -105,7 +116,8 @@ std::uint32_t meanFertilityAround(const Fertility::Field &field, const Torus &t,
 	return std::uint32_t(sum / tiles);
 }
 
-std::vector<std::uint32_t> meanFertilityField(const Fertility::Field &field, const Torus &t, int radius)
+std::vector<std::uint32_t> meanFertilityField(const Fertility::Field &field, const Torus &t,
+											  int radius)
 {
 	const int n = t.size();
 	const int span = 2 * radius + 1;
