@@ -366,6 +366,7 @@ namespace GAGCore
         bool periodicCopy=false;
 		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
 		float overlayScale=1;
+        float mapCopyTranslateX=0, mapCopyTranslateY=0;
 		unsigned long drawCalls=0;
 		int mapClipX=0,mapClipY=0,mapClipW=0,mapClipH=0;
 		//! the GL viewport that fits the logical resolution into the drawable without distorting its aspect ratio, letterboxed/pillarboxed as needed
@@ -463,6 +464,9 @@ namespace GAGCore
 		bool toggleFullscreen();
 		void beginMapTransform(float zoom,float x,float y,int clipX,int clipY,int clipW,int clipH);
 		void endMapTransform();
+        //! Axis-aligned world boundary, snapped to target pixels with a minimum one-pixel stroke.
+        //! Unlike ordinary UI lines, this remains visible when the map is zoomed out.
+        void drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color);
         // Repeat a presentation-only pass. Its primary invocation advances visual
         // state once; subsequent invocations must only draw.
         void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);

@@ -256,14 +256,14 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 				globalContainer->gfx->drawSprite((x<<5), (y<<5), sprite, frame);
 
 				if (!(map->*mapIs)(x+viewportX, y+viewportY-1))
-					globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, y*32, (x+1)*32, y*32, c);
 				if (!(map->*mapIs)(x+viewportX, y+viewportY+1))
-					globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, (y+1)*32, (x+1)*32, (y+1)*32, c);
 
 				if (!(map->*mapIs)(x+viewportX-1, y+viewportY))
-					globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, y*32, x*32, (y+1)*32, c);
 				if (!(map->*mapIs)(x+viewportX+1, y+viewportY))
-					globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary((x+1)*32, y*32, (x+1)*32, (y+1)*32, c);
 			}
 		}
 	}

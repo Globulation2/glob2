@@ -48,6 +48,15 @@ public:
     void triangles(std::span<const SDL_Vertex> vertices, const void* key,
                    SDL_Surface* pixels, bool changed) override
     {
+        submit(vertices, key, pixels, changed, true);
+    }
+    void screenTriangles(std::span<const SDL_Vertex> vertices) override
+    {
+        submit(vertices, nullptr, nullptr, false, false);
+    }
+    void submit(std::span<const SDL_Vertex> vertices, const void* key,
+                SDL_Surface* pixels, bool changed, bool applyTransform)
+    {
         if (vertices.empty()) return;
         if (vertices.size() % 3 || vertices.size() > static_cast<size_t>(std::numeric_limits<int>::max()))
             throw std::invalid_argument("Invalid triangle batch size");
@@ -64,7 +73,7 @@ public:
                 check(SDL_SetTextureScaleMode(texture, SDL_ScaleModeNearest));
             } else texture = found->second;
         }
-        if (scale!=1 || offsetX!=0 || offsetY!=0) {
+        if (applyTransform && (scale!=1 || offsetX!=0 || offsetY!=0)) {
             transformed.assign(vertices.begin(),vertices.end());
             for (auto& vertex : transformed) {
                 vertex.position.x=vertex.position.x*scale+offsetX;

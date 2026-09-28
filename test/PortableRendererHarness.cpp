@@ -63,11 +63,95 @@ void verifyUITransform(unsigned flags)
 #endif
     expect(pixels,110,60,255,0,0);expect(pixels,118,60,0,0,0);expect(pixels,12,12,0,255,0);
 }
+// Check the production primitive, not an approximation of its geometry.
+class BoundaryContext : public GraphicContext
+{
+public:
+    BoundaryContext(unsigned flags) : GraphicContext(320,240,flags,"Zone boundary regression") {}
+    SDL_Surface* read()
+    {
+        if (renderer) return renderer->capture();
+#ifdef HAVE_OPENGL
+        if (optionFlags & USEGPU)
+        {
+            int w,h; SDL_GL_GetDrawableSize(SDL_GetWindowFromID(windowID()),&w,&h);
+            auto* pixels=SDL_CreateRGBSurfaceWithFormat(0,w,h,32,SDL_PIXELFORMAT_RGBA32);
+            glReadPixels(0,0,w,h,GL_RGBA,GL_UNSIGNED_BYTE,pixels->pixels);
+            auto* upright=SDL_CreateRGBSurfaceWithFormat(0,w,h,32,SDL_PIXELFORMAT_RGBA32);
+            for(int y=0;y<h;++y)
+                std::memcpy(static_cast<char*>(upright->pixels)+y*upright->pitch,
+                            static_cast<char*>(pixels->pixels)+(h-y-1)*pixels->pitch,w*4);
+            SDL_FreeSurface(pixels); return upright;
+        }
+#endif
+        return SDL_ConvertSurfaceFormat(getSDLSurface(),SDL_PIXELFORMAT_RGBA32,0);
+    }
+};
+void verifyMapBoundaries(unsigned flags)
+{
+    BoundaryContext context(flags);
+    for(float zoom : {.25f,.33f,1.f/3,.5f,.75f,1.f,1.5f})
+        for(float offset : {-.75f,-.25f,0.f,.25f,.5f,.75f})
+        {
+            context.drawFilledRect(0,0,320,240,Color(0,0,0));
+            context.beginMapTransform(zoom,offset,offset,0,0,320,240);
+            context.drawMapCopies(256,256,int(std::ceil(320/zoom)),int(std::ceil(240/zoom)),[&] {
+                for(int edge=32;edge<160;edge+=32)
+                {
+                    context.drawMapBoundary(edge,32,edge+32,32,Color(255,255,0));
+                    context.drawMapBoundary(edge,160,edge+32,160,Color(255,255,0));
+                    context.drawMapBoundary(32,edge,32,edge+32,Color(255,255,0));
+                    context.drawMapBoundary(160,edge,160,edge+32,Color(255,255,0));
+                }
+                // Boundary drawing must preserve the transform for later map artwork.
+                context.drawFilledRect(80,80,16,16,Color(0,255,0));
+            });
+            context.endMapTransform();
+            auto* pixels=context.read();
+            const float density=pixels->w/320.f;
+            // The untransformed legacy software path draws only the primary
+            // pass; transformed software and GPU paths own periodic copies.
+            const int copies=flags==0 && zoom==1 && offset==0 ? 1 : 3;
+            for(int copy=0;copy<copies;++copy)
+            {
+                const int left=std::lround(((32+copy*256)*zoom+offset)*density);
+                const int right=std::lround(((160+copy*256)*zoom+offset)*density);
+                const int top=std::lround((32*zoom+offset)*density);
+                const int bottom=std::lround((160*zoom+offset)*density);
+                const int centerX=int(((88+copy*256)*zoom+offset)*density);
+                const int centerY=int((88*zoom+offset)*density);
+                if(centerX<pixels->w && centerY<pixels->h)
+                    expect(pixels,centerX,centerY,0,255,0);
+                for(int x=left;x<=right && x<pixels->w;++x)
+                {
+                    expect(pixels,x,top,255,255,0);
+                    if(bottom<pixels->h) expect(pixels,x,bottom,255,255,0);
+                }
+                for(int y=top;y<=bottom && y<pixels->h;++y)
+                {
+                    if(left<pixels->w) expect(pixels,left,y,255,255,0);
+                    if(right<pixels->w) expect(pixels,right,y,255,255,0);
+                }
+            }
+            if (const char* directory=SDL_getenv("GLOB2_ZONE_EVIDENCE_DIR");
+                directory && zoom==.33f && offset==.25f)
+            {
+                const auto path=std::string(directory)+"/borders-"+std::to_string(flags)+".bmp";
+                require(SDL_SaveBMP(pixels,path.c_str())==0,"Cannot save zone evidence");
+            }
+            SDL_FreeSurface(pixels);
+            context.nextFrame();
+        }
+    std::printf("PASS zone borders: backend %u, zoom/offset sweep, joined segments and wrapped copies\n",flags);
+}
 int main()
 {
     try {
+        verifyMapBoundaries(0);
+        verifyMapBoundaries(GraphicContext::PORTABLEGPU);
         verifyUITransform(0);
 #ifdef HAVE_OPENGL
+        verifyMapBoundaries(GraphicContext::USEGPU);
         verifyUITransform(GraphicContext::USEGPU);
 #endif
         {

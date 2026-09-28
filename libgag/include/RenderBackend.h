@@ -17,6 +17,9 @@ public:
     virtual void transform(float scale, float x, float y, const SDL_Rect* bounds) = 0;
     virtual void triangles(std::span<const SDL_Vertex> vertices, const void* key = nullptr,
                            SDL_Surface* pixels = nullptr, bool changed = false) = 0;
+    // Untextured screen-space geometry, retaining the current clip. This avoids
+    // changing/flushing the map transform for pixel-aligned overlays.
+    virtual void screenTriangles(std::span<const SDL_Vertex> vertices) = 0;
     virtual void forget(const void* key) = 0;
     virtual void reset() = 0;
     virtual void present() = 0;

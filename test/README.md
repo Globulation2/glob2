@@ -703,3 +703,19 @@ The harnesses require a windowing display (Xvfb on Linux), use isolated
 `GLOB2_USER_DATA_DIR` profiles, and capture screenshots there. They complement
 Android/iOS device playtesting; they do not establish device lifecycle,
 performance, keyboard or cross-platform simulation compatibility.
+
+
+## Zone boundary rendering
+
+Build `scons release=1 portable-renderer-test` and run
+`build/<toolchain>/client/release/libgag/src/PortableRendererHarness` on a
+windowing display. The boundary regression checks every pixel along joined
+outlines at 25%, 33%, 50%, 75%, 100% and 150% zoom, with fractional camera offsets
+and toroidal copies. It covers software, SDL portable and (when compiled) OpenGL
+renderers and verifies that later map artwork retains its transform.
+Set `GLOB2_ZONE_EVIDENCE_DIR` to an existing ignored artifact directory to capture
+the 33% outline fixtures.
+
+Zone boundaries use `GraphicContext::drawMapBoundary`: positions snap to the
+active target's pixel grid and strokes remain at least one target pixel wide.
+Ordinary UI lines retain their existing sizing behavior.

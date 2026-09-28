@@ -43,10 +43,12 @@ namespace GAGCore
             periodicCopy=true;
             for(int y=-1;y<=vh/ph+1;++y) for(int x=-1;x<=vw/pw+1;++x) {
                 if(x==0 && y==0) continue;
-                renderer->transform(mapScale,mapTranslateX+x*pw*mapScale,mapTranslateY+y*ph*mapScale,&bounds);
+                mapCopyTranslateX=x*pw*mapScale; mapCopyTranslateY=y*ph*mapScale;
+                renderer->transform(mapScale,mapTranslateX+mapCopyTranslateX,mapTranslateY+mapCopyTranslateY,&bounds);
                 draw();
             }
-            renderer->transform(mapScale,mapTranslateX,mapTranslateY,&bounds); periodicCopy=false; return;
+            renderer->transform(mapScale,mapTranslateX,mapTranslateY,&bounds);
+            mapCopyTranslateX=mapCopyTranslateY=0; periodicCopy=false; return;
         }
 #ifdef HAVE_OPENGL
         if(!(optionFlags & USEGPU) || pw<=0 || ph<=0)return;
@@ -55,11 +57,48 @@ namespace GAGCore
         for(int y=-1;y<=vh/ph+1;++y)for(int x=-1;x<=vw/pw+1;++x)
         {
             if(x==0 && y==0)continue;
+            mapCopyTranslateX=x*pw*mapScale; mapCopyTranslateY=y*ph*mapScale;
             glPushMatrix();glTranslatef(x*pw,y*ph,0);
             draw();Sprite::flushBatches(this);glPopMatrix();
         }
-        periodicCopy=false;
+        mapCopyTranslateX=mapCopyTranslateY=0; periodicCopy=false;
 #endif
+    }
+
+    void GraphicContext::drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color)
+    {
+        assert(x1 == x2 || y1 == y2);
+        // Snap in the actual raster target, then return to world coordinates.
+        // Include periodic-copy translation: wrapped maps need the same pixel
+        // alignment as the primary pass, even at fractional zoom and DPI.
+        const float raster = softwareTransform ? 1.f : rasterScale();
+        const float scale = mapTransformActive ? mapScale : 1.f;
+        const float pixelsPerWorld = raster * scale;
+        const float offsetX = mapTransformActive ? (mapTranslateX + mapCopyTranslateX) * raster : 0;
+        const float offsetY = mapTransformActive ? (mapTranslateY + mapCopyTranslateY) * raster : 0;
+        const float left = std::round(std::min(x1, x2) * pixelsPerWorld + offsetX);
+        const float top = std::round(std::min(y1, y2) * pixelsPerWorld + offsetY);
+        const float right = std::round(std::max(x1, x2) * pixelsPerWorld + offsetX);
+        const float bottom = std::round(std::max(y1, y2) * pixelsPerWorld + offsetY);
+        const float stroke = std::max(1.f, std::round(pixelsPerWorld));
+        // SDL's software geometry rasterizer truncates transformed coordinates.
+        // Avoid a world->screen->world round trip there: tiny float errors can
+        // otherwise move a snapped edge back across a pixel boundary.
+        if (renderer && mapTransformActive)
+        {
+            const float x=left/raster, y=top/raster;
+            const float rightEdge=(right+stroke)/raster, bottomEdge=(bottom+stroke)/raster;
+            const SDL_Color ink{color.r,color.g,color.b,color.a};
+            const SDL_Vertex a{{x,y},ink,{}}, b{{rightEdge,y},ink,{}},
+                             c{{rightEdge,bottomEdge},ink,{}}, d{{x,bottomEdge},ink,{}};
+            const SDL_Vertex vertices[]{a,b,c,a,c,d};
+            renderer->screenTriangles(vertices);
+            return;
+        }
+        // Inclusive ends join perpendicular edges and adjacent tile segments.
+        drawFilledRect((left-offsetX)/pixelsPerWorld, (top-offsetY)/pixelsPerWorld,
+                       (right-left+stroke)/pixelsPerWorld,
+                       (bottom-top+stroke)/pixelsPerWorld, color);
     }
 
     void GraphicContext::beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh)
