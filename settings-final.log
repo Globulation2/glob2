@@ -1,0 +1,29 @@
+640x480 gl: exit 0
+Window 640x480, drawable 1280x960
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-a19ae075101c4388bbedc8d259f80e29/preferences.txt: File replacement failed: unspecified iostream_category error
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-a19ae075101c4388bbedc8d259f80e29/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+800x600 gl: exit 0
+Window 800x600, drawable 1600x1200
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-a3c5fba487f54ea3a7fc0162ce0ad868/preferences.txt: File replacement failed: unspecified iostream_category error
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-a3c5fba487f54ea3a7fc0162ce0ad868/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+1000x700 gl: exit 0
+Window 1000x700, drawable 2000x1400
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-1c1eef5a41a248b5879cdddafedce43b/preferences.txt: File replacement failed: unspecified iostream_category error
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-1c1eef5a41a248b5879cdddafedce43b/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+1280x900 gl: exit 0
+Window 1280x900, drawable 2560x1800
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-167f9169a1c84efd8fefad8faf6a36be/preferences.txt: File replacement failed: unspecified iostream_category error
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-167f9169a1c84efd8fefad8faf6a36be/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+1000x700 software: exit 0
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-d7b76bc0a8ff425d8087f721c332cd89/preferences.txt: File replacement failed: unspecified iostream_category error
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-d7b76bc0a8ff425d8087f721c332cd89/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
+640x480 gl: exit 0
+Window 640x480, drawable 1280x960
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-cfcfbf15e9334070b99c1f4f085c1828/preferences.txt: File replacement failed: unspecified iostream_category error
+FileManager::writeAtomically: /Users/bradley/.glob2-settings-test-cfcfbf15e9334070b99c1f4f085c1828/keyboard-gui.txt: File replacement failed: unspecified iostream_category error
+PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization
