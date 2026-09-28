@@ -34,7 +34,9 @@ alliances and the session menu. The minimap is a separate top-right HUD componen
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
 leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
-independent.
+independent. A completed tap on empty map space dismisses building inspection
+and restores the previous palette state. Tapping another object switches selection;
+panning, cancelled gestures and taps inside the inspector do not dismiss it.
 
 ### Gameplay responsibilities and action flow
 

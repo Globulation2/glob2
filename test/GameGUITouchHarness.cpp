@@ -806,6 +806,36 @@ public:
 		  GAGCore::GraphicContext::translateMouseEvent(&resized);
 		  gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 		  const float unit = gfx->logicalUnitsPerPoint();
+          // A completed empty-map tap dismisses inspection and restores the
+          // palette state from before inspection, in both phone orientations.
+          for (bool paletteWasOpen : {false, true}) {
+              gui.setSelection(GameGUI::BUILDING_SELECTION, building);
+              gui.touch->panelOpen = true;
+              gui.touch->restorePalette = true;
+              gui.touch->previousPanelOpen = paletteWasOpen;
+              gui.touch->previousDisplayMode = gui.displayMode;
+              gui.touch->prepareDraw();
+              bool dismissed = false;
+              for (int y = 80; y < gfx->getH() - 80 && !dismissed; y += 32)
+                  for (int x = 16; x < gfx->getW() && !dismissed; x += 32) {
+                      if (gui.touch->interfaceRegion({double(x), double(y)}) != 0) continue;
+                      const int mx = gui.mapMouseX(x) / 32 + gui.viewportX;
+                      const int my = gui.mapMouseY(y) / 32 + gui.viewportY;
+                      if (gui.game.map.getBuilding(mx, my) != NOGBID ||
+                          gui.game.map.isResource(mx, my) ||
+                          gui.game.map.getGroundUnit(mx, my) != NOGUID ||
+                          gui.game.map.getAirUnit(mx, my) != NOGUID) continue;
+                      tap(x, y);
+                      gui.touch->prepareDraw();
+                      require(gui.selectionMode == GameGUI::NO_SELECTION,
+                              "Empty map tap must dismiss the building inspector");
+                      require(gui.touch->panelOpen == paletteWasOpen && gui.orderQueue.empty(),
+                              "Dismissal must restore palette state without issuing an order");
+                      dismissed = true;
+                  }
+              require(dismissed, "Inspector dismissal fixture needs exposed empty terrain");
+          }
+          gui.touch->panelOpen = false;
 		  gui.setSelection(GameGUI::BUILDING_SELECTION, building);
 		  // Info opens the inspector for the selected entity.
 		  tap(gfx->getW() * 2.5f / 6, gfx->getH() - 24 * unit);

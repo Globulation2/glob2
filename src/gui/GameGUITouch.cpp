@@ -833,6 +833,11 @@ void GameGUITouch::select(ViewPoint point)
 	const bool wasInspecting = inspectedBuilding() != nullptr;
 	const bool wasOpen = panelOpen;
 	const int oldDisplay = gui.displayMode;
+    // Desktop selection deliberately sticks on empty terrain. A completed map
+    // tap on touch dismisses the inspector; the shared picker can immediately
+    // select the same building, another building, a unit or a resource instead.
+    // Pan/cancel/UI gestures never reach this selection path.
+    if (usesHUD() && wasInspecting) gui.clearSelection();
 	gui.handleMapClick(int(screenPoint.x), int(screenPoint.y), SDL_BUTTON_LEFT);
 	if (!wasInspecting && inspectedBuilding())
 	{
