@@ -64,3 +64,7 @@ GLOB2_CHROMIUM_ANGLE=metal GLOB2_TEST_RENDERER=webgl2 npx playwright test tests/
 The editor-setup fixture includes a deliberately undersized generation request. Its preview can fail validation; the captures verify the real error-state labels and their wrapping inside the smallest landscape slot. This does not indicate a failed presentation test. `before/new-map-ja-568.png` preserves the initially clipped status text.
 
 The settings long-text fixture initially duplicated numbered placeholders after localization. Its expansion now preserves placeholder counts; all six native settings cases pass (`settings-final.log`).
+
+## Base-branch integration status
+
+GitHub reports base-branch conflicts in `.github/workflows/build.yml`, `src/LandscapePickerScreen.h`, and `test/README.md` after newer changes landed on master. The cleanup revision and its passing CI remain unchanged; integrating those newer changes is still required before merge. A read-only merge-tree check is saved in `base-merge-check.txt`; no merge was applied to the working tree.

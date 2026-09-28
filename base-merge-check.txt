@@ -1,0 +1,23 @@
+9be79f295d8d3132eac2a6c7883d121f6af58d6c
+100644 f3a5ad6699d77fdeec3e81c543143b25a8d5ffe5 1	.github/workflows/build.yml
+100644 e5bafd2eb97231066c9e0ec06adce4b425efce5b 2	.github/workflows/build.yml
+100644 7dc9015aa67d25b239a7a0cd203a64b8f796ab21 3	.github/workflows/build.yml
+100644 530b7446b34568322c7dbbf12c335e151791f41e 1	src/LandscapePickerScreen.h
+100644 e565c012b670d0450232bda9629cfb00bd3064a0 2	src/LandscapePickerScreen.h
+100644 c3d3b12c17805d54955a188f4070e937cff4a4f1 3	src/LandscapePickerScreen.h
+100644 76ca0ac5c2a5de1a7d6acf12435a94a5f1162ecd 1	test/README.md
+100644 387b7256ac51b98db91c28895b0d3c792998eb6e 2	test/README.md
+100644 80534254d49ff3d92fb2c37c1684d6bcf6783f9c 3	test/README.md
+
+Auto-merging .github/workflows/build.yml
+CONFLICT (content): Merge conflict in .github/workflows/build.yml
+Auto-merging browser/README.md
+Auto-merging browser/tests/determinism.spec.js
+Auto-merging src/GUIMapPreview.cpp
+Auto-merging src/GUIMapPreview.h
+Auto-merging src/LandscapePickerScreen.cpp
+Auto-merging src/LandscapePickerScreen.h
+CONFLICT (content): Merge conflict in src/LandscapePickerScreen.h
+Auto-merging test/CustomGameSetupHarness.cpp
+Auto-merging test/README.md
+CONFLICT (content): Merge conflict in test/README.md
