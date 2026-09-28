@@ -1,0 +1,9 @@
+{
+  "base": "c464848726379f9f286c43452820919727e04078",
+  "patch_sha256": "92397591b56a33fa2a998b64f4cddb7910bc370e49098020edbca2f9faaed0bf",
+  "mac_binary_sha256": "2b5123528cc67a7b56cad6370705797262ddde1605aae2a93ac3269d95ce7617",
+  "linux_binary_sha256": "0e345ce0c6cb536413024b0cbda16ee71ac3b074e8c0df0e6c87321701603c34",
+  "candidate_commit": "2d967f6f6ab296b1297136d73a14f0d9b6e3383f",
+  "linux_master_sha256": "8053f11d446c9c6230744527ecc595a116859a706918dba17b82ce8ec8c9b306",
+  "linux_hashes_match_both_hosts": true
+}
