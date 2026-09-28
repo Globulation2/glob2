@@ -49,6 +49,7 @@ static void checkArea(AIEcho::Echo& echo, Game& game, bool adding)
 	original.save(&output);
 	const auto saved = bytes->takeContents();
 	GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(), saved.size()));
+	input.seekFromStart(0);
 	AreaOrder<Order> restored;
 	require(restored.load(&input, game.players[0], VERSION_MINOR), "area load");
 	auto* roundTrip = new GAGCore::MemoryStreamBackend;
@@ -95,6 +96,7 @@ int main(int argc, char** argv)
 		checkArea<AIEcho::Management::RemoveArea>(echo, game, false);
 
 		AIMaxima::Maxima maxima(game.players[0]);
+		maxima.getOrder(); // Initialize the director before sampling its policy state.
 		auto stored = std::make_shared<AITelemetry::Series>();
 		auto& series = *stored;
 		series.implementation = 7;
@@ -116,6 +118,7 @@ int main(int argc, char** argv)
 		AITelemetry::save(&output, {stored});
 		const auto saved = bytes->takeContents();
 		GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(), saved.size()));
+		input.seekFromStart(0);
 		std::vector<std::shared_ptr<AITelemetry::Series>> loaded;
 		AITelemetry::load(&input, loaded);
 		require(loaded.size() == 1 && loaded[0]->current == series.current,
