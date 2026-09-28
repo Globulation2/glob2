@@ -1,0 +1,74 @@
+[
+  {
+    "core": 0,
+    "scenario": "crowded",
+    "variant": "final",
+    "cpu_seconds": 34.760000000000005
+  },
+  {
+    "core": 0,
+    "scenario": "crowded",
+    "variant": "master",
+    "cpu_seconds": 34.36
+  },
+  {
+    "core": 0,
+    "scenario": "g52",
+    "variant": "final",
+    "cpu_seconds": 50.73
+  },
+  {
+    "core": 0,
+    "scenario": "g15",
+    "variant": "final",
+    "cpu_seconds": 15.360000000000001
+  },
+  {
+    "core": 0,
+    "scenario": "g15",
+    "variant": "master",
+    "cpu_seconds": 21.51
+  },
+  {
+    "core": 0,
+    "scenario": "g52",
+    "variant": "master",
+    "cpu_seconds": 65.96
+  },
+  {
+    "core": 2,
+    "scenario": "crowded",
+    "variant": "final",
+    "cpu_seconds": 35.27
+  },
+  {
+    "core": 2,
+    "scenario": "g15",
+    "variant": "master",
+    "cpu_seconds": 21.72
+  },
+  {
+    "core": 2,
+    "scenario": "g52",
+    "variant": "final",
+    "cpu_seconds": 50.53
+  },
+  {
+    "core": 2,
+    "scenario": "g15",
+    "variant": "final",
+    "cpu_seconds": 15.24
+  },
+  {
+    "core": 2,
+    "scenario": "g52",
+    "variant": "master",
+    "cpu_seconds": 64.14999999999999
+  },
+  {
+    "core": 2,
+    "scenario": "crowded",
+    "variant": "master",
+    "cpu_seconds": 34.120000000000005
+  }
+]

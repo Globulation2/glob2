@@ -1,0 +1,15 @@
+[
+  "taskset",
+  "-c",
+  "2",
+  "/home/bradley/glob2-maxima-final/build/linux/client/release/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/glob2-farm-cost-attribution/games/g52-s6101-r0/pre-farming/final.game",
+  "--ticks",
+  "40960",
+  "--output-dir",
+  "/home/bradley/glob2-maxima-final/artifacts/final-maxima/benchmark/core2-g52-final",
+  "--replay",
+  "false"
+]

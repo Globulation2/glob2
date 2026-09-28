@@ -1,0 +1,15 @@
+[
+  "taskset",
+  "-c",
+  "0",
+  "/home/bradley/glob2-maxima-final/build/linux/client/release/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/glob2-maxima-final/inputs/crowded.game",
+  "--ticks",
+  "583520",
+  "--output-dir",
+  "/home/bradley/glob2-maxima-final/artifacts/final-maxima/benchmark/core0-crowded-final",
+  "--replay",
+  "false"
+]

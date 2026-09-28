@@ -1,0 +1,14 @@
+[
+  "/home/bradley/glob2-maxima-final/build/linux/client/release/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/glob2-maxima-final/artifacts/final-maxima/order-diagnostic/full/checkpoint-4096.game",
+  "--ticks",
+  "6200",
+  "--telemetry",
+  "checksums",
+  "--replay",
+  "true",
+  "--output-dir",
+  "/home/bradley/glob2-maxima-final/artifacts/final-maxima/order-diagnostic/resumed"
+]

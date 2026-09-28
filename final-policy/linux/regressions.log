@@ -1,0 +1,42 @@
+MaximaCombatIntegrationTest: PASS
+MaximaImplementationIntegrationTest: PASS
+In file included from libgag/include/BinaryStream.h:7,
+                 from test/maxima/MaximaFarmingIntegrationTest.cpp:29:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+MaximaFarmingIntegrationTest: PASS
+In file included from libgag/include/BinaryStream.h:7,
+                 from test/maxima/../../src/ai/maxima/AIMaximaContinuation.h:7,
+                 from test/maxima/MaximaEconomyRegressionTest.cpp:32:
+libgag/include/StreamBackend.h: In member function ‘virtual void GAGCore::FileStreamBackend::read(void*, size_t)’:
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+MaximaEconomyRegressionTest: PASS
+MaximaDirectorRegressionTest: PASS
+MaximaDefenseStandaloneTest: PASS
+MaximaReconStandaloneTest: PASS
+MaximaForceModelStandaloneTest: PASS
+MaximaStaffingControlStandaloneTest: PASS
+MaximaLabourStandaloneTest: PASS
+MaximaStrategyTest: PASS
+MaximaLifecycleTest: PASS
+MaximaDiagnosticsTest: PASS
+MaximaTacticsStandaloneTest: PASS
+MaximaFarmingStandaloneTest: PASS
+MaximaFoodLedgerStandaloneTest: PASS
+MaximaPlacementStandaloneTest: PASS
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 8.756s
+
+OK
+MaximaStrategyConfigTest: PASS
+..................................................s...........
+----------------------------------------------------------------------
+Ran 61 tests in 0.141s
+
+OK (skipped=1)
+MaximaStrategyPolicyTest: PASS

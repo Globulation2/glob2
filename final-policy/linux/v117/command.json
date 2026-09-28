@@ -1,0 +1,14 @@
+[
+  "/home/bradley/glob2-maxima-final/build/linux/client/release/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/glob2-maxima-final/inputs/v117.game",
+  "--ticks",
+  "8192",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/home/bradley/glob2-maxima-final/artifacts/final-maxima/v117",
+  "--save",
+  "every:7168"
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "case": "g1",
+    "ticks": 8192,
+    "state_digest": "5afa1443be3b4beddd413af90c791470c5b164f4f1eaaf6e23785dea110d5f18",
+    "resume_error": "team/entity state diverges at tick 6171"
+  },
+  {
+    "case": "g52",
+    "ticks": 8192,
+    "state_digest": "be3edb359fef4a8964f5ec4ed97ef859838cee163663ea28381fa58a5044421c",
+    "resumed_matching_ticks": 4096
+  },
+  {
+    "case": "v117",
+    "ticks": 2048,
+    "state_digest": "bedfc464f95f1ed291236273db20630b3c23bfa1bcbf8bbe5f64ba0313f525a8",
+    "resume_error": "team/entity state diverges at tick 7808"
+  },
+  {
+    "case": "crowded",
+    "ticks": 4096,
+    "state_digest": "3b423f9e83fe7ee6669937b5bebb0bd66d0e56447ba4b325afdaaf7d13647b12",
+    "resumed_matching_ticks": 2048
+  },
+  {
+    "case": "v115",
+    "ticks": 512,
+    "state_digest": "1ab3a26d4c287db87890194343bec74d6fc34f2c24e2238e43152f544503870f",
+    "resumed_matching_ticks": 256
+  }
+]

@@ -1,0 +1,12 @@
+[
+  "/home/bradley/glob2-maxima-final/build/linux/client/release/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/home/bradley/glob2-maxima-final/artifacts/final-maxima/crowded/checkpoint-577376.game",
+  "--ticks",
+  "579424",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/home/bradley/glob2-maxima-final/artifacts/final-maxima/crowded/resumed"
+]

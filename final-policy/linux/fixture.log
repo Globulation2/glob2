@@ -1,0 +1,2 @@
+PASS: checkpoint-30000-v115.game.gz matches all 512 current-policy team/entity state hashes
+PASS: save/reload at tick 30256 preserves all 256 continuation records

@@ -1,0 +1,15 @@
+9154d08480d55d5c427c9cfd09d268e468cac8557c028f67ecf746418137d593  /home/bradley/glob2-maxima-final/build/linux/client/release/src/glob2
+c02a0b577187591714e1fc47f86294fbec16b9bfba9709f8a0c2042bba90f202  /home/bradley/glob2-maxima-master-check/build/linux/client/release/src/glob2
+Linux therig 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux
+# The following is the parsable format, which can be fed to other
+# programs. Each different item in every column has an unique ID
+# starting usually from zero.
+# CPU,Core,Socket
+0,0,0
+1,1,0
+2,2,0
+3,3,0
+4,4,0
+5,5,0
+6,6,0
+7,7,0

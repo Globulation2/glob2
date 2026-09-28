@@ -1,0 +1,22 @@
+[
+  "/home/bradley/glob2-maxima-final/build/linux/client/release/src/glob2",
+  "--run-game",
+  "--map-file",
+  "/home/bradley/glob2-maxima-final/inputs/g1-s6101-r0.map",
+  "--game-seed",
+  "6101",
+  "--player",
+  "maxima",
+  "--player",
+  "nicowar",
+  "--ticks",
+  "6200",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/home/bradley/glob2-maxima-final/artifacts/final-maxima/order-diagnostic/full",
+  "--save",
+  "every:4096",
+  "--replay",
+  "true"
+]

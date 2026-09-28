@@ -1,0 +1,12 @@
+[
+  "/Users/bradley/.codex/worktrees/maxima-farm-support/glob2/build/darwin/client/release/src/glob2",
+  "--run-game",
+  "--load-game",
+  "/Users/bradley/.codex/worktrees/maxima-farm-support/glob2/artifacts/final-maxima/v115/checkpoint-30256.game",
+  "--ticks",
+  "30512",
+  "--telemetry",
+  "checksums",
+  "--output-dir",
+  "/Users/bradley/.codex/worktrees/maxima-farm-support/glob2/artifacts/final-maxima/v115/resumed"
+]

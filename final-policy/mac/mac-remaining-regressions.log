@@ -1,0 +1,15 @@
+MaximaFarmingStandaloneTest: PASS
+MaximaFoodLedgerStandaloneTest: PASS
+MaximaPlacementStandaloneTest: PASS
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 10.718s
+
+OK
+MaximaStrategyConfigTest: PASS
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 0.233s
+
+OK
+MaximaStrategyPolicyTest: PASS
