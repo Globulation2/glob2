@@ -102,6 +102,9 @@ struct Toolkit {
     static Font* getFont(const char*) { static Font font; return &font; }
 };
 }
+struct FrontendLayout {
+    static GAGCore::Font* font(const char* name) { return GAGCore::Toolkit::getFont(name); }
+};
 class LobbyParagraph {
 public:
     std::vector<std::string> rows;
@@ -154,7 +157,10 @@ with tempfile.TemporaryDirectory(prefix='glob2-text-layout-') as directory:
     ], check=True)
     subprocess.run([str(binary)], check=True)
     source = (ROOT / 'src/LobbyControls.h').read_text(encoding='utf-8')
-    paragraph = source[source.index('\tint paragraph('):source.index('\tvoid button(')]
+    # Stop at this method's closing indentation, not a neighbouring method's
+    # name: newly inserted button helpers must not enter the paragraph fixture.
+    start = source.index('\tint paragraph(')
+    paragraph = source[start:source.index('\n\t}\n', start) + len('\n\t}')]
     (work / 'lobby.cpp').write_text(
         LOBBY_MAIN.replace('PRODUCTION_PARAGRAPH', paragraph), encoding='utf-8')
     lobby_binary = work / 'lobby-layout-test'
