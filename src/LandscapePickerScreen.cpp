@@ -387,14 +387,15 @@ void LandscapePickerScreen::render()
 		return;
 	}
 	auto &ui = *controls;
-	const int width = gfx->getW(), height = gfx->getH();
-	const int w = std::min(width - 32, 1120), x = (width - w) / 2;
+	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
+	const int width = int(safe.w), topInset = int(safe.y), height = int(safe.y + safe.h);
+	const int w = std::min(width - 32, 1120), x = int(safe.x) + (width - w) / 2;
 	const bool compact = width < 800;
 	ui.setScreenPosition(0, 0);
-	ui.setDimensions(width, height);
-	ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
-	ui.text(x + 8, 20, title, compact ? "standard" : "menu", w - 16);
-	const int subtitleY = compact ? 46 : 56;
+	ui.setDimensions(gfx->getW(), gfx->getH());
+	ui.box({x - 8, topInset + 8, w + 16, int(safe.h) - 16}, Color(232, 237, 218), 8);
+	ui.text(x + 8, topInset + 20, title, compact ? "standard" : "menu", w - 16);
+	const int subtitleY = topInset + (compact ? 46 : 56);
 	const int barY = subtitleY + 6 +
 					 // Not tr(): this replaces an existing translated sentence with one describing
 					 // the new inline size/colony controls below, and there is no translation
@@ -632,19 +633,22 @@ bool LandscapePickerScreen::usesResponsiveViewport() const {return GAGCore::phon
 void LandscapePickerScreen::cancelExecutionInput() {controls->cancelTouch();}
 void LandscapePickerScreen::renderPhone()
 {
-    auto& ui=*controls;const int w=gfx->getW()-24,x=12,h=gfx->getH();
-    ui.setDimensions(gfx->getW(),h);
-    ui.box({4,4,gfx->getW()-8,h-8},Color(232,237,218));
-	ui.text(x, 12, title, "standard", w - 116);
-	ui.button("landscape/settings", {x + w - 112, 8, 112, 48},
+	auto &ui = *controls;
+	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
+	const int x = int(safe.x) + 12, w = int(safe.w) - 24;
+	const int top = int(safe.y), bottom = int(safe.y + safe.h);
+	ui.setDimensions(gfx->getW(), gfx->getH());
+	ui.box({int(safe.x) + 4, top + 4, int(safe.w) - 8, int(safe.h) - 8}, Color(232, 237, 218));
+	ui.text(x, top + 12, title, "standard", w - 116);
+	ui.button("landscape/settings", {x + w - 112, top + 8, 112, 48},
 			  tr(settingsOpen ? "Done" : "Settings"),
 			  [this]
 			  {
 				  settingsOpen = !settingsOpen;
 				  controls->regions[30].offset = 0;
 			  });
-	ui.beginRegion(30, {x, 64, w, h - 128});
-	int y = 64 - ui.regions[30].offset, start = y;
+	ui.beginRegion(30, {x, top + 64, w, std::max(0, int(safe.h) - 128)});
+	int y = top + 64 - ui.regions[30].offset, start = y;
 	if (settingsOpen)
 	{
 		ui.dropdown("landscape/sort", {x, y, w - 12, 48}, {"Random", "Alphabetical"},
@@ -687,7 +691,7 @@ void LandscapePickerScreen::renderPhone()
 			{
 				tile.widget->setScreenPosition(x + (w - 12 - image) / 2, y + 8);
 				tile.widget->setDimensions(image, image);
-				if (y + image + 8 > 64 && y < h - 64)
+				if (y + image + 8 > top + 64 && y < bottom - 64)
 					tile.widget->paint();
 			}
 			else
@@ -696,9 +700,11 @@ void LandscapePickerScreen::renderPhone()
 			ui.text(x + 12, y + image + 20, entries[i].name, "standard", w - 40);
 			y += image + 64;
 		}
-	ui.endRegion(y-start);gfx->setClipRect();
-    ui.button("cancel",{x,h-56,88,48},tr("Back"),[this]{endExecute(CANCEL);});
-    ui.button("confirm",{x+96,h-56,w-96,48},tr("Use this landscape"),[this]{confirm();},true,selected>=0 && incompatible[selected].empty());
+	ui.endRegion(y - start);
+	gfx->setClipRect();
+	ui.button("cancel", {x, bottom - 56, 88, 48}, tr("Back"), [this] { endExecute(CANCEL); });
+	ui.button("confirm", {x + 96, bottom - 56, w - 96, 48}, tr("Use this landscape"),
+			  [this] { confirm(); }, true, selected >= 0 && incompatible[selected].empty());
 }
 
 // Completion and visual settling are separate: a delivered thumbnail may still

@@ -11,9 +11,14 @@
 #include "mobile/ios/SafeArea.h"
 #endif
 namespace GAGCore {
+// Native presentation tests exercise real screen layouts with platform gutters.
+// Unset in production; the normal Android/iOS bridge remains authoritative.
+inline std::optional<SafeInsets> mobileSafeInsetsForTesting;
+
 // Native shell tests and hosts without an attached Activity have no Java UI.
 // Keep neutral viewport defaults until the Android bridge is available.
 inline SafeInsets mobileSafeInsets(GraphicContext* gfx) {
+    if (mobileSafeInsetsForTesting) return *mobileSafeInsetsForTesting;
     SafeInsets insets;
     [[maybe_unused]] const double unit=gfx->logicalUnitsPerPoint();
 #if defined(__IPHONEOS__)

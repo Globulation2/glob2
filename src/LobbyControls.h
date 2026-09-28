@@ -331,11 +331,17 @@ class LobbyControls : public GAGGUI::RectangularWidget
 							-1});
 		}
 	}
+	GAGCore::ViewRect popupSafe()
+	{
+		if (auto *gfx = dynamic_cast<GAGCore::GraphicContext *>(surface()))
+			return GAGCore::mobileDialogSafe(gfx);
+		return {0, 0, double(surface()->getW()), double(surface()->getH())};
+	}
 	int popupRowHeight() const { return GAGCore::phonePresentationRequested() ? 48 : 30; }
 	int popupRows()
 	{
 		return std::max(1, std::min({8, int(popup.options.size()),
-									 (surface()->getH() - 36 - (popup.help.empty() ? 0 : 48)) /
+									 (int(popupSafe().h) - 36 - (popup.help.empty() ? 0 : 48)) /
 										 popupRowHeight()}));
 	}
 	void revealPopup()
@@ -345,15 +351,19 @@ class LobbyControls : public GAGGUI::RectangularWidget
 	}
 	SDL_Rect popupRect()
 	{
+		const auto safe = popupSafe();
 		int pw = popup.help.empty() ? popup.anchor.w : std::max(330, popup.anchor.w);
 		for (auto &s : popup.options)
 			pw = std::max(pw, FrontendLayout::font("standard")->getStringWidth(s) + 30);
-		pw = std::min(pw, surface()->getW() - 32);
+		pw = std::max(1, std::min(pw, int(safe.w) - 32));
 		int ph = popupRows() * popupRowHeight() + 12 + (popup.help.empty() ? 0 : 48);
-		int px = std::clamp(popup.anchor.x, 16, surface()->getW() - pw - 16);
+		int px = std::clamp(popup.anchor.x, int(safe.x) + 16, int(safe.x + safe.w) - pw - 16);
 		int py = popup.anchor.y + popup.anchor.h + 4;
-		if (py + ph > surface()->getH() - 12)
-			py = std::max(12, popup.anchor.y - ph - 4);
+		if (py + ph > safe.y + safe.h - 12)
+			py = popup.anchor.y - ph - 4;
+		const int minimumY = int(safe.y) + 12;
+		const int maximumY = std::max(minimumY, int(safe.y + safe.h) - ph - 12);
+		py = std::clamp(py, minimumY, maximumY);
 		return {px, py, pw, ph};
 	}
 	void paint() override

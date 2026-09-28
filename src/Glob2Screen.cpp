@@ -260,7 +260,7 @@ void Glob2Screen::drawExecution()
     if (menuLayout.maximumOffset > 0) {
         const int thumb = std::max(16, int(clip.h * clip.h / (clip.h + menuLayout.maximumOffset)));
         const int top = int(clip.y + menuLayout.offset / menuLayout.maximumOffset * (clip.h - thumb));
-        gfx->drawFilledRect(getW() - 5, top, 3, thumb, Color(240, 220, 150));
+        gfx->drawFilledRect(int(safe.x + safe.w) - 5, top, 3, thumb, Color(240, 220, 150));
     }
     context->nextFrame();
 }

@@ -76,14 +76,15 @@ void StartQualityScreen::render()
 	}
 	using namespace MapGeneration;
 	auto &ui = *controls;
-	const int width = gfx->getW(), height = gfx->getH();
-	const int w = std::min(width - 32, 1000), x = (width - w) / 2;
+	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
+	const int width = int(safe.w), topInset = int(safe.y), height = int(safe.y + safe.h);
+	const int w = std::min(width - 32, 1000), x = int(safe.x) + (width - w) / 2;
 	const bool compact = width < 800;
 	ui.setScreenPosition(0, 0);
-	ui.setDimensions(width, height);
-	ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
-	ui.text(x + 8, 20, tr("Start quality"), compact ? "standard" : "menu", w - 16);
-	const int subtitleY = compact ? 46 : 56;
+	ui.setDimensions(gfx->getW(), gfx->getH());
+	ui.box({x - 8, topInset + 8, w + 16, int(safe.h) - 16}, Color(232, 237, 218), 8);
+	ui.text(x + 8, topInset + 20, tr("Start quality"), compact ? "standard" : "menu", w - 16);
+	const int subtitleY = topInset + (compact ? 46 : 56);
 	int yy = subtitleY + 8 +
 			 ui.paragraph(x + 8, subtitleY, w - 16,
 						  tr("Every colony's start is measured on the finished map, and a model "

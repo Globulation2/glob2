@@ -43,6 +43,22 @@ phone inspectors fit without scrolling; overflow remains available for constrain
 safe areas and enlarged interfaces. Drawing, hit testing and slider geometry use
 the same action boxes.
 
+### Safe areas
+
+Interactive content uses the host safe rectangle, including Android system bars
+and display cutouts and iOS safe-area insets. Backgrounds may extend edge to edge.
+Use `mobileDialogSafe` (or `FrontendLayout::safe`) for frontend surfaces, fixed
+footers, scroll viewports and dropdown bounds; full window dimensions are only
+appropriate for backgrounds and pointer-coordinate conversion. Gameplay reserves
+system insets separately from keyboard occlusion so the camera stays stable.
+
+Insets can change without a window resize. The screen stack refreshes host metrics,
+cancels held input and invalidates layout when this happens. The native presentation
+harness injects host-point gutters through `mobileSafeInsetsForTesting` and checks
+real selector, lobby, quality, shared menu/form and dropdown bounds with bottom and side navigation
+areas on phones and tablets. Keep this override unset outside tests. Device checks
+must also cover Android gesture/three-button navigation and rotation.
+
 ### Gameplay responsibilities and action flow
 
 - `GameGUITouch` composes explicit bounds, routes input ownership, presents the HUD,

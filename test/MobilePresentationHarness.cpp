@@ -2,6 +2,9 @@
 #include "GlobalContainer.h"
 #include "CustomGameScreen.h"
 #include "SettingsScreen.h"
+#include "LandscapePickerScreen.h"
+#include "StartQualityScreen.h"
+#include "GeneratorRegistry.h"
 #include "LobbyControls.h"
 #include "LobbyMapPreview.h"
 #include "CustomGamePreferences.h"
@@ -22,8 +25,110 @@ static void require(bool value, const char *message)
 }
 struct MobilePresentationHarness
 {
+	// Exercise actual composed views, including inset changes without a resize.
+	// Zero-inset host captures alone cannot detect controls under Android bars.
+	static void safeAreaScreens()
+	{
+		auto *gfx = globalContainer->gfx;
+		for (auto [width, height] : {std::pair{320, 568}, std::pair{568, 320},
+									std::pair{768, 1024}, std::pair{1024, 768}})
+		{
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			SDL_Event resize{};
+			resize.type = SDL_WINDOWEVENT;
+			resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resize);
+			auto verify = [&](LobbyControls *ui)
+			{
+				require(!ui->hits.empty(), "Safe-area fixture must render real controls");
+				const auto safe = GAGCore::mobileDialogSafe(gfx);
+				auto contained = [&](SDL_Rect r)
+				{
+					return r.x >= safe.x && r.y >= safe.y &&
+						r.x + r.w <= safe.x + safe.w + 1 &&
+						r.y + r.h <= safe.y + safe.h + 1;
+				};
+				for (const auto &hit : ui->hits)
+				{
+					if (hit.region < 0)
+						require(contained(hit.box), "Fixed action overlaps a platform gutter");
+					else
+					{
+						SDL_Rect visible{};
+						if (SDL_IntersectRect(&hit.box, &hit.clip, &visible))
+							require(contained(visible), "Visible scroll content overlaps a platform gutter");
+					}
+				}
+				ui->popup.anchor = {int(safe.x + safe.w) - 100, int(safe.y + safe.h) - 50, 80, 48};
+				ui->popup.options = {"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"};
+				require(contained(ui->popupRect()), "Dropdown overlaps a platform gutter");
+			};
+			auto exercise = [&](std::unique_ptr<GAGGUI::Screen> screen, LobbyControls *ui,
+								const char *name)
+			{
+				GAGGUI::ScreenStack stack(*gfx);
+				stack.push(std::move(screen));
+				for (const auto insets : {GAGCore::SafeInsets{}, GAGCore::SafeInsets{12, 24, 20, 48},
+										  GAGCore::SafeInsets{48, 12, 24, 20}})
+				{
+					GAGCore::mobileSafeInsetsForTesting = insets;
+					gfx->printScreen(std::string("safe-") + name + "-" +
+						std::to_string(width) + "x" + std::to_string(height) +
+						"-bottom" + std::to_string(int(insets.bottom)) + ".bmp");
+					stack.frame(SDL_GetTicks(), {});
+					verify(ui);
+				}
+			};
+			GenerationRequest request;
+			request.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
+			request.wDec = request.hDec = 6;
+			request.nbTeams = 2;
+			auto picker = std::make_unique<LandscapePickerScreen>("Choose a landscape",
+				std::vector<LandscapePickerScreen::Entry>{{"Landscape", request}}, 0);
+			auto *pickerControls = picker->controls;
+			exercise(std::move(picker), pickerControls, "landscape");
+			auto quality = std::make_unique<StartQualityScreen>(MapGeneration::StartQualityReport{},
+				std::vector<std::string>{}, std::vector<GAGCore::Color>{});
+			auto *qualityControls = quality->controls;
+			exercise(std::move(quality), qualityControls, "quality");
+			GAGGUI::ScreenStack owner(*gfx);
+			auto lobby = std::make_unique<CustomGameScreen>(owner);
+			auto *lobbyControls = lobby->controls;
+			exercise(std::move(lobby), lobbyControls, "lobby");
+			for (bool form : {false, true})
+			{
+				GAGGUI::ScreenStack stack(*gfx);
+				struct MenuFixture : Glob2Screen
+				{
+					void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
+				};
+				auto screen = std::make_unique<MenuFixture>();
+				auto *view = screen.get();
+				if (form) view->enablePhoneForm();
+				else view->enableResponsiveMenu("Menu");
+				for (int i = 0; i < 3; ++i)
+					view->addWidget(new GAGGUI::TextButton(20, 60 + i * 50, 180, 40,
+						ALIGN_LEFT, ALIGN_TOP, "menu", "Continue", i));
+				stack.push(std::move(screen));
+				for (const auto insets : {GAGCore::SafeInsets{}, GAGCore::SafeInsets{24, 24, 24, 48}})
+				{
+					GAGCore::mobileSafeInsetsForTesting = insets;
+					stack.frame(SDL_GetTicks(), {});
+					const auto safe = GAGCore::mobileDialogSafe(gfx);
+					const auto bounds = form ? view->phoneForm->surfaceBounds : view->menuLayout.content;
+					require(bounds.x >= safe.x && bounds.y >= safe.y &&
+							bounds.x + bounds.w <= safe.x + safe.w + 1 &&
+							bounds.y + bounds.h <= safe.y + safe.h + 1,
+							"Shared menu/form surface overlaps a platform gutter");
+				}
+			}
+		}
+		GAGCore::mobileSafeInsetsForTesting.reset();
+		std::puts("PASS safe-area screens: selector, lobby, quality, dropdowns and live inset changes");
+	}
 	static void run()
 	{
+		safeAreaScreens();
 		FrontendLayout compactTablet;
 		compactTablet.touch = true;
 		require(compactTablet.singleColumn(), "A narrow tablet must use a stacked setup flow");

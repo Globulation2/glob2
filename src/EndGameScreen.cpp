@@ -587,8 +587,10 @@ void EndGameScreen::activateResultControl(int action)
 		std::vector<std::string> options;
 		for (int i = 0; i < 36; ++i)
 			options.push_back(statTypeName(i));
+		const auto safe = mobileDialogSafe(globalContainer->gfx);
 		metricPicker.open({int(r.x), int(r.y), int(r.w), int(r.h)},
-						  {8, 8, gfx->getW() - 16, gfx->getH() - 16}, options, selectedMetric,
+						  {int(safe.x) + 8, int(safe.y) + 8, int(safe.w) - 16, int(safe.h) - 16},
+						  options, selectedMetric,
 						  globalContainer->standardFont);
 	}
 	else if (action == 101)

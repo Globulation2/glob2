@@ -942,9 +942,10 @@ void CustomGameScreen::renderLobby()
 	}
 	auto &ui = *controls;
 	const bool touch = FrontendLayout::resolve(globalContainer->gfx).touch;
-	int width = gfx->getW(), height = gfx->getH();
-	int w = std::min(width - 32, 1120), x = (width - w) / 2;
-	ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
+	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
+	const int width = int(safe.w), topInset = int(safe.y), height = int(safe.y + safe.h);
+	int w = std::min(width - 32, 1120), x = int(safe.x) + (width - w) / 2;
+	ui.box({x - 8, topInset + 8, w + 16, int(safe.h) - 16}, Color(232, 237, 218), 8);
 	auto speed = globalContainer->settings;
 	speed.gameSpeed = setup.speed;
 	std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
@@ -957,19 +958,19 @@ void CustomGameScreen::renderLobby()
 	{
 		int tx = x + i * w / 3;
 		ui.button(
-			"tab/" + std::to_string(i), {tx, 16, w / 3 - 6, touch ? 48 : 38}, titles[i],
+			"tab/" + std::to_string(i), {tx, topInset + 16, w / 3 - 6, touch ? 48 : 38}, titles[i],
 			[this, i]
 			{
 				activateGroup(groups[i]);
 				controls->resetFocus();
 			},
 			currentTab == groups[i], true, false, width < 800 ? "standard" : "menu");
-		ui.text(tx + 9, touch ? 69 : 59, details[i], "little", w / 3 - 20, true);
+		ui.text(tx + 9, topInset + (touch ? 69 : 59), details[i], "little", w / 3 - 20, true);
 	}
 	// Clear inactive viewports so wheel/page navigation only affects this tab.
 	for (auto &pair : ui.regions)
 		pair.second.box = {0, 0, 0, 0};
-	int bodyY = touch ? 95 : 85, bodyH = height - bodyY - 96;
+	int bodyY = topInset + (touch ? 95 : 85), bodyH = height - bodyY - 96;
 	if (currentTab == groups[1])
 		renderPlayers(x, bodyY, w, bodyH);
 	else if (currentTab == groups[2])

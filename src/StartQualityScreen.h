@@ -17,6 +17,7 @@ class StartQualityScreen : public Glob2Screen
 {
 	friend struct CustomGameSetupHarness;
 	friend struct MobileGallerySetup;
+	friend struct MobilePresentationHarness;
 
   public:
 	enum
