@@ -1,0 +1,11 @@
+# Follow-up verification for PR #382
+
+This corrects the baseline framing of the first permanent-versus-maturity report. The old spacing study compared against an experimental baseline that already included expansion support and wood reserves; current master also includes maturity protection. An improvement against the former and a loss against the latter are compatible.
+
+The archived boundary_grid policy and restored production wheat classifier have equivalent normalized tokens. Their protected-cell digests match across 768 diagnostic transitions on 128 maps. Restored code and archived boundary code with only the two later wood-reserve fixes produce identical per-tick team/entity state records across four 8,192-tick games. These tests support wheat-layout equivalence in the tested scenarios, not identical complete behavior for every team/version.
+
+Read REPORT.md and summary.json for fresh six-version results. The new 512 games reuse the same 128 starts as the preceding 256 permanent/master games. Half the starts face Nicowar and half Maxima. Nicowar is the fixed-opponent comparison; archived experiments leave the opposing Maxima unchanged, whereas production applies its policy to both players. Both groups are reported separately. The previous METHOD incorrectly called all opponents Nicowar; original cases.json and commands always recorded the actual assignments.
+
+Inputs/source checks and analysis scripts are in verification-inputs.tar.gz. Host archives contain new archival-version commands, filtered measurement telemetry, results and summary metrics; extract them separately. The current/master game evidence and all exact maps are in the parent evidence directory's archives. Raw stdout hashes accompany filtered logs. CPU repeats include only uninstrumented historical/production builds and were run after therig's games and metric parsing finished. Extra diagnostic instrumentation makes the old experimental binaries unsuitable for CPU comparisons against production.
+
+No production code was changed during this verification. Candidate remains 2d967f6f6ab296b1297136d73a14f0d9b6e3383f. Historical source hashes and original experimental binary provenance are recorded in METHOD.md and binaries.json. Results are exploratory retained-map evidence, not an independent holdout or indefinite-sustainability claim.

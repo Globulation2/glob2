@@ -1,0 +1,1412 @@
+{
+  "permanent_vs_week-ago": {
+    "harvest_common": {
+      "change": 0.041707958455908134,
+      "ci95": [
+        -0.014141485414571942,
+        0.10182070057391646
+      ]
+    },
+    "meals_common": {
+      "change": 0.056183841490997866,
+      "ci95": [
+        -0.008569601364314616,
+        0.12453076546433817
+      ]
+    },
+    "population_time_common": {
+      "change": 0.039259062619827256,
+      "ci95": [
+        -0.011511080812257601,
+        0.10231826075217687
+      ]
+    },
+    "harvest_full_geometric": {
+      "change": 0.08593930939568262,
+      "ci95": [
+        0.024361122798290502,
+        0.1619842457977092
+      ]
+    },
+    "starvation_rate": {
+      "change": -0.2394146977148035,
+      "ci95": [
+        -0.42724988635265215,
+        -0.07934747650466278
+      ]
+    },
+    "tournament_cpu_per_tick_informational": 0.06348864482744254,
+    "by_opponent": {
+      "nicowar": {
+        "harvest_common": {
+          "change": 0.09659400544959129,
+          "ci95": [
+            0.03202318420575989,
+            0.17059175730964982
+          ]
+        },
+        "meals_common": {
+          "change": 0.11360608943862993,
+          "ci95": [
+            0.03376335416246734,
+            0.219344668393199
+          ]
+        },
+        "population_time_common": {
+          "change": 0.07899444881769013,
+          "ci95": [
+            0.018128745558578352,
+            0.15708518636969804
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": 0.19801899733079198,
+          "ci95": [
+            0.08544396950649835,
+            0.33825480571583144
+          ]
+        },
+        "starvation_rate": {
+          "change": -0.2854006382463464,
+          "ci95": [
+            -0.5430143233543553,
+            -0.0663811140909506
+          ]
+        }
+      },
+      "maxima": {
+        "harvest_common": {
+          "change": -0.004709576138147598,
+          "ci95": [
+            -0.09156971175336204,
+            0.08005347767959048
+          ]
+        },
+        "meals_common": {
+          "change": 0.004139358399448012,
+          "ci95": [
+            -0.11155063291139244,
+            0.10738491951426155
+          ]
+        },
+        "population_time_common": {
+          "change": 0.0024526282895047657,
+          "ci95": [
+            -0.09544890731341094,
+            0.0932089921592123
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": -0.01565485495789798,
+          "ci95": [
+            -0.0860302946154261,
+            0.05996258426260148
+          ]
+        },
+        "starvation_rate": {
+          "change": -0.1578033003688758,
+          "ci95": [
+            -0.32094005041792906,
+            -0.012898264720016428
+          ]
+        }
+      }
+    },
+    "families": {
+      "52": {
+        "harvest_common": 0.11005620537748739,
+        "meals_common": 0.08070388349514568,
+        "population_time_common": 0.09654661330961911,
+        "harvest_full_geometric": 0.11849617170432891,
+        "starvation_rate": -0.4376284061418685
+      },
+      "1": {
+        "harvest_common": 0.12407141926234844,
+        "meals_common": 0.21739130434782616,
+        "population_time_common": 0.13044329190723158,
+        "harvest_full_geometric": 0.49353240969045875,
+        "starvation_rate": -0.8525652123730378
+      },
+      "13": {
+        "harvest_common": -0.05557197753473253,
+        "meals_common": 0.09794319294809006,
+        "population_time_common": 0.01380113069504496,
+        "harvest_full_geometric": 0.06953190113195573,
+        "starvation_rate": -0.8839545002846144
+      },
+      "15": {
+        "harvest_common": 0.27205707491082043,
+        "meals_common": 0.2935507783543365,
+        "population_time_common": 0.2660327384829144,
+        "harvest_full_geometric": 0.34142707431549724,
+        "starvation_rate": -0.4922270780868765
+      },
+      "19": {
+        "harvest_common": -0.12125031509957152,
+        "meals_common": -0.2297592997811816,
+        "population_time_common": -0.1815619967793881,
+        "harvest_full_geometric": -0.017353942394260913,
+        "starvation_rate": 1.443679291687162
+      },
+      "2": {
+        "harvest_common": 0.10113978776365773,
+        "meals_common": 0.27219512195121953,
+        "population_time_common": 0.2208292629979376,
+        "harvest_full_geometric": -0.002469234760594685,
+        "starvation_rate": 0.1914405221362323
+      },
+      "28": {
+        "harvest_common": 0.02286453839516822,
+        "meals_common": 0.022762545266425294,
+        "population_time_common": 0.0229868897402552,
+        "harvest_full_geometric": 0.014424415463018647,
+        "starvation_rate": -0.022470365916509305
+      },
+      "29": {
+        "harvest_common": -0.09779599069664413,
+        "meals_common": -0.11756847027388106,
+        "population_time_common": -0.08045417072622352,
+        "harvest_full_geometric": -0.027317085527933438,
+        "starvation_rate": -0.16541205882994037
+      },
+      "36": {
+        "harvest_common": -0.06691201070592168,
+        "meals_common": -0.26792452830188684,
+        "population_time_common": -0.22822379942851878,
+        "harvest_full_geometric": 0.060660600071932747,
+        "starvation_rate": null
+      },
+      "38": {
+        "harvest_common": 0.14200964034111974,
+        "meals_common": 0.08477237048665609,
+        "population_time_common": 0.06861191386221677,
+        "harvest_full_geometric": 0.08670638233214034,
+        "starvation_rate": 0.18533833493268181
+      },
+      "4": {
+        "harvest_common": -0.0934732699245654,
+        "meals_common": -0.12738095238095237,
+        "population_time_common": -0.0781571369806664,
+        "harvest_full_geometric": 0.17675702686548167,
+        "starvation_rate": 0.08478357875948239
+      },
+      "40": {
+        "harvest_common": 0.2984783456886462,
+        "meals_common": 0.4457831325301205,
+        "population_time_common": 0.3727293630719706,
+        "harvest_full_geometric": 0.18714332114919463,
+        "starvation_rate": -0.933774935282473
+      },
+      "48": {
+        "harvest_common": -0.06233791652395171,
+        "meals_common": 0.022665457842248493,
+        "population_time_common": -0.043661578692209324,
+        "harvest_full_geometric": -0.08822839222296419,
+        "starvation_rate": -0.16048370814516177
+      },
+      "57": {
+        "harvest_common": 0.09038350356523406,
+        "meals_common": -0.012522361359570633,
+        "population_time_common": 0.08042136263238375,
+        "harvest_full_geometric": -0.07676233514303776,
+        "starvation_rate": 7.330083346438119
+      },
+      "58": {
+        "harvest_common": 0.11408977556109723,
+        "meals_common": 0.1556240369799693,
+        "population_time_common": 0.15400296515937728,
+        "harvest_full_geometric": 0.11198271813524663,
+        "starvation_rate": 0.5164605749156896
+      },
+      "8": {
+        "harvest_common": 0.07139515298961352,
+        "meals_common": 0.062407758802445645,
+        "population_time_common": 0.04074866964340318,
+        "harvest_full_geometric": 0.07050397505765416,
+        "starvation_rate": -0.41986609974477873
+      }
+    }
+  },
+  "permanent_vs_pre-farming": {
+    "harvest_common": {
+      "change": 0.04189495044095848,
+      "ci95": [
+        -0.027795476266326835,
+        0.11746889503845903
+      ]
+    },
+    "meals_common": {
+      "change": 0.04526122576890357,
+      "ci95": [
+        -0.022450737590179792,
+        0.113792243421873
+      ]
+    },
+    "population_time_common": {
+      "change": 0.03152332228150678,
+      "ci95": [
+        -0.027195942819419727,
+        0.09530045323662262
+      ]
+    },
+    "harvest_full_geometric": {
+      "change": 0.051310360854347925,
+      "ci95": [
+        -0.0327945069926624,
+        0.14380711997939222
+      ]
+    },
+    "starvation_rate": {
+      "change": -0.2312065996859095,
+      "ci95": [
+        -0.47050647579500715,
+        0.26150536435338534
+      ]
+    },
+    "tournament_cpu_per_tick_informational": 0.029722692308562282,
+    "by_opponent": {
+      "nicowar": {
+        "harvest_common": {
+          "change": 0.08875099335508851,
+          "ci95": [
+            0.03681743746117783,
+            0.1462506480652308
+          ]
+        },
+        "meals_common": {
+          "change": 0.08945359769152006,
+          "ci95": [
+            0.019392917369308593,
+            0.1632980034508258
+          ]
+        },
+        "population_time_common": {
+          "change": 0.055260605697031506,
+          "ci95": [
+            0.015408124283713187,
+            0.10008503583653106
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": 0.11579728101764153,
+          "ci95": [
+            0.014172048811897042,
+            0.2341611487881654
+          ]
+        },
+        "starvation_rate": {
+          "change": -0.26932859968599343,
+          "ci95": [
+            -0.6426440970991874,
+            0.9979947774777418
+          ]
+        }
+      },
+      "maxima": {
+        "harvest_common": {
+          "change": 0.0017249626741269175,
+          "ci95": [
+            -0.10726971895356774,
+            0.11866743045361794
+          ]
+        },
+        "meals_common": {
+          "change": 0.004312575470070801,
+          "ci95": [
+            -0.13152251608291632,
+            0.1441043751226212
+          ]
+        },
+        "population_time_common": {
+          "change": 0.008896703883194412,
+          "ci95": [
+            -0.1112170750353284,
+            0.12525225734285095
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": -0.00944957149234682,
+          "ci95": [
+            -0.1018599258899392,
+            0.08209136142904017
+          ]
+        },
+        "starvation_rate": {
+          "change": -0.15276580749804214,
+          "ci95": [
+            -0.6419065406221154,
+            0.9089123323098589
+          ]
+        }
+      }
+    },
+    "families": {
+      "52": {
+        "harvest_common": 0.10677773570617188,
+        "meals_common": 0.16026058631921813,
+        "population_time_common": 0.08503211803009414,
+        "harvest_full_geometric": 0.10564469453708902,
+        "starvation_rate": -0.46718167103698105
+      },
+      "1": {
+        "harvest_common": 0.40770360698547403,
+        "meals_common": 0.3820335636722607,
+        "population_time_common": 0.286629169683132,
+        "harvest_full_geometric": 0.482455204216665,
+        "starvation_rate": -0.9542808986475476
+      },
+      "13": {
+        "harvest_common": -0.1992481203007519,
+        "meals_common": -0.029437229437229484,
+        "population_time_common": -0.10784313725490191,
+        "harvest_full_geometric": -0.24857639630679818,
+        "starvation_rate": 1.2417582417582418
+      },
+      "15": {
+        "harvest_common": 0.1562905317769132,
+        "meals_common": 0.13829093281148075,
+        "population_time_common": 0.1480883568925464,
+        "harvest_full_geometric": 0.1707999373216902,
+        "starvation_rate": 14.678235818643252
+      },
+      "19": {
+        "harvest_common": -0.0961887477313974,
+        "meals_common": -0.1507840772014475,
+        "population_time_common": -0.12213026268441884,
+        "harvest_full_geometric": -0.03099449311194824,
+        "starvation_rate": 0.13912116740449254
+      },
+      "2": {
+        "harvest_common": 0.16947265896758035,
+        "meals_common": 0.17266187050359716,
+        "population_time_common": 0.18189460410865332,
+        "harvest_full_geometric": -0.19606740499704545,
+        "starvation_rate": 2.384396532562792
+      },
+      "28": {
+        "harvest_common": -0.008779264214046845,
+        "meals_common": -0.050432276657060515,
+        "population_time_common": -0.044672749950764756,
+        "harvest_full_geometric": -0.011376852282839911,
+        "starvation_rate": -0.9252313053721747
+      },
+      "29": {
+        "harvest_common": -0.09839513004980627,
+        "meals_common": -0.11043771043771045,
+        "population_time_common": -0.09044071314726265,
+        "harvest_full_geometric": -0.07504466620522154,
+        "starvation_rate": 0.5774481437711396
+      },
+      "36": {
+        "harvest_common": 0.029911373707533162,
+        "meals_common": -0.05672609400324147,
+        "population_time_common": -0.041222947440742064,
+        "harvest_full_geometric": 0.32904504285437186,
+        "starvation_rate": null
+      },
+      "38": {
+        "harvest_common": -0.04019943907759427,
+        "meals_common": -0.21832579185520362,
+        "population_time_common": -0.08610380291796216,
+        "harvest_full_geometric": 0.0011552927545990244,
+        "starvation_rate": 9.395053650876735
+      },
+      "4": {
+        "harvest_common": -0.08035268674097484,
+        "meals_common": -0.1670454545454545,
+        "population_time_common": -0.1077045590284691,
+        "harvest_full_geometric": 0.18148388149814232,
+        "starvation_rate": 0.12070504239178925
+      },
+      "40": {
+        "harvest_common": 0.0990752972258917,
+        "meals_common": 0.118508655126498,
+        "population_time_common": 0.10310421286031035,
+        "harvest_full_geometric": 0.020526173748069088,
+        "starvation_rate": 0.813065326633166
+      },
+      "48": {
+        "harvest_common": -0.0663580998781973,
+        "meals_common": -0.025906735751295318,
+        "population_time_common": -0.06703069911428328,
+        "harvest_full_geometric": -0.09237749459147471,
+        "starvation_rate": -0.15556544838870845
+      },
+      "57": {
+        "harvest_common": 0.284449489216799,
+        "meals_common": 0.37142857142857144,
+        "population_time_common": 0.30396445659603555,
+        "harvest_full_geometric": 0.1411826027220877,
+        "starvation_rate": -0.7773539154563762
+      },
+      "58": {
+        "harvest_common": 0.18266048974189286,
+        "meals_common": 0.24584717607973428,
+        "population_time_common": 0.19807599807599807,
+        "harvest_full_geometric": 0.21879437771934107,
+        "starvation_rate": -0.26966235747550993
+      },
+      "8": {
+        "harvest_common": 0.06994346586927058,
+        "meals_common": 0.06352891515407344,
+        "population_time_common": 0.06883425254720654,
+        "harvest_full_geometric": 0.07040731339362516,
+        "starvation_rate": -0.6210232875921515
+      }
+    }
+  },
+  "permanent_vs_experiment-baseline": {
+    "harvest_common": {
+      "change": 0.1436771269714805,
+      "ci95": [
+        0.07194073145985547,
+        0.23860533961953845
+      ]
+    },
+    "meals_common": {
+      "change": 0.12639907371671177,
+      "ci95": [
+        0.0680695637737101,
+        0.21450950734658591
+      ]
+    },
+    "population_time_common": {
+      "change": 0.1022566113289396,
+      "ci95": [
+        0.04507555410234243,
+        0.18702348647889955
+      ]
+    },
+    "harvest_full_geometric": {
+      "change": 0.1369810247824268,
+      "ci95": [
+        0.05563814612867679,
+        0.23766595169514404
+      ]
+    },
+    "starvation_rate": {
+      "change": -0.24518484040037092,
+      "ci95": [
+        -0.6194607818900827,
+        -0.05427526648957004
+      ]
+    },
+    "by_opponent": {
+      "nicowar": {
+        "harvest_common": {
+          "change": 0.1453371515981572,
+          "ci95": [
+            0.0765294621522925,
+            0.22244893916282016
+          ]
+        },
+        "meals_common": {
+          "change": 0.084004816152635,
+          "ci95": [
+            0.035841360756747376,
+            0.1381496881496882
+          ]
+        },
+        "population_time_common": {
+          "change": 0.09328968903436996,
+          "ci95": [
+            0.02324665644732593,
+            0.16292842586302725
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": 0.21681199397346562,
+          "ci95": [
+            0.11124913457598873,
+            0.3435381223181544
+          ]
+        },
+        "starvation_rate": {
+          "change": 0.037952356157250566,
+          "ci95": [
+            -0.6074471443162335,
+            0.3007268332947175
+          ]
+        }
+      },
+      "maxima": {
+        "harvest_common": {
+          "change": 0.14213466433081012,
+          "ci95": [
+            0.04729533437917621,
+            0.26987034443127533
+          ]
+        },
+        "meals_common": {
+          "change": 0.17249018225757728,
+          "ci95": [
+            0.08530104640333103,
+            0.3262577532736044
+          ]
+        },
+        "population_time_common": {
+          "change": 0.11134440548428404,
+          "ci95": [
+            0.03929443763177498,
+            0.2311237689414527
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": 0.06238749874081795,
+          "ci95": [
+            -0.03695391612209764,
+            0.18559881864596184
+          ]
+        },
+        "starvation_rate": {
+          "change": -0.5533467935600327,
+          "ci95": [
+            -0.766169202385438,
+            0.10653158053033063
+          ]
+        }
+      }
+    },
+    "families": {
+      "52": {
+        "harvest_common": 0.336167489486195,
+        "meals_common": 0.22489683631361768,
+        "population_time_common": 0.1992867563624574,
+        "harvest_full_geometric": 0.3474897003911499,
+        "starvation_rate": -0.5715045745626681
+      },
+      "1": {
+        "harvest_common": 0.3182026593305822,
+        "meals_common": 0.23348017621145378,
+        "population_time_common": 0.20396039603960392,
+        "harvest_full_geometric": 0.46049320878487787,
+        "starvation_rate": -0.8615679824561403
+      },
+      "13": {
+        "harvest_common": -0.01434521055067095,
+        "meals_common": 0.04570895522388052,
+        "population_time_common": 0.020190752412292845,
+        "harvest_full_geometric": -0.13112805184165155,
+        "starvation_rate": -0.34652743607967496
+      },
+      "15": {
+        "harvest_common": 0.5397236614853196,
+        "meals_common": 0.4373970345963756,
+        "population_time_common": 0.4525980172370847,
+        "harvest_full_geometric": 0.6638252272792069,
+        "starvation_rate": -0.704962127521974
+      },
+      "19": {
+        "harvest_common": -0.03005008347245408,
+        "meals_common": 0.06990881458966558,
+        "population_time_common": -0.013266461737582946,
+        "harvest_full_geometric": 0.07994750370421788,
+        "starvation_rate": 1.0268896540416463
+      },
+      "2": {
+        "harvest_common": 0.25,
+        "meals_common": 0.5092592592592593,
+        "population_time_common": 0.3573281843963072,
+        "harvest_full_geometric": -0.044429249561098394,
+        "starvation_rate": -0.4386731442966162
+      },
+      "28": {
+        "harvest_common": 0.09162062615101285,
+        "meals_common": 0.041074249605055346,
+        "population_time_common": 0.05212739037703784,
+        "harvest_full_geometric": 0.09812391717935887,
+        "starvation_rate": -0.524772375880433
+      },
+      "29": {
+        "harvest_common": 0.06081521031384285,
+        "meals_common": 0.13099315068493156,
+        "population_time_common": 0.009918511811671804,
+        "harvest_full_geometric": 0.36446630097721355,
+        "starvation_rate": -0.7299512093920995
+      },
+      "36": {
+        "harvest_common": 0.07808272129880178,
+        "meals_common": 0.03743315508021383,
+        "population_time_common": 0.047279549718574065,
+        "harvest_full_geometric": 0.1124473711137568,
+        "starvation_rate": null
+      },
+      "38": {
+        "harvest_common": 0.13318616629874902,
+        "meals_common": 0.01767304860088359,
+        "population_time_common": 0.06483975847654433,
+        "harvest_full_geometric": 0.17793513236427927,
+        "starvation_rate": 0.551570459209024
+      },
+      "4": {
+        "harvest_common": 0.12977723278152453,
+        "meals_common": 0.26597582037996537,
+        "population_time_common": 0.20408346019521795,
+        "harvest_full_geometric": 0.08519062620002127,
+        "starvation_rate": null
+      },
+      "40": {
+        "harvest_common": 0.14089818306479263,
+        "meals_common": 0.21037463976945237,
+        "population_time_common": 0.1172452512398241,
+        "harvest_full_geometric": 0.01659609810593432,
+        "starvation_rate": -0.9283953098827471
+      },
+      "48": {
+        "harvest_common": 0.05129471143296027,
+        "meals_common": 0.06868782567503562,
+        "population_time_common": 0.08134551495016606,
+        "harvest_full_geometric": 0.09325529938237476,
+        "starvation_rate": -0.04496775348588655
+      },
+      "57": {
+        "harvest_common": 0.22999999999999998,
+        "meals_common": 0.14522821576763478,
+        "population_time_common": 0.20603110380579093,
+        "harvest_full_geometric": 0.04921566557423307,
+        "starvation_rate": -0.06718823714420497
+      },
+      "58": {
+        "harvest_common": 0.00732807215332576,
+        "meals_common": -0.144811858608894,
+        "population_time_common": -0.034498798356461746,
+        "harvest_full_geometric": 0.015876493694947147,
+        "starvation_rate": 3.1429259675606227
+      },
+      "8": {
+        "harvest_common": 0.049928934941084746,
+        "meals_common": 0.05001041883725765,
+        "population_time_common": -0.0005169172932331101,
+        "harvest_full_geometric": 0.05244823349032357,
+        "starvation_rate": -0.4071009276237544
+      }
+    }
+  },
+  "permanent_vs_experiment-boundary": {
+    "harvest_common": {
+      "change": 0.0518610734659144,
+      "ci95": [
+        0.007466682313937989,
+        0.1183410755968477
+      ]
+    },
+    "meals_common": {
+      "change": 0.04274038676253844,
+      "ci95": [
+        0.006713567839196077,
+        0.08767932052410798
+      ]
+    },
+    "population_time_common": {
+      "change": 0.030761354494258653,
+      "ci95": [
+        -0.00468696501791277,
+        0.07770322173456301
+      ]
+    },
+    "harvest_full_geometric": {
+      "change": 0.04712035389955349,
+      "ci95": [
+        -0.002047660075981228,
+        0.10168626112308532
+      ]
+    },
+    "starvation_rate": {
+      "change": -0.17298120202449752,
+      "ci95": [
+        -0.5156145019607119,
+        -0.04505862026418406
+      ]
+    },
+    "by_opponent": {
+      "nicowar": {
+        "harvest_common": {
+          "change": 0.010752350605114147,
+          "ci95": [
+            -0.005196040763305709,
+            0.03798917731942586
+          ]
+        },
+        "meals_common": {
+          "change": 0.0006839945280436854,
+          "ci95": [
+            -0.026089757354520127,
+            0.027587403487464135
+          ]
+        },
+        "population_time_common": {
+          "change": 0.005712543296694905,
+          "ci95": [
+            -0.007972845798394856,
+            0.02340586527056332
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": 0.03444412317281631,
+          "ci95": [
+            -0.00914281690429486,
+            0.08905746690670702
+          ]
+        },
+        "starvation_rate": {
+          "change": 0.011764113345593907,
+          "ci95": [
+            -0.03436015716691332,
+            0.2053414676439238
+          ]
+        }
+      },
+      "maxima": {
+        "harvest_common": {
+          "change": 0.09329367653340515,
+          "ci95": [
+            0.013972275957461644,
+            0.21370779926509909
+          ]
+        },
+        "meals_common": {
+          "change": 0.08873305282842447,
+          "ci95": [
+            0.01769301470588225,
+            0.1844793938698197
+          ]
+        },
+        "population_time_common": {
+          "change": 0.05700920115226582,
+          "ci95": [
+            -0.01034883775677875,
+            0.14920498211209754
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": 0.059951921025655164,
+          "ci95": [
+            -0.012633405277992171,
+            0.14352253673736803
+          ]
+        },
+        "starvation_rate": {
+          "change": -0.4284765249072947,
+          "ci95": [
+            -0.7187065662171745,
+            -0.1769892467118579
+          ]
+        }
+      }
+    },
+    "families": {
+      "52": {
+        "harvest_common": 0.05333333333333323,
+        "meals_common": 0.05260047281323876,
+        "population_time_common": 0.03988980406488074,
+        "harvest_full_geometric": 0.030387051718683278,
+        "starvation_rate": -0.15284063993244368
+      },
+      "1": {
+        "harvest_common": 0.3601955527519318,
+        "meals_common": 0.23893805309734506,
+        "population_time_common": 0.2076734096492603,
+        "harvest_full_geometric": 0.19656338364691295,
+        "starvation_rate": -0.17196156509695293
+      },
+      "13": {
+        "harvest_common": 0.11130434782608689,
+        "meals_common": 0.020018198362147466,
+        "population_time_common": 0.04341129492298923,
+        "harvest_full_geometric": 0.0480070454263426,
+        "starvation_rate": -0.04160516100814615
+      },
+      "15": {
+        "harvest_common": 0.24496683346910286,
+        "meals_common": 0.16957104557640745,
+        "population_time_common": 0.16711363727334594,
+        "harvest_full_geometric": 0.20748539135602528,
+        "starvation_rate": -0.14318540366280275
+      },
+      "19": {
+        "harvest_common": -0.02352941176470591,
+        "meals_common": -0.07611548556430447,
+        "population_time_common": -0.058941521370158956,
+        "harvest_full_geometric": 0.0094010770227968,
+        "starvation_rate": 0.416844291413893
+      },
+      "2": {
+        "harvest_common": 0.0822817409219676,
+        "meals_common": 0.15296198054818744,
+        "population_time_common": 0.12553787651355952,
+        "harvest_full_geometric": 0.1520406357487516,
+        "starvation_rate": 0.015387546438891286
+      },
+      "28": {
+        "harvest_common": -0.008779264214046845,
+        "meals_common": 0.06634304207119746,
+        "population_time_common": 0.04641547422161496,
+        "harvest_full_geometric": -0.013145169194001105,
+        "starvation_rate": -0.6814522132508734
+      },
+      "29": {
+        "harvest_common": -0.03529133112269067,
+        "meals_common": -0.015648286140089396,
+        "population_time_common": -0.045732062998250056,
+        "harvest_full_geometric": -0.03808362713094926,
+        "starvation_rate": -0.7165452250983546
+      },
+      "36": {
+        "harvest_common": 0.037574404761904656,
+        "meals_common": 0.18052738336713992,
+        "population_time_common": 0.09997372569626894,
+        "harvest_full_geometric": 0.28733685887605254,
+        "starvation_rate": -1.0
+      },
+      "38": {
+        "harvest_common": -0.0572390572390572,
+        "meals_common": -0.14374225526641882,
+        "population_time_common": -0.09967012252591889,
+        "harvest_full_geometric": -0.07790192264984186,
+        "starvation_rate": 0.24137506350354854
+      },
+      "4": {
+        "harvest_common": 0.10405432394647485,
+        "meals_common": -0.0040760869565217295,
+        "population_time_common": 0.02892561983471076,
+        "harvest_full_geometric": -0.11426878598464796,
+        "starvation_rate": -0.6112449799196787
+      },
+      "40": {
+        "harvest_common": 0.05516804058338609,
+        "meals_common": 0.053952321204516984,
+        "population_time_common": 0.047092870297290146,
+        "harvest_full_geometric": 0.04031147065357521,
+        "starvation_rate": -0.04497487437185921
+      },
+      "48": {
+        "harvest_common": -0.034269011742176114,
+        "meals_common": -0.03959131545338446,
+        "population_time_common": -0.04586228124175529,
+        "harvest_full_geometric": -0.02052275551131988,
+        "starvation_rate": -0.010703365890068595
+      },
+      "57": {
+        "harvest_common": 0.11443766003545397,
+        "meals_common": 0.026022304832713727,
+        "population_time_common": 0.10983768689278017,
+        "harvest_full_geometric": 0.13423288538563471,
+        "starvation_rate": -0.09896734287361741
+      },
+      "58": {
+        "harvest_common": 0.00027987685418406905,
+        "meals_common": 0.05782792665726366,
+        "population_time_common": 0.015244150974158321,
+        "harvest_full_geometric": -0.007130459867451089,
+        "starvation_rate": -0.13813834912477918
+      },
+      "8": {
+        "harvest_common": 0.004738504738504679,
+        "meals_common": 0.0237708248679398,
+        "population_time_common": 0.012821581209300215,
+        "harvest_full_geometric": 0.005351323584901424,
+        "starvation_rate": 0.019190431629252824
+      }
+    }
+  },
+  "permanent_vs_master": {
+    "harvest_common": {
+      "change": -0.14220908565186663,
+      "ci95": [
+        -0.20976571934626842,
+        -0.07794364541096177
+      ]
+    },
+    "meals_common": {
+      "change": -0.08485869948653624,
+      "ci95": [
+        -0.15476964417284267,
+        -0.01995831310852869
+      ]
+    },
+    "population_time_common": {
+      "change": -0.109707333404926,
+      "ci95": [
+        -0.17952425436280683,
+        -0.05358853142745679
+      ]
+    },
+    "harvest_full_geometric": {
+      "change": -0.15277268587020587,
+      "ci95": [
+        -0.24767490304324014,
+        -0.04340117900575424
+      ]
+    },
+    "starvation_rate": {
+      "change": -0.06654265558666739,
+      "ci95": [
+        -0.39733013231271064,
+        0.06082781744467591
+      ]
+    },
+    "tournament_cpu_per_tick_informational": -0.09816583525245792,
+    "by_opponent": {
+      "nicowar": {
+        "harvest_common": {
+          "change": -0.16144239409290395,
+          "ci95": [
+            -0.26550760407970675,
+            -0.06166028243096444
+          ]
+        },
+        "meals_common": {
+          "change": -0.1012133312855168,
+          "ci95": [
+            -0.16493929523245487,
+            -0.047451764578716915
+          ]
+        },
+        "population_time_common": {
+          "change": -0.09866564187963023,
+          "ci95": [
+            -0.19143606972191585,
+            -0.018734440327275337
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": -0.09397987562575427,
+          "ci95": [
+            -0.2129523234350067,
+            0.040314691357538956
+          ]
+        },
+        "starvation_rate": {
+          "change": 0.16762369630889307,
+          "ci95": [
+            -0.14089341923365817,
+            0.37499631355505114
+          ]
+        }
+      },
+      "maxima": {
+        "harvest_common": {
+          "change": -0.12347636382085458,
+          "ci95": [
+            -0.23213495859692435,
+            0.00851562701296027
+          ]
+        },
+        "meals_common": {
+          "change": -0.06780882235209351,
+          "ci95": [
+            -0.1854304635761589,
+            0.061302062272543534
+          ]
+        },
+        "population_time_common": {
+          "change": -0.12044999459940009,
+          "ci95": [
+            -0.21668137687555167,
+            -0.01318680282500262
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": -0.20775035510018225,
+          "ci95": [
+            -0.30633623736894333,
+            -0.0848443244053958
+          ]
+        },
+        "starvation_rate": {
+          "change": -0.3836561198007299,
+          "ci95": [
+            -0.5836157299713775,
+            -0.20787501672688335
+          ]
+        }
+      }
+    },
+    "families": {
+      "52": {
+        "harvest_common": -0.18452181676152213,
+        "meals_common": -0.1837763519706691,
+        "population_time_common": -0.1693910544278786,
+        "harvest_full_geometric": -0.1661327045701061,
+        "starvation_rate": -0.052220606640653755
+      },
+      "1": {
+        "harvest_common": 0.24530753681778794,
+        "meals_common": 0.3047530288909599,
+        "population_time_common": 0.17029682909532973,
+        "harvest_full_geometric": 0.6098315159733219,
+        "starvation_rate": -0.914551592797784
+      },
+      "13": {
+        "harvest_common": -0.29803361529166206,
+        "meals_common": 0.05060918462980313,
+        "population_time_common": -0.12600344036697253,
+        "harvest_full_geometric": -0.4770634504394581,
+        "starvation_rate": 1.2883385271444974
+      },
+      "15": {
+        "harvest_common": -0.10559317782794075,
+        "meals_common": -0.0668449197860963,
+        "population_time_common": -0.08293756880012582,
+        "harvest_full_geometric": -0.09452200349958562,
+        "starvation_rate": 0.22674308937512855
+      },
+      "19": {
+        "harvest_common": -0.15918958031837915,
+        "meals_common": -0.10204081632653061,
+        "population_time_common": -0.14591793866405267,
+        "harvest_full_geometric": -0.0040441129125171615,
+        "starvation_rate": -0.33094418288712424
+      },
+      "2": {
+        "harvest_common": -0.24374662587727192,
+        "meals_common": -0.14771241830065363,
+        "population_time_common": -0.1885506096241253,
+        "harvest_full_geometric": -0.4775689422775655,
+        "starvation_rate": 2.2863006594057937
+      },
+      "28": {
+        "harvest_common": -0.19681571815718157,
+        "meals_common": -0.13592657342657344,
+        "population_time_common": -0.13516966779580442,
+        "harvest_full_geometric": -0.1976175103221638,
+        "starvation_rate": -0.8072839718261468
+      },
+      "29": {
+        "harvest_common": -0.34664741738851457,
+        "meals_common": -0.3395,
+        "population_time_common": -0.348337582324198,
+        "harvest_full_geometric": -0.2131950865839244,
+        "starvation_rate": -0.3670035453767473
+      },
+      "36": {
+        "harvest_common": -0.16746268656716423,
+        "meals_common": -0.14537444933920707,
+        "population_time_common": -0.18645549941702289,
+        "harvest_full_geometric": -0.17116724487234147,
+        "starvation_rate": -1.0
+      },
+      "38": {
+        "harvest_common": -0.09198113207547165,
+        "meals_common": -0.15006150061500612,
+        "population_time_common": -0.1373419626730885,
+        "harvest_full_geometric": -0.060478880835141635,
+        "starvation_rate": 0.19053782911411798
+      },
+      "4": {
+        "harvest_common": -0.2389867841409692,
+        "meals_common": -0.2535641547861507,
+        "population_time_common": -0.26856334657020076,
+        "harvest_full_geometric": -0.1365561783071354,
+        "starvation_rate": -0.3164138033615945
+      },
+      "40": {
+        "harvest_common": -0.13446033810143043,
+        "meals_common": 0.03703703703703698,
+        "population_time_common": -0.06367628607277287,
+        "harvest_full_geometric": -0.16355159586080703,
+        "starvation_rate": -0.8219988833054159
+      },
+      "48": {
+        "harvest_common": -0.03431767788752271,
+        "meals_common": 0.00044345898004438666,
+        "population_time_common": 0.0031127205485783627,
+        "harvest_full_geometric": -0.04684421960695262,
+        "starvation_rate": -0.06771675203784211
+      },
+      "57": {
+        "harvest_common": -0.09847036328871894,
+        "meals_common": -0.013404825737265424,
+        "population_time_common": -0.0473883950863877,
+        "harvest_full_geometric": -0.08444589631068844,
+        "starvation_rate": -0.2126906746343764
+      },
+      "58": {
+        "harvest_common": -0.26581758422350044,
+        "meals_common": -0.19871794871794868,
+        "population_time_common": -0.22617124394184163,
+        "harvest_full_geometric": -0.2720381724327502,
+        "starvation_rate": 0.5076548364648572
+      },
+      "8": {
+        "harvest_common": -0.057419222062152664,
+        "meals_common": -0.01639664259223117,
+        "population_time_common": -0.04262693554195174,
+        "harvest_full_geometric": -0.05534306576362791,
+        "starvation_rate": -0.535766713161043
+      }
+    }
+  },
+  "experiment-boundary_vs_experiment-baseline": {
+    "harvest_common": {
+      "change": 0.08728914475656868,
+      "ci95": [
+        0.03826909899543618,
+        0.14106963954554175
+      ]
+    },
+    "meals_common": {
+      "change": 0.08022964106522568,
+      "ci95": [
+        0.03185527480090444,
+        0.140867045581188
+      ]
+    },
+    "population_time_common": {
+      "change": 0.06936160006673897,
+      "ci95": [
+        0.022154724401548975,
+        0.1227030724994762
+      ]
+    },
+    "harvest_full_geometric": {
+      "change": 0.08581694601601941,
+      "ci95": [
+        0.0028435837074742842,
+        0.18183644590995707
+      ]
+    },
+    "starvation_rate": {
+      "change": -0.08730592164606654,
+      "ci95": [
+        -0.4078954595777917,
+        0.04907141856267261
+      ]
+    },
+    "by_opponent": {
+      "nicowar": {
+        "harvest_common": {
+          "change": 0.133153092260899,
+          "ci95": [
+            0.07397520317968787,
+            0.20022555977334
+          ]
+        },
+        "meals_common": {
+          "change": 0.08326386959340559,
+          "ci95": [
+            0.03198411823094749,
+            0.1398170246618935
+          ]
+        },
+        "population_time_common": {
+          "change": 0.08707969918581293,
+          "ci95": [
+            0.02044220839401567,
+            0.1523470406263494
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": 0.1762955259886787,
+          "ci95": [
+            0.07053580308104834,
+            0.30763502613109805
+          ]
+        },
+        "starvation_rate": {
+          "change": 0.025883743519089952,
+          "ci95": [
+            -0.6221922209269948,
+            0.2700763537051212
+          ]
+        }
+      },
+      "maxima": {
+        "harvest_common": {
+          "change": 0.04467325554490453,
+          "ci95": [
+            -0.011889556724267503,
+            0.1007316050264837
+          ]
+        },
+        "meals_common": {
+          "change": 0.07693082267646756,
+          "ci95": [
+            -0.003655793025871712,
+            0.20099890364234385
+          ]
+        },
+        "population_time_common": {
+          "change": 0.05140466542087463,
+          "ci95": [
+            0.0062769761992846895,
+            0.11417297505950974
+          ]
+        },
+        "harvest_full_geometric": {
+          "change": 0.0022978190490055006,
+          "ci95": [
+            -0.09106111930696625,
+            0.10233959834975881
+          ]
+        },
+        "starvation_rate": {
+          "change": -0.21848668356533063,
+          "ci95": [
+            -0.4231098118133695,
+            0.4893869310407304
+          ]
+        }
+      }
+    },
+    "families": {
+      "52": {
+        "harvest_common": 0.2685134393856281,
+        "meals_common": 0.1636863823933976,
+        "population_time_common": 0.1532825417409629,
+        "harvest_full_geometric": 0.3077510030270083,
+        "starvation_rate": -0.4941973781613396
+      },
+      "1": {
+        "harvest_common": -0.030872688369249612,
+        "meals_common": -0.004405286343612369,
+        "population_time_common": -0.0030745179781136445,
+        "harvest_full_geometric": 0.22057320886216125,
+        "starvation_rate": -0.8328193333681808
+      },
+      "13": {
+        "harvest_common": -0.11306493907141757,
+        "meals_common": 0.025186567164179108,
+        "population_time_common": -0.022254448100842206,
+        "harvest_full_geometric": -0.1709292872121101,
+        "starvation_rate": -0.3181593458832478
+      },
+      "15": {
+        "harvest_common": 0.23675877950489355,
+        "meals_common": 0.2289950576606261,
+        "population_time_common": 0.24460718377920587,
+        "harvest_full_geometric": 0.3779257614129017,
+        "starvation_rate": -0.6556572755187813
+      },
+      "19": {
+        "harvest_common": -0.006677796327211993,
+        "meals_common": 0.15805471124620052,
+        "population_time_common": 0.04853583562530339,
+        "harvest_full_geometric": 0.06988939113230996,
+        "starvation_rate": 0.4305662706372473
+      },
+      "2": {
+        "harvest_common": 0.15496728138013083,
+        "meals_common": 0.3090277777777777,
+        "population_time_common": 0.20593736800820617,
+        "harvest_full_geometric": -0.17054075977290284,
+        "starvation_rate": -0.44717969245138267
+      },
+      "28": {
+        "harvest_common": 0.10128913443830578,
+        "meals_common": -0.023696682464455,
+        "population_time_common": 0.005458554748219546,
+        "harvest_full_geometric": 0.11275122024024808,
+        "starvation_rate": 0.49185661896886446
+      },
+      "29": {
+        "harvest_common": 0.09962234665972125,
+        "meals_common": 0.148972602739726,
+        "population_time_common": 0.05831755700057628,
+        "harvest_full_geometric": 0.41848744803823346,
+        "starvation_rate": -0.04729496724264548
+      },
+      "36": {
+        "harvest_common": 0.03904136064940089,
+        "meals_common": -0.12121212121212122,
+        "population_time_common": -0.04790494058786743,
+        "harvest_full_geometric": -0.13585370958382115,
+        "starvation_rate": null
+      },
+      "38": {
+        "harvest_common": 0.20198675496688745,
+        "meals_common": 0.18851251840942562,
+        "population_time_common": 0.1827217835578263,
+        "harvest_full_geometric": 0.27745102315940473,
+        "starvation_rate": 0.2498804791760576
+      },
+      "4": {
+        "harvest_common": 0.023298589822194904,
+        "meals_common": 0.27115716753022445,
+        "population_time_common": 0.1702337243664369,
+        "harvest_full_geometric": 0.225191806530612,
+        "starvation_rate": null
+      },
+      "40": {
+        "harvest_common": 0.08124785738772711,
+        "meals_common": 0.14841498559077815,
+        "population_time_common": 0.0669972864227566,
+        "harvest_full_geometric": -0.02279641551269418,
+        "starvation_rate": -0.9250232394983776
+      },
+      "48": {
+        "harvest_common": 0.08859995611147675,
+        "meals_common": 0.11274277593557547,
+        "population_time_common": 0.13332225913621265,
+        "harvest_full_geometric": 0.11616201962210027,
+        "starvation_rate": -0.034635099740984776
+      },
+      "57": {
+        "harvest_common": 0.10369565217391297,
+        "meals_common": 0.11618257261410792,
+        "population_time_common": 0.08667341003919593,
+        "harvest_full_geometric": -0.07495569993326034,
+        "starvation_rate": 0.03526964919425235
+      },
+      "58": {
+        "harvest_common": 0.0070462232243517775,
+        "meals_common": -0.19156214367160773,
+        "population_time_common": -0.048996046205132204,
+        "harvest_full_geometric": 0.023172181875301456,
+        "starvation_rate": 3.806950121697003
+      },
+      "8": {
+        "harvest_common": 0.04497730502957231,
+        "meals_common": 0.02563033965409467,
+        "population_time_common": -0.013169642857142838,
+        "harvest_full_geometric": 0.04684622062015387,
+        "starvation_rate": -0.4182646795177897
+      }
+    }
+  },
+  "cpu_status": "complete",
+  "quiet_cpu": {
+    "week-ago": 37.065,
+    "pre-farming": 36.6175,
+    "master": 46.94,
+    "permanent": 43.28
+  },
+  "totals": {
+    "week-ago": {
+      "harvested_common_window": 128153,
+      "meals_common_window": 22106,
+      "starved_common_window": 921,
+      "sampled_unit_ticks_common_window": 208300032
+    },
+    "pre-farming": {
+      "harvested_common_window": 128130,
+      "meals_common_window": 22337,
+      "starved_common_window": 918,
+      "sampled_unit_ticks_common_window": 209862144
+    },
+    "experiment-baseline": {
+      "harvested_common_window": 116727,
+      "meals_common_window": 20728,
+      "starved_common_window": 875,
+      "sampled_unit_ticks_common_window": 196395008
+    },
+    "experiment-boundary": {
+      "harvested_common_window": 126916,
+      "meals_common_window": 22391,
+      "starved_common_window": 854,
+      "sampled_unit_ticks_common_window": 210017280
+    },
+    "master": {
+      "harvested_common_window": 155630,
+      "meals_common_window": 25513,
+      "starved_common_window": 876,
+      "sampled_unit_ticks_common_window": 243153408
+    },
+    "permanent": {
+      "harvested_common_window": 133498,
+      "meals_common_window": 23348,
+      "starved_common_window": 728,
+      "sampled_unit_ticks_common_window": 216477696
+    }
+  }
+}

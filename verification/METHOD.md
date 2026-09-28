@@ -1,0 +1,21 @@
+# Verification of restored permanent farming
+
+Questions: Does current permanent seed selection reproduce the archived boundary-grid policy, and how does its complete gameplay compare against original experiment controls, pre-farming master and week-old master?
+
+Candidate: 2d967f6f6ab296b1297136d73a14f0d9b6e3383f.
+Comparators:
+- Current master c464848726379f9f286c43452820919727e04078, slow layout maturity.
+- Week-old master 37cc7d54d6149b99b0f1bc5198e87ec0d477d688 (Sep 21).
+- Pre-farming master 1c49596f5195188e7f078768f610454f7068d7c6 (Sep 24).
+- Original experimental baseline at 69a388f458f46a966210fc5a6c19a03dfbd4c3da: already includes expansion support and wood reserves, original spacing. Archived Farming-baseline.cpp equals that commit's policy source byte-for-byte.
+- Original boundary_grid experiment: same source, switches team 0 wheat spacing to dotted interior/checkerboard boundary. Original immutable Linux bundle, hash verified.
+
+Code audit: boundary detection uses the same 3x3 dilation/erosion closing; frontier and live edge gates use the same exterior/lattice rules. Production applies the layout to every Maxima team, while the experiment changed only team 0. The production code also contains subsequent fixes allowing wood reserves to traverse Maxima-owned protection and rejecting externally forbidden reserve cells. Deprecated water-gradient preparation and diagnostics were removed without changing the layout formula.
+
+Differential mask harness: compile current, archived boundary_grid, and archived boundary_grid plus only those two reviewed wood functions against the same current engine. Compare per-plan digests of full forbidden/wheat masks across 128 retained maps, six rounds of forced harvesting/quantity changes, team 0. This isolates farming decisions from broader game trajectories. These are diagnostic transitions, not a yield benchmark.
+
+Gameplay: 512 added games, four archival versions across the same 128 starts used in the completed permanent/master comparison. Together 768 game outputs cover 16 families × four map seeds × two orientations × six versions. Mostly 128x128, Rice 256x256. Half the starts face Nicowar (seeds 6101/6103); half face Maxima (6102/6104), maximum 32,768 ticks. The archived experiments modify only team 0, whereas historical/current production builds apply their policy to both Maxima players. Consequently the Nicowar subset is the fixed-opponent policy comparison; Maxima games measure whole-version/self-play effects and are reported separately. Each case retains its original host assignment; four added variants run serially in seeded random order per case, 32 cases concurrently on therig and 16 on devlaptop. Common-end analyses restrict all six variants to their shared observed window. Also report paired geometric ratios of complete-run harvest to match the form of earlier studies. Bootstrap whole map families, preserving seed/rotation pairing; intervals are exploratory 95%, not adjusted multiple-comparison adoption tests.
+
+Archived experimental binaries contain fixed-area diagnostic instrumentation. Do not compare their CPU with uninstrumented production/historical builds. Process CPU for week-old/pre-farming/current production can be reported with the existing machine-load caveat, but dedicated quiet timing is preferable. Retained maps are not an independent holdout, and short runs do not establish indefinite sustainability. Full commands and per-game results retained under artifacts/permanent-wheat-verification on the executing machines.
+
+Verification outcomes: all 768 mask digests matched the unmodified archived boundary policy, and also its version with the two reviewed wood functions. The normalized classifier tokens match after removing its unused water-gradient parameter and renaming the exterior mask. A current-engine build using archived boundary code plus only the reviewed wood fixes matches the candidate on every team/entity state record in four 8,192-tick games (Swamp, Arena, Rice, Orchard; 32,768 records). This verifies the tested team 0 wheat behavior, not whole-game byte equivalence to old binaries or identical play for other Maxima teams. All-team layout application and wood fixes are intentional production differences.

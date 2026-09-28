@@ -1,0 +1,26 @@
+{
+  "experiment-baseline": {
+    "bundle_id": "fd82b9de0d770b1a4d980c908595bb2c0fdf136d0b5e8d6d1ccf3b25e4939b0e",
+    "source_revision": "69a388f458f46a966210fc5a6c19a03dfbd4c3da",
+    "options": {
+      "bundled_linux_libraries": true,
+      "changed_team": 0,
+      "fixed_area_diagnostics": true,
+      "release": 1,
+      "wheat_policy": "baseline"
+    },
+    "sha256": "123785e8a18643880f8b7917aeb2a1377c08fac9ae6aa0bb4b451f402e936596"
+  },
+  "experiment-boundary": {
+    "bundle_id": "b1b7d53a8a5bdb617ba785ada670aa32136c3da7c4f96c4ce66e8d7050e5d312",
+    "source_revision": "69a388f458f46a966210fc5a6c19a03dfbd4c3da",
+    "options": {
+      "bundled_linux_libraries": true,
+      "changed_team": 0,
+      "fixed_area_diagnostics": true,
+      "release": 1,
+      "wheat_policy": "boundary_grid"
+    },
+    "sha256": "145817a95d57d7969c792c8dfd12087a32deb567cdc89d3013cad974b2819d88"
+  }
+}
