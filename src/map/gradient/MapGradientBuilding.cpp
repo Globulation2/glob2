@@ -11,11 +11,6 @@
 
 
 
-void Map::resolveBuildingGradient(Building *building, int swimClass, size_t cell) const
-{
-	if (auto &search = building->globalGradientSearch[swimClass]) search->resolve(cell);
-}
-
 void Map::finishBuildingGradient(Building *building, int swimClass) const
 {
 	if (auto &search = building->globalGradientSearch[swimClass]) search->finish();

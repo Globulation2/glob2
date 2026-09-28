@@ -231,6 +231,37 @@ static void aPausedFieldKeepsItsOriginalObstacles()
 	std::puts("PASS a paused field freezes obstacles until the existing refresh deadline");
 }
 
+// Public point APIs must resolve for their caller, while the array API must
+// finish the whole field. Compare movement and distance against a complete field.
+static void publicReadsResolveTheirInputs()
+{
+	World world;
+	Map &map = world.game.map;
+	Building *centre = world.place(20, 20);
+	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+	{
+		const Uint16 *full = map.buildingGradient(centre, swim);
+		require(full != nullptr, "public field is reachable");
+		std::vector<Uint16> expected(full, full + map.getW() * map.getH());
+		int expectedDist, expectedDx, expectedDy;
+		require(map.buildingAvailable(centre, swim, 18, 20, &expectedDist), "complete distance exists");
+		require(map.pathfindBuilding(centre, swim, 18, 20, &expectedDx, &expectedDy), "complete direction exists");
+		map.updateGlobalGradient(centre, swim, true);
+		int dist, dx, dy;
+		require(map.buildingAvailable(centre, swim, 18, 20, &dist) && dist == expectedDist,
+			"point API resolves its own distance");
+		require(!centre->globalGradientSearch[swim]->complete(), "point read does not finish the field");
+		map.updateGlobalGradient(centre, swim, true);
+		require(map.pathfindBuilding(centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
+			"movement API resolves its own input layer");
+		require(!centre->globalGradientSearch[swim]->complete(), "movement does not finish the field");
+		full = map.buildingGradient(centre, swim);
+		require(centre->globalGradientSearch[swim]->complete(), "public array API completes the field");
+		require(std::vector<Uint16>(full, full + expected.size()) == expected, "public array is fully resolved");
+	}
+	std::puts("PASS public distance, movement and full-field lazy API boundaries");
+}
+
 int main(int argc, char** argv)
 {
 	const char* scenario = argc > 1 ? argv[1] : "all";
@@ -249,6 +280,7 @@ int main(int argc, char** argv)
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-other-team") == 0) aRivalTeamsRingCutsOffACachedField();
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-flag") == 0) aRingCutsOffAVirtualFlagsField();
 	if (std::strcmp(scenario, "all") == 0) aPausedFieldKeepsItsOriginalObstacles();
+	if (std::strcmp(scenario, "all") == 0) publicReadsResolveTheirInputs();
 	std::puts("Building gradient invalidation regressions passed");
 	return 0;
 }

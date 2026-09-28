@@ -122,6 +122,10 @@ retains its bucket queue and, for weighted swimming, a snapshot of water costs.
 Obstacles remain frozen in the initialized field. Queries finish a whole cost
 layer, including equal-cost neighbors needed for movement sidesteps. An unknown
 cell requires exhausting the search before it can be reported as unreachable.
+The public `buildingGradient` API always completes the field before returning an
+array. Point-distance and movement queries resolve internally; callers do not
+receive partial arrays or need a separate resolve call. Preparing a field applies
+the existing refresh/use policy, while reading a prepared field only extends it.
 The queues share the eager solver's expansion kernel and are freed with their
 field, including the existing idle-field eviction; no separate cache is added.
 

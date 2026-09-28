@@ -288,6 +288,9 @@ scenarios.
 
 ## Building gradient invalidation regression
 
+The building invalidation harness also checks that public distance and movement
+queries resolve their own inputs and that the array API returns a complete field.
+
 Lazy building propagation is opt-in. Build `path-gradient-test` and run
 `PathGradientHarness` from your native build directory. Its independent heap oracle
 covers all seven swim classes, paused water snapshots, equal-cost movement neighbors,
