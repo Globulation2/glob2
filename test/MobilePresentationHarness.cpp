@@ -30,8 +30,8 @@ struct MobilePresentationHarness
 	static void safeAreaScreens()
 	{
 		auto *gfx = globalContainer->gfx;
-		for (auto [width, height] : {std::pair{320, 568}, std::pair{568, 320},
-									std::pair{768, 1024}, std::pair{1024, 768}})
+		for (auto [width, height] :
+			 {std::pair{320, 568}, std::pair{568, 320}, std::pair{768, 1024}, std::pair{1024, 768}})
 		{
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
 			SDL_Event resize{};
@@ -44,9 +44,8 @@ struct MobilePresentationHarness
 				const auto safe = GAGCore::mobileDialogSafe(gfx);
 				auto contained = [&](SDL_Rect r)
 				{
-					return r.x >= safe.x && r.y >= safe.y &&
-						r.x + r.w <= safe.x + safe.w + 1 &&
-						r.y + r.h <= safe.y + safe.h + 1;
+					return r.x >= safe.x && r.y >= safe.y && r.x + r.w <= safe.x + safe.w + 1 &&
+						   r.y + r.h <= safe.y + safe.h + 1;
 				};
 				for (const auto &hit : ui->hits)
 				{
@@ -56,25 +55,30 @@ struct MobilePresentationHarness
 					{
 						SDL_Rect visible{};
 						if (SDL_IntersectRect(&hit.box, &hit.clip, &visible))
-							require(contained(visible), "Visible scroll content overlaps a platform gutter");
+							require(contained(visible),
+									"Visible scroll content overlaps a platform gutter");
 					}
 				}
 				ui->popup.anchor = {int(safe.x + safe.w) - 100, int(safe.y + safe.h) - 50, 80, 48};
-				ui->popup.options = {"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"};
+				ui->popup.options = {"One",  "Two", "Three", "Four",
+									 "Five", "Six", "Seven", "Eight"};
 				require(contained(ui->popupRect()), "Dropdown overlaps a platform gutter");
 			};
-			auto exercise = [&](std::unique_ptr<GAGGUI::Screen> screen, LobbyControls *ui,
-								const char *name)
+			auto exercise =
+				[&](std::unique_ptr<GAGGUI::Screen> screen, LobbyControls *ui, const char *name)
 			{
 				GAGGUI::ScreenStack stack(*gfx);
 				stack.push(std::move(screen));
-				for (const auto insets : {GAGCore::SafeInsets{}, GAGCore::SafeInsets{12, 24, 20, 48},
-										  GAGCore::SafeInsets{48, 12, 24, 20}})
+				for (const auto insets :
+					 {GAGCore::SafeInsets{}, GAGCore::SafeInsets{12, 24, 20, 48},
+					  GAGCore::SafeInsets{48, 12, 24, 20}})
 				{
 					GAGCore::mobileSafeInsetsForTesting = insets;
-					gfx->printScreen(std::string("safe-") + name + "-" +
-						std::to_string(width) + "x" + std::to_string(height) +
-						"-bottom" + std::to_string(int(insets.bottom)) + ".bmp");
+					gfx->printScreen(std::string("safe-") +
+									 std::to_string(GAGCore::Toolkit::getStringTable()->getLang()) +
+									 "-" + name + "-" + std::to_string(width) + "x" +
+									 std::to_string(height) + "-bottom" +
+									 std::to_string(int(insets.bottom)) + ".bmp");
 					stack.frame(SDL_GetTicks(), {});
 					verify(ui);
 				}
@@ -83,12 +87,14 @@ struct MobilePresentationHarness
 			request.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
 			request.wDec = request.hDec = 6;
 			request.nbTeams = 2;
-			auto picker = std::make_unique<LandscapePickerScreen>("Choose a landscape",
+			auto picker = std::make_unique<LandscapePickerScreen>(
+				"Choose a landscape",
 				std::vector<LandscapePickerScreen::Entry>{{"Landscape", request}}, 0);
 			auto *pickerControls = picker->controls;
 			exercise(std::move(picker), pickerControls, "landscape");
 			auto quality = std::make_unique<StartQualityScreen>(MapGeneration::StartQualityReport{},
-				std::vector<std::string>{}, std::vector<GAGCore::Color>{});
+																std::vector<std::string>{},
+																std::vector<GAGCore::Color>{});
 			auto *qualityControls = quality->controls;
 			exercise(std::move(quality), qualityControls, "quality");
 			GAGGUI::ScreenStack owner(*gfx);
@@ -104,31 +110,43 @@ struct MobilePresentationHarness
 				};
 				auto screen = std::make_unique<MenuFixture>();
 				auto *view = screen.get();
-				if (form) view->enablePhoneForm();
-				else view->enableResponsiveMenu("Menu");
+				if (form)
+					view->enablePhoneForm();
+				else
+					view->enableResponsiveMenu("Menu");
 				for (int i = 0; i < 3; ++i)
-					view->addWidget(new GAGGUI::TextButton(20, 60 + i * 50, 180, 40,
-						ALIGN_LEFT, ALIGN_TOP, "menu", "Continue", i));
+					view->addWidget(new GAGGUI::TextButton(20, 60 + i * 50, 180, 40, ALIGN_LEFT,
+														   ALIGN_TOP, "menu", "Continue", i));
 				stack.push(std::move(screen));
-				for (const auto insets : {GAGCore::SafeInsets{}, GAGCore::SafeInsets{24, 24, 24, 48}})
+				for (const auto insets :
+					 {GAGCore::SafeInsets{}, GAGCore::SafeInsets{24, 24, 24, 48}})
 				{
 					GAGCore::mobileSafeInsetsForTesting = insets;
 					stack.frame(SDL_GetTicks(), {});
 					const auto safe = GAGCore::mobileDialogSafe(gfx);
-					const auto bounds = form ? view->phoneForm->surfaceBounds : view->menuLayout.content;
+					const auto bounds =
+						form ? view->phoneForm->surfaceBounds : view->menuLayout.content;
 					require(bounds.x >= safe.x && bounds.y >= safe.y &&
-							bounds.x + bounds.w <= safe.x + safe.w + 1 &&
-							bounds.y + bounds.h <= safe.y + safe.h + 1,
+								bounds.x + bounds.w <= safe.x + safe.w + 1 &&
+								bounds.y + bounds.h <= safe.y + safe.h + 1,
 							"Shared menu/form surface overlaps a platform gutter");
 				}
 			}
 		}
 		GAGCore::mobileSafeInsetsForTesting.reset();
-		std::puts("PASS safe-area screens: selector, lobby, quality, dropdowns and live inset changes");
+		std::puts(
+			"PASS safe-area screens: selector, lobby, quality, dropdowns and live inset changes");
 	}
 	static void run()
 	{
-		safeAreaScreens();
+		auto *localeStrings = GAGCore::Toolkit::getStringTable();
+		const int savedLanguage = localeStrings->getLang();
+		for (const char *language : {"en", "de", "ja"})
+		{
+			localeStrings->setLang(localeStrings->getLangCode(language));
+			safeAreaScreens();
+		}
+		localeStrings->setLang(savedLanguage);
 		FrontendLayout compactTablet;
 		compactTablet.touch = true;
 		require(compactTablet.singleColumn(), "A narrow tablet must use a stacked setup flow");
@@ -157,9 +175,9 @@ struct MobilePresentationHarness
 		strings->setLang(originalLanguage);
 		auto *gfx = globalContainer->gfx;
 		Uint32 tick = SDL_GetTicks();
-        // Preview debounce deadlines use SDL's wall clock. Slow device drawing
-        // must not leave synthetic frame times behind those deadlines forever.
-        auto nextTick = [&]() { return tick = std::max(tick + 40, SDL_GetTicks()); };
+		// Preview debounce deadlines use SDL's wall clock. Slow device drawing
+		// must not leave synthetic frame times behind those deadlines forever.
+		auto nextTick = [&]() { return tick = std::max(tick + 40, SDL_GetTicks()); };
 		for (auto [width, height] :
 			 {std::pair{320, 568}, std::pair{568, 320}, std::pair{390, 844}, std::pair{844, 390}})
 		{
@@ -248,7 +266,7 @@ struct MobilePresentationHarness
 			{
 				require(row.rect.x >= panel.x && row.rect.x + row.rect.w <= panel.x + panel.w,
 						"Every dialog row stays inside its owning surface");
-				if (row.kind == 1)
+				if (row.kind == PhoneForm::RowKind::Button)
 					require(row.rect.h >= 48, "Dialog actions keep minimum touch height");
 			}
 			dialogPtr->endExecute(0);
@@ -538,6 +556,8 @@ int main()
 		settings.mute = true;
 		globalContainer->load();
 		require(SDLNet_Init() == 0, "SDL networking failed");
+		// A title bar would prevent tall phone fixtures fitting on a laptop display.
+		SDL_SetWindowBordered(SDL_GetWindowFromID(globalContainer->gfx->windowID()), SDL_FALSE);
 		MobilePresentationHarness::run();
 		delete globalContainer;
 		globalContainer = nullptr;

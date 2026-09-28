@@ -76,30 +76,48 @@ SDL_Event finger(Uint32 type, float x, float y, SDL_FingerID id = 1)
 // roomy touch rows can still select their old, tightly spaced desktop indices.
 void verifyTouchListRows(GAGCore::GraphicContext *gfx)
 {
-    struct ListScreen : GAGGUI::Screen {
-        void onAction(GAGGUI::Widget *,GAGGUI::Action,int,int) override {}
-    } screen;
-    auto *list=new GAGGUI::List(8,8,240,140,ALIGN_LEFT,ALIGN_TOP,"standard");
-    auto *checks=new GAGGUI::CheckList(8,160,240,140,ALIGN_LEFT,ALIGN_TOP,"standard",false);
-    for(const char *value:{"First","Second","Third"}) {list->addText(value);checks->addItem(value,false);}
-    list->setMinimumRowHeight(44);checks->setMinimumRowHeight(44);
-    screen.addWidget(list);screen.addWidget(checks);screen.beginExecution(gfx);screen.drawExecution();
-    SDL_Event click{};click.type=SDL_MOUSEBUTTONDOWN;click.button.button=SDL_BUTTON_LEFT;
-    click.button.x=100;click.button.y=8+44+20;screen.handleExecutionEvent(click);
-    require(list->getSelectionIndex()==1,"Touch list hit testing must use the displayed row height");
-    click.button.y=160+20;screen.handleExecutionEvent(click);
-    require(checks->isChecked(0),"Touch checklist must toggle from its whole row");
-    list->setMinimumRowHeight(0);screen.drawExecution();
-    click.button.y=8+GAGCore::Toolkit::getFont("standard")->getStringHeight(" ")+5;
-    screen.handleExecutionEvent(click);
-    require(list->getSelectionIndex()==1,"Default list row height must restore desktop hit testing");
+	struct ListScreen : GAGGUI::Screen
+	{
+		void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
+	} screen;
+	auto *list = new GAGGUI::List(8, 8, 240, 140, ALIGN_LEFT, ALIGN_TOP, "standard");
+	auto *checks =
+		new GAGGUI::CheckList(8, 160, 240, 140, ALIGN_LEFT, ALIGN_TOP, "standard", false);
+	for (const char *value : {"First", "Second", "Third"})
+	{
+		list->addText(value);
+		checks->addItem(value, false);
+	}
+	list->setMinimumRowHeight(44);
+	checks->setMinimumRowHeight(44);
+	screen.addWidget(list);
+	screen.addWidget(checks);
+	screen.beginExecution(gfx);
+	screen.drawExecution();
+	SDL_Event click{};
+	click.type = SDL_MOUSEBUTTONDOWN;
+	click.button.button = SDL_BUTTON_LEFT;
+	click.button.x = 100;
+	click.button.y = 8 + 44 + 20;
+	screen.handleExecutionEvent(click);
+	require(list->getSelectionIndex() == 1,
+			"Touch list hit testing must use the displayed row height");
+	click.button.y = 160 + 20;
+	screen.handleExecutionEvent(click);
+	require(checks->isChecked(0), "Touch checklist must toggle from its whole row");
+	list->setMinimumRowHeight(0);
+	screen.drawExecution();
+	click.button.y = 8 + GAGCore::Toolkit::getFont("standard")->getStringHeight(" ") + 5;
+	screen.handleExecutionEvent(click);
+	require(list->getSelectionIndex() == 1,
+			"Default list row height must restore desktop hit testing");
 }
 int main()
 {
 	if (!SDL_getenv("GLOB2_USER_DATA_DIR"))
 		return 2;
 	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	SDL_setenv("GLOB2_RESPONSIVE_UI", "1", 1);
+	SDL_setenv("GLOB2_MOBILE_UI", "1", 1);
 	try
 	{
 		globalContainer = new GlobalContainer("glob2-responsive-menu-test");
@@ -117,7 +135,7 @@ int main()
 		resize.type = SDL_WINDOWEVENT;
 		resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
 		GAGCore::GraphicContext::translateMouseEvent(&resize);
-        verifyTouchListRows(globalContainer->gfx);
+		verifyTouchListRows(globalContainer->gfx);
 		{
 			GAGGUI::ScreenStack stack(*globalContainer->gfx);
 			auto owned = std::make_unique<Menu>();
@@ -165,9 +183,9 @@ int main()
 			stack.push(std::move(child));
 			stack.frame(320, {});
 #ifdef GLOB2_MOBILE
-            // Native mobile expands the legacy canvas to the device aspect ratio.
-            require(globalContainer->gfx->getW() == 800 && globalContainer->gfx->getH() == 1420,
-                    "Legacy child must retain its minimum size and portrait aspect ratio");
+			// Native mobile expands the legacy canvas to the device aspect ratio.
+			require(globalContainer->gfx->getW() == 800 && globalContainer->gfx->getH() == 1420,
+					"Legacy child must retain its minimum size and portrait aspect ratio");
 #else
 			require(globalContainer->gfx->getW() == 800 && globalContainer->gfx->getH() == 600,
 					"Child needs legacy coordinates before initialization");
@@ -194,8 +212,8 @@ int main()
 		}
 		globalContainer->gfx->setResponsiveViewport(false);
 #ifdef GLOB2_MOBILE
-        require(globalContainer->gfx->getW() == 1065 && globalContainer->gfx->getH() == 600,
-                "Legacy viewport must preserve the landscape aspect ratio");
+		require(globalContainer->gfx->getW() == 1065 && globalContainer->gfx->getH() == 600,
+				"Legacy viewport must preserve the landscape aspect ratio");
 #else
 		require(globalContainer->gfx->getW() == 800 && globalContainer->gfx->getH() == 600,
 				"Legacy viewport was not restored");
