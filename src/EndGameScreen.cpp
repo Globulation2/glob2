@@ -544,7 +544,9 @@ void EndGameScreen::handleExecutionEvent(SDL_Event event)
 		}
 		else if (event.type == SDL_MOUSEMOTION)
 			statWidget->inspectScreenPoint(event.motion.x, event.motion.y);
-		else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+		else if (event.type == SDL_KEYDOWN &&
+				 (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_RETURN ||
+				  event.key.keysym.sym == SDLK_KP_ENTER))
 			endExecute(QUIT);
 		return;
 	}

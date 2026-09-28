@@ -1464,7 +1464,11 @@ public:
 		  view->activateResultControl(101);
 		  require(view->expandedChart, "Chart expansion is available");
 		  stack.frame(SDL_GetTicks(), {});
-		  view->endExecute(0);
+		  // Enter confirms a metric while its picker is open (checked above),
+		  // but retains the desktop finish shortcut on the results screen itself.
+		  key.key.keysym.sym = SDLK_RETURN;
+		  view->handleExecutionEvent(key);
+		  require(!view->isExecutionRunning(), "Enter closes results after chart interaction");
 		  stack.frame(SDL_GetTicks(), {});
 	  }
 
