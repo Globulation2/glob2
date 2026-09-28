@@ -192,6 +192,18 @@ on device screenshots: a density-1 emulator can hide an enlarged-glyph defect.
 `GameGUITouchHarness` checks first-draw resolution, stable metrics, offscreen text
 and cache reuse under alternating transforms.
 
+## App icons
+
+Both mobile packages use the canonical blue Glob artwork from
+`data/icons/glob2-icon-128x128.png`, on the in-game purple background. Android
+ships density-specific legacy icons and a padded adaptive foreground; iOS ships
+an opaque iPhone/iPad AppIcon asset catalog, compiled by Xcode into the bundle.
+The canonical source is 128 pixels; larger sizes are resampled from that source.
+
+The generated assets are checked in, so normal builds need no image tooling.
+After changing the canonical source, run `python3 mobile/icons.py` with Pillow
+installed and review both the adaptive foreground and opaque icon before committing.
+
 ## Android
 
 Install Python, SCons, Git, make, autotools and pkg-config. Bootstrap the pinned
