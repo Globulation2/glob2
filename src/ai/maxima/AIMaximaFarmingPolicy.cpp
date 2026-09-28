@@ -109,43 +109,26 @@ namespace
 			&& cell.resource.type==NO_RES_TYPE && cell.building==NOGBID;
 	}
 
-	std::vector<Uint8> waterward_exposure(Map* map, Gradient& water_gradient)
+	// Close one-cell harvest gaps before identifying the outer farm boundary.
+	// Otherwise routine harvesting would turn the entire interior into an edge.
+	std::vector<Uint8> wheat_farm_exterior(Map* map)
 	{
 		const int w=map->getW(), h=map->getH();
-		std::vector<Uint8> exposed(w*h, 0);
-		std::vector<int> queue;
-		queue.reserve(w*h);
-		for(int y=0; y<h; ++y)
-			for(int x=0; x<w; ++x)
-				if(map->isWater(x, y))
-				{
-					exposed[y*w+x]=1;
-					queue.push_back(y*w+x);
-				}
-		// Reverse a strictly waterward route through resource-free terrain.
-		// A harvested hole behind the live farm cannot borrow the water
-		// gradient through those crops and masquerade as its outer boundary.
-		for(size_t head=0; head<queue.size(); ++head)
+		std::vector<Uint8> dilated(w*h, 0), exterior(w*h, 0);
+		for(int y=0; y<h; ++y) for(int x=0; x<w; ++x)
 		{
-			const int x=queue[head]%w, y=queue[head]/w;
-			const int distance=water_gradient.get_height(x, y);
-			for(int dy=-1; dy<=1; ++dy)
-				for(int dx=-1; dx<=1; ++dx)
-				{
-					if(!dx && !dy) continue;
-					const int nx=(x+dx+w)%w, ny=(y+dy+h)%h;
-					const int next=ny*w+nx;
-					const Tile& cell=map->getTile(nx, ny);
-					if(!exposed[next] && cell.resource.type==NO_RES_TYPE
-					   && cell.building==NOGBID
-					   && water_gradient.get_height(nx, ny)>distance)
-					{
-						exposed[next]=1;
-						queue.push_back(next);
-					}
-				}
+			if(map->getResource(x,y).type!=WHEAT) continue;
+			for(int dy=-1; dy<=1; ++dy) for(int dx=-1; dx<=1; ++dx)
+				dilated[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)]=1;
 		}
-		return exposed;
+		for(int y=0; y<h; ++y) for(int x=0; x<w; ++x)
+		{
+			bool inside=true;
+			for(int dy=-1; dy<=1; ++dy) for(int dx=-1; dx<=1; ++dx)
+				inside=inside && dilated[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)];
+			exterior[y*w+x]=!inside;
+		}
+		return exterior;
 	}
 
 	///Semantic roles a single resource tile can play in the shared wheat/wood
@@ -168,8 +151,8 @@ namespace
 	};
 
 	FarmTileClassification classify_farm_tile(MapInfo& mi, Map* map,
-		Gradient& water_gradient, const Farming::ExactFertilityCache& fertility_cache,
-		const std::vector<Uint8>& water_exposure,
+		const Farming::ExactFertilityCache& fertility_cache,
+		const std::vector<Uint8>& wheat_exterior,
 		bool shoreline_backed, int x, int y, int resource_type, Uint32 minimum_fertility)
 	{
 		FarmTileClassification pattern;
@@ -200,7 +183,8 @@ namespace
 				}
 			// Protection follows the expansion lattice only. A shoreline run
 			// must stay porous by construction; it is never a sealed contour.
-			pattern.frontier=adjacent_resource && expansion_lattice;
+			pattern.frontier=adjacent_resource && expansion_lattice
+				&& (resource_type!=WHEAT || wheat_exterior[index] || seed_lattice);
 		}
 		if(resource && fertile)
 		{
@@ -210,7 +194,9 @@ namespace
 					if(!dx && !dy) continue;
 					const Tile& neighbor=map->getTile(x+dx, y+dy);
 					const bool eligible=is_empty_growth_cell(neighbor)
-						&& fertility_cache.at(x+dx, y+dy)>=minimum_fertility;
+						&& fertility_cache.at(x+dx, y+dy)>=minimum_fertility
+						&& (resource_type!=WHEAT
+							|| wheat_exterior[map->normalizeY(y+dy)*w+map->normalizeX(x+dx)]);
 					pattern.edge_candidate=pattern.edge_candidate || eligible;
 				}
 			pattern.edge=pattern.edge_candidate && expansion_lattice;
@@ -549,20 +535,27 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& echo, bool afte
 		{
 			const int index=queue[head],x=index%w,y=index/w;
 			const Tile& current=map->getTile(x,y);
+			const bool current_farm_area=after_harvest
+				&& index<int(applied_farm_protection_mask.size())
+				&& applied_farm_protection_mask[index];
 			if(current.building==NOGBID && (current.resource.type==NO_RES_TYPE
+			   || current_farm_area
 			   || (after_harvest && (current.resource.type==WOOD || current.resource.type==WHEAT))))
 				reachable[index]=1;
 			for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
 			{
 				const int nx=map->normalizeX(x+dx),ny=map->normalizeY(y+dy),next=ny*w+nx;
 				const Tile& tile=map->getTile(nx,ny);
+				const bool farm_area=after_harvest
+					&& next<int(applied_farm_protection_mask.size())
+					&& applied_farm_protection_mask[next];
 				if(visited[next]||tile.building!=NOGBID
-				   ||(tile.resource.type!=NO_RES_TYPE && !(after_harvest
+				   ||(tile.resource.type!=NO_RES_TYPE && !farm_area && !(after_harvest
 				      && (tile.resource.type==WOOD || tile.resource.type==WHEAT)))
 				   ||(!swimming&&map->isWater(nx,ny))
 				   ||!map->isMapDiscovered(nx,ny,echo.player->team->allies)
 				   ||(map->isForbidden(nx,ny,echo.player->team->me)
-				      &&!development_planner.isCirculationReserved(next)))continue;
+				      && !farm_area && !development_planner.isCirculationReserved(next)))continue;
 				visited[next]=1;queue.push_back(next);
 			}
 		}
@@ -1024,10 +1017,16 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& echo) const
 			&& (cell.resource.type==NO_RES_TYPE || cell.resource.type==WOOD
 				|| cell.resource.type==WHEAT);
 	};
+	auto externally_forbidden=[&](int i)
+	{
+		return map->isForbidden(i%w,i/w,echo.player->team->me)
+			&& !applied_farm_protection_mask[i];
+	};
 	std::vector<int> candidates;
 	for(int i=0;i<w*h;++i)
 		if(eligible(i) && map->isResourceTakeable(i%w,i/w,WOOD)
-		   && fertility->at(i%w,i/w)>0) candidates.push_back(i);
+		   && !externally_forbidden(i) && fertility->at(i%w,i/w)>0)
+			candidates.push_back(i);
 	// Fixed terrain scores avoid moving the reserve on every harvest or refill.
 	// A better candidate must already contain live wood before replacing one.
 	std::sort(candidates.begin(),candidates.end(),[&](int a,int b) {
@@ -1054,7 +1053,8 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& echo) const
 			const int x=map->normalizeX(seed%w+dx),y=map->normalizeY(seed/w+dy),i=y*w+x;
 			// Keep harvest outlets off the seed lattice. This also prevents
 			// an outlet growing wood from displacing its own aligned donor.
-			if(Farming::isExpansionCell(x,y) || reserve.cells[i] || !eligible(i)) continue;
+			if(Farming::isExpansionCell(x,y) || reserve.cells[i]
+			   || !eligible(i) || externally_forbidden(i)) continue;
 			bool access=false;
 			for(int ay=-1;ay<=1;++ay)for(int ax=-1;ax<=1;++ax)
 				if(ax || ay)
@@ -1101,10 +1101,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 		&& proactive_clearing_flag>=0
 		&& echo.get_building_position(proactive_clearing_flag,clearing_x,clearing_y);
 
-	GradientInfo water_info;
-	water_info.add_source(new Entities::Water);
-	Gradient& water_gradient=echo.get_gradient_manager().get_gradient(water_info);
-	const std::vector<Uint8> water_exposure=waterward_exposure(map, water_gradient);
+	const std::vector<Uint8> wheat_exterior=wheat_farm_exterior(map);
 
 	// Record which empty tiles can extend a live wheat or wood resource. This
 	// avoids running the more expensive classifier for unrelated map cells.
@@ -1144,13 +1141,13 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 			   && (farming_shoreline_mask[index]
 				|| fertility_cache.at(x, y)>=
 				Uint32(budget.farming_wheat_fertility_min))))
-				wheat_role=classify_farm_tile(map_info, map, water_gradient,
-					fertility_cache, water_exposure, farming_shoreline_mask[index]!=0, x, y, WHEAT,
+				wheat_role=classify_farm_tile(map_info, map,
+					fertility_cache, wheat_exterior, farming_shoreline_mask[index]!=0, x, y, WHEAT,
 					Uint32(budget.farming_wheat_fertility_min));
 			if(wood || (empty_growth && (adjacent_resource_mask[index]&2)
 			   && fertility_cache.at(x, y)>=plan.wood_fertility))
-				wood_role=classify_farm_tile(map_info, map, water_gradient,
-					fertility_cache, water_exposure, farming_shoreline_mask[index]!=0, x, y, WOOD, plan.wood_fertility);
+				wood_role=classify_farm_tile(map_info, map,
+					fertility_cache, wheat_exterior, farming_shoreline_mask[index]!=0, x, y, WOOD, plan.wood_fertility);
 			const bool wheat_farm=wheat_role.protected_tile();
 			const bool wood_farm=wood_role.protected_tile();
 			if(!wheat && !wood && !wheat_farm && !wood_farm) continue;
@@ -1198,10 +1195,11 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 					map_info.get_ammount_resource(x, y), available, wheat);
 			}
 		}
-	// Empty frontier protection cannot regrow a patch after its last live seed
-	// is harvested. The sparse pattern may leave a boundary lattice seed open
-	// while that same seed suppresses its neighbor's local bootstrap. Retain one
-	// eligible anchor only in components with no protected live resource.
+	// Empty frontier protection cannot regrow a patch after its last live crop
+	// is harvested. The sparse pattern may leave a mature boundary cell open
+	// while that same cell suppresses its neighbor's local bootstrap. Select one
+	// eligible anchor only in components with no protected live resource; wheat
+	// anchors still pass through the maturity release step below.
 	std::vector<Uint8> visited(w*h,0);
 	for(int start=0;start<w*h;++start)
 	{
@@ -1290,7 +1288,7 @@ void Maxima::add_wheat_expansion_support(Context& echo, FarmProtectionPlan& plan
 		const Tile& cell=map->getTile(i%w,i/w);
 		const bool external=map->isForbidden(i%w,i/w,team)
 			&& !applied_farm_protection_mask[i];
-		// Harvestable crops are potential lanes; permanent resources are not.
+		// Harvestable crops are potential lanes; stone and algae are not.
 		open[i]=!plan.forbidden[i] && !external && !map->isWater(i%w,i/w)
 			&& cell.building==NOGBID && (cell.resource.type==NO_RES_TYPE
 				|| cell.resource.type==WHEAT || cell.resource.type==WOOD);
@@ -1310,8 +1308,8 @@ void Maxima::add_wheat_expansion_support(Context& echo, FarmProtectionPlan& plan
 			const int i=y*w+x;
 			const Tile& cell=map->getTile(x,y);
 			const bool live=cell.resource.type==WHEAT && cell.resource.amount>0;
-			// Odd/odd protection promises permanent seed survival. Temporary
-			// support must not establish a seed below the normal fertility cutoff.
+			// Odd/odd cells belong to the maturity layout. Extra support
+			// must not replace their normal eligibility and release rules.
 			if(Farming::isInteriorSeed(x,y) || plan.wood_reserve.cells[i] || plan.forbidden[i]
 			   || !open[i] || !nearby[i] || has_hard_farming_contract(i)
 			   || cell.groundUnit!=NOGUID || cell.airUnit!=NOGUID
@@ -1364,6 +1362,34 @@ void Maxima::add_wheat_expansion_support(Context& echo, FarmProtectionPlan& plan
 	}
 }
 
+void Maxima::apply_wheat_maturity(Context& echo, FarmProtectionPlan& plan,
+	const std::vector<Uint8>& layout)
+{
+	Map* map=echo.player->map;
+	const int w=map->getW(), h=map->getH();
+	MapInfo info(echo);
+	const auto nearby=farm_management_area(echo, budget.farming_management_radius);
+	for(int i=0; i<w*h; ++i)
+	{
+		const int x=i%w, y=i/w;
+		const Tile& cell=map->getTile(x,y);
+		if(!nearby[i] || !info.is_discovered(x,y)
+		   || has_hard_farming_contract(i) || plan.wood_reserve.cells[i]
+		   || cell.terrain>=16 || cell.building!=NOGBID
+		   || (map->isForbidden(x,y,echo.player->team->me) && !applied_farm_protection_mask[i])
+		   || (cell.resource.type!=WHEAT && cell.resource.type!=NO_RES_TYPE)) continue;
+		// An empty cell may instead be reserved for wood growth.
+		if(cell.resource.type==NO_RES_TYPE && plan.forbidden[i] && !plan.protected_wheat[i]) continue;
+		const bool live=cell.resource.type==WHEAT && cell.resource.amount>0;
+		const bool support=plan.protected_wheat[i] && !layout[i];
+		const bool target=!live && plan.protected_wheat[i];
+		const bool young=live && cell.resource.amount<4 && fertility_cache.at(x,y)>0;
+		// Layout cells are harvestable at maturity; empty targets and extra
+		// expansion support retain their separate, temporary obligations.
+		plan.forbidden[i]=plan.protected_wheat[i]=support || target || (young && layout[i]);
+	}
+}
+
 void Maxima::apply_farming_protection(Context& echo,
 	const FarmProtectionPlan& plan, int& added, int& removed)
 {
@@ -1375,17 +1401,11 @@ void Maxima::apply_farming_protection(Context& echo,
 	RemoveArea* removals=new RemoveArea(ForbiddenArea);
 	added=0;
 	removed=0;
-	int seed_revocations=0;
 	for(int index=0; index<size; ++index)
 	{
 		const int x=index%w;
 		const int y=index/w;
 		if(!map_info.is_discovered(x, y)) continue;
-		// Audit the temporal contract as well as today's mask. Building/path
-		// contracts are explicit overrides; harvesting a neighbor is not.
-		if(Farming::isInteriorSeed(x,y) && farm_protection_mask[index]
-		   && !plan.forbidden[index] && map->isResourceTakeable(x,y,WHEAT)
-		   && !has_hard_farming_contract(index)) ++seed_revocations;
 		const bool actual=map_info.is_forbidden_area(x, y);
 		if(plan.forbidden[index] && !actual)
 		{
@@ -1401,9 +1421,6 @@ void Maxima::apply_farming_protection(Context& echo,
 	}
 	if(added) echo.add_management_order(additions); else delete additions;
 	if(removed) echo.add_management_order(removals); else delete removals;
-	if(seed_revocations)
-		emit_telemetry(echo,"farming_seed_stability_violation",
-			"\tcount="+boost::lexical_cast<std::string>(seed_revocations));
 	farm_protection_mask=plan.forbidden;
 	wheat_farm_protection_mask=plan.protected_wheat;
 }
@@ -1422,7 +1439,7 @@ void Maxima::update_farming(Context& echo)
 	FarmProtectionPlan plan=build_farming_protection_plan(echo);
 	// Establish/expand farms near allied infrastructure, never around flags.
 	// Recompute proximity as buildings change, but retain established odd/odd
-	// wheat seeds after losing an anchor; distance must not cause seed churn.
+	// wheat cells after losing an anchor, matching the existing radius rule.
 	// This is an establishment limit, not an override for tactical clearing.
 	if(budget.farming_management_radius>0)
 	{
@@ -1442,7 +1459,9 @@ void Maxima::update_farming(Context& echo)
 		}
 	}
 
+	const auto wheat_layout=plan.protected_wheat;
 	add_wheat_expansion_support(echo, plan);
+	apply_wheat_maturity(echo, plan, wheat_layout);
 	resolve_wheat_invasion_clearing(echo, plan);
 	int added=0;
 	int removed=0;

@@ -38,16 +38,22 @@ using namespace AIMaximaRuntime;
 
 namespace
 {
+void setYoungResource(Map& map, int x, int y, int type)
+{
+    map.setResource(x,y,type,1);
+    map.getTile(x,y).resource.amount=1;
+}
+
 struct Fixture
 {
     Game game;
     Player player;
     std::unique_ptr<AIMaxima::Maxima> ai;
-    Fixture(): game(NULL)
+    Fixture(int team=0): game(NULL)
     {
         game.map.setSize(6,6,GRASS);game.map.setGame(&game);
-        game.addTeam();game.teams[0]->race.loadDefault();
-        player.setTeam(game.teams[0]);
+        for(int i=0;i<=team;++i){game.addTeam();game.teams[i]->race.loadDefault();}
+        player.setTeam(game.teams[team]);
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)
             game.map.setMapDiscovered(x,y,player.team->me);
         ai.reset(new AIMaxima::Maxima(&player));
@@ -65,8 +71,8 @@ void farmManagementRadius()
     auto* home=f.game.addBuilding(11,1,
         globalContainer->buildingsTypes.getTypeNum("inn",0,false),0);
     assert(home);
-    map.setResource(11,21,WHEAT,5);
-    map.setResource(11,23,WHEAT,5);
+    setYoungResource(map,11,21,WHEAT);
+    setYoungResource(map,11,23,WHEAT);
     ai.budget.farming_enabled=true;ai.budget.farming_protection_enabled=true;
     ai.budget.farming_management_radius=20;
     ai.budget.farming_wheat_fertility_min=3276;
@@ -99,7 +105,7 @@ void coastalWheatCrossesFertilityDips()
         ai.budget.farming_wood_firebreak_enabled=false;
         for(bool live:{false,true})
         {
-            if(live)map.setResource(11,21,resource,1);
+            if(live)setYoungResource(map,11,21,resource);
             ai.update_farming(ai.context);
             assert(ai.fertility_cache.at(11,21)<65536);
             assert(bool(ai.farm_protection_mask[21*64+11])==(resource==WHEAT));
@@ -120,8 +126,8 @@ void seedSurvival()
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
             map.getTile(x+offset,y).terrain=256;
         const int first=index(20,20),second=index(21,21),growth=index(22,20);
-        map.setResource(first%64,first/64,resource,1);
-        map.setResource(second%64,second/64,resource,1);
+        setYoungResource(map,first%64,first/64,resource);
+        setYoungResource(map,second%64,second/64,resource);
         ai.budget.farming_enabled=true;
         ai.budget.farming_protection_enabled=true;
         ai.budget.farming_wheat_fertility_min=3276;
@@ -132,7 +138,7 @@ void seedSurvival()
         assert(ai.farm_protection_mask[first]);
         assert(bool(ai.wheat_farm_protection_mask[first])==(resource==WHEAT));
         // Boundary growth keeps both the existing lattice seed and aligned edge.
-        map.setResource(growth%64,growth/64,resource,1);
+        setYoungResource(map,growth%64,growth/64,resource);
         ai.update_farming(ai.context);
         assert(ai.farm_protection_mask[growth]);
         assert(ai.farm_protection_mask[first]);
@@ -175,7 +181,7 @@ void initialFlagStaffing()
         if(workers==0)
         {
             Unit* worker=f.game.addUnit(21,20,0,WORKER,0,0,0,0);assert(worker);
-            f.game.map.setResource(22,20,WHEAT,1);
+            setYoungResource(f.game.map,22,20,WHEAT);
             f.game.map.buildingGradient(flag,0);
             // Even if discovery/management is delayed past a recruitment cycle,
             // the default broad resource selector cannot recruit a worker.
@@ -218,12 +224,12 @@ int applyAreaContracts(Fixture& f)
                 if(add->areaType==ForbiddenArea)
                 {
                     changes+=!map.isForbidden(cell.x,cell.y,f.player.team->me);
-                    map.addForbidden(cell.x,cell.y,0);
+                    map.addForbidden(cell.x,cell.y,f.player.team->teamNumber);
                 }
                 if(add->areaType==ClearingArea)
                 {
                     changes+=!map.isClearArea(cell.x,cell.y,f.player.team->me);
-                    map.addClearArea(cell.x,cell.y,0);
+                    map.addClearArea(cell.x,cell.y,f.player.team->teamNumber);
                 }
             }
         if(auto remove=std::dynamic_pointer_cast<Management::RemoveArea>(order))
@@ -232,7 +238,7 @@ int applyAreaContracts(Fixture& f)
                 if(remove->areaType==ForbiddenArea)
                 {
                     changes+=map.isForbidden(cell.x,cell.y,f.player.team->me);
-                    map.removeForbidden(cell.x,cell.y,0);
+                    map.removeForbidden(cell.x,cell.y,f.player.team->teamNumber);
                 }
                 if(remove->areaType==ClearingArea)
                 {
@@ -271,26 +277,33 @@ void temporaryExpansionSupport()
         const int target=index(20,20),other=index(20,18);
         // The donor sits on a narrow shoreline; access remains on the east.
         for(int y:{18,20}){int i=index(19,y);map.getTile(i%64,i/64).terrain=256;}
-        map.setResource(seed%64,seed/64,WHEAT,1);
+        setYoungResource(map,seed%64,seed/64,WHEAT);
         for(int y:{25,27,29,31})
         {
-            int i=index(21,y);map.setResource(i%64,i/64,WHEAT,1);
-            i=index(22,y);map.setResource(i%64,i/64,WHEAT,1);
+            int i=index(21,y);setYoungResource(map,i%64,i/64,WHEAT);
+            i=index(22,y);setYoungResource(map,i%64,i/64,WHEAT);
         }
         for(int i:{seed,support,target,other})map.getTile(i%64,i/64).canResourcesGrow=1;
-        if(live)map.setResource(support%64,support/64,WHEAT,1);
+        if(live)setYoungResource(map,support%64,support/64,WHEAT);
         configurePattern(f);
         ai.update_farming(ai.context);applyAreaContracts(f);
         assert(ai.farm_protection_mask[target] && ai.farm_protection_mask[other]);
         assert(ai.farm_protection_mask[support]);
         ai.update_farming(ai.context);assert(applyAreaContracts(f)==0);
+        if(live)
+        {
+            // A donor's expansion obligation outlives the maturity threshold.
+            map.getTile(support%64,support/64).resource.amount=4;
+            ai.update_farming(ai.context);applyAreaContracts(f);
+            assert(ai.farm_protection_mask[support]);
+        }
         // Intermediate wheat remains protected after it grows; a shared
         // support is released only when both targets have established wheat.
-        map.setResource(support%64,support/64,WHEAT,1);
-        map.setResource(target%64,target/64,WHEAT,1);
+        setYoungResource(map,support%64,support/64,WHEAT);
+        setYoungResource(map,target%64,target/64,WHEAT);
         ai.update_farming(ai.context);applyAreaContracts(f);
         assert(ai.farm_protection_mask[support]);
-        map.setResource(other%64,other/64,WHEAT,1);
+        setYoungResource(map,other%64,other/64,WHEAT);
         ai.update_farming(ai.context);applyAreaContracts(f);
         assert(!ai.farm_protection_mask[support]);
         assert(!map.isForbidden(support%64,support/64,f.player.team->me));
@@ -347,9 +360,9 @@ void woodReserveSurvivesWheatPincer()
         {int i=index(x,y);map.getTile(i%64,i/64).terrain=256;}
         const int seed=index(20,20),outlet=index(20,19),worker=index(21,18);
         for(int y=19;y<=21;++y)for(int x=19;x<=21;++x)
-        {int i=index(x,y);map.setResource(i%64,i/64,WHEAT,1);}
+        {int i=index(x,y);setYoungResource(map,i%64,i/64,WHEAT);}
         map.setNoResource(seed%64,seed/64,0);
-        map.setResource(seed%64,seed/64,WOOD,1);
+        setYoungResource(map,seed%64,seed/64,WOOD);
         map.setNoResource(outlet%64,outlet/64,0);
         for(int i:{seed,outlet})map.getTile(i%64,i/64).canResourcesGrow=1;
         assert(f.game.addUnit(worker%64,worker/64,0,WORKER,0,0,0,0));
@@ -360,6 +373,13 @@ void woodReserveSurvivesWheatPincer()
         ai.budget.farming_wood_firebreak_enabled=true;
         ai.strategy.farming.wood_firebreak_fertility_min_percent=0;
         ai.strategy.farming.wood_firebreak_fertility_max_percent=100;
+        ai.initialize_farming_cache(ai.context);
+        auto openReserve=ai.select_wood_reserve(ai.context);
+        assert(openReserve.cells[seed]==1 && openReserve.cells[outlet]==2);
+        map.addForbidden(outlet%64,outlet/64,f.player.team->teamNumber);
+        auto blockedOutlet=ai.select_wood_reserve(ai.context);
+        assert(blockedOutlet.cells[outlet]!=2);
+        map.removeForbidden(outlet%64,outlet/64,f.player.team->teamNumber);
         auto update=[&]() {
             ai.update_farming(ai.context);applyAreaContracts(f);
             ai.update_maintenance_clearing_areas(ai.context);applyAreaContracts(f);
@@ -405,7 +425,7 @@ void woodReserveSurvivesWheatPincer()
         // More eligible wood does not expand the reserve beyond two donors.
         for(int x:{24,26})
         {
-            int i=index(x,x);map.setResource(i%64,i/64,WOOD,1);
+            int i=index(x,x);setYoungResource(map,i%64,i/64,WOOD);
             map.getTile(i%64,i/64).canResourcesGrow=1;
             i=index(x,x-1);map.getTile(i%64,i/64).canResourcesGrow=1;
         }
@@ -421,6 +441,25 @@ void woodReserveSurvivesWheatPincer()
     }
 }
 
+void woodReserveSurvivesOwnFarmProtection()
+{
+    Fixture f;auto& ai=*f.ai;Map& map=f.game.map;
+    for(int y=0;y<64;++y)for(int x=0;x<12;++x)map.getTile(x,y).terrain=256;
+    const int seed=21*64+20;
+    setYoungResource(map,seed%64,seed/64,WOOD);
+    assert(f.game.addUnit(24,21,0,WORKER,0,0,0,0));
+    configurePattern(f);
+    ai.budget.farming_minimum_wood_fertility=1;
+    ai.budget.farming_wood_firebreak_enabled=false;
+    for(int cycle=0;cycle<4;++cycle)
+    {
+        ai.update_farming(ai.context);applyAreaContracts(f);
+        auto reserve=ai.select_wood_reserve(ai.context);
+        assert(reserve.seeds==1);
+        assert(reserve.cells[seed]==1);
+    }
+}
+
 void alignedPatternTransitions()
 {
     for(int resource:{WHEAT,WOOD}) for(int offset:{0,42})
@@ -430,7 +469,7 @@ void alignedPatternTransitions()
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
         {int i=index(x,y);map.getTile(i%64,i/64).terrain=256;}
         for(int y=18;y<=26;++y)for(int x=18;x<=26;++x)
-        {int i=index(x,y);map.setResource(i%64,i/64,resource,1);}
+        {int i=index(x,y);setYoungResource(map,i%64,i/64,resource);}
         configurePattern(f);
         const int seed=index(21,23),lane=index(21,22),hole=index(20,22);
         ai.update_farming(ai.context);applyAreaContracts(f);
@@ -443,10 +482,58 @@ void alignedPatternTransitions()
             assert(ai.farm_protection_mask[seed] && !ai.farm_protection_mask[lane]);
             ai.update_farming(ai.context);
             assert(applyAreaContracts(f)==0);
-            map.setResource(hole%64,hole/64,resource,1);
+            setYoungResource(map,hole%64,hole/64,resource);
             ai.update_farming(ai.context);applyAreaContracts(f);
             assert(ai.farm_protection_mask==filled);
         }
+    }
+}
+
+// Exercise the actual forbidden-area orders, threshold transitions, both team
+// masks and wrapped farms. A harvested interior hole must not create dense seeds.
+void wheatMaturityLayout()
+{
+    for(int team:{0,1}) for(int offset:{0,44})
+    {
+        Fixture f(team);auto& ai=*f.ai;Map& map=f.game.map;
+        auto index=[&](int x,int y){return map.normalizeY(y+offset)*64+map.normalizeX(x+offset);};
+        for(int y=0;y<64;++y)for(int x=0;x<64;++x)map.getTile(x,y).canResourcesGrow=1;
+        for(int y=0;y<64;++y)for(int x=0;x<12;++x)
+        {int i=index(x,y);map.getTile(i%64,i/64).terrain=256;}
+        for(int y=18;y<=26;++y)for(int x=18;x<=26;++x)
+        {int i=index(x,y);setYoungResource(map,i%64,i/64,WHEAT);}
+        configurePattern(f);
+        ai.budget.food_emergency=true; // isolate layout from supplemental support
+        const int seed=index(21,23),interior=index(20,22),edge=index(18,22),lane=index(21,22);
+        for(int amount:{1,2,3,4,5,2})
+        {
+            for(int i:{seed,interior,edge,lane})
+            {setYoungResource(map,i%64,i/64,WHEAT);map.getTile(i%64,i/64).resource.amount=amount;}
+            ai.update_farming(ai.context);applyAreaContracts(f);
+            for(int i:{seed,edge})
+            {
+                assert(bool(map.isForbidden(i%64,i/64,f.player.team->me))==(amount<4));
+            }
+            for(int i:{interior,lane})assert(!map.isForbidden(i%64,i/64,f.player.team->me));
+            ai.update_farming(ai.context);assert(applyAreaContracts(f)==0);
+        }
+        map.setNoResource(interior%64,interior/64,0);
+        ai.update_farming(ai.context);applyAreaContracts(f);
+        assert(!ai.farm_protection_mask[interior]);
+        setYoungResource(map,interior%64,interior/64,WHEAT);
+        ai.update_farming(ai.context);applyAreaContracts(f);
+        assert(!ai.farm_protection_mask[interior]);
+        // A mature seed can be emptied. New young wheat at its position is
+        // protected again, rather than permanently revoking the layout cell.
+        setYoungResource(map,seed%64,seed/64,WHEAT);
+        map.getTile(seed%64,seed/64).resource.amount=4;
+        ai.update_farming(ai.context);applyAreaContracts(f);
+        assert(!map.isForbidden(seed%64,seed/64,f.player.team->me));
+        map.setNoResource(seed%64,seed/64,0);
+        ai.update_farming(ai.context);applyAreaContracts(f);
+        setYoungResource(map,seed%64,seed/64,WHEAT);
+        ai.update_farming(ai.context);applyAreaContracts(f);
+        assert(map.isForbidden(seed%64,seed/64,f.player.team->me));
     }
 }
 
@@ -485,8 +572,8 @@ void maintenanceProtectionAgreement()
         for(int y=0;y<64;++y)for(int x=0;x<12;++x)
         {int i=index(x,y);map.getTile(i%64,i/64).terrain=256;}
         const int wheat=index(18,21),wood=index(18,22);
-        map.setResource(wheat%64,wheat/64,WHEAT,1);
-        map.setResource(wood%64,wood/64,WOOD,1);
+        setYoungResource(map,wheat%64,wheat/64,WHEAT);
+        setYoungResource(map,wood%64,wood/64,WOOD);
         configurePattern(f);
         ai.budget.farming_maintenance_clearing_enabled=true;
         ai.budget.farming_wheat_invasion_clearing_enabled=true;
@@ -529,7 +616,7 @@ void archipelagoHarvestDoesNotSealWheat()
     ai.budget.farming_wheat_fertility_min=3276;
     for(int round=0;round<8;++round) {
         if(round%2)game.map.setNoResource(48,97,1);
-        else game.map.setResource(48,97,WHEAT,1);
+        else setYoungResource(game.map,48,97,WHEAT);
         ai.update_farming(ai.context);
         for(int patch=0;patch<2;++patch) {
             int wheat=0,open=0;
@@ -543,7 +630,7 @@ void archipelagoHarvestDoesNotSealWheat()
     }
 }
 
-void seedStabilityAcrossMaps()
+void youngSeedStabilityAcrossMaps()
 {
     const char* maps[]={"Holiday_Island_2","Archipelago","Isles","Migration",
         "Garden_3","A_big_pond","Wild_River","Sand_River"};
@@ -557,6 +644,10 @@ void seedStabilityAcrossMaps()
         ai.budget.farming_wheat_fertility_min=3276;
         ai.budget.farming_economic_envelope_radius=20;
         const int w=game.map.getW(),h=game.map.getH();
+        // Immature selected cells still survive neighboring harvests. Mature
+        // cells intentionally lose protection under the new policy.
+        for(int y=0;y<h;++y)for(int x=0;x<w;++x)
+            if(game.map.isResourceTakeable(x,y,WHEAT))setYoungResource(game.map,x,y,WHEAT);
         ai.update_farming(ai.context);
         std::vector<int> seeds;
         for(int y=1;y<h;y+=2)for(int x=1;x<w;x+=2)
@@ -575,7 +666,7 @@ void seedStabilityAcrossMaps()
                 int y=game.map.normalizeY(seed/w+((round/3)%3)-1);
                 const Tile& c=game.map.getTile(x,y);
                 if(c.terrain<16&&c.building==NOGBID&&c.resource.type==NO_RES_TYPE)
-                    game.map.setResource(x,y,WHEAT,1);
+                    setYoungResource(game.map,x,y,WHEAT);
             }
             ai.timer+=64;ai.update_farming(ai.context);
             for(int seed:seeds) {
@@ -587,7 +678,7 @@ void seedStabilityAcrossMaps()
     }
 }
 
-void farmingIgnoresDiscovery()
+void farmingRespectsDiscovery()
 {
     Game game(NULL);
     BinaryInputStream input(new FileStreamBackend(fopen("maps/Archipelago.map","rb")));
@@ -602,11 +693,22 @@ void farmingIgnoresDiscovery()
     ai.update_farming(ai.context);
     const auto full=ai.farm_protection_mask;
     assert(std::count(full.begin(),full.end(),Uint8(1))>0);
+    ai.context.managementOrders.clear();
     game.map.unsetMapDiscovered();
     for(int y=80;y<96;++y)for(int x=24;x<40;++x)
         game.map.setMapDiscovered(x,y,player.team->me);
     ai.update_farming(ai.context);
-    assert(ai.farm_protection_mask==full);
+    // Maturity decisions and area orders apply only to discovered cells.
+    // Undiscovered classification is provisional and must not issue orders.
+    for(int y=80;y<96;++y)for(int x=24;x<40;++x)
+        assert(ai.farm_protection_mask[y*game.map.getW()+x]==full[y*game.map.getW()+x]);
+    for(const auto& order:ai.context.managementOrders)
+    {
+        if(auto add=std::dynamic_pointer_cast<Management::AddArea>(order))
+            for(const auto& cell:add->locations)assert(game.map.isMapDiscovered(cell.x,cell.y,player.team->me));
+        if(auto remove=std::dynamic_pointer_cast<Management::RemoveArea>(order))
+            for(const auto& cell:remove->locations)assert(game.map.isMapDiscovered(cell.x,cell.y,player.team->me));
+    }
 }
 
 int main()
@@ -615,10 +717,11 @@ int main()
     container.buildingsTypes.init();
     IntBuildingType::init();
 
-    firebreakManagementRadius();farmManagementRadius();coastalWheatCrossesFertilityDips();
+    wheatMaturityLayout();firebreakManagementRadius();farmManagementRadius();coastalWheatCrossesFertilityDips();
         seedSurvival();initialFlagStaffing();
-    woodReserveSurvivesWheatPincer();temporaryExpansionSupport();alignedPatternTransitions();maintenanceProtectionAgreement();
+    woodReserveSurvivesWheatPincer();woodReserveSurvivesOwnFarmProtection();
+        temporaryExpansionSupport();alignedPatternTransitions();maintenanceProtectionAgreement();
 
-    archipelagoHarvestDoesNotSealWheat();seedStabilityAcrossMaps();farmingIgnoresDiscovery();
+    archipelagoHarvestDoesNotSealWheat();youngSeedStabilityAcrossMaps();farmingRespectsDiscovery();
     std::cout<<"aligned farming, maintenance agreement, seed survival and flag staffing passed\n";
 }
