@@ -100,6 +100,12 @@ baselines. YOG distributes the host-selected map bytes to every player.
 
 ## Automated tests
 
+Build the native client and `transport-test` target before running the full
+suite. Editor generation tests read the native client's `--headless-catalog`
+to find named landscapes in the picker; this prevents additions to the catalog
+from silently changing which generator a test exercises. UI actions still use
+real pointer and keyboard events.
+
 The maintained Playwright suite starts an isolated local HTTP server and uses
 fresh browser profiles for every test. It covers page startup, a custom match,
 pause over multiple observed engine frames, save persistence across reload,

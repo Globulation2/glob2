@@ -14,23 +14,40 @@ exports.campaignFrame = page => {
 };
 exports.clickCampaignFooter = (page,save) => {
   const f=exports.campaignFrame(page);
-  return page.locator('#canvas').click({position:{x:f.x+f.w*(save?.75:.25),y:f.footer+24},delay:80});
+  return page.locator('#canvas').click({position:{x:f.x+f.w*(save ? 0.75 : 0.25),y:f.footer+24},delay:80});
 };
 
 // The editor's generator chooser now uses the shared landscape catalog. Drive
 // its real sort/navigation controls; the old form's list coordinates no longer
-// select a generator. These two alphabetical positions match the current catalog.
+// select a generator. Read the native catalog so new generators cannot silently
+// shift a fixture onto another landscape. Only pointer/key events change the UI.
+let landscapeNames;
+function editorLandscapeNames() {
+  if (!landscapeNames) {
+    const path = require('node:path');
+    const platform = require('node:os').platform();
+    const root = path.resolve(__dirname, '../..');
+    const toolchain = platform === 'win32' ? 'windows' : platform;
+    const binary = path.join(root, `build/${toolchain}/client/release/src/glob2${platform === 'win32' ? '.exe' : ''}`);
+    const catalog = JSON.parse(require('node:child_process').execFileSync(
+      binary, ['--headless-catalog'], {cwd:root, encoding:'utf8', maxBuffer:8*1024*1024}));
+    landscapeNames = catalog.generators.filter(entry => entry.method !== 0)
+      .map(entry => entry.nameKey).sort();
+  }
+  return landscapeNames;
+}
 exports.chooseEditorLandscape = async (page,name) => {
   const {expect}=require('@playwright/test');
   const canvas=page.locator('#canvas');
   const screen=()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen);
-  const index={'concrete islands':13,'swamp':53}[name];
-  if(index===undefined) throw new Error('Unknown editor landscape fixture: '+name);
+  const names=editorLandscapeNames();
+  const index=names.findIndex(label=>label.toLowerCase()===name.toLowerCase());
+  if(index<0) throw new Error('Unknown editor landscape fixture: '+name);
   // Browse is the first field on the default generated-map preview card.
   await canvas.click({position:{x:830,y:304},delay:80});
   await expect.poll(screen).toContain('LandscapePickerScreen');
   await canvas.click({position:{x:168,y:100},delay:80}); // Alphabetical.
-  for(let i=0;i<70;++i) await canvas.press('ArrowLeft');
+  for(let i=0;i<names.length;++i) await canvas.press('ArrowLeft');
   for(let i=0;i<index;++i) await canvas.press('ArrowRight');
   // Confirmation is disabled while the selected preview is being generated.
   await expect(async()=>{

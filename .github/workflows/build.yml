@@ -934,7 +934,9 @@ jobs:
           cache-dependency-path: browser/package-lock.json
       - name: Build transport integration fixture
         run: |
-          scons release=1 transport-test -j$(nproc)
+          # The browser's editor tests read the native generator catalog, then
+          # navigate the visible picker with real keyboard/pointer events.
+          scons release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)
           python3 test/run-network-transport-tests.py
           python3 -m unittest discover -s tests/transport -v
       - name: Test browser lifecycle, renderers and multiplayer

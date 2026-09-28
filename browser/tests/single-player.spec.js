@@ -372,6 +372,8 @@ test('cancelling an editor replacement preserves edits and a completed load repl
 
 for (const terrain of [{name:'swamp'}, {name:'concrete islands'}]) {
 test(`map generation can be cancelled before retrying (${terrain.name})`, async ({page},info) => {
+  // Two visits generate the full preview catalog on the browser's UI thread.
+  test.setTimeout(180000);
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'editor');
