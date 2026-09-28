@@ -1,0 +1,178 @@
+[
+  {
+    "case": "arena256-2",
+    "pairs": 4,
+    "cpu_saved_percent": 0.5339825969485901,
+    "ci95": [
+      0.1671505100010462,
+      0.8994667730561456
+    ],
+    "pair_savings": [
+      0.5745281668693369,
+      0.7238471329807594,
+      0.2007008739148053,
+      0.6360549763355205
+    ],
+    "before_cpu_s": 9.013834,
+    "after_cpu_s": 8.96572925,
+    "scope_ms": {
+      "before": {
+        "gradient.building": 230.2765095,
+        "gradient.building_resume": 300.92841675
+      },
+      "after": {
+        "gradient.building": 186.19529475000002,
+        "gradient.building_resume": 301.20017674999997
+      }
+    },
+    "scope_calls_match": true,
+    "initialization": {
+      "0": {
+        "before_ms": 201.83675649999998,
+        "after_ms": 134.132227,
+        "saved_percent": 33.54420209383417,
+        "before_fill_ms": 2.074185
+      },
+      "1": {
+        "before_ms": 0.0,
+        "after_ms": 0.0,
+        "saved_percent": null,
+        "before_fill_ms": 0.0
+      }
+    },
+    "counts_match": true,
+    "all_initialization_saved_percent": 33.54420209383419
+  },
+  {
+    "case": "arena128-2",
+    "pairs": 4,
+    "cpu_saved_percent": 1.6867568155540136,
+    "ci95": [
+      1.1515334896019969,
+      2.219082129844796
+    ],
+    "pair_savings": [
+      2.0477351365463248,
+      1.6935621064306572,
+      1.7660921051925182,
+      1.2379198721991114
+    ],
+    "before_cpu_s": 2.982912,
+    "after_cpu_s": 2.93259225,
+    "scope_ms": {
+      "before": {
+        "gradient.building": 108.92589,
+        "gradient.building_resume": 145.39359025
+      },
+      "after": {
+        "gradient.building": 88.5247235,
+        "gradient.building_resume": 144.3441505
+      }
+    },
+    "scope_calls_match": true,
+    "initialization": {
+      "0": {
+        "before_ms": 85.0539305,
+        "after_ms": 54.1578265,
+        "saved_percent": 36.3253100925183,
+        "before_fill_ms": 0.7155994999999999
+      },
+      "1": {
+        "before_ms": 10.8661055,
+        "after_ms": 10.703219,
+        "saved_percent": 1.4990329331884267,
+        "before_fill_ms": 0.08870049999999999
+      }
+    },
+    "counts_match": true,
+    "all_initialization_saved_percent": 32.38008636694006
+  },
+  {
+    "case": "lakes256-4",
+    "pairs": 4,
+    "cpu_saved_percent": 1.5189720211291835,
+    "ci95": [
+      1.068518565026122,
+      1.9673744787717773
+    ],
+    "pair_savings": [
+      1.6904846712776145,
+      1.2544963845486756,
+      1.304311601083319,
+      1.8253801349262244
+    ],
+    "before_cpu_s": 13.76237,
+    "after_cpu_s": 13.55333125,
+    "scope_ms": {
+      "before": {
+        "gradient.building": 1224.11273925,
+        "gradient.building_resume": 944.56718175
+      },
+      "after": {
+        "gradient.building": 1036.30387825,
+        "gradient.building_resume": 942.37264575
+      }
+    },
+    "scope_calls_match": true,
+    "initialization": {
+      "0": {
+        "before_ms": 969.8151705,
+        "after_ms": 664.3186075000001,
+        "saved_percent": 31.50049332003102,
+        "before_fill_ms": 10.830534499999999
+      },
+      "1": {
+        "before_ms": 107.1126845,
+        "after_ms": 95.8459475,
+        "saved_percent": 10.518583352282619,
+        "before_fill_ms": 1.2126964999999998
+      }
+    },
+    "counts_match": true,
+    "all_initialization_saved_percent": 29.413604498139755
+  },
+  {
+    "case": "arena512-4",
+    "pairs": 4,
+    "cpu_saved_percent": 1.4204061544602742,
+    "ci95": [
+      0.819114207583227,
+      2.0180527214590294
+    ],
+    "pair_savings": [
+      1.9490729023125875,
+      1.1867384825325011,
+      1.1192487675380725,
+      1.4244061398000496
+    ],
+    "before_cpu_s": 42.2806935,
+    "after_cpu_s": 41.67963325,
+    "scope_ms": {
+      "before": {
+        "gradient.building": 2605.07607925,
+        "gradient.building_resume": 3141.146233
+      },
+      "after": {
+        "gradient.building": 2161.6310795,
+        "gradient.building_resume": 3147.59795625
+      }
+    },
+    "scope_calls_match": true,
+    "initialization": {
+      "0": {
+        "before_ms": 2156.2875704999997,
+        "after_ms": 1475.61823,
+        "saved_percent": 31.566723743724324,
+        "before_fill_ms": 31.7056095
+      },
+      "1": {
+        "before_ms": 74.85794200000001,
+        "after_ms": 65.09469849999999,
+        "saved_percent": 13.042361624101307,
+        "before_fill_ms": 1.189938
+      }
+    },
+    "counts_match": true,
+    "all_initialization_saved_percent": 30.945206403251124
+  }
+]

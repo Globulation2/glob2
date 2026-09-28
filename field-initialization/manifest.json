@@ -1,0 +1,194 @@
+{
+  "package.py": {
+    "bytes": 1828,
+    "sha256": "13e1a55f09cad29ee762732c910a6065865d78d4d2159b5198c34d4fafee92fa"
+  },
+  "tests-driver.log": {
+    "bytes": 322,
+    "sha256": "edf87630d311ffba773f54ca75a79a23faf357c17bb0dd71424aa12596fe1601"
+  },
+  "lakes256-4-validation.tar.gz": {
+    "bytes": 58450443,
+    "sha256": "53769e8ab3f8dd72b092087120a6f041253910b2f2e54132e5d4c10c6905592b"
+  },
+  "build-restored.log": {
+    "bytes": 502601,
+    "sha256": "330be69d56ef2ce3c6c71003b7d0e08b51508c0af1874f5de33c1fa3dd760c03"
+  },
+  "SavegameSafetyHarness-lazy.log": {
+    "bytes": 7233,
+    "sha256": "45da87090e42002568890973c495391332454551e5fa374e0295042a5d0bd55b"
+  },
+  "tests.json": {
+    "bytes": 1848,
+    "sha256": "e813a448edc9fb9ba51622214cd369f1b84b4a866b510f3029600fc4076981e3"
+  },
+  "arena256-2-validation.tar.gz": {
+    "bytes": 14998458,
+    "sha256": "32a4fc8f750a53de4237e87311ee6e6b123c5b01af45fdd48e7deb557770b8af"
+  },
+  "build-profiles.py": {
+    "bytes": 2662,
+    "sha256": "00d82bfc7c9d0370ae5ac61b2c5ae37a607f629cb8f9538f9900001b5ff0bbf5"
+  },
+  "verify.cpp": {
+    "bytes": 9920,
+    "sha256": "254428389357825f819567da2b911477d8f40406c8198148f10c4ce554684b28"
+  },
+  "profile-measurements.jsonl": {
+    "bytes": 1765098,
+    "sha256": "4f94a3e377a6d84ac6d0572d13f1629d3b10f1ef75bc51b93c859f55544a66d6"
+  },
+  "before-profile.cpp": {
+    "bytes": 6916,
+    "sha256": "334520094662fb034fdcb9da4cce01c08b96517e2809651a6a163fecec6fbc47"
+  },
+  "BuildingGradientInvalidationHarness-lazy.log": {
+    "bytes": 45988,
+    "sha256": "42632898a5b67fb273e11e0a275f83aa8c35c16ce07372c728dc853d42d2d232"
+  },
+  "InitProfile.h": {
+    "bytes": 823,
+    "sha256": "5386b8bf565dd657b6bf29c640d349c199584fed9563e2a9550472bb27968def"
+  },
+  "arena128-2-validation.tar.gz": {
+    "bytes": 19686597,
+    "sha256": "da00b3a1549bec7f85d3cf45c73a1e0302ed355ad6ffef2d7adfd595657babf2"
+  },
+  "validation-driver.log": {
+    "bytes": 615,
+    "sha256": "bef6e92df9da12b5ffe5d3ecb087630452bcee276b6ece28e1e594bf40a47f55"
+  },
+  "build-after-profile.log": {
+    "bytes": 502601,
+    "sha256": "330be69d56ef2ce3c6c71003b7d0e08b51508c0af1874f5de33c1fa3dd760c03"
+  },
+  "ImmobileUnitGradientHarness-lazy.log": {
+    "bytes": 22983,
+    "sha256": "0ce61591507f1b8d8a6eb86c7a5aa2193798b71a882e4598d336424b4d55aae5"
+  },
+  "build-verify.log": {
+    "bytes": 502601,
+    "sha256": "330be69d56ef2ce3c6c71003b7d0e08b51508c0af1874f5de33c1fa3dd760c03"
+  },
+  "build-client.log": {
+    "bytes": 504086,
+    "sha256": "170c26d7b27f6be559cf83efece466bf460f1fb168241816a3cee01bbae5aea7"
+  },
+  "runs-driver.log": {
+    "bytes": 5267,
+    "sha256": "82f810138ec04f9c5d291775beb808ffec91395cec3366dee496aa96f99b2763"
+  },
+  "README.md": {
+    "bytes": 5347,
+    "sha256": "a7a963a5945f19a56b3c6d7e427832fce77687ac3f9bbe11d7cfb5c9946ef825"
+  },
+  "build-before.log": {
+    "bytes": 502601,
+    "sha256": "330be69d56ef2ce3c6c71003b7d0e08b51508c0af1874f5de33c1fa3dd760c03"
+  },
+  "validate.py": {
+    "bytes": 3384,
+    "sha256": "1d76252eda6d3e448a8702a1b8ed77f08520c430146a6d3c886f89c3b653882f"
+  },
+  "profile-warmups.jsonl": {
+    "bytes": 85579,
+    "sha256": "86c4738d050e0eee10d7ae67fe62bf8e3ee6aa489a310755660835427d49c98d"
+  },
+  "run-tests.py": {
+    "bytes": 1503,
+    "sha256": "10eabe4f26f60da9d1ace7250297593eb016cd42cd0e271e56168b491cf26870"
+  },
+  "validation.json": {
+    "bytes": 13695,
+    "sha256": "c3245c598feba84a6e90bf7a59f85fb62868f8471ee3c7937f9792e2c7a09800"
+  },
+  "ci-status.json": {
+    "bytes": 468,
+    "sha256": "7a1a6e6031650b3a8db26ebbd58be8123c40cfe792d95639b0a003116bf25f38"
+  },
+  "analysis.json": {
+    "bytes": 4461,
+    "sha256": "6db4de27d988d4adc02982c328302cbf44526e836b216895a345226b1321184d"
+  },
+  "PathGradientHarness-eager.log": {
+    "bytes": 249,
+    "sha256": "79a240311a656503deaf361d73df6a82aaeb1507e9ea32fe00b50188eb6d2ec6"
+  },
+  "arena512-4-validation.tar.gz": {
+    "bytes": 51603414,
+    "sha256": "81d002774aacf5eda8d88940414eab0bd5f4d035d406efa542a726134f98f7a7"
+  },
+  "profile-plan.json": {
+    "bytes": 6939,
+    "sha256": "f8bc6f0f18e25166e5888c12b83615839de254d28f758abe0e7c0821f51a9c8d"
+  },
+  "build-before-profile.log": {
+    "bytes": 502601,
+    "sha256": "330be69d56ef2ce3c6c71003b7d0e08b51508c0af1874f5de33c1fa3dd760c03"
+  },
+  "before.cpp": {
+    "bytes": 6529,
+    "sha256": "fae6318cf7e96f1d46f3f156b48826a228797f7b7fd4f8cbe94c0a446ba7df32"
+  },
+  "SavegameSafetyHarness-eager.log": {
+    "bytes": 7233,
+    "sha256": "fbfb4e5cd886f60752383f9ab004a3a2f46e4df4954e1827f8d1df9de555ce4c"
+  },
+  "profiles-driver.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "runs.py": {
+    "bytes": 4353,
+    "sha256": "c0828a9883a20aea8d62662319a8425f6defbbbf7ba14aaaf073099c25f4bac5"
+  },
+  "ImmobileUnitGradientHarness-eager.log": {
+    "bytes": 22983,
+    "sha256": "0ce61591507f1b8d8a6eb86c7a5aa2193798b71a882e4598d336424b4d55aae5"
+  },
+  "after.cpp": {
+    "bytes": 7219,
+    "sha256": "fe9054349df6bc5b4949c033ebae3167a1ca06e292724b0cd69242992bba5b82"
+  },
+  "pr-before.json": {
+    "bytes": 5890,
+    "sha256": "04641c74b1f3d5a9616648bc54b1630ee5d32ce644ff357a4085ef55cccdb0de"
+  },
+  "after-profile.cpp": {
+    "bytes": 7606,
+    "sha256": "3d60653cae9ef24339021333d1a14afad9d1008b574f50fe5fb284e59c8429a2"
+  },
+  "logs-continuation.tar.gz": {
+    "bytes": 54292636,
+    "sha256": "881dd9cbc9a912e6b1d155bc94a0b77cffcf7b90d7a26c28aefc2491ca5814fb"
+  },
+  "report.py": {
+    "bytes": 5576,
+    "sha256": "497e16b6bde46e17b54e88a7df934b90637553f1ef7e70dd131538f7eceb2f0d"
+  },
+  "analyze.py": {
+    "bytes": 2518,
+    "sha256": "21c180442ec06ac6cdfd49212b34381ddd565c986f2b09b992b7f86bf063c0bb"
+  },
+  "BuildingGradientInvalidationHarness-eager.log": {
+    "bytes": 45988,
+    "sha256": "42632898a5b67fb273e11e0a275f83aa8c35c16ce07372c728dc853d42d2d232"
+  },
+  "publish.py": {
+    "bytes": 1480,
+    "sha256": "599c22d6d8910f511bcedafd08b152ebe07709f61caf562f3857d08adcd43ca1"
+  },
+  "change.patch": {
+    "bytes": 7276,
+    "sha256": "41512b11f93dedc423261062c323b93e516ecf884e4339bf829d9b15e56d5bca"
+  },
+  "continuation.json": {
+    "bytes": 1215,
+    "sha256": "a13974e5f8c1b62af0c520c6d56981932ca93c90bea9ee52d0e1ff9c0c9b6029"
+  },
+  "build.log": {
+    "bytes": 1492593,
+    "sha256": "4ec72f3457dd655a90448b3e4bb424a507007980e84f7d074f19014d600a4a30"
+  }
+}

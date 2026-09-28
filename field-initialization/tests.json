@@ -1,0 +1,62 @@
+[
+  {
+    "name": "PathGradientHarness",
+    "mode": "eager",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/build/darwin/client/release/src/PathGradientHarness"
+    ],
+    "passed": true
+  },
+  {
+    "name": "BuildingGradientInvalidationHarness",
+    "mode": "eager",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/build/darwin/client/release/src/BuildingGradientInvalidationHarness"
+    ],
+    "passed": true
+  },
+  {
+    "name": "ImmobileUnitGradientHarness",
+    "mode": "eager",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/build/darwin/client/release/src/ImmobileUnitGradientHarness"
+    ],
+    "passed": true
+  },
+  {
+    "name": "SavegameSafetyHarness",
+    "mode": "eager",
+    "command": [
+      "python3",
+      "test/run-savegame-safety-tests.py",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/build/darwin/client/release/src/SavegameSafetyHarness"
+    ],
+    "passed": true
+  },
+  {
+    "name": "BuildingGradientInvalidationHarness",
+    "mode": "lazy",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/build/darwin/client/release/src/BuildingGradientInvalidationHarness"
+    ],
+    "passed": true
+  },
+  {
+    "name": "ImmobileUnitGradientHarness",
+    "mode": "lazy",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/build/darwin/client/release/src/ImmobileUnitGradientHarness"
+    ],
+    "passed": true
+  },
+  {
+    "name": "SavegameSafetyHarness",
+    "mode": "lazy",
+    "command": [
+      "python3",
+      "test/run-savegame-safety-tests.py",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/build/darwin/client/release/src/SavegameSafetyHarness"
+    ],
+    "passed": true
+  }
+]

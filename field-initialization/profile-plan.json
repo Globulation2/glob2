@@ -1,0 +1,324 @@
+{
+  "source_commit": "7d2dcaf1c67ce902f9c1d721ed4f610f96aba667",
+  "power_settings": "Battery Power:\n Sleep On Power Button 1\n lowpowermode         0\n standby              1\n ttyskeepawake        1\n hibernatemode        3\n powernap             1\n hibernatefile        /var/vm/sleepimage\n displaysleep         10\n womp                 0\n networkoversleep     0\n sleep                1\n lessbright           1\n tcpkeepalive         1\n disksleep            10\nAC Power:\n Sleep On Power Button 1\n lowpowermode         0\n standby              1\n ttyskeepawake        1\n hibernatemode        3\n powernap             1\n hibernatefile        /var/vm/sleepimage\n displaysleep         10\n womp                 1\n networkoversleep     0\n sleep                0\n tcpkeepalive         1\n disksleep            10\n",
+  "seed": 20260928,
+  "binary_sha256": {
+    "before": "636aacc2d74e9c891ac9aa382e7f96798725a00eb8570d167964743b7e8434bf",
+    "after": "f006ecdcab7b13bb1f465ceef92e975f59994ee8a36ce1ed75416c08db8dc98b",
+    "before-profile": "433cb2416696e2fe21903a6502999177bbbff0ff6741bd6348b54585798b478b",
+    "after-profile": "0ae30b2790db9bb3db75d6de88a2a834843a0b7cf650fddb0035ab4b67e70485"
+  },
+  "cases": [
+    {
+      "name": "arena128-2",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 7,
+        "height": 7,
+        "teams": 2
+      },
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "ticks": 16384
+    },
+    {
+      "name": "arena256-2",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 2
+      },
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "ticks": 16384
+    },
+    {
+      "name": "arena512-4",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 9,
+        "height": 9,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 16384
+    },
+    {
+      "name": "lakes256-4",
+      "generator": 4,
+      "map_seed": 97,
+      "game_seed": 19,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 16384
+    }
+  ],
+  "runs": [
+    {
+      "case": "arena256-2",
+      "repeat": 0,
+      "variant": "after"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 0,
+      "variant": "before"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 0,
+      "variant": "before"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 0,
+      "variant": "after"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 0,
+      "variant": "after"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 0,
+      "variant": "before"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 0,
+      "variant": "before"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 0,
+      "variant": "after"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 1,
+      "variant": "after"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 1,
+      "variant": "before"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 1,
+      "variant": "before"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 1,
+      "variant": "after"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 1,
+      "variant": "after"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 1,
+      "variant": "before"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 1,
+      "variant": "before"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 1,
+      "variant": "after"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 2,
+      "variant": "after"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 2,
+      "variant": "before"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 2,
+      "variant": "before"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 2,
+      "variant": "after"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 2,
+      "variant": "after"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 2,
+      "variant": "before"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 2,
+      "variant": "before"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 2,
+      "variant": "after"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 3,
+      "variant": "before"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 3,
+      "variant": "after"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 3,
+      "variant": "after"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 3,
+      "variant": "before"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 3,
+      "variant": "before"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 3,
+      "variant": "after"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 3,
+      "variant": "after"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 3,
+      "variant": "before"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 0,
+      "variant": "before-profile"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 0,
+      "variant": "after-profile"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 0,
+      "variant": "before-profile"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 0,
+      "variant": "after-profile"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 0,
+      "variant": "before-profile"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 0,
+      "variant": "after-profile"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 0,
+      "variant": "before-profile"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 0,
+      "variant": "after-profile"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 1,
+      "variant": "after-profile"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 1,
+      "variant": "before-profile"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 1,
+      "variant": "after-profile"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 1,
+      "variant": "before-profile"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 1,
+      "variant": "after-profile"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 1,
+      "variant": "before-profile"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 1,
+      "variant": "after-profile"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 1,
+      "variant": "before-profile"
+    }
+  ],
+  "note": "Four paired before/after lazy runs per original case, alternating AB/BA; two paired phase profiles per case. All on AC; profiles time initialization and fill only; no per-cell instrumentation. Profiles excluded from whole-game speedup claims."
+}

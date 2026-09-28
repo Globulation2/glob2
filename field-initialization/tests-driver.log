@@ -1,0 +1,14 @@
+Running PathGradientHarness eager
+PASS
+Running BuildingGradientInvalidationHarness eager
+PASS
+Running ImmobileUnitGradientHarness eager
+PASS
+Running SavegameSafetyHarness eager
+PASS
+Running BuildingGradientInvalidationHarness lazy
+PASS
+Running ImmobileUnitGradientHarness lazy
+PASS
+Running SavegameSafetyHarness lazy
+PASS

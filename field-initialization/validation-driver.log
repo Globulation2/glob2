@@ -1,0 +1,17 @@
+Running arena128-2 eager
+PASS checksums and saves match original baseline
+Running arena128-2 lazy
+PASS checksums and saves match original baseline
+Running arena256-2 eager
+PASS checksums and saves match original baseline
+Running arena256-2 lazy
+PASS checksums and saves match original baseline
+Running arena512-4 eager
+PASS checksums and saves match original baseline
+Running arena512-4 lazy
+PASS checksums and saves match original baseline
+Running lakes256-4 eager
+PASS checksums and saves match original baseline
+Running lakes256-4 lazy
+PASS checksums and saves match original baseline
+PASS old-save continuation
