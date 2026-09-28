@@ -1,0 +1,4 @@
+PASS zone borders: backend 0, zoom/offset sweep, joined segments and wrapped copies
+PASS zone borders: backend 32, zoom/offset sweep, joined segments and wrapped copies
+PASS zone borders: backend 1, zoom/offset sweep, joined segments and wrapped copies
+PASS portable renderer: clipping, texture scaling, alpha, device reset, dirty textures, resized input
