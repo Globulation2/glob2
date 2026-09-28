@@ -1,0 +1,41 @@
+{
+  "base_commit": "c2c086ad5b08bace7c27399d4eaa0ffd3f950d45",
+  "build_system_tests": 10,
+  "browser_unit_tests": 15,
+  "native_cache_invalidation": "pass",
+  "wasm_cache_invalidation": "pass",
+  "matrix_before": 139,
+  "matrix_after": 129,
+  "real_source_cache_benchmark": {
+    "cold_seconds": 65.0949309580028,
+    "warm_seconds": 4.398593874997459,
+    "byte_identical_objects": 4
+  },
+  "full_build_runtime_checks": "pass: 10 cold-build browser checks; 3 cached-build browser checks",
+  "hosted_modified_workflow": "not run",
+  "full_build_cold_seconds": 1925.1102713340078,
+  "full_build_cached_seconds": 836.383677374979,
+  "simulation_trace": {
+    "trace_sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+    "trace_bytes": 3601608,
+    "ticks": 1500,
+    "platforms": [
+      "local cold WASM",
+      "local cached WASM",
+      "hosted WASM",
+      "Linux",
+      "Windows"
+    ],
+    "cached_browser_stats": {
+      "startTime": "2026-09-28T20:41:56.858Z",
+      "duration": 17266.171000000002,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "cache_hits": 991,
+    "cache_misses": 1,
+    "cacheable_hit_percent": 99.8991935483871
+  }
+}

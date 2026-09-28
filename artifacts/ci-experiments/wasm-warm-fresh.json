@@ -1,0 +1,13 @@
+{
+  "command": [
+    "scons",
+    "target=web",
+    "release=1",
+    "emsdk=/path/to/sdk-checkout/tools/browser-emsdk",
+    "-j4"
+  ],
+  "seconds": 836.383677374979,
+  "returncode": 0,
+  "ports": "rebuilt",
+  "jobs": 4
+}

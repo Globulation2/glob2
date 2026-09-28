@@ -1,0 +1,23 @@
+[
+  {
+    "name": "cold",
+    "seconds": 6.220912582997698,
+    "sha256": "4ea50e12f7a3fa4e3b1a6c5b7f4f283ccf612b41828b97adc92d6ce9c561f3c0",
+    "hits": 0,
+    "misses": 1
+  },
+  {
+    "name": "warm",
+    "seconds": 0.6474367920309305,
+    "sha256": "4ea50e12f7a3fa4e3b1a6c5b7f4f283ccf612b41828b97adc92d6ce9c561f3c0",
+    "hits": 1,
+    "misses": 1
+  },
+  {
+    "name": "header-edit",
+    "seconds": 0.7623017919831909,
+    "sha256": "0833a2b91424aaa73a9ac1bad5c1c292642f2e852304bcf7ed0b72b0786efa3d",
+    "hits": 1,
+    "misses": 2
+  }
+]

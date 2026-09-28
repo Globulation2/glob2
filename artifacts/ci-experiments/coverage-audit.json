@@ -1,0 +1,671 @@
+{
+  "before": 139,
+  "after": 129,
+  "note": "Counts include one runtime skip in the WebGL2 viewport suite; visibility runs twice. All unique contracts are retained.",
+  "groups": [
+    {
+      "group": "chromium-full",
+      "count": 94,
+      "tests": [
+        {
+          "title": "browser runtime does not instrument stacks with Asyncify",
+          "file": "build-artifact.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "campaign authoring waits for durable persistence before closing",
+          "file": "campaign-editor-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "campaign authoring retains the editor on quota failure and can retry",
+          "file": "campaign-editor-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "campaign progress merges through the chooser, survives reload and rejects invalid backups",
+          "file": "campaign-progress.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "campaign persistence failure preserves the durable backup with retry",
+          "file": "campaign-progress.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "campaign persistence failure preserves the durable backup with discard",
+          "file": "campaign-progress.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "leaving a new campaign waits for persistence and discard removes its uncommitted file",
+          "file": "campaign-progress.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "corrupt local files leave the chooser responsive and cannot accept an old selection",
+          "file": "chooser-errors.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "WebAssembly produces a complete per-tick simulation trace",
+          "file": "determinism.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "editor save before quit survives quota with export and retry",
+          "file": "editor-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "editor save before quit survives aborted transaction with export and retry",
+          "file": "editor-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "real file chooser returns exact bytes and releases its input",
+          "file": "file-selection.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "file chooser accept filter does not bypass file type validation",
+          "file": "file-selection.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "imports an exported save, preserves duplicate names, rejects corruption and reloads the imported game",
+          "file": "import.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "imports a custom map and starts it through the normal setup screen",
+          "file": "import.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "imports a complete replay and rejects a truncated command stream",
+          "file": "import.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "failed import persistence offers export and retry without overwriting a save",
+          "file": "import.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "reload and address-bar shortcuts remain available with game focus",
+          "file": "input.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "click coordinates stay correct when browser motion delivery is missing",
+          "file": "input.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "desktop right-click cancels a selection and cycles sidebar views without a browser menu",
+          "file": "input.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "custom setup leaves the colony visible around its own panel",
+          "file": "menu-presentation.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "menu presentation survives a match and nested menus",
+          "file": "menu-presentation.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "browser keeps its system cursor through menus, gameplay and reload",
+          "file": "menu-presentation.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "browser keeps its system cursor through menus, gameplay and reload",
+          "file": "menu-presentation.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "browser YOG login exchanges the native protocol through the real gateway",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "registered browser player enters and leaves the native YOG lobby",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "YOG registration remains scheduled through resize and cancellation",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "YOG map selection and upload screens resize and return to their owning tabs",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "YOG match settings resize and return to their room",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "YOG disconnect message remains scheduled and returns cleanly after resize",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "two browser players create, join and start a YOG match (no AI)",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "two browser players create, join and start a YOG match (Cortex)",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "browser and native players complete matching simulation checkpoints (TCP)",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "browser and native players complete matching simulation checkpoints (WSS)",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "YOG admission enforces greeting, exact version, authentication and retry order",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "browser reports incompatible release before transmitting credentials (client version)",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "browser reports incompatible release before transmitting credentials (legacy server)",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "browser reports incompatible release before transmitting credentials (server version)",
+          "file": "multiplayer.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "WebGL2 draws a playable match and resizes its drawing buffer",
+          "file": "rendering.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "software renderer remains available",
+          "file": "rendering.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "the default renderer is WebGL2 when the browser accelerates it",
+          "file": "rendering.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "the default renderer falls back to software when WebGL2 is unavailable",
+          "file": "rendering.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "the default renderer falls back to software when WebGL2 is emulated",
+          "file": "rendering.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "WebGL context restoration keeps the match and can recover repeatedly",
+          "file": "rendering.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "WebGL context restoration retains settings, editor and confirmation controls",
+          "file": "rendering.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "end-game replay save remains scheduled during resize and durable persistence",
+          "file": "replay-save.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "end-game replay save offers export and retry after quota failure",
+          "file": "replay-save.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "loading page presents branded progress before the runtime is ready",
+          "file": "runtime-build.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "an active match can load the same saved game repeatedly through the scheduled loader",
+          "file": "session-reload.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "a damaged in-game load returns through a scheduled error notice and permits another match",
+          "file": "session-reload.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "an active replay can be loaded again through the scheduled loader",
+          "file": "session-reload.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "new browser profiles are muted and an explicit unmute survives reload",
+          "file": "settings-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "settings survive quota with visible failure and durable retry",
+          "file": "settings-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "settings survive aborted transaction with visible failure and durable retry",
+          "file": "settings-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "settings wait for durable storage before closing",
+          "file": "settings-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "settings can continue after failure without claiming a durable save",
+          "file": "settings-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "Done waits for the latest settings write (success)",
+          "file": "settings-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "Done waits for the latest settings write (failure)",
+          "file": "settings-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "quit waits for final persistence through resize and escape",
+          "file": "shutdown-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "quit offers visible retry after a failed final save",
+          "file": "shutdown-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "failed final save requires an explicit quit without saving",
+          "file": "shutdown-storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "starts with a full-page game and restored local storage",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "application host returns from settings and credits and shuts down cleanly",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "campaign selector returns to its suspended parent and can reopen",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "tutorial sessions quit through the end screen and can restart",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "game rules and AI descriptions return to setup, and a finished game returns there too",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "custom match pauses, persists and resumes after reload",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "editor setup and campaign entry dialogs return to their retained parents",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "map editor frames resume after cancelling quit and can discard a new map",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "editor save cancellation keeps edits open and completed fertility saves the map",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "editor map loading can be cancelled and restarted",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "custom and tutorial startup can be cancelled and retried",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "a generated custom map loads after its setup screen closes",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "the custom game preview draws the selected map",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "cancelling an editor replacement preserves edits and a completed load replaces the map",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "map generation can be cancelled before retrying (swamp)",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "map generation can be cancelled before retrying (concrete islands)",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "landscape picker and start-quality details return to the retained custom setup",
+          "file": "single-player.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "abort failure retains the previous durable save and can retry",
+          "file": "storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "quota failure retains the previous durable save and can retry",
+          "file": "storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "restore failure is explained before entering the game",
+          "file": "storage.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "software preserves the red tutorial team before and after resize",
+          "file": "team-colors.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "webgl2 preserves the red tutorial team before and after resize",
+          "file": "team-colors.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "WebGL2 switches between the flat map and the torus overview",
+          "file": "torus.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "the torus overview recovers after WebGL context loss",
+          "file": "torus.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "the software renderer keeps the flat map",
+          "file": "torus.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "menus follow the viewport and keep their controls clickable",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "a running match survives resize and its open menu follows the new center",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "editor dialogs and discard controls follow viewport changes",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "small viewports retain the active screen and continue rendering",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "interface scale survives resizing and keeps settings controls clickable",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "starts at the actual browser dimensions",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "fills the page before any resize",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "uses the renderer-appropriate backing resolution",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        }
+      ]
+    },
+    {
+      "group": "secondary-smoke",
+      "count": 18,
+      "tests": [
+        {
+          "title": "loading page presents branded progress before the runtime is ready",
+          "file": "runtime-build.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "loading page presents branded progress before the runtime is ready",
+          "file": "runtime-build.spec.js",
+          "project": "webkit"
+        },
+        {
+          "title": "menus follow the viewport and keep their controls clickable",
+          "file": "viewport.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "a running match survives resize and its open menu follows the new center",
+          "file": "viewport.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "editor dialogs and discard controls follow viewport changes",
+          "file": "viewport.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "small viewports retain the active screen and continue rendering",
+          "file": "viewport.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "interface scale survives resizing and keeps settings controls clickable",
+          "file": "viewport.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "menus follow the viewport and keep their controls clickable",
+          "file": "viewport.spec.js",
+          "project": "webkit"
+        },
+        {
+          "title": "a running match survives resize and its open menu follows the new center",
+          "file": "viewport.spec.js",
+          "project": "webkit"
+        },
+        {
+          "title": "editor dialogs and discard controls follow viewport changes",
+          "file": "viewport.spec.js",
+          "project": "webkit"
+        },
+        {
+          "title": "small viewports retain the active screen and continue rendering",
+          "file": "viewport.spec.js",
+          "project": "webkit"
+        },
+        {
+          "title": "interface scale survives resizing and keeps settings controls clickable",
+          "file": "viewport.spec.js",
+          "project": "webkit"
+        },
+        {
+          "title": "starts at the actual browser dimensions",
+          "file": "viewport.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "starts at the actual browser dimensions",
+          "file": "viewport.spec.js",
+          "project": "webkit"
+        },
+        {
+          "title": "fills the page before any resize",
+          "file": "viewport.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "fills the page before any resize",
+          "file": "viewport.spec.js",
+          "project": "webkit"
+        },
+        {
+          "title": "uses the renderer-appropriate backing resolution",
+          "file": "viewport.spec.js",
+          "project": "firefox"
+        },
+        {
+          "title": "uses the renderer-appropriate backing resolution",
+          "file": "viewport.spec.js",
+          "project": "webkit"
+        }
+      ]
+    },
+    {
+      "group": "chromium-webgl",
+      "count": 15,
+      "tests": [
+        {
+          "title": "reload and address-bar shortcuts remain available with game focus",
+          "file": "input.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "click coordinates stay correct when browser motion delivery is missing",
+          "file": "input.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "desktop right-click cancels a selection and cycles sidebar views without a browser menu",
+          "file": "input.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "loading page presents branded progress before the runtime is ready",
+          "file": "runtime-build.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "an active match can load the same saved game repeatedly through the scheduled loader",
+          "file": "session-reload.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "a damaged in-game load returns through a scheduled error notice and permits another match",
+          "file": "session-reload.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "an active replay can be loaded again through the scheduled loader",
+          "file": "session-reload.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "menus follow the viewport and keep their controls clickable",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "a running match survives resize and its open menu follows the new center",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "editor dialogs and discard controls follow viewport changes",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "small viewports retain the active screen and continue rendering",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "interface scale survives resizing and keeps settings controls clickable",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "starts at the actual browser dimensions",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "fills the page before any resize",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        },
+        {
+          "title": "uses the renderer-appropriate backing resolution",
+          "file": "viewport.spec.js",
+          "project": "chromium"
+        }
+      ]
+    },
+    {
+      "group": "visibility",
+      "count": 1,
+      "tests": [
+        {
+          "title": "background single-player suspends and returns without catching up",
+          "file": "lifecycle.spec.js",
+          "project": "chromium-visibility"
+        }
+      ]
+    }
+  ]
+}

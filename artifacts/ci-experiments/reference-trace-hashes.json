@@ -1,0 +1,17 @@
+[
+  {
+    "path": "artifacts/ci-experiments/reference-traces/browser-determinism-ubuntu-22.04/native.replay.checksums",
+    "bytes": 3601608,
+    "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48"
+  },
+  {
+    "path": "artifacts/ci-experiments/reference-traces/browser-determinism-windows/native.replay.checksums",
+    "bytes": 3601608,
+    "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48"
+  },
+  {
+    "path": "artifacts/ci-experiments/reference-traces/browser-determinism-wasm/wasm.replay.checksums",
+    "bytes": 3601608,
+    "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48"
+  }
+]

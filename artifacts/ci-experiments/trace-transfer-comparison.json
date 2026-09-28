@@ -1,0 +1,9 @@
+{
+  "array_run": "determinism-diagnostic.json",
+  "base64_run": "base64-determinism.json",
+  "array_total_seconds": 143.701825,
+  "base64_total_seconds": 16.828785,
+  "trace_bytes": 3601608,
+  "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+  "note": "Array run required a local 300-second timeout and console diagnostics; the original 90-second run timed out. Base64 passed with unchanged 90-second timeout. Both ran on the same frozen binary under shared-machine load."
+}

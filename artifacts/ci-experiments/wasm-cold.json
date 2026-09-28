@@ -1,0 +1,11 @@
+{
+  "command": [
+    "scons",
+    "target=web",
+    "release=1",
+    "emsdk=/path/to/sdk-checkout/tools/browser-emsdk",
+    "-j4"
+  ],
+  "seconds": 1925.1102713340078,
+  "returncode": 0
+}

@@ -1,0 +1,23 @@
+{
+  "trace_sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+  "trace_bytes": 3601608,
+  "ticks": 1500,
+  "platforms": [
+    "local cold WASM",
+    "local cached WASM",
+    "hosted WASM",
+    "Linux",
+    "Windows"
+  ],
+  "cached_browser_stats": {
+    "startTime": "2026-09-28T20:41:56.858Z",
+    "duration": 17266.171000000002,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "cache_hits": 991,
+  "cache_misses": 1,
+  "cacheable_hit_percent": 99.8991935483871
+}
