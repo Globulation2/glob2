@@ -1,5 +1,5 @@
 {
-  "_comment": "Identical text is allowed only for standard names/key legends and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review. For Savannah, Normal is the native control label in ca, de, dk, es, fr, pt, ro, sv, tr, and id; its other controls have local translations.",
+  "_comment": "Identical text is allowed only for standard names/key legends, punctuation-only templates and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review. For Savannah, Normal is the native control label in ca, de, dk, es, fr, pt, ro, sv, tr, and id; its other controls have local translations.",
   "standard_names_and_key_legends": [
     "2 vs 2",
     "AI",

@@ -429,8 +429,10 @@ the obsolete AI Descriptions implementation has been removed.
 The gameplay touch harness also exercises German and Japanese inspectors and
 editor actions in small portrait and landscape views, including constrained
 keyboard layouts. Its localized captures stay in the isolated test profile. The
-mobile presentation harness checks safe-area layouts in those languages as well
-as English.
+mobile presentation harness checks safe-area layouts, including editor setup,
+in those languages as well as English. The menu navigation harness targets the
+rendered Cancel control on composed screens and fails if navigation cannot
+finish within 60 seconds.
 
 The mobile presentation harness covers touch dispatch, clipped/scrolling controls,
 whole-row containment, full-width stacked fields, category filtering, narrow
