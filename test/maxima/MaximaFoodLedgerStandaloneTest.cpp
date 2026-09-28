@@ -282,6 +282,38 @@ static void equalTotalChangesRefreshTheSnapshot()
 	assert(other.residualUpperBound(input,original,3,3,0,0,1,1)==100);
 }
 
+// Capped queries must retain the whole threshold-crossing cell and the same
+// nearest-first order, including across the toroidal seam. A short query must
+// not leave scratch state that truncates a later larger or uncapped query.
+static void cappedQueriesPreserveOrderAndScratchReuse()
+{
+	Input input=makeInput(8,8);
+	input.policy.supplyRadius=3;
+	input.yield[input.index(7,7)]=70;
+	input.yield[input.index(0,7)]=40;
+	input.yield[input.index(1,7)]=30;
+	input.yield[input.index(3,0)]=100;
+	Ledger ledger;Result result;
+	ledger.evaluate(input,result);
+	for(int repeat=0;repeat<3;++repeat)
+	{
+		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,1)==70);
+		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,70)==70);
+		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,71)==110);
+		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,111)==140);
+		assert(ledger.residualQuality(input,result,0,0,0,0,1,1,100)==0);
+		assert(ledger.residualQuality(input,result,0,0,0,0,1,1,240)==83);
+		assert(ledger.residualQuality(input,result,0,0,0,0,1,1,300)==286);
+		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,1000)==240);
+		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,0)==240);
+		assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,-1)==240);
+	}
+	input.traversable[input.index(7,7)]=0;
+	ledger.evaluate(input,result);
+	assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,1)==40);
+	assert(ledger.reachableResidual(input,result,0,0,0,0,1,1,0)==170);
+}
+
 // Opt-in measurement, never a timing assertion in CI. Compare the same driver
 // against before/after sources; the digest makes output changes visible.
 static void benchmark()
@@ -311,6 +343,7 @@ int main(int argc,char** argv)
 	{
 		benchmark();return 0;
 	}
+	cappedQueriesPreserveOrderAndScratchReuse();
 	supplyIsClaimedNearestFirst();
 	qualityOutranksBuildingAge();
 	innsAndSwarmsInterleave();

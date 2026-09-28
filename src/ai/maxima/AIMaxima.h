@@ -794,7 +794,7 @@ private:
 
 	///This function updates the restricted areas for farming
 	void update_farming(AIMaximaRuntime::Context& echo);
-	///Classify the layout, add expansion support, release mature wheat, and
+	///Classify the layout and
 	///reconcile the final plan with the engine-owned forbidden area.
 	bool has_hard_farming_contract(int index) const;
 	struct WoodReserve
@@ -814,10 +814,6 @@ private:
 	void release_farming_protection(AIMaximaRuntime::Context& echo);
 	FarmProtectionPlan build_farming_protection_plan(
 		AIMaximaRuntime::Context& echo);
-	void add_wheat_expansion_support(AIMaximaRuntime::Context& echo,
-		FarmProtectionPlan& plan);
-	void apply_wheat_maturity(AIMaximaRuntime::Context& echo,
-		FarmProtectionPlan& plan, const std::vector<Uint8>& layout);
 	void apply_farming_protection(AIMaximaRuntime::Context& echo,
 		const FarmProtectionPlan& plan, int& added, int& removed);
 	Farming::ExactFertilityCache fertility_cache;

@@ -730,6 +730,30 @@ Use `GLOB2_USER_DIR` to isolate captures in a disposable profile. The
 `test_text_area_layout.py` checks also cover lobby paragraph wrapping for unspaced
 CJK text and long words, preserving complete UTF-8 characters.
 
+### Landscape preview scheduling and scrolling
+
+The existing `custom-setup-test` target also provides focused checks:
+
+```sh
+./build/darwin/client/release/src/CustomGameSetupHarness preview-queue
+./build/darwin/client/release/src/CustomGameSetupHarness artifacts/landscape landscape-responsive
+```
+
+Use the corresponding native build directory on other platforms and `xvfb-run -a`
+for the graphical mode on headless Linux. Run in a disposable home/profile as with
+other UI harnesses. `preview-queue` checks deferred startup, viewport-center
+priority for grid and single-column layouts, scrolling/filtering, unchanged seeds,
+cooperative viewport-only polling, retries, and restart/reroll behavior. The
+normal headless harness also runs these checks. `landscape-responsive` verifies
+that completed off-screen images do not allocate rendering surfaces and that
+scrolling never starts fades; it captures top/middle/bottom screenshots. CI runs
+both the headless harness and this graphical regression.
+
+`landscape-performance` runs the same fixed-image fixture without enforcing the new
+behavior, for comparison with a baseline build. It reports delivery and scrolling
+times for 67 completed 256×256 thumbnails, plus terrain hashes and colony positions
+for three generators with root seed 71. Timings are evidence, not pass/fail limits.
+
 ## Phone interface verification
 
 The native portable-renderer checks exercise real SDL touch dispatch in portrait

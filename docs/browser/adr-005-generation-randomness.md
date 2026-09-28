@@ -10,9 +10,14 @@ The port does not retain the replaced Perlin/legacy generator implementation.
 `GenerationContext` owns named random streams. `GenerationService` saves and
 restores the calling thread's synchronized engine RNG around each complete roll.
 Native landscape previews retain their worker threads. The single-threaded browser
-calls `LandscapePreviewer::poll()` once per UI timer to complete one queued preview;
+calls `LandscapePreviewer::poll()` to complete one queued generation attempt;
 no native thread is started in WebAssembly. The lobby and landscape picker both
-service this queue. Only a completed candidate can become a launch snapshot.
+service this queue. Failed attempts are requeued up to the same three-attempt
+budget. The picker starts work after layout, orders pending maps by distance
+from the viewport center, and only advances cards intersecting the viewport. It
+spaces attempts apart to leave time for rendering and input; unseen maps stay
+queued until browsed. Interaction postpones the next picker attempt. Only a
+completed candidate can become a launch snapshot.
 
 Landscape and start-quality dialogs are owned children of `ScreenStack`. The
 selected request and seed are copied back before the child is destroyed. A
@@ -28,7 +33,7 @@ roll. Failure and cancellation destroy the staging editor and restore RNG state.
 ## Latency limits
 
 A generator roll is synchronous. Browser preview polling yields between complete
-candidates, not inside every terrain algorithm. Large or expensive maps can still
+attempts, not inside every terrain algorithm. Large or expensive maps can still
 pause rendering and input until a roll finishes. Cancellation can discard queued
 work but cannot interrupt a roll in progress. Subdividing the new generator
 pipeline is follow-up work; the old port's coroutine checkpoints do not apply to

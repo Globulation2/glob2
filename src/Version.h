@@ -6,7 +6,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 116
+#define VERSION_MINOR 118
+// version 118 removes the obsolete Maxima rolling maturity cache.
+// version 117 preserves Maxima's rolling wheat maturity checks and pending changes.
 // version 116 preserves Maxima wave delivery and its permanent streaming fallback.
 // version 115 requires the current Maxima strategy and continuation schema.
 // version 114 preserves the team construction cooldown.
