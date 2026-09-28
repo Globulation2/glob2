@@ -1,0 +1,380 @@
+From 9dd23002113d5b2dded4d6c131a07e49148b8ea0 Mon Sep 17 00:00:00 2001
+From: Bradley Arsenault <brad@bradleyarsenault.me>
+Date: Mon, 28 Sep 2026 14:12:52 -0400
+Subject: [PATCH 1/2] Fix AI save initialization, coordinate loading and
+ telemetry bounds
+
+---
+ .github/workflows/build.yml       |   4 +
+ src/SConscript                    |   7 ++
+ src/ai/AITelemetryAdapters.cpp    |  37 ++------
+ src/ai/echo/Echo.h                |  13 +--
+ src/ai/echo/ManagementFlag.cpp    |  10 ++-
+ test/AISavePortabilityHarness.cpp | 135 ++++++++++++++++++++++++++++++
+ test/README.md                    |  20 +++++
+ 7 files changed, 189 insertions(+), 37 deletions(-)
+ create mode 100644 test/AISavePortabilityHarness.cpp
+
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index 860e759d8..f3a5ad669 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -138,6 +138,7 @@ jobs:
+             global-gradient-test \
+             path-gradient-test \
+             nicowar-farming-test \
++            ai-save-portability-test \
+             lan-test \
+             aspect-test \
+             resize-test \
+@@ -373,6 +374,9 @@ jobs:
+         run: |
+           ./build/linux/client/release/src/TerrainResourcesHarness
+ 
++      - name: Test AI save portability
++        run: python3 test/run-savegame-safety-tests.py build/linux/client/release/src/AISavePortabilityHarness .
++
+       - name: Test Nicowar farming wood clearance
+         run: |
+           python3 test/run-savegame-safety-tests.py build/linux/client/release/src/NicowarFarmingHarness .
+diff --git a/src/SConscript b/src/SConscript
+index 992d607a1..e90e3d6ef 100644
+--- a/src/SConscript
++++ b/src/SConscript
+@@ -80,6 +80,13 @@ if not env['server']:
+     farming_test = local.Program('NicowarFarmingHarness', farming_sources)
+     local.Alias('nicowar-farming-test', farming_test)
+ 
++if not env['server']:
++    ai_save_sources = [source for source in source_files if source != 'Glob2.cpp']
++    ai_save_sources += local.Object('AISavePortabilityHarness.o', '#test/AISavePortabilityHarness.cpp')
++    ai_save_test = local.Program('AISavePortabilityHarness', ai_save_sources)
++    local.Alias('ai-save-portability-test', ai_save_test)
++
++
+ if not env['server']:
+     gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
+     gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
+diff --git a/src/ai/AITelemetryAdapters.cpp b/src/ai/AITelemetryAdapters.cpp
+index a379599a3..12dcc5383 100644
+--- a/src/ai/AITelemetryAdapters.cpp
++++ b/src/ai/AITelemetryAdapters.cpp
+@@ -927,35 +927,14 @@ void AIMaxima::Maxima::captureTelemetry()
+ 	telemetry.set(AITrace::AI7::state_policy_bids_5_attack_units, policy_bids[5].attack_units);
+ 	telemetry.set(AITrace::AI7::state_policy_bids_5_request_upgrades,
+ 				  policy_bids[5].request_upgrades);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_utility, policy_bids[6].utility);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_construction_sites,
+-				  policy_bids[6].construction_sites);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_inns, policy_bids[6].desired_inns);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_swarms, policy_bids[6].desired_swarms);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_barracks,
+-				  policy_bids[6].desired_barracks);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_schools,
+-				  policy_bids[6].desired_schools);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_pools, policy_bids[6].desired_pools);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_racetracks,
+-				  policy_bids[6].desired_racetracks);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_hospital_beds,
+-				  policy_bids[6].desired_hospital_beds);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_towers, policy_bids[6].desired_towers);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_swarm_workers, policy_bids[6].swarm_workers);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_worker_ratio, policy_bids[6].worker_ratio);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_explorer_ratio, policy_bids[6].explorer_ratio);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_warrior_ratio, policy_bids[6].warrior_ratio);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_explorers,
+-				  policy_bids[6].desired_explorers);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_desired_warriors,
+-				  policy_bids[6].desired_warriors);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_defense_reserve,
+-				  policy_bids[6].defense_reserve);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_attack_flags, policy_bids[6].attack_flags);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_attack_units, policy_bids[6].attack_units);
+-	telemetry.set(AITrace::AI7::state_policy_bids_6_request_upgrades,
+-				  policy_bids[6].request_upgrades);
++	// Keep the legacy columns so saved telemetry remains readable, but never read
++	// a seventh policy: Maxima has only six. Clear stale values loaded from saves.
++	static_assert(PolicyCount == 6);
++	if (telemetry.series)
++		for (unsigned field = AITrace::AI7::state_policy_bids_6_utility;
++			 field <= AITrace::AI7::state_policy_bids_6_request_upgrades; ++field)
++			telemetry.series->current.values[field] = {};
++
+ }
+ 
+ void Cabino::AICabino::captureTelemetry()
+diff --git a/src/ai/echo/Echo.h b/src/ai/echo/Echo.h
+index 04b5f0cfe..a360a287a 100644
+--- a/src/ai/echo/Echo.h
++++ b/src/ai/echo/Echo.h
+@@ -131,11 +131,12 @@ namespace AIEcho
+ 		friend class AIEcho::Management::SendMessage;
+ 
+ 
+-		Uint32 allies;
+-		Uint32 enemies;
+-		Uint32 inn_view;
+-		Uint32 market_view;
+-		Uint32 other_view;
++		// These fields are serialized even before the first AI tick.
++		Uint32 allies = 0;
++		Uint32 enemies = 0;
++		Uint32 inn_view = 0;
++		Uint32 market_view = 0;
++		Uint32 other_view = 0;
+ 
+ 		void update_management_orders();
+ 		void pause_resource_tracker(int building_id);
+@@ -160,7 +161,7 @@ namespace AIEcho
+ 		///Before the next building is constructed, the previous building must be
+ 		///found on the BuildingRegister
+ 		int previous_building_id;
+-		bool update_gm;
++		bool update_gm = false;
+ 		bool is_fruit;
+ 
+ 		int from_load_timer;
+diff --git a/src/ai/echo/ManagementFlag.cpp b/src/ai/echo/ManagementFlag.cpp
+index 507423629..a28c5c4e9 100644
+--- a/src/ai/echo/ManagementFlag.cpp
++++ b/src/ai/echo/ManagementFlag.cpp
+@@ -292,7 +292,10 @@ bool AddArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
+ 	for(Uint32 location_index=0; location_index<size; ++location_index)
+ 	{
+ 		stream->readEnterSection(location_index);
+-		locations[location_index]=position(stream->readUint32("posx"), stream->readUint32("posy"));
++		// Stream reads must be sequenced: argument evaluation order varies by compiler.
++		const Uint32 x = stream->readUint32("posx");
++		const Uint32 y = stream->readUint32("posy");
++		locations[location_index] = position(x, y);
+ 		stream->readLeaveSection();
+ 	}
+ 	stream->readLeaveSection();
+@@ -361,7 +364,10 @@ bool RemoveArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
+ 	for(Uint32 location_index=0; location_index<size; ++location_index)
+ 	{
+ 		stream->readEnterSection(location_index);
+-		locations[location_index]=position(stream->readUint32("posx"), stream->readUint32("posy"));
++		// Stream reads must be sequenced: argument evaluation order varies by compiler.
++		const Uint32 x = stream->readUint32("posx");
++		const Uint32 y = stream->readUint32("posy");
++		locations[location_index] = position(x, y);
+ 		stream->readLeaveSection();
+ 	}
+ 	stream->readLeaveSection();
+diff --git a/test/AISavePortabilityHarness.cpp b/test/AISavePortabilityHarness.cpp
+new file mode 100644
+index 000000000..62f53434e
+--- /dev/null
++++ b/test/AISavePortabilityHarness.cpp
+@@ -0,0 +1,135 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#define SDL_MAIN_HANDLED
++#include "GlobalContainer.h"
++#include "Game.h"
++#include "IntBuildingType.h"
++#include "FileManager.h"
++#include "Player.h"
++#include "BinaryStream.h"
++#include "StreamBackend.h"
++#include "Version.h"
++#include "Order.h"
++#include "AIMaxima.h"
++#include <boost/logic/tribool.hpp>
++#include <boost/tuple/tuple.hpp>
++#include <list>
++#include <queue>
++#include <sstream>
++#include <tuple>
++#define private public
++#include "AINicowar.h"
++#undef private
++#include <cstdio>
++#include <cstdlib>
++
++GlobalContainer* globalContainer = nullptr;
++static void require(bool ok, const char* message)
++{
++	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
++}
++
++// Exercise the saved wire order and actual area executor, with asymmetric coordinates.
++template<class Order>
++struct AreaOrder : Order
++{
++	using Order::Order;
++	using Order::save;
++	using Order::load;
++	using Order::modify;
++};
++
++template<class Order>
++static void checkArea(AIEcho::Echo& echo, Game& game, bool adding)
++{
++	AreaOrder<Order> original(ClearingArea);
++	original.add_location(3, 17);
++	original.add_location(8, 29);
++	auto* bytes = new GAGCore::MemoryStreamBackend;
++	GAGCore::BinaryOutputStream output(bytes);
++	original.save(&output);
++	const auto saved = bytes->takeContents();
++	GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(), saved.size()));
++	AreaOrder<Order> restored;
++	require(restored.load(&input, game.players[0], VERSION_MINOR), "area load");
++	auto* roundTrip = new GAGCore::MemoryStreamBackend;
++	GAGCore::BinaryOutputStream second(roundTrip);
++	restored.save(&second);
++	require(roundTrip->takeContents() == saved, "area coordinates survive save/load unchanged");
++	restored.modify(echo);
++	for (auto order : echo.orders)
++	{
++		order->sender = 0;
++		game.executeOrder(order, 0);
++	}
++	echo.orders.clear();
++	require(game.map.isClearArea(3, 17, 1) == adding &&
++		game.map.isClearArea(8, 29, 1) == adding, "restored order changes intended tiles");
++	require(!game.map.isClearArea(17, 3, 1) && !game.map.isClearArea(29, 8, 1),
++		"restored order does not change transposed tiles");
++}
++
++int main(int argc, char** argv)
++{
++	require(argc == 3 && std::string(argv[1]).find("glob2-save-test-") == 0,
++		"usage: AISavePortabilityHarness DISPOSABLE_PROFILE ROOT");
++	GlobalContainer globals(argv[1]);
++	globalContainer = &globals;
++	globals.fileManager->addDir(argv[2]);
++	globals.runNoX = true;
++	globals.settings.rememberUnit = false;
++	globals.buildingsTypes.init();
++	IntBuildingType::init();
++	{
++		Game game(nullptr);
++		game.map.setSize(6, 6, GRASS);
++		game.map.setGame(&game);
++		game.addTeam();
++		game.teams[0]->race.loadDefault();
++		game.players[0] = new Player(0, "portability", game.teams[0], BasePlayer::P_LOCAL);
++		game.gameHeader.setNumberOfPlayers(1);
++		AIEcho::Echo echo(new NewNicowar, game.players[0]);
++		require(!echo.update_gm && echo.allies == 0 && echo.enemies == 0 &&
++			echo.inn_view == 0 && echo.market_view == 0 && echo.other_view == 0,
++			"Echo serialized fields initialized before first tick");
++		checkArea<AIEcho::Management::AddArea>(echo, game, true);
++		checkArea<AIEcho::Management::RemoveArea>(echo, game, false);
++
++		AIMaxima::Maxima maxima(game.players[0]);
++		auto stored = std::make_shared<AITelemetry::Series>();
++		auto& series = *stored;
++		series.implementation = 7;
++		series.current.tick = 17;
++		series.fields = maxima.telemetrySchema();
++		series.current.values.resize(series.fields.size());
++		maxima.telemetry.series = &series;
++		maxima.telemetry.tick = 17;
++		unsigned reserved = 0;
++		for (unsigned i = 0; i < series.fields.size(); ++i)
++			if (series.fields[i].name.starts_with("state.policy_bids_6."))
++			{
++				series.current.values[i] = {12345, 10, true};
++				++reserved;
++			}
++		require(reserved == 20, "legacy telemetry columns retained");
++		auto* bytes = new GAGCore::MemoryStreamBackend;
++		GAGCore::BinaryOutputStream output(bytes);
++		AITelemetry::save(&output, {stored});
++		const auto saved = bytes->takeContents();
++		GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(), saved.size()));
++		std::vector<std::shared_ptr<AITelemetry::Series>> loaded;
++		AITelemetry::load(&input, loaded);
++		require(loaded.size() == 1 && loaded[0]->current == series.current,
++			"legacy telemetry remains readable without changing stored samples");
++		series = *loaded[0];
++		maxima.captureTelemetry();
++		for (unsigned i = 0; i < series.fields.size(); ++i)
++		{
++			if (series.fields[i].name.starts_with("state.policy_bids_6."))
++				require(series.current.values[i] == AITelemetry::Value{}, "invalid policy sample cleared");
++			if (series.fields[i].name == "state.policy_bids_5.utility")
++				require(series.current.values[i].valid, "real sixth policy still sampled");
++		}
++	}
++	globalContainer = nullptr;
++	std::puts("PASS Echo initialization, AddArea/RemoveArea serialization, Maxima reserved telemetry");
++}
+diff --git a/test/README.md b/test/README.md
+index 5e179d939..c7c9450bf 100644
+--- a/test/README.md
++++ b/test/README.md
+@@ -458,6 +458,26 @@ python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests
+ 
+ The harness runs headlessly in disposable profile directories in Linux and Windows CI.
+ 
++## AI save portability
++
++`AISavePortabilityHarness` checks Echo's serialized fields before its first tick,
++round-trips asymmetric AddArea/RemoveArea coordinates through the binary stream,
++and executes the restored orders on their intended tiles. It also loads legacy
++Maxima telemetry with values in the nonexistent seventh-policy columns and checks
++that capture marks those columns unavailable while still sampling the six real
++policies. The legacy columns and historical samples remain readable.
++
++```sh
++scons release=1 server=0 ai-save-portability-test
++python3 test/run-savegame-safety-tests.py build/native-tests/src/AISavePortabilityHarness .
++```
++
++The Linux CI regression job runs this harness. For portability changes, also run
++it with Clang and GCC and compare full-game per-tick traces using the same saved
++input. Correct coordinate loading preserves the x/y order written in existing
++saves; a save containing pending area orders can resume differently from older
++GCC builds that transposed those coordinates. The saved layout is unchanged.
++
+ ## Echo building-order id save compatibility
+ 
+ `EchoBuildingOrderSaveLoadTest` covers `AIEcho::Construction::BuildingOrder::id`,
+-- 
+2.54.0 (Apple Git-157)
+
+
+From c3cecc0120340c17c393a5e9f2c723538d82a527 Mon Sep 17 00:00:00 2001
+From: Bradley Arsenault <brad@bradleyarsenault.me>
+Date: Mon, 28 Sep 2026 14:16:53 -0400
+Subject: [PATCH 2/2] Initialize and rewind the AI save regression fixtures
+
+---
+ test/AISavePortabilityHarness.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/test/AISavePortabilityHarness.cpp b/test/AISavePortabilityHarness.cpp
+index 62f53434e..a0208fb10 100644
+--- a/test/AISavePortabilityHarness.cpp
++++ b/test/AISavePortabilityHarness.cpp
+@@ -49,6 +49,7 @@ static void checkArea(AIEcho::Echo& echo, Game& game, bool adding)
+ 	original.save(&output);
+ 	const auto saved = bytes->takeContents();
+ 	GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(), saved.size()));
++	input.seekFromStart(0);
+ 	AreaOrder<Order> restored;
+ 	require(restored.load(&input, game.players[0], VERSION_MINOR), "area load");
+ 	auto* roundTrip = new GAGCore::MemoryStreamBackend;
+@@ -95,6 +96,7 @@ int main(int argc, char** argv)
+ 		checkArea<AIEcho::Management::RemoveArea>(echo, game, false);
+ 
+ 		AIMaxima::Maxima maxima(game.players[0]);
++		maxima.getOrder(); // Initialize the director before sampling its policy state.
+ 		auto stored = std::make_shared<AITelemetry::Series>();
+ 		auto& series = *stored;
+ 		series.implementation = 7;
+@@ -116,6 +118,7 @@ int main(int argc, char** argv)
+ 		AITelemetry::save(&output, {stored});
+ 		const auto saved = bytes->takeContents();
+ 		GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(), saved.size()));
++		input.seekFromStart(0);
+ 		std::vector<std::shared_ptr<AITelemetry::Series>> loaded;
+ 		AITelemetry::load(&input, loaded);
+ 		require(loaded.size() == 1 && loaded[0]->current == series.current,
+-- 
+2.54.0 (Apple Git-157)
+

@@ -1,0 +1,100 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "binaries": {
+    "base": {
+      "path": "/Users/bradley/.codex/worktrees/ai-save-portability/glob2/artifacts/ai-save-portability/base/build/darwin/client/release/src/glob2",
+      "sha256": "96380c179939ddc29752c245be25a540b3ba34f2a8fa28d1b163f4d947770220"
+    },
+    "head": {
+      "path": "/Users/bradley/.codex/worktrees/ai-save-portability/glob2/build/darwin/client/release/src/glob2",
+      "sha256": "45c35e98a4c42bae7affa3c03f13e975b6582e3512be8de7f376d9d1a56d922e"
+    }
+  },
+  "cases": [
+    {
+      "name": "arena256-seed73",
+      "generator": 15,
+      "map_seed": 73,
+      "game_seed": 31,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 8192,
+      "repetitions": 6,
+      "family": "additional-seed",
+      "save_every": 0,
+      "generation_command": [
+        "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/glob2-base",
+        "--generate-map",
+        "--generator",
+        "15",
+        "--map-seed",
+        "73",
+        "--write-map",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-timing-study/maps/arena256-seed73",
+        "--param",
+        "width=8",
+        "--param",
+        "height=8",
+        "--param",
+        "teams=4"
+      ],
+      "map_file": "arena256-seed73.map",
+      "map_sha256": "9e6439407b4fc9852cfe2240b290833c287e088ca225a56a0ae3b221ee06add1"
+    },
+    {
+      "name": "lakes256-seed131",
+      "generator": 4,
+      "map_seed": 131,
+      "game_seed": 31,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 8192,
+      "repetitions": 6,
+      "family": "additional-seed",
+      "save_every": 0,
+      "generation_command": [
+        "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/glob2-base",
+        "--generate-map",
+        "--generator",
+        "4",
+        "--map-seed",
+        "131",
+        "--write-map",
+        "true",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-timing-study/maps/lakes256-seed131",
+        "--param",
+        "width=8",
+        "--param",
+        "height=8",
+        "--param",
+        "teams=4"
+      ],
+      "map_file": "lakes256-seed131.map",
+      "map_sha256": "8e8b47c054750c36b311613f341468d42cc45ca750ba8767fcb55947d013c2de"
+    }
+  ],
+  "commands": [],
+  "continuation_input_sha256": "82a5e219717a6ff98a88268afb1a1f76dac12ec06670f3e5b32d23f6cb4096c1"
+}

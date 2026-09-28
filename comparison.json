@@ -1,0 +1,170 @@
+{
+  "baseline_vs_fixed": [
+    {
+      "host": "macOS",
+      "case": "arena256-seed73",
+      "ticks": 8192,
+      "equal_files": {
+        "checkpoint-4096.game": false,
+        "checkpoint-8192.game": false,
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "host": "macOS",
+      "case": "continuation",
+      "ticks": 4096,
+      "equal_files": {
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "host": "macOS",
+      "case": "lakes256-seed131",
+      "ticks": 8192,
+      "equal_files": {
+        "checkpoint-4096.game": false,
+        "checkpoint-8192.game": false,
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "host": "therig",
+      "case": "arena256-seed73",
+      "ticks": 8192,
+      "equal_files": {
+        "checkpoint-4096.game": false,
+        "checkpoint-8192.game": false,
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "host": "therig",
+      "case": "continuation",
+      "ticks": 4096,
+      "equal_files": {
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "host": "therig",
+      "case": "lakes256-seed131",
+      "ticks": 8192,
+      "equal_files": {
+        "checkpoint-4096.game": false,
+        "checkpoint-8192.game": false,
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "host": "devlaptop",
+      "case": "arena256-seed73",
+      "ticks": 8192,
+      "equal_files": {
+        "checkpoint-4096.game": false,
+        "checkpoint-8192.game": false,
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "host": "devlaptop",
+      "case": "continuation",
+      "ticks": 4096,
+      "equal_files": {
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "host": "devlaptop",
+      "case": "lakes256-seed131",
+      "ticks": 8192,
+      "equal_files": {
+        "checkpoint-4096.game": false,
+        "checkpoint-8192.game": false,
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    }
+  ],
+  "fixed_cross_platform": [
+    {
+      "host": "therig",
+      "case": "arena256-seed73",
+      "equal_files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "host": "devlaptop",
+      "case": "arena256-seed73",
+      "equal_files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "host": "therig",
+      "case": "lakes256-seed131",
+      "equal_files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "host": "devlaptop",
+      "case": "lakes256-seed131",
+      "equal_files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "host": "therig",
+      "case": "continuation",
+      "equal_files": {
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "host": "devlaptop",
+      "case": "continuation",
+      "equal_files": {
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    }
+  ]
+}

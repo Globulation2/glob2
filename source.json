@@ -1,0 +1,20 @@
+{
+  "baseline": "c464848726379f9f286c43452820919727e04078",
+  "head": "c3cecc0120340c17c393a5e9f2c723538d82a527",
+  "macOS": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n"
+  },
+  "therig": {
+    "host": "therig.local",
+    "root": "/home/bradley/glob2-ai-save-fixes.xVwoeO",
+    "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "platform": "Linux therig 7.0.0-31-generic #31-Ubuntu SMP PREEMPT_DYNAMIC Sat Aug  1 04:26:38 UTC 2026 x86_64 GNU/Linux\n"
+  },
+  "devlaptop": {
+    "host": "devlaptop.local",
+    "root": "/home/bradley/glob2-ai-save-fixes.OQztTu",
+    "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "platform": "Linux devlaptop 7.0.0-30-generic #30~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Aug  7 13:27:52 UTC 2 x86_64 x86_64 x86_64 GNU/Linux\n"
+  }
+}
