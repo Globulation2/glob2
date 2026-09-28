@@ -12,9 +12,9 @@ This branch contains review evidence only. The implementation branch has no gene
 - Native mobile input, responsive menu, mobile presentation, gameplay touch/editor, portable renderer and text-raster harnesses. Menu-colony isolation and actual navigation also pass; the harness targets the composed Cancel control and has a 60-second watchdog.
 - Linux software-GL text-raster reproduction and correction, including fractional scales and nearby cache reuse. The original pixel-accuracy threshold is unchanged.
 
-All nine focused Chromium/WebGL2 cases passed on the final implementation revision. They cover Unicode editing through rotation, mixed touch/mouse resizing, quota and transaction-failure recovery, tutorial/results return paths, campaign editor navigation, editor cancellation and successful saving. The browser captures were inspected as well as the native localized captures. These nine cases were rerun successfully after the final preview-status and navigation follow-ups.
+All nine focused Chromium/WebGL2 cases passed against the final application code. They cover Unicode editing through rotation, mixed touch/mouse resizing, quota and transaction-failure recovery, tutorial/results return paths, campaign editor navigation, editor cancellation and successful saving. The browser captures were inspected as well as the native localized captures. These nine cases were rerun successfully after the final preview-status and navigation follow-ups.
 
-Hosted CI is still running: [desktop/browser build](https://github.com/Globulation2/glob2/actions/runs/36490642370) and [Android builds](https://github.com/Globulation2/glob2/actions/runs/36490642368). No completed hosted-validation claim is made yet.
+All 12 hosted checks passed on the implementation revision above, including browser/native simulation equivalence: [desktop/browser build](https://github.com/Globulation2/glob2/actions/runs/36490642370) and [Android builds](https://github.com/Globulation2/glob2/actions/runs/36490642368). The saved `hosted-*-final.json` and `pr-checks-final.json` bind these results to that exact commit. Hosted browser coverage passed 96 Chromium software cases, 28 Firefox/WebKit cases, 24 Chromium WebGL2 cases (one existing renderer-specific skip), both visibility checks, and two TLS/storage deployment tests. The full browser log is included.
 
 ## Captures
 

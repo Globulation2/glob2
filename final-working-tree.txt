@@ -1,0 +1,4 @@
+?? keyboard-gui.txt
+?? keyboard-mapedit.txt
+?? maps/browser_corrupt_fixture.map
+?? preferences.txt
