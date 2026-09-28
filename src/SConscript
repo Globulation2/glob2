@@ -29,6 +29,17 @@ if not env['server']:
     local.Alias('maxima-continuation-test', continuation_test)
 
 if not env['server']:
+    echo_test_env = local.Clone()
+    echo_test_env.Append(CCFLAGS=['-UNDEBUG'])
+    echo_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    echo_sources += [source for source in source_files if not source.endswith('.cpp')]
+    echo_sources += echo_test_env.Object('EchoContinuationTest.o', '#test/EchoContinuationTest.cpp')
+    echo_link_env = local.Clone()
+    echo_link_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    echo_link_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    local.Alias('echo-continuation-test', echo_link_env.Program('EchoContinuationTest', echo_sources))
+
+if not env['server']:
     geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
     geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
     geometry_test = local.Program('CortexGeometryHarness', geometry_sources)
