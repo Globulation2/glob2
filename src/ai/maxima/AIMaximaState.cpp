@@ -260,6 +260,17 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
         // A pre-116 advancing wave has no known launch force; exclude it.
         for(const auto& wave:offense_waves)
             if(wave.phase==Tactics::WaveAdvance)wave_delivery[wave.flagId].scored=true;
+    // Version 117 was a rolling-maturity prototype. Consume its obsolete
+    // cache for save compatibility; permanent protection has no such state.
+    if(versionMinor==117)
+    {
+        std::vector<int> discardedCells;
+        Uint32 discardedCursor=0;
+        std::map<int, bool> discardedPending;
+        archive("wheat_maturity_cells",discardedCells);
+        archive("wheat_maturity_cursor",discardedCursor);
+        archive("wheat_maturity_pending",discardedPending);
+    }
     stream->readLeaveSection();
 
 }

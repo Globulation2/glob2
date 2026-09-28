@@ -4,7 +4,7 @@
 30000 on a 128×128 symmetric arena (map seed 42, game seed 19). The expected
 JSON maps each of the 512 ticks from 30000 through 30511 to the SHA-256 of its
 ordered team/entity checksum record when continuing that retained checkpoint with
-the current AI policy. The current baseline includes wheat maturity protection and
+the current AI policy. The current baseline includes permanent wheat seed protection and
 renewable wood reserves, and was verified against matching macOS and Linux
 continuations. The original v115 checkpoint
 is retained to keep testing older-save loading. The test also saves at tick 30256,

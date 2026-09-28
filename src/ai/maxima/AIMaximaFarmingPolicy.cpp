@@ -1196,10 +1196,9 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 			}
 		}
 	// Empty frontier protection cannot regrow a patch after its last live crop
-	// is harvested. The sparse pattern may leave a mature boundary cell open
+	// is harvested. The sparse pattern may leave a boundary cell open
 	// while that same cell suppresses its neighbor's local bootstrap. Select one
-	// eligible anchor only in components with no protected live resource; wheat
-	// anchors still pass through the maturity release step below.
+	// eligible anchor only in components with no protected live resource.
 	std::vector<Uint8> visited(w*h,0);
 	for(int start=0;start<w*h;++start)
 	{
@@ -1308,8 +1307,8 @@ void Maxima::add_wheat_expansion_support(Context& echo, FarmProtectionPlan& plan
 			const int i=y*w+x;
 			const Tile& cell=map->getTile(x,y);
 			const bool live=cell.resource.type==WHEAT && cell.resource.amount>0;
-			// Odd/odd cells belong to the maturity layout. Extra support
-			// must not replace their normal eligibility and release rules.
+			// Odd/odd cells belong to the permanent layout. Extra support
+			// must not replace their normal layout eligibility.
 			if(Farming::isInteriorSeed(x,y) || plan.wood_reserve.cells[i] || plan.forbidden[i]
 			   || !open[i] || !nearby[i] || has_hard_farming_contract(i)
 			   || cell.groundUnit!=NOGUID || cell.airUnit!=NOGUID
@@ -1359,34 +1358,6 @@ void Maxima::add_wheat_expansion_support(Context& echo, FarmProtectionPlan& plan
 			++added;
 			++plan.protected_wheat_support;
 		}
-	}
-}
-
-void Maxima::apply_wheat_maturity(Context& echo, FarmProtectionPlan& plan,
-	const std::vector<Uint8>& layout)
-{
-	Map* map=echo.player->map;
-	const int w=map->getW(), h=map->getH();
-	MapInfo info(echo);
-	const auto nearby=farm_management_area(echo, budget.farming_management_radius);
-	for(int i=0; i<w*h; ++i)
-	{
-		const int x=i%w, y=i/w;
-		const Tile& cell=map->getTile(x,y);
-		if(!nearby[i] || !info.is_discovered(x,y)
-		   || has_hard_farming_contract(i) || plan.wood_reserve.cells[i]
-		   || cell.terrain>=16 || cell.building!=NOGBID
-		   || (map->isForbidden(x,y,echo.player->team->me) && !applied_farm_protection_mask[i])
-		   || (cell.resource.type!=WHEAT && cell.resource.type!=NO_RES_TYPE)) continue;
-		// An empty cell may instead be reserved for wood growth.
-		if(cell.resource.type==NO_RES_TYPE && plan.forbidden[i] && !plan.protected_wheat[i]) continue;
-		const bool live=cell.resource.type==WHEAT && cell.resource.amount>0;
-		const bool support=plan.protected_wheat[i] && !layout[i];
-		const bool target=!live && plan.protected_wheat[i];
-		const bool young=live && cell.resource.amount<4 && fertility_cache.at(x,y)>0;
-		// Layout cells are harvestable at maturity; empty targets and extra
-		// expansion support retain their separate, temporary obligations.
-		plan.forbidden[i]=plan.protected_wheat[i]=support || target || (young && layout[i]);
 	}
 }
 
@@ -1459,9 +1430,7 @@ void Maxima::update_farming(Context& echo)
 		}
 	}
 
-	const auto wheat_layout=plan.protected_wheat;
 	add_wheat_expansion_support(echo, plan);
-	apply_wheat_maturity(echo, plan, wheat_layout);
 	resolve_wheat_invasion_clearing(echo, plan);
 	int added=0;
 	int removed=0;
