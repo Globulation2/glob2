@@ -1,0 +1,5 @@
+Settings::load("preferences.txt") : error, can't open file.
+Landscape preview:  revision 0 seed 1878759804 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2305735134 [validation]: Unknown generator
+Landscape preview: Could not place every colony
+PASS deferred viewport priority, reprioritization, stable seeds, yielding retries, restart/reroll

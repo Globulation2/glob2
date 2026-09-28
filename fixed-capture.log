@@ -1,0 +1,75 @@
+Settings::load("preferences.txt") : error, can't open file.
+MAP isles root 71 seed 1089828233 pixels 6521978524372576566 score 0.891052 start 236,101 start 203,186 start 60,130 start 55,245
+MAP river root 71 seed 1089828233 pixels 2658210328966754121 score 0.909834 start 7,45 start 96,47 start 154,77 start 63,103
+MAP contested-commons root 71 seed 1089828233 pixels 5497570465864990801 score 0.800607 start 40,220 start 111,159 start 43,80 start 225,150
+Landscape preview:  revision 0 seed 2962945287 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3254816402 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2969958392 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 605839610 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2425087215 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 4090476350 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3866423241 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1366915357 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2625128764 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3938433748 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1038890004 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1582728912 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 65329493 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2580403157 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2341950530 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3027311310 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3127642448 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3718944604 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1685630655 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1878876218 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 4113332825 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3119408523 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 882931817 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 118029698 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1017598225 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1832801969 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1527882000 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1881303677 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 768913549 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1907717468 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2727352330 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 4211833228 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 4109846938 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3087793073 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 447507703 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3084699127 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2204313356 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 748069554 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 958841627 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3788618005 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 901467139 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3831938338 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3456912264 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2086851625 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2479409924 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2073181005 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3944318185 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1910798621 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2799045115 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 4218498472 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 31411108 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 722775027 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2041877452 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2867344598 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 881690037 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 754612523 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1925455358 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 4143594027 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3400941620 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3763095827 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2807187269 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2199957778 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2192281974 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 261926835 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3880412162 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 3835396010 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 1016841015 [validation]: Unknown generator
+BENCH delivery_ms 13.4421
+BENCH initial_uploaded 6 / 67
+BENCH scroll_ms median 1.519 p95 8.34217 max 8.6465
+PASS offscreen previews stay CPU-only; scrolling never fades

@@ -1,0 +1,5 @@
+
+Running 1 test using 1 worker
+
+[1/1] [chromium] › browser/tests/single-player.spec.js:404:1 › landscape picker and start-quality details return to the retained custom setup
+  1 passed (20.4s)
