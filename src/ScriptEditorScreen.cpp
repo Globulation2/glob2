@@ -809,7 +809,7 @@ void ScriptEditorScreen::drawTouchInViewport(GAGCore::ViewRect available, bool k
 		{
 			caption = strings->getString(tabs[c.action - TAB_SCRIPT]);
 			if (c.action == TAB_SCRIPT)
-				caption = "Script";
+				caption = GAGCore::Toolkit::getStringTable()->getString("[Script]");
 			if (c.action == TAB_OBJECTIVES &&
 				Toolkit::getFont("standard")->getStringWidth(caption) >
 					c.bounds.w / context->logicalUnitsPerPoint() - 12)
@@ -826,13 +826,13 @@ void ScriptEditorScreen::drawTouchInViewport(GAGCore::ViewRect available, bool k
 			switch (c.action)
 			{
 			case PREVIOUS_ENTRY:
-				caption = "Previous";
+				caption = GAGCore::Toolkit::getStringTable()->getString("[Previous]");
 				break;
 			case NEXT_ENTRY:
-				caption = "Next";
+				caption = GAGCore::Toolkit::getStringTable()->getString("[Next]");
 				break;
 			case HIDE_KEYBOARD:
-				caption = "Hide keyboard";
+				caption = GAGCore::Toolkit::getStringTable()->getString("[Hide keyboard]");
 				break;
 			case OK:
 				caption = strings->getString("[ok]");
@@ -841,7 +841,7 @@ void ScriptEditorScreen::drawTouchInViewport(GAGCore::ViewRect available, bool k
 				caption = strings->getString("[Cancel]");
 				break;
 			case COMPILE:
-				caption = "Compile";
+				caption = GAGCore::Toolkit::getStringTable()->getString("[Compile]");
 				break;
 			case LOAD:
 				caption = strings->getString("[load]");
@@ -850,11 +850,11 @@ void ScriptEditorScreen::drawTouchInViewport(GAGCore::ViewRect available, bool k
 				caption = strings->getString("[Save]");
 				break;
 			case TAB_PRIMARY:
-				caption = "Primary";
+				caption = GAGCore::Toolkit::getStringTable()->getString("[Primary Objectives]");
 				selected = !touchSecondary;
 				break;
 			case TAB_SECONDARY:
-				caption = "Secondary";
+				caption = GAGCore::Toolkit::getStringTable()->getString("[Secondary Objectives]");
 				selected = touchSecondary;
 				break;
 			}
@@ -864,12 +864,14 @@ void ScriptEditorScreen::drawTouchInViewport(GAGCore::ViewRect available, bool k
 	{
 		const double unit = context->logicalUnitsPerPoint();
 		std::string section =
-			touchTab == TAB_SCRIPT ? "Script"
+			touchTab == TAB_SCRIPT ? GAGCore::Toolkit::getStringTable()->getString("[Script]")
 			: touchTab == TAB_BRIEFING
-				? "Briefing"
-				: (touchTab == TAB_HINTS ? "Hint " : "Objective ") +
-					  std::to_string(touchItem + 1 +
-									 (touchSecondary && touchTab == TAB_OBJECTIVES ? 8 : 0));
+				? GAGCore::Toolkit::getStringTable()->getString("[briefing]")
+				: GAGCore::FormattableString(
+					  touchTab == TAB_HINTS
+						  ? GAGCore::Toolkit::getStringTable()->getString("[Hint %0]")
+						  : GAGCore::Toolkit::getStringTable()->getString("[Objective %0]"))
+					  .arg(touchItem + 1 + (touchSecondary && touchTab == TAB_OBJECTIVES ? 8 : 0));
 		EditorTouch::label(context,
 						   {touchBounds.x + 4 * unit, touchBounds.y + 4 * unit,
 							std::max(0., touchBounds.w - 148 * unit), 44 * unit},
@@ -897,9 +899,11 @@ void ScriptEditorScreen::drawTouchInViewport(GAGCore::ViewRect available, bool k
 	{
 		auto *canvas = static_cast<EditorTouch::TextCanvas *>(touchEntry);
 		canvas->canvasBounds(touchContent);
-		canvas->paintCanvas(false, touchPreedit,
-							touchTab == TAB_HINTS ? "Tap to write this hint"
-												  : "Tap to write this objective");
+		canvas->paintCanvas(
+			false, touchPreedit,
+			touchTab == TAB_HINTS
+				? GAGCore::Toolkit::getStringTable()->getString("[Tap to write this hint]")
+				: GAGCore::Toolkit::getStringTable()->getString("[Tap to write this objective]"));
 	}
 	if (compactKeyboardWorkspace)
 	{
@@ -911,9 +915,12 @@ void ScriptEditorScreen::drawTouchInViewport(GAGCore::ViewRect available, bool k
 		status = compilationResult->getText().empty() ? cursorPosition->getText()
 													  : compilationResult->getText();
 	else if (touchTab == TAB_BRIEFING)
-		status = "Mission briefing · tap to edit, swipe to scroll";
+		status = GAGCore::Toolkit::getStringTable()->getString(
+			"[Mission briefing · tap to edit, swipe to scroll]");
 	else
-		status = "Entry " + std::to_string(touchItem + 1) + " of 8 · empty entries are omitted";
+		status = GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString(
+												"[Entry %0 of 8 · empty entries are omitted]"))
+					 .arg(touchItem + 1);
 	EditorTouch::label(context,
 					   {touchBounds.x + 8 * context->logicalUnitsPerPoint(),
 						touchBounds.y + touchBounds.h - 80 * context->logicalUnitsPerPoint(),

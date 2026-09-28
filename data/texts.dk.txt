@@ -3226,3 +3226,185 @@ Gem spillet automatisk cirka hvert minut.
 AI-modstandere
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Rummelig bruger et sidepanel, når der er plads. Kompakt bruger en værktøjslinje og paneler, der kan foldes ud.
+[Assigned %0 · Target %1]
+Tildelt %0 · Mål %1
+[Range: %0]
+Rækkevidde: %0
+[Player %0]
+Spiller %0
+[Brush %0]
+Pensel %0
+[Team %0]
+Hold %0
+[Your colony]
+Din koloni
+[%0 / %1 HP · %2]
+%0 / %1 LP · %2
+[Units: %0]
+Enheder: %0
+[Buildings: %0]
+Bygninger: %0
+[Need food: %0]
+Behøver mad: %0
+[Need healing: %0]
+Behøver heling: %0
+[Attack: %0]
+Angreb: %0
+[Defense: %0]
+Forsvar: %0
+[Food: %0 / %1]
+Mad: %0 / %1
+[View team %0]
+Vis hold %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pensel %0x%1
+[Level %0]
+Niveau %0
+[Manage teams (%0)]
+Administrer hold (%0)
+[Team %0 / Level %1]
+Hold %0 / Niveau %1
+[Files · %0]
+Filer · %0
+[Hint %0]
+Tip %0
+[Objective %0]
+Mål %0
+[Entry %0 of 8 · empty entries are omitted]
+Post %0 af 8 · tomme poster udelades
+[Teams %0/%1]
+Hold %0/%1
+[Elapsed time · %0]
+Forløbet tid · %0
+[Read-only building]
+Skrivebeskyttet bygning
+[Alliance and shared vision are fixed for this match.]
+Alliance og delt syn er faste i denne kamp.
+[Share vision]
+Del syn
+[Share food vision]
+Del madsyn
+[Share market vision]
+Del markedssyn
+[Chat]
+Chat
+[No other players have editable diplomatic settings in this match.]
+Ingen andre spillere har redigerbare diplomatiske indstillinger i denne kamp.
+[No briefing for this match.]
+Ingen briefing til denne kamp.
+[Chat · recipients selected in Teams]
+Chat · modtagere valgt under Hold
+[Filename]
+Filnavn
+[Reduced motion]
+Reduceret bevægelse
+[Send]
+Send
+[Close]
+Luk
+[Forbidden]
+Forbudt
+[Guard]
+Bevogt
+[Clear]
+Ryd
+[Paint]
+Mal
+[Erase]
+Slet
+[Release on valid terrain to place]
+Slip på gyldigt terræn for at placere
+[Paint on the map; two fingers move]
+Mal på kortet; flyt med to fingre
+[Tutorial ▸]
+Vejledning ▸
+[Back to tools]
+Tilbage til værktøjer
+[Starvation overlay]
+Sultlag
+[Damage overlay]
+Skadelag
+[Defense overlay]
+Forsvarslag
+[Fertility overlay]
+Frugtbarhedslag
+[Health and food bars]
+Livs- og madbjælker
+[Message history]
+Beskedhistorik
+[Mark map for allies]
+Marker kortet for allierede
+[Show zones]
+Vis zoner
+[Pan]
+Panorer
+[Select]
+Vælg
+[Show palette]
+Vis palet
+[Release to place]
+Slip for at placere
+[Blocked placement]
+Placering blokeret
+[File name]
+Filnavn
+[Load map]
+Indlæs kort
+[Save map]
+Gem kort
+[No files in this folder]
+Ingen filer i denne mappe
+[No files saved yet]
+Ingen gemte filer endnu
+[Export]
+Eksporter
+[Tap to write the mission briefing]
+Tryk for at skrive missionsbriefingen
+[Tap to write the map script]
+Tryk for at skrive kortets script
+[Script]
+Script
+[Previous]
+Forrige
+[Compile]
+Kompiler
+[Tap to write this hint]
+Tryk for at skrive dette tip
+[Tap to write this objective]
+Tryk for at skrive dette mål
+[Mission briefing · tap to edit, swipe to scroll]
+Missionsbriefing · tryk for at redigere, stryg for at rulle
+[Not enough recorded history yet.]
+Endnu ikke nok registreret historik.
+[Select a team to show its history.]
+Vælg et hold for at vise dets historik.
+[Back to chart]
+Tilbage til graf
+[Expand chart]
+Udvid graf
+[Slot]
+Plads
+[Color]
+Farve
+[Player / AI]
+Spiller / AI
+[Group]
+Gruppe
+[Forbid]
+Forbyd
+[↓ Low]
+↓ Lav
+[= Normal]
+= Normal
+[↑ High]
+↑ Høj
+[Details]
+Detaljer
+[Campaign name]
+Kampagnenavn
+[Unlocking]
+Oplåsning

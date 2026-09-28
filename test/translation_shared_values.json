@@ -60,6 +60,7 @@
   "shared_vocabulary": {
     "texts.ar.txt": [],
     "texts.br.txt": [
+      "CPU %0%",
       "Coral",
       "Editor",
       "Elite",
@@ -67,12 +68,18 @@
       "Magenta",
       "Menu",
       "Oceania",
+      "P %0/%1/%2",
+      "Script",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "Tutorial ▸"
     ],
     "texts.ca.txt": [
+      "= Normal",
       "Audio",
+      "CPU %0%",
       "Canals",
+      "Color",
       "Combat",
       "Continent",
       "Continents",
@@ -81,23 +88,33 @@
       "Hospital",
       "Magenta",
       "No",
+      "Normal",
       "Oceania",
+      "P %0/%1/%2",
+      "Script",
       "Total",
       "Tutorial",
-      "desert",
-      "Normal"
+      "Tutorial ▸",
+      "desert"
     ],
     "texts.cz.txt": [
       "Audio",
+      "CPU %0%",
+      "Chat",
       "Editor",
       "Info",
+      "P %0/%1/%2",
       "Start"
     ],
     "texts.de.txt": [
       "%0 Level %1",
+      "= Normal",
       "Audio",
       "Briefing",
+      "CPU %0%",
+      "Chat",
       "Cyan",
+      "Details",
       "Diagonal",
       "Editor",
       "Elite",
@@ -107,6 +124,7 @@
       "Maximum",
       "Name",
       "Normal",
+      "P %0/%1/%2",
       "Pause",
       "Polder",
       "Prestige",
@@ -115,12 +133,17 @@
       "Standard",
       "Start",
       "Team",
+      "Team %0",
       "Teams",
+      "Teams %0/%1",
       "Version",
       "Veteran"
     ],
     "texts.dk.txt": [
+      "= Normal",
       "Alliance",
+      "CPU %0%",
+      "Chat",
       "Cyan",
       "Elite",
       "Flag",
@@ -132,12 +155,15 @@
       "Medium",
       "Menu",
       "Normal",
+      "P %0/%1/%2",
       "Pause",
       "Pink",
       "Polder",
       "Prestige",
       "Radius",
       "Sand",
+      "Script",
+      "Send",
       "Spiral",
       "Standard",
       "Start",
@@ -147,30 +173,43 @@
       "Veteran"
     ],
     "texts.eo.txt": [
+      "CPU %0%",
       "Info",
-      "Magenta"
+      "Magenta",
+      "P %0/%1/%2"
     ],
     "texts.es.txt": [
+      "= Normal",
       "Asia",
+      "CPU %0%",
+      "Chat",
+      "Color",
       "Coral",
       "Editor",
       "Hospital",
       "Magenta",
       "No",
+      "Normal",
+      "P %0/%1/%2",
       "Plazas",
+      "Script",
       "Total",
       "Tutorial",
-      "Normal"
+      "Tutorial ▸"
     ],
     "texts.eu.txt": [
       "Asia",
+      "CPU %0%",
       "Info",
-      "Magenta"
+      "Magenta",
+      "P %0/%1/%2"
     ],
     "texts.fa.txt": [],
     "texts.fi.txt": [
       "Audio",
-      "Magenta"
+      "CPU %0%",
+      "Magenta",
+      "P %0/%1/%2"
     ],
     "texts.fr.txt": [
       "30 minutes",
@@ -181,6 +220,7 @@
       "Alliance",
       "Alliances",
       "Audio",
+      "CPU %0%",
       "Colonies",
       "Combat",
       "Construction",
@@ -197,11 +237,13 @@
       "Options",
       "Orange",
       "Orientation",
+      "P %0/%1/%2",
       "Pause",
       "Plantations",
       "Polder",
       "Prestige",
       "Proportions",
+      "Script",
       "Standard",
       "Terrain",
       "Total",
@@ -209,26 +251,37 @@
       "colonies",
       "options"
     ],
-    "texts.gr.txt": [],
+    "texts.gr.txt": [
+      "CPU %0%"
+    ],
     "texts.hu.txt": [
+      "CPU %0%",
       "Editor",
       "Info",
       "Magenta",
+      "P %0/%1/%2",
       "Polder"
     ],
     "texts.id.txt": [
+      "%0 / %1 HP · %2",
+      "= Normal",
       "Asia",
       "Audio",
+      "CPU %0%",
       "Diagonal",
       "Editor",
       "Elite",
+      "Level %0",
       "Menu",
       "Normal",
+      "P %0/%1/%2",
       "Polder",
       "Radius",
+      "Slot",
       "Spiral",
       "Total",
       "Tutorial",
+      "Tutorial ▸",
       "Veteran"
     ],
     "texts.it.txt": [
@@ -236,43 +289,65 @@
       "Asia",
       "Audio",
       "Briefing",
+      "CPU %0%",
+      "Chat",
       "Editor",
       "Magenta",
       "Menu",
       "No",
       "Oceania",
+      "P %0/%1/%2",
       "Polder",
+      "Script",
       "Standard",
-      "Start"
+      "Start",
+      "Tutorial ▸"
     ],
-    "texts.ja.txt": [],
-    "texts.ko.txt": [],
+    "texts.ja.txt": [
+      "%0 / %1 HP · %2",
+      "CPU %0%"
+    ],
+    "texts.ko.txt": [
+      "CPU %0%"
+    ],
     "texts.nl.txt": [
       " teams",
       "%0 teams",
       "Briefing",
+      "CPU %0%",
+      "Chat",
       "Continent",
+      "Details",
       "Elite",
+      "Hint %0",
       "Info",
       "Lobby",
       "Magenta",
       "Menu",
+      "P %0/%1/%2",
       "Polder",
       "School",
+      "Script",
       "Team",
+      "Team %0",
       "Teams",
+      "Teams %0/%1",
       "Tutorial",
       "Water",
       "element"
     ],
     "texts.pl.txt": [
       "Audio",
+      "CPU %0%",
       "Magenta",
       "Menu",
       "Oceania",
+      "P %0/%1/%2",
       "Polder"
     ],
     "texts.pt.txt": [
+      "= Normal",
+      "CPU %0%",
       "Coral",
       "Editor",
       "Elite",
@@ -280,13 +355,17 @@
       "Magenta",
       "Menu",
       "Normal",
+      "P %0/%1/%2",
+      "Script",
       "Total",
-      "Tutorial"
+      "Tutorial",
+      "Tutorial ▸"
     ],
     "texts.ro.txt": [
       "Africa",
       "Asia",
       "Audio",
+      "CPU %0%",
       "Caravanserai",
       "Continent",
       "Control",
@@ -295,29 +374,40 @@
       "Editor",
       "Info",
       "Magenta",
+      "Normal",
       "Oceania",
+      "P %0/%1/%2",
       "Polder",
+      "Script",
       "Standard",
       "Total",
       "Tutorial",
-      "Veteran",
-      "Normal"
+      "Tutorial ▸",
+      "Veteran"
     ],
     "texts.ru.txt": [],
     "texts.si.txt": [
+      "CPU %0%",
       "Cyan",
       "Magenta",
+      "P %0/%1/%2",
       "Polder",
       "Veteran"
     ],
     "texts.sk.txt": [
+      "CPU %0%",
+      "Chat",
       "Editor",
       "Info",
+      "P %0/%1/%2",
       "Polder"
     ],
     "texts.sr.txt": [],
     "texts.sv.txt": [
+      "%0 / %1 HP · %2",
+      "= Normal",
       "Attack",
+      "CPU %0%",
       "Cyan",
       "Editor",
       "Hunger",
@@ -326,6 +416,8 @@
       "Lobby",
       "Magenta",
       "Medium",
+      "Normal",
+      "P %0/%1/%2",
       "Polder",
       "Prestige",
       "Sand",
@@ -333,17 +425,25 @@
       "Standard",
       "Team",
       "Version",
-      "Veteran",
-      "Normal"
+      "Veteran"
     ],
     "texts.tr.txt": [
+      "= Normal",
+      "CPU %0%",
+      "Normal",
+      "P %0/%1/%2",
       "Polder",
-      "Spiral",
-      "Normal"
+      "Spiral"
     ],
     "texts.uk.txt": [],
-    "texts.vi.txt": [],
-    "texts.zh-cn.txt": [],
-    "texts.zh-tw.txt": []
+    "texts.vi.txt": [
+      "CPU %0%"
+    ],
+    "texts.zh-cn.txt": [
+      "CPU %0%"
+    ],
+    "texts.zh-tw.txt": [
+      "CPU %0%"
+    ]
   }
 }

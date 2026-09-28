@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <FormatableString.h>
 #include "InGameTouchTheme.h"
 #include "EditorFileView.h"
 #include "MapEdit.h"
@@ -742,33 +743,45 @@ void PhoneEditor::draw()
 	const double unit = gfx->logicalUnitsPerPoint();
 	const bool objects = paletteMode >= 2;
 	std::string labels[] = {
-		"Menu",
-		objects ? "Team " + std::to_string(editor.team + 1)
-				: "Brush " + std::to_string(BrushTool::getBrushWidth(editor.brush.getFigure())) +
-					  "x" + std::to_string(BrushTool::getBrushHeight(editor.brush.getFigure())),
-		objects ? "Level " + std::to_string((editor.selectionMode == MapEdit::PlaceUnit
-												 ? editor.placingUnitLevel
-												 : editor.buildingLevel) +
-											1)
-				: (editor.brush.getType() == BrushTool::MODE_DEL ? "Erase" : "Paint"),
-		pan                                             ? "Pan"
-		: editor.selectionMode != MapEdit::PlaceNothing ? "Done"
-														: "Select"};
+		GAGCore::Toolkit::getStringTable()->getString("[Menu]"),
+		objects
+			? GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
+				  .arg(editor.team + 1)
+			: GAGCore::FormattableString(
+				  GAGCore::Toolkit::getStringTable()->getString("[Brush %0x%1]"))
+				  .arg(BrushTool::getBrushWidth(editor.brush.getFigure()))
+				  .arg(BrushTool::getBrushHeight(editor.brush.getFigure())),
+		objects ? GAGCore::FormattableString(
+					  GAGCore::Toolkit::getStringTable()->getString("[Level %0]"))
+					  .arg((editor.selectionMode == MapEdit::PlaceUnit ? editor.placingUnitLevel
+																	   : editor.buildingLevel) +
+						   1)
+				: (editor.brush.getType() == BrushTool::MODE_DEL
+					   ? GAGCore::Toolkit::getStringTable()->getString("[Erase]")
+					   : GAGCore::Toolkit::getStringTable()->getString("[Paint]")),
+		pan ? GAGCore::Toolkit::getStringTable()->getString("[Pan]")
+		: editor.selectionMode != MapEdit::PlaceNothing
+			? GAGCore::Toolkit::getStringTable()->getString("[Done]")
+			: GAGCore::Toolkit::getStringTable()->getString("[Select]")};
 	if (editor.selectionMode == MapEdit::PlaceTerrain &&
 		editor.terrainType <= TerrainSelector::Water)
 	{
-		const char *materials[] = {"Grass", "Sand", "Water"};
+		const std::string materials[] = {GAGCore::Toolkit::getStringTable()->getString("[grass]"),
+										 GAGCore::Toolkit::getStringTable()->getString("[sand]"),
+										 GAGCore::Toolkit::getStringTable()->getString("[Water]")};
 		labels[2] = materials[editor.terrainType];
 	}
 	else if (editor.selectionMode == MapEdit::RemoveObject)
-		labels[2] = "Delete";
+		labels[2] = GAGCore::Toolkit::getStringTable()->getString("[delete]");
 	// Zones need both an owner and brush controls. Two fingers still pan,
 	// so the last toolbar slot can expose Paint/Erase while this tool is active.
 	if (editor.selectionMode == MapEdit::PlaceZone)
 	{
-		labels[2] = "Brush " + std::to_string(BrushTool::getBrushWidth(editor.brush.getFigure())) +
-					"x" + std::to_string(BrushTool::getBrushHeight(editor.brush.getFigure()));
-		labels[3] = "Done";
+		labels[2] = GAGCore::FormattableString(
+						GAGCore::Toolkit::getStringTable()->getString("[Brush %0x%1]"))
+						.arg(BrushTool::getBrushWidth(editor.brush.getFigure()))
+						.arg(BrushTool::getBrushHeight(editor.brush.getFigure()));
+		labels[3] = GAGCore::Toolkit::getStringTable()->getString("[Done]");
 	}
 	for (int i = 0; i < 4; ++i)
 	{
@@ -784,12 +797,15 @@ void PhoneEditor::draw()
 	{
 		gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h),
 							InGameTouchTheme::paper);
-		label(modeBar, "Show palette");
+		label(modeBar, GAGCore::Toolkit::getStringTable()->getString("[Show palette]"));
 		return;
 	}
 	gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h + tray.h),
 						InGameTouchTheme::paper);
-	const char *modes[] = {"Terrain", "Resources", "Buildings", "Flags"};
+	const std::string modes[] = {Toolkit::getStringTable()->getString("[Terrain]"),
+								 Toolkit::getStringTable()->getString("[Resources]"),
+								 Toolkit::getStringTable()->getString("[Buildings]"),
+								 Toolkit::getStringTable()->getString("[Flags]")};
 	for (int i = 0; i < 4; ++i)
 	{
 		ViewRect r{modeBar.x + i * modeBar.w / 4, modeBar.y, modeBar.w / 4 - unit, modeBar.h};
@@ -798,7 +814,9 @@ void PhoneEditor::draw()
 		label(r, modes[i]);
 	}
 	if (editor.panelMode == MapEdit::Teams)
-		label(tray, "Manage teams (" + std::to_string(editor.game.teamsCount()) + ")");
+		label(tray, GAGCore::FormattableString(
+						GAGCore::Toolkit::getStringTable()->getString("[Manage teams (%0)]"))
+						.arg(editor.game.teamsCount()));
 	for (const auto &row : rows)
 	{
 		const auto r = row.rect;

@@ -3146,3 +3146,185 @@ Emoji
 Комп’ютерні суперники
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Просторе компонування використовує бічну панель, якщо вистачає місця. Компактне — панель інструментів і висувні панелі.
+[Assigned %0 · Target %1]
+Призначено %0 · Ціль %1
+[Range: %0]
+Радіус: %0
+[Player %0]
+Гравець %0
+[Brush %0]
+Пензель %0
+[Team %0]
+Команда %0
+[Your colony]
+Ваша колонія
+[%0 / %1 HP · %2]
+%0 / %1 ОЗ · %2
+[Units: %0]
+Юніти: %0
+[Buildings: %0]
+Будівлі: %0
+[Need food: %0]
+Потребують їжі: %0
+[Need healing: %0]
+Потребують лікування: %0
+[Attack: %0]
+Атака: %0
+[Defense: %0]
+Захист: %0
+[Food: %0 / %1]
+Їжа: %0 / %1
+[View team %0]
+Показати команду %0
+[P %0/%1/%2]
+П %0/%1/%2
+[CPU load %0]
+ЦП %0%
+[Brush %0x%1]
+Пензель %0x%1
+[Level %0]
+Рівень %0
+[Manage teams (%0)]
+Керування командами (%0)
+[Team %0 / Level %1]
+Команда %0 / Рівень %1
+[Files · %0]
+Файли · %0
+[Hint %0]
+Підказка %0
+[Objective %0]
+Ціль %0
+[Entry %0 of 8 · empty entries are omitted]
+Запис %0 із 8 · порожні записи пропускаються
+[Teams %0/%1]
+Команди %0/%1
+[Elapsed time · %0]
+Минулий час · %0
+[Read-only building]
+Будівля лише для перегляду
+[Alliance and shared vision are fixed for this match.]
+Союз і спільний огляд у цій грі незмінні.
+[Share vision]
+Ділитися оглядом
+[Share food vision]
+Ділитися оглядом їжі
+[Share market vision]
+Ділитися оглядом ринків
+[Chat]
+Чат
+[No other players have editable diplomatic settings in this match.]
+Інші гравці не мають змінюваних налаштувань дипломатії в цій грі.
+[No briefing for this match.]
+Немає інструктажу для цієї гри.
+[Chat · recipients selected in Teams]
+Чат · одержувачі обрані в розділі «Команди»
+[Filename]
+Ім’я файлу
+[Reduced motion]
+Менше руху
+[Send]
+Надіслати
+[Close]
+Закрити
+[Forbidden]
+Заборона
+[Guard]
+Охорона
+[Clear]
+Розчищення
+[Paint]
+Малювати
+[Erase]
+Стирати
+[Release on valid terrain to place]
+Відпустіть над придатною місцевістю для розміщення
+[Paint on the map; two fingers move]
+Малюйте на карті; рухайте двома пальцями
+[Tutorial ▸]
+Навчання ▸
+[Back to tools]
+Назад до інструментів
+[Starvation overlay]
+Шар голоду
+[Damage overlay]
+Шар пошкоджень
+[Defense overlay]
+Шар захисту
+[Fertility overlay]
+Шар родючості
+[Health and food bars]
+Смужки здоров’я та їжі
+[Message history]
+Історія повідомлень
+[Mark map for allies]
+Позначити карту для союзників
+[Show zones]
+Показати зони
+[Pan]
+Переміщувати
+[Select]
+Вибрати
+[Show palette]
+Показати палітру
+[Release to place]
+Відпустіть для розміщення
+[Blocked placement]
+Розміщення заблоковано
+[File name]
+Ім’я файлу
+[Load map]
+Завантажити карту
+[Save map]
+Зберегти карту
+[No files in this folder]
+У цій теці немає файлів
+[No files saved yet]
+Немає збережених файлів
+[Export]
+Експорт
+[Tap to write the mission briefing]
+Торкніться, щоб написати інструктаж місії
+[Tap to write the map script]
+Торкніться, щоб написати скрипт карти
+[Script]
+Скрипт
+[Previous]
+Назад
+[Compile]
+Компілювати
+[Tap to write this hint]
+Торкніться, щоб написати цю підказку
+[Tap to write this objective]
+Торкніться, щоб написати цю ціль
+[Mission briefing · tap to edit, swipe to scroll]
+Інструктаж місії · торкніться для правки, проведіть для прокручування
+[Not enough recorded history yet.]
+Поки що недостатньо записаної історії.
+[Select a team to show its history.]
+Виберіть команду, щоб показати її історію.
+[Back to chart]
+Назад до графіка
+[Expand chart]
+Розгорнути графік
+[Slot]
+Місце
+[Color]
+Колір
+[Player / AI]
+Гравець / ШІ
+[Group]
+Група
+[Forbid]
+Заборонити
+[↓ Low]
+↓ Низький
+[= Normal]
+= Звичайний
+[↑ High]
+↑ Високий
+[Details]
+Подробиці
+[Campaign name]
+Назва кампанії
+[Unlocking]
+Розблокування

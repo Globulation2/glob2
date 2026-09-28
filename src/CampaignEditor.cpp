@@ -256,10 +256,14 @@ CampaignEditor::CampaignEditor(const std::string &name, GAGGUI::ScreenStack &scr
 	saveStatus = new CampaignTextArea(320, 330, 310, 80, ALIGN_SCREEN_CENTERED,
 									  ALIGN_SCREEN_CENTERED, "standard", true, "");
 	addWidget(saveStatus);
-	detailsTab = new TextButton(0, 0, 100, 44, ALIGN_LEFT, ALIGN_TOP, "standard", "Details", 100);
-	mapsTab = new TextButton(0, 0, 100, 44, ALIGN_LEFT, ALIGN_TOP, "standard", "Maps", 101);
-	nameLabel = new Text(0, 0, ALIGN_LEFT, ALIGN_TOP, "standard", "Campaign name");
-	descriptionLabel = new Text(0, 0, ALIGN_LEFT, ALIGN_TOP, "standard", "Description");
+	detailsTab = new TextButton(0, 0, 100, 44, ALIGN_LEFT, ALIGN_TOP, "standard",
+								Toolkit::getStringTable()->getString("[Details]"), 100);
+	mapsTab = new TextButton(0, 0, 100, 44, ALIGN_LEFT, ALIGN_TOP, "standard",
+							 Toolkit::getStringTable()->getString("[the maps]"), 101);
+	nameLabel = new Text(0, 0, ALIGN_LEFT, ALIGN_TOP, "standard",
+						 Toolkit::getStringTable()->getString("[Campaign name]"));
+	descriptionLabel = new Text(0, 0, ALIGN_LEFT, ALIGN_TOP, "standard",
+								Toolkit::getStringTable()->getString("[map description]"));
 	addWidget(detailsTab);
 	addWidget(mapsTab);
 	addWidget(nameLabel);
@@ -490,8 +494,10 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign &campaign, CampaignMapEn
 	addWidget(descriptionEditor);
 	addWidget(ok);
 	addWidget(cancel);
-	detailsTab = new TextButton(0, 0, 100, 44, ALIGN_LEFT, ALIGN_TOP, "standard", "Details", 100);
-	unlockTab = new TextButton(0, 0, 100, 44, ALIGN_LEFT, ALIGN_TOP, "standard", "Unlocking", 101);
+	detailsTab = new TextButton(0, 0, 100, 44, ALIGN_LEFT, ALIGN_TOP, "standard",
+								Toolkit::getStringTable()->getString("[Details]"), 100);
+	unlockTab = new TextButton(0, 0, 100, 44, ALIGN_LEFT, ALIGN_TOP, "standard",
+							   Toolkit::getStringTable()->getString("[Unlocking]"), 101);
 	addWidget(detailsTab);
 	addWidget(unlockTab);
 }

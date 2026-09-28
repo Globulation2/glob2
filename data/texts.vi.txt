@@ -3146,3 +3146,185 @@ Tự động lưu trò chơi khoảng mỗi phút.
 Đối thủ máy
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Bố cục rộng rãi dùng bảng bên khi đủ chỗ. Bố cục gọn dùng thanh công cụ và các bảng có thể mở rộng.
+[Assigned %0 · Target %1]
+Đã phân công %0 · Mục tiêu %1
+[Range: %0]
+Tầm: %0
+[Player %0]
+Người chơi %0
+[Brush %0]
+Cọ %0
+[Team %0]
+Đội %0
+[Your colony]
+Thuộc địa của bạn
+[%0 / %1 HP · %2]
+%0 / %1 máu · %2
+[Units: %0]
+Đơn vị: %0
+[Buildings: %0]
+Công trình: %0
+[Need food: %0]
+Cần thức ăn: %0
+[Need healing: %0]
+Cần chữa trị: %0
+[Attack: %0]
+Tấn công: %0
+[Defense: %0]
+Phòng thủ: %0
+[Food: %0 / %1]
+Thức ăn: %0 / %1
+[View team %0]
+Xem đội %0
+[P %0/%1/%2]
+Uy tín %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Cọ %0x%1
+[Level %0]
+Cấp %0
+[Manage teams (%0)]
+Quản lý đội (%0)
+[Team %0 / Level %1]
+Đội %0 / Cấp %1
+[Files · %0]
+Tệp · %0
+[Hint %0]
+Gợi ý %0
+[Objective %0]
+Mục tiêu %0
+[Entry %0 of 8 · empty entries are omitted]
+Mục %0 trong 8 · bỏ qua mục trống
+[Teams %0/%1]
+Đội %0/%1
+[Elapsed time · %0]
+Thời gian đã qua · %0
+[Read-only building]
+Công trình chỉ xem
+[Alliance and shared vision are fixed for this match.]
+Liên minh và tầm nhìn chung được cố định trong trận này.
+[Share vision]
+Chia sẻ tầm nhìn
+[Share food vision]
+Chia sẻ tầm nhìn thức ăn
+[Share market vision]
+Chia sẻ tầm nhìn chợ
+[Chat]
+Trò chuyện
+[No other players have editable diplomatic settings in this match.]
+Không có người chơi khác với thiết lập ngoại giao có thể sửa trong trận này.
+[No briefing for this match.]
+Không có hướng dẫn cho trận này.
+[Chat · recipients selected in Teams]
+Trò chuyện · chọn người nhận trong Đội
+[Filename]
+Tên tệp
+[Reduced motion]
+Giảm chuyển động
+[Send]
+Gửi
+[Close]
+Đóng
+[Forbidden]
+Cấm
+[Guard]
+Canh gác
+[Clear]
+Dọn dẹp
+[Paint]
+Vẽ
+[Erase]
+Xóa
+[Release on valid terrain to place]
+Thả trên địa hình hợp lệ để đặt
+[Paint on the map; two fingers move]
+Vẽ trên bản đồ; di chuyển bằng hai ngón tay
+[Tutorial ▸]
+Hướng dẫn ▸
+[Back to tools]
+Về công cụ
+[Starvation overlay]
+Lớp đói
+[Damage overlay]
+Lớp thiệt hại
+[Defense overlay]
+Lớp phòng thủ
+[Fertility overlay]
+Lớp màu mỡ
+[Health and food bars]
+Thanh máu và thức ăn
+[Message history]
+Lịch sử tin nhắn
+[Mark map for allies]
+Đánh dấu bản đồ cho đồng minh
+[Show zones]
+Hiện vùng
+[Pan]
+Di chuyển
+[Select]
+Chọn
+[Show palette]
+Hiện bảng công cụ
+[Release to place]
+Thả để đặt
+[Blocked placement]
+Không thể đặt
+[File name]
+Tên tệp
+[Load map]
+Tải bản đồ
+[Save map]
+Lưu bản đồ
+[No files in this folder]
+Không có tệp trong thư mục này
+[No files saved yet]
+Chưa có tệp được lưu
+[Export]
+Xuất
+[Tap to write the mission briefing]
+Chạm để viết hướng dẫn nhiệm vụ
+[Tap to write the map script]
+Chạm để viết tập lệnh bản đồ
+[Script]
+Tập lệnh
+[Previous]
+Trước
+[Compile]
+Biên dịch
+[Tap to write this hint]
+Chạm để viết gợi ý này
+[Tap to write this objective]
+Chạm để viết mục tiêu này
+[Mission briefing · tap to edit, swipe to scroll]
+Hướng dẫn nhiệm vụ · chạm để sửa, vuốt để cuộn
+[Not enough recorded history yet.]
+Chưa có đủ lịch sử được ghi lại.
+[Select a team to show its history.]
+Chọn đội để hiện lịch sử của đội đó.
+[Back to chart]
+Về biểu đồ
+[Expand chart]
+Mở rộng biểu đồ
+[Slot]
+Ô
+[Color]
+Màu
+[Player / AI]
+Người chơi / AI
+[Group]
+Nhóm
+[Forbid]
+Cấm
+[↓ Low]
+↓ Thấp
+[= Normal]
+= Bình thường
+[↑ High]
+↑ Cao
+[Details]
+Chi tiết
+[Campaign name]
+Tên chiến dịch
+[Unlocking]
+Mở khóa

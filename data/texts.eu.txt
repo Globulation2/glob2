@@ -3160,3 +3160,185 @@ Gorde jokoa automatikoki minutuero, gutxi gorabehera.
 Ordenagailuko aurkariak
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Diseinu zabalak alboko panela erabiltzen du lekua dagoenean. Trinkoak tresna-barra eta panel zabalgarriak erabiltzen ditu.
+[Assigned %0 · Target %1]
+Esleituta %0 · Helburua %1
+[Range: %0]
+Irismena: %0
+[Player %0]
+%0 jokalaria
+[Brush %0]
+%0 eskuila
+[Team %0]
+%0 taldea
+[Your colony]
+Zure kolonia
+[%0 / %1 HP · %2]
+%0 / %1 BP · %2
+[Units: %0]
+Unitateak: %0
+[Buildings: %0]
+Eraikinak: %0
+[Need food: %0]
+Janaria behar dute: %0
+[Need healing: %0]
+Sendatzea behar dute: %0
+[Attack: %0]
+Erasoa: %0
+[Defense: %0]
+Defentsa: %0
+[Food: %0 / %1]
+Janaria: %0 / %1
+[View team %0]
+Ikusi %0 taldea
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+%0x%1 eskuila
+[Level %0]
+%0 maila
+[Manage teams (%0)]
+Kudeatu taldeak (%0)
+[Team %0 / Level %1]
+%0 taldea / %1 maila
+[Files · %0]
+Fitxategiak · %0
+[Hint %0]
+%0 pista
+[Objective %0]
+%0 helburua
+[Entry %0 of 8 · empty entries are omitted]
+8tik %0 sarrera · sarrera hutsak ez dira erakusten
+[Teams %0/%1]
+Taldeak %0/%1
+[Elapsed time · %0]
+Igarotako denbora · %0
+[Read-only building]
+Irakurtzeko soilik den eraikina
+[Alliance and shared vision are fixed for this match.]
+Aliantza eta ikusmen partekatua finkoak dira partida honetan.
+[Share vision]
+Partekatu ikusmena
+[Share food vision]
+Partekatu janariaren ikusmena
+[Share market vision]
+Partekatu merkatuen ikusmena
+[Chat]
+Txata
+[No other players have editable diplomatic settings in this match.]
+Beste jokalariek ez dute diplomazia-ezarpen editagarririk partida honetan.
+[No briefing for this match.]
+Ez dago argibiderik partida honetarako.
+[Chat · recipients selected in Teams]
+Txata · hartzaileak Taldeak atalean hautatuta
+[Filename]
+Fitxategi-izena
+[Reduced motion]
+Mugimendu murriztua
+[Send]
+Bidali
+[Close]
+Itxi
+[Forbidden]
+Debekatua
+[Guard]
+Zaindu
+[Clear]
+Garbitu
+[Paint]
+Margotu
+[Erase]
+Ezabatu
+[Release on valid terrain to place]
+Askatu lur egokian kokatzeko
+[Paint on the map; two fingers move]
+Margotu mapan; mugitu bi hatzekin
+[Tutorial ▸]
+Tutoriala ▸
+[Back to tools]
+Itzuli tresnetara
+[Starvation overlay]
+Gose-geruza
+[Damage overlay]
+Kalte-geruza
+[Defense overlay]
+Defentsa-geruza
+[Fertility overlay]
+Emankortasun-geruza
+[Health and food bars]
+Osasun- eta janari-barrak
+[Message history]
+Mezuen historia
+[Mark map for allies]
+Markatu mapa aliatuentzat
+[Show zones]
+Erakutsi eremuak
+[Pan]
+Mugitu
+[Select]
+Hautatu
+[Show palette]
+Erakutsi paleta
+[Release to place]
+Askatu kokatzeko
+[Blocked placement]
+Kokapena blokeatuta
+[File name]
+Fitxategiaren izena
+[Load map]
+Kargatu mapa
+[Save map]
+Gorde mapa
+[No files in this folder]
+Ez dago fitxategirik karpeta honetan
+[No files saved yet]
+Oraindik ez dago gordetako fitxategirik
+[Export]
+Esportatu
+[Tap to write the mission briefing]
+Ukitu misioaren argibideak idazteko
+[Tap to write the map script]
+Ukitu maparen scripta idazteko
+[Script]
+Scripta
+[Previous]
+Aurrekoa
+[Compile]
+Konpilatu
+[Tap to write this hint]
+Ukitu pista hau idazteko
+[Tap to write this objective]
+Ukitu helburu hau idazteko
+[Mission briefing · tap to edit, swipe to scroll]
+Misioaren argibideak · ukitu editatzeko, irristatu korritzeko
+[Not enough recorded history yet.]
+Oraindik ez dago nahikoa historia erregistratuta.
+[Select a team to show its history.]
+Hautatu talde bat haren historia erakusteko.
+[Back to chart]
+Itzuli grafikora
+[Expand chart]
+Handitu grafikoa
+[Slot]
+Lekua
+[Color]
+Kolorea
+[Player / AI]
+Jokalaria / AA
+[Group]
+Taldea
+[Forbid]
+Debekatu
+[↓ Low]
+↓ Baxua
+[= Normal]
+= Normala
+[↑ High]
+↑ Altua
+[Details]
+Xehetasunak
+[Campaign name]
+Kanpainaren izena
+[Unlocking]
+Desblokeatzea

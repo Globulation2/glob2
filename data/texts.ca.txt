@@ -3158,3 +3158,185 @@ Desa la partida automàticament cada minut aproximadament.
 Adversaris d’IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d’eines i panells desplegables.
+[Assigned %0 · Target %1]
+Assignats %0 · Objectiu %1
+[Range: %0]
+Abast: %0
+[Player %0]
+Jugador %0
+[Brush %0]
+Pinzell %0
+[Team %0]
+Equip %0
+[Your colony]
+La teva colònia
+[%0 / %1 HP · %2]
+%0 / %1 PV · %2
+[Units: %0]
+Unitats: %0
+[Buildings: %0]
+Edificis: %0
+[Need food: %0]
+Necessiten menjar: %0
+[Need healing: %0]
+Necessiten curació: %0
+[Attack: %0]
+Atac: %0
+[Defense: %0]
+Defensa: %0
+[Food: %0 / %1]
+Menjar: %0 / %1
+[View team %0]
+Mostra l’equip %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pinzell %0x%1
+[Level %0]
+Nivell %0
+[Manage teams (%0)]
+Gestiona equips (%0)
+[Team %0 / Level %1]
+Equip %0 / Nivell %1
+[Files · %0]
+Fitxers · %0
+[Hint %0]
+Pista %0
+[Objective %0]
+Objectiu %0
+[Entry %0 of 8 · empty entries are omitted]
+Entrada %0 de 8 · s’ometen les entrades buides
+[Teams %0/%1]
+Equips %0/%1
+[Elapsed time · %0]
+Temps transcorregut · %0
+[Read-only building]
+Edifici de només lectura
+[Alliance and shared vision are fixed for this match.]
+L’aliança i la visió compartida són fixes en aquesta partida.
+[Share vision]
+Comparteix visió
+[Share food vision]
+Comparteix visió del menjar
+[Share market vision]
+Comparteix visió dels mercats
+[Chat]
+Xat
+[No other players have editable diplomatic settings in this match.]
+Cap altre jugador té opcions diplomàtiques editables en aquesta partida.
+[No briefing for this match.]
+No hi ha instruccions per a aquesta partida.
+[Chat · recipients selected in Teams]
+Xat · destinataris triats a Equips
+[Filename]
+Nom de fitxer
+[Reduced motion]
+Moviment reduït
+[Send]
+Envia
+[Close]
+Tanca
+[Forbidden]
+Prohibit
+[Guard]
+Vigila
+[Clear]
+Neteja
+[Paint]
+Pinta
+[Erase]
+Esborra
+[Release on valid terrain to place]
+Deixa anar sobre terreny vàlid per col·locar
+[Paint on the map; two fingers move]
+Pinta al mapa; mou amb dos dits
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Torna a les eines
+[Starvation overlay]
+Capa de fam
+[Damage overlay]
+Capa de danys
+[Defense overlay]
+Capa de defensa
+[Fertility overlay]
+Capa de fertilitat
+[Health and food bars]
+Barres de salut i menjar
+[Message history]
+Historial de missatges
+[Mark map for allies]
+Marca el mapa per als aliats
+[Show zones]
+Mostra zones
+[Pan]
+Desplaça
+[Select]
+Selecciona
+[Show palette]
+Mostra paleta
+[Release to place]
+Deixa anar per col·locar
+[Blocked placement]
+Col·locació bloquejada
+[File name]
+Nom del fitxer
+[Load map]
+Carrega mapa
+[Save map]
+Desa mapa
+[No files in this folder]
+No hi ha fitxers en aquesta carpeta
+[No files saved yet]
+Encara no hi ha fitxers desats
+[Export]
+Exporta
+[Tap to write the mission briefing]
+Toca per escriure les instruccions de la missió
+[Tap to write the map script]
+Toca per escriure l’script del mapa
+[Script]
+Script
+[Previous]
+Anterior
+[Compile]
+Compila
+[Tap to write this hint]
+Toca per escriure aquesta pista
+[Tap to write this objective]
+Toca per escriure aquest objectiu
+[Mission briefing · tap to edit, swipe to scroll]
+Instruccions de missió · toca per editar, llisca per desplaçar
+[Not enough recorded history yet.]
+Encara no hi ha prou historial registrat.
+[Select a team to show its history.]
+Selecciona un equip per mostrar-ne l’historial.
+[Back to chart]
+Torna al gràfic
+[Expand chart]
+Amplia el gràfic
+[Slot]
+Lloc
+[Color]
+Color
+[Player / AI]
+Jugador / IA
+[Group]
+Grup
+[Forbid]
+Prohibeix
+[↓ Low]
+↓ Baixa
+[= Normal]
+= Normal
+[↑ High]
+↑ Alta
+[Details]
+Detalls
+[Campaign name]
+Nom de la campanya
+[Unlocking]
+Desbloqueig

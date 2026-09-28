@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <FormatableString.h>
 // Touch editor presentation. Reads existing selection/value bindings; all edits
 // return through named editor actions or ValueScrollBox::setValue.
 #include "PhoneEditor.h"
@@ -106,8 +107,10 @@ void PhoneEditor::drawInspector()
 			return;
 		}
 		title = translated(("[" + b->type->type + "]").c_str());
-		detail = "Team " + std::to_string(b->owner->teamNumber + 1) + " / Level " +
-				 std::to_string(b->type->level + 1);
+		detail = GAGCore::FormattableString(
+					 GAGCore::Toolkit::getStringTable()->getString("[Team %0 / Level %1]"))
+					 .arg(b->owner->teamNumber + 1)
+					 .arg(b->type->level + 1);
 		picture = editor.buildingPicture;
 	}
 	else
@@ -120,7 +123,9 @@ void PhoneEditor::drawInspector()
 			return;
 		}
 		title = getUnitName(unit->typeNum);
-		detail = "Team " + std::to_string(unit->owner->teamNumber + 1);
+		detail =
+			GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
+				.arg(unit->owner->teamNumber + 1);
 		picture = editor.unitPicture;
 	}
 	label({inspector.x + 64 * u, inspector.y + 4 * u, inspector.w - 116 * u, 30 * u}, title);
@@ -192,8 +197,8 @@ void PhoneEditor::drawBrushPanel()
 																	 : InGameTouchTheme::field);
 		surface(erase, editor.brush.getType() == BrushTool::MODE_DEL ? InGameTouchTheme::selected
 																	 : InGameTouchTheme::field);
-		label(paint, "Paint");
-		label(erase, "Erase");
+		label(paint, GAGCore::Toolkit::getStringTable()->getString("[Paint]"));
+		label(erase, GAGCore::Toolkit::getStringTable()->getString("[Erase]"));
 	}
 }
 void PhoneEditor::drawInteractionPreview()
@@ -291,7 +296,8 @@ void PhoneEditor::drawInteractionPreview()
 		ViewRect status{content.x + std::max(0., (content.w - 180 * u) / 2), content.y + 4 * u,
 						std::min(content.w, 180 * u), 28 * u};
 		surface(status);
-		label(status, valid ? "Release to place" : "Blocked placement");
+		label(status, valid ? GAGCore::Toolkit::getStringTable()->getString("[Release to place]")
+							: GAGCore::Toolkit::getStringTable()->getString("[Blocked placement]"));
 	}
 	gfx->setClipRect();
 }

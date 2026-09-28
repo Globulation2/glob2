@@ -3150,3 +3150,185 @@ Emoji
 Рачунарски противници
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Простран распоред користи бочну таблу када има места. Компактан користи траку алатки и табле на извлачење.
+[Assigned %0 · Target %1]
+Додељено %0 · Циљ %1
+[Range: %0]
+Домет: %0
+[Player %0]
+Играч %0
+[Brush %0]
+Четкица %0
+[Team %0]
+Тим %0
+[Your colony]
+Ваша колонија
+[%0 / %1 HP · %2]
+%0 / %1 ЖП · %2
+[Units: %0]
+Јединице: %0
+[Buildings: %0]
+Зграде: %0
+[Need food: %0]
+Требају храну: %0
+[Need healing: %0]
+Требају лечење: %0
+[Attack: %0]
+Напад: %0
+[Defense: %0]
+Одбрана: %0
+[Food: %0 / %1]
+Храна: %0 / %1
+[View team %0]
+Прикажи тим %0
+[P %0/%1/%2]
+П %0/%1/%2
+[CPU load %0]
+ЦПУ %0%
+[Brush %0x%1]
+Четкица %0x%1
+[Level %0]
+Ниво %0
+[Manage teams (%0)]
+Управљај тимовима (%0)
+[Team %0 / Level %1]
+Тим %0 / Ниво %1
+[Files · %0]
+Датотеке · %0
+[Hint %0]
+Савет %0
+[Objective %0]
+Циљ %0
+[Entry %0 of 8 · empty entries are omitted]
+Ставка %0 од 8 · празне ставке се изостављају
+[Teams %0/%1]
+Тимови %0/%1
+[Elapsed time · %0]
+Протекло време · %0
+[Read-only building]
+Зграда само за читање
+[Alliance and shared vision are fixed for this match.]
+Савез и заједнички вид су непроменљиви у овој партији.
+[Share vision]
+Дели вид
+[Share food vision]
+Дели вид хране
+[Share market vision]
+Дели вид пијаца
+[Chat]
+Ћаскање
+[No other players have editable diplomatic settings in this match.]
+Други играчи немају изменљива дипломатска подешавања у овој партији.
+[No briefing for this match.]
+Нема упутстава за ову партију.
+[Chat · recipients selected in Teams]
+Ћаскање · примаоци изабрани у Тимовима
+[Filename]
+Име датотеке
+[Reduced motion]
+Смањено кретање
+[Send]
+Пошаљи
+[Close]
+Затвори
+[Forbidden]
+Забрањено
+[Guard]
+Чувај
+[Clear]
+Очисти
+[Paint]
+Цртај
+[Erase]
+Бриши
+[Release on valid terrain to place]
+Пусти изнад ваљаног терена за постављање
+[Paint on the map; two fingers move]
+Цртај по мапи; померај са два прста
+[Tutorial ▸]
+Обука ▸
+[Back to tools]
+Назад на алате
+[Starvation overlay]
+Слој глади
+[Damage overlay]
+Слој оштећења
+[Defense overlay]
+Слој одбране
+[Fertility overlay]
+Слој плодности
+[Health and food bars]
+Траке здравља и хране
+[Message history]
+Историја порука
+[Mark map for allies]
+Означи мапу за савезнике
+[Show zones]
+Прикажи зоне
+[Pan]
+Померај
+[Select]
+Изабери
+[Show palette]
+Прикажи палету
+[Release to place]
+Пусти за постављање
+[Blocked placement]
+Постављање блокирано
+[File name]
+Име датотеке
+[Load map]
+Учитај мапу
+[Save map]
+Сачувај мапу
+[No files in this folder]
+Нема датотека у овој фасцикли
+[No files saved yet]
+Још нема сачуваних датотека
+[Export]
+Извези
+[Tap to write the mission briefing]
+Додирни да напишеш упутства мисије
+[Tap to write the map script]
+Додирни да напишеш скрипту мапе
+[Script]
+Скрипта
+[Previous]
+Претходно
+[Compile]
+Компајлирај
+[Tap to write this hint]
+Додирни да напишеш овај савет
+[Tap to write this objective]
+Додирни да напишеш овај циљ
+[Mission briefing · tap to edit, swipe to scroll]
+Упутства мисије · додирни за измену, превуци за листање
+[Not enough recorded history yet.]
+Још нема довољно забележене историје.
+[Select a team to show its history.]
+Изабери тим да прикажеш његову историју.
+[Back to chart]
+Назад на графикон
+[Expand chart]
+Прошири графикон
+[Slot]
+Место
+[Color]
+Боја
+[Player / AI]
+Играч / ВИ
+[Group]
+Група
+[Forbid]
+Забрани
+[↓ Low]
+↓ Низак
+[= Normal]
+= Нормалан
+[↑ High]
+↑ Висок
+[Details]
+Детаљи
+[Campaign name]
+Назив кампање
+[Unlocking]
+Откључавање

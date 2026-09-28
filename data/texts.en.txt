@@ -3148,3 +3148,185 @@ Back
 Save the game automatically about every minute.
 [AI opponents]
 AI opponents
+[Assigned %0 · Target %1]
+Assigned %0 · Target %1
+[Range: %0]
+Range: %0
+[Player %0]
+Player %0
+[Brush %0]
+Brush %0
+[Team %0]
+Team %0
+[Your colony]
+Your colony
+[%0 / %1 HP · %2]
+%0 / %1 HP · %2
+[Units: %0]
+Units: %0
+[Buildings: %0]
+Buildings: %0
+[Need food: %0]
+Need food: %0
+[Need healing: %0]
+Need healing: %0
+[Attack: %0]
+Attack: %0
+[Defense: %0]
+Defense: %0
+[Food: %0 / %1]
+Food: %0 / %1
+[View team %0]
+View team %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Brush %0x%1
+[Level %0]
+Level %0
+[Manage teams (%0)]
+Manage teams (%0)
+[Team %0 / Level %1]
+Team %0 / Level %1
+[Files · %0]
+Files · %0
+[Hint %0]
+Hint %0
+[Objective %0]
+Objective %0
+[Entry %0 of 8 · empty entries are omitted]
+Entry %0 of 8 · empty entries are omitted
+[Teams %0/%1]
+Teams %0/%1
+[Elapsed time · %0]
+Elapsed time · %0
+[Read-only building]
+Read-only building
+[Alliance and shared vision are fixed for this match.]
+Alliance and shared vision are fixed for this match.
+[Share vision]
+Share vision
+[Share food vision]
+Share food vision
+[Share market vision]
+Share market vision
+[Chat]
+Chat
+[No other players have editable diplomatic settings in this match.]
+No other players have editable diplomatic settings in this match.
+[No briefing for this match.]
+No briefing for this match.
+[Chat · recipients selected in Teams]
+Chat · recipients selected in Teams
+[Filename]
+Filename
+[Reduced motion]
+Reduced motion
+[Send]
+Send
+[Close]
+Close
+[Forbidden]
+Forbidden
+[Guard]
+Guard
+[Clear]
+Clear
+[Paint]
+Paint
+[Erase]
+Erase
+[Release on valid terrain to place]
+Release on valid terrain to place
+[Paint on the map; two fingers move]
+Paint on the map; two fingers move
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Back to tools
+[Starvation overlay]
+Starvation overlay
+[Damage overlay]
+Damage overlay
+[Defense overlay]
+Defense overlay
+[Fertility overlay]
+Fertility overlay
+[Health and food bars]
+Health and food bars
+[Message history]
+Message history
+[Mark map for allies]
+Mark map for allies
+[Show zones]
+Show zones
+[Pan]
+Pan
+[Select]
+Select
+[Show palette]
+Show palette
+[Release to place]
+Release to place
+[Blocked placement]
+Blocked placement
+[File name]
+File name
+[Load map]
+Load map
+[Save map]
+Save map
+[No files in this folder]
+No files in this folder
+[No files saved yet]
+No files saved yet
+[Export]
+Export
+[Tap to write the mission briefing]
+Tap to write the mission briefing
+[Tap to write the map script]
+Tap to write the map script
+[Script]
+Script
+[Previous]
+Previous
+[Compile]
+Compile
+[Tap to write this hint]
+Tap to write this hint
+[Tap to write this objective]
+Tap to write this objective
+[Mission briefing · tap to edit, swipe to scroll]
+Mission briefing · tap to edit, swipe to scroll
+[Not enough recorded history yet.]
+Not enough recorded history yet.
+[Select a team to show its history.]
+Select a team to show its history.
+[Back to chart]
+Back to chart
+[Expand chart]
+Expand chart
+[Slot]
+Slot
+[Color]
+Color
+[Player / AI]
+Player / AI
+[Group]
+Group
+[Forbid]
+Forbid
+[↓ Low]
+↓ Low
+[= Normal]
+= Normal
+[↑ High]
+↑ High
+[Details]
+Details
+[Campaign name]
+Campaign name
+[Unlocking]
+Unlocking

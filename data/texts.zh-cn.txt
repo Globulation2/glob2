@@ -3146,3 +3146,185 @@ Emoji
 电脑对手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 宽敞布局在空间足够时使用侧边面板。紧凑布局使用工具栏和可展开的面板。
+[Assigned %0 · Target %1]
+已分配 %0 · 目标 %1
+[Range: %0]
+范围：%0
+[Player %0]
+玩家 %0
+[Brush %0]
+画笔 %0
+[Team %0]
+队伍 %0
+[Your colony]
+你的殖民地
+[%0 / %1 HP · %2]
+%0 / %1 生命值 · %2
+[Units: %0]
+单位：%0
+[Buildings: %0]
+建筑：%0
+[Need food: %0]
+需要食物：%0
+[Need healing: %0]
+需要治疗：%0
+[Attack: %0]
+攻击：%0
+[Defense: %0]
+防御：%0
+[Food: %0 / %1]
+食物：%0 / %1
+[View team %0]
+查看队伍 %0
+[P %0/%1/%2]
+声望 %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+画笔 %0x%1
+[Level %0]
+等级 %0
+[Manage teams (%0)]
+管理队伍（%0）
+[Team %0 / Level %1]
+队伍 %0 / 等级 %1
+[Files · %0]
+文件 · %0
+[Hint %0]
+提示 %0
+[Objective %0]
+目标 %0
+[Entry %0 of 8 · empty entries are omitted]
+第 %0 项，共 8 项 · 空白项将省略
+[Teams %0/%1]
+队伍 %0/%1
+[Elapsed time · %0]
+已用时间 · %0
+[Read-only building]
+只读建筑
+[Alliance and shared vision are fixed for this match.]
+本局的联盟和共享视野已固定。
+[Share vision]
+共享视野
+[Share food vision]
+共享食物视野
+[Share market vision]
+共享市场视野
+[Chat]
+聊天
+[No other players have editable diplomatic settings in this match.]
+本局没有其他玩家的外交设置可供编辑。
+[No briefing for this match.]
+本局没有任务简报。
+[Chat · recipients selected in Teams]
+聊天 · 在队伍中选择接收者
+[Filename]
+文件名
+[Reduced motion]
+减少动态效果
+[Send]
+发送
+[Close]
+关闭
+[Forbidden]
+禁止
+[Guard]
+守卫
+[Clear]
+清理
+[Paint]
+绘制
+[Erase]
+擦除
+[Release on valid terrain to place]
+在有效地形上松手以放置
+[Paint on the map; two fingers move]
+在地图上绘制；双指移动
+[Tutorial ▸]
+教程 ▸
+[Back to tools]
+返回工具
+[Starvation overlay]
+饥饿叠加层
+[Damage overlay]
+受损叠加层
+[Defense overlay]
+防御叠加层
+[Fertility overlay]
+肥沃度叠加层
+[Health and food bars]
+生命和食物条
+[Message history]
+消息历史
+[Mark map for allies]
+为盟友标记地图
+[Show zones]
+显示区域
+[Pan]
+平移
+[Select]
+选择
+[Show palette]
+显示面板
+[Release to place]
+松手以放置
+[Blocked placement]
+无法放置
+[File name]
+文件名称
+[Load map]
+加载地图
+[Save map]
+保存地图
+[No files in this folder]
+此文件夹中没有文件
+[No files saved yet]
+尚未保存任何文件
+[Export]
+导出
+[Tap to write the mission briefing]
+点击编写任务简报
+[Tap to write the map script]
+点击编写地图脚本
+[Script]
+脚本
+[Previous]
+上一项
+[Compile]
+编译
+[Tap to write this hint]
+点击编写此提示
+[Tap to write this objective]
+点击编写此目标
+[Mission briefing · tap to edit, swipe to scroll]
+任务简报 · 点击编辑，滑动滚动
+[Not enough recorded history yet.]
+记录的历史数据还不够。
+[Select a team to show its history.]
+选择队伍以显示其历史数据。
+[Back to chart]
+返回图表
+[Expand chart]
+展开图表
+[Slot]
+位置
+[Color]
+颜色
+[Player / AI]
+玩家 / AI
+[Group]
+组
+[Forbid]
+禁止
+[↓ Low]
+↓ 低
+[= Normal]
+= 普通
+[↑ High]
+↑ 高
+[Details]
+详情
+[Campaign name]
+战役名称
+[Unlocking]
+解锁

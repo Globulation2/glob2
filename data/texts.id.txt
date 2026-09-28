@@ -3146,3 +3146,185 @@ Simpan permainan secara otomatis kira-kira setiap menit.
 Lawan AI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Tata letak lapang menggunakan panel samping jika ada ruang. Tata letak ringkas menggunakan bilah alat dan panel yang dapat dibuka.
+[Assigned %0 · Target %1]
+Ditugaskan %0 · Target %1
+[Range: %0]
+Jangkauan: %0
+[Player %0]
+Pemain %0
+[Brush %0]
+Kuas %0
+[Team %0]
+Tim %0
+[Your colony]
+Koloni Anda
+[%0 / %1 HP · %2]
+%0 / %1 HP · %2
+[Units: %0]
+Unit: %0
+[Buildings: %0]
+Bangunan: %0
+[Need food: %0]
+Butuh makanan: %0
+[Need healing: %0]
+Butuh penyembuhan: %0
+[Attack: %0]
+Serangan: %0
+[Defense: %0]
+Pertahanan: %0
+[Food: %0 / %1]
+Makanan: %0 / %1
+[View team %0]
+Lihat tim %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Kuas %0x%1
+[Level %0]
+Level %0
+[Manage teams (%0)]
+Kelola tim (%0)
+[Team %0 / Level %1]
+Tim %0 / Level %1
+[Files · %0]
+Berkas · %0
+[Hint %0]
+Petunjuk %0
+[Objective %0]
+Tujuan %0
+[Entry %0 of 8 · empty entries are omitted]
+Entri %0 dari 8 · entri kosong diabaikan
+[Teams %0/%1]
+Tim %0/%1
+[Elapsed time · %0]
+Waktu berlalu · %0
+[Read-only building]
+Bangunan hanya baca
+[Alliance and shared vision are fixed for this match.]
+Aliansi dan penglihatan bersama tetap untuk pertandingan ini.
+[Share vision]
+Bagikan penglihatan
+[Share food vision]
+Bagikan penglihatan makanan
+[Share market vision]
+Bagikan penglihatan pasar
+[Chat]
+Obrolan
+[No other players have editable diplomatic settings in this match.]
+Tidak ada pemain lain dengan pengaturan diplomasi yang dapat diedit dalam pertandingan ini.
+[No briefing for this match.]
+Tidak ada pengarahan untuk pertandingan ini.
+[Chat · recipients selected in Teams]
+Obrolan · penerima dipilih di Tim
+[Filename]
+Nama berkas
+[Reduced motion]
+Kurangi gerakan
+[Send]
+Kirim
+[Close]
+Tutup
+[Forbidden]
+Terlarang
+[Guard]
+Jaga
+[Clear]
+Bersihkan
+[Paint]
+Lukis
+[Erase]
+Hapus
+[Release on valid terrain to place]
+Lepaskan di medan yang valid untuk menempatkan
+[Paint on the map; two fingers move]
+Lukis di peta; geser dengan dua jari
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Kembali ke alat
+[Starvation overlay]
+Lapisan kelaparan
+[Damage overlay]
+Lapisan kerusakan
+[Defense overlay]
+Lapisan pertahanan
+[Fertility overlay]
+Lapisan kesuburan
+[Health and food bars]
+Bilah kesehatan dan makanan
+[Message history]
+Riwayat pesan
+[Mark map for allies]
+Tandai peta untuk sekutu
+[Show zones]
+Tampilkan zona
+[Pan]
+Geser
+[Select]
+Pilih
+[Show palette]
+Tampilkan palet
+[Release to place]
+Lepaskan untuk menempatkan
+[Blocked placement]
+Penempatan terhalang
+[File name]
+Nama berkas
+[Load map]
+Muat peta
+[Save map]
+Simpan peta
+[No files in this folder]
+Tidak ada berkas di folder ini
+[No files saved yet]
+Belum ada berkas tersimpan
+[Export]
+Ekspor
+[Tap to write the mission briefing]
+Ketuk untuk menulis pengarahan misi
+[Tap to write the map script]
+Ketuk untuk menulis skrip peta
+[Script]
+Skrip
+[Previous]
+Sebelumnya
+[Compile]
+Kompilasi
+[Tap to write this hint]
+Ketuk untuk menulis petunjuk ini
+[Tap to write this objective]
+Ketuk untuk menulis tujuan ini
+[Mission briefing · tap to edit, swipe to scroll]
+Pengarahan misi · ketuk untuk mengedit, usap untuk menggulir
+[Not enough recorded history yet.]
+Riwayat yang tercatat belum cukup.
+[Select a team to show its history.]
+Pilih tim untuk menampilkan riwayatnya.
+[Back to chart]
+Kembali ke grafik
+[Expand chart]
+Perbesar grafik
+[Slot]
+Slot
+[Color]
+Warna
+[Player / AI]
+Pemain / AI
+[Group]
+Grup
+[Forbid]
+Larang
+[↓ Low]
+↓ Rendah
+[= Normal]
+= Normal
+[↑ High]
+↑ Tinggi
+[Details]
+Rincian
+[Campaign name]
+Nama kampanye
+[Unlocking]
+Pembukaan

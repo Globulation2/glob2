@@ -422,7 +422,10 @@ void TeamsEditor::drawTouch()
 			int(touchRows.y + (touchRows.h - thumb) * touchOffset / touchMaximum),
 			std::max(1, int(3 * u)), int(thumb), InGameTouchTheme::border);
 	}
-	const char *headings[] = {"Slot", "Color", "Player / AI", "Group"};
+	const std::string headings[] = {Toolkit::getStringTable()->getString("[Slot]"),
+									Toolkit::getStringTable()->getString("[Color]"),
+									Toolkit::getStringTable()->getString("[Player / AI]"),
+									Toolkit::getStringTable()->getString("[Group]")};
 	for (int i = 0; i < 4; ++i)
 	{
 		auto r = touchCells[i].bounds;
@@ -448,7 +451,9 @@ void TeamsEditor::drawTouch()
 								c.widget == isPlayerActive[c.slot] && active);
 		else
 			EditorTouch::label(context, c.bounds,
-							   c.widget == aiSelector[c.slot] ? "Inactive" : "—");
+							   c.widget == aiSelector[c.slot]
+								   ? Toolkit::getStringTable()->getString("[Inactive]")
+								   : "—");
 		if (c.widget == isPlayerActive[c.slot])
 		{
 			const int x = int(c.bounds.x + 29 * u), y = int(c.bounds.y + 17 * u),

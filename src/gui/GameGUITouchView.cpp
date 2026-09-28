@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <FormatableString.h>
 // Presentation-only composition. Input and commands live in the coordinator,
 // placement session, and action modules; no desktop composed screen is reused.
 #include "GameGUITouch.h"
@@ -20,11 +21,17 @@ void GameGUITouch::drawControls()
 	{
 		const auto rect = controls();
 		auto *gfx = globalContainer->gfx;
-		const char *zones[] = {"Forbidden", "Guard", "Clear"};
+		const std::string zones[] = {GAGCore::Toolkit::getStringTable()->getString("[Forbidden]"),
+									 GAGCore::Toolkit::getStringTable()->getString("[Guard]"),
+									 GAGCore::Toolkit::getStringTable()->getString("[Clear]")};
 		const std::string labels[] = {
 			zones[gui.toolManager.getZoneType()],
-			"Brush " + std::to_string(gui.brush.getFigure() + 1),
-			gui.brush.getType() == BrushTool::MODE_ADD ? "Paint" : "Erase", "Done"};
+			GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Brush %0]"))
+				.arg(gui.brush.getFigure() + 1),
+			gui.brush.getType() == BrushTool::MODE_ADD
+				? GAGCore::Toolkit::getStringTable()->getString("[Paint]")
+				: GAGCore::Toolkit::getStringTable()->getString("[Erase]"),
+			GAGCore::Toolkit::getStringTable()->getString("[Done]")};
 		for (int i = 0; i < 4; ++i)
 		{
 			const ViewRect button{rect.x + i * rect.w / 4, rect.y, rect.w / 4 - 1, rect.h};
@@ -43,7 +50,10 @@ void GameGUITouch::drawControls()
 	{
 		gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
 							InGameTouchTheme::paper);
-		drawPointLabel(rect, "Release on valid terrain to place", .9);
+		drawPointLabel(
+			rect,
+			GAGCore::Toolkit::getStringTable()->getString("[Release on valid terrain to place]"),
+			.9);
 		return;
 	}
 	const int half = int(rect.w / 2);
@@ -102,8 +112,10 @@ void GameGUITouch::drawPanel()
 	}
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION)
 	{
-		drawPointLabel({panel.x, panel.y, panel.w, 48 * gfx->logicalUnitsPerPoint()},
-					   "Paint on the map; two fingers move", .75);
+		drawPointLabel(
+			{panel.x, panel.y, panel.w, 48 * gfx->logicalUnitsPerPoint()},
+			GAGCore::Toolkit::getStringTable()->getString("[Paint on the map; two fingers move]"),
+			.75);
 		return;
 	}
 	drawTacticalPanel();
@@ -172,16 +184,21 @@ void GameGUITouch::drawHUD()
 			{std::to_string(free) + "/" + std::to_string(gui.teamStats->getTotalUnits(i)), i,
 			 free < 0});
 	}
-	stats.push_back({"P " + std::to_string(gui.localTeam->prestige) + "/" +
-					 std::to_string(gui.game.totalPrestige) + "/" +
-					 std::to_string(gui.game.prestigeToReach)});
+	stats.push_back(
+		{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[P %0/%1/%2]"))
+			 .arg(gui.localTeam->prestige)
+			 .arg(gui.game.totalPrestige)
+			 .arg(gui.game.prestigeToReach)});
 	stats.push_back({"+" + std::to_string(gui.localTeam->unitConversionGained) + " / −" +
 					 std::to_string(gui.localTeam->unitConversionLost)});
 	int cpu = 0;
 	for (auto value : gui.smoothedCPULoad)
 		cpu += value;
 	cpu /= GameGUI::SMOOTHED_CPU_SIZE;
-	stats.push_back({"CPU " + std::to_string(cpu) + "%", -1, cpu >= 75});
+	stats.push_back(
+		{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[CPU load %0]"))
+			 .arg(cpu),
+		 -1, cpu >= 75});
 	const int columns = available / unit >= 600 ? 6 : 3;
 	const double cell = std::min(120 * unit, available / columns);
 	const double start = ui.world.x + (available - columns * cell) / 2;
@@ -235,14 +252,16 @@ void GameGUITouch::drawHUD()
 		gfx->drawSprite(0, 0, globalContainer->gamegui, icons[i]);
 		gfx->setUITransform();
 		gfx->setClipRect();
-		const char *labels[] = {globalContainer->replaying ? "[Pause]" : "[Build]",
-								globalContainer->replaying ? "[Speed]" : "[Flags]",
-								"[Info]",
-								"[Goals]",
-								"[Teams]",
-								"[Menu]"};
+		const std::string labels[] = {globalContainer->replaying ? "[Pause]" : "[Build]",
+									  globalContainer->replaying ? "[Speed]" : "[Flags]",
+									  "[Info]",
+									  "[Goals]",
+									  "[Teams]",
+									  "[Menu]"};
 		drawPointLabel({x, ui.actions.y + 26 * unit, width, 22 * unit},
-					   i == 2 ? "Tools" : Toolkit::getStringTable()->getString(labels[i]), .82);
+					   i == 2 ? GAGCore::Toolkit::getStringTable()->getString("[Editor tools]")
+							  : Toolkit::getStringTable()->getString(labels[i]),
+					   .82);
 	}
 }
 
@@ -329,7 +348,7 @@ void GameGUITouch::drawTutorial()
 						InGameTouchTheme::paper);
 	if (tutorialCollapsed)
 	{
-		drawPointLabel(rect, "Tutorial ▸");
+		drawPointLabel(rect, GAGCore::Toolkit::getStringTable()->getString("[Tutorial ▸]"));
 		return;
 	}
 	const double footerHeight = gui.swallowSpaceKey ? 48 * unit : 0;
@@ -450,14 +469,20 @@ void GameGUITouch::drawAllocation()
 	gfx->setUITransform();
 	gfx->setClipRect();
 	const std::string name = Toolkit::getStringTable()->getString("[" + type->type + "]");
-	drawPointLabel({rect.x + 60 * unit, rect.y, std::max(0.0, rect.w - 108 * unit), rect.h},
-				   name + " · " + std::to_string(type->level + 1) + "\n" +
-					   std::to_string(building->hp) + " / " + std::to_string(type->hpMax) +
-					   " HP · " +
-					   (building->owner == gui.localTeam
-							? "Your colony"
-							: "Team " + std::to_string(building->owner->teamNumber + 1)),
-				   .85);
+	drawPointLabel(
+		{rect.x + 60 * unit, rect.y, std::max(0.0, rect.w - 108 * unit), rect.h},
+		name + " · " + std::to_string(type->level + 1) + "\n" +
+			GAGCore::FormattableString(
+				GAGCore::Toolkit::getStringTable()->getString("[%0 / %1 HP · %2]"))
+				.arg(building->hp)
+				.arg(type->hpMax)
+				.arg(building->owner == gui.localTeam
+						 ? std::string(
+							   GAGCore::Toolkit::getStringTable()->getString("[Your colony]"))
+						 : GAGCore::FormattableString(
+							   GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
+							   .arg(building->owner->teamNumber + 1)),
+		.85);
 	drawPointLabel({rect.x + rect.w - 48 * unit, rect.y, 48 * unit, rect.h}, "×", 1.2);
 }
 
@@ -505,42 +530,85 @@ std::vector<std::pair<std::string, int>> GameGUITouch::tacticalActions() const
 	if (showStatistics)
 	{
 		const auto *stats = gui.teamStats->getLatestStat();
-		return {{"Back to tools", -1},
-				{"Units: " + std::to_string(stats->totalUnit), -2},
-				{"Buildings: " + std::to_string(stats->totalBuilding), -2},
-				{"Food: " + std::to_string(stats->totalFood) + " / " +
-					 std::to_string(stats->totalFoodCapacity),
+		return {{GAGCore::Toolkit::getStringTable()->getString("[Back to tools]"), -1},
+				{GAGCore::FormattableString(
+					 GAGCore::Toolkit::getStringTable()->getString("[Units: %0]"))
+					 .arg(stats->totalUnit),
 				 -2},
-				{"Need food: " + std::to_string(stats->needFood), -2},
-				{"Need healing: " + std::to_string(stats->needHeal), -2},
-				{"Attack: " + std::to_string(stats->totalAttackPower), -2},
-				{"Defense: " + std::to_string(stats->totalDefensePower), -2}};
+				{GAGCore::FormattableString(
+					 GAGCore::Toolkit::getStringTable()->getString("[Buildings: %0]"))
+					 .arg(stats->totalBuilding),
+				 -2},
+				{GAGCore::FormattableString(
+					 GAGCore::Toolkit::getStringTable()->getString("[Food: %0 / %1]"))
+					 .arg(stats->totalFood)
+					 .arg(stats->totalFoodCapacity),
+				 -2},
+				{GAGCore::FormattableString(
+					 GAGCore::Toolkit::getStringTable()->getString("[Need food: %0]"))
+					 .arg(stats->needFood),
+				 -2},
+				{GAGCore::FormattableString(
+					 GAGCore::Toolkit::getStringTable()->getString("[Need healing: %0]"))
+					 .arg(stats->needHeal),
+				 -2},
+				{GAGCore::FormattableString(
+					 GAGCore::Toolkit::getStringTable()->getString("[Attack: %0]"))
+					 .arg(stats->totalAttackPower),
+				 -2},
+				{GAGCore::FormattableString(
+					 GAGCore::Toolkit::getStringTable()->getString("[Defense: %0]"))
+					 .arg(stats->totalDefensePower),
+				 -2}};
 	}
-	auto toggle = [](const char *label, bool selected)
+	auto toggle = [](const std::string &label, bool selected)
 	{ return std::string(selected ? "[x] " : "[ ] ") + label; };
 	std::vector<std::pair<std::string, int>> result = {
-		{"Statistics", 3},
-		{toggle("Starvation overlay", gui.showStarvingMap), 20},
-		{toggle("Damage overlay", gui.showDamagedMap), 21},
-		{toggle("Defense overlay", gui.showDefenseMap), 22},
-		{toggle("Fertility overlay", gui.showFertilityMap), 23},
-		{toggle("Health and food bars", gui.drawHealthFoodBar), 6},
-		{"Message history", 4}};
+		{GAGCore::Toolkit::getStringTable()->getString("[Statistics]"), 3},
+		{toggle(GAGCore::Toolkit::getStringTable()->getString("[Starvation overlay]"),
+				gui.showStarvingMap),
+		 20},
+		{toggle(GAGCore::Toolkit::getStringTable()->getString("[Damage overlay]"),
+				gui.showDamagedMap),
+		 21},
+		{toggle(GAGCore::Toolkit::getStringTable()->getString("[Defense overlay]"),
+				gui.showDefenseMap),
+		 22},
+		{toggle(GAGCore::Toolkit::getStringTable()->getString("[Fertility overlay]"),
+				gui.showFertilityMap),
+		 23},
+		{toggle(GAGCore::Toolkit::getStringTable()->getString("[Health and food bars]"),
+				gui.drawHealthFoodBar),
+		 6},
+		{GAGCore::Toolkit::getStringTable()->getString("[Message history]"), 4}};
 	if (!globalContainer->isViewingGame())
 	{
-		result.push_back({"Mark map for allies", 5});
-		result.push_back({"Chat", 1});
+		result.push_back(
+			{GAGCore::Toolkit::getStringTable()->getString("[Mark map for allies]"), 5});
+		result.push_back({GAGCore::Toolkit::getStringTable()->getString("[Chat]"), 1});
 	}
 	else
 	{
 		std::vector<std::pair<std::string, int>> playback = {
-			{toggle("Fog of war", globalContainer->replayShowFog), 31},
-			{toggle("Combined vision", globalContainer->replayVisibleTeams == 0xffffffff), 32},
-			{toggle("Show zones", globalContainer->replayShowAreas), 33},
-			{toggle("Show flags", globalContainer->replayShowFlags), 34}};
+			{toggle(GAGCore::Toolkit::getStringTable()->getString("[fog of war]"),
+					globalContainer->replayShowFog),
+			 31},
+			{toggle(GAGCore::Toolkit::getStringTable()->getString("[combined vision]"),
+					globalContainer->replayVisibleTeams == 0xffffffff),
+			 32},
+			{toggle(GAGCore::Toolkit::getStringTable()->getString("[Show zones]"),
+					globalContainer->replayShowAreas),
+			 33},
+			{toggle(GAGCore::Toolkit::getStringTable()->getString("[show flags]"),
+					globalContainer->replayShowFlags),
+			 34}};
 		for (int i = 0; i < gui.game.teamsCount(); ++i)
 			playback.push_back(
-				{toggle(("View team " + std::to_string(i + 1)).c_str(), gui.localTeamNo == i),
+				{toggle((GAGCore::FormattableString(
+							 GAGCore::Toolkit::getStringTable()->getString("[View team %0]"))
+							 .arg(i + 1))
+							.c_str(),
+						gui.localTeamNo == i),
 				 40 + i});
 		playback.insert(playback.end(), result.begin(), result.end());
 		return playback;

@@ -3160,3 +3160,185 @@ Retour
 Enregistrer automatiquement la partie environ toutes les minutes.
 [AI opponents]
 Adversaires IA
+[Assigned %0 · Target %1]
+Affectés %0 · Cible %1
+[Range: %0]
+Portée : %0
+[Player %0]
+Joueur %0
+[Brush %0]
+Brosse %0
+[Team %0]
+Équipe %0
+[Your colony]
+Votre colonie
+[%0 / %1 HP · %2]
+%0 / %1 PV · %2
+[Units: %0]
+Unités : %0
+[Buildings: %0]
+Bâtiments : %0
+[Need food: %0]
+Besoin de nourriture : %0
+[Need healing: %0]
+Besoin de soins : %0
+[Attack: %0]
+Attaque : %0
+[Defense: %0]
+Défense : %0
+[Food: %0 / %1]
+Nourriture : %0 / %1
+[View team %0]
+Voir l’équipe %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Brosse %0x%1
+[Level %0]
+Niveau %0
+[Manage teams (%0)]
+Gérer les équipes (%0)
+[Team %0 / Level %1]
+Équipe %0 / Niveau %1
+[Files · %0]
+Fichiers · %0
+[Hint %0]
+Indice %0
+[Objective %0]
+Objectif %0
+[Entry %0 of 8 · empty entries are omitted]
+Entrée %0 sur 8 · les entrées vides sont omises
+[Teams %0/%1]
+Équipes %0/%1
+[Elapsed time · %0]
+Temps écoulé · %0
+[Read-only building]
+Bâtiment en lecture seule
+[Alliance and shared vision are fixed for this match.]
+L’alliance et la vision partagée sont fixes pour cette partie.
+[Share vision]
+Partager la vision
+[Share food vision]
+Partager la vision de la nourriture
+[Share market vision]
+Partager la vision des marchés
+[Chat]
+Discussion
+[No other players have editable diplomatic settings in this match.]
+Aucun autre joueur n’a de paramètres diplomatiques modifiables dans cette partie.
+[No briefing for this match.]
+Aucun briefing pour cette partie.
+[Chat · recipients selected in Teams]
+Discussion · destinataires choisis dans Équipes
+[Filename]
+Nom de fichier
+[Reduced motion]
+Animations réduites
+[Send]
+Envoyer
+[Close]
+Fermer
+[Forbidden]
+Interdit
+[Guard]
+Garder
+[Clear]
+Défricher
+[Paint]
+Peindre
+[Erase]
+Effacer
+[Release on valid terrain to place]
+Relâchez sur un terrain valide pour placer
+[Paint on the map; two fingers move]
+Peignez sur la carte ; déplacez avec deux doigts
+[Tutorial ▸]
+Tutoriel ▸
+[Back to tools]
+Retour aux outils
+[Starvation overlay]
+Calque de famine
+[Damage overlay]
+Calque de dégâts
+[Defense overlay]
+Calque de défense
+[Fertility overlay]
+Calque de fertilité
+[Health and food bars]
+Barres de santé et de nourriture
+[Message history]
+Historique des messages
+[Mark map for allies]
+Marquer la carte pour les alliés
+[Show zones]
+Afficher les zones
+[Pan]
+Déplacer
+[Select]
+Sélectionner
+[Show palette]
+Afficher la palette
+[Release to place]
+Relâchez pour placer
+[Blocked placement]
+Placement bloqué
+[File name]
+Nom du fichier
+[Load map]
+Charger une carte
+[Save map]
+Enregistrer la carte
+[No files in this folder]
+Aucun fichier dans ce dossier
+[No files saved yet]
+Aucun fichier enregistré
+[Export]
+Exporter
+[Tap to write the mission briefing]
+Touchez pour écrire le briefing de mission
+[Tap to write the map script]
+Touchez pour écrire le script de la carte
+[Script]
+Script
+[Previous]
+Précédent
+[Compile]
+Compiler
+[Tap to write this hint]
+Touchez pour écrire cet indice
+[Tap to write this objective]
+Touchez pour écrire cet objectif
+[Mission briefing · tap to edit, swipe to scroll]
+Briefing de mission · touchez pour modifier, glissez pour défiler
+[Not enough recorded history yet.]
+Pas encore assez d’historique enregistré.
+[Select a team to show its history.]
+Sélectionnez une équipe pour afficher son historique.
+[Back to chart]
+Retour au graphique
+[Expand chart]
+Agrandir le graphique
+[Slot]
+Place
+[Color]
+Couleur
+[Player / AI]
+Joueur / IA
+[Group]
+Groupe
+[Forbid]
+Interdire
+[↓ Low]
+↓ Basse
+[= Normal]
+= Normale
+[↑ High]
+↑ Haute
+[Details]
+Détails
+[Campaign name]
+Nom de la campagne
+[Unlocking]
+Déverrouillage

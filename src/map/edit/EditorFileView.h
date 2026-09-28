@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <FormatableString.h>
+#include <Toolkit.h>
 #pragma once
 
 #include "EditorTouchWidgets.h"
@@ -187,7 +189,7 @@ class EditorFileView
 			return;
 		if (filename.y - statusBounds.y < -48 * unit)
 			EditorTouch::label(gfx, {filename.x, filename.y - 20 * unit, filename.w, 20 * unit},
-							   "File name");
+							   GAGCore::Toolkit::getStringTable()->getString("[File name]"));
 		EditorTouch::button(gfx, filename, "");
 		auto *font = GAGCore::Toolkit::getFont("standard");
 		InGameTouchTheme::TextStyle ink(font);
@@ -257,9 +259,12 @@ class EditorFileView
 		EditorTouch::panel(gfx, bounds);
 		const double pad = (GAGCore::mobileDialogSafe(gfx).h < 240 * unit ? 8 : 12) * unit;
 		if (model.load || filename.y - bounds.y >= 28 * unit)
-			EditorTouch::label(gfx, {bounds.x + pad, bounds.y + pad, bounds.w - 2 * pad, 32 * unit},
-							   model.title.empty() ? (model.load ? "Load map" : "Save map")
-												   : model.title);
+			EditorTouch::label(
+				gfx, {bounds.x + pad, bounds.y + pad, bounds.w - 2 * pad, 32 * unit},
+				model.title.empty()
+					? (model.load ? GAGCore::Toolkit::getStringTable()->getString("[Load map]")
+								  : GAGCore::Toolkit::getStringTable()->getString("[Save map]"))
+					: model.title);
 		drawName();
 		for (size_t i = 0; i < statusLines.size() && (i + 1) * 20 * unit <= statusBounds.h; ++i)
 			EditorTouch::label(
@@ -267,12 +272,17 @@ class EditorFileView
 				statusLines[i]);
 		if (files.y >= statusBounds.y + statusBounds.h + 20 * unit)
 			EditorTouch::label(gfx, {files.x, files.y - 24 * unit, files.w, 24 * unit},
-							   "Files · " + std::to_string(model.files.size()));
+							   GAGCore::FormattableString(
+								   GAGCore::Toolkit::getStringTable()->getString("[Files · %0]"))
+								   .arg(model.files.size()));
 		if (files.h > 0)
 		{
 			if (model.files.empty())
-				EditorTouch::label(gfx, files,
-								   model.load ? "No files in this folder" : "No files saved yet");
+				EditorTouch::label(
+					gfx, files,
+					model.load
+						? GAGCore::Toolkit::getStringTable()->getString("[No files in this folder]")
+						: GAGCore::Toolkit::getStringTable()->getString("[No files saved yet]"));
 			for (size_t i = 0; i < model.files.size(); ++i)
 			{
 				Rect row{files.x, files.y + i * 44 * unit - offset, files.w - 8 * unit, 44 * unit};
@@ -291,13 +301,14 @@ class EditorFileView
 		}
 		button(cancelButton, tr("[Cancel]"), !model.busy);
 		if (model.canExport && exportButton.w > 0)
-			button(exportButton, "Export", !model.busy);
+			button(exportButton, GAGCore::Toolkit::getStringTable()->getString("[Export]"),
+				   !model.busy);
 		const bool ready = !model.busy && !model.name.empty() && preedit.empty();
 		button(primaryButton,
-			   model.busy     ? "Saving…"
-			   : model.failed ? "Retry"
-			   : model.load   ? "Load"
-							  : "Save",
+			   model.busy     ? GAGCore::Toolkit::getStringTable()->getString("[settings Saving…]")
+			   : model.failed ? GAGCore::Toolkit::getStringTable()->getString("[settings Retry]")
+			   : model.load   ? GAGCore::Toolkit::getStringTable()->getString("[load]")
+							  : GAGCore::Toolkit::getStringTable()->getString("[Save]"),
 			   ready, true);
 		const Rect focused = focusedAction == Cancel    ? cancelButton
 							 : focusedAction == Export  ? exportButton

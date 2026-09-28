@@ -3150,3 +3150,185 @@ Das Spiel etwa jede Minute automatisch speichern.
 KI-Gegner
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Geräumig verwendet bei genügend Platz eine Seitenleiste. Kompakt verwendet eine Werkzeugleiste und ausklappbare Bereiche.
+[Assigned %0 · Target %1]
+Zugewiesen %0 · Ziel %1
+[Range: %0]
+Reichweite: %0
+[Player %0]
+Spieler %0
+[Brush %0]
+Pinsel %0
+[Team %0]
+Team %0
+[Your colony]
+Deine Kolonie
+[%0 / %1 HP · %2]
+%0 / %1 LP · %2
+[Units: %0]
+Einheiten: %0
+[Buildings: %0]
+Gebäude: %0
+[Need food: %0]
+Benötigen Nahrung: %0
+[Need healing: %0]
+Benötigen Heilung: %0
+[Attack: %0]
+Angriff: %0
+[Defense: %0]
+Verteidigung: %0
+[Food: %0 / %1]
+Nahrung: %0 / %1
+[View team %0]
+Team %0 anzeigen
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pinsel %0x%1
+[Level %0]
+Stufe %0
+[Manage teams (%0)]
+Teams verwalten (%0)
+[Team %0 / Level %1]
+Team %0 / Stufe %1
+[Files · %0]
+Dateien · %0
+[Hint %0]
+Hinweis %0
+[Objective %0]
+Ziel %0
+[Entry %0 of 8 · empty entries are omitted]
+Eintrag %0 von 8 · leere Einträge werden ausgelassen
+[Teams %0/%1]
+Teams %0/%1
+[Elapsed time · %0]
+Verstrichene Zeit · %0
+[Read-only building]
+Gebäude nur lesbar
+[Alliance and shared vision are fixed for this match.]
+Bündnis und gemeinsame Sicht sind für dieses Spiel festgelegt.
+[Share vision]
+Sicht teilen
+[Share food vision]
+Nahrungssicht teilen
+[Share market vision]
+Marktsicht teilen
+[Chat]
+Chat
+[No other players have editable diplomatic settings in this match.]
+Keine anderen Spieler haben veränderbare Diplomatieeinstellungen in diesem Spiel.
+[No briefing for this match.]
+Keine Einweisung für dieses Spiel.
+[Chat · recipients selected in Teams]
+Chat · Empfänger unter Teams auswählen
+[Filename]
+Dateiname
+[Reduced motion]
+Weniger Bewegung
+[Send]
+Senden
+[Close]
+Schließen
+[Forbidden]
+Verboten
+[Guard]
+Bewachen
+[Clear]
+Räumen
+[Paint]
+Malen
+[Erase]
+Radieren
+[Release on valid terrain to place]
+Zum Platzieren auf geeignetem Gelände loslassen
+[Paint on the map; two fingers move]
+Auf der Karte malen; mit zwei Fingern verschieben
+[Tutorial ▸]
+Anleitung ▸
+[Back to tools]
+Zurück zu Werkzeugen
+[Starvation overlay]
+Hungeranzeige
+[Damage overlay]
+Schadensanzeige
+[Defense overlay]
+Verteidigungsanzeige
+[Fertility overlay]
+Fruchtbarkeitsanzeige
+[Health and food bars]
+Lebens- und Nahrungsbalken
+[Message history]
+Nachrichtenverlauf
+[Mark map for allies]
+Karte für Verbündete markieren
+[Show zones]
+Zonen anzeigen
+[Pan]
+Verschieben
+[Select]
+Auswählen
+[Show palette]
+Palette anzeigen
+[Release to place]
+Zum Platzieren loslassen
+[Blocked placement]
+Platzierung blockiert
+[File name]
+Dateiname
+[Load map]
+Karte laden
+[Save map]
+Karte speichern
+[No files in this folder]
+Keine Dateien in diesem Ordner
+[No files saved yet]
+Noch keine Dateien gespeichert
+[Export]
+Exportieren
+[Tap to write the mission briefing]
+Tippen, um die Missionseinweisung zu schreiben
+[Tap to write the map script]
+Tippen, um das Kartenskript zu schreiben
+[Script]
+Skript
+[Previous]
+Zurück
+[Compile]
+Kompilieren
+[Tap to write this hint]
+Tippen, um diesen Hinweis zu schreiben
+[Tap to write this objective]
+Tippen, um dieses Ziel zu schreiben
+[Mission briefing · tap to edit, swipe to scroll]
+Missionseinweisung · zum Bearbeiten tippen, zum Scrollen wischen
+[Not enough recorded history yet.]
+Noch nicht genug Verlauf aufgezeichnet.
+[Select a team to show its history.]
+Wähle ein Team aus, um seinen Verlauf anzuzeigen.
+[Back to chart]
+Zurück zum Diagramm
+[Expand chart]
+Diagramm vergrößern
+[Slot]
+Platz
+[Color]
+Farbe
+[Player / AI]
+Spieler / KI
+[Group]
+Gruppe
+[Forbid]
+Verbieten
+[↓ Low]
+↓ Niedrig
+[= Normal]
+= Normal
+[↑ High]
+↑ Hoch
+[Details]
+Details
+[Campaign name]
+Kampagnenname
+[Unlocking]
+Freischaltung

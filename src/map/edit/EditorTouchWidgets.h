@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <StringTable.h>
 
 #include "InGameTouchTheme.h"
 #include <GUITextArea.h>
@@ -36,7 +37,22 @@ inline void button(GAGCore::GraphicContext *gfx, ViewRect r, const std::string &
 	gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
 						selected ? InGameTouchTheme::selected : InGameTouchTheme::field);
 	gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border);
-	label(gfx, r, text);
+	auto *font = GAGCore::Toolkit::getFont("standard");
+	const double unit = gfx->logicalUnitsPerPoint();
+	InGameTouchTheme::TextStyle ink(font);
+	const auto lines = GAGCore::wrapTouchText(font, text, r.w / unit - 12);
+	const double lineHeight = font->getStringHeight(text);
+	// Wrap translated actions inside their existing hit boxes, then shrink only
+	// if the available height cannot hold all lines at the normal point size.
+	const double scale =
+		unit * std::min(1.0, (r.h / unit - 8) / std::max(1.0, lines.size() * lineHeight));
+	SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
+	gfx->setUITransform(scale, r.x + 6 * unit, r.y + (r.h - lines.size() * lineHeight * scale) / 2,
+						&clip);
+	for (size_t i = 0; i < lines.size(); ++i)
+		gfx->drawString(0, int(i * lineHeight), font, lines[i]);
+	gfx->setUITransform();
+	gfx->setClipRect();
 }
 
 // Reuses TextArea's UTF-8 editing, file I/O, and cursor model. Only presentation
@@ -67,7 +83,8 @@ class TextCanvas : public GAGGUI::TextArea
 			setScreenPosition(0, 0);
 	}
 	void paintCanvas(bool numbered, const std::string &preedit,
-					 const std::string &emptyLabel = "Tap to write the mission briefing")
+					 const std::string &emptyLabel = GAGCore::Toolkit::getStringTable()->getString(
+						 "[Tap to write the mission briefing]"))
 	{
 		auto *surface = static_cast<GAGCore::GraphicContext *>(parent->getSurface());
 		const double gutter = numbered ? 36 * canvasScale : 0;
@@ -93,9 +110,15 @@ class TextCanvas : public GAGGUI::TextArea
 				surface->drawString(cx, cy, font, preedit.c_str(), w - (cx - x) - 4);
 		}
 		if (text.empty() && !activated)
-			surface->drawString(x + 8, y + 8, font,
-								numbered ? "Tap to write the map script" : emptyLabel.c_str(),
-								w - 16);
+		{
+			const auto prompt =
+				numbered
+					? GAGCore::Toolkit::getStringTable()->getString("[Tap to write the map script]")
+					: emptyLabel;
+			const auto promptLines = GAGCore::wrapTouchText(font, prompt, w - 16);
+			for (size_t i = 0; i < promptLines.size() && 8 + (i + 1) * charHeight <= h; ++i)
+				surface->drawString(x + 8, y + 8 + i * charHeight, font, promptLines[i]);
+		}
 
 		if (numbered)
 		{

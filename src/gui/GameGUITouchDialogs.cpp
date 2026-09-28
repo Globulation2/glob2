@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <FormatableString.h>
 #include "InGameTouchTheme.h"
 #include "GameGUITouch.h"
 #include "GameGUI.h"
@@ -56,10 +57,16 @@ void GameGUITouch::prepareDialog()
 	{
 		dialogRows.push_back({nullptr, tr("[Teams]")});
 		if (gui.game.gameHeader.areAllyTeamsFixed())
-			dialogRows.push_back({nullptr, "Alliance and shared vision are fixed for this match."});
+			dialogRows.push_back(
+				{nullptr, GAGCore::Toolkit::getStringTable()->getString(
+							  "[Alliance and shared vision are fixed for this match.]")});
 		int count = 0;
-		const char *labels[] = {"Alliance", "Share vision", "Share food vision",
-								"Share market vision", "Chat"};
+		const std::string labels[] = {
+			GAGCore::Toolkit::getStringTable()->getString("[Alliance]"),
+			GAGCore::Toolkit::getStringTable()->getString("[Share vision]"),
+			GAGCore::Toolkit::getStringTable()->getString("[Share food vision]"),
+			GAGCore::Toolkit::getStringTable()->getString("[Share market vision]"),
+			GAGCore::Toolkit::getStringTable()->getString("[Chat]")};
 		for (int i = 0; i < 16; ++i)
 		{
 			OnOffButton *choices[] = {alliance->alliance[i], alliance->normalVision[i],
@@ -71,8 +78,12 @@ void GameGUITouch::prepareDialog()
 			if (!eligible)
 				continue;
 			++count;
-			dialogRows.push_back({nullptr, alliance->texts[i] ? alliance->texts[i]->getText()
-															  : "Player " + std::to_string(i + 1)});
+			dialogRows.push_back(
+				{nullptr, alliance->texts[i]
+							  ? alliance->texts[i]->getText()
+							  : GAGCore::FormattableString(
+									GAGCore::Toolkit::getStringTable()->getString("[Player %0]"))
+									.arg(i + 1)});
 			dialogRows.back().team = gui.game.gameHeader.getBasePlayer(i).teamNumber;
 			dialogRows.back().role = DialogRow::Role::Player;
 			for (int j = 0; j < 5; ++j)
@@ -81,7 +92,9 @@ void GameGUITouch::prepareDialog()
 		}
 		if (!count)
 			dialogRows.push_back(
-				{nullptr, "No other players have editable diplomatic settings in this match."});
+				{nullptr,
+				 GAGCore::Toolkit::getStringTable()->getString(
+					 "[No other players have editable diplomatic settings in this match.]")});
 		dialogRows.push_back({nullptr, tr("[ok]"), 104, 0, false, true});
 	}
 	else if (objectives)
@@ -91,7 +104,8 @@ void GameGUITouch::prepareDialog()
 			dialogRows.push_back({nullptr, tr(tabs[i]), 105, i, objectivePage == i});
 		if (objectivePage == 0)
 			dialogRows.push_back({nullptr, gui.game.missionBriefing.empty()
-											   ? "No briefing for this match."
+											   ? GAGCore::Toolkit::getStringTable()->getString(
+													 "[No briefing for this match.]")
 											   : gui.game.missionBriefing});
 		else if (objectivePage == 1)
 		{
@@ -132,7 +146,8 @@ void GameGUITouch::prepareDialog()
 	}
 	else if (chat)
 	{
-		dialogRows.push_back({nullptr, "Chat · recipients selected in Teams"});
+		dialogRows.push_back({nullptr, GAGCore::Toolkit::getStringTable()->getString(
+										   "[Chat · recipients selected in Teams]")});
 		auto *input = gui.typingInputScreen->composerInput();
 		dialogRows.push_back(
 			{input, input->displayPreedit(chatComposition), 4, 0, input->isActivated()});
@@ -222,7 +237,8 @@ void GameGUITouch::prepareDialog()
 		{
 			if (gui.inGameMenu == GameGUI::IGM_SAVE)
 			{
-				dialogRows.push_back({nullptr, "Filename"});
+				dialogRows.push_back(
+					{nullptr, GAGCore::Toolkit::getStringTable()->getString("[Filename]")});
 				dialogRows.back().role = DialogRow::Role::Section;
 			}
 			row.kind = 4;
@@ -276,7 +292,9 @@ void GameGUITouch::prepareDialog()
 			{nullptr, Toolkit::getStringTable()->getString("[pause game]"), 100, 0});
 	}
 	if (gui.inGameMenu == GameGUI::IGM_OPTION)
-		dialogRows.push_back({nullptr, "Reduced motion", 100, 93, reducedMotion});
+		dialogRows.push_back({nullptr,
+							  GAGCore::Toolkit::getStringTable()->getString("[Reduced motion]"),
+							  100, 93, reducedMotion});
 	if (gui.inGameMenu == GameGUI::IGM_OPTION)
 		for (int i = 0; i < 3; ++i)
 			dialogRows.push_back(
@@ -286,8 +304,10 @@ void GameGUITouch::prepareDialog()
 				 100, 90 + i, globalContainer->settings.mobileDialogTextPercent == 100 + i * 25});
 	if (gui.typingInputScreen)
 	{
-		dialogRows.push_back({nullptr, "Send", 101, 0, false, true});
-		dialogRows.push_back({nullptr, "Close", 101, 1, false, true});
+		dialogRows.push_back({nullptr, GAGCore::Toolkit::getStringTable()->getString("[Send]"), 101,
+							  0, false, true});
+		dialogRows.push_back({nullptr, GAGCore::Toolkit::getStringTable()->getString("[Close]"),
+							  101, 1, false, true});
 	}
 	else if (gui.scrollableText)
 		dialogRows.push_back(
@@ -375,7 +395,7 @@ void GameGUITouch::prepareDialog()
 		dialogRows.front().rect = {dialogBounds.x + inset, dialogBounds.y,
 								   dialogBounds.w - 2 * inset, 40 * unit};
 		dialogRows.front().footer = true;
-		dialogRows.back().text = "Close";
+		dialogRows.back().text = GAGCore::Toolkit::getStringTable()->getString("[Close]");
 		dialogRows.back().rect = {dialogBounds.x + inset,
 								  dialogBounds.y + dialogBounds.h - 56 * unit,
 								  dialogBounds.w - 2 * inset, 48 * unit};
@@ -443,7 +463,8 @@ void GameGUITouch::prepareDialog()
 				auto &input = dialogRows[i];
 				input.footer = true;
 				input.rect = {dialogContent.x, footerTop - 56 * unit, dialogContent.w, 48 * unit};
-				if (i && dialogRows[i - 1].text == "Filename")
+				if (i && dialogRows[i - 1].text ==
+							 GAGCore::Toolkit::getStringTable()->getString("[Filename]"))
 				{
 					dialogRows[i - 1].footer = true;
 					dialogRows[i - 1].rect = {dialogContent.x, footerTop - 80 * unit,

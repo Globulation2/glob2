@@ -93,8 +93,9 @@ void EndGameStat::paint(void)
 
 	if (game->teams[0]->stats.endOfGameStats.size() < 2)
 	{
-		parent->getSurface()->drawString(x + 8, y + 16, globalContainer->standardFont,
-										 "Not enough recorded history yet.");
+		parent->getSurface()->drawString(
+			x + 8, y + 16, globalContainer->standardFont,
+			GAGCore::Toolkit::getStringTable()->getString("[Not enough recorded history yet.]"));
 		return;
 	}
 	// find maximum
@@ -592,8 +593,7 @@ void EndGameScreen::activateResultControl(int action)
 		const auto safe = mobileDialogSafe(globalContainer->gfx);
 		metricPicker.open({int(r.x), int(r.y), int(r.w), int(r.h)},
 						  {int(safe.x) + 8, int(safe.y) + 8, int(safe.w) - 16, int(safe.h) - 16},
-						  options, selectedMetric,
-						  globalContainer->standardFont);
+						  options, selectedMetric, globalContainer->standardFont);
 	}
 	else if (action == 101)
 	{
@@ -651,8 +651,11 @@ void EndGameScreen::drawResults()
 			const int enabled =
 				std::count_if(teams.begin(), teams.end(), [](const auto &t) { return t.enabled; });
 			button({safe.x + safe.w - gap - filtersWidth, top, filtersWidth, target},
-				   "Teams " + std::to_string(enabled) + "/" + std::to_string(teams.size()), 102,
-				   teamFiltersOpen);
+				   GAGCore::FormattableString(
+					   GAGCore::Toolkit::getStringTable()->getString("[Teams %0/%1]"))
+					   .arg(enabled)
+					   .arg(teams.size()),
+				   102, teamFiltersOpen);
 		}
 		top += target + gap;
 	}
@@ -699,16 +702,21 @@ void EndGameScreen::drawResults()
 		TextStyle chartLabels(globalContainer->standardFont);
 		if (std::none_of(teams.begin(), teams.end(), [](const auto &team) { return team.enabled; }))
 			label({safe.x + gap, top + 48 * unit, safe.w - 2 * gap, 48 * unit},
-				  "Select a team to show its history.");
+				  GAGCore::Toolkit::getStringTable()->getString(
+					  "[Select a team to show its history.]"));
 		else
 			statWidget->paint();
 	}
 	label({safe.x + gap, bottom - 28 * unit, safe.w - 2 * gap, 24 * unit},
-		  "Elapsed time · " + statTypeName(selectedMetric));
+		  GAGCore::FormattableString(
+			  GAGCore::Toolkit::getStringTable()->getString("[Elapsed time · %0]"))
+			  .arg(statTypeName(selectedMetric)));
 	const bool save = globalContainer->replayWriter && globalContainer->replayWriter->isValid();
 	const int count = save ? 3 : 2;
 	const double width = (safe.w - (count + 1) * gap) / count;
-	button({safe.x + gap, bottom, width, target}, expandedChart ? "Back to chart" : "Expand chart",
+	button({safe.x + gap, bottom, width, target},
+		   expandedChart ? GAGCore::Toolkit::getStringTable()->getString("[Back to chart]")
+						 : GAGCore::Toolkit::getStringTable()->getString("[Expand chart]"),
 		   101);
 	if (save)
 		button({safe.x + 2 * gap + width, bottom, width, target},

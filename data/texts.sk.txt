@@ -3158,3 +3158,185 @@ Automaticky ukladať hru približne každú minútu.
 Počítačoví súperi
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Priestranné rozloženie používa bočný panel, ak je dosť miesta. Kompaktné používa panel nástrojov a vysúvacie panely.
+[Assigned %0 · Target %1]
+Pridelené %0 · Cieľ %1
+[Range: %0]
+Dosah: %0
+[Player %0]
+Hráč %0
+[Brush %0]
+Štetec %0
+[Team %0]
+Tím %0
+[Your colony]
+Tvoja kolónia
+[%0 / %1 HP · %2]
+%0 / %1 ŽB · %2
+[Units: %0]
+Jednotky: %0
+[Buildings: %0]
+Budovy: %0
+[Need food: %0]
+Potrebujú jedlo: %0
+[Need healing: %0]
+Potrebujú liečenie: %0
+[Attack: %0]
+Útok: %0
+[Defense: %0]
+Obrana: %0
+[Food: %0 / %1]
+Jedlo: %0 / %1
+[View team %0]
+Zobraziť tím %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Štetec %0x%1
+[Level %0]
+Úroveň %0
+[Manage teams (%0)]
+Spravovať tímy (%0)
+[Team %0 / Level %1]
+Tím %0 / Úroveň %1
+[Files · %0]
+Súbory · %0
+[Hint %0]
+Pomôcka %0
+[Objective %0]
+Cieľ %0
+[Entry %0 of 8 · empty entries are omitted]
+Položka %0 z 8 · prázdne položky sa vynechajú
+[Teams %0/%1]
+Tímy %0/%1
+[Elapsed time · %0]
+Uplynutý čas · %0
+[Read-only building]
+Budova len na čítanie
+[Alliance and shared vision are fixed for this match.]
+Spojenectvo a spoločný výhľad sú v tejto hre pevné.
+[Share vision]
+Zdieľať výhľad
+[Share food vision]
+Zdieľať výhľad na jedlo
+[Share market vision]
+Zdieľať výhľad na trhy
+[Chat]
+Chat
+[No other players have editable diplomatic settings in this match.]
+Žiadny ďalší hráč nemá v tejto hre upraviteľné diplomatické nastavenia.
+[No briefing for this match.]
+Pre túto hru nie sú pokyny.
+[Chat · recipients selected in Teams]
+Chat · príjemcovia vybraní v Tímoch
+[Filename]
+Názov súboru
+[Reduced motion]
+Obmedzený pohyb
+[Send]
+Odoslať
+[Close]
+Zavrieť
+[Forbidden]
+Zakázané
+[Guard]
+Strážiť
+[Clear]
+Vyčistiť
+[Paint]
+Maľovať
+[Erase]
+Mazať
+[Release on valid terrain to place]
+Uvoľnite nad vhodným terénom na umiestnenie
+[Paint on the map; two fingers move]
+Maľujte na mape; posúvajte dvoma prstami
+[Tutorial ▸]
+Výučba ▸
+[Back to tools]
+Späť k nástrojom
+[Starvation overlay]
+Vrstva hladu
+[Damage overlay]
+Vrstva poškodenia
+[Defense overlay]
+Vrstva obrany
+[Fertility overlay]
+Vrstva úrodnosti
+[Health and food bars]
+Ukazovatele zdravia a jedla
+[Message history]
+História správ
+[Mark map for allies]
+Označiť mapu pre spojencov
+[Show zones]
+Zobraziť oblasti
+[Pan]
+Posúvať
+[Select]
+Vybrať
+[Show palette]
+Zobraziť paletu
+[Release to place]
+Uvoľnite na umiestnenie
+[Blocked placement]
+Umiestnenie blokované
+[File name]
+Názov súboru
+[Load map]
+Načítať mapu
+[Save map]
+Uložiť mapu
+[No files in this folder]
+V tomto priečinku nie sú súbory
+[No files saved yet]
+Zatiaľ nie sú uložené súbory
+[Export]
+Exportovať
+[Tap to write the mission briefing]
+Ťuknutím napíšte pokyny misie
+[Tap to write the map script]
+Ťuknutím napíšte skript mapy
+[Script]
+Skript
+[Previous]
+Predchádzajúci
+[Compile]
+Kompilovať
+[Tap to write this hint]
+Ťuknutím napíšte túto pomôcku
+[Tap to write this objective]
+Ťuknutím napíšte tento cieľ
+[Mission briefing · tap to edit, swipe to scroll]
+Pokyny misie · ťuknutím upravíte, potiahnutím posuniete
+[Not enough recorded history yet.]
+Zatiaľ nie je dosť zaznamenanej histórie.
+[Select a team to show its history.]
+Vyberte tím na zobrazenie jeho histórie.
+[Back to chart]
+Späť ku grafu
+[Expand chart]
+Zväčšiť graf
+[Slot]
+Pozícia
+[Color]
+Farba
+[Player / AI]
+Hráč / AI
+[Group]
+Skupina
+[Forbid]
+Zakázať
+[↓ Low]
+↓ Nízka
+[= Normal]
+= Normálna
+[↑ High]
+↑ Vysoká
+[Details]
+Podrobnosti
+[Campaign name]
+Názov kampane
+[Unlocking]
+Odomykanie

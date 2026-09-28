@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <FormatableString.h>
 #include "InGameTouchTheme.h"
 #include "GameGUITouch.h"
 #include "GameGUI.h"
@@ -27,15 +28,20 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 		return result;
 	if (allocationBuilding())
 	{
-		result.push_back({"Assigned " + std::to_string(b->unitsWorking.size()) + " · Target " +
-							  std::to_string(allocation && allocation->building == b->gid
-												 ? allocation->requested
-												 : gui.displayedMaxUnitWorking(*b)),
+		result.push_back({GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString(
+														 "[Assigned %0 · Target %1]"))
+							  .arg(b->unitsWorking.size())
+							  .arg(allocation && allocation->building == b->gid
+									   ? allocation->requested
+									   : gui.displayedMaxUnitWorking(*b)),
 						  6});
-		result.push_back({"Priority", 7});
+		result.push_back({GAGCore::Toolkit::getStringTable()->getString("[priority]"), 7});
 	}
 	if (b->type->defaultUnitStayRange)
-		result.push_back({"Range: " + std::to_string(gui.displayedUnitStayRange(*b)), 8});
+		result.push_back({GAGCore::FormattableString(
+							  GAGCore::Toolkit::getStringTable()->getString("[Range: %0]"))
+							  .arg(gui.displayedUnitStayRange(*b)),
+						  8});
 	auto tr = [](const char *key)
 	{ return std::string(Toolkit::getStringTable()->getString(key)); };
 	if (b->type->unitProductionTime)
@@ -103,8 +109,8 @@ std::vector<ViewRect> GameGUITouch::buildingActionBoxes(double width) const
 				++count;
 			count = std::min(count, size_t(kind == 0 ? 3 : 2));
 		}
-		else if (kind == 6 && width >= InGameTouchTheme::inspectorWide &&
-				 i + 1 < rows.size() && rows[i + 1].kind == 7)
+		else if (kind == 6 && width >= InGameTouchTheme::inspectorWide && i + 1 < rows.size() &&
+				 rows[i + 1].kind == 7)
 			count = 2;
 		else if (kind >= 3 && kind <= 5)
 		{
@@ -114,7 +120,8 @@ std::vector<ViewRect> GameGUITouch::buildingActionBoxes(double width) const
 				   rows[i + count].kind <= 5)
 				++count;
 		}
-		const double height = kind == 0 ? InGameTouchTheme::ratioRow : InGameTouchTheme::inspectorRow;
+		const double height =
+			kind == 0 ? InGameTouchTheme::ratioRow : InGameTouchTheme::inspectorRow;
 		for (size_t k = 0; k < count; ++k)
 			boxes.push_back({k * width / count, y, width / count, height});
 		y += height;
@@ -135,8 +142,8 @@ ViewRect GameGUITouch::buildingActionRect(size_t index) const
 	if (index >= boxes.size())
 		return {};
 	const auto box = boxes[index];
-	return {content.x + box.x * unit, content.y + (box.y - actionScroll) * unit,
-			box.w * unit, box.h * unit};
+	return {content.x + box.x * unit, content.y + (box.y - actionScroll) * unit, box.w * unit,
+			box.h * unit};
 }
 void GameGUITouch::drawBuildingActions()
 {
@@ -145,7 +152,8 @@ void GameGUITouch::drawBuildingActions()
 	const double unit = gfx->logicalUnitsPerPoint();
 	const auto rows = buildingActions();
 	if (rows.empty())
-		drawPointLabel({content.x, content.y, content.w, content.h}, "Read-only building", .9);
+		drawPointLabel({content.x, content.y, content.w, content.h},
+					   GAGCore::Toolkit::getStringTable()->getString("[Read-only building]"), .9);
 	for (size_t i = 0; i < rows.size(); ++i)
 	{
 		const auto rect = buildingActionRect(i);
@@ -159,7 +167,9 @@ void GameGUITouch::drawBuildingActions()
 										   : InGameTouchTheme::field);
 		if (row.kind == 7)
 		{
-			const char *labels[] = {"↓ Low", "= Normal", "↑ High"};
+			const std::string labels[] = {Toolkit::getStringTable()->getString("[↓ Low]"),
+										  Toolkit::getStringTable()->getString("[= Normal]"),
+										  Toolkit::getStringTable()->getString("[↑ High]")};
 			for (int k = 0; k < 3; ++k)
 			{
 				const ViewRect button{rect.x + k * rect.w / 3, rect.y, rect.w / 3 - 2 * unit,
@@ -173,8 +183,8 @@ void GameGUITouch::drawBuildingActions()
 		}
 		else if (row.kind == 0)
 		{
-			drawPointLabel({rect.x, rect.y, rect.w, InGameTouchTheme::ratioLabel * unit},
-						   row.label, .78);
+			drawPointLabel({rect.x, rect.y, rect.w, InGameTouchTheme::ratioLabel * unit}, row.label,
+						   .78);
 			const double top = rect.y + InGameTouchTheme::ratioLabel * unit;
 			const double height = rect.h - InGameTouchTheme::ratioLabel * unit;
 			drawPointLabel({rect.x, top, rect.w / 2, height}, "−");
@@ -280,8 +290,7 @@ std::optional<GameGUITouch::BuildingAction> GameGUITouch::actionAt(ViewPoint poi
 	for (size_t i = 0; i < rows.size(); ++i)
 	{
 		const auto rect = buildingActionRect(i);
-		if (rect.y >= content.y && rect.y + rect.h <= content.y + content.h &&
-			rect.contains(point))
+		if (rect.y >= content.y && rect.y + rect.h <= content.y + content.h && rect.contains(point))
 			return rows[i];
 	}
 	return std::nullopt;

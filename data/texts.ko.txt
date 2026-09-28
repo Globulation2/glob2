@@ -3146,3 +3146,185 @@ Emoji
 컴퓨터 상대
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 여유로운 배치는 공간이 충분하면 측면 패널을 사용합니다. 간결한 배치는 도구 모음과 펼칠 수 있는 패널을 사용합니다.
+[Assigned %0 · Target %1]
+배정 %0 · 목표 %1
+[Range: %0]
+범위: %0
+[Player %0]
+플레이어 %0
+[Brush %0]
+브러시 %0
+[Team %0]
+팀 %0
+[Your colony]
+내 식민지
+[%0 / %1 HP · %2]
+%0 / %1 체력 · %2
+[Units: %0]
+유닛: %0
+[Buildings: %0]
+건물: %0
+[Need food: %0]
+식량 필요: %0
+[Need healing: %0]
+치료 필요: %0
+[Attack: %0]
+공격: %0
+[Defense: %0]
+방어: %0
+[Food: %0 / %1]
+식량: %0 / %1
+[View team %0]
+팀 %0 보기
+[P %0/%1/%2]
+명성 %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+브러시 %0x%1
+[Level %0]
+레벨 %0
+[Manage teams (%0)]
+팀 관리 (%0)
+[Team %0 / Level %1]
+팀 %0 / 레벨 %1
+[Files · %0]
+파일 · %0
+[Hint %0]
+힌트 %0
+[Objective %0]
+목표 %0
+[Entry %0 of 8 · empty entries are omitted]
+항목 %0/8 · 빈 항목은 생략됩니다
+[Teams %0/%1]
+팀 %0/%1
+[Elapsed time · %0]
+경과 시간 · %0
+[Read-only building]
+읽기 전용 건물
+[Alliance and shared vision are fixed for this match.]
+이 경기에서는 동맹과 공유 시야가 고정됩니다.
+[Share vision]
+시야 공유
+[Share food vision]
+식량 시야 공유
+[Share market vision]
+시장 시야 공유
+[Chat]
+채팅
+[No other players have editable diplomatic settings in this match.]
+이 경기에서 다른 플레이어의 외교 설정을 수정할 수 없습니다.
+[No briefing for this match.]
+이 경기에는 임무 설명이 없습니다.
+[Chat · recipients selected in Teams]
+채팅 · 팀에서 수신자 선택
+[Filename]
+파일명
+[Reduced motion]
+동작 줄이기
+[Send]
+보내기
+[Close]
+닫기
+[Forbidden]
+금지
+[Guard]
+경비
+[Clear]
+정리
+[Paint]
+그리기
+[Erase]
+지우기
+[Release on valid terrain to place]
+유효한 지형에서 손을 떼어 배치
+[Paint on the map; two fingers move]
+지도에 그리기; 두 손가락으로 이동
+[Tutorial ▸]
+튜토리얼 ▸
+[Back to tools]
+도구로 돌아가기
+[Starvation overlay]
+굶주림 표시
+[Damage overlay]
+피해 표시
+[Defense overlay]
+방어 표시
+[Fertility overlay]
+비옥도 표시
+[Health and food bars]
+체력 및 식량 막대
+[Message history]
+메시지 기록
+[Mark map for allies]
+아군을 위해 지도에 표시
+[Show zones]
+구역 표시
+[Pan]
+이동
+[Select]
+선택
+[Show palette]
+팔레트 표시
+[Release to place]
+손을 떼어 배치
+[Blocked placement]
+배치 불가
+[File name]
+파일 이름
+[Load map]
+지도 불러오기
+[Save map]
+지도 저장
+[No files in this folder]
+이 폴더에는 파일이 없습니다
+[No files saved yet]
+아직 저장된 파일이 없습니다
+[Export]
+내보내기
+[Tap to write the mission briefing]
+탭하여 임무 설명 작성
+[Tap to write the map script]
+탭하여 지도 스크립트 작성
+[Script]
+스크립트
+[Previous]
+이전
+[Compile]
+컴파일
+[Tap to write this hint]
+탭하여 이 힌트 작성
+[Tap to write this objective]
+탭하여 이 목표 작성
+[Mission briefing · tap to edit, swipe to scroll]
+임무 설명 · 탭하여 편집, 쓸어 넘겨 스크롤
+[Not enough recorded history yet.]
+기록된 내역이 아직 부족합니다.
+[Select a team to show its history.]
+팀을 선택하여 기록을 표시하세요.
+[Back to chart]
+차트로 돌아가기
+[Expand chart]
+차트 확대
+[Slot]
+슬롯
+[Color]
+색상
+[Player / AI]
+플레이어 / AI
+[Group]
+그룹
+[Forbid]
+금지
+[↓ Low]
+↓ 낮음
+[= Normal]
+= 보통
+[↑ High]
+↑ 높음
+[Details]
+세부 정보
+[Campaign name]
+캠페인 이름
+[Unlocking]
+잠금 해제
