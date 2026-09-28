@@ -81,6 +81,13 @@ if not env['server']:
     local.Alias('nicowar-farming-test', farming_test)
 
 if not env['server']:
+    ai_save_sources = [source for source in source_files if source != 'Glob2.cpp']
+    ai_save_sources += local.Object('AISavePortabilityHarness.o', '#test/AISavePortabilityHarness.cpp')
+    ai_save_test = local.Program('AISavePortabilityHarness', ai_save_sources)
+    local.Alias('ai-save-portability-test', ai_save_test)
+
+
+if not env['server']:
     gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
     gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
     gradient_test = local.Program('GlobalGradientHarness', gradient_sources)

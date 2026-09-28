@@ -138,6 +138,7 @@ jobs:
             global-gradient-test \
             path-gradient-test \
             nicowar-farming-test \
+            ai-save-portability-test \
             lan-test \
             aspect-test \
             resize-test \
@@ -390,6 +391,9 @@ jobs:
       - name: Build and run the terrain resource regression
         run: |
           ./build/linux/client/release/src/TerrainResourcesHarness
+
+      - name: Test AI save portability
+        run: python3 test/run-savegame-safety-tests.py build/linux/client/release/src/AISavePortabilityHarness .
 
       - name: Test Nicowar farming wood clearance
         run: |

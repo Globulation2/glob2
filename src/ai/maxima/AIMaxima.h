@@ -719,7 +719,7 @@ private:
 	///orders. Only cells owned by this subsystem are removed.
 	void update_maintenance_clearing_areas(AIMaximaRuntime::Context& echo);
 	std::vector<Uint8> worker_reachable_circulation(
-		AIMaximaRuntime::Context& echo) const;
+		AIMaximaRuntime::Context& echo, bool after_harvest=false) const;
 	std::vector<std::vector<int> > reservation_member_footprints(
 		AIMaximaRuntime::Context& echo,
 		const AIMaximaPlacement::Reservation& contract) const;
@@ -794,19 +794,30 @@ private:
 
 	///This function updates the restricted areas for farming
 	void update_farming(AIMaximaRuntime::Context& echo);
-	///The policy is staged: classify a desired plan, restore passive coastal
-	///access, then reconcile that plan with the engine-owned forbidden area.
+	///Classify the layout, add expansion support, release mature wheat, and
+	///reconcile the final plan with the engine-owned forbidden area.
 	bool has_hard_farming_contract(int index) const;
+	struct WoodReserve
+	{
+		// 1: live protected seed, 2: unprotected growing/harvesting cell.
+		std::vector<Uint8> cells;
+		int seeds;
+		explicit WoodReserve(int size): cells(size,0), seeds(0) {}
+	};
+	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& echo) const;
 	bool wheat_invasion_clearing_required(AIMaximaRuntime::Context& echo,
-		int index, const std::vector<Uint8>& protected_wheat) const;
+		int index, const std::vector<Uint8>& protected_wheat,
+		const WoodReserve& wood_reserve) const;
 	struct FarmProtectionPlan;
 	void resolve_wheat_invasion_clearing(AIMaximaRuntime::Context& echo,
 		FarmProtectionPlan& plan);
 	void release_farming_protection(AIMaximaRuntime::Context& echo);
 	FarmProtectionPlan build_farming_protection_plan(
 		AIMaximaRuntime::Context& echo);
-	void restore_passive_coastal_access(AIMaximaRuntime::Context& echo,
+	void add_wheat_expansion_support(AIMaximaRuntime::Context& echo,
 		FarmProtectionPlan& plan);
+	void apply_wheat_maturity(AIMaximaRuntime::Context& echo,
+		FarmProtectionPlan& plan, const std::vector<Uint8>& layout);
 	void apply_farming_protection(AIMaximaRuntime::Context& echo,
 		const FarmProtectionPlan& plan, int& added, int& removed);
 	Farming::ExactFertilityCache fertility_cache;

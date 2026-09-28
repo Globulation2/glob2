@@ -297,6 +297,23 @@ scenarios.
 
 ## Building gradient invalidation regression
 
+The building invalidation harness also checks that public distance and movement
+queries resolve their own inputs and that the array API returns a complete field.
+
+Building propagation is always lazy. Build `path-gradient-test` and run
+`PathGradientHarness` from your native build directory. Its independent heap oracle
+covers all seven swim classes, paused water snapshots, equal-cost movement neighbors,
+repeated and reordered requests, interleaved maps, disconnected/capped distances,
+toroidal geometry and reused frontiers. The existing eager-kernel cases remain.
+
+The building invalidation and immobile-unit harnesses exercise lazy callers without
+configuration switches. The invalidation suite also pauses a field, closes a rival
+building ring, then checks that the field retains its old obstacle snapshot only
+until the normal refresh deadline. The savegame safety harness covers completion
+on save in the standard game path.
+CI runs the oracle on Linux and Windows, the lazy invalidation/immobile-unit suites
+on Linux, and lazy save continuation on both.
+
 From the repository root, run `scons -j8 release=1 server=0 building-gradient-invalidation-test`
 and `./build/native-tests/src/BuildingGradientInvalidationHarness`. The harness links the real
 engine and places every building through `OrderCreate` / `OrderDelete`, so it
@@ -466,6 +483,26 @@ python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests
 ```
 
 The harness runs headlessly in disposable profile directories in Linux and Windows CI.
+
+## AI save portability
+
+`AISavePortabilityHarness` checks Echo's serialized fields before its first tick,
+round-trips asymmetric AddArea/RemoveArea coordinates through the binary stream,
+and executes the restored orders on their intended tiles. It also loads legacy
+Maxima telemetry with values in the nonexistent seventh-policy columns and checks
+that capture marks those columns unavailable while still sampling the six real
+policies. The legacy columns and historical samples remain readable.
+
+```sh
+scons release=1 server=0 ai-save-portability-test
+python3 test/run-savegame-safety-tests.py build/native-tests/src/AISavePortabilityHarness .
+```
+
+The Linux CI regression job runs this harness. For portability changes, also run
+it with Clang and GCC and compare full-game per-tick traces using the same saved
+input. Correct coordinate loading preserves the x/y order written in existing
+saves; a save containing pending area orders can resume differently from older
+GCC builds that transposed those coordinates. The saved layout is unchanged.
 
 ## Echo building-order id save compatibility
 

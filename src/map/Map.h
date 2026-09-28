@@ -467,6 +467,13 @@ public:
 	bool incResource(int x, int y, int resourceType, int variety);
 
 private:
+	//! Allocate/refresh and mark use, without exposing the possibly partial field.
+	bool prepareBuildingGradient(Building *building, int swimClass);
+	//! Read or move on a prepared field. Both settle their input cell first;
+	//! neither refreshes the field or changes its use timestamp.
+	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell) const;
+	bool buildingGradientDirection(Building *building, int swimClass, int x, int y,
+		int *dx, int *dy, bool strict) const;
 	//! Per-tile predicate driver shared by isFree*/isHardSpace*.
 	//! Each flag toggles whether one occupancy/terrain test contributes to rejection.
 	struct TileChecks {
@@ -678,7 +685,8 @@ public:
 	void pathfindRandom(Unit *unit);
 #endif  // !YOG_SERVER_ONLY
 
-	//! Rebuild the building's full-map gradient for a swim class.
+	//! Initialize a fresh building field and retain its search frontier. Point
+	//! queries extend it on demand; buildingGradient returns a complete field.
 	void updateGlobalGradient(Building *building, int swimClass);
 	//! Rebuild the building's round-trip gradient for a resource type and swim class:
 	//! every tile of that resource is seeded with its distance to the building, so a
@@ -691,8 +699,11 @@ public:
 	//! building, read from a round-trip gradient a fetcher's walk has already built. False
 	//! when there is none or no such trip; the caller then scores by the plain distances.
 	bool roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
-	//! The building's gradient for a swim class, built or refreshed as needed; NULL if the building is unreachable.
+	//! Complete field, refreshed as needed; NULL when locked. Point queries use
+	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
 	const Uint16 *buildingGradient(Building *building, int swimClass);
+	//! Finish a cached field without refreshing its age or last-use timestamp.
+	void finishBuildingGradient(Building *building, int swimClass) const;
 	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
 	bool pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy);
