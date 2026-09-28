@@ -311,8 +311,12 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 	chosen = restored.game.teams[0]->findNearestFood(worker);
 	require(chosen && chosen->owner->teamNumber == (scenario.converts ? 1 : 0),
 			"food choice survives save/load");
+	// This fixture drives Game directly, without Engine assigning the wait state.
+	restored.game.anyPlayerWaited = false;
+	const auto firstStep = restored.game.stepCounter;
 	for (int tick = 0; tick < 64; ++tick)
 		restored.game.syncStep(0);
+	require(restored.game.stepCounter == firstStep + 64, "conversion fixture advances game ticks");
 	require(worker->owner->teamNumber == (scenario.converts ? 1 : 0),
 			"normal game ticks realize expected ownership");
 	require(restored.game.teams[1]->stats.measurements.conversionsIn[WORKER] ==
