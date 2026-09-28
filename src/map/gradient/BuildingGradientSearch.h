@@ -25,7 +25,6 @@ class BuildingGradientSearch
 	int widthMask = 0, heightMask = 0, widthShift = 0;
 
 public:
-	static bool enabled();
 	void begin(const Map &map, std::uint16_t *seeded, int swim);
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.

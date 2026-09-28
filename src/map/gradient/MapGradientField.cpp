@@ -9,7 +9,6 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <cstring>
 #include <utility>
 #include <vector>
 
@@ -176,15 +175,6 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 		sweep([](int) { return GRADIENT_STEP; });
 	else
 		sweep([&](int i) { return isWater((unsigned)i) ? WATER_STEP[swimClass] : GRADIENT_STEP; });
-}
-
-bool BuildingGradientSearch::enabled()
-{
-	static const bool useLazy = [] {
-		const char *value = std::getenv("GLOB2_LAZY_BUILDING_GRADIENTS");
-		return value && std::strcmp(value, "1") == 0;
-	}();
-	return useLazy;
 }
 
 void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim)

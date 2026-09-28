@@ -599,7 +599,7 @@ public:
 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
 	Uint16 *globalGradient[SWIM_CLASS_COUNT];
 	//! Retained propagation queues. Never serialized: saving completes
-	//! their fields first. Null for eager/loaded fields; owned with globalGradient.
+	//! their fields first. Null for loaded or locked fields; owned with globalGradient.
 	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[SWIM_CLASS_COUNT];
 	//! Set when the map changed nearby; rebuilt on use once DIRTY_REBUILD_TICKS
 	//! have elapsed since the last rebuild.

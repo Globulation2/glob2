@@ -217,14 +217,12 @@ static void aPausedFieldKeepsItsOriginalObstacles()
 {
 	World world;
 	Building *centre = world.place(20, 20);
-	world.game.map.buildingGradient(centre, 0); // allocate through the public API
-	world.game.map.updateGlobalGradient(centre, 0, true);
 	require(world.available(centre, 18, 20), "nearby query succeeds on a lazy field");
 	require(centre->globalGradientSearch[0] && !centre->globalGradientSearch[0]->complete(),
 		"nearby query leaves a retained frontier");
 	world.placeRing(20, 20, 1);
-	// Eager gradients intentionally retain their pre-edit obstacle snapshot
-	// until the normal refresh deadline. A lazy continuation must do the same.
+	// Cached gradients retain their pre-edit obstacle snapshot until the
+	// normal refresh deadline, including while their search is paused.
 	require(world.available(centre, 45, 45), "paused field preserves its old route before refresh is due");
 	world.tick(DIRTY_GRACE_TICKS);
 	require(!world.available(centre, 45, 45), "normal refresh replaces the paused obstacle snapshot");
@@ -246,12 +244,12 @@ static void publicReadsResolveTheirInputs()
 		int expectedDist, expectedDx, expectedDy;
 		require(map.buildingAvailable(centre, swim, 18, 20, &expectedDist), "complete distance exists");
 		require(map.pathfindBuilding(centre, swim, 18, 20, &expectedDx, &expectedDy), "complete direction exists");
-		map.updateGlobalGradient(centre, swim, true);
+		map.updateGlobalGradient(centre, swim);
 		int dist, dx, dy;
 		require(map.buildingAvailable(centre, swim, 18, 20, &dist) && dist == expectedDist,
 			"point API resolves its own distance");
 		require(!centre->globalGradientSearch[swim]->complete(), "point read does not finish the field");
-		map.updateGlobalGradient(centre, swim, true);
+		map.updateGlobalGradient(centre, swim);
 		require(map.pathfindBuilding(centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
 			"movement API resolves its own input layer");
 		require(!centre->globalGradientSearch[swim]->complete(), "movement does not finish the field");

@@ -21,7 +21,7 @@ void Map::finishBuildingGradient(Building *building, int swimClass) const
 // updateRoundTripGradient: the gradient of the trip to a resource and on to
 // the building.
 
-void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
+void Map::updateGlobalGradient(Building *building, int swimClass)
 {
 	PERF_SCOPE_TIME(BuildingGradient);
 	assert(building);
@@ -37,7 +37,6 @@ void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
 	assert(gradient);
 	// A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
-	if (!lazy) building->globalGradientSearch[swimClass].reset();
 	building->dirtyGradient[swimClass]=false;
 	building->lastGlobalGradientUpdateStepCounter[swimClass]=game->stepCounter;
 	building->gradientGeneration[swimClass]=topologyGeneration;
@@ -60,15 +59,12 @@ void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
 	}
 	else
 	{
-		bool isClearingFlag=false;
-		bool isWarFlag=false;
-		if (building->type->isVirtual && building->type->zonable[WARRIOR])
-			isWarFlag=true;
-
+		const bool isClearingFlag=building->type->zonable[WORKER];
+		const bool isWarFlag=building->type->zonable[WARRIOR];
+		assert(!building->type->zonableForbidden);
 		std::fill(gradient, gradient+size, GRADIENT_UNREACHABLE);
-		if (building->type->isVirtual && !building->type->zonable[WORKER])
+		if (!isClearingFlag)
 		{
-			assert(!building->type->zonableForbidden);
 			int r=building->unitStayRange;
 			int r2=r*r;
 			for (int yi=-r; yi<=r; yi++)
@@ -83,10 +79,8 @@ void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
 					}
 			}
 		}
-		else if (building->type->isVirtual && building->type->zonable[WORKER])
+		else
 		{
-			assert(!building->type->zonableForbidden);
-			isClearingFlag=true;
 			bool anyResourceToClear=false;
 			int r=building->unitStayRange;
 			int r2=r*r;
@@ -160,14 +154,9 @@ void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
 	else
 		building->locked[canSwim]=false;
 
-	if (lazy)
-	{
-		auto &search = building->globalGradientSearch[swimClass];
-		if (!search) search = std::make_unique<BuildingGradientSearch>();
-		search->begin(*this, gradient, swimClass);
-	}
-	else
-		propagateGradient(gradient, swimClass);
+	auto &search = building->globalGradientSearch[swimClass];
+	if (!search) search = std::make_unique<BuildingGradientSearch>();
+	search->begin(*this, gradient, swimClass);
 }
 
 

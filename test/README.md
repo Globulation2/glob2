@@ -291,17 +291,17 @@ scenarios.
 The building invalidation harness also checks that public distance and movement
 queries resolve their own inputs and that the array API returns a complete field.
 
-Lazy building propagation is opt-in. Build `path-gradient-test` and run
+Building propagation is always lazy. Build `path-gradient-test` and run
 `PathGradientHarness` from your native build directory. Its independent heap oracle
 covers all seven swim classes, paused water snapshots, equal-cost movement neighbors,
 repeated and reordered requests, interleaved maps, disconnected/capped distances,
 toroidal geometry and reused frontiers. The existing eager-kernel cases remain.
 
-Run the building invalidation and immobile-unit harnesses with
-`GLOB2_LAZY_BUILDING_GRADIENTS=1` to exercise lazy callers. The default invalidation
-suite additionally pauses a field, closes a rival building ring, then checks that
-the field retains its old obstacle snapshot only until the normal refresh deadline.
-Run the savegame safety harness in the same mode to cover completion on save.
+The building invalidation and immobile-unit harnesses exercise lazy callers without
+configuration switches. The invalidation suite also pauses a field, closes a rival
+building ring, then checks that the field retains its old obstacle snapshot only
+until the normal refresh deadline. The savegame safety harness covers completion
+on save in the standard game path.
 CI runs the oracle on Linux and Windows, the lazy invalidation/immobile-unit suites
 on Linux, and lazy save continuation on both.
 

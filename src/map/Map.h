@@ -685,9 +685,9 @@ public:
 	void pathfindRandom(Unit *unit);
 #endif  // !YOG_SERVER_ONLY
 
-	//! Rebuild the building's gradient. Lazy mode initializes the same snapshot
-	//! but retains its queue; the default still supplies a complete field.
-	void updateGlobalGradient(Building *building, int swimClass, bool lazy = false);
+	//! Initialize a fresh building field and retain its search frontier. Point
+	//! queries extend it on demand; buildingGradient returns a complete field.
+	void updateGlobalGradient(Building *building, int swimClass);
 	//! Rebuild the building's round-trip gradient for a resource type and swim class:
 	//! every tile of that resource is seeded with its distance to the building, so a
 	//! cell's value is the cheapest fetch-and-carry trip from there.

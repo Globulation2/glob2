@@ -115,7 +115,6 @@ Game options:
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |
 | `--profile NAME` | Optional isolated profile name |
-| `--lazy-building-gradients true/false` | Lazy building-gradient propagation; false by default. See [performance telemetry](../development/performance-telemetry.md#lazy-building-gradients) |
 
 GUI autosaving defaults off for tournament/headless runs, independently of the
 normal-play preference. Snapshots are produced only when requested through

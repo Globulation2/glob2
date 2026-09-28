@@ -61,7 +61,7 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass)
 	else if (isClearingFlag(building) && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
 		rebuild=true;
 	if (rebuild)
-		updateGlobalGradient(building, swimClass, BuildingGradientSearch::enabled());
+		updateGlobalGradient(building, swimClass);
 	return !building->locked[swimClass>0];
 }
 
@@ -173,7 +173,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false);
 
 	// Stuck for a while: the gradient may be stale, rebuild it now.
-	updateGlobalGradient(building, swimClass, BuildingGradientSearch::enabled());
+	updateGlobalGradient(building, swimClass);
 	if (building->locked[swimClass>0])
 		return false;
 	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true))
