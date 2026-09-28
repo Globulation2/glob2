@@ -1,0 +1,32 @@
+
+Running 28 tests using 1 worker
+
+[1/28] [firefox] › tests/campaign-editor-storage.spec.js:16:1 › campaign authoring waits for durable persistence before closing
+[2/28] [firefox] › tests/campaign-editor-storage.spec.js:37:1 › campaign authoring retains the editor on quota failure and can retry
+[3/28] [firefox] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation
+[4/28] [firefox] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached
+[5/28] [firefox] › tests/runtime-build.spec.js:4:1 › loading page presents branded progress before the runtime is ready
+[6/28] [firefox] › tests/runtime-build.spec.js:25:1 › browser runtime does not instrument stacks with Asyncify
+[7/28] [firefox] › tests/viewport.spec.js:16:1 › menus follow the viewport and keep their controls clickable
+[8/28] [firefox] › tests/viewport.spec.js:25:1 › a running match survives resize and its open menu follows the new center
+[9/28] [firefox] › tests/viewport.spec.js:47:1 › editor dialogs and discard controls follow viewport changes
+[10/28] [firefox] › tests/viewport.spec.js:58:1 › small viewports retain the active screen and continue rendering
+[11/28] [firefox] › tests/viewport.spec.js:68:3 › initial small viewport › starts at the actual browser dimensions
+[12/28] [firefox] › tests/viewport.spec.js:78:3 › initial wide viewport › fills the page before any resize
+[13/28] [firefox] › tests/viewport.spec.js:87:3 › high density display › uses the renderer-appropriate backing resolution
+[14/28] [firefox] › tests/viewport.spec.js:95:1 › interface scale survives resizing and keeps settings controls clickable
+[15/28] [webkit] › tests/campaign-editor-storage.spec.js:16:1 › campaign authoring waits for durable persistence before closing
+[16/28] [webkit] › tests/campaign-editor-storage.spec.js:37:1 › campaign authoring retains the editor on quota failure and can retry
+[17/28] [webkit] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation
+[18/28] [webkit] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached
+[19/28] [webkit] › tests/runtime-build.spec.js:4:1 › loading page presents branded progress before the runtime is ready
+[20/28] [webkit] › tests/runtime-build.spec.js:25:1 › browser runtime does not instrument stacks with Asyncify
+[21/28] [webkit] › tests/viewport.spec.js:16:1 › menus follow the viewport and keep their controls clickable
+[22/28] [webkit] › tests/viewport.spec.js:25:1 › a running match survives resize and its open menu follows the new center
+[23/28] [webkit] › tests/viewport.spec.js:47:1 › editor dialogs and discard controls follow viewport changes
+[24/28] [webkit] › tests/viewport.spec.js:58:1 › small viewports retain the active screen and continue rendering
+[25/28] [webkit] › tests/viewport.spec.js:68:3 › initial small viewport › starts at the actual browser dimensions
+[26/28] [webkit] › tests/viewport.spec.js:78:3 › initial wide viewport › fills the page before any resize
+[27/28] [webkit] › tests/viewport.spec.js:87:3 › high density display › uses the renderer-appropriate backing resolution
+[28/28] [webkit] › tests/viewport.spec.js:95:1 › interface scale survives resizing and keeps settings controls clickable
+  28 passed (4.5m)

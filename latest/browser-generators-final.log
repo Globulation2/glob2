@@ -1,0 +1,6 @@
+
+Running 2 tests using 1 worker
+
+[1/2] [chromium] › tests/single-player.spec.js:374:1 › map generation can be cancelled before retrying (swamp)
+[2/2] [chromium] › tests/single-player.spec.js:374:1 › map generation can be cancelled before retrying (concrete islands)
+  2 passed (2.4m)

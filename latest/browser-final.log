@@ -1,0 +1,34 @@
+
+Running 29 tests using 1 worker
+
+[1/29] [chromium] › tests/input.spec.js:7:1 › reload and address-bar shortcuts remain available with game focus
+[2/29] [chromium] › tests/input.spec.js:35:1 › click coordinates stay correct when browser motion delivery is missing
+[3/29] [chromium] › tests/input.spec.js:52:1 › desktop right-click cancels a selection and cycles sidebar views without a browser menu
+[4/29] [chromium] › tests/rendering.spec.js:8:1 › WebGL2 draws a playable match and resizes its drawing buffer
+[5/29] [chromium] › tests/rendering.spec.js:29:1 › software renderer remains available
+[6/29] [chromium] › tests/rendering.spec.js:40:1 › the default renderer is WebGL2 when the browser accelerates it
+[7/29] [chromium] › tests/rendering.spec.js:72:3 › the default renderer falls back to software when WebGL2 is unavailable
+[8/29] [chromium] › tests/rendering.spec.js:72:3 › the default renderer falls back to software when WebGL2 is emulated
+[9/29] [chromium] › tests/rendering.spec.js:82:1 › WebGL context restoration keeps the match and can recover repeatedly
+[10/29] [chromium] › tests/rendering.spec.js:111:1 › WebGL context restoration retains settings, editor and confirmation controls
+[11/29] [chromium] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation
+[12/29] [chromium] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached
+[13/29] [chromium] › tests/runtime-build.spec.js:4:1 › loading page presents branded progress before the runtime is ready
+[14/29] [chromium] › tests/runtime-build.spec.js:25:1 › browser runtime does not instrument stacks with Asyncify
+[15/29] [chromium] › tests/session-reload.spec.js:34:1 › an active match can load the same saved game repeatedly through the scheduled loader
+[16/29] [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match
+[17/29] [chromium] › tests/session-reload.spec.js:70:1 › an active replay can be loaded again through the scheduled loader
+[18/29] [chromium] › tests/single-player.spec.js:374:1 › map generation can be cancelled before retrying (swamp)
+[19/29] [chromium] › tests/single-player.spec.js:374:1 › map generation can be cancelled before retrying (concrete islands)
+[20/29] [chromium] › tests/viewport.spec.js:16:1 › menus follow the viewport and keep their controls clickable
+[21/29] [chromium] › tests/viewport.spec.js:25:1 › a running match survives resize and its open menu follows the new center
+[22/29] [chromium] › tests/viewport.spec.js:47:1 › editor dialogs and discard controls follow viewport changes
+[23/29] [chromium] › tests/viewport.spec.js:58:1 › small viewports retain the active screen and continue rendering
+[24/29] [chromium] › tests/viewport.spec.js:68:3 › initial small viewport › starts at the actual browser dimensions
+[25/29] [chromium] › tests/viewport.spec.js:78:3 › initial wide viewport › fills the page before any resize
+[26/29] [chromium] › tests/viewport.spec.js:87:3 › high density display › uses the renderer-appropriate backing resolution
+[27/29] [chromium] › tests/viewport.spec.js:95:1 › interface scale survives resizing and keeps settings controls clickable
+[28/29] [chromium] › tests/multiplayer.spec.js:287:1 › browser and native players complete matching simulation checkpoints (TCP)
+[29/29] [chromium] › tests/multiplayer.spec.js:287:1 › browser and native players complete matching simulation checkpoints (WSS)
+  1 skipped
+  28 passed (8.1m)

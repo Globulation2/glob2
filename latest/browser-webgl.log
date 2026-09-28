@@ -1,0 +1,121 @@
+
+Running 25 tests using 1 worker
+
+[1/25] [chromium] › tests/input.spec.js:7:1 › reload and address-bar shortcuts remain available with game focus
+[2/25] [chromium] › tests/input.spec.js:35:1 › click coordinates stay correct when browser motion delivery is missing
+[3/25] [chromium] › tests/input.spec.js:52:1 › desktop right-click cancels a selection and cycles sidebar views without a browser menu
+[4/25] [chromium] › tests/rendering.spec.js:8:1 › WebGL2 draws a playable match and resizes its drawing buffer
+[5/25] [chromium] › tests/rendering.spec.js:29:1 › software renderer remains available
+[6/25] [chromium] › tests/rendering.spec.js:40:1 › the default renderer is WebGL2 when the browser accelerates it
+[7/25] [chromium] › tests/rendering.spec.js:72:3 › the default renderer falls back to software when WebGL2 is unavailable
+[8/25] [chromium] › tests/rendering.spec.js:72:3 › the default renderer falls back to software when WebGL2 is emulated
+[9/25] [chromium] › tests/rendering.spec.js:82:1 › WebGL context restoration keeps the match and can recover repeatedly
+[10/25] [chromium] › tests/rendering.spec.js:111:1 › WebGL context restoration retains settings, editor and confirmation controls
+[11/25] [chromium] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation
+[12/25] [chromium] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached
+  1) [chromium] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached 
+
+    Error: Test timeout of 90000ms exceeded
+
+       5 | async function matchFrame(page) {
+       6 |   const frames=(await snapshot(page)).frames;
+    >  7 |   await expect.poll(async()=>(await snapshot(page)).frames).toBeGreaterThan(frames+2);
+         |                                                             ^
+       8 | }
+       9 | async function touchMatch(page,x,y) {await page.touchscreen.tap(x,y);await matchFrame(page);}
+      10 |
+        at matchFrame (/Users/bradley/glob2/browser/tests/responsive-presentation.spec.js:7:61)
+        at /Users/bradley/glob2/browser/tests/responsive-presentation.spec.js:71:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/pr208-merge/webgl-results/responsive-presentation-re-59031-sized-with-a-mouse-attached-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/pr208-merge/webgl-results/responsive-presentation-re-59031-sized-with-a-mouse-attached-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/pr208-merge/webgl-results/responsive-presentation-re-59031-sized-with-a-mouse-attached-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/pr208-merge/webgl-results/responsive-presentation-re-59031-sized-with-a-mouse-attached-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[13/25] [chromium] › tests/runtime-build.spec.js:4:1 › loading page presents branded progress before the runtime is ready
+[14/25] [chromium] › tests/runtime-build.spec.js:25:1 › browser runtime does not instrument stacks with Asyncify
+[15/25] [chromium] › tests/session-reload.spec.js:34:1 › an active match can load the same saved game repeatedly through the scheduled loader
+  2) [chromium] › tests/session-reload.spec.js:34:1 › an active match can load the same saved game repeatedly through the scheduled loader 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 25
+    Received:   0
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      11 |   await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
+      12 |   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
+    > 13 |   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
+         |                                                        ^
+      14 |   await page.locator('#canvas').press('Escape',{delay:80});
+      15 |   await click(page,600,400);await click(page,520,555);
+      16 |   await expect.poll(async()=>{
+        at startAndSave (/Users/bradley/glob2/browser/tests/session-reload.spec.js:13:56)
+        at /Users/bradley/glob2/browser/tests/session-reload.spec.js:36:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/pr208-merge/webgl-results/session-reload-an-active-m-2778b-hrough-the-scheduled-loader-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/pr208-merge/webgl-results/session-reload-an-active-m-2778b-hrough-the-scheduled-loader-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/pr208-merge/webgl-results/session-reload-an-active-m-2778b-hrough-the-scheduled-loader-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/pr208-merge/webgl-results/session-reload-an-active-m-2778b-hrough-the-scheduled-loader-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[16/25] [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match
+  3) [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match 
+
+    Test was interrupted.
+
+    Error: page.evaluate: Target page, context or browser has been closed
+
+      2 | const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
+      3 | const path=require('node:path');
+    > 4 | const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
+        |                        ^
+      5 | const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+      6 | const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
+      7 |
+        at state (/Users/bradley/glob2/browser/tests/session-reload.spec.js:4:24)
+        at /Users/bradley/glob2/browser/tests/session-reload.spec.js:13:37
+        at startAndSave (/Users/bradley/glob2/browser/tests/session-reload.spec.js:13:3)
+        at /Users/bradley/glob2/browser/tests/session-reload.spec.js:52:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/pr208-merge/webgl-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/pr208-merge/webgl-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/pr208-merge/webgl-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  2 failed
+    [chromium] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached 
+    [chromium] › tests/session-reload.spec.js:34:1 › an active match can load the same saved game repeatedly through the scheduled loader 
+  1 interrupted
+    [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match 
+  9 did not run
+  13 passed (7.6m)

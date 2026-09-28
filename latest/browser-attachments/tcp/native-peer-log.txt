@@ -1,0 +1,7 @@
+native match started
+nox::game started
+nox::gui.localTeam has won
+automaticEndingGame ended: 290 ticks, 0 minutes, 11 seconds
+GLOB2_GAME_END ticks=290 winner_team=1 seed=1790625575 map="A big pond" orders=1 players=team0:None,team1:ip
+native match order-rate=6
+native match complete

@@ -1,0 +1,29 @@
+
+Running 25 tests using 1 worker
+
+[1/25] [chromium] › tests/multiplayer.spec.js:58:1 › browser YOG login exchanges the native protocol through the real gateway
+[2/25] [chromium] › tests/multiplayer.spec.js:92:1 › registered browser player enters and leaves the native YOG lobby
+[3/25] [chromium] › tests/multiplayer.spec.js:120:1 › YOG registration remains scheduled through resize and cancellation
+[4/25] [chromium] › tests/multiplayer.spec.js:137:1 › YOG map selection and upload screens resize and return to their owning tabs
+[5/25] [chromium] › tests/multiplayer.spec.js:154:1 › YOG match settings resize and return to their room
+[6/25] [chromium] › tests/multiplayer.spec.js:172:1 › YOG disconnect message remains scheduled and returns cleanly after resize
+[7/25] [chromium] › tests/multiplayer.spec.js:225:1 › two browser players create, join and start a YOG match (no AI)
+[8/25] [chromium] › tests/multiplayer.spec.js:225:1 › two browser players create, join and start a YOG match (Cortex)
+[9/25] [chromium] › tests/multiplayer.spec.js:287:1 › browser and native players complete matching simulation checkpoints (TCP)
+[10/25] [chromium] › tests/multiplayer.spec.js:287:1 › browser and native players complete matching simulation checkpoints (WSS)
+[11/25] [chromium] › tests/multiplayer.spec.js:366:1 › YOG admission enforces greeting, exact version, authentication and retry order
+[12/25] [chromium] › tests/multiplayer.spec.js:437:1 › browser reports incompatible release before transmitting credentials (client version)
+[13/25] [chromium] › tests/multiplayer.spec.js:437:1 › browser reports incompatible release before transmitting credentials (legacy server)
+[14/25] [chromium] › tests/multiplayer.spec.js:437:1 › browser reports incompatible release before transmitting credentials (server version)
+[15/25] [chromium] › tests/torus.spec.js:46:1 › WebGL2 switches between the flat map and the torus overview
+[16/25] [chromium] › tests/torus.spec.js:68:1 › the torus overview recovers after WebGL context loss
+[17/25] [chromium] › tests/torus.spec.js:88:1 › the software renderer keeps the flat map
+[18/25] [chromium] › tests/viewport.spec.js:16:1 › menus follow the viewport and keep their controls clickable
+[19/25] [chromium] › tests/viewport.spec.js:25:1 › a running match survives resize and its open menu follows the new center
+[20/25] [chromium] › tests/viewport.spec.js:47:1 › editor dialogs and discard controls follow viewport changes
+[21/25] [chromium] › tests/viewport.spec.js:58:1 › small viewports retain the active screen and continue rendering
+[22/25] [chromium] › tests/viewport.spec.js:68:3 › initial small viewport › starts at the actual browser dimensions
+[23/25] [chromium] › tests/viewport.spec.js:78:3 › initial wide viewport › fills the page before any resize
+[24/25] [chromium] › tests/viewport.spec.js:87:3 › high density display › uses the renderer-appropriate backing resolution
+[25/25] [chromium] › tests/viewport.spec.js:95:1 › interface scale survives resizing and keeps settings controls clickable
+  25 passed (4.9m)
