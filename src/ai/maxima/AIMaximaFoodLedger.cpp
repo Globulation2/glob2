@@ -133,7 +133,8 @@ Ledger::Ledger()
 }
 
 void Ledger::walk(const Input& input, int centerX, int centerY, int left,
-	int top, int width, int height, std::vector<ReachCell>& reach) const
+	int top, int width, int height, std::vector<ReachCell>& reach,
+	const std::vector<uint32_t>* residual, long long cap) const
 {
 	reach.clear();
 	const int size=input.width*input.height;
@@ -175,10 +176,21 @@ void Ledger::walk(const Input& input, int centerX, int centerY, int left,
 				visit(originX+dx,originY+dy,0);
 	// Breadth-first expansion visits cells in nondecreasing distance, so the
 	// claim pass below consumes the nearest wheat first without sorting.
+	long long reached=0;
 	for(size_t head=0;head<queue.size();++head)
 	{
 		const ReachCell current=queue[head];
-		if(input.yield[current.index]>0)reach.push_back(current);
+		if(input.yield[current.index]>0)
+		{
+			reach.push_back(current);
+			// Preserve BFS order and the complete threshold-crossing cell. Later
+			// cells cannot affect a capped sum or a satisfied demand's quality.
+			if(residual && cap>0)
+			{
+				reached+=(*residual)[current.index];
+				if(reached>=cap)break;
+			}
+		}
 		if(current.distance>=input.policy.supplyRadius)continue;
 		const int x=current.index%input.width;
 		const int y=current.index/input.width;
@@ -368,7 +380,8 @@ int Ledger::residualQuality(const Input& input, const Result& result,
 	long long demand) const
 {
 	if(demand<=0)return 0;
-	walk(input,centerX,centerY,left,top,width,height,reachScratch);
+	walk(input,centerX,centerY,left,top,width,height,reachScratch,
+		&result.residual,demand);
 	long long remaining=demand,weighted=0,filled=0;
 	for(size_t i=0;i<reachScratch.size()&&remaining>0;++i)
 	{
@@ -386,7 +399,8 @@ long long Ledger::reachableResidual(const Input& input, const Result& result,
 	int centerX, int centerY, int left, int top, int width, int height,
 	long long cap) const
 {
-	walk(input,centerX,centerY,left,top,width,height,reachScratch);
+	walk(input,centerX,centerY,left,top,width,height,reachScratch,
+		&result.residual,cap);
 	long long total=0;
 	for(size_t i=0;i<reachScratch.size();++i)
 	{
