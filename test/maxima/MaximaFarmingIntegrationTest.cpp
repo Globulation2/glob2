@@ -261,9 +261,9 @@ void configurePattern(Fixture& f)
     b.farming_wood_firebreak_enabled=false;
 }
 
-// Only the selected cells permit new growth, isolating support lifetime from
-// unrelated frontier targets. Extra crops provide a harvestable food reserve.
-void temporaryExpansionSupport()
+// Only selected cells permit new growth, isolating the target and its harvest
+// lane from unrelated frontier targets. Extra crops provide a food reserve.
+void expansionLeavesHarvestLanesOpen()
 {
     for(int offset:{0,44}) for(bool live:{false,true})
     {
@@ -288,64 +288,29 @@ void temporaryExpansionSupport()
         configurePattern(f);
         ai.update_farming(ai.context);applyAreaContracts(f);
         assert(ai.farm_protection_mask[target] && ai.farm_protection_mask[other]);
-        assert(ai.farm_protection_mask[support]);
-        ai.update_farming(ai.context);assert(applyAreaContracts(f)==0);
-        if(live)
-        {
-            // A donor remains protected even when its wheat is full.
-            map.getTile(support%64,support/64).resource.amount=4;
-            ai.update_farming(ai.context);applyAreaContracts(f);
-            assert(ai.farm_protection_mask[support]);
-        }
-        // Intermediate wheat remains protected after it grows; a shared
-        // support is released only when both targets have established wheat.
-        setYoungResource(map,support%64,support/64,WHEAT);
-        setYoungResource(map,target%64,target/64,WHEAT);
-        ai.update_farming(ai.context);applyAreaContracts(f);
-        assert(ai.farm_protection_mask[support]);
-        setYoungResource(map,other%64,other/64,WHEAT);
-        ai.update_farming(ai.context);applyAreaContracts(f);
         assert(!ai.farm_protection_mask[support]);
-        assert(!map.isForbidden(support%64,support/64,f.player.team->me));
         assert(ai.farm_protection_mask[seed]);
-        map.setNoResource(target%64,target/64,0);
-        ai.update_farming(ai.context);applyAreaContracts(f);
-        assert(ai.farm_protection_mask[support]);
-        // Cache reconstruction must choose the same support from saved areas.
+        // Growth and depletion must not reserve the off-lattice harvest lane.
+        for(bool established:{true,false})
+        {
+            setYoungResource(map,support%64,support/64,WHEAT);
+            if(established)setYoungResource(map,target%64,target/64,WHEAT);
+            else map.setNoResource(target%64,target/64,0);
+            ai.update_farming(ai.context);applyAreaContracts(f);
+            assert(!ai.farm_protection_mask[support]);
+            assert(!map.isForbidden(support%64,support/64,f.player.team->me));
+            assert(ai.farm_protection_mask[seed]);
+        }
         const auto protectedMask=ai.farm_protection_mask;
         ai.applied_farm_protection_mask.clear();
         ai.update_farming(ai.context);assert(applyAreaContracts(f)==0);
         assert(ai.farm_protection_mask==protectedMask);
-        ai.budget.recovery_active=true;
+        // Loading an older plan releases its obsolete neighboring support.
+        map.addForbidden(support%64,support/64,0);
+        ai.applied_farm_protection_mask.clear();
         ai.update_farming(ai.context);applyAreaContracts(f);
-        assert(!ai.farm_protection_mask[support]);
-        ai.budget.recovery_active=false;
-        ai.budget.food_emergency=true;
-        ai.update_farming(ai.context);assert(!ai.farm_protection_mask[support]);
-        ai.budget.food_emergency=false;
-        ai.budget.farming_management_radius=1; // no building anchor
-        ai.update_farming(ai.context);assert(!ai.farm_protection_mask[support]);
-        ai.budget.farming_management_radius=0;
-        // An occupied or growth-disabled support cannot be reserved.
-        map.getTile(support%64,support/64).groundUnit=0;
-        ai.update_farming(ai.context);assert(!ai.farm_protection_mask[support]);
-        map.getTile(support%64,support/64).groundUnit=NOGUID;
-        map.getTile(support%64,support/64).canResourcesGrow=0;
-        ai.update_farming(ai.context);assert(!ai.farm_protection_mask[support]);
-        map.getTile(support%64,support/64).canResourcesGrow=1;
-        // Fewer than four available crops cannot spare a live donor.
-        for(int y:{25,27,29,31})
-        {int i=index(22,y);map.setNoResource(i%64,i/64,0);}
-        ai.update_farming(ai.context);assert(!ai.farm_protection_mask[support]);
-        // Reopening the western land makes support split the local lane.
-        map.setNoResource(support%64,support/64,0);
-        for(int y:{18,20}){int i=index(19,y);map.getTile(i%64,i/64).terrain=0;}
-        ai.update_farming(ai.context);assert(!ai.farm_protection_mask[support]);
-        // No source means no target or intermediate protection obligation.
-        map.setNoResource(seed%64,seed/64,0);
-        map.setNoResource(other%64,other/64,0);
-        ai.update_farming(ai.context);applyAreaContracts(f);
-        assert(!ai.farm_protection_mask[support] && !ai.farm_protection_mask[target]);
+        assert(!map.isForbidden(support%64,support/64,f.player.team->me));
+        assert(ai.farm_protection_mask==protectedMask);
     }
 }
 
@@ -503,7 +468,6 @@ void permanentWheatLayout()
         for(int y=18;y<=26;++y)for(int x=18;x<=26;++x)
         {int i=index(x,y);setYoungResource(map,i%64,i/64,WHEAT);}
         configurePattern(f);
-        ai.budget.food_emergency=true; // isolate layout from supplemental support
         const int seed=index(21,23),interior=index(20,22),edge=index(18,22),lane=index(21,22);
         bool first=true;
         for(int amount:{1,2,3,4,5,2})
@@ -721,7 +685,7 @@ int main()
     permanentWheatLayout();firebreakManagementRadius();farmManagementRadius();coastalWheatCrossesFertilityDips();
         seedSurvival();initialFlagStaffing();
     woodReserveSurvivesWheatPincer();woodReserveSurvivesOwnFarmProtection();
-        temporaryExpansionSupport();alignedPatternTransitions();maintenanceProtectionAgreement();
+        expansionLeavesHarvestLanesOpen();alignedPatternTransitions();maintenanceProtectionAgreement();
 
     archipelagoHarvestDoesNotSealWheat();seedStabilityAcrossMaps();farmingRespectsDiscovery();
     std::cout<<"aligned farming, maintenance agreement, seed survival and flag staffing passed\n";

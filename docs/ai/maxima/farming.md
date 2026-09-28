@@ -11,14 +11,12 @@ editing shared masks:
 1. `build_farming_protection_plan` classifies wheat and wood roles and resolves
    their priority against reservations and firebreaks, including the minimum
    renewable wood reserve.
-2. Temporary wheat expansion support augments eligible empty frontier targets
-   after the management-radius filter.
-3. `resolve_wheat_invasion_clearing` gives wood beside the final protected wheat
+2. `resolve_wheat_invasion_clearing` gives wood beside the final protected wheat
    mask the same hard clearing priority used by maintenance. It uses this pass's
    wheat mask, so new and revoked obligations do not depend on stale maintenance.
-4. `apply_farming_protection` emits only the difference between the desired plan
+3. `apply_farming_protection` emits only the difference between the desired plan
    and the forbidden area previously owned by this subsystem.
-5. Building circulation and wood firebreaks use the same model:
+4. Building circulation and wood firebreaks use the same model:
    `build_maintenance_clearing_plan` produces separate hard-circulation and
    renewable-firebreak masks, then `apply_maintenance_clearing_plan` reconciles
    them once.
@@ -119,8 +117,8 @@ advances only after the matching resource actually grows; old edge cells become
 harvestable as they enter the farm interior.
 
 Normal frontier protection uses the expansion lattice everywhere, including
-along a beach. Its cross-parity cells provide worker lanes. Temporary wheat
-support can occupy some of these cells only when the access checks below pass. Coastal sand still matters for growth, not for protection: wheat
+along a beach. Its cross-parity cells provide worker lanes.
+Coastal sand still matters for growth, not for protection: wheat
 backed by a connected sand or blended-sand component touching actual water
 bypasses the inland fertility cutoff, so a farm follows its most fertile
 growth path along the coast. Isolated inland sand does not qualify. A single
@@ -147,40 +145,14 @@ remain harvestable. The normal farming pass revises the layout as the farm
 expands or building and access requirements change. There are no per-tick
 quantity checks or maturity-triggered forbidden-area orders.
 
-Empty layout targets remain protected to establish new wheat. Supplemental
-expansion support is temporary and expires once its target is established.
+Empty layout targets remain protected to establish new wheat. Their neighbors
+receive no additional protection beyond the normal layout.
 Wood reserves, construction/access contracts and independently forbidden areas
 retain their precedence.
 
 Save format 118 no longer writes the experimental rolling-maturity cache.
 Version 117 saves remain readable; their obsolete cache is consumed and
 discarded. Earlier save formats retain their existing loading behavior.
-
-## Temporary wheat expansion support
-
-In map order, each eligible empty wheat frontier target can add up to two extra
-neighboring support cells; targets can share previously selected support. Existing wheat donors are preferred, ranked by fertility times amount.
-Empty intermediate cells qualify only when adjacent live wheat can seed them;
-their score combines incoming growth potential with their own fertility. Support
-must have nonzero fertility, lie within the management radius, permit wheat
-growth, and have no unit or hard building/path reservation. Ties use map index.
-Odd/odd layout positions are excluded from supplemental support so that it
-does not override their normal layout eligibility. Support
-cells do not recursively create targets. Wood keeps its normal pattern.
-
-The extra live donors may use at most one quarter (rounded down) of the otherwise
-harvestable wheat cells within the management area. No extra support is reserved
-during recovery or a food emergency. Each addition must leave its open neighbors
-connected around it, treating harvestable crops as potential future lanes. Empty
-support must also preserve access through currently resource-free neighbors.
-These conservative local checks can reject a cell even when a longer detour exists.
-
-Support is rebuilt from the normal frontier each policy pass. When wheat reaches
-a target, its support disappears on the next pass unless another unfinished target
-or the normal farm pattern still needs it. Losing the target, its source, or its
-eligibility also releases the extra protection. There is no new saved state.
-This temporarily trades harvestable food and some open space for more surviving
-sources of expansion; faster establishment is an intended effect, not a guarantee.
 
 ## Minimum renewable wood reserve
 
@@ -205,7 +177,7 @@ cannot be outlets. If no viable location exists, the policy cannot create wood.
 
 Seeds stay forbidden to harvesting; outlets stay harvestable even if wheat grows
 there. Neither receives wheat-invasion clearing or the ordinary wood firebreak.
-Temporary wheat expansion support cannot reserve an outlet. Discretionary wood
+Discretionary wood
 clearing flags avoid the reserve; an overlapping active campaign retires. Existing
 building/access contracts retain priority. New building parcels and circulation
 routes avoid both seeds and outlets, so future construction uses another location.
@@ -295,7 +267,7 @@ The complete policy normally runs every 512 ticks, and every 64 ticks while an
 urgent farming condition holds. Derived masks are reused and only real
 forbidden-area deltas produce orders. The `farming_policy` record reports
 `microseconds`, `wood_reserve_seeds`, `protected_seeds`, `protected_frontier`, `protected_wheat_edges`,
-`protected_wheat_bootstraps`, `protected_wheat_support`, `protected_wood_edges`, `protected_wood_bootstraps`,
+`protected_wheat_bootstraps`, `protected_wood_edges`, `protected_wood_bootstraps`,
 `protected_interior_seeds`, `expected_capacity`, `blocked_directions`,
 `wood_pressure`, `wood_fertility`, `added` and `removed`. Layout-role counts
 describe the final classification; area-order deltas describe changes to
