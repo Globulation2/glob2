@@ -1,0 +1,14 @@
+{
+  "lakes256-seed131": {
+    "gradient.building": 1810,
+    "gradient.building_resume": 3898
+  },
+  "continuation": {
+    "gradient.building": 1139,
+    "gradient.building_resume": 2577
+  },
+  "arena256-seed73": {
+    "gradient.building": 912,
+    "gradient.building_resume": 1860
+  }
+}

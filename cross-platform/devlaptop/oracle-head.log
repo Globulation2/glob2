@@ -1,0 +1,2 @@
+PASS lazy building gradients: paused terrain snapshots, query ordering, equal-cost movement, unreachable cells, toroidal geometry, independent frontiers and rebuilds
+PASS PathGradientHarness cases=1526 exact_cells=2032787 digest=3281260807785418242

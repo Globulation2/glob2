@@ -1,3 +1,7 @@
+# Latest verification
+
+[Final-head cross-platform checks and save-byte caveats](cross-platform/README.md) supplement the earlier studies below.
+
 # Lazy building gradient validation evidence
 
 **Final standard path:** [default-path validation](final-default/README.md) covers removal of experimental switches and renewed checksum/save verification with lazy building gradients always enabled.

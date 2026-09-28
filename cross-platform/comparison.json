@@ -1,0 +1,280 @@
+{
+  "paired": [
+    {
+      "platform": "macOS",
+      "case": "arena256-seed73",
+      "ticks": 8192,
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "platform": "macOS",
+      "case": "continuation",
+      "ticks": 4096,
+      "files": {
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "platform": "macOS",
+      "case": "lakes256-seed131",
+      "ticks": 8192,
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "platform": "therig",
+      "case": "arena256-seed73",
+      "ticks": 8192,
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "platform": "therig",
+      "case": "continuation",
+      "ticks": 4096,
+      "files": {
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "platform": "therig",
+      "case": "lakes256-seed131",
+      "ticks": 8192,
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "arena256-seed73",
+      "ticks": 8192,
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "continuation",
+      "ticks": 4096,
+      "files": {
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "lakes256-seed131",
+      "ticks": 8192,
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": true
+      }
+    }
+  ],
+  "cross_platform": [
+    {
+      "platform": "therig",
+      "case": "arena256-seed73",
+      "variant": "base",
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "arena256-seed73",
+      "variant": "base",
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "therig",
+      "case": "arena256-seed73",
+      "variant": "head",
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "arena256-seed73",
+      "variant": "head",
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "therig",
+      "case": "lakes256-seed131",
+      "variant": "base",
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "lakes256-seed131",
+      "variant": "base",
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "therig",
+      "case": "lakes256-seed131",
+      "variant": "head",
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "lakes256-seed131",
+      "variant": "head",
+      "files": {
+        "checkpoint-4096.game": true,
+        "checkpoint-8192.game": true,
+        "final.game": true,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "therig",
+      "case": "continuation",
+      "variant": "base",
+      "files": {
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "continuation",
+      "variant": "base",
+      "files": {
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "therig",
+      "case": "continuation",
+      "variant": "head",
+      "files": {
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    },
+    {
+      "platform": "devlaptop",
+      "case": "continuation",
+      "variant": "head",
+      "files": {
+        "final.game": false,
+        "game.replay.checksums": true,
+        "initial.game": false
+      }
+    }
+  ],
+  "ci": [
+    {
+      "trace": "ci/browser-determinism-ubuntu-22.04/native.replay.checksums",
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_original_mac": true
+    },
+    {
+      "trace": "ci/browser-determinism-windows/native.replay.checksums",
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_original_mac": true
+    },
+    {
+      "trace": "ci/browser-determinism-wasm/wasm.replay.checksums",
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_original_mac": true
+    },
+    {
+      "trace": "ci/browser-determinism-ubuntu-24.04/native.replay.checksums",
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_original_mac": true
+    },
+    {
+      "trace": "mac-base/native.replay.checksums",
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_original_mac": true
+    },
+    {
+      "trace": "mac-head/native.replay.checksums",
+      "sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+      "matches_original_mac": true
+    }
+  ],
+  "within_platform_pr_equivalence": false,
+  "cross_platform_tick_equivalence": true,
+  "cross_platform_all_save_bytes_identical": false,
+  "ci_tick_equivalence": true
+}

@@ -1,0 +1,14 @@
+{
+  "fixture": "games/cross-replay.game",
+  "seed": 42,
+  "ticks": 1500,
+  "fixture_sha256": "91cbeadd0fce2ec3bc3cb620ce1bea2ac2fc78d9763ce07ddce583342482ee68",
+  "trace_sha256": "110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48",
+  "command": [
+    "D:/a/glob2/glob2/build/mingw/client/release/src/glob2.exe",
+    "--nox",
+    "D:/a/glob2/glob2/games/cross-replay.game",
+    "1500",
+    "1"
+  ]
+}

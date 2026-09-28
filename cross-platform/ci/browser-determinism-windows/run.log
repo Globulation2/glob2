@@ -1,0 +1,7 @@
+nox::running 1 times 1500 steps:
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::game started
+nox::gui.game.checkSum() = 16791a66
+automaticEndingGame ended: 1500 ticks, 1 minutes, 0 seconds
+GLOB2_GAME_END ticks=1500 winner_team=-1 seed=42 map="SmallForTwo" orders=47 players=team0:local,team1:Nicowar,team0:Econo

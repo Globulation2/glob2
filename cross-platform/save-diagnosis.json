@@ -1,0 +1,58 @@
+[
+  {
+    "file": "initial.game",
+    "sample": "current",
+    "tick": 4096,
+    "field": "state.policy_bids_6.desired_warriors",
+    "offset": 1549711,
+    "changed_offsets": [
+      1549711,
+      1549712,
+      1549713,
+      1549715,
+      1549716,
+      1549717,
+      1549718
+    ],
+    "base_words": [
+      1304561921,
+      0,
+      4096,
+      1
+    ],
+    "head_words": [
+      3604961537,
+      4294967295,
+      4096,
+      1
+    ]
+  },
+  {
+    "file": "final.game",
+    "sample": "history 8",
+    "tick": 4096,
+    "field": "state.policy_bids_6.desired_warriors",
+    "offset": 2093531,
+    "changed_offsets": [
+      2093531,
+      2093532,
+      2093533,
+      2093535,
+      2093536,
+      2093537,
+      2093538
+    ],
+    "base_words": [
+      1304561921,
+      0,
+      4096,
+      1
+    ],
+    "head_words": [
+      3604961537,
+      4294967295,
+      4096,
+      1
+    ]
+  }
+]

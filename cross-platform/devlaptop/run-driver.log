@@ -1,0 +1,16 @@
+RUN arena256-seed73 base
+DONE arena256-seed73 base 8192
+RUN arena256-seed73 head
+DONE arena256-seed73 head 8192
+RUN lakes256-seed131 base
+DONE lakes256-seed131 base 8192
+RUN lakes256-seed131 head
+DONE lakes256-seed131 head 8192
+RUN continuation base
+DONE continuation base 8192
+RUN continuation head
+DONE continuation head 8192
+COMPARE arena256-seed73 {'checkpoint-4096.game': True, 'checkpoint-8192.game': True, 'final.game': True, 'game.replay.checksums': True, 'initial.game': True}
+COMPARE lakes256-seed131 {'checkpoint-4096.game': True, 'checkpoint-8192.game': True, 'final.game': True, 'game.replay.checksums': True, 'initial.game': True}
+COMPARE continuation {'final.game': False, 'game.replay.checksums': True, 'initial.game': False}
+COMPLETE
