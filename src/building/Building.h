@@ -5,6 +5,7 @@
 
 #include <climits>
 #include <list>
+#include <memory>
 #include <vector>
 
 #include "BuildingUtils.h"
@@ -22,6 +23,7 @@ namespace GAGCore
 class Unit;
 class Team;
 class Map;
+class BuildingGradientSearch;
 struct BuildingType;
 class BuildingsTypes;
 class Order;
@@ -596,6 +598,9 @@ public:
 	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
 	Uint16 *globalGradient[SWIM_CLASS_COUNT];
+	//! Retained propagation queues. Never serialized: saving completes
+	//! their fields first. Null for eager/loaded fields; owned with globalGradient.
+	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[SWIM_CLASS_COUNT];
 	//! Set when the map changed nearby; rebuilt on use once DIRTY_REBUILD_TICKS
 	//! have elapsed since the last rebuild.
 	bool dirtyGradient[SWIM_CLASS_COUNT];

@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "GameGUI.h"
 #include "Building.h"
+#include "BuildingGradientSearch.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include "Race.h"
@@ -212,6 +213,24 @@ static void aRingCutsOffAVirtualFlagsField()
 	std::puts("PASS a ring around a virtual flag cuts off its field, though no flag is in the building tile grid");
 }
 
+static void aPausedFieldKeepsItsOriginalObstacles()
+{
+	World world;
+	Building *centre = world.place(20, 20);
+	world.game.map.buildingGradient(centre, 0); // allocate through the public API
+	world.game.map.updateGlobalGradient(centre, 0, true);
+	require(world.available(centre, 18, 20), "nearby query succeeds on a lazy field");
+	require(centre->globalGradientSearch[0] && !centre->globalGradientSearch[0]->complete(),
+		"nearby query leaves a retained frontier");
+	world.placeRing(20, 20, 1);
+	// Eager gradients intentionally retain their pre-edit obstacle snapshot
+	// until the normal refresh deadline. A lazy continuation must do the same.
+	require(world.available(centre, 45, 45), "paused field preserves its old route before refresh is due");
+	world.tick(DIRTY_GRACE_TICKS);
+	require(!world.available(centre, 45, 45), "normal refresh replaces the paused obstacle snapshot");
+	std::puts("PASS a paused field freezes obstacles until the existing refresh deadline");
+}
+
 int main(int argc, char** argv)
 {
 	const char* scenario = argc > 1 ? argv[1] : "all";
@@ -229,6 +248,7 @@ int main(int argc, char** argv)
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-after") == 0) ringPlacedAroundAnExistingField();
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-other-team") == 0) aRivalTeamsRingCutsOffACachedField();
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-flag") == 0) aRingCutsOffAVirtualFlagsField();
+	if (std::strcmp(scenario, "all") == 0) aPausedFieldKeepsItsOriginalObstacles();
 	std::puts("Building gradient invalidation regressions passed");
 	return 0;
 }

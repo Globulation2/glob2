@@ -9,6 +9,7 @@
 #include "Utilities.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "BuildingGradientSearch.h"
 
 
 
@@ -40,7 +41,7 @@ bool isClearingFlag(const Building *building)
 
 } // namespace
 
-const Uint16 *Map::buildingGradient(Building *building, int swimClass)
+const Uint16 *Map::buildingGradient(Building *building, int swimClass, bool complete)
 {
 	assert(building);
 	Uint16 *&gradient=building->globalGradient[swimClass];
@@ -60,24 +61,29 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass)
 	else if (isClearingFlag(building) && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
 		rebuild=true;
 	if (rebuild)
-		updateGlobalGradient(building, swimClass);
+		updateGlobalGradient(building, swimClass, BuildingGradientSearch::enabled());
 	if (building->locked[swimClass>0])
 		return NULL;
+	if (complete) finishBuildingGradient(building, swimClass);
 	return gradient;
 }
 
 bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int *dist)
 {
 	PERF_SCOPE_TIME(PathBuilding);
-	const Uint16 *gradient=buildingGradient(building, swimClass);
+	const Uint16 *gradient=buildingGradient(building, swimClass, false);
 	if (gradient==NULL)
 		return false;
 	// The unit's own cell can be an obstacle in this building's field - it may be
 	// standing on another building, or in a forbidden area - while a cell next to
 	// it is on a route. Take the first of the nine that carries a distance.
+	resolveBuildingGradient(building, swimClass, coordToIndex(x, y));
 	Uint16 g=gradient[coordToIndex(x, y)];
 	for (int d=0; d<8 && g<=GRADIENT_UNREACHABLE; d++)
+	{
+		resolveBuildingGradient(building, swimClass, coordToIndex(x+tabClose[d][0], y+tabClose[d][1]));
 		g=gradient[coordToIndex(x+tabClose[d][0], y+tabClose[d][1])];
+	}
 	if (g<=GRADIENT_UNREACHABLE)
 		return false;
 	*dist=gradientTiles(g);
@@ -87,7 +93,7 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 
 const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int swimClass)
 {
-	if (buildingGradient(building, swimClass)==NULL)
+	if (buildingGradient(building, swimClass, false)==NULL)
 		return NULL;
 	Uint32 now=game->stepCounter;
 	Uint16 *&gradient=building->roundTripGradient[resourceType][swimClass];
@@ -129,11 +135,17 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	assert(y>=0);
 	Uint32 teamMask=building->owner->me;
 	if (((tiles[coordToIndex(x, y)].forbidden) & teamMask)!=0)
+	{
+		// This escape path reads the cached field directly as a tie-breaker.
+		// Preserve its old age (do not call buildingGradient here).
+		finishBuildingGradient(building, swimClass);
 		return pathfindForbidden(building->globalGradient[swimClass], building->owner->teamNumber, swimClass, x, y, dx, dy);
+	}
 
-	const Uint16 *gradient=buildingGradient(building, swimClass);
+	const Uint16 *gradient=buildingGradient(building, swimClass, false);
 	if (gradient==NULL)
 		return false;
+	resolveBuildingGradient(building, swimClass, coordToIndex(x, y));
 	if (isClearingFlag(building) && gradient[coordToIndex(x, y)]==GRADIENT_AT_GOAL)
 	{
 		// Standing where one of the flag's resources was: it is gone, the gradient is stale.
@@ -146,9 +158,10 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 		return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
 
 	// Stuck for a while: the gradient may be stale, rebuild it now.
-	updateGlobalGradient(building, swimClass);
+	updateGlobalGradient(building, swimClass, BuildingGradientSearch::enabled());
 	if (building->locked[swimClass>0])
 		return false;
+	resolveBuildingGradient(building, swimClass, coordToIndex(x, y));
 	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
 		return true;
 	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);

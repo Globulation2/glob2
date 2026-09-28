@@ -86,7 +86,7 @@ void isolateEnvironment()
 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
 		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS",
 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR",
-		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
+		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL", "GLOB2_LAZY_BUILDING_GRADIENTS",
 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
 		"GLOB2_CORTEX_TRACE", "GLOB2_CORTEX_DECIDE_TRACE", "GLOB2_CORTEX_INN_TRACE",
 		"GLOB2_CHECKSUM_SIDECAR_MAX_TICKS", "CORTEX_DUMP_PERIODIC", "CORTEX_DUMP_OFFENSE",
@@ -151,6 +151,10 @@ struct HeadlessRunner
 {
 	static int game(const Options &options, const fs::path &output)
 	{
+		const auto lazy = one(options, "--lazy-building-gradients", "false");
+		if (lazy != "true" && lazy != "false")
+			throw std::invalid_argument("--lazy-building-gradients must be true or false");
+		setHeadlessEnvironment("GLOB2_LAZY_BUILDING_GRADIENTS", lazy == "true" ? "1" : "0");
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
 		globalContainer=&globals;
 		globals.runNoX=true;
@@ -369,7 +373,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--ticks","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--ticks","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates","--lazy-building-gradients"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

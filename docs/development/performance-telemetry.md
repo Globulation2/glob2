@@ -109,3 +109,35 @@ remain required before claiming cross-platform verification.
 Structured tournament runs include requested final-save serialization before the
 performance final export. All records pass through verified worker log artifacts
 and the [offline tournament readers](../tools/tournaments.md#gameplay-ai-and-performance-telemetry).
+
+## Lazy building gradients
+
+`--run-game --lazy-building-gradients true` enables lazy building-field propagation;
+the default is false. Legacy entry points and regression harnesses can instead set
+`GLOB2_LAZY_BUILDING_GRADIENTS=1`. The structured headless command clears that ambient
+variable and uses its explicit argument.
+
+Initialization and seed scanning remain eager. Each building/swim-class field
+retains its bucket queue and, for weighted swimming, a snapshot of water costs.
+Obstacles remain frozen in the initialized field. Queries finish a whole cost
+layer, including equal-cost neighbors needed for movement sidesteps. An unknown
+cell requires exhausting the search before it can be reported as unreachable.
+The queues share the eager solver's expansion kernel and are freed with their
+field, including the existing idle-field eviction; no separate cache is added.
+
+Round-trip construction, forbidden-area escape and gradient debug rendering finish
+the relevant cached fields. Reading an already-cached round-trip field does not
+force completion. Existing refresh deadlines and use timestamps are preserved.
+
+Saving finishes pending fields from their original snapshots without refreshing
+them, then writes the existing complete-field representation. Loaded fields start
+complete; no format or version change is needed. This trades some play-time work
+for save-time work: include autosaves when evaluating latency. Retained queues and
+water snapshots also add memory.
+
+`gradient.building` measures initialization (and eager propagation when disabled).
+`gradient.building_resume` measures actual lazy extensions and completion, including
+those nested in round-trip construction or saving. Sum these two scopes to compare
+building-field construction, but do not then add inclusive round-trip/save timings
+to that total. Lazy propagation remains opt-in pending review; benchmark evidence
+belongs under `artifacts/`, not in this guide.

@@ -134,6 +134,9 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
+	if (view.selectedBuilding && (DEBUG_RENDER_GRADIENTS || view.selectedBuilding->verbose))
+		for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+			map.finishBuildingGradient(view.selectedBuilding, c);
 	// We draw debug area:
 	if (DEBUG_RENDER_GRADIENTS)
 	{

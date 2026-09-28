@@ -288,6 +288,20 @@ scenarios.
 
 ## Building gradient invalidation regression
 
+Lazy building propagation is opt-in. Build `path-gradient-test` and run
+`PathGradientHarness` from your native build directory. Its independent heap oracle
+covers all seven swim classes, paused water snapshots, equal-cost movement neighbors,
+repeated and reordered requests, interleaved maps, disconnected/capped distances,
+toroidal geometry and reused frontiers. The existing eager-kernel cases remain.
+
+Run the building invalidation and immobile-unit harnesses with
+`GLOB2_LAZY_BUILDING_GRADIENTS=1` to exercise lazy callers. The default invalidation
+suite additionally pauses a field, closes a rival building ring, then checks that
+the field retains its old obstacle snapshot only until the normal refresh deadline.
+Run the savegame safety harness in the same mode to cover completion on save.
+CI runs the oracle on Linux and Windows, the lazy invalidation/immobile-unit suites
+on Linux, and lazy save continuation on both.
+
 From the repository root, run `scons -j8 release=1 server=0 building-gradient-invalidation-test`
 and `./build/native-tests/src/BuildingGradientInvalidationHarness`. The harness links the real
 engine and places every building through `OrderCreate` / `OrderDelete`, so it

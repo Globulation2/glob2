@@ -7,15 +7,26 @@
 #include "Game.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "BuildingGradientSearch.h"
 
 
+
+void Map::resolveBuildingGradient(Building *building, int swimClass, size_t cell) const
+{
+	if (auto &search = building->globalGradientSearch[swimClass]) search->resolve(cell);
+}
+
+void Map::finishBuildingGradient(Building *building, int swimClass) const
+{
+	if (auto &search = building->globalGradientSearch[swimClass]) search->finish();
+}
 
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
 // flag's zone or, for a clearing flag, the clearable resources in its range.
 // updateRoundTripGradient: the gradient of the trip to a resource and on to
 // the building.
 
-void Map::updateGlobalGradient(Building *building, int swimClass)
+void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
 {
 	PERF_SCOPE_TIME(BuildingGradient);
 	assert(building);
@@ -29,6 +40,9 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 
 	Uint16 *gradient=building->globalGradient[swimClass];
 	assert(gradient);
+	// A rebuild replaces the old search and its frozen terrain snapshot.
+	// Keep bucket capacity when possible; a locked field has no pending search.
+	if (!lazy) building->globalGradientSearch[swimClass].reset();
 	building->dirtyGradient[swimClass]=false;
 	building->lastGlobalGradientUpdateStepCounter[swimClass]=game->stepCounter;
 	building->gradientGeneration[swimClass]=topologyGeneration;
@@ -124,18 +138,31 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 		                                    wMask, hMask, wDec);
 		building->locked[canSwim] = !reachable;
 		if (!reachable)
+		{
+			building->globalGradientSearch[swimClass].reset();
 			return;
+		}
 	}
 	else
 		building->locked[canSwim]=false;
 
-	propagateGradient(gradient, swimClass);
+	if (lazy)
+	{
+		auto &search = building->globalGradientSearch[swimClass];
+		if (!search) search = std::make_unique<BuildingGradientSearch>();
+		search->begin(*this, gradient, swimClass);
+	}
+	else
+		propagateGradient(gradient, swimClass);
 }
 
 
 void Map::updateRoundTripGradient(Building *building, int resourceType, int swimClass)
 {
 	PERF_SCOPE_TIME(RoundTripGradient);
+	// Only construction needs the parent in full; reading a cached round-trip
+	// field must not force a newly refreshed walking field to finish.
+	finishBuildingGradient(building, swimClass);
 	Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
 	assert(gradient);
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
