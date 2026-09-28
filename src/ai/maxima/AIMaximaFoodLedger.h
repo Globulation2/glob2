@@ -192,7 +192,8 @@ private:
 		int distance;
 	};
 	void walk(const Input& input, int centerX, int centerY, int left, int top,
-		int width, int height, std::vector<ReachCell>& reach) const;
+		int width, int height, std::vector<ReachCell>& reach,
+		const std::vector<uint32_t>* residual = nullptr, long long cap = 0) const;
 	void prepareResidualSums(const Input& input, Result& result) const;
 	mutable std::vector<int> distanceScratch;
 	mutable std::vector<uint32_t> distanceGeneration;

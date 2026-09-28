@@ -32,7 +32,8 @@ build/src/MaximaRelocationIntegrationTest
 build/src/MaximaContinuationTest
 ```
 
-The food-ledger harness accepts `--benchmark` for CPU timings and deterministic
+The food-ledger harness checks capped-query ordering, wrapped reach and scratch
+buffer reuse, and accepts `--benchmark` for CPU timings and deterministic
 result digests at several map sizes. Timing is informational. The relocation
 harness checks pending deletions, capacity protection, failed replacements and
 saved handovers against real buildings. The continuation harness checks binary
