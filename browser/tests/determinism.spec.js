@@ -24,14 +24,21 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page})
         }],
         onRuntimeInitialized() {
           Module.callMain(['--nox', '/tmp/initial.game', '1500', '1']);
-          window.simulationTrace = Array.from(FS.readFile('/tmp/wasm.replay.checksums'));
+          // Avoid millions of individually serialized Playwright values.
+          // Chunk the conversion so large traces do not overflow the call stack.
+          const bytes = FS.readFile('/tmp/wasm.replay.checksums');
+          let binary = '';
+          for (let offset = 0; offset < bytes.length; offset += 32768) {
+            binary += String.fromCharCode(...bytes.subarray(offset, offset + 32768));
+          }
+          window.simulationTrace = btoa(binary);
         }
       };
     </script><script src="/index.js"></script>`,
   }));
   await page.goto('/determinism.html');
-  await page.waitForFunction(() => Array.isArray(window.simulationTrace));
-  const trace = Buffer.from(await page.evaluate(() => window.simulationTrace));
+  await page.waitForFunction(() => typeof window.simulationTrace === 'string');
+  const trace = Buffer.from(await page.evaluate(() => window.simulationTrace), 'base64');
   expect(trace.length).toBeGreaterThan(1000);
   const output = path.join(root, 'artifacts/browser-determinism/wasm');
   fs.mkdirSync(output, {recursive: true});

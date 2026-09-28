@@ -127,7 +127,9 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   it: a separate `scons` call per step re-reads the whole build and compiles one file at
   a time. Builds that need other options (`server=1`, `opengl=0`, `test/`) belong in
   the `linux variants` job, and long CPU-bound checks in a job of their own, as the
-  golden-map sweep does; jobs run in parallel.
+  golden-map sweep does; jobs run in parallel. The Linux variants matrix owns
+  the YOG server build on both supported toolchains; the main Linux jobs do not
+  repeat that build.
 - A map generator's `revision` is enforced by `MapGeneratorGoldenTest`: a seed's map changing
   while the revision stays fails the check, so bump the revision and run `--update` together
   (see the framework reference). `--sweep` there is the first thing to run after touching
