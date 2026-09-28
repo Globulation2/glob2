@@ -1,0 +1,131 @@
+browser	Test Chromium WebGL2 integration	﻿2026-09-28T21:25:36.8264679Z ##[group]Run xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js input.spec.js --project=chromium
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8265969Z ^[[36;1mxvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js input.spec.js --project=chromium^[[0m
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8336677Z shell: /usr/bin/bash -e {0}
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8336986Z env:
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8337199Z   CCACHE: 1
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8337422Z   CCACHE_DIR: /tmp/glob2-ccache
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8337709Z   CCACHE_COMPILERCHECK: content
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8337961Z   CCACHE_MAXSIZE: 500M
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8338197Z   WASM_CACHE_START: 1790628632
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8338466Z   GLOB2_TEST_RENDERER: webgl2
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:36.8338726Z ##[endgroup]
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:37.8175220Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:37] "GET / HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:37.8509640Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:37.8510245Z Running 15 tests using 1 worker
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:37.8510515Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:38.4502558Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:38] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:38.4688389Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:38] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:38.5253594Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:38] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:38.5376136Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:38] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:45.6802612Z   ✓   1 [chromium] › tests/input.spec.js:7:1 › reload and address-bar shortcuts remain available with game focus (7.3s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:45.7711228Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:45] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:45.7881983Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:45] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:45.8295984Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:45] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:25:45.8386946Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:25:45] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:03.5467758Z   ✓   2 [chromium] › tests/input.spec.js:35:1 › click coordinates stay correct when browser motion delivery is missing (17.8s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:03.6350512Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:03] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:03.6527004Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:03] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:03.7075972Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:03] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:03.7201362Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:03] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:23.3314234Z   ✓   3 [chromium] › tests/input.spec.js:52:1 › desktop right-click cancels a selection and cycles sidebar views without a browser menu (19.8s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:23.4276663Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:23] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:23.4416147Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:23] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:23.5139458Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:23] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:23.6750397Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:23] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:28.0263083Z   ✓   4 [chromium] › tests/runtime-build.spec.js:4:1 › loading page presents branded progress before the runtime is ready (4.7s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:28.1091412Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:28] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:28.1222990Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:28] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:28.1726777Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:28] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:26:28.1833157Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:26:28] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:27:09.8078084Z   ✓   5 [chromium] › tests/session-reload.spec.js:34:1 › an active match can load the same saved game repeatedly through the scheduled loader (41.8s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:27:09.8720325Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:27:09] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:27:09.8900268Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:27:09] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:27:09.9467968Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:27:09] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:27:09.9529466Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:27:09] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:03.5700843Z   ✘   6 [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match (52.0s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:04.2422957Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:04] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:04.2660150Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:04] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:04.3277111Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:04] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:04.3380434Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:04] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:25.6925079Z   ✓   7 [chromium] › tests/session-reload.spec.js:70:1 › an active replay can be loaded again through the scheduled loader (21.5s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:25.7748659Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:25] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:25.7879934Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:25] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:25.8380907Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:25] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:25.8493675Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:25] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:37.5506802Z   ✓   8 [chromium] › tests/viewport.spec.js:15:1 › menus follow the viewport and keep their controls clickable (11.8s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:37.6570205Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:37] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:37.6704854Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:37] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:37.7376967Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:37] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:28:37.7514423Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:28:37] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:00.0700545Z   ✓   9 [chromium] › tests/viewport.spec.js:24:1 › a running match survives resize and its open menu follows the new center (22.5s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:00.1560260Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:00] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:00.1718299Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:00] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:00.2237226Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:00] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:00.2359068Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:00] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:11.5827689Z   ✓  10 [chromium] › tests/viewport.spec.js:46:1 › editor dialogs and discard controls follow viewport changes (11.5s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:11.6663153Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:11] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:11.6847207Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:11] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:11.7363311Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:11] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:11.7468831Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:11] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:22.9760152Z   ✓  11 [chromium] › tests/viewport.spec.js:57:1 › small viewports retain the active screen and continue rendering (11.4s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:23.0554900Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:23] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:23.0727016Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:23] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:23.1179352Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:23] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:23.1275064Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:23] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:27.2889334Z   ✓  12 [chromium] › tests/viewport.spec.js:67:3 › initial small viewport › starts at the actual browser dimensions (4.3s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:27.3499108Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:27] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:27.3647099Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:27] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:27.4023440Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:27] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:27.4108019Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:27] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:32.2734563Z   ✓  13 [chromium] › tests/viewport.spec.js:77:3 › initial wide viewport › fills the page before any resize (5.0s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:32.3587538Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:32] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:32.3693704Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:32] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:32.4252664Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:32] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:32.4361381Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:32] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:42.0063486Z   ✓  14 [chromium] › tests/viewport.spec.js:86:3 › high density display › uses the renderer-appropriate backing resolution (9.7s)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:42.0802583Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:42] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:42.0986731Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:42] "GET /index.js HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:42.1379869Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:42] "GET /index.data HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:42.1520172Z [WebServer] 127.0.0.1 - - [28/Sep/2026 21:29:42] "GET /index.wasm HTTP/1.1" 200 -
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.3177975Z   -  15 [chromium] › tests/viewport.spec.js:94:1 › interface scale survives resizing and keeps settings controls clickable
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4385026Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4389783Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4402603Z   1) [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4403525Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4403845Z     Error: expect(received).toContain(expected) // indexOf
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4404229Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4404453Z     Expected substring: "MessageScreen"
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4404936Z     Received string:    "match"
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4405208Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4405536Z     Call Log:
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4406075Z     - Timeout 30000ms exceeded while waiting on the predicate
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4406444Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4406671Z       3 | const path=require('node:path');
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4407131Z       4 | const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4407994Z     > 5 | const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4408661Z         |                                                                            ^
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4409210Z       6 | const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4409835Z       7 |
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4410155Z       8 | async function startAndSave(page) {
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4410995Z         at screen (/home/runner/work/glob2/glob2/browser/tests/session-reload.spec.js:5:76)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4411982Z         at /home/runner/work/glob2/glob2/browser/tests/session-reload.spec.js:57:43
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4412479Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4413242Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4414609Z     ../build/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/test-failed-1.png
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4416806Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4417311Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4418227Z     Error Context: ../build/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/error-context.md
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4419466Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4420217Z     attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4421595Z     ../build/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/trace.zip
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4422475Z     Usage:
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4422647Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4423511Z         npx playwright show-trace ../build/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/trace.zip
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4424459Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4425133Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4425945Z 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4426092Z   1 failed
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4427310Z     [chromium] › tests/session-reload.spec.js:50:1 › a damaged in-game load returns through a scheduled error notice and permits another match 
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4428316Z   1 skipped
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.4428680Z   13 passed (4.1m)
+browser	Test Chromium WebGL2 integration	2026-09-28T21:29:46.5541292Z ##[error]Process completed with exit code 1.

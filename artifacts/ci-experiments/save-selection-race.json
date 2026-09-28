@@ -1,0 +1,103 @@
+{
+  "run": 36481769537,
+  "finding": "Manual save detected first, but autosave appeared during persistence; helper re-read the file list and corrupted Auto_save.game while UI loaded Random_map.game.",
+  "events": [
+    {
+      "type": "before",
+      "callId": "call@435",
+      "startTime": 110174.328,
+      "class": "Frame",
+      "method": "evaluateExpression",
+      "params": {
+        "expression": "() => glob2Diagnostics.saves()",
+        "isFunction": true,
+        "arg": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        }
+      },
+      "stepId": "pw:api@70"
+    },
+    {
+      "type": "after",
+      "callId": "call@435",
+      "endTime": 110219.505,
+      "result": {
+        "value": {
+          "a": [
+            {
+              "s": "Random_map.game"
+            }
+          ],
+          "id": 1
+        }
+      }
+    },
+    {
+      "type": "before",
+      "callId": "call@443",
+      "startTime": 111063.231,
+      "class": "Frame",
+      "method": "evaluateExpression",
+      "params": {
+        "expression": "() => glob2Diagnostics.saves()",
+        "isFunction": true,
+        "arg": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        }
+      },
+      "stepId": "pw:api@79"
+    },
+    {
+      "type": "after",
+      "callId": "call@443",
+      "endTime": 111076.214,
+      "result": {
+        "value": {
+          "a": [
+            {
+              "s": "Auto_save.game"
+            },
+            {
+              "s": "Random_map.game"
+            }
+          ],
+          "id": 1
+        }
+      }
+    },
+    {
+      "type": "before",
+      "callId": "call@447",
+      "startTime": 111149.645,
+      "class": "Frame",
+      "method": "evaluateExpression",
+      "params": {
+        "expression": "name => FS.writeFile('/home/web_user/.glob2/games/' + name, new Uint8Array([1, 2, 3]))",
+        "isFunction": true,
+        "arg": {
+          "value": {
+            "s": "Auto_save.game"
+          },
+          "handles": []
+        }
+      },
+      "stepId": "pw:api@83"
+    },
+    {
+      "type": "after",
+      "callId": "call@447",
+      "endTime": 111198.817,
+      "result": {
+        "value": {
+          "v": "undefined"
+        }
+      }
+    }
+  ]
+}
