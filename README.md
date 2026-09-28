@@ -1,5 +1,7 @@
 # Lazy building gradient validation evidence
 
+**Final standard path:** [default-path validation](final-default/README.md) covers removal of experimental switches and renewed checksum/save verification with lazy building gradients always enabled.
+
 **Single-pass field initialization:** [incremental optimization evidence](field-initialization/README.md) includes AC timings, initialization/fill profiles, and cell-by-cell comparison against the previous initializer.
 
 **API cleanup and remaining costs:** [the follow-up report](api-profile/README.md) covers implementation 7d2dcaf1c, public query boundaries, renewed checksum/save validation, 52 measurement runs, and phase/allocation profiling. The earlier controlled timing study remains the baseline performance evidence.

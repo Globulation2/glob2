@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-final/glob2",
+    "--run-game",
+    "--lazy-building-gradients",
+    "false",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-final/removed-option"
+  ],
+  "exit_code": 2,
+  "output": "unknown option: --lazy-building-gradients\n"
+}

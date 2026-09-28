@@ -1,0 +1,102 @@
+{
+  "package.py": {
+    "bytes": 4239,
+    "sha256": "5b61bd4310e89262806d84fec8fe68128c211c0ffb285b9f8035612fd3b7baa5"
+  },
+  "tests-driver.log": {
+    "bytes": 236,
+    "sha256": "89c843c65fb9ea851703fbc98d020b792862cb081595710c46c3e1208dc27e9a"
+  },
+  "arena128-2-checksums.tar.gz": {
+    "bytes": 24101468,
+    "sha256": "1b6fda07cb2de0bf1b48288db20599bf9274e2f816d8cc5f91c41e0283ec22ff"
+  },
+  "continuation.tar.gz": {
+    "bytes": 5234198,
+    "sha256": "9eb869d1ff8cd472efe72b789c7f1fbb850bc8cb09b0ffd105649033d9686844"
+  },
+  "ClearingFlagGradientTest-default.log": {
+    "bytes": 7738,
+    "sha256": "8db8ac17cf0cf9e6ef21980f3b624d9cd825c6441dd1e5cfff9d429f35d7548a"
+  },
+  "tests.json": {
+    "bytes": 1355,
+    "sha256": "24b9b6636d879fec5223fea3272564d622b17efd260cb6c921b14a57d63169d5"
+  },
+  "ImmobileUnitGradientHarness-default.log": {
+    "bytes": 22983,
+    "sha256": "0ce61591507f1b8d8a6eb86c7a5aa2193798b71a882e4598d336424b4d55aae5"
+  },
+  "validation-driver.log": {
+    "bytes": 331,
+    "sha256": "76ad23c12ddbfb9590594c038fbd79f129a7e842a4dfce190956e9055f423f96"
+  },
+  "SavegameSafetyHarness-default.log": {
+    "bytes": 7233,
+    "sha256": "ad373285173ae12bfb50ac475432ca801cd71d12471f19d60f06fd7ea83b86b2"
+  },
+  "arena512-4-checksums.tar.gz": {
+    "bytes": 42314513,
+    "sha256": "fc7fb08cd4b03828f4609386ca853f22cab78ec7304802ea9a10f52419e7e89e"
+  },
+  "PathGradientHarness-default.log": {
+    "bytes": 249,
+    "sha256": "79a240311a656503deaf361d73df6a82aaeb1507e9ea32fe00b50188eb6d2ec6"
+  },
+  "build-final.log": {
+    "bytes": 1318593,
+    "sha256": "85403a5263d4af2c6218e4863d8293729b6d3c51b881b4f6cd4bb42a168a48cc"
+  },
+  "README.md": {
+    "bytes": 2425,
+    "sha256": "78a4ddd352e98b80244db7b531abc6c6231fe105938aafb07fe097d8eef9e1d9"
+  },
+  "build-confirm.log": {
+    "bytes": 471608,
+    "sha256": "28c2b36d0e612097e322205e55c4a1a931431bc80b763b073778b03b78b36846"
+  },
+  "validate.py": {
+    "bytes": 3326,
+    "sha256": "12f5bb96a438b2ecf3c35b534697a6ab1156d80db749f68ad13143b55487b8aa"
+  },
+  "run-tests.py": {
+    "bytes": 1414,
+    "sha256": "23671a0df67d2a2c0164982e022bb485c55115ae671c578809d26ad0e61d1ef4"
+  },
+  "validation.json": {
+    "bytes": 6691,
+    "sha256": "5c33f26ec0bf0a4047381b7711b469d89fece51a1edaa88ac0c5170694f9ef91"
+  },
+  "BuildingGradientInvalidationHarness-default.log": {
+    "bytes": 45988,
+    "sha256": "42632898a5b67fb273e11e0a275f83aa8c35c16ce07372c728dc853d42d2d232"
+  },
+  "lakes256-4-checksums.tar.gz": {
+    "bytes": 62320204,
+    "sha256": "21ac20b214adcf6c4e6fdc7e1c96e6a4dc99962266eef116eb509679a066916e"
+  },
+  "removed-option.json": {
+    "bytes": 406,
+    "sha256": "dbee3fdb4ff2e5081cbba2ad36e44d53b2c88d38bdbc160c1f28308eef22f3c0"
+  },
+  "publish.py": {
+    "bytes": 1447,
+    "sha256": "c8014052652de18ef6d1f1a45611625e3fb77468bb3b87d7350f607823aa85de"
+  },
+  "change.patch": {
+    "bytes": 18226,
+    "sha256": "7fce0a48f5b1ec1679f198320bc65ef0a0e345d12afcd1cb6aa3f562b2018793"
+  },
+  "continuation.json": {
+    "bytes": 1175,
+    "sha256": "fef5ab52ea0037bbe47198b23dd3357c22b35711f1882b069e4f5297cc4e6971"
+  },
+  "arena256-2-checksums.tar.gz": {
+    "bytes": 17101028,
+    "sha256": "b2e181e6ebbaed3996104abbb520ce70f7044791ca156ce2c7d8e65c91124f75"
+  },
+  "build.log": {
+    "bytes": 1132738,
+    "sha256": "dcf00caf89cb59943bf42eab303d16231e1edd3cc8133a6348c26e7a1b0832c9"
+  }
+}

@@ -1,0 +1,10 @@
+Running PathGradientHarness default
+PASS
+Running BuildingGradientInvalidationHarness default
+PASS
+Running ImmobileUnitGradientHarness default
+PASS
+Running SavegameSafetyHarness default
+PASS
+Running ClearingFlagGradientTest default
+PASS

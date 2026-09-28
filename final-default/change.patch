@@ -1,0 +1,345 @@
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index 763ae3b41..860e759d8 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -332,14 +332,6 @@ jobs:
+         run: |
+           ./build/linux/client/release/src/BuildingGradientInvalidationHarness
+ 
+-      - name: Test lazy building gradients
+-        env:
+-          GLOB2_LAZY_BUILDING_GRADIENTS: '1'
+-        run: |
+-          ./build/linux/client/release/src/BuildingGradientInvalidationHarness
+-          ./build/linux/client/release/src/ImmobileUnitGradientHarness
+-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness
+-
+       - name: Build and run the hiring bucket regression
+         run: |
+           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/HiringBucketHarness .
+@@ -828,12 +820,6 @@ jobs:
+           python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/SavegameSafetyHarness.exe
+           build/mingw/client/release/src/MaximaContinuationTest.exe
+ 
+-      - name: Test lazy building gradient save continuation
+-        env:
+-          GLOB2_LAZY_BUILDING_GRADIENTS: '1'
+-        run: |
+-          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/SavegameSafetyHarness.exe
+-
+       - name: Test team statistics save compatibility
+         run: |
+           build/mingw/client/release/libgag/src/PerformanceTelemetryHarness.exe
+diff --git a/docs/development/performance-telemetry.md b/docs/development/performance-telemetry.md
+index 75316b377..fea415da3 100644
+--- a/docs/development/performance-telemetry.md
++++ b/docs/development/performance-telemetry.md
+@@ -112,18 +112,15 @@ and the [offline tournament readers](../tools/tournaments.md#gameplay-ai-and-per
+ 
+ ## Lazy building gradients
+ 
+-`--run-game --lazy-building-gradients true` enables lazy building-field propagation;
+-the default is false. Legacy entry points and regression harnesses can instead set
+-`GLOB2_LAZY_BUILDING_GRADIENTS=1`. The structured headless command clears that ambient
+-variable and uses its explicit argument.
++Building fields propagate lazily in all game entry points. There is no runtime
++mode switch; point queries extend the retained search only as far as needed.
+ 
+ Initialization and seed scanning remain eager. Ordinary buildings initialize each
+ cell directly in one pass; flags first paint their goal region and then apply their
+-special obstacle rules. This initialization is shared by eager and lazy modes.
+-Each building/swim-class field retains its bucket queue and, for weighted swimming,
+-a snapshot of water costs.
+-Obstacles remain frozen in the initialized field. Queries finish a whole cost
+-layer, including equal-cost neighbors needed for movement sidesteps. An unknown
++special obstacle rules. Each building/swim-class field retains its bucket queue
++and, for weighted swimming, a snapshot of water costs. Obstacles remain frozen in
++the initialized field. Queries finish a whole cost layer, including equal-cost
++neighbors needed for movement sidesteps. An unknown
+ cell requires exhausting the search before it can be reported as unreachable.
+ The public `buildingGradient` API always completes the field before returning an
+ array. Point-distance and movement queries resolve internally; callers do not
+@@ -142,9 +139,8 @@ complete; no format or version change is needed. This trades some play-time work
+ for save-time work: include autosaves when evaluating latency. Retained queues and
+ water snapshots also add memory.
+ 
+-`gradient.building` measures initialization (and eager propagation when disabled).
++`gradient.building` measures initialization and search setup.
+ `gradient.building_resume` measures actual lazy extensions and completion, including
+ those nested in round-trip construction or saving. Sum these two scopes to compare
+ building-field construction, but do not then add inclusive round-trip/save timings
+-to that total. Lazy propagation remains opt-in pending review; benchmark evidence
+-belongs under `artifacts/`, not in this guide.
++to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
+diff --git a/docs/tools/tournaments.md b/docs/tools/tournaments.md
+index d5a2c6033..5a795228e 100644
+--- a/docs/tools/tournaments.md
++++ b/docs/tools/tournaments.md
+@@ -115,7 +115,6 @@ Game options:
+ | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
+ | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |
+ | `--profile NAME` | Optional isolated profile name |
+-| `--lazy-building-gradients true/false` | Lazy building-gradient propagation; false by default. See [performance telemetry](../development/performance-telemetry.md#lazy-building-gradients) |
+ 
+ GUI autosaving defaults off for tournament/headless runs, independently of the
+ normal-play preference. Snapshots are produced only when requested through
+diff --git a/src/Headless.cpp b/src/Headless.cpp
+index f6090dded..22a08b5f3 100644
+--- a/src/Headless.cpp
++++ b/src/Headless.cpp
+@@ -86,7 +86,7 @@ void isolateEnvironment()
+ 		"GLOB2_NICOWAR_V3_TUNING", "GLOB2_MAXIMA_TELEMETRY", "GLOB2_DATASET_PATH",
+ 		"GLOB2_CHECKSUM_SIDECAR", "GLOB2_REPLAY_PATH", "GLOB2_TEAM_TIMELINE", "GLOB2_TEAM_RESULTS",
+ 		"GLOB2_DUMP_GAME", "GLOB2_STUDY_EXPLAIN", "GLOB2_USER_DIR",
+-		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL", "GLOB2_LAZY_BUILDING_GRADIENTS",
++		"GLOB2_PERF_DISABLE", "GLOB2_PERF_BUILD_LABEL",
+ 		"GLOB2_CORTEX_POLICY", "GLOB2_CORTEX_NET", "GLOB2_CORTEX_DECISION_NET",
+ 		"GLOB2_CORTEX_TRACE", "GLOB2_CORTEX_DECIDE_TRACE", "GLOB2_CORTEX_INN_TRACE",
+ 		"GLOB2_CHECKSUM_SIDECAR_MAX_TICKS", "CORTEX_DUMP_PERIODIC", "CORTEX_DUMP_OFFENSE",
+@@ -151,10 +151,6 @@ struct HeadlessRunner
+ {
+ 	static int game(const Options &options, const fs::path &output)
+ 	{
+-		const auto lazy = one(options, "--lazy-building-gradients", "false");
+-		if (lazy != "true" && lazy != "false")
+-			throw std::invalid_argument("--lazy-building-gradients must be true or false");
+-		setHeadlessEnvironment("GLOB2_LAZY_BUILDING_GRADIENTS", lazy == "true" ? "1" : "0");
+ 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
+ 		globalContainer=&globals;
+ 		globals.runNoX=true;
+@@ -373,7 +369,7 @@ int runHeadlessCommand(int argc,char **argv)
+ 			std::cout << "}" << std::endl;return 0;
+ 		}
+ 		const std::set<std::string> common={"--output-dir","--profile"};
+-		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--ticks","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates","--lazy-building-gradients"};
++		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--ticks","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+ 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
+ 		Options options;
+ 		for(int i=2;i<argc;++i)
+diff --git a/src/building/Building.h b/src/building/Building.h
+index 8124202bb..2a53e8145 100644
+--- a/src/building/Building.h
++++ b/src/building/Building.h
+@@ -599,7 +599,7 @@ public:
+ 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
+ 	Uint16 *globalGradient[SWIM_CLASS_COUNT];
+ 	//! Retained propagation queues. Never serialized: saving completes
+-	//! their fields first. Null for eager/loaded fields; owned with globalGradient.
++	//! their fields first. Null for loaded or locked fields; owned with globalGradient.
+ 	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[SWIM_CLASS_COUNT];
+ 	//! Set when the map changed nearby; rebuilt on use once DIRTY_REBUILD_TICKS
+ 	//! have elapsed since the last rebuild.
+diff --git a/src/map/Map.h b/src/map/Map.h
+index 1c1740cde..fab448e3b 100644
+--- a/src/map/Map.h
++++ b/src/map/Map.h
+@@ -685,9 +685,9 @@ public:
+ 	void pathfindRandom(Unit *unit);
+ #endif  // !YOG_SERVER_ONLY
+ 
+-	//! Rebuild the building's gradient. Lazy mode initializes the same snapshot
+-	//! but retains its queue; the default still supplies a complete field.
+-	void updateGlobalGradient(Building *building, int swimClass, bool lazy = false);
++	//! Initialize a fresh building field and retain its search frontier. Point
++	//! queries extend it on demand; buildingGradient returns a complete field.
++	void updateGlobalGradient(Building *building, int swimClass);
+ 	//! Rebuild the building's round-trip gradient for a resource type and swim class:
+ 	//! every tile of that resource is seeded with its distance to the building, so a
+ 	//! cell's value is the cheapest fetch-and-carry trip from there.
+diff --git a/src/map/gradient/BuildingGradientSearch.h b/src/map/gradient/BuildingGradientSearch.h
+index 9f408f407..3a5dcad6e 100644
+--- a/src/map/gradient/BuildingGradientSearch.h
++++ b/src/map/gradient/BuildingGradientSearch.h
+@@ -25,7 +25,6 @@ class BuildingGradientSearch
+ 	int widthMask = 0, heightMask = 0, widthShift = 0;
+ 
+ public:
+-	static bool enabled();
+ 	void begin(const Map &map, std::uint16_t *seeded, int swim);
+ 	// target == cells finishes the field. A whole cost layer is completed to
+ 	// preserve equal-distance sidesteps as well as the requested scalar value.
+diff --git a/src/map/gradient/MapGradientBuilding.cpp b/src/map/gradient/MapGradientBuilding.cpp
+index 7ffd05482..1963de923 100644
+--- a/src/map/gradient/MapGradientBuilding.cpp
++++ b/src/map/gradient/MapGradientBuilding.cpp
+@@ -21,7 +21,7 @@ void Map::finishBuildingGradient(Building *building, int swimClass) const
+ // updateRoundTripGradient: the gradient of the trip to a resource and on to
+ // the building.
+ 
+-void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
++void Map::updateGlobalGradient(Building *building, int swimClass)
+ {
+ 	PERF_SCOPE_TIME(BuildingGradient);
+ 	assert(building);
+@@ -37,7 +37,6 @@ void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
+ 	assert(gradient);
+ 	// A rebuild replaces the old search and its frozen terrain snapshot.
+ 	// Keep bucket capacity when possible; a locked field has no pending search.
+-	if (!lazy) building->globalGradientSearch[swimClass].reset();
+ 	building->dirtyGradient[swimClass]=false;
+ 	building->lastGlobalGradientUpdateStepCounter[swimClass]=game->stepCounter;
+ 	building->gradientGeneration[swimClass]=topologyGeneration;
+@@ -60,15 +59,12 @@ void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
+ 	}
+ 	else
+ 	{
+-		bool isClearingFlag=false;
+-		bool isWarFlag=false;
+-		if (building->type->isVirtual && building->type->zonable[WARRIOR])
+-			isWarFlag=true;
+-
++		const bool isClearingFlag=building->type->zonable[WORKER];
++		const bool isWarFlag=building->type->zonable[WARRIOR];
++		assert(!building->type->zonableForbidden);
+ 		std::fill(gradient, gradient+size, GRADIENT_UNREACHABLE);
+-		if (building->type->isVirtual && !building->type->zonable[WORKER])
++		if (!isClearingFlag)
+ 		{
+-			assert(!building->type->zonableForbidden);
+ 			int r=building->unitStayRange;
+ 			int r2=r*r;
+ 			for (int yi=-r; yi<=r; yi++)
+@@ -83,10 +79,8 @@ void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
+ 					}
+ 			}
+ 		}
+-		else if (building->type->isVirtual && building->type->zonable[WORKER])
++		else
+ 		{
+-			assert(!building->type->zonableForbidden);
+-			isClearingFlag=true;
+ 			bool anyResourceToClear=false;
+ 			int r=building->unitStayRange;
+ 			int r2=r*r;
+@@ -160,14 +154,9 @@ void Map::updateGlobalGradient(Building *building, int swimClass, bool lazy)
+ 	else
+ 		building->locked[canSwim]=false;
+ 
+-	if (lazy)
+-	{
+-		auto &search = building->globalGradientSearch[swimClass];
+-		if (!search) search = std::make_unique<BuildingGradientSearch>();
+-		search->begin(*this, gradient, swimClass);
+-	}
+-	else
+-		propagateGradient(gradient, swimClass);
++	auto &search = building->globalGradientSearch[swimClass];
++	if (!search) search = std::make_unique<BuildingGradientSearch>();
++	search->begin(*this, gradient, swimClass);
+ }
+ 
+ 
+diff --git a/src/map/gradient/MapGradientField.cpp b/src/map/gradient/MapGradientField.cpp
+index 21d738d4b..98b059fa1 100644
+--- a/src/map/gradient/MapGradientField.cpp
++++ b/src/map/gradient/MapGradientField.cpp
+@@ -9,7 +9,6 @@
+ 
+ #include <algorithm>
+ #include <cstdlib>
+-#include <cstring>
+ #include <utility>
+ #include <vector>
+ 
+@@ -178,15 +177,6 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
+ 		sweep([&](int i) { return isWater((unsigned)i) ? WATER_STEP[swimClass] : GRADIENT_STEP; });
+ }
+ 
+-bool BuildingGradientSearch::enabled()
+-{
+-	static const bool useLazy = [] {
+-		const char *value = std::getenv("GLOB2_LAZY_BUILDING_GRADIENTS");
+-		return value && std::strcmp(value, "1") == 0;
+-	}();
+-	return useLazy;
+-}
+-
+ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim)
+ {
+ 	static_assert(BucketCount == BUCKETS);
+diff --git a/src/map/pathfind/MapPathfindBuilding.cpp b/src/map/pathfind/MapPathfindBuilding.cpp
+index ba709881d..060c7a2ea 100644
+--- a/src/map/pathfind/MapPathfindBuilding.cpp
++++ b/src/map/pathfind/MapPathfindBuilding.cpp
+@@ -61,7 +61,7 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass)
+ 	else if (isClearingFlag(building) && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
+ 		rebuild=true;
+ 	if (rebuild)
+-		updateGlobalGradient(building, swimClass, BuildingGradientSearch::enabled());
++		updateGlobalGradient(building, swimClass);
+ 	return !building->locked[swimClass>0];
+ }
+ 
+@@ -173,7 +173,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int
+ 		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false);
+ 
+ 	// Stuck for a while: the gradient may be stale, rebuild it now.
+-	updateGlobalGradient(building, swimClass, BuildingGradientSearch::enabled());
++	updateGlobalGradient(building, swimClass);
+ 	if (building->locked[swimClass>0])
+ 		return false;
+ 	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true))
+diff --git a/test/BuildingGradientInvalidationHarness.cpp b/test/BuildingGradientInvalidationHarness.cpp
+index 6174af6b6..82d2b9b45 100644
+--- a/test/BuildingGradientInvalidationHarness.cpp
++++ b/test/BuildingGradientInvalidationHarness.cpp
+@@ -217,14 +217,12 @@ static void aPausedFieldKeepsItsOriginalObstacles()
+ {
+ 	World world;
+ 	Building *centre = world.place(20, 20);
+-	world.game.map.buildingGradient(centre, 0); // allocate through the public API
+-	world.game.map.updateGlobalGradient(centre, 0, true);
+ 	require(world.available(centre, 18, 20), "nearby query succeeds on a lazy field");
+ 	require(centre->globalGradientSearch[0] && !centre->globalGradientSearch[0]->complete(),
+ 		"nearby query leaves a retained frontier");
+ 	world.placeRing(20, 20, 1);
+-	// Eager gradients intentionally retain their pre-edit obstacle snapshot
+-	// until the normal refresh deadline. A lazy continuation must do the same.
++	// Cached gradients retain their pre-edit obstacle snapshot until the
++	// normal refresh deadline, including while their search is paused.
+ 	require(world.available(centre, 45, 45), "paused field preserves its old route before refresh is due");
+ 	world.tick(DIRTY_GRACE_TICKS);
+ 	require(!world.available(centre, 45, 45), "normal refresh replaces the paused obstacle snapshot");
+@@ -246,12 +244,12 @@ static void publicReadsResolveTheirInputs()
+ 		int expectedDist, expectedDx, expectedDy;
+ 		require(map.buildingAvailable(centre, swim, 18, 20, &expectedDist), "complete distance exists");
+ 		require(map.pathfindBuilding(centre, swim, 18, 20, &expectedDx, &expectedDy), "complete direction exists");
+-		map.updateGlobalGradient(centre, swim, true);
++		map.updateGlobalGradient(centre, swim);
+ 		int dist, dx, dy;
+ 		require(map.buildingAvailable(centre, swim, 18, 20, &dist) && dist == expectedDist,
+ 			"point API resolves its own distance");
+ 		require(!centre->globalGradientSearch[swim]->complete(), "point read does not finish the field");
+-		map.updateGlobalGradient(centre, swim, true);
++		map.updateGlobalGradient(centre, swim);
+ 		require(map.pathfindBuilding(centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
+ 			"movement API resolves its own input layer");
+ 		require(!centre->globalGradientSearch[swim]->complete(), "movement does not finish the field");
+diff --git a/test/README.md b/test/README.md
+index c6d9a13c4..ba5c8f328 100644
+--- a/test/README.md
++++ b/test/README.md
+@@ -291,17 +291,17 @@ scenarios.
+ The building invalidation harness also checks that public distance and movement
+ queries resolve their own inputs and that the array API returns a complete field.
+ 
+-Lazy building propagation is opt-in. Build `path-gradient-test` and run
++Building propagation is always lazy. Build `path-gradient-test` and run
+ `PathGradientHarness` from your native build directory. Its independent heap oracle
+ covers all seven swim classes, paused water snapshots, equal-cost movement neighbors,
+ repeated and reordered requests, interleaved maps, disconnected/capped distances,
+ toroidal geometry and reused frontiers. The existing eager-kernel cases remain.
+ 
+-Run the building invalidation and immobile-unit harnesses with
+-`GLOB2_LAZY_BUILDING_GRADIENTS=1` to exercise lazy callers. The default invalidation
+-suite additionally pauses a field, closes a rival building ring, then checks that
+-the field retains its old obstacle snapshot only until the normal refresh deadline.
+-Run the savegame safety harness in the same mode to cover completion on save.
++The building invalidation and immobile-unit harnesses exercise lazy callers without
++configuration switches. The invalidation suite also pauses a field, closes a rival
++building ring, then checks that the field retains its old obstacle snapshot only
++until the normal refresh deadline. The savegame safety harness covers completion
++on save in the standard game path.
+ CI runs the oracle on Linux and Windows, the lazy invalidation/immobile-unit suites
+ on Linux, and lazy save continuation on both.
+ 
