@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+    "--run-game",
+    "--load-game",
+    "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena512-4/base/final.game",
+    "--ticks",
+    "17408",
+    "--telemetry",
+    "checksums",
+    "--save",
+    "final",
+    "--lazy-building-gradients",
+    "true",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/continuation"
+  ],
+  "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+  "input_sha256": "07e0bc85b95919014c8bc78f2c66d3e432fa4520049ec7421c6a9bcfbdebdf46",
+  "files": {
+    "game.replay.checksums": {
+      "sha256": "89b931ff3705abe82d349dc83298f1ed40605430bd32fb8f174d76322b0d1a34",
+      "baseline_sha256": "89b931ff3705abe82d349dc83298f1ed40605430bd32fb8f174d76322b0d1a34",
+      "identical": true
+    },
+    "final.game": {
+      "sha256": "b27559d601e0e2b8cbe4e583e503ae8c826e76f06f1491a1186cd55abfef81cc",
+      "baseline_sha256": "b27559d601e0e2b8cbe4e583e503ae8c826e76f06f1491a1186cd55abfef81cc",
+      "identical": true
+    }
+  }
+}

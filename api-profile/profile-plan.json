@@ -1,0 +1,263 @@
+{
+  "source_commit": "7d2dcaf1c67ce902f9c1d721ed4f610f96aba667",
+  "power_settings": "Battery Power:\n Sleep On Power Button 1\n lowpowermode         0\n standby              1\n ttyskeepawake        1\n hibernatemode        3\n powernap             1\n hibernatefile        /var/vm/sleepimage\n displaysleep         10\n womp                 0\n networkoversleep     0\n sleep                1\n lessbright           1\n tcpkeepalive         1\n disksleep            10\nAC Power:\n Sleep On Power Button 1\n lowpowermode         0\n standby              1\n ttyskeepawake        1\n hibernatemode        3\n powernap             1\n hibernatefile        /var/vm/sleepimage\n displaysleep         10\n womp                 1\n networkoversleep     0\n sleep                0\n tcpkeepalive         1\n disksleep            10\n",
+  "seed": 20260928,
+  "binary_sha256": {
+    "previous": "8cae74a042f1030e51ce3a8094a0c67bcf7f2f016a35b2888b586a269b8dbc86",
+    "api": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "profile": "2d808949f8cdfa452b62aacf2eb4625fc951d8f9263e0702a050c1ec77f7cf4e"
+  },
+  "cases": [
+    {
+      "name": "arena128-2",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 7,
+        "height": 7,
+        "teams": 2
+      },
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "ticks": 16384
+    },
+    {
+      "name": "arena256-2",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 2
+      },
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "ticks": 16384
+    },
+    {
+      "name": "arena512-4",
+      "generator": 15,
+      "map_seed": 42,
+      "game_seed": 19,
+      "params": {
+        "width": 9,
+        "height": 9,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 16384
+    },
+    {
+      "name": "lakes256-4",
+      "generator": 4,
+      "map_seed": 97,
+      "game_seed": 19,
+      "params": {
+        "width": 8,
+        "height": 8,
+        "teams": 4
+      },
+      "players": [
+        "nicowar",
+        "warrush",
+        "cortex",
+        "maxima"
+      ],
+      "ticks": 16384
+    }
+  ],
+  "runs": [
+    {
+      "case": "arena256-2",
+      "repeat": 0,
+      "variant": "api"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 0,
+      "variant": "previous"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 0,
+      "variant": "previous"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 0,
+      "variant": "api"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 0,
+      "variant": "api"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 0,
+      "variant": "previous"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 0,
+      "variant": "previous"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 0,
+      "variant": "api"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 1,
+      "variant": "api"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 1,
+      "variant": "previous"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 1,
+      "variant": "previous"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 1,
+      "variant": "api"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 1,
+      "variant": "api"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 1,
+      "variant": "previous"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 1,
+      "variant": "previous"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 1,
+      "variant": "api"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 2,
+      "variant": "api"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 2,
+      "variant": "previous"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 2,
+      "variant": "previous"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 2,
+      "variant": "api"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 2,
+      "variant": "api"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 2,
+      "variant": "previous"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 2,
+      "variant": "previous"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 2,
+      "variant": "api"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 0,
+      "variant": "profile"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 0,
+      "variant": "profile"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 0,
+      "variant": "profile"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 0,
+      "variant": "profile"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 1,
+      "variant": "profile"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 1,
+      "variant": "profile"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 1,
+      "variant": "profile"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 1,
+      "variant": "profile"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 2,
+      "variant": "profile"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 2,
+      "variant": "profile"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 2,
+      "variant": "profile"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 2,
+      "variant": "profile"
+    }
+  ],
+  "note": "Three paired old/new lazy repetitions per original case, alternating AB/BA; three instrumented runs per case. Phase counters perturb the hot loop and are not used for speedup claims. All runs retained."
+}

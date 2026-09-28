@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/ac_followup.py", line 45, in <module>
+    c=next(c for c in cases if c['name']==b['case']);r=run(c,b['variant'],f"{b['case']}-r{b['repeat']}-{b['variant']}");r['repeat']=b['repeat']
+                                                       ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/ac_followup.py", line 22, in run
+    assert "'AC Power'" in before, 'Follow-up requires AC power'
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Follow-up requires AC power

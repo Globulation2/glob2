@@ -1,0 +1,149 @@
+{
+  "rows": {
+    "cores": 8886,
+    "metrics": 1085525,
+    "samples": 101593
+  },
+  "cycles": 198138562514.0,
+  "cycle_weighted_bottleneck_fractions": {
+    "Instruction Delivery Bottleneck": 0.14508991313415237,
+    "Discarded Bottleneck": 0.27988188485803145,
+    "Instruction Processing Bottleneck": 0.2111031577143722,
+    "Useful": 0.36392504229219763
+  },
+  "sample_events": {
+    "High Discarded": 61435,
+    "High Delivery Bottleneck": 25216,
+    "High Processing Bottleneck": 14942
+  },
+  "sample_groups": {
+    "other": {
+      "High Discarded": 18856,
+      "High Delivery Bottleneck": 7295,
+      "High Processing Bottleneck": 12310
+    },
+    "building initialization": {
+      "High Delivery Bottleneck": 2057,
+      "High Discarded": 2619,
+      "High Processing Bottleneck": 145
+    },
+    "other gradient propagation": {
+      "High Delivery Bottleneck": 14260,
+      "High Discarded": 34227,
+      "High Processing Bottleneck": 2343
+    },
+    "building propagation": {
+      "High Discarded": 5141,
+      "High Delivery Bottleneck": 831,
+      "High Processing Bottleneck": 96
+    },
+    "building search setup/scan": {
+      "High Delivery Bottleneck": 773,
+      "High Discarded": 592,
+      "High Processing Bottleneck": 48
+    }
+  },
+  "top_sample_leaf_frames": [
+    [
+      "Map::propagateGradient(unsigned short*, int, int)",
+      50105
+    ],
+    [
+      "Map::updateResourcesGradient(int, unsigned char, int)",
+      8247
+    ],
+    [
+      "BuildingGradientSearch::resolve(unsigned long)",
+      6016
+    ],
+    [
+      "Map::updateGlobalGradient(Building*, int, bool)",
+      4757
+    ],
+    [
+      "Map::updateGuardAreasGradient(int, int)",
+      2733
+    ],
+    [
+      "Map::updateClearAreasGradient(int, int)",
+      2417
+    ],
+    [
+      "syncRand()",
+      1639
+    ],
+    [
+      "BuildingGradientSearch::begin(Map const&, unsigned short*, int)",
+      1409
+    ],
+    [
+      "Map::coordToIndex(int, int) const",
+      1384
+    ],
+    [
+      "_tlv_get_addr",
+      1338
+    ],
+    [
+      "Map::updateGlobalGradientTask(unsigned char*) (.resume)",
+      1190
+    ],
+    [
+      "Map::isResourceTakeable(int, int, int) const",
+      1014
+    ],
+    [
+      "AIWarrush::farm()",
+      854
+    ],
+    [
+      "Map::getTerrain(unsigned long) const",
+      822
+    ],
+    [
+      "Map::updateRoundTripGradient(Building*, int, int)",
+      675
+    ],
+    [
+      "Cortex::placeCandidatesImpl(Game*, Team*, int, int, Cortex::BuildCandidate*, Cortex::(anonymous namespace)::ForwardBias const*)",
+      674
+    ],
+    [
+      "syncRandEngine()",
+      572
+    ],
+    [
+      "AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const",
+      477
+    ],
+    [
+      "Map::getTerrain(int, int) const",
+      441
+    ],
+    [
+      "Map::growResources()",
+      411
+    ],
+    [
+      "Map::isMapDiscovered(int, int, unsigned int) const",
+      395
+    ],
+    [
+      "Map::isGuardArea(int, int, unsigned int) const",
+      386
+    ],
+    [
+      "Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)",
+      376
+    ],
+    [
+      "Map::updateForbiddenGradient(int, int)",
+      364
+    ],
+    [
+      "std::__1::vector<Tile, std::__1::allocator<Tile>>::operator[][abi:nqe220106](unsigned long)",
+      356
+    ]
+  ],
+  "note": "Bottleneck-triggered samples are not uniform CPU-time samples. Metrics cover the full process. No direct L1/L2 cache-miss counts were recorded in this guided bottleneck configuration."
+}

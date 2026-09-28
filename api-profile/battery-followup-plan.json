@@ -1,0 +1,85 @@
+{
+  "reason": "User chose to stay on battery. Run the previously declared two opposite-order pairs per workload on battery; retain all initial results and separately analyze battery-only matched pairs.",
+  "runs": [
+    {
+      "case": "arena128-2",
+      "repeat": 3,
+      "variant": "api"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 3,
+      "variant": "previous"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 3,
+      "variant": "api"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 3,
+      "variant": "previous"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 3,
+      "variant": "api"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 3,
+      "variant": "previous"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 3,
+      "variant": "api"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 3,
+      "variant": "previous"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 4,
+      "variant": "previous"
+    },
+    {
+      "case": "arena128-2",
+      "repeat": 4,
+      "variant": "api"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 4,
+      "variant": "previous"
+    },
+    {
+      "case": "arena256-2",
+      "repeat": 4,
+      "variant": "api"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 4,
+      "variant": "previous"
+    },
+    {
+      "case": "arena512-4",
+      "repeat": 4,
+      "variant": "api"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 4,
+      "variant": "previous"
+    },
+    {
+      "case": "lakes256-4",
+      "repeat": 4,
+      "variant": "api"
+    }
+  ]
+}

@@ -1,0 +1,402 @@
+[
+  {
+    "case": "arena128-2",
+    "mode": "eager",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+      "--run-game",
+      "--map-file",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena128-2/generated/map-r0.map",
+      "--game-seed",
+      "19",
+      "--ticks",
+      "16384",
+      "--telemetry",
+      "checksums",
+      "--telemetry",
+      "team-timeline",
+      "--save",
+      "initial",
+      "--save",
+      "final",
+      "--lazy-building-gradients",
+      "false",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/validation/arena128-2/eager",
+      "--player",
+      "nicowar",
+      "--player",
+      "warrush"
+    ],
+    "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "files": {
+      "game.replay.checksums": {
+        "sha256": "e56f5c93e5e02d5975f2b6c107fd54c5b7c6ee97fd8425e7a8b18aa55211de8c",
+        "baseline_sha256": "e56f5c93e5e02d5975f2b6c107fd54c5b7c6ee97fd8425e7a8b18aa55211de8c",
+        "identical": true
+      },
+      "initial.game": {
+        "sha256": "2b97618d63f8c6c494e885268e8803a8c9c27eef7a51f85d00080240e6e027b6",
+        "baseline_sha256": "2b97618d63f8c6c494e885268e8803a8c9c27eef7a51f85d00080240e6e027b6",
+        "identical": true
+      },
+      "final.game": {
+        "sha256": "227db3d4cf4451ce972f8a8859ab98c9023eed2ca8119a0dac95a92628df7431",
+        "baseline_sha256": "227db3d4cf4451ce972f8a8859ab98c9023eed2ca8119a0dac95a92628df7431",
+        "identical": true
+      }
+    }
+  },
+  {
+    "case": "arena128-2",
+    "mode": "lazy",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+      "--run-game",
+      "--map-file",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena128-2/generated/map-r0.map",
+      "--game-seed",
+      "19",
+      "--ticks",
+      "16384",
+      "--telemetry",
+      "checksums",
+      "--telemetry",
+      "team-timeline",
+      "--save",
+      "initial",
+      "--save",
+      "final",
+      "--lazy-building-gradients",
+      "true",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/validation/arena128-2/lazy",
+      "--player",
+      "nicowar",
+      "--player",
+      "warrush"
+    ],
+    "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "files": {
+      "game.replay.checksums": {
+        "sha256": "e56f5c93e5e02d5975f2b6c107fd54c5b7c6ee97fd8425e7a8b18aa55211de8c",
+        "baseline_sha256": "e56f5c93e5e02d5975f2b6c107fd54c5b7c6ee97fd8425e7a8b18aa55211de8c",
+        "identical": true
+      },
+      "initial.game": {
+        "sha256": "2b97618d63f8c6c494e885268e8803a8c9c27eef7a51f85d00080240e6e027b6",
+        "baseline_sha256": "2b97618d63f8c6c494e885268e8803a8c9c27eef7a51f85d00080240e6e027b6",
+        "identical": true
+      },
+      "final.game": {
+        "sha256": "227db3d4cf4451ce972f8a8859ab98c9023eed2ca8119a0dac95a92628df7431",
+        "baseline_sha256": "227db3d4cf4451ce972f8a8859ab98c9023eed2ca8119a0dac95a92628df7431",
+        "identical": true
+      }
+    }
+  },
+  {
+    "case": "arena256-2",
+    "mode": "eager",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+      "--run-game",
+      "--map-file",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena256-2/generated/map-r0.map",
+      "--game-seed",
+      "19",
+      "--ticks",
+      "16384",
+      "--telemetry",
+      "checksums",
+      "--telemetry",
+      "team-timeline",
+      "--save",
+      "initial",
+      "--save",
+      "final",
+      "--lazy-building-gradients",
+      "false",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/validation/arena256-2/eager",
+      "--player",
+      "nicowar",
+      "--player",
+      "warrush"
+    ],
+    "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "files": {
+      "game.replay.checksums": {
+        "sha256": "4f6f5a85bdd941cf67d27f27f487f8b0dbf0b0ff289151aa641bdb7d2b7ec012",
+        "baseline_sha256": "4f6f5a85bdd941cf67d27f27f487f8b0dbf0b0ff289151aa641bdb7d2b7ec012",
+        "identical": true
+      },
+      "initial.game": {
+        "sha256": "88d0c91f42191d696266ebc96f62fa09fe542e259b5e1dcff1f89d4fa9ac8a5d",
+        "baseline_sha256": "88d0c91f42191d696266ebc96f62fa09fe542e259b5e1dcff1f89d4fa9ac8a5d",
+        "identical": true
+      },
+      "final.game": {
+        "sha256": "006bb20631237878d9607d8e1a53bf135b8a2496ce5a8c1a6722d681dc7847e3",
+        "baseline_sha256": "006bb20631237878d9607d8e1a53bf135b8a2496ce5a8c1a6722d681dc7847e3",
+        "identical": true
+      }
+    }
+  },
+  {
+    "case": "arena256-2",
+    "mode": "lazy",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+      "--run-game",
+      "--map-file",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena256-2/generated/map-r0.map",
+      "--game-seed",
+      "19",
+      "--ticks",
+      "16384",
+      "--telemetry",
+      "checksums",
+      "--telemetry",
+      "team-timeline",
+      "--save",
+      "initial",
+      "--save",
+      "final",
+      "--lazy-building-gradients",
+      "true",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/validation/arena256-2/lazy",
+      "--player",
+      "nicowar",
+      "--player",
+      "warrush"
+    ],
+    "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "files": {
+      "game.replay.checksums": {
+        "sha256": "4f6f5a85bdd941cf67d27f27f487f8b0dbf0b0ff289151aa641bdb7d2b7ec012",
+        "baseline_sha256": "4f6f5a85bdd941cf67d27f27f487f8b0dbf0b0ff289151aa641bdb7d2b7ec012",
+        "identical": true
+      },
+      "initial.game": {
+        "sha256": "88d0c91f42191d696266ebc96f62fa09fe542e259b5e1dcff1f89d4fa9ac8a5d",
+        "baseline_sha256": "88d0c91f42191d696266ebc96f62fa09fe542e259b5e1dcff1f89d4fa9ac8a5d",
+        "identical": true
+      },
+      "final.game": {
+        "sha256": "006bb20631237878d9607d8e1a53bf135b8a2496ce5a8c1a6722d681dc7847e3",
+        "baseline_sha256": "006bb20631237878d9607d8e1a53bf135b8a2496ce5a8c1a6722d681dc7847e3",
+        "identical": true
+      }
+    }
+  },
+  {
+    "case": "arena512-4",
+    "mode": "eager",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+      "--run-game",
+      "--map-file",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena512-4/generated/map-r0.map",
+      "--game-seed",
+      "19",
+      "--ticks",
+      "16384",
+      "--telemetry",
+      "checksums",
+      "--telemetry",
+      "team-timeline",
+      "--save",
+      "initial",
+      "--save",
+      "final",
+      "--lazy-building-gradients",
+      "false",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/validation/arena512-4/eager",
+      "--player",
+      "nicowar",
+      "--player",
+      "warrush",
+      "--player",
+      "cortex",
+      "--player",
+      "maxima"
+    ],
+    "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "files": {
+      "game.replay.checksums": {
+        "sha256": "4d12589542239e1c4b47e062ff585258f4122bf509b9b4d6d319aff4a2089540",
+        "baseline_sha256": "4d12589542239e1c4b47e062ff585258f4122bf509b9b4d6d319aff4a2089540",
+        "identical": true
+      },
+      "initial.game": {
+        "sha256": "aef68bba68f93c4a004dca987f4adaeab5e21d64589cfd6f4f98bb2edd6ee318",
+        "baseline_sha256": "aef68bba68f93c4a004dca987f4adaeab5e21d64589cfd6f4f98bb2edd6ee318",
+        "identical": true
+      },
+      "final.game": {
+        "sha256": "07e0bc85b95919014c8bc78f2c66d3e432fa4520049ec7421c6a9bcfbdebdf46",
+        "baseline_sha256": "07e0bc85b95919014c8bc78f2c66d3e432fa4520049ec7421c6a9bcfbdebdf46",
+        "identical": true
+      }
+    }
+  },
+  {
+    "case": "arena512-4",
+    "mode": "lazy",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+      "--run-game",
+      "--map-file",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/arena512-4/generated/map-r0.map",
+      "--game-seed",
+      "19",
+      "--ticks",
+      "16384",
+      "--telemetry",
+      "checksums",
+      "--telemetry",
+      "team-timeline",
+      "--save",
+      "initial",
+      "--save",
+      "final",
+      "--lazy-building-gradients",
+      "true",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/validation/arena512-4/lazy",
+      "--player",
+      "nicowar",
+      "--player",
+      "warrush",
+      "--player",
+      "cortex",
+      "--player",
+      "maxima"
+    ],
+    "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "files": {
+      "game.replay.checksums": {
+        "sha256": "4d12589542239e1c4b47e062ff585258f4122bf509b9b4d6d319aff4a2089540",
+        "baseline_sha256": "4d12589542239e1c4b47e062ff585258f4122bf509b9b4d6d319aff4a2089540",
+        "identical": true
+      },
+      "initial.game": {
+        "sha256": "aef68bba68f93c4a004dca987f4adaeab5e21d64589cfd6f4f98bb2edd6ee318",
+        "baseline_sha256": "aef68bba68f93c4a004dca987f4adaeab5e21d64589cfd6f4f98bb2edd6ee318",
+        "identical": true
+      },
+      "final.game": {
+        "sha256": "07e0bc85b95919014c8bc78f2c66d3e432fa4520049ec7421c6a9bcfbdebdf46",
+        "baseline_sha256": "07e0bc85b95919014c8bc78f2c66d3e432fa4520049ec7421c6a9bcfbdebdf46",
+        "identical": true
+      }
+    }
+  },
+  {
+    "case": "lakes256-4",
+    "mode": "eager",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+      "--run-game",
+      "--map-file",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/lakes256-4/generated/map-r0.map",
+      "--game-seed",
+      "19",
+      "--ticks",
+      "16384",
+      "--telemetry",
+      "checksums",
+      "--telemetry",
+      "team-timeline",
+      "--save",
+      "initial",
+      "--save",
+      "final",
+      "--lazy-building-gradients",
+      "false",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/validation/lakes256-4/eager",
+      "--player",
+      "nicowar",
+      "--player",
+      "warrush",
+      "--player",
+      "cortex",
+      "--player",
+      "maxima"
+    ],
+    "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "files": {
+      "game.replay.checksums": {
+        "sha256": "1662300af860d8a6b31018f0e989fdd4f8821f24a445ec0f041d6c7f3a4b0faa",
+        "baseline_sha256": "1662300af860d8a6b31018f0e989fdd4f8821f24a445ec0f041d6c7f3a4b0faa",
+        "identical": true
+      },
+      "initial.game": {
+        "sha256": "b264a5e7ca8e924a7b42d9ae8164949806b08180b94f0154e7e7073b8e577c79",
+        "baseline_sha256": "b264a5e7ca8e924a7b42d9ae8164949806b08180b94f0154e7e7073b8e577c79",
+        "identical": true
+      },
+      "final.game": {
+        "sha256": "ce926f260d1271aa56df3fc038b11d2b3102572bd5dd957cfb4e48b1874e9e6c",
+        "baseline_sha256": "ce926f260d1271aa56df3fc038b11d2b3102572bd5dd957cfb4e48b1874e9e6c",
+        "identical": true
+      }
+    }
+  },
+  {
+    "case": "lakes256-4",
+    "mode": "lazy",
+    "command": [
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/glob2",
+      "--run-game",
+      "--map-file",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient/runs/lakes256-4/generated/map-r0.map",
+      "--game-seed",
+      "19",
+      "--ticks",
+      "16384",
+      "--telemetry",
+      "checksums",
+      "--telemetry",
+      "team-timeline",
+      "--save",
+      "initial",
+      "--save",
+      "final",
+      "--lazy-building-gradients",
+      "true",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/lazy-gradient-measurement/glob2/artifacts/lazy-gradient-api/validation/lakes256-4/lazy",
+      "--player",
+      "nicowar",
+      "--player",
+      "warrush",
+      "--player",
+      "cortex",
+      "--player",
+      "maxima"
+    ],
+    "binary_sha256": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "files": {
+      "game.replay.checksums": {
+        "sha256": "1662300af860d8a6b31018f0e989fdd4f8821f24a445ec0f041d6c7f3a4b0faa",
+        "baseline_sha256": "1662300af860d8a6b31018f0e989fdd4f8821f24a445ec0f041d6c7f3a4b0faa",
+        "identical": true
+      },
+      "initial.game": {
+        "sha256": "b264a5e7ca8e924a7b42d9ae8164949806b08180b94f0154e7e7073b8e577c79",
+        "baseline_sha256": "b264a5e7ca8e924a7b42d9ae8164949806b08180b94f0154e7e7073b8e577c79",
+        "identical": true
+      },
+      "final.game": {
+        "sha256": "ce926f260d1271aa56df3fc038b11d2b3102572bd5dd957cfb4e48b1874e9e6c",
+        "baseline_sha256": "ce926f260d1271aa56df3fc038b11d2b3102572bd5dd957cfb4e48b1874e9e6c",
+        "identical": true
+      }
+    }
+  }
+]

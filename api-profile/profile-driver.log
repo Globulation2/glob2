@@ -1,0 +1,79 @@
+RUN warmup-previous Now drawing from 'Battery Power'
+DONE warmup-previous 3.03 CPU seconds
+RUN warmup-api Now drawing from 'Battery Power'
+DONE warmup-api 2.97 CPU seconds
+RUN warmup-profile Now drawing from 'Battery Power'
+DONE warmup-profile 3.234 CPU seconds
+RUN arena256-2-r0-api Now drawing from 'Battery Power'
+DONE arena256-2-r0-api 9.029 CPU seconds
+RUN arena256-2-r0-previous Now drawing from 'Battery Power'
+DONE arena256-2-r0-previous 9.199 CPU seconds
+RUN arena128-2-r0-previous Now drawing from 'Battery Power'
+DONE arena128-2-r0-previous 3.091 CPU seconds
+RUN arena128-2-r0-api Now drawing from 'Battery Power'
+DONE arena128-2-r0-api 2.984 CPU seconds
+RUN lakes256-4-r0-api Now drawing from 'Battery Power'
+DONE lakes256-4-r0-api 13.755 CPU seconds
+RUN lakes256-4-r0-previous Now drawing from 'Battery Power'
+DONE lakes256-4-r0-previous 14.015 CPU seconds
+RUN arena512-4-r0-previous Now drawing from 'Battery Power'
+DONE arena512-4-r0-previous 42.699 CPU seconds
+RUN arena512-4-r0-api Now drawing from 'Battery Power'
+DONE arena512-4-r0-api 42.455 CPU seconds
+RUN arena512-4-r1-api Now drawing from 'Battery Power'
+DONE arena512-4-r1-api 46.761 CPU seconds
+RUN arena512-4-r1-previous Now drawing from 'AC Power'
+DONE arena512-4-r1-previous 50.394 CPU seconds
+RUN lakes256-4-r1-previous Now drawing from 'AC Power'
+DONE lakes256-4-r1-previous 15.41 CPU seconds
+RUN lakes256-4-r1-api Now drawing from 'AC Power'
+DONE lakes256-4-r1-api 18.653 CPU seconds
+RUN arena128-2-r1-api Now drawing from 'AC Power'
+DONE arena128-2-r1-api 3.809 CPU seconds
+RUN arena128-2-r1-previous Now drawing from 'AC Power'
+DONE arena128-2-r1-previous 4.075 CPU seconds
+RUN arena256-2-r1-previous Now drawing from 'AC Power'
+DONE arena256-2-r1-previous 12.605 CPU seconds
+RUN arena256-2-r1-api Now drawing from 'AC Power'
+DONE arena256-2-r1-api 12.254 CPU seconds
+RUN arena256-2-r2-api Now drawing from 'AC Power'
+DONE arena256-2-r2-api 11.321 CPU seconds
+RUN arena256-2-r2-previous Now drawing from 'AC Power'
+DONE arena256-2-r2-previous 11.719 CPU seconds
+RUN arena128-2-r2-previous Now drawing from 'AC Power'
+DONE arena128-2-r2-previous 3.752 CPU seconds
+RUN arena128-2-r2-api Now drawing from 'AC Power'
+DONE arena128-2-r2-api 3.845 CPU seconds
+RUN lakes256-4-r2-api Now drawing from 'AC Power'
+DONE lakes256-4-r2-api 16.815 CPU seconds
+RUN lakes256-4-r2-previous Now drawing from 'AC Power'
+DONE lakes256-4-r2-previous 16.764 CPU seconds
+RUN arena512-4-r2-previous Now drawing from 'AC Power'
+DONE arena512-4-r2-previous 52.88 CPU seconds
+RUN arena512-4-r2-api Now drawing from 'AC Power'
+DONE arena512-4-r2-api 52.048 CPU seconds
+RUN arena128-2-r0-profile Now drawing from 'AC Power'
+DONE arena128-2-r0-profile 3.752 CPU seconds
+RUN arena256-2-r0-profile Now drawing from 'AC Power'
+DONE arena256-2-r0-profile 11.527 CPU seconds
+RUN arena512-4-r0-profile Now drawing from 'AC Power'
+DONE arena512-4-r0-profile 48.016 CPU seconds
+RUN lakes256-4-r0-profile Now drawing from 'AC Power'
+DONE lakes256-4-r0-profile 15.513 CPU seconds
+RUN arena128-2-r1-profile Now drawing from 'AC Power'
+DONE arena128-2-r1-profile 4.262 CPU seconds
+RUN arena256-2-r1-profile Now drawing from 'AC Power'
+DONE arena256-2-r1-profile 10.028 CPU seconds
+RUN arena512-4-r1-profile Now drawing from 'AC Power'
+DONE arena512-4-r1-profile 46.313 CPU seconds
+RUN lakes256-4-r1-profile Now drawing from 'AC Power'
+DONE lakes256-4-r1-profile 14.745 CPU seconds
+RUN arena128-2-r2-profile Now drawing from 'AC Power'
+DONE arena128-2-r2-profile 3.237 CPU seconds
+RUN arena256-2-r2-profile Now drawing from 'AC Power'
+DONE arena256-2-r2-profile 10.061 CPU seconds
+RUN arena512-4-r2-profile Now drawing from 'AC Power'
+DONE arena512-4-r2-profile 46.157 CPU seconds
+RUN lakes256-4-r2-profile Now drawing from 'AC Power'
+DONE lakes256-4-r2-profile 14.982 CPU seconds
+COMPLETE 36 measured runs

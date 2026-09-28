@@ -1,0 +1,37 @@
+RUN battery-warmup-previous Now drawing from 'Battery Power'
+DONE battery-warmup-previous 3.1 CPU seconds
+RUN battery-warmup-api Now drawing from 'Battery Power'
+DONE battery-warmup-api 3.132 CPU seconds
+RUN arena128-2-r3-api Now drawing from 'Battery Power'
+DONE arena128-2-r3-api 3.085 CPU seconds
+RUN arena128-2-r3-previous Now drawing from 'Battery Power'
+DONE arena128-2-r3-previous 3.076 CPU seconds
+RUN arena256-2-r3-api Now drawing from 'Battery Power'
+DONE arena256-2-r3-api 9.374 CPU seconds
+RUN arena256-2-r3-previous Now drawing from 'Battery Power'
+DONE arena256-2-r3-previous 9.483 CPU seconds
+RUN arena512-4-r3-api Now drawing from 'Battery Power'
+DONE arena512-4-r3-api 45.954 CPU seconds
+RUN arena512-4-r3-previous Now drawing from 'Battery Power'
+DONE arena512-4-r3-previous 46.903 CPU seconds
+RUN lakes256-4-r3-api Now drawing from 'Battery Power'
+DONE lakes256-4-r3-api 14.638 CPU seconds
+RUN lakes256-4-r3-previous Now drawing from 'Battery Power'
+DONE lakes256-4-r3-previous 14.717 CPU seconds
+RUN arena128-2-r4-previous Now drawing from 'Battery Power'
+DONE arena128-2-r4-previous 3.23 CPU seconds
+RUN arena128-2-r4-api Now drawing from 'Battery Power'
+DONE arena128-2-r4-api 3.445 CPU seconds
+RUN arena256-2-r4-previous Now drawing from 'Battery Power'
+DONE arena256-2-r4-previous 9.695 CPU seconds
+RUN arena256-2-r4-api Now drawing from 'Battery Power'
+DONE arena256-2-r4-api 9.527 CPU seconds
+RUN arena512-4-r4-previous Now drawing from 'Battery Power'
+DONE arena512-4-r4-previous 51.978 CPU seconds
+RUN arena512-4-r4-api Now drawing from 'Battery Power'
+DONE arena512-4-r4-api 57.269 CPU seconds
+RUN lakes256-4-r4-previous Now drawing from 'Battery Power'
+DONE lakes256-4-r4-previous 18.052 CPU seconds
+RUN lakes256-4-r4-api Now drawing from 'Battery Power'
+DONE lakes256-4-r4-api 16.661 CPU seconds
+COMPLETE 16 battery follow-up runs

@@ -1,0 +1,251 @@
+[
+  {
+    "case": "arena128-2",
+    "pairs": 5,
+    "cpu_saved_percent": 0.22165182686648688,
+    "ci95": [
+      -6.341030863360508,
+      6.37932806057393
+    ],
+    "pair_savings": [
+      3.469485267595318,
+      6.531334130946654,
+      -2.494250618651561,
+      -0.28507366759999986,
+      -6.638758795251731
+    ],
+    "ac_only": {
+      "pairs": 2,
+      "saving_percent": 2.122521157450341,
+      "ci95": [
+        -75.79857472468036,
+        45.50581038795634
+      ]
+    },
+    "battery_only": {
+      "pairs": 3,
+      "saving_percent": -1.0660596459659777,
+      "ci95": [
+        -14.502902272956542,
+        10.793978059939624
+      ]
+    },
+    "profile_runs": 3,
+    "profile_mean": {
+      "init_ns": 107748311.33333333,
+      "setup_ns": 329962.6666666667,
+      "seeds_ns": 18441995,
+      "weighted_seeds_ns": 3769757.6666666665,
+      "propagation_ns": 194259802.33333334,
+      "growth_ns": 16841620.666666668,
+      "builds": 2675,
+      "weighted_builds": 330,
+      "cells": 43827200,
+      "weighted_cells": 5406720,
+      "pushes": 12195847,
+      "growths": 411827,
+      "capacity_bytes_added": 9927708,
+      "pops": 12007605,
+      "stale": 385272,
+      "layers": 1366776
+    },
+    "phase_percent": {
+      "init_ns": 33.19931231063237,
+      "setup_ns": 0.10166779865000844,
+      "seeds_ns": 5.682330832471337,
+      "weighted_seeds_ns": 1.161534325339813,
+      "propagation_ns": 59.85515473290647
+    },
+    "growth_percent_of_building": 5.189224939220864,
+    "building_seconds": 0.324549829,
+    "profile_cpu_mean": 3.7503826666666664,
+    "profile_wall_mean": 3.7687675556905256,
+    "deterministic_work_counts": true
+  },
+  {
+    "case": "arena256-2",
+    "pairs": 5,
+    "cpu_saved_percent": 2.1850477272969737,
+    "ci95": [
+      1.063415711034288,
+      3.293963937885269
+    ],
+    "pair_savings": [
+      1.848617635005212,
+      2.781732573314455,
+      3.3974721681396147,
+      1.1471684965550621,
+      1.7337609339910687
+    ],
+    "ac_only": {
+      "pairs": 2,
+      "saving_percent": 3.090091400044981,
+      "ci95": [
+        -0.9017187683550087,
+        6.923980091833426
+      ]
+    },
+    "battery_only": {
+      "pairs": 3,
+      "saving_percent": 1.5769944574354655,
+      "ci95": [
+        0.6387818398618128,
+        2.5063480560470586
+      ]
+    },
+    "profile_runs": 3,
+    "profile_mean": {
+      "init_ns": 210963867.66666666,
+      "setup_ns": 163405.33333333334,
+      "seeds_ns": 39798543.666666664,
+      "weighted_seeds_ns": 3931982.6666666665,
+      "propagation_ns": 377056873.6666667,
+      "growth_ns": 11114287,
+      "builds": 1510,
+      "weighted_builds": 93,
+      "cells": 98959360,
+      "weighted_cells": 6094848,
+      "pushes": 32745527,
+      "growths": 256090,
+      "capacity_bytes_added": 12099968,
+      "pops": 32652030,
+      "stale": 440133,
+      "layers": 1580018
+    },
+    "phase_percent": {
+      "init_ns": 33.384866134714144,
+      "setup_ns": 0.025858765481353737,
+      "seeds_ns": 6.298088233609771,
+      "weighted_seeds_ns": 0.6222331644871721,
+      "propagation_ns": 59.66895370170756
+    },
+    "growth_percent_of_building": 1.75882717633936,
+    "building_seconds": 0.631914673,
+    "profile_cpu_mean": 10.538605,
+    "profile_wall_mean": 10.659217861345192,
+    "deterministic_work_counts": true
+  },
+  {
+    "case": "arena512-4",
+    "pairs": 5,
+    "cpu_saved_percent": 0.3973439731605133,
+    "ci95": [
+      -7.637328524029208,
+      7.832262063377138
+    ],
+    "pair_savings": [
+      0.5711431042617954,
+      7.208018547373496,
+      1.5750410955681637,
+      2.023762656991457,
+      -10.180744784639417
+    ],
+    "ac_only": {
+      "pairs": 1,
+      "saving_percent": 1.5750410955681637,
+      "ci95": null
+    },
+    "battery_only": {
+      "pairs": 3,
+      "saving_percent": -2.3873499250934627,
+      "ci95": [
+        -20.019023280871572,
+        12.654101507303917
+      ]
+    },
+    "profile_runs": 3,
+    "profile_mean": {
+      "init_ns": 2253254614.3333335,
+      "setup_ns": 1143497.6666666667,
+      "seeds_ns": 387778883.6666667,
+      "weighted_seeds_ns": 136333402.66666666,
+      "propagation_ns": 3698037894,
+      "growth_ns": 30080288.333333332,
+      "builds": 4385,
+      "weighted_builds": 747,
+      "cells": 1149501440,
+      "weighted_cells": 195821568,
+      "pushes": 340403202,
+      "growths": 614743,
+      "capacity_bytes_added": 50349192,
+      "pops": 339881244,
+      "stale": 4510140,
+      "layers": 7506113
+    },
+    "phase_percent": {
+      "init_ns": 34.79097989589056,
+      "setup_ns": 0.017655973754110522,
+      "seeds_ns": 5.987431362562417,
+      "weighted_seeds_ns": 2.1050318242520083,
+      "propagation_ns": 57.0989009435409
+    },
+    "growth_percent_of_building": 0.4644493791382844,
+    "building_seconds": 6.476548292333334,
+    "profile_cpu_mean": 46.828631666666666,
+    "profile_wall_mean": 46.962463583331555,
+    "deterministic_work_counts": true
+  },
+  {
+    "case": "lakes256-4",
+    "pairs": 5,
+    "cpu_saved_percent": -1.8120907861483904,
+    "ci95": [
+      -15.569536877646106,
+      10.307663158491941
+    ],
+    "pair_savings": [
+      1.8565754591207129,
+      -21.04670479049233,
+      -0.30771666420701393,
+      0.5337680143222334,
+      7.706186586384445
+    ],
+    "ac_only": {
+      "pairs": 2,
+      "saving_percent": -10.190374204195418,
+      "ci95": [
+        -263.63593455527774,
+        66.60968454036306
+      ]
+    },
+    "battery_only": {
+      "pairs": 3,
+      "saving_percent": 3.4164520678466537,
+      "ci95": [
+        -6.650649793438035,
+        12.533287427410333
+      ]
+    },
+    "profile_runs": 3,
+    "profile_mean": {
+      "init_ns": 1088311300,
+      "setup_ns": 1118633.6666666667,
+      "seeds_ns": 163423676.66666666,
+      "weighted_seeds_ns": 77544124,
+      "propagation_ns": 1142545755,
+      "growth_ns": 48256472.333333336,
+      "builds": 7725,
+      "weighted_builds": 1722,
+      "cells": 506265600,
+      "weighted_cells": 112852992,
+      "pushes": 99922354,
+      "growths": 1236179,
+      "capacity_bytes_added": 42348524,
+      "pops": 99274864,
+      "stale": 1062053,
+      "layers": 7860431
+    },
+    "phase_percent": {
+      "init_ns": 44.00874119017542,
+      "setup_ns": 0.04523490615502228,
+      "seeds_ns": 6.608467899552492,
+      "weighted_seeds_ns": 3.135701415518584,
+      "propagation_ns": 46.20185458859848
+    },
+    "growth_percent_of_building": 1.9513778839460065,
+    "building_seconds": 2.4729434893333333,
+    "profile_cpu_mean": 15.079932666666666,
+    "profile_wall_mean": 15.101402430659315,
+    "deterministic_work_counts": true
+  }
+]

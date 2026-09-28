@@ -1,5 +1,7 @@
 # Lazy building gradient validation evidence
 
+**API cleanup and remaining costs:** [the follow-up report](api-profile/README.md) covers implementation 7d2dcaf1c, public query boundaries, renewed checksum/save validation, 52 measurement runs, and phase/allocation profiling. The earlier controlled timing study remains the baseline performance evidence.
+
 **Updated timing evidence:** the [162-run controlled study](timing-study/README.md) supersedes the small-sample CPU estimates and unmeasured-save-latency status below. It finds 2–8% net CPU savings across seven workloads and measures the synchronous-save tradeoff. The earlier raw measurements remain intact for comparison.
 
 Implementation: [d50968d06](https://github.com/Globulation2/glob2/commit/d50968d06), based on [1c49596f5](https://github.com/Globulation2/glob2/commit/1c49596f5195188e7f078768f610454f7068d7c6). This branch contains review evidence only and is not intended to merge into master.

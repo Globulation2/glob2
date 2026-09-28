@@ -1,0 +1,16 @@
+{
+  "implementation": "7d2dcaf1c67ce902f9c1d721ed4f610f96aba667",
+  "previous": "d50968d06125dc10fbf4b247e35d0526fe69af0b",
+  "original_baseline": "1c49596f5195188e7f078768f610454f7068d7c6",
+  "binaries": {
+    "previous": "8cae74a042f1030e51ce3a8094a0c67bcf7f2f016a35b2888b586a269b8dbc86",
+    "api": "ec818a1a8cf755eb9645c3499ef4ac963c75a1747b1851fbcb7fefd6003ac2f1",
+    "profile": "2d808949f8cdfa452b62aacf2eb4625fc951d8f9263e0702a050c1ec77f7cf4e"
+  },
+  "fixtures": {
+    "arena128-2": "46a3c461da2d0c753a47c58cab1964259417436a0b9aacab673493817aa51baf",
+    "arena256-2": "315d2129fa202c5983277564f7abdca0fac21c5ec4f05f4e38fffe9be932e9f1",
+    "arena512-4": "2eba46d9ba04ce5056e00175043fa584af7cfb368183475f282129cce580ee6d",
+    "lakes256-4": "276f30abdc42b49d2fa0f5a3f82a6908d141bbe08d3a70b48593ce0d97b4186c"
+  }
+}

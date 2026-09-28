@@ -1,0 +1,254 @@
+diff --git a/docs/development/performance-telemetry.md b/docs/development/performance-telemetry.md
+index 7deeb66c0..5f90d8456 100644
+--- a/docs/development/performance-telemetry.md
++++ b/docs/development/performance-telemetry.md
+@@ -122,6 +122,10 @@ retains its bucket queue and, for weighted swimming, a snapshot of water costs.
+ Obstacles remain frozen in the initialized field. Queries finish a whole cost
+ layer, including equal-cost neighbors needed for movement sidesteps. An unknown
+ cell requires exhausting the search before it can be reported as unreachable.
++The public `buildingGradient` API always completes the field before returning an
++array. Point-distance and movement queries resolve internally; callers do not
++receive partial arrays or need a separate resolve call. Preparing a field applies
++the existing refresh/use policy, while reading a prepared field only extends it.
+ The queues share the eager solver's expansion kernel and are freed with their
+ field, including the existing idle-field eviction; no separate cache is added.
+ 
+diff --git a/src/map/Map.h b/src/map/Map.h
+index 3b25ca9f0..1c1740cde 100644
+--- a/src/map/Map.h
++++ b/src/map/Map.h
+@@ -467,6 +467,13 @@ public:
+ 	bool incResource(int x, int y, int resourceType, int variety);
+ 
+ private:
++	//! Allocate/refresh and mark use, without exposing the possibly partial field.
++	bool prepareBuildingGradient(Building *building, int swimClass);
++	//! Read or move on a prepared field. Both settle their input cell first;
++	//! neither refreshes the field or changes its use timestamp.
++	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell) const;
++	bool buildingGradientDirection(Building *building, int swimClass, int x, int y,
++		int *dx, int *dy, bool strict) const;
+ 	//! Per-tile predicate driver shared by isFree*/isHardSpace*.
+ 	//! Each flag toggles whether one occupancy/terrain test contributes to rejection.
+ 	struct TileChecks {
+@@ -692,11 +699,10 @@ public:
+ 	//! building, read from a round-trip gradient a fetcher's walk has already built. False
+ 	//! when there is none or no such trip; the caller then scores by the plain distances.
+ 	bool roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
+-	//! The building's gradient, refreshed as needed; NULL when locked. Complete by
+-	//! default. With complete=false, resolve each queried cell before reading it.
+-	const Uint16 *buildingGradient(Building *building, int swimClass, bool complete = true);
+-	//! Resolve a cached field without refreshing its age or last-use timestamp.
+-	void resolveBuildingGradient(Building *building, int swimClass, size_t cell) const;
++	//! Complete field, refreshed as needed; NULL when locked. Point queries use
++	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
++	const Uint16 *buildingGradient(Building *building, int swimClass);
++	//! Finish a cached field without refreshing its age or last-use timestamp.
+ 	void finishBuildingGradient(Building *building, int swimClass) const;
+ 	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist);
+ 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
+diff --git a/src/map/gradient/MapGradientBuilding.cpp b/src/map/gradient/MapGradientBuilding.cpp
+index b5f8787bd..78396893c 100644
+--- a/src/map/gradient/MapGradientBuilding.cpp
++++ b/src/map/gradient/MapGradientBuilding.cpp
+@@ -11,11 +11,6 @@
+ 
+ 
+ 
+-void Map::resolveBuildingGradient(Building *building, int swimClass, size_t cell) const
+-{
+-	if (auto &search = building->globalGradientSearch[swimClass]) search->resolve(cell);
+-}
+-
+ void Map::finishBuildingGradient(Building *building, int swimClass) const
+ {
+ 	if (auto &search = building->globalGradientSearch[swimClass]) search->finish();
+diff --git a/src/map/pathfind/MapPathfindBuilding.cpp b/src/map/pathfind/MapPathfindBuilding.cpp
+index 84b3bcdb6..ba709881d 100644
+--- a/src/map/pathfind/MapPathfindBuilding.cpp
++++ b/src/map/pathfind/MapPathfindBuilding.cpp
+@@ -41,7 +41,7 @@ bool isClearingFlag(const Building *building)
+ 
+ } // namespace
+ 
+-const Uint16 *Map::buildingGradient(Building *building, int swimClass, bool complete)
++bool Map::prepareBuildingGradient(Building *building, int swimClass)
+ {
+ 	assert(building);
+ 	Uint16 *&gradient=building->globalGradient[swimClass];
+@@ -62,28 +62,45 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass, bool comp
+ 		rebuild=true;
+ 	if (rebuild)
+ 		updateGlobalGradient(building, swimClass, BuildingGradientSearch::enabled());
+-	if (building->locked[swimClass>0])
+-		return NULL;
+-	if (complete) finishBuildingGradient(building, swimClass);
+-	return gradient;
++	return !building->locked[swimClass>0];
++}
++
++const Uint16 *Map::buildingGradient(Building *building, int swimClass)
++{
++	if (!prepareBuildingGradient(building, swimClass)) return NULL;
++	finishBuildingGradient(building, swimClass);
++	return building->globalGradient[swimClass];
++}
++
++Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell) const
++{
++	assert(building->globalGradient[swimClass]);
++	assert(cell < size);
++	if (auto &search = building->globalGradientSearch[swimClass]) search->resolve(cell);
++	return building->globalGradient[swimClass][cell];
++}
++
++bool Map::buildingGradientDirection(Building *building, int swimClass, int x, int y,
++	int *dx, int *dy, bool strict) const
++{
++	// Settling this layer also settles all equal/better neighbors the generic
++	// direction picker can select. Keep partial-array access inside this adapter.
++	buildingGradientValue(building, swimClass, coordToIndex(x, y));
++	return directionByGradient(building->owner->me, swimClass, x, y,
++		building->globalGradient[swimClass], dx, dy, strict);
+ }
+ 
+ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int *dist)
+ {
+ 	PERF_SCOPE_TIME(PathBuilding);
+-	const Uint16 *gradient=buildingGradient(building, swimClass, false);
+-	if (gradient==NULL)
++	if (!prepareBuildingGradient(building, swimClass))
+ 		return false;
+ 	// The unit's own cell can be an obstacle in this building's field - it may be
+ 	// standing on another building, or in a forbidden area - while a cell next to
+ 	// it is on a route. Take the first of the nine that carries a distance.
+-	resolveBuildingGradient(building, swimClass, coordToIndex(x, y));
+-	Uint16 g=gradient[coordToIndex(x, y)];
++	Uint16 g=buildingGradientValue(building, swimClass, coordToIndex(x, y));
+ 	for (int d=0; d<8 && g<=GRADIENT_UNREACHABLE; d++)
+-	{
+-		resolveBuildingGradient(building, swimClass, coordToIndex(x+tabClose[d][0], y+tabClose[d][1]));
+-		g=gradient[coordToIndex(x+tabClose[d][0], y+tabClose[d][1])];
+-	}
++		g=buildingGradientValue(building, swimClass, coordToIndex(x+tabClose[d][0], y+tabClose[d][1]));
+ 	if (g<=GRADIENT_UNREACHABLE)
+ 		return false;
+ 	*dist=gradientTiles(g);
+@@ -93,7 +110,7 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
+ 
+ const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int swimClass)
+ {
+-	if (buildingGradient(building, swimClass, false)==NULL)
++	if (!prepareBuildingGradient(building, swimClass))
+ 		return NULL;
+ 	Uint32 now=game->stepCounter;
+ 	Uint16 *&gradient=building->roundTripGradient[resourceType][swimClass];
+@@ -133,8 +150,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int
+ 	assert(building);
+ 	assert(x>=0);
+ 	assert(y>=0);
+-	Uint32 teamMask=building->owner->me;
+-	if (((tiles[coordToIndex(x, y)].forbidden) & teamMask)!=0)
++	if (((tiles[coordToIndex(x, y)].forbidden) & building->owner->me)!=0)
+ 	{
+ 		// This escape path reads the cached field directly as a tie-breaker.
+ 		// Preserve its old age (do not call buildingGradient here).
+@@ -142,27 +158,25 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int
+ 		return pathfindForbidden(building->globalGradient[swimClass], building->owner->teamNumber, swimClass, x, y, dx, dy);
+ 	}
+ 
+-	const Uint16 *gradient=buildingGradient(building, swimClass, false);
+-	if (gradient==NULL)
++	if (!prepareBuildingGradient(building, swimClass))
+ 		return false;
+-	resolveBuildingGradient(building, swimClass, coordToIndex(x, y));
+-	if (isClearingFlag(building) && gradient[coordToIndex(x, y)]==GRADIENT_AT_GOAL)
++	if (isClearingFlag(building)
++		&& buildingGradientValue(building, swimClass, coordToIndex(x, y))==GRADIENT_AT_GOAL)
+ 	{
+ 		// Standing where one of the flag's resources was: it is gone, the gradient is stale.
+ 		building->dirtyGradient[swimClass]=true;
+ 		return false;
+ 	}
+-	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
++	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true))
+ 		return true;
+ 	if (building->lastGlobalGradientUpdateStepCounter[swimClass]+STUCK_REBUILD_TICKS>game->stepCounter)
+-		return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
++		return buildingGradientDirection(building, swimClass, x, y, dx, dy, false);
+ 
+ 	// Stuck for a while: the gradient may be stale, rebuild it now.
+ 	updateGlobalGradient(building, swimClass, BuildingGradientSearch::enabled());
+ 	if (building->locked[swimClass>0])
+ 		return false;
+-	resolveBuildingGradient(building, swimClass, coordToIndex(x, y));
+-	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
++	if (buildingGradientDirection(building, swimClass, x, y, dx, dy, true))
+ 		return true;
+-	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
++	return buildingGradientDirection(building, swimClass, x, y, dx, dy, false);
+ }
+diff --git a/test/BuildingGradientInvalidationHarness.cpp b/test/BuildingGradientInvalidationHarness.cpp
+index 5d585c589..6174af6b6 100644
+--- a/test/BuildingGradientInvalidationHarness.cpp
++++ b/test/BuildingGradientInvalidationHarness.cpp
+@@ -231,6 +231,37 @@ static void aPausedFieldKeepsItsOriginalObstacles()
+ 	std::puts("PASS a paused field freezes obstacles until the existing refresh deadline");
+ }
+ 
++// Public point APIs must resolve for their caller, while the array API must
++// finish the whole field. Compare movement and distance against a complete field.
++static void publicReadsResolveTheirInputs()
++{
++	World world;
++	Map &map = world.game.map;
++	Building *centre = world.place(20, 20);
++	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
++	{
++		const Uint16 *full = map.buildingGradient(centre, swim);
++		require(full != nullptr, "public field is reachable");
++		std::vector<Uint16> expected(full, full + map.getW() * map.getH());
++		int expectedDist, expectedDx, expectedDy;
++		require(map.buildingAvailable(centre, swim, 18, 20, &expectedDist), "complete distance exists");
++		require(map.pathfindBuilding(centre, swim, 18, 20, &expectedDx, &expectedDy), "complete direction exists");
++		map.updateGlobalGradient(centre, swim, true);
++		int dist, dx, dy;
++		require(map.buildingAvailable(centre, swim, 18, 20, &dist) && dist == expectedDist,
++			"point API resolves its own distance");
++		require(!centre->globalGradientSearch[swim]->complete(), "point read does not finish the field");
++		map.updateGlobalGradient(centre, swim, true);
++		require(map.pathfindBuilding(centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
++			"movement API resolves its own input layer");
++		require(!centre->globalGradientSearch[swim]->complete(), "movement does not finish the field");
++		full = map.buildingGradient(centre, swim);
++		require(centre->globalGradientSearch[swim]->complete(), "public array API completes the field");
++		require(std::vector<Uint16>(full, full + expected.size()) == expected, "public array is fully resolved");
++	}
++	std::puts("PASS public distance, movement and full-field lazy API boundaries");
++}
++
+ int main(int argc, char** argv)
+ {
+ 	const char* scenario = argc > 1 ? argv[1] : "all";
+@@ -249,6 +280,7 @@ int main(int argc, char** argv)
+ 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-other-team") == 0) aRivalTeamsRingCutsOffACachedField();
+ 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-flag") == 0) aRingCutsOffAVirtualFlagsField();
+ 	if (std::strcmp(scenario, "all") == 0) aPausedFieldKeepsItsOriginalObstacles();
++	if (std::strcmp(scenario, "all") == 0) publicReadsResolveTheirInputs();
+ 	std::puts("Building gradient invalidation regressions passed");
+ 	return 0;
+ }
+diff --git a/test/README.md b/test/README.md
+index beaf92ec6..c6d9a13c4 100644
+--- a/test/README.md
++++ b/test/README.md
+@@ -288,6 +288,9 @@ scenarios.
+ 
+ ## Building gradient invalidation regression
+ 
++The building invalidation harness also checks that public distance and movement
++queries resolve their own inputs and that the array API returns a complete field.
++
+ Lazy building propagation is opt-in. Build `path-gradient-test` and run
+ `PathGradientHarness` from your native build directory. Its independent heap oracle
+ covers all seven swim classes, paused water snapshots, equal-cost movement neighbors,

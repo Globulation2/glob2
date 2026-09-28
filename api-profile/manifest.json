@@ -1,0 +1,162 @@
+{
+  "Profile.h": {
+    "bytes": 1955,
+    "sha256": "cc87755f310bbda4bf318494e97edee5e8c7e7e08ec40a9bafd3d01925f55676"
+  },
+  "README.md": {
+    "bytes": 9156,
+    "sha256": "84786bf69bf1cf501fec8d6c98124099bd74d98a5a32a37894dac8e87be625df"
+  },
+  "ac-driver.log": {
+    "bytes": 713,
+    "sha256": "12382b105897310c4004a0a0da4924a8988bb0566915965c341f11545e427b4a"
+  },
+  "ac-followup-plan.json": {
+    "bytes": 1579,
+    "sha256": "fedd92266710f97678132e48b8f5a8718363ff7593b94a5f18e6298b0b7baf19"
+  },
+  "ac_followup.py": {
+    "bytes": 3389,
+    "sha256": "4197d13aa031b794561621a02602d58f35a92f42d7a565d6c05b6b4886c55921"
+  },
+  "analyze_hardware.py": {
+    "bytes": 2504,
+    "sha256": "5a7079c03b5bb90dca0902f426266091b0903ea0c29f8f12c75490b34fbc7b5d"
+  },
+  "analyze_profile.py": {
+    "bytes": 3212,
+    "sha256": "3660787e0eb2e46ce31364bf647866c1f7ede4ec299f96d8485f99ed063c5a40"
+  },
+  "api.patch": {
+    "bytes": 13033,
+    "sha256": "5bcf0c7a461f1c68a046c3ca75dc35a378b7877231be8e3e4c86087a09d7c429"
+  },
+  "battery-driver.log": {
+    "bytes": 1862,
+    "sha256": "c5fd761f89f340622bf44112ae853c20e29b59cb74204a3ed227bbaab77031da"
+  },
+  "battery-followup-plan.json": {
+    "bytes": 1589,
+    "sha256": "946f1d15da293676992fcb34f1a78ebc428f35b8eb66bd2ba80c89270b9472aa"
+  },
+  "battery-warmups.jsonl": {
+    "bytes": 42692,
+    "sha256": "e1fedb2dcf927184115ff333ff2d5778676ae12d181ec1dd3fc26f5dd89022bc"
+  },
+  "battery_followup.py": {
+    "bytes": 3566,
+    "sha256": "8186e05c3a0a867a961d335a9e13ed58d604a45bc6bb454c76171cc765e8abe4"
+  },
+  "continuation.json": {
+    "bytes": 1216,
+    "sha256": "1f061f7aa708365c9fbc769f3b4aceff0e89fae7ddde2ed6a5ef3b9ef0373d48"
+  },
+  "counter-options.json": {
+    "bytes": 812,
+    "sha256": "5cc9b5417f41e6ff2936a56e581f54c4923974ff4f329e18031c8d19c0276bdb"
+  },
+  "hardware-analysis.json": {
+    "bytes": 3514,
+    "sha256": "39d3afc254fe71af552a27abc64d69a63375ad44e1cbe413636bf00980fc09b0"
+  },
+  "hardware-analysis.md": {
+    "bytes": 2885,
+    "sha256": "142827abd173d33d275f8eee2e5d4f8327b951e98e57aaa43c57980defd55154"
+  },
+  "hardware-command.json": {
+    "bytes": 970,
+    "sha256": "7262c69cc7db9721ce716c079889608380b8183dceaa6a53e8f7d621eba9c2f6"
+  },
+  "hardware-data.xml.gz": {
+    "bytes": 26476929,
+    "sha256": "22cb7f76f445f2d410ca7a306ebf96ebc3a1c2c77552e31e02ca507a0618f1c6"
+  },
+  "hardware-status.json": {
+    "bytes": 12,
+    "sha256": "5bc232b82de377a5655a39a2af9d7ae0fc868de5b9df957e18905cb914606c88"
+  },
+  "hardware.log": {
+    "bytes": 259,
+    "sha256": "accf7165c855b628fc2cbcca7ab9f4db24e0df4c229901dd5e9170047ca52545"
+  },
+  "hardware_profile.py": {
+    "bytes": 928,
+    "sha256": "fe9dcf6b9b04e9bb22236ba7aee9fc6c81693338b53fb7a71bea4a89363c4895"
+  },
+  "instrument.py": {
+    "bytes": 2333,
+    "sha256": "f353bfe2b5c547127450fce496d897390d547f06032b2a181eab286f19cacb39"
+  },
+  "instrumented.patch": {
+    "bytes": 17568,
+    "sha256": "c95dda4c86c07291ca6d3026d204647d8859f5548fed479814f45f736acd7613"
+  },
+  "profile-analysis.json": {
+    "bytes": 6604,
+    "sha256": "407ae6a7df1fb2247dd588c61de053ba1ea3f1174535007ea6162f6f40321e93"
+  },
+  "profile-driver.log": {
+    "bytes": 3848,
+    "sha256": "f4f520b349fca235da4a17da33976fdd046315b4ee7d56270d5d827f17a2af5e"
+  },
+  "profile-measurements.jsonl": {
+    "bytes": 1914832,
+    "sha256": "a404f02763281af39ab94ccfdadb39324fd4a5dcd0009f9de549d1569f44db27"
+  },
+  "profile-plan.json": {
+    "bytes": 5666,
+    "sha256": "783cf0d27e462ae1211a59c2f4aa35ddb70696162aafd8c66197bbea9c15b2cf"
+  },
+  "profile-warmups.jsonl": {
+    "bytes": 64328,
+    "sha256": "4e191350f447a8b7abea9ef97cd3bf309a2894501cf5260a3109f54fc43cc005"
+  },
+  "profile_runs.py": {
+    "bytes": 3931,
+    "sha256": "5814c7f874c180951b6d6621c16aae3142b38fd16f1793e6b655a030d131a510"
+  },
+  "raw-arena128-2.tar.gz": {
+    "bytes": 24082938,
+    "sha256": "f003c68876e92dc23ed5f547fbc2cd3b04b5d1cfdfde6359c97bec967ba0aff4"
+  },
+  "raw-arena256-2.tar.gz": {
+    "bytes": 19292277,
+    "sha256": "379555d1bacd8cb3949c834645c1e7de3b71e162f2b3129e2b01728317f30a51"
+  },
+  "raw-arena512-4.tar.gz": {
+    "bytes": 66462574,
+    "sha256": "786bd7053d6e8bf345414235a61de096603eeda467e691d09def8a698b767aca"
+  },
+  "raw-lakes256-4.tar.gz": {
+    "bytes": 73536462,
+    "sha256": "dfcfbf6540fd2653ccf0ca901d2890463469ca3600ed088135097dfdd4e2ab9b"
+  },
+  "report.py": {
+    "bytes": 9466,
+    "sha256": "bbf76abd6eb21bb909e90826c407bda70a48639f9ecb32d637851d5d516ffeb5"
+  },
+  "run-tests.py": {
+    "bytes": 1507,
+    "sha256": "6871659ba6dd4696bb6d9eae685c5a75ac7fa2897acb6878872f12bcda6478e0"
+  },
+  "source-metadata.json": {
+    "bytes": 822,
+    "sha256": "1f5603859743bccf615dbc88061e6f00f8dabe76c8297e9de280e8cc517a4a24"
+  },
+  "tests.json": {
+    "bytes": 1848,
+    "sha256": "e813a448edc9fb9ba51622214cd369f1b84b4a866b510f3029600fc4076981e3"
+  },
+  "validate.py": {
+    "bytes": 3381,
+    "sha256": "6b2130ca871d6e5dfb67362001e7aea30ae1634f7ff01bdf8a9f2871a93e2ac2"
+  },
+  "validation-and-build-logs.tar.gz": {
+    "bytes": 19299968,
+    "sha256": "7a438d98b8fc449c54481d587b4048c697641d8ed219ae0612d276685cdbc588"
+  },
+  "validation.json": {
+    "bytes": 13703,
+    "sha256": "d32b4af3254bfc46770a08d653e8a3c2c4eb36c74ca025d95277599bca0512e3"
+  }
+}
