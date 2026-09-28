@@ -38,11 +38,16 @@ ViewRect GameGUITouch::paletteItemRect(size_t index) const
 {
 	const auto content = panelContent();
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	const double stride = (InGameTouchTheme::paletteCell + InGameTouchTheme::gap) * unit;
-	const int columns = std::max(1, int((content.w - 8 * unit) / stride));
+	const bool flags = gui.displayMode == GameGUI::FLAG_VIEW;
+	const int columns = flags ? int(paletteItems().size()) :
+		std::max(1, int((content.w / unit - 8 + .01) / 60));
+	const double cell = flags ? std::min(InGameTouchTheme::paletteCell,
+		(content.w / unit - 8 - (columns - 1) * InGameTouchTheme::gap) / columns) :
+		InGameTouchTheme::paletteCell;
+	const double stride = (cell + InGameTouchTheme::gap) * unit;
 	return {content.x + 4 * unit + (index % columns) * stride,
 			content.y + 4 * unit + (index / columns) * stride - panelScroll * unit,
-			InGameTouchTheme::paletteCell * unit, InGameTouchTheme::paletteCell * unit};
+			cell * unit, InGameTouchTheme::paletteCell * unit};
 }
 std::optional<GameGUITouch::PaletteItem> GameGUITouch::paletteItemAt(ViewPoint point) const
 {
@@ -70,7 +75,7 @@ void GameGUITouch::drawBuildPalette()
 		gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border);
 		if (items[i].name.starts_with("zone:"))
 		{
-			const char *zones[] = {"Forbidden", "Guard", "Clear"};
+			const char *zones[] = {"Forbid", "Guard", "Clear"};
 			drawPointLabel(rect, zones[items[i].name.back() - '0'], .75);
 			continue;
 		}

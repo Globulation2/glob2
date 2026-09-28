@@ -381,7 +381,7 @@ ViewRect GameGUITouch::allocationRect() const
 	auto rect = layout().panel;
 	if (!inspectedBuilding() || rect.h <= 0)
 		return {};
-	rect.h = InGameTouchTheme::target * globalContainer->gfx->logicalUnitsPerPoint();
+	rect.h = InGameTouchTheme::inspectorHeader * globalContainer->gfx->logicalUnitsPerPoint();
 	return rect;
 }
 ViewRect GameGUITouch::panelContent() const

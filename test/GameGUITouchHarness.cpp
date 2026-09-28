@@ -623,8 +623,23 @@ public:
 		  tap(100, 200); // Activate touch after the resize cancellation.
 		  const float unit = gfx->logicalUnitsPerPoint();
 		  gui.clearSelection();
-		  gui.displayMode = GameGUI::FLAG_VIEW;
-		  tap(gfx->getW() / 12.0f, gfx->getH() - 24 * unit);
+          gui.displayMode = GameGUI::FLAG_VIEW;
+          gui.touch->panelOpen = true;
+          const auto flagContent = gui.touch->panelContent();
+          const auto firstFlag = gui.touch->paletteItemRect(0);
+          for (size_t i = 0; i < gui.touch->paletteItems().size(); ++i)
+          {
+              const auto box = gui.touch->paletteItemRect(i);
+              require(box.y == firstFlag.y && box.x >= flagContent.x &&
+                      box.x + box.w <= flagContent.x + flagContent.w &&
+                      box.y + box.h <= flagContent.y + flagContent.h,
+                      "All flags and zones must fit in one visible row");
+          }
+          gui.drawAll(0);
+          gfx->printScreen(width < height ? "touch-flags-portrait.bmp" : "touch-flags-landscape.bmp");
+          gfx->nextFrame();
+          gui.touch->panelOpen = false;
+          tap(gfx->getW() / 12.0f, gfx->getH() - 24 * unit);
 		  require(gui.touch->usesHUD(), "Phone HUD must be active");
 		  require(gui.displayMode == GameGUI::CONSTRUCTION_VIEW,
 				  "Visible Build control routes to construction");
@@ -747,6 +762,62 @@ public:
 	  noOrder();
 	  gui.localTeam->noMoreBuildingSitesCountdown = 0;
 	  gui.clearSelection();
+      for (bool drag : {false, true})
+      {
+          gui.clearSelection();
+          gui.touch->panelOpen = true;
+          gui.displayMode = GameGUI::FLAG_VIEW;
+          const auto source = gui.touch->paletteItemRect(1);
+          const auto bounds = gui.touch->world();
+          const double x = bounds.x + 2, y = bounds.y + bounds.h / 2;
+          if (drag)
+          {
+              finger(SDL_FINGERDOWN, 1, source.x + source.w / 2, source.y + source.h / 2);
+              finger(SDL_FINGERMOTION, 1, x, y);
+          }
+          else
+          {
+              tap(source.x + source.w / 2, source.y + source.h / 2);
+              finger(SDL_FINGERDOWN, 1, x, y);
+          }
+          auto &session = drag ? gui.touch->placement : gui.touch->placementHold;
+          require(bool(session), "Both placement patterns own a held contact");
+          gui.camera.originX = 0;
+          gui.viewportX = 0;
+          session->lastUpdate = SDL_GetTicks64() - 100;
+          gui.touch->advancePlacement();
+          require(gui.camera.originX > gui.game.map.getW() * 16,
+                  "Stationary edge hold pans and wraps across the toroidal boundary");
+          noOrder();
+          // Hovering over UI suspends panning even if the contact began on the map.
+          const auto toolbar = gui.touch->layout().actions;
+          finger(SDL_FINGERMOTION, 1, x, toolbar.y + toolbar.h / 2);
+          const double overUI = gui.camera.originX;
+          session->lastUpdate = SDL_GetTicks64() - 100;
+          gui.touch->advancePlacement();
+          require(gui.camera.originX == overUI, "Placement never pans while over UI");
+          finger(SDL_FINGERMOTION, 1, x, y);
+          if (!drag)
+          {
+              finger(SDL_FINGERUP, 1, x, y);
+              const double released = gui.camera.originX;
+              gui.touch->advancePlacement();
+              require(!gui.touch->placementHold && gui.camera.originX == released,
+                      "Preview release stops panning and still requires confirmation");
+              noOrder();
+              finger(SDL_FINGERDOWN, 1, x, y);
+          }
+          finger(SDL_FINGERDOWN, 2, x + 30, y);
+          const double stopped = gui.camera.originX;
+          gui.touch->advancePlacement();
+          require(!gui.touch->placementHold && !gui.touch->placement &&
+                  gui.camera.originX == stopped,
+                  "Second finger stops placement edge panning");
+          finger(SDL_FINGERUP, 1, x, y);
+          finger(SDL_FINGERUP, 2, x + 30, y);
+          noOrder();
+          gui.touch->cancel();
+      }
 	  gui.touch->panelOpen = false;
 	  const int type = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
 	  auto *building =
@@ -766,16 +837,14 @@ public:
 			  require(found != rows.end(), "Building action must be available");
 			  const auto r = gui.touch->panelContent();
 			  const double u = gfx->logicalUnitsPerPoint();
-			  const double top =
-				  r.y + (std::distance(rows.begin(), found) * InGameTouchTheme::inspectorRow -
-						 gui.touch->actionScroll) *
-							u;
-			  if (top >= r.y && top + 48 * u <= r.y + r.h)
-				  return GAGCore::ViewPoint{kind == 7  ? r.x + (value + 1.5) * r.w / 3
-											: side < 0 ? r.x + 24 * u
-											: side > 0 ? r.x + r.w - 24 * u
-													   : r.x + r.w / 2,
-											top + 24 * u};
+              const auto box = gui.touch->buildingActionRect(std::distance(rows.begin(), found));
+              const double top = box.y;
+              if (top >= r.y && top + box.h <= r.y + r.h)
+                  return GAGCore::ViewPoint{kind == 7 ? box.x + (value + 1.5) * box.w / 3
+                                            : side < 0 ? box.x + 24 * u
+                                            : side > 0 ? box.x + box.w - 24 * u
+                                                       : box.x + box.w / 2,
+                                            top + box.h - 22 * u};
 			  const float x = r.x + r.w / 2, y = r.y + r.h / 2;
 			  const float delta = (top < r.y ? 1 : -1) * std::min(r.h / 3, 56 * u);
 			  finger(SDL_FINGERDOWN, 1, x, y);
@@ -857,7 +926,7 @@ public:
 				  "Rapid allocation taps use pending values and the shared order format");
 		  require(building->maxUnitWorking == authoritative && gui.game.checkSum() == simulation,
 				  "Allocation UI must not change authoritative simulation state");
-		  const auto track = gui.touch->panelContent();
+		  const auto track = gui.touch->buildingActionRect(0);
 		  const float startX = track.x + track.w / 2, endX = track.x + track.w - 60 * unit;
 		  finger(SDL_FINGERDOWN, 1, startX, rowY);
 		  finger(SDL_FINGERMOTION, 1, endX, rowY);
@@ -1028,8 +1097,16 @@ public:
 		  resized.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
 		  GAGCore::GraphicContext::translateMouseEvent(&resized);
 		  gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
-		  openActions(swarm);
-		  const auto checksum = gui.game.checkSum();
+          openActions(swarm);
+          const auto content = gui.touch->panelContent();
+          for (size_t i = 0; i < gui.touch->buildingActions().size(); ++i)
+          {
+              const auto box = gui.touch->buildingActionRect(i);
+              require(box.y >= content.y && box.y + box.h <= content.y + content.h,
+                      "Swarm controls must fit without inspector scrolling");
+          }
+          gfx->printScreen(width < height ? "touch-swarm-portrait.bmp" : "touch-swarm-landscape.bmp");
+          const auto checksum = gui.game.checkSum();
 		  for (int type = 0; type < NB_UNIT_TYPE; ++type)
 		  {
 			  const auto before = gui.displayedRatio(*swarm);
@@ -1101,7 +1178,7 @@ public:
 			  }
 		  }
 		  openActions(wall);
-		  require(gui.touch->allocationRect().h == 48 * gfx->logicalUnitsPerPoint(),
+		  require(gui.touch->allocationRect().h == InGameTouchTheme::inspectorHeader * gfx->logicalUnitsPerPoint(),
 				  "Unified inspector retains its identity header");
 		  pressAction(4);
 		  require(gui.orderQueue.empty() && gui.touch->confirmDestroy,

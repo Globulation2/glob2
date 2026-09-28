@@ -40,7 +40,6 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 	{ return std::string(Toolkit::getStringTable()->getString(key)); };
 	if (b->type->unitProductionTime)
 	{
-		result.push_back({"Production ratio", 9});
 		const auto ratio = gui.displayedRatio(*b);
 		for (int i = 0; i < NB_UNIT_TYPE; ++i)
 			result.push_back({std::string(getUnitName(i)) + ": " + std::to_string(ratio[i]), 0, i});
@@ -88,6 +87,57 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 	}
 	return result;
 }
+// Local point-space boxes are the sole source of layout for input and drawing.
+std::vector<ViewRect> GameGUITouch::buildingActionBoxes(double width) const
+{
+	const auto rows = buildingActions();
+	std::vector<ViewRect> boxes;
+	double y = 0;
+	for (size_t i = 0; i < rows.size();)
+	{
+		size_t count = 1;
+		const int kind = rows[i].kind;
+		if (kind == 0 || kind == 1 || kind == 2)
+		{
+			while (i + count < rows.size() && rows[i + count].kind == kind)
+				++count;
+			count = std::min(count, size_t(kind == 0 ? 3 : 2));
+		}
+		else if (kind == 6 && width >= InGameTouchTheme::inspectorWide &&
+				 i + 1 < rows.size() && rows[i + 1].kind == 7)
+			count = 2;
+		else if (kind >= 3 && kind <= 5)
+		{
+			// Confirmation adds Cancel beside the destructive action, never
+			// below the visible panel.
+			while (i + count < rows.size() && rows[i + count].kind >= 3 &&
+				   rows[i + count].kind <= 5)
+				++count;
+		}
+		const double height = kind == 0 ? InGameTouchTheme::ratioRow : InGameTouchTheme::inspectorRow;
+		for (size_t k = 0; k < count; ++k)
+			boxes.push_back({k * width / count, y, width / count, height});
+		y += height;
+		i += count;
+	}
+	return boxes;
+}
+double GameGUITouch::buildingActionsHeight(double width) const
+{
+	const auto boxes = buildingActionBoxes(width);
+	return boxes.empty() ? InGameTouchTheme::inspectorRow : boxes.back().y + boxes.back().h;
+}
+ViewRect GameGUITouch::buildingActionRect(size_t index) const
+{
+	const auto content = panelContent();
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const auto boxes = buildingActionBoxes(content.w / unit);
+	if (index >= boxes.size())
+		return {};
+	const auto box = boxes[index];
+	return {content.x + box.x * unit, content.y + (box.y - actionScroll) * unit,
+			box.w * unit, box.h * unit};
+}
 void GameGUITouch::drawBuildingActions()
 {
 	auto *gfx = globalContainer->gfx;
@@ -95,22 +145,14 @@ void GameGUITouch::drawBuildingActions()
 	const double unit = gfx->logicalUnitsPerPoint();
 	const auto rows = buildingActions();
 	if (rows.empty())
-		drawPointLabel({content.x, content.y, content.w, 48 * unit}, "Read-only building", .9);
+		drawPointLabel({content.x, content.y, content.w, content.h}, "Read-only building", .9);
 	for (size_t i = 0; i < rows.size(); ++i)
 	{
-		ViewRect rect{content.x,
-					  content.y + (i * InGameTouchTheme::inspectorRow - actionScroll) * unit,
-					  content.w, 48 * unit};
+		const auto rect = buildingActionRect(i);
 		if (rect.y < content.y || rect.y + rect.h > content.y + content.h)
 			continue;
 		const auto &row = rows[i];
-		if (row.kind == 9)
-		{
-			gfx->drawHorzLine(int(rect.x + 8 * unit), int(rect.y + 4 * unit),
-							  int(rect.w - 16 * unit), InGameTouchTheme::border);
-			drawPointLabel(rect, row.label, .9, true);
-			continue;
-		}
+
 		gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
 							row.kind == 4  ? Color(81, 36, 60, 235)
 							: row.selected ? InGameTouchTheme::selected
@@ -129,7 +171,16 @@ void GameGUITouch::drawBuildingActions()
 				drawPointLabel(button, labels[k], .8);
 			}
 		}
-		else if (row.kind == 0 || row.kind == 6 || row.kind == 8)
+		else if (row.kind == 0)
+		{
+			drawPointLabel({rect.x, rect.y, rect.w, InGameTouchTheme::ratioLabel * unit},
+						   row.label, .78);
+			const double top = rect.y + InGameTouchTheme::ratioLabel * unit;
+			const double height = rect.h - InGameTouchTheme::ratioLabel * unit;
+			drawPointLabel({rect.x, top, rect.w / 2, height}, "−");
+			drawPointLabel({rect.x + rect.w / 2, top, rect.w / 2, height}, "+");
+		}
+		else if (row.kind == 6 || row.kind == 8)
 		{
 			drawPointLabel({rect.x, rect.y, 48 * unit, rect.h}, "−");
 			drawPointLabel({rect.x + 48 * unit, rect.y, rect.w - 96 * unit,
@@ -157,7 +208,7 @@ void GameGUITouch::drawBuildingActions()
 				rect, (row.kind == 1 || row.kind == 2 ? (row.selected ? "[x] " : "[ ] ") : "") +
 						  row.label);
 	}
-	const double extent = rows.size() * InGameTouchTheme::inspectorRow * unit;
+	const double extent = buildingActionsHeight(content.w / unit) * unit;
 	if (extent > content.h)
 		gfx->drawFilledRect(int(content.x + content.w - 3 * unit),
 							int(content.y + actionScroll * unit * content.h / extent),
@@ -177,7 +228,11 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 			!building)
 			return false;
 		const auto row = actionAt(point);
-		const auto content = panelContent();
+		auto content = panelContent();
+		const auto rows = buildingActions();
+		for (size_t i = 0; i < rows.size(); ++i)
+			if (buildingActionRect(i).contains(point))
+				content = buildingActionRect(i);
 		if (!row || row->kind != 6 || point.x < content.x + 48 * unit ||
 			point.x >= content.x + content.w - 48 * unit)
 			return false;
@@ -219,18 +274,17 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 std::optional<GameGUITouch::BuildingAction> GameGUITouch::actionAt(ViewPoint point) const
 {
 	const auto content = panelContent();
-	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	const double y = (point.y - content.y) / unit + actionScroll;
 	const auto rows = buildingActions();
-	const int i = int(y / InGameTouchTheme::inspectorRow);
-	if (!content.contains(point) || y < 0 || i >= int(rows.size()) ||
-		y - i * InGameTouchTheme::inspectorRow >= 48)
+	if (!content.contains(point))
 		return std::nullopt;
-	// Partially clipped rows are not actionable until scrolled fully into view.
-	if (i * InGameTouchTheme::inspectorRow - actionScroll < 0 ||
-		(i * InGameTouchTheme::inspectorRow - actionScroll + 48) * unit > content.h)
-		return std::nullopt;
-	return rows[i];
+	for (size_t i = 0; i < rows.size(); ++i)
+	{
+		const auto rect = buildingActionRect(i);
+		if (rect.y >= content.y && rect.y + rect.h <= content.y + content.h &&
+			rect.contains(point))
+			return rows[i];
+	}
+	return std::nullopt;
 }
 void GameGUITouch::tapBuildingAction(ViewPoint point)
 {
@@ -244,7 +298,11 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 	if (picked->kind == 3 && picked->label != heldActionLabel)
 		return;
 	const auto row = *picked;
-	const auto content = panelContent();
+	auto content = panelContent();
+	const auto rows = buildingActions();
+	for (size_t i = 0; i < rows.size(); ++i)
+		if (buildingActionRect(i).contains(point))
+			content = buildingActionRect(i);
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	if (row.kind == 7)
 	{
@@ -272,9 +330,9 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 	}
 	if (row.kind == 0)
 	{
-		int delta = point.x < content.x + 48 * unit                ? -1
-					: point.x >= content.x + content.w - 48 * unit ? 1
-																   : 0;
+		if (point.y < content.y + InGameTouchTheme::ratioLabel * unit)
+			return;
+		const int delta = point.x < content.x + content.w / 2 ? -1 : 1;
 		auto values = gui.displayedRatio(*b);
 		const int next = std::clamp(values[row.value] + delta, 0, int(MAX_RATIO_RANGE));
 		if (next == values[row.value])

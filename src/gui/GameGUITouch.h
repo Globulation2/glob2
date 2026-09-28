@@ -87,6 +87,8 @@ class GameGUITouch
 	GAGCore::ViewRect paletteItemRect(size_t index) const;
 	std::optional<PaletteItem> paletteItemAt(GAGCore::ViewPoint point) const;
 	std::optional<TouchPlacementSession> placement;
+	// Preview contact pans while held; releasing it never commits construction.
+	std::optional<TouchPlacementSession> placementHold;
 	std::optional<TouchAllocationSession> allocation;
 	bool processAllocationPointer(const SDL_Event &event, GAGCore::ViewPoint point);
 	TouchStrokeSession stroke;
@@ -110,6 +112,10 @@ class GameGUITouch
 	};
 	Building *inspectedBuilding() const;
 	std::vector<BuildingAction> buildingActions() const;
+	// Shared geometry for painting, hit testing, sliders and accessibility.
+	std::vector<GAGCore::ViewRect> buildingActionBoxes(double width) const;
+	GAGCore::ViewRect buildingActionRect(size_t index) const;
+	double buildingActionsHeight(double width) const;
 	void drawBuildingActions();
 	void tapBuildingAction(GAGCore::ViewPoint point);
 	int heldActionKind = -1, heldActionValue = 0;

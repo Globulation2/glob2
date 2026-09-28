@@ -58,7 +58,8 @@ MobileLayout GameGUITouch::layout() const
 	result.status.h = 28;
 	if ((result.persistentPanel || panelOpen) && showsBuildPalette())
 	{
-		const int columns = result.persistentPanel || result.safe.w > result.safe.h
+		const int columns = gui.displayMode == GameGUI::FLAG_VIEW ? int(paletteItems().size()) :
+			result.persistentPanel || result.safe.w > result.safe.h
 								? 4
 								: std::max(1, int(result.safe.w / 60));
 		const double width = std::min(result.safe.w, columns * 60.0 + 8);
@@ -71,8 +72,14 @@ MobileLayout GameGUITouch::layout() const
 	}
 	if ((result.persistentPanel || panelOpen) && inspectedBuilding())
 	{
-		const double height =
-			std::min(result.panel.h, 48.0 + std::max<size_t>(1, buildingActions().size()) * 48.0);
+		// Use horizontal room before introducing overflow. Ordinary inspectors
+		// fit completely; only genuinely constrained/large-text views scroll.
+		result.panel.w = std::min(result.safe.w, result.safe.w > result.safe.h
+			? InGameTouchTheme::inspectorLandscapeWidth : InGameTouchTheme::inspectorPortraitWidth);
+		result.panel.x = result.safe.x + result.safe.w - result.panel.w;
+		const double available = result.actions.y - result.safe.y - (result.safe.h < 400 ? 80 : 104);
+		const double height = std::min(available,
+			InGameTouchTheme::inspectorHeader + buildingActionsHeight(result.panel.w));
 		result.panel.y = result.persistentPanel ? result.safe.y + 104 : result.actions.y - height;
 		result.panel.h = height;
 	}
@@ -100,10 +107,11 @@ void GameGUITouch::clampScroll()
 	const auto content = panelContent();
 	actionScroll =
 		std::clamp(actionScroll, 0.0,
-				   std::max(0.0, buildingActions().size() * InGameTouchTheme::inspectorRow -
+				   std::max(0.0, buildingActionsHeight(content.w / globalContainer->gfx->logicalUnitsPerPoint()) -
 									 content.h / globalContainer->gfx->logicalUnitsPerPoint()));
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	const int columns = std::max(1, int((content.w / unit - 8) / 60));
+	const int columns = gui.displayMode == GameGUI::FLAG_VIEW ? int(paletteItems().size()) :
+		std::max(1, int((content.w / unit - 8 + .01) / 60));
 	const double height = showsBuildPalette()
 							  ? std::ceil(paletteItems().size() / double(columns)) * 60 + 8
 							  : tacticalActions().size() * 56;
@@ -143,6 +151,7 @@ void GameGUITouch::cancel(bool preservePreview)
 		panelOpen = true;
 	}
 	placement.reset();
+	placementHold.reset();
 	allocation.reset();
 	stroke.cancel();
 	gui.toolManager.cancelDrag(gui.localTeamNo);
@@ -212,7 +221,6 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 				   {rect.x + rect.w / 2, rect.y, rect.w / 2, rect.h}};
 	}
 	const auto content = panelContent();
-	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	if (showsBuildPalette())
 	{
 		for (size_t i = 0; i < paletteItems().size(); ++i)
@@ -226,9 +234,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	{
 		for (size_t i = 0; i < buildingActions().size(); ++i)
 		{
-			ViewRect rect{content.x,
-						  content.y + (i * InGameTouchTheme::inspectorRow - actionScroll) * unit,
-						  content.w, 48 * unit};
+			const auto rect = buildingActionRect(i);
 			if (rect.y >= content.y && rect.y + rect.h <= content.y + content.h)
 				targets.push_back(rect);
 		}
@@ -456,16 +462,25 @@ bool GameGUITouch::process(SDL_Event &event)
 							: gui.selectionMode == GameGUI::BRUSH_SELECTION ? TouchMode::Paint
 																			: TouchMode::Navigate);
 		}
+		if (fingers.empty() && ownerRegion == 0 && gui.selectionMode == GameGUI::TOOL_SELECTION)
+			placementHold = TouchPlacementSession{key, point, gui.toolManager.getBuildingName(),
+				true, {}, point, SDL_GetTicks64(), gui.localTeamNo};
+		else
+			placementHold.reset(); // A navigation gesture cannot resume edge panning.
 		if (std::find(fingers.begin(), fingers.end(), key) == fingers.end())
 			fingers.push_back(key);
 		actions(gesture.down(key.first, key.second, {point.x / scale, point.y / scale}));
 	}
 	else if (event.type == SDL_FINGERMOTION)
 	{
+		if (placementHold && placementHold->pointer == key)
+			placementHold->pointerPosition = point;
 		actions(gesture.move(key.first, key.second, {point.x / scale, point.y / scale}));
 	}
 	else
 	{
+		if (placementHold && placementHold->pointer == key)
+			placementHold.reset();
 		actions(gesture.up(key.first, key.second, {point.x / scale, point.y / scale}));
 		std::erase(fingers, key);
 	}
@@ -479,6 +494,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 		const ViewPoint point{action.point.x * scale, action.point.y * scale};
 		if (action.kind == TouchActionKind::Cancel)
 		{
+			placementHold.reset();
 			stroke.cancel();
 			preview.reset();
 			gui.toolManager.cancelDrag(gui.localTeamNo);
@@ -833,11 +849,11 @@ void GameGUITouch::select(ViewPoint point)
 	const bool wasInspecting = inspectedBuilding() != nullptr;
 	const bool wasOpen = panelOpen;
 	const int oldDisplay = gui.displayMode;
-    // Desktop selection deliberately sticks on empty terrain. A completed map
-    // tap on touch dismisses the inspector; the shared picker can immediately
-    // select the same building, another building, a unit or a resource instead.
-    // Pan/cancel/UI gestures never reach this selection path.
-    if (usesHUD() && wasInspecting) gui.clearSelection();
+	// Desktop selection deliberately sticks on empty terrain. A completed map
+	// tap on touch dismisses the inspector; the shared picker can immediately
+	// select the same building, another building, a unit or a resource instead.
+	// Pan/cancel/UI gestures never reach this selection path.
+	if (usesHUD() && wasInspecting) gui.clearSelection();
 	gui.handleMapClick(int(screenPoint.x), int(screenPoint.y), SDL_BUTTON_LEFT);
 	if (!wasInspecting && inspectedBuilding())
 	{

@@ -37,6 +37,11 @@ leave the world visible below short panels. In-game surfaces use `InGameTouchThe
 independent. A completed tap on empty map space dismisses building inspection
 and restores the previous palette state. Tapping another object switches selection;
 panning, cancelled gestures and taps inside the inspector do not dismiss it.
+Flags and zones share one fitted row. Inspectors group production ratios side by
+side and use horizontal room for worker/priority and action controls. Ordinary
+phone inspectors fit without scrolling; overflow remains available for constrained
+safe areas and enlarged interfaces. Drawing, hit testing and slider geometry use
+the same action boxes.
 
 ### Gameplay responsibilities and action flow
 
@@ -55,6 +60,11 @@ panning, cancelled gestures and taps inside the inspector do not dismiss it.
   `GameGUIToolManager::confirmBuilding`, including its existing validation, defaults,
   ghost suppression, and order serialization. A valid drag release places once and
   restores the palette; a tap selects a movable preview with Confirm/Cancel.
+  Both patterns pan continuously while the owning finger stays near an exposed
+  map edge. Speed is density- and zoom-aware, and the preview follows the camera.
+  Release stops preview-mode panning without committing; a second contact,
+  focus loss, rotation or selection change cancels the edge-pan contact.
+  UI-covered edges do not pan.
 - `GameGUITouchActions.cpp` presents the selected building identity and actions,
   reading pending values through `GameGUI::displayed*` and using shared request
   methods for allocation, priority, range, construction and destruction. Enemy

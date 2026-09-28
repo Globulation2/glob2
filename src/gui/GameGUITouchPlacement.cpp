@@ -94,25 +94,27 @@ bool GameGUITouch::processPalettePointer(const SDL_Event &event, ViewPoint point
 // panning. It only updates camera/preview state; release owns the commit.
 void GameGUITouch::advancePlacement()
 {
-	if (!placement)
+	if (!placement && !placementHold)
 		return;
-	const auto point = placement->pointerPosition;
+	auto &session = placement ? placement : placementHold;
+	const bool lifted = bool(placement);
+	const auto point = session->pointerPosition;
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	if (placement->dragging)
+	if (session->dragging)
 	{
 		if (gui.selectionMode != GameGUI::TOOL_SELECTION ||
-			gui.toolManager.getBuildingName() != placement->building ||
-			gui.localTeamNo != placement->team || activeDialog() ||
+			gui.toolManager.getBuildingName() != session->building ||
+			gui.localTeamNo != session->team || activeDialog() ||
 			globalContainer->isViewingGame())
 		{
-			placement.reset();
+			session.reset();
 			preview.reset();
 			return;
 		}
 		const auto bounds = world();
 		const auto now = SDL_GetTicks64();
-		const double delta = std::min<std::uint64_t>(100, now - placement->lastUpdate) / 1000.0;
-		placement->lastUpdate = now;
+		const double delta = std::min<std::uint64_t>(100, now - session->lastUpdate) / 1000.0;
+		session->lastUpdate = now;
 		const double margin = InGameTouchTheme::edgePanMargin * unit;
 		const double dx = point.x < bounds.x + margin              ? -1
 						  : point.x > bounds.x + bounds.w - margin ? 1
@@ -125,14 +127,15 @@ void GameGUITouch::advancePlacement()
 			gui.updateCamera();
 			const int oldX = gui.viewportX, oldY = gui.viewportY;
 			gui.camera.originX +=
-				dx * InGameTouchTheme::edgePanPixelsPerSecond * delta / gui.camera.zoom;
+				dx * InGameTouchTheme::edgePanPixelsPerSecond * unit * delta / gui.camera.zoom;
 			gui.camera.originY +=
-				dy * InGameTouchTheme::edgePanPixelsPerSecond * delta / gui.camera.zoom;
+				dy * InGameTouchTheme::edgePanPixelsPerSecond * unit * delta / gui.camera.zoom;
 			gui.camera.normalize();
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
 			gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
 		}
-		updatePlacementPreview({point.x, point.y - InGameTouchTheme::fingerLift * unit});
+		if (interfaceRegion(point) == 0)
+			updatePlacementPreview({point.x, point.y - (lifted ? InGameTouchTheme::fingerLift * unit : 0)});
 	}
 }
