@@ -1,0 +1,8 @@
+Settings::load("preferences.txt") : error, can't open file.
+generation-contracts seed=2 repeatability=pass telemetry-neutral=pass terrain-resource-save-load=pass invalid-requests=11
+PASS feeding courts at wheat 0/100/300, both harvest parities, three seeds
+superior-variety seed=2 size=256x256 teams=4 clearing=67,115 fruit_distance_squared=16 owner=1 ticks=64 loaded_cooldown_ticks=256 eligible_save_load=pass
+equal-friendly-diet seed=2 size=256x256 teams=4 clearing=67,115 fruit_distance_squared=16 owner=0 ticks=64 loaded_cooldown_ticks=256 eligible_save_load=pass
+no-advertising seed=2 size=256x256 teams=4 clearing=67,115 fruit_distance_squared=16 owner=0 ticks=64 loaded_cooldown_ticks=256 eligible_save_load=pass
+fruit-supply-lost seed=2 size=256x256 teams=4 clearing=67,115 fruit_distance_squared=16 owner=0 ticks=64 loaded_cooldown_ticks=256 eligible_save_load=pass
+wheat-supply-lost seed=2 size=256x256 teams=4 clearing=67,115 fruit_distance_squared=16 owner=0 ticks=64 loaded_cooldown_ticks=256 eligible_save_load=pass

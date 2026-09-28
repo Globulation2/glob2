@@ -80,7 +80,7 @@ Held-out mixed-AI rotations use map seed 401, five candidates, game seed 19, fou
 
 Read `economy-summary.json` and raw team telemetry per AI: resource increases do not guarantee each AI performs better. Cortex still fails some openings, especially Faulted City. These runs cannot establish human fun or universal balance.
 
-No human playtest or Linux/Windows per-tick simulation checksum comparison was performed. Generator revisions intentionally alter newly generated maps. Engine simulation, save formats and existing saves are unchanged. Darwin golden records are updated only from native output; other-platform goldens are not fabricated.
+Human playtesting and Windows checksum comparison remain unperformed. The subsequent PR checks below add native Linux coverage and a matching macOS/Linux simulation trace. Generator revisions intentionally alter newly generated maps. Engine simulation, save formats and existing saves are unchanged. Darwin golden records are updated only from native output; Linux goldens were subsequently imported from native output, as recorded below.
 
 ## Reproduce
 
@@ -114,3 +114,17 @@ Each entry totals four colonies running the same AI. One seed per map: these are
 Treeline delivered more food and produced more warriors with all four AIs in the paired run. Portage delivered more food with all four; warrior births increased for three and were similar for Maxima. Orchard improved for Nicowar and Cabino but declined for Maxima and slightly for Cortex; Comb declined for Cortex. Faulted City delivered more food for all four, but Cortex still failed its wood/construction opening and produced no warriors. Raw counters include starvation and combat deaths; increased population can still raise total starvation.
 
 Held-out rotation details are in `rotation-summary.json` and `rotation-summary.txt`. All 20 games reached 15,000 ticks. Cortex had weak starts on Orchard and one stalled Comb opening; Faulted City retained Cortex starvation. Other starts supported growing armies. No win-rate conclusion is drawn from these short, unresolved runs.
+
+## Native Linux and PR verification
+
+Final source commit: `47c53e94c7511115b4c4b4955cfcad92c819be4e`. The map algorithms are unchanged from the initial evidence; PR verification also initializes the Orchard conversion fixture's engine wait flag and asserts all 64 requested ticks execute.
+
+Native Linux x86-64 produced 544 golden rows. The import refreshes the revised generators and previously missing/stale Linux records already present in the base branch (Glacis, Rice Terraces, and four missing newer generators). Every changed existing row has a newer registered revision; no unchanged-revision output drift was accepted. Raw output: [linux-goldens.log](platform/linux-goldens.log). Native Portage, Treeline, toolkit and Orchard logs and the compiler version are in [platform/](platform/).
+
+The same saved four-AI initial Portage game (map seed 7, game seed 41, Nicowar/Maxima/Cortex/Cabino) ran for 6,000 ticks on macOS ARM64 and Linux x86-64. Full checksum files are byte-identical: SHA-256 `a1d412d05c4bb1833309385f51ff359019c8c02a113bf4e5283c901851101bf5`. The saved initial state and both checksum traces are included. This verifies that run, not every possible state or Windows execution.
+
+Reproduce after decompressing `platform/initial.game.gz`:
+
+```sh
+glob2 --run-game --load-game initial.game --ticks 6000 --telemetry checksums --output-dir compat-result
+```
