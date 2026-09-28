@@ -4,6 +4,7 @@
 
 #include <ApplicationHost.h>
 #include "EndGameScreen.h"
+#include <TouchText.h>
 #include "gui/PhoneForm.h"
 #include "gui/InGameTouchTheme.h"
 #include "gui/MobileSafeArea.h"
@@ -635,7 +636,25 @@ void EndGameScreen::drawResults()
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
 							selected ? InGameTouchTheme::selected : field);
 		gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), border);
-		label(r, text);
+		TextStyle style(globalContainer->standardFont);
+		if (globalContainer->standardFont->getStringWidth(text) <= r.w / unit - 16)
+			label(r, text);
+		else
+		{
+			// Long translations keep the same action bounds and remain fully visible.
+			const auto lines =
+				GAGCore::wrapTouchText(globalContainer->standardFont, text, r.w / unit - 16);
+			const double lineHeight = globalContainer->standardFont->getStringHeight(text);
+			const double scale =
+				unit * std::min(1.0, (r.h / unit - 8) / std::max(1.0, lines.size() * lineHeight));
+			SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
+			context->setUITransform(scale, r.x + 8 * unit,
+									r.y + (r.h - lines.size() * lineHeight * scale) / 2, &clip);
+			for (size_t i = 0; i < lines.size(); ++i)
+				gfx->drawString(0, int(i * lineHeight), globalContainer->standardFont, lines[i]);
+			context->setUITransform();
+			gfx->setClipRect();
+		}
 		resultControls.push_back({r, action});
 	};
 	const double target = 48 * unit, gap = 8 * unit;
