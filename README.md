@@ -12,7 +12,9 @@ This branch contains review evidence only. The implementation branch has no gene
 - Native mobile input, responsive menu, mobile presentation, gameplay touch/editor, portable renderer and text-raster harnesses.
 - Linux software-GL text-raster reproduction and correction, including fractional scales and nearby cache reuse. The original pixel-accuracy threshold is unchanged.
 
-Final browser and hosted-CI results will be recorded after they finish.
+All nine focused Chromium/WebGL2 cases passed on the final implementation revision. They cover Unicode editing through rotation, mixed touch/mouse resizing, quota and transaction-failure recovery, tutorial/results return paths, campaign editor navigation, editor cancellation and successful saving. The browser captures were inspected as well as the native localized captures.
+
+Hosted CI is still running: [desktop/browser build](https://github.com/Globulation2/glob2/actions/runs/36483271007) and [Android builds](https://github.com/Globulation2/glob2/actions/runs/36483271043). No completed hosted-validation claim is made yet.
 
 ## Captures
 
@@ -29,3 +31,32 @@ Native frontend fixtures use a borderless window to fit 844-point tall views on 
 No new physical Android/iOS or real-device IME qualification was performed for this cleanup. Previous device and full browser evidence is linked in the PR and identifies its own tested revision. Translations were authored and checked during this pass; this is not a claim of review by native speakers of every language.
 
 The four pre-existing untracked files remain outside the commits. Reusable gallery sources, app icons, certificate fixtures and pinned SDK metadata are retained.
+
+## Reproduction commands
+
+Run from the repository root at the implementation revision. Each graphical harness needs an isolated `GLOB2_USER_DATA_DIR` under ignored `artifacts/`.
+
+```sh
+scons -C test -j6
+./test/TestsRunner
+python3 data/check_translations.py --strict
+python3 test/test_translations.py
+python3 test/test_font_coverage.py
+python3 test/test_text_area_layout.py
+python3 test/TouchPresentationStructureTest.py
+python3 -m unittest discover -s tests/build_system
+node --test browser/unit/*.test.js
+scons release=1 -j6 gameplay-touch-test responsive-menu-test mobile-presentation-test mobile-input-test portable-renderer-test text-raster-test
+```
+
+On macOS, run the three application harnesses from `build/darwin/client/release/src/`, and `MobileInputHarness`, `PortableRendererHarness`, and `TextRasterHarness` from `build/darwin/client/release/libgag/src/`. The text-raster harness accepts a capture directory as its argument. The Linux reproduction used software GL under `xvfb-run -a -s "-screen 0 1600x1400x24"`, with `LIBGL_ALWAYS_SOFTWARE=1`.
+
+The frontend safe-area captures also use fixture landscape titles and deliberately capture before asynchronous preview generation completes; they demonstrate bounds, labels and fixed actions rather than the generated terrain.
+
+The focused browser command, run from `browser/` after `scons target=web release=1 -j6`, was:
+
+```sh
+GLOB2_CHROMIUM_ANGLE=metal GLOB2_TEST_RENDERER=webgl2 npx playwright test tests/responsive-presentation.spec.js tests/editor-storage.spec.js tests/single-player.spec.js --project=chromium --workers=1 --grep 'native text editing|touch setup and gameplay|editor save before quit|tutorial sessions|game rules and AI|editor setup and campaign|map editor frames|editor save cancellation'
+```
+
+`editor-save-failure.png` captures deliberate fault injection in passing recovery tests, not an unexpected test failure.
