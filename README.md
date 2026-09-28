@@ -65,6 +65,8 @@ The editor-setup fixture includes a deliberately undersized generation request. 
 
 The settings long-text fixture initially duplicated numbered placeholders after localization. Its expansion now preserves placeholder counts; all six native settings cases pass (`settings-final.log`).
 
-## Base-branch integration status
+## Master integration
 
-GitHub reports base-branch conflicts in `.github/workflows/build.yml`, `src/LandscapePickerScreen.h`, and `test/README.md` after newer changes landed on master. The cleanup revision and its passing CI remain unchanged; integrating those newer changes is still required before merge. A read-only merge-tree check is saved in `base-merge-check.txt`; no merge was applied to the working tree.
+Current integration revision: `33feecaf0c96bca4db2f32e78a88df6cc39ae27f`, merging master `802e6687d`. Conflicts are resolved and GitHub reports mergeable. Master preview scheduling, mobile controls and mobile browser coverage are retained alongside CI caching and deduplication. The new landscape harness presents pending portable-renderer captures before checking their files.
+
+Local preview scheduling, landscape scrolling, mobile presentation, responsive menus, 30 build-system and four structural checks pass. Logs and landscape captures are in `merge-validation/`. Hosted validation of this new integration revision is pending. Earlier evidence above identifies its own revision.
