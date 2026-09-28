@@ -1,0 +1,5 @@
+Local reproduction before the composed-control harness fix:
+    +   20 main  (in MenuColonyHarness) + 3680  [0x104bcac58]  MenuColonyHarness.cpp:575
+    +     20 Preview<NewMapScreen>::executeCancellation()  (in MenuColonyHarness) + 460  [0x104bd0808]  MenuColonyHarness.cpp:273
+    +       20 Glob2Screen::execute(GAGCore::DrawableSurface*, int)  (in MenuColonyHarness) + 68  [0x10452ea68]  Glob2Screen.cpp:50
+    +           2 NewMapScreen::drawExecution()  (in MenuColonyHarness) + 84  [0x104963c04]  NewMapScreen.cpp:345

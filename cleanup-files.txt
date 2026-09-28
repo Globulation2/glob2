@@ -38,8 +38,14 @@ libgag/include/InterfacePresentation.h
 libgag/src/TrueTypeFont.cpp
 mobile/ios_smoke.py
 src/CampaignEditor.cpp
+src/CustomGameScreenMobile.cpp
 src/EndGameScreen.cpp
+src/GUIMapPreview.cpp
+src/NewMapScreen.cpp
 src/ScriptEditorScreen.cpp
+src/SettingsScreenBuildings.cpp
+src/SettingsScreenGeneral.cpp
+src/StartQualityScreen.cpp
 src/gui/GameGUIBuildingActions.cpp
 src/gui/GameGUITouchActions.cpp
 src/gui/GameGUITouchDialogs.cpp
@@ -60,4 +66,5 @@ test/PortableRendererHarness.cpp
 test/ResponsiveMenuHarness.cpp
 test/TextRasterHarness.cpp
 test/translation_shared_values.json
+tools/MenuColonyHarness.cpp
 tools/mobile_gallery/catalog.json

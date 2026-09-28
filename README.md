@@ -1,20 +1,20 @@
 # PR #208 cleanup evidence
 
-Implementation revision: `29848f8898769f9c3afc3a77b3f72804fb28707d`.
+Implementation revision: `dccb26a5f581040b0d5c85cfb52b43af84af95a7`.
 
 This branch contains review evidence only. The implementation branch has no generated captures, logs, profiles, or validation reports.
 
 ## Checks
 
 - 203 CppUnit cases.
-- 91 newly registered keys across 33 supported catalogs; strict structural, numbered-placeholder, shared-vocabulary and font-coverage checks.
+- 119 newly registered keys across 33 supported catalogs; strict structural, numbered-placeholder, shared-vocabulary and font-coverage checks.
 - 24 UTF-8 wrapping cases, 30 build-system checks, 15 browser unit tests and four structural checks.
-- Native mobile input, responsive menu, mobile presentation, gameplay touch/editor, portable renderer and text-raster harnesses.
+- Native mobile input, responsive menu, mobile presentation, gameplay touch/editor, portable renderer and text-raster harnesses. Menu-colony isolation and actual navigation also pass; the harness targets the composed Cancel control and has a 60-second watchdog.
 - Linux software-GL text-raster reproduction and correction, including fractional scales and nearby cache reuse. The original pixel-accuracy threshold is unchanged.
 
-All nine focused Chromium/WebGL2 cases passed on the final implementation revision. They cover Unicode editing through rotation, mixed touch/mouse resizing, quota and transaction-failure recovery, tutorial/results return paths, campaign editor navigation, editor cancellation and successful saving. The browser captures were inspected as well as the native localized captures.
+All nine focused Chromium/WebGL2 cases passed on the final implementation revision. They cover Unicode editing through rotation, mixed touch/mouse resizing, quota and transaction-failure recovery, tutorial/results return paths, campaign editor navigation, editor cancellation and successful saving. The browser captures were inspected as well as the native localized captures. These nine cases were rerun successfully after the final preview-status and navigation follow-ups.
 
-Hosted CI is still running: [desktop/browser build](https://github.com/Globulation2/glob2/actions/runs/36483271007) and [Android builds](https://github.com/Globulation2/glob2/actions/runs/36483271043). No completed hosted-validation claim is made yet.
+Hosted CI is still running: [desktop/browser build](https://github.com/Globulation2/glob2/actions/runs/36488613318) and [Android builds](https://github.com/Globulation2/glob2/actions/runs/36488613170). No completed hosted-validation claim is made yet.
 
 ## Captures
 
@@ -60,3 +60,5 @@ GLOB2_CHROMIUM_ANGLE=metal GLOB2_TEST_RENDERER=webgl2 npx playwright test tests/
 ```
 
 `editor-save-failure.png` captures deliberate fault injection in passing recovery tests, not an unexpected test failure.
+
+The editor-setup fixture includes a deliberately undersized generation request. Its preview can fail validation; the captures verify the real error-state labels and their wrapping inside the smallest landscape slot. This does not indicate a failed presentation test. `before/new-map-ja-568.png` preserves the initially clipped status text.
