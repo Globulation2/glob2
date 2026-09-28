@@ -1,0 +1,57 @@
+Settings::load("preferences.txt") : error, can't open file.
+libpng warning: iCCP: known incorrect sRGB profile
+libpng warning: iCCP: known incorrect sRGB profile
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 22CustomGameChoiceScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 21LandscapePickerScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+Map generation: fingerprint revision 3 seed 3957766026 [complete]: 
+INFO: Glob2 screen ready: 14SettingsScreen
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+INFO: Glob2 screen ready: 16CustomGameScreen
+Map generation: fingerprint revision 3 seed 272018424 [complete]: 
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 22CustomGameChoiceScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 21LandscapePickerScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+Map generation: fingerprint revision 3 seed 1910001879 [complete]: 
+INFO: Glob2 screen ready: 14SettingsScreen
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 22CustomGameChoiceScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 21LandscapePickerScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+Map generation: fingerprint revision 3 seed 1566560684 [complete]: 
+INFO: Glob2 screen ready: 14SettingsScreen
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 22CustomGameChoiceScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 21LandscapePickerScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+Map generation: fingerprint revision 3 seed 3711384272 [complete]: 
+INFO: Glob2 screen ready: 14SettingsScreen
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+PASS phone presentation: setup touch dispatch, scrolling, dropdown bounds, category filtering, dialog containment, slider bounds, locale fallback, draft/launch identity and viewport restoration at all four phone sizes

@@ -1,0 +1,5 @@
+FileManager::writeAtomically: /Users/bradley/glob2/artifacts/pr208-merge/profile/replays/blocked.replay: File replacement failed: unspecified iostream_category error
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: editor file view UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: actual gameplay touch, toroidal pan, preview, confirmation, validation, cancellation and duplicate suppression

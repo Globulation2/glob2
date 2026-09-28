@@ -1,0 +1,44 @@
+{
+  "serial": "R8YY50T1RNM",
+  "arch": "arm64-v8a",
+  "remoteDirectory": "/data/local/tmp/glob2-tests-e22a7103b72d429ba3015add527a6ca1",
+  "mode": "native Android CPU with SDL dummy drivers; no JVM",
+  "tests": [
+    {
+      "name": "TestsRunner",
+      "exitCode": 0
+    },
+    {
+      "name": "MobileInputHarness",
+      "exitCode": 0
+    },
+    {
+      "name": "ResponsiveMenuHarness",
+      "exitCode": 139
+    },
+    {
+      "name": "MobilePresentationHarness",
+      "exitCode": 1
+    },
+    {
+      "name": "GameGUITouchHarness",
+      "exitCode": 0
+    },
+    {
+      "name": "EngineSessionHarness",
+      "exitCode": 134
+    },
+    {
+      "name": "GameGUISelectionHarness",
+      "exitCode": 0
+    },
+    {
+      "name": "TerrainResourcesHarness",
+      "exitCode": 0
+    },
+    {
+      "name": "TeamStatsSaveHarness",
+      "exitCode": 0
+    }
+  ]
+}

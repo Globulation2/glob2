@@ -1,0 +1,38 @@
+Map generation: fingerprint revision 3 seed 658660954 [complete]: 
+Map generation: fingerprint revision 3 seed 3676913582 [complete]: 
+Map generation: fingerprint revision 3 seed 2279243908 [complete]: 
+Settings::load("preferences.txt") : error, can't open file.
+libpng warning: iCCP: known incorrect sRGB profile
+libpng warning: iCCP: known incorrect sRGB profile
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 22CustomGameChoiceScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 21LandscapePickerScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 14SettingsScreen
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 22CustomGameChoiceScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 21LandscapePickerScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 14SettingsScreen
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 22CustomGameChoiceScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+INFO: Glob2 screen ready: 21LandscapePickerScreen
+INFO: Glob2 screen ready: 16CustomGameScreen
+FAIL: Generated preview must complete before testing navigation stability

@@ -1,0 +1,11 @@
+Settings::load("preferences.txt") : error, can't open file.
+libpng warning: iCCP: known incorrect sRGB profile
+libpng warning: iCCP: known incorrect sRGB profile
+FileManager::writeAtomically: /data/local/tmp/glob2-tests-2d3bec3dd97e4540a05cf120364f2f9a/profiles/GameGUITouchHarness/replays/blocked.replay: File replacement failed: unspecified iostream_category error
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+SoundMixer : Unable to open audio: Audio device unavailable in native shell tests
+INFO: Glob2 screen ready: 13EndGameScreen
+PASS: editor buffered paint, focus/second-finger cancellation, one-building drag and invalid/UI drops
+PASS: editor file view UTF-8/IME, shared filename commands, busy/error retry and scrolling
+PASS: editor area name IME, touch confirmation and cancellation
+PASS: actual gameplay touch, toroidal pan, preview, confirmation, validation, cancellation and duplicate suppression

@@ -1,0 +1,12 @@
+{
+  "serial": "R8YY50T1RNM",
+  "arch": "arm64-v8a",
+  "remoteDirectory": "/data/local/tmp/glob2-tests-7c6c07e3299b47d38ab3e69de93d106b",
+  "mode": "native Android CPU with SDL dummy drivers; no JVM",
+  "tests": [
+    {
+      "name": "ResponsiveMenuHarness",
+      "exitCode": 0
+    }
+  ]
+}

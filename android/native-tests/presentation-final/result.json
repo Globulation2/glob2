@@ -1,0 +1,13 @@
+{
+  "serial": "R8YY50T1RNM",
+  "arch": "arm64-v8a",
+  "remoteDirectory": "/data/local/tmp/glob2-tests-0e230b0e373d4fc5aded2c5e00faad8e",
+  "mode": "native Android CPU with SDL dummy video; no JVM or audio device",
+  "tests": [
+    {
+      "name": "MobilePresentationHarness",
+      "exitCode": 0,
+      "binarySha256": "ec20e36c17c054d27294b1d96df4e90dd8596d046191bb32c44ddabdadd3aa66"
+    }
+  ]
+}

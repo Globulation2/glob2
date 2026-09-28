@@ -1,0 +1,11 @@
+Landscape preview: fingerprint revision 3 seed 4113514157 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: fingerprint revision 3 seed 2694003196 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: fingerprint revision 3 seed 3291836070 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+Landscape preview: fingerprint revision 3 seed 2111703212 [validation]: Too many colonies for this map; use a bigger map or fewer colonies.
+PASS safe-area screens: selector, lobby, quality, dropdowns and live inset changes
+Map generation: fingerprint revision 3 seed 319767620 [complete]: 
+Map generation: fingerprint revision 3 seed 884781291 [complete]: 
+Map generation: fingerprint revision 3 seed 891291083 [complete]: 
+Map generation: fingerprint revision 3 seed 3782359791 [complete]: 
+Map generation: fingerprint revision 3 seed 213450482 [complete]: 
+PASS phone presentation: setup touch dispatch, scrolling, dropdown bounds, category filtering, dialog containment, slider bounds, locale fallback, draft/launch identity and viewport restoration at all four phone sizes

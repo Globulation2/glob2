@@ -1,0 +1,18 @@
+{
+  "serial": "R8YY50T1RNM",
+  "arch": "arm64-v8a",
+  "remoteDirectory": "/data/local/tmp/glob2-tests-bf2668680c524808b857ff276ff91214",
+  "mode": "native Android CPU with SDL dummy video; no JVM or audio device",
+  "tests": [
+    {
+      "name": "ResponsiveMenuHarness",
+      "exitCode": 0,
+      "binarySha256": "05b57d7fdc5adea62e38aab21c28e8289aafe721404e39f3606972d2960fc7ec"
+    },
+    {
+      "name": "EngineSessionHarness",
+      "exitCode": 0,
+      "binarySha256": "b347c680248643e040d3138df7c6d12735502a36c1ce5b8ec00d04576afe673a"
+    }
+  ]
+}

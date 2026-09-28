@@ -1,0 +1,305 @@
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:06] "GET / HTTP/1.1" 200 -
+
+Running 31 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:10] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:10] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:10] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:10] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:17] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:17] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:17] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:17] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   1 [chromium] › tests/campaign-editor-storage.spec.js:16:1 › campaign authoring waits for durable persistence before closing (10.4s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:20] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:20] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:20] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:20] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:26] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:26] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:26] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:26] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:30] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:30] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:30] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:30] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   2 [chromium] › tests/campaign-editor-storage.spec.js:37:1 › campaign authoring retains the editor on quota failure and can retry (12.3s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:32] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:32] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:33] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:19:33] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:19] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:19] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:19] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:19] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:21] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:21] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:21] "GET /index.wasm HTTP/1.1" 200 -
+  ✘   3 [chromium] › tests/replay-save.spec.js:20:1 › end-game replay save remains scheduled during resize and durable persistence (1.9m)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:32] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:32] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:32] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:32] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:44] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:44] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:44] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   4 [chromium] › tests/replay-save.spec.js:56:1 › end-game replay save offers export and retry after quota failure (14.1s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:46] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:46] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:46] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:46] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:52] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:52] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:52] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   5 [chromium] › tests/responsive-presentation.spec.js:13:3 › responsive mixed input › native text editing preserves Unicode and selection across rotation (7.1s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:54] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:54] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:54] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:21:54] "GET /index.wasm HTTP/1.1" 200 -
+  ✘   6 [chromium] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached (43.2s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:41] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:41] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:41] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:41] "GET /index.data HTTP/1.1" 200 -
+  ✓   7 [chromium] › tests/single-player.spec.js:46:1 › starts with a full-page game and restored local storage (4.3s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:46] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:46] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:46] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:46] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   8 [chromium] › tests/single-player.spec.js:53:1 › application host returns from settings and credits and shuts down cleanly (5.4s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:51] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:51] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:51] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:51] "GET /index.wasm HTTP/1.1" 200 -
+  ✓   9 [chromium] › tests/single-player.spec.js:69:1 › campaign selector returns to its suspended parent and can reopen (5.7s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:57] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:57] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:57] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:22:57] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  10 [chromium] › tests/single-player.spec.js:82:1 › tutorial sessions quit through the end screen and can restart (10.6s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:07] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:07] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:07] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:07] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  11 [chromium] › tests/single-player.spec.js:98:1 › game rules and AI descriptions return to setup, and a finished game returns there too (15.1s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:22] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:22] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:22] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:22] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:34] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:34] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:34] "GET /index.data HTTP/1.1" 200 -
+  ✓  12 [chromium] › tests/single-player.spec.js:130:1 › custom match pauses, persists and resumes after reload (19.0s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:41] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:41] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:41] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:23:41] "GET /index.wasm HTTP/1.1" 200 -
+  ✘  13 [chromium] › tests/single-player.spec.js:177:1 › editor setup and campaign entry dialogs return to their retained parents (38.6s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:23] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:23] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:23] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:23] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  14 [chromium] › tests/single-player.spec.js:208:1 › map editor frames resume after cancelling quit and can discard a new map (5.2s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:28] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:28] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:28] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:28] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:34] "GET /?renderer=software HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:35] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:35] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  15 [chromium] › tests/single-player.spec.js:231:1 › editor save cancellation keeps edits open and completed fertility saves the map (7.8s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:36] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:36] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:36] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:36] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  16 [chromium] › tests/single-player.spec.js:263:1 › editor map loading can be cancelled and restarted (4.7s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:40] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:40] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:41] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:41] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  17 [chromium] › tests/single-player.spec.js:286:1 › custom and tutorial startup can be cancelled and retried (7.3s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:48] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:48] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:48] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:48] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  18 [chromium] › tests/single-player.spec.js:310:1 › a generated custom map loads after its setup screen closes (7.4s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:55] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:55] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:55] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:24:55] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  19 [chromium] › tests/single-player.spec.js:327:1 › the custom game preview draws the selected map (5.3s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:01] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:01] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:01] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:01] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  20 [chromium] › tests/single-player.spec.js:340:1 › cancelling an editor replacement preserves edits and a completed load replaces the map (6.6s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:07] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:07] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:07] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:07] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  21 [chromium] › tests/single-player.spec.js:374:1 › map generation can be cancelled before retrying (swamp) (5.9s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:13] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:13] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:13] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:13] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  22 [chromium] › tests/single-player.spec.js:374:1 › map generation can be cancelled before retrying (concrete islands) (5.6s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:19] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:19] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:19] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:19] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:21] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:21] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  23 [chromium] › tests/single-player.spec.js:401:1 › landscape picker and start-quality details return to the retained custom setup (12.4s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:31] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:31] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:31] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:31] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  24 [chromium] › tests/viewport.spec.js:16:1 › menus follow the viewport and keep their controls clickable (4.2s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:35] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:35] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:35] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:35] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  25 [chromium] › tests/viewport.spec.js:25:1 › a running match survives resize and its open menu follows the new center (8.2s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:43] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:43] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:44] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:44] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  26 [chromium] › tests/viewport.spec.js:47:1 › editor dialogs and discard controls follow viewport changes (5.4s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:49] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:49] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:49] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:49] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  27 [chromium] › tests/viewport.spec.js:58:1 › small viewports retain the active screen and continue rendering (3.2s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:52] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:52] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:52] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:52] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  28 [chromium] › tests/viewport.spec.js:68:3 › initial small viewport › starts at the actual browser dimensions (2.4s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:54] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:54] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:55] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:55] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  29 [chromium] › tests/viewport.spec.js:78:3 › initial wide viewport › fills the page before any resize (2.2s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:57] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:57] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:57] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:25:57] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  30 [chromium] › tests/viewport.spec.js:87:3 › high density display › uses the renderer-appropriate backing resolution (3.4s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:26:00] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:26:00] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:26:00] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 15:26:00] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  31 [chromium] › tests/viewport.spec.js:95:1 › interface scale survives resizing and keeps settings controls clickable (3.5s)
+
+
+  1) [chromium] › tests/replay-save.spec.js:20:1 › end-game replay save remains scheduled during resize and durable persistence 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: page.evaluate: Target page, context or browser has been closed
+
+      2 | const {test,expect}=require('@playwright/test');
+      3 | const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
+    > 4 | const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
+        |                        ^
+      5 | const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+      6 | const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
+      7 | const digest=page=>page.evaluate(()=>glob2Diagnostics.replayDigest('AAA_review_replay.replay'));
+        at state (/Users/bradley/glob2/browser/tests/replay-save.spec.js:4:24)
+        at /Users/bradley/glob2/browser/tests/replay-save.spec.js:5:55
+        at /Users/bradley/glob2/browser/tests/replay-save.spec.js:51:3
+
+    attachment #1: AAA_review_replay.replay (application/octet-stream) ─────────────────────────────
+    ../build/browser-test-results/replay-save-end-game-repla-65a35-ize-and-durable-persistence-chromium/attachments/AAA-review-replay-replay-a3f017613d38d8e6438a70253c1e08abdbb08ed5.replay
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../build/browser-test-results/replay-save-end-game-repla-65a35-ize-and-durable-persistence-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../build/browser-test-results/replay-save-end-game-repla-65a35-ize-and-durable-persistence-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/replay-save-end-game-repla-65a35-ize-and-durable-persistence-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/replay-save-end-game-repla-65a35-ize-and-durable-persistence-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('input[aria-label="Game text field"]')
+    Expected: visible
+    Timeout: 30000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('input[aria-label="Game text field"]') with timeout 30000ms
+      - waiting for locator('input[aria-label="Game text field"]')
+
+
+      72 |     await page.touchscreen.tap(420,88);
+      73 |     const field=page.locator('input[aria-label="Game text field"]');
+    > 74 |     await expect(field).toBeVisible();await field.fill('Responsive phone');
+         |                         ^
+      75 |     await page.screenshot({path:info.outputPath('phone-save-dialog.png')});
+      76 |     await field.press('Enter'); // Native input validates through the dialog's shared shortcut.
+      77 |     const digest=()=>page.evaluate(()=>glob2Diagnostics.saveDigest('Responsive_phone.game'));
+        at /Users/bradley/glob2/browser/tests/responsive-presentation.spec.js:74:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../build/browser-test-results/responsive-presentation-re-59031-sized-with-a-mouse-attached-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../build/browser-test-results/responsive-presentation-re-59031-sized-with-a-mouse-attached-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/responsive-presentation-re-59031-sized-with-a-mouse-attached-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/responsive-presentation-re-59031-sized-with-a-mouse-attached-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/single-player.spec.js:177:1 › editor setup and campaign entry dialogs return to their retained parents 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "CampaignMapEntryEditor"
+    Received string:    "14CampaignEditor"
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+       6 |
+       7 | const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
+    >  8 | const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+         |                                                                                    ^
+       9 | const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
+      10 | const menu = (page, x, y) => click(page, x + 280, y + 210);
+      11 |
+        at screen (/Users/bradley/glob2/browser/tests/single-player.spec.js:8:84)
+        at /Users/bradley/glob2/browser/tests/single-player.spec.js:198:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../build/browser-test-results/single-player-editor-setup-ff081-n-to-their-retained-parents-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../build/browser-test-results/single-player-editor-setup-ff081-n-to-their-retained-parents-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/single-player-editor-setup-ff081-n-to-their-retained-parents-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/single-player-editor-setup-ff081-n-to-their-retained-parents-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/replay-save.spec.js:20:1 › end-game replay save remains scheduled during resize and durable persistence 
+    [chromium] › tests/responsive-presentation.spec.js:45:3 › responsive mixed input › touch setup and gameplay retain their session when resized with a mouse attached 
+    [chromium] › tests/single-player.spec.js:177:1 › editor setup and campaign entry dialogs return to their retained parents 
+  28 passed (7.0m)

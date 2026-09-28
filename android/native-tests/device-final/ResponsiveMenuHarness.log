@@ -1,0 +1,8 @@
+Settings::load("preferences.txt") : error, can't open file.
+libpng warning: iCCP: known incorrect sRGB profile
+libpng warning: iCCP: known incorrect sRGB profile
+INFO: Glob2 screen ready: Z19verifyTouchListRowsPN7GAGCore14GraphicContextEE10ListScreen
+INFO: Glob2 screen ready: 4Menu
+INFO: Glob2 screen ready: Z4mainE5Child
+INFO: Glob2 screen ready: 4Menu
+PASS responsive menu: portrait layout, actual touch dispatch, duplicate suppression, scrolling, cancellation, legacy restoration

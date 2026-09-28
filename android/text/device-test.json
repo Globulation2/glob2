@@ -1,0 +1,13 @@
+{
+  "serial": "R8YY50T1RNM",
+  "arch": "arm64-v8a",
+  "remoteDirectory": "/data/local/tmp/glob2-tests-2d3bec3dd97e4540a05cf120364f2f9a",
+  "mode": "native Android CPU with SDL dummy video; no JVM or audio device",
+  "tests": [
+    {
+      "name": "GameGUITouchHarness",
+      "exitCode": 0,
+      "binarySha256": "17576cea2e74d6d3d491213752c7fd8d7e51a9437890f008d40ac85059c1ae36"
+    }
+  ]
+}

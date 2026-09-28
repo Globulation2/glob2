@@ -1,0 +1,65 @@
+PASS script GC roots, live frames, bytecode constants and interpreter isolation
+Settings::load("preferences.txt") : error, can't open file.
+libpng warning: iCCP: known incorrect sRGB profile
+libpng warning: iCCP: known incorrect sRGB profile
+INFO: Glob2 screen ready: Z4mainE14SelectionProbe
+ChooseMapScreen::onAction() : error, can't open file maps/browser_missing_fixture.map
+Map thumbnail load: Incomplete binary field: signature: unspecified iostream_category error
+ChooseMapScreen: Incomplete binary field: signature: unspecified iostream_category error
+PASS map selection clears stale data and recovers from missing/corrupt files without a modal loop
+INFO: Glob2 screen ready: 14SettingsScreen
+PASS settings close only after persistence completion
+INFO: Glob2 screen ready: N12_GLOBAL__N_114ShutdownScreenE
+PASS application quit waits for final persistence
+INFO: Glob2 screen ready: Z4mainE10LoginProbe
+PASS protocol rejection provides an actionable translated status
+PASS deferred multiplayer launch and invalid local-player rejection
+INFO: Glob2 screen ready: N6GAGGUI9TabScreenE
+PASS owned tab destruction preserves surviving tabs
+INFO: Glob2 screen ready: 20EditorGenerateScreen
+INFO: Glob2 screen ready: 20EditorGenerateScreen
+FileManager::writeAtomically: /data/local/tmp/glob2-tests-bf2668680c524808b857ff276ff91214/profiles/EngineSessionHarness/replays/Blocked.replay: File replacement failed: unspecified iostream_category error
+PASS atomic replay save, complete file/memory recordings and trailing ticks
+INFO: Glob2 screen ready: 14GameLoadScreen
+INFO: Glob2 screen ready: 14GameLoadScreen
+INFO: Glob2 screen ready: 14GameLoadScreen
+Engine::loadMapHeader : error, can't open file maps/missing-reload-fixture.map
+Engine::loadGameHeader : error, can't open file maps/missing-reload-fixture.map
+GameGUI::loadFromHeaders() : error, can't open file maps/missing-reload-fixture.map, campaigns/missing-reload-fixture.map or replays/missing-reload-fixture.replay
+PASS reused-engine cooperative loading, cancellation and failure ownership
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+INFO: Glob2 screen ready: 14GameLoadScreen
+INFO: Glob2 screen ready: 14GameLoadScreen
+INFO: Glob2 screen ready: 14GameLoadScreen
+INFO: Glob2 screen ready: 14GameLoadScreen
+INFO: Glob2 screen ready: 17GameSessionScreen
+music dir found: original
+selecting music dir original
+nox::gui.game.checkSum() = 7b27b1e3
+automaticEndingGame ended: 50 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=50 winner_team=-1 seed=1241274047 map="balanced" orders=0 players=team0:local,team1:None,team2:None,team3:None
+INFO: Glob2 screen ready: 15MapEditorScreen
+INFO: Glob2 screen ready: 16EditorLoadScreen
+INFO: Glob2 screen ready: 15MapEditorScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 15MapEditorScreen
+INFO: Glob2 screen ready: 13MessageScreen
+INFO: Glob2 screen ready: 15MapEditorScreen
+INFO: Glob2 screen ready: 16EditorLoadScreen
+INFO: Glob2 screen ready: 15MapEditorScreen
+INFO: Glob2 screen ready: 13MessageScreen
+FileManager::writeAtomically: /data/local/tmp/glob2-tests-bf2668680c524808b857ff276ff91214/profiles/EngineSessionHarness/maps/blocked.map: File replacement failed: unspecified iostream_category error
+PASS editor atomic save/reload and failed replacement retains live metadata
+PASS touch script and hint canvases, provisional IME, multiline drafts and tab retention
+INFO: Glob2 screen ready: Z4mainE10EntryProbe
+INFO: Glob2 screen ready: 16EditorLoadScreen
+INFO: Glob2 screen ready: 16EditorLoadScreen
+INFO: Glob2 screen ready: 16EditorLoadScreen
+INFO: Glob2 screen ready: 16EditorLoadScreen
+INFO: Glob2 screen ready: 15FertilityScreen
+PASS: engine sessions, editor decisions, fertility equivalence and cancellation
