@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from build_paths import native_binary
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -30,7 +31,9 @@ for width, height, renderer, expanded in cases:
             lines = (root/'data/texts.en.txt').read_text().splitlines()
             for i in range(0, len(lines)-1, 2):
                 if lines[i].startswith('[settings ') and len(lines[i+1]) > 12:
-                    lines[i+1] += ' — ' + lines[i+1]
+                    # Expand the wording without duplicating substitution slots:
+                    # StringTable requires the key's placeholder count to match.
+                    lines[i+1] += ' — ' + re.sub(r'%[0-9]', 'value', lines[i+1])
             destination.write_text('\n'.join(lines)+'\n')
         with tempfile.TemporaryDirectory(prefix=profile) as work:
             result = subprocess.run([str(native_binary('settings-screen-tests')), profile, str(width), str(height), renderer, str(output)],
