@@ -37,6 +37,10 @@ leave the world visible below short panels. In-game surfaces use `InGameTouchThe
 independent. A completed tap on empty map space dismisses building inspection
 and restores the previous palette state. Tapping another object switches selection;
 panning, cancelled gestures and taps inside the inspector do not dismiss it.
+On the flat map, flags also accept selection within 24 screen points of their
+centres, independent of zoom. Exact flag hits retain priority; the extra halo
+does not override direct unit/building hits and chooses the nearest flag.
+Halo clicks select without moving the flag; direct flag grabs retain dragging.
 Flags and zones share one fitted row. Inspectors group production ratios side by
 side and use horizontal room for worker/priority and action controls. Ordinary
 phone inspectors fit without scrolling; overflow remains available for constrained

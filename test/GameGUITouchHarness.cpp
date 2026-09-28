@@ -862,6 +862,63 @@ public:
 		  new Building(0, 0, 3, globalContainer->buildingsTypes.getTypeNum("warflag", 0, false),
 					   gui.localTeam, &globalContainer->buildingsTypes, 1, 1);
 	  gui.localTeam->myBuildings[3] = rangeFlag;
+      {
+          const auto savedCamera = gui.camera;
+          const int savedX = gui.viewportX, savedY = gui.viewportY;
+          const auto savedFlags = gui.localTeam->virtualBuildings;
+          gui.localTeam->virtualBuildings = {rangeFlag};
+          rangeFlag->posX = rangeFlag->posY = 2;
+          gui.view.mouseUnit = nullptr;
+          for (double zoom : {.33, .5, 1.})
+          {
+              gui.camera.zoom = zoom;
+              gui.camera.originX = gui.camera.originY = 0;
+              gui.viewportX = gui.viewportY = 0;
+              gui.updateCamera();
+              const auto center = gui.camera.worldToScreen(80, 80);
+              const double unit = gfx->logicalUnitsPerPoint();
+              const int x = int(center.first + 20 * unit), y = int(center.second);
+              const int mapX = gui.mapMouseX(x) / 32 + gui.viewportX;
+              const int mapY = gui.mapMouseY(y) / 32 + gui.viewportY;
+              require(gui.game.map.getBuilding(mapX, mapY) == NOGBID,
+                      "Flag halo fixture needs ground outside buildings");
+              gui.clearSelection();
+              gui.handleMapClick(x, y, SDL_BUTTON_LEFT);
+              require(gui.selectionMode == GameGUI::BUILDING_SELECTION &&
+                      gui.selectionBuilding() == rangeFlag && !gui.selectionPushed,
+                      "Near flag clicks select across zoom levels without starting a move");
+              SDL_MouseButtonEvent release{};
+              release.button = SDL_BUTTON_LEFT; release.x = x; release.y = y;
+              gui.handleMouseButtonUp(release);
+              require(gui.orderQueue.empty(), "Forgiving flag selection must not move the flag");
+              gui.game.map.setBuilding(mapX, mapY, 1, 1, building->gid);
+              gui.clearSelection();
+              gui.handleMapClick(x, y, SDL_BUTTON_LEFT);
+              require(gui.selectionMode == GameGUI::BUILDING_SELECTION &&
+                      gui.selectionBuilding() == building,
+                      "Expanded flag hits must not steal direct building selection");
+              gui.game.map.setBuilding(mapX, mapY, 1, 1, NOGBID);
+              gui.clearSelection();
+              gui.handleMapClick(int(center.first + 30 * unit), y, SDL_BUTTON_LEFT);
+              require(gui.selectionMode != GameGUI::BUILDING_SELECTION,
+                      "Clicks outside the halo must not select a flag");
+          }
+          gui.camera.zoom = 1;
+          gui.viewportX = gui.game.map.getW() - 2; gui.viewportY = 0;
+          gui.camera.originX = gui.viewportX * 32.; gui.camera.originY = 0;
+          rangeFlag->posX = gui.game.map.getW() - 1;
+          require(gui.game.map.getBuilding(0, 2) == NOGBID, "Seam fixture needs empty ground");
+          gui.clearSelection();
+          gui.handleMapClick(int(gui.camera.offsetX + 69), int(gui.camera.offsetY + 80), SDL_BUTTON_LEFT);
+          require(gui.selectionMode == GameGUI::BUILDING_SELECTION &&
+                  gui.selectionBuilding() == rangeFlag,
+                  "Expanded flag selection crosses the toroidal seam");
+          rangeFlag->posX = rangeFlag->posY = 0;
+          gui.localTeam->virtualBuildings = savedFlags;
+          gui.clearSelection();
+          gui.camera = savedCamera; gui.viewportX = savedX; gui.viewportY = savedY;
+      }
+
 	  require(rangeFlag->type->defaultUnitStayRange && rangeFlag->type->maxUnitWorking,
 			  "Flag fixture needs range and workers");
 	  gui.orderQueue.clear();
