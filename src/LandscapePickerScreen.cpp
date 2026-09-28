@@ -8,6 +8,8 @@
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <charconv>
+#include <string_view>
 #include <functional>
 #include <map>
 #include <numeric>
@@ -33,8 +35,7 @@ std::string tagLabel(const std::string &value)
 // Every tag on any of `entries` is "category:value"; the filter row groups by category, reading
 // the vocabulary straight from what these entries' own generators declared (each generator sets
 // its GeneratorDefinition::tags itself, so there is no separate catalog to keep in sync here).
-std::vector<std::string>
-categoriesOf(const std::vector<LandscapePickerScreen::Entry> &entries)
+std::vector<std::string> categoriesOf(const std::vector<LandscapePickerScreen::Entry> &entries)
 {
 	std::vector<std::string> found;
 	for (const auto &entry : entries)
@@ -83,15 +84,18 @@ std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vect
 LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vector<Entry> entries,
 											 int selected, SortOrder sortOrder)
 	: title(title), entries(std::move(entries)), tiles(this->entries.size()),
-	  redraws(this->entries.size(), 0),
-	  filterCategories(categoriesOf(this->entries)),
+	  redraws(this->entries.size(), 0), filterCategories(categoriesOf(this->entries)),
 	  filters(filterCategories.size()),
 	  selected(std::clamp(selected, 0, std::max(0, int(this->entries.size()) - 1))),
-	  sortOrder(sortOrder), previewer(requestsOf(this->entries))
+	  sortOrder(sortOrder), previewer(requestsOf(this->entries), 1, true)
 {
 	gfx = globalContainer->gfx;
 	controls = new LobbyControls();
-	controls->render = [this] { render(); };
+	controls->render = [this]
+	{
+		render();
+		updatePreviewPriority();
+	};
 	controls->focus = "landscape/" + std::to_string(this->selected);
 	addWidget(controls);
 	recomputeIncompatible();
@@ -127,7 +131,8 @@ bool LandscapePickerScreen::matchesFilters(int index, int skip) const
 	const auto &tags = entries[index].tags;
 	for (int c = 0; c < int(filterCategories.size()); ++c)
 		if (c != skip && !filters[c].empty() &&
-			std::find(tags.begin(), tags.end(), filterCategories[c] + ":" + filters[c]) == tags.end())
+			std::find(tags.begin(), tags.end(), filterCategories[c] + ":" + filters[c]) ==
+				tags.end())
 			return false;
 	return true;
 }
@@ -139,8 +144,8 @@ void LandscapePickerScreen::rebuild()
 		if (matchesFilters(i, -1))
 			visible.push_back(i);
 	if (sortOrder == SortOrder::Alphabetical)
-		std::stable_sort(visible.begin(), visible.end(), [this](int a, int b)
-						 { return entries[a].name < entries[b].name; });
+		std::stable_sort(visible.begin(), visible.end(),
+						 [this](int a, int b) { return entries[a].name < entries[b].name; });
 	else
 	{
 		// This run's fixed random order (see randomOrderFor), narrowed to what the active filters
@@ -157,6 +162,7 @@ void LandscapePickerScreen::rebuild()
 		visible = std::move(ordered);
 	}
 	reveal = true;
+	layoutReady = false;
 }
 
 void LandscapePickerScreen::onAction(Widget *, Action, int, int) {}
@@ -234,9 +240,16 @@ void LandscapePickerScreen::confirm()
 		endExecute(selected);
 }
 
-void LandscapePickerScreen::onTimer(Uint32)
+void LandscapePickerScreen::onTimer(Uint32 tick)
 {
-    previewer.poll();
+	// A synchronous host must present the initial layout and leave time for input between
+	// attempts. Native generation runs independently and never needs polling here.
+	if (layoutReady && previewer.threadCount() == 0 && Sint32(tick - nextPreviewTick) >= 0 &&
+		!controls->popup.open)
+	{
+		previewer.poll(viewportSlots);
+		nextPreviewTick = SDL_GetTicks() + 100;
+	}
 	refresh();
 }
 
@@ -248,8 +261,8 @@ void LandscapePickerScreen::refresh()
 		const unsigned revision = previewer.revision(i);
 		if (revision == tile.revision)
 			continue;
-		tile.revision = revision;
 		tile.preview = previewer.preview(i);
+		tile.revision = tile.preview.revision;
 		if (tile.widget)
 			tile.widget->cancelDrag();
 		if (activePreview == int(i))
@@ -267,13 +280,14 @@ void LandscapePickerScreen::refresh()
 		}
 		if (tile.preview.state == LandscapePreviewer::State::Ready)
 		{
-			// Surfaces belong to the UI thread; the worker only hands over pixels.
 			if (!tile.widget)
 			{
 				tile.widget = new MapPreview(0, 0, ALIGN_LEFT, ALIGN_TOP);
 				tile.widget->visible = false;
+				tile.widget->setAnimateChanges(false);
 				addWidget(tile.widget);
 			}
+			// MapPreview retains CPU pixels and creates surfaces only on a visible paint.
 			tile.widget->setMapThumbnail(tile.preview.thumbnail);
 			tile.widget->starts = tile.preview.starts;
 		}
@@ -282,11 +296,67 @@ void LandscapePickerScreen::refresh()
 	}
 }
 
+void LandscapePickerScreen::updatePreviewPriority()
+{
+	const auto region = controls->regions.find(30);
+	if (region == controls->regions.end())
+		return;
+	const auto viewport = region->second.box;
+	std::vector<std::pair<double, std::size_t>> distances;
+	viewportSlots.clear();
+	// Use rendered card bounds so the same scheduler follows grids and single-column layouts.
+	constexpr std::string_view prefix = "landscape/";
+	for (const auto &hit : controls->hits)
+	{
+		if (hit.region != 30 || !hit.id.starts_with(prefix))
+			continue;
+		std::size_t index;
+		const char *end = hit.id.data() + hit.id.size();
+		const auto parsed = std::from_chars(hit.id.data() + prefix.size(), end, index);
+		if (parsed.ec != std::errc{} || parsed.ptr != end || index >= entries.size())
+			continue;
+		const double dx = hit.box.x + hit.box.w / 2.0 - viewport.x - viewport.w / 2.0;
+		const double dy = hit.box.y + hit.box.h / 2.0 - viewport.y - viewport.h / 2.0;
+		distances.emplace_back(dx * dx + dy * dy, index);
+		if (hit.box.y < viewport.y + viewport.h && hit.box.y + hit.box.h > viewport.y &&
+			hit.box.x < viewport.x + viewport.w && hit.box.x + hit.box.w > viewport.x)
+			viewportSlots.push_back(index);
+	}
+	std::stable_sort(distances.begin(), distances.end(),
+					 [](const auto &a, const auto &b) { return a.first < b.first; });
+	std::vector<std::size_t> order;
+	for (const auto &[distance, index] : distances)
+		order.push_back(index);
+	if (!layoutReady || region->second.offset != priorityOffset)
+		nextPreviewTick = SDL_GetTicks() + 100;
+	if (!layoutReady || order != priorityOrder)
+	{
+		priorityOrder = std::move(order);
+		previewer.prioritize(priorityOrder);
+	}
+	priorityOffset = region->second.offset;
+	layoutReady = true;
+}
+
 void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
 {
+	switch (event->type)
+	{
+	case SDL_MOUSEMOTION:
+	case SDL_MOUSEWHEEL:
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_KEYDOWN:
+	case SDL_FINGERDOWN:
+	case SDL_FINGERMOTION:
+		nextPreviewTick = SDL_GetTicks() + 150;
+		break;
+	default:
+		break;
+	}
 	if (event->type == SDL_WINDOWEVENT && (event->window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
 										   event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
 	{
+		layoutReady = false;
 		for (auto &tile : tiles)
 			if (tile.widget)
 				tile.widget->cancelDrag();
@@ -448,11 +518,10 @@ void LandscapePickerScreen::render()
 			options.push_back(tagLabel(value) + " (" + std::to_string(count) + ")");
 		}
 		const auto match = std::find(values.begin(), values.end(), filters[c]);
-		const int current = filters[c].empty() || match == values.end()
-								? 0
-								: int(match - values.begin()) + 1;
-		ui.dropdown("landscape/filter/" + std::to_string(c), {barX, barY, filterW - 8, barH}, options,
-					current,
+		const int current =
+			filters[c].empty() || match == values.end() ? 0 : int(match - values.begin()) + 1;
+		ui.dropdown("landscape/filter/" + std::to_string(c), {barX, barY, filterW - 8, barH},
+					options, current,
 					[this, c, values](int index)
 					{
 						filters[c] = index <= 0 ? std::string() : values[std::size_t(index - 1)];
@@ -524,18 +593,26 @@ void LandscapePickerScreen::render()
 		const SDL_Rect r{x + column * (tileW + gap), top + row * stride - offset, tileW, tileH};
 		const bool current = i == selected;
 		const bool enabled = incompatible[i].empty();
-		ui.button(
-			"landscape/" + std::to_string(i), r, "",
-			[this, i]
-			{
-				if (i == selected)
-					confirm();
-				else
-					select(i);
-			},
-			current, enabled);
+		const auto action = [this, i]
+		{
+			if (i == selected)
+				confirm();
+			else
+				select(i);
+		};
 		const SDL_Rect frame{r.x + 8, r.y + 8, image, image};
 		auto &tile = tiles[i];
+		// Update retained widget bounds even off-screen so old hit areas cannot intercept input.
+		if (tile.widget)
+			tile.widget->setScreenPosition(frame.x, frame.y);
+		if (r.y >= bottom || r.y + r.h <= top)
+		{
+			// Keep navigation/hit metadata, but skip text layout, surfaces and draw calls.
+			ui.hits.push_back(
+				{"landscape/" + std::to_string(i), r, ui.clip(), action, enabled, 30});
+			continue;
+		}
+		ui.button("landscape/" + std::to_string(i), r, "", action, current, enabled);
 		std::string note;
 		if (!enabled)
 		{
@@ -551,7 +628,7 @@ void LandscapePickerScreen::render()
 			ui.box(frame, Color(222, 226, 212), 3);
 			const int pad = 12;
 			ui.paragraph(frame.x + pad, frame.y + pad, frame.w - 2 * pad, incompatible[i], "little",
-						true);
+						 true);
 		}
 		else if (tile.widget && tile.widget->isThumbnailLoaded())
 		{
@@ -581,6 +658,10 @@ void LandscapePickerScreen::render()
 					   ? tr("Preview unavailable")
 					   : tr("Generating preview...");
 		}
+		if (tile.preview.state == LandscapePreviewer::State::Ready && enabled)
+			note = std::to_string(tile.preview.width) + " x " +
+				   std::to_string(tile.preview.height) + "  /  " +
+				   std::to_string(tile.preview.starts.size()) + " " + tr("colonies");
 		ui.text(r.x + 8, r.y + 8 + image + 8, entries[i].name, "standard", tileW - 16);
 		ui.text(r.x + 8, r.y + 8 + image + 8 + nameH + 4, note, "little", tileW - 16, true);
 	}

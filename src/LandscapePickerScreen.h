@@ -70,6 +70,7 @@ class LandscapePickerScreen : public Glob2Screen
 	/// count, and rolls them all again (the way back from randomizeParameters).
 	void resetParameters();
 	static constexpr int kRandomDraws = 6;
+	/// Includes off-screen slots, which cooperative hosts defer until browsed.
 	bool busy() const { return previewer.busy(); }
 	/// The shared width/height (tile exponents) and colony count every entry is currently shown
 	/// at - uniform across entries[] by construction (the caller's GenerationHistory already
@@ -98,6 +99,7 @@ class LandscapePickerScreen : public Glob2Screen
 	static std::vector<GenerationRequest> requestsOf(const std::vector<Entry> &);
 	void render();
 	void refresh();
+	void updatePreviewPriority();
 	void select(int index);
 	void confirm();
 	/// Whether entries[index] matches every active filter except filterCategories[skip] (skip < 0
@@ -135,6 +137,11 @@ class LandscapePickerScreen : public Glob2Screen
 	int selected, columns = 1;
 	int activePreview = -1;
 	bool reveal = true;
+	bool layoutReady = false;
+	int priorityOffset = 0;
+	Uint32 nextPreviewTick = 0;
+	std::vector<std::size_t> priorityOrder;
+	std::vector<std::size_t> viewportSlots;
 	SortOrder sortOrder;
 	LobbyControls *controls;
 	LandscapePreviewer previewer;
