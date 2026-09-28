@@ -1,0 +1,26 @@
+[
+  {
+    "case": "arena",
+    "ticks": 8192,
+    "complete_sidecar_sha256": "103719d4e6975e07cc091b459b86fd0c884989fefc02018338373ce79d3f0fe3",
+    "detailed_tick_hashes": "arena-ticks.tsv.gz"
+  },
+  {
+    "case": "rice",
+    "ticks": 8192,
+    "complete_sidecar_sha256": "8c3ee53d4199ab793ef8488489cfa5c4fcec7015e50d6799381caf27ad1ec785",
+    "detailed_tick_hashes": "rice-ticks.tsv.gz"
+  },
+  {
+    "case": "both-maxima",
+    "ticks": 8192,
+    "complete_sidecar_sha256": "e7f44f40309ded3288add5fa5089c9944e418e0f973cc9095739a8b42e9cdf9c",
+    "detailed_tick_hashes": "both-maxima-ticks.tsv.gz"
+  },
+  {
+    "case": "old-save",
+    "ticks": 512,
+    "complete_sidecar_sha256": "809e2c68b63bd78a18a9276fa0b8936f7475144ca2b1300cdafb36ce4ff8a83a",
+    "detailed_tick_hashes": "old-save-ticks.tsv.gz"
+  }
+]

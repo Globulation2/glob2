@@ -1,0 +1,18 @@
+PASS: roundTrip: writer initialised on file backend
+PASS: roundTrip: replay file written
+PASS: roundTrip: replay loads (version accepted)
+PASS: roundTrip: step total survives >65535 quiet steps
+PASS: roundTrip: no order at the Uint16-wrapped step
+PASS: roundTrip: order due exactly at the true step
+PASS: roundTrip: order read back
+PASS: roundTrip: terminator due immediately after last order
+PASS: roundTrip: NullOrder terminator
+PASS: roundTrip: reader finished
+PASS: versionBounds: replay older than the supported floor is rejected
+PASS: versionBounds: replay newer than this build is rejected
+PASS: versionBounds: current-version replay accepted
+PASS: decodeVersion: oldest supported replay loads
+PASS: decodeVersion: initial scan uses the replay header version
+PASS: decodeVersion: order read back
+PASS: decodeVersion: order decoded against the replay's version, not VERSION_MINOR
+ALL PASS

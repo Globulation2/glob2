@@ -1,0 +1,137 @@
+{
+  "status": "Frozen before combined-policy gameplay; paired follow-up on previously tested maps, not an independent holdout",
+  "map_families": {
+    "15": "Symmetric arena",
+    "1": "Swamp",
+    "2": "River",
+    "4": "Crater lakes",
+    "13": "Watershed",
+    "29": "Canals",
+    "57": "Hidden Oasis",
+    "58": "Orchard Commons",
+    "8": "Old islands",
+    "19": "Everglades",
+    "28": "Old growth",
+    "36": "Braided Delta",
+    "38": "Hedgerow Country",
+    "40": "Allotments",
+    "52": "Rice terraces",
+    "48": "Plantations"
+  },
+  "old_families": [
+    1,
+    2,
+    8,
+    15,
+    28,
+    48,
+    52,
+    58
+  ],
+  "new_families": [
+    4,
+    13,
+    19,
+    29,
+    36,
+    38,
+    40,
+    57
+  ],
+  "base_seeds": [
+    6101,
+    6102,
+    6103,
+    6104,
+    6105,
+    6106,
+    6107,
+    6108,
+    6109,
+    6110,
+    6111,
+    6112
+  ],
+  "seed_derivation": "map seed = generator*100000 + base seed; game seed = map seed+50000",
+  "map_size": {
+    "default": 128,
+    "large_base_seeds": [
+      6105,
+      6106
+    ],
+    "required_large_families": [
+      52
+    ],
+    "planned_small_maps": 150,
+    "planned_large_maps": 42,
+    "fallback": "If 128 generation fails, preserve failure and use the already-generated 256 map for that same generator/seed, for every policy and rotation. Never select size using gameplay results."
+  },
+  "teams": 2,
+  "generator_parameters": "defaults except width=8, height=8, teams=2; candidates=0",
+  "variants": [
+    "baseline",
+    "boundary_grid",
+    "mature4",
+    "boundary_mature4",
+    "diagonal_mature4",
+    "layout_mature4"
+  ],
+  "opponent_assignment": "base seed odd: nicowar; even: maxima; unchanged team 1 for every build",
+  "rotations": [
+    0,
+    1
+  ],
+  "ticks": 98304,
+  "late_window": [
+    32768,
+    98304
+  ],
+  "independent_map_blocks": 192,
+  "games": 2304,
+  "primary_endpoints": [
+    "total harvested wheat",
+    "wheat harvested after tick 32768"
+  ],
+  "analysis": "Twelve paired contrasts: each of the three candidates vs baseline, boundary_grid and mature4 (9), plus all three candidate pairs (3). Average both rotation log ratios per map; equal family/opponent weights. Stratified map-block bootstrap 50000 draws, seed 2026092801. Bonferroni alpha 0.05/24 for twelve contrasts by two endpoints. No optional stopping. Report six-policy equal-duration sensitivities, family, size and feeding/stock measures. Follow-up evidence on previously seen maps; not an independent holdout.",
+  "early_termination": "Retain every completed game, including eliminations. Primary yield stops at normal game end. Also compare at the last shared logged tick across all eight policies per start, report follow-up duration and the number of starts that reach the late window. Survivor-only and equal-duration subsets are sensitivity analyses, not substitutes for the primary population.",
+  "decision_rule": "No automatic adoption. Report whether combined improves both endpoints versus each comparator with corrected intervals; review meals, starvation, hunger, standing stock, natural growth and crowding. Early-ending games remain included. Do not infer indefinite sustainability.",
+  "feeding_guard": "Report meals, hunger exposure, starvation deaths and starvation per 1000 unit-minutes. Report whether exploratory 95% intervals exclude a meals decline worse than 5% and a starvation-rate increase greater than 1 per 1000 unit-minutes; these thresholds are practical guardrails, not proof of universal noninferiority.",
+  "sustainability": "Report fixed-initial-footprint natural net growth, wheat stock and wheat tile area at 32768, 65536 and end, plus later changes. Initial-footprint measurements do not represent whole-colony ownership or all expansions; do not claim biological growth improvement from harvest alone.",
+  "secondaries": [
+    "delivered wheat",
+    "meals",
+    "starvation",
+    "population",
+    "hunger exposure",
+    "natural growth",
+    "standing wheat",
+    "wheat tile count",
+    "planting attempts and blockers",
+    "victories and duration"
+  ],
+  "generation_failures": "Preserve every failure. Before gameplay, replace failed generation seed with original+10000000, then +20000000, identically for all policies. At most two replacements. An unresolved map blocks final confirmatory analysis; do not silently shrink the sample or reroll based on gameplay.",
+  "process_failures": "Infrastructure retries identical inputs. Exhausted execution failures block full analysis and remain visible. No optional stopping based on favorable effects.",
+  "platforms": "Native Mac and packaged Linux builds; existing three finalist builds have full 32768-tick checksum equivalence on Arena and Rice across all hosts. Additional five policies require matching per-tick checksums over 8192 ticks on those same two retained maps across all hosts before gameplay.",
+  "outputs": "Keep all results, telemetry, final saves, replays, manifests, hashes and host identity. Source/gameplay rules remain unchanged outside experimental bundles.",
+  "amendment": {
+    "reason": "User requested mostly 128x128 for faster comparative trials.",
+    "unchanged": [
+      "192 independent map/seed blocks",
+      "16 families",
+      "8 policies",
+      "both rotations",
+      "balanced opponents",
+      "98304 tick limit",
+      "primary endpoints and multiplicity correction"
+    ],
+    "old_results": "Reuse already completed 256 games only where the predetermined size plan calls for 256 and all inputs match. Running/completed other 256 games remain preserved as supplemental evidence, excluded from primary estimates. Old queued games are retired after running games finish.",
+    "size_reporting": "Show paired policy effects and map counts separately for 128 and 256, and per family/size. These subgroups are descriptive; do not imply precise family-specific size effects from only two larger seeds.",
+    "additional_policy": "User added diagonal and layout maturity variants before main-batch gameplay; 1152 new games and 1152 reused controls, 192 maps, six policies."
+  },
+  "new_games": 1152,
+  "reused_games": 1152,
+  "policy": "Boundary-grid protection stays intact. Add temporary forbidden status to other eligible fertile wheat stacks of 1-3 units. Release temporary protection at 4-5 or empty on normal farming updates. Preserve construction contracts, wood reserves and external forbidden areas. No additional route-access or emergency override beyond existing rules; measure consequences.",
+  "comparison_provenance": "Reuse accepted results with identical map bytes, seed, opponents, rotations, simulation tick limit and telemetry. No recovered late attempt substitutes. Record source result paths. No fresh random seeds selected based on outcomes.",
+  "additional_policy": "diagonal_mature4: within each 2x2, even/even and odd/odd cells receive maturity protection only at 1-3 units; other two cells are harvestable down to zero. Existing boundary-grid expansion targets, edge donors and temporary support override this rule. Interior permanent seeds and bootstrap anchors do not. Construction, wood reserves and external forbidden areas retain priority. Normal update cadence, no harvest hysteresis.",
+  "layout_maturity_policy": "layout_mature4: the dotted-interior/checkerboard-boundary pattern selects cells for temporary 1-3 protection, released at 4-5. Other live wheat is harvestable to zero. Preserve empty expansion targets and supplemental expansion-support cells, plus construction/wood/external contracts. No permanent wheat seed guarantee; update at normal farm cadence."
+}

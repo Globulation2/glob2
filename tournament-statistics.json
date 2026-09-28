@@ -1,0 +1,6255 @@
+{
+  "games": 2304,
+  "independent_maps": 192,
+  "families": 16,
+  "starts": 384,
+  "early_ended_games": 1905,
+  "hosts": {
+    "localhost": 180,
+    "therig.local": 1229,
+    "devlaptop.local": 895
+  },
+  "primary_confidence": 0.9979166666666667,
+  "variants": {
+    "boundary_mature4_vs_baseline": {
+      "primary": {
+        "harvest": {
+          "effect": -9.148887505642204,
+          "interval": [
+            -20.820251656112205,
+            4.512476916672696
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": -2.8998666562290834,
+          "interval": [
+            -38.26491312446325,
+            54.16537543539545
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": -19.08188793223889,
+          "interval": [
+            -28.201452921473614,
+            -8.845709997189552
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": -9.616046339861793,
+          "interval": [
+            -17.111902191962365,
+            -1.4078761638913848
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": -9.359375,
+          "interval": [
+            -22.908919270833334,
+            4.005273437500003
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": 393.7682291666667,
+          "interval": [
+            327.1665364583333,
+            463.18274739583336
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": 138.6328125,
+          "interval": [
+            119.5728515625,
+            157.97916666666666
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": 39.432291666666664,
+          "interval": [
+            34.9140625,
+            43.973958333333336
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": 0.008382770296812251,
+          "interval": [
+            0.0023126873091558306,
+            0.014382944927372354
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": -0.001393987041234678,
+          "interval": [
+            -0.00522482684355833,
+            0.002414101725573522
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": -0.00240365034979532,
+          "interval": [
+            -0.007160995995136683,
+            0.002384429776669653
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": -14.947280237311796,
+          "interval": [
+            -21.472848454001177,
+            -8.333615551319303
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": 0.7111586946567643,
+          "interval": [
+            -0.5722216345047321,
+            1.9935404232906206
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": -0.052083333333333336,
+          "interval": [
+            -0.09635416666666667,
+            -0.0078125
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": -3.2630208333333335,
+          "interval": [
+            -18.797135416666666,
+            12.518294270833337
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": -2.078125,
+          "interval": [
+            -5.6849609375,
+            1.5677083333333333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": 205.18229166666666,
+          "interval": [
+            144.83847656249998,
+            268.7473958333333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": -10.395761487577632,
+          "interval": [
+            -13.90484816704257,
+            -6.72347996241516
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": -4.035693800675541,
+          "interval": [
+            -11.25660818189054,
+            3.5351389778994715
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 94,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": -17.223231957448757,
+          "late_harvest": 0.8838629985355814,
+          "meals": -30.788034898476624
+        },
+        "2": {
+          "harvest": -10.346287623504823,
+          "late_harvest": 151.38053023358339,
+          "meals": -10.388894301670888
+        },
+        "4": {
+          "harvest": -14.421326620780379,
+          "late_harvest": 13.678856683764874,
+          "meals": -25.745465619995528
+        },
+        "8": {
+          "harvest": -35.65213486412347,
+          "late_harvest": -44.441012070620985,
+          "meals": -43.649201312498825
+        },
+        "13": {
+          "harvest": -11.128062192740172,
+          "late_harvest": -49.37442452195347,
+          "meals": -8.003877755109839
+        },
+        "15": {
+          "harvest": -51.343626751055396,
+          "late_harvest": -77.23420361644861,
+          "meals": -55.97598557331719
+        },
+        "19": {
+          "harvest": 5.107529833900791,
+          "late_harvest": 25.787036505753946,
+          "meals": 3.6236582577002583
+        },
+        "28": {
+          "harvest": 47.01619908497066,
+          "late_harvest": 116.05630119846921,
+          "meals": 12.157275395576026
+        },
+        "29": {
+          "harvest": 6.261940903793799,
+          "late_harvest": 2.2770955952727148,
+          "meals": -12.917893926981952
+        },
+        "36": {
+          "harvest": 6.278499893176541,
+          "late_harvest": 27.036978001203614,
+          "meals": -3.134255696265495
+        },
+        "38": {
+          "harvest": 13.254258792412926,
+          "late_harvest": 122.27861985884454,
+          "meals": 2.6448476795001903
+        },
+        "40": {
+          "harvest": 28.820625958282914,
+          "late_harvest": 172.2703536417972,
+          "meals": 34.42803662788283
+        },
+        "48": {
+          "harvest": 24.198425163443343,
+          "late_harvest": 81.8517501516615,
+          "meals": 18.373767208786916
+        },
+        "52": {
+          "harvest": -39.819731293791484,
+          "late_harvest": -65.50840641261466,
+          "meals": -48.38988186555142
+        },
+        "57": {
+          "harvest": -13.426320438881154,
+          "late_harvest": -31.73860632315531,
+          "meals": -20.86759422790459
+        },
+        "58": {
+          "harvest": -26.007966999547815,
+          "late_harvest": -63.02895469870552,
+          "meals": -50.84706979444967
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": -9.96670580659929,
+            "late_harvest": 1.071643744470749,
+            "meals": -20.650336617375807
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": -6.166991895030667,
+            "late_harvest": -15.852148503476668,
+            "meals": -13.222883333146537
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": -14.766902474915694
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -28.482975809437328
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 0.5176360831494274
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -49.39442867022043
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -31.06674849334512
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 152.37682840943506
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": -38.229901256841714
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -21.057044869609015
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": -11.499211294175957
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -9.248838192874773
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": -57.252724991817935
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -7.039975351756178
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": 4.731861950980826
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 7.0061787022972
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": 37.62062865908166
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 104.5377412346828
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": 7.425896129930466
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 0.6286251180044053
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": -13.378628450765174
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 195.49301184056503
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": 18.714914024505187
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -10.504573692456884
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": 35.21945575673363
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 1.0919357491352482
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 27.08884059304088
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 10.703014080499404
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": -39.819731293791484
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": -15.983515746348766
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 0.5756243593888996
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": -34.74389551181798
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 38.67687206487504
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": -8.555882637524242,
+          "late_harvest": 2.053601353808997,
+          "meals": -17.926090434205783
+        },
+        "maxima": {
+          "harvest": -9.738046803550137,
+          "late_harvest": -7.612903706448275,
+          "meals": -20.221409029360586
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": -18.804142477523072,
+          "late_harvest": -20.428738949604902,
+          "meals": -30.9263365861134
+        },
+        "new": {
+          "harvest": 1.6545042236615852,
+          "late_harvest": 18.490467172648614,
+          "meals": -5.206405205744661
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": -8.583406207619557,
+        "2": -9.06849456435237,
+        "4": -8.786057025577579,
+        "8": -7.035602959838172,
+        "13": -9.01538611720862,
+        "15": -5.286994665246491,
+        "19": -10.027453804505576,
+        "28": -12.017846661615101,
+        "29": -10.092949561750087,
+        "36": -10.093883509290263,
+        "38": -10.474113486355142,
+        "40": -11.239466069173242,
+        "48": -11.022979164305756,
+        "52": -6.619687093934538,
+        "57": -8.856323843231003,
+        "58": -7.8971075942178945
+      },
+      "arithmetic_totals": {
+        "baseline": {
+          "harvest": 1079562,
+          "late_harvest": 693577,
+          "meals": 290183,
+          "starved": 34039
+        },
+        "boundary_mature4": {
+          "harvest": 969098,
+          "late_harvest": 635816,
+          "meals": 241557,
+          "starved": 30445
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": false,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "boundary_mature4_vs_boundary_grid": {
+      "primary": {
+        "harvest": {
+          "effect": -17.057101635274527,
+          "interval": [
+            -27.827187803502735,
+            -4.145503151711118
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": -4.212611292691851,
+          "interval": [
+            -37.99514781593797,
+            49.1730502777987
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": -23.555108316579467,
+          "interval": [
+            -32.276648318426396,
+            -13.571984962404384
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": -17.560763396163026,
+          "interval": [
+            -24.621245840500343,
+            -9.65452630939878
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": -40.169270833333336,
+          "interval": [
+            -56.440234374999996,
+            -23.8828125
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": 325.7447916666667,
+          "interval": [
+            248.51770833333333,
+            403.31516927083334
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": 189.5546875,
+          "interval": [
+            171.34368489583332,
+            208.27871093750002
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": 50.322916666666664,
+          "interval": [
+            45.942708333333336,
+            54.768229166666664
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": 0.013471073270724658,
+          "interval": [
+            0.007623235503897147,
+            0.01933353352538788
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": -0.0015803595691518905,
+          "interval": [
+            -0.005602065104105257,
+            0.002488682066708166
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": -0.004378346478354637,
+          "interval": [
+            -0.00975312676523146,
+            0.0010662248157564751
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": -25.270519047835005,
+          "interval": [
+            -32.627873866549855,
+            -17.68164254752128
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": -0.33301235140326835,
+          "interval": [
+            -1.7898491646428898,
+            1.129432353396209
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": -0.0859375,
+          "interval": [
+            -0.13541666666666666,
+            -0.036458333333333336
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": 12.8359375,
+          "interval": [
+            -3.3698567708333327,
+            29.619791666666668
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": 1.515625,
+          "interval": [
+            -2.2161458333333335,
+            5.34381510416667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": 148.83333333333334,
+          "interval": [
+            77.9322265625,
+            220.08600260416668
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": -19.530400995703445,
+          "interval": [
+            -22.822085256768286,
+            -16.012870423969577
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": -13.786539492162401,
+          "interval": [
+            -20.74452594538846,
+            -6.3837494593820585
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 80,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": -34.7913596047151,
+          "late_harvest": -32.03339946173384,
+          "meals": -44.22334136935004
+        },
+        "2": {
+          "harvest": -6.519331575459174,
+          "late_harvest": 214.58472167475682,
+          "meals": -3.333390144629288
+        },
+        "4": {
+          "harvest": -16.94096008687084,
+          "late_harvest": 220.9386602116708,
+          "meals": -19.00443679414452
+        },
+        "8": {
+          "harvest": -39.89446520936401,
+          "late_harvest": -53.423448702763544,
+          "meals": -51.761628023414985
+        },
+        "13": {
+          "harvest": -2.1231581966047237,
+          "late_harvest": -51.02948281723653,
+          "meals": 15.223520978178826
+        },
+        "15": {
+          "harvest": -66.79551142410975,
+          "late_harvest": -90.46424573428976,
+          "meals": -67.79677419358084
+        },
+        "19": {
+          "harvest": -13.968825637331808,
+          "late_harvest": -15.940664140538782,
+          "meals": -15.72697087428885
+        },
+        "28": {
+          "harvest": 32.23998411383892,
+          "late_harvest": 116.7985131033659,
+          "meals": 10.722277734224557
+        },
+        "29": {
+          "harvest": -6.476038038011829,
+          "late_harvest": 4.099037562680512,
+          "meals": -23.341824929401874
+        },
+        "36": {
+          "harvest": 29.15962219336508,
+          "late_harvest": 266.44391748374943,
+          "meals": 43.49845370379177
+        },
+        "38": {
+          "harvest": -3.168005048935582,
+          "late_harvest": -6.14135979732331,
+          "meals": -16.01894903406748
+        },
+        "40": {
+          "harvest": 17.357513495612544,
+          "late_harvest": 171.63958662192468,
+          "meals": 21.231603642910184
+        },
+        "48": {
+          "harvest": 18.53787206935144,
+          "late_harvest": 79.78523905566836,
+          "meals": 12.193313262725473
+        },
+        "52": {
+          "harvest": -58.46700373891197,
+          "late_harvest": -79.15418948692376,
+          "meals": -67.21867513445002
+        },
+        "57": {
+          "harvest": -18.426494461647003,
+          "late_harvest": 1.8610890336872334,
+          "meals": -20.976681103861058
+        },
+        "58": {
+          "harvest": -19.115621899942532,
+          "late_harvest": -50.26339626615625,
+          "meals": -42.710249413981416
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": -15.840340554299987,
+            "late_harvest": 8.105960876152787,
+            "meals": -22.227459923975733
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": -21.260841113547553,
+            "late_harvest": -37.81855531916351,
+            "meals": -28.114385105857977
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": -34.8806322948007
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -34.34315702502131
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 2.4635693059343122
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -40.91415475164767
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -21.781432510219815
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 12.142995062981257
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": -42.963274208767054
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -21.88870102702114
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": -9.270868818204312
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 43.003255528791016
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": -71.58927662344439
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -27.594873767000276
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": -13.86801221829804
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -14.47112553218139
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": 25.187072760628215
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 73.93192676314439
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": -4.555797740819427
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -15.513052853680415
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": -3.784862738576237
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 463.04561054879673
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": -0.5727463881127293
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -15.162852271790642
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": 27.255045908038195
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -21.71287646956968
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 20.411715252334808
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 9.597095770377317
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": -58.46700373891197
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": -15.32869385955514
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -32.29613527099646
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": -23.213649087645614
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 4.8981327581231815
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": -19.35688940164241,
+          "late_harvest": -0.0883471665373506,
+          "meals": -22.75878007885935
+        },
+        "maxima": {
+          "harvest": -14.691728306406743,
+          "late_harvest": -8.166629465547622,
+          "meals": -24.343226706463973
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": -29.070482503737626,
+          "late_harvest": -33.471520210929704,
+          "meals": -38.854316722202476
+        },
+        "new": {
+          "harvest": -3.009006236314858,
+          "late_harvest": 37.91422657567334,
+          "meals": -4.427898238699806
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": -15.716192835674732,
+        "2": -17.71581589775482,
+        "4": -17.06483862840176,
+        "8": -15.25706069059655,
+        "13": -17.967523147956385,
+        "15": -11.837336666751607,
+        "19": -17.259000198201317,
+        "28": -19.596744182898544,
+        "29": -17.718355812394584,
+        "36": -19.470308243939087,
+        "38": -17.908807874929504,
+        "40": -18.95421598669866,
+        "48": -19.00826931446235,
+        "52": -13.142977603153664,
+        "57": -16.964995652720354,
+        "58": -16.91801877735029
+      },
+      "arithmetic_totals": {
+        "boundary_grid": {
+          "harvest": 1231916,
+          "late_harvest": 805434,
+          "meals": 312519,
+          "starved": 45870
+        },
+        "boundary_mature4": {
+          "harvest": 969098,
+          "late_harvest": 635816,
+          "meals": 241557,
+          "starved": 30445
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": false,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "boundary_mature4_vs_mature4": {
+      "primary": {
+        "harvest": {
+          "effect": -27.13757027606405,
+          "interval": [
+            -36.269628390134464,
+            -16.60794217351851
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": -3.756709232863405,
+          "interval": [
+            -39.62280137640805,
+            51.9962537793772
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": -27.453206869258718,
+          "interval": [
+            -35.381181076521436,
+            -18.482455332000022
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": -27.39960999317968,
+          "interval": [
+            -33.287393743813126,
+            -20.991593753559297
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": -47.567708333333336,
+          "interval": [
+            -66.83346354166666,
+            -28.565104166666668
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": 222.78385416666666,
+          "interval": [
+            146.61920572916665,
+            300.2291666666667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": 254.64322916666666,
+          "interval": [
+            227.83072916666666,
+            281.6510416666667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": 59.0078125,
+          "interval": [
+            52.796875,
+            65.25
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": 0.0029339632642417044,
+          "interval": [
+            -0.003618998805874994,
+            0.009574851226148132
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": -0.003132769086289387,
+          "interval": [
+            -0.007649098906051347,
+            0.0013215639393027415
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": -0.007368179896358195,
+          "interval": [
+            -0.013249130028060377,
+            -0.0015147598001053275
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": -32.61065879296718,
+          "interval": [
+            -40.27691648777693,
+            -25.050759462234584
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": -0.9079084430209642,
+          "interval": [
+            -2.551997318831001,
+            0.7050181158966767
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": -0.125,
+          "interval": [
+            -0.16666666666666666,
+            -0.08333333333333333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": 92.54427083333333,
+          "interval": [
+            72.74993489583333,
+            112.47148437500002
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": 22.854166666666668,
+          "interval": [
+            18.325520833333332,
+            27.369791666666668
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": 161.84114583333334,
+          "interval": [
+            93.68743489583333,
+            232.01569010416668
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": -30.310550938639064,
+          "interval": [
+            -32.82541726923813,
+            -27.703082659626947
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": -22.36763957979974,
+          "interval": [
+            -28.681990321084644,
+            -15.984863306631688
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 63,
+      "zero_maps": 1,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": -30.25529458169699,
+          "late_harvest": 1.6106872547839834,
+          "meals": -26.81090694237525
+        },
+        "2": {
+          "harvest": -17.57198006135648,
+          "late_harvest": 230.35715931032667,
+          "meals": -23.583098471269448
+        },
+        "4": {
+          "harvest": -12.218699325096008,
+          "late_harvest": 256.63590407572315,
+          "meals": -2.779115764554722
+        },
+        "8": {
+          "harvest": -6.19130842703595,
+          "late_harvest": 8.299525035049717,
+          "meals": -7.155292778062621
+        },
+        "13": {
+          "harvest": -35.52975938559175,
+          "late_harvest": -24.057182941272835,
+          "meals": -39.29542672130845
+        },
+        "15": {
+          "harvest": -75.50490317819983,
+          "late_harvest": -91.8352900406811,
+          "meals": -74.87095751717845
+        },
+        "19": {
+          "harvest": -8.926656187436368,
+          "late_harvest": 28.48534299808997,
+          "meals": 2.809248942505978
+        },
+        "28": {
+          "harvest": -8.842266286955917,
+          "late_harvest": 4.612199648254309,
+          "meals": -9.601581551881628
+        },
+        "29": {
+          "harvest": -34.65021062743863,
+          "late_harvest": -7.289997025354785,
+          "meals": -52.86544421264249
+        },
+        "36": {
+          "harvest": -24.624885099060954,
+          "late_harvest": 8.501639306128983,
+          "meals": -11.286356467209718
+        },
+        "38": {
+          "harvest": -2.9726655403591704,
+          "late_harvest": 62.02190661734582,
+          "meals": 4.111630319157856
+        },
+        "40": {
+          "harvest": -8.788656787294164,
+          "late_harvest": 35.0191613926553,
+          "meals": -7.779449552748627
+        },
+        "48": {
+          "harvest": 12.663010178057144,
+          "late_harvest": 41.993638491828825,
+          "meals": 6.400726387858152
+        },
+        "52": {
+          "harvest": -55.55142037227151,
+          "late_harvest": -73.98902136742436,
+          "meals": -60.31564584272171
+        },
+        "57": {
+          "harvest": -30.163401201389238,
+          "late_harvest": 9.683025530399387,
+          "meals": -26.901303412338866
+        },
+        "58": {
+          "harvest": -33.309114111740165,
+          "late_harvest": -43.740966154344235,
+          "meals": -33.62289599843245
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": -28.95686487757566,
+            "late_harvest": -3.626500654565505,
+            "meals": -29.981883881277625
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": -20.251338482940426,
+            "late_harvest": -4.220305429240496,
+            "meals": -17.653324706571468
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": -33.004691624344474
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -14.720329594587334
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": -23.710486348828656
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 21.373806823182527
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -12.730091409401057
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -9.616435627449379
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": -7.352763536858498
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -0.16194217432792996
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": -49.02470838844399
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 108.62058167224625
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": -79.87702578850258
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -34.53425576221366
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": -13.720284707735686
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 19.34498571347034
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": -10.102966834252737
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -2.268554600415788
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": -36.20533715672718
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -26.2871130913682
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": -32.63695007771561
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 32.20844982502161
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": -8.67098716663777
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 31.316949765211653
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": -1.3377988819260578
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -38.405900931785624
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 15.391552246691623
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -0.04189211969242887
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": -55.55142037227151
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": -34.20694750050469
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -5.898120066871085
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": -38.68031785077761
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 1.484436202206426
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": -24.266738721816505,
+          "late_harvest": 7.591193551694722,
+          "meals": -20.238535045831384
+        },
+        "maxima": {
+          "harvest": -29.899576808468275,
+          "late_harvest": -13.907721330026105,
+          "meals": -34.015289255547884
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": -33.08076780986472,
+          "late_harvest": -29.00768700196791,
+          "meals": -34.6998783258287
+        },
+        "new": {
+          "harvest": -20.666548441688377,
+          "late_harvest": 30.47568992356066,
+          "meals": -19.402337107186387
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": -26.92483413368733,
+        "2": -27.734296489691303,
+        "4": -28.03680690049569,
+        "8": -28.35470297374107,
+        "13": -26.540730264586404,
+        "15": -21.645258521595974,
+        "19": -28.213219923612808,
+        "28": -28.21765231258137,
+        "29": -26.607060884251588,
+        "36": -27.30207301399602,
+        "38": -28.515653263528375,
+        "40": -28.22046575771552,
+        "48": -29.224143123386902,
+        "52": -24.69681126491102,
+        "57": -26.93124839314946,
+        "58": -26.706387629604368
+      },
+      "arithmetic_totals": {
+        "mature4": {
+          "harvest": 1330347,
+          "late_harvest": 862244,
+          "meals": 314717,
+          "starved": 48711
+        },
+        "boundary_mature4": {
+          "harvest": 969098,
+          "late_harvest": 635816,
+          "meals": 241557,
+          "starved": 30445
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": false,
+        "starvation_rate_upper_95_below_plus1": true
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "diagonal_mature4_vs_baseline": {
+      "primary": {
+        "harvest": {
+          "effect": 25.10294799944621,
+          "interval": [
+            11.002537007363207,
+            40.39422280190351
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": 28.05740072017343,
+          "interval": [
+            -16.296483457360587,
+            94.0996879538983
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 15.357156649145901,
+          "interval": [
+            3.727660245540006,
+            28.22049991949067
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 24.977991621205643,
+          "interval": [
+            15.645179839803832,
+            34.97759223550797
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": 30.828125,
+          "interval": [
+            13.106705729166668,
+            49.14850260416667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": 223.29947916666666,
+          "interval": [
+            154.05983072916666,
+            295.1983072916667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": -54.473958333333336,
+          "interval": [
+            -70.21373697916667,
+            -38.645703125
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": -7.432291666666667,
+          "interval": [
+            -11.0625,
+            -3.8072916666666665
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": 0.0024207040876654553,
+          "interval": [
+            -0.001997130998859854,
+            0.006871458243464978
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": 0.0011994274038388357,
+          "interval": [
+            -0.0025216234549312105,
+            0.004927007517211155
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": 0.004640951437893136,
+          "interval": [
+            -0.0004016817286358354,
+            0.009702255067835315
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 19.12111872546709,
+          "interval": [
+            12.194123982851421,
+            26.05509825890011
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": 0.8240327529436021,
+          "interval": [
+            -0.37338552604579633,
+            2.029645855888066
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": 0.07291666666666667,
+          "interval": [
+            0.03125,
+            0.11458333333333333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": -27.5859375,
+          "interval": [
+            -40.76315104166667,
+            -13.669205729166663
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": -6.966145833333333,
+          "interval": [
+            -10.0859375,
+            -3.7005208333333335
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": 142.75,
+          "interval": [
+            78.68984375000001,
+            209.59140625000003
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": 24.252232616152575,
+          "interval": [
+            20.290483403214687,
+            28.33681081256384
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": 24.6379132727352,
+          "interval": [
+            18.016346163184227,
+            31.78057160969116
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 136,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": 24.21066126000128,
+          "late_harvest": 17.05601666993424,
+          "meals": 17.88750004732594
+        },
+        "2": {
+          "harvest": 32.83791463396024,
+          "late_harvest": 56.00766654508572,
+          "meals": 49.734240934196514
+        },
+        "4": {
+          "harvest": 5.036482960316771,
+          "late_harvest": -48.11811328695016,
+          "meals": -14.862476145366777
+        },
+        "8": {
+          "harvest": 4.290261550710593,
+          "late_harvest": 12.484717535434575,
+          "meals": 8.879783954363804
+        },
+        "13": {
+          "harvest": 25.809575106510835,
+          "late_harvest": 86.20024546869834,
+          "meals": 24.340648259405448
+        },
+        "15": {
+          "harvest": 53.14297432929004,
+          "late_harvest": 39.69368582116307,
+          "meals": 12.750574888608252
+        },
+        "19": {
+          "harvest": 12.772220899548332,
+          "late_harvest": 55.4711676521212,
+          "meals": 13.674101958733104
+        },
+        "28": {
+          "harvest": 45.189363872806084,
+          "late_harvest": 88.71743177588833,
+          "meals": 27.639219236354585
+        },
+        "29": {
+          "harvest": 20.392567001022783,
+          "late_harvest": -18.081890463669513,
+          "meals": 11.390794126113056
+        },
+        "36": {
+          "harvest": 17.018618048432728,
+          "late_harvest": -3.765537896428197,
+          "meals": -4.098385094757702
+        },
+        "38": {
+          "harvest": 25.461298770716823,
+          "late_harvest": 66.02086610340571,
+          "meals": 16.207383494827884
+        },
+        "40": {
+          "harvest": 9.88317062955057,
+          "late_harvest": 18.210682449419387,
+          "meals": -2.6797437324049467
+        },
+        "48": {
+          "harvest": 25.664556043874654,
+          "late_harvest": 13.038404332769296,
+          "meals": 19.688900720515147
+        },
+        "52": {
+          "harvest": 56.94966412482878,
+          "late_harvest": 74.48899883149207,
+          "meals": 47.35285093790265
+        },
+        "57": {
+          "harvest": 50.97944149548579,
+          "late_harvest": 91.71040957952566,
+          "meals": 43.03535978344408
+        },
+        "58": {
+          "harvest": 9.164525949378836,
+          "late_harvest": 9.910033552419272,
+          "meals": -3.0584512500525105
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": 21.587505035465963,
+            "late_harvest": 20.562507548600955,
+            "meals": 10.417603763328968
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 38.508625162120744,
+            "late_harvest": 58.836022991971745,
+            "meals": 34.872658328975234
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": 29.484299801309604
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 0.8945435337077954
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 40.61053369342771
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -0.0361413093603135
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -18.59287223733196
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 275.6028406628167
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": 7.79643084293455
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -11.602367821915285
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": 34.84479041563171
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -11.057094862785
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": 39.34354982907677
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 145.5546231905662
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": 11.600220313837847
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 18.819450736505985
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": 47.09642786841546
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 36.018563231640606
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": 20.017266838193134
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 22.286745128124256
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": 13.473400105580035
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 36.476994066878746
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": 28.62902419201155
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 10.755116733324918
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": 6.747022637035396
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 27.0013217020443
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 31.3049095291733
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 0.89554339825118
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 56.94966412482878
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": 43.72737874332263
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 93.11204430631224
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 7.892481794205067
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 15.753274042105867
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": 17.219587764481698,
+          "late_harvest": 2.3419247839953554,
+          "meals": 3.2326870284696927
+        },
+        "maxima": {
+          "harvest": 33.51648727512777,
+          "late_harvest": 60.2344094447945,
+          "meals": 28.905620624848048
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 30.1596615373884,
+          "late_harvest": 36.05254684666438,
+          "meals": 21.435363336615417
+        },
+        "new": {
+          "harvest": 20.24268819765225,
+          "late_harvest": 20.53209042598031,
+          "meals": 9.583182563453104
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 25.162661181383744,
+        "2": 24.603596207772316,
+        "4": 26.56958863787405,
+        "8": 26.629763644764086,
+        "13": 25.05598088828188,
+        "15": 23.427587817059635,
+        "19": 25.971385063230695,
+        "28": 23.867220725174633,
+        "29": 25.423447806386694,
+        "36": 25.661348439893228,
+        "38": 25.079094373120377,
+        "40": 26.189523728308195,
+        "48": 25.0655968278572,
+        "52": 23.225717050622094,
+        "57": 23.54472084097605,
+        "58": 26.244735808757998
+      },
+      "arithmetic_totals": {
+        "baseline": {
+          "harvest": 1079562,
+          "late_harvest": 693577,
+          "meals": 290183,
+          "starved": 34039
+        },
+        "diagonal_mature4": {
+          "harvest": 1346812,
+          "late_harvest": 883719,
+          "meals": 323220,
+          "starved": 45877
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": true,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "diagonal_mature4_vs_boundary_grid": {
+      "primary": {
+        "harvest": {
+          "effect": 14.213253048387472,
+          "interval": [
+            1.4623869595295853,
+            28.3008510796261
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": 26.326129503895984,
+          "interval": [
+            -15.971497180882613,
+            89.2720385361754
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 8.980117301386361,
+          "interval": [
+            -1.4275744177844452,
+            20.33614896076907
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 13.992471056030729,
+          "interval": [
+            5.7831499582317365,
+            22.808099127709603
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": 0.018229166666666668,
+          "interval": [
+            -19.773502604166666,
+            20.1484375
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": 155.27604166666666,
+          "interval": [
+            87.41614583333335,
+            225.658984375
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": -3.5520833333333335,
+          "interval": [
+            -20.557421875,
+            13.809960937500005
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": 3.4583333333333335,
+          "interval": [
+            -0.5,
+            7.474023437500003
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": 0.007509007061577859,
+          "interval": [
+            0.0030200220202295253,
+            0.012041827009278265
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": 0.001013054875921624,
+          "interval": [
+            -0.0028705524242515685,
+            0.004893460567406509
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": 0.0026662553093338187,
+          "interval": [
+            -0.002654041793181389,
+            0.007994470950033725
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 8.797879914943886,
+          "interval": [
+            1.3976136711698284,
+            16.15951750112667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": -0.22013829311643018,
+          "interval": [
+            -1.5560370404024688,
+            1.1127146330335365
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": 0.0390625,
+          "interval": [
+            -0.0026041666666666665,
+            0.08072916666666667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": -11.486979166666666,
+          "interval": [
+            -25.96888020833333,
+            3.455794270833337
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": -3.3723958333333335,
+          "interval": [
+            -6.721419270833334,
+            0.059895833333333336
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": 86.40104166666667,
+          "interval": [
+            23.520768229166666,
+            151.11477864583335
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": 11.585428323507479,
+          "interval": [
+            8.240872359900301,
+            15.098556753301004
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": 11.973568499512446,
+          "interval": [
+            5.882705575417221,
+            18.6280887600269
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 111,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": -2.1511888553032263,
+          "late_harvest": -21.138036459591838,
+          "meals": -4.996616736493956
+        },
+        "2": {
+          "harvest": 38.50823042281859,
+          "late_harvest": 95.2324164230659,
+          "meals": 61.52352253193924
+        },
+        "4": {
+          "harvest": 1.943966715591723,
+          "late_harvest": 46.47317625000277,
+          "meals": -7.13345990066717
+        },
+        "8": {
+          "harvest": -2.585393769872479,
+          "late_harvest": -5.7011221460009125,
+          "meals": -6.794869967197665
+        },
+        "13": {
+          "harvest": 38.557166456276335,
+          "late_harvest": 80.11296136502735,
+          "meals": 55.734469492313174
+        },
+        "15": {
+          "harvest": 4.5091074827501805,
+          "late_harvest": -41.48745609337036,
+          "meals": -17.523827160552422
+        },
+        "19": {
+          "harvest": -7.695227784287899,
+          "late_harvest": 3.896263567147852,
+          "meals": -7.55334190785038
+        },
+        "28": {
+          "harvest": 30.596759347188424,
+          "late_harvest": 89.36572726066998,
+          "meals": 26.006137651099515
+        },
+        "29": {
+          "harvest": 5.960702025044355,
+          "late_harvest": -16.62261905215471,
+          "meals": -1.9429434766702347
+        },
+        "36": {
+          "harvest": 42.21202324004235,
+          "late_harvest": 177.59266510448762,
+          "meals": 42.07017708393552
+        },
+        "38": {
+          "harvest": 7.268971415791858,
+          "late_harvest": -29.89657418409473,
+          "meals": -4.922473786807735
+        },
+        "40": {
+          "harvest": 0.10520896144592569,
+          "late_harvest": 17.936824503123074,
+          "meals": -12.233407329164635
+        },
+        "48": {
+          "harvest": 19.937181557477274,
+          "late_harvest": 11.753868348748178,
+          "meals": 13.439781881092477
+        },
+        "52": {
+          "harvest": 8.317725284650347,
+          "late_harvest": 5.45655413230795,
+          "meals": -6.405529553784348
+        },
+        "57": {
+          "harvest": 42.2594299958652,
+          "late_harvest": 186.07431004575062,
+          "meals": 42.83818038016617
+        },
+        "58": {
+          "harvest": 19.333182694806244,
+          "late_harvest": 47.86035235467757,
+          "meals": 12.989340128489951
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": 13.655321715277132,
+            "late_harvest": 28.95333687390382,
+            "meals": 8.222986055698026
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 16.22831734845271,
+            "late_harvest": 17.37261500262344,
+            "meals": 11.727657575989687
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": -1.072048586170353
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -7.372862939968962
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 43.332630229414825
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 16.715391800103284
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -7.627323854893484
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 66.89815690114798
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": -0.4638879917111808
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -12.53362805888168
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": 38.24001862252872
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 40.153852992453345
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": -7.389393879646231
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 91.25870024761781
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": -8.219441214501314
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -5.028905717202206
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": 33.80676572847962
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 15.665552164718225
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": 6.631200700843194
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 2.6709225155334035
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": 26.041167109357367
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 160.04937298385659
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": 7.730614264259643
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 4.990261375716854
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": 0.45963570997343783
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -1.648256243813067
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 24.406275985227282
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -0.11239870504787369
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 8.317725284650347
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": 44.8475854999927
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 29.996028446582372
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 26.956244673707193
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -12.441763887089333
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": 3.374087399349942,
+          "late_harvest": 0.19392479719925532,
+          "meals": -2.8458772830343633
+        },
+        "maxima": {
+          "harvest": 26.188946379777374,
+          "late_harvest": 59.27403809897649,
+          "meals": 22.245619999304008
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 13.702376845618,
+          "late_harvest": 13.751736414071916,
+          "meals": 7.497530872413195
+        },
+        "new": {
+          "harvest": 14.726424669263377,
+          "late_harvest": 40.29052653178613,
+          "meals": 10.48315129321549
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 15.396835099152423,
+        "2": 12.75415711024551,
+        "4": 15.0818495080561,
+        "8": 15.431054435564448,
+        "13": 12.75150181593385,
+        "15": 14.891348155304513,
+        "19": 15.846430797920796,
+        "28": 13.197136662652314,
+        "29": 14.785742106797711,
+        "36": 12.555964493931205,
+        "38": 14.69187702987666,
+        "40": 15.221579140072325,
+        "48": 13.84151819392401,
+        "52": 14.617509115651348,
+        "57": 12.553463549890209,
+        "58": 13.879841294355916
+      },
+      "arithmetic_totals": {
+        "boundary_grid": {
+          "harvest": 1231916,
+          "late_harvest": 805434,
+          "meals": 312519,
+          "starved": 45870
+        },
+        "diagonal_mature4": {
+          "harvest": 1346812,
+          "late_harvest": 883719,
+          "meals": 323220,
+          "starved": 45877
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": true,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "diagonal_mature4_vs_mature4": {
+      "primary": {
+        "harvest": {
+          "effect": 0.3323405360937047,
+          "interval": [
+            -12.213654398130632,
+            15.028482320457194
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": 26.927381332849837,
+          "interval": [
+            -19.59061981536457,
+            100.10849312650427
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 3.422973741256456,
+          "interval": [
+            -7.374179621578669,
+            15.55632713861982
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 0.3878516764894713,
+          "interval": [
+            -7.949571540357112,
+            9.418915532062748
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": -7.380208333333333,
+          "interval": [
+            -29.526106770833334,
+            14.510546875000006
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": 52.315104166666664,
+          "interval": [
+            -20.336132812499997,
+            128.71360677083334
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": 61.536458333333336,
+          "interval": [
+            39.348958333333336,
+            83.56282552083336
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": 12.143229166666666,
+          "interval": [
+            6.861979166666667,
+            17.424479166666668
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": -0.002650148625143426,
+          "interval": [
+            -0.009033197690214326,
+            0.0036949934485238835
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": -0.0005393546412158739,
+          "interval": [
+            -0.005055411254463143,
+            0.003818117520522714
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": -0.00032357810866973986,
+          "interval": [
+            -0.006609420869420657,
+            0.005742663539854369
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 1.4577401698117018,
+          "interval": [
+            -7.063613270523619,
+            10.010844779982383
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": -0.7950343847341261,
+          "interval": [
+            -2.4164652749033997,
+            0.7336759873262289
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": 0.0,
+          "interval": [
+            -0.041666666666666664,
+            0.041666666666666664
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": 68.22135416666667,
+          "interval": [
+            49.919270833333336,
+            86.53658854166667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": 17.966145833333332,
+          "interval": [
+            13.583333333333334,
+            22.390625
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": 99.40885416666667,
+          "interval": [
+            34.927083333333336,
+            167.27669270833337
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": -3.363169204732694,
+          "interval": [
+            -7.041338316985417,
+            0.4702289624503042
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": 0.8284828852204525,
+          "interval": [
+            -4.703979229218637,
+            6.794414421571628
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 89,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": 4.655402527170351,
+          "late_harvest": 17.89935424372204,
+          "meals": 24.66167083449237
+        },
+        "2": {
+          "harvest": 22.131766614123904,
+          "late_harvest": 105.0208482835872,
+          "meals": 27.68759693098019
+        },
+        "4": {
+          "harvest": 7.739916132105786,
+          "late_harvest": 62.765039276695035,
+          "meals": 11.469897695468639
+        },
+        "8": {
+          "harvest": 52.03819053228792,
+          "late_harvest": 119.26320001138029,
+          "meals": 79.39251792491274
+        },
+        "13": {
+          "harvest": -8.734142870792157,
+          "late_harvest": 179.31674937801782,
+          "meals": -17.95256354729301
+        },
+        "15": {
+          "harvest": -22.903173144829818,
+          "late_harvest": -49.900350127787156,
+          "meals": -35.641625979907744
+        },
+        "19": {
+          "harvest": -2.285371345694631,
+          "late_harvest": 58.80623995130517,
+          "meals": 12.780703201266855
+        },
+        "28": {
+          "harvest": -9.974999678545384,
+          "late_harvest": -8.624994778977001,
+          "meals": 2.8768174888655187
+        },
+        "29": {
+          "harvest": -25.960049020166842,
+          "late_harvest": -25.74458499639349,
+          "meals": -39.707985524225535
+        },
+        "36": {
+          "harvest": -17.007750487490554,
+          "late_harvest": -17.806633467917052,
+          "meals": -12.169345932599317
+        },
+        "38": {
+          "harvest": 7.485365472037906,
+          "late_harvest": 21.0148654036937,
+          "meals": 17.867973154841536
+        },
+        "40": {
+          "harvest": -22.197307185590326,
+          "late_harvest": -41.37919535311501,
+          "meals": -33.236192182817184
+        },
+        "48": {
+          "harvest": 13.992968412930285,
+          "late_harvest": -11.737256819720656,
+          "meals": 7.582839319164027
+        },
+        "52": {
+          "harvest": 15.921543611818286,
+          "late_harvest": 31.586544667085942,
+          "meals": 13.303416734503134
+        },
+        "57": {
+          "harvest": 21.79095004405863,
+          "late_harvest": 208.04202222855056,
+          "meals": 32.12916079197399
+        },
+        "58": {
+          "harvest": -1.6072589451419501,
+          "late_harvest": 67.2506754193995,
+          "meals": 30.911814138838288
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": -4.05818617635113,
+            "late_harvest": 14.958363313990027,
+            "meals": -2.567543802021831
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 17.718462706539462,
+            "late_harvest": 80.79208795525506,
+            "meals": 27.986679299520546
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": 1.7778403799245013
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 20.31056263376477
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 6.718677912696294
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 139.75609315723273
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": 3.0619105176749706
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 34.514423299137626
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": 61.68083945784871
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 11.795256441452167
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": -22.331172249952694
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 104.46372515628073
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": -34.405019753602616
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 72.92826910307083
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": -8.062025673346424
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 32.5204378158611
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": -3.9131518036611768
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -35.008127568249115
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": -28.727975756858193
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -10.422019544801419
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": -11.754868579761458
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -38.93794066407182
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": -1.0439261342501065
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 62.51136734441521
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": -22.112567624009895
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -22.61962408038274
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 19.219573154343355
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -8.897443349546522
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 15.921543611818286
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": 12.55247180690397
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 80.6820143817209
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 1.3841194138331494
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -15.291168744943128
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": -2.9197074329100783,
+          "late_harvest": 7.895161873940617,
+          "meals": 0.32409071417753793
+        },
+        "maxima": {
+          "harvest": 3.693327360894539,
+          "late_harvest": 49.31679838283628,
+          "meals": 6.617577307112812
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 7.273756050901135,
+          "late_harvest": 21.38408845626639,
+          "meals": 14.801265916844205
+        },
+        "new": {
+          "harvest": -6.159913402546424,
+          "late_harvest": 32.723821852640675,
+          "meals": -6.827582326204931
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 0.05056901235202449,
+        "2": -0.9741838460857135,
+        "4": -0.1429885535563587,
+        "8": -2.409660928853426,
+        "13": 0.9678520363160366,
+        "15": 2.109913000089756,
+        "19": 0.5093275431264905,
+        "28": 1.0600396534001733,
+        "29": 2.385690818137927,
+        "36": 1.6095443827800382,
+        "38": -0.12724028944137705,
+        "40": 2.0478904118879053,
+        "48": -0.5178562044451116,
+        "52": -0.6290604593065487,
+        "57": -0.9557338466368274,
+        "58": 0.46299837581675546
+      },
+      "arithmetic_totals": {
+        "mature4": {
+          "harvest": 1330347,
+          "late_harvest": 862244,
+          "meals": 314717,
+          "starved": 48711
+        },
+        "diagonal_mature4": {
+          "harvest": 1346812,
+          "late_harvest": 883719,
+          "meals": 323220,
+          "starved": 45877
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": false,
+        "starvation_rate_upper_95_below_plus1": true
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "layout_mature4_vs_baseline": {
+      "primary": {
+        "harvest": {
+          "effect": 27.08582168831755,
+          "interval": [
+            12.012060491105245,
+            44.07513497965493
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": 3.5627336050729244,
+          "interval": [
+            -34.766872365641994,
+            63.37587662321747
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 19.78606582972398,
+          "interval": [
+            7.680482978523879,
+            33.24682659145248
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 27.119514429856324,
+          "interval": [
+            17.29672191852476,
+            37.712658355311525
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": 63.1953125,
+          "interval": [
+            41.192578125000004,
+            85.72669270833335
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": -35.497395833333336,
+          "interval": [
+            -100.15104166666667,
+            28.065104166666668
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": -200.89583333333334,
+          "interval": [
+            -220.93235677083334,
+            -181.2810546875
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": -43.932291666666664,
+          "interval": [
+            -48.63548177083333,
+            -39.302083333333336
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": -0.020251909739405376,
+          "interval": [
+            -0.024967474581461643,
+            -0.015604507316788961
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": 0.006428066956970987,
+          "interval": [
+            0.0024541284619352785,
+            0.010435945716529572
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": 0.012632919105046719,
+          "interval": [
+            0.007255267032604059,
+            0.01799624625019362
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 23.492757859324602,
+          "interval": [
+            16.113460682604195,
+            31.080269526261286
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": 3.1345082180662143,
+          "interval": [
+            1.7741119579703915,
+            4.514414913981315
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": 0.06770833333333333,
+          "interval": [
+            0.0234375,
+            0.11197916666666667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": -73.48958333333333,
+          "interval": [
+            -87.93235677083334,
+            -59.479036458333326
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": -18.549479166666668,
+          "interval": [
+            -21.973958333333332,
+            -15.234309895833329
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": -52.7265625,
+          "interval": [
+            -111.38053385416666,
+            4.903645833333333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": 33.55563927617863,
+          "interval": [
+            28.898868112530725,
+            38.343604126871135
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": 22.423851606849716,
+          "interval": [
+            15.050425533090332,
+            30.474137100314437
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 131,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": 22.141761668486858,
+          "late_harvest": -1.9688841008296445,
+          "meals": 15.655327989936415
+        },
+        "2": {
+          "harvest": 40.42288923489798,
+          "late_harvest": 4.038952259236363,
+          "meals": 67.03052920616932
+        },
+        "4": {
+          "harvest": -0.8111557074326715,
+          "late_harvest": -71.62522717644178,
+          "meals": -12.568781998657341
+        },
+        "8": {
+          "harvest": -17.23253058933408,
+          "late_harvest": -54.616297423492796,
+          "meals": -33.6879202719864
+        },
+        "13": {
+          "harvest": 1.0638838654730263,
+          "late_harvest": -52.2382634542118,
+          "meals": -5.019450822974676
+        },
+        "15": {
+          "harvest": 94.44024496730145,
+          "late_harvest": 86.45153530532245,
+          "meals": 57.1396108778645
+        },
+        "19": {
+          "harvest": 28.511589806903213,
+          "late_harvest": 94.29528343932975,
+          "meals": 38.2351573345562
+        },
+        "28": {
+          "harvest": 31.250702030557008,
+          "late_harvest": 35.6710046907698,
+          "meals": 8.788410958029184
+        },
+        "29": {
+          "harvest": 34.89121499521577,
+          "late_harvest": 32.204765178534565,
+          "meals": 44.868783909575626
+        },
+        "36": {
+          "harvest": 67.1477946826141,
+          "late_harvest": 75.86990557167658,
+          "meals": 48.58241714274278
+        },
+        "38": {
+          "harvest": 18.62320197448179,
+          "late_harvest": 46.460861547753275,
+          "meals": 7.432127046779223
+        },
+        "40": {
+          "harvest": 20.560993660531864,
+          "late_harvest": 1.2996574930143199,
+          "meals": 11.09845178807273
+        },
+        "48": {
+          "harvest": 14.547350607952044,
+          "late_harvest": 20.225902458951982,
+          "meals": 18.179128156214606
+        },
+        "52": {
+          "harvest": 92.41892810446711,
+          "late_harvest": 125.766241150686,
+          "meals": 111.91852503168032
+        },
+        "57": {
+          "harvest": 14.400860731986578,
+          "late_harvest": -39.68889023498627,
+          "meals": 2.265120403061437
+        },
+        "58": {
+          "harvest": 22.005678176519567,
+          "late_harvest": 0.5647809333332626,
+          "meals": 8.62680284259067
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": 22.881390348602302,
+            "late_harvest": -5.862591340973519,
+            "meals": 14.15934210707836
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 43.310888788871445,
+            "late_harvest": 45.61564138650386,
+            "meals": 42.242948151353495
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": 41.18181516199896
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -40.80414861563507
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 51.645039745112676
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -4.39372871558049
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -22.77508589918707
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 246.72871569453596
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": -20.670064624069827
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 2.3228338278999274
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": 5.782799915144598
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -19.554711301671574
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": 116.9748578996704
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 12.375049035820423
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": 16.735105440637533
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 107.8003993542487
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": 40.44808494405623
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -6.452819808736286
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": 32.822031261416065
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 45.730820643729245
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": 43.214734250161754
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 261.96401637597995
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": 26.202654788881922
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -12.96871372923635
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": 14.763933501644786
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 54.2459560913465
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 17.319847873819217
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 1.6372338047044424
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 92.41892810446711
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": 15.90838455751257
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 7.152297434308378
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 18.940673120465455
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 38.55694530084853
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": 25.258001162183618,
+          "late_harvest": -8.466289890757254,
+          "meals": 10.964192158520195
+        },
+        "maxima": {
+          "harvest": 28.94031458543582,
+          "late_harvest": 17.172567122593936,
+          "meals": 29.309295979597028
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 32.917696076173044,
+          "late_harvest": 15.631717324474662,
+          "meals": 24.99241086020702
+        },
+        "new": {
+          "harvest": 21.50982563630255,
+          "late_harvest": -7.246557952095799,
+          "meals": 14.796582194183964
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 27.422453381809508,
+        "2": 26.24311858273125,
+        "4": 29.20303616241214,
+        "8": 30.77144707835991,
+        "13": 29.041828727389273,
+        "15": 23.533429221397476,
+        "19": 26.99133485502466,
+        "28": 26.812909173100476,
+        "29": 26.581818410781693,
+        "36": 24.78532983019387,
+        "38": 27.67100149749065,
+        "40": 27.533159816396306,
+        "48": 27.968939655906333,
+        "52": 23.619520661741017,
+        "57": 27.979857383371474,
+        "58": 27.431923472817665
+      },
+      "arithmetic_totals": {
+        "baseline": {
+          "harvest": 1079562,
+          "late_harvest": 693577,
+          "meals": 290183,
+          "starved": 34039
+        },
+        "layout_mature4": {
+          "harvest": 1356406,
+          "late_harvest": 851500,
+          "meals": 323805,
+          "starved": 58306
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": true,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "layout_mature4_vs_boundary_grid": {
+      "primary": {
+        "harvest": {
+          "effect": 16.023525771865206,
+          "interval": [
+            2.420722524015023,
+            31.46151173809176
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": 2.162617885394524,
+          "interval": [
+            -34.3199821142205,
+            58.882513258555655
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 13.164192707167954,
+          "interval": [
+            2.3751699217581805,
+            25.18333006751198
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 15.945754779142836,
+          "interval": [
+            7.281140461813089,
+            25.492202370831592
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": 32.385416666666664,
+          "interval": [
+            9.694661458333337,
+            55.239583333333336
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": -103.52083333333333,
+          "interval": [
+            -171.06035156250002,
+            -34.7755208333333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": -149.97395833333334,
+          "interval": [
+            -170.46640625,
+            -129.34361979166667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": -33.041666666666664,
+          "interval": [
+            -37.86985677083333,
+            -28.200520833333332
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": -0.015163606765492972,
+          "interval": [
+            -0.019958421990833187,
+            -0.010298410632119573
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": 0.006241694429053775,
+          "interval": [
+            0.00214310811039393,
+            0.010365465671521367
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": 0.010658222976487402,
+          "interval": [
+            0.004945293474973228,
+            0.016283947118263576
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 13.169519048801398,
+          "interval": [
+            5.391918882160527,
+            20.92192870041288
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": 2.090337172006182,
+          "interval": [
+            0.5992312510073238,
+            3.5619940688170018
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": 0.033854166666666664,
+          "interval": [
+            -0.010416666666666666,
+            0.078125
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": -57.390625,
+          "interval": [
+            -72.01569010416667,
+            -42.47649739583333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": -14.955729166666666,
+          "interval": [
+            -18.411523437499998,
+            -11.468684895833329
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": -109.07552083333333,
+          "interval": [
+            -169.39069010416668,
+            -48.03125
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": 19.940405897502604,
+          "interval": [
+            15.79659781331788,
+            24.264860410512433
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": 9.984475621611983,
+          "interval": [
+            3.66561773950429,
+            16.756670351098453
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 115,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": -3.780995534970462,
+          "late_harvest": -33.955327476544966,
+          "meals": -6.79548343052965
+        },
+        "2": {
+          "harvest": 46.416977053423466,
+          "late_harvest": 30.19729415557063,
+          "meals": 80.18162899433945
+        },
+        "4": {
+          "harvest": -3.731503986669673,
+          "late_harvest": -19.89221356143476,
+          "meals": -4.631537953598422
+        },
+        "8": {
+          "harvest": -22.68922983395079,
+          "late_harvest": -61.95365628689853,
+          "meals": -43.23440229835845
+        },
+        "13": {
+          "harvest": 11.304130608588652,
+          "late_harvest": -53.79969673217047,
+          "meals": 18.961463087383525
+        },
+        "15": {
+          "harvest": 32.69153579690821,
+          "late_harvest": -21.902313752548995,
+          "meals": 14.946409093615449
+        },
+        "19": {
+          "harvest": 5.187544677084046,
+          "late_harvest": 29.841142141771783,
+          "meals": 12.421194504457139
+        },
+        "28": {
+          "harvest": 18.05903607547024,
+          "late_harvest": 36.13707133299322,
+          "meals": 7.396516274814796
+        },
+        "29": {
+          "harvest": 18.721347953174103,
+          "late_harvest": 34.55983215191855,
+          "meals": 27.527652924391578
+        },
+        "36": {
+          "harvest": 103.13371033049997,
+          "late_harvest": 407.30470906330663,
+          "meals": 120.11235510357136
+        },
+        "38": {
+          "harvest": 1.422422583914483,
+          "late_harvest": -38.15591748538726,
+          "meals": -12.102135266785604
+        },
+        "40": {
+          "harvest": 9.83286515889336,
+          "late_harvest": 1.0649772121232044,
+          "meals": 0.1922203907198669
+        },
+        "48": {
+          "harvest": 9.326661544861386,
+          "late_harvest": 18.859689809087392,
+          "meals": 12.00883657744867
+        },
+        "52": {
+          "harvest": 32.79659252669516,
+          "late_harvest": 36.447168535521485,
+          "meals": 34.604807452567144
+        },
+        "57": {
+          "harvest": 7.79349213088307,
+          "late_harvest": -10.002492029715635,
+          "meals": 2.124144245503271
+        },
+        "58": {
+          "harvest": 33.37048603493879,
+          "late_harvest": 35.288321390438874,
+          "meals": 26.608981718569307
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": 14.864795924689433,
+            "late_harvest": 0.6891215028038873,
+            "meals": 11.890355051203679
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 20.258095422905487,
+            "late_harvest": 7.603352771443195,
+            "meals": 17.83315907431354
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": 7.865028982619967
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -45.654719794307425
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 54.58075463465153
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 11.627577783297948
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -12.372882122008056
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 54.06801368168922
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": -26.749028038840205
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 1.244872980649226
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": 8.44628246400254
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 26.763536099558838
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": 44.2059795922686
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -12.47281138676177
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": -3.9964869505070477
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 66.09259844871522
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": 27.7590779834168
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -20.450665018067774
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": 18.007792095650668
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 22.35437110343281
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": 59.076508109843715
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 589.7024377248928
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": 5.698458085876751
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -17.498732673151835
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": 8.004351478922349
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 19.450400559728827
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 11.155976006308023
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 0.6218822464076891
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 32.79659252669516
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": 16.811770931572287
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -27.868957343269667
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 39.956565529186655
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 4.807417605504077
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": 10.46303614054259,
+          "late_harvest": -10.38744203364523,
+          "meals": 4.430380071233894
+        },
+        "maxima": {
+          "harvest": 21.863919396598856,
+          "late_harvest": 16.47028865213067,
+          "meals": 22.62843917957344
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 16.111687678007055,
+          "late_harvest": -3.3218492776594797,
+          "meals": 10.646315670149583
+        },
+        "new": {
+          "harvest": 15.93543080576919,
+          "late_harvest": 7.958214086787339,
+          "meals": 15.739366769714438
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 17.480306842638075,
+        "2": 14.237765682373963,
+        "4": 17.476279441563594,
+        "8": 19.206461355058,
+        "13": 16.345175038733416,
+        "15": 14.989869578675835,
+        "19": 16.78440209126733,
+        "28": 15.889079663014554,
+        "29": 15.84586628441906,
+        "36": 11.771306993804922,
+        "38": 17.068538730786933,
+        "40": 16.44843115825117,
+        "48": 16.484298972697964,
+        "52": 14.983802695169798,
+        "57": 16.594024536756137,
+        "58": 14.950751236886395
+      },
+      "arithmetic_totals": {
+        "boundary_grid": {
+          "harvest": 1231916,
+          "late_harvest": 805434,
+          "meals": 312519,
+          "starved": 45870
+        },
+        "layout_mature4": {
+          "harvest": 1356406,
+          "late_harvest": 851500,
+          "meals": 323805,
+          "starved": 58306
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": true,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "layout_mature4_vs_mature4": {
+      "primary": {
+        "harvest": {
+          "effect": 1.9226016879954122,
+          "interval": [
+            -9.998005286552301,
+            15.954062244136558
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": 2.648862980495072,
+          "interval": [
+            -31.843971369666836,
+            56.75399314527259
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 7.393693644473899,
+          "interval": [
+            -3.761015588822586,
+            20.081028405900334
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 2.1080175335967968,
+          "interval": [
+            -5.890278895410755,
+            10.836926169903524
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": 24.986979166666668,
+          "interval": [
+            -1.297070312499999,
+            52.15110677083334
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": -206.48177083333334,
+          "interval": [
+            -258.79694010416665,
+            -154.54941406249998
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": -84.88541666666667,
+          "interval": [
+            -107.182421875,
+            -62.627278645833314
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": -24.356770833333332,
+          "interval": [
+            -29.690104166666668,
+            -19.013020833333332
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": -0.02538202171147352,
+          "interval": [
+            -0.031171428178021994,
+            -0.01947673878946381
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": 0.004689284911916278,
+          "interval": [
+            0.0004323002563137257,
+            0.00891255168855514
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": 0.007668389558483843,
+          "interval": [
+            0.001823809674754764,
+            0.013407604408642299
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 5.829379303669213,
+          "interval": [
+            -2.5363664343486634,
+            14.126215835172948
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": 1.5154410803884861,
+          "interval": [
+            -0.04838703426853411,
+            3.037848261706658
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": -0.005208333333333333,
+          "interval": [
+            -0.049479166666666664,
+            0.0390625
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": 22.317708333333332,
+          "interval": [
+            4.827994791666668,
+            39.526171875
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": 6.3828125,
+          "interval": [
+            2.2057291666666665,
+            10.505273437500005
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": -96.06770833333333,
+          "interval": [
+            -143.06790364583335,
+            -49.12949218749996
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": 3.8725296337896333,
+          "interval": [
+            0.17552217211598334,
+            7.739528124594358
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": -0.9626292485093363,
+          "interval": [
+            -6.099305694579565,
+            4.5727458496879505
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 95,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": 2.9122226958915283,
+          "late_harvest": -1.2626126438806853,
+          "meals": 22.30123144819157
+        },
+        "2": {
+          "harvest": 29.105425830985453,
+          "late_harvest": 36.725038705453095,
+          "meals": 42.43720578126503
+        },
+        "4": {
+          "harvest": 1.741770707984816,
+          "late_harvest": -10.982015001931657,
+          "meals": 14.473013599038353
+        },
+        "8": {
+          "harvest": 20.66147017969958,
+          "late_harvest": -11.534863816900568,
+          "meals": 9.257113847984863
+        },
+        "13": {
+          "harvest": -26.68537368494955,
+          "late_harvest": -28.353193289095273,
+          "meals": -37.32612237482267
+        },
+        "15": {
+          "harvest": -2.112872199493391,
+          "late_harvest": -33.13114632187594,
+          "meals": -10.30422806942908
+        },
+        "19": {
+          "harvest": 11.352442787674653,
+          "late_harvest": 98.46318689979987,
+          "meals": 37.14872589878661
+        },
+        "28": {
+          "harvest": -18.617699139150627,
+          "late_harvest": -34.30951955364394,
+          "meals": -12.316875910149855
+        },
+        "29": {
+          "harvest": -17.043558463446793,
+          "late_harvest": 19.838211103158475,
+          "meals": -21.587498454538927
+        },
+        "36": {
+          "harvest": 18.544994917165678,
+          "late_harvest": 50.20959534286327,
+          "meals": 36.07790539770257
+        },
+        "38": {
+          "harvest": 1.6270223775692871,
+          "late_harvest": 6.757312277066816,
+          "meals": 8.967319338025446
+        },
+        "40": {
+          "harvest": -14.636882960057001,
+          "late_harvest": -49.76539082891051,
+          "meals": -23.78405104513467
+        },
+        "48": {
+          "harvest": 3.9083169567573752,
+          "late_harvest": -6.125108409057947,
+          "meals": 6.225774309661545
+        },
+        "52": {
+          "harvest": 42.118807901753726,
+          "late_harvest": 70.25600338382552,
+          "meals": 62.94963282077553
+        },
+        "57": {
+          "harvest": -7.715981882054608,
+          "late_harvest": -3.091562656350104,
+          "meals": -5.53241829430011
+        },
+        "58": {
+          "harvest": 9.966795491891594,
+          "late_harvest": 53.029955417875655,
+          "meals": 46.691815919984116
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": -3.0372119916610907,
+            "late_harvest": -10.23840955116649,
+            "meals": 0.7341648463842385
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 21.799905945117107,
+            "late_harvest": 65.7442395579265,
+            "meals": 34.980675944417946
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": 10.972374798760017
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -29.412573403849922
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 15.093497823578303
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 129.30473457833128
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -2.2327969855858263
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 24.173749992403437
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": 18.984742309378237
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 29.406265368747555
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": -39.07049697505664
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 84.9292349193858
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": 2.1393637190365142
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -20.861507441234316
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": -3.8318284960431095
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 131.76171687414754
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": -8.256005852445846
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -55.301642239914926
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": -21.123890907716795
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 6.751329342085219
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": 11.37414612994037
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 61.94867418159902
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": -2.9105654202892643
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 27.701308533309476
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": -16.263068617796243
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -6.019796436204756
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 6.52170003545552
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -8.227741894009522
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 42.118807901753726
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": -9.23249766913803
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 0.2552327360313955
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 11.76585436052728
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 1.3966731898773708
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": 3.737640023319208,
+          "late_harvest": -3.4995238754435034,
+          "meals": 7.837759537022413
+        },
+        "maxima": {
+          "harvest": 0.13932004347308816,
+          "late_harvest": 9.188985322603536,
+          "meals": 6.951456374086786
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 9.54684681342249,
+          "late_harvest": 3.1649236223624597,
+          "meals": 18.163989487759434
+        },
+        "new": {
+          "harvest": -5.171010969008338,
+          "late_harvest": 2.135383822495779,
+          "meals": -2.3949217980842192
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 1.856966330595533,
+        "2": 0.3287885096414153,
+        "4": 1.934668507918201,
+        "8": 0.7822291843101853,
+        "13": 4.185950778972616,
+        "15": 2.1974741100481183,
+        "19": 1.3231192439123993,
+        "28": 3.463350146774685,
+        "29": 3.3312921122235974,
+        "36": 0.90119728235906,
+        "38": 1.9423375142810901,
+        "40": 3.1344721202545145,
+        "48": 1.7915780127467598,
+        "52": -0.31149172635018024,
+        "57": 2.5998599589207916,
+        "58": 1.4077382226083899
+      },
+      "arithmetic_totals": {
+        "mature4": {
+          "harvest": 1330347,
+          "late_harvest": 862244,
+          "meals": 314717,
+          "starved": 48711
+        },
+        "layout_mature4": {
+          "harvest": 1356406,
+          "late_harvest": 851500,
+          "meals": 323805,
+          "starved": 58306
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": true,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "diagonal_mature4_vs_boundary_mature4": {
+      "primary": {
+        "harvest": {
+          "effect": 37.70106338237255,
+          "interval": [
+            19.307185857562096,
+            58.67327425764608
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": 31.88179697632563,
+          "interval": [
+            -18.449243188896958,
+            112.39119483629648
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 42.56036590738229,
+          "interval": [
+            26.682336489289682,
+            60.4961119341245
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 38.27453498122903,
+          "interval": [
+            26.185244277591007,
+            51.61244621435254
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": 40.1875,
+          "interval": [
+            22.825390625,
+            58.013020833333336
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": -170.46875,
+          "interval": [
+            -242.70345052083334,
+            -98.29427083333333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": -193.10677083333334,
+          "interval": [
+            -211.59902343750002,
+            -174.341015625
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": -46.864583333333336,
+          "interval": [
+            -51.111979166666664,
+            -42.5390625
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": -0.00558411188938513,
+          "interval": [
+            -0.011835600315545992,
+            0.0006361349118045106
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": 0.0025934144450735137,
+          "interval": [
+            -0.0015339406850586302,
+            0.006755295894920627
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": 0.0070446017876884546,
+          "interval": [
+            0.001493229093125778,
+            0.012663026385634043
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 34.068398962778886,
+          "interval": [
+            26.191424312657414,
+            41.88395264575693
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": 0.11287405828683772,
+          "interval": [
+            -1.3084880518916653,
+            1.5467260255035213
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": 0.125,
+          "interval": [
+            0.08072916666666667,
+            0.16927083333333334
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": -24.322916666666668,
+          "interval": [
+            -39.38548177083333,
+            -9.387955729166663
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": -4.888020833333333,
+          "interval": [
+            -8.177083333333334,
+            -1.6041666666666667
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": -62.432291666666664,
+          "interval": [
+            -126.768359375,
+            2.1641276041666706
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": 38.66780710259231,
+          "interval": [
+            32.752675291389316,
+            44.9152021369863
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": 29.879450192505626,
+          "interval": [
+            20.226750178692715,
+            40.84462428194768
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 125,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": 50.054978223057724,
+          "late_harvest": 16.030466311181407,
+          "meals": 70.32820824318887
+        },
+        "2": {
+          "harvest": 48.16777923943148,
+          "late_harvest": -37.93963820502605,
+          "meals": 67.09339737227286
+        },
+        "4": {
+          "harvest": 22.73675065617683,
+          "late_harvest": -54.361005883990934,
+          "meals": 14.656329832915032
+        },
+        "8": {
+          "harvest": 62.072605408884925,
+          "late_harvest": 102.45998303355313,
+          "meals": 93.21781854089988
+        },
+        "13": {
+          "harvest": 41.56276796772359,
+          "late_harvest": 267.7987730716127,
+          "meals": 35.158575410836775
+        },
+        "15": {
+          "harvest": 214.74391555192992,
+          "late_harvest": 513.6121199875691,
+          "meals": 156.11152539571785
+        },
+        "19": {
+          "harvest": 7.292237842293399,
+          "late_harvest": 23.59872048103257,
+          "meals": 9.698985608130647
+        },
+        "28": {
+          "harvest": -1.2426081095381385,
+          "late_harvest": -12.653585788024483,
+          "meals": 13.803780259616783
+        },
+        "29": {
+          "harvest": 13.297918311149997,
+          "late_harvest": -19.905713923971884,
+          "meals": 27.91467633168204
+        },
+        "36": {
+          "harvest": 10.105635821028121,
+          "late_harvest": -24.246889671242,
+          "meals": -0.9953254428821138
+        },
+        "38": {
+          "harvest": 10.778437922302361,
+          "late_harvest": -25.309565891296554,
+          "meals": 13.213070233856808
+        },
+        "40": {
+          "harvest": -14.700639115715072,
+          "late_harvest": -56.583344140016415,
+          "meals": -27.60419722785042
+        },
+        "48": {
+          "harvest": 1.1804746143132698,
+          "late_harvest": -37.84035389348904,
+          "meals": 1.11100080933355
+        },
+        "52": {
+          "harvest": 160.79920794477448,
+          "late_harvest": 405.8884808827974,
+          "meals": 185.51155522263372
+        },
+        "57": {
+          "harvest": 74.39416028158776,
+          "late_harvest": 180.84748824071664,
+          "meals": 80.75446890290662
+        },
+        "58": {
+          "harvest": 47.53551365281679,
+          "late_harvest": 197.28678931501827,
+          "meals": 97.22435334892992
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": 35.047269040588006,
+            "late_harvest": 19.284205818802153,
+            "meals": 39.15321005319849
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 47.61183506679609,
+            "late_harvest": 88.7582631845737,
+            "meals": 55.42422185651276
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": 51.91786238110383
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 41.07765902684434
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 39.88643105087843
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 97.53528329758137
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": 18.095586648497076
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 48.826198914533514
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": 74.51231750681667
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 11.976593772145131
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": 52.36563694799915
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -1.992543824125736
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": 225.97060234226777
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 164.15077246346792
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": 6.558040919841296
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 11.039803661314345
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": 6.8854497335625275
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -33.49952805258789
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": 11.720982707031395
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 21.522822144019138
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": 30.99931122781027
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -53.813799786062056
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": 8.351191801781436
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 23.755057998969423
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": -21.05646185333088
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 25.629527974619563
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": 3.3174186785077073
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -8.85926256273074
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 160.79920794477448
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": 71.07045125739889
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 92.00680635723529
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 65.33699435543929
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -16.530224313139385
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": 28.18712799187993,
+          "late_harvest": 0.28252156353284535,
+          "meals": 25.78015056747556
+        },
+        "maxima": {
+          "harvest": 47.921114652301995,
+          "late_harvest": 73.43808375107277,
+          "meals": 61.57921449413497
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 60.3033276683569,
+          "late_harvest": 70.982016686273,
+          "meals": 75.80559265979514
+        },
+        "new": {
+          "harvest": 18.285647169251547,
+          "late_harvest": 1.7230274316978766,
+          "meals": 15.601885128734502
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 36.91459721814316,
+        "2": 37.030169698394005,
+        "4": 38.76122938065051,
+        "8": 36.21318233264976,
+        "13": 37.44739418181416,
+        "15": 30.317465252862945,
+        "19": 40.010914873429456,
+        "28": 40.78675734245047,
+        "29": 39.503461847555776,
+        "36": 39.769521079111655,
+        "38": 39.71276827742639,
+        "40": 42.168504559301944,
+        "48": 40.559433945090646,
+        "52": 31.96113100903739,
+        "57": 35.54941609824536,
+        "58": 37.069241270464715
+      },
+      "arithmetic_totals": {
+        "boundary_mature4": {
+          "harvest": 969098,
+          "late_harvest": 635816,
+          "meals": 241557,
+          "starved": 30445
+        },
+        "diagonal_mature4": {
+          "harvest": 1346812,
+          "late_harvest": 883719,
+          "meals": 323220,
+          "starved": 45877
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": true,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "layout_mature4_vs_boundary_mature4": {
+      "primary": {
+        "harvest": {
+          "effect": 39.883616390729465,
+          "interval": [
+            22.074813513244482,
+            60.59207897972261
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": 6.655603899555912,
+          "interval": [
+            -34.46087152073806,
+            73.01452798364409
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 48.03368834089298,
+          "interval": [
+            31.704272392702332,
+            66.27811693482172
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 40.64389671185573,
+          "interval": [
+            28.770992915981918,
+            53.437857473970695
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": 72.5546875,
+          "interval": [
+            51.33326822916667,
+            94.75540364583334
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": -429.265625,
+          "interval": [
+            -504.31022135416663,
+            -356.00253906250003
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": -339.5286458333333,
+          "interval": [
+            -363.9244791666667,
+            -315.8333333333333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": -83.36458333333333,
+          "interval": [
+            -89.01575520833333,
+            -77.8125
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": -0.02863468003621763,
+          "interval": [
+            -0.03510345162150841,
+            -0.022210333918661413
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": 0.007822053998205665,
+          "interval": [
+            0.0033777745332252704,
+            0.012311305322650228
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": 0.015036569454842039,
+          "interval": [
+            0.008951253565887883,
+            0.02113745108867626
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 38.44003809663639,
+          "interval": [
+            30.626853357319266,
+            46.35770704507411
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": 2.4233495234094495,
+          "interval": [
+            0.8035758124336435,
+            4.050765244652536
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": 0.11979166666666667,
+          "interval": [
+            0.07291666666666667,
+            0.16666666666666666
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": -70.2265625,
+          "interval": [
+            -87.81009114583333,
+            -53.79160156249999
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": -16.471354166666668,
+          "interval": [
+            -20.427083333333332,
+            -12.7578125
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": -257.9088541666667,
+          "interval": [
+            -324.8363932291667,
+            -192.778515625
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": 49.050582308852526,
+          "interval": [
+            42.88571765751344,
+            55.34193997703287
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": 27.572278126584866,
+          "interval": [
+            17.176861561211233,
+            39.68618248896613
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 129,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": 47.55560594694891,
+          "late_harvest": -2.827753631328172,
+          "meals": 67.10308372300616
+        },
+        "2": {
+          "harvest": 56.62808099368022,
+          "late_harvest": -58.61296331797728,
+          "meals": 86.39489815968622
+        },
+        "4": {
+          "harvest": 15.903694665886878,
+          "late_harvest": -75.03953360254847,
+          "meals": 17.74529155876902
+        },
+        "8": {
+          "harvest": 28.625043326448633,
+          "late_harvest": -18.31438212266503,
+          "meals": 17.677266822345636
+        },
+        "13": {
+          "harvest": 13.718555439462076,
+          "late_harvest": -5.656901487470896,
+          "meals": 3.2440790538874333
+        },
+        "15": {
+          "harvest": 299.61927283908074,
+          "late_harvest": 718.9985193754795,
+          "meals": 256.94066732501966
+        },
+        "19": {
+          "harvest": 22.266777660922457,
+          "late_harvest": 54.46367832224269,
+          "meals": 33.40115535274876
+        },
+        "28": {
+          "harvest": -10.723646205342101,
+          "late_harvest": -37.205717242126404,
+          "meals": -3.003696751427784
+        },
+        "29": {
+          "harvest": 26.94217124957468,
+          "late_harvest": 29.261360433708983,
+          "meals": 66.3588427547947
+        },
+        "36": {
+          "harvest": 57.273385351335385,
+          "late_harvest": 38.43993169454198,
+          "meals": 53.39005363634462
+        },
+        "38": {
+          "harvest": 4.740610409988877,
+          "late_harvest": -34.10933465361557,
+          "meals": 4.663925638261843
+        },
+        "40": {
+          "harvest": -6.411731224179771,
+          "late_harvest": -62.79445920642333,
+          "meals": -17.354701760905673
+        },
+        "48": {
+          "harvest": -7.770689960674318,
+          "late_harvest": -33.88795963817479,
+          "meals": -0.16442752238256433
+        },
+        "52": {
+          "harvest": 219.73756887631865,
+          "late_harvest": 554.5543933152912,
+          "meals": 310.61429946665726
+        },
+        "57": {
+          "harvest": 32.14277285190638,
+          "late_harvest": -11.646823311970847,
+          "meals": 29.2329222210041
+        },
+        "58": {
+          "harvest": 64.89029052056719,
+          "late_harvest": 172.00956887689668,
+          "meals": 120.99761375024711
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": 36.48438774731548,
+            "late_harvest": -6.8607126871067665,
+            "meals": 43.868716312760945
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 52.7297181270711,
+            "late_harvest": 73.04736698181789,
+            "meals": 63.91757829133597
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": 65.64200910385641
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -17.228307449380196
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 50.864112661453774
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 88.92439858328135
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": 12.028538351128788
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 37.38532094239343
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": 28.42772958124311
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 29.616168610475913
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": 19.52752225380254
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -11.356188619050437
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": 407.5758814056341
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 20.88534771913208
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": 11.460928189431748
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 94.1947669511421
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": 2.0545294063282022
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -54.2640983387367
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": 23.640608127456748
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 44.820442963256966
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": 65.33417987818369
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 22.494949752408935
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": 6.307329475748196
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -2.7533697960292027
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": -15.127647231393478
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 52.57988181581135
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": -7.686743126804947
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -8.189280437479916
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 219.73756887631865
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": 37.95909884490955
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 6.539032809201273
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 82.26750440183845
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -0.08647928255146137
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": 36.97764796140232,
+          "late_harvest": -10.308201871382186,
+          "meals": 35.20032461663862
+        },
+        "maxima": {
+          "harvest": 42.851234677810226,
+          "late_harvest": 26.827849151453577,
+          "meals": 62.085209084710705
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 63.700095216530336,
+          "late_harvest": 45.31844261113481,
+          "meals": 80.95523631236632
+        },
+        "new": {
+          "harvest": 19.532160984185236,
+          "late_harvest": -21.72075588768152,
+          "meals": 21.10162342017316
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 39.386568778971665,
+        "2": 38.83319975613261,
+        "4": 41.64834009932271,
+        "8": 40.66831092538033,
+        "13": 41.82818744895058,
+        "15": 30.42921485257606,
+        "19": 41.14453822290964,
+        "28": 44.134809573675746,
+        "29": 40.79187093087967,
+        "36": 38.79515065372477,
+        "38": 42.60791651365776,
+        "40": 43.68228104146602,
+        "48": 43.822459387817574,
+        "52": 32.38285117559442,
+        "57": 40.41550964352535,
+        "58": 38.35822105497487
+      },
+      "arithmetic_totals": {
+        "boundary_mature4": {
+          "harvest": 969098,
+          "late_harvest": 635816,
+          "meals": 241557,
+          "starved": 30445
+        },
+        "layout_mature4": {
+          "harvest": 1356406,
+          "late_harvest": 851500,
+          "meals": 323805,
+          "starved": 58306
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": true,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    },
+    "layout_mature4_vs_diagonal_mature4": {
+      "primary": {
+        "harvest": {
+          "effect": 1.5849935757549931,
+          "interval": [
+            -10.00424572829281,
+            14.882412957682655
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        },
+        "late_harvest": {
+          "effect": -19.127880916953323,
+          "interval": [
+            -47.14001506335999,
+            22.40310621939901
+          ],
+          "unit": "percent",
+          "confidence": 0.9979166666666667,
+          "available_blocks": 192
+        }
+      },
+      "secondary": {
+        "meals": {
+          "effect": 3.8393016170192427,
+          "interval": [
+            -6.262760701546849,
+            15.225090764183053
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "delivered": {
+          "effect": 1.713519941288059,
+          "interval": [
+            -5.743460289668081,
+            9.971416219014518
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starved": {
+          "effect": 32.3671875,
+          "interval": [
+            10.153580729166668,
+            55.54433593750001
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_net": {
+          "effect": -258.796875,
+          "interval": [
+            -330.368359375,
+            -190.43450520833332
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_stock": {
+          "effect": -146.421875,
+          "interval": [
+            -163.02089843750002,
+            -130.200390625
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "fixed_tiles": {
+          "effect": -36.5,
+          "interval": [
+            -40.4427734375,
+            -32.640625
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "blocked_fraction": {
+          "effect": -0.02267261382707083,
+          "interval": [
+            -0.02721843760844433,
+            -0.018126109413516847
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 190
+        },
+        "critical_fraction": {
+          "effect": 0.0052286395531321505,
+          "interval": [
+            0.0013453906694317094,
+            0.009207665348963095
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "unserved_fraction": {
+          "effect": 0.007991967667153583,
+          "interval": [
+            0.0025716994757649207,
+            0.013470826469138298
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "mean_population": {
+          "effect": 4.371639133857511,
+          "interval": [
+            -2.78291778140445,
+            11.75272880824276
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "starvation_per_1000_unit_minutes": {
+          "effect": 2.3104754651226123,
+          "interval": [
+            0.9627106055589885,
+            3.68470373212887
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "won": {
+          "effect": -0.005208333333333333,
+          "interval": [
+            -0.046875,
+            0.0390625
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_stock": {
+          "effect": -45.903645833333336,
+          "interval": [
+            -58.640690104166666,
+            -33.44524739583333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_tiles": {
+          "effect": -11.583333333333334,
+          "interval": [
+            -14.643229166666666,
+            -8.596354166666666
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "late_fixed_net": {
+          "effect": -195.4765625,
+          "interval": [
+            -262.9973958333333,
+            -131.23157552083333
+          ],
+          "unit": "difference",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_harvest": {
+          "effect": 7.487516694180217,
+          "interval": [
+            4.011620026111041,
+            11.001710800471836
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        },
+        "common_late_harvest": {
+          "effect": -1.7763950051383082,
+          "interval": [
+            -6.591162430244858,
+            3.4640395870638803
+          ],
+          "unit": "percent",
+          "confidence": 0.95,
+          "available_blocks": 192
+        }
+      },
+      "positive_maps": 96,
+      "zero_maps": 0,
+      "common_duration_min_tick": 9216,
+      "common_starts_reaching_late_window": 189,
+      "common_starts_reaching_full_horizon": 18,
+      "by_family": {
+        "1": {
+          "harvest": -1.6656376920687481,
+          "late_harvest": -16.25281750737245,
+          "meals": -1.8934764555134578
+        },
+        "2": {
+          "harvest": 5.7099470597972015,
+          "late_harvest": -33.31164130375001,
+          "meals": 11.55132464295457
+        },
+        "4": {
+          "harvest": -5.5672453065271705,
+          "late_harvest": -45.30890331630689,
+          "meals": 2.6941048351673555
+        },
+        "8": {
+          "harvest": -20.637393961831542,
+          "late_harvest": -59.65345020117015,
+          "meals": -39.09605868082192
+        },
+        "13": {
+          "harvest": -19.66916367064114,
+          "late_harvest": -74.34926230867008,
+          "meals": -23.61263150335816
+        },
+        "15": {
+          "harvest": 26.96648071442931,
+          "late_harvest": 33.4716986020536,
+          "meals": 39.369232514433165
+        },
+        "19": {
+          "harvest": 13.9567783464819,
+          "late_harvest": 24.971907250404474,
+          "meals": 21.60655325409076
+        },
+        "28": {
+          "harvest": -9.600332607325223,
+          "late_harvest": -28.10891743594407,
+          "meals": -14.768821363141221
+        },
+        "29": {
+          "harvest": 12.042809913729819,
+          "late_harvest": 61.38649430124129,
+          "meals": 30.054539108106066
+        },
+        "36": {
+          "harvest": 42.83863326213052,
+          "late_harvest": 82.7514818780798,
+          "meals": 54.932132571023864
+        },
+        "38": {
+          "harvest": -5.450363469241449,
+          "late_harvest": -11.781654327396135,
+          "meals": -7.551375983299057
+        },
+        "40": {
+          "harvest": 9.717432587542874,
+          "late_harvest": -14.305834807815321,
+          "meals": 14.15758244880972
+        },
+        "48": {
+          "harvest": -8.846731159453695,
+          "late_harvest": 6.358456817051028,
+          "meals": -1.2614140118355737
+        },
+        "52": {
+          "harvest": 22.599133408420734,
+          "late_harvest": 29.3870918296193,
+          "meals": 43.81705116854977
+        },
+        "57": {
+          "harvest": -24.22752422527201,
+          "late_harvest": -68.54051384205333,
+          "meals": -28.50360878744172
+        },
+        "58": {
+          "harvest": 11.763118206637339,
+          "late_harvest": -8.502638309749026,
+          "meals": 12.05391727625923
+        }
+      },
+      "by_size": {
+        "128": {
+          "maps": 150,
+          "effects": {
+            "harvest": 1.0641597693438432,
+            "late_harvest": -21.918172926954117,
+            "meals": 3.3887154006434472
+          }
+        },
+        "256": {
+          "maps": 42,
+          "effects": {
+            "harvest": 3.4671224417466973,
+            "late_harvest": -8.32328923655819,
+            "meals": 5.464628571641985
+          }
+        }
+      },
+      "by_family_size": {
+        "1": {
+          "128": {
+            "maps": 10,
+            "harvest": 9.03392564089926
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -41.32898637418561
+          }
+        },
+        "2": {
+          "128": {
+            "maps": 10,
+            "harvest": 7.847567150085223
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -4.35916286475665
+          }
+        },
+        "4": {
+          "128": {
+            "maps": 10,
+            "harvest": -5.13740476638337
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -7.687408571598501
+          }
+        },
+        "8": {
+          "128": {
+            "maps": 10,
+            "harvest": -26.4076419269221
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 15.752912500825447
+          }
+        },
+        "13": {
+          "128": {
+            "maps": 10,
+            "harvest": -21.552178924309505
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -9.554012684628455
+          }
+        },
+        "15": {
+          "128": {
+            "maps": 10,
+            "harvest": 55.712164765300344
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -54.23623160676142
+          }
+        },
+        "19": {
+          "128": {
+            "maps": 10,
+            "harvest": 4.601142464019839
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 74.88752730819039
+          }
+        },
+        "28": {
+          "128": {
+            "maps": 10,
+            "harvest": -4.519717453850406
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -31.22469612331356
+          }
+        },
+        "29": {
+          "128": {
+            "maps": 10,
+            "harvest": 10.66910183889312
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 19.17139546975576
+          }
+        },
+        "36": {
+          "128": {
+            "maps": 10,
+            "harvest": 26.209961204043626
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 165.21980415146328
+          }
+        },
+        "38": {
+          "128": {
+            "maps": 10,
+            "harvest": -1.8863311903133475
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -21.420076256777616
+          }
+        },
+        "40": {
+          "128": {
+            "maps": 10,
+            "harvest": 7.510196225208777
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 21.45224476735792
+          }
+        },
+        "48": {
+          "128": {
+            "maps": 10,
+            "harvest": -10.65082920775852
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 0.735107202431807
+          }
+        },
+        "52": {
+          "256": {
+            "maps": 12,
+            "harvest": 22.599133408420734
+          }
+        },
+        "57": {
+          "128": {
+            "maps": 10,
+            "harvest": -19.355389647431725
+          },
+          "256": {
+            "maps": 2,
+            "harvest": -44.512887417656586
+          }
+        },
+        "58": {
+          "128": {
+            "maps": 10,
+            "harvest": 10.240001103444625
+          },
+          "256": {
+            "maps": 2,
+            "harvest": 19.700238673549492
+          }
+        }
+      },
+      "by_opponent": {
+        "nicowar": {
+          "harvest": 6.857568390235894,
+          "late_harvest": -10.560886652820557,
+          "meals": 7.489396384614396
+        },
+        "maxima": {
+          "harvest": -3.4274214241887258,
+          "late_harvest": -26.874279046184917,
+          "meals": 0.313155743552708
+        }
+      },
+      "old_vs_new_families": {
+        "old": {
+          "harvest": 2.1189625927172515,
+          "late_harvest": -15.009516540109063,
+          "meals": 2.929169416433963
+        },
+        "new": {
+          "harvest": 1.0538166250636438,
+          "late_harvest": -23.04668265513505,
+          "meals": 4.757481493761226
+        }
+      },
+      "leave_one_family_out_harvest": {
+        "1": 1.8054843026634806,
+        "2": 1.3157905749566752,
+        "4": 2.0806321272581556,
+        "8": 3.270702964600438,
+        "13": 3.1872508702067828,
+        "15": 0.08575182113639084,
+        "19": 0.8096678394716416,
+        "28": 2.378101672646288,
+        "29": 0.9235678213719236,
+        "36": -0.6971265393657484,
+        "38": 2.0722144954443174,
+        "40": 1.0647762574815836,
+        "48": 2.3214560212312807,
+        "52": 0.3195790785759039,
+        "57": 3.5899037305723747,
+        "58": 0.9403858754618348
+      },
+      "arithmetic_totals": {
+        "diagonal_mature4": {
+          "harvest": 1346812,
+          "late_harvest": 883719,
+          "meals": 323220,
+          "starved": 45877
+        },
+        "layout_mature4": {
+          "harvest": 1356406,
+          "late_harvest": 851500,
+          "meals": 323805,
+          "starved": 58306
+        }
+      },
+      "feeding_guard": {
+        "meals_lower_95_above_minus5": false,
+        "starvation_rate_upper_95_below_plus1": false
+      },
+      "both_adjusted_primary_intervals_positive": false
+    }
+  }
+}

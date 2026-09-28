@@ -1,0 +1,12 @@
+[
+  {
+    "case": "arena",
+    "ticks": 4096,
+    "matches": true
+  },
+  {
+    "case": "rice",
+    "ticks": 4096,
+    "matches": true
+  }
+]
