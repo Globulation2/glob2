@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "BuildingGradientSearch.h"
 #include "Map.h"
 #include "FileFormatVersions.h"
 #include "MapInternal.h"
@@ -413,6 +414,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
+				// Materialize the old full-field representation from its frozen inputs.
+				// This changes no routing answers, timestamps, RNG or save bytes.
+				finishBuildingGradient(building, sw);
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
@@ -516,6 +520,9 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->readEnterSection(sw);
+				// Existing saves contain complete fields; discard any previous queue
+				// before replacing its buffer, including when reusing a loaded object.
+				building->globalGradientSearch[sw].reset();
 				loadGradient(stream, building->globalGradient[sw], size);
 				building->dirtyGradient[sw]=loadFlag(stream,"dirty");
 				building->lastGlobalGradientUpdateStepCounter[sw]=stream->readUint32("lastUpdate");

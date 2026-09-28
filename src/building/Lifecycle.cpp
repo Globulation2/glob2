@@ -18,6 +18,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "Bullet.h"
+#include "BuildingGradientSearch.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -159,6 +160,7 @@ void Building::resetPathfindGradients()
 	dirtyGradients();
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
+		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
@@ -181,6 +183,7 @@ void Building::freeIdleGradients()
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
+			globalGradientSearch[c].reset();
 			delete[] globalGradient[c];
 			globalGradient[c] = NULL;
 		}

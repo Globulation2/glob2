@@ -3,6 +3,7 @@
 #define SDL_MAIN_HANDLED
 #include "GlobalContainer.h"
 #include "Map.h"
+#include "BuildingGradientSearch.h"
 #ifdef main
 #undef main
 #endif
@@ -38,6 +39,7 @@ struct PathMap : Map
 		tiles.assign(size, Tile());
 		for (size_t i = 0; i < size; ++i) tiles[i].terrain = terrain[i];
 	}
+	void changeTerrain() { for (auto &tile : tiles) tile.terrain = tile.terrain == 256 ? 0 : 256; }
 	~PathMap()
 	{
 		// Map::clear expects zero geometry when setSize has not built its arrays.
@@ -129,6 +131,90 @@ void check(int widthShift, int heightShift, const std::vector<Uint16>& seeds,
 	++cases; cellsChecked += actual.size();
 }
 
+void lazyBuildingChecks()
+{
+	std::mt19937 random(0xA975B13u);
+	for (int swim = 0; swim < 7; ++swim)
+	{
+		// Stop near a source, change live terrain, then resume far away. The
+		// snapshot must still equal the original eager solve, for every class.
+		std::vector<Uint16> terrain(4096, 256), seeds(4096, Unreached);
+		seeds[0] = Goal;
+		PathMap map(6, 6, terrain);
+		const auto expected = oracle(seeds, terrain, 64, 64, swim, CostLimit);
+		auto actual = seeds;
+		BuildingGradientSearch search;
+		search.begin(map, actual.data(), swim);
+		search.resolve(1);
+		require(actual[1] == expected[1] && !search.complete(), "nearby lazy query must stop early");
+		map.changeTerrain();
+		search.resolve(32 + 32 * 64);
+		require(actual[32 + 32 * 64] == expected[32 + 32 * 64], "lazy weighted terrain snapshot changed during a pause");
+		search.finish();
+		require(search.complete() && actual == expected, "completed lazy field differs from eager snapshot");
+	}
+	for (int trial = 0; trial < 140; ++trial)
+	{
+		const int ws = random() % 7, hs = random() % 7, swim = trial % 7;
+		const int w = 1 << ws, h = 1 << hs;
+		const size_t size = size_t(w) * h;
+		std::vector<Uint16> seeds(size, Unreached), terrain(size), secondSeeds(size, Unreached);
+		for (size_t i = 0; i < size; ++i)
+		{
+			terrain[i] = random() % 2 ? 256 : 0;
+			if (random() % 4 == 0) seeds[i] = secondSeeds[i] = Blocked;
+			if (trial % 11 != 0 && random() % 17 == 0) seeds[i] = Goal;
+			if (random() % 23 == 0) secondSeeds[i] = Goal;
+		}
+		PathMap map(ws, hs, terrain), other(ws, hs, terrain);
+		auto first = seeds, second = secondSeeds;
+		const auto expected = oracle(seeds, terrain, w, h, swim, CostLimit);
+		const auto otherExpected = oracle(secondSeeds, terrain, w, h, (swim + 1) % 7, CostLimit);
+		BuildingGradientSearch a, b;
+		a.begin(map, first.data(), swim);
+		b.begin(other, second.data(), (swim + 1) % 7);
+		for (size_t i = 0; i < size; ++i)
+		{
+			const size_t target = (i * 73 + 19) & (size - 1);
+			a.resolve(target);
+			require(a.resolved(target) && first[target] == expected[target], "lazy scalar query disagrees with heap oracle");
+			// Every equal/better neighbor used by directionByGradient must be final.
+			if (expected[target] > Unreached && expected[target] != Goal)
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+					{
+						const size_t n = (((target / w + dy) & (h - 1)) * w) + ((target % w + dx) & (w - 1));
+						if (expected[n] >= expected[target])
+							require(first[n] == expected[n], "equal/better neighbor was not settled before movement");
+					}
+			a.resolve(target); // repeated queries do not consume/drop queue entries
+			b.resolve(size - 1 - target);
+			require(second[size - 1 - target] == otherExpected[size - 1 - target], "interleaved Map queues contaminated one another");
+		}
+		a.finish(); b.finish();
+		require(first == expected && second == otherExpected, "lazy final fields differ from oracle");
+		// Reuse retained bucket capacities for a completely different field.
+		first = secondSeeds;
+		a.begin(map, first.data(), (swim + 1) % 7);
+		a.finish();
+		require(first == otherExpected, "rebuild retained stale frontier entries");
+	}
+	// Unreachable includes cells beyond the representable distance, not just
+	// disconnected components. Exercise the limit without wraparound shortcuts.
+	std::vector<Uint16> terrain(65536, 0), seeds(65536, Blocked);
+	for (int y = 1; y < 253; ++y)
+		if (y % 2) for (int x = 1; x < 254; ++x) seeds[y * 256 + x] = Unreached;
+		else seeds[y * 256 + ((y / 2) % 2 ? 253 : 1)] = Unreached;
+	seeds[257] = Goal;
+	const auto expected = oracle(seeds, terrain, 256, 256, 0, CostLimit);
+	PathMap map(8, 8, terrain);
+	BuildingGradientSearch search;
+	search.begin(map, seeds.data(), 0);
+	search.finish();
+	require(seeds == expected, "lazy distance limit differs from eager oracle");
+	std::puts("PASS lazy building gradients: paused terrain snapshots, query ordering, equal-cost movement, unreachable cells, toroidal geometry, independent frontiers and rebuilds");
+}
+
 void analyticOracleCheck()
 {
 	const int width = 32, height = 16;
@@ -147,6 +233,7 @@ void analyticOracleCheck()
 int main()
 {
 	analyticOracleCheck();
+	lazyBuildingChecks();
 	std::mt19937 random(0x71A6D19u);
 	constexpr int caps[] = {INT_MIN, -1, 0, 1, 4, 5, 7, 9, 10, 13, 14, 29, 30, 41, 42, 43, 44, 120, 65490, 65491, 65492, INT_MAX};
 	constexpr Uint16 terrainKinds[] = {0, 255, 256, 257, 271, 272, 65535};

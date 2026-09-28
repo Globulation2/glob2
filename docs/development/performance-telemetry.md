@@ -109,3 +109,38 @@ remain required before claiming cross-platform verification.
 Structured tournament runs include requested final-save serialization before the
 performance final export. All records pass through verified worker log artifacts
 and the [offline tournament readers](../tools/tournaments.md#gameplay-ai-and-performance-telemetry).
+
+## Lazy building gradients
+
+Building fields propagate lazily in all game entry points. There is no runtime
+mode switch; point queries extend the retained search only as far as needed.
+
+Initialization and seed scanning remain eager. Ordinary buildings initialize each
+cell directly in one pass; flags first paint their goal region and then apply their
+special obstacle rules. Each building/swim-class field retains its bucket queue
+and, for weighted swimming, a snapshot of water costs. Obstacles remain frozen in
+the initialized field. Queries finish a whole cost layer, including equal-cost
+neighbors needed for movement sidesteps. An unknown
+cell requires exhausting the search before it can be reported as unreachable.
+The public `buildingGradient` API always completes the field before returning an
+array. Point-distance and movement queries resolve internally; callers do not
+receive partial arrays or need a separate resolve call. Preparing a field applies
+the existing refresh/use policy, while reading a prepared field only extends it.
+The queues share the eager solver's expansion kernel and are freed with their
+field, including the existing idle-field eviction; no separate cache is added.
+
+Round-trip construction, forbidden-area escape and gradient debug rendering finish
+the relevant cached fields. Reading an already-cached round-trip field does not
+force completion. Existing refresh deadlines and use timestamps are preserved.
+
+Saving finishes pending fields from their original snapshots without refreshing
+them, then writes the existing complete-field representation. Loaded fields start
+complete; no format or version change is needed. This trades some play-time work
+for save-time work: include autosaves when evaluating latency. Retained queues and
+water snapshots also add memory.
+
+`gradient.building` measures initialization and search setup.
+`gradient.building_resume` measures actual lazy extensions and completion, including
+those nested in round-trip construction or saving. Sum these two scopes to compare
+building-field construction, but do not then add inclusive round-trip/save timings
+to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
