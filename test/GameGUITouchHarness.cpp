@@ -902,6 +902,29 @@ public:
               gui.handleMapClick(int(center.first + 30 * unit), y, SDL_BUTTON_LEFT);
               require(gui.selectionMode != GameGUI::BUILDING_SELECTION,
                       "Clicks outside the halo must not select a flag");
+
+              // The larger target belongs to touch presentation only. Check
+              // both a near miss and an exact desktop hit at every zoom.
+              SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+              gui.clearSelection();
+              gui.updateCamera();
+              // Switching presentation preserves the camera centre; reset the
+              // fixture origin so the flag stays inside the desktop viewport.
+              gui.camera.originX = gui.camera.originY = 0;
+              gui.viewportX = gui.viewportY = 0;
+              const auto desktopCenter = gui.camera.worldToScreen(80, 80);
+              gui.handleMapClick(int(desktopCenter.first + 20 * unit),
+                                 int(desktopCenter.second), SDL_BUTTON_LEFT);
+              require(gui.selectionMode != GameGUI::BUILDING_SELECTION,
+                      "Desktop must not use the touch flag selection halo");
+              gui.clearSelection();
+              gui.handleMapClick(int(desktopCenter.first), int(desktopCenter.second), SDL_BUTTON_LEFT);
+              require(gui.selectionMode == GameGUI::BUILDING_SELECTION &&
+                      gui.selectionBuilding() == rangeFlag && gui.selectionPushed,
+                      "Desktop exact flag hits retain selection and dragging");
+              gui.clearSelection();
+              SDL_setenv("GLOB2_MOBILE_UI", "1", 1);
+              gui.updateCamera();
           }
           gui.camera.zoom = 1;
           gui.viewportX = gui.game.map.getW() - 2; gui.viewportY = 0;

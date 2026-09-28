@@ -125,9 +125,10 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				}
 			}
         // Keep exact flag hits above units/buildings as before. The extra
-        // selection halo only claims otherwise empty ground, so it cannot
+        // touch-only selection halo claims otherwise empty ground, so it cannot
         // steal direct clicks from a neighbouring building or unit.
-        if (!torusView.active() && !view.mouseUnit && game.map.getBuilding(mapX, mapY) == NOGBID)
+        if (touch->usesHUD() && !torusView.active() && !view.mouseUnit &&
+            game.map.getBuilding(mapX, mapY) == NOGBID)
         {
             constexpr double flagSelectionRadiusPoints = 24;
             const double radius = flagSelectionRadiusPoints *
