@@ -866,7 +866,7 @@ jobs:
     timeout-minutes: 90
     env:
       CCACHE: 1
-      CCACHE_DIR: /tmp/glob2-native-ccache
+      CCACHE_DIR: /tmp/glob2-ccache
       CCACHE_COMPILERCHECK: content
       CCACHE_MAXSIZE: 500M
     steps:
