@@ -117,8 +117,11 @@ the default is false. Legacy entry points and regression harnesses can instead s
 `GLOB2_LAZY_BUILDING_GRADIENTS=1`. The structured headless command clears that ambient
 variable and uses its explicit argument.
 
-Initialization and seed scanning remain eager. Each building/swim-class field
-retains its bucket queue and, for weighted swimming, a snapshot of water costs.
+Initialization and seed scanning remain eager. Ordinary buildings initialize each
+cell directly in one pass; flags first paint their goal region and then apply their
+special obstacle rules. This initialization is shared by eager and lazy modes.
+Each building/swim-class field retains its bucket queue and, for weighted swimming,
+a snapshot of water costs.
 Obstacles remain frozen in the initialized field. Queries finish a whole cost
 layer, including equal-cost neighbors needed for movement sidesteps. An unknown
 cell requires exhausting the search before it can be reported as unreachable.
