@@ -1,3 +1,4 @@
+const {campaignFrame,clickCampaignFooter}=require('./editor-controls');
 const {editTextField}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL}=require('./main-menu');
@@ -21,10 +22,10 @@ test('campaign authoring waits for durable persistence before closing',async({pa
       return sync.call(FS,populate,callback);
     };
   });
-  await click(page,630,660);
+  await clickCampaignFooter(page,true);
   await expect.poll(()=>page.evaluate(()=>typeof window.releaseCampaignWrite)).toBe('function');
   await screen(page,'CampaignEditor');
-  await click(page,820,660); // Cancel cannot complete a pending save.
+  await clickCampaignFooter(page,false); // Cancel cannot complete a pending save.
   await screen(page,'CampaignEditor');
   await page.evaluate(()=>window.releaseCampaignWrite());
   await screen(page,'EditorMainMenu');
@@ -43,15 +44,15 @@ test('campaign authoring retains the editor on quota failure and can retry',asyn
       return put.apply(this,args);
     };
   });
-  await click(page,630,660);
+  await clickCampaignFooter(page,true);
   await expect.poll(async()=>(await state(page)).persistence).toBe('failed');
   await screen(page,'CampaignEditor');
-  await expect.poll(()=>require('./pixels').hasLightText(page,{x:610,y:548,width:290,height:65})).toBe(true);
+  await expect.poll(()=>require('./pixels').hasLightText(page,{x:campaignFrame(page).x,y:campaignFrame(page).y+34,width:campaignFrame(page).w,height:48})).toBe(true);
   await page.screenshot({path:info.outputPath('campaign-editor-save-failure.png')});
   const restored=await context.newPage();await restored.goto(gameURL());await screen(restored,'MainMenuScreen');
   expect(await digest(restored)).toBeNull();await restored.close();
   await page.evaluate(()=>window.failCampaignWrite=false);
-  await click(page,630,660);await screen(page,'EditorMainMenu');
+  await clickCampaignFooter(page,true);await screen(page,'EditorMainMenu');
   const saved=await digest(page);expect(saved?.size).toBeGreaterThan(0);
   await page.reload();await screen(page,'MainMenuScreen');
   expect(await digest(page)).toEqual(saved);

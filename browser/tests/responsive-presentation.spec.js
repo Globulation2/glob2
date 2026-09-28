@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone}=require('./main-menu');
+const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile}=require('./main-menu');
 const snapshot=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await snapshot(page)).screen).toContain(name);
 async function matchFrame(page) {
@@ -15,7 +15,8 @@ test.describe('responsive mixed input',()=>{
     expect(await page.evaluate(()=>Module.presentationMetrics.touch)).toBe(true);
     await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
     const canvas=page.locator('#canvas');
-    for(let i=0;i<6;++i) await canvas.press('Tab');
+    // Touch settings omit the desktop keyboard-controls category.
+    for(let i=0;i<5;++i) await canvas.press('Tab');
     await canvas.press('Enter');
     const field=page.locator('input[aria-label="Game text field"]');
     await expect(field).toBeVisible();
@@ -54,9 +55,9 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);
     expect((await snapshot(page)).screenClass).toContain('GameSessionScreen');
     await page.screenshot({path:info.outputPath('phone-gameplay-mouse.png')});
-    // A real touch selects the first construction row and starts a preview.
+    // A real touch selects the first icon in the content-sized palette.
     await touchMatch(page,32,820);
-    await touchMatch(page,180,540);
+    await touchMatch(page,50,698);
     await touchMatch(page,195,400);
     await page.screenshot({path:info.outputPath('phone-placement-preview.png')});
     await page.setViewportSize({width:844,height:390});
@@ -77,7 +78,7 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(digest).not.toBeNull();
     await expect.poll(async()=>(await snapshot(page)).persisting).toBe(false);
     const saved=await digest();
-    const bytes=await page.evaluate(()=>Array.from(FS.readFile('/home/web_user/.glob2/games/Responsive_phone.game')));
+    const bytes=await readBrowserFile(page,'/home/web_user/.glob2/games/Responsive_phone.game');
     require('node:fs').writeFileSync(info.outputPath('Responsive_phone.game'),Buffer.from(bytes));
     await page.reload();await screen(page,'MainMenuScreen');
     expect(await digest()).toEqual(saved);

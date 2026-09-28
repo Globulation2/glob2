@@ -1,3 +1,4 @@
+const {clickCreateMap,clickCampaignFooter,campaignFrame,chooseEditorLandscape}=require('./editor-controls');
 const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile}=require('./main-menu');
 const {darkShare}=require('./pixels');
@@ -184,19 +185,20 @@ test('editor setup and campaign entry dialogs return to their retained parents',
   await screen(page, 'EditorMainMenu');
   await menu(page, 320, 210);
   await screen(page, 'CampaignEditor');
-  await menu(page, 80, 380);
+  const campaign=campaignFrame(page);
+  await click(page,campaign.x+(campaign.w+20)/2+74,campaign.footer-34);
   await screen(page, 'ChooseMapScreen');
   await menu(page, 100, 70);
   await menu(page, 530, 380);
   await screen(page, 'CampaignMapEntryEditor');
-  await menu(page, 350, 450);
+  await clickCampaignFooter(page,true);
   await screen(page, 'CampaignEditor');
-  await menu(page, 100, 60);
-  await menu(page, 240, 380);
+  await click(page,campaign.x+(campaign.w+20)/2+80,campaign.y+44);
+  await click(page,campaign.x+(campaign.w+20)/2+230,campaign.footer-34);
   await screen(page, 'CampaignMapEntryEditor');
-  await menu(page, 540, 450);
+  await clickCampaignFooter(page,false);
   await screen(page, 'CampaignEditor');
-  await menu(page, 540, 450);
+  await clickCampaignFooter(page,false);
   await screen(page, 'EditorMainMenu');
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'MainMenuScreen');
@@ -210,7 +212,7 @@ test('map editor frames resume after cancelling quit and can discard a new map',
   await screen(page, 'EditorMainMenu');
   await menu(page, 320, 90);
   await screen(page, 'NewMapScreen');
-  await menu(page, 160, 440);
+  await clickCreateMap(page);
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await click(page, 600, 525);
@@ -231,7 +233,7 @@ test('editor save cancellation keeps edits open and completed fertility saves th
   await screen(page, 'EditorMainMenu');
   await menu(page, 320, 90);
   await screen(page, 'NewMapScreen');
-  await menu(page, 160, 440);
+  await clickCreateMap(page);
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await click(page, 600, 525);
@@ -342,7 +344,7 @@ test('cancelling an editor replacement preserves edits and a completed load repl
   await screen(page, 'EditorMainMenu');
   await menu(page, 320, 90);
   await screen(page, 'NewMapScreen');
-  await menu(page, 160, 440);
+  await clickCreateMap(page);
   await screen(page, 'MapEditorScreen');
   for (const cancel of [true, false]) {
     await page.locator('#canvas').press('Escape', {delay:80});
@@ -368,23 +370,23 @@ test('cancelling an editor replacement preserves edits and a completed load repl
 });
 
 
-for (const terrain of [{name:'swamp', y:140}, {name:'concrete islands', y:235}]) {
-test(`map generation can be cancelled before retrying (${terrain.name})`, async ({page}) => {
+for (const terrain of [{name:'swamp'}, {name:'concrete islands'}]) {
+test(`map generation can be cancelled before retrying (${terrain.name})`, async ({page},info) => {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'editor');
   await screen(page, 'EditorMainMenu');
   await menu(page, 320, 90);
   await screen(page, 'NewMapScreen');
-  await menu(page, 110, 60); // 256 columns.
-  await menu(page, 110, 85); // 256 rows.
-  await menu(page, 100, 235); // Concrete islands keep substantial work pending.
+  // The preview starts at 256 × 256; choose a partition generator first.
+  await chooseEditorLandscape(page,'concrete islands');
   await holdLoader(page, 'EditorGenerateScreen');
-  await menu(page, 160, 440);
+  await clickCreateMap(page);
   await cancelHeldLoader(page, 'EditorGenerateScreen');
   await screen(page, 'NewMapScreen');
-  await menu(page, 100, terrain.y); // Exercise height-map and partition jobs.
-  await menu(page, 160, 440);
+  await chooseEditorLandscape(page,terrain.name); // Exercise height-map and partition jobs.
+  await page.screenshot({path:info.outputPath('selected-editor-landscape.png')});
+  await clickCreateMap(page);
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await click(page, 600, 525);

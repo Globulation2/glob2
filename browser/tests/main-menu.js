@@ -49,13 +49,27 @@ exports.clickMainMenu = async (page, action) => {
   const {width, height} = page.viewportSize();
   const touch = await page.evaluate(() => Boolean(Module.presentationMetrics?.touch));
   if (touch || width < 640 || height < 480) {
-    const names=['custom','campaign','load','tutorial','yog','settings','editor','credits','quit'];
-    const index=names.indexOf(action),available=Math.min(width,640)-16;
-    const columns=available>=456 ? 2 : 1;
-    const buttonWidth=(available-(columns-1)*8)/columns;
-    return page.locator('#canvas').click({position:{
-      x:(width-Math.min(width,640))/2+8+(index%columns)*(buttonWidth+8)+buttonWidth/2,
-      y:56+Math.floor(index/columns)*56+24},delay:80});
+    // MainMenuScreen::renderMobile uses a centred play card and a settings
+    // button in its header; utilities live in the More card.
+    const w=Math.min(440,width-24), x=(width-w)/2;
+    const top=(height-Math.min(height-24,420))/2;
+    const click=(x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
+    if(action==='settings') return click(x+w-60,top+32);
+    const landscape=width>height && height<480;
+    if(action==='custom') return click(width/2,top+100);
+    const index=['campaign','load','tutorial','more'].indexOf(action);
+    const secondary=index>=0?index:3;
+    if(landscape) {
+      const half=Math.floor((w-32)/2);
+      await click(x+12+(secondary%2)*(half+8)+half/2,top+160+Math.floor(secondary/2)*56);
+    } else {
+      await click(width/2,top+148+secondary*64+24+(secondary===3?12:0));
+    }
+    if(index>=0) return;
+    const moreTop=(height-Math.min(height-24,596))/2;
+    const utility=['yog','editor','credits'].indexOf(action);
+    if(utility<0) throw new Error('Unavailable mobile menu action: '+action);
+    return click(width/2,moreTop+72+64+utility*64+28);
   }
   return page.locator('#canvas').click({position: point(width, height, action), delay: 80});
 };
@@ -124,3 +138,18 @@ exports.editTextField = async (page, value, password = false) => {
   await expect(field).toHaveValue(value);
   if (password) await expect(field).toHaveAttribute('type', 'password');
 };
+
+// EndGameScreen::drawResults places Save replay in the middle footer slot.
+exports.clickResultsSave = page => {
+  const {width,height}=page.viewportSize();
+  return page.locator('#canvas').click({position:{x:width/2,y:height-32},delay:80});
+};
+
+// Export binary evidence compactly: tracing a JS number per byte can consume
+// minutes and hundreds of MB for a replay. This leaves the exact bytes intact.
+exports.readBrowserFile = async (page,path) => Buffer.from(await page.evaluate(path=>{
+  const data=FS.readFile(path),parts=[];
+  for(let at=0;at<data.length;at+=32768)
+    parts.push(String.fromCharCode(...data.subarray(at,at+32768)));
+  return btoa(parts.join(''));
+},path),'base64');

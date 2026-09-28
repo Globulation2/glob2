@@ -1,6 +1,6 @@
-const {editTextField}=require('./main-menu');
+const {editTextField,readBrowserFile}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
+const {clickMainMenu,gameURL,clickCustomGameStart,clickResultsSave}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
 const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
@@ -13,7 +13,7 @@ async function endMatch(page) {
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(50);
   await page.locator('#canvas').press('Escape');await click(page,600,500);
   await screen(page,'EndGameScreen');
-  await click(page,1060,815);await screen(page,'LoadSaveScreen');
+  await clickResultsSave(page);await screen(page,'LoadSaveScreen');
   await editTextField(page,'AAA review replay');
 }
 
@@ -35,7 +35,7 @@ test('end-game replay save remains scheduled during resize and durable persisten
   await page.evaluate(()=>releaseReplaySave());await screen(page,'EndGameScreen');
   const saved=await digest(page);expect(saved).not.toBeNull();
   for (const name of ['AAA_review_replay.replay']) {
-    const bytes = await page.evaluate(name => Array.from(FS.readFile('/home/web_user/.glob2/replays/' + name)), name);
+    const bytes = await readBrowserFile(page,'/home/web_user/.glob2/replays/' + name);
     const file = info.outputPath(name);
     require('node:fs').writeFileSync(file, Buffer.from(bytes));
     await info.attach(name, {path:file, contentType:'application/octet-stream'});
