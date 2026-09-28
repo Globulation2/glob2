@@ -27,6 +27,7 @@ struct Plot
 {
 	std::vector<int> tiles;
 	int type, minimum, extra;
+	int home = -1;
 };
 struct Grove
 {
@@ -42,7 +43,7 @@ struct Layout
 	std::vector<Plot> plots;
 	std::vector<Grove> groves;
 	std::vector<int> plotOf, groveOf;
-	std::vector<unsigned char> woodland;
+	std::vector<unsigned char> woodland, wheatland;
 	std::string failure;
 };
 std::string validateRequest(const GenerationRequest &r)
@@ -80,6 +81,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	L.plotOf.assign(t.size(), -1);
 	L.groveOf.assign(t.size(), -1);
 	L.woodland.assign(t.size(), 0);
+	L.wheatland.assign(t.size(), 0);
 	const bool vertical = t.h > t.w || (t.h == t.w && c.bounded("orchard-heading", 2));
 	const int length = vertical ? t.h : t.w, breadth = vertical ? t.w : t.h;
 	const int pairs = (r.nbTeams + 1) / 2;
@@ -198,23 +200,46 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	const double elongation = 1.05 + .05 * farmForm;
 	const Stretch fieldStretch =
 		vertical ? Stretch{1 / elongation, elongation} : Stretch{elongation, 1 / elongation};
-	const Stretch pocketStretch = vertical ? Stretch{.8, 1.25} : Stretch{1.25, .8};
+
 	c.telemetry.measure("orchard.farm.form", farmForm);
-	for (const ShapePoint h : L.homes)
+	for (size_t home = 0; home < L.homes.size(); ++home)
 	{
+		const ShapePoint h = L.homes[home];
 		// Farm on the outside of town; open ground faces the orchards. The pond is between
 		// wheat and wood, keeping both renewable and the wheat close to the starting swarm.
 		const double along = vertical ? h.y : h.x;
 		const double across = vertical ? h.x : h.y;
 		const int side = across < valley(along) ? -1 : 1;
-		const ShapePoint wheat = at(along - 16, across + side * 8);
+		const ShapePoint wheat = at(along - 18, across + side * 11);
 		const ShapePoint wood = at(along + 16, across + side * 8);
-		addPlot(L, c, wheat, 9.0, WHEAT, 48, 32, fieldStretch);
+		const int foodFloor = std::min(t.w, t.h) == 128 ? 48 : 64;
+		addPlot(L, c, wheat, 10.0, WHEAT, foodFloor, 160 - foodFloor, fieldStretch);
+		L.plots.back().home = int(home);
 		addPlot(L, c, wood, 7.0, WOOD, 28, 18, fieldStretch);
 		const ShapePoint pond = at(along - 2 * farmForm, across + side * (16 + farmForm));
 		RadialShape shape(7.0, .2, c, "orchard-home-ponds");
 		fillShape(L.terrain, t, pond.x, pond.y, shape, 0, WATER);
 		addPlot(L, c, at(along + 14, across - 3 * side), 3.0, STONE, 4, 3);
+	}
+	// Backwaters irrigate the whole outer edge of the home farms. Broad gravel
+	// crossings leave frequent routes between the towns and their wider countryside.
+	for (int side : {-1, 1})
+	{
+		std::vector<ShapePoint> points;
+		for (int x = 0; x <= length; x += 8)
+			points.push_back(
+				at(x, valley(x) + side * (65 + 3 * std::sin(x * 2 * kPi / length + phase))));
+		auto path = splinePath(points, 1.);
+		for (auto &p : path)
+			p.halfWidth = 3.5;
+		std::vector<unsigned char> water(t.size(), 0);
+		strokePath(water, t, path);
+		for (int i = 0; i < t.size(); ++i)
+			if (water[i])
+			{
+				const int along = vertical ? i / t.w : i % t.w;
+				L.terrain[i] = along % 32 < 8 ? SAND : WATER;
+			}
 	}
 	// Two separate 8x8 courts per grove, with farm pockets toward the stream. The courts
 	// face one another across the fruit; their grass joins the valley's open ground.
@@ -225,7 +250,18 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		for (int side : {-1, 1})
 		{
 			L.courts.push_back(at(along, across + side * 10));
-			addPlot(L, c, at(along, across + side * 21), 3.5, WHEAT, 8, 6, pocketStretch);
+			std::vector<int> corners;
+			for (int dy = -3; dy <= 3; ++dy)
+				for (int dx = -6; dx <= 6; ++dx)
+					if (std::abs(dx) < 6 || std::abs(dy) < 2)
+					{
+						const auto p = at(along + dx, across + side * 21 + dy);
+						corners.push_back(t.at(int(p.x), int(p.y)));
+					}
+			auto tiles = stampContainedPlot(L.terrain, t, corners);
+			for (int i : tiles)
+				L.plotOf[i] = int(L.plots.size());
+			L.plots.push_back({std::move(tiles), WHEAT, 16, 24});
 		}
 	}
 	// Beyond the working valley, broad lake basins and sandy uplands make the spare
@@ -266,7 +302,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 				L.terrain[i] = WATER;
 				++lakeCorners;
 			}
-			else if (dry > 1 - .48 * freedom)
+			else if (dry > 1 - .28 * freedom)
 			{
 				if (swale)
 					++swaleCorners;
@@ -277,6 +313,8 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 				}
 			}
 		}
+		L.wheatland[i] = homeDistance2 >= 32 * 32 && std::abs(across - valley(along)) > 62 &&
+						 forest[i] < sorted[sorted.size() / 4];
 		L.woodland[i] = !swale && homeDistance2 >= 27 * 27 &&
 						std::abs(across - valley(along)) > 55 && forest[i] > threshold;
 	}
@@ -350,9 +388,88 @@ bool generate(Game &game, GenerationContext &c)
 		const Plot &p = L.plots[k];
 		const int amount = p.type == WHEAT ? o.wheat : p.type == WOOD ? o.wood : o.stone;
 		const int wanted = p.minimum + (p.type == STONE ? 0 : int(scaledCount(p.extra, amount)));
-		const int placed = plantContainedPlot(game.map, t, p.tiles, fertility, p.type, wanted,
-											  p.minimum > 0 && p.type != STONE);
+		std::vector<int> seedTiles = p.tiles;
+		int nearby = 0;
+		if (p.home >= 0)
+		{
+			// Dense grain must leave an opening inn site, with a harvesting edge and
+			// an unseeded approach. This is ordinary grass and may regrow if unused.
+			const auto h = L.homes[p.home];
+			int court = -1, best = t.size();
+			std::vector<int> opening;
+			for (int anchor : p.tiles)
+			{
+				const int x = anchor % t.w, y = anchor / t.w;
+				const int distance = t.dist2(x + 1, y + 1, int(h.x), int(h.y));
+				if (distance >= best)
+					continue;
+				bool fits = true;
+				std::vector<int> clear;
+				for (int dy = 0; dy < 3; ++dy)
+					for (int dx = 0; dx < 3; ++dx)
+					{
+						const int i = t.at(x + dx, y + dy);
+						fits &= L.plotOf[i] == int(k) && clearGround(game.map, x + dx, y + dy);
+						clear.push_back(i);
+					}
+				if (!fits)
+					continue;
+				const int dx = t.offsetX(x + 1, int(h.x)), dy = t.offsetY(y + 1, int(h.y));
+				const int sx = std::abs(dx) >= std::abs(dy) ? (dx > 0 ? 1 : -1) : 0;
+				const int sy = sx ? 0 : (dy > 0 ? 1 : -1);
+				for (int step = 1; step < 32; ++step)
+				{
+					const int i = t.at(x + 1 + step * sx, y + 1 + step * sy);
+					if (L.plotOf[i] != int(k))
+						break;
+					clear.push_back(i);
+				}
+				int remaining = 0;
+				for (int i : p.tiles)
+					remaining += fertility.at(i % t.w, i / t.w) > 0 &&
+								 std::find(clear.begin(), clear.end(), i) == clear.end();
+				if (remaining < p.minimum)
+					continue;
+				court = anchor;
+				best = distance;
+				opening = std::move(clear);
+			}
+			if (court >= 0)
+			{
+				seedTiles.erase(
+					std::remove_if(
+						seedTiles.begin(), seedTiles.end(), [&](int i)
+						{ return std::find(opening.begin(), opening.end(), i) != opening.end(); }),
+					seedTiles.end());
+				const auto eligible = [&](int i)
+				{
+					return L.plotOf[i] == int(k) && fertility.at(i % t.w, i / t.w) > 0 &&
+						   std::find(opening.begin(), opening.end(), i) == opening.end() &&
+						   clearGround(game.map, i % t.w, i / t.w);
+				};
+				const int seed = seedNear(t, court % t.w + 1, court / t.w + 1, 8, eligible);
+				if (seed >= 0)
+					nearby = growPatch(game.map, t, seed, WHEAT, 24, eligible);
+			}
+			c.telemetry.measure("orchard.home.inn-court", court >= 0 ? 1 : 0, p.home);
+			if (court < 0)
+			{
+				c.detail = "An orchard home farm lacks opening inn room beside its grain.";
+				return false;
+			}
+		}
+		const int placed =
+			nearby + plantContainedPlot(game.map, t, seedTiles, fertility, p.type, wanted - nearby,
+										p.minimum > 0 && p.type != STONE);
 		c.telemetry.measure("orchard.plot.planted", placed, int(k));
+		if (c.telemetry.enabled())
+		{
+			double potential = 0;
+			for (int i : p.tiles)
+				potential += fertility.at(i % t.w, i / t.w) / double(Fertility::kScale);
+			c.telemetry.measure("orchard.plot.growth-potential", potential, int(k));
+			c.telemetry.measure("orchard.plot.resource", p.type, int(k));
+		}
 		if (placed < wanted)
 			c.telemetry.fallback("orchard.plot.saturated", "Plot capacity reached", int(k));
 		if (placed < p.minimum)
@@ -424,6 +541,19 @@ bool generate(Game &game, GenerationContext &c)
 		game.map.setResource(i % t.w, i / t.w, WOOD, 1);
 		++trees;
 	}
+	// Broad open grain fields use the dry gaps between woods and water. These
+	// are finite harvest reserves; the existing irrigated farms provide renewal.
+	std::vector<int> grain;
+	for (int i = 0; i < t.size(); ++i)
+		if (L.wheatland[i] && fertility.at(i % t.w, i / t.w) == 0 &&
+			clearGround(game.map, i % t.w, i / t.w))
+			grain.push_back(i);
+	c.shuffle(grain.begin(), grain.end(), "orchard-open-grain");
+	const int grainCount =
+		std::min(int(grain.size()), int(scaledCount(grain.size() * 3 / 5, o.wheat)));
+	for (int k = 0; k < grainCount; ++k)
+		game.map.setResource(grain[k] % t.w, grain[k] / t.w, WHEAT, 1);
+	c.telemetry.measure("orchard.country.wheat", grainCount);
 	c.telemetry.measure("orchard.woodland.tiles", trees);
 	seedAlgae(game.map, c, t, "orchard-algae", o.algae, AlgaeBand::anyWater(25));
 	// Pick the actual swarm anchor after deposits, beaches and fords exist. Geometric
@@ -695,7 +825,7 @@ GeneratorDefinition orchardCommonsDefinition()
 	return {"orchard-commons",
 			58,
 			"Orchard Commons",
-			1,
+			2,
 			false,
 			{GeneratorControl::choice("orchard-spacing", "Orchard spacing",
 									  {"Compact", "Balanced", "Spread"}, 1, ControlGroup::Layout),

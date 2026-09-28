@@ -2612,6 +2612,24 @@ inline void siteOperationChecks()
 	writeUndermap(contained.map, terrain);
 	assert(cropSpreadEnvelope(contained.map).steps[t.at(0, 0)] >= 0);
 
+	// Dry open fields need no sand seal: they are finite harvest stock, not
+	// sources that can spread through the surrounding construction ground.
+	{
+		Game dryField(nullptr);
+		grassMap(dryField, 6, 6);
+		const auto dry = cropGrowthField(TerrainSketch(t.size(), GRASS), t);
+		dryField.map.setResource(4, 4, WHEAT, 1);
+		const auto envelope = cropSpreadEnvelope(dryField.map, &dry);
+		assert(envelope.visited.size() == 1 && envelope.steps[t.at(4, 4)] == 0);
+		std::vector<int> labels(t.size(), -1);
+		std::vector<unsigned char> allowed(t.size(), 0);
+		assert(!containedPlotsMismatch(dryField.map, t, labels, &dry).empty());
+		allowed[t.at(4, 4)] = 1;
+		assert(containedPlotsMismatch(dryField.map, t, labels, &dry, &allowed).empty());
+		allowed[t.at(4, 4)] = 0;
+		assert(!containedPlotsMismatch(dryField.map, t, labels, &dry, &allowed).empty());
+	}
+
 	// Exercise actual engine growth, not just our conservative reachability proof.
 	// Irrigated wood outside a sand ring must spread, while the grass inside it stays
 	// empty: terrain is the only containment a generated map may use, because the saved

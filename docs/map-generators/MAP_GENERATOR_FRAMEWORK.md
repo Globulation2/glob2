@@ -245,7 +245,7 @@ were counts of their own until that audit and are percentages since.
 | Stone highlands | The ponds' farmland (wheat and wood) and algae, how much of the ridgeline is two tiles thick (stone, 0 to 200), and the valleys' fruit groves (four per 128×128 at 100); kits are unscaled | Fruit in home valleys (off) |
 | Symmetric arena | The farmland's wheat and wood, stone outcrops and algae, on top of Resource richness; fruit (0 to 100) keeps that share of the orchard's groves nearest the centre, never fewer than three | Moat (on); Stone in the orchard (on) |
 | Ring world | The ambient scatter's wheat, wood, stone and fruit, and the shallows' algae; starter patches and island prizes are unscaled | Winding belt (on); Colonies on both coasts (on) |
-| City states | Every home's ambient fields, outcrops and grove, everything on the commons (farmland, outcrops, groves, the orchard), the sea's algae and the islets' prizes; every home's kit and the walls' stone are unscaled | Stone walls (on): off, the causeways are plain roads and the homes' coasts are open |
+| City states | Every home's ambient fields, outcrops and grove, everything on the commons (farmland, outcrops, groves, the orchard), the sea's algae; every home's kit, the islets' full wheat cover and the walls' stone are unscaled | Stone walls (on): off, the causeways are plain roads and the homes' coasts are open |
 | Tidal flats | Every island's ambient fields and outcrops and every island's prize; each home's kit is unscaled | Central island (on): off, the middle of the map is flats and there is no orchard |
 | Everglades | The swamp's standing wood and wheat, its outcrops and groves, and the pools' algae; every home's kit is unscaled | None |
 | Spider web | The threads' standing wheat and wood, the share of knots carrying stone, whether the dew drops and the hub carry fruit and stone, and the shallows' algae; every pad's kit is unscaled | Spiral (on): off, the capture threads are closed rings; Sand roads (on): off, the threads are grass from shore to shore |
@@ -362,6 +362,14 @@ editor's fertility tool, and old-save-format migration) is a thin wrapper over t
 gameplay fertility and generation-time fertility scoring are the same computation. The field
 takes plain terrain/sand masks, not a live `Game`, so a generator or the scoring pass below can
 evaluate a candidate's growth potential without needing a finished map.
+
+A zero-growth crop is finite stock and needs no sand ring to stop it spreading.
+`cropSpreadEnvelope` optionally accepts the finished fertility field to include
+those seeds without starting a spread flood from them; renewable seeds still use
+the conservative grass-component flood. `containedPlotsMismatch` can additionally
+accept an explicit mask for finite wheat, while retaining the existing sealed-plot
+checks. Keep these reserves separate from renewable capacity in economy budgets;
+see [sustained economies](GAME_RULES_FOR_MAP_DESIGN.md#from-a-viable-opening-to-a-sustained-economy).
 
 ## Colony placement and fairness
 
@@ -716,8 +724,10 @@ shape.
   lie wholly in the sea - too near a home's outer coast, or another islet - is left out with its
   mirror images, so the symmetry holds. Every islet carries the farms' 10x4 building plot
   (`stampFarmPlot`, a clearing of grass in a two-vertex ring of sand) at its middle, kept clear of
-  everything, and a small prize on its grass beyond the ring, stone, fruit and wheat in turn. An
-  islet is only ever reached by swimming: a forward post, not a stepping stone. The archipelago
+  everything. Wheat fills every plantable tile outside that sand border, on all sides of the
+  island, independently of the ambient resource amount controls. Arrivals must harvest an approach
+  through the wheat to reach the plot. An islet is only ever reached by swimming: a forward post,
+  not a stepping stone. The archipelago
   cannot be turned round the centre for every colony like the rest of the design, so with three,
   five or six colonies it lies nearer some homes than others, which the lobby's best-of-five rolls
   cover, as on Canals. A 128 map's corners hold only the islet on the wrap point; a 256 map holds

@@ -49,7 +49,7 @@ struct Layout
 {
 	Torus t{1, 1};
 	TerrainSketch terrain;
-	std::vector<unsigned char> forest, rock, roads, reserved, lakeWater;
+	std::vector<unsigned char> forest, rock, roads, reserved, lakeWater, wheatland;
 	std::vector<int> plotOf, candidates, homes;
 	std::vector<Plot> plots;
 	std::vector<std::vector<int>> proposals;
@@ -352,7 +352,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 	auto tiles = stampContainedPlot(L.terrain, t, corners);
 	int court = -1;
 	std::vector<int> access;
-	if (minimum > 0)
+	if (minimum > 0 || kind == WHEAT)
 	{
 		BayGrowth fertility(L.terrain, t, centre, int(std::ceil(radius * std::sqrt(5.))));
 		// Leave opening room for a farmhouse/inn INSIDE the crop boundary.
@@ -443,8 +443,9 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 			fertile += value > 0;
 			potential += value;
 		}
-		if (fertile < minimum ||
-			(kind == WHEAT && potential < (t.size() == 4096 ? 2 : 6) * Fertility::kScale))
+		if (minimum > 0 &&
+			(fertile < minimum ||
+			 (kind == WHEAT && potential < (t.size() == 4096 ? 2 : 6) * Fertility::kScale)))
 		{
 			L.terrain = std::move(original);
 			return false;
@@ -488,8 +489,9 @@ bool furnishBay(Layout &L, GenerationContext &c, int home, bool starter)
 		for (int pass = 0; pass < 2 && !placed; ++pass)
 			for (auto candidate : candidates)
 				if (makePlot(L, c, candidate.tile, radii[kind], kind ? WOOD : WHEAT,
-							 starter ? (kind ? 12 : (L.compact ? 20 : 32)) : 0, kind ? 12 : 64,
-							 pass == 1, starter && L.compact && t.size() > 4096 ? home : -1))
+							 starter ? (kind ? 12 : (L.compact ? 20 : 32)) : 0,
+							 kind ? 12 : (L.compact ? 96 : 128), pass == 1,
+							 starter && L.compact && t.size() > 4096 ? home : -1))
 				{
 					placed = true;
 					break;
@@ -541,7 +543,10 @@ bool expansion(Layout &L, int endpoint)
 	if (path.empty())
 		return false;
 	for (int i : path)
+	{
 		L.forest[i] = L.rock[i] = 0;
+		L.reserved[i] = 1;
+	}
 	for (int y = -radius; y <= radius; ++y)
 		for (int x = -radius; x <= radius; ++x)
 		{
@@ -955,6 +960,14 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		c.telemetry.measure("portage-lakes.expansion.x", L.expansions[k] % t.w, int(k));
 		c.telemetry.measure("portage-lakes.expansion.y", L.expansions[k] / t.w, int(k));
 	}
+	// Use the existing open gaps in lake-country woodland for grain; leave
+	// trails, landing clearings, portage plugs and home construction ground alone.
+	L.wheatland.assign(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+		L.wheatland[i] = grass[i] && !L.reserved[i] && !homeBuffer[i] && !L.roads[i] &&
+						 !L.forest[i] && !L.rock[i] && L.plotOf[i] < 0 &&
+						 growth.at(i % t.w, i / t.w) == 0;
+
 	return L;
 }
 
@@ -1143,7 +1156,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 									plot.kind == WHEAT || plot.kind == WOOD);
 		// Scarce sowing can concentrate at a rich tip away from the inn. Re-site
 		// the same seed budget around its rim; never add an abundance exception.
-		if (plot.court >= 0 && !farmServiceSites(game.map, t, plot))
+		if (count > 0 && plot.court >= 0 && !farmServiceSites(game.map, t, plot))
 		{
 			for (int i : plantable)
 				if (game.map.getResource(i % t.w, i / t.w).type == WHEAT)
@@ -1177,7 +1190,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 			c.telemetry.measure("portage-lakes.farm.service-sites", sites, int(p));
 			c.telemetry.measure("portage-lakes.farm.court-x", plot.court % t.w, int(p));
 			c.telemetry.measure("portage-lakes.farm.court-y", plot.court / t.w, int(p));
-			if (!sites)
+			if (!sites && (plot.minimum > 0 || count > 0))
 			{
 				c.detail = "Portage Lakes starter grain has no adjacent inn site.";
 				return false;
@@ -1229,7 +1242,16 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		if (seed >= 0)
 			growPatch(game.map, t, seed, CHERRY + int(k % 3), scaledCount(3, o.fruit), eligible);
 	}
-	if (auto e = containedPlotsMismatch(game.map, t, L.plotOf, &growth); !e.empty())
+	std::vector<int> grain;
+	for (int i = 0; i < t.size(); ++i)
+		if (L.wheatland[i] && clearGround(game.map, i % t.w, i / t.w))
+			grain.push_back(i);
+	c.shuffle(grain.begin(), grain.end(), "portage-open-grain");
+	const int grainCount = std::min(int(grain.size()), int(scaledCount(grain.size() / 2, o.wheat)));
+	for (int k = 0; k < grainCount; ++k)
+		game.map.setResource(grain[k] % t.w, grain[k] / t.w, WHEAT, 1);
+	c.telemetry.measure("portage-lakes.country.wheat", grainCount);
+	if (auto e = containedPlotsMismatch(game.map, t, L.plotOf, &growth, &L.wheatland); !e.empty())
 	{
 		c.detail = e;
 		return false;
@@ -1321,7 +1343,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	const auto &t = L.t;
 	const auto &map = game.map;
 	auto growth = Fertility::forMap(map, false);
-	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &growth); !e.empty())
+	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &growth, &L.wheatland); !e.empty())
 		return e;
 
 	for (const auto &crossing : L.portages)
@@ -1354,7 +1376,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			1,
+			2,
 			false,
 			{{"lake-elongation", "Lake elongation", 125, 300, 25, 200, ControlGroup::Terrain},
 			 {"portage-depth", "Portage depth", 2, 8, 1, 4, ControlGroup::Layout},

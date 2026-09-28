@@ -1,6 +1,6 @@
 # The Faulted City
 
-A planned city broken into displaced neighbourhoods. Buildable grass avenues follow the
+The Faulted City (`faulted-city`, numeric ID 64, revision 2) is a planned city broken into displaced neighbourhoods. Buildable grass avenues follow the
 old street grid; broad sandy fractures form a permanent travel network. Junctions connect
 the two. There is no central objective or special starting army: colonies settle suitable
 lawns beside the city's existing irrigated gardens.
@@ -26,7 +26,7 @@ tiles of the plaza must survive in each of two districts.
   possible district exits. Each mouth reserves a clear five-by-five tile area.
 - **Resource amounts:** ordinary resource percentages scale eligible deposits. Structural
   stone remains even at zero. Every renewable tile of each selected starter wheat/wood plot is seeded;
-  the sliders scale other plots and ambient resources. Other crop plots fill to 55%
+  the sliders scale other plots and ambient resources. Other crop plots fill to 80%
   of renewable capacity at 100%, then increase to full capacity at 300%. Abundance never spills outside
   plots or onto streets, and decorative resources cannot obstruct junction reservations.
 
@@ -39,6 +39,8 @@ selection use fixed maximum resource amounts, so resource sliders do not redraw 
 ## Economy and fairness
 
 Sand caps and dividers contain gardens physically; generated maps never disable growth.
+Broader rear reservoirs irrigate the civic gardens; wider wood compartments
+provide an ordinary construction economy rather than an unintended timber shortage.
 Fertility is calculated on final terrain, after beaches. Stone outlines are permanent
 resource deposits and supply ammunition as well as upgrades. They do not block tower fire.
 Grass streets can be built upon; sandy fractures cannot. Swimming is optional.
@@ -70,6 +72,8 @@ Generation telemetry uses `faulted-city.*` for source block roles, district tran
 entrance counts, fault coverage and planted resources, plus the shared `starts.scored.*`
 records for completed settlement proposals. It is observational and consumes no RNG draws.
 
+The following results describe revision 1, before the larger reservoirs and
+woodlots. They establish the earlier validation baseline, not revision 2 balance.
 The retained [evidence bundle](../../test/fixtures/faulted-city/README.md) contains maps,
 previews, a finished save, every study request, game results, timings, and cross-platform
 replays/checksums. Reproduction scripts are included.

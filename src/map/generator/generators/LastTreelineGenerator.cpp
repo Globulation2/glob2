@@ -24,7 +24,7 @@ using namespace MapGeneration;
 namespace
 {
 constexpr int kHomeWood = 48;
-constexpr int kHomeWheat = 64;
+constexpr int kHomeWheat = 96;
 struct Patch
 {
 	ShapePoint centre;
@@ -38,6 +38,7 @@ struct Layout
 	std::vector<ShapePoint> homes, courts;
 	std::vector<Patch> patches;
 	std::vector<int> plotOf;
+	std::vector<unsigned char> wheatland;
 	std::string failure;
 };
 std::string validateRequest(const GenerationRequest &r)
@@ -60,6 +61,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 	const double bankDepth = 14. + (o.depth - 12) / 2.;
 	L.terrain.assign(t.size(), GRASS);
 	L.plotOf.assign(t.size(), -1);
+	L.wheatland.assign(t.size(), 0);
 	const double cx = t.w / 2., cy = t.h / 2.;
 	const double homeRadius = 36 + 6 * r.nbTeams, shoreRadius = homeRadius - 24;
 	const double heading = c.bounded("treeline-heading", 6283) / 1000.;
@@ -179,6 +181,27 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 									  L.terrain[i] = WATER;
 							  });
 	}
+	// Irregular outer wetlands and sandy terraces break up the unused plain. Keep
+	// all new water beyond the finite home timber's entire growth-probe reach.
+	const PeriodicNoise lakes(t.w, t.h, 58, c.stream("treeline-country-lakes"));
+	const PeriodicNoise terraces(t.w, t.h, 29, c.stream("treeline-country-terraces"));
+	std::vector<unsigned char> countryside(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		bool allowed =
+			t.dist2(i % t.w, i / t.w, int(cx), int(cy)) > (homeRadius + 20) * (homeRadius + 20);
+		for (const auto &h : L.homes)
+			allowed &= t.dist2(i % t.w, i / t.w, int(h.x), int(h.y)) > 48 * 48;
+		countryside[i] = allowed;
+		if (!allowed)
+			continue;
+		const double basin = lakes.at(i % t.w, i / t.w), terrace = terraces.at(i % t.w, i / t.w);
+		L.wheatland[i] = terrace < .48 && basin > .40;
+		if (basin < .30)
+			L.terrain[i] = WATER;
+		else if (basin < .36 || terrace > .66)
+			L.terrain[i] = SAND;
+	}
 	layBeaches(L.terrain, t);
 	const auto grass = pureTiles(L.terrain, t, GRASS);
 	for (size_t k = 0; k < L.patches.size(); ++k)
@@ -268,11 +291,12 @@ bool generate(Game &game, GenerationContext &c)
 	for (size_t k = 0; k < L.patches.size(); ++k)
 	{
 		const Patch &p = L.patches[k];
+		const bool homeFarm = p.type == WHEAT && k < size_t(2 * c.request.nbTeams);
 		const int floor = p.type == WOOD ? 40 : kHomeWheat;
-		const int extra = p.type == WOOD ? int(p.tiles.size()) / 5 : 32;
+		const int extra = p.type == WOOD ? int(p.tiles.size()) / 5 : 96;
 		const int wanted = floor + int(scaledCount(extra, p.type == WOOD ? o.wood : o.wheat));
 		int nearby = 0;
-		if (p.type == WHEAT)
+		if (homeFarm)
 		{
 			const Team *home = game.teams[k - c.request.nbTeams];
 			const auto eligible = [&](int i)
@@ -282,7 +306,7 @@ bool generate(Game &game, GenerationContext &c)
 			};
 			const int seed = seedNear(t, home->startPosX + 2, home->startPosY + 2, 18, eligible);
 			if (seed >= 0)
-				nearby = growPatch(game.map, t, seed, WHEAT, 24, eligible);
+				nearby = growPatch(game.map, t, seed, WHEAT, 48, eligible);
 		}
 		if (p.type == WOOD)
 		{
@@ -406,6 +430,18 @@ bool generate(Game &game, GenerationContext &c)
 		c.telemetry.measure("treeline.home.stone", stones, k);
 		c.telemetry.measure("treeline.home.fruit", fruits, k);
 	}
+	// Dry open wheat sections add harvestable country without new farm borders
+	// or renewable timber. Water remains in the separate low-lying wetlands.
+	std::vector<int> grain;
+	for (int i = 0; i < t.size(); ++i)
+		if (L.wheatland[i] && fertility.at(i % t.w, i / t.w) == 0 &&
+			clearGround(game.map, i % t.w, i / t.w))
+			grain.push_back(i);
+	c.shuffle(grain.begin(), grain.end(), "treeline-open-grain");
+	const int grainCount = std::min(int(grain.size()), int(scaledCount(grain.size() / 2, o.wheat)));
+	for (int k = 0; k < grainCount; ++k)
+		game.map.setResource(grain[k] % t.w, grain[k] / t.w, WHEAT, 1);
+	c.telemetry.measure("treeline.country.wheat", grainCount);
 	seedAlgae(game.map, c, t, "treeline-algae", o.algae, AlgaeBand::anyWater(25));
 	return true;
 }
@@ -422,7 +458,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	for (int i = 0; i < t.size(); ++i)
 		actual[i] = TerrainType(map.getUMTerrain(i % t.w, i / t.w));
 	const auto fertility = cropGrowthField(actual, t);
-	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &fertility); !e.empty())
+	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &fertility, &L.wheatland); !e.empty())
 		return e;
 	const auto connected =
 		walkFromFirstColony(map, c.request.nbTeams, "the treeline basin", "without swimming");
@@ -435,6 +471,8 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 		open[i] = stepCost(map, i % t.w, i / t.w, StepCosts::walking()) >= 0;
 		future[i] = open[i] && L.plotOf[i] < 0;
 		int type = map.getResource(i % t.w, i / t.w).type;
+		if (type == WOOD && L.wheatland[i])
+			return "The open grain country must not add timber.";
 		if ((type == WOOD || type == WHEAT) && L.plotOf[i] >= 0 &&
 			L.patches[L.plotOf[i]].type != type)
 			return "Wood and wheat must remain in separate growing areas.";
@@ -495,7 +533,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 				   std::to_string(g) + ": " + std::to_string(yield) + "," +
 				   std::to_string(frontage[0]) + "," + std::to_string(frontage[1]) + ").";
 	}
-	for (size_t k = c.request.nbTeams; k < L.patches.size(); ++k)
+	for (int k = c.request.nbTeams; k < 2 * c.request.nbTeams; ++k)
 	{
 		double yield = 0;
 		for (int i : L.patches[k].tiles)
@@ -587,7 +625,7 @@ GeneratorDefinition lastTreelineDefinition()
 	return {"last-treeline",
 			70,
 			"The Last Treeline",
-			1,
+			2,
 			false,
 			{{"woodland-depth", "Woodland depth", 12, 16, 2, 14, ControlGroup::Layout},
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

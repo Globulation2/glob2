@@ -28,7 +28,9 @@ int cropSeedsIn(const Map &, const std::vector<unsigned char> &region);
 /// deposits, so this is a containment test, not a prediction of growth speed or harvests.
 /// Sand barriers stop the flood; sources themselves are included even on non-grass terrain.
 /// Neither operation mutates the map or consumes random numbers.
-Flood cropSpreadEnvelope(const Map &);
+/// With fertility supplied, zero-growth seeds are included but do not initiate a
+/// spread flood. The envelope from renewable seeds still conservatively ignores fertility.
+Flood cropSpreadEnvelope(const Map &, const Fertility::Field *fertility = nullptr);
 
 /// How far, on each axis, the engine's crop growth probe reaches for water.
 constexpr int kCropProbeReach = 15;
