@@ -1,0 +1,70 @@
+[
+  {
+    "name": "arena128-2",
+    "generator": 15,
+    "map_seed": 42,
+    "game_seed": 19,
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 2
+    },
+    "players": [
+      "nicowar",
+      "warrush"
+    ],
+    "ticks": 16384
+  },
+  {
+    "name": "arena256-2",
+    "generator": 15,
+    "map_seed": 42,
+    "game_seed": 19,
+    "params": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    },
+    "players": [
+      "nicowar",
+      "warrush"
+    ],
+    "ticks": 16384
+  },
+  {
+    "name": "arena512-4",
+    "generator": 15,
+    "map_seed": 42,
+    "game_seed": 19,
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 4
+    },
+    "players": [
+      "nicowar",
+      "warrush",
+      "cortex",
+      "maxima"
+    ],
+    "ticks": 16384
+  },
+  {
+    "name": "lakes256-4",
+    "generator": 4,
+    "map_seed": 97,
+    "game_seed": 19,
+    "params": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    },
+    "players": [
+      "nicowar",
+      "warrush",
+      "cortex",
+      "maxima"
+    ],
+    "ticks": 16384
+  }
+]

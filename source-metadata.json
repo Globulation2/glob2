@@ -1,0 +1,23 @@
+{
+  "base": "1c49596f5195188e7f078768f610454f7068d7c6",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "files": {
+    ".github/workflows/build.yml": "51e2597f35eb1ce418cceee01edac1897fb5d586db19c6ecc05f5e84549bbe09",
+    "docs/development/performance-telemetry.md": "d4fa78b9bcc6c87c7e367e68a37ad650acb426295884815cd854924aeb2b8d6d",
+    "docs/tools/tournaments.md": "d06c00d345319a682814dd4300c21336b4af1c24264e0397b184d528af6578b7",
+    "libgag/include/PerformanceScopes.inc": "b172386d47aeb73e47e1d4a3b79a74f6da40b9957b40dfaf977a2562bf74f5a0",
+    "src/Headless.cpp": "1f6b3fa9befbb6c7a3bb30d30b66d84f4739cf2c1750b534bad79ccf29bc1fcb",
+    "src/building/Building.h": "3dfd8c0ee76b36b3ed331120d5cc329ba55f885b48751e0279012ac4bdaa5be0",
+    "src/building/Lifecycle.cpp": "63354a87d114054fbd8e0ab55bdf1a3d1b4393ec1ceaa2ff7e019b8b1c3ccedb",
+    "src/map/Map.h": "9c5bbf9e758f064484512feaca27ca1d4b7b07a67699a699c16c3b2bc56211c8",
+    "src/map/gradient/MapGradientBuilding.cpp": "9d541d477ad3ce5e29177d4dc58a7eebe6c262a194e37d66f81025535396d252",
+    "src/map/gradient/MapGradientField.cpp": "0d904478aa653eeeef1c431febd6b0fb6a08ca6701291349b808c19861fbd4b5",
+    "src/map/io/MapIO.cpp": "d28f11fbb5dd5e95aec50db84439cfcf41a67ce893e079d9013d03518ec4f997",
+    "src/map/pathfind/MapPathfindBuilding.cpp": "11762a5f2faf672c49f72323e48a10d7f2789b671cb6501eb71eae6cfef5d13e",
+    "src/render/GameRenderTerrain.cpp": "5e03dbf472715111cde702e6cb335b356dbc59f9c01a2d33b3b8753f32f2a062",
+    "test/BuildingGradientInvalidationHarness.cpp": "57df5da9dd1150bbe2ec86c895b7ceaf21ba60ff70cb5956d346930ffc215531",
+    "test/PathGradientHarness.cpp": "d3a73460f02f69d454ebc534fc54c8e8884af38e65f6654cc8b0a000bafc4fef",
+    "test/README.md": "7a63e64abc14881703ac5f6baf00af3bd071a70e8e365626a59c9b8b06f14f67",
+    "src/map/gradient/BuildingGradientSearch.h": "e8c602d80cb0e542afb12bfab2374517c5c7c894f29a3c7a494d2a32e579de74"
+  }
+}

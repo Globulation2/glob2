@@ -1,0 +1,35 @@
+{
+  "source_commit": "d50968d06125dc10fbf4b247e35d0526fe69af0b",
+  "base_commit": "1c49596f5195188e7f078768f610454f7068d7c6",
+  "binary_sha256": "8cae74a042f1030e51ce3a8094a0c67bcf7f2f016a35b2888b586a269b8dbc86",
+  "archives": {
+    "arena128-2.tar.gz": {
+      "bytes": 12381604,
+      "sha256": "7b498ba2f26441377b3d19bfb68dc2a20c660fab5eff3f45b9aaaddf58a31aa2"
+    },
+    "arena256-2.tar.gz": {
+      "bytes": 9934147,
+      "sha256": "e14c19c8217b303b9d4be8bc886eaeb46f8f1655f273d979b0e2ffbce63cd328"
+    },
+    "arena512-4.tar.gz": {
+      "bytes": 39080677,
+      "sha256": "c9eba789f44dca35525843192e2fc2f75ffe860f8e2f253c709b7be99ab1918d"
+    },
+    "continuation.tar.gz": {
+      "bytes": 37964884,
+      "sha256": "a6af8b8777c5546f5fcfc5f7d0e65770961598e22f20b200d368addbc5ba79cf"
+    },
+    "lakes256-4.tar.gz": {
+      "bytes": 38442805,
+      "sha256": "4a3431f85464fd1d9f1b774cad00962c33111cef7a39ab0ac53235537dd23492"
+    },
+    "logs.tar.gz": {
+      "bytes": 18657447,
+      "sha256": "e972c80bf98f6e325c51b8fec7b0e7ad0cd368f099d8cac2cb84c9bc012bad62"
+    },
+    "prototype-source.tar.gz": {
+      "bytes": 96862,
+      "sha256": "193bbc406df696a75821a29ae827f659b01a2034929f2b5c3de5ae7de74550d0"
+    }
+  }
+}

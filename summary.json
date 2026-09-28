@@ -1,0 +1,30 @@
+[
+  {
+    "case": "arena128-2",
+    "eager_cpu_seconds": 3.198011,
+    "lazy_cpu_seconds": 3.1180695,
+    "cpu_reduction_percent": 2.49972561069991,
+    "extra_peak_rss_mib": 0.46875
+  },
+  {
+    "case": "arena256-2",
+    "eager_cpu_seconds": 9.858301,
+    "lazy_cpu_seconds": 10.720283,
+    "cpu_reduction_percent": -8.743717604078016,
+    "extra_peak_rss_mib": 1.171875
+  },
+  {
+    "case": "arena512-4",
+    "eager_cpu_seconds": 53.26088,
+    "lazy_cpu_seconds": 46.675169000000004,
+    "cpu_reduction_percent": 12.365005985631472,
+    "extra_peak_rss_mib": 6.828125
+  },
+  {
+    "case": "lakes256-4",
+    "eager_cpu_seconds": 17.662921500000003,
+    "lazy_cpu_seconds": 15.1210545,
+    "cpu_reduction_percent": 14.390977166489716,
+    "extra_peak_rss_mib": 3.390625
+  }
+]
