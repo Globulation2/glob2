@@ -3119,34 +3119,34 @@ Apropiate
 [settings Spacious]
 Spațioasă
 [More]
-
+Mai multe
 [No items]
-
+Niciun element
 [Opponents]
-
+Adversari
 [Review]
-
+Rezumat
 [Review & Play]
-
+Verifică și joacă
 [Edit opponents]
-
+Editează adversarii
 [Map settings]
-
+Setările hărții
 [Next]
-
+Următorul
 [Done]
-
+Gata
 [Contribution]
-
+Contribuție
 [Choose who controls this colony]
-
+Alege cine controlează această colonie
 [Settings]
-
+Setări
 [settings Back]
-
+Înapoi
 [settings Save the game automatically about every minute.]
-
+Salvează automat jocul aproximativ o dată pe minut.
 [AI opponents]
-
+Adversari IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Aranjarea spațioasă folosește un panou lateral când există loc. Cea compactă folosește o bară de instrumente și panouri extensibile.

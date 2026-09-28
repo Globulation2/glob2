@@ -3117,34 +3117,34 @@ Emoji
 [settings Spacious]
 واسع
 [More]
-
+المزيد
 [No items]
-
+لا توجد عناصر
 [Opponents]
-
+الخصوم
 [Review]
-
+مراجعة
 [Review & Play]
-
+مراجعة ولعب
 [Edit opponents]
-
+تعديل الخصوم
 [Map settings]
-
+إعدادات الخريطة
 [Next]
-
+التالي
 [Done]
-
+تم
 [Contribution]
-
+المساهمة
 [Choose who controls this colony]
-
+اختر من يتحكم في هذه المستعمرة
 [Settings]
-
+ﺍﻹﻋﺪﺍﺩﺍﺕ
 [settings Back]
-
+ﻋُﺪ
 [settings Save the game automatically about every minute.]
-
+احفظ اللعبة تلقائيًا كل دقيقة تقريبًا.
 [AI opponents]
-
+خصوم آليون
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 يستخدم التخطيط الواسع لوحة جانبية عند توفر مساحة. يستخدم التخطيط المضغوط شريط أدوات ولوحات قابلة للفتح.

@@ -3143,34 +3143,34 @@ Dicht bijeen
 [settings Spacious]
 Ruim
 [More]
-
+Meer
 [No items]
-
+Geen items
 [Opponents]
-
+Tegenstanders
 [Review]
-
+Overzicht
 [Review & Play]
-
+Controleren en spelen
 [Edit opponents]
-
+Tegenstanders aanpassen
 [Map settings]
-
+Kaartinstellingen
 [Next]
-
+Volgende
 [Done]
-
+Klaar
 [Contribution]
-
+Bijdrage
 [Choose who controls this colony]
-
+Kies wie deze kolonie bestuurt
 [Settings]
-
+Instellingen
 [settings Back]
-
+Terug
 [settings Save the game automatically about every minute.]
-
+Het spel ongeveer elke minuut automatisch opslaan.
 [AI opponents]
-
+AI-tegenstanders
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 De ruime indeling gebruikt een zijpaneel als er plaats is. De compacte indeling gebruikt een werkbalk en uitklapbare panelen.

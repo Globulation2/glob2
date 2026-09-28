@@ -3119,34 +3119,34 @@ Majhen
 [settings Spacious]
 Prostorna
 [More]
-
+Več
 [No items]
-
+Ni elementov
 [Opponents]
-
+Nasprotniki
 [Review]
-
+Pregled
 [Review & Play]
-
+Preglej in igraj
 [Edit opponents]
-
+Uredi nasprotnike
 [Map settings]
-
+Nastavitve zemljevida
 [Next]
-
+Naprej
 [Done]
-
+Končano
 [Contribution]
-
+Prispevek
 [Choose who controls this colony]
-
+Izberi, kdo nadzoruje to kolonijo
 [Settings]
-
+Nastavitve
 [settings Back]
-
+Nazaj
 [settings Save the game automatically about every minute.]
-
+Samodejno shrani igro približno vsako minuto.
 [AI opponents]
-
+Računalniški nasprotniki
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Prostorna postavitev uporablja stransko ploščo, kadar je dovolj prostora. Strnjena uporablja orodno vrstico in izvlečne plošče.

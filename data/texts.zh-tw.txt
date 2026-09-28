@@ -3191,34 +3191,34 @@ Emoji
 [settings Spacious]
 寬敞
 [More]
-
+更多
 [No items]
-
+沒有項目
 [Opponents]
-
+對手
 [Review]
-
+總覽
 [Review & Play]
-
+檢查並開始遊戲
 [Edit opponents]
-
+編輯對手
 [Map settings]
-
+地圖設定
 [Next]
-
+下一步
 [Done]
-
+完成
 [Contribution]
-
+貢獻
 [Choose who controls this colony]
-
+選擇由誰控制此殖民地
 [Settings]
-
+設定
 [settings Back]
-
+返回
 [settings Save the game automatically about every minute.]
-
+大約每分鐘自動儲存遊戲。
 [AI opponents]
-
+電腦對手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 寬敞配置會在空間足夠時使用側邊面板。精簡配置使用工具列和可展開的面板。

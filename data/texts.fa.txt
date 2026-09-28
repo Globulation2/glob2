@@ -3117,34 +3117,34 @@ Emoji
 [settings Spacious]
 جادار
 [More]
-
+بیشتر
 [No items]
-
+موردی نیست
 [Opponents]
-
+حریفان
 [Review]
-
+مرور
 [Review & Play]
-
+مرور و بازی
 [Edit opponents]
-
+ویرایش حریفان
 [Map settings]
-
+تنظیمات نقشه
 [Next]
-
+بعدی
 [Done]
-
+انجام شد
 [Contribution]
-
+سهم
 [Choose who controls this colony]
-
+انتخاب کنید چه کسی این مستعمره را کنترل کند
 [Settings]
-
+تنظیمها
 [settings Back]
-
+برگشتن
 [settings Save the game automatically about every minute.]
-
+بازی را تقریباً هر دقیقه به‌طور خودکار ذخیره کنید.
 [AI opponents]
-
+حریفان هوش مصنوعی
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 چیدمان جادار در صورت وجود فضا از پنل کناری استفاده می‌کند. چیدمان فشرده از نوار ابزار و پنل‌های بازشو استفاده می‌کند.

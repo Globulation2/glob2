@@ -3119,34 +3119,34 @@ Cercanos
 [settings Spacious]
 Amplia
 [More]
-
+Más
 [No items]
-
+No hay elementos
 [Opponents]
-
+Oponentes
 [Review]
-
+Resumen
 [Review & Play]
-
+Revisar y jugar
 [Edit opponents]
-
+Editar oponentes
 [Map settings]
-
+Configuración del mapa
 [Next]
-
+Siguiente
 [Done]
-
+Listo
 [Contribution]
-
+Contribución
 [Choose who controls this colony]
-
+Elige quién controla esta colonia
 [Settings]
-
+Configuración
 [settings Back]
-
+Atrás
 [settings Save the game automatically about every minute.]
-
+Guardar la partida automáticamente cada minuto aproximadamente.
 [AI opponents]
-
+Oponentes de IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposición amplia usa un panel lateral cuando hay espacio. La compacta usa una barra de herramientas y paneles desplegables.

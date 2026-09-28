@@ -3117,34 +3117,34 @@ Emoji
 [settings Spacious]
 Просторная
 [More]
-
+Ещё
 [No items]
-
+Нет элементов
 [Opponents]
-
+Соперники
 [Review]
-
+Обзор
 [Review & Play]
-
+Проверить и играть
 [Edit opponents]
-
+Изменить соперников
 [Map settings]
-
+Настройки карты
 [Next]
-
+Далее
 [Done]
-
+Готово
 [Contribution]
-
+Вклад
 [Choose who controls this colony]
-
+Выберите, кто управляет этой колонией
 [Settings]
-
+Настройки
 [settings Back]
-
+Назад
 [settings Save the game automatically about every minute.]
-
+Автоматически сохранять игру примерно каждую минуту.
 [AI opponents]
-
+Компьютерные соперники
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Просторная компоновка использует боковую панель, если хватает места. Компактная — панель инструментов и выдвижные панели.

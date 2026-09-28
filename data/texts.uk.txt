@@ -3115,34 +3115,34 @@ Emoji
 [settings Spacious]
 Просторе
 [More]
-
+Більше
 [No items]
-
+Немає елементів
 [Opponents]
-
+Суперники
 [Review]
-
+Огляд
 [Review & Play]
-
+Перевірити й грати
 [Edit opponents]
-
+Змінити суперників
 [Map settings]
-
+Налаштування мапи
 [Next]
-
+Далі
 [Done]
-
+Готово
 [Contribution]
-
+Внесок
 [Choose who controls this colony]
-
+Виберіть, хто керує цією колонією
 [Settings]
-
+Налаштування
 [settings Back]
-
+Назад
 [settings Save the game automatically about every minute.]
-
+Автоматично зберігати гру приблизно щохвилини.
 [AI opponents]
-
+Комп’ютерні суперники
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Просторе компонування використовує бічну панель, якщо вистачає місця. Компактне — панель інструментів і висувні панелі.

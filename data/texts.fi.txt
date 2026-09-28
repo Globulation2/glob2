@@ -3119,34 +3119,34 @@ Tiivis
 [settings Spacious]
 Väljä
 [More]
-
+Lisää
 [No items]
-
+Ei kohteita
 [Opponents]
-
+Vastustajat
 [Review]
-
+Yhteenveto
 [Review & Play]
-
+Tarkista ja pelaa
 [Edit opponents]
-
+Muokkaa vastustajia
 [Map settings]
-
+Kartan asetukset
 [Next]
-
+Seuraava
 [Done]
-
+Valmis
 [Contribution]
-
+Osuus
 [Choose who controls this colony]
-
+Valitse, kuka ohjaa tätä siirtokuntaa
 [Settings]
-
+Asetukset
 [settings Back]
-
+Takaisin
 [settings Save the game automatically about every minute.]
-
+Tallenna peli automaattisesti noin minuutin välein.
 [AI opponents]
-
+Tietokonevastustajat
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Väljä asettelu käyttää sivupaneelia, kun tilaa on riittävästi. Tiivis asettelu käyttää työkalupalkkia ja avattavia paneeleja.

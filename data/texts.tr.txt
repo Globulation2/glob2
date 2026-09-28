@@ -3127,34 +3127,34 @@ Yakın
 [settings Spacious]
 Geniş
 [More]
-
+Daha fazla
 [No items]
-
+Öğe yok
 [Opponents]
-
+Rakipler
 [Review]
-
+Özet
 [Review & Play]
-
+İncele ve oyna
 [Edit opponents]
-
+Rakipleri düzenle
 [Map settings]
-
+Harita ayarları
 [Next]
-
+İleri
 [Done]
-
+Tamam
 [Contribution]
-
+Katkı
 [Choose who controls this colony]
-
+Bu koloniyi kimin yöneteceğini seçin
 [Settings]
-
+Ayarlar
 [settings Back]
-
+Geri
 [settings Save the game automatically about every minute.]
-
+Oyunu yaklaşık her dakika otomatik olarak kaydet.
 [AI opponents]
-
+Yapay zeka rakipleri
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Geniş düzen, yer olduğunda yan panel kullanır. Kompakt düzen, araç çubuğu ve açılır paneller kullanır.

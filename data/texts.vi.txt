@@ -3115,34 +3115,34 @@ Gần nhau
 [settings Spacious]
 Rộng rãi
 [More]
-
+Thêm
 [No items]
-
+Không có mục nào
 [Opponents]
-
+Đối thủ
 [Review]
-
+Tổng quan
 [Review & Play]
-
+Xem lại và chơi
 [Edit opponents]
-
+Chỉnh sửa đối thủ
 [Map settings]
-
+Thiết lập bản đồ
 [Next]
-
+Tiếp theo
 [Done]
-
+Xong
 [Contribution]
-
+Đóng góp
 [Choose who controls this colony]
-
+Chọn người điều khiển thuộc địa này
 [Settings]
-
+Thiết lập
 [settings Back]
-
+Quay lại
 [settings Save the game automatically about every minute.]
-
+Tự động lưu trò chơi khoảng mỗi phút.
 [AI opponents]
-
+Đối thủ máy
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Bố cục rộng rãi dùng bảng bên khi đủ chỗ. Bố cục gọn dùng thanh công cụ và các bảng có thể mở rộng.

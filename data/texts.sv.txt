@@ -3129,34 +3129,34 @@ Tätt
 [settings Spacious]
 Rymlig
 [More]
-
+Mer
 [No items]
-
+Inga objekt
 [Opponents]
-
+Motståndare
 [Review]
-
+Översikt
 [Review & Play]
-
+Granska och spela
 [Edit opponents]
-
+Redigera motståndare
 [Map settings]
-
+Kartinställningar
 [Next]
-
+Nästa
 [Done]
-
+Klar
 [Contribution]
-
+Bidrag
 [Choose who controls this colony]
-
+Välj vem som styr denna koloni
 [Settings]
-
+Inställningar
 [settings Back]
-
+Tillbaka
 [settings Save the game automatically about every minute.]
-
+Spara spelet automatiskt ungefär varje minut.
 [AI opponents]
-
+AI-motståndare
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Rymlig layout använder en sidopanel när det finns plats. Kompakt layout använder ett verktygsfält och utfällbara paneler.

@@ -3115,34 +3115,34 @@ Emoji
 [settings Spacious]
 ゆったり
 [More]
-
+その他
 [No items]
-
+項目なし
 [Opponents]
-
+対戦相手
 [Review]
-
+確認
 [Review & Play]
-
+確認してプレイ
 [Edit opponents]
-
+対戦相手を編集
 [Map settings]
-
+マップ設定
 [Next]
-
+次へ
 [Done]
-
+完了
 [Contribution]
-
+寄与度
 [Choose who controls this colony]
-
+このコロニーを操作するプレイヤーを選択
 [Settings]
-
+設定
 [settings Back]
-
+戻る
 [settings Save the game automatically about every minute.]
-
+約1分ごとにゲームを自動保存します。
 [AI opponents]
-
+AI対戦相手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 ゆったり配置は十分な空間があるときにサイドパネルを使います。コンパクト配置はツールバーと開閉式パネルを使います。

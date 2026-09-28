@@ -3195,34 +3195,34 @@ Tæt
 [settings Spacious]
 Rummelig
 [More]
-
+Mere
 [No items]
-
+Ingen elementer
 [Opponents]
-
+Modstandere
 [Review]
-
+Oversigt
 [Review & Play]
-
+Gennemgå og spil
 [Edit opponents]
-
+Rediger modstandere
 [Map settings]
-
+Kortindstillinger
 [Next]
-
+Næste
 [Done]
-
+Færdig
 [Contribution]
-
+Bidrag
 [Choose who controls this colony]
-
+Vælg, hvem der styrer denne koloni
 [Settings]
-
+Indstillinger
 [settings Back]
-
+Tilbage
 [settings Save the game automatically about every minute.]
-
+Gem spillet automatisk cirka hvert minut.
 [AI opponents]
-
+AI-modstandere
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Rummelig bruger et sidepanel, når der er plads. Kompakt bruger en værktøjslinje og paneler, der kan foldes ud.

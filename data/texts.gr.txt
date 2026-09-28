@@ -3189,34 +3189,34 @@ Emoji
 [settings Spacious]
 Ευρύχωρη
 [More]
-
+Περισσότερα
 [No items]
-
+Δεν υπάρχουν στοιχεία
 [Opponents]
-
+Αντίπαλοι
 [Review]
-
+Επισκόπηση
 [Review & Play]
-
+Έλεγχος και παιχνίδι
 [Edit opponents]
-
+Επεξεργασία αντιπάλων
 [Map settings]
-
+Ρυθμίσεις χάρτη
 [Next]
-
+Επόμενο
 [Done]
-
+Τέλος
 [Contribution]
-
+Συνεισφορά
 [Choose who controls this colony]
-
+Επιλέξτε ποιος ελέγχει αυτή την αποικία
 [Settings]
-
+Ρυθμίσεις
 [settings Back]
-
+Πίσω
 [settings Save the game automatically about every minute.]
-
+Αυτόματη αποθήκευση του παιχνιδιού περίπου κάθε λεπτό.
 [AI opponents]
-
+Αντίπαλοι υπολογιστή
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Η ευρύχωρη διάταξη χρησιμοποιεί πλευρικό πίνακα όταν υπάρχει χώρος. Η συμπαγής χρησιμοποιεί γραμμή εργαλείων και αναπτυσσόμενους πίνακες.

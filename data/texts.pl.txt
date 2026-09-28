@@ -3119,34 +3119,34 @@ Bliski
 [settings Spacious]
 Przestronny
 [More]
-
+Więcej
 [No items]
-
+Brak elementów
 [Opponents]
-
+Przeciwnicy
 [Review]
-
+Podsumowanie
 [Review & Play]
-
+Sprawdź i graj
 [Edit opponents]
-
+Edytuj przeciwników
 [Map settings]
-
+Ustawienia mapy
 [Next]
-
+Dalej
 [Done]
-
+Gotowe
 [Contribution]
-
+Wkład
 [Choose who controls this colony]
-
+Wybierz, kto kontroluje tę kolonię
 [Settings]
-
+Ustawienia
 [settings Back]
-
+Powrót
 [settings Save the game automatically about every minute.]
-
+Automatycznie zapisuj grę mniej więcej co minutę.
 [AI opponents]
-
+Przeciwnicy SI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Przestronny układ używa panelu bocznego, gdy jest miejsce. Kompaktowy używa paska narzędzi i wysuwanych paneli.

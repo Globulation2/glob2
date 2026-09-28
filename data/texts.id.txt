@@ -3115,34 +3115,34 @@ Rapat
 [settings Spacious]
 Lapang
 [More]
-
+Lainnya
 [No items]
-
+Tidak ada item
 [Opponents]
-
+Lawan
 [Review]
-
+Ringkasan
 [Review & Play]
-
+Tinjau dan mainkan
 [Edit opponents]
-
+Edit lawan
 [Map settings]
-
+Pengaturan peta
 [Next]
-
+Berikutnya
 [Done]
-
+Selesai
 [Contribution]
-
+Kontribusi
 [Choose who controls this colony]
-
+Pilih siapa yang mengendalikan koloni ini
 [Settings]
-
+Pengaturan
 [settings Back]
-
+Kembali
 [settings Save the game automatically about every minute.]
-
+Simpan permainan secara otomatis kira-kira setiap menit.
 [AI opponents]
-
+Lawan AI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Tata letak lapang menggunakan panel samping jika ada ruang. Tata letak ringkas menggunakan bilah alat dan panel yang dapat dibuka.

@@ -3127,34 +3127,34 @@ Propers
 [settings Spacious]
 Espaiosa
 [More]
-
+Més
 [No items]
-
+Cap element
 [Opponents]
-
+Adversaris
 [Review]
-
+Resum
 [Review & Play]
-
+Revisa i juga
 [Edit opponents]
-
+Edita els adversaris
 [Map settings]
-
+Opcions del mapa
 [Next]
-
+Següent
 [Done]
-
+Fet
 [Contribution]
-
+Contribució
 [Choose who controls this colony]
-
+Tria qui controla aquesta colònia
 [Settings]
-
+Opcions
 [settings Back]
-
+Enrere
 [settings Save the game automatically about every minute.]
-
+Desa la partida automàticament cada minut aproximadament.
 [AI opponents]
-
+Adversaris d’IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d’eines i panells desplegables.

@@ -3127,34 +3127,34 @@ Blízko seba
 [settings Spacious]
 Priestranné
 [More]
-
+Viac
 [No items]
-
+Žiadne položky
 [Opponents]
-
+Súperi
 [Review]
-
+Prehľad
 [Review & Play]
-
+Skontrolovať a hrať
 [Edit opponents]
-
+Upraviť súperov
 [Map settings]
-
+Nastavenia mapy
 [Next]
-
+Ďalej
 [Done]
-
+Hotovo
 [Contribution]
-
+Príspevok
 [Choose who controls this colony]
-
+Vyberte, kto ovláda túto kolóniu
 [Settings]
-
+Nastavenia
 [settings Back]
-
+Späť
 [settings Save the game automatically about every minute.]
-
+Automaticky ukladať hru približne každú minútu.
 [AI opponents]
-
+Počítačoví súperi
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Priestranné rozloženie používa bočný panel, ak je dosť miesta. Kompaktné používa panel nástrojov a vysúvacie panely.

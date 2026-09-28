@@ -3115,34 +3115,34 @@ Emoji
 [settings Spacious]
 宽敞
 [More]
-
+更多
 [No items]
-
+没有项目
 [Opponents]
-
+对手
 [Review]
-
+总览
 [Review & Play]
-
+检查并开始游戏
 [Edit opponents]
-
+编辑对手
 [Map settings]
-
+地图设定
 [Next]
-
+下一步
 [Done]
-
+完成
 [Contribution]
-
+贡献
 [Choose who controls this colony]
-
+选择由谁控制此殖民地
 [Settings]
-
+设定
 [settings Back]
-
+后退
 [settings Save the game automatically about every minute.]
-
+大约每分钟自动保存游戏。
 [AI opponents]
-
+电脑对手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 宽敞布局在空间足够时使用侧边面板。紧凑布局使用工具栏和可展开的面板。

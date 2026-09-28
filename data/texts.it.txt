@@ -3181,34 +3181,34 @@ Ravvicinati
 [settings Spacious]
 Spaziosa
 [More]
-
+Altro
 [No items]
-
+Nessun elemento
 [Opponents]
-
+Avversari
 [Review]
-
+Riepilogo
 [Review & Play]
-
+Controlla e gioca
 [Edit opponents]
-
+Modifica avversari
 [Map settings]
-
+Impostazioni mappa
 [Next]
-
+Avanti
 [Done]
-
+Fatto
 [Contribution]
-
+Contributo
 [Choose who controls this colony]
-
+Scegli chi controlla questa colonia
 [Settings]
-
+Impostazioni
 [settings Back]
-
+Indietro
 [settings Save the game automatically about every minute.]
-
+Salva automaticamente la partita circa ogni minuto.
 [AI opponents]
-
+Avversari IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposizione spaziosa usa un pannello laterale quando c’è spazio. Quella compatta usa una barra degli strumenti e pannelli a scomparsa.

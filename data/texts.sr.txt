@@ -3119,34 +3119,34 @@ Emoji
 [settings Spacious]
 Простран
 [More]
-
+Више
 [No items]
-
+Нема ставки
 [Opponents]
-
+Противници
 [Review]
-
+Преглед
 [Review & Play]
-
+Провери и играј
 [Edit opponents]
-
+Уреди противнике
 [Map settings]
-
+Подешавања мапе
 [Next]
-
+Даље
 [Done]
-
+Готово
 [Contribution]
-
+Допринос
 [Choose who controls this colony]
-
+Изабери ко управља овом колонијом
 [Settings]
-
+Подешавања
 [settings Back]
-
+Назад
 [settings Save the game automatically about every minute.]
-
+Аутоматски сачувај игру приближно сваког минута.
 [AI opponents]
-
+Рачунарски противници
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Простран распоред користи бочну таблу када има места. Компактан користи траку алатки и табле на извлачење.

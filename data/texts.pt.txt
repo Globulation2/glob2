@@ -3125,34 +3125,34 @@ Próximos
 [settings Spacious]
 Espaçosa
 [More]
-
+Mais
 [No items]
-
+Nenhum elemento
 [Opponents]
-
+Adversários
 [Review]
-
+Resumo
 [Review & Play]
-
+Rever e jogar
 [Edit opponents]
-
+Editar adversários
 [Map settings]
-
+Opções do mapa
 [Next]
-
+Seguinte
 [Done]
-
+Concluir
 [Contribution]
-
+Contribuição
 [Choose who controls this colony]
-
+Escolhe quem controla esta colónia
 [Settings]
-
+Opções
 [settings Back]
-
+Voltar
 [settings Save the game automatically about every minute.]
-
+Guardar o jogo automaticamente a cada minuto, aproximadamente.
 [AI opponents]
-
+Adversários de IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 A disposição espaçosa usa um painel lateral quando há espaço. A compacta usa uma barra de ferramentas e painéis retráteis.
