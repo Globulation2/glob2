@@ -17,7 +17,7 @@ temporary test binaries and requires no external services.
 | Director budgets, production and labour | `MaximaDirectorRegressionTest`, `MaximaEconomyRegressionTest`, `MaximaLabourStandaloneTest` |
 | Stock-band staffing | `MaximaStaffingControlStandaloneTest` |
 | Food claims, bounds and relocation | `MaximaFoodLedgerStandaloneTest`, `MaximaRelocationIntegrationTest` |
-| Farm protection, growth and clearing | `MaximaFarmingStandaloneTest`, `MaximaFarmingIntegrationTest` |
+| Farm layout, maturity release, expansion support, wood reserves and clearing | `MaximaFarmingStandaloneTest`, `MaximaFarmingIntegrationTest` |
 | Placement and wrapped routes | `MaximaPlacementStandaloneTest` |
 | Defence, scouting and force inference | `MaximaDefenseStandaloneTest`, `MaximaReconStandaloneTest`, `MaximaForceModelStandaloneTest` |
 | Rally arrival, recruitment and attack waves | `MaximaTacticsStandaloneTest`, `MaximaCombatIntegrationTest` |

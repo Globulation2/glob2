@@ -26,6 +26,13 @@ static uint32_t direct(int w, int h, const std::vector<uint8_t>& water,
 
 int main()
 {
+	// The center cannot close a corridor, including a diagonal corridor.
+	assert(canProtectWithoutSplittingAccess(0x1ff));
+	assert(!canProtectWithoutSplittingAccess((1<<3)|(1<<4)|(1<<5)));
+	assert(!canProtectWithoutSplittingAccess((1<<0)|(1<<4)|(1<<8)));
+	assert(!canProtectWithoutSplittingAccess(1<<4));
+	assert(canProtectWithoutSplittingAccess((1<<0)|(1<<1)|(1<<2)|(1<<4)));
+
 	{
 		const int w=8,h=6;
 		std::vector<uint8_t> water(w*h,1),sand(w*h,0);

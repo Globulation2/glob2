@@ -50,7 +50,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertNotIn("clearing_resources[WHEAT]=true", conversion)
         self.assertIn("IntBuildingType::CLEARING_FLAG, 0", conversion)
         self.assertIn("AssignWorkers(\n\t\t\t\tstrategy.staffing.clearing_workers", conversion)
-        self.assertIn("if(wood<2)", conversion)
+        self.assertIn("if(wood<2 || reserve_overlap)", conversion)
 
     def test_proactive_clearing_has_live_pressure_inputs(self):
         self.assertIn(
@@ -171,7 +171,7 @@ class MaximaFarmingPolicyTest(unittest.TestCase):
         self.assertNotIn("select_barrier_conversion_target", self.header)
         self.assertNotIn("select_barrier_conversion_target", self.source)
         self.assertNotIn("reason=barrier_conversion", self.source)
-        self.assertIn("if(wood<2)", self.source)
+        self.assertIn("if(wood<2 || reserve_overlap)", self.source)
 
     def test_default_fertility_cutoffs(self):
         self.assertRegex(

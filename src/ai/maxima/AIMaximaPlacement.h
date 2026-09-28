@@ -196,6 +196,9 @@ struct WorldTile
 	bool water;
 	bool sand;
 	bool permanentResource;
+	/// Renewable seed or harvest outlet reserved against new construction.
+	bool woodReserve;
+	bool blocksConstruction() const { return permanentResource || woodReserve; }
 	bool clearableResource;
 	bool occupied;
 	bool ownOccupied;

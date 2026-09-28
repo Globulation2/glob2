@@ -87,6 +87,10 @@ bool fertilityWithinPercentBand(uint32_t fertility, int minimumPercent,
 bool hasAdjacentProtectedWheat(const std::vector<uint8_t>& protectedWheat,
 	int width, int height, int x, int y);
 
+/// Whether removing the center preserves eight-connected access through its
+/// 3x3 neighborhood. Bit y*3+x denotes open land; the center is ignored.
+bool canProtectWithoutSplittingAccess(uint16_t openNeighborhood);
+
 struct ReservationClearingSelection
 {
 	std::vector<int> tiles;

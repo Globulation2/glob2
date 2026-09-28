@@ -600,8 +600,33 @@ static void mixedCampusRegression()
 	}
 }
 
+static void woodReserveBlocksNewPlans()
+{
+	for(bool access:{false,true})
+	{
+		WorldState world=makeWorld();
+		Planner planner;planner.configure(world.profiles,1,2,6,5,7);
+		DevelopmentIntent intent;intent.buildingType=7;intent.unmetCount=1;intent.priority=100;
+		DevelopmentLimits limits;limits.newConstruction=1;
+		DevelopmentAction action;
+		assert(planner.selectAction(world,{intent},limits,action));
+		const auto& tiles=access?action.accessTiles:action.parcelTiles;
+		assert(!tiles.empty());
+		const int reserved=tiles.front();
+		const uint32_t before=world.computeSignature();
+		world.tiles[reserved].woodReserve=true;
+		assert(world.computeSignature()!=before);
+		assert(!planner.revalidate(world,action));
+		DevelopmentAction alternative;
+		assert(planner.selectAction(world,{intent},limits,alternative));
+		for(const auto* selected:{&alternative.parcelTiles,&alternative.accessTiles,&alternative.arteryTiles})
+			assert(std::find(selected->begin(),selected->end(),reserved)==selected->end());
+	}
+}
+
 int main()
 {
+	woodReserveBlocksNewPlans();
 	adjoiningBarracksRegression();
 	mixedCampusRegression();
 	placementReviewRegressions();
