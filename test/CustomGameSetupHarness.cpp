@@ -25,6 +25,8 @@
 #include <StringTable.h>
 #include <atomic>
 #include <cassert>
+#include <chrono>
+#include <algorithm>
 #include <filesystem>
 #include <functional>
 #include <iostream>
@@ -281,6 +283,213 @@ struct CustomGameSetupHarness
 		std::cout << "PASS landscape picker Random order is a real shuffle drawn once per process "
 					 "run, Alphabetical stays stable\n";
 	}
+	static void previewPriority()
+	{
+		GenerationRequest request;
+		request.setMethodDefaults(0);
+		request.wDec = request.hDec = 6;
+		request.nbTeams = 1;
+		LandscapePreviewer queue({request, request, request}, -1, true);
+		queue.poll();
+		assert(queue.finished() == 0 && queue.attempts == std::vector<int>({0, 0, 0}));
+		const auto seeds = queue.seeds;
+		queue.prioritize({2, 0, 1});
+		queue.poll(std::vector<std::size_t>{});
+		assert(queue.finished() == 0);
+		queue.poll(std::vector<std::size_t>{0});
+		assert(queue.preview(0).state == LandscapePreviewer::State::Ready && queue.finished() == 1);
+		// Reset while preserving roots so the unrestricted sequence checks exactly the same maps.
+		queue.regenerate();
+		queue.seeds = seeds;
+		queue.prioritize({2, 0, 1});
+		queue.poll();
+		assert(queue.preview(2).state == LandscapePreviewer::State::Ready);
+		assert(queue.finished() == 1 &&
+			   queue.preview(0).state == LandscapePreviewer::State::Pending);
+		queue.prioritize({1, 1, 1000}); // Duplicates/out-of-range indices cannot lose work.
+		queue.poll();
+		assert(queue.preview(1).state == LandscapePreviewer::State::Ready && queue.finished() == 2);
+		queue.poll();
+		assert(!queue.busy() && queue.finished() == 3 && queue.seeds == seeds);
+		for (std::size_t i = 0; i < seeds.size(); ++i)
+		{
+			const auto expected = LandscapePreviewer::roll(request, seeds[i]);
+			const auto actual = queue.preview(i);
+			assert(actual.seed == expected.seed && actual.score == expected.score &&
+				   actual.thumbnail.pixels()->rgb == expected.thumbnail.pixels()->rgb);
+		}
+		// The same priority survives regeneration; failed requests terminate in one attempt.
+		GenerationRequest invalid = request;
+		invalid.method = -1;
+		queue.restart({invalid, invalid, invalid});
+		queue.poll();
+		assert(queue.preview(1).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 1);
+		queue.regenerate();
+		assert(queue.attempts == std::vector<int>({0, 0, 0}));
+		queue.poll();
+		assert(queue.preview(1).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 1);
+		// Uniform places one team: asking for two forces all three placement retries.
+		auto retry = request;
+		retry.nbTeams = 2;
+		queue.restart({retry, request});
+		queue.prioritize({0, 1});
+		queue.poll();
+		assert(queue.preview(0).state == LandscapePreviewer::State::Pending &&
+			   queue.finished() == 0);
+		queue.prioritize({1, 0});
+		queue.poll();
+		assert(queue.preview(1).state == LandscapePreviewer::State::Ready);
+		queue.poll();
+		assert(queue.preview(0).state == LandscapePreviewer::State::Pending);
+		queue.poll();
+		assert(queue.preview(0).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 2);
+		queue.reroll(0, request);
+		queue.poll();
+		assert(queue.preview(0).state == LandscapePreviewer::State::Ready &&
+			   queue.attempts[0] == 1);
+		queue.restart({});
+		queue.prioritize({0});
+		queue.poll();
+		assert(!queue.busy() && queue.finished() == 0);
+		std::vector<LandscapePickerScreen::Entry> entries(9, {"Landscape", invalid});
+		LandscapePickerScreen picker("Landscape", entries, 0);
+		const SDL_Rect viewport{0, 0, 300, 100};
+		picker.controls->regions[30].box = viewport;
+		auto layout = [&](const std::vector<int> &indices, int columns, int offset)
+		{
+			picker.controls->hits.clear();
+			picker.controls->regions[30].offset = offset;
+			for (std::size_t position = 0; position < indices.size(); ++position)
+			{
+				const SDL_Rect box{int(position % columns) * 100,
+								   int(position / columns) * 100 - offset, 100, 100};
+				picker.controls->hits.push_back({"landscape/" + std::to_string(indices[position]),
+												 box, viewport, [] {}, true, 30});
+			}
+			picker.updatePreviewPriority();
+		};
+		layout({0, 1, 2, 3, 4, 5, 6, 7, 8}, 3, 0);
+		assert(picker.priorityOrder.front() == 1);
+		assert(picker.viewportSlots == std::vector<std::size_t>({0, 1, 2}));
+		layout({0, 1, 2, 3, 4, 5, 6, 7, 8}, 3, 100);
+		assert(picker.priorityOrder.front() == 4);
+		assert(picker.viewportSlots == std::vector<std::size_t>({3, 4, 5}));
+		layout({8, 7, 6, 5, 4, 3, 2, 1, 0}, 3, 0);
+		assert(picker.priorityOrder.front() == 7);
+		layout({8, 5}, 3, 0);
+		assert(picker.priorityOrder.front() == 5);
+		assert(picker.viewportSlots == std::vector<std::size_t>({8, 5}));
+		layout({8, 5, 2}, 1, 100);
+		assert(picker.priorityOrder.front() == 5);
+		assert(picker.viewportSlots == std::vector<std::size_t>({5}));
+		std::cout << "PASS deferred viewport priority, reprioritization, stable seeds, yielding "
+					 "retries, restart/reroll\n";
+	}
+
+	// Fixed pixels isolate UI delivery and scrolling costs from generator/seed variance.
+	static void landscapePerformance(const std::string &output, bool verify)
+	{
+		std::filesystem::create_directories(output);
+		using Clock = std::chrono::steady_clock;
+		auto elapsed = [](auto start)
+		{ return std::chrono::duration<double, std::milli>(Clock::now() - start).count(); };
+		for (const auto *id : {"isles", "river", "contested-commons"})
+		{
+			GenerationRequest request;
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(id));
+			request.wDec = request.hDec = 8;
+			request.nbTeams = 4;
+			const auto result = LandscapePreviewer::roll(request, 71);
+			assert(result.state == LandscapePreviewer::State::Ready);
+			std::uint64_t hash = 14695981039346656037ULL;
+			for (auto byte : result.thumbnail.pixels()->rgb)
+			{
+				hash ^= byte;
+				hash *= 1099511628211ULL;
+			}
+			std::cout << "MAP " << id << " root 71 seed " << result.seed << " pixels " << hash
+					  << " score " << result.score;
+			for (const auto &start : result.starts)
+				std::cout << " start " << start.x << "," << start.y;
+			std::cout << "\n";
+		}
+		std::vector<LandscapePickerScreen::Entry> entries;
+		for (int i = 0; i < 67; ++i)
+		{
+			GenerationRequest request;
+			request.method = -1; // Finish cheaply; results are replaced with the fixture below.
+			entries.push_back({"Landscape " + std::to_string(100 + i), request});
+		}
+		LandscapePickerScreen picker("Landscape", entries, 0,
+									 LandscapePickerScreen::SortOrder::Alphabetical);
+		picker.dispatchInit();
+		picker.dispatchPaint(false);
+		while (picker.busy())
+		{
+			picker.dispatchTimer(SDL_GetTicks());
+			SDL_Delay(1);
+		}
+		Map map;
+		map.setSize(8, 8, GRASS);
+		for (int y = 0; y < 256; ++y)
+			for (int x = 128; x < 256; ++x)
+				map.setUMatPos(x, y, WATER, 1);
+		MapThumbnail image;
+		image.loadFromMap(map);
+		{
+			std::lock_guard<std::mutex> lock(picker.previewer.mutex);
+			for (auto &slot : picker.previewer.slots)
+			{
+				slot.state = LandscapePreviewer::State::Ready;
+				slot.thumbnail = image;
+				slot.width = slot.height = 256;
+				slot.starts = {{64, 128, Color(240, 40, 40)}};
+				++slot.revision;
+			}
+		}
+		const auto delivery = Clock::now();
+		picker.refresh();
+		picker.dispatchPaint(false);
+		std::cout << "BENCH delivery_ms " << elapsed(delivery) << "\n";
+		int uploaded = 0;
+		for (const auto &tile : picker.tiles)
+			if (tile.widget && tile.widget->surface)
+				++uploaded;
+		std::cout << "BENCH initial_uploaded " << uploaded << " / " << entries.size() << "\n";
+		if (verify)
+			assert(uploaded > 0 && uploaded < int(entries.size()));
+		globalContainer->gfx->printScreen(output + "/top.bmp");
+		std::vector<double> frames;
+		auto &region = picker.controls->regions[30];
+		for (int step = 0; step < 80; ++step)
+		{
+			region.offset = region.maximum * (step < 40 ? step : 79 - step) / 39;
+			const auto frame = Clock::now();
+			picker.dispatchPaint(false);
+			frames.push_back(elapsed(frame));
+			if (verify)
+				for (const auto &tile : picker.tiles)
+					if (tile.widget)
+						assert(!tile.widget->transitioning && !tile.widget->transitionPending);
+			if (step == 20)
+				globalContainer->gfx->printScreen(output + "/middle.bmp");
+			if (step == 39)
+				globalContainer->gfx->printScreen(output + "/bottom.bmp");
+		}
+		std::sort(frames.begin(), frames.end());
+		std::cout << "BENCH scroll_ms median " << frames[frames.size() / 2] << " p95 "
+				  << frames[frames.size() * 95 / 100] << " max " << frames.back() << "\n";
+		if (verify)
+		{
+			for (const char *name : {"top.bmp", "middle.bmp", "bottom.bmp"})
+				assert(std::filesystem::exists(output + "/" + name));
+			std::cout << "PASS offscreen previews stay CPU-only; scrolling never fades\n";
+		}
+	}
+
 	static void preferencesScreen(bool write)
 	{
 		auto *files = Toolkit::getFileManager();
@@ -1144,8 +1353,8 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
           GeneratorRegistry::builtins().selectionIndex(screen.setup.generator.method, false);
       LandscapePickerScreen picker("Landscape", shown, current);
       picker.dispatchInit();
-      assert(picker.previewer.threadCount() >= 1 && picker.busy());
-      picker.dispatchPaint(false); // placeholders while every tile is still pending
+	  assert(picker.previewer.threadCount() == 1 && picker.busy());
+	  picker.dispatchPaint(false); // placeholders while every tile is still pending
       globalContainer->gfx->printScreen(output + "/landscape-picker-pending.bmp");
       auto settle = [&] {
         const Uint32 deadline = SDL_GetTicks() + 120000;
@@ -1206,10 +1415,10 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       auto seedsShown = [&] {
         std::vector<std::uint32_t> seeds;
         for (const auto &tile : picker.tiles) {
-          assert(tile.preview.state == LandscapePreviewer::State::Ready && tile.widget && tile.widget->isThumbnailLoaded() &&
-                 tile.preview.width == 256 && tile.preview.height == 256 &&
-                 tile.preview.starts.size() == 4);
-          seeds.push_back(tile.preview.seed);
+			assert(tile.preview.state == LandscapePreviewer::State::Ready &&
+				   tile.preview.width == 256 && tile.preview.height == 256 &&
+				   tile.preview.starts.size() == 4);
+			seeds.push_back(tile.preview.seed);
         }
         assert(std::set<std::uint32_t>(seeds.begin(), seeds.end()).size() == seeds.size());
         return seeds;
@@ -1564,7 +1773,8 @@ int main(int argc, char **argv)
 {
 	GlobalContainer globals("glob2-custom-setup-tests");
 	globalContainer = &globals;
-	globals.runNoX = argc < 2 || std::string(argv[1]) == "preview-restart";
+	globals.runNoX = argc < 2 || std::string(argv[1]) == "preview-restart" ||
+					 std::string(argv[1]) == "preview-queue";
 	globals.settings.rememberUnit = false;
 	globals.settings.screenWidth = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 1000 : 640;
 	globals.settings.screenHeight = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 700 : 480;
@@ -1573,6 +1783,19 @@ int main(int argc, char **argv)
 	if (argc > 3 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
 		globals.settings.language = argv[3];
 	globals.load();
+	if (argc > 1 && std::string(argv[1]) == "preview-queue")
+	{
+		CustomGameSetupHarness::previewPriority();
+		checkPreviewRestart();
+		return 0;
+	}
+	if (argc > 2 && (std::string(argv[2]) == "landscape-performance" ||
+					 std::string(argv[2]) == "landscape-responsive"))
+	{
+		CustomGameSetupHarness::landscapePerformance(argv[1], std::string(argv[2]) ==
+																  "landscape-responsive");
+		return 0;
+	}
 	if (argc > 1 && std::string(argv[1]) == "preview-restart")
 	{
 		checkPreviewRestart();
@@ -1588,6 +1811,7 @@ int main(int argc, char **argv)
 	CustomGameSetupHarness::preferencesModel();
 	CustomGameSetupHarness::preferencesOptions();
 	CustomGameSetupHarness::landscapeRandomOrder();
+	CustomGameSetupHarness::previewPriority();
 	assert(SDLNet_Init() == 0);
 	if (argc > 2 && std::string(argv[2]) == "ui")
 	{

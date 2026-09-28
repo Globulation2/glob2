@@ -105,10 +105,14 @@ void MapPreview::setMapThumbnail(const MapThumbnail &next)
 	delete surface;
 	surface = nullptr;
 	state = next.isLoaded() ? State::Ready : State::Failed;
-	if (next.isLoaded())
+}
+void MapPreview::setAnimateChanges(bool enabled)
+{
+	animateChanges = enabled;
+	if (!enabled)
 	{
-		surface = new DrawableSurface(next.pixels()->width, next.pixels()->height);
-		thumbnail.loadIntoSurface(surface);
+		transitioning = transitionPending = false;
+		previousFrame.reset();
 	}
 }
 void MapPreview::setState(State next)
@@ -192,7 +196,7 @@ bool MapPreview::handlePreviewEvent(SDL_Event *e)
 		mouseY = e->motion.y;
 		return dragging;
 	}
-	if (e->type == SDL_MOUSEWHEEL && surface && inside(mapArea(), mouseX, mouseY))
+	if (e->type == SDL_MOUSEWHEEL && thumbnail.isLoaded() && inside(mapArea(), mouseX, mouseY))
 	{
 		const auto before = worldArea();
 		const double mapX = double(mouseX - before.x) / before.w - view.offsetX;
@@ -211,7 +215,7 @@ bool MapPreview::handlePreviewEvent(SDL_Event *e)
 		retry();
 		return true;
 	}
-	if (!surface || !inside(mapArea(), e->button.x, e->button.y))
+	if (!thumbnail.isLoaded() || !inside(mapArea(), e->button.x, e->button.y))
 		return false;
 	if (e->button.button == SDL_BUTTON_RIGHT ||
 		(e->button.button == SDL_BUTTON_LEFT && e->button.clicks >= 2))
@@ -233,15 +237,23 @@ void MapPreview::paint()
 {
 	// Keep the layout slot, but paint only the fitted map and its outline.
 	// The menu owns the unused space around rectangular maps.
-	auto b = surface ? mapArea() : box();
+	auto b = thumbnail.isLoaded() ? mapArea() : box();
 	if (b.w <= 0 || b.h <= 0)
 		return;
 	auto target = parent->getSurface();
 	int cx, cy, cw, ch;
 	target->getClipRect(&cx, &cy, &cw, &ch);
 	const int left = std::max(cx, b.x), top = std::max(cy, b.y);
-	target->setClipRect(left, top, std::max(0, std::min(cx + cw, b.x + b.w) - left),
-						std::max(0, std::min(cy + ch, b.y + b.h) - top));
+	const int right = std::min(cx + cw, b.x + b.w), bottom = std::min(cy + ch, b.y + b.h);
+	if (right <= left || bottom <= top)
+		return;
+	// A delivered off-screen thumbnail needs no rendering resources until its first paint.
+	if (!surface && thumbnail.isLoaded())
+	{
+		surface = new DrawableSurface(thumbnail.pixels()->width, thumbnail.pixels()->height);
+		thumbnail.loadIntoSurface(surface);
+	}
+	target->setClipRect(left, top, right - left, bottom - top);
 	target->drawFilledRect(b.x, b.y, b.w, b.h, Color(15, 24, 19));
 	if (surface)
 	{

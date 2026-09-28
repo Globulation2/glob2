@@ -67,12 +67,14 @@ Generation failures still display their error message.
 
 The landscape-selection grid uses the same `MapPreview` widget as the lobby and
 online screens, including terrain, centered colony markers, aspect fitting,
-toroidal dragging, cursor-anchored zoom, and transitions. Its old images and map
-metadata remain visible during regeneration, without loading-text flashes; the
-first images fade in as they arrive. Only ready results can supply a chosen seed.
+toroidal dragging, and cursor-anchored zoom. Its old images and map
+metadata remain visible during regeneration, without loading-text flashes. Grid
+images appear immediately, without fades, including when scrolling to a map that
+finished generating off-screen. Completed off-screen results retain CPU pixels;
+rendering surfaces are created only when their cards enter the viewport. Only
+ready results can supply a chosen seed.
 Click or drag an image to select and inspect it; use its label, Enter, or the Use
-button to confirm. The wheel zooms over the selected map and scrolls the grid
-elsewhere. Right-click or double-click an image resets its view.
+button to confirm. The wheel scrolls the grid, including over images. Right-click or double-click an image resets its view.
 
 Local thumbnail lookup retains at most 16 images (at most 12 MiB of RGB pixels),
 keyed by resolved path, mtime and size. Custom setup retains eight map summaries
@@ -81,7 +83,19 @@ rasterizes the already-loaded Game instead of loading Map again. Generated maps
 are still saved as the exact launch snapshot; previewing reads back only the
 finalized header and rasterizes the generated world, avoiding two body reloads.
 
-The upstream landscape picker and candidate selection continue to generate on worker threads. Final generation of the chosen seed, snapshot writing, and the first uncached Game load still run synchronously. The picker uses the same tightly packed terrain format, with cached viewport rasters for both software and OpenGL rendering.
+On native builds the landscape picker uses one background worker, leaving more
+CPU time and memory bandwidth for input and rendering. Its queue starts after the
+first layout and prioritizes cards nearest the viewport center, updating as the
+view scrolls, resizes, sorts, or filters. Filtered-out cards follow those still
+shown. Reordering does not change a request or its seed. Candidate selection
+keeps its separate worker budget. Browser builds use the same priority queue,
+poll one generation attempt at a time for cards in view, and leave an
+input/rendering interval between attempts; interaction postpones the next
+attempt. A single browser generation attempt still runs synchronously and can
+pause input until it finishes. Final generation of the chosen seed, snapshot
+writing, and the first uncached Game load also remain synchronous. The picker
+uses the same tightly packed terrain format, with cached viewport rasters for
+both software and OpenGL rendering.
 
 The YOG client retains up to 32 thumbnails (at most 24 MiB of RGB pixels) across
 list refreshes, keyed by map ID plus SHA1, name, dimensions, and download size.
