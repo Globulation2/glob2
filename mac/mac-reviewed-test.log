@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+Echo gradient continuation: binary/text fields, stale ages, queued work, duplicate entries and invalid indices PASS

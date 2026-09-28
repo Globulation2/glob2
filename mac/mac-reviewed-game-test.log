@@ -1,0 +1,4 @@
+PASS: maxima/nicowar reload at 4096: 4096 matching ticks
+PASS: maxima/nicowar reload at 6144: 2048 matching ticks
+PASS: nicowar/nicowar reload at 4096: 4096 matching ticks
+PASS: nicowar/nicowar reload at 6144: 2048 matching ticks

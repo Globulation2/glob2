@@ -1,0 +1,20 @@
+[
+  "/Users/bradley/.codex/worktrees/maxima-farm-support/glob2/build/darwin/client/release/src/glob2",
+  "--run-game",
+  "--map-file",
+  "/Users/bradley/.codex/worktrees/maxima-farm-support/glob2/artifacts/final-maxima/inputs/g52-s6101-r0.map",
+  "--game-seed",
+  "6101",
+  "--player",
+  "maxima",
+  "--player",
+  "nicowar",
+  "--ticks",
+  "8192",
+  "--telemetry",
+  "checksums",
+  "--save",
+  "every:4096",
+  "--output-dir",
+  "/Users/bradley/.codex/worktrees/maxima-farm-support/glob2/artifacts/echo-save-continuity/validation-final/g52"
+]

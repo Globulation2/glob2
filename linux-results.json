@@ -1,0 +1,63 @@
+[
+  {
+    "case": "g1",
+    "resumed_matching_ticks": 4096,
+    "unchanged_original_ticks": 8192,
+    "full_sha256": "7c5ebc1970ae6a9d89fe89606d517034cbd9a518575ec6fc93fc9f939bf21a41",
+    "full_ticks": 8192,
+    "resumed_sha256": "3ff7d0dbd98412fa121cc1a0edb21af2f452d447fe5be68095ba4009237138e8",
+    "resumed_ticks": 4096
+  },
+  {
+    "case": "g52",
+    "resumed_matching_ticks": 4096,
+    "unchanged_original_ticks": 8192,
+    "full_sha256": "2088dbe0b969e944ad5f8c996aab48346092daa7b4f696b8ba64af5199ae237f",
+    "full_ticks": 8192,
+    "resumed_sha256": "a708549c780a05402dd898ae0f3ec69e5385836ac9866eb60c257d4aa9765de8",
+    "resumed_ticks": 4096
+  },
+  {
+    "case": "nicowar-mirror",
+    "resumed_matching_ticks": 4096,
+    "full_sha256": "07c41e3d19a42cb754b4526d90e2da16dfd13d3fcfac1922782fd43ab9bcf475",
+    "full_ticks": 8192,
+    "resumed_sha256": "c27cbe10035661edd9458bfd69c5daa17dec83a3ad08cccda34dcb0ac313a68d",
+    "resumed_ticks": 4096
+  },
+  {
+    "case": "echo-mixed",
+    "resumed_matching_ticks": 4096,
+    "full_sha256": "ff3eeaecfbe55cc80e2fbbed51a6a31a38093c2fd34ab4c9d5f9325d26350aec",
+    "full_ticks": 8192,
+    "resumed_sha256": "3fd6e7252556d1fba19d1fab7c071bd147574749d9de2d0ea17d976b6989375e",
+    "resumed_ticks": 4096
+  },
+  {
+    "case": "v117",
+    "resumed_matching_ticks": 1024,
+    "unchanged_original_ticks": 2048,
+    "full_sha256": "2aa52350b8c7399bb580fad4eb43048f1860bfd95ac2e720ce06286cb255d989",
+    "full_ticks": 2048,
+    "resumed_sha256": "9e5c287a7b4c921caf0b1fa05e2090df7625e34f43952f5ccfea8838cd520ad0",
+    "resumed_ticks": 1024
+  },
+  {
+    "case": "v115",
+    "resumed_matching_ticks": 256,
+    "unchanged_original_ticks": 512,
+    "full_sha256": "4b562164709085580bc5c12de05bc882e77c51173a5d06926b15b5d9e6c91b5a",
+    "full_ticks": 512,
+    "resumed_sha256": "b22582d3251fdea3d7746962a37747a6dd9e4820752f183dbb50eac042ca4cba",
+    "resumed_ticks": 256
+  },
+  {
+    "case": "crowded",
+    "resumed_matching_ticks": 2048,
+    "unchanged_original_ticks": 4096,
+    "full_sha256": "dd7671412be329c14369d9ae38d15228d27e67b009b7aa573d2f64d77f956bc3",
+    "full_ticks": 4096,
+    "resumed_sha256": "3c01a83675bd4c72b314ceb267883a03a690504a8134ef025d3c1f05d347c740",
+    "resumed_ticks": 2048
+  }
+]

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/bradley/glob2-echo-continuity/test/check_echo_save_continuation.py", line 50, in <module>
+    main()
+    ~~~~^^
+  File "/home/bradley/glob2-echo-continuity/test/check_echo_save_continuation.py", line 38, in main
+    count = compare(baseline / "game.replay.checksums", child / "game.replay.checksums")
+  File "/home/bradley/glob2-echo-continuity/test/compare_save_continuation.py", line 59, in compare
+    raise ValueError(f"team/entity state diverges at tick {tick}")
+ValueError: team/entity state diverges at tick 6171
