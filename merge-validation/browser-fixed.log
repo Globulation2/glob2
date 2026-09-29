@@ -1,0 +1,26 @@
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:06:46] "GET / HTTP/1.1" 200 -
+
+Running 4 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:06:47] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:06:47] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:06:47] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:06:47] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  1 [chromium] › tests/session-reload.spec.js:40:1 › an active match can load the same saved game repeatedly through the scheduled loader (18.4s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:05] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:05] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:05] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:05] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  2 [chromium] › tests/session-reload.spec.js:56:1 › a damaged in-game load returns through a scheduled error notice and permits another match (11.7s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:17] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:17] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:17] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:17] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  3 [chromium] › tests/single-player.spec.js:374:1 › map generation can be cancelled before retrying (swamp) (14.0s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:31] "GET /?renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:31] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:31] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 20:07:31] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  4 [chromium] › tests/single-player.spec.js:374:1 › map generation can be cancelled before retrying (concrete islands) (11.0s)
+
+  4 passed (55.9s)

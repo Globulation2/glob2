@@ -70,3 +70,7 @@ The settings long-text fixture initially duplicated numbered placeholders after 
 Current integration revision: `33feecaf0c96bca4db2f32e78a88df6cc39ae27f`, merging master `802e6687d`. Conflicts are resolved and GitHub reports mergeable. Master preview scheduling, mobile controls and mobile browser coverage are retained alongside CI caching and deduplication. The new landscape harness presents pending portable-renderer captures before checking their files.
 
 Local preview scheduling, landscape scrolling, mobile presentation, responsive menus, 30 build-system and four structural checks pass. Logs and landscape captures are in `merge-validation/`. Hosted validation of this new integration revision is pending. Earlier evidence above identifies its own revision.
+
+Browser integration follow-up: `96b1a6dfb` adapts master’s save-name regression to the native text field and replaces a frozen wall clock with an advancing one so SDL preview deadlines can expire. All four previously failing Chromium/software cases pass locally (`merge-validation/browser-fixed.log`). No production code changed in this follow-up.
+
+Five focused WebGL2 cases also pass, including replay reload and both landscape cancellation/retry paths; see `merge-validation/browser-webgl.log` and the selected-landscape captures.
