@@ -301,12 +301,21 @@ without automatically sharing a finished farm shape.
 
 Do not surround every farm with sand by habit. Use a seal where it enforces an
 actual requirement, such as keeping a supply lane open or separating scarce wood
-from grain. Elsewhere consider existing shores, dry ground, continuous farmland
+from grain. Elsewhere consider existing shores, continuous farmland
 and ordinary growth. Check the eventual resource footprint either way; removing
-sand without checking spreading crops is not a complete fix. Wheat sections on
-verified zero-growth ground can also provide finite reserves without any enclosure;
-record them as harvest stock, not renewable production. Inspect side-by-side
-previews early, before spending a large test budget polishing a repeated design.
+sand without checking spreading crops is not a complete fix. Do not substitute finite dry wheat for productive farmland when fixing food scarcity.
+Expansion fields should meet the existing shore, with only the required beach
+between grain and water, and demonstrate meaningful exact growth potential on
+finished terrain. A positive but negligible probability is not a sustainable farm;
+check productive area, inn access and delivered food as well as the nearest water.
+Finite stock remains appropriate when it is an explicit map concept, not a fallback
+for a field that failed to fit beside water.
+
+Fill coherent sections rather than randomly accepting half the tiles in a mask.
+Per-tile thinning creates a speckled texture, and noisy appendages make otherwise
+clean farms look unfinished. Let rivers, shores and deliberate boundaries define
+the field; control abundance through filled area within it. Inspect side-by-side
+previews and close-ups before spending a large test budget on the design.
 
 ## Calibrate locally before a tournament
 
@@ -667,3 +676,24 @@ within the bound. Local building-room checks need a global fallback and checks f
 blocked external roots; compare ordered footprints and failure results against the
 original helper. Preserve map-byte comparisons when optimizing exact behavior.
 **Carry forward evidence only when its inputs still match.** Freeze the executable and requests for each review round. After an output-preserving change, compare the exact played maps against the final generator, including colony counts and options; a larger-map comparison with eight colonies does not cover a four-colony game. Exact serialized comparisons may require the same output path. Reuse play evidence only when the saved world matches and simulation/AI behavior is unchanged. Re-test changed maps, retain the failed version, and state the review's remaining limits.
+
+### Natural field edges and usable expansion ground
+
+A renewable crop does not automatically need an enclosure. Choose containment
+for a route or building-space promise, not as a default field outline. Open outer
+shores can use the water's natural fertility limit; include the final dry tile
+that a fertile source can seed when checking their future footprint. Preserve
+central tactical clearings separately from optional outer-country farmland.
+
+Compare the buildable approaches beside expansion food across starts. A cleared
+inn footprint alone can hide a large imbalance between grassy and sandy shores.
+Remove unnecessary inland desert or distribute it deliberately. Small separated
+wheat tufts along a winding inlet are a valid different style from broad fields;
+the unwanted texture is random terrain speckling, not every small crop patch.
+Break up spare country with spaced copses or outcrops while leaving useful lawns.
+
+When removing a terrain feature fixes unfair construction space but leaves the
+map visually empty, relocate and reshape that feature instead of erasing its
+landscape role. Treeline's broken dry terraces belong farther inland, outside a
+broad grassy apron around every lake; they must not determine which colony can
+build beside expansion wheat. Compare the revised silhouette as well as access.

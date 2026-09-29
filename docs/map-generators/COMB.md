@@ -1,6 +1,6 @@
 # The Comb
 
-The Comb (`comb`, numeric ID 62, revision 3) creates two curving shores with broad,
+The Comb (`comb`, numeric ID 62, revision 4) creates two curving shores with broad,
 interlocking peninsulas. Land around both ends of the inlet connects the shores;
 outer sea keeps the toroidal seam from creating another walking route. Opponents
 can threaten a nearby waterfront while their armies take a longer land route.
@@ -26,16 +26,12 @@ clearing beside compact guaranteed grain, so an inn can establish a feeding edge
 Those farm clearings can regrow; the sand-protected mainland and forward building
 ground are the permanent construction reserve.
 
-Broader irregular sandy clearings and occasional wheat/wood pockets break up the interior.
-Larger open wheat sections occupy dry peninsula interiors, clear of towns, roads
-and forward building positions. These finite harvest reserves have no added sand
-rims or ponds; the coastal fields supply renewable food. They scale with wheat
-amount and disappear at zero.
-The decorative pockets' sizes and outlines come from smooth noise, without a repeated placement grid.
-Each crop pocket has a closed sand rim; natural growth can fill its grass centre but
-cannot escape onto nearby construction ground. Ambient crops follow their existing
-amount sliders and disappear at zero. Farms, starting ground, supply roads and the
-central part of each forward position are excluded from this decorative layer.
+Broader irregular sandy clearings and occasional wood pockets break up the interior.
+Small separated wheat tufts line the central wave-shaped inlet, directly beside
+water. They add no sand enclosure, leave gaps for gathering and forward buildings,
+and scale with wheat abundance. Their future spread follows fertile shores; the
+mainland construction belt and both end routes remain protected. Short dry paths
+across the inlet mouths stop crops spreading around the outer sea coast.
 
 The long dimension determines coastline orientation; square maps choose either
 orientation from the seed. The inhabited landmass has a bounded transverse span

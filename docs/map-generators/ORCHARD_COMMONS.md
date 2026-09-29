@@ -1,6 +1,6 @@
 # Orchard Commons
 
-Orchard Commons (`orchard-commons`, numeric ID 58, revision 2) is a natural valley
+Orchard Commons (`orchard-commons`, numeric ID 58, revision 3) is a natural valley
 for two to eight colonies. Homes and the surrounding farmland sustain ordinary food production; separate cherry, orange and prune
 groves supply the diets worth fighting over. Claim a grove, establish an inn,
 secure another variety, and advertise the inn to tempt hungry enemy workers.
@@ -29,9 +29,11 @@ walls or identical cleared plots. Larger home farms, ponds and outer backwaters 
 small quarries provide ordinary upgrade stone. Home wheat leaves an initial inn
 clearing and an unseeded approach, with grain planted beside it. These openings
 can regrow if unused; permanent construction room remains outside the plots.
-Open wheat sections occupy dry gaps in the outer countryside, without added sand
-rims. They supply finite harvest reserves alongside the renewable home and outpost
-farms, and follow the wheat amount control. No fruit is planted at home.
+Solid wheat sections follow existing outer lake shores, without artificial sand
+borders on their inland edges, with inn openings and
+verified productive fertility. A thin landward boundary controls crop spread; no
+extra ponds are stamped into the country. These fields follow the wheat amount
+control. No fruit is planted at home.
 
 On the finished map, first-fruit access from usable swarm exits is 24–48 walking steps; the largest first
 access and largest nearest-per-variety access are at most 125% of the smallest.
@@ -39,9 +41,8 @@ The validator also checks renewable gathering frontage, home building room,
 connected future court approaches, and clear flanking loops around groves.
 This is measured access fairness, not tile symmetry or a guarantee of equal wins.
 
-Renewable crops occupy the existing sand-contained plots. Extra open wheat and
-outer woodland are planted only on ground with zero crop growth probability, so
-they do not engulf routes. They are finite harvest reserves and clearable woodland. Fruit regrows in place and never spreads. No no-growth flags are used.
+Renewable crops occupy the home plots and open outer shore sections. Outer
+woodland alone is planted on zero-growth ground, so it cannot engulf routes. Fruit regrows in place and never spreads. No no-growth flags are used.
 Maps retain the normal toroidal wrap and swimming shortcuts.
 
 ## Controls and supported requests
@@ -106,3 +107,8 @@ and human play assessment.
 No engine, save-format, replay or network version changes are introduced. Existing
 generators retain their definitions and behavior. Cross-platform simulation checks
 and human play review must not be inferred from the local headless evidence.
+
+Outer-country wheat may spread naturally along fertile grass. Validation checks
+its full fertile spread, including the last dry neighbour, against central court
+approaches and the grove gathering loops. The original central plots retain
+containment where those tactical clearings require it.
