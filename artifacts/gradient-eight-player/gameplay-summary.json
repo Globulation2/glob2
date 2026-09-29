@@ -1,0 +1,258 @@
+{
+  "failed": [
+    {
+      "case": {
+        "id": "g15-s10508-r0-nicowar",
+        "generator": 15,
+        "base_seed": 10508,
+        "rotation": 0,
+        "size": 256,
+        "seed": 1560508,
+        "map_sha256": "abb26bc280794c86fc633331386835e555cbafc27d9c5c2d3bd13e6fca71a5da",
+        "map": "generated/g15-s10508/map-r0.map",
+        "players": [
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar",
+          "nicowar"
+        ],
+        "host": "therig"
+      },
+      "status": "failed",
+      "failures": {
+        "baseline": {
+          "status": "exit 3 under 8GiB address-space cap",
+          "last_progress_tick": 36096,
+          "peak_rss_kib": 8210716,
+          "note": "Baseline partner failed too; allocation origin pending. Preserve as failed outcome."
+        },
+        "candidate": {
+          "case": "g15-s10508-r0-nicowar",
+          "variant": "candidate",
+          "last_progress_tick": 42496,
+          "status": "kernel OOM kill",
+          "signal": 9,
+          "peak_rss_kib": 105217324,
+          "original_evidence": "/home/bradley/glob2-gradient-production/artifacts/gradient-eight-player/games/g15-s10508-r0-nicowar/candidate",
+          "diagnostic": "Separate reproduction under GDB with 4GiB address-space limit; original frozen run retained. Do not count reproduction as cohort completion."
+        }
+      }
+    }
+  ],
+  "groups": {
+    "maxima": {
+      "completed_pairs": 128,
+      "metrics": {
+        "common_wheat": {
+          "estimate": 1.9405546881966864,
+          "ci95": [
+            -1.1373181648594308,
+            4.924926753221729
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "common_meals": {
+          "estimate": 2.1133618967590038,
+          "ci95": [
+            -1.1763742414312697,
+            5.1732458922952596
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "common_unit_ticks": {
+          "estimate": 1.7623869818117963,
+          "ci95": [
+            -1.2835778905937976,
+            4.678630808424768
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "common_starved": {
+          "estimate": -0.23059060685907695,
+          "ci95": [
+            -0.8483377370555324,
+            0.3062987740762325
+          ],
+          "units": "per million unit-ticks",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "common_critical_ticks": {
+          "estimate": 0.04597453580831699,
+          "ci95": [
+            -0.2917596398072667,
+            0.3439779164530145
+          ],
+          "units": "percentage points",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_wheat": {
+          "estimate": 1.1096132946947275,
+          "ci95": [
+            -0.9012577056338816,
+            3.0927537869820747
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_meals": {
+          "estimate": 0.9835474572359183,
+          "ci95": [
+            -0.35277825625240533,
+            2.416104497975708
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_unit_ticks": {
+          "estimate": 0.6160476486604923,
+          "ci95": [
+            -0.7245783211878303,
+            1.9237803780487586
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_starved": {
+          "estimate": -0.006728366615668033,
+          "ci95": [
+            -0.24058553422992662,
+            0.21945688305291183
+          ],
+          "units": "per million unit-ticks",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_critical_ticks": {
+          "estimate": 0.11430835378860144,
+          "ci95": [
+            -0.11575807578063141,
+            0.3949084592931626
+          ],
+          "units": "percentage points",
+          "families": 16,
+          "excluded_pairs": []
+        }
+      }
+    },
+    "nicowar": {
+      "completed_pairs": 127,
+      "metrics": {
+        "common_wheat": {
+          "estimate": 0.22386558112897167,
+          "ci95": [
+            -3.103900278780784,
+            3.7804550347527046
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "common_meals": {
+          "estimate": 0.016321647657344174,
+          "ci95": [
+            -3.712113325885521,
+            3.8463900082552835
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "common_unit_ticks": {
+          "estimate": 0.17744936668146824,
+          "ci95": [
+            -2.82387482988508,
+            3.292456328398142
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "common_starved": {
+          "estimate": 0.17884326662374075,
+          "ci95": [
+            -0.6675206065558209,
+            1.1025419114315482
+          ],
+          "units": "per million unit-ticks",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "common_critical_ticks": {
+          "estimate": 0.07895437682976399,
+          "ci95": [
+            -0.25983879954659406,
+            0.4216412119377726
+          ],
+          "units": "percentage points",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_wheat": {
+          "estimate": 0.7725905901859866,
+          "ci95": [
+            -0.5440164939877389,
+            2.1340461367301735
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_meals": {
+          "estimate": 0.15490905770725202,
+          "ci95": [
+            -1.162578881038164,
+            1.4498005899973283
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_unit_ticks": {
+          "estimate": 0.7126498301929658,
+          "ci95": [
+            -0.23127910702136087,
+            1.6185241635343777
+          ],
+          "units": "percent change",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_starved": {
+          "estimate": 0.22660865174600855,
+          "ci95": [
+            -0.14015383868065204,
+            0.6554370149918877
+          ],
+          "units": "per million unit-ticks",
+          "families": 16,
+          "excluded_pairs": []
+        },
+        "early_critical_ticks": {
+          "estimate": 0.13613403026556778,
+          "ci95": [
+            -0.10240865986919125,
+            0.3794003931030754
+          ],
+          "units": "percentage points",
+          "families": 16,
+          "excluded_pairs": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,2466 @@
+[
+  {
+    "state": "g29-s10501-r0-maxima-baseline",
+    "variant": "baseline",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 4343296,
+      "critical_ticks": 287232,
+      "hungry_ticks": 105472,
+      "inn_ticks": 330752,
+      "meals": 476,
+      "wheat": 2040,
+      "starved": 10,
+      "other_deaths": 98
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "50278569214",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "50277336624",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "23379051205",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "22454554341",
+        "self_ns": "48544985"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "11606646585",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "4200847455",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "3400700544",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "6813584947",
+        "self_ns": "321437708"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "2956341",
+        "self_ns": "2956341"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12767226",
+        "self_ns": "12767226"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "2380358",
+        "self_ns": "28494"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "300939984",
+        "self_ns": "280874279"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "274232515",
+        "self_ns": "180955196"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "526987921",
+        "self_ns": "526987921"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "21879021435",
+        "self_ns": "21233147571"
+      },
+      "ai.observe": {
+        "calls": "65536",
+        "total_ns": "67185853",
+        "self_ns": "67185853"
+      },
+      "ai.plan": {
+        "calls": "14872",
+        "total_ns": "1800390",
+        "self_ns": "1800390"
+      },
+      "ai.gradient": {
+        "calls": "65536",
+        "total_ns": "576887621",
+        "self_ns": "576887621"
+      },
+      "gradient.resource": {
+        "calls": "6209",
+        "total_ns": "4970319116",
+        "self_ns": "924189584"
+      },
+      "gradient.building": {
+        "calls": "26020",
+        "total_ns": "4197146696",
+        "self_ns": "4197146696"
+      },
+      "gradient.building_resume": {
+        "calls": "40528",
+        "total_ns": "5627642589",
+        "self_ns": "5627642589"
+      },
+      "gradient.round_trip": {
+        "calls": "5702",
+        "total_ns": "5211899746",
+        "self_ns": "618609697"
+      },
+      "gradient.area": {
+        "calls": "11022",
+        "total_ns": "10944091760",
+        "self_ns": "1263193657"
+      },
+      "gradient.propagation": {
+        "calls": "20483",
+        "total_ns": "11588731071",
+        "self_ns": "11588731071"
+      },
+      "path.resource": {
+        "calls": "44011",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "1992525",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "12898",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "9855",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "156615",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g29-s10501-r0-maxima-baseline",
+    "variant": "candidate",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 4336128,
+      "critical_ticks": 304128,
+      "hungry_ticks": 103936,
+      "inn_ticks": 323584,
+      "meals": 499,
+      "wheat": 1984,
+      "starved": 8,
+      "other_deaths": 86
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "46598343880",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "46597335789",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "20991165908",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "22061712253",
+        "self_ns": "46813155"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "9755059920",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "3569202539",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "2765519144",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "6912450456",
+        "self_ns": "330509230"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3030175",
+        "self_ns": "3030175"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12899446",
+        "self_ns": "12899446"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "10435978",
+        "self_ns": "67970"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "297060071",
+        "self_ns": "277173093"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "264278558",
+        "self_ns": "171901034"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "516914396",
+        "self_ns": "516914396"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "21497984702",
+        "self_ns": "20879361471"
+      },
+      "ai.observe": {
+        "calls": "65536",
+        "total_ns": "67488555",
+        "self_ns": "67488555"
+      },
+      "ai.plan": {
+        "calls": "14909",
+        "total_ns": "1783491",
+        "self_ns": "1783491"
+      },
+      "ai.gradient": {
+        "calls": "65536",
+        "total_ns": "549351185",
+        "self_ns": "549351185"
+      },
+      "gradient.resource": {
+        "calls": "6196",
+        "total_ns": "4866670525",
+        "self_ns": "919604703"
+      },
+      "gradient.building": {
+        "calls": "19348",
+        "total_ns": "3060443722",
+        "self_ns": "3060443722"
+      },
+      "gradient.building_resume": {
+        "calls": "32163",
+        "total_ns": "4325019684",
+        "self_ns": "4325019684"
+      },
+      "gradient.round_trip": {
+        "calls": "5782",
+        "total_ns": "4974322631",
+        "self_ns": "622826783"
+      },
+      "gradient.area": {
+        "calls": "9448",
+        "total_ns": "9371915811",
+        "self_ns": "1118130701"
+      },
+      "gradient.propagation": {
+        "calls": "19567",
+        "total_ns": "10970961620",
+        "self_ns": "10970961620"
+      },
+      "path.resource": {
+        "calls": "46305",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "1773126",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "12806",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "5957",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "164867",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g29-s10501-r0-maxima-candidate",
+    "variant": "baseline",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 4387328,
+      "critical_ticks": 420352,
+      "hungry_ticks": 132096,
+      "inn_ticks": 328192,
+      "meals": 483,
+      "wheat": 1583,
+      "starved": 24,
+      "other_deaths": 112
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "46907228849",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "46906167709",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "23222074702",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "20564170266",
+        "self_ns": "49209798"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "11540114652",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "4011003593",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "3337333737",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "6899607567",
+        "self_ns": "331654847"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3061061",
+        "self_ns": "3061061"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12530085",
+        "self_ns": "12530085"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "8205840",
+        "self_ns": "80609"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "307064828",
+        "self_ns": "283257043"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "262975670",
+        "self_ns": "172244151"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "500078544",
+        "self_ns": "500078544"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "20014881924",
+        "self_ns": "19208432409"
+      },
+      "ai.observe": {
+        "calls": "65536",
+        "total_ns": "67110451",
+        "self_ns": "67110451"
+      },
+      "ai.plan": {
+        "calls": "14989",
+        "total_ns": "2207631",
+        "self_ns": "2207631"
+      },
+      "ai.gradient": {
+        "calls": "65536",
+        "total_ns": "737131433",
+        "self_ns": "737131433"
+      },
+      "gradient.resource": {
+        "calls": "6258",
+        "total_ns": "5042084247",
+        "self_ns": "932443102"
+      },
+      "gradient.building": {
+        "calls": "24648",
+        "total_ns": "4066843183",
+        "self_ns": "4066843183"
+      },
+      "gradient.building_resume": {
+        "calls": "40703",
+        "total_ns": "5314463529",
+        "self_ns": "5314463529"
+      },
+      "gradient.round_trip": {
+        "calls": "5258",
+        "total_ns": "5701435549",
+        "self_ns": "525408725"
+      },
+      "gradient.area": {
+        "calls": "8435",
+        "total_ns": "8232591923",
+        "self_ns": "986307591"
+      },
+      "gradient.propagation": {
+        "calls": "18157",
+        "total_ns": "10895281682",
+        "self_ns": "10895281682"
+      },
+      "path.resource": {
+        "calls": "39376",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "1745687",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "9502",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "8593",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "160102",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g29-s10501-r0-maxima-candidate",
+    "variant": "candidate",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 4424704,
+      "critical_ticks": 420352,
+      "hungry_ticks": 126464,
+      "inn_ticks": 344576,
+      "meals": 502,
+      "wheat": 1669,
+      "starved": 29,
+      "other_deaths": 104
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "47020153767",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "47019018429",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "22587879646",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "21541839217",
+        "self_ns": "47866351"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "10906738693",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "3865619129",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "3185040070",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "7045058079",
+        "self_ns": "335781264"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3060701",
+        "self_ns": "3060701"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12437496",
+        "self_ns": "12437496"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "9201488",
+        "self_ns": "88866"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "314670115",
+        "self_ns": "293416559"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "261113269",
+        "self_ns": "170758723"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "500831785",
+        "self_ns": "500831785"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "20993141081",
+        "self_ns": "20245606064"
+      },
+      "ai.observe": {
+        "calls": "65536",
+        "total_ns": "68240573",
+        "self_ns": "68240573"
+      },
+      "ai.plan": {
+        "calls": "14998",
+        "total_ns": "1929046",
+        "self_ns": "1929046"
+      },
+      "ai.gradient": {
+        "calls": "65536",
+        "total_ns": "677365398",
+        "self_ns": "677365398"
+      },
+      "gradient.resource": {
+        "calls": "6188",
+        "total_ns": "4948824562",
+        "self_ns": "912083652"
+      },
+      "gradient.building": {
+        "calls": "21545",
+        "total_ns": "3457988160",
+        "self_ns": "3457988160"
+      },
+      "gradient.building_resume": {
+        "calls": "36550",
+        "total_ns": "4744260963",
+        "self_ns": "4744260963"
+      },
+      "gradient.round_trip": {
+        "calls": "5329",
+        "total_ns": "5758256960",
+        "self_ns": "529988293"
+      },
+      "gradient.area": {
+        "calls": "8580",
+        "total_ns": "8320956832",
+        "self_ns": "1023832787"
+      },
+      "gradient.propagation": {
+        "calls": "18483",
+        "total_ns": "11101150898",
+        "self_ns": "11101150898"
+      },
+      "path.resource": {
+        "calls": "39370",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "2157631",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "7697",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "6066",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "164546",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g29-s10501-r0-nicowar-baseline",
+    "variant": "baseline",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 5433344,
+      "critical_ticks": 421376,
+      "hungry_ticks": 107008,
+      "inn_ticks": 254976,
+      "meals": 722,
+      "wheat": 2166,
+      "starved": 15,
+      "other_deaths": 131
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "18719733790",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "18718937743",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "15038334396",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "2326304852",
+        "self_ns": "30156792"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "6314703937",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "3566172596",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "3042930283",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "4536180693",
+        "self_ns": "323497503"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3044574",
+        "self_ns": "3044574"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "11719326",
+        "self_ns": "11719326"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "7400976",
+        "self_ns": "158323"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "287068729",
+        "self_ns": "279510827"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "131701845",
+        "self_ns": "99851145"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "429813574",
+        "self_ns": "429813574"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "1866334486",
+        "self_ns": "897817584"
+      },
+      "ai.gradient": {
+        "calls": "1602",
+        "total_ns": "1417989931",
+        "self_ns": "968516902"
+      },
+      "gradient.resource": {
+        "calls": "5969",
+        "total_ns": "3323969663",
+        "self_ns": "1080334739"
+      },
+      "gradient.building": {
+        "calls": "15994",
+        "total_ns": "2740945826",
+        "self_ns": "2740945826"
+      },
+      "gradient.building_resume": {
+        "calls": "32536",
+        "total_ns": "2860923626",
+        "self_ns": "2860923626"
+      },
+      "gradient.round_trip": {
+        "calls": "5852",
+        "total_ns": "2872758887",
+        "self_ns": "654666974"
+      },
+      "gradient.area": {
+        "calls": "7148",
+        "total_ns": "3541586540",
+        "self_ns": "870633332"
+      },
+      "gradient.propagation": {
+        "calls": "16920",
+        "total_ns": "4527647937",
+        "self_ns": "4527647937"
+      },
+      "path.resource": {
+        "calls": "61265",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "2421227",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "20888",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "5903",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "173989",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g29-s10501-r0-nicowar-baseline",
+    "variant": "candidate",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 5444096,
+      "critical_ticks": 415744,
+      "hungry_ticks": 114176,
+      "inn_ticks": 254976,
+      "meals": 719,
+      "wheat": 2235,
+      "starved": 21,
+      "other_deaths": 123
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "17432091325",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "17431253813",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "13902980162",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "2675303013",
+        "self_ns": "30305374"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "5685914239",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "2796047893",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "2272526314",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "4778839839",
+        "self_ns": "353261957"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3067141",
+        "self_ns": "3067141"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "11731861",
+        "self_ns": "11731861"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "24790524",
+        "self_ns": "335464"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "288801452",
+        "self_ns": "280518359"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "127973405",
+        "self_ns": "97437465"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "443114941",
+        "self_ns": "443114941"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "2201882698",
+        "self_ns": "1010014952"
+      },
+      "ai.gradient": {
+        "calls": "1870",
+        "total_ns": "1712918061",
+        "self_ns": "1191867746"
+      },
+      "gradient.resource": {
+        "calls": "6014",
+        "total_ns": "3455894292",
+        "self_ns": "1071927290"
+      },
+      "gradient.building": {
+        "calls": "11675",
+        "total_ns": "1941334123",
+        "self_ns": "1941334123"
+      },
+      "gradient.building_resume": {
+        "calls": "27715",
+        "total_ns": "2164380548",
+        "self_ns": "2164380548"
+      },
+      "gradient.round_trip": {
+        "calls": "6012",
+        "total_ns": "2974227361",
+        "self_ns": "673986491"
+      },
+      "gradient.area": {
+        "calls": "5502",
+        "total_ns": "2815837087",
+        "self_ns": "727384405"
+      },
+      "gradient.propagation": {
+        "calls": "16265",
+        "total_ns": "4586346269",
+        "self_ns": "4586346269"
+      },
+      "path.resource": {
+        "calls": "62880",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "1961762",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "24046",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "6798",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "171181",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g29-s10501-r0-nicowar-candidate",
+    "variant": "baseline",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 6396416,
+      "critical_ticks": 580608,
+      "hungry_ticks": 134144,
+      "inn_ticks": 294400,
+      "meals": 859,
+      "wheat": 2259,
+      "starved": 25,
+      "other_deaths": 125
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "22138042780",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "22137076280",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "17819848746",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "2118141735",
+        "self_ns": "29516268"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "7613565840",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "4059302636",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "3529541091",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "5476026538",
+        "self_ns": "308707536"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "2954947",
+        "self_ns": "2954947"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "11280143",
+        "self_ns": "11280143"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "13887733",
+        "self_ns": "276306"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "302947192",
+        "self_ns": "295860772"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "134598278",
+        "self_ns": "103084153"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "465074517",
+        "self_ns": "465074517"
+      },
+      "ai.total": {
+        "calls": "61702",
+        "total_ns": "1623550950",
+        "self_ns": "822988610"
+      },
+      "ai.gradient": {
+        "calls": "1364",
+        "total_ns": "1185239409",
+        "self_ns": "800562340"
+      },
+      "gradient.resource": {
+        "calls": "5945",
+        "total_ns": "4015687151",
+        "self_ns": "1010992572"
+      },
+      "gradient.building": {
+        "calls": "20013",
+        "total_ns": "3545216275",
+        "self_ns": "3545216275"
+      },
+      "gradient.building_resume": {
+        "calls": "41875",
+        "total_ns": "3416226833",
+        "self_ns": "3416226833"
+      },
+      "gradient.round_trip": {
+        "calls": "5242",
+        "total_ns": "2969662776",
+        "self_ns": "631904871"
+      },
+      "gradient.area": {
+        "calls": "8200",
+        "total_ns": "5668047470",
+        "self_ns": "1029211956"
+      },
+      "gradient.propagation": {
+        "calls": "17421",
+        "total_ns": "6432160581",
+        "self_ns": "6432160581"
+      },
+      "path.resource": {
+        "calls": "58819",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "3256473",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "37120",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "18023",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "200538",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g29-s10501-r0-nicowar-candidate",
+    "variant": "candidate",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 6459392,
+      "critical_ticks": 517632,
+      "hungry_ticks": 124416,
+      "inn_ticks": 282112,
+      "meals": 881,
+      "wheat": 2424,
+      "starved": 22,
+      "other_deaths": 118
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "19480176265",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "19479320718",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "15837690203",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "2195069843",
+        "self_ns": "28716955"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "6422980525",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "3230463150",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "2722145170",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "5540892457",
+        "self_ns": "313800559"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "2782911",
+        "self_ns": "2782911"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "11285112",
+        "self_ns": "11285112"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "9249236",
+        "self_ns": "192776"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "295207364",
+        "self_ns": "288181495"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "126530086",
+        "self_ns": "96032046"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "448364315",
+        "self_ns": "448364315"
+      },
+      "ai.total": {
+        "calls": "63943",
+        "total_ns": "1717988573",
+        "self_ns": "816759028"
+      },
+      "ai.gradient": {
+        "calls": "1522",
+        "total_ns": "1332717180",
+        "self_ns": "901229545"
+      },
+      "gradient.resource": {
+        "calls": "5938",
+        "total_ns": "3961711601",
+        "self_ns": "992565826"
+      },
+      "gradient.building": {
+        "calls": "13826",
+        "total_ns": "2310693595",
+        "self_ns": "2310693595"
+      },
+      "gradient.building_resume": {
+        "calls": "33986",
+        "total_ns": "2690238999",
+        "self_ns": "2690238999"
+      },
+      "gradient.round_trip": {
+        "calls": "5443",
+        "total_ns": "2871074232",
+        "self_ns": "643423143"
+      },
+      "gradient.area": {
+        "calls": "6155",
+        "total_ns": "4344301681",
+        "self_ns": "820109980"
+      },
+      "gradient.propagation": {
+        "calls": "16349",
+        "total_ns": "6025548196",
+        "self_ns": "6025548196"
+      },
+      "path.resource": {
+        "calls": "61282",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "3531748",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "45885",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "14868",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "200893",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g48-s10501-r0-maxima-baseline",
+    "variant": "baseline",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 16421376,
+      "critical_ticks": 4580864,
+      "hungry_ticks": 1602560,
+      "inn_ticks": 274432,
+      "meals": 728,
+      "wheat": 6766,
+      "starved": 820,
+      "other_deaths": 349
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "59207211938",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "59205998711",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "33649790177",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "20645899130",
+        "self_ns": "55631846"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "21579259774",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "5480430220",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "3794873913",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "5427167653",
+        "self_ns": "256738819"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3017830",
+        "self_ns": "3017830"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12862387",
+        "self_ns": "12862387"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "16701116",
+        "self_ns": "94702"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "490584296",
+        "self_ns": "470113846"
+      },
+      "telemetry.output": {
+        "calls": "155",
+        "total_ns": "259431468",
+        "self_ns": "168878954"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "1249369210",
+        "self_ns": "1249369210"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "19340898074",
+        "self_ns": "18785740318"
+      },
+      "ai.observe": {
+        "calls": "65536",
+        "total_ns": "67405718",
+        "self_ns": "67405718"
+      },
+      "ai.plan": {
+        "calls": "15026",
+        "total_ns": "1775742",
+        "self_ns": "1775742"
+      },
+      "ai.gradient": {
+        "calls": "65536",
+        "total_ns": "485976296",
+        "self_ns": "485976296"
+      },
+      "gradient.resource": {
+        "calls": "6132",
+        "total_ns": "4084412870",
+        "self_ns": "882171289"
+      },
+      "gradient.building": {
+        "calls": "29575",
+        "total_ns": "4934394559",
+        "self_ns": "4934394559"
+      },
+      "gradient.building_resume": {
+        "calls": "54089",
+        "total_ns": "10518858477",
+        "self_ns": "10518858477"
+      },
+      "gradient.round_trip": {
+        "calls": "10371",
+        "total_ns": "14360061710",
+        "self_ns": "593273621"
+      },
+      "gradient.area": {
+        "calls": "15384",
+        "total_ns": "10806831338",
+        "self_ns": "1662760821"
+      },
+      "gradient.propagation": {
+        "calls": "27691",
+        "total_ns": "14867379886",
+        "self_ns": "14867379886"
+      },
+      "path.resource": {
+        "calls": "52824",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "7194314",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "8853",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "2083",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "502980",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g48-s10501-r0-maxima-baseline",
+    "variant": "candidate",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 16586752,
+      "critical_ticks": 4682752,
+      "hungry_ticks": 1614336,
+      "inn_ticks": 265728,
+      "meals": 718,
+      "wheat": 6816,
+      "starved": 826,
+      "other_deaths": 354
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "53876232453",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "53875097956",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "30266656656",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "20788978896",
+        "self_ns": "51639231"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "18522998017",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "5012898370",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "3331563976",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "5606332116",
+        "self_ns": "262832495"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "2886988",
+        "self_ns": "2886988"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12583390",
+        "self_ns": "12583390"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "32980321",
+        "self_ns": "192974"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "472592701",
+        "self_ns": "450389121"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "257964741",
+        "self_ns": "168881725"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "1192854577",
+        "self_ns": "1192854577"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "19544485088",
+        "self_ns": "19001090079"
+      },
+      "ai.observe": {
+        "calls": "65536",
+        "total_ns": "69867245",
+        "self_ns": "69867245"
+      },
+      "ai.plan": {
+        "calls": "15012",
+        "total_ns": "2230788",
+        "self_ns": "2230788"
+      },
+      "ai.gradient": {
+        "calls": "65536",
+        "total_ns": "471296976",
+        "self_ns": "471296976"
+      },
+      "gradient.resource": {
+        "calls": "6132",
+        "total_ns": "4105942763",
+        "self_ns": "873729878"
+      },
+      "gradient.building": {
+        "calls": "22566",
+        "total_ns": "3693196823",
+        "self_ns": "3693196823"
+      },
+      "gradient.building_resume": {
+        "calls": "44767",
+        "total_ns": "8186150214",
+        "self_ns": "8186150214"
+      },
+      "gradient.round_trip": {
+        "calls": "10355",
+        "total_ns": "13006672266",
+        "self_ns": "592488180"
+      },
+      "gradient.area": {
+        "calls": "10426",
+        "total_ns": "6999326167",
+        "self_ns": "1168111464"
+      },
+      "gradient.propagation": {
+        "calls": "24370",
+        "total_ns": "13579610190",
+        "self_ns": "13579610190"
+      },
+      "path.resource": {
+        "calls": "54086",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "8453400",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "8786",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "1824",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "495948",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g48-s10501-r0-maxima-candidate",
+    "variant": "baseline",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 17249792,
+      "critical_ticks": 4823552,
+      "hungry_ticks": 1636864,
+      "inn_ticks": 282112,
+      "meals": 833,
+      "wheat": 6447,
+      "starved": 787,
+      "other_deaths": 232
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "60152124321",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "60151131661",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "34695939342",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "20570720504",
+        "self_ns": "52938644"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "20201031462",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "7931127029",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "6282005121",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "5405485045",
+        "self_ns": "255190926"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3044409",
+        "self_ns": "3044409"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12609676",
+        "self_ns": "12609676"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "35704588",
+        "self_ns": "187869"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "467964907",
+        "self_ns": "447722261"
+      },
+      "telemetry.output": {
+        "calls": "155",
+        "total_ns": "259355333",
+        "self_ns": "168665782"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "1237639863",
+        "self_ns": "1237639863"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "19280141997",
+        "self_ns": "18642180016"
+      },
+      "ai.observe": {
+        "calls": "65536",
+        "total_ns": "71357616",
+        "self_ns": "71357616"
+      },
+      "ai.plan": {
+        "calls": "15003",
+        "total_ns": "3019723",
+        "self_ns": "3019723"
+      },
+      "ai.gradient": {
+        "calls": "65536",
+        "total_ns": "563584642",
+        "self_ns": "563584642"
+      },
+      "gradient.resource": {
+        "calls": "6177",
+        "total_ns": "3985459177",
+        "self_ns": "885579877"
+      },
+      "gradient.building": {
+        "calls": "31350",
+        "total_ns": "5179934440",
+        "self_ns": "5179934440"
+      },
+      "gradient.building_resume": {
+        "calls": "56242",
+        "total_ns": "10405908431",
+        "self_ns": "10405908431"
+      },
+      "gradient.round_trip": {
+        "calls": "9351",
+        "total_ns": "12853820935",
+        "self_ns": "536394410"
+      },
+      "gradient.area": {
+        "calls": "14289",
+        "total_ns": "10954171517",
+        "self_ns": "1546374062"
+      },
+      "gradient.propagation": {
+        "calls": "25942",
+        "total_ns": "14439931111",
+        "self_ns": "14439931111"
+      },
+      "path.resource": {
+        "calls": "46763",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "18209728",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "7973",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "1886",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "511636",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g48-s10501-r0-maxima-candidate",
+    "variant": "candidate",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 17246720,
+      "critical_ticks": 4803584,
+      "hungry_ticks": 1680896,
+      "inn_ticks": 283136,
+      "meals": 821,
+      "wheat": 6462,
+      "starved": 826,
+      "other_deaths": 217
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "53840905560",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "53839785218",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "30836453580",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "20023167758",
+        "self_ns": "50113052"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "17168458334",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "6878042852",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "5230260962",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "5664508871",
+        "self_ns": "271759098"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "2937256",
+        "self_ns": "2937256"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12480816",
+        "self_ns": "12480816"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "28536475",
+        "self_ns": "154360"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "469861941",
+        "self_ns": "449657973"
+      },
+      "telemetry.output": {
+        "calls": "155",
+        "total_ns": "261378776",
+        "self_ns": "170347395"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "1254099006",
+        "self_ns": "1254099006"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "18718955700",
+        "self_ns": "18106178456"
+      },
+      "ai.observe": {
+        "calls": "65536",
+        "total_ns": "71600091",
+        "self_ns": "71600091"
+      },
+      "ai.plan": {
+        "calls": "15042",
+        "total_ns": "1599722",
+        "self_ns": "1599722"
+      },
+      "ai.gradient": {
+        "calls": "65536",
+        "total_ns": "539577431",
+        "self_ns": "539577431"
+      },
+      "gradient.resource": {
+        "calls": "6177",
+        "total_ns": "4029997764",
+        "self_ns": "892160587"
+      },
+      "gradient.building": {
+        "calls": "22121",
+        "total_ns": "3622460697",
+        "self_ns": "3622460697"
+      },
+      "gradient.building_resume": {
+        "calls": "43198",
+        "total_ns": "7595738825",
+        "self_ns": "7595738825"
+      },
+      "gradient.round_trip": {
+        "calls": "9229",
+        "total_ns": "11643601632",
+        "self_ns": "541123615"
+      },
+      "gradient.area": {
+        "calls": "9815",
+        "total_ns": "7406674775",
+        "self_ns": "1115337068"
+      },
+      "gradient.propagation": {
+        "calls": "22887",
+        "total_ns": "13252359072",
+        "self_ns": "13252359072"
+      },
+      "path.resource": {
+        "calls": "47777",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "21535409",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "8430",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "1701",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "533157",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g48-s10501-r0-nicowar-baseline",
+    "variant": "baseline",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 9001984,
+      "critical_ticks": 1169408,
+      "hungry_ticks": 209408,
+      "inn_ticks": 364032,
+      "meals": 960,
+      "wheat": 3699,
+      "starved": 99,
+      "other_deaths": 368
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "58275647224",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "58274528335",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "48542100302",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "3126462489",
+        "self_ns": "45340209"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "30042758084",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "10370150910",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "9163434521",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "6914095606",
+        "self_ns": "250033494"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3033998",
+        "self_ns": "3033998"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "12401223",
+        "self_ns": "12401223"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "111326066",
+        "self_ns": "548910"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "377706508",
+        "self_ns": "370511819"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "123119598",
+        "self_ns": "93239769"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "775208113",
+        "self_ns": "775208113"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "2305914167",
+        "self_ns": "1330368749"
+      },
+      "ai.gradient": {
+        "calls": "1448",
+        "total_ns": "1512591060",
+        "self_ns": "975545418"
+      },
+      "gradient.resource": {
+        "calls": "6331",
+        "total_ns": "5561641767",
+        "self_ns": "823154603"
+      },
+      "gradient.building": {
+        "calls": "58361",
+        "total_ns": "10023611847",
+        "self_ns": "10023611847"
+      },
+      "gradient.building_resume": {
+        "calls": "83050",
+        "total_ns": "18442102564",
+        "self_ns": "18442102564"
+      },
+      "gradient.round_trip": {
+        "calls": "8193",
+        "total_ns": "13604678110",
+        "self_ns": "495306273"
+      },
+      "gradient.area": {
+        "calls": "15223",
+        "total_ns": "16163403627",
+        "self_ns": "1790064322"
+      },
+      "gradient.propagation": {
+        "calls": "27448",
+        "total_ns": "18694101632",
+        "self_ns": "18694101632"
+      },
+      "path.resource": {
+        "calls": "42626",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "2891454",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "16222",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "12820",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "278609",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g48-s10501-r0-nicowar-baseline",
+    "variant": "candidate",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 9011712,
+      "critical_ticks": 1150976,
+      "hungry_ticks": 207360,
+      "inn_ticks": 374272,
+      "meals": 930,
+      "wheat": 3766,
+      "starved": 98,
+      "other_deaths": 403
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "49848577321",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "49847432830",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "43348630222",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "3315615177",
+        "self_ns": "44396895"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "25910153644",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "9017978978",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "7494595606",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "7217855816",
+        "self_ns": "253517948"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "2937020",
+        "self_ns": "2937020"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "11885461",
+        "self_ns": "11885461"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "119113978",
+        "self_ns": "484833"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "379467295",
+        "self_ns": "372413002"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "139742001",
+        "self_ns": "107721263"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "789001255",
+        "self_ns": "789001255"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "2482217027",
+        "self_ns": "1385308326"
+      },
+      "ai.gradient": {
+        "calls": "1604",
+        "total_ns": "1693367476",
+        "self_ns": "1096908701"
+      },
+      "gradient.resource": {
+        "calls": "6378",
+        "total_ns": "5533766061",
+        "self_ns": "826691685"
+      },
+      "gradient.building": {
+        "calls": "46928",
+        "total_ns": "8116807244",
+        "self_ns": "8116807244"
+      },
+      "gradient.building_resume": {
+        "calls": "73074",
+        "total_ns": "14728853945",
+        "self_ns": "14728853945"
+      },
+      "gradient.round_trip": {
+        "calls": "8014",
+        "total_ns": "12784113631",
+        "self_ns": "517040696"
+      },
+      "gradient.area": {
+        "calls": "9352",
+        "total_ns": "10181271630",
+        "self_ns": "1141366768"
+      },
+      "gradient.propagation": {
+        "calls": "22551",
+        "total_ns": "16481745675",
+        "self_ns": "16481745675"
+      },
+      "path.resource": {
+        "calls": "41890",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "3619345",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "19316",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "14256",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "274687",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g48-s10501-r0-nicowar-candidate",
+    "variant": "baseline",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 8869888,
+      "critical_ticks": 891904,
+      "hungry_ticks": 178688,
+      "inn_ticks": 395776,
+      "meals": 1043,
+      "wheat": 3915,
+      "starved": 59,
+      "other_deaths": 314
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "52537326567",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "52536441341",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "43702026374",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "2843564255",
+        "self_ns": "36197911"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "26916785279",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "9569132263",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "8164234347",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "6253999949",
+        "self_ns": "236435306"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "2807390",
+        "self_ns": "2807390"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "11856809",
+        "self_ns": "11856809"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "78817845",
+        "self_ns": "265596"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "348525049",
+        "self_ns": "341634417"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "116148452",
+        "self_ns": "88083513"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "610445403",
+        "self_ns": "610445403"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "2196920941",
+        "self_ns": "1204537611"
+      },
+      "ai.gradient": {
+        "calls": "1584",
+        "total_ns": "1519638608",
+        "self_ns": "992383330"
+      },
+      "gradient.resource": {
+        "calls": "6362",
+        "total_ns": "4914318368",
+        "self_ns": "812304033"
+      },
+      "gradient.building": {
+        "calls": "51152",
+        "total_ns": "8415821023",
+        "self_ns": "8415821023"
+      },
+      "gradient.building_resume": {
+        "calls": "78612",
+        "total_ns": "16179135671",
+        "self_ns": "16179135671"
+      },
+      "gradient.round_trip": {
+        "calls": "8580",
+        "total_ns": "13323266546",
+        "self_ns": "517593045"
+      },
+      "gradient.area": {
+        "calls": "13945",
+        "total_ns": "14568450824",
+        "self_ns": "1600254350"
+      },
+      "gradient.propagation": {
+        "calls": "26746",
+        "total_ns": "17521241995",
+        "self_ns": "17521241995"
+      },
+      "path.resource": {
+        "calls": "46306",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "3365583",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "16557",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "8877",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "287045",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  },
+  {
+    "state": "g48-s10501-r0-nicowar-candidate",
+    "variant": "candidate",
+    "start": 32768,
+    "end": 40448,
+    "metrics": {
+      "unit_ticks": 8699392,
+      "critical_ticks": 867840,
+      "hungry_ticks": 185344,
+      "inn_ticks": 381440,
+      "meals": 973,
+      "wheat": 3626,
+      "starved": 58,
+      "other_deaths": 296
+    },
+    "perf": {
+      "loop": {
+        "calls": "8192",
+        "total_ns": "45970203855",
+        "self_ns": "na"
+      },
+      "loop.work": {
+        "calls": "8192",
+        "total_ns": "45969256122",
+        "self_ns": "na"
+      },
+      "simulation.tick": {
+        "calls": "8192",
+        "total_ns": "40142224697",
+        "self_ns": "na"
+      },
+      "engine.orders": {
+        "calls": "8192",
+        "total_ns": "2762006485",
+        "self_ns": "41852568"
+      },
+      "simulation.units": {
+        "calls": "65536",
+        "total_ns": "23803212421",
+        "self_ns": "na"
+      },
+      "simulation.buildings": {
+        "calls": "65536",
+        "total_ns": "8471781676",
+        "self_ns": "na"
+      },
+      "simulation.tasks": {
+        "calls": "65536",
+        "total_ns": "6881584818",
+        "self_ns": "na"
+      },
+      "simulation.map": {
+        "calls": "8192",
+        "total_ns": "6886262380",
+        "self_ns": "256431493"
+      },
+      "simulation.fog": {
+        "calls": "256",
+        "total_ns": "3003167",
+        "self_ns": "3003167"
+      },
+      "simulation.scripts": {
+        "calls": "256",
+        "total_ns": "11978038",
+        "self_ns": "11978038"
+      },
+      "simulation.projects": {
+        "calls": "512",
+        "total_ns": "41102695",
+        "self_ns": "264857"
+      },
+      "telemetry.capture": {
+        "calls": "65536",
+        "total_ns": "354129393",
+        "self_ns": "347167457"
+      },
+      "telemetry.output": {
+        "calls": "154",
+        "total_ns": "117496582",
+        "self_ns": "89354501"
+      },
+      "replay.checksum": {
+        "calls": "8192",
+        "total_ns": "639441274",
+        "self_ns": "639441274"
+      },
+      "ai.total": {
+        "calls": "65536",
+        "total_ns": "2080712643",
+        "self_ns": "1211835946"
+      },
+      "ai.gradient": {
+        "calls": "1342",
+        "total_ns": "1327333705",
+        "self_ns": "868876697"
+      },
+      "gradient.resource": {
+        "calls": "6364",
+        "total_ns": "5213752801",
+        "self_ns": "830621723"
+      },
+      "gradient.building": {
+        "calls": "37893",
+        "total_ns": "6442546267",
+        "self_ns": "6442546267"
+      },
+      "gradient.building_resume": {
+        "calls": "65157",
+        "total_ns": "13551319169",
+        "self_ns": "13551319169"
+      },
+      "gradient.round_trip": {
+        "calls": "8663",
+        "total_ns": "13146424299",
+        "self_ns": "518147752"
+      },
+      "gradient.area": {
+        "calls": "8043",
+        "total_ns": "8686285715",
+        "self_ns": "983070892"
+      },
+      "gradient.propagation": {
+        "calls": "22068",
+        "total_ns": "16186205865",
+        "self_ns": "16186205865"
+      },
+      "path.resource": {
+        "calls": "46693",
+        "self_ns": "na"
+      },
+      "path.building": {
+        "calls": "4323685",
+        "self_ns": "na"
+      },
+      "path.area": {
+        "calls": "24305",
+        "self_ns": "na"
+      },
+      "path.point": {
+        "calls": "9852",
+        "self_ns": "na"
+      },
+      "path.direction": {
+        "calls": "273604",
+        "self_ns": "na"
+      },
+      "budgets": {}
+    }
+  }
+]
