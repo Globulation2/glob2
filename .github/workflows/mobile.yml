@@ -10,6 +10,7 @@ on:
       - 'src/**'
       - 'test/**'
       - 'tests/build_system/**'
+      - '!tests/build_system/test_ci_changed_paths.py'
       - '.github/workflows/mobile.yml'
 jobs:
   android-native:
