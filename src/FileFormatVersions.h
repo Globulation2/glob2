@@ -156,5 +156,8 @@ static constexpr int FILE_FORMAT_VERSION_CONSTRUCTION_COOLDOWN = 114;
 //! Shared AI runtime gradient fields, queued refreshes and construction scheduling.
 static constexpr int FILE_FORMAT_VERSION_SHARED_RUNTIME_CONTINUATION = 119;
 
+//! Each shared-runtime controller stores its own gradient manager.
+static constexpr int FILE_FORMAT_VERSION_SHARED_RUNTIME_PRIVATE_GRADIENTS = 122;
+
 // Completed private fields and remaining fixed publication deadlines.
 static constexpr int FILE_FORMAT_VERSION_GRADIENT_PIPELINE = 120;

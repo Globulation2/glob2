@@ -6,6 +6,8 @@
 // 400 lines on their own and have no overlap with the asset/init code.
 
 #include <sstream>
+#include <cerrno>
+#include <cstdlib>
 
 #include <Toolkit.h>
 
@@ -187,6 +189,20 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				requireStringArg(i, argc, argv,
 					"--ai-types <comma-separated-list> requires an argument\n"),
 				testGamesAIPool, false);
+		}
+		else if (strcmp(argv[i], "--ai-threads")==0)
+		{
+			const char *value = requireStringArg(i, argc, argv,
+				"--ai-threads <1..64> requires an argument\n");
+			char *end = nullptr;
+			errno = 0;
+			const long count = std::strtol(value, &end, 10);
+			if (errno || end == value || *end || count < 1 || count > 64)
+			{
+				std::cerr << "--ai-threads expects an integer from 1 to 64\n";
+				exit(1);
+			}
+			aiThreads = static_cast<unsigned>(count);
 		}
 		else if (strcmp(argv[i], "--map")==0)
 		{

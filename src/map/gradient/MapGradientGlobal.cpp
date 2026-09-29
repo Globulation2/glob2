@@ -118,6 +118,9 @@ GAGCore::CooperativeTask Map::updateGlobalGradientTask(Uint8 *gradient)
 
 Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass)
 {
+	// AI workers may request the same lazy field concurrently. Cover both
+	// allocation and pipeline invalidation before publishing the pointer.
+	std::lock_guard<std::mutex> lock(resourcesGradientMutex);
 	Uint16 *&gradient = resourcesGradient[teamNumber][resourceType][swimClass];
 	if (gradient == NULL)
 	{

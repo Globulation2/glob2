@@ -9,6 +9,7 @@
 #include "gradient/GradientPipeline.h"
 
 #include <list>
+#include <mutex>
 #include <optional>
 #include <vector>
 #include <assert.h>
@@ -85,7 +86,7 @@ class Map
 	mutable GradientPipeline gradientPipeline;
 public:
 	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
-	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4 };
+	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
 	void configureCompute(unsigned threads, unsigned experiments)
 	{
 		compute.configure(threads);
@@ -835,6 +836,7 @@ protected:
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	mutable std::mutex resourcesGradientMutex;
 	
 	// Used to go out of forbidden areas
 	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];

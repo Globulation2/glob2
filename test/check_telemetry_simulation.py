@@ -1,5 +1,6 @@
 """Cross-platform per-tick checksums for the default gradient publication schedule."""
 
+import argparse
 import gzip
 import hashlib
 from pathlib import Path
@@ -44,13 +45,15 @@ def detailed_ticks(data: bytes) -> dict[int, bytes]:
     return records
 
 
-def main(binary: str) -> int:
+def main(binary: str, parallel_ai: bool = False) -> int:
+    compute = (["--compute-threads", "4", "--compute-experiments", "ai"] if parallel_ai
+               else ["--compute-threads", "1", "--compute-experiments", "ai"])
     for save, ticks, fixture in SCENARIOS:
         with tempfile.TemporaryDirectory(prefix="glob2-telemetry-check-", dir=ROOT) as directory:
             output = Path(directory)
             command = [str(Path(binary).resolve()), "--run-game", "--load-game", str(save),
                        "--ticks", str(ticks), "--telemetry", "checksums",
-                       "--output-dir", str(output)]
+                       "--output-dir", str(output), *compute]
             result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
             if result.returncode:
                 sys.stderr.write(result.stdout + result.stderr)
@@ -81,7 +84,8 @@ def main(binary: str) -> int:
             checkpoint.write_bytes(stream.read())
         output = Path(directory) / "run"
         command = [str(Path(binary).resolve()), "--run-game", "--load-game", str(checkpoint),
-                   "--ticks", "1280", "--telemetry", "checksums", "--output-dir", str(output)]
+                   "--ticks", "1280", "--telemetry", "checksums", "--output-dir", str(output),
+                   *compute]
         result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
         if result.returncode:
             sys.stderr.write(result.stdout + result.stderr)
@@ -103,6 +107,8 @@ def main(binary: str) -> int:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.exit("usage: check_telemetry_simulation.py BUILD/GLOB2")
-    sys.exit(main(sys.argv[1]))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("binary")
+    parser.add_argument("--parallel-ai", action="store_true")
+    args = parser.parse_args()
+    sys.exit(main(args.binary, args.parallel_ai))

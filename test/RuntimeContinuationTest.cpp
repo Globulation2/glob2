@@ -72,14 +72,17 @@ class RuntimeContinuationTest
         BinaryOutputStream out(backend);value.save(&out);out.flush();
         return backend->takeContents();
     }
-    static void sharing()
+    static void independentManagers()
     {
         Game source(nullptr),target(nullptr);setup(source);setup(target);
-        // Slot 1 owns updating, but slot 0 is the first serialized sharer.
+        // Each controller owns its cache, regardless of poll order.
         runtime(source,1).getOrder();runtime(source,0).getOrder();
-        auto& manager=runtime(source,0).get_gradient_manager();
-        manager.get_gradient(info(new Entities::Resource(WHEAT)));
-        manager.queue_gradient(info(new Entities::Water));
+        auto& first=runtime(source,0).get_gradient_manager();
+        auto& second=runtime(source,1).get_gradient_manager();
+        assert(&first!=&second);
+        first.get_gradient(info(new Entities::Resource(WHEAT)));
+        first.queue_gradient(info(new Entities::Water));
+        assert(second.gradients.empty());
         for(int i=0;i<2;++i)
         {
             const auto bytes=saveRuntime(runtime(source,i));
@@ -89,22 +92,23 @@ class RuntimeContinuationTest
             assert(runtime(target,i).load(&in,target.players[i],VERSION_MINOR));
             assert(saveRuntime(runtime(target,i))==bytes);
         }
-        assert(&runtime(target,0).get_gradient_manager()==&runtime(target,1).get_gradient_manager());
+        assert(&runtime(target,0).get_gradient_manager()!=&runtime(target,1).get_gradient_manager());
         for(int tick=0;tick<5;++tick)
             for(int i=0;i<2;++i)
             {
                 runtime(source,i).getOrder();runtime(target,i).getOrder();
                 assert(saveRuntime(runtime(source,i))==saveRuntime(runtime(target,i)));
             }
-        source.players[0]->type=BasePlayer::P_LOCAL;
-        const auto bytes=saveRuntime(runtime(source,1));
-        source.players[0]->type=BasePlayer::playerTypeFromImplementationID(AI::NICOWAR);
-        Game humanSlot(nullptr);setup(humanSlot);
-        auto* backend=new MemoryStreamBackend;
-        backend->write(bytes.data(),bytes.size());backend->seekFromStart(0);
-        BinaryInputStream in(backend);
-        assert(runtime(humanSlot,1).load(&in,humanSlot.players[1],VERSION_MINOR));
-        assert(saveRuntime(runtime(humanSlot,1))==bytes);
+        // An older shared manager must become a complete, independent copy
+        // when a later runtime player references its previous owner.
+        auto legacyCopy=first.clone();
+        assert(save(*legacyCopy,false)==save(first,false));
+        assert(legacyCopy->gradients[0]!=first.gradients[0]);
+        assert(legacyCopy->gradients[0]->gradient_info.sources[0]!=
+            first.gradients[0]->gradient_info.sources[0]);
+        const auto originalFirst=save(first,false);
+        legacyCopy->update();
+        assert(save(first,false)==originalFirst);
     }
 public:
     static void run()
@@ -145,8 +149,8 @@ public:
             GradientManager badQueue(&map);
             assert(!load(badQueue,save(original,text),text));
         }
-        sharing();
-        std::cout<<"Runtime gradient continuation: binary/text fields, stale ages, queued work, duplicate entries and invalid indices PASS\n";
+        independentManagers();
+        std::cout<<"Runtime gradient continuation: independent managers, binary/text fields, stale ages, queued work and invalid indices PASS\n";
     }
 };
 int main(int argc,char** argv)

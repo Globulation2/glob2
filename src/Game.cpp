@@ -5,12 +5,14 @@
 #include <iostream>
 
 #include "AICastor.h"
+#include "AIMaxima.h"
 #include "AINicowar.h"
 
 #include <assert.h>
 #include <string.h>
 
 #include <string>
+#include <stdexcept>
 
 #include <FileManager.h>
 
@@ -195,6 +197,29 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 
 	for (int p=0; p<Team::MAX_COUNT; ++p)
 		resolvedHeader.setAIConfig(p, gameHeader.getAIConfig(p));
+	// Resolve Maxima defaults before publishing the header. AI polling must
+	// treat it as read-only, including on the first tick of a new game.
+	for (int p=0; p<resolvedHeader.getNumberOfPlayers(); ++p)
+		if (resolvedHeader.getBasePlayer(p).type ==
+			BasePlayer::playerTypeFromImplementationID(AI::MAXIMA))
+		{
+			// A loaded controller's saved strategy takes precedence over
+			// environment defaults, even in older saves with an empty header.
+			if (mapHeader.getIsSavedGame() && players[p] && players[p]->ai)
+				if (const auto *maxima = dynamic_cast<const AIMaxima::Maxima *>(
+						players[p]->ai->aiImplementation))
+				{
+					resolvedHeader.setAIConfig(p, maxima->canonicalStrategy());
+					continue;
+				}
+			AIMaxima::ResolvedStrategy strategy;
+			std::string error;
+			if (!AIMaxima::StrategyResolver::resolveForPlayer(
+					resolvedHeader, p, strategy, error))
+				throw std::runtime_error("Maxima strategy error: " + error);
+			resolvedHeader.setAIConfig(p,
+				AIMaxima::StrategyResolver::canonicalValues(strategy.values));
+		}
 	gameHeader = resolvedHeader;
 	anyPlayerWaited=false;
 }

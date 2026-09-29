@@ -6,11 +6,12 @@ capped-game adjudication belongs in offline analysis.
 
 Run AI games without a GUI to generate `.replay` files for cross-codebase fidelity testing (C++ vs Rust).
 
-Version 121 gives each AI controller an independent saved random stream. AI orders
-and game trajectories can differ from earlier versions for the same seed. Replays
-recorded before version 121 are refused; older saved games still load and start
-their AI streams from the saved game seed and player number. Network protocol
-version 44 rejects clients that still use the previous shared AI stream.
+Version 121 gives each AI controller an independent saved random stream. Version
+122 also gives each Econo and Nicowar controller a private gradient cache. AI
+orders and game trajectories can differ from earlier versions for the same
+seed. Replays recorded before version 122 are refused; older saved games still
+load, with shared gradient cache state copied into each controller. Network
+protocol version 45 rejects clients that still share these caches.
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or

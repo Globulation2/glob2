@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 		require(buildingCounts > 0, "Castor building count columns checked");
 		castor->~AICastor();
 		AISharedRuntime::Runtime runtime(new NewNicowar, game.players[0]);
-		require(!runtime.update_gm && runtime.allies == 0 && runtime.enemies == 0 &&
+		require(!runtime.gm && runtime.allies == 0 && runtime.enemies == 0 &&
 			runtime.inn_view == 0 && runtime.market_view == 0 && runtime.other_view == 0,
 			"Runtime serialized fields initialized before first tick");
 		checkArea<AISharedRuntime::Management::AddArea>(runtime, game, true);

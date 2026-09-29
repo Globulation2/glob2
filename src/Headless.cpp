@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "GlobalContainer.h"
 #include "AINames.h"
+#include "AIThreading.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
@@ -267,13 +268,15 @@ struct HeadlessRunner
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;
 			if(engine.initGame(map,header,true,false,false,mapFile)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot initialize map");
 		}
-		const unsigned computeThreads = integer(one(options, "--compute-threads", "1"), 1, 64);
-		const std::string computeExperiments = one(options, "--compute-experiments", computeThreads > 1 ? "all" : "none");
+		const unsigned computeThreads = integer(one(options, "--compute-threads",
+			std::to_string(defaultAIThreadCount(engine.gui.game))), 1, 64);
+		const std::string computeExperiments = one(options, "--compute-experiments", "ai");
 		unsigned experimentMask = 0;
-		if (computeExperiments == "all") experimentMask = 7;
+		if (computeExperiments == "all") experimentMask = 15;
 		else if (computeExperiments == "areas") experimentMask = Map::ComputeAreas;
 		else if (computeExperiments == "initialize") experimentMask = Map::ComputeInitialize;
 		else if (computeExperiments == "hiring") experimentMask = Map::ComputeHiring;
+		else if (computeExperiments == "ai") experimentMask = Map::ComputeAI;
 		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
 		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
 		auto &pipeline = engine.gui.game.map.pipeline();
