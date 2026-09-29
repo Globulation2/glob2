@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "gradient/GradientRuntime.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -36,7 +37,7 @@ const int tabClose[8][2]={
 	{-1,  1},
 	{-1,  0}};
 
-Map::Map()
+Map::Map() : gradientRuntime(std::make_unique<GradientRuntime>())
 {
 	topologyGeneration=1;
 	game=NULL;
@@ -92,9 +93,16 @@ Map::~Map(void)
 	clear();
 }
 
+void Map::configureCompute(unsigned threads, unsigned experiments)
+{
+	compute.configure(threads);
+	gradientRuntime->workspaces.resize(compute.threadCount());
+	computeExperiments = experiments;
+}
+
 void Map::clear()
 {
-	gradientPipeline.reset();
+	gradientRuntime->pipeline.reset();
 	growthCoverage.clear();
 	for (auto &counts : growthCoverageCounts) counts.clear();
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();

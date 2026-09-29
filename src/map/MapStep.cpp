@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/GradientRuntime.h"
 #include "kernel/GradientPropagation.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -217,13 +218,28 @@ void Map::recordNaturalGrowth(int x, int y, int resourceType, int oldType, int o
 }
 
 
+bool Map::gradientPipelineEnabled() const { return gradientRuntime->pipeline.enabled(); }
+
+Map::GradientPipelineStatus Map::gradientPipelineStatus() const
+{
+	const auto &pipeline = gradientRuntime->pipeline;
+	const auto &metrics = pipeline.metrics;
+	return {pipeline.enabled(), pipeline.workerCount(), pipeline.delayTicks(),
+		pipeline.pendingCount(), metrics.jobs, metrics.published, metrics.discarded,
+		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs()};
+}
+
+void Map::advanceGradientPipeline() { gradientRuntime->pipeline.advance(); }
+void Map::finishGradientPipeline() { gradientRuntime->pipeline.finish(); }
+void Map::setGradientWorkerCount(unsigned workers) { gradientRuntime->pipeline.setWorkerCount(workers); }
+
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 #ifdef YOG_SERVER_ONLY
 	workers=0;
 #endif
-	gradientPipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
+	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 #ifndef YOG_SERVER_ONLY
 		const gradient_kernel::GradientGeometry geometry{size, wMask, hMask, wDec};
 		if (job.water.empty())
@@ -258,7 +274,7 @@ void Map::syncStep(Uint32 stepCounter)
 	}
 	
 	auto dispatch = [&](Uint16 **slot, int swim, auto seed) {
-		gradientPipeline.submit(slot, swim, [&](GradientPipeline::Job &job) {
+		gradientRuntime->pipeline.submit(slot, swim, [&](GradientPipeline::Job &job) {
 			seed(job.data.get());
 			if (swim != 0 && swim != SWIM_CLASS_EVEN) {
 				job.water.resize(size);
@@ -277,7 +293,7 @@ void Map::syncStep(Uint32 stepCounter)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
 					if (resourcesGradient[t][r][s] && !gradientUpdated[t][r][s])
 					{
-						if (gradientPipeline.enabled()) dispatch(&resourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field); });
+						if (gradientRuntime->pipeline.enabled()) dispatch(&resourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field); });
 						else updateResourcesGradient(t, r, s);
 						gradientUpdated[t][r][s]=true;
 						return;
@@ -286,7 +302,7 @@ void Map::syncStep(Uint32 stepCounter)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
 				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
 				{
-					if (gradientPipeline.enabled()) dispatch(&guardAreasGradient[t][s], s, [&](Uint16 *field) { seedGuardAreasGradient(t, s, field); });
+					if (gradientRuntime->pipeline.enabled()) dispatch(&guardAreasGradient[t][s], s, [&](Uint16 *field) { seedGuardAreasGradient(t, s, field); });
 					else updateGuardAreasGradient(t, s);
 					guardGradientUpdated[t][s]=true;
 					return;
@@ -295,7 +311,7 @@ void Map::syncStep(Uint32 stepCounter)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
 				if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
 				{
-					if (gradientPipeline.enabled()) dispatch(&clearAreasGradient[t][s], s, [&](Uint16 *field) { seedClearAreasGradient(t, s, field); });
+					if (gradientRuntime->pipeline.enabled()) dispatch(&clearAreasGradient[t][s], s, [&](Uint16 *field) { seedClearAreasGradient(t, s, field); });
 					else updateClearAreasGradient(t, s);
 					clearGradientUpdated[t][s]=true;
 					return;

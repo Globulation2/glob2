@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/GradientRuntime.h"
 #include "kernel/GradientPropagation.h"
 
 static_assert(gradient_kernel::COST_LIMIT == Map::GRADIENT_COST_LIMIT);
@@ -17,6 +18,6 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 {
 	PERF_SCOPE_TIME(Propagation);
 	gradient_kernel::propagateField(gradient, swimClass, maxCost,
-		{size, wMask, hMask, wDec}, gradientWorkspaces[compute.slot()],
+		{size, wMask, hMask, wDec}, gradientRuntime->workspaces[compute.slot()],
 		[this](size_t i) { return isWater(static_cast<unsigned>(i)); });
 }
