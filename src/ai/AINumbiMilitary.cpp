@@ -233,7 +233,7 @@ std::array<UpgradeInventory, NB_UPGRADE_KINDS> collectUpgradeInventory(Team *tea
 		else
 		{
 			inv[kind].number[l]++;
-			if (random() & 1)
+			if (syncRand() & 1)
 				inv[kind].exemplar[l] = b;
 		}
 	}
