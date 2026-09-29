@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 // lanes. A minimal host supplies CLI arguments without changing the game shell.
 test('WebAssembly produces a complete per-tick simulation trace', async ({page}, info) => {
   const root = path.resolve(__dirname, '../..');
-  const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game'));
+  const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game.gz'));
   await page.route('**/determinism.html', route => route.fulfill({
     contentType: 'text/html',
     body: `<!doctype html><canvas id="canvas"></canvas><script>
@@ -20,10 +20,10 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page},
         preRun: [function() {
           ENV.GLOB2_REPLAY_PATH = '/tmp/wasm.replay';
           ENV.GLOB2_CHECKSUM_SIDECAR = '1';
-          FS.writeFile('/tmp/initial.game', Uint8Array.from(atob('${fixture.toString('base64')}'), c => c.charCodeAt(0)));
+          FS.writeFile('/tmp/initial.game.gz', Uint8Array.from(atob('${fixture.toString('base64')}'), c => c.charCodeAt(0)));
         }],
         onRuntimeInitialized() {
-          Module.callMain(['--nox', '/tmp/initial.game', '1500', '1']);
+          Module.callMain(['--nox', '/tmp/initial.game.gz', '1500', '1']);
           // Avoid millions of individually serialized Playwright values.
           // Chunk the conversion so large traces do not overflow the call stack.
           const bytes = FS.readFile('/tmp/wasm.replay.checksums');
@@ -47,7 +47,7 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page},
   fs.writeFileSync(path.join(output, 'wasm.replay.checksums'), trace);
   fs.writeFileSync(path.join(output, 'run.log'), (await page.evaluate(() => window.engineLog)).join('\n'));
   fs.writeFileSync(path.join(output, 'manifest.json'), JSON.stringify({
-    fixture: 'games/cross-replay.game', seed: 42, ticks: 1500,
+    fixture: 'games/cross-replay.game.gz', seed: 42, ticks: 1500,
     fixture_sha256: crypto.createHash('sha256').update(fixture).digest('hex'),
     trace_sha256: crypto.createHash('sha256').update(trace).digest('hex'),
   }, null, 2) + '\n');

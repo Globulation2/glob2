@@ -68,7 +68,7 @@ The operational commands live in [the browser README](../../browser/README.md).
 WebKit automation is not a substitute for manual testing in shipping Safari, and
 Chromium automation is not a substitute for shipping Edge qualification.
 
-CI retains the same 1,500-tick `games/cross-replay.game` trace from two Linux
+CI retains the same 1,500-tick `games/cross-replay.game.gz` trace from two Linux
 compiler environments, Windows, and WebAssembly, then compares every byte in a
 separate comparison job. The fixture uses seed 42. Run a native trace locally with
 `python3 test/run-browser-determinism.py BINARY OUTPUT`; the browser counterpart
