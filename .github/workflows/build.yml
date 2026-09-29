@@ -232,15 +232,6 @@ jobs:
           if-no-files-found: error
 
 
-      - name: Test unit rendering and HD cache
-        run: |
-          xvfb-run -a ./build/linux/client/release/src/DrawableSurfaceBlendTest
-          xvfb-run -a ./build/linux/client/release/src/UnitTeamShaderTest
-          xvfb-run -a ./build/linux/client/release/src/UnitTeamColorCacheTest
-          xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest
-          xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest software
-          xvfb-run -a ./build/linux/client/release/src/RuntimePackCheck
-
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
       - name: Report the cache statistics
@@ -848,6 +839,19 @@ jobs:
         with:
           name: browser-determinism-${{ matrix.runner }}
           path: artifacts/browser-determinism/native/
+
+      - name: Test unit rendering and HD cache
+        if: ${{ matrix.shard == 4 }}
+        id: test_unit_rendering_and_hd_cache
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check surface-blending 'xvfb-run -a ./build/linux/client/release/src/DrawableSurfaceBlendTest' \
+            --check team-shader 'xvfb-run -a ./build/linux/client/release/src/UnitTeamShaderTest' \
+            --check team-color-cache 'xvfb-run -a ./build/linux/client/release/src/UnitTeamColorCacheTest' \
+            --check hd-cache 'xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest' \
+            --check hd-cache-software 'xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest software' \
+            --check runtime-pack 'xvfb-run -a ./build/linux/client/release/src/RuntimePackCheck'
 
       - name: Summarize CI failures
         if: always()
@@ -1682,7 +1686,6 @@ jobs:
         run: python3 test/ci_step_summary.py
 
   web-test:
-    if: ${{ !cancelled() }}
     name: browser tests (${{ matrix.name }})
     needs: [changes, web-build, web-native]
     if: ${{ needs.changes.outputs.browser == 'true' }}
@@ -1800,7 +1803,6 @@ jobs:
         run: python3 test/ci_step_summary.py
 
   browser-determinism:
-    if: ${{ !cancelled() }}
     name: browser/native simulation equivalence
     needs: [changes, linux, windows, web-test]
     if: ${{ needs.changes.outputs.cross_platform == 'true' }}
