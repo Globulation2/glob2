@@ -488,8 +488,6 @@ jobs:
         id: build_and_run_custom_game_setup_regressions
         continue-on-error: true
         run: |
-          # The growing generator catalog exercises hundreds of complete worlds.
-          timeout 300s ./build/linux/client/release/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
           timeout 180s ./build/linux/client/release/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
           timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness artifacts/custom-game-ci/landscape-performance landscape-responsive
@@ -498,6 +496,14 @@ jobs:
           timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-read
           cat artifacts/custom-game-ci/ui.log
           ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
+
+      - name: Check map generator defaults
+        if: ${{ matrix.shard == 1 }}
+        id: check_map_generator_defaults
+        continue-on-error: true
+        run: |
+          # The growing generator catalog exercises hundreds of complete worlds.
+          timeout 300s ./build/linux/client/release/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
 
       - name: Test status-bar bounds in GPU and software rendering
         if: ${{ matrix.shard == 1 }}
@@ -1719,26 +1725,41 @@ jobs:
           # Includes rendering.spec.js, which explicitly selects its own renderers,
           # and build-artifact.spec.js, which checks the shared WASM binary once.
           # Shards split the suite by spec file, so each file keeps its order.
+          # Torus rendering runs separately because software GPU transitions
+          # dominated the third Chromium shard in a measured full CI run.
           - name: chromium 1/4
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=1/4
+            command: xvfb-run -a npx playwright test --project=chromium --shard=1/4 --grep-invert='torus\.spec\.js'
           - name: chromium 2/4
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=2/4
+            command: xvfb-run -a npx playwright test --project=chromium --shard=2/4 --grep-invert='torus\.spec\.js'
           - name: chromium 3/4
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=3/4
+            command: xvfb-run -a npx playwright test --project=chromium --shard=3/4 --grep-invert='torus\.spec\.js'
           - name: chromium 4/4
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=4/4
+            command: xvfb-run -a npx playwright test --project=chromium --shard=4/4 --grep-invert='torus\.spec\.js'
+          - name: chromium torus
+            browsers: chromium
+            command: xvfb-run -a npx playwright test torus.spec.js --project=chromium
           - name: firefox and webkit
             browsers: firefox webkit
             command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox --project=webkit
-          # Repeat only tests whose gameURL() changes with the renderer setting.
-          - name: chromium webgl2
+          # Repeat renderer-sensitive tests on WebGL2. These groups place the
+          # three long, independent reload cases on separate runners while
+          # untagged new cases stay in the first group by default.
+          - name: chromium webgl2 input and match reload
             browsers: chromium
             renderer: webgl2
-            command: xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js input.spec.js responsive-presentation.spec.js --project=chromium
+            command: xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js input.spec.js responsive-presentation.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'
+          - name: chromium webgl2 viewport and damaged load
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test viewport.spec.js session-reload.spec.js --project=chromium --grep='viewport\.spec\.js|@webgl2-reload-b'
+          - name: chromium webgl2 replay reload
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'
           - name: lifecycle
             browsers: chromium
             command: |

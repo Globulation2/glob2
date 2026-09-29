@@ -173,9 +173,12 @@ uses deprecated ScriptProcessorNode.
 CI builds the browser in parallel jobs. `web-build` compiles the WebAssembly
 client and `web-native` the gateway, router and transport fixtures; both hand
 their outputs to the `web-test` matrix as artifacts, which runs the Chromium
-suite in four shards (split by spec file) beside the Firefox/WebKit, WebGL2 and
-lifecycle suites. `web-deploy` checks self-hosting on its own runner. A spec
-that needs a native program must use one `web-native` packages, or add it there.
+suite in four shards (split by spec file) beside a separate torus spec job,
+Firefox/WebKit, three duration-balanced WebGL2 jobs and the lifecycle suite.
+The WebGL2 jobs place each long reload case on a different runner; new untagged
+reload cases run with the input and match reload group. `web-deploy` checks
+self-hosting on its own runner. A spec that needs a native program must use one
+packaged by `web-native`, or add it there.
 
 `web-native` restores the main Ubuntu 24.04 native compiler cache read-only
 for its router and transport fixtures. Emscripten uses a separate bounded cache

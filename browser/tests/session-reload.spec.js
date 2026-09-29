@@ -53,7 +53,7 @@ test('an active match can load the same saved game repeatedly through the schedu
   expect(errors).toEqual([]);
 });
 
-test('a damaged in-game load returns through a scheduled error notice and permits another match',async({page})=>{
+test('a damaged in-game load returns through a scheduled error notice and permits another match',{tag:'@webgl2-reload-b'},async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
   const name=await startAndSave(page);
   // Let the initial autosave appear first so loading cannot accidentally select it.
@@ -73,7 +73,7 @@ test('a damaged in-game load returns through a scheduled error notice and permit
   expect(errors).toEqual([]);
 });
 
-test('an active replay can be loaded again through the scheduled loader',async({page})=>{
+test('an active replay can be loaded again through the scheduled loader',{tag:'@webgl2-reload-c'},async({page})=>{
   const loadTimeout=process.env.GLOB2_TEST_RENDERER==='webgl2'?180000:30000;
   if(process.env.GLOB2_TEST_RENDERER==='webgl2') test.setTimeout(420000);
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
