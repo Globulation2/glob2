@@ -96,7 +96,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 				ex=b->posX;
 				ey=b->posY;
 
-				if ((syncRand()&AI_NUMBI_ENEMY_FLAG_CHANCE_MASK)==0)
+				if ((random()&AI_NUMBI_ENEMY_FLAG_CHANCE_MASK)==0)
 				{
 					bool already=false;
 					count=0;
@@ -233,7 +233,7 @@ std::array<UpgradeInventory, NB_UPGRADE_KINDS> collectUpgradeInventory(Team *tea
 		else
 		{
 			inv[kind].number[l]++;
-			if (syncRand() & 1)
+			if (random() & 1)
 				inv[kind].exemplar[l] = b;
 		}
 	}

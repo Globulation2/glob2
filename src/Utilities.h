@@ -18,15 +18,28 @@ namespace GAGCore
 	class OutputStream;
 }
 
-// The synchronized gameplay stream. One state per thread: the simulation only ever runs on
-// one thread, so its sequence is unchanged, while a background map generation (which seeds
-// this stream itself) neither disturbs nor races the menu's live colony on the UI thread.
+// The synchronized gameplay stream. One state per thread, with a temporary
+// per-AI override while a controller decides. Background map generation seeds
+// its own thread's game stream and does not disturb the UI thread's stream.
 // Reached through a function rather than an `extern thread_local` object: a thread_local
 // with a constructor that other translation units name directly is initialised through a
 // weak per-unit wrapper, which mingw's emulated TLS does not get right, and the savegame
 // harness saw the engine stream change state under it on Windows. A function-local
 // thread_local is initialised in one place, in this unit.
 boost::mt19937 &syncRandEngine();
+
+// Route synchronized draws made while an AI is deciding to its own stream.
+// The scope is thread-local and restores the previous stream on exit.
+class SyncRandScope
+{
+public:
+	explicit SyncRandScope(boost::mt19937 &engine);
+	~SyncRandScope();
+	SyncRandScope(const SyncRandScope &) = delete;
+	SyncRandScope &operator=(const SyncRandScope &) = delete;
+private:
+	boost::mt19937 *previous;
+};
 
 inline Uint32 syncRand(void)
 {
@@ -135,5 +148,3 @@ namespace Utilities
 	*/
 	void read(int fd, void *buf, size_t count);
 };
-
-

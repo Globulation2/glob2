@@ -1775,7 +1775,7 @@ bool PrioritizedBuildingAttack::targetEnemy()
 		{
 			if(AICabino_DEBUG)
 				std::cout<<"AICabino: targetEnemy: A new enemy has been chosen."<<std::endl;
-			enemy=targets[syncRand()%targets.size()];
+			enemy=targets[ai.random()%targets.size()];
 		}
 	}
 	return false;

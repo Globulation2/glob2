@@ -39,7 +39,7 @@ int NewNicowar::choose_building_to_attack(Echo& echo)
 	if(buildings_to_attack.size() == 0)
 		return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_to_attack_result, -1);
 
-	int num=syncRand() % buildings_to_attack.size();
+	int num=echo.random() % buildings_to_attack.size();
 	return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_to_attack_result,
 								 buildings_to_attack[num]);
 }
@@ -159,9 +159,9 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 			}
 		}
 		if(available_reachable_targets.size()!=0)
-			target=available_reachable_targets[syncRand() % available_reachable_targets.size()];
+			target=available_reachable_targets[echo.random() % available_reachable_targets.size()];
 		else if(available_targets.size()!=0)
-			target=available_targets[syncRand() % available_targets.size()];
+			target=available_targets[echo.random() % available_targets.size()];
 		else
 			target=AI_NICOWAR_NO_TARGET;
 	}
@@ -196,7 +196,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		return telemetry.returnedBool(AITrace::AI5::NewNicowar_dig_out_enemy_result,
 									  AITrace::AI5::NewNicowar_dig_out_enemy_true, false);
 
-	int num=syncRand() % buildings_to_attack.size();
+	int num=echo.random() % buildings_to_attack.size();
 
 
 	int building=buildings_to_attack[num];
@@ -340,5 +340,4 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	return telemetry.returnedBool(AITrace::AI5::NewNicowar_dig_out_enemy_result,
 								  AITrace::AI5::NewNicowar_dig_out_enemy_true, true);
 }
-
 

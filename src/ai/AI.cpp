@@ -10,6 +10,8 @@
 #include "Order.h"
 #include "TeamStat.h"
 #include <assert.h>
+#include <locale>
+#include <sstream>
 #include <stdexcept>
 #include <Stream.h>
 
@@ -65,6 +67,8 @@ AI::AI(ImplementationID implementationID, Player *player)
 
 	this->implementationID=implementationID;
 	this->player=player;
+	assert(aiImplementation);
+	aiImplementation->setRandomEngine(randomEngine);
 }
 
 AI::AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
@@ -89,6 +93,8 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 	if (paused || !player->team->isAlive)
 		return shared_ptr<Order>(new NullOrder());
 	assert(aiImplementation);
+	initializeRandom();
+	SyncRandScope randomScope(randomEngine);
 	bindTelemetry();
 	aiImplementation->telemetry.tick = player->game->stepCounter;
 	aiImplementation->telemetry.count(AITelemetry::Polls);
@@ -107,8 +113,25 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 	return order;
 }
 
+void AI::initializeRandom()
+{
+	if (randomInitialized) return;
+	// Mix a stable player identity into the saved game seed. Do not use team
+	// number: multiple controllers can act for the same team.
+	Uint32 seed = player->game->gameHeader.getRandomSeed() ^
+		(0x9e3779b9u * (static_cast<Uint32>(player->number) + 1u));
+	seed ^= seed >> 16;
+	seed *= 0x7feb352du;
+	seed ^= seed >> 15;
+	seed *= 0x846ca68bu;
+	seed ^= seed >> 16;
+	randomEngine.seed(seed);
+	randomInitialized = true;
+}
+
 bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+	randomInitialized = false;
 	resumeTelemetry = true;
 	telemetrySeries.reset();
 	telemetryTeam = nullptr;
@@ -175,6 +198,25 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			assert(false);
 		break;
 	}
+	assert(aiImplementation);
+	aiImplementation->setRandomEngine(randomEngine);
+	if (versionMinor >= 121)
+	{
+		std::ostringstream state;
+		state.imbue(std::locale::classic());
+		stream->readEnterSection("randomState");
+		for (unsigned i = 0; i < boost::mt19937::state_size; ++i)
+		{
+			stream->readEnterSection(i);
+			state << stream->readUint32("word") << ' ';
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		std::istringstream input(state.str());
+		input.imbue(std::locale::classic());
+		if (!(input >> randomEngine)) return false;
+		randomInitialized = true;
+	}
 
 	stream->read(signature, 4, "signatureEnd");
 	stream->readLeaveSection();
@@ -196,6 +238,22 @@ void AI::save(GAGCore::OutputStream *stream)
 	
 	assert(aiImplementation);
 	aiImplementation->save(stream);
+	initializeRandom();
+	std::ostringstream randomState;
+	randomState.imbue(std::locale::classic());
+	randomState << randomEngine;
+	std::istringstream state(randomState.str());
+	state.imbue(std::locale::classic());
+	stream->writeEnterSection("randomState");
+	for (unsigned i = 0; i < boost::mt19937::state_size; ++i)
+	{
+		Uint32 word;
+		if (!(state >> word)) throw std::runtime_error("Invalid AI RNG state while saving");
+		stream->writeEnterSection(i);
+		stream->writeUint32(word, "word");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	
 	stream->write( "AI e",  4, "signatureEnd");
 	stream->writeLeaveSection();
