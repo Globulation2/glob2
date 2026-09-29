@@ -19,6 +19,19 @@ from tools.tournaments.transport import Transport
 from tools.tournaments.worker import Worker, pack
 
 
+def stop_transport(transport):
+    """Wait for the local daemon before its temporary worker tree is removed."""
+    try:
+        transport.rpc('stop')
+        deadline = time.monotonic() + 5
+        while transport.rpc('status')['daemon_running']:
+            if time.monotonic() >= deadline:
+                raise AssertionError('worker daemon did not stop')
+            time.sleep(.05)
+    finally:
+        transport.close()
+
+
 class PipelineTests(unittest.TestCase):
     setUp = fixtures.Fixture.setUp
     tearDown = fixtures.Fixture.tearDown
@@ -59,13 +72,17 @@ class PipelineTests(unittest.TestCase):
     def test_stream_reuse_disconnect_and_reconnect(self):
         t=Transport({'name':'local','transport':'local','directory':str(self.root/'remote')},self.coordinator.root/'worker.pyz')
         try:
-            t.rpc('status'); pid=t.process.pid
+            deadline=time.monotonic()+5
+            while not t.rpc('status')['daemon_running']:
+                self.assertLess(time.monotonic(),deadline,'worker daemon did not start')
+                time.sleep(.05)
+            pid=t.process.pid
             t.rpc('status'); self.assertEqual(pid,t.process.pid)
             t.process.kill();t.process.wait()
             with self.assertRaises((OSError,ConnectionError)):t.rpc('status')
             t.rpc('status');self.assertNotEqual(pid,t.process.pid)
         finally:
-            t.rpc('stop');t.close()
+            stop_transport(t)
 
     def test_stream_timeout_is_bounded_even_when_stdin_is_not_read(self):
         t=Transport({'name':'local','transport':'local','directory':str(self.root/'timeout'),
@@ -154,7 +171,7 @@ class PipelineTests(unittest.TestCase):
         finally:
             release.set();c.control('cancelled')
             if 'thread' in locals():thread.join(15)
-            t.rpc('stop');t.close()
+            stop_transport(t)
 
     def test_cancellation_during_input_delivery_never_enqueues(self):
         c=self.coordinator;a=c.dispatch('local',self.status)[0]
@@ -195,7 +212,7 @@ class PipelineTests(unittest.TestCase):
                 self.assertEqual(modes[0],'running')
                 self.assertIn('cancelled',modes[1:])
             finally:w.close()
-        finally:t.rpc('stop');t.close()
+        finally:stop_transport(t)
 
     def test_worker_rejects_input_arriving_after_durable_cancellation(self):
         a=self.coordinator.dispatch('local',self.status)[0]
