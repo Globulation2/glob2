@@ -144,7 +144,7 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 	return true;
 }
 
-void Building::gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource)
+int Building::gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource)
 {
 	owner->map->advanceHiringGradients(this);
 	// The tallies count units, and the same unit is offered every resource the
@@ -152,10 +152,9 @@ void Building::gatherBringResourcesCandidates(BringResourcesCandidate* candidate
 	// ends up showing is one coherent pass, for the last resource attempted.
 	resetFailureTallies();
 
+	int count=0;
 	for(int n=0; n<Unit::MAX_COUNT; ++n)
 	{
-		candidates[n].unit = NULL;
-		candidates[n].distance = 0;
 		Unit* unit=owner->myUnits[n];
 		if(!unit)
 			continue;
@@ -167,10 +166,11 @@ void Building::gatherBringResourcesCandidates(BringResourcesCandidate* candidate
 		int dist;
 		if(considerUnitForResource(unit, wantedResource, &dist))
 		{
-			candidates[n].unit = unit;
-			candidates[n].distance = dist;
+			candidates[count].unit = unit;
+			candidates[count++].distance = dist;
 		}
 	}
+	return count;
 }
 
 
@@ -233,13 +233,11 @@ void Building::selectUnitCarryingWantedResource(const int* targets, const int* s
 	}
 }
 
-void Building::selectFetcher(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel)
+void Building::selectFetcher(const BringResourcesCandidate* candidates, int count, int wantedResource, BringResourcesSelection& sel)
 {
-	for(int n=0; n<Unit::MAX_COUNT; ++n)
+	for(int n=0; n<count; ++n)
 	{
 		Unit* unit=candidates[n].unit;
-		if(unit==NULL)
-			continue;
 
 		// A unit already carrying what is wanted is a delivery, not a fetch, and
 		// selectUnitCarryingWantedResource has first refusal on it.
@@ -301,8 +299,8 @@ bool Building::subscribeToBringResourcesStep()
 				if(!wantsAnotherDelivery(r, targets, served))
 					continue;
 				BringResourcesCandidate candidates[Unit::MAX_COUNT];
-				gatherBringResourcesCandidates(candidates, r);
-				selectFetcher(candidates, r, sel);
+				const int count=gatherBringResourcesCandidates(candidates, r);
+				selectFetcher(candidates, count, r, sel);
 			}
 		}
 
