@@ -172,7 +172,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					{
                         waitForAutosave();
                         const std::string name = static_cast<LoadSaveScreen*>(gameMenuScreen.get())->getName();
-                        if (!Toolkit::getFileManager()->writeAtomically(locationName, [&](OutputStream& stream) {
+                        if (!Toolkit::getFileManager()->writeGzipAtomically(glob2GzipWritePath(locationName), [&](OutputStream& stream) {
                             save(&stream, name);
                         })) {
                             std::cerr << "GGU: Save failed; previous file retained: " << locationName << std::endl;

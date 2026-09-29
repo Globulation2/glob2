@@ -30,7 +30,7 @@ def run_host(host, output):
     jobs = [generation]
     for players in (['numbi','castor'], ['warrush','econo'], ['nicowar','cortex'], ['maxima','cabino']):
         config = {'players':players, 'ticks':700}
-        inputs = {'map':{'job':generation['id'],'artifact':'map-r0.map'}}
+        inputs = {'map':{'job':generation['id'],'artifact':'map-r0.map.gz'}}
         enabled = job('game', build, config=config, inputs=inputs, depends_on=[generation['id']],
                       seeds={'game':19}, outputs={'telemetry':['team-timeline','checksums'],
                       'saves':['initial','final','every:513']}, labels={'variant':'on'})
@@ -40,7 +40,7 @@ def run_host(host, output):
         # deterministic double-reload for all AIs (historic Castor/Numbi limits).
         for variant in ('reload-a','reload-b'):
             jobs.append(job('game', build, config={'ticks':700},
-                            inputs={'save':{'job':enabled['id'],'artifact':'checkpoint-513.game'}},
+                            inputs={'save':{'job':enabled['id'],'artifact':'checkpoint-513.game.gz'}},
                             depends_on=[enabled['id']], outputs={'telemetry':['team-timeline','checksums']},
                             labels={'variant':variant,'pair':enabled['id']}))
         jobs.extend([enabled, disabled])

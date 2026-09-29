@@ -11,8 +11,8 @@ test('corrupt local files leave the chooser responsive and cannot accept an old 
   // Inject damaged local storage, rather than bypassing the import validator.
   // The valid fixture is only selected for its header/preview, never played.
   await page.evaluate(() => {
-    FS.writeFile('/home/web_user/.glob2/games/AAA_Valid.game', FS.readFile('/maps/balanced.map'));
-    FS.writeFile('/home/web_user/.glob2/games/AAB_Corrupt.game', new Uint8Array([98,97,100]));
+    FS.writeFile('/home/web_user/.glob2/games/AAA_Valid.game.gz', FS.readFile('/maps/balanced.map.gz'));
+    FS.writeFile('/home/web_user/.glob2/games/AAB_Corrupt.game.gz', new Uint8Array([98,97,100]));
   });
   await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen');
   await click(page,380,280);

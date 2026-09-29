@@ -112,6 +112,7 @@
   Delete $INSTDIR\stderr.txt
   Delete $INSTDIR\stdout.txt
   Delete $INSTDIR\games\*.game
+  Delete $INSTDIR\games\*.game.gz
   RMDir $INSTDIR\games
   RMDir $INSTDIR\logs
   RMDir $INSTDIR\videoshots

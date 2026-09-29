@@ -74,12 +74,12 @@ test.describe('responsive mixed input',()=>{
     await expect(field).toBeVisible();await field.fill('Responsive phone');
     await page.screenshot({path:info.outputPath('phone-save-dialog.png')});
     await field.press('Enter'); // Native input validates through the dialog's shared shortcut.
-    const digest=()=>page.evaluate(()=>glob2Diagnostics.saveDigest('Responsive_phone.game'));
+    const digest=()=>page.evaluate(()=>glob2Diagnostics.saveDigest('Responsive_phone.game.gz'));
     await expect.poll(digest).not.toBeNull();
     await expect.poll(async()=>(await snapshot(page)).persisting).toBe(false);
     const saved=await digest();
-    const bytes=await readBrowserFile(page,'/home/web_user/.glob2/games/Responsive_phone.game');
-    require('node:fs').writeFileSync(info.outputPath('Responsive_phone.game'),Buffer.from(bytes));
+    const bytes=await readBrowserFile(page,'/home/web_user/.glob2/games/Responsive_phone.game.gz');
+    require('node:fs').writeFileSync(info.outputPath('Responsive_phone.game.gz'),Buffer.from(bytes));
     await page.reload();await screen(page,'MainMenuScreen');
     expect(await digest()).toEqual(saved);
     await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');

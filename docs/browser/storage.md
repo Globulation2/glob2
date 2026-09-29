@@ -12,8 +12,9 @@ or replays before choosing a file. The custom-game and editor map choosers have
 Import and Export controls below their lists. Export downloads the selected file
 in its existing Glob2 format. The page has no permanent wrapper controls.
 
-Imports accept `.game`, `.map` or `.replay` according to the visible list, up to
-64 MiB. The browser adapter validates names, types and sizes before transferring
+Imports accept `.game`, `.game.gz`, `.map`, `.map.gz` or `.replay` according to
+the visible list, up to 64 MiB both on disk and after decompression. New maps and
+saves use gzip; exports preserve the file container and imports accept legacy raw files. The browser adapter validates names, types and sizes before transferring
 bytes. Shared C++ validation then reads the complete game/map state, saved local
 UI fields and, for replays, the complete command stream through its terminator.
 It rejects unsupported versions, incomplete fields and trailing data. Replay

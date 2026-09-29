@@ -89,11 +89,14 @@ void MapThumbnail::loadFromMap(const std::string &filename)
 	std::string path;
 	std::error_code ec;
 	auto files = Toolkit::getFileManager();
+	// Prefer an existing ".gz" sibling so the cache key (mtime/size) and the
+	// actual read below both resolve to the file that is really on disk.
+	const std::string resolvedName = glob2PreferGzipReadPath(*files, filename);
 	for (unsigned i = 0; i <= files->getDirCount(); ++i)
 	{
 		auto candidate = i == files->getDirCount()
-							 ? std::filesystem::path(filename)
-							 : std::filesystem::path(files->getDir(i)) / filename;
+							 ? std::filesystem::path(resolvedName)
+							 : std::filesystem::path(files->getDir(i)) / resolvedName;
 		if (std::filesystem::is_regular_file(candidate, ec))
 		{
 			path = std::filesystem::canonical(candidate, ec).string();
@@ -114,7 +117,7 @@ void MapThumbnail::loadFromMap(const std::string &filename)
 			}
 	try
 	{
-		BinaryInputStream stream(files->openInputStreamBackend(filename));
+		BinaryInputStream stream(files->openInflatingInputStreamBackend(resolvedName));
 		BinaryInputStream::CheckedReads checked(&stream);
 		if (!stream.isValid() || stream.isEndOfStream() || !stream.canSeek())
 			return;

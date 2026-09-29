@@ -114,7 +114,7 @@ var Module = {
   onAbort(reason) { Module.printErr('Game stopped: ' + reason); }
 };
 async function localFileDigest(directory, name, extension) {
-  if (!/^[A-Za-z0-9 _().-]+$/.test(name) || name.includes('..') || !name.endsWith('.' + extension))
+  if (!/^[A-Za-z0-9 _().-]+$/.test(name) || name.includes('..') || !(name.endsWith('.' + extension) || (['game','map'].includes(extension) && name.endsWith('.' + extension + '.gz'))))
     throw Error('Invalid local file name');
   const path = '/home/web_user/.glob2/' + directory + '/' + name;
   if (!FS.analyzePath(path).exists) return null;
@@ -136,7 +136,7 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   },
   saves() {
     const path = '/home/web_user/.glob2/games';
-    return FS.analyzePath(path).exists ? FS.readdir(path).filter(n => n.endsWith('.game')).sort() : [];
+    return FS.analyzePath(path).exists ? FS.readdir(path).filter(n => n.endsWith('.game') || n.endsWith('.game.gz')).sort() : [];
   },
   preferences() {
     const path = '/home/web_user/.glob2/preferences.txt';

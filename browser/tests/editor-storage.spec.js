@@ -31,15 +31,15 @@ for(const fault of ['quota','aborted transaction']) test(`editor save before qui
   await click(page,520,555);
   await expect.poll(async()=>(await state(page)).persistence).toBe('failed');
   await screen(page,'MapEditorScreen');
-  const digest=()=>page.evaluate(()=>glob2Diagnostics.mapDigest('Editor_durability.map'));
+  const digest=()=>page.evaluate(()=>glob2Diagnostics.mapDigest('Editor_durability.map.gz'));
   const local=await digest();expect(local).not.toBeNull();
   const downloadEvent=page.waitForEvent('download');await click(page,600,422);
-  const download=await downloadEvent;expect(download.suggestedFilename()).toBe('Editor_durability.map');
+  const download=await downloadEvent;expect(download.suggestedFilename()).toBe('Editor_durability.map.gz');
   const bytes=await fs.readFile(await download.path());
   expect({size:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')}).toEqual(local);
   await page.screenshot({path:info.outputPath('editor-save-failure.png')});
   const restored=await context.newPage();await restored.goto(gameURL());await screen(restored,'MainMenuScreen');
-  expect(await restored.evaluate(()=>glob2Diagnostics.mapDigest('Editor_durability.map'))).toBeNull();
+  expect(await restored.evaluate(()=>glob2Diagnostics.mapDigest('Editor_durability.map.gz'))).toBeNull();
   await restored.close();
   await page.evaluate(()=>window.editorStorageFault=false);
   await click(page,520,555);await screen(page,'EditorMainMenu');

@@ -194,8 +194,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			{
 				mapPreview->setMapThumbnail(mapFileName.c_str());
 
-				auto stream = std::unique_ptr<InputStream>(new BinaryInputStream(
-					Toolkit::getFileManager()->openInputStreamBackend(mapFileName)));
+				auto stream = std::unique_ptr<InputStream>(new BinaryInputStream(Toolkit::getFileManager()->openInflatingInputStreamBackend(mapFileName)));
 				if (stream->isEndOfStream())
 				{
 					std::cerr << "ChooseMapScreen::onAction() : error, can't open file "

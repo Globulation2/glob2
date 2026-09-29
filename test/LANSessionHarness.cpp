@@ -207,8 +207,9 @@ int host(int cycles, const std::string& capture)
 	// A private map name forces a real transfer without touching user maps.
 	MapHeader map = Engine::loadMapHeader("maps/FourSquares1.map");
 	map.setMapName("LAN regression transfer");
-	std::filesystem::copy_file("maps/FourSquares1.map",
-		Toolkit::getFileManager()->getDir(0) + "/" + map.getFileName(),
+	const std::string sourcePath = glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map");
+	std::filesystem::copy_file(sourcePath,
+		Toolkit::getFileManager()->getDir(0) + "/" + glob2GzipWritePath(map.getFileName()),
 		std::filesystem::copy_options::overwrite_existing);
     ScreenStack screens(*globalContainer->gfx);
     screens.push(std::make_unique<LANSessionScreen>(screens, client, "LAN host", map));
@@ -257,14 +258,16 @@ int main(int argc, char** argv)
 	if (std::string(argv[1]) == "host") rc = connectionFailureChecks() ? host(std::stoi(argv[3]), argv[4]) : 1;
 	else for (int cycle = 0; cycle < std::stoi(argv[3]) && !rc; ++cycle)
 	{
-		const auto downloaded = std::filesystem::path(globals.fileManager->getDir(0)) / "maps/LAN_regression_transfer.map";
+		// A new receiver stores the download as ".gz" without unzipping it (see
+		// YOGClientFileAssembler::handleMessage), so this is the file to expect.
+		const auto downloaded = std::filesystem::path(globals.fileManager->getDir(0)) / "maps/LAN_regression_transfer.map.gz";
 		// Force a second request too: rejoining must reuse the server's upload
 		// rather than append another copy of its chunks to the cached transfer.
 		std::filesystem::remove(downloaded);
         ScreenStack screens(*globals.gfx);
         screens.push(std::make_unique<JoinScreen>(screens, argv[2], std::string(argv[4]) + "-" + std::to_string(cycle + 1) + ".bmp"));
         rc = screens.execute(20);
-		std::ifstream original("maps/FourSquares1.map", std::ios::binary);
+		std::ifstream original(glob2PreferGzipReadPath(*globals.fileManager, "maps/FourSquares1.map"), std::ios::binary);
 		std::ifstream received(downloaded, std::ios::binary);
 		std::string expected((std::istreambuf_iterator<char>(original)), {});
 		std::string actual((std::istreambuf_iterator<char>(received)), {});

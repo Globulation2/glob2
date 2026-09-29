@@ -37,7 +37,7 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   await expect.poll(async ()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('p',{delay:80});
   await expect.poll(async ()=>(await state(page)).paused).toBe(true);
-  const digest=()=>page.evaluate(()=>glob2Diagnostics.saveDigest('Durability_regression.game'));
+  const digest=()=>page.evaluate(()=>glob2Diagnostics.saveDigest('Durability_regression.game.gz'));
   await save(page);
   await expect.poll(digest).not.toBeNull();
   await expect.poll(async ()=>(await state(page)).persistence).toBe('persisted');
@@ -53,13 +53,13 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   const downloadEvent=page.waitForEvent('download');
   await click(page,600,422);
   const download=await downloadEvent;
-  expect(download.suggestedFilename()).toBe('Durability_regression.game');
+  expect(download.suggestedFilename()).toBe('Durability_regression.game.gz');
   const exported=await fs.readFile(await download.path());
   expect({size:exported.length,sha256:createHash('sha256').update(exported).digest('hex')}).toEqual(changed);
   await page.screenshot({path:info.outputPath('save-persistence-failure.png')});
   const restored=await context.newPage();
   await restored.goto(gameURL()); await screen(restored,'MainMenuScreen');
-  expect(await restored.evaluate(()=>glob2Diagnostics.saveDigest('Durability_regression.game'))).toEqual(original);
+  expect(await restored.evaluate(()=>glob2Diagnostics.saveDigest('Durability_regression.game.gz'))).toEqual(original);
   await restored.close();
   await page.evaluate(()=>storageFault.disable());
   // The original save dialog is retained; click OK to retry the operation.

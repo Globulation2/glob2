@@ -31,6 +31,7 @@
 #include "../../src/unit/Unit.h"
 #include "../../src/ai/maxima/AIMaximaContinuation.h"
 #include <BinaryStream.h>
+#include <GzipUtil.h>
 #include <StreamBackend.h>
 #include <cassert>
 #include <bit>
@@ -688,8 +689,8 @@ void trackerLogicalCadence()
 void holidayHarvestCapacity()
 {
     Game game(NULL);
-    FILE* file=fopen("maps/Holiday_Island_2.map","rb"); assert(file);
-    BinaryInputStream input(new FileStreamBackend(file)); assert(game.load(&input));
+    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend("maps/Holiday_Island_2.map.gz"));
+    assert(input.isValid()); assert(game.load(&input));
     Player player; player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player); auto& c=ai.context; c.initialize();
     ai.budget.can_swim=true;

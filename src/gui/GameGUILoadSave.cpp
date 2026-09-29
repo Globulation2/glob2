@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GameGUILoadSave.h"
+#include "MapHeader.h"
 #include "GlobalContainer.h"
 #include <GUIFileList.h>
 #include <GUIButton.h>
@@ -42,10 +43,21 @@ class FuncFileList : public FileList
 		return nameToFilenameFunc(fullDir(), listName, extension);
 	}
 
-  private:
-	std::string (*filenameToNameFunc)(const std::string &filename);
-	std::string (*nameToFilenameFunc)(const std::string &dir, const std::string &name,
-									  const std::string &extension);
+	// Also lists "<extension>.gz" files (a no-op for extensions, like
+	// "replay", that are never gzip-compressed), so a Load Game/Script list
+	// still shows entries once the matching files are stored compressed.
+	void generateList() override
+	{
+		if (extension.empty())
+			generateListFromExtensions({extension});
+		else
+			generateListFromExtensions({extension, extension + ".gz"});
+	}
+
+private:
+	std::string (*filenameToNameFunc)(const std::string& filename);
+	std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension);
+
 };
 
 //! Load/Save screen
@@ -175,7 +187,7 @@ void LoadSaveScreen::beginPersistence(
 	saveFailed = false;
 	endValue = -1;
 	caption->setText(Toolkit::getStringTable()->getString("[saving to storage]"));
-	exportPath = fileName;
+	exportPath = glob2PreferGzipReadPath(*Toolkit::getFileManager(), fileName);
 	exportButton->visible = false;
 	persistence = std::move(operation);
 }

@@ -26,7 +26,7 @@ bool MapEdit::load(const std::string filename)
 
 GAGCore::CooperativeTask MapEdit::loadTask(std::string filename)
 {
-    auto stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(filename));
+    auto stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
     if (stream->isEndOfStream()) co_return false;
     try {
         if (!(co_await game.loadTask(stream.get()))) { doQuitAfterLoadSave = true; co_return false; }
@@ -50,7 +50,7 @@ bool MapEdit::save(const std::string filename, const std::string name)
 	assert(filename.size());
 	assert(name.size());
 
-    if (!Toolkit::getFileManager()->writeAtomically(filename, [&](OutputStream& stream) {
+    if (!Toolkit::getFileManager()->writeGzipAtomically(glob2GzipWritePath(filename), [&](OutputStream& stream) {
         game.save(&stream, true, name);
     })) return false;
 

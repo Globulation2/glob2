@@ -3,7 +3,8 @@
 // Format validation belongs to the shared game loader after this boundary.
 class Glob2FileSelection {
   constructor(extensions, limit = 64 * 1024 * 1024) {
-    this.extensions = new Set(extensions);
+    this.extensions = new Set(extensions.flatMap(extension =>
+      ['map', 'game'].includes(extension) ? [extension, extension + '.gz'] : [extension]));
     this.limit = limit;
     this.state = 'pending';
     this.file = null;
@@ -20,8 +21,7 @@ class Glob2FileSelection {
           name.endsWith('.') || name.endsWith(' ')) throw new Error('Invalid file name');
       const dot = name.lastIndexOf('.');
       if (dot <= 0) throw new Error('Missing file extension');
-      const extension = name.slice(dot + 1).toLowerCase();
-      if (!this.extensions.has(extension)) throw new Error('Unsupported file type');
+      if (![...this.extensions].some(extension => name.toLowerCase().endsWith('.' + extension))) throw new Error('Unsupported file type');
       if (!Number.isSafeInteger(file.size) || file.size <= 0 || file.size > this.limit)
         throw new Error('File exceeds import size limit');
       this.state = 'reading';

@@ -39,14 +39,14 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 GAGCore::CooperativeTask GameGUI::loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, std::string sourceFileName)
 {
 	init();
-	auto stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
+	auto stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
 	if (stream->isEndOfStream())
 	{
 		if(!sourceFileName.empty()) co_return false;
-		stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(true)));
+		stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), mapHeader.getFileName(true)));
 		if(stream->isEndOfStream())
 		{
-			stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(false,true)));
+			stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), mapHeader.getFileName(false,true)));
 			if(stream->isEndOfStream())
 			{
 				std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << ", " << mapHeader.getFileName(true) << " or " << mapHeader.getFileName(false,true) << std::endl;

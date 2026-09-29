@@ -5,6 +5,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from build_paths import native_binary
 import argparse
+import gzip
 import hashlib
 import platform
 import json
@@ -91,12 +92,12 @@ def main():
             '--param','width=7','--param','height=7','--param','teams=2',
             '--param','workers=4','--candidates','0','--rotations','2','--write-map','true'])
         assert rotated['rotations_verified'],(generator,seed)
-        assert all((directory/f'map-r{rotation}.map').is_file() for rotation in range(2))
+        assert all((directory/f'map-r{rotation}.map.gz').is_file() for rotation in range(2))
     invalid,_=run('invalid-generator',['--generate-map','--generator','15','--map-seed','42','--param','teams=0'],2)
     assert invalid['status']=='invalid_request'
     assert invalid['map_report']['report_type']=='generation_failure'
     assert invalid['map_report']['generation']['telemetry']['records']
-    base=['--run-game','--map-file',str(map_dir/'map-r0.map'),'--player','cortex','--player','cortex',
+    base=['--run-game','--map-file',str(map_dir/'map-r0.map.gz'),'--player','cortex','--player','cortex',
           '--game-seed','19','--ticks',str(args.ticks),'--telemetry','checksums']
     params=['--ai-param','0:swarmWorkerCap=4','--ai-param','1:swarmWorkerCap=7',
             '--ai-param','0:expandDebounceCycles=3','--ai-param','1:expandDebounceCycles=5']
@@ -106,7 +107,7 @@ def main():
     assert 'swarmWorkerCap=7' in value['players'][1]['runtime_values']
     assert all('standard_statistics' in t and 'history' in t for t in value['teams'])
     original_ticks=tick_records(original/'game.replay.checksums')
-    for name,save in [('initial-reload','initial.game'),('continuation','checkpoint-512.game')]:
+    for name,save in [('initial-reload','initial.game.gz'),('continuation','checkpoint-512.game.gz')]:
         restored,target=run(name,['--run-game','--load-game',str(original/save),'--ticks',str(args.ticks),'--telemetry','checksums','--save','final'],
                             environment={'GLOB2_CORTEX_TUNING':'/nonexistent/ambient','GLOB2_MAXIMA_OVERRIDES':'invalid=1','GLOB2_CORTEX_POLICY':'ml'})
         trace=tick_records(target/'game.replay.checksums')
@@ -119,11 +120,11 @@ def main():
     run('invalid-override',base+['--ai-param','0:tierMidDiv=0'],2)
     run('duplicate-override',base+['--ai-param','0:swarmWorkerCap=4','--ai-param','0:swarmWorkerCap=5'],2)
     for name in ('maxima',):
-        config=['--run-game','--map-file',str(map_dir/'map-r0.map'),'--player','maxima','--player','maxima',
+        config=['--run-game','--map-file',str(map_dir/'map-r0.map.gz'),'--player','maxima','--player','maxima',
                 '--game-seed','23','--ticks',str(args.ticks),'--telemetry','checksums',
                 '--ai-param','0:staffing.new_inn_workers=3','--ai-param','1:staffing.new_inn_workers=5','--save','every:512']
         maximum,directory=run(name,config)
-        restored,target=run('maxima-continuation',['--run-game','--load-game',str(directory/'checkpoint-512.game'),
+        restored,target=run('maxima-continuation',['--run-game','--load-game',str(directory/'checkpoint-512.game.gz'),
                             '--ticks',str(args.ticks),'--telemetry','checksums'])
         first=tick_records(directory/'game.replay.checksums');second=tick_records(target/'game.replay.checksums')
         assert all(first[t]==record for t,record in second.items()),'Maxima configured continuation'
@@ -133,9 +134,16 @@ def main():
                       '--alliance','1','--alliance','1','--alliance','1','--alliance','1','--ticks','256','--save','initial'])
     assert allied['winning_teams']==[0,1,2,3] and allied['winning_alliances']==[1],allied
     assert 'generation' in allied
-    legacy=root/'test/fixtures/team-stats/version88.game'
+    # These fixtures are checked in gzip-compressed; inflate them to genuinely raw
+    # files so these two cases exercise loading legacy uncompressed saves, not the
+    # engine's own (also tested elsewhere) transparent gzip support.
+    legacy_fixtures=Path(tempfile.mkdtemp(prefix='glob2-legacy-fixtures-'))
+    legacy=legacy_fixtures/'version88.game'
+    legacy.write_bytes(gzip.decompress((root/'test/fixtures/team-stats/version88.game.gz').read_bytes()))
     run('empty-player-save',['--run-game','--load-game',str(legacy),'--ticks','10000'],2)
-    run('legacy-v84',['--run-game','--load-game',str(root/'games/gd-small-2ai.game'),'--ticks','10000'])
+    legacy_v84=legacy_fixtures/'gd-small-2ai.game'
+    legacy_v84.write_bytes(gzip.decompress((root/'games/gd-small-2ai.game.gz').read_bytes()))
+    run('legacy-v84',['--run-game','--load-game',str(legacy_v84),'--ticks','10000'])
     (output/'verification.json').write_text(json.dumps({'passed':True,'cases':records,'ticks':args.ticks,'binary_sha256':hashlib.sha256(binary.read_bytes()).hexdigest(),'platform':platform.platform()},indent=2))
     print(f'PASS {len(records)} main-binary cases; retained artifacts: {output}')
 

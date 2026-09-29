@@ -25,6 +25,7 @@
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
+#include <GzipUtil.h>
 #include <algorithm>
 #include <cassert>
 #include <filesystem>
@@ -51,6 +52,35 @@ static std::string contents(const fs::path& path)
 	std::ifstream file(path, std::ios::binary);
 	assert(file);
 	return std::string(std::istreambuf_iterator<char>(file), {});
+}
+
+static void checkGzipWrites(FileManager& files, const fs::path& directory)
+{
+	const std::string original(200000, 'x');
+	std::string compressed, again, decoded;
+	assert(gzipCompress(original, 6, compressed));
+	assert(gzipCompress(original, 6, again) && again == compressed);
+	assert(gzipDecompress(compressed, decoded) && decoded == original);
+	assert(!gzipDecompress(compressed, decoded, original.size() - 1));
+	assert(!gzipDecompress(compressed.substr(0, compressed.size()-1), decoded));
+	assert(!gzipDecompress(compressed + "trailing", decoded));
+	again = compressed; again[again.size()-8] ^= 1;
+	assert(!gzipDecompress(again, decoded));
+	const auto path = (directory / "atomic.game.gz").string();
+	assert(files.writeGzipAtomic(path, original));
+	assert(contents(path) == compressed);
+	assert(!files.writeGzipAtomically(path, [](OutputStream& stream) {
+		stream.write("partial", 7, "data");
+		throw std::runtime_error("injected serialization failure");
+	}));
+	assert(contents(path) == compressed);
+	assert(!files.writeGzipAtomic((directory / "missing" / "save.game.gz").string(), original));
+	const auto blocked = directory / "blocked.game.gz";
+	fs::create_directory(blocked);
+	assert(!files.writeGzipAtomic(blocked.string(), original));
+	for (const auto& entry : fs::directory_iterator(directory))
+		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
+	std::cout << "PASS gzip deterministic encoding, round trip, size limit, corruption rejection and failed atomic replacement" << std::endl;
 }
 
 static void checkAtomicWrites(FileManager& files, const fs::path& directory)
@@ -457,6 +487,27 @@ static void checkImports(const std::string& bytes, const fs::path& directory)
         FileImport invalid(selected(name, bytes), "game");
         validate(invalid); assert(invalid.state() == FileImport::State::Failed);
     }
+    {
+        std::string compressed;
+        assert(gzipCompress(bytes, 6, compressed));
+        FileImport operation(selected("Compressed.GAME.GZ", compressed), "game");
+        validate(operation); operation.advance();
+        assert(operation.state() == FileImport::State::Succeeded);
+        assert(operation.path() == "games/Compressed.game.gz");
+        assert(contents(directory / operation.path()) == compressed);
+        FileImport rawSibling(selected("Compressed.game", bytes), "game");
+        validate(rawSibling); rawSibling.advance();
+        assert(rawSibling.state() == FileImport::State::Succeeded);
+        assert(rawSibling.path() == "games/Compressed_(1).game");
+        FileImport gzipSibling(selected("Compressed_(1).game.gz", compressed), "game");
+        validate(gzipSibling); gzipSibling.advance();
+        assert(gzipSibling.state() == FileImport::State::Succeeded);
+        assert(gzipSibling.path() == "games/Compressed_(1)_(1).game.gz");
+        for (const auto& corrupt : {compressed.substr(0, compressed.size()-1), compressed + "extra"}) {
+            FileImport invalid(selected("invalid.game.gz", corrupt), "game");
+            validate(invalid); assert(invalid.state() == FileImport::State::Failed);
+        }
+    }
     const auto original = directory / "games/Imported.game";
     { std::ofstream out(original, std::ios::binary); out << "previous save"; }
     struct ControlledPersistence : Persistence {
@@ -603,6 +654,7 @@ int main(int argc, char **argv)
 		for (bool ai : {false,true}) checkRandomContinuation(text,ai);
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+	checkGzipWrites(*globals.fileManager, directory);
 	checkBackgroundWriter(*globals.fileManager, directory);
     checkPreferences(directory);
 	checkMapHeaders();
@@ -638,7 +690,7 @@ int main(int argc, char **argv)
 			BinaryOutputStream initial(new MemoryStreamBackend());
 			gui.save(&initial, "Auto save");
 		}
-		const fs::path save = directory / "games" / "Auto_save.game";
+		const fs::path save = directory / "games" / "Auto_save.game.gz";
 		gui.syncStep();
 		gui.waitForAutosave();
 		assert(!fs::exists(save));
@@ -646,7 +698,9 @@ int main(int argc, char **argv)
 		gui.syncStep();
 		gui.waitForAutosave();
 		std::cout << "PASS headless autosave defaults off and can be explicitly enabled" << std::endl;
-		const auto bytes = contents(save);
+		const auto compressedBytes = contents(save);
+		std::string bytes;
+		assert(gzipDecompress(compressedBytes, bytes));
 		{
 			// Autosave hashes on the writer thread; a direct save hashes as it writes.
 			const fs::path reference = directory / "games" / "reference.game";
@@ -706,7 +760,7 @@ int main(int argc, char **argv)
 		gui.game.stepCounter = AUTOSAVE_PHASE_TICKS + AUTOSAVE_INTERVAL_TICKS - 1;
 		gui.syncStep();
 		gui.waitForAutosave();
-		assert(contents(save) == bytes);
+		assert(contents(save) == compressedBytes);
 		std::cout << "PASS autosave waits for the configured interval" << std::endl;
         checkImports(bytes, directory);
 #ifndef WIN32
@@ -724,14 +778,14 @@ int main(int argc, char **argv)
 		}
 		int status = 0;
 		assert(waitpid(child, &status, 0) == child && WIFEXITED(status) && WEXITSTATUS(status) == 0);
-		assert(contents(save) == bytes);
+		assert(contents(save) == compressedBytes);
 		std::cout << "PASS failed production autosave preserves the previous complete game" << std::endl;
 #endif
 		globals.settings.autosaveGames = false;
 		gui.game.stepCounter = AUTOSAVE_PHASE_TICKS + 2 * AUTOSAVE_INTERVAL_TICKS;
 		gui.syncStep();
 		gui.waitForAutosave();
-		assert(contents(save) == bytes);
+		assert(contents(save) == compressedBytes);
 		globals.settings.autosaveGames = true;
 		std::cout << "PASS disabled autosave leaves the previous save untouched" << std::endl;
 		auto stream = input(bytes, false);

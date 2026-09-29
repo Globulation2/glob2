@@ -117,8 +117,17 @@ int YOGClientMapUploader::getPercentUploaded()
 
 int YOGClientMapUploader::getCompressedSize(const std::string& mapname)
 {
-	Toolkit::getFileManager()->gzip(mapname, mapname+".gz");
-	BinaryInputStream* istream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapname+".gz"));
+	FileManager& files = *Toolkit::getFileManager();
+	const std::string resolved = glob2PreferGzipReadPath(files, mapname);
+	// A locally compressed map is already the wire payload; only a legacy raw
+	// map needs gzipping once to measure its transfer size.
+	std::string gzipFile = resolved;
+	if (!glob2IsGzipPath(resolved))
+	{
+		files.gzip(resolved, resolved+".gz");
+		gzipFile = resolved+".gz";
+	}
+	BinaryInputStream* istream = new BinaryInputStream(files.openInputStreamBackend(gzipFile));
 	istream->seekFromEnd(0);
 	int size=istream->getPosition();
 	istream->seekFromStart(0);

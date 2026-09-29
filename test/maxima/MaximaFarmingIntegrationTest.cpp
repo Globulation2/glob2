@@ -27,6 +27,7 @@
 #include "../../src/building/IntBuildingType.h"
 #include "../../src/unit/Unit.h"
 #include <BinaryStream.h>
+#include <GzipUtil.h>
 #include <StreamBackend.h>
 #include <cassert>
 #include <iostream>
@@ -576,7 +577,7 @@ void maintenanceProtectionAgreement()
 void archipelagoHarvestDoesNotSealWheat()
 {
     Game game(NULL);
-    BinaryInputStream input(new FileStreamBackend(fopen("maps/Archipelago.map","rb")));
+    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend("maps/Archipelago.map.gz"));
     assert(game.load(&input));
     Player player;player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player);ai.context.initialize();
@@ -603,8 +604,8 @@ void seedStabilityAcrossMaps()
     const char* maps[]={"Holiday_Island_2","Archipelago","Isles","Migration",
         "Garden_3","A_big_pond","Wild_River","Sand_River"};
     for(const char* name:maps) {
-        Game game(NULL);std::string path=std::string("maps/")+name+".map";
-        BinaryInputStream input(new FileStreamBackend(fopen(path.c_str(),"rb")));
+        Game game(NULL);std::string path=std::string("maps/")+name+".map.gz";
+        BinaryInputStream input(GAGCore::openInflatingFileStreamBackend(path));
         assert(game.load(&input));
         Player player;player.setTeam(game.teams[0]);
         AIMaxima::Maxima ai(&player);ai.context.initialize();
@@ -646,7 +647,7 @@ void seedStabilityAcrossMaps()
 void farmingRespectsDiscovery()
 {
     Game game(NULL);
-    BinaryInputStream input(new FileStreamBackend(fopen("maps/Archipelago.map","rb")));
+    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend("maps/Archipelago.map.gz"));
     assert(game.load(&input));
     Player player;player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player);ai.context.initialize();

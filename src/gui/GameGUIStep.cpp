@@ -373,8 +373,8 @@ void GameGUI::autosave()
 	lastAutosaveSize = contents.size();
 	if (!autosaveWriter)
 		autosaveWriter = std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
-	autosaveWriter->write(glob2NameToFilename("games", name, "game"), std::move(contents),
-		[sha1 = std::move(sha1)](std::string& bytes) { sha1.apply(bytes); });
+	autosaveWriter->write(glob2GzipWritePath(glob2NameToFilename("games", name, "game")), std::move(contents),
+		[sha1 = std::move(sha1)](std::string& bytes) { sha1.apply(bytes); }, true);
 }
 
 void GameGUI::waitForAutosave()

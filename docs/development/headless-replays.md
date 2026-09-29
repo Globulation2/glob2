@@ -12,6 +12,14 @@ the structured `--run-game --save initial/final/every:N` options when snapshots
 are needed. Test harnesses that exercise autosaving can enable
 `settings.autosaveGames` after `GlobalContainer::load()`.
 
+Every `.map`/`.game` file this engine writes — autosaves, `--save-game-as`,
+`--save initial/final/every:N`, the map generator's `--output` — is gzip
+level 6 by default, with a `.gz` suffix appended to whatever destination name
+was given (a name that already ends in `.gz` is left as-is). Loading is
+transparent either way: an existing `.gz` file is preferred when both it and a
+raw file of the same name exist, and legacy raw `.map`/`.game` files (no `.gz`
+suffix) keep loading unchanged. Replays are unaffected and stay uncompressed.
+
 ## CLI Flags
 
 ### `--nox <game-file> <steps> <runs>`
@@ -98,8 +106,9 @@ pipeline to produce curated datasets (exact counts per matchup).
 ```
 
 - `--map <name>` is the bare map filename without `.map` (resolved as
-  `maps/<name>.map`). On a typo the binary fails fast with a clear
-  message; it does **not** silently retry random maps.
+  `maps/<name>.map`, or `maps/<name>.map.gz` when that exists). On a typo the
+  binary fails fast with a clear message; it does **not** silently retry
+  random maps.
 - `--matchup <list>` is one AI name per team. The list length must
   match the loaded map's `getNumberOfTeams()` exactly — startup fails
   otherwise.
@@ -117,7 +126,7 @@ GLOB2_TEST_SEED=42 ./glob2 -test-games-nox 1 \
   --save-game-as games/cross-replay.game
 ```
 
-`<path>` is resolved by the file manager: relative paths land under `~/.glob2/` (so `--save-game-as games/foo.game` writes to `~/.glob2/games/foo.game`); absolute paths (`/tmp/foo.game`, `C:\foo.game`) are used as-is. Requires `-test-games` or `-test-games-nox`; the save fires at random-game creation time. Without `GLOB2_TEST_SEED`, the wall-clock seed at run-start is captured and the .game file is still reproducible — just not predictable across separate invocations.
+`<path>` is resolved by the file manager: relative paths land under `~/.glob2/` (so `--save-game-as games/foo.game` writes to `~/.glob2/games/foo.game.gz`); absolute paths (`/tmp/foo.game`, `C:\foo.game`) are used as-is (also gaining a `.gz` suffix). Requires `-test-games` or `-test-games-nox`; the save fires at random-game creation time. Without `GLOB2_TEST_SEED`, the wall-clock seed at run-start is captured and the .game.gz file is still reproducible — just not predictable across separate invocations. The command prints the actual path written.
 
 **Local-player quirk:** the engine still creates a passive `P_LOCAL`
 player on team 0 in `-test-games-nox` mode (the headless engine

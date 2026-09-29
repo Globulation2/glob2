@@ -144,7 +144,7 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   await click(page, 600, 400);
   await editTextField(page,'Browser regression');
   await click(page, 520, 555);
-  const digest = () => page.evaluate(() => glob2Diagnostics.saveDigest('Browser_regression.game'));
+  const digest = () => page.evaluate(() => glob2Diagnostics.saveDigest('Browser_regression.game.gz'));
   await expect.poll(digest).not.toBeNull();
   await expect.poll(async () => (await state(page)).persisting).toBe(false);
   const saved = await digest();
@@ -153,13 +153,13 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   await screen(page, 'MainMenuScreen');
   expect(await digest()).toEqual(saved);
   // Each test owns a fresh browser context; only this test's save exists.
-  expect(await page.evaluate(() => glob2Diagnostics.saves())).toEqual(['Browser_regression.game']);
+  expect(await page.evaluate(() => glob2Diagnostics.saves())).toEqual(['Browser_regression.game.gz']);
   await clickMainMenu(page, 'load'); await screen(page, 'ChooseMapScreen');
   await menu(page, 100, 70);
   const downloadEvent = page.waitForEvent('download');
   await menu(page, 340, 320);
   const download = await downloadEvent;
-  expect(download.suggestedFilename()).toBe('Browser_regression.game');
+  expect(download.suggestedFilename()).toBe('Browser_regression.game.gz');
   const bytes = await require('node:fs/promises').readFile(await download.path());
   expect({size:bytes.length,sha256:require('node:crypto').createHash('sha256').update(bytes).digest('hex')}).toEqual(saved);
   await menu(page, 530, 440); await screen(page, 'MainMenuScreen');
@@ -249,7 +249,7 @@ test('editor save cancellation keeps edits open and completed fertility saves th
   await editTextField(page,'Browser editor');
   await click(page, 520, 555);
   await screen(page, 'EditorMainMenu'); // Returns only after job and map write complete.
-  const digest = () => page.evaluate(() => glob2Diagnostics.mapDigest('Browser_editor.map'));
+  const digest = () => page.evaluate(() => glob2Diagnostics.mapDigest('Browser_editor.map.gz'));
   await expect.poll(digest).not.toBeNull();
   await expect.poll(async () => (await state(page)).persisting).toBe(false);
   const saved = await digest();

@@ -53,7 +53,7 @@ function documentFixture() {
 test('picker uses accepted extensions and releases its input on cancellation',async()=>{
   const fixture=documentFixture(),selection=new Selection(['game','map']);
   selection.pick(fixture.document);
-  assert.equal(fixture.input.accept,'.game,.map');assert.equal(fixture.clicks(),1);
+  assert.equal(fixture.input.accept,'.game,.game.gz,.map,.map.gz');assert.equal(fixture.clicks(),1);
   fixture.handlers.cancel();
   assert.equal(selection.state,'cancelled');assert.equal(fixture.removed(),1);
 });
@@ -62,4 +62,13 @@ test('disposing an open picker ignores its late change event',async()=>{
   selection.pick(fixture.document);selection.dispose();
   fixture.input.files=[file('late.game')];fixture.handlers.change();
   await Promise.resolve();assert.equal(selection.file,null);
+});
+
+test('accepts gzip containers only for supported map and save types',async()=>{
+  for(const name of ['Backup.game.gz','Island.map.gz']) {
+    const selection=new Selection(['game','map']); await selection.select(file(name));
+    assert.equal(selection.state,'selected');
+  }
+  const selection=new Selection(['replay']); await selection.select(file('run.replay.gz'));
+  assert.equal(selection.state,'failed');
 });

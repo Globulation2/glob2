@@ -8,6 +8,7 @@
 #include "Version.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
+#include <GzipUtil.h>
 #include <Toolkit.h>
 #include <algorithm>
 #include <cctype>
@@ -30,8 +31,8 @@ bool validName(const std::string &name, const std::string &extension)
 	for (unsigned char c : name)
 		if (c < 32 || c == 127 || std::string("/\\<>:\"|?*").find(c) != std::string::npos)
 			return false;
-	const auto dot = name.rfind('.');
-	if (dot == std::string::npos || lower(name.substr(dot + 1)) != extension)
+	const auto suffix = "." + extension;
+	if (name.size() <= suffix.size() || lower(name.substr(name.size() - suffix.size())) != suffix)
 		return false;
 	const auto stem = lower(name.substr(0, name.find('.')));
 	if (stem == "con" || stem == "prn" || stem == "aux" || stem == "nul")
@@ -65,18 +66,27 @@ FileImport::~FileImport()
 CooperativeTask FileImport::validate()
 {
 	if ((extension != "game" && extension != "map" && extension != "replay") ||
-		!validName(file.name, extension) || file.bytes.empty() ||
+		!validName(file.name, extension + (glob2IsGzipPath(lower(file.name)) && extension != "replay" ? ".gz" : "")) || file.bytes.empty() ||
 		file.bytes.size() > 64u * 1024u * 1024u)
 		co_return false;
-	BinaryInputStream input(new MemoryStreamBackend(file.bytes.data(), file.bytes.size()));
+	std::string decoded;
+	if (glob2IsGzipPath(lower(file.name)))
+	{
+		if (extension == "replay" || !gzipDecompress(
+			std::string(file.bytes.begin(), file.bytes.end()), decoded, 64u * 1024u * 1024u))
+			co_return false;
+	}
+	else decoded.assign(file.bytes.begin(), file.bytes.end());
+	if (decoded.size() < 4) co_return false;
+	BinaryInputStream input(new MemoryStreamBackend(decoded.data(), decoded.size()));
 	input.seekFromStart(0);
 	BinaryInputStream::CheckedReads checked(&input);
 	MapHeader header;
 	if (!header.load(&input) || header.getMapOffset() < input.getPosition() ||
-		header.getMapOffset() > file.bytes.size() - 4 ||
+		header.getMapOffset() > decoded.size() - 4 ||
 		header.getIsSavedGame() != (extension != "map"))
 		co_return false;
-	const auto mapStart = file.bytes.begin() + header.getMapOffset();
+	const auto mapStart = decoded.begin() + header.getMapOffset();
 	if (!std::equal(mapStart, mapStart + 4, "MapB"))
 		co_return false;
 	input.seekFromStart(0);
@@ -113,7 +123,7 @@ CooperativeTask FileImport::validate()
 		// recording. Older recordings may already contain one, so accept any
 		// additional complete terminators while still rejecting trailing or
 		// truncated command data.
-		while (input.getPosition() < file.bytes.size())
+		while (input.getPosition() < decoded.size())
 		{
 			if (input.readUint32("steps") != 0)
 				co_return false;
@@ -126,7 +136,7 @@ CooperativeTask FileImport::validate()
 	}
 	// The complete supported format must be consumed, including the replay
 	// terminator. Unlike playback recovery, importing never truncates corruption.
-	co_return input.getPosition() == file.bytes.size();
+	co_return input.getPosition() == decoded.size();
 }
 void FileImport::advance()
 {
@@ -147,13 +157,16 @@ void FileImport::advance()
 			const auto directory = extension == "game"  ? "games"
 								   : extension == "map" ? "maps"
 														: "replays";
-			const auto name = file.name.substr(0, file.name.rfind('.'));
+			const auto storedExtension = extension + (glob2IsGzipPath(lower(file.name)) ? ".gz" : "");
+			const auto name = file.name.substr(0, file.name.size() - storedExtension.size() - 1);
 			for (unsigned suffix = 0; suffix < 10000; ++suffix)
 			{
 				const auto candidate = glob2NameToFilename(
 					directory, name + (suffix ? " (" + std::to_string(suffix) + ")" : ""),
-					extension);
-				if (files.exists(candidate))
+					storedExtension);
+				const auto rawCandidate = glob2IsGzipPath(candidate) ? candidate.substr(0, candidate.size()-3) : candidate;
+				if (files.exists(candidate) || (extension != "replay" &&
+					(files.exists(rawCandidate) || files.exists(rawCandidate + ".gz"))))
 					continue;
 				if (!files.writeAtomically(
 						candidate, [this](OutputStream &output)

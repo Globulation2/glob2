@@ -16,7 +16,7 @@ args = parser.parse_args()
 binary = args.binary.resolve()
 output = args.output.resolve()
 output.mkdir(parents=True, exist_ok=True)
-fixture = root / 'games/cross-replay.game'
+fixture = root / 'games/cross-replay.game.gz'
 replay = output / 'native.replay'
 command = [str(binary), '--nox', str(fixture), '1500', '1']
 with tempfile.TemporaryDirectory(prefix='glob2-browser-determinism-') as profile:
@@ -28,7 +28,7 @@ with tempfile.TemporaryDirectory(prefix='glob2-browser-determinism-') as profile
                        SDL_AUDIODRIVER='dummy'))
 trace = Path(str(replay) + '.checksums').read_bytes()
 assert len(trace) > 1000, 'Missing or empty simulation trace'
-metadata = {'fixture': 'games/cross-replay.game', 'seed': 42, 'ticks': 1500,
+metadata = {'fixture': 'games/cross-replay.game.gz', 'seed': 42, 'ticks': 1500,
             'fixture_sha256': hashlib.sha256(fixture.read_bytes()).hexdigest(),
             'trace_sha256': hashlib.sha256(trace).hexdigest(), 'command': command}
 (output / 'manifest.json').write_text(json.dumps(metadata, indent=2) + '\n')
