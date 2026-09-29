@@ -7,7 +7,6 @@
 #include <cstdint>
 #include <cstdio>
 #include <ctime>
-#include <limits>
 #include <string>
 
 /// Local wall-clock time for the YOG lobby and server, replacing

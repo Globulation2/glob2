@@ -134,9 +134,7 @@ def configure(env, server_only):
         missing.append("regex")
 
     env.Append(LIBS=["pthread"])
-    
 
-     
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
     if not server_only and env["opengl"]:

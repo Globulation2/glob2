@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include <algorithm>
+#include <sstream>
 #include "Version.h"
 #include "NetBroadcaster.h"
 #include "NetConnection.h"
