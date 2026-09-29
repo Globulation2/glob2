@@ -1140,10 +1140,15 @@ jobs:
 
   web-deploy:
     name: browser self-hosting deployment
+    needs: web-build
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-client
+          path: build/emscripten/client/release
       - name: Test self-hosting with real TLS and persistent volumes
         run: |
           docker compose -f deploy/compose.yaml build lobby
