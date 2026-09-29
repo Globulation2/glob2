@@ -101,6 +101,9 @@ public:
 	/// the map, otherwise it will be ignored
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	GAGCore::CooperativeTask loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, std::string sourceFileName=std::string());
+	//! Same as loadFromHeadersTask, but from an already-open stream: a caller that already
+	//! has the bytes in memory (a freshly generated custom game) skips the file entirely.
+	GAGCore::CooperativeTask loadFromStreamTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, GAGCore::InputStream *stream);
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
     GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, bool ignoreGUIData=false);
