@@ -1065,11 +1065,19 @@ jobs:
           - image: ubuntu:22.04
             runner: ubuntu-22.04
             compiler: g++-11
-            suite: sweep
+            suite: sweep-a
           - image: ubuntu:24.04
             runner: ubuntu-24.04
             compiler: g++-13
-            suite: sweep
+            suite: sweep-a
+          - image: ubuntu:22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            suite: sweep-b
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            suite: sweep-b
           - image: ubuntu:22.04
             runner: ubuntu-22.04
             compiler: g++-11
@@ -1123,27 +1131,35 @@ jobs:
 
       - name: Check golden maps and sweep colony counts
         id: check_golden_maps_and_sweep_colony_counts
-        if: ${{ matrix.suite == 'sweep' }}
+        if: ${{ startsWith(matrix.suite, 'sweep-') }}
         continue-on-error: true
         run: |
-          # Golden maps: rows exist per platform and this platform must have them. The check and
-          # the sweep's shards share nothing, so they run side by side with separate
-          # profiles; logs are replayed in order. A failing check then prints the rows this
-          # platform produces, so a new platform's rows can be committed from the log.
+          # The two jobs divide the four independent sweep shards between runners.
+          # Run golden rows alongside the first pair of shards.
           golden() { log=$1; shift; timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
-          golden /tmp/golden-rows.log glob2-golden-rows --require-rows & rows=$!
+          if [ '${{ matrix.suite }}' = sweep-a ]; then
+            golden /tmp/golden-rows.log glob2-golden-rows --require-rows & rows=$!
+            shards=(0 1)
+          else
+            shards=(2 3)
+          fi
           sweeps=()
-          for shard in 0 1 2 3; do
+          for shard in "${shards[@]}"; do
             golden /tmp/golden-sweep-$shard.log glob2-golden-sweep-$shard --sweep $shard/4 & sweeps+=($!)
           done
           status=0
-          if ! wait $rows; then
-            status=1
-            golden /tmp/golden-print.log glob2-golden-print --print || true
-            cat /tmp/golden-print.log
+          if [ '${{ matrix.suite }}' = sweep-a ]; then
+            if ! wait $rows; then
+              status=1
+              golden /tmp/golden-print.log glob2-golden-print --print || true
+              cat /tmp/golden-print.log
+            fi
+            cat /tmp/golden-rows.log
           fi
-          cat /tmp/golden-rows.log
-          for i in 0 1 2 3; do wait ${sweeps[$i]} || status=1; cat /tmp/golden-sweep-$i.log; done
+          for i in "${!shards[@]}"; do
+            wait ${sweeps[$i]} || status=1
+            cat /tmp/golden-sweep-${shards[$i]}.log
+          done
           [ $status = 0 ]
 
       - name: Check generator telemetry equivalence and cost
