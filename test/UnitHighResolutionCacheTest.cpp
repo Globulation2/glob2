@@ -70,6 +70,9 @@ struct InspectUnitSprite : Sprite
 int main(int argc, char **argv)
 {
 	const bool software = argc > 1 && std::string(argv[1]) == "software";
+	// This test compares pixel alignment; lossy S3TC texture blocks obscure
+	// that comparison on Mesa when the two draw paths upload different layers.
+	SDL_setenv("GLOB2_DISABLE_S3TC", "1", 1);
 	Toolkit::init("glob2-unit-hd-cache-test");
 	auto gfx = Toolkit::initGraphic(640, 480, software ? 0 : GraphicContext::USEGPU, "HD unit cache checks");
 	Sprite::setHighResolution(true);

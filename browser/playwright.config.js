@@ -3,8 +3,10 @@ const path = require('node:path');
 module.exports = defineConfig({
   testDir: './tests',
   outputDir: '../build/browser-test-results',
-  timeout: 90000,
-  expect: {timeout: 30000},
+  // Software-backed WebGL2 on CI can spend longer preparing a generated map
+  // and rendering saved-game transitions than the browser's software path.
+  timeout: process.env.GLOB2_TEST_RENDERER === 'webgl2' ? 180000 : 90000,
+  expect: {timeout: process.env.GLOB2_TEST_RENDERER === 'webgl2' ? 60000 : 30000},
   workers: 1,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,

@@ -80,12 +80,13 @@ for (const [reason, stub] of Object.entries(fallbacks)) {
 
 
 test('WebGL context restoration keeps the match and can recover repeatedly', async ({page}, info) => {
+  test.setTimeout(120000);
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   await page.goto('/?renderer=webgl2'); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
-  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+  await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
   for (let count=1; count<=2; ++count) {
     await page.evaluate(() => {
       window.contextLoss = document.querySelector('#canvas').getContext('webgl2').getExtension('WEBGL_lose_context');
