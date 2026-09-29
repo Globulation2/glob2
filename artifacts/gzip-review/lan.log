@@ -1,0 +1,28 @@
+Settings::load("preferences.txt") : error, can't open file.
+LAN progress PASS: cancellation and greeting timeout release the connection
+HOST roster=0 state=1
+HOST roster=1 state=4
+  slot=0 id=1 name=LAN host mask=1
+HOST roster=2 state=5
+  slot=0 id=1 name=LAN host mask=1
+  slot=1 id=2 name=LAN guest mask=2
+HOST guest ready, cycle=1
+HOST roster=1 state=5
+  slot=0 id=1 name=LAN host mask=1
+HOST departure verified, cycle=1
+HOST roster=2 state=5
+  slot=0 id=1 name=LAN host mask=1
+  slot=1 id=2 name=LAN guest mask=2
+HOST guest ready, cycle=2
+HOST roster=1 state=5
+  slot=0 id=1 name=LAN host mask=1
+HOST departure verified, cycle=2
+HOST PASS: all ready/join/leave cycles completed
+
+Settings::load("preferences.txt") : error, can't open file.
+JOIN PASS: lobby returned through Leave Game
+JOIN map verified: 48770 bytes, cycle=1
+JOIN PASS: lobby returned through Leave Game
+JOIN map verified: 48770 bytes, cycle=2
+
+LAN session regression PASS: two ready/join/leave cycles and exact map downloads

@@ -1,0 +1,46 @@
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:14] "GET / HTTP/1.1" 200 -
+
+Running 4 tests using 1 worker
+
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:14] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:14] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:14] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:14] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:21] "GET / HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:21] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:21] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:21] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:28] "GET / HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:28] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:28] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:28] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  1 [chromium] › tests/import.spec.js:46:1 › imports an exported save, preserves duplicate names, rejects corruption and reloads the imported game (19.9s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:34] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:34] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:34] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:34] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  2 [chromium] › tests/import.spec.js:71:1 › imports a custom map and starts it through the normal setup screen (7.8s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:42] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:42] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:42] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:42] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  3 [chromium] › tests/import.spec.js:93:1 › imports a complete replay and rejects a truncated command stream (7.3s)
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:49] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:49] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:49] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:49] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:55] "GET / HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:55] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:55] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:22:55] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:23:01] "GET / HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:23:01] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:23:01] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:23:01] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:23:04] "GET / HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:23:04] "GET /index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:23:04] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:23:04] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  4 [chromium] › tests/import.spec.js:108:1 › failed import persistence offers export and retry without overwriting a save (16.0s)
+
+  4 passed (51.6s)

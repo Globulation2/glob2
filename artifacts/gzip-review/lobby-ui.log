@@ -1,0 +1,55 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
+PASS preferences keep every generator option, and older files still load
+PASS landscape picker Random order is a real shuffle drawn once per process run, Alphabetical stays stable
+Landscape preview:  revision 0 seed 2137760538 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 2805924448 [validation]: Unknown generator
+Landscape preview: Could not place every colony
+PASS deferred viewport priority, reprioritization, stable seeds, yielding retries, restart/reroll
+PASS canonical map catalog, selection stability, inline controls, popup cancel, focus preservation and rules
+Map generation: river revision 3 seed 1058579305 [complete]: 
+Map generation: river revision 3 seed 3079532742 [complete]: 
+Map generation: river revision 3 seed 1715928767 [complete]: 
+Map generation: river revision 3 seed 3335821140 [complete]: 
+Map generation: river revision 3 seed 315112635 [complete]: 
+Map generation: river revision 3 seed 2547898882 [complete]: 
+Map generation: river revision 3 seed 2748554953 [complete]: 
+Map generation: river revision 3 seed 1231253495 [complete]: 
+Map generation: river revision 3 seed 1637129039 [complete]: 
+Map generation: river revision 3 seed 1977677791 [complete]: 
+Map generation: river revision 3 seed 2493021005 [complete]: 
+Map generation: fjord-continent revision 13 seed 3403827764 [complete]: 
+Map generation: fjord-continent revision 13 seed 166728122 [complete]: 
+Map generation: contested-commons revision 3 seed 2258514737 [complete]: 
+Map generation: contested-commons revision 3 seed 4039316115 [complete]: 
+Map generation: contested-commons revision 3 seed 1251139010 [complete]: 
+Map generation: contested-commons revision 3 seed 1449614186 [complete]: 
+Map generation: contested-commons revision 3 seed 4214995341 [complete]: 
+Map generation: contested-commons revision 3 seed 249886751 [complete]: 
+Map generation: contested-commons revision 3 seed 1566707215 [complete]: 
+Map generation: contested-commons revision 3 seed 2643357885 [complete]: 
+Map generation: contested-commons revision 3 seed 955342005 [complete]: 
+Map generation: contested-commons revision 3 seed 518165306 [complete]: 
+Map generation: contested-commons revision 3 seed 3123401115 [complete]: 
+Map generation: contested-commons revision 3 seed 2661011254 [complete]: 
+Map generation: contested-commons revision 3 seed 1258958480 [complete]: 
+Map generation: contested-commons revision 3 seed 3195833411 [complete]: 
+Map generation: contested-commons revision 3 seed 1909817797 [complete]: 
+Map generation: contested-commons revision 3 seed 3748397646 [complete]: 
+Map generation: contested-commons revision 3 seed 737787118 [complete]: 
+Map generation: contested-commons revision 3 seed 623454479 [complete]: 
+Map generation: contested-commons revision 3 seed 69029291 [complete]: 
+Map generation: contested-commons revision 3 seed 1236904176 [complete]: 
+PASS rectangular aspect ratios, cropped terrain and colony marker pixels
+Landscape preview: polder revision 5 seed 3457519593 [generator validation]: Colony 2 cannot walk to colony 0 along the dykes.
+Landscape preview: polder revision 5 seed 3758657406 [generator validation]: Colony 1 cannot walk to colony 0 along the dykes.
+Landscape preview: polder revision 5 seed 3684111448 [generator validation]: Colony 1 cannot walk to colony 0 along the dykes.
+Map generation: rain-shadow revision 4 seed 4077170123 [complete]: 
+Map generation: rain-shadow revision 4 seed 2556263145 [complete]: 
+PASS landscape picker: 67 previews on 1 threads, selection, regeneration and the shown map played
+Map generation: river revision 3 seed 329707938 [complete]: 
+Map generation: river revision 3 seed 1376127661 [complete]: 
+Map generation: river revision 3 seed 304567780 [complete]: 
+Map generation: river revision 3 seed 1462869741 [complete]: 
+Map generation: river revision 3 seed 3534669156 [complete]: 
+PASS native rendering, snapshot reroll ownership, invalidation, failure recovery, preserved alliances

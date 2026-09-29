@@ -1,0 +1,4 @@
+Settings::load("preferences.txt") : error, can't open file.
+PASS native preferences write
+Settings::load("preferences.txt") : error, can't open file.
+PASS native preferences reload, random preview, missing map and recovery

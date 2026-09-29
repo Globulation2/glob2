@@ -1,0 +1,36 @@
+Starting headless savegame safety checks
+Settings::load("preferences.txt") : error, can't open file.
+PASS pending construction binary/text round trips, queue order, staffing, delayed placement, empty queue and invalid reference
+PASS binary human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+FileManager::writeAtomically: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/atomic.game: injected serialization failure
+FileManager::writeAtomically: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/directory.game: File replacement failed: unspecified iostream_category error
+FileManager::writeAtomically: cannot create temporary file for /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/missing/save.game
+PASS atomic creation/replacement, close drains pending writes, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup
+PASS injected short write and buffered flush failure preserve previous bytes
+FileManager::writeGzipAtomically: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/atomic.game.gz: injected serialization failure
+writeGzipAtomicToPath: cannot create temporary file for /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/missing/save.game.gz
+writeGzipAtomicToPath: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/blocked.game.gz: replacement failed
+PASS gzip deterministic encoding, round trip, size limit, corruption rejection and failed atomic replacement
+FileManager::writeAtomically: cannot create temporary file for /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/missing/save.game
+BackgroundFileWriter: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/missing/save.game was not replaced; the previous file is kept
+PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure
+FileManager::writeAtomically: /var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/glob2-save-test-1a317375e6da4fbab448570377867deaqmitr8or/home/.glob2-save-test-1a317375e6da4fbab448570377867dea/blocked-preferences.txt: File replacement failed: unspecified iostream_category error
+PASS preference/keyboard writes round trip and preserve prior files on failure
+PASS every truncated header, invalid versions/team counts/save flags rejected; previous header preserved; valid reload succeeds
+PASS campaign progress truncation/version/definition validation, monotonic merge, legacy text round trip and atomic failure preservation
+PASS embedded zero bytes preserved in binary strings
+PASS ticks finish before lazy gradients are requested
+PASS headless autosave defaults off and can be explicitly enabled
+Assertion failed: (file), function contents, file SavegameSafetyHarness.cpp, line 53.
+Traceback (most recent call last):
+  File "/Users/bradley/.codex/worktrees/gzip-maps-saves/glob2/test/run-savegame-safety-tests.py", line 33, in <module>
+    result = subprocess.run([str(binary), profile, *extra], cwd=work, env=env,
+                            check=True, timeout=120, text=True,
+                            stdout=subprocess.PIPE if expected is not None else None)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/Users/bradley/.codex/worktrees/gzip-maps-saves/glob2/build/darwin/client/release/src/SavegameSafetyHarness', 'glob2-save-test-1a317375e6da4fbab448570377867dea', '/Users/bradley/.codex/worktrees/gzip-maps-saves/glob2']' died with <Signals.SIGABRT: 6>.
