@@ -371,7 +371,8 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	gameSpeedText=new Text(10, 195, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 	addWidget(gameSpeedText);
 	gameSpeed=new Selector(19, 225, ALIGN_LEFT, ALIGN_TOP, 256,
-		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
+		globalContainer->settings.gameSpeed-Settings::GAME_SPEED_MINIMUM,
+		Settings::GAME_SPEED_MAXIMUM-Settings::GAME_SPEED_MINIMUM, true);
 	addWidget(gameSpeed);
 	gameSpeed->visible=adjustableGameSpeed;
 	updateGameSpeedText();
@@ -418,7 +419,7 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 		{
 			if(!adjustableGameSpeed)
 				return;
-			globalContainer->settings.gameSpeed=gameSpeed->getValue();
+			globalContainer->settings.gameSpeed=gameSpeed->getValue()+Settings::GAME_SPEED_MINIMUM;
 			updateGameSpeedText();
 		}
 		else

@@ -14,6 +14,10 @@ PACK = ROOT / 'data/highres/v1'
 records = json.loads((DERIVED/'manifest.json').read_text())['frames']
 pack = {f['id']: f for f in json.loads((PACK/'manifest.json').read_text())['frames']}
 for frame in records:
+    # This category's frames are always a literal 4x of their logical size
+    # (line 22 below); unit frames use a fixed 128x128 HD canvas instead (see
+    # render.py's UNIT_HD_PIXEL_SIZE) and must never end up here.
+    assert not frame['id'].startswith('unit'), frame['id']
     assert pack[frame['id']]['recipe'] == frame['recipe']
     for src in frame['sources']:
         assert hashlib.sha256((ROOT/src['path']).read_bytes()).hexdigest() == src['sha256']
