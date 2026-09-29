@@ -153,7 +153,7 @@ int main(int argc,char** argv)
             assert(screen.row("display.uiscale").value.rfind("Match the desktop",0)==0 && !screen.restartRequired());
         }
         screen.selectCategory(SettingsScreen::Category::Gameplay);
-        assert(screen.changeSetting("gameplay.speed",4));loaded.load();assert(loaded.gameSpeed==4);
+        assert(screen.changeSetting("gameplay.speed",4-Settings::GAME_SPEED_MINIMUM));loaded.load();assert(loaded.gameSpeed==4);
         assert(s.autosaveGames);assert(screen.changeSetting("gameplay.autosave",0));loaded.load();assert(!loaded.autosaveGames);
         assert(screen.changeSetting("gameplay.autosave",1));loaded.load();assert(loaded.autosaveGames);
         const auto before=readFile(profile+"/preferences.txt");
@@ -164,7 +164,7 @@ int main(int argc,char** argv)
         assert(std::filesystem::is_directory(directoryTarget));
         std::filesystem::rename(profile+"/preferences.txt", profile+"/preferences.backup");
         std::filesystem::create_directory(profile+"/preferences.txt");
-        assert(screen.changeSetting("gameplay.speed",5));assert(screen.saveFailed());assert(readFile(profile+"/preferences.backup")==before);
+        assert(screen.changeSetting("gameplay.speed",5-Settings::GAME_SPEED_MINIMUM));assert(screen.saveFailed());assert(readFile(profile+"/preferences.backup")==before);
         screen.capture(std::string(argv[5])+"/save-error.bmp");
         std::filesystem::remove(profile+"/preferences.txt");
         std::filesystem::rename(profile+"/preferences.backup", profile+"/preferences.txt");
