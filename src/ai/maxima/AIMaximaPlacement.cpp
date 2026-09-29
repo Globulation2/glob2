@@ -168,10 +168,23 @@ void WorldState::reset(int w, int h)
 	std::fill(accessibleSupplies, accessibleSupplies+5, 0);
 	tiles.assign(std::max(0, w*h), WorldTile()); buildings.clear(); profiles.clear();
 }
+namespace
+{
+int normalizeCoordinate(int coordinate, int dimension)
+{
+	if(dimension<=0)return 0;
+	// Engine maps are powers of two; unsigned masking also wraps negative coordinates.
+	const unsigned mask=static_cast<unsigned>(dimension)-1;
+	if((static_cast<unsigned>(dimension)&mask)==0)
+		return static_cast<unsigned>(coordinate)&mask;
+	const int remainder=coordinate%dimension;
+	return remainder<0?remainder+dimension:remainder;
+}
+}
 int WorldState::normalizeX(int x) const
-{ return width ? (x%width+width)%width : 0; }
+{ return normalizeCoordinate(x,width); }
 int WorldState::normalizeY(int y) const
-{ return height ? (y%height+height)%height : 0; }
+{ return normalizeCoordinate(y,height); }
 int WorldState::index(int x, int y) const
 { return normalizeY(y)*width+normalizeX(x); }
 int WorldState::wrappedManhattan(int ax, int ay, int bx, int by) const
