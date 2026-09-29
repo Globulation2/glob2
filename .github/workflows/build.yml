@@ -19,9 +19,30 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  changes:
+    name: Select relevant checks
+    runs-on: ubuntu-24.04
+    outputs:
+      native: ${{ steps.select.outputs.native }}
+      browser: ${{ steps.select.outputs.browser }}
+      map_generators: ${{ steps.select.outputs.map_generators }}
+      deployment: ${{ steps.select.outputs.deployment }}
+      cross_platform: ${{ steps.select.outputs.cross_platform }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test changed-path selection
+        run: python3 -m unittest discover -s tests/build_system -p test_ci_changed_paths.py -v
+      - name: Select checks for changed paths
+        id: select
+        env:
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          BROWSER_ONLY: ${{ inputs.browser_only }}
+        run: python3 .github/scripts/ci_changed_paths.py --base "$PR_BASE"
+
   linux:
     name: linux (${{ matrix.image }})
-    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.browser_only }}
+    needs: changes
+    if: ${{ needs.changes.outputs.native == 'true' }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -133,7 +154,7 @@ jobs:
             buffered-file-test \
             team-stats-save-test \
             unit-continuation-test \
-            echo-continuation-test \
+            runtime-continuation-test \
             performance-telemetry-test \
             terrain-test \
             global-gradient-test \
@@ -386,8 +407,8 @@ jobs:
         run: |
           build/linux/client/release/libgag/src/PerformanceTelemetryHarness
           ./build/linux/client/release/src/UnitContinuationHarness
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/EchoContinuationTest .
-          python3 test/check_echo_save_continuation.py build/linux/client/release/src/glob2
+          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .
+          python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2
           python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
           python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
@@ -537,6 +558,8 @@ jobs:
 
   linux-variants:
     name: linux variants (${{ matrix.image }})
+    needs: changes
+    if: ${{ needs.changes.outputs.native == 'true' }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -651,6 +674,8 @@ jobs:
 
   linux-map-generators:
     name: linux map generators (${{ matrix.image }})
+    needs: changes
+    if: ${{ needs.changes.outputs.map_generators == 'true' }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -742,7 +767,8 @@ jobs:
 
   windows:
     name: windows (mingw-w64)
-    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.browser_only }}
+    needs: changes
+    if: ${{ needs.changes.outputs.native == 'true' }}
     runs-on: windows-latest
     env:
       CCACHE: 1
@@ -813,7 +839,7 @@ jobs:
             maxima-continuation-test \
             team-stats-save-test \
             unit-continuation-test \
-            echo-continuation-test \
+            runtime-continuation-test \
             performance-telemetry-test
 
       - name: Test Orchard Commons generation and fruit conversion
@@ -900,8 +926,8 @@ jobs:
         run: |
           build/mingw/client/release/libgag/src/PerformanceTelemetryHarness.exe
           ./build/mingw/client/release/src/UnitContinuationHarness.exe
-          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/EchoContinuationTest.exe .
-          python3 test/check_echo_save_continuation.py build/mingw/client/release/src/glob2.exe
+          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/RuntimeContinuationTest.exe .
+          python3 test/check_shared_runtime_save_continuation.py build/mingw/client/release/src/glob2.exe
           python3 test/maxima/check_save_continuation_fixture.py build/mingw/client/release/src/glob2.exe
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TeamStatsSaveHarness.exe .
           python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
@@ -940,7 +966,8 @@ jobs:
 
   windows-server:
     name: windows server (mingw-w64)
-    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.browser_only }}
+    needs: changes
+    if: ${{ needs.changes.outputs.native == 'true' }}
     runs-on: windows-latest
     env:
       CCACHE: 1
@@ -1020,6 +1047,8 @@ jobs:
   # separate runners, with the Chromium suite split into shards by spec file.
   web-build:
     name: browser build (WebAssembly)
+    needs: changes
+    if: ${{ needs.changes.outputs.browser == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
@@ -1090,6 +1119,8 @@ jobs:
 
   web-native:
     name: browser gateway, router and transport
+    needs: changes
+    if: ${{ needs.changes.outputs.browser == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
@@ -1144,7 +1175,8 @@ jobs:
 
   web-deploy:
     name: browser self-hosting deployment
-    needs: web-build
+    needs: [changes, web-build]
+    if: ${{ needs.changes.outputs.deployment == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -1160,7 +1192,8 @@ jobs:
 
   web-test:
     name: browser tests (${{ matrix.name }})
-    needs: [web-build, web-native]
+    needs: [changes, web-build, web-native]
+    if: ${{ needs.changes.outputs.browser == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
@@ -1254,7 +1287,8 @@ jobs:
 
   browser-determinism:
     name: browser/native simulation equivalence
-    needs: [linux, windows, web-test]
+    needs: [changes, linux, windows, web-test]
+    if: ${{ needs.changes.outputs.cross_platform == 'true' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/download-artifact@v4
@@ -1272,4 +1306,40 @@ jobs:
           for trace in traces[1:]:
               assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
           print('All four per-tick simulation traces match')
+          PY
+
+  ci-result:
+    name: Relevant checks passed
+    needs: [changes, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-24.04
+    env:
+      NEEDS_JSON: ${{ toJSON(needs) }}
+    steps:
+      - name: Verify all selected jobs completed successfully
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          needs = json.loads(os.environ['NEEDS_JSON'])
+          assert needs['changes']['result'] == 'success', 'Change detection failed'
+          selected = needs['changes']['outputs']
+          expected = {
+              'linux': selected['native'] == 'true',
+              'linux-variants': selected['native'] == 'true',
+              'linux-map-generators': selected['map_generators'] == 'true',
+              'windows': selected['native'] == 'true',
+              'windows-server': selected['native'] == 'true',
+              'web-build': selected['browser'] == 'true',
+              'web-native': selected['browser'] == 'true',
+              'web-deploy': selected['deployment'] == 'true',
+              'web-test': selected['browser'] == 'true',
+              'browser-determinism': selected['cross_platform'] == 'true',
+          }
+          for job, should_run in expected.items():
+              required = 'success' if should_run else 'skipped'
+              actual = needs[job]['result']
+              print(f'{job}: {actual} (expected {required})')
+              assert actual == required, f'{job}: {actual}, expected {required}'
           PY

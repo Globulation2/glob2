@@ -52,7 +52,7 @@ carry their original update ticks. In particular, the strategic snapshot's own
   shared pointer is -1; an actual NullOrder is 51.
 - `*.true`: true returns from a boolean function. Meaning follows that function;
   a true predicate is not automatically a completed action.
-- `echo.*` / `runtime.*` event counters: named queue, application, invalidation,
+- `shared_runtime.*` / `runtime.*` event counters: named queue, application, invalidation,
   placement and posture boundaries. Requests queued, requests applied and orders
   returned remain separate measurements.
 
@@ -67,8 +67,8 @@ Timestamps are simulation ticks. AI-local timer values retain the AI's own caden
 | Numbi | Phases and attack timers, critical mass/time, economic and military helper inputs/results, food estimates, placement and upgrades. |
 | Castor | Food/workforce/swimming/war state, building aggregates, project inputs, subphase/priority/retries/staffing, final placement scores, subsystem calls/results. |
 | Warrush | Delays, population/skill/food/building predicate results, rule inputs, placement, farming and guard/exploration subsystem calls/results. |
-| Econo | Fruit/enemy flag state, economic rule calls and shared Echo queue/lifecycle measurements. |
-| Nicowar | Phase flags, recovery and labor state, construction queues, upgrade/target selection results, attack/defense/explorer/farming/fruit subsystem calls and Echo lifecycle measurements. |
+| Econo | Fruit/enemy flag state, economic rule calls and shared AI runtime queue/lifecycle measurements. |
+| Nicowar | Phase flags, recovery and labor state, construction queues, upgrade/target selection results, attack/defense/explorer/farming/fruit subsystem calls and shared AI runtime lifecycle measurements. |
 | Maxima | Cached strategic snapshot/trends, environment, demands, director budget, all policy bids/posture utilities, fixed opponent assessments, campaign/offense state, strategic/recon/farming calls, runtime requests, management/placement outcomes and posture changes. |
 | Cortex | Cached controller/wave state, existing observation/fact scalars, nineteen hand-policy candidate scores, gates/masks, hand/ML choice, actual economy action, independent combat scores/action, policy evaluations. ML choice is recorded without rerunning inference. |
 | Cabino | Scheduler, queue and installed-module scalar/container-size snapshots; module invocations and existing boolean/integer outcomes, covering defense, attack, construction, upgrades, swarm allocation, exploration, inns, towers, clearing, happiness and farming. |
@@ -127,8 +127,8 @@ A new implementation inherits the common schema by default. Override
 `telemetrySchema()` to return a process-lifetime descriptor vector beginning with
 `AITelemetry::schema(0)`, followed by its own fields. Its numeric indices begin at
 `AITelemetry::Specific`. Override the snapshot hook as needed. This requires no
-TeamStats, serializer, exporter or order-format changes. Echo strategies delegate
-through the Echo wrapper; Cabino modules can override the module snapshot hook.
+TeamStats, serializer, exporter or order-format changes. Econo and Nicowar delegate
+through the shared AI runtime wrapper; Cabino modules can override the module snapshot hook.
 
 Override `telemetrySchemaVersion()` to advance an implementation schema version.
 Treat field names/types/meanings as a versioned contract. Preserve historical

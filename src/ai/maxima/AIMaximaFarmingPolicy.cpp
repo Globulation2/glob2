@@ -31,16 +31,16 @@ namespace
 	// Shared spatial scope for farm protection and renewable wood firebreaks.
 	// Use the same allied physical anchors and wrapped inclusive distance in
 	// both policies; zero keeps the optimizer's unlimited control setting.
-	std::vector<Uint8> farm_management_area(Context& echo, int radius)
+	std::vector<Uint8> farm_management_area(Context& runtime, int radius)
 	{
-		Map* map=echo.player->map;
+		Map* map=runtime.player->map;
 		const int w=map->getW(), h=map->getH();
 		if(radius<=0)return std::vector<Uint8>(w*h,1);
 		std::vector<Uint8> nearby(w*h,0);
 		for(int team=0;team<Team::MAX_COUNT;++team)
 		{
-			if(!((echo.player->team->allies|echo.player->team->me)&(Uint32(1)<<team)))continue;
-			Team* ally=echo.player->game->teams[team];
+			if(!((runtime.player->team->allies|runtime.player->team->me)&(Uint32(1)<<team)))continue;
+			Team* ally=runtime.player->game->teams[team];
 			if(!ally)continue;
 			for(int b=0;b<Building::MAX_COUNT;++b)
 			{
@@ -269,16 +269,16 @@ struct Maxima::WoodClearingTarget
 	int maintenance_wood=0;
 };
 
-Maxima::WoodClearingTarget Maxima::select_wood_clearing_target(Context& echo) const
+Maxima::WoodClearingTarget Maxima::select_wood_clearing_target(Context& runtime) const
 {
-	MapInfo mi(echo);
-	Map* map=echo.player->map;
+	MapInfo mi(runtime);
+	Map* map=runtime.player->map;
 	const int w=map->getW();
 	AIMaximaRuntime::Gradients::GradientInfo settlement_info;
 	settlement_info.add_source(new Entities::AnyTeamBuilding(
-		echo.player->team->teamNumber, CompletedBuildings));
-	Gradient& settlement=echo.get_gradient_manager().get_gradient(settlement_info);
-	const WoodReserve wood_reserve=select_wood_reserve(echo);
+		runtime.player->team->teamNumber, CompletedBuildings));
+	Gradient& settlement=runtime.get_gradient_manager().get_gradient(settlement_info);
+	const WoodReserve wood_reserve=select_wood_reserve(runtime);
 	WoodClearingTarget best;
 	int best_score=INT_MIN;
 	for(int x=0; x<mi.get_width(); ++x)
@@ -332,36 +332,36 @@ Maxima::WoodClearingTarget Maxima::select_wood_clearing_target(Context& echo) co
 	return best;
 }
 
-void Maxima::retire_clearing_campaign(Context& echo, const char* reason,
+void Maxima::retire_clearing_campaign(Context& runtime, const char* reason,
 	const std::string& details)
 {
 	telemetry.count(AITrace::AI7::Maxima_retire_clearing_campaign_calls);
-	echo.add_management_order(new DestroyBuilding(proactive_clearing_flag));
-	emit_telemetry(echo, "land_clearing_finished",
+	runtime.add_management_order(new DestroyBuilding(proactive_clearing_flag));
+	emit_telemetry(runtime, "land_clearing_finished",
 		"\tflag="+boost::lexical_cast<std::string>(proactive_clearing_flag)
 		+details+"\treason="+reason);
 	proactive_clearing_flag=-1;
 }
 
-bool Maxima::continue_clearing_campaign(Context& echo)
+bool Maxima::continue_clearing_campaign(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_continue_clearing_campaign_calls);
-	MapInfo mi(echo);
+	MapInfo mi(runtime);
 	if(proactive_clearing_flag!=-1)
 	{
-		if(echo.get_building_register().is_building_found(proactive_clearing_flag))
+		if(runtime.get_building_register().is_building_found(proactive_clearing_flag))
 		{
-			Building* flag=echo.get_building_register().get_building(proactive_clearing_flag);
+			Building* flag=runtime.get_building_register().get_building(proactive_clearing_flag);
 			bool clearing_resources[BASIC_COUNT]={false};
 			clearing_resources[WOOD]=true;
-			echo.push_order(std::shared_ptr<Order>(new OrderModifyClearingFlag(
+			runtime.push_order(std::shared_ptr<Order>(new OrderModifyClearingFlag(
 				flag->gid, clearing_resources)));
 
-			const WoodReserve wood_reserve=select_wood_reserve(echo);
+			const WoodReserve wood_reserve=select_wood_reserve(runtime);
 			bool reserve_overlap=false;
 			for(size_t i=0;i<wood_reserve.cells.size();++i)
-				if(wood_reserve.cells[i] && echo.player->map->warpDistSquare(
-					int(i)%echo.player->map->getW(),int(i)/echo.player->map->getW(),
+				if(wood_reserve.cells[i] && runtime.player->map->warpDistSquare(
+					int(i)%runtime.player->map->getW(),int(i)/runtime.player->map->getW(),
 					flag->posX,flag->posY)<=16) reserve_overlap=true;
 			int nearby_wood=0;
 			for(int dx=-4; dx<=4; ++dx)
@@ -379,7 +379,7 @@ bool Maxima::continue_clearing_campaign(Context& echo)
 			{
 				const char* reason=reserve_overlap ? "wood_reserve" : budget.recovery_active ? "starvation"
 					: nearby_wood<=1 ? "cleared" : clearing_quota_met ? "quota" : "timeout";
-				retire_clearing_campaign(echo, reason,
+				retire_clearing_campaign(runtime, reason,
 					"\twood_remaining="+boost::lexical_cast<std::string>(nearby_wood));
 				last_proactive_clearing_tick=timer;
 				recent_construction_failures=0;
@@ -387,13 +387,13 @@ bool Maxima::continue_clearing_campaign(Context& echo)
 					AITrace::AI7::Maxima_continue_clearing_campaign_result,
 					AITrace::AI7::Maxima_continue_clearing_campaign_true, true);
 			}
-			echo.add_management_order(new AssignWorkers(
+			runtime.add_management_order(new AssignWorkers(
 				strategy.staffing.clearing_workers, proactive_clearing_flag));
 			return telemetry.returnedBool(AITrace::AI7::Maxima_continue_clearing_campaign_result,
 										  AITrace::AI7::Maxima_continue_clearing_campaign_true,
 										  true);
 		}
-		if(echo.get_building_register().is_building_pending(proactive_clearing_flag))
+		if(runtime.get_building_register().is_building_pending(proactive_clearing_flag))
 			return telemetry.returnedBool(AITrace::AI7::Maxima_continue_clearing_campaign_result,
 										  AITrace::AI7::Maxima_continue_clearing_campaign_true,
 										  true);
@@ -405,26 +405,26 @@ bool Maxima::continue_clearing_campaign(Context& echo)
 								  AITrace::AI7::Maxima_continue_clearing_campaign_true, false);
 }
 
-void Maxima::manage_land_clearing(Context& echo)
+void Maxima::manage_land_clearing(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_manage_land_clearing_calls);
 	if(!budget.farming_enabled)
 	{
 		if(proactive_clearing_flag!=-1
-		   && (echo.get_building_register().is_building_found(
+		   && (runtime.get_building_register().is_building_found(
 				proactive_clearing_flag)
-			||echo.get_building_register().is_building_pending(
+			||runtime.get_building_register().is_building_pending(
 				proactive_clearing_flag)))
-			echo.add_management_order(new DestroyBuilding(proactive_clearing_flag));
+			runtime.add_management_order(new DestroyBuilding(proactive_clearing_flag));
 		proactive_clearing_flag=-1;
 		farming_urgent=false;
 		return;
 	}
-	MapInfo mi(echo);
-	Map* map=echo.player->map;
+	MapInfo mi(runtime);
+	Map* map=runtime.player->map;
 	const int w=map->getW();
-	TeamStat* stat=echo.player->team->stats.getLatestStat();
-	if(continue_clearing_campaign(echo)) return;
+	TeamStat* stat=runtime.player->team->stats.getLatestStat();
+	if(continue_clearing_campaign(runtime)) return;
 
 	int maintenance_wood_tiles=0;
 	for(int index=0; index<w*map->getH(); ++index)
@@ -448,7 +448,7 @@ void Maxima::manage_land_clearing(Context& echo)
 	if(stat->numberUnitPerType[WORKER]<budget.farming_min_workers_for_clearing)
 		return;
 
-	const WoodClearingTarget target=select_wood_clearing_target(echo);
+	const WoodClearingTarget target=select_wood_clearing_target(runtime);
 	const int best_x=target.x;
 	const int best_y=target.y;
 	const int best_wood=target.wood;
@@ -462,7 +462,7 @@ void Maxima::manage_land_clearing(Context& echo)
 	BuildingOrder* flag_order=new BuildingOrder(
 		IntBuildingType::CLEARING_FLAG, 0);
 	flag_order->add_constraint(new Construction::SinglePosition(best_x, best_y));
-	proactive_clearing_flag=echo.add_building_order(flag_order);
+	proactive_clearing_flag=runtime.add_building_order(flag_order);
 	proactive_clearing_started_tick=timer;
 	proactive_clearing_initial_wood=best_wood;
 	proactive_clearing_campaigns+=1;
@@ -476,9 +476,9 @@ void Maxima::manage_land_clearing(Context& echo)
 				release_wood->add_location(best_x+dx, best_y+dy);
 		}
 	}
-	echo.add_management_order(release_wood);
-	echo.add_management_order(new ChangeFlagSize(4, proactive_clearing_flag));
-	emit_telemetry(echo, "land_clearing_started",
+	runtime.add_management_order(release_wood);
+	runtime.add_management_order(new ChangeFlagSize(4, proactive_clearing_flag));
+	emit_telemetry(runtime, "land_clearing_started",
 		"\tflag="+boost::lexical_cast<std::string>(proactive_clearing_flag)
 		+"\tx="+boost::lexical_cast<std::string>(best_x)
 		+"\ty="+boost::lexical_cast<std::string>(best_y)
@@ -510,9 +510,9 @@ struct Maxima::MaintenanceClearingPlan
 		reservation_fallback_entrances(0) {}
 };
 
-std::vector<Uint8> Maxima::worker_reachable_circulation(Context& echo, bool after_harvest) const
+std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool after_harvest) const
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int w=map->getW(), h=map->getH(), size=w*h;
 	// Empty pockets beside a building are not necessarily connected to workers.
 	// Ignore transient units. Reserve selection may include approaches workers
@@ -524,7 +524,7 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& echo, bool afte
 		std::vector<int> queue;
 		for(int id=0;id<Unit::MAX_COUNT;++id)
 		{
-			const Unit* worker=echo.player->team->myUnits[id];
+			const Unit* worker=runtime.player->team->myUnits[id];
 			if(!worker||worker->typeNum!=WORKER
 			   ||int(worker->performance[SWIM]>0)!=swimming)continue;
 			const int index=map->normalizeY(worker->posY)*w+map->normalizeX(worker->posX);
@@ -552,8 +552,8 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& echo, bool afte
 				   ||(tile.resource.type!=NO_RES_TYPE && !farm_area && !(after_harvest
 				      && (tile.resource.type==WOOD || tile.resource.type==WHEAT)))
 				   ||(!swimming&&map->isWater(nx,ny))
-				   ||!map->isMapDiscovered(nx,ny,echo.player->team->allies)
-				   ||(map->isForbidden(nx,ny,echo.player->team->me)
+				   ||!map->isMapDiscovered(nx,ny,runtime.player->team->allies)
+				   ||(map->isForbidden(nx,ny,runtime.player->team->me)
 				      && !farm_area && !development_planner.isCirculationReserved(next)))continue;
 				visited[next]=1;queue.push_back(next);
 			}
@@ -564,15 +564,15 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& echo, bool afte
 }
 
 std::vector<std::vector<int> > Maxima::reservation_member_footprints(
-	Context& echo, const AIMaximaPlacement::Reservation& contract) const
+	Context& runtime, const AIMaximaPlacement::Reservation& contract) const
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int w=map->getW();
 	std::vector<std::vector<int> > members;
 	auto add_member=[&](int buildingId,
 		const AIMaximaPlacement::DevelopmentAction* action)
 	{
-		Building* building=echo.get_building_register().get_building(buildingId);
+		Building* building=runtime.get_building_register().get_building(buildingId);
 		int x,y,width,height;
 		if(building&&action&&action->type==AIMaximaPlacement::UpgradeBuilding
 		   &&action->state==AIMaximaPlacement::ParcelReserved)
@@ -622,14 +622,14 @@ std::vector<std::vector<int> > Maxima::reservation_member_footprints(
 }
 
 Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
-	Context& echo)
+	Context& runtime)
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int w=map->getW();
 	const int h=map->getH();
 	const int size=w*h;
 	MaintenanceClearingPlan plan(size);
-	const WoodReserve wood_reserve=select_wood_reserve(echo);
+	const WoodReserve wood_reserve=select_wood_reserve(runtime);
 	const bool enabled=budget.farming_enabled
 		&& budget.farming_maintenance_clearing_enabled;
 
@@ -653,7 +653,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 
 	const std::vector<Uint8> reachable=enabled
 		&& budget.farming_resource_preserving_circulation_enabled
-		? worker_reachable_circulation(echo) : std::vector<Uint8>(size, 0);
+		? worker_reachable_circulation(runtime) : std::vector<Uint8>(size, 0);
 
 	if(enabled)
 	{
@@ -667,7 +667,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 			if(contract.footprintTiles.empty()&&contract.circulationTiles.empty())
 				continue;
 			const std::vector<std::vector<int> > members=
-				reservation_member_footprints(echo, contract);
+				reservation_member_footprints(runtime, contract);
 			// Only actual/pending members need their footprint kept clear. Future
 			// upgrade land and unused campus slots remain resource-preserving.
 			std::vector<Uint8> memberMask(size,0);
@@ -690,7 +690,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 			circulation.erase(std::remove_if(circulation.begin(),circulation.end(),
 				[&](int index){const Tile& cell=map->getTile(index%w,index/w);
 					return memberMask[index]||cell.building!=NOGBID||cell.terrain>=16
-						||!map->isMapDiscovered(index%w,index/w,echo.player->team->allies)
+						||!map->isMapDiscovered(index%w,index/w,runtime.player->team->allies)
 						||(cell.resource.type!=NO_RES_TYPE
 						   &&globalContainer->resourcesTypes.get(cell.resource.type)->eternal);
 				}),circulation.end());
@@ -724,7 +724,7 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 		}
 	}
 
-	const std::vector<Uint8> managed=farm_management_area(echo,
+	const std::vector<Uint8> managed=farm_management_area(runtime,
 		budget.farming_management_radius);
 	for(int index=0; index<size; ++index)
 	{
@@ -732,8 +732,8 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 		const int y=index/w;
 		const Tile& cell=map->getTile(x, y);
 		const bool discovered=map->isMapDiscovered(x, y,
-			echo.player->team->me);
-		if(wheat_invasion_clearing_required(echo, index,
+			runtime.player->team->me);
+		if(wheat_invasion_clearing_required(runtime, index,
 			wheat_farm_protection_mask, wood_reserve))
 		{
 			plan.circulation[index]=1;
@@ -761,10 +761,10 @@ Maxima::MaintenanceClearingPlan Maxima::build_maintenance_clearing_plan(
 	return plan;
 }
 
-void Maxima::apply_maintenance_clearing_plan(Context& echo,
+void Maxima::apply_maintenance_clearing_plan(Context& runtime,
 	const MaintenanceClearingPlan& plan)
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int w=map->getW();
 	const int size=w*map->getH();
 	maintenance_circulation_mask=plan.circulation;
@@ -781,13 +781,13 @@ void Maxima::apply_maintenance_clearing_plan(Context& echo,
 		const int x=index%w;
 		const int y=index/w;
 		const bool discovered=map->isMapDiscovered(x, y,
-			echo.player->team->me);
+			runtime.player->team->me);
 		const bool building_footprint=map->getTile(x, y).building!=NOGBID;
 		const bool contract_desired=plan.circulation[index]
 			&& !building_footprint && discovered;
 		const bool desired=!building_footprint
 			&& (contract_desired || plan.firebreak[index]);
-		const bool actual=map->isClearArea(x, y, echo.player->team->me);
+		const bool actual=map->isClearArea(x, y, runtime.player->team->me);
 		if(desired)
 		{
 			++retained;
@@ -799,7 +799,7 @@ void Maxima::apply_maintenance_clearing_plan(Context& echo,
 			// Hard circulation contracts outrank farming. A firebreak alone
 			// never removes a farm's ForbiddenArea protection.
 			if(contract_desired && map->isForbidden(x, y,
-				echo.player->team->me))
+				runtime.player->team->me))
 			{
 				forbidden_releases->add_location(x, y);
 				++released;
@@ -812,12 +812,12 @@ void Maxima::apply_maintenance_clearing_plan(Context& echo,
 		}
 		applied_maintenance_clearing_mask[index]=desired;
 	}
-	if(added) echo.add_management_order(additions); else delete additions;
-	if(removed) echo.add_management_order(removals); else delete removals;
-	if(released) echo.add_management_order(forbidden_releases);
+	if(added) runtime.add_management_order(additions); else delete additions;
+	if(removed) runtime.add_management_order(removals); else delete removals;
+	if(released) runtime.add_management_order(forbidden_releases);
 	else delete forbidden_releases;
 	if(added || removed || released || timer%1000<budget.farming_normal_interval)
-		emit_telemetry(echo, "maintenance_clearing",
+		emit_telemetry(runtime, "maintenance_clearing",
 			"\tretained="+boost::lexical_cast<std::string>(retained)
 			+"\tadded="+boost::lexical_cast<std::string>(added)
 			+"\tremoved="+boost::lexical_cast<std::string>(removed)
@@ -835,15 +835,15 @@ void Maxima::apply_maintenance_clearing_plan(Context& echo,
 				+boost::lexical_cast<std::string>(released));
 }
 
-void Maxima::update_maintenance_clearing_areas(Context& echo)
+void Maxima::update_maintenance_clearing_areas(Context& runtime)
 {
-	initialize_farming_cache(echo);
-	const MaintenanceClearingPlan plan=build_maintenance_clearing_plan(echo);
-	apply_maintenance_clearing_plan(echo, plan);
+	initialize_farming_cache(runtime);
+	const MaintenanceClearingPlan plan=build_maintenance_clearing_plan(runtime);
+	apply_maintenance_clearing_plan(runtime, plan);
 }
-void Maxima::initialize_farming_cache(Context& echo)
+void Maxima::initialize_farming_cache(Context& runtime)
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int w=map->getW();
 	const int h=map->getH();
 	if(fertility_cache.validFor(w, h)
@@ -888,16 +888,16 @@ void Maxima::initialize_farming_cache(Context& echo)
 	for(int y=0; y<h; ++y)
 		for(int x=0; x<w; ++x)
 		{
-			if(map->isMapDiscovered(x, y, echo.player->team->me)
-			   && map->isForbidden(x, y, echo.player->team->me))
+			if(map->isMapDiscovered(x, y, runtime.player->team->me)
+			   && map->isForbidden(x, y, runtime.player->team->me))
 				applied_farm_protection_mask[y*w+x]=1;
-			if(map->isMapDiscovered(x, y, echo.player->team->me)
-			   && map->isClearArea(x, y, echo.player->team->me))
+			if(map->isMapDiscovered(x, y, runtime.player->team->me)
+			   && map->isClearArea(x, y, runtime.player->team->me))
 				applied_maintenance_clearing_mask[y*w+x]=1;
 		}
 	const long long elapsed=std::chrono::duration_cast<std::chrono::microseconds>(
 		std::chrono::steady_clock::now()-started).count();
-	emit_telemetry(echo, "farming_fertility_cache",
+	emit_telemetry(runtime, "farming_fertility_cache",
 		"\tmicroseconds="+boost::lexical_cast<std::string>(elapsed)
 		+"\tpath="+(fertility_cache.pathUsed()==Farming::SandCorrectionFertilityPath
 			? "sand_correction" : "water_splat")
@@ -912,9 +912,9 @@ void Maxima::initialize_farming_cache(Context& echo)
 
 
 
-int Maxima::available_expansion_neighbors(Context& echo, int x, int y) const
+int Maxima::available_expansion_neighbors(Context& runtime, int x, int y) const
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	int available=0;
 	for(int dy=-1; dy<=1; ++dy)
 		for(int dx=-1; dx<=1; ++dx)
@@ -929,9 +929,9 @@ int Maxima::available_expansion_neighbors(Context& echo, int x, int y) const
 	return available;
 }
 
-int Maxima::growth_absorbing_neighbors(Context& echo, int x, int y) const
+int Maxima::growth_absorbing_neighbors(Context& runtime, int x, int y) const
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const ResourceType* corn=globalContainer->resourcesTypes.get(WHEAT);
 	const int full=corn ? corn->sizesCount : 0;
 	int available=0;
@@ -954,10 +954,10 @@ int Maxima::growth_absorbing_neighbors(Context& echo, int x, int y) const
 	return available;
 }
 
-void Maxima::release_farming_protection(Context& echo)
+void Maxima::release_farming_protection(Context& runtime)
 {
-	MapInfo map_info(echo);
-	Map* map=echo.player->map;
+	MapInfo map_info(runtime);
+	Map* map=runtime.player->map;
 	std::fill(farm_protection_mask.begin(), farm_protection_mask.end(), 0);
 	std::fill(wheat_farm_protection_mask.begin(),
 		wheat_farm_protection_mask.end(), 0);
@@ -974,7 +974,7 @@ void Maxima::release_farming_protection(Context& echo)
 		}
 		applied_farm_protection_mask[index]=0;
 	}
-	if(removed) echo.add_management_order(removals); else delete removals;
+	if(removed) runtime.add_management_order(removals); else delete removals;
 	farming_urgent=false;
 }
 
@@ -984,9 +984,9 @@ bool Maxima::has_hard_farming_contract(int index) const
 		|| development_planner.isCirculationReserved(index);
 }
 
-Maxima::WoodReserve Maxima::select_wood_reserve(Context& echo) const
+Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime) const
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int w=map->getW(), h=map->getH();
 	WoodReserve reserve(w*h);
 	if(!budget.farming_enabled || !budget.farming_protection_enabled) return reserve;
@@ -1005,20 +1005,20 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& echo) const
 		}
 		rebuilt.rebuild(w,h,water,sand);fertility=&rebuilt;
 	}
-	const auto managed=farm_management_area(echo,budget.farming_management_radius);
-	const auto reachable=worker_reachable_circulation(echo,true);
+	const auto managed=farm_management_area(runtime,budget.farming_management_radius);
+	const auto reachable=worker_reachable_circulation(runtime,true);
 	auto eligible=[&](int i)
 	{
 		const Tile& cell=map->getTile(i%w,i/w);
 		return managed[i] && cell.terrain<16 && cell.canResourcesGrow
 			&& cell.building==NOGBID && !has_hard_farming_contract(i)
-			&& map->isMapDiscovered(i%w,i/w,echo.player->team->me)
+			&& map->isMapDiscovered(i%w,i/w,runtime.player->team->me)
 			&& (cell.resource.type==NO_RES_TYPE || cell.resource.type==WOOD
 				|| cell.resource.type==WHEAT);
 	};
 	auto externally_forbidden=[&](int i)
 	{
-		return map->isForbidden(i%w,i/w,echo.player->team->me)
+		return map->isForbidden(i%w,i/w,runtime.player->team->me)
 			&& !applied_farm_protection_mask[i];
 	};
 	std::vector<int> candidates;
@@ -1071,34 +1071,34 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& echo) const
 	return reserve;
 }
 
-bool Maxima::wheat_invasion_clearing_required(Context& echo, int index,
+bool Maxima::wheat_invasion_clearing_required(Context& runtime, int index,
 	const std::vector<Uint8>& protected_wheat, const WoodReserve& wood_reserve) const
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int w=map->getW(), h=map->getH();
 	const int x=index%w, y=index/w;
 	return budget.farming_enabled && budget.farming_maintenance_clearing_enabled
 		&& budget.farming_wheat_invasion_clearing_enabled
-		&& map->isMapDiscovered(x, y, echo.player->team->me)
+		&& map->isMapDiscovered(x, y, runtime.player->team->me)
 		&& map->getTile(x, y).resource.type==WOOD
 		&& !wood_reserve.cells[index]
 		&& Farming::hasAdjacentProtectedWheat(protected_wheat, w, h, x, y);
 }
 
-Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
+Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtime)
 {
-	Map* map=echo.player->map;
-	MapInfo map_info(echo);
+	Map* map=runtime.player->map;
+	MapInfo map_info(runtime);
 	const int w=map->getW();
 	const int h=map->getH();
 	FarmProtectionPlan plan(w*h);
-	plan.wood_reserve=select_wood_reserve(echo);
+	plan.wood_reserve=select_wood_reserve(runtime);
 	plan.wood_pressure=budget.farming_wood_pressure;
 	plan.wood_fertility=budget.farming_minimum_wood_fertility;
 	int clearing_x=0, clearing_y=0;
 	const bool clearing_wood=!budget.recovery_active
 		&& proactive_clearing_flag>=0
-		&& echo.get_building_position(proactive_clearing_flag,clearing_x,clearing_y);
+		&& runtime.get_building_position(proactive_clearing_flag,clearing_x,clearing_y);
 
 	const std::vector<Uint8> wheat_exterior=wheat_farm_exterior(map);
 
@@ -1187,7 +1187,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 			if(wheat || wood)
 			{
 				plan.protected_seeds+=(x&1) && (y&1);
-				const int available=available_expansion_neighbors(echo, x, y);
+				const int available=available_expansion_neighbors(runtime, x, y);
 				plan.blocked_directions+=8-available;
 				plan.expected_capacity+=Farming::usefulExpansionCapacity(
 					fertility_cache.at(x, y),
@@ -1243,7 +1243,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 		if(resource==WHEAT) ++plan.protected_wheat_bootstraps;
 		else ++plan.protected_wood_bootstraps;
 		plan.protected_seeds+=(x&1) && (y&1);
-		const int available=available_expansion_neighbors(echo,x,y);
+		const int available=available_expansion_neighbors(runtime,x,y);
 		plan.blocked_directions+=8-available;
 		plan.expected_capacity+=Farming::usefulExpansionCapacity(
 			fertility_cache.at(x,y),map_info.get_ammount_resource(x,y),available,resource==WHEAT);
@@ -1257,7 +1257,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& echo)
 	return plan;
 }
 
-void Maxima::resolve_wheat_invasion_clearing(Context& echo,
+void Maxima::resolve_wheat_invasion_clearing(Context& runtime,
 	FarmProtectionPlan& plan)
 {
 	// Use this pass's final wheat mask, including fallback seeds and coastal
@@ -1266,15 +1266,15 @@ void Maxima::resolve_wheat_invasion_clearing(Context& echo,
 	if(!budget.farming_maintenance_clearing_enabled
 	   || !budget.farming_wheat_invasion_clearing_enabled) return;
 	for(size_t index=0; index<plan.forbidden.size(); ++index)
-		if(wheat_invasion_clearing_required(echo, int(index), plan.protected_wheat, plan.wood_reserve))
+		if(wheat_invasion_clearing_required(runtime, int(index), plan.protected_wheat, plan.wood_reserve))
 			plan.forbidden[index]=0;
 }
 
-void Maxima::apply_farming_protection(Context& echo,
+void Maxima::apply_farming_protection(Context& runtime,
 	const FarmProtectionPlan& plan, int& added, int& removed)
 {
-	MapInfo map_info(echo);
-	Map* map=echo.player->map;
+	MapInfo map_info(runtime);
+	Map* map=runtime.player->map;
 	const int w=map->getW();
 	const int size=w*map->getH();
 	AddArea* additions=new AddArea(ForbiddenArea);
@@ -1299,34 +1299,34 @@ void Maxima::apply_farming_protection(Context& echo,
 		}
 		applied_farm_protection_mask[index]=plan.forbidden[index];
 	}
-	if(added) echo.add_management_order(additions); else delete additions;
-	if(removed) echo.add_management_order(removals); else delete removals;
+	if(added) runtime.add_management_order(additions); else delete additions;
+	if(removed) runtime.add_management_order(removals); else delete removals;
 	farm_protection_mask=plan.forbidden;
 	wheat_farm_protection_mask=plan.protected_wheat;
 }
 
-void Maxima::update_farming(Context& echo)
+void Maxima::update_farming(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_update_farming_calls);
 	const std::chrono::steady_clock::time_point started=
 		std::chrono::steady_clock::now();
-	initialize_farming_cache(echo);
+	initialize_farming_cache(runtime);
 	if(!budget.farming_enabled || !budget.farming_protection_enabled)
 	{
-		release_farming_protection(echo);
+		release_farming_protection(runtime);
 		return;
 	}
-	FarmProtectionPlan plan=build_farming_protection_plan(echo);
+	FarmProtectionPlan plan=build_farming_protection_plan(runtime);
 	// Establish/expand farms near allied infrastructure, never around flags.
 	// Recompute proximity as buildings change, but retain established odd/odd
 	// wheat cells after losing an anchor, matching the existing radius rule.
 	// This is an establishment limit, not an override for tactical clearing.
 	if(budget.farming_management_radius>0)
 	{
-		Map* map=echo.player->map;
+		Map* map=runtime.player->map;
 		const int w=map->getW(), h=map->getH();
 		const int radius=budget.farming_management_radius;
-		const std::vector<Uint8> nearby=farm_management_area(echo,radius);
+		const std::vector<Uint8> nearby=farm_management_area(runtime,radius);
 		for(int i=0;i<w*h;++i)
 		{
 			if(nearby[i])continue;
@@ -1339,10 +1339,10 @@ void Maxima::update_farming(Context& echo)
 		}
 	}
 
-	resolve_wheat_invasion_clearing(echo, plan);
+	resolve_wheat_invasion_clearing(runtime, plan);
 	int added=0;
 	int removed=0;
-	apply_farming_protection(echo, plan, added, removed);
+	apply_farming_protection(runtime, plan, added, removed);
 	// This pass satisfies the clearing campaign's urgent farming request;
 	// subsequent evaluations resume the ordinary cadence.
 	if(farming_urgent)
@@ -1355,7 +1355,7 @@ void Maxima::update_farming(Context& echo)
 	// Preserve every applied-area change and one idle sample per strategic
 	// interval; unchanged urgent evaluations add no diagnostic information.
 	if(added || removed || timer%1000<budget.farming_normal_interval)
-		emit_telemetry(echo, "farming_policy",
+		emit_telemetry(runtime, "farming_policy",
 		"\tmicroseconds="+boost::lexical_cast<std::string>(elapsed)
 		+"\twood_reserve_seeds="+boost::lexical_cast<std::string>(plan.wood_reserve.seeds)
 		+"\tprotected_seeds="+boost::lexical_cast<std::string>(plan.protected_seeds)

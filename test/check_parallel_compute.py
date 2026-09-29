@@ -52,7 +52,7 @@ def main():
         ticks = detailed_ticks((run / 'game.replay.checksums').read_bytes())
         assert ticks and all(full_ticks[tick] == value for tick, value in ticks.items()), f'continuation differs: {n}'
         assert digest(run / 'final.game') == digest(resumed / 'final.game'), f'final continuation save differs from serial reload: {n}'
-    # Version 121 stored one Echo gradient manager for every Econo/Nicowar
+    # Version 121 stored one gradient manager for every Econo/Nicowar
     # controller. Loading it must split that state without leaving aliases.
     legacy = ROOT / 'test/fixtures/echo/v121-shared-gradient-256.game.gz'
     legacy_args = ['--load-game', str(legacy), '--ticks', '512',
@@ -64,8 +64,8 @@ def main():
                                       '--compute-experiments', 'ai'], run)
         hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'final.game')}
         if legacy_reference is None: legacy_reference = hashes
-        assert hashes == legacy_reference, f'v121 Echo continuation differs: {n}'
-    for label, players in (('echo-new', ('econo', 'nicowar', 'econo', 'nicowar')),
+        assert hashes == legacy_reference, f'v121 shared-runtime continuation differs: {n}'
+    for label, players in (('runtime-new', ('econo', 'nicowar', 'econo', 'nicowar')),
                            ('castor-new', ('castor',) * 4)):
         fixture = output / f'{label}-fixture'
         setup = ['--map-file', str(ROOT / 'maps/FourSquares1.map.gz'),
@@ -84,7 +84,7 @@ def main():
                       ('game.replay.checksums', 'game.replay', 'final.game')}
             if reference is None: reference = hashes
             assert hashes == reference, f'{label} game differs: {n}'
-    print('PASS compute experiments: exact traces, replay bytes, final saves, and Echo/Castor continuation at 1/2/4/8 threads')
+    print('PASS compute experiments: exact traces, replay bytes, final saves, and runtime/Castor continuation at 1/2/4/8 threads')
 
 
 if __name__ == '__main__':

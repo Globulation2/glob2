@@ -10,8 +10,8 @@ Version 121 gives each AI controller an independent saved random stream. Version
 122 also gives each Econo and Nicowar controller a private gradient cache. AI
 orders and game trajectories can differ from earlier versions for the same
 seed. Replays recorded before version 122 are refused; older saved games still
-load, with shared Echo cache state copied into each controller. Network protocol
-version 45 rejects clients that still share Echo caches.
+load, with shared gradient cache state copied into each controller. Network
+protocol version 45 rejects clients that still share these caches.
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or
@@ -276,11 +276,11 @@ The `ReplayWriter` records live during gameplay:
 | 1 | Numbi | `AI::NUMBI` | Simple beginner AI |
 | 2 | Castor | `AI::CASTOR` | Default toggle AI, moderate |
 | 3 | Warrush | `AI::WARRUSH` | Aggressive rush strategy |
-| 4 | Econo | `AI::ECONO` | Expansionist (Echo wrapper) |
-| 5 | Nicowar | `AI::NICOWAR` | Strongest economy-focused AI (Echo wrapper) |
+| 4 | Econo | `AI::ECONO` | Expansionist (shared AI runtime) |
+| 5 | Nicowar | `AI::NICOWAR` | Strongest economy-focused AI (shared AI runtime) |
 | 6 | Cortex | `AI::CORTEX` | Food-aware growth and supported attack waves (experimental) |
 | 7 | Maxima | `AI::MAXIMA` | Standalone colony developer with relentless attacks; strategy configured through `data/maxima` and `GLOB2_MAXIMA_*` (see [Maxima](../ai/maxima/README.md)) |
-| 8 | Cabino | `AI::CABINO` | Resurrected 2005-2007 Nicowar: independent cooperating modules, not Echo-based. |
+| 8 | Cabino | `AI::CABINO` | Resurrected 2005-2007 Nicowar: independent cooperating modules, outside the shared AI runtime. |
 
 Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The player type encodes which AI: `P_AI + implementationID` maps to the enum above.
 

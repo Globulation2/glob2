@@ -22,7 +22,7 @@ class Order;
 static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 122 separates Echo controllers' gradient
+//! the reader still accepts. Version 122 separates shared-runtime controllers' gradient
 //! state; earlier replays can diverge even when their orders match.
 static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 122;
 

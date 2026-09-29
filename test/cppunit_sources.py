@@ -15,7 +15,7 @@ BrushTestStubs.cpp
 ../src/Brush.cpp
 
 GradientBFSTest.cpp
-../src/ai/echo/GradientBFS.cpp
+../src/ai/shared_runtime/GradientBFS.cpp
 
 MapQueryTest.cpp
 GradientTest.cpp

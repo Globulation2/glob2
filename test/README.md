@@ -494,7 +494,7 @@ The harness runs headlessly in disposable profile directories in Linux and Windo
 
 ## AI save portability
 
-`AISavePortabilityHarness` checks Echo's serialized fields before its first tick,
+`AISavePortabilityHarness` checks the shared AI runtime's serialized fields before its first tick,
 round-trips asymmetric AddArea/RemoveArea coordinates through the binary stream,
 and executes the restored orders on their intended tiles. It also loads legacy
 Maxima telemetry with values in the nonexistent seventh-policy columns and checks
@@ -512,28 +512,29 @@ input. Correct coordinate loading preserves the x/y order written in existing
 saves; a save containing pending area orders can resume differently from older
 GCC builds that transposed those coordinates. The saved layout is unchanged.
 
-## Echo/Nicowar save continuation
+## Shared AI runtime/Nicowar save continuation
 
 ```sh
-scons release=1 server=0 echo-continuation-test
-python3 test/run-savegame-safety-tests.py build/linux/client/release/src/EchoContinuationTest .
+scons release=1 server=0 runtime-continuation-test
+python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .
 ```
 
 The harness preserves stale fields, uncomputed gradients, ages and duplicate
 refresh-queue entries through binary and text manager round trips. It also checks
-that Echo controllers own independent managers and that a legacy shared manager
-can be copied without retaining mutable gradient or entity references. Linux
-and Windows CI run it.
-`check_parallel_compute.py` also resumes the version 121 four-Echo fixture in
+that shared-runtime controllers own independent managers and that a legacy shared
+manager can be copied without retaining mutable gradient or entity references.
+Linux and Windows CI run it.
+`check_parallel_compute.py` also resumes the version 121 four-controller fixture in
 `test/fixtures/echo/` at 1, 2, 4 and 8 workers and compares checksums and saves.
 That fixture was saved at tick 256 from `maps/FourSquares1.map.gz`, game seed
 123, with Econo, Nicowar, Econo and Nicowar in player order.
-The same check starts a fresh four-Echo game to cover concurrent cache creation.
+The same check starts a fresh four-controller game to cover concurrent cache creation.
 It also starts four Castor controllers to exercise concurrent lazy map-gradient
 requests.
-`python3 test/check_echo_save_continuation.py PATH/TO/glob2` also checks full
+
+`python3 test/check_shared_runtime_save_continuation.py PATH/TO/glob2` also checks full
 Maxima/Nicowar and Nicowar/Nicowar games through two reloads using the retained
-[arena fixture](fixtures/echo-continuation/README.md).
+[arena fixture](fixtures/shared-runtime-continuation/README.md).
 
 Save format 119 stores these fields plus the previous construction id, fruit
 observation and local initialization timer. Recomputing the cache on load can
@@ -541,33 +542,35 @@ otherwise change the tick a pending building becomes ready. Earlier saves remain
 readable through their historical reconstruction path; missing historical cache
 state cannot be recovered from them. A subsequent format-119 save preserves the
 reconstructed state. Network protocol 42 gates transfers containing the new fields;
-the replay floor remains unchanged because uninterrupted execution is unchanged.
+the replay floor for that version remained unchanged. Version 122 gives each
+controller its own manager, loads and copies legacy shared-manager state, and
+raises the replay floor to 122 and network protocol to 45.
 
-## Echo building-order id save compatibility
+## Shared AI runtime building-order id save compatibility
 
-`EchoBuildingOrderSaveLoadTest` covers `AIEcho::Construction::BuildingOrder::id`,
-the `BuildingRegister` key handed out at runtime by `Echo::add_building_order`.
+`RuntimeBuildingOrderSaveLoadTest` covers `AISharedRuntime::Construction::BuildingOrder::id`,
+the `BuildingRegister` key handed out at runtime by `Runtime::add_building_order`.
 `save()` and `load()` never moved the field and the member had no initialiser, so
 every pending building order restored from a save carried an uninitialised heap
 value into `BuildingRegister::issue_order` and `AssignWorkers`: an AI game resumed
 from a save was not reproducible run to run, and a resumed multiplayer game could
 desync without packet loss or a version mismatch. Version 96 serialises the field.
 Older saves do not carry it and load leaves the member at `-1`, the sentinel
-`Echo::load` replaces with a fresh `register_building()` key.
+`Runtime::load` replaces with a fresh `register_building()` key.
 
 The fixture checks the version-96 round trip, that an unregistered order's `-1`
 survives the `Uint32` on the wire rather than returning as a huge positive key,
 and that a pre-96 stream leaves the sentinel with every following field still
 decoding from the right offset. `BuildingOrder.cpp` is linked against
-`EchoBuildingOrderTestStubs.cpp`, which satisfies the `find_location` /
+`RuntimeBuildingOrderTestStubs.cpp`, which satisfies the `find_location` /
 `passes_conditions` link surface (`globalContainer`, `BuildingsTypes`, `Map`,
 `FlagMap`, `GradientManager`, and the `Constraint` / `Condition` factories) that
 a constraint-free order never reaches at runtime. It needs no profile or display:
 
 ```sh
 cd test
-scons -j8 EchoBuildingOrderSaveLoadTest
-./EchoBuildingOrderSaveLoadTest
+scons -j8 RuntimeBuildingOrderSaveLoadTest
+./RuntimeBuildingOrderSaveLoadTest
 ```
 
 Linux CI runs it through this directory's "Build and run the tests" step, which

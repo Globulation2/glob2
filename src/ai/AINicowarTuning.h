@@ -4,7 +4,7 @@
 // AINicowarTuning.h
 //
 // Behavior-preserving tuning constants for AINicowar (the "NewNicowar"
-// AIEcho-based AI), extracted from glob2/src/ai/nicowar/*.cpp during the
+// AISharedRuntime-based AI), extracted from glob2/src/ai/nicowar/*.cpp during the
 // magic-number cleanup pass that prepares the codebase for the Rust port.
 // Every value here is byte-for-byte identical to the literal it replaces;
 // nothing in the AI's decision logic changes.
@@ -189,8 +189,8 @@ static constexpr int AI_NICOWAR_NO_BUILDING_TYPE = -1;
 // ---------------------------------------------------------------------------
 // Attack control (Attack.cpp).
 // ---------------------------------------------------------------------------
-// The Echo gradient layer reports -2 for "unreachable" cells. Used to skip
-// enemy buildings we can't path to. Distinct from Echo's wildcard `-1` args
+// The Runtime gradient layer reports -2 for "unreachable" cells. Used to skip
+// enemy buildings we can't path to. Distinct from Runtime's wildcard `-1` args
 // to enemy_building_iterator and from AI_NICOWAR_NO_TARGET, even though all
 // three are negative integers in adjacent code.
 static constexpr int AI_NICOWAR_GRADIENT_UNREACHABLE = -2;
