@@ -51,10 +51,10 @@ int main()
 		if(cancelled) original.invalidate(&field);
 		for(unsigned i=0;i<phase;++i) original.advance();
 		restored.configure(0,8,1,[](auto &,auto &) { assert(false); });
-		original.visitPending([&](const auto &job,unsigned remaining) {
-			assert(remaining==8-phase && field[0]==0);
-			auto data=std::make_unique<std::uint16_t[]>(1); data[0]=job.data[0];
-			restored.restoreCompleted(&field,0,remaining,job.superseded,std::move(data));
+		original.visitPendingSnapshots([&](const auto &snapshot) {
+			assert(snapshot.remaining==8-phase && field[0]==0);
+			auto data=std::make_unique<std::uint16_t[]>(1); data[0]=snapshot.data[0];
+			restored.restoreCompleted({&field,0,snapshot.remaining,snapshot.superseded,std::move(data)});
 		});
 		original.reset(); restored.setWorkerCount(1);
 		for(unsigned i=1;i<8-phase;++i) { restored.advance(); assert(field[0]==0); }

@@ -1,8 +1,9 @@
 # Default gradient scheduling reference traces
 
 These fixtures pin the eight-tick periodic gradient publication schedule introduced
-in save/replay version 120. `test/check_telemetry_simulation.py` compares the same
-legacy starting saves against these records on Linux, Windows and local builds.
+in save/replay version 120. They were refreshed for version 121 after AI controllers
+received independent random streams. `test/check_telemetry_simulation.py` compares
+the same legacy starting saves against these records on Linux, Windows and local builds.
 The previous telemetry-only fixtures remain available in `../team-stats/`.
 
 References were generated from the named legacy checkpoints with

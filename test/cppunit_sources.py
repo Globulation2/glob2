@@ -25,7 +25,9 @@ FertilityFieldTest.cpp
 ../src/map/FertilityField.cpp
 MapQueryTestStubs.cpp
 ../src/map/Map.cpp
-../src/map/gradient/MapGradientField.cpp
+../src/map/gradient/MapGradientPropagation.cpp
+../src/map/gradient/BuildingGradientSearch.cpp
+../src/map/gradient/MapGradientDirection.cpp
 ../src/map/MapQuery.cpp
 ../src/map/MapTerrain.cpp
 ../src/BitArray.cpp
