@@ -137,20 +137,8 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		}
 
 		std::array<shared_ptr<Order>, Team::MAX_COUNT> aiOrders{};
-		// Econo and Nicowar share Echo's mutable GradientManager. The first
-		// Echo poll can also attach that manager to the other Echo instances.
-		// Preserve their player order while other AI implementations run in
-		// parallel after the shared manager is stable.
-		for (size_t job = 0; job < aiCount; ++job)
-		{
-			AI* ai = gui.game.players[aiPlayers[job]]->ai;
-			if (ai->implementationID == AI::ECONO || ai->implementationID == AI::NICOWAR)
-				aiOrders[job] = ai->getOrder(gui.gamePaused);
-		}
 		gui.game.map.computeExecutor().run(aiCount, [&](size_t job) {
-			AI* ai = gui.game.players[aiPlayers[job]]->ai;
-			if (ai->implementationID != AI::ECONO && ai->implementationID != AI::NICOWAR)
-				aiOrders[job] = ai->getOrder(gui.gamePaused);
+			aiOrders[job] = gui.game.players[aiPlayers[job]]->ai->getOrder(gui.gamePaused);
 		});
 		size_t firstRemote = 0;
 		if (localAI)

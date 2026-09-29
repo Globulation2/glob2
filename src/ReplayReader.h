@@ -22,9 +22,9 @@ class Order;
 static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 121 moved AI decisions to per-controller
-//! random streams; earlier replays can diverge even when their orders match.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 121;
+//! the reader still accepts. Version 122 separates Echo controllers' gradient
+//! state; earlier replays can diverge even when their orders match.
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 122;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

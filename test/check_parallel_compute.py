@@ -47,7 +47,37 @@ def main():
         ticks = detailed_ticks((run / 'game.replay.checksums').read_bytes())
         assert ticks and all(full_ticks[tick] == value for tick, value in ticks.items()), f'continuation differs: {n}'
         assert digest(run / 'final.game') == digest(resumed / 'final.game'), f'final continuation save differs from serial reload: {n}'
-    print('PASS compute experiments: exact traces, replay bytes, final saves, and uninterrupted continuation at 1/2/4/8 threads')
+    # Version 121 stored one Echo gradient manager for every Econo/Nicowar
+    # controller. Loading it must split that state without leaving aliases.
+    legacy = ROOT / 'test/fixtures/echo/v121-shared-gradient-256.game.gz'
+    legacy_args = ['--load-game', str(legacy), '--ticks', '512',
+                   '--telemetry', 'checksums', '--save', 'final']
+    legacy_reference = None
+    for n in (1, 2, 4, 8):
+        run = output / f'echo-v121-{n}'
+        execute(binary, legacy_args + ['--compute-threads', str(n),
+                                      '--compute-experiments', 'ai'], run)
+        hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'final.game')}
+        if legacy_reference is None: legacy_reference = hashes
+        assert hashes == legacy_reference, f'v121 Echo continuation differs: {n}'
+    echo_fixture = output / 'echo-new-fixture'
+    execute(binary, ['--map-file', str(ROOT / 'maps/FourSquares1.map.gz'),
+                     '--game-seed', '123', '--player', 'econo', '--player', 'nicowar',
+                     '--player', 'econo', '--player', 'nicowar', '--ticks', '1',
+                     '--save', 'initial'], echo_fixture)
+    echo_args = ['--load-game', str(echo_fixture / 'initial.game.gz'),
+                 '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true',
+                 '--save', 'final']
+    echo_reference = None
+    for n in (1, 2, 4, 8):
+        run = output / f'echo-new-{n}'
+        execute(binary, echo_args + ['--compute-threads', str(n),
+                                    '--compute-experiments', 'ai'], run)
+        hashes = {name: digest(run / name) for name in
+                  ('game.replay.checksums', 'game.replay', 'final.game')}
+        if echo_reference is None: echo_reference = hashes
+        assert hashes == echo_reference, f'new Echo game differs: {n}'
+    print('PASS compute experiments: exact traces, replay bytes, final saves, and old/new Echo continuation at 1/2/4/8 threads')
 
 
 if __name__ == '__main__':

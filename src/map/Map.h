@@ -9,6 +9,7 @@
 #include "gradient/GradientPipeline.h"
 
 #include <list>
+#include <mutex>
 #include <optional>
 #include <vector>
 #include <assert.h>
@@ -835,6 +836,7 @@ protected:
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	mutable std::mutex resourcesGradientMutex;
 	
 	// Used to go out of forbidden areas
 	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];

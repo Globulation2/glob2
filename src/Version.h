@@ -6,7 +6,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 121
+#define VERSION_MINOR 122
+// version 122 gives each Echo controller a private gradient manager. Econo
+// and Nicowar decisions no longer depend on another Echo controller's cache.
 // version 121 gives each AI controller a saved random stream derived from the
 // game seed and player number. AI decisions and replay/network behavior change.
 // version 120 preserves pending periodic gradients and eight-tick publication.
@@ -149,9 +151,10 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 44
+#define NET_PROTOCOL_VERSION 45
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 44
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 45
+// version 45 separates Echo gradient caches in mixed-client games.
 // version 44 keeps clients with different AI random streams out of mixed games.
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.

@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 		require(buildingCounts > 0, "Castor building count columns checked");
 		castor->~AICastor();
 		AIEcho::Echo echo(new NewNicowar, game.players[0]);
-		require(!echo.update_gm && echo.allies == 0 && echo.enemies == 0 &&
+		require(!echo.gm && echo.allies == 0 && echo.enemies == 0 &&
 			echo.inn_view == 0 && echo.market_view == 0 && echo.other_view == 0,
 			"Echo serialized fields initialized before first tick");
 		checkArea<AIEcho::Management::AddArea>(echo, game, true);

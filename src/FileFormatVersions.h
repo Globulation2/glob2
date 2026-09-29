@@ -156,5 +156,8 @@ static constexpr int FILE_FORMAT_VERSION_CONSTRUCTION_COOLDOWN = 114;
 //! Echo shared gradient fields, queued refreshes and construction scheduling.
 static constexpr int FILE_FORMAT_VERSION_ECHO_CONTINUATION = 119;
 
+//! Each Echo controller stores its own gradient manager without shared-owner fields.
+static constexpr int FILE_FORMAT_VERSION_ECHO_PRIVATE_GRADIENTS = 122;
+
 // Completed private fields and remaining fixed publication deadlines.
 static constexpr int FILE_FORMAT_VERSION_GRADIENT_PIPELINE = 120;

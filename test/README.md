@@ -521,8 +521,14 @@ python3 test/run-savegame-safety-tests.py build/linux/client/release/src/EchoCon
 
 The harness preserves stale fields, uncomputed gradients, ages and duplicate
 refresh-queue entries through binary and text manager round trips. It also checks
-that two Echo controllers reload one shared manager, including when the updating
-controller differs from the first serialized player. Linux and Windows CI run it.
+that Echo controllers own independent managers and that a legacy shared manager
+can be copied without retaining mutable gradient or entity references. Linux
+and Windows CI run it.
+`check_parallel_compute.py` also resumes the version 121 four-Echo fixture in
+`test/fixtures/echo/` at 1, 2, 4 and 8 workers and compares checksums and saves.
+That fixture was saved at tick 256 from `maps/FourSquares1.map.gz`, game seed
+123, with Econo, Nicowar, Econo and Nicowar in player order.
+The same check starts a fresh four-Echo game to cover concurrent cache creation.
 `python3 test/check_echo_save_continuation.py PATH/TO/glob2` also checks full
 Maxima/Nicowar and Nicowar/Nicowar games through two reloads using the retained
 [arena fixture](fixtures/echo-continuation/README.md).

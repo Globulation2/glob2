@@ -167,8 +167,6 @@ The `ai` experiment polls eligible AI controllers in a blocking batch after the
 GUI sync step. It binds their telemetry on the main thread, waits for every
 controller to return one order, then submits those orders in player order before
 the network update and simulation step. No AI work continues past the barrier.
-Econo and Nicowar polls run in player order before the batch because Echo
-controllers share a mutable gradient manager, including across saved games.
 Paused games keep the serial order path.
 The ordinary one-thread path remains the default for normal games. `all` also
 includes AI polling. Worker-local implicit performance scopes are not merged

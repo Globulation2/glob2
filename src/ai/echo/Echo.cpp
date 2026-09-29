@@ -257,29 +257,7 @@ void Echo::check_fruit()
 std::shared_ptr<Order> Echo::getOrder(void)
 {
 	if(!gm)
-	{
-		gm.reset(new GradientManager(player->map));
-		update_gm=true;
-		for(int x=0; x<player->team->game->gameHeader.getNumberOfPlayers(); ++x)
-		{
-			if(player->team->game->players[x]!=NULL)
-			{
-				if(player->team->game->players[x]->type>=BasePlayer::P_AI)
-				{
-					Echo* other=dynamic_cast<Echo*>(player->team->game->players[x]->ai->aiImplementation);
-					if(other)
-					{
-						if(!other->gm)
-						{
-							other->gm=gm;
-							other->update_gm=false;
-//							std::cout<<"Linked with another AI, number "<<x<<std::endl;
-						}
-					}
-				}
-			}
-		}
-	}
+		gm=std::make_unique<GradientManager>(player->map);
 
 	if(from_load_timer==0)
 	{
@@ -303,8 +281,7 @@ std::shared_ptr<Order> Echo::getOrder(void)
 		orders.erase(orders.begin());
 		return order;
 	}
-	if(update_gm)
-		gm->update();
+	gm->update();
 	br.tick();
 	update_resource_trackers();
 	update_management_orders();

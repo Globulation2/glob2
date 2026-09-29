@@ -148,7 +148,7 @@ namespace AIEcho
 
 		std::list<std::shared_ptr<Order> > orders;
 		std::shared_ptr<EchoAI> echoai;
-		std::shared_ptr<Gradients::GradientManager> gm;
+		std::unique_ptr<Gradients::GradientManager> gm;
 		Construction::BuildingRegister br;
 		Construction::FlagMap fm;
 		std::vector<std::shared_ptr<Construction::BuildingOrder> > building_orders;
@@ -161,7 +161,6 @@ namespace AIEcho
 		///Before the next building is constructed, the previous building must be
 		///found on the BuildingRegister
 		int previous_building_id;
-		bool update_gm = false;
 		bool is_fruit;
 
 		int from_load_timer;
