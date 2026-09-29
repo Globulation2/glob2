@@ -120,6 +120,41 @@ namespace
 			return landCardinal.size + landDiagonal.size + (Weighted ? waterCardinal.size + waterDiagonal.size : 0);
 		};
 		const size_t queuedBefore = queued();
+		// The relaxation vectors depend only on the terrain entered, so build both
+		// sets once per layer. Each side of a compare carries the value less one.
+#if defined(GLOB2_GRADIENT_SSE2)
+		// NW, N, NE, x + 2 above and SW, S, SE, x + 2 below; lanes at x + 2 never improve.
+		auto aroundValues = [](Uint16 cardinal, Uint16 diagonal)
+		{
+			return _mm_setr_epi16(short(diagonal), short(cardinal), short(diagonal), 1,
+				short(diagonal), short(cardinal), short(diagonal), 1);
+		};
+		// SSE2 compares signed: biasing both sides by 0x8000 orders them unsigned.
+		const __m128i one = _mm_set1_epi16(1);
+		const __m128i bias = _mm_set1_epi16(short(0x8000));
+		auto biasedLimit = [&](__m128i values) { return _mm_xor_si128(_mm_sub_epi16(values, one), bias); };
+		const __m128i landValues = aroundValues(landCardinalValue, landDiagonalValue);
+		const __m128i waterValues = aroundValues(waterCardinalValue, waterDiagonalValue);
+		const __m128i landLimits = biasedLimit(landValues), waterLimits = biasedLimit(waterValues);
+#elif defined(GLOB2_GRADIENT_NEON)
+		// Lanes x - 1 .. x + 2 of each row; the cell itself and x + 2 get 1, which never improves.
+		auto outerValues = [](Uint16 cardinal, Uint16 diagonal)
+		{
+			const uint16x4_t half = vset_lane_u16(1, vset_lane_u16(cardinal, vdup_n_u16(diagonal), 1), 3);
+			return vcombine_u16(half, half);
+		};
+		auto rowValues = [](Uint16 cardinal)
+		{
+			return vset_lane_u16(cardinal, vset_lane_u16(cardinal, vdup_n_u16(1), 0), 2);
+		};
+		const uint16x8_t landValues = outerValues(landCardinalValue, landDiagonalValue);
+		const uint16x8_t waterValues = outerValues(waterCardinalValue, waterDiagonalValue);
+		const uint16x4_t landRowValues = rowValues(landCardinalValue), waterRowValues = rowValues(waterCardinalValue);
+		const uint16x8_t landLimits = vsubq_u16(landValues, vdupq_n_u16(1));
+		const uint16x8_t waterLimits = vsubq_u16(waterValues, vdupq_n_u16(1));
+		const uint16x4_t landRowLimits = vsub_u16(landRowValues, vdup_n_u16(1));
+		const uint16x4_t waterRowLimits = vsub_u16(waterRowValues, vdup_n_u16(1));
+#endif
 		// Relaxations append to other buckets but never to this one (each step is
 		// positive and less than BUCKETS), so these stay valid.
 		const Uint32 *const cells = bucket.cells.data();
@@ -178,12 +213,9 @@ namespace
 					Uint16 *belowRun = gradient + below + x - 1;
 					const __m128i g = _mm_unpacklo_epi64(_mm_loadl_epi64((const __m128i *)aboveRun),
 						_mm_loadl_epi64((const __m128i *)belowRun));
-					const __m128i value = _mm_setr_epi16(short(diagonalValue), short(cardinalValue), short(diagonalValue), 1,
-						short(diagonalValue), short(cardinalValue), short(diagonalValue), 1);
-					const __m128i one = _mm_set1_epi16(1);
-					const __m128i bias = _mm_set1_epi16(short(0x8000));
+					const __m128i value = water ? waterValues : landValues;
 					const __m128i better = _mm_cmplt_epi16(_mm_xor_si128(_mm_sub_epi16(g, one), bias),
-						_mm_xor_si128(_mm_sub_epi16(value, one), bias));
+						water ? waterLimits : landLimits);
 					const unsigned mask = unsigned(_mm_movemask_epi8(better));
 					if (mask)
 					{
@@ -205,19 +237,16 @@ namespace
 #elif defined(GLOB2_GRADIENT_NEON)
 				if (x >= 1 && x + 2 <= wMask)
 				{
-					// Columns x - 1 .. x + 2 of the three rows. Lanes at x + 2 and at the
-					// cell itself get value 1, which never improves.
+					// Columns x - 1 .. x + 2 of the three rows.
 					Uint16 *aboveRun = gradient + above + x - 1;
 					Uint16 *rowRun = gradient + row + x - 1;
 					Uint16 *belowRun = gradient + below + x - 1;
 					const uint16x8_t g = vcombine_u16(vld1_u16(aboveRun), vld1_u16(belowRun));
 					const uint16x4_t gRow = vld1_u16(rowRun);
-					const uint16x4_t one = vdup_n_u16(1);
-					const uint16x4_t outer = vset_lane_u16(1, vset_lane_u16(cardinalValue, vdup_n_u16(diagonalValue), 1), 3);
-					const uint16x8_t value = vcombine_u16(outer, outer);
-					const uint16x4_t valueRow = vset_lane_u16(cardinalValue, vset_lane_u16(cardinalValue, one, 0), 2);
-					const uint16x8_t better = vcltq_u16(vsubq_u16(g, vdupq_n_u16(1)), vsubq_u16(value, vdupq_n_u16(1)));
-					const uint16x4_t betterRow = vclt_u16(vsub_u16(gRow, one), vsub_u16(valueRow, one));
+					const uint16x8_t value = water ? waterValues : landValues;
+					const uint16x4_t valueRow = water ? waterRowValues : landRowValues;
+					const uint16x8_t better = vcltq_u16(vsubq_u16(g, vdupq_n_u16(1)), water ? waterLimits : landLimits);
+					const uint16x4_t betterRow = vclt_u16(vsub_u16(gRow, vdup_n_u16(1)), water ? waterRowLimits : landRowLimits);
 					// One byte per above/below lane, sixteen bits per row lane.
 					const uint64_t mask = vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(better, 8)), 0);
 					const uint64_t rowMask = vget_lane_u64(vreinterpret_u64_u16(betterRow), 0);
