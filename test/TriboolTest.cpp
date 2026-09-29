@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// AIEcho::tribool replaced boost::logic::tribool; the Echo AI's decisions
+// AISharedRuntime::tribool replaced boost::logic::tribool; the Echo AI's decisions
 // depend on its three-valued logic, so every operator is checked against the
 // Kleene truth tables that Boost implements.
 
-#include "../src/ai/echo/Tribool.h"
+#include "../src/ai/shared_runtime/Tribool.h"
 #include <cstdlib>
 #include <iostream>
 #include <string>
 
-using namespace AIEcho;
+using namespace AISharedRuntime;
 
 namespace
 {

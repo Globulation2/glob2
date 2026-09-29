@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "echo/Echo.h"
+#include "shared_runtime/Runtime.h"
 #include "AINicowarTuning.h"
 #include "ConfigFiles.h"
 
@@ -199,12 +199,12 @@ public:
 /// currently targeted." `target` is a Sint8/int that otherwise holds an
 /// enemy team index. Used at init, when a chosen target dies/becomes
 /// unreachable, and as a guard before launching attacks.
-/// Distinct from AINames::AI_UNKNOWN_NAME and from the Echo
+/// Distinct from AINames::AI_UNKNOWN_NAME and from the Runtime
 /// enemy_building_iterator wildcard `-1` args (those are kept literal).
 static const int AI_NICOWAR_NO_TARGET = -1;
 
 ///Nicowar is a new powerhouse AI for Globulation 2
-class NewNicowar : public AIEcho::EchoAI
+class NewNicowar : public AISharedRuntime::RuntimeAI
 {
 public:
   void captureTelemetry() override;
@@ -215,8 +215,8 @@ public:
 	NewNicowar();
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-	void tick(AIEcho::Echo& echo);
-	void handle_message(AIEcho::Echo& echo, const std::string& message);
+	void tick(AISharedRuntime::Runtime& runtime);
+	void handle_message(AISharedRuntime::Runtime& runtime, const std::string& message);
 private:
 	///This function loads up all available strategies, and selects one at random.
 	///As such, Nicowar may be going war-rush style, or it may try a longer game.
@@ -244,11 +244,11 @@ private:
 
 	///This function is called at the very beginning of the game,
 	///to initialize the existing buildings with the right amount of units
-	void initialize(AIEcho::Echo& echo);
+	void initialize(AISharedRuntime::Runtime& runtime);
 
 	///This function is called periodically to choose the strategies
 	///(called phases) that will be used at that time
-	void check_phases(AIEcho::Echo& echo);
+	void check_phases(AISharedRuntime::Runtime& runtime);
 	///During the growth phase, the object of the game is the fast growth of economy.
 	///Swarms become a big priority, so does gaining territory and exploration.
 	bool growth_phase;
@@ -283,42 +283,42 @@ private:
 	///This function decides how many buildings need to be constructed (and with what properties
 	///their location must be picked with) and adds them to a queue. Most of the decisions are
 	///made using statistics and depend on the phases that are activated
-	void queue_buildings(AIEcho::Echo& echo);
+	void queue_buildings(AISharedRuntime::Runtime& runtime);
 	///This function decides how many Inns and of what placements need construction and adds
 	///them to the queue
-	void queue_inns(AIEcho::Echo& echo);
+	void queue_inns(AISharedRuntime::Runtime& runtime);
 	///This function decides how many swarms are needed and queues them up
-	void queue_swarms(AIEcho::Echo& echo);
+	void queue_swarms(AISharedRuntime::Runtime& runtime);
 	///This function decides how many racetracks are needed and queues them up.
-	void queue_racetracks(AIEcho::Echo& echo);
+	void queue_racetracks(AISharedRuntime::Runtime& runtime);
 	///This function decides how many swimming pools are needed and queues them up.
-	void queue_swimmingpools(AIEcho::Echo& echo);
+	void queue_swimmingpools(AISharedRuntime::Runtime& runtime);
 	///This function decides how many schools are needed and queues them up.
-	void queue_schools(AIEcho::Echo& echo);
+	void queue_schools(AISharedRuntime::Runtime& runtime);
 	///This function decides how many barracks are needed and queues them up.
-	void queue_barracks(AIEcho::Echo& echo);
+	void queue_barracks(AISharedRuntime::Runtime& runtime);
 	///This function decides how many hospitals are needed and queues them up.
-	void queue_hospitals(AIEcho::Echo& echo);
+	void queue_hospitals(AISharedRuntime::Runtime& runtime);
 	///This counts how many StarvingRecoveryInn's there are under construction
 	int starving_recovery_inns;
 
 	///This function starts construction on buildings that are queued for construction. Its careful
 	///not to construct too much or too little at once
-	void order_buildings(AIEcho::Echo& echo);
+	void order_buildings(AISharedRuntime::Runtime& runtime);
 	///This function starts construction of a RegularInn, and returns the ID code
-	int order_regular_inn(AIEcho::Echo& echo);
+	int order_regular_inn(AISharedRuntime::Runtime& runtime);
 	///This function starts construction of a RegularSwarm, and returns the ID code
-	int order_regular_swarm(AIEcho::Echo& echo);
+	int order_regular_swarm(AISharedRuntime::Runtime& runtime);
 	///This function starts construction of a RegularSwarm, and returns the ID code
-	int order_regular_racetrack(AIEcho::Echo& echo);
+	int order_regular_racetrack(AISharedRuntime::Runtime& runtime);
 	///This function starts construction of a RegularSwarm, and returns the ID code
-	int order_regular_swimmingpool(AIEcho::Echo& echo);
+	int order_regular_swimmingpool(AISharedRuntime::Runtime& runtime);
 	///This function starts construction of a RegularSwarm, and returns the ID code
-	int order_regular_school(AIEcho::Echo& echo);
+	int order_regular_school(AISharedRuntime::Runtime& runtime);
 	///This function starts construction of a RegularBarracks, and returns the ID code
-	int order_regular_barracks(AIEcho::Echo& echo);
+	int order_regular_barracks(AISharedRuntime::Runtime& runtime);
 	///This function starts construction of a RegularHospital, and returns the ID code
-	int order_regular_hospital(AIEcho::Echo& echo);
+	int order_regular_hospital(AISharedRuntime::Runtime& runtime);
 	///This integer stores the total number of buildings that are currently being constructed
 	int buildings_under_construction;
 	///This integer stores the number of buildings being constructed based on their placement id,
@@ -331,43 +331,43 @@ private:
 
 
 	///This function updates all of the buildings that are not under construction.
-	void manage_buildings(AIEcho::Echo& echo);
+	void manage_buildings(AISharedRuntime::Runtime& runtime);
 	///This function updates the units assigned to a particular Inn.
 	///Using the messaging system, it is called after the completion
 	///of a new Inn and periodically thereafter
-	void manage_inn(AIEcho::Echo& echo, int id);
+	void manage_inn(AISharedRuntime::Runtime& runtime, int id);
 	///This function updated the units assigned and the creation
 	///ratios of a particular Swarm. Its done after the completion
 	///of a new swarm and periodically thereafter
-	void manage_swarm(AIEcho::Echo& echo, int id);
+	void manage_swarm(AISharedRuntime::Runtime& runtime, int id);
 
 
 	///This function chooses the type of level 1 building to be upgraded randomly
 	///(but weighted in favor of certain building depending on the phase)
-	int choose_building_upgrade_type_level1(AIEcho::Echo& echo);
+	int choose_building_upgrade_type_level1(AISharedRuntime::Runtime& runtime);
 	///This function chooses the type of level 2 building to be upgraded randomly
 	///(but weighted in favor of certain building depending on the phase)
-	int choose_building_upgrade_type_level2(AIEcho::Echo& echo);
+	int choose_building_upgrade_type_level2(AISharedRuntime::Runtime& runtime);
 	///This function is a generic version of the above functions
-	int choose_building_upgrade_type(AIEcho::Echo& echo, int level, int inn_ratio, int hospital_ratio, int racetrack_ratio, int swimmingpool_ratio, int barracks_ratio, int school_ratio, int tower_ratio);
+	int choose_building_upgrade_type(AISharedRuntime::Runtime& runtime, int level, int inn_ratio, int hospital_ratio, int racetrack_ratio, int swimmingpool_ratio, int barracks_ratio, int school_ratio, int tower_ratio);
 	///This function chooses a building of the given type and level to be upgraded.
-	int choose_building_for_upgrade(AIEcho::Echo& echo, int type, int level);
+	int choose_building_for_upgrade(AISharedRuntime::Runtime& runtime, int type, int level);
 	///This function starts upgrading buildings if the upgrading_phase is active.
-	void upgrade_buildings(AIEcho::Echo& echo);
+	void upgrade_buildings(AISharedRuntime::Runtime& runtime);
 
 
 	///This function chooses an enemy building to be destroyed. It returns -1 if there are no accessible buildings
-	int choose_building_to_attack(AIEcho::Echo& echo);
+	int choose_building_to_attack(AISharedRuntime::Runtime& runtime);
 	///This function starts an attack on another enemy building
-	void attack_building(AIEcho::Echo& echo);
+	void attack_building(AISharedRuntime::Runtime& runtime);
 	///This function controls the attacking of enemies, such as how many flags are active at one time
-	void control_attacks(AIEcho::Echo& echo);
+	void control_attacks(AISharedRuntime::Runtime& runtime);
 	///This function chooses the enemy team to target
-	void choose_enemy_target(AIEcho::Echo& echo);
+	void choose_enemy_target(AISharedRuntime::Runtime& runtime);
 	///This function digs out an enemy building that is surrounded by resources.
 	///It will also cause Nicowar to dig itself out in certain situation
 	///Returns true if there are buildings that it can dig out, false otherwise
-	bool dig_out_enemy(AIEcho::Echo& echo);
+	bool dig_out_enemy(AISharedRuntime::Runtime& runtime);
 
 	///This integer stores the currently targetted enemy
 	int target;
@@ -378,26 +378,26 @@ private:
 	
 	
 	///This function calculates the positions of defense flags
-	void compute_defense_flag_positioning(AIEcho::Echo& echo);
+	void compute_defense_flag_positioning(AISharedRuntime::Runtime& runtime);
 	///This function adds the specific value to the counts around the given pos, used in compute_defense_flag_positioning
 	void modify_points(Uint16* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations);
 	///This vector stores the ID's for all current defense flags
 	std::vector<int> defense_flags;
 
 	///This function calculates the positions of explorer flags for explorer flag attacks
-	void compute_explorer_flag_attack_positioning(AIEcho::Echo& echo);
+	void compute_explorer_flag_attack_positioning(AISharedRuntime::Runtime& runtime);
 	///This vector stores the list of explorer attack flags
 	std::vector<int> explorer_attack_flags;
 
 	///This function updates the restricted areas for farming
-	void update_farming(AIEcho::Echo& echo);
+	void update_farming(AISharedRuntime::Runtime& runtime);
 
 	///This function puts exploration flags on fruit trees once the fruit phase
 	///has been activated.
-	void update_fruit_flags(AIEcho::Echo& echo);
+	void update_fruit_flags(AISharedRuntime::Runtime& runtime);
 	///This function updates the alliances with opponents once the fruit phase
 	///has been activated.
-	void update_fruit_alliances(AIEcho::Echo& echo);
+	void update_fruit_alliances(AISharedRuntime::Runtime& runtime);
 	///This variable tells whether their are exploration flags on the fruit trees yet or not
 	bool exploration_on_fruit;
 

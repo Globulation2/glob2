@@ -7,7 +7,7 @@
 #include "IntBuildingType.h"
 #include "FileManager.h"
 #include "Player.h"
-#include "../src/ai/echo/Tribool.h"
+#include "../src/ai/shared_runtime/Tribool.h"
 #include <list>
 #include <map>
 #include <memory>
@@ -32,7 +32,7 @@ static void require(bool ok, const char* message)
 struct Fixture
 {
 	Game game{nullptr};
-	std::unique_ptr<AIEcho::Echo> echo;
+	std::unique_ptr<AISharedRuntime::Runtime> runtime;
 	Fixture()
 	{
 		game.map.setSize(6, 6, GRASS);
@@ -44,19 +44,19 @@ struct Fixture
 		for (int y=0; y<64; ++y)
 			for (int x=0; x<64; ++x)
 				if (x != 50 || y != 50) game.map.setMapDiscovered(x, y, game.teams[0]->me);
-		echo.reset(new AIEcho::Echo(new NewNicowar, game.players[0]));
-		echo->gm.reset(new AIEcho::Gradients::GradientManager(&game.map));
+		runtime.reset(new AISharedRuntime::Runtime(new NewNicowar, game.players[0]));
+		runtime->gm.reset(new AISharedRuntime::Gradients::GradientManager(&game.map));
 	}
 	void update()
 	{
-		static_cast<NewNicowar*>(echo->echoai.get())->update_farming(*echo);
-		echo->update_management_orders();
-		for (auto order : echo->orders)
+		static_cast<NewNicowar*>(runtime->runtimeai.get())->update_farming(*runtime);
+		runtime->update_management_orders();
+		for (auto order : runtime->orders)
 		{
 			order->sender = 0;
 			game.executeOrder(order, 0);
 		}
-		echo->orders.clear();
+		runtime->orders.clear();
 	}
 	bool clearing(int x, int y) { return game.map.isClearArea(x, y, game.teams[0]->me); }
 };

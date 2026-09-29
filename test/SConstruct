@@ -18,7 +18,7 @@ if ccache.enabled():
     ccache.enable(env)
 
 # Shared include paths so tests can compile against game headers.
-# echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
+# runtime/Runtime.h transitively pulls in Map.h / Player.h / Team.h / etc.,
 # which need libgag and SDL2 headers visible at parse time even when the
 # test itself never references those types.
 common_cpppath = [config_dir, '..', '../src', '../src/ai', '../src/ai/maxima',
@@ -417,9 +417,9 @@ replay_objs = [
 wcdecode_env.Program( target = 'ReplayStepCounterTest', source = replay_objs )
 
 
-# Standalone regression harness for AIEcho::Construction::BuildingOrder::id
+# Standalone regression harness for AISharedRuntime::Construction::BuildingOrder::id
 # serialization. The id is a BuildingRegister key handed out at runtime by
-# Echo::add_building_order, but save()/load() never moved it and the member had
+# Runtime::add_building_order, but save()/load() never moved it and the member had
 # no initialiser, so every pending building order restored from a save carried
 # an uninitialised heap value into issue_order() and AssignWorkers -- an AI game
 # resumed from a save was not reproducible, and a resumed multiplayer game could
@@ -427,12 +427,12 @@ wcdecode_env.Program( target = 'ReplayStepCounterTest', source = replay_objs )
 # on the wire, and the pre-96 layout. Reuses the wcdecode env's libgagserver.a
 # link surface. Distinct object name for BuildingOrder.cpp because the main
 # build compiles it with different flags.
-echo_order_objs = [
-  wcdecode_env.Object('EchoBuildingOrderSaveLoadTest.o', 'EchoBuildingOrderSaveLoadTest.cpp'),
-  wcdecode_env.Object('BuildingOrder-saveload.o', '../src/ai/echo/BuildingOrder.cpp'),
-  wcdecode_env.Object('EchoBuildingOrderTestStubs.o', 'EchoBuildingOrderTestStubs.cpp'),
+runtime_order_objs = [
+  wcdecode_env.Object('RuntimeBuildingOrderSaveLoadTest.o', 'RuntimeBuildingOrderSaveLoadTest.cpp'),
+  wcdecode_env.Object('BuildingOrder-saveload.o', '../src/ai/shared_runtime/BuildingOrder.cpp'),
+  wcdecode_env.Object('RuntimeBuildingOrderTestStubs.o', 'RuntimeBuildingOrderTestStubs.cpp'),
 ]
-wcdecode_env.Program( target = 'EchoBuildingOrderSaveLoadTest', source = echo_order_objs )
+wcdecode_env.Program( target = 'RuntimeBuildingOrderSaveLoadTest', source = runtime_order_objs )
 
 # Standalone regression harness for SoundMixer's track selection and fade
 # state machine, both reshaped when the device buffer shrank to 1024 frames

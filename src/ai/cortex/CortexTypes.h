@@ -112,7 +112,7 @@ namespace Cortex
 	/// resource gradient always marks forbidden, so it zeroed the deficit and pinned
 	/// every inn to one hauler. -1 for swarms / unknown.
 	/// v15 (2026-06-06, offense-hold relocation) added flagPosture + offenseHoldUntil:
-	/// the action layer's RAM-only hysteresis state, echoed into the observation so the
+	/// the action layer's RAM-only hysteresis state, runtimeed into the observation so the
 	/// PURE policy makes the hold-vs-recall (thrash-damper) decision itself instead of
 	/// it living in the downstream action layer. AICortex still OWNS/mutates the state
 	/// on flag placement and persists it; these obs fields are a per-cycle read-only
@@ -134,7 +134,7 @@ namespace Cortex
 	/// (a forward site is already building — don't order another).
 	/// (c) ENEMY WARRIOR INTEL: enemyWarriorLevelVisible (this cycle's max
 	/// ATTACK_STRENGTH level among FOW-visible enemy warriors) and
-	/// enemyWarriorLevelLatched (AICortex's persisted highest-ever-seen echo, the
+	/// enemyWarriorLevelLatched (AICortex's persisted highest-ever-seen runtime, the
 	/// flagPosture pattern) — the war-preparation level-match gate's inputs.
 	/// v19 (2026-07-16, amphibious-wave increment) added the water-campaign signals:
 	/// warriorSwimLevel[] (per-level WARRIOR SWIM histogram, mirroring workerSwimLevel;
@@ -381,7 +381,7 @@ namespace Cortex
 		// harassment defensive recall (0 == no hold active). These mirror the AICortex
 		// RAM-only members of the same names: AICortex OWNS and MUTATES the state when
 		// it actually places a flag (re-arming offenseHoldUntil on a war-flag placement
-		// is an execution side-effect), and echoes the current values into the
+		// is an execution side-effect), and runtimees the current values into the
 		// observation each cycle BEFORE policy.decide() so the PURE policy can make the
 		// hold-vs-recall hysteresis decision itself instead of having it hidden in the
 		// downstream executor. Not derived from engine state and NOT serialized via the
@@ -391,9 +391,9 @@ namespace Cortex
 		Sint32 offenseHoldUntil;///< == AICortex.offenseHoldUntil (tick the offense hold expires; 0 == none).
 
 		// --- wheat sustainability (v5) ---
-		// The open margin N drawn once per game (AICortex, via syncRand) and echoed
+		// The open margin N drawn once per game (AICortex, via syncRand) and runtimeed
 		// through the observation so the pure policy reads it like any other feature.
-		// It is the ML seam (a learned policy later OUTPUTS N here instead of echoing
+		// It is the ML seam (a learned policy later OUTPUTS N here instead of runtimeing
 		// the seeded value); the wheat executor reads it each cycle via the AICortex
 		// member to drive the checkerboard scan.
 		Sint32 wheatOpenMargin;
@@ -469,7 +469,7 @@ namespace Cortex
 		// exactly like enemies[].totalUnit — never unfogged truth); -1 when no enemy
 		// warrior is visible. enemyWarriorLevelLatched: the highest value
 		// enemyWarriorLevelVisible has EVER reached this game — AICortex owns and
-		// persists the latch (serialized, monotone; the flagPosture echo pattern) and
+		// persists the latch (serialized, monotone; the flagPosture runtime pattern) and
 		// stamps it here after observe(), so the pure policy reads a stable "how
 		// strong has their army been seen to be" signal that a lull in visibility
 		// never resets. 0 until the first enemy warrior is sighted.
@@ -486,7 +486,7 @@ namespace Cortex
 		// and close enough that the finished building brings the target in range
 		// (<= range - CORTEX_FORWARD_RANGE_SLACK). *Underway flags: the forward site
 		// AICortex last ORDERED (tracked by position, serialized) is still building —
-		// AICortex echoes these in before decide() so the policy does not order a
+		// AICortex runtimees these in before decide() so the policy does not order a
 		// second one.
 		BuildCandidate forwardInn;
 		BuildCandidate forwardHeal;
@@ -498,8 +498,8 @@ namespace Cortex
 		// discovered (attackRangeUnscoutedWaiver: first contact with a lone distant
 		// building is no basis for holding the first strike) — telling computeOffenseCommit to attack
 		// out-of-envelope anyway while the forward base keeps building. AICortex
-		// owns/serializes the bind-start tick (rangeGateBindingSince) and echoes this
-		// derived flag in before decide() (the flagPosture echo pattern). 0 while the
+		// owns/serializes the bind-start tick (rangeGateBindingSince) and runtimees this
+		// derived flag in before decide() (the flagPosture runtime pattern). 0 while the
 		// gate is unbound or still inside the grace window.
 		Sint32 rangeGateWaived;
 

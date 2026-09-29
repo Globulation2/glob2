@@ -5,7 +5,7 @@
 #include "AICastor.h"
 #include "AIWarrush.h"
 #include "AINicowar.h"
-#include "echo/Echo.h"
+#include "shared_runtime/Runtime.h"
 #include "cortex/AICortex.h"
 #include "AIMaxima.h"
 #include "AICabino.h"
@@ -107,7 +107,7 @@ void AIWarrush::captureTelemetry()
 	telemetry.set(AITrace::AI3::state_areaUpdatingDelay, areaUpdatingDelay);
 }
 
-void AIEcho::Econo::captureTelemetry()
+void AISharedRuntime::Econo::captureTelemetry()
 {
 	telemetry.set(AITrace::AI4::state_timer, timer);
 	telemetry.set(AITrace::AI4::state_flag_on_cherry, flag_on_cherry);
@@ -951,22 +951,22 @@ void Cabino::AICabino::captureTelemetry()
 	telemetry.set(AITrace::AI8::state_modules_count, modules.size());
 }
 
-void AIEcho::Echo::captureTelemetry()
+void AISharedRuntime::Runtime::captureTelemetry()
 {
-	echoai->telemetry = telemetry;
-	echoai->captureTelemetry();
-	telemetry.set(telemetry.series->implementation == 4 ? AITrace::AI4::echo_timer
-														: AITrace::AI5::echo_timer,
+	runtimeai->telemetry = telemetry;
+	runtimeai->captureTelemetry();
+	telemetry.set(telemetry.series->implementation == 4 ? AITrace::AI4::shared_runtime_timer
+														: AITrace::AI5::shared_runtime_timer,
 				  timer);
-	telemetry.set(telemetry.series->implementation == 4 ? AITrace::AI4::echo_orders_count
-														: AITrace::AI5::echo_orders_count,
+	telemetry.set(telemetry.series->implementation == 4 ? AITrace::AI4::shared_runtime_orders_count
+														: AITrace::AI5::shared_runtime_orders_count,
 				  orders.size());
-	telemetry.set(telemetry.series->implementation == 4 ? AITrace::AI4::echo_building_orders_count
-														: AITrace::AI5::echo_building_orders_count,
+	telemetry.set(telemetry.series->implementation == 4 ? AITrace::AI4::shared_runtime_building_orders_count
+														: AITrace::AI5::shared_runtime_building_orders_count,
 				  building_orders.size());
 	telemetry.set(telemetry.series->implementation == 4
-					  ? AITrace::AI4::echo_management_orders_count
-					  : AITrace::AI5::echo_management_orders_count,
+					  ? AITrace::AI4::shared_runtime_management_orders_count
+					  : AITrace::AI5::shared_runtime_management_orders_count,
 				  management_orders.size());
 }
 

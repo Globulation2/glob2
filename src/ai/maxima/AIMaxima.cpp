@@ -481,12 +481,12 @@ Maxima::CampaignPlan::CampaignPlan()
 }
 
 
-void Maxima::StrategyDirector::evaluate(Maxima& owner, Context& echo)
+void Maxima::StrategyDirector::evaluate(Maxima& owner, Context& runtime)
 {
 	if(initialized && !dirty
 	   && owner.snapshot.tick==owner.timer)
 		return;
-	owner.evaluate_strategy(echo);
+	owner.evaluate_strategy(runtime);
 	committed();
 }
 
@@ -500,18 +500,18 @@ const char* Maxima::posture_name(StrategicPosture selected) const
 }
 
 
-void Maxima::emit_telemetry(Context& echo, const std::string& event,
+void Maxima::emit_telemetry(Context& runtime, const std::string& event,
 	const std::string& fields) const
 {
 	if(!telemetry_enabled())
 		return;
 	std::cout<<"MAXIMA_TELEMETRY\t"<<timer<<"\t"
-		<<echo.player->team->teamNumber<<"\t"<<event<<fields
-		<<"\tgame_tick="<<echo.player->game->stepCounter<<std::endl;
+		<<runtime.player->team->teamNumber<<"\t"<<event<<fields
+		<<"\tgame_tick="<<runtime.player->game->stepCounter<<std::endl;
 }
 
 
-void Maxima::emit_ablation_opportunities(Context& echo) const
+void Maxima::emit_ablation_opportunities(Context& runtime) const
 {
 	if(!telemetry_enabled())
 		return;
@@ -526,11 +526,11 @@ void Maxima::emit_ablation_opportunities(Context& echo) const
 		context^=static_cast<Uint32>(values[i]);
 		context*=16777619u;
 	}
-	const int player=echo.player ? echo.player->number : -1;
-	const int team=echo.player && echo.player->team
-		? echo.player->team->teamNumber : -1;
-	const Uint32 eventTick=echo.player && echo.player->game
-		? echo.player->game->stepCounter : static_cast<Uint32>(timer);
+	const int player=runtime.player ? runtime.player->number : -1;
+	const int team=runtime.player && runtime.player->team
+		? runtime.player->team->teamNumber : -1;
+	const Uint32 eventTick=runtime.player && runtime.player->game
+		? runtime.player->game->stepCounter : static_cast<Uint32>(timer);
 	const int population=std::max(1, snapshot.population);
 	const bool rawFood=snapshot.population>1 && (
 		snapshot.unserved_food*100
@@ -615,11 +615,11 @@ void Maxima::emit_ablation_opportunities(Context& echo) const
 }
 
 
-Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& echo)
+Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 {
 	StrategicSnapshot state;
 	state.tick=timer;
-	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	state.population=stat->totalUnit;
 	state.workers=stat->numberUnitPerType[WORKER];
 	state.free_warriors=stat->isFree[WARRIOR];
@@ -650,10 +650,10 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& echo)
 	state.towers=stat->numberBuildingPerType[IntBuildingType::DEFENSE_BUILDING];
 	state.total_hp=stat->totalHP;
 	state.attack_power=stat->totalAttackPower;
-	state.prestige=echo.player->team->prestige;
-	for(enemy_team_iterator enemy(echo); enemy!=enemy_team_iterator(); ++enemy)
+	state.prestige=runtime.player->team->prestige;
+	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		const Team* hostile=echo.player->game->teams[*enemy];
+		const Team* hostile=runtime.player->game->teams[*enemy];
 		if(hostile && hostile->isAlive)
 			state.enemy_prestige+=hostile->prestige;
 	}
@@ -674,7 +674,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& echo)
 	}
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
-		Unit* unit=echo.player->team->myUnits[i];
+		Unit* unit=runtime.player->team->myUnits[i];
 		if(unit && unit->underAttackTimer)
 			state.own_units_under_attack+=1;
 		if(unit && unit->typeNum==EXPLORER
@@ -685,7 +685,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& echo)
 
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
-		Building* building=echo.player->team->myBuildings[i];
+		Building* building=runtime.player->team->myBuildings[i];
 		if(!building)
 			continue;
 		// Only a level-zero site is new construction. Upgrade sites retain the
@@ -743,11 +743,11 @@ void Maxima::update_trends()
 }
 
 
-void Maxima::initialize_topology_profile(Context& echo)
+void Maxima::initialize_topology_profile(Context& runtime)
 {
 	if(topology_initialized)
 		return;
-	MapInfo map(echo);
+	MapInfo map(runtime);
 	const int width=map.get_width();
 	const int height=map.get_height();
 	const int tiles=std::max(1, width*height);
@@ -872,7 +872,7 @@ void Maxima::initialize_topology_profile(Context& echo)
 	int start_label=largest_label;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
-		Building* building=echo.player->team->myBuildings[id];
+		Building* building=runtime.player->team->myBuildings[id];
 		if(!building || building->type->isVirtual)
 			continue;
 		const int bx=(building->posX%width+width)%width;
@@ -901,7 +901,7 @@ void Maxima::initialize_topology_profile(Context& echo)
 	global_algae_tiles=algae;
 	global_fruit_tiles=fruit;
 	const int participants=std::max(1,
-		echo.player->game->gameHeader.getNumberOfPlayers());
+		runtime.player->game->gameHeader.getNumberOfPlayers());
 	const int global_food_per_player=(corn+fruit/2)/participants;
 	const int global_material_per_player=(wood+stone*3+algae*2)/participants;
 	const int global_space_per_player=buildable/participants;
@@ -978,10 +978,10 @@ void Maxima::initialize_topology_profile(Context& echo)
 }
 
 
-void Maxima::update_environment_model(Context& echo)
+void Maxima::update_environment_model(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_update_environment_model_calls);
-	initialize_topology_profile(echo);
+	initialize_topology_profile(runtime);
 	const MaximaStrategy::Environment& policy=strategy.environment;
 	EnvironmentModel observed;
 	observed.known_tiles=0;
@@ -1002,12 +1002,12 @@ void Maxima::update_environment_model(Context& echo)
 	// naturally expands as the colony and its knowledge expand, so an island can
 	// be reclassified after swimming opens new resources without knowing the map
 	// name or peeking through fog of war.
-	MapInfo map(echo);
+	MapInfo map(runtime);
 	const int map_width=map.get_width(),map_height=map.get_height();
 	std::vector<Uint8> local_tiles(map_width*map_height,0);
 	for(int id=0;id<Building::MAX_COUNT;++id)
 	{
-		Building* building=echo.player->team->myBuildings[id];
+		Building* building=runtime.player->team->myBuildings[id];
 		if(!building||building->type->isVirtual)continue;
 		for(int dy=-policy.local_territory_radius;
 			dy<=policy.local_territory_radius;++dy)
@@ -1016,15 +1016,15 @@ void Maxima::update_environment_model(Context& echo)
 			if(dx*dx+dy*dy<=policy.local_territory_radius
 				*policy.local_territory_radius)
 			{
-				const int x=echo.player->map->normalizeX(building->posX+dx);
-				const int y=echo.player->map->normalizeY(building->posY+dy);
+				const int x=runtime.player->map->normalizeX(building->posX+dx);
+				const int y=runtime.player->map->normalizeY(building->posY+dy);
 				local_tiles[y*map_width+x]=1;
 			}
 	}
 	// Use the same worker connectivity for food and materials as for algae.
 	// Nearby deposits across water or behind blocked routes are not live supply.
 	const ResourceAccessObservation resources=
-		observe_resource_access(echo.player, local_tiles);
+		observe_resource_access(runtime.player, local_tiles);
 	known_algae_units=resources.knownAlgaeUnits;
 	walk_accessible_algae_units=resources.walkingAlgaeUnits;
 	swim_accessible_algae_units=resources.swimmingAlgaeUnits;
@@ -1033,19 +1033,19 @@ void Maxima::update_environment_model(Context& echo)
 	std::set<int> food_tiles;
 	long long food_capacity=0;
 	std::vector<Building*> food_sources;
-	BuildingSearch food_buildings(echo);
+	BuildingSearch food_buildings(runtime);
 	food_buildings.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i=food_buildings.begin();i!=food_buildings.end();++i)
-		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING
-		   || echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+		if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING
+		   || runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
-			food_capacity+=nearby_farm_capacity(echo,*i,&food_tiles);
-			Building* source=echo.get_building_register().get_building(*i);
+			food_capacity+=nearby_farm_capacity(runtime,*i,&food_tiles);
+			Building* source=runtime.get_building_register().get_building(*i);
 			if(source)food_sources.push_back(source);
 		}
 	if(food_capacity==0 && !food_sources.empty())
-		food_capacity=distantFoodCapacity(echo.player->map,food_sources,
-			echo.player->team->me,budget.can_swim,budget.swarm_supply_radius,
+		food_capacity=distantFoodCapacity(runtime.player->map,food_sources,
+			runtime.player->team->me,budget.can_swim,budget.swarm_supply_radius,
 			fertility_cache,&applied_farm_protection_mask,
 			strategy.farming.wheat_stock_horizon_ticks);
 	observed.accessible_corn=int(food_capacity/65536);
@@ -1068,7 +1068,7 @@ void Maxima::update_environment_model(Context& echo)
 		}
 	}
 
-	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	const int population=std::max(1, snapshot.population);
 	const int food_stress=(snapshot.hungry*policy.hungry_weight
 		+snapshot.critical_food*policy.critical_food_weight
@@ -1294,26 +1294,26 @@ void Maxima::score_demands()
 
 
 std::vector<unsigned char> Maxima::reconnaissance_discovery_map(
-	Context& echo) const
+	Context& runtime) const
 {
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int width=map->getW();
 	const int height=map->getH();
 	std::vector<unsigned char> discovered(width*height, 0);
 	for(int y=0; y<height; ++y)
 		for(int x=0; x<width; ++x)
 			discovered[y*width+x]=map->isMapDiscovered(
-				x, y, echo.player->team->me) ? 1 : 0;
+				x, y, runtime.player->team->me) ? 1 : 0;
 	return discovered;
 }
 
 
-void Maxima::remember_cleared_enemy_site(Context& echo,
+void Maxima::remember_cleared_enemy_site(Context& runtime,
 	const Recon::BuildingSighting& sighting)
 {
 	if(sighting.construction)
 		return;
-	Map* map=echo.player->map;
+	Map* map=runtime.player->map;
 	const int x=map->normalizeX(sighting.x+sighting.width/2);
 	const int y=map->normalizeY(sighting.y+sighting.height/2);
 	const int width=map->getW();
@@ -1341,7 +1341,7 @@ void Maxima::remember_cleared_enemy_site(Context& echo,
 	fields<<"\tx="<<x<<"\ty="<<y<<"\tteam="<<sighting.team
 		<<"\tbuilding_type="<<sighting.type<<"\tmerged="<<(merged ? 1 : 0)
 		<<"\thotspot_count="<<cleared_enemy_sites.size();
-	emit_telemetry(echo, "colony_site_remembered", fields.str());
+	emit_telemetry(runtime, "colony_site_remembered", fields.str());
 }
 
 
@@ -1358,12 +1358,12 @@ void Maxima::prune_cleared_enemy_sites()
 }
 
 
-void Maxima::sample_reconnaissance_forces(Context& echo)
+void Maxima::sample_reconnaissance_forces(Context& runtime)
 {
 	std::vector<int> living;
-	for(enemy_team_iterator enemy(echo); enemy!=enemy_team_iterator(); ++enemy)
+	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		Team* enemy_team=echo.player->game->teams[*enemy];
+		Team* enemy_team=runtime.player->game->teams[*enemy];
 		if(enemy_team && enemy_team->isAlive)
 			living.push_back(*enemy);
 	}
@@ -1372,19 +1372,19 @@ void Maxima::sample_reconnaissance_forces(Context& echo)
 	std::vector<Building*> own_buildings;
 	for(int b=0; b<Building::MAX_COUNT; ++b)
 	{
-		Building* building=echo.player->team->myBuildings[b];
+		Building* building=runtime.player->team->myBuildings[b];
 		if(building && !building->type->isVirtual)
 			own_buildings.push_back(building);
 	}
 
 	for(std::vector<int>::const_iterator team=living.begin(); team!=living.end(); ++team)
 	{
-		Team* enemy_team=echo.player->game->teams[*team];
+		Team* enemy_team=runtime.player->game->teams[*team];
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
 			Unit* unit=enemy_team->myUnits[i];
-			if(!unit || !echo.player->map->isFOWDiscovered(
-				unit->posX, unit->posY, echo.player->team->me))
+			if(!unit || !runtime.player->map->isFOWDiscovered(
+				unit->posX, unit->posY, runtime.player->team->me))
 				continue;
 			const bool warrior=unit->typeNum==WARRIOR;
 			const bool explorer=unit->typeNum==EXPLORER;
@@ -1406,7 +1406,7 @@ void Maxima::sample_reconnaissance_forces(Context& echo)
 				for(std::vector<Building*>::const_iterator building=
 					own_buildings.begin(); building!=own_buildings.end(); ++building)
 				{
-					if(echo.player->map->warpDistSquare(unit->posX, unit->posY,
+					if(runtime.player->map->warpDistSquare(unit->posX, unit->posY,
 						(*building)->posX, (*building)->posY)<=threat_radius)
 					{
 						colony_threat=warrior;
@@ -1438,13 +1438,13 @@ void Maxima::apply_force_beliefs()
 }
 
 
-void Maxima::update_reconnaissance(Context& echo)
+void Maxima::update_reconnaissance(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_update_reconnaissance_calls);
 	std::vector<int> living;
-	for(enemy_team_iterator enemy(echo); enemy!=enemy_team_iterator(); ++enemy)
+	for(enemy_team_iterator enemy(runtime); enemy!=enemy_team_iterator(); ++enemy)
 	{
-		Team* enemy_team=echo.player->game->teams[*enemy];
+		Team* enemy_team=runtime.player->game->teams[*enemy];
 		if(enemy_team && enemy_team->isAlive)
 			living.push_back(*enemy);
 	}
@@ -1454,12 +1454,12 @@ void Maxima::update_reconnaissance(Context& echo)
 
 	for(std::vector<int>::const_iterator team=living.begin(); team!=living.end(); ++team)
 	{
-		Team* enemy_team=echo.player->game->teams[*team];
+		Team* enemy_team=runtime.player->game->teams[*team];
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
 			Unit* unit=enemy_team->myUnits[i];
-			if(!unit || !echo.player->map->isFOWDiscovered(
-				unit->posX, unit->posY, echo.player->team->me))
+			if(!unit || !runtime.player->map->isFOWDiscovered(
+				unit->posX, unit->posY, runtime.player->team->me))
 				continue;
 			if(!unit->isDead)
 			{
@@ -1502,9 +1502,9 @@ void Maxima::update_reconnaissance(Context& echo)
 				const int threat_radius=warrior ? 144 : 324;
 				for(int b=0; b<Building::MAX_COUNT; ++b)
 				{
-					Building* own=echo.player->team->myBuildings[b];
+					Building* own=runtime.player->team->myBuildings[b];
 					if(own && !own->type->isVirtual
-					   && echo.player->map->warpDistSquare(unit->posX, unit->posY,
+					   && runtime.player->map->warpDistSquare(unit->posX, unit->posY,
 						own->posX, own->posY)<=threat_radius)
 					{
 						colony_threat=warrior;
@@ -1521,7 +1521,7 @@ void Maxima::update_reconnaissance(Context& echo)
 		{
 			Building* building=enemy_team->myBuildings[i];
 			if(!building || building->type->isVirtual
-			   || !building_currently_visible(echo.player, building))
+			   || !building_currently_visible(runtime.player, building))
 				continue;
 			reconnaissance.observeBuilding(Recon::BuildingSighting(
 				building->gid, *team, building->type->shortTypeNum,
@@ -1539,13 +1539,13 @@ void Maxima::update_reconnaissance(Context& echo)
 			{
 				if(building->second.currentlyVisible
 				   || !remembered_footprint_currently_visible(
-						echo.player, building->second))
+						runtime.player, building->second))
 					continue;
 				const int id=Building::GIDtoID(building->first);
 				Building* actual=id>=0 && id<Building::MAX_COUNT
 					? enemy_team->myBuildings[id] : NULL;
 				if(!actual || actual->gid!=building->first
-				   || echo.player->map->getBuilding(building->second.x,
+				   || runtime.player->map->getBuilding(building->second.x,
 					building->second.y)!=building->first)
 					absent.push_back(building->first);
 			}
@@ -1559,15 +1559,15 @@ void Maxima::update_reconnaissance(Context& echo)
 				std::map<int, Recon::BuildingSighting>::const_iterator sighting=
 					before->buildings.find(*gid);
 				if(sighting!=before->buildings.end() && !sighting->second.construction)
-					remember_cleared_enemy_site(echo, sighting->second);
+					remember_cleared_enemy_site(runtime, sighting->second);
 			}
 			reconnaissance.confirmBuildingAbsent(*team, *gid);
 		}
 	}
 	reconnaissance.finishObservation();
 	Tactics::RaidRules raid_rules;
-	raid_rules.width=echo.player->map->getW();
-	raid_rules.height=echo.player->map->getH();
+	raid_rules.width=runtime.player->map->getW();
+	raid_rules.height=runtime.player->map->getH();
 	raid_rules.tick=timer;
 	raid_rules.clusterRadius=strategy.raiding.cluster_radius;
 	raid_rules.flagRadius=strategy.raiding.flag_radius;
@@ -1580,7 +1580,7 @@ void Maxima::update_reconnaissance(Context& echo)
 	raid_rules.defenderPenalty=strategy.raiding.defender_penalty;
 	tactics.finishObservation(raid_rules);
 
-	const std::vector<unsigned char> discovered=reconnaissance_discovery_map(echo);
+	const std::vector<unsigned char> discovered=reconnaissance_discovery_map(runtime);
 	int explored=0;
 	for(std::vector<unsigned char>::const_iterator tile=discovered.begin();
 		tile!=discovered.end(); ++tile)
@@ -1616,16 +1616,16 @@ void Maxima::update_reconnaissance(Context& echo)
 }
 
 
-void Maxima::update_opponent_models(Context& echo)
+void Maxima::update_opponent_models(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_update_opponent_models_calls);
 	AIMaximaRuntime::Gradients::GradientInfo home_info;
 	home_info.add_source(new Entities::AnyTeamBuilding(
-		echo.player->team->teamNumber, CompletedBuildings));
+		runtime.player->team->teamNumber, CompletedBuildings));
 	home_info.add_obstacle(new Entities::AnyResource);
 	if(snapshot.swimming_warriors<6)
 		home_info.add_obstacle(new Entities::Water);
-	Gradient& home=echo.get_gradient_manager().get_gradient(home_info);
+	Gradient& home=runtime.get_gradient_manager().get_gradient(home_info);
 
 	for(int team=0; team<Team::MAX_COUNT; ++team)
 		opponents[team]=OpponentAssessment();
@@ -1690,7 +1690,7 @@ void Maxima::update_opponent_models(Context& echo)
 }
 
 
-void Maxima::remove_reconnaissance_missions(Context& echo,
+void Maxima::remove_reconnaissance_missions(Context& runtime,
 	const char* reason)
 {
 	const std::vector<Recon::ReconMission> missions=
@@ -1698,10 +1698,10 @@ void Maxima::remove_reconnaissance_missions(Context& echo,
 	for(std::vector<Recon::ReconMission>::const_iterator mission=missions.begin();
 		mission!=missions.end(); ++mission)
 	{
-		if(echo.get_building_register().is_building_found(mission->flagId)
-		   || echo.get_building_register().is_building_pending(mission->flagId))
-			echo.add_management_order(new DestroyBuilding(mission->flagId));
-		emit_telemetry(echo, "recon_mission_removed",
+		if(runtime.get_building_register().is_building_found(mission->flagId)
+		   || runtime.get_building_register().is_building_pending(mission->flagId))
+			runtime.add_management_order(new DestroyBuilding(mission->flagId));
+		emit_telemetry(runtime, "recon_mission_removed",
 			"\tflag="+telemetryText(mission->flagId)
 			+"\ttarget_team="+telemetryText(mission->targetTeam)
 			+"\treason="+reason);
@@ -1710,20 +1710,20 @@ void Maxima::remove_reconnaissance_missions(Context& echo,
 }
 
 
-void Maxima::update_reconnaissance_missions(Context& echo)
+void Maxima::update_reconnaissance_missions(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_update_reconnaissance_missions_calls);
 	Recon::ReconReport& report=reconnaissance.mutableReport();
 	for(std::vector<Recon::ReconMission>::iterator mission=report.missions.begin();
 		mission!=report.missions.end();)
 	{
-		if(echo.get_building_register().is_building_found(mission->flagId)
-		   || echo.get_building_register().is_building_pending(mission->flagId))
+		if(runtime.get_building_register().is_building_found(mission->flagId)
+		   || runtime.get_building_register().is_building_pending(mission->flagId))
 		{
 			++mission;
 			continue;
 		}
-		emit_telemetry(echo, "recon_mission_removed",
+		emit_telemetry(runtime, "recon_mission_removed",
 			"\tflag="+telemetryText(mission->flagId)
 			+"\ttarget_team="+telemetryText(mission->targetTeam)
 			+"\treason=flag_missing");
@@ -1733,10 +1733,10 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 	if(budget.reconnaissance_suspended || report.exploredPercent<strategy.reconnaissance.active_min_explored_percent)
 	{
 		if(!reconnaissance_suspended)
-			emit_telemetry(echo, "recon_suspended");
+			emit_telemetry(runtime, "recon_suspended");
 		reconnaissance_suspended=true;
 		if(!report.missions.empty())
-			remove_reconnaissance_missions(echo,
+			remove_reconnaissance_missions(runtime,
 				report.exploredPercent<strategy.reconnaissance.active_min_explored_percent ? "initial_exploration" : "emergency");
 		last_recon_mission_tick=-1000000;
 		return;
@@ -1745,20 +1745,20 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 	{
 		reconnaissance_suspended=false;
 		last_recon_mission_tick=-1000000;
-		emit_telemetry(echo, "recon_resumed");
+		emit_telemetry(runtime, "recon_resumed");
 	}
 	if(budget.reconnaissance_objectives.empty())
 	{
 		if(!report.missions.empty())
-			remove_reconnaissance_missions(echo, "no_living_enemy");
+			remove_reconnaissance_missions(runtime, "no_living_enemy");
 		return;
 	}
 	if(timer-last_recon_mission_tick<budget.reconnaissance_review_interval)
 		return;
 	last_recon_mission_tick=timer;
 
-	Map* map=echo.player->map;
-	const std::vector<unsigned char> discovered=reconnaissance_discovery_map(echo);
+	Map* map=runtime.player->map;
+	const std::vector<unsigned char> discovered=reconnaissance_discovery_map(runtime);
 	const std::vector<Recon::MissionObjective>& objectives=
 		budget.reconnaissance_objectives;
 	std::vector<Recon::ReconMission>& missions=report.missions;
@@ -1790,17 +1790,17 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 				IntBuildingType::EXPLORATION_FLAG, 1);
 			order->add_constraint(new Construction::SinglePosition(
 				objective.x, objective.y));
-			const int flag=echo.add_building_order(order);
-			echo.add_management_order(new ChangeFlagSize(
+			const int flag=runtime.add_building_order(order);
+			runtime.add_management_order(new ChangeFlagSize(
 				budget.reconnaissance_flag_radius, flag));
 			ManagementOrder* removed=new Notify(
 				RuntimeEvent(RuntimeEvent::ReconFlagDeleted, flag));
 			removed->add_condition(new BuildingDestroyed(flag));
-			echo.add_management_order(removed);
+			runtime.add_management_order(removed);
 			missions.push_back(Recon::ReconMission(flag, objective.targetTeam,
 				objective.frontier, objective.x, objective.y, timer,
 				objective.economicWatch));
-			emit_telemetry(echo, "recon_mission_created",
+			emit_telemetry(runtime, "recon_mission_created",
 				"\tflag="+telemetryText(flag)
 				+"\ttarget_team="+telemetryText(objective.targetTeam)
 				+"\tfrontier="+telemetryText(objective.frontier ? 1 : 0)
@@ -1841,9 +1841,9 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 		if(location_changed && (assignment_changed || saturated
 		   || materially_better || newer_building || economic_revisit))
 		{
-			echo.add_management_order(new ChangeFlagPosition(
+			runtime.add_management_order(new ChangeFlagPosition(
 				objective.x, objective.y, mission.flagId));
-			emit_telemetry(echo, "recon_mission_moved",
+			emit_telemetry(runtime, "recon_mission_moved",
 				"\tflag="+telemetryText(mission.flagId)
 				+"\tprevious_team="+telemetryText(mission.targetTeam)
 				+"\ttarget_team="+telemetryText(objective.targetTeam)
@@ -1861,10 +1861,10 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 	while(missions.size()>objectives.size())
 	{
 		const Recon::ReconMission mission=missions.back();
-		if(echo.get_building_register().is_building_found(mission.flagId)
-		   || echo.get_building_register().is_building_pending(mission.flagId))
-			echo.add_management_order(new DestroyBuilding(mission.flagId));
-		emit_telemetry(echo, "recon_mission_removed",
+		if(runtime.get_building_register().is_building_found(mission.flagId)
+		   || runtime.get_building_register().is_building_pending(mission.flagId))
+			runtime.add_management_order(new DestroyBuilding(mission.flagId));
+		emit_telemetry(runtime, "recon_mission_removed",
 			"\tflag="+telemetryText(mission.flagId)
 			+"\ttarget_team="+telemetryText(mission.targetTeam)
 			+"\treason=capacity_reduced");
@@ -1873,7 +1873,7 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 }
 
 
-void Maxima::plan_reconnaissance_objectives(Context& echo)
+void Maxima::plan_reconnaissance_objectives(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_plan_reconnaissance_objectives_calls);
 	Recon::ReconReport& report=reconnaissance.mutableReport();
@@ -1900,8 +1900,8 @@ void Maxima::plan_reconnaissance_objectives(Context& echo)
 		return;
 	}
 
-	Map* map=echo.player->map;
-	const std::vector<unsigned char> discovered=reconnaissance_discovery_map(echo);
+	Map* map=runtime.player->map;
+	const std::vector<unsigned char> discovered=reconnaissance_discovery_map(runtime);
 	budget.reconnaissance_objectives=Recon::Program::planObjectives(
 		report, contact_desired, map->getW(), map->getH(), discovered,
 		budget.reconnaissance_flag_radius);
@@ -2864,7 +2864,7 @@ void Maxima::arbitrate_policy_bids()
 }
 
 
-void Maxima::finalize_director_plan(Context& echo)
+void Maxima::finalize_director_plan(Context& runtime)
 {
 	// Copy every executor-facing threshold into the immutable plan. From this
 	// point until the next strategic cadence, tactical code does not reinterpret
@@ -2981,7 +2981,7 @@ void Maxima::finalize_director_plan(Context& echo)
 		const auto& action=entry.second;
 		if(action.purpose!=AIMaximaPlacement::ColonySeed
 		   || action.state!=AIMaximaPlacement::Completed) continue;
-		Building* building=echo.get_building_register().get_building(action.buildingId);
+		Building* building=runtime.get_building_register().get_building(action.buildingId);
 		// Completion alone is not success: do not chain empty, unstaffed outposts.
 		// Once provisioned, remember startup so a later pause cannot block expansion.
 		if(building && !operating_colonies.count(action.id))
@@ -2990,7 +2990,7 @@ void Maxima::finalize_director_plan(Context& echo)
 			   && building->resources[WHEAT]>=building->type->resourceForOneUnit)
 			{
 				operating_colonies.insert(action.id);
-				emit_telemetry(echo,"colony_swarm_operating",
+				emit_telemetry(runtime,"colony_swarm_operating",
 					"\tbuilding_id="+telemetryText(action.buildingId));
 			}
 			else colony_starting=true;
@@ -3029,12 +3029,12 @@ void Maxima::finalize_director_plan(Context& echo)
 		: 0;
 	budget.explorer_campaign_units_per_flag=
 		strategy.explorer_campaign.units_per_flag;
-	budget.fruit_active=strategy.fruit.enabled && echo.is_fruit_on_map();
+	budget.fruit_active=strategy.fruit.enabled && runtime.is_fruit_on_map();
 	if(budget.fruit_active)
 	{
 		int missions=0;
 		for(int fruit=CHERRY;fruit<=PRUNE;++fruit)
-			missions+=echo.resource_flags(fruit).size();
+			missions+=runtime.resource_flags(fruit).size();
 		budget.desired_explorers+=missions*strategy.fruit.units_per_flag;
 	}
 	budget.fruit_units_per_flag=strategy.fruit.units_per_flag;
@@ -3163,9 +3163,9 @@ void Maxima::finalize_director_plan(Context& echo)
 }
 
 
-void Maxima::emit_director_snapshot(Context& echo) const
+void Maxima::emit_director_snapshot(Context& runtime) const
 {
-	MapInfo world(echo);
+	MapInfo world(runtime);
 	int estimated_enemy_warriors=0;
 	for(int team=0; team<Team::MAX_COUNT; ++team)
 		if(opponents[team].alive)
@@ -3178,7 +3178,7 @@ void Maxima::emit_director_snapshot(Context& echo) const
 	int military_workers=0;
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
-		Building* building=echo.player->team->myBuildings[i];
+		Building* building=runtime.player->team->myBuildings[i];
 		if(!building || building->type->isBuildingSite)
 			continue;
 		const int assigned=building->maxUnitWorking;
@@ -3198,7 +3198,7 @@ void Maxima::emit_director_snapshot(Context& echo) const
 			default: break;
 		}
 	}
-	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	const bool endgame=snapshot.alive_enemies<=2;
 	const int campaign_population_required=std::max(endgame ? 45 : 50,
 		(endgame ? 55 : 70)-demands.aggression/5);
@@ -3440,26 +3440,26 @@ void Maxima::emit_director_snapshot(Context& echo) const
 	for(std::map<std::string,int>::const_iterator r=offense_diagnostics.rejections.begin();
 		r!=offense_diagnostics.rejections.end(); ++r)
 		fields<<"\toffense_reject_"<<r->first<<"="<<r->second;
-	emit_telemetry(echo, "director_snapshot", fields.str());
+	emit_telemetry(runtime, "director_snapshot", fields.str());
 }
 
 
-void Maxima::evaluate_strategy(Context& echo)
+void Maxima::evaluate_strategy(Context& runtime)
 {
 	telemetry.count(AITrace::AI7::Maxima_evaluate_strategy_calls);
 	if(strategy.reconnaissance.enabled)
-		update_reconnaissance(echo);
+		update_reconnaissance(runtime);
 	else
 	{
 		if(!reconnaissance.report().missions.empty())
-			remove_reconnaissance_missions(echo, "disabled");
+			remove_reconnaissance_missions(runtime, "disabled");
 		reconnaissance.reset();
 		force_beliefs.clear();
 		tactics.reset();
 	}
 	prune_cleared_enemy_sites();
-	StrategicSnapshot next=collect_snapshot(echo);
-	labour_observation=observe_labour(echo);
+	StrategicSnapshot next=collect_snapshot(runtime);
+	labour_observation=observe_labour(runtime);
 	if(director.initialized)
 	{
 		previous_snapshot=snapshot;
@@ -3471,7 +3471,7 @@ void Maxima::evaluate_strategy(Context& echo)
 		snapshot=next;
 		previous_snapshot=next;
 	}
-	update_environment_model(echo);
+	update_environment_model(runtime);
 	const bool bomb_visible=strategy.military.explorer_defense_enabled
 		&& (snapshot.visible_enemy_attack_explorers
 			>=strategy.reconnaissance.explorer_attack_warning_threshold
@@ -3491,12 +3491,12 @@ void Maxima::evaluate_strategy(Context& echo)
 		explorer_colony_threat_until=timer
 			+strategy.scheduling.explorer_colony_warning_duration_ticks;
 	if(new_explorer_alert || new_colony_alert)
-		emit_telemetry(echo, "explorer_defense_alert",
+		emit_telemetry(runtime, "explorer_defense_alert",
 			"\tattack_explorers="
 				+telemetryText(snapshot.visible_enemy_attack_explorers)
 			+"\tnear_colony="
 				+telemetryText(snapshot.visible_colony_explorer_threat));
-	update_opponent_models(echo);
+	update_opponent_models(runtime);
 	score_demands();
 	score_postures();
 	const StrategicPosture previous_posture=posture;
@@ -3504,25 +3504,25 @@ void Maxima::evaluate_strategy(Context& echo)
 	if (posture != previous_posture)
 		telemetry.count(AITrace::AI7::runtime_posture_changed);
 	allocate_resources();
-	finalize_director_plan(echo);
-	plan_offense(echo);
+	finalize_director_plan(runtime);
+	plan_offense(runtime);
 	// Explorer strikes share the offensive target. Keep the existing strategic
 	// target selector available when there is no warrior mission to follow.
 	if(budget.tactical_kind==Tactics::MissionRaid
 	   || budget.tactical_kind==Tactics::MissionSiege)
 		target=budget.tactical_target_team;
 	else
-		choose_enemy_target(echo);
-	plan_reconnaissance_objectives(echo);
-	emit_ablation_opportunities(echo);
+		choose_enemy_target(runtime);
+	plan_reconnaissance_objectives(runtime);
+	emit_ablation_opportunities(runtime);
 	if(!director.initialized || posture!=previous_posture)
-		emit_telemetry(echo, "posture_changed",
+		emit_telemetry(runtime, "posture_changed",
 			"\tprevious="+std::string(director.initialized
 				? posture_name(previous_posture) : "none")
 			+"\tposture="+posture_name(posture));
 	if(timer-last_director_telemetry_tick>=1000)
 	{
-		emit_director_snapshot(echo);
+		emit_director_snapshot(runtime);
 		std::ostringstream recon_fields;
 		const Recon::ReconReport& recon=reconnaissance.report();
 		recon_fields<<"\texplored_percent="<<recon.exploredPercent
@@ -3546,7 +3546,7 @@ void Maxima::evaluate_strategy(Context& echo)
 				<<"\tteam_"<<opponent->first<<"_contact_age="
 				<<std::max(0, timer-opponent->second.lastSeenTick);
 		}
-		emit_telemetry(echo, "recon_snapshot", recon_fields.str());
+		emit_telemetry(runtime, "recon_snapshot", recon_fields.str());
 		last_director_telemetry_tick=timer;
 	}
 }
@@ -3709,23 +3709,23 @@ Maxima::Maxima(GAGCore::InputStream *stream, Player *player,
 	assert(loaded);
 }
 
-void Maxima::tick(Context& echo)
+void Maxima::tick(Context& runtime)
 {
 	ensure_strategy();
 	timer++;
-	const int team=echo.player->team->teamNumber;
+	const int team=runtime.player->team->teamNumber;
 	// A new game and every loaded save start with no executable plan. Likewise,
 	// completion events invalidate director assumptions. Replan before any
 	// scheduled executor observes the plan.
 	if(!director.initialized || director.dirty)
 	{
-		director.evaluate(*this, echo);
-		update_reconnaissance_missions(echo);
+		director.evaluate(*this, runtime);
+		update_reconnaissance_missions(runtime);
 	}
 	if(timer==1)
 	{
-		initialize(echo);
-		emit_telemetry(echo, "strategy_loaded", "\tsettings="
+		initialize(runtime);
+		emit_telemetry(runtime, "strategy_loaded", "\tsettings="
 			+StrategyResolver::canonicalValues(strategy));
 	}
 	if(strategy.reconnaissance.enabled && timer>1
@@ -3733,25 +3733,25 @@ void Maxima::tick(Context& echo)
 		==staggered_phase(
 			strategy.reconnaissance.force_sample_phase_offset_ticks,
 			strategy.reconnaissance.force_sample_interval_ticks,team))
-		sample_reconnaissance_forces(echo);
+		sample_reconnaissance_forces(runtime);
 	if(timer%strategy.scheduling.strategy_interval_ticks
 		==staggered_phase(strategy.scheduling.strategy_phase_offset_ticks,
 			strategy.scheduling.strategy_interval_ticks,team))
 	{
-		check_phases(echo);
-		update_reconnaissance_missions(echo);
+		check_phases(runtime);
+		update_reconnaissance_missions(runtime);
 	}
 	if(timer%strategy.scheduling.building_interval_ticks
 		==staggered_phase(strategy.scheduling.building_phase_offset_ticks,
 			strategy.scheduling.building_interval_ticks,team))
 	{
-		manage_buildings(echo);
+		manage_buildings(runtime);
 	}
 	if(budget.tactical_review_interval>0
 	   && timer%budget.tactical_review_interval
 		==staggered_phase(0,budget.tactical_review_interval,team))
 	{
-		control_offense(echo);
+		control_offense(runtime);
 	}
 	const int defenseInterval=strategy.scheduling.defense_interval_ticks;
 	const int defensePhase=staggered_phase(
@@ -3774,13 +3774,13 @@ void Maxima::tick(Context& echo)
 		==staggered_phase(strategy.scheduling.fruit_phase_offset_ticks,
 			strategy.scheduling.fruit_interval_ticks,team))
 	{
-		update_fruit_flags(echo);
+		update_fruit_flags(runtime);
 	}
 	if(timer%strategy.scheduling.explorer_attack_interval_ticks
 		==staggered_phase(strategy.scheduling.explorer_attack_phase_offset_ticks,
 			strategy.scheduling.explorer_attack_interval_ticks,team))
 	{
-		compute_explorer_flag_attack_positioning(echo);
+		compute_explorer_flag_attack_positioning(runtime);
 	}
 
 	// Placement plans operate on strategic state and construction lifecycles, not
@@ -3799,26 +3799,26 @@ void Maxima::tick(Context& echo)
 	if(land_clearing_pending)
 	{
 		land_clearing_pending=false;
-		manage_land_clearing(echo);
+		manage_land_clearing(runtime);
 	}
 	else if(maintenance_clearing_pending)
 	{
 		maintenance_clearing_pending=false;
-		update_maintenance_clearing_areas(echo);
+		update_maintenance_clearing_areas(runtime);
 	}
 	else if(preemptive_defense_pending)
 	{
 		preemptive_defense_pending=false;
-		update_preemptive_defense(echo);
+		update_preemptive_defense(runtime);
 	}
 	else if(reactive_defense_pending)
 	{
 		reactive_defense_pending=false;
-		compute_defense_flag_positioning(echo);
+		compute_defense_flag_positioning(runtime);
 	}
 	else if(farmingDue)
 	{
-		update_farming(echo);
+		update_farming(runtime);
 		last_farming_tick=timer;
 		land_clearing_pending=true;
 		maintenance_clearing_pending=true;
@@ -3828,7 +3828,7 @@ void Maxima::tick(Context& echo)
 		development_cycle_pending=false;
 		const uint32_t previousSpatialRevision=
 			development_planner.spatialRevision();
-		development_cycle(echo);
+		development_cycle(runtime);
 		// Reservations are the placement state that changes clearing contracts.
 		// Refresh immediately for those changes; otherwise the farming cadence is
 		// sufficient and avoids another complete map pass after every review.
@@ -3838,7 +3838,7 @@ void Maxima::tick(Context& echo)
 }
 
 
-void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
+void Maxima::handle_event(Context& runtime, const RuntimeEvent& event)
 {
 	telemetry.count(AITrace::AI7::Maxima_handle_event_calls);
 	if(event.type>=RuntimeEvent::BuildingResolved && event.type<=RuntimeEvent::DevelopmentEngineRejected)
@@ -3858,15 +3858,15 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 	{
 		// Completing a swarm changes every share of the colony-wide budget.
 		// Reconcile the existing producers as well as the completed building.
-		BuildingSearch swarms(echo);
+		BuildingSearch swarms(runtime);
 		swarms.add_condition(new SpecificBuildingType(IntBuildingType::SWARM_BUILDING));
 		swarms.add_condition(new NotUnderConstruction);
 		for(building_search_iterator swarm=swarms.begin(); swarm!=swarms.end(); ++swarm)
-			manage_swarm(echo, *swarm);
+			manage_swarm(runtime, *swarm);
 	}
 	if(event.type == RuntimeEvent::UpdateInn)
 	{
-		manage_inn(echo, event.first);
+		manage_inn(runtime, event.first);
 	}
 	if(event.type == RuntimeEvent::AttackFinished)
 	{
@@ -3889,9 +3889,9 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 			const int team=Building::GIDtoTeam(gid);
 			finished_team=team;
 			const int local=Building::GIDtoID(gid);
-			if(team>=0 && team<Team::MAX_COUNT && echo.player->game->teams[team]
+			if(team>=0 && team<Team::MAX_COUNT && runtime.player->game->teams[team]
 			   && local>=0 && local<Building::MAX_COUNT
-			   && echo.player->game->teams[team]->myBuildings[local]==NULL)
+			   && runtime.player->game->teams[team]->myBuildings[local]==NULL)
 			{
 				reason="target_destroyed";
 				campaign.buildings_destroyed+=1;
@@ -3902,7 +3902,7 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 		std::map<int, int>::const_iterator started=attack_flag_started_ticks.find(id);
 		if(started!=attack_flag_started_ticks.end())
 			duration=timer-started->second;
-		emit_telemetry(echo, "attack_finished",
+		emit_telemetry(runtime, "attack_finished",
 			"\tflag="+telemetryText(id)
 			+"\ttarget_building="+telemetryText(finished_target)
 			+"\ttarget_team="+telemetryText(finished_team)
@@ -3960,21 +3960,21 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 
 
 
-void Maxima::initialize(Context& echo)
+void Maxima::initialize(Context& runtime)
 {
-	initialize_farming_cache(echo);
-	BuildingSearch bs(echo);
+	initialize_farming_cache(runtime);
+	BuildingSearch bs(runtime);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{
 	}
 
-	manage_buildings(echo);
+	manage_buildings(runtime);
 }
 
 
-void Maxima::check_phases(Context& echo)
+void Maxima::check_phases(Context& runtime)
 {
-	director.evaluate(*this, echo);
+	director.evaluate(*this, runtime);
 }
 
 
@@ -4145,10 +4145,10 @@ void Maxima::configure_development_planner()
 
 
 AIMaximaPlacement::WorldState Maxima::collect_development_world(
-	Context& echo, uint32_t* signature) const
+	Context& runtime, uint32_t* signature) const
 {
 	using namespace AIMaximaPlacement;
-	Map* map=echo.player->map;WorldState world;
+	Map* map=runtime.player->map;WorldState world;
 	world.reset(map->getW(),map->getH());world.tick=timer;
 	Uint32 worldSignature=2166136261u;
 	add_preemptive_hash(worldSignature,Uint32(world.width));
@@ -4156,7 +4156,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	// Final placement validation must see losses since the last strategy tick.
 	for(int id=0; id<Unit::MAX_COUNT; ++id)
 	{
-		const Unit* worker=echo.player->team->myUnits[id];
+		const Unit* worker=runtime.player->team->myUnits[id];
 		if(worker && worker->typeNum==WORKER && worker->performance[SWIM]>0)
 			++world.swimmingBuilders;
 	}
@@ -4167,22 +4167,22 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	world.profiles=collect_building_profiles();
 	const bool cachedFertility=fertility_cache.validFor(world.width,world.height);
 	const std::vector<uint32_t>& fertilityValues=fertility_cache.values();
-	const WoodReserve wood_reserve=select_wood_reserve(echo);
+	const WoodReserve wood_reserve=select_wood_reserve(runtime);
 	for(int y=0;y<world.height;++y)for(int x=0;x<world.width;++x)
 	{
 		const int index=y*world.width+x;
 		WorldTile& tile=world.tiles[index];const Tile& cell=map->getTile(x,y);
-		tile.discovered=map->isMapDiscovered(x,y,echo.player->team->allies);
+		tile.discovered=map->isMapDiscovered(x,y,runtime.player->team->allies);
 		// Terrain is immutable during a match. Classifying the already-fetched
 		// cell avoids three wrapped MapInfo calls per tile on every planner scan.
 		tile.water=cell.terrain>=256 && cell.terrain<272;
 		tile.sand=cell.terrain>=128 && cell.terrain<144;
 		tile.grass=cell.terrain<16;tile.occupied=cell.building!=NOGBID;
 		tile.woodReserve=wood_reserve.cells[index]!=0;
-		tile.foodTraversable=!(cell.forbidden&echo.player->team->me)
+		tile.foodTraversable=!(cell.forbidden&runtime.player->team->me)
 			|| applied_farm_protection_mask[index];
 		tile.ownOccupied=tile.occupied
-			&&Building::GIDtoTeam(cell.building)==echo.player->team->teamNumber;
+			&&Building::GIDtoTeam(cell.building)==runtime.player->team->teamNumber;
 		if(cell.resource.type!=NO_RES_TYPE)
 		{
 			tile.resourceType=cell.resource.type;tile.resourceAmount=cell.resource.amount;
@@ -4203,7 +4203,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		int expansionNeighbors=0;
 		if((tile.resourceType==WHEAT||tile.resourceType==WOOD)&&tile.resourceAmount>0)
 		{
-			expansionNeighbors=available_expansion_neighbors(echo,x,y);
+			expansionNeighbors=available_expansion_neighbors(runtime,x,y);
 			tile.farmCapacity=Farming::usefulExpansionCapacity(tile.fertility,
 				tile.resourceAmount,expansionNeighbors,
 				tile.resourceType==WHEAT);
@@ -4233,7 +4233,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			const bool farm=index<int(wheat_farm_protection_mask.size())
 				&& wheat_farm_protection_mask[index];
 			const uint32_t cell=AIMaximaFoodLedger::cellYield(tile.fertility,
-				growth_absorbing_neighbors(echo,x,y),
+				growth_absorbing_neighbors(runtime,x,y),
 				strategy.food.growth_period_ticks);
 			// A stack of wheat is also a stock. Spread over the planning horizon
 			// it is a rate like any other, and on infertile ground (Locust) it
@@ -4243,20 +4243,20 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			tile.protectedYield=(farm ? cell : cell*strategy.farming.wild_wheat_yield_percent/100)
 				+(farm ? 0 : stock);
 		}
-		tile.protectedness=map->isGuardArea(x,y,echo.player->team->me)
+		tile.protectedness=map->isGuardArea(x,y,runtime.player->team->me)
 			? strategy.placement.guard_area_protectedness
 			: strategy.placement.baseline_protectedness;
 	}
 
 	for(int team=0;team<Team::MAX_COUNT;++team)
 	{
-		if(!echo.player->game->teams[team]
-		   || !(echo.player->team->enemies&echo.player->game->teams[team]->me))continue;
+		if(!runtime.player->game->teams[team]
+		   || !(runtime.player->team->enemies&runtime.player->game->teams[team]->me))continue;
 		for(int id=0;id<Building::MAX_COUNT;++id)
 		{
-			Building* enemy=echo.player->game->teams[team]->myBuildings[id];
+			Building* enemy=runtime.player->game->teams[team]->myBuildings[id];
 			if(!enemy||enemy->type->isVirtual
-			   ||!(enemy->seenByMask&echo.player->team->allies))continue;
+			   ||!(enemy->seenByMask&runtime.player->team->allies))continue;
 			const int radius=strategy.placement.enemy_threat_radius;
 			for(int dy=-radius;dy<=radius;++dy)
 				for(int dx=-(radius-std::abs(dy));
@@ -4270,10 +4270,10 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 				}
 		}
 	}
-	const std::map<int,BuildingRecord>& found=echo.get_building_register().found();
+	const std::map<int,BuildingRecord>& found=runtime.get_building_register().found();
 	for(std::map<int,BuildingRecord>::const_iterator i=found.begin();i!=found.end();++i)
 	{
-		Building* building=echo.get_building_register().get_building(i->first);
+		Building* building=runtime.get_building_register().get_building(i->first);
 		if(!building||building->type->isVirtual)continue;
 		WorldBuilding value;value.id=i->first;value.gid=building->gid;
 		value.buildingType=building->type->shortTypeNum;
@@ -4282,7 +4282,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		value.centerY=map->normalizeY(building->posY-building->type->decTop);
 		value.hp=building->hp;value.hpMax=building->getEffectiveMaxHp();
 		value.age=i->second.age;value.site=building->type->isBuildingSite;
-		value.upgrading=echo.get_building_register().is_building_upgrading(i->first);
+		value.upgrading=runtime.get_building_register().is_building_upgrading(i->first);
 		world.buildings.push_back(value);
 		const int radius=strategy.placement.building_protection_radius;
 		for(int dy=-radius;dy<=radius;++dy)
@@ -4311,13 +4311,13 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 }
 
 
-std::pair<int,int> Maxima::barracks_capacity(Context& echo,int excludedAction) const
+std::pair<int,int> Maxima::barracks_capacity(Context& runtime,int excludedAction) const
 {
 	using namespace AIMaximaPlacement;
 	std::map<int,std::pair<int,int>> seats;
 	for(int id=0;id<Building::MAX_COUNT;++id)
 	{
-		const Building* b=echo.player->team->myBuildings[id];
+		const Building* b=runtime.player->team->myBuildings[id];
 		if(!b || b->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
 		   || b->buildingState==Building::WAITING_FOR_DESTRUCTION)continue;
 		const int operational=b->buildingState==Building::ALIVE
@@ -4333,8 +4333,8 @@ std::pair<int,int> Maxima::barracks_capacity(Context& echo,int excludedAction) c
 		if(a.id==excludedAction || a.type!=UpgradeBuilding
 		   || a.buildingType!=IntBuildingType::ATTACK_BUILDING
 		   || (a.state!=CreateIssued && a.state!=SiteObserved)
-		   || !echo.get_building_register().is_building_found(a.buildingId))continue;
-		const Building* b=echo.get_building_register().get_building(a.buildingId);
+		   || !runtime.get_building_register().is_building_found(a.buildingId))continue;
+		const Building* b=runtime.get_building_register().get_building(a.buildingId);
 		auto found=seats.find(b->gid);
 		if(found==seats.end())continue;
 		found->second.first=0;
@@ -4493,7 +4493,7 @@ Maxima::collect_development_intents(
 
 
 AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
-	Context& echo, int excludedAction) const
+	Context& runtime, int excludedAction) const
 {
 	using namespace AIMaximaPlacement;DevelopmentLimits limits;
 	limits.newConstruction=budget.construction_sites;
@@ -4519,7 +4519,7 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 	std::map<int,std::pair<int,bool>> service;
 	for(int id=0;id<Building::MAX_COUNT;++id)
 	{
-		const Building* b=echo.player->team->myBuildings[id];
+		const Building* b=runtime.player->team->myBuildings[id];
 		if(!b || b->type->isVirtual || b->buildingState==Building::DEAD
 		   || b->buildingState==Building::WAITING_FOR_DESTRUCTION
 		   || b->constructionResultState==Building::NEW_BUILDING
@@ -4529,10 +4529,10 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 			b->buildingState==Building::ALIVE && !b->type->isBuildingSite
 			&& b->constructionResultState==Building::NO_CONSTRUCTION);
 	}
-	for(const auto& record:echo.get_building_register().found())
+	for(const auto& record:runtime.get_building_register().found())
 		if(record.second.upgrading)
 		{
-			const Building* b=echo.get_building_register().get_building(record.first);
+			const Building* b=runtime.get_building_register().get_building(record.first);
 			if(b && service.count(b->gid))service[b->gid].second=false;
 		}
 	for(const auto& entry:development_planner.actions())
@@ -4540,8 +4540,8 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 		const DevelopmentAction& a=entry.second;
 		if(a.id==excludedAction || (a.type!=UpgradeBuilding && a.type!=RepairBuilding)
 		   || a.state!=ParcelReserved
-		   || !echo.get_building_register().is_building_found(a.buildingId))continue;
-		const Building* b=echo.get_building_register().get_building(a.buildingId);
+		   || !runtime.get_building_register().is_building_found(a.buildingId))continue;
+		const Building* b=runtime.get_building_register().get_building(a.buildingId);
 		if(service.count(b->gid))service[b->gid].second=false;
 	}
 	std::map<int,std::pair<int,int>> categories;
@@ -4556,7 +4556,7 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 	{
 		// Training must keep running while the next tier is built. Recheck at
 		// issue time too, including orders already issued but not yet observed.
-		const auto seats=barracks_capacity(echo,excludedAction);
+		const auto seats=barracks_capacity(runtime,excludedAction);
 		const int keep=std::max(1,(seats.second+1)/2);
 		for(int level=1;level<=2;++level)
 			if(seats.first-globalContainer->buildingsTypes
@@ -4564,9 +4564,9 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 				limits.upgradePriorities[std::make_pair(IntBuildingType::ATTACK_BUILDING,level)]=0;
 	}
 	std::vector<WorldBuilding> hospitals;
-	for(const auto& record:echo.get_building_register().found())
+	for(const auto& record:runtime.get_building_register().found())
 	{
-		const Building* b=echo.get_building_register().get_building(record.first);
+		const Building* b=runtime.get_building_register().get_building(record.first);
 		if(!b || b->type->shortTypeNum!=IntBuildingType::HEAL_BUILDING) continue;
 		WorldBuilding hospital; hospital.id=record.first;
 		hospital.buildingType=IntBuildingType::HEAL_BUILDING;
@@ -4580,16 +4580,16 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 		limits.upgradePriorities[std::make_pair(IntBuildingType::HEAL_BUILDING,1)]=0;
 		limits.upgradePriorities[std::make_pair(IntBuildingType::HEAL_BUILDING,2)]=0;
 	}
-	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	const int can1=stat->upgradeState[BUILD][1]+stat->upgradeState[BUILD][2]
 		+stat->upgradeState[BUILD][3];
 	const int can2=stat->upgradeState[BUILD][2]+stat->upgradeState[BUILD][3];
 	// Prestige comes from level-three schools. Preserve the workforce needed
 	// for that upgrade, and apply the additional population gate after the first.
 	bool hasPrestigeSchool=false;
-	for(const auto& record:echo.get_building_register().found())
+	for(const auto& record:runtime.get_building_register().found())
 	{
-		const Building* building=echo.get_building_register().get_building(record.first);
+		const Building* building=runtime.get_building_register().get_building(record.first);
 		if(building && building->type->shortTypeNum==IntBuildingType::SCIENCE_BUILDING
 		   && building->type->level>=2)
 			hasPrestigeSchool=true;
@@ -4627,27 +4627,27 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 }
 
 
-bool Maxima::issue_development_action(Context& echo,
+bool Maxima::issue_development_action(Context& runtime,
 	AIMaximaPlacement::DevelopmentAction& action)
 {
 	using namespace AIMaximaPlacement;int buildingId=-1;
 	if(action.type==BuildCampusMember||action.type==BuildStandalone)
 	{
-		const int x=echo.player->map->normalizeX(action.centerX+action.initialFootprint.left);
-		const int y=echo.player->map->normalizeY(action.centerY+action.initialFootprint.top);
-		buildingId=echo.issue_building_at(action.buildingType,action.workers,x,y);
+		const int x=runtime.player->map->normalizeX(action.centerX+action.initialFootprint.left);
+		const int y=runtime.player->map->normalizeY(action.centerY+action.initialFootprint.top);
+		buildingId=runtime.issue_building_at(action.buildingType,action.workers,x,y);
 		if(buildingId<0)return false;
 		if(action.buildingType==IntBuildingType::FOOD_BUILDING)
 		{
 			ManagementOrder* update=new Notify(RuntimeEvent(RuntimeEvent::UpdateInn,buildingId));
 			update->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
-			echo.add_management_order(update);
+			runtime.add_management_order(update);
 		}
 		else if(action.buildingType==IntBuildingType::SWARM_BUILDING)
 		{
 			ManagementOrder* update=new Notify(RuntimeEvent(RuntimeEvent::UpdateSwarm,buildingId));
 			update->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
-			echo.add_management_order(update);
+			runtime.add_management_order(update);
 		}
 	}
 	else
@@ -4656,16 +4656,16 @@ bool Maxima::issue_development_action(Context& echo,
 		if(action.type==UpgradeBuilding)
 		{
 			// A saved reservation may outlive its original director authorization.
-			const DevelopmentLimits limits=collect_development_limits(echo,action.id);
+			const DevelopmentLimits limits=collect_development_limits(runtime,action.id);
 			if(!limits.allowUpgrades
 			   || (action.fromLevel==2 && !limits.allowLevel2Upgrades)
 			   || limits.upgradePriority(action.buildingType,action.fromLevel)==0)
 				return false;
 		}
 		else if(action.type==RepairBuilding
-		        && !collect_development_limits(echo,action.id).repairAllowed(action.buildingType))
+		        && !collect_development_limits(runtime,action.id).repairAllowed(action.buildingType))
 			return false;
-		if(!echo.issue_upgrade_repair(buildingId,action.type==RepairBuilding))return false;
+		if(!runtime.issue_upgrade_repair(buildingId,action.type==RepairBuilding))return false;
 		// Repairs execute the labor allocation used to score their cost and
 		// downtime; upgrade staffing still follows the current director plan.
 		const int workers=action.type==RepairBuilding ? action.workers
@@ -4679,22 +4679,22 @@ bool Maxima::issue_development_action(Context& echo,
 		ManagementOrder* assignment=new AssignWorkers(workers,buildingId);
 		assignment->add_condition(
 			new ParticularBuilding(new StaffableConstructionSite,buildingId));
-		echo.add_management_order(assignment);
+		runtime.add_management_order(assignment);
 		if(action.type==UpgradeBuilding)
 		{
 			ManagementOrder* update=new Notify(RuntimeEvent(RuntimeEvent::BuildingUpdated,
 				action.buildingType,buildingId));
 			update->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
-			echo.add_management_order(update);
+			runtime.add_management_order(update);
 			// An upgrade is only useful once it finishes, and a half-upgraded
 			// building serves nobody meanwhile. Outrank equals for workers while
 			// the site is live, then hand the advantage back on completion.
 			ManagementOrder* raise=new ChangePriority(1,buildingId);
 			raise->add_condition(new ParticularBuilding(new UnderConstruction,buildingId));
-			echo.add_management_order(raise);
+			runtime.add_management_order(raise);
 			ManagementOrder* restore=new ChangePriority(0,buildingId);
 			restore->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
-			echo.add_management_order(restore);
+			runtime.add_management_order(restore);
 		}
 	}
 	development_planner.markIssued(action.id,buildingId,timer);
@@ -4702,7 +4702,7 @@ bool Maxima::issue_development_action(Context& echo,
 }
 
 
-void Maxima::emit_placement_diagnostics(Context& echo,const char* outcome,
+void Maxima::emit_placement_diagnostics(Context& runtime,const char* outcome,
 	const AIMaximaPlacement::DevelopmentAction* action) const
 {
 	using namespace AIMaximaPlacement;
@@ -4746,11 +4746,11 @@ void Maxima::emit_placement_diagnostics(Context& echo,const char* outcome,
 		<<"\tactive_colonial_action="<<development_planner.activeBuildCount(
 			IntBuildingType::SWARM_BUILDING, ColonySeed)
 		<<"\thotspot_count="<<cleared_enemy_sites.size();
-	emit_telemetry(echo,"placement_planner",fields.str());
+	emit_telemetry(runtime,"placement_planner",fields.str());
 }
 
 
-void Maxima::development_cycle(Context& echo)
+void Maxima::development_cycle(Context& runtime)
 {
 	using namespace AIMaximaPlacement;
 	const bool profile=telemetry_enabled();
@@ -4771,15 +4771,15 @@ void Maxima::development_cycle(Context& echo)
 	}
 	else
 	{
-		initialize_farming_cache(echo);
+		initialize_farming_cache(runtime);
 		if(!development_planner_initialized)
 		{
 			configure_development_planner();
-			WorldState initial=collect_development_world(echo);
+			WorldState initial=collect_development_world(runtime);
 			development_planner.adoptStartingBuildings(initial);
 			development_planner_initialized=true;
 		}
-		refreshedWorld=collect_development_world(echo,&worldSignature);
+		refreshedWorld=collect_development_world(runtime,&worldSignature);
 		development_planner.observe(refreshedWorld,worldSignature);
 		// An under-supplied building is a burden whatever its distance from
 		// wheat; with the ledger disabled nothing is retired. Relocation goes
@@ -4787,8 +4787,8 @@ void Maxima::development_cycle(Context& echo)
 		// retirement takes over once the planner has found nowhere better.
 		if(budget.food_ledger_enabled)
 		{
-			update_food_relocation(echo,refreshedWorld);
-			update_food_retirement(echo,refreshedWorld);
+			update_food_relocation(runtime,refreshedWorld);
+			update_food_retirement(runtime,refreshedWorld);
 		}
 		// Reconcile any starting construction site when it first becomes a completed
 		// building. Planner-owned campus and standalone actions are ignored here.
@@ -4801,8 +4801,8 @@ void Maxima::development_cycle(Context& echo)
 		development_reported_states[i->first]=i->second.state;
 		RuntimeEvent::Type event=RuntimeEvent::DevelopmentParcelReserved;
 		switch(i->second.state){case ParcelReserved:event=RuntimeEvent::DevelopmentParcelReserved;break;case CreateIssued:event=RuntimeEvent::DevelopmentCreateIssued;break;case SiteObserved:event=RuntimeEvent::DevelopmentSiteObserved;break;case Completed:event=RuntimeEvent::DevelopmentCompleted;break;case InvalidatedBeforeIssue:event=RuntimeEvent::DevelopmentInvalidatedBeforeIssue;break;case CreateTimedOut:event=RuntimeEvent::DevelopmentCreateTimedOut;break;case DestroyedDuringConstruction:event=RuntimeEvent::DevelopmentDestroyedDuringConstruction;break;case UpgradeBlocked:event=RuntimeEvent::DevelopmentUpgradeBlocked;break;case RequiredSourceMissing:event=RuntimeEvent::DevelopmentRequiredSourceMissing;break;case EngineRejected:event=RuntimeEvent::DevelopmentEngineRejected;break;default:break;}
-		echo.dispatch_event(RuntimeEvent(event,i->second.id,i->second.buildingId));
-		emit_placement_diagnostics(echo,lifecycleName(i->second.state),&i->second);
+		runtime.dispatch_event(RuntimeEvent(event,i->second.id,i->second.buildingId));
+		emit_placement_diagnostics(runtime,lifecycleName(i->second.state),&i->second);
 		if(i->second.purpose==Relocation)
 		{
 			std::ostringstream fields;
@@ -4811,7 +4811,7 @@ void Maxima::development_cycle(Context& echo)
 				<<"\treplaces="<<i->second.replacesBuildingId
 				<<"\tx="<<i->second.centerX<<"\ty="<<i->second.centerY
 				<<"\tstate="<<lifecycleName(i->second.state);
-			emit_telemetry(echo,"food_relocation_lifecycle",fields.str());
+			emit_telemetry(runtime,"food_relocation_lifecycle",fields.str());
 		}
 		if(i->second.purpose==ColonySeed)
 		{
@@ -4827,14 +4827,14 @@ void Maxima::development_cycle(Context& echo)
 				++established_colonies;
 				director.invalidate();
 				fields<<"\testablished_colonies="<<established_colonies;
-				emit_telemetry(echo,"colony_swarm_completed",fields.str());
+				emit_telemetry(runtime,"colony_swarm_completed",fields.str());
 			}
 			else if(i->second.state==InvalidatedBeforeIssue
 				||i->second.state==CreateTimedOut
 				||i->second.state==DestroyedDuringConstruction
 				||i->second.state==RequiredSourceMissing
 				||i->second.state==EngineRejected)
-				emit_telemetry(echo,"colony_swarm_failed",fields.str());
+				emit_telemetry(runtime,"colony_swarm_failed",fields.str());
 		}
 		}
 
@@ -4853,14 +4853,14 @@ void Maxima::development_cycle(Context& echo)
 		DevelopmentAction pending=found->second;RejectionReason reason=RejectedReservation;
 		if((pending.type==UpgradeBuilding || pending.type==RepairBuilding)
 		   &&!development_planner.revalidateSelection(refreshedWorld,{},
-			collect_development_limits(echo,pending.id),pending,&reason))
+			collect_development_limits(runtime,pending.id),pending,&reason))
 		{
 			development_planner.markInvalidated(pending.id,UpgradeBlocked,worldSignature);
 			continue;
 		}
 			if(development_planner.revalidate(refreshedWorld,pending,&reason,true))
 			{
-				if(!issue_development_action(echo,pending))
+				if(!issue_development_action(runtime,pending))
 					development_planner.markInvalidated(pending.id,
 						pending.type==UpgradeBuilding||pending.type==RepairBuilding
 						?UpgradeBlocked:EngineRejected,worldSignature,
@@ -4870,7 +4870,7 @@ void Maxima::development_cycle(Context& echo)
 					development_reported_states[pending.id]=CreateIssued;
 					std::map<int,DevelopmentAction>::const_iterator issued=
 						development_planner.actions().find(pending.id);
-					echo.dispatch_event(RuntimeEvent(RuntimeEvent::DevelopmentCreateIssued,
+					runtime.dispatch_event(RuntimeEvent(RuntimeEvent::DevelopmentCreateIssued,
 						pending.id,issued==development_planner.actions().end()
 						? pending.buildingId:issued->second.buildingId));
 				}
@@ -4896,7 +4896,7 @@ void Maxima::development_cycle(Context& echo)
 	const WorldState& world=*worldSnapshot;
 
 	DevelopmentLimits limits=continuingSelection
-		? development_planner.selectionLimits() : collect_development_limits(echo);
+		? development_planner.selectionLimits() : collect_development_limits(runtime);
 	const int totalLimit=limits.totalCapacity();
 	int activeDevelopment=0;
 	for(std::map<int,DevelopmentAction>::const_iterator i=development_planner.actions().begin();
@@ -4940,7 +4940,7 @@ void Maxima::development_cycle(Context& echo)
 				record_construction_space_failure();
 			if(development_planner.diagnostics().candidateCount
 			   ||development_planner.diagnostics().rejected[RejectedNegativeUtility])
-				emit_placement_diagnostics(echo,"waiting",NULL);
+				emit_placement_diagnostics(runtime,"waiting",NULL);
 			if(budget.colony_swarm_requested)
 			{
 				const PlacementDiagnostics& diagnostics=
@@ -4953,7 +4953,7 @@ void Maxima::development_cycle(Context& echo)
 					std::ostringstream fields;
 					fields<<"\tstage=placement\tcandidates="
 						<<diagnostics.candidateCount<<"\trejected="<<rejected;
-					emit_telemetry(echo,"colony_swarm_failed",fields.str());
+					emit_telemetry(runtime,"colony_swarm_failed",fields.str());
 				}
 			}
 			break;
@@ -4961,9 +4961,9 @@ void Maxima::development_cycle(Context& echo)
 		// Keep selection scores snapshot-stable, but never execute stale authority
 		// or stale spatial contracts. Only a finished winner needs this live pass.
 		uint32_t issueSignature=0;
-		WorldState issueWorld=collect_development_world(echo,&issueSignature);
+		WorldState issueWorld=collect_development_world(runtime,&issueSignature);
 		development_planner.observe(issueWorld,issueSignature);
-		const DevelopmentLimits issueLimits=collect_development_limits(echo);
+		const DevelopmentLimits issueLimits=collect_development_limits(runtime);
 		const std::vector<DevelopmentIntent> issueIntents=
 			collect_development_intents(issueWorld);
 		RejectionReason issueReason=RejectedAuthorization;
@@ -4971,15 +4971,15 @@ void Maxima::development_cycle(Context& echo)
 			issueLimits,action,&issueReason))
 		{
 			action.state=InvalidatedBeforeIssue;
-			emit_placement_diagnostics(echo,"selection_became_invalid",&action);
+			emit_placement_diagnostics(runtime,"selection_became_invalid",&action);
 			// A changed world is not a permanently broken coordinate.
 			development_cycle_pending=true;
 			break;
 		}
 		if(!development_planner.reserve(issueWorld,action))
-		{emit_placement_diagnostics(echo,"invalidated_before_issue",&action);continue;}
+		{emit_placement_diagnostics(runtime,"invalidated_before_issue",&action);continue;}
 		development_reported_states[action.id]=ParcelReserved;
-		echo.dispatch_event(RuntimeEvent(RuntimeEvent::DevelopmentParcelReserved,
+		runtime.dispatch_event(RuntimeEvent(RuntimeEvent::DevelopmentParcelReserved,
 			action.id,action.buildingId));
 		// A development consumes its category quota as soon as its parcel is
 		// reserved.
@@ -5006,23 +5006,23 @@ void Maxima::development_cycle(Context& echo)
 				issueSignature,
 				action.type==BuildCampusMember||action.type==BuildStandalone
 					? issueWorld.index(action.centerX,action.centerY) : -1);
-			emit_placement_diagnostics(echo,"revalidation_failed",&action);continue;
+			emit_placement_diagnostics(runtime,"revalidation_failed",&action);continue;
 		}
-		if(!issue_development_action(echo,action))
+		if(!issue_development_action(runtime,action))
 		{
 			development_planner.markInvalidated(action.id,
 				action.type==UpgradeBuilding||action.type==RepairBuilding
 				?UpgradeBlocked:EngineRejected,
 				issueSignature,issueWorld.index(action.centerX,action.centerY));
-			emit_placement_diagnostics(echo,"engine_rejected",&action);continue;
+			emit_placement_diagnostics(runtime,"engine_rejected",&action);continue;
 		}
 		development_reported_states[action.id]=CreateIssued;
 		std::map<int,DevelopmentAction>::const_iterator issuedAction=
 			development_planner.actions().find(action.id);
-		echo.dispatch_event(RuntimeEvent(RuntimeEvent::DevelopmentCreateIssued,
+		runtime.dispatch_event(RuntimeEvent(RuntimeEvent::DevelopmentCreateIssued,
 			action.id,issuedAction==development_planner.actions().end()
 			? action.buildingId:issuedAction->second.buildingId));
-		emit_placement_diagnostics(echo,"selected",&action);
+		emit_placement_diagnostics(runtime,"selected",&action);
 		if(action.purpose==ColonySeed)
 		{
 			std::ostringstream fields;
@@ -5032,7 +5032,7 @@ void Maxima::development_cycle(Context& echo)
 				<<"\tcorn_distance="<<action.utility.cornDistance
 				<<"\tcolony_new_food="<<action.utility.frontierGain
 				<<"\tcolony_value="<<action.utility.conqueredGain;
-			emit_telemetry(echo,"colony_swarm_selected",fields.str());
+			emit_telemetry(runtime,"colony_swarm_selected",fields.str());
 		}
 		// Reservations immediately affect subsequent candidates even though the
 		// engine has not observed the queued OrderCreate yet.
@@ -5040,12 +5040,12 @@ void Maxima::development_cycle(Context& echo)
 	if(!selectionExhausted&&selectionLimit<totalLimit)
 		development_cycle_pending=true;
 	if(profile)
-		emit_telemetry(echo,"placement_cycle_performance",
+		emit_telemetry(runtime,"placement_cycle_performance",
 			"\tmicroseconds="+telemetryText(
 				std::chrono::duration_cast<std::chrono::microseconds>(
 					std::chrono::steady_clock::now()-profileStarted).count()));
 }
-void Maxima::update_food_retirement(Context& echo,
+void Maxima::update_food_retirement(Context& runtime,
 	const AIMaximaPlacement::WorldState& world)
 {
 	// Fully qualified: this translation unit has other Result types in scope.
@@ -5109,7 +5109,7 @@ void Maxima::update_food_retirement(Context& echo,
 			<<"\tsupported_inns="<<food_supported_inns
 			<<"\tsupported_swarms="<<food_supported_swarms
 			<<"\tburdened="<<food_burden_since.size();
-		emit_telemetry(echo,"food_ledger",fields.str());
+		emit_telemetry(runtime,"food_ledger",fields.str());
 		for(size_t i=0;i<ledger.consumers.size();++i)
 		{
 			const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
@@ -5123,7 +5123,7 @@ void Maxima::update_food_retirement(Context& echo,
 				<<"\tcoverage="<<value.coveragePercent
 				<<"\tquality="<<value.quality<<"\tquality_band="<<value.qualityBand
 				<<"\torder="<<value.order;
-			emit_telemetry(echo,"food_consumer",consumer.str());
+			emit_telemetry(runtime,"food_consumer",consumer.str());
 		}
 	}
 
@@ -5139,7 +5139,7 @@ void Maxima::update_food_retirement(Context& echo,
 	for(size_t b=0;b<world.buildings.size();++b)
 	{
 		const AIMaximaPlacement::WorldBuilding& building=world.buildings[b];
-		if(building.site||food_building_pending_deletion(echo,building.id))continue;
+		if(building.site||food_building_pending_deletion(runtime,building.id))continue;
 		if(building.buildingType==IntBuildingType::FOOD_BUILDING)
 		{++completed_inns;inn_level[building.id]=std::max(1,building.level);}
 		else if(building.buildingType==IntBuildingType::SWARM_BUILDING)
@@ -5162,7 +5162,7 @@ void Maxima::update_food_retirement(Context& echo,
 	{
 		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
 		if(value.key<0||!value.retirable)continue;
-		if(establishing.count(value.key)||food_building_pending_deletion(echo,value.key))
+		if(establishing.count(value.key)||food_building_pending_deletion(runtime,value.key))
 			continue;
 		// Keep both sides of a handover until it finishes. Counts above exclude
 		// every queued deletion, including one just issued by relocation.
@@ -5190,7 +5190,7 @@ void Maxima::update_food_retirement(Context& echo,
 	}
 	if(!worst)return;
 	// One at a time: freeing this building's wheat often clears the others.
-	echo.add_management_order(new DestroyBuilding(worst->key));
+	runtime.add_management_order(new DestroyBuilding(worst->key));
 	food_retirement_issued.insert(worst->key);
 	last_food_retirement_tick=timer;
 	std::ostringstream fields;
@@ -5202,7 +5202,7 @@ void Maxima::update_food_retirement(Context& echo,
 		<<"\tburden_age="<<(timer-food_burden_since[worst->key])
 		<<"\tcompleted_inns="<<completed_inns
 		<<"\tcompleted_swarms="<<completed_swarms;
-	emit_telemetry(echo,"food_retirement",fields.str());
+	emit_telemetry(runtime,"food_retirement",fields.str());
 }
 
 std::set<int> Maxima::establishing_colony_buildings() const
@@ -5221,9 +5221,9 @@ std::set<int> Maxima::establishing_colony_buildings() const
 	return establishing;
 }
 
-bool Maxima::food_building_pending_deletion(Context& echo,int id) const
+bool Maxima::food_building_pending_deletion(Context& runtime,int id) const
 {
-	const Building* building=echo.get_building_register().get_building(id);
+	const Building* building=runtime.get_building_register().get_building(id);
 	return food_retirement_issued.count(id)||relocation_destroy_issued.count(id)
 		||!building||building->buildingState==Building::WAITING_FOR_DESTRUCTION;
 }
@@ -5250,7 +5250,7 @@ void Maxima::finish_food_relocation()
 	last_food_relocation_tick=timer;
 }
 
-void Maxima::update_food_relocation(Context& echo,
+void Maxima::update_food_relocation(Context& runtime,
 	const AIMaximaPlacement::WorldState& world)
 {
 	using namespace AIMaximaPlacement;
@@ -5281,7 +5281,7 @@ void Maxima::update_food_relocation(Context& echo,
 		const bool coverageRoom=100-value.coveragePercent
 			>=policy.relocationMinCoverageGainPercent;
 		if(establishing.count(value.key)||value.quality<threshold
-		   ||food_building_pending_deletion(echo,value.key)||!(distanceRoom||coverageRoom))
+		   ||food_building_pending_deletion(runtime,value.key)||!(distanceRoom||coverageRoom))
 		{relocation_since.erase(value.key);continue;}
 		if(!relocation_since.count(value.key))relocation_since[value.key]=timer;
 		if(timer-relocation_since[value.key]<budget.food_relocation_confirm_ticks)
@@ -5306,14 +5306,14 @@ void Maxima::update_food_relocation(Context& echo,
 		if(!present.count(target))
 		{
 			// The old building is gone, by our order or otherwise: finished.
-			emit_telemetry(echo,"food_relocation_done",
+			emit_telemetry(runtime,"food_relocation_done",
 				"\tbuilding_id="+telemetryText(target));
 			finish_food_relocation();
 			return;
 		}
 		// A deletion already in flight owns this handover until the old building
 		// disappears. Keep protecting its replacement, without queuing it twice.
-		if(food_building_pending_deletion(echo,target))return;
+		if(food_building_pending_deletion(runtime,target))return;
 		// Follow the newest planner action for this nomination.
 		const DevelopmentAction* action=current_food_relocation();
 		const bool underway=action&&(action->state==ParcelReserved
@@ -5323,9 +5323,9 @@ void Maxima::update_food_relocation(Context& echo,
 			const WorldBuilding* replacement=world.building(action->buildingId);
 			// Completed actions are historical: observe() no longer updates them.
 			// Losing the replacement must release the nomination and permit a retry.
-			if(!replacement||food_building_pending_deletion(echo,action->buildingId))
+			if(!replacement||food_building_pending_deletion(runtime,action->buildingId))
 			{
-				emit_telemetry(echo,"food_relocation_abandoned",
+				emit_telemetry(runtime,"food_relocation_abandoned",
 					"\tbuilding_id="+telemetryText(target)
 					+"\treason="+(replacement?"replacement_deleting":"replacement_missing"));
 				finish_food_relocation();
@@ -5354,7 +5354,7 @@ void Maxima::update_food_relocation(Context& echo,
 					{
 						const WorldBuilding& building=world.buildings[b];
 						if(building.site
-						   ||food_building_pending_deletion(echo,building.id)
+						   ||food_building_pending_deletion(runtime,building.id)
 						   ||building.buildingType!=IntBuildingType::FOOD_BUILDING)
 							continue;
 						const int level=std::min(3,std::max(1,building.level));
@@ -5373,12 +5373,12 @@ void Maxima::update_food_relocation(Context& echo,
 					std::ostringstream fields;
 					fields<<"\tbuilding_id="<<target
 						<<"\treason="<<(hungry?"hungry":"seats");
-					emit_telemetry(echo,"food_relocation_deferred",fields.str());
+					emit_telemetry(runtime,"food_relocation_deferred",fields.str());
 					// A pair that cannot be resolved keeps both buildings and
 					// frees the slot rather than blocking every later move.
 					if(timer-relocation_completed_tick>=budget.food_relocation_cooldown_ticks)
 					{
-						emit_telemetry(echo,"food_relocation_abandoned",
+						emit_telemetry(runtime,"food_relocation_abandoned",
 							"\tbuilding_id="+telemetryText(target)
 							+"\treason=deferred");
 						finish_food_relocation();
@@ -5386,13 +5386,13 @@ void Maxima::update_food_relocation(Context& echo,
 				}
 				else
 				{
-					echo.add_management_order(new DestroyBuilding(target));
+					runtime.add_management_order(new DestroyBuilding(target));
 					relocation_destroy_issued.insert(target);
 					std::ostringstream fields;
 					fields<<"\tbuilding_id="<<target
 						<<"\treplacement_id="<<action->buildingId
 						<<"\taction_id="<<action->id;
-					emit_telemetry(echo,"food_relocation_destroy",fields.str());
+					emit_telemetry(runtime,"food_relocation_destroy",fields.str());
 				}
 			}
 			return;
@@ -5409,7 +5409,7 @@ void Maxima::update_food_relocation(Context& echo,
 			fields<<"\tbuilding_id="<<target
 				<<"\treason="<<(failed?lifecycleName(action->state)
 					:refused?"refused":"no_site");
-			emit_telemetry(echo,"food_relocation_abandoned",fields.str());
+			emit_telemetry(runtime,"food_relocation_abandoned",fields.str());
 			finish_food_relocation();
 		}
 		return;
@@ -5426,7 +5426,7 @@ void Maxima::update_food_relocation(Context& echo,
 		<<"\tquality="<<worst->quality<<"\tcoverage="<<worst->coveragePercent
 		<<"\tclaimed="<<worst->claimed<<"\tdemand="<<worst->demand
 		<<"\tconfirmed_ticks="<<(timer-relocation_since[worst->key]);
-	emit_telemetry(echo,"food_relocation_nominated",fields.str());
+	emit_telemetry(runtime,"food_relocation_nominated",fields.str());
 }
 
 Labour::Policy Maxima::labour_policy() const
@@ -5450,10 +5450,10 @@ bool Maxima::labour_swimming_matters() const
 }
 
 
-Labour::Observation Maxima::observe_labour(Context& echo) const
+Labour::Observation Maxima::observe_labour(Context& runtime) const
 {
 	Labour::Observation result;
-	Team* team=echo.player->team;
+	Team* team=runtime.player->team;
 	const bool swimming=labour_swimming_matters();
 	std::vector<const Building*> schools;
 	for(int id=0; id<Building::MAX_COUNT; ++id)
@@ -5534,9 +5534,9 @@ Labour::Observation Maxima::observe_labour(Context& echo) const
 }
 
 
-void Maxima::manage_buildings(Context& echo)
+void Maxima::manage_buildings(Context& runtime)
 {
-	labour_observation=observe_labour(echo);
+	labour_observation=observe_labour(runtime);
 	labour_plan=Labour::plan(labour_observation, labour_policy(), budget.swarm_workers);
 	// Births take the labour that subsistence, the training reserve and
 	// construction leave. Each swarm's loop still owns its request; the budget
@@ -5546,10 +5546,10 @@ void Maxima::manage_buildings(Context& echo)
 	std::vector<int> swarm_ids;
 	std::vector<int> swarm_requests;
 	{
-		BuildingSearch swarms(echo);
+		BuildingSearch swarms(runtime);
 		swarms.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
-			if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+			if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 			{
 				std::map<int,StaffingControl::State>::const_iterator state=
 					staffing_control.find(*i);
@@ -5565,20 +5565,20 @@ void Maxima::manage_buildings(Context& echo)
 	if(!labour_plan.uncapped)
 		for(size_t i=0;i<swarm_ids.size();++i)
 			swarm_allowance[swarm_ids[i]]=swarm_requests[i];
-	BuildingSearch bs(echo);
+	BuildingSearch bs(runtime);
 	bs.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
 	{
-		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+		if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
-			manage_swarm(echo, *i);
+			manage_swarm(runtime, *i);
 		}
-		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
+		if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 		{
-			manage_inn(echo, *i);
+			manage_inn(runtime, *i);
 		}
-		if(echo.get_building_register().get_type(*i)==IntBuildingType::DEFENSE_BUILDING
-		   && echo.get_building_register().get_assigned(*i)
+		if(runtime.get_building_register().get_type(*i)==IntBuildingType::DEFENSE_BUILDING
+		   && runtime.get_building_register().get_assigned(*i)
 			!=(explorer_defense_emergency()
 				? strategy.staffing.completed_tower_emergency_workers
 				: strategy.staffing.completed_tower_workers))
@@ -5586,7 +5586,7 @@ void Maxima::manage_buildings(Context& echo)
 			// A single carrier could not keep even one shot in the tower during the
 			// FourSquares bomber wave. Two workers sustain the deterrent layer; four
 			// replenish ammunition while an actual strike is in the colony.
-			echo.add_management_order(new AssignWorkers(explorer_defense_emergency()
+			runtime.add_management_order(new AssignWorkers(explorer_defense_emergency()
 				? strategy.staffing.completed_tower_emergency_workers
 				: strategy.staffing.completed_tower_workers, *i));
 		}
@@ -5611,32 +5611,32 @@ void Maxima::manage_buildings(Context& echo)
 			<<"\tfunded_swarm_workers="<<budget.swarm_workers
 			<<"\tswarm_cap="<<labour_plan.swarmCap
 			<<"\tswarm_trimmed="<<trimmed;
-		emit_telemetry(echo,"labour_budget",fields.str());
+		emit_telemetry(runtime,"labour_budget",fields.str());
 	}
 	// A destroyed building must not leave its control loop behind, or a later
 	// building reusing the id would inherit a stranger's integral state.
 	for(std::map<int,StaffingControl::State>::iterator entry=staffing_control.begin();
 		entry!=staffing_control.end();)
 	{
-		if(!echo.get_building_register().get_building(entry->first))
+		if(!runtime.get_building_register().get_building(entry->first))
 			staffing_control.erase(entry++);
 		else ++entry;
 	}
 }
 
 
-int Maxima::staff_building(Context& echo, int id)
+int Maxima::staff_building(Context& runtime, int id)
 {
-	const int request=update_staffing_request(echo, id);
-	if(request!=echo.get_building_register().get_assigned(id))
-		echo.add_management_order(new AssignWorkers(request, id));
+	const int request=update_staffing_request(runtime, id);
+	if(request!=runtime.get_building_register().get_assigned(id))
+		runtime.add_management_order(new AssignWorkers(request, id));
 	return request;
 }
 
 
-int Maxima::update_staffing_request(Context& echo, int id)
+int Maxima::update_staffing_request(Context& runtime, int id)
 {
-	Building* building=echo.get_building_register().get_building(id);
+	Building* building=runtime.get_building_register().get_building(id);
 	if(!building || !building->type) return 0;
 	StaffingControl::Policy policy;
 	policy.windowSamples=budget.staffing_window_samples;
@@ -5660,7 +5660,7 @@ int Maxima::update_staffing_request(Context& echo, int id)
 	// The building's own stock and its own actual staffing are the only inputs.
 	const int request=StaffingControl::update(state, policy,
 		building->resources[WHEAT], building->type->maxResource[WHEAT],
-		echo.get_building_register().get_enrolled(id));
+		runtime.get_building_register().get_enrolled(id));
 	if(request!=previous)
 	{
 		std::ostringstream fields;
@@ -5670,36 +5670,36 @@ int Maxima::update_staffing_request(Context& echo, int id)
 			<<"\tcapacity="<<building->type->maxResource[WHEAT]
 			<<"\tfill_average="<<state.cornAverage
 			<<"\tenrolled_average="<<state.enrolledAverage;
-		emit_telemetry(echo,"staffing_control",fields.str());
+		emit_telemetry(runtime,"staffing_control",fields.str());
 	}
 	return request;
 }
 
 
-void Maxima::manage_inn(Context& echo, int id)
+void Maxima::manage_inn(Context& runtime, int id)
 {
-	staff_building(echo, id);
+	staff_building(runtime, id);
 }
 
 
-long long Maxima::nearby_farm_capacity(Context& echo, int id,
+long long Maxima::nearby_farm_capacity(Context& runtime, int id,
 	std::set<int>* shared_tiles)
 {
-	Building* building=echo.get_building_register().get_building(id);
+	Building* building=runtime.get_building_register().get_building(id);
 	if(!building) return 0;
-	initialize_farming_cache(echo);
-	Map* map=echo.player->map;
-	return reachableFoodCapacity(map, building, echo.player->team->me,
+	initialize_farming_cache(runtime);
+	Map* map=runtime.player->map;
+	return reachableFoodCapacity(map, building, runtime.player->team->me,
 		budget.can_swim, budget.swarm_supply_radius, fertility_cache,
 		&applied_farm_protection_mask, shared_tiles,
 		strategy.farming.wheat_stock_horizon_ticks);
 }
 
 
-void Maxima::manage_swarm(Context& echo, int id)
+void Maxima::manage_swarm(Context& runtime, int id)
 {
 	//Get some statistics
-	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	int total_explorers=stat->numberUnitPerType[EXPLORER];
 	if(stat->totalUnit == 0)
 		return;
@@ -5707,11 +5707,11 @@ void Maxima::manage_swarm(Context& echo, int id)
 	// Staffing is the building's own business: it regulates its carriers from
 	// its own wheat stock. The labour budget only bounds the sum over swarms.
 	{
-		int request=update_staffing_request(echo, id);
+		int request=update_staffing_request(runtime, id);
 		std::map<int,int>::const_iterator allowed=swarm_allowance.find(id);
 		if(allowed!=swarm_allowance.end()) request=std::min(request, allowed->second);
-		if(request!=echo.get_building_register().get_assigned(id))
-			echo.add_management_order(new AssignWorkers(request, id));
+		if(request!=runtime.get_building_register().get_assigned(id))
+			runtime.add_management_order(new AssignWorkers(request, id));
 	}
 
 	int worker_ratio=budget.worker_ratio;
@@ -5731,18 +5731,18 @@ void Maxima::manage_swarm(Context& echo, int id)
 
 	//Change the ratio of the swarm when its finished
 	ManagementOrder* mo_ratios=new ChangeSwarm(worker_ratio, explorer_ratio, warrior_ratio, id);
-	echo.add_management_order(mo_ratios);
+	runtime.add_management_order(mo_ratios);
 }
 
 
 
 
 
-AIMaximaFruit::Field Maxima::collect_fruit_field(Context& echo) const
+AIMaximaFruit::Field Maxima::collect_fruit_field(Context& runtime) const
 {
 	AIMaximaFruit::Field field;
-	if(!strategy.fruit.enabled || !echo.is_fruit_on_map())return field;
-	Map* map=echo.player->map;
+	if(!strategy.fruit.enabled || !runtime.is_fruit_on_map())return field;
+	Map* map=runtime.player->map;
 	field.width=map->getW();
 	field.height=map->getH();
 	field.tiles.resize(field.width*field.height);
@@ -5751,11 +5751,11 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& echo) const
 		AIMaximaFruit::Tile& tile=field.tiles[field.index(x,y)];
 		const ::Tile& cell=map->getTile(x,y);
 		tile.passable=cell.building==NOGBID && cell.resource.type==NO_RES_TYPE
-			&& !(cell.forbidden&echo.player->team->me)
+			&& !(cell.forbidden&runtime.player->team->me)
 			&& (budget.can_swim || !(cell.terrain>=256 && cell.terrain<272));
-		tile.visible=cell.resource.amount>0 && map->isFOWDiscovered(x,y,echo.player->team->allies);
+		tile.visible=cell.resource.amount>0 && map->isFOWDiscovered(x,y,runtime.player->team->allies);
 		if(cell.resource.type>=CHERRY && cell.resource.type<=PRUNE
-		   && map->isMapDiscovered(x,y,echo.player->team->allies))
+		   && map->isMapDiscovered(x,y,runtime.player->team->allies))
 			tile.variety=cell.resource.type-CHERRY;
 	}
 	bool knownFruit=false;
@@ -5763,9 +5763,9 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& echo) const
 	if(!knownFruit)return AIMaximaFruit::Field();
 	// Completed friendly buildings provide persistent vision using the same
 	// rectangular footprint as Building::setMapDiscovered.
-	for(const auto& entry:echo.get_building_register().found())
+	for(const auto& entry:runtime.get_building_register().found())
 	{
-		Building* building=echo.get_building_register().get_building(entry.first);
+		Building* building=runtime.get_building_register().get_building(entry.first);
 		if(!building || building->type->isVirtual || building->type->isBuildingSite)continue;
 		const int radius=building->type->viewingRange;
 		for(int dy=-radius;dy<building->type->height+radius;++dy)
@@ -5776,7 +5776,7 @@ AIMaximaFruit::Field Maxima::collect_fruit_field(Context& echo) const
 	return field;
 }
 
-void Maxima::update_fruit_flags(AIMaximaRuntime::Context& echo)
+void Maxima::update_fruit_flags(AIMaximaRuntime::Context& runtime)
 {
 	// Reconcile per resource against the serialized runtime, rather than trusting
 	// a one-shot Boolean. Pending searches count too, including after a load.
@@ -5784,12 +5784,12 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& echo)
 	for(const Recon::ReconMission& mission:reconnaissance.report().missions)
 		other_flags.insert(mission.flagId);
 
-	const auto field=collect_fruit_field(echo);
+	const auto field=collect_fruit_field(runtime);
 	int selected[3]={-1,-1,-1},varieties[3]={0,0,0};
 	bool supply=false;
-	for(const auto& entry:echo.get_building_register().found())
+	for(const auto& entry:runtime.get_building_register().found())
 	{
-		Building* inn=echo.get_building_register().get_building(entry.first);
+		Building* inn=runtime.get_building_register().get_building(entry.first);
 		if(!inn || inn->type->shortTypeNum!=IntBuildingType::FOOD_BUILDING
 		   || inn->type->isBuildingSite)continue;
 		const auto assessment=field.assessBuilding(inn->posX,inn->posY,
@@ -5808,22 +5808,22 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& echo)
 	}
 	for(int v=0;v<3;++v)
 	{
-		auto flags=echo.resource_flags(CHERRY+v);
+		auto flags=runtime.resource_flags(CHERRY+v);
 		flags.erase(std::remove_if(flags.begin(),flags.end(),
 			[&](int id){return other_flags.count(id)!=0;}),flags.end());
 		const int source=budget.fruit_active?selected[v]:-1;
 		const size_t keep=(source>=0 && strategy.fruit.units_per_flag>0)?1:0;
 		for(size_t n=keep;n<flags.size();++n)
 		{
-			echo.cancel_or_destroy_building(flags[n]);
+			runtime.cancel_or_destroy_building(flags[n]);
 		}
 		if(!keep)continue;
 		const int x=source%field.width,y=source/field.width;
 		if(!flags.empty())
 		{
 			int oldX,oldY;
-			if(echo.get_building_position(flags[0],oldX,oldY) && (x!=oldX || y!=oldY))
-				echo.add_management_order(new ChangeFlagPosition(x,y,flags[0]));
+			if(runtime.get_building_position(flags[0],oldX,oldY) && (x!=oldX || y!=oldY))
+				runtime.add_management_order(new ChangeFlagPosition(x,y,flags[0]));
 			continue;
 		}
 		GradientInfo resource;resource.add_source(new Entities::Resource(CHERRY+v));
@@ -5831,13 +5831,13 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& echo)
 			budget.fruit_units_per_flag);
 		order->add_constraint(new SinglePosition(x,y));
 		order->add_constraint(new MaximumDistance(resource,0));
-		const int id=echo.add_building_order(order);
-		echo.add_management_order(new ChangeFlagSize(budget.fruit_flag_radius,id));
+		const int id=runtime.add_building_order(order);
+		runtime.add_management_order(new ChangeFlagSize(budget.fruit_flag_radius,id));
 	}
 	// Supply maintained by buildings also merits advertising. mV remains
 	// untouched; fV shares the inns that can recruit visitors.
-	for(enemy_team_iterator i(echo);i!=enemy_team_iterator();++i)
-		echo.add_management_order(new ChangeAlliances(*i,KeepValue,KeepValue,
+	for(enemy_team_iterator i(runtime);i!=enemy_team_iterator();++i)
+		runtime.add_management_order(new ChangeAlliances(*i,KeepValue,KeepValue,
 			KeepValue,budget.fruit_active && supply?SetValue:ClearValue,KeepValue));
 }
 

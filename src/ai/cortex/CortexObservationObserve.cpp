@@ -27,7 +27,7 @@ namespace Cortex
 		PERF_SCOPE_TIME(AIObserve);
 		CortexObservation obs = makeEmptyObservation();
 
-		// Echo the seeded open margin N regardless; even an early-return (no team)
+		// Runtime the seeded open margin N regardless; even an early-return (no team)
 		// observation carries it, and decide() ignores invalid observations anyway.
 		obs.wheatOpenMargin = openMargin;
 
@@ -93,8 +93,8 @@ namespace Cortex
 		//                    Reading our OWN state is not a fog-of-war cheat.
 		//   upgradableCount = per IntBuildingType, the count of FINISHED instances
 		//                    that pass the full engine "Upgradable" predicate right
-		//                    now. The predicate mirrors Echo's
-		//                    (ai/echo/Conditions.cpp:112-129) and the GUI enable-gate
+		//                    now. The predicate mirrors Runtime's
+		//                    (ai/shared_runtime/Conditions.cpp:112-129) and the GUI enable-gate
 		//                    (gui/GameGUIInput.cpp:421-427): the building must be
 		//                    ALIVE, not a site, at full HP, not already
 		//                    upgrading/repairing, have a next level, clear the
@@ -245,9 +245,9 @@ namespace Cortex
 		{
 			obs.totalPrestige = game->totalPrestige;
 
-			// fruitOnMap: replicate Echo::check_fruit() directly off the Map
-			// (AIEcho/MapInfo::is_resource -> Map::isResourceTakeable) so the
-			// direct binding carries no Echo dependency. Any takeable fruit
+			// fruitOnMap: replicate Runtime::check_fruit() directly off the Map
+			// (AISharedRuntime/MapInfo::is_resource -> Map::isResourceTakeable) so the
+			// direct binding carries no Runtime dependency. Any takeable fruit
 			// (CHERRY/ORANGE/PRUNE) anywhere on the map flips this on.
 			Map& map = game->map;
 			const int w = map.getW();
@@ -351,8 +351,8 @@ namespace Cortex
 			// that state, so the steady-state observe cost is unchanged. The
 			// double-order guard (forwardInnUnderway/forwardHealUnderway) is NOT
 			// derived here by proximity — AICortex tracks the ordered forward site by
-			// POSITION and echoes underway into the observation before decide() (the
-			// flagPosture/latch echo pattern); the policy's `valid && !underway` check
+			// POSITION and runtimees underway into the observation before decide() (the
+			// flagPosture/latch runtime pattern); the policy's `valid && !underway` check
 			// suppresses double-ordering. Candidates are surfaced whenever the
 			// out-of-range state holds.
 			{

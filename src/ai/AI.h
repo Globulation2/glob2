@@ -34,9 +34,9 @@ public:
 		CASTOR=2,
 		///Reference to AIWarrush
 		WARRUSH=3,
-		///Reference to the AIEcho based AIEcono
+		///Reference to the AISharedRuntime based AIEcono
 		ECONO=4,
-		///Reference to the AIEcho based AINicowar
+		///Reference to the AISharedRuntime based AINicowar
 		NICOWAR=5,
 		///Reference to AICortex (direct AIImplementation binding)
 		CORTEX=6,
@@ -46,7 +46,7 @@ public:
 		///Nicowar: a set of independent specialist modules (defense, attack,
 		///construction, upgrades, unit/swarm management) that each act on
 		///their own but cooperate toward one game plan, direct AIImplementation
-		///binding, no AIEcho involved.
+		///binding, no AISharedRuntime involved.
 		CABINO=8,
 
 		SIZE

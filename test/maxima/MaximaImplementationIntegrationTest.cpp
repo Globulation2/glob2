@@ -4,7 +4,7 @@
 #include "../../src/team/Team.h"
 #include "../../src/ai/AIImplementation.h"
 #include "../../src/ai/AICastor.h"
-#include "../../src/ai/echo/Echo.h"
+#include "../../src/ai/shared_runtime/Runtime.h"
 #include "../../src/ai/AINicowar.h"
 #include "../../src/map/Map.h"
 #include "../../src/Order.h"

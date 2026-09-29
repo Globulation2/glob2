@@ -7,19 +7,19 @@
 #include "Game.h"
 #include "Unit.h"
 
-using namespace AIEcho;
-using namespace AIEcho::Gradients;
-using namespace AIEcho::Construction;
-using namespace AIEcho::Management;
-using namespace AIEcho::Conditions;
-using namespace AIEcho::SearchTools;
+using namespace AISharedRuntime;
+using namespace AISharedRuntime::Gradients;
+using namespace AISharedRuntime::Construction;
+using namespace AISharedRuntime::Management;
+using namespace AISharedRuntime::Conditions;
+using namespace AISharedRuntime::SearchTools;
 
 
 
-void NewNicowar::check_phases(Echo& echo)
+void NewNicowar::check_phases(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_check_phases_calls);
-	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 
 	///Qualifications for the growth phase:
 	///1) Less than strategy.growth_phase_unit_max units
@@ -47,7 +47,7 @@ void NewNicowar::check_phases(Echo& echo)
 	///1) At least strategy.upgrading_phase_1_school_min schools
 	///2) At least strategy.upgrading_phase_1_unit_min units
 	///3) At least strategy.upgrading_phase_1_trained_worker_min of them are trained for upgrading to level 2
-	BuildingSearch schools(echo);
+	BuildingSearch schools(runtime);
 	schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools.add_condition(new NotUnderConstruction);
 	const int school_counts=schools.count_buildings();
@@ -66,16 +66,16 @@ void NewNicowar::check_phases(Echo& echo)
 	///1) At least strategy.upgrading_phase_2_school_min level 2 or level 3 schools
 	///2) At least strategy.upgrading_phase_2_unit_min units
 	///3) At least strategy.upgrading_phase_2_trained_worker_min of them are trained for upgrading to level 3
-	BuildingSearch schools_2(echo);
+	BuildingSearch schools_2(runtime);
 	schools_2.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools_2.add_condition(new NotUnderConstruction);
 	schools_2.add_condition(new BuildingLevel(2));
-	BuildingSearch schools_3(echo);
+	BuildingSearch schools_3(runtime);
 	schools_3.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools_3.add_condition(new NotUnderConstruction);
 	schools_3.add_condition(new BuildingLevel(3));
 	const int school_counts_2=schools_2.count_buildings() + schools_3.count_buildings();
-	const int trained_count_2=echo.get_team_stats().upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
+	const int trained_count_2=runtime.get_team_stats().upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
 
 	if(stat->totalUnit>=strategy.upgrading_phase_2_unit_min && school_counts_2>=strategy.upgrading_phase_2_school_min && trained_count_2>strategy.upgrading_phase_2_trained_worker_min)
 	{
@@ -90,7 +90,7 @@ void NewNicowar::check_phases(Echo& echo)
 	///1) At least strategy.war_preparation_phase_unit_min units
 	///2) Less than strategy.war_preparation_phase_barracks_max barracks OR
 	///3) Less than strategy.war_preparation_phase_trained_warrior_max trained warriors
-	BuildingSearch barracks(echo);
+	BuildingSearch barracks(runtime);
 	barracks.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
 	int barracks_count=barracks.count_buildings();
 
@@ -122,7 +122,7 @@ void NewNicowar::check_phases(Echo& echo)
 
 	///Qualifications for the fruit phase:
 	///At least strategy.fruit_phase_unit_min units, and fruits on the map
-	if(echo.is_fruit_on_map() && stat->totalUnit >= strategy.fruit_phase_unit_min)
+	if(runtime.is_fruit_on_map() && stat->totalUnit >= strategy.fruit_phase_unit_min)
 	{
 		fruit_phase=true;
 	}
@@ -188,7 +188,7 @@ void NewNicowar::check_phases(Echo& echo)
 	
 	///Qualifications for the defend explorers phase
 	///1) Prestige, not counting this teams prestige, is more than 0, indicating that ground attacking explorers are being created
-	if(echo.player->game->totalPrestige - echo.player->team->prestige > 0)
+	if(runtime.player->game->totalPrestige - runtime.player->team->prestige > 0)
 	{
 		defend_explorers=true;
 	}
@@ -199,7 +199,7 @@ void NewNicowar::check_phases(Echo& echo)
 	
 	///Qualifications for the explorer attack preparation phase
 	//1) This teams prestige greater than 0
-	if(echo.player->team->prestige > 0)
+	if(runtime.player->team->prestige > 0)
 	{
 		explorer_attack_preparation_phase = true;
 	}

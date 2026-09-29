@@ -5,12 +5,12 @@
 #include <string>
 #include "Utilities.h"
 
-using namespace AIEcho;
-using namespace AIEcho::Gradients;
-using namespace AIEcho::Construction;
-using namespace AIEcho::Management;
-using namespace AIEcho::Conditions;
-using namespace AIEcho::SearchTools;
+using namespace AISharedRuntime;
+using namespace AISharedRuntime::Gradients;
+using namespace AISharedRuntime::Construction;
+using namespace AISharedRuntime::Management;
+using namespace AISharedRuntime::Conditions;
+using namespace AISharedRuntime::SearchTools;
 
 
 void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)

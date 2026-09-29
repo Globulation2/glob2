@@ -116,7 +116,7 @@ void AICortex::translateActionBuildForward(const Cortex::CortexAction& action, c
 		return; // no legal forward spot this cycle; drop rather than misbuild.
 
 	// Record the ordered position by POSITION (not proximity) ONLY when the
-	// OrderCreate is actually emitted, so getOrder()'s reconcile can echo the
+	// OrderCreate is actually emitted, so getOrder()'s reconcile can runtime the
 	// underway guard and later detect the site finishing / vanishing (FIX 3).
 	if (emitBuildOrder(type, cand->x, cand->y, obs.tick))
 	{
@@ -136,7 +136,7 @@ void AICortex::translateActionBuildForward(const Cortex::CortexAction& action, c
 bool AICortex::emitBuildOrder(int type, int x, int y, int tick)
 {
 	// Resolve the long building-site type id for a fresh (level 0)
-	// building, exactly as the GUI/Echo build path does.
+	// building, exactly as the GUI/Runtime build path does.
 	const std::string& name = IntBuildingType::reverseConversionMap[type];
 	Sint32 typeNum = globalContainer->buildingsTypes.getTypeNum(name, 0, true);
 	if (typeNum < 0)
