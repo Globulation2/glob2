@@ -477,6 +477,7 @@ def main():
         application = env.Bundle(env.Dir(env["BUNDLE_NAME"] + ".app"), env["BUNDLE_BINARIES"])
         image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)
         env.Alias("bundle", [application, image])
+        env.Alias("package", [application, image])
 
         import subprocess
         arch = subprocess.check_output(["uname", "-p"], text=True).strip()

@@ -241,6 +241,8 @@ debug builds. An explicit `JAVA_HOME` takes precedence over the task-local JDK.
 The asset packager excludes local caches and metadata before writing its index.
 The completed APK is checked against that index and its content digest, so an
 AAPT-filtered or missing file fails the build instead of failing on first launch.
+Release packaging restores gzip assets that AAPT expands and renames, then aligns
+the APK before signing so compressed maps retain their indexed paths.
 Native startup failures are also written to Android logcat under `SDL/APP`.
 
 ### Native tests on a connected Android device
