@@ -96,7 +96,7 @@ private:
 	result_type state[n];
 	/// The block before the current one. Together with the used part of
 	/// state it holds the 624 most recent words, which form the text state.
-	result_type previous[n];
+	result_type previous[n] = {};
 	std::size_t next;
 
 	/// j-th of the 624 most recent state words, oldest first
