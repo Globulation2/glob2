@@ -12,6 +12,8 @@
 #include <cstdlib>
 #include <iostream>
 
+// GLSL 1.20 fixed-function inputs and glMultiTexCoord2f are desktop GL only.
+// WebGL2 uses the existing CPU-colour fallback for team sprites.
 #if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 
 namespace GAGCore
@@ -254,7 +256,7 @@ namespace GAGCore
 	}
 }
 
-#else // !HAVE_OPENGL || GLOB2_WEBGL2
+#else // no desktop OpenGL unit shader
 
 namespace GAGCore
 {
@@ -263,4 +265,4 @@ namespace GAGCore
 	bool GraphicContext::drawTeamColoredQuad(DrawableSurface *, DrawableSurface *, float, float, float, float, Uint8, float) { return false; }
 }
 
-#endif // HAVE_OPENGL && !GLOB2_WEBGL2
+#endif // desktop OpenGL unit shader

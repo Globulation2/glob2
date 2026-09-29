@@ -138,6 +138,7 @@ jobs:
             entering-unit-save-test \
             clearing-gradient-test \
             trapped-unit-test \
+            hungry-defeat-test \
             failing-unit-markers-test \
             entering-unit-draw-test \
             immobile-unit-gradient-test \
@@ -356,6 +357,10 @@ jobs:
       - name: Test clearing flag resource bounds
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ClearingFlagGradientTest
+
+      - name: Test hunger and defeat detection
+        run: |
+          python3 test/run-hungry-defeat-tests.py build/linux/client/release/src/HungryDefeatHarness
 
       - name: Test trapped colony elimination
         run: |
@@ -841,6 +846,7 @@ jobs:
             gradient-pipeline-test \
             point-bar-render-test \
             trapped-unit-test \
+            hungry-defeat-test \
             hiring-bucket-test \
             map-render-resize-test \
             map-preview-test \
@@ -895,6 +901,10 @@ jobs:
         run: |
           SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             ./build/mingw/client/release/src/point-bar-render-test.exe software
+
+      - name: Test hunger and defeat detection
+        run: |
+          python3 test/run-hungry-defeat-tests.py build/mingw/client/release/src/HungryDefeatHarness.exe
 
       - name: Test trapped colony elimination
         run: |
