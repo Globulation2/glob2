@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphMaze.h"
+#include "Topology.h"
 #include "GenerationContext.h"
 #include <utility>
 #include <algorithm>
+#include <stdexcept>
 namespace MapGeneration
 {
 CellGraph cellGraph(const Tessellation &tiling)
@@ -103,10 +105,129 @@ std::vector<int> spreadPockets(const CellGraph &g, int count)
 			return {};
 		pockets.push_back(chosen);
 		for (int cell = 0; cell < g.cellCount(); ++cell)
-			nearest[cell] = pockets.size() == 1 ? g.distance2(cell, chosen)
-												: std::min(nearest[cell], g.distance2(cell, chosen));
+			nearest[cell] = pockets.size() == 1
+								? g.distance2(cell, chosen)
+								: std::min(nearest[cell], g.distance2(cell, chosen));
 	}
 	return pockets;
+}
+
+std::vector<int> farthestCells(const CellGraph &g, int count,
+							   const std::vector<unsigned char> &eligible)
+{
+	std::vector<unsigned char> taken(size_t(g.cellCount()), 0);
+	std::vector<int> chosen;
+	std::vector<long long> nearest(size_t(g.cellCount()), 0);
+	for (int k = 0; k < count; ++k)
+	{
+		int best = -1;
+		for (int cell = 0; cell < g.cellCount(); ++cell)
+			if (eligible[cell] && !taken[cell] && (best < 0 || nearest[cell] > nearest[best]))
+				best = cell;
+		if (best < 0)
+			return {};
+		taken[best] = 1;
+		chosen.push_back(best);
+		for (int cell = 0; cell < g.cellCount(); ++cell)
+			nearest[cell] = chosen.size() == 1 ? g.distance2(cell, best)
+											   : std::min(nearest[cell], g.distance2(cell, best));
+	}
+	return chosen;
+}
+
+std::vector<std::vector<int>> claimNeighbourCells(const CellGraph &g, const std::vector<int> &seeds,
+												  int wanted,
+												  const std::vector<unsigned char> &eligible)
+{
+	std::vector<std::vector<int>> held(seeds.size());
+	std::vector<int> owner(size_t(g.cellCount()), -1);
+	for (size_t s = 0; s < seeds.size(); ++s)
+		owner[seeds[s]] = int(s);
+	for (int round = 0; round < wanted; ++round)
+	{
+		std::vector<int> taken;
+		bool complete = true;
+		for (size_t s = 0; s < seeds.size() && complete; ++s)
+		{
+			int best = -1;
+			const auto consider = [&](int cell)
+			{
+				for (int edge : g.cellEdges[cell])
+				{
+					const int next = g.other(edge, cell);
+					if (owner[next] >= 0 || !eligible[next])
+						continue;
+					if (best < 0 || g.distance2(seeds[s], next) < g.distance2(seeds[s], best))
+						best = next;
+				}
+			};
+			consider(seeds[s]);
+			for (int cell : held[s])
+				consider(cell);
+			if (best < 0)
+				complete = false;
+			else
+			{
+				owner[best] = int(s);
+				held[s].push_back(best);
+				taken.push_back(best);
+			}
+		}
+		if (!complete)
+		{
+			// The round is undone so no seed holds more than another.
+			for (int cell : taken)
+			{
+				held[owner[cell]].pop_back();
+				owner[cell] = -1;
+			}
+			break;
+		}
+	}
+	return held;
+}
+
+std::vector<int> closedEdges(const CellGraph &g, const std::vector<unsigned char> &open,
+							 const std::vector<unsigned char> &blocked)
+{
+	if (open.size() != g.edgeCells.size() ||
+		(!blocked.empty() && blocked.size() != g.cellEdges.size()))
+		throw std::invalid_argument("Maze masks do not match the cell graph");
+	std::vector<int> result;
+	for (int edge = 0; edge < int(g.edgeCells.size()); ++edge)
+		if (!open[edge] &&
+			(blocked.empty() || (!blocked[g.edgeCells[edge][0]] && !blocked[g.edgeCells[edge][1]])))
+			result.push_back(edge);
+	return result;
+}
+
+std::vector<int> edgeDetours(const CellGraph &g, const std::vector<unsigned char> &open,
+							 const std::vector<int> &edges)
+{
+	if (open.size() != g.edgeCells.size())
+		throw std::invalid_argument("Maze edge mask does not match the cell graph");
+	RegionGraph routes(g.cellCount());
+	for (int edge = 0; edge < int(g.edgeCells.size()); ++edge)
+		if (open[edge])
+		{
+			const auto &cells = g.edgeCells[edge];
+			routes[cells[0]].push_back(cells[1]);
+			routes[cells[1]].push_back(cells[0]);
+		}
+	std::vector<int> result(g.edgeCells.size(), -1);
+	// Several candidate edges can have the same first endpoint. One flood per source
+	// gives exactly the same distances while avoiding repeated graph walks.
+	std::vector<std::vector<int>> distances(g.cellCount());
+	for (int edge : edges)
+	{
+		if (edge < 0 || edge >= int(g.edgeCells.size()))
+			throw std::invalid_argument("Shortcut edge outside the cell graph");
+		const auto &cells = g.edgeCells[edge];
+		if (distances[cells[0]].empty())
+			distances[cells[0]] = graphDistances(routes, {cells[0]});
+		result[edge] = distances[cells[0]][cells[1]];
+	}
+	return result;
 }
 
 bool carveSpanningTree(const CellGraph &g, GenerationContext &context, const std::string &stream,
@@ -141,6 +262,35 @@ bool carveSpanningTree(const CellGraph &g, GenerationContext &context, const std
 		stack.push_back(next);
 	}
 	return std::all_of(visited.begin(), visited.end(), [](unsigned char v) { return v != 0; });
+}
+
+bool carveNearTree(const CellGraph &g, GenerationContext &context, const std::string &stream,
+				   const std::vector<unsigned char> &blocked, int jitterPercent,
+				   std::vector<unsigned char> &open)
+{
+	// Every edge between two free cells, keyed by its stretched distance; the edge index breaks
+	// ties, so the order is the same on every platform.
+	std::vector<std::pair<long long, int>> edges;
+	for (size_t edge = 0; edge < g.edgeCells.size(); ++edge)
+	{
+		const int a = g.edgeCells[edge][0], b = g.edgeCells[edge][1];
+		if (blocked[a] || blocked[b])
+			continue;
+		const long long stretch = 100 + context.bounded(stream, std::uint32_t(2 * jitterPercent + 1));
+		edges.push_back({g.distance2(a, b) * stretch, int(edge)});
+	}
+	std::sort(edges.begin(), edges.end());
+	DisjointSets sets(g.cellCount());
+	int joined = 0, free = 0;
+	for (int cell = 0; cell < g.cellCount(); ++cell)
+		free += !blocked[cell];
+	for (const auto &[key, edge] : edges)
+		if (sets.unite(g.edgeCells[edge][0], g.edgeCells[edge][1]))
+		{
+			open[edge] = 1;
+			++joined;
+		}
+	return free > 0 && joined == free - 1;
 }
 
 std::vector<int> openPocketDoors(const CellGraph &g, GenerationContext &context,

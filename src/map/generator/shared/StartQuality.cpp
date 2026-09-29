@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "StartQuality.h"
+#include "FairnessModel.h"
 #include "FertilityField.h"
 #include "Game.h"
 #include "Grid.h"
@@ -13,11 +14,6 @@ namespace MapGeneration
 {
 namespace
 {
-double clampUnit(double v)
-{
-	return v < 0 ? 0 : (v > 1 ? 1 : v);
-}
-
 /// Distance in walking steps from a colony's starting workers to every tile it can reach.
 /// Workers, not the boot tile: the swarm occupies the boot tile and nobody walks out of it.
 std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers)
@@ -27,8 +23,45 @@ std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers
 }
 } // namespace
 
-StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualityWeights &weights,
-							   const StartQualityScale &scale)
+std::vector<double> winProbabilities(const std::vector<double> &fitness)
+{
+	std::vector<double> probability(fitness.size(), 0.0);
+	if (fitness.empty())
+		return probability;
+	const double top = *std::max_element(fitness.begin(), fitness.end());
+	double total = 0;
+	for (std::size_t i = 0; i < fitness.size(); ++i)
+	{
+		probability[i] = std::exp(fitness[i] - top);
+		total += probability[i];
+	}
+	for (double &value : probability)
+		value = total > 0 ? value / total : 1.0 / double(fitness.size());
+	return probability;
+}
+
+double mapFairness(const std::vector<double> &probability)
+{
+	const std::size_t n = probability.size();
+	if (n < 2)
+		return 1.0; // one colony has nobody to be unfair to
+	double total = 0;
+	for (double value : probability)
+		total += value;
+	if (total <= 0)
+		return 1.0;
+	std::vector<double> ordered(probability);
+	std::sort(ordered.begin(), ordered.end());
+	double weighted = 0;
+	for (std::size_t i = 0; i < n; ++i)
+		weighted += (2.0 * double(i + 1) - double(n) - 1.0) * ordered[i];
+	// Divided by the (n-1)/n ceiling a raw Gini cannot exceed, so two colonies and eight
+	// colonies are read off the same scale.
+	const double gini = weighted / total * (1.0 / double(n - 1));
+	return 1.0 - std::min(1.0, std::max(0.0, gini));
+}
+
+StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualityScale &scale)
 {
 	StartQualityReport report;
 	Map &map = game.map;
@@ -168,36 +201,6 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 				++colony.rivalsWithinThreat;
 		}
 
-		colony.wheat = colony.wheatDistance < 0
-						   ? 0
-						   : clampUnit(1.0 - double(colony.wheatDistance) / scale.wheatReference);
-		colony.wood = colony.woodDistance < 0
-						  ? 0
-						  : clampUnit(1.0 - double(colony.woodDistance) / scale.woodReference);
-		colony.fertility = clampUnit(colony.meanFertility / scale.fertilityReference);
-		colony.depth = clampUnit(double(colony.resourceAmount) / scale.depthReference);
-		colony.room = clampUnit(double(colony.buildSites) / scale.roomReference);
-		// No reachable rival is the safest a colony can be; being one of several crowded into
-		// the same neighbourhood is the case the raw distance alone does not describe.
-		const double spacing =
-			colony.rivalDistance < 0
-				? 1.0
-				: clampUnit(double(colony.rivalDistance) / scale.isolationReference);
-		const int crowd = std::max(0, colony.rivalsWithinThreat - 1);
-		colony.isolation = spacing * std::max(0.0, 1.0 - scale.crowdPenalty * crowd);
-
-		const double sum = weights.wheat + weights.wood + weights.fertility + weights.depth +
-						   weights.room + weights.isolation;
-		colony.total = sum <= 0
-						   ? 0
-						   : (weights.wheat * colony.wheat + weights.wood * colony.wood +
-							  weights.fertility * colony.fertility + weights.depth * colony.depth +
-							  weights.room * colony.room + weights.isolation * colony.isolation) /
-								 sum;
-		// A colony that cannot reach one of its primary resources has not got a start at all,
-		// whatever room and fertility it was given.
-		if (colony.wheatDistance < 0 || colony.woodDistance < 0)
-			colony.total = 0;
 	}
 
 	// Assign each walkable tile to its uniquely closest colony, or to every colony
@@ -320,14 +323,24 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 			}
 		}
 
-	report.worst = report.best = report.colonies[0].total;
-	for (const ColonyQuality &colony : report.colonies)
+	// Every measurement is final now -- territory, deposits and bands included -- so the fitted
+	// model can read them. Fitness first, then what it says about who wins and how evenly.
+	std::vector<double> fitness(report.colonies.size());
+	for (std::size_t i = 0; i < report.colonies.size(); ++i)
+		fitness[i] = startFitness(report.colonies, i);
+	const std::vector<double> probability = winProbabilities(fitness);
+	double sum = 0;
+	for (std::size_t i = 0; i < report.colonies.size(); ++i)
 	{
-		report.worst = std::min(report.worst, colony.total);
-		report.best = std::max(report.best, colony.total);
+		report.colonies[i].fitness = fitness[i];
+		report.colonies[i].winProbability = probability[i];
+		sum += fitness[i];
 	}
-	report.fairness = report.best > 0 ? report.worst / report.best : 0;
-	report.score = report.worst * std::pow(report.fairness, scale.fairnessExponent);
+	report.worstFitness = *std::min_element(fitness.begin(), fitness.end());
+	report.bestFitness = *std::max_element(fitness.begin(), fitness.end());
+	report.meanFitness = sum / double(fitness.size());
+	report.fairness = mapFairness(probability);
+	report.score = report.fairness;
 	report.measured = true;
 	return report;
 }

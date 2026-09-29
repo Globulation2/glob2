@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Grid.h"
+#include "Geometry.h"
 #include <cstdint>
 #include <utility>
 #include <vector>
@@ -36,6 +37,31 @@ int growUntilSites(const Torus &t, std::vector<unsigned char> &region,
 				   const std::vector<unsigned char> &buildable,
 				   const std::vector<unsigned char> &eligible, int target, int maximumTiles,
 				   Key key, int size = kBuildFootprint);
+
+/// Tiles usable after mobile units leave: pure grass with no resource or building.
+/// Unlike buildableTiles, this is a planning mask, not permission to build right now.
+std::vector<unsigned char> potentialBuildingTiles(const Map &);
+struct BuildingGrid
+{
+	RegionBounds bounds;
+	int width = 4, height = 4, gap = 2, inset = 1;
+};
+struct BuildingArrangement
+{
+	std::vector<RegionBounds> footprints;
+	std::string failure;
+};
+/// Place every complete buildable footprint on a fixed grid within unwrapped bounds.
+/// Footprints never overlap (including at seams); gap reserves lanes between rows and
+/// columns. Then block ALL proposed buildings in the walking mask and require access
+/// from an open entrance to a cardinal face of every building. Existing obstacles can
+/// invalidate circulation, even when many overlapping placement anchors would fit.
+/// The caller chooses the site, grid, entrances, and required count. No terrain repair,
+/// RNG, or optimization fallback is hidden here. Masks must match the torus; bounds
+/// cannot cover more than one copy of it. Mobile units should be omitted from masks.
+BuildingArrangement arrangeBuildingGrid(const Torus &, const std::vector<unsigned char> &buildable,
+										const std::vector<unsigned char> &walking,
+										const BuildingGrid &, const std::vector<int> &entrances);
 } // namespace MapGeneration
 
 #include <queue>

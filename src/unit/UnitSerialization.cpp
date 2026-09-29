@@ -115,11 +115,28 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	previousClearingArea=std::nullopt;
 	previousClearingAreaDistance=0;
+	if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION)
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		const Uint8 claimed = stream->readUint8("hasClearingClaim");
+		if (claimed > 1) throw std::runtime_error("Invalid unit clearing claim");
+		if (claimed)
+		{
+			const Uint32 x = stream->readUint32("clearingClaimX");
+			const Uint32 y = stream->readUint32("clearingClaimY");
+			previousClearingArea = ClearingAreaClaim{x, y};
+		}
+		previousClearingAreaDistance = stream->readUint32("clearingClaimDistance");
+	}
+
+	// Old replay headers were originally loaded with a reset idle timer.
+	// Keep that execution contract; new saves retain the timer read above.
+	if (versionMinor < FILE_FORMAT_VERSION_SIMULATION_CONTINUATION)
+		jobTimer = 0;
 
 	// gui
 	levelUpAnimation = 0;
 	magicActionAnimation = 0;
-	jobTimer = 0;
 
 	verbose = false;
 
@@ -193,6 +210,13 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(destinationPurpose, "destinationPurpose");
 	stream->writeSint32(carriedResource, "carriedRessource");
 	stream->writeSint32(jobTimer, "jobTimer");
+	stream->writeUint8(previousClearingArea.has_value(), "hasClearingClaim");
+	if (previousClearingArea)
+	{
+		stream->writeUint32(previousClearingArea->x, "clearingClaimX");
+		stream->writeUint32(previousClearingArea->y, "clearingClaimY");
+	}
+	stream->writeUint32(previousClearingAreaDistance, "clearingClaimDistance");
 
 
 	stream->writeLeaveSection();

@@ -17,7 +17,7 @@ namespace GAGCore
 		waitUntilIdle();
 	}
 
-	void BackgroundFileWriter::write(const std::string &filename, std::string contents, std::function<void(std::string &)> finish)
+	void BackgroundFileWriter::write(const std::string &filename, std::string contents, std::function<void(std::string &)> finish, bool gzip)
 	{
 		std::unique_lock<std::mutex> lock(mutex);
 		publishMetrics();
@@ -26,6 +26,7 @@ namespace GAGCore
 		pendingMeasured = PerformanceTelemetry::collector().enabled;
 		queuedAt = pendingMeasured ? PerformanceTelemetry::now() : 0;
 		pendingName = filename;
+		pendingGzip = gzip;
 		pendingContents = std::move(contents);
 		pendingFinish = std::move(finish);
 		pending = true;
@@ -33,6 +34,9 @@ namespace GAGCore
 			return; // the running worker takes the newest snapshot next
 		writing = true;
 		lock.unlock();
+#ifdef __EMSCRIPTEN__
+        drain();
+#else
 		// A previous worker cleared writing before exiting, so this join is short.
 		if (worker.joinable())
 			worker.join();
@@ -44,6 +48,7 @@ namespace GAGCore
 		{
 			drain(); // no thread available: write on this one instead
 		}
+#endif
 	}
 
 	void BackgroundFileWriter::waitUntilIdle()
@@ -78,6 +83,7 @@ namespace GAGCore
 		while (pending)
 		{
 			const std::string name = std::move(pendingName);
+			const bool gzip = pendingGzip;
 			std::string contents = std::move(pendingContents);
 			const std::function<void(std::string &)> finish = std::move(pendingFinish);
 			pendingFinish = nullptr;
@@ -90,7 +96,7 @@ namespace GAGCore
 			if (finish)
 				finish(contents);
 			const auto hashed = measured ? PerformanceTelemetry::now() : 0;
-			const bool written = fileManager->writeAtomically(name, [&contents](OutputStream &stream) {
+			const bool written = gzip ? fileManager->writeGzipAtomic(name, contents) : fileManager->writeAtomically(name, [&contents](OutputStream &stream) {
 				stream.write(contents.data(), contents.size(), "contents");
 			});
 			if (!written)

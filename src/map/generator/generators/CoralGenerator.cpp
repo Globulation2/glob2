@@ -922,12 +922,12 @@ CoralOptions::CoralOptions(const GenerationRequest &r)
 GeneratorDefinition coralDefinition()
 {
 	return {
-		"coral",
-		21,
-		"Coral",
-		1,
-		false,
-		// Forks from the trunk to the tips; how far each fork's children turn from their parent's
+			"coral",
+			21,
+			"Coral",
+			1,
+			false,
+			// Forks from the trunk to the tips; how far each fork's children turn from their parent's
 		// heading, in degrees either side; the trunk's width in tiles (branches taper from it); the
 		// water kept between any two pieces of land; how far every trunk is turned off the line to
 		// the map centre, in degrees; land bridges per pair of neighbours.
@@ -948,8 +948,10 @@ GeneratorDefinition coralDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling",
+			 "fairness:repeated-wedge"}};
 }

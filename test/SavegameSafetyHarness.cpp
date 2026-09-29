@@ -16,9 +16,16 @@
 #include "Order.h"
 #include "Player.h"
 #include <BackgroundFileWriter.h>
+#include "Version.h"
+#include "FileImport.h"
+#include "Campaign.h"
+#include "KeyboardManager.h"
+#include "GameGUIKeyActions.h"
+#include "MapEditKeyActions.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
+#include <GzipUtil.h>
 #include <algorithm>
 #include <cassert>
 #include <filesystem>
@@ -45,6 +52,35 @@ static std::string contents(const fs::path& path)
 	std::ifstream file(path, std::ios::binary);
 	assert(file);
 	return std::string(std::istreambuf_iterator<char>(file), {});
+}
+
+static void checkGzipWrites(FileManager& files, const fs::path& directory)
+{
+	const std::string original(200000, 'x');
+	std::string compressed, again, decoded;
+	assert(gzipCompress(original, 6, compressed));
+	assert(gzipCompress(original, 6, again) && again == compressed);
+	assert(gzipDecompress(compressed, decoded) && decoded == original);
+	assert(!gzipDecompress(compressed, decoded, original.size() - 1));
+	assert(!gzipDecompress(compressed.substr(0, compressed.size()-1), decoded));
+	assert(!gzipDecompress(compressed + "trailing", decoded));
+	again = compressed; again[again.size()-8] ^= 1;
+	assert(!gzipDecompress(again, decoded));
+	const auto path = (directory / "atomic.game.gz").string();
+	assert(files.writeGzipAtomic(path, original));
+	assert(contents(path) == compressed);
+	assert(!files.writeGzipAtomically(path, [](OutputStream& stream) {
+		stream.write("partial", 7, "data");
+		throw std::runtime_error("injected serialization failure");
+	}));
+	assert(contents(path) == compressed);
+	assert(!files.writeGzipAtomic((directory / "missing" / "save.game.gz").string(), original));
+	const auto blocked = directory / "blocked.game.gz";
+	fs::create_directory(blocked);
+	assert(!files.writeGzipAtomic(blocked.string(), original));
+	for (const auto& entry : fs::directory_iterator(directory))
+		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
+	std::cout << "PASS gzip deterministic encoding, round trip, size limit, corruption rejection and failed atomic replacement" << std::endl;
 }
 
 static void checkAtomicWrites(FileManager& files, const fs::path& directory)
@@ -348,6 +384,250 @@ static void checkRandomContinuation(bool text, bool ai)
 	std::cout << "PASS " << (text ? "binary + text routing" : "binary") << (ai ? " AI" : " human") << " saved game continues RNG and 700 simulation steps and measurements across header replacement" << std::endl;
 }
 
+static std::string headerBytes(const MapHeader& header)
+{
+	auto *backend = new MemoryStreamBackend;
+	BinaryOutputStream output(backend);
+	header.save(&output);
+	backend->seekFromStart(0);
+	std::string bytes;
+	while (!backend->isEndOfStream()) bytes += char(backend->getChar());
+	return bytes;
+}
+
+static void checkMapHeaders()
+{
+	MapHeader source;
+	source.setMapName("Import validation");
+	source.setNumberOfTeams(1);
+	const std::string bytes = headerBytes(source);
+	for (bool file : {false, true})
+	{
+		MapHeader header;
+		header.setMapName("Previous selection");
+		const std::string previous = headerBytes(header);
+		for (size_t cut = 0; cut < bytes.size(); ++cut)
+		{
+			auto stream = input(bytes.substr(0, cut), file);
+			bool rejected = false;
+			try { rejected = !header.load(stream.get()); }
+			catch (const std::ios_base::failure&) { rejected = true; }
+			assert(rejected && headerBytes(header) == previous);
+		}
+		const size_t fields = 4 + source.getMapName().size();
+		const auto replace = [&](size_t offset, Uint32 value) {
+			std::string corrupt = bytes;
+			for (int i = 0; i < 4; ++i) corrupt[offset + i] = char(value >> (24 - i * 8));
+			return corrupt;
+		};
+		for (const auto& corrupt : {replace(fields, VERSION_MAJOR + 1),
+			replace(fields + 4, MINIMUM_VERSION_MINOR - 1), replace(fields + 4, VERSION_MINOR + 1),
+			replace(fields + 8, 0xffffffffu), replace(fields + 8, Team::MAX_COUNT + 1)})
+		{
+			auto stream = input(corrupt, file);
+			assert(!header.load(stream.get()) && headerBytes(header) == previous);
+		}
+		auto corrupt = bytes;
+		corrupt[fields + 16] = 2;
+		auto invalid = input(corrupt, file);
+		assert(!header.load(invalid.get()) && headerBytes(header) == previous);
+		auto valid = input(bytes, file);
+		assert(header.load(valid.get()) && headerBytes(header) == bytes);
+	}
+	std::cout << "PASS every truncated header, invalid versions/team counts/save flags rejected; previous header preserved; valid reload succeeds" << std::endl;
+}
+
+static void checkImports(const std::string& bytes, const fs::path& directory)
+{
+    using namespace ApplicationHost;
+    const auto selected = [&](const std::string& name, const std::string& payload) {
+        return SelectedFile{name, std::vector<unsigned char>(payload.begin(), payload.end())};
+    };
+    const auto validate = [](FileImport& operation) {
+        for (unsigned i = 0; i < 100000 && operation.state() == FileImport::State::Validating; ++i) operation.advance();
+        assert(operation.state() != FileImport::State::Validating);
+    };
+    const auto beforeRng = getSyncRandState();
+    const auto preferences = directory / "preferences.txt";
+    { std::ofstream out(preferences); out << "preserved preferences"; }
+    const auto preferencesTime = fs::last_write_time(preferences);
+    const bool remember = globalContainer->settings.rememberUnit;
+    globalContainer->settings.rememberUnit = true;
+    {
+        FileImport cancelled(selected("cancel.game", bytes), "game", persistStorage,
+            CooperativeSlice(std::chrono::steady_clock::now, std::chrono::milliseconds(4), 1));
+        cancelled.advance();
+        assert(cancelled.state() == FileImport::State::Validating);
+    }
+    assert(getSyncRandState() == beforeRng && !fs::exists(directory / "games/cancel.game"));
+    for (const auto& payload : {bytes.substr(0, 3), bytes.substr(0, bytes.size()-1), bytes + "extra"}) {
+        FileImport invalid(selected("invalid.game", payload), "game");
+        validate(invalid);
+        assert(invalid.state() == FileImport::State::Failed && invalid.path().empty());
+    }
+    {
+        auto stream = input(bytes, false);
+        MapHeader header; assert(header.load(stream.get()));
+        auto badCount = bytes;
+        // GameHeader begins with latency (4), order rate (1), player count (4).
+        std::fill_n(badCount.begin() + stream->getPosition() + 5, 4, char(0xff));
+        auto badOffset = bytes;
+        const auto offsetField = 4 + header.getMapName().size() + 12;
+        const Uint32 offset = header.getMapOffset() + 1;
+        for (int i = 0; i < 4; ++i) badOffset[offsetField+i] = char(offset >> (24-i*8));
+        auto badPlayer = bytes;
+        const auto player = badPlayer.find("PLYb"); assert(player != std::string::npos);
+        badPlayer[player] = '!';
+        for (const auto& corrupt : {badCount, badPlayer, badOffset}) {
+            FileImport invalid(selected("invalid.game", corrupt), "game");
+            validate(invalid); assert(invalid.state() == FileImport::State::Failed);
+        }
+    }
+    for (const auto& name : {"../escape.game", "con.game", "wrong.map"}) {
+        FileImport invalid(selected(name, bytes), "game");
+        validate(invalid); assert(invalid.state() == FileImport::State::Failed);
+    }
+    {
+        std::string compressed;
+        assert(gzipCompress(bytes, 6, compressed));
+        FileImport operation(selected("Compressed.game.gz", compressed), "game");
+        validate(operation); operation.advance();
+        assert(operation.state() == FileImport::State::Succeeded);
+        assert(operation.path() == "games/Compressed.game.gz");
+        assert(contents(directory / operation.path()) == compressed);
+        for (const auto& corrupt : {compressed.substr(0, compressed.size()-1), compressed + "extra"}) {
+            FileImport invalid(selected("invalid.game.gz", corrupt), "game");
+            validate(invalid); assert(invalid.state() == FileImport::State::Failed);
+        }
+    }
+    const auto original = directory / "games/Imported.game";
+    { std::ofstream out(original, std::ios::binary); out << "previous save"; }
+    struct ControlledPersistence : Persistence {
+        std::shared_ptr<PersistenceState> result;
+        explicit ControlledPersistence(std::shared_ptr<PersistenceState> result) : result(std::move(result)) {}
+        PersistenceState state() const override { return *result; }
+    };
+    auto result = std::make_shared<PersistenceState>(PersistenceState::Pending);
+    const auto persist = [result] { return std::make_unique<ControlledPersistence>(result); };
+    std::string imported;
+    {
+        FileImport operation(selected("Imported.game", bytes), "game", persist);
+        validate(operation);
+        assert(operation.state() == FileImport::State::Persisting);
+        imported = operation.path();
+        assert(imported == "games/Imported_(1).game");
+        assert(contents(directory / imported) == bytes && contents(original) == "previous save");
+        operation.advance(); assert(operation.state() == FileImport::State::Persisting);
+        *result = PersistenceState::Failed;
+        operation.advance(); assert(operation.canRetry());
+        operation.retryPersistence();
+        *result = PersistenceState::Succeeded;
+        operation.advance(); assert(operation.state() == FileImport::State::Succeeded);
+    }
+    assert(contents(directory / imported) == bytes && contents(original) == "previous save");
+    {
+        *result = PersistenceState::Failed;
+        FileImport operation(selected("abandoned.game", bytes), "game", persist);
+        validate(operation); operation.advance(); assert(operation.canRetry());
+    }
+    assert(!fs::exists(directory / "games/abandoned.game"));
+    assert(getSyncRandState() == beforeRng);
+    assert(contents(preferences) == "preserved preferences" && fs::last_write_time(preferences) == preferencesTime);
+    globalContainer->settings.rememberUnit = remember;
+    std::cout << "PASS imported save full validation, cancellation/RNG restoration, name collision, pending/failure/retry persistence and abandoned-file cleanup" << std::endl;
+}
+
+static void checkCampaignProgress(const fs::path& directory)
+{
+    Campaign base;
+    base.setName("Progress fixture");
+    base.setPlayerName("First player");
+    CampaignMapEntry first("First", "campaigns/first.map"), second("Second", "campaigns/second.map");
+    first.unlockMap(); second.lockMap(); second.getUnlockedByMaps().push_back("First");
+    base.appendMap(first); base.appendMap(second);
+    Campaign source = base;
+    source.setCompleted("First"); source.setPlayerName("Restored player");
+    const auto backup = source.exportProgress();
+    const auto unchanged = base.exportProgress();
+    for (size_t cut = 0; cut < backup.size(); ++cut) {
+        assert(!base.importProgress({backup.begin(), backup.begin()+cut}));
+        assert(base.exportProgress() == unchanged);
+    }
+    auto extra = backup; extra.push_back(0);
+    assert(!base.importProgress(extra));
+    assert(!base.importProgress(std::vector<unsigned char>(1024*1024+1)));
+    auto invalidFlag = backup; invalidFlag.back() = 2;
+    assert(!base.importProgress(invalidFlag));
+    auto future = backup; future[7] = 2;
+    assert(!base.importProgress(future));
+    Campaign changed = base; changed.getMap(0).setMapFileName("../different.map");
+    assert(!changed.importProgress(backup));
+    changed = base; changed.getMap(1).getUnlockedByMaps().clear();
+    assert(!changed.importProgress(backup));
+    changed = base; changed.setName("Different campaign");
+    assert(!changed.importProgress(backup));
+    base.getMap(1).unlockMap(); base.getMap(1).setCompleted(true);
+    assert(base.importProgress(backup));
+    assert(base.getMap(0).isCompleted() && base.getMap(1).isCompleted() && base.getMap(1).isUnlocked());
+    assert(base.getPlayerName() == "Restored player");
+    assert(base.save(true));
+    const auto file = directory / "games/Progress_fixture.txt";
+    const auto previous = contents(file);
+    Campaign restored; assert(restored.load(file.string()));
+    assert(restored.exportProgress() == base.exportProgress());
+#ifndef WIN32
+    const auto child = fork(); assert(child >= 0);
+    if (child == 0) {
+        std::signal(SIGXFSZ, SIG_IGN);
+        struct rlimit budget = {0,0};
+        if (setrlimit(RLIMIT_FSIZE, &budget)) _exit(2);
+        base.setPlayerName("Unwritten");
+        _exit(base.save(true) ? 3 : 0);
+    }
+    int status = 0; assert(waitpid(child, &status, 0) == child);
+    assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+    assert(contents(file) == previous);
+#endif
+    std::cout << "PASS campaign progress truncation/version/definition validation, monotonic merge, legacy text round trip and atomic failure preservation" << std::endl;
+}
+
+static void checkPreferences(const fs::path& directory)
+{
+    Settings settings;
+    settings.optionFlags = GlobalContainer::OPTION_LOW_SPEED_GFX;
+    const auto file = directory / "preferences-test.txt";
+    assert(settings.save(file.string()));
+    Settings loaded;
+    loaded.load(file.string());
+    assert(loaded.optionFlags == settings.optionFlags);
+    KeyboardManager game(GameGUIShortcuts), editor(MapEditShortcuts);
+    assert(game.saveKeyboardLayout() && editor.saveKeyboardLayout());
+    const auto gamePath = directory / GameGUIKeyActions::getConfigurationFile();
+    const auto editorPath = directory / MapEditKeyActions::getConfigurationFile();
+    const auto previous = contents(file), gameBytes = contents(gamePath), editorBytes = contents(editorPath);
+    assert(!gameBytes.empty() && !editorBytes.empty());
+    const auto blocked = directory / "blocked-preferences.txt";
+    fs::create_directory(blocked);
+    assert(!settings.save(blocked.string()) && fs::is_directory(blocked));
+#ifndef WIN32
+    const pid_t child = fork(); assert(child >= 0);
+    if (child == 0) {
+        std::signal(SIGXFSZ, SIG_IGN);
+        struct rlimit budget = {0, 0};
+        if (setrlimit(RLIMIT_FSIZE, &budget) != 0) _exit(2);
+        settings.optionFlags = 0;
+        const bool preferencesFailed = !settings.save(file.string());
+        const bool gameFailed = !game.saveKeyboardLayout();
+        const bool editorFailed = !editor.saveKeyboardLayout();
+        _exit(preferencesFailed && gameFailed && editorFailed ? 0 : 3);
+    }
+    int status = 0; assert(waitpid(child, &status, 0) == child);
+    assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+    assert(contents(file) == previous && contents(gamePath) == gameBytes && contents(editorPath) == editorBytes);
+#endif
+    std::cout << "PASS preference/keyboard writes round trip and preserve prior files on failure" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	SDL_SetMainReady();
@@ -366,7 +646,21 @@ int main(int argc, char **argv)
 		for (bool ai : {false,true}) checkRandomContinuation(text,ai);
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+	checkGzipWrites(*globals.fileManager, directory);
 	checkBackgroundWriter(*globals.fileManager, directory);
+    checkPreferences(directory);
+	checkMapHeaders();
+    checkCampaignProgress(directory);
+	for (bool file : {false, true})
+	{
+		const std::string payload("before\0after", 12);
+		const std::string bytes = std::string("\0\0\0\14", 4) + payload
+			+ std::string("\0\0\0\12", 4) + "next field";
+		auto restored = input(bytes, file);
+		assert(restored->readText("binary string") == payload);
+		assert(restored->readText("following string") == "next field");
+	}
+	std::cout << "PASS embedded zero bytes preserved in binary strings" << std::endl;
 	{
 		GameGUI gui;
 		auto map = Engine::loadMapHeader("maps/balanced.map");
@@ -375,6 +669,11 @@ int main(int argc, char **argv)
 		header.setRandomSeed(123456);
 		header.getBasePlayer(0) = BasePlayer(0, "Test", 0, BasePlayer::P_LOCAL);
 		assert(gui.loadFromHeaders(map, header, true, true));
+		// Loading now leaves resource/area gradients unallocated. A simulation
+		// tick must finish even before any unit has requested one of them.
+		gui.game.map.syncStep(0);
+		gui.game.map.syncStep(1);
+		std::cout << "PASS ticks finish before lazy gradients are requested" << std::endl;
 		gui.localPlayer = gui.localTeamNo = 0;
 		gui.adjustLocalTeam();
 		gui.game.stepCounter = AUTOSAVE_PHASE_TICKS;
@@ -383,7 +682,7 @@ int main(int argc, char **argv)
 			BinaryOutputStream initial(new MemoryStreamBackend());
 			gui.save(&initial, "Auto save");
 		}
-		const fs::path save = directory / "games" / "Auto_save.game";
+		const fs::path save = directory / "games" / "Auto_save.game.gz";
 		gui.syncStep();
 		gui.waitForAutosave();
 		assert(!fs::exists(save));
@@ -391,7 +690,9 @@ int main(int argc, char **argv)
 		gui.syncStep();
 		gui.waitForAutosave();
 		std::cout << "PASS headless autosave defaults off and can be explicitly enabled" << std::endl;
-		const auto bytes = contents(save);
+		const auto compressedBytes = contents(save);
+		std::string bytes;
+		assert(gzipDecompress(compressedBytes, bytes));
 		{
 			// Autosave hashes on the writer thread; a direct save hashes as it writes.
 			const fs::path reference = directory / "games" / "reference.game";
@@ -451,8 +752,9 @@ int main(int argc, char **argv)
 		gui.game.stepCounter = AUTOSAVE_PHASE_TICKS + AUTOSAVE_INTERVAL_TICKS - 1;
 		gui.syncStep();
 		gui.waitForAutosave();
-		assert(contents(save) == bytes);
+		assert(contents(save) == compressedBytes);
 		std::cout << "PASS autosave waits for the configured interval" << std::endl;
+        checkImports(bytes, directory);
 #ifndef WIN32
 		const pid_t child = fork();
 		assert(child >= 0);
@@ -468,14 +770,14 @@ int main(int argc, char **argv)
 		}
 		int status = 0;
 		assert(waitpid(child, &status, 0) == child && WIFEXITED(status) && WEXITSTATUS(status) == 0);
-		assert(contents(save) == bytes);
+		assert(contents(save) == compressedBytes);
 		std::cout << "PASS failed production autosave preserves the previous complete game" << std::endl;
 #endif
 		globals.settings.autosaveGames = false;
 		gui.game.stepCounter = AUTOSAVE_PHASE_TICKS + 2 * AUTOSAVE_INTERVAL_TICKS;
 		gui.syncStep();
 		gui.waitForAutosave();
-		assert(contents(save) == bytes);
+		assert(contents(save) == compressedBytes);
 		globals.settings.autosaveGames = true;
 		std::cout << "PASS disabled autosave leaves the previous save untouched" << std::endl;
 		auto stream = input(bytes, false);
@@ -515,7 +817,27 @@ int main(int argc, char **argv)
 				++count;
 			}
 		std::cout << "PASS " << count << " truncated map loads rejected, followed by successful reuse" << std::endl;
-		for (bool file : {false, true})
+			const auto replaceSint32 = [](std::string& value, size_t offset, Uint32 replacement)
+			{
+				for (int byte = 0; byte < 4; ++byte)
+					value[offset + byte] = char(replacement >> (24 - 8 * byte));
+			};
+			for (const auto [widthExponent, heightExponent] : {
+				std::pair<Uint32, Uint32>{10, 9}, {9, 10}, {3, 9}, {9, 3},
+				{0x7fffffffU, 9}, {9, 0x7fffffffU}})
+			{
+				std::string malformed = mapBytes;
+				replaceSint32(malformed, 4, widthExponent);
+				replaceSint32(malformed, 8, heightExponent);
+				auto invalid = input(malformed, false);
+				Map loaded;
+				assert(!loaded.load(invalid.get(), savedHeader, &gui.game));
+				assert(loaded.getW() == 0 && loaded.getH() == 0);
+			}
+			assert(Map::supportedDimensions(4, 4));
+			assert(Map::supportedDimensions(9, 9));
+			std::cout << "PASS unsupported and extreme map dimensions rejected before allocation" << std::endl;
+			for (bool file : {false, true})
 		{
 			std::string malformed = mapBytes;
 			malformed.replace(cellsEnd, 4, 4, char(0xFF));

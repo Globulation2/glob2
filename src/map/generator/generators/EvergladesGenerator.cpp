@@ -542,12 +542,12 @@ EvergladesOptions::EvergladesOptions(const GenerationRequest &r)
 GeneratorDefinition evergladesDefinition()
 {
 	return {
-		"everglades",
-		19,
-		"Everglades",
-		2,
-		false,
-		// Pool spacing and pool size in tiles; sloughs is the share of pools grown and stretched
+			"everglades",
+			19,
+			"Everglades",
+			2,
+			false,
+			// Pool spacing and pool size in tiles; sloughs is the share of pools grown and stretched
 		// into sloughs; the clearings' radius in tiles; the levee is the share of each clearing's
 		// ring that is sand.
 		{{"pool-spacing", "Pool spacing", 8, 20, 1, 15, ControlGroup::Terrain},
@@ -562,8 +562,14 @@ GeneratorDefinition evergladesDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			// "style:wide-open" (from the code's own "sprawling" framing) was wrong at a glance:
+			// FEEDBACK 2026-09-17 asked for tags read off the rendered map, and this one is nearly
+			// wall-to-wall pools and sloughs, not open ground - dense and growth-pressured, not
+			// wide-open. Left with no style tag rather than a second guess; see the skill's own
+			// "A growth-pressure map can intentionally creep into bases" characterization.
+			{"terrain:natural", "feature:swamp", "feature:lakes"}};
 }

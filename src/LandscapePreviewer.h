@@ -17,6 +17,8 @@
 /// thread has its own synchronized random stream, so any number of workers may roll at once.
 class LandscapePreviewer
 {
+	friend struct CustomGameSetupHarness;
+
   public:
 	enum class State
 	{
@@ -40,14 +42,23 @@ class LandscapePreviewer
 		unsigned revision = 0;
 	};
 	static constexpr int kAttempts = 3;
-	/// threads <= 0 picks a count from the hardware, leaving a core to the UI.
-	explicit LandscapePreviewer(std::vector<GenerationRequest> requests, int threads = 0);
+	/// Zero picks a hardware-derived worker count; negative uses cooperative poll() on any host.
+	/// A deferred queue waits for prioritize() so its first jobs can follow the initial layout.
+	explicit LandscapePreviewer(std::vector<GenerationRequest> requests, int threads = 0,
+								bool deferred = false);
 	~LandscapePreviewer();
 	LandscapePreviewer(const LandscapePreviewer &) = delete;
 	LandscapePreviewer &operator=(const LandscapePreviewer &) = delete;
 	/// Rolls every request again with fresh seeds. Rolls already under way finish, then are
 	/// dropped rather than shown.
 	void regenerate();
+	/// Advance one generation attempt on hosts without worker threads; retries yield too.
+	void poll();
+	/// Cooperative hosts may restrict an attempt to cards actually in view.
+	void poll(const std::vector<std::size_t> &eligible);
+	/// Reorder pending work without rerolling. Unlisted slots follow listed slots in index order.
+	/// Also releases a deferred queue. Already running attempts are not interrupted.
+	void prioritize(const std::vector<std::size_t> &order);
 	/// Replaces the requests and rolls them with fresh seeds, on the same workers; rolls of the
 	/// old requests already under way finish, then are dropped.
 	void restart(std::vector<GenerationRequest> requests);
@@ -68,11 +79,18 @@ class LandscapePreviewer
 	static Preview roll(const GenerationRequest &request, std::uint32_t rootSeed);
 
   private:
+	static Preview rollAttempt(const GenerationRequest &, std::uint32_t rootSeed, int attempt);
 	void beginPass();
+	void sortQueue();
+	void pollNext(const std::vector<std::size_t> *eligible);
+	void advance(std::unique_lock<std::mutex> &lock);
 	void work();
 	std::vector<GenerationRequest> requests;
 	std::vector<Preview> slots;
 	std::vector<std::uint32_t> seeds;
+	std::vector<int> attempts;
+	std::vector<std::size_t> priorities;
+	bool started;
 	/// Per slot, the pass its pending roll belongs to: a roll finished for an older pass is dropped.
 	std::vector<unsigned> passes;
 	unsigned pass = 0;

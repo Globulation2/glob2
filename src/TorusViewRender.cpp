@@ -13,8 +13,19 @@
 #include <cstddef>
 #include <cstring>
 #include <vector>
-#ifdef HAVE_OPENGL
-#ifdef __APPLE__
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
+#if defined(HAVE_OPENGL)
+#define GLOB2_TORUS_OPENGL
+#endif
+
+#ifdef GLOB2_TORUS_OPENGL
+#if defined(GLOB2_WEBGL2)
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
+#elif defined(__APPLE__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #define glGenFramebuffers glGenFramebuffersEXT
@@ -39,7 +50,83 @@ float smooth(float x)
     return x * x * (3 - 2 * x);
 }
 float mix(float a, float b, float t) { return a + (b - a) * t; }
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
+#ifdef GLOB2_WEBGL2
+// GLSL ES 1.00 has no version line. Emscripten's legacy-GL bridge rewrites
+// ftransform() and the gl_* vertex inputs, and adds the fragment precision.
+#define TORUS_GLSL_VERSION ""
+// WebGL has no attribute stacks and the bridge does not emulate them. Save
+// exactly what each torus block changes, so the 2D renderer's GL state cache
+// still matches when the HUD resumes drawing.
+struct TextureState
+{
+    GLint texture = 0, alignment = 1;
+    TextureState()
+    {
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &texture);
+        glGetIntegerv(GL_UNPACK_ALIGNMENT, &alignment);
+    }
+    void restore() const
+    {
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+    }
+};
+void setCapability(GLenum capability, bool enabled)
+{
+    if (enabled)
+        glEnable(capability);
+    else
+        glDisable(capability);
+}
+struct RingState
+{
+    bool scissor = glIsEnabled(GL_SCISSOR_TEST), depth = glIsEnabled(GL_DEPTH_TEST),
+         blend = glIsEnabled(GL_BLEND), cull = glIsEnabled(GL_CULL_FACE);
+    GLboolean depthMask = GL_TRUE;
+    GLint scissorBox[4] = {}, depthFunc = GL_LESS, blendFactors[4] = {}, textureEnvironment = GL_MODULATE;
+    GLfloat clearColor[4] = {};
+    TextureState texture;
+    RingState()
+    {
+        glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
+        glGetIntegerv(GL_SCISSOR_BOX, scissorBox);
+        glGetIntegerv(GL_DEPTH_FUNC, &depthFunc);
+        glGetIntegerv(GL_BLEND_SRC_RGB, &blendFactors[0]);
+        glGetIntegerv(GL_BLEND_DST_RGB, &blendFactors[1]);
+        glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendFactors[2]);
+        glGetIntegerv(GL_BLEND_DST_ALPHA, &blendFactors[3]);
+        glGetTexEnviv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, &textureEnvironment);
+        glGetFloatv(GL_COLOR_CLEAR_VALUE, clearColor);
+    }
+    void restore() const
+    {
+        setCapability(GL_SCISSOR_TEST, scissor);
+        setCapability(GL_DEPTH_TEST, depth);
+        setCapability(GL_BLEND, blend);
+        setCapability(GL_CULL_FACE, cull);
+        glDepthMask(depthMask);
+        glDepthFunc(depthFunc);
+        glScissor(scissorBox[0], scissorBox[1], scissorBox[2], scissorBox[3]);
+        glBlendFuncSeparate(blendFactors[0], blendFactors[1], blendFactors[2], blendFactors[3]);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, textureEnvironment);
+        glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
+        // The bridge cannot report point size or current color; return them to
+        // their defaults.
+        glPointSize(1);
+        glColor4f(1, 1, 1, 1);
+        texture.restore();
+    }
+};
+// The bridge draws emulated client-array elements as GL_UNSIGNED_SHORT,
+// whatever type is requested; the torus mesh fits in 16 bits.
+using MeshIndex = GLushort;
+const GLenum meshIndexType = GL_UNSIGNED_SHORT;
+#else
+#define TORUS_GLSL_VERSION "#version 120\n"
+using MeshIndex = GLuint;
+const GLenum meshIndexType = GL_UNSIGNED_INT;
+#endif
 struct SkyPoint
 {
     float x, y, z, brightness;
@@ -126,13 +213,13 @@ void drawSky(float yaw, float pitch, float fade, float sx, float sy, float dista
 GLuint createMaterial()
 {
     const char *vertex =
-        "#version 120\n"
+        TORUS_GLSL_VERSION
         "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
         "uniform vec2 mapOffset;\n"
         "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;normal=gl_Normal;}\n";
     // A sun off to the left: its highlight lies on the ring's left flank, where
     // the surface normal bisects the sun and the eye, never on the front face.
-    const char *fragment = "#version 120\n"
+    const char *fragment = TORUS_GLSL_VERSION
                            "uniform sampler2D world; uniform vec3 sunHalf; uniform float specular;\n"
                            "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
                            "void main(){\n"
@@ -166,7 +253,7 @@ GLuint createMaterial()
 
 void TorusView::releaseResources()
 {
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     if (graphicsContext && graphicsContext == SDL_GL_GetCurrentContext() &&
         graphicsGeneration == globalContainer->gfx->getGLContextGeneration())
     {
@@ -199,7 +286,7 @@ void TorusView::releaseResources()
 
 bool TorusView::prepareRenderTarget()
 {
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     // Resolution/fullscreen changes can replace SDL's GL context. Object names
     // belong to their creating context; never delete or reuse them in another.
     if (graphicsContext != SDL_GL_GetCurrentContext() ||
@@ -223,7 +310,11 @@ bool TorusView::prepareRenderTarget()
             glDeleteFramebuffers(1, &framebuffer);
         atlasW = nextW;
         atlasH = nextH;
+#ifdef GLOB2_WEBGL2
+        const TextureState textureState;
+#else
         glPushAttrib(GL_TEXTURE_BIT);
+#endif
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -242,7 +333,11 @@ bool TorusView::prepareRenderTarget()
             fprintf(stderr, "Torus view: offscreen framebuffer is unavailable\n");
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#ifdef GLOB2_WEBGL2
+        textureState.restore();
+#else
         glPopAttrib();
+#endif
         if (!failed && !material)
             material = createMaterial();
         if (!material)
@@ -258,11 +353,15 @@ bool TorusView::prepareRenderTarget()
 // same world-anchored field as the shadows the atlas already carries.
 void TorusView::updateClouds(int time)
 {
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     int gridW, gridH;
     clouds.computeWorld(worldW, worldH, time, cloudPixels, gridW, gridH, cloudGridLimit);
+#ifdef GLOB2_WEBGL2
+    const TextureState textureState;
+#else
     glPushAttrib(GL_TEXTURE_BIT);
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
+#endif
     if (!cloudTexture || gridW != cloudW || gridH != cloudH)
     {
         if (cloudTexture)
@@ -285,15 +384,19 @@ void TorusView::updateClouds(int time)
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, cloudW, cloudH, GL_ALPHA, GL_UNSIGNED_BYTE, &cloudPixels[0]);
     }
+#ifdef GLOB2_WEBGL2
+    textureState.restore();
+#else
     glPopClientAttrib();
     glPopAttrib();
+#endif
 #endif
 }
 
 bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height, float flatZoom, float fractionX, float fractionY)
 {
 	PERF_SCOPE_TIME(Torus);
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     if (!active() || !available())
     {
         reset();
@@ -426,7 +529,11 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
 
     // Save GL state AFTER the game renderer: its state cache must still match
     // the restored state when the ordinary HUD resumes drawing.
+#ifdef GLOB2_WEBGL2
+    const RingState ringState;
+#else
     glPushAttrib(GL_ALL_ATTRIB_BITS);
+#endif
     glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
     glEnable(GL_SCISSOR_TEST);
     // The sidebar is translucent: render beneath it, while retaining the
@@ -508,6 +615,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glUniform1f(glGetUniformLocation(material, "specular"), 0.18f * roll);
     }
     const int U = meshColumns, V = meshRows;
+#ifdef GLOB2_WEBGL2
+    static_assert((meshColumns + 1) * (meshRows + 1) <= 65536, "WebGL torus indices are 16-bit");
+#endif
     using MeshVertex = TorusPicking::Vertex;
     pickU = anchorU;
     pickV = anchorV;
@@ -517,7 +627,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     GLint oldArrayBuffer, oldIndexBuffer;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldArrayBuffer);
     glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &oldIndexBuffer);
+#ifndef GLOB2_WEBGL2
     glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+#endif
     if (!meshBuffer || std::memcmp(key, meshKey, sizeof(key)) != 0)
     {
         if (!meshBuffer)
@@ -571,17 +683,17 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     }
     if (!indexBuffer)
     {
-        std::vector<unsigned> indices;
+        std::vector<MeshIndex> indices;
         indices.reserve(U * V * 6);
         for (int j = 0; j < V; ++j)
             for (int i = 0; i < U; ++i)
             {
-                unsigned a = j * (U + 1) + i, b = a + U + 1;
-                indices.insert(indices.end(), {a, b, a + 1, a + 1, b, b + 1});
+                const MeshIndex a = MeshIndex(j * (U + 1) + i), b = MeshIndex(a + U + 1);
+                indices.insert(indices.end(), {a, b, MeshIndex(a + 1), MeshIndex(a + 1), b, MeshIndex(b + 1)});
             }
         glGenBuffers(1, &indexBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), indices.data(),
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(MeshIndex), indices.data(),
                      GL_STATIC_DRAW);
     }
     glBindBuffer(GL_ARRAY_BUFFER, meshBuffer);
@@ -598,7 +710,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glNormalPointer(GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, normal)));
     // Both navigation axes only change texture offsets. Unfolding or resizing
     // rebuilds the shared surface and cloud geometry.
-    glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, U * V * 6, meshIndexType, nullptr);
     if (drawClouds && cloudTexture)
     {
         // White clouds lit like the ground, blended over it without writing depth.
@@ -619,17 +731,30 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                         reinterpret_cast<void *>(offsetof(MeshVertex, position)));
         glColorPointer(3, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, color)));
         glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
-        glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, U * V * 6, meshIndexType, nullptr);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
         glDepthMask(GL_TRUE);
         glDisable(GL_BLEND);
     }
+#ifdef GLOB2_WEBGL2
+    // The bridge has no client attribute stacks; Glob2's other batched paths
+    // leave client arrays disabled too (see AlphaMapRender).
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+#else
     glPopClientAttrib();
+#endif
     glBindBuffer(GL_ARRAY_BUFFER, oldArrayBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldIndexBuffer);
     glUseProgram(oldProgram);
+#ifdef GLOB2_WEBGL2
+    ringState.restore();
+#else
     glPopAttrib();
+#endif
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);

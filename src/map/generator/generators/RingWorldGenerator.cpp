@@ -79,23 +79,8 @@ double unitDraw(std::mt19937 &rng)
 	return rng() / 4294967296.0;
 }
 
-// Belt coordinates: u runs along the belt and v across it. The belt follows the map's longer
-// axis, so a tall map gets one that wraps top to bottom.
-struct Axes
-{
-	int width, height;
-	bool alongX;
-	int length() const { return alongX ? width : height; }
-	int breadth() const { return alongX ? height : width; }
-	int u(int x, int y) const { return alongX ? x : y; }
-	int v(int x, int y) const { return alongX ? y : x; }
-	int stepU(int dx, int dy) const { return alongX ? dx : dy; }
-};
-
-Axes axesFor(int width, int height)
-{
-	return {width, height, width >= height};
-}
+// Belt coordinates (Grid.h's Axes): u runs along the belt and v across it. The belt follows the
+// map's longer axis, so a tall map gets one that wraps top to bottom.
 
 // A smooth closed curve along the belt, one sample per tile. Its harmonics are whole numbers of
 // cycles per map length, so it meets itself exactly at the seam. Normalised to [-1, 1]; `slope`
@@ -747,7 +732,8 @@ RingWorldOptions::RingWorldOptions(const GenerationRequest &r)
 
 GeneratorDefinition ringWorldDefinition()
 {
-	return {"ring-world",
+	return {
+			"ring-world",
 			16,
 			"Ring world",
 			1,
@@ -773,5 +759,9 @@ GeneratorDefinition ringWorldDefinition()
 			generate,
 			true,
 			validate,
-			validateWorld};
+			validateWorld,
+			// The belt's start-bearing stretches are periodic along its length, not arranged around
+			// one shared centre, so this is a stamped lattice rather than a repeated wedge.
+			{"terrain:natural", "feature:ocean", "feature:lakes", "style:wide-open",
+			 "fairness:stamped-lattice"}};
 }

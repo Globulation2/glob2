@@ -5,8 +5,16 @@
 #include <cmath>
 #include <random>
 #include <vector>
+struct GenerationContext;
 namespace MapGeneration
 {
+/// A broken line: along `length` tiles, runs of `runLow` to `runHigh` on and gaps of `gapLow` to
+/// `gapHigh` off, each length a bounded draw from `stream`, from 0 to the end (the last run is cut
+/// short at the end; the line does not join itself across the seam, so a run and a gap may meet
+/// there). A moraine's hummocks, a broken fence, a crumbled wall: cover with doors in it.
+std::vector<unsigned char> runsAndGaps(int length, int runLow, int runHigh, int gapLow, int gapHigh,
+									   GenerationContext &, const char *stream);
+
 // Whole-map patterns with a grain: labyrinths that grow themselves, parallel stripes that wrap the
 // torus exactly at any slant, the shadow a ridge casts downwind, and curves that follow a field.
 // LatticeNoise.h gives smooth isotropic noise; these give structure. The iterated and stepped ones

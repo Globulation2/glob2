@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GUIMapPreview.h"
 #include <StringTable.h>
+#include <TouchText.h>
 #include <Toolkit.h>
 #include <GUIStyle.h>
 #include <algorithm>
@@ -105,10 +106,14 @@ void MapPreview::setMapThumbnail(const MapThumbnail &next)
 	delete surface;
 	surface = nullptr;
 	state = next.isLoaded() ? State::Ready : State::Failed;
-	if (next.isLoaded())
+}
+void MapPreview::setAnimateChanges(bool enabled)
+{
+	animateChanges = enabled;
+	if (!enabled)
 	{
-		surface = new DrawableSurface(next.pixels()->width, next.pixels()->height);
-		thumbnail.loadIntoSurface(surface);
+		transitioning = transitionPending = false;
+		previousFrame.reset();
 	}
 }
 void MapPreview::setState(State next)
@@ -192,7 +197,7 @@ bool MapPreview::handlePreviewEvent(SDL_Event *e)
 		mouseY = e->motion.y;
 		return dragging;
 	}
-	if (e->type == SDL_MOUSEWHEEL && surface && inside(mapArea(), mouseX, mouseY))
+	if (e->type == SDL_MOUSEWHEEL && thumbnail.isLoaded() && inside(mapArea(), mouseX, mouseY))
 	{
 		const auto before = worldArea();
 		const double mapX = double(mouseX - before.x) / before.w - view.offsetX;
@@ -211,7 +216,7 @@ bool MapPreview::handlePreviewEvent(SDL_Event *e)
 		retry();
 		return true;
 	}
-	if (!surface || !inside(mapArea(), e->button.x, e->button.y))
+	if (!thumbnail.isLoaded() || !inside(mapArea(), e->button.x, e->button.y))
 		return false;
 	if (e->button.button == SDL_BUTTON_RIGHT ||
 		(e->button.button == SDL_BUTTON_LEFT && e->button.clicks >= 2))
@@ -233,15 +238,23 @@ void MapPreview::paint()
 {
 	// Keep the layout slot, but paint only the fitted map and its outline.
 	// The menu owns the unused space around rectangular maps.
-	auto b = surface ? mapArea() : box();
+	auto b = thumbnail.isLoaded() ? mapArea() : box();
 	if (b.w <= 0 || b.h <= 0)
 		return;
 	auto target = parent->getSurface();
 	int cx, cy, cw, ch;
 	target->getClipRect(&cx, &cy, &cw, &ch);
 	const int left = std::max(cx, b.x), top = std::max(cy, b.y);
-	target->setClipRect(left, top, std::max(0, std::min(cx + cw, b.x + b.w) - left),
-						std::max(0, std::min(cy + ch, b.y + b.h) - top));
+	const int right = std::min(cx + cw, b.x + b.w), bottom = std::min(cy + ch, b.y + b.h);
+	if (right <= left || bottom <= top)
+		return;
+	// A delivered off-screen thumbnail needs no rendering resources until its first paint.
+	if (!surface && thumbnail.isLoaded())
+	{
+		surface = new DrawableSurface(thumbnail.pixels()->width, thumbnail.pixels()->height);
+		thumbnail.loadIntoSurface(surface);
+	}
+	target->setClipRect(left, top, right - left, bottom - top);
 	target->drawFilledRect(b.x, b.y, b.w, b.h, Color(15, 24, 19));
 	if (surface)
 	{
@@ -317,17 +330,43 @@ void MapPreview::paint()
 												   : "[GUIMapPreview text 0]";
 		auto font = Toolkit::getFont("standard");
 		const auto label = tr(key);
-		const int fh = font->getStringHeight(label);
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(235, 240, 224)));
-		target->drawString(b.x + std::max(4, (b.w - font->getStringWidth(label)) / 2),
-						   b.y + b.h / 2 - fh, font, label);
 		const auto second = tr(state == State::Empty    ? "[GUIMapPreview text 1]"
 							   : state == State::Failed ? (retry ? "[Map preview retry]"
 																 : "[Map preview choose another]")
 														: "[Map preview please wait]");
-		target->drawString(b.x + std::max(4, (b.w - font->getStringWidth(second)) / 2),
-						   b.y + b.h / 2, font, second);
-		font->popStyle();
+		if (std::max(font->getStringWidth(label), font->getStringWidth(second)) <= b.w - 8)
+		{
+			const int fh = font->getStringHeight(label);
+			font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(235, 240, 224)));
+			target->drawString(b.x + (b.w - font->getStringWidth(label)) / 2, b.y + b.h / 2 - fh,
+							   font, label);
+			target->drawString(b.x + (b.w - font->getStringWidth(second)) / 2, b.y + b.h / 2, font,
+							   second);
+			font->popStyle();
+		}
+		else
+		{
+			// Landscape previews can be tiny. Wrap their status at the smaller
+			// font size and mark overflow explicitly instead of clipping glyphs.
+			font = Toolkit::getFont("little");
+			font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(235, 240, 224)));
+			auto lines = GAGCore::wrapTouchText(font, label + "\n" + second, b.w - 8);
+			const int fh = font->getStringHeight(label);
+			const size_t capacity = std::max(1, b.h / std::max(1, fh));
+			if (lines.size() > capacity)
+			{
+				lines.resize(capacity);
+				lines.back() = "…";
+			}
+			int y = b.y + (b.h - int(lines.size()) * fh) / 2;
+			for (const auto &line : lines)
+			{
+				target->drawString(b.x + std::max(0, (b.w - font->getStringWidth(line)) / 2), y,
+								   font, line);
+				y += fh;
+			}
+			font->popStyle();
+		}
 	}
 	target->setClipRect(cx, cy, cw, ch);
 	Style::style->drawFrame(target, b.x, b.y, b.w, b.h, Color::ALPHA_TRANSPARENT);

@@ -8,6 +8,15 @@
 struct GenerationContext;
 namespace MapGeneration
 {
+/// Half-open, unwrapped tile/corner bounds. Shared integer boundaries, rather than rounded
+/// child centres, are essential when thirds do not divide the map's power-of-two dimensions.
+struct RegionBounds
+{
+	int x0, y0, x1, y1;
+	int width() const { return x1 - x0; }
+	int height() const { return y1 - y0; }
+	bool contains(int x, int y) const { return x >= x0 && x < x1 && y >= y0 && y < y1; }
+};
 constexpr double kPi = 3.14159265358979323846;
 struct ShapePoint
 {
@@ -89,6 +98,30 @@ class RadialShape
   private:
 	double radius;
 	std::array<double, 4> amplitude, phase;
+};
+/// A teardrop: the outline of a drumlin, a barchan's body, a raindrop. `length` runs along its axis
+/// from the blunt head to the tapered tail, and it is `width` across at its widest, which lies
+/// `headShare` of the length back from the head (0.4 is a drumlin's: a short round head, a long
+/// tail). The outline is two half-ellipses sharing that widest cross-section, a short one for the
+/// head and a long one for the tail, so it is smooth with no corner where they meet. Points are
+/// measured from the middle of the length: `along` positive towards the tail, `across` either side.
+struct Teardrop
+{
+	double length, width, headShare = 0.4;
+	/// Half the width at `along` (0 beyond either end).
+	double halfWidthAt(double along) const;
+	bool contains(double along, double across) const
+	{
+		return std::abs(across) < halfWidthAt(along);
+	}
+	/// The farthest any point of the outline lies from the middle, once `along` is divided by
+	/// `stretch` (the length's ratio to the width, say): the radius of the disc that holds the
+	/// shape in a frame squashed along its axis. The blunt head bulges past a disc of half the
+	/// width, so it is a little over half the width even when length is width times stretch.
+	double reach(double stretch) const;
+	/// The teardrop, `stretch` times as long as wide, whose reach under `stretch` is exactly
+	/// `radius`: the biggest that fits a landform's packed radius (packLandforms, Points.h).
+	static Teardrop fitting(double radius, double stretch, double headShare = 0.4);
 };
 // Rasterizes a shape into a label grid; callers decide what the labels mean.
 // Wrapping visits each tile once using its nearest image relative to the shape center.

@@ -1,13 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Farmland.h"
+#include "GenerationContext.h"
+#include "LatticeNoise.h"
 #include "Morphology.h"
 #include "Map.h"
 #include "Resources.h"
+#include "Planting.h"
 #include "Drawing.h"
 #include "Territories.h"
 #include "Topology.h"
 #include <algorithm>
 #include <cmath>
+#include <set>
 namespace MapGeneration
 {
 namespace
@@ -15,6 +19,168 @@ namespace
 // How far from its point a field's seed may move to find open ground.
 constexpr int kSeedSearch = 16;
 } // namespace
+
+std::vector<int> stampContainedPlot(TerrainSketch &sketch, const Torus &t,
+									const std::vector<int> &corners, int margin)
+{
+	margin = std::max(1, margin);
+	const std::set<int> inside(corners.begin(), corners.end());
+	// Two corner rows include a pure-sand tile even on a straight edge. Using a square
+	// stencil also seals diagonal steps; radial offsets alone need not seal raster corners.
+	for (int i : inside)
+		for (int dy = -margin; dy <= margin; ++dy)
+			for (int dx = -margin; dx <= margin; ++dx)
+				sketch[t.at(i % t.w + dx, i / t.w + dy)] = SAND;
+	for (int i : inside)
+		sketch[i] = GRASS;
+	std::vector<int> tiles;
+	for (int i : inside)
+		if (inside.count(t.at(i % t.w + 1, i / t.w)) && inside.count(t.at(i % t.w, i / t.w + 1)) &&
+			inside.count(t.at(i % t.w + 1, i / t.w + 1)))
+			tiles.push_back(i);
+	return tiles;
+}
+
+int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,
+					   const Fertility::Field &fertility, int resource, int wanted, bool renewable)
+{
+	std::vector<std::pair<int, int>> ranked;
+	for (int i : tiles)
+	{
+		const int f = fertility.at(i % t.w, i / t.w);
+		if ((!renewable || f > 0) && clearGround(map, i % t.w, i / t.w))
+			ranked.push_back({-f, i});
+	}
+	std::sort(ranked.begin(), ranked.end());
+	const int count = std::min(std::max(0, wanted), int(ranked.size()));
+	for (int k = 0; k < count; ++k)
+	{
+		const int i = ranked[k].second;
+		map.setResource(i % t.w, i / t.w, resource, 1);
+	}
+	return count;
+}
+
+std::string containedPlotsMismatch(const Map &map, const Torus &t, const std::vector<int> &plotOf,
+								   const Fertility::Field *dry,
+								   const std::vector<unsigned char> *finiteWheat)
+{
+	if (int(plotOf.size()) != t.size() || (finiteWheat && int(finiteWheat->size()) != t.size()))
+		return "Contained plot labels have the wrong dimensions.";
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const int type = map.getResource(x, y).type;
+		if (plotOf[i] < 0)
+		{
+			const bool finiteCrop =
+				dry && dry->at(x, y) == 0 &&
+				(type == WOOD || (type == WHEAT && finiteWheat && (*finiteWheat)[i]));
+			if ((type == WHEAT || type == WOOD) && !finiteCrop)
+				return "A spreading crop was planted outside its contained plot.";
+			continue;
+		}
+		if (!map.isGrass(x, y))
+			return "Contained plot " + std::to_string(plotOf[i]) + " lost grass at (" +
+				   std::to_string(x) + ", " + std::to_string(y) + ").";
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int j = t.at(x + dx, y + dy);
+				if (map.isGrass(j % t.w, j / t.w) && plotOf[j] != plotOf[i])
+					return "A contained plot has a grass growth connection across its margin.";
+			}
+	}
+	return "";
+}
+
+double ContourWobble::at(double angle) const
+{
+	// The weights sum to one, so the shift never exceeds the amplitude.
+	return amplitude * (0.55 * std::sin(2 * angle + phase[0]) + 0.3 * std::sin(3 * angle + phase[1]) +
+						0.15 * std::sin(5 * angle + phase[2]));
+}
+
+double ContourFarmStyle::reach() const
+{
+	double amplitude = 0;
+	for (const ContourWobble &w : wobbles)
+		amplitude = std::max(amplitude, w.amplitude);
+	return outerRadius() + amplitude;
+}
+
+double contourNominal(const ContourFarmStyle &style, size_t centre, double distance, double angle)
+{
+	if (centre >= style.wobbles.size() || style.wobbles[centre].amplitude <= 0)
+		return distance;
+	const ContourWobble &w = style.wobbles[centre];
+	// Ramped in over amplitude + 2 tiles past the cap: the shift then changes by less than a tile
+	// per tile along a ray, so the mapping is monotone, and the summit and its cap stay round.
+	const double ramp =
+		std::clamp((distance - style.innerRadius - style.cap) / (w.amplitude + 2), 0.0, 1.0);
+	return distance + w.at(angle) * ramp;
+}
+
+ContourFarm layContourFarm(TerrainSketch &sketch, const Torus &t,
+						   const std::vector<ShapePoint> &centres, const ContourFarmStyle &style)
+{
+	ContourFarm result;
+	Farm &farm = result.farm;
+	farm.water.assign(t.size(), 0);
+	farm.sand.assign(t.size(), 0);
+	farm.plot.assign(t.size(), 0);
+	farm.row.assign(t.size(), -1);
+	result.crossings.assign(t.size(), 0);
+	farm.rows = style.bands;
+	const double outer = style.outerRadius();
+	const int extent = int(std::ceil(style.reach()));
+	// Scan each bounded disc rather than the whole torus for each centre. Integer
+	// offsets give identical rasterization at every whole-corner translation, even
+	// when a disc straddles the map seam. Discs must not overlap: silently choosing
+	// a winning farm would cut the other farm's containment cap.
+	std::vector<ShapePoint> directions;
+	for (int s = 0; s < style.crossings; ++s)
+	{
+		const double angle = style.phase + s * 2 * kPi / style.crossings;
+		directions.push_back({std::cos(angle), std::sin(angle)});
+	}
+	for (size_t c = 0; c < centres.size(); ++c)
+	{
+		const ShapePoint &centre = centres[c];
+		for (int dy = -extent; dy <= extent; ++dy)
+			for (int dx = -extent; dx <= extent; ++dx)
+			{
+				const double distance =
+					contourNominal(style, c, std::hypot(dx, dy), std::atan2(double(dy), double(dx)));
+				if (distance < style.innerRadius || distance > outer)
+					continue;
+				const int i = t.at(int(centre.x) + dx, int(centre.y) + dy);
+				// A ray, not an infinite line: the positive projection selects the
+				// outward half and the perpendicular projection controls true width.
+				// This avoids stair widths shrinking with radius as angular wedges do.
+				for (const ShapePoint &direction : directions)
+					if (dx * direction.x + dy * direction.y > 0 &&
+						std::fabs(-dx * direction.y + dy * direction.x) <= style.crossingHalfWidth)
+						result.crossings[i] = 1;
+				const double radial = distance - style.innerRadius - style.cap;
+				if (result.crossings[i] || radial < 0 || distance > outer - style.cap)
+				{
+					sketch[i] = SAND;
+					farm.sand[i] = 1;
+					continue;
+				}
+				// Each complete period begins with crops and ends with irrigation.
+				// Keeping the last water band whole is important: an outer crop
+				// fragment would have a different growth budget and harvesting edge.
+				const int band = int(radial / style.rows.period());
+				const bool water = std::fmod(radial, style.rows.period()) >= style.rows.crops;
+				farm.row[i] = 2 * band + int(water);
+				farm.water[i] = water;
+				sketch[i] = water ? WATER : GRASS;
+			}
+	}
+	return result;
+}
 
 FarmRows bestFarmRows(double angle)
 {
@@ -67,9 +233,21 @@ void stampFarmPlot(TerrainSketch &sketch, const Torus &t, Farm &farm, int x0, in
 			farm.plot[t.at(x0 + dx, y0 + dy)] = 1;
 }
 
+GeneratorControl waterCrossingsControl()
+{
+	return GeneratorControl::toggle("water-crossings", "Sand bridges over water", true,
+									ControlGroup::Terrain);
+}
+
+GeneratorControl cropCrossingsControl()
+{
+	return GeneratorControl::toggle("crop-crossings", "Sand lanes through crops", true,
+									ControlGroup::Terrain);
+}
+
 Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned char> &region,
 			 double angle, ShapePoint origin, int rim, const FarmRows &rows, const FarmPlot *plot,
-			 int bridgeSpacing, bool caps)
+			 const FarmBridges &bridges, bool caps, std::vector<int> *edgeDepthOut)
 {
 	const int n = t.size();
 	Farm farm;
@@ -78,7 +256,7 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 	std::vector<unsigned char> outside(n, 0);
 	for (int i = 0; i < n; ++i)
 		outside[i] = !region[i];
-	const std::vector<int> fromEdge = stepsFrom(t, outside);
+	std::vector<int> fromEdge = stepsFrom(t, outside);
 	// Across the rows: the rows run along `angle`, so a vertex's place across them is its offset along
 	// the normal, shifted so the crop row at the origin is centred on it.
 	const double nx = -std::sin(angle), ny = std::cos(angle), period = rows.period();
@@ -126,23 +304,24 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 				farm.sand[i] = 1;
 				sketch[i] = SAND;
 			}
-	// Bridges: every `bridgeSpacing` tiles along the rows, a line of sand vertices straight across the
+	// Bridges: every `bridges.spacing` tiles along the rows, a line of sand vertices straight across the
 	// whole farm inside its cap, water rows and crop rows alike (FEEDBACK 2026-09-14: "extend those
 	// same sand bridges across the grass farm portions as well, so they go clean across the whole
 	// farm"). Across a water row the tiles either side of the line are no longer pure water, so
 	// workers walk across, two tiles wide, instead of round the end of a long row; across a crop row
 	// the line is a lane no crop grows over, so the farm is cut into bays that can be walked round
-	// without cutting through the rows. The cap ring (fromEdge == rim - 1) is sand already; the rim
-	// beyond it is the coast's or the wall's, and is left alone.
-	if (bridgeSpacing > 0)
+	// without cutting through the rows. Each half can be switched off (FarmBridges). The cap ring
+	// (fromEdge == rim - 1) is sand already; the rim beyond it is the coast's or the wall's, and is
+	// left alone.
+	if (bridges.spacing > 0)
 	{
 		const double ax = std::cos(angle), ay = std::sin(angle);
 		for (int i = 0; i < n; ++i)
 		{
-			if (!region[i] || fromEdge[i] < rim - 1)
+			if (!region[i] || fromEdge[i] < rim - 1 || !bridges.crosses(farm.water[i]))
 				continue;
 			const double along = t.offsetX(ox, i % t.w) * ax + t.offsetY(oy, i / t.w) * ay;
-			const double off = along - bridgeSpacing * std::round(along / bridgeSpacing);
+			const double off = along - bridges.spacing * std::round(along / bridges.spacing);
 			if (std::abs(off) < kBridgeHalfWidth)
 			{
 				farm.water[i] = 0;
@@ -179,6 +358,8 @@ Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned c
 		}
 	}
 	farm.rows = int(std::count(seen.begin(), seen.end(), 1));
+	if (edgeDepthOut)
+		*edgeDepthOut = std::move(fromEdge);
 	return farm;
 }
 
@@ -361,5 +542,134 @@ void clearFarmPlots(Map &map, const Torus &t, const std::vector<Farm> &farms)
 		for (int i = 0; i < t.size(); ++i)
 			if (farm.plot[i] && map.isResource(i % t.w, i / t.w))
 				map.setNoResource(i % t.w, i / t.w, 1);
+}
+
+std::vector<unsigned char> stampSealedOval(TerrainSketch &terrain, const Torus &t,
+										   const std::vector<unsigned char> &ground,
+										   const SealedOval &oval, const std::vector<int> &swayNoise)
+{
+	const int n = t.size();
+	std::vector<unsigned char> garden(n, 0);
+	// Distance in the oval's frame: along the rim's tangent squeezed by the stretch.
+	const double ca = std::cos(oval.angle), sa = std::sin(oval.angle);
+	const auto ovalDistance = [&](double dx, double dy)
+	{
+		const double across = dx * ca + dy * sa, along = -dx * sa + dy * ca;
+		return std::hypot(along / oval.stretch, across);
+	};
+	for (int i = 0; i < n; ++i)
+	{
+		if (!ground[i])
+			continue;
+		const double dx = t.offsetX(int(std::lround(oval.x)), i % t.w) - (oval.x - std::lround(oval.x));
+		const double dy = t.offsetY(int(std::lround(oval.y)), i / t.w) - (oval.y - std::lround(oval.y));
+		const double radius = oval.radius + (swayNoise[i] / 65536.0 * 2 - 1) * oval.sway;
+		const double d = ovalDistance(dx, dy);
+		if (d >= radius && d < radius + oval.sealWidth)
+			terrain[i] = SAND;
+		// A tile's middle is half a tile past its corner.
+		if (ovalDistance(dx + 0.5, dy + 0.5) < radius - 0.7)
+			garden[i] = 1;
+	}
+	return garden;
+}
+
+std::pair<int, int> plantSealedGarden(Map &map, const Torus &t, GenerationContext &context,
+									  const std::vector<unsigned char> &garden, int wheat, int wood,
+									  const std::string &cropsStream, const std::string &splitStream)
+{
+	const int n = t.size();
+	const auto plot = [&](int i) { return garden[i] && clearGround(map, i % t.w, i / t.w); };
+	const int tiles = int(std::count(garden.begin(), garden.end(), 1));
+	const int wheatWanted = std::min(wheat, tiles / 2);
+	const int woodWanted = std::min(wood, tiles * 2 / 5);
+	const std::vector<int> order = periodicNoise(t.w, t.h, 3, context.stream(cropsStream));
+	const std::vector<int> split = periodicNoise(t.w, t.h, 4, context.stream(splitStream));
+	std::vector<int> plotTiles;
+	for (int i = 0; i < n; ++i)
+		if (plot(i))
+			plotTiles.push_back(i);
+	std::stable_sort(plotTiles.begin(), plotTiles.end(), [&](int a, int b) { return order[a] > order[b]; });
+	plantFields(map, t, plotTiles, wheatWanted, woodWanted, [&](int i) { return split[i]; });
+	std::pair<int, int> standing{0, 0};
+	for (int i = 0; i < n; ++i)
+		if (garden[i])
+		{
+			standing.first += map.getResource(i % t.w, i / t.w).type == WHEAT;
+			standing.second += map.getResource(i % t.w, i / t.w).type == WOOD;
+		}
+	return standing;
+}
+
+int trimFieldsBeyondWater(Map &map, const Torus &t, const std::vector<unsigned char> &keep,
+						  const Fertility::Field &watered, int leastReach, int reachSpread,
+						  const std::vector<int> &noise)
+{
+	const std::vector<std::int64_t> toWater = distanceSquaredTo(t, pureTiles(map, WATER));
+	int trimmed = 0;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const int type = map.getResource(x, y).type;
+		if (type != WHEAT && type != WOOD)
+			continue;
+		const std::int64_t reach = leastReach + noise[i] * (reachSpread + 1) / 65536;
+		if (!keep[i] && watered.at(x, y) > 0 && toWater[i] > reach * reach)
+		{
+			map.setNoResource(x, y, 0);
+			++trimmed;
+		}
+	}
+	return trimmed;
+}
+
+int frayFieldEdges(Map &map, const Torus &t, const std::vector<unsigned char> &keep, int depth,
+				   const std::vector<int> &noise)
+{
+	const int n = t.size();
+	std::vector<unsigned char> unplanted(n, 0);
+	for (int i = 0; i < n; ++i)
+	{
+		const int type = map.getResource(i % t.w, i / t.w).type;
+		unplanted[i] = type != WHEAT && type != WOOD;
+	}
+	const std::vector<int> intoField = stepsFrom(t, unplanted);
+	int frayed = 0;
+	for (int i = 0; i < n; ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const int type = map.getResource(x, y).type;
+		if ((type == WHEAT || type == WOOD) && !keep[i] && intoField[i] <= noise[i] * (depth + 1) / 65536)
+		{
+			map.setNoResource(x, y, 0);
+			++frayed;
+		}
+	}
+	return frayed;
+}
+
+int removeCropSlivers(Map &map, const Torus &t, const std::vector<unsigned char> &protect)
+{
+	int slivers = 0;
+	for (int pass = 0; pass < 2; ++pass)
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const int x = i % t.w, y = i / t.w;
+			const int type = map.getResource(x, y).type;
+			if ((type != WHEAT && type != WOOD) || protect[i])
+				continue;
+			const auto open = [&](int dx, int dy)
+			{
+				const int j = t.at(x + dx, y + dy);
+				return map.isGrass(j % t.w, j / t.w) && !map.isResource(j % t.w, j / t.w) &&
+					   map.getBuilding(j % t.w, j / t.w) == NOGBID;
+			};
+			if ((open(-1, 0) && open(1, 0)) || (open(0, -1) && open(0, 1)))
+			{
+				map.setNoResource(x, y, 0);
+				++slivers;
+			}
+		}
+	return slivers;
 }
 } // namespace MapGeneration

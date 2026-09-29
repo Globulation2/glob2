@@ -11,6 +11,7 @@ namespace GAGGUI
 	class OnOffButton;
 	class Text;
 	class TextInput;
+	class ScreenStack;
 }
 
 ///This handles with connecting the user to YOG and logging them in.
@@ -20,7 +21,7 @@ class YOGLoginScreen : public YOGConnectionScreen
 public:
 	///Construct with the given YOG client.
 	///The provided client should not yet be connected to YOG.
-	YOGLoginScreen(std::shared_ptr<YOGClient> client);
+	YOGLoginScreen(GAGGUI::ScreenStack& screens, std::shared_ptr<YOGClient> client);
 	virtual ~YOGLoginScreen();
 
 	enum
@@ -56,8 +57,11 @@ private:
 
 	///Show the lobby screen
 	void showLobby();
+	void onTimer(Uint32 tick) override;
+	bool lobbyRequested = false;
 
 	TextInput *login, *password;
 	OnOffButton *rememberYogPassword;
 	Text *rememberYogPasswordText;
+	GAGGUI::ScreenStack& screens;
 };

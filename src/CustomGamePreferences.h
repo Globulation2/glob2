@@ -23,6 +23,11 @@ struct CustomGamePreferences
 	bool userMaps = false;
 	std::string librarySelection[2];
 	bool expanded[3] = {false, false, false};
+	// The landscape picker's sort order (LandscapePickerScreen::SortOrder): 0 random (its
+	// catalog order, shuffled once so no landscape is favoured), 1 alphabetical. Kept as a plain
+	// int here, the same way other UI choices in this struct are, so the wire format does not
+	// depend on that screen's header.
+	int landscapeSortOrder = 0;
 
 	struct Field
 	{
@@ -66,15 +71,22 @@ struct CustomGamePreferences
 		// stay unchanged regardless of which generator module is selected.
 		const auto legacy = toLegacyDescriptor(setup.generator);
 		std::ostringstream out;
-		out << "glob2-custom-game 1\n"
+		out << "glob2-custom-game 3\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' '
 			<< setup.prestige << ' ' << setup.revealed << ' ' << setup.locked << ' '
 			<< setup.speed << ' ' << userMaps << '\n'
+			<< "rules " << setup.noResourceGrowth << ' ' << setup.resourceScarcity << ' '
+			<< setup.instantConstruction << ' ' << setup.stockpileStart << ' ' << setup.noHunger << ' '
+			<< setup.unitUpgradesDisabled << ' ' << setup.glassCannonLevel << ' '
+			<< setup.unitsFearless << ' ' << setup.permadeathDisabled << ' ' << setup.peacefulMode << ' '
+			<< setup.buildingHpLevel << ' ' << setup.startingUnitLevel << ' '
+			<< setup.suddenDeathMinutes << '\n'
 			<< "labels " << std::quoted(setup.format) << ' ' << std::quoted(setup.ruleset) << '\n'
 			<< "map " << std::quoted(setup.premadeMap) << '\n'
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
 			<< std::quoted(librarySelection[1]) << '\n'
 			<< "sections " << expanded[0] << ' ' << expanded[1] << ' ' << expanded[2] << '\n'
+			<< "picker " << landscapeSortOrder << '\n'
 			<< "generator " << int(legacy.method) << ' '
 			<< legacy.logRepeatAreaTimes << '\n';
 		for (const auto &f : fields())
@@ -109,12 +121,29 @@ struct CustomGamePreferences
 		auto number = [&](int &value, int lo, int hi) {
 			return bool(in >> value) && value >= lo && value <= hi;
 		};
+		auto boolean = [&](bool &value) {
+			int parsed;
+			if (!number(parsed, 0, 1)) return false;
+			value = parsed;
+			return true;
+		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
-		if (!word("glob2-custom-game") || !number(version, 1, 1) || !word("setup") ||
+		if (!word("glob2-custom-game") || !number(version, 1, 3) || !word("setup") ||
 			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
-			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1) ||
-			!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(s.ruleset))) return false;
+			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1)) return false;
+		// Older preferences did not store these rules; retain their normal defaults.
+		if (version >= 3) {
+			if (!word("rules") || !boolean(s.noResourceGrowth) || !number(s.resourceScarcity, 0, 3) ||
+				!boolean(s.instantConstruction) || !number(s.stockpileStart, 0, 3) || !boolean(s.noHunger) ||
+				!boolean(s.unitUpgradesDisabled) || !number(s.glassCannonLevel, 0, 2) ||
+				!boolean(s.unitsFearless) || !boolean(s.permadeathDisabled) || !boolean(s.peacefulMode) ||
+				!number(s.buildingHpLevel, 0, 2) || !number(s.startingUnitLevel, 0, 3) ||
+				!number(s.suddenDeathMinutes, 0, 90)) return false;
+			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
+			if (std::find(minutes.begin(), minutes.end(), s.suddenDeathMinutes) == minutes.end()) return false;
+		}
+		if (!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(s.ruleset))) return false;
 		if (s.format != "FFA" && s.format != "2 vs 2" && s.format != "You vs all" && s.format != "Custom teams") return false;
 		if (s.ruleset != "Standard" && s.ruleset != "Quick clash" && s.ruleset != "Open book" && s.ruleset != "Last colony standing" && s.ruleset != "Custom") return false;
 		if (!word("map") || !(in >> std::quoted(s.premadeMap)) || !word("libraries") ||
@@ -125,6 +154,8 @@ struct CustomGamePreferences
 			if (!number(value, 0, 1)) return false;
 			expanded = value;
 		}
+		// The sort-order line was added at version 2; a version-1 file keeps the random default.
+		if (version >= 2 && (!word("picker") || !number(draft.landscapeSortOrder, 0, 1))) return false;
 		if (!word("generator") || !number(method, 0, 1000) || !number(repeat, 0, 5)) return false;
 		// Method validity is checked against the live registry rather than a
 		// hardcoded range, so it stays correct as generators are added or

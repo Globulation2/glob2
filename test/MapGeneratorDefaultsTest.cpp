@@ -1,18 +1,24 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
 #include "CustomGameSetup.h"
+#include "Contact.h"
+#include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
+#include "GenerationValidation.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "LegacyGenerationDescriptor.h"
 #include "MapGeneratorFrameworkChecks.h"
+#include "MapGeneratorContracts.h"
+#include "HungryMarchesContracts.h"
 #include "MapGeneratorLandscapeChecks.h"
 #include "MapGeneratorToolkitChecks.h"
 #include "NewMapScreen.h"
 #include "Race.h"
 #include "Resources.h"
+#include "Sketch.h"
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -24,9 +30,12 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <cassert>
+#include <chrono>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <set>
+#include <tuple>
 #include <utility>
 
 GlobalContainer *globalContainer = nullptr;
@@ -87,9 +96,12 @@ class MapGeneratorDefaultsTest
 	static void generationContracts()
 	{
 		globalsInit();
+		GeneratorContracts::generatorContracts();
+		GeneratorContracts::hungryMarchesContracts();
 		frameworkChecks();
 		ToolkitChecks::toolkitChecks();
 		LandscapeChecks::landscapeChecks();
+		gauntletContracts();
 		GenerationService service;
 		for (int method : GeneratorRegistry::builtins().methods())
 		{
@@ -117,6 +129,22 @@ class MapGeneratorDefaultsTest
 			assert(bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat));
 			assert(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
 			assert(request.seed == 22001 && request.options == DWithDefaults(method).options);
+			if (method == GeneratorRegistry::builtins().idOf("lava-shield"))
+			{
+				if (!a)
+					std::cerr << a.diagnostic() << std::endl;
+				assert(a); // A repeatable failure is not a valid default map.
+				GenerationContext probe(request);
+				const auto &definition = GeneratorRegistry::builtins().at(method);
+				assert(definition.validateWorld(first, probe).empty());
+				// Removing all rock must be caught by the generator's actual final-world
+				// validator, not merely by a golden hash. Corrupt the unused repeated copy.
+				for (int y = 0; y < repeat.map.getH(); ++y)
+					for (int x = 0; x < repeat.map.getW(); ++x)
+						if (repeat.map.getResource(x, y).type == STONE)
+							repeat.map.setNoResource(x, y, 1);
+				assert(!definition.validateWorld(repeat, probe).empty());
+			}
 			if (a)
 			{
 				auto rejected = service.generate(first, request);
@@ -131,6 +159,15 @@ class MapGeneratorDefaultsTest
 					rectangular.wDec = dimensions.first;
 					rectangular.hDec = dimensions.second;
 					Game world(nullptr);
+					// A landscape may refuse a shape its concept cannot hold (Emoji needs a
+					// square); it must then say so up front, through its request check.
+					if (const auto &d = GeneratorRegistry::builtins().at(method);
+						d.validateRequest && !d.validateRequest(rectangular).empty())
+					{
+						assert(service.generate(world, rectangular).error ==
+							   GenerationError::InvalidRequest);
+						continue;
+					}
 					assert(service.generate(world, rectangular));
 					assert(world.map.getW() == (1 << dimensions.first));
 					assert(world.map.getH() == (1 << dimensions.second));
@@ -167,6 +204,30 @@ class MapGeneratorDefaultsTest
 					std::cerr << outcome.diagnostic() << std::endl;
 				assert(outcome && world.teamsCount() == teams);
 			}
+		// These combined controls exhausted real coastal towns/approaches in held-out
+		// seeds. Reject them before world mutation, while retaining the full control
+		// range on an ordinary four-colony map. Test each budget independently.
+		for (int dims : {7, 8})
+		{
+			D lava;
+			lava.setMethodDefaults(GeneratorRegistry::builtins().idOf("lava-shield"));
+			lava.wDec = lava.hDec = dims;
+			lava.nbTeams = dims == 7 ? 2 : 8;
+			const auto &definition = GeneratorRegistry::builtins().at(lava.method);
+			assert(validateGenerationRequest(lava, definition).empty());
+			for (const char *key : {"tongue-count", "rim-width"})
+			{
+				D crowded = lava;
+				crowded.options[key] = std::string(key) == "tongue-count" ? 9 : 12;
+				Game untouched(nullptr);
+				const auto result = service.generate(untouched, crowded);
+				assert(result.error == GenerationError::InvalidRequest &&
+					   untouched.teamsCount() == 0);
+				crowded.wDec = crowded.hDec = 8;
+				crowded.nbTeams = 4;
+				assert(validateGenerationRequest(crowded, definition).empty());
+			}
+		}
 		// Scoped RNG restoration must also hold when placement fails.
 		setSyncRandSeed(711);
 		auto savedFailureRng = syncRandEngine();
@@ -237,6 +298,8 @@ class MapGeneratorDefaultsTest
 				 }
 				 return MapGeneration::placeStarts(game, context);
 			 }});
+		// Every playable registration needs catalog tags (#333).
+		definitions.back().tags = {"terrain:novelty"};
 		// A toggle is exactly 0 or 1, shown as a checkbox: any other domain is a registration error.
 		{
 			const auto rejected = [](GeneratorControl control)
@@ -248,6 +311,8 @@ class MapGeneratorDefaultsTest
 											   false,
 											   {std::move(control)},
 											   [](Game &, GenerationContext &) { return false; }};
+				// Tagged, so a rejection can only come from the control under test.
+				definition.tags = {"terrain:novelty"};
 				try
 				{
 					GeneratorRegistry({definition});
@@ -265,8 +330,8 @@ class MapGeneratorDefaultsTest
 			const auto amount = GeneratorControl::percentage("amount", "Fruit");
 			assert(!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount));
 			// A choice stores the index of its named option and is shown by name.
-			const auto shape = GeneratorControl::choice("shape", "Cell shape",
-														{"Squares", "Hexagons"}, 1);
+			const auto shape =
+				GeneratorControl::choice("shape", "Cell shape", {"Squares", "Hexagons"}, 1);
 			assert(shape.isChoice() && !shape.isToggle() && shape.defaultValue == 1 &&
 				   shape.values() == std::vector<int>({0, 1}) &&
 				   std::string(shape.valueLabel(1)) == "Hexagons" && !shape.valueLabel(2) &&
@@ -343,6 +408,92 @@ class MapGeneratorDefaultsTest
 		puts("PASS registration extension, explicit seeds, interleaved repeatability, RNG "
 			 "isolation, errors and legacy sentinels");
 	}
+	static void gauntletContracts()
+	{
+		GenerationService service;
+		D request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf("gauntlet"));
+		request.seed = 22001;
+		const auto &definition = GeneratorRegistry::builtins().at(request.method);
+		// Exercise both opponents sharing two fronts, the usual four-colony arena,
+		// and the denser circuit at both supported sizes.
+		for (auto [dims, teams] : {std::pair{8, 2}, std::pair{8, 4}, std::pair{8, 8},
+								  std::pair{9, 8}})
+		{
+			D sized = request;
+			sized.wDec = sized.hDec = dims;
+			sized.nbTeams = teams;
+			Game world(nullptr);
+			const auto result = service.generate(world, sized);
+			if (!result)
+				std::cerr << "Gauntlet " << (1 << dims) << "x" << (1 << dims) << ", "
+						  << teams << " colonies: " << result.diagnostic() << std::endl;
+			assert(result && world.teamsCount() == teams);
+			GenerationContext probe(sized);
+			assert(definition.validateWorld(world, probe).empty());
+		}
+		for (auto [width, height, teams] : {std::tuple{7, 7, 4}, std::tuple{9, 7, 4},
+										   std::tuple{8, 8, 1}, std::tuple{9, 9, 13}})
+		{
+			D invalid = request;
+			invalid.wDec = width;
+			invalid.hDec = height;
+			invalid.nbTeams = teams;
+			Game untouched(nullptr);
+			assert(!validateGenerationRequest(invalid, definition).empty());
+			assert(service.generate(untouched, invalid).error == GenerationError::InvalidRequest);
+			assert(untouched.teamsCount() == 0);
+		}
+		// Test the final-world validator, not just generator success or a golden hash.
+		for (int corruption = 0; corruption < 3; ++corruption)
+		{
+			Game world(nullptr);
+			const auto result = service.generate(world, request, true);
+			assert(result);
+			GenerationContext probe(request);
+			assert(definition.validateWorld(world, probe).empty());
+			int changed = 0;
+			for (int y = 0; y < world.map.getH(); ++y)
+				for (int x = 0; x < world.map.getW(); ++x)
+				{
+					const int type = world.map.getResource(x, y).type;
+					// Retain cherries and prunes: total fruit alone cannot prove
+					// that a court supplies all three upgrade ingredients.
+					if ((corruption == 0 && type == STONE) ||
+						(corruption == 1 && type == ORANGE))
+					{
+						world.map.setNoResource(x, y, 1);
+						++changed;
+					}
+				}
+			if (corruption == 2)
+			{
+				// Close the circular home/court boundary, regardless of the seed's
+				// rotation. This plugs every door without removing any structural wall.
+				double outer = -1;
+				for (const auto &record : result.telemetry.records())
+					if (record.key == "gauntlet.arena.outer-radius")
+						outer = std::get<double>(record.value);
+				assert(outer > 0);
+				for (int y = 0; y < world.map.getH(); ++y)
+					for (int x = 0; x < world.map.getW(); ++x)
+						if (std::abs(std::hypot(x - world.map.getW() / 2.,
+											   y - world.map.getH() / 2.) - outer) < 1.5 &&
+							world.map.getResource(x, y).type != STONE)
+						{
+							world.map.setResource(x, y, STONE, 1);
+							++changed;
+						}
+			}
+			assert(changed > 0);
+			const auto error = definition.validateWorld(world, probe);
+			assert(!error.empty());
+			if (corruption == 1)
+				assert(error.find("orchard") != std::string::npos);
+			if (corruption == 2)
+				assert(error.find("entrance") != std::string::npos);
+		}
+	}
 	// scatterResources used to group algae candidates by land component, and land components
 	// never label water, so no algae density ever placed a single tile. Algae is now shared out
 	// between water bodies: a sea with an island, and a lake inside the island, must both get some.
@@ -402,7 +553,8 @@ class MapGeneratorDefaultsTest
 		D editorFirst, lobbyFirst;
 		editorFirst.setMethodDefaults(GeneratorRegistry::builtins().methods().front());
 		lobbyFirst.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
-		assert(GeneratorRegistry::builtins().methods(false).front() == GeneratorRegistry::builtins().idOf("fingerprint"));
+		assert(GeneratorRegistry::builtins().methods(false).front() ==
+			   GeneratorRegistry::builtins().idOf("fingerprint"));
 		assert(s.methods->getSelectionIndex() == 0);
 		sameControls(s.descriptor, editorFirst);
 		sameControls(lobby.generator, lobbyFirst);
@@ -440,7 +592,8 @@ class MapGeneratorDefaultsTest
 				assert(decoded.setData(encoded.getData(), encoded.getDataLength()));
 				sameControls(fromLegacyDescriptor(decoded, 0), expected);
 			}
-			if (output && ((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
+			if (output &&
+				((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
 			{
 				s.gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(34, 55, 42));
 				for (auto *w : s.widgets)
@@ -510,5 +663,66 @@ int main(int argc, char **argv)
 	globals.gfx = GAGCore::Toolkit::initGraphic(640, 480, 0, "Map defaults test", "");
 	GAGCore::Toolkit::loadFont("data/fonts/sans.ttf", 20, "menu");
 	GAGCore::Toolkit::loadFont("data/fonts/sans.ttf", 13, "standard");
+	// Fast iteration over reusable primitives and their raster/economy fixtures.
+	// The ordinary invocation still runs the complete registry/editor/defaults
+	// contract; this option never weakens that CI path or changes generated worlds.
+	if (argc == 3 && std::string(argv[2]) == "--toolkit-only")
+	{
+		ToolkitChecks::toolkitChecks();
+		puts("PASS toolkit-only geometry, raster, resource and home contracts");
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--bastion-keys-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::bastionKeysContracts();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--eaten-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::eatenMapContracts();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--drowned-forest-only")
+	{
+		GeneratorContracts::drownedForestContracts();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--gauntlet-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		MapGeneratorDefaultsTest::gauntletContracts();
+		puts("PASS Gauntlet supported shapes, request rejection and final-world corruption checks");
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--hungry-marches-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::hungryMarchesContracts();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--faulted-city-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::faultedCityContracts();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--portage-lakes-only")
+	{
+		MapGeneratorDefaultsTest::globalsInit();
+		GeneratorContracts::portageLakesContracts();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--treeline-only")
+	{
+		LastTreelineChecks::run();
+		return 0;
+	}
+	if (argc == 3 && std::string(argv[2]) == "--treeline-profile")
+	{
+		LastTreelineChecks::profile();
+		return 0;
+	}
 	MapGeneratorDefaultsTest::run(argc == 3 ? argv[2] : nullptr);
 }

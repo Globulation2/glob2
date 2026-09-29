@@ -70,10 +70,13 @@ bool settleColonies(Game &game, GenerationContext &context, const char *stream, 
 /// The usual last word on every colony's crops: clear the ground round the swarms, run the
 /// wheat/wood guarantee (guaranteeStartingResources) and clear round the swarms again, since a
 /// topped-up deposit may land there. Tiles of `keep` are designed deposits (walls) that are never
-/// cleared and never looked past.
+/// cleared and never looked past. `allowedTopup` is an independent row-major mask for where new
+/// emergency crops may go; it clips the entire clump to a designed farm belt. Keeping these
+/// roles separate lets a map protect both structural deposits and crop-free town ground.
 void secureStartingCrops(Game &, GenerationContext &, const Torus &, int wheatRange = 24,
 						 int woodRange = 32, int clearRadius = 0,
-						 const std::vector<unsigned char> *keep = nullptr);
+						 const std::vector<unsigned char> *keep = nullptr,
+						 const std::vector<unsigned char> *allowedTopup = nullptr);
 
 /// The resource amounts a generator's ambient layers are scaled by; every one is 100 by default.
 struct ResourceAmounts
@@ -85,11 +88,21 @@ struct ResourceAmounts
 	}
 };
 
-/// A resource amount well above the default can wall a colony into a pocket with nowhere to
-/// build, which the wheat/wood guarantee doesn't address: a colony buried in wheat has wheat at
-/// its feet. At any non-default amount this opens such a colony back up (openCrampedStarts) and
-/// re-runs the guarantee in case the clearing took its nearest crop with the wall. At the
-/// defaults nothing happens, and it returns whether anything ran.
+/// Opens a colony that resource tiles have walled into a pocket with nowhere to build
+/// (openCrampedStarts), then re-runs the wheat/wood guarantee in case the clearing took its
+/// nearest crop with the wall. A colony that already has its room is left untouched, so this only
+/// ever takes away a wall. Whatever the resource amounts are: a landscape that never budgets a
+/// colony's room can bury one at the defaults too, which is what a 512-tile fjord continent with
+/// four colonies did to two of them until 2026-09-16.
+void openStartsBuriedByResources(Game &, GenerationContext &, int wheatRange = 24,
+								 int woodRange = 32, int clearRadius = 0,
+								 const std::vector<unsigned char> *protectedWalls = nullptr);
+
+/// The same relief for the case it was written for: a resource amount well above the default
+/// widening a band until it walls a colony in, which the wheat/wood guarantee doesn't address
+/// (a colony buried in wheat has wheat at its feet). At the defaults nothing happens, and it
+/// returns whether anything ran. A landscape that wants the relief unconditionally — the legacy
+/// core does — calls openStartsBuriedByResources instead.
 bool reopenCrampedStarts(Game &, GenerationContext &, const ResourceAmounts &, int wheatRange = 24,
 						 int woodRange = 32, int clearRadius = 0,
 						 const std::vector<unsigned char> *protectedWalls = nullptr);
@@ -105,6 +118,35 @@ bool settleRoundColonies(Game &, GenerationContext &, const char *stream,
 template <typename Layout>
 std::string designMismatch(const Layout &L, const Map &map, const char *name);
 
+/// A finished colony must be able to harvest `type` within `range` walking steps. `name` is
+/// used in failure diagnostics. The last step means gathering from a neighboring walkable tile,
+/// not walking through the resource. Permanent resources are valid targets too.
+struct ResourceAccessRule
+{
+	int type, range;
+	const char *name;
+};
+/// Read-only counterpart to starting-resource/room repairs, for maps whose resource policy
+/// forbids those repairs from planting freely (dry reserves, protected farmland, shore-only wood).
+/// Floods from each colony's actual workers with the engine's non-swimmer ground predicate.
+/// Requires `minimumSites` overlapping 4x4 anchors within `buildingRange`; these are placement
+/// options, not disjoint buildings. Returns the first unmet rule with colony and observed distance
+/// or site count. No mutation, RNG draws or silent weakening of requirements. Invalid budgets or
+/// resource rules throw GenerationFailure; no worker for a colony is an explicit failure.
+std::string startingAccessFailure(const Map &, int teams, const std::vector<ResourceAccessRule> &,
+								  int minimumSites = 16, int buildingRange = 24);
+
+/// Farther than any walk on the largest supported map, so a rule given this range asks only that
+/// the resource is reachable at all. For a landscape whose wood is deliberately a voyage away
+/// (an archipelago), which is a design question rather than a broken world.
+constexpr int kReachableAnywhere = 1024;
+/// The floor a finished world has to clear whatever else it promises: every colony can harvest
+/// wheat and wood, and stands in room for a first base — the same 16 overlapping 4x4 origins
+/// within 24 steps that reopenCrampedStarts opens up for. The landscapes on the legacy core
+/// (shared/legacy) use it as their whole validateWorld; a landscape that designs its own
+/// economy calls startingAccessFailure with its own rules instead.
+std::string startingFloorFailure(const Map &, int teams, int wheatRange = 24, int woodRange = 32);
+
 /// Every colony's walk from colony 0's workers, with water, buildings and every resource
 /// blocking (units don't, since they move): the check every validator makes.
 struct ColonyWalk
@@ -113,10 +155,27 @@ struct ColonyWalk
 	std::vector<int> steps;                // from colony 0's workers
 	std::string error;
 };
+/// The opposite promise, for a map of islands: no colony's units can walk to any other colony's on
+/// the engine's own ground rule (groundUnitTiles: no swimming, deposits and buildings block). "" when
+/// every colony is cut off from every other, else "Colony a can walk to colony b <route>."
+std::string coloniesApart(const Map &, int teams, const std::string &route);
+
 /// `ground` names what the workers walk ("the flats"); `route` finishes the cut-off message
 /// ("over the flats", or empty).
 ColonyWalk walkFromFirstColony(const Map &, int teams, const std::string &ground,
 							   const std::string &route);
+
+/// Which crops a walk stands beside: whether any wheat deposit, and any wood deposit, has a tile
+/// of `reach` (a flood's steps, -1 where nothing was reached) within one tile of it, diagonals
+/// included, the way a worker harvests from the tile next to a deposit. The check a validator
+/// makes after flooding from a colony's workers over walkable land.
+struct CropsInReach
+{
+	bool wheat = false, wood = false;
+	/// "" when both are in reach, else which is not: "cannot walk to wheat."
+	std::string missing() const;
+};
+CropsInReach cropsBesideReach(const Map &, const std::vector<int> &reach);
 } // namespace MapGeneration
 
 #include "Map.h"

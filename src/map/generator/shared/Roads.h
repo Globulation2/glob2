@@ -2,6 +2,7 @@
 #pragma once
 #include "Contact.h"
 #include "Grid.h"
+#include "Sketch.h"
 #include "Topology.h"
 #include <climits>
 #include <functional>
@@ -78,6 +79,30 @@ std::vector<int> cheapestRoute(const Torus &, const std::vector<int> &sources,
 							   const std::vector<unsigned char> &blocked,
 							   const std::vector<unsigned char> &costly);
 
+/// Reserve a permanent sand approach BEFORE placing resources/buildings. Finds a
+/// cheapest path, widened by radius tiles (Chebyshev), between valid sources
+/// and goal. No painted corner may be water or spoil a protected tile's terrain.
+/// Returns the centreline, goal first; empty means no route and leaves sketch unchanged.
+/// radius 0 is one pure-sand tile wide; radius 1 is three. Invalid masks/sources or
+/// radius return empty. Source/goal cells that cannot fit the width are ignored.
+/// Eight-neighbour routes use 10/14 cardinal/diagonal step lengths; cardinal-only
+/// routes use unit lengths. Dilation keeps diagonal routes broad after rasterization.
+/// Optional positive tileCosts steer the route along a terrain/noise field; each must
+/// be at most INT_MAX / (tile count * maximum step length), bounding every simple path sum.
+/// At radius 0 only, existingPassage may mark already walkable, crop-proof tiles
+/// (for example mixed beach terrain). Such tiles need no conversion and are left
+/// untouched. The caller must establish that semantic guarantee from the world;
+/// this operation still excludes protectedTiles themselves. Other path tiles must
+/// satisfy the ordinary corner protections and become pure sand. This allows an
+/// existing beach bypass that cannot be repainted without spoiling adjacent stone.
+/// This never creates a ford: callers must explicitly allow another operation for that.
+std::vector<int> reserveSandRoute(TerrainSketch &, const Torus &, const std::vector<int> &sources,
+								  const std::vector<unsigned char> &goal,
+								  const std::vector<unsigned char> &protectedTiles, int radius = 0,
+								  const std::vector<int> *tileCosts = nullptr,
+								  GridNeighbors neighbours = GridNeighbors::Cardinal,
+								  const std::vector<unsigned char> *existingPassage = nullptr);
+
 /// Deposits may land anywhere, and a band of them could close a colony off from where it must
 /// be able to walk. This keeps one way open: the cheapest walk from the sources to the goal
 /// (deposits cost one, open ground nothing; water, buildings and `alsoBlocked` are impassable),
@@ -86,11 +111,47 @@ std::vector<int> cheapestRoute(const Torus &, const std::vector<int> &sources,
 bool openRoad(Map &, const Torus &, const std::vector<int> &sources,
 			  const std::vector<unsigned char> &goal,
 			  const std::vector<unsigned char> *alsoBlocked = nullptr);
+/// Every colony must be able to walk to colony 0 at the start, and the deposits are the last thing
+/// laid: for each colony whose workers colony 0's cannot reach over walkable land (Grid.h), the
+/// cheapest walk between them is opened with openRoad, clearing only the deposits on it, never
+/// water, buildings or `alsoBlocked` (a designed wall). Almost always nothing is in the way.
+/// Returns how many walks were opened, or -1 with `detail` set when a colony has no land route
+/// at all, which a design that keeps its ground joined should never allow. Watershed's and
+/// Braided river's last word on their deposits.
+int connectColonies(Map &, int teams, const std::vector<unsigned char> *alsoBlocked,
+					std::string &detail);
+/// Clears every deposit within `radius` Chebyshev steps of the tiles of `route`, except tiles of
+/// `keep` (a designed wall). A route one tile wide is a path a unit can follow but a column cannot,
+/// and a single regrown crop closes it; radius 1 makes a three-wide lane. Returns how many deposits
+/// it cleared.
+int clearRoute(Map &, const Torus &, const std::vector<int> &route, int radius,
+			   const std::vector<unsigned char> *keep = nullptr);
+
 /// Every colony must be able to walk to colony 0 at the start. Where a map's growth, water or walls box
 /// one in, the cheapest way from anything colony 0's doorstep reaches to that colony's doorstep (the
 /// open ring round its swarm) is opened under `costs`, four-connected: deposits on it are cleared, and
 /// water on it becomes a sand ford (one sand corner per water tile, clearing deposits on the four tiles
 /// it spoils). The map may look odd there; it does not fail. Returns whether anything changed; the
 /// terrain is rebuilt when a ford was laid. Everglades' backstop, and any map whose design can close.
-bool openColonyRoutes(Map &, const GenerationContext &, const Torus &, const StepCosts &costs);
+///
+/// With `radius` above 0 the deposits within that many steps of the route are cleared too
+/// (clearRoute), so a pass cut through a range or a forest takes a column of units and does not
+/// close on the first regrowth. Tiles of `keep` are never entered and never cleared: a designed wall
+/// the route must go round, whatever `costs` says a deposit costs. The defaults are the original
+/// behaviour, so existing maps are unchanged.
+bool openColonyRoutes(Map &, const GenerationContext &, const Torus &, const StepCosts &costs,
+					  int radius = 0, const std::vector<unsigned char> *keep = nullptr);
+
+/// A colony's trail to a shared objective: a cheap walk over land from `sources` to `goal` that bends
+/// with the lie of the land (`lie`, a noise field scaled by `bend`) and prefers the gaps between
+/// deposits to cutting through them, with every deposit within `radius` of it cleared, so the
+/// finished map's walk stays near the one the design balanced. Never through water, a building or
+/// `keep`; never clearing `protect` (the starter kits: a straight re-cut once cleared a colony's kit).
+/// Without `lie` it is the shortest walk over land, cutting straight through whatever deposits stand
+/// in the way. False when no walk exists. Central Quarry's trails to the isle, Hidden Oasis' to the
+/// gorge.
+bool openTrail(Map &, const Torus &, const std::vector<int> &sources,
+			   const std::vector<unsigned char> &goal, const std::vector<unsigned char> &keep,
+			   const std::vector<unsigned char> &protect, const std::vector<int> *lie, int bend,
+			   int radius);
 } // namespace MapGeneration

@@ -6,21 +6,27 @@
 #include <algorithm>
 #include <iostream>
 
-LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, int threads)
-	: requests(std::move(requests))
+LandscapePreviewer::LandscapePreviewer(std::vector<GenerationRequest> requests, int threads,
+									   bool deferred)
+	: requests(std::move(requests)), started(!deferred)
 {
 	slots.resize(this->requests.size());
 	seeds.resize(this->requests.size());
 	passes.resize(this->requests.size());
-	if (threads <= 0)
+	attempts.resize(this->requests.size());
+#ifndef __EMSCRIPTEN__
+	if (threads == 0)
 	{
 		const unsigned cores = std::thread::hardware_concurrency();
 		threads = int(std::clamp(cores == 0 ? 1u : cores - 1, 1u, 4u));
 	}
-	threads = int(std::min<std::size_t>(threads, std::max<std::size_t>(1, this->requests.size())));
+	threads = std::min(std::max(0, threads), int(std::max<std::size_t>(1, this->requests.size())));
 	regenerate();
 	for (int i = 0; i < threads; ++i)
 		workers.emplace_back([this] { work(); });
+#else
+	regenerate();
+#endif
 }
 
 LandscapePreviewer::~LandscapePreviewer()
@@ -44,10 +50,12 @@ void LandscapePreviewer::beginPass()
 	{
 		seeds[i] = GenerationContext::deriveSeed(root, "landscape/" + std::to_string(i));
 		passes[i] = pass;
+		attempts[i] = 0;
 		slots[i].state = State::Pending;
 		++slots[i].revision;
 		queue.push_back(i);
 	}
+	sortQueue();
 }
 
 void LandscapePreviewer::regenerate()
@@ -67,6 +75,7 @@ void LandscapePreviewer::restart(std::vector<GenerationRequest> fresh)
 		slots.resize(requests.size());
 		seeds.resize(requests.size());
 		passes.resize(requests.size());
+		attempts.resize(requests.size());
 		beginPass();
 	}
 	wake.notify_all();
@@ -82,12 +91,14 @@ void LandscapePreviewer::reroll(std::size_t index, GenerationRequest request)
 		++pass;
 		requests[index] = std::move(request);
 		seeds[index] = GenerationContext::deriveSeed(GenerationContext::randomSeed(),
-													  "landscape/" + std::to_string(index));
+													 "landscape/" + std::to_string(index));
 		passes[index] = pass;
+		attempts[index] = 0;
 		slots[index].state = State::Pending;
 		++slots[index].revision;
 		queue.erase(std::remove(queue.begin(), queue.end(), index), queue.end());
 		queue.push_back(index);
+		sortQueue();
 	}
 	wake.notify_all();
 }
@@ -124,40 +135,107 @@ int LandscapePreviewer::finished() const
 							 { return p.state == State::Ready || p.state == State::Failed; }));
 }
 
-LandscapePreviewer::Preview LandscapePreviewer::roll(const GenerationRequest &request,
-													 std::uint32_t rootSeed)
+void LandscapePreviewer::sortQueue()
+{
+	if (priorities.size() != slots.size())
+		return;
+	std::sort(queue.begin(), queue.end(),
+			  [this](std::size_t a, std::size_t b) { return priorities[a] < priorities[b]; });
+}
+
+void LandscapePreviewer::prioritize(const std::vector<std::size_t> &order)
+{
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		const auto count = slots.size();
+		priorities.assign(count, count);
+		std::size_t rank = 0;
+		for (auto index : order)
+			if (index < count && priorities[index] == count)
+				priorities[index] = rank++;
+		for (auto &priority : priorities)
+			if (priority == count)
+				priority = rank++;
+		sortQueue();
+		started = true;
+	}
+	wake.notify_all();
+}
+
+LandscapePreviewer::Preview LandscapePreviewer::rollAttempt(const GenerationRequest &request,
+															std::uint32_t rootSeed, int attempt)
 {
 	Preview result;
 	GenerationService generator;
+	auto roll = request;
+	roll.seed = GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
+	Game game(nullptr);
+	const auto outcome = generator.generate(game, roll);
+	if (!outcome || game.teamsCount() != request.nbTeams)
+	{
+		result.detail = outcome ? "Could not place every colony" : outcome.diagnostic();
+		if (outcome.error == GenerationError::InvalidRequest || attempt + 1 == kAttempts)
+		{
+			std::cerr << "Landscape preview: " << result.detail << std::endl;
+			result.state = State::Failed;
+		}
+		return result; // Pending retries return to the queue between attempts.
+	}
+	result.thumbnail.loadFromMap(game.map);
+	for (int i = 0; i < game.teamsCount(); ++i)
+		result.starts.push_back(
+			{game.teams[i]->startPosX, game.teams[i]->startPosY, game.teams[i]->color});
+	result.seed = roll.seed;
+	result.score = outcome.quality.score;
+	result.width = game.map.getW();
+	result.height = game.map.getH();
+	result.state = State::Ready;
+	return result;
+}
+
+LandscapePreviewer::Preview LandscapePreviewer::roll(const GenerationRequest &request,
+													 std::uint32_t rootSeed)
+{
 	for (int attempt = 0; attempt < kAttempts; ++attempt)
 	{
-		auto roll = request;
-		roll.seed = GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
-		Game game(nullptr);
-		const auto outcome = generator.generate(game, roll);
-		if (!outcome || game.teamsCount() != request.nbTeams)
-		{
-			result.detail = outcome ? "Could not place every colony" : outcome.diagnostic();
-			// A request the generator refuses outright fails the same way on every seed.
-			if (outcome.error == GenerationError::InvalidRequest)
-				break;
-			continue;
-		}
-		result.thumbnail.loadFromMap(game.map);
-		for (int i = 0; i < game.teamsCount(); ++i)
-			result.starts.push_back(
-				{game.teams[i]->startPosX, game.teams[i]->startPosY, game.teams[i]->color});
-		result.seed = roll.seed;
-		result.score = outcome.quality.score;
-		result.width = game.map.getW();
-		result.height = game.map.getH();
-		result.state = State::Ready;
-		result.detail.clear();
-		return result;
+		auto result = rollAttempt(request, rootSeed, attempt);
+		if (result.state != State::Pending)
+			return result;
 	}
-	std::cerr << "Landscape preview: " << result.detail << std::endl;
-	result.state = State::Failed;
-	return result;
+	return {}; // rollAttempt makes the final attempt terminal.
+}
+
+// Entered and returned with the mutex held. Expensive work never holds the UI's lock.
+void LandscapePreviewer::advance(std::unique_lock<std::mutex> &lock)
+{
+	const std::size_t index = queue.front();
+	queue.erase(queue.begin());
+	const unsigned myPass = passes[index];
+	const int attempt = attempts[index]++;
+	slots[index].state = State::Generating;
+	++slots[index].revision;
+	const GenerationRequest request = requests[index];
+	const std::uint32_t seed = seeds[index];
+	lock.unlock();
+	Preview result = rollAttempt(request, seed, attempt);
+	lock.lock();
+	if (index >= passes.size() || passes[index] != myPass)
+		return;
+	if (result.state == State::Pending)
+	{
+		// Retain an old image while retrying, as beginPass does while regenerating.
+		slots[index].state = State::Pending;
+		slots[index].detail = std::move(result.detail);
+		++slots[index].revision;
+		queue.push_back(index);
+		sortQueue();
+		wake.notify_one();
+	}
+	else
+	{
+		result.revision = slots[index].revision + 1;
+		slots[index] = std::move(result);
+	}
 }
 
 void LandscapePreviewer::work()
@@ -165,22 +243,38 @@ void LandscapePreviewer::work()
 	std::unique_lock<std::mutex> lock(mutex);
 	for (;;)
 	{
-		wake.wait(lock, [this] { return stopping || !queue.empty(); });
+		wake.wait(lock, [this] { return stopping || (started && !queue.empty()); });
 		if (stopping)
 			return;
-		const std::size_t index = queue.front();
-		queue.erase(queue.begin());
-		const unsigned myPass = passes[index];
-		slots[index].state = State::Generating;
-		++slots[index].revision;
-		const GenerationRequest request = requests[index];
-		const std::uint32_t seed = seeds[index];
-		lock.unlock();
-		Preview result = roll(request, seed);
-		lock.lock();
-		if (passes[index] != myPass)
-			continue; // regenerate(), restart() or reroll() superseded this roll while it ran
-		result.revision = slots[index].revision + 1;
-		slots[index] = std::move(result);
+		advance(lock);
 	}
+}
+
+void LandscapePreviewer::poll()
+{
+	pollNext(nullptr);
+}
+
+void LandscapePreviewer::poll(const std::vector<std::size_t> &eligible)
+{
+	pollNext(&eligible);
+}
+
+void LandscapePreviewer::pollNext(const std::vector<std::size_t> *eligible)
+{
+	if (!workers.empty())
+		return;
+	std::unique_lock<std::mutex> lock(mutex);
+	if (!started || stopping || queue.empty())
+		return;
+	if (eligible)
+	{
+		const auto next = std::find_if(
+			queue.begin(), queue.end(), [&](std::size_t index)
+			{ return std::find(eligible->begin(), eligible->end(), index) != eligible->end(); });
+		if (next == queue.end())
+			return;
+		std::rotate(queue.begin(), next, next + 1);
+	}
+	advance(lock);
 }

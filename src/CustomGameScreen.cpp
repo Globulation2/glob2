@@ -2,9 +2,9 @@
 #include "GeneratorRegistry.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
+#include "gui/FrontendLayout.h"
 #include "CustomGamePreferences.h"
 #include "AINames.h"
-#include "CustomGameScreen.h"
 #include "LobbyMapPreview.h"
 #include "LandscapePickerScreen.h"
 #include "LandscapePreviewer.h"
@@ -12,6 +12,8 @@
 #include "GenerationService.h"
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
+#include <InterfacePresentation.h>
+#include "gui/MobileSafeArea.h"
 #include "LobbyMapCatalog.h"
 #include "Player.h"
 #include "Unit.h"
@@ -54,37 +56,62 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 	controls->render = [this]
 	{
 		auto &ui = *controls;
+		const bool phone = GAGCore::phonePresentationRequested();
 		int w = std::min(gfx->getW() - 32, 1000), x = (gfx->getW() - w) / 2, height = gfx->getH();
-		ui.setDimensions(gfx->getW(), height);
-		ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
-		ui.text(x + 8, 20, this->title, "standard", w - 16);
-		int left = w < 800 ? 174 : 235, right = x + left + 22, rightW = w - left - 22;
-		ui.beginRegion(20, {x, 60, left, height - 135});
-		int yy = 60 - ui.regions[20].offset;
-		for (size_t i = 0; i < this->choices.size(); ++i)
+		int top = 0;
+		if (phone)
 		{
-			auto name = this->choices[i];
-			auto split = name.find(" - ");
-			if (split != std::string::npos)
-				name = name.substr(0, split);
-			ui.button(
-				"profile/" + std::to_string(i), {x, yy + int(i) * 58, left - 8, 52}, "",
-				[this, i]
-				{
-					this->selected = i;
-					controls->regions[21].offset = 0;
-				},
-				int(i) == this->selected);
-			ui.text(x + 9, yy + int(i) * 58 + 8, name, "standard", left - 25);
-			auto full = this->choices[i];
-			auto separator = full.find(" - ");
-			if (separator != std::string::npos)
-				full = full.substr(separator + 3);
-			ui.text(x + 9, yy + int(i) * 58 + 31, full, "little", left - 25, true);
+			const auto safe = GAGCore::mobileDialogSafe(globalContainer->gfx);
+			x = int(safe.x) + 16;
+			w = int(safe.w) - 32;
+			top = int(safe.y);
+			height = int(safe.y + safe.h);
 		}
-		ui.endRegion(this->choices.size() * 58);
-		ui.beginRegion(21, {right, 60, rightW, height - 135});
-		yy = 60 - ui.regions[21].offset;
+		ui.setDimensions(gfx->getW(), gfx->getH());
+		ui.box({x - 8, top + 8, w + 16, height - top - 16}, Color(232, 237, 218), 8);
+		ui.text(x + 8, top + 20, this->title, "standard", w - 16);
+		int left = w < 800 ? 174 : 235, right = x + left + 22, rightW = w - left - 22;
+		if (phone)
+		{
+			ui.dropdown("profile/select", {x, top + 56, w, 48}, this->choices, this->selected,
+						[this](int v)
+						{
+							this->selected = v;
+							controls->regions[21].offset = 0;
+						});
+			right = x;
+			rightW = w;
+		}
+		if (!phone)
+		{
+			ui.beginRegion(20, {x, 60, left, height - 135});
+			int yy = 60 - ui.regions[20].offset;
+			for (size_t i = 0; i < this->choices.size(); ++i)
+			{
+				auto name = this->choices[i];
+				auto split = name.find(" - ");
+				if (split != std::string::npos)
+					name = name.substr(0, split);
+				ui.button(
+					"profile/" + std::to_string(i), {x, yy + int(i) * 58, left - 8, 52}, "",
+					[this, i]
+					{
+						this->selected = i;
+						controls->regions[21].offset = 0;
+					},
+					int(i) == this->selected);
+				ui.text(x + 9, yy + int(i) * 58 + 8, name, "standard", left - 25);
+				auto full = this->choices[i];
+				auto separator = full.find(" - ");
+				if (separator != std::string::npos)
+					full = full.substr(separator + 3);
+				ui.text(x + 9, yy + int(i) * 58 + 31, full, "little", left - 25, true);
+			}
+			ui.endRegion(this->choices.size() * 58);
+		}
+		const int detailTop = phone ? top + 116 : 60;
+		ui.beginRegion(21, {right, detailTop, rightW, height - detailTop - 75});
+		int yy = detailTop - ui.regions[21].offset;
 		int start = yy;
 		ui.text(right, yy, this->choices[this->selected], "standard", rightW - 15);
 		yy += 32;
@@ -100,10 +127,11 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 			auto part =
 				content.substr(pos, end == std::string::npos ? std::string::npos : end - pos);
 			auto colon = part.find(':');
-			if (colon != std::string::npos && colon < 40)
+			if (colon != std::string::npos)
 			{
-				ui.text(right, yy, part.substr(0, colon), "standard", rightW - 15);
-				yy += 25;
+				yy += ui.paragraph(right, yy, rightW - 18, part.substr(0, colon), "standard", false,
+								   false) +
+					  8;
 				part = part.substr(colon + 1);
 			}
 			yy += ui.paragraph(right, yy, rightW - 18, part, "standard") + 20;
@@ -113,10 +141,12 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 		}
 		ui.endRegion(yy - start);
 		ui.button(
-			"profile/back", {x, height - 55, 100, 34}, tr("Back"), [this] { endExecute(-2); },
-			false, true, true);
+			"profile/back", {x, height - (phone ? 64 : 55), 100, phone ? 48 : 34}, tr("Back"),
+			[this] { endExecute(-2); }, false, true, true);
 		ui.button(
-			"profile/use", {right, height - 55, rightW, 34},
+			"profile/use",
+			{phone ? x + 108 : right, height - (phone ? 64 : 55), phone ? w - 108 : rightW,
+			 phone ? 48 : 34},
 			tr("Use") + " " +
 				this->choices[this->selected].substr(0, this->choices[this->selected].find(" - ")),
 			[this] { endExecute(this->selected); }, true);
@@ -186,7 +216,8 @@ std::string colorName(Color c)
 }
 } // namespace
 
-CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
+CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens)
+	: Glob2TabScreen(false, true), screens(screens)
 {
 	gfx = globalContainer->gfx;
 	username = globalContainer->settings.getUsername();
@@ -213,6 +244,7 @@ CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
 	{
 		setup = preferences.setup;
 		userMaps = preferences.userMaps && separateMapLibraries;
+		landscapeSortOrder = preferences.landscapeSortOrder;
 		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
 		listMaps();
 		if (setup.random)
@@ -258,11 +290,25 @@ CustomGameScreen::~CustomGameScreen()
 		std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path(), error);
 	}
 }
+std::shared_ptr<void> CustomGameScreen::releaseSnapshot()
+{
+	if (snapshot.empty())
+		return nullptr;
+	const auto directory = std::filesystem::path(snapshot).parent_path();
+	snapshot.clear();
+	return std::shared_ptr<void>(nullptr,
+								 [directory](void *)
+								 {
+									 std::error_code error;
+									 std::filesystem::remove_all(directory, error);
+								 });
+}
 void CustomGameScreen::savePreferences()
 {
 	CustomGamePreferences preferences;
 	preferences.setup = setup;
 	preferences.userMaps = userMaps;
+	preferences.landscapeSortOrder = landscapeSortOrder;
 	std::copy(std::begin(librarySelection), std::end(librarySelection),
 			  preferences.librarySelection);
 	std::copy(std::begin(expanded), std::end(expanded), preferences.expanded);
@@ -273,15 +319,6 @@ void CustomGameScreen::savePreferences()
 		lastSavedPreferences = text;
 	else
 		preferencesRetryAt = SDL_GetTicks() + 5000;
-}
-int CustomGameScreen::choose(const std::string &title, const std::vector<std::string> &values,
-							 int selected, bool profiles, const std::vector<bool> &enabled)
-{
-	CustomGameChoiceScreen screen(title, values, selected, profiles, enabled);
-	int result = screen.execute(globalContainer->gfx, 40);
-	if (result == QUIT_APPLICATION)
-		endExecute(QUIT_APPLICATION);
-	return result;
 }
 void CustomGameScreen::onGroupActivated(int group)
 {
@@ -302,7 +339,7 @@ std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntrie
 	}
 	return entries;
 }
-void CustomGameScreen::chooseLandscape()
+LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 {
 	const auto entries = landscapeEntries();
 	std::vector<LandscapePickerScreen::Entry> shown;
@@ -311,17 +348,45 @@ void CustomGameScreen::chooseLandscape()
 	{
 		if (method == setup.generator.method)
 			selected = int(shown.size());
-		shown.push_back({tr(GenerationRequest::methodName(method)), request});
+		LandscapePickerScreen::Entry entry{tr(GenerationRequest::methodName(method)), request,
+										   method};
+		if (const auto *definition = GeneratorRegistry::builtins().find(method))
+			entry.tags = definition->tags;
+		shown.push_back(std::move(entry));
 	}
-	LandscapePickerScreen picker(tr("Landscape"), std::move(shown), selected);
-	const int result = picker.execute(globalContainer->gfx, 40);
-	if (result == QUIT_APPLICATION)
-		endExecute(QUIT_APPLICATION);
-	else if (result >= 0 && result < int(entries.size()))
-	{
-		const GenerationRequest request = picker.chosenRequest();
-		applyLandscape(entries[result].first, picker.chosenSeed(), &request);
-	}
+	auto picker = std::make_unique<LandscapePickerScreen>(
+		tr("Landscape"), std::move(shown), selected,
+		LandscapePickerScreen::SortOrder(landscapeSortOrder));
+	auto *result = picker.get(); // Non-owning; ScreenStack retains ownership through completion.
+	screens.push(std::move(picker),
+				 [this, entries](GAGGUI::Screen &screen, int result)
+				 {
+					 auto &picker = static_cast<LandscapePickerScreen &>(screen);
+					 // Persisted the next time preferences save, the way any other lobby choice on this screen is.
+					 landscapeSortOrder = int(picker.currentSortOrder());
+					 // Size and colony count are shared lobby settings the picker can also change (FEEDBACK
+					 // 2026-09-17); bring them back whether or not a landscape was actually picked, so backing
+					 // out still keeps what was chosen there, the same two-way relationship the sort order has.
+					 if (picker.sharedWDec() != setup.generator.wDec ||
+						 picker.sharedHDec() != setup.generator.hDec ||
+						 picker.sharedTeams() != setup.capacity)
+					 {
+						 setup.generator.wDec = picker.sharedWDec();
+						 setup.generator.hDec = picker.sharedHDec();
+						 setup.generator.nbTeams = picker.sharedTeams();
+						 setup.setCapacity(picker.sharedTeams());
+						 ++setup.mapRevision;
+						 invalidate();
+					 }
+					 if (result == QUIT_APPLICATION)
+						 endExecute(QUIT_APPLICATION);
+					 else if (result >= 0 && result < int(entries.size()))
+					 {
+						 const GenerationRequest request = picker.chosenRequest();
+						 applyLandscape(entries[result].first, picker.chosenSeed(), &request);
+					 }
+				 });
+	return result;
 }
 void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> seed,
 									  const GenerationRequest *shown)
@@ -394,9 +459,12 @@ void CustomGameScreen::showStartQuality()
 		colors.push_back(i < preview->starts.size() ? preview->starts[i].color
 													: Color(160, 172, 149));
 	}
-	StartQualityScreen screen(quality, labels, colors);
-	if (screen.execute(globalContainer->gfx, 40) == QUIT_APPLICATION)
-		endExecute(QUIT_APPLICATION);
+	screens.push(std::make_unique<StartQualityScreen>(quality, labels, colors),
+				 [this](GAGGUI::Screen &, int result)
+				 {
+					 if (result == QUIT_APPLICATION)
+						 endExecute(QUIT_APPLICATION);
+				 });
 }
 void CustomGameScreen::invalidate()
 {
@@ -601,11 +669,11 @@ bool CustomGameScreen::generateMap()
 		for (int i = 0; i < game->teamsCount(); ++i)
 			preview->starts.push_back(
 				{game->teams[i]->startPosX, game->teams[i]->startPosY, game->teams[i]->color});
-		source = candidate;
+		source = candidateGzip;
 		validMap = true;
 		if (!snapshot.empty())
 			std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path());
-		snapshot = candidate;
+		snapshot = candidateGzip;
 		previewRevision = setup.mapRevision;
 		quality = generationResult.quality;
 		randomAttempts = 0;
@@ -632,7 +700,22 @@ void CustomGameScreen::updateLayout()
 }
 void CustomGameScreen::onSDLEvent(SDL_Event *event)
 {
-	if (currentTab == groups[0] && validMap && !controls->popup.open && controls->pressed.empty() &&
+	if (FrontendLayout::resolve(globalContainer->gfx).singleColumn() &&
+		event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_ESCAPE && !controls->popup.open)
+	{
+		if (phonePage != PhonePage::Main)
+			phonePage = PhonePage::Main;
+		else if (currentTab == groups[2])
+			activateGroup(groups[1]);
+		else if (currentTab == groups[1])
+			activateGroup(groups[0]);
+		else
+			endExecute(CANCEL);
+		return;
+	}
+
+	if (!FrontendLayout::resolve(globalContainer->gfx).singleColumn() && currentTab == groups[0] &&
+		validMap && !controls->popup.open && controls->pressed.empty() &&
 		preview->handlePreviewEvent(event))
 		return;
 	if (controls->handle(event))
@@ -678,6 +761,12 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 		return;
 	if (code == CANCEL)
 		endExecute(CANCEL);
+	// Phone launch is a confirmation of the visible draft. Keyboard shortcuts
+	// must obey the same readiness boundary as the Review action.
+	if (code == OK && FrontendLayout::resolve(globalContainer->gfx).singleColumn() &&
+		(currentTab != groups[2] || phonePage != PhonePage::Main || !validMap || previewBusy() ||
+		 (setup.random && previewRevision != setup.mapRevision)))
+		return;
 	if (code == OK && setup.validation().empty())
 	{
 		if (setup.random && candidates)
@@ -694,6 +783,8 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 }
 void CustomGameScreen::onTimer(Uint32 tick)
 {
+	if (candidates)
+		candidates->poll();
 	if (controls->pressed.empty() && !controls->popup.open &&
 		Sint32(tick - preferencesRetryAt) >= 0)
 		savePreferences();
@@ -773,7 +864,10 @@ bool CustomGameScreen::collectCandidates()
 void CustomGameScreen::finishPreview()
 {
 	while (candidates && candidates->busy())
+	{
+		candidates->poll();
 		SDL_Delay(5);
+	}
 	if (candidates)
 		collectCandidates();
 }
@@ -802,7 +896,8 @@ void CustomGameScreen::setMapMode(bool random)
 		listMaps();
 		std::string first = mapPaths.empty() ? "" : mapPaths.front();
 		for (const auto &p : mapPaths)
-			if (std::filesystem::path(p).filename() == "FourSquares1.map")
+			if ((std::filesystem::path(p).filename() == "FourSquares1.map" ||
+				std::filesystem::path(p).filename() == "FourSquares1.map.gz"))
 			{
 				first = p;
 				break;
@@ -816,18 +911,42 @@ void CustomGameScreen::showAIProfile(int colony)
 	std::vector<std::string> labels;
 	for (int i : AINames::selectionOrder())
 		labels.push_back(AINames::getAISelectorText(i));
-	int result = choose(colonyLabel(colony) + " / " + tr("AI strategy & counterplay"), labels,
-						AINames::selectionIndex(setup.colonies[colony].ai), true);
-	if (result >= 0)
-		setup.colonies[colony].ai = (AI::ImplementationID)AINames::selectionOrder()[result];
+	// CustomGameChoiceScreen must be pushed, not blocking-executed: the
+	// browser host has no Asyncify and ApplicationHost::wait is a hard
+	// error there (docs/browser/adr-003-screen-execution.md).
+	screens.push(std::make_unique<CustomGameChoiceScreen>(
+					 colonyLabel(colony) + " / " + tr("AI strategy & counterplay"), labels,
+					 AINames::selectionIndex(setup.colonies[colony].ai), true, std::vector<bool>{}),
+				 [this, colony](GAGGUI::Screen &, int result)
+				 {
+					 if (result >= 0)
+						 setup.colonies[colony].ai =
+							 (AI::ImplementationID)AINames::selectionOrder()[result];
+				 });
+}
+
+void CustomGameScreen::paint()
+{
+	// The lobby draws its own panel; a full-window widget is not another panel.
+	if (FrontendTheme::current)
+		FrontendTheme::current->background(gfx, false);
+	else
+		Glob2TabScreen::paint();
 }
 
 void CustomGameScreen::renderLobby()
 {
+	if (FrontendLayout::resolve(globalContainer->gfx).singleColumn())
+	{
+		renderPhoneLobby();
+		return;
+	}
 	auto &ui = *controls;
-	int width = gfx->getW(), height = gfx->getH();
-	int w = std::min(width - 32, 1120), x = (width - w) / 2;
-	ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
+	const bool touch = FrontendLayout::resolve(globalContainer->gfx).touch;
+	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
+	const int width = int(safe.w), topInset = int(safe.y), height = int(safe.y + safe.h);
+	int w = std::min(width - 32, 1120), x = int(safe.x) + (width - w) / 2;
+	ui.box({x - 8, topInset + 8, w + 16, int(safe.h) - 16}, Color(232, 237, 218), 8);
 	auto speed = globalContainer->settings;
 	speed.gameSpeed = setup.speed;
 	std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
@@ -840,19 +959,19 @@ void CustomGameScreen::renderLobby()
 	{
 		int tx = x + i * w / 3;
 		ui.button(
-			"tab/" + std::to_string(i), {tx, 16, w / 3 - 6, 38}, titles[i],
+			"tab/" + std::to_string(i), {tx, topInset + 16, w / 3 - 6, touch ? 48 : 38}, titles[i],
 			[this, i]
 			{
 				activateGroup(groups[i]);
 				controls->resetFocus();
 			},
 			currentTab == groups[i], true, false, width < 800 ? "standard" : "menu");
-		ui.text(tx + 9, 59, details[i], "little", w / 3 - 20, true);
+		ui.text(tx + 9, topInset + (touch ? 69 : 59), details[i], "little", w / 3 - 20, true);
 	}
 	// Clear inactive viewports so wheel/page navigation only affects this tab.
 	for (auto &pair : ui.regions)
 		pair.second.box = {0, 0, 0, 0};
-	int bodyY = 85, bodyH = height - 181;
+	int bodyY = topInset + (touch ? 95 : 85), bodyH = height - bodyY - 96;
 	if (currentTab == groups[1])
 		renderPlayers(x, bodyY, w, bodyH);
 	else if (currentTab == groups[2])
@@ -870,26 +989,28 @@ void CustomGameScreen::renderLobby()
 			"little", w - 8);
 	ui.paragraph(x + 4, height - 53, w - 270, error.empty() ? message : tr(error));
 	ui.button(
-		"back", {x + w - 255, height - 52, 80, 34}, tr("Back"), [this] { endExecute(CANCEL); },
-		false, true, true);
+		"back", {x + w - 255, height - 52, 80, touch ? 48 : 34}, tr("Back"),
+		[this] { endExecute(CANCEL); }, false, true, true);
 	auto label =
 		!setup.humanColony()
 			? tr(setup.random && !validMap ? "Generate & watch" : "Watch game")
 			: tr(setup.random ? (validMap ? "Play this map" : "Generate & play") : "Start game");
 	ui.button(
-		"start", {x + w - 165, height - 52, 165, 34}, label,
+		"start", {x + w - 165, height - 52, 165, touch ? 48 : 34}, label,
 		[this] { onAction(nullptr, BUTTON_SHORTCUT, OK, 0); }, true, error.empty());
 }
 
 void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 {
 	auto &ui = *controls;
+	const bool touch = FrontendLayout::resolve(globalContainer->gfx).touch;
+	const int controlH = touch ? 48 : 30;
 	std::vector<std::string> formats = localized({"FFA", "2 vs 2", "You vs all"});
 	int selected = setup.format == "FFA"          ? 0
 				   : setup.format == "2 vs 2"     ? 1
 				   : setup.format == "You vs all" ? 2
 												  : -1;
-	ui.segments("format", {x, y, std::min(w, 450), 30}, formats, selected,
+	ui.segments("format", {x, y, std::min(w, 450), controlH}, formats, selected,
 				[this](int i) { setup.presetTeams(i); },
 				{true, setup.activeColonies() == 4,
 				 bool(setup.humanColony()) && setup.activeColonies() > 1});
@@ -897,8 +1018,8 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 		ui.text(x + 470, y + 9,
 				std::to_string(setup.controllerCount()) + " / 12 " + tr("controllers"), "little",
 				w - 475, true);
-	int top = y + 42, rowH = w < 760 ? 64 : 88;
-	ui.beginRegion(1, {x, top, w, h - 42});
+	int top = y + controlH + 12, rowH = touch ? 128 : w < 760 ? 80 : 100;
+	ui.beginRegion(1, {x, top, w, h - controlH - 12});
 	int offset = ui.regions[1].offset;
 	for (int i = 0; i < setup.capacity; ++i)
 	{
@@ -929,7 +1050,7 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 		}
 		std::string id = "colony/" + std::to_string(i);
 		ui.dropdown(
-			id + "/controller", {cx, ry + 8, cw, 30},
+			id + "/controller", {cx, ry + 8, cw, controlH},
 			localized({"You", "AI", "You + AI", "Closed"}), c.controller,
 			[this, i](int value) { setup.setController(i, (CustomGameSetup::Controller)value); },
 			enabled, tr("Shared control needs a free controller slot (maximum 12)."));
@@ -939,12 +1060,14 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 			for (int j : AINames::selectionOrder())
 				names.push_back(AINames::getAISelectorText(j));
 			ui.dropdown(
-				id + "/ai", {ax, ry + 8, aw, 30}, names, AINames::selectionIndex(c.ai),
+				id + "/ai", {ax, ry + 8, aw, controlH}, names, AINames::selectionIndex(c.ai),
 				[this, i](int value)
 				{ setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[value]; });
 			ui.button(
-				id + "/info", {x + w - 66, ry + 38, 44, 18}, tr("Info"),
-				[this, i] { showAIProfile(i); }, false, true, true, "little");
+				id + "/info", {x + w - 150, ry + controlH + 14, 128, touch ? 48 : 28},
+				tr("AI strategy"), [this, i] { showAIProfile(i); }, false, true, false, "standard");
+			gfx->drawRect(x + w - 150, ry + controlH + 14, 128, touch ? 48 : 28,
+						  ui.focus == id + "/info" ? ui.ink : ui.line);
 		}
 		else
 			ui.text(
@@ -954,7 +1077,7 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 		std::vector<std::string> teams;
 		for (int j = 0; j < setup.capacity; ++j)
 			teams.push_back(tr("Team") + " " + std::to_string(j + 1));
-		ui.dropdown(id + "/team", {x + w - 22 - teamW, ry + 8, teamW, 30}, teams, c.alliance,
+		ui.dropdown(id + "/team", {x + w - 22 - teamW, ry + 8, teamW, controlH}, teams, c.alliance,
 					[this, i](int value)
 					{
 						setup.colonies[i].alliance = value;
@@ -964,9 +1087,9 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 					   : c.controller == CustomGameSetup::Closed
 						   ? tr("This colony will not join the match.")
 						   : AINames::getAISummary(c.ai);
-		ui.text(cx, ry + 45, summary, "little", w - 196, true);
-		if (c.controller == CustomGameSetup::Shared && rowH > 64)
-			ui.text(cx, ry + 62, tr("You and the AI both issue orders. Uses two controller slots."),
+		ui.text(cx, ry + 49, summary, "little", w - 278, true);
+		if (c.controller == CustomGameSetup::Shared && rowH > 80)
+			ui.text(cx, ry + 76, tr("You and the AI both issue orders. Uses two controller slots."),
 					"little", w - 150, true);
 	}
 	ui.endRegion(setup.capacity * rowH);
@@ -975,17 +1098,20 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 void CustomGameScreen::renderRules(int x, int y, int w, int h)
 {
 	auto &ui = *controls;
+	const bool phone = GAGCore::phonePresentationRequested();
+	const int controlH = phone ? 48 : 29;
 	ui.beginRegion(2, {x, y, w, h});
 	int yy = y - ui.regions[2].offset, startY = yy;
-	ui.text(x, yy, tr("Try a ruleset, then make it your own."), "standard", w - 20);
-	yy += 24;
+	yy += ui.paragraph(x, yy, w - 20, tr("Try a ruleset, then make it your own."), "standard",
+					   false, false) +
+		  12;
 	std::vector<std::string> names =
 		localized({"Standard", "Quick clash", "Open book", "Last colony standing"});
 	std::vector<std::string> effects =
 		localized({"Classic colony building",
 				   setup.random ? "8 workers / 2x speed" : "Premade: only speed changes (2x)",
 				   "Start with terrain known", "Win through conquest"});
-	int columns = w >= 800 ? 4 : 2, tileW = (w - 12) / columns;
+	int columns = w >= 800 ? 4 : w < 420 ? 1 : 2, tileW = (w - 12) / columns;
 	for (int i = 0; i < 4; ++i)
 	{
 		int tx = x + (i % columns) * tileW, ty = yy + (i / columns) * 54;
@@ -1025,13 +1151,24 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		if (category != definition.category)
 		{
 			category = definition.category;
-			ui.text(x + 4, yy, tr(category), "standard", w - 20);
-			yy += 24;
+			if (category != definition.label)
+			{
+				ui.text(x + 4, yy, tr(category), "standard", w - 20);
+				yy += 24;
+			}
 		}
-		ui.box({x, yy, w - 12, 58}, ui.panel);
-		ui.text(x + 10, yy + 8, tr(definition.label) + (setup.ruleChanged(index) ? " *" : ""),
-				"standard", 170);
-		int fieldX = x + 182, fieldW = w - 208;
+		const auto label = tr(definition.label) + (setup.ruleChanged(index) ? " *" : "");
+		const int labelHeight =
+			phone ? ui.paragraph(0, 0, w - 32, label, "standard", false, false, false) : 0;
+		ui.box({x, yy, w - 12, phone ? labelHeight + controlH + 24 : 58}, ui.panel);
+		if (phone)
+		{
+			ui.paragraph(x + 10, yy + 8, w - 32, label, "standard", false, false);
+			yy += labelHeight + 12;
+		}
+		else
+			ui.text(x + 10, yy + 8, label, "standard", 170);
+		int fieldX = phone ? x + 8 : x + 182, fieldW = phone ? w - 32 : w - 208;
 		auto apply = [this, index](int value)
 		{
 			if (index == 0)
@@ -1052,6 +1189,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				setup.stockpileStart = value;
 			if (index == 9)
 				setup.noHunger = value;
+			if (index == 10)
 				setup.unitUpgradesDisabled = value;
 			if (index == 11)
 				setup.glassCannonLevel = value;
@@ -1073,7 +1211,8 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			auto options = index == 0   ? localized({"Conquest or prestige", "Conquest only"})
 						   : index == 1 ? localized({"Explore as you play", "Terrain revealed"})
 										: localized({"Locked teams", "Can change in game"});
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
+						options,
 						index == 0   ? !setup.prestige
 						: index == 1 ? setup.revealed
 									 : !setup.locked,
@@ -1092,13 +1231,15 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				settings.gameSpeed = i;
 				options.push_back(settings.getGameSpeedText());
 			}
-			ui.dropdown("rule/speed", {fieldX, yy + 5, fieldW, 29}, options, setup.speed, apply);
+			ui.dropdown("rule/speed", {fieldX, yy + 5, fieldW, controlH}, options, setup.speed,
+						apply);
 			help = tr("Changes the pace of the whole simulation.");
 		}
 		else if (index == 4)
 		{
 			if (setup.random)
-				ui.stepper("rule/workers", {fieldX, yy + 5, 130, 29}, setup.generator.nbWorkers,
+				ui.stepper("rule/workers", {fieldX, yy + 5, 130, controlH},
+						   setup.generator.nbWorkers,
 						   GenerationRequest::control(setup.generator.method, "workers").minimum,
 						   GenerationRequest::control(setup.generator.method, "workers").maximum,
 						   [this](int v)
@@ -1116,15 +1257,15 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		}
 		else if (index == 5 || index == 7 || index == 9)
 		{
-			auto options = index == 5 ? localized({"Grow normally", "No growth"})
+			auto options = index == 5   ? localized({"Grow normally", "No growth"})
 						   : index == 7 ? localized({"Normal construction", "Instant"})
 										: localized({"Units get hungry", "No hunger"});
-			bool current = index == 5	 ? setup.noResourceGrowth
+			bool current = index == 5   ? setup.noResourceGrowth
 						   : index == 7 ? setup.instantConstruction
 										: setup.noHunger;
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
-						current, apply, {}, w < 800 ? "little" : "standard");
-			help = tr(index == 5	? "Resources never grow or spread across the map."
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
+						options, current, apply, {}, w < 800 ? "little" : "standard");
+			help = tr(index == 5   ? "Resources never grow or spread across the map."
 					  : index == 7 ? "Building sites complete immediately, skipping delivery."
 								   : "Units never grow hungry and never starve.");
 		}
@@ -1132,29 +1273,29 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		{
 			std::vector<std::string> options =
 				index == 6 ? localized({"Off (today's growth)", "Scarce (2x slower)",
-										 "Very scarce (4x slower)", "Extremely scarce (8x slower)"})
+										"Very scarce (4x slower)", "Extremely scarce (8x slower)"})
 						   : localized({"None (today's default)", "Small (+50 each)",
 										"Medium (+150 each)", "Large (+300 each)"});
 			int current = index == 6 ? setup.resourceScarcity : setup.stockpileStart;
-			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
-						current, apply);
+			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
+						options, current, apply);
 			help = tr(index == 6 ? "Slows how often resources grow or spread across the map."
-								  : "Seeds each team's shared market/exchange resource pool at "
-									"game start.");
+								 : "Seeds each team's shared market/exchange resource pool at "
+								   "game start.");
 		}
 		else if (index == 10 || index == 12 || index == 13 || index == 14)
 		{
-			auto options = index == 10	 ? localized({"Trains normally", "No upgrades"})
+			auto options = index == 10   ? localized({"Trains normally", "No upgrades"})
 						   : index == 12 ? localized({"Retreats when damaged", "Fearless"})
 						   : index == 13 ? localized({"Can die permanently", "No permadeath"})
-										: localized({"Normal combat", "Peaceful mode"});
-			bool current = index == 10	 ? setup.unitUpgradesDisabled
+										 : localized({"Normal combat", "Peaceful mode"});
+			bool current = index == 10   ? setup.unitUpgradesDisabled
 						   : index == 12 ? setup.unitsFearless
 						   : index == 13 ? setup.permadeathDisabled
-										: setup.peacefulMode;
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
-						current, apply, {}, w < 800 ? "little" : "standard");
-			help = tr(index == 10	? "Units still visit schools but never gain a level."
+										 : setup.peacefulMode;
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
+						options, current, apply, {}, w < 800 ? "little" : "standard");
+			help = tr(index == 10   ? "Units still visit schools but never gain a level."
 					  : index == 12 ? "Units fight to the death instead of retreating to heal."
 					  : index == 13 ? "Units are never permanently lost -- HP just stops at 1."
 									: "Disables all combat between every team.");
@@ -1162,11 +1303,12 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		else if (index == 11 || index == 15)
 		{
 			std::vector<std::string> options =
-				index == 11 ? localized({"Off (today's balance)", "Glass cannon x2", "Glass cannon x3"})
-						   : localized({"Off (today's HP)", "Fortress x5", "Fortress x10"});
+				index == 11
+					? localized({"Off (today's balance)", "Glass cannon x2", "Glass cannon x3"})
+					: localized({"Off (today's HP)", "Fortress x5", "Fortress x10"});
 			int current = index == 11 ? setup.glassCannonLevel : setup.buildingHpLevel;
-			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
-						current, apply);
+			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
+						options, current, apply);
 			help = tr(index == 11 ? "Higher tiers deal more damage but have less HP and armor."
 								  : "Higher tiers give every building much more HP.");
 		}
@@ -1174,16 +1316,17 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		{
 			if (setup.random)
 			{
-				std::vector<std::string> options = localized({"Standard", "Veteran", "Elite", "Legendary"});
-				ui.dropdown("rule/startingLevel", {fieldX, yy + 5, fieldW, 29}, options,
-					setup.startingUnitLevel,
-					[this](int v)
-					{
-						setup.startingUnitLevel = v;
-						++setup.mapRevision;
-						setup.ruleset = "Custom";
-						invalidate();
-					});
+				std::vector<std::string> options =
+					localized({"Standard", "Veteran", "Elite", "Legendary"});
+				ui.dropdown("rule/startingLevel", {fieldX, yy + 5, fieldW, controlH}, options,
+							setup.startingUnitLevel,
+							[this](int v)
+							{
+								setup.startingUnitLevel = v;
+								++setup.mapRevision;
+								setup.ruleset = "Custom";
+								invalidate();
+							});
 			}
 			else
 				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
@@ -1193,21 +1336,31 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		}
 		else
 		{
-			std::vector<std::string> options =
-				localized({"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"});
+			std::vector<std::string> options = localized(
+				{"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"});
 			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
-			const int current = int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) -
-									minutes.begin());
-			ui.dropdown("rule/suddenDeath", {fieldX, yy + 5, fieldW, 29}, options,
+			const int current =
+				int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) -
+					minutes.begin());
+			ui.dropdown("rule/suddenDeath", {fieldX, yy + 5, fieldW, controlH}, options,
 						current < int(minutes.size()) ? current : 0,
 						[apply, minutes](int v) { apply(minutes[v]); });
 			help = tr("Match ends at the timer; highest prestige at that instant wins.");
 		}
-		ui.text(x + 10, yy + 39, help, "little", w - 40, true);
-		yy += 65;
+		if (phone)
+		{
+			yy += 60;
+			yy += ui.paragraph(x + 10, yy, w - 40, help, "standard") + 20;
+		}
+		else
+		{
+			ui.text(x + 10, yy + 39, help, "little", w - 40, true);
+			yy += 65;
+		}
 	}
 	ui.button(
-		"rules/restore", {x, yy, 230, 30}, tr("Restore standard rules"),
+		"rules/restore", {x, yy, std::min(w - 12, 230), phone ? 48 : 30},
+		tr("Restore standard rules"),
 		[this]
 		{
 			auto rev = setup.mapRevision;
@@ -1217,24 +1370,26 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		},
 		false, true, true);
 	ui.text(x + 245, yy + 8, tr("* Changed from standard."), "little", w - 270, true);
-	yy += 36;
+	yy += phone ? 56 : 36;
 	ui.endRegion(yy - startY);
 }
 
 void CustomGameScreen::renderMap(int x, int y, int w, int h)
 {
 	auto &ui = *controls;
-	ui.segments("map/mode", {x, y, 300, 30}, localized({"Premade maps", "Random map"}),
+	const bool touch = FrontendLayout::resolve(globalContainer->gfx).touch;
+	const int controlH = touch ? 48 : 30;
+	ui.segments("map/mode", {x, y, 300, controlH}, localized({"Premade maps", "Random map"}),
 				setup.random, [this](int value) { setMapMode(value); });
 	int leftW = w < 800 ? 280 : w * 46 / 100;
 	int rightX = x + leftW + 24, rightW = w - leftW - 24;
-	int top = y + 43;
+	int top = y + controlH + 13;
 	if (!setup.random)
 	{
 		if (separateMapLibraries)
 			ui.segments(
-				"map/library", {x, top, leftW, 27}, localized({"Built-in maps", "Your maps"}),
-				userMaps,
+				"map/library", {x, top, leftW, touch ? 48 : 27},
+				localized({"Built-in maps", "Your maps"}), userMaps,
 				[this](int value)
 				{
 					if (userMaps != bool(value))
@@ -1248,7 +1403,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 				{}, "little");
 		else
 			ui.text(x + 4, top + 6, tr("Map"), "little", leftW, true);
-		int region = 10 + userMaps, listTop = top + 35, rowH = 28;
+		int region = 10 + userMaps, listTop = top + (touch ? 56 : 35), rowH = touch ? 56 : 28;
 		ui.beginRegion(region, {x, listTop, leftW, h - 78});
 		int yy = listTop - ui.regions[region].offset;
 		for (size_t i = 0; i < mapPaths.size(); ++i)
@@ -1273,9 +1428,9 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		};
 		ui.text(x + 4, yy, tr("Landscape"), "little", leftW - 20, true);
 		yy += 18;
-		ui.chooser("generator/landscape", {x, yy, leftW - 16, 30},
+		ui.chooser("generator/landscape", {x, yy, leftW - 16, controlH},
 				   tr(GenerationRequest::methodName(g.method)), [this] { chooseLandscape(); });
-		yy += 36;
+		yy += controlH + 6;
 		// Right under the landscape, before its controls (FEEDBACK 2026-09-14): Reset to defaults,
 		// and beside it Random parameters, which draws every control below at random.
 		{
@@ -1293,12 +1448,12 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			};
 			const std::string reset = tr("Reset to defaults"), random = tr("Random parameters");
 			ui.button(
-				"generator/reset", {x, yy, half, 30}, reset, [this] { resetParameters(); }, false,
-				!atDefaults, true, fitting(reset));
+				"generator/reset", {x, yy, half, controlH}, reset, [this] { resetParameters(); },
+				false, !atDefaults, true, fitting(reset));
 			ui.button(
-				"generator/random", {x + half + 6, yy, half, 30}, random,
+				"generator/random", {x + half + 6, yy, half, controlH}, random,
 				[this] { randomizeParameters(); }, false, true, true, fitting(random));
-			yy += 38;
+			yy += controlH + 8;
 		}
 		auto discrete = [&](const GenerationRequest::Control &c, const std::string &id)
 		{
@@ -1307,7 +1462,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			for (int v : c.values())
 				options.push_back(c.isChoice() ? tr(c.valueLabel(v))
 											   : std::to_string(c.displayValue(v)));
-			ui.dropdown(id, {x + 112, yy, leftW - 128, 28}, options, c.indexOf(c.get(g)),
+			ui.dropdown(id, {x + 112, yy, leftW - 128, controlH}, options, c.indexOf(c.get(g)),
 						[this, c, changed](int i)
 						{
 							c.set(setup.generator, c.valueAt(i));
@@ -1315,7 +1470,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 								setup.setCapacity(setup.generator.nbTeams);
 							changed();
 						});
-			yy += 36;
+			yy += controlH + 6;
 		};
 		for (const auto &c : GenerationRequest::sharedControls())
 			if (c.id != "workers")
@@ -1334,10 +1489,10 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		{
 			auto sectionName = section == 0 ? "Terrain" : section == 1 ? "Resources" : "Layout";
 			ui.button(
-				"generator/section/" + std::to_string(section), {x, yy, leftW - 16, 30},
+				"generator/section/" + std::to_string(section), {x, yy, leftW - 16, controlH},
 				std::string(expanded[section] ? "-  " : "+  ") + tr(sectionName),
 				[this, section] { expanded[section] = !expanded[section]; }, expanded[section]);
-			yy += 38;
+			yy += controlH + 8;
 			if (!expanded[section])
 				continue;
 			bool any = false;
@@ -1349,13 +1504,13 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 				std::string id = "generator/" + c.id;
 				if (c.isToggle())
 				{
-					ui.checkbox(id, {x, yy, leftW - 16, 28}, tr(c.label), c.get(g) != 0,
+					ui.checkbox(id, {x, yy, leftW - 16, controlH}, tr(c.label), c.get(g) != 0,
 								[this, c, changed](bool on)
 								{
 									c.set(setup.generator, on ? 1 : 0);
 									changed();
 								});
-					yy += 34;
+					yy += controlH + 6;
 					continue;
 				}
 				if (c.powerOfTwo || !c.allowedValues.empty())
@@ -1375,13 +1530,13 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 					}
 				};
 				if ((c.maximum - c.minimum) / c.step > 8)
-					ui.slider(id, {x + 8, yy, leftW - 32, 22}, (c.get(g) - c.minimum) / c.step, 0,
-							  (c.maximum - c.minimum) / c.step,
+					ui.slider(id, {x + 8, yy, leftW - 32, touch ? 48 : 22},
+							  (c.get(g) - c.minimum) / c.step, 0, (c.maximum - c.minimum) / c.step,
 							  [c, apply](int i) { apply(c.minimum + i * c.step); });
 				else
-					ui.stepper(id, {x + 8, yy, 130, 26}, c.get(g), c.minimum, c.maximum, apply,
-							   c.step);
-				yy += 34;
+					ui.stepper(id, {x + 8, yy, 130, touch ? 48 : 26}, c.get(g), c.minimum,
+							   c.maximum, apply, c.step);
+				yy += controlH + 6;
 			}
 			if (!any)
 				yy +=
@@ -1405,17 +1560,20 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			dimensions + "  /  " + std::to_string(setup.capacity) + " " + tr("colonies"), "little",
 			rightW, true);
 	// The generated map's start quality (FEEDBACK 2026-09-14): the fairness the lobby ranked its
-	// candidate rolls by, and a small (i) that opens the breakdown behind it.
+	// candidate rolls by, and a small (i) that opens the breakdown behind it. Fairness is the
+	// whole ranking now, so there is no second number to show beside it.
 	if (setup.random && (validMap || previewBusy()) && quality.measured)
 	{
 		char summary[96];
-		std::snprintf(summary, sizeof summary, "%s %.2f  /  %s %.2f", tr("Fairness").c_str(),
-					  quality.fairness, tr("Score").c_str(), quality.score);
+		std::snprintf(summary, sizeof summary, "%s %.2f", tr("Fairness").c_str(), quality.fairness);
 		const int sw = Toolkit::getFont("little")->getStringWidth(summary);
-		ui.text(rightX + rightW - sw - 30, top + 29, summary, "little", sw + 2, true);
+		ui.text(rightX + rightW - sw - (touch ? 58 : 30), top + 29, summary, "little", sw + 2,
+				true);
 		ui.button(
-			"quality/info", {rightX + rightW - 24, top + 26, 22, 20}, "i",
-			[this] { showStartQuality(); }, false, true, false, "little");
+			"quality/info",
+			{rightX + rightW - (touch ? 50 : 24), top + (touch ? 10 : 26), touch ? 48 : 22,
+			 touch ? 48 : 20},
+			"i", [this] { showStartQuality(); }, false, true, false, "little");
 	}
 	// A random map keeps a row under its preview for the Randomize button.
 	const int previewLimit = std::max(1, h - (setup.random ? 210 : 174));
@@ -1461,7 +1619,8 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		const int buttonW = std::min(rightW, 160);
 		ui.button(
 			"map/randomize",
-			{rightX + (rightW - buttonW) / 2, py + previewH + helpHeight + 17, buttonW, 30},
+			{rightX + (rightW - buttonW) / 2, py + previewH + helpHeight + 17, buttonW,
+			 touch ? 48 : 30},
 			tr("Randomize"),
 			[this]
 			{

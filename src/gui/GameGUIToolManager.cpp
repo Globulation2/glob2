@@ -65,7 +65,7 @@ void GameGUIToolManager::deactivateTool()
 
 
 
-void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
+void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers)
 {
 	if(mode == PlaceBuilding)
 	{
@@ -79,7 +79,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 		
 		
-		SDL_Keymod modState = SDL_GetModState();
+		const int modState = modifiers;
 		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
 		{
 			drawBuildingAt(mapX, mapY, localteam, viewportX, viewportY);
@@ -185,7 +185,7 @@ void GameGUIToolManager::handleMouseDown(int mouseX, int mouseY, int localteam, 
 
 
 
-void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
+void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, int viewportX, int viewportY, int modifiers)
 {
 	if(mode == PlaceZone)
 	{
@@ -200,7 +200,7 @@ void GameGUIToolManager::handleMouseUp(int mouseX, int mouseY, int localteam, in
 		int mapX, mapY;
 		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &mapX, &mapY, viewportX, viewportY);
 
-		SDL_Keymod modState = SDL_GetModState();
+		const int modState = modifiers;
 		if(!(modState & KMOD_CTRL || modState & KMOD_SHIFT) || !firstPlacement)
 		{
 			placeBuildingAt(mapX, mapY, localteam);
@@ -326,7 +326,16 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 
 
 
-void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
+bool GameGUIToolManager::confirmBuilding(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
+{
+    if (mode != PlaceBuilding) return false;
+    const auto* type=globalContainer->buildingsTypes.get(globalContainer->buildingsTypes.getPlaceableTypeNum(building));
+    int x,y;
+    game.map.cursorToBuildingPos(mouseX,mouseY,type->width,type->height,&x,&y,viewportX,viewportY);
+    return placeBuildingAt(x,y,localteam);
+}
+
+bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 {
 	// Count down whether a building site can be placed
 	if (game.teams[localteam]->noMoreBuildingSitesCountdown==0)
@@ -356,8 +365,10 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 				r = globalContainer->settings.defaultFlagRadius[bt->shortTypeNum - IntBuildingType::EXPLORATION_FLAG];
 			ghostManager.addBuilding(typeNum, mapX, mapY);
 			orders.push(std::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
+            return true;
 		}
 	}
+    return false;
 }
 
 
@@ -622,6 +633,11 @@ void GameGUIToolManager::computeBuildingBox(int sx, int sy, int ex, int ey, int 
 }
 
 void GameGUIToolManager::finishPointerGesture(int localteam)
+{
+	cancelDrag(localteam);
+}
+
+void GameGUIToolManager::cancelDrag(int localteam)
 {
     if (mode == PlaceZone) flushBrushOrders(localteam);
     firstPlacement.reset();

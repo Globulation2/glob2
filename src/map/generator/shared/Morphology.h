@@ -42,6 +42,12 @@ std::vector<unsigned char> dilateRound(const Torus &, const std::vector<unsigned
 /// A mask with nothing outside it gets the half of the longer side everywhere.
 std::vector<int> clearance(const Torus &, const std::vector<unsigned char> &mask);
 
+/// The tile of `region` with the most `room` (its clearance, say), the one nearest (nearX, nearY) the
+/// short way round on a tie, then the lowest index: where a feature that needs ground all round it (a
+/// plot, a pond, a chamber) stands best. -1 for an empty region.
+int roomiestTile(const Torus &, const std::vector<unsigned char> &region,
+				 const std::vector<int> &room, int nearX, int nearY);
+
 /// The mask with every connected part (with the given neighbours, across the wrap) smaller than
 /// `minimumTiles` removed. Pass the inverted mask to fill pockets instead.
 std::vector<unsigned char> dropSmallRegions(const Torus &, const std::vector<unsigned char> &mask,
@@ -54,6 +60,17 @@ std::vector<unsigned char> dropSmallRegions(const Torus &, const std::vector<uns
 int widestWalkClearance(const Torus &, const std::vector<unsigned char> &mask,
 						const std::vector<int> &sources, const std::vector<unsigned char> &goal);
 
+/// The same walk over a clearance field the caller already has.
+///
+/// `clearance` is a full distance transform and depends on nothing but the mask, so asking for
+/// several walks over one mask - every colony's way out of the same country, say - recomputes the
+/// identical field once per walk. Even Ground's shape pass did exactly that, four times per
+/// proposal for thousands of proposals, and it was about 30 per cent of the generator's whole run
+/// time. Compute it once with `clearance(t, mask)` and pass it here.
+int widestWalkClearance(const Torus &, const std::vector<unsigned char> &mask,
+						const std::vector<int> &room, const std::vector<int> &sources,
+						const std::vector<unsigned char> &goal);
+
 /// widestWalkClearance as a passage width in tiles (2c - 1), 0 when no walk exists: the check a
 /// validator makes that a designed tunnel, lane or street still takes a column of units.
 int narrowestPassage(const Torus &, const std::vector<unsigned char> &mask,
@@ -64,6 +81,19 @@ int narrowestPassage(const Torus &, const std::vector<unsigned char> &mask,
 /// up.
 std::vector<unsigned char> slivers(const Torus &, const std::vector<unsigned char> &mask,
 								   int minimumClearance);
+
+/// The mask with every diagonal-only contact joined: where two mask tiles touch only at a corner and
+/// neither tile beside that corner is in the mask, the one of those two with the lower index joins
+/// it. A line of tiles that must hold water or wall against eight-connected movement (a river, a
+/// moat's core) leaks at every diagonal step otherwise; after this the mask is four-connected
+/// wherever it was eight-connected. One pass suffices: a bridging tile touches its two neighbours
+/// orthogonally and creates no new diagonal-only contact with them.
+std::vector<unsigned char> bridgeDiagonals(const Torus &, const std::vector<unsigned char> &mask);
+
+/// How many mask tiles lie within `radius` Chebyshev steps (a square) of every tile, across the
+/// wrap: running sums along rows then columns, so the cost does not grow with the radius. A cheap
+/// measure of how much of a kind of ground a site has round it (buildable grass, farmable land).
+std::vector<int> windowCount(const Torus &, const std::vector<unsigned char> &mask, int radius);
 
 /// The least value of an integer field within `radius` Chebyshev steps (a square) of every tile,
 /// across the wrap: a running minimum along rows then columns, so the cost does not grow with the

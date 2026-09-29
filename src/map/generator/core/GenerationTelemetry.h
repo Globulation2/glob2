@@ -68,6 +68,13 @@ class GenerationTelemetry
 		if (enabled_)
 			append(key, "error", std::string(detail), -1);
 	}
+	/// Records everything `from` recorded, in order, as though it had been recorded here: how a design
+	/// cached from an earlier context reports what building it would have.
+	void replay(const GenerationTelemetry &from)
+	{
+		for (const Record &r : from.records_)
+			append(r.key, r.kind.c_str(), r.value, r.subject);
+	}
 	const std::vector<Record> &records() const { return records_; }
 	size_t droppedRecords() const { return droppedRecords_; }
 	size_t invalidValues() const { return invalidValues_; }

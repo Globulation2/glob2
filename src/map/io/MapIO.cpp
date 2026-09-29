@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "BuildingGradientSearch.h"
 #include "Map.h"
 #include "FileFormatVersions.h"
 #include "MapInternal.h"
@@ -21,6 +22,11 @@
 
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
+{
+    return loadTask(stream, header, game).run();
+}
+
+GAGCore::CooperativeTask Map::loadTask(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 try
 {
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
@@ -29,6 +35,7 @@ try
 	Sint32 versionMinor = header.getVersionMinor();
 
 	clear();
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading terrain]");
 
 	stream->readEnterSection("Map");
 
@@ -37,15 +44,14 @@ try
 	if (memcmp(signature, "MapB", 4)!=0)
 	{
 		fprintf(stderr, "Map:: Failed to find signature at the beginning of Map.\n");
-		return false;
+		co_return false;
 	}
 
 	// We load and compute size:
 	wDec = stream->readSint32("wDec");
 	hDec = stream->readSint32("hDec");
-	if (wDec < 0 || hDec < 0 || wDec >= std::numeric_limits<int>::digits ||
-		hDec >= std::numeric_limits<int>::digits || wDec + hDec >= std::numeric_limits<int>::digits)
-		return false;
+	if (!supportedDimensions(wDec, hDec))
+		co_return false;
 	w = 1<<wDec;
 	h = 1<<hDec;
 	wMask = w-1;
@@ -72,13 +78,14 @@ try
 	stream->readEnterSection("cases");
 	for (size_t i=0; i<size; i++)
 	{
+        if (i % 512 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		stream->readEnterSection(i);
 		mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
 		tiles[i].terrain = stream->readUint16("terrain");
 		tiles[i].building = stream->readUint16("building");
 		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
-			return false;
+			co_return false;
 
 		stream->read(&(tiles[i].resource), 4, "ressource");
 		tiles[i].groundUnit = stream->readUint16("groundUnit");
@@ -115,7 +122,7 @@ try
 	wSector = stream->readSint32("wSector");
 	hSector = stream->readSint32("hSector");
 	if (wSector < 0 || hSector < 0 || wSector > w || hSector > h)
-		return false;
+		co_return false;
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
@@ -133,11 +140,12 @@ try
 	stream->readEnterSection("sectors");
 	for (int i=0; i<sizeSector; i++)
 	{
+        if (i % 512 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		stream->readEnterSection(i);
 		if (!sectors[i].load(stream, this->game, versionMinor))
 		{
 			stream->readLeaveSection(3);
-			return false;
+			co_return false;
 		}
 		stream->readLeaveSection();
 	}
@@ -149,7 +157,7 @@ try
 	if (memcmp(signature, "MapE", 4)!=0)
 	{
 		fprintf(stderr, "Map:: Failed to find signature at the end of Map.\n");
-		return false;
+		co_return false;
 	}
 
 	if (game)
@@ -176,13 +184,13 @@ try
 		}
 	}
 
-	return true;
+	co_return true;
 }
 catch (const std::ios_base::failure& error)
 {
 	std::cerr << "Map::load: " << error.what() << std::endl;
 	clear();
-	return false;
+	co_return false;
 }
 
 
@@ -251,6 +259,11 @@ void Map::save(GAGCore::OutputStream *stream)
 
 void Map::addTeam(void)
 {
+    addTeamTask().run();
+}
+
+GAGCore::CooperativeTask Map::addTeamTask(void)
+{
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	int oldNumberOfTeam=numberOfTeam-1;
 	assert(numberOfTeam>0);
@@ -267,6 +280,7 @@ void Map::addTeam(void)
 	assert(clearingAreaClaims[t] == NULL);
 	clearingAreaClaims[t] = new Uint16[size];
 	memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
+    co_return true;
 }
 
 void Map::removeTeam(void)
@@ -400,6 +414,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
+				// Materialize the old full-field representation from its frozen inputs.
+				// This changes no routing answers, timestamps, RNG or save bytes.
+				finishBuildingGradient(building, sw);
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
@@ -503,6 +520,9 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->readEnterSection(sw);
+				// Existing saves contain complete fields; discard any previous queue
+				// before replacing its buffer, including when reusing a loaded object.
+				building->globalGradientSearch[sw].reset();
 				loadGradient(stream, building->globalGradient[sw], size);
 				building->dirtyGradient[sw]=loadFlag(stream,"dirty");
 				building->lastGlobalGradientUpdateStepCounter[sw]=stream->readUint32("lastUpdate");

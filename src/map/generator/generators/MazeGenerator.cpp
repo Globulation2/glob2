@@ -682,12 +682,12 @@ MazeOptions::MazeOptions(const GenerationRequest &r)
 GeneratorDefinition mazeDefinition()
 {
 	return {
-		"maze",
-		11,
-		"Maze",
-		14,
-		false,
-		{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
+			"maze",
+			11,
+			"Maze",
+			14,
+			false,
+			{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
 		 {"cell-size",
 		  "Cell size",
 		  24,
@@ -734,8 +734,9 @@ GeneratorDefinition mazeDefinition()
 		 // Off, the treasure's fruit is scattered along the passages' shores instead.
 		 GeneratorControl::toggle("dead-end-treasure", "Treasure in dead ends", true,
 								  ControlGroup::Resources)},
-		generate,
-		true,
-		validate,
-		validateWorld};
+			generate,
+			true,
+			validate,
+			validateWorld,
+			{"terrain:arena", "feature:maze", "feature:stone-walls", "style:tight-building", "style:siege"}};
 }

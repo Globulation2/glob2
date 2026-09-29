@@ -36,10 +36,17 @@ class MapPreview : public RectangularWidget
 	virtual void setMapThumbnail(const std::string &filename);
 	virtual void setMapThumbnail(const MapThumbnail &thumbnail);
 	void setState(State state);
+	void setAnimateChanges(bool enabled);
 	State getState() const { return state; }
 	int getLastWidth() const { return thumbnail.getMapWidth(); }
 	int getLastHeight() const { return thumbnail.getMapHeight(); }
 	bool isThumbnailLoaded() const { return thumbnail.isLoaded(); }
+	// Readiness includes the real-time crossfade, not just thumbnail delivery.
+	bool isPresentationSettled() const
+	{
+		return state == State::Ready && !transitionPending &&
+			   (!transitioning || transitionAlpha() == 0);
+	}
 	std::function<void()> retry;
 	bool handlePreviewEvent(SDL_Event *event);
 	void onSDLMouseButtonDown(SDL_Event *e) override { handlePreviewEvent(e); }
@@ -60,6 +67,7 @@ class MapPreview : public RectangularWidget
 	bool animateChanges = true;
 	virtual void paintOverlay(DrawableSurface *, MapPreviewGeometry::Rect);
 	MapThumbnail thumbnail;
+	// Created on the first visible paint, independently of thumbnail readiness.
 	DrawableSurface *surface = nullptr;
 	MapPreviewGeometry view;
 

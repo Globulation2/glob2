@@ -23,10 +23,10 @@ the supplied executable/data bundles remain in the workspace's
 the retained initial saves with a locally built compatible production client and
 `test/tournament_cli_integration.py --initial FILE --output DIR --ticks 2048`.
 
-See [the validation record](../../../docs/tournaments-validation.md) for results,
-commands, measured platform coverage, limitations and the initial failures that
-led to the fixes. [The framework guide](../../../docs/tournaments.md) describes
-the operational and data contracts.
+Keep results, measured platform coverage and other run-specific evidence in the
+ignored `artifacts/` workspace or in pull-request attachments. The
+[framework guide](../../../docs/tools/tournaments.md) describes the operational
+and data contracts.
 
 
 `telemetry-merge-20260914.tar.gz` and its index contain the subsequent mainline

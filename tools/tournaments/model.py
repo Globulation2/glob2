@@ -97,7 +97,9 @@ def validate_experiment(manifest):
         raise ValueError('lease must span at least two positive heartbeat intervals')
     if type(settings['prefetch']) is not int or settings['prefetch'] < 0:
         raise ValueError('prefetch must be a nonnegative integer')
-    for key in ('infrastructure_attempts', 'process_attempts'):
-        if type(settings[key]) is not int or settings[key] < 1:
+    for key in ('infrastructure_attempts', 'process_attempts', 'input_transfer_slots', 'result_transfer_slots'):
+        if type(settings.get(key, 8)) is not int or settings.get(key, 8) < 1:
             raise ValueError(f'{key} must be a positive integer')
+    if settings.get('poll_seconds', 1) <= 0:
+        raise ValueError('poll_seconds must be positive')
     return manifest

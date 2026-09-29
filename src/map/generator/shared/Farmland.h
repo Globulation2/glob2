@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationRequest.h"
+struct GenerationContext;
 #include "Geometry.h"
+#include "FertilityField.h"
+#include <string>
 #include "Grid.h"
 #include "Sketch.h"
+#include <utility>
 #include <vector>
 class Map;
 struct GenerationContext;
@@ -18,9 +23,34 @@ namespace MapGeneration
 // ground out into fields joined to their homes (by equal yield for their rows' angles), layFarm lays
 // the rows over a field, and plantFarm plants them once the terrain is written. Around a laid farm,
 // sand does three jobs: a cap ring closes the crop rows so wheat and wood never spread into the ground
-// round the farm; bridges cross the whole farm, water rows and crop rows alike, so workers need not walk
+// round the farm; bridges cross the whole farm, water rows and crop rows alike (FarmBridges), so workers need not walk
 // round a long row nor cut through one; and a ring round the building plot keeps crops off it. Walls
 // round a farm are the map's business, not the farm's.
+
+/// An irregular grass plot surrounded by sand. `corners` is an arbitrary, nonempty set of
+/// undermap vertices; a Chebyshev margin seals diagonal growth across the wrap.
+/// The default two rows preserve existing gardens; one row is a thinner, still sealed bund.
+/// margin must be positive.
+/// Returns the pure grass tiles inside it, suitable for a crop eligibility list. The caller must
+/// reserve the plot AND its margin before stamping: this operation intentionally overwrites terrain.
+/// Run beaches afterwards and check final tiles if later stages can overlap the plot.
+std::vector<int> stampContainedPlot(TerrainSketch &, const Torus &,
+									const std::vector<int> &corners, int margin = 2);
+
+/// Plant up to `wanted` deposits in a contained plot, preferring exact crop fertility (tile index
+/// breaks ties). With renewable=true, dry tiles are excluded; false also serves finite dry groves
+/// and quarries. Returns actual deposits planted, so essential shortfalls can fail explicitly.
+int plantContainedPlot(Map &, const Torus &, const std::vector<int> &tiles,
+					   const Fertility::Field &, int resource, int wanted, bool renewable = true);
+
+/// Prove on final terrain that eight-neighbour grass growth cannot leave or join differently
+/// labelled plots. `plotOf` labels pure grass tiles (-1 outside); also reject wheat/wood planted
+/// outside them, except a tree on a tile whose crop growth chance in `dry` is zero (the engine's
+/// water probe never lets it spread). Empty means sealed. Does not assume a particular outline or
+/// sand graphic. `finiteWheat` additionally permits dry wheat on the marked tiles.
+std::string containedPlotsMismatch(const Map &, const Torus &, const std::vector<int> &plotOf,
+								   const Fertility::Field *dry = nullptr,
+								   const std::vector<unsigned char> *finiteWheat = nullptr);
 
 /// The widths of a farm's crop rows and water rows, measured across the rows in tiles.
 struct FarmRows
@@ -59,6 +89,58 @@ struct Farm
 	int plotX = -1, plotY = -1;
 };
 
+/// A low-harmonic wobble of one hill's contours: at each heading the bands shift in or out by up
+/// to `amplitude` tiles, the same shift for every band so their widths hold, ramped in past the
+/// summit's cap so the summit and its cap stay round. Three harmonics (two, three and five waves
+/// round the hill) with their own phases make a hill lobed rather than circular, and the ramp keeps
+/// the mapping monotone along every ray so no contour folds back on itself.
+struct ContourWobble
+{
+	double amplitude = 0;
+	double phase[3] = {0, 0, 0};
+	double at(double angle) const;
+};
+
+/// Contour rows around a central clearing, circular or wobbled. Widths are undermap CORNERS, as
+/// in layFarm; beaches and four-corner conversion consume crop ground at every boundary.
+/// The inner and outer caps contain eight-neighbour crop spread. Every radial crossing
+/// cuts BOTH crop and water rows, keeping circulation open after crops fill the bands.
+struct ContourFarmStyle
+{
+	FarmRows rows{10, 8};
+	double innerRadius = 16, cap = 2;
+	int bands = 1, crossings = 3;
+	double crossingHalfWidth = 2.5, phase = 0;
+	std::vector<ContourWobble> wobbles; // one per centre; empty (or none for a centre) is a circle
+	double outerRadius() const { return innerRadius + 2 * cap + bands * rows.period(); }
+	/// The farthest any band reaches from a centre once the wobble is counted.
+	double reach() const;
+};
+
+/// The radius the band arithmetic sees for a point `distance` from centre `centre` at `angle`:
+/// the distance itself inside the summit's cap and for a centre without a wobble, the distance
+/// shifted by the centre's wobble beyond it.
+double contourNominal(const ContourFarmStyle &, size_t centre, double distance, double angle);
+
+struct ContourFarm
+{
+	Farm farm;
+	// Crossing corners only, separate from the caps in farm.sand. Callers use these to
+	// preserve roads, score defenses or verify every crossing's finished walkable core.
+	std::vector<unsigned char> crossings;
+};
+
+/// Stamps complete concentric crop/water bands at each centre into an existing sketch.
+/// Central clearings and ground outside the outer cap are untouched. All centres use
+/// the same style, so one farm mask can be planted with per-region eligibility policies.
+/// Centres are whole-corner positions; distances wrap on the torus. The caller budgets
+/// non-overlapping outer discs (including their copies across a seam) and supplies
+/// positive row widths, cap, band count and crossing width. Crossings may be zero.
+/// No beach pass is run: compose other terrain first, then call layBeaches once.
+/// Like layFarm, this creates geometry only; plantFarm stocks the finished grass later.
+ContourFarm layContourFarm(TerrainSketch &, const Torus &, const std::vector<ShapePoint> &centres,
+						   const ContourFarmStyle &);
+
 /// A clearing in the middle of a farm for buildings: `width` by `height` tiles of pure grass with a
 /// ring of sand `ring` undermap vertices wide round it (two vertices make a full tile of sand), so
 /// no crop grows onto it and nothing but the clearing is buildable. 10 by 4 seats a swarm or an inn
@@ -72,6 +154,24 @@ struct FarmPlot
 /// stays unbroken.
 constexpr double kBridgeHalfWidth = 0.75;
 
+/// A farm's sand bridges: a line of sand every `spacing` tiles along its rows (0 lays none), over the
+/// water rows (`water`) and through the crop rows (`crops`). Over water a bridge is a crossing; through
+/// crops it is a lane no crop grows over, so a filled row is never a wall a worker must cut through or
+/// walk the length of. Both are on by default, on every map that lays farm rows, and each is a
+/// player control (waterCrossingsControl, cropCrossingsControl) so a map can be played with either off.
+struct FarmBridges
+{
+	int spacing = 0;
+	bool water = true, crops = true;
+	/// Whether a bridge line is laid over a vertex in a water row (`waterRow`) or a crop row.
+	bool crosses(bool waterRow) const { return spacing > 0 && (waterRow ? water : crops); }
+};
+
+/// The two toggles every farm-row map offers, both on by default: "water-crossings" switches the
+/// bridges over its water rows and "crop-crossings" the lanes through its crop rows.
+GeneratorControl waterCrossingsControl();
+GeneratorControl cropCrossingsControl();
+
 /// The least a field is opened by (growFarmFields): a beach and a wall each side fill any strip narrower
 /// than twice this. A map with a wider rim round its rows passes that rim instead.
 constexpr int kFarmOpening = 3;
@@ -81,19 +181,22 @@ constexpr int kFarmOpening = 3;
 /// margin of land and every crop row joins the rim at both ends. Then, in order:
 ///  - with `caps` (on), a ring of sand vertices just inside the rim, where the water rows' beaches begin,
 ///    closes every crop row, so its wheat and wood never spread out of the farm;
-///  - with a `bridgeSpacing`, a line of sand vertices crosses the whole farm inside its cap, water rows
-///    and crop rows alike, each that many tiles along the rows, starting at the origin: across a water
-///    row the tiles either side are no longer pure water, so workers walk across, two tiles wide, and
-///    across a crop row the line is a lane no crop grows over, so the farm is cut into bays a worker
-///    walks round without clearing anything;
+///  - with a `bridges.spacing`, a line of sand vertices crosses the whole farm inside its cap every that
+///    many tiles along the rows, starting at the origin: over the water (with `bridges.water`) the tiles
+///    either side are no longer pure water, so workers walk across, two tiles wide, and through the
+///    crops (with `bridges.crops`) the line is a lane no crop grows over, so the farm is cut into bays a
+///    worker walks round without clearing anything;
 ///  - with a `plot`, a building clearing is stamped at the region's most inland point, clear of every
 ///    water row by its sand ring and a vertex more and at least `rim` from the edge (a region too small
 ///    for it gets none); its grass always wins over a cap or bridge running through it.
 /// Stamps the water and the sand into `sketch`; lay beaches afterwards as usual, keeping the farm's sand
 /// (`Farm::sand`) out of any beach flood, as a sand road is.
+/// If requested, edgeDepthOut receives the computed distance to the region exterior (0 outside,
+/// -1 when there is no exterior). Reuse it for planting clearance instead of repeating the flood.
 Farm layFarm(TerrainSketch &sketch, const Torus &, const std::vector<unsigned char> &region,
 			 double angle, ShapePoint origin, int rim, const FarmRows &rows,
-			 const FarmPlot *plot = nullptr, int bridgeSpacing = 0, bool caps = true);
+			 const FarmPlot *plot = nullptr, const FarmBridges &bridges = {}, bool caps = true,
+			 std::vector<int> *edgeDepthOut = nullptr);
 
 /// Stamps one building plot with its top-left grass tile at (x0, y0) into a laid farm: the plot's
 /// grass tiles win over any water row, bridge or cap running through them, and its ring of sand
@@ -146,6 +249,45 @@ void clearFarmPlots(Map &, const Torus &, const std::vector<Farm> &);
 /// water. Returns how many tiles were planted.
 template <typename Eligible>
 int plantFarm(Map &map, const Torus &t, const Farm &farm, int wheat, int wood, Eligible eligible);
+
+/// A sealed oval garden against a shore or a wall (Central Quarry's isle, Hidden Oasis' basin): a
+/// holder's foothold of wheat and wood that can never spread over the building ground round it.
+/// The plot is an oval `stretch` times as long across `angle` as along it, centred on (x, y), which
+/// a caller puts on the rim of its ground so the rim's own beach or rock closes the far half. A line
+/// of sand corners `sealWidth` wide closes the near half, its radius swaying by up to `sway` tiles on
+/// `swayNoise` (a round plot with a ruled ring read as a bullseye).
+struct SealedOval
+{
+	double x = 0, y = 0, angle = 0, radius = 4, stretch = 1.6, sealWidth = 1.2, sway = 0.6;
+};
+/// Lays the seal into the sketch on the corners of `ground`, and returns the garden's tiles inside it.
+std::vector<unsigned char> stampSealedOval(TerrainSketch &, const Torus &,
+										   const std::vector<unsigned char> &ground, const SealedOval &,
+										   const std::vector<int> &swayNoise);
+/// Plants a sealed garden on the written map: up to `wheat` wheat (at most half its clear tiles) and
+/// `wood` wood (at most two fifths), dealt over the plot by noise rather than grown as two blobs.
+/// Draws a noise field from `cropsStream`, then one from `splitStream`. Returns {wheat, wood} tiles
+/// standing in the garden afterwards.
+std::pair<int, int> plantSealedGarden(Map &, const Torus &, GenerationContext &,
+									  const std::vector<unsigned char> &garden, int wheat, int wood,
+									  const std::string &cropsStream, const std::string &splitStream);
+
+/// Crops regrow only within the engine's square growth probe of water, and kits plant the most fertile
+/// ground first, so fields end in ruler-straight lines along the probe's square contours. This takes
+/// off every wheat and wood deposit on watered ground farther than a round distance from pure water,
+/// `leastReach` to `leastReach + reachSpread` tiles by `noise`, so fields round a pond are round.
+/// Tiles of `keep` (the fields round a home) are never touched. Returns how many it took.
+int trimFieldsBeyondWater(Map &, const Torus &, const std::vector<unsigned char> &keep,
+						  const Fertility::Field &watered, int leastReach, int reachSpread,
+						  const std::vector<int> &noise);
+/// Frays every field's edge: wheat and wood up to `depth` tiles in from a field's edge are taken off
+/// where `noise` says so, so every edge wanders. Never on `keep`. Returns how many it took.
+int frayFieldEdges(Map &, const Torus &, const std::vector<unsigned char> &keep, int depth,
+				   const std::vector<int> &noise);
+/// Where trails and routes cut through fields they leave one-tile strips of crop between two lanes. In
+/// two passes, every wheat or wood tile open (clear grass) on two opposite sides goes, except on
+/// `protect` (the kits). Returns how many went.
+int removeCropSlivers(Map &, const Torus &, const std::vector<unsigned char> &protect);
 } // namespace MapGeneration
 
 #include "Map.h"

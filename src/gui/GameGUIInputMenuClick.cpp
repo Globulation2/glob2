@@ -117,7 +117,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		const int y = YPOS_BASE_STAT + (globalContainer->isViewingGame() ? 15 : 0);
 		if (my >= y && my < y + 16)
-			measurementPage = !measurementPage;
+			measurementPage = (measurementPage + 1) % 3;
 	}
 	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->isViewingGame()) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->isViewingGame()))
 	{

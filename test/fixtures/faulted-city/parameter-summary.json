@@ -1,0 +1,552 @@
+{
+  "random": {
+    "count": 2000,
+    "failed": [],
+    "attempts": {
+      "1": 1959,
+      "3": 3,
+      "2": 37,
+      "6": 1
+    },
+    "plaza_variants": {
+      "twin-fountains": 657,
+      "arcade": 687,
+      "market": 656
+    },
+    "minimum_plaza_districts": 2,
+    "fairness_min": 0.7010515904436734,
+    "fairness_mean": 0.957
+  },
+  "shapes": {
+    "count": 288,
+    "failed": [],
+    "attempts": {
+      "1": 280,
+      "2": 7,
+      "3": 1
+    },
+    "plaza_variants": {
+      "market": 102,
+      "arcade": 186
+    },
+    "minimum_plaza_districts": 2,
+    "fairness_min": 0.8222211838297468,
+    "fairness_mean": 0.956
+  },
+  "controls": {
+    "count": 1032,
+    "failed": [],
+    "attempts": {
+      "1": 1001,
+      "2": 29,
+      "4": 2
+    },
+    "plaza_variants": {
+      "market": 93,
+      "arcade": 817,
+      "twin-fountains": 122
+    },
+    "minimum_plaza_districts": 2,
+    "fairness_min": 0.7965498979003072,
+    "fairness_mean": 0.953
+  },
+  "control_effects": {
+    "algae-amount": [
+      {
+        "value": 0,
+        "n": 8,
+        "deposits": 0
+      },
+      {
+        "value": 25,
+        "n": 8,
+        "deposits": 23.875
+      },
+      {
+        "value": 50,
+        "n": 8,
+        "deposits": 49
+      },
+      {
+        "value": 75,
+        "n": 8,
+        "deposits": 72.125
+      },
+      {
+        "value": 100,
+        "n": 8,
+        "deposits": 94
+      },
+      {
+        "value": 125,
+        "n": 8,
+        "deposits": 117.75
+      },
+      {
+        "value": 150,
+        "n": 8,
+        "deposits": 142.125
+      },
+      {
+        "value": 175,
+        "n": 8,
+        "deposits": 163.875
+      },
+      {
+        "value": 200,
+        "n": 8,
+        "deposits": 184.375
+      },
+      {
+        "value": 225,
+        "n": 8,
+        "deposits": 204.875
+      },
+      {
+        "value": 250,
+        "n": 8,
+        "deposits": 223.5
+      },
+      {
+        "value": 275,
+        "n": 8,
+        "deposits": 244.5
+      },
+      {
+        "value": 300,
+        "n": 8,
+        "deposits": 263.375
+      }
+    ],
+    "fault-displacement": [
+      {
+        "value": 4,
+        "n": 8,
+        "absolute_axis_shift": 2.359
+      },
+      {
+        "value": 5,
+        "n": 8,
+        "absolute_axis_shift": 2.562
+      },
+      {
+        "value": 6,
+        "n": 8,
+        "absolute_axis_shift": 3.281
+      },
+      {
+        "value": 7,
+        "n": 8,
+        "absolute_axis_shift": 3.734
+      },
+      {
+        "value": 8,
+        "n": 8,
+        "absolute_axis_shift": 3.969
+      },
+      {
+        "value": 9,
+        "n": 8,
+        "absolute_axis_shift": 5.125
+      },
+      {
+        "value": 10,
+        "n": 8,
+        "absolute_axis_shift": 5.625
+      },
+      {
+        "value": 11,
+        "n": 8,
+        "absolute_axis_shift": 5.531
+      },
+      {
+        "value": 12,
+        "n": 8,
+        "absolute_axis_shift": 6.391
+      },
+      {
+        "value": 13,
+        "n": 8,
+        "absolute_axis_shift": 7.812
+      },
+      {
+        "value": 14,
+        "n": 8,
+        "absolute_axis_shift": 7.969
+      }
+    ],
+    "fault-width": [
+      {
+        "value": 8,
+        "n": 8,
+        "fault_corners": 12723,
+        "sand_tiles": 13322.5
+      },
+      {
+        "value": 10,
+        "n": 8,
+        "fault_corners": 14821.75,
+        "sand_tiles": 15404.125
+      },
+      {
+        "value": 12,
+        "n": 8,
+        "fault_corners": 16878.5,
+        "sand_tiles": 17418
+      },
+      {
+        "value": 14,
+        "n": 8,
+        "fault_corners": 18893.25,
+        "sand_tiles": 19404.625
+      },
+      {
+        "value": 16,
+        "n": 8,
+        "fault_corners": 20862.5,
+        "sand_tiles": 21332.25
+      }
+    ],
+    "fruit-amount": [
+      {
+        "value": 0,
+        "n": 8,
+        "deposits": 0
+      },
+      {
+        "value": 25,
+        "n": 8,
+        "deposits": 0.75
+      },
+      {
+        "value": 50,
+        "n": 8,
+        "deposits": 1.625
+      },
+      {
+        "value": 75,
+        "n": 8,
+        "deposits": 2.5
+      },
+      {
+        "value": 100,
+        "n": 8,
+        "deposits": 3.875
+      },
+      {
+        "value": 125,
+        "n": 8,
+        "deposits": 4.5
+      },
+      {
+        "value": 150,
+        "n": 8,
+        "deposits": 5
+      },
+      {
+        "value": 175,
+        "n": 8,
+        "deposits": 5.875
+      },
+      {
+        "value": 200,
+        "n": 8,
+        "deposits": 6.625
+      },
+      {
+        "value": 225,
+        "n": 8,
+        "deposits": 7.5
+      },
+      {
+        "value": 250,
+        "n": 8,
+        "deposits": 8.5
+      },
+      {
+        "value": 275,
+        "n": 8,
+        "deposits": 10.5
+      },
+      {
+        "value": 300,
+        "n": 8,
+        "deposits": 12
+      }
+    ],
+    "ruin-density": [
+      {
+        "value": 20,
+        "n": 8,
+        "stone": 3513.5,
+        "ruin_blocks": 13
+      },
+      {
+        "value": 25,
+        "n": 8,
+        "stone": 3564.125,
+        "ruin_blocks": 17
+      },
+      {
+        "value": 30,
+        "n": 8,
+        "stone": 3600.5,
+        "ruin_blocks": 19.375
+      },
+      {
+        "value": 35,
+        "n": 8,
+        "stone": 3633.875,
+        "ruin_blocks": 23
+      },
+      {
+        "value": 40,
+        "n": 8,
+        "stone": 3675.875,
+        "ruin_blocks": 25.125
+      },
+      {
+        "value": 45,
+        "n": 8,
+        "stone": 3731.5,
+        "ruin_blocks": 28
+      },
+      {
+        "value": 50,
+        "n": 8,
+        "stone": 3765.75,
+        "ruin_blocks": 31.125
+      },
+      {
+        "value": 55,
+        "n": 8,
+        "stone": 3809.25,
+        "ruin_blocks": 35.375
+      },
+      {
+        "value": 60,
+        "n": 8,
+        "stone": 3833.5,
+        "ruin_blocks": 38.125
+      }
+    ],
+    "stone-amount": [
+      {
+        "value": 0,
+        "n": 8,
+        "deposits": 3580.875
+      },
+      {
+        "value": 25,
+        "n": 8,
+        "deposits": 3593.375
+      },
+      {
+        "value": 50,
+        "n": 8,
+        "deposits": 3604.75
+      },
+      {
+        "value": 75,
+        "n": 8,
+        "deposits": 3618
+      },
+      {
+        "value": 100,
+        "n": 8,
+        "deposits": 3633.875
+      },
+      {
+        "value": 125,
+        "n": 8,
+        "deposits": 3646.75
+      },
+      {
+        "value": 150,
+        "n": 8,
+        "deposits": 3658.625
+      },
+      {
+        "value": 175,
+        "n": 8,
+        "deposits": 3671.75
+      },
+      {
+        "value": 200,
+        "n": 8,
+        "deposits": 3684.125
+      },
+      {
+        "value": 225,
+        "n": 8,
+        "deposits": 3699.625
+      },
+      {
+        "value": 250,
+        "n": 8,
+        "deposits": 3713.25
+      },
+      {
+        "value": 275,
+        "n": 8,
+        "deposits": 3724.875
+      },
+      {
+        "value": 300,
+        "n": 8,
+        "deposits": 3737.875
+      }
+    ],
+    "surviving-junctions": [
+      {
+        "value": 0,
+        "n": 8,
+        "junctions_per_district": 2
+      },
+      {
+        "value": 1,
+        "n": 8,
+        "junctions_per_district": 3
+      },
+      {
+        "value": 2,
+        "n": 8,
+        "junctions_per_district": 4
+      }
+    ],
+    "wheat-amount": [
+      {
+        "value": 0,
+        "n": 8,
+        "deposits": 345.375
+      },
+      {
+        "value": 25,
+        "n": 8,
+        "deposits": 654.75
+      },
+      {
+        "value": 50,
+        "n": 8,
+        "deposits": 982.125
+      },
+      {
+        "value": 75,
+        "n": 8,
+        "deposits": 1312
+      },
+      {
+        "value": 100,
+        "n": 8,
+        "deposits": 1638.125
+      },
+      {
+        "value": 125,
+        "n": 8,
+        "deposits": 1775.625
+      },
+      {
+        "value": 150,
+        "n": 8,
+        "deposits": 1900
+      },
+      {
+        "value": 175,
+        "n": 8,
+        "deposits": 2044.125
+      },
+      {
+        "value": 200,
+        "n": 8,
+        "deposits": 2171.375
+      },
+      {
+        "value": 225,
+        "n": 8,
+        "deposits": 2308.125
+      },
+      {
+        "value": 250,
+        "n": 8,
+        "deposits": 2440
+      },
+      {
+        "value": 275,
+        "n": 8,
+        "deposits": 2577.375
+      },
+      {
+        "value": 300,
+        "n": 8,
+        "deposits": 2736.375
+      }
+    ],
+    "wood-amount": [
+      {
+        "value": 0,
+        "n": 8,
+        "deposits": 68
+      },
+      {
+        "value": 25,
+        "n": 8,
+        "deposits": 133.375
+      },
+      {
+        "value": 50,
+        "n": 8,
+        "deposits": 216.5
+      },
+      {
+        "value": 75,
+        "n": 8,
+        "deposits": 314.875
+      },
+      {
+        "value": 100,
+        "n": 8,
+        "deposits": 398
+      },
+      {
+        "value": 125,
+        "n": 8,
+        "deposits": 432
+      },
+      {
+        "value": 150,
+        "n": 8,
+        "deposits": 464.625
+      },
+      {
+        "value": 175,
+        "n": 8,
+        "deposits": 505.125
+      },
+      {
+        "value": 200,
+        "n": 8,
+        "deposits": 539
+      },
+      {
+        "value": 225,
+        "n": 8,
+        "deposits": 572.375
+      },
+      {
+        "value": 250,
+        "n": 8,
+        "deposits": 607
+      },
+      {
+        "value": 275,
+        "n": 8,
+        "deposits": 641.375
+      },
+      {
+        "value": 300,
+        "n": 8,
+        "deposits": 694.875
+      }
+    ]
+  }
+}

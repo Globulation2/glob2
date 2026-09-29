@@ -1,3 +1,9 @@
+[AI strategy]
+Tekoälytaktiikka
+[AIMaxima-Summary]
+Tasapainottaa kestävän kasvun ja koulutuksen ja kokoaa sitten armeijat aalloiksi.
+[AIMaxima-Profile]
+Perusstrategia: Käsittelee ruokaa, työläisiä, syntymiä, koulutusta, rakentamista ja taistelua kilpailevina tarpeina. Mitoittaa armeijansa osittain arvioidun vihollisvoiman perusteella ja pyrkii sitten saamaan sen tehokkaasti perille.\n\nTalous ja kehitys: Mitoittaa syntymät ruoan ja työvoiman mukaan, jättää vapaa-aikaa koulutukseen ja lopettaa ylimääräisten työläisten lisäämisen sotilastuotannon ollessa tarpeen. Kasvattaa koulutuskapasiteettia ja välttää liian suuren infrastruktuuriosan sulkemista parannusten vuoksi.\n\nTiedustelu ja päätökset: Arvioi vihollisjoukot näkyvistä yksiköistä ja muistetuista havainnoista sovitetun mallin avulla. Kohteisiin vaikuttavat arvo, etäisyys, tornit, suojaamattomat työläiset ja pitkäjänteisyys. Hedelmätehtävät tukevat ruoan monipuolisuutta ja loikkauksia.\n\nHyökkäys ja puolustus: Varaa sotureita koulutukseen ja puolustukseen, kokoaa sitten soveltuvat maajoukot omien ruokahuoltorakennusten lähelle ennen aaltojen lähettämistä. Reagoi paikallisiin puolustustarpeisiin ja arvioi yhdyskuntaan johtavia lähestymisreittejä.\n\nHyökkäysten pysähtyessä: Neljän peräkkäisen hyökkäysaallon perillepääsyn epäonnistumisen jälkeen siirtyy jatkuvasti täydennettyihin hyökkäyslippuihin. Myös maihinnousuhyökkäykset voivat käyttää jatkuvia vahvistuksia. Varamenettely ei ratkaise kaikkia esteitä ennen kokoontumisen syntymistä.\n\nVertailu muihin tekoälyihin: Yhdistää ruoan, koulutuksen, tiedustelutiedon ja joukkojen lähettämisen tiiviimmin. Cabino painottaa useisiin rakennuksiin hyökkäämistä; Maxima arvioitua tarvetta ja koottujen joukkojen perillepääsyä.\n\nVahvuudet ja heikkoudet: Ylläpitää kasvua ja sotilastappioiden korvaamista sopeutuen ruokapaineeseen ja havaittuihin uhkiin. Tarvitsee ruokaa, koulutuskapasiteettia ja avointa kokoontumistilaa; ruuhkat ja pitkät reitit voivat vaikeuttaa perillepääsyä.\n\nKokeiltava vastataktiikka: Taistele suojaamattomien vehnäalueiden, majatalojen ja parakkien hallinnasta ennen aaltojen kokoontumista. Pidä huollettu puolustusjoukko yhdessä ja häiritse vahvistusreittejä. Varaudu jatkuvaan paineeseen ensimmäisen aallon jälkeen.\n\nTiedustelu: Voima-arviot perustuvat havaintoihin ja havaintohistoriaan, eivät piilossa olevien vihollisjoukkojen kokonaismääriin.
 [%0 has left the game]
 %0 on poistunut pelistä.
 [%0 level %1]
@@ -51,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor pelaa varmistellen ja pärjää hyvin kartoilla, joissa on vähän resursseja. Vaikeustaso: normaali.
+Rakentaa ja kouluttaa sovittaen kasvun ruoansaantiin.
 [AICastor]
 Castor
 [AINicowar-Description]
-Nicowar pelaa aggressiivisesti, kasvaa nopeasti and hyökkää suurilla sotajoukkoilla vastustajiensa kimppuun. Vaikeustaso: haastava.
+Kasvattaa väestöä, kouluttaa sotureita ja hyökkää sitten.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ None ei tee mitään.
 [AINone]
 Ei mitään
 [AINumbi-Description]
-Numbi laajentaa nopeasti ja sulavasti. Vaikeustaso: aloittelija.
+Anteeksiantava vastustaja, joka silti laajentaa ja hyökkää.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - Ei hyökkää, mutta rakentaa valtavan tukikohdan ja yrittää voimakkaasti käännyttää joukkoja omalle puolelleen. Vaikeustaso: aloittelija.
+Laajentaa ja houkuttelee yksiköitä puolelleen tuottamatta sotureita.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Hyökkää nopeasti työntäen puolustamiseen painottavan pelaajan häviön partaalle. Vaikeustaso: normaali.
+Nopeita hyökkäyksiä, jotka koettelevat alkupelin puolustusta.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino johtaa puolustusta, hyökkäystä ja rakentamista itsenäisinä osastoina, jotka toimivat yhden suunnitelman mukaan: kasvaa nopeasti ja hyökkää suurilla sotajoukoilla vastustajiensa kimppuun. Vaikeustaso: haastava.
+Vahva rakentaja, joka lähettää koulutettuja hyökkäysjoukkoja.
 [AICabino]
 Cabino
 [Alga]
@@ -1223,9 +1229,9 @@ Nopeus: 1x (moninpeli)
 [game speed help]
 Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
 [AICortex-Description]
-Cortex laajenee kohti uusia vehnäpeltoja ja lähettää soturiryhmiä taisteluun majatalojen ja sairaaloiden tukemana lähellä etulinjaa. Keskivaikeus. Kokeellinen.
+Koottuja soturiaaltoja, joita ruoka ja hoito tukevat.
 [AIMaxima-Description]
-Maxima kasvattaa hyvin ruokitun siirtokunnan, partioi jatkuvasti ja hyökkää tauotta jokaisella soturilla, jonka se voi irrottaa. Vaikea.
+Tiedustelee, kehittää ruoansaantia ja kokoaa soturiaaltoja.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1241,37 +1247,37 @@ Yhä töissä: %0
 [AI strategy & counterplay]
 Tekoälyn strategia ja vastapeli
 [AICastor-Profile]
-Strategia: Laajentuu varovasti ja toimii hyvin kartoilla, joissa on vähän resursseja.\n\nVahvuudet: Rajoitettu laajennus on tehokas peleissä, joissa on niukkoja resursseja.\n\nEhdotettu vastapeli: Miehitä alue aikaisin. Älä oleta, että resurssien puute heikentää tätä tekoälyä.
+Perusstrategia: Panostaa tuottavaan yhdyskuntaan ja teknologiaan ennen suuria hyökkäyksiä. Tärkeysjärjestykseen asetetut rakennushankkeet kehittävät asutusta; kehitys, sotilaallinen infrastruktuuri ja aika lisäävät sotavalmiutta.\n\nTalous ja kehitys: Tutkii kosteutta, vehnän kasvua, esteitä ja työläisten ulottuvuutta. Hallitsee ruokahuollon laajentamista, parannuksia ja puolustusta tuotannon rinnalla.\n\nHyökkäys ja puolustus: Arvioi terveiden soturien hyökkäysvoimaa ja aloittaa iskut voima- tai aikaehtojen täyttyessä. Suosii aiemmin nähtyjä, saavutettavia rakennuksia, erityisesti parakkeja ja kouluja, ja siirtää hyökkäyslippuja kohti arvokkaita kohteita.\n\nVertailu muihin tekoälyihin: Harkitsee maastoa ja kohteiden arvoa tarkemmin kuin Numbi. On kärsivällisempi kuin Warrush ja vaihtaa varhaisen painostuksen kehittyneeseen tukikohtaan ja vahvempiin joukkoihin.\n\nVahvuudet ja heikkoudet: Laaja infrastruktuurin suunnittelu ja arvokkaat sotilaskohteet antavat iskuille tarkoituksen. Valmistelu vie aikaa, joten nopeammat vastustajat voivat kiistää resurssien hallinnan ennen pääjoukon valmistumista.\n\nKokeiltava vastataktiikka: Estä laajentumista varhain. Suojaa parakit ja koulut ruokahuollon ohella ja pidä reserviä hyökätessäsi sen kehittyneeseen asutukseen.
 [AICastor-Summary]
-Varovainen laajentaminen; toimii hyvin niukoilla resursseilla.
+Kehittää linnoitettua yhdyskuntaa ja iskee sitten sotilas- ja tiederakennuksiin.
 [AICortex-Profile]
-Strategia: Hallitsee ruokavarastoja, laajenee kohti uusia vehnäpeltoja ja kokoaa peräkkäisiä soturiryhmiä. Majatalot ja sairaalat lähellä etulinjaa tukevat hyökkäyksiä kaukana tukikohdasta.\n\nVahvuudet: Lähettää vahvistuksia yhdessä, ylläpitää sotilaallista painetta ja reagoi ruokapulaan.\n\nEhdotettu vastapeli: Taistele uusien vehnäpeltojen hallinnasta ja hyökkää sen tukirakennuksiin lähellä etulinjaa. Hyökkää ennen kuin sen soturiryhmät ovat valmiita.\n\nKokeellinen tekoäly. Keskitaso; vastapeliehdotukset eivät ole vertailutesteihin perustuvia arvioita.
+Perusstrategia: Kasvattaa toimivaa taloutta tilanteeseen reagoivilla prioriteeteilla ja käyttää ylimääräisen työvoiman ruokaan, teknologiaan ja sotilaalliseen painostukseen. Tavallinen toimintamalli on sääntöpohjainen; opittuihin malleihin perustuvat kokeilut vaativat erilliset asetukset.\n\nTalous ja kehitys: Säätää työläistuotantoa miehitystarpeen mukaan ja pitää syntymät käynnissä. Ruokavaikeudet vähentävät laajentumis- ja teknologiamenoja. Lisää uintia, kun vesireiteistä on olennaista hyötyä.\n\nHyökkäys ja puolustus: Valmistelee hyökkäyksiä havaitun vihollisteknologian ja käytettävissä olevien joukkojen mukaan. Vesistöjen ylitys vaatii uintitaitoisia sotureita. Tukee pitkiä sotaretkiä eteen rakennetuilla majataloilla ja sairaaloilla ja voi koota joukkoja ennen etenemistä.\n\nSitoutuminen ja hätätilanteet: Jatkaa hyökkäystä pienestä häirinnästä huolimatta sen sijaan, että marssisi toistuvasti kotiin. Vakavat iskut voivat kutsua puolustajat takaisin. Varhainen hätätilanne voi käynnistää pelkän soturituotannon ja sairaalan rakentamisen; nälänhätä voi laukaista pienemmän epätoivoisen hyökkäyksen.\n\nVertailu muihin tekoälyihin: Huomioi etulinjan tuen paremmin kuin Warrush. Maxima menee pidemmälle kestävien syntymien, koulutuksen ja joukkojen lähettämisen mitoituksessa suhteessa arvioituun vihollisvoimaan.\n\nVahvuudet ja heikkoudet: Yhdistää painostuksen ruokaan, hoitoon ja saavutettavuuteen. Etulinjan infrastruktuuri tarvitsee jatkuvaa huoltoa, ja syntymien jatkuminen voi rasittaa niukkaa ruokahuoltoa. Hätätilanteiden prioriteetit pakottavat valitsemaan kasvun ja selviytymisen välillä.\n\nKokeiltava vastataktiikka: Taistele etulinjan majatalojen, sairaaloiden ja vehnäalueiden hallinnasta. Pidä puolustajat yhdessä sen etenemistä vastaan; pieni häirintä ei välttämättä saa sitä vetäytymään.\n\nTiedustelu: Käyttää löydettyjä vihollisrakennuksia ja havaittuja vihollisjoukkoja.
 [AICortex-Summary]
-Laajentuu ruokavarat mielessään ja tukee hyökkääviä joukkojaan.
+Tukee päättäväisiä sotilaallisia etenemisiä etulinjan ruoalla ja hoidolla.
 [AINicowar-Profile]
-Strategia: Laajenee nopeasti ja hyökkää vastustajia vastaan valtavilla armeijoilla.\n\nVahvuudet: Nopea laajeneminen tukee aggressiivisia sotilaallisia hyökkäyksiä.\n\nEhdotettu vastapeli: Estä sen laajeneminen. Käytä maastoa vähentääksesi kerralla taistelevien vihollisjoukkojen määrää.
+Perusstrategia: Yhdistää kasvun, koulutuksen, parannukset ja sodankäynnin päällekkäisten ehtojen avulla. Voi hyökätä laajentuessaan ja siirtää talouden painopisteen toipumiseen ruokahuollon pettäessä.\n\nAvaus: Mukana toimitettu aggressiivinen profiili aloittaa sotavalmistelut viiden yksikön kokonaismäärällä ja sallii sodan viidellä soturilla, mukaan lukien nollatason soturit. Tavoittelee kolmea hyökkäyslippua, joista kullekin määrätään viisi soturia. Omat strategiatiedostot voivat muuttaa näitä rajoja.\n\nTalous ja kehitys: Laajentaa ruokahuoltoa ja syntymäkapasiteettia, kouluttaa työläisiä, kehittää uintia ja liikkumista sekä parantaa rakennuksia. Säätää ruokahuollon miehitystä, reagoi nälkään ja hankkii hedelmiä.\n\nHyökkäys ja puolustus: Valitsee saavutettavista vihollisrakennuksista hyökkäyskohteita satunnaisesti. Voi avata resurssien tukkimia reittejä keräämislipuilla. Puolustusliput suojaavat uhattujen yksiköiden ja rakennusten ryhmiä. Myöhemmin maahyökkäykseen koulutetut tiedustelijat iskevät vihollisyksikköjen ryhmiin.\n\nVertailu muihin tekoälyihin: Jakaa Warrush-tekoälyn varhaisen aggressiivisuuden mutta jatkaa monipuolisemmin. Toisin kuin Cabino, ei suosi johdonmukaisesti sairaaloita ja majataloja.\n\nVahvuudet ja heikkoudet: Laaja taktiikkavalikoima yhdistää alkupelin painostuksen jatkuvaan kehitykseen. Satunnaiset kohteet voivat kuluttaa voimia vähäarvoisiin rakennuksiin. Sen kynnysarvot eivät korvaa Maxima-tekoälyn tarkkaa arviota vastustajan taisteluvoimasta.\n\nKokeiltava vastataktiikka: Varaudu varhaiseen hyökkäykseen. Suojaa ruokahuolto ja työläiset, estä laajentumista ja valmistaudu tiedustelijaiskuihin, jos se saavuttaa edistyneen koulutuksen.
 [AINicowar-Summary]
-Laajenee nopeasti ja rakentaa suuria armeijoita aggressiivisia hyökkäyksiä varten.
+Varhainen rynnäkkö, jota tukevat viljely, parannukset, puolustus ja tiedustelijaiskut.
 [AINone-Profile]
 Strategia: AI ei anna komentoja.\n\nVahvuudet: Ennustettava, ei-aktiivinen vastustaja kokeissa.\n\nHeikkoudet: Ei laajene tai mukaudu.
 [AINone-Summary]
 Toimeton siirtokunta kokeiluja varten.
 [AINumbi-Profile]
-Strategia: Laajenee nopeasti, mutta pienessä mittakaavassa. Helpompi vastustaja siirtokunnan hallinnan harjoitteluun.\n\nVahvuudet: Voit oppia sekä talouden hallintaa että taistelua.\n\nEhdotettu vastapeli: Kehitä vahvempi talous ja kouluta armeijasi ennen hyökkäämistä.
+Perusstrategia: Kehittää ensin ruokahuoltoa ja kasvattaa väestöä, lisää sitten hoitoa, tiedettä ja koulutusta ja siirtyy lopuksi sotimaan. Päävaiheet etenevät ajan, eivät vastustajan kehityksen mukaan.\n\nTalous ja kehitys: Mitoittaa rakennustarpeet väestön mukaan ja arvioi lähistön vehnävaroja. Myöhemmissä vaiheissa parannukset, puolustus ja laajentuminen tukevat kasvavaa armeijaa.\n\nHyökkäys ja puolustus: Hyökkää, kun terveitä taistelijoita on tarpeeksi tai odotusaika päättyy. Asettaa sotalippuja satunnaisesti valittuihin vihollisrakennuksiin. Taisteluvoiman heikentyessä liikaa poistaa hyökkäysliput ja nostaa seuraavan yrityksen kynnysarvoja.\n\nVertailu muihin tekoälyihin: Ennalta arvattavampi kuin Castor tai Nicowar. Castor huomioi maaston ja kohteiden arvon tarkemmin; Nicowar aloittaa painostuksen paljon aikaisemmin.\n\nVahvuudet ja heikkoudet: Monipuolinen tukirakentaminen voi tehdä siitä vaarallisen, jos sen annetaan kehittyä rauhassa, mutta aikataulu ei välttämättä vastaa taistelutilannetta. Yksinkertainen kohteenvalinta ja tappioiden jälkeiset pidemmät tauot helpottavat hyökkäysten ennakointia.\n\nKokeiltava vastataktiikka: Painosta ennen sen sotavaihetta. Kehitä ruokahuoltoa ja koulutusta hyökkäysten taustalla ja hyödynnä tauko torjutun hyökkäyksen jälkeen.\n\nTiedustelu: Hyökkäysrutiini lukee vihollisrakennusten sijainnit suoraan tarkistamatta näkyvyyttä.
 [AINumbi-Summary]
-Nopea laajennus pienessä mittakaavassa.
+Kasvattaa yhdyskuntaa vähitellen aikataulun mukaan ja hyökkää sitten ylivoimalla.
 [AIEcono-Profile]
-Strategia: Ei hyökkää, vaan rakentaa valtavia tukikohtia ja muuntaa aktiivisesti vihollisen yksiköitä omalle puolelleen.\n\nVahvuudet: Laajentuminen ja yksiköiden muuntaminen uhkaavat vastustajia ilman suoria hyökkäyksiä.\n\nEhdotettu vastapeli: Kehitä siirtokuntaasi ajoissa ja vältä yksiköiden lähettämistä sinne, missä vihollinen voi muuttaa ne.
+Perusstrategia: Tuottaa työläisiä ja tiedustelijoita, laajentaa taloutta ja houkuttelee vihollisyksiköitä ruoalla ja hedelmillä. Ei harjoita tavanomaista soturihyökkäystä.\n\nTalous ja kehitys: Rakentaa majataloja ja pesiä vehnän lähelle, lisää koulutusta ja liikkumistaitoja sekä parantaa infrastruktuuria. Seuraa ruokavaroja ja korvaa vanhoja majataloja ja pesiä niiden resurssitilanteen heikentyessä.\n\nViljely ja loikkaukset: Suojaa uusiutuvaa vehnää ja puustoa veden lähellä. Lähettää tiedustelijoita hedelmäpaikoille ja vihollisyhdyskuntiin sekä mainostaa ruokaa vihollisille hankkiessaan hedelmiä. Parempi ruoka ja hedelmät voivat houkutella loikkareita.\n\nVertailu muihin tekoälyihin: Talouteen erikoistunein vastustaja. Cabino ja Maxima tavoittelevat myös hedelmiä mutta yhdistävät ne armeijoihin.\n\nVahvuudet ja heikkoudet: Voi kasvaa sotilaallisten vastustajien uuvuttaessa toisensa, ja loikkaukset tarjoavat toisen kilpailukeinon. Ei tuota sotureita jatkuvan hyökkäyksen torjumiseen. Ruoka, hedelmät, maantiede ja voittoehdot vaikuttavat vahvasti mahdollisuuksiin.\n\nKokeiltava vastataktiikka: Painosta suojaamattomia laajennuksia. Pidä omat majatalot ruoassa ja hedelmissä säilyttääksesi yksikkösi. Älä uuvuta yhdyskuntaasi turhissa taisteluissa sen kasvaessa.
 [AIEcono-Summary]
-Valtavat tukikohdat ja muunnos hyökkäysten sijaan.
+Kasvattaa ruokarikasta yhdyskuntaa ja kilpailee loikkareista tuottamatta sotureita.
 [AIWarrush-Profile]
-Strategia: Hyökkää aikaisin ja voimakkaasti, ennen kuin vastustajat ovat valmistautuneet.\n\nVahvuudet: Käyttää hyväkseen puolustamatonta laajentumista ja hidasta sotilaallista valmistautumista.\n\nEhdotettu vastapeli: Selviydy ensimmäisestä hyökkäyksestä pitäen samalla taloutesi toiminnassa ja aloita vastahyökkäys.
+Perusstrategia: Hyökkää ennen kuin vastustajat ehtivät kehittää pitkälle talouttaan tai teknologiaansa. Odottaa taistelun ratkaisevan pelin ennen laajan tukiverkoston tarvetta.\n\nTalous ja kehitys: Kun kuusi yksikköä osaa kerätä resursseja, asettaa tuotantosuhteeksi neljä työläistä, yhden tiedustelijan ja kolme soturia. Lisää parakkeja koulutuspaikkojen täyttyessä mutta rajoittaa uusia majataloja. Muu rakentaminen painottuu usein sairaaloihin ja liikkumiskoulutukseen.\n\nHyökkäys ja puolustus: Merkitsee löydetyt vihollisrakennukset vartioalueiksi, jotta soturit painostavat jatkuvasti. Ei odota huolellisesti koottua hyökkäysaaltoa. Raivaa tukkivaa puustoa ja suojaa osan uusiutuvista resursseista.\n\nHedelmäpolitiikka: Kieltää hedelmien keruun, välttää niiden aiheuttamat panssarirangaistukset eikä käytä Econo-tekoälyn loikkauksiin perustuvaa strategiaa.\n\nVertailu muihin tekoälyihin: Panostaa alkupelin painostukseen enemmän kuin Numbi tai Castor. Nicowar aloittaa myös aggressiivisesti mutta jatkaa monipuolisemmilla parannuksilla ja taktiikoilla.\n\nVahvuudet ja heikkoudet: Rankaisee hitaista avauksista ja pakottaa varhaisiin puolustusmenoihin. Vähäinen järjestelmällinen parantaminen ja niukka ruokahuolto tekevät pysähtyneestä hyökkäyksestä kalliin. Maasto ja pitkät matkat voivat syödä alkuetua.\n\nKokeiltava vastataktiikka: Suojaa majatalot ja pesät varhain. Korvaa myös menetetyt työläiset, älä vain puolustajia, kehitä koulutusta ja iske takaisin rynnäkön hiipuessa.\n\nTiedustelu: Alun tiedusteluliput käyttävät vihollisten lähtöpaikkoja suoraan. Myöhempi hyökkäysalueiden sijoittaminen edellyttää näkyvyyttä.
 [AIWarrush-Summary]
-Nopeat hyökkäykset, jotka testaavat varhaista puolustustasi.
+Painostaa varhain sotureilla tarkoituksellisen niukan tukitalouden turvin.
 [AICabino-Profile]
-Ydinstrategia: itsenäisten erikoisosastojen (puolustus, hyökkäys, rakentaminen, päivitykset, yksikönhallinta) kabinetti, joka toimii omasta aloitteestaan mutta pyrkii yhteen suunnitelmaan: kasvaa nopeasti ja lähettää sitten valtavia armeijoita vastustajia vastaan.\n\nVahvuudet: nopea kasvu tukee hyökkäävää sotilaallista painetta; itsenäiset osastot reagoivat nopeasti paikallisiin uhkiin odottamatta keskitettyä suunnitelmaa.\n\nVastapeli: haasta sen kasvu ajoissa ja käytä maastoa rajoittaaksesi kuinka moni sen joukoista voi taistella kerralla.
+Perusstrategia: Jakaa yksikkötuotannon rakentamisen, parannusten, puolustuksen, hyökkäysten ja tiedustelun kesken. Erilliset hallintamoduulit pyytävät ja varaavat yksiköitä kehittäen taloutta ja armeijaa rinnakkain.\n\nTalous ja kehitys: Rakentaa ja parantaa monipuolista asutusta, hallitsee majatalojen ja tornien miehitystä, raivaa rakennusten ympäristöä ja suojaa uusiutuvia resursseja. Tiedustelee hedelmiä ja mainostaa ruokaa kilpaillakseen loikkareista.\n\nHyökkäys ja puolustus: Valitsee vihollisen ja asettaa sairaalat etusijalle, sitten majatalot ja parakit. Tukee enintään neljää hyökkäystä ja määrää tavallisesti 8–20 soturia kohdetta kohti saatavuuden ja läheisten vihollisten perusteella. Käyttää erillisiä puolustuslippuja uhattujen rakennusten ympärillä.\n\nKoulutus: Hyökkääminen vaatii tarpeeksi sopivia sotureita ja valmiin parakin, mutta ei korkeinta teknologiaa. Jatkuvat parannukset ja koulutus vahvistavat myöhempiä hyökkäyksiä.\n\nVertailu muihin tekoälyihin: Tuhoaa tukirakennuksia tarkoitushakuisemmin kuin Nicowar. Hajauttaa hyökkäyksiä enemmän kuin Maxima-tekoälyn kootut aallot ja hallitsee kilpailevia tarpeita yksikkövarauksilla.\n\nVahvuudet ja heikkoudet: Yhdistää kasvun, koulutuksen, puolustuksen ja useita hyökkäyksiä. Ruoan ja hoidon tuhoaminen voi heikentää koko yhdyskuntaa. Satunnainen vastustajanvalinta ja kiinteät rakennusprioriteetit voivat hukata tilaisuuksia; useat hyökkäykset voivat hajottaa voimat.\n\nKokeiltava vastataktiikka: Puolusta sairaaloita ja majataloja. Painosta suojaamattomia laajennuksia ja keskitä puolustajat yksittäisiä hyökkäyksiä vastaan. Vahingoita ruokahuoltoa tai koulutusta ennen kuin se pystyy ylläpitämään useita rintamia.\n\nTiedustelu: Hyökkäyskohteiden valitsin lukee vihollisrakennusten luetteloita ilman nimenomaista näkyvyystarkistusta. Osa talousvertailuista käyttää vihollistilastoja suoraan.
 [AICabino-Summary]
-Itsenäiset osastot, jotka tekevät yhteistyötä nopean kasvun ja valtavien armeijoiden eteen.
+Yhdistää yhdyskunnan kasvun ja koulutetut hyökkäykset; iskee ensin hoitoon ja ruokaan.
 [Algae]
 Levä
 [Alliances]
@@ -1980,6 +1986,10 @@ Polun leveys
 Muuri mutkien välissä
 [Farm building plots]
 Rakennuspaikat tiloilla
+[Sand bridges over water]
+Hiekkasillat veden yli
+[Sand lanes through crops]
+Hiekkapolut viljelysten läpi
 [Carousels need at least two colonies.]
 Karuselli tarvitsee vähintään kaksi siirtokuntaa.
 [Switchbacks need at least two colonies.]
@@ -2182,24 +2192,22 @@ Satunnaista parametrit
 Aloituksen laatu
 [Fairness]
 Tasapuolisuus
-[Score]
-Pisteet
-[Weight]
-Paino
+[Fitness]
+Vahvuus
+[Win chance]
+Voittomahdollisuus
+[Coefficient]
+Kerroin
+[Average]
+Keskiarvo
+[Fitted on games:]
+Sovitettu peleihin:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Jokaisen siirtokunnan aloitus mitataan valmiilla kartalla, ja tuhansiin tasaväkisten vastustajien peleihin sovitettu malli muuttaa mittaukset vahvuudeksi. Vahvuus kertoo, kuinka todennäköisesti siirtokunta voittaa. Tasapuolisuus kertoo, kuinka tasaisesti nämä mahdollisuudet jakautuvat: 1, kun jokaisella siirtokunnalla on yhtä hyvä mahdollisuus voittaa, 0, kun yksi siirtokunta ottaisi koko kartan.
 [Worst]
 Heikoin
 [Best]
 Paras
-[Fertility]
-Hedelmällisyys
-[Deposits]
-Esiintymät
-[Room]
-Tila
-[Isolation]
-Eristyneisyys
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Jokaisen yhdyskunnan aloitus mitataan valmiilta kartalta: matka vehnän ja puun luo, kuinka hyvin sen maa kasvaa takaisin, ulottuvilla olevat esiintymät ja rakennuspaikat sekä etäisyys kilpailijoihin. Jokainen tekijä saa pisteet 0–1 kiinteää mittapuuta vasten, kokonaisarvo painottaa ne, tasapuolisuus on heikoimman yhdyskunnan kokonaisarvo jaettuna parhaan arvolla, ja pisteet ovat heikoin kokonaisarvo kerrottuna tasapuolisuudella.
 [Map preview controls]
 Vedä reunojen yli. Zoomaa rullalla. Palauta näkymä oikealla tai kaksoisnapsautuksella.
 [Map preview drag help]
@@ -2257,9 +2265,9 @@ Ruokaa/min
 [Stats occupancy]
 Ruokailu / hoito
 [Stats page one]
-Tilastot 1/2 >
+Tilastot 1/3 >
 [Stats page two]
-Tilastot 2/2 >
+Tilastot 2/3 >
 [Stats next page]
 Sivu (P)
 [Map preview choose another]
@@ -2382,3 +2390,1001 @@ Pois (ei ajastinta)
 60 minuuttia
 [Sudden-death timer]
 Äkkikuoleman ajastin
+[Stats page three]
+Tilastot 3/3 >
+[Stats blocked units]
+Yksiköt S/C
+[Stats blocked buildings]
+Rakennuksia S/C
+[Stats blocked buildings swim]
+Uinti S/C
+[Stats current blocked units]
+Yksiköt C
+[Stats current blocked buildings]
+Rakennuksia C
+[Stats growth global]
+Resurssit +
+[Stats growth new tiles]
+Resurssit +#
+[Stats growth reductions]
+Resurssit -
+[Stats growth per minute]
+Vilja +/min
+[Stats growth near 8]
+Resurssit + <=8
+[Stats growth near 16]
+Resurssit + <=16
+[Stats growth near 32]
+Resurssit + <=32
+[Stats low HP 25]
+HP <=25%
+[Stats low HP 50]
+HP <=50%
+[Stats low HP 75]
+HP <=75%
+[Stats low food 25]
+Ruoka <=25%
+[Stats low food 50]
+Ruoka <=50%
+[Stats low food 75]
+Ruoka <=75%
+[Stats structural units]
+Yksiköt S
+[Stats structural buildings]
+Rakennuksia S
+[Stats low HP ranges]
+HP: <=25/50/75%
+[Stats low food ranges]
+Ruoka: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emojimerkki
+[Smiley]
+Hymyilevät kasvot
+[Sad face]
+Surulliset kasvot
+[Winking face]
+Silmänisku
+[Surprised face]
+Yllättyneet kasvot
+[Heart eyes]
+Sydänsilmät
+[Sunglasses]
+Aurinkolasit
+[Heart]
+Sydän
+[Star]
+Tähti
+[Neutral face]
+Neutraalit kasvot
+[Sleeping face]
+Nukkuvat kasvot
+[Grinning face]
+Virnistävät kasvot
+[Kissing face]
+Suukottavat kasvot
+[Angry face]
+Vihaiset kasvot
+[Tongue out]
+Kieli ulkona
+[Skull]
+Pääkallo
+[Flower]
+Kukka
+[Four-leaf clover]
+Neliapila
+[Teardrop]
+Pisara
+[Cloud]
+Pilvi
+[Gem]
+Jalokivi
+[Apple]
+Omena
+[Speech bubble]
+Puhekupla
+[Shield]
+Kilpi
+[Emoji style]
+Emojin tyyli
+[Outline]
+Ääriviiva
+[Filled]
+Täytetty
+[Emoji terrain]
+Emojin maasto
+[Regular]
+Tavallinen
+[Inverse]
+Käänteinen
+[Crossings]
+Ylitykset
+[Forts]
+Linnoitukset
+[Gate width]
+Portin leveys
+[Braided Delta]
+Haarautuva suisto
+[Braid count]
+Jokihaarojen määrä
+[Rejoining frequency]
+Yhtymiskohtien tiheys
+[Crossing spacing]
+Ylityspaikkojen väli
+[Breachable highlands]
+Murrettava ylänkö
+[Ridge depth]
+Harjanteiden paksuus
+[Extra open passes]
+Ylimääräiset avoimet solat
+[Wooded saddles]
+Metsäiset solat
+[Hedgerow Country]
+Pensasaitamaaseutu
+[Field size]
+Peltojen koko
+[Hedge thickness]
+Pensasaitojen paksuus
+[Existing gateways]
+Olemassa olevat kulkuaukot
+[Wooded boundary share]
+Puustoisten rajojen osuus
+[The Glacis]
+Glasiisi
+[Allotments]
+Siirtolapuutarhat
+[Caravanserai]
+Karavaaniseralji
+[Mixed]
+Sekalainen
+[Fort size]
+Linnoituksen koko
+[Bastions]
+Bastionit
+[Four-pointed]
+Nelisakarainen
+[Five-pointed]
+Viisisakarainen
+[Six-pointed]
+Kuusisakarainen
+[Glacis width]
+Glasiksen leveys
+[Gates]
+Portit
+[Site size]
+Palstojen koko
+[Plot width]
+Penkkien leveys
+[Plot mix]
+Penkkien sekoitus
+[Tended]
+Hoidetut
+[Overgrown]
+Villiintyneet
+[Commons]
+Yhteismaat
+[Few]
+Vähän
+[Some]
+Joitakin
+[Home oasis size]
+Kotikeitaan koko
+[Caravanserais per colony]
+Karavaaniseraljeja siirtokuntaa kohti
+[Desert]
+Aavikko
+[Open erg]
+Avoin erg
+[Dunes and mesas]
+Dyynit ja mesat
+[Canyon country]
+Kanjonimaa
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Linnoitus ei ulotu kahlaamoonsa; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[A wall would stand on a beach; try another seed.]
+Muuri seisoisi rannalla; kokeile toista siementä.
+[The fort is too small for its gardens; raise Fort size.]
+Linnoitus on liian pieni puutarhoilleen; kasvata linnoituksen kokoa.
+[The home oasis is too small; raise Home oasis size.]
+Kotikeidas on liian pieni; kasvata kotikeitaan kokoa.
+[Braided river]
+Palmikoiva joki
+[Braid width]
+Palmikon leveys
+[Bar size]
+Särkkien koko
+[Extra riffles]
+Lisäkahlaamot
+[Moraine hummocks]
+Moreenikumpareet
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Palmikko jättää kotialueille liian vähän terassia; käytä suurempaa karttaa tai kapeampaa palmikkoa.
+[The map is too narrow across for a braid; use a bigger map.]
+Kartta on poikittain liian kapea palmikolle; käytä suurempaa karttaa.
+[Drumlin field]
+Drumliinikenttä
+[Drumlin spacing]
+Drumliinien väli
+[Drumlin length]
+Drumliinien pituus
+[Water gap]
+Vesikaista
+[Esker loops]
+Harjulenkit
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Harjut eivät yhdistäneet kaikkia drumliineja; käytä kapeampaa vesikaistaa tai suurempaa karttaa.
+[Continents]
+Mantereet
+[Continent]
+Manner
+[North America]
+Pohjois-Amerikka
+[South America]
+Etelä-Amerikka
+[Africa]
+Afrikka
+[Europe]
+Eurooppa
+[Asia]
+Aasia
+[Oceania]
+Oseania
+[Orientation]
+Suunta
+[Turn to fit]
+Käännä tarvittaessa
+[Upright]
+Kääntämättä
+[Mountain ranges]
+Vuoristot
+[Great rivers]
+Suuret joet
+[Islets]
+Luodot
+[Oases]
+Keitaat
+[The world atlas has no such continent.]
+Maailmankartastossa ei ole sellaista mannerta.
+[The map is too small to hold a continent.]
+Kartta on liian pieni mantereelle.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Tällä mantereella ei ole tilaa näin monelle siirtokunnalle tällä karttakoolla; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Savannah]
+Savanni
+[Watering holes]
+Juomapaikat
+[Dry patches]
+Kuivat alueet
+[Sparse]
+Harvassa
+[Normal]
+Normaali
+[Many]
+Paljon
+[Rice terraces]
+Riisiterassit
+[Unoccupied hills]
+Asumattomat kukkulat
+[Hill radius]
+Kukkulan säde
+[Contour band width]
+Korkeusvyöhykkeiden leveys
+[Stairs per hill]
+Portaita kukkulalla
+[Valley river]
+Laakson joki
+[Hills]
+Kukkulat
+[Hillsides]
+Rinteet
+[Terraces per slope]
+Terasseja rinnettä kohden
+[Waviness]
+Aaltoilevuus
+[Stair spacing]
+Portaiden väli
+[Locust]
+Heinäsirkat
+[Plantations]
+Plantaasit
+[Plot size]
+Rakennuspaikan koko
+[Farm width]
+Pellon leveys
+[Islands per colony]
+Saaria siirtokuntaa kohden
+[Outpost inns]
+Etuvartiomajatalot
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Saaret ovat liian pieniä rakennuspaikoilleen; käytä suurempaa karttaa, pienempää rakennuspaikkaa tai vähemmän siirtokuntia.
+[Sierpiński Gardens]
+Sierpińskin puutarhat
+[Hilbert River]
+Hilbertin joki
+[Maximum nesting]
+Suurin sisäkkäisyys
+[Minimum terminal district side]
+Päätealueen pienin sivu
+[Major crossing pairs]
+Pääylityspaikkojen parit
+[Maximum fold depth]
+Suurin taitossyvyys
+[Minimum land spacing]
+Maa-alueen pienin väli
+[Optional local crossings per parent]
+Valinnaiset paikalliset ylitykset pääaluetta kohti
+[Optional major shortcuts]
+Valinnaiset suuret oikoreitit
+[Lava shield]
+Laavakilpi
+[Lava tongues]
+Laavakielekkeet
+[Long tongues]
+Pitkät kielekkeet
+[Crater rim width]
+Kraatterin reunan leveys
+[Honeycomb isle]
+Hunajakennosaari
+[Blocks per colony]
+Kortteleita siirtokuntaa kohden
+[Rubble]
+Kivimurska
+[Outline gaps]
+Aukot ääriviivoissa
+[Craters per colony]
+Kraattereita siirtokuntaa kohden
+[Wheat fields]
+Viljapellot
+[Bridges]
+Sillat
+[Karst towers]
+Karstitornit
+[Tower spacing]
+Karstitornien väli
+[Tower density]
+Karstitornien tiheys
+[Paddy depth]
+Riisipeltojen laajuus
+[Home design]
+Kotialueen muoto
+[Horseshoe]
+Hevosenkenkä
+[Twin gates]
+Kaksoisportit
+[Three gates]
+Kolme porttia
+[Four gates]
+Neljä porttia
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Joet eivät löytäneet reittiä kotialueiden välistä; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[River meander]
+Joen mutkaisuus
+[Flooded terraces]
+Tulvitetut terassit
+[Sinkholes]
+Vajoamat
+[Bajada]
+Tulvaviuhkat
+[Range spacing]
+Vuorijonojen väli
+[Ridge width]
+Harjanteiden leveys
+[Passes]
+Solat
+[Fans per range]
+Viuhkoja vuorijonoa kohden
+[Stream reach]
+Purojen pituus
+[Playa]
+Suolajärvet
+[Broad fan]
+Leveä viuhka
+[Long fan]
+Pitkä viuhka
+[Twin springs]
+Kaksoislähteet
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Viuhkarinteet ovat liian kapeita kotialueille; käytä suurempaa karttaa, suurempaa vuorijonojen väliä, kapeampia harjanteita tai pienempiä suolajärviä.
+[Central Quarry]
+Keskuslouhos
+[Quarry size]
+Louhoksen koko
+[Sand bars]
+Hiekkasärkät
+[Woodland]
+Metsämaa
+[Central Quarry needs at least two colonies.]
+Keskuslouhos tarvitsee vähintään kaksi siirtokuntaa.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Järvi ei mahdu tälle kartalle; käytä pienempää järveä tai suurempaa karttaa.
+[A sand bar did not reach the island.]
+Hiekkasärkkä ei ulottunut saareen.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Tällä kartalla ei ole tilaa näin monelle siirtokunnalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[The island has no room for its quarry; use a bigger island.]
+Saarella ei ole tilaa louhokselle; käytä suurempaa saarta.
+[Hidden Oasis]
+Kätketty keidas
+[Pond algae]
+Lammen levät
+[Starting towers]
+Aloitustornit
+[Starting school]
+Aloituskoulu
+[Mesas]
+Pöytävuoret
+[Springs]
+Lähteet
+[Hidden Oasis needs at least two colonies.]
+Kätketty keidas tarvitsee vähintään kaksi siirtokuntaa.
+[Hidden Oasis holds at most eight colonies.]
+Kätkettyyn keitaaseen mahtuu enintään kahdeksan siirtokuntaa.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Vuorimassiivi ei mahdu tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[The pond has no room for that much algae; use a bigger pond.]
+Lammessa ei ole tilaa näin suurelle levämäärälle; käytä suurempaa lampea.
+[Even Ground]
+Tasainen maa
+[Balance]
+Tasapainotus
+[Tight passes]
+Kapeat kulkuväylät
+[Solver effort]
+Ratkaisijan työmäärä
+[Brief]
+Lyhyt
+[Patient]
+Kärsivällinen
+[This map is too small to solve on; use a bigger map.]
+Tämä kartta on liian pieni ratkaistavaksi; käytä suurempaa karttaa.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Liikaa siirtokuntia tasapainotettavaksi tämänkokoisella kartalla; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[The colonies could not be spread out on this map.]
+Siirtokuntia ei voitu levittää tälle kartalle.
+[Marchland]
+Rajamaa
+[Prizes on the rope]
+Palkinnot köydessä
+[March width]
+Rajamaan leveys
+[Levelling]
+Tasoitus
+[A march needs a country on each side; use at least two colonies.]
+Rajamaa tarvitsee maan kummallekin puolelleen; käytä vähintään kahta siirtokuntaa.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Liikaa siirtokuntia, jotta tämä kartta antaisi jokaiselle kotimaan; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Tällä kartalla ei ole tilaa levittää siirtokuntia; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Siirtokunnan kotimaasta ei ole uloskäyntiä rajamaalle; käytä suurempaa karttaa tai kapeampaa rajamaata.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Siirtokunnan kotimaassa ei ole tilaa pesälle; käytä suurempaa karttaa, vähemmän siirtokuntia tai kapeampaa rajamaata.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Rajamaalla on liian vähän kiisteltyä maata näin monelle palkinnolle; käytä vähemmän palkintoja, leveämpää rajamaata tai suurempaa karttaa.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Rajamaalla ei ole tilaa palkinnolle; käytä suurempaa karttaa, vähemmän siirtokuntia tai leveämpää rajamaata.
+[Orchard Commons]
+Yhteiset hedelmätarhat
+[Orchard spacing]
+Hedelmätarhojen välimatka
+[Compact]
+Tiivis
+[Balanced]
+Tasapainoinen
+[Spread]
+Väljä
+[The Gauntlet]
+Koetusten areena
+[Partition thickness]
+Väliseinien paksuus
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Koetusten areena tarvitsee suuremman kartan tai vähemmän siirtokuntia, jotta jokaiselle siirtokunnalle mahtuu kaksi vartioitua sisäänkäyntiä.
+[The Comb]
+Kampa
+[Peninsulas per shore]
+Niemiä rantaa kohti
+[Encircled Kingdom]
+Saarrettu valtakunta
+[Fortress plan]
+Linnoituksen pohjapiirros
+[Automatic]
+Automaattinen
+[Elongated enclosure]
+Pitkulainen linnoitus
+[Bastioned enclosure]
+Bastionilinnoitus
+[Paired courtyards]
+Kaksi sisäpihaa
+[Heartland farmland]
+Ydinalueen viljelymaa
+[The Faulted City]
+Murtunut kaupunki
+[Fault displacement]
+Siirrosten siirtymä
+[Fault width]
+Siirrosten leveys
+[Ruin density]
+Raunioiden tiheys
+[Surviving junctions]
+Säilyneet risteykset
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Murtunut kaupunki vaatii 256 tai 512 ruutua kummassakin suunnassa ja yhdestä kahteentoista siirtokuntaa.
+[The city has too few usable junctions.]
+Kaupungissa on liian vähän käyttökelpoisia risteyksiä.
+[A city neighbourhood lacks reachable crops or building room.]
+Kaupunginosasta puuttuu saavutettavia viljelykasveja tai rakennustilaa.
+[The city neighbourhoods are too unequal; try another seed.]
+Kaupunginosat ovat liian epätasapainoisia; kokeile toista siementä.
+[The fractured civic plaza did not survive.]
+Murtunut kaupunginaukio ei säilynyt.
+[Who Ate the Map?]
+Kuka söi kartan?
+[Appetite]
+Ruokahalu
+[A Little Nibble]
+Pieni haukkaus
+[Hungry]
+Nälkäinen
+[Portage Lakes]
+Järvet ja metsätaipaleet
+[Lake elongation]
+Järvien pitkänomaisuus
+[Portage depth]
+Raivaussyvyys
+[Extra trails]
+Lisäpolut
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Kartan sivujen on oltava 64–512 ruudun pituisia.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Tällä siemenellä rannoille ei mahdu siirtokuntia.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Jokaisen siirtokunnan viereen ei mahdu uusiutuvia rantapeltoja.
+[Portage Lakes cannot connect its shoreline trails.]
+Rantapolkuja ei voi yhdistää.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Tällä siemenellä ei mahdu hyödyllistä oikopolkua kuivan metsän läpi.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Tällä siemenellä ei mahdu hyödyllistä uintioikoreittiä.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Tällä siemenellä uintijärvien on pysyttävä erillisinä.
+[Drowned Forest]
+Uponnut metsä
+[Sandbar connections]
+Hiekkasärkkäyhteydet
+[Wooded neck thickness]
+Metsäesteiden paksuus
+[Neutral clearing size]
+Neutraalien aukioiden koko
+[Bastion Keys]
+Linnakesaaret
+[Plantation size]
+Viljelmän koko
+[Outlying islands]
+Ulkosaaret
+[The Hungry Marches]
+Nälkäiset rajamaat
+[Opening ration]
+Aloitusannos
+[Central concentration]
+Keskustan painotus
+[The Last Treeline]
+Viimeinen metsävyöhyke
+[Woodland depth]
+Metsiköiden leveys
+[Fertility]
+Hedelmällisyys
+[Deposits]
+Esiintymät
+[Room]
+Tila
+[Isolation]
+Eristyneisyys
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Jokaisen yhdyskunnan aloitus mitataan valmiilta kartalta: matka vehnän ja puun luo, kuinka hyvin sen maa kasvaa takaisin, ulottuvilla olevat esiintymät ja rakennuspaikat sekä etäisyys kilpailijoihin. Jokainen tekijä saa pisteet 0–1 kiinteää mittapuuta vasten, kokonaisarvo painottaa ne, tasapuolisuus on heikoimman yhdyskunnan kokonaisarvo jaettuna parhaan arvolla, ja pisteet ovat heikoin kokonaisarvo kerrottuna tasapuolisuudella.
+[ERROR_CANT_SAVE_MAP]
+Karttaa ei voitu tallentaa. Tarkista kohde ja käytettävissä oleva tila. Muutoksesi ovat yhä avoinna.
+[Loading headers]
+Ladataan otsikkotietoja...
+[Loading teams]
+Ladataan joukkueita...
+[Loading terrain]
+Ladataan maastoa...
+[Building gradients]
+Rakennetaan liukuvärejä...
+[Loading players]
+Ladataan pelaajia...
+[Loading scripts]
+Ladataan skriptejä...
+[Generating map]
+Luodaan karttaa...
+[ERROR_CANT_GENERATE_MAP]
+Karttaa ei voitu luoda. Kokeile eri luontiasetuksia.
+[Loading units]
+Ladataan yksiköitä...
+[Loading buildings]
+Ladataan rakennuksia...
+[Resolving team links]
+Ratkaistaan joukkueiden linkkejä...
+[saving to storage]
+Tallennetaan...
+[save failed retry]
+Tallennus epäonnistui. Yritä uudelleen.
+[export save]
+Vie tallennus
+[storage restore failed]
+Selaimen tallennustilaa ei voitu palauttaa. Olemassa olevaa tallennettua dataa ei ole muutettu. Voit jatkaa tätä istuntoa, mutta paikallisia muutoksia ei voida säilyttää. Vie tärkeät tallennukset tallennusvirheen valintaikkunasta. Lataa sivu uudelleen yrittääksesi palauttaa tallennustilan uudelleen.
+[continue]
+Jatka
+[export file]
+Vie tiedosto
+[export failed]
+Tiedoston vienti epäonnistui
+[import file]
+Tuo
+[select import file]
+Valitse tuotava tiedosto
+[validating import]
+Tarkistetaan tiedostoa...
+[import succeeded]
+Tiedosto tuotu
+[import cancelled]
+Tuonti peruutettu
+[import failed]
+Tuonti epäonnistui: virheellinen tai tukematon tiedosto
+[import persistence failed]
+Ei tallennettu: valitse Tuo yrittääksesi uudelleen, tai Vie tiedosto
+[import progress]
+Tuonnin edistyminen
+[export progress]
+Viennin edistyminen
+[retry save]
+Yritä tallennusta uudelleen
+[campaign save failed]
+Kampanjan edistymistä ei tallennettu. Yritä uudelleen tai vie varmuuskopio.
+[leave without saving]
+Poistu tallentamatta
+[campaign import failed]
+Virheellinen edistymistiedosto tai eri kampanjaversio
+[network release mismatch]
+Asiakkaan ja palvelimen protokollat eroavat. Asenna sama Glob2-versio kuin palvelimella.
+[settings continue]
+Jatka
+[settings save failed]
+Asetusten tallennusta ei vahvistettu. Yritä uudelleen tai jatka.
+[shutdown save failed]
+Lopullista tallennusta ei vahvistettu. Yritä uudelleen tai poistu tallentamatta.
+[quit without saving]
+Poistu tallentamatta
+[game closed]
+Peli suljettu. Voit sulkea tämän ikkunan tai ladata sivun uudelleen pelataksesi taas.
+[campaign editor save failed]
+Tallennusta ei vahvistettu. OK yrittää uudelleen; Peruuta palaa editorin valikkoon.
+[Actions]
+Toiminnot
+[Minimap]
+Pienoiskartta
+[Fast forward]
+Pikakelaus
+[Hide keyboard]
+Piilota näppäimistö
+[Dialog text size]
+Valintaikkunoiden tekstikoko
+[Player slot]
+Pelaajapaikka
+[Team color]
+Joukkueen väri
+[Alliance group]
+Liittoumaryhmä
+[menu]
+Valikko
+[Editor tools]
+Työkalut
+[Pan map]
+Siirrä karttaa
+[Edit map]
+Muokkaa
+[Editor map]
+Kartta
+[Flags]
+Liput
+[Pause]
+Tauko
+[Speed]
+Nopeus
+[Objectives]
+Tavoitteet
+[Menu]
+Valikko
+[Goals]
+Tavoitteet
+[Teams]
+Joukkueet
+[Use this landscape]
+Käytä tätä maisemaa
+[Reset]
+Palauta
+[Generating...]
+Luodaan...
+[Players]
+Pelaajat
+[Rules]
+Säännöt
+[settings Interface layout]
+Käyttöliittymän asettelu
+[settings Automatic]
+Automaattinen
+[settings Compact]
+Tiivis
+[settings Spacious]
+Väljä
+[More]
+Lisää
+[No items]
+Ei kohteita
+[Opponents]
+Vastustajat
+[Review]
+Yhteenveto
+[Review & Play]
+Tarkista ja pelaa
+[Edit opponents]
+Muokkaa vastustajia
+[Map settings]
+Kartan asetukset
+[Next]
+Seuraava
+[Done]
+Valmis
+[Contribution]
+Osuus
+[Choose who controls this colony]
+Valitse, kuka ohjaa tätä siirtokuntaa
+[Settings]
+Asetukset
+[settings Back]
+Takaisin
+[settings Save the game automatically about every minute.]
+Tallenna peli automaattisesti noin minuutin välein.
+[AI opponents]
+Tietokonevastustajat
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Väljä asettelu käyttää sivupaneelia, kun tilaa on riittävästi. Tiivis asettelu käyttää työkalupalkkia ja avattavia paneeleja.
+[Assigned %0 · Target %1]
+Määrätty %0 · Tavoite %1
+[Range: %0]
+Kantama: %0
+[Player %0]
+Pelaaja %0
+[Brush %0]
+Sivellin %0
+[Team %0]
+Joukkue %0
+[Your colony]
+Oma siirtokuntasi
+[%0 / %1 HP · %2]
+%0 / %1 EP · %2
+[Units: %0]
+Yksiköt: %0
+[Buildings: %0]
+Rakennukset: %0
+[Need food: %0]
+Tarvitsevat ruokaa: %0
+[Need healing: %0]
+Tarvitsevat hoitoa: %0
+[Attack: %0]
+Hyökkäys: %0
+[Defense: %0]
+Puolustus: %0
+[Food: %0 / %1]
+Ruoka: %0 / %1
+[View team %0]
+Näytä joukkue %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Sivellin %0x%1
+[Level %0]
+Taso %0
+[Manage teams (%0)]
+Hallitse joukkueita (%0)
+[Team %0 / Level %1]
+Joukkue %0 / Taso %1
+[Files · %0]
+Tiedostot · %0
+[Hint %0]
+Vihje %0
+[Objective %0]
+Tavoite %0
+[Entry %0 of 8 · empty entries are omitted]
+Merkintä %0/8 · tyhjät merkinnät ohitetaan
+[Teams %0/%1]
+Joukkueet %0/%1
+[Elapsed time · %0]
+Kulunut aika · %0
+[Read-only building]
+Rakennus vain katseltavissa
+[Alliance and shared vision are fixed for this match.]
+Liittouma ja jaettu näkö ovat kiinteät tässä ottelussa.
+[Share vision]
+Jaa näkö
+[Share food vision]
+Jaa ruokanäkö
+[Share market vision]
+Jaa markkinanäkö
+[Chat]
+Keskustelu
+[No other players have editable diplomatic settings in this match.]
+Muilla pelaajilla ei ole muokattavia diplomatia-asetuksia tässä ottelussa.
+[No briefing for this match.]
+Ei ohjeistusta tälle ottelulle.
+[Chat · recipients selected in Teams]
+Keskustelu · vastaanottajat valitaan Joukkueet-valikossa
+[Filename]
+Tiedostonimi
+[Reduced motion]
+Vähennetty liike
+[Send]
+Lähetä
+[Close]
+Sulje
+[Forbidden]
+Kielletty
+[Guard]
+Vartioi
+[Clear]
+Raivaa
+[Paint]
+Maalaa
+[Erase]
+Pyyhi
+[Release on valid terrain to place]
+Sijoita vapauttamalla kelvollisen maaston päällä
+[Paint on the map; two fingers move]
+Maalaa kartalle; siirrä kahdella sormella
+[Tutorial ▸]
+Opastus ▸
+[Back to tools]
+Takaisin työkaluihin
+[Starvation overlay]
+Nälkäkerros
+[Damage overlay]
+Vauriokerros
+[Defense overlay]
+Puolustuskerros
+[Fertility overlay]
+Hedelmällisyyskerros
+[Health and food bars]
+Terveys- ja ruokapalkit
+[Message history]
+Viestihistoria
+[Mark map for allies]
+Merkitse karttaa liittolaisille
+[Show zones]
+Näytä alueet
+[Pan]
+Siirrä
+[Select]
+Valitse
+[Show palette]
+Näytä paletti
+[Release to place]
+Sijoita vapauttamalla
+[Blocked placement]
+Sijoitus estetty
+[File name]
+Tiedoston nimi
+[Load map]
+Lataa kartta
+[Save map]
+Tallenna kartta
+[No files in this folder]
+Ei tiedostoja tässä kansiossa
+[No files saved yet]
+Ei vielä tallennettuja tiedostoja
+[Export]
+Vie
+[Tap to write the mission briefing]
+Kirjoita tehtävän ohjeistus napauttamalla
+[Tap to write the map script]
+Kirjoita kartan skripti napauttamalla
+[Script]
+Skripti
+[Previous]
+Edellinen
+[Compile]
+Käännä
+[Tap to write this hint]
+Kirjoita tämä vihje napauttamalla
+[Tap to write this objective]
+Kirjoita tämä tavoite napauttamalla
+[Mission briefing · tap to edit, swipe to scroll]
+Tehtävän ohjeistus · muokkaa napauttamalla, vieritä pyyhkäisemällä
+[Not enough recorded history yet.]
+Tallennettua historiaa ei vielä ole tarpeeksi.
+[Select a team to show its history.]
+Näytä historia valitsemalla joukkue.
+[Back to chart]
+Takaisin kaavioon
+[Expand chart]
+Suurenna kaaviota
+[Slot]
+Paikka
+[Color]
+Väri
+[Player / AI]
+Pelaaja / TI
+[Group]
+Ryhmä
+[Forbid]
+Kiellä
+[↓ Low]
+↓ Matala
+[= Normal]
+= Normaali
+[↑ High]
+↑ Korkea
+[Details]
+Tiedot
+[Campaign name]
+Kampanjan nimi
+[Unlocking]
+Avaaminen
+[Parameters]
+Parametrit
+[Blank map]
+Tyhjä kartta
+[Generated]
+Luotu
+[Preview]
+Esikatselu
+[Selected landscape]
+Valittu maisema
+[Representative preview]
+Esimerkkiesikatselu
+[Starting terrain]
+Aloitusmaasto
+[Hide parameters]
+Piilota parametrit
+[Size and parameters]
+Koko ja parametrit
+[Choose a landscape]
+Valitse maisema
+[%0 / Browse]
+%0 / Selaa
+[%0 colonies · %1]
+%0 siirtokuntia · %1
+[%0 · Team %1]
+%0 · Joukkue %1
+[Colonies: %0]
+Siirtokunnat: %0
+[%0 colonies · %1 AI]
+%0 siirtokuntia · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Yksiköt
+[settings Level %0]
+Taso %0
+[settings Match the desktop %0]
+Työpöydän mukaan (%0)
+[settings Current display %0 %1 %2 %3]
+Nykyiset näyttöasetukset: %0 × %1 · %2 · %3
+[Fairness: %0]
+Tasapuolisuus: %0
+[Colony %0]
+Siirtokunta %0
+[Win chance: %0 · Fitness: %1]
+Voittomahdollisuus: %0 · Vahvuus: %1
+[%0 · Contribution: %1]
+%0 · Osuus: %1
+[Min required level %0]
+Alin vaadittu taso: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Valintaikkunoiden tekstikoko: %0%
+[%0 %1]
+%0 %1

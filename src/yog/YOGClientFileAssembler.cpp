@@ -104,7 +104,7 @@ void YOGClientFileAssembler::handleMessage(std::shared_ptr<NetMessage> message)
 				ostream->seekFromEnd(0);
 				const size_t receivedSize = ostream->getPosition();
 				const char* receivedData = obackend->getBuffer();
-				Toolkit::getFileManager()->writeAtomically(filename+".gz", [&](OutputStream& stream) {
+				Toolkit::getFileManager()->writeAtomically(glob2GzipWritePath(filename), [&](OutputStream& stream) {
 					stream.write(receivedData, receivedSize, "");
 				});
 				ostream.reset();

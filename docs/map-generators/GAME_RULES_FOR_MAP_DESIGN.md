@@ -16,7 +16,12 @@ comments can say "because grass may not touch water" and a reader can check it h
 - **Grass may never touch water.** There is no grass-to-water tile graphic, so every grass corner
   beside water must become sand. `Map::controlSand` does it in place in row order, which makes a
   shoreline depend on scan direction; the designed generators use `layBeaches`, which applies the
-  same rule to every corner at once.
+  same rule to every corner at once. The pass is not a step in a fixed order, it is a postcondition:
+  anything that cuts terrain after it — a late pond, a farm plot stamped against a lake — needs
+  another pass, or that shoreline ships as a hard grass/water edge that reads immediately as a bug
+  in the finished game (the fractal maps' garden beds and bank plots did, 2026-09-16). Size a crop
+  bed knowing the beach will take its innermost row: three rows of farmable grass means four rows
+  of grass laid down.
 - **Buildings need pure grass.** `Map::isFreeForBuilding` requires grass, no resource and no unit
   on every tile of the footprint (`Map::checkTile`). Sand is walkable but unbuildable, so a map's
   building room is its grass, not its land. A swarm is 4×4; the start scorer counts free 4×4
@@ -39,6 +44,19 @@ comments can say "because grass may not touch water" and a reader can check it h
   grass and puts the banks' nearest grass w + 4 tiles apart, so a level-1 tower on one bank covers the
   other across a single water corner and a level-3 tower across five (`shared/Channels`). A canal can
   start a tower duel long before either side can swim.
+- **A worker serves only buildings of its own build level or below.** `Building::canUnitWorkHere`
+  refuses a worker whose build level is under the building's level, for construction, repair and
+  resupply alike, and build level is raised only at a school, which costs algae. So a building a map
+  grants above level 0 (a level-2 tower, say) cannot be resupplied or repaired by a colony that has no
+  school yet: Hidden Oasis' first towers fired their 32 shots and stood empty in every game. Grant
+  level-0 buildings, or grant the school as well.
+- **A tower is an ammunition counter.** It holds 12, 16 or 20 shots and the stone for as many again
+  (`BuildingTypesDefence.cpp`), and a worker has 200 hp against 30 to 50 a shot: an unserved tower
+  kills about six workers and is then a landmark. A design that relies on towers must put each one
+  where its owner's workers can walk to it and find stone.
+- **Level-0 warriors barely scratch an upgraded tower.** A warrior hits for 13 to 16 less the
+  building's armour (8, 12, 15 by tower level), never under 1: about 5 a hit on a level-1 tower's 480
+  hp, and 1 a hit on a level-2 tower's 1,440.
 - **Players can plug gaps.** Players build stone walls, so a narrow gate, ramp or trail can be sealed
   by whoever holds it. How wide a map's doors are decides whether a colony can shut itself in.
 
@@ -68,6 +86,31 @@ Consequences a generator has to design around:
   with lots of sand grows its fields back slowly — a lever, not just decoration.
 - **Growth can shut a map.** Wheat and wood that spread unchecked cover grass, and covered grass is
   unwalkable and unbuildable. Lanes, sand roads and levees exist to stop a map growing shut.
+- **Wood overgrowth is the usual way it happens, and it is slow enough to miss.** A deposit first
+  thickens in place; once its amount passes a random 0-7 it *extends* to one of its eight
+  neighbours instead. Timber scattered as decoration therefore creeps outward a tile at a time
+  wherever the water probe succeeds, and tens of thousands of ticks later the map is forest. It
+  does not show in a preview or in any measurement of the map as generated: it needs a long game,
+  or a count of wood tiles on a final save against the same count at tick zero. Treat a sprinkle
+  of timber across open land as a promise that the land will eventually be woods, and either keep
+  the sprinkle sparse and contained or leave it out.
+- **No-growth zones are forbidden on generated maps.** The engine keeps a saved per-tile
+  `canResourcesGrow` flag, and it exists for hand-made scenarios such as the tutorial, where a
+  designer freezes the ground a lesson needs. A generator may not set it on any tile: the shared
+  structural check (`validateGeneratedWorld`) refuses a generated world with even one no-growth
+  tile, and the toolkit no longer has a helper that sets it. A frozen tile is invisible to the
+  player, stops farmland regrowing where they expect it to, and hides an overgrowth problem the
+  design should have solved (the fractal maps used it and were stripped of it on 2026-09-16).
+  Contain crops with terrain instead, which players can see and reason about:
+  - **Sand.** A deposit cannot occupy sand, so a sand cap or aisle contains a plot permanently.
+    One row of sand *corners* is enough: the two tile rows either side of it are no longer pure
+    grass, and no crop can extend across them.
+  - **Dry ground.** A wheat or wood deposit whose growth probe can never find water never
+    thickens or extends. Scenery on dry ground (`Fertility::forMap` reads zero) stays the size it
+    was planted.
+  - **Leaving it out.** A copse that would have to be held back by anything else does not belong
+    on fertile ground.
+  Stone and fruit need none of this: neither extends (their resource types are not expendable).
 - **Fruit is a weapon.** A colony whose inns hold all three fruits can pull hungry enemy units
   across to its side, so an orchard of all three kinds in contested ground is the strongest prize
   a map can offer, and fruit spread unevenly between colonies is a real unfairness.
@@ -88,12 +131,46 @@ The shared tools encode a few measurable promises every generator is expected to
 - **Room to build.** `openCrampedStarts` makes sure a colony can walk to at least 16 free 4×4
   building sites within 24 steps. A colony walled in by its own deposits cannot grow at all.
 - **Workers can leave the swarm.** A clear ring of `kSwarmClearance` tiles round each swarm.
-- **Fair starts.** `scoreStarts` rates each colony on wheat and wood distance, fertility, deposit
+- **Fair starts.** `scoreStarts` measures each colony on wheat and wood distance, fertility, deposit
   depth, room and isolation from rivals; fairness is the weakest start divided by the strongest,
   and the lobby keeps the best-scoring of several seeds. Designed generators get fairness by
   construction instead: they design one colony's share and turn or mirror it onto every other
   colony (`WedgeFrame`), or slide it across a lattice of colonies with no centre at all
   (`translationSymmetry`, `shared/Orbits`), so every colony's ground is the same.
+
+### From a viable opening to a sustained economy
+
+Reachable starter crops establish an opening, not an army-sized food supply. For a
+map intended to support sustained fighting, budget renewable growing room and
+irrigation alongside opening stock, gathering frontage, feeding buildings and
+travel. Measure wheat capacity only on ground wheat can actually occupy; fertile
+open lawns outside sand-contained farms do not feed a colony automatically. Count
+wood separately: a narrow wood strip beside a token pond can constrain every
+building even when the grain supply looks adequate.
+
+Compare population, delivered food, and starvation versus combat deaths in
+sustained games with a healthy reference map. Increasing seed density can improve
+the opening but cannot raise a field's eventual growing capacity. When capacity
+is insufficient, enlarge or better irrigate the crop ground and preserve building
+shoulders and routes around its fully grown footprint. Recheck whole building
+footprints and upgrade room after enlarging fields: more food is no improvement
+if the new field leaves a colony nowhere to develop. Check the crop bank nearest
+the home separately: irrigation that divides a broad field into thin strips can
+reduce accessible food despite increasing total farmland.
+
+Choose the smallest remedy that fits the individual landscape. Several maps with
+low wheat need not all acquire the same new farm, pond or sand ring. First use
+existing farmland and water well; add terrain when capacity or geography requires
+it. Sand enclosures serve particular growth and route contracts, not a universal
+farm template. Where a seal is unnecessary, use the map's existing shores, dry
+land and continuous fields, and still validate their future crop footprint.
+
+A map's special shortage should remain deliberate. An orchard contest needs an
+ordinary grain economy behind the fruit prize; a limited-timber landscape should
+supply ample wheat without introducing extra renewable trees. Check new water
+against the full growth-probe reach of any deliberately finite wood. Outer land
+should offer useful expansion, alternate approaches, or recognizable landscape,
+not merely unused grass around a small functional centre.
 
 ## What makes a good game
 
@@ -115,3 +192,49 @@ These are judgement rules rather than engine rules, learned from playtesting on 
 - **Defaults must work at every size.** 128×128, 256×256 and 512×512 maps, 2 to 12 colonies and
   rectangular maps are all in play; tuning that looks good at one size often breaks another, which
   is why several generators scale widths and angles with map size.
+
+## Buildings and units placed by a generator
+
+A landscape may grant a colony buildings or units beyond its swarm and workers (Hills' inn,
+Plantations' pools and inns; until 2026-09-16 The Glacis, Allotments and Caravanserai started whole
+premade bases, which the shipped AIs barely grew beyond, so their revision 2 dropped them). The engine rules
+it rests on, each verified in the source:
+
+- **A building is raised with `Game::addBuilding`, which checks no room.** `checkRoomForBuilding`
+  runs first. A finished type comes out of `Building`'s constructor complete (`hp = hpInit`, times
+  the fortress-buildings multiplier), with empty stock, worker ratios of workers only, no bullets,
+  and in no call list (`src/building/Lifecycle.cpp`).
+- **Only level-0 construction sites can be placed.** A site type (`getTypeNum(name, 0, true)`) is
+  valid straight from the constructor (`NEW_BUILDING`, hp 1); a higher-level site needs an
+  `UPGRADE` state the constructor does not set, so a plan never asks for one.
+- **Stock is written straight into `Building::resources`**, capped by the type's `maxResource`
+  (an inn holds 10, 30 or 50 wheat by level; a swarm 20; fruit moves in tens), and a tower's
+  bullets into `Building::bullets`. Stock, hp, ratios and bullets survive the lobby's save and
+  reload of the generated map; `maxUnitWorking` does not (`Building::load` resets it), so nothing
+  may depend on it.
+- **`Team::createLists` runs exactly once per colony, after the last building.** It asserts its
+  lists are empty and then rebuilds them, running every building's `update()`, which is what
+  registers an inn to feed (only while its wheat exceeds the units inside) and a site to be worked.
+  `placeTower` pushes into the turret list by hand because it runs after that, so a design raises
+  its bases first and chooses wall towers second; never place a flag before the lists exist.
+- **Units are placed with `Game::addUnit(x, y, team, type, level, ...)`** on a free tile
+  (`isFreeForGroundUnit`, or `isFreeForAirUnit` for an explorer); `level` (0 to 3) applies to
+  every ability. A team holds 1024 units and 1024 buildings.
+- **The structural check counts only WORKER units**, against the lobby's "Starting workers";
+  granted warriors and explorers pass freely.
+- **A fed unit walks 264 tiles before it is hungry** (`HUNGRY_MAX` 150000 over 425 per completed
+  move at level 0) and 352 before it starves, at 16 ticks a tile. Those are walked tiles, detours
+  included: a map that forces long detours round rows, walls or crops can starve an army on its way
+  to a base that looks close (Polder, until 2026-09-16, when its rows under crop were crossed only at
+  the ditches). Keep colony-to-rival walks well inside that budget, with crossings through every kind
+  of linear obstacle and forward inn ground on the way. On a map of short walks, inn spacing is about
+  supply throughput (an inn feeds 4, 7 or 17 at once) and forward feeding, not survival.
+- **Every AI adopts what it finds** (Echo and Nicowar through `BuildingRegister::initiate`, Numbi,
+  Castor and Cortex by reading `myBuildings` live), but their openings drift: Cortex sets the first
+  swarm's workers to 4 and tracks at most 24 sites and 16 inns; Nicowar does not count pre-placed
+  sites towards its own cap and, in the first headless plays of premade bases, bred warriors it
+  could not feed. Keep granted sites under a dozen and regrowing food within a short walk of the
+  swarm. In rotation tournaments of the premade bases (2026-09-16, 45,000 ticks), a finished base
+  of fifty-odd units bred 14 to 15 births a colony with Nicowar and 4 to 9 with Numbi, and
+  Caravanserai's starved; only Allotments' base of sites, which Nicowar had to build out, bred
+  (82 births). Grant a start, not a population.

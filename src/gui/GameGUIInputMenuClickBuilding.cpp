@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <optional>
+#include <algorithm>
 
 
 #include <Toolkit.h>
@@ -51,6 +52,40 @@ static std::optional<int> interpretScrollBoxClick(int lmx, int current, int max)
 	return std::nullopt;
 }
 
+bool GameGUI::requestWorkerAllocation(Building& building, int requested)
+{
+    if (globalContainer->isViewingGame() || building.owner->teamNumber!=localTeamNo ||
+        !building.type->maxUnitWorking || building.buildingState!=Building::ALIVE) return false;
+    requested=std::clamp(requested,0,int(MAX_UNIT_WORKING));
+    if (requested==displayedMaxUnitWorking(building)) return false;
+    pendingFor(building.gid).pendingMaxUnitWorking=requested;
+    orderQueue.push_back(std::make_shared<OrderModifyBuilding>(building.gid,requested));
+    defaultAssign.setDefaultAssignedUnits(building.typeNum,requested);
+    return true;
+}
+
+bool GameGUI::requestBuildingPriority(Building& building, int requested)
+{
+    if (globalContainer->isViewingGame() || building.owner->teamNumber!=localTeamNo ||
+        !building.type->maxUnitWorking || building.buildingState!=Building::ALIVE) return false;
+    requested=std::clamp(requested,-1,1);
+    if (requested==displayedPriority(building)) return false;
+    pendingFor(building.gid).pendingPriority=requested;
+    orderQueue.push_back(std::make_shared<OrderChangePriority>(building.gid,requested));
+    return true;
+}
+
+bool GameGUI::requestFlagRange(Building& building, int requested)
+{
+    if (globalContainer->isViewingGame() || building.owner->teamNumber!=localTeamNo ||
+        !building.type->defaultUnitStayRange) return false;
+    requested=std::clamp(requested,0,building.type->maxUnitStayRange);
+    if (requested==displayedUnitStayRange(building)) return false;
+    pendingFor(building.gid).pendingUnitStayRange=requested;
+    orderQueue.push_back(std::make_shared<OrderModifyFlag>(building.gid,requested));
+    return true;
+}
+
 void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 {
 	if(globalContainer->liveSpectating) return;
@@ -74,9 +109,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			const int current = displayedMaxUnitWorking(*selBuild);
 			if (auto nbReq = interpretScrollBoxClick(lmx, current, MAX_UNIT_WORKING))
 			{
-				pendingFor(selBuild->gid).pendingMaxUnitWorking = *nbReq;
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, *nbReq)));
-				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, *nbReq);
+                requestWorkerAllocation(*selBuild,*nbReq);
 			}
 		}
 		ypos += YOFFSET_BAR + YOFFSET_B_SEP;
@@ -95,18 +128,15 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 
 			if(lmx>=0 && lmx<=12)
 			{
-				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, -1)));
-				pendingFor(selBuild->gid).pendingPriority = -1;
+				requestBuildingPriority(*selBuild, -1);
 			}
 			else if(lmx>=(width) && lmx<(width+12))
 			{
-				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 0)));
-				pendingFor(selBuild->gid).pendingPriority = 0;
+				requestBuildingPriority(*selBuild, 0);
 			}
 			else if(lmx>=(width*2) && lmx<=(width*2+12))
 			{
-				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 1)));
-				pendingFor(selBuild->gid).pendingPriority = 1;
+				requestBuildingPriority(*selBuild, 1);
 			}
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -123,8 +153,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			const int current = displayedUnitStayRange(*selBuild);
 			if (auto nbReq = interpretScrollBoxClick(lmx, current, selBuild->type->maxUnitStayRange))
 			{
-				pendingFor(selBuild->gid).pendingUnitStayRange = *nbReq;
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, *nbReq)));
+				requestFlagRange(*selBuild, *nbReq);
 			}
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -289,33 +318,11 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 
 	if ((my>globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET) && (my<globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET+BOTTOM_BUTTON_HEIGHT))
 	{
-		if (selBuild->constructionResultState==Building::REPAIR)
-		{
-			int typeNum = selBuild->typeNum; //determines type of updated building
-			int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
-			orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
-		}
-		else if (selBuild->constructionResultState==Building::UPGRADE)
-		{
-			int typeNum = selBuild->typeNum; //determines type of updated building
-			int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
-			orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
-		}
-		else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
-		{
-			repairAndUpgradeBuilding(selBuild, true, true);
-		}
+        requestBuildingConstruction(*selBuild);
 	}
 
 	if ((my>globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET) && (my<globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET+BOTTOM_BUTTON_HEIGHT))
 	{
-		if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
-		{
-			orderQueue.push_back(shared_ptr<Order>(new OrderCancelDelete(selBuild->gid)));
-		}
-		else if (selBuild->buildingState==Building::ALIVE)
-		{
-			orderQueue.push_back(shared_ptr<Order>(new OrderDelete(selBuild->gid)));
-		}
+        requestBuildingDestruction(*selBuild);
 	}
 }

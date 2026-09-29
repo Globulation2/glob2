@@ -98,12 +98,23 @@ def check_parsing():
     study = t.parse_study('\n'.join([
         'SAMPLED,1001,42,5', 'ROTATIONS,4,4,0,1,1,1,1', 'START,0,7,9',
         'MAPFILE,0,/tmp/map-r0.map,1024,123', 'OPTION,width,7',
-        'COLONY,0,' + ','.join(['1'] * 15)]))
+        'COLONY,0,2,3,400,50,600,70,2,80.5,-0.125,0.25']))
     assert study['rotation_checks'] == {'teams': 4, 'rotations': 4, 'save_load_stable': 0,
                                        'references_consistent': 1, 'colonies_placed': 1,
                                        'round_trip': 1, 'reload_idempotent': 1}, study['rotation_checks']
     assert study['chosen_seed'] == 42 and study['starts'] == [[7, 9]]
-    assert len(study['colony_quality']) == 1 and study['colony_quality'][0]['total'] == 1.0
+    assert study['colony_quality'] == [{
+        'wheat_distance': 2.0, 'wood_distance': 3.0, 'catchment_tiles': 400.0,
+        'build_sites': 50.0, 'resource_amount': 600.0, 'rival_distance': 70.0,
+        'rivals_within_threat': 2.0, 'mean_fertility': 80.5,
+        'fitness': -0.125, 'win_probability': 0.25}]
+    for count in (9, 11, 15):
+        try:
+            t.parse_study('COLONY,0,' + ','.join(['1'] * count))
+        except ValueError as error:
+            assert 'COLONY field count' in str(error)
+        else:
+            raise AssertionError('malformed colony data was silently accepted')
     assert t.parse_int_list('1001-1003,1007') == [1001, 1002, 1003, 1007]
     print('parsing checks passed')
 
@@ -164,10 +175,32 @@ def check_scorer():
                 for q, w in zip((-1.5, -0.5, 0.5, 1.5), (0.1, -0.1, 0.15, -0.15))]
     rho = t.spearman([p[1] for p in shuffled], [p[2] for p in shuffled])
     assert t.scorer_permutation_p(shuffled, rho, 2, 500, 1) > 0.1
+    # Historical manifests have the old score schema. Keep their games, but do not
+    # reinterpret the old total as the current fitness measure.
+    legacy = dict(RECORD, key='old', method=9, map_seed=1,
+                  colony_quality=[{'total': value} for value in range(4)])
+    analysed = t.analyse_map(legacy, [], CONFIG)
+    assert analysed['quality'] is None
+    check = t.scorer_check([analysed], 10, 1)
+    assert check['fitness'] is None and check['top_rated_start']['n'] == 0
     print('scorer checks passed')
 
 
+def check_verification_coverage():
+    records = {f'g{g}-s{s}': {'method': g} for g in (15, 59, 60) for s in (1, 2)}
+    games = [dict(map=m, rotation=r, game=0, outcome={'status': 'ok'})
+             for m in records for r in range(4)]
+    selected = t.verification_games(records, list(reversed(games)), 6)
+    assert [records[g['map']]['method'] for g in selected] == [15, 59, 60, 15, 59, 60]
+    assert len({g['map'] for g in selected}) == 6
+    assert not t.verification_games(records, games, 0)
+    games[0]['outcome']['status'] = 'failed'
+    assert all(g['outcome']['status'] == 'ok' for g in t.verification_games(records, games, 100))
+    print('verification coverage checks passed')
+
+
 if __name__ == '__main__':
+    check_verification_coverage()
     check_adjudication()
     check_parsing()
     check_statistics()

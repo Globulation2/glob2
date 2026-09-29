@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "Drawing.h"
 #include "Points.h"
 #include "Tessellation.h"
 #include <array>
 #include <functional>
+#include <random>
 #include <string>
 #include <vector>
 struct GenerationContext;
@@ -52,11 +54,54 @@ bool pocketsFit(const CellGraph &, const std::vector<unsigned char> &pocket);
 /// pocketsFit (the lowest index on a tie). Empty if the tiling can't hold them.
 std::vector<int> spreadPockets(const CellGraph &, int count);
 
+/// Cells spread as far apart as the graph allows with no maze to leave behind them: farthest-point
+/// spreading from the lowest `eligible` cell over the eligible cells only (the islands fit to be
+/// homes), the lowest index on a tie. Unlike spreadPockets it never asks that the other cells stay
+/// joined, which a ring of cells round a narrow map or a dozen homes among seventeen cells cannot
+/// give. Empty when there are fewer eligible cells than `count`.
+std::vector<int> farthestCells(const CellGraph &, int count,
+							   const std::vector<unsigned char> &eligible);
+
+/// Neighbouring cells dealt to seed cells, as many to each as to every other: round by round, every
+/// seed in turn takes the `eligible` cell nearest its seed (by the graph's distance2, the lowest index
+/// on a tie) that touches any cell it already holds and no seed holds; a round in which some seed finds
+/// none is undone for the seeds that did, and the dealing stops there, so every seed ends with the same
+/// count, `wanted` when the graph allows. A colony's outer islands, the chambers off its queen's room,
+/// the blocks round its home block. Returns each seed's cells in the order taken.
+std::vector<std::vector<int>> claimNeighbourCells(const CellGraph &, const std::vector<int> &seeds,
+												  int wanted,
+												  const std::vector<unsigned char> &eligible);
+
+/// Closed edges with neither endpoint blocked, in ascending edge-ID order. An empty
+/// blocked mask excludes no cells. Parallel edges retain their separate identities.
+/// This supplies a stable candidate list before a caller shuffles or ranks shortcuts.
+std::vector<int> closedEdges(const CellGraph &, const std::vector<unsigned char> &open,
+							 const std::vector<unsigned char> &blocked = {});
+
+/// For each requested edge, the distance between its endpoints using only open edges:
+/// the detour a shortcut would avoid, measured in graph edges, not tiles or travel time.
+/// The result is indexed by edge ID; unrequested or unreachable edges have value -1.
+/// Distances use the original open graph for every candidate, without adding shortcuts
+/// as they are measured. No RNG is consumed; stable sorting can preserve a seeded tie order.
+std::vector<int> edgeDetours(const CellGraph &, const std::vector<unsigned char> &open,
+							 const std::vector<int> &edges);
+
 /// Opens a spanning tree of the cells not `blocked` with a recursive backtracker from a random
 /// start: long winding passages with comparatively few, deep dead ends. Returns whether every such
 /// cell was reached.
 bool carveSpanningTree(const CellGraph &, GenerationContext &, const std::string &stream,
 					   const std::vector<unsigned char> &blocked, std::vector<unsigned char> &open);
+
+/// Opens a spanning tree of the cells not `blocked` that joins near neighbours first: Kruskal's
+/// algorithm over the edges between them in order of their cells' distance, each distance stretched
+/// by up to `jitterPercent` of itself by a draw from `stream`, so the tree changes from seed to
+/// seed while still preferring short links. Where carveSpanningTree winds long passages through a
+/// maze, this makes the network a traveller would: eskers between drumlins, bridges between
+/// islands, roads between towns, each to the next one over. Returns whether every such cell was
+/// reached.
+bool carveNearTree(const CellGraph &, GenerationContext &, const std::string &stream,
+				   const std::vector<unsigned char> &blocked, int jitterPercent,
+				   std::vector<unsigned char> &open);
 
 /// Opens one door into each pocket, through a random edge onto a cell that isn't a pocket, and
 /// returns each pocket's door edge in the order given.
@@ -70,6 +115,45 @@ std::vector<int> openPocketDoors(const CellGraph &, GenerationContext &, const s
 void openLoops(const CellGraph &, GenerationContext &, const std::string &stream,
 			   const std::vector<unsigned char> &blocked, int percent,
 			   std::vector<unsigned char> &open);
+
+/// A wandering corridor (Drawing.h's carveCorridor) along every open edge of a graph, from the one
+/// cell's point to the other's, carved into `mask` on the tiles `eligible(tile)` allows: tunnels
+/// between chambers, eskers over the water between drumlins (eligible: water only, so the corridor
+/// is nothing across the land it joins). Corridors are carved in edge order, each drawing from
+/// `random` as wanderingPath does. Returns each carved edge's two cells, in that order.
+template <typename Eligible>
+std::vector<std::array<int, 2>>
+carveOpenEdges(std::vector<unsigned char> &mask, const Torus &t, const CellGraph &g,
+			   const std::vector<ShapePoint> &points, const std::vector<unsigned char> &open,
+			   double halfWidth, double wander, double widthJitter, std::mt19937 &random,
+			   Eligible eligible)
+{
+	std::vector<std::array<int, 2>> carved;
+	std::vector<unsigned char> line(mask.size(), 0);
+	for (size_t edge = 0; edge < open.size(); ++edge)
+	{
+		if (!open[edge])
+			continue;
+		const int a = g.edgeCells[edge][0], b = g.edgeCells[edge][1];
+		const std::vector<StrokePoint> path =
+			wanderingPath(t, points[a], points[b], halfWidth, wander, widthJitter, random);
+		strokePath(line, t, path);
+		// Only the stroke's bounding circle need be looked at, and cleared for the next edge.
+		const PathBounds bounds = pathBounds(path);
+		const int reach = int(std::ceil(bounds.radius)) + 1;
+		const int x0 = int(std::lround(bounds.x)), y0 = int(std::lround(bounds.y));
+		for (int y = y0 - reach; y <= y0 + reach; ++y)
+			for (int x = x0 - reach; x <= x0 + reach; ++x)
+			{
+				const int i = t.at(x, y);
+				if (line[i] && eligible(i))
+					mask[i] = 1;
+				line[i] = 0;
+			}
+		carved.push_back({a, b});
+	}
+	return carved;
+}
 
 /// The cells, other than `blocked` ones, with exactly one open edge, and that edge for each (by
 /// cell index; -1 elsewhere).

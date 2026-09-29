@@ -13,6 +13,12 @@ namespace MapGeneration
 // width at each, and filled radial shapes, rasterized onto tile masks. Coordinates are map tiles
 // and may run past the edges; every tile is written through the wrap.
 
+/// Fill half-open integer bounds, wrapping every write. Unlike polygon rasterization,
+/// this addresses corners/tiles exactly: a 25x25 corner rectangle makes 24x24 pure tiles.
+/// Empty bounds do nothing; callers own clipping/reservation policy.
+void fillRectangle(std::vector<unsigned char> &, const Torus &, RegionBounds,
+				   unsigned char value = 1);
+
 /// A point on a stroked path and the path's half width there. The width is interpolated linearly
 /// between points, and every point is a round joint, so a path turns without gaps.
 struct StrokePoint
@@ -32,12 +38,54 @@ inline ShapePoint polarPoint(double cx, double cy, double radius, double angle)
 void strokePath(std::vector<unsigned char> &mask, const Torus &, const std::vector<StrokePoint> &,
 				unsigned char value = 1, bool closed = false);
 
+/// Does the exact stroke raster touch a protected tile/corner mask? Uses strokePath's
+/// width, joints, and wrapping, so legality checks cannot disagree with stamping.
+/// Useful when proposing roads/crossings beside reserved plots; does not edit either mask.
+bool strokeIntersectsMask(const Torus &, const std::vector<StrokePoint> &,
+						  const std::vector<unsigned char> &protectedMask);
+
 /// Sets `value` on a line one tile thick through the path's points: each segment is traced from
 /// its rounded ends with Bresenham's steps, so consecutive tiles always touch, at least at a corner,
 /// and the line has no gaps. Half widths are ignored. The thinnest stroke there is: a sand road
 /// down the middle of land that must stay open.
 void tracePath(std::vector<unsigned char> &mask, const Torus &, const std::vector<StrokePoint> &,
 			   unsigned char value = 1);
+
+/// A line one tile thick traced from `from` along `heading` (radians), a tile at a time, until it is
+/// `length` tiles long or the next tile is one `stop(tile)` refuses: consecutive tiles always touch, at
+/// least at a corner, as tracePath's do. Sets `value` on every tile it covers and returns the last one,
+/// or -1 when it covered none. A lane from a plot out to the shore, a jetty, a spoke traced until it
+/// meets water.
+template <typename Stop>
+int traceRay(std::vector<unsigned char> &mask, const Torus &t, ShapePoint from, double heading,
+			 double length, Stop stop, unsigned char value = 1)
+{
+	int last = -1;
+	const double cx = std::cos(heading), sy = std::sin(heading);
+	for (double d = 0; d <= length; d += 1.0)
+	{
+		const int i = t.at(int(std::lround(from.x + d * cx)), int(std::lround(from.y + d * sy)));
+		if (stop(i))
+			break;
+		mask[i] = value;
+		last = i;
+	}
+	return last;
+}
+
+/// A radial downhill walk. Radius strictly increases by step, while correlated angular
+/// perturbations bend the flow within maxDrift of heading. Width tapers linearly in map
+/// tiles; stretch moves centres only. Useful for lava, roots, drainage and ridge fingers.
+/// Memory is in [0,1); angularNoise and maxDrift are radians. Invalid/nonfinite geometry
+/// returns an empty path without drawing RNG. The terminal radius is always included.
+struct DownhillStyle
+{
+	double step = 3, memory = 0.72, angularNoise = 0.055, maxDrift = 0.3;
+};
+std::vector<StrokePoint> downhillPath(ShapePoint centre, double fromRadius, double toRadius,
+									  double heading, double fromHalfWidth, double toHalfWidth,
+									  std::mt19937 &, const DownhillStyle & = {},
+									  const Stretch & = {});
 
 /// `segments` + 1 points along the quadratic Bezier from `from` through the pull of `control`
 /// to `to`, with the half width running linearly from one end's to the other's: a thread that
@@ -50,6 +98,11 @@ std::vector<StrokePoint> bezierPath(ShapePoint from, ShapePoint control, ShapePo
 /// a twig or a root. A quadratic Bezier whose control point sits off the chord's middle.
 std::vector<StrokePoint> bentPath(ShapePoint from, double heading, double length, double bend,
 								  double fromHalfWidth, double toHalfWidth, int segments);
+
+/// A smooth curve through `waypoints` (Catmull-Rom, the ends repeated), sampled about every `step`
+/// tiles, every half width 0 for the caller to set: a stream, a gorge, a wash. Straight legs between
+/// waypoints read as drawn canals. No draws.
+std::vector<StrokePoint> splinePath(const std::vector<ShapePoint> &waypoints, double step);
 
 /// A path that wanders from `from` to `to` the short way round the torus: points about a tile apart,
 /// pushed sideways by up to `wander` tiles (three harmonics with random amplitudes, zero at both ends,
@@ -221,6 +274,35 @@ inline void fillShape(std::vector<unsigned char> &mask, const Torus &t, double c
 		t, cx, cy, shape, turn, [&](int i, double, double) { mask[i] = value; }, stretch);
 }
 
+/// Visits every tile a Teardrop centred at (cx, cy) with its axis along `heading` (radians, head
+/// to tail) covers, through the wrap: `visit(tile, along, across)` with the tile's place in the
+/// shape's own frame. Searches only the bounding box of the length. Every drumlin of a field is
+/// stamped this way at the field's one heading.
+template <typename Visit>
+void forEachTileInTeardrop(const Torus &t, double cx, double cy, double heading,
+						   const Teardrop &shape, Visit visit)
+{
+	const int reach = int(std::ceil(shape.length / 2)) + 1;
+	const int x0 = int(std::lround(cx)), y0 = int(std::lround(cy));
+	const double c = std::cos(heading), s = std::sin(heading);
+	for (int y = y0 - reach; y <= y0 + reach; ++y)
+		for (int x = x0 - reach; x <= x0 + reach; ++x)
+		{
+			const double dx = x - cx, dy = y - cy;
+			const double along = dx * c + dy * s, across = -dx * s + dy * c;
+			if (shape.contains(along, across))
+				visit(t.at(x, y), along, across);
+		}
+}
+
+/// Sets `value` on every tile of a Teardrop centred at (cx, cy) along `heading`.
+inline void fillTeardrop(std::vector<unsigned char> &mask, const Torus &t, double cx, double cy,
+						 double heading, const Teardrop &shape, unsigned char value = 1)
+{
+	forEachTileInTeardrop(t, cx, cy, heading, shape,
+						  [&](int i, double, double) { mask[i] = value; });
+}
+
 /// Points along the arc `radius` tiles round (cx, cy) from angle `from` to angle `to` (radians,
 /// either way round), about `step` tiles apart along the arc, all with the same half width: a
 /// corridor that follows a circle, or a ring drawn a piece at a time.
@@ -251,8 +333,8 @@ struct Zigzag
 	std::vector<std::vector<StrokePoint>> legs;
 	double finishAcross = 0; // the side the path finishes on
 };
-Zigzag zigzagPath(const AxisFrame &, double start, double firstLeg, double pitch, int legs, double span,
-				  double finish, double halfWidth);
+Zigzag zigzagPath(const AxisFrame &, double start, double firstLeg, double pitch, int legs,
+				  double span, double finish, double halfWidth);
 
 /// Visits every tile within `halfWidth` of the circle of `radius` round (cx, cy), through the wrap:
 /// `visit(tile, gate)` with the index into `gates` of the gate the tile lies in - a gap reaching
@@ -331,6 +413,31 @@ std::vector<std::pair<long long, long long>> sealedSegmentTiles(SubtilePoint a, 
 void traceSealedPath(std::vector<unsigned char> &mask, const Torus &,
 					 const std::vector<SubtilePoint> &points, unsigned char value = 1,
 					 bool closed = false);
+
+/// A sealed line right round the torus along one axis: a vertex every `step` tiles at u = 0,
+/// step, 2 * step, ... and a last one at u = length, the first vertex's image past the seam, each
+/// at the tile `vAt(u)` across (rounded), traced with traceSealedPath so that nothing steps over
+/// it at any slant and the seam is crossed rather than the map run back across. A wall of bluffs
+/// along the back of a belt that wraps the map the long way.
+template <typename VAt>
+void traceSealedLap(std::vector<unsigned char> &mask, const Torus &t, bool alongX, int step,
+					VAt vAt, unsigned char value = 1)
+{
+	const int length = alongX ? t.w : t.h;
+	std::vector<SubtilePoint> line;
+	for (int u = 0; u <= length; u += std::max(1, step))
+	{
+		const int v = int(std::lround(vAt(u)));
+		line.push_back(alongX ? subtileCentre(u, v) : subtileCentre(v, u));
+	}
+	if (line.size() < 2 || (length % std::max(1, step)) != 0)
+	{
+		// A step that does not divide the lap still needs the closing vertex at u = length.
+		const int v = int(std::lround(vAt(length)));
+		line.push_back(alongX ? subtileCentre(length, v) : subtileCentre(v, length));
+	}
+	traceSealedPath(mask, t, line, value, false);
+}
 
 /// Visits each tile whose centre lies inside the polygon `outline` (any simple polygon, either
 /// winding, coordinates unwrapped) with its wrapped tile index. A centre exactly on an edge

@@ -64,16 +64,6 @@ HeightFieldOptions HeightFieldOptions::fromRequest(const GenerationRequest &r, b
 	return options;
 }
 
-void openStartsBuriedByAmounts(Game &game, GenerationContext &context,
-							   const HeightFieldOptions &options)
-{
-	// The resource bands are painted from map-wide noise levels with no awareness of where any team
-	// starts, so an amount well above the default widens them until they can wall a colony in.
-	// placeStarts has already carved out the swarm's own rectangle by now, so nothing needs to be
-	// kept clear for it.
-	reopenCrampedStarts(game, context, {options.wheat, options.wood, options.stone, options.algae});
-}
-
 // Repeat landscape: the field is built at a fraction of the map's size and stamped several times,
 // so every colony can get the same patch of terrain. Each of `repeat` halvings goes to the longer
 // remaining side, so 1 halves the long side, 2 makes a 2x2 tiling on a square map, and so on up to

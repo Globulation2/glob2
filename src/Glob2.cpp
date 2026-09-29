@@ -1,9 +1,28 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
+
+#ifdef __APPLE__
+#	include <CoreFoundation/CoreFoundation.h>
+#	include <sys/param.h>
+#endif
+
+#include <ApplicationHost.h>
+#include <cstdlib>
+#ifdef GLOB2_MOBILE
+#include "mobile/MobilePaths.h"
+#include <exception>
+#include <SDL_log.h>
+#endif
 #include "Glob2.h"
 #include "GlobalContainer.h"
 #include "YOGServer.h"
+#ifdef GLOB2_ROUTER_ONLY
+#include "YOGServerRouter.h"
+#endif
 
 #ifndef YOG_SERVER_ONLY
 
@@ -13,6 +32,8 @@
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Headless.h"
+#include "Application.h"
+#include "SinglePlayerFlow.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -49,11 +70,6 @@
 #	include <time.h>
 #endif
 
-#ifdef __APPLE__
-#	include <Carbon/Carbon.h>
-#	include <sys/param.h>
-#endif
-
 #ifndef YOG_SERVER_ONLY
 #include "FrontendTheme.h"
 #include "MapCommand.h"
@@ -78,43 +94,6 @@ GlobalContainer *globalContainer=NULL;
 
 
 #ifndef YOG_SERVER_ONLY
-
-void Glob2::drawYOGSplashScreen(void)
-{
-	int w, h;
-	w=globalContainer->gfx->getW();
-	h=globalContainer->gfx->getH();
-	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
-	std::string text[3];
-	text[0]=Toolkit::getStringTable()->getString("[connecting to]");
-	text[1]=Toolkit::getStringTable()->getString("[yog]");
-	text[2]=Toolkit::getStringTable()->getString("[please wait]");
-	for (int i=0; i<3; ++i)
-	{
-		int size=globalContainer->menuFont->getStringWidth(text[i]);
-		int dec=(w-size)>>1;
-		globalContainer->gfx->drawString(dec, 150+i*50, globalContainer->menuFont, text[i]);
-	}
-	globalContainer->gfx->nextFrame();
-}
-
-void Glob2::multiplayerYOG(void)
-{
-	if (verbose)
-		printf("Glob2:: starting YOGLoginScreen...\n");
-	shared_ptr<YOGClient> client(new YOGClient);
-	YOGLoginScreen yogLoginScreen(client);
-	int yogReturnCode=yogLoginScreen.execute(globalContainer->gfx, 40);
-	if (yogReturnCode==YOGLoginScreen::Cancelled)
-		return;
-	if (yogReturnCode==-1)
-	{
-		isRunning=false;
-		return;
-	}
-	if (verbose)
-		printf("Glob2::YOGLoginScreen has ended ...\n");
-}
 
 int Glob2::runNoX()
 {
@@ -456,9 +435,19 @@ int Glob2::run(int argc, char *argv[])
 	}
 	atexit(SDLNet_Quit);
 
+
+#ifdef GLOB2_ROUTER_ONLY
+	const char* lobbyHost = std::getenv("GLOB2_YOG_HOST");
+	YOGServerRouter router(lobbyHost ? lobbyHost : "127.0.0.1");
+	int routerResult = router.run();
+	delete globalContainer;
+	return routerResult;
+#endif
 	if (globalContainer->hostServer)
 	{
-		YOGServer server(YOGRequirePassword, YOGMultipleGames);
+		const char* externalRouter = std::getenv("GLOB2_EXTERNAL_ROUTER");
+		YOGServer server(YOGRequirePassword, YOGMultipleGames,
+		    !(externalRouter && std::string(externalRouter) == "1"));
 		int rc = server.run();
 		delete globalContainer;
 		return rc;
@@ -498,149 +487,13 @@ int Glob2::run(int argc, char *argv[])
 		return ret;
 	}
 
-	isRunning=true;
-
-	auto frontend = std::make_unique<FrontendTheme>();
-	// Replay the game specified by the command line
-	if (globalContainer->replaying)
-	{
-		Engine engine;
-		int rc_e = engine.loadReplay(globalContainer->replayFileName);
-		if (rc_e == Engine::EE_NO_ERROR)
-			isRunning = (engine.run() != -1);
-		else if(rc_e == -1)
-			isRunning = false;
-	}
- 
-	while (isRunning)
-	{
-		switch (MainMenuScreen::menu())
-		{
-			case -1:
-			{
-				isRunning = false;
-			}
-			break;
-			case MainMenuScreen::CAMPAIGN:
-			{
-				CampaignMainMenu ccs;
-				int rccs=ccs.execute(globalContainer->gfx, 40);
-				if(rccs == Screen::QUIT_APPLICATION)
-				{
-					isRunning = false;
-				}
-			}
-			break;
-			case MainMenuScreen::TUTORIAL:
-			{
-				Campaign campaign;
-				if(campaign.load("games/Tutorial_Campaign.txt"))
-				{
-					CampaignMenuScreen cms("games/Tutorial_Campaign.txt");
-					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms == -1)
-					{
-						isRunning = false;
-					}
-				}
-				else
-				{
-					CampaignMenuScreen cms("campaigns/Tutorial_Campaign.txt");
-					cms.setNewCampaign();
-					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms == -1)
-					{
-						isRunning = false;
-					}
-				}
-			}
-			break;
-			case MainMenuScreen::LOAD_GAME:
-			{
-				Engine engine;
-				int rc_e = engine.initLoadGame();
-				if (rc_e == Engine::EE_NO_ERROR)
-					isRunning = (engine.run() != -1);
-				else if(rc_e == -1)
-					isRunning = false;
-			}
-			break;
-			case MainMenuScreen::CUSTOM:
-			{
-				bool cont=true;
-				while(cont && isRunning)
-				{
-					Engine engine;
-					int rc_e = engine.initCustom();
-					if (rc_e ==  Engine::EE_NO_ERROR)
-					{
-						isRunning = (engine.run() != -1);
-					}
-					else if(rc_e == -1)
-					{
-						isRunning = false;
-					}
-					else
-					{
-						cont=false;	
-					}
-				}
-			}
-			break;
-			case MainMenuScreen::MULTIPLAYERS_YOG:
-			{
-				multiplayerYOG();
-			}
-			break;
-			case MainMenuScreen::MULTIPLAYERS_LAN:
-			{
-				LANMenuScreen lanms;
-				int rc_lms = lanms.execute(globalContainer->gfx, 40);
-				if(rc_lms == -1)
-					isRunning=false;
-			}
-			break;
-			case MainMenuScreen::GAME_SETUP:
-			{
-				SettingsScreen settingsScreen;
-				int rc_ss = settingsScreen.execute(globalContainer->gfx, 40);
-				if( rc_ss == -1)
-				{
-					isRunning=false;
-				}
-			}
-			break;
-			case MainMenuScreen::EDITOR:
-			{
-				EditorMainMenu editorMainMenu;
-				int rc=editorMainMenu.execute(globalContainer->gfx, 40);
-				if (rc==-1)
-				{
-					isRunning=false;
-				}
-			}
-			break;
-			case MainMenuScreen::CREDITS:
-			{
-				CreditScreen creditScreen;
-				if (creditScreen.execute(globalContainer->gfx, 40)==-1)
-					isRunning=false;
-			}
-			break;
-			case MainMenuScreen::QUIT:
-			{
-				isRunning=false;
-			}
-			break;
-			default:
-			break;
-		}
-	}
-
-	frontend.reset();
-	// This is for the text shot code
-	GAGCore::DrawableSurface::printFinishingText();
-	delete globalContainer;
+    GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
+        GAGCore::DrawableSurface::printFinishingText();
+        delete globalContainer;
+        globalContainer = nullptr;
+        GAGCore::ApplicationHost::exited(0);
+    });
+    return HOSTED_RUN;
 
 #endif  // !YOG_SERVER_ONLY
 
@@ -649,6 +502,16 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+#ifdef GLOB2_MOBILE
+    try { initializeMobilePaths(); }
+    catch(const std::exception& error) {
+        // Android does not expose native stderr in logcat. Keep early asset and
+        // storage failures diagnosable even before the game logger is available.
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Mobile startup: %s", error.what());
+        fprintf(stderr,"Mobile startup: %s\n",error.what());
+        return 1;
+    }
+#endif
 	// Line-buffer stderr/stdout so abort() and assert failures don't swallow
 	// the last log line. macOS block-buffers redirected stdio, and abort()
 	// is not required to flush — without this, "fprintf(stderr, ...) ; abort()"
@@ -656,7 +519,7 @@ int main(int argc, char *argv[])
 	setvbuf(stderr, NULL, _IOLBF, 0);
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
-#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY)
+#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY) && !defined(GLOB2_MOBILE)
 	// Map tools resolve input and output paths relative to the caller.
 	if (!(argc > 1 && isMapCommand(argv[1])))
 	{
@@ -680,5 +543,7 @@ int main(int argc, char *argv[])
 #endif
 
 	Glob2 glob2;
-	return glob2.run(argc, argv);
+	int result = glob2.run(argc, argv);
+	if (result != Glob2::HOSTED_RUN) GAGCore::ApplicationHost::exited(result);
+	return result == Glob2::HOSTED_RUN ? 0 : result;
 }

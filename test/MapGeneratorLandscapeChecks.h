@@ -7,6 +7,7 @@
 #include "Channels.h"
 #include "Contact.h"
 #include "Drawing.h"
+#include "Farmland.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GraphMaze.h"
@@ -16,11 +17,15 @@
 #include "Morphology.h"
 #include "Orbits.h"
 #include "Patterns.h"
+#include "Planting.h"
 #include "Pipeline.h"
 #include "Points.h"
 #include "Roads.h"
 #include "Room.h"
 #include "Sketch.h"
+#include "ScoredSettlements.h"
+#include "Utilities.h"
+#include <stdexcept>
 #include "Walls.h"
 #include <algorithm>
 #include <cassert>
@@ -28,6 +33,7 @@
 #include <cstdint>
 #include <random>
 #include <set>
+#include <tuple>
 #include <vector>
 
 namespace LandscapeChecks
@@ -77,6 +83,19 @@ inline void orbitChecks()
 	assert(!three.exact && three.sites.size() == 3);
 	const LatticeSites four = latticeSites(64, 64, 4, 5, 7);
 	assert(four.exact && four.sites.size() == 4 && four.sites[0].x == 5 && four.sites[0].y == 7);
+	assert(roomyLatticeSites(0, 64, 4, 5, 7).sites.empty());
+	assert(roomyLatticeSites(64, 64, 0, 5, 7).sites.empty());
+	// Seven or eleven teams cannot factor into balanced equal rows on these rectangles, yet
+	// larger composite grids fit. The opt-in vacancy operation must improve whole-tile
+	// wrapped spacing without changing the ordinary exact/equal-row operation above.
+	for (const auto [w, h, teams] : {std::tuple{256, 128, 7}, std::tuple{128, 256, 11}})
+	{
+		const Torus t(w, h);
+		const LatticeSites ordinary = latticeSites(w, h, teams, 5, 7);
+		const LatticeSites roomy = roomyLatticeSites(w, h, teams, 5, 7);
+		assert(roomy.sites.size() == size_t(teams) && roomy.vacancies > 0);
+		assert(nearestSiteDistance(t, roomy.sites) > nearestSiteDistance(t, ordinary.sites));
+	}
 
 	std::vector<unsigned char> feature(size_t(64) * 64, 0);
 	feature[size_t(7) * 64 + 3] = 1;
@@ -158,6 +177,22 @@ inline void morphologyChecks()
 
 // Growth: a pond waters what is near it and nothing more than its probe reaches; draining the dry
 // zone of a region leaves it dry.
+// Disconnected habitat: a nearby two-tile pocket must not prevent fulfilling a five-tile
+// budget from a second pocket. With neither pocket eligible, placement terminates with zero.
+inline void patchBudgetChecks()
+{
+	Game game(nullptr);
+	landscapeGrass(game, 5, 5);
+	const Torus t(game.map);
+	std::vector<unsigned char> allowed(t.size(), 0);
+	for (int x : {4, 5, 8, 9, 10})
+		allowed[t.at(x, 4)] = 1;
+	const auto eligible = [&](int i) { return allowed[i]; };
+	const auto planted = growPatchesNear(game.map, t, 4, 4, 8, WHEAT, 5, eligible);
+	assert(planted.tiles == 5 && planted.patches == 2);
+	assert(growPatchesNear(game.map, t, 4, 4, 8, WHEAT, 5, eligible).tiles == 0);
+}
+
 inline void growthChecks()
 {
 	const Torus t(64, 64);
@@ -166,6 +201,12 @@ inline void growthChecks()
 		for (int x = 28; x < 36; ++x)
 			sketch[t.at(x, y)] = WATER;
 	layBeaches(sketch, t);
+	// The finished-map overload must agree with sketch corner arithmetic, including beaches.
+	Game written(nullptr);
+	landscapeGrass(written, 6, 6);
+	writeUndermap(written.map, sketch);
+	for (const auto type : {GRASS, SAND, WATER})
+		assert(pureTiles(written.map, type) == pureTiles(sketch, t, type));
 	Fertility::Field field = cropGrowthField(sketch, t);
 	assert(field.at(26, 31) > 0 && field.at(0, 0) == 0);
 	std::vector<unsigned char> distant(t.size(), 0), nearby(t.size(), 0);
@@ -183,6 +224,30 @@ inline void growthChecks()
 	assert(drainWithin(drained, dryZone(t, region)) == 64);
 	layBeaches(drained, t);
 	assert(wetTiles(cropGrowthField(drained, t), region) == 0);
+	// Finished-map containment is independent of fertility: even a dry grass component
+	// is included. An enclosed sand ring must isolate its interior on the torus.
+	Game game(nullptr);
+	landscapeGrass(game, 6, 6);
+	TerrainSketch enclosed(t.size(), GRASS);
+	for (int y = 20; y <= 40; ++y)
+		for (int x = 20; x <= 40; ++x)
+			if (x <= 22 || x >= 38 || y <= 22 || y >= 38)
+				enclosed[t.at(x, y)] = SAND;
+	writeUndermap(game.map, enclosed);
+	game.map.setResource(5, 5, STONE, 1);
+	assert(cropSpreadEnvelope(game.map).visited.empty());
+	game.map.setResource(0, 0, WHEAT, 1);
+	const auto spread = cropSpreadEnvelope(game.map);
+	assert(spread.steps[t.at(63, 63)] == 1); // Diagonal wrapping is a growth route too.
+	assert(spread.steps[t.at(30, 30)] < 0);
+	std::vector<unsigned char> reserved(t.size(), 0);
+	reserved[t.at(30, 30)] = 1;
+	assert(cropSeedsIn(game.map, reserved) == 0);
+	game.map.setResource(30, 30, WOOD, 1);
+	assert(cropSeedsIn(game.map, reserved) == 1);
+	assert(cropSpreadEnvelope(game.map).steps[t.at(31, 31)] == 1);
+	reserved[t.at(0, 0)] = reserved[t.at(5, 5)] = 1;
+	assert(cropSeedsIn(game.map, reserved) == 2); // Stone is not a crop seed.
 }
 
 // Contact: a wood wall stops walkers and costs choppers; costSpread and unevenCosts read the costs;
@@ -550,12 +615,304 @@ inline void dealChecks()
 	assert(moved >= 6);
 }
 
+// Circular farm caps must block future crop spread, including across the torus seam.
+// Test narrow bands and arbitrary crossing angles after beach conversion, not merely
+// that the primitive painted some water. The sand core must join inner and outer caps.
+inline void contourFarmChecks()
+{
+	// The owner/boundary query needs exact ties and sensible missing-site sentinels.
+	const Torus rectangle{128, 64};
+	assert(nearestTwoSites(rectangle, {}, 0, 0).first == -1);
+	const auto lone = nearestTwoSites(rectangle, {{127, 63}}, 0, 0);
+	assert(lone.first == 0 && lone.firstDistanceSquared == 2 && lone.second == -1);
+	const auto tie = nearestTwoSites(rectangle, {{1, 0}, {127, 0}, {60, 30}}, 0, 0);
+	assert(tie.first == 0 && tie.second == 1 && tie.firstDistanceSquared == 1 &&
+		   tie.secondDistanceSquared == 1);
+	const auto duplicate = nearestTwoSites(rectangle, {{0, 0}, {0, 0}}, 0, 0);
+	assert(duplicate.first == 0 && duplicate.second == 1 && duplicate.secondDistanceSquared == 0);
+	const Torus t{128, 128};
+	for (double phase : {0.0, 0.37, kPi / 4})
+		for (int crossings : {2, 3, 4})
+		{
+			TerrainSketch sketch(t.size(), GRASS);
+			ContourFarmStyle style;
+			style.innerRadius = 12;
+			style.rows = {8, 6.4};
+			style.crossings = crossings;
+			style.phase = phase;
+			// One disc wraps both seams; the other tests ordinary translation.
+			const auto contours = layContourFarm(sketch, t, {{0, 0}, {64, 64}}, style);
+			layBeaches(sketch, t);
+			const auto grass = pureTiles(sketch, t, GRASS);
+			const auto water = pureTiles(sketch, t, WATER);
+			const auto sand = pureTiles(sketch, t, SAND);
+			assert(count(water) > 100 && contours.farm.rows == 1);
+			const auto growth = stepsFrom(t, tileMask(t, {t.at(0, 0), t.at(64, 64)}), grass);
+			for (int i = 0; i < t.size(); ++i)
+			{
+				assert(contours.farm.row[i] < 0 || growth[i] < 0);
+				assert(sketch[i] == sketch[t.at(i % t.w + 64, i / t.w + 64)]);
+			}
+			for (int s = 0; s < crossings; ++s)
+			{
+				const double angle = phase + s * 2 * kPi / crossings;
+				const auto atRadius = [&](double radius)
+				{
+					return t.at(int(std::lround(radius * std::cos(angle))),
+								int(std::lround(radius * std::sin(angle))));
+				};
+				const int entry = atRadius(style.innerRadius + 1);
+				const int exit = atRadius(style.outerRadius() - 1);
+				// Keep the search on crossing cores only: going around a water band
+				// via another stair would hide a broken diagonal crossing here.
+				std::vector<unsigned char> walk(t.size(), 0);
+				for (int i = 0; i < t.size(); ++i)
+					walk[i] = sand[i] && contours.crossings[i];
+				const int source =
+					seedNear(t, entry % t.w, entry / t.w, 3, [&](int i) { return walk[i]; });
+				const int target =
+					seedNear(t, exit % t.w, exit / t.w, 3, [&](int i) { return walk[i]; });
+				assert(source >= 0 && target >= 0);
+				const auto reached = stepsFrom(t, tileMask(t, {source}), walk);
+				assert(reached[target] >= 0);
+			}
+			int cores = 0;
+			for (int i = 0; i < t.size(); ++i)
+				cores += sand[i] && contours.crossings[i];
+			assert(cores > 50);
+		}
+	// Lobed contours: the summit and its cap stay round, no band reaches farther than the
+	// amplitude past the circular outer radius, some band ground lies beyond that circle, and
+	// the layout is still a function of the whole-corner translation.
+	{
+		TerrainSketch sketch(t.size(), GRASS);
+		ContourFarmStyle style;
+		style.innerRadius = 12;
+		style.rows = {8, 6.4};
+		style.bands = 2;
+		style.wobbles = {{3, {0.3, 1.1, 2.0}}};
+		assert(std::abs(style.reach() - style.outerRadius() - 3) < 1e-9);
+		assert(contourNominal(style, 0, style.innerRadius + style.cap, 1.0) ==
+			   style.innerRadius + style.cap);
+		assert(contourNominal(style, 5, 30, 1.0) == 30);
+		// One hill on the seam: two bands plus the wobble reach farther than half the 64-tile
+		// spacing the circular cases use, and discs must not overlap.
+		const auto contours = layContourFarm(sketch, t, {{0, 0}}, style);
+		assert(contours.farm.rows == 2);
+		int lobed = 0;
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const double d = std::hypot(t.offsetX(0, i % t.w), t.offsetY(0, i / t.w));
+			if (d < style.innerRadius || d > style.outerRadius() + 3)
+				assert(contours.farm.row[i] < 0 && !contours.farm.sand[i]);
+			else if (d < style.innerRadius + style.cap)
+				assert(contours.farm.row[i] < 0 && contours.farm.sand[i]);
+			lobed += contours.farm.row[i] >= 0 && d > style.outerRadius();
+		}
+		assert(lobed > 0);
+	}
+}
+
+// Additive operations are tested against their semantic contracts, including
+// malformed inputs and toroidal seams. Existing operations retain their goldens.
+inline void lavaPrimitiveChecks()
+{
+	// A tempting isolated high-priority tile must not beat a contiguous starter
+	// patch: the latter can actually satisfy a resource budget. A border-crossing
+	// cluster also checks that the local density probe respects toroidal wrapping.
+	const Torus patchT(32, 32);
+	std::vector<unsigned char> patch(patchT.size(), 0);
+	patch[patchT.at(10, 10)] = 1;
+	for (int y = -2; y <= 2; ++y)
+		for (int x = -2; x <= 2; ++x)
+			patch[patchT.at(x, y)] = 1;
+	const auto eligiblePatch = [&](int i) { return patch[i] != 0; };
+	const int patchSeed = seedForPatchCapacity(
+		patchT, 0, 0, 11, 2, eligiblePatch,
+		[&](int i) { return i == patchT.at(10, 10) ? 100.0 : 1.0; });
+	assert(patchSeed != patchT.at(10, 10));
+	assert(patchT.chebyshev(patchSeed % patchT.w, patchSeed / patchT.w, 0, 0) <= 2);
+	assert(seedForPatchCapacity(patchT, 0, 0, -1, 2, eligiblePatch,
+								 [](int) { return 1.0; }) == -1);
+
+	std::mt19937 a(37), b(37), untouched(37);
+	const DownhillStyle style{3, 0.72, 0.055, 0.2};
+	const auto path = downhillPath({32, 32}, 5, 24, 0.7, 4, 2, a, style, {2, 1});
+	const auto repeat = downhillPath({32, 32}, 5, 24, 0.7, 4, 2, b, style, {2, 1});
+	assert(path.size() == 8 && path.size() == repeat.size());
+	double previous = -1;
+	for (size_t k = 0; k < path.size(); ++k)
+	{
+		assert(path[k].x == repeat[k].x && path[k].y == repeat[k].y);
+		const double x = (path[k].x - 32) / 2, y = path[k].y - 32;
+		const double r = std::hypot(x, y);
+		assert(r > previous && std::abs(std::atan2(y, x) - 0.7) <= 0.200001);
+		previous = r;
+	}
+	assert(std::abs(previous - 24) < 1e-9 && path.back().halfWidth == 2);
+	assert(downhillPath({0, 0}, 2, 1, 0, 1, 1, untouched).empty());
+	assert(untouched == std::mt19937(37));
+
+	const Torus t(32, 32);
+	const std::vector<RankedSite> sites{{t.at(0, 0), 1}, {t.at(31, 0), 100}, {t.at(16, 0), 1}};
+	const auto spread = spreadRankedSites(t, sites, 3, 8, 0);
+	assert(spread.size() == 2 && spread[1] == t.at(16, 0));
+	assert(spreadRankedSites(t, {{-1, 1}}, 1, 1, 0).empty());
+
+	TerrainSketch terrain(t.size(), GRASS);
+	std::vector<unsigned char> keep(t.size(), 0), goal(t.size(), 0);
+	keep[t.at(0, 0)] = 1;
+	goal[t.at(3, 16)] = 1;
+	terrain[t.at(0, 12)] = WATER;
+	const auto route = reserveSandRoute(terrain, t, {t.at(29, 16)}, goal, keep, 1);
+	assert(!route.empty()); // the shortest route crosses the seam
+	assert(terrain[t.at(0, 12)] == WATER);
+	assert(pureTiles(terrain, t, GRASS)[t.at(0, 0)]);
+	const auto sand = pureTiles(terrain, t, SAND);
+	for (int p : route)
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+				assert(sand[t.at(p % t.w + dx, p / t.w + dy)]);
+	const auto saved = terrain;
+	std::fill(keep.begin(), keep.end(), 1);
+	assert(reserveSandRoute(terrain, t, {0}, goal, keep).empty() && terrain == saved);
+	assert(reserveSandRoute(terrain, t, {-1}, goal, keep).empty() && terrain == saved);
+
+	TerrainSketch diagonalTerrain(t.size(), GRASS);
+	std::vector<unsigned char> diagonalKeep(t.size(), 0), diagonalGoal(t.size(), 0);
+	diagonalKeep[t.at(10, 10)] = 1;
+	diagonalGoal[t.at(20, 20)] = 1;
+	std::vector<int> costs(t.size(), 1);
+	const auto diagonal = reserveSandRoute(diagonalTerrain, t, {t.at(4, 4)}, diagonalGoal,
+										   diagonalKeep, 1, &costs, GridNeighbors::Eight);
+	assert(!diagonal.empty() && pureTiles(diagonalTerrain, t, GRASS)[t.at(10, 10)]);
+	bool diagonalStep = false;
+	for (size_t k = 1; k < diagonal.size(); ++k)
+		diagonalStep |= t.offsetX(diagonal[k] % t.w, diagonal[k - 1] % t.w) != 0 &&
+						t.offsetY(diagonal[k] / t.w, diagonal[k - 1] / t.w) != 0;
+	assert(diagonalStep);
+	const auto beforeInvalidCosts = diagonalTerrain;
+	costs[0] = 0;
+	assert(
+		reserveSandRoute(diagonalTerrain, t, {0}, diagonalGoal, diagonalKeep, 1, &costs).empty() &&
+		diagonalTerrain == beforeInvalidCosts);
+
+	// A narrow natural gap can preserve a one-tile trail even when three tiles do
+	// not fit. Failure of the wide attempt must leave an exact, reusable sketch.
+	TerrainSketch narrowTerrain(t.size(), GRASS);
+	std::vector<unsigned char> narrowKeep(t.size(), 0), narrowGoal(t.size(), 0);
+	for (int x = 0; x < t.w; ++x)
+		for (int y : {14, 18})
+			narrowKeep[t.at(x, y)] = 1;
+	narrowGoal[t.at(20, 16)] = 1;
+	const auto narrowBefore = narrowTerrain;
+	assert(reserveSandRoute(narrowTerrain, t, {t.at(4, 16)}, narrowGoal, narrowKeep, 1).empty());
+	assert(narrowTerrain == narrowBefore);
+	const auto narrowPath =
+		reserveSandRoute(narrowTerrain, t, {t.at(4, 16)}, narrowGoal, narrowKeep, 0);
+	assert(!narrowPath.empty());
+	const auto narrowSand = pureTiles(narrowTerrain, t, SAND);
+	const auto narrowGrass = pureTiles(narrowTerrain, t, GRASS);
+	for (int p : narrowPath)
+		assert(narrowSand[p]);
+	for (int i = 0; i < t.size(); ++i)
+		assert(!narrowKeep[i] || narrowGrass[i]);
+
+	// A mixed beach between water and legal stone is already crop-proof, but
+	// cannot be repainted pure sand without spoiling its stone neighbour. Reuse
+	// that existing passage exactly, and reject misuse of it as a wide-road claim.
+	TerrainSketch beachTerrain(t.size(), GRASS);
+	std::vector<unsigned char> beachKeep(t.size(), 0), beachGoal(t.size(), 0), passage(t.size(), 0);
+	for (int y = 0; y < t.h; ++y)
+	{
+		beachTerrain[t.at(0, y)] = WATER;
+		beachTerrain[t.at(1, y)] = SAND;
+		beachKeep[t.at(2, y)] = passage[t.at(1, y)] = 1;
+	}
+	beachGoal[t.at(1, 20)] = 1;
+	const auto beachBefore = beachTerrain;
+	assert(reserveSandRoute(beachTerrain, t, {t.at(1, 4)}, beachGoal, beachKeep).empty());
+	assert(!reserveSandRoute(beachTerrain, t, {t.at(1, 4)}, beachGoal, beachKeep, 0, nullptr,
+							 GridNeighbors::Eight, &passage)
+				.empty());
+	assert(beachTerrain == beachBefore);
+	assert(reserveSandRoute(beachTerrain, t, {t.at(1, 4)}, beachGoal, beachKeep, 1, nullptr,
+							GridNeighbors::Eight, &passage)
+			   .empty());
+	assert(beachTerrain == beachBefore);
+
+	GenerationRequest request;
+	request.nbTeams = 1;
+	request.wDec = request.hDec = 5;
+	GenerationContext context(request, true);
+	context.bounded("builder", 100); // trials must copy an already-advanced stream
+	GenerationContext expected(context);
+	const auto expectedDraw = expected.bounded("builder", 10000);
+	setSyncRandSeed(793);
+	const auto engine = syncRandEngine();
+	int attempts = 0;
+	const auto rejected = chooseScoredSettlements(
+		context, {{}, {1}, {2}},
+		[&](Game &, GenerationContext &probe, const std::vector<int> &)
+		{
+			assert(probe.bounded("builder", 10000) == expectedDraw);
+			assert(syncRandEngine() == engine);
+			syncRand();
+			++attempts;
+			probe.detail = "retained rejection";
+			return false;
+		},
+		[](const StartQualityReport &) { return std::string{}; });
+	assert(attempts == 2 && rejected.selected == -1 && rejected.failure == "retained rejection");
+	assert(syncRandEngine() == engine && context.bounded("builder", 10000) == expectedDraw);
+	try
+	{
+		chooseScoredSettlements(
+			context, {{1}},
+			[](Game &, GenerationContext &, const std::vector<int> &) -> bool
+			{
+				syncRand();
+				throw std::runtime_error("builder failed");
+			},
+			[](const StartQualityReport &) { return std::string{}; });
+		assert(false);
+	}
+	catch (const std::runtime_error &)
+	{
+	}
+	assert(syncRandEngine() == engine);
+	const auto build = [](Game &world, GenerationContext &c, const std::vector<int> &proposal)
+	{
+		world.map.makeHomogenMap(GRASS);
+		world.addTeam();
+		std::vector<unsigned char> home(world.map.getW() * world.map.getH(), 1);
+		const int x = proposal[0];
+		if (!placeSettlement(world, c, 0, home, {x, 12}, "trial-settle"))
+			return false;
+		world.map.setResource(x + 7, 12, WHEAT, 1);
+		world.map.setResource(x + 7, 16, WOOD, 1);
+		return true;
+	};
+	const auto selected = chooseScoredSettlements(
+		context, {{8}, {16}}, build, [](const StartQualityReport &) { return std::string{}; });
+	assert(selected.selected >= 0 && selected.viable == 2 && syncRandEngine() == engine);
+	Game finalWorld(nullptr);
+	finalWorld.map.setSize(request.wDec, request.hDec);
+	finalWorld.map.setGame(&finalWorld);
+	assert(build(finalWorld, context, selected.sites));
+	const auto finalQuality = scoreStarts(finalWorld, 1);
+	assert(finalQuality.score == selected.quality.score);
+}
+
 inline void landscapeChecks()
 {
+	contourFarmChecks();
+	lavaPrimitiveChecks();
 	dealChecks();
 	orbitChecks();
 	morphologyChecks();
 	growthChecks();
+	patchBudgetChecks();
 	contactChecks();
 	pointChecks();
 	patternChecks();

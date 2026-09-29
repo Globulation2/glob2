@@ -8,13 +8,18 @@ A placement rule that favoured one index over another would show here; a flat ta
 starts colonies get do not depend on their index.
 
     python3 tools/colony_start_metrics.py [--seeds 1-40] [--size 256] [--colonies 4]
-                                          [--generators 9,11,...] [--study build/src/MapGeneratorStudy]
+                                          [--generators 9,11,...] [--study PATH/TO/MapGeneratorStudy]
 """
 import argparse
 import statistics
 import subprocess
 import sys
 from pathlib import Path
+
+if __package__:
+    from .build_paths import native_binary
+else:
+    from build_paths import native_binary
 
 ROOT = Path(__file__).resolve().parent.parent
 COLUMNS = ["colony", "wheatDistance", "woodDistance", "catchmentTiles", "buildSites",
@@ -42,7 +47,7 @@ def main():
     ap.add_argument("--size", type=int, default=256)
     ap.add_argument("--colonies", type=int, default=4)
     ap.add_argument("--generators", help="comma-separated legacy ids; default: every playable generator")
-    ap.add_argument("--study", default=str(ROOT / "build" / "src" / "MapGeneratorStudy"))
+    ap.add_argument("--study", default=str(native_binary("MapGeneratorStudy")))
     ap.add_argument("--profile", default="glob2-colony-metrics")
     args = ap.parse_args()
     dec = args.size.bit_length() - 1

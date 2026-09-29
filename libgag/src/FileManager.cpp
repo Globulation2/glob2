@@ -11,13 +11,15 @@
 #include <iostream>
 #include <valarray>
 #include <vector>
+#include <filesystem>
+#include <stdexcept>
 #include <zlib.h>
 #include "BinaryStream.h"
 #include "TextStream.h"
 
 // here we handle compile time options
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+#  include <glob2/BuildConfig.h>
 #else
 #	ifdef WIN32
 #		define PACKAGE_DATA_DIR ".."
@@ -70,11 +72,18 @@ namespace GAGCore
 
 	FileManager::FileManager(const std::string gameName)
 	{
+        const char* profile = SDL_getenv("GLOB2_USER_DATA_DIR");
+        if (profile && *profile) {
+            std::filesystem::path path(profile);
+            if (!path.is_absolute()) throw std::runtime_error("GLOB2_USER_DATA_DIR must be absolute");
+            std::filesystem::create_directories(path);
+            addDir(path.string());
+        }
 		#ifndef WIN32
 		const char *experimentDir = getenv("GLOB2_USER_DIR");
 		const char *home = getenv("HOME");
 		const std::string homeDir = home ? home : "";
-		if ((experimentDir && *experimentDir) || !homeDir.empty())
+		if ((!profile || !*profile) && ((experimentDir && *experimentDir) || !homeDir.empty()))
 		{
 			std::string gameLocal(homeDir);
 			if (experimentDir && *experimentDir) gameLocal = experimentDir;
@@ -82,12 +91,14 @@ namespace GAGCore
 			mkdir(gameLocal.c_str(), S_IRWXU);
 			addDir(gameLocal.c_str());
 		}
-		else
+		else if ((!profile || !*profile) && homeDir.empty())
 			std::cerr << "FileManager::FileManager : warning, can't get home directory by using getenv(\"HOME\")" << std::endl;
 		#endif
 #ifdef __APPLE__
 		addDir("./Contents/Resources");
 #endif
+		const char* assets = SDL_getenv("GLOB2_ASSET_DIR");
+		if (assets && *assets) addDir(assets);
 		addDir(".");
 
 		#ifndef WIN32

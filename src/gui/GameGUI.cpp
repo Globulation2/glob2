@@ -14,6 +14,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameGUILoadSave.h"
@@ -24,7 +25,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
-#include "config.h"
+#include <glob2/BuildConfig.h>
 #include "Order.h"
 
 
@@ -47,7 +48,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 	}
 }
 
-GameGUI::GameGUI()
+GameGUI::GameGUI(bool persistPreferences)
 	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
@@ -60,6 +61,7 @@ GameGUI::GameGUI()
 
 	  ghostManager(game)
 {
+	this->persistPreferences = persistPreferences;
 }
 
 GameGUI::~GameGUI()
@@ -67,7 +69,7 @@ GameGUI::~GameGUI()
 	if (!globalContainer->runNoX) Sprite::setHighResolution(false);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
-	if (globalContainer->settings.rememberUnit)
+	if (persistPreferences && globalContainer->settings.rememberUnit)
 		globalContainer->settings.save();
 }
 
@@ -86,6 +88,7 @@ void GameGUI::init()
 	torusPointerDown = false;
 	camera=MapCamera();zoomControlPushed=false;
 	if (!globalContainer->runNoX) Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
+    touch = std::make_unique<GameGUITouch>(*this);
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;
@@ -294,6 +297,8 @@ void GameGUI::publishMessageHistoryLines(const std::string& text, HistoryList ta
 
 void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat)
 {
+    // Headless simulations execute the order but have no font or message UI.
+    if (globalContainer->runNoX) return;
 	// Wrap-measure the text in bold so the line breaks match the bold
 	// rendering used by InGameMessage::draw. The font color pushed here is
 	// irrelevant to glyph widths but matches the historical call site.
@@ -314,8 +319,10 @@ void GameGUI::updateCamera()
 {
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
-    camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
-    if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
+    if (touch && touch->usesHUD()) {
+        const auto bounds=touch->worldBounds();
+        camera.resize(bounds.w,bounds.h,game.map.getW()*32.0,game.map.getH()*32.0,bounds.x,bounds.y);
+    } else camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
@@ -324,9 +331,8 @@ void GameGUI::updateCamera()
 bool GameGUI::zoomMap(double steps,int x,int y)
 {
     updateCamera();
-    if (torusView.active() || !globalContainer->gfx->canDrawStretchedSprite() || y<16 || !camera.contains(x,y)) return false;
+    if (torusView.active() || y<16 || !camera.contains(x,y)) return false;
     camera.wheel(steps,x,y);
-    if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());

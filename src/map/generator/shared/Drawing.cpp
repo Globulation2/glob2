@@ -4,6 +4,66 @@
 #include <cmath>
 namespace MapGeneration
 {
+bool strokeIntersectsMask(const Torus &t, const std::vector<StrokePoint> &path,
+						  const std::vector<unsigned char> &protectedMask)
+{
+	std::vector<unsigned char> stroke(t.size(), 0);
+	strokePath(stroke, t, path);
+	for (int i = 0; i < t.size(); ++i)
+		if (stroke[i] && protectedMask[i])
+			return true;
+	return false;
+}
+
+void fillRectangle(std::vector<unsigned char> &mask, const Torus &t, RegionBounds b,
+				   unsigned char value)
+{
+	for (int y = b.y0; y < b.y1; ++y)
+		for (int x = b.x0; x < b.x1; ++x)
+			mask[t.at(x, y)] = value;
+}
+
+std::vector<StrokePoint> downhillPath(ShapePoint centre, double fromRadius, double toRadius,
+									  double heading, double fromHalfWidth, double toHalfWidth,
+									  std::mt19937 &random, const DownhillStyle &style,
+									  const Stretch &stretch)
+{
+	for (double v :
+		 {centre.x, centre.y, fromRadius, toRadius, heading, fromHalfWidth, toHalfWidth, style.step,
+		  style.memory, style.angularNoise, style.maxDrift, stretch.sx, stretch.sy})
+		if (!std::isfinite(v))
+			return {};
+	if (fromRadius < 0 || toRadius <= fromRadius || style.step <= 0 || style.memory < 0 ||
+		style.memory >= 1 || style.angularNoise < 0 || style.maxDrift < 0 || fromHalfWidth <= 0 ||
+		toHalfWidth <= 0 || stretch.sx <= 0 || stretch.sy <= 0)
+		return {};
+	// A defensive cap prevents an accidentally microscopic step allocating unbounded
+	// memory. 65536 segments already exceed a full diagonal of any supported map.
+	const double needed = std::ceil((toRadius - fromRadius) / style.step);
+	if (needed > 65536)
+		return {};
+	const int segments = int(needed);
+	std::vector<StrokePoint> path;
+	path.reserve(segments + 1);
+	double turn = 0, angle = heading;
+	for (int k = 0; k <= segments; ++k)
+	{
+		const double radius = std::min(toRadius, fromRadius + k * style.step);
+		const double progress = (radius - fromRadius) / (toRadius - fromRadius);
+		if (k)
+		{
+			// Explicit conversion avoids implementation-defined uniform distributions.
+			const double roll = random() / 4294967296.0;
+			turn = style.memory * turn + (2 * roll - 1) * style.angularNoise;
+			angle = std::clamp(angle + turn, heading - style.maxDrift, heading + style.maxDrift);
+		}
+		const ShapePoint p =
+			stretch.apply(centre.x, centre.y, polarPoint(centre.x, centre.y, radius, angle));
+		path.push_back({p.x, p.y, fromHalfWidth + (toHalfWidth - fromHalfWidth) * progress});
+	}
+	return path;
+}
+
 namespace
 {
 void strokeSegment(std::vector<unsigned char> &mask, const Torus &t, const StrokePoint &a,
@@ -313,5 +373,31 @@ Zigzag zigzagPath(const AxisFrame &frame, double start, double firstLeg, double 
 	point(finish, side);
 	zigzag.finishAcross = side;
 	return zigzag;
+}
+
+std::vector<StrokePoint> splinePath(const std::vector<ShapePoint> &waypoints, double step)
+{
+	std::vector<StrokePoint> path;
+	if (waypoints.empty())
+		return path;
+	std::vector<ShapePoint> knots{waypoints.front()};
+	knots.insert(knots.end(), waypoints.begin(), waypoints.end());
+	knots.push_back(waypoints.back());
+	for (size_t w = 1; w + 2 < knots.size(); ++w)
+	{
+		const ShapePoint &p0 = knots[w - 1], &p1 = knots[w], &p2 = knots[w + 1], &p3 = knots[w + 2];
+		const int samples = std::max(2, int(std::hypot(p2.x - p1.x, p2.y - p1.y) / step));
+		for (int q = (w == 1 ? 0 : 1); q <= samples; ++q)
+		{
+			const double u = double(q) / samples, u2 = u * u, u3 = u2 * u;
+			const auto blend = [&](double a, double b, double c, double d)
+			{
+				return 0.5 * (2 * b + (c - a) * u + (2 * a - 5 * b + 4 * c - d) * u2 +
+							  (3 * b - a - 3 * c + d) * u3);
+			};
+			path.push_back({blend(p0.x, p1.x, p2.x, p3.x), blend(p0.y, p1.y, p2.y, p3.y), 0});
+		}
+	}
+	return path;
 }
 } // namespace MapGeneration

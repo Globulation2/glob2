@@ -57,7 +57,7 @@ using namespace MapGeneration;
 // the sea outside it - a square's four corners, which the torus joins into one ocean round the
 // point across the map from the centre, and a rectangle's bands - held nothing. It now holds round
 // islets, kIsletRadius in radius, each with an axis-aligned 10x4 clearing of grass in a ring of
-// sand at its middle - the same building plot the farms use (Farmland.h) - and a small prize on its
+// sand at its middle - the same building plot the farms use (Farmland.h) - and wheat covering all plantable
 // grass beyond the ring. Their middles lie on rings round each wrap point (rasterize): the point
 // itself, then `islands` rings of eight, sixteen and so on at equal angles, so the set has the
 // map's own four-fold symmetry with mirrors; an islet whose disc and kIsletMoat of water round it
@@ -154,10 +154,9 @@ constexpr int kRoadWidth = 2;
 // The islets (see the header): radius (11 since the plot "is taking up too much of the space" at 9)
 // and roughness (nearly round, so the axis-aligned 10x4 plot of grass, whose far corner is 5.4 tiles
 // out, sits well inside the beach with room to build round it: the grass reaches 10.45 - 1 beach =
-// 9.5 at the roughest), the water kept between an islet and any coast or other islet, and how far
-// from the middle the prize stands, clear of the ring.
+// 9.5 at the roughest), and the water kept between an islet and any coast or other islet.
 constexpr double kIsletRadius = 11.0, kIsletRoughness = 0.05;
-constexpr int kIsletMoat = 3, kIsletPrizeOut = 7;
+constexpr int kIsletMoat = 3;
 
 // What a home is made of, and what the heart of the commons is. One of each per map.
 enum HomeKind
@@ -318,11 +317,10 @@ struct Layout
 	// The sand roads: undermap vertices turned to sand, and the tiles with a corner on one.
 	std::vector<unsigned char> sandRoad, roadTile;
 	std::vector<double> radius, angle;
-	// The islets' middles, where their 10x4 plots are stamped and their prizes stand, with each
-	// islet's place among its wedge's (the prize kind goes round by it).
+	// The islets' middles, where their 10x4 building plots are stamped.
 	struct IsletSite
 	{
-		int x, y, place;
+		int x, y;
 	};
 	std::vector<IsletSite> plots;
 	std::string failure;
@@ -768,8 +766,8 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 	// every home's outer coast and clear of the islets already raised, and its images under the
 	// map's symmetries are raised or dropped with it. Three is the least moat that leaves a tile
 	// of pure water: the beach pass sands the land vertices beside water, and a tile with a sand
-	// corner is no longer water to walk on. The plots and prizes stand at every middle raised; the
-	// prize kind goes round by the islet's place.
+	// corner is no longer water to walk on. Every islet has a central building plot
+	// surrounded by wheat.
 	{
 		const double reach = f.islet.maximumRadius();
 		const double pitch = 2 * reach + kIsletMoat + 1;
@@ -789,7 +787,7 @@ static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const 
 				for (int dx = -span; dx <= span; ++dx)
 					if (std::hypot(dx, dy) < f.islet.radiusAt(std::atan2(dy, dx)))
 						L.region[t.at(x + dx, y + dy)] = Islet;
-			L.plots.push_back({x, y, int(L.plots.size())});
+			L.plots.push_back({x, y});
 		};
 		// A candidate offset from a focus and its images under the square's symmetries, each once.
 		const auto orbit = [&](int fx, int fy, double u, double v)
@@ -1369,30 +1367,15 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 				map.setResource(i % t.w, i / t.w, WOOD, 1);
 }
 
-// Every islet's prize: one small clump on its grass beyond the plot's ring, kIsletPrizeOut tiles
-// below the middle (the same side on every islet), of a kind that goes round by the islet's place
-// - stone, then a fruit (the three fruits in turn), then wheat - each scaled by its amount. Small,
-// since the islet is a place to build, not a mine.
-void stockIslets(Map &map, const Layout &L, GenerationContext &context, const CityStatesOptions &o,
-				 const Farm &plots)
+// Wheat covers every plantable islet tile outside the sand-bordered building plot.
+// This guaranteed cover is independent of the ambient resource amount controls.
+void stockIslets(Map &map, const Layout &L, const Farm &plots)
 {
 	const Torus &t = L.t;
-	for (const Layout::IsletSite &site : L.plots)
-	{
-		const int kind = site.place % 3;
-		const int type = kind == 0 ? STONE : kind == 1 ? CHERRY + (site.place / 3) % 3 : WHEAT;
-		const int amount = kind == 0 ? o.stone : kind == 1 ? o.fruit : o.wheat;
-		if (scaledCount(1, amount) <= 0)
-			continue;
-		const int seed = seedNear(t, site.x, site.y + kIsletPrizeOut, 3,
-								  [&](int i)
-								  {
-									  return L.region[i] == Islet && !plots.plot[i] &&
-											 !plots.sand[i] && clearGround(map, i % t.w, i / t.w);
-								  });
-		if (seed >= 0)
-			placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), type, 1);
-	}
+	for (int i = 0; i < t.size(); ++i)
+		if (L.region[i] == Islet && !plots.plot[i] && !plots.sand[i] &&
+			map.isResourceAllowed(i % t.w, i / t.w, WHEAT))
+			map.setResource(i % t.w, i / t.w, WHEAT, 1);
 }
 
 // Causeways and their approaches hold nothing but the causeways' own stone lines.
@@ -1506,7 +1489,7 @@ bool generate(Game &game, GenerationContext &context)
 	context.stage = "city resources";
 	furnishHomes(map, L, context, o);
 	stockCommons(map, L, context, o);
-	stockIslets(map, L, context, o, isletPlots);
+	stockIslets(map, L, isletPlots);
 	seedAlgae(map, context, t, "city-algae", o.algae, AlgaeBand::shallows(2, 4));
 	// The kits already put wheat and wood a short walk from every swarm; this is only the backstop,
 	// and the walls and the causeways' stone are designed and must never be cleared.
@@ -1572,12 +1555,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	if (!heartReached)
 		return "The heart of the commons cannot be reached on foot.";
 	// Every islet keeps its plot clear and buildable, and no islet can be walked to: the moat holds.
+	std::vector<unsigned char> isletPlot(n, 0);
 	for (const Layout::IsletSite &site : L.plots)
 	{
 		for (int dy = 0; dy < 4; ++dy)
 			for (int dx = 0; dx < 10; ++dx)
 			{
 				const int x = t.x(site.x - 5 + dx), y = t.y(site.y - 2 + dy);
+				isletPlot[t.at(x, y)] = 1;
 				if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID)
 					return "The islet plot at " + where(t.at(site.x, site.y)) +
 						   " is not buildable.";
@@ -1585,6 +1570,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 		if (fromFirst[t.at(site.x, site.y)] >= 0)
 			return "The islet at " + where(t.at(site.x, site.y)) + " can be walked to.";
 	}
+
+	for (int i = 0; i < n; ++i)
+		if (L.region[i] == Islet && !isletPlot[i] && map.isGrass(i % t.w, i / t.w) &&
+			map.getResource(i % t.w, i / t.w).type != WHEAT)
+			return "The islet grass at " + where(i) + " is not covered with wheat.";
 
 	// Shut every causeway road: with the walls up, nothing landing from the sea may get in.
 	if (L.g.walls)
@@ -1642,7 +1632,7 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		9,
+		10,
 		false,
 		// The commons' radius as a share of half the shorter side, the strait's width as a share of
 		// the shorter side, the causeway's road in tiles; valleys per 128x128 of commons; rings of
@@ -1662,8 +1652,8 @@ GeneratorDefinition cityStatesDefinition()
 		 GeneratorControl::toggle("stone-walls", "Stone walls", true, ControlGroup::Layout),
 		 // Off, no sand roads: the causeways and the commons are grass from shore to shore.
 		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
-		 // Every home's ambient fields, outcrops and grove, the commons and the islets' prizes;
-		 // every home's kit and the causeways' stone stay as they are.
+		 // Every home's ambient fields, outcrops and grove, and the commons;
+		 // every home's kit, the islets' wheat and the causeways' stone stay as they are.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
@@ -1672,5 +1662,9 @@ GeneratorDefinition cityStatesDefinition()
 		generate,
 		true,
 		validateRequest,
-		validateWorld};
+		validateWorld,
+		// The wedge dividers are stone roads/walls, not blue canals, and the city is one landmass
+		// (small ring islands in the surrounding ocean are decoration, not a mapped feature).
+		{"terrain:urban", "feature:stone-walls", "style:tight-building", "style:contested-center",
+		 "fairness:repeated-wedge"}};
 }

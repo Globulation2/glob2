@@ -13,6 +13,8 @@
 #include <BinaryStream.h>
 #include <stdexcept>
 #include <cstddef>
+#include <algorithm>
+#include <tuple>
 
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -21,6 +23,7 @@
 #include "FileFormatVersions.h"
 #include "Unit.h"
 #include "Bullet.h"
+#include "Map.h"
 
 
 namespace
@@ -79,7 +82,7 @@ void statValue(Stream* stream, const char* name, T (&values)[N])
     leaveStatSection(stream);
 }
 
-template <class Stream, class Stat> void measurementFields(Stream *stream, Stat &stat)
+template <class Stream, class Stat> void measurementFields(Stream *stream, Stat &stat, bool extended = true)
 {
 	statValue(stream, "tick", stat.tick);
 	statValue(stream, "births", stat.births);
@@ -112,6 +115,18 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 	statValue(stream, "critical", stat.critical);
 	statValue(stream, "feeding", stat.feeding);
 	statValue(stream, "healing", stat.healing);
+	if (extended)
+	{
+		statValue(stream, "trappedUnits", stat.trappedUnits);
+		statValue(stream, "trappedBuildings", stat.trappedBuildings);
+		statValue(stream, "lowHP", stat.lowHP);
+		statValue(stream, "lowFood", stat.lowFood);
+		statValue(stream, "trappedTick", stat.trappedTick);
+		statValue(stream, "growthTiles", stat.growthTiles);
+		statValue(stream, "growthAmount", stat.growthAmount);
+		statValue(stream, "growthReduction", stat.growthReduction);
+		statValue(stream, "growthGlobal", stat.growthGlobal);
+	}
 }
 
 template<class Stream, class Stat>
@@ -321,6 +336,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		(measurements.tick & END_OF_GAME_STAT_INTERVAL_MASK) == 0 &&
 		(measurementHistory.empty() || measurementHistory.back().tick != measurements.tick))
 	{
+		sampleTraps(team);
 		measurementHistory.push_back(measurements);
 		AITelemetry::capture(team, true, getenv("GLOB2_TEAM_TIMELINE") != nullptr);
 		if (getenv("GLOB2_TEAM_TIMELINE"))
@@ -730,7 +746,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	{
 		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		coverageStartTick = stream->readUint32("coverageStartTick");
-		measurementFields(stream, measurements);
+		measurementFields(stream, measurements, versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS);
 		const Uint32 count = stream->readUint32("measurementCount");
 		if (measurements.tick < coverageStartTick || count > Uint64(measurements.tick) / 512 + 1)
 			throw std::runtime_error("Invalid gameplay statistics coverage");
@@ -739,7 +755,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		{
 			stream->readEnterSection(i);
 			GameplayMeasurements sample;
-			measurementFields(stream, sample);
+			measurementFields(stream, sample, versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS);
 			stream->readLeaveSection();
 			if (sample.tick < coverageStartTick || sample.tick > measurements.tick ||
 				(sample.tick & 511) ||
@@ -748,9 +764,44 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			measurementHistory.push_back(sample);
 		}
 		needsMeasurementInitialization = false;
+		extendedCoverageStartTick = versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS
+			? stream->readUint32("extendedCoverageStartTick") : measurements.tick;
+		if (extendedCoverageStartTick < coverageStartTick || extendedCoverageStartTick > measurements.tick)
+			throw std::runtime_error("Invalid extended gameplay coverage");
+		if (versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS)
+		{
+			coverageBuildingTick = stream->readUint32("coverageBuildingTick");
+			coverageBuildingGeneration = stream->readUint32("coverageBuildingGeneration");
+			const Uint32 buildings = stream->readUint32("coverageBuildingCount");
+			if (buildings > Building::MAX_COUNT || coverageBuildingTick > measurements.tick)
+				throw std::runtime_error("Invalid gameplay coverage anchors");
+			coverageBuildings.clear();
+			coverageBuildings.reserve(buildings);
+			for (Uint32 i = 0; i < buildings; ++i)
+			{
+				CoverageBuilding b{stream->readSint32("coverageX"),stream->readSint32("coverageY"),
+					stream->readSint32("coverageW"),stream->readSint32("coverageH")};
+				if (b.width <= 0 || b.height <= 0 || b.width > 32 || b.height > 32 ||
+					b.x < -(1 << 20) || b.x > (1 << 20) ||
+					b.y < -(1 << 20) || b.y > (1 << 20))
+					throw std::runtime_error("Invalid gameplay coverage footprint");
+				coverageBuildings.push_back(b);
+			}
+			std::sort(coverageBuildings.begin(), coverageBuildings.end(), [](const CoverageBuilding &a, const CoverageBuilding &b) {
+				return std::tie(a.x,a.y,a.width,a.height) < std::tie(b.x,b.y,b.width,b.height);
+			});
+		}
+		else
+		{
+			coverageBuildings.clear();
+			coverageBuildingTick = coverageBuildingGeneration = 0;
+		}
 	}
 	else
+	{
 		needsMeasurementInitialization = true;
+		extendedCoverageStartTick = measurements.tick;
+	}
 
 	if (versionMinor >= FILE_FORMAT_VERSION_AI_TELEMETRY)
 		AITelemetry::load(stream, aiTelemetry);
@@ -803,6 +854,17 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 		measurementFields(stream, measurementHistory[i]);
 		stream->writeLeaveSection();
 	}
+	stream->writeUint32(extendedCoverageStartTick, "extendedCoverageStartTick");
+	stream->writeUint32(coverageBuildingTick, "coverageBuildingTick");
+	stream->writeUint32(coverageBuildingGeneration, "coverageBuildingGeneration");
+	stream->writeUint32(coverageBuildings.size(), "coverageBuildingCount");
+	for (const auto &b : coverageBuildings)
+	{
+		stream->writeSint32(b.x, "coverageX");
+		stream->writeSint32(b.y, "coverageY");
+		stream->writeSint32(b.width, "coverageW");
+		stream->writeSint32(b.height, "coverageH");
+	}
 
 	AITelemetry::save(stream, aiTelemetry);
 	stream->writeLeaveSection();
@@ -812,6 +874,10 @@ void TeamStats::initializeMeasurements(Uint32 tick)
 {
 	measurements = GameplayMeasurements{};
 	measurements.tick = coverageStartTick = tick;
+	extendedCoverageStartTick = tick;
+	coverageBuildingTick = 0;
+	coverageBuildingGeneration = 0;
+	coverageBuildings.clear();
 	measurementHistory.clear();
 	needsMeasurementInitialization = false;
 }
@@ -846,7 +912,8 @@ void TeamStats::printMeasurements(int team, bool final) const
 	auto emit = [&](const GameplayMeasurements& measurements, const char* prefix, bool isFinal)
 	{
 	std::cout << prefix << " team=" << team << " tick=" << measurements.tick
-			  << " coverage_start=" << coverageStartTick << " final=" << isFinal;
+			  << " coverage_start=" << coverageStartTick
+			  << " extended_coverage_start=" << extendedCoverageStartTick << " final=" << isFinal;
 	printMeasurement("births", measurements.births);
 	printMeasurement("deaths", measurements.deaths);
 	printMeasurement("conversionsIn", measurements.conversionsIn);
@@ -877,6 +944,15 @@ void TeamStats::printMeasurements(int team, bool final) const
 	printMeasurement("critical", measurements.critical);
 	printMeasurement("feeding", measurements.feeding);
 	printMeasurement("healing", measurements.healing);
+	printMeasurement("trappedUnits", measurements.trappedUnits);
+	printMeasurement("trappedBuildings", measurements.trappedBuildings);
+	printMeasurement("lowHP", measurements.lowHP);
+	printMeasurement("lowFood", measurements.lowFood);
+	printMeasurement("trappedTick", measurements.trappedTick);
+	printMeasurement("growthTiles", measurements.growthTiles);
+	printMeasurement("growthAmount", measurements.growthAmount);
+	printMeasurement("growthReduction", measurements.growthReduction);
+	printMeasurement("growthGlobal", measurements.growthGlobal);
 	std::cout << '\n';
 	};
 	if (final)
@@ -904,8 +980,14 @@ const char *TeamStats::measurementLabel(int metric)
 		"[Stats births]",        "[Stats deaths]",          "[Stats starvation]",
 		"[Stats wheat stock]",   "[Stats wheat loads]",     "[Stats meals]",
 		"[Stats new buildings]", "[Stats upgrades]",        "[Stats training]",
-		"[Stats damage dealt]",  "[Stats damage received]", "[Stats HP restored]"};
-	assert(metric >= 0 && metric < 12);
+		"[Stats damage dealt]",  "[Stats damage received]", "[Stats HP restored]",
+		"[Stats combat deaths]", "[Stats clearing deaths]", "[Stats trapped deaths]",
+		"[Stats unknown deaths]", "[Stats current blocked units]", "[Stats current blocked buildings]",
+		"[Stats growth global]", "[Stats growth near 8]", "[Stats growth near 16]",
+		"[Stats growth near 32]", "[Stats low HP 25]", "[Stats low food 25]",
+		"[Stats low HP 50]", "[Stats low HP 75]", "[Stats low food 50]",
+		"[Stats low food 75]", "[Stats structural units]", "[Stats structural buildings]"};
+	assert(metric >= 0 && metric < 30);
 	return labels[metric];
 }
 Uint64 TeamStats::graphValue(const GameplayMeasurements &m, int metric)
@@ -941,6 +1023,26 @@ Uint64 TeamStats::graphValue(const GameplayMeasurements &m, int metric)
 		return measurementSum(m.damageReceived);
 	case 11:
 		return m.hpRestored;
+	case 12: case 13: case 14: case 15:
+	{
+		const int cause[] = {GameplayMeasurements::COMBAT, GameplayMeasurements::CLEARING,
+			GameplayMeasurements::TRAPPED, GameplayMeasurements::UNKNOWN};
+		Uint64 total = 0;
+		for (const auto &row : m.deaths) total += row[cause[metric-12]];
+		return total;
+	}
+	case 16: return measurementSum(m.trappedUnits[1]);
+	case 17: return measurementSum(m.trappedBuildings[1][0]);
+	case 18: return measurementSum(m.growthGlobal[1]);
+	case 19: case 20: case 21: return measurementSum(m.growthAmount[metric-19]);
+	case 22: return measurementSum(m.lowHP[0]);
+	case 23: return measurementSum(m.lowFood[0]);
+	case 24: return measurementSum(m.lowHP[1]);
+	case 25: return measurementSum(m.lowHP[2]);
+	case 26: return measurementSum(m.lowFood[1]);
+	case 27: return measurementSum(m.lowFood[2]);
+	case 28: return measurementSum(m.trappedUnits[0]);
+	case 29: return measurementSum(m.trappedBuildings[0][0]);
 	default:
 		return 0;
 	}
@@ -998,29 +1100,110 @@ void TeamStats::drawMeasurements(int x, int y)
 		if (r % 2)
 			y += 12;
 	}
-	auto rate = [&](bool harvested)
+	auto rate = [&](int kind)
 	{
 		if (measurementHistory.size() < 2)
 			return std::string(strings->getString("[Stats unavailable]"));
 		const auto &a = measurementHistory[measurementHistory.size() - 2];
 		const auto &b = measurementHistory.back();
-		const Uint64 difference = harvested ? b.harvested[WHEAT] - a.harvested[WHEAT]
-											: b.consumed[GameplayMeasurements::MEAL][WHEAT] -
-												  a.consumed[GameplayMeasurements::MEAL][WHEAT];
+		const Uint64 difference = kind == 0 ? b.harvested[WHEAT] - a.harvested[WHEAT]
+			: b.consumed[GameplayMeasurements::MEAL][WHEAT] -
+				a.consumed[GameplayMeasurements::MEAL][WHEAT];
 		std::ostringstream text;
 		text.setf(std::ios::fixed);
 		text.precision(1);
 		text << static_cast<long double>(difference) * 1500 / (b.tick - a.tick);
 		return text.str();
 	};
-	line("[Stats wheat per minute]", rate(true));
-	line("[Stats meals per minute]", rate(false));
+	line("[Stats wheat per minute]", rate(0));
+	line("[Stats meals per minute]", rate(1));
 	line("[Stats occupancy]",
 		 std::to_string(measurements.feeding) + " / " + std::to_string(measurements.healing));
 	count("[Stats HP restored]", measurements.hpRestored);
 	count("[Stats new buildings]", graphValue(measurements, 6));
 	count("[Stats upgrades]", graphValue(measurements, 7));
 	count("[Stats training]", graphValue(measurements, 8));
+}
+
+void TeamStats::drawExpandedMeasurements(int x, int y)
+{
+	auto *strings = Toolkit::getStringTable();
+	auto compact = [](Uint64 value)
+	{
+		if (value < 1000000) return std::to_string(value);
+		std::ostringstream text;
+		text.setf(std::ios::scientific); text.precision(2);
+		text << static_cast<long double>(value);
+		return text.str();
+	};
+	auto line = [&](const char *label, const std::string &value)
+	{
+		const int valueWidth = globalContainer->littleFont->getStringWidth(value);
+		std::string name = strings->getString(label);
+		while (!name.empty() && globalContainer->littleFont->getStringWidth(name) > 124-valueWidth)
+		{
+			size_t last = name.size()-1;
+			while (last>0 && (static_cast<unsigned char>(name[last]) & 0xc0)==0x80) --last;
+			name.resize(last);
+		}
+		globalContainer->gfx->drawString(x+4,y,globalContainer->littleFont,name);
+		globalContainer->gfx->drawString(x+132-valueWidth,y,globalContainer->littleFont,value);
+		y += 12;
+	};
+	auto count = [&](const char *label, Uint64 value) { line(label,compact(value)); };
+	count("[Stats since tick]", extendedCoverageStartTick);
+	if (measurements.trappedTick < extendedCoverageStartTick)
+	{
+		for (const char *key : {"[Stats blocked units]", "[Stats blocked buildings]",
+			"[Stats blocked buildings swim]", "[Stats low HP ranges]", "[Stats low food ranges]"})
+			line(key,strings->getString("[Stats unavailable]"));
+	}
+	else
+	{
+		line("[Stats blocked units]",compact(measurementSum(measurements.trappedUnits[0]))+" / "+
+			compact(measurementSum(measurements.trappedUnits[1])));
+		line("[Stats blocked buildings]",compact(measurementSum(measurements.trappedBuildings[0][0]))+" / "+
+			compact(measurementSum(measurements.trappedBuildings[1][0])));
+		line("[Stats blocked buildings swim]",compact(measurementSum(measurements.trappedBuildings[0][1]))+" / "+
+			compact(measurementSum(measurements.trappedBuildings[1][1])));
+		line("[Stats low HP ranges]",compact(measurementSum(measurements.lowHP[0]))+"/"+
+			compact(measurementSum(measurements.lowHP[1]))+"/"+
+			compact(measurementSum(measurements.lowHP[2])));
+		line("[Stats low food ranges]",compact(measurementSum(measurements.lowFood[0]))+"/"+
+			compact(measurementSum(measurements.lowFood[1]))+"/"+
+			compact(measurementSum(measurements.lowFood[2])));
+	}
+	count("[Stats growth new tiles]",measurementSum(measurements.growthGlobal[0]));
+	count("[Stats growth global]",measurementSum(measurements.growthGlobal[1]));
+	count("[Stats growth reductions]",measurementSum(measurements.growthGlobal[2]));
+	for (int r = 0; r < MAX_RESOURCES; ++r)
+	{
+		const std::string amount = compact(measurements.growthGlobal[1][r]);
+		std::string name = getResourceName(r);
+		while (!name.empty() && globalContainer->littleFont->getStringWidth(name+" "+amount) > 60)
+		{
+			size_t last = name.size()-1;
+			while (last>0 && (static_cast<unsigned char>(name[last]) & 0xc0)==0x80) --last;
+			name.resize(last);
+		}
+		globalContainer->gfx->drawString(x+4+(r%2)*66,y,globalContainer->littleFont,name+" "+amount);
+		if (r%2) y += 12;
+	}
+	count("[Stats growth near 8]",measurementSum(measurements.growthAmount[0]));
+	count("[Stats growth near 16]",measurementSum(measurements.growthAmount[1]));
+	count("[Stats growth near 32]",measurementSum(measurements.growthAmount[2]));
+	if (measurementHistory.size() < 2)
+		line("[Stats growth per minute]",strings->getString("[Stats unavailable]"));
+	else
+	{
+		const auto &a = measurementHistory[measurementHistory.size()-2];
+		const auto &b = measurementHistory.back();
+		const Uint64 delta = b.growthGlobal[1][WHEAT]-a.growthGlobal[1][WHEAT];
+		std::ostringstream rate;
+		rate.setf(std::ios::fixed); rate.precision(1);
+		rate << static_cast<long double>(delta)*1500/(b.tick-a.tick);
+		line("[Stats growth per minute]",rate.str());
+	}
 }
 
 void TeamStats::beginMeasurementSnapshot(Team *team)
@@ -1072,4 +1255,115 @@ void TeamStats::refreshMeasurements(Team *team)
 		observeMeasurementUnit(team->myUnits[i]);
 	for (int i = 0; i < Building::MAX_COUNT; ++i)
 		observeMeasurementBuilding(team->myBuildings[i]);
+	sampleTraps(team);
+}
+
+void TeamStats::sampleTraps(Team *team)
+{
+	auto &m = measurements;
+	m.trappedTick = team->game->stepCounter;
+	for (auto &row : m.trappedUnits) std::fill(std::begin(row), std::end(row), 0);
+	for (auto &row : m.trappedBuildings)
+		for (auto &swim : row) std::fill(std::begin(swim), std::end(swim), 0);
+	for (auto &row : m.lowHP) std::fill(std::begin(row), std::end(row), 0);
+	for (auto &row : m.lowFood) std::fill(std::begin(row), std::end(row), 0);
+	static constexpr int offsets[8][2] = {{-1,-1},{0,-1},{1,-1},{-1,0},
+		{1,0},{-1,1},{0,1},{1,1}};
+	Map *map = team->map;
+	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+	{
+		Unit *u = team->myUnits[i];
+		if (!u || u->isDead) continue;
+		for (int band = 0; band < 3; ++band)
+		{
+			const int percent = (band + 1) * 25;
+			if (Sint64(u->hp) * 100 <= Sint64(u->performance[HP]) * percent)
+				++m.lowHP[band][u->typeNum];
+			if (Sint64(u->hungry) * 100 <= Sint64(Unit::HUNGRY_MAX) * percent)
+				++m.lowFood[band][u->typeNum];
+		}
+		bool structural = false, current = false;
+		if (u->displacement == Unit::DIS_INSIDE && u->attachedBuilding)
+		{
+			Building *b = u->attachedBuilding;
+			if (u->performance[FLY])
+			{
+				int x,y,dx,dy;
+				current = !b->findAirExit(&x,&y,&dx,&dy);
+			}
+			else
+			{
+				bool hardExit = false;
+				for (int y = b->posY - 1; y <= b->posY + b->type->height && !hardExit; ++y)
+					for (int x = b->posX - 1; x <= b->posX + b->type->width; ++x)
+						if (x < b->posX || x >= b->posX + b->type->width ||
+							y < b->posY || y >= b->posY + b->type->height)
+							hardExit |= map->isHardSpaceForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
+				structural = !hardExit;
+				int x,y,dx,dy;
+				current = !b->findGroundExit(&x,&y,&dx,&dy,u->performance[SWIM] > 0);
+			}
+		}
+		else if (u->displacement != Unit::DIS_INSIDE)
+		{
+			bool hardExit = false, freeExit = false;
+			for (const auto &d : offsets)
+			{
+				const int x = u->posX + d[0], y = u->posY + d[1];
+				if (u->performance[FLY])
+				{
+					hardExit = true;
+					freeExit |= map->isFreeForAirUnit(x,y);
+				}
+				else
+				{
+					hardExit |= map->isHardSpaceForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
+					freeExit |= map->isFreeForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
+				}
+				if (hardExit && freeExit) break;
+			}
+			structural = !hardExit;
+			current = !freeExit;
+		}
+		if (structural) ++m.trappedUnits[0][u->typeNum];
+		if (current) ++m.trappedUnits[1][u->typeNum];
+	}
+	for (int i = 0; i < Building::MAX_COUNT; ++i)
+	{
+		Building *b = team->myBuildings[i];
+		if (!b || b->type->isVirtual || b->buildingState == Building::DEAD) continue;
+		for (int swim = 0; swim < 2; ++swim)
+		{
+			bool hardExit = false;
+			for (int y = b->posY - 1; y <= b->posY + b->type->height && !hardExit; ++y)
+				for (int x = b->posX - 1; x <= b->posX + b->type->width; ++x)
+					if (x < b->posX || x >= b->posX + b->type->width ||
+						y < b->posY || y >= b->posY + b->type->height)
+						hardExit |= map->isHardSpaceForGroundUnit(x,y,swim != 0,team->me);
+			int x,y,dx,dy;
+			const bool freeExit = b->findGroundExit(&x,&y,&dx,&dy,swim != 0);
+			if (!hardExit) ++m.trappedBuildings[0][swim][b->type->shortTypeNum];
+			if (!freeExit) ++m.trappedBuildings[1][swim][b->type->shortTypeNum];
+		}
+	}
+	if ((m.tick & END_OF_GAME_STAT_INTERVAL_MASK) == 0 &&
+		(coverageBuildingTick != m.tick || (m.tick == 0 && coverageBuildings.empty())))
+	{
+		std::vector<CoverageBuilding> latest;
+		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		{
+			Building *b = team->myBuildings[i];
+			if (b && !b->type->isVirtual && b->buildingState != Building::DEAD)
+				latest.push_back({b->posX,b->posY,b->type->width,b->type->height});
+		}
+		std::sort(latest.begin(), latest.end(), [](const CoverageBuilding &a, const CoverageBuilding &b) {
+			return std::tie(a.x,a.y,a.width,a.height) < std::tie(b.x,b.y,b.width,b.height);
+		});
+		if (latest != coverageBuildings)
+		{
+			coverageBuildings.swap(latest);
+			++coverageBuildingGeneration;
+		}
+		coverageBuildingTick = m.tick;
+	}
 }

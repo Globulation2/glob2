@@ -65,10 +65,6 @@ bool chooseHeightFieldStarts(Game &, GenerationContext &);
 /// diagnostic when no grass is free.
 bool plantHeightFieldGroves(Map &, GenerationContext &, const HeightFieldTiling &, int count);
 
-// Call after placeStarts: at any non-default resource amount, open up a colony that the widened
-// bands walled in (openCrampedStarts) and re-run the wheat/wood guarantee in case the clearing
-// took its nearest crop too. Nothing happens at the default amounts.
-void openStartsBuriedByAmounts(Game &, GenerationContext &, const HeightFieldOptions &);
 
 using HeightFieldBuilder = std::function<void(HeightMap &, unsigned, unsigned, float)>;
 /// The whole pipeline: build the field, classify and paint its terrain and resources, choose

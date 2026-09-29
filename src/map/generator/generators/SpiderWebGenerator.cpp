@@ -734,12 +734,12 @@ SpiderWebOptions::SpiderWebOptions(const GenerationRequest &r)
 GeneratorDefinition spiderWebDefinition()
 {
 	return {
-		"spider-web",
-		20,
-		"Spider web",
-		2,
-		false,
-		// Spokes per colony (more on a web with few colonies); the spacing between capture threads
+			"spider-web",
+			20,
+			"Spider web",
+			2,
+			false,
+			// Spokes per colony (more on a web with few colonies); the spacing between capture threads
 		// and every thread's width in tiles; how far the capture threads sag and the share of them
 		// torn, in percent; the hub's radius as a share of the half side; dew drops per colony.
 		{{"spokes", "Spokes per colony", 1, 3, 1, 2, ControlGroup::Layout},
@@ -762,8 +762,9 @@ GeneratorDefinition spiderWebDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:arena", "feature:islands", "style:contested-center", "fairness:repeated-wedge"}};
 }

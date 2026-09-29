@@ -3,6 +3,7 @@
 #include "AIImplementation.h"
 #include "AINames.h"
 #include "CustomGameScreen.h"
+#include <ScreenStack.h>
 #include "CustomGameSetup.h"
 #include "CustomGamePreferences.h"
 #include "Engine.h"
@@ -21,13 +22,18 @@
 #include <FileManager.h>
 #include <GUIList.h>
 #include <Toolkit.h>
+#include <StringTable.h>
 #include <atomic>
 #include <cassert>
+#include <chrono>
+#include <algorithm>
 #include <filesystem>
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <numeric>
 #include <set>
+#include <optional>
 #include <unistd.h>
 
 GlobalContainer *globalContainer = nullptr;
@@ -56,6 +62,23 @@ struct CustomGameSetupHarness
 		legacy.logRepeatAreaTimes = repeat;
 		return legacy;
 	}
+	static void setExtraRules(CustomGameSetup &s)
+	{
+		s.noResourceGrowth = s.instantConstruction = s.noHunger = true;
+		s.resourceScarcity = s.stockpileStart = 3;
+		s.unitUpgradesDisabled = s.unitsFearless = s.permadeathDisabled = s.peacefulMode = true;
+		s.glassCannonLevel = s.buildingHpLevel = 2;
+		s.startingUnitLevel = 3;
+		s.suddenDeathMinutes = 90;
+	}
+	static void checkExtraRules(const CustomGameSetup &s)
+	{
+		assert(s.noResourceGrowth && s.instantConstruction && s.noHunger);
+		assert(s.resourceScarcity == 3 && s.stockpileStart == 3);
+		assert(s.unitUpgradesDisabled && s.unitsFearless && s.permadeathDisabled && s.peacefulMode);
+		assert(s.glassCannonLevel == 2 && s.buildingHpLevel == 2);
+		assert(s.startingUnitLevel == 3 && s.suddenDeathMinutes == 90);
+	}
 	static void preferencesModel()
 	{
 		CustomGamePreferences original;
@@ -66,6 +89,7 @@ struct CustomGameSetupHarness
 		original.librarySelection[0] = "maps/FourSquares1.map";
 		original.librarySelection[1] = original.setup.premadeMap;
 		original.expanded[0] = original.expanded[2] = true;
+		original.landscapeSortOrder = 1;
 		// Crater Lakes is one of the four modern height-map generators that
 		// still exposes a "repeat landscape" control; Old Islands (the prior
 		// choice) has no repeat option in the modular registry, so it would
@@ -76,6 +100,7 @@ struct CustomGameSetupHarness
 		original.setup.revealed = true;
 		original.setup.locked = false;
 		original.setup.ruleset = "Custom";
+		setExtraRules(original.setup);
 		original.setup.colonies[11].controller = CustomGameSetup::Closed;
 		assert(original.setup.setController(3, CustomGameSetup::Shared));
 		original.setup.colonies[3].ai = AI::CORTEX;
@@ -84,14 +109,38 @@ struct CustomGameSetupHarness
 		CustomGamePreferences restored;
 		const auto encoded = original.encode();
 		assert(restored.decode(encoded) && restored.encode() == encoded);
+		checkExtraRules(restored.setup);
 		assert(restored.setup.mapRevision == 0);
+		assert(restored.landscapeSortOrder == 1);
+		// Both older formats still load; omitted rules take their normal defaults.
+		for (int version : {1, 2})
+		{
+			auto old = encoded;
+			auto removeLine = [&](const std::string &prefix) {
+				const auto at = old.find("\n" + prefix), eol = old.find('\n', at + 1);
+				assert(at != std::string::npos && eol != std::string::npos);
+				old.erase(at, eol - at);
+			};
+			removeLine("rules ");
+			if (version == 1) removeLine("picker ");
+			old.replace(0, std::string("glob2-custom-game 3").size(),
+				"glob2-custom-game " + std::to_string(version));
+			CustomGamePreferences fromOld;
+			assert(fromOld.decode(old) && fromOld.landscapeSortOrder == version - 1);
+			assert(fromOld.setup.premadeMap == original.setup.premadeMap);
+			assert(!fromOld.setup.unitUpgradesDisabled && !fromOld.setup.noHunger);
+			assert(fromOld.setup.startingUnitLevel == 0 && fromOld.setup.suddenDeathMinutes == 0);
+		}
 		for (size_t length : {size_t(0), size_t(10), encoded.size() / 2, encoded.size() - 5})
 		{
 			assert(!restored.decode(encoded.substr(0, length)));
 			assert(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-			{"glob2-custom-game 1", "glob2-custom-game 2"},
+			{"glob2-custom-game 3", "glob2-custom-game 4"},
+			{"rules 1 3", "rules 2 3"}, {"rules 1 3", "rules 1 4"},
+			{"2 3 90\nlabels", "2 4 90\nlabels"},
+			{"2 3 90\nlabels", "2 3 31\nlabels"},
 			{"wDec 9", "wDec 31"}, {"nbWorkers 8", "nbWorkers -1"},
 			{"generator 4 5", "generator 0 5"}, {"generator 4 5", "generator 4 100"},
 			{"colonies\n1 1 0", "colonies\n99 1 0"}})
@@ -185,13 +234,276 @@ struct CustomGameSetupHarness
 								encoded.substr(end)));
 		std::cout << "PASS preferences keep every generator option, and older files still load\n";
 	}
+	// FEEDBACK 2026-09-17, in two parts. First: "'random' isn't actually randomizing the order...
+	// I want it to be dynamically random" - Random must not be a fixed order that looks shuffled
+	// once (the registry's own catalog order, which used to be exactly what Random fell through
+	// to) and then repeats identically forever. Second, refining that fix once it was tried in
+	// the UI: "I don't like how the random order changes sometimes while I'm using the UI...
+	// randomized once when the app starts and then stays consistent for the duration of
+	// execution" - so the permutation itself must be a real shuffle (not the untouched catalog
+	// order), but two sheets built in the same process run must land on the SAME order as each
+	// other, not a fresh one each time; only a relaunch (a new process) draws again.
+	static void landscapeRandomOrder()
+	{
+		std::vector<LandscapePickerScreen::Entry> shown;
+		for (int method : GeneratorRegistry::builtins().methods(false))
+		{
+			GenerationRequest request;
+			request.setMethodDefaults(method);
+			shown.push_back({GenerationRequest::methodName(method), request, method});
+		}
+		std::vector<int> identity(shown.size());
+		std::iota(identity.begin(), identity.end(), 0);
+		LandscapePickerScreen first("Landscape", shown, 0);
+		LandscapePickerScreen second("Landscape", shown, 0);
+		assert(first.sortOrder == LandscapePickerScreen::SortOrder::Random &&
+			  second.sortOrder == LandscapePickerScreen::SortOrder::Random);
+		// A real shuffle, not the untouched catalog order left alone...
+		assert(first.visible != identity);
+		// ...but the SAME shuffle every time within this one process run, however many sheets are
+		// opened - the process-lifetime permutation this fix's refinement asked for.
+		assert(first.visible == second.visible);
+		// Touching a filter must not redraw it either: narrowing still respects the one order
+		// this run drew, just with the excluded entries missing from it.
+		LandscapePickerScreen third("Landscape", shown, 0);
+		if (!third.filterCategories.empty())
+		{
+			third.filters[0] = "does-not-exist";
+			third.rebuild();
+			third.filters[0].clear();
+			third.rebuild();
+		}
+		assert(third.visible == first.visible);
+		// Alphabetical stays the deterministic alternative: same entries, same order, every time.
+		LandscapePickerScreen sortedA("Landscape", shown, 0,
+									  LandscapePickerScreen::SortOrder::Alphabetical);
+		LandscapePickerScreen sortedB("Landscape", shown, 0,
+									  LandscapePickerScreen::SortOrder::Alphabetical);
+		assert(sortedA.visible == sortedB.visible);
+		std::cout << "PASS landscape picker Random order is a real shuffle drawn once per process "
+					 "run, Alphabetical stays stable\n";
+	}
+	static void previewPriority()
+	{
+		GenerationRequest request;
+		request.setMethodDefaults(0);
+		request.wDec = request.hDec = 6;
+		request.nbTeams = 1;
+		LandscapePreviewer queue({request, request, request}, -1, true);
+		queue.poll();
+		assert(queue.finished() == 0 && queue.attempts == std::vector<int>({0, 0, 0}));
+		const auto seeds = queue.seeds;
+		queue.prioritize({2, 0, 1});
+		queue.poll(std::vector<std::size_t>{});
+		assert(queue.finished() == 0);
+		queue.poll(std::vector<std::size_t>{0});
+		assert(queue.preview(0).state == LandscapePreviewer::State::Ready && queue.finished() == 1);
+		// Reset while preserving roots so the unrestricted sequence checks exactly the same maps.
+		queue.regenerate();
+		queue.seeds = seeds;
+		queue.prioritize({2, 0, 1});
+		queue.poll();
+		assert(queue.preview(2).state == LandscapePreviewer::State::Ready);
+		assert(queue.finished() == 1 &&
+			   queue.preview(0).state == LandscapePreviewer::State::Pending);
+		queue.prioritize({1, 1, 1000}); // Duplicates/out-of-range indices cannot lose work.
+		queue.poll();
+		assert(queue.preview(1).state == LandscapePreviewer::State::Ready && queue.finished() == 2);
+		queue.poll();
+		assert(!queue.busy() && queue.finished() == 3 && queue.seeds == seeds);
+		for (std::size_t i = 0; i < seeds.size(); ++i)
+		{
+			const auto expected = LandscapePreviewer::roll(request, seeds[i]);
+			const auto actual = queue.preview(i);
+			assert(actual.seed == expected.seed && actual.score == expected.score &&
+				   actual.thumbnail.pixels()->rgb == expected.thumbnail.pixels()->rgb);
+		}
+		// The same priority survives regeneration; failed requests terminate in one attempt.
+		GenerationRequest invalid = request;
+		invalid.method = -1;
+		queue.restart({invalid, invalid, invalid});
+		queue.poll();
+		assert(queue.preview(1).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 1);
+		queue.regenerate();
+		assert(queue.attempts == std::vector<int>({0, 0, 0}));
+		queue.poll();
+		assert(queue.preview(1).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 1);
+		// Uniform places one team: asking for two forces all three placement retries.
+		auto retry = request;
+		retry.nbTeams = 2;
+		queue.restart({retry, request});
+		queue.prioritize({0, 1});
+		queue.poll();
+		assert(queue.preview(0).state == LandscapePreviewer::State::Pending &&
+			   queue.finished() == 0);
+		queue.prioritize({1, 0});
+		queue.poll();
+		assert(queue.preview(1).state == LandscapePreviewer::State::Ready);
+		queue.poll();
+		assert(queue.preview(0).state == LandscapePreviewer::State::Pending);
+		queue.poll();
+		assert(queue.preview(0).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 2);
+		queue.reroll(0, request);
+		queue.poll();
+		assert(queue.preview(0).state == LandscapePreviewer::State::Ready &&
+			   queue.attempts[0] == 1);
+		queue.restart({});
+		queue.prioritize({0});
+		queue.poll();
+		assert(!queue.busy() && queue.finished() == 0);
+		std::vector<LandscapePickerScreen::Entry> entries(9, {"Landscape", invalid});
+		LandscapePickerScreen picker("Landscape", entries, 0);
+		const SDL_Rect viewport{0, 0, 300, 100};
+		picker.controls->regions[30].box = viewport;
+		auto layout = [&](const std::vector<int> &indices, int columns, int offset)
+		{
+			picker.controls->hits.clear();
+			picker.controls->regions[30].offset = offset;
+			for (std::size_t position = 0; position < indices.size(); ++position)
+			{
+				const SDL_Rect box{int(position % columns) * 100,
+								   int(position / columns) * 100 - offset, 100, 100};
+				picker.controls->hits.push_back({"landscape/" + std::to_string(indices[position]),
+												 box, viewport, [] {}, true, 30});
+			}
+			picker.updatePreviewPriority();
+		};
+		layout({0, 1, 2, 3, 4, 5, 6, 7, 8}, 3, 0);
+		assert(picker.priorityOrder.front() == 1);
+		assert(picker.viewportSlots == std::vector<std::size_t>({0, 1, 2}));
+		layout({0, 1, 2, 3, 4, 5, 6, 7, 8}, 3, 100);
+		assert(picker.priorityOrder.front() == 4);
+		assert(picker.viewportSlots == std::vector<std::size_t>({3, 4, 5}));
+		layout({8, 7, 6, 5, 4, 3, 2, 1, 0}, 3, 0);
+		assert(picker.priorityOrder.front() == 7);
+		layout({8, 5}, 3, 0);
+		assert(picker.priorityOrder.front() == 5);
+		assert(picker.viewportSlots == std::vector<std::size_t>({8, 5}));
+		layout({8, 5, 2}, 1, 100);
+		assert(picker.priorityOrder.front() == 5);
+		assert(picker.viewportSlots == std::vector<std::size_t>({5}));
+		std::cout << "PASS deferred viewport priority, reprioritization, stable seeds, yielding "
+					 "retries, restart/reroll\n";
+	}
+
+	// Fixed pixels isolate UI delivery and scrolling costs from generator/seed variance.
+	static void landscapePerformance(const std::string &output, bool verify)
+	{
+		std::filesystem::create_directories(output);
+		using Clock = std::chrono::steady_clock;
+		auto elapsed = [](auto start)
+		{ return std::chrono::duration<double, std::milli>(Clock::now() - start).count(); };
+		for (const auto *id : {"isles", "river", "contested-commons"})
+		{
+			GenerationRequest request;
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(id));
+			request.wDec = request.hDec = 8;
+			request.nbTeams = 4;
+			const auto result = LandscapePreviewer::roll(request, 71);
+			assert(result.state == LandscapePreviewer::State::Ready);
+			std::uint64_t hash = 14695981039346656037ULL;
+			for (auto byte : result.thumbnail.pixels()->rgb)
+			{
+				hash ^= byte;
+				hash *= 1099511628211ULL;
+			}
+			std::cout << "MAP " << id << " root 71 seed " << result.seed << " pixels " << hash
+					  << " score " << result.score;
+			for (const auto &start : result.starts)
+				std::cout << " start " << start.x << "," << start.y;
+			std::cout << "\n";
+		}
+		std::vector<LandscapePickerScreen::Entry> entries;
+		for (int i = 0; i < 67; ++i)
+		{
+			GenerationRequest request;
+			request.method = -1; // Finish cheaply; results are replaced with the fixture below.
+			entries.push_back({"Landscape " + std::to_string(100 + i), request});
+		}
+		LandscapePickerScreen picker("Landscape", entries, 0,
+									 LandscapePickerScreen::SortOrder::Alphabetical);
+		picker.dispatchInit();
+		picker.dispatchPaint(false);
+		while (picker.busy())
+		{
+			picker.dispatchTimer(SDL_GetTicks());
+			SDL_Delay(1);
+		}
+		Map map;
+		map.setSize(8, 8, GRASS);
+		for (int y = 0; y < 256; ++y)
+			for (int x = 128; x < 256; ++x)
+				map.setUMatPos(x, y, WATER, 1);
+		MapThumbnail image;
+		image.loadFromMap(map);
+		{
+			std::lock_guard<std::mutex> lock(picker.previewer.mutex);
+			for (auto &slot : picker.previewer.slots)
+			{
+				slot.state = LandscapePreviewer::State::Ready;
+				slot.thumbnail = image;
+				slot.width = slot.height = 256;
+				slot.starts = {{64, 128, Color(240, 40, 40)}};
+				++slot.revision;
+			}
+		}
+		const auto delivery = Clock::now();
+		picker.refresh();
+		picker.dispatchPaint(false);
+		std::cout << "BENCH delivery_ms " << elapsed(delivery) << "\n";
+		int uploaded = 0;
+		for (const auto &tile : picker.tiles)
+			if (tile.widget && tile.widget->surface)
+				++uploaded;
+		std::cout << "BENCH initial_uploaded " << uploaded << " / " << entries.size() << "\n";
+		if (verify)
+			assert(uploaded > 0 && uploaded < int(entries.size()));
+		auto capture = [&](const char *name)
+		{
+			globalContainer->gfx->printScreen(output + "/" + name);
+			// The portable renderer reads back a requested capture before presenting.
+			globalContainer->gfx->nextFrame();
+		};
+		capture("top.bmp");
+		std::vector<double> frames;
+		auto &region = picker.controls->regions[30];
+		for (int step = 0; step < 80; ++step)
+		{
+			region.offset = region.maximum * (step < 40 ? step : 79 - step) / 39;
+			const auto frame = Clock::now();
+			picker.dispatchPaint(false);
+			frames.push_back(elapsed(frame));
+			if (verify)
+				for (const auto &tile : picker.tiles)
+					if (tile.widget)
+						assert(!tile.widget->transitioning && !tile.widget->transitionPending);
+			if (step == 20)
+				capture("middle.bmp");
+			if (step == 39)
+				capture("bottom.bmp");
+		}
+		std::sort(frames.begin(), frames.end());
+		std::cout << "BENCH scroll_ms median " << frames[frames.size() / 2] << " p95 "
+				  << frames[frames.size() * 95 / 100] << " max " << frames.back() << "\n";
+		if (verify)
+		{
+			for (const char *name : {"top.bmp", "middle.bmp", "bottom.bmp"})
+				assert(std::filesystem::exists(output + "/" + name));
+			std::cout << "PASS offscreen previews stay CPU-only; scrolling never fades\n";
+		}
+	}
+
 	static void preferencesScreen(bool write)
 	{
 		auto *files = Toolkit::getFileManager();
 		if (write) files->remove(CustomGamePreferences::filename);
 		if (write)
 		{
-			CustomGameScreen screen;
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
+			CustomGameScreen screen(screens);
 			// Nothing saved: a random map (FEEDBACK 2026-09-14). The premade library is what this
 			// file is written with, so switch to it first.
 			assert(screen.setup.random && screen.previewPending && screen.setup.capacity == 4);
@@ -203,6 +515,7 @@ struct CustomGameSetupHarness
 			screen.setup.colonies[11].ai = AI::NICOWAR;
 			screen.setup.colonies[11].alliance = 7;
 			screen.setup.presetRules(1);
+			setExtraRules(screen.setup);
 			screen.setup.generator = fromLegacyDescriptor(maxedLegacy(MapGenerationDescriptor::eISLANDS, 3), 0);
 			screen.expanded[1] = true;
 			screen.userMaps = screen.separateMapLibraries;
@@ -216,13 +529,15 @@ struct CustomGameSetupHarness
 		{
 			std::string premade;
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.validMap && !screen.setup.random && screen.setup.capacity == 4);
 				assert(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
 				assert(screen.setup.colonies[2].ai == AI::CORTEX);
 				assert(screen.setup.colonies[0].alliance == 2);
 				assert(screen.setup.colonies[11].ai == AI::NICOWAR && screen.setup.colonies[11].alliance == 7);
 				assert(screen.setup.speed == 3 && screen.setup.ruleset == "Quick clash");
+				checkExtraRules(screen.setup);
 				assert(screen.expanded[1]);
 				assert(screen.userMaps == screen.separateMapLibraries);
 				assert(screen.librarySelection[1] == "maps/favorite-user-map.map");
@@ -240,7 +555,8 @@ struct CustomGameSetupHarness
 				assert(screen.previewPending);
 			}
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap);
 				assert(screen.snapshot.empty() && screen.source.empty());
 				assert(screen.setup.premadeMap == premade);
@@ -250,7 +566,8 @@ struct CustomGameSetupHarness
 				screen.setup.premadeMap = "/missing/saved-map.map";
 			}
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(!screen.validMap && !screen.setup.random && !screen.message.empty());
 				assert(screen.setup.colonies[2].ai == AI::CORTEX && screen.setup.speed == 3);
 				assert(screen.setup.premadeMap == "/missing/saved-map.map");
@@ -262,7 +579,8 @@ struct CustomGameSetupHarness
 			{
 				// A file the lobby cannot read is the same as none: a random map at four colonies,
 				// its preview pending (FEEDBACK 2026-09-14: random maps are the default tab).
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap &&
 					   screen.setup.capacity == 4 && screen.setup.speed == 0);
 			}
@@ -348,10 +666,12 @@ struct CustomGameSetupHarness
 		key(SDLK_DOWN);
 		key(SDLK_RETURN);
 		click("2 vs 2 preset", 235, 100);
-		click("Second colony AI", 350, 207);
-		key(SDLK_DOWN, KMOD_NONE, 5);
+		click("Second colony AI", 350, 223);
+		// Select the following row; the profile interaction below moves up once.
+		const int aiSteps = AINames::selectionIndex(AI::NICOWAR) + 1 - AINames::selectionIndex(AI::NUMBI);
+		key(aiSteps >= 0 ? SDLK_DOWN : SDLK_UP, KMOD_NONE, aiSteps >= 0 ? aiSteps : -aiSteps);
 		key(SDLK_RETURN);
-		click("Second colony profile", 580, 238);
+		click("Second colony profile", 550, 262);
 		key(SDLK_UP);
 		key(SDLK_RETURN);
 		key(SDLK_3, KMOD_CTRL);
@@ -367,69 +687,120 @@ struct CustomGameSetupHarness
 		}
 		click("Launch", 540, 445);
 
-    globalContainer->settings.gameSpeed = 7;
-    {
-      Engine engine;
-      auto timer = SDL_AddTimer(500, Driver::tick, &driver);
-      assert(timer);
-      auto watchdog = SDL_AddTimer(
-          20000,
-          [](Uint32, void *) -> Uint32 {
-            SDL_Event event = {};
-            event.type = SDL_QUIT;
-            SDL_PushEvent(&event);
-            return 0;
-          },
-          nullptr);
-      int result = engine.initCustom();
-      SDL_RemoveTimer(timer);
-      SDL_RemoveTimer(watchdog);
-      assert(result == Engine::EE_NO_ERROR);
-      assert(driver.next == driver.steps.size());
-      assert(globalContainer->liveSpectating ==
-             (control == CustomGameSetup::Computer));
-      assert(globalContainer->settings.gameSpeed == 3);
-      assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
-             (control == CustomGameSetup::Shared ? 5 : 4));
-      assert(
-          engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
-              ->ai->implementationID == AI::NICOWAR);
-      assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
-             engine.gui.game.gameHeader.getAllyTeamNumber(1));
-      assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
-             engine.gui.game.gameHeader.getAllyTeamNumber(2));
-      if (globalContainer->liveSpectating) {
-        SDL_Event pause = {};
-        pause.type = SDL_KEYDOWN;
-        pause.key.keysym.sym = SDLK_p;
-        engine.gui.processEvent(&pause);
-        assert(engine.gui.hardPause);
-        engine.gui.processEvent(&pause);
-        assert(!engine.gui.hardPause);
-      }
-      globalContainer->settings.save(); // Simulate persisting in-game options.
-      globalContainer->automaticEndingGame = true;
-      globalContainer->automaticEndingSteps = 30;
-      globalContainer->automaticGameGlobalEndConditions = true;
-      engine.run();
-      {
-        FrontendScope gameplay(false);
-        engine.gui.drawAll(engine.gui.localTeamNo);
-        globalContainer->gfx->printScreen(output + "/live-control-" +
-                                          std::to_string(control) + ".bmp");
-      }
-    }
-    assert(globalContainer->settings.gameSpeed == 7);
-    Settings persisted;
-    persisted.load();
-    assert(persisted.gameSpeed == 7);
-    std::cout << "PASS full SDL UI flow mode " << control
-              << ": clicks, nested choices, shared control, presets, profiles, "
-                 "random preview, "
-                 "match launch and speed restoration\n";
-  }
+		globalContainer->settings.gameSpeed = 7;
+		{
+			Engine engine;
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
+			std::optional<GAGCore::CooperativeTask> load;
+			std::shared_ptr<void> mapFile;
+			std::string source;
+			screens.push(std::make_unique<CustomGameScreen>(screens),
+				[&](GAGGUI::Screen &screen, int result)
+				{
+					if (result != CustomGameScreen::OK) return;
+					auto &selected = static_cast<CustomGameScreen &>(screen);
+					// Like SinglePlayerFlow, read the generated map only after the
+					// stack has destroyed this screen.
+					source = selected.sourceFile();
+					load.emplace(engine.initCustomTask(selected.getMapHeader(), selected.getGameHeader(),
+						selected.getSelectedColor(0), selected.selectedSpeed(), source));
+					mapFile = selected.releaseSnapshot();
+				});
+			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
+			assert(timer);
+			auto watchdog = SDL_AddTimer(
+				20000,
+				[](Uint32, void *) -> Uint32
+				{
+					SDL_Event event = {};
+					event.type = SDL_QUIT;
+					SDL_PushEvent(&event);
+					return 0;
+				},
+				nullptr);
+			screens.execute();
+			SDL_RemoveTimer(timer);
+			SDL_RemoveTimer(watchdog);
+			const bool loaded = load && load->run();
+			mapFile.reset();
+			assert(loaded);
+			assert(!std::filesystem::exists(std::filesystem::path(source).parent_path()));
+			assert(driver.next == driver.steps.size());
+			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
+			assert(globalContainer->settings.gameSpeed == 3);
+			assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
+				   (control == CustomGameSetup::Shared ? 5 : 4));
+			assert(engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
+					   ->ai->implementationID == AI::NICOWAR);
+			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
+				   engine.gui.game.gameHeader.getAllyTeamNumber(1));
+			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
+				   engine.gui.game.gameHeader.getAllyTeamNumber(2));
+			if (globalContainer->liveSpectating)
+			{
+				SDL_Event pause = {};
+				pause.type = SDL_KEYDOWN;
+				pause.key.keysym.sym = SDLK_p;
+				engine.gui.processEvent(&pause);
+				assert(engine.gui.hardPause);
+				engine.gui.processEvent(&pause);
+				assert(!engine.gui.hardPause);
+			}
+			globalContainer->settings.save(); // Simulate persisting in-game options.
+			globalContainer->automaticEndingGame = true;
+			globalContainer->automaticEndingSteps = 30;
+			globalContainer->automaticGameGlobalEndConditions = true;
+			engine.run();
+			{
+				FrontendScope gameplay(false);
+				engine.gui.drawAll(engine.gui.localTeamNo);
+				globalContainer->gfx->printScreen(output + "/live-control-" +
+												  std::to_string(control) + ".bmp");
+			}
+		}
+		assert(globalContainer->settings.gameSpeed == 7);
+		Settings persisted;
+		persisted.load();
+		assert(persisted.gameSpeed == 7);
+		std::cout << "PASS full SDL UI flow mode " << control
+				  << ": clicks, nested choices, shared control, presets, profiles, "
+					 "random preview, "
+					 "match launch and speed restoration\n";
+	}
 
-	static void visual(const std::string &output)
+	static void strategyVisual(const std::string &output)
+	{
+		FrontendTheme theme;
+		FrontendScope scope;
+		GAGGUI::ScreenStack screens(*globalContainer->gfx);
+		CustomGameScreen screen(screens);
+		screen.gfx = globalContainer->gfx;
+		screen.dispatchInit();
+		screen.activateGroup(screen.groups[1]);
+		screen.setup.colonies[1].ai = AI::MAXIMA;
+		screen.dispatchPaint(false);
+		globalContainer->gfx->printScreen(output + "/players.bmp");
+		std::vector<std::string> labels;
+		for (int id : AINames::selectionOrder()) labels.push_back(AINames::getAISelectorText(id));
+		for (int id : AINames::selectionOrder())
+		{
+			auto text = AINames::getAIProfile(id);
+			assert(text.find("-Profile]") == std::string::npos);
+			assert(text.find("-Summary]") == std::string::npos);
+			CustomGameChoiceScreen profile(Toolkit::getStringTable()->getString("[AI strategy & counterplay]"), labels,
+				AINames::selectionIndex(id), true, {});
+			profile.dispatchInit();
+			profile.dispatchPaint(false);
+			globalContainer->gfx->printScreen(output + "/" + AINames::getCLIName(id) + ".bmp");
+			profile.controls->regions[21].offset = 10000;
+			profile.dispatchPaint(false);
+			profile.dispatchPaint(false);
+			globalContainer->gfx->printScreen(output + "/" + AINames::getCLIName(id) + "-bottom.bmp");
+		}
+		std::cout << "PASS strategy profiles and scrolling for every AI\n";
+	}
+
+	static void visual(const std::string &output, bool onlyAIProfile = false)
 	{
 		FrontendTheme theme;
 		FrontendScope scope;
@@ -445,8 +816,12 @@ struct CustomGameSetupHarness
 			profile.onAction(nullptr, GAGGUI::BUTTON_SHORTCUT, -3, 0);
 			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
 		}
+		if (onlyAIProfile)
+			return;
 
-    CustomGameScreen screen;
+    GAGGUI::ScreenStack screens(*globalContainer->gfx);
+
+    CustomGameScreen screen(screens);
     screen.gfx = globalContainer->gfx;
     screen.dispatchInit();
     // With nothing saved the lobby opens on a random map (FEEDBACK 2026-09-14); the premade
@@ -579,10 +954,13 @@ struct CustomGameSetupHarness
     paint();
     clickControl("rule/1/1");
     assert(screen.setup.revealed && screen.setup.ruleset == "Custom");
+    assert(!screen.setup.unitUpgradesDisabled);
+    screen.setup.unitUpgradesDisabled = true;
     int rulesOffset = screen.controls->regions[2].offset;
     clickControl("rule/1/0");
     assert(!screen.setup.revealed &&
            screen.controls->regions[2].offset == rulesOffset);
+    assert(screen.setup.unitUpgradesDisabled);
     clickControl("ruleset/1");
     assert(screen.setup.speed == 3 && screen.setup.generator.nbWorkers == 8);
     screen.setup = CustomGameSetup();
@@ -981,8 +1359,8 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
           GeneratorRegistry::builtins().selectionIndex(screen.setup.generator.method, false);
       LandscapePickerScreen picker("Landscape", shown, current);
       picker.dispatchInit();
-      assert(picker.previewer.threadCount() >= 1 && picker.busy());
-      picker.dispatchPaint(false); // placeholders while every tile is still pending
+	  assert(picker.previewer.threadCount() == 1 && picker.busy());
+	  picker.dispatchPaint(false); // placeholders while every tile is still pending
       globalContainer->gfx->printScreen(output + "/landscape-picker-pending.bmp");
       auto settle = [&] {
         const Uint32 deadline = SDL_GetTicks() + 120000;
@@ -1043,10 +1421,10 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       auto seedsShown = [&] {
         std::vector<std::uint32_t> seeds;
         for (const auto &tile : picker.tiles) {
-          assert(tile.preview.state == LandscapePreviewer::State::Ready && tile.widget && tile.widget->isThumbnailLoaded() &&
-                 tile.preview.width == 256 && tile.preview.height == 256 &&
-                 tile.preview.starts.size() == 4);
-          seeds.push_back(tile.preview.seed);
+			assert(tile.preview.state == LandscapePreviewer::State::Ready &&
+				   tile.preview.width == 256 && tile.preview.height == 256 &&
+				   tile.preview.starts.size() == 4);
+			seeds.push_back(tile.preview.seed);
         }
         assert(std::set<std::uint32_t>(seeds.begin(), seeds.end()).size() == seeds.size());
         return seeds;
@@ -1073,22 +1451,41 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
         e.button.x = -20; e.button.y = -20;
         picker.dispatchEvents(&e);
         assert(!widget->dragging && picker.activePreview == -1 && picker.returnCode == 0);
-        const auto before = widget->worldArea();
-        const double anchor = MapPreviewGeometry::wrap(double(widget->mouseX - before.x) / before.w - widget->view.offsetX);
-        e = {}; e.type = SDL_MOUSEWHEEL; e.wheel.y = 1;
+        // The picker intentionally reserves the wheel for grid scrolling, even
+        // above a preview. MapPreviewHarness separately checks anchored zoom.
+        e = {}; e.type = SDL_MOUSEMOTION;
+        e.motion.x = area.x + area.w / 2; e.motion.y = area.y + area.h / 2;
         picker.dispatchEvents(&e);
-        const auto after = widget->worldArea();
-        assert(widget->zoom > 1 && std::abs(anchor - MapPreviewGeometry::wrap(double(widget->mouseX - after.x) / after.w - widget->view.offsetX)) < 1e-12);
+        const auto previewZoom = widget->zoom;
+        const auto previewX = widget->view.offsetX, previewY = widget->view.offsetY;
+        auto &grid = picker.controls->regions[30];
+        assert(grid.maximum > 0);
+        bool scrolled = false;
+        for (int direction : {-1, 1}) {
+          const int before = grid.offset;
+          e = {}; e.type = SDL_MOUSEWHEEL; e.wheel.y = direction;
+          picker.dispatchEvents(&e);
+          assert(grid.offset == std::clamp(before - direction * 36, 0, grid.maximum));
+          scrolled |= grid.offset != before;
+          assert(widget->zoom == previewZoom && widget->view.offsetX == previewX &&
+                 widget->view.offsetY == previewY && picker.returnCode == 0);
+        }
+        assert(scrolled);
         e = {}; e.type = SDL_MOUSEBUTTONDOWN; e.button.button = SDL_BUTTON_RIGHT;
         e.button.x = area.x + area.w / 2; e.button.y = area.y + area.h / 2;
         picker.dispatchEvents(&e);
         assert(widget->zoom == 1 && widget->view.offsetX == 0 && picker.returnCode == 0);
       }
+      // Keyboard navigation follows the displayed sort/filter order, not the
+      // registry identity of a landscape (these differ in Random order).
+      const auto position = std::find(picker.visible.begin(), picker.visible.end(), other);
+      assert(position != picker.visible.end());
+      const int left = std::max(0, int(position - picker.visible.begin()) - 1);
       pickerKey(SDLK_LEFT);
-      assert(picker.selection() == std::max(0, other - 1));
+      assert(picker.selection() == picker.visible[left]);
       pickerKey(SDLK_DOWN);
-      assert(picker.selection() ==
-             std::min(int(shown.size()) - 1, std::max(0, other - 1) + picker.columns));
+      assert(picker.selection() == picker.visible[
+          std::min(int(picker.visible.size()) - 1, left + picker.columns)]);
       pickerKey(SDLK_ESCAPE);
       assert(picker.returnCode == LandscapePickerScreen::CANCEL);
       // Regenerate all rolls every landscape again with fresh seeds.
@@ -1185,7 +1582,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       {
         Game shownMap(nullptr);
         GAGCore::BinaryInputStream in(
-            Toolkit::getFileManager()->openInputStreamBackend(screen.snapshot));
+            Toolkit::getFileManager()->openInflatingInputStreamBackend(screen.snapshot));
         assert(shownMap.load(&in) && shownMap.gameHeader.getRandomSeed() == seed);
       }
       capture("landscape-applied");
@@ -1384,17 +1781,56 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
 		std::cout << "PASS save/load: " << (watching ? "AI-only" : "human/shared") << "\n";
 	}
 };
+static void checkPreviewRestart()
+{
+    GenerationRequest request;
+    request.setMethodDefaults(0);
+    request.wDec = request.hDec = 8;
+    request.nbTeams = 4;
+    LandscapePreviewer previewer({request}, 1);
+    const auto started = SDL_GetTicks64();
+    while (previewer.preview(0).state == LandscapePreviewer::State::Pending &&
+           SDL_GetTicks64() - started < 10000)
+        SDL_Delay(1);
+    assert(previewer.preview(0).state == LandscapePreviewer::State::Generating);
+    previewer.restart({});
+    assert(!previewer.busy() && previewer.finished() == 0);
+    // Destruction joins the in-flight worker after restart has removed its slot.
+}
+
 int main(int argc, char **argv)
 {
 	GlobalContainer globals("glob2-custom-setup-tests");
 	globalContainer = &globals;
-	globals.runNoX = argc < 2;
+	globals.runNoX = argc < 2 || std::string(argv[1]) == "preview-restart" ||
+					 std::string(argv[1]) == "preview-queue";
 	globals.settings.rememberUnit = false;
-	globals.settings.screenWidth = argc > 2 && std::string(argv[2]) == "large" ? 1000 : 640;
-	globals.settings.screenHeight = argc > 2 && std::string(argv[2]) == "large" ? 700 : 480;
+	globals.settings.screenWidth = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 1000 : 640;
+	globals.settings.screenHeight = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 700 : 480;
 	globals.settings.screenFlags = GraphicContext::USEGPU;
 	globals.settings.mute = true;
+	if (argc > 3 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
+		globals.settings.language = argv[3];
 	globals.load();
+	if (argc > 1 && std::string(argv[1]) == "preview-queue")
+	{
+		CustomGameSetupHarness::previewPriority();
+		checkPreviewRestart();
+		return 0;
+	}
+	if (argc > 2 && (std::string(argv[2]) == "landscape-performance" ||
+					 std::string(argv[2]) == "landscape-responsive"))
+	{
+		CustomGameSetupHarness::landscapePerformance(argv[1], std::string(argv[2]) ==
+																  "landscape-responsive");
+		return 0;
+	}
+	if (argc > 1 && std::string(argv[1]) == "preview-restart")
+	{
+		checkPreviewRestart();
+		std::cout << "PASS preview restart joins superseded workers safely\n";
+		return 0;
+	}
 	if (argc > 1 && (std::string(argv[1]) == "preferences-write" || std::string(argv[1]) == "preferences-read"))
 	{
 		CustomGameSetupHarness::preferencesScreen(std::string(argv[1]) == "preferences-write");
@@ -1403,6 +1839,8 @@ int main(int argc, char **argv)
 	Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
 	CustomGameSetupHarness::preferencesModel();
 	CustomGameSetupHarness::preferencesOptions();
+	CustomGameSetupHarness::landscapeRandomOrder();
+	CustomGameSetupHarness::previewPriority();
 	assert(SDLNet_Init() == 0);
 	if (argc > 2 && std::string(argv[2]) == "ui")
 	{
@@ -1411,12 +1849,19 @@ int main(int argc, char **argv)
 			CustomGameSetupHarness::ui(argv[1], control);
 		return 0;
 	}
+	if (argc > 2 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
+	{
+		assert(Toolkit::getStringTable()->getString("[language-code]") == globals.settings.language);
+		CustomGameSetupHarness::strategyVisual(argv[1]);
+		return 0;
+	}
 	if (argc > 1)
 	{
-		CustomGameSetupHarness::visual(argv[1]);
+		CustomGameSetupHarness::visual(argv[1], argc > 2 && std::string(argv[2]) == "ai-profile");
 		return 0;
 	}
 	assert(SDLNet_Init() == 0);
+	checkPreviewRestart();
 	const auto playableMethods = GeneratorRegistry::builtins().methods(false);
 	for (int method : playableMethods)
 	{
@@ -1435,15 +1880,25 @@ int main(int argc, char **argv)
 	std::cout << "PASS all " << playableMethods.size() << " playable generator landscapes\n";
 
 	CustomGameSetupHarness::model();
-	assert((AINames::selectionOrder() == std::vector<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE}));
+	const auto &selection = AINames::selectionOrder();
+	assert(selection.back() == AI::NONE);
+	assert((std::set<int>(selection.begin(), selection.end()) ==
+		std::set<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX,
+			AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE}));
+	assert(selection.size() == 9);
+	for (size_t i = 1; i + 1 < selection.size(); ++i)
+		assert(AINames::getAIStrength(selection[i-1]) <= AINames::getAIStrength(selection[i]));
+	for (int id : selection)
+		if (id != AI::NONE)
+			assert(AINames::getAISelectorText(id).find("(" +
+				std::to_string(AINames::getAIStrength(id)) + ")") != std::string::npos);
 	for (int id : AINames::selectionOrder())
 		assert(AINames::selectionOrder()[AINames::selectionIndex(id)] == id);
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
 	assert(AINames::parseAIName("Econo") == AI::ECONO);
-	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy - No warriors");
-	assert(AINames::getAISelectorText(AI::CORTEX).find("Medium") != std::string::npos);
+	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
 	assert(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);
-	assert(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths:") != std::string::npos);
+	assert(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths and weaknesses:") != std::string::npos);
 	const auto dir =
 		std::filesystem::temp_directory_path() / ("glob2-setup-test-" + std::to_string(getpid()));
 	std::filesystem::create_directory(dir);
@@ -1513,6 +1968,29 @@ int main(int argc, char **argv)
 		CustomGameSetupHarness::sessionReplay(map, control);
 	}
 	CustomGameSetupHarness::sessionReplay("maps/FourSquares1.map", CustomGameSetup::Human, true);
+	// Exercise new terrain through the real match/replay path, not just map bytes.
+	// Explicit seeds and no rerolls keep failures reviewable; the engine's normal
+	// replay checksum assertions remain active throughout playback.
+	for (const char *id : {"sierpinski-gardens", "hilbert-river", "drowned-forest"})
+	{
+		Game game(nullptr);
+		GenerationRequest request;
+		request.setMethodDefaults(GeneratorRegistry::builtins().idOf(id));
+		request.seed = 20001;
+		request.wDec = request.hDec = 8;
+		request.nbTeams = 4;
+		MapGenerator generator;
+		assert(generator.generateMap(game, request));
+		const auto fractalMap = (dir / (std::string(id) + ".map")).string();
+		{
+			GAGCore::BinaryOutputStream out(
+				Toolkit::getFileManager()->openOutputStreamBackend(fractalMap));
+			game.save(&out, true, id);
+		}
+		CustomGameSetupHarness::sessionReplay(fractalMap, CustomGameSetup::Computer);
+		std::cout << "PASS generated landscape replay: " << id << "\n";
+	}
+
 	std::filesystem::remove_all(dir);
 	std::cout << "ALL CUSTOM SETUP TESTS PASSED\n";
 }

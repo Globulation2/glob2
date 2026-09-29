@@ -9,6 +9,7 @@
 
 namespace GAGGUI
 {
+	class ScreenStack;
 	class Text;
 	class TextInput;
 	class List;
@@ -18,7 +19,7 @@ class LANFindScreen : public Glob2Screen
 {
 public:
 	///Construct a LANFindScreen
-	LANFindScreen();
+	LANFindScreen(GAGGUI::ScreenStack& screens);
 	virtual ~LANFindScreen();
 	
 	void onTimer(Uint32 tick);
@@ -34,6 +35,7 @@ public:
 	};
 
 private:
+    GAGGUI::ScreenStack& screens;
 	Text *serverText;
 	TextInput *serverName;
 	Text *playerText;

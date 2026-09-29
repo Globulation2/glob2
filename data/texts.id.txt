@@ -1,3 +1,9 @@
+[AI strategy]
+Strategi AI
+[AIMaxima-Summary]
+Menyeimbangkan pertumbuhan berkelanjutan dan pelatihan, lalu mengumpulkan tentara dalam gelombang.
+[AIMaxima-Profile]
+Strategi utama: Menganggap pangan, pekerja, kelahiran, pelatihan, pembangunan, dan pertempuran sebagai kebutuhan bersaing. Menentukan ukuran tentara sebagian menurut perkiraan kekuatan musuh, lalu berusaha mengirim tentara itu secara efektif.\n\nEkonomi dan perkembangan: Menganggarkan kelahiran menurut pangan dan tenaga, mempertahankan kesempatan luang untuk pelatihan, dan berhenti menambah pekerja berlebih saat produksi militer diperlukan. Memperbesar kapasitas pelatihan serta menghindari terlalu banyak infrastruktur berhenti beroperasi untuk peningkatan.\n\nPengintaian dan keputusan: Memperkirakan pasukan musuh dari unit terlihat dan ingatan pengamatan menggunakan model yang disesuaikan dengan data. Sasaran bergantung pada nilai, jarak, menara, pekerja terbuka, dan kesinambungan serangan. Misi buah mendukung variasi pangan dan pembelotan.\n\nSerangan dan pertahanan: Mencadangkan prajurit untuk pelatihan dan pertahanan, lalu mengumpulkan pasukan darat yang memenuhi syarat dekat infrastruktur pangan kawan sebelum meluncurkan gelombang. Menggunakan respons pertahanan setempat dan menilai jalur pendekatan ke koloni.\n\nKetika serangan macet: Setelah empat kegagalan pengiriman gelombang berturut-turut, beralih ke bendera serangan dengan bala bantuan terus-menerus. Serangan menyeberangi air juga dapat memakai penguatan terus-menerus. Pilihan cadangan ini tidak mengatasi setiap sumbatan sebelum pasukan dapat berkumpul.\n\nDibanding AI lain: Memadukan pangan, pelatihan, intelijen, dan pengerahan lebih erat. Cabino menekankan beberapa serangan bangunan; Maxima menekankan perkiraan kebutuhan dan pengiriman kekuatan yang sudah terkumpul.\n\nKekuatan dan kelemahan: Mempertahankan pertumbuhan dan penggantian pasukan sambil beradaptasi pada tekanan pangan dan ancaman yang diamati. Membutuhkan pangan, kapasitas pelatihan, dan ruang berkumpul terbuka; kemacetan dan rute panjang dapat menghambat pengiriman.\n\nCara menghadapi: Perebutkan gandum, penginapan, dan barak terbuka sebelum gelombang terkumpul. Satukan pasukan bertahan yang terpasok dan ganggu rute bala bantuan. Antisipasi tekanan berulang setelah gelombang pertama.\n\nPengintaian: Perkiraan kekuatan memakai pengamatan dan riwayatnya, bukan jumlah total pasukan musuh yang tersembunyi.
 [%0 has left the game]
 %0 telah keluar dari permainan.
 [%0 level %1]
@@ -51,19 +57,19 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor bermain dengan hati-hati dan sangat tangguh di peta dengan sedikit sumber daya. Tingkat kesulitan sedang.
+Membangun dan melatih sambil menyesuaikan pertumbuhan dengan pasokan makanan.
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex berekspansi ke ladang gandum baru dan mengirimkan kelompok prajurit ke medan perang, didukung oleh penginapan dan rumah sakit di dekat garis depan. Kesulitan sedang. Eksperimental.
+Mengumpulkan gelombang prajurit dengan dukungan makanan dan pengobatan.
 [AIMaxima-Description]
-Maxima mengembangkan koloni yang tercukupi pangannya, terus menjelajah, dan menyerang tanpa henti dengan setiap prajurit yang bisa dikerahkan. Tingkat kesulitan tinggi.
+Mengintai, menambah pasokan makanan, dan mengumpulkan gelombang prajurit.
 [AIMaxima]
 Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
-Nicowar bermain agresif, berkembang pesat, dan mengerahkan pasukan besar untuk menyerang lawan. Tingkat kesulitan sulit.
+Menambah populasi, melatih prajurit, lalu menyerang.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -71,19 +77,19 @@ Tidak ada - Tidak melakukan apa pun.
 [AINone]
 Tidak ada
 [AINumbi-Description]
-Numbi - Berkembang secara terbatas dan cepat. Tingkat kesulitan mudah.
+Lawan yang cukup mudah, tetapi tetap meluas dan menyerang.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
+Meluas dan berebut pengikut tanpa menghasilkan prajurit.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Menyerang dengan cepat dan keras, sering kali membuat pemain yang bertahan kewalahan. Tingkat kesulitan sedang.
+Serangan cepat yang menguji pertahanan awalmu.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino menjalankan pertahanan, serangan, dan pembangunan sebagai departemen independen yang menuju satu rencana: berkembang pesat lalu mengerahkan pasukan besar untuk menyerang lawan. Tingkat kesulitan sulit.
+Pembangun kuat yang menurunkan pasukan penyerang terlatih.
 [AICabino]
 Cabino
 [Alga]
@@ -1237,37 +1243,37 @@ Masih bekerja: %0
 [AI strategy & counterplay]
 Strategi AI & cara melawannya
 [AICastor-Profile]
-Strategi: Berkembang dengan hati-hati dan mampu bertahan di peta dengan sedikit sumber daya.\n\nKekuatan: Pertumbuhan terkendali cocok untuk pertandingan dengan sumber daya langka.\n\nSaran melawan: Kuasai wilayah lebih awal; jangan beranggapan bahwa sumber daya langka akan melumpuhkannya.
+Strategi utama: Berinvestasi pada koloni produktif dan teknologi sebelum melancarkan serangan besar. Proyek pembangunan berprioritas mengembangkan permukimannya; perkembangan, infrastruktur militer, dan waktu meningkatkan kesiapan perang.\n\nEkonomi dan perkembangan: Mempelajari kelembapan, pertumbuhan gandum, rintangan, dan jangkauan pekerja. Mengelola perluasan pangan, peningkatan, dan pertahanan bersamaan dengan produksi.\n\nSerangan dan pertahanan: Memperkirakan daya serang prajurit sehat dan menyerang saat syarat kekuatan atau waktu terpenuhi. Mengutamakan bangunan yang pernah terlihat dan dapat dijangkau, terutama barak dan sekolah, serta memindahkan bendera serangan ke sasaran bernilai.\n\nDibanding AI lain: Lebih cermat mempertimbangkan medan dan nilai sasaran daripada Numbi. Lebih sabar daripada Warrush, mengorbankan tekanan awal demi markas berkembang dan pasukan lebih kuat.\n\nKekuatan dan kelemahan: Perencanaan infrastruktur luas dan sasaran militer bernilai memberi arah pada serangannya. Persiapan memakan waktu sehingga lawan cepat dapat memperebutkan sumber daya sebelum pasukan utama siap.\n\nCara menghadapi: Ganggu perluasan sejak awal. Lindungi barak dan sekolah selain pangan, dan sisakan cadangan saat menyerang permukimannya yang sudah berkembang.
 [AICastor-Summary]
-Ekspansi yang hati-hati; berkinerja baik dengan sumber daya yang terbatas.
+Mengembangkan koloni berbenteng, lalu menyerang bangunan militer dan ilmu pengetahuan.
 [AICortex-Profile]
-Strategi: Mengelola persediaan makanan, memperluas ke ladang gandum baru, dan mengumpulkan kelompok pejuang secara berurutan. Penginapan dan rumah sakit di dekat garis depan mendukung serangan yang jauh dari pangkalan.\n\nKekuatan: Mengirim bala bantuan bersama-sama, mempertahankan tekanan militer, dan bereaksi terhadap kekurangan pangan.\n\nSaran melawan: Berjuang untuk menguasai ladang gandum baru dan serang bangunan pendukungnya di dekat garis depan. Serang sebelum kelompok prajuritnya siap.\n\nAI eksperimental. Kesulitan sedang; saran melawan bukan penilaian tolok ukur kinerja.
+Strategi utama: Menggunakan prioritas reaktif untuk membangun ekonomi yang berjalan dan mengubah tenaga berlebih menjadi pangan, teknologi, serta tekanan militer. Kebijakan normalnya berbasis aturan; percobaan kebijakan hasil pembelajaran memerlukan konfigurasi terpisah.\n\nEkonomi dan perkembangan: Menyesuaikan produksi pekerja dengan kebutuhan tenaga dan terus melahirkan unit. Masalah pangan menekan belanja perluasan dan teknologi. Menambahkan kemampuan berenang jika akses air memberi manfaat berarti.\n\nSerangan dan pertahanan: Menyiapkan serangan berdasarkan teknologi musuh yang diamati dan pasukan tersedia. Operasi menyeberangi air membutuhkan prajurit yang bisa berenang. Mendukung operasi panjang dengan penginapan dan rumah sakit di depan, serta dapat mengumpulkan pasukan sebelum maju.\n\nKomitmen dan keadaan darurat: Mempertahankan serangan saat mendapat gangguan kecil alih-alih terus pulang. Serangan serius dapat memanggil pulang pembela. Darurat awal dapat memicu produksi khusus prajurit dan pembangunan rumah sakit; kelaparan dapat memicu serangan putus asa berskala kecil.\n\nDibanding AI lain: Lebih memperhatikan dukungan depan daripada Warrush. Maxima melangkah lebih jauh dalam menganggarkan kelahiran berkelanjutan, pelatihan, dan pengerahan sesuai perkiraan kekuatan musuh.\n\nKekuatan dan kelemahan: Menghubungkan tekanan dengan pangan, perawatan, dan keterjangkauan. Infrastruktur depan harus terus dipasok, sedangkan kelahiran berkelanjutan dapat terus membebani pangan terbatas. Prioritas darurat memaksa pilihan antara pertumbuhan dan kelangsungan hidup.\n\nCara menghadapi: Perebutkan penginapan, rumah sakit, dan gandum di depan. Satukan pembela menghadapi dorongannya; gangguan kecil belum tentu membuatnya mundur.\n\nPengintaian: Menggunakan bangunan musuh yang ditemukan dan pasukan musuh yang diamati.
 [AICortex-Summary]
-Menjaga pangan sambil melancarkan gelombang serangan dengan dukungan.
+Menopang dorongan militer yang gigih dengan pangan dan perawatan di garis depan.
 [AINicowar-Profile]
-Strategi: Berekspansi dengan cepat dan menyerang lawan dengan pasukan yang sangat besar.\n\nKekuatan: Ekspansi yang cepat mendukung serangan militer yang agresif.\n\nSaran melawan: Cegah perluasannya. Gunakan medan untuk mengurangi jumlah pasukan musuh yang bisa bertarung sekaligus.
+Strategi utama: Menggabungkan pertumbuhan, pelatihan, peningkatan, dan perang melalui kondisi yang bertumpang tindih. Dapat menyerang sambil memperluas, serta mengalihkan upaya ekonomi ke pemulihan saat pemberian makan gagal.\n\nPembukaan: Profil agresif bawaan mulai menyiapkan perang pada lima unit total dan mengizinkan perang pada lima prajurit, termasuk prajurit tingkat nol. Menargetkan tiga bendera serangan dengan lima prajurit masing-masing. Berkas strategi khusus dapat mengubah ambang ini.\n\nEkonomi dan perkembangan: Memperluas kapasitas pangan dan kelahiran, melatih pekerja, mengembangkan renang dan gerak, serta meningkatkan bangunan. Menyesuaikan tenaga pangan, menanggapi kelaparan, dan mencari buah.\n\nSerangan dan pertahanan: Memilih secara acak dari bangunan musuh yang dapat dijangkau. Dapat memakai bendera pembersihan untuk membuka jalur terhalang sumber daya. Bendera pertahanan melindungi kelompok unit dan bangunan terancam. Nantinya, penjelajah terlatih menyerang darat menyasar kelompok unit musuh.\n\nDibanding AI lain: Sama agresifnya sejak awal seperti Warrush, tetapi memiliki kelanjutan lebih lengkap. Tidak seperti Cabino, tidak selalu mengutamakan rumah sakit dan penginapan.\n\nKekuatan dan kelemahan: Cakupan taktik luas menggabungkan tekanan awal dengan perkembangan berkelanjutan. Pemilihan sasaran acak dapat menghabiskan upaya pada bangunan kurang bernilai. Ambangnya tidak memberi perkiraan rinci daya tempur lawan seperti Maxima.\n\nCara menghadapi: Antisipasi serangan awal. Lindungi pangan dan pekerja, ganggu perluasan, dan siapkan pertahanan terhadap penjelajah jika ia mencapai pelatihan lanjutan.
 [AINicowar-Summary]
-Berkembang dengan cepat dan membangun pasukan besar untuk serangan agresif.
+Serbuan awal yang didukung pertanian, peningkatan, pertahanan, dan serangan penjelajah.
 [AINone-Profile]
 Strategi: AI tidak memberikan perintah.\n\nKekuatan: Lawan eksperimen yang dapat diprediksi dan tidak aktif.\n\nKelemahan: Tidak berkembang atau beradaptasi.
 [AINone-Summary]
 Koloni yang diam untuk eksperimen.
 [AINumbi-Profile]
-Strategi: Berkembang dengan cepat namun dalam skala kecil. Lawan yang lebih mudah untuk mempraktikkan manajemen koloni.\n\nKekuatan: Memungkinkan Anda mempelajari manajemen ekonomi dan pertempuran.\n\nSaran melawan: Kembangkan ekonomi yang lebih kuat dan latih pasukan Anda sebelum menyerang.
+Strategi utama: Membangun pangan dan populasi lebih dahulu, menambahkan perawatan, ilmu pengetahuan, dan pelatihan, lalu beralih ke perang. Tahap besarnya maju menurut waktu, bukan kemajuan lawan.\n\nEkonomi dan perkembangan: Menyesuaikan kebutuhan bangunan dengan populasi dan memperkirakan gandum sekitar. Tahap lanjut menambahkan peningkatan, pertahanan, dan perluasan untuk mendukung tentara yang membesar.\n\nSerangan dan pertahanan: Menyerang saat cukup petarung sehat tersedia atau waktu tunggu habis. Memasang bendera perang pada bangunan musuh yang dipilih secara acak. Jika kekuatan tempur terlalu rendah, mencabut bendera serangan dan menaikkan ambang percobaan berikutnya.\n\nDibanding AI lain: Lebih mudah diprediksi daripada Castor atau Nicowar. Castor lebih teliti mempertimbangkan medan dan nilai sasaran; Nicowar menekan jauh lebih awal.\n\nKekuatan dan kelemahan: Infrastruktur pendukung luas dapat membuatnya berbahaya setelah berkembang tanpa gangguan, tetapi jadwalnya bisa tidak sesuai pertempuran. Pemilihan sasaran sederhana dan jeda lebih lama setelah kalah memudahkan perkiraan serangan.\n\nCara menghadapi: Tekan sebelum tahap militernya. Kembangkan pangan dan pelatihan di belakang serangan Anda, lalu manfaatkan jeda setelah mematahkan serbuan.\n\nPengintaian: Rutin serangannya membaca posisi bangunan musuh langsung tanpa memeriksa visibilitas.
 [AINumbi-Summary]
-Ekspansi cepat dalam skala kecil.
+Membangun koloni bertahap sesuai jadwal, lalu menyerang dengan jumlah besar.
 [AIEcono-Profile]
-Strategi: Tidak menyerang, tetapi membangun markas besar dan giat mengubah unit musuh menjadi sekutu.\n\nKekuatan: Pertumbuhan dan pengalihan unit menekan lawan tanpa serangan biasa.\n\nSaran melawan: Manfaatkan awal permainan untuk berkembang, dan hindari mengirim unit ke tempat musuh bisa mengambil alihnya.
+Strategi utama: Menghasilkan pekerja dan penjelajah, memperluas ekonomi, serta menarik unit musuh melalui pangan dan buah. Tidak memiliki serangan prajurit konvensional.\n\nEkonomi dan perkembangan: Membangun penginapan dan sarang dekat gandum, menambahkan pendidikan dan latihan gerak, serta meningkatkan infrastruktur. Memantau pasokan pangan dan mengganti penginapan serta sarang lama saat posisi sumber dayanya memburuk.\n\nPertanian dan pembelotan: Melindungi gandum dan kayu terbarukan dekat air. Mengirim penjelajah ke sumber buah dan koloni musuh, serta mengiklankan pangan kepada musuh saat mencari pasokan buah. Pangan dan buah yang lebih baik dapat menarik pembelot.\n\nDibanding AI lain: Lawan yang paling mengkhususkan diri pada ekonomi. Cabino dan Maxima juga mencari buah, tetapi menggabungkannya dengan tentara.\n\nKekuatan dan kelemahan: Dapat tumbuh saat lawan militer saling menguras kekuatan, dengan pembelotan sebagai bentuk persaingan lain. Tidak menghasilkan prajurit untuk menjawab serbuan berkelanjutan. Pangan, buah, geografi, dan aturan kemenangan sangat memengaruhi peluangnya.\n\nCara menghadapi: Tekan perluasan yang terbuka. Pasok penginapan Anda dengan pangan dan buah agar unit bertahan. Hindari menguras koloni dalam pertempuran tidak perlu saat ia tumbuh.
 [AIEcono-Summary]
-Basis besar dan konversi, bukan serangan.
+Membangun koloni kaya pangan dan memperebutkan pembelot tanpa menghasilkan prajurit.
 [AIWarrush-Profile]
-Strategi: Menyerang dengan cepat dan keras sebelum lawan selesai bersiap.\n\nKekuatan: Menghukum ekspansi tanpa pertahanan dan persiapan militer yang lambat.\n\nSaran melawan: Pertahankan ekonomi sambil bertahan dari serangan pertama, lalu serang balik.
+Strategi utama: Menyerang sebelum lawan selesai mengembangkan ekonomi atau teknologi yang panjang. Berharap pertempuran menentukan permainan sebelum jaringan dukungan besar diperlukan.\n\nEkonomi dan perkembangan: Begitu enam unit dapat memanen, mengatur rasio produksi menjadi empat pekerja, satu penjelajah, dan tiga prajurit. Menambah barak ketika pelatihan penuh, tetapi membatasi penginapan baru. Kapasitas pembangunan luang sering dialihkan ke rumah sakit dan pelatihan gerak.\n\nSerangan dan pertahanan: Menandai bangunan musuh yang ditemukan dengan area penjagaan agar prajurit terus menekan. Tidak menunggu gelombang yang dikumpulkan dengan cermat. Membersihkan kayu penghalang dan melindungi sebagian sumber daya terbarukan.\n\nKebijakan buah: Melarang pemanenan buah, menghindari penalti zirah terkait buah, dan menolak strategi pembelotan Econo.\n\nDibanding AI lain: Lebih berkomitmen pada tekanan awal daripada Numbi atau Castor. Nicowar juga membuka secara agresif, tetapi melanjutkan dengan program peningkatan dan taktik lebih luas.\n\nKekuatan dan kelemahan: Menghukum pembukaan lambat dan memaksa belanja pertahanan awal. Peningkatan sistematis terbatas dan dukungan pangan tipis membuat serangan yang macet mahal. Medan dan perjalanan jauh dapat mengikis keunggulan awalnya.\n\nCara menghadapi: Lindungi penginapan dan sarang sejak awal. Ganti pekerja serta pembela yang hilang, kembangkan pelatihan, lalu serang balik ketika serbuannya kehilangan momentum.\n\nPengintaian: Bendera eksplorasi pembukaan memakai lokasi awal musuh secara langsung. Penempatan area serangan berikutnya memerlukan visibilitas.
 [AIWarrush-Summary]
-Serangan cepat yang menguji pertahanan awal Anda.
+Tekanan prajurit sejak awal dengan ekonomi pendukung yang sengaja dirampingkan.
 [AICabino-Profile]
-Strategi inti: sebuah kabinet departemen spesialis independen (pertahanan, serangan, pembangunan, peningkatan, manajemen unit) yang masing-masing bertindak atas inisiatifnya sendiri tetapi menuju satu rencana: berkembang pesat lalu mengerahkan pasukan besar melawan lawan.\n\nKekuatan: ekspansi cepat mendukung tekanan militer yang agresif; departemen independen bereaksi cepat terhadap ancaman lokal tanpa menunggu rencana terpusat.\n\nCara melawan: hadapi ekspansinya sejak awal dan gunakan medan untuk membatasi berapa banyak pasukannya yang bisa bertempur sekaligus.
+Strategi utama: Membagi produksi unit antara pembangunan, peningkatan, pertahanan, serangan, dan eksplorasi. Pengelola terpisah meminta dan mencadangkan unit, mengembangkan ekonomi dan militer bersama.\n\nEkonomi dan perkembangan: Membangun dan meningkatkan permukiman dengan fasilitas beragam, mengatur tenaga penginapan dan menara, membersihkan sekitar bangunan, serta melindungi sumber daya terbarukan. Mengintai buah dan mengiklankan pangan untuk memperebutkan pembelot.\n\nSerangan dan pertahanan: Memilih musuh dan mengutamakan rumah sakit, lalu penginapan, lalu barak. Mendukung hingga empat serangan, umumnya menugaskan delapan sampai dua puluh prajurit per sasaran sesuai ketersediaan dan musuh terdekat. Menggunakan bendera pertahanan terpisah di sekitar bangunan terancam.\n\nPelatihan: Membutuhkan cukup prajurit yang sesuai dan barak selesai untuk menyerang, tetapi tidak menunggu teknologi maksimal. Peningkatan dan pelatihan berkelanjutan memperkuat serangan berikutnya.\n\nDibanding AI lain: Lebih terarah menghancurkan bangunan pendukung daripada Nicowar. Menyebarkan serangan lebih luas daripada gelombang terkumpul Maxima, memakai pencadangan unit untuk mengelola kebutuhan yang bersaing.\n\nKekuatan dan kelemahan: Menggabungkan pertumbuhan, pelatihan, pertahanan, dan beberapa serangan. Menghancurkan pangan dan perawatan dapat melemahkan seluruh koloni. Pemilihan lawan acak dan prioritas bangunan tetap bisa melewatkan peluang; beberapa serangan dapat memecah kekuatannya.\n\nCara menghadapi: Pertahankan rumah sakit dan penginapan. Ganggu perluasan terbuka dan pusatkan pembela menghadapi serangan satu per satu. Rusak pangan atau pelatihan sebelum ia sanggup menopang beberapa front.\n\nPengintaian: Pemilih serangannya membaca daftar bangunan musuh tanpa pemeriksaan visibilitas eksplisit. Sebagian perbandingan ekonomi memakai statistik musuh langsung.
 [AICabino-Summary]
-Departemen independen yang bekerja sama untuk pertumbuhan cepat dan pasukan besar.
+Mengoordinasikan pertumbuhan koloni dan serangan terlatih, menyasar perawatan dan pangan dahulu.
 [Algae]
 Ganggang
 [Alliances]
@@ -1976,6 +1982,10 @@ Lebar jalan setapak
 Tembok antar tikungan
 [Farm building plots]
 Petak bangunan di ladang
+[Sand bridges over water]
+Jembatan pasir di atas air
+[Sand lanes through crops]
+Jalur pasir melintasi tanaman
 [Carousels need at least two colonies.]
 Komidi putar memerlukan setidaknya dua koloni.
 [Switchbacks need at least two colonies.]
@@ -2178,24 +2188,22 @@ Acak parameter
 Kualitas awal
 [Fairness]
 Keadilan
-[Score]
-Skor
-[Weight]
-Bobot
+[Fitness]
+Kekuatan
+[Win chance]
+Peluang menang
+[Coefficient]
+Koefisien
+[Average]
+Rata-rata
+[Fitted on games:]
+Disesuaikan pada permainan:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Awal setiap koloni diukur pada peta yang sudah jadi, dan model yang disesuaikan pada ribuan permainan antara lawan yang setara mengubah pengukuran tersebut menjadi kekuatan. Kekuatan menunjukkan seberapa besar peluang koloni itu menang. Keadilan menunjukkan seberapa merata peluang tersebut dibagi: 1 jika setiap koloni punya peluang menang yang sama, 0 jika satu koloni akan menguasai seluruh peta.
 [Worst]
 Terburuk
 [Best]
 Terbaik
-[Fertility]
-Kesuburan
-[Deposits]
-Cadangan
-[Room]
-Ruang
-[Isolation]
-Keterpencilan
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Awal setiap koloni diukur pada peta yang sudah jadi: jarak tempuh ke gandum dan ke kayu, seberapa baik tanahnya tumbuh kembali, cadangan dan lokasi bangunan yang terjangkau, serta jaraknya dari pesaing. Setiap faktor dinilai dari 0 sampai 1 terhadap patokan tetap, totalnya membobotinya, keadilan adalah total koloni terburuk dibagi total yang terbaik, dan skor adalah total terburuk dikali keadilan.
 [Map preview controls]
 Seret untuk melintasi tepi. Gulir untuk memperbesar. Klik kanan atau klik ganda untuk mengatur ulang.
 [Map preview drag help]
@@ -2253,9 +2261,9 @@ Makanan/menit
 [Stats occupancy]
 Makan / penyembuhan
 [Stats page one]
-Statistik 1/2 >
+Statistik 1/3 >
 [Stats page two]
-Statistik 2/2 >
+Statistik 2/3 >
 [Stats next page]
 Halaman (P)
 [Map preview choose another]
@@ -2378,3 +2386,1001 @@ Nonaktif (tanpa pengatur waktu)
 60 menit
 [Sudden-death timer]
 Pengatur waktu kematian mendadak
+[Stats page three]
+Statistik 3/3 >
+[Stats blocked units]
+Unit S/C
+[Stats blocked buildings]
+Bangunan S/C
+[Stats blocked buildings swim]
+Berenang S/C
+[Stats current blocked units]
+Unit C
+[Stats current blocked buildings]
+Bangunan C
+[Stats growth global]
+Sumber daya +
+[Stats growth new tiles]
+Sumber daya +#
+[Stats growth reductions]
+Sumber daya -
+[Stats growth per minute]
+Gandum +/min
+[Stats growth near 8]
+Sumber daya + <=8
+[Stats growth near 16]
+Sumber daya + <=16
+[Stats growth near 32]
+Sumber daya + <=32
+[Stats low HP 25]
+HP <=25%
+[Stats low HP 50]
+HP <=50%
+[Stats low HP 75]
+HP <=75%
+[Stats low food 25]
+Makanan <=25%
+[Stats low food 50]
+Makanan <=50%
+[Stats low food 75]
+Makanan <=75%
+[Stats structural units]
+Unit S
+[Stats structural buildings]
+Bangunan S
+[Stats low HP ranges]
+HP: <=25/50/75%
+[Stats low food ranges]
+Makanan: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Karakter emoji
+[Smiley]
+Wajah tersenyum
+[Sad face]
+Wajah sedih
+[Winking face]
+Wajah mengedip
+[Surprised face]
+Wajah terkejut
+[Heart eyes]
+Mata hati
+[Sunglasses]
+Kacamata hitam
+[Heart]
+Hati
+[Star]
+Bintang
+[Neutral face]
+Wajah datar
+[Sleeping face]
+Wajah tidur
+[Grinning face]
+Wajah menyeringai
+[Kissing face]
+Wajah mencium
+[Angry face]
+Wajah marah
+[Tongue out]
+Menjulurkan lidah
+[Skull]
+Tengkorak
+[Flower]
+Bunga
+[Four-leaf clover]
+Semanggi berdaun empat
+[Teardrop]
+Tetesan
+[Cloud]
+Awan
+[Gem]
+Permata
+[Apple]
+Apel
+[Speech bubble]
+Balon kata
+[Shield]
+Perisai
+[Emoji style]
+Gaya emoji
+[Outline]
+Garis luar
+[Filled]
+Terisi
+[Emoji terrain]
+Medan emoji
+[Regular]
+Biasa
+[Inverse]
+Terbalik
+[Crossings]
+Penyeberangan
+[Forts]
+Benteng
+[Gate width]
+Lebar gerbang
+[Braided Delta]
+Delta berjalin
+[Braid count]
+Jumlah cabang
+[Rejoining frequency]
+Frekuensi pertemuan
+[Crossing spacing]
+Jarak penyeberangan
+[Breachable highlands]
+Dataran tinggi yang dapat ditembus
+[Ridge depth]
+Ketebalan punggung bukit
+[Extra open passes]
+Celah terbuka tambahan
+[Wooded saddles]
+Celah berhutan
+[Hedgerow Country]
+Pedesaan berpagar tanaman
+[Field size]
+Ukuran ladang
+[Hedge thickness]
+Ketebalan pagar tanaman
+[Existing gateways]
+Jalur masuk yang ada
+[Wooded boundary share]
+Proporsi batas berpohon
+[The Glacis]
+Glasis
+[Allotments]
+Petak Kebun
+[Caravanserai]
+Karavanserai
+[Mixed]
+Campuran
+[Fort size]
+Ukuran benteng
+[Bastions]
+Bastion
+[Four-pointed]
+Berujung empat
+[Five-pointed]
+Berujung lima
+[Six-pointed]
+Berujung enam
+[Glacis width]
+Lebar glasis
+[Gates]
+Gerbang
+[Site size]
+Ukuran petak
+[Plot width]
+Lebar bedengan
+[Plot mix]
+Campuran bedengan
+[Tended]
+Terawat
+[Overgrown]
+Terbengkalai
+[Commons]
+Tanah bersama
+[Few]
+Sedikit
+[Some]
+Beberapa
+[Home oasis size]
+Ukuran oasis asal
+[Caravanserais per colony]
+Karavanserai per koloni
+[Desert]
+Gurun
+[Open erg]
+Erg terbuka
+[Dunes and mesas]
+Bukit pasir dan mesa
+[Canyon country]
+Negeri ngarai
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Sebuah benteng tidak dapat mencapai arungannya; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[A wall would stand on a beach; try another seed.]
+Sebuah tembok akan berdiri di pantai; coba benih lain.
+[The fort is too small for its gardens; raise Fort size.]
+Benteng terlalu kecil untuk kebunnya; perbesar ukuran benteng.
+[The home oasis is too small; raise Home oasis size.]
+Oasis asal terlalu kecil; perbesar ukuran oasis asal.
+[Braided river]
+Sungai teranyam
+[Braid width]
+Lebar anyaman
+[Bar size]
+Ukuran gosong
+[Extra riffles]
+Penyeberangan dangkal tambahan
+[Moraine hummocks]
+Gundukan morena
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Anyaman menyisakan terlalu sedikit teras untuk markas; gunakan peta lebih besar atau anyaman lebih sempit.
+[The map is too narrow across for a braid; use a bigger map.]
+Peta terlalu sempit melintang untuk anyaman; gunakan peta lebih besar.
+[Drumlin field]
+Padang drumlin
+[Drumlin spacing]
+Jarak drumlin
+[Drumlin length]
+Panjang drumlin
+[Water gap]
+Celah air
+[Esker loops]
+Simpul esker
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Esker tidak dapat menghubungkan semua drumlin; gunakan celah air yang lebih kecil atau peta yang lebih besar.
+[Continents]
+Benua-benua
+[Continent]
+Benua
+[North America]
+Amerika Utara
+[South America]
+Amerika Selatan
+[Africa]
+Afrika
+[Europe]
+Eropa
+[Asia]
+Asia
+[Oceania]
+Oseania
+[Orientation]
+Orientasi
+[Turn to fit]
+Putar agar muat
+[Upright]
+Tanpa putaran
+[Mountain ranges]
+Pegunungan
+[Great rivers]
+Sungai besar
+[Islets]
+Pulau kecil
+[Oases]
+Oase
+[The world atlas has no such continent.]
+Atlas dunia tidak memiliki benua tersebut.
+[The map is too small to hold a continent.]
+Peta terlalu kecil untuk memuat sebuah benua.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Benua ini tidak memiliki ruang untuk koloni sebanyak ini pada ukuran peta ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[Savannah]
+Sabana
+[Watering holes]
+Kubangan air
+[Dry patches]
+Area kering
+[Sparse]
+Sedikit
+[Normal]
+Normal
+[Many]
+Banyak
+[Rice terraces]
+Teras sawah
+[Unoccupied hills]
+Bukit kosong
+[Hill radius]
+Jari-jari bukit
+[Contour band width]
+Lebar pita kontur
+[Stairs per hill]
+Tangga per bukit
+[Valley river]
+Sungai lembah
+[Hills]
+Bukit
+[Hillsides]
+Lereng
+[Terraces per slope]
+Teras per lereng
+[Waviness]
+Kebergelombangan
+[Stair spacing]
+Jarak tangga
+[Locust]
+Belalang
+[Plantations]
+Perkebunan
+[Plot size]
+Ukuran petak bangunan
+[Farm width]
+Lebar ladang
+[Islands per colony]
+Pulau per koloni
+[Outpost inns]
+Penginapan pos terdepan
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Pulau-pulau ini terlalu kecil untuk petak bangunannya; gunakan peta yang lebih besar, petak bangunan yang lebih kecil, atau koloni yang lebih sedikit.
+[Sierpiński Gardens]
+Kebun Sierpiński
+[Hilbert River]
+Sungai Hilbert
+[Maximum nesting]
+Tingkat bersarang maksimum
+[Minimum terminal district side]
+Sisi minimum distrik akhir
+[Major crossing pairs]
+Pasangan penyeberangan utama
+[Maximum fold depth]
+Kedalaman lipatan maksimum
+[Minimum land spacing]
+Jarak daratan minimum
+[Optional local crossings per parent]
+Penyeberangan lokal opsional per wilayah induk
+[Optional major shortcuts]
+Jalan pintas utama opsional
+[Lava shield]
+Perisai lava
+[Lava tongues]
+Lidah lava
+[Long tongues]
+Lidah panjang
+[Crater rim width]
+Lebar bibir kawah
+[Honeycomb isle]
+Pulau sarang lebah
+[Blocks per colony]
+Blok per koloni
+[Rubble]
+Puing
+[Outline gaps]
+Celah garis luar
+[Craters per colony]
+Kawah per koloni
+[Wheat fields]
+Ladang gandum
+[Bridges]
+Jembatan
+[Karst towers]
+Menara karst
+[Tower spacing]
+Jarak menara karst
+[Tower density]
+Kerapatan menara karst
+[Paddy depth]
+Jangkauan sawah
+[Home design]
+Rancangan markas
+[Horseshoe]
+Tapal kuda
+[Twin gates]
+Gerbang kembar
+[Three gates]
+Tiga gerbang
+[Four gates]
+Empat gerbang
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Sungai tidak menemukan jalan di antara markas; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[River meander]
+Kelokan sungai
+[Flooded terraces]
+Teras tergenang
+[Sinkholes]
+Dolina
+[Bajada]
+Kipas aluvial
+[Range spacing]
+Jarak antarpegunungan
+[Ridge width]
+Lebar punggung gunung
+[Passes]
+Celah gunung
+[Fans per range]
+Kipas per pegunungan
+[Stream reach]
+Panjang anak sungai
+[Playa]
+Danau garam
+[Broad fan]
+Kipas lebar
+[Long fan]
+Kipas panjang
+[Twin springs]
+Mata air kembar
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Lereng kipas terlalu sempit untuk markas; gunakan peta yang lebih besar, jarak antarpegunungan yang lebih lebar, punggung gunung yang lebih sempit, atau danau garam yang lebih kecil.
+[Central Quarry]
+Tambang Batu Tengah
+[Quarry size]
+Ukuran tambang batu
+[Sand bars]
+Gosong pasir
+[Woodland]
+Hutan
+[Central Quarry needs at least two colonies.]
+Tambang Batu Tengah memerlukan setidaknya dua koloni.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Danau tidak muat di peta ini; gunakan danau yang lebih kecil atau peta yang lebih besar.
+[A sand bar did not reach the island.]
+Sebuah gosong pasir tidak mencapai pulau.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Peta ini tidak punya ruang untuk koloni sebanyak ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[The island has no room for its quarry; use a bigger island.]
+Pulau tidak punya ruang untuk tambang batunya; gunakan pulau yang lebih besar.
+[Hidden Oasis]
+Oasis Tersembunyi
+[Pond algae]
+Ganggang kolam
+[Starting towers]
+Menara awal
+[Starting school]
+Sekolah awal
+[Mesas]
+Bukit meja
+[Springs]
+Mata air
+[Hidden Oasis needs at least two colonies.]
+Oasis Tersembunyi memerlukan setidaknya dua koloni.
+[Hidden Oasis holds at most eight colonies.]
+Oasis Tersembunyi menampung paling banyak delapan koloni.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Masif batu tidak muat di peta ini; gunakan peta yang lebih besar atau koloni yang lebih sedikit.
+[The pond has no room for that much algae; use a bigger pond.]
+Kolam tidak punya ruang untuk ganggang sebanyak itu; gunakan kolam yang lebih besar.
+[Even Ground]
+Tanah Sama Rata
+[Balance]
+Penyeimbangan
+[Tight passes]
+Lorong sempit
+[Solver effort]
+Upaya penyelesaian
+[Brief]
+Singkat
+[Patient]
+Sabar
+[This map is too small to solve on; use a bigger map.]
+Peta ini terlalu kecil untuk dipecahkan; gunakan peta yang lebih besar.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Terlalu banyak koloni untuk diseimbangkan pada peta seukuran ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[The colonies could not be spread out on this map.]
+Koloni tidak dapat disebar di peta ini.
+[Marchland]
+Perbatasan
+[Prizes on the rope]
+Hadiah pada tali
+[March width]
+Lebar perbatasan
+[Levelling]
+Penyetaraan
+[A march needs a country on each side; use at least two colonies.]
+Perbatasan memerlukan sebuah negeri di kedua sisinya; gunakan setidaknya dua koloni.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Terlalu banyak koloni bagi peta ini untuk memberi masing-masing tanah air; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Peta ini tidak punya ruang untuk menyebar koloni; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Tanah air sebuah koloni tidak punya jalan keluar ke perbatasan; gunakan peta yang lebih besar atau perbatasan yang lebih sempit.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Tanah air sebuah koloni tidak punya ruang untuk sarang; gunakan peta yang lebih besar, lebih sedikit koloni, atau perbatasan yang lebih sempit.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Perbatasan punya terlalu sedikit lahan sengketa untuk hadiah sebanyak itu; gunakan lebih sedikit hadiah, perbatasan yang lebih lebar, atau peta yang lebih besar.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Perbatasan tidak punya ruang untuk sebuah hadiah; gunakan peta yang lebih besar, lebih sedikit koloni, atau perbatasan yang lebih lebar.
+[Orchard Commons]
+Kebun Buah Bersama
+[Orchard spacing]
+Jarak antarkebun
+[Compact]
+Rapat
+[Balanced]
+Seimbang
+[Spread]
+Renggang
+[The Gauntlet]
+Arena tantangan
+[Partition thickness]
+Ketebalan dinding pemisah
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Arena tantangan memerlukan peta yang lebih besar atau lebih sedikit koloni agar setiap koloni memiliki ruang untuk dua pintu masuk yang dijaga.
+[The Comb]
+Sisir
+[Peninsulas per shore]
+Semenanjung per pantai
+[Encircled Kingdom]
+Kerajaan terkepung
+[Fortress plan]
+Denah benteng
+[Automatic]
+Otomatis
+[Elongated enclosure]
+Benteng memanjang
+[Bastioned enclosure]
+Benteng berbastion
+[Paired courtyards]
+Halaman kembar
+[Heartland farmland]
+Lahan pertanian pusat
+[The Faulted City]
+Kota yang Terbelah
+[Fault displacement]
+Pergeseran sesar
+[Fault width]
+Lebar sesar
+[Ruin density]
+Kepadatan reruntuhan
+[Surviving junctions]
+Persimpangan tersisa
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Kota yang Terbelah memerlukan 256 atau 512 petak per sisi dan satu hingga dua belas koloni.
+[The city has too few usable junctions.]
+Kota ini memiliki terlalu sedikit persimpangan yang dapat dilalui.
+[A city neighbourhood lacks reachable crops or building room.]
+Sebuah kawasan kota kekurangan tanaman yang dapat dijangkau atau ruang untuk membangun.
+[The city neighbourhoods are too unequal; try another seed.]
+Kawasan kota terlalu tidak seimbang; coba benih lain.
+[The fractured civic plaza did not survive.]
+Alun-alun kota yang terbelah tidak tersisa.
+[Who Ate the Map?]
+Siapa yang memakan peta?
+[Appetite]
+Nafsu makan
+[A Little Nibble]
+Gigitan kecil
+[Hungry]
+Lapar
+[Portage Lakes]
+Danau dan lintasan hutan
+[Lake elongation]
+Kelonjongan danau
+[Portage depth]
+Ketebalan lintasan hutan
+[Extra trails]
+Jalur tambahan
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Sisi peta ini harus berukuran 64 hingga 512 petak.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Benih ini tidak menyediakan ruang untuk permukiman di tepi danau.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Ladang tepi danau yang dapat tumbuh kembali tidak muat di samping setiap permukiman.
+[Portage Lakes cannot connect its shoreline trails.]
+Jalur di tepi danau tidak dapat dihubungkan.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Benih ini tidak menyediakan jalan pintas yang berguna melalui hutan kering.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Benih ini tidak menyediakan jalan pintas renang yang berguna.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Dengan benih ini, danau untuk berenang harus tetap terpisah.
+[Drowned Forest]
+Hutan terendam
+[Sandbar connections]
+Sambungan jalur pasir
+[Wooded neck thickness]
+Ketebalan penghalang pohon
+[Neutral clearing size]
+Ukuran lahan terbuka netral
+[Bastion Keys]
+Kepulauan Benteng
+[Plantation size]
+Ukuran perkebunan
+[Outlying islands]
+Pulau luar
+[The Hungry Marches]
+Perbatasan Kelaparan
+[Opening ration]
+Jatah awal
+[Central concentration]
+Pemusatan di tengah
+[The Last Treeline]
+Sabuk hutan terakhir
+[Woodland depth]
+Lebar hutan
+[Fertility]
+Kesuburan
+[Deposits]
+Cadangan
+[Room]
+Ruang
+[Isolation]
+Keterpencilan
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Awal setiap koloni diukur pada peta yang sudah jadi: jarak tempuh ke gandum dan ke kayu, seberapa baik tanahnya tumbuh kembali, cadangan dan lokasi bangunan yang terjangkau, serta jaraknya dari pesaing. Setiap faktor dinilai dari 0 sampai 1 terhadap patokan tetap, totalnya membobotinya, keadilan adalah total koloni terburuk dibagi total yang terbaik, dan skor adalah total terburuk dikali keadilan.
+[ERROR_CANT_SAVE_MAP]
+Peta tidak dapat disimpan. Periksa tujuan dan ruang yang tersedia. Perubahan Anda masih terbuka.
+[Loading headers]
+Memuat header...
+[Loading teams]
+Memuat tim...
+[Loading terrain]
+Memuat medan...
+[Building gradients]
+Membangun gradien...
+[Loading players]
+Memuat pemain...
+[Loading scripts]
+Memuat skrip...
+[Generating map]
+Membuat peta...
+[ERROR_CANT_GENERATE_MAP]
+Peta tidak dapat dibuat. Coba pengaturan pembuatan yang lain.
+[Loading units]
+Memuat unit...
+[Loading buildings]
+Memuat bangunan...
+[Resolving team links]
+Menyelesaikan tautan tim...
+[saving to storage]
+Menyimpan...
+[save failed retry]
+Penyimpanan gagal. Coba lagi.
+[export save]
+Ekspor simpanan
+[storage restore failed]
+Penyimpanan peramban tidak dapat dipulihkan. Data tersimpan yang ada tidak berubah. Anda dapat melanjutkan sesi ini, tetapi perubahan lokal tidak akan tersimpan. Ekspor simpanan penting dari dialog kegagalan penyimpanan. Muat ulang untuk mencoba memulihkan penyimpanan lagi.
+[continue]
+Lanjutkan
+[export file]
+Ekspor berkas
+[export failed]
+Ekspor berkas gagal
+[import file]
+Impor
+[select import file]
+Pilih berkas untuk diimpor
+[validating import]
+Memvalidasi berkas...
+[import succeeded]
+Berkas diimpor
+[import cancelled]
+Impor dibatalkan
+[import failed]
+Impor gagal: berkas tidak valid atau tidak didukung
+[import persistence failed]
+Belum tersimpan: pilih Impor untuk mencoba lagi, atau Ekspor berkas
+[import progress]
+Progres impor
+[export progress]
+Progres ekspor
+[retry save]
+Coba simpan lagi
+[campaign save failed]
+Progres kampanye tidak tersimpan. Coba lagi atau ekspor cadangan.
+[leave without saving]
+Keluar tanpa menyimpan
+[campaign import failed]
+Berkas progres tidak valid atau versi kampanye berbeda
+[network release mismatch]
+Protokol klien dan server berbeda. Pasang versi Glob2 yang sama dengan server.
+[settings continue]
+Lanjutkan
+[settings save failed]
+Penyimpanan pengaturan belum dikonfirmasi. Coba lagi, atau lanjutkan.
+[shutdown save failed]
+Penyimpanan akhir belum dikonfirmasi. Coba lagi, atau keluar tanpa menyimpan.
+[quit without saving]
+Keluar tanpa menyimpan
+[game closed]
+Permainan ditutup. Anda dapat menutup jendela ini atau memuat ulang untuk bermain lagi.
+[campaign editor save failed]
+Penyimpanan belum dikonfirmasi. OK akan mencoba lagi; Batal kembali ke menu editor.
+[Actions]
+Tindakan
+[Minimap]
+Peta mini
+[Fast forward]
+Percepat
+[Hide keyboard]
+Sembunyikan papan ketik
+[Dialog text size]
+Ukuran teks dialog
+[Player slot]
+Slot pemain
+[Team color]
+Warna tim
+[Alliance group]
+Grup aliansi
+[menu]
+Menu
+[Editor tools]
+Alat
+[Pan map]
+Geser peta
+[Edit map]
+Edit Peta
+[Editor map]
+Peta
+[Flags]
+Bendera
+[Pause]
+Jeda
+[Speed]
+Kecepatan
+[Objectives]
+Sasaran
+[Menu]
+Menu
+[Goals]
+Tujuan
+[Teams]
+Tim
+[Use this landscape]
+Gunakan lanskap ini
+[Reset]
+Atur ulang
+[Generating...]
+Membuat...
+[Players]
+Pemain
+[Rules]
+Aturan
+[settings Interface layout]
+Tata letak antarmuka
+[settings Automatic]
+Otomatis
+[settings Compact]
+Rapat
+[settings Spacious]
+Lapang
+[More]
+Lainnya
+[No items]
+Tidak ada item
+[Opponents]
+Lawan
+[Review]
+Ringkasan
+[Review & Play]
+Tinjau dan mainkan
+[Edit opponents]
+Edit lawan
+[Map settings]
+Pengaturan peta
+[Next]
+Berikutnya
+[Done]
+Selesai
+[Contribution]
+Kontribusi
+[Choose who controls this colony]
+Pilih siapa yang mengendalikan koloni ini
+[Settings]
+Pengaturan
+[settings Back]
+Kembali
+[settings Save the game automatically about every minute.]
+Simpan permainan secara otomatis kira-kira setiap menit.
+[AI opponents]
+Lawan AI
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Tata letak lapang menggunakan panel samping jika ada ruang. Tata letak ringkas menggunakan bilah alat dan panel yang dapat dibuka.
+[Assigned %0 · Target %1]
+Ditugaskan %0 · Target %1
+[Range: %0]
+Jangkauan: %0
+[Player %0]
+Pemain %0
+[Brush %0]
+Kuas %0
+[Team %0]
+Tim %0
+[Your colony]
+Koloni Anda
+[%0 / %1 HP · %2]
+%0 / %1 HP · %2
+[Units: %0]
+Unit: %0
+[Buildings: %0]
+Bangunan: %0
+[Need food: %0]
+Butuh makanan: %0
+[Need healing: %0]
+Butuh penyembuhan: %0
+[Attack: %0]
+Serangan: %0
+[Defense: %0]
+Pertahanan: %0
+[Food: %0 / %1]
+Makanan: %0 / %1
+[View team %0]
+Lihat tim %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Kuas %0x%1
+[Level %0]
+Level %0
+[Manage teams (%0)]
+Kelola tim (%0)
+[Team %0 / Level %1]
+Tim %0 / Level %1
+[Files · %0]
+Berkas · %0
+[Hint %0]
+Petunjuk %0
+[Objective %0]
+Tujuan %0
+[Entry %0 of 8 · empty entries are omitted]
+Entri %0 dari 8 · entri kosong diabaikan
+[Teams %0/%1]
+Tim %0/%1
+[Elapsed time · %0]
+Waktu berlalu · %0
+[Read-only building]
+Bangunan hanya baca
+[Alliance and shared vision are fixed for this match.]
+Aliansi dan penglihatan bersama tetap untuk pertandingan ini.
+[Share vision]
+Bagikan penglihatan
+[Share food vision]
+Bagikan penglihatan makanan
+[Share market vision]
+Bagikan penglihatan pasar
+[Chat]
+Obrolan
+[No other players have editable diplomatic settings in this match.]
+Tidak ada pemain lain dengan pengaturan diplomasi yang dapat diedit dalam pertandingan ini.
+[No briefing for this match.]
+Tidak ada pengarahan untuk pertandingan ini.
+[Chat · recipients selected in Teams]
+Obrolan · penerima dipilih di Tim
+[Filename]
+Nama berkas
+[Reduced motion]
+Kurangi gerakan
+[Send]
+Kirim
+[Close]
+Tutup
+[Forbidden]
+Terlarang
+[Guard]
+Jaga
+[Clear]
+Bersihkan
+[Paint]
+Lukis
+[Erase]
+Hapus
+[Release on valid terrain to place]
+Lepaskan di medan yang valid untuk menempatkan
+[Paint on the map; two fingers move]
+Lukis di peta; geser dengan dua jari
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Kembali ke alat
+[Starvation overlay]
+Lapisan kelaparan
+[Damage overlay]
+Lapisan kerusakan
+[Defense overlay]
+Lapisan pertahanan
+[Fertility overlay]
+Lapisan kesuburan
+[Health and food bars]
+Bilah kesehatan dan makanan
+[Message history]
+Riwayat pesan
+[Mark map for allies]
+Tandai peta untuk sekutu
+[Show zones]
+Tampilkan zona
+[Pan]
+Geser
+[Select]
+Pilih
+[Show palette]
+Tampilkan palet
+[Release to place]
+Lepaskan untuk menempatkan
+[Blocked placement]
+Penempatan terhalang
+[File name]
+Nama berkas
+[Load map]
+Muat peta
+[Save map]
+Simpan peta
+[No files in this folder]
+Tidak ada berkas di folder ini
+[No files saved yet]
+Belum ada berkas tersimpan
+[Export]
+Ekspor
+[Tap to write the mission briefing]
+Ketuk untuk menulis pengarahan misi
+[Tap to write the map script]
+Ketuk untuk menulis skrip peta
+[Script]
+Skrip
+[Previous]
+Sebelumnya
+[Compile]
+Kompilasi
+[Tap to write this hint]
+Ketuk untuk menulis petunjuk ini
+[Tap to write this objective]
+Ketuk untuk menulis tujuan ini
+[Mission briefing · tap to edit, swipe to scroll]
+Pengarahan misi · ketuk untuk mengedit, usap untuk menggulir
+[Not enough recorded history yet.]
+Riwayat yang tercatat belum cukup.
+[Select a team to show its history.]
+Pilih tim untuk menampilkan riwayatnya.
+[Back to chart]
+Kembali ke grafik
+[Expand chart]
+Perbesar grafik
+[Slot]
+Slot
+[Color]
+Warna
+[Player / AI]
+Pemain / AI
+[Group]
+Grup
+[Forbid]
+Larang
+[↓ Low]
+↓ Rendah
+[= Normal]
+= Normal
+[↑ High]
+↑ Tinggi
+[Details]
+Rincian
+[Campaign name]
+Nama kampanye
+[Unlocking]
+Pembukaan
+[Parameters]
+Parameter
+[Blank map]
+Peta kosong
+[Generated]
+Dihasilkan
+[Preview]
+Pratinjau
+[Selected landscape]
+Bentang alam terpilih
+[Representative preview]
+Pratinjau contoh
+[Starting terrain]
+Medan awal
+[Hide parameters]
+Sembunyikan parameter
+[Size and parameters]
+Ukuran dan parameter
+[Choose a landscape]
+Pilih bentang alam
+[%0 / Browse]
+%0 / Jelajahi
+[%0 colonies · %1]
+%0 koloni · %1
+[%0 · Team %1]
+%0 · Tim %1
+[Colonies: %0]
+Koloni: %0
+[%0 colonies · %1 AI]
+%0 koloni · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unit
+[settings Level %0]
+Tingkat %0
+[settings Match the desktop %0]
+Ikuti desktop (%0)
+[settings Current display %0 %1 %2 %3]
+Setelan tampilan saat ini: %0 × %1 · %2 · %3
+[Fairness: %0]
+Keadilan: %0
+[Colony %0]
+Koloni %0
+[Win chance: %0 · Fitness: %1]
+Peluang menang: %0 · Kekuatan: %1
+[%0 · Contribution: %1]
+%0 · Kontribusi: %1
+[Min required level %0]
+Tingkat minimum: %0
+[Confirm %0]
+Oke: %0
+[Dialog text size %0]
+Ukuran teks dialog: %0%
+[%0 %1]
+%0 %1

@@ -5,7 +5,7 @@
 struct PolderOptions
 {
 	int rowAngle, dykeSpacing, villageSize;
-	bool hamlets;
+	bool hamlets, waterCrossings, cropCrossings;
 	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
 	explicit PolderOptions(const GenerationRequest &r);
 };

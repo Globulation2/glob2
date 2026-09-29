@@ -16,6 +16,10 @@ namespace AINames
 	const std::vector<int>& selectionOrder();
 	int selectionIndex(int id);
 	std::string getAIText(int id);
+	//! Measured playing strength on Elo's scale, from the AI tournament; 0 when
+	//! the slot has no AI. See the note in AINames.cpp for the sample behind it.
+	int getAIStrength(int id);
+
 	std::string getCLIName(int id);
 	std::string getAIDescription(int id);
 	std::string getAISelectorText(int id);

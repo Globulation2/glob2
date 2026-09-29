@@ -577,7 +577,7 @@ void fillAndWall(Layout &L)
 // THE FARM ROWS (layFarm): over each whole field inside its walls, along the colony's axis at the widths
 // that yield most (bestFarmRows), with a sand cap closing the crop rows, a sand bridge across the water
 // every kFarmBridgeSpacing tiles and, with `farm-plots`, a building plot in the middle.
-void layFarmRows(Layout &L, const std::vector<FarmSet> &sets, bool plots)
+void layFarmRows(Layout &L, const std::vector<FarmSet> &sets, bool plots, const FarmBridges &bridges)
 {
 	const Torus &t = L.t;
 	const int n = t.size(), teams = L.g.teams;
@@ -596,7 +596,7 @@ void layFarmRows(Layout &L, const std::vector<FarmSet> &sets, bool plots)
 			TerrainSketch rows(n, GRASS);
 			L.farms.push_back(layFarm(rows, t, region, L.axis[k], set.origins[k], kFarmRim,
 									  bestFarmRows(L.axis[k]), plots ? &plot : nullptr,
-									  kFarmBridgeSpacing));
+									  bridges));
 			L.farmColony.push_back(k);
 			const Farm &farm = L.farms.back();
 			for (int i = 0; i < n; ++i)
@@ -674,7 +674,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		context.telemetry.fallback("carousel.farms.omitted",
 								   "Not every colony had enough room for its outer farm.");
 	fillAndWall(L);
-	layFarmRows(L, farmSets, o.farmPlots);
+	layFarmRows(L, farmSets, o.farmPlots, {kFarmBridgeSpacing, o.waterCrossings, o.cropCrossings});
 	finishRoads(L);
 	context.telemetry.measure("carousel.home.radius", g.homeR);
 	context.telemetry.measure("carousel.court.radius", g.courtR);
@@ -1043,6 +1043,7 @@ CarouselOptions::CarouselOptions(const GenerationRequest &r)
 	  courtWall(r.option("court-wall")), plazaSize(r.option("plaza-size")),
 	  towers(r.option("starting-towers")), towerCount(r.option("tower-count")),
 	  sandRoads(r.option("sand-roads") != 0), farmPlots(r.option("farm-plots") != 0),
+	  waterCrossings(r.option("water-crossings") != 0), cropCrossings(r.option("crop-crossings") != 0),
 	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
@@ -1052,12 +1053,12 @@ CarouselOptions::CarouselOptions(const GenerationRequest &r)
 GeneratorDefinition carouselDefinition()
 {
 	return {
-		"carousel",
-		22,
-		"Carousel",
-		2,
-		false,
-		// Each home's radius and each court's as percentages of the standard; the corridors' and the
+			"carousel",
+			22,
+			"Carousel",
+			2,
+			false,
+			// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as
 		// a share of the half side. The lanes and courts default tight: the siege only works in them.
 		{{"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout},
@@ -1076,6 +1077,10 @@ GeneratorDefinition carouselDefinition()
 		 // On, every farm has a 10x4 clearing of grass ringed with sand in its middle, for a swarm or
 		 // an inn.
 		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout),
+		 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
+		 // both on by default so workers cross the rows rather than walking round them.
+		 waterCrossingsControl(),
+		 cropCrossingsControl(),
 		 // Every home's scattered fields, the farms' wheat and woodlots, the courts' and the orchard's
 		 // fruit, and the algae; the walls' stone and the towers are unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
@@ -1083,8 +1088,10 @@ GeneratorDefinition carouselDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		validateRequest,
-		validateWorld};
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:arena", "feature:stone-walls", "style:siege", "style:tight-building",
+			 "fairness:repeated-wedge"}};
 }

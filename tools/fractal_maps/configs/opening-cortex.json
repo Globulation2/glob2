@@ -1,0 +1,32 @@
+{
+  "generators": [
+    34,
+    35
+  ],
+  "map_seeds": [
+    20001
+  ],
+  "game_seeds": [
+    19
+  ],
+  "colonies": 2,
+  "generator_params": {
+    "width": 8,
+    "height": 8
+  },
+  "candidates": 0,
+  "ticks": 20000,
+  "timeout_seconds": 1800,
+  "outputs": {
+    "replay": true,
+    "saves": [
+      "initial",
+      "final"
+    ],
+    "telemetry": [
+      "team-timeline"
+    ]
+  },
+  "id": "fractal-opening-cortex",
+  "ai": "Cortex"
+}

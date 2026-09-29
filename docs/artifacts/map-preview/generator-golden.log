@@ -1,2 +1,0 @@
-Settings::load("preferences.txt") : error, can't open file.
-macos-arm64: 248 golden rows compared, 0 failures

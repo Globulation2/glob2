@@ -1,3 +1,9 @@
+[AI strategy]
+AI-strategio
+[AIMaxima-Summary]
+Ekvilibrigas daŭrigeblajn kreskon kaj trejnadon, poste kolektas armeojn en ondojn.
+[AIMaxima-Profile]
+Kerna strategio: Traktas nutraĵon, laboristojn, naskiĝojn, trejnadon, konstruadon kaj batalon kiel konkurencajn bezonojn. Parte adaptas armegrandecon al taksita malamika forto, poste provas efike liveri tiun armeon al batalo.\n\nEkonomio kaj disvolviĝo: Planas naskiĝojn laŭ nutraĵo kaj laborforto, konservas liberajn okazojn por trejnado kaj ĉesas aldoni superfluajn laboristojn kiam milita produktado necesas. Adaptas trejnkapablon kaj evitas malfunkciigi tro da infrastrukturo por plibonigoj.\n\nEsplorado kaj decidoj: Taksas malamikajn fortojn el videblaj unuoj kaj memoritaj vidaĵoj per adaptita modelo. Celoj dependas de valoro, distanco, turoj, senprotektaj laboristoj kaj persisto ĉe celo. Fruktmisioj subtenas nutraĵdiversecon kaj transfuĝon.\n\nAtako kaj defendo: Rezervas militistojn por trejnado kaj defendo, poste kolektas elekteblajn terajn fortojn apud propra nutraĵa infrastrukturo antaŭ lanĉi ondojn. Uzas lokajn defendajn reagojn kaj taksas alirvojojn al la kolonio.\n\nKiam atakoj haltas: Post kvar sinsekvaj malsukcesoj liveri ondojn, ŝanĝas al senĉese plifortigataj atakflagoj. Amfibiaj atakoj ankaŭ povas uzi senĉesajn plifortigojn. Ĉi tiu rezerva metodo ne solvas ĉiun blokadon antaŭ ol kolektiĝo povas formiĝi.\n\nKompare kun aliaj AI: Pli firme kunligas nutraĵon, trejnadon, informojn kaj deplojadon. Cabino emfazas plurajn konstruatakojn; Maxima emfazas taksitan bezonon kaj liveradon de kolektitaj fortoj.\n\nFortoj kaj malfortoj: Daŭrigas kreskon kaj militistan anstataŭigon dum adaptiĝo al nutraĵpremo kaj observitaj minacoj. Bezonas nutraĵon, trejnkapablon kaj liberan kolektejon; ŝtopiĝoj kaj longaj vojoj povas malhelpi liveradon.\n\nEbla kontraŭludo: Disputu senprotektajn tritikon, manĝejojn kaj militistejojn antaŭ ol ondoj kolektiĝas. Tenu provizitan defendan forton kune kaj interrompu plifortigajn vojojn. Atendu ripetan premon post la unua ondo.\n\nEsplorado: Fortotaksoj uzas vidaĵojn kaj observhistorion anstataŭ kaŝitajn totalojn de malamikaj trupoj.
 [%0 has left the game]
 %0 forlasis la ludon.
 [%0 level %1]
@@ -51,11 +57,11 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Kastoro ludas singardeme, kaj faras tre bone sur kartoj kiuj havas malmultajn da rezervaĵojn. Ĝi mezfacilas.
+Konstruas kaj trejnas, adaptante kreskon al la nutraĵprovizo.
 [AICastor]
 Kastoro
 [AINicowar-Description]
-Nicowar ludas kvereleme, kreskas rapide, kaj sendas grandegajn armeojn al siaj kontraŭanoj. Ĝi malfacilas.
+Kreskigas sian loĝantaron, trejnas militistojn, poste atakas.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Nenio; Nenion faras!
 [AINone]
 Nenio
 [AINumbi-Description]
-Numbi Etendas singarde kaj rapide. Ĝi facilas.
+Pardonema kontraŭulo, kiu tamen vastiĝas kaj atakas.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo ne atakas, sed konstruas monstrajn fundojn kaj avide konvertigas globulojn. Ĝi facilas.
+Vastiĝas kaj varbas fremdajn unuojn sen produkti militistojn.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush atakas rapide kaj sovaĝe, kaj ofte puŝas denendanta ludanto al la bordo de sia ludo. Ĝi mezfacilas.
+Rapidaj atakoj provas vian fruan defendon.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino administras defendon, atakon kaj konstruadon kiel sendependajn fakojn, kiuj kunlaboras al unu plano: kreskas rapide kaj sendas grandegajn armeojn al siaj kontraŭuloj. Ĝi malfacilas.
+Forta konstruanto, kiu sendas trejnitajn atakfortojn.
 [AICabino]
 Cabino
 [Alga]
@@ -1221,9 +1227,9 @@ Rapido: 1x (plurludanta)
 [game speed help]
 Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
 [AICortex-Description]
-Cortex disetendiĝas direkte al novaj tritikkampoj kaj sendas grupojn de militistoj en batalon, apogita fare de gastejoj kaj hospitaloj proksime de la frontlinio. Meza malfacileco. Eksperimenta.
+Kunigitaj ondoj de militistoj kun nutra kaj kuraca subteno.
 [AIMaxima-Description]
-Maxima kreskigas bone nutritan kolonion, konstante esploras kaj atakas senpaŭze, sendante ĉiun militiston, kiun ĝi povas rezervi. Malfacila.
+Esploras, disvolvas nutraĵprovizon kaj kolektas militistajn ondojn.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1239,37 +1245,37 @@ Ankoraŭ laborantaj: %0
 [AI strategy & counterplay]
 AI-strategio kaj kontraŭludo
 [AICastor-Profile]
-Strategio: Vastiĝas singarde kaj funkcias bone sur mapoj kun malmultaj rimedoj.\n\nFortoj: Limigita ekspansio estas efika en ludoj kun malabundaj rimedoj.\n\nProponita kontraŭludo: Okupu teritorion frue. Ne supozu, ke manko de rimedoj malfortigos ĉi tiun AI.
+Kerna strategio: Investas en produktiva kolonio kaj teknologio antaŭ grandaj atakoj. Prioritatigitaj konstruprojektoj disvolvas ĝian setlejon; disvolviĝo, milita infrastrukturo kaj tempo pliigas militpretecon.\n\nEkonomio kaj disvolviĝo: Studas humidecon, tritikkreskon, obstaklojn kaj laboristan atingopovon. Krom produktado, administras vastigon de nutraĵprovizo, plibonigojn kaj defendojn.\n\nAtako kaj defendo: Taksas la atakforton de sanaj militistoj kaj komencas frapojn kiam fortaj aŭ tempaj kondiĉoj plenumiĝas. Preferas antaŭe viditajn atingeblajn konstruaĵojn, precipe militistejojn kaj lernejojn, kaj movas atakflagojn al valoraj celoj.\n\nKompare kun aliaj AI: Pli zorge konsideras terenon kaj celvaloron ol Numbi. Pli pacienca ol Warrush, interŝanĝante fruan premon kontraŭ evoluinta bazo kaj pli fortaj trupoj.\n\nFortoj kaj malfortoj: Ampleksa infrastruktura planado kaj valoraj militaj celoj donas celon al ĝiaj frapoj. Preparado bezonas tempon, ebligante al pli rapidaj kontraŭuloj disputi rimedojn antaŭ ol la ĉefa forto pretas.\n\nEbla kontraŭludo: Frue disputu vastigejojn. Protektu militistejojn kaj lernejojn same kiel nutraĵon, kaj konservu rezervon atakante ĝian evoluintan setlejon.
 [AICastor-Summary]
-Singarda ekspansio; funkcias bone kun malabundaj rimedoj.
+Disvolvas fortikigitan kolonion, poste frapas militajn kaj sciencajn konstruaĵojn.
 [AICortex-Profile]
-Strategio: Administras manĝaĵojn, disetendiĝas al novaj tritikaj kampoj kaj kunvenas sinsekvajn grupojn de militistoj. Gastejoj kaj hospitaloj proksime de la frontlinio subtenas atakojn malproksime de la bazo.\n\nFortoj: sendas plifortigojn kune, konservas militan premon kaj reagas al manĝaĵmalabundoj.\n\nProponita kontraŭludo: Batalu por kontrolo de novaj tritikaj kampoj kaj ataku ĝiajn subtenajn konstruaĵojn proksime de la frontlinio. Ataku antaŭ ol ĝiaj grupoj de militistoj estas pretaj.\n\nEksperimenta AI. Meza malfacileco; la taktikaj sugestoj ne estas taksoj bazitaj sur komparaj testoj.
+Kerna strategio: Uzas reagajn prioritatojn por kreskigi funkciantan ekonomion kaj transformi liberan laborforton en nutraĵon, teknologion kaj militan premon. Ĝia normala decidado baziĝas sur reguloj; eksperimentoj kun lernita decidado postulas apartan agordon.\n\nEkonomio kaj disvolviĝo: Adaptas laboristan produktadon al personarbezono kaj daŭrigas naskiĝojn. Nutraĵproblemoj bremsas elspezojn por vastigo kaj teknologio. Aldonas naĝadon kiam aliro tra akvo grave helpas.\n\nAtako kaj defendo: Preparas atakojn laŭ observita malamika teknologio kaj disponeblaj trupoj. Kampanjoj trans akvo bezonas naĝkapablajn militistojn. Subtenas longajn kampanjojn per antaŭaj manĝejoj kaj malsanejoj kaj povas kolekti fortojn antaŭ antaŭeniro.\n\nPersisto kaj krizoj: Daŭrigas ofensivon malgraŭ eta ĝenado anstataŭ ripete marŝi hejmen. Gravaj atakoj povas revoki defendantojn. Fruaj krizoj povas ekigi nurmilitistan produktadon kaj malsanejon; malsatego povas ekigi pli malgrandan malesperan atakon.\n\nKompare kun aliaj AI: Pli atentas antaŭan subtenon ol Warrush. Maxima iras pli for en planado de daŭrigeblaj naskiĝoj, trejnado kaj deplojado kontraŭ taksita malamika forto.\n\nFortoj kaj malfortoj: Ligas premon al nutraĵo, kuracado kaj atingeblo. Antaŭa infrastrukturo devas resti provizita, kaj daŭraj naskiĝoj povas plu premi limigitan nutraĵon. Krizaj prioritatoj devigas elektojn inter kresko kaj pluvivo.\n\nEbla kontraŭludo: Disputu antaŭajn manĝejojn, malsanejojn kaj tritikon. Tenu defendantojn kune kontraŭ la ofensivo; eta ĝenado eble ne konvinkos ĝin retiriĝi.\n\nEsplorado: Uzas malkovritajn malamikajn konstruaĵojn kaj observitajn malamikajn trupojn.
 [AICortex-Summary]
-Kresko laŭ manĝaĵprovizo kaj subtenataj atakondoj.
+Subtenas persistajn militajn ofensivojn per antaŭaj nutraĵprovizo kaj kuracado.
 [AINicowar-Profile]
-Strategio: Vastiĝas rapide kaj atakas kontraŭulojn kun grandegaj armeoj.\n\nFortoj: Rapida ekspansio subtenas agresemajn militajn atakojn.\n\nProponita kontraŭludo: Malhelpu ĝian ekspansion. Uzu terenon por redukti la nombron da malamikaj trupoj, kiuj povas batali samtempe.
+Kerna strategio: Kombinas kreskon, trejnadon, plibonigojn kaj militon per interkovrantaj kondiĉoj. Povas ataki dum vastigo kaj redirekti ekonomian penadon al resaniĝo kiam nutrado malsukcesas.\n\nKomenco: La liverita agresema profilo komencas militpreparon ĉe kvin entutaj unuoj kaj permesas militon ĉe kvin militistoj, inkluzive de nulnivelaj militistoj. Celas tri atakflagojn kun po kvin militistoj. Propraj strategiaj dosieroj povas ŝanĝi ĉi tiujn sojlojn.\n\nEkonomio kaj disvolviĝo: Vastigas nutraĵan kaj naskiĝan kapablon, trejnas laboristojn, disvolvas naĝadon kaj movadon kaj plibonigas konstruaĵojn. Adaptas nutraĵan personaron, reagas al malsatado kaj akiras fruktojn.\n\nAtako kaj defendo: Hazarde elektas atingeblajn malamikajn konstruaĵojn por atakoj. Povas uzi malbarajn flagojn por malfermi vojojn blokitajn de rimedoj. Defendaj flagoj kovras grupojn de minacataj unuoj kaj konstruaĵoj. Poste trejnitaj esploristoj kapablaj ataki surteren celas malamikajn unuogrupojn.\n\nKompare kun aliaj AI: Kunhavas la fruan agresemon de Warrush sed havas pli ampleksan daŭrigon. Male al Cabino, ne konstante prioritatas malsanejojn kaj manĝejojn.\n\nFortoj kaj malfortoj: Ampleksa taktika repertuaro kombinas fruan premon kun daŭra disvolviĝo. Hazarda celelekto povas elspezi penadon por malpli valoraj konstruaĵoj. Ĝiaj sojloj ne donas la detalan takson de kontraŭa batalforto de Maxima.\n\nEbla kontraŭludo: Atendu fruan atakon. Protektu nutraĵon kaj laboristojn, disputu vastigon kaj preparu vin por esploristaj atakoj se ĝi atingas altnivelan trejnadon.
 [AINicowar-Summary]
-Vastiĝas rapide kaj konstruas grandajn armeojn por agresemaj atakoj.
+Frua sturmo subtenata de kultivado, plibonigoj, defendo kaj esploristaj atakoj.
 [AINone-Profile]
 Strategio: La AI donas neniujn ordonojn.\n\nFortoj: Antaŭvidebla, neaktiva kontraŭulo por eksperimentoj.\n\nMalfortoj: Nek vastiĝas nek adaptiĝas.
 [AINone-Summary]
 Neaktiva kolonio por eksperimentoj.
 [AINumbi-Profile]
-Strategio: Vastiĝas rapide sed malgrandskale. Pli facila kontraŭulo por praktikado de kolonia administrado.\n\nFortoj: Permesas vin lerni kaj ekonomian administradon kaj batalon.\n\nProponita kontraŭludo: Disvolvu pli fortan ekonomion kaj trejnu vian armeon antaŭ ol ataki.
+Kerna strategio: Unue konstruas nutraĵprovizon kaj loĝantaron, aldonas kuracadon, sciencon kaj trejnadon, poste transiras al milito. Ĝiaj ĉefaj fazoj antaŭeniras laŭ tempo anstataŭ laŭ la progreso de la kontraŭulo.\n\nEkonomio kaj disvolviĝo: Adaptas konstrubezonon al loĝantaro kaj taksas proksiman tritikon. Postaj fazoj aldonas plibonigojn, defendojn kaj vastigon por subteni la kreskantan armeon.\n\nAtako kaj defendo: Atakas kiam sufiĉe da sanaj batalantoj ekzistas aŭ tempolimo finiĝas. Metas militflagojn sur elektitajn malamikajn konstruaĵojn. Kiam ĝia batalforto tro malaltiĝas, forigas atakflagojn kaj altigas la sojlojn por alia provo.\n\nKompare kun aliaj AI: Pli antaŭvidebla ol Castor aŭ Nicowar. Castor pli zorge konsideras terenon kaj celvaloron; Nicowar premas multe pli frue.\n\nFortoj kaj malfortoj: Ampleksa subtena infrastrukturo povas fari ĝin danĝera post seninterrompa disvolviĝo, sed ĝia horaro eble ne kongruas kun la batalo. Simpla celelekto kaj pli longaj paŭzoj post perdoj faciligas antaŭvidi ĝiajn atakojn.\n\nEbla kontraŭludo: Premu antaŭ ĝia milita fazo. Disvolvu nutraĵon kaj trejnadon malantaŭ viaj atakoj kaj ekspluatu la paŭzon post venkita sturmo.\n\nEsplorado: Ĝia atakrutino rekte legas malamikajn konstrupoziciojn sen videbleca kontrolo.
 [AINumbi-Summary]
-Rapida ekspansio en malgranda skalo.
+Laŭgrade konstruas kolonion laŭ horaro, poste atakas nombre.
 [AIEcono-Profile]
-Strategio: Ne atakas, sed konstruas enormajn bazojn kaj aktive konvertas malamikunuojn al sia propra flanko.\n\nFortoj: Vastiĝo kaj unuokonverto minacas kontraŭulojn sen rektaj atakoj.\n\nProponita kontraŭludo: Disvolvu vian kolonion frue kaj evitu sendi unuojn kie la malamiko povas konverti ilin.
+Kerna strategio: Produktas laboristojn kaj esploristojn, vastigas sian ekonomion kaj allogas malamikajn unuojn per nutraĵo kaj fruktoj. Ne havas kutiman militistan ofensivon.\n\nEkonomio kaj disvolviĝo: Konstruas manĝejojn kaj globulejojn apud tritiko, aldonas edukadon kaj movtrejnadon kaj plibonigas infrastrukturon. Spuras nutraĵprovizojn kaj anstataŭigas malnovajn manĝejojn kaj globulejojn kiam ilia rimeda situacio malboniĝas.\n\nKultivado kaj transfuĝo: Protektas renovigeblajn tritikon kaj lignon apud akvo. Sendas esploristojn al fruktejoj kaj malamikaj kolonioj kaj reklamas nutraĵon al malamikoj dum akirado de fruktoprovizo. Pli bona nutraĵo kaj fruktoj povas helpi allogi transfuĝantojn.\n\nKompare kun aliaj AI: La plej specialiĝinta ekonomia kontraŭulo. Cabino kaj Maxima ankaŭ akiras fruktojn, sed kombinas tion kun armeoj.\n\nFortoj kaj malfortoj: Povas kreski dum militaj kontraŭuloj elĉerpas sin, kun transfuĝo kiel alia konkurenca rimedo. Produktas neniujn militistojn por respondi al daŭra atako. Nutraĵo, fruktoj, geografio kaj venkoreguloj forte influas ĝiajn ŝancojn.\n\nEbla kontraŭludo: Premu senprotektan vastigon. Tenu viajn proprajn manĝejojn provizitaj per nutraĵo kaj fruktoj por reteni unuojn. Evitu elĉerpi vian kolonion per nenecesaj bataloj dum ĝi kreskas.
 [AIEcono-Summary]
-Grandegaj bazoj kaj konvertiĝo anstataŭ atakoj.
+Kreskigas nutraĵriĉan kolonion kaj konkurencas pri transfuĝantoj sen produkti militistojn.
 [AIWarrush-Profile]
-Strategio: Atakas frue kaj forte, antaŭ ol kontraŭuloj finas prepariĝi.\n\nFortoj: Ekspluatas nedefenditan ekspansion kaj malrapidan armean preparon.\n\nProponita kontraŭludo: Travivu la unuan atakon konservante vian ekonomion, poste kontraŭataku.
+Kerna strategio: Atakas antaŭ ol kontraŭuloj finas longan ekonomian aŭ teknologian disvolviĝon. Atendas ke batalo decidu la ludon antaŭ ol granda subtena reto necesas.\n\nEkonomio kaj disvolviĝo: Kiam ses unuoj povas rikolti, agordas produktadon laŭ proporcio kvar laboristoj, unu esploristo kaj tri militistoj. Aldonas militistejojn kiam trejnado pleniĝas, sed limigas novajn manĝejojn. Libera konstrukapablo ofte iras al malsanejoj kaj movtrejnado.\n\nAtako kaj defendo: Markas malkovritajn malamikajn konstruaĵojn per gardareoj por ke militistoj konstante premu. Ne atendas zorge kunmetitan ondon. Forigas obstaklan lignon kaj protektas kelkajn renovigeblajn rimedojn.\n\nFruktopolitiko: Malpermesas fruktorikoltadon, evitante fruktorilatajn kirasajn punojn kaj rifuzante la transfuĝan strategion de Econo.\n\nKompare kun aliaj AI: Pli engaĝita al frua premo ol Numbi aŭ Castor. Nicowar ankaŭ komencas agreseme, sed daŭrigas per pli ampleksa pliboniga kaj taktika programo.\n\nFortoj kaj malfortoj: Punas malrapidajn komencojn kaj devigas fruajn defendajn elspezojn. Limigita sistema plibonigado kaj ŝparema nutraĵsubteno faras haltintan ofensivon multekosta. Tereno kaj longaj vojaĝoj povas erozii ĝian fruan avantaĝon.\n\nEbla kontraŭludo: Frue protektu manĝejojn kaj globulejojn. Anstataŭigu laboristojn same kiel defendantojn, disvolvu trejnadon, poste kontraŭataku kiam la sturmo perdas impeton.\n\nEsplorado: Komencaj esplorflagoj rekte uzas malamikajn startpoziciojn. Posta lokado de atakareoj postulas videblecon.
 [AIWarrush-Summary]
-Rapidaj atakoj, kiuj testas viajn fruajn defendojn.
+Frua militista premo subtenata de intence ŝparema subtena ekonomio.
 [AICabino-Profile]
-Ĉefa strategio: kabineto de sendependaj fakoj (defendo, atako, konstruado, plibonigoj, administrado de unuoj), kiuj ĉiu agas laŭ propra iniciato sed kunlaboras al unu plano: kreski rapide kaj poste sendi grandegajn armeojn kontraŭ la malamikojn.\n\nFortoj: Rapida kresko subtenas agreseman militan premon; la sendependaj fakoj reagas rapide al lokaj minacoj sen atendi centran planon.\n\nKontraŭludo provinda: Malhelpu ĝian kreskon frue kaj uzu la terenon por limigi kiom da ĝiaj trupoj povas batali samtempe.
+Kerna strategio: Dividas unuoproduktadon inter konstruado, plibonigoj, defendo, atakoj kaj esplorado. Apartaj administrantoj petas kaj rezervas unuojn, disvolvante ekonomion kaj militistaron kune.\n\nEkonomio kaj disvolviĝo: Konstruas kaj plibonigas ampleksan setlejon, administras personaron de manĝejoj kaj turoj, malbaras konstruaĵajn ĉirkaŭaĵojn kaj protektas renovigeblajn rimedojn. Esploras fruktojn kaj reklamas nutraĵon por konkurenci pri transfuĝantoj.\n\nAtako kaj defendo: Elektas malamikon kaj prioritatas malsanejojn, poste manĝejojn, poste militistejojn. Subtenas ĝis kvar atakojn, kutime asignante ok ĝis dudek militistojn por ĉiu celo laŭ disponeblo kaj proksimaj malamikoj. Uzas apartajn defendajn flagojn ĉirkaŭ minacataj konstruaĵoj.\n\nTrejnado: Postulas sufiĉe da taŭgaj militistoj kaj finitan militistejon por ataki, sed ne atendas maksimuman teknologion. Daŭraj plibonigoj kaj trejnado fortigas postajn atakojn.\n\nKompare kun aliaj AI: Pli celkonscie malmuntas subtenajn konstruaĵojn ol Nicowar. Disigas atakojn pli ol la kolektitaj ondoj de Maxima, uzante unuorezervojn por administri konkurencajn bezonojn.\n\nFortoj kaj malfortoj: Kombinas kreskon, trejnadon, defendon kaj plurajn atakojn. Detruado de nutraĵo kaj kuracado povas malfortigi tutan kolonion. Hazarda kontraŭulelekto kaj fiksaj konstruprioritatoj povas maltrafi ŝancojn; pluraj atakoj povas dividi ĝian forton.\n\nEbla kontraŭludo: Defendu malsanejojn kaj manĝejojn. Disputu senprotektan vastigon kaj koncentru defendantojn kontraŭ unuopaj atakoj. Difektu nutraĵon aŭ trejnadon antaŭ ol ĝi povas subteni plurajn frontojn.\n\nEsplorado: Ĝia atakelektilo legas malamikajn konstrulistojn sen eksplicita videbleca kontrolo. Kelkaj ekonomiaj komparoj rekte uzas malamikajn statistikojn.
 [AICabino-Summary]
-Sendependaj fakoj kunlaborantaj por rapida kresko kaj grandegaj armeoj.
+Kunordigas kolonian kreskon kaj trejnitajn atakojn, celante kuracadon kaj nutraĵon unue.
 [Algae]
 algo
 [Alliances]
@@ -1978,6 +1984,10 @@ Larĝo de la pado
 Muro inter kurboj
 [Farm building plots]
 Konstruejoj en la bienoj
+[Sand bridges over water]
+Sablaj pontoj super akvo
+[Sand lanes through crops]
+Sablaj vojetoj tra la kultivaĵoj
 [Carousels need at least two colonies.]
 Karuselo bezonas almenaŭ du koloniojn.
 [Switchbacks need at least two colonies.]
@@ -2180,24 +2190,22 @@ Hazardigi parametrojn
 Kvalito de la komenco
 [Fairness]
 Justeco
-[Score]
-Poentaro
-[Weight]
-Pezo
+[Fitness]
+Taŭgeco
+[Win chance]
+Ŝanco venki
+[Coefficient]
+Koeficiento
+[Average]
+Mezumo
+[Fitted on games:]
+Alĝustigita per ludoj:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+La komenco de ĉiu kolonio estas mezurata sur la preta mapo, kaj modelo alĝustigita per miloj da ludoj inter egalaj kontraŭuloj transformas tiujn mezurojn en taŭgecon. La taŭgeco montras, kiom verŝajne la kolonio venkos. Justeco estas, kiom egale tiuj ŝancoj estas dividitaj: 1 kiam ĉiu kolonio havas saman ŝancon venki, 0 kiam unu sola kolonio transprenus la mapon.
 [Worst]
 Plej malbona
 [Best]
 Plej bona
-[Fertility]
-Fekundeco
-[Deposits]
-Rezervoj
-[Room]
-Spaco
-[Isolation]
-Izoliteco
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-La komenco de ĉiu kolonio estas mezurata sur la finita mapo: la vojo al tritiko kaj al ligno, kiel bone ĝia tero rekreskas, la rezervoj kaj konstruejoj atingeblaj, kaj ĝia distanco de rivaloj. Ĉiu faktoro ricevas poenton de 0 ĝis 1 kontraŭ fiksa mezurilo, la sumo pezas ilin, la justeco estas la sumo de la plej malbona kolonio dividita per tiu de la plej bona, kaj la poentaro estas la plej malbona sumo multiplikita per la justeco.
 [Map preview controls]
 Trenu por movi trans randojn. Rulumu por zomi. Dekstre aŭ duoble alklaku por restarigi.
 [Map preview drag help]
@@ -2255,9 +2263,9 @@ Manĝaĵo/min
 [Stats occupancy]
 Nutrado / kuracado
 [Stats page one]
-Statistikoj 1/2 >
+Statistikoj 1/3 >
 [Stats page two]
-Statistikoj 2/2 >
+Statistikoj 2/3 >
 [Stats next page]
 Paĝo (P)
 [Map preview choose another]
@@ -2380,3 +2388,1001 @@ Malŝaltita (neniu kronometro)
 60 minutoj
 [Sudden-death timer]
 Kronometro de subita morto
+[Stats page three]
+Statistikoj 3/3 >
+[Stats blocked units]
+Globuloj S/C
+[Stats blocked buildings]
+Konstruaĵoj S/C
+[Stats blocked buildings swim]
+Naĝado S/C
+[Stats current blocked units]
+Globuloj C
+[Stats current blocked buildings]
+Konstruaĵoj C
+[Stats growth global]
+Rimedoj +
+[Stats growth new tiles]
+Rimedoj +#
+[Stats growth reductions]
+Rimedoj -
+[Stats growth per minute]
+Tritiko +/min
+[Stats growth near 8]
+Rimedoj + <=8
+[Stats growth near 16]
+Rimedoj + <=16
+[Stats growth near 32]
+Rimedoj + <=32
+[Stats low HP 25]
+VPo <=25%
+[Stats low HP 50]
+VPo <=50%
+[Stats low HP 75]
+VPo <=75%
+[Stats low food 25]
+Nutraĵo <=25%
+[Stats low food 50]
+Nutraĵo <=50%
+[Stats low food 75]
+Nutraĵo <=75%
+[Stats structural units]
+Globuloj S
+[Stats structural buildings]
+Konstruaĵoj S
+[Stats low HP ranges]
+VPo: <=25/50/75%
+[Stats low food ranges]
+Nutraĵo: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoĝia signo
+[Smiley]
+Ridetanta vizaĝo
+[Sad face]
+Malĝoja vizaĝo
+[Winking face]
+Palpebruma vizaĝo
+[Surprised face]
+Surprizita vizaĝo
+[Heart eyes]
+Koraj okuloj
+[Sunglasses]
+Sunokulvitroj
+[Heart]
+Koro
+[Star]
+Stelo
+[Neutral face]
+Neŭtrala vizaĝo
+[Sleeping face]
+Dormanta vizaĝo
+[Grinning face]
+Rikanta vizaĝo
+[Kissing face]
+Kisanta vizaĝo
+[Angry face]
+Kolera vizaĝo
+[Tongue out]
+Elŝovita lango
+[Skull]
+Kranio
+[Flower]
+Floro
+[Four-leaf clover]
+Kvarfolia trifolio
+[Teardrop]
+Guto
+[Cloud]
+Nubo
+[Gem]
+Gemo
+[Apple]
+Pomo
+[Speech bubble]
+Parolbalono
+[Shield]
+Ŝildo
+[Emoji style]
+Emoĝia stilo
+[Outline]
+Konturo
+[Filled]
+Plenigita
+[Emoji terrain]
+Emoĝia tereno
+[Regular]
+Normala
+[Inverse]
+Inversa
+[Crossings]
+Transirejoj
+[Forts]
+Fortikaĵoj
+[Gate width]
+Larĝo de pordego
+[Braided Delta]
+Plektita delto
+[Braid count]
+Nombro de riverbrakoj
+[Rejoining frequency]
+Ofteco de kunfluoj
+[Crossing spacing]
+Interspaco de transirejoj
+[Breachable highlands]
+Trarompebla altebenaĵo
+[Ridge depth]
+Dikeco de krestoj
+[Extra open passes]
+Pliaj malfermitaj pasejoj
+[Wooded saddles]
+Arbaraj seloj
+[Hedgerow Country]
+Heĝa kamparo
+[Field size]
+Grandeco de kampoj
+[Hedge thickness]
+Dikeco de heĝoj
+[Existing gateways]
+Ekzistantaj pasejoj
+[Wooded boundary share]
+Proporcio de arbaj limoj
+[The Glacis]
+La Glaciso
+[Allotments]
+Ĝardenparceloj
+[Caravanserai]
+Karavanejo
+[Mixed]
+Miksita
+[Fort size]
+Grando de fortikaĵo
+[Bastions]
+Bastionoj
+[Four-pointed]
+Kvarpinta
+[Five-pointed]
+Kvinpinta
+[Six-pointed]
+Sespinta
+[Glacis width]
+Larĝo de glacio
+[Gates]
+Pordegoj
+[Site size]
+Grando de parceloj
+[Plot width]
+Larĝo de bedoj
+[Plot mix]
+Miksaĵo de bedoj
+[Tended]
+Prizorgataj
+[Overgrown]
+Superkreskitaj
+[Commons]
+Komunaj herbejoj
+[Few]
+Malmultaj
+[Some]
+Kelkaj
+[Home oasis size]
+Grando de hejma oazo
+[Caravanserais per colony]
+Karavanserajoj po kolonio
+[Desert]
+Dezerto
+[Open erg]
+Malferma ergo
+[Dunes and mesas]
+Dunoj kaj mezaoj
+[Canyon country]
+Kanjonlando
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Fortikaĵo ne povas atingi sian vadejon; uzu pli grandan mapon aŭ malpli da kolonioj.
+[A wall would stand on a beach; try another seed.]
+Muro starus sur strando; provu alian semon.
+[The fort is too small for its gardens; raise Fort size.]
+La fortikaĵo estas tro malgranda por siaj ĝardenoj; pligrandigu la grandon de fortikaĵo.
+[The home oasis is too small; raise Home oasis size.]
+La hejma oazo estas tro malgranda; pligrandigu la grandon de hejma oazo.
+[Braided river]
+Plektita rivero
+[Braid width]
+Larĝo de la plektaĵo
+[Bar size]
+Grando de gruzbenkoj
+[Extra riffles]
+Pliaj travadejoj
+[Moraine hummocks]
+Morenaj montetoj
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+La plektaĵo lasas tro malmulte da teraso por la hejmoj; uzu pli grandan mapon aŭ pli mallarĝan plektaĵon.
+[The map is too narrow across for a braid; use a bigger map.]
+La mapo estas transverse tro mallarĝa por plektaĵo; uzu pli grandan mapon.
+[Drumlin field]
+Drumlina kampo
+[Drumlin spacing]
+Interspaco de drumlinoj
+[Drumlin length]
+Longo de drumlinoj
+[Water gap]
+Akva interspaco
+[Esker loops]
+Bukloj de eskeroj
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+La eskeroj ne povis kunligi ĉiujn drumlinojn; uzu pli malgrandan akvan interspacon aŭ pli grandan mapon.
+[Continents]
+Kontinentoj
+[Continent]
+Kontinento
+[North America]
+Nord-Ameriko
+[South America]
+Sud-Ameriko
+[Africa]
+Afriko
+[Europe]
+Eŭropo
+[Asia]
+Azio
+[Oceania]
+Oceanio
+[Orientation]
+Orientiĝo
+[Turn to fit]
+Turni laŭbezone
+[Upright]
+Neturnita
+[Mountain ranges]
+Montoĉenoj
+[Great rivers]
+Grandaj riveroj
+[Islets]
+Insuletoj
+[Oases]
+Oazoj
+[The world atlas has no such continent.]
+La monda atlaso ne havas tian kontinenton.
+[The map is too small to hold a continent.]
+La mapo estas tro malgranda por enhavi kontinenton.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Ĉi tiu kontinento ne havas spacon por tiom da kolonioj ĉe ĉi tiu mapgrandeco; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Savannah]
+Savano
+[Watering holes]
+Trinkejoj
+[Dry patches]
+Sekaj areoj
+[Sparse]
+Malmultaj
+[Normal]
+Normala
+[Many]
+Multaj
+[Rice terraces]
+Rizterasoj
+[Unoccupied hills]
+Neokupitaj montetoj
+[Hill radius]
+Monteta radiuso
+[Contour band width]
+Larĝo de nivelaj bendoj
+[Stairs per hill]
+Ŝtuparoj por monteto
+[Valley river]
+Vala rivero
+[Hills]
+Montetoj
+[Hillsides]
+Deklivoj
+[Terraces per slope]
+Terasoj po deklivo
+[Waviness]
+Ondeco
+[Stair spacing]
+Interspaco de ŝtupoj
+[Locust]
+Akridoj
+[Plantations]
+Plantejoj
+[Plot size]
+Grando de konstruejo
+[Farm width]
+Larĝo de kampoj
+[Islands per colony]
+Insuloj po kolonio
+[Outpost inns]
+Antaŭpostenaj manĝejoj
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+La insuloj estas tro malgrandaj por siaj konstruejoj; uzu pli grandan mapon, pli malgrandan konstruejon aŭ malpli da kolonioj.
+[Sierpiński Gardens]
+Ĝardenoj de Sierpiński
+[Hilbert River]
+Rivero de Hilbert
+[Maximum nesting]
+Maksimuma ingado
+[Minimum terminal district side]
+Minimuma flanko de finaj distriktoj
+[Major crossing pairs]
+Paroj de ĉefaj transirejoj
+[Maximum fold depth]
+Maksimuma faldprofundo
+[Minimum land spacing]
+Minimuma tera interspaco
+[Optional local crossings per parent]
+Laŭvolaj lokaj transirejoj por patra regiono
+[Optional major shortcuts]
+Laŭvolaj ĉefaj mallongigoj
+[Lava shield]
+Lava ŝildo
+[Lava tongues]
+Lavaj langoj
+[Long tongues]
+Longaj langoj
+[Crater rim width]
+Larĝo de la kratera rando
+[Honeycomb isle]
+Vaksĉela insulo
+[Blocks per colony]
+Kvartaloj po kolonio
+[Rubble]
+Ruboj
+[Outline gaps]
+Breĉoj en la konturoj
+[Craters per colony]
+Krateroj po kolonio
+[Wheat fields]
+Tritikaj kampoj
+[Bridges]
+Pontoj
+[Karst towers]
+Karstaj turoj
+[Tower spacing]
+Interspaco de karstaj turoj
+[Tower density]
+Denseco de karstaj turoj
+[Paddy depth]
+Etendo de rizejoj
+[Home design]
+Aspekto de la hejmo
+[Horseshoe]
+Hufumo
+[Twin gates]
+Ĝemelaj pordegoj
+[Three gates]
+Tri pordegoj
+[Four gates]
+Kvar pordegoj
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+La riveroj trovis neniun vojon inter la hejmoj; uzu pli grandan mapon aŭ malpli da kolonioj.
+[River meander]
+Meandrado de rivero
+[Flooded terraces]
+Inunditaj terasoj
+[Sinkholes]
+Dolinoj
+[Bajada]
+Aluviaj ventumiloj
+[Range spacing]
+Interspaco de montaroj
+[Ridge width]
+Larĝo de krestoj
+[Passes]
+Montpasejoj
+[Fans per range]
+Ventumiloj po montaro
+[Stream reach]
+Longo de la riveretoj
+[Playa]
+Salaj lagoj
+[Broad fan]
+Larĝa ventumilo
+[Long fan]
+Longa ventumilo
+[Twin springs]
+Ĝemelaj fontoj
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+La ventumilaj deklivoj estas tro mallarĝaj por la hejmoj; uzu pli grandan mapon, pli grandan interspacon de montaroj, pli mallarĝajn krestojn aŭ pli malgrandajn salajn lagojn.
+[Central Quarry]
+Centra ŝtonminejo
+[Quarry size]
+Grando de ŝtonminejo
+[Sand bars]
+Sablobenkoj
+[Woodland]
+Arbaro
+[Central Quarry needs at least two colonies.]
+Centra ŝtonminejo bezonas almenaŭ du koloniojn.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+La lago ne enteniĝas en ĉi tiu mapo; uzu pli malgrandan lagon aŭ pli grandan mapon.
+[A sand bar did not reach the island.]
+Sablobenko ne atingis la insulon.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Ĉi tiu mapo ne havas lokon por tiom da kolonioj; uzu pli grandan mapon aŭ malpli da kolonioj.
+[The island has no room for its quarry; use a bigger island.]
+La insulo ne havas lokon por sia ŝtonminejo; uzu pli grandan insulon.
+[Hidden Oasis]
+Kaŝita oazo
+[Pond algae]
+Algoj de la lageto
+[Starting towers]
+Komencaj turoj
+[Starting school]
+Komenca lernejo
+[Mesas]
+Tablomontoj
+[Springs]
+Fontoj
+[Hidden Oasis needs at least two colonies.]
+Kaŝita oazo bezonas almenaŭ du koloniojn.
+[Hidden Oasis holds at most eight colonies.]
+Kaŝita oazo enhavas maksimume ok koloniojn.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+La montmasivo ne enteniĝas en ĉi tiu mapo; uzu pli grandan mapon aŭ malpli da kolonioj.
+[The pond has no room for that much algae; use a bigger pond.]
+La lageto ne havas lokon por tiom da algoj; uzu pli grandan lageton.
+[Even Ground]
+Egala tero
+[Balance]
+Ekvilibrigo
+[Tight passes]
+Mallarĝaj trapasejoj
+[Solver effort]
+Peno de la solvilo
+[Brief]
+Mallonga
+[Patient]
+Pacienca
+[This map is too small to solve on; use a bigger map.]
+Ĉi tiu mapo estas tro malgranda por solvi; uzu pli grandan mapon.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Tro da kolonioj por ekvilibrigi sur mapo de ĉi tiu grandeco; uzu pli grandan mapon aŭ malpli da kolonioj.
+[The colonies could not be spread out on this map.]
+Ne eblis disigi la koloniojn sur ĉi tiu mapo.
+[Marchland]
+Limregiono
+[Prizes on the rope]
+Premioj sur la ŝnuro
+[March width]
+Larĝo de la limregiono
+[Levelling]
+Egaligo
+[A march needs a country on each side; use at least two colonies.]
+Limregiono bezonas landon ĉe ĉiu flanko; uzu almenaŭ du koloniojn.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Tro da kolonioj por ke ĉi tiu mapo donu al ĉiu hejmlandon; uzu pli grandan mapon aŭ malpli da kolonioj.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Ĉi tiu mapo ne havas lokon por disigi la koloniojn; uzu pli grandan mapon aŭ malpli da kolonioj.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+La hejmlando de kolonio havas neniun elirejon al la limregiono; uzu pli grandan mapon aŭ pli mallarĝan limregionon.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+La hejmlando de kolonio ne havas lokon por globulejo; uzu pli grandan mapon, malpli da kolonioj aŭ pli mallarĝan limregionon.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+La limregiono havas tro malmulte da disputata tero por tiom da premioj; uzu malpli da premioj, pli larĝan limregionon aŭ pli grandan mapon.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+La limregiono ne havas lokon por premio; uzu pli grandan mapon, malpli da kolonioj aŭ pli larĝan limregionon.
+[Orchard Commons]
+Komunaj fruktoĝardenoj
+[Orchard spacing]
+Distanco inter fruktoĝardenoj
+[Compact]
+Proksimaj
+[Balanced]
+Ekvilibra
+[Spread]
+Disaj
+[The Gauntlet]
+Areno de provoj
+[Partition thickness]
+Dikeco de disigaj muroj
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Areno de provoj bezonas pli grandan mapon aŭ malpli da kolonioj por havi lokon por du gardataj enirejoj ĉe ĉiu kolonio.
+[The Comb]
+La Kombilo
+[Peninsulas per shore]
+Duoninsuloj ĉe ĉiu bordo
+[Encircled Kingdom]
+Ĉirkaŭita regno
+[Fortress plan]
+Fortikaĵa plano
+[Automatic]
+Aŭtomata
+[Elongated enclosure]
+Longforma ĉirkaŭmuro
+[Bastioned enclosure]
+Bastiona ĉirkaŭmuro
+[Paired courtyards]
+Du kortoj
+[Heartland farmland]
+Kerna agraro
+[The Faulted City]
+La fendita urbo
+[Fault displacement]
+Delokiĝo ĉe faŭltoj
+[Fault width]
+Larĝo de faŭltoj
+[Ruin density]
+Denseco de ruinoj
+[Surviving junctions]
+Konservitaj vojkruciĝoj
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+La fendita urbo bezonas 256 aŭ 512 kahelojn ĉiuflanke kaj unu ĝis dek du koloniojn.
+[The city has too few usable junctions.]
+La urbo havas tro malmultajn uzeblajn vojkruciĝojn.
+[A city neighbourhood lacks reachable crops or building room.]
+Al urba kvartalo mankas atingeblaj kultivaĵoj aŭ konstruspaco.
+[The city neighbourhoods are too unequal; try another seed.]
+La urbaj kvartaloj estas tro malegalaj; provu alian semon.
+[The fractured civic plaza did not survive.]
+La fendita urba placo ne konserviĝis.
+[Who Ate the Map?]
+Kiu manĝis la mapon?
+[Appetite]
+Apetito
+[A Little Nibble]
+Eta mordeto
+[Hungry]
+Malsata
+[Portage Lakes]
+Lagoj kaj arbaraj pasejoj
+[Lake elongation]
+Laga longformeco
+[Portage depth]
+Dikeco de arbara pasejo
+[Extra trails]
+Pliaj padoj
+[Portage Lakes needs sides between 64 and 512 tiles.]
+La flankoj de ĉi tiu mapo devas longi inter 64 kaj 512 kaheloj.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Ĉi tiu semo ne ebligas loki koloniojn ĉe la bordoj.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Ne estas loko por renovigeblaj kampoj apud ĉiu kolonio.
+[Portage Lakes cannot connect its shoreline trails.]
+Ne eblas kunligi la bordajn padojn.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Ĉi tiu semo ne ebligas utilan ŝparvojon tra seka arbaro.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Ĉi tiu semo ne ebligas utilan naĝan ŝparvojon.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Kun ĉi tiu semo la lagoj por naĝado devas resti apartaj.
+[Drowned Forest]
+Inundita arbaro
+[Sandbar connections]
+Sablaj ligoj
+[Wooded neck thickness]
+Dikeco de arbaj baroj
+[Neutral clearing size]
+Grandeco de neŭtralaj maldensejoj
+[Bastion Keys]
+Bastionaj insuletoj
+[Plantation size]
+Grandeco de plantejoj
+[Outlying islands]
+Eksteraj insuloj
+[The Hungry Marches]
+La Malsataj Limlandoj
+[Opening ration]
+Komenca porcio
+[Central concentration]
+Koncentriĝo en la centro
+[The Last Treeline]
+La lasta arbara strio
+[Woodland depth]
+Larĝo de la arbaretoj
+[Fertility]
+Fekundeco
+[Deposits]
+Rezervoj
+[Room]
+Spaco
+[Isolation]
+Izoliteco
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+La komenco de ĉiu kolonio estas mezurata sur la finita mapo: la vojo al tritiko kaj al ligno, kiel bone ĝia tero rekreskas, la rezervoj kaj konstruejoj atingeblaj, kaj ĝia distanco de rivaloj. Ĉiu faktoro ricevas poenton de 0 ĝis 1 kontraŭ fiksa mezurilo, la sumo pezas ilin, la justeco estas la sumo de la plej malbona kolonio dividita per tiu de la plej bona, kaj la poentaro estas la plej malbona sumo multiplikita per la justeco.
+[ERROR_CANT_SAVE_MAP]
+La mapo ne povis esti konservita. Kontrolu la celon kaj la disponeblan spacon. Viaj redaktoj ankoraŭ estas malfermitaj.
+[Loading headers]
+Ŝargante kapojn...
+[Loading teams]
+Ŝargante teamojn...
+[Loading terrain]
+Ŝargante terenon...
+[Building gradients]
+Konstruante gradientojn...
+[Loading players]
+Ŝargante ludantojn...
+[Loading scripts]
+Ŝargante skriptojn...
+[Generating map]
+Generante mapon...
+[ERROR_CANT_GENERATE_MAP]
+La mapo ne povis esti generita. Provu aliajn generajn agordojn.
+[Loading units]
+Ŝargante unuojn...
+[Loading buildings]
+Ŝargante konstruaĵojn...
+[Resolving team links]
+Solvante teamajn ligilojn...
+[saving to storage]
+Konservante...
+[save failed retry]
+Konservado malsukcesis. Reprovu.
+[export save]
+Eksporti konservaĵon
+[storage restore failed]
+La retumila konservejo ne povis esti restarigita. Ekzistantaj konservitaj datumoj ne ŝanĝiĝis. Vi povas daŭrigi ĉi tiun seancon, sed lokaj ŝanĝoj ne povos esti konservitaj. Eksportu gravajn konservaĵojn el la dialogo pri konserva malsukceso. Reŝargu por reprovi restarigi la konservejon.
+[continue]
+Daŭrigi
+[export file]
+Eksporti dosieron
+[export failed]
+Eksportado de dosiero malsukcesis
+[import file]
+Importi
+[select import file]
+Elektu dosieron por importi
+[validating import]
+Kontrolante dosieron...
+[import succeeded]
+Dosiero importita
+[import cancelled]
+Importado nuligita
+[import failed]
+Importado malsukcesis: nevalida aŭ nesubtenata dosiero
+[import persistence failed]
+Ne konservita: elektu Importi por reprovi, aŭ Eksporti dosieron
+[import progress]
+Importa progreso
+[export progress]
+Eksporta progreso
+[retry save]
+Reprovi konservadon
+[campaign save failed]
+Kampanja progreso ne konservita. Reprovu aŭ eksportu sekurkopion.
+[leave without saving]
+Eliri sen konservi
+[campaign import failed]
+Nevalida progresa dosiero aŭ malsama kampanja versio
+[network release mismatch]
+La protokoloj de kliento kaj servilo malsamas. Instalu la saman version de Glob2 kiel la servilo.
+[settings continue]
+Daŭrigi
+[settings save failed]
+Konservado de agordoj ne konfirmita. Reprovu, aŭ daŭrigu.
+[shutdown save failed]
+Fina konservado ne konfirmita. Reprovu, aŭ eliru sen konservi.
+[quit without saving]
+Eliri sen konservi
+[game closed]
+La ludo fermiĝis. Vi povas fermi ĉi tiun fenestron aŭ reŝargi por denove ludi.
+[campaign editor save failed]
+Konservado ne konfirmita. Bone reprovas; Nuligi revenas al la redaktila menuo.
+[Actions]
+Agoj
+[Minimap]
+Mapeto
+[Fast forward]
+Rapide antaŭen
+[Hide keyboard]
+Kaŝi klavaron
+[Dialog text size]
+Dialoga tekstogrando
+[Player slot]
+Ludantloko
+[Team color]
+Teamkoloro
+[Alliance group]
+Alianca grupo
+[menu]
+Menuo
+[Editor tools]
+Iloj
+[Pan map]
+Movi mapon
+[Edit map]
+Redakti Karton
+[Editor map]
+Mapo
+[Flags]
+Flagoj
+[Pause]
+Paŭzo
+[Speed]
+Rapido
+[Objectives]
+Celtabulo
+[Menu]
+Menuo
+[Goals]
+Celoj
+[Teams]
+Teamoj
+[Use this landscape]
+Uzi ĉi tiun pejzaĝon
+[Reset]
+Restarigi
+[Generating...]
+Generado...
+[Players]
+Ludantoj
+[Rules]
+Reguloj
+[settings Interface layout]
+Interfaca aranĝo
+[settings Automatic]
+Aŭtomata
+[settings Compact]
+Proksimaj
+[settings Spacious]
+Vasta
+[More]
+Pli
+[No items]
+Neniuj eroj
+[Opponents]
+Kontraŭuloj
+[Review]
+Superrigardo
+[Review & Play]
+Kontroli kaj ludi
+[Edit opponents]
+Redakti kontraŭulojn
+[Map settings]
+Mapaj agordoj
+[Next]
+Sekva
+[Done]
+Farite
+[Contribution]
+Kontribuo
+[Choose who controls this colony]
+Elektu, kiu regas ĉi tiun kolonion
+[Settings]
+Elektaĵoj
+[settings Back]
+Reen
+[settings Save the game automatically about every minute.]
+Aŭtomate konservi la ludon proksimume ĉiun minuton.
+[AI opponents]
+Komputilaj kontraŭuloj
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La vasta aranĝo uzas flankan panelon kiam estas spaco. La kompakta uzas ilobreton kaj malfermeblajn panelojn.
+[Assigned %0 · Target %1]
+Asignitaj %0 · Celo %1
+[Range: %0]
+Atingo: %0
+[Player %0]
+Ludanto %0
+[Brush %0]
+Peniko %0
+[Team %0]
+Teamo %0
+[Your colony]
+Via kolonio
+[%0 / %1 HP · %2]
+%0 / %1 VP · %2
+[Units: %0]
+Unuoj: %0
+[Buildings: %0]
+Konstruaĵoj: %0
+[Need food: %0]
+Bezonas manĝon: %0
+[Need healing: %0]
+Bezonas kuracadon: %0
+[Attack: %0]
+Atako: %0
+[Defense: %0]
+Defendo: %0
+[Food: %0 / %1]
+Manĝo: %0 / %1
+[View team %0]
+Montri teamon %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Peniko %0x%1
+[Level %0]
+Nivelo %0
+[Manage teams (%0)]
+Administri teamojn (%0)
+[Team %0 / Level %1]
+Teamo %0 / Nivelo %1
+[Files · %0]
+Dosieroj · %0
+[Hint %0]
+Konsilo %0
+[Objective %0]
+Celo %0
+[Entry %0 of 8 · empty entries are omitted]
+Ero %0 el 8 · malplenaj eroj estas preterlasitaj
+[Teams %0/%1]
+Teamoj %0/%1
+[Elapsed time · %0]
+Pasinta tempo · %0
+[Read-only building]
+Nurlegebla konstruaĵo
+[Alliance and shared vision are fixed for this match.]
+Alianco kaj komuna vidado estas fiksitaj por ĉi tiu ludo.
+[Share vision]
+Kunhavigi vidon
+[Share food vision]
+Kunhavigi manĝovidon
+[Share market vision]
+Kunhavigi merkatvidon
+[Chat]
+Babilado
+[No other players have editable diplomatic settings in this match.]
+Neniu alia ludanto havas redakteblajn diplomatiajn agordojn en ĉi tiu ludo.
+[No briefing for this match.]
+Neniu instrukcio por ĉi tiu ludo.
+[Chat · recipients selected in Teams]
+Babilado · ricevantoj elektitaj ĉe Teamoj
+[Filename]
+Dosiernomo
+[Reduced motion]
+Malpli da moviĝo
+[Send]
+Sendi
+[Close]
+Fermi
+[Forbidden]
+Malpermesita
+[Guard]
+Gardi
+[Clear]
+Malplenigi
+[Paint]
+Pentri
+[Erase]
+Forviŝi
+[Release on valid terrain to place]
+Lasu sur valida tereno por loki
+[Paint on the map; two fingers move]
+Pentru sur la mapo; movu per du fingroj
+[Tutorial ▸]
+Instruilo ▸
+[Back to tools]
+Reen al iloj
+[Starvation overlay]
+Malsata tavolo
+[Damage overlay]
+Damaĝa tavolo
+[Defense overlay]
+Defenda tavolo
+[Fertility overlay]
+Fekundeca tavolo
+[Health and food bars]
+Sanaj kaj manĝaj bretoj
+[Message history]
+Mesaĝhistorio
+[Mark map for allies]
+Marki mapon por aliancanoj
+[Show zones]
+Montri zonojn
+[Pan]
+Movi
+[Select]
+Elekti
+[Show palette]
+Montri paletron
+[Release to place]
+Lasu por loki
+[Blocked placement]
+Lokado blokita
+[File name]
+Dosiernomo
+[Load map]
+Ŝargi mapon
+[Save map]
+Konservi mapon
+[No files in this folder]
+Neniuj dosieroj en ĉi tiu dosierujo
+[No files saved yet]
+Ankoraŭ neniuj konservitaj dosieroj
+[Export]
+Eksporti
+[Tap to write the mission briefing]
+Tuŝu por skribi la misiajn instrukciojn
+[Tap to write the map script]
+Tuŝu por skribi la mapan skripton
+[Script]
+Skripto
+[Previous]
+Antaŭa
+[Compile]
+Kompili
+[Tap to write this hint]
+Tuŝu por skribi ĉi tiun konsilon
+[Tap to write this objective]
+Tuŝu por skribi ĉi tiun celon
+[Mission briefing · tap to edit, swipe to scroll]
+Misiaj instrukcioj · tuŝu por redakti, ŝovu por rulumi
+[Not enough recorded history yet.]
+Ankoraŭ ne sufiĉas registrita historio.
+[Select a team to show its history.]
+Elektu teamon por montri ĝian historion.
+[Back to chart]
+Reen al diagramo
+[Expand chart]
+Pligrandigi diagramon
+[Slot]
+Loko
+[Color]
+Koloro
+[Player / AI]
+Ludanto / AI
+[Group]
+Grupo
+[Forbid]
+Malpermesi
+[↓ Low]
+↓ Malalta
+[= Normal]
+= Normala
+[↑ High]
+↑ Alta
+[Details]
+Detaloj
+[Campaign name]
+Kampanja nomo
+[Unlocking]
+Malŝlosado
+[Parameters]
+Parametroj
+[Blank map]
+Malplena mapo
+[Generated]
+Generita
+[Preview]
+Antaŭrigardo
+[Selected landscape]
+Elektita pejzaĝo
+[Representative preview]
+Ekzempla antaŭrigardo
+[Starting terrain]
+Komenca tereno
+[Hide parameters]
+Kaŝi parametrojn
+[Size and parameters]
+Grando kaj parametroj
+[Choose a landscape]
+Elektu pejzaĝon
+[%0 / Browse]
+%0 / Foliumi
+[%0 colonies · %1]
+%0 kolonioj · %1
+[%0 · Team %1]
+%0 · Teamo %1
+[Colonies: %0]
+Kolonioj: %0
+[%0 colonies · %1 AI]
+%0 kolonioj · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Globuloj
+[settings Level %0]
+Nivelo %0
+[settings Match the desktop %0]
+Kiel la labortablo (%0)
+[settings Current display %0 %1 %2 %3]
+Nunaj ekranagordoj: %0 × %1 · %2 · %3
+[Fairness: %0]
+Justeco: %0
+[Colony %0]
+Kolonio %0
+[Win chance: %0 · Fitness: %1]
+Ŝanco venki: %0 · Taŭgeco: %1
+[%0 · Contribution: %1]
+%0 · Kontribuo: %1
+[Min required level %0]
+Minimuma bezonata nivelo: %0
+[Confirm %0]
+Bone!: %0
+[Dialog text size %0]
+Dialoga tekstogrando: %0%
+[%0 %1]
+%0 %1

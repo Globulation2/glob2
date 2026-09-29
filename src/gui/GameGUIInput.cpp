@@ -16,6 +16,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
@@ -117,21 +118,27 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    inputState.observe(*event);
+    if (touch && touch->process(*event)) return;
     if ((event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_MIDDLE) ||
         (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST))
-    {
         panPushed = false;
-    }
     if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST)
     {
+        lastMouseButtonState = 0;
         viewportSpeedX = viewportSpeedY = 0;
+        selectionPushed = false;
+        if (touch) touch->cancel();
         torusView.stopMoving();
-        if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
+        toolManager.cancelDrag(localTeamNo);
         torusPointerDown = false;
         torusView.setPointerHeld(false);
     }
     if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT)
         torusView.setPointerHeld(false);
+    if (!inputState.hasFocus() && (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ||
+        event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP ||
+        event->type == SDL_MOUSEMOTION || event->type == SDL_MOUSEWHEEL)) return;
 
     if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText) {
         int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
@@ -139,7 +146,6 @@ void GameGUI::processEvent(SDL_Event *event)
         if (torusView.event(*event, width)) return;
         if (torusView.active() && handleTorusPointer(*event)) return;
     }
-
 
 	// handle typing
 	if (processTypingInput(event))
@@ -222,7 +228,7 @@ void GameGUI::processEvent(SDL_Event *event)
 void GameGUI::accumulateScrollWheelDelta(int delta)
 {
 	if(globalContainer->liveSpectating) return;
-	SDL_Keymod mod = SDL_GetModState();
+	SDL_Keymod mod = inputState.modifiers();
 	switch (scrollWheelTarget(mod & KMOD_SHIFT, mod & KMOD_CTRL,
 	                          globalContainer->settings.scrollWheelEnabled, mod & KMOD_ALT))
 	{
@@ -303,7 +309,7 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 {
 	updateCamera();
-    if(mouseEvent.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseEvent.x,mouseEvent.y,true))
+    if(mouseEvent.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseEvent.x,mouseEvent.y,true,true))
     {viewportX=camera.tileX();viewportY=camera.tileY();zoomControlPushed=true;return;}
 	int button=mouseEvent.button;
 
@@ -355,7 +361,7 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 		// We send the order
 		else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
 		{
-			toolManager.handleMouseUp(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), localTeamNo, viewportX, viewportY);
+			toolManager.handleMouseUp(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), localTeamNo, viewportX, viewportY, inputState.modifiers());
 		}
 	}
 	miniMapPushed=false;

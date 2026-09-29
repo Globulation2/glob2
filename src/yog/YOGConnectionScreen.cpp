@@ -13,6 +13,7 @@ using namespace GAGCore;
 YOGConnectionScreen::YOGConnectionScreen(std::shared_ptr<YOGClient> client)
 	: statusText(nullptr), animation(nullptr), connectionAttemptPending(false), tabChangeAllowed(true), client(client)
 {
+    enablePhoneForm();
 }
 
 void YOGConnectionScreen::onTimer(Uint32 tick)

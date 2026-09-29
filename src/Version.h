@@ -6,7 +6,19 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 107
+#define VERSION_MINOR 119
+// version 119 preserves Echo/Nicowar gradient caches and construction scheduling.
+// version 118 removes the obsolete Maxima rolling maturity cache.
+// version 117 preserves Maxima's rolling wheat maturity checks and pending changes.
+// version 116 preserves Maxima wave delivery and its permanent streaming fallback.
+// version 115 requires the current Maxima strategy and continuation schema.
+// version 114 preserves the team construction cooldown.
+// version 113 preserves unit clearing/idle state and ordered building/service lists.
+// version 112 persists Maxima offensive waves and their strategy controls.
+// version 111 persists Maxima fitted force beliefs and their observation cadence.
+// version 110 persists Maxima reachable fruit supply configuration.
+// version 109 persists Maxima labour observations, budgets and swarm allowances.
+// version 108 persists extended diagnostic gameplay measurements.
 // version 107 persists Maxima relocation relationships and fractional food supply.
 // version 101 persists resolved per-player runtime AI configuration in all header forms
 //             and Cortex queued orders, settle clocks and policy debounce for continuation.
@@ -134,9 +146,9 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 33
+#define NET_PROTOCOL_VERSION 42
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 33
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 42
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
@@ -150,3 +162,18 @@
 // version 31 GameHeader carries the custom-game economy rules; older clients would misread it
 // version 32 GameHeader carries the custom-game combat rules; older clients would misread it
 // version 33 GameHeader can carry the sudden-death winning condition, which older clients can't decode
+
+// version 34 changes Maxima labour and combat decisions; peers run AIs locally.
+// version 35 enables Maxima reachable fruit supply; peers run AIs locally.
+// version 36 enables Maxima fitted force inference; peers run AIs locally.
+
+// version 37 adds Maxima army growth and gathered attack waves; peers run AIs locally.
+
+// version 38 transfers the complete continuation state when joining saved games.
+
+// version 39 transfers construction cooldown state when joining saved games.
+// version 40 changes Maxima wave fallback decisions and their saved state.
+
+// version 41 adds symmetric version admission and the versioned YOG server greeting.
+
+// version 42 transfers Echo/Nicowar continuation fields when joining saved games.

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Exercise map CLI modes in a disposable profile; PNG checks use the shared software renderer without a display."""
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
+from build_paths import native_binary
 import hashlib
 import json
 import os
-from pathlib import Path
 import struct
 import subprocess
 import sys
@@ -13,7 +16,7 @@ import zlib
 ROOT = Path(__file__).resolve().parents[1]
 GENERATION_ONLY = '--generation-only' in sys.argv
 arguments = [arg for arg in sys.argv[1:] if arg != '--generation-only']
-BINARY = Path(arguments[0] if arguments else ROOT / 'build/src/glob2').resolve()
+BINARY = Path(arguments[0] if arguments else native_binary()).resolve()
 OUT = ROOT / 'artifacts/map-cli'
 if GENERATION_ONLY:
     OUT = OUT / 'generation-only'

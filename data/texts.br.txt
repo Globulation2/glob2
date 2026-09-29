@@ -1,3 +1,9 @@
+[AI strategy]
+Estratégia IA
+[AIMaxima-Summary]
+Equilibra crescimento sustentável e treinamento, depois reúne exércitos em ondas.
+[AIMaxima-Profile]
+Estratégia central: Trata comida, trabalhadores, nascimentos, treinamento, construção e combate como demandas concorrentes. Dimensiona parte do exército conforme a força inimiga estimada e tenta levá-lo ao combate com eficácia.\n\nEconomia e desenvolvimento: Planeja nascimentos conforme comida e trabalho, preserva períodos ociosos para treinamento e deixa de acrescentar trabalhadores excedentes quando precisa de produção militar. Amplia o treinamento e evita paralisar infraestrutura demais para melhorias.\n\nExploração e decisões: Estima forças inimigas a partir de unidades visíveis e avistamentos lembrados usando um modelo ajustado. Os alvos dependem de valor, distância, torres, trabalhadores expostos e persistência. Missões de frutas apoiam variedade alimentar e conversão.\n\nAtaque e defesa: Reserva guerreiros para treinamento e defesa e reúne as forças terrestres aptas perto de infraestrutura alimentar aliada antes de lançar ondas. Usa respostas defensivas locais e avalia vias de aproximação à colônia.\n\nQuando os ataques param: Após quatro falhas consecutivas na chegada das ondas, passa a bandeiras de ataque reforçadas continuamente. Ataques anfíbios também podem usar reforços contínuos. Essa alternativa não resolve todo bloqueio anterior à formação de um ponto de reunião.\n\nComparação com outras IAs: Integra comida, treinamento, informações e deslocamento mais estreitamente. Cabino enfatiza ataques a vários edifícios; Maxima enfatiza demanda estimada e chegada de forças reunidas.\n\nPontos fortes e fracos: Sustenta crescimento e reposição militar adaptando-se à pressão alimentar e às ameaças observadas. Precisa de comida, capacidade de treinamento e espaço livre para reunir tropas; congestionamento e rotas longas podem prejudicar sua chegada.\n\nComo enfrentar: Dispute trigo, tavernas e quartéis expostos antes de as ondas se reunirem. Mantenha uma defesa abastecida e unida e interrompa rotas de reforço. Espere pressão repetida após a primeira onda.\n\nExploração: As estimativas usam avistamentos e histórico de observações, não totais ocultos de tropas inimigas.
 [%0 has left the game]
 %0 saiu do jogo.
 [%0 level %1]
@@ -51,11 +57,11 @@ IA
 [ai]
 IA
 [AICastor-Description]
-A Ai Castor tem um comportamento conservador e tem bom desempenho em mapas com poucos recursos. Dificuldade Média.
+Constrói e treina, ajustando o crescimento à disponibilidade de comida.
 [AICastor]
 Castor
 [AINicowar-Description]
-Nicowar tem comportamento agressivo, cresce muito e rápido enquanto joga enormes exércitos contra seus adversários. Dificuldade Difícil
+Aumenta a população, treina guerreiros e depois ataca.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ None -
 [AINone]
 AINone
 [AINumbi-Description]
-Numbi - Expande levemente com rapidez. Dificuldade Fácil.
+Um adversário tolerante que ainda assim se expande e ataca.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - Não ataca. Porém constrói enormes bases e tenta converter muitas unidades. Dificuldade Fácil.
+Expande-se e busca conversões sem produzir guerreiros.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Ataca rápido e com força, costuma fazer com que o jogador defensor seja levado ao limite. Dificuldade Média.
+Ataques rápidos que põem à prova suas primeiras defesas.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino administra a defesa, o ataque e a construção como departamentos independentes que cooperam em um único plano: cresce muito e rápido e lança enormes exércitos contra os adversários. Dificuldade Difícil.
+Um construtor forte que coloca em campo forças de ataque treinadas.
 [AICabino]
 Cabino
 [Alga]
@@ -521,7 +527,7 @@ Descrição do mapa
 [Map Discovered]
 Mapa
 [Map download failure: lost connection]
-<<<<<<< /media/disk-2/attila/glob2/data/texts.br.txt
+Falha no download do mapa: conexão perdida
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
@@ -1217,9 +1223,9 @@ Velocidade: 1x (multijogador)
 [game speed help]
 Apenas para um jogador e replays. Partidas multijogador funcionam a 1x.
 [AICortex-Description]
-Cortex se expande em direção a novos campos de trigo e envia grupos de guerreiros para a batalha, apoiados por tavernas e hospitais próximos à linha de frente. Dificuldade média. Experimental.
+Ondas de guerreiros agrupados, apoiadas por comida e cura.
 [AIMaxima-Description]
-Maxima desenvolve uma colônia bem alimentada, explora o mapa constantemente e ataca sem pausa, enviando todos os guerreiros que puder dispensar. Dificuldade alta.
+Explora, desenvolve o abastecimento de comida e reúne ondas de guerreiros.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1237,37 +1243,37 @@ Ainda trabalhando: %0
 [AI strategy & counterplay]
 Estratégia e contra-jogo de IA
 [AICastor-Profile]
-Estratégia: Expande com cautela e funciona bem em mapas com poucos recursos.\n\nPontos fortes: A expansão limitada é eficaz em jogos com recursos escassos.\n\nTáticas a experimentar: ocupar o território antecipadamente. Não presuma que a falta de recursos enfraquecerá esta IA.
+Estratégia central: Investe numa colônia produtiva e em tecnologia antes de lançar ataques importantes. Projetos de construção priorizados desenvolvem o povoado; desenvolvimento, infraestrutura militar e tempo aumentam a prontidão para a guerra.\n\nEconomia e desenvolvimento: Estuda a umidade, o crescimento do trigo, obstáculos e o alcance dos trabalhadores. Gerencia a expansão alimentar, melhorias e defesas junto com a produção.\n\nAtaque e defesa: Estima o poder de ataque dos guerreiros saudáveis e inicia ofensivas quando as condições de força ou tempo são satisfeitas. Prefere edifícios acessíveis já avistados, sobretudo quartéis e escolas, movendo as bandeiras de ataque para alvos valiosos.\n\nComparação com outras IAs: Considera terreno e valor dos alvos mais cuidadosamente que Numbi. Mais paciente que Warrush, troca pressão inicial por uma base desenvolvida e tropas fortes.\n\nPontos fortes e fracos: O planejamento amplo da infraestrutura e os alvos militares valiosos dão propósito aos ataques. A preparação demora, permitindo que adversários rápidos disputem recursos antes que a força principal esteja pronta.\n\nComo enfrentar: Dispute a expansão cedo. Proteja quartéis, escolas e comida; mantenha uma reserva ao atacar o povoado desenvolvido.
 [AICastor-Summary]
-Expansão cautelosa; funciona bem com recursos escassos.
+Desenvolve uma colônia fortificada e depois ataca edifícios militares e científicos.
 [AICortex-Profile]
-Estratégia: Gerencia o abastecimento de alimentos, expande-se para novos campos de trigo e reúne sucessivos grupos de guerreiros. Tavernas e hospitais próximos à linha de frente apoiam ataques longe da base.\n\nPontos fortes: Envia reforços em conjunto, mantém a pressão militar e reage à escassez de alimentos.\n\nTáticas a experimentar: Lute pelo controle de novos campos de trigo e ataque seus edifícios de apoio próximos à linha de frente. Ataque antes que seus grupos de guerreiros estejam prontos.\n\nIA experimental. Dificuldade média; as sugestões táticas não são avaliações baseadas em testes comparativos.
+Estratégia central: Usa prioridades reativas para desenvolver uma economia funcional e transformar trabalho excedente em comida, tecnologia e pressão militar. Sua política normal usa regras; experiências com políticas aprendidas exigem configuração separada.\n\nEconomia e desenvolvimento: Ajusta a produção de trabalhadores à demanda de pessoal e mantém os nascimentos. Problemas alimentares restringem gastos em expansão e tecnologia. Acrescenta natação quando o acesso pela água ajuda significativamente.\n\nAtaque e defesa: Prepara ataques conforme a tecnologia inimiga observada e as tropas disponíveis. Campanhas que cruzam água precisam de guerreiros nadadores. Sustenta campanhas longas com tavernas e hospitais avançados e pode concentrar forças antes de avançar.\n\nCompromisso e emergências: Mantém a ofensiva diante de pequenas incursões em vez de voltar sempre à base. Ataques graves podem chamar defensores de volta. Emergências iniciais podem levar à produção exclusiva de guerreiros e a um hospital; a fome pode provocar um ataque desesperado menor.\n\nComparação com outras IAs: Preocupa-se mais com apoio avançado que Warrush. Maxima vai além ao planejar nascimentos sustentáveis, treinamento e deslocamento segundo a força inimiga estimada.\n\nPontos fortes e fracos: Liga pressão a comida, cura e acesso. A infraestrutura avançada precisa de abastecimento, e nascimentos contínuos podem manter a pressão sobre comida limitada. Prioridades de emergência impõem escolhas entre crescimento e sobrevivência.\n\nComo enfrentar: Dispute tavernas, hospitais e trigo avançados. Mantenha defensores unidos contra a ofensiva; pequenas incursões talvez não provoquem retirada.\n\nExploração: Usa edifícios inimigos descobertos e tropas inimigas observadas.
 [AICortex-Summary]
-Expansão atenta aos alimentos e ondas de ataque apoiadas.
+Sustenta ofensivas persistentes com comida e cura na linha de frente.
 [AINicowar-Profile]
-Estratégia: Expande-se rapidamente e ataca adversários com exércitos enormes.\n\nPontos fortes: A rápida expansão apoia ataques militares agressivos.\n\nTáticas a experimentar: Impedir sua expansão. Use o terreno para reduzir o número de tropas inimigas que podem lutar ao mesmo tempo.
+Estratégia central: Combina crescimento, treinamento, melhorias e guerra por condições sobrepostas. Pode atacar enquanto expande e redirecionar o esforço econômico à recuperação quando falta alimento.\n\nAbertura: O perfil agressivo incluído começa a preparação militar com cinco unidades no total e permite guerra com cinco guerreiros, incluindo os de nível zero. Busca três bandeiras de ataque com cinco guerreiros cada. Arquivos de estratégia personalizados podem alterar esses limites.\n\nEconomia e desenvolvimento: Amplia a capacidade alimentar e de nascimentos, treina trabalhadores, desenvolve natação e movimento e melhora edifícios. Ajusta trabalhadores da alimentação, reage à fome e busca frutas.\n\nAtaque e defesa: Seleciona por amostragem edifícios inimigos alcançáveis. Pode usar bandeiras de limpeza para abrir rotas bloqueadas por recursos. Bandeiras defensivas cobrem grupos de unidades e edifícios ameaçados. Mais tarde, exploradores treinados para atacar o solo visam grupos inimigos.\n\nComparação com outras IAs: Compartilha a agressividade inicial de Warrush, mas tem mais continuidade. Diferentemente de Cabino, não prioriza sistematicamente hospitais e tavernas.\n\nPontos fortes e fracos: Táticas variadas combinam pressão inicial e desenvolvimento contínuo. Alvos aleatórios podem desperdiçar esforço em edifícios menos valiosos. Seus limites não fornecem a estimativa detalhada da força inimiga usada por Maxima.\n\nComo enfrentar: Espere um ataque cedo. Proteja comida e trabalhadores, dispute a expansão e prepare-se para ataques de exploradores se ele alcançar treinamento avançado.
 [AINicowar-Summary]
-Expande-se rapidamente e constrói grandes exércitos para ataques agressivos.
+Uma investida inicial apoiada por agricultura, melhorias, defesa e ataques de exploradores.
 [AINone-Profile]
 Estratégia: A IA não dá comandos.\n\nPontos fortes: Um oponente previsível e inativo para experimentos.\n\nFraquezas: Não se expande nem se adapta.
 [AINone-Summary]
 Uma colônia ociosa para experimentos.
 [AINumbi-Profile]
-Estratégia: Expande-se rapidamente, mas em pequena escala. Um oponente mais fácil para praticar o manejo de colônias.\n\nPontos fortes: Permite aprender gestão econômica e combate.\n\nTáticas a experimentar: Desenvolva uma economia mais forte e treine seu exército antes de atacar.
+Estratégia central: Primeiro desenvolve comida e população, acrescenta cura, ciência e treinamento, depois passa à guerra. Suas grandes fases avançam com o tempo, não com o progresso do adversário.\n\nEconomia e desenvolvimento: Dimensiona a demanda por edifícios conforme a população e estima o trigo próximo. As fases posteriores acrescentam melhorias, defesas e expansão para sustentar o exército crescente.\n\nAtaque e defesa: Ataca quando há combatentes saudáveis suficientes ou quando um prazo se esgota. Coloca bandeiras de guerra em edifícios inimigos escolhidos por amostragem. Quando sua força cai demais, remove as bandeiras de ataque e eleva os requisitos para outra tentativa.\n\nComparação com outras IAs: Mais previsível que Castor ou Nicowar. Castor considera melhor o terreno e o valor dos alvos; Nicowar pressiona muito antes.\n\nPontos fortes e fracos: Uma infraestrutura de apoio ampla pode torná-lo perigoso após crescer sem interrupção, mas seu cronograma pode não acompanhar a batalha. A seleção simples de alvos e pausas maiores após perdas tornam os ataques mais previsíveis.\n\nComo enfrentar: Pressione antes da fase militar. Desenvolva comida e treinamento por trás dos ataques e aproveite a pausa após derrotar uma ofensiva.\n\nExploração: A rotina de ataque lê diretamente as posições dos edifícios inimigos, sem verificar a visibilidade.
 [AINumbi-Summary]
-Expansão rápida em pequena escala.
+Constrói gradualmente a colônia seguindo um cronograma, depois ataca em massa.
 [AIEcono-Profile]
-Estratégia: Não ataca, mas constrói bases enormes e converte ativamente as unidades inimigas para o seu próprio lado.\n\nPontos fortes: A expansão e a conversão de unidades ameaçam os oponentes sem ataques diretos.\n\nTáticas a experimentar: Desenvolva sua colônia antecipadamente e evite enviar unidades onde o inimigo possa convertê-las.
+Estratégia central: Produz trabalhadores e exploradores, expande a economia e atrai unidades inimigas com comida e frutas. Não possui ofensiva convencional de guerreiros.\n\nEconomia e desenvolvimento: Constrói tavernas e núcleos de reprodução perto do trigo, acrescenta educação e treinamento de movimento e melhora a infraestrutura. Monitora a comida e substitui tavernas e núcleos antigos quando sua localização perde recursos.\n\nAgricultura e conversão: Protege trigo e madeira renováveis perto da água. Envia exploradores a depósitos de frutas e colônias inimigas e anuncia comida aos inimigos ao buscar frutas. Comida melhor e frutas podem atrair convertidos.\n\nComparação com outras IAs: O adversário econômico mais especializado. Cabino e Maxima também buscam frutas, mas combinam isso com exércitos.\n\nPontos fortes e fracos: Pode crescer enquanto adversários militares se esgotam, com a conversão como outra forma de competição. Não produz guerreiros para responder a um ataque prolongado. Comida, frutas, geografia e regras de vitória afetam muito suas oportunidades.\n\nComo enfrentar: Pressione expansões expostas. Abasteça suas tavernas com comida e frutas para reter unidades. Evite esgotar sua colônia em lutas desnecessárias enquanto ele cresce.
 [AIEcono-Summary]
-Enormes bases e conversão em vez de ataques.
+Desenvolve uma colônia rica em comida e disputa convertidos sem produzir guerreiros.
 [AIWarrush-Profile]
-Estratégia: Ataca cedo e com força, antes que os oponentes terminem de se preparar.\n\nPontos fortes: Explora a expansão sem defesa e a lenta preparação militar.\n\nTáticas a experimentar: Sobreviva ao primeiro ataque enquanto mantém sua economia e depois contra-ataque.
+Estratégia central: Ataca antes que os adversários concluam um longo desenvolvimento econômico ou tecnológico. Espera decidir a partida em combate antes de precisar de uma grande rede de apoio.\n\nEconomia e desenvolvimento: Quando seis unidades podem colher, define a produção em quatro trabalhadores, um explorador e três guerreiros. Acrescenta quartéis quando o treinamento lota, mas restringe novas tavernas. A construção excedente costuma ir para hospitais e treinamento de movimento.\n\nAtaque e defesa: Marca edifícios inimigos descobertos com áreas de guarda para manter a pressão dos guerreiros. Não espera uma onda cuidadosamente reunida. Remove madeira que bloqueia caminhos e protege alguns recursos renováveis.\n\nPolítica de frutas: Proíbe colher frutas, evitando penalidades de armadura relacionadas a elas e recusando a estratégia de conversão de Econo.\n\nComparação com outras IAs: Mais dedicado à pressão inicial que Numbi ou Castor. Nicowar também abre agressivamente, mas continua com melhorias e táticas mais amplas.\n\nPontos fortes e fracos: Pune aberturas lentas e força gastos defensivos cedo. Melhorias sistemáticas limitadas e pouco apoio alimentar tornam cara uma ofensiva paralisada. Terreno e viagens longas podem corroer a vantagem inicial.\n\nComo enfrentar: Proteja tavernas e núcleos de reprodução cedo. Reponha trabalhadores e defensores, desenvolva o treinamento e contra-ataque quando a investida perder força.\n\nExploração: As bandeiras iniciais usam diretamente as posições de início inimigas. A colocação posterior de áreas de ataque exige visibilidade.
 [AIWarrush-Summary]
-Ataques rápidos que testam suas defesas iniciais.
+Pressão inicial de guerreiros com uma economia de apoio deliberadamente enxuta.
 [AICabino-Profile]
-Estratégia principal: um gabinete de departamentos especialistas independentes (defesa, ataque, construção, melhorias, gestão de unidades) que agem por conta própria mas convergem para um único plano: crescer rápido e depois lançar exércitos enormes contra os adversários.\n\nPontos fortes: a expansão rápida sustenta uma pressão militar agressiva; os departamentos independentes reagem depressa a ameaças locais sem esperar por um plano central.\n\nComo contra-atacar: dispute sua expansão cedo e use o terreno para limitar quantas tropas ele consegue engajar de uma vez.
+Estratégia central: Divide a produção de unidades entre construção, melhorias, defesa, ataques e exploração. Gerentes separados solicitam e reservam unidades, desenvolvendo economia e forças militares em conjunto.\n\nEconomia e desenvolvimento: Constrói e melhora um povoado variado, gerencia pessoal de tavernas e torres, limpa arredores de edifícios e protege recursos renováveis. Procura frutas e anuncia comida para disputar convertidos.\n\nAtaque e defesa: Escolhe um inimigo e prioriza hospitais, depois tavernas e quartéis. Sustenta até quatro ataques, geralmente atribuindo oito a vinte guerreiros por alvo conforme a disponibilidade e os inimigos próximos. Usa bandeiras defensivas separadas ao redor de edifícios ameaçados.\n\nTreinamento: Exige guerreiros adequados suficientes e um quartel concluído para atacar, mas não espera a tecnologia máxima. Melhorias e treinamento contínuos fortalecem ataques posteriores.\n\nComparação com outras IAs: Desmantela edifícios de apoio de forma mais intencional que Nicowar. Espalha ataques mais que as ondas reunidas de Maxima, reservando unidades para gerenciar demandas concorrentes.\n\nPontos fortes e fracos: Combina crescimento, treinamento, defesa e vários ataques. Destruir comida e cura pode enfraquecer a colônia inteira. A escolha aleatória do adversário e prioridades fixas podem perder oportunidades; vários ataques podem dividir a força.\n\nComo enfrentar: Defenda hospitais e tavernas. Dispute expansões expostas e concentre defensores contra ataques individuais. Prejudique comida ou treinamento antes que consiga sustentar várias frentes.\n\nExploração: O seletor de ataques lê listas de edifícios inimigos sem verificar explicitamente a visibilidade. Algumas comparações econômicas usam estatísticas inimigas diretamente.
 [AICabino-Summary]
-Departamentos independentes que cooperam para um crescimento rápido e exércitos enormes.
+Coordena crescimento e ataques treinados, mirando primeiro cura e comida.
 [Algae]
 alga
 [Alliances]
@@ -1976,6 +1982,10 @@ Largura da trilha
 Muro entre trechos
 [Farm building plots]
 Lotes para construir nas fazendas
+[Sand bridges over water]
+Pontes de areia sobre a água
+[Sand lanes through crops]
+Trilhas de areia entre as plantações
 [Carousels need at least two colonies.]
 O carrossel precisa de pelo menos duas colônias.
 [Switchbacks need at least two colonies.]
@@ -2178,24 +2188,22 @@ Sortear parâmetros
 Qualidade do início
 [Fairness]
 Equidade
-[Score]
-Pontuação
-[Weight]
-Peso
+[Fitness]
+Aptidão
+[Win chance]
+Chance de vitória
+[Coefficient]
+Coeficiente
+[Average]
+Média
+[Fitted on games:]
+Ajustado em partidas:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+O início de cada colônia é medido no mapa pronto, e um modelo ajustado a milhares de partidas entre adversários equivalentes transforma essas medidas em aptidão. A aptidão indica quão provável é que a colônia vença. A equidade mostra quão igualmente essas chances são divididas: 1 quando todas as colônias têm a mesma chance de vencer, 0 quando uma única colônia dominaria o mapa.
 [Worst]
 Pior
 [Best]
 Melhor
-[Fertility]
-Fertilidade
-[Deposits]
-Depósitos
-[Room]
-Espaço
-[Isolation]
-Isolamento
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-O início de cada colônia é medido no mapa pronto: o caminho até o trigo e a madeira, quão bem seu terreno volta a crescer, os depósitos e locais de construção ao alcance, e a distância até os rivais. Cada fator pontua de 0 a 1 contra uma barra fixa, o total os pondera, a equidade é o total da pior colônia dividido pelo da melhor, e a pontuação é o pior total multiplicado pela equidade.
 [Map preview controls]
 Sachit evit kelc'hiñ. Rod evit zoumañ. Klik dehou pe daouglik evit adderaouekaat.
 [Map preview drag help]
@@ -2253,9 +2261,9 @@ Comida/min
 [Stats occupancy]
 Alimentação / cura
 [Stats page one]
-Estatísticas 1/2 >
+Estatísticas 1/3 >
 [Stats page two]
-Estatísticas 2/2 >
+Estatísticas 2/3 >
 [Stats next page]
 Página (P)
 [Map preview choose another]
@@ -2378,3 +2386,1001 @@ Desativado (sem cronômetro)
 60 minutos
 [Sudden-death timer]
 Cronômetro de morte súbita
+[Stats page three]
+Estatísticas 3/3 >
+[Stats blocked units]
+Unidades S/C
+[Stats blocked buildings]
+Construções S/C
+[Stats blocked buildings swim]
+Nadar S/C
+[Stats current blocked units]
+Unidades C
+[Stats current blocked buildings]
+Construções C
+[Stats growth global]
+Recursos +
+[Stats growth new tiles]
+Recursos +#
+[Stats growth reductions]
+Recursos -
+[Stats growth per minute]
+trigo +/min
+[Stats growth near 8]
+Recursos + <=8
+[Stats growth near 16]
+Recursos + <=16
+[Stats growth near 32]
+Recursos + <=32
+[Stats low HP 25]
+Vida <=25%
+[Stats low HP 50]
+Vida <=50%
+[Stats low HP 75]
+Vida <=75%
+[Stats low food 25]
+Comida <=25%
+[Stats low food 50]
+Comida <=50%
+[Stats low food 75]
+Comida <=75%
+[Stats structural units]
+Unidades S
+[Stats structural buildings]
+Construções S
+[Stats low HP ranges]
+Vida: <=25/50/75%
+[Stats low food ranges]
+Comida: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Caractere emoji
+[Smiley]
+Rosto sorridente
+[Sad face]
+Rosto triste
+[Winking face]
+Piscadinha
+[Surprised face]
+Rosto surpreso
+[Heart eyes]
+Olhos de coração
+[Sunglasses]
+Óculos de sol
+[Heart]
+Coração
+[Star]
+Estrela
+[Neutral face]
+Rosto neutro
+[Sleeping face]
+Rosto dormindo
+[Grinning face]
+Rosto sorrindo
+[Kissing face]
+Rosto beijando
+[Angry face]
+Rosto zangado
+[Tongue out]
+Língua de fora
+[Skull]
+Caveira
+[Flower]
+Flor
+[Four-leaf clover]
+Trevo de quatro folhas
+[Teardrop]
+Gota
+[Cloud]
+Nuvem
+[Gem]
+Joia
+[Apple]
+Maçã
+[Speech bubble]
+Balão de fala
+[Shield]
+Escudo
+[Emoji style]
+Estilo do emoji
+[Outline]
+Contorno
+[Filled]
+Preenchido
+[Emoji terrain]
+Terreno do emoji
+[Regular]
+Normal
+[Inverse]
+Invertido
+[Crossings]
+Travessias
+[Forts]
+Kreñvlec’hioù
+[Gate width]
+Largura do portão
+[Braided Delta]
+Delta entrelaçado
+[Braid count]
+Número de braços
+[Rejoining frequency]
+Frequência de confluências
+[Crossing spacing]
+Distância entre passagens
+[Breachable highlands]
+Uheldir gant toulloù
+[Ridge depth]
+Tevder ar cʼhrib
+[Extra open passes]
+Tremenioù digor ouzhpenn
+[Wooded saddles]
+Tremenioù koadek
+[Hedgerow Country]
+Campos com sebes
+[Field size]
+Tamanho dos campos
+[Hedge thickness]
+Espessura das sebes
+[Existing gateways]
+Passagens existentes
+[Wooded boundary share]
+Proporção de limites arborizados
+[The Glacis]
+O Glacis
+[Allotments]
+Hortas
+[Caravanserai]
+Caravançará
+[Mixed]
+Misto
+[Fort size]
+Tamanho do forte
+[Bastions]
+Baluartes
+[Four-pointed]
+De quatro pontas
+[Five-pointed]
+De cinco pontas
+[Six-pointed]
+De seis pontas
+[Glacis width]
+Largura da esplanada
+[Gates]
+Portões
+[Site size]
+Tamanho dos lotes
+[Plot width]
+Largura dos canteiros
+[Plot mix]
+Mistura de canteiros
+[Tended]
+Cuidados
+[Overgrown]
+Abandonados
+[Commons]
+Terras comunais
+[Few]
+Poucos
+[Some]
+Alguns
+[Home oasis size]
+Tamanho do oásis natal
+[Caravanserais per colony]
+Caravançarás por colônia
+[Desert]
+Deserto
+[Open erg]
+Erg aberto
+[Dunes and mesas]
+Dunas e mesetas
+[Canyon country]
+Terra de cânions
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Um forte não consegue chegar ao seu vau; use um mapa maior ou menos colônias.
+[A wall would stand on a beach; try another seed.]
+Um muro ficaria sobre uma praia; tente outra semente.
+[The fort is too small for its gardens; raise Fort size.]
+O forte é pequeno demais para suas hortas; aumente o tamanho do forte.
+[The home oasis is too small; raise Home oasis size.]
+O oásis natal é pequeno demais; aumente o tamanho do oásis natal.
+[Braided river]
+Rio entrelaçado
+[Braid width]
+Largura do entrelaçado
+[Bar size]
+Tamanho das barras
+[Extra riffles]
+Vaus extras
+[Moraine hummocks]
+Montículos de morena
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+O entrelaçado deixa pouco terraço para as bases; use um mapa maior ou um entrelaçado mais estreito.
+[The map is too narrow across for a braid; use a bigger map.]
+O mapa é estreito demais para um entrelaçado; use um mapa maior.
+[Drumlin field]
+Campo de drumlins
+[Drumlin spacing]
+Espaçamento dos drumlins
+[Drumlin length]
+Comprimento dos drumlins
+[Water gap]
+Faixa de água
+[Esker loops]
+Ciclos de eskers
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Os eskers não conseguiram conectar todos os drumlins; use uma faixa de água menor ou um mapa maior.
+[Continents]
+Continentes
+[Continent]
+Continente
+[North America]
+América do Norte
+[South America]
+América do Sul
+[Africa]
+África
+[Europe]
+Europa
+[Asia]
+Ásia
+[Oceania]
+Oceania
+[Orientation]
+Orientação
+[Turn to fit]
+Girar para caber
+[Upright]
+Sem rotação
+[Mountain ranges]
+Cordilheiras
+[Great rivers]
+Grandes rios
+[Islets]
+Ilhotas
+[Oases]
+Oásis
+[The world atlas has no such continent.]
+O atlas mundial não tem esse continente.
+[The map is too small to hold a continent.]
+O mapa é pequeno demais para conter um continente.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Este continente não tem espaço para tantas colônias neste tamanho de mapa; use um mapa maior ou menos colônias.
+[Savannah]
+Savanenn
+[Watering holes]
+Poulloù dour
+[Dry patches]
+Tachennoù sec’h
+[Sparse]
+Nebeut
+[Normal]
+Reizh
+[Many]
+Kalz
+[Rice terraces]
+Terasoù riz
+[Unoccupied hills]
+Torgennoù dieub
+[Hill radius]
+Skin an dorgenn
+[Contour band width]
+Ledander ar bandennoù kontour
+[Stairs per hill]
+Diri dre dorgenn
+[Valley river]
+Stêr an draonienn
+[Hills]
+Colinas
+[Hillsides]
+Encostas
+[Terraces per slope]
+Terraços por encosta
+[Waviness]
+Ondulação
+[Stair spacing]
+Espaçamento das escadas
+[Locust]
+Gafanhotos
+[Plantations]
+Plantações
+[Plot size]
+Tamanho do lote
+[Farm width]
+Largura da lavoura
+[Islands per colony]
+Ilhas por colônia
+[Outpost inns]
+Tavernas de posto avançado
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+As ilhas são pequenas demais para os seus lotes; use um mapa maior, um lote menor ou menos colônias.
+[Sierpiński Gardens]
+Jardins de Sierpiński
+[Hilbert River]
+Rio de Hilbert
+[Maximum nesting]
+Aninhamento máximo
+[Minimum terminal district side]
+Lado mínimo dos distritos terminais
+[Major crossing pairs]
+Pares de travessias principais
+[Maximum fold depth]
+Profundidade máxima das dobras
+[Minimum land spacing]
+Espaçamento mínimo de terra
+[Optional local crossings per parent]
+Travessias locais opcionais por região superior
+[Optional major shortcuts]
+Atalhos principais opcionais
+[Lava shield]
+Skoed lava
+[Lava tongues]
+Teodoù lava
+[Long tongues]
+Teodoù hir
+[Crater rim width]
+Ledander ribl ar c'hrater
+[Honeycomb isle]
+Ilha favo de mel
+[Blocks per colony]
+Quarteirões por colônia
+[Rubble]
+Escombros
+[Outline gaps]
+Brechas nos contornos
+[Craters per colony]
+Crateras por colônia
+[Wheat fields]
+Campos de trigo
+[Bridges]
+Pontes
+[Karst towers]
+Torres cársticas
+[Tower spacing]
+Espaçamento das torres cársticas
+[Tower density]
+Densidade das torres cársticas
+[Paddy depth]
+Extensão dos arrozais
+[Home design]
+Desenho da base
+[Horseshoe]
+Ferradura
+[Twin gates]
+Portões gêmeos
+[Three gates]
+Três portões
+[Four gates]
+Quatro portões
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Os rios não encontraram caminho entre as bases; use um mapa maior ou menos colônias.
+[River meander]
+Meandros do rio
+[Flooded terraces]
+Terraços alagados
+[Sinkholes]
+Dolinas
+[Bajada]
+Leques aluviais
+[Range spacing]
+Espaçamento das serras
+[Ridge width]
+Largura das cristas
+[Passes]
+Passagens
+[Fans per range]
+Leques por serra
+[Stream reach]
+Comprimento dos córregos
+[Playa]
+Lagoas salinas
+[Broad fan]
+Leque largo
+[Long fan]
+Leque comprido
+[Twin springs]
+Nascentes gêmeas
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Os leques aluviais são estreitos demais para as bases; use um mapa maior, um espaçamento maior das serras, cristas mais estreitas ou lagoas salinas menores.
+[Central Quarry]
+Pedreira central
+[Quarry size]
+Tamanho da pedreira
+[Sand bars]
+Bancos de areia
+[Woodland]
+Mata
+[Central Quarry needs at least two colonies.]
+Pedreira central precisa de pelo menos duas colônias.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+O lago não cabe neste mapa; use um lago menor ou um mapa maior.
+[A sand bar did not reach the island.]
+Um banco de areia não chegou à ilha.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Este mapa não tem espaço para tantas colônias; use um mapa maior ou menos colônias.
+[The island has no room for its quarry; use a bigger island.]
+A ilha não tem espaço para sua pedreira; use uma ilha maior.
+[Hidden Oasis]
+Oásis oculto
+[Pond algae]
+Algas da lagoa
+[Starting towers]
+Torres iniciais
+[Starting school]
+Escola inicial
+[Mesas]
+Mesetas rochosas
+[Springs]
+Nascentes
+[Hidden Oasis needs at least two colonies.]
+Oásis oculto precisa de pelo menos duas colônias.
+[Hidden Oasis holds at most eight colonies.]
+Oásis oculto comporta no máximo oito colônias.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+O maciço não cabe neste mapa; use um mapa maior ou menos colônias.
+[The pond has no room for that much algae; use a bigger pond.]
+A lagoa não tem espaço para tantas algas; use uma lagoa maior.
+[Even Ground]
+Terreno parelho
+[Balance]
+Equilibragem
+[Tight passes]
+Passagens estreitas
+[Solver effort]
+Esforço do solucionador
+[Brief]
+Breve
+[Patient]
+Paciente
+[This map is too small to solve on; use a bigger map.]
+Este mapa é pequeno demais para resolver; use um mapa maior.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Colônias demais para equilibrar num mapa deste tamanho; use um mapa maior ou menos colônias.
+[The colonies could not be spread out on this map.]
+Não foi possível espalhar as colônias neste mapa.
+[Marchland]
+Terra de ninguém
+[Prizes on the rope]
+Prêmios na corda
+[March width]
+Largura da terra de ninguém
+[Levelling]
+Nivelamento
+[A march needs a country on each side; use at least two colonies.]
+Uma terra de ninguém precisa de um país de cada lado; use pelo menos duas colônias.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Colônias demais para este mapa dar a cada uma a sua terra natal; use um mapa maior ou menos colônias.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Este mapa não tem espaço para espalhar as colônias; use um mapa maior ou menos colônias.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+A terra natal de uma colônia não tem saída para a terra de ninguém; use um mapa maior ou uma terra de ninguém mais estreita.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+A terra natal de uma colônia não tem espaço para um núcleo de reprodução; use um mapa maior, menos colônias ou uma terra de ninguém mais estreita.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+A terra de ninguém tem pouco terreno disputado para tantos prêmios; use menos prêmios, uma terra de ninguém mais larga ou um mapa maior.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+A terra de ninguém não tem espaço para um prêmio; use um mapa maior, menos colônias ou uma terra de ninguém mais larga.
+[Orchard Commons]
+Pomares comuns
+[Orchard spacing]
+Espaçamento dos pomares
+[Compact]
+Próximos
+[Balanced]
+Equilibrado
+[Spread]
+Afastados
+[The Gauntlet]
+Arena de desafios
+[Partition thickness]
+Espessura das divisórias
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+A Arena de desafios precisa de um mapa maior ou de menos colônias para acomodar duas entradas defendidas por colônia.
+[The Comb]
+O Pente
+[Peninsulas per shore]
+Penínsulas por margem
+[Encircled Kingdom]
+Reino cercado
+[Fortress plan]
+Planta da fortaleza
+[Automatic]
+Automática
+[Elongated enclosure]
+Recinto alongado
+[Bastioned enclosure]
+Recinto abaluartado
+[Paired courtyards]
+Pátios duplos
+[Heartland farmland]
+Terras agrícolas centrais
+[The Faulted City]
+A Cidade Fraturada
+[Fault displacement]
+Deslocamento das falhas
+[Fault width]
+Largura das falhas
+[Ruin density]
+Densidade de ruínas
+[Surviving junctions]
+Cruzamentos preservados
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+A Cidade Fraturada requer 256 ou 512 casas por lado e de uma a doze colônias.
+[The city has too few usable junctions.]
+A cidade tem poucos cruzamentos utilizáveis.
+[A city neighbourhood lacks reachable crops or building room.]
+Um bairro da cidade não tem plantações acessíveis ou espaço para construir.
+[The city neighbourhoods are too unequal; try another seed.]
+Os bairros da cidade são muito desiguais; tente outra semente.
+[The fractured civic plaza did not survive.]
+A praça pública fraturada não sobreviveu.
+[Who Ate the Map?]
+Quem comeu o mapa?
+[Appetite]
+Apetite
+[A Little Nibble]
+Uma mordidinha
+[Hungry]
+Com fome
+[Portage Lakes]
+Lennoù ha tremenlec’hioù koad
+[Lake elongation]
+Astenn al lennoù
+[Portage depth]
+Tevder ar c’hoad
+[Extra trails]
+Gwenodennoù ouzhpenn
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Ret eo da gostezioù ar gartenn-mañ bezañ etre 64 ha 512 karrez hed.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Gant an had-mañ ne c’haller ket lakaat trevadennoù war ar ribloù.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+N’eus ket plas evit parkeier a gresk en-dro e-kichen pep trevadenn.
+[Portage Lakes cannot connect its shoreline trails.]
+Ne c’haller ket kevreañ gwenodennoù ar ribloù.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Gant an had-mañ ne c’haller ket krouiñ un hent-berr talvoudus dre goad sec’h.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Gant an had-mañ ne c’haller ket krouiñ un hent-berr talvoudus dre neuial.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Gant an had-mañ e rank al lennoù evit neuial bezañ dispartiet.
+[Drowned Forest]
+Floresta inundada
+[Sandbar connections]
+Conexões entre bancos de areia
+[Wooded neck thickness]
+Espessura das barreiras de árvores
+[Neutral clearing size]
+Tamanho das clareiras neutras
+[Bastion Keys]
+Ilhotas fortificadas
+[Plantation size]
+Tamanho das plantações
+[Outlying islands]
+Ilhas periféricas
+[The Hungry Marches]
+As Fronteiras Famintas
+[Opening ration]
+Ração inicial
+[Central concentration]
+Concentração central
+[The Last Treeline]
+A última faixa de floresta
+[Woodland depth]
+Largura dos bosques
+[Fertility]
+Fertilidade
+[Deposits]
+Depósitos
+[Room]
+Espaço
+[Isolation]
+Isolamento
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+O início de cada colônia é medido no mapa pronto: o caminho até o trigo e a madeira, quão bem seu terreno volta a crescer, os depósitos e locais de construção ao alcance, e a distância até os rivais. Cada fator pontua de 0 a 1 contra uma barra fixa, o total os pondera, a equidade é o total da pior colônia dividido pelo da melhor, e a pontuação é o pior total multiplicado pela equidade.
+[ERROR_CANT_SAVE_MAP]
+Não foi possível salvar o mapa. Verifique o destino e o espaço disponível. Suas edições continuam abertas.
+[Loading headers]
+Carregando cabeçalhos...
+[Loading teams]
+Carregando equipes...
+[Loading terrain]
+Carregando o terreno...
+[Building gradients]
+Gerando gradientes...
+[Loading players]
+Carregando jogadores...
+[Loading scripts]
+Carregando scripts...
+[Generating map]
+Gerando o mapa...
+[ERROR_CANT_GENERATE_MAP]
+Não foi possível gerar o mapa. Tente outras configurações de geração.
+[Loading units]
+Carregando unidades...
+[Loading buildings]
+Carregando construções...
+[Resolving team links]
+Resolvendo vínculos de equipe...
+[saving to storage]
+Salvando...
+[save failed retry]
+Falha ao salvar. Tente de novo.
+[export save]
+Exportar jogo salvo
+[storage restore failed]
+Não foi possível restaurar o armazenamento do navegador. Os dados salvos existentes não foram alterados. Você pode continuar esta sessão, mas as alterações locais não poderão ser mantidas. Exporte os jogos importantes na caixa de falha de salvamento. Recarregue para tentar restaurar o armazenamento de novo.
+[continue]
+Continuar
+[export file]
+Exportar arquivo
+[export failed]
+Falha ao exportar o arquivo
+[import file]
+Importar
+[select import file]
+Escolha um arquivo para importar
+[validating import]
+Validando o arquivo...
+[import succeeded]
+Arquivo importado
+[import cancelled]
+Importação cancelada
+[import failed]
+Falha na importação: arquivo inválido ou não suportado
+[import persistence failed]
+Não salvo: escolha Importar para tentar de novo ou Exportar arquivo
+[import progress]
+Progresso da importação
+[export progress]
+Progresso da exportação
+[retry save]
+Tentar salvar de novo
+[campaign save failed]
+Progresso da campanha não salvo. Tente novamente ou exporte um backup.
+[leave without saving]
+Sair sem salvar
+[campaign import failed]
+Arquivo de progresso inválido ou versão de campanha diferente
+[network release mismatch]
+Os protocolos do cliente e do servidor são diferentes. Instale a mesma versão do Glob2 do servidor.
+[settings continue]
+Continuar
+[settings save failed]
+Salvamento das configurações não confirmado. Tente de novo, ou continue.
+[shutdown save failed]
+Salvamento final não confirmado. Tente de novo, ou saia sem salvar.
+[quit without saving]
+Sair sem salvar
+[game closed]
+Jogo encerrado. Você pode fechar esta janela ou recarregar para jogar de novo.
+[campaign editor save failed]
+Salvamento não confirmado. OK tenta de novo; Cancelar volta ao menu do editor.
+[Actions]
+Ações
+[Minimap]
+Minimapa
+[Fast forward]
+Avançar rápido
+[Hide keyboard]
+Ocultar teclado
+[Dialog text size]
+Tamanho do texto dos diálogos
+[Player slot]
+Vaga de jogador
+[Team color]
+Cor da equipe
+[Alliance group]
+Grupo de aliança
+[menu]
+Menu
+[Editor tools]
+Ferramentas
+[Pan map]
+Mover mapa
+[Edit map]
+Editar mapa
+[Editor map]
+Mapa
+[Flags]
+Bandeiras
+[Pause]
+Pausar
+[Speed]
+Velocidade
+[Objectives]
+objetivos
+[Menu]
+Menu
+[Goals]
+Objetivos
+[Teams]
+Equipes
+[Use this landscape]
+Usar esta paisagem
+[Reset]
+Redefinir
+[Generating...]
+Gerando...
+[Players]
+Jogadores
+[Rules]
+Regras
+[settings Interface layout]
+Layout da interface
+[settings Automatic]
+Automática
+[settings Compact]
+Próximos
+[settings Spacious]
+Espaçoso
+[More]
+Mais
+[No items]
+Nenhum item
+[Opponents]
+Adversários
+[Review]
+Revisão
+[Review & Play]
+Revisar e jogar
+[Edit opponents]
+Editar adversários
+[Map settings]
+Ajustes do mapa
+[Next]
+Próximo
+[Done]
+Concluir
+[Contribution]
+Contribuição
+[Choose who controls this colony]
+Escolha quem controla esta colônia
+[Settings]
+Ajustes
+[settings Back]
+Volta
+[settings Save the game automatically about every minute.]
+Salvar o jogo automaticamente a cada minuto, aproximadamente.
+[AI opponents]
+Adversários de IA
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+O modo espaçoso usa um painel lateral quando há espaço. O modo compacto usa uma barra de ferramentas e painéis retráteis.
+[Assigned %0 · Target %1]
+Atribuídos %0 · Alvo %1
+[Range: %0]
+Alcance: %0
+[Player %0]
+Jogador %0
+[Brush %0]
+Pincel %0
+[Team %0]
+Equipe %0
+[Your colony]
+Sua colônia
+[%0 / %1 HP · %2]
+%0 / %1 PV · %2
+[Units: %0]
+Unidades: %0
+[Buildings: %0]
+Edifícios: %0
+[Need food: %0]
+Precisam de comida: %0
+[Need healing: %0]
+Precisam de cura: %0
+[Attack: %0]
+Ataque: %0
+[Defense: %0]
+Defesa: %0
+[Food: %0 / %1]
+Comida: %0 / %1
+[View team %0]
+Ver equipe %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pincel %0x%1
+[Level %0]
+Nível %0
+[Manage teams (%0)]
+Gerenciar equipes (%0)
+[Team %0 / Level %1]
+Equipe %0 / Nível %1
+[Files · %0]
+Arquivos · %0
+[Hint %0]
+Dica %0
+[Objective %0]
+Objetivo %0
+[Entry %0 of 8 · empty entries are omitted]
+Entrada %0 de 8 · entradas vazias são omitidas
+[Teams %0/%1]
+Equipes %0/%1
+[Elapsed time · %0]
+Tempo decorrido · %0
+[Read-only building]
+Edifício somente leitura
+[Alliance and shared vision are fixed for this match.]
+A aliança e a visão compartilhada são fixas nesta partida.
+[Share vision]
+Compartilhar visão
+[Share food vision]
+Compartilhar visão da comida
+[Share market vision]
+Compartilhar visão dos mercados
+[Chat]
+Conversa
+[No other players have editable diplomatic settings in this match.]
+Nenhum outro jogador tem configurações diplomáticas editáveis nesta partida.
+[No briefing for this match.]
+Sem instruções para esta partida.
+[Chat · recipients selected in Teams]
+Conversa · destinatários escolhidos em Equipes
+[Filename]
+Nome do arquivo
+[Reduced motion]
+Movimento reduzido
+[Send]
+Enviar
+[Close]
+Fechar
+[Forbidden]
+Proibido
+[Guard]
+Vigiar
+[Clear]
+Limpar
+[Paint]
+Pintar
+[Erase]
+Apagar
+[Release on valid terrain to place]
+Solte sobre terreno válido para colocar
+[Paint on the map; two fingers move]
+Pinte no mapa; mova com dois dedos
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Voltar às ferramentas
+[Starvation overlay]
+Camada de fome
+[Damage overlay]
+Camada de danos
+[Defense overlay]
+Camada de defesa
+[Fertility overlay]
+Camada de fertilidade
+[Health and food bars]
+Barras de saúde e comida
+[Message history]
+Histórico de mensagens
+[Mark map for allies]
+Marcar o mapa para aliados
+[Show zones]
+Mostrar zonas
+[Pan]
+Deslocar
+[Select]
+Selecionar
+[Show palette]
+Mostrar paleta
+[Release to place]
+Solte para colocar
+[Blocked placement]
+Colocação bloqueada
+[File name]
+Nome do arquivo
+[Load map]
+Carregar mapa
+[Save map]
+Salvar mapa
+[No files in this folder]
+Nenhum arquivo nesta pasta
+[No files saved yet]
+Nenhum arquivo salvo ainda
+[Export]
+Exportar
+[Tap to write the mission briefing]
+Toque para escrever as instruções da missão
+[Tap to write the map script]
+Toque para escrever o script do mapa
+[Script]
+Script
+[Previous]
+Anterior
+[Compile]
+Compilar
+[Tap to write this hint]
+Toque para escrever esta dica
+[Tap to write this objective]
+Toque para escrever este objetivo
+[Mission briefing · tap to edit, swipe to scroll]
+Instruções da missão · toque para editar, deslize para rolar
+[Not enough recorded history yet.]
+Ainda não há histórico suficiente.
+[Select a team to show its history.]
+Selecione uma equipe para mostrar seu histórico.
+[Back to chart]
+Voltar ao gráfico
+[Expand chart]
+Expandir gráfico
+[Slot]
+Vaga
+[Color]
+Cor
+[Player / AI]
+Jogador / IA
+[Group]
+Grupo
+[Forbid]
+Proibir
+[↓ Low]
+↓ Izel
+[= Normal]
+= Reizh
+[↑ High]
+↑ Uhel
+[Details]
+Munudoù
+[Campaign name]
+Anv ar c'houlzad
+[Unlocking]
+Dibrennañ
+[Parameters]
+Arventennoù
+[Blank map]
+Kartenn c'houllo
+[Generated]
+Krouet
+[Preview]
+Alberz
+[Selected landscape]
+Dremmvro dibabet
+[Representative preview]
+Alberz skouer
+[Starting terrain]
+Douar deroù
+[Hide parameters]
+Kuzhat an arventennoù
+[Size and parameters]
+Ment hag arventennoù
+[Choose a landscape]
+Dibab un dremmvro
+[%0 / Browse]
+%0 / Furchal
+[%0 colonies · %1]
+%0 colônias · %1
+[%0 · Team %1]
+%0 · Equipe %1
+[Colonies: %0]
+Colônias: %0
+[%0 colonies · %1 AI]
+%0 colônias · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unidades
+[settings Level %0]
+Nível %0
+[settings Match the desktop %0]
+Acompanhar a área de trabalho (%0)
+[settings Current display %0 %1 %2 %3]
+Configurações de exibição atuais: %0 × %1 · %2 · %3
+[Fairness: %0]
+Equidade: %0
+[Colony %0]
+Colônia %0
+[Win chance: %0 · Fitness: %1]
+Chance de vitória: %0 · Aptidão: %1
+[%0 · Contribution: %1]
+%0 · Contribuição: %1
+[Min required level %0]
+Nível mínimo requerido: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Tamanho do texto dos diálogos: %0%
+[%0 %1]
+%0 %1

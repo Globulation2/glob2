@@ -10,6 +10,7 @@
 #include "Order.h"
 #include "TeamStat.h"
 #include <assert.h>
+#include <stdexcept>
 #include <Stream.h>
 
 
@@ -159,6 +160,8 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AIWarrush(stream, player, versionMinor);
 		break;
 		case MAXIMA:
+			if(versionMinor<115)
+				throw std::runtime_error("This Maxima save uses a retired strategy format");
 			aiImplementation=new AIMaxima::Maxima(stream,player,versionMinor);
 		break;
 		case CORTEX:

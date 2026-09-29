@@ -24,14 +24,25 @@ class EngineJob:
 
     def validate(self, job):
         config, seeds = job['config'], job['seeds']
-        allowed = {'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions'} if self.kind == 'game' else {'generator', 'params', 'candidates', 'rotations'}
+        generation = {'generator', 'params', 'candidates'}
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions'} | generation
+                   if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
         if self.kind == 'game' and 'save' in job['inputs'] and seeds:
             raise ValueError('saved games retain their seeds')
         if self.kind == 'game':
-            if ('map' in job['inputs']) == ('save' in job['inputs']):
-                raise ValueError('game requires exactly one map or saved state input')
+            # A game either loads a map or a save, or generates its own map inline;
+            # exactly one of the three.
+            inline = 'generator' in config
+            sources = int('map' in job['inputs']) + int('save' in job['inputs']) + int(inline)
+            if sources != 1:
+                raise ValueError('game requires exactly one map, saved state or inline generator')
+            if inline:
+                if type(config['generator']) is not int or 'map' not in seeds:
+                    raise ValueError('inline generation requires a map seed and integer generator')
+                if not config.get('players') or 'game' not in seeds:
+                    raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
                 raise ValueError('new game requires players and game seed')
             if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions')):
@@ -55,7 +66,15 @@ class EngineJob:
         def add(key, value):
             args.extend([key, str(value)])
         if self.kind == 'game':
-            add('--map-file' if 'map' in inputs else '--load-game', inputs.get('map', inputs.get('save')))
+            if 'generator' in config:
+                add('--generator', config['generator'])
+                add('--map-seed', job['seeds']['map'])
+                for key, value in sorted(config.get('params', {}).items()):
+                    add('--param', f'{key}={value}')
+                add('--candidates', config.get('candidates', 0))
+            else:
+                add('--map-file' if 'map' in inputs else '--load-game',
+                    inputs.get('map', inputs.get('save')))
             if 'game' in job['seeds']:
                 add('--game-seed', job['seeds']['game'])
             add('--ticks', config.get('ticks', 90000))

@@ -92,6 +92,7 @@ enum YOGServerGameCreateRefusalReason
 {
 	///This represents internally an unknown reason
 	YOGCreateRefusalUnknown,
+	YOGCreateRefusalNoRouter,
 };
 
 ///This is used to represent the types of messages that can be sent through YOG
@@ -166,5 +167,5 @@ enum YOGMapUploadRefusalReason
 /// Shared by login and registration acceptance checks.
 inline bool isSupportedYOGClientVersion(unsigned version)
 {
-	return version >= YOG_MIN_CLIENT_NET_PROTOCOL_VERSION;
+	return version == NET_PROTOCOL_VERSION;
 }

@@ -6,7 +6,7 @@ A generator is a registered module, not a new branch in a central dispatch switc
 
 - **`core/`** owns requests, control metadata, registration, seed streams, validation and results. It does not implement terrain recipes.
 - **`generators/`** contains one header/source pair per generator. The header defines its named options; the source owns its controls, its design (the layout as a pure function of the request) and the order it calls the shared stages in. A generator source holds only what is particular to its map.
-- **`shared/`** is the toolkit every generator is built from: the torus grid and its floods (`Grid`), shapes (`Geometry`, `Wedge`), fairness by symmetry groups (`Orbits`), mask arithmetic (`Morphology`), drawing strokes, shapes, grown branches and wandering paths (`Drawing`), the terrain sketch (`Sketch`), crop growth on a sketch (`Growth`), noise and patterns (`LatticeNoise`, `HeightMap`, `Patterns`), scattered sites and cells (`Points`, `Tessellation`, `GraphMaze`), water sized for its purpose (`Channels`), walls and towers (`Walls`, `Towers`), deposits and kinds of land (`Planting`, `Resources`, `Farmland`, `Biomes`), homes and building room (`Homes`, `Room`, `Territories`), routes and costs (`Roads`, `Contact`), colonies (`Settlements`, `BalancedStarts`), the pipeline stages (`Pipeline`), the height-field stages (`Terrain`) and the start scoring (`StartQuality`). These are ordinary functions with explicit map/context dependencies, not methods of a generator superclass. [Map generator framework](MAP_GENERATOR_FRAMEWORK.md) lists what each gives you.
+- **`shared/`** is the toolkit every generator is built from: the torus grid and its floods (`Grid`), shapes (`Geometry`, `Wedge`), fairness by symmetry groups (`Orbits`), mask arithmetic (`Morphology`), drawing strokes, shapes, grown branches and wandering paths (`Drawing`), the terrain sketch (`Sketch`), crop growth on a sketch (`Growth`), noise and patterns (`LatticeNoise`, `HeightMap`, `Patterns`), scattered sites and cells (`Points`, `Tessellation`, `GraphMaze`), water sized for its purpose (`Channels`), walls and towers (`Walls`, `Towers`), deposits and kinds of land (`Planting`, `Resources`, `Farmland`, `Biomes`), homes and building room (`Homes`, `Room`, `Territories`), routes and costs (`Roads`, `Contact`), colonies (`Settlements`, `BalancedStarts`), real geography and pictures laid onto the torus (`WorldAtlas`, `Raster`, `Landmass`), the pipeline stages (`Pipeline`), the height-field stages (`Terrain`) and the start scoring (`StartQuality`). These are ordinary functions with explicit map/context dependencies, not methods of a generator superclass. [Map generator framework](MAP_GENERATOR_FRAMEWORK.md) lists what each gives you.
 - **`shared/legacy/`** is the older area-grid toolkit (`Regions`, `Distances`, `StartingPositions`) the point-dispersion and height-field generators still build on. It does not compose with the tile masks the rest of `shared/` uses; do not start a new generator on it.
 - **`compatibility/`** owns the historical descriptor codec and overloaded-field conversion. New generators do not add fields to that descriptor. `MapGenerator.h` is only a small compatibility facade for older callers.
 
@@ -19,8 +19,8 @@ Extract on the second use. When a routine you are about to write already exists 
 `tools/new_map_generator.py <id> "<Display name>"` does the steps below for you and leaves a generator that builds and passes its own validation, ready to be given its own design; read on for what it did and why.
 
 1. Add `ExampleGenerator.h/.cpp` under `src/map/generator/generators/`. Use a named options struct that reads its scalar values from the request by stable option ID.
-2. Return a `GeneratorDefinition` from `exampleDefinition()`. Provide a stable string ID, unique nonnegative numeric ID, translation key, revision, editor-only availability, control list and callback. Numeric IDs are identifiers, never list positions; gaps are supported, and the id lives only in the definition (`GeneratorRegistry::idOf` looks one up by string; the `Method` enum names only the ids the legacy descriptor knows). `hasStartingColonies` defaults to true. Uniform alone disables normal starting-colony validation in the shipped catalog.
-3. Add that definition to the single list in `GeneratorRegistry::builtins()` and its source to `src/SConscript`. Add the display name and control labels to the translation tables using the existing translation workflow.
+2. Return a `GeneratorDefinition` from `exampleDefinition()`. Provide a stable string ID, unique nonnegative numeric ID, translation key, revision, editor-only availability, control list and callback. Numeric IDs are identifiers, never list positions; gaps are supported, and the id lives only in the definition (`GeneratorRegistry::idOf` looks one up by string; the `Method` enum names only the ids the legacy descriptor knows). Give it several catalog `tags` (the last field), which the landscape picker filters by and the registry requires of every playable generator: one `terrain:` (natural, urban, arena, novelty), every `feature:` a player would look for (river, lakes, islands, forest, mountains, stone-walls ...), at least one `style:` (wide-open, tight-building, contested-center, siege ...), and a `fairness:` (exact-symmetry, repeated-wedge, stamped-lattice) only when the homes are fair by construction. Reuse the existing values (`git grep '"feature:'`) rather than inventing near-synonyms; shipped generators carry three to seven. `hasStartingColonies` defaults to true. Uniform alone disables normal starting-colony validation in the shipped catalog. The colony check counts each colony's workers against the lobby's shared "Starting workers" control; warriors and explorers are never counted.
+3. Add that definition to the single list in `GeneratorRegistry::builtins()` and its source to `scons/sources.py`. Add the display name and control labels to the translation tables using the existing translation workflow.
 4. Write the callback as `bool generate(Game&, GenerationContext&)`. Read the immutable request, build into the supplied fresh game, set `context.stage` before operations that may fail, and return false with a useful `context.detail` if the layout cannot be placed. The usual shape is a `design()` that computes the whole layout from the request and the context's streams without touching the map, a `generate()` that stamps it through the shared stages, and a `validateWorld` that calls `design()` again and checks the finished map against it (`designMismatch`, `homePondMissing`, `walkFromFirstColony` in `Pipeline.h`), with `designFailure<design>` as the registry's request check.
 
 Each `GeneratorControl` defines `id`, translation label, minimum, maximum, step, default, group, power-of-two display formatting, whether the value participates in terrain weighting, and its `kind`. The all-zero-weight check reads this metadata, not generator-specific option names. IDs must be unique within a generator and cannot shadow shared controls. For irregular integer domains, supply a sorted, unique `allowedValues` list such as `{4, 8, 16}` with matching minimum and maximum. These are literal stored values; `powerOfTwo` instead formats stored exponents. Use `values()`, `indexOf()`, `valueAt()` and `displayValue()` in consumers, never selection-index arithmetic. Use `GeneratorControl::set()` for UI normalization. The service rejects malformed requests instead of silently changing their settings.
@@ -31,7 +31,7 @@ Declare a choice between named options with `GeneratorControl::choice(id, label,
 
 Declare resource amounts with `GeneratorControl::percentage(id, label, maximum)`: 0 to `maximum` (300 unless given) in steps of 25, defaulting to 100, in the Resources group. The percentage scales the numbers that already decide that resource's amount — densities, clump sizes and counts, noise or fertility thresholds — and 100 must reproduce the unscaled map exactly: use `MapGeneration::scaledCount()` and `scaledShare()` from `shared/Resources.h`, which return their input unchanged at 100, and draw nothing from a random stream at 100 that the unscaled code didn't. Decide deliberately which placements are fairness guarantees (starter kits, reachability backstops, 1:1 guaranteed wheat and wood) and leave those unscaled, so every setting stays playable. Keep existing control ids and meanings; a generator that already exposes explicit amounts (Maze) keeps them.
 
-Check the top of each range as carefully as the bottom. Resources block ground units and buildings alike, so an amount well above the default can wall a colony into a pocket with nowhere to build, or cover the building sites a start search was looking at — a map that still passes `validateWorld` and is still unplayable. `MapGeneration::openCrampedStarts()` clears the resource tiles nearest such a colony, ring by ring, until it can reach 16 tiles where a 4x4 building fits within 24 steps; call it at non-default amounts only (the height-field generators go through `openStartsBuriedByAmounts()`) and re-run `guaranteeStartingResources()` afterwards, since the clearing can take the nearest crop with the wall. If a generator picks its start sites relative to a scaled field, make that search widen rather than fail when the field covers everything it wanted. `MapGeneratorStudy`'s `tuning` line reports the worst colony's build sites and crop distances, which is how to see both problems.
+Check the top of each range as carefully as the bottom. Resources block ground units and buildings alike, so an amount well above the default can wall a colony into a pocket with nowhere to build, or cover the building sites a start search was looking at — a map that still passes `validateWorld` and is still unplayable. `MapGeneration::openCrampedStarts()` clears the resource tiles nearest such a colony, ring by ring, until it can reach 16 tiles where a 4x4 building fits within 24 steps; call it through `reopenCrampedStarts()` at non-default amounts, or through `openStartsBuriedByResources()` at any amount when nothing in the design budgets a colony's room (the height-field and other legacy-core landscapes do). Both re-run `guaranteeStartingResources()` afterwards, since the clearing can take the nearest crop with the wall. If a generator picks its start sites relative to a scaled field, make that search widen rather than fail when the field covers everything it wanted. `MapGeneratorStudy`'s `tuning` line reports the worst colony's build sites and crop distances, which is how to see both problems.
 
 Lobby preferences save a control through its legacy descriptor field when it has one (`wheat`, `lake-size`, ...) and in the preferences' `options` section otherwise, so new controls persist with no further work.
 
@@ -134,6 +134,40 @@ For targeted settings, pass a JSON configuration list with `id`, `method` and a 
 
 Before accepting a generator or structural refactor, inspect fixed-seed previews and poor-performing examples, exercise range endpoints and crowded/rectangular maps, and investigate changes beyond the documented statistical thresholds. Keep generated evidence under ignored `artifacts/` and summarize findings in the pull request. The comparison plotter requires an explicitly supplied baseline study summary.
 
+### No-growth zones are forbidden
+
+A generator may never disable resource growth on any tile. The engine's saved
+`canResourcesGrow` flag is for hand-made scenarios such as the tutorial, not for generated
+maps, and `validateGeneratedWorld` refuses a generated world with even one no-growth tile.
+Contain crops with terrain the player can see: sand caps and aisles (one row of sand corners
+is enough to stop a crop extending), dry ground for scenery that must not spread, or leaving
+the deposit out. [Game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md) has the engine
+detail.
+
+### Hand-drawn shapes come in several designs
+
+When a generator stamps a specific drawn shape (a home module, a fort, a town plot, a garden,
+a pond), give it several designs that meet the same contract, and turns and mirrors where the
+concept allows. Choose one per map from its own named stream and give every colony the same
+design, so the opening stays fair; neutral copies may draw their own. The same stamp on every
+map is too boring, however well it plays. Canals' block kinds, City states' home kinds,
+Hedgerow Country's and Breachable Highlands' centrepieces, and the home designs of
+[Forts](FORTS.md), [Lava shield](LAVA_SHIELD.md) and the [fractal maps](FRACTAL_MAPS.md)
+are working examples. Record the choice with `telemetry.choice`, and verify each design
+pinned on its own against the previous release across sizes and colony counts. The
+map-design skill's shaped-generators reference lists the traps the first sets hit: mirrored
+corners, sand opposite water, closed designs costing reach, and paths paving unheld tiles.
+
+### Maps can't be ugly
+
+A change made for mobility, fairness or a healthier economy must not destroy the aesthetic vision the map was built on. When the fix and the picture disagree, find the version of the fix that keeps the picture; it nearly always exists. Three checks catch most of what previews miss:
+
+- **Look at a played game, not only a preview.** Wood that the engine can spread, and shorelines stamped after the beach pass, look correct in a preview and wrong forty thousand ticks later. Compare wood tiles on a final save with the same count at tick zero (`--save final`, then `--preview-map final.game --json`).
+- **Paint what the feature needs, not what protects it.** A route's protection mask and its visible surface are different things: a causeway's mask can cover its whole stroke while its sand stops at the water.
+- **Draw connections in the map's own language.** A formal map's paths are straight and square; a natural map's are not. A repair that drags a diagonal or a staircase across a square design has changed what the map is.
+
+The engine rules behind the first check — how a deposit extends, and why terrain rather than a no-growth flag has to contain it — are in [game rules for map design](GAME_RULES_FOR_MAP_DESIGN.md).
+
 ## Instrument internal decisions
 
 Add [telemetry](TELEMETRY.md) alongside every generator's design: selected variants, effective
@@ -145,3 +179,15 @@ Guard telemetry-only loops and dynamic strings with `telemetry.enabled()`. Valid
 output equivalence, trace repeatability and generation cost. Keep useful bounded production
 metrics; remove temporary per-candidate/per-tile debug traces before finalizing. Bulk seed
 analysis of internal telemetry and final-map outcomes is part of tuning a generator.
+
+For a commented example of connected field lanes, dry clearable boundaries and
+contained starter farms, see [Hedgerow Country](HEDGEROW_COUNTRY.md).
+
+## Recursive layouts
+
+[Fractal maps and recursive geometry](FRACTAL_MAPS.md) documents reusable halves/thirds,
+rectangular Hilbert paths, travel-benefit crossing selection, and examples for cities,
+reservoirs and folded roads. Keep hierarchy and validate the finished movement graph.
+
+For an example of a city sampled through displaced district coordinates, found starts and
+contained urban gardens, see [The Faulted City](FAULTED_CITY.md).

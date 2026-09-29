@@ -1,3 +1,0 @@
-Settings::load("preferences.txt") : error, can't open file.
-BASELINE missing-file isLoaded=1 (expected false)
-BASELINE 20 selections, original header + Game + thumbnail pipeline ms: 196.438

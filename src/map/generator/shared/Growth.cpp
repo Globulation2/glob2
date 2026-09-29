@@ -1,9 +1,55 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Growth.h"
+#include "Map.h"
 #include "Morphology.h"
+#include "Map.h"
+#include <stdexcept>
 #include "TerrainType.h"
 namespace MapGeneration
 {
+int cropSeedsIn(const Map &map, const std::vector<unsigned char> &region)
+{
+	const Torus t(map);
+	if (region.size() != size_t(t.size()))
+		throw std::invalid_argument("cropSeedsIn requires one mask entry per map tile");
+	int seeds = 0;
+	for (int i = 0; i < t.size(); ++i)
+		if (region[i])
+		{
+			const int type = map.getResource(i % t.w, i / t.w).type;
+			seeds += type == WHEAT || type == WOOD;
+		}
+	return seeds;
+}
+
+Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
+{
+	const Torus t(map);
+	std::vector<unsigned char> seeds(t.size(), 0), grass(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int x = i % t.w, y = i / t.w;
+		const int type = map.getResource(x, y).type;
+		seeds[i] = (type == WHEAT || type == WOOD) && (!fertility || fertility->at(x, y) > 0);
+		// A tile whose growth flag is off never takes a crop, so the envelope stops at it as
+		// the engine does. No generated map sets the flag; loaded scenario maps may.
+		grass[i] = map.isGrass(x, y) && map.canResourcesGrow(x, y);
+	}
+	// Reuse the same toroidal eight-neighbour topology as the other region operations.
+	auto result = floodFrom(t, seeds, grass);
+	if (fertility)
+		for (int i = 0; i < t.size(); ++i)
+		{
+			const int type = map.getResource(i % t.w, i / t.w).type;
+			if ((type == WHEAT || type == WOOD) && result.steps[i] < 0)
+			{
+				result.steps[i] = 0;
+				result.visited.push_back(i);
+			}
+		}
+	return result;
+}
+
 Fertility::Field cropGrowthField(const TerrainSketch &sketch, const Torus &t)
 {
 	const std::vector<unsigned char> water = pureTiles(sketch, t, WATER);
@@ -52,5 +98,57 @@ int drainWithin(TerrainSketch &sketch, const std::vector<unsigned char> &zone)
 			++drained;
 		}
 	return drained;
+}
+
+} // namespace MapGeneration
+
+namespace MapGeneration
+{
+std::uint32_t meanFertilityAround(const Fertility::Field &field, const Torus &t, int site,
+								  int radius)
+{
+	const int sx = site % t.w, sy = site / t.w;
+	std::uint64_t sum = 0;
+	for (int dy = -radius; dy <= radius; ++dy)
+		for (int dx = -radius; dx <= radius; ++dx)
+			sum += field.at(t.x(sx + dx), t.y(sy + dy));
+	const std::uint64_t tiles = std::uint64_t(2 * radius + 1) * (2 * radius + 1);
+	return std::uint32_t(sum / tiles);
+}
+
+std::vector<std::uint32_t> meanFertilityField(const Fertility::Field &field, const Torus &t,
+											  int radius)
+{
+	const int n = t.size();
+	const int span = 2 * radius + 1;
+	// Sums along each row over the window, then along each column over those sums.
+	std::vector<std::uint64_t> rows(size_t(n), 0);
+	for (int y = 0; y < t.h; ++y)
+	{
+		std::uint64_t sum = 0;
+		for (int dx = -radius; dx <= radius; ++dx)
+			sum += field.at(t.x(dx), y);
+		for (int x = 0; x < t.w; ++x)
+		{
+			rows[size_t(y * t.w + x)] = sum;
+			sum += field.at(t.x(x + radius + 1), y);
+			sum -= field.at(t.x(x - radius), y);
+		}
+	}
+	std::vector<std::uint32_t> means(size_t(n), 0);
+	const std::uint64_t tiles = std::uint64_t(span) * span;
+	for (int x = 0; x < t.w; ++x)
+	{
+		std::uint64_t sum = 0;
+		for (int dy = -radius; dy <= radius; ++dy)
+			sum += rows[size_t(t.y(dy) * t.w + x)];
+		for (int y = 0; y < t.h; ++y)
+		{
+			means[size_t(y * t.w + x)] = std::uint32_t(sum / tiles);
+			sum += rows[size_t(t.y(y + radius + 1) * t.w + x)];
+			sum -= rows[size_t(t.y(y - radius) * t.w + x)];
+		}
+	}
+	return means;
 }
 } // namespace MapGeneration

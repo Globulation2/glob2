@@ -15,7 +15,7 @@
 
 // version related stuff
 #ifdef HAVE_CONFIG_H
-	#include <config.h>
+	#include <glob2/BuildConfig.h>
 #endif
 #ifndef PACKAGE_VERSION
 	#define PACKAGE_VERSION "System Specific - not using autoconf"

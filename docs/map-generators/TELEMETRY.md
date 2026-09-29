@@ -38,7 +38,7 @@ Use a stable generator/helper namespace and a descriptive operation name. Includ
 
 ## What is instrumented
 
-Every built-in generator emits its own observations. Examples include City states' effective home/heart kinds and islet counts; Canals' block-kind histogram and wall/moat fallbacks; Anthill's chambers and room shortfalls; the height-field modes' fitted parameters; Watershed's start-search relaxation; and optional island, lake, farm and crossing shortfalls across the catalog. Uniform reports its intentionally empty starting-colony configuration.
+Every built-in generator emits its own observations. Examples include City states' effective home/heart kinds and islet counts; Canals' block-kind histogram and wall/moat fallbacks; Anthill's chambers and room shortfalls; the height-field modes' fitted parameters; Watershed's start-search relaxation; Braided river's clamped channel count, crossings found and riffles by kind (forced, tree, loop), and its short-stretch and relaxed-home-distance fallbacks; and optional island, lake, farm and crossing shortfalls across the catalog. Uniform reports its intentionally empty starting-colony configuration.
 
 Shared helpers report reusable decisions:
 
@@ -98,3 +98,36 @@ Temporary debug instrumentation is useful for one hypothesis: every rejected poi
 ## Verification
 
 `MapGeneratorDefaultsTest` exercises typed values, bounds, disabled collection and partial failure traces. `test/test_map_report.py` verifies JSON types/escaping, failure output, malformed request serialization, schema rejection, no map-byte changes when JSON is requested, and repeatability. `MapGeneratorGoldenTest <profile> --telemetry` compares enabled/disabled full serialized worlds and RNG state for all generators, checks repeatable traces, and prints separate generation timings. Timing differences are reported rather than asserted against a flaky wall-clock threshold. Existing golden rows still protect pre-change maps; telemetry-only changes should not require generator revision bumps.
+
+## Fractal generator records
+
+`fractal.homes.*` reports bounded-search attempts, candidate/fitted counts, optional spare modules,
+and the site omitted after finished-world scoring. Search relaxation is always zero;
+Hilbert emits a search batch for every attempted uniform order. `fractal.home.*` subjects are stable
+home-site indices, not team indices; `home.team` records the later random deal. Frontages
+count resource-adjacent walking edges (a deposit may have several); renewable frontages
+also require positive exact engine growth probability. Expansion anchors overlap and are
+scoring inputs; final validation separately checks a nonoverlapping building arrangement.
+Contact records repeat by source-site subject, with targets in site-index order. Walking
+and swimming use the engine's corresponding hard-space predicates.
+
+`fractal.crossing.*` subjects are candidate IDs; benefits are graph-distance reductions
+at selection time. `fractal.crossings.*` counts are per selector invocation: Hilbert emits
+one mandatory batch followed by an optional batch. Sum counts across batches within a
+map; do not treat their mean as the map's bridge count. Gardens counts opposing pairs.
+`local-shortfall` and `major-shortfall` are unspent optional budgets, not silently omitted
+mandatory connectivity. `sierpinski.depth.*`, `sierpinski.regions.*`, `hilbert.depth.*`, and
+`hilbert.orientation` explain achieved geometry. `*.bank-farms.proposed/placed` exposes
+actual farm omissions. `sierpinski.crossings.square-axes` counts axes (0–2) with at least
+one legal square causeway; `angled-fallback` is 1 only when that falls short of the pairs
+requested and the angled search ran; `blocked-approaches` and `legal-candidates` count its
+proposals. `hilbert.crossings.extra-samples` is 1 when no midpoint court fitted and interior
+fractions were tried.
+
+The shared finishing stages report what they laid: `fractal.beds.*` (pools placed, water and
+crop tiles), `fractal.paths.*` (features to join, path edges drawn, sand tiles laid, and
+`unjoined-groups`, the number of path-tree components left over after crossing landings are
+linked), `fractal.shore-wheat.*` (spots and planted tiles), `fractal.ambient.deposit-tiles`
+(dry-ground copse tiles) and `fractal.quarries.*` (quarries placed, stone tiles, and the
+nearest quarry-to-home Chebyshev distance, emitted only when at least one quarry was placed).
+No telemetry-only scans or random draws are used.

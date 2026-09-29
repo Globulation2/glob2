@@ -5,16 +5,18 @@
 #include "GUIText.h"
 #include "StringTable.h"
 #include "Toolkit.h"
+#include <GUIButton.h>
 
 using namespace GAGCore;
 using namespace GAGGUI;
 
-YOGClientGameConnectionDialog::YOGClientGameConnectionDialog(GraphicContext *parentCtx, std::shared_ptr<MultiplayerGame> game)
-	: OverlayScreen(parentCtx, 200, 100), parentCtx(parentCtx), game(game)
+YOGClientGameConnectionDialog::YOGClientGameConnectionDialog(std::shared_ptr<MultiplayerGame> game)
+	: game(game)
 {
-	addWidget(new Text(0, 20, ALIGN_FILL, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[connecting to game]")));
+	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[connecting to game]")));
+	addWidget(new TextButton(240, 280, 160, 35, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
+		Toolkit::getStringTable()->getString("[Cancel]"), Cancelled, 27));
 	game->addEventListener(this);
-	dispatchInit();
 }
 
 
@@ -26,13 +28,7 @@ YOGClientGameConnectionDialog::~YOGClientGameConnectionDialog()
 
 void YOGClientGameConnectionDialog::onAction(Widget *source, Action action, int par1, int par2)
 {
-
-}
-
-
-void YOGClientGameConnectionDialog::execute()
-{
-	executeModal(parentCtx);
+	if(action == BUTTON_RELEASED || action == BUTTON_SHORTCUT) endExecute(Cancelled);
 }
 
 
@@ -46,7 +42,7 @@ void YOGClientGameConnectionDialog::updateGame()
 {
 	game->update();
 	if(game->isFullyInGame())
-		endValue = Success;
+		endExecute(Success);
 }
 
 
@@ -56,10 +52,10 @@ void YOGClientGameConnectionDialog::handleMultiplayerGameEvent(std::shared_ptr<M
 	Uint8 type = event->getEventType();
 	if(type == MGEGameRefused)
 	{
-		endValue = Failed;
+		endExecute(Failed);
 	}
 	else if(type == MGEServerDisconnected)
 	{
-		endValue = Failed;
+		endExecute(Failed);
 	}
 }

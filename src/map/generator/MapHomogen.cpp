@@ -14,10 +14,19 @@
 ///generates a map that is of one terrain type only
 void Map::makeHomogenMap(TerrainType terrainType)
 {
-	for (int y=0; y<h; y++)
-		for (int x=0; x<w; x++)
-			undermap[y*w+x]=terrainType;
-	regenerateMap(0, 0, w, h);
+    makeHomogenMapTask(terrainType).run();
+}
+GAGCore::CooperativeTask Map::makeHomogenMapTask(TerrainType terrainType)
+{
+    for (int y = 0; y < h; ++y) {
+        for (int x = 0; x < w; ++x) undermap[y*w+x] = terrainType;
+        if (y % 8 == 0) co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
+    }
+    for (int x = 0; x < w; ++x) {
+        regenerateMap(x, 0, 1, h);
+        if (x % 8 == 0) co_await GAGCore::CooperativeTask::checkpoint();
+    }
+    co_return true;
 }
 
 ///cares for the sand so water is never next to grass

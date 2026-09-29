@@ -976,7 +976,8 @@ SymmetricArenaOptions::SymmetricArenaOptions(const GenerationRequest &r)
 
 GeneratorDefinition symmetricArenaDefinition()
 {
-	return {"symmetric-arena",
+	return {
+			"symmetric-arena",
 			15,
 			"Symmetric arena",
 			1,
@@ -1007,5 +1008,6 @@ GeneratorDefinition symmetricArenaDefinition()
 			generate,
 			true,
 			validate,
-			validateWorld};
+			validateWorld,
+			{"terrain:arena", "feature:orchard", "style:contested-center", "fairness:exact-symmetry"}};
 }

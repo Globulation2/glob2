@@ -2,18 +2,20 @@
 #pragma once
 
 #include <string>
+#include <limits>
 
 namespace GAGCore
 {
 	class StreamBackend;
 
-	//! Gzip-compresses input at level. The gzip header carries no timestamp or OS
-	//! byte, so the same input and level always produce identical bytes on every
-	//! platform. Returns false (leaving output unspecified) on a zlib failure.
+	//! Gzip-compresses input at level with zero timestamp and OS=unknown.
+	//! Output is deterministic for the same zlib encoder and input.
+	//! Returns false (leaving output unspecified) on a zlib failure.
 	bool gzipCompress(const std::string& input, int level, std::string& output);
 	//! Inflates a gzip stream produced by gzipCompress (or any conforming gzip
 	//! encoder). Returns false for corrupt or truncated input.
-	bool gzipDecompress(const std::string& input, std::string& output);
+	bool gzipDecompress(const std::string& input, std::string& output,
+		size_t maxOutput = std::numeric_limits<size_t>::max());
 
 	//! Atomically replaces the literal filesystem path `path` (no FileManager
 	//! directory search) with contents gzip-compressed at level. Mirrors

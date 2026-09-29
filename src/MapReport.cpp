@@ -9,6 +9,8 @@
 #include "Grid.h"
 #include "Room.h"
 #include "Topology.h"
+#include "FairnessModel.h"
+#include <chrono>
 #include "RessourceType.h"
 #include "Unit.h"
 #include "Building.h"
@@ -208,36 +210,31 @@ J components(const Map &map, const std::vector<unsigned char> &mask, GridNeighbo
 		 {"largest_component_percent_of_passable", total ? J(100.0 * largest / total) : J()},
 		 {"component_sizes", distribution(counts)}});
 }
-J weightsJson(const StartQualityWeights &w)
-{
-	return J::object({{"wheat", w.wheat},
-					  {"wood", w.wood},
-					  {"fertility", w.fertility},
-					  {"depth", w.depth},
-					  {"room", w.room},
-					  {"isolation", w.isolation}});
-}
 J scaleJson(const StartQualityScale &s)
 {
-	return J::object({{"catchment_steps", s.catchmentSteps},
-					  {"wheat_reference", s.wheatReference},
-					  {"wood_reference", s.woodReference},
-					  {"fertility_reference", s.fertilityReference},
-					  {"depth_reference", s.depthReference},
-					  {"room_reference", s.roomReference},
-					  {"isolation_reference", s.isolationReference},
-					  {"threat_radius", s.threatRadius},
-					  {"crowd_penalty", s.crowdPenalty},
-					  {"fairness_exponent", s.fairnessExponent}});
+	return J::object({{"catchment_steps", s.catchmentSteps}, {"threat_radius", s.threatRadius}});
 }
-J qualityJson(const StartQualityReport &report, const StartQualityWeights &weights,
-			  const StartQualityScale &scale)
+J modelJson()
+{
+	std::vector<J> terms;
+	for (int i = 0; i < FAIRNESS_MODEL_FEATURE_COUNT; ++i)
+	{
+		const auto &term = fairnessModelTerms()[i];
+		terms.push_back(J::object({{"measurement", term.name},
+								   {"transform", term.transform},
+								   {"label", term.label},
+								   {"coefficient", term.coefficient}}));
+	}
+	return J::object({{"intercept", FAIRNESS_MODEL_INTERCEPT},
+					  {"games", FAIRNESS_MODEL_GAMES},
+					  {"terms", J::array(terms)}});
+}
+J qualityJson(const StartQualityReport &report, const StartQualityScale &scale)
 {
 	std::vector<J> colonies;
-	std::vector<double> totals;
+	std::vector<double> fitnesses, probabilities;
 	std::vector<double> localRoom, localFertile, localExclusive, nearestRival, wheatSupply,
 		woodSupply, exclusiveWheat, exclusiveWood;
-	std::array<std::vector<double>, 6> factorValues;
 	for (size_t i = 0; i < report.colonies.size(); ++i)
 	{
 		const auto &c = report.colonies[i];
@@ -298,17 +295,10 @@ J qualityJson(const StartQualityReport &report, const StartQualityWeights &weigh
 										  {"reachable_rivals", c.reachableRivals},
 										  {"farthest_rival_distance", distance(c.farthestRivalDistance)},
 										  {"rivals_within_threat", c.rivalsWithinThreat}})},
-					   {"normalized", J::object({{"wheat", c.wheat},
-												 {"wood", c.wood},
-												 {"fertility", c.fertility},
-												 {"depth", c.depth},
-												 {"room", c.room},
-												 {"isolation", c.isolation}})},
-					   {"total", c.total}}));
-		totals.push_back(c.total);
-		const double factors[] = {c.wheat, c.wood, c.fertility, c.depth, c.room, c.isolation};
-		for (int factor = 0; factor < 6; ++factor)
-			factorValues[factor].push_back(factors[factor]);
+					   {"fitness", c.fitness},
+					   {"win_probability", c.winProbability}}));
+		fitnesses.push_back(c.fitness);
+		probabilities.push_back(c.winProbability);
 		localRoom.push_back(c.catchmentBuildable);
 		localFertile.push_back(c.catchmentFertileGrass);
 		localExclusive.push_back(c.exclusiveCatchmentTiles);
@@ -323,19 +313,15 @@ J qualityJson(const StartQualityReport &report, const StartQualityWeights &weigh
 		{{"measured", report.measured},
 		 {"unavailable_reason",
 		  report.measured ? J() : J("Every colony needs at least one ground-unit source tile")},
-		 {"weights", weightsJson(weights)},
+		 {"model", modelJson()},
 		 {"scale", scaleJson(scale)},
-		 {"worst", report.measured ? J(report.worst) : J()},
-		 {"best", report.measured ? J(report.best) : J()},
+		 {"worst_fitness", report.measured ? J(report.worstFitness) : J()},
+		 {"best_fitness", report.measured ? J(report.bestFitness) : J()},
+		 {"mean_fitness", report.measured ? J(report.meanFitness) : J()},
 		 {"fairness", report.measured ? J(report.fairness) : J()},
 		 {"score", report.measured ? J(report.score) : J()},
-		 {"colony_totals", distribution(totals)},
-		 {"normalized_spreads", J::object({{"wheat", distribution(factorValues[0])},
-									  {"wood", distribution(factorValues[1])},
-									  {"fertility", distribution(factorValues[2])},
-									  {"depth", distribution(factorValues[3])},
-									  {"room", distribution(factorValues[4])},
-									  {"isolation", distribution(factorValues[5])}})},
+		 {"colony_fitness", distribution(fitnesses)},
+		 {"colony_win_probability", distribution(probabilities)},
 		 {"raw_spreads", J::object({{"catchment_buildable_tiles", distribution(localRoom)},
 							   {"catchment_fertile_grass_tiles", distribution(localFertile)},
 							   {"exclusive_catchment_tiles", distribution(localExclusive)},
@@ -466,7 +452,7 @@ J generationJson(const GenerationRequest *request, const GenerationResult *resul
 							: J()},
 		 {"selection_quality",
 		  result && *result && definition
-			  ? qualityJson(result->quality, definition->qualityWeights, definition->qualityScale)
+			  ? qualityJson(result->quality, {})
 			  : J()}});
 }
 
@@ -634,8 +620,18 @@ J movementReport(const Game &game, const StepCosts &costs,
 } // namespace
 
 std::string describeMap(Game &game, const GenerationRequest *request,
-						const GenerationResult *generation)
+						const GenerationResult *generation, MapReportTimings *timings)
 {
+	using Clock = std::chrono::steady_clock;
+	auto mark = Clock::now();
+	// Adds the time since the last lap to one stage, when anyone is counting.
+	const auto lap = [&](double MapReportTimings::*stage)
+	{
+		const auto now = Clock::now();
+		if (timings)
+			timings->*stage += std::chrono::duration<double>(now - mark).count();
+		mark = now;
+	};
 	const Map &map = game.map;
 	const Torus t(map);
 	std::array<int, 6> terrain{};
@@ -686,6 +682,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 			fertileGrass += fertility.values()[p] > 0;
 		}
 	}
+	lap(&MapReportTimings::tileScan);
 	std::vector<std::pair<std::string, J>> terrainJson, underlyingJson, resources;
 	const char *terrainNames[] = {
 		"grass", "grass_sand_border", "sand", "sand_water_border", "water", "unknown"};
@@ -712,6 +709,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 						{"amount_per_deposit", distribution(resourceAmountValues[r])},
 						{"patches", components(map, mask, GridNeighbors::Eight)}})});
 	}
+	lap(&MapReportTimings::resourcePatches);
 	const auto buildable = buildableTiles(map);
 	const auto anchors = buildAnchors(t, buildable);
 	int buildableCount = std::accumulate(buildable.begin(), buildable.end(), 0);
@@ -752,8 +750,18 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		controllers.push_back(
 			J::object({{"slot", i}, {"team", p.teamNumber}, {"type", int(p.type)}}));
 	}
+	const J landRegions = components(map, land, GridNeighbors::Cardinal);
+	const J waterRegions = components(map, water, GridNeighbors::Cardinal);
+	lap(&MapReportTimings::space);
 	const auto quality = canonicalQuality(game);
-	return pretty(
+	lap(&MapReportTimings::startQuality);
+	J walking = movementReport(game, StepCosts::walking(), anchors);
+	lap(&MapReportTimings::walking);
+	J swimming = movementReport(game, StepCosts::swimming(), anchors);
+	lap(&MapReportTimings::swimming);
+	J clearing = movementReport(game, StepCosts::chopping(), anchors);
+	lap(&MapReportTimings::clearing);
+	const std::string text = pretty(
 			   J::object(
 				   {{"schema_version", 2},
 					{"report_type", "map"},
@@ -791,13 +799,12 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 						   "Toroidal; terrain land/water are four-connected, resource "
 						   "patches and movement are eight-connected"},
 						  {"canonical_quality",
-						   "Production scoreStarts with common default weights/scales, independent "
-						   "of "
-						   "generator; uses its own ground-unit passability rule"},
+						   "Production scoreStarts with the fitted fairness model, identical for "
+						   "every generator; uses its own ground-unit passability rule"},
 						  {"quality_formula",
-						   "total = weighted mean of normalized factors, forced to "
-						   "0 if wheat/wood unreachable; fairness = worst/best or 0 "
-						   "when best=0; score = worst * fairness^exponent"},
+						   "fitness = model.intercept + sum of coefficient * transform(measurement) "
+						   "over model.terms; win_probability = softmax(fitness) over the map's "
+						   "colonies; fairness = score = 1 - Gini(win_probability) * n/(n-1)"},
 						  {"percentiles",
 						   "Linear interpolation at p*(count-1); stddev is population "
 						   "standard deviation"}})},
@@ -812,8 +819,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 						  {"buildable", coverage(buildableCount, t.size())},
 						  {"build_sites_4x4", sitesCount},
 						  {"growth_disabled", coverage(noGrowth, t.size())},
-						  {"land_regions", components(map, land, GridNeighbors::Cardinal)},
-						  {"water_regions", components(map, water, GridNeighbors::Cardinal)}})},
+						  {"land_regions", landRegions},
+						  {"water_regions", waterRegions}})},
 					{"fertility",
 					 J::object({{"scale", Fertility::kScale},
 								{"all_tiles", distribution(fertilityAll)},
@@ -821,16 +828,16 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 								{"potential_grass_ignoring_deposit_reachability",
 								 distribution(potentialGrass)},
 								{"positive_grass", coverage(fertileGrass, terrain[0])}})},
-					{"canonical_quality", qualityJson(quality, {}, {})},
+					{"canonical_quality", qualityJson(quality, {})},
 					{"start_position_euclidean_distances", J::array(geometry)},
 					{"movement",
-					 J::object({{"walking", movementReport(game, StepCosts::walking(), anchors)},
-								{"walking_and_swimming",
-								 movementReport(game, StepCosts::swimming(), anchors)},
-								{"walking_and_clearing",
-								 movementReport(game, StepCosts::chopping(), anchors)}})}})
+					 J::object({{"walking", walking},
+								{"walking_and_swimming", swimming},
+								{"walking_and_clearing", clearing}})}})
 				   .text) +
 		   "\n";
+	lap(&MapReportTimings::serialise);
+	return text;
 }
 
 std::string describeGenerationFailure(const GenerationRequest &request,

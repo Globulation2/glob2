@@ -9,20 +9,22 @@
 #include <string>
 #include <valarray>
 #include <SDL_image.h>
+#ifdef GLOB2_WEBGL2
+#include <set>
+#endif
 
 namespace GAGCore
 {
+#ifdef GLOB2_WEBGL2
+    namespace { std::set<DrawableSurface*> gpuSurfaces; }
+#endif
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
-		SDL_Surface *dest;
-		if (_gc->sdlsurface->format->BitsPerPixel == 32)
-		{
-			dest = SDL_ConvertSurfaceFormat(source, SDL_PIXELFORMAT_BGRA32, 0);
-		}
-		else
-		{
-			dest = SDL_ConvertSurface(source, &_glFormat, 0);
-		}
+		// Color::pack/unpack and software drawing use _glFormat. A 32-bit
+		// display is not necessarily BGRA (the browser uses RGBA), so loaded
+		// and cloned sprites must use the same format as generated surfaces.
+		// WebGL converts to RGBA separately at the texture upload boundary.
+		SDL_Surface *dest = SDL_ConvertSurface(source, &_glFormat, 0);
 		assert(dest);
 		return dest;
 	}
@@ -72,6 +74,8 @@ namespace GAGCore
 
 	DrawableSurface::~DrawableSurface(void)
 	{
+		if (_gc && _gc->renderer) _gc->renderer->forget(this);
+        if (_gc && _gc->softwareRasterizer) _gc->softwareRasterizer->forget(this);
 		SDL_FreeSurface(sdlsurface);
 		freeGPUTexture();
 	}
@@ -90,10 +94,13 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (textureInfo)
 			return;
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
 			glState.allocatedTextureCount++;
+#ifdef GLOB2_WEBGL2
+            gpuSurfaces.insert(this);
+#endif
 			initTextureSize();
 		}
 		#endif
@@ -101,8 +108,9 @@ namespace GAGCore
 
 	void DrawableSurface::initTextureSize(void)
 	{
+        if (!texture || textureInfo) return;
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			// only power of two textures are supported
 			if (!glState.isTextureSRectangle)
@@ -116,7 +124,7 @@ namespace GAGCore
 				int h = getMinPowerOfTwo(sdlsurface->h);
 				glState.allocatedTextureBytes-=gpuBytes;gpuBytes=w*h*4;glState.allocatedTextureBytes+=gpuBytes;
 				std::valarray<char> zeroBuffer((char)0, w * h * 4);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
 
 				texMultX = 1.0f / static_cast<float>(w);
 				texMultY = 1.0f / static_cast<float>(h);
@@ -137,13 +145,19 @@ namespace GAGCore
 		{
 			return;
 		}
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glState.setTexture(texture);
 
 			void *pixelsPtr;
 			GLenum pixelFormat;
-			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+			#if defined(GLOB2_WEBGL2)
+            std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> rgba(
+                SDL_ConvertSurfaceFormat(sdlsurface, SDL_PIXELFORMAT_RGBA32, 0), SDL_FreeSurface);
+            if (!rgba) return;
+            pixelsPtr = rgba->pixels;
+            pixelFormat = GL_RGBA;
+            #elif SDL_BYTEORDER == SDL_BIG_ENDIAN
 			std::valarray<Uint32> tempPixels(sdlsurface->w * sdlsurface->h);
 			Uint32 *sourcePtr = static_cast<Uint32 *>(sdlsurface->pixels);
 			for (size_t i=0; i<tempPixels.size(); i++)
@@ -209,6 +223,10 @@ namespace GAGCore
 
 	void DrawableSurface::freeGPUTexture(void)
 	{
+#ifdef GLOB2_WEBGL2
+        gpuSurfaces.erase(this);
+#endif
+        if (!texture) return;
 		#ifdef HAVE_OPENGL
 		if (_gc && texture && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
@@ -338,3 +356,39 @@ namespace GAGCore
 		dirty = true;
 	}
 }
+
+#ifdef GLOB2_WEBGL2
+namespace GAGCore {
+void GraphicContext::restoreBrowserContext()
+{
+    if (!_gc || !(_gc->optionFlags & USEGPU)) return;
+    // GL objects owned outside libgag, such as the torus overview's, belong to
+    // the lost context; a new generation tells them to recreate, not reuse.
+    ++_gc->glContextGeneration;
+    glState.resetCache();
+    glDisable(GL_BLEND);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_TEXTURE_2D);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, _gc->getW(), _gc->getH(), 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    _gc->applyGLViewport();
+    // CPU surfaces, including sprite atlases, remain the source of truth.
+    // Rebuild GPU objects without touching game, camera, or UI state.
+    glState.allocatedTextureCount = 0;
+    for (auto* surface : gpuSurfaces) {
+        glDeleteTextures(1, &surface->texture);
+        surface->texture = 0;
+        if (surface->textureInfo) continue;
+        glGenTextures(1, &surface->texture);
+        ++glState.allocatedTextureCount;
+        surface->initTextureSize();
+        surface->uploadToTexture();
+    }
+    _gc->setClipRect();
+}
+}
+#endif

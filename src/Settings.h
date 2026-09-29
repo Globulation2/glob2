@@ -14,6 +14,7 @@ class Settings
 public:
 	Settings();
 	void load(const std::string filename="preferences.txt");
+	// Checked atomic local replacement; callers separately await host persistence.
 	bool save(const std::string filename="preferences.txt");
 
 	/**
@@ -74,6 +75,8 @@ public:
 	/// Simulation speed preset. Zero is the original 25 ticks/second;
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;
+    std::string interfacePresentation = "automatic";
+    int mobileDialogTextPercent; // Local UI preference; never part of saves/orders.
 
 	enum
 	{
@@ -115,4 +118,3 @@ public:
 
 //Version 1 - Resets default units assigned and keyboard shortcuts
 #define SETTINGS_VERSION 1
-

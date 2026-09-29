@@ -1,3 +1,9 @@
+[AI strategy]
+Chiến thuật AI
+[AIMaxima-Summary]
+Cân bằng tăng trưởng bền vững và huấn luyện, rồi tập hợp quân thành từng đợt.
+[AIMaxima-Profile]
+Chiến lược chính: Xem thức ăn, công nhân, sinh sản, huấn luyện, xây dựng và chiến đấu là các nhu cầu cạnh tranh. Định cỡ quân đội một phần theo sức mạnh địch ước tính, rồi cố đưa quân đó tới nơi hiệu quả.\n\nKinh tế và phát triển: Phân bổ sinh sản theo thức ăn và lao động, giữ cơ hội rảnh để huấn luyện, dừng thêm công nhân dư khi cần sản xuất quân sự. Mở rộng năng lực huấn luyện và tránh cho quá nhiều hạ tầng ngừng hoạt động để nâng cấp.\n\nTrinh sát và quyết định: Ước tính quân địch từ đơn vị nhìn thấy và ký ức quan sát bằng mô hình khớp dữ liệu. Mục tiêu phụ thuộc giá trị, khoảng cách, tháp, công nhân sơ hở và tính liên tục của cuộc đánh. Nhiệm vụ trái cây hỗ trợ đa dạng thức ăn và thu hút đổi phe.\n\nTấn công và phòng thủ: Giữ chiến binh cho huấn luyện và phòng thủ, rồi tập hợp lực lượng bộ binh đủ điều kiện gần hạ tầng thức ăn bên mình trước khi tung các đợt đánh. Dùng phản ứng phòng thủ cục bộ và đánh giá các lối tiếp cận thuộc địa.\n\nKhi tấn công đình trệ: Sau bốn lần liên tiếp không đưa được đợt quân tới nơi, chuyển sang cờ tấn công được tiếp viện liên tục. Tấn công vượt nước cũng có thể dùng tiếp viện liên tục. Cách dự phòng này không giải quyết mọi chỗ tắc trước khi việc tập kết hình thành.\n\nSo với các AI khác: Kết hợp chặt chẽ hơn thức ăn, huấn luyện, tình báo và triển khai. Cabino nhấn mạnh nhiều cuộc đánh công trình; Maxima nhấn mạnh ước tính nhu cầu và đưa lực lượng đã tập kết tới nơi.\n\nĐiểm mạnh và yếu: Duy trì tăng trưởng và bổ sung quân trong khi thích nghi với áp lực thức ăn và đe dọa quan sát được. Cần thức ăn, năng lực huấn luyện và chỗ tập kết thoáng; ùn tắc và đường dài có thể cản việc đưa quân.\n\nCách đối phó nên thử: Tranh chấp lúa mì, quán trọ và doanh trại sơ hở trước khi các đợt quân tập kết. Giữ quân phòng thủ được tiếp tế ở cùng nhau và phá tuyến tiếp viện. Dự liệu áp lực lặp lại sau đợt đầu.\n\nTrinh sát: Ước tính sức mạnh dùng quan sát và lịch sử quan sát, không dùng tổng số quân địch bị ẩn.
 [%0 has left the game]
 %0 đã rời trận đấu.
 [%0 level %1]
@@ -51,19 +57,19 @@ trí tuệ nhân tạo
 [ai]
 trí tuệ nhân tạo
 [AICastor-Description]
-Castor chơi thận trọng và rất giỏi trên các bản đồ ít tài nguyên. Độ khó trung bình.
+Xây dựng và huấn luyện, điều chỉnh tăng trưởng theo nguồn lương thực.
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex mở rộng tới những cánh đồng lúa mì mới và gửi các nhóm chiến binh vào trận chiến, được hỗ trợ bởi các nhà trọ và bệnh viện gần tiền tuyến. Độ khó trung bình. Thực nghiệm.
+Tập hợp từng đợt chiến binh với hỗ trợ lương thực và chữa trị.
 [AIMaxima-Description]
-Maxima phát triển một thuộc địa được cung cấp đủ lương thực, liên tục trinh sát và tấn công không ngừng bằng mọi chiến binh có thể điều động. Độ khó cao.
+Trinh sát, tăng nguồn lương thực và tập hợp từng đợt chiến binh.
 [AIMaxima]
 Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
-Nicowar chơi quyết liệt, phát triển nhanh và tung những đạo quân lớn vào đối thủ. Độ khó cao.
+Tăng dân số, huấn luyện chiến binh rồi tấn công.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -71,19 +77,19 @@ Không - Không thực hiện hành động nào.
 [AINone]
 Không
 [AINumbi-Description]
-Numbi - Mở rộng vừa phải và nhanh chóng. Độ khó thấp.
+Đối thủ khá dễ chịu nhưng vẫn mở rộng và tấn công.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - Không tấn công, nhưng xây căn cứ khổng lồ và ra sức thu phục đơn vị. Độ khó thấp.
+Mở rộng và lôi kéo đơn vị đổi phe mà không tạo chiến binh.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - Tấn công nhanh và dữ dội, thường khiến người phòng thủ phải chống đỡ hết sức. Độ khó trung bình.
+Tấn công nhanh để thử thách phòng thủ đầu trận của bạn.
 [AIWarrush]
 Warrush
 [AICabino-Description]
-Cabino điều hành phòng thủ, tấn công và xây dựng như những bộ phận độc lập nhưng cùng hướng đến một kế hoạch: phát triển nhanh và tung những đạo quân lớn vào đối thủ. Độ khó cao.
+Giỏi xây dựng và triển khai lực lượng tấn công đã huấn luyện.
 [AICabino]
 Cabino
 [Alga]
@@ -1237,37 +1243,37 @@ Còn làm việc: %0
 [AI strategy & counterplay]
 Chiến lược và phản đòn AI
 [AICastor-Profile]
-Chiến lược: Mở rộng một cách thận trọng và hoạt động tốt trên các bản đồ có ít tài nguyên.\n\nĐiểm mạnh: Việc mở rộng hạn chế có hiệu quả trong các trò chơi có nguồn tài nguyên khan hiếm.\n\nGợi ý đối phó: Chiếm lãnh thổ sớm. Đừng cho rằng việc thiếu tài nguyên sẽ làm suy yếu AI này.
+Chiến lược chính: Đầu tư vào thuộc địa có năng suất và công nghệ trước khi mở các đợt tấn công lớn. Các dự án xây dựng theo ưu tiên phát triển khu định cư; mức phát triển, hạ tầng quân sự và thời gian làm tăng mức sẵn sàng chiến tranh.\n\nKinh tế và phát triển: Nghiên cứu độ ẩm, tăng trưởng lúa mì, chướng ngại và phạm vi tiếp cận của công nhân. Quản lý mở rộng lương thực, nâng cấp và phòng thủ song song với sản xuất.\n\nTấn công và phòng thủ: Ước tính sức tấn công của chiến binh khỏe mạnh và ra đòn khi đạt điều kiện về sức mạnh hoặc thời gian. Ưu tiên công trình đã thấy và có thể tiếp cận, nhất là doanh trại và trường học, rồi chuyển cờ tấn công tới mục tiêu giá trị.\n\nSo với các AI khác: Cân nhắc địa hình và giá trị mục tiêu kỹ hơn Numbi. Kiên nhẫn hơn Warrush, đổi áp lực sớm lấy căn cứ phát triển và quân mạnh hơn.\n\nĐiểm mạnh và yếu: Quy hoạch hạ tầng rộng cùng mục tiêu quân sự giá trị giúp các đòn đánh có mục đích. Chuẩn bị mất thời gian, cho phép đối thủ nhanh tranh tài nguyên trước khi chủ lực sẵn sàng.\n\nCách đối phó nên thử: Tranh chấp việc mở rộng từ sớm. Bảo vệ doanh trại và trường học bên cạnh lương thực; giữ lực lượng dự bị khi đánh khu định cư đã phát triển.
 [AICastor-Summary]
-Mở rộng thận trọng; hoạt động tốt với nguồn lực khan hiếm.
+Phát triển thuộc địa kiên cố rồi đánh vào công trình quân sự và khoa học.
 [AICortex-Profile]
-Chiến lược: Quản lý nguồn cung cấp lương thực, mở rộng sang các cánh đồng lúa mì mới và tập hợp các nhóm chiến binh liên tiếp. Các nhà trọ và bệnh viện gần tiền tuyến hỗ trợ các cuộc tấn công ở xa căn cứ.\n\nĐiểm mạnh: Cùng nhau gửi quân tiếp viện, duy trì áp lực quân sự và ứng phó với tình trạng thiếu lương thực.\n\nGợi ý đối phó: Chiến đấu để giành quyền kiểm soát các cánh đồng lúa mì mới và tấn công các tòa nhà hỗ trợ của nó gần tiền tuyến. Tấn công trước khi nhóm chiến binh của nó sẵn sàng.\n\nAI thử nghiệm. Độ khó trung bình; các gợi ý đối phó không phải là đánh giá từ phép đo hiệu năng.
+Chiến lược chính: Dùng ưu tiên phản ứng theo tình hình để phát triển nền kinh tế hoạt động tốt, chuyển lao động dư sang lương thực, công nghệ và áp lực quân sự. Chính sách thông thường dựa trên quy tắc; thử nghiệm chính sách học được cần cấu hình riêng.\n\nKinh tế và phát triển: Điều chỉnh sản xuất công nhân theo nhu cầu nhân lực và tiếp tục sinh đơn vị. Khó khăn lương thực làm giảm chi cho mở rộng và công nghệ. Bổ sung bơi khi đường thủy giúp ích đáng kể.\n\nTấn công và phòng thủ: Chuẩn bị tấn công theo công nghệ địch quan sát được và quân hiện có. Chiến dịch vượt nước cần chiến binh biết bơi. Hỗ trợ chiến dịch dài bằng quán trọ và bệnh viện tiền phương, có thể tập kết quân trước khi tiến lên.\n\nKiên trì và khẩn cấp: Giữ thế tiến công trước quấy rối nhỏ thay vì liên tục quay về. Đòn đánh nghiêm trọng có thể khiến quân phòng thủ được gọi về. Khẩn cấp đầu trận có thể kích hoạt sản xuất chỉ chiến binh và xây bệnh viện; nạn đói có thể dẫn đến đợt đánh liều chết nhỏ hơn.\n\nSo với các AI khác: Quan tâm hỗ trợ tiền phương hơn Warrush. Maxima đi xa hơn trong phân bổ sinh sản bền vững, huấn luyện và triển khai theo sức mạnh địch ước tính.\n\nĐiểm mạnh và yếu: Gắn áp lực với lương thực, chữa trị và khả năng tiếp cận. Hạ tầng tiền phương phải được tiếp tế, còn sinh sản liên tục có thể tiếp tục gây áp lực lên nguồn ăn hạn chế. Ưu tiên khẩn cấp buộc phải đánh đổi giữa tăng trưởng và sống sót.\n\nCách đối phó nên thử: Tranh chấp quán trọ, bệnh viện và lúa mì tiền phương. Giữ quân phòng thủ tập trung để chặn mũi tiến công; quấy rối nhỏ có thể không khiến nó rút lui.\n\nTrinh sát: Dùng công trình địch đã khám phá và quân địch quan sát được.
 [AICortex-Summary]
-Bảo đảm lương thực và hỗ trợ các đợt tấn công liên tiếp.
+Duy trì các mũi tiến công bằng lương thực và chữa trị ở tiền tuyến.
 [AINicowar-Profile]
-Chiến lược: Mở rộng nhanh chóng và tấn công đối thủ với đội quân khổng lồ.\n\nĐiểm mạnh: Mở rộng nhanh chóng hỗ trợ các cuộc tấn công quân sự tích cực.\n\nGợi ý đối phó: Ngăn chặn sự mở rộng của nó. Sử dụng địa hình để giảm số lượng quân địch có thể chiến đấu cùng một lúc.
+Chiến lược chính: Kết hợp tăng trưởng, huấn luyện, nâng cấp và chiến tranh qua các điều kiện chồng lấn. Có thể vừa mở rộng vừa đánh, rồi chuyển nỗ lực kinh tế sang hồi phục khi nuôi quân thất bại.\n\nMở đầu: Cấu hình hiếu chiến đi kèm trò chơi bắt đầu chuẩn bị chiến tranh khi có tổng cộng năm đơn vị, cho phép đánh khi có năm chiến binh, kể cả cấp không. Nhắm tới ba cờ tấn công, mỗi cờ năm chiến binh. Tệp chiến lược tùy chỉnh có thể đổi các ngưỡng này.\n\nKinh tế và phát triển: Mở rộng năng lực lương thực và sinh sản, huấn luyện công nhân, phát triển bơi và di chuyển, nâng cấp công trình. Điều chỉnh nhân lực cung cấp thức ăn, phản ứng với đói và tìm trái cây.\n\nTấn công và phòng thủ: Chọn ngẫu nhiên công trình địch có thể tới để đánh. Có thể dùng cờ dọn dẹp mở đường bị tài nguyên chắn. Cờ phòng thủ che chở các cụm đơn vị và công trình bị đe dọa. Về sau, trinh sát được huấn luyện đánh mặt đất nhắm vào các nhóm đơn vị địch.\n\nSo với các AI khác: Có tính hiếu chiến sớm như Warrush nhưng phát triển tiếp toàn diện hơn. Khác Cabino, không nhất quán ưu tiên bệnh viện và quán trọ.\n\nĐiểm mạnh và yếu: Nhiều chiến thuật kết hợp áp lực sớm với phát triển liên tục. Chọn mục tiêu ngẫu nhiên có thể tốn sức vào công trình kém giá trị. Các ngưỡng không cung cấp ước tính chi tiết về sức chiến đấu đối phương như Maxima.\n\nCách đối phó nên thử: Dự liệu một đợt đánh sớm. Bảo vệ lương thực và công nhân, tranh chấp mở rộng, chuẩn bị chống trinh sát tấn công nếu nó đạt huấn luyện cao cấp.
 [AINicowar-Summary]
-Mở rộng nhanh chóng và xây dựng đội quân lớn để tấn công mạnh mẽ.
+Đánh nhanh đầu trận, được hỗ trợ bởi nông nghiệp, nâng cấp, phòng thủ và đòn đánh trinh sát.
 [AINone-Profile]
 Chiến lược: AI không đưa ra mệnh lệnh.\n\nĐiểm mạnh: Một đối thủ không hoạt động, có thể đoán trước được để thử nghiệm.\n\nĐiểm yếu: Không mở rộng và thích ứng được.
 [AINone-Summary]
 Một thuộc địa nhàn rỗi cho các thí nghiệm.
 [AINumbi-Profile]
-Chiến lược: Mở rộng nhanh chóng nhưng ở quy mô nhỏ. Một đối thủ dễ dàng hơn để thực hành quản lý thuộc địa.\n\nĐiểm mạnh: Cho phép bạn học cả quản lý kinh tế và chiến đấu.\n\nGợi ý đối phó: Phát triển nền kinh tế mạnh hơn và huấn luyện quân đội của bạn trước khi tấn công.
+Chiến lược chính: Xây nền lương thực và dân số trước, bổ sung chữa trị, khoa học và huấn luyện, rồi chuyển sang chiến tranh. Các giai đoạn lớn tiến theo thời gian thay vì tiến độ đối phương.\n\nKinh tế và phát triển: Tăng nhu cầu công trình theo dân số và ước tính lúa mì gần đó. Các giai đoạn sau bổ sung nâng cấp, phòng thủ và mở rộng để nuôi đội quân đang lớn.\n\nTấn công và phòng thủ: Đánh khi đủ quân khỏe mạnh hoặc hết thời gian chờ. Đặt cờ chiến tranh lên công trình địch được chọn ngẫu nhiên. Khi sức chiến đấu xuống quá thấp, gỡ cờ tấn công và tăng ngưỡng cho lần sau.\n\nSo với các AI khác: Dễ dự đoán hơn Castor hay Nicowar. Castor xét địa hình và giá trị mục tiêu kỹ hơn; Nicowar gây áp lực sớm hơn nhiều.\n\nĐiểm mạnh và yếu: Hạ tầng hỗ trợ rộng có thể khiến nó nguy hiểm sau giai đoạn phát triển không bị cản, nhưng thời gian biểu có thể lệch diễn biến chiến trận. Chọn mục tiêu đơn giản và nghỉ lâu hơn sau tổn thất khiến các đòn đánh dễ đoán.\n\nCách đối phó nên thử: Gây áp lực trước giai đoạn quân sự. Phát triển lương thực và huấn luyện phía sau các đợt tấn công của bạn, tận dụng khoảng nghỉ sau khi đẩy lùi một cuộc đánh.\n\nTrinh sát: Quy trình tấn công đọc trực tiếp vị trí công trình địch mà không kiểm tra tầm nhìn.
 [AINumbi-Summary]
-Mở rộng nhanh chóng ở quy mô nhỏ.
+Xây thuộc địa dần theo thời gian biểu, rồi tấn công bằng số đông.
 [AIEcono-Profile]
-Chiến lược: Không tấn công, nhưng xây dựng những căn cứ khổng lồ và chủ động chuyển đổi các đơn vị quân địch về phía mình.\n\nĐiểm mạnh: Mở rộng và chuyển đổi đơn vị đe dọa đối thủ mà không cần tấn công trực tiếp.\n\nGợi ý đối phó: Phát triển thuộc địa của bạn sớm và tránh gửi các đơn vị đến nơi kẻ thù có thể chuyển đổi chúng.
+Chiến lược chính: Sản xuất công nhân và trinh sát, mở rộng kinh tế, thu hút đơn vị địch bằng thức ăn và trái cây. Không có đợt tiến công chiến binh thông thường.\n\nKinh tế và phát triển: Xây quán trọ và tổ gần lúa mì, bổ sung giáo dục và huấn luyện di chuyển, nâng cấp hạ tầng. Theo dõi nguồn thức ăn và thay quán trọ, tổ cũ khi vị trí so với tài nguyên trở nên bất lợi.\n\nNông nghiệp và đổi phe: Bảo vệ lúa mì và gỗ tái sinh gần nước. Gửi trinh sát tới nơi có trái cây và thuộc địa địch, quảng bá thức ăn cho địch khi tìm nguồn trái cây. Thức ăn tốt hơn và trái cây có thể thu hút đơn vị đổi phe.\n\nSo với các AI khác: Đối thủ chuyên kinh tế nhất. Cabino và Maxima cũng tìm trái cây nhưng kết hợp với quân đội.\n\nĐiểm mạnh và yếu: Có thể lớn mạnh khi các đối thủ quân sự tự tiêu hao, còn đổi phe tạo cách cạnh tranh khác. Không sản xuất chiến binh để đáp lại tấn công kéo dài. Thức ăn, trái cây, địa lý và luật thắng ảnh hưởng mạnh tới cơ hội của nó.\n\nCách đối phó nên thử: Ép các điểm mở rộng sơ hở. Cấp thức ăn và trái cây cho quán trọ của bạn để giữ đơn vị. Tránh làm kiệt sức thuộc địa bằng những trận không cần thiết trong khi nó lớn lên.
 [AIEcono-Summary]
-Xây căn cứ lớn và chiêu dụ quân địch thay vì tấn công.
+Phát triển thuộc địa dồi dào thức ăn và thu hút đơn vị đổi phe mà không tạo chiến binh.
 [AIWarrush-Profile]
-Chiến lược: Tấn công nhanh và mạnh trước khi đối thủ xây dựng lực lượng xong.\n\nĐiểm mạnh: Trừng phạt việc mở rộng thiếu phòng thủ và chuẩn bị quân sự chậm.\n\nGợi ý đối phó: Duy trì kinh tế, chống đỡ đợt tấn công đầu rồi phản công.
+Chiến lược chính: Đánh trước khi đối thủ hoàn thành quá trình phát triển kinh tế hoặc công nghệ dài. Mong giao tranh quyết định ván đấu trước khi cần mạng lưới hỗ trợ lớn.\n\nKinh tế và phát triển: Khi sáu đơn vị có thể thu hoạch, đặt tỷ lệ sản xuất thành bốn công nhân, một trinh sát và ba chiến binh. Thêm doanh trại khi chỗ huấn luyện đầy, nhưng hạn chế quán trọ mới. Năng lực xây dựng dư thường dành cho bệnh viện và huấn luyện di chuyển.\n\nTấn công và phòng thủ: Đánh dấu công trình địch đã khám phá bằng vùng canh gác để chiến binh liên tục gây áp lực. Không chờ một đợt quân được tập hợp cẩn thận. Dọn gỗ cản đường và bảo vệ một phần tài nguyên tái sinh.\n\nChính sách trái cây: Cấm thu hoạch trái cây để tránh giảm giáp do trái cây, không theo chiến lược thu hút đổi phe của Econo.\n\nSo với các AI khác: Chú trọng áp lực sớm hơn Numbi hay Castor. Nicowar cũng mở đầu hiếu chiến nhưng tiếp tục bằng chương trình nâng cấp và chiến thuật rộng hơn.\n\nĐiểm mạnh và yếu: Trừng phạt mở đầu chậm và buộc chi sớm cho phòng thủ. Nâng cấp hệ thống hạn chế cùng hỗ trợ thức ăn ít khiến tấn công đình trệ rất tốn kém. Địa hình và hành trình dài có thể bào mòn lợi thế ban đầu.\n\nCách đối phó nên thử: Bảo vệ quán trọ và tổ từ sớm. Bù công nhân lẫn quân thủ, phát triển huấn luyện, rồi phản công khi đợt đánh nhanh mất đà.\n\nTrinh sát: Cờ khám phá mở đầu dùng trực tiếp vị trí xuất phát của địch. Việc đặt vùng tấn công về sau cần tầm nhìn.
 [AIWarrush-Summary]
-Các cuộc tấn công nhanh kiểm tra khả năng phòng thủ sớm của bạn.
+Áp lực chiến binh đầu trận dựa trên nền kinh tế hỗ trợ cố ý tinh gọn.
 [AICabino-Profile]
-Chiến lược cốt lõi: một nội các gồm các bộ phận chuyên trách độc lập (phòng thủ, tấn công, xây dựng, nâng cấp, quản lý đơn vị), mỗi bộ phận tự hành động theo sáng kiến riêng nhưng cùng hướng đến một kế hoạch: phát triển nhanh rồi tung những đạo quân lớn vào đối thủ.\n\nĐiểm mạnh: mở rộng nhanh hỗ trợ áp lực quân sự mạnh mẽ; các bộ phận độc lập phản ứng nhanh với các mối đe dọa cục bộ mà không cần chờ một kế hoạch trung tâm.\n\nCách đối phó: ngăn chặn sự mở rộng của nó sớm và dùng địa hình để hạn chế số quân nó có thể huy động cùng lúc.
+Chiến lược chính: Chia sản xuất đơn vị giữa xây dựng, nâng cấp, phòng thủ, tấn công và khám phá. Các bộ quản lý riêng yêu cầu và giữ trước đơn vị, phát triển kinh tế và quân sự cùng nhau.\n\nKinh tế và phát triển: Xây và nâng cấp khu định cư đa dạng, quản lý nhân lực quán trọ và tháp, dọn xung quanh công trình, bảo vệ tài nguyên tái sinh. Do thám trái cây và quảng bá thức ăn để tranh giành đơn vị đổi phe.\n\nTấn công và phòng thủ: Chọn một kẻ địch, ưu tiên bệnh viện, rồi quán trọ, rồi doanh trại. Hỗ trợ tới bốn đợt đánh, thường giao tám đến hai mươi chiến binh mỗi mục tiêu tùy quân sẵn có và địch gần đó. Dùng cờ phòng thủ riêng quanh công trình bị đe dọa.\n\nHuấn luyện: Cần đủ chiến binh phù hợp và doanh trại hoàn tất để đánh, nhưng không chờ công nghệ tối đa. Nâng cấp và huấn luyện liên tục tăng sức các đòn đánh sau.\n\nSo với các AI khác: Phá công trình hỗ trợ có mục đích hơn Nicowar. Trải rộng tấn công hơn các đợt quân tập kết của Maxima, dùng việc giữ trước đơn vị để quản lý nhu cầu cạnh tranh.\n\nĐiểm mạnh và yếu: Kết hợp tăng trưởng, huấn luyện, phòng thủ và nhiều đợt đánh. Phá thức ăn và chữa trị có thể làm yếu cả thuộc địa. Chọn đối thủ ngẫu nhiên và ưu tiên công trình cố định có thể bỏ lỡ cơ hội; nhiều đợt đánh có thể chia nhỏ lực lượng.\n\nCách đối phó nên thử: Bảo vệ bệnh viện và quán trọ. Tranh chấp mở rộng sơ hở, tập trung quân thủ chống từng đợt đánh. Phá thức ăn hoặc huấn luyện trước khi nó đủ sức duy trì nhiều mặt trận.\n\nTrinh sát: Bộ chọn tấn công đọc danh sách công trình địch mà không kiểm tra tầm nhìn rõ ràng. Một số so sánh kinh tế dùng trực tiếp thống kê địch.
 [AICabino-Summary]
-Các bộ phận độc lập hợp tác để phát triển nhanh và tạo ra những đạo quân khổng lồ.
+Phối hợp tăng trưởng thuộc địa và đòn đánh đã huấn luyện, nhắm chữa trị và thức ăn trước.
 [Algae]
 Tảo
 [Alliances]
@@ -1976,6 +1982,10 @@ Kích thước cao nguyên
 Tường giữa các khúc
 [Farm building plots]
 Ô đất xây dựng trong nông trại
+[Sand bridges over water]
+Cầu cát qua mặt nước
+[Sand lanes through crops]
+Lối cát xuyên qua cánh đồng
 [Carousels need at least two colonies.]
 Vòng quay ngựa gỗ cần ít nhất hai thuộc địa.
 [Switchbacks need at least two colonies.]
@@ -2178,24 +2188,22 @@ Chọn tham số ngẫu nhiên
 Chất lượng khởi đầu
 [Fairness]
 Công bằng
-[Score]
-Điểm
-[Weight]
-Trọng số
+[Fitness]
+Sức mạnh
+[Win chance]
+Khả năng thắng
+[Coefficient]
+Hệ số
+[Average]
+Trung bình
+[Fitted on games:]
+Khớp trên số trận:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Khởi đầu của mỗi thuộc địa được đo trên bản đồ hoàn chỉnh, và một mô hình được khớp trên hàng nghìn trận đấu giữa các đối thủ ngang sức sẽ chuyển các số đo đó thành sức mạnh. Sức mạnh cho biết thuộc địa đó có khả năng thắng đến mức nào. Công bằng cho biết các cơ hội này được chia đều đến đâu: 1 khi mọi thuộc địa đều có cơ hội thắng như nhau, 0 khi một thuộc địa duy nhất sẽ chiếm cả bản đồ.
 [Worst]
 Kém nhất
 [Best]
 Tốt nhất
-[Fertility]
-Độ phì nhiêu
-[Deposits]
-Trữ lượng
-[Room]
-Không gian
-[Isolation]
-Cách biệt
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Khởi đầu của mỗi thuộc địa được đo trên bản đồ hoàn chỉnh: đường đi tới lúa mì và tới gỗ, đất của nó mọc lại tốt đến đâu, trữ lượng và vị trí xây dựng trong tầm với, cùng khoảng cách tới các đối thủ. Mỗi yếu tố được chấm từ 0 đến 1 so với một mức cố định, tổng điểm cân nhắc chúng theo trọng số, công bằng là tổng của thuộc địa kém nhất chia cho tổng của thuộc địa tốt nhất, và điểm là tổng kém nhất nhân với công bằng.
 [Map preview controls]
 Kéo để đi qua các cạnh. Cuộn để thu phóng. Nhấp phải hoặc nhấp đúp để đặt lại.
 [Map preview drag help]
@@ -2253,9 +2261,9 @@ Thức ăn/phút
 [Stats occupancy]
 Ăn / chữa trị
 [Stats page one]
-Thống kê 1/2 >
+Thống kê 1/3 >
 [Stats page two]
-Thống kê 2/2 >
+Thống kê 2/3 >
 [Stats next page]
 Trang (P)
 [Map preview choose another]
@@ -2378,3 +2386,1001 @@ Tắt (không có bộ đếm giờ)
 60 phút
 [Sudden-death timer]
 Bộ đếm giờ đột tử
+[Stats page three]
+Thống kê 3/3 >
+[Stats blocked units]
+Đơn vị S/C
+[Stats blocked buildings]
+Công trình S/C
+[Stats blocked buildings swim]
+Bơi S/C
+[Stats current blocked units]
+Đơn vị C
+[Stats current blocked buildings]
+Công trình C
+[Stats growth global]
+Tài nguyên +
+[Stats growth new tiles]
+Tài nguyên +#
+[Stats growth reductions]
+Tài nguyên -
+[Stats growth per minute]
+Lúa mì +/min
+[Stats growth near 8]
+Tài nguyên + <=8
+[Stats growth near 16]
+Tài nguyên + <=16
+[Stats growth near 32]
+Tài nguyên + <=32
+[Stats low HP 25]
+Máu <=25%
+[Stats low HP 50]
+Máu <=50%
+[Stats low HP 75]
+Máu <=75%
+[Stats low food 25]
+Thức ăn <=25%
+[Stats low food 50]
+Thức ăn <=50%
+[Stats low food 75]
+Thức ăn <=75%
+[Stats structural units]
+Đơn vị S
+[Stats structural buildings]
+Công trình S
+[Stats low HP ranges]
+Máu: <=25/50/75%
+[Stats low food ranges]
+Thức ăn: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Ký tự biểu cảm
+[Smiley]
+Mặt cười
+[Sad face]
+Mặt buồn
+[Winking face]
+Mặt nháy mắt
+[Surprised face]
+Mặt ngạc nhiên
+[Heart eyes]
+Mắt trái tim
+[Sunglasses]
+Kính râm
+[Heart]
+Trái tim
+[Star]
+Ngôi sao
+[Neutral face]
+Mặt bình thản
+[Sleeping face]
+Mặt đang ngủ
+[Grinning face]
+Mặt cười toe
+[Kissing face]
+Mặt hôn
+[Angry face]
+Mặt giận dữ
+[Tongue out]
+Lè lưỡi
+[Skull]
+Đầu lâu
+[Flower]
+Bông hoa
+[Four-leaf clover]
+Cỏ bốn lá
+[Teardrop]
+Giọt nước
+[Cloud]
+Đám mây
+[Gem]
+Đá quý
+[Apple]
+Quả táo
+[Speech bubble]
+Bong bóng thoại
+[Shield]
+Khiên
+[Emoji style]
+Kiểu biểu cảm
+[Outline]
+Đường viền
+[Filled]
+Tô kín
+[Emoji terrain]
+Địa hình biểu cảm
+[Regular]
+Thông thường
+[Inverse]
+Đảo ngược
+[Crossings]
+Lối qua
+[Forts]
+Pháo đài
+[Gate width]
+Chiều rộng cổng
+[Braided Delta]
+Châu thổ đan nhánh
+[Braid count]
+Số nhánh sông
+[Rejoining frequency]
+Tần suất hợp lưu
+[Crossing spacing]
+Khoảng cách lối qua
+[Breachable highlands]
+Cao nguyên có thể mở lối
+[Ridge depth]
+Độ dày sống núi
+[Extra open passes]
+Đèo mở bổ sung
+[Wooded saddles]
+Đèo phủ rừng
+[Hedgerow Country]
+Miền quê hàng rào cây
+[Field size]
+Kích thước cánh đồng
+[Hedge thickness]
+Độ dày hàng rào cây
+[Existing gateways]
+Lối đi có sẵn
+[Wooded boundary share]
+Tỷ lệ ranh giới có cây
+[The Glacis]
+Dốc thành
+[Allotments]
+Vườn phân lô
+[Caravanserai]
+Lữ quán thương đoàn
+[Mixed]
+Hỗn hợp
+[Fort size]
+Kích thước pháo đài
+[Bastions]
+Pháo đài góc
+[Four-pointed]
+Bốn cánh
+[Five-pointed]
+Năm cánh
+[Six-pointed]
+Sáu cánh
+[Glacis width]
+Độ rộng dốc lũy
+[Gates]
+Cổng
+[Site size]
+Kích thước lô đất
+[Plot width]
+Độ rộng luống
+[Plot mix]
+Kiểu luống
+[Tended]
+Chăm sóc
+[Overgrown]
+Bỏ hoang
+[Commons]
+Đất chung
+[Few]
+Ít
+[Some]
+Vài
+[Home oasis size]
+Kích thước ốc đảo quê nhà
+[Caravanserais per colony]
+Lữ quán mỗi thuộc địa
+[Desert]
+Sa mạc
+[Open erg]
+Sa mạc cát trống
+[Dunes and mesas]
+Cồn cát và núi bàn
+[Canyon country]
+Xứ hẻm núi
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Một pháo đài không tới được chỗ lội của nó; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[A wall would stand on a beach; try another seed.]
+Một bức tường sẽ nằm trên bãi cát; hãy thử hạt giống khác.
+[The fort is too small for its gardens; raise Fort size.]
+Pháo đài quá nhỏ cho các khu vườn; hãy tăng kích thước pháo đài.
+[The home oasis is too small; raise Home oasis size.]
+Ốc đảo quê nhà quá nhỏ; hãy tăng kích thước ốc đảo quê nhà.
+[Braided river]
+Sông bện
+[Braid width]
+Độ rộng dải bện
+[Bar size]
+Kích thước cồn sỏi
+[Extra riffles]
+Bãi cạn bổ sung
+[Moraine hummocks]
+Gò băng tích
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Dải bện để lại quá ít thềm cho các căn cứ; hãy dùng bản đồ lớn hơn hoặc dải bện hẹp hơn.
+[The map is too narrow across for a braid; use a bigger map.]
+Bản đồ quá hẹp theo chiều ngang cho một dải bện; hãy dùng bản đồ lớn hơn.
+[Drumlin field]
+Cánh đồng drumlin
+[Drumlin spacing]
+Khoảng cách drumlin
+[Drumlin length]
+Chiều dài drumlin
+[Water gap]
+Khoảng nước
+[Esker loops]
+Vòng esker
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Các esker không thể nối mọi drumlin; hãy dùng khoảng nước nhỏ hơn hoặc bản đồ lớn hơn.
+[Continents]
+Các lục địa
+[Continent]
+Lục địa
+[North America]
+Bắc Mỹ
+[South America]
+Nam Mỹ
+[Africa]
+Châu Phi
+[Europe]
+Châu Âu
+[Asia]
+Châu Á
+[Oceania]
+Châu Đại Dương
+[Orientation]
+Hướng
+[Turn to fit]
+Xoay cho vừa
+[Upright]
+Không xoay
+[Mountain ranges]
+Dãy núi
+[Great rivers]
+Sông lớn
+[Islets]
+Đảo nhỏ
+[Oases]
+Ốc đảo
+[The world atlas has no such continent.]
+Tập bản đồ thế giới không có lục địa này.
+[The map is too small to hold a continent.]
+Bản đồ quá nhỏ để chứa một lục địa.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Lục địa này không đủ chỗ cho số thuộc địa này ở kích thước bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[Savannah]
+Xa van
+[Watering holes]
+Hố nước
+[Dry patches]
+Vùng khô
+[Sparse]
+Ít
+[Normal]
+Bình thường
+[Many]
+Nhiều
+[Rice terraces]
+Ruộng bậc thang
+[Unoccupied hills]
+Đồi chưa có người ở
+[Hill radius]
+Bán kính đồi
+[Contour band width]
+Độ rộng dải đồng mức
+[Stairs per hill]
+Số cầu thang mỗi đồi
+[Valley river]
+Sông thung lũng
+[Hills]
+Đồi
+[Hillsides]
+Sườn đồi
+[Terraces per slope]
+Số ruộng bậc thang mỗi sườn
+[Waviness]
+Độ uốn lượn
+[Stair spacing]
+Khoảng cách bậc thang
+[Locust]
+Châu chấu
+[Plantations]
+Đồn điền
+[Plot size]
+Kích thước lô đất xây dựng
+[Farm width]
+Chiều rộng đất canh tác
+[Islands per colony]
+Số đảo mỗi thuộc địa
+[Outpost inns]
+Quán trọ tiền đồn
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Các đảo này quá nhỏ so với lô đất xây dựng của chúng; hãy dùng bản đồ lớn hơn, lô đất nhỏ hơn hoặc ít thuộc địa hơn.
+[Sierpiński Gardens]
+Vườn Sierpiński
+[Hilbert River]
+Sông Hilbert
+[Maximum nesting]
+Mức lồng nhau tối đa
+[Minimum terminal district side]
+Cạnh tối thiểu của khu cuối
+[Major crossing pairs]
+Cặp lối băng qua chính
+[Maximum fold depth]
+Độ sâu nếp gấp tối đa
+[Minimum land spacing]
+Khoảng đất tối thiểu
+[Optional local crossings per parent]
+Lối băng qua cục bộ tùy chọn mỗi vùng cha
+[Optional major shortcuts]
+Đường tắt chính tùy chọn
+[Lava shield]
+Khiên dung nham
+[Lava tongues]
+Lưỡi dung nham
+[Long tongues]
+Lưỡi dài
+[Crater rim width]
+Độ rộng vành miệng núi lửa
+[Honeycomb isle]
+Đảo tổ ong
+[Blocks per colony]
+Số khu phố mỗi thuộc địa
+[Rubble]
+Gạch vụn
+[Outline gaps]
+Khe hở đường viền
+[Craters per colony]
+Số hố bom mỗi thuộc địa
+[Wheat fields]
+Ruộng lúa mì
+[Bridges]
+Cầu
+[Karst towers]
+Tháp đá vôi
+[Tower spacing]
+Khoảng cách tháp đá vôi
+[Tower density]
+Mật độ tháp đá vôi
+[Paddy depth]
+Bề rộng dải ruộng lúa
+[Home design]
+Kiểu căn cứ
+[Horseshoe]
+Móng ngựa
+[Twin gates]
+Cổng đôi
+[Three gates]
+Ba cổng
+[Four gates]
+Bốn cổng
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Các con sông không tìm được đường giữa các căn cứ; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[River meander]
+Độ uốn khúc của sông
+[Flooded terraces]
+Ruộng bậc thang ngập nước
+[Sinkholes]
+Hố sụt
+[Bajada]
+Quạt bồi tích
+[Range spacing]
+Khoảng cách dãy núi
+[Ridge width]
+Độ rộng sống núi
+[Passes]
+Đèo
+[Fans per range]
+Số quạt mỗi dãy núi
+[Stream reach]
+Độ dài suối
+[Playa]
+Hồ muối
+[Broad fan]
+Quạt rộng
+[Long fan]
+Quạt dài
+[Twin springs]
+Suối đôi
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Sườn quạt bồi tích quá hẹp cho các căn cứ; hãy dùng bản đồ lớn hơn, khoảng cách dãy núi rộng hơn, sống núi hẹp hơn hoặc hồ muối nhỏ hơn.
+[Central Quarry]
+Mỏ đá trung tâm
+[Quarry size]
+Kích thước mỏ đá
+[Sand bars]
+Doi cát
+[Woodland]
+Rừng
+[Central Quarry needs at least two colonies.]
+Mỏ đá trung tâm cần ít nhất hai thuộc địa.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Hồ không vừa bản đồ này; hãy dùng hồ nhỏ hơn hoặc bản đồ lớn hơn.
+[A sand bar did not reach the island.]
+Một doi cát không nối tới đảo.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Bản đồ này không đủ chỗ cho số thuộc địa này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[The island has no room for its quarry; use a bigger island.]
+Đảo không đủ chỗ cho mỏ đá; hãy dùng đảo lớn hơn.
+[Hidden Oasis]
+Ốc đảo ẩn
+[Pond algae]
+Tảo trong ao
+[Starting towers]
+Tháp ban đầu
+[Starting school]
+Trường học ban đầu
+[Mesas]
+Núi mặt bàn
+[Springs]
+Suối nguồn
+[Hidden Oasis needs at least two colonies.]
+Ốc đảo ẩn cần ít nhất hai thuộc địa.
+[Hidden Oasis holds at most eight colonies.]
+Ốc đảo ẩn chỉ chứa được tối đa tám thuộc địa.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Khối núi đá không vừa bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[The pond has no room for that much algae; use a bigger pond.]
+Ao không đủ chỗ cho từng ấy tảo; hãy dùng ao lớn hơn.
+[Even Ground]
+Đất bằng
+[Balance]
+Độ cân bằng
+[Tight passes]
+Lối hẹp
+[Solver effort]
+Công sức giải
+[Brief]
+Ngắn
+[Patient]
+Kiên nhẫn
+[This map is too small to solve on; use a bigger map.]
+Bản đồ này quá nhỏ để giải; hãy dùng bản đồ lớn hơn.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Quá nhiều thuộc địa để cân bằng trên bản đồ cỡ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[The colonies could not be spread out on this map.]
+Không thể trải các thuộc địa ra trên bản đồ này.
+[Marchland]
+Vùng biên
+[Prizes on the rope]
+Phần thưởng trên dây
+[March width]
+Độ rộng vùng biên
+[Levelling]
+San đều
+[A march needs a country on each side; use at least two colonies.]
+Vùng biên cần một xứ sở ở mỗi bên; hãy dùng ít nhất hai thuộc địa.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Quá nhiều thuộc địa để bản đồ này cho mỗi thuộc địa một quê hương; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Bản đồ này không đủ chỗ để trải các thuộc địa ra; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Quê hương của một thuộc địa không có lối ra vùng biên; hãy dùng bản đồ lớn hơn hoặc vùng biên hẹp hơn.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Quê hương của một thuộc địa không đủ chỗ cho một tổ; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc vùng biên hẹp hơn.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Vùng biên có quá ít đất tranh chấp cho từng ấy phần thưởng; hãy dùng ít phần thưởng hơn, vùng biên rộng hơn hoặc bản đồ lớn hơn.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Vùng biên không đủ chỗ cho một phần thưởng; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc vùng biên rộng hơn.
+[Orchard Commons]
+Vườn cây ăn quả chung
+[Orchard spacing]
+Khoảng cách giữa các vườn
+[Compact]
+Gần nhau
+[Balanced]
+Cân bằng
+[Spread]
+Cách xa
+[The Gauntlet]
+Đấu trường thử thách
+[Partition thickness]
+Độ dày tường ngăn
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Đấu trường thử thách cần bản đồ lớn hơn hoặc ít thuộc địa hơn để mỗi thuộc địa có đủ chỗ cho hai lối vào được phòng thủ.
+[The Comb]
+Chiếc lược
+[Peninsulas per shore]
+Số bán đảo mỗi bờ
+[Encircled Kingdom]
+Vương quốc bị bao vây
+[Fortress plan]
+Bố cục pháo đài
+[Automatic]
+Tự động
+[Elongated enclosure]
+Thành lũy thuôn dài
+[Bastioned enclosure]
+Thành lũy có pháo đài góc
+[Paired courtyards]
+Hai sân trong
+[Heartland farmland]
+Đất nông nghiệp trung tâm
+[The Faulted City]
+Thành phố đứt gãy
+[Fault displacement]
+Độ dịch chuyển đứt gãy
+[Fault width]
+Độ rộng đứt gãy
+[Ruin density]
+Mật độ phế tích
+[Surviving junctions]
+Giao lộ còn lại
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Thành phố đứt gãy cần 256 hoặc 512 ô mỗi chiều và từ một đến mười hai thuộc địa.
+[The city has too few usable junctions.]
+Thành phố có quá ít giao lộ có thể đi qua.
+[A city neighbourhood lacks reachable crops or building room.]
+Một khu phố thiếu cây trồng có thể tiếp cận hoặc không gian xây dựng.
+[The city neighbourhoods are too unequal; try another seed.]
+Các khu phố quá mất cân bằng; hãy thử hạt giống khác.
+[The fractured civic plaza did not survive.]
+Quảng trường thành phố bị đứt gãy không còn tồn tại.
+[Who Ate the Map?]
+Ai đã ăn bản đồ?
+[Appetite]
+Sức ăn
+[A Little Nibble]
+Cắn một miếng nhỏ
+[Hungry]
+Đói bụng
+[Portage Lakes]
+Hồ và lối xuyên rừng
+[Lake elongation]
+Độ thuôn dài của hồ
+[Portage depth]
+Độ dày rừng cần chặt
+[Extra trails]
+Đường mòn bổ sung
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Các cạnh bản đồ này phải dài từ 64 đến 512 ô.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Hạt giống này không đủ chỗ đặt các khu định cư ven hồ.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Không đủ chỗ đặt ruộng ven hồ có thể tái sinh cạnh mỗi khu định cư.
+[Portage Lakes cannot connect its shoreline trails.]
+Không thể nối các đường mòn ven hồ.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Hạt giống này không tạo được lối tắt hữu ích qua rừng khô.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Hạt giống này không tạo được lối tắt hữu ích bằng cách bơi.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Với hạt giống này, các hồ để bơi phải tách biệt nhau.
+[Drowned Forest]
+Rừng ngập nước
+[Sandbar connections]
+Kết nối bãi cát
+[Wooded neck thickness]
+Độ dày rào cây
+[Neutral clearing size]
+Kích thước khoảng trống trung lập
+[Bastion Keys]
+Quần đảo pháo đài
+[Plantation size]
+Kích thước đồn điền
+[Outlying islands]
+Đảo ngoại vi
+[The Hungry Marches]
+Miền Biên Ải Đói Kém
+[Opening ration]
+Khẩu phần ban đầu
+[Central concentration]
+Mức tập trung ở trung tâm
+[The Last Treeline]
+Dải rừng cuối cùng
+[Woodland depth]
+Bề rộng lùm cây
+[Fertility]
+Độ phì nhiêu
+[Deposits]
+Trữ lượng
+[Room]
+Không gian
+[Isolation]
+Cách biệt
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Khởi đầu của mỗi thuộc địa được đo trên bản đồ hoàn chỉnh: đường đi tới lúa mì và tới gỗ, đất của nó mọc lại tốt đến đâu, trữ lượng và vị trí xây dựng trong tầm với, cùng khoảng cách tới các đối thủ. Mỗi yếu tố được chấm từ 0 đến 1 so với một mức cố định, tổng điểm cân nhắc chúng theo trọng số, công bằng là tổng của thuộc địa kém nhất chia cho tổng của thuộc địa tốt nhất, và điểm là tổng kém nhất nhân với công bằng.
+[ERROR_CANT_SAVE_MAP]
+Không thể lưu bản đồ. Hãy kiểm tra đích lưu và dung lượng trống. Các chỉnh sửa của bạn vẫn còn mở.
+[Loading headers]
+Đang tải phần đầu...
+[Loading teams]
+Đang tải đội...
+[Loading terrain]
+Đang tải địa hình...
+[Building gradients]
+Đang dựng gradient...
+[Loading players]
+Đang tải người chơi...
+[Loading scripts]
+Đang tải kịch bản...
+[Generating map]
+Đang tạo bản đồ...
+[ERROR_CANT_GENERATE_MAP]
+Không thể tạo bản đồ. Hãy thử các thiết lập tạo khác.
+[Loading units]
+Đang tải đơn vị...
+[Loading buildings]
+Đang tải công trình...
+[Resolving team links]
+Đang phân giải liên kết đội...
+[saving to storage]
+Đang lưu...
+[save failed retry]
+Lưu thất bại. Hãy thử lại.
+[export save]
+Xuất bản lưu
+[storage restore failed]
+Không thể khôi phục bộ nhớ trình duyệt. Dữ liệu đã lưu hiện có không thay đổi. Bạn có thể tiếp tục phiên này, nhưng các thay đổi cục bộ sẽ không được lưu giữ. Hãy xuất các bản lưu quan trọng từ hộp thoại lỗi lưu. Tải lại trang để thử khôi phục bộ nhớ lần nữa.
+[continue]
+Tiếp tục
+[export file]
+Xuất tệp
+[export failed]
+Xuất tệp thất bại
+[import file]
+Nhập
+[select import file]
+Chọn tệp để nhập
+[validating import]
+Đang kiểm tra tệp...
+[import succeeded]
+Đã nhập tệp
+[import cancelled]
+Đã hủy nhập
+[import failed]
+Nhập thất bại: tệp không hợp lệ hoặc không được hỗ trợ
+[import persistence failed]
+Chưa lưu: chọn Nhập để thử lại, hoặc Xuất tệp
+[import progress]
+Tiến trình nhập
+[export progress]
+Tiến trình xuất
+[retry save]
+Thử lưu lại
+[campaign save failed]
+Tiến trình chiến dịch chưa được lưu. Hãy thử lại hoặc xuất bản sao lưu.
+[leave without saving]
+Thoát mà không lưu
+[campaign import failed]
+Tệp tiến trình không hợp lệ hoặc khác phiên bản chiến dịch
+[network release mismatch]
+Giao thức máy khách và máy chủ khác nhau. Hãy cài phiên bản Glob2 giống với máy chủ.
+[settings continue]
+Tiếp tục
+[settings save failed]
+Chưa xác nhận lưu thiết lập. Hãy thử lại, hoặc tiếp tục.
+[shutdown save failed]
+Chưa xác nhận lưu lần cuối. Hãy thử lại, hoặc thoát mà không lưu.
+[quit without saving]
+Thoát mà không lưu
+[game closed]
+Trò chơi đã đóng. Bạn có thể đóng cửa sổ này hoặc tải lại để chơi tiếp.
+[campaign editor save failed]
+Chưa xác nhận lưu. Đồng ý sẽ thử lại; Hủy sẽ quay về menu trình chỉnh sửa.
+[Actions]
+Thao tác
+[Minimap]
+Bản đồ nhỏ
+[Fast forward]
+Tua nhanh
+[Hide keyboard]
+Ẩn bàn phím
+[Dialog text size]
+Cỡ chữ hộp thoại
+[Player slot]
+Vị trí người chơi
+[Team color]
+Màu đội
+[Alliance group]
+Nhóm liên minh
+[menu]
+Trình đơn
+[Editor tools]
+Công cụ
+[Pan map]
+Di chuyển bản đồ
+[Edit map]
+Sửa bản đồ
+[Editor map]
+Bản đồ
+[Flags]
+Cờ
+[Pause]
+Tạm dừng
+[Speed]
+Tốc độ
+[Objectives]
+Mục tiêu
+[Menu]
+Trình đơn
+[Goals]
+Mục tiêu
+[Teams]
+Đội
+[Use this landscape]
+Dùng địa hình này
+[Reset]
+Đặt lại
+[Generating...]
+Đang tạo...
+[Players]
+Người chơi
+[Rules]
+Luật chơi
+[settings Interface layout]
+Bố cục giao diện
+[settings Automatic]
+Tự động
+[settings Compact]
+Gần nhau
+[settings Spacious]
+Rộng rãi
+[More]
+Thêm
+[No items]
+Không có mục nào
+[Opponents]
+Đối thủ
+[Review]
+Tổng quan
+[Review & Play]
+Xem lại và chơi
+[Edit opponents]
+Chỉnh sửa đối thủ
+[Map settings]
+Thiết lập bản đồ
+[Next]
+Tiếp theo
+[Done]
+Xong
+[Contribution]
+Đóng góp
+[Choose who controls this colony]
+Chọn người điều khiển thuộc địa này
+[Settings]
+Thiết lập
+[settings Back]
+Quay lại
+[settings Save the game automatically about every minute.]
+Tự động lưu trò chơi khoảng mỗi phút.
+[AI opponents]
+Đối thủ máy
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Bố cục rộng rãi dùng bảng bên khi đủ chỗ. Bố cục gọn dùng thanh công cụ và các bảng có thể mở rộng.
+[Assigned %0 · Target %1]
+Đã phân công %0 · Mục tiêu %1
+[Range: %0]
+Tầm: %0
+[Player %0]
+Người chơi %0
+[Brush %0]
+Cọ %0
+[Team %0]
+Đội %0
+[Your colony]
+Thuộc địa của bạn
+[%0 / %1 HP · %2]
+%0 / %1 máu · %2
+[Units: %0]
+Đơn vị: %0
+[Buildings: %0]
+Công trình: %0
+[Need food: %0]
+Cần thức ăn: %0
+[Need healing: %0]
+Cần chữa trị: %0
+[Attack: %0]
+Tấn công: %0
+[Defense: %0]
+Phòng thủ: %0
+[Food: %0 / %1]
+Thức ăn: %0 / %1
+[View team %0]
+Xem đội %0
+[P %0/%1/%2]
+Uy tín %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Cọ %0x%1
+[Level %0]
+Cấp %0
+[Manage teams (%0)]
+Quản lý đội (%0)
+[Team %0 / Level %1]
+Đội %0 / Cấp %1
+[Files · %0]
+Tệp · %0
+[Hint %0]
+Gợi ý %0
+[Objective %0]
+Mục tiêu %0
+[Entry %0 of 8 · empty entries are omitted]
+Mục %0 trong 8 · bỏ qua mục trống
+[Teams %0/%1]
+Đội %0/%1
+[Elapsed time · %0]
+Thời gian đã qua · %0
+[Read-only building]
+Công trình chỉ xem
+[Alliance and shared vision are fixed for this match.]
+Liên minh và tầm nhìn chung được cố định trong trận này.
+[Share vision]
+Chia sẻ tầm nhìn
+[Share food vision]
+Chia sẻ tầm nhìn thức ăn
+[Share market vision]
+Chia sẻ tầm nhìn chợ
+[Chat]
+Trò chuyện
+[No other players have editable diplomatic settings in this match.]
+Không có người chơi khác với thiết lập ngoại giao có thể sửa trong trận này.
+[No briefing for this match.]
+Không có hướng dẫn cho trận này.
+[Chat · recipients selected in Teams]
+Trò chuyện · chọn người nhận trong Đội
+[Filename]
+Tên tệp
+[Reduced motion]
+Giảm chuyển động
+[Send]
+Gửi
+[Close]
+Đóng
+[Forbidden]
+Cấm
+[Guard]
+Canh gác
+[Clear]
+Dọn dẹp
+[Paint]
+Vẽ
+[Erase]
+Xóa
+[Release on valid terrain to place]
+Thả trên địa hình hợp lệ để đặt
+[Paint on the map; two fingers move]
+Vẽ trên bản đồ; di chuyển bằng hai ngón tay
+[Tutorial ▸]
+Hướng dẫn ▸
+[Back to tools]
+Về công cụ
+[Starvation overlay]
+Lớp đói
+[Damage overlay]
+Lớp thiệt hại
+[Defense overlay]
+Lớp phòng thủ
+[Fertility overlay]
+Lớp màu mỡ
+[Health and food bars]
+Thanh máu và thức ăn
+[Message history]
+Lịch sử tin nhắn
+[Mark map for allies]
+Đánh dấu bản đồ cho đồng minh
+[Show zones]
+Hiện vùng
+[Pan]
+Di chuyển
+[Select]
+Chọn
+[Show palette]
+Hiện bảng công cụ
+[Release to place]
+Thả để đặt
+[Blocked placement]
+Không thể đặt
+[File name]
+Tên tệp
+[Load map]
+Tải bản đồ
+[Save map]
+Lưu bản đồ
+[No files in this folder]
+Không có tệp trong thư mục này
+[No files saved yet]
+Chưa có tệp được lưu
+[Export]
+Xuất
+[Tap to write the mission briefing]
+Chạm để viết hướng dẫn nhiệm vụ
+[Tap to write the map script]
+Chạm để viết tập lệnh bản đồ
+[Script]
+Tập lệnh
+[Previous]
+Trước
+[Compile]
+Biên dịch
+[Tap to write this hint]
+Chạm để viết gợi ý này
+[Tap to write this objective]
+Chạm để viết mục tiêu này
+[Mission briefing · tap to edit, swipe to scroll]
+Hướng dẫn nhiệm vụ · chạm để sửa, vuốt để cuộn
+[Not enough recorded history yet.]
+Chưa có đủ lịch sử được ghi lại.
+[Select a team to show its history.]
+Chọn đội để hiện lịch sử của đội đó.
+[Back to chart]
+Về biểu đồ
+[Expand chart]
+Mở rộng biểu đồ
+[Slot]
+Ô
+[Color]
+Màu
+[Player / AI]
+Người chơi / AI
+[Group]
+Nhóm
+[Forbid]
+Cấm
+[↓ Low]
+↓ Thấp
+[= Normal]
+= Bình thường
+[↑ High]
+↑ Cao
+[Details]
+Chi tiết
+[Campaign name]
+Tên chiến dịch
+[Unlocking]
+Mở khóa
+[Parameters]
+Tham số
+[Blank map]
+Bản đồ trống
+[Generated]
+Đã tạo
+[Preview]
+Xem trước
+[Selected landscape]
+Địa hình đã chọn
+[Representative preview]
+Bản xem trước mẫu
+[Starting terrain]
+Địa hình ban đầu
+[Hide parameters]
+Ẩn tham số
+[Size and parameters]
+Kích thước và tham số
+[Choose a landscape]
+Chọn địa hình
+[%0 / Browse]
+%0 / Duyệt
+[%0 colonies · %1]
+%0 thuộc địa · %1
+[%0 · Team %1]
+%0 · Đội %1
+[Colonies: %0]
+Thuộc địa: %0
+[%0 colonies · %1 AI]
+%0 thuộc địa · %1 trí tuệ nhân tạo
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Đơn vị
+[settings Level %0]
+Cấp %0
+[settings Match the desktop %0]
+Theo màn hình nền (%0)
+[settings Current display %0 %1 %2 %3]
+Thiết lập hiển thị hiện tại: %0 × %1 · %2 · %3
+[Fairness: %0]
+Công bằng: %0
+[Colony %0]
+Thuộc địa %0
+[Win chance: %0 · Fitness: %1]
+Khả năng thắng: %0 · Sức mạnh: %1
+[%0 · Contribution: %1]
+%0 · Đóng góp: %1
+[Min required level %0]
+Cấp tối thiểu: %0
+[Confirm %0]
+Đồng ý: %0
+[Dialog text size %0]
+Cỡ chữ hộp thoại: %0%
+[%0 %1]
+%0 %1

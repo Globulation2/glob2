@@ -54,6 +54,7 @@ namespace GAGCore
 
 	bool gzipCompress(const std::string& input, int level, std::string& output)
 	{
+		if (input.size() > std::numeric_limits<uInt>::max()) return false;
 		z_stream stream;
 		std::memset(&stream, 0, sizeof(stream));
 		if (deflateInit2(&stream, level, Z_DEFLATED, 15 + 16, 8, Z_DEFAULT_STRATEGY) != Z_OK)
@@ -74,8 +75,9 @@ namespace GAGCore
 		return ok;
 	}
 
-	bool gzipDecompress(const std::string& input, std::string& output)
+	bool gzipDecompress(const std::string& input, std::string& output, size_t maxOutput)
 	{
+		if (input.size() > std::numeric_limits<uInt>::max()) return false;
 		z_stream stream;
 		std::memset(&stream, 0, sizeof(stream));
 		if (inflateInit2(&stream, 15 + 16) != Z_OK)
@@ -92,13 +94,16 @@ namespace GAGCore
 			result = inflate(&stream, Z_NO_FLUSH);
 			if (result != Z_OK && result != Z_STREAM_END)
 				break;
-			output.append(buffer, sizeof(buffer) - stream.avail_out);
+			const size_t produced = sizeof(buffer) - stream.avail_out;
+			if (produced > maxOutput - output.size()) break;
+			output.append(buffer, produced);
 			if (result == Z_STREAM_END)
 				break;
 			if (stream.avail_in == 0)
 				break; // ran out of input without reaching the end: truncated
 		}
-		const bool ok = (result == Z_STREAM_END);
+		const bool ok = (result == Z_STREAM_END && stream.avail_in == 0 &&
+			stream.total_out == output.size());
 		inflateEnd(&stream);
 		return ok;
 	}
@@ -196,14 +201,18 @@ namespace GAGCore
 
 	bool FileManager::writeGzipAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer, int level)
 	{
-		auto *memory = new MemoryStreamBackend();
-		std::string contents;
+		try
 		{
+			auto *memory = new MemoryStreamBackend();
 			BinaryOutputStream stream(memory);
 			writer(stream);
-			contents = memory->takeContents();
+			return writeGzipAtomic(filename, memory->takeContents(), level);
 		}
-		return writeGzipAtomic(filename, contents, level);
+		catch (const std::exception& error)
+		{
+			std::cerr << "FileManager::writeGzipAtomically: " << filename << ": " << error.what() << std::endl;
+			return false;
+		}
 	}
 
 	StreamBackend *FileManager::openInflatingInputStreamBackend(const std::string& filename)

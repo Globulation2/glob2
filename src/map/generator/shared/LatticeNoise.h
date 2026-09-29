@@ -34,4 +34,10 @@ std::vector<float> torusNoise(int width, int height, std::mt19937 &rng);
 
 /// The value below which `percent` of the samples fall; 0 with no samples.
 int percentile(std::vector<int> samples, int percent);
+
+/// The `percent` of `region`'s tiles where `noise` is highest, as a mask: cover in patches rather than
+/// speckle (a forest with clearings, scree on a range), since neighbouring tiles of smooth noise
+/// rise and fall together. 0 gives nothing, 100 the whole region; the cut is percentile's.
+std::vector<unsigned char> noisyShare(const std::vector<unsigned char> &region,
+									  const std::vector<int> &noise, int percent);
 } // namespace MapGeneration

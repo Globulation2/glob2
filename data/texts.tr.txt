@@ -1,3 +1,9 @@
+[AI strategy]
+YZ stratejisi
+[AIMaxima-Summary]
+Sürdürülebilir büyümeyle eğitimi dengeler, sonra orduları dalgalar hâlinde toplar.
+[AIMaxima-Profile]
+Temel strateji: Gıda, işçiler, doğumlar, eğitim, inşaat ve savaşı birbiriyle yarışan talepler olarak ele alır. Ordusunu kısmen tahmin edilen düşman gücüne göre boyutlandırır, sonra onu etkili biçimde hedefe ulaştırmaya çalışır.\n\nEkonomi ve gelişim: Doğumları gıda ve emeğe göre bütçeler, eğitim için boş zaman bırakır, askerî üretim gerektiğinde fazla işçi eklemeyi durdurur. Eğitim kapasitesini ölçekler ve yükseltme yüzünden fazla altyapının aynı anda durmasını önler.\n\nKeşif ve kararlar: Görünür birimler ve hatırlanan gözlemlerden, verilere uyarlanmış bir modelle düşman kuvvetlerini tahmin eder. Hedefler değere, mesafeye, kulelere, açıkta kalan işçilere ve saldırının sürdürülmesine bağlıdır. Meyve görevleri besin çeşitliliğini ve taraf değiştirmeyi destekler.\n\nSaldırı ve savunma: Eğitim ve savunma için savaşçı ayırır; uygun kara kuvvetlerini dost gıda altyapısı yakınında topladıktan sonra dalgalar gönderir. Yerel savunma tepkileri kullanır ve koloniye yaklaşım yollarını değerlendirir.\n\nSaldırılar durakladığında: Art arda dört dalga ulaştırma başarısızlığından sonra sürekli takviye edilen saldırı bayraklarına geçer. Su geçişli saldırılar da sürekli takviye kullanabilir. Bu yedek yöntem, toplanma oluşmadan önceki her tıkanmayı çözmez.\n\nDiğer yapay zekâlarla karşılaştırma: Gıda, eğitim, istihbarat ve konuşlandırmayı daha sıkı bütünleştirir. Cabino birden fazla bina saldırısını; Maxima ise tahmin edilen talebi ve toplanmış kuvvetleri ulaştırmayı vurgular.\n\nGüçlü ve zayıf yanları: Gıda baskısına ve gözlenen tehditlere uyum sağlarken büyümeyi ve asker yenilemeyi sürdürür. Gıda, eğitim kapasitesi ve açık toplanma alanı ister; sıkışıklık ve uzun yollar kuvvet ulaştırmayı bozabilir.\n\nDenenecek karşı hamleler: Dalgalar toplanmadan açıkta kalan buğdayı, otelleri ve kışlaları zorlayın. İkmal edilen savunma gücünü birlikte tutun ve takviye yollarını bozun. İlk dalgadan sonra tekrarlanan baskı bekleyin.\n\nKeşif: Kuvvet tahminleri gizli toplam düşman asker sayısını değil, gözlemleri ve gözlem geçmişini kullanır.
 [%0 has left the game]
 %0 oyundan çıktı.
 [%0 level %1]
@@ -51,11 +57,11 @@ yapay zeka
 [ai]
 yapay zeka
 [AICastor-Description]
-Castor temkinli oynar ve kaynakları az olan haritalarda çok başarılıdır. Orta zorluk.
+Büyümeyi yiyecek arzına göre ayarlayarak inşa eder ve eğitim verir.
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar saldırgan oynar, hızla büyür ve rakiplerine dev ordular gönderir. Zor.
+Nüfusunu artırır, savaşçıları eğitir, ardından saldırır.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Yapay zekâ yok — hiçbir şey yapmaz.
 [AINone]
 Yapay zekâ yok
 [AINumbi-Description]
-Numbi küçük adımlarla, hızla genişler. Kolay.
+Hataları daha kolay affeden, ama yine de genişleyip saldıran bir rakip.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo saldırmaz, ancak dev üsler kurar ve çok sayıda birimi kendi tarafına çeker. Kolay.
+Savaşçı üretmeden genişler ve birimleri kendi tarafına çekmeye çalışır.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush hızlı ve sert saldırır, savunmadaki oyuncuyu sıklıkla yenilginin eşiğine getirir. Orta zorluk.
+Erken savunmanızı sınayan hızlı saldırılar yapar.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino savunma, saldırı ve inşayı bağımsız departmanlar olarak yönetir, ama hepsi tek bir plana yönelir: hızla büyür ve rakiplerine dev ordular gönderir. Zor.
+Eğitimli saldırı kuvvetleri çıkaran güçlü bir inşacı.
 [AICabino]
 Cabino
 [Alga]
@@ -1229,9 +1235,9 @@ Hız: 1x (çok oyunculu)
 [game speed help]
 Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
 [AICortex-Description]
-Cortex yeni buğday tarlalarına doğru genişliyor ve ön cepheye yakın hanlar ve hastaneler tarafından desteklenen savaşçı gruplarını savaşa gönderiyor. Orta zorluk. Deneysel.
+Yiyecek ve tedavi desteğiyle savaşçı dalgaları toplar.
 [AIMaxima-Description]
-Maxima iyi beslenen bir koloni büyütür, sürekli keşif yapar ve ayırabildiği her savaşçıyla durmaksızın saldırır. Yüksek zorluk.
+Keşif yapar, yiyecek arzını geliştirir ve savaşçı dalgaları toplar.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1249,37 +1255,37 @@ Hâlâ çalışıyor: %0
 [AI strategy & counterplay]
 Yapay zekâ stratejisi ve karşı taktikler
 [AICastor-Profile]
-Strateji: Dikkatli bir şekilde genişler ve az sayıda kaynağa sahip haritalarda iyi performans gösterir.\n\nGüçlü Yönler: Sınırlı genişleme, kıt kaynaklara sahip oyunlarda etkilidir.\n\nKarşı taktik önerisi: Bölgeyi erken işgal edin. Kaynak eksikliğinin bu yapay zekâyı zayıflatacağını varsaymayın.
+Temel strateji: Büyük saldırılara girişmeden önce üretken bir koloniye ve teknolojiye yatırım yapar. Öncelikli inşaat projeleriyle yerleşimini geliştirir; gelişim, askerî altyapı ve zaman savaşa hazırlığını artırır.\n\nEkonomi ve gelişim: Nemi, buğday büyümesini, engelleri ve işçilerin erişimini inceler. Üretimle birlikte gıda kapasitesinin genişlemesini, yükseltmeleri ve savunmayı yönetir.\n\nSaldırı ve savunma: Sağlıklı savaşçıların saldırı gücünü tahmin eder; güç veya zaman koşulları sağlanınca saldırır. Daha önce görülmüş, erişilebilir binaları, özellikle kışla ve akademileri tercih eder; saldırı bayraklarını değerli hedeflere taşır.\n\nDiğer yapay zekâlarla karşılaştırma: Araziyi ve hedef değerini Numbi'den daha dikkatli değerlendirir. Warrush'tan daha sabırlıdır; erken baskı yerine gelişmiş bir üs ve güçlü birlikler kurar.\n\nGüçlü ve zayıf yanları: Kapsamlı altyapı planlaması ve değerli askerî hedefler saldırılarına amaç kazandırır. Hazırlık zaman alır; hızlı rakipler ana güç hazır olmadan kaynaklara meydan okuyabilir.\n\nDenenecek karşı hamleler: Genişlemesini erken engelleyin. Gıda kadar kışla ve akademileri de koruyun; gelişmiş yerleşimine saldırırken yedek kuvvet bırakın.
 [AICastor-Summary]
-Dikkatli genişleme; kıt kaynaklarla iyi performans gösterir.
+Tahkim edilmiş bir koloni geliştirir, ardından askerî ve bilimsel binaları vurur.
 [AICortex-Profile]
-Strateji: Yiyecek tedarikini yönetir, yeni buğday tarlalarına doğru genişler ve birbirini izleyen savaşçı gruplarını bir araya getirir. Cephe hattı yakınındaki hanlar ve hastaneler, üsten uzaktaki saldırıları destekliyor.\n\nGüçlü Yönleri: Birlikte takviye gönderir, askeri baskıyı sürdürür ve yiyecek kıtlığına tepki verir.\n\nKarşı taktik önerisi: Yeni buğday tarlalarının kontrolü için savaşın ve ön cephe yakınındaki destek binalarına saldırın. Savaşçı grupları hazır olmadan saldırın.\n\nDeneysel yapay zekâ. Orta zorluk; karşı taktik önerileri kıyaslama puanları değildir.
+Temel strateji: Tepkisel önceliklerle işleyen bir ekonomi kurar, fazla emeği gıda, teknoloji ve askerî baskıya dönüştürür. Normal politikası kurallara dayanır; öğrenilmiş politika deneyleri ayrı yapılandırma ister.\n\nEkonomi ve gelişim: İşçi üretimini personel talebine göre ayarlar ve doğumları sürdürür. Gıda sorunları genişleme ve teknoloji harcamalarını kısar. Su üzerinden erişim belirgin yarar sağlayacaksa yüzme ekler.\n\nSaldırı ve savunma: Gözlenen düşman teknolojisine ve mevcut birliklere göre saldırı hazırlar. Su geçişi içeren seferlerde yüzebilen savaşçılar gerekir. Uzun seferleri ileri oteller ve hastanelerle destekler, ilerlemeden önce kuvvetleri toplayabilir.\n\nKararlılık ve acil durumlar: Küçük tacizler yüzünden tekrar tekrar eve dönmek yerine saldırıyı sürdürür. Ciddi saldırılar savunmacıları geri çağırabilir. Erken acil durumlar yalnızca savaşçı üretimine ve hastane yapımına; kıtlık ise daha küçük bir çaresizlik saldırısına yol açabilir.\n\nDiğer yapay zekâlarla karşılaştırma: İleri desteğe Warrush'tan daha çok önem verir. Maxima, tahmin edilen düşman gücüne göre sürdürülebilir doğum, eğitim ve konuşlandırmayı bütçelemede daha ileri gider.\n\nGüçlü ve zayıf yanları: Baskıyı gıda, tedavi ve erişilebilirlikle bağlar. İleri altyapı ikmal ister; süren doğumlar sınırlı gıdayı zorlamaya devam edebilir. Acil öncelikler büyüme ile hayatta kalma arasında seçim gerektirir.\n\nDenenecek karşı hamleler: İleri otelleri, hastaneleri ve buğdayı zorlayın. İlerleyişine karşı savunmacıları bir arada tutun; küçük tacizler onu geri çekilmeye ikna etmeyebilir.\n\nKeşif: Keşfedilen düşman binalarını ve gözlenen düşman birliklerini kullanır.
 [AICortex-Summary]
-Gıdayı gözeten büyüme ve destekli saldırı dalgaları.
+Kararlı askerî ilerleyişleri cephede gıda ve tedaviyle destekler.
 [AINicowar-Profile]
-Strateji: Hızla genişler ve devasa ordularla rakiplere saldırır.\n\nGüçlü Yönler: Hızlı genişleme agresif askeri saldırıları destekler.\n\nKarşı taktik önerisi: Genişlemesini önleyin. Aynı anda savaşabilecek düşman birliklerinin sayısını azaltmak için araziyi kullanın.
+Temel strateji: Örtüşen koşullarla büyüme, eğitim, yükseltme ve savaşı birleştirir. Genişlerken saldırabilir, beslenme aksadığında ekonomik çabayı toparlanmaya yönlendirebilir.\n\nAçılış: Oyunla gelen saldırgan profil toplam beş birimde savaş hazırlığına başlar ve sıfır seviyeliler dahil beş savaşçıyla savaşa izin verir. Her birinde beş savaşçı bulunan üç saldırı bayrağını hedefler. Özel strateji dosyaları bu eşikleri değiştirebilir.\n\nEkonomi ve gelişim: Gıda ve doğum kapasitesini artırır, işçileri eğitir, yüzme ve hareketi geliştirir, binaları yükseltir. Gıda personelini ayarlar, açlığa yanıt verir ve meyve arar.\n\nSaldırı ve savunma: Saldırılar için erişilebilir düşman binalarından rastgele örnek seçer. Kaynakların kapattığı yolları temizleme bayraklarıyla açabilir. Savunma bayrakları tehdit altındaki birim ve bina kümelerini korur. İleride kara saldırısı eğitimi almış kâşifler düşman birim gruplarını hedefler.\n\nDiğer yapay zekâlarla karşılaştırma: Warrush'ın erken saldırganlığını paylaşır, ama devamı daha kapsamlıdır. Cabino'nun aksine hastane ve otellere sürekli öncelik vermez.\n\nGüçlü ve zayıf yanları: Geniş taktik kapsamı erken baskıyı süren gelişimle birleştirir. Rastgele hedef seçimi daha az değerli binalara emek harcayabilir. Eşikleri, Maxima'nın ayrıntılı karşı kuvvet tahminini sağlamaz.\n\nDenenecek karşı hamleler: Erken saldırı bekleyin. Gıdayı ve işçileri koruyun, genişlemeyi engelleyin; ileri eğitime ulaşırsa kâşif saldırılarına hazırlanın.
 [AINicowar-Summary]
-Hızla genişler ve agresif saldırılar için büyük ordular oluşturur.
+Tarım, yükseltme, savunma ve kâşif saldırılarıyla desteklenen erken hücum.
 [AINone-Profile]
 Strateji: Yapay zeka hiçbir komut vermez.\n\nGüçlü Yönleri: Deneyler için tahmin edilebilir, aktif olmayan bir rakip.\n\nZayıf Yönler: Genişlemez veya uyum sağlamaz.
 [AINone-Summary]
 Denemeler için hareketsiz bir koloni.
 [AINumbi-Profile]
-Strateji: Hızlı ama küçük ölçekte genişler. Koloni yönetimini uygulamak için daha kolay bir rakip.\n\nGüçlü Yönler: Hem ekonomik yönetimi hem de savaşı öğrenmenizi sağlar.\n\nKarşı taktik önerisi: Daha güçlü bir ekonomi geliştirin ve saldırmadan önce ordunuzu eğitin.
+Temel strateji: Önce gıda ve nüfus oluşturur; tedavi, bilim ve eğitim ekler, ardından savaşa yönelir. Genel aşamaları rakibin ilerlemesine göre değil, zamana göre ilerler.\n\nEkonomi ve gelişim: Bina talebini nüfusa göre ölçekler, yakındaki buğdayı tahmin eder. Sonraki aşamalar büyüyen ordusunu desteklemek için yükseltme, savunma ve genişleme ekler.\n\nSaldırı ve savunma: Yeterli sağlıklı savaşçı olduğunda veya bekleme süresi dolduğunda saldırır. Rastgele seçilen düşman binalarına savaş bayrağı koyar. Savaş gücü çok azalınca saldırı bayraklarını kaldırır ve sonraki denemenin eşiklerini yükseltir.\n\nDiğer yapay zekâlarla karşılaştırma: Castor veya Nicowar'dan daha öngörülebilirdir. Castor araziyi ve hedef değerini daha dikkatli ele alır; Nicowar çok daha erken baskı kurar.\n\nGüçlü ve zayıf yanları: Kesintisiz gelişimden sonra kapsamlı destek altyapısı onu tehlikeli kılabilir, fakat takvimi savaşa uymayabilir. Basit hedef seçimi ve kayıplardan sonraki uzun aralar saldırıları öngörmeyi kolaylaştırır.\n\nDenenecek karşı hamleler: Askerî aşamasından önce baskı kurun. Saldırılarınızın gerisinde gıdayı ve eğitimi geliştirin; hücumu yendikten sonraki aradan yararlanın.\n\nKeşif: Saldırı yordamı, görünürlük denetimi olmadan düşman bina konumlarını doğrudan okur.
 [AINumbi-Summary]
-Küçük ölçekte hızlı genişleme.
+Takvime göre koloniyi yavaşça kurar, sonra sayısal güçle saldırır.
 [AIEcono-Profile]
-Strateji: Saldırmaz ancak devasa üsler inşa eder ve düşman birimlerini aktif olarak kendi tarafına çeker.\n\nGüçlü Yönler: Genişleme ve birim dönüştürme, doğrudan saldırı olmadan rakipleri tehdit eder.\n\nKarşı taktik önerisi: Koloninizi erkenden geliştirin ve düşmanın onları dönüştürebileceği yerlere birimleri göndermekten kaçının.
+Temel strateji: İşçi ve kâşif üretir, ekonomisini genişletir, gıda ve meyveyle düşman birimlerini çeker. Geleneksel bir savaşçı taarruzu yoktur.\n\nEkonomi ve gelişim: Buğday yakınında oteller ve yuvalar kurar, öğrenim ve hareket eğitimi ekler, altyapıyı yükseltir. Gıda arzını izler; kaynak konumları kötüleşen eski otel ve yuvaları yenileriyle değiştirir.\n\nTarım ve taraf değiştirme: Su yakınındaki yenilenebilir buğdayı ve odunu korur. Kâşifleri meyve alanlarına ve düşman kolonilerine yollar, meyve tedariki ararken düşmana gıdasını duyurur. Daha iyi gıda ve meyve birim çekmeye yardım edebilir.\n\nDiğer yapay zekâlarla karşılaştırma: Ekonomide en uzmanlaşmış rakiptir. Cabino ve Maxima da meyve arar, ama bunu ordularla birleştirir.\n\nGüçlü ve zayıf yanları: Askerî rakipler birbirini tüketirken büyüyebilir; birimlerin taraf değiştirmesi başka bir rekabet yoludur. Sürekli hücuma karşılık verecek savaşçı üretmez. Gıda, meyve, coğrafya ve zafer kuralları fırsatlarını güçlü biçimde etkiler.\n\nDenenecek karşı hamleler: Açıkta kalan genişlemeye baskı kurun. Birimlerinizi tutmak için kendi otellerinize gıda ve meyve sağlayın. O büyürken koloninizi gereksiz savaşlarla tüketmeyin.
 [AIEcono-Summary]
-Saldırmak yerine dev üsler kurar ve düşman birimlerini tarafına çeker.
+Savaşçı üretmeden gıda zengini bir koloni kurar ve taraf değiştiren birimler için yarışır.
 [AIWarrush-Profile]
-Strateji: Rakipler hazırlıklarını bitirmeden önce erken ve güçlü saldırılar.\n\nGüçlü Yönler: Savunmasız genişlemeden ve yavaş askeri hazırlıktan yararlanır.\n\nKarşı taktik önerisi: İlk saldırıda ekonominizi koruyarak hayatta kalın, ardından karşı saldırı yapın.
+Temel strateji: Rakipler uzun ekonomik veya teknolojik hazırlıklarını bitirmeden saldırır. Büyük bir destek ağı gerekmeden önce savaşın sonucu belirlemesini bekler.\n\nEkonomi ve gelişim: Altı birim hasat yapabilir olduğunda üretimi dört işçi, bir kâşif ve üç savaşçı oranına ayarlar. Eğitim doldukça kışla ekler, ancak yeni otelleri sınırlar. Boş inşaat kapasitesi çoğunlukla hastanelere ve hareket eğitimine gider.\n\nSaldırı ve savunma: Savaşçıların sürekli baskı yapması için keşfedilen düşman binalarını koruma alanlarıyla işaretler. Özenle toplanmış bir dalgayı beklemez. Engelleyen odunu temizler ve bazı yenilenebilir kaynakları korur.\n\nMeyve politikası: Meyve toplamayı yasaklayarak meyvenin zırh cezalarından kaçınır ve Econo'nun birimlerin taraf değiştirmesine dayanan stratejisini benimsemez.\n\nDiğer yapay zekâlarla karşılaştırma: Erken baskıya Numbi veya Castor'dan daha çok bağlıdır. Nicowar da saldırgan başlar, fakat daha geniş yükseltme ve taktik programıyla devam eder.\n\nGüçlü ve zayıf yanları: Yavaş açılışları cezalandırır, erken savunma harcamasını zorlar. Sınırlı sistematik yükseltme ve dar gıda desteği, duran saldırıyı pahalı kılar. Arazi ve uzun yolculuklar erken üstünlüğünü aşındırabilir.\n\nDenenecek karşı hamleler: Otelleri ve yuvaları erkenden koruyun. Savunmacıların yanında işçileri de yenileyin, eğitimi geliştirin; hücum ivmesini kaybedince karşı saldırın.\n\nKeşif: Açılış keşif bayrakları düşmanın başlangıç konumlarını doğrudan kullanır. Sonraki saldırı alanı yerleştirmeleri görünürlük gerektirir.
 [AIWarrush-Summary]
-Erken savunmanızı test eden hızlı saldırılar.
+Bilerek dar tutulan destek ekonomisiyle erken savaşçı baskısı kurar.
 [AICabino-Profile]
-Temel strateji: her biri kendi inisiyatifiyle hareket eden ama tek bir plana yönelen bağımsız uzman departmanlardan (savunma, saldırı, inşa, yükseltmeler, birim yönetimi) oluşan bir kabine: hızlı büyüme, ardından rakiplere dev ordular gönderme.\n\nGüçlü yönler: hızlı yayılma saldırgan askeri baskıyı destekler; bağımsız departmanlar merkezi bir planı beklemeden yerel tehditlere hızla tepki verir.\n\nDenenecek karşı oyun: yayılmasına erken karşı çıkın ve aynı anda çarpışabilecek birlik sayısını sınırlamak için araziyi kullanın.
+Temel strateji: Birim üretimini inşaat, yükseltme, savunma, saldırı ve keşif arasında paylaştırır. Ayrı yöneticiler birim ister ve ayırır; ekonomi ile ordu birlikte gelişir.\n\nEkonomi ve gelişim: Çeşitli tesislerden oluşan bir yerleşim kurar ve yükseltir, otel ve kule personelini yönetir, bina çevrelerini temizler, yenilenebilir kaynakları korur. Meyve keşfeder ve taraf değiştirecek birimleri çekmek için gıdasını duyurur.\n\nSaldırı ve savunma: Bir düşman seçer; önce hastaneleri, sonra otelleri, sonra kışlaları önceler. Dört saldırıya kadar destekler; mevcut kuvvet ve yakındaki düşmanlara göre hedef başına genellikle sekiz ila yirmi savaşçı ayırır. Tehdit altındaki binaların çevresinde ayrı savunma bayrakları kullanır.\n\nEğitim: Saldırı için yeterli uygun savaşçı ve tamamlanmış bir kışla ister, ama en yüksek teknolojiyi beklemez. Süren yükseltme ve eğitim sonraki saldırıları güçlendirir.\n\nDiğer yapay zekâlarla karşılaştırma: Destek binalarını yıkmada Nicowar'dan daha amaçlıdır. Maxima'nın toplanmış dalgalarına göre saldırılarını daha çok yayar; çakışan talepleri birim ayırarak yönetir.\n\nGüçlü ve zayıf yanları: Büyüme, eğitim, savunma ve birden fazla saldırıyı birleştirir. Gıda ve tedaviyi yok etmek tüm koloniyi zayıflatabilir. Rastgele rakip seçimi ve sabit bina öncelikleri fırsatları kaçırabilir; çoklu saldırılar kuvveti bölebilir.\n\nDenenecek karşı hamleler: Hastaneleri ve otelleri savunun. Açıkta kalan genişlemeyi zorlayın, tek tek saldırılara karşı savunmacıları yoğunlaştırın. Birden fazla cepheyi sürdürebilmeden gıda veya eğitime zarar verin.\n\nKeşif: Saldırı seçicisi açık bir görünürlük denetimi olmadan düşman bina listelerini okur. Bazı ekonomik karşılaştırmalar düşman istatistiklerini doğrudan kullanır.
 [AICabino-Summary]
-Hızlı büyüme ve devasa ordular için iş birliği yapan bağımsız departmanlar.
+Koloni büyümesini ve eğitimli saldırıları koordine eder; önce tedavi ve gıdayı hedefler.
 [Algae]
 Yosun
 [Alliances]
@@ -1988,6 +1994,10 @@ Patika genişliği
 Virajlar arası duvar
 [Farm building plots]
 Çiftliklerde yapı arsaları
+[Sand bridges over water]
+Su üzerinde kum köprüler
+[Sand lanes through crops]
+Ekinler arasından kum yollar
 [Carousels need at least two colonies.]
 Atlıkarınca en az iki koloni gerektirir.
 [Switchbacks need at least two colonies.]
@@ -2190,24 +2200,22 @@ Parametreleri rastgele seç
 Başlangıç kalitesi
 [Fairness]
 Adalet
-[Score]
-Puan
-[Weight]
-Ağırlık
+[Fitness]
+Güç
+[Win chance]
+Kazanma şansı
+[Coefficient]
+Katsayı
+[Average]
+Ortalama
+[Fitted on games:]
+Uydurulan oyun sayısı:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Her koloninin başlangıcı tamamlanmış haritada ölçülür ve denk rakipler arasındaki binlerce oyuna uydurulmuş bir model bu ölçümleri güce dönüştürür. Güç, o koloninin kazanma olasılığını gösterir. Adalet, bu şansların ne kadar eşit dağıldığını gösterir: her koloninin kazanma şansı eşit olduğunda 1, tek bir koloni haritayı ele geçirecekse 0.
 [Worst]
 En kötü
 [Best]
 En iyi
-[Fertility]
-Verimlilik
-[Deposits]
-Yataklar
-[Room]
-Alan
-[Isolation]
-Uzaklık
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Her koloninin başlangıcı bitmiş haritada ölçülür: buğdaya ve oduna yürüme mesafesi, toprağının ne kadar iyi yeniden yeşerdiği, erişilebilir yataklar ve inşaat alanları ile rakiplere olan uzaklığı. Her etken sabit bir ölçüte göre 0 ile 1 arasında puanlanır, toplam bunları ağırlıklandırır, adalet en kötü koloninin toplamının en iyisine bölümüdür ve puan en kötü toplam çarpı adalettir.
 [Map preview controls]
 Kenarları geçmek için sürükleyin. Tekerlekle yakınlaştırın. Sıfırlamak için sağ veya çift tıklayın.
 [Map preview drag help]
@@ -2265,9 +2273,9 @@ Yiyecek/dak
 [Stats occupancy]
 Beslenme / tedavi
 [Stats page one]
-İstatistikler 1/2 >
+İstatistikler 1/3 >
 [Stats page two]
-İstatistikler 2/2 >
+İstatistikler 2/3 >
 [Stats next page]
 Sayfa (P)
 [Map preview choose another]
@@ -2390,3 +2398,1001 @@ Kapalı (zamanlayıcı yok)
 60 dakika
 [Sudden-death timer]
 Ani ölüm zamanlayıcısı
+[Stats page three]
+İstatistikler 3/3 >
+[Stats blocked units]
+Birimler S/C
+[Stats blocked buildings]
+Binalar S/C
+[Stats blocked buildings swim]
+Yüz S/C
+[Stats current blocked units]
+Birimler C
+[Stats current blocked buildings]
+Binalar C
+[Stats growth global]
+Kaynaklar +
+[Stats growth new tiles]
+Kaynaklar +#
+[Stats growth reductions]
+Kaynaklar -
+[Stats growth per minute]
+Buğday +/min
+[Stats growth near 8]
+Kaynaklar + <=8
+[Stats growth near 16]
+Kaynaklar + <=16
+[Stats growth near 32]
+Kaynaklar + <=32
+[Stats low HP 25]
+Can <=25%
+[Stats low HP 50]
+Can <=50%
+[Stats low HP 75]
+Can <=75%
+[Stats low food 25]
+Besin <=25%
+[Stats low food 50]
+Besin <=50%
+[Stats low food 75]
+Besin <=75%
+[Stats structural units]
+Birimler S
+[Stats structural buildings]
+Binalar S
+[Stats low HP ranges]
+Can: <=25/50/75%
+[Stats low food ranges]
+Besin: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emoji karakteri
+[Smiley]
+Gülen yüz
+[Sad face]
+Üzgün yüz
+[Winking face]
+Göz kırpan yüz
+[Surprised face]
+Şaşkın yüz
+[Heart eyes]
+Kalp gözler
+[Sunglasses]
+Güneş gözlüğü
+[Heart]
+Kalp
+[Star]
+Yıldız
+[Neutral face]
+Nötr yüz
+[Sleeping face]
+Uyuyan yüz
+[Grinning face]
+Sırıtan yüz
+[Kissing face]
+Öpücük veren yüz
+[Angry face]
+Kızgın yüz
+[Tongue out]
+Dil çıkaran yüz
+[Skull]
+Kafatası
+[Flower]
+Çiçek
+[Four-leaf clover]
+Dört yapraklı yonca
+[Teardrop]
+Damla
+[Cloud]
+Bulut
+[Gem]
+Mücevher
+[Apple]
+Elma
+[Speech bubble]
+Konuşma balonu
+[Shield]
+Kalkan
+[Emoji style]
+Emoji biçimi
+[Outline]
+Ana hat
+[Filled]
+Dolu
+[Emoji terrain]
+Emoji arazisi
+[Regular]
+Normal
+[Inverse]
+Ters
+[Crossings]
+Geçitler
+[Forts]
+Kaleler
+[Gate width]
+Kapı genişliği
+[Braided Delta]
+Örgülü delta
+[Braid count]
+Kol sayısı
+[Rejoining frequency]
+Birleşme sıklığı
+[Crossing spacing]
+Geçit aralığı
+[Breachable highlands]
+Geçit açılabilen yaylalar
+[Ridge depth]
+Sırt kalınlığı
+[Extra open passes]
+Ek açık geçitler
+[Wooded saddles]
+Ormanlık geçitler
+[Hedgerow Country]
+Çitli kırlar
+[Field size]
+Tarla boyutu
+[Hedge thickness]
+Çit kalınlığı
+[Existing gateways]
+Mevcut geçitler
+[Wooded boundary share]
+Ağaçlık sınır oranı
+[The Glacis]
+Glasi
+[Allotments]
+Hobi Bahçeleri
+[Caravanserai]
+Kervansaray
+[Mixed]
+Karışık
+[Fort size]
+Kale boyutu
+[Bastions]
+Tabyalar
+[Four-pointed]
+Dört köşeli
+[Five-pointed]
+Beş köşeli
+[Six-pointed]
+Altı köşeli
+[Glacis width]
+Şev genişliği
+[Gates]
+Kapılar
+[Site size]
+Parsel boyutu
+[Plot width]
+Tarh genişliği
+[Plot mix]
+Tarh karışımı
+[Tended]
+Bakımlı
+[Overgrown]
+Bakımsız
+[Commons]
+Ortak meralar
+[Few]
+Az
+[Some]
+Birkaç
+[Home oasis size]
+Yurt vahası boyutu
+[Caravanserais per colony]
+Koloni başına kervansaray
+[Desert]
+Çöl
+[Open erg]
+Açık erg
+[Dunes and mesas]
+Kum tepeleri ve mesalar
+[Canyon country]
+Kanyon diyarı
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Bir kale geçidine ulaşamıyor; daha büyük bir harita veya daha az koloni kullanın.
+[A wall would stand on a beach; try another seed.]
+Bir duvar kumsalda kalacak; başka bir tohum deneyin.
+[The fort is too small for its gardens; raise Fort size.]
+Kale bahçeleri için çok küçük; kale boyutunu artırın.
+[The home oasis is too small; raise Home oasis size.]
+Yurt vahası çok küçük; yurt vahası boyutunu artırın.
+[Braided river]
+Örgülü nehir
+[Braid width]
+Örgü genişliği
+[Bar size]
+Çakıl seti boyutu
+[Extra riffles]
+Ek sığ geçitler
+[Moraine hummocks]
+Moren tümsekleri
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Örgü, üsler için çok az teras bırakıyor; daha büyük bir harita veya daha dar bir örgü kullanın.
+[The map is too narrow across for a braid; use a bigger map.]
+Harita enine bir örgü için çok dar; daha büyük bir harita kullanın.
+[Drumlin field]
+Drumlin alanı
+[Drumlin spacing]
+Drumlin aralığı
+[Drumlin length]
+Drumlin uzunluğu
+[Water gap]
+Su boşluğu
+[Esker loops]
+Esker döngüleri
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskerler tüm drumlinleri birleştiremedi; daha küçük bir su boşluğu veya daha büyük bir harita kullanın.
+[Continents]
+Kıtalar
+[Continent]
+Kıta
+[North America]
+Kuzey Amerika
+[South America]
+Güney Amerika
+[Africa]
+Afrika
+[Europe]
+Avrupa
+[Asia]
+Asya
+[Oceania]
+Okyanusya
+[Orientation]
+Yön
+[Turn to fit]
+Sığdırmak için döndür
+[Upright]
+Döndürmeden
+[Mountain ranges]
+Sıradağlar
+[Great rivers]
+Büyük nehirler
+[Islets]
+Adacıklar
+[Oases]
+Vahalar
+[The world atlas has no such continent.]
+Dünya atlasında böyle bir kıta yok.
+[The map is too small to hold a continent.]
+Harita bir kıtayı sığdıramayacak kadar küçük.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Bu kıtada bu harita boyutunda bu kadar koloni için yer yok; daha büyük bir harita veya daha az koloni kullanın.
+[Savannah]
+Savan
+[Watering holes]
+Su birikintileri
+[Dry patches]
+Kurak alanlar
+[Sparse]
+Az
+[Normal]
+Normal
+[Many]
+Çok
+[Rice terraces]
+Pirinç terasları
+[Unoccupied hills]
+Boş tepeler
+[Hill radius]
+Tepe yarıçapı
+[Contour band width]
+Eşyükselti şeridi genişliği
+[Stairs per hill]
+Tepe başına merdiven
+[Valley river]
+Vadi nehri
+[Hills]
+Tepeler
+[Hillsides]
+Yamaçlar
+[Terraces per slope]
+Yamaç başına teras
+[Waviness]
+Dalgalılık
+[Stair spacing]
+Merdiven aralığı
+[Locust]
+Çekirge
+[Plantations]
+Plantasyonlar
+[Plot size]
+Yapı arsası boyutu
+[Farm width]
+Tarla genişliği
+[Islands per colony]
+Koloni başına ada
+[Outpost inns]
+Karakol otelleri
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Adalar kendi arsaları için çok küçük; daha büyük bir harita, daha küçük bir arsa veya daha az koloni kullanın.
+[Sierpiński Gardens]
+Sierpiński Bahçeleri
+[Hilbert River]
+Hilbert Nehri
+[Maximum nesting]
+En fazla iç içe geçme
+[Minimum terminal district side]
+En küçük uç bölge kenarı
+[Major crossing pairs]
+Ana geçiş çiftleri
+[Maximum fold depth]
+En fazla kıvrım derinliği
+[Minimum land spacing]
+En az kara aralığı
+[Optional local crossings per parent]
+Üst bölge başına isteğe bağlı yerel geçişler
+[Optional major shortcuts]
+İsteğe bağlı ana kestirmeler
+[Lava shield]
+Lav kalkanı
+[Lava tongues]
+Lav dilleri
+[Long tongues]
+Uzun lav dilleri
+[Crater rim width]
+Krater kenarı genişliği
+[Honeycomb isle]
+Petek adası
+[Blocks per colony]
+Koloni başına blok
+[Rubble]
+Moloz
+[Outline gaps]
+Ana hat gedikleri
+[Craters per colony]
+Koloni başına krater
+[Wheat fields]
+Buğday tarlaları
+[Bridges]
+Köprüler
+[Karst towers]
+Karst kuleleri
+[Tower spacing]
+Karst kulesi aralığı
+[Tower density]
+Karst kulesi yoğunluğu
+[Paddy depth]
+Çeltik tarlası genişliği
+[Home design]
+Üs tasarımı
+[Horseshoe]
+At nalı
+[Twin gates]
+İkiz kapılar
+[Three gates]
+Üç kapı
+[Four gates]
+Dört kapı
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Nehirler üsler arasında yol bulamadı; daha büyük bir harita veya daha az koloni kullanın.
+[River meander]
+Nehir kıvrımlılığı
+[Flooded terraces]
+Su basmış teraslar
+[Sinkholes]
+Obruklar
+[Bajada]
+Alüvyon yelpazeleri
+[Range spacing]
+Sıradağ aralığı
+[Ridge width]
+Sırt genişliği
+[Passes]
+Geçitler
+[Fans per range]
+Sıradağ başına yelpaze
+[Stream reach]
+Dere uzunluğu
+[Playa]
+Tuz gölleri
+[Broad fan]
+Geniş yelpaze
+[Long fan]
+Uzun yelpaze
+[Twin springs]
+İkiz kaynaklar
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Yelpaze yamaçları üsler için çok dar; daha büyük bir harita, daha geniş sıradağ aralığı, daha dar sırtlar veya daha küçük tuz gölleri kullanın.
+[Central Quarry]
+Merkez Taş Ocağı
+[Quarry size]
+Taş ocağı boyutu
+[Sand bars]
+Kum dilleri
+[Woodland]
+Ormanlık
+[Central Quarry needs at least two colonies.]
+Merkez Taş Ocağı için en az iki koloni gerekir.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Göl bu haritaya sığmıyor; daha küçük bir göl veya daha büyük bir harita kullanın.
+[A sand bar did not reach the island.]
+Bir kum dili adaya ulaşmadı.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Bu haritada bu kadar koloni için yer yok; daha büyük bir harita veya daha az koloni kullanın.
+[The island has no room for its quarry; use a bigger island.]
+Adada taş ocağı için yer yok; daha büyük bir ada kullanın.
+[Hidden Oasis]
+Gizli Vaha
+[Pond algae]
+Gölet yosunu
+[Starting towers]
+Başlangıç kuleleri
+[Starting school]
+Başlangıç akademisi
+[Mesas]
+Masa dağları
+[Springs]
+Pınarlar
+[Hidden Oasis needs at least two colonies.]
+Gizli Vaha için en az iki koloni gerekir.
+[Hidden Oasis holds at most eight colonies.]
+Gizli Vaha en fazla sekiz koloni alır.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Kaya kütlesi bu haritaya sığmıyor; daha büyük bir harita veya daha az koloni kullanın.
+[The pond has no room for that much algae; use a bigger pond.]
+Gölette bu kadar yosun için yer yok; daha büyük bir gölet kullanın.
+[Even Ground]
+Eşit Zemin
+[Balance]
+Dengeleme
+[Tight passes]
+Dar geçitler
+[Solver effort]
+Çözücü çabası
+[Brief]
+Kısa
+[Patient]
+Sabırlı
+[This map is too small to solve on; use a bigger map.]
+Bu harita çözülmek için çok küçük; daha büyük bir harita kullanın.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Bu boyutta bir haritada dengelenemeyecek kadar çok koloni var; daha büyük bir harita veya daha az koloni kullanın.
+[The colonies could not be spread out on this map.]
+Koloniler bu haritaya yayılamadı.
+[Marchland]
+Sınır Bölgesi
+[Prizes on the rope]
+Halattaki ödüller
+[March width]
+Sınır bölgesi genişliği
+[Levelling]
+Eşitleme
+[A march needs a country on each side; use at least two colonies.]
+Bir sınır bölgesi her iki yanında bir ülke gerektirir; en az iki koloni kullanın.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Bu haritanın her birine bir anayurt verebilmesi için çok fazla koloni var; daha büyük bir harita veya daha az koloni kullanın.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Bu haritada kolonileri yaymak için yer yok; daha büyük bir harita veya daha az koloni kullanın.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Bir koloninin anayurdunun sınır bölgesine çıkışı yok; daha büyük bir harita veya daha dar bir sınır bölgesi kullanın.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Bir koloninin anayurdunda yuva için yer yok; daha büyük bir harita, daha az koloni veya daha dar bir sınır bölgesi kullanın.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Sınır bölgesinde bu kadar ödül için çok az çekişmeli alan var; daha az ödül, daha geniş bir sınır bölgesi veya daha büyük bir harita kullanın.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Sınır bölgesinde bir ödül için yer yok; daha büyük bir harita, daha az koloni veya daha geniş bir sınır bölgesi kullanın.
+[Orchard Commons]
+Ortak Meyve Bahçeleri
+[Orchard spacing]
+Meyve bahçeleri aralığı
+[Compact]
+Yakın
+[Balanced]
+Dengeli
+[Spread]
+Seyrek
+[The Gauntlet]
+Sınav arenası
+[Partition thickness]
+Bölme duvarı kalınlığı
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Sınav arenasında her koloniye iki korunan giriş sığdırmak için daha büyük bir harita veya daha az koloni gerekir.
+[The Comb]
+Tarak
+[Peninsulas per shore]
+Kıyı başına yarımada
+[Encircled Kingdom]
+Kuşatılmış Krallık
+[Fortress plan]
+Kale planı
+[Automatic]
+Otomatik
+[Elongated enclosure]
+Uzun sur çevresi
+[Bastioned enclosure]
+Tabyalı sur çevresi
+[Paired courtyards]
+İkiz avlular
+[Heartland farmland]
+Merkezdeki tarım arazisi
+[The Faulted City]
+Kırılmış Şehir
+[Fault displacement]
+Fay yer değiştirmesi
+[Fault width]
+Fay genişliği
+[Ruin density]
+Harabe yoğunluğu
+[Surviving junctions]
+Korunan kavşaklar
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Kırılmış Şehir, her kenarda 256 veya 512 kare ve bir ila on iki koloni gerektirir.
+[The city has too few usable junctions.]
+Şehirde kullanılabilir kavşak sayısı çok az.
+[A city neighbourhood lacks reachable crops or building room.]
+Şehrin bir mahallesinde erişilebilir ekin veya inşaat alanı eksik.
+[The city neighbourhoods are too unequal; try another seed.]
+Şehrin mahalleleri çok dengesiz; başka bir tohum deneyin.
+[The fractured civic plaza did not survive.]
+Kırılmış şehir meydanı korunamadı.
+[Who Ate the Map?]
+Haritayı kim yedi?
+[Appetite]
+İştah
+[A Little Nibble]
+Küçük bir ısırık
+[Hungry]
+Aç
+[Portage Lakes]
+Göller ve orman geçitleri
+[Lake elongation]
+Göl uzunluk oranı
+[Portage depth]
+Orman geçidi kalınlığı
+[Extra trails]
+Ek patikalar
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Bu haritanın kenarları 64 ile 512 kare arasında olmalıdır.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Bu tohumla kıyılara yerleşimler sığdırılamıyor.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Her yerleşimin yanına yenilenebilir kıyı tarlaları sığdırılamıyor.
+[Portage Lakes cannot connect its shoreline trails.]
+Kıyı patikaları birbirine bağlanamıyor.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Bu tohumla kuru ormandan geçen yararlı bir kestirme oluşturulamıyor.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Bu tohumla yüzerek kullanılabilecek yararlı bir kestirme oluşturulamıyor.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Bu tohumda yüzülebilen göllerin birbirinden ayrı kalması gerekir.
+[Drowned Forest]
+Sular altında kalan orman
+[Sandbar connections]
+Kum geçidi bağlantıları
+[Wooded neck thickness]
+Ağaç engellerinin kalınlığı
+[Neutral clearing size]
+Tarafsız açıklıkların boyutu
+[Bastion Keys]
+Burç Adacıkları
+[Plantation size]
+Plantasyon boyutu
+[Outlying islands]
+Dış adalar
+[The Hungry Marches]
+Aç Sınır Toprakları
+[Opening ration]
+Başlangıç erzağı
+[Central concentration]
+Merkezde yoğunlaşma
+[The Last Treeline]
+Son orman kuşağı
+[Woodland depth]
+Koruların genişliği
+[Fertility]
+Verimlilik
+[Deposits]
+Yataklar
+[Room]
+Alan
+[Isolation]
+Uzaklık
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Her koloninin başlangıcı bitmiş haritada ölçülür: buğdaya ve oduna yürüme mesafesi, toprağının ne kadar iyi yeniden yeşerdiği, erişilebilir yataklar ve inşaat alanları ile rakiplere olan uzaklığı. Her etken sabit bir ölçüte göre 0 ile 1 arasında puanlanır, toplam bunları ağırlıklandırır, adalet en kötü koloninin toplamının en iyisine bölümüdür ve puan en kötü toplam çarpı adalettir.
+[ERROR_CANT_SAVE_MAP]
+Harita kaydedilemedi. Hedefi ve kullanılabilir alanı kontrol edin. Düzenlemeleriniz hâlâ açık.
+[Loading headers]
+Başlıklar yükleniyor...
+[Loading teams]
+Takımlar yükleniyor...
+[Loading terrain]
+Arazi yükleniyor...
+[Building gradients]
+Gradyanlar oluşturuluyor...
+[Loading players]
+Oyuncular yükleniyor...
+[Loading scripts]
+Betikler yükleniyor...
+[Generating map]
+Harita oluşturuluyor...
+[ERROR_CANT_GENERATE_MAP]
+Harita oluşturulamadı. Farklı oluşturma ayarları deneyin.
+[Loading units]
+Birimler yükleniyor...
+[Loading buildings]
+Binalar yükleniyor...
+[Resolving team links]
+Takım bağlantıları çözümleniyor...
+[saving to storage]
+Kaydediliyor...
+[save failed retry]
+Kayıt başarısız oldu. Yeniden deneyin.
+[export save]
+Kaydı dışa aktar
+[storage restore failed]
+Tarayıcı depolaması geri yüklenemedi. Mevcut kayıtlı veriler değiştirilmedi. Bu oturuma devam edebilirsiniz, ancak yerel değişiklikler kalıcı olamaz. Önemli kayıtları, kayıt hatası penceresinden dışa aktarın. Depolamayı yeniden geri yüklemeyi denemek için sayfayı yenileyin.
+[continue]
+Devam et
+[export file]
+Dosyayı dışa aktar
+[export failed]
+Dosya dışa aktarma başarısız oldu
+[import file]
+İçe aktar
+[select import file]
+İçe aktarılacak bir dosya seçin
+[validating import]
+Dosya doğrulanıyor...
+[import succeeded]
+Dosya içe aktarıldı
+[import cancelled]
+İçe aktarma iptal edildi
+[import failed]
+İçe aktarma başarısız: geçersiz veya desteklenmeyen dosya
+[import persistence failed]
+Kaydedilmedi: yeniden denemek için İçe Aktar veya Dosyayı Dışa Aktar'ı seçin
+[import progress]
+İçe aktarma ilerlemesi
+[export progress]
+Dışa aktarma ilerlemesi
+[retry save]
+Kaydetmeyi yeniden dene
+[campaign save failed]
+Kampanya ilerlemesi kaydedilmedi. Yeniden deneyin veya bir yedek dışa aktarın.
+[leave without saving]
+Kaydetmeden çık
+[campaign import failed]
+Geçersiz ilerleme dosyası veya farklı kampanya sürümü
+[network release mismatch]
+İstemci ve sunucu protokolleri farklı. Sunucuyla aynı Glob2 sürümünü yükleyin.
+[settings continue]
+Devam et
+[settings save failed]
+Ayar kaydı onaylanmadı. Yeniden deneyin veya devam edin.
+[shutdown save failed]
+Son kayıt onaylanmadı. Yeniden deneyin veya kaydetmeden çıkın.
+[quit without saving]
+Kaydetmeden çık
+[game closed]
+Oyun kapatıldı. Bu pencereyi kapatabilir veya yeniden oynamak için sayfayı yenileyebilirsiniz.
+[campaign editor save failed]
+Kayıt onaylanmadı. Tamam yeniden dener; İptal düzenleyici menüsüne döner.
+[Actions]
+Eylemler
+[Minimap]
+Mini harita
+[Fast forward]
+İleri sar
+[Hide keyboard]
+Klavyeyi gizle
+[Dialog text size]
+İletişim kutusu yazı boyutu
+[Player slot]
+Oyuncu yuvası
+[Team color]
+Takım rengi
+[Alliance group]
+İttifak grubu
+[menu]
+Menü
+[Editor tools]
+Araçlar
+[Pan map]
+Haritayı kaydır
+[Edit map]
+Haritayı Düzenle
+[Editor map]
+Harita
+[Flags]
+Bayraklar
+[Pause]
+Duraklat
+[Speed]
+Hız
+[Objectives]
+Hedefler
+[Menu]
+Menü
+[Goals]
+Hedefler
+[Teams]
+Takımlar
+[Use this landscape]
+Bu manzarayı kullan
+[Reset]
+Sıfırla
+[Generating...]
+Oluşturuluyor...
+[Players]
+Oyuncular
+[Rules]
+Kurallar
+[settings Interface layout]
+Arayüz düzeni
+[settings Automatic]
+Otomatik
+[settings Compact]
+Yakın
+[settings Spacious]
+Geniş
+[More]
+Daha fazla
+[No items]
+Öğe yok
+[Opponents]
+Rakipler
+[Review]
+Özet
+[Review & Play]
+İncele ve oyna
+[Edit opponents]
+Rakipleri düzenle
+[Map settings]
+Harita ayarları
+[Next]
+İleri
+[Done]
+Tamam
+[Contribution]
+Katkı
+[Choose who controls this colony]
+Bu koloniyi kimin yöneteceğini seçin
+[Settings]
+Ayarlar
+[settings Back]
+Geri
+[settings Save the game automatically about every minute.]
+Oyunu yaklaşık her dakika otomatik olarak kaydet.
+[AI opponents]
+Yapay zeka rakipleri
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Geniş düzen, yer olduğunda yan panel kullanır. Kompakt düzen, araç çubuğu ve açılır paneller kullanır.
+[Assigned %0 · Target %1]
+Atanan %0 · Hedef %1
+[Range: %0]
+Menzil: %0
+[Player %0]
+Oyuncu %0
+[Brush %0]
+Fırça %0
+[Team %0]
+Takım %0
+[Your colony]
+Kolonin
+[%0 / %1 HP · %2]
+%0 / %1 CP · %2
+[Units: %0]
+Birimler: %0
+[Buildings: %0]
+Binalar: %0
+[Need food: %0]
+Yemek gereken: %0
+[Need healing: %0]
+İyileşme gereken: %0
+[Attack: %0]
+Saldırı: %0
+[Defense: %0]
+Savunma: %0
+[Food: %0 / %1]
+Yiyecek: %0 / %1
+[View team %0]
+%0 takımını göster
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Fırça %0x%1
+[Level %0]
+Seviye %0
+[Manage teams (%0)]
+Takımları yönet (%0)
+[Team %0 / Level %1]
+Takım %0 / Seviye %1
+[Files · %0]
+Dosyalar · %0
+[Hint %0]
+İpucu %0
+[Objective %0]
+Hedef %0
+[Entry %0 of 8 · empty entries are omitted]
+8 girdiden %0 · boş girdiler atlanır
+[Teams %0/%1]
+Takımlar %0/%1
+[Elapsed time · %0]
+Geçen süre · %0
+[Read-only building]
+Salt okunur bina
+[Alliance and shared vision are fixed for this match.]
+Bu maçta ittifak ve ortak görüş sabittir.
+[Share vision]
+Görüşü paylaş
+[Share food vision]
+Yiyecek görüşünü paylaş
+[Share market vision]
+Pazar görüşünü paylaş
+[Chat]
+Sohbet
+[No other players have editable diplomatic settings in this match.]
+Bu maçta diğer oyuncuların düzenlenebilir diplomasi ayarları yok.
+[No briefing for this match.]
+Bu maç için görev özeti yok.
+[Chat · recipients selected in Teams]
+Sohbet · alıcılar Takımlar bölümünde seçilir
+[Filename]
+Dosya adı
+[Reduced motion]
+Azaltılmış hareket
+[Send]
+Gönder
+[Close]
+Kapat
+[Forbidden]
+Yasak
+[Guard]
+Koru
+[Clear]
+Temizle
+[Paint]
+Boya
+[Erase]
+Sil
+[Release on valid terrain to place]
+Yerleştirmek için uygun arazide bırak
+[Paint on the map; two fingers move]
+Haritada boya; iki parmakla taşı
+[Tutorial ▸]
+Öğretici ▸
+[Back to tools]
+Araçlara dön
+[Starvation overlay]
+Açlık katmanı
+[Damage overlay]
+Hasar katmanı
+[Defense overlay]
+Savunma katmanı
+[Fertility overlay]
+Verimlilik katmanı
+[Health and food bars]
+Sağlık ve yiyecek çubukları
+[Message history]
+Mesaj geçmişi
+[Mark map for allies]
+Müttefikler için haritayı işaretle
+[Show zones]
+Bölgeleri göster
+[Pan]
+Kaydır
+[Select]
+Seç
+[Show palette]
+Paleti göster
+[Release to place]
+Yerleştirmek için bırak
+[Blocked placement]
+Yerleştirme engellendi
+[File name]
+Dosya adı
+[Load map]
+Harita yükle
+[Save map]
+Haritayı kaydet
+[No files in this folder]
+Bu klasörde dosya yok
+[No files saved yet]
+Henüz kaydedilmiş dosya yok
+[Export]
+Dışa aktar
+[Tap to write the mission briefing]
+Görev özetini yazmak için dokun
+[Tap to write the map script]
+Harita betiğini yazmak için dokun
+[Script]
+Betik
+[Previous]
+Önceki
+[Compile]
+Derle
+[Tap to write this hint]
+Bu ipucunu yazmak için dokun
+[Tap to write this objective]
+Bu hedefi yazmak için dokun
+[Mission briefing · tap to edit, swipe to scroll]
+Görev özeti · düzenlemek için dokun, kaydırmak için sürükle
+[Not enough recorded history yet.]
+Henüz yeterli kayıtlı geçmiş yok.
+[Select a team to show its history.]
+Geçmişini göstermek için bir takım seç.
+[Back to chart]
+Grafiğe dön
+[Expand chart]
+Grafiği büyüt
+[Slot]
+Yuva
+[Color]
+Renk
+[Player / AI]
+Oyuncu / YZ
+[Group]
+Grup
+[Forbid]
+Yasakla
+[↓ Low]
+↓ Düşük
+[= Normal]
+= Normal
+[↑ High]
+↑ Yüksek
+[Details]
+Ayrıntılar
+[Campaign name]
+Sefer adı
+[Unlocking]
+Kilidi açma
+[Parameters]
+Parametreler
+[Blank map]
+Boş harita
+[Generated]
+Oluşturulmuş
+[Preview]
+Önizleme
+[Selected landscape]
+Seçilen arazi
+[Representative preview]
+Örnek önizleme
+[Starting terrain]
+Başlangıç arazisi
+[Hide parameters]
+Parametreleri gizle
+[Size and parameters]
+Boyut ve parametreler
+[Choose a landscape]
+Bir arazi seçin
+[%0 / Browse]
+%0 / Göz at
+[%0 colonies · %1]
+%0 koloniler · %1
+[%0 · Team %1]
+%0 · Takım %1
+[Colonies: %0]
+Koloniler: %0
+[%0 colonies · %1 AI]
+%0 koloniler · %1 yapay zeka
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Birimler
+[settings Level %0]
+Seviye %0
+[settings Match the desktop %0]
+Masaüstüyle aynı (%0)
+[settings Current display %0 %1 %2 %3]
+Geçerli görüntüleme modu: %0 × %1 · %2 · %3
+[Fairness: %0]
+Adalet: %0
+[Colony %0]
+Koloni %0
+[Win chance: %0 · Fitness: %1]
+Kazanma şansı: %0 · Güç: %1
+[%0 · Contribution: %1]
+%0 · Katkı: %1
+[Min required level %0]
+Gerekli en düşük seviye: %0
+[Confirm %0]
+Tamam: %0
+[Dialog text size %0]
+İletişim kutusu yazı boyutu: %0%
+[%0 %1]
+%0 %1

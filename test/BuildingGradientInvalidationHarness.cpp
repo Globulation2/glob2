@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "GameGUI.h"
 #include "Building.h"
+#include "BuildingGradientSearch.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include "Race.h"
@@ -212,6 +213,53 @@ static void aRingCutsOffAVirtualFlagsField()
 	std::puts("PASS a ring around a virtual flag cuts off its field, though no flag is in the building tile grid");
 }
 
+static void aPausedFieldKeepsItsOriginalObstacles()
+{
+	World world;
+	Building *centre = world.place(20, 20);
+	require(world.available(centre, 18, 20), "nearby query succeeds on a lazy field");
+	require(centre->globalGradientSearch[0] && !centre->globalGradientSearch[0]->complete(),
+		"nearby query leaves a retained frontier");
+	world.placeRing(20, 20, 1);
+	// Cached gradients retain their pre-edit obstacle snapshot until the
+	// normal refresh deadline, including while their search is paused.
+	require(world.available(centre, 45, 45), "paused field preserves its old route before refresh is due");
+	world.tick(DIRTY_GRACE_TICKS);
+	require(!world.available(centre, 45, 45), "normal refresh replaces the paused obstacle snapshot");
+	std::puts("PASS a paused field freezes obstacles until the existing refresh deadline");
+}
+
+// Public point APIs must resolve for their caller, while the array API must
+// finish the whole field. Compare movement and distance against a complete field.
+static void publicReadsResolveTheirInputs()
+{
+	World world;
+	Map &map = world.game.map;
+	Building *centre = world.place(20, 20);
+	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+	{
+		const Uint16 *full = map.buildingGradient(centre, swim);
+		require(full != nullptr, "public field is reachable");
+		std::vector<Uint16> expected(full, full + map.getW() * map.getH());
+		int expectedDist, expectedDx, expectedDy;
+		require(map.buildingAvailable(centre, swim, 18, 20, &expectedDist), "complete distance exists");
+		require(map.pathfindBuilding(centre, swim, 18, 20, &expectedDx, &expectedDy), "complete direction exists");
+		map.updateGlobalGradient(centre, swim);
+		int dist, dx, dy;
+		require(map.buildingAvailable(centre, swim, 18, 20, &dist) && dist == expectedDist,
+			"point API resolves its own distance");
+		require(!centre->globalGradientSearch[swim]->complete(), "point read does not finish the field");
+		map.updateGlobalGradient(centre, swim);
+		require(map.pathfindBuilding(centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
+			"movement API resolves its own input layer");
+		require(!centre->globalGradientSearch[swim]->complete(), "movement does not finish the field");
+		full = map.buildingGradient(centre, swim);
+		require(centre->globalGradientSearch[swim]->complete(), "public array API completes the field");
+		require(std::vector<Uint16>(full, full + expected.size()) == expected, "public array is fully resolved");
+	}
+	std::puts("PASS public distance, movement and full-field lazy API boundaries");
+}
+
 int main(int argc, char** argv)
 {
 	const char* scenario = argc > 1 ? argv[1] : "all";
@@ -229,6 +277,8 @@ int main(int argc, char** argv)
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-after") == 0) ringPlacedAroundAnExistingField();
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-other-team") == 0) aRivalTeamsRingCutsOffACachedField();
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-flag") == 0) aRingCutsOffAVirtualFlagsField();
+	if (std::strcmp(scenario, "all") == 0) aPausedFieldKeepsItsOriginalObstacles();
+	if (std::strcmp(scenario, "all") == 0) publicReadsResolveTheirInputs();
 	std::puts("Building gradient invalidation regressions passed");
 	return 0;
 }

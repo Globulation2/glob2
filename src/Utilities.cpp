@@ -15,6 +15,7 @@ using ssize_t = SSIZE_T;
 #include <stdarg.h>
 #include <Stream.h>
 #include <ctime>
+#include <sstream>
 
 #include "Utilities.h"
 #include <random>
@@ -52,6 +53,28 @@ void setSyncRandSeed(Uint32 seed)
 void setRandomSyncRandSeed()
 {
 	syncRandEngine().seed(std::random_device{}());
+}
+
+std::string getSyncRandState()
+{
+	std::ostringstream stream;
+	stream<<syncRandEngine();
+	return stream.str();
+}
+
+bool setSyncRandState(const std::string& state)
+{
+	// Boost's extractor consumes trailing whitespace after every state word.
+	// Supplying a terminator keeps its final std::ws from turning EOF into a
+	// parse failure. Parse into a temporary so malformed state cannot partly
+	// replace the live synchronized generator.
+	std::istringstream stream(state+"\n");
+	boost::mt19937 restored;
+	stream>>restored;
+	if(stream.fail())
+		return false;
+	syncRandEngine()=restored;
+	return true;
 }
 
 namespace Utilities

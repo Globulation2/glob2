@@ -1,11 +1,41 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Tessellation.h"
 #include "GenerationContext.h"
+#include "Morphology.h"
+#include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <stdexcept>
 namespace MapGeneration
 {
+std::vector<StrokePoint> cellCrossing(const Tessellation &g, int edge, double centreRadius,
+									  double halfWidth)
+{
+	if (edge < 0 || edge >= int(g.edges.size()) || !std::isfinite(centreRadius) ||
+		!std::isfinite(halfWidth) || centreRadius < 0 || halfWidth < 0)
+		throw std::invalid_argument("Invalid cell crossing geometry");
+	const int owner = g.edges[edge].cells[0];
+	const auto ends = g.edgeEnds(edge, owner);
+	const ShapePoint a = tilePoint(ends.first), b = tilePoint(ends.second);
+	const ShapePoint midpoint{(a.x + b.x) / 2, (a.y + b.y) / 2};
+	const ShapePoint from = tilePoint(g.cells[owner].centre);
+	const ShapePoint to = tilePoint(g.centreAcross(edge, owner));
+	const auto approach = [&](ShapePoint centre)
+	{
+		const double vx = midpoint.x - centre.x, vy = midpoint.y - centre.y;
+		const double scale = centreRadius / std::hypot(vx, vy);
+		return ShapePoint{centre.x + vx * scale, centre.y + vy * scale};
+	};
+	if (std::hypot(midpoint.x - from.x, midpoint.y - from.y) <= centreRadius ||
+		std::hypot(midpoint.x - to.x, midpoint.y - to.y) <= centreRadius)
+		return {};
+	const ShapePoint entry = approach(from), exit = approach(to);
+	return {{entry.x, entry.y, halfWidth},
+			{midpoint.x, midpoint.y, halfWidth},
+			{exit.x, exit.y, halfWidth}};
+}
+
 namespace
 {
 long long floorDiv(long long a, long long b)
@@ -146,7 +176,8 @@ Tessellation squareTessellation(int width, int height, int cellSize)
 				return {(long long)(column / g.columns) * width * kSubtile,
 						(long long)(row / g.rows) * height * kSubtile};
 			};
-			cell.cornerShifts = {shift(c + 1, r), shift(c + 1, r + 1), shift(c, r + 1), shift(c, r)};
+			cell.cornerShifts = {shift(c + 1, r), shift(c + 1, r + 1), shift(c, r + 1),
+								 shift(c, r)};
 			cell.edges = {2 * self, 2 * self + 1, 2 * g.cellAt(c - 1, r),
 						  2 * g.cellAt(c, r - 1) + 1};
 			g.cells.push_back(cell);
@@ -154,10 +185,10 @@ Tessellation squareTessellation(int width, int height, int cellSize)
 	for (int self = 0; self < g.cellCount(); ++self)
 	{
 		const auto &cell = g.cells[self];
-		g.edges.push_back({{self, g.cellAt(cell.column + 1, cell.row)},
-						   {cell.corners[0], cell.corners[1]}});
-		g.edges.push_back({{self, g.cellAt(cell.column, cell.row + 1)},
-						   {cell.corners[1], cell.corners[2]}});
+		g.edges.push_back(
+			{{self, g.cellAt(cell.column + 1, cell.row)}, {cell.corners[0], cell.corners[1]}});
+		g.edges.push_back(
+			{{self, g.cellAt(cell.column, cell.row + 1)}, {cell.corners[1], cell.corners[2]}});
 	}
 	return g;
 }
@@ -197,16 +228,20 @@ Tessellation hexTessellation(int width, int height, int pitch)
 			cell.centre = at(2 * c + p, 3 * r);
 			// Clockwise from the upper right corner: lower right, bottom, lower left, upper left,
 			// top; so the edges run east, south-east, south-west, west, north-west, north-east.
-			cell.corners = {2 * self + 1,	   2 * southEast,	 2 * southWest + 1,
-							2 * southWest,	   2 * west + 1,	 2 * self};
+			cell.corners = {2 * self + 1,  2 * southEast, 2 * southWest + 1,
+							2 * southWest, 2 * west + 1,  2 * self};
 			// Each corner is stored with the cell that owns it; a neighbour past the seam owns the
 			// copy one map size away.
 			const auto shift = [&](int column, int row) -> SubtilePoint
 			{ return {floorDiv(column, g.columns) * w, floorDiv(row, g.rows) * h}; };
-			cell.cornerShifts = {shift(c, r),			shift(c + p, r + 1), shift(c + p - 1, r + 1),
-								 shift(c + p - 1, r + 1), shift(c - 1, r),	 shift(c, r)};
-			cell.edges = {3 * self,			3 * self + 1,	   3 * self + 2,
-						  3 * west,			3 * northWest + 1, 3 * northEast + 2};
+			cell.cornerShifts = {shift(c, r),
+								 shift(c + p, r + 1),
+								 shift(c + p - 1, r + 1),
+								 shift(c + p - 1, r + 1),
+								 shift(c - 1, r),
+								 shift(c, r)};
+			cell.edges = {3 * self, 3 * self + 1,      3 * self + 2,
+						  3 * west, 3 * northWest + 1, 3 * northEast + 2};
 			g.cells.push_back(cell);
 			const int owned[3] = {east, southEast, southWest};
 			for (int k = 0; k < 3; ++k)
@@ -249,11 +284,61 @@ int warpLimit(const Tessellation &g)
 		for (size_t k = 0; k < n; ++k)
 			for (size_t e = 0; e < n; ++e)
 				if (e != k && (e + 1) % n != k)
-					least = std::min(least, lineDistance(points[k], points[e], points[(e + 1) % n]));
+					least =
+						std::min(least, lineDistance(points[k], points[e], points[(e + 1) % n]));
 	}
 	// Three corners move at once (this one and the far edge's two ends), each by up to sqrt(2) times
 	// its reach on one axis.
 	return std::max(0, int(std::floor(least / (3 * std::sqrt(2.0)))) - 1);
+}
+
+std::vector<unsigned char> rasterizeBoundaries(const Tessellation &g,
+	const std::vector<unsigned char> &walls, int radius)
+{
+	assert(walls.size() == g.edges.size() && radius >= 0);
+	std::vector<unsigned char> mask(g.t.size(), 0);
+	for (int e = 0; e < int(g.edges.size()); ++e)
+		if (walls[e])
+		{
+			const auto ends = g.edgeEnds(e, g.edges[e].cells[0]);
+			traceSealedPath(mask, g.t, {ends.first, ends.second});
+		}
+	return radius ? dilate(g.t, mask, radius) : mask;
+}
+
+int relaxWarpOutside(Tessellation &g, const std::vector<SubtilePoint> &referenceCorners,
+	const std::vector<unsigned char> &walls, const std::vector<unsigned char> &excluded,
+	int radius, int maxContractions)
+{
+	assert(referenceCorners.size() == g.corners.size());
+	assert(excluded.size() == size_t(g.t.size()) && maxContractions > 0);
+	// Inspect the exact raster footprint, including thickness and the torus seam.
+	// A centre-to-line distance cannot represent an arbitrary reserved tile mask.
+	for (int contractions = 0; contractions <= maxContractions; ++contractions)
+	{
+		const auto boundary = rasterizeBoundaries(g, walls, radius);
+		bool safe = true;
+		for (int i = 0; i < g.t.size(); ++i)
+			if (boundary[i] && excluded[i])
+			{
+				safe = false;
+				break;
+			}
+		if (safe)
+			return contractions;
+		if (contractions == maxContractions)
+			return -1;
+		// Preserve corner identities and shared edges. Never repair overlap by
+		// deleting wall pixels: that would invent routes through the barrier.
+		for (size_t k = 0; k < g.corners.size(); ++k)
+		{
+			g.corners[k].x = referenceCorners[k].x + (contractions + 1 == maxContractions
+				? 0 : (g.corners[k].x - referenceCorners[k].x) / 2);
+			g.corners[k].y = referenceCorners[k].y + (contractions + 1 == maxContractions
+				? 0 : (g.corners[k].y - referenceCorners[k].y) / 2);
+		}
+	}
+	return -1;
 }
 
 void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &walls,
@@ -315,7 +400,8 @@ void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &w
 		o.radius = std::max(x1 - x0, y1 - y0) / 2 + 1;
 	};
 	// Steps between two obstacles, the short way round; anything at least `enough` apart by their
-	// boxes alone reports `enough`.
+	// boxes alone reports `enough`. A tile of `a` at least `least` from `b`'s box can be no nearer to
+	// any of `b`'s tiles, so it is skipped: the result is the same as comparing every pair of tiles.
 	const auto gap = [&](const Obstacle &a, const Obstacle &b, int enough)
 	{
 		const long long apart =
@@ -324,8 +410,12 @@ void warpCorners(Tessellation &g, int reach, const std::vector<unsigned char> &w
 			return enough;
 		int least = enough;
 		for (const auto &p : a.tiles)
+		{
+			if (t.chebyshev(p.first, p.second, int(b.cx), int(b.cy)) - b.radius >= least)
+				continue;
 			for (const auto &q : b.tiles)
 				least = std::min(least, t.chebyshev(p.first, p.second, q.first, q.second));
+		}
 		return least;
 	};
 	for (Obstacle &o : obstacles)

@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import tempfile
 
+from ..build_paths import native_binary
 from .common import digest, store_artifact
 from .local import execute_jobs, supplied_binary
 from .model import job
@@ -17,7 +18,7 @@ def main():
     parser.add_argument('--map',required=True);parser.add_argument('--matchup',required=True)
     parser.add_argument('--games',type=int,default=40);parser.add_argument('--swap-sides',action='store_true')
     parser.add_argument('--jobs',type=int,default=max(1,(os.cpu_count() or 1)-2))
-    parser.add_argument('--seed-base',type=int,default=1);parser.add_argument('--bin',default='build/src/glob2')
+    parser.add_argument('--seed-base',type=int,default=1);parser.add_argument('--bin',default=str(native_binary()))
     parser.add_argument('--out');parser.add_argument('--keep',action='store_true')
     parser.add_argument('--ticks',type=int,default=int(os.environ.get('GLOB2_TEST_MAX_TICKS','90000')))
     args=parser.parse_args()

@@ -7,7 +7,6 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
-#include "FrontendTheme.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
@@ -29,6 +28,7 @@ Engine::~Engine()
         // In-game options may have persisted the temporary match speed.
         globalContainer->settings.save();
     }
+    if (multiplayer) multiplayer->setNetEngine(nullptr);
 	// Finalize the replay of the session this Engine ran, if any.
 	// initGame allocated the writer; destroying it (ReplayWriter::finish)
 	// writes the NullOrder terminator and flushes the replay file. This must
@@ -37,10 +37,8 @@ Engine::~Engine()
 	globalContainer->replayWriter.reset();
 }
 
-int Engine::run(void)
+void Engine::prepareRun()
 {
-	FrontendScope gameplay(false);
-	bool doRunOnceAgain=true;
 	if (globalContainer->runNoX)
 	{
 		assert(globalContainer->mix==nullptr);
@@ -82,35 +80,29 @@ int Engine::run(void)
 		globalContainer->gfx->cursorManager.setDrawColor(gui.getLocalTeam()->color);
 	}
 
-	while (doRunOnceAgain)
-	{
-		runOneGameSession(doRunOnceAgain);
-	}
+}
 
-	if (gui.exitGlobCompletely)
-		return -1; // There is no bypass for the "close window button"
+std::unique_ptr<GAGGUI::Screen> Engine::endRunScreen()
+{
+    if (gui.exitGlobCompletely || globalContainer->runNoX || globalContainer->automaticEndingGame)
+        return {};
+    assert(globalContainer->mix);
+    globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
+    return std::make_unique<EndGameScreen>(&gui);
+}
 
-	if (globalContainer->runNoX || globalContainer->automaticEndingGame)
-	{
-		if(!globalContainer->runNoX)
-			globalContainer->gfx->cursorManager.setDefaultColor();
-		return -1;
-	}
-	else
-	{
-		// Restart menu music
-		assert(globalContainer->mix);
-		globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
+void Engine::restoreCursor()
+{
+    if (!globalContainer->runNoX) globalContainer->gfx->cursorManager.setDefaultColor();
+}
 
-		// Display End Game Screen
-		FrontendScope results(true);
-		EndGameScreen endGameScreen(&gui);
-		int result = endGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
-
-		// Return to default color
-		globalContainer->gfx->cursorManager.setDefaultColor();
-
-		// Return
-		return (result == -1) ? -1 : EE_NO_ERROR;
-	}
+int Engine::run(void)
+{
+    prepareRun();
+    bool doRunOnceAgain = true;
+    while (doRunOnceAgain) runOneGameSession(doRunOnceAgain);
+    auto endScreen = endRunScreen();
+    const int result = endScreen ? endScreen->execute(globalContainer->gfx, GAME_TICK_MS) : -1;
+    restoreCursor();
+    return result == -1 ? -1 : EE_NO_ERROR;
 }

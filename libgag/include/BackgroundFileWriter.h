@@ -28,7 +28,8 @@ namespace GAGCore
 
 		//! Queues contents to become the whole of filename. finish, when given,
 		//! runs on the worker just before the write and may change the contents.
-		void write(const std::string &filename, std::string contents, std::function<void(std::string &)> finish = {});
+		//! gzip compresses the finalized bytes on the worker before replacement.
+		void write(const std::string &filename, std::string contents, std::function<void(std::string &)> finish = {}, bool gzip = false);
 		//! Returns once nothing is queued or being written; no worker thread remains.
 		void waitUntilIdle();
 
@@ -46,6 +47,7 @@ namespace GAGCore
 		std::string pendingContents;
 		std::function<void(std::string &)> pendingFinish;
 		bool pending = false;
+		bool pendingGzip = false;
 		bool writing = false;
 		std::thread worker;
 	};

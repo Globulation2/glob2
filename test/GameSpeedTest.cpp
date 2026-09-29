@@ -156,11 +156,38 @@ int main(int argc, char** argv) {
                 gui.step();
                 SDL_Delay(pass==0?40:1);
             }
+            // Sample both cadences at the end of the measurement window.
+            // Otherwise the 40 ms pass stops with a camera sample from before
+            // its final sleep, while the 1 ms pass samples almost at the end.
+            SDL_PushEvent(&mouse);
+            gui.step();
             distance[pass]=(before-gui.viewportX)&gui.game.map.getMaskW();
         }
         std::cerr<<"Camera distances: "<<distance[0]<<"/"<<distance[1]<<std::endl;
         assert(distance[0]>=10 && distance[0]<=14);
         assert(std::abs(distance[0]-distance[1])<=2);
+        SDL_Event centered{};
+        centered.type = SDL_MOUSEMOTION;
+        centered.motion.x = 200; centered.motion.y = 200;
+        SDL_Event held{};
+        held.type = SDL_KEYDOWN;
+        held.key.keysym.sym = SDLK_LEFT;
+        held.key.keysym.scancode = SDL_SCANCODE_LEFT;
+        const Uint64 inputStart = SDL_GetTicks64() + 40;
+        gui.step({centered, held}, inputStart);
+        const int heldX = gui.viewportX;
+        gui.step({}, inputStart + 40);
+        assert(gui.viewportX == ((heldX - 1) & gui.game.map.getMaskW()));
+        SDL_Event focus{};
+        focus.type = SDL_WINDOWEVENT;
+        focus.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+        gui.step({focus}, inputStart + 80);
+        const int releasedX = gui.viewportX;
+        gui.step({}, inputStart + 120);
+        focus.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+        gui.step({focus}, inputStart + 160);
+        assert(gui.viewportX == releasedX);
+        std::cout << "PASS: supplied input, held-key scrolling and focus cleanup\n";
         std::cout<<"PASS: multiplayer controls, replay eligibility, camera cadence "
                  <<distance[0]<<"/"<<distance[1]<<" cells\n";
     }

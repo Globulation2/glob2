@@ -24,7 +24,8 @@ static bool generate(Game &game, GenerationContext &context)
 
 GeneratorDefinition uniformDefinition()
 {
-	return {"uniform",
+	return {
+			"uniform",
 			0,
 			"uniform terrain",
 			1,
@@ -33,5 +34,8 @@ GeneratorDefinition uniformDefinition()
 
 			},
 			generate,
-			false};
+			false,
+			nullptr,
+			nullptr,
+			{"special:editor-only"}};
 }

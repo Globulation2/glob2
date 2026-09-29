@@ -24,7 +24,6 @@
 
 
 #include "Brush.h"
-#include "FertilityCalculatorDialog.h"
 
 
 #include "GameRenderInternal.h"
@@ -135,6 +134,9 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
+	if (view.selectedBuilding && (DEBUG_RENDER_GRADIENTS || view.selectedBuilding->verbose))
+		for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+			map.finishBuildingGradient(view.selectedBuilding, c);
 	// We draw debug area:
 	if (DEBUG_RENDER_GRADIENTS)
 	{
@@ -257,14 +259,14 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 				globalContainer->gfx->drawSprite((x<<5), (y<<5), sprite, frame);
 
 				if (!(map->*mapIs)(x+viewportX, y+viewportY-1))
-					globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, y*32, (x+1)*32, y*32, c);
 				if (!(map->*mapIs)(x+viewportX, y+viewportY+1))
-					globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, (y+1)*32, (x+1)*32, (y+1)*32, c);
 
 				if (!(map->*mapIs)(x+viewportX-1, y+viewportY))
-					globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, y*32, x*32, (y+1)*32, c);
 				if (!(map->*mapIs)(x+viewportX+1, y+viewportY))
-					globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary((x+1)*32, y*32, (x+1)*32, (y+1)*32, c);
 			}
 		}
 	}

@@ -1,3 +1,9 @@
+[AI strategy]
+Strategia IA
+[AIMaxima-Summary]
+Echilibrează creșterea sustenabilă și instruirea, apoi adună armatele în valuri.
+[AIMaxima-Profile]
+Strategie de bază: Tratează hrana, lucrătorii, nașterile, instruirea, construcția și lupta ca nevoi concurente. Dimensionează armata parțial în raport cu puterea estimată a inamicului, apoi încearcă să o aducă eficient în luptă.\n\nEconomie și dezvoltare: Planifică nașterile în funcție de hrană și forță de muncă, păstrează perioade libere pentru instruire și încetează să adauge lucrători în surplus când este necesară producția militară. Adaptează capacitatea de instruire și evită să scoată din funcțiune prea multă infrastructură pentru îmbunătățiri.\n\nExplorare și decizii: Estimează forțele inamice din unitățile vizibile și observațiile memorate folosind un model ajustat. Țintele depind de valoare, distanță, turnuri, lucrători expuși și perseverența în urmărirea țintei. Misiunile pentru fructe sprijină diversitatea hranei și convertirea.\n\nAtac și apărare: Rezervă luptători pentru instruire și apărare, apoi adună forțele terestre eligibile lângă infrastructura alimentară proprie înainte de lansarea valurilor. Folosește reacții defensive locale și evaluează căile de acces spre colonie.\n\nCând atacurile se blochează: După patru eșecuri consecutive de aducere a valurilor, trece la steaguri de atac întărite continuu. Atacurile amfibii pot folosi și ele întăriri continue. Această soluție de rezervă nu rezolvă orice blocaj înainte de formarea grupului.\n\nFață de alte IA: Integrează mai strâns hrana, instruirea, informațiile și desfășurarea. Cabino pune accent pe mai multe atacuri asupra clădirilor; Maxima pe necesarul estimat și aducerea forțelor adunate.\n\nPuncte forte și slabe: Susține creșterea și înlocuirea militarilor, adaptându-se presiunii alimentare și amenințărilor observate. Necesită hrană, capacitate de instruire și spațiu liber de adunare; aglomerația și rutele lungi pot împiedica sosirea forțelor.\n\nCum poți contracara: Dispută grâul expus, popasurile și câmpurile de antrenament înainte de adunarea valurilor. Ține împreună o forță defensivă aprovizionată și perturbă rutele întăririlor. Așteaptă-te la presiune repetată după primul val.\n\nExplorare: Estimările de forță folosesc observațiile și istoricul lor, nu totalurile ascunse ale trupelor inamice.
 [%0 has left the game]
 %0 a părăsit jocul.
 [%0 level %1]
@@ -51,11 +57,11 @@ IA
 [ai]
 IA
 [AICastor-Description]
-Castor joacă prudent și se descurcă foarte bine pe hărți cu puține resurse. Dificultate medie.
+Construiește și instruiește, adaptând creșterea la rezervele de hrană.
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar joacă agresiv, se dezvoltă rapid și trimite armate uriașe împotriva adversarilor. Dificultate ridicată.
+Își crește populația, instruiește războinici, apoi atacă.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,19 +69,19 @@ Fără IA — nu face nimic.
 [AINone]
 Fără IA
 [AINumbi-Description]
-Numbi se extinde la scară mică, dar rapid. Dificultate scăzută.
+Un adversar îngăduitor, care totuși se extinde și atacă.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo nu atacă, dar construiește baze uriașe și convertește unități în număr mare. Dificultate scăzută.
+Se extinde și atrage unități străine fără a produce războinici.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush atacă rapid și necruțător, aducând adesea jucătorul care se apără la limita înfrângerii. Dificultate medie.
+Atacuri rapide care îți testează apărarea timpurie.
 [AIWarrush]
 AIWarrush
 [AICabino-Description]
-Cabino conduce apărarea, atacul și construcția ca departamente independente care converg spre un singur plan: se dezvoltă rapid și trimite armate uriașe împotriva adversarilor. Dificultate ridicată.
+Un constructor puternic, care trimite forțe de atac instruite.
 [AICabino]
 Cabino
 [Alga]
@@ -1221,9 +1227,9 @@ Viteză: 1x (multiplayer)
 [game speed help]
 Doar pentru un singur jucător și reluări. Jocurile multiplayer rulează la 1x.
 [AICortex-Description]
-Cortex se extinde către noi câmpuri de grâu și trimite grupuri de războinici în luptă, sprijiniți de popasuri și spitale de lângă linia frontului. Dificultate medie. Experimental.
+Valuri concentrate de războinici, sprijinite cu hrană și vindecare.
 [AIMaxima-Description]
-Maxima dezvoltă o colonie bine hrănită, cercetează constant și atacă fără pauză cu fiecare războinic pe care îl poate trimite. Dificultate ridicată.
+Explorează, dezvoltă aprovizionarea și adună valuri de războinici.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1241,37 +1247,37 @@ Cortex
 [AI strategy & counterplay]
 Strategia IA și contracarare
 [AICastor-Profile]
-Strategie: se extinde cu precauție și funcționează bine pe hărți cu puține resurse.\n\nPuncte forte: Expansiunea limitată este eficientă în jocurile cu resurse limitate.\n\nTactici de încercat: ocupați teritoriul devreme. Nu presupuneți că lipsa de resurse va slăbi această inteligență artificială.
+Strategie de bază: Investește într-o colonie productivă și în tehnologie înainte de atacuri importante. Proiectele de construcție prioritizate dezvoltă așezarea; dezvoltarea, infrastructura militară și timpul cresc pregătirea de război.\n\nEconomie și dezvoltare: Studiază umiditatea, creșterea grâului, obstacolele și raza de acțiune a lucrătorilor. Gestionează extinderea aprovizionării, îmbunătățirile și apărarea alături de producție.\n\nAtac și apărare: Estimează puterea de atac a luptătorilor sănătoși și începe loviturile când sunt îndeplinite condițiile de putere sau timp. Preferă clădirile accesibile văzute anterior, mai ales câmpurile de antrenament și școlile, și mută steagurile de atac către ținte valoroase.\n\nFață de alte IA: Analizează terenul și valoarea țintelor mai atent decât Numbi. Mai răbdător decât Warrush, schimbă presiunea timpurie pe o bază dezvoltată și trupe mai puternice.\n\nPuncte forte și slabe: Planificarea amplă a infrastructurii și țintele militare valoroase dau sens loviturilor. Pregătirea durează, permițând adversarilor mai rapizi să dispute resursele înainte ca forța principală să fie gata.\n\nCum poți contracara: Dispută extinderea devreme. Protejează câmpurile de antrenament și școlile, precum și hrana, și păstrează o rezervă când ataci așezarea dezvoltată.
 [AICastor-Summary]
-Extindere prudentă; funcţionează bine cu resurse limitate.
+Dezvoltă o colonie fortificată, apoi lovește clădirile militare și științifice.
 [AICortex-Profile]
-Strategie: Gestionează proviziile de hrană, se extinde către noi câmpuri de grâu și adună grupuri succesive de războinici. Popasurile și spitalele de lângă linia frontului susțin atacuri departe de bază.\n\nPuncte forte: Trimite întăriri împreună, menține presiunea militară și reacționează la penuria de alimente.\n\nTactici de încercat: Luptă pentru controlul noilor lanuri de grâu și atacă clădirile de sprijin din apropierea liniei frontului. Atacă înainte ca grupurile sale de războinici să fie gata.\n\nIA experimentală. Dificultate medie; sugestiile tactice nu reprezintă evaluări din teste comparative.
+Strategie de bază: Folosește priorități reactive pentru a dezvolta o economie funcțională și a transforma forța de muncă disponibilă în hrană, tehnologie și presiune militară. Deciziile obișnuite se bazează pe reguli; experimentele cu politici învățate necesită configurare separată.\n\nEconomie și dezvoltare: Ajustează producția de lucrători la necesarul de personal și menține nașterile. Problemele cu hrana limitează cheltuielile de extindere și tehnologie. Adaugă înotul când accesul prin apă ajută semnificativ.\n\nAtac și apărare: Pregătește atacurile pe baza tehnologiei inamice observate și a trupelor disponibile. Campaniile peste apă necesită luptători care pot înota. Susține campaniile lungi cu popasuri și spitale înaintate și poate aduna forțe înainte de înaintare.\n\nPerseverență și urgențe: Menține ofensiva în ciuda hărțuirii minore în loc să revină repetat acasă. Atacurile serioase pot rechema apărătorii. Urgențele timpurii pot declanșa producția exclusivă de luptători și construirea unui spital; foametea poate declanșa un atac disperat mai mic.\n\nFață de alte IA: Acordă mai multă atenție sprijinului înaintat decât Warrush. Maxima merge mai departe în planificarea nașterilor sustenabile, instruirii și desfășurării în raport cu puterea estimată a inamicului.\n\nPuncte forte și slabe: Leagă presiunea de hrană, vindecare și accesibilitate. Infrastructura înaintată trebuie aprovizionată, iar nașterile continue pot menține presiunea asupra hranei limitate. Prioritățile de urgență impun compromisuri între creștere și supraviețuire.\n\nCum poți contracara: Dispută popasurile înaintate, spitalele și grâul. Ține apărătorii împreună împotriva ofensivei; hărțuirea minoră poate să nu-l convingă să se retragă.\n\nExplorare: Folosește clădirile inamice descoperite și trupele inamice observate.
 [AICortex-Summary]
-Se extinde având în vedere proviziile de hrană și își sprijină trupele atacatoare.
+Susține ofensivele hotărâte cu hrană și vindecare în poziții înaintate.
 [AINicowar-Profile]
-Strategie: se extinde rapid și atacă adversarii cu armate enorme.\n\nPuncte forte: Expansiunea rapidă sprijină atacuri militare agresive.\n\nTactici de încercat: Preveniți extinderea acestuia. Utilizați terenul pentru a reduce numărul de trupe inamice care pot lupta simultan.
+Strategie de bază: Combină creșterea, instruirea, îmbunătățirile și războiul prin condiții care se suprapun. Poate ataca în timpul extinderii și redirecționa efortul economic spre redresare când hrănirea eșuează.\n\nDeschidere: Profilul agresiv inclus începe pregătirea de război la cinci unități în total și permite războiul la cinci luptători, inclusiv cei de nivel zero. Urmărește trei steaguri de atac cu câte cinci luptători. Fișierele de strategie personalizate pot schimba aceste praguri.\n\nEconomie și dezvoltare: Extinde capacitatea de hrană și nașteri, instruiește lucrători, dezvoltă înotul și deplasarea și îmbunătățește clădirile. Ajustează personalul pentru hrană, reacționează la înfometare și caută fructe.\n\nAtac și apărare: Alege aleatoriu clădiri inamice accesibile pentru atac. Poate folosi steaguri de curățare pentru a deschide rute blocate de resurse. Steagurile defensive acoperă grupuri de unități și clădiri amenințate. Mai târziu, exploratorii instruiți pentru atacuri la sol țintesc grupuri de unități inamice.\n\nFață de alte IA: Împărtășește agresivitatea timpurie a Warrush, dar are un plan de continuare mai amplu. Spre deosebire de Cabino, nu prioritizează constant spitalele și popasurile.\n\nPuncte forte și slabe: Gama tactică amplă combină presiunea timpurie cu dezvoltarea continuă. Alegerea aleatorie a țintelor poate irosi efort pe clădiri mai puțin valoroase. Pragurile sale nu oferă estimarea detaliată a puterii de luptă adverse folosită de Maxima.\n\nCum poți contracara: Așteaptă-te la un atac timpuriu. Protejează hrana și lucrătorii, contestă extinderea și pregătește-te pentru atacuri ale exploratorilor dacă ajunge la instruire avansată.
 [AINicowar-Summary]
-Se extinde rapid și construiește armate mari pentru atacuri agresive.
+Un asalt timpuriu susținut de agricultură, îmbunătățiri, apărare și atacuri ale exploratorilor.
 [AINone-Profile]
 Strategie: AI nu dă comenzi.\n\nPuncte forte: un adversar previzibil, inactiv pentru experimente.\n\nPuncte slabe: Nu se extinde sau nu se adaptează.
 [AINone-Summary]
 O colonie inactivă pentru experimente.
 [AINumbi-Profile]
-Strategie: se extinde rapid, dar la scară mică. Un adversar mai ușor pentru practicarea managementului coloniei.\n\nPuncte forte: Vă permite să învățați atât managementul economic, cât și lupta.\n\nTactici de încercat: dezvoltă o economie mai puternică și antrenează-ți armata înainte de a ataca.
+Strategie de bază: Dezvoltă mai întâi hrana și populația, adaugă vindecare, știință și instruire, apoi se orientează spre război. Fazele principale avansează cu timpul, nu cu progresul adversarului.\n\nEconomie și dezvoltare: Adaptează necesarul de clădiri la populație și estimează grâul din apropiere. Fazele ulterioare adaugă îmbunătățiri, apărare și extindere pentru a susține armata în creștere.\n\nAtac și apărare: Atacă atunci când există destui luptători sănătoși sau expiră un termen. Plasează steaguri de război pe clădiri inamice selectate. Când forța de luptă scade prea mult, elimină steagurile de atac și ridică pragurile pentru o nouă încercare.\n\nFață de alte IA: Mai previzibil decât Castor sau Nicowar. Castor ține cont mai atent de teren și valoarea țintelor; Nicowar exercită presiune mult mai devreme.\n\nPuncte forte și slabe: Infrastructura amplă de sprijin îl poate face periculos după o dezvoltare neîntreruptă, dar calendarul său poate să nu corespundă bătăliei. Alegerea simplă a țintelor și pauzele mai lungi după pierderi fac atacurile mai ușor de anticipat.\n\nCum poți contracara: Exercită presiune înainte de faza militară. Dezvoltă hrana și instruirea în spatele atacurilor tale și profită de pauza de după respingerea unui asalt.\n\nExplorare: Rutina de atac citește direct pozițiile clădirilor inamice fără verificarea vizibilității.
 [AINumbi-Summary]
-Extindere rapidă la scară mică.
+Construiește treptat colonia după un calendar, apoi atacă prin superioritate numerică.
 [AIEcono-Profile]
-Strategie: Nu atacă, dar construiește baze enorme și transformă activ unitățile inamice în propria sa parte.\n\nPuncte forte: Expansiunea și conversia unităților amenință adversarii fără atacuri directe.\n\nTactici de încercat: Dezvoltați-vă colonia devreme și evitați trimiterea de unități unde inamicul le poate converti.
+Strategie de bază: Produce lucrători și exploratori, își extinde economia și atrage unități inamice prin hrană și fructe. Nu are o ofensivă convențională de luptători.\n\nEconomie și dezvoltare: Construiește popasuri și stupi lângă grâu, adaugă educație și instruire pentru deplasare și îmbunătățește infrastructura. Urmărește proviziile de hrană și înlocuiește popasurile și stupii vechi când accesul lor la resurse se deteriorează.\n\nAgricultură și convertire: Protejează grâul și lemnul regenerabile de lângă apă. Trimite exploratori la fructe și colonii inamice și anunță inamicilor disponibilitatea hranei când urmărește aprovizionarea cu fructe. Hrana mai bună și fructele pot ajuta la atragerea dezertorilor.\n\nFață de alte IA: Cel mai specializat adversar economic. Cabino și Maxima urmăresc și ei fructele, dar le combină cu armate.\n\nPuncte forte și slabe: Poate crește în timp ce adversarii militari se epuizează, convertirea oferind o altă formă de competiție. Nu produce luptători pentru a răspunde unui asalt susținut. Hrana, fructele, geografia și regulile de victorie îi influențează puternic oportunitățile.\n\nCum poți contracara: Presează extinderea expusă. Aprovizionează-ți popasurile cu hrană și fructe pentru a păstra unitățile. Evită să-ți epuizezi colonia în lupte inutile în timp ce el crește.
 [AIEcono-Summary]
-Baze uriașe și conversie în loc de atacuri.
+Dezvoltă o colonie bogată în hrană și atrage dezertori fără să producă luptători.
 [AIWarrush-Profile]
-Strategie: atacă devreme și cu forță, înainte ca adversarii să termine pregătirea.\n\nPuncte forte: exploatează extinderea lipsită de apărare și pregătirea militară lentă.\n\nTactici de încercat: Supraviețuiește primului atac menținându-ți economia, apoi contraatacă.
+Strategie de bază: Atacă înainte ca adversarii să încheie o dezvoltare economică sau tehnologică lungă. Se așteaptă ca lupta să decidă jocul înainte să fie necesară o rețea mare de sprijin.\n\nEconomie și dezvoltare: Când șase unități pot recolta, setează proporția producției la patru lucrători, un explorator și trei luptători. Adaugă câmpuri de antrenament când instruirea se umple, dar restricționează popasurile noi. Capacitatea liberă de construcție merge adesea spre spitale și instruire pentru deplasare.\n\nAtac și apărare: Marchează clădirile inamice descoperite cu zone de pază, astfel încât luptătorii să exercite presiune continuă. Nu așteaptă un val adunat cu grijă. Înlătură lemnul care blochează și protejează unele resurse regenerabile.\n\nPolitica fructelor: Interzice recoltarea fructelor, evitând penalizările de armură legate de fructe și refuzând strategia de convertire a Econo.\n\nFață de alte IA: Se angajează mai mult în presiunea timpurie decât Numbi sau Castor. Nicowar începe și el agresiv, dar continuă cu un program mai amplu de îmbunătățiri și tactici.\n\nPuncte forte și slabe: Pedepsește deschiderile lente și impune cheltuieli defensive timpurii. Îmbunătățirile sistematice limitate și sprijinul alimentar modest fac costisitoare o ofensivă blocată. Terenul și drumurile lungi îi pot eroda avantajul timpuriu.\n\nCum poți contracara: Protejează popasurile și stupii devreme. Înlocuiește lucrătorii, nu doar apărătorii, dezvoltă instruirea și contraatacă atunci când asaltul își pierde avântul.\n\nExplorare: Steagurile inițiale de explorare folosesc direct pozițiile de start ale inamicilor. Plasarea ulterioară a zonelor de atac necesită vizibilitate.
 [AIWarrush-Summary]
-Atacuri rapide care vă testează apărarea timpurie.
+Presiune timpurie a luptătorilor, susținută de o economie de sprijin intenționat modestă.
 [AICabino-Profile]
-Strategie de bază: un cabinet de departamente specializate independente (apărare, atac, construcție, îmbunătățiri, gestionarea unităților), fiecare acționând din proprie inițiativă, dar convergând spre un singur plan: creștere rapidă, apoi armate uriașe trimise împotriva adversarilor.\n\nPuncte forte: expansiunea rapidă susține o presiune militară agresivă; departamentele independente reacționează rapid la amenințările locale fără să aștepte un plan central.\n\nContraatac de încercat: contestă-i expansiunea devreme și folosește terenul pentru a limita câte trupe poate angaja simultan.
+Strategie de bază: Împarte producția de unități între construcție, îmbunătățiri, apărare, atacuri și explorare. Administratori separați cer și rezervă unități, dezvoltând economia și armata împreună.\n\nEconomie și dezvoltare: Construiește și îmbunătățește o așezare amplă, gestionează personalul popasurilor și turnurilor, curăță împrejurimile clădirilor și protejează resursele regenerabile. Caută fructe și anunță disponibilitatea hranei pentru a concura pentru dezertori.\n\nAtac și apărare: Alege un inamic și prioritizează spitalele, apoi popasurile, apoi câmpurile de antrenament. Susține până la patru atacuri, alocând de obicei între opt și douăzeci de luptători pe țintă în funcție de disponibilitate și inamicii din apropiere. Folosește steaguri defensive separate în jurul clădirilor amenințate.\n\nInstruire: Necesită destui luptători potriviți și un câmp de antrenament finalizat pentru a ataca, dar nu așteaptă tehnologia maximă. Îmbunătățirile și instruirea continue întăresc atacurile ulterioare.\n\nFață de alte IA: Demontează clădirile de sprijin mai deliberat decât Nicowar. Împrăștie atacurile mai mult decât valurile adunate de Maxima, folosind rezervări de unități pentru a gestiona cererile concurente.\n\nPuncte forte și slabe: Combină creșterea, instruirea, apărarea și mai multe atacuri. Distrugerea hranei și vindecării poate slăbi o colonie întreagă. Alegerea aleatorie a adversarului și prioritățile fixe de clădiri pot rata oportunități; atacurile multiple îi pot împărți forța.\n\nCum poți contracara: Apără spitalele și popasurile. Contestă extinderea expusă și concentrează apărătorii împotriva atacurilor individuale. Afectează hrana sau instruirea înainte să poată susține mai multe fronturi.\n\nExplorare: Selectorul de atac citește listele clădirilor inamice fără o verificare explicită a vizibilității. Unele comparații economice folosesc direct statisticile inamicului.
 [AICabino-Summary]
-Departamente independente care cooperează pentru o creștere rapidă și armate uriașe.
+Coordonează creșterea coloniei și atacurile instruite, țintind întâi vindecarea și hrana.
 [Algae]
 Alge
 [Alliances]
@@ -1980,6 +1986,10 @@ Lățimea potecii
 Zid între serpentine
 [Farm building plots]
 Loturi de construcție în ferme
+[Sand bridges over water]
+Poduri de nisip peste apă
+[Sand lanes through crops]
+Cărări de nisip prin culturi
 [Carousels need at least two colonies.]
 Caruselul are nevoie de cel puțin două colonii.
 [Switchbacks need at least two colonies.]
@@ -2182,24 +2192,22 @@ Parametri la întâmplare
 Calitatea startului
 [Fairness]
 Echitate
-[Score]
-Scor
-[Weight]
-Pondere
+[Fitness]
+Putere
+[Win chance]
+Șansă de câștig
+[Coefficient]
+Coeficient
+[Average]
+Medie
+[Fitted on games:]
+Ajustat pe partide:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Startul fiecărei colonii este măsurat pe harta finalizată, iar un model ajustat pe mii de partide între adversari egali transformă aceste măsurători într-o putere. Puterea arată cât de probabil este ca acea colonie să câștige. Echitatea arată cât de egal sunt împărțite aceste șanse: 1 când fiecare colonie are aceeași șansă de câștig, 0 când o singură colonie ar lua harta.
 [Worst]
 Cel mai slab
 [Best]
 Cel mai bun
-[Fertility]
-Fertilitate
-[Deposits]
-Zăcăminte
-[Room]
-Spațiu
-[Isolation]
-Izolare
-[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Startul fiecărei colonii se măsoară pe harta terminată: drumul până la grâu și la lemn, cât de bine își reface terenul, zăcămintele și locurile de construcție la îndemână și distanța față de rivali. Fiecare factor primește de la 0 la 1 față de un prag fix, totalul îi ponderează, echitatea este totalul celei mai slabe colonii împărțit la cel al celei mai bune, iar scorul este cel mai slab total înmulțit cu echitatea.
 [Map preview controls]
 Trage pentru a trece peste margini. Rotița mărește. Clic dreapta sau dublu clic pentru resetare.
 [Map preview drag help]
@@ -2257,9 +2265,9 @@ Hrană/min
 [Stats occupancy]
 Hrănire / vindecare
 [Stats page one]
-Statistici 1/2 >
+Statistici 1/3 >
 [Stats page two]
-Statistici 2/2 >
+Statistici 2/3 >
 [Stats next page]
 Pagina (P)
 [Map preview choose another]
@@ -2382,3 +2390,1001 @@ Dezactivat (fără temporizator)
 60 minute
 [Sudden-death timer]
 Temporizator de moarte subită
+[Stats page three]
+Statistici 3/3 >
+[Stats blocked units]
+Unităţi S/C
+[Stats blocked buildings]
+Clădiri S/C
+[Stats blocked buildings swim]
+Înoată S/C
+[Stats current blocked units]
+Unităţi C
+[Stats current blocked buildings]
+Clădiri C
+[Stats growth global]
+Resurse +
+[Stats growth new tiles]
+Resurse +#
+[Stats growth reductions]
+Resurse -
+[Stats growth per minute]
+Grâu +/min
+[Stats growth near 8]
+Resurse + <=8
+[Stats growth near 16]
+Resurse + <=16
+[Stats growth near 32]
+Resurse + <=32
+[Stats low HP 25]
+Viata <=25%
+[Stats low HP 50]
+Viata <=50%
+[Stats low HP 75]
+Viata <=75%
+[Stats low food 25]
+Mâncare <=25%
+[Stats low food 50]
+Mâncare <=50%
+[Stats low food 75]
+Mâncare <=75%
+[Stats structural units]
+Unităţi S
+[Stats structural buildings]
+Clădiri S
+[Stats low HP ranges]
+Viata: <=25/50/75%
+[Stats low food ranges]
+Mâncare: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Caracter emoji
+[Smiley]
+Față zâmbitoare
+[Sad face]
+Față tristă
+[Winking face]
+Față care face cu ochiul
+[Surprised face]
+Față surprinsă
+[Heart eyes]
+Ochi în formă de inimă
+[Sunglasses]
+Ochelari de soare
+[Heart]
+Inimă
+[Star]
+Stea
+[Neutral face]
+Față neutră
+[Sleeping face]
+Față adormită
+[Grinning face]
+Față care râde
+[Kissing face]
+Față care sărută
+[Angry face]
+Față furioasă
+[Tongue out]
+Limba scoasă
+[Skull]
+Craniu
+[Flower]
+Floare
+[Four-leaf clover]
+Trifoi cu patru foi
+[Teardrop]
+Picătură
+[Cloud]
+Nor
+[Gem]
+Nestemată
+[Apple]
+Măr
+[Speech bubble]
+Bulă de dialog
+[Shield]
+Scut
+[Emoji style]
+Stil emoji
+[Outline]
+Contur
+[Filled]
+Umplut
+[Emoji terrain]
+Teren emoji
+[Regular]
+Normal
+[Inverse]
+Inversat
+[Crossings]
+Treceri
+[Forts]
+Fortărețe
+[Gate width]
+Lățimea porții
+[Braided Delta]
+Deltă împletită
+[Braid count]
+Număr de brațe
+[Rejoining frequency]
+Frecvența confluențelor
+[Crossing spacing]
+Distanța dintre treceri
+[Breachable highlands]
+Ținuturi înalte cu breșe
+[Ridge depth]
+Grosimea crestelor
+[Extra open passes]
+Trecători deschise suplimentare
+[Wooded saddles]
+Șei împădurite
+[Hedgerow Country]
+Ținutul gardurilor vii
+[Field size]
+Dimensiunea câmpurilor
+[Hedge thickness]
+Grosimea gardurilor vii
+[Existing gateways]
+Treceri existente
+[Wooded boundary share]
+Proporția hotarelor împădurite
+[The Glacis]
+Glacisul
+[Allotments]
+Loturi
+[Caravanserai]
+Caravanserai
+[Mixed]
+Mixt
+[Fort size]
+Mărimea fortului
+[Bastions]
+Bastioane
+[Four-pointed]
+Cu patru colțuri
+[Five-pointed]
+Cu cinci colțuri
+[Six-pointed]
+Cu șase colțuri
+[Glacis width]
+Lățimea glacisului
+[Gates]
+Porți
+[Site size]
+Mărimea parcelelor
+[Plot width]
+Lățimea straturilor
+[Plot mix]
+Amestecul straturilor
+[Tended]
+Îngrijite
+[Overgrown]
+Năpădite
+[Commons]
+Izlazuri
+[Few]
+Puține
+[Some]
+Câteva
+[Home oasis size]
+Mărimea oazei natale
+[Caravanserais per colony]
+Caravanseraiuri pe colonie
+[Desert]
+Deșert
+[Open erg]
+Erg deschis
+[Dunes and mesas]
+Dune și platouri
+[Canyon country]
+Ținut de canioane
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Un fort nu își poate atinge vadul; folosiți o hartă mai mare sau mai puține colonii.
+[A wall would stand on a beach; try another seed.]
+Un zid ar sta pe o plajă; încercați altă sămânță.
+[The fort is too small for its gardens; raise Fort size.]
+Fortul este prea mic pentru grădinile sale; măriți mărimea fortului.
+[The home oasis is too small; raise Home oasis size.]
+Oaza natală este prea mică; măriți mărimea oazei natale.
+[Braided river]
+Râu împletit
+[Braid width]
+Lățimea împletiturii
+[Bar size]
+Mărimea bancurilor
+[Extra riffles]
+Vaduri suplimentare
+[Moraine hummocks]
+Movile morenice
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Împletitura lasă prea puțină terasă pentru baze; folosește o hartă mai mare sau o împletitură mai îngustă.
+[The map is too narrow across for a braid; use a bigger map.]
+Harta este prea îngustă pe lățime pentru o împletitură; folosește o hartă mai mare.
+[Drumlin field]
+Câmp de drumlinuri
+[Drumlin spacing]
+Distanța dintre drumlinuri
+[Drumlin length]
+Lungimea drumlinurilor
+[Water gap]
+Fâșia de apă
+[Esker loops]
+Bucle de eskere
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskerele nu au putut lega toate drumlinurile; folosiți o fâșie de apă mai mică sau o hartă mai mare.
+[Continents]
+Continente
+[Continent]
+Continent
+[North America]
+America de Nord
+[South America]
+America de Sud
+[Africa]
+Africa
+[Europe]
+Europa
+[Asia]
+Asia
+[Oceania]
+Oceania
+[Orientation]
+Orientare
+[Turn to fit]
+Rotire la nevoie
+[Upright]
+Fără rotire
+[Mountain ranges]
+Lanțuri muntoase
+[Great rivers]
+Fluvii mari
+[Islets]
+Insulițe
+[Oases]
+Oaze
+[The world atlas has no such continent.]
+Atlasul lumii nu are un astfel de continent.
+[The map is too small to hold a continent.]
+Harta este prea mică pentru a cuprinde un continent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Acest continent nu are loc pentru atâtea colonii la această mărime a hărții; folosiți o hartă mai mare sau mai puține colonii.
+[Savannah]
+Savană
+[Watering holes]
+Adăpători
+[Dry patches]
+Zone uscate
+[Sparse]
+Puține
+[Normal]
+Normal
+[Many]
+Multe
+[Rice terraces]
+Terase de orez
+[Unoccupied hills]
+Dealuri neocupate
+[Hill radius]
+Raza dealului
+[Contour band width]
+Lățimea benzilor de nivel
+[Stairs per hill]
+Scări pe deal
+[Valley river]
+Râu în vale
+[Hills]
+Dealuri
+[Hillsides]
+Versanți
+[Terraces per slope]
+Terase pe versant
+[Waviness]
+Ondulare
+[Stair spacing]
+Distanța dintre scări
+[Locust]
+Lăcuste
+[Plantations]
+Plantații
+[Plot size]
+Mărimea lotului de construcție
+[Farm width]
+Lățimea culturilor
+[Islands per colony]
+Insule per colonie
+[Outpost inns]
+Popasuri de avanpost
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Insulele sunt prea mici pentru loturile lor; folosește o hartă mai mare, un lot mai mic sau mai puține colonii.
+[Sierpiński Gardens]
+Grădinile lui Sierpiński
+[Hilbert River]
+Râul lui Hilbert
+[Maximum nesting]
+Imbricare maximă
+[Minimum terminal district side]
+Latura minimă a districtelor terminale
+[Major crossing pairs]
+Perechi de treceri principale
+[Maximum fold depth]
+Adâncimea maximă a pliurilor
+[Minimum land spacing]
+Distanța minimă de uscat
+[Optional local crossings per parent]
+Treceri locale opționale pe regiune părinte
+[Optional major shortcuts]
+Scurtături principale opționale
+[Lava shield]
+Scut de lavă
+[Lava tongues]
+Limbi de lavă
+[Long tongues]
+Limbi lungi
+[Crater rim width]
+Lățimea marginii craterului
+[Honeycomb isle]
+Insula fagure
+[Blocks per colony]
+Cvartale per colonie
+[Rubble]
+Moloz
+[Outline gaps]
+Breșe în contururi
+[Craters per colony]
+Cratere per colonie
+[Wheat fields]
+Lanuri de grâu
+[Bridges]
+Poduri
+[Karst towers]
+Turnuri carstice
+[Tower spacing]
+Distanța dintre turnurile carstice
+[Tower density]
+Densitatea turnurilor carstice
+[Paddy depth]
+Întinderea orezăriilor
+[Home design]
+Forma bazei
+[Horseshoe]
+Potcoavă
+[Twin gates]
+Porți gemene
+[Three gates]
+Trei porți
+[Four gates]
+Patru porți
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Râurile nu au găsit drum printre baze; folosiți o hartă mai mare sau mai puține colonii.
+[River meander]
+Meandrele râului
+[Flooded terraces]
+Terase inundate
+[Sinkholes]
+Doline
+[Bajada]
+Conuri aluviale
+[Range spacing]
+Distanța dintre lanțuri
+[Ridge width]
+Lățimea crestelor
+[Passes]
+Trecători
+[Fans per range]
+Conuri pe lanț
+[Stream reach]
+Lungimea pâraielor
+[Playa]
+Lacuri sărate
+[Broad fan]
+Con larg
+[Long fan]
+Con alungit
+[Twin springs]
+Izvoare gemene
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Conurile aluviale sunt prea înguste pentru baze; folosiți o hartă mai mare, o distanță mai mare între lanțuri, creste mai înguste sau lacuri sărate mai mici.
+[Central Quarry]
+Cariera centrală
+[Quarry size]
+Mărimea carierei
+[Sand bars]
+Bancuri de nisip
+[Woodland]
+Pădure
+[Central Quarry needs at least two colonies.]
+Cariera centrală are nevoie de cel puțin două colonii.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Lacul nu încape pe această hartă; folosiți un lac mai mic sau o hartă mai mare.
+[A sand bar did not reach the island.]
+Un banc de nisip nu a ajuns la insulă.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Această hartă nu are loc pentru atâtea colonii; folosiți o hartă mai mare sau mai puține colonii.
+[The island has no room for its quarry; use a bigger island.]
+Insula nu are loc pentru cariera sa; folosiți o insulă mai mare.
+[Hidden Oasis]
+Oaza ascunsă
+[Pond algae]
+Algele iazului
+[Starting towers]
+Turnuri de start
+[Starting school]
+Școală de start
+[Mesas]
+Platouri stâncoase
+[Springs]
+Izvoare
+[Hidden Oasis needs at least two colonies.]
+Oaza ascunsă are nevoie de cel puțin două colonii.
+[Hidden Oasis holds at most eight colonies.]
+Oaza ascunsă găzduiește cel mult opt colonii.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Masivul nu încape pe această hartă; folosiți o hartă mai mare sau mai puține colonii.
+[The pond has no room for that much algae; use a bigger pond.]
+Iazul nu are loc pentru atâtea alge; folosiți un iaz mai mare.
+[Even Ground]
+Teren egal
+[Balance]
+Echilibrare
+[Tight passes]
+Treceri înguste
+[Solver effort]
+Efortul rezolvatorului
+[Brief]
+Scurt
+[Patient]
+Răbdător
+[This map is too small to solve on; use a bigger map.]
+Această hartă este prea mică pentru a fi rezolvată; folosiți o hartă mai mare.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Prea multe colonii de echilibrat pe o hartă de această mărime; folosiți o hartă mai mare sau mai puține colonii.
+[The colonies could not be spread out on this map.]
+Coloniile nu au putut fi răspândite pe această hartă.
+[Marchland]
+Ținut de graniță
+[Prizes on the rope]
+Premii pe funie
+[March width]
+Lățimea ținutului de graniță
+[Levelling]
+Nivelare
+[A march needs a country on each side; use at least two colonies.]
+Un ținut de graniță are nevoie de câte o țară pe fiecare parte; folosiți cel puțin două colonii.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Prea multe colonii pentru ca această hartă să dea fiecăreia o patrie; folosiți o hartă mai mare sau mai puține colonii.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Această hartă nu are loc pentru a răspândi coloniile; folosiți o hartă mai mare sau mai puține colonii.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Patria unei colonii nu are ieșire spre ținutul de graniță; folosiți o hartă mai mare sau un ținut de graniță mai îngust.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Patria unei colonii nu are loc pentru un stup; folosiți o hartă mai mare, mai puține colonii sau un ținut de graniță mai îngust.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Ținutul de graniță are prea puțin teren disputat pentru atâtea premii; folosiți mai puține premii, un ținut de graniță mai lat sau o hartă mai mare.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Ținutul de graniță nu are loc pentru un premiu; folosiți o hartă mai mare, mai puține colonii sau un ținut de graniță mai lat.
+[Orchard Commons]
+Livezi comune
+[Orchard spacing]
+Distanța dintre livezi
+[Compact]
+Apropiate
+[Balanced]
+Echilibrată
+[Spread]
+Răsfirate
+[The Gauntlet]
+Arena încercărilor
+[Partition thickness]
+Grosimea zidurilor despărțitoare
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Arena încercărilor necesită o hartă mai mare sau mai puține colonii pentru a face loc pentru două intrări apărate la fiecare colonie.
+[The Comb]
+Pieptenele
+[Peninsulas per shore]
+Peninsule pe fiecare mal
+[Encircled Kingdom]
+Regat încercuit
+[Fortress plan]
+Planul fortăreței
+[Automatic]
+Automat
+[Elongated enclosure]
+Incintă alungită
+[Bastioned enclosure]
+Incintă cu bastioane
+[Paired courtyards]
+Două curți
+[Heartland farmland]
+Teren agricol central
+[The Faulted City]
+Orașul fracturat
+[Fault displacement]
+Deplasarea faliilor
+[Fault width]
+Lățimea faliilor
+[Ruin density]
+Densitatea ruinelor
+[Surviving junctions]
+Intersecții păstrate
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Orașul fracturat necesită 256 sau 512 celule pe fiecare latură și una până la douăsprezece colonii.
+[The city has too few usable junctions.]
+Orașul are prea puține intersecții utilizabile.
+[A city neighbourhood lacks reachable crops or building room.]
+Un cartier al orașului nu are culturi accesibile sau spațiu pentru construcții.
+[The city neighbourhoods are too unequal; try another seed.]
+Cartierele orașului sunt prea dezechilibrate; încercați altă sămânță.
+[The fractured civic plaza did not survive.]
+Piața orașului, străbătută de fisuri, nu s-a păstrat.
+[Who Ate the Map?]
+Cine a mâncat harta?
+[Appetite]
+Poftă de mâncare
+[A Little Nibble]
+O mușcătură mică
+[Hungry]
+Flămând
+[Portage Lakes]
+Lacuri și treceri împădurite
+[Lake elongation]
+Alungirea lacurilor
+[Portage depth]
+Grosimea trecerii
+[Extra trails]
+Poteci suplimentare
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Laturile acestei hărți trebuie să aibă între 64 și 512 dale.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Această sămânță nu permite amplasarea coloniilor pe maluri.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Nu încap câmpuri regenerabile lângă fiecare colonie.
+[Portage Lakes cannot connect its shoreline trails.]
+Potecile de pe maluri nu pot fi conectate.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Această sămânță nu permite o scurtătură utilă prin pădure uscată.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Această sămânță nu permite o scurtătură utilă prin înot.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Cu această sămânță, lacurile pentru înot trebuie să rămână separate.
+[Drowned Forest]
+Pădure inundată
+[Sandbar connections]
+Legături de nisip
+[Wooded neck thickness]
+Grosimea barierelor de copaci
+[Neutral clearing size]
+Mărimea poienilor neutre
+[Bastion Keys]
+Insulițe fortificate
+[Plantation size]
+Mărimea plantației
+[Outlying islands]
+Insule periferice
+[The Hungry Marches]
+Ținuturile de frontieră înfometate
+[Opening ration]
+Rație inițială
+[Central concentration]
+Concentrare în centru
+[The Last Treeline]
+Ultima fâșie de pădure
+[Woodland depth]
+Lățimea pâlcurilor de copaci
+[Fertility]
+Fertilitate
+[Deposits]
+Zăcăminte
+[Room]
+Spațiu
+[Isolation]
+Izolare
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Startul fiecărei colonii se măsoară pe harta terminată: drumul până la grâu și la lemn, cât de bine își reface terenul, zăcămintele și locurile de construcție la îndemână și distanța față de rivali. Fiecare factor primește de la 0 la 1 față de un prag fix, totalul îi ponderează, echitatea este totalul celei mai slabe colonii împărțit la cel al celei mai bune, iar scorul este cel mai slab total înmulțit cu echitatea.
+[ERROR_CANT_SAVE_MAP]
+Harta nu a putut fi salvată. Verificați destinația și spațiul disponibil. Modificările dvs. sunt încă deschise.
+[Loading headers]
+Se încarcă anteturile...
+[Loading teams]
+Se încarcă echipele...
+[Loading terrain]
+Se încarcă terenul...
+[Building gradients]
+Se generează gradienții...
+[Loading players]
+Se încarcă jucătorii...
+[Loading scripts]
+Se încarcă scripturile...
+[Generating map]
+Se generează harta...
+[ERROR_CANT_GENERATE_MAP]
+Harta nu a putut fi generată. Încercați alte setări de generare.
+[Loading units]
+Se încarcă unitățile...
+[Loading buildings]
+Se încarcă construcțiile...
+[Resolving team links]
+Se rezolvă legăturile dintre echipe...
+[saving to storage]
+Se salvează...
+[save failed retry]
+Salvare eșuată. Reîncercați.
+[export save]
+Exportă jocul salvat
+[storage restore failed]
+Stocarea din browser nu a putut fi restaurată. Datele salvate existente nu au fost modificate. Puteți continua această sesiune, dar modificările locale nu vor putea fi păstrate. Exportați salvările importante din fereastra de eroare de salvare. Reîncărcați pentru a reîncerca restaurarea stocării.
+[continue]
+Continuă
+[export file]
+Exportă fișierul
+[export failed]
+Exportul fișierului a eșuat
+[import file]
+Importă
+[select import file]
+Alegeți un fișier de importat
+[validating import]
+Se validează fișierul...
+[import succeeded]
+Fișier importat
+[import cancelled]
+Import anulat
+[import failed]
+Import eșuat: fișier nevalid sau neacceptat
+[import persistence failed]
+Nesalvat: alegeți Importă pentru a reîncerca sau Exportă fișierul
+[import progress]
+Progres import
+[export progress]
+Progres export
+[retry save]
+Reîncearcă salvarea
+[campaign save failed]
+Progresul campaniei nu a fost salvat. Reîncercați sau exportați o copie de rezervă.
+[leave without saving]
+Ieși fără a salva
+[campaign import failed]
+Fișier de progres nevalid sau versiune de campanie diferită
+[network release mismatch]
+Protocoalele clientului și serverului diferă. Instalați aceeași versiune Glob2 ca serverul.
+[settings continue]
+Continuă
+[settings save failed]
+Salvarea setărilor neconfirmată. Reîncercați sau continuați.
+[shutdown save failed]
+Salvarea finală neconfirmată. Reîncercați sau ieșiți fără a salva.
+[quit without saving]
+Ieși fără a salva
+[game closed]
+Joc închis. Puteți închide această fereastră sau reîncărca pentru a juca din nou.
+[campaign editor save failed]
+Salvare neconfirmată. OK reîncearcă; Anulare revine la meniul editorului.
+[Actions]
+Acțiuni
+[Minimap]
+Minihartă
+[Fast forward]
+Derulare rapidă
+[Hide keyboard]
+Ascunde tastatura
+[Dialog text size]
+Dimensiunea textului din dialoguri
+[Player slot]
+Loc de jucător
+[Team color]
+Culoarea echipei
+[Alliance group]
+Grup de alianță
+[menu]
+Meniu
+[Editor tools]
+Unelte
+[Pan map]
+Deplasează harta
+[Edit map]
+Editează harta
+[Editor map]
+Hartă
+[Flags]
+Steaguri
+[Pause]
+Pauză
+[Speed]
+Viteză
+[Objectives]
+Obiective
+[Menu]
+Meniu
+[Goals]
+Obiective
+[Teams]
+Echipe
+[Use this landscape]
+Folosește acest peisaj
+[Reset]
+Resetează
+[Generating...]
+Se generează...
+[Players]
+Jucători
+[Rules]
+Reguli
+[settings Interface layout]
+Aranjarea interfeței
+[settings Automatic]
+Automat
+[settings Compact]
+Apropiate
+[settings Spacious]
+Spațioasă
+[More]
+Mai multe
+[No items]
+Niciun element
+[Opponents]
+Adversari
+[Review]
+Rezumat
+[Review & Play]
+Verifică și joacă
+[Edit opponents]
+Editează adversarii
+[Map settings]
+Setările hărții
+[Next]
+Următorul
+[Done]
+Gata
+[Contribution]
+Contribuție
+[Choose who controls this colony]
+Alege cine controlează această colonie
+[Settings]
+Setări
+[settings Back]
+Înapoi
+[settings Save the game automatically about every minute.]
+Salvează automat jocul aproximativ o dată pe minut.
+[AI opponents]
+Adversari IA
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Aranjarea spațioasă folosește un panou lateral când există loc. Cea compactă folosește o bară de instrumente și panouri extensibile.
+[Assigned %0 · Target %1]
+Alocați %0 · Țintă %1
+[Range: %0]
+Rază: %0
+[Player %0]
+Jucător %0
+[Brush %0]
+Pensulă %0
+[Team %0]
+Echipa %0
+[Your colony]
+Colonia ta
+[%0 / %1 HP · %2]
+%0 / %1 PV · %2
+[Units: %0]
+Unități: %0
+[Buildings: %0]
+Clădiri: %0
+[Need food: %0]
+Necesită hrană: %0
+[Need healing: %0]
+Necesită vindecare: %0
+[Attack: %0]
+Atac: %0
+[Defense: %0]
+Apărare: %0
+[Food: %0 / %1]
+Hrană: %0 / %1
+[View team %0]
+Vezi echipa %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pensulă %0x%1
+[Level %0]
+Nivel %0
+[Manage teams (%0)]
+Gestionează echipele (%0)
+[Team %0 / Level %1]
+Echipa %0 / Nivel %1
+[Files · %0]
+Fișiere · %0
+[Hint %0]
+Indiciu %0
+[Objective %0]
+Obiectiv %0
+[Entry %0 of 8 · empty entries are omitted]
+Intrarea %0 din 8 · intrările goale sunt omise
+[Teams %0/%1]
+Echipe %0/%1
+[Elapsed time · %0]
+Timp scurs · %0
+[Read-only building]
+Clădire doar pentru citire
+[Alliance and shared vision are fixed for this match.]
+Alianța și vederea partajată sunt fixe în acest meci.
+[Share vision]
+Partajează vederea
+[Share food vision]
+Partajează vederea hranei
+[Share market vision]
+Partajează vederea piețelor
+[Chat]
+Conversație
+[No other players have editable diplomatic settings in this match.]
+Niciun alt jucător nu are setări diplomatice editabile în acest meci.
+[No briefing for this match.]
+Nu există instructaj pentru acest meci.
+[Chat · recipients selected in Teams]
+Conversație · destinatari aleși în Echipe
+[Filename]
+Nume fișier
+[Reduced motion]
+Mișcare redusă
+[Send]
+Trimite
+[Close]
+Închide
+[Forbidden]
+Interzis
+[Guard]
+Păzește
+[Clear]
+Curăță
+[Paint]
+Pictează
+[Erase]
+Șterge
+[Release on valid terrain to place]
+Eliberează pe teren valid pentru a plasa
+[Paint on the map; two fingers move]
+Pictează pe hartă; deplasează cu două degete
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Înapoi la unelte
+[Starvation overlay]
+Strat de foamete
+[Damage overlay]
+Strat de daune
+[Defense overlay]
+Strat de apărare
+[Fertility overlay]
+Strat de fertilitate
+[Health and food bars]
+Bare de sănătate și hrană
+[Message history]
+Istoricul mesajelor
+[Mark map for allies]
+Marchează harta pentru aliați
+[Show zones]
+Arată zonele
+[Pan]
+Deplasează
+[Select]
+Selectează
+[Show palette]
+Arată paleta
+[Release to place]
+Eliberează pentru a plasa
+[Blocked placement]
+Plasare blocată
+[File name]
+Numele fișierului
+[Load map]
+Încarcă harta
+[Save map]
+Salvează harta
+[No files in this folder]
+Niciun fișier în acest dosar
+[No files saved yet]
+Niciun fișier salvat încă
+[Export]
+Exportă
+[Tap to write the mission briefing]
+Atinge pentru a scrie instructajul misiunii
+[Tap to write the map script]
+Atinge pentru a scrie scriptul hărții
+[Script]
+Script
+[Previous]
+Anterior
+[Compile]
+Compilează
+[Tap to write this hint]
+Atinge pentru a scrie acest indiciu
+[Tap to write this objective]
+Atinge pentru a scrie acest obiectiv
+[Mission briefing · tap to edit, swipe to scroll]
+Instructaj · atinge pentru editare, glisează pentru derulare
+[Not enough recorded history yet.]
+Istoric înregistrat insuficient deocamdată.
+[Select a team to show its history.]
+Selectează o echipă pentru a-i arăta istoricul.
+[Back to chart]
+Înapoi la grafic
+[Expand chart]
+Mărește graficul
+[Slot]
+Loc
+[Color]
+Culoare
+[Player / AI]
+Jucător / IA
+[Group]
+Grup
+[Forbid]
+Interzice
+[↓ Low]
+↓ Scăzută
+[= Normal]
+= Normală
+[↑ High]
+↑ Ridicată
+[Details]
+Detalii
+[Campaign name]
+Numele campaniei
+[Unlocking]
+Deblocare
+[Parameters]
+Parametri
+[Blank map]
+Hartă goală
+[Generated]
+Generată
+[Preview]
+Previzualizare
+[Selected landscape]
+Peisaj selectat
+[Representative preview]
+Previzualizare reprezentativă
+[Starting terrain]
+Teren inițial
+[Hide parameters]
+Ascunde parametrii
+[Size and parameters]
+Dimensiune și parametri
+[Choose a landscape]
+Alege un peisaj
+[%0 / Browse]
+%0 / Răsfoiește
+[%0 colonies · %1]
+%0 colonii · %1
+[%0 · Team %1]
+%0 · Echipa %1
+[Colonies: %0]
+Colonii: %0
+[%0 colonies · %1 AI]
+%0 colonii · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unităţi
+[settings Level %0]
+Nivel %0
+[settings Match the desktop %0]
+La fel ca desktopul (%0)
+[settings Current display %0 %1 %2 %3]
+Modul de afișare curent: %0 × %1 · %2 · %3
+[Fairness: %0]
+Echitate: %0
+[Colony %0]
+Colonie %0
+[Win chance: %0 · Fitness: %1]
+Șansă de câștig: %0 · Putere: %1
+[%0 · Contribution: %1]
+%0 · Contribuție: %1
+[Min required level %0]
+Nivel minim necesar: %0
+[Confirm %0]
+Acceptă: %0
+[Dialog text size %0]
+Dimensiunea textului din dialoguri: %0%
+[%0 %1]
+%0 %1

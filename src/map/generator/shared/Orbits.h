@@ -86,8 +86,23 @@ struct LatticeSites
 {
 	std::vector<ShapePoint> sites;
 	bool exact = false;
+	int vacancies = 0; // extra lattice sites left empty, if a sparse lattice was requested
 };
 LatticeSites latticeSites(int width, int height, int teams, double x0, double y0);
+
+/// Move sites by at most `radius` whole tiles on each axis, preserving `minimumSpacing`
+/// measured on wrapped, truncated tile centres as nearestSiteDistance does. One proposal per
+/// site, in input order; a rejected move leaves that site unchanged. Returns accepted moves.
+/// This bounded operation cannot rescue an initially invalid lattice; validate spacing first.
+int jitterSites(const Torus &, std::vector<ShapePoint> &, GenerationContext &,
+				const std::string &stream, int radius, double minimumSpacing);
+/// Roomier fallback for colony counts whose equal-row factorization is crowded (notably primes).
+/// Tries at most `maxVacancies` extra lattice sites and leaves the extras empty. Each vacancy is
+/// chosen to maximize the minimum wrapped whole-tile distance among the surviving sites; equal
+/// scores retain the first choice. The original lattice wins unless spacing strictly improves.
+/// This is opt-in: callers that need exact symmetry or historic layout output keep latticeSites.
+LatticeSites roomyLatticeSites(int width, int height, int teams, double x0, double y0,
+							   int maxVacancies = 4);
 
 /// Colony 0's feature stamped onto every image of it: an entry is set when any image of its tile (or
 /// corner) lies in the feature. A union doesn't depend on the order an orbit is visited in, so the
@@ -133,5 +148,56 @@ inline double nearestSiteDistance(const Torus &t, const std::vector<ShapePoint> 
 			nearest = std::min(nearest, std::hypot(t.offsetX(int(sites[a].x), int(sites[b].x)),
 												   t.offsetY(int(sites[a].y), int(sites[b].y))));
 	return nearest;
+}
+/// Quarter turns of a stencil: a design drawn once in its own frame (offsets from an origin vertex)
+/// and stamped at every colony turned by a whole number of quarter turns, `facing` 0 to 3, so every
+/// copy covers exactly the same tiles. The two grids turn differently: a vertex (undermap corner)
+/// at offset (dx, dy) turns about the origin vertex, while tile (dx, dy), whose centre lies half a
+/// tile past its top-left corner, lands one tile over on the axes the turn flips. Evaluate a
+/// stencil's tiles at their centres and its corners at the corners, and turn each with its own rule,
+/// and the terrain and the tile masks of every copy agree. (The Glacis' forts and Caravanserai's
+/// home oases.)
+inline std::pair<int, int> turnStencilVertex(int facing, int dx, int dy)
+{
+	switch (facing & 3)
+	{
+	case 1:
+		return {-dy, dx};
+	case 2:
+		return {-dx, -dy};
+	case 3:
+		return {dy, -dx};
+	default:
+		return {dx, dy};
+	}
+}
+inline std::pair<int, int> turnStencilTile(int facing, int dx, int dy)
+{
+	switch (facing & 3)
+	{
+	case 1:
+		return {-dy - 1, dx};
+	case 2:
+		return {-dx - 1, -dy - 1};
+	case 3:
+		return {dy, -dx - 1};
+	default:
+		return {dx, dy};
+	}
+}
+/// A frame point (such as a stencil's feature centre) turned the same way, about the origin vertex.
+inline ShapePoint turnStencilPoint(int facing, ShapePoint p)
+{
+	switch (facing & 3)
+	{
+	case 1:
+		return {-p.y, p.x};
+	case 2:
+		return {-p.x, -p.y};
+	case 3:
+		return {p.y, -p.x};
+	default:
+		return p;
+	}
 }
 } // namespace MapGeneration

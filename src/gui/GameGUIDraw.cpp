@@ -6,12 +6,14 @@
 #include "../render/MapCopies.h"
 #include <iostream>
 
+#include <ApplicationHost.h>
 #include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "PanelButtonHit.h"
@@ -233,6 +235,7 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 
 void GameGUI::drawTopScreenBar(void)
 {
+    if (touch->usesHUD()) return;
 	// bar background
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 0);
@@ -373,12 +376,12 @@ void GameGUI::drawOverlayInfos(void)
 		if (selectionMode==TOOL_SELECTION)
 		{
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
+			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
 		}
 		else if (selectionMode==BRUSH_SELECTION)
 		{
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
+			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
 		}
 		else if (selectionMode==BUILDING_SELECTION)
 		{
@@ -474,7 +477,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		// TODO: die with SGSL
 		// show script text
-		if (game.sgslScript.isTextShown)
+		if (game.sgslScript.isTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
 			setMultiLine(game.sgslScript.textShown, &lines);
@@ -495,7 +498,7 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// show script text
-		if (!scriptText.empty())
+		if (!scriptText.empty() && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
 			setMultiLine(scriptText, &lines);
@@ -524,7 +527,7 @@ void GameGUI::drawOverlayInfos(void)
 	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, game, &camera);
 
 	// display text if placing a building
-	if(selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
+	if(!touch->usesHUD() && selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
 	{
 		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(255,255,255)));
 		globalContainer->gfx->drawString(10, globalContainer->gfx->getH()-100, globalContainer->standardFont,  Toolkit::getStringTable()->getString("[Building Tool Line Explanation]"), 0, 75);
@@ -566,6 +569,7 @@ void GameGUI::drawOverlayInfos(void)
 
 void GameGUI::drawInGameMenu(void)
 {
+    if (touch->drawDialog()) return;
 	gameMenuScreen->dispatchPaint();
 	globalContainer->gfx->drawSurface((int)gameMenuScreen->decX, (int)gameMenuScreen->decY, gameMenuScreen->getSurface());
 
@@ -595,6 +599,7 @@ void GameGUI::drawInGameMenu(void)
 
 void GameGUI::drawInGameTextInput(void)
 {
+    if (touch->drawDialog()) return;
 	typingInputScreen->decX=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-492)/2;
 	typingInputScreen->decY=globalContainer->gfx->getH()-typingInputScreenPos;
 	typingInputScreen->dispatchPaint();
@@ -624,6 +629,7 @@ void GameGUI::drawInGameTextInput(void)
 
 void GameGUI::drawInGameScrollableText(void)
 {
+    if (touch->drawDialog()) return;
 	scrollableText->decX=28;
 	scrollableText->decY=globalContainer->gfx->getH() - 165;
 	scrollableText->dispatchPaint();
@@ -636,6 +642,8 @@ void GameGUI::drawAll(int team)
 	updateCamera();
 	globalContainer->gfx->setClipRect();
 	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
+    if (touch) touch->prepareDraw();
+    const int sidebar=touch->usesHUD() ? 0 : RIGHT_MENU_WIDTH;
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
@@ -654,6 +662,7 @@ void GameGUI::drawAll(int team)
 		torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
 			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(),
 			camera.zoom, camera.fractionX(), camera.fractionY());
+	GAGCore::ApplicationHost::overviewDrawn(drewTorus);
 	if (!drewTorus)
 	{
 		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
@@ -691,32 +700,34 @@ void GameGUI::drawAll(int team)
 		}
 		else
 		{
-			globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 0, 0, 20);
+			globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-sidebar, globalContainer->gfx->getH(), 0, 0, 0, 20);
 			s = Toolkit::getStringTable()->getString("[Paused]");
 		}
 
-		int x = (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-globalContainer->menuFont->getStringWidth(s))/2;
+		int x = (globalContainer->gfx->getW()-sidebar-globalContainer->menuFont->getStringWidth(s))/2;
 		globalContainer->gfx->drawString(x, globalContainer->gfx->getH()-80, globalContainer->menuFont, s);
 	}
 
 	// draw the panel
 	globalContainer->gfx->setClipRect();
-	drawPanel();
+	if (!touch->usesHUD()) drawPanel();
 
 	// draw the minimap
 	drawOptions = 0;
 
 	globalContainer->gfx->setClipRect();
+    if (!touch->usesHUD())
 	minimap.draw(localTeamNo, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
 
 	// draw the progress bar if this is a replay
-	if (globalContainer->replaying) drawReplayProgressBar();
+	if (globalContainer->replaying && !touch->usesHUD()) drawReplayProgressBar();
 
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
+    touch->drawHUD();
 
-	if (!torusView.active()) drawMapZoomControls(camera, true);
+	if (!torusView.active() && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
 	// draw menu if any
 	if (inGameMenu)
 	{
@@ -739,6 +750,7 @@ void GameGUI::drawAll(int team)
 		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
 
 	}
+    if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)
@@ -817,10 +829,13 @@ void GameGUI::drawStatisticsPage(int y)
 	const int x = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + RIGHT_MENU_OFFSET;
 	globalContainer->gfx->drawString(
 		x + 4, y, globalContainer->littleFont,
-		Toolkit::getStringTable()->getString(measurementPage ? "[Stats page two]"
-															 : "[Stats page one]"));
-	if (measurementPage)
+		Toolkit::getStringTable()->getString(measurementPage == 0 ? "[Stats page one]"
+													: measurementPage == 1 ? "[Stats page two]"
+													: "[Stats page three]"));
+	if (measurementPage == 1)
 		teamStats->drawMeasurements(x, y + 16);
+	else if (measurementPage == 2)
+		teamStats->drawExpandedMeasurements(x, y + 16);
 	else
 		teamStats->drawText(x, y);
 }

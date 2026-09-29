@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GeneratorRegistry.h"
+#include "BastionKeysGenerator.h"
 #include "CityStatesGenerator.h"
 #include "ConcreteIslandsGenerator.h"
 #include "ContestedCommonsGenerator.h"
@@ -31,6 +32,42 @@
 #include "PolderGenerator.h"
 #include "OldTownGenerator.h"
 #include "AnthillGenerator.h"
+#include "EmojiGenerator.h"
+#include "BraidedRiverGenerator.h"
+#include "FortsGenerator.h"
+#include "BraidedDeltaGenerator.h"
+#include "BreachableHighlandsGenerator.h"
+#include "HedgerowCountryGenerator.h"
+#include "GlacisGenerator.h"
+#include "AllotmentsGenerator.h"
+#include "CaravanseraiGenerator.h"
+#include "DrumlinFieldGenerator.h"
+#include "ContinentsGenerator.h"
+#include "SavannahGenerator.h"
+#include "HillsGenerator.h"
+#include "RiceTerracesGenerator.h"
+#include "LocustGenerator.h"
+#include "PlantationsGenerator.h"
+#include "SierpinskiGardensGenerator.h"
+#include "HilbertRiverGenerator.h"
+#include "LavaShieldGenerator.h"
+#include "HoneycombIsleGenerator.h"
+#include "KarstTowersGenerator.h"
+#include "BajadaGenerator.h"
+#include "CentralQuarryGenerator.h"
+#include "HiddenOasisGenerator.h"
+#include "DrownedForestGenerator.h"
+#include "PortageLakesGenerator.h"
+#include "FaultedCityGenerator.h"
+#include "EvenGroundGenerator.h"
+#include "MarchlandGenerator.h"
+#include "OrchardCommonsGenerator.h"
+#include "LastTreelineGenerator.h"
+#include "GauntletGenerator.h"
+#include "CombGenerator.h"
+#include "EncircledKingdomGenerator.h"
+#include "WhoAteTheMapGenerator.h"
+#include "HungryMarchesGenerator.h"
 #include <algorithm>
 #include <set>
 #include <stdexcept>
@@ -57,7 +94,8 @@ GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
 	for (const auto &d : definitions)
 	{
 		if (!d.id || !*d.id || !d.nameKey || d.legacyId < 0 || !d.generate ||
-			!numbers.insert(d.legacyId).second || !ids.insert(d.id).second)
+			!numbers.insert(d.legacyId).second || !ids.insert(d.id).second ||
+			(d.tags.empty() && !d.editorOnly))
 			throw std::invalid_argument("Invalid generator registration");
 		std::set<std::string> controls;
 		for (const auto &c : sharedGeneratorControls())
@@ -140,7 +178,16 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 switchbacksDefinition(),
 											 cityStatesDefinition(),
 											 canalsDefinition(),
-											 ruggedArchipelagoDefinition(),
+											 sierpinskiGardensDefinition(),
+											 hilbertRiverDefinition(),
+											 lavaShieldDefinition(),
+											 honeycombIsleDefinition(),
+											 karstTowersDefinition(), bajadaDefinition(),
+											 centralQuarryDefinition(), hiddenOasisDefinition(), drownedForestDefinition(), portageLakesDefinition(),
+											 orchardCommonsDefinition(), lastTreelineDefinition(), gauntletDefinition(), faultedCityDefinition(), combDefinition(), encircledKingdomDefinition(), bastionKeysDefinition(),
+											 evenGroundDefinition(), marchlandDefinition(),
+											 whoAteTheMapDefinition(), ruggedArchipelagoDefinition(),
+											 hungryMarchesDefinition(),
 											 contestedCommonsDefinition(),
 											 rainShadowDefinition(),
 											 evergladesDefinition(),
@@ -149,6 +196,22 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 											 oldGrowthDefinition(),
 											 anthillDefinition(),
 											 coralDefinition(),
+											 emojiDefinition(),
+											 fortsDefinition(),
+											 braidedDeltaDefinition(),
+											 breachableHighlandsDefinition(),
+											 hedgerowCountryDefinition(),
+											 glacisDefinition(),
+											 allotmentsDefinition(),
+											 caravanseraiDefinition(),
+											 braidedRiverDefinition(),
+											 drumlinFieldDefinition(),
+											 continentsDefinition(),
+											 savannahDefinition(),
+											 hillsDefinition(),
+											 riceTerracesDefinition(),
+											 locustDefinition(),
+											 plantationsDefinition(),
 											 uniformDefinition()});
 	return registry;
 }
