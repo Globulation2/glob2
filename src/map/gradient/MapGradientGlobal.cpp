@@ -134,33 +134,31 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
-	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
+	const Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
+	// Only fogged resources of a type that must be seen to be collected are hidden.
+	const bool hideFogged = globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected;
+	const Tile *tile = tiles.data();
+	const Uint8 *immobile = immobileUnits;
+	const Uint32 *fog = fogOfWar;
 	for (size_t i=0; i<size; i++)
 	{
-		const Tile& c=tiles[i];
-		if (c.forbidden & teamMask)
-			gradient[i]=GRADIENT_FORBIDDEN;
-		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
-			gradient[i]=GRADIENT_FORBIDDEN;
+		const Tile& c=tile[i];
+		Uint16 value;
+		if ((c.forbidden & teamMask) || immobile[i] != IMMOBILE_UNIT_NONE)
+			value=GRADIENT_FORBIDDEN;
 		else if (c.resource.type==NO_RES_TYPE)
 		{
-			if (c.building!=NOGBID)
-				gradient[i]=GRADIENT_FORBIDDEN;
-			else if (!canSwim && isWater(i))
-				gradient[i]=GRADIENT_FORBIDDEN;
+			if (c.building!=NOGBID || (!canSwim && isWater(i)))
+				value=GRADIENT_FORBIDDEN;
 			else
-				gradient[i]=GRADIENT_UNREACHABLE;
+				value=GRADIENT_UNREACHABLE;
 		}
 		else if (c.resource.type==resourceType)
-		{
-			if (globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected && !(fogOfWar[i]&teamMask))
-				gradient[i]=GRADIENT_FORBIDDEN;
-			else
-				gradient[i]=GRADIENT_AT_GOAL;
-		}
+			value=(hideFogged && !(fog[i]&teamMask)) ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL;
 		else
-			gradient[i]=GRADIENT_FORBIDDEN;
+			value=GRADIENT_FORBIDDEN;
+		gradient[i]=value;
 	}
 
 	propagateGradient(gradient, swimClass);
