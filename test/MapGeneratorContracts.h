@@ -1768,6 +1768,24 @@ inline void portageLakesContracts()
 	if (!report)
 		std::fprintf(stderr, "%s\n", report.diagnostic().c_str());
 	assert(report);
+	// Coverage is per water component, not merely a larger global wheat total.
+	const auto checkShoreFields = [](const auto &result, int wanted)
+	{
+		int lakes = 0, fields = 0;
+		for (const auto &record : result.telemetry.records())
+		{
+			if (record.key == "portage-lakes.lakes.components")
+				lakes = int(std::get<std::int64_t>(record.value));
+			if (record.key == "portage-lakes.shore-fields.extra")
+			{
+				assert(std::get<std::int64_t>(record.value) >= 1 &&
+					   std::get<std::int64_t>(record.value) <= wanted);
+				++fields;
+			}
+		}
+		assert(lakes > 0 && fields == lakes);
+	};
+	checkShoreFields(report, 2);
 	const auto fingerprint = mapFingerprint(first);
 	GenerationContext context(r);
 	assert(definition.validateWorld(first, context).empty());
@@ -1776,10 +1794,11 @@ inline void portageLakesContracts()
 	compact.wDec = compact.hDec = 6;
 	compact.nbTeams = 2;
 	Game small(nullptr);
-	auto smallReport = service.generate(small, compact);
+	auto smallReport = service.generate(small, compact, true);
 	if (!smallReport)
 		std::fprintf(stderr, "%s\n", smallReport.diagnostic().c_str());
 	assert(smallReport);
+	checkShoreFields(smallReport, 1);
 	Game repeated(nullptr);
 	assert(service.generate(repeated, r, false));
 	assert(mapFingerprint(repeated) == fingerprint);
@@ -1867,6 +1886,30 @@ inline void portageLakesContracts()
 		if (!result)
 			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
 		assert(result);
+	}
+	// Full maps need shore room budgeted early; tiny maps need their landing first.
+	for (unsigned seed : {650037u, 650064u})
+	{
+		const bool tiny = seed == 650064u;
+		D shore = r;
+		shore.seed = seed;
+		shore.wDec = shore.hDec = tiny ? 6 : 9;
+		shore.nbTeams = tiny ? 2 : 11;
+		shore.nbWorkers = 2;
+		shore.options["lake-elongation"] = 225;
+		shore.options["portage-depth"] = 5;
+		shore.options["extra-trails"] = tiny ? 100 : 25;
+		shore.options["wheat-amount"] = tiny ? 125 : 300;
+		shore.options["wood-amount"] = tiny ? 175 : 50;
+		shore.options["stone-amount"] = tiny ? 250 : 200;
+		shore.options["algae-amount"] = tiny ? 150 : 275;
+		shore.options["fruit-amount"] = 175;
+		Game world(nullptr);
+		auto result = service.generate(world, shore, true);
+		if (!result)
+			std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
+		assert(result);
+		checkShoreFields(result, tiny ? 1 : 2);
 	}
 	// Deliberately unsupported requests are rejected before touching the world.
 	D invalid = compact;

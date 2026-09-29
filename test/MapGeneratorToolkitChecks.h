@@ -29,6 +29,7 @@
 #include "LatticeNoise.h"
 #include "Pipeline.h"
 #include "Planting.h"
+#include "Farmland.h"
 #include "Points.h"
 #include "Resources.h"
 #include "Rivers.h"
@@ -310,6 +311,73 @@ inline void sketchChecks()
 // tile, algae lands on water only and in the band asked for, and the swarm clearance is exact.
 inline void plantingChecks()
 {
+	// Shore fields reuse water, preserve a reserved crossing, supply fertile
+	// solid crops and leave actual inn footprints rather than noisy holes.
+	{
+		Game shoreGame(nullptr);
+		grassMap(shoreGame, 6, 6);
+		const Torus shore(shoreGame.map);
+		TerrainSketch terrain(shore.size(), GRASS);
+		std::vector<unsigned char> allowed(shore.size(), 1);
+		std::vector<int> labels(shore.size(), -1);
+		for (int i = 0; i < shore.size(); ++i)
+		{
+			if (shore.dist2(2, 32, i % shore.w, i / shore.w) <= 100)
+				terrain[i] = WATER;
+			if (i / shore.w >= 55 && i / shore.w <= 59)
+				allowed[i] = 0;
+		}
+		layBeaches(terrain, shore);
+		const auto before = terrain;
+		const auto water = pureTiles(terrain, shore, WATER);
+		const auto fields = layShoreFields(terrain, shore, allowed, labels, 0);
+		assert(!fields.empty() && pureTiles(terrain, shore, WATER) == water);
+		for (int i = 0; i < shore.size(); ++i)
+			if (!allowed[i])
+				assert(terrain[i] == before[i]);
+		writeUndermap(shoreGame.map, terrain);
+		const auto fertility = cropGrowthField(terrain, shore);
+		assert(plantShoreFields(shoreGame.map, shore, fields, fertility, 0) == 0);
+		assert(plantShoreFields(shoreGame.map, shore, fields, fertility, 100) >= 48);
+		for (const auto &field : fields)
+			for (int y = 0; y < 4; ++y)
+				for (int x = 0; x < 4; ++x)
+					assert(clearGround(shoreGame.map, shore.x(field.court % shore.w + x),
+									   shore.y(field.court / shore.w + y)));
+		for (int i = 0; i < shore.size(); ++i)
+			if (shoreGame.map.getResource(i).type == WHEAT)
+				assert(labels[i] >= 0 &&
+					   fertility.at(i % shore.w, i / shore.w) >= Fertility::kScale / 64);
+		std::vector<unsigned char> walking(shore.size());
+		for (int i = 0; i < shore.size(); ++i)
+			walking[i] = !shoreGame.map.isWater(i % shore.w, i / shore.w) &&
+				!shoreGame.map.isResource(i % shore.w, i / shore.w);
+		const auto approach = stepsFrom(shore, tileMask(shore, {shore.at(32, 32)}), walking);
+		for (const auto &field : fields) assert(approach[field.court] >= 0);
+		for (int tick = 0; tick < 256; ++tick)
+			shoreGame.map.growResources();
+		assert(containedPlotsMismatch(shoreGame.map, shore, labels).empty());
+		// Open shores add no sand rim. Their fertile spread ends naturally,
+		// including the last dry neighbour a fertile source can seed.
+		Game openGame(nullptr);
+		grassMap(openGame, 6, 6);
+		terrain = before;
+		labels.assign(shore.size(), -1);
+		const auto openFields = layShoreFields(terrain, shore, allowed, labels, 0, false);
+		assert(!openFields.empty() && pureTiles(terrain, shore, WATER) == water);
+		for (int i = 0; i < shore.size(); ++i)
+			assert(terrain[i] != SAND || before[i] == SAND);
+		writeUndermap(openGame.map, terrain);
+		const auto openFertility = cropGrowthField(terrain, shore);
+		assert(plantShoreFields(openGame.map, shore, openFields, openFertility, 100) > 0);
+		const auto envelope = fertileCropEnvelope(openGame.map, openFertility);
+		assert(!envelope[shore.at(32, 32)]);
+		for (int tick = 0; tick < 256; ++tick) openGame.map.growResources();
+		for (int i = 0; i < shore.size(); ++i)
+			if (openGame.map.getResource(i).type == WHEAT) assert(envelope[i]);
+
+	}
+
 	Game game(nullptr);
 	grassMap(game, 6, 6);
 	Map &map = game.map;

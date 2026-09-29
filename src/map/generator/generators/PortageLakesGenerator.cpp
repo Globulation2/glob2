@@ -39,6 +39,7 @@ struct Plot
 	int court = -1;
 	std::vector<int> access{};
 	int serviceHome = -1;
+	int lake = -1;
 };
 struct Crossing
 {
@@ -49,11 +50,11 @@ struct Layout
 {
 	Torus t{1, 1};
 	TerrainSketch terrain;
-	std::vector<unsigned char> forest, rock, roads, reserved, lakeWater, wheatland;
+	std::vector<unsigned char> forest, rock, roads, reserved, lakeWater;
 	std::vector<int> plotOf, candidates, homes;
 	std::vector<Plot> plots;
-	std::vector<std::vector<int>> proposals;
-	std::vector<int> lakeCentres, algaePools, expansions;
+	std::vector<std::vector<int>> proposals, countryClumps;
+	std::vector<int> lakeCentres, algaePools, expansions, shoreFields;
 	Crossing portage, swim;
 	std::vector<Crossing> portages;
 	bool compact = false;
@@ -280,12 +281,34 @@ Layout landscape(const GenerationRequest &r, GenerationContext &c)
 }
 
 bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind, int minimum,
-			  int baseline, bool narrowBay = false, int serviceHome = -1)
+			  int baseline, bool narrowBay = false, int serviceHome = -1,
+			  const std::vector<int> *shoreDistance = nullptr)
 {
 	const auto &t = L.t;
 	// Grow a patch ALONG the shore, clipped by existing ground and reservations.
 	// This makes farms fit bays instead of drawing a row of identical round gardens.
 	const int cx = centre % t.w, cy = centre / t.w;
+	const double phase = c.bounded("portage-field-shapes", 6283) / 1000.;
+	auto eligible = [&](int i)
+	{
+		int dx = t.offsetX(cx, i % t.w), dy = t.offsetY(cy, i / t.w);
+		if (dx * dx + dy * dy > radius * radius * 5)
+			return false;
+		if (L.terrain[i] != GRASS || (shoreDistance && ((*shoreDistance)[i] < 0 || (*shoreDistance)[i] > 8)))
+			return false;
+		const int margin = shoreDistance ? 1 : 2;
+		for (int y = -margin; y <= margin; ++y)
+			for (int x = -margin; x <= margin; ++x)
+			{
+				int q = t.at(i % t.w + x, i / t.w + y);
+				if (L.reserved[q] || L.rock[q] || L.roads[q] ||
+					(shoreDistance ? L.terrain[q] == WATER : L.terrain[q] != GRASS))
+					return false;
+			}
+		return true;
+	};
+	if (!eligible(centre))
+		return false;
 	int wx = 0, wy = 1, best = INT_MAX;
 	for (int y = -22; y <= 22; ++y)
 		for (int x = -22; x <= 22; ++x)
@@ -297,23 +320,6 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 			}
 	const double length = std::max(1., std::hypot(wx, wy));
 	const double nx = wx / length, ny = wy / length;
-	const double phase = c.bounded("portage-field-shapes", 6283) / 1000.;
-	auto eligible = [&](int i)
-	{
-		int dx = t.offsetX(cx, i % t.w), dy = t.offsetY(cy, i / t.w);
-		if (dx * dx + dy * dy > radius * radius * 5)
-			return false;
-		for (int y = -2; y <= 2; ++y)
-			for (int x = -2; x <= 2; ++x)
-			{
-				int q = t.at(i % t.w + x, i / t.w + y);
-				if (L.reserved[q] || L.terrain[q] != GRASS)
-					return false;
-			}
-		return true;
-	};
-	if (!eligible(centre))
-		return false;
 	std::vector<int> corners;
 	std::set<int> queued{centre};
 	using Node = std::pair<double, int>;
@@ -335,7 +341,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 			int x = t.offsetX(cx, q % t.w), y = t.offsetY(cy, q / t.w);
 			double across = x * nx + y * ny, along = -x * ny + y * nx;
 			frontier.push(
-				{across * across * 1.9 + along * along * .55 + 4 * std::sin(along * .4 + phase),
+				{across * across * 1.9 + along * along * .55 + (shoreDistance ? 0 : 4 * std::sin(along * .4 + phase)),
 				 q});
 		}
 	}
@@ -349,7 +355,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 		return true;
 	}
 	auto original = L.terrain;
-	auto tiles = stampContainedPlot(L.terrain, t, corners);
+	auto tiles = stampContainedPlot(L.terrain, t, corners, shoreDistance ? 1 : 2);
 	int court = -1;
 	std::vector<int> access;
 	if (minimum > 0 || kind == WHEAT)
@@ -432,7 +438,7 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 			for (int i = exit; i >= 0; i = parent.at(i))
 				access.push_back(i);
 		}
-		int fertile = 0;
+		int fertile = 0, shoreTiles = 0;
 		std::uint64_t potential = 0;
 		for (int i : tiles)
 		{
@@ -441,11 +447,13 @@ bool makePlot(Layout &L, GenerationContext &c, int centre, int radius, int kind,
 			const bool inAccess = std::find(access.begin(), access.end(), i) != access.end();
 			const auto value = inCourt || inAccess ? 0 : fertility.at(i);
 			fertile += value > 0;
+			shoreTiles += value > 0 && shoreDistance && (*shoreDistance)[i] <= 3;
 			potential += value;
 		}
-		if (minimum > 0 &&
-			(fertile < minimum ||
-			 (kind == WHEAT && potential < (t.size() == 4096 ? 2 : 6) * Fertility::kScale)))
+		if ((shoreDistance && (shoreTiles < 6 || fertile < 24 || potential < 2 * Fertility::kScale)) ||
+			(minimum > 0 &&
+			 (fertile < minimum ||
+			  (kind == WHEAT && potential < (t.size() == 4096 ? 2 : 6) * Fertility::kScale))))
 		{
 			L.terrain = std::move(original);
 			return false;
@@ -491,11 +499,76 @@ bool furnishBay(Layout &L, GenerationContext &c, int home, bool starter)
 				if (makePlot(L, c, candidate.tile, radii[kind], kind ? WOOD : WHEAT,
 							 starter ? (kind ? 12 : (L.compact ? 20 : 32)) : 0,
 							 kind ? 12 : (L.compact ? 96 : 128), pass == 1,
-							 starter && L.compact && t.size() > 4096 ? home : -1))
+							 starter ? home : -1))
 				{
 					placed = true;
 					break;
 				}
+		if (!placed)
+			return false;
+	}
+	return true;
+}
+
+// Give every existing lake additional farming ground, independently of where
+// the settlement search happened to place towns or neutral bays.
+bool extraShoreFields(Layout &L, GenerationContext &c, bool opening)
+{
+	const auto &t = L.t;
+	auto owner = connectedRegions(L.lakeWater, t.w, t.h, true, GridNeighbors::Eight);
+	std::vector<int> sizes, queue, depth(t.size(), -1);
+	for (int i = 0; i < t.size(); ++i)
+		if (owner[i] >= 0)
+		{
+			if (int(sizes.size()) <= owner[i])
+				sizes.resize(owner[i] + 1);
+			++sizes[owner[i]];
+			queue.push_back(i);
+			depth[i] = 0;
+		}
+	std::vector<std::vector<int>> candidates(sizes.size());
+	for (size_t head = 0; head < queue.size(); ++head)
+	{
+		const int i = queue[head];
+		if (depth[i] >= 2 && depth[i] <= 5 && L.terrain[i] == GRASS && !L.reserved[i])
+			candidates[owner[i]].push_back(i);
+		if (depth[i] == 8)
+			continue;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int q = t.at(i % t.w + dx, i / t.w + dy);
+				if (depth[q] >= 0)
+					continue;
+				depth[q] = depth[i] + 1;
+				owner[q] = owner[i];
+				queue.push_back(q);
+			}
+	}
+	L.shoreFields.resize(sizes.size(), 0);
+	const int wanted = opening || L.compact ? 1 : 2;
+	for (size_t lake = 0; lake < sizes.size(); ++lake)
+	{
+		if (sizes[lake] < (L.compact ? 20 : 80))
+			continue;
+		auto &sites = candidates[lake];
+		c.shuffle(sites.begin(), sites.end(), "portage-extra-shore-fields");
+		int &placed = L.shoreFields[lake];
+		for (int radius : {L.compact ? 5 : 6, 4, 3})
+		{
+			for (int site : sites)
+			{
+				if (placed == wanted)
+					break;
+				if (makePlot(L, c, site, radius, WHEAT, 0, L.compact ? 64 : 96, true, -1, &depth))
+				{
+					L.plots.back().lake = int(lake);
+					++placed;
+				}
+			}
+		}
+		if (!opening)
+			c.telemetry.measure("portage-lakes.shore-fields.extra", placed, int(lake));
 		if (!placed)
 			return false;
 	}
@@ -713,6 +786,14 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 					L.algaePools.push_back(p);
 					placed = true;
 				}
+	}
+	// On full maps, budget one field per lake before optional bays and routes
+	// consume the remaining shore. Compact maps must fit their swimming landing
+	// first; their single extra field fits around the finished network.
+	if (!L.compact && !extraShoreFields(L, c, true))
+	{
+		L.failure = "Portage Lakes cannot fit additional shore fields beside every lake.";
+		return L;
 	}
 	std::vector<int> neutralBays;
 	int neutral = 0, neutralTries = 0;
@@ -960,13 +1041,53 @@ Layout furnish(const Layout &base, const std::vector<int> &homes, GenerationCont
 		c.telemetry.measure("portage-lakes.expansion.x", L.expansions[k] % t.w, int(k));
 		c.telemetry.measure("portage-lakes.expansion.y", L.expansions[k] / t.w, int(k));
 	}
-	// Use the existing open gaps in lake-country woodland for grain; leave
-	// trails, landing clearings, portage plugs and home construction ground alone.
-	L.wheatland.assign(t.size(), 0);
+	if (!L.failure.empty())
+		return L;
+	if (!extraShoreFields(L, c, false))
+	{
+		L.failure = "Portage Lakes cannot fit additional shore fields beside every lake.";
+		return L;
+	}
+	grass = pureTiles(L.terrain, t, GRASS);
+	// Shore expansion may clear ordinary woodland, but reserved portage plugs
+	// and their margins were excluded from every new field.
 	for (int i = 0; i < t.size(); ++i)
-		L.wheatland[i] = grass[i] && !L.reserved[i] && !homeBuffer[i] && !L.roads[i] &&
-						 !L.forest[i] && !L.rock[i] && L.plotOf[i] < 0 &&
-						 growth.at(i % t.w, i / t.w) == 0;
+		if (!grass[i] || L.plotOf[i] >= 0)
+			L.forest[i] = 0;
+
+	// Break up the largest empty lawns with small fruit copses and rocky outcrops.
+	// Keep broad aisles around every clump and stay away from all promised routes,
+	// lake landings, home room and working fields. These add no enclosing sand.
+	std::vector<unsigned char> empty(t.size());
+	for (int i = 0; i < t.size(); ++i)
+		empty[i] = grass[i] && !L.forest[i] && !L.rock[i] && !L.reserved[i] &&
+			!L.roads[i] && L.plotOf[i] < 0;
+	std::vector<unsigned char> keepClear(t.size(), 0);
+	for (int h : L.homes) disc(keepClear, t, h, 20);
+	for (int h : L.expansions) disc(keepClear, t, h, 12);
+	for (int i = 0; i < t.size(); ++i) empty[i] &= !keepClear[i];
+	const auto room = clearance(t, empty);
+	std::vector<int> centres;
+	for (int i = 0; i < t.size(); ++i) if (room[i] >= 7) centres.push_back(i);
+	c.shuffle(centres.begin(), centres.end(), "portage-country-clumps");
+	std::stable_sort(centres.begin(), centres.end(), [&](int a, int b) { return room[a] > room[b]; });
+	std::vector<int> used;
+	for (int i : centres)
+	{
+		bool apart = true;
+		for (int other : used) apart &= t.dist2(i % t.w, i / t.w, other % t.w, other / t.w) >= 24 * 24;
+		if (!apart) continue;
+		used.push_back(i);
+		std::vector<int> clump;
+		const int radius = 2 + c.bounded("portage-country-clumps", 2);
+		for (int dy = -radius; dy <= radius; ++dy)
+			for (int dx = -radius; dx <= radius; ++dx)
+				if (dx * dx + dy * dy <= radius * radius && !(dx == radius && dy >= 0))
+					clump.push_back(t.at(i % t.w + dx, i / t.w + dy));
+		L.countryClumps.push_back(std::move(clump));
+		if (used.size() >= size_t(t.size() / 1800)) break;
+	}
+	c.telemetry.measure("portage-lakes.country.clumps", L.countryClumps.size());
 
 	return L;
 }
@@ -1175,6 +1296,8 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 				plantContainedPlot(game.map, t, plantable, growth, WHEAT, budget - count, true);
 			c.telemetry.measure("portage-lakes.farm.resown", 1, int(p));
 		}
+		if (plot.lake >= 0)
+			c.telemetry.measure("portage-lakes.shore-field.lake", plot.lake, int(p));
 		c.telemetry.measure("portage-lakes.plot.requested", requested, int(p));
 		c.telemetry.measure("portage-lakes.plot.planted", count, int(p));
 		if (plot.kind == WOOD || plot.kind == WHEAT)
@@ -1208,6 +1331,12 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 	for (int i = 0; i < t.size(); ++i)
 		if ((L.forest[i] || L.rock[i]) && clearGround(game.map, i % t.w, i / t.w))
 			game.map.setResource(i % t.w, i / t.w, L.rock[i] ? STONE : WOOD, 1);
+	for (size_t k = 0; k < L.countryClumps.size(); ++k)
+	{
+		const int kind = k % 3 == 0 ? STONE : CHERRY + int(k % 3);
+		plantFieldInteriors(game.map, t, L.countryClumps[k], kind,
+			scaledCount(int(L.countryClumps[k].size()), kind == STONE ? o.stone : o.fruit));
+	}
 	for (int pool : L.algaePools)
 	{
 		auto waterEligible = [&](int i)
@@ -1242,16 +1371,7 @@ bool materialize(Game &game, GenerationContext &c, const Layout &L)
 		if (seed >= 0)
 			growPatch(game.map, t, seed, CHERRY + int(k % 3), scaledCount(3, o.fruit), eligible);
 	}
-	std::vector<int> grain;
-	for (int i = 0; i < t.size(); ++i)
-		if (L.wheatland[i] && clearGround(game.map, i % t.w, i / t.w))
-			grain.push_back(i);
-	c.shuffle(grain.begin(), grain.end(), "portage-open-grain");
-	const int grainCount = std::min(int(grain.size()), int(scaledCount(grain.size() / 2, o.wheat)));
-	for (int k = 0; k < grainCount; ++k)
-		game.map.setResource(grain[k] % t.w, grain[k] / t.w, WHEAT, 1);
-	c.telemetry.measure("portage-lakes.country.wheat", grainCount);
-	if (auto e = containedPlotsMismatch(game.map, t, L.plotOf, &growth, &L.wheatland); !e.empty())
+	if (auto e = containedPlotsMismatch(game.map, t, L.plotOf, &growth); !e.empty())
 	{
 		c.detail = e;
 		return false;
@@ -1343,7 +1463,7 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 	const auto &t = L.t;
 	const auto &map = game.map;
 	auto growth = Fertility::forMap(map, false);
-	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &growth, &L.wheatland); !e.empty())
+	if (auto e = containedPlotsMismatch(map, t, L.plotOf, &growth); !e.empty())
 		return e;
 
 	for (const auto &crossing : L.portages)
@@ -1376,7 +1496,7 @@ GeneratorDefinition portageLakesDefinition()
 	return {"portage-lakes",
 			65,
 			"Portage Lakes",
-			2,
+			3,
 			false,
 			{{"lake-elongation", "Lake elongation", 125, 300, 25, 200, ControlGroup::Terrain},
 			 {"portage-depth", "Portage depth", 2, 8, 1, 4, ControlGroup::Layout},

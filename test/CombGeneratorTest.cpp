@@ -88,7 +88,7 @@ void contracts()
 							restored.game.map.getResource(x, y).getUint32(),
 					"terrain and resources survive save/load");
 	const auto &def = GeneratorRegistry::builtins().at(r.method);
-	// Open dry fields are allowed, but town construction ground stays clear.
+	// Natural inlet crops are allowed, but town construction ground stays clear.
 	// A new seed on open construction ground must still be rejected.
 	const Torus t{256, 256};
 	const auto reserve = buildAnchors(t, potentialBuildingTiles(second.game.map), 6);
@@ -96,11 +96,11 @@ void contracts()
 	for (int i = 0; i < t.size(); ++i)
 		terrain[i] = TerrainType(second.game.map.getUMTerrain(i % t.w, i / t.w));
 	const auto fertility = cropGrowthField(terrain, t);
-	const auto envelope = cropSpreadEnvelope(second.game.map, &fertility);
+	const auto envelope = fertileCropEnvelope(second.game.map, fertility);
 	const int home = unitTilesByTeam(second.game.map, 4).front().front();
 	int stray = -1, nearest = 999999;
 	for (int i = 0; i < t.size(); ++i)
-		if (reserve[i] && envelope.steps[i] < 0 && clearGround(second.game.map, i % t.w, i / t.w))
+		if (reserve[i] && !envelope[i] && clearGround(second.game.map, i % t.w, i / t.w))
 		{
 			const int distance = t.dist2(i % 256, i / 256, home % 256, home / 256);
 			if (distance < nearest)
@@ -115,7 +115,7 @@ void contracts()
 			"stray crop planted");
 	GenerationContext strayContext(r);
 	require(!def.validateWorld(second.game, strayContext).empty(),
-			"uncontained decorative crop rejected");
+			"crop in protected construction ground rejected");
 	GenerationContext context(r);
 	for (int y = 0; y < 256; ++y)
 		for (int x = 0; x < 256; ++x)

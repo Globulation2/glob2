@@ -37,6 +37,7 @@ struct Grove
 };
 struct Layout
 {
+	std::vector<ShoreField> shoreFields;
 	Torus t{1, 1};
 	TerrainSketch terrain;
 	std::vector<ShapePoint> homes, courts;
@@ -313,8 +314,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 				}
 			}
 		}
-		L.wheatland[i] = homeDistance2 >= 32 * 32 && std::abs(across - valley(along)) > 62 &&
-						 forest[i] < sorted[sorted.size() / 4];
+		L.wheatland[i] = homeDistance2 >= 32 * 32 && std::abs(across - valley(along)) > 62;
 		L.woodland[i] = !swale && homeDistance2 >= 27 * 27 &&
 						std::abs(across - valley(along)) > 55 && forest[i] > threshold;
 	}
@@ -331,6 +331,7 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		g.tiles.erase(
 			std::remove_if(g.tiles.begin(), g.tiles.end(), [&](int i) { return !grass[i]; }),
 			g.tiles.end());
+	L.shoreFields = layShoreFields(L.terrain, t, L.wheatland, L.plotOf, int(L.plots.size()), false);
 	for (size_t k = 0; k < L.groves.size(); ++k)
 	{
 		int nearest = std::numeric_limits<int>::max();
@@ -541,19 +542,13 @@ bool generate(Game &game, GenerationContext &c)
 		game.map.setResource(i % t.w, i / t.w, WOOD, 1);
 		++trees;
 	}
-	// Broad open grain fields use the dry gaps between woods and water. These
-	// are finite harvest reserves; the existing irrigated farms provide renewal.
-	std::vector<int> grain;
-	for (int i = 0; i < t.size(); ++i)
-		if (L.wheatland[i] && fertility.at(i % t.w, i / t.w) == 0 &&
-			clearGround(game.map, i % t.w, i / t.w))
-			grain.push_back(i);
-	c.shuffle(grain.begin(), grain.end(), "orchard-open-grain");
-	const int grainCount =
-		std::min(int(grain.size()), int(scaledCount(grain.size() * 3 / 5, o.wheat)));
-	for (int k = 0; k < grainCount; ++k)
-		game.map.setResource(grain[k] % t.w, grain[k] / t.w, WHEAT, 1);
-	c.telemetry.measure("orchard.country.wheat", grainCount);
+	// Fill clean, renewable field sections against the outer lakes and streams.
+	const int grainCount = plantShoreFields(game.map, t, L.shoreFields, fertility, o.wheat);
+	c.telemetry.measure("orchard.shore.fields", L.shoreFields.size());
+	for (size_t k = 0; k < L.shoreFields.size(); ++k)
+		c.telemetry.measure("orchard.shore.growth-potential",
+			L.shoreFields[k].growthPotential / double(Fertility::kScale), int(k));
+	c.telemetry.measure("orchard.shore.wheat", grainCount);
 	c.telemetry.measure("orchard.woodland.tiles", trees);
 	seedAlgae(game.map, c, t, "orchard-algae", o.algae, AlgaeBand::anyWater(25));
 	// Pick the actual swarm anchor after deposits, beaches and fords exist. Geometric
@@ -668,13 +663,14 @@ std::string validateWorld(const Game &game, const GenerationContext &c)
 			}
 	}
 	const auto fertility = cropGrowthField(L.terrain, t);
+	const auto spread = fertileCropEnvelope(map, fertility);
 	std::vector<unsigned char> future(t.size(), 0), walking(t.size(), 0);
 	for (int i = 0; i < t.size(); ++i)
 	{
 		walking[i] = stepCost(map, i % t.w, i / t.w, StepCosts::walking()) >= 0;
-		future[i] = walking[i] && L.plotOf[i] < 0;
+		future[i] = walking[i] && L.plotOf[i] < 0 && !spread[i];
 		const int type = map.getResource(i % t.w, i / t.w).type;
-		if ((type == WHEAT || type == WOOD) && L.plotOf[i] < 0 &&
+		if ((type == WHEAT || type == WOOD) && L.plotOf[i] < 0 && !L.wheatland[i] &&
 			fertility.at(i % t.w, i / t.w) > 0)
 			return "An uncontained renewable crop threatens orchard routes.";
 	}
@@ -825,7 +821,7 @@ GeneratorDefinition orchardCommonsDefinition()
 	return {"orchard-commons",
 			58,
 			"Orchard Commons",
-			2,
+			3,
 			false,
 			{GeneratorControl::choice("orchard-spacing", "Orchard spacing",
 									  {"Compact", "Balanced", "Spread"}, 1, ControlGroup::Layout),

@@ -32,6 +32,11 @@ int cropSeedsIn(const Map &, const std::vector<unsigned char> &region);
 /// spread flood. The envelope from renewable seeds still conservatively ignores fertility.
 Flood cropSpreadEnvelope(const Map &, const Fertility::Field *fertility = nullptr);
 
+/// Future crop occupancy using exact source fertility. A fertile crop may seed
+/// any grass neighbour, including one final dry tile; dry tiles cannot spread
+/// again. Ignores buildings and other resources for a conservative upper bound.
+std::vector<unsigned char> fertileCropEnvelope(const Map &, const Fertility::Field &);
+
 /// How far, on each axis, the engine's crop growth probe reaches for water.
 constexpr int kCropProbeReach = 15;
 

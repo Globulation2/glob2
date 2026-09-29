@@ -162,8 +162,37 @@ Choose the smallest remedy that fits the individual landscape. Several maps with
 low wheat need not all acquire the same new farm, pond or sand ring. First use
 existing farmland and water well; add terrain when capacity or geography requires
 it. Sand enclosures serve particular growth and route contracts, not a universal
-farm template. Where a seal is unnecessary, use the map's existing shores, dry
-land and continuous fields, and still validate their future crop footprint.
+farm template. Prefer existing shores and continuous fields, and still validate
+their future crop footprint. Expansion wheat intended to cure a food shortage
+must have productive water access: place it against the shore, separated only by
+the required beach, and measure exact fertility on the finished crop tiles. Dry
+wheat is finite stock, useful only when that is an explicit design goal. A barely
+positive growth chance also does not establish useful sustained production.
+
+Draw solid, coherent fields. Randomly thinning individual wheat tiles creates
+speckled texture without adding useful geographic variety. Use clean boundaries
+and distinct filled sections, preserving inn openings and worker access. Inspect
+close-ups of both the field edge and its connection to water before broad tests.
+
+Use containment only for a specific promise. An outer field does not need a sand
+border simply because a home woodlot does. Where shores can grow naturally,
+validate their fertile spread and leave the inland edge grassy. Growth is tested
+at the source tile: a fertile plant can seed one final dry neighbour, which cannot
+spread again. Include that fringe when protecting building room and routes.
+
+Compare usable construction space beside each food source, not just wheat counts.
+An inn opening does not compensate for one player receiving a broad grassy shore
+while another receives an unbuildable desert. Keep outer lake approaches grassy
+or distribute dry terrain deliberately across comparable expansion opportunities.
+Do not solve that imbalance by flattening the whole landscape. Keep contrast in
+less sensitive ground: broken dry terraces beyond a broad grassy shore apron
+can preserve the theme without taking away building frontage beside food.
+
+Match the crop pattern to the landscape. Small separated wheat clumps can suit a
+winding inlet; long solid fields can suit farmland. Neither needs random brown
+terrain flecks around it. Give empty country occasional coherent woods, fruit
+copses or rocky outcrops while retaining clear construction areas and routes;
+visual variety should not turn every empty space into another enclosed farm.
 
 A map's special shortage should remain deliberate. An orchard contest needs an
 ordinary grain economy behind the fruit prize; a limited-timber landscape should
