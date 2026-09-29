@@ -12,6 +12,12 @@ on:
       - 'tests/build_system/**'
       - '!tests/build_system/test_ci_changed_paths.py'
       - '.github/workflows/mobile.yml'
+
+# A newer push supersedes an Android build for the same pull request.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   android-native:
     name: Android native (${{ matrix.arch }})
