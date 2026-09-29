@@ -94,6 +94,7 @@ Map::~Map(void)
 
 void Map::clear()
 {
+	gradientPipeline.reset();
 	growthCoverage.clear();
 	for (auto &counts : growthCoverageCounts) counts.clear();
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();

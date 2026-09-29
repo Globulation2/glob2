@@ -45,7 +45,8 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 	{
 		// Ordinary buildings have no prepainted flag goals: write each cell's
 		// final initial value directly, without clearing the whole field first.
-		for (size_t i=0; i<size; ++i)
+		initializeGradientCells([&](size_t begin, size_t end) {
+		for (size_t i=begin; i<end; ++i)
 		{
 			const Tile& tile=tiles[i];
 			if (tile.building!=NOGBID)
@@ -56,6 +57,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 			else
 				gradient[i]=GRADIENT_UNREACHABLE;
 		}
+		});
 	}
 	else
 	{
@@ -102,12 +104,9 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 			building->anyResourceToClear[canSwim] = anyResourceToClear ? 1 : 2;
 		}
 
-		for (int y=0; y<h; y++)
-		{
-			int wy=w*y;
-			for (int x=0; x<w; x++)
+		initializeGradientCells([&](size_t begin, size_t end) {
+			for (size_t wyx=begin; wyx<end; ++wyx)
 			{
-				int wyx=wy+x;
 				const Tile& c=tiles[wyx];
 				if (c.building==NOGBID)
 				{
@@ -119,7 +118,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 					//Clearing flags don't consider water an obstacle so long as that piece of
 					//water is under the flag, like algae
-					else if (!canSwim && isWater(x, y) && (!isClearingFlag || gradient[wyx] != GRADIENT_AT_GOAL))
+					else if (!canSwim && isWater(static_cast<unsigned>(wyx)) && (!isClearingFlag || gradient[wyx] != GRADIENT_AT_GOAL))
 						gradient[wyx] = GRADIENT_FORBIDDEN;
 				}
 				else
@@ -133,7 +132,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 						gradient[wyx] = GRADIENT_UNREACHABLE;
 				}
 			}
-		}
+		});
 	}
 
 	if (!building->type->isVirtual)

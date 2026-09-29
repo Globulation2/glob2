@@ -144,6 +144,9 @@ void Game::syncStep(Sint32 localTeam)
 
 		Uint64 startTick=SDL_GetTicks64();
 
+		if (!map.pipeline().enabled()) map.configureGradientPipeline(1, 8);
+		map.pipeline().advance();
+
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
 

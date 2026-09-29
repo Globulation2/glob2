@@ -150,6 +150,10 @@ void AICastor::init(Player *player)
 	starvingWarningStats[0]=0;
 	starvingWarningStats[1]=0;
 	buildsAmount=0;
+	// Telemetry can capture this derived cache before the boot sequence computes
+	// it (including immediately after loading an old save). Never serialize heap
+	// contents as historical building counts. Gameplay computes it before use.
+	for (auto &counts : buildingSum) counts[0] = counts[1] = 0;
 	
 	
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)

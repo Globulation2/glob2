@@ -130,7 +130,14 @@ Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass
 void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
 {
 	PERF_SCOPE_TIME(ResourceGradient);
-	Uint16 *gradient=resourcesGradient[teamNumber][resourceType][swimClass];
+	gradientPipeline.invalidate(&resourcesGradient[teamNumber][resourceType][swimClass]);
+	Uint16 *gradient = resourcesGradient[teamNumber][resourceType][swimClass];
+	seedResourcesGradient(teamNumber, resourceType, swimClass, gradient);
+	propagateGradient(gradient, swimClass);
+}
+
+void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient)
+{
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
@@ -141,7 +148,8 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 	const Tile *tile = tiles.data();
 	const Uint8 *immobile = immobileUnits;
 	const Uint32 *fog = fogOfWar;
-	for (size_t i=0; i<size; i++)
+	initializeGradientCells([&](size_t begin, size_t end) {
+	for (size_t i=begin; i<end; i++)
 	{
 		const Tile& c=tile[i];
 		Uint16 value;
@@ -160,6 +168,6 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 			value=GRADIENT_FORBIDDEN;
 		gradient[i]=value;
 	}
+	});
 
-	propagateGradient(gradient, swimClass);
 }

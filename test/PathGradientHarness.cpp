@@ -215,6 +215,43 @@ void lazyBuildingChecks()
 	std::puts("PASS lazy building gradients: paused terrain snapshots, query ordering, equal-cost movement, unreachable cells, toroidal geometry, independent frontiers and rebuilds");
 }
 
+void parallelChecks()
+{
+	std::vector<Uint16> terrain(128 * 128, 0), seeds(terrain.size(), Unreached);
+	for (size_t i = 0; i < terrain.size(); ++i)
+	{
+		if (i % 11 == 0) terrain[i] = 256;
+		if (i % 19 == 0) seeds[i] = Blocked;
+		if (i % 701 == 0) seeds[i] = Goal - (i % 80);
+	}
+	PathMap map(7, 7, terrain);
+	std::array<std::vector<Uint16>, 7> expected;
+	for (int swim = 0; swim < 7; ++swim) expected[swim] = oracle(seeds, terrain, 128, 128, swim, CostLimit);
+	for (unsigned threads : {1, 2, 4, 8})
+	{
+		map.configureCompute(threads, 7);
+		for (int repeat = 0; repeat < 5; ++repeat)
+		{
+			std::array<std::vector<Uint16>, 7> actual;
+			for (auto &field : actual) field = seeds;
+			map.computeExecutor().run(7, [&](size_t swim) { map.propagateGradient(actual[swim].data(), swim); });
+			for (int swim = 0; swim < 7; ++swim) require(actual[swim] == expected[swim], "parallel propagation differs from oracle");
+		}
+		// Concurrent independent lazy searches, including nested water initialization.
+		std::array<std::vector<Uint16>, 7> actual;
+		for (auto &field : actual) { field.assign(terrain.size(), Unreached); field[0] = Goal; }
+		map.computeExecutor().run(7, [&](size_t swim) {
+			BuildingGradientSearch search;
+			search.begin(map, actual[swim].data(), swim);
+			search.resolve(123); search.finish();
+		});
+		std::vector<Uint16> goals(terrain.size(), Unreached); goals[0] = Goal;
+		for (int swim = 0; swim < 7; ++swim)
+			require(actual[swim] == oracle(goals, terrain, 128, 128, swim, CostLimit), "parallel lazy propagation differs");
+	}
+	std::puts("PASS parallel eager/lazy gradients at 1, 2, 4, 8 threads");
+}
+
 void analyticOracleCheck()
 {
 	const int width = 32, height = 16;
@@ -233,6 +270,7 @@ void analyticOracleCheck()
 int main()
 {
 	analyticOracleCheck();
+	parallelChecks();
 	lazyBuildingChecks();
 	std::mt19937 random(0x71A6D19u);
 	constexpr int caps[] = {INT_MIN, -1, 0, 1, 4, 5, 7, 9, 10, 13, 14, 29, 30, 41, 42, 43, 44, 120, 65490, 65491, 65492, INT_MAX};

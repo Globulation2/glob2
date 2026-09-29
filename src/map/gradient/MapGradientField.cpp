@@ -41,13 +41,6 @@ namespace
 	constexpr int COST_LIMIT = GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1 - MAX_STEP;
 	static_assert(COST_LIMIT == Map::GRADIENT_COST_LIMIT);
 
-	// Shared scratch storage retains capacity between fields. Calls must be serial
-	// and non-reentrant, including calls on different Maps. Before parallelizing
-	// propagation, give each worker its own workspace; these are not cached fields.
-	GradientBucket buckets[BUCKETS];
-	// Seeds whose cost lies beyond the bucket window, sorted by (cost, cell);
-	// each enters its bucket once the sweep reaches its cost.
-	std::vector<std::pair<int, int>> deferredSeeds;
 
 	// Costs of entering a cell by a cardinal and by a diagonal step.
 	struct EntrySteps
@@ -347,8 +340,17 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 {
 	PERF_SCOPE_TIME(Propagation);
+	propagateGradientSnapshot(gradient, swimClass, maxCost, gradientWorkspace(), nullptr);
+}
+
+void Map::propagateGradientSnapshot(Uint16 *gradient, int swimClass, int maxCost,
+	GradientWorkspace &workspace, const std::uint8_t *water)
+{
+	auto *buckets = workspace.buckets.data();
+	auto &deferredSeeds = workspace.deferredSeeds;
+	static_assert(std::tuple_size<decltype(workspace.buckets)>::value == BUCKETS);
 	const int limit = std::min(maxCost, COST_LIMIT);
-	for (auto &bucket : buckets)
+	for (auto &bucket : workspace.buckets)
 		bucket.clear();
 	deferredSeeds.clear();
 	size_t pending = 0;
@@ -386,7 +388,14 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 	if (!weightedClass(swimClass))
 		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	else
-		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [&](size_t i) { return isWater((unsigned)i); });
+	{
+		const EntrySteps waterSteps = entrySteps(WATER_STEP[swimClass]);
+		// A pipelined field reads its terrain snapshot; an immediate one reads the map.
+		if (water)
+			sweep(std::true_type(), waterSteps, [water](size_t i) { return water[i] != 0; });
+		else
+			sweep(std::true_type(), waterSteps, [&](size_t i) { return isWater((unsigned)i); });
+	}
 }
 
 void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim)
@@ -398,11 +407,19 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	widthShift = map.getShiftW();
 	swimClass = swim;
 	currentCost = 0;
+	popped = 0;
 	pending = 0;
 	for (auto &bucket : buckets) bucket.clear();
 	const bool weighted = weightedClass(swim);
+	const bool splitWater = weighted && map.computeEnabled(Map::ComputeInitialize) && cells >= 16384;
 	if (weighted) water.resize(cells);
 	else water.clear();
+	if (splitWater)
+	{
+		map.initializeGradientCells([&](size_t begin, size_t end) {
+			for (size_t i = begin; i < end; ++i) water[i] = map.isWater(static_cast<unsigned>(i));
+		});
+	}
 	// Building fields have only zero-cost seeds, so no deferred seeds are needed.
 	for (std::size_t i = 0; i < cells; ++i)
 	{
@@ -412,7 +429,7 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 			buckets[0].push(static_cast<Uint32>(i));
 			++pending;
 		}
-		if (weighted) water[i] = map.isWater(static_cast<unsigned>(i));
+		if (weighted && !splitWater) water[i] = map.isWater(static_cast<unsigned>(i));
 	}
 }
 
@@ -434,6 +451,7 @@ void BuildingGradientSearch::resolve(std::size_t target)
 		while (pending && (target == cells || !resolved(target)))
 		{
 			assert(currentCost <= COST_LIMIT);
+			popped += buckets[currentCost % BUCKETS].size;
 			expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost, COST_LIMIT,
 				widthMask, heightMask, widthShift, waterSteps, waterAt);
 			++currentCost;
