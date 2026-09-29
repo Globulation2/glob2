@@ -60,24 +60,26 @@ def main():
         hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'final.game')}
         if legacy_reference is None: legacy_reference = hashes
         assert hashes == legacy_reference, f'v121 Echo continuation differs: {n}'
-    echo_fixture = output / 'echo-new-fixture'
-    execute(binary, ['--map-file', str(ROOT / 'maps/FourSquares1.map.gz'),
-                     '--game-seed', '123', '--player', 'econo', '--player', 'nicowar',
-                     '--player', 'econo', '--player', 'nicowar', '--ticks', '1',
-                     '--save', 'initial'], echo_fixture)
-    echo_args = ['--load-game', str(echo_fixture / 'initial.game.gz'),
-                 '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true',
-                 '--save', 'final']
-    echo_reference = None
-    for n in (1, 2, 4, 8):
-        run = output / f'echo-new-{n}'
-        execute(binary, echo_args + ['--compute-threads', str(n),
-                                    '--compute-experiments', 'ai'], run)
-        hashes = {name: digest(run / name) for name in
-                  ('game.replay.checksums', 'game.replay', 'final.game')}
-        if echo_reference is None: echo_reference = hashes
-        assert hashes == echo_reference, f'new Echo game differs: {n}'
-    print('PASS compute experiments: exact traces, replay bytes, final saves, and old/new Echo continuation at 1/2/4/8 threads')
+    for label, players in (('echo-new', ('econo', 'nicowar', 'econo', 'nicowar')),
+                           ('castor-new', ('castor',) * 4)):
+        fixture = output / f'{label}-fixture'
+        setup = ['--map-file', str(ROOT / 'maps/FourSquares1.map.gz'),
+                 '--game-seed', '123']
+        for ai in players: setup += ['--player', ai]
+        execute(binary, setup + ['--ticks', '1', '--save', 'initial'], fixture)
+        common = ['--load-game', str(fixture / 'initial.game.gz'),
+                  '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true',
+                  '--save', 'final']
+        reference = None
+        for n in (1, 2, 4, 8):
+            run = output / f'{label}-{n}'
+            execute(binary, common + ['--compute-threads', str(n),
+                                      '--compute-experiments', 'ai'], run)
+            hashes = {name: digest(run / name) for name in
+                      ('game.replay.checksums', 'game.replay', 'final.game')}
+            if reference is None: reference = hashes
+            assert hashes == reference, f'{label} game differs: {n}'
+    print('PASS compute experiments: exact traces, replay bytes, final saves, and Echo/Castor continuation at 1/2/4/8 threads')
 
 
 if __name__ == '__main__':

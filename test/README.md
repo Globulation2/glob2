@@ -529,6 +529,8 @@ and Windows CI run it.
 That fixture was saved at tick 256 from `maps/FourSquares1.map.gz`, game seed
 123, with Econo, Nicowar, Econo and Nicowar in player order.
 The same check starts a fresh four-Echo game to cover concurrent cache creation.
+It also starts four Castor controllers to exercise concurrent lazy map-gradient
+requests.
 `python3 test/check_echo_save_continuation.py PATH/TO/glob2` also checks full
 Maxima/Nicowar and Nicowar/Nicowar games through two reloads using the retained
 [arena fixture](fixtures/echo-continuation/README.md).
