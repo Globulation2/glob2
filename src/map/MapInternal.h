@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-// Private shared definitions for the Map.cpp family of translation units.
-// Not intended for inclusion outside Map*.cpp.
+// Private shared definitions for Map, gradient and pathfinding implementation
+// files. Not part of the public Map interface.
 
 #pragma once
 

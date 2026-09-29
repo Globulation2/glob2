@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "GradientBucket.h"
+#include "kernel/GradientBucket.h"
 #include <array>
 #include <utility>
 #include <vector>

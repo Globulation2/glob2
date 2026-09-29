@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "kernel/GradientPropagation.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
@@ -224,8 +225,16 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 #endif
 	gradientPipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
 #ifndef YOG_SERVER_ONLY
-		propagateGradientSnapshot(job.data.get(), job.swim, GRADIENT_COST_LIMIT, scratch,
-			job.water.empty() ? nullptr : job.water.data());
+		const gradient_kernel::GradientGeometry geometry{size, wMask, hMask, wDec};
+		if (job.water.empty())
+			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
+				geometry, scratch, [this](size_t i) { return isWater(static_cast<unsigned>(i)); });
+		else
+		{
+			const auto *water = job.water.data();
+			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
+				geometry, scratch, [water](size_t i) { return water[i] != 0; });
+		}
 #else
 		throw std::logic_error("The server does not simulate gradients");
 #endif

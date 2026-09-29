@@ -6,13 +6,15 @@
 #include <cstdint>
 #include <vector>
 
-// One cost layer of the gradient bucket queue: cell indices in [0, size).
-// cells.size() is capacity, so the kernel can reserve room for a run of
-// expanded cells and then append through a raw cursor without branching.
+// One cost layer of the gradient bucket queue. Only cells[0..size) are live;
+// cells.size() is allocated storage, not the number of queued entries. The
+// kernel reserves enough storage for a chunk, writes through raw end cursors,
+// then publishes their final offsets back to size. Rejected writes beyond size
+// may remain in storage and must never be read as queue entries.
 struct GradientBucket
 {
-	// A power of two above the largest edge cost (42): each bucket then holds a
-	// single cost at a time and a mask selects it.
+	// Power of two above the largest edge cost (42). The ring cannot reuse a
+	// bucket for a future cost while that bucket's current layer is expanding.
 	static constexpr unsigned COUNT = 64;
 
 	std::vector<std::uint32_t> cells;
