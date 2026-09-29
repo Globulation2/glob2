@@ -17,6 +17,7 @@ alone is not a safe job limit. The commands below leave concurrency unspecified.
 scons                        # default client: debug information, no optimization
 scons release=1 server=0       # optimized client, including headless runs
 scons release=1 server=1       # server with the correct stripped library
+scons release=1 package        # macOS signed app bundle and DMG
 scons -C test                 # rebuild the separate test suite
 (cd test && ./TestsRunner && ./WinningConditionsHarness)
 ```
@@ -126,7 +127,15 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
   the current implementation; independent scratch, stable inputs and deterministic
   publication are relevant checks.
-- In `src/map/gradient/MapGradientGlobal.cpp` the chamfer distance transform's
+- Gradient field seeding lives in the area, building and resource source files.
+  `MapGradientPropagation.cpp` starts eager fields through the private
+  `kernel/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
+  building fields. Both use `kernel/GradientRelaxation.h`. Keep their cell-cost
+  and queue ordering contracts shared when tuning architecture-specific kernels.
+  `GradientConstants.h` owns the field encoding; `Map` keeps its pipeline and
+  per-executor scratch in an opaque `GradientRuntime`. Save/load reaches pending
+  work through snapshot views, not the pipeline's mutable jobs.
+- In `src/map/gradient/MapGradientChamfer.cpp` the chamfer distance transform's
   convergence-pass cap is bounded by the Uint8 value range (256), not by the
   Borgefors 1-pass result. Borgefors holds only on an obstacle-free grid; with
   obstacles each bend in the propagation path costs about K/2 passes, and real

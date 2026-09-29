@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/GradientRuntime.h"
 #include "Game.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
@@ -117,7 +118,7 @@ void Map::updateForbiddenGradient()
 void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
 	PERF_SCOPE_TIME(AreaGradient);
-	gradientPipeline.invalidate(&guardAreasGradient[teamNumber][swimClass]);
+	gradientRuntime->pipeline.invalidate(&guardAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
 	seedGuardAreasGradient(teamNumber, swimClass, gradient);
 	propagateGradient(gradient, swimClass);
@@ -171,7 +172,7 @@ void Map::updateGuardAreasGradient()
 void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 {
 	PERF_SCOPE_TIME(AreaGradient);
-	gradientPipeline.invalidate(&clearAreasGradient[teamNumber][swimClass]);
+	gradientRuntime->pipeline.invalidate(&clearAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
 	seedClearAreasGradient(teamNumber, swimClass, gradient);
 	propagateGradient(gradient, swimClass);

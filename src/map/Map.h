@@ -5,10 +5,11 @@
 #pragma once
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
-#include "gradient/GradientWorkspace.h"
-#include "gradient/GradientPipeline.h"
-
+#include <cstddef>
+#include <cstdint>
 #include <list>
+#include <memory>
+#include <mutex>
 #include <optional>
 #include <vector>
 #include <assert.h>
@@ -32,6 +33,7 @@ class Map;
 class Game;
 class SessionGame;
 class MapHeader;
+struct GradientRuntime;
 
 //! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
 //! dx and dy are each in {-1, 0, +1}.
@@ -80,20 +82,13 @@ enum AreaType
 class Map
 {
 	mutable ComputeExecutor compute;
-	std::vector<GradientWorkspace> gradientWorkspaces{1};
+	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
-	mutable GradientPipeline gradientPipeline;
 public:
 	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
-	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4 };
-	void configureCompute(unsigned threads, unsigned experiments)
-	{
-		compute.configure(threads);
-		gradientWorkspaces.resize(compute.threadCount());
-		computeExperiments = experiments;
-	}
+	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
+	void configureCompute(unsigned threads, unsigned experiments);
 	ComputeExecutor &computeExecutor() { return compute; }
-	GradientWorkspace &gradientWorkspace() { return gradientWorkspaces[compute.slot()]; }
 	bool computeEnabled(ComputeExperiment experiment) const { return computeExperiments & experiment; }
 	// Fixed chunks and synchronous barriers: thresholds affect execution only.
 	template<class Function> void initializeGradientCells(Function function) const
@@ -106,14 +101,24 @@ public:
 			function(begin, std::min(begin + chunk, size));
 		});
 	}
-	GradientPipeline &pipeline() { return gradientPipeline; }
+	struct GradientPipelineStatus
+	{
+		bool enabled = false;
+		unsigned workers = 0, delay = 0;
+		std::size_t pending = 0;
+		std::uint64_t jobs = 0, published = 0, discarded = 0;
+		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0;
+	};
+	bool gradientPipelineEnabled() const;
+	GradientPipelineStatus gradientPipelineStatus() const;
+	void advanceGradientPipeline();
+	void finishGradientPipeline();
+	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
 	void updateTeamAreaGradients(int teamNumber);
 	void seedResourcesGradient(int team, Uint8 resource, int swim, Uint16 *gradient);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
 	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
-	void propagateGradientSnapshot(Uint16 *gradient, int swim, int maxCost,
-		GradientWorkspace &workspace, const std::uint8_t *water);
 	void advanceHiringGradients(Building *building);
 
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
@@ -666,7 +671,7 @@ public:
 	static constexpr int SWIM_CLASS_EVEN = 3;
 	//! Cheapest possible step for a class, the A* heuristic unit.
 	static int minStepCost(int swimClass);
-	//! Highest cost a gradient can hold (see MapInternal.h).
+	//! Highest cost a pathfinding gradient can hold (see GradientConstants.h).
 	static constexpr int GRADIENT_COST_LIMIT = 0xFFFF - 1 - 1 - 42;
 	//! Cost of stepping (dx, dy) into the cell at targetIndex, in gradient units.
 	int stepCost(int dx, int dy, size_t targetIndex, int swimClass) const;
@@ -702,13 +707,14 @@ public:
 	// buffer (0 = obstacle, 1 = free, any cell >= 3 = source); chamfer sweeps it
 	// forward and backward until stable. Only the AIs' own helper maps use it;
 	// the pathfinding gradients are built by propagateGradient. Defined in
-	// MapGradientGlobal.cpp.
+	// MapGradientChamfer.cpp.
 	void updateGlobalGradient(Uint8 *gradient);
-	//! Dijkstra from every seeded cell of a pathfinding gradient (see MapInternal.h).
+	//! Dijkstra from every seeded cell of a pathfinding gradient (see GradientConstants.h).
 	//! Seeds may carry any cost up to GRADIENT_COST_LIMIT (0 for GRADIENT_AT_GOAL; e.g. a
 	//! resource tile seeded with its distance to a building); do not pass a completed
-	//! field. With maxCost, cells that would cost more stay unreachable. Uses worker-owned
-	//! scratch storage: parallel calls must use this Map's executor and distinct fields.
+	//! field. With maxCost, propagation does not add cells beyond the cap; existing
+	//! seeds remain. Uses worker-owned scratch storage: parallel calls must use this
+	//! Map's executor and distinct fields.
 	//! swimClass must be in [0, SWIM_CLASS_COUNT).
     GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
@@ -828,13 +834,14 @@ public:
 	Uint16 fertilityMaximum;
 	
 protected:
-	// Pathfinding gradients, see MapInternal.h for the cell values. Indexed
+	// Pathfinding gradients, see GradientConstants.h for the cell values. Indexed
 	// [team][swim class]; NULL until a unit of that class asks for one.
 	// Map owns the buffers and frees them on clear. Resource/guard/clear fields
 	// refresh round-robin in syncStep; forbidden fields refresh through map edits.
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	mutable std::mutex resourcesGradientMutex;
 	
 	// Used to go out of forbidden areas
 	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];

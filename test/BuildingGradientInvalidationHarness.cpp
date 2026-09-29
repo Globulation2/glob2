@@ -338,20 +338,20 @@ static void delayedFields()
 		const auto cells=map.getW()*map.getH();
 		field();
 		map.configureGradientPipeline(workers, 3);
-		map.pipeline().advance(); map.syncStep(0); // Seed the only allocated periodic slot.
-		require(map.pipeline().metrics.jobs==1, "pipeline scheduled a real field");
+		map.advanceGradientPipeline(); map.syncStep(0); // Seed the only allocated periodic slot.
+		require(map.gradientPipelineStatus().jobs==1, "pipeline scheduled a real field");
 		map.addForbidden(41, 40, 0);
 		refresh();
 		const std::vector<Uint16> expected(field(),field()+cells);
-		map.pipeline().advance(); map.pipeline().advance(); map.pipeline().advance();
-		require(map.pipeline().metrics.discarded==1, "synchronous refresh supersedes queued snapshot");
+		map.advanceGradientPipeline(); map.advanceGradientPipeline(); map.advanceGradientPipeline();
+		require(map.gradientPipelineStatus().discarded==1, "synchronous refresh supersedes queued snapshot");
 		require(std::vector<Uint16>(field(),field()+cells)==expected, "old field cannot overwrite fresh synchronous field");
 		// A subsequent periodic snapshot publishes normally at its fixed deadline.
 		map.syncStep(1);
-		map.pipeline().advance(); map.pipeline().advance();
-		require(map.pipeline().metrics.published==0, "no early publication");
-		map.pipeline().advance();
-		require(map.pipeline().metrics.published==1, "publication at deadline");
+		map.advanceGradientPipeline(); map.advanceGradientPipeline();
+		require(map.gradientPipelineStatus().published==0, "no early publication");
+		map.advanceGradientPipeline();
+		require(map.gradientPipelineStatus().published==1, "publication at deadline");
 		map.syncStep(2);
 		std::vector<Uint16> frozen(cells);
 		if(kind==0) map.seedResourcesGradient(0, 0, swim, frozen.data());
@@ -359,7 +359,7 @@ static void delayedFields()
 		else map.seedClearAreasGradient(0, swim, frozen.data());
 		map.propagateGradient(frozen.data(), swim);
 		map.setTerrain(55, 55, 0); // Workers must use captured water, not this live edit.
-		map.pipeline().advance(); map.pipeline().advance(); map.pipeline().advance();
+		map.advanceGradientPipeline(); map.advanceGradientPipeline(); map.advanceGradientPipeline();
 		require(std::vector<Uint16>(field(),field()+cells)==frozen, "terrain changes do not alter a pending snapshot");
 		map.syncStep(3); // Destruction must safely drain a job in flight.
 	}

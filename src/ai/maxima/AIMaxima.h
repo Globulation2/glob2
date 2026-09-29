@@ -53,8 +53,9 @@ public:
 	void save(GAGCore::OutputStream *stream) override;
 	std::shared_ptr<Order> getOrder() override;
 	std::string auditStrategyJson() const;
-	void tick(AIMaximaRuntime::Context& echo) override;
-	void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event) override;
+	std::string canonicalStrategy() const;
+	void tick(AIMaximaRuntime::Context& runtime) override;
+	void handle_event(AIMaximaRuntime::Context& runtime, const AIMaximaRuntime::RuntimeEvent& event) override;
 private:
 	AIMaximaRuntime::Context context;
 	///Owns strategic cadence and invalidation. Maxima's remaining methods are
@@ -64,7 +65,7 @@ private:
 	public:
 		StrategyDirector() : initialized(false), dirty(true) {}
 		void evaluate(Maxima& owner,
-			AIMaximaRuntime::Context& echo);
+			AIMaximaRuntime::Context& runtime);
 		void invalidate() { dirty=true; }
 		void committed() { initialized=true; dirty=false; }
 		bool initialized;
@@ -478,23 +479,23 @@ private:
 		int confirmedTick;
 	};
 
-	void evaluate_strategy(AIMaximaRuntime::Context& echo);
-	StrategicSnapshot collect_snapshot(AIMaximaRuntime::Context& echo);
+	void evaluate_strategy(AIMaximaRuntime::Context& runtime);
+	StrategicSnapshot collect_snapshot(AIMaximaRuntime::Context& runtime);
 	void update_trends();
-	void update_opponent_models(AIMaximaRuntime::Context& echo);
-	void sample_reconnaissance_forces(AIMaximaRuntime::Context& echo);
-	void update_reconnaissance(AIMaximaRuntime::Context& echo);
-	void remember_cleared_enemy_site(AIMaximaRuntime::Context& echo,
+	void update_opponent_models(AIMaximaRuntime::Context& runtime);
+	void sample_reconnaissance_forces(AIMaximaRuntime::Context& runtime);
+	void update_reconnaissance(AIMaximaRuntime::Context& runtime);
+	void remember_cleared_enemy_site(AIMaximaRuntime::Context& runtime,
 		const Recon::BuildingSighting& sighting);
 	void prune_cleared_enemy_sites();
-	void plan_reconnaissance_objectives(AIMaximaRuntime::Context& echo);
-	void update_reconnaissance_missions(AIMaximaRuntime::Context& echo);
-	void remove_reconnaissance_missions(AIMaximaRuntime::Context& echo,
+	void plan_reconnaissance_objectives(AIMaximaRuntime::Context& runtime);
+	void update_reconnaissance_missions(AIMaximaRuntime::Context& runtime);
+	void remove_reconnaissance_missions(AIMaximaRuntime::Context& runtime,
 		const char* reason);
 	std::vector<unsigned char> reconnaissance_discovery_map(
-		AIMaximaRuntime::Context& echo) const;
-	void initialize_topology_profile(AIMaximaRuntime::Context& echo);
-	void update_environment_model(AIMaximaRuntime::Context& echo);
+		AIMaximaRuntime::Context& runtime) const;
+	void initialize_topology_profile(AIMaximaRuntime::Context& runtime);
+	void update_environment_model(AIMaximaRuntime::Context& runtime);
 	void score_demands();
 	void score_postures();
 	void select_posture();
@@ -502,12 +503,12 @@ private:
 	void build_policy_bids();
 	void arbitrate_policy_bids();
 	const char* policy_name(PolicyKind policy) const;
-	void finalize_director_plan(AIMaximaRuntime::Context& echo);
-	void plan_offense(AIMaximaRuntime::Context& echo);
-	void emit_telemetry(AIMaximaRuntime::Context& echo, const std::string& event,
+	void finalize_director_plan(AIMaximaRuntime::Context& runtime);
+	void plan_offense(AIMaximaRuntime::Context& runtime);
+	void emit_telemetry(AIMaximaRuntime::Context& runtime, const std::string& event,
 		const std::string& fields=std::string()) const;
-	void emit_ablation_opportunities(AIMaximaRuntime::Context& echo) const;
-	void emit_director_snapshot(AIMaximaRuntime::Context& echo) const;
+	void emit_ablation_opportunities(AIMaximaRuntime::Context& runtime) const;
+	void emit_director_snapshot(AIMaximaRuntime::Context& runtime) const;
 	const char* posture_name(StrategicPosture posture) const;
 	bool severe_food_emergency() const;
 	bool severe_colony_emergency() const;
@@ -546,7 +547,7 @@ private:
 	int failed_waves=0;
 	void observe_wave_delivery();
 	void fall_back_to_streaming();
-	bool control_offense_waves(AIMaximaRuntime::Context& echo);
+	bool control_offense_waves(AIMaximaRuntime::Context& runtime);
 	OffenseDiagnostics offense_diagnostics;
 	std::vector<ClearedEnemySite> cleared_enemy_sites;
 	// Runtime startup latch.
@@ -605,17 +606,17 @@ private:
 
 	///This function is called at the very begginning of the game,
 	///to initialize the existing buildings with the right amount of units
-	void initialize(AIMaximaRuntime::Context& echo);
+	void initialize(AIMaximaRuntime::Context& runtime);
 
 	///Recalculate the sole strategic plan.
-	void check_phases(AIMaximaRuntime::Context& echo);
+	void check_phases(AIMaximaRuntime::Context& runtime);
 
 
 	///Unified deterministic construction, upgrade and repair selector.
-	void development_cycle(AIMaximaRuntime::Context& echo);
+	void development_cycle(AIMaximaRuntime::Context& runtime);
 	void configure_development_planner();
 	AIMaximaPlacement::WorldState collect_development_world(
-		AIMaximaRuntime::Context& echo, uint32_t* signature=NULL) const;
+		AIMaximaRuntime::Context& runtime, uint32_t* signature=NULL) const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&
 		collect_building_profiles() const;
 	std::vector<AIMaximaPlacement::DevelopmentIntent>
@@ -625,13 +626,13 @@ private:
 		const std::vector<AIMaximaPlacement::WorldBuilding>& buildings,
 		int excludedAction=-1) const;
 	// Operational seats, then seats after observed/issued upgrades finish.
-	std::pair<int,int> barracks_capacity(AIMaximaRuntime::Context& echo,
+	std::pair<int,int> barracks_capacity(AIMaximaRuntime::Context& runtime,
 		int excludedAction=-1) const;
 	AIMaximaPlacement::DevelopmentLimits collect_development_limits(
-		AIMaximaRuntime::Context& echo, int excludedAction=-1) const;
-	bool issue_development_action(AIMaximaRuntime::Context& echo,
+		AIMaximaRuntime::Context& runtime, int excludedAction=-1) const;
+	bool issue_development_action(AIMaximaRuntime::Context& runtime,
 		AIMaximaPlacement::DevelopmentAction& action);
-	void emit_placement_diagnostics(AIMaximaRuntime::Context& echo,
+	void emit_placement_diagnostics(AIMaximaRuntime::Context& runtime,
 		const char* outcome,
 		const AIMaximaPlacement::DevelopmentAction* action) const;
 	mutable std::vector<AIMaximaPlacement::BuildingProfile>
@@ -644,10 +645,10 @@ private:
 	///is the controller's integral state, so it is carried across saves.
 	std::map<int, StaffingControl::State> staffing_control;
 	///Runs one control pass and issues the order when the request changes.
-	int staff_building(AIMaximaRuntime::Context& echo, int id);
+	int staff_building(AIMaximaRuntime::Context& runtime, int id);
 	/// One control pass for a building: advances its loop and returns the
 	/// request, without issuing it.
-	int update_staffing_request(AIMaximaRuntime::Context& echo, int id);
+	int update_staffing_request(AIMaximaRuntime::Context& runtime, int id);
 	/// Labour snapshots retained between scheduler passes and saved from v109.
 	Labour::Observation labour_observation;
 	Labour::Plan labour_plan;
@@ -659,7 +660,7 @@ private:
 	std::map<int, int> swarm_allowance;
 	Labour::Policy labour_policy() const;
 	bool labour_swimming_matters() const;
-	Labour::Observation observe_labour(AIMaximaRuntime::Context& echo) const;
+	Labour::Observation observe_labour(AIMaximaRuntime::Context& runtime) const;
 	///Food ledger retirement. A building whose protected farm capacity stays
 	///below its burden threshold for the confirmation window is removed, but
 	///only while doing so cannot leave the population without inn seats.
@@ -678,10 +679,10 @@ private:
 	int relocation_completed_tick;
 	int last_food_relocation_tick;
 	std::set<int> relocation_destroy_issued;
-	bool food_building_pending_deletion(AIMaximaRuntime::Context& echo, int id) const;
+	bool food_building_pending_deletion(AIMaximaRuntime::Context& runtime, int id) const;
 	const AIMaximaPlacement::DevelopmentAction* current_food_relocation() const;
 	void finish_food_relocation();
-	void update_food_relocation(AIMaximaRuntime::Context& echo,
+	void update_food_relocation(AIMaximaRuntime::Context& runtime,
 		const AIMaximaPlacement::WorldState& world);
 	///Colony swarms whose settlement is not yet running: exempt from both
 	///retirement and relocation until their own farm exists.
@@ -691,11 +692,11 @@ private:
 	int food_supported_inns;
 	int food_supported_swarms;
 	bool food_ledger_valid;
-	void update_food_retirement(AIMaximaRuntime::Context& echo,
+	void update_food_retirement(AIMaximaRuntime::Context& runtime,
 		const AIMaximaPlacement::WorldState& world);
 	///Neighbouring cells a protected stack's growth can actually spread into.
 	///Unlike farm expansion, a partly harvested wheat neighbour absorbs growth.
-	int growth_absorbing_neighbors(AIMaximaRuntime::Context& echo,
+	int growth_absorbing_neighbors(AIMaximaRuntime::Context& runtime,
 		int x, int y) const;
 	///Placement pressure drives small, wheat-safe clearing campaigns. Clearing
 	///damages workers, so campaigns are rate-limited and health-gated.
@@ -708,58 +709,58 @@ private:
 	int proactive_clearing_initial_wood;
 	int proactive_clearing_campaigns;
 	int last_proactive_clearing_tick;
-	void manage_land_clearing(AIMaximaRuntime::Context& echo);
-	bool continue_clearing_campaign(AIMaximaRuntime::Context& echo);
-	void retire_clearing_campaign(AIMaximaRuntime::Context& echo,
+	void manage_land_clearing(AIMaximaRuntime::Context& runtime);
+	bool continue_clearing_campaign(AIMaximaRuntime::Context& runtime);
+	void retire_clearing_campaign(AIMaximaRuntime::Context& runtime,
 		const char* reason, const std::string& details=std::string());
 	struct WoodClearingTarget;
 	WoodClearingTarget select_wood_clearing_target(
-		AIMaximaRuntime::Context& echo) const;
+		AIMaximaRuntime::Context& runtime) const;
 	///Keeps planner parcels and circulation routes under durable clearing
 	///orders. Only cells owned by this subsystem are removed.
-	void update_maintenance_clearing_areas(AIMaximaRuntime::Context& echo);
+	void update_maintenance_clearing_areas(AIMaximaRuntime::Context& runtime);
 	std::vector<Uint8> worker_reachable_circulation(
-		AIMaximaRuntime::Context& echo, bool after_harvest=false) const;
+		AIMaximaRuntime::Context& runtime, bool after_harvest=false) const;
 	std::vector<std::vector<int> > reservation_member_footprints(
-		AIMaximaRuntime::Context& echo,
+		AIMaximaRuntime::Context& runtime,
 		const AIMaximaPlacement::Reservation& contract) const;
 	struct MaintenanceClearingPlan;
 	MaintenanceClearingPlan build_maintenance_clearing_plan(
-		AIMaximaRuntime::Context& echo);
-	void apply_maintenance_clearing_plan(AIMaximaRuntime::Context& echo,
+		AIMaximaRuntime::Context& runtime);
+	void apply_maintenance_clearing_plan(AIMaximaRuntime::Context& runtime,
 		const MaintenanceClearingPlan& plan);
-	void initialize_farming_cache(AIMaximaRuntime::Context& echo);
-	int available_expansion_neighbors(AIMaximaRuntime::Context& echo,
+	void initialize_farming_cache(AIMaximaRuntime::Context& runtime);
+	int available_expansion_neighbors(AIMaximaRuntime::Context& runtime,
 		int x, int y) const;
 
 
 	///This function updates all of the buildings that are not under construction.
-	void manage_buildings(AIMaximaRuntime::Context& echo);
+	void manage_buildings(AIMaximaRuntime::Context& runtime);
 	///This function updates the units assigned to a particular Inn.
 	///Using the messaging system, it is called after the completion
 	///of a new Inn and periodically thereafter
-	void manage_inn(AIMaximaRuntime::Context& echo, int id);
+	void manage_inn(AIMaximaRuntime::Context& runtime, int id);
 	///This function updated the units assigned and the creation
 	///ratios of a particular Swarm. Its done afeter the completion
 	///of a new swarm and periodically thereafter
-	long long nearby_farm_capacity(AIMaximaRuntime::Context& echo, int id,
+	long long nearby_farm_capacity(AIMaximaRuntime::Context& runtime, int id,
 		std::set<int>* shared_tiles=NULL);
-	void manage_swarm(AIMaximaRuntime::Context& echo, int id);
+	void manage_swarm(AIMaximaRuntime::Context& runtime, int id);
 
 
 	///This function chooses an enemy building to be destroyed. It returns -1 if there are no accessible buildings
-	int choose_building_to_attack(AIMaximaRuntime::Context& echo);
+	int choose_building_to_attack(AIMaximaRuntime::Context& runtime);
 	///This function starts an attack on another enemy building
-	void attack_building(AIMaximaRuntime::Context& echo);
+	void attack_building(AIMaximaRuntime::Context& runtime);
 	///Keep one war flag on the planned offensive target; runs every review tick.
-	void control_offense(AIMaximaRuntime::Context& echo);
-	void end_offense(AIMaximaRuntime::Context& echo, const char* reason);
+	void control_offense(AIMaximaRuntime::Context& runtime);
+	void end_offense(AIMaximaRuntime::Context& runtime, const char* reason);
 	///This function chooses the enemy team to target
-	void choose_enemy_target(AIMaximaRuntime::Context& echo);
+	void choose_enemy_target(AIMaximaRuntime::Context& runtime);
 	///This function digs out an enemy building that is surrounded by resources.
 	///It will also cause Maxima to dig itself out in certain situations.
 	///Returns true if there are buildings that it can dig out, false otherwise
-	bool dig_out_enemy(AIMaximaRuntime::Context& echo);
+	bool dig_out_enemy(AIMaximaRuntime::Context& runtime);
 
 	///This integer stores the currently targetted enemy
 	int target;
@@ -770,16 +771,16 @@ private:
 
 
 	///This function calculates the positions of defense flags
-	void compute_defense_flag_positioning(AIMaximaRuntime::Context& echo);
+	void compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime);
 	///This function adds the specific value to the counts arround the given pos, used in compute_defense_flag_positioning
 	void modify_points(Uint16* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations);
 	///This vector stores the ID's for all current defense flags
 	std::vector<int> defense_flags;
 
 	///Refreshes fog-safe guard zones on narrow enemy approach corridors.
-	void update_preemptive_defense(AIMaximaRuntime::Context& echo);
-	void clear_preemptive_defense(AIMaximaRuntime::Context& echo);
-	Uint32 compute_preemptive_building_signature(AIMaximaRuntime::Context& echo) const;
+	void update_preemptive_defense(AIMaximaRuntime::Context& runtime);
+	void clear_preemptive_defense(AIMaximaRuntime::Context& runtime);
+	Uint32 compute_preemptive_building_signature(AIMaximaRuntime::Context& runtime) const;
 	///Only cells added by this subsystem are owned and therefore removable.
 	std::set<int> preemptive_guard_tiles;
 	int last_preemptive_defense_tick;
@@ -788,12 +789,12 @@ private:
 	bool last_preemptive_amphibious_active;
 
 	///This function calculates the positions of explorer flags for explorer flag attacks
-	void compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& echo);
+	void compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& runtime);
 	///This vector stores the list of explorer attack flags
 	std::vector<int> explorer_attack_flags;
 
 	///This function updates the restricted areas for farming
-	void update_farming(AIMaximaRuntime::Context& echo);
+	void update_farming(AIMaximaRuntime::Context& runtime);
 	///Classify the layout and
 	///reconcile the final plan with the engine-owned forbidden area.
 	bool has_hard_farming_contract(int index) const;
@@ -804,17 +805,17 @@ private:
 		int seeds;
 		explicit WoodReserve(int size): cells(size,0), seeds(0) {}
 	};
-	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& echo) const;
-	bool wheat_invasion_clearing_required(AIMaximaRuntime::Context& echo,
+	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& runtime) const;
+	bool wheat_invasion_clearing_required(AIMaximaRuntime::Context& runtime,
 		int index, const std::vector<Uint8>& protected_wheat,
 		const WoodReserve& wood_reserve) const;
 	struct FarmProtectionPlan;
-	void resolve_wheat_invasion_clearing(AIMaximaRuntime::Context& echo,
+	void resolve_wheat_invasion_clearing(AIMaximaRuntime::Context& runtime,
 		FarmProtectionPlan& plan);
-	void release_farming_protection(AIMaximaRuntime::Context& echo);
+	void release_farming_protection(AIMaximaRuntime::Context& runtime);
 	FarmProtectionPlan build_farming_protection_plan(
-		AIMaximaRuntime::Context& echo);
-	void apply_farming_protection(AIMaximaRuntime::Context& echo,
+		AIMaximaRuntime::Context& runtime);
+	void apply_farming_protection(AIMaximaRuntime::Context& runtime,
 		const FarmProtectionPlan& plan, int& added, int& removed);
 	Farming::ExactFertilityCache fertility_cache;
 	/// Terrain-only adjacency, built with fertility once per map load.
@@ -839,8 +840,8 @@ private:
 	bool reactive_defense_pending;
 
 	///Maintain explorer vision for reachable fruit varieties at completed inns.
-	void update_fruit_flags(AIMaximaRuntime::Context& echo);
-	AIMaximaFruit::Field collect_fruit_field(AIMaximaRuntime::Context& echo) const;
+	void update_fruit_flags(AIMaximaRuntime::Context& runtime);
+	AIMaximaFruit::Field collect_fruit_field(AIMaximaRuntime::Context& runtime) const;
 
 
 	int timer;

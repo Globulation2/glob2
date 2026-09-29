@@ -111,8 +111,8 @@ Game options:
 | `--alliance N` | Repeat once per team, one-based group labels; default separate alliances |
 | `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
-| `--compute-threads N` | Experimental execution threads, 1–64 including main; default 1 |
-| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `all`; default `none` at one thread, `all` otherwise; direct engine option |
+| `--compute-threads N` | Execution threads, 1–64 including main; default minimum of AI controllers, available hardware threads and 4 (at least 1) |
+| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `ai`, `all`; default `ai`; map modes remain experimental |
 | `--replay true/false` | false |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |

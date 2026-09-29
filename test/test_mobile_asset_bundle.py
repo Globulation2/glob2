@@ -1,5 +1,6 @@
 """Regress the on-device startup failure caused by an AAPT-filtered cache file."""
 import hashlib
+import gzip
 from pathlib import Path
 import sys
 import tempfile
@@ -7,7 +8,7 @@ import unittest
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'mobile'))
-from asset_bundle import include_asset, verify_apk_assets
+from asset_bundle import include_asset, restore_gzip_assets, verify_apk_assets
 
 
 class AssetBundleTest(unittest.TestCase):
@@ -39,6 +40,38 @@ class AssetBundleTest(unittest.TestCase):
                 else:
                     with self.assertRaisesRegex(ValueError, 'missing indexed|identity'):
                         verify_apk_assets(apk)
+
+    def test_aapt_expanded_gzip_is_restored_to_indexed_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / 'assets'
+            compressed = assets / 'maps/test.map.gz'
+            compressed.parent.mkdir(parents=True)
+            compressed.write_bytes(gzip.compress(b'map data', mtime=0))
+            name = 'maps/test.map.gz'
+            digest = hashlib.sha256(name.encode() + b'\0' + hashlib.sha256(compressed.read_bytes()).digest()).hexdigest()
+            apk = root / 'app.apk'
+            with zipfile.ZipFile(apk, 'w') as package:
+                package.writestr('assets/glob2-bundle/index.list', digest + '\n' + name + '\n')
+                package.writestr('assets/glob2-bundle/maps/test.map', b'map data')
+            with self.assertRaisesRegex(ValueError, 'missing indexed'):
+                verify_apk_assets(apk)
+            self.assertTrue(restore_gzip_assets(apk, assets))
+            self.assertFalse(restore_gzip_assets(apk, assets))
+            verify_apk_assets(apk)
+
+    def test_gzip_restore_rejects_unexpected_expanded_contents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            assets = root / 'assets'
+            compressed = assets / 'maps/test.map.gz'
+            compressed.parent.mkdir(parents=True)
+            compressed.write_bytes(gzip.compress(b'map data', mtime=0))
+            apk = root / 'app.apk'
+            with zipfile.ZipFile(apk, 'w') as package:
+                package.writestr('assets/glob2-bundle/maps/test.map', b'other data')
+            with self.assertRaisesRegex(ValueError, 'did not package gzip asset'):
+                restore_gzip_assets(apk, assets)
 
 
 if __name__ == '__main__':

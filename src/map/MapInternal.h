@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-// Private shared definitions for the Map.cpp family of translation units.
-// Not intended for inclusion outside Map*.cpp.
+// Private shared definitions for Map, gradient and pathfinding implementation
+// files. Not part of the public Map interface.
 
 #pragma once
 
@@ -24,32 +24,7 @@ inline void fill(std::vector<T>& vec, const T& value) {
 	std::fill(vec.begin(), vec.end(), value);
 }
 
-// Pathfinding gradients are Uint16 fields. A goal cell holds GRADIENT_AT_GOAL and every
-// other reachable cell GRADIENT_AT_GOAL - cost, where cost is the cheapest path to a goal
-// in tenths of a land step: GRADIENT_STEP per cardinal step, GRADIENT_DIAGONAL_STEP per
-// diagonal step (octile distance), and water at the rate of the unit's swim class. A unit
-// walks toward the neighbour whose value minus the step to reach it is highest.
-//   GRADIENT_FORBIDDEN        (0): obstacle / impassable — never enter.
-//   GRADIENT_UNREACHABLE      (1): reachable cell with no path to any goal.
-//   GRADIENT_FORBIDDEN_BORDER    : forbidden-zone interior cell that borders a free cell;
-//                                  seeded one step below the goal so the forbidden gradient
-//                                  tapers into the forbidden zone.
-//   GRADIENT_AT_GOAL     (0xFFFF): goal cell itself.
-// The AIs' own Uint8 helper maps (Map::updateGlobalGradient(Uint8*)) use the same 0 / 1 /
-// max-of-type sentinels with one unit per step.
-constexpr int GRADIENT_STEP          = 10;
-constexpr int GRADIENT_DIAGONAL_STEP = 14;
-constexpr std::uint16_t GRADIENT_FORBIDDEN        = 0;
-constexpr std::uint16_t GRADIENT_UNREACHABLE      = 1;
-constexpr std::uint16_t GRADIENT_AT_GOAL          = 0xFFFF;
-constexpr std::uint16_t GRADIENT_FORBIDDEN_BORDER = GRADIENT_AT_GOAL - GRADIENT_STEP;
-
-// Weighted cost rounded to whole land-step equivalents, for a reachable value.
-// This is not a geometric tile count: water and diagonal steps change the cost.
-inline int gradientTiles(std::uint16_t g)
-{
-	return (GRADIENT_AT_GOAL - g + GRADIENT_STEP / 2) / GRADIENT_STEP;
-}
+#include "gradient/GradientConstants.h"
 
 // Sentinel for Map::immobileUnits[]: byte stores the team number of the immobile
 // unit on the tile, or IMMOBILE_UNIT_NONE if no immobile unit is present.

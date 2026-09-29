@@ -24,7 +24,7 @@ class Building;
 
 // AICortex — variant A of the parent-class spike (docs/AI/cortex/NEXT.md open
 // question #1). Subclasses AIImplementation DIRECTLY, owning the full
-// observation -> policy -> action pipeline with no Echo framework in between.
+// observation -> policy -> action pipeline with no Runtime framework in between.
 //
 // The engine constraint is one Order per getOrder() call. The action layer
 // therefore translates one CortexAction into a *sequence* of Orders pushed onto
@@ -131,7 +131,7 @@ private:
 
 	/// Flag posture the action layer last committed (RAM-only hysteresis state).
 	/// Aliases Cortex::CortexFlagPosture (single source of truth) so the value
-	/// stored in flagPosture / echoed into the observation is identical everywhere.
+	/// stored in flagPosture / runtimeed into the observation is identical everywhere.
 	enum FlagPosture {
 		POSTURE_NONE    = Cortex::CORTEX_POSTURE_NONE,
 		POSTURE_OFFENSE = Cortex::CORTEX_POSTURE_OFFENSE,
@@ -398,14 +398,14 @@ private:
 
 	/// Persisted monotone latch of the highest enemy-warrior ATTACK_STRENGTH level ever
 	/// observed. FOW-gated intel from the observation (obs.enemyWarriorLevelVisible),
-	/// latched so a visibility lull never resets the war-preparation gate; echoed into
-	/// obs.enemyWarriorLevelLatched each cycle (the flagPosture echo pattern) and
+	/// latched so a visibility lull never resets the war-preparation gate; runtimeed into
+	/// obs.enemyWarriorLevelLatched each cycle (the flagPosture runtime pattern) and
 	/// serialized for lockstep determinism.
 	Sint32 enemyWarriorLevelSeen;
 
 	/// Position of the forward inn / hospital AICortex last ORDERED (-1 == none
 	/// tracked). Set in translateActionBuildForward when the OrderCreate is actually
-	/// emitted; reconciled each cycle in getOrder() against the live buildings to echo
+	/// emitted; reconciled each cycle in getOrder() against the live buildings to runtime
 	/// obs.forwardInnUnderway/forwardHealUnderway (the double-order guard) and cleared
 	/// once the site finishes (the finished inn opens the envelope via supportDist),
 	/// is destroyed, or its build cooldown lapses with no site. This replaces the old
@@ -416,7 +416,7 @@ private:
 
 	/// Tick the attack-range gate began BINDING (army wants to attack, every target
 	/// out of the support envelope); 0 == not binding. Advanced/reset each cycle in
-	/// getOrder() and echoed as obs.rangeGateWaived once the bind outlives
+	/// getOrder() and runtimeed as obs.rangeGateWaived once the bind outlives
 	/// attackRangeGraceTicks — the grace-timeout that stops a never-ordered "possible"
 	/// forward base from holding the gate shut forever. Serialized for lockstep
 	/// determinism.
@@ -428,7 +428,7 @@ private:
 	/// this state: it is MUTATED only here, as an execution side-effect when flags are
 	/// (re)placed. The hold-vs-recall DECISION lives in the policy
 	/// (CortexPolicy::scoreDefense), which READS these through the observation
-	/// (obs.flagPosture / obs.offenseHoldUntil, echoed each cycle before decide()).
+	/// (obs.flagPosture / obs.offenseHoldUntil, runtimeed each cycle before decide()).
 	/// flagPosture is one of FlagPosture; offenseHoldUntil == 0 means no hold is active.
 	int flagPosture;
 	int offenseHoldUntil;

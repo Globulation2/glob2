@@ -1,5 +1,6 @@
 """Keep the mobile asset index consistent with the files Android packages."""
 import hashlib
+import gzip
 from pathlib import PurePosixPath
 import zipfile
 
@@ -15,6 +16,28 @@ def include_asset(relative):
                     part == '__pycache__' for part in path.parts)
             and path.suffix not in ('.pyc', '.pyo', '.scc')
             and not path.name.endswith('~'))
+
+
+def restore_gzip_assets(apk, assets):
+    """Restore gzip files that AAPT expands and renames while packaging assets."""
+    prefix = 'assets/glob2-bundle/'
+    with zipfile.ZipFile(apk) as package:
+        packaged = set(package.namelist())
+        missing = []
+        for source in sorted(assets.rglob('*.gz')):
+            relative = source.relative_to(assets).as_posix()
+            name = prefix + relative
+            if name in packaged:
+                continue
+            expanded = name[:-3]
+            if expanded not in packaged or package.read(expanded) != gzip.decompress(source.read_bytes()):
+                raise ValueError('AAPT did not package gzip asset as expected: ' + relative)
+            missing.append((source, name))
+    if missing:
+        with zipfile.ZipFile(apk, 'a') as package:
+            for source, name in missing:
+                package.write(source, name, compress_type=zipfile.ZIP_STORED)
+    return bool(missing)
 
 
 def verify_apk_assets(apk):

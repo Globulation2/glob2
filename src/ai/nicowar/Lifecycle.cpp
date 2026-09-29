@@ -9,12 +9,12 @@
 #include "Game.h"
 #include "Unit.h"
 
-using namespace AIEcho;
-using namespace AIEcho::Gradients;
-using namespace AIEcho::Construction;
-using namespace AIEcho::Management;
-using namespace AIEcho::Conditions;
-using namespace AIEcho::SearchTools;
+using namespace AISharedRuntime;
+using namespace AISharedRuntime::Gradients;
+using namespace AISharedRuntime::Construction;
+using namespace AISharedRuntime::Management;
+using namespace AISharedRuntime::Conditions;
+using namespace AISharedRuntime::SearchTools;
 using namespace boost::logic;
 
 
@@ -74,14 +74,14 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		no_workers_phase=stream->readUint8("no_workers_phase");
 		if(versionMinor >= AI_NICOWAR_SAVE_FORMAT_V60)
 			can_swim=stream->readUint8("can_swim");
-		
+
 		starving_recovery_inns=stream->readUint8("starving_recovery_inns");
 		buildings_under_construction=stream->readUint32("buildings_under_construction");
 		for(int n=0; n<PlacementSize; ++n)
 		{
 			buildings_under_construction_per_type[n]=stream->readUint8(FormattableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
 		}
-			
+
 		stream->readEnterSection("placement_queue");
 		size_t size = stream->readUint16("size");
 		for(size_t n = 0; n<size; ++n)
@@ -130,7 +130,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 				stream->readLeaveSection();
 			}
 			stream->readLeaveSection();
-			
+
 			stream->readEnterSection("explorer_attack_flags");
 			size = stream->readUint16("size");
 			for(size_t n = 0; n<size; ++n)
@@ -171,7 +171,7 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	{
 		stream->writeUint8(buildings_under_construction_per_type[n], FormattableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
 	}
-		
+
 	stream->writeEnterSection("placement_queue");
 	stream->writeUint16(placement_queue.size(), "size");
 	size_t n = 0;
@@ -234,58 +234,58 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 }
 
 
-void NewNicowar::tick(Echo& echo)
+void NewNicowar::tick(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_tick_calls);
 	timer++;
 	if(timer==AI_NICOWAR_INIT_TICK)
 	{
 		selectStrategy();
-		check_phases(echo);
-		initialize(echo);
+		check_phases(runtime);
+		initialize(runtime);
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_QUEUE_BUILDINGS_PHASE)
 	{
-		queue_buildings(echo);
+		queue_buildings(runtime);
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_CHECK_PHASES_PHASE)
 	{
-		check_phases(echo);
+		check_phases(runtime);
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_MANAGE_BUILDINGS_PHASE)
 	{
-		manage_buildings(echo);
+		manage_buildings(runtime);
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_UPGRADE_PHASE)
 	{
-		upgrade_buildings(echo);
+		upgrade_buildings(runtime);
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_CONTROL_ATTACKS_PHASE)
 	{
-		control_attacks(echo);
+		control_attacks(runtime);
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_DEFENSE_FLAG_PHASE)
 	{
-		compute_defense_flag_positioning(echo);
+		compute_defense_flag_positioning(runtime);
 	}
 	if(timer%AI_NICOWAR_FARMING_INTERVAL_TICKS == 0)
 	{
-		update_farming(echo);
+		update_farming(runtime);
 	}
 	if(timer%AI_NICOWAR_FARMING_INTERVAL_TICKS == AI_NICOWAR_FRUIT_PHASE_OFFSET)
 	{
-		update_fruit_flags(echo);
+		update_fruit_flags(runtime);
 	}
 	if(timer%AI_NICOWAR_EXPLORER_ATTACK_INTERVAL_TICKS == AI_NICOWAR_EXPLORER_ATTACK_OFFSET)
 	{
-		compute_explorer_flag_attack_positioning(echo);
+		compute_explorer_flag_attack_positioning(runtime);
 	}
 
-	order_buildings(echo);
+	order_buildings(runtime);
 }
 
 
-void NewNicowar::handle_message(Echo& echo, const std::string& message)
+void NewNicowar::handle_message(Runtime& runtime, const std::string& message)
 {
 	if(message.substr(0,19) == "building completed ")
 	{
@@ -295,9 +295,9 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 	}
 	if(message.substr(0,22) == "update clearing zone1 ")
 	{
-		MapInfo mi(echo);
+		MapInfo mi(runtime);
 		int id=std::stoi(message.substr(22, message.size()-1));
-		Building* b = echo.get_building_register().get_building(id);		
+		Building* b = runtime.get_building_register().get_building(id);
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
 		mo_remove_clearing->add_condition(new BuildingDestroyed(id));
@@ -312,14 +312,14 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 				}
 			}
 		}
-		echo.add_management_order(mo_clearing);
-		echo.add_management_order(mo_remove_clearing);
+		runtime.add_management_order(mo_clearing);
+		runtime.add_management_order(mo_remove_clearing);
 	}
 	if(message.substr(0,22) == "update clearing zone2 ")
 	{
-		MapInfo mi(echo);
+		MapInfo mi(runtime);
 		int id=std::stoi(message.substr(22, message.size()-1));
-		Building* b = echo.get_building_register().get_building(id);		
+		Building* b = runtime.get_building_register().get_building(id);
 		AddArea* mo_clearing=new AddArea(ClearingArea);
 		RemoveArea* mo_remove_clearing=new RemoveArea(ClearingArea);
 		mo_remove_clearing->add_condition(new BuildingDestroyed(id));
@@ -331,18 +331,18 @@ void NewNicowar::handle_message(Echo& echo, const std::string& message)
 				mo_remove_clearing->add_location(b->posX+nx, b->posY+ny);
 			}
 		}
-		echo.add_management_order(mo_clearing);
-		echo.add_management_order(mo_remove_clearing);
+		runtime.add_management_order(mo_clearing);
+		runtime.add_management_order(mo_remove_clearing);
 	}
 	if(message.substr(0,13) == "update swarm ")
 	{
 		int id=std::stoi(message.substr(13, message.size()-1));
-		manage_swarm(echo, id);
+		manage_swarm(runtime, id);
 	}
 	if(message.substr(0,11) == "update inn ")
 	{
 		int id=std::stoi(message.substr(11, message.size()-1));
-		manage_inn(echo, id);
+		manage_inn(runtime, id);
 	}
 	if(message.substr(0,16)  == "attack finished ")
 	{
@@ -380,25 +380,25 @@ void NewNicowar::selectStrategy()
 
 
 
-void NewNicowar::initialize(Echo& echo)
+void NewNicowar::initialize(Runtime& runtime)
 {
-	BuildingSearch bs(echo);
+	BuildingSearch bs(runtime);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
-	{	
-		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
+	{
+		if(runtime.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
 			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
-			echo.add_management_order(mo_tracker);
+			runtime.add_management_order(mo_tracker);
 		}
-		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
+		if(runtime.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 		{
 			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
-			echo.add_management_order(mo_tracker);
+			runtime.add_management_order(mo_tracker);
 		}
 	}
-	
-	manage_buildings(echo);
+
+	manage_buildings(runtime);
 }
 

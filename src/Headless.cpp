@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "GlobalContainer.h"
 #include "AINames.h"
+#include "AIThreading.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
@@ -267,23 +268,25 @@ struct HeadlessRunner
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;
 			if(engine.initGame(map,header,true,false,false,mapFile)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot initialize map");
 		}
-		const unsigned computeThreads = integer(one(options, "--compute-threads", "1"), 1, 64);
-		const std::string computeExperiments = one(options, "--compute-experiments", computeThreads > 1 ? "all" : "none");
+		const unsigned computeThreads = integer(one(options, "--compute-threads",
+			std::to_string(defaultAIThreadCount(engine.gui.game))), 1, 64);
+		const std::string computeExperiments = one(options, "--compute-experiments", "ai");
 		unsigned experimentMask = 0;
-		if (computeExperiments == "all") experimentMask = 7;
+		if (computeExperiments == "all") experimentMask = 15;
 		else if (computeExperiments == "areas") experimentMask = Map::ComputeAreas;
 		else if (computeExperiments == "initialize") experimentMask = Map::ComputeInitialize;
 		else if (computeExperiments == "hiring") experimentMask = Map::ComputeHiring;
+		else if (computeExperiments == "ai") experimentMask = Map::ComputeAI;
 		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
 		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
-		auto &pipeline = engine.gui.game.map.pipeline();
-		if (!pipeline.enabled()) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
+		const auto pipeline = engine.gui.game.map.gradientPipelineStatus();
+		if (!pipeline.enabled) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
 		else {
-			if (options.count("--gradient-delay") && gradientDelay != pipeline.delayTicks()) {
-				if (pipeline.pendingCount()) throw std::invalid_argument("cannot change the delay with pending gradients");
+			if (options.count("--gradient-delay") && gradientDelay != pipeline.delay) {
+				if (pipeline.pending) throw std::invalid_argument("cannot change the delay with pending gradients");
 				engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
 			}
-			pipeline.setWorkerCount(gradientWorkers);
+			engine.gui.game.map.setGradientWorkerCount(gradientWorkers);
 		}
 		globals.headlessReplay=recordReplay;
 		if(recordReplay) {
@@ -293,26 +296,27 @@ struct HeadlessRunner
 		if(initial) engine.saveInitialGameStateOrExit((output/"initial.game").string(),"initial",engine.gui.game.mapHeader.getMapName());
 		const auto runStart = std::chrono::steady_clock::now();
 		engine.run();
-		engine.gui.game.map.pipeline().finish();
+		engine.gui.game.map.finishGradientPipeline();
 		const auto runEnd = std::chrono::steady_clock::now();
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
 		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);
 		PerformanceTelemetry::collector().reset();
 		Game &game=engine.gui.game;
+		const auto pipelineResult = game.map.gradientPipelineStatus();
 		engine.trackTeamEliminations();
 		std::ostringstream result;
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
 			<< ",\"run_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runEnd - runStart).count()
 			<< ",\"gradient_pipeline\":" << "true"
-			<< ",\"gradient_workers\":" << game.map.pipeline().workerCount()
-			<< ",\"gradient_delay\":" << game.map.pipeline().delayTicks()
-			<< ",\"gradient_jobs\":" << game.map.pipeline().metrics.jobs
-			<< ",\"gradient_published\":" << game.map.pipeline().metrics.published
-			<< ",\"gradient_discarded\":" << game.map.pipeline().metrics.discarded
-			<< ",\"gradient_max_pending\":" << game.map.pipeline().metrics.maxPending
-			<< ",\"gradient_wait_ns\":" << game.map.pipeline().metrics.waitNs
-			<< ",\"gradient_active_elapsed_ns\":" << game.map.pipeline().activeElapsedNs()
+			<< ",\"gradient_workers\":" << pipelineResult.workers
+			<< ",\"gradient_delay\":" << pipelineResult.delay
+			<< ",\"gradient_jobs\":" << pipelineResult.jobs
+			<< ",\"gradient_published\":" << pipelineResult.published
+			<< ",\"gradient_discarded\":" << pipelineResult.discarded
+			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
+			<< ",\"gradient_wait_ns\":" << pipelineResult.waitNs
+			<< ",\"gradient_active_elapsed_ns\":" << pipelineResult.activeElapsedNs
 			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
 			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
 			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries

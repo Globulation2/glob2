@@ -21,7 +21,7 @@
 #include "AICastor.h"
 #include "AIWarrush.h"
 #include "AINicowar.h"
-#include "echo/Echo.h"
+#include "shared_runtime/Runtime.h"
 #include "cortex/AICortex.h"
 #include "AICabino.h"
 
@@ -43,13 +43,13 @@ AI::AI(ImplementationID implementationID, Player *player)
 			aiImplementation=new AICastor(player);
 		break;
 		case NICOWAR:
-			aiImplementation=new AIEcho::Echo(new NewNicowar, player);
+			aiImplementation=new AISharedRuntime::Runtime(new NewNicowar, player);
 		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(player);
 		break;
 		case ECONO:
-			aiImplementation=new AIEcho::Echo(new AIEcho::Econo, player);
+			aiImplementation=new AISharedRuntime::Runtime(new AISharedRuntime::Econo, player);
 		break;
 		case MAXIMA:
 			aiImplementation=new AIMaxima::Maxima(player);
@@ -172,11 +172,11 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			}
 		break;
 		case NICOWAR:
-			aiImplementation=new AIEcho::Echo(new NewNicowar, player);
+			aiImplementation=new AISharedRuntime::Runtime(new NewNicowar, player);
 			aiImplementation->load(stream, player, versionMinor);
 		break;
 		case ECONO:
-			aiImplementation=new AIEcho::Echo(new AIEcho::Econo, player);
+			aiImplementation=new AISharedRuntime::Runtime(new AISharedRuntime::Econo, player);
 			aiImplementation->load(stream, player, versionMinor);
 		break;
 		case WARRUSH:

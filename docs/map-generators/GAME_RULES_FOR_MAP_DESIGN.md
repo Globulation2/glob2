@@ -258,7 +258,7 @@ it rests on, each verified in the source:
   the ditches). Keep colony-to-rival walks well inside that budget, with crossings through every kind
   of linear obstacle and forward inn ground on the way. On a map of short walks, inn spacing is about
   supply throughput (an inn feeds 4, 7 or 17 at once) and forward feeding, not survival.
-- **Every AI adopts what it finds** (Echo and Nicowar through `BuildingRegister::initiate`, Numbi,
+- **Every AI adopts what it finds** (Econo and Nicowar through the shared AI runtime's `BuildingRegister::initiate`, Numbi,
   Castor and Cortex by reading `myBuildings` live), but their openings drift: Cortex sets the first
   swarm's workers to 4 and tracks at most 24 sites and 16 inns; Nicowar does not count pre-placed
   sites towards its own cap and, in the first headless plays of premade bases, bred warriors it

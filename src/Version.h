@@ -6,11 +6,13 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 121
+#define VERSION_MINOR 122
+// version 122 gives each shared-runtime controller a private gradient manager.
+// Econo and Nicowar decisions no longer depend on another controller's cache.
 // version 121 gives each AI controller a saved random stream derived from the
 // game seed and player number. AI decisions and replay/network behavior change.
 // version 120 preserves pending periodic gradients and eight-tick publication.
-// version 119 preserves Echo/Nicowar gradient caches and construction scheduling.
+// version 119 preserves shared AI runtime gradient caches and construction scheduling.
 // version 118 removes the obsolete Maxima rolling maturity cache.
 // version 117 preserves Maxima's rolling wheat maturity checks and pending changes.
 // version 116 preserves Maxima wave delivery and its permanent streaming fallback.
@@ -69,7 +71,7 @@
 // version 49 added units skinning and per-unit hungriness
 // version 50 changed TeamStat code to use std::vector
 // version 51 added script areas to Map
-// version 52 changed the Echo API
+// version 52 changed the shared AI runtime API
 // version 53 added no-growth areas, to limit resources growth
 // version 54 removed campaign map linking for the new campaign system
 // version 55 froze current Nicowar to OldNicowar in preparation of new nicowar system
@@ -122,7 +124,7 @@
 //            rather than refusing it: the simulation changed again
 // version 95 routes and hires by round trip (fetch plus carry) and saves the
 //            round-trip fields with the map runtime state: the simulation changed again
-// version 96 saves AIEcho::Construction::BuildingOrder::id, which was assigned at
+// version 96 saves AISharedRuntime::Construction::BuildingOrder::id, which was assigned at
 //            runtime and never serialised, so every pending building order restored
 //            from a save carried an uninitialised heap value as its register key
 // version 97 rebuilds route fields from a map topology generation instead of a proximity
@@ -149,9 +151,10 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 44
+#define NET_PROTOCOL_VERSION 45
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 44
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 45
+// version 45 separates shared-runtime gradient caches in mixed-client games.
 // version 44 keeps clients with different AI random streams out of mixed games.
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
@@ -180,6 +183,6 @@
 
 // version 41 adds symmetric version admission and the versioned YOG server greeting.
 
-// version 42 transfers Echo/Nicowar continuation fields when joining saved games.
+// version 42 transfers shared AI runtime continuation fields when joining saved games.
 
 // version 43 uses delayed gradient publication and transfers its pending fields.
