@@ -467,12 +467,12 @@ private:
 	/// the HARVEST ability or already filling this building.
 	bool considerUnitForResource(Unit* unit, int wantedResource, int* dist);
 
-	/// Fills candidates[Unit::MAX_COUNT] with workers hireable to fetch
-	/// `wantedResource` (null `unit` where the slot is empty or the unit was
-	/// rejected), tallying rejection reasons via considerUnitForResource. The
+	/// Packs workers hireable to fetch `wantedResource` into candidates in unit
+	/// index order and returns their count. The caller supplies Unit::MAX_COUNT
+	/// slots. Rejection reasons are tallied via considerUnitForResource. The
 	/// tallies are reset per scan, so they describe one resource, never a unit
 	/// counted once per resource the building tried.
-	void gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource);
+	int gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource);
 
 	/// Per-resource delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in
@@ -498,7 +498,7 @@ private:
 	/// the unit it chooses. A candidate holding something else is charged
 	/// CARRIED_RESOURCE_PENALTY_TILES of detour rather than excluded, so it is
 	/// hired when it is enough closer to be worth the loss.
-	void selectFetcher(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel);
+	void selectFetcher(const BringResourcesCandidate* candidates, int count, int wantedResource, BringResourcesSelection& sel);
 
 	/// This function updates the resources pointer. The variable resources can either point to local resources
 	/// or team resources, depending on the BuildingType.

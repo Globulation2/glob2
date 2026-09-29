@@ -321,7 +321,7 @@ void Econo::tick_upgrade_l1_to_l2(Echo& echo)
 
 			if(buildings.size()!=0)
 			{
-				int chosen=syncRand()%buildings.size();
+				int chosen=echo.random()%buildings.size();
 				ManagementOrder* uro = new UpgradeRepair(buildings[chosen]);
 				echo.add_management_order(uro);
 
@@ -393,7 +393,7 @@ void Econo::tick_upgrade_l2_to_l3(Echo& echo)
 
 			if(buildings.size()!=0)
 			{
-				int chosen=syncRand()%buildings.size();
+				int chosen=echo.random()%buildings.size();
 				ManagementOrder* uro = new UpgradeRepair(buildings[chosen]);
 				echo.add_management_order(uro);
 

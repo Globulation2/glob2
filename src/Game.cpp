@@ -158,9 +158,13 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 
 	// A loaded saved game already restored the live RNG. New maps and old
 	// saves retain the seed-based initialization used by earlier versions.
-	if (!hasSavedRandomState || !mapHeader.getIsSavedGame() ||
-		newGameHeader.getRandomSeed() != gameHeader.getRandomSeed())
+	const bool gameSeedChanged = newGameHeader.getRandomSeed() != gameHeader.getRandomSeed();
+	if (!hasSavedRandomState || !mapHeader.getIsSavedGame() || gameSeedChanged)
 		setSyncRandSeed(newGameHeader.getRandomSeed());
+	if (gameSeedChanged)
+		for (int p=0; p<newGameHeader.getNumberOfPlayers(); ++p)
+			if (players[p] && players[p]->ai)
+				players[p]->ai->resetRandom();
 
 	if(newGameHeader.isMapDiscovered())
 		map.setMapDiscovered();

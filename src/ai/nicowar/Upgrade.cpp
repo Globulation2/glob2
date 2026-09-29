@@ -153,7 +153,7 @@ int NewNicowar::choose_building_upgrade_type(Echo& echo, int level, int inn_rati
 									 AI_NICOWAR_NO_BUILDING_TYPE);
 
 	//Now choose a building, or return AI_NICOWAR_NO_BUILDING_TYPE for none available
-	int random = syncRand() % buildings.size();
+	int random = echo.random() % buildings.size();
 
 	return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_upgrade_type_result,
 								 buildings[random]);
@@ -172,7 +172,7 @@ int NewNicowar::choose_building_for_upgrade(Echo& echo, int type, int level)
 	bs.add_condition(new Upgradable);
 	std::vector<int> buildings;
 	std::copy(bs.begin(), bs.end(), std::back_insert_iterator<std::vector<int> >(buildings));
-	int random=syncRand() % buildings.size();
+	int random=echo.random() % buildings.size();
 	int id=buildings[random];
 
 	return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_for_upgrade_result, id);
@@ -264,4 +264,3 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 		}
 	}
 }
-

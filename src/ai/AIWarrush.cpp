@@ -174,7 +174,7 @@ Building *AIWarrush::getSwarmAtRandom()const
 		if ((b) && (b->type->shortTypeNum==IntBuildingType::SWARM_BUILDING))
 		{
 			++swarmsfound;
-			if(syncRand()%swarmsfound == 0)
+			if(random()%swarmsfound == 0)
 			{
 				chosen_swarm = b;
 			}
@@ -376,7 +376,7 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		{
 			if(verbose)std::cout << "TAKEN!\n";
 			Sint32 type;
-			int random_number = syncRand()%AI_WARRUSH_RANDOM_BUILDING_DENOM;
+			int random_number = random()%AI_WARRUSH_RANDOM_BUILDING_DENOM;
 			if(random_number < AI_WARRUSH_HEAL_PCT_THRESHOLD || numberOfBuildingsOfType(IntBuildingType::HEAL_BUILDING) == 0)type = IntBuildingType::HEAL_BUILDING;
 			else if(random_number < AI_WARRUSH_WALKSPEED_PCT_THRESHOLD || numberOfBuildingsOfType(IntBuildingType::WALKSPEED_BUILDING) == 0)type = IntBuildingType::WALKSPEED_BUILDING;
 			else if(random_number < AI_WARRUSH_SWIMSPEED_PCT_THRESHOLD)type = IntBuildingType::SWIMSPEED_BUILDING;
@@ -864,4 +864,3 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		shared_ptr<Order>(
 			new OrderCreate(team->teamNumber, destination_x, destination_y, typeNum, 1, 1)));
 }
-

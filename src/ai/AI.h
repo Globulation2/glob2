@@ -6,6 +6,7 @@
 #include <SDL_rwops.h>
 
 #include <memory>
+#include "MersenneTwister.h"
 #include "AITelemetry.h"
 namespace GAGCore
 {
@@ -67,10 +68,18 @@ public:
 
 	Player *player;
 
+private:
+	MersenneTwister randomEngine;
+	bool randomInitialized = false;
+	void initializeRandom();
+
+public:
+
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
+	// Called when the owning game's seed is changed before a new match.
+	void resetRandom() { randomInitialized = false; }
 
 	std::shared_ptr<Order> getOrder(bool paused);
 
 };
-

@@ -635,6 +635,7 @@ GAG_SOURCES = (
     'GraphicContextResize.cpp',
     'GraphicContextDraw.cpp',
     'GraphicContextCompound.cpp',
+    'GraphicContextUnitShader.cpp',
     'DrawableSurface.cpp',
     'DrawableSurfaceDraw.cpp',
     'DrawableSurfaceCompound.cpp',

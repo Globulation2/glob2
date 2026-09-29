@@ -11,6 +11,8 @@ The main method is std::shared_ptr<Order> getOrder() which return the order to b
 
 #include "BuildingType.h"
 #include "AITelemetry.h"
+#include "MersenneTwister.h"
+#include <cassert>
 #include <memory>
 
 namespace GAGCore
@@ -31,8 +33,7 @@ Fill AIImplementation's methods correctly for that subclass.
 
 Warning:
 You have to understand how the Order class is used.
-Never use rand(), always syncRand().
-(because the AI need to behave exactly the same on every computer.)
+Use the controller-provided random stream for AI decisions. Never use rand().
 Be sure to return at least a *NullOrder, not NULL.
 
 Idea:
@@ -57,6 +58,9 @@ Think if your AI is able to play with a human player?
 class AIImplementation
 {
 public:
+	// Bound by the owning AI when the implementation is created or loaded.
+	void setRandomEngine(MersenneTwister &engine) { randomEngine = &engine; }
+	Uint32 random() const { assert(randomEngine); return (*randomEngine)(); }
   AITelemetry::Sink telemetry;
   virtual void captureTelemetry() {}
   virtual Uint32 telemetrySchemaVersion() const { return 1; }
@@ -71,8 +75,9 @@ public:
 	virtual void save(GAGCore::OutputStream *stream)=0;
 	
 	virtual std::shared_ptr<Order> getOrder(void)=0;
+private:
+	MersenneTwister *randomEngine = nullptr;
 };
 
 
  
-

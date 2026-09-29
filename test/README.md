@@ -387,9 +387,10 @@ buffered flush errors while checking that the previous save survives unchanged.
 ## Cortex placement regression
 
 Build with `scons release=1 cortex-geometry-test` and run
-`./build/native-tests/src/CortexGeometryHarness`. It compares 57,600 candidates against
-the tile-scan helpers, including wrapped corners, upgrade reservations,
-construction sites, map-only occupants, dead buildings, and empty colonies.
+`./build/native-tests/src/CortexGeometryHarness`. It compares placement geometry against the tile-scan helpers and checks the
+building-proximity mask against per-building edge distances. Coverage includes
+wrapped corners, upgrade reservations, construction sites, map-only occupants,
+dead buildings, empty colonies, and footprints or distance limits spanning the map.
 
 ## Clearing flag resource bounds
 

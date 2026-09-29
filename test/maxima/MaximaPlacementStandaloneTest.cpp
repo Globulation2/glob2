@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <climits>
 #include <cstdlib>
 #include <iostream>
 
@@ -624,8 +625,32 @@ static void woodReserveBlocksNewPlans()
 	}
 }
 
+static void coordinateWrappingMatchesModulo()
+{
+	WorldState world;
+	assert(world.normalizeX(INT_MIN)==0 && world.normalizeY(INT_MAX)==0);
+	for(int dimension : {1,2,3,7,16,31,256,512,1024})
+	{
+		world.width=dimension;
+		world.height=dimension;
+		for(int coordinate=-3*dimension;coordinate<=3*dimension;++coordinate)
+		{
+			const int expected=(coordinate%dimension+dimension)%dimension;
+			assert(world.normalizeX(coordinate)==expected);
+			assert(world.normalizeY(coordinate)==expected);
+		}
+		for(int coordinate : {INT_MIN,INT_MIN+1,INT_MAX-1,INT_MAX})
+		{
+			const int expected=(static_cast<long long>(coordinate)%dimension+dimension)%dimension;
+			assert(world.normalizeX(coordinate)==expected);
+			assert(world.normalizeY(coordinate)==expected);
+		}
+	}
+}
+
 int main()
 {
+	coordinateWrappingMatchesModulo();
 	woodReserveBlocksNewPlans();
 	adjoiningBarracksRegression();
 	mixedCampusRegression();
