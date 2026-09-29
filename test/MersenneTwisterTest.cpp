@@ -3,7 +3,7 @@
 // MersenneTwister replaced boost::mt19937 as the simulation RNG and must stay
 // bit-identical to it: saved games store its text state and lockstep games
 // replay its draws. The expected values below were produced by Boost 1.83's
-// boost::mt19937 and boost::random::uniform_int_distribution<size_t>.
+// boost::mt19937.
 
 #include "../src/MersenneTwister.h"
 #include <cstdint>
@@ -121,31 +121,7 @@ int main()
 		check(a == b && text(a) == text(b), "reseeding");
 	}
 
-	struct UniformCase
-	{
-		std::uint32_t bound;
-		std::uint32_t expected[4];
-	};
-	const UniformCase uniformCases[] = {
-		{1u, {0, 0, 1, 0}},
-		{2u, {1, 2, 2, 1}},
-		{5u, {5, 1, 3, 1}},
-		{6u, {3, 0, 0, 2}},
-		{100u, {27, 1, 50, 53}},
-		{1000u, {679, 869, 804, 331}},
-		{0x7fffffffu, {818064854u, 843837184u, 141597221u, 1448113563u}},
-		{0xfffffffeu, {1237575930u, 2887580678u, 3906674451u, 2980842940u}},
-	};
-	{
-		MersenneTwister mt(7u);
-		for (const UniformCase& c : uniformCases)
-			for (std::uint32_t expected : c.expected)
-				check(uniformInt(mt, c.bound) == expected, "uniformInt(" + std::to_string(c.bound) + ")");
-		MersenneTwister before = mt;
-		check(uniformInt(mt, 0) == 0 && mt == before, "uniformInt(0) draws nothing");
-	}
-
 	if (failures)
 		return EXIT_FAILURE;
-	std::cout << "MersenneTwister matches boost::mt19937 outputs, text state and uniform draws\n";
+	std::cout << "MersenneTwister matches boost::mt19937 outputs and text state\n";
 }

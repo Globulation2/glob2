@@ -9,7 +9,10 @@ default `build/<toolchain>/client/release` directory (`darwin`, `linux`, or
 CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exceptions are `GameGUISelectionHarness` and `TerrainResourcesHarness`, which use the top-level `selection-test` and `terrain-test` targets described below.
 
 
-
+The separate test build also creates `MersenneTwisterTest`, `TriboolTest`, and
+`LocalTimeTest`. Run them after `scons -C test` to check the compatibility
+implementations that replaced Boost's simulation RNG, Echo three-state boolean,
+and persisted YOG timestamps. CI runs these standalone checks on Linux and Windows.
 
 ## Maxima
 

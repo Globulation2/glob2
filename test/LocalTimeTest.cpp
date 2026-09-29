@@ -43,6 +43,9 @@ int main()
 		{at(2000, 2, 29, 23, 59, 59), "2000-Feb-29 23:59:59"},
 		{at(1970, 1, 1, 0, 0, 0), "1970-Jan-01 00:00:00"},
 		{at(1969, 12, 31, 23, 59, 59, 500000), "1969-Dec-31 23:59:59.500000"},
+		{at(1400, 1, 1, 0, 0, 0), "1400-Jan-01 00:00:00"},
+		{at(9999, 12, 31, 23, 59, 59, 999999), "9999-Dec-31 23:59:59.999999"},
+		{at(2400, 2, 29, 0, 0, 0), "2400-Feb-29 00:00:00"},
 		{at(2100, 12, 31, 12, 30, 0), "2100-Dec-31 12:30:00"},
 		{notADateTime(), "not-a-date-time"},
 		{positiveInfinity(), "+infinity"},
@@ -61,8 +64,20 @@ int main()
 	check(parseLocalTime("2026-Sep-29", parsed) && parsed == at(2026, 9, 29, 0, 0, 0), "date only");
 	check(parseLocalTime("2026-SEP-29 01:02:03.5", parsed) && parsed == at(2026, 9, 29, 1, 2, 3, 500000), "short fraction");
 
-	// Unparseable text leaves the value alone, as Boost's stream extraction did.
-	for (const char* bad : {"", "garbage", "2026-Foo-29 01:02:03"})
+	// Reject invalid dates, overflow and incomplete/trailing time text without
+	// changing a caller's existing expiration time. Only persisted time syntax
+	// is supported; Boost's permissive duration/trailing-text extensions are not.
+	for (const char* bad : {
+		"", "garbage", "2026-Foo-29 01:02:03", "2026-J-01", "2026-Ja-01",
+		"2026-Feb-31", "2026-Feb-29", "1900-Feb-29", "2100-Feb-29", "2026-Apr-31",
+		"2026-Jan-00", "2026-Jan-32", "1399-Dec-31", "10000-Jan-01", "-2026-Jan-01",
+		"2147483647-Jan-01 00:00:00", "999999999999999999999999-Jan-01",
+		"2026-Jan-999999999999999999999999", "2026-Sep-29 garbage", "2026-Sep-29 12:",
+		"2026-Sep-29 12:00", "2026-Sep-29 24:00:00", "2026-Sep-29 12:60:00",
+		"2026-Sep-29 12:00:60", "2026-Sep-29 -1:00:00", "2026-Sep-29 2147483647:00:00",
+		"2026-Sep-29 999999999999999999999999:00:00", "2026-Sep-29 12:00:00.",
+		"2026-Sep-29 12:00:00.1234567", "2026-Sep-29 12:00:00garbage",
+		"2026-Sep-29 12:00:00.123garbage", "2026-Sep-29junk"})
 	{
 		LocalTime kept = at(2001, 1, 1, 0, 0, 0);
 		check(!parseLocalTime(bad, kept) && kept == at(2001, 1, 1, 0, 0, 0), std::string("reject [") + bad + "]");

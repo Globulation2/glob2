@@ -3,6 +3,7 @@
 #pragma once
 
 #include <cctype>
+#include <charconv>
 #include <chrono>
 #include <cstdint>
 #include <cstdio>
@@ -118,7 +119,8 @@ inline std::string toString(LocalTime t)
 
 /// Parses toString()'s form (and Boost's), ignoring surrounding whitespace;
 /// the time of day is optional. Leaves result unchanged and returns false
-/// when the text is not a time, as Boost's stream extraction did.
+/// when the text is not a valid persisted time. Accepts Gregorian years
+/// 1400-9999 (Boost's date range), and requires a complete time when present.
 inline bool parseLocalTime(const std::string& text, LocalTime& result)
 {
 	std::size_t begin = text.find_first_not_of(" \t\r\n");
@@ -142,41 +144,76 @@ inline bool parseLocalTime(const std::string& text, LocalTime& result)
 		return true;
 	}
 
-	int year, day, consumed = 0;
-	char monthText[4];
-	if (std::sscanf(s.c_str(), "%d-%3[A-Za-z]-%d%n", &year, monthText, &day, &consumed) != 3)
+	std::size_t pos = 0;
+	// from_chars reports overflow without first converting an unbounded input
+	// to an integer (unlike scanf's numeric conversions).
+	auto number = [&](unsigned& value) {
+		const char* first = s.data() + pos;
+		const auto parsed = std::from_chars(first, s.data() + s.size(), value);
+		if (parsed.ec != std::errc())
+			return false;
+		pos = std::size_t(parsed.ptr - s.data());
+		return true;
+	};
+	auto consume = [&](char c) {
+		if (pos == s.size() || s[pos] != c)
+			return false;
+		++pos;
+		return true;
+	};
+
+	unsigned year, day;
+	if (!number(year) || year < 1400 || year > 9999 || !consume('-'))
+		return false;
+	if (s.size() - pos < 3)
 		return false;
 	unsigned month = 0;
-	for (unsigned m = 0; m < 12 && month == 0; ++m)
+	for (unsigned m = 0; m < 12; ++m)
 	{
-		const char* name = LocalTimeDetail::monthNames[m];
 		bool same = true;
-		for (int c = 0; c < 3; ++c)
-			if (std::tolower((unsigned char)monthText[c]) != std::tolower((unsigned char)name[c]))
+		for (unsigned c = 0; c < 3; ++c)
+			if (std::tolower((unsigned char)s[pos + c]) != std::tolower((unsigned char)LocalTimeDetail::monthNames[m][c]))
 				same = false;
 		if (same)
 			month = m + 1;
 	}
-	if (month == 0 || day < 1 || day > 31)
+	pos += 3;
+	if (!consume('-') || !number(day) || month == 0 || day < 1 || day > 31)
+		return false;
+	const std::chrono::year_month_day date{std::chrono::year(int(year)),
+		std::chrono::month(month), std::chrono::day(day)};
+	if (!date.ok())
 		return false;
 
-	LocalTime parsed = LocalClock::fromCivil(year, month, unsigned(day));
-	int hours, minutes, seconds, more = 0;
-	if (std::sscanf(s.c_str() + consumed, " %d:%d:%d%n", &hours, &minutes, &seconds, &more) == 3)
+	LocalTime parsed = LocalClock::fromCivil(year, month, day);
+	if (pos != s.size())
 	{
+		if (!std::isspace((unsigned char)s[pos]))
+			return false;
+		while (pos < s.size() && std::isspace((unsigned char)s[pos]))
+			++pos;
+		unsigned hours, minutes, seconds;
+		if (!number(hours) || !consume(':') || !number(minutes) || !consume(':') || !number(seconds)
+			|| hours > 23 || minutes > 59 || seconds > 59)
+			return false;
 		parsed += std::chrono::hours(hours) + std::chrono::minutes(minutes) + std::chrono::seconds(seconds);
-		const char* rest = s.c_str() + consumed + more;
-		if (*rest == '.')
+		if (consume('.'))
 		{
-			std::int64_t micros = 0;
-			int digits = 0;
-			for (++rest; std::isdigit((unsigned char)*rest) && digits < 6; ++rest, ++digits)
-				micros = micros * 10 + (*rest - '0');
+			unsigned micros = 0, digits = 0;
+			while (pos < s.size() && s[pos] >= '0' && s[pos] <= '9' && digits < 6)
+			{
+				micros = micros * 10 + unsigned(s[pos++] - '0');
+				++digits;
+			}
+			if (digits == 0)
+				return false;
 			for (; digits < 6; ++digits)
 				micros *= 10;
 			parsed += std::chrono::microseconds(micros);
 		}
 	}
+	if (pos != s.size())
+		return false;
 	result = parsed;
 	return true;
 }

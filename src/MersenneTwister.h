@@ -138,26 +138,3 @@ private:
 		state[0] = upperMask;
 	}
 };
-
-/// Uniform integer in [0, bound] drawn from a 32-bit engine, using the same
-/// bucket-and-reject scheme as boost::random::uniform_int_distribution so that
-/// seeded map generation keeps producing the same maps. Draws nothing when
-/// bound is 0.
-template<typename Engine>
-std::uint32_t uniformInt(Engine& engine, std::uint32_t bound)
-{
-	static_assert(Engine::min() == 0 && Engine::max() == 0xffffffffu, "needs a full-range 32-bit engine");
-	if (bound == 0)
-		return 0;
-	if (bound == 0xffffffffu)
-		return engine();
-	std::uint32_t bucketSize = 0xffffffffu / (bound + 1);
-	if (0xffffffffu % (bound + 1) == bound)
-		++bucketSize;
-	while (true)
-	{
-		std::uint32_t result = engine() / bucketSize;
-		if (result <= bound)
-			return result;
-	}
-}
