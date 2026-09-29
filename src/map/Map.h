@@ -82,7 +82,7 @@ class Map
 	mutable ComputeExecutor compute;
 	std::vector<GradientWorkspace> gradientWorkspaces{1};
 	unsigned computeExperiments = 0;
-	GradientPipeline gradientPipeline;
+	mutable GradientPipeline gradientPipeline;
 public:
 	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
 	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4 };

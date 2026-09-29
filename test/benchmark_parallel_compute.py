@@ -20,7 +20,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def digest(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    path = Path(path)
+    if not path.exists() and Path(str(path)+".gz").exists():
+        path = Path(str(path)+".gz")
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def execute(binary, args, output):

@@ -357,8 +357,6 @@ void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size)
 // changes decisions before their scheduled refresh, even with an identical RNG.
 void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
-	if (gradientPipeline.enabled())
-		throw std::runtime_error("experimental gradient pipeline does not serialize pending jobs");
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
 	stream->writeUint32(topologyGeneration, "topologyGeneration");
@@ -458,11 +456,34 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	stream->writeEnterSection("gradientPipeline");
+	stream->writeUint8(gradientPipeline.enabled() ? gradientPipeline.delayTicks() : 8, "delay");
+	stream->writeUint8(gradientPipeline.pendingCount(), "count");
+	unsigned index=0;
+	gradientPipeline.visitPending([&](const GradientPipeline::Job &job, unsigned remaining) {
+		int destination=-1;
+		for (int t=0; t<game->teamsCount(); ++t)
+			for (int kind=0; kind<MAX_NB_RESOURCES+2; ++kind)
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+					auto *slot=kind<MAX_NB_RESOURCES ? &resourcesGradient[t][kind][sw]
+						: kind==MAX_NB_RESOURCES ? &guardAreasGradient[t][sw] : &clearAreasGradient[t][sw];
+					if (slot==job.slot) destination=(t*(MAX_NB_RESOURCES+2)+kind)*SWIM_CLASS_COUNT+sw;
+				}
+		if (destination<0) throw std::runtime_error("Unknown pending gradient destination");
+		stream->writeEnterSection(index++);
+		stream->writeUint16(destination, "destination");
+		stream->writeUint8(remaining, "remaining");
+		stream->writeUint8(job.superseded, "superseded");
+		saveGradient(stream, job.data.get(), size);
+		stream->writeLeaveSection();
+	});
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
 void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+	gradientPipeline.reset();
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
 	if (versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION)
@@ -570,5 +591,28 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if (versionMinor>=FILE_FORMAT_VERSION_GRADIENT_PIPELINE) {
+		stream->readEnterSection("gradientPipeline");
+		const unsigned delay=stream->readUint8("delay"), count=stream->readUint8("count");
+		if (delay<1 || delay>16 || count>delay) throw std::runtime_error("Invalid saved gradient queue size");
+		configureGradientPipeline(1, delay);
+		for (unsigned index=0; index<count; ++index) {
+			stream->readEnterSection(index);
+			const unsigned destination=stream->readUint16("destination");
+			const unsigned sw=destination%SWIM_CLASS_COUNT;
+			const unsigned kind=(destination/SWIM_CLASS_COUNT)%(MAX_NB_RESOURCES+2);
+			const unsigned team=destination/(SWIM_CLASS_COUNT*(MAX_NB_RESOURCES+2));
+			if (team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
+			auto *slot=kind<MAX_NB_RESOURCES ? &resourcesGradient[team][kind][sw]
+				: kind==MAX_NB_RESOURCES ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
+			const unsigned remaining=stream->readUint8("remaining");
+			const bool superseded=loadFlag(stream,"superseded");
+			Uint16 *field=nullptr;
+			loadGradient(stream, field, size);
+			gradientPipeline.restoreCompleted(slot, sw, remaining, superseded, std::unique_ptr<Uint16[]>(field));
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+	}
 	stream->readLeaveSection();
 }

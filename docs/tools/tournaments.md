@@ -535,10 +535,12 @@ ticks, workload size, platform, and all commands rather than extrapolating one r
 to every tournament.
 
 
-For experimental delayed gradient computation, `--gradient-workers N` enables
-0–16 background workers and `--gradient-delay D` selects a fixed 1–16 tick delay
-(default 8). Zero workers is the serial control with the same delayed behavior.
-These options are headless-only, cannot be combined with blocking compute
-experiments, and reject save/replay exports. Checksum telemetry remains available.
-See [performance experiments](../development/performance-telemetry.md) for the
+Periodic gradient propagation uses one background worker and an eight-tick
+publication delay by default, including normal games. `--gradient-workers N`
+selects 0–16 background workers for headless runs; zero is the serial control
+with identical simulation behavior. `--gradient-delay D` selects 1–16 ticks for
+experiments before work is pending. A loaded game preserves its saved delay;
+worker count may change without altering decisions. Save and replay exports
+retain pending fields and deadlines. See
+[performance experiments](../development/performance-telemetry.md) for the
 benchmark procedure and interpretation of CPU and wall time.

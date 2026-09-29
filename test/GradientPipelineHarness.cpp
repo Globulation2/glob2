@@ -37,6 +37,25 @@ int main()
 		pipeline.reset(); // Drain before slot destruction.
 		for (auto *slot : slots) delete[] slot;
 	}
+	// Snapshot/restore at every phase, including cancelled jobs and execution changes.
+	for (unsigned phase=0; phase<8; ++phase) for (bool cancelled : {false,true}) {
+		auto *field=new std::uint16_t[1]{};
+		GradientPipeline original, restored;
+		original.configure(1,8,1,[](auto &job,auto &) { job.data[0]=42; });
+		original.advance(); original.submit(&field,0,[](auto &) {});
+		if(cancelled) original.invalidate(&field);
+		for(unsigned i=0;i<phase;++i) original.advance();
+		restored.configure(0,8,1,[](auto &,auto &) { assert(false); });
+		original.visitPending([&](const auto &job,unsigned remaining) {
+			assert(remaining==8-phase && field[0]==0);
+			auto data=std::make_unique<std::uint16_t[]>(1); data[0]=job.data[0];
+			restored.restoreCompleted(&field,0,remaining,job.superseded,std::move(data));
+		});
+		original.reset(); restored.setWorkerCount(1);
+		for(unsigned i=1;i<8-phase;++i) { restored.advance(); assert(field[0]==0); }
+		restored.advance(); assert(field[0]==(cancelled ? 0 : 42));
+		restored.reset(); delete[] field;
+	}
 	GradientPipeline fallback;
 	unsigned created=0;
 	fallback.configure(4, 3, 1, [](auto &job, auto &) { job.data[0]=9; },

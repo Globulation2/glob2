@@ -203,29 +203,32 @@ unchanged baseline. Aggregate ratios do not replace per-scenario CPU and small-m
 regression checks. Timing thresholds are deliberately not CI assertions.
 
 
-### Delayed periodic-gradient experiment
+### Delayed periodic gradients
 
-Structured headless runs accept `--gradient-workers N --gradient-delay D`.
+All games use one background worker and an eight-tick publication delay by
+default. Structured headless runs accept `--gradient-workers N --gradient-delay D`.
 `N` counts **background workers** (0–16); the simulation thread is additional.
-`D` is the fixed publication delay (1–16 ticks, default 8). Omit both options for
-normal scheduling. Use `--gradient-workers 1` for the selected configuration: one
-background worker and eight ticks. Zero workers computes synchronously but retains exactly the
-same delayed publication schedule, providing the determinism and timing control
-for each delay. Different delays may produce different games.
+`D` is the fixed publication delay (1–16 ticks, default 8). Zero workers computes
+synchronously but retains exactly the same publication schedule, providing the
+determinism and timing control for each delay. Different delays may produce
+different games. A loaded game's delay cannot change while jobs are pending.
 
-The experiment seeds one allocated resource, guard or clear field at the original
+The pipeline seeds one allocated resource, guard or clear field at the original
 end-of-tick round-robin boundary. It snapshots weighted terrain inputs, propagates
 in private storage, and publishes before the teams step at the fixed deadline.
 A synchronous refresh supersedes older pending results for that field. Increasing
 worker count does not increase the number of scheduled fields. Buffers are bounded
 by the delay; workers block on condition variables when idle.
 
-This is a headless performance prototype. It can load normal checkpoints, but
-rejects save and replay exports while enabled: pending snapshots and deadlines
-are not yet part of the save format or replay/network protocol. Use
-`--telemetry checksums` for experimental execution traces. Run it separately from
-`--compute-experiments` so blocking and asynchronous changes can be measured
-independently. Ordinary play and save formats are unchanged.
+Saving waits for private computation without publishing early, then stores each
+pending field, destination, supersession flag and remaining deadline. Loading
+restores that queue; worker count is local execution configuration and is not
+saved. Format 120 adds this state while keeping the save compatibility floor at
+58. Older saves start with an empty queue. Replays before 120 are rejected, and
+network protocol 43 prevents mixed scheduling semantics. Platforms without worker
+threads use the same delayed serial schedule. Routing decisions may use periodic
+fields eight ticks older than before; synchronous refreshes still take effect
+immediately.
 
 `result.json` includes actual worker count, delay, jobs, published/discarded jobs,
 maximum pending buffers, deadline wait nanoseconds, and summed propagation elapsed

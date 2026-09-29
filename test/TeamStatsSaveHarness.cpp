@@ -769,10 +769,10 @@ static void measurementAttributionFields()
 
 static void measurementReplayBoundaries()
 {
-	require(REPLAY_MINIMUM_VERSION_MINOR == 99 && NET_PROTOCOL_VERSION == 42 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 42,
-			"current save format preserves replay floor and uses current network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, VERSION_MINOR, VERSION_MINOR+1})
+	require(REPLAY_MINIMUM_VERSION_MINOR == 120 && NET_PROTOCOL_VERSION == 43 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 43,
+			"gradient scheduling uses current replay and network gates");
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -785,8 +785,8 @@ static void measurementReplayBoundaries()
 		copy->seekFromStart(0);
 		ReplayReader reader;
 		require(reader.loadReplay(new GAGCore::BinaryInputStream(copy), false) ==
-					(version >= 99 && version <= VERSION_MINOR),
-				"replay acceptance boundary is unchanged except current writer version");
+					(version >= REPLAY_MINIMUM_VERSION_MINOR && version <= VERSION_MINOR),
+				"old and future replay schedules are rejected");
 	}
 }
 

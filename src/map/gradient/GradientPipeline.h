@@ -101,6 +101,33 @@ public:
 #endif
 		delay = ticks;
 	}
+	// Saving completes private work without changing publication deadlines.
+	template<class Visitor> void visitPending(Visitor visitor) {
+		finish();
+		for (const auto &job : pending) visitor(*job, static_cast<unsigned>(job->due-tick));
+	}
+	std::size_t pendingCount() const { return pending.size(); }
+	void restoreCompleted(std::uint16_t **slot, int swim, unsigned remaining,
+		bool superseded, std::unique_ptr<std::uint16_t[]> data) {
+		if (!enabled() || !slot || !*slot || !data || !remaining || remaining>delay ||
+			pending.size()>=delay || (!pending.empty() && pending.back()->due>=tick+remaining))
+			throw std::runtime_error("Invalid saved gradient deadline or destination");
+		auto job=std::make_unique<Job>();
+		job->slot=slot; job->swim=swim; job->due=tick+remaining;
+		job->superseded=superseded; job->done=true; job->data=std::move(data);
+		pending.push_back(std::move(job));
+	}
+	// Execution is local configuration, never part of saved simulation state.
+	void setWorkerCount(unsigned count) {
+		finish();
+		auto savedPending=std::move(pending);
+		auto savedSpare=std::move(spare);
+		const auto savedTick=tick, savedSubmission=lastSubmission, savedActive=activeElapsedNs();
+		const auto savedMetrics=metrics;
+		configure(count, delay, cells, work);
+		pending=std::move(savedPending); spare=std::move(savedSpare);
+		tick=savedTick; lastSubmission=savedSubmission; metrics=savedMetrics; activeNs=savedActive;
+	}
 	// Call before the teams step; seed at the original end-of-tick map boundary.
 	void advance() {
 		++tick;

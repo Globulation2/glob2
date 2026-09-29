@@ -216,15 +216,23 @@ void Map::recordNaturalGrowth(int x, int y, int resourceType, int oldType, int o
 }
 
 
-#ifndef YOG_SERVER_ONLY
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
+	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
+#ifdef YOG_SERVER_ONLY
+	workers=0;
+#endif
 	gradientPipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
+#ifndef YOG_SERVER_ONLY
 		propagateGradientSnapshot(job.data.get(), job.swim, GRADIENT_COST_LIMIT, scratch,
 			job.water.empty() ? nullptr : job.water.data());
+#else
+		throw std::logic_error("The server does not simulate gradients");
+#endif
 	});
 }
 
+#ifndef YOG_SERVER_ONLY
 void Map::syncStep(Uint32 stepCounter)
 {
 	PERF_SCOPE_TIME(Map);

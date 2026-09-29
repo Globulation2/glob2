@@ -278,12 +278,13 @@ static void checkRandomContinuation(bool text, bool ai)
 	class CheckpointOutput : public BinaryOutputStream
 	{
 	public:
-		size_t runtimeStart=0, runtimeEnd=0;
+		size_t runtimeStart=0, runtimeEnd=0, pipelineStart=0;
 		explicit CheckpointOutput(StreamBackend *backend) : BinaryOutputStream(backend) {}
 		void writeEnterSection(const std::string name) override
 		{
 			if (name=="mapRuntime") runtimeStart=getPosition();
 			if (name=="GameGUI") runtimeEnd=getPosition();
+			if (name=="gradientPipeline") pipelineStart=getPosition();
 			BinaryOutputStream::writeEnterSection(name);
 		}
 	} output(backend);
@@ -337,6 +338,18 @@ static void checkRandomContinuation(bool text, bool ai)
 			bool rejected=false;
 			try { rejected=!restored.load(partial.get()); }
 			catch (const std::exception&) { rejected=true; }
+			assert(rejected);
+		}
+		assert(output.pipelineStart>output.runtimeStart);
+		// Reject invalid queue sizes, deadlines, destinations and cancellation flags.
+		const auto pipeline=output.pipelineStart;
+		assert(static_cast<unsigned char>(bytes[pipeline+1])>0);
+		for (const auto [offset,value] : std::vector<std::pair<size_t,unsigned char>>{
+			{pipeline,0}, {pipeline,17}, {pipeline+1,17},
+			{pipeline+2,255}, {pipeline+4,0}, {pipeline+4,17}, {pipeline+5,2}}) {
+			auto malformed=bytes; malformed[offset]=value;
+			auto bad=input(malformed,true); bool rejected=false;
+			try { rejected=!restored.load(bad.get()); } catch(const std::exception &) { rejected=true; }
 			assert(rejected);
 		}
 		auto corrupt=bytes;

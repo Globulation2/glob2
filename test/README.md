@@ -822,7 +822,7 @@ frozen hiring advancement. Linux/Windows CI run the executor and path oracle.
 
 `python3 test/check_parallel_compute.py BUILD/GLOB2 --baseline BASELINE` compares
 per-tick traces, replay bytes, final saves and uninterrupted save continuation.
-Omit `--baseline` to compare the candidate's default serial path; `--output DIR`
+Omit `--baseline` to compare the candidate's default execution; `--output DIR`
 retains all evidence. This subprocess runner uses Unix `wait4`; native Windows
 uses the C++ harnesses. See the existing performance guide for corpus preparation
 and paired CPU/wall-time benchmarking.
@@ -839,6 +839,7 @@ also be compiled directly with ThreadSanitizer without SDL.
 `BuildingGradientInvalidationHarness` exercises real resource, guard and clear
 fields, including a synchronous update while an older snapshot is pending.
 `benchmark_gradient_pipeline.py --verify` compares real-game per-tick traces across
-worker counts under the same delayed schedule. Save/resume of a pipeline run is
-not supported; the headless command rejects save/replay exports until pending
-state and scheduling semantics have versioned serialization.
+worker counts under the same delayed schedule. `check_gradient_pipeline.py` also
+checks the one-worker/eight-tick defaults and save/resume at each of the eight
+deadline phases with zero, one and two workers. Pending fields, supersession and
+remaining deadlines are versioned save state; worker count is not.

@@ -153,15 +153,8 @@ struct HeadlessRunner
 	static int game(const Options &options, const fs::path &output)
 	{
 		const auto setupStart = std::chrono::steady_clock::now();
-		const bool pipelineExperiment = options.count("--gradient-workers");
-		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "0"), 0, 16);
+		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "1"), 0, 16);
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
-		if (options.count("--gradient-delay") && !pipelineExperiment)
-			throw std::invalid_argument("--gradient-delay requires --gradient-workers (0 is the serial control)");
-		if (pipelineExperiment && (options.count("--save") || one(options,"--replay","false") != "false"))
-			throw std::invalid_argument("experimental gradient pipeline cannot export saves or replays; use --telemetry checksums");
-		if (pipelineExperiment && (one(options,"--compute-threads","1") != "1" || one(options,"--compute-experiments","none") != "none"))
-			throw std::invalid_argument("run the gradient pipeline separately from blocking compute experiments");
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
 		globalContainer=&globals;
 		globals.runNoX=true;
@@ -169,7 +162,8 @@ struct HeadlessRunner
 		globals.automaticEndingGame=true;
 		globals.automaticGameGlobalEndConditions=true;
 		globals.automaticEndingSteps=integer(one(options, "--ticks", "90000"), 1, std::numeric_limits<int>::max());
-		globals.headlessReplay=one(options, "--replay", "false") == "true";
+		const bool recordReplay=one(options, "--replay", "false") == "true";
+		globals.headlessReplay=false; // Write the replay header after configuring the saved schedule.
 		if(options.count("--replay") && one(options,"--replay")!="true" && one(options,"--replay")!="false")
 			throw std::invalid_argument("--replay must be true or false");
 		const std::string replay=(output/"game.replay").string();
@@ -282,7 +276,20 @@ struct HeadlessRunner
 		else if (computeExperiments == "hiring") experimentMask = Map::ComputeHiring;
 		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
 		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
-		if (pipelineExperiment) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
+		auto &pipeline = engine.gui.game.map.pipeline();
+		if (!pipeline.enabled()) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
+		else {
+			if (options.count("--gradient-delay") && gradientDelay != pipeline.delayTicks()) {
+				if (pipeline.pendingCount()) throw std::invalid_argument("cannot change the delay with pending gradients");
+				engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
+			}
+			pipeline.setWorkerCount(gradientWorkers);
+		}
+		globals.headlessReplay=recordReplay;
+		if(recordReplay) {
+			globals.replayWriter=std::make_unique<ReplayWriter>();
+			globals.replayWriter->init(replay, engine.gui);
+		}
 		if(initial) engine.saveInitialGameStateOrExit((output/"initial.game").string(),"initial",engine.gui.game.mapHeader.getMapName());
 		const auto runStart = std::chrono::steady_clock::now();
 		engine.run();
@@ -297,7 +304,7 @@ struct HeadlessRunner
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
 			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
 			<< ",\"run_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runEnd - runStart).count()
-			<< ",\"gradient_pipeline\":" << (pipelineExperiment ? "true" : "false")
+			<< ",\"gradient_pipeline\":" << "true"
 			<< ",\"gradient_workers\":" << game.map.pipeline().workerCount()
 			<< ",\"gradient_delay\":" << game.map.pipeline().delayTicks()
 			<< ",\"gradient_jobs\":" << game.map.pipeline().metrics.jobs
