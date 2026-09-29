@@ -220,8 +220,8 @@ int plantShoreFields(Map &map, const Torus &t, const std::vector<ShoreField> &fi
 			if (dx >= -1 && dx <= 4 && dy >= -1 && dy <= 4)
 				rim.push_back(i);
 		}
-		const int near = plantFieldInteriors(map, t, rim, WHEAT, std::min(wanted, 12));
-		planted += near + plantFieldInteriors(map, t, fertile, WHEAT, wanted - near);
+		const int rimPlanted = plantFieldInteriors(map, t, rim, WHEAT, std::min(wanted, 12));
+		planted += rimPlanted + plantFieldInteriors(map, t, fertile, WHEAT, wanted - rimPlanted);
 	}
 	return planted;
 }
