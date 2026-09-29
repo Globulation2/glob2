@@ -449,16 +449,34 @@ namespace GAGCore
         }
         auto batch=std::make_unique<Sprite>();
         auto atlas=std::move(levels[0]);atlas->uploadToTexture();
-        glBindTexture(GL_TEXTURE_2D,atlas->texture);
+        glState.setTexture(atlas->texture);
         // DrawableSurface's legacy allocator rounds up to powers of two. These
         // prepacked mip levels use exact dimensions, so redefine level zero too.
+        // Browser GL has no BGRA upload. Convert each packed mip to RGBA at
+        // the upload boundary, as DrawableSurface::uploadToTexture does.
+#ifdef GLOB2_WEBGL2
+        auto uploadAtlasMip = [&](int mip, DrawableSurface &surface) {
+            std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> rgba(
+                SDL_ConvertSurfaceFormat(surface.sdlsurface, SDL_PIXELFORMAT_RGBA32, 0), SDL_FreeSurface);
+            if (!rgba) return false;
+            glTexImage2D(GL_TEXTURE_2D, mip, GL_RGBA, rgba->w, rgba->h, 0,
+                         GL_RGBA, GL_UNSIGNED_BYTE, rgba->pixels);
+            return true;
+        };
+        if (!uploadAtlasMip(0, *atlas)) { reject(); return; }
+#else
         glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,atlasW,atlasH,0,GL_BGRA,GL_UNSIGNED_BYTE,atlas->sdlsurface->pixels);
+#endif
         glState.allocatedTextureBytes-=atlas->gpuBytes;
         atlas->gpuBytes=atlasW*atlasH*4;glState.allocatedTextureBytes+=atlas->gpuBytes;
         atlas->texMultX=1.f/atlasW;atlas->texMultY=1.f/atlasH;
 
         for(int mip=1;mip<4;++mip)
+#ifdef GLOB2_WEBGL2
+            if (!uploadAtlasMip(mip, *levels[mip])) { reject(); return; }
+#else
             glTexImage2D(GL_TEXTURE_2D,mip,GL_RGBA,atlasW>>mip,atlasH>>mip,0,GL_BGRA,GL_UNSIGNED_BYTE,levels[mip]->sdlsurface->pixels);
+#endif
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,3);

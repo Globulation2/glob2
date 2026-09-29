@@ -199,7 +199,14 @@ namespace GAGCore
                     // compress during upload needs no offline tool or vendored encoder.
                     // Block compression is undefined below 4x4, so the chain stops
                     // there instead of continuing to the 2x2/1x1 tail.
+                    // WebGL2 only accepts pre-compressed data through
+                    // compressedTexImage2D. Desktop GL may compress RGBA on
+                    // upload, but WebGL2 rejects that internal format here.
+#ifdef GLOB2_WEBGL2
+                    const bool compress=false;
+#else
                     const bool compress=glState.hasS3TCCompression;
+#endif
                     const GLenum internalFormat=compress?GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:GL_RGBA;
                     for(int mip=0;;++mip)
                     {
