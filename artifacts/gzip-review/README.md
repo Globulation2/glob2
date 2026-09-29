@@ -1,6 +1,6 @@
 # PR 315 gzip verification
 
-Final source: `6fb2aa3f71d4690a839036e6a85f1d31d9ec9ad7`. The full native suite and 10 Chromium integration checks ran at `4e048761ce26aef9dce756846b1aefb8dd32ee31`; the final import-only followup was rebuilt and passed the save-safety harness, with focused browser import checks recorded separately. Host: macOS arm64. All commands run from the repository root unless stated otherwise.
+Gzip/import validation source: `6fb2aa3f71d4690a839036e6a85f1d31d9ec9ad7`. The full native suite and 10 Chromium integration checks ran at `4e048761ce26aef9dce756846b1aefb8dd32ee31`; the final import-only followup was rebuilt and passed the save-safety harness, with focused browser import checks recorded separately. Host: macOS arm64. All commands run from the repository root unless stated otherwise.
 
 ## Native checks
 
@@ -51,3 +51,17 @@ scons -j6 target=web release=1 emsdk=/path/to/browser-emsdk
 ```
 
 The final native import tests cover uppercase gzip suffixes and collisions in both directions between raw and gzip files. `import-before.log` demonstrates that the expanded import regression fails against the prior importer.
+
+## Final Windows portability fix
+
+While CI ran, master advanced to `4f05b6ac5` (PR #389). GitHub's merge build picked up a new `near` local in `Farmland.cpp`, which conflicts with the Windows headers' `near` macro. The branch now includes that master commit and renames only the local to `rimPlanted`, without changing the calculation. Final PR head: `c2f5d77442d7575c58c5c74f1317cf8db2518745`.
+
+`windows-macro-before.log` reproduces the exact parse errors with `-Dnear=`. `windows-macro-after.log` records successful syntax checking after the rename. Final CI: https://github.com/Globulation2/glob2/actions/runs/36508734905 and https://github.com/Globulation2/glob2/actions/runs/36508734912.
+
+## Session and trace fixture alignment
+
+CI exposed a session-test fixture still creating `blocked.map` instead of blocking the actual `blocked.map.gz` output. `EngineSessionHarness` now exercises the gzip destination; `engine-session.log` records the complete harness pass, including preservation of live editor metadata after a failed replacement. The native and WebAssembly determinism runners both read `games/cross-replay.game.gz`.
+
+`native-trace/` and `wasm-trace/` contain matching 1,500-tick traces. SHA-256 for each: `110443ab4a136dff6621f32dbeed150a15c18394791874e3774ef6cbe27c3c48`. See `browser-determinism.log` and `native-trace.log`. Final test-path cleanup head: `df531cd8386997f659ef0b57528b5c08cc030783`.
+
+`browser-save-flows.log` records 19 additional Chromium cases passing, covering single-player and responsive presentation, including saved games, exports, editor decisions and landscape selection.

@@ -1,0 +1,10 @@
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:53:03] "GET / HTTP/1.1" 200 -
+
+Running 1 test using 1 worker
+
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:53:04] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:53:04] "GET /index.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [28/Sep/2026 21:53:04] "GET /index.wasm HTTP/1.1" 200 -
+  ✓  1 [chromium] › browser/tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (2.4s)
+
+  1 passed (3.6s)
