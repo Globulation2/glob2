@@ -270,10 +270,11 @@ struct HeadlessRunner
 		const unsigned computeThreads = integer(one(options, "--compute-threads", "1"), 1, 64);
 		const std::string computeExperiments = one(options, "--compute-experiments", computeThreads > 1 ? "all" : "none");
 		unsigned experimentMask = 0;
-		if (computeExperiments == "all") experimentMask = 7;
+		if (computeExperiments == "all") experimentMask = 15;
 		else if (computeExperiments == "areas") experimentMask = Map::ComputeAreas;
 		else if (computeExperiments == "initialize") experimentMask = Map::ComputeInitialize;
 		else if (computeExperiments == "hiring") experimentMask = Map::ComputeHiring;
+		else if (computeExperiments == "ai") experimentMask = Map::ComputeAI;
 		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
 		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
 		auto &pipeline = engine.gui.game.map.pipeline();

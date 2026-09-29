@@ -53,6 +53,7 @@ public:
 	void save(GAGCore::OutputStream *stream) override;
 	std::shared_ptr<Order> getOrder() override;
 	std::string auditStrategyJson() const;
+	std::string canonicalStrategy() const;
 	void tick(AIMaximaRuntime::Context& echo) override;
 	void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event) override;
 private:

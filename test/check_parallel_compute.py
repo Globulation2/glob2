@@ -27,7 +27,7 @@ def main():
     initial = str(fixture / 'initial.game')
     common = ['--load-game', initial, '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true', '--save', 'final']
     references = {}
-    for label, exe, extra in [('baseline', baseline, []), *[(f'{experiment}-{n}', binary, ['--compute-threads', str(n), '--compute-experiments', experiment]) for experiment in ('none', 'areas', 'initialize', 'hiring', 'all') for n in (1, 2, 4, 8)]]:
+    for label, exe, extra in [('baseline', baseline, []), *[(f'{experiment}-{n}', binary, ['--compute-threads', str(n), '--compute-experiments', experiment]) for experiment in ('none', 'areas', 'initialize', 'hiring', 'ai', 'all') for n in (1, 2, 4, 8)]]:
         run = output / label
         execute(exe, common + extra, run)
         hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'game.replay', 'final.game')}

@@ -85,7 +85,7 @@ class Map
 	mutable GradientPipeline gradientPipeline;
 public:
 	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
-	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4 };
+	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
 	void configureCompute(unsigned threads, unsigned experiments)
 	{
 		compute.configure(threads);

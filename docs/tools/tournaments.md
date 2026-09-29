@@ -112,7 +112,7 @@ Game options:
 | `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
 | `--compute-threads N` | Experimental execution threads, 1–64 including main; default 1 |
-| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `all`; default `none` at one thread, `all` otherwise; direct engine option |
+| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `ai`, `all`; default `none` at one thread, `all` otherwise; direct engine option |
 | `--replay true/false` | false |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |

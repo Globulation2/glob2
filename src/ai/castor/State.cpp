@@ -163,12 +163,6 @@ void AICastor::computeWarLevel()
 		warAmountTriggerLevel=0;
 	warLevel=warTimeTriggerLevelUse+warLevelTriggerLevel+warAmountTriggerLevel;
 
-	static int oldWarLevel=AI_CASTOR_WAR_LEVEL_UNSET;
-	if (oldWarLevel!=warLevel)
-	{
-		oldWarLevel=warLevel;
-	}
-
 	if (warLevel==0)
 		return;
 
@@ -187,12 +181,6 @@ void AICastor::computeWarLevel()
 		if (u && u->medical==Unit::MED_FREE && u->typeNum==WARRIOR)
 			warPowerSum+=u->performance[ATTACK_SPEED]*u->performance[ATTACK_STRENGTH]*glassCannonScale;
 	}
-	static int oldWarPowerSum=AI_CASTOR_WAR_POWER_UNSET;
-	if (oldWarPowerSum!=warPowerSum)
-	{
-		oldWarPowerSum=warPowerSum;
-	}
-
 	if (warPowerSum<strategy.strikeWarPowerTriggerDown)
 	{
 		if (onStrike)
@@ -209,4 +197,3 @@ void AICastor::computeWarLevel()
 		onStrike=true;
 	}
 }
-

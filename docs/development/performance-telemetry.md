@@ -149,7 +149,7 @@ to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
 
 Structured `--run-game` accepts `--compute-threads N` (1–64 execution threads,
 including the submitting thread) and `--compute-experiments MODE`. Modes are
-`none`, `areas`, `initialize`, `hiring`, and `all`. One thread defaults to `none`;
+`none`, `areas`, `initialize`, `hiring`, `ai`, and `all`. One thread defaults to `none`;
 explicitly requesting multiple threads defaults to `all`. These are opt-in
 prototype controls, not a change to normal play or simulation rules. For the
 serial reference of an experiment, specify its mode with one thread.
@@ -160,7 +160,25 @@ refresh boundaries. Initialization jobs use 4096-cell chunks on maps of at least
 ordering. Hiring jobs advance existing frozen building searches in separate swim
 classes before candidate evaluation; they neither refresh caches nor change use
 timestamps. This can perform unnecessary work and must be measured separately.
-Periodic one-field-per-tick refresh and AI polling remain unchanged.
+Periodic one-field-per-tick refresh remains unchanged. The `areas`,
+`initialize`, and `hiring` modes leave AI polling unchanged.
+
+The `ai` experiment polls eligible AI controllers in a blocking batch after the
+GUI sync step. It binds their telemetry on the main thread, waits for every
+controller to return one order, then submits those orders in player order before
+the network update and simulation step. No AI work continues past the barrier.
+Econo and Nicowar polls run in player order before the batch because Echo
+controllers share a mutable gradient manager, including across saved games.
+Paused games keep the serial order path.
+The ordinary one-thread path remains the default for normal games. `all` also
+includes AI polling. Worker-local implicit performance scopes are not merged
+into the main-thread collector; use batch metrics and process-level timing for
+threaded comparisons. Short or uneven AI workloads may cost more in dispatch
+and barrier overhead than they save in parallel work.
+
+Ordinary GUI games and legacy `--nox` runs can opt in with `--ai-threads N`
+(1–64, including the main thread). The default is one thread. Structured
+`--run-game` uses `--compute-threads N --compute-experiments ai` instead.
 
 A game-owned executor uses persistent workers, main-thread participation and a
 barrier before simulation resumes. Nested jobs run inline. Eager propagation

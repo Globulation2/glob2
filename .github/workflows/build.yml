@@ -396,7 +396,9 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game
 
       - name: Verify default gradient schedule against cross-platform checksums
-        run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
+        run: |
+          python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
+          python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --parallel-ai
 
       - name: Verify parallel compute and save continuation
         run: |
@@ -908,7 +910,9 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy /tmp/gd-small-2ai.game
 
       - name: Verify default gradient schedule against cross-platform checksums
-        run: python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe
+        run: |
+          python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe
+          python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe --parallel-ai
 
       - name: Report the cache statistics
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}

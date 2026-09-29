@@ -225,7 +225,6 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
     std::string error;
     if(!StrategyResolver::restoreValues(savedStrategy,strategy,error,versionMinor))
         throw std::runtime_error(error);
-    context.player->game->gameHeader.setAIConfig(context.player->number, StrategyResolver::canonicalValues(strategy));
     // Reconfigure derived policies before restoring incremental work. Local
     // configuration may have changed since this game was saved.
     configure_development_planner();

@@ -24,6 +24,7 @@
 #include "unit/UnitConsts.h"
 
 #include <iostream>
+#include <array>
 #include <fstream>
 #include <sstream>
 #include <iomanip>
@@ -98,6 +99,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	PERF_SCOPE_TIME(Orders);
 	// Viewpoint changes must not move the controller used for order bookkeeping.
     const int orderPlayer=globalContainer->liveSpectating ? 0 : gui.localPlayer;
+	shared_ptr<Order> localOrder;
 	// But some jobs have to be executed synchronously:
 	if (wasReadyLastTick)
 	{
@@ -108,19 +110,71 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		net->setLocalPlayer(orderPlayer);
 
 		// We get and push local orders
-		shared_ptr<Order> localOrder = gui.getOrder();
-		if(globalContainer->liveSpectating && gui.game.players[orderPlayer]->ai)
-			localOrder=gui.game.players[orderPlayer]->ai->getOrder(gui.gamePaused);
-		net->addLocalOrder(localOrder);
+		localOrder = gui.getOrder();
 	}
 
-	// we get and push ai orders, if they are needed for this frame
-	for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); i++)
+	const bool localAI = wasReadyLastTick && globalContainer->liveSpectating &&
+		gui.game.players[orderPlayer]->ai;
+	if (!gui.gamePaused && gui.game.map.computeEnabled(Map::ComputeAI) &&
+		gui.game.map.computeExecutor().threadCount() > 1)
 	{
-		if (gui.game.players[i]->ai && !(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))
+		// Decisions read the same completed tick. Bind telemetry before dispatch:
+		// its first use can append to shared team statistics, including when two
+		// controllers belong to one team. The workers only update their own AI.
+		std::array<int, Team::MAX_COUNT> aiPlayers{};
+		size_t aiCount = 0;
+		if (localAI) aiPlayers[aiCount++] = orderPlayer;
+		for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); ++i)
+			if (gui.game.players[i]->ai &&
+				!(globalContainer->liveSpectating && i == orderPlayer) &&
+				!net->orderReceived(i))
+				aiPlayers[aiCount++] = i;
+		for (size_t job = 0; job < aiCount; ++job)
 		{
-			shared_ptr<Order> order = gui.game.players[i]->ai->getOrder(gui.gamePaused);
-			net->pushOrder(order, i, true);
+			const int i = aiPlayers[job];
+			if (!gui.gamePaused && gui.game.players[i]->team->isAlive)
+				gui.game.players[i]->ai->bindTelemetry();
+		}
+
+		std::array<shared_ptr<Order>, Team::MAX_COUNT> aiOrders{};
+		// Econo and Nicowar share Echo's mutable GradientManager. The first
+		// Echo poll can also attach that manager to the other Echo instances.
+		// Preserve their player order while other AI implementations run in
+		// parallel after the shared manager is stable.
+		for (size_t job = 0; job < aiCount; ++job)
+		{
+			AI* ai = gui.game.players[aiPlayers[job]]->ai;
+			if (ai->implementationID == AI::ECONO || ai->implementationID == AI::NICOWAR)
+				aiOrders[job] = ai->getOrder(gui.gamePaused);
+		}
+		gui.game.map.computeExecutor().run(aiCount, [&](size_t job) {
+			AI* ai = gui.game.players[aiPlayers[job]]->ai;
+			if (ai->implementationID != AI::ECONO && ai->implementationID != AI::NICOWAR)
+				aiOrders[job] = ai->getOrder(gui.gamePaused);
+		});
+		size_t firstRemote = 0;
+		if (localAI)
+		{
+			localOrder = aiOrders[0];
+			firstRemote = 1;
+		}
+		if (wasReadyLastTick) net->addLocalOrder(localOrder);
+		for (size_t job = firstRemote; job < aiCount; ++job)
+			net->pushOrder(aiOrders[job], aiPlayers[job], true);
+	}
+	else
+	{
+		if (localAI)
+			localOrder = gui.game.players[orderPlayer]->ai->getOrder(gui.gamePaused);
+		if (wasReadyLastTick) net->addLocalOrder(localOrder);
+		// Get and push AI orders when they are needed for this frame.
+		for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); i++)
+		{
+			if (gui.game.players[i]->ai && !(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))
+			{
+				shared_ptr<Order> order = gui.game.players[i]->ai->getOrder(gui.gamePaused);
+				net->pushOrder(order, i, true);
+			}
 		}
 	}
 
@@ -566,6 +620,8 @@ void Engine::beginSession(Uint64 now)
 {
     if (session) throw std::logic_error("Engine session is already active");
     if (!net) throw std::logic_error("Engine session requires an initialized game");
+	if (!globalContainer->structuredHeadless && globalContainer->aiThreads > 1)
+		gui.game.map.configureCompute(globalContainer->aiThreads, Map::ComputeAI);
     sessionEndingTarget = globalContainer->automaticEndingSteps;
     MainLoopState st{};
     st.adjustableGameSpeed = gui.canChangeGameSpeed();

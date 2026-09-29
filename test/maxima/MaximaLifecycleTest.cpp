@@ -80,7 +80,18 @@ static void run(Uint32 seed)
         header.getBasePlayer(seat)=BasePlayer(seat,"Maxima",seat,
             BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
     assert(original.loadFromHeaders(map,header,true,true));
-    for(int tick=0;tick<600;++tick) step(original.game);
+    std::vector<std::string> initialAIConfigs;
+    for(int seat=0;seat<2;++seat)
+    {
+        initialAIConfigs.push_back(original.game.gameHeader.getAIConfig(seat));
+        assert(!initialAIConfigs.back().empty());
+    }
+    for(int tick=0;tick<600;++tick)
+    {
+        step(original.game);
+        for(int seat=0;seat<2;++seat)
+            assert(original.game.gameHeader.getAIConfig(seat)==initialAIConfigs[seat]);
+    }
     rejectedStateThrows(original.game);
     auto* storage=new MemoryStreamBackend;
     BinaryOutputStream output(storage);
