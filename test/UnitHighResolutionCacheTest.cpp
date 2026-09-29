@@ -175,8 +175,8 @@ int main(int argc, char **argv)
 				for (size_t i = 0; i < sized.size(); ++i)
 					maxDiff = std::max(maxDiff, std::abs(static_cast<int>(sized[i]) - static_cast<int>(zoomed[i])));
 				assert(glGetError() == GL_NO_ERROR);
-				assert(maxDiff <= 3); // filtering/rounding only, not an exact-pixel match
 				std::cout << "Sized-overload vs. zoomed-shader alignment: max diff=" << maxDiff << "/255" << std::endl;
+				assert(maxDiff <= 3); // filtering/rounding only, not an exact-pixel match
 			}
 		}
 		std::cout << "PASS all 1792 layer mappings, whole-block HD/native fallback, HD/classic "
