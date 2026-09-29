@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select CI jobs from a pull request's changed paths, defaulting to full CI."""
+"""Select CI jobs from a PR or master push diff, defaulting to full CI."""
 
 import argparse
 import os
@@ -87,7 +87,7 @@ def changed_paths(base):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base", help="Pull request base commit; omitted for full CI")
+    parser.add_argument("--base", help="PR base or pre-push commit; omitted for full CI")
     args = parser.parse_args()
     if args.base:
         try:

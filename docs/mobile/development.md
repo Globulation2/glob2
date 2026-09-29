@@ -176,6 +176,14 @@ and phone/tablet play sessions remain necessary.
 
 Run commands from the repository root. Versions and checksums are pinned in
 `mobile/toolchain.json`, `mobile/android-tools.json` and `mobile/vcpkg.json`.
+
+Android CI opts into the shared `CCACHE=1` compiler wrapper and restores a
+per-architecture cache keyed by the pinned toolchain, dependency manifest and
+triplets. A cache miss still builds normally; ccache checks compiler content and
+source dependencies before reusing an object. Leave `CCACHE` unset when generating
+`compile_commands.json` for source analysis. A newer PR push cancels its older
+Android checks.
+
 Use `python3 mobile/doctor.py android` or `python3 mobile/doctor.py ios` to inspect
 SDK availability. iOS requires the pinned full Xcode 27.0 toolchain;
 `--developer-dir` on the packaging command selects it without changing the

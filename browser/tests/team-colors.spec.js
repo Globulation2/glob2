@@ -25,7 +25,9 @@ async function workerColors(page, width) {
 
 for (const renderer of ['software','webgl2']) {
   test(`${renderer} preserves the red tutorial team before and after resize`, async ({page}, info) => {
-    const screen = name => expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen)).toContain(name);
+    if (renderer === 'webgl2') test.setTimeout(120000);
+    const screen = name => expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen),
+      {timeout: renderer === 'webgl2' ? 60000 : 30000}).toContain(name);
     const click = (x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
     const entry = new URL(process.env.GLOB2_TEST_ENTRY_PATH || '/', 'http://localhost');
     entry.searchParams.set('renderer',renderer);

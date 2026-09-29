@@ -12,10 +12,21 @@ on:
       - 'tests/build_system/**'
       - '!tests/build_system/test_ci_changed_paths.py'
       - '.github/workflows/mobile.yml'
+
+# A newer push supersedes an Android build for the same pull request.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   android-native:
     name: Android native (${{ matrix.arch }})
     runs-on: ubuntu-24.04
+    env:
+      CCACHE: 1
+      CCACHE_DIR: /tmp/glob2-android-ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 1G
     strategy:
       fail-fast: false
       matrix:
@@ -25,7 +36,7 @@ jobs:
         id: actions_checkout_v4_1
       - name: Install build utilities
         id: install_build_utilities
-        run: sudo apt-get update -qq && sudo apt-get install -y scons pkg-config unzip zip autoconf automake libtool
+        run: sudo apt-get update -qq && sudo apt-get install -y scons pkg-config unzip zip autoconf automake libtool ccache
       - name: Check build isolation and artifact validation
         id: check_build_isolation
         continue-on-error: true
@@ -36,9 +47,34 @@ jobs:
       - name: Build pinned target dependencies
         id: build_pinned_target_dependencies
         run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release
+      - name: Restore Android compiler cache
+        id: restore_android_compiler_cache
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-android-${{ matrix.arch }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/triplets/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-android-${{ matrix.arch }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/triplets/**') }}-
+      - name: Reset Android compiler cache statistics
+        id: cache_ready
+        run: |
+          ccache -z
+          echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
       - name: Compile and stage native application
         id: compile_and_stage_native_application
         run: python3 mobile/android.py configure --arch '${{ matrix.arch }}' --release
+      - name: Report Android compiler cache
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
+        run: ccache -s
+      - name: Keep Android cache entries used by this run
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.compile_and_stage_native_application.outcome == 'success' }}
+        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
+      - name: Save Android compiler cache
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.compile_and_stage_native_application.outcome == 'success' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-android-${{ matrix.arch }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/triplets/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         id: actions_upload_artifact_v4_1
         if: always()
