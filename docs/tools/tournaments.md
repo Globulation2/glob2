@@ -111,6 +111,8 @@ Game options:
 | `--alliance N` | Repeat once per team, one-based group labels; default separate alliances |
 | `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
+| `--compute-threads N` | Experimental execution threads, 1–64 including main; default 1 |
+| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `all`; default `none` at one thread, `all` otherwise; direct engine option |
 | `--replay true/false` | false |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |
@@ -531,3 +533,12 @@ the supplied bundle must match those hosts. Do not benchmark two variants concur
 on the same CPU resources. Short jobs emphasize scheduling overhead; report the map,
 ticks, workload size, platform, and all commands rather than extrapolating one result
 to every tournament.
+
+
+For experimental delayed gradient computation, `--gradient-workers N` enables
+0–16 background workers and `--gradient-delay D` selects a fixed 1–16 tick delay
+(default 8). Zero workers is the serial control with the same delayed behavior.
+These options are headless-only, cannot be combined with blocking compute
+experiments, and reject save/replay exports. Checksum telemetry remains available.
+See [performance experiments](../development/performance-telemetry.md) for the
+benchmark procedure and interpretation of CPU and wall time.

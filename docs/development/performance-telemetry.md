@@ -144,3 +144,109 @@ water snapshots also add memory.
 those nested in round-trip construction or saving. Sum these two scopes to compare
 building-field construction, but do not then add inclusive round-trip/save timings
 to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
+
+## Experimental parallel gradient computation
+
+Structured `--run-game` accepts `--compute-threads N` (1–64 execution threads,
+including the submitting thread) and `--compute-experiments MODE`. Modes are
+`none`, `areas`, `initialize`, `hiring`, and `all`. One thread defaults to `none`;
+explicitly requesting multiple threads defaults to `all`. These are opt-in
+prototype controls, not a change to normal play or simulation rules. For the
+serial reference of an experiment, specify its mode with one thread.
+
+Area jobs rebuild allocated forbidden/guard/clear fields at existing structural
+refresh boundaries. Initialization jobs use 4096-cell chunks on maps of at least
+16384 cells. Goal painting and forbidden-border detection retain their serial
+ordering. Hiring jobs advance existing frozen building searches in separate swim
+classes before candidate evaluation; they neither refresh caches nor change use
+timestamps. This can perform unnecessary work and must be measured separately.
+Periodic one-field-per-tick refresh and AI polling remain unchanged.
+
+A game-owned executor uses persistent workers, main-thread participation and a
+barrier before simulation resumes. Nested jobs run inline. Eager propagation
+scratch is owned by executor slot; lazy searches retain their own queues. Thread
+creation failure and the browser target use serial execution. Thread count and
+performance counters are not saved or included in simulation checksums.
+
+`result.json` reports actual `compute_threads`, selected `compute_experiments`,
+`compute_batches`, `compute_jobs`, `compute_parallel_batches`, `compute_batch_ns`,
+`compute_wait_ns`, and `compute_active_elapsed_ns`. The last value sums active
+elapsed time across executor slots; it is **not CPU time**. `hiring_prepasses`
+counts candidate-scan hooks and `hiring_popped_entries` counts queue entries
+advanced there (including stale entries). `setup_ns` ends immediately before
+`Engine::run`; `run_ns` measures that call, including its normal finalization.
+Worker-local implicit scope timings are not merged into main-thread scope totals;
+use the explicit batch metrics and process CPU measurements for comparisons.
+
+On macOS/Linux, prepare retained fixtures and run paired measurements:
+
+```sh
+python3 test/prepare_parallel_compute.py BASELINE artifacts/compute-corpus --quick
+python3 test/benchmark_parallel_compute.py BASELINE CANDIDATE \
+  artifacts/compute-corpus/windows.json --output artifacts/compute-timing
+python3 test/benchmark_parallel_compute.py BASELINE CANDIDATE \
+  artifacts/compute-corpus/windows.json --output artifacts/compute-verification --verify
+```
+
+Omit `--quick` for the full two-seed land/water, 2/4-team corpus. Preparation keeps
+early/middle/late checkpoints; `completion.json` instead measures games from their
+initial state to an end condition or 90000-tick cap. Do not count a capped game as
+a completed game, or changed termination ticks as computation speedup. A full
+campaign can take considerable time and disk space. Timed runs omit optional
+exports and saves; built-in scope collection remains enabled in both binaries.
+
+The runner retains commands, executable/input hashes, logs, results, per-process
+peak resident memory, wall time, and user-plus-system CPU time from `wait4`.
+It runs one warm-up and five measured repetitions with rotated/reversed ordering.
+Compare each experiment's serial execution, its threaded execution, and the
+unchanged baseline. Aggregate ratios do not replace per-scenario CPU and small-map
+regression checks. Timing thresholds are deliberately not CI assertions.
+
+
+### Delayed periodic-gradient experiment
+
+Structured headless runs accept `--gradient-workers N --gradient-delay D`.
+`N` counts **background workers** (0–16); the simulation thread is additional.
+`D` is the fixed publication delay (1–16 ticks, default 8). Omit both options for
+normal scheduling. Use `--gradient-workers 1` for the selected configuration: one
+background worker and eight ticks. Zero workers computes synchronously but retains exactly the
+same delayed publication schedule, providing the determinism and timing control
+for each delay. Different delays may produce different games.
+
+The experiment seeds one allocated resource, guard or clear field at the original
+end-of-tick round-robin boundary. It snapshots weighted terrain inputs, propagates
+in private storage, and publishes before the teams step at the fixed deadline.
+A synchronous refresh supersedes older pending results for that field. Increasing
+worker count does not increase the number of scheduled fields. Buffers are bounded
+by the delay; workers block on condition variables when idle.
+
+This is a headless performance prototype. It can load normal checkpoints, but
+rejects save and replay exports while enabled: pending snapshots and deadlines
+are not yet part of the save format or replay/network protocol. Use
+`--telemetry checksums` for experimental execution traces. Run it separately from
+`--compute-experiments` so blocking and asynchronous changes can be measured
+independently. Ordinary play and save formats are unchanged.
+
+`result.json` includes actual worker count, delay, jobs, published/discarded jobs,
+maximum pending buffers, deadline wait nanoseconds, and summed propagation elapsed
+nanoseconds. The latter is **not CPU time**. Whole-process user+system CPU must be
+measured externally. Timed runs drain outstanding work before stopping the timer;
+finishing work does not publish it early.
+
+`test/benchmark_gradient_pipeline.py` accepts the same scenario manifests as
+`test/benchmark_parallel_compute.py`. For example:
+
+```sh
+python3 test/benchmark_gradient_pipeline.py /path/to/glob2 scenarios.json \
+  --output artifacts/pipeline-verify --workers 0 1 2 4 8 --delays 1 3 8 --verify
+python3 test/benchmark_gradient_pipeline.py /path/to/glob2 scenarios.json \
+  --output artifacts/pipeline-timing --workers 0 1 2 4 8 --delays 1 3 8 --repeats 5
+```
+
+Verification compares exact per-tick traces, outcomes and scheduling counters
+within each delay. Timing omits traces and retains commands, input/binary hashes,
+per-child wall/CPU/RSS measurements, warmups and repeated medians. Compare each
+worker count with its zero-worker control before comparing against legacy
+scheduling. A shorter game caused by changed decisions is not evidence of faster
+ticks. Retain fixed-tick windows as well as full-game measurements, and record
+machine contention when interpreting results.

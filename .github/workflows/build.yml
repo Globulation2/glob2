@@ -138,6 +138,8 @@ jobs:
             terrain-test \
             global-gradient-test \
             path-gradient-test \
+            compute-executor-test \
+            gradient-pipeline-test \
             nicowar-farming-test \
             ai-save-portability-test \
             lan-test \
@@ -393,6 +395,11 @@ jobs:
       - name: Verify gameplay telemetry leaves simulation checksums unchanged
         run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
 
+      - name: Verify parallel compute and save continuation
+        run: |
+          python3 test/check_parallel_compute.py build/linux/client/release/src/glob2
+          python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2
+
       - name: Build and run the terrain resource regression
         run: |
           ./build/linux/client/release/src/TerrainResourcesHarness
@@ -405,7 +412,10 @@ jobs:
           python3 test/run-savegame-safety-tests.py build/linux/client/release/src/NicowarFarmingHarness .
 
       - name: Verify weighted path gradients against the independent oracle
-        run: ./build/linux/client/release/src/PathGradientHarness
+        run: |
+          ./build/linux/client/release/src/PathGradientHarness
+          ./build/linux/client/release/src/ComputeExecutorHarness
+          ./build/linux/client/release/src/GradientPipelineHarness
 
       - name: Build and run the global gradient regression
         run: |
@@ -778,6 +788,8 @@ jobs:
             tournament-compatibility-test \
             clearing-gradient-test \
             path-gradient-test \
+            compute-executor-test \
+            gradient-pipeline-test \
             point-bar-render-test \
             trapped-unit-test \
             hiring-bucket-test \
@@ -822,7 +834,10 @@ jobs:
           path: artifacts/map-cli/
 
       - name: Verify weighted path gradients against the independent oracle
-        run: ./build/mingw/client/release/src/PathGradientHarness.exe
+        run: |
+          ./build/mingw/client/release/src/PathGradientHarness.exe
+          ./build/mingw/client/release/src/ComputeExecutorHarness.exe
+          ./build/mingw/client/release/src/GradientPipelineHarness.exe
 
       - name: Test clearing flag resource bounds
         run: |

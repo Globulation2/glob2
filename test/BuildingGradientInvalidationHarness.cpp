@@ -17,6 +17,7 @@
 #include "IntBuildingType.h"
 #include "Race.h"
 #include "Player.h"
+#include "Unit.h"
 #include "BasePlayer.h"
 #include "Order.h"
 #include <memory>
@@ -51,9 +52,9 @@ struct World
 	int flagType = -1;
 	int siteW = 0, siteH = 0;
 
-	World()
+	World(int exponent = 6)
 	{
-		game.map.setSize(6, 6, GRASS);
+		game.map.setSize(exponent, exponent, GRASS);
 		game.map.setGame(&game);
 		game.addTeam(0);
 		game.addTeam(1);
@@ -260,6 +261,111 @@ static void publicReadsResolveTheirInputs()
 	std::puts("PASS public distance, movement and full-field lazy API boundaries");
 }
 
+static void parallelFields()
+{
+	World world(7);
+	Map &map = world.game.map;
+	Building *building = world.place(20, 20);
+	Building *flag = world.placeFlag(40, 40, 5);
+	for (int x = 50; x < 65; ++x)
+	{
+		map.setTerrain(x, 60, 256);
+		map.addForbidden(x, 62, 0);
+		map.addGuardArea(x, 64, 0);
+		map.addClearArea(x, 66, 0);
+	}
+	const size_t cells = map.getW() * map.getH();
+	std::vector<std::vector<Uint16>> expected;
+	auto capture = [&] {
+		std::vector<std::vector<Uint16>> fields;
+		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+		{
+			for (auto *b : {building, flag})
+			{
+				map.buildingGradient(b, swim);
+				map.updateGlobalGradient(b, swim);
+				const auto *field = map.buildingGradient(b, swim);
+				require(field != nullptr, "parallel test building reachable");
+				fields.emplace_back(field, field + cells);
+			}
+			for (const auto *field : {map.getForbiddenGradient(0, swim), map.getGuardAreasGradient(0, swim), map.getClearAreasGradient(0, swim)})
+				fields.emplace_back(field, field + cells);
+		}
+		return fields;
+	};
+	expected = capture();
+	for (unsigned threads : {1, 2, 4, 8})
+	{
+		map.configureCompute(threads, 7);
+		map.updateTeamAreaGradients(0);
+		require(capture() == expected, "parallel area/building initialization preserves all fields");
+	}
+	// Exercise the hiring prepass with two independently owned weighted fields.
+	Unit *a = world.game.addUnit(10, 10, 0, WORKER, 0, 0, 0, 0);
+	Unit *b = world.game.addUnit(12, 10, 0, WORKER, 0, 0, 0, 0);
+	require(a && b, "hiring test units created");
+	for (auto *unit : {a, b}) { unit->activity = Unit::ACT_RANDOM; unit->medical = Unit::MED_FREE; unit->performance[HARVEST] = 1; unit->performance[WALK] = 10; }
+	a->performance[SWIM] = 0; b->performance[SWIM] = 20;
+	map.updateGlobalGradient(building, a->swimClass());
+	map.updateGlobalGradient(building, b->swimClass());
+	const auto used = building->globalGradientUsedStep[a->swimClass()];
+	map.advanceHiringGradients(building);
+	require(building->globalGradientUsedStep[a->swimClass()] == used, "prepass does not touch use timestamps");
+	for (auto *unit : {a, b})
+	{
+		const int swim = unit->swimClass();
+		const auto *field = map.buildingGradient(building, swim);
+		require(std::vector<Uint16>(field, field + cells) == expected[swim * 5], "hiring advancement preserves frozen fields");
+	}
+	std::puts("PASS parallel area batches, seed initialization, frozen hiring advancement");
+}
+
+static void delayedFields()
+{
+	for (unsigned workers : {0, 1, 2, 4, 8}) for (int kind=0; kind<3; ++kind)
+	{
+		World world(7);
+		Map &map=world.game.map;
+		map.setTerrain(55, 55, 256);
+		map.setResource(30, 30, 0, 1);
+		map.addGuardArea(40, 40, 0);
+		map.addClearArea(30, 30, 0);
+		const int swim=1;
+		auto field=[&]() { return kind==0 ? map.getResourceGradient(0, 0, swim)
+			: kind==1 ? map.getGuardAreasGradient(0, swim) : map.getClearAreasGradient(0, swim); };
+		auto refresh=[&]() { if(kind==0) map.updateResourcesGradient(0, 0, swim);
+			else if(kind==1) map.updateGuardAreasGradient(0, swim); else map.updateClearAreasGradient(0, swim); };
+		const auto cells=map.getW()*map.getH();
+		field();
+		map.configureGradientPipeline(workers, 3);
+		map.pipeline().advance(); map.syncStep(0); // Seed the only allocated periodic slot.
+		require(map.pipeline().metrics.jobs==1, "pipeline scheduled a real field");
+		map.addForbidden(41, 40, 0);
+		refresh();
+		const std::vector<Uint16> expected(field(),field()+cells);
+		map.pipeline().advance(); map.pipeline().advance(); map.pipeline().advance();
+		require(map.pipeline().metrics.discarded==1, "synchronous refresh supersedes queued snapshot");
+		require(std::vector<Uint16>(field(),field()+cells)==expected, "old field cannot overwrite fresh synchronous field");
+		// A subsequent periodic snapshot publishes normally at its fixed deadline.
+		map.syncStep(1);
+		map.pipeline().advance(); map.pipeline().advance();
+		require(map.pipeline().metrics.published==0, "no early publication");
+		map.pipeline().advance();
+		require(map.pipeline().metrics.published==1, "publication at deadline");
+		map.syncStep(2);
+		std::vector<Uint16> frozen(cells);
+		if(kind==0) map.seedResourcesGradient(0, 0, swim, frozen.data());
+		else if(kind==1) map.seedGuardAreasGradient(0, swim, frozen.data());
+		else map.seedClearAreasGradient(0, swim, frozen.data());
+		map.propagateGradient(frozen.data(), swim);
+		map.setTerrain(55, 55, 0); // Workers must use captured water, not this live edit.
+		map.pipeline().advance(); map.pipeline().advance(); map.pipeline().advance();
+		require(std::vector<Uint16>(field(),field()+cells)==frozen, "terrain changes do not alter a pending snapshot");
+		map.syncStep(3); // Destruction must safely drain a job in flight.
+	}
+	std::puts("PASS delayed resource/guard/clear publication, synchronous supersession, teardown");
+}
+
 int main(int argc, char** argv)
 {
 	const char* scenario = argc > 1 ? argv[1] : "all";
@@ -279,6 +385,8 @@ int main(int argc, char** argv)
 	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-flag") == 0) aRingCutsOffAVirtualFlagsField();
 	if (std::strcmp(scenario, "all") == 0) aPausedFieldKeepsItsOriginalObstacles();
 	if (std::strcmp(scenario, "all") == 0) publicReadsResolveTheirInputs();
+	if (std::strcmp(scenario, "all") == 0) parallelFields();
+	if (std::strcmp(scenario, "all") == 0) delayedFields();
 	std::puts("Building gradient invalidation regressions passed");
 	return 0;
 }

@@ -180,3 +180,38 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 		return true;
 	return buildingGradientDirection(building, swimClass, x, y, dx, dy, false);
 }
+
+void Map::advanceHiringGradients(Building *building)
+{
+	if (!computeEnabled(ComputeHiring)) return;
+	++hiringPrepasses;
+	// Most callers have at most one active class. Avoid a full unit scan when
+	// there cannot be an independent pair of searches to advance.
+	unsigned incomplete = 0;
+	for (const auto &search : building->globalGradientSearch)
+		if (search && !search->complete()) ++incomplete;
+	if (incomplete < 2) return;
+	std::array<std::vector<size_t>, SWIM_CLASS_COUNT> targets;
+	for (int n = 0; n < Unit::MAX_COUNT; ++n)
+	{
+		const Unit *unit = building->owner->myUnits[n];
+		if (!unit || !unit->performance[HARVEST] || unit->activity != Unit::ACT_RANDOM
+			|| unit->medical != Unit::MED_FREE) continue;
+		const int swim = unit->swimClass();
+		const auto &search = building->globalGradientSearch[swim];
+		if (search && !search->complete()) targets[swim].push_back(coordToIndex(unit->posX, unit->posY));
+	}
+	std::vector<int> jobs;
+	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+		if (!targets[swim].empty()) jobs.push_back(swim);
+	// One field offers no inter-field parallelism; do not do speculative work.
+	if (jobs.size() < 2) return;
+	std::vector<std::uint64_t> popped(jobs.size());
+	computeExecutor().run(jobs.size(), [&](size_t i) {
+		const int swim = jobs[i];
+		const auto before = building->globalGradientSearch[swim]->poppedEntries();
+		for (size_t cell : targets[swim]) building->globalGradientSearch[swim]->resolve(cell);
+		popped[i] = building->globalGradientSearch[swim]->poppedEntries() - before;
+	});
+	for (auto count : popped) hiringPoppedEntries += count;
+}

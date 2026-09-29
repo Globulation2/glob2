@@ -57,7 +57,8 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	// Seed: free cells are goals, forbidden interiors are placeholders (promoted
 	// to GRADIENT_FORBIDDEN_BORDER in the second pass if they border a free cell),
 	// all other blockers (resources, buildings, water, immobileUnits) are obstacles.
-	for (size_t i=0; i<size; i++)
+	initializeGradientCells([&](size_t begin, size_t end) {
+	for (size_t i=begin; i<end; i++)
 	{
 		const Tile& c=tiles[i];
 		if (c.resource.type!=NO_RES_TYPE)
@@ -73,6 +74,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 		else
 			gradient[i] = GRADIENT_AT_GOAL;
 	}
+	});
 
 	// Forbidden cells bordering free cells become GRADIENT_FORBIDDEN_BORDER sources
 	// so the gradient fades outward into the forbidden zone.
@@ -115,12 +117,20 @@ void Map::updateForbiddenGradient()
 void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
 	PERF_SCOPE_TIME(AreaGradient);
+	gradientPipeline.invalidate(&guardAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
+	seedGuardAreasGradient(teamNumber, swimClass, gradient);
+	propagateGradient(gradient, swimClass);
+}
+
+void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)
+{
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
-	for (size_t i=0; i<size; i++)
+	initializeGradientCells([&](size_t begin, size_t end) {
+	for (size_t i=begin; i<end; i++)
 	{
 		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
@@ -138,8 +148,8 @@ void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 		else
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
+	});
 
-	propagateGradient(gradient, swimClass);
 }
 
 void Map::updateGuardAreasGradient(int teamNumber)
@@ -161,12 +171,20 @@ void Map::updateGuardAreasGradient()
 void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 {
 	PERF_SCOPE_TIME(AreaGradient);
+	gradientPipeline.invalidate(&clearAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
+	seedClearAreasGradient(teamNumber, swimClass, gradient);
+	propagateGradient(gradient, swimClass);
+}
+
+void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)
+{
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
-	for (size_t i=0; i<size; i++)
+	initializeGradientCells([&](size_t begin, size_t end) {
+	for (size_t i=begin; i<end; i++)
 	{
 		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
@@ -184,8 +202,8 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 		else
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
+	});
 
-	propagateGradient(gradient, swimClass);
 }
 
 void Map::updateClearAreasGradient(int teamNumber)
@@ -201,4 +219,31 @@ void Map::updateClearAreasGradient()
 	PERF_SCOPE_TIME(AreaGradient);
 	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 		updateClearAreasGradient(i);
+}
+
+// These refreshes already share a simulation boundary. Only allocated fields
+// participate; no worker changes cache ownership or refresh scheduling.
+void Map::updateTeamAreaGradients(int teamNumber)
+{
+	if (!computeEnabled(ComputeAreas))
+	{
+		updateForbiddenGradient(teamNumber);
+		updateGuardAreasGradient(teamNumber);
+		updateClearAreasGradient(teamNumber);
+		return;
+	}
+	std::vector<std::pair<int, int>> jobs;
+	for (int kind = 0; kind < 3; ++kind)
+		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+		{
+			const auto field = kind == 0 ? forbiddenGradient[teamNumber][swim]
+				: kind == 1 ? guardAreasGradient[teamNumber][swim] : clearAreasGradient[teamNumber][swim];
+			if (field) jobs.emplace_back(kind, swim);
+		}
+	computeExecutor().run(jobs.size(), [&](size_t i) {
+		const auto [kind, swim] = jobs[i];
+		if (kind == 0) updateForbiddenGradient(teamNumber, swim);
+		else if (kind == 1) updateGuardAreasGradient(teamNumber, swim);
+		else updateClearAreasGradient(teamNumber, swim);
+	});
 }

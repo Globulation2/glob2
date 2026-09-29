@@ -18,6 +18,7 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <algorithm>
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -151,6 +152,16 @@ struct HeadlessRunner
 {
 	static int game(const Options &options, const fs::path &output)
 	{
+		const auto setupStart = std::chrono::steady_clock::now();
+		const bool pipelineExperiment = options.count("--gradient-workers");
+		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "0"), 0, 16);
+		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
+		if (options.count("--gradient-delay") && !pipelineExperiment)
+			throw std::invalid_argument("--gradient-delay requires --gradient-workers (0 is the serial control)");
+		if (pipelineExperiment && (options.count("--save") || one(options,"--replay","false") != "false"))
+			throw std::invalid_argument("experimental gradient pipeline cannot export saves or replays; use --telemetry checksums");
+		if (pipelineExperiment && (one(options,"--compute-threads","1") != "1" || one(options,"--compute-experiments","none") != "none"))
+			throw std::invalid_argument("run the gradient pipeline separately from blocking compute experiments");
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
 		globalContainer=&globals;
 		globals.runNoX=true;
@@ -262,8 +273,21 @@ struct HeadlessRunner
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;
 			if(engine.initGame(map,header,true,false,false,mapFile)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot initialize map");
 		}
+		const unsigned computeThreads = integer(one(options, "--compute-threads", "1"), 1, 64);
+		const std::string computeExperiments = one(options, "--compute-experiments", computeThreads > 1 ? "all" : "none");
+		unsigned experimentMask = 0;
+		if (computeExperiments == "all") experimentMask = 7;
+		else if (computeExperiments == "areas") experimentMask = Map::ComputeAreas;
+		else if (computeExperiments == "initialize") experimentMask = Map::ComputeInitialize;
+		else if (computeExperiments == "hiring") experimentMask = Map::ComputeHiring;
+		else if (computeExperiments != "none") throw std::invalid_argument("unknown compute experiment: " + computeExperiments);
+		engine.gui.game.map.configureCompute(computeThreads, experimentMask);
+		if (pipelineExperiment) engine.gui.game.map.configureGradientPipeline(gradientWorkers, gradientDelay);
 		if(initial) engine.saveInitialGameStateOrExit((output/"initial.game").string(),"initial",engine.gui.game.mapHeader.getMapName());
+		const auto runStart = std::chrono::steady_clock::now();
 		engine.run();
+		engine.gui.game.map.pipeline().finish();
+		const auto runEnd = std::chrono::steady_clock::now();
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
 		PerformanceTelemetry::collector().capture(engine.gui.game.stepCounter, true, true);
 		PerformanceTelemetry::collector().reset();
@@ -271,6 +295,27 @@ struct HeadlessRunner
 		engine.trackTeamEliminations();
 		std::ostringstream result;
 		result << "{\"schema_version\":1,\"job_type\":\"game\",\"status\":\"completed\",\"ticks\":" << game.stepCounter
+			<< ",\"setup_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runStart - setupStart).count()
+			<< ",\"run_ns\":" << std::chrono::duration_cast<std::chrono::nanoseconds>(runEnd - runStart).count()
+			<< ",\"gradient_pipeline\":" << (pipelineExperiment ? "true" : "false")
+			<< ",\"gradient_workers\":" << game.map.pipeline().workerCount()
+			<< ",\"gradient_delay\":" << game.map.pipeline().delayTicks()
+			<< ",\"gradient_jobs\":" << game.map.pipeline().metrics.jobs
+			<< ",\"gradient_published\":" << game.map.pipeline().metrics.published
+			<< ",\"gradient_discarded\":" << game.map.pipeline().metrics.discarded
+			<< ",\"gradient_max_pending\":" << game.map.pipeline().metrics.maxPending
+			<< ",\"gradient_wait_ns\":" << game.map.pipeline().metrics.waitNs
+			<< ",\"gradient_active_elapsed_ns\":" << game.map.pipeline().activeElapsedNs()
+			<< ",\"compute_active_elapsed_ns\":" << game.map.computeExecutor().activeNs()
+			<< ",\"hiring_prepasses\":" << game.map.hiringPrepasses
+			<< ",\"hiring_popped_entries\":" << game.map.hiringPoppedEntries
+			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
+			<< ",\"compute_experiments\":" << quote(computeExperiments)
+			<< ",\"compute_batches\":" << game.map.computeExecutor().metrics().batches
+			<< ",\"compute_jobs\":" << game.map.computeExecutor().metrics().jobs
+			<< ",\"compute_parallel_batches\":" << game.map.computeExecutor().metrics().parallelBatches
+			<< ",\"compute_batch_ns\":" << game.map.computeExecutor().metrics().batchNs
+			<< ",\"compute_wait_ns\":" << game.map.computeExecutor().metrics().waitNs
 			<< ",\"game_seed\":" << game.gameHeader.getRandomSeed() << ",\"termination\":"
 			<< quote(game.isGameEnded || game.totalPrestigeReached ? "engine_end" : "tick_cap")
 			<< ",\"resolved\":{\"tick_limit\":" << globals.automaticEndingSteps << ",\"map\":" << quote(game.mapHeader.getMapName())
@@ -373,7 +418,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--ticks","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

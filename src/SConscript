@@ -421,3 +421,15 @@ if not env['server']:
     gallery_sources = [source for source in source_files if source != 'Glob2.cpp']
     gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
     local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
+
+# Header-only executor: test without the simulation or SDL entry-point shim.
+if not env['server']:
+    compute_env = local.Clone()
+    compute_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    compute_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    compute_test = compute_env.Program('ComputeExecutorHarness', local.Object('ComputeExecutorHarness.o', '#test/ComputeExecutorHarness.cpp'))
+    local.Alias('compute-executor-test', compute_test)
+
+if not env['server']:
+    pipeline_test = compute_env.Program('GradientPipelineHarness', local.Object('GradientPipelineHarness.o', '#test/GradientPipelineHarness.cpp'))
+    local.Alias('gradient-pipeline-test', pipeline_test)

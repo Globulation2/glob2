@@ -405,9 +405,7 @@ void Team::syncStep(void)
 	if (isDirtyGlobalGradient)
 	{
 		dirtyGlobalGradient();
-		map->updateForbiddenGradient(teamNumber);
-		map->updateGuardAreasGradient(teamNumber);
-		map->updateClearAreasGradient(teamNumber);
+		map->updateTeamAreaGradients(teamNumber);
 	}
 
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)

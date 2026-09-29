@@ -14,6 +14,7 @@
 #endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
+#include <stdexcept>
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <limits>
@@ -285,6 +286,7 @@ GAGCore::CooperativeTask Map::addTeamTask(void)
 
 void Map::removeTeam(void)
 {
+	gradientPipeline.reset();
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	assert(numberOfTeam<Team::MAX_COUNT);
 	
@@ -355,6 +357,8 @@ void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size)
 // changes decisions before their scheduled refresh, even with an identical RNG.
 void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
+	if (gradientPipeline.enabled())
+		throw std::runtime_error("experimental gradient pipeline does not serialize pending jobs");
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
 	stream->writeUint32(topologyGeneration, "topologyGeneration");
