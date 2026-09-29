@@ -136,8 +136,9 @@ profiles as described in `test/README.md`. The statistics harness also accepts
 at 640×480 and 1024×768 with the supported maximum of 12 teams, large totals and partial legacy history.
 `python3 test/check_telemetry_simulation.py build/src/glob2` compares the complete
 1,024-tick four-AI and 2,048-tick 12-team checksum sidecars against compressed
-pre-change fixtures. It also reloads a format-108 mid-run checkpoint and compares
-256 team/entity checksum records against the parent build's reload. Aggregate
+version-121 fixtures, plus a 2,048-tick Numbi/Castor scenario. It also reloads a
+format-108 mid-run checkpoint and compares
+256 team/entity checksum records against the version-121 reference. Aggregate
 checksums after save/load include `MapHeader::versionMinor`, so a format-108 save
 cannot have the same aggregate checksum as a format-107 save. CI runs the
 same check on Linux and Windows (with `.exe` on Windows).

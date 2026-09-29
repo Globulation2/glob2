@@ -210,12 +210,12 @@ int upgradeKindFor(int shortTypeNum)
 // Walks every building owned by `team` and tallies, per (kind, level): the
 // count of completed buildings, the count of upgrading sites, and one
 // "exemplar" — a deterministically chosen building used as the target for
-// the next upgrade order. The exemplar is selected by an unbiased syncRand
+// the next upgrade order. The exemplar is selected by an unbiased AI-owned RNG
 // coin flip on each completed building, so for k buildings at one (kind,
 // level) the last one wins with probability 1/2, the previous with 1/4,
-// etc. syncRand() is the lockstep RNG, so the result is identical across
-// networked clients.
-std::array<UpgradeInventory, NB_UPGRADE_KINDS> collectUpgradeInventory(Team *team)
+// etc. The owning AI supplies its saved random stream.
+template <class Random>
+std::array<UpgradeInventory, NB_UPGRADE_KINDS> collectUpgradeInventory(Team *team, Random draw)
 {
 	std::array<UpgradeInventory, NB_UPGRADE_KINDS> inv{};
 	Building **myBuildings = team->myBuildings;
@@ -233,7 +233,7 @@ std::array<UpgradeInventory, NB_UPGRADE_KINDS> collectUpgradeInventory(Team *tea
 		else
 		{
 			inv[kind].number[l]++;
-			if (random() & 1)
+			if (draw() & 1)
 				inv[kind].exemplar[l] = b;
 		}
 	}
@@ -281,7 +281,7 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ntrigger, ntrigger);
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ptrigger, ptrigger);
 	telemetry.count(AITrace::AI1::AINumbi_mayUpgrade_calls);
-	const auto inv = collectUpgradeInventory(team);
+	const auto inv = collectUpgradeInventory(team, [this] { return random(); });
 
 	Unit **myUnits = team->myUnits;
 	int wun[NB_UNIT_LEVELS] = {}; // working units per BUILD level
