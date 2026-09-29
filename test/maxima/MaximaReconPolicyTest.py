@@ -23,8 +23,8 @@ class MaximaReconPolicyTest(unittest.TestCase):
 
     def test_director_refreshes_recon_before_snapshot(self):
         cycle = self.source[self.source.index("void Maxima::evaluate_strategy"):]
-        self.assertLess(cycle.index("update_reconnaissance(echo)"),
-                        cycle.index("collect_snapshot(echo)"))
+        self.assertLess(cycle.index("update_reconnaissance(runtime)"),
+                        cycle.index("collect_snapshot(runtime)"))
         snapshot = self.source[self.source.index("Maxima::StrategicSnapshot Maxima::collect_snapshot"):]
         snapshot = snapshot[:snapshot.index("void Maxima::update_trends")]
         self.assertIn("reconnaissance.report()", snapshot)
@@ -32,8 +32,8 @@ class MaximaReconPolicyTest(unittest.TestCase):
     def test_director_returns_objectives_to_recon_executor(self):
         cycle = self.source[self.source.index("void Maxima::evaluate_strategy"):]
         cycle = cycle[:cycle.index("Maxima::Maxima(Player")]
-        self.assertIn("plan_reconnaissance_objectives(echo)", cycle)
-        self.assertNotIn("update_reconnaissance_missions(echo)", cycle)
+        self.assertIn("plan_reconnaissance_objectives(runtime)", cycle)
+        self.assertNotIn("update_reconnaissance_missions(runtime)", cycle)
         executor = self.source[self.source.index("void Maxima::update_reconnaissance_missions"):]
         executor = executor[:executor.index("void Maxima::plan_reconnaissance_objectives")]
         self.assertIn("budget.reconnaissance_objectives", executor)

@@ -25,9 +25,9 @@ MAXIMA_FILES = [
 
 
 class MaximaDecouplingTest(unittest.TestCase):
-    def test_runtime_sources_have_no_echo_dependency(self):
+    def test_runtime_sources_have_no_shared_runtime_dependency(self):
         text = "\n".join(path.read_text() for path in MAXIMA_FILES)
-        for forbidden in ("AIEcho", "EchoAI", "boost::logic", "tribool"):
+        for forbidden in ("AISharedRuntime", "shared_runtime/", "boost::logic", "tribool"):
             self.assertNotIn(forbidden, text)
 
     def test_direct_ai_and_typed_runtime_contracts(self):
@@ -41,7 +41,7 @@ class MaximaDecouplingTest(unittest.TestCase):
         self.assertIn("seenByMask", implementation)
         self.assertIn("queuedIndexes", runtime)
 
-    def test_built_objects_have_no_undefined_echo_symbols(self):
+    def test_built_objects_have_no_undefined_shared_runtime_symbols(self):
         objects = [
             native_build_directory() / "src/ai/maxima/AIMaxima.o",
             native_build_directory() / "src/ai/maxima/AIMaximaState.o",
@@ -52,8 +52,7 @@ class MaximaDecouplingTest(unittest.TestCase):
         if not all(path.exists() for path in objects):
             self.skipTest("optimized Maxima objects have not been built")
         output = subprocess.check_output(["nm", "-u", *map(str, objects)], text=True)
-        self.assertNotIn("AIEcho", output)
-        self.assertNotIn("EchoAI", output)
+        self.assertNotIn("AISharedRuntime", output)
 
 
 if __name__ == "__main__":

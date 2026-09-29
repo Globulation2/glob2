@@ -103,7 +103,7 @@ namespace Cortex
 			tuning.*(TUNING_FIELDS[field].member) = value;
 		}
 
-		// Echo the effective vector once so every benchmark game log records the
+		// Runtime the effective vector once so every benchmark game log records the
 		// exact config it ran (the search driver's audit trail).
 		std::cerr << "CortexTuning '" << path << "':";
 		for (int i = 0; i < NUM_TUNING_FIELDS; i++)

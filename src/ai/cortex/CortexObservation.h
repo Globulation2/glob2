@@ -11,7 +11,7 @@ class Game;
 
 // AICortex observation layer. This is the ONLY place that reads live engine
 // state (Game*/Team*/Map*) to fill a CortexObservation. Both the direct
-// (AIImplementation) and Echo (EchoAI) bindings call this same function, so the
+// (AIImplementation) and Runtime (RuntimeAI) bindings call this same function, so the
 // feature surface is identical regardless of parent class — the whole point of
 // the parent-class spike is that only the *action* path differs, not this one.
 //
@@ -25,7 +25,7 @@ namespace Cortex
 	/// Project the player's current game state into a fixed feature vector.
 	/// Returns an observation with version == OBSERVATION_VERSION and valid == 1.
 	/// `openMargin` is the per-game wheat open-margin N (drawn once via syncRand in
-	/// AICortex); it is echoed into obs.wheatOpenMargin and drives the wheat scan.
+	/// AICortex); it is runtimeed into obs.wheatOpenMargin and drives the wheat scan.
 	/// `offenseFlagGid` is AICortex's tracked OFFENSE war-flag gid (NOGBID == none):
 	/// the building scan captures THAT flag's footprint specifically (Cortex runs two
 	/// flags now — offense + defense — so a bare "last WAR_FLAG wins" capture would be

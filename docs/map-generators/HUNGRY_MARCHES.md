@@ -106,7 +106,7 @@ tests it completed an inn but kept all birth ratios at zero in both positions.
 This requires an AI planning fix, not private renewable food added to the map.
 Use another AI or a human player when evaluating the intended opening.
 
-Nicowar also has an existing full-roster bug: its Echo enemy iterator can run past
+Nicowar also has an existing full-roster bug: its shared AI runtime enemy iterator can run past
 the twelve-entry team array when all slots are occupied. Twelve-colony automated
 tests therefore use Cortex, Cabino and Maxima; avoid Nicowar at that count until
 the iterator is fixed. This change does not modify AI or simulation code.

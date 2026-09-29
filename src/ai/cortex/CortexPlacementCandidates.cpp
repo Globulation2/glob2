@@ -120,7 +120,7 @@ namespace Cortex
 			return 0;
 
 		// Resolve the building footprint. We place the construction SITE (the
-		// same as the GUI/Echo build path), so request isBuildingSite == true.
+		// same as the GUI/Runtime build path), so request isBuildingSite == true.
 		// Flags (virtual buildings) have no site type and are not placed by this
 		// helper — they occupy no ground, so isHardSpaceForBuilding is the wrong
 		// gate for them. Bail out if there is no real building footprint here.
@@ -201,7 +201,7 @@ namespace Cortex
 						continue;
 				}
 
-				// Fog-of-war: the footprint must be discovered (mirrors AIEcho's
+				// Fog-of-war: the footprint must be discovered (mirrors AISharedRuntime's
 				// find_location). Check both corners of the grown box, like the
 				// engine path does.
 				if (!map.isMapDiscovered(map.normalizeX(gx), map.normalizeY(gy),

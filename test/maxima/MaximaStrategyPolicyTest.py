@@ -145,7 +145,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             "timer%250 == 85",
             "duration<=500",
             "timer+5000",
-            "tile.protectedness=map->isGuardArea(x,y,echo.player->team->me)?80:35",
+            "tile.protectedness=map->isGuardArea(x,y,runtime.player->team->me)?80:35",
         ):
             self.assertNotIn(obsolete_literal, self.maxima)
         placement = (ROOT / "src/ai/maxima/AIMaximaPlacement.cpp").read_text()
@@ -181,7 +181,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         # production and must never derive its own. The loop's request now
         # passes through the labour budget's per-swarm allowance, so the
         # executor must consult that too and must not issue a raw request.
-        self.assertIn("update_staffing_request(echo, id)", staffing)
+        self.assertIn("update_staffing_request(runtime, id)", staffing)
         self.assertIn("swarm_allowance.find(id)", staffing)
         self.assertIn("if(budget.swarm_workers<=0)", staffing)
         self.assertNotIn("SwarmController::plan(", staffing)

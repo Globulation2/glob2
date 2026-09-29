@@ -154,7 +154,7 @@ jobs:
             buffered-file-test \
             team-stats-save-test \
             unit-continuation-test \
-            echo-continuation-test \
+            runtime-continuation-test \
             performance-telemetry-test \
             terrain-test \
             global-gradient-test \
@@ -407,8 +407,8 @@ jobs:
         run: |
           build/linux/client/release/libgag/src/PerformanceTelemetryHarness
           ./build/linux/client/release/src/UnitContinuationHarness
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/EchoContinuationTest .
-          python3 test/check_echo_save_continuation.py build/linux/client/release/src/glob2
+          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .
+          python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2
           python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
           python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
@@ -837,7 +837,7 @@ jobs:
             maxima-continuation-test \
             team-stats-save-test \
             unit-continuation-test \
-            echo-continuation-test \
+            runtime-continuation-test \
             performance-telemetry-test
 
       - name: Test Orchard Commons generation and fruit conversion
@@ -924,8 +924,8 @@ jobs:
         run: |
           build/mingw/client/release/libgag/src/PerformanceTelemetryHarness.exe
           ./build/mingw/client/release/src/UnitContinuationHarness.exe
-          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/EchoContinuationTest.exe .
-          python3 test/check_echo_save_continuation.py build/mingw/client/release/src/glob2.exe
+          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/RuntimeContinuationTest.exe .
+          python3 test/check_shared_runtime_save_continuation.py build/mingw/client/release/src/glob2.exe
           python3 test/maxima/check_save_continuation_fixture.py build/mingw/client/release/src/glob2.exe
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TeamStatsSaveHarness.exe .
           python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game

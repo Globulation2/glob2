@@ -153,8 +153,8 @@ static constexpr int FILE_FORMAT_VERSION_SIMULATION_CONTINUATION = 113;
 //! Team cooldown that temporarily blocks new construction orders.
 static constexpr int FILE_FORMAT_VERSION_CONSTRUCTION_COOLDOWN = 114;
 
-//! Echo shared gradient fields, queued refreshes and construction scheduling.
-static constexpr int FILE_FORMAT_VERSION_ECHO_CONTINUATION = 119;
+//! Shared AI runtime gradient fields, queued refreshes and construction scheduling.
+static constexpr int FILE_FORMAT_VERSION_SHARED_RUNTIME_CONTINUATION = 119;
 
 // Completed private fields and remaining fixed publication deadlines.
 static constexpr int FILE_FORMAT_VERSION_GRADIENT_PIPELINE = 120;

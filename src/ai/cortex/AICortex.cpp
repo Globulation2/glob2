@@ -663,12 +663,12 @@ shared_ptr<Order> AICortex::getOrder(void)
 			pendingUpgradeUntil = 0;
 		}
 
-		// Echo the action layer's RAM-only offense-hold hysteresis state into the
+		// Runtime the action layer's RAM-only offense-hold hysteresis state into the
 		// observation so the PURE policy can make the hold-vs-recall (thrash-damper)
 		// decision itself. AICortex still OWNS and mutates these members when it
 		// actually places a flag (translateActionPlaceWarFlag re-arms offenseHoldUntil);
 		// decide() only READS this mirror. Injected here, after observe() and before
-		// decide(), exactly like wheatOpenMargin's per-game value is echoed in.
+		// decide(), exactly like wheatOpenMargin's per-game value is runtimeed in.
 		obs.flagPosture = flagPosture;
 		obs.offenseHoldUntil = offenseHoldUntil;
 
@@ -676,8 +676,8 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// enemyWarriorLevelVisible is FOW-gated (-1 when no enemy warrior is in view), so
 		// we only ever RAISE the persisted latch — a lull in visibility must not reset the
 		// war-preparation level-match gate. AICortex OWNS and serializes enemyWarriorLevelSeen;
-		// we echo the current value into the observation each cycle for the PURE policy,
-		// the same flagPosture echo pattern used just above (injected after observe(),
+		// we runtime the current value into the observation each cycle for the PURE policy,
+		// the same flagPosture runtime pattern used just above (injected after observe(),
 		// before decide()).
 		if (obs.enemyWarriorLevelVisible > enemyWarriorLevelSeen)
 			enemyWarriorLevelSeen = obs.enemyWarriorLevelVisible;
@@ -686,8 +686,8 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// FORWARD-SITE UNDERWAY LATCH (position-tracked): AICortex OWNS and serializes
 		// the position of the forward inn / hospital it last ORDERED (forwardInnX/Y,
 		// forwardHealX/Y, set in translateActionBuildForward). Reconcile each tracked
-		// pair against the live buildings and echo obs.forwardInnUnderway/
-		// forwardHealUnderway for the PURE policy — the flagPosture/latch echo pattern,
+		// pair against the live buildings and runtime obs.forwardInnUnderway/
+		// forwardHealUnderway for the PURE policy — the flagPosture/latch runtime pattern,
 		// and the replacement for the old proximity scan (a tracked position never
 		// false-positives on an unrelated economy food/heal site). A tracked site that
 		// is a construction site marks underway; one that has FINISHED clears the pair
@@ -741,8 +741,8 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// RANGE-GATE GRACE WAIVER: the offense range gate binds while the army wants to
 		// attack but every known target sits outside the support envelope. AICortex OWNS
 		// and serializes rangeGateBindingSince (the tick the bind began; 0 == not
-		// binding) and echoes obs.rangeGateWaived — 1 once the bind has outlived the
-		// grace window — into the observation for the PURE policy (the flagPosture echo
+		// binding) and runtimees obs.rangeGateWaived — 1 once the bind has outlived the
+		// grace window — into the observation for the PURE policy (the flagPosture runtime
 		// pattern). Past the grace, computeOffenseCommit attacks out-of-envelope anyway
 		// while the forward base keeps building, so a never-ordered "possible" forward
 		// base cannot hold the gate shut forever.

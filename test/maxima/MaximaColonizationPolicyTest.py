@@ -54,9 +54,9 @@ class MaximaColonizationPolicyTest(unittest.TestCase):
             self.assertIn(text, self.placement)
 
     def test_cleared_sites_are_remembered_merged_decayed_and_expired(self) -> None:
-        self.assertIn("remember_cleared_enemy_site(echo, sighting->second)", self.maxima)
+        self.assertIn("remember_cleared_enemy_site(runtime, sighting->second)", self.maxima)
         self.assertLess(
-            self.maxima.index("remember_cleared_enemy_site(echo, sighting->second)"),
+            self.maxima.index("remember_cleared_enemy_site(runtime, sighting->second)"),
             self.maxima.index("reconnaissance.confirmBuildingAbsent(*team, *gid)"),
         )
         for behavior in (
