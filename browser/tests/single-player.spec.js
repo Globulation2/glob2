@@ -36,9 +36,9 @@ async function cancelHeldLoader(page, name) {
 }
 
 test.beforeEach(async ({page}, info) => {
-  // Pin the editor's wall-time seed before runtime initialization, matching
-  // the native generation fixture. Animation and cooperative timers remain real.
-  if (info.title.startsWith('map generation can')) await page.clock.setFixedTime(12345 * 1000);
+  // Start from a known epoch, but let Date.now advance: SDL's browser clock
+  // uses it for cooperative preview deadlines as well as generation seeds.
+  if (info.title.startsWith('map generation can')) await page.clock.setSystemTime(12345 * 1000);
   await page.goto(gameURL());
   await screen(page, 'MainMenuScreen');
 });
@@ -372,7 +372,7 @@ test('cancelling an editor replacement preserves edits and a completed load repl
 
 for (const terrain of [{name:'swamp'}, {name:'concrete islands'}]) {
 test(`map generation can be cancelled before retrying (${terrain.name})`, async ({page},info) => {
-  // Two visits generate the full preview catalog on the browser's UI thread.
+  // Two visits generate the visible previews cooperatively on the UI thread.
   test.setTimeout(180000);
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
