@@ -29,15 +29,15 @@ using ssize_t = SSIZE_T;
 
 namespace
 {
-	thread_local boost::mt19937 *activeSyncRandEngine = nullptr;
-	boost::mt19937 &gameSyncRandEngine()
+	thread_local MersenneTwister *activeSyncRandEngine = nullptr;
+	MersenneTwister &gameSyncRandEngine()
 	{
-		thread_local boost::mt19937 engine;
+		thread_local MersenneTwister engine;
 		return engine;
 	}
 }
 
-SyncRandScope::SyncRandScope(boost::mt19937 &engine) : previous(activeSyncRandEngine)
+SyncRandScope::SyncRandScope(MersenneTwister &engine) : previous(activeSyncRandEngine)
 {
 	activeSyncRandEngine = &engine;
 }
@@ -47,7 +47,7 @@ SyncRandScope::~SyncRandScope()
 	activeSyncRandEngine = previous;
 }
 
-boost::mt19937 &syncRandEngine()
+MersenneTwister &syncRandEngine()
 {
 	return activeSyncRandEngine ? *activeSyncRandEngine : gameSyncRandEngine();
 }
@@ -83,12 +83,12 @@ std::string getSyncRandState()
 
 bool setSyncRandState(const std::string& state)
 {
-	// Boost's extractor consumes trailing whitespace after every state word.
+	// The extractor consumes trailing whitespace after every state word, as Boost's did.
 	// Supplying a terminator keeps its final std::ws from turning EOF into a
 	// parse failure. Parse into a temporary so malformed state cannot partly
 	// replace the live synchronized generator.
 	std::istringstream stream(state+"\n");
-	boost::mt19937 restored;
+	MersenneTwister restored;
 	stream>>restored;
 	if(stream.fail())
 		return false;

@@ -51,7 +51,7 @@ def main():
         ["pkg-config", "--cflags", *packages], text=True))
     libs = shlex.split(subprocess.check_output(
         ["pkg-config", "--libs", *packages], text=True))
-    libs += ["-lboost_date_time", "-lpthread", "-lz"]
+    libs += ["-lpthread", "-lz"]
     if sys.platform == "darwin":
         libs += ["-framework", "OpenGL", "-framework", "GLUT"]
     elif sys.platform.startswith("linux"):

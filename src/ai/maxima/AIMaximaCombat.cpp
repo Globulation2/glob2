@@ -22,7 +22,6 @@
 #include "AITelemetryFields.h"
 #include "Game.h"
 #include "Utilities.h"
-#include "boost/lexical_cast.hpp"
 #include <algorithm>
 #include <climits>
 #include <cstring>
@@ -1218,9 +1217,9 @@ void Maxima::choose_enemy_target(Context& runtime)
 		target=best_target;
 		if(target!=previous)
 			emit_telemetry(runtime, "target_changed",
-				"\tprevious="+boost::lexical_cast<std::string>(previous)
-				+"\ttarget="+boost::lexical_cast<std::string>(target)
-				+"\tscore="+boost::lexical_cast<std::string>(best_score));
+				"\tprevious="+telemetryText(previous)
+				+"\ttarget="+telemetryText(target)
+				+"\tscore="+telemetryText(best_score));
 	}
 }
 
@@ -1408,10 +1407,10 @@ bool Maxima::dig_out_enemy(Context& runtime)
 	campaign.started_tick=timer;
 	campaign.last_progress_tick=timer;
 	emit_telemetry(runtime, "dig_out_started",
-		"\ttarget_team="+boost::lexical_cast<std::string>(target)
-		+"\ttarget_building="+boost::lexical_cast<std::string>(building)
-		+"\tflags="+boost::lexical_cast<std::string>(flags_created)
-		+"\tworkers_per_flag="+boost::lexical_cast<std::string>(
+		"\ttarget_team="+telemetryText(target)
+		+"\ttarget_building="+telemetryText(building)
+		+"\tflags="+telemetryText(flags_created)
+		+"\tworkers_per_flag="+telemetryText(
 			budget.attack_clearing_workers));
 
 	return true;
@@ -1486,7 +1485,7 @@ void Maxima::clear_preemptive_defense(Context& runtime)
 		delete remove;
 	preemptive_guard_tiles.clear();
 	emit_telemetry(runtime, "preemptive_defense_cleared",
-		"\ttiles="+boost::lexical_cast<std::string>(removed));
+		"\ttiles="+telemetryText(removed));
 }
 
 
@@ -1680,10 +1679,10 @@ void Maxima::update_preemptive_defense(Context& runtime)
 	preemptive_guard_tiles.swap(next_owned);
 	if(!additions.empty() || !removals.empty())
 		emit_telemetry(runtime, "preemptive_defense_updated",
-			"\tchokes="+boost::lexical_cast<std::string>(plan.selectedCount)
-			+"\tdesired_tiles="+boost::lexical_cast<std::string>(desired.size())
-			+"\tadded="+boost::lexical_cast<std::string>(additions.size())
-			+"\tremoved="+boost::lexical_cast<std::string>(removals.size()));
+			"\tchokes="+telemetryText(plan.selectedCount)
+			+"\tdesired_tiles="+telemetryText(desired.size())
+			+"\tadded="+telemetryText(additions.size())
+			+"\tremoved="+telemetryText(removals.size()));
 }
 
 
@@ -2095,12 +2094,12 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	if(moved_flags || deadband_flags || locally_retained_flags
 	   || reassigned_flags || destroyed_flags || created_flags)
 		emit_telemetry(runtime, "reactive_defense_updated",
-			"\tmoved="+boost::lexical_cast<std::string>(moved_flags)
-			+"\tdeadband="+boost::lexical_cast<std::string>(deadband_flags)
-			+"\tretained="+boost::lexical_cast<std::string>(locally_retained_flags)
-			+"\treassigned="+boost::lexical_cast<std::string>(reassigned_flags)
-			+"\tdestroyed="+boost::lexical_cast<std::string>(destroyed_flags)
-			+"\tcreated="+boost::lexical_cast<std::string>(created_flags));
+			"\tmoved="+telemetryText(moved_flags)
+			+"\tdeadband="+telemetryText(deadband_flags)
+			+"\tretained="+telemetryText(locally_retained_flags)
+			+"\treassigned="+telemetryText(reassigned_flags)
+			+"\tdestroyed="+telemetryText(destroyed_flags)
+			+"\tcreated="+telemetryText(created_flags));
 
 	delete[] counts;
 	delete[] unitGID;
@@ -2148,7 +2147,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	const int w = mi.get_width();
 	const int h = mi.get_height();
 
-	std::vector<boost::tuple<int, int, int> > groups;
+	std::vector<std::tuple<int, int, int> > groups;
 	// Keep explorer and warrior pressure concentrated on the same opponent. The
 	// lower-threshold independent raids tested here produced weaker, fragmented
 	// strikes and lost the G2 gate that the concentrated version had won.
@@ -2246,13 +2245,13 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			group_x = (group_x / group_size + w)%w;
 			group_y = (group_y / group_size + h)%h;
 
-			groups.push_back(boost::make_tuple(group_size, group_x, group_y));
+			groups.push_back(std::make_tuple(group_size, group_x, group_y));
 		}
 		delete[] units;
 
 	}
 
-	std::sort(groups.begin(), groups.end(), std::greater<boost::tuple<int, int, int> >());
+	std::sort(groups.begin(), groups.end(), std::greater<std::tuple<int, int, int> >());
 	const int trained_explorers=runtime.player->team->stats.getLatestStat()
 		->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][3];
 	int total_attacks=budget.explorer_campaign_flags;
@@ -2272,10 +2271,10 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			if(runtime.get_building_register().is_building_found(*i))
 			{
 				Building* b = runtime.get_building_register().get_building(*i);
-				for(std::vector<boost::tuple<int, int, int> >::iterator j = groups.begin(); j!=groups.end(); ++j)
+				for(std::vector<std::tuple<int, int, int> >::iterator j = groups.begin(); j!=groups.end(); ++j)
 				{
-					int flag_x = j->get<1>();
-					int flag_y = j->get<2>();
+					int flag_x = std::get<1>(*j);
+					int flag_y = std::get<2>(*j);
 					int d = runtime.player->map->warpDistSquare(flag_x, flag_y, b->posX, b->posY);
 					if(d < min_dist)
 					{
@@ -2322,13 +2321,13 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 	while(total_attacks && !groups.empty())
 	{
-		boost::tuple<int, int, int> groupInfo = *groups.begin();
+		std::tuple<int, int, int> groupInfo = *groups.begin();
 		groups.erase(groups.begin());
 		total_attacks -= 1;
 
 		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG,
 			budget.explorer_campaign_units_per_flag);
-		bo_flag->add_constraint(new Construction::SinglePosition(groupInfo.get<1>(), groupInfo.get<2>()));
+		bo_flag->add_constraint(new Construction::SinglePosition(std::get<1>(groupInfo), std::get<2>(groupInfo)));
 		unsigned int id_flag=runtime.add_building_order(bo_flag);
 
 		ManagementOrder* mo_completion=new ChangeFlagSize(6, id_flag);
@@ -2339,14 +2338,14 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 		explorer_attack_flags.push_back(id_flag);
 		emit_telemetry(runtime, "explorer_strike_launched",
-			"\tflag="+boost::lexical_cast<std::string>(id_flag)
-			+"\ttarget_team="+boost::lexical_cast<std::string>(strike_target)
-			+"\ttarget_score="+boost::lexical_cast<std::string>(groupInfo.get<0>())
-			+"\tx="+boost::lexical_cast<std::string>(groupInfo.get<1>())
-			+"\ty="+boost::lexical_cast<std::string>(groupInfo.get<2>())
-			+"\tassigned="+boost::lexical_cast<std::string>(
+			"\tflag="+telemetryText(id_flag)
+			+"\ttarget_team="+telemetryText(strike_target)
+			+"\ttarget_score="+telemetryText(std::get<0>(groupInfo))
+			+"\tx="+telemetryText(std::get<1>(groupInfo))
+			+"\ty="+telemetryText(std::get<2>(groupInfo))
+			+"\tassigned="+telemetryText(
 				budget.explorer_campaign_units_per_flag)
-			+"\ttrained_explorers="+boost::lexical_cast<std::string>(trained_explorers));
+			+"\ttrained_explorers="+telemetryText(trained_explorers));
 
 		ManagementOrder* mo_destroyed=new Notify(
 			RuntimeEvent(RuntimeEvent::ExplorerAttackFlagDeleted, id_flag));

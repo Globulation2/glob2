@@ -7,7 +7,6 @@
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
-using namespace boost::logic;
 using std::shared_ptr;
 
 
@@ -74,7 +73,7 @@ void ChangeFlagSize::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool ChangeFlagSize::wait(Runtime& runtime)
+tribool ChangeFlagSize::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
@@ -118,7 +117,7 @@ void ChangeFlagMinimumLevel::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool ChangeFlagMinimumLevel::wait(Runtime& runtime)
+tribool ChangeFlagMinimumLevel::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
@@ -162,7 +161,7 @@ void ChangeFlagPosition::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool ChangeFlagPosition::wait(Runtime& runtime)
+tribool ChangeFlagPosition::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
@@ -215,7 +214,7 @@ void AdjustPriority::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool AdjustPriority::wait(Runtime& runtime)
+tribool AdjustPriority::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
@@ -274,7 +273,7 @@ void AddArea::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool AddArea::wait(Runtime& runtime)
+tribool AddArea::wait(Runtime& runtime)
 {
 	return true;
 }
@@ -346,7 +345,7 @@ void RemoveArea::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool RemoveArea::wait(Runtime& runtime)
+tribool RemoveArea::wait(Runtime& runtime)
 {
 	return true;
 }

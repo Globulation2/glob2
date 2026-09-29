@@ -4,6 +4,7 @@
 #include "YOGClientPlayerListManager.h"
 #include "YOGClientPlayerListListener.h"
 #include "LobbyMessages.h"
+#include <cassert>
 
 using std::static_pointer_cast;
 

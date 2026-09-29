@@ -7,11 +7,10 @@
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
-using namespace boost::logic;
 using std::shared_ptr;
 
 
-ChangeAlliances::ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other) : team(team), is_allied(is_allied), is_enemy(is_enemy), view_market(view_market), view_inn(view_inn), view_other(view_other)
+ChangeAlliances::ChangeAlliances(int team, tribool is_allied, tribool is_enemy, tribool view_market, tribool view_inn, tribool view_other) : team(team), is_allied(is_allied), is_enemy(is_enemy), view_market(view_market), view_inn(view_inn), view_other(view_other)
 {
 
 }
@@ -65,7 +64,7 @@ void ChangeAlliances::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool ChangeAlliances::wait(Runtime& runtime)
+tribool ChangeAlliances::wait(Runtime& runtime)
 {
 	return true;
 }
@@ -183,7 +182,7 @@ void UpgradeRepair::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool UpgradeRepair::wait(Runtime& runtime)
+tribool UpgradeRepair::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, id);
 }
@@ -231,7 +230,7 @@ void SendMessage::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool SendMessage::wait(Runtime& runtime)
+tribool SendMessage::wait(Runtime& runtime)
 {
 	return true;
 }

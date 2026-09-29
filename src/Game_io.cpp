@@ -281,16 +281,16 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	}
 
 	if (versionMinor >= FILE_FORMAT_VERSION_PENDING_CONSTRUCTION) loadBuildProjects(stream);
-	boost::mt19937 savedRandom;
+	MersenneTwister savedRandom;
 	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
 	{
 		GAGCore::BinaryInputStream::CheckedReads checked(stream);
-		// Boost's canonical stream representation is exactly 624 uint32 words.
+		// The canonical text state is exactly 624 uint32 words.
 		// Store fixed-width words, not locale-dependent text or a raw object.
 		std::ostringstream state;
 		state.imbue(std::locale::classic());
 		stream->readEnterSection("randomState");
-		for (unsigned i=0; i<boost::mt19937::state_size; ++i)
+		for (unsigned i=0; i<MersenneTwister::state_size; ++i)
 		{
 			stream->readEnterSection(i);
 			state << stream->readUint32("word") << ' ';
@@ -618,7 +618,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 		std::istringstream state(randomState.str());
 		state.imbue(std::locale::classic());
 		stream->writeEnterSection("randomState");
-		for (unsigned i=0; i<boost::mt19937::state_size; ++i)
+		for (unsigned i=0; i<MersenneTwister::state_size; ++i)
 		{
 			stream->writeEnterSection(i);
 			Uint32 word;

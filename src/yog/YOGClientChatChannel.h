@@ -3,8 +3,9 @@
 
 #pragma once
 
+#include <memory>
 #include <vector>
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include "LocalTime.h"
 #include <tuple>
 #include "SDL_net.h"
 #include "ListenerList.h"
@@ -32,7 +33,7 @@ public:
 	const std::shared_ptr<YOGMessage> getMessage(Uint32 n) const;
 
 	///Retrieves the local time that YOG message x was received, where higher x gets more recent
-	boost::posix_time::ptime getMessageTime(Uint32 n) const;
+	LocalTime getMessageTime(Uint32 n) const;
 
 	///Sends a message through this channel
 	void sendMessage(std::shared_ptr<YOGMessage> message);
@@ -61,7 +62,7 @@ protected:
 private:
 	std::shared_ptr<YOGClient> client;
 	Uint32 channelID;
-	std::vector<std::tuple<std::shared_ptr<YOGMessage>, boost::posix_time::ptime> > messageHistory;
+	std::vector<std::tuple<std::shared_ptr<YOGMessage>, LocalTime> > messageHistory;
 	ListenerList<YOGClientChatListener> listeners;
 };
 

@@ -23,7 +23,6 @@
 #include "AIMaximaFoodSupply.h"
 #include "GlobalContainer.h"
 #include "FormatableString.h"
-#include "boost/lexical_cast.hpp"
 #include "Utilities.h"
 #include "Game.h"
 #include "Unit.h"
@@ -1703,8 +1702,8 @@ void Maxima::remove_reconnaissance_missions(Context& runtime,
 		   || runtime.get_building_register().is_building_pending(mission->flagId))
 			runtime.add_management_order(new DestroyBuilding(mission->flagId));
 		emit_telemetry(runtime, "recon_mission_removed",
-			"\tflag="+boost::lexical_cast<std::string>(mission->flagId)
-			+"\ttarget_team="+boost::lexical_cast<std::string>(mission->targetTeam)
+			"\tflag="+telemetryText(mission->flagId)
+			+"\ttarget_team="+telemetryText(mission->targetTeam)
 			+"\treason="+reason);
 	}
 	reconnaissance.clearMissions();
@@ -1725,8 +1724,8 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 			continue;
 		}
 		emit_telemetry(runtime, "recon_mission_removed",
-			"\tflag="+boost::lexical_cast<std::string>(mission->flagId)
-			+"\ttarget_team="+boost::lexical_cast<std::string>(mission->targetTeam)
+			"\tflag="+telemetryText(mission->flagId)
+			+"\ttarget_team="+telemetryText(mission->targetTeam)
 			+"\treason=flag_missing");
 		mission=report.missions.erase(mission);
 	}
@@ -1802,13 +1801,13 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 				objective.frontier, objective.x, objective.y, timer,
 				objective.economicWatch));
 			emit_telemetry(runtime, "recon_mission_created",
-				"\tflag="+boost::lexical_cast<std::string>(flag)
-				+"\ttarget_team="+boost::lexical_cast<std::string>(objective.targetTeam)
-				+"\tfrontier="+boost::lexical_cast<std::string>(objective.frontier ? 1 : 0)
-				+"\teconomic_watch="+boost::lexical_cast<std::string>(
+				"\tflag="+telemetryText(flag)
+				+"\ttarget_team="+telemetryText(objective.targetTeam)
+				+"\tfrontier="+telemetryText(objective.frontier ? 1 : 0)
+				+"\teconomic_watch="+telemetryText(
 					objective.economicWatch ? 1 : 0)
-				+"\tx="+boost::lexical_cast<std::string>(objective.x)
-				+"\ty="+boost::lexical_cast<std::string>(objective.y));
+				+"\tx="+telemetryText(objective.x)
+				+"\ty="+telemetryText(objective.y));
 			continue;
 		}
 
@@ -1845,11 +1844,11 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 			runtime.add_management_order(new ChangeFlagPosition(
 				objective.x, objective.y, mission.flagId));
 			emit_telemetry(runtime, "recon_mission_moved",
-				"\tflag="+boost::lexical_cast<std::string>(mission.flagId)
-				+"\tprevious_team="+boost::lexical_cast<std::string>(mission.targetTeam)
-				+"\ttarget_team="+boost::lexical_cast<std::string>(objective.targetTeam)
-				+"\tx="+boost::lexical_cast<std::string>(objective.x)
-				+"\ty="+boost::lexical_cast<std::string>(objective.y));
+				"\tflag="+telemetryText(mission.flagId)
+				+"\tprevious_team="+telemetryText(mission.targetTeam)
+				+"\ttarget_team="+telemetryText(objective.targetTeam)
+				+"\tx="+telemetryText(objective.x)
+				+"\ty="+telemetryText(objective.y));
 			mission.x=objective.x;
 			mission.y=objective.y;
 			mission.lastRetaskTick=timer;
@@ -1866,8 +1865,8 @@ void Maxima::update_reconnaissance_missions(Context& runtime)
 		   || runtime.get_building_register().is_building_pending(mission.flagId))
 			runtime.add_management_order(new DestroyBuilding(mission.flagId));
 		emit_telemetry(runtime, "recon_mission_removed",
-			"\tflag="+boost::lexical_cast<std::string>(mission.flagId)
-			+"\ttarget_team="+boost::lexical_cast<std::string>(mission.targetTeam)
+			"\tflag="+telemetryText(mission.flagId)
+			+"\ttarget_team="+telemetryText(mission.targetTeam)
 			+"\treason=capacity_reduced");
 		missions.pop_back();
 	}
@@ -2992,7 +2991,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 			{
 				operating_colonies.insert(action.id);
 				emit_telemetry(runtime,"colony_swarm_operating",
-					"\tbuilding_id="+boost::lexical_cast<std::string>(action.buildingId));
+					"\tbuilding_id="+telemetryText(action.buildingId));
 			}
 			else colony_starting=true;
 		}
@@ -3494,9 +3493,9 @@ void Maxima::evaluate_strategy(Context& runtime)
 	if(new_explorer_alert || new_colony_alert)
 		emit_telemetry(runtime, "explorer_defense_alert",
 			"\tattack_explorers="
-				+boost::lexical_cast<std::string>(snapshot.visible_enemy_attack_explorers)
+				+telemetryText(snapshot.visible_enemy_attack_explorers)
 			+"\tnear_colony="
-				+boost::lexical_cast<std::string>(snapshot.visible_colony_explorer_threat));
+				+telemetryText(snapshot.visible_colony_explorer_threat));
 	update_opponent_models(runtime);
 	score_demands();
 	score_postures();
@@ -3908,13 +3907,13 @@ void Maxima::handle_event(Context& runtime, const RuntimeEvent& event)
 		if(started!=attack_flag_started_ticks.end())
 			duration=timer-started->second;
 		emit_telemetry(runtime, "attack_finished",
-			"\tflag="+boost::lexical_cast<std::string>(id)
-			+"\ttarget_building="+boost::lexical_cast<std::string>(finished_target)
-			+"\ttarget_team="+boost::lexical_cast<std::string>(finished_team)
+			"\tflag="+telemetryText(id)
+			+"\ttarget_building="+telemetryText(finished_target)
+			+"\ttarget_team="+telemetryText(finished_team)
 			+"\treason="+reason
-			+"\tduration="+boost::lexical_cast<std::string>(duration)
+			+"\tduration="+telemetryText(duration)
 			+"\tcampaign_destroyed="
-				+boost::lexical_cast<std::string>(campaign.buildings_destroyed));
+				+telemetryText(campaign.buildings_destroyed));
 		attack_flag_targets.erase(id);
 		attack_flag_started_ticks.erase(id);
 		attack_flag_end_reasons.erase(id);
@@ -5046,7 +5045,7 @@ void Maxima::development_cycle(Context& runtime)
 		development_cycle_pending=true;
 	if(profile)
 		emit_telemetry(runtime,"placement_cycle_performance",
-			"\tmicroseconds="+boost::lexical_cast<std::string>(
+			"\tmicroseconds="+telemetryText(
 				std::chrono::duration_cast<std::chrono::microseconds>(
 					std::chrono::steady_clock::now()-profileStarted).count()));
 }
@@ -5312,7 +5311,7 @@ void Maxima::update_food_relocation(Context& runtime,
 		{
 			// The old building is gone, by our order or otherwise: finished.
 			emit_telemetry(runtime,"food_relocation_done",
-				"\tbuilding_id="+boost::lexical_cast<std::string>(target));
+				"\tbuilding_id="+telemetryText(target));
 			finish_food_relocation();
 			return;
 		}
@@ -5331,7 +5330,7 @@ void Maxima::update_food_relocation(Context& runtime,
 			if(!replacement||food_building_pending_deletion(runtime,action->buildingId))
 			{
 				emit_telemetry(runtime,"food_relocation_abandoned",
-					"\tbuilding_id="+boost::lexical_cast<std::string>(target)
+					"\tbuilding_id="+telemetryText(target)
 					+"\treason="+(replacement?"replacement_deleting":"replacement_missing"));
 				finish_food_relocation();
 				return;
@@ -5384,7 +5383,7 @@ void Maxima::update_food_relocation(Context& runtime,
 					if(timer-relocation_completed_tick>=budget.food_relocation_cooldown_ticks)
 					{
 						emit_telemetry(runtime,"food_relocation_abandoned",
-							"\tbuilding_id="+boost::lexical_cast<std::string>(target)
+							"\tbuilding_id="+telemetryText(target)
 							+"\treason=deferred");
 						finish_food_relocation();
 					}

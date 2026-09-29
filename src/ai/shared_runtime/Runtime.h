@@ -190,7 +190,7 @@ namespace AISharedRuntime
 	/// (SearchTools.h:113-116, SearchTools.cpp:314).
 	static constexpr int AI_SHARED_RUNTIME_WILDCARD_LEVEL = -1;
 
-	// On-disk encoding of boost::logic::tribool inside AI Runtime save streams.
+	// On-disk encoding of tribool inside AI Runtime save streams.
 	// Used by BuildingRegister and ChangeAlliances. NOT a wire-format enum —
 	// these bytes only appear in saved-game/AI snapshots.
 	static constexpr int AI_SHARED_RUNTIME_TRIBOOL_FALSE = 0;

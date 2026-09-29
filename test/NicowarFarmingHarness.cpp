@@ -7,8 +7,7 @@
 #include "IntBuildingType.h"
 #include "FileManager.h"
 #include "Player.h"
-#include <boost/logic/tribool.hpp>
-#include <boost/tuple/tuple.hpp>
+#include "../src/ai/shared_runtime/Tribool.h"
 #include <list>
 #include <map>
 #include <memory>

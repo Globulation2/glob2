@@ -12,7 +12,6 @@
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
-using namespace boost::logic;
 
 
 GradientInfo::GradientInfo()

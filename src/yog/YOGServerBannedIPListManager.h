@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 #include "SDL_net.h"
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include "LocalTime.h"
 
 ///This class stores and records YOGPlayerStoredInfo for the server
 class YOGServerBannedIPListManager
@@ -19,7 +19,7 @@ public:
 	void update();
 
 	///Adds the given IP address to the list of IP's banned for however long
-	void addBannedIP(const std::string& bannedIP, boost::posix_time::ptime unban_time);
+	void addBannedIP(const std::string& bannedIP, LocalTime unban_time);
 	
 	///Returns true if the given IP address is in the list of ones banned
 	bool isIPBanned(const std::string& bannedIP);
@@ -32,7 +32,7 @@ public:
 private:
 	bool modified;
 	int saveCountdown;
-	std::map<std::string, boost::posix_time::ptime> bannedIPs;
+	std::map<std::string, LocalTime> bannedIPs;
 };
 
 

@@ -19,10 +19,10 @@ namespace
 // only while the menu game is executing, including during construction/loading.
 struct ColonyContext
 {
-	boost::mt19937& rng;
+	MersenneTwister& rng;
 	std::unique_ptr<ReplayWriter> replay;
 	std::unique_ptr<DatasetWriter> dataset;
-	explicit ColonyContext(boost::mt19937& state) : rng(state),
+	explicit ColonyContext(MersenneTwister& state) : rng(state),
 		replay(std::move(globalContainer->replayWriter)),
 		dataset(std::move(globalContainer->datasetWriter))
 	{ std::swap(syncRandEngine(), rng); }

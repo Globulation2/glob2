@@ -5,7 +5,6 @@
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Conditions;
-using namespace boost::logic;
 
 
 EitherCondition::EitherCondition(Condition* condition1, Condition* condition2) : condition1(condition1), condition2(condition2)
@@ -23,7 +22,7 @@ EitherCondition::~EitherCondition()
 
 
 
-boost::logic::tribool EitherCondition::passes(Runtime& runtime)
+tribool EitherCondition::passes(Runtime& runtime)
 {
 	tribool p1=condition1->passes(runtime);
 	tribool p2=condition2->passes(runtime);
@@ -72,7 +71,7 @@ Population::Population(bool workers, bool explorers, bool warriors, int num, Pop
 
 
 
-boost::logic::tribool Population::passes(Runtime& runtime)
+tribool Population::passes(Runtime& runtime)
 {
 	int amount=0;
 	if(workers)

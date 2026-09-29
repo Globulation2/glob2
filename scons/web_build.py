@@ -9,7 +9,7 @@ from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIE
 
 PORTS = ['--use-port=sdl2', '--use-port=sdl2_image:formats=png,jpg',
          '--use-port=sdl2_ttf', '--use-port=sdl2_net', '--use-port=vorbis',
-         '--use-port=zlib', '--use-port=boost_headers']
+         '--use-port=zlib']
 
 
 def build_web(directory, identity, arguments):

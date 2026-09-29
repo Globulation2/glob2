@@ -25,7 +25,7 @@ by another invocation. Existing native selectors remain available, including
 paths move under the identity directory. macOS packaging is an explicit
 `package` target rather than a side effect of compiling release objects.
 
-The browser SDK revision/version and Boost port version are recorded in
+The browser SDK revision and version are recorded in
 `browser/toolchain.json`. Emscripten verifies port archive checksums. A complete
 release dependency lock covering SDK archive digests and native gateway
 dependencies is still required before reproducible release status.

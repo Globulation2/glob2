@@ -5,7 +5,6 @@
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Unit.h"
-#include "boost/lexical_cast.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -338,7 +337,7 @@ void Maxima::retire_clearing_campaign(Context& runtime, const char* reason,
 	telemetry.count(AITrace::AI7::Maxima_retire_clearing_campaign_calls);
 	runtime.add_management_order(new DestroyBuilding(proactive_clearing_flag));
 	emit_telemetry(runtime, "land_clearing_finished",
-		"\tflag="+boost::lexical_cast<std::string>(proactive_clearing_flag)
+		"\tflag="+telemetryText(proactive_clearing_flag)
 		+details+"\treason="+reason);
 	proactive_clearing_flag=-1;
 }
@@ -380,7 +379,7 @@ bool Maxima::continue_clearing_campaign(Context& runtime)
 				const char* reason=reserve_overlap ? "wood_reserve" : budget.recovery_active ? "starvation"
 					: nearby_wood<=1 ? "cleared" : clearing_quota_met ? "quota" : "timeout";
 				retire_clearing_campaign(runtime, reason,
-					"\twood_remaining="+boost::lexical_cast<std::string>(nearby_wood));
+					"\twood_remaining="+telemetryText(nearby_wood));
 				last_proactive_clearing_tick=timer;
 				recent_construction_failures=0;
 				return telemetry.returnedBool(
@@ -479,11 +478,11 @@ void Maxima::manage_land_clearing(Context& runtime)
 	runtime.add_management_order(release_wood);
 	runtime.add_management_order(new ChangeFlagSize(4, proactive_clearing_flag));
 	emit_telemetry(runtime, "land_clearing_started",
-		"\tflag="+boost::lexical_cast<std::string>(proactive_clearing_flag)
-		+"\tx="+boost::lexical_cast<std::string>(best_x)
-		+"\ty="+boost::lexical_cast<std::string>(best_y)
-		+"\twood="+boost::lexical_cast<std::string>(best_wood)
-		+"\tworkers="+boost::lexical_cast<std::string>(clearing_workers)
+		"\tflag="+telemetryText(proactive_clearing_flag)
+		+"\tx="+telemetryText(best_x)
+		+"\ty="+telemetryText(best_y)
+		+"\twood="+telemetryText(best_wood)
+		+"\tworkers="+telemetryText(clearing_workers)
 		+"\treason="+(best_maintenance_wood>0 ? "maintenance_overgrowth"
 			: (budget.farming_clearing_for_placement
 				? "construction_pressure" : "wood_pressure")));
@@ -818,21 +817,21 @@ void Maxima::apply_maintenance_clearing_plan(Context& runtime,
 	else delete forbidden_releases;
 	if(added || removed || released || timer%1000<budget.farming_normal_interval)
 		emit_telemetry(runtime, "maintenance_clearing",
-			"\tretained="+boost::lexical_cast<std::string>(retained)
-			+"\tadded="+boost::lexical_cast<std::string>(added)
-			+"\tremoved="+boost::lexical_cast<std::string>(removed)
-			+"\tfirebreak="+boost::lexical_cast<std::string>(plan.firebreak_tiles)
-			+"\tfirebreak_wood="+boost::lexical_cast<std::string>(plan.firebreak_wood)
-			+"\twheat_invasion_wood="+boost::lexical_cast<std::string>(
+			"\tretained="+telemetryText(retained)
+			+"\tadded="+telemetryText(added)
+			+"\tremoved="+telemetryText(removed)
+			+"\tfirebreak="+telemetryText(plan.firebreak_tiles)
+			+"\tfirebreak_wood="+telemetryText(plan.firebreak_wood)
+			+"\twheat_invasion_wood="+telemetryText(
 				plan.wheat_invasion_wood)
 			+"\treservation_resources_preserved="
-				+boost::lexical_cast<std::string>(
+				+telemetryText(
 					plan.reservation_resources_preserved)
 			+"\treservation_fallback_entrances="
-				+boost::lexical_cast<std::string>(
+				+telemetryText(
 					plan.reservation_fallback_entrances)
 			+"\tforbidden_released="
-				+boost::lexical_cast<std::string>(released));
+				+telemetryText(released));
 }
 
 void Maxima::update_maintenance_clearing_areas(Context& runtime)
@@ -898,11 +897,11 @@ void Maxima::initialize_farming_cache(Context& runtime)
 	const long long elapsed=std::chrono::duration_cast<std::chrono::microseconds>(
 		std::chrono::steady_clock::now()-started).count();
 	emit_telemetry(runtime, "farming_fertility_cache",
-		"\tmicroseconds="+boost::lexical_cast<std::string>(elapsed)
+		"\tmicroseconds="+telemetryText(elapsed)
 		+"\tpath="+(fertility_cache.pathUsed()==Farming::SandCorrectionFertilityPath
 			? "sand_correction" : "water_splat")
-		+"\twater="+boost::lexical_cast<std::string>(fertility_cache.waterCount())
-		+"\tsand="+boost::lexical_cast<std::string>(fertility_cache.sandCount()));
+		+"\twater="+telemetryText(fertility_cache.waterCount())
+		+"\tsand="+telemetryText(fertility_cache.sandCount()));
 }
 
 
@@ -1356,21 +1355,21 @@ void Maxima::update_farming(Context& runtime)
 	// interval; unchanged urgent evaluations add no diagnostic information.
 	if(added || removed || timer%1000<budget.farming_normal_interval)
 		emit_telemetry(runtime, "farming_policy",
-		"\tmicroseconds="+boost::lexical_cast<std::string>(elapsed)
-		+"\twood_reserve_seeds="+boost::lexical_cast<std::string>(plan.wood_reserve.seeds)
-		+"\tprotected_seeds="+boost::lexical_cast<std::string>(plan.protected_seeds)
-		+"\tprotected_frontier="+boost::lexical_cast<std::string>(plan.protected_frontier)
-		+"\tprotected_wheat_edges="+boost::lexical_cast<std::string>(plan.protected_wheat_edges)
-		+"\tprotected_wheat_bootstraps="+boost::lexical_cast<std::string>(plan.protected_wheat_bootstraps)
-		+"\tprotected_wood_edges="+boost::lexical_cast<std::string>(plan.protected_wood_edges)
-		+"\tprotected_wood_bootstraps="+boost::lexical_cast<std::string>(plan.protected_wood_bootstraps)
-		+"\tprotected_interior_seeds="+boost::lexical_cast<std::string>(plan.protected_interior_seeds)
-		+"\texpected_capacity="+boost::lexical_cast<std::string>(plan.expected_capacity)
-		+"\tblocked_directions="+boost::lexical_cast<std::string>(plan.blocked_directions)
-		+"\twood_pressure="+boost::lexical_cast<std::string>(plan.wood_pressure)
-		+"\twood_fertility="+boost::lexical_cast<std::string>(plan.wood_fertility)
-		+"\tadded="+boost::lexical_cast<std::string>(added)
-		+"\tremoved="+boost::lexical_cast<std::string>(removed));
+		"\tmicroseconds="+telemetryText(elapsed)
+		+"\twood_reserve_seeds="+telemetryText(plan.wood_reserve.seeds)
+		+"\tprotected_seeds="+telemetryText(plan.protected_seeds)
+		+"\tprotected_frontier="+telemetryText(plan.protected_frontier)
+		+"\tprotected_wheat_edges="+telemetryText(plan.protected_wheat_edges)
+		+"\tprotected_wheat_bootstraps="+telemetryText(plan.protected_wheat_bootstraps)
+		+"\tprotected_wood_edges="+telemetryText(plan.protected_wood_edges)
+		+"\tprotected_wood_bootstraps="+telemetryText(plan.protected_wood_bootstraps)
+		+"\tprotected_interior_seeds="+telemetryText(plan.protected_interior_seeds)
+		+"\texpected_capacity="+telemetryText(plan.expected_capacity)
+		+"\tblocked_directions="+telemetryText(plan.blocked_directions)
+		+"\twood_pressure="+telemetryText(plan.wood_pressure)
+		+"\twood_fertility="+telemetryText(plan.wood_fertility)
+		+"\tadded="+telemetryText(added)
+		+"\tremoved="+telemetryText(removed));
 }
 
 }

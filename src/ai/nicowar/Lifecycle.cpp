@@ -15,7 +15,6 @@ using namespace AISharedRuntime::Construction;
 using namespace AISharedRuntime::Management;
 using namespace AISharedRuntime::Conditions;
 using namespace AISharedRuntime::SearchTools;
-using namespace boost::logic;
 
 
 

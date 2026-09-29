@@ -10,7 +10,6 @@
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Construction;
 using namespace AISharedRuntime::SearchTools;
-using namespace boost::logic;
 
 
 FlagMap::FlagMap(Runtime& runtime) : flagmap(runtime.player->map->getW()*runtime.player->map->getH(), NOGBID), width(runtime.player->map->getW()), runtime(runtime)
@@ -144,7 +143,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 building_type=stream->readUint32("building_type");
 		Uint32 gid=stream->readUint32("gid");
 		Uint8 upgrade_status=stream->readUint8("upgrade_status");
-		boost::logic::tribool t;
+		tribool t;
 		if(upgrade_status==AI_SHARED_RUNTIME_TRIBOOL_FALSE)
 			t=false;
 		else if(upgrade_status==AI_SHARED_RUNTIME_TRIBOOL_TRUE)

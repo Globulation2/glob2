@@ -36,7 +36,7 @@ const std::shared_ptr<YOGMessage> YOGClientChatChannel::getMessage(Uint32 n) con
 
 
 
-boost::posix_time::ptime YOGClientChatChannel::getMessageTime(Uint32 n) const
+LocalTime YOGClientChatChannel::getMessageTime(Uint32 n) const
 {
 	return std::get<1>(messageHistory[n]);
 }
@@ -47,7 +47,7 @@ void YOGClientChatChannel::sendMessage(std::shared_ptr<YOGMessage> message)
 {
 	if(channelID != static_cast<Uint32>(-1))
 	{
-		messageHistory.push_back(std::make_tuple(message, boost::posix_time::second_clock::local_time()));
+		messageHistory.push_back(std::make_tuple(message, LocalClock::now()));
 		std::shared_ptr<NetSendYOGMessage> netmessage(new NetSendYOGMessage(channelID, message));
 		client->sendNetMessage(netmessage);
 		sendToListeners(message);
@@ -88,7 +88,7 @@ void YOGClientChatChannel::removeListener(YOGClientChatListener* listener)
 
 void YOGClientChatChannel::receiveMessage(std::shared_ptr<YOGMessage> message)
 {
-	messageHistory.push_back(std::make_tuple(message, boost::posix_time::second_clock::local_time()));
+	messageHistory.push_back(std::make_tuple(message, LocalClock::now()));
 	sendToListeners(message);
 }
 

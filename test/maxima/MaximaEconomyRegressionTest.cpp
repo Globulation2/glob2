@@ -10,8 +10,10 @@
 #include "../../src/TeamStat.h"
 #include "../../src/Utilities.h"
 #include <memory>
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp>
+#include <limits>
+#include <locale>
+#include <tuple>
+#include <type_traits>
 #include <list>
 #include <map>
 #include <queue>

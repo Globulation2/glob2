@@ -40,7 +40,9 @@ scons -C test                 # rebuild the separate test suite
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
-  Boost date_time, zlib, fribidi and pcre; PortAudio is optional.
+  zlib, fribidi and pcre; PortAudio is optional. The native secure WebSocket client
+  (`wss=1`, the default) and the browser gateway also need OpenSSL and the header-only
+  Boost.Beast and Boost.Asio; nothing else uses Boost.
 - `CCACHE=1` opts into the shared compiler cache. Unset it when generating
   `compile_commands.json`; do not add `CCACHE_SLOPPINESS` settings that weaken
   content or time-macro validation (`include_file_mtime`, `include_file_ctime`,

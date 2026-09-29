@@ -15,13 +15,16 @@
 #include "TeamStat.h"
 
 #include <memory>
-#include <boost/tuple/tuple.hpp>
-#include <boost/tuple/tuple_comparison.hpp>
+#include <limits>
 #include <list>
+#include <locale>
 #include <map>
 #include <queue>
 #include <set>
+#include <sstream>
 #include <string>
+#include <tuple>
+#include <type_traits>
 #include <vector>
 
 class Building;
@@ -29,6 +32,20 @@ struct BuildingType;
 
 namespace AIMaximaRuntime
 {
+
+/// A value as telemetry text, formatted exactly as boost::lexical_cast<std::string>
+/// did before it was replaced: stream output in the classic locale, with enough
+/// significant digits for floating-point values to round-trip.
+template<typename T>
+std::string telemetryText(const T& value)
+{
+	std::ostringstream text;
+	text.imbue(std::locale::classic());
+	if constexpr (std::is_floating_point<T>::value)
+		text.precision(std::numeric_limits<T>::max_digits10);
+	text << value;
+	return text.str();
+}
 
 /// Most units a building accepts. The engine keeps its own copy of this limit
 /// (MAX_UNIT_WORKING in GameGUI.h, a macro, hence the distinct name).

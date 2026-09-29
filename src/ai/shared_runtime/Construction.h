@@ -12,7 +12,7 @@
 #include <memory>
 #include <tuple>
 #include <vector>
-#include <boost/logic/tribool.hpp>
+#include "Tribool.h"
 
 class RuntimeBuildingOrderSaveLoadTest;
 
@@ -244,7 +244,7 @@ namespace AISharedRuntime
 			void save(GAGCore::OutputStream *stream);
 			///An internal function used to find the location to place the building
 			position find_location(Runtime& runtime, Map* map, Gradients::GradientManager& manager);
-			boost::logic::tribool passes_conditions(Runtime& runtime);
+			tribool passes_conditions(Runtime& runtime);
 			///An internal function that has all of the constraints register their respective Gradients with the GradientManager
 			void queue_gradients(Gradients::GradientManager& manager);
 			int get_building_type() const { return building_type; }
@@ -354,7 +354,7 @@ namespace AISharedRuntime
 			void tick();
 
 			typedef std::map<int, std::tuple<int, int, int, int> >::iterator pending_iterator;
-			typedef std::map<int, std::tuple<int, int, int, int, boost::logic::tribool> >::iterator found_iterator;
+			typedef std::map<int, std::tuple<int, int, int, int, tribool> >::iterator found_iterator;
 
 			found_iterator begin() { return found_buildings.begin(); }
 			found_iterator end() { return found_buildings.end(); }
@@ -363,7 +363,7 @@ namespace AISharedRuntime
 			///real. So basically, the last variable is set to true when the object is supposed to be there, false is
 			///the default value if its accidentally created.
 			std::map<int, std::tuple<int, int, int, int> > pending_buildings;
-			std::map<int, std::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
+			std::map<int, std::tuple<int, int, int, int, tribool> > found_buildings;
 			unsigned int building_id;
 			Player* player;
 			Runtime& runtime;

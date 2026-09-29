@@ -11,7 +11,6 @@ using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
 using namespace AISharedRuntime::Construction;
 using namespace AISharedRuntime::Conditions;
-using namespace boost::logic;
 
 
 BuildingOrder::BuildingOrder(int building_type, int number_of_workers) : building_type(building_type), number_of_workers(number_of_workers)
@@ -173,11 +172,11 @@ position BuildingOrder::find_location(Runtime& runtime, Map* map, GradientManage
 
 
 
-boost::logic::tribool BuildingOrder::passes_conditions(Runtime& runtime)
+tribool BuildingOrder::passes_conditions(Runtime& runtime)
 {
 	for(unsigned int i=0; i<conditions.size(); ++i)
 	{
-		boost::logic::tribool passes=conditions[i]->passes(runtime);
+		tribool passes=conditions[i]->passes(runtime);
 		if(passes)
 			continue;
 		else if(!passes)

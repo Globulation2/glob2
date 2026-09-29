@@ -6,7 +6,6 @@
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
-using namespace boost::logic;
 
 
 ResourceTracker::ResourceTracker(Runtime& runtime, int building_id, int length, int resource) : record(length, 0), position(0), timer(0), length(length), runtime(runtime), building_id(building_id), resource(resource)
@@ -102,7 +101,7 @@ void AddResourceTracker::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool AddResourceTracker::wait(Runtime& runtime)
+tribool AddResourceTracker::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
@@ -148,7 +147,7 @@ void PauseResourceTracker::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool PauseResourceTracker::wait(Runtime& runtime)
+tribool PauseResourceTracker::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
@@ -190,7 +189,7 @@ void UnPauseResourceTracker::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool UnPauseResourceTracker::wait(Runtime& runtime)
+tribool UnPauseResourceTracker::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }

@@ -11,7 +11,7 @@ chooseScoredSettlements(GenerationContext &context, const std::vector<std::vecto
 {
 	struct EngineScope
 	{
-		boost::mt19937 initial = syncRandEngine();
+		MersenneTwister initial = syncRandEngine();
 		~EngineScope() { syncRandEngine() = initial; }
 	} engine;
 	GenerationContext initial(context);

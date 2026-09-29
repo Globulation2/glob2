@@ -11,7 +11,7 @@ The main method is std::shared_ptr<Order> getOrder() which return the order to b
 
 #include "BuildingType.h"
 #include "AITelemetry.h"
-#include <boost/random/mersenne_twister.hpp>
+#include "MersenneTwister.h"
 #include <cassert>
 #include <memory>
 
@@ -59,7 +59,7 @@ class AIImplementation
 {
 public:
 	// Bound by the owning AI when the implementation is created or loaded.
-	void setRandomEngine(boost::mt19937 &engine) { randomEngine = &engine; }
+	void setRandomEngine(MersenneTwister &engine) { randomEngine = &engine; }
 	Uint32 random() const { assert(randomEngine); return (*randomEngine)(); }
   AITelemetry::Sink telemetry;
   virtual void captureTelemetry() {}
@@ -76,7 +76,7 @@ public:
 	
 	virtual std::shared_ptr<Order> getOrder(void)=0;
 private:
-	boost::mt19937 *randomEngine = nullptr;
+	MersenneTwister *randomEngine = nullptr;
 };
 
 

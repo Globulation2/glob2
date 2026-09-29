@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include <algorithm>
+#include <sstream>
 #include "Version.h"
 #include "NetBroadcaster.h"
 #include "NetConnection.h"
@@ -109,10 +110,10 @@ void YOGServer::update()
 		if(t > organizedGameBroadcastTime)
 		{
 			organizedGameBroadcastTime = t + 60000;
-			boost::posix_time::time_duration organized_game_time = boost::posix_time::second_clock::local_time().time_of_day();
-			organized_game_time = boost::posix_time::seconds(7200 - organized_game_time.total_seconds() % 7200);
+			const long long seconds_of_day = std::chrono::duration_cast<std::chrono::seconds>(timeOfDay(LocalClock::now())).count();
+			const long long organized_game_time = 7200 - seconds_of_day % 7200;
 			std::stringstream s;
-			s << "An organized game will occur in "<<std::to_string(organized_game_time.hours())<<" hours and "<<std::to_string(organized_game_time.minutes())<<" minutes. There may be more players on! Feel free to join!";
+			s << "An organized game will occur in "<<std::to_string(organized_game_time / 3600)<<" hours and "<<std::to_string(organized_game_time / 60 % 60)<<" minutes. There may be more players on! Feel free to join!";
 			std::shared_ptr<YOGMessage> m(new YOGMessage(s.str(), "server", YOGAdministratorMessage));
 			std::shared_ptr<NetSendYOGMessage> send(new NetSendYOGMessage(LOBBY_CHAT_CHANNEL, m));
 			for(std::map<YOGPlayerID, shared_ptr<YOGServerPlayer> >::iterator i=players.begin(); i!=players.end(); ++i)

@@ -6,7 +6,7 @@
 #include <SDL_rwops.h>
 
 #include <memory>
-#include <boost/random/mersenne_twister.hpp>
+#include "MersenneTwister.h"
 #include "AITelemetry.h"
 namespace GAGCore
 {
@@ -69,7 +69,7 @@ public:
 	Player *player;
 
 private:
-	boost::mt19937 randomEngine;
+	MersenneTwister randomEngine;
 	bool randomInitialized = false;
 	void initializeRandom();
 

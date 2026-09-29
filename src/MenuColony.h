@@ -19,7 +19,7 @@ public:
 private:
 	std::unique_ptr<Game> game;
 	Game::ViewState view;
-	boost::mt19937 rng;
+	MersenneTwister rng;
 	Uint64 lastTime = 0, pending = 0;
 	bool clockStarted = false;
 	int centerX = 0, centerY = 0;

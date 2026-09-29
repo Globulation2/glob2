@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include "LocalTime.h"
 #include <memory>
 #include "SDL_net.h"
 #include <string>
@@ -67,7 +67,7 @@ private:
 	std::shared_ptr<GAGCore::BinaryInputStream> istream;
 	std::string filename;
 	Uint16 fileID;
-	boost::posix_time::ptime sendTime;
+	LocalTime sendTime;
 };
 
 

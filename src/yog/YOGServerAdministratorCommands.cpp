@@ -81,7 +81,7 @@ void YOGMutePlayer::execute(YOGServer* server, YOGServerAdministrator* admin, co
 	}
 	if(server->getPlayerStoredInfoManager().doesStoredInfoExist(name))
 	{
-		boost::posix_time::ptime unmute_time = boost::posix_time::second_clock::local_time() + boost::posix_time::minutes(time);
+		LocalTime unmute_time = LocalClock::now() + std::chrono::minutes(time);
 		YOGPlayerStoredInfo i = server->getPlayerStoredInfoManager().getPlayerStoredInfo(name);
 		i.setMuted(unmute_time);
 		server->getPlayerStoredInfoManager().setPlayerStoredInfo(name, i);
@@ -315,7 +315,7 @@ void YOGBanIP::execute(YOGServer* server, YOGServerAdministrator* admin, const s
 	std::shared_ptr<YOGServerPlayer> nplayer = server->getPlayer(name);
 	if(nplayer)
 	{
-		boost::posix_time::ptime unban_time = boost::posix_time::second_clock::local_time() + boost::posix_time::hours(24);
+		LocalTime unban_time = LocalClock::now() + std::chrono::hours(24);
 		server->getServerBannedIPListManager().addBannedIP(nplayer->getPlayerIP(), unban_time);
 		std::shared_ptr<NetIPIsBanned> send(new NetIPIsBanned);
 		nplayer->sendMessage(send);

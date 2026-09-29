@@ -7,7 +7,7 @@
 #include "Player.h"
 #include "Stream.h"
 
-#include <boost/logic/tribool.hpp>
+#include "Tribool.h"
 
 namespace AISharedRuntime
 {
@@ -59,7 +59,7 @@ namespace AISharedRuntime
 			///This function checks if the condition passes. The third state, indeterminate, means that the condition
 			///is impossible to fulfill. For example, a condition on a particular building could never pass if that
 			///building is destroyed.
-			virtual boost::logic::tribool passes(Runtime& runtime)=0;
+			virtual tribool passes(Runtime& runtime)=0;
 			virtual ConditionType get_type()=0;
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 			virtual void save(GAGCore::OutputStream *stream)=0;
@@ -75,7 +75,7 @@ namespace AISharedRuntime
 			friend class Condition;
 			ParticularBuilding(BuildingCondition* condition, int id);
 			~ParticularBuilding();
-			boost::logic::tribool passes(Runtime& runtime);
+			tribool passes(Runtime& runtime);
 			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -94,7 +94,7 @@ namespace AISharedRuntime
 		protected:
 			friend class Condition;
 			BuildingDestroyed() = default;
-			boost::logic::tribool passes(Runtime& runtime);
+			tribool passes(Runtime& runtime);
 			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -111,7 +111,7 @@ namespace AISharedRuntime
 		protected:
 			friend class Condition;
 			EnemyBuildingDestroyed() = default;
-			boost::logic::tribool passes(Runtime& runtime);
+			tribool passes(Runtime& runtime);
 			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -130,7 +130,7 @@ namespace AISharedRuntime
 		protected:
 			friend class Condition;
 			~EitherCondition();
-			boost::logic::tribool passes(Runtime& runtime);
+			tribool passes(Runtime& runtime);
 			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -153,7 +153,7 @@ namespace AISharedRuntime
 			Population(bool workers, bool explorers, bool warriors, int num, PopulationMethod method);
 		protected:
 			friend class Condition;
-			boost::logic::tribool passes(Runtime& runtime);
+			tribool passes(Runtime& runtime);
 			ConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);

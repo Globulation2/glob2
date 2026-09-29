@@ -278,7 +278,7 @@ namespace AISharedRuntime
 
 	/// On-disk and on-Order encoding of AdjustPriority::BuildingPriority.
 	/// Stored as a Sint32 (-1/0/1) inside MAdjustPriority orders. Distinct
-	/// from the AI_SHARED_RUNTIME_TRIBOOL_* domain — those encode boost::logic::tribool
+	/// from the AI_SHARED_RUNTIME_TRIBOOL_* domain — those encode tribool
 	/// in BuildingRegister/ChangeAlliances save streams.
 	/// (Management.cpp:733-738, 769-773, 786-791.)
 	static constexpr int AI_SHARED_RUNTIME_PRIORITY_LOW = -1;

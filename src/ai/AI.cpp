@@ -205,7 +205,7 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		std::ostringstream state;
 		state.imbue(std::locale::classic());
 		stream->readEnterSection("randomState");
-		for (unsigned i = 0; i < boost::mt19937::state_size; ++i)
+		for (unsigned i = 0; i < MersenneTwister::state_size; ++i)
 		{
 			stream->readEnterSection(i);
 			state << stream->readUint32("word") << ' ';
@@ -245,7 +245,7 @@ void AI::save(GAGCore::OutputStream *stream)
 	std::istringstream state(randomState.str());
 	state.imbue(std::locale::classic());
 	stream->writeEnterSection("randomState");
-	for (unsigned i = 0; i < boost::mt19937::state_size; ++i)
+	for (unsigned i = 0; i < MersenneTwister::state_size; ++i)
 	{
 		Uint32 word;
 		if (!(state >> word)) throw std::runtime_error("Invalid AI RNG state while saving");

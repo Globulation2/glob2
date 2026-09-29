@@ -92,7 +92,7 @@ jobs:
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
+            libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
@@ -422,6 +422,15 @@ jobs:
           /tmp/cloud-field
           ${{ matrix.compiler }} -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
           /tmp/map-render-geometry
+
+      - name: Test the RNG, tribool and local time that replaced Boost
+        run: |
+          ${{ matrix.compiler }} -std=c++20 -O2 test/MersenneTwisterTest.cpp -o /tmp/mersenne-twister
+          /tmp/mersenne-twister
+          ${{ matrix.compiler }} -std=c++20 -O2 test/TriboolTest.cpp -o /tmp/tribool
+          /tmp/tribool
+          ${{ matrix.compiler }} -std=c++20 -O2 test/LocalTimeTest.cpp -o /tmp/local-time
+          /tmp/local-time
 
       - name: Exercise GPU and software game rendering
         if: ${{ matrix.shard == 4 }}
@@ -929,7 +938,7 @@ jobs:
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
+            libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
@@ -1063,7 +1072,7 @@ jobs:
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
+            libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
@@ -1294,6 +1303,15 @@ jobs:
           g++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
           /tmp/map-render-geometry
 
+      - name: Test the RNG, tribool and local time that replaced Boost
+        run: |
+          g++ -std=c++20 -O2 test/MersenneTwisterTest.cpp -o /tmp/mersenne-twister
+          /tmp/mersenne-twister
+          g++ -std=c++20 -O2 test/TriboolTest.cpp -o /tmp/tribool
+          /tmp/tribool
+          g++ -std=c++20 -O2 test/LocalTimeTest.cpp -o /tmp/local-time
+          /tmp/local-time
+
       - name: Build and run the hiring bucket regression
         id: build_and_run_the_hiring_bucket_regression
         continue-on-error: true
@@ -1419,7 +1437,6 @@ jobs:
             mingw-w64-x86_64-fribidi
             mingw-w64-x86_64-pcre
             mingw-w64-x86_64-openssl
-            mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy
             mingw-w64-x86_64-libsystre
             mingw-w64-x86_64-ccache
@@ -1500,7 +1517,7 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
         id: install_pinned_emscripten
         run: python3 browser/setup.py
@@ -1589,7 +1606,7 @@ jobs:
         id: install_native_build_dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       # Reuse the native client objects already populated by the main Linux job.
       # This job only reads that cache; transport-specific misses stay local.
       - name: Restore native compiler cache
@@ -1739,7 +1756,7 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth
+          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth
       - uses: actions/download-artifact@v4
         id: actions_download_artifact_v4_1
         with:

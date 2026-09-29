@@ -149,24 +149,15 @@ def configure(env, server_only):
         print("Could not find regex.h")
         missing.append("regex")
 
-    boost_date_time = ''
-    if conf.CheckLib("boost_date_time") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_date_time="boost_date_time"
-    elif conf.CheckLib("boost_date_time-mt") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_date_time="boost_date_time-mt"
-    else:
-        print("Could not find libboost_date_time or libboost_date_time-mt or boost/date_time/posix_time/posix_time.hpp")
-        missing.append("libboost_date_time")
-    env.Append(LIBS=[boost_date_time])
-    # Optional, unlike the checks above: Boost.System is header-only from 1.69 on,
-    # so there is nothing to link against on a modern Boost.
-    if conf.CheckLib("boost_system"):
-        env.Append(LIBS=["boost_system"])
     env.Append(LIBS=["pthread"])
     if not server_only and env["wss"]:
         if not conf.CheckCXXHeader("openssl/ssl.h") or not conf.CheckLib("ssl") or not conf.CheckLib("crypto"):
             missing.append("OpenSSL development headers and libraries")
         env.Append(LIBS=["ssl", "crypto"])
+        # Boost.Beast and Boost.Asio (header-only) implement the WebSocket and TLS
+        # transport; nothing else in the game uses Boost.
+        if not conf.CheckCXXHeader("boost/beast/websocket.hpp") or not conf.CheckCXXHeader("boost/asio/ssl.hpp"):
+            missing.append("Boost.Beast and Boost.Asio headers (or build with wss=0)")
         configfile.add("GLOB2_NATIVE_WSS", "Defined when native secure WebSocket support is compiled")
     if not server_only:
         if env["mingw"] or env["mingwcross"]:
@@ -174,10 +165,6 @@ def configure(env, server_only):
 
     
 
-    if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):
-        print("Could not find boost/logic/tribool.hpp")
-        missing.append("boost/logic/tribool.hpp")
-     
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []
     if not server_only and env["opengl"]:

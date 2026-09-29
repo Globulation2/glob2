@@ -7,7 +7,6 @@
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Conditions;
-using namespace boost::logic;
 
 
 ParticularBuilding::ParticularBuilding(BuildingCondition* condition, int id) : condition(condition), id(id)
@@ -24,7 +23,7 @@ ParticularBuilding::~ParticularBuilding()
 
 
 
-boost::logic::tribool ParticularBuilding::passes(Runtime& runtime)
+tribool ParticularBuilding::passes(Runtime& runtime)
 {
 	if(!runtime.get_building_register().is_building_found(id) && !runtime.get_building_register().is_building_pending(id))
 	{
@@ -74,7 +73,7 @@ BuildingDestroyed::BuildingDestroyed(int id) : id(id)
 
 
 
-boost::logic::tribool BuildingDestroyed::passes(Runtime& runtime)
+tribool BuildingDestroyed::passes(Runtime& runtime)
 {
 	if(!runtime.get_building_register().is_building_found(id) && !runtime.get_building_register().is_building_pending(id))
 	{
@@ -121,7 +120,7 @@ EnemyBuildingDestroyed::EnemyBuildingDestroyed(Runtime& runtime, int gbid) : gbi
 
 
 
-boost::logic::tribool EnemyBuildingDestroyed::passes(Runtime& runtime)
+tribool EnemyBuildingDestroyed::passes(Runtime& runtime)
 {
 	Building* b=runtime.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
 	if(b==NULL)

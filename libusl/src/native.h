@@ -5,20 +5,35 @@
 #include "code.h"
 #include "types.h"
 
+#include <functional>
 #include <mutex>
 #include <sstream>
-#include <boost/function.hpp>
-#include <boost/type_traits/function_traits.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/mpl/assert.hpp>
+#include <type_traits>
+
+/// Parameter count and first parameter type of a function signature such as R(A, B)
+template<typename Function>
+struct FunctionSignature;
+
+template<typename Result>
+struct FunctionSignature<Result()>
+{
+	static constexpr size_t arity = 0;
+};
+
+template<typename Result, typename Argument1, typename... Arguments>
+struct FunctionSignature<Result(Argument1, Arguments...)>
+{
+	static constexpr size_t arity = 1 + sizeof...(Arguments);
+	typedef Argument1 FirstArgument;
+};
 
 template<typename Function>
 struct NativeFunction: NativeCode
 {
-	typedef boost::function<Function> BoostFunction;
-	BoostFunction function;
+	typedef std::function<Function> Callable;
+	Callable function;
 
-	NativeFunction(const std::string& name, const BoostFunction& function, bool receiver = false);
+	NativeFunction(const std::string& name, const Callable& function, bool receiver = false);
 	
 	void prologue(ThunkPrototype* thunk);
 	void execute(Thread* thread);
@@ -41,9 +56,9 @@ private:
 	{}
 	
 	template<typename Function>
-	void addMethod(const std::string& name, const boost::function<Function>& function)
+	void addMethod(const std::string& name, const std::function<Function>& function)
 	{
-		BOOST_MPL_ASSERT(( boost::is_same<This, typename boost::function_traits<Function>::arg1_type> ));
+		static_assert(std::is_same<This, typename FunctionSignature<Function>::FirstArgument>::value, "method receiver must be the first argument");
 		NativeCode* native = new NativeFunction<Function>(name, function, true);
 		Prototype::addMethod(native);
 	}
@@ -144,13 +159,13 @@ inline void push(Thread* thread, const T& t)
 
 
 template<typename Result>
-void execute(const boost::function<Result(void)>& function, Thread* thread)
+void execute(const std::function<Result(void)>& function, Thread* thread)
 {
 	const Result& result = function();
 	push(thread, result);
 }
 
-inline void execute(const boost::function<void(void)>& function, Thread* thread)
+inline void execute(const std::function<void(void)>& function, Thread* thread)
 {
 	function();
 	push(thread, &nil);
@@ -158,7 +173,7 @@ inline void execute(const boost::function<void(void)>& function, Thread* thread)
 
 
 template<typename Result, typename Argument>
-void execute(const boost::function<Result(Argument)>& function, Thread* thread)
+void execute(const std::function<Result(Argument)>& function, Thread* thread)
 {
 	const Argument& argument = pop<Argument>(thread);
 	const Result& result = function(argument);
@@ -166,7 +181,7 @@ void execute(const boost::function<Result(Argument)>& function, Thread* thread)
 }
 
 template<typename Argument>
-void execute(const boost::function<void(Argument)>& function, Thread* thread)
+void execute(const std::function<void(Argument)>& function, Thread* thread)
 {
 	const Argument& argument = pop<Argument>(thread);
 	function(argument);
@@ -175,7 +190,7 @@ void execute(const boost::function<void(Argument)>& function, Thread* thread)
 
 
 template<typename Result, typename Argument1, typename Argument2>
-void execute(const boost::function<Result(Argument1, Argument2)>& function, Thread* thread)
+void execute(const std::function<Result(Argument1, Argument2)>& function, Thread* thread)
 {
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
@@ -184,7 +199,7 @@ void execute(const boost::function<Result(Argument1, Argument2)>& function, Thre
 }
 
 template<typename Argument1, typename Argument2>
-void execute(const boost::function<void(Argument1, Argument2)>& function, Thread* thread)
+void execute(const std::function<void(Argument1, Argument2)>& function, Thread* thread)
 {
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
@@ -194,7 +209,7 @@ void execute(const boost::function<void(Argument1, Argument2)>& function, Thread
 
 
 template<typename Result, typename Argument1, typename Argument2, typename Argument3>
-void execute(const boost::function<Result(Argument1, Argument2, Argument3)>& function, Thread* thread)
+void execute(const std::function<Result(Argument1, Argument2, Argument3)>& function, Thread* thread)
 {
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
@@ -204,7 +219,7 @@ void execute(const boost::function<Result(Argument1, Argument2, Argument3)>& fun
 }
 
 template<typename Argument1, typename Argument2, typename Argument3>
-void execute(const boost::function<void(Argument1, Argument2, Argument3)>& function, Thread* thread)
+void execute(const std::function<void(Argument1, Argument2, Argument3)>& function, Thread* thread)
 {
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
@@ -215,7 +230,7 @@ void execute(const boost::function<void(Argument1, Argument2, Argument3)>& funct
 
 
 template<typename Result, typename Argument1, typename Argument2, typename Argument3, typename Argument4>
-void execute(const boost::function<Result(Argument1, Argument2, Argument3, Argument4)>& function, Thread* thread)
+void execute(const std::function<Result(Argument1, Argument2, Argument3, Argument4)>& function, Thread* thread)
 {
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
@@ -226,7 +241,7 @@ void execute(const boost::function<Result(Argument1, Argument2, Argument3, Argum
 }
 
 template<typename Argument1, typename Argument2, typename Argument3, typename Argument4>
-void execute(const boost::function<void(Argument1, Argument2, Argument3, Argument4)>& function, Thread* thread)
+void execute(const std::function<void(Argument1, Argument2, Argument3, Argument4)>& function, Thread* thread)
 {
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
@@ -238,7 +253,7 @@ void execute(const boost::function<void(Argument1, Argument2, Argument3, Argumen
 
 
 template<typename Result, typename Argument1, typename Argument2, typename Argument3, typename Argument4, typename Argument5>
-void execute(const boost::function<Result(Argument1, Argument2, Argument3, Argument4, Argument5)>& function, Thread* thread)
+void execute(const std::function<Result(Argument1, Argument2, Argument3, Argument4, Argument5)>& function, Thread* thread)
 {
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
@@ -250,7 +265,7 @@ void execute(const boost::function<Result(Argument1, Argument2, Argument3, Argum
 }
 
 template<typename Argument1, typename Argument2, typename Argument3, typename Argument4, typename Argument5>
-void execute(const boost::function<void(Argument1, Argument2, Argument3, Argument4)>& function, Thread* thread)
+void execute(const std::function<void(Argument1, Argument2, Argument3, Argument4, Argument5)>& function, Thread* thread)
 {
 	const Argument1& argument1 = pop<Argument1>(thread);
 	const Argument2& argument2 = pop<Argument2>(thread);
@@ -264,7 +279,7 @@ void execute(const boost::function<void(Argument1, Argument2, Argument3, Argumen
 
 
 template<typename Function>
-NativeFunction<Function>::NativeFunction(const std::string& name, const BoostFunction& function, bool receiver):
+NativeFunction<Function>::NativeFunction(const std::string& name, const Callable& function, bool receiver):
 	NativeCode(name),
 	function(function),
 	receiver(receiver)
@@ -273,7 +288,7 @@ NativeFunction<Function>::NativeFunction(const std::string& name, const BoostFun
 template<typename Function>
 void NativeFunction<Function>::prologue(ThunkPrototype* thunk)
 {
-	size_t arguments = BoostFunction::arity;
+	size_t arguments = FunctionSignature<Function>::arity;
 	if (receiver)
 		--arguments;
 	
@@ -319,14 +334,14 @@ typedef NativeValue<std::string> String;
 template<>
 inline void NativeValuePrototype<int>::initialize()
 {
-	addMethod<int (int     )>("_-",                   -  boost::lambda::_1);
-	addMethod<int (int, int)>("+" , boost::lambda::_1 +  boost::lambda::_2);
-	addMethod<int (int, int)>("-" , boost::lambda::_1 -  boost::lambda::_2);
-	addMethod<int (int, int)>("*" , boost::lambda::_1 *  boost::lambda::_2);
-	addMethod<bool(int, int)>("<" , boost::lambda::_1 <  boost::lambda::_2);
-	addMethod<bool(int, int)>(">" , boost::lambda::_1 >  boost::lambda::_2);
-	addMethod<bool(int, int)>("<=", boost::lambda::_1 <= boost::lambda::_2);
-	addMethod<bool(int, int)>(">=", boost::lambda::_1 >= boost::lambda::_2);
-	addMethod<bool(int, int)>("=" , boost::lambda::_1 == boost::lambda::_2);
-	addMethod<bool(int, int)>("!=", boost::lambda::_1 != boost::lambda::_2);
+	addMethod<int (int     )>("_-", std::negate<int>());
+	addMethod<int (int, int)>("+", std::plus<int>());
+	addMethod<int (int, int)>("-", std::minus<int>());
+	addMethod<int (int, int)>("*", std::multiplies<int>());
+	addMethod<bool(int, int)>("<", std::less<int>());
+	addMethod<bool(int, int)>(">", std::greater<int>());
+	addMethod<bool(int, int)>("<=", std::less_equal<int>());
+	addMethod<bool(int, int)>(">=", std::greater_equal<int>());
+	addMethod<bool(int, int)>("=", std::equal_to<int>());
+	addMethod<bool(int, int)>("!=", std::not_equal_to<int>());
 }

@@ -10,7 +10,7 @@
 
 #include <SDL_net.h>
 
-#include <boost/random/mersenne_twister.hpp>
+#include "MersenneTwister.h"
 
 namespace GAGCore
 {
@@ -26,19 +26,19 @@ namespace GAGCore
 // weak per-unit wrapper, which mingw's emulated TLS does not get right, and the savegame
 // harness saw the engine stream change state under it on Windows. A function-local
 // thread_local is initialised in one place, in this unit.
-boost::mt19937 &syncRandEngine();
+MersenneTwister &syncRandEngine();
 
 // Route synchronized draws made while an AI is deciding to its own stream.
 // The scope is thread-local and restores the previous stream on exit.
 class SyncRandScope
 {
 public:
-	explicit SyncRandScope(boost::mt19937 &engine);
+	explicit SyncRandScope(MersenneTwister &engine);
 	~SyncRandScope();
 	SyncRandScope(const SyncRandScope &) = delete;
 	SyncRandScope &operator=(const SyncRandScope &) = delete;
 private:
-	boost::mt19937 *previous;
+	MersenneTwister *previous;
 };
 
 inline Uint32 syncRand(void)

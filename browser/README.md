@@ -36,9 +36,8 @@ The SDK and build output are ignored by Git. Shared source manifests in
 configuration, objects, compilation database, cache, and signature database.
 Native builds do not require Emscripten; browser builds do not probe system libraries.
 
-`browser/toolchain.json` pins the SDK revision and version. Boost headers come
-from the SDK's checksum-verified Boost port. `emsdk=/path/to/emsdk` selects an
-already installed matching SDK. Omit `release=1` for a debug build.
+`browser/toolchain.json` pins the SDK revision and version. `emsdk=/path/to/emsdk`
+selects an already installed matching SDK. Omit `release=1` for a debug build.
 `python3 browser/build.py` remains a compatibility wrapper for the release build.
 See [delivery contracts](../docs/browser/implementation.md) for output paths and
 platform boundaries.

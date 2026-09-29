@@ -7,7 +7,6 @@
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Management;
 using namespace AISharedRuntime::Conditions;
-using namespace boost::logic;
 using std::shared_ptr;
 
 
@@ -54,11 +53,11 @@ void ManagementOrder::add_condition(Condition* condition)
 
 
 
-boost::logic::tribool ManagementOrder::passes_conditions(Runtime& runtime)
+tribool ManagementOrder::passes_conditions(Runtime& runtime)
 {
 	for(unsigned int i=0; i<conditions.size(); ++i)
 	{
-		boost::logic::tribool passes=conditions[i]->passes(runtime);
+		tribool passes=conditions[i]->passes(runtime);
 		if(passes)
 			continue;
 		else if(!passes)
@@ -68,7 +67,7 @@ boost::logic::tribool ManagementOrder::passes_conditions(Runtime& runtime)
 
 	}
 
-	boost::logic::tribool passes=wait(runtime);
+	tribool passes=wait(runtime);
 	if(passes)
 		return true;
 	if(!passes)
@@ -91,7 +90,7 @@ void AssignWorkers::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool AssignWorkers::wait(Runtime& runtime)
+tribool AssignWorkers::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
@@ -138,7 +137,7 @@ void ChangeSwarm::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool ChangeSwarm::wait(Runtime& runtime)
+tribool ChangeSwarm::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
@@ -187,7 +186,7 @@ void DestroyBuilding::modify(Runtime& runtime)
 
 
 
-boost::logic::tribool DestroyBuilding::wait(Runtime& runtime)
+tribool DestroyBuilding::wait(Runtime& runtime)
 {
 	return wait_for_building(runtime, building_id);
 }
