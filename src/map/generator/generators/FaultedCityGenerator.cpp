@@ -170,18 +170,19 @@ Layout design(const GenerationRequest &r, GenerationContext &c)
 		}
 		else
 		{
-			// Distinct civic spaces: a market's small corner garden, a deep productive garden,
+			// Distinct civic spaces: a market's irrigated garden, a deep productive garden,
 			// a long reservoir with a bank field, and a formal orchard with side lawns.
-			const int right = civicKind == Square ? 19 : 27;
-			const int top = civicKind == Garden ? 14 : civicKind == Reservoir ? 10 : 15;
-			const int divider = civicKind == Square ? 15 : 21;
+			const int right = 27;
+			const int top = civicKind == Garden ? 12 : civicKind == Reservoir ? 10 : 13;
+			const int divider = 17;
 			if (x >= 4 && x <= right && y >= top && y <= 27)
 			{
 				if (x == 4 || x == right || y == top || y == 27 || x == divider)
 					L.terrain[i] = SAND;
-				else if ((civicKind != Square && x >= 25 && y >= top + 4 && y <= 23) || (b.variant == 0 && x >= 7 && x <= divider - 3 && y >= (civicKind == Reservoir ? 20 : 23)) ||
-					(b.variant == 1 && x >= 6 && x <= 10 && y >= top + 4 && y <= 25) ||
-					(b.variant == 2 && ((x >= 6 && x <= 10) || (x >= divider - 6 && x <= divider - 2)) && y >= 22 && y <= 25))
+				// Broad rear reservoirs irrigate both crops without consuming the street.
+				// Wood has a full compartment rather than a two-tile strip.
+				else if (y >= 21 || (b.variant == 1 && x >= 6 && x <= 10 && y >= 19) ||
+					(b.variant == 2 && x >= 21 && x <= 25 && y >= 19))
 					L.terrain[i] = WATER;
 				else L.crop[i] = x < divider ? WHEAT : WOOD;
 			}
@@ -486,9 +487,9 @@ bool populate(Game &game, GenerationContext &c, const Layout &L, const std::vect
 		const int amount = resource == WHEAT ? o.wheat : o.wood;
 		const int capacity = L.plotCapacity[L.plotOf[plot.front()]];
 		const int minimum = starter ? capacity : 0;
-		// 100% seeds 55% of renewable capacity; the upper half of the slider fills
+		// 100% seeds 80% of renewable capacity; the upper half of the slider fills
 		// the remaining space gradually, reaching capacity only at 300%.
-		const int fill = amount <= 100 ? amount * 110 : 11000 + (amount - 100) * 45;
+		const int fill = amount <= 100 ? amount * 160 : 16000 + (amount - 100) * 20;
 		const int wanted = std::max(minimum, capacity * fill / 20000);
 		int guaranteed = 0;
 		if (starter)
@@ -668,7 +669,7 @@ FaultedCityOptions::FaultedCityOptions(const GenerationRequest &r)
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount")) {}
 GeneratorDefinition faultedCityDefinition()
 {
-	return {"faulted-city", 64, "The Faulted City", 1, false,
+	return {"faulted-city", 64, "The Faulted City", 2, false,
 		{{"fault-displacement", "Fault displacement", 4, 14, 1, 10, ControlGroup::Terrain},
 		 {"fault-width", "Fault width", 8, 16, 2, 12, ControlGroup::Terrain},
 		 {"ruin-density", "Ruin density", 20, 60, 5, 35, ControlGroup::Layout},

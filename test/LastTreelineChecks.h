@@ -96,11 +96,17 @@ inline void run()
 	}
 	const auto envelope = floodFrom(t, renewable, pureTiles(plain.map, GRASS));
 	std::vector<int> finite;
+	std::vector<int> finiteTypes(t.size(), NO_RES_TYPE);
 	for (int i = 0; i < t.size(); ++i)
-		if (plain.map.getResource(i % t.w, i / t.w).type == WOOD &&
+		if ((plain.map.getResource(i % t.w, i / t.w).type == WOOD ||
+			 plain.map.getResource(i % t.w, i / t.w).type == WHEAT) &&
 			fertility.at(i % t.w, i / t.w) == 0)
+		{
 			finite.push_back(i);
-	assert(finite.size() >= 48 * 4);
+			finiteTypes[i] = plain.map.getResource(i % t.w, i / t.w).type;
+		}
+	assert(std::count(finiteTypes.begin(), finiteTypes.end(), WOOD) >= 48 * 4);
+	assert(std::count(finiteTypes.begin(), finiteTypes.end(), WHEAT) > 0);
 	for (int tick = 0; tick < 2048; ++tick)
 		plain.map.growResources();
 	for (int i = 0; i < t.size(); ++i)
@@ -111,7 +117,7 @@ inline void run()
 				   std::find(finite.begin(), finite.end(), i) != finite.end());
 	}
 	for (int i : finite)
-		assert(plain.map.getResource(i % t.w, i / t.w).type == WOOD);
+		assert(plain.map.getResource(i % t.w, i / t.w).type == finiteTypes[i]);
 	GenerationContext context(r);
 	assert(definition.validateWorld(plain, context).empty());
 	// Fault injection: introducing trees into a wheat plot must be rejected even

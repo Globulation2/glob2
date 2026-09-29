@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 118
+#define VERSION_MINOR 119
+// version 119 preserves Echo/Nicowar gradient caches and construction scheduling.
 // version 118 removes the obsolete Maxima rolling maturity cache.
 // version 117 preserves Maxima's rolling wheat maturity checks and pending changes.
 // version 116 preserves Maxima wave delivery and its permanent streaming fallback.
@@ -145,9 +146,9 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 41
+#define NET_PROTOCOL_VERSION 42
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 41
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 42
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
@@ -174,3 +175,5 @@
 // version 40 changes Maxima wave fallback decisions and their saved state.
 
 // version 41 adds symmetric version admission and the versioned YOG server greeting.
+
+// version 42 transfers Echo/Nicowar continuation fields when joining saved games.

@@ -20,6 +20,7 @@
 #include "StreamBackend.h"
 #include "Grid.h"
 #include "Growth.h"
+#include "Planting.h"
 #include "Room.h"
 #include "Topology.h"
 #include <SDL.h>
@@ -87,15 +88,19 @@ void contracts()
 							restored.game.map.getResource(x, y).getUint32(),
 					"terrain and resources survive save/load");
 	const auto &def = GeneratorRegistry::builtins().at(r.method);
-	// Decorative crops are legal only inside their sand-contained pockets.
+	// Open dry fields are allowed, but town construction ground stays clear.
 	// A new seed on open construction ground must still be rejected.
 	const Torus t{256, 256};
 	const auto reserve = buildAnchors(t, potentialBuildingTiles(second.game.map), 6);
-	const auto envelope = cropSpreadEnvelope(second.game.map);
+	TerrainSketch terrain(t.size());
+	for (int i = 0; i < t.size(); ++i)
+		terrain[i] = TerrainType(second.game.map.getUMTerrain(i % t.w, i / t.w));
+	const auto fertility = cropGrowthField(terrain, t);
+	const auto envelope = cropSpreadEnvelope(second.game.map, &fertility);
 	const int home = unitTilesByTeam(second.game.map, 4).front().front();
 	int stray = -1, nearest = 999999;
 	for (int i = 0; i < t.size(); ++i)
-		if (reserve[i] && envelope.steps[i] < 0)
+		if (reserve[i] && envelope.steps[i] < 0 && clearGround(second.game.map, i % t.w, i / t.w))
 		{
 			const int distance = t.dist2(i % 256, i / 256, home % 256, home / 256);
 			if (distance < nearest)
@@ -261,8 +266,12 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 	GAGCore::BinaryOutputStream disk(new GAGCore::FileStreamBackend(file));
 	game.save(&disk, false, "Comb cross-channel firing");
 	const int before = buildingTarget ? enemyTower->hp : worker->hp;
+	// This fixture drives a running match directly, without a network wait phase.
+	game.anyPlayerWaited = false;
+	const auto beforeStep = game.stepCounter;
 	for (int tick = 0; tick < 32; ++tick)
 		game.syncStep(0);
+	require(game.stepCounter == beforeStep + 32, "controlled combat simulation advances");
 	require((buildingTarget ? enemyTower->hp : worker->hp) < before,
 			"cross-channel projectile damages target");
 	if (buildingTarget)

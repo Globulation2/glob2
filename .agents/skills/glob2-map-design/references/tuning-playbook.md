@@ -228,6 +228,86 @@ The notes below on each AI's habits stay as a diagnostic reference, including th
 
 
 **Compare revisions with the variant pinned.** The lobby's best-of-five roll picks a different home design or layout for the same map seed as a generator changes, so two revisions' games on "seed 202" can be different kinds of map; one Bajada A/B compared a Broad fan home against a Twin springs home without noticing. Pin the variant through `--param` for paired games, and remember that one game per condition is noise: two runs of the same map and AI differed by up to 40% in final units. Use growth potential and wheat near the swarm, which are deterministic, to decide between revisions, and games to catch collapses.
+
+## Survival is not a fighting economy
+
+A static start check answers whether a colony can get food and begin construction.
+It does not answer whether that colony can replace losses, feed an army, and keep
+building. Maintainer feedback on Orchard Commons, The Last Treeline, The Comb and
+Faulted City exposed this distinction: their themes did not call for general
+starvation, yet their small crop reservations made food or timber the limiting
+experience. Keep each map's intended contest explicit. Fruit variety can be scarce
+while basic grain is plentiful; limited renewable timber need not imply limited food.
+
+Diagnose four quantities separately:
+
+- **Opening stock:** seeded deposits and the food reachable from the actual swarm,
+  including whether an inn can establish a useful feeding edge.
+- **Renewable capacity:** sum exact growth probability over land that the intended
+  crop can actually occupy. Exclude open lawns outside sealed farms, woodlots when
+  measuring wheat, and unseeded farmland cut off by sand or water. A large lake
+  or a high whole-map fertility figure can coexist with an underfed town.
+- **Delivery:** gathering frontage, harvest-to-inn/swarm travel, completed feeding
+  buildings, and the wheat those buildings receive. More seeds cannot repair a
+  long supply route or a tiny irrigated footprint. Dense grain can also occupy
+  the last legal inn site: reserve its real footprint and an initial approach,
+  and test crop adjacency and harvesting parity on the planted map. Recheck
+  buildability against the finished terrain: beach shaping can remove a corner
+  even when an earlier plot label still calls it farmland.
+- **Sustained play:** population and worker/warrior starvation versus combat deaths
+  during ordinary games, separately for each newer AI, against a healthy reference.
+  Survival at the tick cap and a high peak before collapse are insufficient.
+
+Increase growing room and irrigation when capacity is the constraint, then seed
+it generously enough to establish the opening. Keep permanent building shoulders
+and circulation outside the future crop envelope. Recheck whole building and
+upgrade footprints on every supported size after enlarging a field; a few extra
+crop rows can remove the last legal town site. Compare refused requests against
+the preceding revision on identical seeds and settings. Do not let a new pond irrigate
+finite timber on a wood-scarcity map: check the finished terrain, including the
+full growth-probe reach. Reserve existing fields and their sand margins before
+adding expansion farms, and measure actual placed features when placement may omit
+them. A requested meadow count is not evidence of usable new farmland. Compare the
+near-home crop component before and after irrigation: a ditch can split a broad
+coastal field into narrow banks and reduce the food an inn can reach, even while
+whole-map farmland grows. Put added capacity inside the opening catchment as
+well as on distant expansion ground.
+
+Inspect the full-size map and a played save as well as close-ups of the opening.
+Large areas of flat, empty ground do not become good expansion territory merely
+because buildings are legal there. Give the surplus country working farms,
+watercourses, woodland where the resource contract allows it, and alternate
+approaches whose purpose is visible. Preserve the map's visual subject and avoid
+covering every empty area with the same stamped pond or garden. Scale this work to
+the request: City States' explicitly wheat-filled islets call for complete tile
+coverage, not this broader economy redesign.
+
+## Distinct maps, distinct remedies
+
+Diagnosing the same resource shortage on several maps does not establish that they
+need the same terrain feature. A food pass on Orchard Commons, The Last Treeline
+and The Comb added the same small stream pond surrounded by a sand-enclosed field.
+The maintainer rejected the repeated treatment: it did not fit the maps, and some
+of the shortages called for simpler changes. Resource counts and passing growth
+checks did not make the visual choice appropriate. Faulted City's larger existing
+reservoirs and wood compartments were a separate, accepted treatment.
+
+Start with each map's existing economy and its smallest useful adjustment. More
+initial grain can be enough when the field already renews well; extend a working
+bank when the shortage is growing area, and fix access when food is present but
+not delivered. Preserve the coastline, dry basin, orchard valley or city blocks
+that give that map its identity. Share low-level geometry and validation helpers
+without automatically sharing a finished farm shape.
+
+Do not surround every farm with sand by habit. Use a seal where it enforces an
+actual requirement, such as keeping a supply lane open or separating scarce wood
+from grain. Elsewhere consider existing shores, dry ground, continuous farmland
+and ordinary growth. Check the eventual resource footprint either way; removing
+sand without checking spreading crops is not a complete fix. Wheat sections on
+verified zero-growth ground can also provide finite reserves without any enclosure;
+record them as harvest stock, not renewable production. Inspect side-by-side
+previews early, before spending a large test budget polishing a repeated design.
+
 ## Calibrate locally before a tournament
 
 A tournament costs an hour of a cluster; a food-capped or unbuildable home shows in a few minutes on one machine. Before the first tournament, and after every economy change:

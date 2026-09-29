@@ -1,6 +1,6 @@
 # The Comb
 
-The Comb (`comb`, numeric ID 62, revision 2) creates two curving shores with broad,
+The Comb (`comb`, numeric ID 62, revision 3) creates two curving shores with broad,
 interlocking peninsulas. Land around both ends of the inlet connects the shores;
 outer sea keeps the toroidal seam from creating another walking route. Opponents
 can threaten a nearby waterfront while their armies take a longer land route.
@@ -14,7 +14,9 @@ one upgrade (range 7). Towers prioritise units but can also target buildings.
 Colonies receive the standard swarm and workers; no military buildings, schools
 or trained military units are granted.
 
-Mainland farming ribbons follow the outer coast. Sand caps, cross aisles, and
+Mainland farming ribbons follow the outer coast, retaining broad uninterrupted
+banks against the sea. Higher initial wheat coverage supplies a stronger opening
+within those existing fields. Sand caps, cross aisles, and
 separate wheat/wood compartments contain their future spread. The mainland has
 stone and mixed fruit. Forward peninsulas retain building ground and sand supply
 lanes; their primary reward is military position rather than exclusive resources. Paths stop short of the noses to leave
@@ -24,8 +26,12 @@ clearing beside compact guaranteed grain, so an inn can establish a feeding edge
 Those farm clearings can regrow; the sand-protected mainland and forward building
 ground are the permanent construction reserve.
 
-Irregular sandy clearings and occasional wheat/wood pockets break up the interior.
-Their sizes and outlines come from smooth noise, without a repeated placement grid.
+Broader irregular sandy clearings and occasional wheat/wood pockets break up the interior.
+Larger open wheat sections occupy dry peninsula interiors, clear of towns, roads
+and forward building positions. These finite harvest reserves have no added sand
+rims or ponds; the coastal fields supply renewable food. They scale with wheat
+amount and disappear at zero.
+The decorative pockets' sizes and outlines come from smooth noise, without a repeated placement grid.
 Each crop pocket has a closed sand rim; natural growth can fill its grass centre but
 cannot escape onto nearby construction ground. Ambient crops follow their existing
 amount sliders and disappear at zero. Farms, starting ground, supply roads and the
@@ -50,7 +56,7 @@ on the longer sizes.
 - **Peninsulas per shore:** 2–4, default 3. More peninsulas create more fronts and
   divide the inlet into narrower landforms.
 - **Wheat, wood, stone, algae, fruit:** 0–300%, steps of 25, default 100%.
-  Crop compartments retain a starting floor (24 wheat or 12 wood tiles per
+  Crop compartments retain a starting floor (48 wheat or 12 wood tiles per
   compartment, limited by legal plot capacity); stone retains a mainland floor.
   Amount controls scale additional deposits inside their reserved ground.
   Fruit and algae have no floor. Wheat above 100% interpolates from the default
@@ -83,7 +89,7 @@ native stone and deliver it before the tower can fire again. These controlled
 mechanism tests are separate from normal AI development. Initial-map supply
 checks do not claim sustained throughput after both proposed buildings are built.
 
-## Revision 2: scattered ground
+## Historical revision 2: scattered ground
 
 The decorative revision passed 1,232 additional requests: all 192 shape/team/peninsula
 cases, all 272 paired slider cases, 128 resource-extreme combinations, 512 random

@@ -504,6 +504,29 @@ input. Correct coordinate loading preserves the x/y order written in existing
 saves; a save containing pending area orders can resume differently from older
 GCC builds that transposed those coordinates. The saved layout is unchanged.
 
+## Echo/Nicowar save continuation
+
+```sh
+scons release=1 server=0 echo-continuation-test
+python3 test/run-savegame-safety-tests.py build/linux/client/release/src/EchoContinuationTest .
+```
+
+The harness preserves stale fields, uncomputed gradients, ages and duplicate
+refresh-queue entries through binary and text manager round trips. It also checks
+that two Echo controllers reload one shared manager, including when the updating
+controller differs from the first serialized player. Linux and Windows CI run it.
+`python3 test/check_echo_save_continuation.py PATH/TO/glob2` also checks full
+Maxima/Nicowar and Nicowar/Nicowar games through two reloads using the retained
+[arena fixture](fixtures/echo-continuation/README.md).
+
+Save format 119 stores these fields plus the previous construction id, fruit
+observation and local initialization timer. Recomputing the cache on load can
+otherwise change the tick a pending building becomes ready. Earlier saves remain
+readable through their historical reconstruction path; missing historical cache
+state cannot be recovered from them. A subsequent format-119 save preserves the
+reconstructed state. Network protocol 42 gates transfers containing the new fields;
+the replay floor remains unchanged because uninterrupted execution is unchanged.
+
 ## Echo building-order id save compatibility
 
 `EchoBuildingOrderSaveLoadTest` covers `AIEcho::Construction::BuildingOrder::id`,

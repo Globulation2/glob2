@@ -1,7 +1,7 @@
 # Orchard Commons
 
-Orchard Commons (`orchard-commons`, numeric ID 58, revision 1) is a natural valley
-for two to eight colonies. Homes supply survival; separate cherry, orange and prune
+Orchard Commons (`orchard-commons`, numeric ID 58, revision 2) is a natural valley
+for two to eight colonies. Homes and the surrounding farmland sustain ordinary food production; separate cherry, orange and prune
 groves supply the diets worth fighting over. Claim a grove, establish an inn,
 secure another variety, and advertise the inn to tempt hungry enemy workers.
 
@@ -18,15 +18,20 @@ The valley runs along the longer map axis (a seeded choice on square maps). Bend
 streams and gravel fords separate the outer banks from the orchard commons. Groves
 have irregular outlines, a single fruit kind each, and space to gather and flank
 on either side. Two separate 8-by-8 clearings beside each grove accommodate inns,
-upgrade margins and circulation. Wheat pockets near the streams support outposts.
+upgrade margins and circulation. Broader wheat pockets near the streams support outposts.
 The clearings remain ordinary terrain; no buildings are granted.
 
 There are three groves per two colonies, rounded up, with equal counts of each
 variety. Fruit order, grove offsets and shapes, river bends, fords, woodland and
 home positions vary by seed. Homes are selected near the banks by access to the
 three varieties, then dealt to colony indices. They are not surrounded by town
-walls or identical cleared plots. Farms and ponds supply renewable wheat and wood;
-small quarries provide ordinary upgrade stone. No fruit is planted at home.
+walls or identical cleared plots. Larger home farms, ponds and outer backwaters supply renewable wheat and wood;
+small quarries provide ordinary upgrade stone. Home wheat leaves an initial inn
+clearing and an unseeded approach, with grain planted beside it. These openings
+can regrow if unused; permanent construction room remains outside the plots.
+Open wheat sections occupy dry gaps in the outer countryside, without added sand
+rims. They supply finite harvest reserves alongside the renewable home and outpost
+farms, and follow the wheat amount control. No fruit is planted at home.
 
 On the finished map, first-fruit access from usable swarm exits is 24–48 walking steps; the largest first
 access and largest nearest-per-variety access are at most 125% of the smallest.
@@ -34,9 +39,9 @@ The validator also checks renewable gathering frontage, home building room,
 connected future court approaches, and clear flanking loops around groves.
 This is measured access fairness, not tile symmetry or a guarantee of equal wins.
 
-Crops occupy sand-contained plots. Outer woodland is planted only on ground with
-zero crop growth probability, so it does not engulf routes; it is finite clearable
-scenery. Fruit regrows in place and never spreads. No no-growth flags are used.
+Renewable crops occupy the existing sand-contained plots. Extra open wheat and
+outer woodland are planted only on ground with zero crop growth probability, so
+they do not engulf routes. They are finite harvest reserves and clearable woodland. Fruit regrows in place and never spreads. No no-growth flags are used.
 Maps retain the normal toroidal wrap and swimming shortcuts.
 
 ## Controls and supported requests
@@ -49,6 +54,8 @@ Maps retain the normal toroidal wrap and swimming shortcuts.
 - **Wheat, wood, stone, algae and fruit amounts:** ordinary 0–300% controls in 25%
   steps, default 100%. Amounts scale deposits, not the terrain reservations.
 - Home wheat, wood and stone have unscaled floors, as do the outpost wheat pockets.
+  Home wheat reserves 64 seeds (48 where a side is 128), and requests 160 at
+  the default, limited by productive ground after reserving the inn opening.
   Stone increases are apportioned across quarries after scaling the map-wide extra
   budget, so each 25% step remains meaningful even with small deposits.
   Every fruit grove retains six fruit tiles at 0%; the default requests 24, rising

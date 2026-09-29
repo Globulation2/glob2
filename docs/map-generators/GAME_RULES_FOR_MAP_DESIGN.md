@@ -138,6 +138,40 @@ The shared tools encode a few measurable promises every generator is expected to
   colony (`WedgeFrame`), or slide it across a lattice of colonies with no centre at all
   (`translationSymmetry`, `shared/Orbits`), so every colony's ground is the same.
 
+### From a viable opening to a sustained economy
+
+Reachable starter crops establish an opening, not an army-sized food supply. For a
+map intended to support sustained fighting, budget renewable growing room and
+irrigation alongside opening stock, gathering frontage, feeding buildings and
+travel. Measure wheat capacity only on ground wheat can actually occupy; fertile
+open lawns outside sand-contained farms do not feed a colony automatically. Count
+wood separately: a narrow wood strip beside a token pond can constrain every
+building even when the grain supply looks adequate.
+
+Compare population, delivered food, and starvation versus combat deaths in
+sustained games with a healthy reference map. Increasing seed density can improve
+the opening but cannot raise a field's eventual growing capacity. When capacity
+is insufficient, enlarge or better irrigate the crop ground and preserve building
+shoulders and routes around its fully grown footprint. Recheck whole building
+footprints and upgrade room after enlarging fields: more food is no improvement
+if the new field leaves a colony nowhere to develop. Check the crop bank nearest
+the home separately: irrigation that divides a broad field into thin strips can
+reduce accessible food despite increasing total farmland.
+
+Choose the smallest remedy that fits the individual landscape. Several maps with
+low wheat need not all acquire the same new farm, pond or sand ring. First use
+existing farmland and water well; add terrain when capacity or geography requires
+it. Sand enclosures serve particular growth and route contracts, not a universal
+farm template. Where a seal is unnecessary, use the map's existing shores, dry
+land and continuous fields, and still validate their future crop footprint.
+
+A map's special shortage should remain deliberate. An orchard contest needs an
+ordinary grain economy behind the fruit prize; a limited-timber landscape should
+supply ample wheat without introducing extra renewable trees. Check new water
+against the full growth-probe reach of any deliberately finite wood. Outer land
+should offer useful expansion, alternate approaches, or recognizable landscape,
+not merely unused grass around a small functional centre.
+
 ## What makes a good game
 
 These are judgement rules rather than engine rules, learned from playtesting on this branch:

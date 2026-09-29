@@ -11,6 +11,9 @@
 #include "MapEditKeyActions.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
+#include "Grid.h"
+#include "Room.h"
+#include "Topology.h"
 #include "FileManager.h"
 #include "Unit.h"
 #include "Race.h"
@@ -109,6 +112,53 @@ void contracts(unsigned seed)
 	std::printf("generation-contracts seed=%u repeatability=pass telemetry-neutral=pass "
 				"terrain-resource-save-load=pass invalid-requests=11\n",
 				seed);
+}
+void feedingCourts()
+{
+	using namespace MapGeneration;
+	for (unsigned seed : {7u, 29u, 401u})
+		for (int amount : {0, 100, 300})
+		{
+			GenerationRequest r;
+			r.setMethodDefaults(GeneratorRegistry::builtins().idOf("orchard-commons"));
+			r.wDec = r.hDec = 8;
+			r.nbTeams = 4;
+			r.seed = seed;
+			r.options["wheat-amount"] = amount;
+			Game world(nullptr);
+			auto result = GenerationService().generate(world, r);
+			require(bool(result), result.diagnostic().c_str());
+			const Torus t{256, 256};
+			const auto anchors = buildAnchors(t, potentialBuildingTiles(world.map), 3);
+			const auto open = groundUnitTiles(world.map);
+			for (const auto &units : unitTilesByTeam(world.map, 4))
+			{
+				const auto walk = stepsFrom(t, tileMask(t, units), open);
+				bool found = false;
+				for (int i = 0; i < t.size() && !found; ++i)
+				{
+					if (!anchors[i] || walk[i] < 0 || walk[i] > 24)
+						continue;
+					int cluster[2]{}, edge[2]{};
+					const int x = i % 256, y = i / 256;
+					for (int dy = -5; dy <= 6; ++dy)
+						for (int dx = -5; dx <= 6; ++dx)
+							if (world.map.getResource(x + dx, y + dy).type == WHEAT)
+							{
+								const int parity = (x + dx + y + dy) & 1;
+								++cluster[parity];
+								if (dx >= -1 && dx <= 3 && dy >= -1 && dy <= 3)
+									++edge[parity];
+							}
+					found = cluster[0] >= 5 && cluster[1] >= 5 && edge[0] && edge[1];
+				}
+				if (!found)
+					std::fprintf(stderr, "feeding court: seed=%u wheat=%d worker=(%d,%d)\n",
+							 seed, amount, units.front() % t.w, units.front() / t.w);
+				require(found, "orchard opening has a reachable inn court beside viable grain");
+			}
+		}
+	puts("PASS feeding courts at wheat 0/100/300, both harvest parities, three seeds");
 }
 // Repeated fixed-world work for sampling profilers; Game lifetime is outside
 // the measured interval, matching the existing generator profiling fixture.
@@ -261,8 +311,12 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 	chosen = restored.game.teams[0]->findNearestFood(worker);
 	require(chosen && chosen->owner->teamNumber == (scenario.converts ? 1 : 0),
 			"food choice survives save/load");
+	// This fixture drives Game directly, without Engine assigning the wait state.
+	restored.game.anyPlayerWaited = false;
+	const auto firstStep = restored.game.stepCounter;
 	for (int tick = 0; tick < 64; ++tick)
 		restored.game.syncStep(0);
+	require(restored.game.stepCounter == firstStep + 64, "conversion fixture advances game ticks");
 	require(worker->owner->teamNumber == (scenario.converts ? 1 : 0),
 			"normal game ticks realize expected ownership");
 	require(restored.game.teams[1]->stats.measurements.conversionsIn[WORKER] ==
@@ -303,6 +357,7 @@ int main(int argc, char **argv)
 		{"wheat-supply-lost", 1, 3, true, false, false},
 	};
 	contracts(seed);
+	feedingCourts();
 	for (const auto &scenario : scenarios)
 		run(scenario, argv[3], seed);
 	return 0;
