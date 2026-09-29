@@ -1,0 +1,254 @@
+[
+  {
+    "case": "even12",
+    "variant": "baseline",
+    "repeat": -1,
+    "run_s": 8.555963636,
+    "wall_s": 17.945308768888935
+  },
+  {
+    "case": "even12",
+    "variant": "row-scans",
+    "repeat": -1,
+    "run_s": 7.699240894,
+    "wall_s": 17.072034952929243
+  },
+  {
+    "case": "even12",
+    "variant": "proximity",
+    "repeat": -1,
+    "run_s": 6.982637739,
+    "wall_s": 16.360356491990387
+  },
+  {
+    "case": "even12",
+    "variant": "proximity",
+    "repeat": 0,
+    "run_s": 6.927556837,
+    "wall_s": 16.15504421084188
+  },
+  {
+    "case": "even12",
+    "variant": "row-scans",
+    "repeat": 0,
+    "run_s": 7.754326256,
+    "wall_s": 16.830434399889782
+  },
+  {
+    "case": "even12",
+    "variant": "baseline",
+    "repeat": 0,
+    "run_s": 8.287077198,
+    "wall_s": 17.429061241913587
+  },
+  {
+    "case": "even12",
+    "variant": "baseline",
+    "repeat": 1,
+    "run_s": 8.288905834,
+    "wall_s": 17.50585990701802
+  },
+  {
+    "case": "even12",
+    "variant": "row-scans",
+    "repeat": 1,
+    "run_s": 8.023991028,
+    "wall_s": 17.176988777006045
+  },
+  {
+    "case": "even12",
+    "variant": "proximity",
+    "repeat": 1,
+    "run_s": 7.174347772,
+    "wall_s": 16.491642843931913
+  },
+  {
+    "case": "held-continents12",
+    "variant": "baseline",
+    "repeat": -1,
+    "run_s": 5.182993902,
+    "wall_s": 10.397835572017357
+  },
+  {
+    "case": "held-continents12",
+    "variant": "row-scans",
+    "repeat": -1,
+    "run_s": 5.153657425,
+    "wall_s": 10.321974447928369
+  },
+  {
+    "case": "held-continents12",
+    "variant": "proximity",
+    "repeat": -1,
+    "run_s": 4.844563153,
+    "wall_s": 10.052648663986474
+  },
+  {
+    "case": "held-continents12",
+    "variant": "proximity",
+    "repeat": 0,
+    "run_s": 4.688180051,
+    "wall_s": 9.826179364928976
+  },
+  {
+    "case": "held-continents12",
+    "variant": "row-scans",
+    "repeat": 0,
+    "run_s": 4.951034774,
+    "wall_s": 10.139246457023546
+  },
+  {
+    "case": "held-continents12",
+    "variant": "baseline",
+    "repeat": 0,
+    "run_s": 5.001978688,
+    "wall_s": 10.140152560081333
+  },
+  {
+    "case": "held-continents12",
+    "variant": "baseline",
+    "repeat": 1,
+    "run_s": 5.187578857,
+    "wall_s": 10.422740862937644
+  },
+  {
+    "case": "held-continents12",
+    "variant": "row-scans",
+    "repeat": 1,
+    "run_s": 5.211234488,
+    "wall_s": 10.44926580088213
+  },
+  {
+    "case": "held-continents12",
+    "variant": "proximity",
+    "repeat": 1,
+    "run_s": 4.864067595,
+    "wall_s": 10.108140741940588
+  },
+  {
+    "case": "cortex12",
+    "variant": "baseline",
+    "repeat": -1,
+    "run_s": 12.051838745,
+    "wall_s": 16.61463181884028
+  },
+  {
+    "case": "cortex12",
+    "variant": "row-scans",
+    "repeat": -1,
+    "run_s": 11.935759897,
+    "wall_s": 16.445602633990347
+  },
+  {
+    "case": "cortex12",
+    "variant": "proximity",
+    "repeat": -1,
+    "run_s": 10.287946807,
+    "wall_s": 14.867452073842287
+  },
+  {
+    "case": "cortex12",
+    "variant": "proximity",
+    "repeat": 0,
+    "run_s": 10.178597368,
+    "wall_s": 14.762660699896514
+  },
+  {
+    "case": "cortex12",
+    "variant": "row-scans",
+    "repeat": 0,
+    "run_s": 12.495639844,
+    "wall_s": 17.075618415838107
+  },
+  {
+    "case": "cortex12",
+    "variant": "baseline",
+    "repeat": 0,
+    "run_s": 12.197900206,
+    "wall_s": 16.711349944816902
+  },
+  {
+    "case": "cortex12",
+    "variant": "baseline",
+    "repeat": 1,
+    "run_s": 12.659324041,
+    "wall_s": 17.20230942615308
+  },
+  {
+    "case": "cortex12",
+    "variant": "row-scans",
+    "repeat": 1,
+    "run_s": 12.240879369,
+    "wall_s": 16.811154216062278
+  },
+  {
+    "case": "cortex12",
+    "variant": "proximity",
+    "repeat": 1,
+    "run_s": 9.879781207,
+    "wall_s": 14.413270313991234
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "baseline",
+    "repeat": -1,
+    "run_s": 25.161877381,
+    "wall_s": 38.170656175818294
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "row-scans",
+    "repeat": -1,
+    "run_s": 24.565053425,
+    "wall_s": 37.80873604584485
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "proximity",
+    "repeat": -1,
+    "run_s": 22.928944086,
+    "wall_s": 36.10623671091162
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "proximity",
+    "repeat": 0,
+    "run_s": 22.866708969,
+    "wall_s": 35.86661111097783
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "row-scans",
+    "repeat": 0,
+    "run_s": 25.161825801,
+    "wall_s": 38.188815637957305
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "baseline",
+    "repeat": 0,
+    "run_s": 24.518697817,
+    "wall_s": 37.56116109690629
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "baseline",
+    "repeat": 1,
+    "run_s": 26.514763751,
+    "wall_s": 39.55295902304351
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "row-scans",
+    "repeat": 1,
+    "run_s": 27.668961363,
+    "wall_s": 40.99970160191879
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "proximity",
+    "repeat": 1,
+    "run_s": 25.103148156,
+    "wall_s": 38.498216337990016
+  }
+]

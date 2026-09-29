@@ -1,0 +1,15 @@
+{
+  "case": "held-even8",
+  "variant": "baseline",
+  "directory": "held-even8-baseline",
+  "wall_s": 5.78649085201323,
+  "cpu_s": null,
+  "run_s": 2.128133861,
+  "ticks": 8512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "ef4f32b93850eca259b263b344fc11bc262dc4217d612904b6fad7362f862a22",
+  "order_sha256": "3fdc75c47acfb1a3b5a1c77324c0247e66d626cf6fc9e955632ee8c5b836e469",
+  "trace_ticks": 512,
+  "orders": 75
+}

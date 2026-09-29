@@ -1,0 +1,36 @@
+{
+  "even12": {
+    "baseline": {
+      "instructions:u": 75154668273.5,
+      "cycles:u": 39279899769,
+      "cache-misses:u": 419587452
+    },
+    "row-scans": {
+      "instructions:u": 75133042251.5,
+      "cycles:u": 37324930162,
+      "cache-misses:u": 354771136.5
+    },
+    "reductions_percent": {
+      "instructions:u": 0.02877535420859889,
+      "cycles:u": 4.977022901017881,
+      "cache-misses:u": 15.447629615959057
+    }
+  },
+  "held-islands12-late": {
+    "baseline": {
+      "instructions:u": 198785100212,
+      "cycles:u": 103074792035,
+      "cache-misses:u": 415633969.5
+    },
+    "row-scans": {
+      "instructions:u": 198676778150,
+      "cycles:u": 102577204602,
+      "cache-misses:u": 398482977
+    },
+    "reductions_percent": {
+      "instructions:u": 0.05449204285656872,
+      "cycles:u": 0.48274405718038427,
+      "cache-misses:u": 4.126465534237333
+    }
+  }
+}

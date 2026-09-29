@@ -1,0 +1,15 @@
+{
+  "case": "historic-v115",
+  "variant": "baseline",
+  "directory": "historic-v115-baseline",
+  "wall_s": 1.9714317061007023,
+  "cpu_s": null,
+  "run_s": 1.046657819,
+  "ticks": 30512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "8d63bf39c79545daf015450259a3e2ee7c29d96881456aee04090e926a6fd963",
+  "order_sha256": "713f9469d4218411c3d45ac0e804c0975b832c148ec9be7e275f3edb16feb2fd",
+  "trace_ticks": 512,
+  "orders": 89
+}

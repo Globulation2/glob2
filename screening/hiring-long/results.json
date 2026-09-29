@@ -1,0 +1,58 @@
+[
+  {
+    "case": "held-islands8",
+    "variant": "baseline",
+    "repeat": -1,
+    "run_s": 5.929019185,
+    "wall_s": 6.705725540872663
+  },
+  {
+    "case": "held-islands8",
+    "variant": "hiring",
+    "repeat": -1,
+    "run_s": 5.483700188,
+    "wall_s": 6.273531666025519
+  },
+  {
+    "case": "held-islands8",
+    "variant": "hiring",
+    "repeat": 0,
+    "run_s": 5.488647189,
+    "wall_s": 6.280705234967172
+  },
+  {
+    "case": "held-islands8",
+    "variant": "baseline",
+    "repeat": 0,
+    "run_s": 5.943562707,
+    "wall_s": 6.755254571791738
+  },
+  {
+    "case": "held-islands8",
+    "variant": "baseline",
+    "repeat": 1,
+    "run_s": 5.951871186,
+    "wall_s": 6.743592005223036
+  },
+  {
+    "case": "held-islands8",
+    "variant": "hiring",
+    "repeat": 1,
+    "run_s": 5.544490322,
+    "wall_s": 6.354297613725066
+  },
+  {
+    "case": "held-islands8",
+    "variant": "hiring",
+    "repeat": 2,
+    "run_s": 5.555528674,
+    "wall_s": 6.349920513108373
+  },
+  {
+    "case": "held-islands8",
+    "variant": "baseline",
+    "repeat": 2,
+    "run_s": 5.936220913,
+    "wall_s": 6.748343622777611
+  }
+]

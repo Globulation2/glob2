@@ -1,0 +1,15 @@
+{
+  "case": "cortex-continents12",
+  "variant": "candidate",
+  "directory": "cortex-continents12-candidate",
+  "wall_s": 6.971813749987632,
+  "cpu_s": null,
+  "run_s": 3.763993958,
+  "ticks": 20512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "e150528389288d851c301d057e326724750c79f4f097500283c3ec9b4ab5e951",
+  "order_sha256": "d9c864e54e97e10d5acd01202b13e3cad4ff78a77ca01f1404bec8b94fe74566",
+  "trace_ticks": 512,
+  "orders": 133
+}

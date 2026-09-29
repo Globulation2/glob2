@@ -1,0 +1,159 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 1K of event 'cycles:u'
+# Event count (approx.): 43074090897
+#
+# Overhead;      Period;Command        ;Shared Object      ;Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+ 9.91%  ; 4269088695 ;baseline-symbol;baseline-symbols   ;[.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+ 9.05%  ; 3896329803 ;baseline-symbol;baseline-symbols   ;[.] Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const
+ 6.69%  ; 2882289684 ;baseline-symbol;baseline-symbols   ;[.] Map::updateGlobalGradient(Building*, int)
+ 6.31%  ; 2716850737 ;baseline-symbol;baseline-symbols   ;[.] Cortex::placeCandidatesImpl(Game*, Team*, int, int, Cortex::BuildCandidate*, Cortex::(anonymous namespace)::ForwardBias const*)
+ 6.17%  ; 2656921695 ;baseline-symbol;baseline-symbols   ;[.] Cortex::(anonymous namespace)::bfsGroundField(Map&, unsigned int, int, int, bool, std::vector<int, std::allocator<int> >&)
+ 4.17%  ; 1798038487 ;baseline-symbol;baseline-symbols   ;[.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+ 3.71%  ; 1597056144 ;baseline-symbol;baseline-symbols   ;[.] BuildingGradientSearch::resolve(unsigned long)
+ 3.17%  ; 1363713178 ;baseline-symbol;baseline-symbols   ;[.] Map::warpDist1d(int, int, int)
+ 2.86%  ; 1233863702 ;baseline-symbol;baseline-symbols   ;[.] Map::seedClearAreasGradient(int, int, unsigned short*)
+ 2.22%  ; 955961823  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::WorldState::index(int, int) const
+ 2.04%  ; 879838619  ;baseline-symbol;libc.so.6          ;[.] __memset_avx2_unaligned_erms
+ 1.94%  ; 837404862  ;baseline-symbol;baseline-symbols   ;[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+ 1.76%  ; 759949955  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const
+ 1.58%  ; 678495127  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)
+ 1.55%  ; 668392481  ;baseline-symbol;baseline-symbols   ;[.] Cortex::anyWheatWithin(Map const&, int, int, int, int, int)
+ 1.52%  ; 654763060  ;baseline-symbol;baseline-symbols   ;[.] Map::seedGuardAreasGradient(int, int, unsigned short*)
+ 1.11%  ; 479567252  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const
+ 1.04%  ; 446864711  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::wheat_invasion_clearing_required(AIMaximaRuntime::Context&, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Maxima::WoodReserve const&) const
+ 1.02%  ; 439906647  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::build_maintenance_clearing_plan(AIMaximaRuntime::Context&)
+ 1.02%  ; 439571260  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)
+ 1.02%  ; 439478466  ;baseline-symbol;baseline-symbols   ;[.] Cortex::assessSwim(Player*, bool)
+ 1.02%  ; 437951605  ;baseline-symbol;libc.so.6          ;[.] __memmove_avx_unaligned_erms
+ 0.83%  ; 359296077  ;baseline-symbol;baseline-symbols   ;[.] Map::updateRoundTripGradient(Building*, int, int)
+ 0.83%  ; 358040022  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::SearchTools::MapInfo::is_discovered(int, int) const
+ 0.74%  ; 320095958  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::adjoiningBarracks(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&, std::vector<int, std::allocator<int> >&, std::vector<int, std::allocator<int> >&) const
+ 0.74%  ; 320054757  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaFoodLedger::Input::normalizeX(int) const
+ 0.74%  ; 320015295  ;baseline-symbol;baseline-symbols   ;[.] TeamStats::step(Team*, bool)
+ 0.74%  ; 319883426  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::plan_offense(AIMaximaRuntime::Context&)::{lambda(int, int)#1}::operator()(int, int) const
+ 0.65%  ; 280454387  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const
+ 0.65%  ; 280079659  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::Gradients::Entities::AnyTeamBuilding::matches(Player*, int, int) const
+ 0.65%  ; 279979684  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaFoodLedger::Input::normalizeY(int) const
+ 0.65%  ; 279819295  ;baseline-symbol;baseline-symbols   ;[.] Cortex::assessAmphibious(Player*, int, int, int const*, int const*, int, int, int)
+ 0.65%  ; 279418372  ;baseline-symbol;baseline-symbols   ;[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+ 0.64%  ; 277452406  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const
+ 0.56%  ; 240948622  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::collect_fruit_field(AIMaximaRuntime::Context&) const
+ 0.56%  ; 240320823  ;baseline-symbol;baseline-symbols   ;[.] Map::growResources()
+ 0.56%  ; 240184858  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::WorldState::normalizeX(int) const
+ 0.56%  ; 239999651  ;baseline-symbol;baseline-symbols   ;[.] Cortex::rectEdgeChebyshev(int, int, int, int, int, int, int, int, int, int)
+ 0.56%  ; 239882534  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int) const
+ 0.56%  ; 239828036  ;baseline-symbol;baseline-symbols   ;[.] Map::isHardSpaceForBuilding(int, int) const
+ 0.56%  ; 239799869  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::Gradients::Entities::AnyResource::matches(Player*, int, int) const
+ 0.47%  ; 202767675  ;baseline-symbol;baseline-symbols   ;[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const
+ 0.46%  ; 200122195  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const
+ 0.46%  ; 200043975  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const
+ 0.46%  ; 200040126  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const
+ 0.46%  ; 200026240  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::WorldState::normalizeY(int) const
+ 0.46%  ; 199856940  ;baseline-symbol;baseline-symbols   ;[.] Team::syncStep()
+ 0.46%  ; 199759685  ;baseline-symbol;baseline-symbols   ;[.] Cortex::observe(Player*, int, unsigned short)
+ 0.46%  ; 198825927  ;baseline-symbol;baseline-symbols   ;[.] Team::integrity()
+ 0.37%  ; 160160367  ;baseline-symbol;baseline-symbols   ;[.] Building::integrity()
+ 0.37%  ; 160116351  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::reachableFoodCapacity(Map*, Building*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const*, std::set<int, std::less<int>, std::allocator<int> >*, int)
+ 0.37%  ; 160089019  ;baseline-symbol;baseline-symbols   ;[.] Building::computeWishedResources(int*)
+ 0.37%  ; 160076053  ;baseline-symbol;baseline-symbols   ;[.] Cortex::countSurvivingWheatWithin(Map const&, int, int, int, int, int)
+ 0.37%  ; 159965344  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::prepareRetrySignature(AIMaximaPlacement::WorldState const&)
+ 0.37%  ; 159783132  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::apply_maintenance_clearing_plan(AIMaximaRuntime::Context&, AIMaxima::Maxima::MaintenanceClearingPlan const&)
+ 0.28%  ; 120102329  ;baseline-symbol;baseline-symbols   ;[.] BuildingGradientSearch::resolved(unsigned long) const
+ 0.28%  ; 120048285  ;baseline-symbol;baseline-symbols   ;[.] Cortex::(anonymous namespace)::countReach(Map&, Team const*, int, int, bool, bool*)
+ 0.28%  ; 119985377  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::Gradients::Gradient::recalculate(Player*)
+ 0.28%  ; 119961200  ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Farming::selectResourcePreservingCirculation(int, int, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&)
+ 0.28%  ; 119947431  ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int) const
+ 0.28%  ; 119933334  ;baseline-symbol;baseline-symbols   ;[.] Map::updateExploredArea(int)
+ 0.27%  ; 115673514  ;baseline-symbol;baseline-symbols   ;[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)
+ 0.19%  ; 80193883   ;baseline-symbol;libstdc++.so.6.0.35;[.] std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)
+ 0.19%  ; 80165497   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Defense::analyzeMode(AIMaxima::Defense::ModeInput const&, AIMaxima::Defense::Policy const&)
+ 0.19%  ; 80114427   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Defense::computeDistanceField(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)
+ 0.19%  ; 80113652   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::WorldState::reset(int, int)
+ 0.19%  ; 80091895   ;baseline-symbol;baseline-symbols   ;[.] Map::isHardSpaceForGroundUnit(int, int, bool, unsigned int) const
+ 0.19%  ; 80050695   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::(anonymous namespace)::rally_space(Map*, unsigned int, int, int, int, int)
+ 0.19%  ; 80014707   ;baseline-symbol;baseline-symbols   ;[.] std::vector<int, std::allocator<int> >::_M_fill_assign(unsigned long, int const&)
+ 0.19%  ; 80009153   ;baseline-symbol;baseline-symbols   ;[.] Map::isHardSpaceForBuilding(int, int, int, int) const
+ 0.19%  ; 79990706   ;baseline-symbol;baseline-symbols   ;[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)
+ 0.19%  ; 79983203   ;baseline-symbol;baseline-symbols   ;[.] Cortex::nearestWheatDist(Map const&, int, int, int)
+ 0.19%  ; 79982937   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::resourceDistanceAt(AIMaximaPlacement::WorldState const&, int, int) const
+ 0.19%  ; 79980353   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::Gradients::Entities::Water::matches(Player*, int, int) const
+ 0.19%  ; 79978251   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::apply_farming_protection(AIMaximaRuntime::Context&, AIMaxima::Maxima::FarmProtectionPlan const&, int&, int&)
+ 0.19%  ; 79956676   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::WorldState::tile(int, int) const
+ 0.19%  ; 79943904   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::update_environment_model(AIMaximaRuntime::Context&)
+ 0.19%  ; 79883082   ;baseline-symbol;baseline-symbols   ;[.] Map::updateForbiddenGradient(int, int)
+ 0.19%  ; 79857996   ;baseline-symbol;baseline-symbols   ;[.] Cortex::rectsOverlap(int, int, int, int, int, int, int, int, int, int)
+ 0.19%  ; 79802272   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const
+ 0.18%  ; 79442557   ;baseline-symbol;baseline-symbols   ;[.] Map::warpDistSquare(int, int, int, int)
+ 0.11%  ; 47416086   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::available_expansion_neighbors(AIMaximaRuntime::Context&, int, int) const
+ 0.10%  ; 41124787   ;baseline-symbol;baseline-symbols   ;[.] Sector::step()
+ 0.09%  ; 40136704   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::UtilityComponents::UtilityComponents()
+ 0.09%  ; 40125482   ;baseline-symbol;[unknown]          ;[k] 0xffffffffb353697e
+ 0.09%  ; 40119743   ;baseline-symbol;baseline-symbols   ;[.] Building::subscribeToBringResourcesStep()
+ 0.09%  ; 40114757   ;baseline-symbol;baseline-symbols   ;[.] Cortex::PlacementGeometry::candidateOverlapsReservedExpansion(int, int, int, int) const
+ 0.09%  ; 40111903   ;baseline-symbol;baseline-symbols   ;[.] Cortex::countHarvestableWheatWithin(Map const&, unsigned int, int, int, int, int, int)
+ 0.09%  ; 40106695   ;baseline-symbol;baseline-symbols   ;[.] Building::subscribeForFlagingStep()
+ 0.09%  ; 40090682   ;baseline-symbol;baseline-symbols   ;[.] std::_Rb_tree_iterator<std::pair<int const, int> > std::_Rb_tree<int, std::pair<int const, int>, std::_Select1st<std::pair<int const, int> >, std::less<int>, std::allocator<std::pair<int const, int> > >::_M_emplace_hint_unique<std::pair<int, int> >(std::_Rb_tree_const_iterator<std::pair<int const, int> >, std::pair<int, int>&&) [clone .isra.0]
+ 0.09%  ; 40090373   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::DevelopmentAction::DevelopmentAction()
+ 0.09%  ; 40085806   ;baseline-symbol;baseline-symbols   ;[.] Building::canUnitWorkHere(Unit*)
+ 0.09%  ; 40069993   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::(anonymous namespace)::compute_preemptive_distance_field(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)
+ 0.09%  ; 40069938   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::SearchTools::MapInfo::is_resource(int, int, int) const
+ 0.09%  ; 40059254   ;baseline-symbol;libc.so.6          ;[.] _int_free_merge_chunk
+ 0.09%  ; 40056645   ;baseline-symbol;baseline-symbols   ;[.] Unit::handleMedical()
+ 0.09%  ; 40047203   ;baseline-symbol;baseline-symbols   ;[.] AI::getOrder(bool)
+ 0.09%  ; 40045093   ;baseline-symbol;baseline-symbols   ;[.] boost::random::mersenne_twister_engine<unsigned int, 32ul, 624ul, 397ul, 31ul, 2567483615u, 11ul, 4294967295u, 7ul, 2636928640u, 15ul, 4022730752u, 18ul, 1812433253u>::twist()
+ 0.09%  ; 40042679   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::Footprint::empty() const
+ 0.09%  ; 40038474   ;baseline-symbol;baseline-symbols   ;[.] Building::considerScanTile(int, int, int, int, unsigned int, Map*, Building::TurretTarget&) const
+ 0.09%  ; 40038043   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Farming::ExactFertilityCache::at(int, int) const
+ 0.09%  ; 40033413   ;baseline-symbol;baseline-symbols   ;[.] Map::syncStep(unsigned int)
+ 0.09%  ; 40030717   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::ForceModel::predict(long const (&) [26])
+ 0.09%  ; 40026126   ;baseline-symbol;baseline-symbols   ;[.] Cortex::placeFlagTargets(Game*, Team*, Cortex::BuildCandidate*)
+ 0.09%  ; 40025099   ;baseline-symbol;baseline-symbols   ;[.] Building::considerUnitForBuilding(Unit*, int*)
+ 0.09%  ; 40018632   ;baseline-symbol;baseline-symbols   ;[.] Cortex::grownFootprintBox(BuildingType const*, int&, int&, int&, int&)
+ 0.09%  ; 40014713   ;baseline-symbol;baseline-symbols   ;[.] Map::pathfindPointToPoint(int, int, int, int, int*, int*, int, unsigned int, int)
+ 0.09%  ; 40013949   ;baseline-symbol;baseline-symbols   ;[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)
+ 0.09%  ; 40008073   ;baseline-symbol;baseline-symbols   ;[.] std::_Rb_tree_node_base* std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_M_copy<false, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node>(std::_Rb_tree_node<std::pair<std::pair<int, int> const, int> >*, std::_Rb_tree_node_base*, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node&) [clone .isra.0]
+ 0.09%  ; 40000416   ;baseline-symbol;baseline-symbols   ;[.] Map::setMapBuildingsDiscovered(int, int, unsigned int, Team**)
+ 0.09%  ; 39998939   ;baseline-symbol;baseline-symbols   ;[.] TeamStats::observeMeasurementBuilding(Building*)
+ 0.09%  ; 39995339   ;baseline-symbol;baseline-symbols   ;[.] Map::recordNaturalGrowth(int, int, int, int, int)
+ 0.09%  ; 39993508   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::WorldState::building(int) const
+ 0.09%  ; 39992564   ;baseline-symbol;baseline-symbols   ;[.] AINumbi::findNewEmplacement(int, int*, int*)
+ 0.09%  ; 39985996   ;baseline-symbol;baseline-symbols   ;[.] AIMaxima::Maxima::modify_points(unsigned short*, int, int, int, int, int, int, std::__cxx11::list<int, std::allocator<int> >&)
+ 0.09%  ; 39983267   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::Gradients::GradientInfo::matches_obstacle(Player*, int, int) const
+ 0.09%  ; 39974211   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::Construction::BuildingRegister::tick()
+ 0.09%  ; 39968241   ;baseline-symbol;baseline-symbols   ;[.] Unit::integrity()
+ 0.09%  ; 39966725   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaRuntime::Gradients::GradientInfo::matches_source(Player*, int, int) const
+ 0.09%  ; 39961346   ;baseline-symbol;baseline-symbols   ;[.] Building::updateCallLists()
+ 0.09%  ; 39959922   ;baseline-symbol;baseline-symbols   ;[.] BuildingUtils::GIDtoTeam(unsigned short)
+ 0.09%  ; 39958794   ;baseline-symbol;baseline-symbols   ;[.] Unit::handleAction()
+ 0.09%  ; 39958647   ;baseline-symbol;baseline-symbols   ;[.] Team::dirtyWarFlagGradient()
+ 0.09%  ; 39930146   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaFoodLedger::Input::index(int, int) const
+ 0.09%  ; 39929782   ;baseline-symbol;baseline-symbols   ;[.] PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)
+ 0.09%  ; 39927017   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const
+ 0.09%  ; 39916815   ;baseline-symbol;libc.so.6          ;[.] cfree@GLIBC_2.2.5
+ 0.09%  ; 39916792   ;baseline-symbol;libc.so.6          ;[.] malloc
+ 0.09%  ; 39913044   ;baseline-symbol;baseline-symbols   ;[.] PerformanceTelemetry::Moments::add(unsigned long)
+ 0.09%  ; 39907696   ;baseline-symbol;baseline-symbols   ;[.] Map::warpDistMax(int, int, int, int)
+ 0.09%  ; 39895402   ;baseline-symbol;[unknown]          ;[k] 0xffffffffb1e00ef0
+ 0.09%  ; 39893060   ;baseline-symbol;libc.so.6          ;[.] clock_gettime@@GLIBC_2.17
+ 0.09%  ; 39860878   ;baseline-symbol;baseline-symbols   ;[.] Unit::handleMovementAttackingAround()
+ 0.09%  ; 39853164   ;baseline-symbol;baseline-symbols   ;[.] TeamStats::observeMeasurementUnit(Unit*)
+ 0.09%  ; 39845089   ;baseline-symbol;baseline-symbols   ;[.] AIMaximaPlacement::WorldState::WorldState()
+ 0.09%  ; 39750300   ;baseline-symbol;baseline-symbols   ;[.] Game::checkRoomForBuilding(int, int, BuildingType const*, int, bool)
+ 0.09%  ; 39387384   ;baseline-symbol;baseline-symbols   ;[.] NetEngine::getWaitingOnMask()
+ 0.03%  ; 11385451   ;baseline-symbol;baseline-symbols   ;[.] Team::maxBuildLevel()
+ 0.02%  ; 10140441   ;baseline-symbol;baseline-symbols   ;[.] ThunkPrototype::propagateMarkForGC()
+ 0.00%  ; 46811      ;baseline-symbol;baseline-symbols   ;[.] GameGUI::canChangeGameSpeed() const
+ 0.00%  ; 40177      ;baseline-symbol;[unknown]          ;[k] 0xffffffffb34ebc21
+ 0.00%  ; 170        ;baseline-symbol;baseline-symbols   ;[.] PerformanceTelemetry::Scope::~Scope()
+ 0.00%  ; 138        ;baseline-symbol;[unknown]          ;[k] 0xffffffffb1e00f70
+ 0.00%  ; 91         ;baseline-symbol;libc.so.6          ;[.] __internal_syscall_cancel
+ 0.00%  ; 3          ;baseline-symbol;libc.so.6          ;[.] pthread_cond_signal@@GLIBC_2.3.2
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

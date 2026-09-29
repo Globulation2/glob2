@@ -1,0 +1,15 @@
+{
+  "case": "continents12",
+  "variant": "candidate",
+  "directory": "continents12-candidate",
+  "wall_s": 5.251478734891862,
+  "cpu_s": null,
+  "run_s": 2.061549747,
+  "ticks": 12512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "eeb741a9b006fbd97bb23302fda0d108eddbb34eb12141a0ae6a8df0c274d0bb",
+  "order_sha256": "5598003a78aea0ee7556465e5293aefad9d4ead1f0eba62397776e21574a1add",
+  "trace_ticks": 512,
+  "orders": 210
+}

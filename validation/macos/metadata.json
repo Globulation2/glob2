@@ -1,0 +1,33 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "cpu": "Apple M3",
+  "binaries": {
+    "baseline": {
+      "path": "/Users/bradley/.codex/worktrees/nongradient-profile/glob2/artifacts/pr-final/candidate-macos",
+      "sha256": "c049b882cd5ca8d3f8be41a4c791e13808bbcf75d4a2f163e790697cad1c61c9"
+    },
+    "candidate": {
+      "path": "/Users/bradley/.codex/worktrees/nongradient-profile/glob2/artifacts/broad-pass/candidate-macos",
+      "sha256": "2cc1369333517e8fdf589dd0800bb2fdf996bb4b0037f86fe2641a6a74fd8daa"
+    }
+  },
+  "revisions": {
+    "baseline": "ef1f90ed1f0b0ed9557d90b3a75aef5e2531631a",
+    "candidate": "b8b3287715570ec6ed8210749e3c9fc481053594"
+  },
+  "argv": [
+    "artifacts/broad-pass/evidence/run.py",
+    "verify",
+    "--baseline",
+    "artifacts/pr-final/candidate-macos",
+    "--candidate",
+    "artifacts/broad-pass/candidate-macos",
+    "--root",
+    ".",
+    "--output",
+    "artifacts/broad-pass/verify-macos",
+    "--jobs",
+    "3"
+  ]
+}

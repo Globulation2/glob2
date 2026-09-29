@@ -1,0 +1,129 @@
+diff --git a/src/ai/cortex/CortexPlacementCandidates.cpp b/src/ai/cortex/CortexPlacementCandidates.cpp
+index bed0a5531..e6594d1be 100644
+--- a/src/ai/cortex/CortexPlacementCandidates.cpp
++++ b/src/ai/cortex/CortexPlacementCandidates.cpp
+@@ -169,11 +169,20 @@ namespace Cortex
+ 		if (reserveGrown)
+ 			grownFootprintBox(bt, gox, goy, ew, eh);
+ 
++		// Precompute the existing edge-distance gate once, rather than scanning
++		// every building for each candidate. Keep candidate order unchanged.
++		const std::vector<unsigned char> proximity = !isWheatFed && forward == NULL
++			? geometry.buildingProximityMask(w, h, CORTEX_MAX_BUILD_EDGE_DIST)
++			: std::vector<unsigned char>();
++
+ 		// Deterministic scan: fixed (x, y) order over every top-left corner.
+ 		for (int x = 0; x < mapW; x++)
+ 		{
+ 			for (int y = 0; y < mapH; y++)
+ 			{
++				if (!proximity.empty() && !proximity[y * mapW + x])
++					continue;
++
+ 				// Grown-footprint top-left corner: the placed corner shifted by the
+ 				// upgrade box offset (zero for non-growing types and for the inn; up/
+ 				// left for the centered racetrack/pool growth).
+@@ -312,20 +321,6 @@ namespace Cortex
+ 				if (!isWheatFed && anyWheatWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
+ 					continue;
+ 
+-				// EDGE-DISTANCE CAP (non-wheat-fed only): keep tech/military buildings
+-				// clustered with the colony. The soft compactness score alone can let a
+-				// far-flung spot win; this hard cap forbids any spot whose footprint edge
+-				// is more than CORTEX_MAX_BUILD_EDGE_DIST tiles from the nearest existing
+-				// building. Skipped when the team has no buildings yet (first placement),
+-				// and in FORWARD mode (a forward hospital is far from the colony by
+-				// design — the target-distance window above bounds it instead).
+-				if (!isInn && !isSwarm && forward == NULL)
+-				{
+-					const int edgeDist = geometry.nearestBuildingEdgeDist(x, y, w, h);
+-					if (edgeDist >= 0 && edgeDist > CORTEX_MAX_BUILD_EDGE_DIST)
+-						continue;
+-				}
+-
+ 				// INN SIDE-CLEARANCE (placing an inn): the inn may touch a building on
+ 				// at most CORTEX_INN_MAX_TOUCH_SIDES of its four sides; the rest keep
+ 				// CORTEX_INN_SIDE_CLEARANCE empty tiles so workers can reach it and the
+diff --git a/src/ai/cortex/CortexPlacementGeo.cpp b/src/ai/cortex/CortexPlacementGeo.cpp
+index be2eb0a9b..cf4472dc4 100644
+--- a/src/ai/cortex/CortexPlacementGeo.cpp
++++ b/src/ai/cortex/CortexPlacementGeo.cpp
+@@ -4,6 +4,7 @@
+ #include "CortexPlacementGeo.h"
+ 
+ #include "CortexTypes.h"
++#include <algorithm>
+ #include "Game.h"
+ #include "GlobalContainer.h"
+ #include "IntBuildingType.h"
+@@ -471,6 +472,29 @@ namespace Cortex
+ 		return best;
+ 	}
+ 
++	std::vector<unsigned char> PlacementGeometry::buildingProximityMask(int w, int h, int maxGap) const
++	{
++		if (typedBuildings.empty()) return {};
++		const int mapW = map.getW(), mapH = map.getH();
++		std::vector<unsigned char> mask(mapW * mapH, 0);
++		for (const BuildingBox& building : typedBuildings)
++		{
++			const Box& b = building.box;
++			// The edge gap counts empty tiles: touching boxes have gap zero.
++			// These inclusive bounds also cover overlap and both sides of a seam.
++			const int x0 = b.x - w - maxGap, y0 = b.y - h - maxGap;
++			const int columns = std::min(mapW, w + b.w + 2 * maxGap + 1);
++			const int rows = std::min(mapH, h + b.h + 2 * maxGap + 1);
++			for (int dy = 0; dy < rows; ++dy)
++			{
++				const int row = map.normalizeY(y0 + dy) * mapW;
++				for (int dx = 0; dx < columns; ++dx)
++					mask[row + map.normalizeX(x0 + dx)] = 1;
++			}
++		}
++		return mask;
++	}
++
+ 	bool PlacementGeometry::candidateCrowdsInn(int x, int y, int w, int h) const
+ 	{
+ 		if (w <= 0 || h <= 0) return false;
+diff --git a/src/ai/cortex/CortexPlacementGeo.h b/src/ai/cortex/CortexPlacementGeo.h
+index 7e3fd7f2d..7fe25b596 100644
+--- a/src/ai/cortex/CortexPlacementGeo.h
++++ b/src/ai/cortex/CortexPlacementGeo.h
+@@ -40,6 +40,9 @@ namespace Cortex
+ 		int distanceToNearestBuilding(int x, int y) const;
+ 		int distanceToNearestBuildingType(int x, int y, int type) const;
+ 		int nearestBuildingEdgeDist(int x, int y, int w, int h) const;
++		// Exact distance-gate membership for every candidate top-left corner.
++		// Empty means there are no typed buildings, so the gate accepts everywhere.
++		std::vector<unsigned char> buildingProximityMask(int w, int h, int maxGap) const;
+ 		bool candidateCrowdsInn(int x, int y, int w, int h) const;
+ 		bool candidateOverlapsReservedExpansion(int x, int y, int w, int h) const;
+ 	};
+diff --git a/test/CortexGeometryHarness.cpp b/test/CortexGeometryHarness.cpp
+index 05ffcd7dd..c69f5a4cf 100644
+--- a/test/CortexGeometryHarness.cpp
++++ b/test/CortexGeometryHarness.cpp
+@@ -18,6 +18,22 @@ static unsigned compare(Game& game)
+     unsigned checks = 0;
+     auto* team = game.teams[0];
+     Cortex::PlacementGeometry snapshot(team, game.map);
++    // Compare the mask against the independent per-building distance query,
++    // including footprints/radii that wrap or cover the whole map.
++    for (int w : {1, 2, 6, 20})
++        for (int h : {1, 3, 6, 20})
++            for (int gap : {0, 1, 4, 20})
++            {
++                const auto mask = snapshot.buildingProximityMask(w, h, gap);
++                for (int y = 0; y < game.map.getH(); ++y)
++                    for (int x = 0; x < game.map.getW(); ++x)
++                    {
++                        const int distance = snapshot.nearestBuildingEdgeDist(x, y, w, h);
++                        require((mask.empty() || mask[y * game.map.getW() + x]) ==
++                            (distance < 0 || distance <= gap));
++                        ++checks;
++                    }
++            }
+     // Exhaustive candidates include wrapped, grown, and empty footprints.
+     for (int x = -2; x < game.map.getW() + 2; ++x)
+         for (int y = -2; y < game.map.getH() + 2; ++y)

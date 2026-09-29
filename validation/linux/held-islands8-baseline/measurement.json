@@ -1,0 +1,15 @@
+{
+  "case": "held-islands8",
+  "variant": "baseline",
+  "directory": "held-islands8-baseline",
+  "wall_s": 2.6537436521612108,
+  "cpu_s": null,
+  "run_s": 1.097822169,
+  "ticks": 8512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "860fb7ee9a013dc64022ff0aba8f464c29d8c7d32de027690e1434922df44857",
+  "order_sha256": "fdd2ae93e7c63272dbf1bd6c50460a9d6b4834a42c4ce7b185527e6c60780f9e",
+  "trace_ticks": 512,
+  "orders": 124
+}

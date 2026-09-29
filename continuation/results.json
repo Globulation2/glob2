@@ -1,0 +1,86 @@
+[
+  {
+    "case": "continents12",
+    "variant": "baseline",
+    "ticks": 128,
+    "trace_sha256": "49a853b123c2b9ca042cfcc1037451795378ca1e93d37b81ce7194caf83cbb06",
+    "first_uninterrupted_mismatch": 12171
+  },
+  {
+    "case": "continents12",
+    "variant": "candidate",
+    "ticks": 128,
+    "trace_sha256": "49a853b123c2b9ca042cfcc1037451795378ca1e93d37b81ce7194caf83cbb06",
+    "first_uninterrupted_mismatch": 12171
+  },
+  {
+    "case": "islands12",
+    "variant": "baseline",
+    "ticks": 128,
+    "trace_sha256": "1014c6ba6e2eedda0076a748a2cf75a0ed16ceb917e6cf6f23d0fe96c99a12b6",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "islands12",
+    "variant": "candidate",
+    "ticks": 128,
+    "trace_sha256": "1014c6ba6e2eedda0076a748a2cf75a0ed16ceb917e6cf6f23d0fe96c99a12b6",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "even12",
+    "variant": "baseline",
+    "ticks": 128,
+    "trace_sha256": "69041a622814ead76e8bd951b33a1b167e098fb11e1a30b7b214305a2e00bf9a",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "even12",
+    "variant": "candidate",
+    "ticks": 128,
+    "trace_sha256": "69041a622814ead76e8bd951b33a1b167e098fb11e1a30b7b214305a2e00bf9a",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "held-even12-late",
+    "variant": "baseline",
+    "ticks": 128,
+    "trace_sha256": "71045d1ffc27e729a7ceb3f89a09a6b169f1f9e1fa2bccf52bb141b980fc0da9",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "held-even12-late",
+    "variant": "candidate",
+    "ticks": 128,
+    "trace_sha256": "71045d1ffc27e729a7ceb3f89a09a6b169f1f9e1fa2bccf52bb141b980fc0da9",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "cortex12",
+    "variant": "baseline",
+    "ticks": 128,
+    "trace_sha256": "407af60a9abc9e97c92b4550cd0a53208466e181b2a88ac4c51c1993fff9b701",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "cortex12",
+    "variant": "candidate",
+    "ticks": 128,
+    "trace_sha256": "407af60a9abc9e97c92b4550cd0a53208466e181b2a88ac4c51c1993fff9b701",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "cortex-continents12",
+    "variant": "baseline",
+    "ticks": 128,
+    "trace_sha256": "5f8b5f3dd1ac665e69b43eb21daf7b71436cf084852c02ec5b9df347d3fe587b",
+    "first_uninterrupted_mismatch": null
+  },
+  {
+    "case": "cortex-continents12",
+    "variant": "candidate",
+    "ticks": 128,
+    "trace_sha256": "5f8b5f3dd1ac665e69b43eb21daf7b71436cf084852c02ec5b9df347d3fe587b",
+    "first_uninterrupted_mismatch": null
+  }
+]

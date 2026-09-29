@@ -1,0 +1,54 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 211  of event 'cycles:u'
+# Event count (approx.): 7989039005
+#
+# Overhead;      Period;Command        ;Shared Object   ;Symbol                                                                                                                                                                                             
+ 35.94% ; 2870981025 ;baseline-symbol;baseline-symbols;[.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+ 10.90% ; 870748537  ;baseline-symbol;baseline-symbols;[.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+ 6.91%  ; 552124527  ;baseline-symbol;baseline-symbols;[.] AICastor::computeHydratationMap()
+ 6.42%  ; 512580762  ;baseline-symbol;baseline-symbols;[.] Map::updateGlobalGradient(Building*, int)
+ 3.54%  ; 282703605  ;baseline-symbol;baseline-symbols;[.] Map::seedClearAreasGradient(int, int, unsigned short*)
+ 3.48%  ; 278132900  ;baseline-symbol;baseline-symbols;[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+ 3.00%  ; 239487086  ;baseline-symbol;baseline-symbols;[.] Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+ 2.99%  ; 238605608  ;baseline-symbol;baseline-symbols;[.] BuildingGradientSearch::resolve(unsigned long)
+ 2.48%  ; 198178705  ;baseline-symbol;baseline-symbols;[.] TeamStats::step(Team*, bool)
+ 2.47%  ; 197642433  ;baseline-symbol;baseline-symbols;[.] Map::syncStep(unsigned int)
+ 1.98%  ; 158485245  ;baseline-symbol;baseline-symbols;[.] Team::syncStep()
+ 1.97%  ; 157511935  ;baseline-symbol;baseline-symbols;[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+ 1.49%  ; 119427314  ;baseline-symbol;baseline-symbols;[.] Map::updateRoundTripGradient(Building*, int, int)
+ 1.49%  ; 118774850  ;baseline-symbol;baseline-symbols;[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)
+ 1.48%  ; 118468313  ;baseline-symbol;baseline-symbols;[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const
+ 1.48%  ; 117955524  ;baseline-symbol;baseline-symbols;[.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+ 1.00%  ; 79635012   ;baseline-symbol;baseline-symbols;[.] Map::seedGuardAreasGradient(int, int, unsigned short*)
+ 0.99%  ; 79177683   ;baseline-symbol;baseline-symbols;[.] AICastor::updateGlobalGradient(unsigned char*)
+ 0.99%  ; 79143918   ;baseline-symbol;baseline-symbols;[.] Map::updateExploredArea(int)
+ 0.61%  ; 48696496   ;baseline-symbol;baseline-symbols;[.] Building::considerUnitForBuilding(Unit*, int*)
+ 0.50%  ; 39945040   ;baseline-symbol;baseline-symbols;[.] Map::setMapDiscovered(int, int, unsigned int)
+ 0.50%  ; 39935913   ;baseline-symbol;baseline-symbols;[.] Unit::integrity()
+ 0.50%  ; 39928684   ;baseline-symbol;libc.so.6       ;[.] __memset_avx2_unaligned_erms
+ 0.50%  ; 39913645   ;baseline-symbol;baseline-symbols;[.] Map::growResources()
+ 0.50%  ; 39906809   ;baseline-symbol;baseline-symbols;[.] Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const
+ 0.50%  ; 39902827   ;baseline-symbol;baseline-symbols;[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)
+ 0.50%  ; 39892904   ;baseline-symbol;baseline-symbols;[.] Map::swimClass(int, int)
+ 0.50%  ; 39877947   ;baseline-symbol;baseline-symbols;[.] Team::addBuildingNeedingWork(Building*, int)
+ 0.50%  ; 39834759   ;baseline-symbol;baseline-symbols;[.] Map::resourceAvailableUpdate(int, int, int, int, int, int*, int*, int*)
+ 0.50%  ; 39829251   ;baseline-symbol;baseline-symbols;[.] Building::considerUnitForResource(Unit*, int, int*)
+ 0.50%  ; 39822613   ;baseline-symbol;baseline-symbols;[.] Map::resourceAvailable(int, int, int, int, int, int*)
+ 0.49%  ; 39324552   ;baseline-symbol;baseline-symbols;[.] Unit::syncStep()
+ 0.49%  ; 39311630   ;baseline-symbol;libc.so.6       ;[.] _int_free_chunk
+ 0.49%  ; 39203208   ;baseline-symbol;baseline-symbols;[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)
+ 0.49%  ; 39177538   ;baseline-symbol;baseline-symbols;[.] Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)
+ 0.49%  ; 38998017   ;baseline-symbol;libc.so.6       ;[.] __memmove_avx_unaligned
+ 0.45%  ; 35771886   ;baseline-symbol;baseline-symbols;[.] AICastor::computeWorkPowerMap()
+ 0.00%  ; 298        ;baseline-symbol;[unknown]       ;[k] 0xffffffffb1e00f70
+ 0.00%  ; 3          ;baseline-symbol;baseline-symbols;[.] GradientBucket::grow(unsigned long)
+ 0.00%  ; 3          ;baseline-symbol;libc.so.6       ;[.] _int_malloc
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

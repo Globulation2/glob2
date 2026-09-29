@@ -1,0 +1,12 @@
+{
+  "case": "cortex-continents12",
+  "variant": "candidate",
+  "directory": "cortex-continents12-2-candidate",
+  "wall_s": 10.54246198409237,
+  "cpu_s": 11.568265000000054,
+  "run_s": 6.804526929,
+  "ticks": 21000,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "compiler_interference": []
+}

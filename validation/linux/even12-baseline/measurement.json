@@ -1,0 +1,15 @@
+{
+  "case": "even12",
+  "variant": "baseline",
+  "directory": "even12-baseline",
+  "wall_s": 20.572286769747734,
+  "cpu_s": null,
+  "run_s": 7.641122857,
+  "ticks": 12512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "6ba7c027588c1848fcf618ac68c6bca1b1a2aa360ad2876e3ee0a0275b6d3d0b",
+  "order_sha256": "69a481648a1508792b00bca7dafe2a00a638068938ece82b155d0a2fbf0a9009",
+  "trace_ticks": 512,
+  "orders": 164
+}

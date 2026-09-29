@@ -1,0 +1,15 @@
+{
+  "case": "cortex12",
+  "variant": "candidate",
+  "directory": "cortex12-candidate",
+  "wall_s": 18.256338098086417,
+  "cpu_s": null,
+  "run_s": 9.530345528,
+  "ticks": 20512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "35f64b51a4b3eb9a522bb5b95194ce87c9ad4eb16cfb20a92f4bfc9327183758",
+  "order_sha256": "534a7aa0bae5e02f0e5ccf013b5dc4c00cf14b1a67371dff484189588f9d9d94",
+  "trace_ticks": 512,
+  "orders": 344
+}

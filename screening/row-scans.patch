@@ -1,0 +1,32 @@
+diff --git a/src/ai/cortex/CortexObservationObserve.cpp b/src/ai/cortex/CortexObservationObserve.cpp
+index 1e4fcf3d5..f1c0ae471 100644
+--- a/src/ai/cortex/CortexObservationObserve.cpp
++++ b/src/ai/cortex/CortexObservationObserve.cpp
+@@ -252,8 +252,9 @@ namespace Cortex
+ 			Map& map = game->map;
+ 			const int w = map.getW();
+ 			const int h = map.getH();
+-			for (int x = 0; x < w && obs.fruitOnMap == 0; x++)
+-				for (int y = 0; y < h; y++)
++			// This is an existence query; row order follows the map storage.
++			for (int y = 0; y < h && obs.fruitOnMap == 0; y++)
++				for (int x = 0; x < w; x++)
+ 					if (map.isResourceTakeable(x, y, CHERRY)
+ 					 || map.isResourceTakeable(x, y, ORANGE)
+ 					 || map.isResourceTakeable(x, y, PRUNE))
+diff --git a/src/ai/cortex/CortexWater.cpp b/src/ai/cortex/CortexWater.cpp
+index 0bb6dc022..3c7ef559a 100644
+--- a/src/ai/cortex/CortexWater.cpp
++++ b/src/ai/cortex/CortexWater.cpp
+@@ -134,8 +134,9 @@ namespace Cortex
+ 		// grows on water and is harvestable only by swimmers, so a revealed algae
+ 		// tile is a direct reason to train SWIM. FOW-gated (team->allies vision),
+ 		// exactly like the placement / fruit scans — never unfogged truth.
+-		for (int x = 0; x < w && out.algaeDiscovered == 0; x++)
+-			for (int y = 0; y < h; y++)
++		// Only existence matters, so visit adjacent tiles in storage order.
++		for (int y = 0; y < h && out.algaeDiscovered == 0; y++)
++			for (int x = 0; x < w; x++)
+ 				if (map.isResourceTakeable(x, y, ALGA)
+ 				 && map.isMapDiscovered(x, y, team->allies))
+ 				{

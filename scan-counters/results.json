@@ -1,0 +1,66 @@
+[
+  {
+    "case": "even12",
+    "variant": "baseline",
+    "repeat": 0,
+    "instructions:u": 75154676495,
+    "cycles:u": 37513122854,
+    "cache-misses:u": 416850292
+  },
+  {
+    "case": "even12",
+    "variant": "row-scans",
+    "repeat": 1,
+    "instructions:u": 75132906208,
+    "cycles:u": 37059852146,
+    "cache-misses:u": 345614790
+  },
+  {
+    "case": "even12",
+    "variant": "row-scans",
+    "repeat": 2,
+    "instructions:u": 75133178295,
+    "cycles:u": 37590008178,
+    "cache-misses:u": 363927483
+  },
+  {
+    "case": "even12",
+    "variant": "baseline",
+    "repeat": 3,
+    "instructions:u": 75154660052,
+    "cycles:u": 41046676684,
+    "cache-misses:u": 422324612
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "baseline",
+    "repeat": 0,
+    "instructions:u": 198808776370,
+    "cycles:u": 103281120557,
+    "cache-misses:u": 408895687
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "row-scans",
+    "repeat": 1,
+    "instructions:u": 198651188154,
+    "cycles:u": 102202209901,
+    "cache-misses:u": 388134576
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "row-scans",
+    "repeat": 2,
+    "instructions:u": 198702368146,
+    "cycles:u": 102952199303,
+    "cache-misses:u": 408831378
+  },
+  {
+    "case": "held-islands12-late",
+    "variant": "baseline",
+    "repeat": 3,
+    "instructions:u": 198761424054,
+    "cycles:u": 102868463513,
+    "cache-misses:u": 422372252
+  }
+]

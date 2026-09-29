@@ -1,0 +1,12 @@
+{
+  "case": "cortex12",
+  "variant": "baseline",
+  "directory": "cortex12--1-baseline",
+  "wall_s": 16.820193998049945,
+  "cpu_s": 17.824574000000027,
+  "run_s": 12.214083319,
+  "ticks": 21000,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "compiler_interference": []
+}

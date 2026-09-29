@@ -1,0 +1,12 @@
+{
+  "case": "even12",
+  "variant": "candidate",
+  "directory": "even12-2-candidate",
+  "wall_s": 16.666399606037885,
+  "cpu_s": 19.07666599999999,
+  "run_s": 7.07202593,
+  "ticks": 13000,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "compiler_interference": []
+}

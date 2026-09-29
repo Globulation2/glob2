@@ -1,0 +1,15 @@
+{
+  "case": "held-islands12",
+  "variant": "candidate",
+  "directory": "held-islands12-candidate",
+  "wall_s": 20.206624755170196,
+  "cpu_s": null,
+  "run_s": 7.509395956,
+  "ticks": 8512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "08edcf4375323b753d64ea4a07f64e36521f2877d8c917eba1cdf3377e676d8b",
+  "order_sha256": "7e0e4c03cec8448a1e92bb544919370fe01ae98b1f7c3b9f0eb7e64bc6829ba0",
+  "trace_ticks": 512,
+  "orders": 252
+}

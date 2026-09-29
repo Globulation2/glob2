@@ -1,0 +1,15 @@
+{
+  "case": "held-even8",
+  "variant": "candidate",
+  "directory": "held-even8-candidate",
+  "wall_s": 5.69048143690452,
+  "cpu_s": null,
+  "run_s": 1.991840192,
+  "ticks": 8512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "ef4f32b93850eca259b263b344fc11bc262dc4217d612904b6fad7362f862a22",
+  "order_sha256": "3fdc75c47acfb1a3b5a1c77324c0247e66d626cf6fc9e955632ee8c5b836e469",
+  "trace_ticks": 512,
+  "orders": 75
+}

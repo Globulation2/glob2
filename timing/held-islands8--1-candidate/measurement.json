@@ -1,0 +1,12 @@
+{
+  "case": "held-islands8",
+  "variant": "candidate",
+  "directory": "held-islands8--1-candidate",
+  "wall_s": 9.620299068978056,
+  "cpu_s": 13.473302000000007,
+  "run_s": 8.459553468,
+  "ticks": 18000,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "compiler_interference": []
+}

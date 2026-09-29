@@ -1,0 +1,2379 @@
+{
+  "profiles": {
+    "even12": {
+      "total_period": 79448742537,
+      "symbols": {
+        "[.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)": 15563428176,
+        "[.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)": 6226939928,
+        "[.] BuildingGradientSearch::resolve(unsigned long)": 4787880446,
+        "[.] Map::updateGlobalGradient(Building*, int)": 4595973451,
+        "[.] Cortex::placeCandidatesImpl(Game*, Team*, int, int, Cortex::BuildCandidate*, Cortex::(anonymous namespace)::ForwardBias const*)": 4316265678,
+        "[.] Cortex::observe(Player*, int, unsigned short)": 2793930071,
+        "[.] Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const": 2236977141,
+        "[.] AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const": 2201368548,
+        "[.] __memset_avx2_unaligned_erms": 2001266106,
+        "[.] Cortex::assessSwim(Player*, bool)": 1918466666,
+        "[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)": 1832852868,
+        "[.] Cortex::anyWheatWithin(Map const&, int, int, int, int, int)": 1797061776,
+        "[.] Map::seedClearAreasGradient(int, int, unsigned short*)": 1478791251,
+        "[.] Cortex::rectEdgeChebyshev(int, int, int, int, int, int, int, int, int, int)": 1396423281,
+        "[.] Map::seedGuardAreasGradient(int, int, unsigned short*)": 1191202253,
+        "[.] Map::syncStep(unsigned int)": 1157902662,
+        "[.] AIMaximaRuntime::Gradients::Entities::AnyTeamBuilding::matches(Player*, int, int) const": 1116423114,
+        "[.] AIMaximaPlacement::WorldState::index(int, int) const": 1079924576,
+        "[.] AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const": 1078696607,
+        "[.] Cortex::nearestWheatDist(Map const&, int, int, int)": 799341714,
+        "[.] Map::updateRoundTripGradient(Building*, int, int)": 759185262,
+        "[.] AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const": 719294381,
+        "[.] AIMaximaFoodLedger::Input::normalizeX(int) const": 718871076,
+        "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const": 678560291,
+        "[.] Map::growResources()": 639732474,
+        "[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)": 639075818,
+        "[.] Map::isHardSpaceForBuilding(int, int, int, int) const": 599272334,
+        "[.] Cortex::rectsOverlap(int, int, int, int, int, int, int, int, int, int)": 559539480,
+        "[.] Map::isHardSpaceForBuilding(int, int) const": 559509147,
+        "[.] AIMaximaPlacement::WorldState::normalizeY(int) const": 520095305,
+        "[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, __gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]": 517808638,
+        "[.] AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int) const": 456156564,
+        "[.] Map::warpDist1d(int, int, int)": 436245477,
+        "[.] Map::resourceAvailableUpdate(int, int, int, int, int, int*, int*, int*)": 359548099,
+        "[.] AICastor::computeHydratationMap()": 356509985,
+        "[.] AINumbi::nbFreeAround(int, int, int, int, int)": 319776411,
+        "[.] AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)": 319773978,
+        "[.] AIMaximaPlacement::WorldState::normalizeX(int) const": 319034731,
+        "[.] AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const": 279722969,
+        "[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const": 279546796,
+        "[.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)": 240040991,
+        "[.] Cortex::countSurvivingWheatWithin(Map const&, int, int, int, int, int)": 239965479,
+        "[.] AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)": 239894602,
+        "[.] AIMaximaFoodLedger::Input::index(int, int) const": 239813983,
+        "[.] Map::isFreeForBuilding(int, int) const": 239715086,
+        "[.] Cortex::PlacementGeometry::nearestBuildingEdgeDist(int, int, int, int) const": 239680016,
+        "[.] AIMaximaPlacement::WorldState::tile(int, int) const": 239595362,
+        "[.] AIMaximaFoodLedger::Input::normalizeY(int) const": 220125197,
+        "[.] TeamStats::step(Team*, bool)": 200107725,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_discovered(int, int) const": 200032949,
+        "[.] AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const": 199860046,
+        "[.] AIMaximaPlacement::Planner::adjoiningBarracks(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&, std::vector<int, std::allocator<int> >&, std::vector<int, std::allocator<int> >&) const": 199831385,
+        "[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 199528899,
+        "[.] AIMaximaPlacement::Planner::prepareRetrySignature(AIMaximaPlacement::WorldState const&)": 160240996,
+        "[.] AIMaximaPlacement::Planner::resourceDistanceAt(AIMaximaPlacement::WorldState const&, int, int) const": 160085949,
+        "[.] AIMaxima::Maxima::wheat_invasion_clearing_required(AIMaximaRuntime::Context&, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Maxima::WoodReserve const&) const": 159958597,
+        "[.] AIMaximaPlacement::Planner::routeArtery(AIMaximaPlacement::WorldState const&, std::vector<int, std::allocator<int> > const&, int, bool, unsigned int, std::vector<int, std::allocator<int> >&, AIMaximaPlacement::RejectionReason&) const": 159870019,
+        "[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)": 159738064,
+        "[.] Game::checkRoomForBuilding(int, int, BuildingType const*, int, bool)": 159732310,
+        "[.] __memmove_avx_unaligned_erms": 150762356,
+        "[.] AI::getOrder(bool)": 120154981,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_resource(int, int, int) const": 120125180,
+        "[.] AIMaximaPlacement::Planner::isCirculationReserved(int) const": 120106428,
+        "[.] AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const": 120105866,
+        "[.] AIMaxima::Maxima::apply_maintenance_clearing_plan(AIMaximaRuntime::Context&, AIMaxima::Maxima::MaintenanceClearingPlan const&)": 120045799,
+        "[.] Building::integrity()": 120017251,
+        "[.] cfree@GLIBC_2.2.5": 120011484,
+        "[.] _int_malloc": 119985565,
+        "[.] AIMaxima::(anonymous namespace)::compute_preemptive_distance_field(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)": 119929693,
+        "[.] AIMaxima::Maxima::build_maintenance_clearing_plan(AIMaximaRuntime::Context&)": 119743368,
+        "[.] AIMaxima::reachableFoodCapacity(Map*, Building*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const*, std::set<int, std::less<int>, std::allocator<int> >*, int)": 118833502,
+        "[.] Map::isFreeForBuilding(int, int, int, int) const": 118832383,
+        "[.] AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int) const": 116695093,
+        "[.] AICastor::updateGlobalGradient(unsigned char*)": 116305501,
+        "[.] AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const": 101518036,
+        "[.] Building::updateCallLists()": 80116729,
+        "[.] AICastor::wheatGradientAt(unsigned long)": 80058783,
+        "[.] Team::buildingHasHigherPriority(Building*, Building*)": 80056498,
+        "[.] Cortex::(anonymous namespace)::countReach(Map&, Team const*, int, int, bool, bool*)": 80043135,
+        "[.] AIMaximaPlacement::Planner::configuredProfile(int) const": 80042557,
+        "[.] Map::updateForbiddenGradient(int, int)": 80030317,
+        "[.] malloc": 80023138,
+        "[.] Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 79967048,
+        "[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)": 79962258,
+        "[.] AIMaximaPlacement::Footprint::Footprint()": 79961062,
+        "[.] Map::warpDistMax(int, int, int, int)": 79941854,
+        "[.] Building::computeWishedResources(int*)": 79940076,
+        "[.] AIMaximaRuntime::Gradients::GradientInfo::matches_obstacle(Player*, int, int) const": 79922548,
+        "[.] Map::resourceAvailable(int, int, int, int, int, int*)": 79863085,
+        "[.] AINumbi::findNewEmplacement(int, int*, int*)": 79835072,
+        "[.] Team::integrity()": 79741354,
+        "[.] AIMaximaRuntime::Gradients::Gradient::recalculate(Player*)": 79736210,
+        "[.] Map::updateExploredArea(int)": 79606773,
+        "[.] AIMaxima::Maxima::available_expansion_neighbors(AIMaximaRuntime::Context&, int, int) const": 79298833,
+        "[.] AICastor::updateGlobalGradientNoObstacle(unsigned char*)": 79117068,
+        "[.] AICastor::computeObstacleUnitMap()": 79107712,
+        "[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]": 78622921,
+        "[.] Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]": 73322253,
+        "[.] void std::vector<int, std::allocator<int> >::_M_realloc_append<int const&>(int const&)": 40089909,
+        "[.] AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)": 40080577,
+        "[.] 0x0000000000000a09": 40078915,
+        "[.] Map::getResourceGradient(int, int, int)": 40060694,
+        "[.] AIMaxima::Maxima::reconnaissance_discovery_map(AIMaximaRuntime::Context&) const": 40052853,
+        "[.] AIMaximaPlacement::DevelopmentAction::DevelopmentAction()": 40049142,
+        "[.] AIMaximaRuntime::Gradients::Entities::AnyResource::matches(Player*, int, int) const": 40048831,
+        "[.] std::vector<int, std::allocator<int> >::_M_fill_assign(unsigned long, int const&)": 40048553,
+        "[.] Cortex::scanWheatForbidden(Map&, unsigned int, int, std::vector<int, std::allocator<int> > const&, int, int, int, int, int, bool, bool, bool)": 40040247,
+        "[.] Cortex::innOccupiedSides(Map const&, int, int, int, int, int, int, int, int)": 40036569,
+        "[.] syncRandEngine()": 40031854,
+        "[.] TeamStats::observeMeasurementBuilding(Building*)": 40029376,
+        "[.] AIMaximaPlacement::Planner::isFootprintReserved(int) const": 40020746,
+        "[.] Building::desiredNumberOfWorkers()": 40017506,
+        "[.] AIMaximaPlacement::Planner::colonyBenefit(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&) const": 40013444,
+        "[.] bool std::binary_search<__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int>(__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int const&) [clone .isra.0]": 40012665,
+        "[.] Map::buildingGradientValue(Building*, int, unsigned long) const": 40011016,
+        "[.] bool Map::isGradientPeak<unsigned short>(unsigned short const*, int, int) const": 40005722,
+        "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const::{lambda(std::vector<int, std::allocator<int> > const&, int, int, int, int)#1}::operator()(std::vector<int, std::allocator<int> > const&, int, int, int, int) const [clone .isra.0]": 40005704,
+        "[.] Unit::endOfAction()": 40005298,
+        "[.] Cortex::CortexPolicy::scoreFeedCapacity(Cortex::CortexObservation const&, Cortex::CortexPolicy::DecideFacts const&) const": 40004234,
+        "[.] AIMaximaRuntime::Gradients::GradientInfo::matches_source(Player*, int, int) const": 40002396,
+        "[.] Building::fetchApportionment(int*, int*) const": 40000090,
+        "[.] Team::removeBuildingNeedingWork(Building*, int)": 39998306,
+        "[.] Map::setMapExploredByUnit(int, int, int, int, int)": 39997427,
+        "[.] AICortex::translateAction(Cortex::CortexAction const&, Cortex::CortexObservation const&)": 39985526,
+        "[.] AIMaximaPlacement::WorldState::profile(int) const": 39983962,
+        "[.] Building::totalWishedResource()": 39982468,
+        "[.] AIMaximaPlacement::Planner::stateSignature(unsigned int) const": 39982375,
+        "[.] Team::syncStep()": 39979156,
+        "[.] __strlen_avx2": 39967220,
+        "[.] PerformanceTelemetry::Moments::add(unsigned long)": 39959032,
+        "[.] AINumbi::mayAttack(int, int, int)": 39953100,
+        "[.] Cortex::reconcileWheatForbidden(Player*, int, bool, bool)": 39952157,
+        "[.] Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)": 39950652,
+        "[.] Map::directionByGradient(unsigned int, int, int, int, unsigned short const*, int*, int*, bool) const": 39939917,
+        "[.] AIMaxima::StrategyResolver::telemetryEnabled()": 39929456,
+        "[.] _int_free_merge_chunk": 39926027,
+        "[.] Cortex::PlacementGeometry::distanceToNearestBuilding(int, int) const": 39918218,
+        "[.] BuildingGradientSearch::resolved(unsigned long) const": 39913001,
+        "[.] Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)": 39909011,
+        "[.] boost::random::mersenne_twister_engine<unsigned int, 32ul, 624ul, 397ul, 31ul, 2567483615u, 11ul, 4294967295u, 7ul, 2636928640u, 15ul, 4022730752u, 18ul, 1812433253u>::twist()": 39901853,
+        "[.] AIMaximaFoodLedger::Ledger::prepareResidualSums(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const": 39901520,
+        "[.] AIMaxima::Maxima::update_environment_model(AIMaximaRuntime::Context&)": 39891420,
+        "[.] AICastor::computeEnemyWarriorsMap()": 39882410,
+        "[.] AIMaxima::Maxima::update_farming(AIMaximaRuntime::Context&)": 39869911,
+        "[.] AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const": 39865016,
+        "[.] Unit::tryClaimClearingAreaForHarvesting()": 39862175,
+        "[.] AIMaxima::(anonymous namespace)::farm_management_area(AIMaximaRuntime::Context&, int)": 39860860,
+        "[.] Map::recordNaturalGrowth(int, int, int, int, int)": 39846149,
+        "[.] AIMaximaPlacement::WorldState::reset(int, int)": 39842070,
+        "[.] AIMaximaPlacement::Planner::selectActionIncremental(AIMaximaPlacement::WorldState const&, std::vector<AIMaximaPlacement::DevelopmentIntent, std::allocator<AIMaximaPlacement::DevelopmentIntent> > const&, AIMaximaPlacement::DevelopmentLimits const&, AIMaximaPlacement::DevelopmentAction&, unsigned int, int)": 39656185,
+        "[.] memcpy@plt": 38904177,
+        "[.] Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)": 38087584,
+        "[.] Unit::handleMovement()": 37604423,
+        "[.] ResourcesTypes::get(unsigned int) const": 35407134,
+        "[k] 0xffffffffb1e00b90": 2703164,
+        "[.] pthread_cond_wait@@GLIBC_2.3.2": 176,
+        "[.] __internal_syscall_cancel": 3,
+        "[k] 0xffffffffb1e00f70": 1
+      }
+    },
+    "held-islands12-late": {
+      "total_period": 200031246265,
+      "symbols": {
+        "[.] Map::updateGlobalGradient(Building*, int)": 16886469919,
+        "[.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)": 15589615932,
+        "[.] BuildingGradientSearch::resolve(unsigned long)": 14561851792,
+        "[.] AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const": 13171246605,
+        "[.] AIMaximaFoodLedger::Input::normalizeX(int) const": 10351516673,
+        "[.] Cortex::rectEdgeChebyshev(int, int, int, int, int, int, int, int, int, int)": 10243492705,
+        "[.] AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const": 9439105327,
+        "[.] AIMaximaFoodLedger::Input::normalizeY(int) const": 7069316777,
+        "[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)": 6726898172,
+        "[.] Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const": 6079296973,
+        "[.] __memset_avx2_unaligned_erms": 5407275909,
+        "[.] Cortex::placeCandidatesImpl(Game*, Team*, int, int, Cortex::BuildCandidate*, Cortex::(anonymous namespace)::ForwardBias const*)": 4756187179,
+        "[.] Map::warpDist1d(int, int, int)": 3967238142,
+        "[.] AIMaximaPlacement::WorldState::index(int, int) const": 3966282343,
+        "[.] AIMaximaFoodLedger::Input::index(int, int) const": 3681671562,
+        "[.] Cortex::(anonymous namespace)::bfsGroundField(Map&, unsigned int, int, int, bool, std::vector<int, std::allocator<int> >&)": 3087152117,
+        "[.] AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)": 2640430425,
+        "[.] Cortex::rectsOverlap(int, int, int, int, int, int, int, int, int, int)": 2525204974,
+        "[.] Cortex::anyWheatWithin(Map const&, int, int, int, int, int)": 2277885346,
+        "[.] Map::updateRoundTripGradient(Building*, int, int)": 2123728725,
+        "[.] Map::seedGuardAreasGradient(int, int, unsigned short*)": 2080358311,
+        "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const": 2075770106,
+        "[.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)": 1966132050,
+        "[.] Map::seedClearAreasGradient(int, int, unsigned short*)": 1724801639,
+        "[.] AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const": 1682816525,
+        "[.] AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const": 1681642927,
+        "[.] Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 1322180786,
+        "[.] AIMaxima::reachableFoodCapacity(Map*, Building*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const*, std::set<int, std::less<int>, std::allocator<int> >*, int)": 1201777068,
+        "[.] Cortex::nearestWheatDist(Map const&, int, int, int)": 1147485283,
+        "[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)": 1081863571,
+        "[.] AIMaximaPlacement::WorldState::normalizeX(int) const": 1000599037,
+        "[.] __memmove_avx_unaligned_erms": 906040129,
+        "[.] AIMaxima::Defense::computeDistanceField(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)": 861072542,
+        "[.] void AIMaximaPlacement::(anonymous namespace)::sortUnique<int>(std::vector<int, std::allocator<int> >&)": 841856336,
+        "[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)": 840546318,
+        "[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const": 801395235,
+        "[.] AIMaximaPlacement::Planner::routeArtery(AIMaximaPlacement::WorldState const&, std::vector<int, std::allocator<int> > const&, int, bool, unsigned int, std::vector<int, std::allocator<int> >&, AIMaximaPlacement::RejectionReason&) const": 795863102,
+        "[.] AIMaximaPlacement::Planner::resourceDistanceAt(AIMaximaPlacement::WorldState const&, int, int) const": 760403102,
+        "[.] Map::syncStep(unsigned int)": 721430017,
+        "[.] Cortex::PlacementGeometry::nearestBuildingEdgeDist(int, int, int, int) const": 721211081,
+        "[.] Map::isHardSpaceForBuilding(int, int) const": 720897453,
+        "[.] Building::integrity()": 720819516,
+        "[.] Cortex::assessSwim(Player*, bool)": 681295715,
+        "[.] AIMaximaPlacement::WorldState::normalizeY(int) const": 677536729,
+        "[.] AIMaxima::Maxima::collect_fruit_field(AIMaximaRuntime::Context&) const": 666070552,
+        "[.] AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)": 600887395,
+        "[.] Map::isHardSpaceForBuilding(int, int, int, int) const": 561146990,
+        "[.] BuildingGradientSearch::resolved(unsigned long) const": 556431598,
+        "[.] Map::warpDistMax(int, int, int, int)": 552142613,
+        "[.] Building::computeWishedResources(int*)": 521645527,
+        "[.] Cortex::observe(Player*, int, unsigned short)": 521390756,
+        "[.] AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const": 520773061,
+        "[.] Cortex::PlacementGeometry::distanceToNearestBuilding(int, int) const": 520143151,
+        "[.] Unit::handleMovementAttackingAround()": 480201109,
+        "[.] AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int) const": 469577474,
+        "[.] Cortex::scanWheatForbidden(Map&, unsigned int, int, std::vector<int, std::allocator<int> > const&, int, int, int, int, int, bool, bool, bool)": 441321239,
+        "[.] Unit::syncStep()": 441067191,
+        "[.] _int_malloc": 440915857,
+        "[.] Map::resourceAvailable(int, int, int, int, int, int*)": 400947324,
+        "[.] Map::updateForbiddenGradient(int, int)": 400928651,
+        "[.] AIMaximaRuntime::Gradients::Entities::AnyTeamBuilding::matches(Player*, int, int) const": 400726822,
+        "[.] AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const": 400700721,
+        "[.] AIMaximaPlacement::Planner::adjoiningBarracks(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&, std::vector<int, std::allocator<int> >&, std::vector<int, std::allocator<int> >&) const": 400377725,
+        "[.] cfree@GLIBC_2.2.5": 400165326,
+        "[.] AIMaximaPlacement::DevelopmentAction::DevelopmentAction()": 399952079,
+        "[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)": 360942510,
+        "[.] AIMaximaPlacement::Planner::isCirculationReserved(int) const": 360715612,
+        "[.] AIMaxima::(anonymous namespace)::compute_preemptive_distance_field(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)": 360662021,
+        "[.] malloc": 360647034,
+        "[.] AIMaximaPlacement::Planner::parcelTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::DevelopmentTemplate const&) const": 360564738,
+        "[.] AIMaxima::Defense::analyzeMode(AIMaxima::Defense::ModeInput const&, AIMaxima::Defense::Policy const&)": 360102607,
+        "[.] Building::considerUnitForBuilding(Unit*, int*)": 354322620,
+        "[.] TeamStats::step(Team*, bool)": 320620914,
+        "[.] Map::growResources()": 320570297,
+        "[.] AIMaxima::Farming::hasAdjacentProtectedWheat(std::vector<unsigned char, std::allocator<unsigned char> > const&, int, int, int, int)": 320482879,
+        "[.] AIMaxima::Maxima::plan_offense(AIMaximaRuntime::Context&)::{lambda(int, int)#1}::operator()(int, int) const": 320207164,
+        "[.] Map::setMapDiscovered(int, int, unsigned int)": 320079405,
+        "[.] AIMaximaPlacement::Planner::isFootprintReserved(int) const": 316298584,
+        "[.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)": 280771563,
+        "[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 280550755,
+        "[.] AIMaxima::Maxima::update_environment_model(AIMaximaRuntime::Context&)": 280537943,
+        "[.] AIMaxima::Maxima::wheat_invasion_clearing_required(AIMaximaRuntime::Context&, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Maxima::WoodReserve const&) const": 280261720,
+        "[.] Map::updateExploredArea(int)": 279956227,
+        "[.] Cortex::assessAmphibious(Player*, int, int, int const*, int const*, int, int, int)": 269323710,
+        "[.] Building::desiredNumberOfWorkers()": 240532022,
+        "[.] Cortex::PlacementGeometry::candidateCrowdsInn(int, int, int, int) const": 240257930,
+        "[.] Map::pathfindPointToPoint(int, int, int, int, int*, int*, int, unsigned int, int)": 240249920,
+        "[.] void std::vector<int, std::allocator<int> >::_M_realloc_append<int const&>(int const&)": 240105077,
+        "[.] PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)": 239493106,
+        "[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]": 236310956,
+        "[.] AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int) const": 233585320,
+        "[.] bool std::binary_search<__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int>(__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int const&) [clone .isra.0]": 201591251,
+        "[.] AIMaximaRuntime::Construction::BuildingRegister::observe_buildings() const": 200520849,
+        "[.] AIMaxima::Maxima::apply_maintenance_clearing_plan(AIMaximaRuntime::Context&, AIMaxima::Maxima::MaintenanceClearingPlan const&)": 200426931,
+        "[.] AIMaxima::Maxima::build_maintenance_clearing_plan(AIMaximaRuntime::Context&)": 200410708,
+        "[.] AIMaxima::Maxima::sample_reconnaissance_forces(AIMaximaRuntime::Context&)": 200399765,
+        "[.] AIMaximaPlacement::Planner::prepareRetrySignature(AIMaximaPlacement::WorldState const&)": 200393149,
+        "[.] Building::updateCallLists()": 200379951,
+        "[.] TeamStats::observeMeasurementUnit(Unit*)": 200358451,
+        "[.] AIMaximaPlacement::WorldState::tile(int, int) const": 200328519,
+        "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const::{lambda(std::vector<int, std::allocator<int> > const&, int, int, int, int)#1}::operator()(std::vector<int, std::allocator<int> > const&, int, int, int, int) const [clone .isra.0]": 175372496,
+        "[.] _int_free_merge_chunk": 160457999,
+        "[.] AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const": 160446099,
+        "[.] Team::buildingHasHigherPriority(Building*, Building*)": 160376261,
+        "[.] Map::buildingGradientValue(Building*, int, unsigned long) const": 160336202,
+        "[.] GradientBucket::grow(unsigned long)": 160312446,
+        "[.] Unit::integrity()": 160308420,
+        "[.] AIMaximaPlacement::WorldState::reset(int, int)": 160249690,
+        "[.] Team::syncStep()": 160242592,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_discovered(int, int) const": 160185871,
+        "[.] Cortex::countSurvivingWheatWithin(Map const&, int, int, int, int, int)": 160170665,
+        "[.] Map::roundTripDistance(Building*, int, int, int, int, int*)": 160126872,
+        "[.] Team::removeBuildingNeedingWork(Building*, int)": 160123406,
+        "[.] Cortex::(anonymous namespace)::countReach(Map&, Team const*, int, int, bool, bool*)": 120435982,
+        "[.] Map::isHardSpaceForGroundUnit(int, int, bool, unsigned int) const": 120348334,
+        "[k] 0xffffffffb1e00ef0": 120314039,
+        "[.] Building::subscribeForFlagingStep()": 120292907,
+        "[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, __gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]": 120284782,
+        "[.] Team::integrity()": 120236640,
+        "[.] AIMaximaPlacement::Planner::footprintTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const": 120208875,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_resource(int, int, int) const": 120190838,
+        "[.] std::_Rb_tree_increment(std::_Rb_tree_node_base*)": 120180400,
+        "[.] Building::canUnitWorkHere(Unit*)": 120162618,
+        "[.] Building::noteUnitFailing(Unit*, Building::UnitCantWorkReason)": 120146386,
+        "[.] AIMaximaRuntime::Gradients::Gradient::recalculate(Player*)": 120145151,
+        "[.] AIMaximaPlacement::Planner::selectActionIncremental(AIMaximaPlacement::WorldState const&, std::vector<AIMaximaPlacement::DevelopmentIntent, std::allocator<AIMaximaPlacement::DevelopmentIntent> > const&, AIMaximaPlacement::DevelopmentLimits const&, AIMaximaPlacement::DevelopmentAction&, unsigned int, int)": 120126349,
+        "[.] AIMaxima::Maxima::update_preemptive_defense(AIMaximaRuntime::Context&)": 118676244,
+        "[.] Unit::handleDisplacement()": 80241141,
+        "[.] NetEngine::clearTopOrders()": 80235763,
+        "[.] AIMaxima::Farming::ExactFertilityCache::at(int, int) const": 80235638,
+        "[.] Cortex::PlacementGeometry::candidateOverlapsReservedExpansion(int, int, int, int) const": 80233864,
+        "[.] AIMaxima::Farming::usefulExpansionCapacity(unsigned int, int, int, bool)": 80213988,
+        "[.] malloc@plt": 80211371,
+        "[.] Building::considerScanTile(int, int, int, int, unsigned int, Map*, Building::TurretTarget&) const": 80202982,
+        "[.] Map::buildingAvailable(Building*, int, int, int, int*)": 80199418,
+        "[.] Map::setMapBuildingsDiscovered(int, int, unsigned int, Team**)": 80187171,
+        "[.] AIMaxima::Farming::selectResourcePreservingCirculation(int, int, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&)": 80167670,
+        "[.] AIMaximaRuntime::Gradients::GradientInfo::matches_source(Player*, int, int) const": 80159573,
+        "[.] AIMaximaPlacement::Planner::stateSignature(unsigned int) const": 80151909,
+        "[.] AIMaximaPlacement::PlacementPolicy::score(AIMaximaPlacement::UtilityComponents const&, AIMaximaPlacement::DevelopmentPurpose, int) const": 80147062,
+        "[.] AIMaxima::(anonymous namespace)::farm_management_area(AIMaximaRuntime::Context&, int)": 80140600,
+        "[.] AIMaxima::Maxima::available_expansion_neighbors(AIMaximaRuntime::Context&, int, int) const": 80128510,
+        "[.] AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const": 80113403,
+        "[.] operator new(unsigned long)": 80112798,
+        "[.] bool Map::isGradientPeak<unsigned short>(unsigned short const*, int, int) const": 80112312,
+        "[.] Team::addBuildingNeedingWork(Building*, int)": 80095658,
+        "[.] AIMaximaPlacement::UtilityComponents::UtilityComponents()": 80089350,
+        "[.] AIMaximaPlacement::WorldState::wrappedManhattan(int, int, int, int) const": 80057396,
+        "[.] syncRandEngine()": 80048573,
+        "[.] Cortex::distanceToNearestBuilding(Game*, Team*, int, int)": 80025692,
+        "[.] AI::getOrder(bool)": 79983244,
+        "[.] Building::wantsAnotherDelivery(int, int const*, int const*)": 79981848,
+        "[.] AIMaxima::Maxima::modify_points(unsigned short*, int, int, int, int, int, int, std::__cxx11::list<int, std::allocator<int> >&)": 79941580,
+        "[.] 0x00000000000009ec": 79359808,
+        "[.] unlink_chunk.isra.0": 77751328,
+        "[.] Building::considerUnitForResource(Unit*, int, int*)": 66277187,
+        "[k] 0xffffffffb1e00b93": 62450771,
+        "[.] Map::updateClearAreasGradient(int, int)": 40165890,
+        "[.] Building::findGroundExit(int*, int*, int*, int*, bool)": 40156814,
+        "[.] Cortex::CortexPolicy::decide(Cortex::CortexObservation const&, Cortex::DecideTrace*)": 40154619,
+        "[.] __memcmp_avx2_movbe": 40149708,
+        "[.] ThunkPrototype::propagateMarkForGC()": 40144189,
+        "[.] Map::warpDistSquare(int, int, int, int)": 40139252,
+        "[.] AIMaximaPlacement::WorldState::building(int) const": 40134753,
+        "[.] AIMaxima::(anonymous namespace)::classify_farm_tile(AIMaximaRuntime::SearchTools::MapInfo&, Map*, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, bool, int, int, int, unsigned int)": 40131263,
+        "[.] Unit::dxDyFromDirection()": 40126267,
+        "[.] clock_gettime@@GLIBC_2.17": 40122073,
+        "[.] AIMaximaRuntime::Gradients::GradientManager::update(unsigned int)": 40120530,
+        "[.] Building::resetPathfindGradients()": 40120171,
+        "[.] 0x000000000015efc4": 40112562,
+        "[.] BaseTeam::checkSum()": 40111902,
+        "[.] pthread_mutex_unlock@plt": 40111520,
+        "[.] GameGUI::canChangeGameSpeed() const": 40110872,
+        "[.] AIMaxima::Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context&)": 40108695,
+        "[.] Map::doesUnitTouchEnemy(Unit*) const": 40105843,
+        "[.] AIMaximaPlacement::WorldState::profile(int) const": 40103127,
+        "[.] PerformanceTelemetry::Scope::stop()": 40102291,
+        "[.] Building::resetFailureTallies()": 40100217,
+        "[.] AIMaxima::Maxima::reconnaissance_discovery_map(AIMaximaRuntime::Context&) const": 40087916,
+        "[.] AIMaximaFoodLedger::Ledger::residualQuality(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, long long) const": 40087225,
+        "[.] AIMaximaRuntime::Gradients::Gradient::get_height(int, int) const": 40086998,
+        "[.] Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)": 40086433,
+        "[.] BuildingUtils::turretScanTile(int, int, int, int, int, int&, int&)": 40083308,
+        "[.] Team::swapInn(Unit*)": 40082578,
+        "[.] Map::resourceAvailable(int, int, int, int, int)": 40078132,
+        "[.] operator delete(void*, unsigned long)@plt": 40077028,
+        "[.] Unit::tryAcquireAttackTarget(int, int, int, int&)": 40075320,
+        "[.] AIMaximaRuntime::Gradients::Entities::Water::matches(Player*, int, int) const": 40071802,
+        "[.] Team::findBestUpgrade(Unit*)": 40071401,
+        "[.] Game::checkRoomForBuilding(int, int, BuildingType const*, int, bool)": 40070749,
+        "[.] AIMaximaRuntime::Gradients::Entities::AnyResource::matches(Player*, int, int) const": 40070240,
+        "[.] std::vector<int, std::allocator<int> >::_M_fill_assign(unsigned long, int const&)": 40067193,
+        "[.] Map::directionByGradient(unsigned int, int, int, int, unsigned short const*, int*, int*, bool) const": 40066154,
+        "[.] Team::findNearestFood(Unit*)": 40064552,
+        "[.] Building::fetchApportionment(int*, int*) const": 40063369,
+        "[.] Unit::tryClaimClearingAreaForHarvesting()": 40063105,
+        "[k] 0xffffffffb25eba50": 40062924,
+        "[.] AIMaximaFoodLedger::Ledger::reachableResidual(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, long long) const": 40062684,
+        "[.] NetEngine::pushOrder(std::shared_ptr<Order>, int, bool)": 40062460,
+        "[.] AIMaximaPlacement::WorldState::tile(int, int)": 40061865,
+        "[.] AIMaximaPlacement::Planner::colonyAnchorDistance(AIMaximaPlacement::WorldState const&, int, int) const": 40061204,
+        "[k] 0xffffffffb1e00ef3": 40060291,
+        "[.] AIMaximaPlacement::DevelopmentAction::~DevelopmentAction()": 40053467,
+        "[.] Unit::endOfAction()": 40052802,
+        "[.] AIMaximaPlacement::Planner::waterTierPasses(AIMaximaPlacement::WorldState const&, std::vector<int, std::allocator<int> > const&, int) const": 40052421,
+        "[.] __libc_malloc2": 40049692,
+        "[.] _int_free_chunk": 40040734,
+        "[.] pthread_mutex_lock@@GLIBC_2.2.5": 40037517,
+        "[.] 0x000000000015f092": 40036857,
+        "[.] PerformanceTelemetry::collector()": 40033880,
+        "[.] Building::totalWishedResource()": 40017142,
+        "[.] AIMaximaPlacement::Footprint::Footprint()": 40013662,
+        "[.] std::_Rb_tree_node_base* std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_M_copy<false, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node>(std::_Rb_tree_node<std::pair<std::pair<int, int> const, int> >*, std::_Rb_tree_node_base*, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node&) [clone .isra.0]": 39993995,
+        "[.] Cortex::PlacementGeometry::distanceToNearestBuildingType(int, int, int) const": 39989586,
+        "[.] Map::prepareBuildingGradient(Building*, int)": 39988039,
+        "[.] AIMaximaPlacement::Planner::parcelRingTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::DevelopmentTemplate const&) const": 39987604,
+        "[.] Team::updateAllBuildingTasks()": 39981998,
+        "[.] Map::pathfindArea(Map::AreaKind, int, int, int, int, int*, int*)": 38955697,
+        "[.] Unit::handleMedical()": 38873473,
+        "[.] UnitUtils::GIDtoTeam(unsigned short)": 38676780,
+        "[k] 0xffffffffb1e00b94": 34964774,
+        "[.] Map::rebuildGrowthCoverage()": 32742794,
+        "[.] Map::setMapExploredByUnit(int, int, int, int, int)": 27762618,
+        "[.] AIMaxima::(anonymous namespace)::collect_building_perimeter(AIMaxima::(anonymous namespace)::PreemptiveBuilding const&, int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> >&)": 16676033,
+        "[k] 0xffffffffb1e00b90": 36461,
+        "[.] arena_get2": 16442,
+        "[.] pthread_cond_wait@@GLIBC_2.3.2": 361,
+        "[k] 0xffffffffb1e00f70": 137,
+        "[.] __GI___futex_abstimed_wait_cancelable64": 79,
+        "[.] __internal_syscall_cancel": 12,
+        "[.] __brk": 3
+      }
+    },
+    "held-even12-late": {
+      "total_period": 130614281672,
+      "symbols": {
+        "[.] AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const": 16795000186,
+        "[.] AIMaximaFoodLedger::Input::normalizeX(int) const": 14362839397,
+        "[.] AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const": 12559095225,
+        "[.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)": 11529787279,
+        "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const": 10556079166,
+        "[.] AIMaximaFoodLedger::Input::normalizeY(int) const": 7963704461,
+        "[.] BuildingGradientSearch::resolve(unsigned long)": 5972513314,
+        "[.] AIMaximaFoodLedger::Input::index(int, int) const": 4498145667,
+        "[.] AIMaximaPlacement::WorldState::index(int, int) const": 4211429936,
+        "[.] __memset_avx2_unaligned_erms": 2727624371,
+        "[.] Map::updateGlobalGradient(Building*, int)": 2645786168,
+        "[.] AIMaxima::Defense::computeDistanceField(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)": 2358104217,
+        "[.] AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)": 2043689149,
+        "[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]": 1963842962,
+        "[.] AIMaximaPlacement::Planner::routeArtery(AIMaximaPlacement::WorldState const&, std::vector<int, std::allocator<int> > const&, int, bool, unsigned int, std::vector<int, std::allocator<int> >&, AIMaximaPlacement::RejectionReason&) const": 1924264685,
+        "[.] void AIMaximaPlacement::(anonymous namespace)::sortUnique<int>(std::vector<int, std::allocator<int> >&)": 1876392761,
+        "[.] AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const": 1643981988,
+        "[.] AIMaximaPlacement::WorldState::normalizeX(int) const": 1123113617,
+        "[.] AIMaximaPlacement::WorldState::normalizeY(int) const": 1042707938,
+        "[.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)": 961961752,
+        "[.] bool std::binary_search<__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int>(__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int const&) [clone .isra.0]": 919272137,
+        "[.] AIMaxima::reachableFoodCapacity(Map*, Building*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const*, std::set<int, std::less<int>, std::allocator<int> >*, int)": 881689873,
+        "[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)": 841185884,
+        "[.] AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const": 801609551,
+        "[.] AIMaxima::Defense::analyzeMode(AIMaxima::Defense::ModeInput const&, AIMaxima::Defense::Policy const&)": 798115897,
+        "[.] AIMaxima::Maxima::plan_offense(AIMaximaRuntime::Context&)::{lambda(int, int)#1}::operator()(int, int) const": 721534376,
+        "[.] AIMaximaPlacement::Planner::isCirculationReserved(int) const": 681797447,
+        "[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)": 626378189,
+        "[.] malloc": 601587846,
+        "[.] AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)": 561096199,
+        "[.] __memmove_avx_unaligned_erms": 560948340,
+        "[.] TeamStats::step(Team*, bool)": 481236562,
+        "[.] Map::updateRoundTripGradient(Building*, int, int)": 481102117,
+        "[.] Map::seedClearAreasGradient(int, int, unsigned short*)": 481089136,
+        "[.] AIMaxima::(anonymous namespace)::compute_preemptive_distance_field(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)": 481087498,
+        "[.] AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const": 440160983,
+        "[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)": 360798834,
+        "[.] Map::syncStep(unsigned int)": 341928045,
+        "[.] void std::vector<int, std::allocator<int> >::_M_realloc_append<int const&>(int const&)": 320825564,
+        "[.] Map::seedGuardAreasGradient(int, int, unsigned short*)": 320758208,
+        "[.] cfree@GLIBC_2.2.5": 280747383,
+        "[.] AIMaximaPlacement::Planner::parcelTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::DevelopmentTemplate const&) const": 280677160,
+        "[.] Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 280652833,
+        "[.] AIMaximaRuntime::Gradients::Gradient::recalculate(Player*)": 280644333,
+        "[.] AIMaximaPlacement::Planner::adjoiningBarracks(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&, std::vector<int, std::allocator<int> >&, std::vector<int, std::allocator<int> >&) const": 240554910,
+        "[.] AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int) const": 238848235,
+        "[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const": 200547795,
+        "[.] AIMaxima::ForceModel::predict(long const (&) [26])": 200513627,
+        "[.] Unit::integrity()": 200447331,
+        "[.] AIMaxima::Maxima::build_maintenance_clearing_plan(AIMaximaRuntime::Context&)": 200377718,
+        "[.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)": 199433617,
+        "[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)": 185315825,
+        "[.] AIMaxima::Maxima::modify_points(unsigned short*, int, int, int, int, int, int, std::__cxx11::list<int, std::allocator<int> >&)": 160494188,
+        "[.] AIMaxima::Maxima::update_preemptive_defense(AIMaximaRuntime::Context&)": 160443708,
+        "[.] AIMaximaRuntime::Gradients::Entities::AnyTeamBuilding::matches(Player*, int, int) const": 160420070,
+        "[.] Building::considerUnitForBuilding(Unit*, int*)": 160414228,
+        "[.] Building::updateCallLists()": 160387968,
+        "[.] Team::syncStep()": 160360134,
+        "[.] AIMaxima::Maxima::wheat_invasion_clearing_required(AIMaximaRuntime::Context&, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Maxima::WoodReserve const&) const": 160327883,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_discovered(int, int) const": 160290478,
+        "[.] AIMaxima::Maxima::sample_reconnaissance_forces(AIMaximaRuntime::Context&)": 158943532,
+        "[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 120338935,
+        "[.] Building::desiredNumberOfWorkers()": 120297985,
+        "[.] AIMaximaPlacement::BuildingProfile::atLevel(int) const": 120255735,
+        "[.] BuildingGradientSearch::resolved(unsigned long) const": 120252338,
+        "[.] Map::swimClass(int, int)": 120237504,
+        "[.] Team::swapTask(Unit*)": 120236274,
+        "[.] Map::buildingGradientValue(Building*, int, unsigned long) const": 120220621,
+        "[.] _int_malloc": 120217631,
+        "[.] Map::setMapDiscovered(int, int, unsigned int)": 120180360,
+        "[.] Building::computeWishedResources(int*)": 120136628,
+        "[.] Building::integrity()": 120133186,
+        "[.] Map::roundTripDistance(Building*, int, int, int, int, int*)": 120097499,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_forbidden_area(int, int) const": 80278838,
+        "[.] AIMaximaRuntime::Gradients::Entities::AnyResource::matches(Player*, int, int) const": 80271666,
+        "[.] AIMaxima::Farming::selectResourcePreservingCirculation(int, int, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&)": 80268947,
+        "[.] AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const": 80263374,
+        "[.] Team::addBuildingNeedingWork(Building*, int)": 80258903,
+        "[.] AIMaxima::Maxima::apply_maintenance_clearing_plan(AIMaximaRuntime::Context&, AIMaxima::Maxima::MaintenanceClearingPlan const&)": 80249175,
+        "[.] std::_Rb_tree_increment(std::_Rb_tree_node_base*)": 80235102,
+        "[.] AIMaxima::Maxima::control_offense_waves(AIMaximaRuntime::Context&)": 80206836,
+        "[.] AIMaxima::Farming::ExactFertilityCache::at(int, int) const": 80204231,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_resource(int, int, int) const": 80200903,
+        "[.] Unit::syncStep()": 80189766,
+        "[.] _int_free_chunk": 80184054,
+        "[.] AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int) const": 80180754,
+        "[.] AIMaximaPlacement::WorldState::tile(int, int) const": 80180195,
+        "[.] AIMaximaPlacement::PlacementPolicy::score(AIMaximaPlacement::UtilityComponents const&, AIMaximaPlacement::DevelopmentPurpose, int) const": 80173797,
+        "[.] Map::growResources()": 80172270,
+        "[.] std::_Rb_tree_node_base* std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_M_copy<false, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node>(std::_Rb_tree_node<std::pair<std::pair<int, int> const, int> >*, std::_Rb_tree_node_base*, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node&) [clone .isra.0]": 80162459,
+        "[.] void std::vector<int, std::allocator<int> >::_M_range_insert<__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > > >(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, std::forward_iterator_tag) [clone .isra.0]": 80147760,
+        "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const::{lambda(std::vector<int, std::allocator<int> > const&, int, int, int, int)#1}::operator()(std::vector<int, std::allocator<int> > const&, int, int, int, int) const [clone .isra.0]": 80088697,
+        "[.] Unit::handleMovementAttackingAround()": 80084833,
+        "[.] Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)": 80063282,
+        "[.] operator new(unsigned long)": 80054375,
+        "[.] AIMaximaPlacement::Planner::resourceDistanceAt(AIMaximaPlacement::WorldState const&, int, int) const": 80029760,
+        "[k] 0xffffffffb1e00ef0": 73172618,
+        "[.] operator new[](unsigned long)@plt": 40154987,
+        "[.] AIMaximaPlacement::Planner::foodCandidatePasses(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::DevelopmentAction const&, AIMaximaPlacement::RejectionReason&) const": 40154333,
+        "[.] AIMaxima::(anonymous namespace)::classify_farm_tile(AIMaximaRuntime::SearchTools::MapInfo&, Map*, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, bool, int, int, int, unsigned int)": 40152001,
+        "[.] Sector::step()": 40145945,
+        "[.] operator delete(void*, unsigned long)": 40141792,
+        "[.] GradientBucket::grow(unsigned long)": 40140927,
+        "[.] Map::getResourceGradient(int, int, int)": 40139319,
+        "[.] AIMaximaRuntime::Gradients::GradientInfo::matches_obstacle(Player*, int, int) const": 40137545,
+        "[.] Map::resourceAvailable(int, int, int, int, int)": 40137324,
+        "[.] AIMaxima::Maxima::apply_farming_protection(AIMaximaRuntime::Context&, AIMaxima::Maxima::FarmProtectionPlan const&, int&, int&)": 40133515,
+        "[.] AIMaxima::Maxima::reconnaissance_discovery_map(AIMaximaRuntime::Context&) const": 40133092,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::get_height() const": 40132271,
+        "[.] Map::updateExploredArea(int)": 40126761,
+        "[.] Building::findBestTarget() const": 40125237,
+        "[.] Building::considerScanTile(int, int, int, int, unsigned int, Map*, Building::TurretTarget&) const": 40123700,
+        "[.] std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)": 40114645,
+        "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const::{lambda(int)#1}::operator()(int) const": 40112678,
+        "[.] AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)": 40111150,
+        "[.] NetEngine::advanceStep(unsigned int)": 40109260,
+        "[.] AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const": 40102450,
+        "[.] AIMaximaPlacement::Planner::parcelRingTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::DevelopmentTemplate const&) const": 40101262,
+        "[.] AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const": 40100791,
+        "[.] AIMaximaRuntime::Management::ManagementOrder::ready(AIMaximaRuntime::Context&) const": 40100214,
+        "[.] AIMaximaPlacement::Planner::colonyCandidatePasses(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, AIMaximaPlacement::DevelopmentAction const&, AIMaximaPlacement::RejectionReason&) const": 40099695,
+        "[.] Team::integrity()": 40098594,
+        "[.] Building::wantsAnotherDelivery(int, int const*, int const*)": 40098561,
+        "[.] AIMaximaPlacement::UtilityComponents::UtilityComponents()": 40095598,
+        "[.] PerformanceTelemetry::now()": 40095516,
+        "[.] AIMaximaPlacement::DevelopmentAction::DevelopmentAction()": 40095498,
+        "[.] AIMaximaPlacement::Planner::isFootprintReserved(int) const": 40094729,
+        "[.] Map::advanceHiringGradients(Building*)": 40093951,
+        "[.] Building::resetFailureTallies()": 40093643,
+        "[.] AIMaxima::Defense::buildFootprint(AIMaxima::Defense::ModeResult const&, int, int)": 40093327,
+        "[.] AIMaximaPlacement::Planner::colonyAnchorDistance(AIMaximaPlacement::WorldState const&, int, int) const": 40092879,
+        "[.] Map::getClearAreasGradient(int, int)": 40089306,
+        "[.] bool Map::getGlobalGradientDestination<unsigned short>(unsigned short const*, int, int, int*, int*) const": 40089100,
+        "[.] Map::updateForbiddenGradient(int, int)": 40088242,
+        "[.] Map::pathfindPointToPoint(int, int, int, int, int*, int*, int, unsigned int, int)": 40088155,
+        "[.] AIMaxima::Recon::Program::beginForceObservation(int, std::vector<int, std::allocator<int> > const&)": 40087715,
+        "[.] AIMaxima::Maxima::select_wood_clearing_target(AIMaximaRuntime::Context&) const": 40086593,
+        "[.] malloc@plt": 40085476,
+        "[.] NetEngine::clearTopOrders()": 40085305,
+        "[.] AIMaxima::Maxima::update_farming(AIMaximaRuntime::Context&)": 40083933,
+        "[.] TeamStats::beginMeasurementSnapshot(Team*)": 40083869,
+        "[.] Building::subscribeToBringResourcesStep()": 40083315,
+        "[.] PerformanceTelemetry::Moments::add(unsigned long)": 40082629,
+        "[.] Unit::wrapPosition()": 40081511,
+        "[.] AIMaximaPlacement::Planner::foodLocationQuality(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&) const": 40076916,
+        "[.] AI::getOrder(bool)": 40076468,
+        "[.] TeamStats::observeMeasurementUnit(Unit*)": 40070574,
+        "[.] AIMaxima::(anonymous namespace)::rally_space(Map*, unsigned int, int, int, int, int)": 40066238,
+        "[.] AIMaximaPlacement::Footprint::area() const": 40065422,
+        "[.] _int_free_maybe_trim": 40064534,
+        "[.] Map::resourceAvailable(int, int, int, int, int, int*)": 40058627,
+        "[.] AIMaxima::Maxima::resolve_wheat_invasion_clearing(AIMaximaRuntime::Context&, AIMaxima::Maxima::FarmProtectionPlan&)": 40054931,
+        "[.] AIMaxima::Maxima::collect_development_limits(AIMaximaRuntime::Context&, int) const": 40046462,
+        "[.] __memmove_avx_unaligned": 40041945,
+        "[.] AIMaximaPlacement::Planner::relocationCandidatePasses(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, AIMaximaPlacement::DevelopmentAction const&, AIMaximaPlacement::RejectionReason&) const": 40035036,
+        "[.] AIMaximaRuntime::Gradients::Entities::Water::matches(Player*, int, int) const": 40018516,
+        "[.] AIMaximaPlacement::Planner::prepareRetrySignature(AIMaximaPlacement::WorldState const&)": 39536695,
+        "[.] AIMaximaFoodLedger::Ledger::reachableResidual(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, long long) const": 39496256,
+        "[.] AIMaximaPlacement::Planner::footprintTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const": 39248140,
+        "[.] NetEngine::pushOrder(std::shared_ptr<Order>, int, bool)": 38948569,
+        "[k] 0xffffffffb1e00b93": 36240321,
+        "[.] pthread_cond_wait@@GLIBC_2.3.2": 201,
+        "[.] GradientPipeline::configure(unsigned int, unsigned int, unsigned long, std::function<void (GradientPipeline::Job&, GradientWorkspace&)>, std::function<std::thread (std::function<void ()>)>)::{lambda()#1}::operator()() const": 200,
+        "[.] __internal_syscall_cancel": 110
+      }
+    },
+    "held-islands8": {
+      "total_period": 7989039005,
+      "symbols": {
+        "[.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)": 2870981025,
+        "[.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)": 870748537,
+        "[.] AICastor::computeHydratationMap()": 552124527,
+        "[.] Map::updateGlobalGradient(Building*, int)": 512580762,
+        "[.] Map::seedClearAreasGradient(int, int, unsigned short*)": 282703605,
+        "[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)": 278132900,
+        "[.] Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]": 239487086,
+        "[.] BuildingGradientSearch::resolve(unsigned long)": 238605608,
+        "[.] TeamStats::step(Team*, bool)": 198178705,
+        "[.] Map::syncStep(unsigned int)": 197642433,
+        "[.] Team::syncStep()": 158485245,
+        "[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)": 157511935,
+        "[.] Map::updateRoundTripGradient(Building*, int, int)": 119427314,
+        "[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)": 118774850,
+        "[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const": 118468313,
+        "[.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)": 117955524,
+        "[.] Map::seedGuardAreasGradient(int, int, unsigned short*)": 79635012,
+        "[.] AICastor::updateGlobalGradient(unsigned char*)": 79177683,
+        "[.] Map::updateExploredArea(int)": 79143918,
+        "[.] Building::considerUnitForBuilding(Unit*, int*)": 48696496,
+        "[.] Map::setMapDiscovered(int, int, unsigned int)": 39945040,
+        "[.] Unit::integrity()": 39935913,
+        "[.] __memset_avx2_unaligned_erms": 39928684,
+        "[.] Map::growResources()": 39913645,
+        "[.] Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const": 39906809,
+        "[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 39902827,
+        "[.] Map::swimClass(int, int)": 39892904,
+        "[.] Team::addBuildingNeedingWork(Building*, int)": 39877947,
+        "[.] Map::resourceAvailableUpdate(int, int, int, int, int, int*, int*, int*)": 39834759,
+        "[.] Building::considerUnitForResource(Unit*, int, int*)": 39829251,
+        "[.] Map::resourceAvailable(int, int, int, int, int, int*)": 39822613,
+        "[.] Unit::syncStep()": 39324552,
+        "[.] _int_free_chunk": 39311630,
+        "[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)": 39203208,
+        "[.] Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 39177538,
+        "[.] __memmove_avx_unaligned": 38998017,
+        "[.] AICastor::computeWorkPowerMap()": 35771886,
+        "[k] 0xffffffffb1e00f70": 298,
+        "[.] GradientBucket::grow(unsigned long)": 3,
+        "[.] _int_malloc": 3
+      }
+    },
+    "held-continents12": {
+      "total_period": 43074090897,
+      "symbols": {
+        "[.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)": 4269088695,
+        "[.] Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const": 3896329803,
+        "[.] Map::updateGlobalGradient(Building*, int)": 2882289684,
+        "[.] Cortex::placeCandidatesImpl(Game*, Team*, int, int, Cortex::BuildCandidate*, Cortex::(anonymous namespace)::ForwardBias const*)": 2716850737,
+        "[.] Cortex::(anonymous namespace)::bfsGroundField(Map&, unsigned int, int, int, bool, std::vector<int, std::allocator<int> >&)": 2656921695,
+        "[.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)": 1798038487,
+        "[.] BuildingGradientSearch::resolve(unsigned long)": 1597056144,
+        "[.] Map::warpDist1d(int, int, int)": 1363713178,
+        "[.] Map::seedClearAreasGradient(int, int, unsigned short*)": 1233863702,
+        "[.] AIMaximaPlacement::WorldState::index(int, int) const": 955961823,
+        "[.] __memset_avx2_unaligned_erms": 879838619,
+        "[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)": 837404862,
+        "[.] AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const": 759949955,
+        "[.] AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)": 678495127,
+        "[.] Cortex::anyWheatWithin(Map const&, int, int, int, int, int)": 668392481,
+        "[.] Map::seedGuardAreasGradient(int, int, unsigned short*)": 654763060,
+        "[.] AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const": 479567252,
+        "[.] AIMaxima::Maxima::wheat_invasion_clearing_required(AIMaximaRuntime::Context&, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Maxima::WoodReserve const&) const": 446864711,
+        "[.] AIMaxima::Maxima::build_maintenance_clearing_plan(AIMaximaRuntime::Context&)": 439906647,
+        "[.] AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)": 439571260,
+        "[.] Cortex::assessSwim(Player*, bool)": 439478466,
+        "[.] __memmove_avx_unaligned_erms": 437951605,
+        "[.] Map::updateRoundTripGradient(Building*, int, int)": 359296077,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_discovered(int, int) const": 358040022,
+        "[.] AIMaximaPlacement::Planner::adjoiningBarracks(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&, std::vector<int, std::allocator<int> >&, std::vector<int, std::allocator<int> >&) const": 320095958,
+        "[.] AIMaximaFoodLedger::Input::normalizeX(int) const": 320054757,
+        "[.] TeamStats::step(Team*, bool)": 320015295,
+        "[.] AIMaxima::Maxima::plan_offense(AIMaximaRuntime::Context&)::{lambda(int, int)#1}::operator()(int, int) const": 319883426,
+        "[.] AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const": 280454387,
+        "[.] AIMaximaRuntime::Gradients::Entities::AnyTeamBuilding::matches(Player*, int, int) const": 280079659,
+        "[.] AIMaximaFoodLedger::Input::normalizeY(int) const": 279979684,
+        "[.] Cortex::assessAmphibious(Player*, int, int, int const*, int const*, int, int, int)": 279819295,
+        "[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)": 279418372,
+        "[.] AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const": 277452406,
+        "[.] AIMaxima::Maxima::collect_fruit_field(AIMaximaRuntime::Context&) const": 240948622,
+        "[.] Map::growResources()": 240320823,
+        "[.] AIMaximaPlacement::WorldState::normalizeX(int) const": 240184858,
+        "[.] Cortex::rectEdgeChebyshev(int, int, int, int, int, int, int, int, int, int)": 239999651,
+        "[.] AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int) const": 239882534,
+        "[.] Map::isHardSpaceForBuilding(int, int) const": 239828036,
+        "[.] AIMaximaRuntime::Gradients::Entities::AnyResource::matches(Player*, int, int) const": 239799869,
+        "[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const": 202767675,
+        "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const": 200122195,
+        "[.] AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const": 200043975,
+        "[.] AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const": 200040126,
+        "[.] AIMaximaPlacement::WorldState::normalizeY(int) const": 200026240,
+        "[.] Team::syncStep()": 199856940,
+        "[.] Cortex::observe(Player*, int, unsigned short)": 199759685,
+        "[.] Team::integrity()": 198825927,
+        "[.] Building::integrity()": 160160367,
+        "[.] AIMaxima::reachableFoodCapacity(Map*, Building*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const*, std::set<int, std::less<int>, std::allocator<int> >*, int)": 160116351,
+        "[.] Building::computeWishedResources(int*)": 160089019,
+        "[.] Cortex::countSurvivingWheatWithin(Map const&, int, int, int, int, int)": 160076053,
+        "[.] AIMaximaPlacement::Planner::prepareRetrySignature(AIMaximaPlacement::WorldState const&)": 159965344,
+        "[.] AIMaxima::Maxima::apply_maintenance_clearing_plan(AIMaximaRuntime::Context&, AIMaxima::Maxima::MaintenanceClearingPlan const&)": 159783132,
+        "[.] BuildingGradientSearch::resolved(unsigned long) const": 120102329,
+        "[.] Cortex::(anonymous namespace)::countReach(Map&, Team const*, int, int, bool, bool*)": 120048285,
+        "[.] AIMaximaRuntime::Gradients::Gradient::recalculate(Player*)": 119985377,
+        "[.] AIMaxima::Farming::selectResourcePreservingCirculation(int, int, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&)": 119961200,
+        "[.] AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int) const": 119947431,
+        "[.] Map::updateExploredArea(int)": 119933334,
+        "[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)": 115673514,
+        "[.] std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)": 80193883,
+        "[.] AIMaxima::Defense::analyzeMode(AIMaxima::Defense::ModeInput const&, AIMaxima::Defense::Policy const&)": 80165497,
+        "[.] AIMaxima::Defense::computeDistanceField(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)": 80114427,
+        "[.] AIMaximaPlacement::WorldState::reset(int, int)": 80113652,
+        "[.] Map::isHardSpaceForGroundUnit(int, int, bool, unsigned int) const": 80091895,
+        "[.] AIMaxima::(anonymous namespace)::rally_space(Map*, unsigned int, int, int, int, int)": 80050695,
+        "[.] std::vector<int, std::allocator<int> >::_M_fill_assign(unsigned long, int const&)": 80014707,
+        "[.] Map::isHardSpaceForBuilding(int, int, int, int) const": 80009153,
+        "[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)": 79990706,
+        "[.] Cortex::nearestWheatDist(Map const&, int, int, int)": 79983203,
+        "[.] AIMaximaPlacement::Planner::resourceDistanceAt(AIMaximaPlacement::WorldState const&, int, int) const": 79982937,
+        "[.] AIMaximaRuntime::Gradients::Entities::Water::matches(Player*, int, int) const": 79980353,
+        "[.] AIMaxima::Maxima::apply_farming_protection(AIMaximaRuntime::Context&, AIMaxima::Maxima::FarmProtectionPlan const&, int&, int&)": 79978251,
+        "[.] AIMaximaPlacement::WorldState::tile(int, int) const": 79956676,
+        "[.] AIMaxima::Maxima::update_environment_model(AIMaximaRuntime::Context&)": 79943904,
+        "[.] Map::updateForbiddenGradient(int, int)": 79883082,
+        "[.] Cortex::rectsOverlap(int, int, int, int, int, int, int, int, int, int)": 79857996,
+        "[.] AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const": 79802272,
+        "[.] Map::warpDistSquare(int, int, int, int)": 79442557,
+        "[.] AIMaxima::Maxima::available_expansion_neighbors(AIMaximaRuntime::Context&, int, int) const": 47416086,
+        "[.] Sector::step()": 41124787,
+        "[.] AIMaximaPlacement::UtilityComponents::UtilityComponents()": 40136704,
+        "[k] 0xffffffffb353697e": 40125482,
+        "[.] Building::subscribeToBringResourcesStep()": 40119743,
+        "[.] Cortex::PlacementGeometry::candidateOverlapsReservedExpansion(int, int, int, int) const": 40114757,
+        "[.] Cortex::countHarvestableWheatWithin(Map const&, unsigned int, int, int, int, int, int)": 40111903,
+        "[.] Building::subscribeForFlagingStep()": 40106695,
+        "[.] std::_Rb_tree_iterator<std::pair<int const, int> > std::_Rb_tree<int, std::pair<int const, int>, std::_Select1st<std::pair<int const, int> >, std::less<int>, std::allocator<std::pair<int const, int> > >::_M_emplace_hint_unique<std::pair<int, int> >(std::_Rb_tree_const_iterator<std::pair<int const, int> >, std::pair<int, int>&&) [clone .isra.0]": 40090682,
+        "[.] AIMaximaPlacement::DevelopmentAction::DevelopmentAction()": 40090373,
+        "[.] Building::canUnitWorkHere(Unit*)": 40085806,
+        "[.] AIMaxima::(anonymous namespace)::compute_preemptive_distance_field(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)": 40069993,
+        "[.] AIMaximaRuntime::SearchTools::MapInfo::is_resource(int, int, int) const": 40069938,
+        "[.] _int_free_merge_chunk": 40059254,
+        "[.] Unit::handleMedical()": 40056645,
+        "[.] AI::getOrder(bool)": 40047203,
+        "[.] boost::random::mersenne_twister_engine<unsigned int, 32ul, 624ul, 397ul, 31ul, 2567483615u, 11ul, 4294967295u, 7ul, 2636928640u, 15ul, 4022730752u, 18ul, 1812433253u>::twist()": 40045093,
+        "[.] AIMaximaPlacement::Footprint::empty() const": 40042679,
+        "[.] Building::considerScanTile(int, int, int, int, unsigned int, Map*, Building::TurretTarget&) const": 40038474,
+        "[.] AIMaxima::Farming::ExactFertilityCache::at(int, int) const": 40038043,
+        "[.] Map::syncStep(unsigned int)": 40033413,
+        "[.] AIMaxima::ForceModel::predict(long const (&) [26])": 40030717,
+        "[.] Cortex::placeFlagTargets(Game*, Team*, Cortex::BuildCandidate*)": 40026126,
+        "[.] Building::considerUnitForBuilding(Unit*, int*)": 40025099,
+        "[.] Cortex::grownFootprintBox(BuildingType const*, int&, int&, int&, int&)": 40018632,
+        "[.] Map::pathfindPointToPoint(int, int, int, int, int*, int*, int, unsigned int, int)": 40014713,
+        "[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)": 40013949,
+        "[.] std::_Rb_tree_node_base* std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_M_copy<false, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node>(std::_Rb_tree_node<std::pair<std::pair<int, int> const, int> >*, std::_Rb_tree_node_base*, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node&) [clone .isra.0]": 40008073,
+        "[.] Map::setMapBuildingsDiscovered(int, int, unsigned int, Team**)": 40000416,
+        "[.] TeamStats::observeMeasurementBuilding(Building*)": 39998939,
+        "[.] Map::recordNaturalGrowth(int, int, int, int, int)": 39995339,
+        "[.] AIMaximaPlacement::WorldState::building(int) const": 39993508,
+        "[.] AINumbi::findNewEmplacement(int, int*, int*)": 39992564,
+        "[.] AIMaxima::Maxima::modify_points(unsigned short*, int, int, int, int, int, int, std::__cxx11::list<int, std::allocator<int> >&)": 39985996,
+        "[.] AIMaximaRuntime::Gradients::GradientInfo::matches_obstacle(Player*, int, int) const": 39983267,
+        "[.] AIMaximaRuntime::Construction::BuildingRegister::tick()": 39974211,
+        "[.] Unit::integrity()": 39968241,
+        "[.] AIMaximaRuntime::Gradients::GradientInfo::matches_source(Player*, int, int) const": 39966725,
+        "[.] Building::updateCallLists()": 39961346,
+        "[.] BuildingUtils::GIDtoTeam(unsigned short)": 39959922,
+        "[.] Unit::handleAction()": 39958794,
+        "[.] Team::dirtyWarFlagGradient()": 39958647,
+        "[.] AIMaximaFoodLedger::Input::index(int, int) const": 39930146,
+        "[.] PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)": 39929782,
+        "[.] AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const": 39927017,
+        "[.] cfree@GLIBC_2.2.5": 39916815,
+        "[.] malloc": 39916792,
+        "[.] PerformanceTelemetry::Moments::add(unsigned long)": 39913044,
+        "[.] Map::warpDistMax(int, int, int, int)": 39907696,
+        "[k] 0xffffffffb1e00ef0": 39895402,
+        "[.] clock_gettime@@GLIBC_2.17": 39893060,
+        "[.] Unit::handleMovementAttackingAround()": 39860878,
+        "[.] TeamStats::observeMeasurementUnit(Unit*)": 39853164,
+        "[.] AIMaximaPlacement::WorldState::WorldState()": 39845089,
+        "[.] Game::checkRoomForBuilding(int, int, BuildingType const*, int, bool)": 39750300,
+        "[.] NetEngine::getWaitingOnMask()": 39387384,
+        "[.] Team::maxBuildLevel()": 11385451,
+        "[.] ThunkPrototype::propagateMarkForGC()": 10140441,
+        "[.] GameGUI::canChangeGameSpeed() const": 46811,
+        "[k] 0xffffffffb34ebc21": 40177,
+        "[.] PerformanceTelemetry::Scope::~Scope()": 170,
+        "[k] 0xffffffffb1e00f70": 138,
+        "[.] __internal_syscall_cancel": 91,
+        "[.] pthread_cond_signal@@GLIBC_2.3.2": 3
+      }
+    }
+  },
+  "pooled": [
+    {
+      "symbol": "[.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)",
+      "percent": 10.803881942776458,
+      "equal_game_percent": 16.411550366030006
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const",
+      "percent": 6.758019799441546,
+      "equal_game_percent": 4.292355387566825
+    },
+    {
+      "symbol": "[.] Map::updateGlobalGradient(Building*, int)",
+      "percent": 5.968265924293814,
+      "equal_game_percent": 5.871982566239616
+    },
+    {
+      "symbol": "[.] BuildingGradientSearch::resolve(unsigned long)",
+      "percent": 5.8890754614058185,
+      "equal_game_percent": 4.91463142354714
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Input::normalizeX(int) const",
+      "percent": 5.584488480939983,
+      "equal_game_percent": 3.56383682449082
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const",
+      "percent": 5.264877317853744,
+      "equal_game_percent": 3.458058748339264
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Input::normalizeY(int) const",
+      "percent": 3.3682916302189283,
+      "equal_game_percent": 2.111656730106021
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const",
+      "percent": 2.92970073709851,
+      "equal_game_percent": 2.087656113006175
+    },
+    {
+      "symbol": "[.] Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const",
+      "percent": 2.6569042838757526,
+      "equal_game_percent": 3.079992466661089
+    },
+    {
+      "symbol": "[.] Cortex::rectEdgeChebyshev(int, int, int, int, int, int, int, int, int, int)",
+      "percent": 2.576108640415145,
+      "equal_game_percent": 1.4871530973834786
+    },
+    {
+      "symbol": "[.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)",
+      "percent": 2.5639447061588014,
+      "equal_game_percent": 4.926133514753878
+    },
+    {
+      "symbol": "[.] Cortex::placeCandidatesImpl(Game*, Team*, int, int, Cortex::BuildCandidate*, Cortex::(anonymous namespace)::ForwardBias const*)",
+      "percent": 2.5564598083837993,
+      "equal_game_percent": 2.823575900376766
+    },
+    {
+      "symbol": "[.] __memset_avx2_unaligned_erms",
+      "percent": 2.3974316968535376,
+      "equal_game_percent": 1.9705741085724955
+    },
+    {
+      "symbol": "[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)",
+      "percent": 2.2542961931270855,
+      "equal_game_percent": 2.045922644725288
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::index(int, int) const",
+      "percent": 2.214774970470483,
+      "equal_game_percent": 1.7571544481772765
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Input::index(int, int) const",
+      "percent": 1.8344195173063649,
+      "equal_game_percent": 1.1357871607057077
+    },
+    {
+      "symbol": "[.] Map::warpDist1d(int, int, int)",
+      "percent": 1.2505918353034722,
+      "equal_game_percent": 1.1396741155664736
+    },
+    {
+      "symbol": "[.] Cortex::(anonymous namespace)::bfsGroundField(Map&, unsigned int, int, int, bool, std::vector<int, std::allocator<int> >&)",
+      "percent": 1.2455777153996939,
+      "equal_game_percent": 1.542318884164785
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)",
+      "percent": 1.2322015594603757,
+      "equal_game_percent": 0.9724713103608698
+    },
+    {
+      "symbol": "[.] Map::seedClearAreasGradient(int, int, unsigned short*)",
+      "percent": 1.1278685604436174,
+      "equal_game_percent": 1.8990134642401302
+    },
+    {
+      "symbol": "[.] Cortex::anyWheatWithin(Map const&, int, int, int, int, int)",
+      "percent": 1.0285728038046373,
+      "equal_game_percent": 0.9904811228587889
+    },
+    {
+      "symbol": "[.] Map::seedGuardAreasGradient(int, int, unsigned short*)",
+      "percent": 0.9382299493561754,
+      "equal_game_percent": 1.060363332621213
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const",
+      "percent": 0.8588066609732137,
+      "equal_game_percent": 0.8599390246374723
+    },
+    {
+      "symbol": "[.] Map::updateRoundTripGradient(Building*, int, int)",
+      "percent": 0.8332815415879397,
+      "equal_game_percent": 0.9429254602256819
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const",
+      "percent": 0.808118590737452,
+      "equal_game_percent": 0.5631797568626323
+    },
+    {
+      "symbol": "[.] Cortex::observe(Player*, int, unsigned short)",
+      "percent": 0.7622300995569007,
+      "equal_game_percent": 0.8482115567713862
+    },
+    {
+      "symbol": "[.] AIMaxima::Defense::computeDistanceField(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)",
+      "percent": 0.715437111777878,
+      "equal_game_percent": 0.4843713108441679
+    },
+    {
+      "symbol": "[.] Cortex::rectsOverlap(int, int, int, int, int, int, int, int, int, int)",
+      "percent": 0.6862304383318524,
+      "equal_game_percent": 0.43041588185409224
+    },
+    {
+      "symbol": "[.] Cortex::assessSwim(Player*, bool)",
+      "percent": 0.6590463135844694,
+      "equal_game_percent": 0.7551204198361787
+    },
+    {
+      "symbol": "[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)",
+      "percent": 0.6299083236291003,
+      "equal_game_percent": 1.19098437541923
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::routeArtery(AIMaximaPlacement::WorldState const&, std::vector<int, std::allocator<int> > const&, int, bool, unsigned int, std::vector<int, std::allocator<int> >&, AIMaximaPlacement::RejectionReason&) const",
+      "percent": 0.6245151446451522,
+      "equal_game_percent": 0.41446713386578227
+    },
+    {
+      "symbol": "[.] void AIMaximaPlacement::(anonymous namespace)::sortUnique<int>(std::vector<int, std::allocator<int> >&)",
+      "percent": 0.5894406323705753,
+      "equal_game_percent": 0.3714906442954139
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::normalizeX(int) const",
+      "percent": 0.5817823243891345,
+      "equal_game_percent": 0.4638521858034409
+    },
+    {
+      "symbol": "[.] Map::syncStep(unsigned int)",
+      "percent": 0.5332098255379033,
+      "equal_game_percent": 0.929345010895332
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::normalizeY(int) const",
+      "percent": 0.5291829232297416,
+      "equal_game_percent": 0.45120668496766647
+    },
+    {
+      "symbol": "[.] AIMaxima::reachableFoodCapacity(Map*, Building*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const*, std::set<int, std::less<int>, std::allocator<int> >*, int)",
+      "percent": 0.5122799269997245,
+      "equal_game_percent": 0.35942472099113787
+    },
+    {
+      "symbol": "[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]",
+      "percent": 0.4941429622818635,
+      "equal_game_percent": 0.3441282806666207
+    },
+    {
+      "symbol": "[.] __memmove_avx_unaligned_erms",
+      "percent": 0.44577023556900613,
+      "equal_game_percent": 0.41778388460860494
+    },
+    {
+      "symbol": "[.] Cortex::nearestWheatDist(Map const&, int, int, int)",
+      "percent": 0.43950507968590785,
+      "equal_game_percent": 0.3530900965659615
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Gradients::Entities::AnyTeamBuilding::matches(Player*, int, int) const",
+      "percent": 0.42450791495568546,
+      "equal_game_percent": 0.4757182596260992
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)",
+      "percent": 0.3993103991172196,
+      "equal_game_percent": 0.410485723769208
+    },
+    {
+      "symbol": "[.] Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+      "percent": 0.37340357188153167,
+      "equal_game_percent": 0.29338041993194175
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const",
+      "percent": 0.3475755834543945,
+      "equal_game_percent": 0.3232626942608748
+    },
+    {
+      "symbol": "[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const",
+      "percent": 0.34754420349608045,
+      "equal_game_percent": 0.5719324721818136
+    },
+    {
+      "symbol": "[.] Map::isHardSpaceForBuilding(int, int) const",
+      "percent": 0.3296563461326853,
+      "equal_game_percent": 0.3242823661772755
+    },
+    {
+      "symbol": "[.] TeamStats::step(Team*, bool)",
+      "percent": 0.32963998837719044,
+      "equal_game_percent": 0.8008341437345955
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int) const",
+      "percent": 0.3045521563472437,
+      "equal_game_percent": 0.3097352395451848
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::plan_offense(AIMaximaRuntime::Context&)::{lambda(int, int)#1}::operator()(int, int) const",
+      "percent": 0.29526252097219147,
+      "equal_game_percent": 0.29102601312926096
+    },
+    {
+      "symbol": "[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)",
+      "percent": 0.2915249771344591,
+      "equal_game_percent": 0.4685527983128178
+    },
+    {
+      "symbol": "[.] Map::growResources()",
+      "percent": 0.2863901799956312,
+      "equal_game_percent": 0.4168769068362229
+    },
+    {
+      "symbol": "[.] Map::isHardSpaceForBuilding(int, int, int, int) const",
+      "percent": 0.2689815832920884,
+      "equal_game_percent": 0.24411308344648858
+    },
+    {
+      "symbol": "[.] AIMaxima::Defense::analyzeMode(AIMaxima::Defense::ModeInput const&, AIMaxima::Defense::Policy const&)",
+      "percent": 0.2685382474596084,
+      "equal_game_percent": 0.1954363689147322
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::isCirculationReserved(int) const",
+      "percent": 0.25210903827024567,
+      "equal_game_percent": 0.1706994801528648
+    },
+    {
+      "symbol": "[.] bool std::binary_search<__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int>(__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int const&) [clone .isra.0]",
+      "percent": 0.2517309821014455,
+      "equal_game_percent": 0.17098990056008342
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::adjoiningBarracks(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&, std::vector<int, std::allocator<int> >&, std::vector<int, std::allocator<int> >&) const",
+      "percent": 0.2517274963067934,
+      "equal_game_percent": 0.27579614697352706
+    },
+    {
+      "symbol": "[.] Building::integrity()",
+      "percent": 0.24311229074626098,
+      "equal_game_percent": 0.19504335739365664
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const",
+      "percent": 0.24244452872021757,
+      "equal_game_percent": 0.2574513803537921
+    },
+    {
+      "symbol": "[.] malloc",
+      "percent": 0.23466495585187613,
+      "equal_game_percent": 0.1668543823628789
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::resourceDistanceAt(AIMaximaPlacement::WorldState const&, int, int) const",
+      "percent": 0.23430215954878397,
+      "equal_game_percent": 0.16571935231974827
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::wheat_invasion_clearing_required(AIMaximaRuntime::Context&, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Maxima::WoodReserve const&) const",
+      "percent": 0.22712698747672758,
+      "equal_game_percent": 0.300325280152305
+    },
+    {
+      "symbol": "[.] AIMaxima::(anonymous namespace)::compute_preemptive_distance_field(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)",
+      "percent": 0.21722500911472611,
+      "equal_game_percent": 0.15852154843945665
+    },
+    {
+      "symbol": "[.] Cortex::PlacementGeometry::nearestBuildingEdgeDist(int, int, int, int) const",
+      "percent": 0.20836510402230285,
+      "equal_game_percent": 0.13244560301364589
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::build_maintenance_clearing_plan(AIMaximaRuntime::Context&)",
+      "percent": 0.20826694751443137,
+      "equal_game_percent": 0.2851196536170634
+    },
+    {
+      "symbol": "[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)",
+      "percent": 0.19969266789368567,
+      "equal_game_percent": 0.2467478137898428
+    },
+    {
+      "symbol": "[.] AICastor::computeHydratationMap()",
+      "percent": 0.19703348818844804,
+      "equal_game_percent": 1.4719510204465227
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::collect_fruit_field(AIMaximaRuntime::Context&) const",
+      "percent": 0.19668320908663098,
+      "equal_game_percent": 0.17847300932719184
+    },
+    {
+      "symbol": "[.] Building::computeWishedResources(int*)",
+      "percent": 0.19121697912275162,
+      "equal_game_percent": 0.16500765582435223
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::SearchTools::MapInfo::is_discovered(int, int) const",
+      "percent": 0.19050964362356188,
+      "equal_game_percent": 0.2571591998728836
+    },
+    {
+      "symbol": "[.] cfree@GLIBC_2.2.5",
+      "percent": 0.18233275825443304,
+      "equal_game_percent": 0.1317441267276688
+    },
+    {
+      "symbol": "[.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)",
+      "percent": 0.18176043457539243,
+      "equal_game_percent": 0.41433059617114587
+    },
+    {
+      "symbol": "[.] BuildingGradientSearch::resolved(unsigned long) const",
+      "percent": 0.18143463930488934,
+      "equal_game_percent": 0.13986076672784128
+    },
+    {
+      "symbol": "[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)",
+      "percent": 0.16393425094850636,
+      "equal_game_percent": 0.25030866512898603
+    },
+    {
+      "symbol": "[.] Team::syncStep()",
+      "percent": 0.15589559365497171,
+      "equal_game_percent": 0.5401941986608495
+    },
+    {
+      "symbol": "[.] _int_malloc",
+      "percent": 0.1476977395233507,
+      "equal_game_percent": 0.09269726559327501
+    },
+    {
+      "symbol": "[.] Map::warpDistMax(int, int, int, int)",
+      "percent": 0.14571861200798208,
+      "equal_game_percent": 0.09385956110484028
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::parcelTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::DevelopmentTemplate const&) const",
+      "percent": 0.13905054922184268,
+      "equal_game_percent": 0.07902886145281521
+    },
+    {
+      "symbol": "[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, __gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]",
+      "percent": 0.13836781530118286,
+      "equal_game_percent": 0.14237696642722425
+    },
+    {
+      "symbol": "[.] Building::considerUnitForBuilding(Unit*, int*)",
+      "percent": 0.13085736941616383,
+      "equal_game_percent": 0.2004823458935226
+    },
+    {
+      "symbol": "[.] void std::vector<int, std::allocator<int> >::_M_realloc_append<int const&>(int const&)",
+      "percent": 0.13032872279832525,
+      "equal_game_percent": 0.08322442401863173
+    },
+    {
+      "symbol": "[.] Map::updateForbiddenGradient(int, int)",
+      "percent": 0.13030915073899663,
+      "equal_game_percent": 0.10346243349391908
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Gradients::Gradient::recalculate(Player*)",
+      "percent": 0.13021824446715577,
+      "equal_game_percent": 0.1307691565410603
+    },
+    {
+      "symbol": "[.] Unit::handleMovementAttackingAround()",
+      "percent": 0.13013925820352798,
+      "equal_game_percent": 0.07878346171664022
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::tile(int, int) const",
+      "percent": 0.13012059472768875,
+      "equal_game_percent": 0.12974675722038487
+    },
+    {
+      "symbol": "[.] Map::updateExploredArea(int)",
+      "percent": 0.12984005298663784,
+      "equal_game_percent": 0.3079936001595221
+    },
+    {
+      "symbol": "[.] Map::resourceAvailable(int, int, int, int, int, int*)",
+      "percent": 0.12158357396907124,
+      "equal_game_percent": 0.16601977976012636
+    },
+    {
+      "symbol": "[.] Unit::syncStep()",
+      "percent": 0.1215596905835048,
+      "equal_game_percent": 0.15482495939213053
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::apply_maintenance_clearing_plan(AIMaximaRuntime::Context&, AIMaxima::Maxima::MaintenanceClearingPlan const&)",
+      "percent": 0.12154310795901745,
+      "equal_game_percent": 0.13673711401956576
+    },
+    {
+      "symbol": "[.] Cortex::countSurvivingWheatWithin(Map const&, int, int, int, int, int)",
+      "percent": 0.12147960686378158,
+      "equal_game_percent": 0.15074809749195137
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::prepareRetrySignature(AIMaximaPlacement::WorldState const&)",
+      "percent": 0.12146312377147123,
+      "equal_game_percent": 0.1407028621940927
+    },
+    {
+      "symbol": "[.] Cortex::PlacementGeometry::distanceToNearestBuilding(int, int) const",
+      "percent": 0.12144690046031131,
+      "equal_game_percent": 0.062054988039714785
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int) const",
+      "percent": 0.11935373856111382,
+      "equal_game_percent": 0.12070210644316286
+    },
+    {
+      "symbol": "[.] Cortex::assessAmphibious(Player*, int, int, int const*, int const*, int, int, int)",
+      "percent": 0.11907930015917816,
+      "equal_game_percent": 0.15685280738720045
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::DevelopmentAction::DevelopmentAction()",
+      "percent": 0.1128003348912694,
+      "equal_game_percent": 0.07482485512336859
+    },
+    {
+      "symbol": "[.] Cortex::scanWheatForbidden(Map&, unsigned int, int, std::vector<int, std::allocator<int> > const&, int, int, int, int, int, bool, bool, bool)",
+      "percent": 0.10438116912089598,
+      "equal_game_percent": 0.054204747017991065
+    },
+    {
+      "symbol": "[.] Building::updateCallLists()",
+      "percent": 0.10426938689652321,
+      "equal_game_percent": 0.08331674696658684
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const",
+      "percent": 0.10422004799405422,
+      "equal_game_percent": 0.13125131290841077
+    },
+    {
+      "symbol": "[.] Map::setMapDiscovered(int, int, unsigned int)",
+      "percent": 0.10413034781800529,
+      "equal_game_percent": 0.15040488320205542
+    },
+    {
+      "symbol": "[.] Unit::integrity()",
+      "percent": 0.095555206235596,
+      "equal_game_percent": 0.1652560233509948
+    },
+    {
+      "symbol": "[.] Team::integrity()",
+      "percent": 0.09517412376818529,
+      "equal_game_percent": 0.13055355489574877
+    },
+    {
+      "symbol": "[.] Building::desiredNumberOfWorkers()",
+      "percent": 0.08692206016279323,
+      "equal_game_percent": 0.05254357879261469
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::update_environment_model(AIMaximaRuntime::Context&)",
+      "percent": 0.08681922195622573,
+      "equal_game_percent": 0.07521071710642299
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Gradients::Entities::AnyResource::matches(Player*, int, int) const",
+      "percent": 0.08677961270353868,
+      "equal_game_percent": 0.13772245694435659
+    },
+    {
+      "symbol": "[.] Map::resourceAvailableUpdate(int, int, int, int, int, int*, int*, int*)",
+      "percent": 0.08660445602181972,
+      "equal_game_percent": 0.1902342396853598
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::isFootprintReserved(int) const",
+      "percent": 0.08596068471996499,
+      "equal_game_percent": 0.047838935021174464
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::SearchTools::MapInfo::is_resource(int, int, int) const",
+      "percent": 0.0781917104021315,
+      "equal_game_percent": 0.07314256915483591
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::sample_reconnaissance_forces(AIMaximaRuntime::Context&)",
+      "percent": 0.07792204932784622,
+      "equal_game_percent": 0.04437469492882064
+    },
+    {
+      "symbol": "[.] Map::buildingGradientValue(Building*, int, unsigned long) const",
+      "percent": 0.06951375793571311,
+      "equal_game_percent": 0.0445117695712887
+    },
+    {
+      "symbol": "[.] Cortex::(anonymous namespace)::countReach(Map&, Team const*, int, int, bool, bool*)",
+      "percent": 0.06950498934608038,
+      "equal_game_percent": 0.08793171458870791
+    },
+    {
+      "symbol": "[.] AIMaxima::Farming::hasAdjacentProtectedWheat(std::vector<unsigned char, std::allocator<unsigned char> > const&, int, int, int, int)",
+      "percent": 0.06949533472491118,
+      "equal_game_percent": 0.03204328173563709
+    },
+    {
+      "symbol": "[.] Map::pathfindPointToPoint(int, int, int, int, int*, int*, int, unsigned int, int)",
+      "percent": 0.06946712505075352,
+      "equal_game_percent": 0.04873912329470702
+    },
+    {
+      "symbol": "[.] AINumbi::nbFreeAround(int, int, int, int, int)",
+      "percent": 0.06934214017584311,
+      "equal_game_percent": 0.08049879728457054
+    },
+    {
+      "symbol": "[.] Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]",
+      "percent": 0.0678313605603974,
+      "equal_game_percent": 0.617996908622721
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const::{lambda(std::vector<int, std::allocator<int> > const&, int, int, int, int)#1}::operator()(std::vector<int, std::allocator<int> > const&, int, int, int, int) const [clone .isra.0]",
+      "percent": 0.06407072655867478,
+      "equal_game_percent": 0.03986872184418579
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::modify_points(unsigned short*, int, int, int, int, int, int, std::__cxx11::list<int, std::allocator<int> >&)",
+      "percent": 0.060808254138686915,
+      "equal_game_percent": 0.05113434594978283
+    },
+    {
+      "symbol": "[.] AIMaxima::Farming::selectResourcePreservingCirculation(int, int, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&)",
+      "percent": 0.06080306133467239,
+      "equal_game_percent": 0.07600643910253906
+    },
+    {
+      "symbol": "[.] TeamStats::observeMeasurementUnit(Unit*)",
+      "percent": 0.06077798789989595,
+      "equal_game_percent": 0.04467289765388435
+    },
+    {
+      "symbol": "[.] AI::getOrder(bool)",
+      "percent": 0.060773587450074815,
+      "equal_game_percent": 0.06297542523913194
+    },
+    {
+      "symbol": "[.] Map::roundTripDistance(Building*, int, int, int, int, int*)",
+      "percent": 0.060765450315124925,
+      "equal_game_percent": 0.03439982867278543
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::reset(int, int)",
+      "percent": 0.06076133913746963,
+      "equal_game_percent": 0.06325016444146701
+    },
+    {
+      "symbol": "[.] PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)",
+      "percent": 0.06059165217172605,
+      "equal_game_percent": 0.04248561586213767
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::update_preemptive_defense(AIMaximaRuntime::Context&)",
+      "percent": 0.060525961802287545,
+      "equal_game_percent": 0.03643333027465308
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const",
+      "percent": 0.05673968297736495,
+      "equal_game_percent": 0.05824479469613739
+    },
+    {
+      "symbol": "[.] AIMaxima::ForceModel::predict(long const (&) [26])",
+      "percent": 0.052161007023605085,
+      "equal_game_percent": 0.049290082417615844
+    },
+    {
+      "symbol": "[.] _int_free_merge_chunk",
+      "percent": 0.052139091729625726,
+      "equal_game_percent": 0.04469421942909913
+    },
+    {
+      "symbol": "[.] Team::buildingHasHigherPriority(Building*, Building*)",
+      "percent": 0.05213681029599993,
+      "equal_game_percent": 0.036188114009902274
+    },
+    {
+      "symbol": "[.] Cortex::PlacementGeometry::candidateCrowdsInn(int, int, int, int) const",
+      "percent": 0.05209889937884725,
+      "equal_game_percent": 0.024022040004860835
+    },
+    {
+      "symbol": "[.] Map::isFreeForBuilding(int, int) const",
+      "percent": 0.05198118599084624,
+      "equal_game_percent": 0.06034458906341091
+    },
+    {
+      "symbol": "[.] Game::checkRoomForBuilding(int, int, BuildingType const*, int, bool)",
+      "percent": 0.051946116186074996,
+      "equal_game_percent": 0.06267331321556736
+    },
+    {
+      "symbol": "[k] 0xffffffffb1e00ef0",
+      "percent": 0.050607896308226714,
+      "equal_game_percent": 0.0417579900387899
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::available_expansion_neighbors(AIMaximaRuntime::Context&, int, int) const",
+      "percent": 0.044853108468248006,
+      "equal_game_percent": 0.049989920762735826
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Construction::BuildingRegister::observe_buildings() const",
+      "percent": 0.04348208417267236,
+      "equal_game_percent": 0.020048952625566448
+    },
+    {
+      "symbol": "[.] AIMaxima::Farming::ExactFertilityCache::at(int, int) const",
+      "percent": 0.043472773468785794,
+      "equal_game_percent": 0.03889370547470904
+    },
+    {
+      "symbol": "[.] GradientBucket::grow(unsigned long)",
+      "percent": 0.04346745294265307,
+      "equal_game_percent": 0.02217523151723267
+    },
+    {
+      "symbol": "[.] Map::isHardSpaceForGroundUnit(int, int, bool, unsigned int) const",
+      "percent": 0.04346460207221506,
+      "equal_game_percent": 0.04922092115287886
+    },
+    {
+      "symbol": "[.] std::_Rb_tree_increment(std::_Rb_tree_node_base*)",
+      "percent": 0.043459240128553345,
+      "equal_game_percent": 0.024301971107204157
+    },
+    {
+      "symbol": "[.] Team::addBuildingNeedingWork(Building*, int)",
+      "percent": 0.04341955866624768,
+      "equal_game_percent": 0.1201294168059777
+    },
+    {
+      "symbol": "[.] Team::removeBuildingNeedingWork(Building*, int)",
+      "percent": 0.043395533029901026,
+      "equal_game_percent": 0.026078798220528922
+    },
+    {
+      "symbol": "[.] AICastor::updateGlobalGradient(unsigned char*)",
+      "percent": 0.04238968817167734,
+      "equal_game_percent": 0.22749391032679106
+    },
+    {
+      "symbol": "[.] Building::subscribeForFlagingStep()",
+      "percent": 0.03478196422072373,
+      "equal_game_percent": 0.03064960153100769
+    },
+    {
+      "symbol": "[.] Building::considerScanTile(int, int, int, int, unsigned int, Map*, Building::TurretTarget&) const",
+      "percent": 0.03477449475368885,
+      "equal_game_percent": 0.032753404900110084
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::UtilityComponents::UtilityComponents()",
+      "percent": 0.034765061098289515,
+      "equal_game_percent": 0.0327833502078949
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::PlacementPolicy::score(AIMaximaPlacement::UtilityComponents const&, AIMaximaPlacement::DevelopmentPurpose, int) const",
+      "percent": 0.0347648891396482,
+      "equal_game_percent": 0.020289875473908325
+    },
+    {
+      "symbol": "[.] Building::canUnitWorkHere(Unit*)",
+      "percent": 0.03474918192125792,
+      "equal_game_percent": 0.030626875564239143
+    },
+    {
+      "symbol": "[.] operator new(unsigned long)",
+      "percent": 0.03473156299116296,
+      "equal_game_percent": 0.020268163400541793
+    },
+    {
+      "symbol": "[.] std::_Rb_tree_node_base* std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_M_copy<false, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node>(std::_Rb_tree_node<std::pair<std::pair<int, int> const, int> >*, std::_Rb_tree_node_base*, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node&) [clone .isra.0]",
+      "percent": 0.03473098921743671,
+      "equal_game_percent": 0.03484985798150174
+    },
+    {
+      "symbol": "[.] std::vector<int, std::allocator<int> >::_M_fill_assign(unsigned long, int const&)",
+      "percent": 0.0347236004170028,
+      "equal_game_percent": 0.05123982922681748
+    },
+    {
+      "symbol": "[.] Map::swimClass(int, int)",
+      "percent": 0.03472359065894623,
+      "equal_game_percent": 0.11828017377540037
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Gradients::GradientInfo::matches_source(Player*, int, int) const",
+      "percent": 0.034723218985413806,
+      "equal_game_percent": 0.03664189315070053
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Gradients::Entities::Water::matches(Player*, int, int) const",
+      "percent": 0.03471063694727397,
+      "equal_game_percent": 0.04727047087184587
+    },
+    {
+      "symbol": "[.] Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)",
+      "percent": 0.0347080467253692,
+      "equal_game_percent": 0.02631399621811264
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Gradients::GradientInfo::matches_obstacle(Player*, int, int) const",
+      "percent": 0.0347047146743195,
+      "equal_game_percent": 0.044830119246078506
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::selectActionIncremental(AIMaximaPlacement::WorldState const&, std::vector<AIMaximaPlacement::DevelopmentIntent, std::allocator<AIMaximaPlacement::DevelopmentIntent> > const&, AIMaximaPlacement::DevelopmentLimits const&, AIMaximaPlacement::DevelopmentAction&, unsigned int, int)",
+      "percent": 0.034648155677372394,
+      "equal_game_percent": 0.021993593598056166
+    },
+    {
+      "symbol": "[.] _int_free_chunk",
+      "percent": 0.03459478648069479,
+      "equal_game_percent": 0.1146953540439664
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::footprintTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const",
+      "percent": 0.03457756828145626,
+      "equal_game_percent": 0.01802878747489914
+    },
+    {
+      "symbol": "[.] Cortex::PlacementGeometry::candidateOverlapsReservedExpansion(int, int, int, int) const",
+      "percent": 0.026097081148838765,
+      "equal_game_percent": 0.026648066298523156
+    },
+    {
+      "symbol": "[.] NetEngine::clearTopOrders()",
+      "percent": 0.026091106399224524,
+      "equal_game_percent": 0.01416028957421317
+    },
+    {
+      "symbol": "[.] std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)",
+      "percent": 0.026088387154127347,
+      "equal_game_percent": 0.043377781591803645
+    },
+    {
+      "symbol": "[.] malloc@plt",
+      "percent": 0.02608585417948778,
+      "equal_game_percent": 0.014157876939199773
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::reconnaissance_discovery_map(AIMaximaRuntime::Context&) const",
+      "percent": 0.026080869764192428,
+      "equal_game_percent": 0.020236139509577953
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::BuildingProfile::atLevel(int) const",
+      "percent": 0.026076939219006504,
+      "equal_game_percent": 0.018413872275007032
+    },
+    {
+      "symbol": "[.] Team::swapTask(Unit*)",
+      "percent": 0.026072719184809044,
+      "equal_game_percent": 0.018410892355851045
+    },
+    {
+      "symbol": "[.] Map::setMapBuildingsDiscovered(int, int, unsigned int, Team**)",
+      "percent": 0.026062161618138683,
+      "equal_game_percent": 0.026590307344507746
+    },
+    {
+      "symbol": "[.] Building::noteUnitFailing(Unit*, Building::UnitCantWorkReason)",
+      "percent": 0.02605322735838997,
+      "equal_game_percent": 0.012012761830302343
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::stateSignature(unsigned int) const",
+      "percent": 0.02605060309171006,
+      "equal_game_percent": 0.018078887346227694
+    },
+    {
+      "symbol": "[.] bool Map::isGradientPeak<unsigned short>(unsigned short const*, int, int) const",
+      "percent": 0.02604707934906021,
+      "equal_game_percent": 0.01808080551322371
+    },
+    {
+      "symbol": "[.] AIMaxima::(anonymous namespace)::rally_space(Map*, unsigned int, int, int, int, int)",
+      "percent": 0.026046840601942824,
+      "equal_game_percent": 0.043303884871498236
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::apply_farming_protection(AIMaximaRuntime::Context&, AIMaxima::Maxima::FarmProtectionPlan const&, int&, int&)",
+      "percent": 0.026045720160203022,
+      "equal_game_percent": 0.04328054957566527
+    },
+    {
+      "symbol": "[.] syncRandEngine()",
+      "percent": 0.026038924432762792,
+      "equal_game_percent": 0.018081010938285798
+    },
+    {
+      "symbol": "[.] Building::wantsAnotherDelivery(int, int const*, int const*)",
+      "percent": 0.026038920529540165,
+      "equal_game_percent": 0.014136931833888488
+    },
+    {
+      "symbol": "[.] AIMaxima::(anonymous namespace)::farm_management_area(AIMaximaRuntime::Context&, int)",
+      "percent": 0.026021800778250122,
+      "equal_game_percent": 0.018047167089021727
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Footprint::Footprint()",
+      "percent": 0.026016003191574034,
+      "equal_game_percent": 0.024129709710615527
+    },
+    {
+      "symbol": "[.] PerformanceTelemetry::Moments::add(unsigned long)",
+      "percent": 0.026011662157475118,
+      "equal_game_percent": 0.03472890367418304
+    },
+    {
+      "symbol": "[.] AINumbi::findNewEmplacement(int, int*, int*)",
+      "percent": 0.02598410779102748,
+      "equal_game_percent": 0.038666449517850386
+    },
+    {
+      "symbol": "[.] Map::warpDistSquare(int, int, int, int)",
+      "percent": 0.025930801262757614,
+      "equal_game_percent": 0.04089976769449517
+    },
+    {
+      "symbol": "[.] Map::isFreeForBuilding(int, int, int, int) const",
+      "percent": 0.025768291456043257,
+      "equal_game_percent": 0.02991422625591807
+    },
+    {
+      "symbol": "[.] Building::considerUnitForResource(Unit*, int, int*)",
+      "percent": 0.02300872498489392,
+      "equal_game_percent": 0.1063364256527507
+    },
+    {
+      "symbol": "[k] 0xffffffffb1e00b93",
+      "percent": 0.02140073907944082,
+      "equal_game_percent": 0.01179331419415642
+    },
+    {
+      "symbol": "[.] Sector::step()",
+      "percent": 0.017623208894346428,
+      "equal_game_percent": 0.025242158508173816
+    },
+    {
+      "symbol": "[.] AIMaxima::(anonymous namespace)::classify_farm_tile(AIMaximaRuntime::SearchTools::MapInfo&, Map*, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, bool, int, int, int, unsigned int)",
+      "percent": 0.017409080703148613,
+      "equal_game_percent": 0.010160678700000998
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::SearchTools::MapInfo::is_forbidden_area(int, int) const",
+      "percent": 0.01740812094407364,
+      "equal_game_percent": 0.012292505378791133
+    },
+    {
+      "symbol": "[.] Unit::handleDisplacement()",
+      "percent": 0.01739994651166309,
+      "equal_game_percent": 0.00802286067784601
+    },
+    {
+      "symbol": "[.] Map::resourceAvailable(int, int, int, int, int)",
+      "percent": 0.017394376829819307,
+      "equal_game_percent": 0.010153119049364756
+    },
+    {
+      "symbol": "[.] AIMaxima::Farming::usefulExpansionCapacity(unsigned int, int, int, bool)",
+      "percent": 0.017394058500329462,
+      "equal_game_percent": 0.008020145801994661
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::control_offense_waves(AIMaximaRuntime::Context&)",
+      "percent": 0.017392507619872124,
+      "equal_game_percent": 0.012281480244467641
+    },
+    {
+      "symbol": "[.] Building::subscribeToBringResourcesStep()",
+      "percent": 0.017391688376811747,
+      "equal_game_percent": 0.024765910186147294
+    },
+    {
+      "symbol": "[.] Map::getResourceGradient(int, int, int)",
+      "percent": 0.01739102808165059,
+      "equal_game_percent": 0.01623090145632814
+    },
+    {
+      "symbol": "[.] Map::buildingAvailable(Building*, int, int, int, int*)",
+      "percent": 0.01739089905845818,
+      "equal_game_percent": 0.008018689029588143
+    },
+    {
+      "symbol": "[.] Building::resetFailureTallies()",
+      "percent": 0.01738969383004908,
+      "equal_game_percent": 0.010148638655558345
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::development_cycle(AIMaximaRuntime::Context&)",
+      "percent": 0.017389231298167718,
+      "equal_game_percent": 0.016231593385161842
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::colonyAnchorDistance(AIMaximaPlacement::WorldState const&, int, int) const",
+      "percent": 0.017381068358579346,
+      "equal_game_percent": 0.010144620979292685
+    },
+    {
+      "symbol": "[.] void std::vector<int, std::allocator<int> >::_M_range_insert<__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > > >(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, std::forward_iterator_tag) [clone .isra.0]",
+      "percent": 0.017379697243208574,
+      "equal_game_percent": 0.012272434373029424
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::building(int) const",
+      "percent": 0.017375468968874454,
+      "equal_game_percent": 0.022582483694397856
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::parcelRingTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::DevelopmentTemplate const&) const",
+      "percent": 0.017366926332462704,
+      "equal_game_percent": 0.010138545755833677
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::profile(int) const",
+      "percent": 0.017366540997651086,
+      "equal_game_percent": 0.014075034238780315
+    },
+    {
+      "symbol": "[.] Building::fetchApportionment(int*, int*) const",
+      "percent": 0.017361416933723946,
+      "equal_game_percent": 0.014075119035979708
+    },
+    {
+      "symbol": "[.] AICastor::wheatGradientAt(unsigned long)",
+      "percent": 0.017360402963223595,
+      "equal_game_percent": 0.020153568311723977
+    },
+    {
+      "symbol": "[.] Unit::endOfAction()",
+      "percent": 0.01736025485760945,
+      "equal_game_percent": 0.014075373535009284
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::wrappedManhattan(int, int, int, int) const",
+      "percent": 0.017360102198235573,
+      "equal_game_percent": 0.008004489048070072
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::configuredProfile(int) const",
+      "percent": 0.01735688442487058,
+      "equal_game_percent": 0.02014948366557808
+    },
+    {
+      "symbol": "[.] TeamStats::observeMeasurementBuilding(Building*)",
+      "percent": 0.017353796108389396,
+      "equal_game_percent": 0.028648937282499183
+    },
+    {
+      "symbol": "[.] Cortex::distanceToNearestBuilding(Game*, Team*, int, int)",
+      "percent": 0.017353227322114285,
+      "equal_game_percent": 0.008001319143308493
+    },
+    {
+      "symbol": "[.] clock_gettime@@GLIBC_2.17",
+      "percent": 0.017350937648351838,
+      "equal_game_percent": 0.022534576254621807
+    },
+    {
+      "symbol": "[.] Map::directionByGradient(unsigned int, int, int, int, unsigned short const*, int*, int*, bool) const",
+      "percent": 0.017348972592604577,
+      "equal_game_percent": 0.01406024986443855
+    },
+    {
+      "symbol": "[.] Building::totalWishedResource()",
+      "percent": 0.017347571552526996,
+      "equal_game_percent": 0.014066060990384663
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::update_farming(AIMaximaRuntime::Context&)",
+      "percent": 0.017337647392150803,
+      "equal_game_percent": 0.01617439391894903
+    },
+    {
+      "symbol": "[.] boost::random::mersenne_twister_engine<unsigned int, 32ul, 624ul, 397ul, 31ul, 2567483615u, 11ul, 4294967295u, 7ul, 2636928640u, 15ul, 4022730752u, 18ul, 1812433253u>::twist()",
+      "percent": 0.017336151590501652,
+      "equal_game_percent": 0.02863826537878662
+    },
+    {
+      "symbol": "[.] Unit::tryClaimClearingAreaForHarvesting()",
+      "percent": 0.01733145341153232,
+      "equal_game_percent": 0.014040374658271251
+    },
+    {
+      "symbol": "[.] Map::recordNaturalGrowth(int, int, int, int, int)",
+      "percent": 0.017313283476509768,
+      "equal_game_percent": 0.02860114116253183
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Ledger::reachableResidual(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, long long) const",
+      "percent": 0.017252014157234045,
+      "equal_game_percent": 0.010053412483916571
+    },
+    {
+      "symbol": "[.] 0x00000000000009ec",
+      "percent": 0.017208833238997096,
+      "equal_game_percent": 0.007934741144877404
+    },
+    {
+      "symbol": "[.] AICastor::updateGlobalGradientNoObstacle(unsigned char*)",
+      "percent": 0.01715619611340785,
+      "equal_game_percent": 0.019916506032340152
+    },
+    {
+      "symbol": "[.] AICastor::computeObstacleUnitMap()",
+      "percent": 0.017154167305024344,
+      "equal_game_percent": 0.019914150803119084
+    },
+    {
+      "symbol": "[.] __memmove_avx_unaligned",
+      "percent": 0.017139476008745727,
+      "equal_game_percent": 0.10376013332284344
+    },
+    {
+      "symbol": "[.] NetEngine::pushOrder(std::shared_ptr<Order>, int, bool)",
+      "percent": 0.017133202012063378,
+      "equal_game_percent": 0.009969526823308645
+    },
+    {
+      "symbol": "[.] Unit::handleMedical()",
+      "percent": 0.017115656809506934,
+      "equal_game_percent": 0.022485690931016634
+    },
+    {
+      "symbol": "[.] unlink_chunk.isra.0",
+      "percent": 0.016860041265001114,
+      "equal_game_percent": 0.007773918270448166
+    },
+    {
+      "symbol": "[.] Map::setMapExploredByUnit(int, int, int, int, int)",
+      "percent": 0.014693474493687521,
+      "equal_game_percent": 0.01284456571289699
+    },
+    {
+      "symbol": "[.] ThunkPrototype::propagateMarkForGC()",
+      "percent": 0.010904005868495428,
+      "equal_game_percent": 0.008722163274300587
+    },
+    {
+      "symbol": "[.] Map::updateClearAreasGradient(int, int)",
+      "percent": 0.008709800594602005,
+      "equal_game_percent": 0.004015961581001051
+    },
+    {
+      "symbol": "[.] GameGUI::canChangeGameSpeed() const",
+      "percent": 0.008708020941929554,
+      "equal_game_percent": 0.004032195748010571
+    },
+    {
+      "symbol": "[.] Building::findGroundExit(int*, int*, int*, int*, bool)",
+      "percent": 0.008707832503014925,
+      "equal_game_percent": 0.004015054122774453
+    },
+    {
+      "symbol": "[.] operator new[](unsigned long)@plt",
+      "percent": 0.00870743632591823,
+      "equal_game_percent": 0.006148636502222267
+    },
+    {
+      "symbol": "[.] Cortex::CortexPolicy::decide(Cortex::CortexObservation const&, Cortex::DecideTrace*)",
+      "percent": 0.008707356526700068,
+      "equal_game_percent": 0.004014834657061871
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::foodCandidatePasses(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::DevelopmentAction const&, AIMaximaPlacement::RejectionReason&) const",
+      "percent": 0.00870729450882943,
+      "equal_game_percent": 0.0061485363600338894
+    },
+    {
+      "symbol": "[.] __memcmp_avx2_movbe",
+      "percent": 0.008706291597459857,
+      "equal_game_percent": 0.00401434363377509
+    },
+    {
+      "symbol": "[.] operator delete(void*, unsigned long)",
+      "percent": 0.008704575046886551,
+      "equal_game_percent": 0.006146616049354312
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::SearchTools::MapInfo::get_height() const",
+      "percent": 0.00870251045896229,
+      "equal_game_percent": 0.0061451581689635736
+    },
+    {
+      "symbol": "[.] Unit::dxDyFromDirection()",
+      "percent": 0.008701208517370307,
+      "equal_game_percent": 0.004011999899939733
+    },
+    {
+      "symbol": "[k] 0xffffffffb353697e",
+      "percent": 0.008701038293494607,
+      "equal_game_percent": 0.018630912998697617
+    },
+    {
+      "symbol": "[.] Building::findBestTarget() const",
+      "percent": 0.008700985166297732,
+      "equal_game_percent": 0.006144081104509372
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Gradients::GradientManager::update(unsigned int)",
+      "percent": 0.008699964473580632,
+      "equal_game_percent": 0.004011426289555644
+    },
+    {
+      "symbol": "[.] Building::resetPathfindGradients()",
+      "percent": 0.008699886625973784,
+      "equal_game_percent": 0.0040113903951634715
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const::{lambda(int)#1}::operator()(int) const",
+      "percent": 0.008698261801132224,
+      "equal_game_percent": 0.0061421580376227755
+    },
+    {
+      "symbol": "[.] 0x000000000015efc4",
+      "percent": 0.008698236647030847,
+      "equal_game_percent": 0.004010629614021317
+    },
+    {
+      "symbol": "[.] Cortex::countHarvestableWheatWithin(Map const&, unsigned int, int, int, int, int, int)",
+      "percent": 0.008698093745713538,
+      "equal_game_percent": 0.018624608048451556
+    },
+    {
+      "symbol": "[.] BaseTeam::checkSum()",
+      "percent": 0.008698093528867837,
+      "equal_game_percent": 0.004010563624330974
+    },
+    {
+      "symbol": "[.] pthread_mutex_unlock@plt",
+      "percent": 0.008698010693809852,
+      "equal_game_percent": 0.0040105254302980784
+    },
+    {
+      "symbol": "[.] NetEngine::advanceStep(unsigned int)",
+      "percent": 0.008697520622524397,
+      "equal_game_percent": 0.006141634664534283
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context&)",
+      "percent": 0.008697398104703033,
+      "equal_game_percent": 0.004010242974426533
+    },
+    {
+      "symbol": "[.] Map::doesUnitTouchEnemy(Unit*) const",
+      "percent": 0.008696779660762271,
+      "equal_game_percent": 0.004009957818976747
+    },
+    {
+      "symbol": "[.] PerformanceTelemetry::Scope::stop()",
+      "percent": 0.00869600942483044,
+      "equal_game_percent": 0.004009602674461445
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Management::ManagementOrder::ready(AIMaximaRuntime::Context&) const",
+      "percent": 0.008695559036308361,
+      "equal_game_percent": 0.006140249517384338
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::colonyCandidatePasses(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, AIMaximaPlacement::DevelopmentAction const&, AIMaximaPlacement::RejectionReason&) const",
+      "percent": 0.008695446493389268,
+      "equal_game_percent": 0.006140170046748607
+    },
+    {
+      "symbol": "[.] PerformanceTelemetry::now()",
+      "percent": 0.008694540295202577,
+      "equal_game_percent": 0.006139530147352231
+    },
+    {
+      "symbol": "[.] Map::advanceHiringGradients(Building*)",
+      "percent": 0.008694200931679684,
+      "equal_game_percent": 0.006139290510464141
+    },
+    {
+      "symbol": "[.] AIMaxima::Defense::buildFootprint(AIMaxima::Defense::ModeResult const&, int, int)",
+      "percent": 0.00869406561996193,
+      "equal_game_percent": 0.00613919496195413
+    },
+    {
+      "symbol": "[.] std::_Rb_tree_iterator<std::pair<int const, int> > std::_Rb_tree<int, std::pair<int const, int>, std::_Select1st<std::pair<int const, int> >, std::less<int>, std::allocator<std::pair<int const, int> > >::_M_emplace_hint_unique<std::pair<int, int> >(std::_Rb_tree_const_iterator<std::pair<int const, int> >, std::pair<int, int>&&) [clone .isra.0]",
+      "percent": 0.008693492063081384,
+      "equal_game_percent": 0.018614754793486406
+    },
+    {
+      "symbol": "[.] Map::getClearAreasGradient(int, int)",
+      "percent": 0.00869319368339608,
+      "equal_game_percent": 0.006138579255930481
+    },
+    {
+      "symbol": "[.] bool Map::getGlobalGradientDestination<unsigned short>(unsigned short const*, int, int, int*, int*) const",
+      "percent": 0.008693149013181564,
+      "equal_game_percent": 0.0061385477126723684
+    },
+    {
+      "symbol": "[.] AIMaxima::Recon::Program::beginForceObservation(int, std::vector<int, std::allocator<int> > const&)",
+      "percent": 0.008692848681884946,
+      "equal_game_percent": 0.006138335637854474
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Ledger::residualQuality(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, long long) const",
+      "percent": 0.008692742427491197,
+      "equal_game_percent": 0.004008096309802792
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Gradients::Gradient::get_height(int, int) const",
+      "percent": 0.00869269320351695,
+      "equal_game_percent": 0.004008073613348689
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::select_wood_clearing_target(AIMaximaRuntime::Context&) const",
+      "percent": 0.00869260538100783,
+      "equal_game_percent": 0.006138163834283587
+    },
+    {
+      "symbol": "[.] TeamStats::beginMeasurementSnapshot(Team*)",
+      "percent": 0.008692014693316864,
+      "equal_game_percent": 0.006137746728287959
+    },
+    {
+      "symbol": "[.] BuildingUtils::turretScanTile(int, int, int, int, int, int&, int&)",
+      "percent": 0.008691893042878306,
+      "equal_game_percent": 0.004007704670989043
+    },
+    {
+      "symbol": "[.] Team::swapInn(Unit*)",
+      "percent": 0.00869173474551619,
+      "equal_game_percent": 0.004007631682392148
+    },
+    {
+      "symbol": "[.] Unit::wrapPosition()",
+      "percent": 0.008691503371152659,
+      "equal_game_percent": 0.0061373856651683965
+    },
+    {
+      "symbol": "[.] 0x0000000000000a09",
+      "percent": 0.008690940439711487,
+      "equal_game_percent": 0.0100892509359314
+    },
+    {
+      "symbol": "[.] operator delete(void*, unsigned long)@plt",
+      "percent": 0.008690531251872701,
+      "equal_game_percent": 0.004007076769086989
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::foodLocationQuality(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&) const",
+      "percent": 0.00869050696515413,
+      "equal_game_percent": 0.006136682066765346
+    },
+    {
+      "symbol": "[.] Unit::tryAcquireAttackTarget(int, int, int, int&)",
+      "percent": 0.00869016087941449,
+      "equal_game_percent": 0.004006905995767131
+    },
+    {
+      "symbol": "[.] Team::findBestUpgrade(Unit*)",
+      "percent": 0.008689311061110197,
+      "equal_game_percent": 0.004006514156984623
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Footprint::area() const",
+      "percent": 0.008688014540660751,
+      "equal_game_percent": 0.006134922075460741
+    },
+    {
+      "symbol": "[.] Team::findNearestFood(Unit*)",
+      "percent": 0.008687825884900422,
+      "equal_game_percent": 0.004005829363970743
+    },
+    {
+      "symbol": "[.] _int_free_maybe_trim",
+      "percent": 0.008687821981677793,
+      "equal_game_percent": 0.006134786102581108
+    },
+    {
+      "symbol": "[k] 0xffffffffb25eba50",
+      "percent": 0.008687472860098331,
+      "equal_game_percent": 0.004005666589401229
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::tile(int, int)",
+      "percent": 0.008687243220500412,
+      "equal_game_percent": 0.004005560705943542
+    },
+    {
+      "symbol": "[k] 0xffffffffb1e00ef3",
+      "percent": 0.008686901905366204,
+      "equal_game_percent": 0.004005403330530512
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::resolve_wheat_invasion_clearing(AIMaximaRuntime::Context&, AIMaxima::Maxima::FarmProtectionPlan&)",
+      "percent": 0.008685739612406007,
+      "equal_game_percent": 0.00613331566613617
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::DevelopmentAction::~DevelopmentAction()",
+      "percent": 0.008685422150298968,
+      "equal_game_percent": 0.004004721037126115
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::waterTierPasses(AIMaximaPlacement::WorldState const&, std::vector<int, std::allocator<int> > const&, int) const",
+      "percent": 0.008685195329695168,
+      "equal_game_percent": 0.004004616453465358
+    },
+    {
+      "symbol": "[.] __libc_malloc2",
+      "percent": 0.008684603557775694,
+      "equal_game_percent": 0.004004343596094227
+    },
+    {
+      "symbol": "[.] AIMaxima::Maxima::collect_development_limits(AIMaximaRuntime::Context&, int) const",
+      "percent": 0.008683903146159754,
+      "equal_game_percent": 0.006132018870733464
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Footprint::empty() const",
+      "percent": 0.008683082818870869,
+      "equal_game_percent": 0.018592466220936014
+    },
+    {
+      "symbol": "[.] pthread_mutex_lock@@GLIBC_2.2.5",
+      "percent": 0.008681963461359575,
+      "equal_game_percent": 0.004003126286276153
+    },
+    {
+      "symbol": "[.] 0x000000000015f092",
+      "percent": 0.008681820343196565,
+      "equal_game_percent": 0.004003060296585809
+    },
+    {
+      "symbol": "[.] Cortex::innOccupiedSides(Map const&, int, int, int, int, int, int, int, int)",
+      "percent": 0.008681757891634525,
+      "equal_game_percent": 0.010078590981186294
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::relocationCandidatePasses(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, AIMaximaPlacement::DevelopmentAction const&, AIMaximaPlacement::RejectionReason&) const",
+      "percent": 0.00868142546717408,
+      "equal_game_percent": 0.006130269291766488
+    },
+    {
+      "symbol": "[.] PerformanceTelemetry::collector()",
+      "percent": 0.008681174793543111,
+      "equal_game_percent": 0.004002762643088609
+    },
+    {
+      "symbol": "[.] Cortex::placeFlagTargets(Game*, Team*, Cortex::BuildCandidate*)",
+      "percent": 0.008679493371973454,
+      "equal_game_percent": 0.01858478039418713
+    },
+    {
+      "symbol": "[.] Cortex::grownFootprintBox(BuildingType const*, int&, int&, int&, int&)",
+      "percent": 0.008677868330286193,
+      "equal_game_percent": 0.018581300808271823
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::Planner::colonyBenefit(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&) const",
+      "percent": 0.008676743334786657,
+      "equal_game_percent": 0.010072769617811226
+    },
+    {
+      "symbol": "[.] Cortex::CortexPolicy::scoreFeedCapacity(Cortex::CortexObservation const&, Cortex::CortexPolicy::DecideFacts const&) const",
+      "percent": 0.008674746185875572,
+      "equal_game_percent": 0.010070451141846497
+    },
+    {
+      "symbol": "[.] Cortex::PlacementGeometry::distanceToNearestBuildingType(int, int, int) const",
+      "percent": 0.008671569830039569,
+      "equal_game_percent": 0.003998333934991544
+    },
+    {
+      "symbol": "[.] Map::prepareBuildingGradient(Building*, int)",
+      "percent": 0.008671234369739303,
+      "equal_game_percent": 0.003998179259156754
+    },
+    {
+      "symbol": "[.] AICortex::translateAction(Cortex::CortexAction const&, Cortex::CortexObservation const&)",
+      "percent": 0.008670689436491361,
+      "equal_game_percent": 0.010065741690342897
+    },
+    {
+      "symbol": "[.] Team::updateAllBuildingTasks()",
+      "percent": 0.008669924404856364,
+      "equal_game_percent": 0.003997575253521355
+    },
+    {
+      "symbol": "[.] AIMaximaRuntime::Construction::BuildingRegister::tick()",
+      "percent": 0.008668235827378554,
+      "equal_game_percent": 0.018560675416499202
+    },
+    {
+      "symbol": "[.] __strlen_avx2",
+      "percent": 0.008666719859079164,
+      "equal_game_percent": 0.010061133436161536
+    },
+    {
+      "symbol": "[.] BuildingUtils::GIDtoTeam(unsigned short)",
+      "percent": 0.008665137319149401,
+      "equal_game_percent": 0.01855404080172153
+    },
+    {
+      "symbol": "[.] Unit::handleAction()",
+      "percent": 0.008664892717198077,
+      "equal_game_percent": 0.018553517053000894
+    },
+    {
+      "symbol": "[.] Team::dirtyWarFlagGradient()",
+      "percent": 0.008664860840879952,
+      "equal_game_percent": 0.01855344879851336
+    },
+    {
+      "symbol": "[.] AINumbi::mayAttack(int, int, int)",
+      "percent": 0.008663657997773569,
+      "equal_game_percent": 0.01005757894315155
+    },
+    {
+      "symbol": "[.] Cortex::reconcileWheatForbidden(Player*, int, bool, bool)",
+      "percent": 0.008663453512277026,
+      "equal_game_percent": 0.010057341557393162
+    },
+    {
+      "symbol": "[.] Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)",
+      "percent": 0.008663127159496225,
+      "equal_game_percent": 0.010056962696771348
+    },
+    {
+      "symbol": "[.] AIMaxima::StrategyResolver::telemetryEnabled()",
+      "percent": 0.008658530898006608,
+      "equal_game_percent": 0.010051626929502249
+    },
+    {
+      "symbol": "[.] AIMaximaFoodLedger::Ledger::prepareResidualSums(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const",
+      "percent": 0.008652473096488682,
+      "equal_game_percent": 0.010044594470810537
+    },
+    {
+      "symbol": "[.] AICastor::computeEnemyWarriorsMap()",
+      "percent": 0.008648329175132457,
+      "equal_game_percent": 0.010039783821984696
+    },
+    {
+      "symbol": "[.] AIMaximaPlacement::WorldState::WorldState()",
+      "percent": 0.008640236276705678,
+      "equal_game_percent": 0.018500721974738232
+    },
+    {
+      "symbol": "[.] NetEngine::getWaitingOnMask()",
+      "percent": 0.008540984914887173,
+      "equal_game_percent": 0.01828820210933029
+    },
+    {
+      "symbol": "[.] Map::pathfindArea(Map::AreaKind, int, int, int, int, int*, int*)",
+      "percent": 0.008447375444531058,
+      "equal_game_percent": 0.0038949611850532355
+    },
+    {
+      "symbol": "[.] memcpy@plt",
+      "percent": 0.008436203553988265,
+      "equal_game_percent": 0.009793528697293597
+    },
+    {
+      "symbol": "[.] UnitUtils::GIDtoTeam(unsigned short)",
+      "percent": 0.008386893491997586,
+      "equal_game_percent": 0.0038670738419298023
+    },
+    {
+      "symbol": "[.] Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)",
+      "percent": 0.00825912887203928,
+      "equal_game_percent": 0.009587963958589341
+    },
+    {
+      "symbol": "[.] Unit::handleMovement()",
+      "percent": 0.008154357486042643,
+      "equal_game_percent": 0.009466335601847262
+    },
+    {
+      "symbol": "[.] AICastor::computeWorkPowerMap()",
+      "percent": 0.007756979714699093,
+      "equal_game_percent": 0.08955241294381439
+    },
+    {
+      "symbol": "[.] ResourcesTypes::get(unsigned int) const",
+      "percent": 0.007677884811374848,
+      "equal_game_percent": 0.00891320186307809
+    },
+    {
+      "symbol": "[k] 0xffffffffb1e00b94",
+      "percent": 0.00758196094684631,
+      "equal_game_percent": 0.0034959312260324483
+    },
+    {
+      "symbol": "[.] Map::rebuildGrowthCoverage()",
+      "percent": 0.007100134134962053,
+      "equal_game_percent": 0.003273767934897789
+    },
+    {
+      "symbol": "[.] AIMaxima::(anonymous namespace)::collect_building_perimeter(AIMaxima::(anonymous namespace)::PreemptiveBuilding const&, int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> >&)",
+      "percent": 0.0036161260746121315,
+      "equal_game_percent": 0.0016673428088237485
+    },
+    {
+      "symbol": "[.] Team::maxBuildLevel()",
+      "percent": 0.0024688861093234084,
+      "equal_game_percent": 0.005286449818395571
+    },
+    {
+      "symbol": "[k] 0xffffffffb1e00b90",
+      "percent": 0.0005940759050524343,
+      "equal_game_percent": 0.0006841255264063339
+    },
+    {
+      "symbol": "[k] 0xffffffffb34ebc21",
+      "percent": 8.712209750345997e-06,
+      "equal_game_percent": 1.865483364283759e-05
+    },
+    {
+      "symbol": "[.] arena_get2",
+      "percent": 3.5653770245461057e-06,
+      "equal_game_percent": 1.6439431645811727e-06
+    },
+    {
+      "symbol": "[.] pthread_cond_wait@@GLIBC_2.3.2",
+      "percent": 1.6003212772868423e-07,
+      "equal_game_percent": 1.1117730129060873e-07
+    },
+    {
+      "symbol": "[k] 0xffffffffb1e00f70",
+      "percent": 1.244694326778655e-07,
+      "equal_game_percent": 8.24047379075e-07
+    },
+    {
+      "symbol": "[.] __internal_syscall_cancel",
+      "percent": 4.68386715303466e-08,
+      "equal_game_percent": 6.105128178562481e-08
+    },
+    {
+      "symbol": "[.] GradientPipeline::configure(unsigned int, unsigned int, unsigned long, std::function<void (GradientPipeline::Job&, GradientWorkspace&)>, std::function<std::thread (std::function<void ()>)>)::{lambda()#1}::operator()() const",
+      "percent": 4.336914030587648e-08,
+      "equal_game_percent": 3.062452243962757e-08
+    },
+    {
+      "symbol": "[.] PerformanceTelemetry::Scope::~Scope()",
+      "percent": 3.686376925999501e-08,
+      "equal_game_percent": 7.893376108923987e-08
+    },
+    {
+      "symbol": "[.] __GI___futex_abstimed_wait_cancelable64",
+      "percent": 1.713081042082121e-08,
+      "equal_game_percent": 7.898765965327373e-09
+    },
+    {
+      "symbol": "[.] __brk",
+      "percent": 6.505371045881472e-10,
+      "equal_game_percent": 2.9995313792382424e-10
+    },
+    {
+      "symbol": "[.] pthread_cond_signal@@GLIBC_2.3.2",
+      "percent": 6.505371045881472e-10,
+      "equal_game_percent": 1.392948725104233e-09
+    }
+  ]
+}

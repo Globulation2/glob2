@@ -1,0 +1,15 @@
+{
+  "case": "islands12",
+  "variant": "baseline",
+  "directory": "islands12-baseline",
+  "wall_s": 30.710019792895764,
+  "cpu_s": null,
+  "run_s": 12.634932641,
+  "ticks": 12512,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "dcb97ec76732800bc8a71c9afe951fe788b1829611be434bd4bf30d8f5d89815",
+  "order_sha256": "287c2d44ec7928e31a0b6df5006ade6332819b49277111dac0ef49723c73cffe",
+  "trace_ticks": 512,
+  "orders": 449
+}

@@ -1,0 +1,68 @@
+{
+  "cortex": {
+    "even12/row-scans": {
+      "baseline_median": 8.287991516,
+      "candidate_median": 7.889158642,
+      "reduction_percent": 4.812177633508085
+    },
+    "even12/proximity": {
+      "baseline_median": 8.287991516,
+      "candidate_median": 7.0509523045,
+      "reduction_percent": 14.92568144057449
+    },
+    "held-islands12-late/row-scans": {
+      "baseline_median": 25.516730784,
+      "candidate_median": 26.415393582,
+      "reduction_percent": -3.5218571125243736
+    },
+    "held-islands12-late/proximity": {
+      "baseline_median": 25.516730784,
+      "candidate_median": 23.984928562500002,
+      "reduction_percent": 6.00312882738293
+    },
+    "held-continents12/row-scans": {
+      "baseline_median": 5.0947787725,
+      "candidate_median": 5.081134630999999,
+      "reduction_percent": 0.2678063584163337
+    },
+    "held-continents12/proximity": {
+      "baseline_median": 5.0947787725,
+      "candidate_median": 4.776123823,
+      "reduction_percent": 6.254539475197596
+    },
+    "cortex12/row-scans": {
+      "baseline_median": 12.428612123499999,
+      "candidate_median": 12.3682596065,
+      "reduction_percent": 0.4855933743871832
+    },
+    "cortex12/proximity": {
+      "baseline_median": 12.428612123499999,
+      "candidate_median": 10.0291892875,
+      "reduction_percent": 19.305637766771845
+    }
+  },
+  "hiring": {
+    "cortex12/hiring": {
+      "baseline_median": 7.443931047,
+      "candidate_median": 7.4813486,
+      "reduction_percent": -0.5026585115277094
+    },
+    "held-islands8/hiring": {
+      "baseline_median": 0.558065906,
+      "candidate_median": 0.527601918,
+      "reduction_percent": 5.4588513063544735
+    },
+    "held-even12-late/hiring": {
+      "baseline_median": 10.113031351,
+      "candidate_median": 10.122677794,
+      "reduction_percent": -0.09538626614704615
+    }
+  },
+  "hiring-long": {
+    "held-islands8/hiring": {
+      "baseline_median": 5.943562707,
+      "candidate_median": 5.544490322,
+      "reduction_percent": 6.7143631635280805
+    }
+  }
+}

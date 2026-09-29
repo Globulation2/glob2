@@ -1,0 +1,8 @@
+{
+  "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.39",
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",
+  "binaries": {
+    "artifacts/pr-final/candidate": "134841bd2cf2e21d45668ba6fafdf0ca2193b42756224d086771105c5d5508e0",
+    "artifacts/broad-pass/hiring": "91dee87a1bfe9faae642ac8ef3dc83a6ab157ca2da05d8bbf1ab50b0b9060790"
+  }
+}

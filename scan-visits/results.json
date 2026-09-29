@@ -1,0 +1,26 @@
+{
+  "even12": {
+    "SCAN_fruit": {
+      "calls": 120,
+      "row_visits": 31457280,
+      "column_visits": 31457280
+    },
+    "SCAN_algae": {
+      "calls": 120,
+      "row_visits": 26527000,
+      "column_visits": 23726720
+    }
+  },
+  "held-islands12-late": {
+    "SCAN_fruit": {
+      "calls": 197,
+      "row_visits": 6080996,
+      "column_visits": 7425521
+    },
+    "SCAN_algae": {
+      "calls": 197,
+      "row_visits": 6188284,
+      "column_visits": 11799612
+    }
+  }
+}

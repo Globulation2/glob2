@@ -1,0 +1,8 @@
+{
+  "candidate": "b8b3287715570ec6ed8210749e3c9fc481053594",
+  "manifest": "source-manifest.json",
+  "mismatched_tracked_files": {
+    "therig.local": [],
+    "devlaptop.local": []
+  }
+}

@@ -1,0 +1,1241 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 211  of event 'cycles:u'
+# Event count (approx.): 7989039005
+#
+# Children      Self  Command          Shared Object        Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+# ........  ........  ...............  ...................  .....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    54.53%     0.00%  baseline-symbol  baseline-symbols     [.] HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               |          
+                --54.04%--Engine::run()
+                          Engine::runOneGameSession(bool&)
+                          Engine::stepSession(unsigned long)
+                          Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+                          |          
+                          |--39.22%--Engine::executeOrdersAndStep(bool)
+                          |          |          
+                          |          |--37.73%--Game::syncStep(int)
+                          |          |          |          
+                          |          |          |--19.40%--Map::syncStep(unsigned int)
+                          |          |          |          |          
+                          |          |          |          |--10.90%--Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+                          |          |          |          |          
+                          |          |          |          |--3.54%--Map::seedClearAreasGradient(int, int, unsigned short*)
+                          |          |          |          |          
+                          |          |          |          |--1.00%--Map::seedGuardAreasGradient(int, int, unsigned short*)
+                          |          |          |          |          
+                          |          |          |           --0.99%--Map::updateExploredArea(int)
+                          |          |          |          
+                          |          |           --17.83%--Team::syncStep()
+                          |          |                     |          
+                          |          |                     |--11.86%--Unit::syncStep()
+                          |          |                     |          |          
+                          |          |                     |           --10.87%--Unit::endOfAction()
+                          |          |                     |                     |          
+                          |          |                     |                     |--8.90%--Unit::handleMovementGoingToResource()
+                          |          |                     |                     |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+                          |          |                     |                     |          Map::roundTripGradient(Building*, int, int)
+                          |          |                     |                     |          |          
+                          |          |                     |                     |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+                          |          |                     |                     |          |          |          
+                          |          |                     |                     |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+                          |          |                     |                     |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+                          |          |                     |                     |          |          |          
+                          |          |                     |                     |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+                          |          |                     |                     |          |          
+                          |          |                     |                     |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+                          |          |                     |                     |                     Map::updateGlobalGradient(Building*, int)
+                          |          |                     |                     |          
+                          |          |                     |                      --1.48%--Unit::handleMovementRemovingBlackAround()
+                          |          |                     |                                Unit::locationIsInEnemyGuardTowerRange(int, int) const
+                          |          |                     |          
+                          |          |                      --2.48%--TeamStats::step(Team*, bool)
+                          |          |          
+                          |           --1.50%--GameGUI::executeOrder(std::shared_ptr<Order>)
+                          |                     Game::executeOrder(std::shared_ptr<Order>, int)
+                          |                     |          
+                          |                      --1.00%--Building::launchConstruction(int, int)
+                          |                                Building::updateConstructionState()
+                          |                                Map::updateForbiddenGradient(int)
+                          |                                Map::updateForbiddenGradient(int, int)
+                          |                                Map::propagateGradient(unsigned short*, int, int)
+                          |                                Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+                          |          
+                           --14.81%--Engine::gatherAndAdvanceOrders(bool)
+                                     |          
+                                     |--12.35%--AI::getOrder(bool)
+                                     |          |          
+                                     |          |--11.35%--AICastor::getOrder()
+                                     |          |          |          
+                                     |          |          |--6.91%--AICastor::computeHydratationMap()
+                                     |          |          |          
+                                     |          |          |--1.44%--AICastor::continueProject(AICastor::Project*)
+                                     |          |          |          
+                                     |          |          |--1.00%--AICastor::computeWheatCareMap()
+                                     |          |          |          Map::updateGlobalGradient(unsigned char*)
+                                     |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                                     |          |          |          
+                                     |          |          |--0.50%--AICastor::computeWheatGrowthMap()
+                                     |          |          |          Map::updateGlobalGradient(unsigned char*)
+                                     |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                                     |          |          |          
+                                     |          |           --0.50%--AICastor::computeNeedSwim()
+                                     |          |                     AICastor::computeWorkRangeMap()
+                                     |          |                     AICastor::updateGlobalGradient(unsigned char*)
+                                     |          |          
+                                     |           --1.00%--AINumbi::getOrder()
+                                     |                     AINumbi::adjustBuildings(int, int, int, int)
+                                     |                     AINumbi::findNewEmplacement(int, int*, int*)
+                                     |          
+                                      --2.47%--Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+                                                Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+
+    54.04%     0.00%  baseline-symbol  baseline-symbols     [.] Engine::run()
+            |
+            ---Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               |          
+               |--39.22%--Engine::executeOrdersAndStep(bool)
+               |          |          
+               |          |--37.73%--Game::syncStep(int)
+               |          |          |          
+               |          |          |--19.40%--Map::syncStep(unsigned int)
+               |          |          |          |          
+               |          |          |          |--10.90%--Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+               |          |          |          |          
+               |          |          |          |--3.54%--Map::seedClearAreasGradient(int, int, unsigned short*)
+               |          |          |          |          
+               |          |          |          |--1.00%--Map::seedGuardAreasGradient(int, int, unsigned short*)
+               |          |          |          |          
+               |          |          |           --0.99%--Map::updateExploredArea(int)
+               |          |          |          
+               |          |           --17.83%--Team::syncStep()
+               |          |                     |          
+               |          |                     |--11.86%--Unit::syncStep()
+               |          |                     |          |          
+               |          |                     |           --10.87%--Unit::endOfAction()
+               |          |                     |                     |          
+               |          |                     |                     |--8.90%--Unit::handleMovementGoingToResource()
+               |          |                     |                     |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+               |          |                     |                     |          Map::roundTripGradient(Building*, int, int)
+               |          |                     |                     |          |          
+               |          |                     |                     |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |          |                     |                     |          |          |          
+               |          |                     |                     |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |          |                     |                     |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          |                     |                     |          |          |          
+               |          |                     |                     |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |          |                     |                     |          |          
+               |          |                     |                     |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+               |          |                     |                     |                     Map::updateGlobalGradient(Building*, int)
+               |          |                     |                     |          
+               |          |                     |                      --1.48%--Unit::handleMovementRemovingBlackAround()
+               |          |                     |                                Unit::locationIsInEnemyGuardTowerRange(int, int) const
+               |          |                     |          
+               |          |                      --2.48%--TeamStats::step(Team*, bool)
+               |          |          
+               |           --1.50%--GameGUI::executeOrder(std::shared_ptr<Order>)
+               |                     Game::executeOrder(std::shared_ptr<Order>, int)
+               |                     |          
+               |                      --1.00%--Building::launchConstruction(int, int)
+               |                                Building::updateConstructionState()
+               |                                Map::updateForbiddenGradient(int)
+               |                                Map::updateForbiddenGradient(int, int)
+               |                                Map::propagateGradient(unsigned short*, int, int)
+               |                                Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          
+                --14.81%--Engine::gatherAndAdvanceOrders(bool)
+                          |          
+                          |--12.35%--AI::getOrder(bool)
+                          |          |          
+                          |          |--11.35%--AICastor::getOrder()
+                          |          |          |          
+                          |          |          |--6.91%--AICastor::computeHydratationMap()
+                          |          |          |          
+                          |          |          |--1.44%--AICastor::continueProject(AICastor::Project*)
+                          |          |          |          
+                          |          |          |--1.00%--AICastor::computeWheatCareMap()
+                          |          |          |          Map::updateGlobalGradient(unsigned char*)
+                          |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                          |          |          |          
+                          |          |          |--0.50%--AICastor::computeWheatGrowthMap()
+                          |          |          |          Map::updateGlobalGradient(unsigned char*)
+                          |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                          |          |          |          
+                          |          |           --0.50%--AICastor::computeNeedSwim()
+                          |          |                     AICastor::computeWorkRangeMap()
+                          |          |                     AICastor::updateGlobalGradient(unsigned char*)
+                          |          |          
+                          |           --1.00%--AINumbi::getOrder()
+                          |                     AINumbi::adjustBuildings(int, int, int, int)
+                          |                     AINumbi::findNewEmplacement(int, int*, int*)
+                          |          
+                           --2.47%--Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+                                     Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+
+    54.04%     0.00%  baseline-symbol  baseline-symbols     [.] Engine::runOneGameSession(bool&)
+            |
+            ---Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               |          
+               |--39.22%--Engine::executeOrdersAndStep(bool)
+               |          |          
+               |          |--37.73%--Game::syncStep(int)
+               |          |          |          
+               |          |          |--19.40%--Map::syncStep(unsigned int)
+               |          |          |          |          
+               |          |          |          |--10.90%--Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+               |          |          |          |          
+               |          |          |          |--3.54%--Map::seedClearAreasGradient(int, int, unsigned short*)
+               |          |          |          |          
+               |          |          |          |--1.00%--Map::seedGuardAreasGradient(int, int, unsigned short*)
+               |          |          |          |          
+               |          |          |           --0.99%--Map::updateExploredArea(int)
+               |          |          |          
+               |          |           --17.83%--Team::syncStep()
+               |          |                     |          
+               |          |                     |--11.86%--Unit::syncStep()
+               |          |                     |          |          
+               |          |                     |           --10.87%--Unit::endOfAction()
+               |          |                     |                     |          
+               |          |                     |                     |--8.90%--Unit::handleMovementGoingToResource()
+               |          |                     |                     |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+               |          |                     |                     |          Map::roundTripGradient(Building*, int, int)
+               |          |                     |                     |          |          
+               |          |                     |                     |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |          |                     |                     |          |          |          
+               |          |                     |                     |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |          |                     |                     |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          |                     |                     |          |          |          
+               |          |                     |                     |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |          |                     |                     |          |          
+               |          |                     |                     |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+               |          |                     |                     |                     Map::updateGlobalGradient(Building*, int)
+               |          |                     |                     |          
+               |          |                     |                      --1.48%--Unit::handleMovementRemovingBlackAround()
+               |          |                     |                                Unit::locationIsInEnemyGuardTowerRange(int, int) const
+               |          |                     |          
+               |          |                      --2.48%--TeamStats::step(Team*, bool)
+               |          |          
+               |           --1.50%--GameGUI::executeOrder(std::shared_ptr<Order>)
+               |                     Game::executeOrder(std::shared_ptr<Order>, int)
+               |                     |          
+               |                      --1.00%--Building::launchConstruction(int, int)
+               |                                Building::updateConstructionState()
+               |                                Map::updateForbiddenGradient(int)
+               |                                Map::updateForbiddenGradient(int, int)
+               |                                Map::propagateGradient(unsigned short*, int, int)
+               |                                Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          
+                --14.81%--Engine::gatherAndAdvanceOrders(bool)
+                          |          
+                          |--12.35%--AI::getOrder(bool)
+                          |          |          
+                          |          |--11.35%--AICastor::getOrder()
+                          |          |          |          
+                          |          |          |--6.91%--AICastor::computeHydratationMap()
+                          |          |          |          
+                          |          |          |--1.44%--AICastor::continueProject(AICastor::Project*)
+                          |          |          |          
+                          |          |          |--1.00%--AICastor::computeWheatCareMap()
+                          |          |          |          Map::updateGlobalGradient(unsigned char*)
+                          |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                          |          |          |          
+                          |          |          |--0.50%--AICastor::computeWheatGrowthMap()
+                          |          |          |          Map::updateGlobalGradient(unsigned char*)
+                          |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                          |          |          |          
+                          |          |           --0.50%--AICastor::computeNeedSwim()
+                          |          |                     AICastor::computeWorkRangeMap()
+                          |          |                     AICastor::updateGlobalGradient(unsigned char*)
+                          |          |          
+                          |           --1.00%--AINumbi::getOrder()
+                          |                     AINumbi::adjustBuildings(int, int, int, int)
+                          |                     AINumbi::findNewEmplacement(int, int*, int*)
+                          |          
+                           --2.47%--Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+                                     Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+
+    54.04%     0.00%  baseline-symbol  baseline-symbols     [.] Engine::stepSession(unsigned long)
+            |
+            ---Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               |          
+               |--39.22%--Engine::executeOrdersAndStep(bool)
+               |          |          
+               |          |--37.73%--Game::syncStep(int)
+               |          |          |          
+               |          |          |--19.40%--Map::syncStep(unsigned int)
+               |          |          |          |          
+               |          |          |          |--10.90%--Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+               |          |          |          |          
+               |          |          |          |--3.54%--Map::seedClearAreasGradient(int, int, unsigned short*)
+               |          |          |          |          
+               |          |          |          |--1.00%--Map::seedGuardAreasGradient(int, int, unsigned short*)
+               |          |          |          |          
+               |          |          |           --0.99%--Map::updateExploredArea(int)
+               |          |          |          
+               |          |           --17.83%--Team::syncStep()
+               |          |                     |          
+               |          |                     |--11.86%--Unit::syncStep()
+               |          |                     |          |          
+               |          |                     |           --10.87%--Unit::endOfAction()
+               |          |                     |                     |          
+               |          |                     |                     |--8.90%--Unit::handleMovementGoingToResource()
+               |          |                     |                     |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+               |          |                     |                     |          Map::roundTripGradient(Building*, int, int)
+               |          |                     |                     |          |          
+               |          |                     |                     |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |          |                     |                     |          |          |          
+               |          |                     |                     |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |          |                     |                     |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          |                     |                     |          |          |          
+               |          |                     |                     |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |          |                     |                     |          |          
+               |          |                     |                     |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+               |          |                     |                     |                     Map::updateGlobalGradient(Building*, int)
+               |          |                     |                     |          
+               |          |                     |                      --1.48%--Unit::handleMovementRemovingBlackAround()
+               |          |                     |                                Unit::locationIsInEnemyGuardTowerRange(int, int) const
+               |          |                     |          
+               |          |                      --2.48%--TeamStats::step(Team*, bool)
+               |          |          
+               |           --1.50%--GameGUI::executeOrder(std::shared_ptr<Order>)
+               |                     Game::executeOrder(std::shared_ptr<Order>, int)
+               |                     |          
+               |                      --1.00%--Building::launchConstruction(int, int)
+               |                                Building::updateConstructionState()
+               |                                Map::updateForbiddenGradient(int)
+               |                                Map::updateForbiddenGradient(int, int)
+               |                                Map::propagateGradient(unsigned short*, int, int)
+               |                                Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          
+                --14.81%--Engine::gatherAndAdvanceOrders(bool)
+                          |          
+                          |--12.35%--AI::getOrder(bool)
+                          |          |          
+                          |          |--11.35%--AICastor::getOrder()
+                          |          |          |          
+                          |          |          |--6.91%--AICastor::computeHydratationMap()
+                          |          |          |          
+                          |          |          |--1.44%--AICastor::continueProject(AICastor::Project*)
+                          |          |          |          
+                          |          |          |--1.00%--AICastor::computeWheatCareMap()
+                          |          |          |          Map::updateGlobalGradient(unsigned char*)
+                          |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                          |          |          |          
+                          |          |          |--0.50%--AICastor::computeWheatGrowthMap()
+                          |          |          |          Map::updateGlobalGradient(unsigned char*)
+                          |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                          |          |          |          
+                          |          |           --0.50%--AICastor::computeNeedSwim()
+                          |          |                     AICastor::computeWorkRangeMap()
+                          |          |                     AICastor::updateGlobalGradient(unsigned char*)
+                          |          |          
+                          |           --1.00%--AINumbi::getOrder()
+                          |                     AINumbi::adjustBuildings(int, int, int, int)
+                          |                     AINumbi::findNewEmplacement(int, int*, int*)
+                          |          
+                           --2.47%--Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+                                     Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+
+    54.04%     0.00%  baseline-symbol  baseline-symbols     [.] Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+            |
+            ---Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               |          
+               |--39.22%--Engine::executeOrdersAndStep(bool)
+               |          |          
+               |          |--37.73%--Game::syncStep(int)
+               |          |          |          
+               |          |          |--19.40%--Map::syncStep(unsigned int)
+               |          |          |          |          
+               |          |          |          |--10.90%--Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+               |          |          |          |          
+               |          |          |          |--3.54%--Map::seedClearAreasGradient(int, int, unsigned short*)
+               |          |          |          |          
+               |          |          |          |--1.00%--Map::seedGuardAreasGradient(int, int, unsigned short*)
+               |          |          |          |          
+               |          |          |           --0.99%--Map::updateExploredArea(int)
+               |          |          |          
+               |          |           --17.83%--Team::syncStep()
+               |          |                     |          
+               |          |                     |--11.86%--Unit::syncStep()
+               |          |                     |          |          
+               |          |                     |           --10.87%--Unit::endOfAction()
+               |          |                     |                     |          
+               |          |                     |                     |--8.90%--Unit::handleMovementGoingToResource()
+               |          |                     |                     |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+               |          |                     |                     |          Map::roundTripGradient(Building*, int, int)
+               |          |                     |                     |          |          
+               |          |                     |                     |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |          |                     |                     |          |          |          
+               |          |                     |                     |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |          |                     |                     |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          |                     |                     |          |          |          
+               |          |                     |                     |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |          |                     |                     |          |          
+               |          |                     |                     |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+               |          |                     |                     |                     Map::updateGlobalGradient(Building*, int)
+               |          |                     |                     |          
+               |          |                     |                      --1.48%--Unit::handleMovementRemovingBlackAround()
+               |          |                     |                                Unit::locationIsInEnemyGuardTowerRange(int, int) const
+               |          |                     |          
+               |          |                      --2.48%--TeamStats::step(Team*, bool)
+               |          |          
+               |           --1.50%--GameGUI::executeOrder(std::shared_ptr<Order>)
+               |                     Game::executeOrder(std::shared_ptr<Order>, int)
+               |                     |          
+               |                      --1.00%--Building::launchConstruction(int, int)
+               |                                Building::updateConstructionState()
+               |                                Map::updateForbiddenGradient(int)
+               |                                Map::updateForbiddenGradient(int, int)
+               |                                Map::propagateGradient(unsigned short*, int, int)
+               |                                Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          
+                --14.81%--Engine::gatherAndAdvanceOrders(bool)
+                          |          
+                          |--12.35%--AI::getOrder(bool)
+                          |          |          
+                          |          |--11.35%--AICastor::getOrder()
+                          |          |          |          
+                          |          |          |--6.91%--AICastor::computeHydratationMap()
+                          |          |          |          
+                          |          |          |--1.44%--AICastor::continueProject(AICastor::Project*)
+                          |          |          |          
+                          |          |          |--1.00%--AICastor::computeWheatCareMap()
+                          |          |          |          Map::updateGlobalGradient(unsigned char*)
+                          |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                          |          |          |          
+                          |          |          |--0.50%--AICastor::computeWheatGrowthMap()
+                          |          |          |          Map::updateGlobalGradient(unsigned char*)
+                          |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+                          |          |          |          
+                          |          |           --0.50%--AICastor::computeNeedSwim()
+                          |          |                     AICastor::computeWorkRangeMap()
+                          |          |                     AICastor::updateGlobalGradient(unsigned char*)
+                          |          |          
+                          |           --1.00%--AINumbi::getOrder()
+                          |                     AINumbi::adjustBuildings(int, int, int, int)
+                          |                     AINumbi::findNewEmplacement(int, int*, int*)
+                          |          
+                           --2.47%--Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+                                     Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+
+    39.22%     0.00%  baseline-symbol  baseline-symbols     [.] Engine::executeOrdersAndStep(bool)
+            |
+            ---Engine::executeOrdersAndStep(bool)
+               |          
+               |--37.73%--Game::syncStep(int)
+               |          |          
+               |          |--19.40%--Map::syncStep(unsigned int)
+               |          |          |          
+               |          |          |--10.90%--Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+               |          |          |          
+               |          |          |--3.54%--Map::seedClearAreasGradient(int, int, unsigned short*)
+               |          |          |          
+               |          |          |--1.00%--Map::seedGuardAreasGradient(int, int, unsigned short*)
+               |          |          |          
+               |          |           --0.99%--Map::updateExploredArea(int)
+               |          |          
+               |           --17.83%--Team::syncStep()
+               |                     |          
+               |                     |--11.86%--Unit::syncStep()
+               |                     |          |          
+               |                     |           --10.87%--Unit::endOfAction()
+               |                     |                     |          
+               |                     |                     |--8.90%--Unit::handleMovementGoingToResource()
+               |                     |                     |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+               |                     |                     |          Map::roundTripGradient(Building*, int, int)
+               |                     |                     |          |          
+               |                     |                     |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |                     |                     |          |          |          
+               |                     |                     |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |                     |                     |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |                     |                     |          |          |          
+               |                     |                     |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |                     |                     |          |          
+               |                     |                     |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+               |                     |                     |                     Map::updateGlobalGradient(Building*, int)
+               |                     |                     |          
+               |                     |                      --1.48%--Unit::handleMovementRemovingBlackAround()
+               |                     |                                Unit::locationIsInEnemyGuardTowerRange(int, int) const
+               |                     |          
+               |                      --2.48%--TeamStats::step(Team*, bool)
+               |          
+                --1.50%--GameGUI::executeOrder(std::shared_ptr<Order>)
+                          Game::executeOrder(std::shared_ptr<Order>, int)
+                          |          
+                           --1.00%--Building::launchConstruction(int, int)
+                                     Building::updateConstructionState()
+                                     Map::updateForbiddenGradient(int)
+                                     Map::updateForbiddenGradient(int, int)
+                                     Map::propagateGradient(unsigned short*, int, int)
+                                     Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+    37.73%     0.00%  baseline-symbol  baseline-symbols     [.] Game::syncStep(int)
+            |
+            ---Game::syncStep(int)
+               |          
+               |--19.40%--Map::syncStep(unsigned int)
+               |          |          
+               |          |--10.90%--Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+               |          |          
+               |          |--3.54%--Map::seedClearAreasGradient(int, int, unsigned short*)
+               |          |          
+               |          |--1.00%--Map::seedGuardAreasGradient(int, int, unsigned short*)
+               |          |          
+               |           --0.99%--Map::updateExploredArea(int)
+               |          
+                --17.83%--Team::syncStep()
+                          |          
+                          |--11.86%--Unit::syncStep()
+                          |          |          
+                          |           --10.87%--Unit::endOfAction()
+                          |                     |          
+                          |                     |--8.90%--Unit::handleMovementGoingToResource()
+                          |                     |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+                          |                     |          Map::roundTripGradient(Building*, int, int)
+                          |                     |          |          
+                          |                     |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+                          |                     |          |          |          
+                          |                     |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+                          |                     |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+                          |                     |          |          |          
+                          |                     |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+                          |                     |          |          
+                          |                     |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+                          |                     |                     Map::updateGlobalGradient(Building*, int)
+                          |                     |          
+                          |                      --1.48%--Unit::handleMovementRemovingBlackAround()
+                          |                                Unit::locationIsInEnemyGuardTowerRange(int, int) const
+                          |          
+                           --2.48%--TeamStats::step(Team*, bool)
+
+    35.94%    35.94%  baseline-symbol  baseline-symbols     [.] Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+            |          
+             --5.94%--HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+                       Engine::run()
+                       Engine::runOneGameSession(bool&)
+                       Engine::stepSession(unsigned long)
+                       Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+                       Engine::executeOrdersAndStep(bool)
+                       |          
+                       |--4.44%--Game::syncStep(int)
+                       |          Team::syncStep()
+                       |          |          
+                       |           --3.95%--Unit::syncStep()
+                       |                     Unit::endOfAction()
+                       |                     Unit::handleMovementGoingToResource()
+                       |                     Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+                       |                     Map::roundTripGradient(Building*, int, int)
+                       |                     Map::updateRoundTripGradient(Building*, int, int)
+                       |                     Map::propagateGradient(unsigned short*, int, int)
+                       |                     Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+                       |          
+                        --1.50%--GameGUI::executeOrder(std::shared_ptr<Order>)
+                                  Game::executeOrder(std::shared_ptr<Order>, int)
+                                  |          
+                                   --1.00%--Building::launchConstruction(int, int)
+                                             Building::updateConstructionState()
+                                             Map::updateForbiddenGradient(int)
+                                             Map::updateForbiddenGradient(int, int)
+                                             Map::propagateGradient(unsigned short*, int, int)
+                                             Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+    19.40%     2.47%  baseline-symbol  baseline-symbols     [.] Map::syncStep(unsigned int)
+            |          
+            |--16.93%--Map::syncStep(unsigned int)
+            |          |          
+            |          |--10.90%--Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+            |          |          
+            |          |--3.54%--Map::seedClearAreasGradient(int, int, unsigned short*)
+            |          |          
+            |          |--1.00%--Map::seedGuardAreasGradient(int, int, unsigned short*)
+            |          |          
+            |           --0.99%--Map::updateExploredArea(int)
+            |          
+             --2.47%--HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+                       Engine::run()
+                       Engine::runOneGameSession(bool&)
+                       Engine::stepSession(unsigned long)
+                       Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+                       Engine::executeOrdersAndStep(bool)
+                       Game::syncStep(int)
+                       Map::syncStep(unsigned int)
+
+    17.83%     1.98%  baseline-symbol  baseline-symbols     [.] Team::syncStep()
+            |          
+            |--15.84%--Team::syncStep()
+            |          |          
+            |          |--11.86%--Unit::syncStep()
+            |          |          |          
+            |          |           --10.87%--Unit::endOfAction()
+            |          |                     |          
+            |          |                     |--8.90%--Unit::handleMovementGoingToResource()
+            |          |                     |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+            |          |                     |          Map::roundTripGradient(Building*, int, int)
+            |          |                     |          |          
+            |          |                     |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+            |          |                     |          |          |          
+            |          |                     |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+            |          |                     |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+            |          |                     |          |          |          
+            |          |                     |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+            |          |                     |          |          
+            |          |                     |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+            |          |                     |                     Map::updateGlobalGradient(Building*, int)
+            |          |                     |          
+            |          |                      --1.48%--Unit::handleMovementRemovingBlackAround()
+            |          |                                Unit::locationIsInEnemyGuardTowerRange(int, int) const
+            |          |          
+            |           --2.48%--TeamStats::step(Team*, bool)
+            |          
+             --1.98%--HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+                       Engine::run()
+                       Engine::runOneGameSession(bool&)
+                       Engine::stepSession(unsigned long)
+                       Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+                       Engine::executeOrdersAndStep(bool)
+                       Game::syncStep(int)
+                       Team::syncStep()
+
+    15.48%     0.00%  baseline-symbol  baseline-symbols     [.] Building::subscribeToBringResourcesStep()
+            |
+            ---Building::subscribeToBringResourcesStep()
+               |          
+               |--12.03%--Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+               |          |          
+               |           --8.55%--Building::considerUnitForResource(Unit*, int, int*)
+               |                     |          
+               |                      --7.55%--Building::considerUnitForBuilding(Unit*, int*)
+               |                                |          
+               |                                 --6.44%--Map::buildingAvailable(Building*, int, int, int, int*)
+               |                                           |          
+               |                                           |--5.45%--Map::prepareBuildingGradient(Building*, int)
+               |                                           |          Map::updateGlobalGradient(Building*, int)
+               |                                           |          |          
+               |                                           |           --1.48%--BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+               |                                           |          
+               |                                            --1.00%--Map::buildingGradientValue(Building*, int, unsigned long) const
+               |                                                      BuildingGradientSearch::resolve(unsigned long)
+               |          
+               |--1.49%--Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)
+               |          
+                --0.98%--Team::swapTask(Unit*)
+
+    14.81%     0.00%  baseline-symbol  baseline-symbols     [.] Engine::gatherAndAdvanceOrders(bool)
+            |
+            ---Engine::gatherAndAdvanceOrders(bool)
+               |          
+               |--12.35%--AI::getOrder(bool)
+               |          |          
+               |          |--11.35%--AICastor::getOrder()
+               |          |          |          
+               |          |          |--6.91%--AICastor::computeHydratationMap()
+               |          |          |          
+               |          |          |--1.44%--AICastor::continueProject(AICastor::Project*)
+               |          |          |          
+               |          |          |--1.00%--AICastor::computeWheatCareMap()
+               |          |          |          Map::updateGlobalGradient(unsigned char*)
+               |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+               |          |          |          
+               |          |          |--0.50%--AICastor::computeWheatGrowthMap()
+               |          |          |          Map::updateGlobalGradient(unsigned char*)
+               |          |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+               |          |          |          
+               |          |           --0.50%--AICastor::computeNeedSwim()
+               |          |                     AICastor::computeWorkRangeMap()
+               |          |                     AICastor::updateGlobalGradient(unsigned char*)
+               |          |          
+               |           --1.00%--AINumbi::getOrder()
+               |                     AINumbi::adjustBuildings(int, int, int, int)
+               |                     AINumbi::findNewEmplacement(int, int*, int*)
+               |          
+                --2.47%--Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+                          Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+
+    12.35%     0.00%  baseline-symbol  baseline-symbols     [.] AI::getOrder(bool)
+            |
+            ---AI::getOrder(bool)
+               |          
+               |--11.35%--AICastor::getOrder()
+               |          |          
+               |          |--6.91%--AICastor::computeHydratationMap()
+               |          |          
+               |          |--1.44%--AICastor::continueProject(AICastor::Project*)
+               |          |          
+               |          |--1.00%--AICastor::computeWheatCareMap()
+               |          |          Map::updateGlobalGradient(unsigned char*)
+               |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+               |          |          
+               |          |--0.50%--AICastor::computeWheatGrowthMap()
+               |          |          Map::updateGlobalGradient(unsigned char*)
+               |          |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+               |          |          
+               |           --0.50%--AICastor::computeNeedSwim()
+               |                     AICastor::computeWorkRangeMap()
+               |                     AICastor::updateGlobalGradient(unsigned char*)
+               |          
+                --1.00%--AINumbi::getOrder()
+                          AINumbi::adjustBuildings(int, int, int, int)
+                          AINumbi::findNewEmplacement(int, int*, int*)
+
+    12.03%     3.48%  baseline-symbol  baseline-symbols     [.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+            |          
+            |--8.55%--Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+            |          Building::considerUnitForResource(Unit*, int, int*)
+            |          |          
+            |           --7.55%--Building::considerUnitForBuilding(Unit*, int*)
+            |                     |          
+            |                      --6.44%--Map::buildingAvailable(Building*, int, int, int, int*)
+            |                                |          
+            |                                |--5.45%--Map::prepareBuildingGradient(Building*, int)
+            |                                |          Map::updateGlobalGradient(Building*, int)
+            |                                |          |          
+            |                                |           --1.48%--BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+            |                                |          
+            |                                 --1.00%--Map::buildingGradientValue(Building*, int, unsigned long) const
+            |                                           BuildingGradientSearch::resolve(unsigned long)
+            |          
+             --3.48%--Building::subscribeToBringResourcesStep()
+                       Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+
+    11.86%     0.49%  baseline-symbol  baseline-symbols     [.] Unit::syncStep()
+            |          
+             --11.37%--Unit::syncStep()
+                       |          
+                        --10.87%--Unit::endOfAction()
+                                  |          
+                                  |--8.90%--Unit::handleMovementGoingToResource()
+                                  |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+                                  |          Map::roundTripGradient(Building*, int, int)
+                                  |          |          
+                                  |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+                                  |          |          |          
+                                  |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+                                  |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+                                  |          |          |          
+                                  |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+                                  |          |          
+                                  |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+                                  |                     Map::updateGlobalGradient(Building*, int)
+                                  |          
+                                   --1.48%--Unit::handleMovementRemovingBlackAround()
+                                             Unit::locationIsInEnemyGuardTowerRange(int, int) const
+
+    11.35%     0.00%  baseline-symbol  baseline-symbols     [.] AICastor::getOrder()
+            |
+            ---AICastor::getOrder()
+               |          
+               |--6.91%--AICastor::computeHydratationMap()
+               |          
+               |--1.44%--AICastor::continueProject(AICastor::Project*)
+               |          
+               |--1.00%--AICastor::computeWheatCareMap()
+               |          Map::updateGlobalGradient(unsigned char*)
+               |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+               |          
+               |--0.50%--AICastor::computeWheatGrowthMap()
+               |          Map::updateGlobalGradient(unsigned char*)
+               |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+               |          
+                --0.50%--AICastor::computeNeedSwim()
+                          AICastor::computeWorkRangeMap()
+                          AICastor::updateGlobalGradient(unsigned char*)
+
+    10.90%    10.90%  baseline-symbol  baseline-symbols     [.] Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::executeOrdersAndStep(bool)
+               Game::syncStep(int)
+               Map::syncStep(unsigned int)
+               Map::seedResourcesGradient(int, unsigned char, int, unsigned short*)
+
+    10.87%     0.00%  baseline-symbol  baseline-symbols     [.] Unit::endOfAction()
+            |
+            ---Unit::endOfAction()
+               |          
+               |--8.90%--Unit::handleMovementGoingToResource()
+               |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+               |          Map::roundTripGradient(Building*, int, int)
+               |          |          
+               |          |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |          |          |          
+               |          |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |          |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          |          |          
+               |          |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |          |          
+               |           --1.47%--Map::prepareBuildingGradient(Building*, int)
+               |                     Map::updateGlobalGradient(Building*, int)
+               |          
+                --1.48%--Unit::handleMovementRemovingBlackAround()
+                          Unit::locationIsInEnemyGuardTowerRange(int, int) const
+
+     8.90%     0.00%  baseline-symbol  baseline-symbols     [.] Unit::handleMovementGoingToResource()
+            |
+            ---Unit::handleMovementGoingToResource()
+               Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+               Map::roundTripGradient(Building*, int, int)
+               |          
+               |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |          |          
+               |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          |          
+               |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |          
+                --1.47%--Map::prepareBuildingGradient(Building*, int)
+                          Map::updateGlobalGradient(Building*, int)
+
+     8.90%     0.00%  baseline-symbol  baseline-symbols     [.] Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+            |
+            ---Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+               Map::roundTripGradient(Building*, int, int)
+               |          
+               |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |          |          
+               |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          |          
+               |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |          
+                --1.47%--Map::prepareBuildingGradient(Building*, int)
+                          Map::updateGlobalGradient(Building*, int)
+
+     8.90%     0.00%  baseline-symbol  baseline-symbols     [.] Map::roundTripGradient(Building*, int, int)
+            |
+            ---Map::roundTripGradient(Building*, int, int)
+               |          
+               |--7.43%--Map::updateRoundTripGradient(Building*, int, int)
+               |          |          
+               |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+               |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+               |          |          
+               |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+               |          
+                --1.47%--Map::prepareBuildingGradient(Building*, int)
+                          Map::updateGlobalGradient(Building*, int)
+
+     8.55%     0.50%  baseline-symbol  baseline-symbols     [.] Building::considerUnitForResource(Unit*, int, int*)
+            |          
+             --8.05%--Building::considerUnitForResource(Unit*, int, int*)
+                       |          
+                        --7.55%--Building::considerUnitForBuilding(Unit*, int*)
+                                  |          
+                                   --6.44%--Map::buildingAvailable(Building*, int, int, int, int*)
+                                             |          
+                                             |--5.45%--Map::prepareBuildingGradient(Building*, int)
+                                             |          Map::updateGlobalGradient(Building*, int)
+                                             |          |          
+                                             |           --1.48%--BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+                                             |          
+                                              --1.00%--Map::buildingGradientValue(Building*, int, unsigned long) const
+                                                        BuildingGradientSearch::resolve(unsigned long)
+
+     8.39%     6.42%  baseline-symbol  baseline-symbols     [.] Map::updateGlobalGradient(Building*, int)
+            |          
+            |--4.94%--Building::subscribeToBringResourcesStep()
+            |          |          
+            |          |--3.96%--Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+            |          |          Building::considerUnitForResource(Unit*, int, int*)
+            |          |          Building::considerUnitForBuilding(Unit*, int*)
+            |          |          Map::buildingAvailable(Building*, int, int, int, int*)
+            |          |          Map::prepareBuildingGradient(Building*, int)
+            |          |          Map::updateGlobalGradient(Building*, int)
+            |          |          
+            |           --0.98%--Team::swapTask(Unit*)
+            |          
+            |--1.97%--Map::updateGlobalGradient(Building*, int)
+            |          BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+            |          
+             --1.47%--HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+                       Engine::run()
+                       Engine::runOneGameSession(bool&)
+                       Engine::stepSession(unsigned long)
+                       Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+                       Engine::executeOrdersAndStep(bool)
+                       Game::syncStep(int)
+                       Team::syncStep()
+                       Unit::syncStep()
+                       Unit::endOfAction()
+                       Unit::handleMovementGoingToResource()
+                       Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+                       Map::roundTripGradient(Building*, int, int)
+                       Map::prepareBuildingGradient(Building*, int)
+                       Map::updateGlobalGradient(Building*, int)
+
+     8.39%     0.00%  baseline-symbol  baseline-symbols     [.] Map::prepareBuildingGradient(Building*, int)
+            |
+            ---Map::prepareBuildingGradient(Building*, int)
+               Map::updateGlobalGradient(Building*, int)
+               |          
+                --1.97%--BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+
+     7.55%     0.61%  baseline-symbol  baseline-symbols     [.] Building::considerUnitForBuilding(Unit*, int*)
+            |          
+            |--6.94%--Building::considerUnitForBuilding(Unit*, int*)
+            |          |          
+            |           --6.44%--Map::buildingAvailable(Building*, int, int, int, int*)
+            |                     |          
+            |                     |--5.45%--Map::prepareBuildingGradient(Building*, int)
+            |                     |          Map::updateGlobalGradient(Building*, int)
+            |                     |          |          
+            |                     |           --1.48%--BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+            |                     |          
+            |                      --1.00%--Map::buildingGradientValue(Building*, int, unsigned long) const
+            |                                BuildingGradientSearch::resolve(unsigned long)
+            |          
+             --0.61%--Building::subscribeToBringResourcesStep()
+                       Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+                       Building::considerUnitForResource(Unit*, int, int*)
+                       Building::considerUnitForBuilding(Unit*, int*)
+
+     7.43%     1.49%  baseline-symbol  baseline-symbols     [.] Map::updateRoundTripGradient(Building*, int, int)
+            |          
+            |--5.94%--Map::updateRoundTripGradient(Building*, int, int)
+            |          |          
+            |          |--3.95%--Map::propagateGradient(unsigned short*, int, int)
+            |          |          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+            |          |          
+            |           --1.99%--BuildingGradientSearch::resolve(unsigned long)
+            |          
+             --1.49%--HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+                       Engine::run()
+                       Engine::runOneGameSession(bool&)
+                       Engine::stepSession(unsigned long)
+                       Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+                       Engine::executeOrdersAndStep(bool)
+                       Game::syncStep(int)
+                       Team::syncStep()
+                       Unit::syncStep()
+                       Unit::endOfAction()
+                       Unit::handleMovementGoingToResource()
+                       Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+                       Map::roundTripGradient(Building*, int, int)
+                       Map::updateRoundTripGradient(Building*, int, int)
+
+     7.43%     0.00%  baseline-symbol  baseline-symbols     [.] Map::buildingAvailable(Building*, int, int, int, int*)
+            |
+            ---Map::buildingAvailable(Building*, int, int, int, int*)
+               |          
+               |--6.43%--Map::prepareBuildingGradient(Building*, int)
+               |          Map::updateGlobalGradient(Building*, int)
+               |          |          
+               |           --1.48%--BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+               |          
+                --1.00%--Map::buildingGradientValue(Building*, int, unsigned long) const
+                          BuildingGradientSearch::resolve(unsigned long)
+
+     6.91%     6.91%  baseline-symbol  baseline-symbols     [.] AICastor::computeHydratationMap()
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::gatherAndAdvanceOrders(bool)
+               AI::getOrder(bool)
+               AICastor::getOrder()
+               AICastor::computeHydratationMap()
+
+     5.94%     0.00%  baseline-symbol  baseline-symbols     [.] Map::propagateGradient(unsigned short*, int, int)
+            |
+            ---Map::propagateGradient(unsigned short*, int, int)
+               Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+     3.54%     3.54%  baseline-symbol  baseline-symbols     [.] Map::seedClearAreasGradient(int, int, unsigned short*)
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::executeOrdersAndStep(bool)
+               Game::syncStep(int)
+               Map::syncStep(unsigned int)
+               Map::seedClearAreasGradient(int, int, unsigned short*)
+
+     3.00%     3.00%  baseline-symbol  baseline-symbols     [.] Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::gatherAndAdvanceOrders(bool)
+               AI::getOrder(bool)
+               AICastor::getOrder()
+               |          
+               |--1.00%--AICastor::computeWheatCareMap()
+               |          Map::updateGlobalGradient(unsigned char*)
+               |          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+               |          
+                --0.50%--AICastor::computeWheatGrowthMap()
+                          Map::updateGlobalGradient(unsigned char*)
+                          Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+
+     3.00%     0.00%  baseline-symbol  baseline-symbols     [.] Map::updateGlobalGradient(unsigned char*)
+            |
+            ---Map::updateGlobalGradient(unsigned char*)
+               Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+
+     2.99%     2.99%  baseline-symbol  baseline-symbols     [.] BuildingGradientSearch::resolve(unsigned long)
+            |          
+            |--1.99%--HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+            |          Engine::run()
+            |          Engine::runOneGameSession(bool&)
+            |          Engine::stepSession(unsigned long)
+            |          Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+            |          Engine::executeOrdersAndStep(bool)
+            |          Game::syncStep(int)
+            |          Team::syncStep()
+            |          Unit::syncStep()
+            |          Unit::endOfAction()
+            |          Unit::handleMovementGoingToResource()
+            |          Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+            |          Map::roundTripGradient(Building*, int, int)
+            |          Map::updateRoundTripGradient(Building*, int, int)
+            |          BuildingGradientSearch::resolve(unsigned long)
+            |          
+             --1.00%--Building::subscribeToBringResourcesStep()
+                       Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+                       Building::considerUnitForResource(Unit*, int, int*)
+                       Building::considerUnitForBuilding(Unit*, int*)
+                       Map::buildingAvailable(Building*, int, int, int, int*)
+                       Map::buildingGradientValue(Building*, int, unsigned long) const
+                       BuildingGradientSearch::resolve(unsigned long)
+
+     2.48%     2.48%  baseline-symbol  baseline-symbols     [.] TeamStats::step(Team*, bool)
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::executeOrdersAndStep(bool)
+               Game::syncStep(int)
+               Team::syncStep()
+               TeamStats::step(Team*, bool)
+
+     2.47%     1.48%  baseline-symbol  baseline-symbols     [.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+            |          
+            |--1.48%--HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+            |          Engine::run()
+            |          Engine::runOneGameSession(bool&)
+            |          Engine::stepSession(unsigned long)
+            |          Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+            |          Engine::gatherAndAdvanceOrders(bool)
+            |          Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+            |          Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+            |          
+             --0.99%--Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+
+     2.47%     0.00%  baseline-symbol  baseline-symbols     [.] Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+            |
+            ---Game::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, bool)
+               Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+
+     2.00%     0.00%  baseline-symbol  baseline-symbols     [.] Map::updateForbiddenGradient(int)
+            |
+            ---Map::updateForbiddenGradient(int)
+               Map::updateForbiddenGradient(int, int)
+               Map::propagateGradient(unsigned short*, int, int)
+               Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+     2.00%     0.00%  baseline-symbol  baseline-symbols     [.] Map::updateForbiddenGradient(int, int)
+            |
+            ---Map::updateForbiddenGradient(int, int)
+               Map::propagateGradient(unsigned short*, int, int)
+               Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+     1.97%     1.97%  baseline-symbol  baseline-symbols     [.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+            |          
+             --1.48%--Building::subscribeToBringResourcesStep()
+                       Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+                       Building::considerUnitForResource(Unit*, int, int*)
+                       Building::considerUnitForBuilding(Unit*, int*)
+                       Map::buildingAvailable(Building*, int, int, int, int*)
+                       Map::prepareBuildingGradient(Building*, int)
+                       Map::updateGlobalGradient(Building*, int)
+                       BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+
+     1.50%     0.00%  baseline-symbol  baseline-symbols     [.] AICastor::computeWheatGrowthMap()
+            |
+            ---AICastor::computeWheatGrowthMap()
+               Map::updateGlobalGradient(unsigned char*)
+               Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+
+     1.50%     0.00%  baseline-symbol  baseline-symbols     [.] GameGUI::executeOrder(std::shared_ptr<Order>)
+            |
+            ---GameGUI::executeOrder(std::shared_ptr<Order>)
+               Game::executeOrder(std::shared_ptr<Order>, int)
+               |          
+                --1.00%--Building::launchConstruction(int, int)
+                          Building::updateConstructionState()
+                          Map::updateForbiddenGradient(int)
+                          Map::updateForbiddenGradient(int, int)
+                          Map::propagateGradient(unsigned short*, int, int)
+                          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+     1.50%     0.00%  baseline-symbol  baseline-symbols     [.] Game::executeOrder(std::shared_ptr<Order>, int)
+            |
+            ---Game::executeOrder(std::shared_ptr<Order>, int)
+               |          
+                --1.00%--Building::launchConstruction(int, int)
+                          Building::updateConstructionState()
+                          Map::updateForbiddenGradient(int)
+                          Map::updateForbiddenGradient(int, int)
+                          Map::propagateGradient(unsigned short*, int, int)
+                          Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+     1.49%     1.49%  baseline-symbol  baseline-symbols     [.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)
+            |
+            ---Building::subscribeToBringResourcesStep()
+               Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)
+
+     1.48%     1.48%  baseline-symbol  baseline-symbols     [.] Unit::locationIsInEnemyGuardTowerRange(int, int) const
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::executeOrdersAndStep(bool)
+               Game::syncStep(int)
+               Team::syncStep()
+               Unit::syncStep()
+               Unit::endOfAction()
+               Unit::handleMovementRemovingBlackAround()
+               Unit::locationIsInEnemyGuardTowerRange(int, int) const
+
+     1.48%     0.00%  baseline-symbol  baseline-symbols     [.] Unit::handleMovementRemovingBlackAround()
+            |
+            ---Unit::handleMovementRemovingBlackAround()
+               Unit::locationIsInEnemyGuardTowerRange(int, int) const
+
+     1.44%     0.00%  baseline-symbol  baseline-symbols     [.] AICastor::continueProject(AICastor::Project*)
+            |
+            ---AICastor::continueProject(AICastor::Project*)
+
+     1.00%     0.00%  baseline-symbol  baseline-symbols     [.] AICastor::computeWheatCareMap()
+            |
+            ---AICastor::computeWheatCareMap()
+               Map::updateGlobalGradient(unsigned char*)
+               Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+
+     1.00%     0.00%  baseline-symbol  baseline-symbols     [.] AINumbi::getOrder()
+            |
+            ---AINumbi::getOrder()
+               AINumbi::adjustBuildings(int, int, int, int)
+               AINumbi::findNewEmplacement(int, int*, int*)
+
+     1.00%     0.00%  baseline-symbol  baseline-symbols     [.] AINumbi::adjustBuildings(int, int, int, int)
+            |
+            ---AINumbi::adjustBuildings(int, int, int, int)
+               AINumbi::findNewEmplacement(int, int*, int*)
+
+     1.00%     0.00%  baseline-symbol  baseline-symbols     [.] AINumbi::findNewEmplacement(int, int*, int*)
+            |
+            ---AINumbi::findNewEmplacement(int, int*, int*)
+
+     1.00%     0.00%  baseline-symbol  baseline-symbols     [.] Building::launchConstruction(int, int)
+            |
+            ---Building::launchConstruction(int, int)
+               Building::updateConstructionState()
+               Map::updateForbiddenGradient(int)
+               Map::updateForbiddenGradient(int, int)
+               Map::propagateGradient(unsigned short*, int, int)
+               Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+     1.00%     0.00%  baseline-symbol  baseline-symbols     [.] Building::updateConstructionState()
+            |
+            ---Building::updateConstructionState()
+               Map::updateForbiddenGradient(int)
+               Map::updateForbiddenGradient(int, int)
+               Map::propagateGradient(unsigned short*, int, int)
+               Map::propagateGradientSnapshot(unsigned short*, int, int, GradientWorkspace&, unsigned char const*)
+
+     1.00%     1.00%  baseline-symbol  baseline-symbols     [.] Map::seedGuardAreasGradient(int, int, unsigned short*)
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::executeOrdersAndStep(bool)
+               Game::syncStep(int)
+               Map::syncStep(unsigned int)
+               Map::seedGuardAreasGradient(int, int, unsigned short*)
+
+     1.00%     0.00%  baseline-symbol  baseline-symbols     [.] Map::buildingGradientValue(Building*, int, unsigned long) const
+            |
+            ---Map::buildingGradientValue(Building*, int, unsigned long) const
+               BuildingGradientSearch::resolve(unsigned long)
+
+     0.99%     0.99%  baseline-symbol  baseline-symbols     [.] AICastor::updateGlobalGradient(unsigned char*)
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::gatherAndAdvanceOrders(bool)
+               AI::getOrder(bool)
+               AICastor::getOrder()
+               |          
+                --0.50%--AICastor::computeNeedSwim()
+                          AICastor::computeWorkRangeMap()
+                          AICastor::updateGlobalGradient(unsigned char*)
+
+     0.99%     0.00%  baseline-symbol  baseline-symbols     [.] AICastor::computeWorkRangeMap()
+            |
+            ---AICastor::computeWorkRangeMap()
+               AICastor::updateGlobalGradient(unsigned char*)
+
+     0.99%     0.99%  baseline-symbol  baseline-symbols     [.] Map::updateExploredArea(int)
+            |
+            ---HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&) [clone .isra.0]
+               Engine::run()
+               Engine::runOneGameSession(bool&)
+               Engine::stepSession(unsigned long)
+               Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+               Engine::executeOrdersAndStep(bool)
+               Game::syncStep(int)
+               Map::syncStep(unsigned int)
+               Map::updateExploredArea(int)
+
+     0.99%     0.50%  baseline-symbol  baseline-symbols     [.] Team::addBuildingNeedingWork(Building*, int)
+     0.99%     0.00%  baseline-symbol  baseline-symbols     [.] Building::updateCallLists()
+            |
+            ---Building::updateCallLists()
+               Team::addBuildingNeedingWork(Building*, int)
+
+     0.98%     0.00%  baseline-symbol  baseline-symbols     [.] Team::swapTask(Unit*)
+            |
+            ---Team::swapTask(Unit*)
+
+     0.50%     0.00%  baseline-symbol  baseline-symbols     [.] AICastor::computeNeedSwim()
+            |
+            ---AICastor::computeNeedSwim()
+               AICastor::computeWorkRangeMap()
+               AICastor::updateGlobalGradient(unsigned char*)
+
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

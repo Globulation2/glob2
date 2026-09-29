@@ -1,0 +1,35 @@
+{
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           43 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  32\nOn-line CPU(s) list:                     0-31\nVendor ID:                               AuthenticAMD\nModel name:                              AMD Ryzen Threadripper 2950X 16-Core Processor\nCPU family:                              23\nModel:                                   8\nThread(s) per core:                      2\nCore(s) per socket:                      16\nSocket(s):                               1\nStepping:                                2\nFrequency boost:                         disabled\nCPU(s) scaling MHz:                      71%\nCPU max MHz:                             4000.0000\nCPU min MHz:                             2200.0000\nBogoMIPS:                                7998.72\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid amd_dcm aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb hw_pstate ssbd ibpb vmmcall fsgsbase bmi1 avx2 smep bmi2 rdseed adx smap clflushopt sha_ni xsaveopt xsavec xgetbv1 clzero xsaveerptr arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif overflow_recov succor smca sev sev_es\nVirtualization:                          AMD-V\nL1d cache:                               512 KiB (16 instances)\nL1i cache:                               1 MiB (16 instances)\nL2 cache:                                8 MiB (16 instances)\nL3 cache:                                32 MiB (4 instances)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-31\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; untrained return thunk; SMT vulnerable\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; IBPB conditional; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Mitigation; IBPB before exit to userspace",
+  "binaries": {
+    "baseline": {
+      "path": "/home/bradley/glob2-nongradient-de84ffc18/artifacts/pr-final/candidate",
+      "sha256": "ef4b0c4383b4bb59f5e9130b6990097bb6d628390a70a508731ad3b093016ec6"
+    },
+    "candidate": {
+      "path": "/home/bradley/glob2-nongradient-de84ffc18/artifacts/broad-pass/candidate",
+      "sha256": "1d2050945fa5b2c14fc993aaa843f27aa070a3229f71cc2e99f65e88e7626d60"
+    }
+  },
+  "revisions": {
+    "baseline": "ef1f90ed1f0b0ed9557d90b3a75aef5e2531631a",
+    "candidate": "b8b3287715570ec6ed8210749e3c9fc481053594"
+  },
+  "argv": [
+    "artifacts/broad-pass/evidence/run.py",
+    "timing",
+    "--baseline",
+    "artifacts/pr-final/candidate",
+    "--candidate",
+    "artifacts/broad-pass/candidate",
+    "--root",
+    ".",
+    "--output",
+    "artifacts/broad-pass/timing-final",
+    "--cpus",
+    "8,10",
+    "--repeats",
+    "3"
+  ]
+}
