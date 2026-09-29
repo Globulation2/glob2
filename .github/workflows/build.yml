@@ -1703,11 +1703,12 @@ jobs:
           path: |
             build/linux/**/.sconsign.dblite
             build/linux/**/identity.json
+            build/linux/**/configure
             build/linux/**/include/glob2/BuildConfig.h
             build/linux/**/*.o
             build/linux/**/*.a
-          key: native-objects-v1-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: native-objects-v1-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-
+          key: native-objects-v2-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: native-objects-v2-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-
       - name: Reset native compiler cache statistics
         id: reset_native_compiler_cache_statistics
         run: |
@@ -1761,10 +1762,11 @@ jobs:
           path: |
             build/linux/**/.sconsign.dblite
             build/linux/**/identity.json
+            build/linux/**/configure
             build/linux/**/include/glob2/BuildConfig.h
             build/linux/**/*.o
             build/linux/**/*.a
-          key: native-objects-v1-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: native-objects-v2-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         id: upload_artifact_1
         continue-on-error: true
