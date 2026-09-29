@@ -810,3 +810,36 @@ the 33% outline fixtures.
 Zone boundaries use `GraphicContext::drawMapBoundary`: positions snap to the
 active target's pixel grid and strokes remain at least one target pixel wide.
 Ordinary UI lines retain their existing sizing behavior.
+
+## Parallel compute prototype
+
+Build `scons release=1 server=0 compute-executor-test path-gradient-test
+building-gradient-invalidation-test`. `ComputeExecutorHarness` checks exclusive
+slots, barriers, nested batches, exception propagation, reuse and reconfiguration.
+The path oracle also exercises independent eager/lazy searches at 1/2/4/8 threads;
+the building invalidation harness compares real area/building seed fields and
+frozen hiring advancement. Linux/Windows CI run the executor and path oracle.
+
+`python3 test/check_parallel_compute.py BUILD/GLOB2 --baseline BASELINE` compares
+per-tick traces, replay bytes, final saves and uninterrupted save continuation.
+Omit `--baseline` to compare the candidate's default execution; `--output DIR`
+retains all evidence. This subprocess runner uses Unix `wait4`; native Windows
+uses the C++ harnesses. See the existing performance guide for corpus preparation
+and paired CPU/wall-time benchmarking.
+
+
+### Delayed gradient pipeline
+
+Build `gradient-pipeline-test` and run `GradientPipelineHarness` from the build's
+`src` directory. The standalone scheduler test varies completion order across
+0/1/2/4/8 workers and publication delays, checks synchronous supersession, bounded
+buffers, partial thread-creation failure, exception delivery and teardown. It can
+also be compiled directly with ThreadSanitizer without SDL.
+
+`BuildingGradientInvalidationHarness` exercises real resource, guard and clear
+fields, including a synchronous update while an older snapshot is pending.
+`benchmark_gradient_pipeline.py --verify` compares real-game per-tick traces across
+worker counts under the same delayed schedule. `check_gradient_pipeline.py` also
+checks the one-worker/eight-tick defaults and save/resume at each of the eight
+deadline phases with zero, one and two workers. Pending fields, supersession and
+remaining deadlines are versioned save state; worker count is not.

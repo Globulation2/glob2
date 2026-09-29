@@ -298,3 +298,14 @@ not reconstruct internal AI decisions from recorded orders.
 The same timeline option also exports [engine performance telemetry](performance-telemetry.md):
 frame/work timing, subsystem costs, sampled pathfinding, per-player AI time, and autosave work.
 Performance records describe this execution session and are not stored in saves.
+
+### Gradient scheduling compatibility
+
+Version 120 makes periodic resource, guard and clear fields publish eight ticks
+after seeding, with one background worker by default. Saves retain completed
+pending fields and their remaining deadlines without publishing them early;
+older saves remain loadable and start with an empty queue. The save compatibility
+floor remains 58. Replay versions before 120 are rejected because their routing
+schedule differs. Network protocol 43 rejects older and newer clients. Worker
+availability affects wall time only: the serial fallback publishes on the same
+ticks. Headless `--gradient-workers 0` is the deterministic serial control.

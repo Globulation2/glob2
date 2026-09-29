@@ -111,6 +111,8 @@ Game options:
 | `--alliance N` | Repeat once per team, one-based group labels; default separate alliances |
 | `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
+| `--compute-threads N` | Experimental execution threads, 1–64 including main; default 1 |
+| `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `all`; default `none` at one thread, `all` otherwise; direct engine option |
 | `--replay true/false` | false |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |
@@ -531,3 +533,14 @@ the supplied bundle must match those hosts. Do not benchmark two variants concur
 on the same CPU resources. Short jobs emphasize scheduling overhead; report the map,
 ticks, workload size, platform, and all commands rather than extrapolating one result
 to every tournament.
+
+
+Periodic gradient propagation uses one background worker and an eight-tick
+publication delay by default, including normal games. `--gradient-workers N`
+selects 0–16 background workers for headless runs; zero is the serial control
+with identical simulation behavior. `--gradient-delay D` selects 1–16 ticks for
+experiments before work is pending. A loaded game preserves its saved delay;
+worker count may change without altering decisions. Save and replay exports
+retain pending fields and deadlines. See
+[performance experiments](../development/performance-telemetry.md) for the
+benchmark procedure and interpretation of CPU and wall time.

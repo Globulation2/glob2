@@ -4,6 +4,9 @@
 
 #pragma once
 #include <CooperativeTask.h>
+#include "ComputeExecutor.h"
+#include "gradient/GradientWorkspace.h"
+#include "gradient/GradientPipeline.h"
 
 #include <list>
 #include <optional>
@@ -76,7 +79,43 @@ enum AreaType
 */
 class Map
 {
+	mutable ComputeExecutor compute;
+	std::vector<GradientWorkspace> gradientWorkspaces{1};
+	unsigned computeExperiments = 0;
+	mutable GradientPipeline gradientPipeline;
 public:
+	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
+	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4 };
+	void configureCompute(unsigned threads, unsigned experiments)
+	{
+		compute.configure(threads);
+		gradientWorkspaces.resize(compute.threadCount());
+		computeExperiments = experiments;
+	}
+	ComputeExecutor &computeExecutor() { return compute; }
+	GradientWorkspace &gradientWorkspace() { return gradientWorkspaces[compute.slot()]; }
+	bool computeEnabled(ComputeExperiment experiment) const { return computeExperiments & experiment; }
+	// Fixed chunks and synchronous barriers: thresholds affect execution only.
+	template<class Function> void initializeGradientCells(Function function) const
+	{
+		constexpr size_t chunk = 4096;
+		if (!computeEnabled(ComputeInitialize) || size < 16384)
+		{ function(0, size); return; }
+		compute.run((size + chunk - 1) / chunk, [&](size_t part) {
+			const size_t begin = part * chunk;
+			function(begin, std::min(begin + chunk, size));
+		});
+	}
+	GradientPipeline &pipeline() { return gradientPipeline; }
+	void configureGradientPipeline(unsigned workers, unsigned delay);
+	void updateTeamAreaGradients(int teamNumber);
+	void seedResourcesGradient(int team, Uint8 resource, int swim, Uint16 *gradient);
+	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
+	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
+	void propagateGradientSnapshot(Uint16 *gradient, int swim, int maxCost,
+		GradientWorkspace &workspace, const std::uint8_t *water);
+	void advanceHiringGradients(Building *building);
+
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
 	void loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor);
 	//! Type of terrain (used for undermap)
@@ -668,8 +707,8 @@ public:
 	//! Dijkstra from every seeded cell of a pathfinding gradient (see MapInternal.h).
 	//! Seeds may carry any cost up to GRADIENT_COST_LIMIT (0 for GRADIENT_AT_GOAL; e.g. a
 	//! resource tile seeded with its distance to a building); do not pass a completed
-	//! field. With maxCost, cells that would cost more stay unreachable. Uses shared
-	//! scratch storage: calls across all Maps must be serial and non-reentrant.
+	//! field. With maxCost, cells that would cost more stay unreachable. Uses worker-owned
+	//! scratch storage: parallel calls must use this Map's executor and distinct fields.
 	//! swimClass must be in [0, SWIM_CLASS_COUNT).
     GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
