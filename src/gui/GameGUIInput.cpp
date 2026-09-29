@@ -128,6 +128,7 @@ void GameGUI::processEvent(SDL_Event *event)
         lastMouseButtonState = 0;
         viewportSpeedX = viewportSpeedY = 0;
         selectionPushed = false;
+        emptyMapPanPushed = false;
         if (touch) touch->cancel();
         torusView.stopMoving();
         toolManager.cancelDrag(localTeamNo);
@@ -135,7 +136,10 @@ void GameGUI::processEvent(SDL_Event *event)
         torusView.setPointerHeld(false);
     }
     if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT)
+    {
         torusView.setPointerHeld(false);
+        emptyMapPanPushed = false;
+    }
     if (!inputState.hasFocus() && (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ||
         event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP ||
         event->type == SDL_MOUSEMOTION || event->type == SDL_MOUSEWHEEL)) return;
@@ -223,6 +227,8 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 	}
 
+	if (inGameMenu != IGM_NONE || scrollableText)
+		emptyMapPanPushed = false;
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
@@ -343,7 +349,14 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 		else if (globalContainer->replaying && mouseEvent.y >= REPLAY_BAR_Y)
 			handleReplayProgressBarClick(mouseEvent.x, mouseEvent.y, mouseEvent.button);
 		else
+		{
 			handleMapClick(mouseEvent.x, mouseEvent.y, mouseEvent.button);
+			if (emptyMapPanPushed)
+			{
+				panMouseX=mouseEvent.x;
+				panMouseY=mouseEvent.y;
+			}
+		}
 	}
 	else if (button==SDL_BUTTON_MIDDLE)
 	{
@@ -368,7 +381,7 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 {
 	updateCamera();
     if(mouseEvent.button==SDL_BUTTON_LEFT && zoomControlPushed)
-    {zoomControlPushed=false;miniMapPushed=selectionPushed=panPushed=false;return;}
+    {zoomControlPushed=false;miniMapPushed=selectionPushed=emptyMapPanPushed=false;return;}
 	int button=mouseEvent.button;
 	if ((button==SDL_BUTTON_LEFT) && camera.contains(mouseEvent.x,mouseEvent.y) && mouseEvent.y>=16)
 	{
@@ -383,9 +396,14 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 			toolManager.handleMouseUp(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), localTeamNo, viewportX, viewportY, inputState.modifiers());
 		}
 	}
-	miniMapPushed=false;
-	selectionPushed=false;
-	panPushed=false;
+	if (button==SDL_BUTTON_LEFT)
+	{
+		miniMapPushed=false;
+		selectionPushed=false;
+		emptyMapPanPushed=false;
+	}
+	else if (button==SDL_BUTTON_MIDDLE)
+		panPushed=false;
 	// showUnitWorkingToBuilding=false;
 }
 

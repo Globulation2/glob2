@@ -55,14 +55,18 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	}
 	else
 	{
-		if (mx<scrollZoneWidth)
+		if (emptyMapPanPushed)
+			viewportSpeedX=viewportSpeedY=0;
+		else if (mx<scrollZoneWidth)
 			viewportSpeedX=-1;
 		else if ((mx>globalContainer->gfx->getW()-scrollZoneWidth) )
 			viewportSpeedX=1;
 		else
 			viewportSpeedX=0;
 
-		if (my<scrollZoneWidth)
+		if (emptyMapPanPushed)
+			viewportSpeedY=0;
+		else if (my<scrollZoneWidth)
 			viewportSpeedY=-1;
 		else if (my>globalContainer->gfx->getH()-scrollZoneWidth)
 			viewportSpeedY=1;
@@ -70,11 +74,12 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 			viewportSpeedY=0;
 	}
 
-	if (panPushed)
+	if (panPushed || emptyMapPanPushed)
 	{
 		// handle panning
-		camera.originX += (mx-panMouseX)/camera.zoom;
-        camera.originY += (my-panMouseY)/camera.zoom;
+		const int direction = emptyMapPanPushed ? -1 : 1;
+		camera.originX += direction*(mx-panMouseX)/camera.zoom;
+        camera.originY += direction*(my-panMouseY)/camera.zoom;
         camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
         panMouseX=mx;panMouseY=my;
 	}
@@ -238,6 +243,10 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				{
 					if (selectionMode == RESOURCE_SELECTION)
 						clearSelection();
+					// Only unclaimed ground starts a map drag. Keep flag,
+					// unit, building, resource and active tool gestures intact.
+					if (!torusView.active())
+						emptyMapPanPushed = true;
 				}
 			}
 		}

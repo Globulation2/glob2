@@ -204,6 +204,7 @@ void GameGUI::suspendInput()
 {
     if (touch) touch->cancel(true);
     panPushed=false;
+    emptyMapPanPushed=false;
     torusView.stopMoving();
     torusPointerDown=false;
     torusView.setPointerHeld(false);

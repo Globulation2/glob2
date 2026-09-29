@@ -142,6 +142,7 @@ void GameGUI::init()
 
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
+	emptyMapPanPushed=false;
 
 	buildingsChoiceName.clear();
 	buildingsChoiceName.push_back("swarm");
