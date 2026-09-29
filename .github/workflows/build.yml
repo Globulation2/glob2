@@ -13,7 +13,7 @@ on:
         default: false
 
 # A new push to a pull request supersedes its running checks. Master runs are
-# never cancelled: each one saves the compiler caches the next PRs restore.
+# never cancelled: relevant builds save the compiler caches the next PRs restore.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -35,9 +35,9 @@ jobs:
       - name: Select checks for changed paths
         id: select
         env:
-          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           BROWSER_ONLY: ${{ inputs.browser_only }}
-        run: python3 .github/scripts/ci_changed_paths.py --base "$PR_BASE"
+        run: python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
 
   linux-build:
     name: linux build (${{ matrix.image }})
