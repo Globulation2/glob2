@@ -78,6 +78,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
+    if (emptyMapPanPushed) return;
     if (torusView.active()) {
         if (!torusPointerDown || !torusMapPointer(mx, my, mx, my)) return;
     }
@@ -170,7 +171,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 				it away. */
 			if (wasMouseMotion
 				&& (lastMouseButtonState & SDL_BUTTON(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
-				&& ((mouseMapX != oldMouseMapX)
+				&& (emptyMapPanPushed || (mouseMapX != oldMouseMapX)
 					|| (mouseMapY != oldMouseMapY))
 			)
 			{

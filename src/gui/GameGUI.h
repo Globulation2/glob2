@@ -531,6 +531,8 @@ private:
 	bool putMark;
 	//! True if we are panning
 	bool panPushed;
+	//! True while a left-button drag that began on empty map ground is panning
+	bool emptyMapPanPushed = false;
 	//! Coordinate of mouse when began panning
 	int panMouseX, panMouseY;
 	//! Coordinate of viewport when began panning
@@ -725,4 +727,3 @@ private:
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
-
