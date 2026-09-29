@@ -31,6 +31,17 @@ void GradientInfo::add_obstacle(Entities::Entity* obstacle)
 	obstacles.push_back(std::shared_ptr<Entities::Entity>(obstacle));
 }
 
+GradientInfo GradientInfo::clone() const
+{
+	GradientInfo copy;
+	copy.needs_updated=needs_updated;
+	for(const auto& source : sources)
+		copy.sources.push_back(source->clone());
+	for(const auto& obstacle : obstacles)
+		copy.obstacles.push_back(obstacle->clone());
+	return copy;
+}
+
 
 bool GradientInfo::match_source(Map* map, int posx, int posy)
 {
@@ -252,6 +263,24 @@ bool Gradient::within_dist(int posx, int posy, int max_dist) const
 
 GradientManager::GradientManager(Map* map) : map(map), cur_update(0), timer(0)
 {
+}
+
+std::unique_ptr<GradientManager> GradientManager::clone() const
+{
+	auto copy=std::make_unique<GradientManager>(map);
+	copy->cur_update=cur_update;
+	copy->timer=timer;
+	copy->ticks_since_update=ticks_since_update;
+	copy->queuedGradients=queuedGradients;
+	copy->gradients.reserve(gradients.size());
+	for(const auto& gradient : gradients)
+	{
+		auto field=std::make_shared<Gradient>(gradient->gradient_info.clone());
+		field->width=gradient->width;
+		field->gradient=gradient->gradient;
+		copy->gradients.push_back(std::move(field));
+	}
+	return copy;
 }
 
 

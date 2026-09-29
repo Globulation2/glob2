@@ -13,7 +13,7 @@ from build_layout import build_identity, default_directory, BuildLock
 from mobile_toolchain import ROOT, LOCK
 from mobile_artifacts import verify_android_shared_library, verify_android_symbols
 import developer_apk
-from asset_bundle import include_asset, verify_apk_assets
+from asset_bundle import include_asset, restore_gzip_assets, verify_apk_assets
 
 
 def main():
@@ -93,6 +93,14 @@ def main():
         gradle=args.gradle or str(ROOT/'build/mobile-tools/gradle-8.13/bin/gradle')
         subprocess.run([gradle,'--no-daemon','--project-dir',str(project),'assembleRelease' if args.release else 'assembleDebug'],env=env,check=True)
         apk=project/('app/build/outputs/apk/release/app-release-unsigned.apk' if args.release else 'app/build/outputs/apk/debug/app-debug.apk')
+        if args.release and restore_gzip_assets(apk, assets):
+            aligned=apk.with_suffix('.aligned.apk')
+            try:
+                subprocess.run([str(developer_apk.build_tools(ROOT,sdk)/'zipalign'),
+                    '-f','-P','16','4',str(apk),str(aligned)],check=True)
+                aligned.replace(apk)
+            finally:
+                aligned.unlink(missing_ok=True)
         developer_apk.verify_alignment(ROOT,sdk,apk)
         verify_apk_assets(apk)
         readelf = prebuilt / 'bin' / ('llvm-readelf.exe' if os.name == 'nt' else 'llvm-readelf')

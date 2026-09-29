@@ -93,6 +93,9 @@ public:
 	bool runNoX;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;
+	// Zero selects the bounded hardware/AI-count default. Structured
+	// --run-game configures its own compute executor instead.
+	unsigned aiThreads = 0;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;
@@ -164,4 +167,3 @@ public:
 };
 
 extern GlobalContainer *globalContainer;
-

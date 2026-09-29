@@ -3560,6 +3560,11 @@ void Maxima::ensure_strategy()
 	strategy_resolved=true;
 }
 
+std::string Maxima::canonicalStrategy() const
+{
+	return StrategyResolver::canonicalValues(strategy);
+}
+
 
 void Maxima::resolve_strategy(bool announce)
 {
@@ -3572,10 +3577,9 @@ void Maxima::resolve_strategy(bool announce)
 		throw std::runtime_error("Maxima strategy error: "+error);
 	}
 	strategy=resolved.values;
-	// Legacy construction precedes header installation; resolve format defaults
-	// at ensure_strategy(), then persist them. Explicit configurations are ready now.
-	if (announce || !player->game->gameHeader.getAIConfig(player->number).empty())
-		player->game->gameHeader.setAIConfig(player->number, StrategyResolver::canonicalValues(strategy));
+	// Game::setGameHeader has already canonicalized the finalized configuration.
+	// A controller may also be constructed before that setup step, but it never
+	// changes the shared header while deciding an order.
 	budget.swarm_supply_radius=
 		strategy.staffing.swarm_supply_radius;
 	budget.attack_clearing_workers=strategy.staffing.attack_clearing_workers;

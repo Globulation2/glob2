@@ -103,7 +103,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--repeats', type=int, default=5)
     parser.add_argument('--threads', type=int, nargs='+', default=[1, 2, 4, 8])
-    parser.add_argument('--experiments', nargs='+', choices=['none', 'areas', 'initialize', 'hiring', 'all'], default=['areas', 'initialize', 'hiring', 'all'])
+    parser.add_argument('--experiments', nargs='+', choices=['none', 'areas', 'initialize', 'hiring', 'ai', 'all'], default=['areas', 'initialize', 'hiring', 'ai', 'all'])
     parser.add_argument('--verify', action='store_true', help='Compare per-tick traces, replay orders and final saves, without timing repeats')
     args = parser.parse_args()
     before, after, output = args.before.resolve(), args.after.resolve(), args.output.resolve()

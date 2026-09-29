@@ -66,6 +66,7 @@ namespace AISharedRuntime
 				virtual bool can_change()=0;
 
 				virtual EntityType get_type()=0;
+				virtual std::shared_ptr<Entity> clone() const=0;
 				virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)=0;
 				virtual void save(GAGCore::OutputStream *stream)=0;
 				static Entity* load_entity(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -84,6 +85,7 @@ namespace AISharedRuntime
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<Building>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			private:
@@ -104,6 +106,7 @@ namespace AISharedRuntime
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<AnyTeamBuilding>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			private:
@@ -123,6 +126,7 @@ namespace AISharedRuntime
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<AnyBuilding>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			private:
@@ -141,6 +145,7 @@ namespace AISharedRuntime
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<Resource>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			private:
@@ -158,6 +163,7 @@ namespace AISharedRuntime
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<AnyResource>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			};
@@ -173,6 +179,7 @@ namespace AISharedRuntime
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<Water>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			};
@@ -189,6 +196,7 @@ namespace AISharedRuntime
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<Position>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 				int x;
@@ -206,6 +214,7 @@ namespace AISharedRuntime
 				bool operator==(const Entity& rhs) const;
 				bool can_change();
 				EntityType get_type();
+				std::shared_ptr<Entity> clone() const override { return std::make_shared<Sand>(*this); }
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			};
@@ -224,6 +233,7 @@ namespace AISharedRuntime
 		private:
 			friend class AISharedRuntime::Gradients::Gradient;
 			friend class AISharedRuntime::Gradients::GradientManager;
+			friend class ::RuntimeContinuationTest;
 			friend class AISharedRuntime::Construction::MinimumDistance;
 			friend class AISharedRuntime::Construction::MaximumDistance;
 			friend class AISharedRuntime::Construction::MinimizedDistance;
@@ -242,6 +252,7 @@ namespace AISharedRuntime
 			bool needs_updating() const;
 
 			bool operator==(const GradientInfo& rhs) const;
+			GradientInfo clone() const;
 			std::vector<std::shared_ptr<Entities::Entity> > sources;
 			std::vector<std::shared_ptr<Entities::Entity> > obstacles;
 			mutable tribool needs_updated;
@@ -291,8 +302,8 @@ namespace AISharedRuntime
 
 		///The gradient manager is a very important part of the system, just like the gradient itself is. The gradient manager takes upon the task
 		///of managing and updating various gradients in the game. It returns a matching gradient when provided a GradientInfo.
-		///This object is shared among all Runtime AI's, which means gradients that aren't specific to a particular team (such as most Resource
-		///gradients) don't have to be recalculated for every Runtime AI separately. This saves a lot of cpu time when their are multiple Runtime AI's.
+		///Each controller owns its manager so cached fields and update cadence
+		///cannot depend on another controller's decisions or poll order.
 		class GradientManager
 		{
 		public:
@@ -312,6 +323,7 @@ namespace AISharedRuntime
 			void update();
 			void save(GAGCore::OutputStream* stream);
 			bool load(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor);
+			std::unique_ptr<GradientManager> clone() const;
 			static int increment(const int x) { return x+1; }
 			std::vector<std::shared_ptr<Gradient> > gradients;
 			std::queue<int> queuedGradients;

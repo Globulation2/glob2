@@ -524,8 +524,17 @@ python3 test/run-savegame-safety-tests.py build/linux/client/release/src/Runtime
 
 The harness preserves stale fields, uncomputed gradients, ages and duplicate
 refresh-queue entries through binary and text manager round trips. It also checks
-that two shared AI runtime controllers reload one shared manager, including when the updating
-controller differs from the first serialized player. Linux and Windows CI run it.
+that shared-runtime controllers own independent managers and that a legacy shared
+manager can be copied without retaining mutable gradient or entity references.
+Linux and Windows CI run it.
+`check_parallel_compute.py` also resumes the version 121 four-controller fixture in
+`test/fixtures/echo/` at 1, 2, 4 and 8 workers and compares checksums and saves.
+That fixture was saved at tick 256 from `maps/FourSquares1.map.gz`, game seed
+123, with Econo, Nicowar, Econo and Nicowar in player order.
+The same check starts a fresh four-controller game to cover concurrent cache creation.
+It also starts four Castor controllers to exercise concurrent lazy map-gradient
+requests.
+
 `python3 test/check_shared_runtime_save_continuation.py PATH/TO/glob2` also checks full
 Maxima/Nicowar and Nicowar/Nicowar games through two reloads using the retained
 [arena fixture](fixtures/shared-runtime-continuation/README.md).
@@ -536,7 +545,9 @@ otherwise change the tick a pending building becomes ready. Earlier saves remain
 readable through their historical reconstruction path; missing historical cache
 state cannot be recovered from them. A subsequent format-119 save preserves the
 reconstructed state. Network protocol 42 gates transfers containing the new fields;
-the replay floor remains unchanged because uninterrupted execution is unchanged.
+the replay floor for that version remained unchanged. Version 122 gives each
+controller its own manager, loads and copies legacy shared-manager state, and
+raises the replay floor to 122 and network protocol to 45.
 
 ## Shared AI runtime building-order id save compatibility
 

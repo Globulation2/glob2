@@ -17,6 +17,7 @@ alone is not a safe job limit. The commands below leave concurrency unspecified.
 scons                        # default client: debug information, no optimization
 scons release=1 server=0       # optimized client, including headless runs
 scons release=1 server=1       # server with the correct stripped library
+scons release=1 package        # macOS signed app bundle and DMG
 scons -C test                 # rebuild the separate test suite
 (cd test && ./TestsRunner && ./WinningConditionsHarness)
 ```

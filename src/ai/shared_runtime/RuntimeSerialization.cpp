@@ -13,6 +13,7 @@ using namespace AISharedRuntime::Management;
 
 bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	gm.reset();
 	stream->readEnterSection("EchoAI");
 	signature_check(stream, player, versionMinor);
 
@@ -108,7 +109,8 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	signature_check(stream, player, versionMinor);
 
 	timer=stream->readUint32("timer");
-	update_gm=stream->readUint8("update_gm");
+	if(versionMinor<FILE_FORMAT_VERSION_SHARED_RUNTIME_PRIVATE_GRADIENTS)
+		stream->readUint8("update_gm");
 
 	allies=stream->readUint32("allies");
 	enemies=stream->readUint32("enemies");
@@ -129,21 +131,34 @@ bool Runtime::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 		previous_building_id=stream->readSint32("previousBuildingId");
 		from_load_timer=stream->readSint32("fromLoadTimer");
 		is_fruit=stream->readUint8("isFruit")!=0;
-		const int owner=stream->readSint32("gradientOwner");
-		if(owner < -1 || owner > player->number) return false;
-		if(owner==player->number)
+		if(versionMinor>=FILE_FORMAT_VERSION_SHARED_RUNTIME_PRIVATE_GRADIENTS)
 		{
-			gm=std::make_shared<Gradients::GradientManager>(player->map);
-			if(!gm->load(stream,player,versionMinor)) return false;
+			const Uint8 hasManager=stream->readUint8("hasGradientManager");
+			if(hasManager>1) return false;
+			if(hasManager)
+			{
+				gm=std::make_unique<Gradients::GradientManager>(player->map);
+				if(!gm->load(stream,player,versionMinor)) return false;
+			}
 		}
-		else if(owner>=0)
+		else
 		{
-			// Players load in slot order. Only the first sharer writes the
-			// manager; all later Runtime players restore the same instance.
-			Player* prior=player->team->game->players[owner];
-			Runtime* runtime=prior && prior->type>=BasePlayer::P_AI && prior->ai ? dynamic_cast<Runtime*>(prior->ai->aiImplementation) : nullptr;
-			if(!runtime || !runtime->gm) return false;
-			gm=runtime->gm;
+			const int owner=stream->readSint32("gradientOwner");
+			if(owner < -1 || owner > player->number) return false;
+			if(owner==player->number)
+			{
+				gm=std::make_unique<Gradients::GradientManager>(player->map);
+				if(!gm->load(stream,player,versionMinor)) return false;
+			}
+			else if(owner>=0)
+			{
+				// Older saves stored one mutable manager for multiple controllers.
+				// Restore its full scheduling state, then give this AI a private copy.
+				Player* prior=player->team->game->players[owner];
+				Runtime* runtime=prior && prior->type>=BasePlayer::P_AI && prior->ai ? dynamic_cast<Runtime*>(prior->ai->aiImplementation) : nullptr;
+				if(!runtime || !runtime->gm) return false;
+				gm=runtime->gm->clone();
+			}
 		}
 		stream->readLeaveSection();
 	}
@@ -246,7 +261,6 @@ void Runtime::save(GAGCore::OutputStream *stream)
 	signature_write(stream);
 
 	stream->writeUint32(timer, "timer");
-	stream->writeUint8(update_gm, "update_gm");
 
 	stream->writeUint32(allies, "allies");
 	stream->writeUint32(enemies, "enemies");
@@ -265,19 +279,8 @@ void Runtime::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(previous_building_id,"previousBuildingId");
 	stream->writeSint32(from_load_timer,"fromLoadTimer");
 	stream->writeUint8(is_fruit,"isFruit");
-	int owner=-1;
-	if(gm)
-	{
-		owner=player->number;
-		for(int i=0;i<player->number;++i)
-		{
-			Player* prior=player->team->game->players[i];
-			Runtime* runtime=prior && prior->type>=BasePlayer::P_AI && prior->ai ? dynamic_cast<Runtime*>(prior->ai->aiImplementation) : nullptr;
-			if(runtime && runtime->gm==gm){owner=i;break;}
-		}
-	}
-	stream->writeSint32(owner,"gradientOwner");
-	if(owner==player->number)gm->save(stream);
+	stream->writeUint8(gm != nullptr,"hasGradientManager");
+	if(gm)gm->save(stream);
 	stream->writeLeaveSection();
 
 	stream->writeLeaveSection();
