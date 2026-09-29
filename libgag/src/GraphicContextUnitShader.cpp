@@ -12,7 +12,7 @@
 #include <cstdlib>
 #include <iostream>
 
-#ifdef HAVE_OPENGL
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 
 namespace GAGCore
 {
@@ -254,7 +254,7 @@ namespace GAGCore
 	}
 }
 
-#else // !HAVE_OPENGL
+#else // !HAVE_OPENGL || GLOB2_WEBGL2
 
 namespace GAGCore
 {
@@ -263,4 +263,4 @@ namespace GAGCore
 	bool GraphicContext::drawTeamColoredQuad(DrawableSurface *, DrawableSurface *, float, float, float, float, Uint8, float) { return false; }
 }
 
-#endif // HAVE_OPENGL
+#endif // HAVE_OPENGL && !GLOB2_WEBGL2
