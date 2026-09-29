@@ -38,6 +38,8 @@ leave the world visible below short panels. In-game surfaces use `InGameTouchThe
 independent. A completed tap on empty map space dismisses building inspection
 and restores the previous palette state. Tapping another object switches selection;
 panning, cancelled gestures and taps inside the inspector do not dismiss it.
+Two quick taps on the same map position restore 1:1 zoom around that point;
+pinching still adjusts zoom continuously. Touches on controls do not reset zoom.
 In the mobile/touch interface, flags on the flat map also accept selection within 24 screen points of their
 centres, independent of zoom. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.

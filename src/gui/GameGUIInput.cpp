@@ -192,7 +192,26 @@ void GameGUI::processEvent(SDL_Event *event)
 		else if (event->type==SDL_MOUSEWHEEL)
 		{
 			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
-			if (SDL_GetModState() & KMOD_ALT)
+			updateCamera();
+			bool emptyMap = camera.contains(mouseX, mouseY) && mouseY >= 16 &&
+				selectionMode != TOOL_SELECTION && selectionMode != BRUSH_SELECTION &&
+				!selectionPushed && !panPushed && !miniMapPushed;
+			if (emptyMap)
+			{
+				const auto world = camera.screenToWorld(mouseX, mouseY);
+				const int mapX = int(MapCamera::wrap(world.first,
+					game.map.getW() * 32.0)) / 32;
+				const int mapY = int(MapCamera::wrap(world.second,
+					game.map.getH() * 32.0)) / 32;
+				emptyMap = game.map.getBuilding(mapX, mapY) == NOGBID &&
+					game.map.getGroundUnit(mapX, mapY) == NOGUID &&
+					game.map.getAirUnit(mapX, mapY) == NOGUID;
+				if (localTeam)
+					for (auto *flag : localTeam->virtualBuildings)
+						if (displayedPosX(*flag) == mapX && displayedPosY(*flag) == mapY)
+							emptyMap = false;
+			}
+			if ((SDL_GetModState() & KMOD_ALT) || emptyMap)
             {
                 double delta=event->wheel.y;
 #if SDL_VERSION_ATLEAST(2,0,18)
