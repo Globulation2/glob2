@@ -524,10 +524,13 @@ class GameGUITouchHarness
 		}
 
 		const auto checksum = gui.game.checkSum();
+		Uint32 touchTicks = 1000;
+		Uint32 touchTickStep = 200;
 		auto finger = [&](Uint32 type, int id, float x, float y)
 		{
 			SDL_Event event{};
 			event.type = type;
+			event.tfinger.timestamp = touchTicks += touchTickStep;
 			event.tfinger.touchId = 7;
 			event.tfinger.fingerId = id;
 			event.tfinger.x = x / globalContainer->gfx->getW();
@@ -588,6 +591,58 @@ class GameGUITouchHarness
 		require(std::abs(gui.camera.zoom - oldZoom * 1.5) < 0.001,
 				"Pinch uses the shared camera zoom");
 		noOrder();
+		gui.camera.setZoom(1.7, 200, 200);
+		const auto tapAnchor = gui.camera.screenToWorld(200, 200);
+		touchTickStep = 50;
+		tap(200, 200);
+		tap(200, 200);
+		touchTickStep = 200;
+		require(std::abs(gui.camera.zoom - 1) < 0.001,
+				"Double tap restores 1:1 map zoom");
+		const auto restoredAnchor = gui.camera.screenToWorld(200, 200);
+		require(std::abs(MapCamera::wrap(tapAnchor.first, gui.camera.mapWidth) -
+					MapCamera::wrap(restoredAnchor.first, gui.camera.mapWidth)) < 0.001 &&
+					std::abs(MapCamera::wrap(tapAnchor.second, gui.camera.mapHeight) -
+					MapCamera::wrap(restoredAnchor.second, gui.camera.mapHeight)) < 0.001,
+				"Double tap keeps the tapped world position anchored");
+		gui.clearSelection();
+		bool foundEmptyGround = false;
+		for (int y = 80; y < 480 && !foundEmptyGround; y += 32)
+			for (int x = 80; x < 560 && !foundEmptyGround; x += 32)
+			{
+				const auto world = gui.camera.screenToWorld(x, y);
+				const int tileX = int(MapCamera::wrap(world.first, gui.camera.mapWidth)) / 32;
+				const int tileY = int(MapCamera::wrap(world.second, gui.camera.mapHeight)) / 32;
+				if (gui.game.map.getBuilding(tileX, tileY) != NOGBID ||
+					gui.game.map.getGroundUnit(tileX, tileY) != NOGUID ||
+					gui.game.map.getAirUnit(tileX, tileY) != NOGUID)
+					continue;
+				bool flagHere = false;
+				for (auto *flagBuilding : gui.localTeam->virtualBuildings)
+					flagHere |= gui.displayedPosX(*flagBuilding) == tileX &&
+						gui.displayedPosY(*flagBuilding) == tileY;
+				if (flagHere) continue;
+				foundEmptyGround = true;
+				gui.camera.setZoom(1.7, x, y);
+				gui.mouseX = x; gui.mouseY = y;
+				gui.updateCamera();
+				const auto wheelAnchor = gui.camera.screenToWorld(x, y);
+				SDL_Event wheel{};
+				wheel.type = SDL_MOUSEWHEEL;
+				wheel.wheel.y = -1;
+#if SDL_VERSION_ATLEAST(2,0,18)
+				wheel.wheel.preciseY = -1;
+#endif
+				gui.processEvent(&wheel);
+				require(gui.camera.zoom < 1.7, "Wheel on empty map zooms without Alt");
+				const auto afterWheel = gui.camera.screenToWorld(x, y);
+				require(std::abs(MapCamera::wrap(wheelAnchor.first, gui.camera.mapWidth) -
+						MapCamera::wrap(afterWheel.first, gui.camera.mapWidth)) < 0.001 &&
+					std::abs(MapCamera::wrap(wheelAnchor.second, gui.camera.mapHeight) -
+						MapCamera::wrap(afterWheel.second, gui.camera.mapHeight)) < 0.001,
+					"Wheel zoom keeps the cursor's world position anchored");
+			}
+		require(foundEmptyGround, "Fixture needs empty ground for wheel zoom");
 		flag();
 		tap(240, 240);
 		const auto position = gui.camera.screenToWorld(240, 240);
