@@ -1,3 +1,9 @@
+[AI strategy]
+AI 전략
+[AIMaxima-Summary]
+지속 가능한 성장과 훈련의 균형을 맞춘 뒤 군대를 모아 파상 공격합니다.
+[AIMaxima-Profile]
+핵심 전략: 식량, 일꾼, 출생, 훈련, 건설, 전투를 서로 경쟁하는 수요로 취급합니다. 추정한 적 전력을 일부 반영해 군대 규모를 정한 뒤 효과적으로 투입하려고 합니다.\n\n경제와 발전: 식량과 노동력에 맞춰 출생을 배분하고 훈련할 여유를 보존하며, 군사 생산이 필요하면 잉여 일꾼을 더 만들지 않습니다. 훈련 수용량을 늘리고 업그레이드로 너무 많은 시설이 멈추지 않게 합니다.\n\n정찰과 판단: 보이는 유닛과 기억한 목격 정보를 보정된 모델에 넣어 적 전력을 추정합니다. 표적은 가치, 거리, 탑, 노출된 일꾼, 공격의 지속성에 따라 결정됩니다. 과일 임무는 식단 다양성과 전향을 지원합니다.\n\n공격과 방어: 훈련과 방어용 전사를 남겨 두고, 자격을 갖춘 지상 병력을 아군 식량 시설 근처에 모아 파상 공격을 시작합니다. 국지적 방어 대응을 하고 식민지로 향하는 접근로를 평가합니다.\n\n공격이 막힐 때: 공격대 투입에 4번 연속 실패하면 계속 증원하는 공격 깃발로 전환합니다. 물을 건너는 공격도 지속 증원을 사용할 수 있습니다. 이 대안이 집결하기 전의 모든 장애를 해결하지는 못합니다.\n\n다른 AI와의 비교: 식량, 훈련, 정보, 배치를 더 긴밀하게 통합합니다. Cabino는 여러 건물을 공격하는 데 중점을 두고 Maxima는 수요 추정과 모인 병력의 투입을 중시합니다.\n\n강점과 약점: 식량 압박과 관측한 위협에 적응하면서 성장과 군대 보충을 유지합니다. 식량, 훈련 수용량, 열린 집결 공간이 필요하며 혼잡과 긴 경로는 투입을 방해할 수 있습니다.\n\n시도할 대응책: 공격대가 모이기 전에 노출된 밀, 여관, 병영을 견제하세요. 보급되는 수비대를 모아 두고 증원 경로를 방해하세요. 첫 공세 이후에도 반복되는 압박을 예상하세요.\n\n정찰: 전력 추정은 숨겨진 적 병력 총수가 아닌 목격 정보와 관측 이력을 사용합니다.
 [%0 has left the game]
 %0 님이 게임을 나갔습니다.
 [%0 level %1]
@@ -51,15 +57,19 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Castor는 신중하게 플레이하며 자원이 적은 지도에서 특히 강합니다. 난이도: 보통.
+식량 공급에 맞춰 인구를 늘리며 건설과 훈련을 진행합니다.
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex는 새로운 밀밭으로 확장하고 최전선 근처의 여관과 병원의 지원을 받아 전사 그룹을 전투에 보냅니다. 중간 난이도. 실험적입니다.
+전사를 모아 연이어 공격하고 식량과 치료로 지원합니다.
+[AIMaxima-Description]
+정찰하고 식량 공급을 늘리며 전사를 모아 연이어 공격합니다.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]
-Nicowar는 공격적으로 플레이하며 빠르게 성장하여 대규모 군대로 상대를 공격합니다. 난이도: 어려움.
+인구를 늘리고 전사를 훈련한 다음 공격합니다.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -67,17 +77,21 @@ Nicowar
 [AINone]
 없음
 [AINumbi-Description]
-Numbi - 소규모로 빠르게 확장합니다. 난이도: 쉬움.
+비교적 상대하기 쉽지만 확장과 공격은 계속합니다.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Econo - 공격하지 않지만 거대한 기지를 건설하고 적극적으로 유닛을 전향시킵니다. 난이도: 쉬움.
+전사를 생산하지 않고 확장과 적 유닛 전향으로 경쟁합니다.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush - 빠르고 강력한 공격으로 방어하는 플레이어를 극한까지 몰아붙입니다. 난이도: 보통.
+빠른 공격으로 초반 방어를 시험합니다.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+건설에 능하며 훈련된 공격 부대를 운용합니다.
+[AICabino]
+Cabino
 [Alga]
 해조류
 [algae]
@@ -617,9 +631,9 @@ Num Lock
 [ok]
 확인
 [old islands terrain]
-기존 무작위 섬
+험준한 군도
 [old random terrain]
-기존 무작위 지형
+갈라진 해안
 [on press]
 누를 때
 [On the spot]
@@ -1229,33 +1243,37 @@ IP 주소가 일시적으로 차단되었습니다. 차단이 해제될 때까�
 [AI strategy & counterplay]
 AI 전략 및 대응
 [AICastor-Profile]
-전략: 신중하게 확장하고 자원가 적은 지도에서 잘 작동합니다.\n\n장점: 제한된 확장은 자원가 부족한 게임에서 효과적입니다.\n\n대응 제안: 일찍 영토를 점령하십시오. 자원 부족으로 인해 이 AI가 약화될 것이라고 가정하지 마십시오.
+핵심 전략: 생산력 있는 식민지와 기술에 투자한 뒤 본격적인 공격에 나섭니다. 우선순위가 정해진 건설 계획으로 정착지를 키우며, 발전 수준, 군사 시설, 시간에 따라 전쟁 준비도가 높아집니다.\n\n경제와 발전: 수분, 밀의 성장, 장애물, 일꾼의 활동 범위를 분석합니다. 생산과 함께 식량 확충, 업그레이드, 방어를 관리합니다.\n\n공격과 방어: 건강한 전사의 공격력을 추산하고 전력 또는 시간 조건이 충족되면 공격합니다. 이전에 발견했고 접근 가능한 건물, 특히 병영과 학교를 선호하며 공격 깃발을 가치 있는 표적으로 옮깁니다.\n\n다른 AI와의 비교: Numbi보다 지형과 표적 가치를 신중히 따집니다. Warrush보다 오래 준비하며 초반 압박 대신 발전된 기지와 강한 병력을 확보합니다.\n\n강점과 약점: 폭넓은 기반 시설 계획과 중요한 군사 표적 선택으로 목적 있는 공격을 합니다. 준비에는 시간이 걸리므로 주력이 갖춰지기 전에 빠른 상대가 자원을 다툴 수 있습니다.\n\n시도할 대응책: 초반부터 확장을 견제하세요. 식량뿐 아니라 병영과 학교도 보호하고, 발전된 정착지를 공격할 때 예비 병력을 남기세요.
 [AICastor-Summary]
-조심스러운 확장; 부족한 자원으로도 잘 수행됩니다.
+요새화된 식민지를 발전시킨 뒤 군사 및 과학 건물을 타격합니다.
 [AICortex-Profile]
-전략: 식량 공급을 관리하고, 새로운 밀밭으로 확장하고, 연속적인 전사 그룹을 소집합니다. 최전선 근처의 여관과 병원은 기지에서 멀리 떨어진 공격을 지원합니다.\n\n강점: 증원군을 함께 보내고 군사적 압력을 유지하며 식량 부족에 대응합니다.\n\n대응 제안: 새로운 밀밭을 장악하기 위해 싸우고 최전선 근처의 지원 건물을 공격하십시오. 전사 그룹이 준비되기 전에 공격하세요.\n\n실험 단계의 AI입니다. 난이도는 중간입니다. 대응 제안은 성능 비교 평가가 아닙니다.
+핵심 전략: 상황에 반응하는 우선순위로 경제를 키우고 남는 노동력을 식량, 기술, 군사적 압박에 투입합니다. 일반 정책은 규칙 기반이며 학습 정책 실험에는 별도 설정이 필요합니다.\n\n경제와 발전: 인력 수요에 맞춰 일꾼 생산을 조절하면서 출생을 계속합니다. 식량 문제가 생기면 확장과 기술 지출을 줄입니다. 수로 접근이 실질적으로 도움이 되면 수영을 도입합니다.\n\n공격과 방어: 관측한 적 기술과 가용 병력에 따라 공격을 준비합니다. 물을 건너는 작전에는 수영 가능한 전사가 필요합니다. 전방 여관과 병원으로 장기전을 지원하며 전진 전에 병력을 집결시킬 수 있습니다.\n\n공세 유지와 비상 상황: 작은 견제에 매번 귀환하지 않고 공세를 유지합니다. 심각한 공격에는 수비대를 호출할 수 있습니다. 초반 위기에는 전사만 생산하고 병원을 지을 수 있으며, 기근에는 소규모 결사 공격을 감행할 수 있습니다.\n\n다른 AI와의 비교: Warrush보다 전방 지원을 중시합니다. Maxima는 추정한 적 전력에 맞춰 지속 가능한 출생, 훈련, 배치에 자원을 더 세밀하게 배분합니다.\n\n강점과 약점: 압박을 식량, 치료, 접근 가능성과 연결합니다. 전방 시설은 보급을 받아야 하며, 출생을 계속하면 부족한 식량에 부담이 이어질 수 있습니다. 비상 우선순위는 성장과 생존 사이의 선택을 강요합니다.\n\n시도할 대응책: 전방 여관, 병원, 밀을 견제하세요. 공세에 맞서 수비대를 모아 두세요. 작은 견제만으로는 후퇴하지 않을 수 있습니다.\n\n정찰: 발견한 적 건물과 관측한 적 병력을 활용합니다.
 [AICortex-Summary]
-식량을 확보하며 확장하고 지원을 갖춘 공격 부대를 연이어 보냅니다.
+전방의 식량과 치료로 지속적인 공세를 지원합니다.
 [AINicowar-Profile]
-전략: 빠르게 확장하며 대규모 군대로 적을 공격합니다.\n\n강점: 빠른 확장을 바탕으로 강력한 군사적 압박을 가합니다.\n\n대응 제안: 확장을 견제하고 지형을 이용해 한 번에 교전할 수 있는 적의 수를 제한해 보세요.
+핵심 전략: 겹치는 조건을 통해 성장, 훈련, 업그레이드, 전쟁을 함께 추진합니다. 확장하면서 공격할 수 있고 식량 공급이 무너지면 경제 역량을 회복에 돌립니다.\n\n초반 운영: 기본으로 제공되는 공격적 설정은 전체 유닛 5명부터 전쟁을 준비하며 전사 5명이면 전쟁을 허용합니다. 0레벨 전사도 포함됩니다. 전사 5명씩 배정된 공격 깃발 3개를 목표로 합니다. 사용자 전략 파일로 이 기준을 바꿀 수 있습니다.\n\n경제와 발전: 식량과 출생 능력을 확장하고, 일꾼을 훈련하며, 수영과 이동을 발전시키고 건물을 업그레이드합니다. 식량 담당 인력을 조절하고 굶주림에 대응하며 과일을 확보합니다.\n\n공격과 방어: 접근 가능한 적 건물 중에서 공격 대상을 무작위로 고릅니다. 제거 깃발로 자원에 막힌 길을 열 수 있습니다. 방어 깃발은 위협받는 유닛과 건물 무리를 보호합니다. 후반에는 지상 공격 훈련을 받은 탐험가가 적 유닛 무리를 노립니다.\n\n다른 AI와의 비교: Warrush처럼 초반부터 공격적이지만 이후 운영이 더 풍부합니다. Cabino와 달리 병원과 여관을 일관되게 우선하지는 않습니다.\n\n강점과 약점: 다양한 전술로 초반 압박과 지속적인 발전을 결합합니다. 무작위 표적 선택으로 덜 중요한 건물에 힘을 낭비할 수 있습니다. 기준값만 사용하므로 Maxima처럼 상대 전투력을 세밀하게 추정하지 않습니다.\n\n시도할 대응책: 이른 공격을 예상하세요. 식량과 일꾼을 보호하고 확장을 견제하며, 고급 훈련에 도달하면 탐험가 공격에 대비하세요.
 [AINicowar-Summary]
-빠르게 확장하고 대규모 군대로 적극적으로 공격합니다.
+농업, 업그레이드, 방어, 탐험가 공격이 뒷받침하는 초반 돌격.
 [AINone-Profile]
 전략: AI는 명령을 내리지 않습니다.\n\n강점: 실험을 위한 예측 가능하고 활동적이지 않은 상대입니다.\n\n약점: 확장하거나 적응하지 못합니다.
 [AINone-Summary]
 실험용으로 사용할 수 있는, 행동하지 않는 식민지입니다.
 [AINumbi-Profile]
-전략: 빠르게 확장하지만 규모는 작습니다. 식민지 관리를 연습하기에 더 쉬운 상대입니다.\n\n강점: 경제 관리와 전투를 모두 배울 수 있습니다.\n\n대응 제안: 공격하기 전에 더 강력한 경제를 개발하고 군대를 훈련하십시오.
+핵심 전략: 먼저 식량과 인구를 늘리고 치료, 과학, 훈련을 갖춘 뒤 전쟁으로 전환합니다. 큰 단계는 상대의 발전보다 시간에 따라 진행됩니다.\n\n경제와 발전: 인구에 비례해 건물 수요를 늘리고 주변 밀을 추산합니다. 후반 단계에서는 업그레이드, 방어, 확장을 더해 커지는 군대를 지원합니다.\n\n공격과 방어: 건강한 전투원이 충분하거나 대기 시간이 끝나면 공격합니다. 무작위로 고른 적 건물에 전쟁 깃발을 놓습니다. 전력이 너무 줄면 공격 깃발을 제거하고 다음 시도의 기준을 높입니다.\n\n다른 AI와의 비교: Castor나 Nicowar보다 예측하기 쉽습니다. Castor는 지형과 표적 가치를 더 신중히 고려하고 Nicowar는 훨씬 일찍 압박합니다.\n\n강점과 약점: 방해 없이 성장하면 폭넓은 지원 시설 덕에 위협적이지만 시간표가 전황과 맞지 않을 수 있습니다. 단순한 표적 선택과 패배 후 길어진 휴지기로 공격을 예측하기 쉽습니다.\n\n시도할 대응책: 군사 단계 전에 압박하세요. 공격하는 동안 후방에서 식량과 훈련을 발전시키고, 공세를 격퇴한 뒤의 공백을 활용하세요.\n\n정찰: 공격 절차는 시야 확인 없이 적 건물 위치를 직접 읽습니다.
 [AINumbi-Summary]
-소규모로 빠른 확장이 가능합니다.
+시간표에 따라 식민지를 차근차근 키운 뒤 수로 밀어붙입니다.
 [AIEcono-Profile]
-전략: 공격하지는 않지만, 거대한 기지를 건설하고 적극적으로 적 유닛을 아군으로 전환시킵니다.\n\n장점: 확장 및 유닛 전환은 직접적인 공격 없이도 상대를 위협합니다.\n\n대응 제안: 식민지를 조기에 개발하고 적군이 전환할 수 있는 곳에 유닛을 보내는 것을 피하십시오.
+핵심 전략: 일꾼과 탐험가를 생산하고 경제를 확장하며 식량과 과일로 적 유닛을 유인합니다. 일반적인 전사 공세는 없습니다.\n\n경제와 발전: 밀 근처에 여관과 둥지를 짓고 교육과 이동 훈련을 더하며 시설을 업그레이드합니다. 식량 공급을 추적하고 자원 입지가 나빠진 오래된 여관과 둥지를 대체합니다.\n\n농업과 전향: 물 근처의 재생 가능한 밀과 나무를 보호합니다. 탐험가를 과일 산지와 적 식민지로 보내고, 과일 공급을 확보할 때 적에게 식량을 홍보합니다. 더 좋은 식량과 과일은 전향을 유도하는 데 도움이 됩니다.\n\n다른 AI와의 비교: 경제에 가장 특화된 상대입니다. Cabino와 Maxima도 과일을 추구하지만 군대와 함께 활용합니다.\n\n강점과 약점: 군사적 상대들이 소모전을 벌이는 동안 성장할 수 있고 전향이라는 다른 경쟁 수단이 있습니다. 지속적인 공격에 대응할 전사를 생산하지 않습니다. 식량, 과일, 지형, 승리 규칙이 기회를 크게 좌우합니다.\n\n시도할 대응책: 노출된 확장 지점을 압박하세요. 유닛을 지키려면 자신의 여관에 식량과 과일을 공급하세요. 상대가 성장하는 동안 불필요한 싸움으로 식민지를 소모하지 마세요.
 [AIEcono-Summary]
-직접 공격 대신 거대한 기지와 적 유닛 전향으로 압박합니다.
+전사를 만들지 않고 식량이 풍부한 식민지를 키워 적 유닛을 전향시킵니다.
 [AIWarrush-Profile]
-전략: 상대방이 준비를 마치기 전에 조기에 강력하게 공격합니다.\n\n강점: 무방비 확장과 느린 군사 준비를 이용합니다.\n\n대응 제안: 경제를 유지하면서 첫 번째 공격에서 살아남은 후 반격하십시오.
+핵심 전략: 상대가 긴 경제 또는 기술 발전을 마치기 전에 공격합니다. 큰 지원망이 필요해지기 전에 전투로 승부를 내려고 합니다.\n\n경제와 발전: 수확 가능한 유닛이 6명이 되면 생산 비율을 일꾼 4, 탐험가 1, 전사 3으로 설정합니다. 훈련 수용량이 차면 병영을 늘리지만 새 여관은 제한합니다. 남는 건설 역량은 병원과 이동 훈련에 쓰이는 경우가 많습니다.\n\n공격과 방어: 발견한 적 건물에 경비 구역을 표시해 전사가 계속 압박하게 합니다. 신중하게 모은 공격대가 준비되기를 기다리지 않습니다. 장애가 되는 나무를 치우고 일부 재생 자원을 보호합니다.\n\n과일 정책: 과일 채집을 금지해 과일에 따른 방어력 불이익을 피하고 Econo의 전향 전략은 채택하지 않습니다.\n\n다른 AI와의 비교: Numbi나 Castor보다 초반 압박에 집중합니다. Nicowar도 공격적으로 시작하지만 이후에는 더 폭넓은 업그레이드와 전술을 이어 갑니다.\n\n강점과 약점: 느린 시작을 응징하고 조기 방어 지출을 강요합니다. 체계적인 업그레이드가 적고 식량 지원도 빠듯해 공세가 멈추면 손실이 큽니다. 지형과 긴 이동은 초반 이점을 약화할 수 있습니다.\n\n시도할 대응책: 여관과 둥지를 일찍 보호하세요. 수비대뿐 아니라 일꾼도 보충하고 훈련을 발전시킨 뒤 돌격의 기세가 꺾이면 반격하세요.\n\n정찰: 초기 탐험 깃발은 적 시작 위치를 직접 이용합니다. 이후 공격 구역을 놓으려면 시야가 필요합니다.
 [AIWarrush-Summary]
-초기 방어력을 테스트하는 빠른 공격입니다.
+의도적으로 줄인 지원 경제를 바탕으로 전사가 초반 압박을 가합니다.
+[AICabino-Profile]
+핵심 전략: 유닛 생산을 건설, 업그레이드, 방어, 공격, 탐험에 배분합니다. 별도 관리 기능들이 유닛을 요청하고 예약해 경제와 군사를 함께 발전시킵니다.\n\n경제와 발전: 다양한 시설을 건설하고 업그레이드하며 여관과 탑의 인력을 관리하고 건물 주변을 정리하며 재생 자원을 보호합니다. 과일을 정찰하고 식량을 홍보해 전향을 유도합니다.\n\n공격과 방어: 적을 고르고 병원, 여관, 병영 순으로 우선합니다. 최대 4개의 공격을 지원하며, 보통 가용 병력과 인근 적에 따라 표적당 전사 8~20명을 배정합니다. 위협받는 건물 주변에는 별도 방어 깃발을 사용합니다.\n\n훈련: 공격하려면 적합한 전사가 충분하고 병영이 완성되어야 하지만 최고 기술까지 기다리지는 않습니다. 지속적인 업그레이드와 훈련이 후속 공격을 강화합니다.\n\n다른 AI와의 비교: Nicowar보다 지원 건물 파괴를 뚜렷하게 중시합니다. Maxima의 집결한 공세보다 공격을 분산하며 유닛 예약으로 상충하는 수요를 관리합니다.\n\n강점과 약점: 성장, 훈련, 방어, 여러 공격을 결합합니다. 식량과 치료를 파괴하면 식민지 전체가 약해집니다. 무작위 상대 선택과 고정된 건물 우선순위로 기회를 놓칠 수 있고 여러 공격이 병력을 분산시킬 수 있습니다.\n\n시도할 대응책: 병원과 여관을 방어하세요. 노출된 확장을 견제하고 개별 공격에 수비대를 집중하세요. 여러 전선을 유지하기 전에 식량이나 훈련을 손상시키세요.\n\n정찰: 공격 대상 선택은 명시적인 시야 확인 없이 적 건물 목록을 읽습니다. 일부 경제 비교는 적 통계를 직접 사용합니다.
+[AICabino-Summary]
+식민지 성장과 훈련된 공격을 조율하며 치료와 식량을 먼저 노립니다.
 [Algae]
 해조류
 [Alliances]
@@ -1359,9 +1377,9 @@ AI 전략 및 대응
 [No AI orders]
 AI 명령 없음
 [Old islands]
-구형 섬 생성
+험준한 군도
 [Old random]
-구형 무작위 생성
+갈라진 해안
 [Open at least one colony to start a match.]
 매치를 시작하려면 콜로니를 하나 이상 여세요.
 [Open book]
@@ -1376,6 +1394,14 @@ AI 명령 없음
 미리 만들어진 지도
 [Preview ready. Start plays this exact map.]
 미리보기가 준비되었습니다. 게임을 시작할 때 이 정확한 지도를 사용합니다.
+[Regenerate all]
+모두 다시 생성
+[Generating preview...]
+미리보기 생성 중...
+[Preview unavailable]
+미리보기를 사용할 수 없음
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+각 지형은 현재 크기와 식민지 수로 실제 생성된 지도로 표시됩니다. 하나를 선택하면 표시된 지도로 플레이합니다.
 [Purple]
 보라색
 [Quick clash]
@@ -1538,6 +1564,10 @@ AI 명령 없음
 빠른 전투: 속도 2배; 생성된 맵은 8명의 작업자로 시작합니다.
 [Reroll]
 다른 지도 생성
+[Randomize]
+무작위 생성
+[Reset to defaults]
+기본값 복원
 [Ruleset]
 규칙 세트
 [Select a map from the library.]
@@ -1616,6 +1646,8 @@ Globulation 2 커서를 표시합니다.
 완료
 [settings Edit shortcut]
 키보드 단축키 수정
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+고해상도 화면에서 메뉴, 텍스트, 사이드바를 크게 표시합니다.
 [settings Flags]
 깃발
 [settings Full]
@@ -1630,6 +1662,8 @@ Globulation 2 커서를 표시합니다.
 게임플레이
 [settings Graphics detail]
 그래픽 디테일
+[settings Interface scale]
+인터페이스 배율
 [settings Keep]
 변경사항 유지
 [settings Keep this display mode?]
@@ -1652,6 +1686,8 @@ Globulation 2 커서를 표시합니다.
 레벨
 [settings Map editor]
 지도 편집기
+[settings Match the desktop]
+바탕 화면에 맞춤
 [settings Missing font]
 누락된 글꼴
 [settings Music volume]
@@ -1762,3 +1798,1589 @@ Globulation 2 커서를 표시합니다.
 자동 토러스 보기
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 지도 안에서 이동할 때 토러스(도넛) 모양의 지도 전체 보기를 자동으로 표시합니다(OpenGL).
+[settings Autosave]
+자동 저장
+[settings Save the game automatically about every 10 seconds.]
+약 10초마다 게임을 자동으로 저장합니다.
+[Channel width]
+수로 너비
+[Land bridge width]
+육교 너비
+[Lake size]
+호수 크기
+[Contested commons]
+쟁탈 공유지
+[Maze]
+미로
+[Fjord continent]
+피오르 대륙
+[Cell size]
+칸 크기
+[Corridor width]
+통로 너비
+[Spoke width]
+바큇살 너비
+[Loopiness]
+순환로 밀도
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+미로에는 가로와 세로로 각각 칸이 2개 이상 필요합니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+수로가 이렇게 넓으면 각 칸에 남는 초지가 너무 적습니다. 수로를 더 좁게 하거나 칸을 더 크게 하세요.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+이 식민지 수에 비해 미로의 막다른 길이 너무 적습니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
+[Home island size]
+시작 섬 크기
+[Commons size]
+공유지 크기
+[Moat width]
+해자 너비
+[Bridge count]
+다리 수
+[Continent size]
+대륙 크기
+[Coast roughness]
+해안선 굴곡도
+[Fjord width]
+피오르 너비
+[Lake connects to fjords]
+호수와 피오르 연결
+[Resource islands]
+자원 섬
+[Watershed]
+유역
+[River density]
+강 밀도
+[Dryness]
+건조도
+[Fords]
+여울
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+이 식민지 수에 비해 유역의 범람원이 너무 적습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Stone highlands]
+바위 고원
+[Valley size]
+골짜기 크기
+[Pass width]
+고갯길 너비
+[Pond size]
+연못 크기
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+골짜기가 지도에 비해 너무 큽니다. 더 큰 지도를 사용하거나 골짜기를 더 작게 하세요.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+이 식민지 수에 비해 고원의 공간이 너무 부족합니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Symmetric arena]
+대칭 경기장
+[Centre size]
+중앙 크기
+[Causeway width]
+둑길 너비
+[Causeways]
+둑길
+[Lakes]
+호수
+[Resource richness]
+자원 풍부도
+[Symmetric arena needs 2, 4 or 8 colonies.]
+대칭 경기장에는 식민지가 2개, 4개 또는 8개 필요합니다.
+[Eight colonies need a square map in the symmetric arena.]
+대칭 경기장에서 식민지를 8개로 하려면 정사각형 지도가 필요합니다.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+이 지도에서는 중앙이 너무 작아 과수원을 둘 수 없습니다. 중앙을 더 크게 하거나 더 큰 지도를 사용하세요.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+경기장에 식민지마다 둘 공간이 너무 부족합니다. 더 큰 지도를 사용하거나, 중앙을 더 작게 하거나, 해자를 더 좁게 하세요.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+둑길끼리 너무 가깝습니다. 둑길 수를 줄이거나 더 좁게 하거나, 중앙을 더 크게 하세요.
+[Ring world]
+고리 세계
+[Belt width]
+띠 너비
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+이 식민지 수에 비해 띠가 너무 짧습니다. 더 긴 지도를 사용하거나 식민지 수를 줄이세요.
+[City states]
+도시 국가
+[Strait width]
+해협 너비
+[Valleys]
+계곡
+[Frontier richness]
+변경의 풍요로움
+[City states need at least one colony.]
+도시 국가에는 최소 한 개의 식민지가 필요합니다.
+[Stone walls]
+돌 성벽
+[Sand patches]
+모래밭
+[Tidal flats]
+갯벌
+[Everglades]
+습지대
+[Pool spacing]
+웅덩이 간격
+[Pool size]
+웅덩이 크기
+[Clearing size]
+공터 크기
+[Levee]
+제방
+[Sloughs]
+늪지
+[Everglades need at least one colony.]
+습지대에는 최소 한 개의 식민지가 필요합니다.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+이 지도에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지를 줄이세요.
+[Coral]
+산호
+[Fork angle]
+분기 각도
+[Lean]
+기울기
+[Home size]
+본거지 크기
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+산호가 이 지도에 맞지 않습니다. 더 큰 지도, 더 좁은 해협 또는 더 적은 식민지를 사용하세요.
+[Branching]
+가지치기
+[Branch width]
+가지 너비
+[Coral needs at least one colony.]
+산호에는 식민지가 하나 이상 필요합니다.
+[Coral needs a map at least 128 tiles across.]
+산호에는 너비가 128칸 이상인 지도가 필요합니다.
+[Carousel]
+회전목마
+[Amphitheatre]
+원형 경기장
+[Switchbacks]
+굽잇길
+[Court size]
+안뜰 크기
+[Court wall]
+안뜰 벽
+[Plaza size]
+광장 크기
+[Starting tower level]
+시작 탑 레벨
+[Towers per colony]
+식민지당 탑 수
+[Rings]
+고리 수
+[Ramp width]
+경사로 너비
+[Pit size]
+경기장 크기
+[Terrace width]
+계단식 단 너비
+[Bay size]
+만 크기
+[Border wall]
+경계 벽
+[Plateau size]
+고원 크기
+[Trail width]
+산길 너비
+[Wall between legs]
+굽이 사이 벽
+[Farm building plots]
+농장 건설 부지
+[Sand bridges over water]
+물 위의 모래 다리
+[Sand lanes through crops]
+작물 사이의 모래 길
+[Carousels need at least two colonies.]
+회전목마에는 식민지가 두 개 이상 필요합니다.
+[Switchbacks need at least two colonies.]
+굽잇길에는 식민지가 두 개 이상 필요합니다.
+[An amphitheatre needs at least two colonies.]
+원형 경기장에는 식민지가 두 개 이상 필요합니다.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+회전목마가 이 지도에 맞지 않습니다. 더 큰 지도, 더 작은 본거지 또는 더 적은 식민지를 사용하세요.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+굽잇길이 이 지도에 맞지 않습니다. 더 큰 지도, 더 작은 고원, 더 좁은 산길 또는 더 적은 식민지를 사용하세요.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+원형 경기장이 이 지도에 맞지 않습니다. 더 큰 지도, 더 적은 고리, 더 좁은 단 또는 더 적은 식민지를 사용하세요.
+[Spider web]
+거미줄
+[Spokes per colony]
+식민지당 방사줄
+[Ring spacing]
+고리 간격
+[Thread width]
+실 너비
+[Sag]
+처짐
+[Torn strands]
+끊어진 실
+[Hub size]
+중심 크기
+[Dew drops]
+이슬방울
+[Spiral]
+나선
+[Spider webs need at least one colony.]
+거미줄에는 식민지가 하나 이상 필요합니다.
+[Sandbars]
+모래톱
+[Tide pools]
+조수 웅덩이
+[Lagoons]
+석호
+[Central island]
+중앙 섬
+[Tidal flats need at least one colony.]
+갯벌에는 최소 한 개의 식민지가 필요합니다.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+본섬이 이 지도에 들어가지 않습니다. 더 큰 지도, 더 적은 식민지 또는 더 작은 섬을 사용하세요.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+공유지와 해협이 본거지에 남기는 공간이 너무 적습니다. 더 큰 지도, 더 적은 식민지, 더 작은 공유지 또는 더 좁은 해협을 사용하세요.
+[Wheat amount]
+밀 양
+[Wood amount]
+나무 양
+[Stone amount]
+돌 양
+[Algae amount]
+해조류 양
+[Fruit amount]
+과일 양
+[Stone on hilltops]
+언덕 꼭대기의 돌
+[Winding river]
+구불구불한 강
+[Sandy beaches]
+모래 해변
+[Land bridges]
+육교
+[Colony meadows]
+식민지 주변 초원
+[Extra starting deposit]
+추가 시작 자원
+[Moat bridges]
+해자 위의 다리
+[Jagged coastlines]
+들쭉날쭉한 해안선
+[Sand roads]
+모래길
+[Treasure in dead ends]
+막다른 길의 보물
+[Fjord bank deposits]
+피오르 기슭의 자원
+[Sandy lake shore]
+모래 호숫가
+[River delta]
+강 삼각주
+[Meandering rivers]
+굽이치는 강
+[Fruit in home valleys]
+시작 골짜기의 과일
+[Moat]
+해자
+[Stone in the orchard]
+과수원의 돌
+[Colonies on both coasts]
+양쪽 해안의 식민지
+[Winding belt]
+구불구불한 띠
+[Cell shape]
+칸 모양
+[Squares]
+정사각형
+[Hexagons]
+육각형
+[Warp]
+뒤틀림
+[Fingerprint]
+지문
+[Wavelength]
+파장
+[Pattern]
+패턴
+[Labyrinth]
+미궁
+[Channels]
+고랑
+[Barrier]
+장벽
+[Water]
+물
+[Grain]
+입자
+[Rain shadow]
+비 그늘
+[Ridges]
+산등성이
+[Slant]
+비스듬함
+[Ridge thickness]
+산등성이 두께
+[Pass spacing]
+고갯길 간격
+[Lee width]
+바람그늘 너비
+[Old growth]
+원시림
+[Canals]
+운하
+[Forest density]
+숲 밀도
+[Hidden groves]
+숨겨진 숲
+[Starting trails]
+시작 산길
+[Block size]
+블록 크기
+[Canal width]
+운하 너비
+[Extra bridges]
+추가 다리
+[Polder]
+간척지
+[Old town]
+옛 도시
+[Anthill]
+개미집
+[Row angle]
+열 각도
+[Diagonal]
+대각선
+[Dyke spacing]
+제방 간격
+[Village size]
+마을 크기
+[Hamlets]
+작은 마을
+[City size]
+도시 크기
+[Street width]
+거리 너비
+[Plazas]
+광장
+[Chamber spacing]
+방 간격
+[Chamber size]
+방 크기
+[Queen room]
+여왕 방
+[Tunnel width]
+터널 너비
+[Loops]
+순환로
+[Home pools]
+본거지 연못
+[Farm plots]
+농경지
+[Tendril roads]
+덩굴길
+[Random]
+무작위
+[Vertical]
+세로
+[Horizontal]
+가로
+[Inland lakes]
+내륙 호수
+[Block shape]
+블록 모양
+[Random parameters]
+무작위 매개변수
+[Randomize parameters]
+매개변수 무작위화
+[Start quality]
+시작 품질
+[Fairness]
+공정성
+[Fitness]
+강도
+[Win chance]
+승리 확률
+[Coefficient]
+계수
+[Average]
+평균
+[Fitted on games:]
+학습한 게임 수:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+각 식민지의 시작 지점은 완성된 지도에서 측정되며, 실력이 비슷한 상대끼리 치른 수천 번의 게임으로 학습한 모델이 그 측정값을 강도로 바꿉니다. 강도는 그 식민지가 이길 가능성이 얼마나 되는지를 나타냅니다. 공정성은 그 가능성이 얼마나 고르게 나뉘는지를 나타냅니다. 모든 식민지의 승리 가능성이 같으면 1, 한 식민지가 지도를 차지하게 되면 0입니다.
+[Worst]
+최저
+[Best]
+최고
+[Map preview controls]
+드래그하여 경계를 넘어 이동합니다. 휠로 확대합니다. 오른쪽 클릭이나 두 번 클릭으로 초기화합니다.
+[Map preview drag help]
+드래그로 이동, 휠로 확대합니다.
+[Map preview loading]
+불러오는 중...
+[Map preview failed]
+미리보기 실패
+[Map preview retry]
+클릭하여 다시 시도
+[Map preview please wait]
+잠시 기다려 주세요
+[Stats births]
+탄생
+[Stats deaths]
+사망
+[Stats starvation]
+굶주림
+[Stats wheat stock]
+밀 재고
+[Stats wheat loads]
+밀 운반 횟수
+[Stats meals]
+제공한 식사
+[Stats new buildings]
+새 건물
+[Stats upgrades]
+업그레이드
+[Stats training]
+훈련 횟수
+[Stats damage dealt]
+가한 피해
+[Stats damage received]
+받은 피해
+[Stats HP restored]
+회복한 체력
+[Stats since tick]
+기록 시작 틱
+[Stats combat deaths]
+전투
+[Stats clearing deaths]
+제거 작업 부상
+[Stats trapped deaths]
+갇힘
+[Stats unknown deaths]
+기타/알 수 없음
+[Stats conversions]
+전입 / 전출
+[Stats unavailable]
+데이터 없음
+[Stats wheat per minute]
+운반/분
+[Stats meals per minute]
+식량/분
+[Stats occupancy]
+식사 / 치료
+[Stats page one]
+통계 1/3 >
+[Stats page two]
+통계 2/3 >
+[Stats next page]
+페이지 (P)
+[Map preview choose another]
+지도 선택
+[Resources never grow or spread across the map.]
+자원은 지도에서 절대 성장하거나 퍼지지 않습니다.
+[Building sites complete immediately, skipping delivery.]
+건설 현장은 배송 단계를 건너뛰고 즉시 완료됩니다.
+[Units never grow hungry and never starve.]
+유닛은 절대 배고파지지 않으며 절대 굶주리지 않습니다.
+[Slows how often resources grow or spread across the map.]
+자원이 지도에서 성장하거나 퍼지는 빈도를 늦춥니다.
+[Seeds each team's shared market/exchange resource pool at game start.]
+게임 시작 시 각 팀의 공유 시장/교환 자원 비축량을 채웁니다.
+[Grow normally]
+정상 성장
+[No growth]
+성장 없음
+[Normal construction]
+일반 건설
+[Instant]
+즉시
+[Units get hungry]
+유닛이 배고파짐
+[No hunger]
+배고픔 없음
+[Off (today's growth)]
+꺼짐 (현재 성장 속도)
+[Scarce (2x slower)]
+희소 (2x 느림)
+[Very scarce (4x slower)]
+매우 희소 (4x 느림)
+[Extremely scarce (8x slower)]
+극도로 희소 (8x 느림)
+[None (today's default)]
+없음 (현재 기본값)
+[Small (+50 each)]
+소 (각 +50)
+[Medium (+150 each)]
+중 (각 +150)
+[Large (+300 each)]
+대 (각 +300)
+[No resource growth]
+자원 성장 없음
+[Economy]
+경제
+[Scarce resources]
+희소 자원
+[Instant construction]
+즉시 건설
+[Stockpile start]
+시작 비축량
+[Units still visit schools but never gain a level.]
+유닛은 계속 학교에 다니지만 절대 레벨업하지 않습니다.
+[Units fight to the death instead of retreating to heal.]
+유닛은 치료를 위해 후퇴하는 대신 죽을 때까지 싸웁니다.
+[Units are never permanently lost -- HP just stops at 1.]
+유닛은 절대 영구적으로 사라지지 않습니다 -- 체력이 1에서 멈출 뿐입니다.
+[Disables all combat between every team.]
+모든 팀 간의 전투를 비활성화합니다.
+[Higher tiers deal more damage but have less HP and armor.]
+상위 등급은 더 많은 피해를 주지만 체력과 방어력이 낮습니다.
+[Higher tiers give every building much more HP.]
+상위 등급은 모든 건물에 훨씬 더 많은 체력을 부여합니다.
+[Starting units spawn already leveled up. Changes the generated map.]
+시작 유닛이 이미 레벨업된 상태로 등장합니다. 생성되는 지도가 바뀝니다.
+[Trains normally]
+정상적으로 훈련함
+[No upgrades]
+업그레이드 없음
+[Retreats when damaged]
+피해를 입으면 후퇴함
+[Fearless]
+두려움 없음
+[Can die permanently]
+영구적으로 죽을 수 있음
+[No permadeath]
+영구 사망 없음
+[Normal combat]
+일반 전투
+[Peaceful mode]
+평화 모드
+[Off (today's balance)]
+꺼짐 (현재 밸런스)
+[Glass cannon x2]
+유리 대포 x2
+[Glass cannon x3]
+유리 대포 x3
+[Off (today's HP)]
+꺼짐 (현재 체력)
+[Fortress x5]
+요새 x5
+[Fortress x10]
+요새 x10
+[Veteran]
+베테랑
+[Elite]
+엘리트
+[Legendary]
+전설
+[Combat]
+전투
+[Glass cannon]
+유리 대포
+[Fortress buildings]
+요새화된 건물
+[Veteran/Fast start]
+베테랑/빠른 시작
+[Match ends at the timer; highest prestige at that instant wins.]
+경기는 타이머가 끝나면 종료되며, 그 순간 명성이 가장 높은 쪽이 승리합니다.
+[Off (no timer)]
+꺼짐 (타이머 없음)
+[90 minutes]
+90분
+[30 minutes]
+30분
+[45 minutes]
+45분
+[60 minutes]
+60분
+[Sudden-death timer]
+서든데스 타이머
+[Stats page three]
+통계 3/3 >
+[Stats blocked units]
+유닛 S/C
+[Stats blocked buildings]
+건물 S/C
+[Stats blocked buildings swim]
+수영 S/C
+[Stats current blocked units]
+유닛 C
+[Stats current blocked buildings]
+건물 C
+[Stats growth global]
+자원 +
+[Stats growth new tiles]
+자원 +#
+[Stats growth reductions]
+자원 -
+[Stats growth per minute]
+밀 +/min
+[Stats growth near 8]
+자원 + <=8
+[Stats growth near 16]
+자원 + <=16
+[Stats growth near 32]
+자원 + <=32
+[Stats low HP 25]
+체력 <=25%
+[Stats low HP 50]
+체력 <=50%
+[Stats low HP 75]
+체력 <=75%
+[Stats low food 25]
+식량 <=25%
+[Stats low food 50]
+식량 <=50%
+[Stats low food 75]
+식량 <=75%
+[Stats structural units]
+유닛 S
+[Stats structural buildings]
+건물 S
+[Stats low HP ranges]
+체력: <=25/50/75%
+[Stats low food ranges]
+식량: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+이모지 종류
+[Smiley]
+웃는 얼굴
+[Sad face]
+슬픈 얼굴
+[Winking face]
+윙크하는 얼굴
+[Surprised face]
+놀란 얼굴
+[Heart eyes]
+하트 눈
+[Sunglasses]
+선글라스
+[Heart]
+하트
+[Star]
+별
+[Neutral face]
+무표정
+[Sleeping face]
+자는 얼굴
+[Grinning face]
+활짝 웃는 얼굴
+[Kissing face]
+뽀뽀하는 얼굴
+[Angry face]
+화난 얼굴
+[Tongue out]
+메롱
+[Skull]
+해골
+[Flower]
+꽃
+[Four-leaf clover]
+네잎클로버
+[Teardrop]
+물방울
+[Cloud]
+구름
+[Gem]
+보석
+[Apple]
+사과
+[Speech bubble]
+말풍선
+[Shield]
+방패
+[Emoji style]
+이모지 스타일
+[Outline]
+윤곽선
+[Filled]
+채우기
+[Emoji terrain]
+이모지 지형
+[Regular]
+일반
+[Inverse]
+반전
+[Crossings]
+통로
+[Forts]
+요새
+[Gate width]
+성문 너비
+[Braided Delta]
+망상 삼각주
+[Braid count]
+분류 수
+[Rejoining frequency]
+합류 빈도
+[Crossing spacing]
+도하 지점 간격
+[Breachable highlands]
+돌파 가능한 고지
+[Ridge depth]
+능선 두께
+[Extra open passes]
+추가 개방 고개
+[Wooded saddles]
+숲으로 덮인 고개
+[Hedgerow Country]
+산울타리 전원
+[Field size]
+밭 크기
+[Hedge thickness]
+산울타리 두께
+[Existing gateways]
+기존 통로
+[Wooded boundary share]
+나무 경계 비율
+[The Glacis]
+글라시
+[Allotments]
+텃밭
+[Caravanserai]
+카라반사라이
+[Mixed]
+혼합
+[Fort size]
+요새 크기
+[Bastions]
+능보
+[Four-pointed]
+사각별
+[Five-pointed]
+오각별
+[Six-pointed]
+육각별
+[Glacis width]
+경사제 너비
+[Gates]
+성문
+[Site size]
+구획 크기
+[Plot width]
+두둑 너비
+[Plot mix]
+두둑 구성
+[Tended]
+가꾼
+[Overgrown]
+무성한
+[Commons]
+공유지
+[Few]
+적음
+[Some]
+약간
+[Home oasis size]
+고향 오아시스 크기
+[Caravanserais per colony]
+식민지당 대상 숙소
+[Desert]
+사막
+[Open erg]
+탁 트인 사구 사막
+[Dunes and mesas]
+사구와 메사
+[Canyon country]
+협곡 지대
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+요새가 여울에 닿을 수 없습니다. 더 큰 맵이나 더 적은 식민지를 사용하세요.
+[A wall would stand on a beach; try another seed.]
+성벽이 모래밭 위에 서게 됩니다. 다른 시드를 시도하세요.
+[The fort is too small for its gardens; raise Fort size.]
+요새가 텃밭에 비해 너무 작습니다. 요새 크기를 늘리세요.
+[The home oasis is too small; raise Home oasis size.]
+고향 오아시스가 너무 작습니다. 고향 오아시스 크기를 늘리세요.
+[Braided river]
+망상 하천
+[Braid width]
+망상대 너비
+[Bar size]
+모래톱 크기
+[Extra riffles]
+추가 여울
+[Moraine hummocks]
+빙퇴석 둔덕
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+망상대가 본거지를 위한 단구를 너무 적게 남깁니다. 더 큰 지도를 사용하거나 망상대를 좁히세요.
+[The map is too narrow across for a braid; use a bigger map.]
+지도의 폭이 망상 하천을 두기에 너무 좁습니다. 더 큰 지도를 사용하세요.
+[Drumlin field]
+드럼린 들판
+[Drumlin spacing]
+드럼린 간격
+[Drumlin length]
+드럼린 길이
+[Water gap]
+물길 너비
+[Esker loops]
+에스커 순환로
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+에스커가 모든 드럼린을 연결하지 못했습니다. 물길 너비를 줄이거나 더 큰 지도를 사용하세요.
+[Continents]
+세계의 대륙
+[Continent]
+대륙
+[North America]
+북아메리카
+[South America]
+남아메리카
+[Africa]
+아프리카
+[Europe]
+유럽
+[Asia]
+아시아
+[Oceania]
+오세아니아
+[Orientation]
+방향
+[Turn to fit]
+맞게 회전
+[Upright]
+회전 안 함
+[Mountain ranges]
+산맥
+[Great rivers]
+큰 강
+[Islets]
+작은 섬
+[Oases]
+오아시스
+[The world atlas has no such continent.]
+세계 지도책에 그런 대륙이 없습니다.
+[The map is too small to hold a continent.]
+지도가 너무 작아 대륙을 담을 수 없습니다.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+이 지도 크기에서는 이 대륙에 그만큼의 식민지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Savannah]
+사바나
+[Watering holes]
+물웅덩이
+[Dry patches]
+건조 지대
+[Sparse]
+적음
+[Normal]
+보통
+[Many]
+많음
+[Rice terraces]
+계단식 논
+[Unoccupied hills]
+비어 있는 언덕
+[Hill radius]
+언덕 반경
+[Contour band width]
+등고선 띠 너비
+[Stairs per hill]
+언덕당 계단 수
+[Valley river]
+계곡의 강
+[Hills]
+언덕
+[Hillsides]
+비탈
+[Terraces per slope]
+비탈당 계단식 논
+[Waviness]
+굴곡
+[Stair spacing]
+계단 간격
+[Locust]
+메뚜기 떼
+[Plantations]
+농장
+[Plot size]
+건설 부지 크기
+[Farm width]
+농경지 너비
+[Islands per colony]
+식민지당 섬 수
+[Outpost inns]
+전초 여관
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+섬이 건설 부지에 비해 너무 작습니다. 더 큰 지도를 사용하거나, 건설 부지를 더 작게 하거나, 식민지 수를 줄이세요.
+[Sierpiński Gardens]
+시에르핀스키 정원
+[Hilbert River]
+힐베르트 강
+[Maximum nesting]
+최대 중첩 깊이
+[Minimum terminal district side]
+말단 구역 최소 변 길이
+[Major crossing pairs]
+주요 횡단로 쌍
+[Maximum fold depth]
+최대 접힘 깊이
+[Minimum land spacing]
+최소 육지 간격
+[Optional local crossings per parent]
+상위 구역당 선택적 지역 횡단로
+[Optional major shortcuts]
+선택적 주요 지름길
+[Lava shield]
+용암 방패
+[Lava tongues]
+용암 흐름 수
+[Long tongues]
+긴 용암 흐름
+[Crater rim width]
+분화구 가장자리 폭
+[Honeycomb isle]
+벌집 섬
+[Blocks per colony]
+식민지당 블록 수
+[Rubble]
+잔해
+[Outline gaps]
+윤곽선 틈
+[Craters per colony]
+식민지당 분화구 수
+[Wheat fields]
+밀밭
+[Bridges]
+다리
+[Karst towers]
+카르스트 봉우리
+[Tower spacing]
+봉우리 간격
+[Tower density]
+봉우리 밀도
+[Paddy depth]
+논 지대 폭
+[Home design]
+본거지 설계
+[Horseshoe]
+말굽
+[Twin gates]
+쌍둥이 문
+[Three gates]
+세 개의 문
+[Four gates]
+네 개의 문
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+강이 본거지 사이로 길을 찾지 못했습니다. 더 큰 맵이나 더 적은 식민지를 사용하세요.
+[River meander]
+강의 굽이
+[Flooded terraces]
+물 댄 계단식 논
+[Sinkholes]
+돌리네
+[Bajada]
+선상지
+[Range spacing]
+산맥 간격
+[Ridge width]
+능선 너비
+[Passes]
+고개
+[Fans per range]
+산맥당 선상지
+[Stream reach]
+개울 길이
+[Playa]
+염호
+[Broad fan]
+넓은 선상지
+[Long fan]
+긴 선상지
+[Twin springs]
+쌍둥이 샘
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+선상지 비탈이 본거지를 두기에 너무 좁습니다. 더 큰 지도, 더 넓은 산맥 간격, 더 좁은 능선 또는 더 작은 염호를 사용하세요.
+[Central Quarry]
+중앙 채석장
+[Quarry size]
+채석장 크기
+[Sand bars]
+모래톱
+[Woodland]
+삼림
+[Central Quarry needs at least two colonies.]
+중앙 채석장에는 식민지가 최소 두 개 필요합니다.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+호수가 이 지도에 들어가지 않습니다. 더 작은 호수나 더 큰 지도를 사용하세요.
+[A sand bar did not reach the island.]
+모래톱이 섬까지 닿지 않았습니다.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+이 지도에는 그만큼의 식민지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[The island has no room for its quarry; use a bigger island.]
+섬에 채석장을 둘 공간이 없습니다. 더 큰 섬을 사용하세요.
+[Hidden Oasis]
+숨겨진 오아시스
+[Pond algae]
+연못 해조류
+[Starting towers]
+시작 탑
+[Starting school]
+시작 학교
+[Mesas]
+메사
+[Springs]
+샘
+[Hidden Oasis needs at least two colonies.]
+숨겨진 오아시스에는 식민지가 최소 두 개 필요합니다.
+[Hidden Oasis holds at most eight colonies.]
+숨겨진 오아시스에는 식민지가 최대 여덟 개까지 들어갑니다.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+암석 고원이 이 지도에 들어가지 않습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[The pond has no room for that much algae; use a bigger pond.]
+연못에 그만큼의 해조류를 둘 자리가 없습니다. 더 큰 연못을 사용하세요.
+[Even Ground]
+공평한 들판
+[Balance]
+균형
+[Tight passes]
+좁은 통로
+[Solver effort]
+풀이 노력
+[Brief]
+짧게
+[Patient]
+끈기 있게
+[This map is too small to solve on; use a bigger map.]
+이 지도는 너무 작아 풀 수 없습니다. 더 큰 지도를 사용하세요.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+이 크기의 지도에서 균형을 맞추기에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[The colonies could not be spread out on this map.]
+이 지도에서는 식민지를 흩어 놓을 수 없었습니다.
+[Marchland]
+변경
+[Prizes on the rope]
+줄 위의 상품
+[March width]
+변경 너비
+[Levelling]
+균등화
+[A march needs a country on each side; use at least two colonies.]
+변경에는 양쪽에 나라가 있어야 합니다. 식민지를 최소 두 개 사용하세요.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+이 지도가 각 식민지에 본토를 주기에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+이 지도에는 식민지를 흩어 놓을 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+어떤 식민지의 본토에 변경으로 나가는 길이 없습니다. 더 큰 지도를 사용하거나 변경을 더 좁게 하세요.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+어떤 식민지의 본토에 둥지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변경을 더 좁게 하세요.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+변경에 경합 지역이 너무 적어 그만큼의 상품을 둘 수 없습니다. 상품을 줄이거나, 변경을 더 넓게 하거나, 더 큰 지도를 사용하세요.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+변경에 상품을 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변경을 더 넓게 하세요.
+[Orchard Commons]
+공동 과수원
+[Orchard spacing]
+과수원 간격
+[Compact]
+좁게
+[Balanced]
+균형 있게
+[Spread]
+넓게
+[The Gauntlet]
+시련의 투기장
+[Partition thickness]
+분리벽 두께
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+시련의 투기장에서 각 식민지에 방어된 입구 두 개를 배치하려면 지도를 더 크게 하거나 식민지 수를 줄여야 합니다.
+[The Comb]
+빗
+[Peninsulas per shore]
+해안당 반도 수
+[Encircled Kingdom]
+포위된 왕국
+[Fortress plan]
+요새 형태
+[Automatic]
+자동
+[Elongated enclosure]
+길쭉한 성곽
+[Bastioned enclosure]
+보루형 성곽
+[Paired courtyards]
+두 안뜰
+[Heartland farmland]
+중심부 농지
+[The Faulted City]
+단층의 도시
+[Fault displacement]
+단층 변위
+[Fault width]
+단층 너비
+[Ruin density]
+폐허 밀도
+[Surviving junctions]
+남아 있는 교차로
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+단층의 도시는 각 변이 256 또는 512칸이어야 하며 식민지가 1~12개 필요합니다.
+[The city has too few usable junctions.]
+도시에 이용 가능한 교차로가 너무 적습니다.
+[A city neighbourhood lacks reachable crops or building room.]
+도시의 한 구역에 접근 가능한 작물이나 건설 공간이 부족합니다.
+[The city neighbourhoods are too unequal; try another seed.]
+도시 구역 간 조건이 너무 불균형합니다. 다른 시드를 시도하세요.
+[The fractured civic plaza did not survive.]
+단층으로 갈라진 도시 광장이 보존되지 않았습니다.
+[Who Ate the Map?]
+누가 지도를 먹었나요?
+[Appetite]
+식욕
+[A Little Nibble]
+살짝 한 입
+[Hungry]
+배고픔
+[Portage Lakes]
+호수와 숲 통로
+[Lake elongation]
+호수의 길쭉한 정도
+[Portage depth]
+벌목할 숲의 두께
+[Extra trails]
+추가 오솔길
+[Portage Lakes needs sides between 64 and 512 tiles.]
+이 지도의 각 변은 64~512칸이어야 합니다.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+이 시드에서는 호숫가에 정착지를 배치할 수 없습니다.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+각 정착지 옆에 다시 자라는 호숫가 농지를 배치할 수 없습니다.
+[Portage Lakes cannot connect its shoreline trails.]
+호숫가 오솔길을 연결할 수 없습니다.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+이 시드에서는 마른 숲을 통과하는 유용한 지름길을 만들 수 없습니다.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+이 시드에서는 헤엄쳐 갈 수 있는 유용한 지름길을 만들 수 없습니다.
+[Portage Lakes needs separate swimming lakes on this seed.]
+이 시드에서는 헤엄쳐 건너는 호수들이 서로 분리되어 있어야 합니다.
+[Drowned Forest]
+물에 잠긴 숲
+[Sandbar connections]
+모래톱 연결
+[Wooded neck thickness]
+나무 장벽 두께
+[Neutral clearing size]
+중립 숲 공터 크기
+[Bastion Keys]
+요새 군도
+[Plantation size]
+농장 크기
+[Outlying islands]
+주변 섬
+[The Hungry Marches]
+굶주린 변경
+[Opening ration]
+초기 식량
+[Central concentration]
+중앙 집중도
+[The Last Treeline]
+마지막 산림 지대
+[Woodland depth]
+숲의 너비
+[Fertility]
+비옥도
+[Deposits]
+매장량
+[Room]
+공간
+[Isolation]
+격리
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+각 식민지의 시작 지점은 완성된 지도에서 측정됩니다: 밀과 목재까지의 거리, 땅이 얼마나 잘 다시 자라는지, 닿을 수 있는 매장량과 건설 부지, 그리고 경쟁자와의 거리입니다. 각 요소는 고정된 기준에 대해 0에서 1로 점수가 매겨지고, 합계는 이를 가중하며, 공정성은 최저 식민지의 합계를 최고 식민지의 합계로 나눈 값이고, 점수는 최저 합계에 공정성을 곱한 값입니다.
+[ERROR_CANT_SAVE_MAP]
+맵을 저장할 수 없습니다. 저장 위치와 사용 가능한 공간을 확인하세요. 편집 내용은 아직 열려 있습니다.
+[Loading headers]
+헤더 불러오는 중...
+[Loading teams]
+팀 불러오는 중...
+[Loading terrain]
+지형 불러오는 중...
+[Building gradients]
+그라디언트 생성 중...
+[Loading players]
+플레이어 불러오는 중...
+[Loading scripts]
+스크립트 불러오는 중...
+[Generating map]
+맵 생성 중...
+[ERROR_CANT_GENERATE_MAP]
+맵을 생성할 수 없습니다. 다른 생성 설정을 시도해 보세요.
+[Loading units]
+유닛 불러오는 중...
+[Loading buildings]
+건물 불러오는 중...
+[Resolving team links]
+팀 연결 해석 중...
+[saving to storage]
+저장 중...
+[save failed retry]
+저장에 실패했습니다. 다시 시도하세요.
+[export save]
+저장 게임 내보내기
+[storage restore failed]
+브라우저 저장소를 복원할 수 없습니다. 기존에 저장된 데이터는 변경되지 않았습니다. 이 세션을 계속할 수 있지만 로컬 변경 사항은 유지되지 않습니다. 저장 실패 대화상자에서 중요한 저장 파일을 내보내세요. 저장소 복원을 다시 시도하려면 새로고침하세요.
+[continue]
+계속
+[export file]
+파일 내보내기
+[export failed]
+파일 내보내기에 실패했습니다
+[import file]
+가져오기
+[select import file]
+가져올 파일을 선택하세요
+[validating import]
+파일 확인 중...
+[import succeeded]
+파일을 가져왔습니다
+[import cancelled]
+가져오기가 취소되었습니다
+[import failed]
+가져오기 실패: 잘못되었거나 지원되지 않는 파일입니다
+[import persistence failed]
+저장되지 않음: 다시 시도하려면 가져오기, 또는 파일 내보내기를 선택하세요
+[import progress]
+가져오기 진행 상황
+[export progress]
+내보내기 진행 상황
+[retry save]
+저장 다시 시도
+[campaign save failed]
+캠페인 진행 상황이 저장되지 않았습니다. 다시 시도하거나 백업을 내보내세요.
+[leave without saving]
+저장하지 않고 나가기
+[campaign import failed]
+진행 파일이 잘못되었거나 캠페인 버전이 다릅니다
+[network release mismatch]
+클라이언트와 서버의 프로토콜이 다릅니다. 서버와 동일한 Glob2 버전을 설치하세요.
+[settings continue]
+계속
+[settings save failed]
+설정 저장이 확인되지 않았습니다. 다시 시도하거나 계속하세요.
+[shutdown save failed]
+최종 저장이 확인되지 않았습니다. 다시 시도하거나 저장하지 않고 나가세요.
+[quit without saving]
+저장하지 않고 나가기
+[game closed]
+게임이 종료되었습니다. 이 창을 닫거나 새로고침하여 다시 플레이할 수 있습니다.
+[campaign editor save failed]
+저장이 확인되지 않았습니다. 확인은 다시 시도하고, 취소는 편집기 메뉴로 돌아갑니다.
+[Actions]
+작업
+[Minimap]
+미니맵
+[Fast forward]
+빨리 감기
+[Hide keyboard]
+키보드 숨기기
+[Dialog text size]
+대화 상자 글자 크기
+[Player slot]
+플레이어 슬롯
+[Team color]
+팀 색상
+[Alliance group]
+동맹 그룹
+[menu]
+메뉴
+[Editor tools]
+도구
+[Pan map]
+지도 이동
+[Edit map]
+지도 편집
+[Editor map]
+지도
+[Flags]
+깃발
+[Pause]
+일시 정지
+[Speed]
+속도
+[Objectives]
+목표
+[Menu]
+메뉴
+[Goals]
+목표
+[Teams]
+팀
+[Use this landscape]
+이 지형 사용
+[Reset]
+초기화
+[Generating...]
+생성 중...
+[Players]
+플레이어
+[Rules]
+규칙
+[settings Interface layout]
+인터페이스 배치
+[settings Automatic]
+자동
+[settings Compact]
+좁게
+[settings Spacious]
+여유롭게
+[More]
+더 보기
+[No items]
+항목 없음
+[Opponents]
+상대
+[Review]
+검토
+[Review & Play]
+검토 후 플레이
+[Edit opponents]
+상대 편집
+[Map settings]
+지도 설정
+[Next]
+다음
+[Done]
+완료
+[Contribution]
+기여도
+[Choose who controls this colony]
+이 식민지를 조종할 플레이어를 선택하세요
+[Settings]
+설정
+[settings Back]
+뒤로
+[settings Save the game automatically about every minute.]
+약 1분마다 게임을 자동으로 저장합니다.
+[AI opponents]
+컴퓨터 상대
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+여유로운 배치는 공간이 충분하면 측면 패널을 사용합니다. 간결한 배치는 도구 모음과 펼칠 수 있는 패널을 사용합니다.
+[Assigned %0 · Target %1]
+배정 %0 · 목표 %1
+[Range: %0]
+범위: %0
+[Player %0]
+플레이어 %0
+[Brush %0]
+브러시 %0
+[Team %0]
+팀 %0
+[Your colony]
+내 식민지
+[%0 / %1 HP · %2]
+%0 / %1 체력 · %2
+[Units: %0]
+유닛: %0
+[Buildings: %0]
+건물: %0
+[Need food: %0]
+식량 필요: %0
+[Need healing: %0]
+치료 필요: %0
+[Attack: %0]
+공격: %0
+[Defense: %0]
+방어: %0
+[Food: %0 / %1]
+식량: %0 / %1
+[View team %0]
+팀 %0 보기
+[P %0/%1/%2]
+명성 %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+브러시 %0x%1
+[Level %0]
+레벨 %0
+[Manage teams (%0)]
+팀 관리 (%0)
+[Team %0 / Level %1]
+팀 %0 / 레벨 %1
+[Files · %0]
+파일 · %0
+[Hint %0]
+힌트 %0
+[Objective %0]
+목표 %0
+[Entry %0 of 8 · empty entries are omitted]
+항목 %0/8 · 빈 항목은 생략됩니다
+[Teams %0/%1]
+팀 %0/%1
+[Elapsed time · %0]
+경과 시간 · %0
+[Read-only building]
+읽기 전용 건물
+[Alliance and shared vision are fixed for this match.]
+이 경기에서는 동맹과 공유 시야가 고정됩니다.
+[Share vision]
+시야 공유
+[Share food vision]
+식량 시야 공유
+[Share market vision]
+시장 시야 공유
+[Chat]
+채팅
+[No other players have editable diplomatic settings in this match.]
+이 경기에서 다른 플레이어의 외교 설정을 수정할 수 없습니다.
+[No briefing for this match.]
+이 경기에는 임무 설명이 없습니다.
+[Chat · recipients selected in Teams]
+채팅 · 팀에서 수신자 선택
+[Filename]
+파일명
+[Reduced motion]
+동작 줄이기
+[Send]
+보내기
+[Close]
+닫기
+[Forbidden]
+금지
+[Guard]
+경비
+[Clear]
+정리
+[Paint]
+그리기
+[Erase]
+지우기
+[Release on valid terrain to place]
+유효한 지형에서 손을 떼어 배치
+[Paint on the map; two fingers move]
+지도에 그리기; 두 손가락으로 이동
+[Tutorial ▸]
+튜토리얼 ▸
+[Back to tools]
+도구로 돌아가기
+[Starvation overlay]
+굶주림 표시
+[Damage overlay]
+피해 표시
+[Defense overlay]
+방어 표시
+[Fertility overlay]
+비옥도 표시
+[Health and food bars]
+체력 및 식량 막대
+[Message history]
+메시지 기록
+[Mark map for allies]
+아군을 위해 지도에 표시
+[Show zones]
+구역 표시
+[Pan]
+이동
+[Select]
+선택
+[Show palette]
+팔레트 표시
+[Release to place]
+손을 떼어 배치
+[Blocked placement]
+배치 불가
+[File name]
+파일 이름
+[Load map]
+지도 불러오기
+[Save map]
+지도 저장
+[No files in this folder]
+이 폴더에는 파일이 없습니다
+[No files saved yet]
+아직 저장된 파일이 없습니다
+[Export]
+내보내기
+[Tap to write the mission briefing]
+탭하여 임무 설명 작성
+[Tap to write the map script]
+탭하여 지도 스크립트 작성
+[Script]
+스크립트
+[Previous]
+이전
+[Compile]
+컴파일
+[Tap to write this hint]
+탭하여 이 힌트 작성
+[Tap to write this objective]
+탭하여 이 목표 작성
+[Mission briefing · tap to edit, swipe to scroll]
+임무 설명 · 탭하여 편집, 쓸어 넘겨 스크롤
+[Not enough recorded history yet.]
+기록된 내역이 아직 부족합니다.
+[Select a team to show its history.]
+팀을 선택하여 기록을 표시하세요.
+[Back to chart]
+차트로 돌아가기
+[Expand chart]
+차트 확대
+[Slot]
+슬롯
+[Color]
+색상
+[Player / AI]
+플레이어 / AI
+[Group]
+그룹
+[Forbid]
+금지
+[↓ Low]
+↓ 낮음
+[= Normal]
+= 보통
+[↑ High]
+↑ 높음
+[Details]
+세부 정보
+[Campaign name]
+캠페인 이름
+[Unlocking]
+잠금 해제
+[Parameters]
+매개변수
+[Blank map]
+빈 지도
+[Generated]
+생성됨
+[Preview]
+미리 보기
+[Selected landscape]
+선택한 지형
+[Representative preview]
+대표 미리 보기
+[Starting terrain]
+시작 지형
+[Hide parameters]
+매개변수 숨기기
+[Size and parameters]
+크기 및 매개변수
+[Choose a landscape]
+지형 선택
+[%0 / Browse]
+%0 / 찾아보기
+[%0 colonies · %1]
+%0 식민지 · %1
+[%0 · Team %1]
+%0 · 팀 %1
+[Colonies: %0]
+식민지: %0
+[%0 colonies · %1 AI]
+%0 식민지 · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 유닛
+[settings Level %0]
+레벨 %0
+[settings Match the desktop %0]
+바탕 화면에 맞춤 (%0)
+[settings Current display %0 %1 %2 %3]
+현재 화면 설정: %0 × %1 · %2 · %3
+[Fairness: %0]
+공정성: %0
+[Colony %0]
+식민지 %0
+[Win chance: %0 · Fitness: %1]
+승리 확률: %0 · 강도: %1
+[%0 · Contribution: %1]
+%0 · 기여도: %1
+[Min required level %0]
+최소 레벨: %0
+[Confirm %0]
+확인: %0
+[Dialog text size %0]
+대화 상자 글자 크기: %0%
+[%0 %1]
+%0 %1

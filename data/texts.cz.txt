@@ -1,3 +1,9 @@
+[AI strategy]
+Strategie AI
+[AIMaxima-Summary]
+Vyvažuje udržitelný růst a výcvik a poté shromažďuje armády do vln.
+[AIMaxima-Profile]
+Základní strategie: Jídlo, dělníky, rození, výcvik, stavbu a boj považuje za soupeřící požadavky. Velikost armády částečně přizpůsobuje odhadované síle nepřítele a snaží se armádu účinně dopravit do boje.\n\nHospodářství a rozvoj: Plánuje rození podle jídla a pracovní síly, zachovává volný čas pro výcvik a přestává přidávat nadbytečné dělníky, když je potřeba vojenská produkce. Přizpůsobuje výcvikové kapacity a nevypíná kvůli vylepšením příliš mnoho infrastruktury najednou.\n\nPrůzkum a rozhodování: Odhaduje nepřátelské síly z viditelných jednotek a zapamatovaných pozorování pomocí kalibrovaného modelu. Cíle závisí na hodnotě, vzdálenosti, věžích, nechráněných dělnících a vytrvalosti při sledování cíle. Výpravy za ovocem podporují pestrost jídla a přeběhlictví.\n\nÚtok a obrana: Rezervuje válečníky pro výcvik a obranu, pak shromáždí způsobilé pozemní síly poblíž vlastního zásobování a vyšle vlny. Používá místní obranné reakce a vyhodnocuje přístupové cesty ke kolonii.\n\nKdyž se útoky zastaví: Po čtyřech po sobě jdoucích selháních dopravení vln přepne na průběžně posilované útočné vlajky. Průběžné posilování mohou používat i obojživelné útoky. Tato náhrada neřeší všechny překážky ještě před vznikem shromaždiště.\n\nSrovnání s ostatními AI: Úžeji propojuje jídlo, výcvik, zpravodajství a nasazení. Cabino zdůrazňuje několik útoků na budovy; Maxima odhad potřeb a dopravení shromážděných sil.\n\nSilné a slabé stránky: Udržuje růst i doplňování armády a přizpůsobuje se nedostatku jídla a pozorovaným hrozbám. Potřebuje jídlo, výcvikové kapacity a volné shromažďovací místo; zácpy a dlouhé trasy mohou narušit dopravení sil.\n\nMožná protihra: Bojujte o nechráněnou pšenici, hospody a cvičiště, než se vlny shromáždí. Držte zásobenou obranu pohromadě a narušujte trasy posil. Po první vlně očekávejte další tlak.\n\nPrůzkum: Odhady sil používají pozorování a jejich historii, nikoli skryté celkové počty nepřátelských jednotek.
 [%0 has left the game]
 %0 opustil hru.
 [%0 level %1]
@@ -51,11 +57,11 @@ Počítač
 [ai]
 Počítač
 [AICastor-Description]
-Castor hraje opatrně a daří se mu na mapách s malým množstvím zdrojů. Střední obtížnost.
+Staví a cvičí armádu, přičemž růst přizpůsobuje zásobám jídla.
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar hraje útočně, rychle se rozrůstá a posílá na soupeře obrovské armády. Vysoká obtížnost.
+Zvyšuje počet obyvatel, cvičí bojovníky a potom útočí.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,17 +69,21 @@ Nicowar
 [AINone]
 Žádná AI
 [AINumbi-Description]
-Numbi se rozrůstá v malém rozsahu, ale rychle. Nízká obtížnost.
+Shovívavý soupeř, který se přesto rozšiřuje a útočí.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo neútočí, ale buduje obrovské základny a usilovně přetahuje jednotky na svou stranu. Nízká obtížnost.
+Rozšiřuje se a přetahuje jednotky bez tvorby bojovníků.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush útočí rychle a tvrdě a často zatlačí obránce na hranici jeho možností. Střední obtížnost.
+Rychlé útoky prověří vaši počáteční obranu.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Silný stavitel, který nasazuje vycvičené útočné síly.
+[AICabino]
+Cabino
 [Alga]
 Řasy
 [algae]
@@ -605,9 +615,9 @@ z toho
 [ok]
 Budiž
 [old islands terrain]
-náhodné ostrovy (staré)
+Členité souostroví
 [old random terrain]
-náhodný terén (starý)
+Roztříštěné pobřeží
 [on press]
 Stisk
 [On the spot]
@@ -1217,7 +1227,11 @@ Rychlost: 1x (více hráčů)
 [game speed help]
 Pouze pro jednoho hráče a záznamy. Hra více hráčů běží rychlostí 1x.
 [AICortex-Description]
-Cortex expanduje směrem k novým pšeničným polím a posílá skupiny válečníků do bitvy, podporované hospodami a nemocnicemi poblíž frontové linie. Střední obtížnost. Experimentální.
+Soustředěné vlny bojovníků s podporou zásobování a léčení.
+[AIMaxima-Description]
+Provádí průzkum, rozvíjí zásobování a shromažďuje vlny bojovníků.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Mapu nelze načíst: soubor je poškozený nebo má nekompatibilní verzi.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1233,33 +1247,37 @@ Ještě v práci: %0
 [AI strategy & counterplay]
 AI strategie a protihra
 [AICastor-Profile]
-Strategie: Opatrně se rozšiřuje a funguje dobře na mapách s malým počtem zdrojů.\n\nSilné stránky: Omezené rozšíření je účinné ve hrách s omezenými zdroji.\n\nDoporučená protihra: Obsaďte území brzy. Nepředpokládejte, že nedostatek zdrojů oslabí tuto AI.
+Základní strategie: Investuje do produktivní kolonie a technologií, než zahájí větší útoky. Osadu rozvíjí pomocí stavebních projektů s určenými prioritami; rozvoj, vojenská infrastruktura a čas zvyšují připravenost k válce.\n\nHospodářství a rozvoj: Zkoumá zavlažení, růst pšenice, překážky a dosah dělníků. Vedle produkce řídí rozšiřování zásobování jídlem, vylepšování a obranu.\n\nÚtok a obrana: Odhaduje útočnou sílu zdravých válečníků a zahajuje údery při splnění podmínek síly nebo načasování. Upřednostňuje dříve spatřené dostupné budovy, zejména cvičiště a školy, a přesouvá útočné vlajky k hodnotným cílům.\n\nSrovnání s ostatními AI: Terén a hodnotu cílů zvažuje důkladněji než Numbi. Je trpělivější než Warrush; počáteční tlak vyměňuje za rozvinutou základnu a silnější jednotky.\n\nSilné a slabé stránky: Rozsáhlé plánování infrastruktury a hodnotné vojenské cíle dávají útokům smysl. Příprava trvá dlouho, takže rychlejší soupeři mohou bojovat o suroviny dříve, než je hlavní síla připravena.\n\nMožná protihra: Brzy soupeřte o prostor pro rozšíření. Chraňte cvičiště a školy i jídlo a při útoku na rozvinutou osadu si ponechte zálohu.
 [AICastor-Summary]
-Opatrná expanze; funguje dobře s omezenými zdroji.
+Rozvíjí opevněnou kolonii a poté útočí na vojenské a vědecké budovy.
 [AICortex-Profile]
-Strategie: Spravuje zásoby jídla, expanduje na nová pšeničná pole a shromažďuje po sobě jdoucí skupiny válečníků. Hospody a nemocnice poblíž frontové linie podporují útoky daleko od základny.\n\nSilné stránky: Posílá posily ve skupinách, udržuje vojenský tlak a reaguje na nedostatek potravin.\n\nDoporučená protihra: Bojujte o kontrolu nad novými pšeničnými poli a zaútočte na podpůrné budovy poblíž přední linie. Zaútočte dříve, než budou jeho skupiny válečníků připraveny.\n\nExperimentální AI. Střední obtížnost; doporučení k protihře nejsou hodnocením výkonu z testů.
+Základní strategie: Pomocí priorit reagujících na situaci rozvíjí funkční hospodářství a využívá volné dělníky na jídlo, technologie a vojenský tlak. Běžné rozhodování je založeno na pravidlech; pokusy s naučenými postupy vyžadují zvláštní nastavení.\n\nHospodářství a rozvoj: Přizpůsobuje produkci dělníků potřebám pracovních míst a udržuje rození jednotek. Potíže s jídlem omezují výdaje na rozšiřování a technologie. Přidává plavání, pokud přístup přes vodu výrazně pomůže.\n\nÚtok a obrana: Připravuje útoky podle pozorované nepřátelské technologie a dostupných jednotek. Tažení přes vodu vyžadují válečníky schopné plavat. Dlouhá tažení podporuje předsunutými hospodami a nemocnicemi a před postupem může shromáždit síly.\n\nVytrvalost a krizové situace: Pokračuje v ofenzivě i při drobném obtěžování, místo aby opakovaně pochodoval domů. Vážné útoky mohou přivolat obránce zpět. Počáteční krize mohou spustit výhradní produkci válečníků a stavbu nemocnice; hladomor může vyvolat menší zoufalý útok.\n\nSrovnání s ostatními AI: Předsunuté podpoře věnuje více pozornosti než Warrush. Maxima jde dále v plánování udržitelného rození, výcviku a nasazení vůči odhadované síle nepřítele.\n\nSilné a slabé stránky: Spojuje tlak s jídlem, léčením a dostupností cílů. Předsunutá infrastruktura musí zůstat zásobená a nepřetržité rození může dál zatěžovat omezené zásoby jídla. Krizové priority nutí volit mezi růstem a přežitím.\n\nMožná protihra: Bojujte o předsunuté hospody, nemocnice a pšenici. Proti jeho postupu držte obránce pohromadě; drobné obtěžování jej nemusí přimět k ústupu.\n\nPrůzkum: Využívá objevené nepřátelské budovy a pozorované nepřátelské jednotky.
 [AICortex-Summary]
-Expanduje s ohledem na zásoby jídla a podporuje své útočící jednotky.
+Podporuje vytrvalé vojenské útoky předsunutým zásobováním a léčením.
 [AINicowar-Profile]
-Strategie: Rychle expanduje a útočí na protivníky obrovskými armádami.\n\nSilné stránky: Rychlá expanze podporuje agresivní vojenské útoky.\n\nDoporučená protihra: Zabraňte jejímu rozšíření. Použijte terén ke snížení počtu nepřátelských jednotek, které mohou bojovat najednou.
+Základní strategie: Spojuje růst, výcvik, vylepšování a válku pomocí překrývajících se podmínek. Může útočit během rozšiřování a při selhání zásobování přesměrovat hospodářské úsilí na obnovu.\n\nZahájení: Dodávaný agresivní profil zahajuje válečné přípravy při pěti jednotkách celkem a povoluje válku při pěti válečnících, včetně úrovně nula. Usiluje o tři útočné vlajky s pěti válečníky na každé. Vlastní soubory strategie mohou tyto prahy změnit.\n\nHospodářství a rozvoj: Rozšiřuje kapacitu zásobování a rození, cvičí dělníky, rozvíjí plavání a pohyb a vylepšuje budovy. Upravuje přidělení dělníků k jídlu, reaguje na hladovění a získává ovoce.\n\nÚtok a obrana: Náhodně vybírá dostupné nepřátelské budovy k útoku. Pomocí čisticích vlajek může otevřít cesty zablokované surovinami. Obranné vlajky chrání shluky ohrožených jednotek a budov. Později vycvičení průzkumníci s pozemním útokem napadají skupiny nepřátelských jednotek.\n\nSrovnání s ostatními AI: Sdílí počáteční agresivitu Warrush, ale má širší pokračování. Na rozdíl od Cabino nedává soustavně přednost nemocnicím a hospodám.\n\nSilné a slabé stránky: Široká škála taktik spojuje počáteční tlak s dalším rozvojem. Náhodný výběr cílů může plýtvat úsilím na méně hodnotné budovy. Jeho prahy nenahrazují podrobný odhad nepřátelské bojové síly, který používá Maxima.\n\nMožná protihra: Očekávejte brzký útok. Chraňte jídlo a dělníky, brzděte rozšiřování a připravte se na útoky průzkumníků, pokud dosáhne pokročilého výcviku.
 [AINicowar-Summary]
-Rychle expanduje a buduje velké armády pro agresivní útoky.
+Počáteční nápor podporuje zemědělstvím, vylepšeními, obranou a útoky průzkumníků.
 [AINone-Profile]
 Strategie: AI nedává žádné příkazy.\n\nSilné stránky: Předvídatelný, neaktivní protivník pro experimenty.\n\nSlabé stránky: Nerozšiřuje se ani se nepřizpůsobuje.
 [AINone-Summary]
 Nečinná kolonie pro experimenty.
 [AINumbi-Profile]
-Strategie: Rozšiřuje se rychle, ale v malém měřítku. Snazší protivník pro nácvik vedení kolonie.\n\nSilné stránky: Umožňuje vám naučit se jak ekonomické řízení, tak boj.\n\nDoporučená protihra: Před útokem vyviňte silnější ekonomiku a vycvičte svou armádu.
+Základní strategie: Nejdříve buduje zásobování a populaci, přidává léčení, vědu a výcvik a pak přechází k válce. Jeho hlavní fáze postupují podle času, nikoli podle pokroku soupeře.\n\nHospodářství a rozvoj: Přizpůsobuje poptávku po budovách populaci a odhaduje blízkou pšenici. Pozdější fáze přidávají vylepšení, obranu a rozšiřování na podporu rostoucí armády.\n\nÚtok a obrana: Útočí, když má dost zdravých bojovníků nebo vyprší časový limit. Umisťuje válečné vlajky na vybrané nepřátelské budovy. Když bojová síla příliš klesne, odstraní útočné vlajky a zvýší prahy pro další pokus.\n\nSrovnání s ostatními AI: Předvídatelnější než Castor či Nicowar. Castor pečlivěji zvažuje terén a hodnotu cíle; Nicowar vytváří tlak mnohem dříve.\n\nSilné a slabé stránky: Široká podpůrná infrastruktura jej po nerušeném rozvoji může učinit nebezpečným, ale jeho časový plán nemusí odpovídat bitvě. Jednoduchý výběr cílů a delší přestávky po ztrátách usnadňují předvídání útoků.\n\nMožná protihra: Vytvářejte tlak před jeho vojenskou fází. Za útoky rozvíjejte zásobování a výcvik a po odražení náporu využijte přestávku.\n\nPrůzkum: Jeho útočná rutina čte polohy nepřátelských budov přímo bez kontroly viditelnosti.
 [AINumbi-Summary]
-Rychlé rozšíření v malém měřítku.
+Postupně buduje kolonii podle časového plánu a pak útočí početní silou.
 [AIEcono-Profile]
-Strategie: Neútočí, ale buduje obrovské základny a aktivně převádí nepřátelské jednotky na svou stranu.\n\nSilné stránky: Rozšíření a konverze jednotek ohrožují protivníky bez přímých útoků.\n\nDoporučená protihra: Rozvíjejte svou kolonii brzy a vyhněte se posílání jednotek tam, kde je může nepřítel přeměnit.
+Základní strategie: Produkuje dělníky a průzkumníky, rozšiřuje hospodářství a láká nepřátelské jednotky jídlem a ovocem. Nemá běžnou ofenzivu válečníků.\n\nHospodářství a rozvoj: Staví hospody a úly poblíž pšenice, přidává vzdělávání a pohybový výcvik a vylepšuje infrastrukturu. Sleduje zásoby jídla a nahrazuje staré hospody a úly, když se jejich přístup k surovinám zhorší.\n\nZemědělství a přeběhlíci: Chrání obnovitelnou pšenici a dřevo poblíž vody. Posílá průzkumníky k ovoci a nepřátelským koloniím a při zajišťování ovoce nabízí jídlo nepřátelům. Lepší jídlo a ovoce mohou přilákat přeběhlíky.\n\nSrovnání s ostatními AI: Nejvíce hospodářsky specializovaný soupeř. Cabino a Maxima také získávají ovoce, ale kombinují je s armádami.\n\nSilné a slabé stránky: Může růst, zatímco se vojenští soupeři vyčerpávají, a přeběhlictví nabízí další způsob soupeření. Neprodukuje válečníky, kteří by odpověděli na trvalý nápor. Jeho možnosti silně ovlivňují jídlo, ovoce, zeměpis a pravidla vítězství.\n\nMožná protihra: Napadejte nechráněné rozšiřování. Vlastní hospody zásobujte jídlem a ovocem, abyste si udrželi jednotky. Nevyčerpávejte kolonii zbytečnými boji, zatímco on roste.
 [AIEcono-Summary]
-Obrovské základny a konverze místo útoků.
+Rozvíjí kolonii bohatou na jídlo a láká přeběhlíky, aniž by produkoval válečníky.
 [AIWarrush-Profile]
-Strategie: Útočí včas a důrazně, než soupeř dokončí přípravu.\n\nSilné stránky: Využívá nechráněnou expanzi a pomalou vojenskou přípravu.\n\nDoporučená protihra: Přežijte první útok při zachování své ekonomiky a poté zaútočte.
+Základní strategie: Útočí dříve, než soupeři dokončí dlouhý hospodářský či technologický rozvoj. Očekává, že boj rozhodne hru před nutností rozsáhlé podpůrné sítě.\n\nHospodářství a rozvoj: Jakmile šest jednotek umí sklízet, nastaví produkční poměr na čtyři dělníky, jednoho průzkumníka a tři válečníky. Při zaplnění výcviku přidává cvičiště, ale omezuje nové hospody. Volné stavební kapacity často využívá na nemocnice a pohybový výcvik.\n\nÚtok a obrana: Označuje objevené nepřátelské budovy strážními oblastmi, aby válečníci udržovali tlak. Nečeká na pečlivě sestavenou vlnu. Odstraňuje překážející dřevo a chrání některé obnovitelné suroviny.\n\nPřístup k ovoci: Zakazuje sběr ovoce, čímž se vyhýbá postihům brnění spojeným s ovocem a odmítá strategii přeběhlíků, kterou používá Econo.\n\nSrovnání s ostatními AI: Na počáteční tlak se soustředí více než Numbi či Castor. Nicowar také začíná agresivně, ale pokračuje širším programem vylepšení a taktik.\n\nSilné a slabé stránky: Trestá pomalé zahájení a vynucuje brzké obranné výdaje. Omezené systematické vylepšování a úsporné zásobování činí zastavenou ofenzivu nákladnou. Terén a dlouhé cesty mohou oslabit jeho počáteční výhodu.\n\nMožná protihra: Brzy chraňte hospody a úly. Nahrazujte dělníky i obránce, rozvíjejte výcvik a přejděte do protiútoku, až nápor ztratí sílu.\n\nPrůzkum: Počáteční průzkumné vlajky používají přímo startovní polohy nepřátel. Pozdější umístění útočných oblastí vyžaduje viditelnost.
 [AIWarrush-Summary]
-Rychlé útoky, které otestují vaši ranou obranu.
+Brzký tlak válečníků s úmyslně úsporným podpůrným hospodářstvím.
+[AICabino-Profile]
+Základní strategie: Rozděluje produkci jednotek mezi stavbu, vylepšování, obranu, útoky a průzkum. Oddělení správci požadují a rezervují jednotky a rozvíjejí hospodářství současně s armádou.\n\nHospodářství a rozvoj: Buduje a vylepšuje rozsáhlou osadu, řídí obsazení hospod a věží, čistí okolí budov a chrání obnovitelné suroviny. Hledá ovoce a nabízí jídlo, aby soutěžil o přeběhlíky.\n\nÚtok a obrana: Vybere nepřítele a upřednostňuje nemocnice, pak hospody a poté cvičiště. Podporuje až čtyři útoky, obvykle přiděluje osm až dvacet válečníků na cíl podle dostupnosti a blízkých nepřátel. Kolem ohrožených budov používá samostatné obranné vlajky.\n\nVýcvik: K útoku vyžaduje dost vhodných válečníků a dokončené cvičiště, ale nečeká na nejvyšší technologii. Další vylepšování a výcvik posilují pozdější útoky.\n\nSrovnání s ostatními AI: Ničení podpůrných budov sleduje cíleněji než Nicowar. Útoky rozděluje více než shromážděné vlny Maxima a rezervacemi jednotek řeší soupeřící požadavky.\n\nSilné a slabé stránky: Spojuje růst, výcvik, obranu a několik útoků. Zničení zásobování a léčení může oslabit celou kolonii. Náhodný výběr soupeře a pevné priority budov mohou přehlédnout příležitosti; několik útoků může rozdělit síly.\n\nMožná protihra: Braňte nemocnice a hospody. Napadejte nechráněné rozšiřování a soustřeďte obránce proti jednotlivým útokům. Poškoďte zásobování nebo výcvik, než dokáže udržet několik front.\n\nPrůzkum: Výběr útoků čte seznamy nepřátelských budov bez výslovné kontroly viditelnosti. Některá hospodářská srovnání používají přímo statistiky nepřítele.
+[AICabino-Summary]
+Koordinuje růst kolonie a vycvičené útoky, přednostně ničí léčení a jídlo.
 [Algae]
 Řasy
 [Alliances]
@@ -1363,9 +1381,9 @@ Střední – Experimentální
 [No AI orders]
 Žádné příkazy AI
 [Old islands]
-Staré ostrovy
+Členité souostroví
 [Old random]
-Staré náhodné
+Roztříštěné pobřeží
 [Open at least one colony to start a match.]
 Otevřete alespoň jednu kolonii a začněte zápas.
 [Open book]
@@ -1380,6 +1398,14 @@ Hráči a týmy
 Předpřipravené mapy
 [Preview ready. Start plays this exact map.]
 Náhled připraven. Při spuštění hry se používá přesně tato mapa.
+[Regenerate all]
+Znovu vygenerovat vše
+[Generating preview...]
+Generuje se náhled...
+[Preview unavailable]
+Náhled není k dispozici
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Každá krajina je zobrazena jako skutečná mapa ve vaší aktuální velikosti a počtu kolonií. Vyberte jednu a zahrajte si zobrazenou mapu.
 [Purple]
 Fialová
 [Quick clash]
@@ -1542,6 +1568,10 @@ Formát hry
 Rychlá bitva: dvojnásobná rychlost; generované mapy začínají s 8 pracovníky.
 [Reroll]
 Vygenerujte další mapu
+[Randomize]
+Vygenerovat náhodně
+[Reset to defaults]
+Obnovit výchozí hodnoty
 [Ruleset]
 Pravidla
 [Select a map from the library.]
@@ -1620,6 +1650,8 @@ Zobrazovat kurzor hry Globulation 2.
 Hotovo
 [settings Edit shortcut]
 Upravit klávesovou zkratku
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Zvětší nabídky, text a postranní panel na obrazovce s vysokým rozlišením.
 [settings Flags]
 Vlajky
 [settings Full]
@@ -1634,6 +1666,8 @@ Rychlost hry
 Hratelnost
 [settings Graphics detail]
 Grafické detaily
+[settings Interface scale]
+Měřítko rozhraní
 [settings Keep]
 Ponechat změny
 [settings Keep this display mode?]
@@ -1656,6 +1690,8 @@ Jazyk používaný v celém rozhraní.
 Úroveň
 [settings Map editor]
 Editor map
+[settings Match the desktop]
+Podle plochy
 [settings Missing font]
 Chybí písmo
 [settings Music volume]
@@ -1766,3 +1802,1589 @@ Vybraná grafika se použije při příštím načtení hry nebo editoru map (Op
 Automatický toroidní pohled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenGL).
+[settings Autosave]
+Automatické ukládání
+[settings Save the game automatically about every 10 seconds.]
+Hru automaticky ukládá přibližně každých 10 sekund.
+[Channel width]
+Šířka průlivu
+[Land bridge width]
+Šířka pevninského mostu
+[Lake size]
+Velikost jezera
+[Contested commons]
+Sporné společné území
+[Maze]
+Bludiště
+[Fjord continent]
+Fjordový kontinent
+[Cell size]
+Velikost buňky
+[Corridor width]
+Šířka chodby
+[Spoke width]
+Šířka paprsků
+[Loopiness]
+Propojenost
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Bludiště potřebuje alespoň dvě buňky na šířku i na výšku; použijte větší mapu nebo menší buňky.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Takto široké průlivy nechávají v každé buňce příliš málo trávy; použijte užší průlivy nebo větší buňky.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Bludiště má pro tolik kolonií příliš málo slepých uliček; použijte větší mapu nebo menší buňky.
+[Home island size]
+Velikost domovského ostrova
+[Commons size]
+Velikost společného území
+[Moat width]
+Šířka příkopu
+[Bridge count]
+Počet mostů
+[Continent size]
+Velikost kontinentu
+[Coast roughness]
+Členitost pobřeží
+[Fjord width]
+Šířka fjordu
+[Lake connects to fjords]
+Jezero spojené s fjordy
+[Resource islands]
+Surovinové ostrovy
+[Watershed]
+Povodí
+[River density]
+Hustota řek
+[Dryness]
+Vyprahlost
+[Fords]
+Brody
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Povodí má pro tolik kolonií příliš málo záplavové nivy; použijte větší mapu nebo méně kolonií.
+[Stone highlands]
+Kamenná vysočina
+[Valley size]
+Velikost údolí
+[Pass width]
+Šířka průsmyku
+[Pond size]
+Velikost tůně
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Tato údolí jsou pro mapu příliš velká; použijte větší mapu nebo menší údolí.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Vysočina má pro tolik kolonií příliš málo místa; použijte větší mapu nebo méně kolonií.
+[Symmetric arena]
+Symetrická aréna
+[Centre size]
+Velikost středu
+[Causeway width]
+Šířka hráze
+[Causeways]
+Hráze
+[Lakes]
+Jezera
+[Resource richness]
+Bohatost surovin
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symetrická aréna vyžaduje 2, 4 nebo 8 kolonií.
+[Eight colonies need a square map in the symmetric arena.]
+Osm kolonií vyžaduje v symetrické aréně čtvercovou mapu.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Střed je na této mapě příliš malý pro ovocný sad; použijte větší střed nebo větší mapu.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Aréna nechává příliš málo místa pro každou kolonii; použijte větší mapu, menší střed nebo užší příkop.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Hráze jsou příliš blízko sebe; použijte méně nebo užší hráze, případně větší střed.
+[Ring world]
+Prstencový svět
+[Belt width]
+Šířka pásu
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Pás je pro tolik kolonií příliš krátký; použijte delší mapu nebo méně kolonií.
+[City states]
+Městské státy
+[Strait width]
+Šířka průlivu
+[Valleys]
+Údolí
+[Frontier richness]
+Bohatství pohraničí
+[City states need at least one colony.]
+Městské státy potřebují alespoň jednu kolonii.
+[Stone walls]
+Kamenné hradby
+[Sand patches]
+Písčiny
+[Tidal flats]
+Přílivové pláně
+[Everglades]
+Mokřady
+[Pool spacing]
+Rozestup tůní
+[Pool size]
+Velikost tůní
+[Clearing size]
+Velikost mýtiny
+[Levee]
+Hráz
+[Sloughs]
+Slepá ramena
+[Everglades need at least one colony.]
+Mokřady potřebují alespoň jednu kolonii.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Příliš mnoho kolonií pro tuto mapu; použijte větší mapu nebo méně kolonií.
+[Coral]
+Korál
+[Fork angle]
+Úhel větvení
+[Lean]
+Náklon
+[Home size]
+Velikost domova
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korál se na tuto mapu nevejde; použijte větší mapu, užší průlivy nebo méně kolonií.
+[Branching]
+Větvení
+[Branch width]
+Šířka větví
+[Coral needs at least one colony.]
+Korál potřebuje alespoň jednu kolonii.
+[Coral needs a map at least 128 tiles across.]
+Korál potřebuje mapu širokou alespoň 128 polí.
+[Carousel]
+Kolotoč
+[Amphitheatre]
+Amfiteátr
+[Switchbacks]
+Serpentiny
+[Court size]
+Velikost nádvoří
+[Court wall]
+Zeď nádvoří
+[Plaza size]
+Velikost náměstí
+[Starting tower level]
+Úroveň počátečních věží
+[Towers per colony]
+Věže na kolonii
+[Rings]
+Prstence
+[Ramp width]
+Šířka ramp
+[Pit size]
+Velikost jámy
+[Terrace width]
+Šířka teras
+[Bay size]
+Velikost zátok
+[Border wall]
+Hraniční zeď
+[Plateau size]
+Velikost náhorní plošiny
+[Trail width]
+Šířka stezky
+[Wall between legs]
+Zeď mezi serpentinami
+[Farm building plots]
+Stavební parcely na farmách
+[Sand bridges over water]
+Písečné mosty přes vodu
+[Sand lanes through crops]
+Písečné cesty přes pole
+[Carousels need at least two colonies.]
+Kolotoč potřebuje alespoň dvě kolonie.
+[Switchbacks need at least two colonies.]
+Serpentiny potřebují alespoň dvě kolonie.
+[An amphitheatre needs at least two colonies.]
+Amfiteátr potřebuje alespoň dvě kolonie.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Kolotoč se na tuto mapu nevejde; použijte větší mapu, menší domovy nebo méně kolonií.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Serpentiny se na tuto mapu nevejdou; použijte větší mapu, menší náhorní plošinu, užší stezky nebo méně kolonií.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteátr se na tuto mapu nevejde; použijte větší mapu, méně prstenců, užší terasy nebo méně kolonií.
+[Spider web]
+Pavučina
+[Spokes per colony]
+Paprsků na kolonii
+[Ring spacing]
+Rozestup kruhů
+[Thread width]
+Šířka vláken
+[Sag]
+Průvěs
+[Torn strands]
+Přetržená vlákna
+[Hub size]
+Velikost středu
+[Dew drops]
+Kapky rosy
+[Spiral]
+Spirála
+[Spider webs need at least one colony.]
+Pavučina potřebuje alespoň jednu kolonii.
+[Sandbars]
+Písečné lavice
+[Tide pools]
+Přílivové tůně
+[Lagoons]
+Laguny
+[Central island]
+Střední ostrov
+[Tidal flats need at least one colony.]
+Přílivové pláně potřebují alespoň jednu kolonii.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Domovské ostrovy se na tuto mapu nevejdou; použijte větší mapu, méně kolonií nebo menší ostrovy.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Společné území a průliv ponechávají příliš málo místa pro domovské základny; použijte větší mapu, méně kolonií, menší společné území nebo užší průliv.
+[Wheat amount]
+Množství pšenice
+[Wood amount]
+Množství dřeva
+[Stone amount]
+Množství kamení
+[Algae amount]
+Množství řas
+[Fruit amount]
+Množství ovoce
+[Stone on hilltops]
+Kamení na vrcholcích kopců
+[Winding river]
+Klikatá řeka
+[Sandy beaches]
+Písečné pláže
+[Land bridges]
+Pevninské mosty
+[Colony meadows]
+Louky kolem kolonií
+[Extra starting deposit]
+Ložisko navíc na začátku
+[Moat bridges]
+Mosty přes příkop
+[Jagged coastlines]
+Členité pobřeží
+[Sand roads]
+Písečné cesty
+[Treasure in dead ends]
+Poklady ve slepých uličkách
+[Fjord bank deposits]
+Ložiska na březích fjordů
+[Sandy lake shore]
+Písečný břeh jezera
+[River delta]
+Říční delta
+[Meandering rivers]
+Meandrující řeky
+[Fruit in home valleys]
+Ovoce v domovských údolích
+[Moat]
+Vodní příkop
+[Stone in the orchard]
+Kamení v sadu
+[Colonies on both coasts]
+Kolonie na obou pobřežích
+[Winding belt]
+Zvlněný pás
+[Cell shape]
+Tvar buněk
+[Squares]
+Čtverce
+[Hexagons]
+Šestiúhelníky
+[Warp]
+Deformace
+[Fingerprint]
+Otisk prstu
+[Wavelength]
+Vlnová délka
+[Pattern]
+Vzor
+[Labyrinth]
+Labyrint
+[Channels]
+Brázdy
+[Barrier]
+Bariéra
+[Water]
+Voda
+[Grain]
+Zrnitost
+[Rain shadow]
+Srážkový stín
+[Ridges]
+Hřebeny
+[Slant]
+Zkosení
+[Ridge thickness]
+Tloušťka hřebenů
+[Pass spacing]
+Rozestup průsmyků
+[Lee width]
+Šířka závětří
+[Old growth]
+Prales
+[Canals]
+Kanály
+[Forest density]
+Hustota lesa
+[Hidden groves]
+Skryté háje
+[Starting trails]
+Počáteční stezky
+[Block size]
+Velikost bloku
+[Canal width]
+Šířka kanálů
+[Extra bridges]
+Další mosty
+[Polder]
+Poldr
+[Old town]
+Staré město
+[Anthill]
+Mraveniště
+[Row angle]
+Úhel řad
+[Diagonal]
+Šikmo
+[Dyke spacing]
+Rozestup hrází
+[Village size]
+Velikost vesnic
+[Hamlets]
+Osady
+[City size]
+Velikost města
+[Street width]
+Šířka ulic
+[Plazas]
+Náměstí
+[Chamber spacing]
+Rozestup komor
+[Chamber size]
+Velikost komor
+[Queen room]
+Královnina komora
+[Tunnel width]
+Šířka tunelů
+[Loops]
+Smyčky
+[Home pools]
+Tůně u domova
+[Farm plots]
+Zemědělské parcely
+[Tendril roads]
+Úponkové cesty
+[Random]
+Náhodně
+[Vertical]
+Svisle
+[Horizontal]
+Vodorovně
+[Inland lakes]
+Vnitrozemská jezera
+[Block shape]
+Tvar bloků
+[Random parameters]
+Náhodné parametry
+[Randomize parameters]
+Náhodně zvolit parametry
+[Start quality]
+Kvalita startu
+[Fairness]
+Spravedlnost
+[Fitness]
+Síla
+[Win chance]
+Šance na výhru
+[Coefficient]
+Koeficient
+[Average]
+Průměr
+[Fitted on games:]
+Přizpůsobeno na hrách:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Start každé kolonie se měří na hotové mapě a model přizpůsobený tisícům her mezi rovnocennými soupeři z těchto měření určí sílu. Síla říká, jak pravděpodobně kolonie vyhraje. Spravedlnost vyjadřuje, jak rovnoměrně jsou tyto šance rozděleny: 1, když má každá kolonie stejnou šanci na výhru, 0, když by mapu ovládla jediná kolonie.
+[Worst]
+Nejhorší
+[Best]
+Nejlepší
+[Map preview controls]
+Tažením posouvejte přes okraje. Kolečkem přibližujte. Pravým nebo dvojitým kliknutím obnovte pohled.
+[Map preview drag help]
+Tažením posouvejte; kolečkem přibližujte.
+[Map preview loading]
+Načítání...
+[Map preview failed]
+Náhled selhal
+[Map preview retry]
+Kliknutím zkuste znovu
+[Map preview please wait]
+Čekejte prosím
+[Stats births]
+Narození
+[Stats deaths]
+Úmrtí
+[Stats starvation]
+Vyhladovění
+[Stats wheat stock]
+Zásoby pšenice
+[Stats wheat loads]
+Náklady pšenice
+[Stats meals]
+Podaná jídla
+[Stats new buildings]
+Nové budovy
+[Stats upgrades]
+Vylepšení
+[Stats training]
+Návštěvy výcviku
+[Stats damage dealt]
+Způsobené poškození
+[Stats damage received]
+Utrpěné poškození
+[Stats HP restored]
+Obnovené zdraví
+[Stats since tick]
+Od kroku
+[Stats combat deaths]
+Boj
+[Stats clearing deaths]
+Zranění při čištění
+[Stats trapped deaths]
+Uvěznění
+[Stats unknown deaths]
+Jiné/neznámé
+[Stats conversions]
+Příchozí / odchozí
+[Stats unavailable]
+Nedostupné
+[Stats wheat per minute]
+Náklady/min
+[Stats meals per minute]
+Jídlo/min
+[Stats occupancy]
+Krmení / léčení
+[Stats page one]
+Statistiky 1/3 >
+[Stats page two]
+Statistiky 2/3 >
+[Stats next page]
+Stránka (P)
+[Map preview choose another]
+Vyberte mapu
+[Resources never grow or spread across the map.]
+Zdroje na mapě nikdy nerostou ani se nešíří.
+[Building sites complete immediately, skipping delivery.]
+Staveniště se dokončí okamžitě, bez fáze dovozu materiálu.
+[Units never grow hungry and never starve.]
+Jednotky nikdy nemají hlad a nikdy neumírají hladem.
+[Slows how often resources grow or spread across the map.]
+Zpomaluje, jak často zdroje na mapě rostou nebo se šíří.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Na začátku hry naplní sdílenou zásobu tržiště/burzy každého týmu.
+[Grow normally]
+Normální růst
+[No growth]
+Bez růstu
+[Normal construction]
+Normální stavba
+[Instant]
+Okamžitá
+[Units get hungry]
+Jednotky mají hlad
+[No hunger]
+Bez hladu
+[Off (today's growth)]
+Vypnuto (dnešní růst)
+[Scarce (2x slower)]
+Vzácné (2x pomaleji)
+[Very scarce (4x slower)]
+Velmi vzácné (4x pomaleji)
+[Extremely scarce (8x slower)]
+Extrémně vzácné (8x pomaleji)
+[None (today's default)]
+Žádné (dnešní výchozí)
+[Small (+50 each)]
+Malé (+50 od každého)
+[Medium (+150 each)]
+Střední (+150 od každého)
+[Large (+300 each)]
+Velké (+300 od každého)
+[No resource growth]
+Bez růstu zdrojů
+[Economy]
+Ekonomika
+[Scarce resources]
+Vzácné zdroje
+[Instant construction]
+Okamžitá stavba
+[Stockpile start]
+Počáteční zásoba
+[Units still visit schools but never gain a level.]
+Jednotky stále navštěvují školu, ale nikdy nezískávají úroveň.
+[Units fight to the death instead of retreating to heal.]
+Jednotky bojují až do smrti, místo aby se stáhly a léčily se.
+[Units are never permanently lost -- HP just stops at 1.]
+Jednotky nikdy nejsou trvale ztraceny -- životy se prostě zastaví na 1.
+[Disables all combat between every team.]
+Vypíná veškerý boj mezi všemi týmy.
+[Higher tiers deal more damage but have less HP and armor.]
+Vyšší úrovně způsobují více poškození, ale mají méně životů a brnění.
+[Higher tiers give every building much more HP.]
+Vyšší úrovně dávají každé budově mnohem více životů.
+[Starting units spawn already leveled up. Changes the generated map.]
+Počáteční jednotky se objeví už s vyšší úrovní. Mění vygenerovanou mapu.
+[Trains normally]
+Trénuje normálně
+[No upgrades]
+Žádná vylepšení
+[Retreats when damaged]
+Stáhne se při zranění
+[Fearless]
+Nebojácná
+[Can die permanently]
+Může trvale zemřít
+[No permadeath]
+Žádná trvalá smrt
+[Normal combat]
+Normální boj
+[Peaceful mode]
+Mírový režim
+[Off (today's balance)]
+Vypnuto (dnešní vyváženost)
+[Glass cannon x2]
+Skleněné dělo x2
+[Glass cannon x3]
+Skleněné dělo x3
+[Off (today's HP)]
+Vypnuto (dnešní životy)
+[Fortress x5]
+Pevnost x5
+[Fortress x10]
+Pevnost x10
+[Veteran]
+Veterán
+[Elite]
+Elita
+[Legendary]
+Legendární
+[Combat]
+Boj
+[Glass cannon]
+Skleněné dělo
+[Fortress buildings]
+Opevněné budovy
+[Veteran/Fast start]
+Veterán/Rychlý start
+[Match ends at the timer; highest prestige at that instant wins.]
+Zápas končí časovačem; vyhrává ten, kdo má v tu chvíli nejvyšší prestiž.
+[Off (no timer)]
+Vypnuto (bez časovače)
+[90 minutes]
+90 minut
+[30 minutes]
+30 minut
+[45 minutes]
+45 minut
+[60 minutes]
+60 minut
+[Sudden-death timer]
+Časovač náhlé smrti
+[Stats page three]
+Statistiky 3/3 >
+[Stats blocked units]
+Jednotky S/C
+[Stats blocked buildings]
+Budovy S/C
+[Stats blocked buildings swim]
+Plavání S/C
+[Stats current blocked units]
+Jednotky C
+[Stats current blocked buildings]
+Budovy C
+[Stats growth global]
+Zdroje +
+[Stats growth new tiles]
+Zdroje +#
+[Stats growth reductions]
+Zdroje -
+[Stats growth per minute]
+Pšenice +/min
+[Stats growth near 8]
+Zdroje + <=8
+[Stats growth near 16]
+Zdroje + <=16
+[Stats growth near 32]
+Zdroje + <=32
+[Stats low HP 25]
+Životy <=25%
+[Stats low HP 50]
+Životy <=50%
+[Stats low HP 75]
+Životy <=75%
+[Stats low food 25]
+Potrava <=25%
+[Stats low food 50]
+Potrava <=50%
+[Stats low food 75]
+Potrava <=75%
+[Stats structural units]
+Jednotky S
+[Stats structural buildings]
+Budovy S
+[Stats low HP ranges]
+Životy: <=25/50/75%
+[Stats low food ranges]
+Potrava: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Znak emoji
+[Smiley]
+Usměvavá tvář
+[Sad face]
+Smutná tvář
+[Winking face]
+Mrknutí
+[Surprised face]
+Překvapená tvář
+[Heart eyes]
+Srdíčkové oči
+[Sunglasses]
+Sluneční brýle
+[Heart]
+Srdce
+[Star]
+Hvězda
+[Neutral face]
+Neutrální tvář
+[Sleeping face]
+Spící tvář
+[Grinning face]
+Rozesmátá tvář
+[Kissing face]
+Líbající tvář
+[Angry face]
+Naštvaná tvář
+[Tongue out]
+Vyplazený jazyk
+[Skull]
+Lebka
+[Flower]
+Květina
+[Four-leaf clover]
+Čtyřlístek
+[Teardrop]
+Kapka
+[Cloud]
+Mrak
+[Gem]
+Drahokam
+[Apple]
+Jablko
+[Speech bubble]
+Bublina
+[Shield]
+Štít
+[Emoji style]
+Styl emoji
+[Outline]
+Obrys
+[Filled]
+Výplň
+[Emoji terrain]
+Terén emoji
+[Regular]
+Běžný
+[Inverse]
+Obrácený
+[Crossings]
+Přechody
+[Forts]
+Pevnosti
+[Gate width]
+Šířka brány
+[Braided Delta]
+Rozvětvená delta
+[Braid count]
+Počet ramen
+[Rejoining frequency]
+Četnost soutoků
+[Crossing spacing]
+Rozestup přechodů
+[Breachable highlands]
+Průlomová vysočina
+[Ridge depth]
+Tloušťka hřebenů
+[Extra open passes]
+Další otevřené průsmyky
+[Wooded saddles]
+Zalesněná sedla
+[Hedgerow Country]
+Krajina živých plotů
+[Field size]
+Velikost polí
+[Hedge thickness]
+Tloušťka živých plotů
+[Existing gateways]
+Existující průchody
+[Wooded boundary share]
+Podíl zalesněných hranic
+[The Glacis]
+Předpolí
+[Allotments]
+Zahrádky
+[Caravanserai]
+Karavanseráj
+[Mixed]
+Smíšené
+[Fort size]
+Velikost pevnosti
+[Bastions]
+Bašty
+[Four-pointed]
+Čtyřcípá
+[Five-pointed]
+Pěticípá
+[Six-pointed]
+Šesticípá
+[Glacis width]
+Šířka předpolí
+[Gates]
+Brány
+[Site size]
+Velikost parcel
+[Plot width]
+Šířka záhonů
+[Plot mix]
+Směs záhonů
+[Tended]
+Udržované
+[Overgrown]
+Zarostlé
+[Commons]
+Obecní pastviny
+[Few]
+Málo
+[Some]
+Několik
+[Home oasis size]
+Velikost domovské oázy
+[Caravanserais per colony]
+Karavanseraje na kolonii
+[Desert]
+Poušť
+[Open erg]
+Otevřený erg
+[Dunes and mesas]
+Duny a stolové hory
+[Canyon country]
+Kaňonová krajina
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Pevnost nedosáhne na svůj brod; použijte větší mapu nebo méně kolonií.
+[A wall would stand on a beach; try another seed.]
+Zeď by stála na pláži; zkuste jiné semínko.
+[The fort is too small for its gardens; raise Fort size.]
+Pevnost je na své zahrady příliš malá; zvětšete velikost pevnosti.
+[The home oasis is too small; raise Home oasis size.]
+Domovská oáza je příliš malá; zvětšete velikost domovské oázy.
+[Braided river]
+Divočící řeka
+[Braid width]
+Šířka divočení
+[Bar size]
+Velikost lavic
+[Extra riffles]
+Brody navíc
+[Moraine hummocks]
+Morénové pahorky
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Divočící řeka ponechává domovům příliš málo terasy; použijte větší mapu nebo užší řeku.
+[The map is too narrow across for a braid; use a bigger map.]
+Mapa je napříč příliš úzká pro divočící řeku; použijte větší mapu.
+[Drumlin field]
+Drumlinové pole
+[Drumlin spacing]
+Rozestup drumlinů
+[Drumlin length]
+Délka drumlinů
+[Water gap]
+Vodní mezera
+[Esker loops]
+Smyčky eskerů
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskery nedokázaly propojit všechny drumliny; použijte menší vodní mezeru nebo větší mapu.
+[Continents]
+Kontinenty
+[Continent]
+Kontinent
+[North America]
+Severní Amerika
+[South America]
+Jižní Amerika
+[Africa]
+Afrika
+[Europe]
+Evropa
+[Asia]
+Asie
+[Oceania]
+Oceánie
+[Orientation]
+Orientace
+[Turn to fit]
+Otočit podle potřeby
+[Upright]
+Bez otáčení
+[Mountain ranges]
+Pohoří
+[Great rivers]
+Veletoky
+[Islets]
+Ostrůvky
+[Oases]
+Oázy
+[The world atlas has no such continent.]
+Světový atlas takový kontinent nemá.
+[The map is too small to hold a continent.]
+Mapa je příliš malá, aby se na ni vešel kontinent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Tento kontinent nemá při této velikosti mapy místo pro tolik kolonií; použijte větší mapu nebo méně kolonií.
+[Savannah]
+Savana
+[Watering holes]
+Napajedla
+[Dry patches]
+Suché oblasti
+[Sparse]
+Málo
+[Normal]
+Normální
+[Many]
+Mnoho
+[Rice terraces]
+Rýžové terasy
+[Unoccupied hills]
+Neobsazené kopce
+[Hill radius]
+Poloměr kopce
+[Contour band width]
+Šířka vrstevnicových pásů
+[Stairs per hill]
+Schodiště na kopec
+[Valley river]
+Řeka v údolí
+[Hills]
+Kopce
+[Hillsides]
+Svahy
+[Terraces per slope]
+Terasy na svah
+[Waviness]
+Zvlnění
+[Stair spacing]
+Rozestup schodů
+[Locust]
+Kobylky
+[Plantations]
+Plantáže
+[Plot size]
+Velikost stavební parcely
+[Farm width]
+Šířka polí
+[Islands per colony]
+Ostrovy na kolonii
+[Outpost inns]
+Předsunuté hospody
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Ostrovy jsou pro své parcely příliš malé; použijte větší mapu, menší parcelu nebo méně kolonií.
+[Sierpiński Gardens]
+Sierpińského zahrady
+[Hilbert River]
+Hilbertova řeka
+[Maximum nesting]
+Maximální vnoření
+[Minimum terminal district side]
+Minimální strana koncové oblasti
+[Major crossing pairs]
+Páry hlavních přechodů
+[Maximum fold depth]
+Maximální hloubka záhybů
+[Minimum land spacing]
+Minimální rozestup pevniny
+[Optional local crossings per parent]
+Volitelné místní přechody na nadřazenou oblast
+[Optional major shortcuts]
+Volitelné hlavní zkratky
+[Lava shield]
+Lávový štít
+[Lava tongues]
+Lávové jazyky
+[Long tongues]
+Dlouhé jazyky
+[Crater rim width]
+Šířka okraje kráteru
+[Honeycomb isle]
+Plástvový ostrov
+[Blocks per colony]
+Bloků na kolonii
+[Rubble]
+Suť
+[Outline gaps]
+Mezery v obrysech
+[Craters per colony]
+Kráterů na kolonii
+[Wheat fields]
+Pšeničná pole
+[Bridges]
+Mosty
+[Karst towers]
+Krasové věže
+[Tower spacing]
+Rozestup krasových věží
+[Tower density]
+Hustota krasových věží
+[Paddy depth]
+Rozsah rýžových polí
+[Home design]
+Tvar domova
+[Horseshoe]
+Podkova
+[Twin gates]
+Dvojice bran
+[Three gates]
+Tři brány
+[Four gates]
+Čtyři brány
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Řeky nenašly cestu mezi domovy; použijte větší mapu nebo méně kolonií.
+[River meander]
+Meandrování řeky
+[Flooded terraces]
+Zaplavené terasy
+[Sinkholes]
+Závrty
+[Bajada]
+Náplavové kužely
+[Range spacing]
+Rozestup pohoří
+[Ridge width]
+Šířka hřebenů
+[Passes]
+Průsmyky
+[Fans per range]
+Kuželů na pohoří
+[Stream reach]
+Délka potoků
+[Playa]
+Slaná jezera
+[Broad fan]
+Široký kužel
+[Long fan]
+Dlouhý kužel
+[Twin springs]
+Dvojité prameny
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Svahy s náplavovými kužely jsou pro domovy příliš úzké; použijte větší mapu, větší rozestup pohoří, užší hřebeny nebo menší slaná jezera.
+[Central Quarry]
+Centrální lom
+[Quarry size]
+Velikost lomu
+[Sand bars]
+Písečné mělčiny
+[Woodland]
+Lesy
+[Central Quarry needs at least two colonies.]
+Centrální lom potřebuje alespoň dvě kolonie.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Jezero se na tuto mapu nevejde; použijte menší jezero nebo větší mapu.
+[A sand bar did not reach the island.]
+Písečná mělčina nedosáhla na ostrov.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Na této mapě není místo pro tolik kolonií; použijte větší mapu nebo méně kolonií.
+[The island has no room for its quarry; use a bigger island.]
+Na ostrově není místo pro lom; použijte větší ostrov.
+[Hidden Oasis]
+Skrytá oáza
+[Pond algae]
+Řasy v tůni
+[Starting towers]
+Počáteční věže
+[Starting school]
+Počáteční škola
+[Mesas]
+Stolové hory
+[Springs]
+Prameny
+[Hidden Oasis needs at least two colonies.]
+Skrytá oáza potřebuje alespoň dvě kolonie.
+[Hidden Oasis holds at most eight colonies.]
+Skrytá oáza pojme nejvýše osm kolonií.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Masiv se na tuto mapu nevejde; použijte větší mapu nebo méně kolonií.
+[The pond has no room for that much algae; use a bigger pond.]
+V tůni není místo pro tolik řas; použijte větší tůň.
+[Even Ground]
+Rovný terén
+[Balance]
+Vyvážení
+[Tight passes]
+Úzké průchody
+[Solver effort]
+Úsilí řešiče
+[Brief]
+Krátké
+[Patient]
+Trpělivé
+[This map is too small to solve on; use a bigger map.]
+Tato mapa je příliš malá na řešení; použijte větší mapu.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Příliš mnoho kolonií na vyvážení na mapě této velikosti; použijte větší mapu nebo méně kolonií.
+[The colonies could not be spread out on this map.]
+Kolonie se na této mapě nepodařilo rozmístit.
+[Marchland]
+Pohraničí
+[Prizes on the rope]
+Trofeje na laně
+[March width]
+Šířka pohraničí
+[Levelling]
+Vyrovnávání
+[A march needs a country on each side; use at least two colonies.]
+Pohraničí potřebuje zemi na každé straně; použijte alespoň dvě kolonie.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Příliš mnoho kolonií na to, aby tato mapa dala každé domovinu; použijte větší mapu nebo méně kolonií.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Na této mapě není místo pro rozmístění kolonií; použijte větší mapu nebo méně kolonií.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Domovina kolonie nemá východ do pohraničí; použijte větší mapu nebo užší pohraničí.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Domovina kolonie nemá místo pro úl; použijte větší mapu, méně kolonií nebo užší pohraničí.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Pohraničí má příliš málo sporné půdy pro tolik trofejí; použijte méně trofejí, širší pohraničí nebo větší mapu.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Pohraničí nemá místo pro trofej; použijte větší mapu, méně kolonií nebo širší pohraničí.
+[Orchard Commons]
+Společné sady
+[Orchard spacing]
+Rozestupy sadů
+[Compact]
+Blízko sebe
+[Balanced]
+Vyvážené
+[Spread]
+Daleko od sebe
+[The Gauntlet]
+Aréna zkoušek
+[Partition thickness]
+Tloušťka dělicích zdí
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Aréna zkoušek potřebuje větší mapu nebo méně kolonií, aby se ke každé kolonii vešly dva bráněné vstupy.
+[The Comb]
+Hřeben
+[Peninsulas per shore]
+Poloostrovy na každém břehu
+[Encircled Kingdom]
+Obklíčené království
+[Fortress plan]
+Půdorys pevnosti
+[Automatic]
+Automatický
+[Elongated enclosure]
+Protáhlé opevnění
+[Bastioned enclosure]
+Bastionové opevnění
+[Paired courtyards]
+Dvojice nádvoří
+[Heartland farmland]
+Pole v jádru království
+[The Faulted City]
+Rozlámané město
+[Fault displacement]
+Posun zlomů
+[Fault width]
+Šířka zlomů
+[Ruin density]
+Hustota ruin
+[Surviving junctions]
+Zachované křižovatky
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Rozlámané město vyžaduje 256 nebo 512 políček na každé straně a jednu až dvanáct kolonií.
+[The city has too few usable junctions.]
+Město má příliš málo použitelných křižovatek.
+[A city neighbourhood lacks reachable crops or building room.]
+Jedné městské čtvrti chybí dostupné plodiny nebo prostor pro stavby.
+[The city neighbourhoods are too unequal; try another seed.]
+Městské čtvrti jsou příliš nevyvážené; zkuste jiné semínko.
+[The fractured civic plaza did not survive.]
+Rozlámané městské náměstí se nezachovalo.
+[Who Ate the Map?]
+Kdo snědl mapu?
+[Appetite]
+Chuť k jídlu
+[A Little Nibble]
+Malé sousto
+[Hungry]
+Hladový
+[Portage Lakes]
+Jezera a lesní průchody
+[Lake elongation]
+Protáhlost jezer
+[Portage depth]
+Tloušťka lesního průchodu
+[Extra trails]
+Další stezky
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Strany této mapy musí měřit 64 až 512 polí.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+S tímto seedem nelze na břehy umístit kolonie.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Vedle každé kolonie se nevejdou obnovitelná pobřežní pole.
+[Portage Lakes cannot connect its shoreline trails.]
+Pobřežní stezky nelze propojit.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+S tímto seedem nelze vytvořit užitečnou zkratku suchým lesem.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+S tímto seedem nelze vytvořit užitečnou zkratku plaváním.
+[Portage Lakes needs separate swimming lakes on this seed.]
+S tímto seedem musí jezera pro plavání zůstat oddělená.
+[Drowned Forest]
+Zatopený les
+[Sandbar connections]
+Písečná spojení
+[Wooded neck thickness]
+Tloušťka lesních bariér
+[Neutral clearing size]
+Velikost neutrálních mýtin
+[Bastion Keys]
+Opevněné ostrůvky
+[Plantation size]
+Velikost plantáží
+[Outlying islands]
+Okolní ostrovy
+[The Hungry Marches]
+Hladové pohraničí
+[Opening ration]
+Počáteční příděl
+[Central concentration]
+Soustředění ve středu
+[The Last Treeline]
+Poslední pás lesa
+[Woodland depth]
+Šířka hájů
+[Fertility]
+Úrodnost
+[Deposits]
+Zásoby
+[Room]
+Prostor
+[Isolation]
+Odloučení
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Start každé kolonie se měří na hotové mapě: cesta k obilí a ke dřevu, jak dobře její půda dorůstá, zásoby a stavební místa v dosahu a vzdálenost od soupeřů. Každý činitel dostane skóre od 0 do 1 vůči pevné laťce, celek je váží, spravedlnost je celek nejhorší kolonie dělený celkem nejlepší a skóre je nejhorší celek násobený spravedlností.
+[ERROR_CANT_SAVE_MAP]
+Mapu se nepodařilo uložit. Zkontrolujte cíl a dostupné místo. Vaše úpravy jsou stále otevřené.
+[Loading headers]
+Načítání hlaviček...
+[Loading teams]
+Načítání týmů...
+[Loading terrain]
+Načítání terénu...
+[Building gradients]
+Vytvářejí se gradienty...
+[Loading players]
+Načítání hráčů...
+[Loading scripts]
+Načítání skriptů...
+[Generating map]
+Generuje se mapa...
+[ERROR_CANT_GENERATE_MAP]
+Mapu se nepodařilo vytvořit. Zkuste jiná nastavení generování.
+[Loading units]
+Načítání jednotek...
+[Loading buildings]
+Načítání budov...
+[Resolving team links]
+Řeší se propojení týmů...
+[saving to storage]
+Ukládá se...
+[save failed retry]
+Uložení selhalo. Zkuste to znovu.
+[export save]
+Exportovat uloženou hru
+[storage restore failed]
+Úložiště prohlížeče se nepodařilo obnovit. Stávající uložená data nebyla změněna. Můžete pokračovat v této relaci, ale místní změny nebude možné uchovat. Důležité uložené hry exportujte z dialogu chyby uložení. Obnovte stránku a zkuste obnovení úložiště znovu.
+[continue]
+Pokračovat
+[export file]
+Exportovat soubor
+[export failed]
+Export souboru selhal
+[import file]
+Importovat
+[select import file]
+Vyberte soubor k importu
+[validating import]
+Ověřuje se soubor...
+[import succeeded]
+Soubor byl importován
+[import cancelled]
+Import zrušen
+[import failed]
+Import selhal: neplatný nebo nepodporovaný soubor
+[import persistence failed]
+Neuloženo: zvolte Importovat pro nový pokus, nebo Exportovat soubor
+[import progress]
+Průběh importu
+[export progress]
+Průběh exportu
+[retry save]
+Zkusit uložení znovu
+[campaign save failed]
+Postup tažení nebyl uložen. Zkuste to znovu nebo exportujte zálohu.
+[leave without saving]
+Ukončit bez uložení
+[campaign import failed]
+Neplatný soubor postupu nebo jiná verze tažení
+[network release mismatch]
+Protokoly klienta a serveru se liší. Nainstalujte stejnou verzi Glob2 jako server.
+[settings continue]
+Pokračovat
+[settings save failed]
+Uložení nastavení nepotvrzeno. Zkuste to znovu, nebo pokračujte.
+[shutdown save failed]
+Závěrečné uložení nepotvrzeno. Zkuste to znovu, nebo ukončete bez uložení.
+[quit without saving]
+Ukončit bez uložení
+[game closed]
+Hra byla ukončena. Toto okno můžete zavřít nebo znovu načíst stránku a hrát znovu.
+[campaign editor save failed]
+Uložení nepotvrzeno. OK zkusí to znovu; Zrušit se vrátí do nabídky editoru.
+[Actions]
+Akce
+[Minimap]
+Minimapa
+[Fast forward]
+Rychlý posun
+[Hide keyboard]
+Skrýt klávesnici
+[Dialog text size]
+Velikost textu dialogů
+[Player slot]
+Místo hráče
+[Team color]
+Barva týmu
+[Alliance group]
+Skupina aliance
+[menu]
+Nabídka
+[Editor tools]
+Nástroje
+[Pan map]
+Posun mapy
+[Edit map]
+Upravit mapu
+[Editor map]
+Mapa
+[Flags]
+Vlajky
+[Pause]
+Pozastavit
+[Speed]
+Rychlost
+[Objectives]
+Cíle
+[Menu]
+Nabídka
+[Goals]
+Cíle
+[Teams]
+Týmy
+[Use this landscape]
+Použít tuto krajinu
+[Reset]
+Obnovit
+[Generating...]
+Generování...
+[Players]
+Hráči
+[Rules]
+Pravidla
+[settings Interface layout]
+Rozložení rozhraní
+[settings Automatic]
+Automatický
+[settings Compact]
+Blízko sebe
+[settings Spacious]
+Prostorné
+[More]
+Více
+[No items]
+Žádné položky
+[Opponents]
+Soupeři
+[Review]
+Přehled
+[Review & Play]
+Zkontrolovat a hrát
+[Edit opponents]
+Upravit soupeře
+[Map settings]
+Nastavení mapy
+[Next]
+Další
+[Done]
+Hotovo
+[Contribution]
+Příspěvek
+[Choose who controls this colony]
+Vyberte, kdo ovládá tuto kolonii
+[Settings]
+Nastavení
+[settings Back]
+Zpět
+[settings Save the game automatically about every minute.]
+Automaticky ukládat hru přibližně každou minutu.
+[AI opponents]
+Počítačoví soupeři
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Prostorné rozložení používá boční panel, pokud je dost místa. Kompaktní používá panel nástrojů a vysouvací panely.
+[Assigned %0 · Target %1]
+Přiděleno %0 · Cíl %1
+[Range: %0]
+Dosah: %0
+[Player %0]
+Hráč %0
+[Brush %0]
+Štětec %0
+[Team %0]
+Tým %0
+[Your colony]
+Tvoje kolonie
+[%0 / %1 HP · %2]
+%0 / %1 ŽB · %2
+[Units: %0]
+Jednotky: %0
+[Buildings: %0]
+Budovy: %0
+[Need food: %0]
+Potřebují jídlo: %0
+[Need healing: %0]
+Potřebují léčení: %0
+[Attack: %0]
+Útok: %0
+[Defense: %0]
+Obrana: %0
+[Food: %0 / %1]
+Jídlo: %0 / %1
+[View team %0]
+Zobrazit tým %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Štětec %0x%1
+[Level %0]
+Úroveň %0
+[Manage teams (%0)]
+Spravovat týmy (%0)
+[Team %0 / Level %1]
+Tým %0 / Úroveň %1
+[Files · %0]
+Soubory · %0
+[Hint %0]
+Nápověda %0
+[Objective %0]
+Cíl %0
+[Entry %0 of 8 · empty entries are omitted]
+Položka %0 z 8 · prázdné položky se vynechají
+[Teams %0/%1]
+Týmy %0/%1
+[Elapsed time · %0]
+Uplynulý čas · %0
+[Read-only building]
+Budova jen pro čtení
+[Alliance and shared vision are fixed for this match.]
+Spojenectví a sdílený výhled jsou v této hře pevně dané.
+[Share vision]
+Sdílet výhled
+[Share food vision]
+Sdílet výhled na jídlo
+[Share market vision]
+Sdílet výhled na trhy
+[Chat]
+Chat
+[No other players have editable diplomatic settings in this match.]
+Žádný další hráč nemá v této hře upravitelná nastavení diplomacie.
+[No briefing for this match.]
+Pro tuto hru není zadání.
+[Chat · recipients selected in Teams]
+Chat · příjemci vybraní v Týmech
+[Filename]
+Název souboru
+[Reduced motion]
+Omezený pohyb
+[Send]
+Odeslat
+[Close]
+Zavřít
+[Forbidden]
+Zakázáno
+[Guard]
+Hlídat
+[Clear]
+Vyčistit
+[Paint]
+Malovat
+[Erase]
+Mazat
+[Release on valid terrain to place]
+Uvolněte nad vhodným terénem pro umístění
+[Paint on the map; two fingers move]
+Malujte na mapě; dvěma prsty posouvejte
+[Tutorial ▸]
+Výuka ▸
+[Back to tools]
+Zpět k nástrojům
+[Starvation overlay]
+Vrstva hladu
+[Damage overlay]
+Vrstva poškození
+[Defense overlay]
+Vrstva obrany
+[Fertility overlay]
+Vrstva úrodnosti
+[Health and food bars]
+Ukazatele zdraví a jídla
+[Message history]
+Historie zpráv
+[Mark map for allies]
+Označit mapu pro spojence
+[Show zones]
+Zobrazit oblasti
+[Pan]
+Posouvat
+[Select]
+Vybrat
+[Show palette]
+Zobrazit paletu
+[Release to place]
+Uvolněte pro umístění
+[Blocked placement]
+Umístění blokováno
+[File name]
+Název souboru
+[Load map]
+Načíst mapu
+[Save map]
+Uložit mapu
+[No files in this folder]
+V této složce nejsou soubory
+[No files saved yet]
+Zatím nejsou uložené soubory
+[Export]
+Exportovat
+[Tap to write the mission briefing]
+Klepnutím napište zadání mise
+[Tap to write the map script]
+Klepnutím napište skript mapy
+[Script]
+Skript
+[Previous]
+Předchozí
+[Compile]
+Přeložit
+[Tap to write this hint]
+Klepnutím napište tuto nápovědu
+[Tap to write this objective]
+Klepnutím napište tento cíl
+[Mission briefing · tap to edit, swipe to scroll]
+Zadání mise · klepnutím upravíte, tažením posunete
+[Not enough recorded history yet.]
+Zatím není dost zaznamenané historie.
+[Select a team to show its history.]
+Vyberte tým pro zobrazení jeho historie.
+[Back to chart]
+Zpět ke grafu
+[Expand chart]
+Zvětšit graf
+[Slot]
+Pozice
+[Color]
+Barva
+[Player / AI]
+Hráč / AI
+[Group]
+Skupina
+[Forbid]
+Zakázat
+[↓ Low]
+↓ Nízká
+[= Normal]
+= Normální
+[↑ High]
+↑ Vysoká
+[Details]
+Podrobnosti
+[Campaign name]
+Název kampaně
+[Unlocking]
+Odemykání
+[Parameters]
+Parametry
+[Blank map]
+Prázdná mapa
+[Generated]
+Vygenerovaná
+[Preview]
+Náhled
+[Selected landscape]
+Vybraná krajina
+[Representative preview]
+Ukázkový náhled
+[Starting terrain]
+Výchozí terén
+[Hide parameters]
+Skrýt parametry
+[Size and parameters]
+Velikost a parametry
+[Choose a landscape]
+Vyberte krajinu
+[%0 / Browse]
+%0 / Procházet
+[%0 colonies · %1]
+%0 kolonie · %1
+[%0 · Team %1]
+%0 · Tým %1
+[Colonies: %0]
+Kolonie: %0
+[%0 colonies · %1 AI]
+%0 kolonie · %1 Počítač
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Jednotky
+[settings Level %0]
+Úroveň %0
+[settings Match the desktop %0]
+Podle plochy (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuální režim zobrazení: %0 × %1 · %2 · %3
+[Fairness: %0]
+Spravedlnost: %0
+[Colony %0]
+Kolonie %0
+[Win chance: %0 · Fitness: %1]
+Šance na výhru: %0 · Síla: %1
+[%0 · Contribution: %1]
+%0 · Příspěvek: %1
+[Min required level %0]
+Min. úroveň jednotek: %0
+[Confirm %0]
+Budiž: %0
+[Dialog text size %0]
+Velikost textu dialogů: %0%
+[%0 %1]
+%0 %1

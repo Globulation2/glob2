@@ -10,13 +10,16 @@
 #include <SDL_endian.h>
 #include <iostream>
 #include <valarray>
+#include <vector>
+#include <filesystem>
+#include <stdexcept>
 #include <zlib.h>
 #include "BinaryStream.h"
 #include "TextStream.h"
 
 // here we handle compile time options
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+#  include <glob2/BuildConfig.h>
 #else
 #	ifdef WIN32
 #		define PACKAGE_DATA_DIR ".."
@@ -69,11 +72,18 @@ namespace GAGCore
 
 	FileManager::FileManager(const std::string gameName)
 	{
+        const char* profile = SDL_getenv("GLOB2_USER_DATA_DIR");
+        if (profile && *profile) {
+            std::filesystem::path path(profile);
+            if (!path.is_absolute()) throw std::runtime_error("GLOB2_USER_DATA_DIR must be absolute");
+            std::filesystem::create_directories(path);
+            addDir(path.string());
+        }
 		#ifndef WIN32
 		const char *experimentDir = getenv("GLOB2_USER_DIR");
 		const char *home = getenv("HOME");
 		const std::string homeDir = home ? home : "";
-		if ((experimentDir && *experimentDir) || !homeDir.empty())
+		if ((!profile || !*profile) && ((experimentDir && *experimentDir) || !homeDir.empty()))
 		{
 			std::string gameLocal(homeDir);
 			if (experimentDir && *experimentDir) gameLocal = experimentDir;
@@ -81,52 +91,41 @@ namespace GAGCore
 			mkdir(gameLocal.c_str(), S_IRWXU);
 			addDir(gameLocal.c_str());
 		}
-		else
+		else if ((!profile || !*profile) && homeDir.empty())
 			std::cerr << "FileManager::FileManager : warning, can't get home directory by using getenv(\"HOME\")" << std::endl;
 		#endif
 #ifdef __APPLE__
 		addDir("./Contents/Resources");
 #endif
+		const char* assets = SDL_getenv("GLOB2_ASSET_DIR");
+		if (assets && *assets) addDir(assets);
 		addDir(".");
 
 		#ifndef WIN32
 		#ifndef __APPLE__
-		/* Find own path
-		 * TODO: Make nicer */
-
-		char link[100];
+		// Immutable bundles can have long paths. readlink does not terminate its
+		// output and signals truncation by filling the entire supplied buffer.
 		#ifdef __FreeBSD__
-		char proc[]="/proc/curproc/file";
+		const char* proc="/proc/curproc/file";
 		#else
-		char proc[]="/proc/self/exe";
+		const char* proc="/proc/self/exe";
 		#endif
-		char * pch;
-
-		int linksize = readlink(proc, link, sizeof(link));
-		if (linksize < 0)
-		{
+		std::vector<char> buffer(256);
+		ssize_t length;
+		while ((length=readlink(proc,buffer.data(),buffer.size())) == static_cast<ssize_t>(buffer.size()))
+			buffer.resize(buffer.size()*2);
+		if (length < 0)
 			perror("readlink() error");
-		}
 		else
 		{
-			assert ((int)sizeof(link) > linksize);
-			link[linksize] = '\0';
-
-			pch = strrchr(link,'/');
-			if ( (pch-link) > 0)
-				link[pch-link] = '\0';
-			else
-				link[1] = '\0';
-
-			pch = strrchr(link,'/');
-			if ( (pch-link) > 0)
-				link[pch-link] = '\0';
-
-			if ((linksize + 13) <= (int)sizeof(link))
+			std::string prefix(buffer.data(),static_cast<size_t>(length));
+			for (int parent=0;parent<2;++parent)
 			{
-				strcat(link, "/share/glob2");
-				addDir(link);
+				const size_t slash=prefix.rfind('/');
+				if (slash==std::string::npos) break;
+				prefix.resize(slash==0 ? 1 : slash);
 			}
+			addDir(prefix+"/share/glob2");
 		}
 		#endif
 		#endif

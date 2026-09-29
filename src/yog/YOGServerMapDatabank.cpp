@@ -8,6 +8,7 @@
 #include "YOGServer.h"
 #include "YOGServerMapDatabank.h"
 #include "Version.h"
+#include <filesystem>
 
 using namespace GAGCore;
 
@@ -173,21 +174,41 @@ std::string YOGServerMapDatabank::getThumbtackFile(const std::string& mapName)
 MapThumbnail YOGServerMapDatabank::loadThumbnail(const std::string& mapName, const std::string& fileName)
 {
 	MapThumbnail thumbnail;
-	InputStream* istream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(getThumbtackFile(mapName)));
-	if(!istream->isEndOfStream())
+	auto files = Toolkit::getFileManager();
+	std::string revision;
+	std::error_code error;
+	for (unsigned i = 0; i < files->getDirCount(); ++i)
 	{
-		Uint32 versionMinor = istream->readUint32("versionMinor");
-		thumbnail.decodeData(istream, versionMinor);
-		delete istream;
+		auto path = std::filesystem::path(files->getDir(i)) / fileName;
+		auto time = std::filesystem::last_write_time(path, error);
+		if (error) continue;
+		auto size = std::filesystem::file_size(path, error);
+		if (!error) { revision = std::to_string(static_cast<long long>(time.time_since_epoch().count())) + ":" + std::to_string(size); break; }
 	}
-	else
+	const auto cacheFile = getThumbtackFile(mapName) + ".v2";
+	if (!revision.empty())
 	{
-		delete istream;
+		try
+		{
+			BinaryInputStream input(files->openInputStreamBackend(cacheFile));
+			BinaryInputStream::CheckedReads checked(&input);
+			if (input.isValid() && !input.isEndOfStream() && input.readText("revision") == revision)
+				thumbnail.decodeData(&input, VERSION_MINOR);
+		}
+		catch (const std::exception&) { }
+	}
+	if (!thumbnail.isLoaded())
+	{
 		thumbnail.loadFromMap(fileName);
-		OutputStream* ostream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(getThumbtackFile(mapName)));
-		ostream->writeUint32(VERSION_MINOR, "versionMinor");
-		thumbnail.encodeData(ostream);
-		delete ostream;
+		if (thumbnail.isLoaded() && !revision.empty())
+		{
+			try
+			{
+				BinaryOutputStream output(files->openOutputStreamBackend(cacheFile));
+				if (output.isValid()) { output.writeText(revision, "revision"); thumbnail.encodeData(&output); }
+			}
+			catch (const std::exception&) { }
+		}
 	}
 	return thumbnail;
 }
@@ -236,4 +257,3 @@ void YOGServerMapDatabank::save()
 	stream->writeLeaveSection();
 	delete stream;
 }
-

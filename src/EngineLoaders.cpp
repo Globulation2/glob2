@@ -26,7 +26,7 @@
 MapHeader Engine::loadMapHeader(const std::string &filename)
 {
 	MapHeader mapHeader;
-	std::unique_ptr<InputStream> stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	std::unique_ptr<InputStream> stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Engine::loadMapHeader : error, can't open file " << filename  << std::endl;
@@ -67,7 +67,7 @@ GameHeader Engine::loadGameHeader(const std::string &filename)
 {
 	MapHeader mapHeader;
 	GameHeader gameHeader;
-	std::unique_ptr<InputStream> stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	std::unique_ptr<InputStream> stream = std::make_unique<BinaryInputStream>(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "Engine::loadGameHeader : error, can't open file " << filename  << std::endl;
@@ -115,20 +115,7 @@ std::optional<MapHeader> Engine::chooseRandomMap()
 		return loadMapHeader(fullPath);
 	}
 
-	std::vector<std::string> maps;
-
-	std::string fullDir = "maps";
-
-	// we add the other files
-	if (Toolkit::getFileManager()->initDirectoryListing(fullDir.c_str(), "map", false))
-	{
-		std::string fileName;
-		while (!(fileName = (Toolkit::getFileManager()->getNextDirectoryEntry())).empty())
-		{
-			std::string fullFileName = fullDir + DIR_SEPARATOR + fileName;
-			maps.push_back(fullFileName);
-		}
-	}
+	std::vector<std::string> maps = glob2ListMapOrSaveFiles(*Toolkit::getFileManager(), "maps", "map");
 
 	if (maps.empty())
 		return std::nullopt;

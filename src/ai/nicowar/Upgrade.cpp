@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include "FormatableString.h"
 #include <string>
@@ -19,6 +20,7 @@ using namespace boost::logic;
 
 int NewNicowar::choose_building_upgrade_type_level1(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_choose_building_upgrade_type_level1_calls);
 	BuildingSearch schools(echo);
 	schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools.add_condition(new BeingUpgradedTo(2));
@@ -29,13 +31,21 @@ int NewNicowar::choose_building_upgrade_type_level1(Echo& echo)
 	if(school_counts>0)
 		school_chance=0;
 
-	return choose_building_upgrade_type(echo, 1, strategy.upgrading_phase_1_inn_chance, strategy.upgrading_phase_1_hospital_chance, strategy.upgrading_phase_1_racetrack_chance, strategy.upgrading_phase_1_swimmingpool_chance, strategy.upgrading_phase_1_barracks_chance, school_chance, strategy.upgrading_phase_1_tower_chance);
+	return telemetry.returnedInt(
+		AITrace::AI5::NewNicowar_choose_building_upgrade_type_level1_result,
+		choose_building_upgrade_type(echo, 1, strategy.upgrading_phase_1_inn_chance,
+									 strategy.upgrading_phase_1_hospital_chance,
+									 strategy.upgrading_phase_1_racetrack_chance,
+									 strategy.upgrading_phase_1_swimmingpool_chance,
+									 strategy.upgrading_phase_1_barracks_chance, school_chance,
+									 strategy.upgrading_phase_1_tower_chance));
 }
 
 
 
 int NewNicowar::choose_building_upgrade_type_level2(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_choose_building_upgrade_type_level2_calls);
 	BuildingSearch schools_upgrading(echo);
 	schools_upgrading.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools_upgrading.add_condition(new BeingUpgradedTo(3));
@@ -58,12 +68,34 @@ int NewNicowar::choose_building_upgrade_type_level2(Echo& echo)
 	if(school_counts_upgrading>0 || (school_counts_level2 + school_counts_level3)<AI_NICOWAR_LVL2_SCHOOL_THRESHOLD)
 		school_chance=0;
 
-	return choose_building_upgrade_type(echo, 2, strategy.upgrading_phase_2_inn_chance, strategy.upgrading_phase_2_hospital_chance, strategy.upgrading_phase_2_racetrack_chance, strategy.upgrading_phase_2_swimmingpool_chance, strategy.upgrading_phase_2_barracks_chance, school_chance, strategy.upgrading_phase_2_tower_chance);
+	return telemetry.returnedInt(
+		AITrace::AI5::NewNicowar_choose_building_upgrade_type_level2_result,
+		choose_building_upgrade_type(echo, 2, strategy.upgrading_phase_2_inn_chance,
+									 strategy.upgrading_phase_2_hospital_chance,
+									 strategy.upgrading_phase_2_racetrack_chance,
+									 strategy.upgrading_phase_2_swimmingpool_chance,
+									 strategy.upgrading_phase_2_barracks_chance, school_chance,
+									 strategy.upgrading_phase_2_tower_chance));
 }
 
 
 int NewNicowar::choose_building_upgrade_type(Echo& echo, int level, int inn_ratio, int hospital_ratio, int racetrack_ratio, int swimmingpool_ratio, int barracks_ratio, int school_ratio, int tower_ratio)
 {
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_upgrade_type_input_tower_ratio,
+				  tower_ratio);
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_upgrade_type_input_school_ratio,
+				  school_ratio);
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_upgrade_type_input_barracks_ratio,
+				  barracks_ratio);
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_upgrade_type_input_swimmingpool_ratio,
+				  swimmingpool_ratio);
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_upgrade_type_input_racetrack_ratio,
+				  racetrack_ratio);
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_upgrade_type_input_hospital_ratio,
+				  hospital_ratio);
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_upgrade_type_input_inn_ratio, inn_ratio);
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_upgrade_type_input_level, level);
+	telemetry.count(AITrace::AI5::NewNicowar_choose_building_upgrade_type_calls);
 	///First count the types of buildings that are available to us for upgrading
 	///you wouldn't want to choose a Barracks to be upgraded if there are none
 	int building_count[IntBuildingType::NB_BUILDING];
@@ -118,17 +150,22 @@ int NewNicowar::choose_building_upgrade_type(Echo& echo, int level, int inn_rati
 	}
 
 	if(buildings.size()==0)
-		return AI_NICOWAR_NO_BUILDING_TYPE;
+		return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_upgrade_type_result,
+									 AI_NICOWAR_NO_BUILDING_TYPE);
 
 	//Now choose a building, or return AI_NICOWAR_NO_BUILDING_TYPE for none available
 	int random = syncRand() % buildings.size();
 
-	return buildings[random];
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_upgrade_type_result,
+								 buildings[random]);
 }
 
 
 int NewNicowar::choose_building_for_upgrade(Echo& echo, int type, int level)
 {
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_for_upgrade_input_level, level);
+	telemetry.set(AITrace::AI5::NewNicowar_choose_building_for_upgrade_input_type, type);
+	telemetry.count(AITrace::AI5::NewNicowar_choose_building_for_upgrade_calls);
 	BuildingSearch bs(echo);
 	bs.add_condition(new SpecificBuildingType(type));
 	bs.add_condition(new NotUnderConstruction);
@@ -139,7 +176,7 @@ int NewNicowar::choose_building_for_upgrade(Echo& echo, int type, int level)
 	int random=syncRand() % buildings.size();
 	int id=buildings[random];
 
-	return id;
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_for_upgrade_result, id);
 }
 
 

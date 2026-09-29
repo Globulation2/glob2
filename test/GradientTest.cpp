@@ -12,6 +12,8 @@
 #include <vector>
 #include <queue>
 #include <random>
+#include <string>
+#include <utility>
 #include <functional>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( GradientTest );
@@ -44,6 +46,98 @@ namespace
 		}
 		size_t cells() const { return size; }
 		void putWater(int x, int y) { tiles[coordToIndex(x, y)].terrain = 256; }
+		void putWaterAt(size_t i) { tiles[i].terrain = 256; }
+
+		// The kernel before the low-level rewrite, kept verbatim as a differential oracle.
+		void legacyPropagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT) const
+		{
+			constexpr int WATER_STEP[SWIM_CLASS_COUNT] = { 0, 5, 7, 10, 13, 20, 30 };
+			constexpr int MAX_STEP = WATER_STEP[SWIM_CLASS_COUNT - 1] * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
+			constexpr int BUCKETS = MAX_STEP + 1;
+			constexpr int COST_LIMIT = GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1 - MAX_STEP;
+			static std::vector<int> buckets[BUCKETS];
+			static std::vector<std::pair<int, int>> deferredSeeds;
+			auto expandBucket = [&](size_t &pending, int cur, int limit, auto stepAt)
+			{
+				std::vector<int> &bucket = buckets[cur % BUCKETS];
+				for (size_t bi = 0; bi < bucket.size(); bi++)
+				{
+					int i = bucket[bi];
+					pending--;
+					if (GRADIENT_AT_GOAL - gradient[i] != cur)
+						continue;
+					size_t x = i & wMask;
+					size_t y = i >> wDec;
+					const size_t left = (x - 1) & wMask;
+					const size_t right = (x + 1) & wMask;
+					const size_t above = ((y - 1) & hMask) << wDec;
+					const size_t row = y << wDec;
+					const size_t below = ((y + 1) & hMask) << wDec;
+					const int step = stepAt(i);
+					const int cardinalCost = cur + step;
+					const int diagonalCost = cur + step * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
+					const unsigned cardinalValue = cardinalCost <= limit ? GRADIENT_AT_GOAL - cardinalCost : 1;
+					const unsigned diagonalValue = diagonalCost <= limit ? GRADIENT_AT_GOAL - diagonalCost : 1;
+					auto& cardinalBucket = buckets[cardinalCost % BUCKETS];
+					auto& diagonalBucket = buckets[diagonalCost % BUCKETS];
+					auto relax = [&](size_t n, unsigned value, std::vector<int>& destination)
+					{
+						if (static_cast<unsigned>(gradient[n] - 1) < value - 1)
+						{
+							gradient[n] = (Uint16)value;
+							destination.push_back((int)n);
+							pending++;
+						}
+					};
+					relax(above | left, diagonalValue, diagonalBucket);
+					relax(above | x, cardinalValue, cardinalBucket);
+					relax(above | right, diagonalValue, diagonalBucket);
+					relax(row | right, cardinalValue, cardinalBucket);
+					relax(below | right, diagonalValue, diagonalBucket);
+					relax(below | x, cardinalValue, cardinalBucket);
+					relax(below | left, diagonalValue, diagonalBucket);
+					relax(row | left, cardinalValue, cardinalBucket);
+				}
+				bucket.clear();
+			};
+			const int limit = std::min(maxCost, COST_LIMIT);
+			for (int b = 0; b < BUCKETS; b++)
+				buckets[b].clear();
+			deferredSeeds.clear();
+			size_t pending = 0;
+			for (size_t i = 0; i < size; i++)
+				if (gradient[i] > GRADIENT_UNREACHABLE)
+				{
+					int cost = GRADIENT_AT_GOAL - gradient[i];
+					if (cost <= MAX_STEP)
+					{
+						buckets[cost % BUCKETS].push_back((int)i);
+						pending++;
+					}
+					else
+						deferredSeeds.push_back({cost, (int)i});
+				}
+			std::sort(deferredSeeds.begin(), deferredSeeds.end());
+			auto sweep = [&](auto stepAt)
+			{
+				size_t nextSeed = 0;
+				for (int cur = 0; (pending > 0 || nextSeed < deferredSeeds.size()) && cur <= limit; cur++)
+				{
+					if (pending == 0)
+						cur = deferredSeeds[nextSeed].first;
+					for (; nextSeed < deferredSeeds.size() && deferredSeeds[nextSeed].first == cur; nextSeed++)
+					{
+						buckets[cur % BUCKETS].push_back(deferredSeeds[nextSeed].second);
+						pending++;
+					}
+					expandBucket(pending, cur, limit, stepAt);
+				}
+			};
+			if (swimClass == 0 || swimClass == SWIM_CLASS_EVEN)
+				sweep([](int) { return GRADIENT_STEP; });
+			else
+				sweep([&](int i) { return isWater((unsigned)i) ? WATER_STEP[swimClass] : GRADIENT_STEP; });
+		}
 		void putGroundUnit(int x, int y) { tiles[coordToIndex(x, y)].groundUnit = 0; }
 	};
 
@@ -171,6 +265,44 @@ void GradientTest::testSeedBelowGoalPropagates()
 	CPPUNIT_ASSERT_EQUAL(GRADIENT_STEP + GRADIENT_DIAGONAL_STEP, cost(g, map, 5, 5));
 }
 
+void GradientTest::testSeedsBeyondBucketWindow()
+{
+	// Seeds may start at any cost, as the round-trip gradients seed resource
+	// tiles with their distance to a building. Walls along x=2 and y=2 cut
+	// the torus into one 7x7 rectangle with the goal in the corner (3,3) and
+	// a seed at cost 60 in the opposite corner (1,1), 84 from the goal.
+	GrassMap map;
+	std::vector<Uint16> g = blank(map);
+	for (int i = 0; i < 8; i++)
+	{
+		g[map.coordToIndex(2, i)] = GRADIENT_FORBIDDEN;
+		g[map.coordToIndex(i, 2)] = GRADIENT_FORBIDDEN;
+	}
+	g[map.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
+	g[map.coordToIndex(1, 1)] = GRADIENT_AT_GOAL - 60;
+	map.propagateGradient(g.data(), 0);
+	CPPUNIT_ASSERT_EQUAL(0, cost(g, map, 3, 3));
+	CPPUNIT_ASSERT_EQUAL(60, cost(g, map, 1, 1));
+	// (0,0) and (1,0): 70 through the seed, 70 and 80 from the goal.
+	CPPUNIT_ASSERT_EQUAL(70, cost(g, map, 0, 0));
+	CPPUNIT_ASSERT_EQUAL(70, cost(g, map, 1, 0));
+	// (7,7): four diagonals from the goal beat 88 through the seed.
+	CPPUNIT_ASSERT_EQUAL(56, cost(g, map, 7, 7));
+	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_FORBIDDEN, (int)g[map.coordToIndex(2, 5)]);
+}
+
+void GradientTest::testMaxCostStopsPropagation()
+{
+	GrassMap map;
+	std::vector<Uint16> g = blank(map);
+	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
+	map.propagateGradient(g.data(), 0, 20);
+	CPPUNIT_ASSERT_EQUAL(20, cost(g, map, 2, 0));
+	CPPUNIT_ASSERT_EQUAL(14, cost(g, map, 1, 1));
+	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(3, 0)]);
+	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(2, 2)]);
+}
+
 void GradientTest::testDirectionPrefersCheapestTotal()
 {
 	GrassMap map;
@@ -293,4 +425,44 @@ void GradientTest::testRandomFieldsAgainstReference()
 		map.propagateGradient(input.data(), swimClass);
 		CPPUNIT_ASSERT(input == expected);
 	}
+}
+
+void GradientTest::testMatchesLegacyKernelOnLargeMaps()
+{
+	std::mt19937 random(2026);
+	// Widths 1-4 exercise the column-edge paths; the rest mostly the interior.
+	const int shapes[][2] = { {6, 6}, {7, 7}, {8, 8}, {7, 5}, {5, 8}, {0, 7}, {1, 7}, {2, 6}, {8, 1} };
+	int trial = 0;
+	for (const auto &shape : shapes)
+		for (int swimClass = 0; swimClass < SWIM_CLASS_COUNT; ++swimClass)
+			for (int variant = 0; variant < 6; ++variant, ++trial)
+			{
+				GrassMap map(shape[0], shape[1]);
+				std::vector<Uint16> input = blank(map);
+				const unsigned obstaclePercent = (variant * 17 + trial) % 45;
+				const unsigned waterPercent = (variant * 23 + trial * 7) % 60;
+				// One goal; a few goals; many goals; seeds within the first bucket
+				// window; seeds far beyond it; many goals under a cost cap.
+				const unsigned seedEvery = variant == 0 ? 0 : variant == 1 ? 997 : 61;
+				for (size_t i = 0; i < map.cells(); ++i)
+				{
+					const bool water = random() % 100 < waterPercent;
+					if (water)
+						map.putWaterAt(i);
+					if (random() % 100 < obstaclePercent || (water && swimClass == 0))
+						input[i] = GRADIENT_FORBIDDEN;
+					else if (seedEvery && random() % seedEvery == 0)
+						input[i] = variant == 3 ? GRADIENT_AT_GOAL - random() % 43
+							: variant == 4 ? GRADIENT_AT_GOAL - random() % 3000
+							: GRADIENT_AT_GOAL;
+				}
+				if (variant == 0)
+					input[random() % map.cells()] = GRADIENT_AT_GOAL;
+				const int maxCost = variant == 5 ? 25 + int(random() % 400) : Map::GRADIENT_COST_LIMIT;
+
+				auto expected = input;
+				map.legacyPropagateGradient(expected.data(), swimClass, maxCost);
+				map.propagateGradient(input.data(), swimClass, maxCost);
+				CPPUNIT_ASSERT_MESSAGE("trial " + std::to_string(trial), input == expected);
+			}
 }

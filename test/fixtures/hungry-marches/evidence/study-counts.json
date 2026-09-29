@@ -1,0 +1,32 @@
+{
+  "v26/controls/ablation.jsonl.gz": {
+    "total": 493,
+    "completed": 493,
+    "invalid": 0,
+    "failed_checks": 0
+  },
+  "v26/controls/random.jsonl.gz": {
+    "total": 2000,
+    "completed": 1484,
+    "invalid": 516,
+    "failed_checks": 0
+  },
+  "v26/held-out/results.jsonl.gz": {
+    "total": 1000,
+    "completed": 745,
+    "invalid": 255,
+    "failed_checks": 0
+  },
+  "v27/cap-checks.jsonl.gz": {
+    "total": 703,
+    "completed": 703,
+    "invalid": 0,
+    "failed_checks": 0
+  },
+  "final/envelope/results.jsonl.gz": {
+    "total": 358,
+    "completed": 354,
+    "invalid": 4,
+    "failed_checks": 0
+  }
+}

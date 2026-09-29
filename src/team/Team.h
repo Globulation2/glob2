@@ -4,6 +4,7 @@
 #pragma once
 
 #include <SDL_rwops.h>
+#include <CooperativeTask.h>
 
 #include <climits>
 #include <list>
@@ -26,6 +27,9 @@ class Map;
 class Unit;
 
 class Game;
+
+//! Tiles a unit can still walk before it starves: what is left of its hunger, then its hp.
+Sint32 starvationLimitedTravelDistance(const Unit *unit);
 
 class Team:public BaseTeam
 {
@@ -57,11 +61,12 @@ public:
 	};
 
 	Team(Game *game);
-	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 
 	virtual ~Team(void);
 
 	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
+    // Borrows this private preparation team and stream; discard on cancellation.
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 
 	//! Rebuild the per-building lists from myBuildings (map generators, in place of load()).
@@ -110,6 +115,12 @@ public:
 	void removeBuildingNeedingWork(Building* b, Sint32 priority);
 	//! Update every building in buildingsNeedingUnits, highest priority first.
 	void updateAllBuildingTasks();
+	//! Give `unit`'s fetching job to a team mate and take the mate's job, when that
+	//! shortens the two trips together by more than a few tiles (see TeamStep.cpp).
+	void swapTask(Unit *unit);
+	//! Give `unit` a team mate's inn and the mate `unit`'s, when that shortens the
+	//! two walks together by more than a few tiles; called as `unit` books its place.
+	void swapInn(Unit *unit);
 
 	//! Highest build level any unit of the team has.
 	int maxBuildLevel(void);
@@ -163,6 +174,10 @@ public:
 	// Team masks (see teamNumberToMask).
 	Uint32 allies; // teams we never fire on
 	Uint32 enemies; // teams we fire on
+	//! The teams this team's units and turrets may actually attack: `enemies`, or none under the
+	//! custom-game peaceful mode. Diplomacy and AI planning keep reading `enemies`, so AIs
+	//! still develop normally; only target acquisition goes through here.
+	Uint32 attackableTeams() const;
 	Uint32 sharedVisionExchange; // teams that see our markets
 	Uint32 sharedVisionFood; // teams that see our food buildings
 	Uint32 sharedVisionOther; // teams that see everything else of ours

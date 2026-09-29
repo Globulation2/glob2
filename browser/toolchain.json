@@ -1,0 +1,5 @@
+{
+  "emscripten": "4.0.15",
+  "emsdk_commit": "5eb0bde7585670252e8ba05e9d361627bffd08b5",
+  "boost": "1.83.0"
+}

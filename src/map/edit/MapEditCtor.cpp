@@ -6,6 +6,8 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "PhoneEditor.h"
+#include <InterfacePresentation.h>
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
 #include "SDLCompat.h"
@@ -23,6 +25,8 @@ MapEdit::MapEdit()
             Minimap::HideFOW)
 {
 	Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
+    const bool usePhone=GAGCore::phonePresentationRequested();
+    if(usePhone && globalContainer->gfx->hasPortableRenderer()) phone=std::make_unique<PhoneEditor>(*this);
 	doQuit=false;
 	doFullQuit=false;
 	doQuitAfterLoadSave=false;
@@ -174,10 +178,8 @@ MapEdit::MapEdit()
 	unitWalkLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 300, 112, 16), "unit editor", "unit editor walk level scroll box", "update unit walk level", NULL, 3);
 	unitSwimLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 316, 128, 16), "unit editor", "unit editor swim level label", "", "[Swim]", NULL, 3);
 	unitSwimLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 332, 112, 16), "unit editor", "unit editor swim level scroll box", "update unit swim level", NULL, 3);
-	unitHarvestLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 348, 128, 16), "unit editor", "unit editor harvest level label", "", "[Harvest]", NULL, 3);
-	unitHarvestLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 364, 112, 16), "unit editor", "unit editor harvest level scroll box", "update unit harvest level", NULL, 3);
-	unitBuildLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 380, 128, 16), "unit editor", "unit editor build level label", "", "[Build]", NULL, 3);
-	unitBuildLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 396, 112, 16), "unit editor", "unit editor build level scroll box", "update unit build level", NULL, 3);
+	unitBuildLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 348, 128, 16), "unit editor", "unit editor build level label", "", "[Build]", NULL, 3);
+	unitBuildLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 364, 112, 16), "unit editor", "unit editor build level scroll box", "update unit build level", NULL, 3);
 	unitAttackSpeedLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 348, 128, 16), "unit editor", "unit editor attack speed level label", "", "[At. speed]", NULL, 3);
 	unitAttackSpeedLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 364, 112, 16), "unit editor", "unit editor attack speed level scroll box", "update unit attack speed level", NULL, 3);
 	unitAttackStrengthLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 380, 128, 16), "unit editor", "unit editor attack strength level label", "", "[At. strength]", NULL, 3);
@@ -192,8 +194,6 @@ MapEdit::MapEdit()
 	addWidget(unitWalkLevelScrollBox);
 	addWidget(unitSwimLevelLabel);
 	addWidget(unitSwimLevelScrollBox);
-	addWidget(unitHarvestLevelLabel);
-	addWidget(unitHarvestLevelScrollBox);
 	addWidget(unitBuildLevelLabel);
 	addWidget(unitBuildLevelScrollBox);
 	addWidget(unitAttackSpeedLevelLabel);
@@ -308,7 +308,7 @@ MapEdit::MapEdit()
 MapEdit::~MapEdit()
 {
 	Sprite::setHighResolution(false);
-	Toolkit::releaseSprite("data/gui/editor");
+	// The toolkit owns this shared cache entry; other staging editors may use it.
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
 		delete *i;
@@ -319,7 +319,7 @@ void MapEdit::updateCamera()
 {
     if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
     if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
-    camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
+    camera.resize(globalContainer->gfx->getW()-menuWidth(),globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
     if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
     viewportX=camera.tileX();viewportY=camera.tileY();
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());

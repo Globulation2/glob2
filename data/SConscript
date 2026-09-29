@@ -16,6 +16,7 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "glob2.desktop")
     PackTar(env["TARFILE"], "SConscript")
     
+SConscript("maxima/SConscript")
 SConscript("fonts/SConscript")
 SConscript("gfx/SConscript")
 SConscript("gui/SConscript")

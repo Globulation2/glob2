@@ -19,11 +19,12 @@
 #include "YOGClientDownloadableMapList.h"
 #include "YOGClientDownloadingMapScreen.h"
 #include "YOGClientRatedMapList.h"
+#include <ScreenStack.h>
 
 using namespace GAGCore;
 
-YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, std::shared_ptr<YOGClient> client)
-	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Download Maps]")), client(client)
+YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<YOGClient> client)
+	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Download Maps]")), client(client), screens(screens)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Download Maps]")));
 
@@ -32,6 +33,12 @@ YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, std::s
 	addWidget(mapList);
 	mapPreview = new MapPreview(72, 130, ALIGN_RIGHT, ALIGN_TOP);
 	addWidget(mapPreview);
+	mapPreview->retry = [this]
+	{
+		if (!mapValid) return;
+		this->client->getDownloadableMapList()->requestThumbnail(mapList->get(), true);
+		updateMapPreview();
+	};
 	mapName=new Text(72, 268+25, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
 	addWidget(mapName);
 	mapInfo=new Text(72, 268+50, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
@@ -95,6 +102,7 @@ YOGClientMapDownloadScreen::~YOGClientMapDownloadScreen()
 void YOGClientMapDownloadScreen::onTimer(Uint32 tick)
 {
 	updateVisibility();
+	updateMapPreview();
 }
 
 
@@ -111,19 +119,13 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 		}
 		else if(par1==ADDMAP)
 		{
-			ChooseMapScreen cms("maps", "map", false);
-			int rc = cms.execute(globalContainer->gfx, 40);
-			if(rc == -1)
-			{
-				endExecute(-1);
-				parent->completeEndExecute(-1);
-			}
-			else if(rc == ChooseMapScreen::OK)
-			{
-				YOGClientMapUploadScreen upload(client, cms.getMapHeader().getFileName());
-				upload.execute(globalContainer->gfx, 40);
-				requestMaps();
-			}
+			screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false),
+				[this](Screen& selection, int rc) {
+					if(rc != ChooseMapScreen::OK) return;
+					const auto file = static_cast<ChooseMapScreen&>(selection).getMapHeader().getFileName();
+					screens.push(std::make_unique<YOGClientMapUploadScreen>(screens, client, file),
+						[this](Screen&, int) { requestMaps(); });
+				});
 		}
 		else if (par1==REFRESHMAPLIST)
 		{
@@ -133,17 +135,8 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 		{
 			if(mapValid)
 			{
-				YOGClientDownloadingMapScreen screen(client, client->getDownloadableMapList()->getMap(mapList->get()));
-				int rc = screen.execute(globalContainer->gfx, 40);
-				if(rc == -1)
-				{
-					endExecute(-1);
-					parent->completeEndExecute(-1);
-				}
-				else if(rc == YOGClientDownloadingMapScreen::FINISHED)
-				{
-				
-				}
+				screens.push(std::make_unique<YOGClientDownloadingMapScreen>(screens, client,
+					client->getDownloadableMapList()->getMap(mapList->get())));
 			}
 		}
 		else if (par1==SUBMITRATING)
@@ -299,13 +292,15 @@ void YOGClientMapDownloadScreen::updateMapPreview()
 		}
 		else
 		{
-			mapPreview->setMapThumbnail("");
+			auto state = client->getDownloadableMapList()->getThumbnailState(mapList->get());
+			mapPreview->setState(state == YOGClientDownloadableMapList::ThumbnailState::Failed
+				? MapPreview::State::Failed : MapPreview::State::Loading);
 		}
 	}
 	else
 	{
 	
-		mapPreview->setMapThumbnail("");
+		mapPreview->setState(MapPreview::State::Empty);
 	}
 }
 

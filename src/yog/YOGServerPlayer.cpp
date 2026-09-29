@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "AuthMessages.h"
+#include "Version.h"
 #include "FileTransferMessages.h"
 #include "GameCreateMessages.h"
 #include "GameHeaderMessages.h"
@@ -64,12 +65,26 @@ void YOGServerPlayer::update()
 	if(!message)
 		return;
 	Uint8 type = message->getMessageType();
+    // Control messages cannot be used to skip or rewind admission. Lobby,
+    // room and file operations become available only after authentication.
+    const bool hello = type == MNetSendClientInformation;
+    const bool login = type == MNetAttemptLogin || type == MNetRegistrationRequest;
+    const bool allowed = type == MNetPingReply ||
+        (hello && connectionState == WaitingForClientInformation) ||
+        (login && connectionState == WaitingForLoginAttempt) ||
+        (!hello && !login && connectionState == ClientOnStandby);
+    if (!allowed) { closeConnection(); return; }
 	//This receives the client information
 	if(type==MNetSendClientInformation)
 	{
 		shared_ptr<NetSendClientInformation> info = static_pointer_cast<NetSendClientInformation>(message);
-		netVersion = info->getNetVersion();
-		connectionState = NeedToSendServerInformation;
+        netVersion = info->getNetVersion();
+        if (netVersion != NET_PROTOCOL_VERSION) {
+            connection->sendMessage(std::make_shared<NetRefuseLogin>(YOGClientVersionTooOld));
+            connectionState = IncompatibleClient;
+            return;
+        }
+        connectionState = NeedToSendServerInformation;
 	}
 	//This receives a login attempt
 	else if(type==MNetAttemptLogin)

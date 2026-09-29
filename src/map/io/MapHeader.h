@@ -5,11 +5,14 @@
 
 #include "BaseTeam.h"
 #include "Team.h"
+#include <vector>
 
 namespace GAGCore
 {
 	class InputStream;
 	class OutputStream;
+	class FileManager;
+	class StreamBackend;
 }
 
 ///This is the map header. It is static with the map, and does not change from game to game if
@@ -27,8 +30,9 @@ public:
 	/// Loads map header information from the stream
 	bool load(GAGCore::InputStream *stream);
 	
-	/// Saves map header information to the stream.
-	void save(GAGCore::OutputStream *stream) const;
+	/// Saves map header information to the stream. sha1Position, when given,
+	/// receives the stream position the game SHA1 is written at.
+	void save(GAGCore::OutputStream *stream, size_t *sha1Position = nullptr) const;
 
 	/// Returns the version major
 	Sint32 getVersionMajor() const;
@@ -90,6 +94,7 @@ public:
 	bool operator!=(const MapHeader& rhs) const;
 	bool operator==(const MapHeader& rhs) const;
 private:
+	bool loadFields(GAGCore::InputStream *stream);
 	/// Major map version. Changes only with structural modification
 	Sint32 versionMajor;
 	/// Minor map version. Changes each time something has been changed in serializations
@@ -119,3 +124,24 @@ private:
 std::string glob2FilenameToName(const std::string& filename);
 //! create the filename from the directory, end user-visible name and extension. directory and extension must be given without the / and the .
 std::string glob2NameToFilename(const std::string& dir, const std::string& name, const std::string& extension="");
+
+//! Appends ".gz" to path unless it already ends with it: the on-disk name a newly
+//! written map or save should actually use. Never applied to replays.
+std::string glob2GzipWritePath(const std::string& path);
+
+//! True if path already ends in ".gz".
+bool glob2IsGzipPath(const std::string& path);
+
+//! Resolves path to what should actually be opened for reading: path + ".gz" when
+//! that exists, otherwise path unchanged (whether or not it exists).
+std::string glob2PreferGzipReadPath(GAGCore::FileManager& files, const std::string& path);
+
+//! Opens path (see glob2PreferGzipReadPath) for reading, transparently gzip-decompressing
+//! a ".gz" file into a seekable in-memory backend. Never returns nullptr; an invalid
+//! backend means the file is missing, unreadable, or its gzip data is corrupt or truncated.
+GAGCore::StreamBackend *glob2OpenMapOrSaveInputStreamBackend(GAGCore::FileManager& files, const std::string& path);
+
+//! Lists the files under dir (searched across the FileManager's directories, without
+//! recursion) named "<name>.baseExtension" or "<name>.baseExtension.gz" as full paths,
+//! one entry per distinct name and preferring the ".gz" file when both exist.
+std::vector<std::string> glob2ListMapOrSaveFiles(GAGCore::FileManager& files, const std::string& dir, const std::string& baseExtension);

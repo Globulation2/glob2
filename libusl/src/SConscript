@@ -1,8 +1,5 @@
-usl_sources = Split("""
-code.cpp	debug.cpp	interpreter.cpp	lexer.cpp
-parser.cpp	position.cpp	token.cpp
-tree.cpp		types.cpp	usl.cpp
-""")
+from sources import USL_SOURCES
+usl_sources = list(USL_SOURCES)
     
 Import("env")
 Import("PackTar")

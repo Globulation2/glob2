@@ -15,6 +15,7 @@ using ssize_t = SSIZE_T;
 #include <stdarg.h>
 #include <Stream.h>
 #include <ctime>
+#include <sstream>
 
 #include "Utilities.h"
 #include <random>
@@ -26,8 +27,11 @@ using ssize_t = SSIZE_T;
 #endif
 
 
-//Mersenne twister implementation
-boost::mt19937 randomGenerator;
+boost::mt19937 &syncRandEngine()
+{
+	thread_local boost::mt19937 engine;
+	return engine;
+}
 
 int distSquare(int x1, int y1, int x2, int y2)
 {
@@ -39,16 +43,38 @@ int distSquare(int x1, int y1, int x2, int y2)
 void setSyncRandSeed()
 {
 	///Sets the default seed
-	randomGenerator.seed();
+	syncRandEngine().seed();
 }
 void setSyncRandSeed(Uint32 seed)
 {
-	randomGenerator.seed(seed);
+	syncRandEngine().seed(seed);
 }
 
 void setRandomSyncRandSeed()
 {
-	randomGenerator.seed(std::random_device{}());
+	syncRandEngine().seed(std::random_device{}());
+}
+
+std::string getSyncRandState()
+{
+	std::ostringstream stream;
+	stream<<syncRandEngine();
+	return stream.str();
+}
+
+bool setSyncRandState(const std::string& state)
+{
+	// Boost's extractor consumes trailing whitespace after every state word.
+	// Supplying a terminator keeps its final std::ws from turning EOF into a
+	// parse failure. Parse into a temporary so malformed state cannot partly
+	// replace the live synchronized generator.
+	std::istringstream stream(state+"\n");
+	boost::mt19937 restored;
+	stream>>restored;
+	if(stream.fail())
+		return false;
+	syncRandEngine()=restored;
+	return true;
 }
 
 namespace Utilities

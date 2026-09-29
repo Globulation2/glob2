@@ -189,6 +189,46 @@ void testPrestige()
 	}
 }
 
+// ---------------- SuddenDeath ----------------
+void testSuddenDeath()
+{
+	constexpr int N = 3;
+	struct Tile
+	{
+		const char* tag;
+		Uint32 stepCounter;
+		Uint32 endStepTick;
+		std::array<int, N> teamPrestige;
+	};
+	static const Tile tiles[] = {
+		{"beforeTick-noTie",    50,  100, {10, 30, 10}},
+		{"beforeTick-tieAtTop", 50,  100, {30, 30, 10}},
+		{"atTick-uniqueMax",    100, 100, {10, 30, 10}},
+		{"atTick-tieAtTop",     100, 100, {30, 30, 10}},
+		{"afterTick-uniqueMax", 150, 100, {10, 30, 10}},
+		{"negativePrestige",    100, 100, {-5, 0, -10}},
+		// All-negative: maximumPrestige()'s floor at 0 (shared with Prestige,
+		// which never actually hits it thanks to its own totalPrestige gate)
+		// would make every team compare against 0 here, so nobody ties it and
+		// everybody loses. actualMaximumPrestige() must find team 1's -2 as
+		// the true max instead, so team 1 (only) wins and the other two lose.
+		{"allNegativePrestige", 100, 100, {-5, -2, -10}},
+	};
+	for (const auto& c : tiles)
+	{
+		clearAll();
+		setupTeams(N);
+		g()->stepCounter = c.stepCounter;
+		for (int i = 0; i < N; ++i) T(i)->prestige = c.teamPrestige[i];
+		std::printf("SuddenDeath/%s step=%u endTick=%u prestiges=[%d,%d,%d]\n",
+		            c.tag, c.stepCounter, c.endStepTick,
+		            c.teamPrestige[0], c.teamPrestige[1], c.teamPrestige[2]);
+		WinningConditionSuddenDeath wc;
+		wc.endStepTick = c.endStepTick;
+		emitWonLost("SuddenDeath", wc, N);
+	}
+}
+
 // ---------------- Script ----------------
 void testScript()
 {
@@ -273,6 +313,7 @@ int main(int /*argc*/, char* /*argv*/[])
 	testDeath();
 	testAllies();
 	testPrestige();
+	testSuddenDeath();
 	testScript();
 	testOpponentsDefeated();
 	return 0;

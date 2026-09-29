@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import tempfile
 
 
 def main():
@@ -20,10 +21,12 @@ def main():
     env.setdefault("SDL_AUDIODRIVER", "dummy")
     host_log = output / "host.log"
     join_log = output / "join.log"
-    with host_log.open("w") as host_out, join_log.open("w") as join_out:
+    with tempfile.TemporaryDirectory(prefix="glob2-lan-test-") as profiles, host_log.open("w") as host_out, join_log.open("w") as join_out:
+        host_env = dict(env, GLOB2_USER_DIR=str(Path(profiles) / "host"))
+        join_env = dict(env, GLOB2_USER_DIR=str(Path(profiles) / "join"))
         host = subprocess.Popen(
             [str(binary), "host", "127.0.0.1", "2", str(output / "host")],
-            stdout=host_out, stderr=subprocess.STDOUT, env=env,
+            stdout=host_out, stderr=subprocess.STDOUT, env=host_env,
         )
         try:
             deadline = time.monotonic() + 20
@@ -33,7 +36,7 @@ def main():
                 time.sleep(0.1)
             joined = subprocess.run(
                 [str(binary), "join", "127.0.0.1", "2", str(output / "join")],
-                stdout=join_out, stderr=subprocess.STDOUT, env=env, timeout=100,
+                stdout=join_out, stderr=subprocess.STDOUT, env=join_env, timeout=100,
             )
             if joined.returncode != 0:
                 raise RuntimeError(f"Join/transfer/leave test exited {joined.returncode}")

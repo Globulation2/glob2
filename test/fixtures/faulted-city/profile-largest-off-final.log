@@ -1,0 +1,4 @@
+Settings::load("preferences.txt") : error, can't open file.
+generator                 attempts        ok    failed     mean_ms      max_ms
+faulted-city                     6         6         0    2482.862    2603.457
+# 6 rounds, 1 generators, 6 attempts (6 ok, 0 failed), 14.898s wall, 14.897s summed generation time

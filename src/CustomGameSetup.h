@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "EngineTiming.h"
 #include "GameHeader.h"
-#include "MapGenerationDescriptor.h"
+#include "GenerationRequest.h"
+#include "GenerationValidation.h"
+#include "GeneratorRegistry.h"
 #include <array>
 #include <optional>
 #include <string>
@@ -21,12 +24,25 @@ struct CustomGameSetup
 		const char *label;
 		const char *category;
 	};
-	static constexpr std::array<RuleDefinition, 5> ruleDefinitions = {
+	static constexpr std::array<RuleDefinition, 18> ruleDefinitions = {
 		{{"Victory", "Victory"},
 		 {"Map knowledge", "World & diplomacy"},
 		 {"Alliances", "World & diplomacy"},
 		 {"Game speed", "Starting conditions & pace"},
-		 {"Starting workers", "Starting conditions & pace"}}};
+		 {"Starting workers", "Starting conditions & pace"},
+		 {"No resource growth", "Economy"},
+		 {"Scarce resources", "Economy"},
+		 {"Instant construction", "Economy"},
+		 {"Stockpile start", "Economy"},
+		 {"No hunger", "Economy"},
+		 {"No upgrades", "Combat"},
+		 {"Glass cannon", "Combat"},
+		 {"Fearless", "Combat"},
+		 {"No permadeath", "Combat"},
+		 {"Peaceful mode", "Combat"},
+		 {"Fortress buildings", "Combat"},
+		 {"Veteran/Fast start", "Starting conditions & pace"},
+		 {"Sudden-death timer", "Victory"}}};
 	bool ruleChanged(int index) const
 	{
 		switch (index)
@@ -40,7 +56,35 @@ struct CustomGameSetup
 		case 3:
 			return speed != 0;
 		case 4:
-			return random && generator.nbWorkers != 4;
+			return random &&
+				   generator.nbWorkers !=
+					   GenerationRequest::control(generator.method, "workers").defaultValue;
+		case 5:
+			return noResourceGrowth;
+		case 6:
+			return resourceScarcity != 0;
+		case 7:
+			return instantConstruction;
+		case 8:
+			return stockpileStart != 0;
+		case 9:
+			return noHunger;
+		case 10:
+			return unitUpgradesDisabled;
+		case 11:
+			return glassCannonLevel != 0;
+		case 12:
+			return unitsFearless;
+		case 13:
+			return permadeathDisabled;
+		case 14:
+			return peacefulMode;
+		case 15:
+			return buildingHpLevel != 0;
+		case 16:
+			return random && startingUnitLevel != 0;
+		case 17:
+			return suddenDeathMinutes != 0;
 		default:
 			return false;
 		}
@@ -52,16 +96,30 @@ struct CustomGameSetup
 		int alliance = 0;
 	};
 	std::array<Colony, Team::MAX_COUNT> colonies;
-	MapGenerationDescriptor generator;
-	int capacity = 4;
+	GenerationRequest generator;
+	GenerationHistory generatorHistory;
+	int capacity;
 	bool random = false, prestige = true, revealed = false, locked = true;
 	int speed = 0;
+	bool noResourceGrowth = false, instantConstruction = false, noHunger = false;
+	int resourceScarcity = 0, stockpileStart = 0;
+	bool unitUpgradesDisabled = false, unitsFearless = false, permadeathDisabled = false, peacefulMode = false;
+	int glassCannonLevel = 0, buildingHpLevel = 0;
+	// Level the generated map's starting workers spawn at; applied to the generated map, so
+	// changing it regenerates the preview (mapRevision).
+	int startingUnitLevel = 0;
+	// Sudden-death timer choices in game minutes (0 = off). Prestige comes only from top-level
+	// schools, so an earlier buzzer almost always finds every colony tied at zero; in default AI
+	// matches the first sole prestige leader appeared 13-28 minutes in.
+	static constexpr std::array<int, 5> suddenDeathMinuteChoices = {0, 30, 45, 60, 90};
+	int suddenDeathMinutes = 0;
 	std::string format = "FFA", ruleset = "Standard";
 	std::string premadeMap;
 	unsigned mapRevision = 0;
 	CustomGameSetup()
 	{
-		generator.method = MapGenerationDescriptor::eRIVER;
+		generator.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
+		capacity = generator.nbTeams;
 		for (int i = 0; i < Team::MAX_COUNT; ++i)
 			colonies[i].alliance = i;
 		colonies[0].controller = Human;
@@ -139,12 +197,30 @@ struct CustomGameSetup
 		revealed = preset == 2;
 		locked = true;
 		speed = preset == 1 ? 3 : 0;
-		int workers = preset == 1 ? 8 : 4;
+		const auto &workerControl = GenerationRequest::control(generator.method, "workers");
+		int workers = preset == 1 ? workerControl.maximum : workerControl.defaultValue;
 		if (generator.nbWorkers != workers)
 		{
 			generator.nbWorkers = workers;
 			++mapRevision;
 		}
+		noResourceGrowth = false;
+		resourceScarcity = 0;
+		instantConstruction = false;
+		stockpileStart = 0;
+		noHunger = false;
+		unitUpgradesDisabled = false;
+		glassCannonLevel = 0;
+		unitsFearless = false;
+		permadeathDisabled = false;
+		peacefulMode = false;
+		buildingHpLevel = 0;
+		if (startingUnitLevel != 0)
+		{
+			startingUnitLevel = 0;
+			++mapRevision;
+		}
+		suddenDeathMinutes = 0;
 		ruleset = preset == 0	? "Standard"
 				  : preset == 1 ? "Quick clash"
 				  : preset == 2 ? "Open book"
@@ -154,19 +230,17 @@ struct CustomGameSetup
 	{
 		if (capacity < 1 || capacity > Team::MAX_COUNT)
 			return "Invalid colony count.";
-		if (random && generator.method >= MapGenerationDescriptor::eSWAMP &&
-			generator.method <= MapGenerationDescriptor::eOLDRANDOM &&
-			generator.method != MapGenerationDescriptor::eCONCRETEISLANDS &&
-			generator.method != MapGenerationDescriptor::eISLES &&
-			generator.waterRatio + generator.grassRatio +
-					(generator.method == MapGenerationDescriptor::eSWAMP
-						 ? 0
-						 : generator.sandRatio +
-							   (generator.method == MapGenerationDescriptor::eOLDRANDOM
-									? 0
-									: generator.desertRatio)) ==
-				0)
-			return "Give at least one terrain type a nonzero weight.";
+		if (random)
+		{
+			const auto *definition = GeneratorRegistry::builtins().find(generator.method);
+			if (!definition)
+				return "Unknown generator";
+			auto request = generator;
+			request.nbTeams = capacity;
+			const auto error = validateGenerationRequest(request, *definition);
+			if (!error.empty())
+				return error;
+		}
 		if (controllerCount() > Team::MAX_COUNT)
 			return "Shared control needs a free controller slot (maximum 12).";
 		if (activeColonies() < 1)
@@ -200,5 +274,20 @@ struct CustomGameSetup
 		header.setAllyTeamsFixed(locked);
 		header.setMapDiscovered(revealed);
 		WinningCondition::setPrestigeWinCondition(header.getWinningConditions(), prestige);
+		header.setResourceGrowthDisabled(noResourceGrowth);
+		header.setResourceScarcityLevel(static_cast<Uint8>(resourceScarcity));
+		header.setInstantConstructionEnabled(instantConstruction);
+		header.setStockpileStartLevel(static_cast<Uint8>(stockpileStart));
+		header.setHungerDisabled(noHunger);
+		header.setUnitUpgradesDisabled(unitUpgradesDisabled);
+		header.setGlassCannonLevel(static_cast<Uint8>(glassCannonLevel));
+		header.setUnitsFearless(unitsFearless);
+		header.setPermadeathDisabled(permadeathDisabled);
+		header.setPeacefulModeEnabled(peacefulMode);
+		header.setBuildingHpLevel(static_cast<Uint8>(buildingHpLevel));
+		std::optional<Uint32> endStepTick;
+		if (suddenDeathMinutes != 0)
+			endStepTick = static_cast<Uint32>(suddenDeathMinutes) * 60 * GAME_TICKS_PER_SECOND;
+		WinningCondition::setSuddenDeathWinCondition(header.getWinningConditions(), endStepTick);
 	}
 };

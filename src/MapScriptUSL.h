@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include "usl.h"
-#include "interpreter.h"
 #include "MapScriptError.h"
 #include "SDL.h"
 
@@ -17,6 +15,7 @@ namespace GAGCore
 }
 
 class GameGUI;
+struct Usl;
 
 ///This represents a USL based map script
 class MapScriptUSL

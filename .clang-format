@@ -1,0 +1,31 @@
+# Matches the style the engine and the generator core already use: tabs, Allman braces,
+# 100 columns, right-aligned pointers and references, access specifiers half a level out.
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++20
+IndentWidth: 4
+TabWidth: 4
+UseTab: ForContinuationAndIndentation
+ContinuationIndentWidth: 4
+ColumnLimit: 100
+BreakBeforeBraces: Allman
+AccessModifierOffset: -2
+PointerAlignment: Right
+ReferenceAlignment: Right
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortLambdasOnASingleLine: All
+AllowShortBlocksOnASingleLine: Never
+AlignAfterOpenBracket: Align
+AlignOperands: Align
+BinPackArguments: true
+BinPackParameters: true
+NamespaceIndentation: None
+IndentCaseLabels: false
+SortIncludes: false
+ReflowComments: false
+FixNamespaceComments: true
+SpaceAfterCStyleCast: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1

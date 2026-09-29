@@ -1,0 +1,34 @@
+[
+  {
+    "version": "before",
+    "seed": 917,
+    "rounds": 60,
+    "cpu_seconds": 3.558859,
+    "wall_seconds": 12.920947292004712,
+    "exit_code": 0
+  },
+  {
+    "version": "after",
+    "seed": 917,
+    "rounds": 60,
+    "cpu_seconds": 2.501009,
+    "wall_seconds": 8.704129041987471,
+    "exit_code": 0
+  },
+  {
+    "version": "after",
+    "seed": 918,
+    "rounds": 60,
+    "cpu_seconds": 2.130934999999999,
+    "wall_seconds": 5.066742791910656,
+    "exit_code": 0
+  },
+  {
+    "version": "before",
+    "seed": 918,
+    "rounds": 60,
+    "cpu_seconds": 2.8472160000000013,
+    "wall_seconds": 4.724301415961236,
+    "exit_code": 0
+  }
+]

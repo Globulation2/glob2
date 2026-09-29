@@ -165,7 +165,7 @@ public:
             Engine engine;assert(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
             auto &gui=engine.gui;gui.updateCamera();
             const auto checksum=gui.game.checkSum(nullptr,nullptr,nullptr,true);
-            for(double zoom:{.5,1.,2.,3.})
+            for(double zoom:{MapCamera::MIN_ZOOM,.5,1.,2.,MapCamera::MAX_ZOOM})
             {
                 gui.camera.setZoom(zoom,300,300);gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
                 gui.mouseX=300;gui.mouseY=300;gui.updateCamera();
@@ -224,7 +224,7 @@ public:
         {
             MapEdit editor;assert(editor.load("maps/Archipelago.map"));editor.minimap.setGame(editor.game);editor.updateCamera();
             const auto checksum=editor.game.checkSum(nullptr,nullptr,nullptr,true);
-            for(double zoom:{.5,1.,2.,3.})
+            for(double zoom:{MapCamera::MIN_ZOOM,.5,1.,2.,MapCamera::MAX_ZOOM})
             {
                 editor.camera.setZoom(zoom,300,300);editor.viewportX=editor.camera.tileX();editor.viewportY=editor.camera.tileY();
                 editor.mouseX=300;editor.mouseY=300;editor.updateCamera();
@@ -247,7 +247,7 @@ public:
             MapEdit small;small.game.map.setSize(4,4,GRASS);small.game.map.setGame(&small.game);small.game.addTeam(0);
             small.regenerateGameHeader();small.minimap.setGame(small.game);
             small.game.addBuilding(5,5,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);
-            small.updateCamera();small.camera.setZoom(.5,300,300);small.viewportX=small.camera.tileX();small.viewportY=small.camera.tileY();
+            small.updateCamera();small.camera.setZoom(MapCamera::MIN_ZOOM,300,300);small.viewportX=small.camera.tileX();small.viewportY=small.camera.tileY();
             small.drawMap(0,0,gfx->getW(),gfx->getH());small.drawMenu();small.drawMiniMap();small.drawWidgets();capture("small-map-repeated");
             assert(small.camera.visibleW()>512&&small.camera.visibleH()>512);
             assert(small.camera.contains(0,0));
@@ -273,7 +273,7 @@ public:
             }
             for(int y=0;y<64;++y)for(int x=0;x<3;++x)dense.game.map.setUMatPos(x,y,WATER,1);
             dense.regenerateGameHeader();dense.minimap.setGame(dense.game);dense.updateCamera();
-            for(double zoom:{.5,3.})
+            for(double zoom:{MapCamera::MIN_ZOOM,.5,MapCamera::MAX_ZOOM})
             {
                 dense.camera.setZoom(zoom,0,0);dense.viewportX=dense.camera.tileX();dense.viewportY=dense.camera.tileY();
                 gfx->resetDrawCallCount();auto start=std::chrono::steady_clock::now();

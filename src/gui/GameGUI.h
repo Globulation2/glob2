@@ -5,6 +5,7 @@
 #pragma once
 #include <MapCamera.h>
 
+#include <InputState.h>
 #include <memory>
 #include <optional>
 #include <queue>
@@ -30,6 +31,7 @@
 
 namespace GAGCore
 {
+	class BackgroundFileWriter;
 	class Font;
 }
 using namespace GAGCore;
@@ -54,6 +56,7 @@ class MapMarkOrder;
 /*!
 	Handle all user input during game, draw & handle menu.
 */
+class GameGUITouch;
 class GameGUI
 {
 	friend struct CustomGameSetupHarness;
@@ -63,10 +66,11 @@ class GameGUI
     bool torusMapPointer(int x, int y, int &mx, int &my) const;
     bool handleTorusPointer(const SDL_Event &event);
 	friend class HighResolutionIntegrationHarness;
+	friend class FailingUnitMarkersHarness;
 public:
     void drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit);
 	///Constructs a GameGUI
-	GameGUI();
+	explicit GameGUI(bool persistPreferences = true);
 	
 	///Destroys the GameGUI
 	~GameGUI();
@@ -78,11 +82,15 @@ public:
 	void adjustLocalTeam();
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
+    // Host-supplied events and monotonic time; no event polling in this phase.
+    void step(const std::vector<SDL_Event>& events, Uint64 now);
+    void suspendInput();
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
 	void configureLiveSpectatorView();
 	//! Return position on x
 	int getViewportX() { return viewportX; }
+    void viewportResized(int oldWidth, int oldHeight, int width, int height);
 	//! Return position on y
 	int getViewportY() { return viewportY; }
 
@@ -92,14 +100,18 @@ public:
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
+	GAGCore::CooperativeTask loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, std::string sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const std::string name);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, bool ignoreGUIData=false);
+	void save(GAGCore::OutputStream *stream, const std::string name, DeferredGameSHA1* deferredSHA1 = nullptr);
 
 	void processEvent(SDL_Event *event);
 
 	// Engine has to call this every "real" steps. (or game steps)
 	void syncStep(void);
+	//! Returns once a pending autosave has reached the disk.
+	void waitForAutosave();
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
@@ -237,6 +249,20 @@ private:
 	friend class GameGUISelectionHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
+	bool persistPreferences;
+    friend class GameGUITouch;
+    friend class GameGUITouchHarness;
+	friend class MobileGalleryGameplay;
+	std::unique_ptr<GameGUITouch> touch;
+
+	//! Serializes the game and hands the bytes to autosaveWriter.
+	void autosave();
+	//! Tick of this session's latest autosave, or -1 before the first.
+	Sint64 lastAutosaveStep;
+	//! Size of the previous autosave, reserved up front for the next one.
+	size_t lastAutosaveSize = 0;
+	//! Writes autosaves off the game thread; created by the first autosave.
+	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
@@ -504,8 +530,6 @@ private:
 	bool panPushed;
 	//! Coordinate of mouse when began panning
 	int panMouseX, panMouseY;
-	int lastMouseX = 0, lastMouseY = 0;
-	Uint16 lastMouseButtonState = 0;
 	//! Coordinate of viewport when began panning
 	int panViewX, panViewY;
 
@@ -518,6 +542,8 @@ private:
 	bool showUnitWorkingToBuilding;
 
 	TeamStats *teamStats;
+	int measurementPage = 0;
+	void drawStatisticsPage(int y);
 	Team *localTeam;
 
 	Uint32 chatMask;
@@ -530,6 +556,9 @@ private:
 	//! for mouse motion
 	int viewportSpeedX, viewportSpeedY;
 	Uint64 lastViewportStep;
+    GAGCore::InputState inputState;
+    int lastMouseX = 0, lastMouseY = 0;
+    Uint32 lastMouseButtonState = 0;
 
 	// menu related functions
 	enum InGameMenu
@@ -652,6 +681,11 @@ private:
 	Sint32 displayedPosX(const Building& b) const;
 	Sint32 displayedPosY(const Building& b) const;
 	Sint32 displayedMaxUnitWorking(const Building& b) const;
+    void requestBuildingConstruction(Building& building);
+    void requestBuildingDestruction(Building& building);
+    bool requestWorkerAllocation(Building& building, int requested);
+    bool requestBuildingPriority(Building& building, int requested);
+    bool requestFlagRange(Building& building, int requested);
 	Sint32 displayedUnitStayRange(const Building& b) const;
 	Sint32 displayedPriority(const Building& b) const;
 	bool displayedClearingResource(const Building& b, int i) const;
@@ -688,5 +722,4 @@ private:
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
-
 

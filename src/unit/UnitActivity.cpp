@@ -124,6 +124,8 @@ void Unit::handleActivity(void)
 					// If free slot, do the conversion, change owner and ID
 					if (targetID!=UNIT_TARGETID_NONE)
 					{
+						++currentTeam->stats.measurements.conversionsOut[typeNum];
+						++targetTeam->stats.measurements.conversionsIn[typeNum];
 						Sint32 currentID=Unit::GIDtoID(gid);
 						assert(currentTeam->myUnits[currentID]);
 						currentTeam->myUnits[currentID]=NULL;
@@ -154,6 +156,7 @@ void Unit::handleActivity(void)
 				if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
 				b->subscribeUnitForInside(this);
+				owner->swapInn(this);
 			}
 			else
 				activity=ACT_RANDOM;

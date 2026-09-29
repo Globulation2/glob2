@@ -5,6 +5,7 @@
 
 #include <climits>
 #include <list>
+#include <memory>
 #include <vector>
 
 #include "BuildingUtils.h"
@@ -22,6 +23,7 @@ namespace GAGCore
 class Unit;
 class Team;
 class Map;
+class BuildingGradientSearch;
 struct BuildingType;
 class BuildingsTypes;
 class Order;
@@ -52,7 +54,9 @@ static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
 
 class Building : public BuildingUtils
 {
-public:
+	friend struct TeamStatsMeasurementFixture;
+
+  public:
 	static const int MAX_COUNT=1024;
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
@@ -136,6 +140,15 @@ public:
 	void saveCrossRef(GAGCore::OutputStream *stream);
 
 	bool isResourceFull(void);
+	///Custom-game "fortress buildings" rule: type->hpMax scaled by the
+	///configured multiplier. Use this instead of reading type->hpMax
+	///directly anywhere the result affects simulation or display.
+	int getEffectiveMaxHp(void) const;
+	///Same rule, for type->hpInit.
+	int getEffectiveInitHp(void) const;
+	///Same rule, for type->hpInc: a site delivered in full must still reach
+	///the scaled hpInit, or every new building would finish badly damaged.
+	int getEffectiveHpInc(void) const;
 	int neededResource(void);
 	/**
 	 * calls neededResource(int res) for all possible resources.
@@ -206,6 +219,8 @@ public:
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
 	bool subscribeToBringResourcesStep(void);
+	//! Whether the unit's type and level qualify it to work for this building.
+	bool canUnitWorkHere(Unit* unit);
 	///This function subscribes any flag that needs units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
@@ -218,7 +233,7 @@ public:
 	void turretStep(Uint32 stepCounter);
 	/// Kills the building: releases its workers, expels the units inside onto
 	/// the footprint or the ring around it, and queues it for deletion.
-	void kill(void);
+	void kill(int diagnosticRemoval = 2);
 
 	/// This function removes the unit from the list of units working on the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
@@ -396,7 +411,6 @@ private:
 	/// Tells whether a particular unit can work at this building. Takes into account this buildings level,
 	/// the units type and level, and whether this building is a flag, because flags get a couple of special
 	/// rules.
-	bool canUnitWorkHere(Unit* unit);
 
 	/// Per-zonable candidate-selection helpers for subscribeForFlagingStep.
 	/// Each tests one unit against the per-flag-type requirements (activity,
@@ -436,6 +450,10 @@ private:
 		Unit* choosen;
 	};
 
+	/// Lets test/RoundTripHungerGateHarness.cpp reach considerUnitForResource
+	/// without exposing it to game callers, as GameGUI does for its own harness.
+	friend class RoundTripHungerGateHarness;
+
 	/// Whether a unit is a possible hire at all: harvest-capable, idle, healthy,
 	/// high enough level, and close enough to reach this building before going
 	/// hungry. Fills *distBuilding on success; on failure tallies the rejection
@@ -449,12 +467,12 @@ private:
 	/// the HARVEST ability or already filling this building.
 	bool considerUnitForResource(Unit* unit, int wantedResource, int* dist);
 
-	/// Fills candidates[Unit::MAX_COUNT] with workers hireable to fetch
-	/// `wantedResource` (null `unit` where the slot is empty or the unit was
-	/// rejected), tallying rejection reasons via considerUnitForResource. The
+	/// Packs workers hireable to fetch `wantedResource` into candidates in unit
+	/// index order and returns their count. The caller supplies Unit::MAX_COUNT
+	/// slots. Rejection reasons are tallied via considerUnitForResource. The
 	/// tallies are reset per scan, so they describe one resource, never a unit
 	/// counted once per resource the building tried.
-	void gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource);
+	int gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource);
 
 	/// Per-resource delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in
@@ -480,7 +498,7 @@ private:
 	/// the unit it chooses. A candidate holding something else is charged
 	/// CARRIED_RESOURCE_PENALTY_TILES of detour rather than excluded, so it is
 	/// hired when it is enough closer to be worth the loss.
-	void selectFetcher(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel);
+	void selectFetcher(const BringResourcesCandidate* candidates, int count, int wantedResource, BringResourcesSelection& sel);
 
 	/// This function updates the resources pointer. The variable resources can either point to local resources
 	/// or team resources, depending on the BuildingType.
@@ -580,12 +598,30 @@ public:
 	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
 	Uint16 *globalGradient[SWIM_CLASS_COUNT];
+	//! Retained propagation queues. Never serialized: saving completes
+	//! their fields first. Null for loaded or locked fields; owned with globalGradient.
+	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[SWIM_CLASS_COUNT];
 	//! Set when the map changed nearby; rebuilt on use once DIRTY_REBUILD_TICKS
 	//! have elapsed since the last rebuild.
 	bool dirtyGradient[SWIM_CLASS_COUNT];
 	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_CLASS_COUNT];
+	//! Map::topologyGeneration when each field was computed. Differs from the
+	//! map's current value exactly when the ground it was built against has moved.
+	Uint32 gradientGeneration[SWIM_CLASS_COUNT];
 	// These flags track physical access (cannot swim / can swim), not travel cost.
 	// All swimming classes share passability, but keep separate weighted fields.
+	//! Last step a unit asked for the gradient; freeIdleGradients drops it when that is long ago.
+	Uint32 globalGradientUsedStep[SWIM_CLASS_COUNT];
+	//! Round-trip gradients per resource type and swim class (see Map::roundTripGradient),
+	//! NULL until a unit fetching that resource for this building asks for one, freed again
+	//! by freeIdleGradients when unused for a while. Their last rebuild and last
+	//! use, in steps.
+	Uint16 *roundTripGradient[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientUsedStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
+	//! buildings with fetchers need one, and each is a full map of Uint16.
+	void freeIdleGradients();
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
 
 	// Per-swim-variant tri-state cache of whether a clearing flag has any
@@ -613,6 +649,17 @@ public:
 	};
 
 	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
+	/// Display only. While the local player has this building selected, the
+	/// units behind each tally are kept by gid so the map view can mark them.
+	/// Never read by the simulation, not saved, not in the checksum.
+	bool recordFailingUnits = false;
+	std::vector<Uint16> unitsFailingByReason[UnitCantWorkReasonSize];
+	void setRecordFailingUnits(bool on);
+	/// Count `unit` under `reason`, and remember it while recording (busy units,
+	/// UnitNotAvailable, are only counted: marking every working unit says nothing).
+	void noteUnitFailing(Unit* unit, UnitCantWorkReason reason);
+	/// Start a hiring pass: every tally and remembered unit is dropped.
+	void resetFailureTallies();
 
 private:
 	// ─── Private data ───────────────────────────────────────────────

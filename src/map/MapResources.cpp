@@ -252,5 +252,25 @@ bool Map::getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *
 template bool Map::getGlobalGradientDestination<Uint8>(const Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
 template bool Map::getGlobalGradientDestination<Uint16>(const Uint16 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
 
+template<typename T>
+bool Map::isGradientPeak(const T *gradient, int x, int y) const
+{
+	// A round-trip gradient's goal is seeded at a finite cost, not the type's
+	// max the way GRADIENT_AT_GOAL is, so getGlobalGradientDestination's own
+	// "reached exact goal" check does not generalize to it. This is the
+	// weaker, gradient-agnostic property an ascent target actually needs:
+	// no neighbour holds a strictly higher value, so an ascent from anywhere
+	// nearby would still stop here.
+	size_t index = coordToIndex(x, y);
+	T here = gradient[index];
+	for (int d=0; d<8; d++)
+		if (gradient[coordToIndex(x+deltaOne[d][0], y+deltaOne[d][1])]>here)
+			return false;
+	return true;
+}
+
+template bool Map::isGradientPeak<Uint8>(const Uint8 *gradient, int x, int y) const;
+template bool Map::isGradientPeak<Uint16>(const Uint16 *gradient, int x, int y) const;
+
 
 

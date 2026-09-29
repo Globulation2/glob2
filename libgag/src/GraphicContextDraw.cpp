@@ -10,6 +10,13 @@ namespace GAGCore
 {
 	void GraphicContext::beginMapTransform(float zoom,float x,float y,int cx,int cy,int cw,int ch)
 	{
+        if (zoom!=1 || x!=0 || y!=0) beginSoftwareTransform();
+        if (renderer) {
+            assert(!mapTransformActive);
+            mapTranslateX=x; mapTranslateY=y; mapTransformActive=true; mapScale=zoom;
+            mapClipX=cx; mapClipY=cy; mapClipW=cw; mapClipH=ch;
+            SDL_Rect bounds{cx,cy,cw,ch}; renderer->transform(zoom,x,y,&bounds); return;
+        }
 #ifdef HAVE_OPENGL
 		if(!(optionFlags & USEGPU))return;
 		assert(!mapTransformActive);
@@ -20,6 +27,7 @@ namespace GAGCore
 	}
 	void GraphicContext::endMapTransform()
 	{
+        if (renderer) { renderer->transform(1,0,0,nullptr); mapTransformActive=false; mapScale=1; endSoftwareTransform(); setClipRect(); return; }
 #ifdef HAVE_OPENGL
 		if(!mapTransformActive)return;
 		Sprite::flushBatches(this);
@@ -30,6 +38,18 @@ namespace GAGCore
     void GraphicContext::drawMapCopies(int pw,int ph,int vw,int vh,const std::function<void()> &draw)
     {
         draw();
+        if (renderer && pw>0 && ph>0) {
+            SDL_Rect bounds{mapClipX,mapClipY,mapClipW,mapClipH};
+            periodicCopy=true;
+            for(int y=-1;y<=vh/ph+1;++y) for(int x=-1;x<=vw/pw+1;++x) {
+                if(x==0 && y==0) continue;
+                mapCopyTranslateX=x*pw*mapScale; mapCopyTranslateY=y*ph*mapScale;
+                renderer->transform(mapScale,mapTranslateX+mapCopyTranslateX,mapTranslateY+mapCopyTranslateY,&bounds);
+                draw();
+            }
+            renderer->transform(mapScale,mapTranslateX,mapTranslateY,&bounds);
+            mapCopyTranslateX=mapCopyTranslateY=0; periodicCopy=false; return;
+        }
 #ifdef HAVE_OPENGL
         if(!(optionFlags & USEGPU) || pw<=0 || ph<=0)return;
         Sprite::flushBatches(this);
@@ -37,15 +57,58 @@ namespace GAGCore
         for(int y=-1;y<=vh/ph+1;++y)for(int x=-1;x<=vw/pw+1;++x)
         {
             if(x==0 && y==0)continue;
+            mapCopyTranslateX=x*pw*mapScale; mapCopyTranslateY=y*ph*mapScale;
             glPushMatrix();glTranslatef(x*pw,y*ph,0);
             draw();Sprite::flushBatches(this);glPopMatrix();
         }
-        periodicCopy=false;
+        mapCopyTranslateX=mapCopyTranslateY=0; periodicCopy=false;
 #endif
+    }
+
+    void GraphicContext::drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color)
+    {
+        assert(x1 == x2 || y1 == y2);
+        // Snap in the actual raster target, then return to world coordinates.
+        // Include periodic-copy translation: wrapped maps need the same pixel
+        // alignment as the primary pass, even at fractional zoom and DPI.
+        const float raster = softwareTransform ? 1.f : rasterScale();
+        const float scale = mapTransformActive ? mapScale : 1.f;
+        const float pixelsPerWorld = raster * scale;
+        const float offsetX = mapTransformActive ? (mapTranslateX + mapCopyTranslateX) * raster : 0;
+        const float offsetY = mapTransformActive ? (mapTranslateY + mapCopyTranslateY) * raster : 0;
+        const float left = std::round(std::min(x1, x2) * pixelsPerWorld + offsetX);
+        const float top = std::round(std::min(y1, y2) * pixelsPerWorld + offsetY);
+        const float right = std::round(std::max(x1, x2) * pixelsPerWorld + offsetX);
+        const float bottom = std::round(std::max(y1, y2) * pixelsPerWorld + offsetY);
+        const float stroke = std::max(1.f, std::round(pixelsPerWorld));
+        // SDL's software geometry rasterizer truncates transformed coordinates.
+        // Avoid a world->screen->world round trip there: tiny float errors can
+        // otherwise move a snapped edge back across a pixel boundary.
+        if (renderer && mapTransformActive)
+        {
+            const float x=left/raster, y=top/raster;
+            const float rightEdge=(right+stroke)/raster, bottomEdge=(bottom+stroke)/raster;
+            const SDL_Color ink{color.r,color.g,color.b,color.a};
+            const SDL_Vertex a{{x,y},ink,{}}, b{{rightEdge,y},ink,{}},
+                             c{{rightEdge,bottomEdge},ink,{}}, d{{x,bottomEdge},ink,{}};
+            const SDL_Vertex vertices[]{a,b,c,a,c,d};
+            renderer->screenTriangles(vertices);
+            return;
+        }
+        // Inclusive ends join perpendicular edges and adjacent tile segments.
+        drawFilledRect((left-offsetX)/pixelsPerWorld, (top-offsetY)/pixelsPerWorld,
+                       (right-left+stroke)/pixelsPerWorld,
+                       (bottom-top+stroke)/pixelsPerWorld, color);
     }
 
     void GraphicContext::beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh)
     {
+        if (renderer && mapTransformActive) {
+            x=x*mapScale+mapTranslateX; y=y*mapScale+mapTranslateY;
+            sx=mapClipX; sy=mapClipY; sw=mapClipW; sh=mapClipH;
+            SDL_Rect bounds{sx,sy,sw,sh}; renderer->transform(1,0,0,&bounds);
+            overlayScale=mapScale; mapScale=1; return;
+        }
 #ifdef HAVE_OPENGL
         if(!mapTransformActive)return;
         Sprite::flushBatches(this);
@@ -57,25 +120,38 @@ namespace GAGCore
     }
     void GraphicContext::endScreenOverlay()
     {
+        if (renderer && mapTransformActive) {
+            mapScale=overlayScale; SDL_Rect bounds{mapClipX,mapClipY,mapClipW,mapClipH};
+            renderer->transform(mapScale,mapTranslateX,mapTranslateY,&bounds); return;
+        }
 #ifdef HAVE_OPENGL
         if(!mapTransformActive)return;
         Sprite::flushBatches(this);glPopMatrix();mapScale=overlayScale;
 #endif
     }
 
-	// GL rasterises lines at a width in drawable pixels, which the viewport
+	// GL rasterises lines at a width in the target's pixels, which the viewport
 	// transform does not scale the way it scales filled geometry.
 	void GraphicContext::setScaledLineWidth(float width)
 	{
 		#ifdef HAVE_OPENGL
-		glLineWidth(width * drawableScale() * mapScale);
+		glLineWidth(width * rasterScale() * mapScale);
 		#endif
 	}
 
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
+#ifdef HAVE_OPENGL
+        if (uiTransformActive && !renderer && (optionFlags & USEGPU)) {
+            SDL_Rect transformed{int(std::floor(x*uiTransformScale+uiTransformX)),int(std::floor(y*uiTransformScale+uiTransformY)),
+                int(std::ceil(w*uiTransformScale)),int(std::ceil(h*uiTransformScale))};
+            SDL_Rect clipped{}; SDL_IntersectRect(&transformed,&uiBounds,&clipped);
+            x=clipped.x;y=clipped.y;w=clipped.w;h=clipped.h;
+        }
+#endif
 		if(mapTransformActive){x=mapClipX;y=mapClipY;w=mapClipW;h=mapClipH;}
 		DrawableSurface::setClipRect(x, y, w, h);
+        if (renderer) renderer->clip(mapTransformActive ? nullptr : &clipRect);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
@@ -100,8 +176,16 @@ namespace GAGCore
 
 	void GraphicContext::setClipRect(void)
 	{
+#ifdef HAVE_OPENGL
+        if (uiTransformActive && !renderer && (optionFlags & USEGPU)) {
+            uiTransformActive=false;
+            setClipRect(uiBounds.x,uiBounds.y,uiBounds.w,uiBounds.h);
+            uiTransformActive=true; return;
+        }
+#endif
 		if(mapTransformActive){setClipRect(mapClipX,mapClipY,mapClipW,mapClipH);return;}
 		DrawableSurface::setClipRect();
+        if (renderer) renderer->clip(nullptr);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 			glState.doScissor(false);
@@ -112,6 +196,7 @@ namespace GAGCore
 
 	void GraphicContext::drawPixel(int x, int y, const Color& color)
 	{
+        if (renderer) { drawPixel(float(x), float(y), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawPixel(static_cast<float>(x), static_cast<float>(y), color);
@@ -122,6 +207,7 @@ namespace GAGCore
 
 	void GraphicContext::drawPixel(float x, float y, const Color& color)
 	{
+        if (renderer) { drawFilledRect(x, y, 1.0f, 1.0f, color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, 1.0f, 1.0f, color);
@@ -133,6 +219,7 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(int x, int y, int w, int h, const Color& color)
 	{
+        if (renderer) { drawRect(float(x), float(y), float(w), float(h), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawRect(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h), color);
@@ -143,6 +230,13 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(float x, float y, float w, float h, const Color& color)
 	{
+        if (renderer) {
+            if (w <= 0 || h <= 0) return;
+            drawFilledRect(x,y,w,1.0f,color);
+            if (h > 1) drawFilledRect(x,y+h-1,w,1.0f,color);
+            if (h > 2) { drawFilledRect(x,y+1,1.0f,h-2,color); if(w > 1) drawFilledRect(x+w-1,y+1,1.0f,h-2,color); }
+            return;
+        }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
@@ -153,11 +247,12 @@ namespace GAGCore
 			setScaledLineWidth(1.0f);
 
 			// draw
-			++drawCalls;glBegin(GL_LINES);
+			++drawCalls;
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_LINES);
 			glVertex2f(x, y);     glVertex2f(x+w, y);
 			glVertex2f(x+w, y);   glVertex2f(x+w, y+h);
 			glVertex2f(x+w, y+h); glVertex2f(x, y+h);
@@ -172,6 +267,7 @@ namespace GAGCore
 
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
+        if (renderer) { drawFilledRect(float(x), float(y), float(w), float(h), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawFilledRect(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h), color);
@@ -182,6 +278,13 @@ namespace GAGCore
 
 	void GraphicContext::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
+        if (renderer) {
+            if (w <= 0 || h <= 0) return;
+            SDL_Color c{color.r,color.g,color.b,color.a};
+            SDL_Vertex a{{x,y},c,{0,0}}, b{{x+w,y},c,{0,0}}, d{{x,y+h},c,{0,0}}, e{{x+w,y+h},c,{0,0}};
+            const SDL_Vertex vertices[] = {a,b,e,a,e,d};
+            renderer->triangles(vertices); return;
+        }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
@@ -193,11 +296,12 @@ namespace GAGCore
 			glState.doTexture(false);
 
 			// draw
-			++drawCalls;glBegin(GL_QUADS);
+			++drawCalls;
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_QUADS);
 			glVertex2f(x, y);
 			glVertex2f(x+w, y);
 			glVertex2f(x+w, y+h);
@@ -212,6 +316,7 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, const Color& color)
 	{
+        if (renderer) { drawLine(float(x1), float(y1), float(x2), float(y2), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawLine(static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2), color);
@@ -222,6 +327,15 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
+        if (renderer) {
+            float dx=x2-x1, dy=y2-y1, length=std::hypot(dx,dy);
+            if (length == 0) { drawPixel(x1,y1,color); return; }
+            float nx=-dy/(2*length), ny=dx/(2*length);
+            SDL_Color c{color.r,color.g,color.b,color.a};
+            SDL_Vertex a{{x1+nx,y1+ny},c,{0,0}}, b{{x2+nx,y2+ny},c,{0,0}}, d{{x1-nx,y1-ny},c,{0,0}}, e{{x2-nx,y2-ny},c,{0,0}};
+            const SDL_Vertex vertices[] = {a,b,e,a,e,d};
+            renderer->triangles(vertices); return;
+        }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
@@ -232,7 +346,7 @@ namespace GAGCore
 
 			// Drivers only antialias 1 px lines, so a scaled line is built from
 			// several 1 px smooth lines spread across the scaled thickness.
-			const float scale = drawableScale();
+			const float scale = rasterScale();
 			const int passes = std::max(1, static_cast<int>(std::ceil(scale)));
 			float nx = 0.0f, ny = 0.0f;
 			if (passes > 1)
@@ -248,7 +362,7 @@ namespace GAGCore
 			glLineWidth(1.0f);
 
 			// draw
-			++drawCalls;glBegin(GL_LINES);
+			++drawCalls;
 			if (color.a < 255)
 			{
 				// the passes overlap, so each carries the alpha that composes back to the requested one
@@ -257,9 +371,10 @@ namespace GAGCore
 			}
 			else
 				glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_LINES);
 			for (int i = 0; i < passes; ++i)
 			{
-				// offsets in window pixels from -(scale-1)/2 to +(scale-1)/2, mapped back to logical units
+				// offsets in target pixels from -(scale-1)/2 to +(scale-1)/2, mapped back to logical units
 				const float off = passes > 1 ? ((scale - 1.0f) * (static_cast<float>(i) / (passes - 1) - 0.5f)) / scale : 0.0f;
 				glVertex2f(x1 + nx * off, y1 + ny * off);
 				glVertex2f(x2 + nx * off, y2 + ny * off);
@@ -274,6 +389,7 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(int x, int y, int radius, const Color& color)
 	{
+        if (renderer) { drawCircle(float(x), float(y), float(radius), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawCircle(static_cast<float>(x), static_cast<float>(y), static_cast<float>(radius), color);
@@ -284,6 +400,15 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(float x, float y, float radius, const Color& color)
 	{
+        if (renderer) {
+            if (radius <= 0) return;
+            int segments=std::max(12, int(std::ceil(radius*2)));
+            for(int i=0;i<segments;++i) {
+                float a=2*M_PI*i/segments, b=2*M_PI*(i+1)/segments;
+                drawLine(x+radius*std::cos(a),y+radius*std::sin(a),x+radius*std::cos(b),y+radius*std::sin(b),color);
+            }
+            return;
+        }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
@@ -296,17 +421,18 @@ namespace GAGCore
 			double fy = y;
 			double fray = radius;
 
-			++drawCalls;glBegin(GL_LINES);
+			++drawCalls;
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_LINES);
 			for (int i=0; i<tot; i++)
 			{
 				double angle0 = (2*M_PI*(double)i)/((double)tot);
 				double angle1 = (2*M_PI*(double)(i+1))/((double)tot);
-				glVertex2d(fx+fray*sin(angle0), fy+fray*cos(angle0));
-				glVertex2d(fx+fray*sin(angle1), fy+fray*cos(angle1));
+				glVertex2f(fx+fray*sin(angle0), fy+fray*cos(angle0));
+				glVertex2f(fx+fray*sin(angle1), fy+fray*cos(angle1));
 			}
 			glEnd();
 			setScaledLineWidth(1.0f);
@@ -342,6 +468,7 @@ namespace GAGCore
 	// adjacent lines (charts, sliders, training bars) leave gaps between them.
 	void GraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+        if (renderer) { drawFilledRect(x,y,1, l,Color(r,g,b,a)); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, 1, l, Color(r, g, b, a));
@@ -352,6 +479,7 @@ namespace GAGCore
 
 	void GraphicContext::drawVertLine(int x, int y, int l, const Color& color)
 	{
+        if (renderer) { drawFilledRect(x,y,1, l,color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, 1, l, color);
@@ -362,6 +490,7 @@ namespace GAGCore
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+        if (renderer) { drawFilledRect(x,y,l, 1,Color(r,g,b,a)); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, l, 1, Color(r, g, b, a));
@@ -372,6 +501,7 @@ namespace GAGCore
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, const Color& color)
 	{
+        if (renderer) { drawFilledRect(x,y,l, 1,color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, l, 1, color);

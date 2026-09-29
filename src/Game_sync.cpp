@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include <PerformanceTelemetry.h>
 #include "AICastor.h"
 
 #include <assert.h>
@@ -21,7 +21,6 @@
 
 
 #include "Brush.h"
-#include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"
 
@@ -31,6 +30,7 @@
 
 void Game::buildProjectSyncStep(Sint32 localTeam)
 {
+	PERF_SCOPE_TIME(Projects);
 	for (std::list<BuildProject>::iterator bpi=buildProjects.begin(); bpi!=buildProjects.end();)
 	{
 		int posX=bpi->posX&map.getMaskW();
@@ -43,16 +43,14 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 		int h=bt->height;
 		if (!map.isHardSpaceForBuilding(posX, posY, w, h))
 		{
-			Uint32 notTeamMask=~Team::teamNumberToMask(teamNumber);
 			for (int y=posY; y<posY+h; y++)
 				for (int x=posX; x<posX+w; x++)
 				{
-					size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.tiles[index].forbidden&=notTeamMask;
+					map.removeForbidden(x, y, teamNumber);
 					// Update local map
 					if (teamNumber == localTeam)
-						map.displayedForbiddenView.set(index, false);
+						map.displayedForbiddenView.set(map.coordToIndex(x, y), false);
 				}
 			map.updateForbiddenGradient(teamNumber);
 			std::list<BuildProject>::iterator to_erase=bpi;
@@ -65,16 +63,14 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 			Building *b=addBuilding(posX, posY, typeNum, teamNumber, bpi->unitWorking, bpi->unitWorkingFuture);
 			if (b)
 			{
-				Uint32 notTeamMask=~Team::teamNumberToMask(teamNumber);
 				for (int y=posY; y<posY+h; y++)
 					for (int x=posX; x<posX+w; x++)
 					{
-						size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 						// Update real map
-						map.tiles[index].forbidden&=notTeamMask;
+						map.removeForbidden(x, y, teamNumber);
 						// Update local map
 						if (teamNumber == localTeam)
-							map.displayedForbiddenView.set(index, false);
+							map.displayedForbiddenView.set(map.coordToIndex(x, y), false);
 					}
 				map.updateForbiddenGradient(teamNumber);
 				b->owner->addToStaticAbilitiesLists(b);
@@ -109,6 +105,7 @@ void Game::wonSyncStep(void)
 
 void Game::scriptSyncStep()
 {
+	PERF_SCOPE_TIME(Scripts);
 	// Decorative games have no GUI or mission script context. Normal and
 	// headless Engine sessions both supply a GameGUI, as before.
 	if (!gui) return;
@@ -139,12 +136,16 @@ void Game::syncStep(Sint32 localTeam)
 {
 	if (!anyPlayerWaited)
 	{
+		PERF_SCOPE_TIME(Tick);
 		if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 		{
 			globalContainer->replayWriter->advanceStep();
 		}
 
 		Uint64 startTick=SDL_GetTicks64();
+
+		if (!map.pipeline().enabled()) map.configureGradientPipeline(1, 8);
+		map.pipeline().advance();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();

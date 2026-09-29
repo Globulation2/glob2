@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
+#include <ApplicationHost.h>
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -40,6 +41,24 @@ public:
 	int cachedPresentations = 0;
 	Context(bool gpu) : GraphicContext(640, 480, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
 	void nextFrame() override { ++frames; GraphicContext::nextFrame(); }
+	void checkHostPolling()
+	{
+		struct Probe : ApplicationHost::Loop
+		{
+			Context &context;
+			int frames = 0;
+			explicit Probe(Context &context) : context(context) {}
+			bool frame(std::uint32_t, const std::vector<SDL_Event> &) override
+			{
+				if (frames++ == 0) { context.resize(800, 600); return true; }
+				require(context.getW() == 800 && context.getH() == 600,
+					"Native host did not apply the window size before dispatching a frame");
+				return false;
+			}
+			std::uint32_t delay(std::uint32_t) override { return 0; }
+		};
+		ApplicationHost::run(std::make_unique<Probe>(*this), [] {});
+	}
 	void benchmark()
 	{
 		readback = false; // Pixel readback would dominate the work being measured.
@@ -101,6 +120,13 @@ public:
 			"Window manager constrained test dimensions; use a desktop at least 1100x850");
 	}
 	void applyResize() { updateWindowSize(); }
+	// Like resize(), but without requiring the window to land on the size asked
+	// for: with an interface scale the whole point is that SDL clamps it up to
+	// the scaled minimum.
+	void shrinkTo(int w, int h)
+	{
+		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
+	}
 	void expose(bool otherWindow = false)
 	{
 		SDL_Event event{}; event.type = SDL_WINDOWEVENT;
@@ -126,9 +152,16 @@ public:
 	Color pixel(int x, int y)
 	{
 		Color c;
+		// Callers use SDL window coordinates; Retina readback is in drawable
+		// pixels. Sample the same window position on either density.
+		int windowWidth, windowHeight;
+		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+		require(x >= 0 && x < windowWidth && y >= 0 && y < windowHeight, "Readback outside window");
 		if (getOptionFlags() & USEGPU)
 		{
 #ifdef HAVE_OPENGL
+			x = x * presentedWidth / windowWidth;
+			y = y * presentedHeight / windowHeight;
 			require(x >= 0 && x < presentedWidth && y >= 0 && y < presentedHeight, "Readback outside presented frame");
 			c = presentedPixels[(presentedHeight-y-1)*presentedWidth+x];
 #endif
@@ -136,6 +169,9 @@ public:
 		else
 		{
 			auto *surface = SDL_GetWindowSurface(window);
+			require(surface != nullptr, "Missing software window surface");
+			x = x * surface->w / windowWidth;
+			y = y * surface->h / windowHeight;
 			require(surface && x >= 0 && x < surface->w && y >= 0 && y < surface->h, "Readback outside software window surface");
 			Uint32 p = 0;
 			const int bytes = surface->format->BytesPerPixel;
@@ -229,8 +265,30 @@ int main(int argc, char **argv)
 			gfx.expose();
 			require(gfx.pixel(size.first-5, size.second-5).r > 240, "New frame does not cover resized window");
 		}
+		gfx.checkHostPolling();
 		gfx.resize(300, 200); gfx.applyResize();
 		require(gfx.getW() >= 640 && gfx.getH() >= 480, "Minimum size not enforced");
+		{
+			// The same floor, but with an interface scale in play. The logical
+			// surface is the window divided by the scale, so the floor only holds
+			// if the window's own minimum is the scaled one. The check above misses
+			// this because its context is built at 640x480, where setRes() reduces
+			// the scale back to 1 and nothing is ever stretched. Before this was
+			// fixed, dragging the window down at scale 1.75 gave a 366x274 logical
+			// surface -- narrower than the 368px main menu panel.
+			SDL_setenv("GLOB2_UI_SCALE", "", 1); // an inherited override would win
+			const Uint32 windowed = GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
+			GraphicContext::setRequestedUiScale(1.75f);
+			gfx.setRes(1280, 960, windowed);
+			require(gfx.getUiScale() > 1.7f, "Interface scale not applied in a window with room for it");
+			require(gfx.getW() >= 640 && gfx.getH() >= 480, "Scaled logical surface starts below the layout floor");
+			gfx.shrinkTo(640, 480);
+			gfx.applyResize();
+			require(gfx.getW() >= 640 && gfx.getH() >= 480, "Interface scale lets a resize break the layout floor");
+			GraphicContext::setRequestedUiScale(0.0f);
+			gfx.setRes(640, 480, windowed);
+			require(gfx.getUiScale() == 1.0f, "Interface scale not cleared");
+		}
 		gfx.setRes(800, 600, gpu ? GraphicContext::USEGPU : 0);
 		require(!gfx.cached(), "Window recreation retained old frame cache");
 		gfx.expose();

@@ -53,6 +53,7 @@ namespace GAGGUI
 	
 		void set(int newValue) {value=newValue;};
 		int get(void);
+        int maximumValue() const {return max;}
 	
 		void setScale(float start, float ratio);
 		

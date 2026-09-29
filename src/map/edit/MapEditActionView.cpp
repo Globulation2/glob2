@@ -5,13 +5,14 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
 bool MapEdit::performViewAction(const std::string& action, int relMouseX, int relMouseY)
 {
+    if(phone && action.starts_with("close ")) phone->closeOverlay();
 	if(action=="scroll drag start")
 	{
 		isScrollDragging=true;
@@ -203,10 +204,7 @@ bool MapEdit::performViewAction(const std::string& action, int relMouseX, int re
 		//Only compute when its x'ed in, not otherwise
 		if(isFertilityOn)
 		{
-			FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
-			dialog.runModal();
-			overlay.forceRecompute();
-			overlay.compute(game, OverlayArea::Fertility, team);
+			fertilityRequested = true;
 		}
 	}
 	else if(action=="quit editor")

@@ -78,9 +78,9 @@ constexpr int EXPLORED_AREA_SAVED_VERSION_MINOR = 88;
 // Initial Resource::amount when a fresh resource is seeded onto a tile.
 constexpr int RESOURCE_INITIAL_AMOUNT = 1;
 
-// Corn growth probability denominator: corn grows on 1-in-CORN_GROWTH_DIVISOR
-// random rolls. Comment in Map::growResources says "Growth rate of corn is 1/3".
-constexpr int CORN_GROWTH_DIVISOR = 3;
+// Wheat growth probability denominator: wheat grows on 1-in-WHEAT_GROWTH_DIVISOR
+// random rolls. Comment in Map::growResources says "Growth rate of wheat is 1/3".
+constexpr int WHEAT_GROWTH_DIVISOR = 3;
 
 // Spiral outward from (startX, startY) for `steps` cells in each of E, S, W, N (in order),
 // returning true on the first non-zero gradient cell encountered. The grid stride is

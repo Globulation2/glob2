@@ -7,7 +7,6 @@
 #include "GlobalContainer.h"
 #include <GUIButton.h>
 #include "GUIMapPreview.h"
-#include "GUIMessageBox.h"
 #include <GUIText.h>
 #include <GUIProgressBar.h>
 #include "MapHeader.h"
@@ -16,16 +15,25 @@
 #include "YOGClient.h"
 #include "YOGClientDownloadingMapScreen.h"
 #include "YOGClientDownloadableMapList.h"
+#include <ScreenStack.h>
+#include "MessageScreen.h"
 
 using namespace GAGCore;
 
-YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info)
-	: info(info), client(client), downloader(client)
+YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info)
+	: screens(screens), info(info), client(client), downloader(client)
 {
+    enablePhoneForm();
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[downloading map]")));
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	preview = new MapPreview(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(preview);
+	preview->setState(MapPreview::State::Loading);
+	preview->retry = [this]
+	{
+		this->client->getDownloadableMapList()->requestThumbnail(this->info.getMapHeader().getMapName(), true);
+	};
+	client->getDownloadableMapList()->requestThumbnail(info.getMapHeader().getMapName());
 	
 	mapName=new Text(173, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
 	addWidget(mapName);
@@ -46,7 +54,7 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(std::shared_ptr<YOG
 	std::string textTemp;
 	textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 	mapInfo->setText(textTemp);
-	textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
+	textTemp = FormattableString("%0 x %1").arg(info.getWidth()).arg(info.getHeight());
 	mapSize->setText(textTemp);
 	authorName->setText(info.getAuthorName());
 	
@@ -56,6 +64,8 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(std::shared_ptr<YOG
 
 
 
+
+YOGClientDownloadingMapScreen::~YOGClientDownloadingMapScreen() { downloader.cancelDownload(); }
 
 void YOGClientDownloadingMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
@@ -77,8 +87,10 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 	downloader.update();
 	if(!client->isConnected())
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map download failure: lost connection]"), Toolkit::getStringTable()->getString("[ok]"));
-		endExecute(CONNECTIONLOST);
+		screens.push(std::make_unique<MessageScreen>(Toolkit::getStringTable()->getString("[Map download failure: lost connection]"),
+			std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}),
+			[this](Screen&, int) { endExecute(CONNECTIONLOST); });
+		return;
 	}
 	
 	downloadStatus->visible = false;
@@ -105,6 +117,11 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 			textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
 			mapSize->setText(textTemp);
 		}
+		else
+		{
+			auto state = client->getDownloadableMapList()->getThumbnailState(info.getMapHeader().getMapName());
+			preview->setState(state == YOGClientDownloadableMapList::ThumbnailState::Failed
+				? MapPreview::State::Failed : MapPreview::State::Loading);
+		}
 	}
 }
-

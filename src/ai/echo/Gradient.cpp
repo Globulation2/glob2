@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include <PerformanceTelemetry.h>
 #include "echo/Echo.h"
 #include "Building.h"
 #include <queue>
@@ -205,6 +206,7 @@ GradientInfo make_gradient_info_obstacle(Entities::Entity* source1, Entities::En
 
 void Gradient::recalculate(Map* map)
 {
+	PERF_SCOPE_TIME(AIGradient);
 	width=map->getW();
 	gradient.resize(map->getW()*map->getH());
 	std::fill(gradient.begin(), gradient.end(),0);
@@ -338,3 +340,82 @@ void GradientManager::update()
 }
 
 
+
+// These fields are observable scheduling state: recomputing them on load can
+// change both placement scores and the tick a pending building becomes ready.
+void GradientManager::save(GAGCore::OutputStream* stream)
+{
+	stream->writeEnterSection("GradientManager");
+	stream->writeSint32(timer,"timer");
+	stream->writeUint32(cur_update,"curUpdate");
+	stream->writeUint32(gradients.size(),"count");
+	stream->writeEnterSection("gradients");
+	for(size_t i=0;i<gradients.size();++i)
+	{
+		stream->writeEnterSection(i);
+		Gradient& g=*gradients[i];
+		g.gradient_info.save(stream);
+		stream->writeSint32(ticks_since_update[i],"age");
+		stream->writeSint32(g.width,"width");
+		stream->writeUint32(g.gradient.size(),"size");
+		stream->writeEnterSection("values");
+		for(size_t j=0;j<g.gradient.size();++j)
+			stream->writeSint16(g.gradient[j],std::to_string(j));
+		stream->writeLeaveSection();
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	auto pending=queuedGradients;
+	stream->writeUint32(pending.size(),"queuedCount");
+	stream->writeEnterSection("queued");
+	for(size_t i=0;!pending.empty();++i)
+	{
+		stream->writeUint32(pending.front(),std::to_string(i));
+		pending.pop();
+	}
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+bool GradientManager::load(GAGCore::InputStream* stream,Player* player,Sint32 versionMinor)
+{
+	stream->readEnterSection("GradientManager");
+	timer=stream->readSint32("timer");
+	cur_update=stream->readUint32("curUpdate");
+	const Uint32 count=stream->readUint32("count");
+	stream->readEnterSection("gradients");
+	for(Uint32 i=0;i<count;++i)
+	{
+		if(stream->isEndOfStream()) return false;
+		stream->readEnterSection(i);
+		GradientInfo info;
+		if(!info.load(stream,player,versionMinor)) return false;
+		auto g=std::make_shared<Gradient>(info);
+		ticks_since_update.push_back(stream->readSint32("age"));
+		g->width=stream->readSint32("width");
+		const Uint32 size=stream->readUint32("size");
+		// A queued gradient can be uncomputed; materialized fields must match
+		// the loaded map. Values use explicit endian-safe signed 16-bit IO.
+		if(size ? (size!=Uint32(map->getW()*map->getH()) || g->width!=map->getW()) : g->width!=0)
+			return false;
+		g->gradient.resize(size);
+		stream->readEnterSection("values");
+		for(Uint32 j=0;j<size;++j)g->gradient[j]=stream->readSint16(std::to_string(j));
+		stream->readLeaveSection();
+		gradients.push_back(g);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	const Uint32 queued=stream->readUint32("queuedCount");
+	stream->readEnterSection("queued");
+	for(Uint32 i=0;i<queued;++i)
+	{
+		if(stream->isEndOfStream()) return false;
+		const Uint32 index=stream->readUint32(std::to_string(i));
+		if(index>=count) return false;
+		queuedGradients.push(index);
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+	return true;
+}

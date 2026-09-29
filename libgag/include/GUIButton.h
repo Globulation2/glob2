@@ -21,7 +21,8 @@ namespace GAGGUI
 		bool isClickable;
 		
 	public:
-		Button() { isClickable=true; }
+		Button() { isClickable=true; unicodeShortcut=0; }
+        Uint16 shortcut() const { return unicodeShortcut; }
 		Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode, Uint16 unicodeShortcut=0);
 		Button(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, int returnCode, const std::string& tooltip, const std::string &font, Uint16 unicodeShortcut=0);
 		virtual ~Button() { }
@@ -54,6 +55,11 @@ namespace GAGGUI
 		virtual void paint(void);
 	
 		void setText(const std::string text);
+        const std::string& caption() const { return text; }
+        int textWidth() const;
+        std::vector<std::string> wrappedLines(int width) const;
+        int wrappedHeight(int width) const;
+        void paintResponsive();
 	};
 	
 	class OnOffButton:public HighlightableWidget

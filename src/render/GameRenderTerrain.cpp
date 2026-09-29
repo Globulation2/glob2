@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <iostream>
 
 #include "AICastor.h"
@@ -23,7 +24,6 @@
 
 
 #include "Brush.h"
-#include "FertilityCalculatorDialog.h"
 
 
 #include "GameRenderInternal.h"
@@ -42,6 +42,7 @@
 // same way in GlobalContainer::load), not a per-render guard here.
 void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
 {
+	PERF_SCOPE_TIME(Water);
 	// Tile size of the data/gfx/water sprite, in pixels.
 	static const int WATER_TILE_SIZE = 512;
 	int waterStartX = -(((viewportX<<5)+time/2) % WATER_TILE_SIZE);
@@ -54,6 +55,7 @@ void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
 
 void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	PERF_SCOPE_TIME(Terrain);
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
@@ -90,6 +92,7 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 
 void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	PERF_SCOPE_TIME(Resources);
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
@@ -131,6 +134,9 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
+	if (view.selectedBuilding && (DEBUG_RENDER_GRADIENTS || view.selectedBuilding->verbose))
+		for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+			map.finishBuildingGradient(view.selectedBuilding, c);
 	// We draw debug area:
 	if (DEBUG_RENDER_GRADIENTS)
 	{
@@ -190,6 +196,7 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
  */
 void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
+	PERF_SCOPE_TIME(Overlay);
 	static int areaAnimationTick = 0;
 
 	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
@@ -252,14 +259,14 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 				globalContainer->gfx->drawSprite((x<<5), (y<<5), sprite, frame);
 
 				if (!(map->*mapIs)(x+viewportX, y+viewportY-1))
-					globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, y*32, (x+1)*32, y*32, c);
 				if (!(map->*mapIs)(x+viewportX, y+viewportY+1))
-					globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, (y+1)*32, (x+1)*32, (y+1)*32, c);
 
 				if (!(map->*mapIs)(x+viewportX-1, y+viewportY))
-					globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary(x*32, y*32, x*32, (y+1)*32, c);
 				if (!(map->*mapIs)(x+viewportX+1, y+viewportY))
-					globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, c);
+					globalContainer->gfx->drawMapBoundary((x+1)*32, y*32, (x+1)*32, (y+1)*32, c);
 			}
 		}
 	}

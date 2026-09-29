@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <iostream>
 #include <sstream>
 #include <locale>
 #include <stdexcept>
+#include <set>
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -16,6 +18,7 @@
 #include <algorithm>
 
 #include <BinaryStream.h>
+#include <StreamBackend.h>
 
 #include "BuildingType.h"
 #include "DatasetWriter.h"
@@ -33,7 +36,6 @@
 #include "Brush.h"
 #include "Bullet.h"
 #include "FertilityCalculator.h"
-#include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"
 
@@ -143,7 +145,14 @@ namespace
 
 bool Game::load(GAGCore::InputStream *stream)
 {
+	PERF_SCOPE_TIME(Load);
+    return loadTask(stream).run();
+}
+
+GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
+{
 	assert(stream);
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
 
 	ReadSectionGuard gameSection(stream, "Game");
 
@@ -157,7 +166,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (verbose)
 		printf("Loading map header\n");
 	if (!tempMapHeader.load(stream))
-		return false;
+		co_return false;
 	mapHeader=tempMapHeader;
 	Sint32 versionMinor=mapHeader.getVersionMinor();
 
@@ -167,11 +176,11 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (verbose)
 		printf("Loading game header\n");
 	if (!tempGameHeader.load(stream, versionMinor))
-		return false;
+		co_return false;
 	gameHeader=tempGameHeader;
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_BEGIN, "signatureStart"))
-		return false;
+		co_return false;
 
 	///Load the step counter
 	stepCounter = stream->readUint32("stepCounter");
@@ -184,12 +193,12 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->readUint32("SyncRandSeedC");
 
 		if (!readMatchingSignature(stream, FILE_SIG_GAME_SYNC, "signatureAfterSyncRand"))
-			return false;
+			co_return false;
 	}
 	else
 	{
 		if (!readMatchingSignature(stream, FILE_SIG_GAME_BUILT, "signatureBeforeTeams"))
-			return false;
+			co_return false;
 	}
 
 	///Load teams
@@ -197,53 +206,60 @@ bool Game::load(GAGCore::InputStream *stream)
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		stream->readEnterSection(i);
-		teams[i]=new Team(stream, this, versionMinor);
+        co_await GAGCore::CooperativeTask::checkpoint("[Loading teams]");
+		teams[i]=new Team(this);
+        if (!(co_await teams[i]->loadTask(stream, &globalContainer->buildingsTypes, versionMinor)))
+            co_return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_TEAM, "signatureAfterTeams"))
-		return false;
+		co_return false;
 
 	// Load the map. Team has to be saved and loaded first.
-	if(!map.load(stream, mapHeader, this))
-		return false;
+	if(!(co_await map.loadTask(stream, mapHeader, this)))
+		co_return false;
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_MAP, "signatureAfterMap"))
-		return false;
+		co_return false;
 
 	// Load the players. Both Map and Team must be loaded first.
 	stream->readEnterSection("players");
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 	{
 		stream->readEnterSection(i);
-		players[i]=new Player(stream, teams, versionMinor);
+        co_await GAGCore::CooperativeTask::checkpoint("[Loading players]");
+		players[i]=new Player();
+		if (!players[i]->load(stream, teams, versionMinor)) co_return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_PLAYER, "signatureAfterPlayers"))
-		return false;
+		co_return false;
 
-	// We have to finish Team's loading
-	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
-	{
-		teams[i]->update();
-	}
+	// Legacy saves reconstruct service lists by running building updates. That
+	// changes tie-breaking order and can even advance construction. New saved
+	// games carry the live lists and bookkeeping instead.
+	if (versionMinor < FILE_FORMAT_VERSION_SIMULATION_CONTINUATION || !mapHeader.getIsSavedGame())
+		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
+			teams[i]->update();
 
 	// Check integrity of loaded game
 	if (!integrity())
-		return false;
+		co_return false;
 
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading scripts]");
 	// Now load the old map script
 	if (!sgslScript.load(stream, this))
-		return false;
+		co_return false;
 
 	if(versionMinor >= FILE_FORMAT_VERSION_USL_MAPSCRIPT)
 	{
 		// This is the new map script system
 		if (!mapscript.decodeData(stream, mapHeader.getVersionMinor()))
-			return false;
+			co_return false;
 	}
 
 	///Load the campaign text for the game.
@@ -283,35 +299,55 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->readLeaveSection();
 		std::istringstream input(state.str());
 		input.imbue(std::locale::classic());
-		if (!(input >> savedRandom)) return false;
-		map.loadRuntimeState(stream);
+		if (!(input >> savedRandom)) co_return false;
+		map.loadRuntimeState(stream, versionMinor);
 	}
+	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		if (teams[t]->stats.needsMeasurementInitialization)
+		{
+			teams[t]->stats.initializeMeasurements(stepCounter);
+			teams[t]->stats.refreshMeasurements(teams[t]);
+		}
+	std::set<std::pair<int, Uint32>> diagnosticIdentities;
+	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		for (const auto &record : teams[t]->stats.aiTelemetry)
+			if (record->current.tick > stepCounter || record->coverage > stepCounter ||
+				!diagnosticIdentities.emplace(record->player, record->generation).second)
+				throw std::runtime_error("Invalid AI telemetry identity or game tick");
+	for (int p = 0; p < gameHeader.getNumberOfPlayers(); ++p)
+		if (players[p] && players[p]->ai)
+			players[p]->ai->bindTelemetry();
 	gameSection.commit();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
 	///compute it now
 	if(mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_PRE_FERTILITY)
 	{
-	    if(globalContainer->runNoX)
-	    {
-	        FertilityCalculator::compute(map, {});
-	    }
-	    else
-	    {
-	        FertilityCalculatorDialog dialog(globalContainer->gfx, map);
-	        dialog.runModal();
-	    }
+        FertilityCalculator::Job fertility(map);
+        while (!fertility.advance(65536))
+            co_await GAGCore::CooperativeTask::checkpoint("[Computing Fertility]");
+        fertility.commit();
 	}
 
 	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
 	{
-		randomGenerator = savedRandom;
+		syncRandEngine() = savedRandom;
 		hasSavedRandomState = true;
 	}
 
-	return true;
+	co_return true;
 }
 
+// Known gap, deliberately out of scope here: this writes into the building tile
+// grid directly rather than through Map::setBuilding, so it does not bump
+// Map::topologyGeneration, and moving the bump here would not help - integrity()
+// runs before Map::loadRuntimeState, which then restores the saved generation and
+// the per-field stamps over anything set while healing. A save whose grid was
+// already inconsistent therefore gets healed and its restored fields treated as
+// current against a map the heal changed. It predates the generation (fields were
+// restored after the heal without being dirtied before it too) and only fires for
+// saves that were already inconsistent. A fix has to record that the heal touched
+// a cell and bump after loadRuntimeState.
 bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 	std::vector<Uint16> buildings(map.getW()*map.getH(), NOGBID);
 	for (int ti=0; ti<mapHeader.getNumberOfTeams(); ti++)
@@ -433,14 +469,39 @@ bool Game::integrity(void)
 	return true;
 }
 
-void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name)
+void DeferredGameSHA1::apply(std::string& contents) const
 {
+	assert(start <= headerOffset && headerOffset + initialHeader.size() <= end && end <= contents.size());
+	assert(sha1Offset + SHA1_BYTE_LEN <= headerOffset + initialHeader.size());
+	const unsigned char* bytes = reinterpret_cast<const unsigned char*>(contents.data());
+	const size_t afterHeader = headerOffset + initialHeader.size();
+	SHA1_CTX context;
+	SHA1Init(&context);
+	SHA1Update(&context, bytes + start, headerOffset - start);
+	SHA1Update(&context, reinterpret_cast<const unsigned char*>(initialHeader.data()), initialHeader.size());
+	SHA1Update(&context, bytes + afterHeader, end - afterHeader);
+	unsigned char sha1[SHA1_BYTE_LEN];
+	SHA1Final(sha1, &context);
+	std::copy(sha1, sha1 + SHA1_BYTE_LEN, contents.begin() + sha1Offset);
+}
+
+void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, DeferredGameSHA1* deferredSHA1)
+{
+	PERF_SCOPE_TIME(Serialize);
 	assert(stream);
+	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+		if (teams[t])
+			AITelemetry::capture(teams[t], false, false);
 	stream->writeEnterSection("Game");
-	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+	const bool binary = dynamic_cast<GAGCore::BinaryOutputStream*>(stream) != nullptr;
+	assert(!deferredSHA1 || (binary && stream->canSeek()));
+	const bool hashing = binary && !deferredSHA1;
+	if (hashing)
 	{
 		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->enableSHA1();
 	}
+	if (deferredSHA1)
+		deferredSHA1->start = stream->getPosition();
 
 	///Save the two headers, record the position in the file because mapHeader will
 	///will need to be overwritten with the mapOffset known.
@@ -448,8 +509,8 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	/// We mutate mapHeader briefly to shape the on-disk record (mapName,
 	/// isSavedGame), then restore it on scope exit via the RAII guard
 	/// below. Without the restore, every in-game save (the ReplayWriter's
-	/// initial state dump with name="replayHeader" and the GameGUI auto-save
-	/// every 256 ticks with name="Auto save") would permanently overwrite
+	/// initial state dump with name="replayHeader" and the periodic GameGUI
+	/// auto-save with name="Auto save") would permanently overwrite
 	/// the live mapHeader.mapName — observable later in things like the
 	/// GLOB2_GAME_END "map=" field, which would read "Auto save" instead
 	/// of the actual map. Map-editor "Save As" still wants the new name
@@ -487,7 +548,20 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 		gameHeader.getBasePlayer(i).disableRecursiveDestruction=true;
 	}
 
-	mapHeader.save(stream);
+	if (deferredSHA1)
+	{
+		// The backpatch below rewrites these bytes, but the hash covers them as written now.
+		auto* header = new GAGCore::MemoryStreamBackend();
+		GAGCore::BinaryOutputStream headerStream(header);
+		size_t sha1Position = 0;
+		mapHeader.save(&headerStream, &sha1Position);
+		deferredSHA1->headerOffset = mapHeaderOffset;
+		deferredSHA1->sha1Offset = mapHeaderOffset + sha1Position;
+		deferredSHA1->initialHeader = header->takeContents();
+		stream->write(deferredSHA1->initialHeader.data(), deferredSHA1->initialHeader.size(), "MapHeader");
+	}
+	else
+		mapHeader.save(stream);
 	gameHeader.save(stream);
 
 	///Save basic informations
@@ -540,7 +614,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	{
 		std::ostringstream randomState;
 		randomState.imbue(std::locale::classic());
-		randomState << randomGenerator;
+		randomState << syncRandEngine();
 		std::istringstream state(randomState.str());
 		state.imbue(std::locale::classic());
 		stream->writeEnterSection("randomState");
@@ -560,10 +634,12 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	Uint8 sha1[SHA1_BYTE_LEN];
 	for(int i=0; i<SHA1_BYTE_LEN; ++i)
 		sha1[i]=0;
-	if(dynamic_cast<GAGCore::BinaryOutputStream*>(stream))
+	if (hashing)
 	{
 		dynamic_cast<GAGCore::BinaryOutputStream*>(stream)->finishSHA1(sha1);
 	}
+	if (deferredSHA1)
+		deferredSHA1->end = stream->getPosition();
 	mapHeader.setGameSHA1(sha1);
 
 	///Overwrite the MapHeader. This is done after the map

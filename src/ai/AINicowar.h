@@ -207,6 +207,11 @@ static const int AI_NICOWAR_NO_TARGET = -1;
 class NewNicowar : public AIEcho::EchoAI
 {
 public:
+  void captureTelemetry() override;
+  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+  {
+	  return AITelemetry::schema(5);
+  }
 	NewNicowar();
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);

@@ -1,12 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "GraphicContextPrivate.h"
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
+#include <InterfacePresentation.h>
+#include <BrowserTextInput.h>
+#include <algorithm>
 #include <assert.h>
+#include <cstdlib>
 #include <cstring>
+#ifndef _WIN32
+#include <dlfcn.h>
+#endif
 #include <iostream>
 #include <memory>
 #include <string>
@@ -164,7 +172,23 @@ namespace GAGCore
 	{
 		minW = w;
 		minH = h;
-		if (window) SDL_SetWindowMinimumSize(window, minW, minH);
+		if (window) applyWindowMinimumSize();
+	}
+
+	// The minimum is a floor on the *logical* surface, which is the window divided
+	// by the interface scale -- so the window's own minimum has to be the scaled
+	// one. Without this, a window dragged to 640x480 at scale 1.75 lays the
+	// interface out on 366x274, narrower than the 368px main menu panel.
+	void GraphicContext::applyWindowMinimumSize(void)
+	{
+        if (window && (compactWindowAllowed || (renderer && phonePresentationRequested()))) { SDL_SetWindowMinimumSize(window,1,1); return; }
+		if (!window) return;
+		#ifdef GLOB2_WEBGL2
+		return;
+		#endif
+		SDL_SetWindowMinimumSize(window,
+			std::max(1, static_cast<int>(minW * uiScale + 0.5f)),
+			std::max(1, static_cast<int>(minH * uiScale + 0.5f)));
 	}
 
 	VideoModes GraphicContext::listVideoModes() const
@@ -256,11 +280,13 @@ namespace GAGCore
 		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
 		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
 		cursorManager.releaseNativeCursor();
+		renderer.reset();
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
 		releaseFrameCache();
 		freeOwnedSurface();
 		if (context) SDL_GL_DeleteContext(context);
 		if (window) SDL_DestroyWindow(window);
+		window = nullptr;
 		_gc = nullptr;
 		TTF_Quit();
 		SDL_Quit();
@@ -274,8 +300,89 @@ namespace GAGCore
 		return windowW && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h);
 	}
 
+	float GraphicContext::textRenderScale(void)
+	{
+        // Both GPU backends draw glyph textures directly to the output. Include
+        // the local UI transform: touch controls can enlarge text independently
+        // of the window's logical-to-drawable scale. Pure software composition
+        // still cannot preserve more pixels than its destination surface.
+        if (!renderer && !(optionFlags & USEGPU)) return 1.0f;
+        const float outputScale = softwareTransform ? 1.0f : drawableScale();
+        const float scale = outputScale * (uiTransformActive ? uiTransformScale : 1.0f);
+        if (std::fabs(scale - 1.0f) < 0.01f) return 1.0f;
+        return std::clamp(scale, 0.25f, 8.0f);
+	}
+
+	float GraphicContext::requestedUiScale = 0.0f;
+
+	namespace
+	{
+		float scaleFromEnv(const char *name)
+		{
+			const char *value = getenv(name);
+			if (!value || !*value)
+				return 0.0f;
+			const float scale = static_cast<float>(atof(value));
+			return (scale >= 0.5f && scale <= 8.0f) ? scale : 0.0f;
+		}
+
+		// Xft.dpi in the X resource database is where GTK, Qt and Xwayland all read the
+		// desktop's scale from, and the only place it is exposed as the fraction the user
+		// picked rather than the panel's physical DPI. libX11 is loaded on demand so a
+		// build without X11 simply reports no scale.
+		float scaleFromXResources(void)
+		{
+			#ifndef _WIN32
+			void *lib = dlopen("libX11.so.6", RTLD_LAZY);
+			if (!lib)
+				return 0.0f;
+			auto openDisplay = reinterpret_cast<void *(*)(const char *)>(dlsym(lib, "XOpenDisplay"));
+			auto resourceString = reinterpret_cast<char *(*)(void *)>(dlsym(lib, "XResourceManagerString"));
+			auto closeDisplay = reinterpret_cast<int (*)(void *)>(dlsym(lib, "XCloseDisplay"));
+			float scale = 0.0f;
+			if (openDisplay && resourceString && closeDisplay)
+			{
+				if (void *display = openDisplay(NULL))
+				{
+					if (const char *database = resourceString(display))
+						if (const char *entry = strstr(database, "Xft.dpi:"))
+						{
+							const float dpi = static_cast<float>(atof(entry + strlen("Xft.dpi:")));
+							if (dpi >= 48.0f && dpi <= 768.0f)
+								scale = dpi / 96.0f;
+						}
+					closeDisplay(display);
+				}
+			}
+			dlclose(lib);
+			return scale;
+			#else
+			return 0.0f;
+			#endif
+		}
+	}
+
+	float GraphicContext::querySystemUiScale(void)
+	{
+		// Opens its own X connection, and the settings form asks on every rebuild.
+		static const float cached = scaleFromXResources();
+		return cached;
+	}
+
+	float GraphicContext::effectiveUiScale(float preferred)
+	{
+		float scale = scaleFromEnv("GLOB2_UI_SCALE");
+		if (!scale)
+			scale = preferred;
+		if (!scale)
+			scale = querySystemUiScale();
+		// Below 1 the interface would be drawn smaller than the window can show.
+		return std::max(1.0f, std::min(scale ? scale : 1.0f, 4.0f));
+	}
+
 	void GraphicContext::freeOwnedSurface(void)
 	{
+        softwareRasterizer.reset();
 		if (ownsSurface && sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		sdlsurface = NULL;
@@ -287,6 +394,15 @@ namespace GAGCore
 		if (!drawableW || !sdlsurface)
 			return 1.0f;
 		return std::min(static_cast<float>(drawableW) / sdlsurface->w, static_cast<float>(drawableH) / sdlsurface->h);
+	}
+
+	float GraphicContext::rasterScale(void)
+	{
+		// An offscreen pass rasterises into its own target, whose pixels have
+		// nothing to do with the window the logical surface is stretched into.
+		if (renderTargetScale > 0.0f)
+			return renderTargetScale;
+		return drawableScale();
 	}
 
 	void GraphicContext::glLetterbox(float &scale, int &offX, int &offY)
@@ -312,13 +428,24 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
+        if (responsiveViewport) {
+            if (renderer) renderer->outputSize(drawableW, drawableH);
+            setResponsiveViewport(true, responsiveMinW, responsiveMinH);
+            return;
+        }
 		if (windowW <= 0 || windowH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
+		// A resizable window keeps the interface at its scale: the logical surface
+		// follows the window divided by uiScale, not the window itself.
+		const int logicalW = std::max(1, static_cast<int>(windowW / uiScale + 0.5f));
+		const int logicalH = std::max(1, static_cast<int>(windowH / uiScale + 0.5f));
 		if ((optionFlags & RESIZABLE) && !(optionFlags & FULLSCREEN)
-			&& (getW() != windowW || getH() != windowH))
+			&& (getW() != logicalW || getH() != logicalH))
 		{
-			SDL_Surface *resized = SDL_CreateRGBSurface(0, windowW, windowH, 32,
+			SDL_Surface *resized = SDL_CreateRGBSurface(0, logicalW, logicalH, 32,
 				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 			if (!resized) return;
+			requestedW = windowW;
+			requestedH = windowH;
 			freeOwnedSurface();
 			sdlsurface = resized;
 			ownsSurface = true;
@@ -327,13 +454,15 @@ namespace GAGCore
 			{
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
-				gluOrtho2D(0, getW(), getH(), 0);
+				glOrtho(0, getW(), getH(), 0, -1, 1);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
 			}
 			#endif
+			if (renderer) renderer->logicalSize(logicalW, logicalH);
 			setClipRect();
 		}
+		if (renderer) renderer->outputSize(drawableW, drawableH);
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
@@ -383,16 +512,25 @@ namespace GAGCore
             case SDL_KEYDOWN:
                 if(event->key.keysym.sym==SDLK_F11 && !event->key.repeat)_gc->toggleFullscreen();
                 break;
+            case SDL_RENDER_DEVICE_RESET:
+            case SDL_RENDER_TARGETS_RESET:
+                if (_gc->renderer) _gc->renderer->reset();
+                break;
 			case SDL_MOUSEMOTION:
-				_gc->windowToLogical(event->motion.x, event->motion.y);
+                // SDL's renderer event watch already maps polled events to its
+                // logical size. Raw SDL_GetMouseState coordinates still need
+                // translateMouseCoordinates below.
+				if (!_gc->renderer) _gc->windowToLogical(event->motion.x, event->motion.y);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				_gc->windowToLogical(event->button.x, event->button.y);
+				if (!_gc->renderer) _gc->windowToLogical(event->button.x, event->button.y);
 				break;
 			case SDL_WINDOWEVENT:
+				#ifndef GLOB2_WEBGL2
 				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 					_gc->updateWindowSize();
+				#endif
 				break;
 			default:
 				break;
@@ -410,6 +548,40 @@ namespace GAGCore
 		}
 	}
 
+    bool GraphicContext::resizeViewport(int w, int h)
+    {
+        if (!window || !sdlsurface || w <= 0 || h <= 0) return false;
+        const int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
+        const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
+        if (w == windowW && h == windowH && logicalW == getW() && logicalH == getH()) return true;
+        const auto& format = *sdlsurface->format;
+        SDL_Surface* replacement = SDL_CreateRGBSurface(0, logicalW, logicalH, 32,
+            format.Rmask, format.Gmask, format.Bmask, format.Amask);
+        if (!replacement) return false;
+        // SDL may invalidate its borrowed window surface when changing size.
+        freeOwnedSurface();
+        SDL_SetWindowSize(window, w, h);
+        requestedW = w;
+        requestedH = h;
+        sdlsurface = replacement;
+        ownsSurface = true;
+        SDL_GetWindowSize(window, &windowW, &windowH);
+        drawableW = windowW; drawableH = windowH;
+#ifdef HAVE_OPENGL
+        if (optionFlags & USEGPU) {
+            SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0, logicalW, logicalH, 0, -1, 1);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            applyGLViewport();
+        }
+#endif
+        setClipRect();
+        return true;
+    }
+
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
 		// check dimension
@@ -426,9 +598,36 @@ namespace GAGCore
 			h = minH;
 		}
 
+		requestedW = w;
+		requestedH = h;
+		// The window keeps the requested size while the interface is laid out on a
+		// smaller logical surface that is scaled back up to fill it. Widgets, fonts and
+		// the map all keep their pixel sizes, so every screen grows by the same factor
+		// without touching any of the layout constants they are written in.
+		wantedUiScale = uiScale = effectiveUiScale(requestedUiScale);
+		// Widget layouts are authored against 640x480, and setMinRes() has not run yet
+		// on the context's first setRes(), so hold that floor here regardless. Only the
+		// scale is reduced: a window genuinely smaller than the floor keeps scale 1.
+		const int floorW = std::max(minW, 640), floorH = std::max(minH, 480);
+		// One factor for both axes, so scaling never changes the aspect ratio.
+		if (w < static_cast<int>(floorW * uiScale))
+			uiScale = static_cast<float>(w) / floorW;
+		if (h < static_cast<int>(floorH * uiScale))
+			uiScale = static_cast<float>(h) / floorH;
+		uiScale = std::max(1.0f, uiScale);
+		const int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
+		const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
+
 		// set flags
+        const char* selectedRenderer = SDL_getenv("GLOB2_RENDERER");
+        if (selectedRenderer && std::string(selectedRenderer) == "sdl") flags |= PORTABLEGPU;
+#ifdef GLOB2_MOBILE
+        flags |= PORTABLEGPU | RESIZABLE;
+#endif
+        if (flags & PORTABLEGPU) flags &= ~USEGPU;
 		optionFlags = flags;
-		Uint32 sdlFlags = 0;
+        fixedLogicalW=logicalW; fixedLogicalH=logicalH; responsiveViewport=false;
+		Uint32 sdlFlags = (flags & PORTABLEGPU) ? SDL_WINDOW_ALLOW_HIGHDPI : 0;
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.
 			sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -439,6 +638,11 @@ namespace GAGCore
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+#ifdef GLOB2_WEBGL2
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
 			sdlFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
 		}
 		#else
@@ -452,6 +656,7 @@ namespace GAGCore
 		releaseFrameCache();
 		if (context) SDL_GL_DeleteContext(context);
 		context = nullptr;
+		renderer.reset();
 		freeOwnedSurface();
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -470,14 +675,22 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-		SDL_SetWindowMinimumSize(window, std::max(1, minW), std::max(1, minH));
+		if (flags & PORTABLEGPU) {
+            renderer = makeSDLRenderBackend(window, logicalW, logicalH);
+            if (!renderer) {
+                std::cerr << "Cannot initialize portable renderer: " << SDL_GetError() << std::endl;
+                return false;
+            }
+            renderer->outputSize(drawableW, drawableH);
+        }
+		applyWindowMinimumSize();
 		// Own the drawing surface: SDL invalidates its window surface during resizing.
-		sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+		sdlsurface = SDL_CreateRGBSurface(0, logicalW, logicalH, 32,
 			0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 		ownsSurface = true;
 		if (!sdlsurface)
 		{
-			fprintf(stderr, "Toolkit : can't get surface for %dx%d at 32 bpp\n", w, h);
+			fprintf(stderr, "Toolkit : can't get surface for %dx%d at 32 bpp\n", logicalW, logicalH);
 			fprintf(stderr, "Toolkit : %s\n", SDL_GetError());
 			return false;
 		}
@@ -496,6 +709,9 @@ namespace GAGCore
 				}
 				++glContextGeneration;
 				#ifdef HAVE_OPENGL
+				// The new context starts at the GL defaults, so a cache still describing the
+				// replaced one would skip the enables the next draw call needs.
+				glState.resetCache();
 				// Map the logical projection onto a centered, aspect-correct sub-rect of the
 				// drawable so fullscreen scales without distorting circles into ellipses.
 				// The drawable is in pixels; on HiDPI it is larger than the window points mouse events use.
@@ -576,7 +792,7 @@ namespace GAGCore
 			{
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
-				gluOrtho2D(0, w, h, 0);
+				glOrtho(0, logicalW, logicalH, 0, -1, 1);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
 				glGetIntegerv(GL_MAX_TEXTURE_SIZE, &frameCache.maximumTextureSize);
@@ -588,14 +804,17 @@ namespace GAGCore
 			#endif
 
 			eventThread = SDL_ThreadID();
-			SDL_AddEventWatch(watchWindow, this);
-			watchingEvents = true;
+			if (!renderer) {
+				SDL_AddEventWatch(watchWindow, this);
+				watchingEvents = true;
+			}
 			return true;
 		}
 	}
 
 	void GraphicContext::nextFrame(void)
 	{
+        endBrowserTextFrame();
 		DrawableSurface::nextFrame();
 		if (sdlsurface)
 		{
@@ -613,6 +832,21 @@ namespace GAGCore
 					cursorScale = std::min(float(windowW) / getW(), float(windowH) / getH());
 				cursorManager.update(cursorScale);
 			}
+
+
+            if (renderer) {
+                if (!pendingScreenshot.empty()) {
+                    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> pixels(renderer->capture(), SDL_FreeSurface);
+                    bool saved=false;
+                    for (size_t i=0;i<Toolkit::getFileManager()->getDirCount();++i) {
+                        auto path=Toolkit::getFileManager()->getDir(i)+DIR_SEPARATOR_S+pendingScreenshot;
+                        if(SDL_SaveBMP(pixels.get(),path.c_str())==0) {saved=true;break;}
+                    }
+                    if(!saved) std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
+                    pendingScreenshot.clear();
+                }
+                renderer->present(); return;
+            }
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();
 			#endif
@@ -624,7 +858,9 @@ namespace GAGCore
 
 	void GraphicContext::printScreen(const std::string filename)
 	{
+		PERF_SCOPE_TIME(Screenshot);
 		SDL_Surface *toPrintSurface = NULL;
+        if (renderer) { pendingScreenshot=filename; return; }
 
 		// Fetch the surface to print
 		#ifdef HAVE_OPENGL

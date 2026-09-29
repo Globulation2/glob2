@@ -31,7 +31,10 @@ using boost::make_unique;
 
 #define GL_GLEXT_PROTOTYPES
 #ifdef HAVE_OPENGL
-#if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
+#if defined(GLOB2_WEBGL2)
+#include <GL/gl.h>
+#include <GL/glext.h>
+#elif defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #include <OpenGL/glu.h>
@@ -223,8 +226,10 @@ namespace GAGCore
 		}
 		atlas->uploadToTexture();
 		this->atlas = std::move(atlas);
+#ifndef GLOB2_WEBGL2
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &texCoordBuffer);
+#endif
 		return true; // Success
 #else
 		return false;

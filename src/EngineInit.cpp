@@ -9,8 +9,6 @@
 
 #include "AINames.h"
 #include "ChecksumSidecar.h"
-#include "CustomGameScreen.h"
-#include "ChooseMapScreen.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
 #include "EngineTiming.h"
@@ -21,131 +19,95 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 
+#include <cerrno>
+#include <cstdlib>
+#include <functional>
 #include <iostream>
+#include <sstream>
 
 
-int Engine::initCampaign(const std::string &mapName, Campaign& campaign, const std::string& missionName)
+int Engine::initCampaign(const std::string& filename, Campaign& campaign, const std::string& mission)
 {
-	MapHeader mapHeader = loadMapHeader(mapName);
-	GameHeader gameHeader = loadGameHeader(mapName);
-	if(gameHeader.getNumberOfPlayers() == 0)
-	{
-		gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
-	}
-	else
-	{
-		gui.localPlayer = 0;
-		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
-	}
-
-	gameHeader.getBasePlayer(0).name = campaign.getPlayerName();
-
-	int end=initGame(mapHeader, gameHeader);
-	gui.setCampaignGame(campaign, missionName);
-	return end;
+    const bool loaded = initCampaignTask(filename, &campaign, mission).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
 }
-
-
-
-int Engine::initCampaign(const std::string &mapName)
+int Engine::initCampaign(const std::string& filename)
 {
-	MapHeader mapHeader = loadMapHeader(mapName);
-	GameHeader gameHeader = loadGameHeader(mapName);
-	if(gameHeader.getNumberOfPlayers() == 0)
-	{
-		gameHeader = prepareCampaign(mapHeader, gui.localPlayer, gui.localTeamNo);
-	}
-	else
-	{
-		gui.localPlayer = 0;
-		gui.localTeamNo = gameHeader.getBasePlayer(0).teamNumber;
-	}
-	int end=initGame(mapHeader, gameHeader);
-	return end;
+    const bool loaded = initCampaignTask(filename).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
 }
-
-
-
-int Engine::initCustom(void)
+GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign* campaign, std::string mission)
 {
-	CustomGameScreen customGameScreen;
-
-    for (;;) {
-        int result=customGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
-        if (result==CustomGameScreen::CANCEL) return EE_CANCEL;
-        if (result==-1) return -1;
-        gui.localPlayer=0;
-        gui.localTeamNo=customGameScreen.getSelectedColor(0);
-        int loaded=initGame(customGameScreen.getMapHeader(), customGameScreen.getGameHeader(),
-                            true, false, false, customGameScreen.sourceFile());
-        if (loaded==-1) return -1;
-        if (loaded==EE_NO_ERROR) break;
-        customGameScreen.launchFailed();
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
+    auto map = loadMapHeader(filename);
+    auto players = loadGameHeader(filename);
+    if (players.getNumberOfPlayers() == 0) players = prepareCampaign(map, gui.localPlayer, gui.localTeamNo);
+    else { gui.localPlayer = 0; gui.localTeamNo = players.getBasePlayer(0).teamNumber; }
+    if (campaign) players.getBasePlayer(0).name = campaign->getPlayerName();
+    const bool loaded = co_await initGameTask(map, players);
+    if (loaded && campaign) gui.setCampaignGame(*campaign, mission);
+    co_return loaded;
+}
+int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam, const std::string& sourceFileName)
+{
+    const bool loaded = initCustomTask(map, players, localTeam, -1, sourceFileName).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
+}
+GAGCore::CooperativeTask Engine::initCustomTask(MapHeader map, GameHeader players, int localTeam, int speed, std::string sourceFileName)
+{
+    gui.localPlayer = 0;
+    gui.localTeamNo = localTeam;
+    // Restored by ~Engine(); a negative speed means the caller doesn't offer
+    // a match-speed choice (e.g. the sync MapHeader/GameHeader overload).
+    if (speed >= 0)
+    {
+        previousCustomSpeed = globalContainer->settings.gameSpeed;
+        globalContainer->settings.gameSpeed = speed;
     }
-
-	previousCustomSpeed=globalContainer->settings.gameSpeed;
-	globalContainer->settings.gameSpeed=customGameScreen.selectedSpeed();
-	return EE_NO_ERROR;
+    // Without this, a generated map falls back to a name-based library
+    // lookup ("Random map" -> maps/Random_map.map) that never exists; a
+    // premade map's on-disk path can also legitimately differ from its
+    // declared map name (user libraries, duplicate names).
+    co_return co_await initGameTask(map, players, true, false, false, sourceFileName);
 }
-
-int Engine::initCustom(const std::string &gameName)
+int Engine::initCustom(const std::string& filename)
 {
-	MapHeader mapHeader = loadMapHeader(gameName);
-	GameHeader gameHeader = loadGameHeader(gameName);
-
-	// If the game is a network saved game, we need to toggle net players to ai players:
-	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
-	{
-		if (verbose)
-			printf("Engine::initCustom::player[%d].type=%d.\n", p, gameHeader.getBasePlayer(p).type);
-		if (gameHeader.getBasePlayer(p).type==BasePlayer::P_IP)
-		{
-			gameHeader.getBasePlayer(p).makeItAI(AI::toggleAI);
-			if (verbose)
-				printf("Engine::initCustom::net player (id %d) was made ai.\n", p);
-		}
-	}
-
-	int ret = initGame(mapHeader, gameHeader, true, false, true, gameName);
-	if(ret != EE_NO_ERROR)
-		return EE_CANT_LOAD_MAP;
-	else if(ret == -1)
-		return -1;
-
-	return EE_NO_ERROR;
+    const bool loaded = initCustomTask(filename).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
 }
-
-int Engine::initLoadGame()
+GAGCore::CooperativeTask Engine::initCustomTask(std::string filename)
 {
-	ChooseMapScreen loadGameScreen("games", "game", true, "replays", "replay", false);
-	int lgs = loadGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
-	if (lgs == ChooseMapScreen::CANCEL)
-		return EE_CANCEL;
-	else if(lgs == -1)
-		return -1;
-
-	assert(loadGameScreen.getSelectedType() != ChooseMapScreen::NONE);
-	assert(loadGameScreen.getSelectedType() != ChooseMapScreen::MAP);
-
-	if (loadGameScreen.getSelectedType() == ChooseMapScreen::GAME)
-		return initCustom(loadGameScreen.getMapHeader().getFileName());
-	else if (loadGameScreen.getSelectedType() == ChooseMapScreen::REPLAY)
-		return loadReplay(loadGameScreen.getMapHeader().getFileName(false,true));
-	else
-		assert(false);
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
+    auto map = loadMapHeader(filename);
+    auto players = loadGameHeader(filename);
+    for (int p = 0; p < players.getNumberOfPlayers(); ++p)
+        if (players.getBasePlayer(p).type == BasePlayer::P_IP) players.getBasePlayer(p).makeItAI(AI::toggleAI);
+    co_return co_await initGameTask(map, players, true, false, true, filename);
 }
+
 
 int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer)
 {
+    const bool loaded = initMultiplayerTask(multiplayerGame, client, localPlayer).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
+}
+
+GAGCore::CooperativeTask Engine::initMultiplayerTask(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer)
+{
+    if (localPlayer < 0 || localPlayer >= multiplayerGame->getGameHeader().getNumberOfPlayers()) co_return false;
 	gui.localPlayer = localPlayer;
 	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
 
 	// On failure, initGame has not created `net`; propagate the error before
 	// touching it, and leave `multiplayer` unset so the engine is not left
 	// half-initialised (mirrors the clean state teardownSession leaves).
-	int ret = initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
-	if (ret != EE_NO_ERROR)
-		return ret;
+	const bool loaded = co_await initGameTask(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
+	if (!loaded) co_return false;
 
 	multiplayer = multiplayerGame;
 	multiplayer->setNetEngine(net.get());
@@ -160,10 +122,69 @@ int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, st
 
 	net->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client->getGameConnection());
 
-	return Engine::EE_NO_ERROR;
+	co_return true;
 }
 
 
+
+namespace
+{
+	// GLOB2_TEST_RULES turns custom-game rules on for -test-games(-nox) matches, as
+	// comma-separated name=value pairs (docs/development/headless-replays.md), so AI matches can exercise
+	// the rules without the lobby. An unknown name or out-of-range value stops the run.
+	void applyTestRules(GameHeader& header)
+	{
+		const char* environment = getenv("GLOB2_TEST_RULES");
+		if (!environment || !*environment)
+			return;
+		struct Rule
+		{
+			const char* name;
+			long maximum;
+			std::function<void(GameHeader&, int)> apply;
+		};
+		const Rule rules[] = {
+			{"noGrowth", 1, [](GameHeader& h, int v) { h.setResourceGrowthDisabled(v); }},
+			{"scarcity", 3, [](GameHeader& h, int v) { h.setResourceScarcityLevel(v); }},
+			{"instantConstruction", 1, [](GameHeader& h, int v) { h.setInstantConstructionEnabled(v); }},
+			{"stockpile", 3, [](GameHeader& h, int v) { h.setStockpileStartLevel(v); }},
+			{"noHunger", 1, [](GameHeader& h, int v) { h.setHungerDisabled(v); }},
+			{"noUpgrades", 1, [](GameHeader& h, int v) { h.setUnitUpgradesDisabled(v); }},
+			{"glassCannon", 2, [](GameHeader& h, int v) { h.setGlassCannonLevel(v); }},
+			{"fearless", 1, [](GameHeader& h, int v) { h.setUnitsFearless(v); }},
+			{"noPermadeath", 1, [](GameHeader& h, int v) { h.setPermadeathDisabled(v); }},
+			{"peaceful", 1, [](GameHeader& h, int v) { h.setPeacefulModeEnabled(v); }},
+			{"fortress", 2, [](GameHeader& h, int v) { h.setBuildingHpLevel(v); }},
+			{"suddenDeathTick", 100000000, [](GameHeader& h, int v)
+				{
+					WinningCondition::setSuddenDeathWinCondition(h.getWinningConditions(),
+						v ? std::optional<Uint32>(v) : std::nullopt);
+				}},
+		};
+		std::stringstream list(environment);
+		std::string item;
+		while (std::getline(list, item, ','))
+		{
+			const size_t equals = item.find('=');
+			const std::string name = item.substr(0, equals);
+			const Rule* rule = nullptr;
+			for (const Rule& candidate : rules)
+				if (name == candidate.name)
+					rule = &candidate;
+			char* end = nullptr;
+			errno = 0;
+			const long value = equals == std::string::npos ? -1 : strtol(item.c_str() + equals + 1, &end, 10);
+			if (!rule || equals == std::string::npos || errno || *end || end == item.c_str() + equals + 1
+				|| value < 0 || value > rule->maximum)
+			{
+				std::cerr << "GLOB2_TEST_RULES: invalid entry \"" << item << "\"" << std::endl;
+				exit(1);
+			}
+			rule->apply(header, static_cast<int>(value));
+			std::cout << "GLOB2_TEST_RULES: " << name << "=" << value << std::endl;
+		}
+	}
+}
 
 void Engine::createRandomGame()
 {
@@ -257,6 +278,7 @@ void Engine::createRandomGame()
 	{
 		game.setRandomSeed(globalContainer->testGamesSeed);
 	}
+	applyTestRules(game);
 	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)
 	{
@@ -289,21 +311,24 @@ void Engine::createRandomGame()
 
 void Engine::saveInitialGameStateOrExit(const std::string& path, const std::string& label, const std::string& mapName)
 {
-	BinaryOutputStream stream(Toolkit::getFileManager()->openOutputStreamBackend(path));
-	if (stream.isEndOfStream())
+	const std::string gzipPath = glob2GzipWritePath(path);
+	const bool saved = Toolkit::getFileManager()->writeGzipAtomically(gzipPath,
+		[&](OutputStream &stream) { gui.save(&stream, mapName); });
+	if (!saved)
 	{
-		std::cerr << label << ": cannot open " << path << " for writing" << std::endl;
+		std::cerr << label << ": cannot open " << gzipPath << " for writing" << std::endl;
 		exit(1);
 	}
-	gui.save(&stream, mapName);
-	std::cout << label << ": wrote " << path << std::endl;
+	std::cout << label << ": wrote " << gzipPath << std::endl;
 }
 
 
 
 bool Engine::haveMap(const MapHeader& mapHeader)
 {
-	if (!Toolkit::getFileManager()->exists(mapHeader.getFileName()))
+	FileManager& files = *Toolkit::getFileManager();
+	const std::string resolved = glob2PreferGzipReadPath(files, mapHeader.getFileName());
+	if (!files.exists(resolved))
 		return false;
 	MapHeader mh = loadMapHeader(mapHeader.getFileName());
 	return mh == mapHeader;
@@ -313,10 +338,17 @@ bool Engine::haveMap(const MapHeader& mapHeader)
 
 int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, const std::string& sourceFileName)
 {
+    const bool loaded = initGameTask(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI, sourceFileName).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
+}
+
+GAGCore::CooperativeTask Engine::initGameTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, std::string sourceFileName)
+{
 	bool error = false;
 	try
 	{
-		error = !gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI, sourceFileName);
+		error = !(co_await gui.loadFromHeadersTask(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI, sourceFileName));
 	}
 	catch (std::exception &e)
 	{
@@ -324,8 +356,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		error = true;
 	}
 	if (error) {
-		showMapLoadError();
-		return EE_CANT_LOAD_MAP;
+		co_return false;
 	}
 
 
@@ -359,7 +390,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// and to allow concurrent headless instances to write to distinct files).
 	const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
 	std::string replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
-	if (!globalContainer->replaying)
+	if (!globalContainer->replaying && (!globalContainer->structuredHeadless || globalContainer->headlessReplay))
 	{
 		assert(globalContainer->replayWriter == nullptr);
 		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
@@ -397,7 +428,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		}
 	}
 
-	return EE_NO_ERROR;
+	co_return true;
 }
 
 
@@ -444,7 +475,7 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& 
 
 bool Engine::loadGame(const std::string &filename)
 {
-	BinaryInputStream stream(Toolkit::getFileManager()->openInputStreamBackend(filename));
+	BinaryInputStream stream(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), filename));
 	if (stream.isEndOfStream())
 	{
 		std::cerr << "Engine::loadGame(\"" << filename << "\") : error, can't open file." << std::endl;
@@ -463,8 +494,16 @@ bool Engine::loadGame(const std::string &filename)
 
 
 
-int Engine::loadReplay(const std::string &fileName)
+int Engine::loadReplay(const std::string& filename)
 {
+    const bool loaded = loadReplayTask(filename).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
+}
+
+GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
+{
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
 	// Parse the replay file before committing any global state, so a failed
 	// load leaves globalContainer as if no replay had been requested.
 	auto replayReader = std::make_unique<ReplayReader>();
@@ -472,9 +511,8 @@ int Engine::loadReplay(const std::string &fileName)
 
 	if (!replayLoaded)
 	{
-		showMapLoadError();
 		clearReplayState();
-		return EE_CANT_LOAD_MAP;
+		co_return false;
 	}
 
 	assert(replayReader->isValid());
@@ -504,14 +542,14 @@ int Engine::loadReplay(const std::string &fileName)
 	// Finally, initialise the Game. If the map embedded in the replay fails
 	// to load, drop the replay state committed above so the next game
 	// session starts as a normal game.
-	int ret = initGame(mapHeader, gameHeader, true, false, true);
-	if(ret != EE_NO_ERROR)
+	bool loaded = co_await initGameTask(mapHeader, gameHeader, true, false, true);
+	if (!loaded)
 	{
 		clearReplayState();
-		return EE_CANT_LOAD_MAP;
+		co_return false;
 	}
 
-	return EE_NO_ERROR;
+	co_return true;
 }
 
 void Engine::clearReplayState()
@@ -535,4 +573,10 @@ void Engine::finalAdjustments(void)
 		gui.adjustInitialViewport();
 	}
 	gui.game.setAlliances();
+}
+
+void Engine::cancelInitialization()
+{
+    teardownSession();
+    clearReplayState();
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include "FormatableString.h"
 #include <string>
@@ -232,6 +233,7 @@ void NewNicowar::queue_hospitals(Echo& echo)
 
 void NewNicowar::order_buildings(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_order_buildings_calls);
 	while(!placement_queue.empty())
 	{
 		BuildingPlacement b=placement_queue.front();
@@ -312,12 +314,13 @@ void NewNicowar::order_buildings(Echo& echo)
 
 int NewNicowar::order_regular_inn(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_order_regular_inn_calls);
 	//The main order for the inn
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, AI_NICOWAR_INN_ORDER_WORKERS);
 
 	//Constraints around the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(WHEAT));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_INN_WHEAT_MIN_DIST));
 	//You can't be farther than 10 units from wheat
@@ -373,22 +376,23 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_completion);
 
-	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, CORN, id);
+	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, id);
 	mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_tracker);
 
-	return id;
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_order_regular_inn_result, id);
 }
 
 
 int NewNicowar::order_regular_swarm(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_order_regular_swarm_calls);
 	//The main order for the swarm
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWARM_BUILDING, AI_NICOWAR_SWARM_ORDER_WORKERS);
 
 	//Constraints around the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(WHEAT));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_SWARM_WHEAT_PREF));
 
@@ -423,16 +427,17 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_completion);
 
-	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, CORN, id);
+	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, id);
 	mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_tracker);
 
-	return id;
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_order_regular_swarm_result, id);
 }
 
 
 int NewNicowar::order_regular_racetrack(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_order_regular_racetrack_calls);
 	//The main order for the racetrack
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, AI_NICOWAR_RACETRACK_ORDER_WORKERS);
 
@@ -481,12 +486,13 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	//Add the building order to the list of orders
 	int id = echo.add_building_order(bo);
 
-	return id;
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_order_regular_racetrack_result, id);
 }
 
 
 int NewNicowar::order_regular_swimmingpool(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_order_regular_swimmingpool_calls);
 	//The main order for the swimming pool
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, AI_NICOWAR_SWIMMINGPOOL_ORDER_WORKERS);
 
@@ -504,7 +510,7 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 
 	//Constraints around the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(WHEAT));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_SWIMMINGPOOL_WHEAT_PREF));
 
@@ -539,12 +545,13 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 	//Add the building order to the list of orders
 	int id = echo.add_building_order(bo);
 
-	return id;
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_order_regular_swimmingpool_result, id);
 }
 
 
 int NewNicowar::order_regular_school(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_order_regular_school_calls);
 	//The main order for the school
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SCIENCE_BUILDING, AI_NICOWAR_SCHOOL_ORDER_WORKERS);
 
@@ -583,12 +590,13 @@ int NewNicowar::order_regular_school(Echo& echo)
 	//Add the building order to the list of orders
 	int id = echo.add_building_order(bo);
 
-	return id;
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_order_regular_school_result, id);
 }
 
 
 int NewNicowar::order_regular_barracks(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_order_regular_barracks_calls);
 	//The main order for the barracks
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::ATTACK_BUILDING, AI_NICOWAR_BARRACKS_ORDER_WORKERS);
 
@@ -630,12 +638,13 @@ int NewNicowar::order_regular_barracks(Echo& echo)
 	//Add the building order to the list of orders
 	int id = echo.add_building_order(bo);
 
-	return id;
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_order_regular_barracks_result, id);
 }
 
 
 int NewNicowar::order_regular_hospital(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_order_regular_hospital_calls);
 	//The main order for the hospital
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::HEAL_BUILDING, AI_NICOWAR_HOSPITAL_ORDER_WORKERS);
 
@@ -671,8 +680,7 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 	//Add the building order to the list of orders
 	int id = echo.add_building_order(bo);
 
-	return id;
-
+	return telemetry.returnedInt(AITrace::AI5::NewNicowar_order_regular_hospital_result, id);
 }
 
 

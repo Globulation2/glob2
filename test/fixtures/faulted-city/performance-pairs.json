@@ -1,0 +1,322 @@
+[
+  {
+    "repeat": 0,
+    "size": 256,
+    "teams": 4,
+    "seed": 101,
+    "version": "before",
+    "seconds": 0.6791531918570399,
+    "returncode": 0,
+    "sha256": "54baa34148b9417cfcc51aad9e2215df3b7e3b5de7d9545e281edefc542167e5"
+  },
+  {
+    "repeat": 0,
+    "size": 256,
+    "teams": 4,
+    "seed": 101,
+    "version": "after",
+    "seconds": 0.6805394229013473,
+    "returncode": 0,
+    "sha256": "54baa34148b9417cfcc51aad9e2215df3b7e3b5de7d9545e281edefc542167e5"
+  },
+  {
+    "repeat": 0,
+    "size": 256,
+    "teams": 4,
+    "seed": 202,
+    "version": "before",
+    "seconds": 0.6459826740901917,
+    "returncode": 0,
+    "sha256": "9bb952646295489fad03d2c89c0488a8743196d168711cbafeb0cd5f48ed8802"
+  },
+  {
+    "repeat": 0,
+    "size": 256,
+    "teams": 4,
+    "seed": 202,
+    "version": "after",
+    "seconds": 0.5351676598656923,
+    "returncode": 0,
+    "sha256": "9bb952646295489fad03d2c89c0488a8743196d168711cbafeb0cd5f48ed8802"
+  },
+  {
+    "repeat": 0,
+    "size": 256,
+    "teams": 4,
+    "seed": 303,
+    "version": "before",
+    "seconds": 0.5378926820121706,
+    "returncode": 0,
+    "sha256": "7cb6690722741633807dc05775598564d5505bbc1e4532528b4fc179367f5b07"
+  },
+  {
+    "repeat": 0,
+    "size": 256,
+    "teams": 4,
+    "seed": 303,
+    "version": "after",
+    "seconds": 0.6054225519765168,
+    "returncode": 0,
+    "sha256": "7cb6690722741633807dc05775598564d5505bbc1e4532528b4fc179367f5b07"
+  },
+  {
+    "repeat": 0,
+    "size": 256,
+    "teams": 4,
+    "seed": 404,
+    "version": "before",
+    "seconds": 0.6793412410188466,
+    "returncode": 0,
+    "sha256": "54af64e2d133c4de37d73bcdc403fdfc98fe14a7571846bf69f7ff58c2357b00"
+  },
+  {
+    "repeat": 0,
+    "size": 256,
+    "teams": 4,
+    "seed": 404,
+    "version": "after",
+    "seconds": 0.5107463849708438,
+    "returncode": 0,
+    "sha256": "54af64e2d133c4de37d73bcdc403fdfc98fe14a7571846bf69f7ff58c2357b00"
+  },
+  {
+    "repeat": 0,
+    "size": 512,
+    "teams": 12,
+    "seed": 101,
+    "version": "before",
+    "seconds": 4.079986571101472,
+    "returncode": 0,
+    "sha256": "a74d9361d14c76d17959b9e23182c9d9b4d425bdd08738a97e3b967634e75291"
+  },
+  {
+    "repeat": 0,
+    "size": 512,
+    "teams": 12,
+    "seed": 101,
+    "version": "after",
+    "seconds": 3.040724732913077,
+    "returncode": 0,
+    "sha256": "a74d9361d14c76d17959b9e23182c9d9b4d425bdd08738a97e3b967634e75291"
+  },
+  {
+    "repeat": 0,
+    "size": 512,
+    "teams": 12,
+    "seed": 202,
+    "version": "before",
+    "seconds": 4.289864332880825,
+    "returncode": 0,
+    "sha256": "3b251f53257ebb085c27dab50b7e58b0338c82bef087bcde0bdd9dd9c8cfa54e"
+  },
+  {
+    "repeat": 0,
+    "size": 512,
+    "teams": 12,
+    "seed": 202,
+    "version": "after",
+    "seconds": 3.3618410071358085,
+    "returncode": 0,
+    "sha256": "3b251f53257ebb085c27dab50b7e58b0338c82bef087bcde0bdd9dd9c8cfa54e"
+  },
+  {
+    "repeat": 0,
+    "size": 512,
+    "teams": 12,
+    "seed": 303,
+    "version": "before",
+    "seconds": 3.982034862972796,
+    "returncode": 0,
+    "sha256": "809fcda42fca1e4cebe7e10c50c0c03f05efb4b1ea3ae7e732d35f7a58dda22b"
+  },
+  {
+    "repeat": 0,
+    "size": 512,
+    "teams": 12,
+    "seed": 303,
+    "version": "after",
+    "seconds": 3.2338916219305247,
+    "returncode": 0,
+    "sha256": "809fcda42fca1e4cebe7e10c50c0c03f05efb4b1ea3ae7e732d35f7a58dda22b"
+  },
+  {
+    "repeat": 0,
+    "size": 512,
+    "teams": 12,
+    "seed": 404,
+    "version": "before",
+    "seconds": 4.140748793026432,
+    "returncode": 0,
+    "sha256": "7e0bba7daee6ad749b092f163cfd42c9ab7b14319c41b272e0e15c292ed3c4f7"
+  },
+  {
+    "repeat": 0,
+    "size": 512,
+    "teams": 12,
+    "seed": 404,
+    "version": "after",
+    "seconds": 3.400068012997508,
+    "returncode": 0,
+    "sha256": "7e0bba7daee6ad749b092f163cfd42c9ab7b14319c41b272e0e15c292ed3c4f7"
+  },
+  {
+    "repeat": 1,
+    "size": 256,
+    "teams": 4,
+    "seed": 101,
+    "version": "after",
+    "seconds": 0.4431211859919131,
+    "returncode": 0,
+    "sha256": "54baa34148b9417cfcc51aad9e2215df3b7e3b5de7d9545e281edefc542167e5"
+  },
+  {
+    "repeat": 1,
+    "size": 256,
+    "teams": 4,
+    "seed": 101,
+    "version": "before",
+    "seconds": 0.699094545096159,
+    "returncode": 0,
+    "sha256": "54baa34148b9417cfcc51aad9e2215df3b7e3b5de7d9545e281edefc542167e5"
+  },
+  {
+    "repeat": 1,
+    "size": 256,
+    "teams": 4,
+    "seed": 202,
+    "version": "after",
+    "seconds": 0.5127259730361402,
+    "returncode": 0,
+    "sha256": "9bb952646295489fad03d2c89c0488a8743196d168711cbafeb0cd5f48ed8802"
+  },
+  {
+    "repeat": 1,
+    "size": 256,
+    "teams": 4,
+    "seed": 202,
+    "version": "before",
+    "seconds": 0.7272782661020756,
+    "returncode": 0,
+    "sha256": "9bb952646295489fad03d2c89c0488a8743196d168711cbafeb0cd5f48ed8802"
+  },
+  {
+    "repeat": 1,
+    "size": 256,
+    "teams": 4,
+    "seed": 303,
+    "version": "after",
+    "seconds": 0.5990587330888957,
+    "returncode": 0,
+    "sha256": "7cb6690722741633807dc05775598564d5505bbc1e4532528b4fc179367f5b07"
+  },
+  {
+    "repeat": 1,
+    "size": 256,
+    "teams": 4,
+    "seed": 303,
+    "version": "before",
+    "seconds": 0.6287341841962188,
+    "returncode": 0,
+    "sha256": "7cb6690722741633807dc05775598564d5505bbc1e4532528b4fc179367f5b07"
+  },
+  {
+    "repeat": 1,
+    "size": 256,
+    "teams": 4,
+    "seed": 404,
+    "version": "after",
+    "seconds": 0.6751925870776176,
+    "returncode": 0,
+    "sha256": "54af64e2d133c4de37d73bcdc403fdfc98fe14a7571846bf69f7ff58c2357b00"
+  },
+  {
+    "repeat": 1,
+    "size": 256,
+    "teams": 4,
+    "seed": 404,
+    "version": "before",
+    "seconds": 0.47751936689019203,
+    "returncode": 0,
+    "sha256": "54af64e2d133c4de37d73bcdc403fdfc98fe14a7571846bf69f7ff58c2357b00"
+  },
+  {
+    "repeat": 1,
+    "size": 512,
+    "teams": 12,
+    "seed": 101,
+    "version": "after",
+    "seconds": 2.426744416123256,
+    "returncode": 0,
+    "sha256": "a74d9361d14c76d17959b9e23182c9d9b4d425bdd08738a97e3b967634e75291"
+  },
+  {
+    "repeat": 1,
+    "size": 512,
+    "teams": 12,
+    "seed": 101,
+    "version": "before",
+    "seconds": 2.9384828750044107,
+    "returncode": 0,
+    "sha256": "a74d9361d14c76d17959b9e23182c9d9b4d425bdd08738a97e3b967634e75291"
+  },
+  {
+    "repeat": 1,
+    "size": 512,
+    "teams": 12,
+    "seed": 202,
+    "version": "after",
+    "seconds": 2.8492886831518263,
+    "returncode": 0,
+    "sha256": "3b251f53257ebb085c27dab50b7e58b0338c82bef087bcde0bdd9dd9c8cfa54e"
+  },
+  {
+    "repeat": 1,
+    "size": 512,
+    "teams": 12,
+    "seed": 202,
+    "version": "before",
+    "seconds": 3.028997927904129,
+    "returncode": 0,
+    "sha256": "3b251f53257ebb085c27dab50b7e58b0338c82bef087bcde0bdd9dd9c8cfa54e"
+  },
+  {
+    "repeat": 1,
+    "size": 512,
+    "teams": 12,
+    "seed": 303,
+    "version": "after",
+    "seconds": 2.301204565912485,
+    "returncode": 0,
+    "sha256": "809fcda42fca1e4cebe7e10c50c0c03f05efb4b1ea3ae7e732d35f7a58dda22b"
+  },
+  {
+    "repeat": 1,
+    "size": 512,
+    "teams": 12,
+    "seed": 303,
+    "version": "before",
+    "seconds": 2.5844397698529065,
+    "returncode": 0,
+    "sha256": "809fcda42fca1e4cebe7e10c50c0c03f05efb4b1ea3ae7e732d35f7a58dda22b"
+  },
+  {
+    "repeat": 1,
+    "size": 512,
+    "teams": 12,
+    "seed": 404,
+    "version": "after",
+    "seconds": 2.130204414948821,
+    "returncode": 0,
+    "sha256": "7e0bba7daee6ad749b092f163cfd42c9ab7b14319c41b272e0e15c292ed3c4f7"
+  },
+  {
+    "repeat": 1,
+    "size": 512,
+    "teams": 12,
+    "seed": 404,
+    "version": "before",
+    "seconds": 2.403437844943255,
+    "returncode": 0,
+    "sha256": "7e0bba7daee6ad749b092f163cfd42c9ab7b14319c41b272e0e15c292ed3c4f7"
+  }
+]

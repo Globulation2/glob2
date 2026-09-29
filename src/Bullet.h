@@ -23,13 +23,14 @@ public:
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 public:
-	Sint32 px, py; //!< pixel precision point of x,y
-	Sint32 speedX, speedY; //!< pixel precision speed.
-	Sint32 ticksInitial;
-	Sint32 ticksLeft;
-	Sint32 shootDamage;
-	Sint32 targetX, targetY;
-	Sint32 revealX, revealY, revealW, revealH; //!< area of source of the bullet
+  Sint32 sourceTeam = -1; //!< Diagnostic only; old saves have unknown attribution.
+  Sint32 px, py;          //!< pixel precision point of x,y
+  Sint32 speedX, speedY;  //!< pixel precision speed.
+  Sint32 ticksInitial;
+  Sint32 ticksLeft;
+  Sint32 shootDamage;
+  Sint32 targetX, targetY;
+  Sint32 revealX, revealY, revealW, revealH; //!< area of source of the bullet
 public:
 	void step(void);
 };

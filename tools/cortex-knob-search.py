@@ -2,7 +2,9 @@
 """cortex-knob-search.py — successive-halving knob search for the Cortex AI.
 
 Searches the CortexTuning knob vector (src/ai/cortex/CortexTuning.h) against
-Nicowar using tools/ai-benchmark.sh as the game runner. Designed around the
+Nicowar using tools/ai-benchmark.sh as the game runner. That entry point now
+delegates execution, retries and artifacts to tools/tournaments; this script
+retains its historical search/selection policy. Designed around the
 anti-overfit rules from the rank-gate tuning handoff:
 
   * fitness = MIN across the training maps' win rates (no map trading);
@@ -34,6 +36,8 @@ game runs write outside any sandbox — run this with sandboxing disabled.
 State is checkpointed to <run-dir>/state.json after every benchmark; rerunning
 the same command resumes where it left off.
 """
+
+from build_paths import native_binary
 
 import argparse
 import json
@@ -383,7 +387,7 @@ def main():
                    help="RNG seed for config sampling (reproducible population)")
     p.add_argument("--jobs", type=int, default=0,
                    help="parallel games per benchmark (default: ai-benchmark.sh's)")
-    p.add_argument("--bin", default=os.path.join(REPO_DIR, "build", "src", "glob2"))
+    p.add_argument("--bin", default=str(native_binary()))
     p.add_argument("--include-secondary", action="store_true",
                    help="also search tierMidDiv/workerRatioTier2")
     p.add_argument("--no-hypotheses", action="store_true",

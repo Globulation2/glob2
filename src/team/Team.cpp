@@ -13,6 +13,11 @@
 #include "Integrity.h"
 #include <stdexcept>
 
+Uint32 Team::attackableTeams() const
+{
+	return game->gameHeader.isPeacefulModeEnabled() ? 0 : enemies;
+}
+
 Team::Team(Game *game)
 :BaseTeam()
 {
@@ -20,16 +25,6 @@ Team::Team(Game *game)
 	this->game=game;
 	this->map=&game->map;
 	init();
-}
-
-
-
-
-Team::Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
-:Team(game)
-{
-	if (!load(stream, &(globalContainer->buildingsTypes), versionMinor))
-		throw std::runtime_error("Failed to load team");
 }
 
 

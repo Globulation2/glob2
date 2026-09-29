@@ -40,7 +40,7 @@ namespace GAGGUI
 			int xShift = 20;
 			int spriteYShift = (textHeight-16) >> 1;
 			Style::style->drawOnOffButton(parent->getSurface(), x, y+spriteYShift, 16, 16, 0, checks[element]);
-			parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
+			parent->getSurface()->drawString(x+xShift, y + (int(textHeight) - fontPtr->getStringHeight(" ")) / 2, fontPtr, (strings[element]).c_str());
 		}
 	}
 	
@@ -50,7 +50,7 @@ namespace GAGGUI
 		if(!readOnly)
 		{
 			int spriteYShift = (textHeight-16) >> 1;
-			if(mx >= 0 && mx <= 16 && my>=spriteYShift && my<=((int)textHeight-spriteYShift))
+			if(minimumRowHeight > 0 || (mx >= 0 && mx <= 16 && my>=spriteYShift && my<=((int)textHeight-spriteYShift)))
 			{
 				checks[element] = !checks[element];
 			}

@@ -41,13 +41,13 @@ static void hiringRoundIsFair()
     require(first && second, "create competing inns");
     for (auto* building : {first, second}) {
         building->maxUnitWorking = 2;
-        building->resources[CORN] = 0;
+        building->resources[WHEAT] = 0;
         building->updateCallLists();
     }
     for (int n = 0; n < 2; ++n) {
         auto* unit = game.addUnit(12+n, 12, 0, WORKER, 0, 255, 0, 0);
         require(unit != nullptr, "create available worker");
-        unit->carriedResource = CORN;
+        unit->carriedResource = WHEAT;
         unit->activity = Unit::ACT_RANDOM;
         unit->medical = Unit::MED_FREE;
     }

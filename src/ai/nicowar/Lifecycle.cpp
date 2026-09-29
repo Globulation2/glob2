@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include "FormatableString.h"
 #include <string>
@@ -235,6 +236,7 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 
 void NewNicowar::tick(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_tick_calls);
 	timer++;
 	if(timer==AI_NICOWAR_INIT_TICK)
 	{
@@ -385,13 +387,13 @@ void NewNicowar::initialize(Echo& echo)
 	{	
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, CORN, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			echo.add_management_order(mo_tracker);
 		}
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 		{
-			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, CORN, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, WHEAT, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			echo.add_management_order(mo_tracker);
 		}

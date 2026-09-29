@@ -127,6 +127,7 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Si
 	// player
 	startPositionX = stream->readSint32("startPositionX");
 	startPositionY = stream->readSint32("startPositionY");
+	if (!teams[teamNumber]) return false;
 	setTeam(teams[teamNumber]);
 	if (type >= P_AI)
 	{

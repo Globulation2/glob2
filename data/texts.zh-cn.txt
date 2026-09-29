@@ -1,3 +1,9 @@
+[AI strategy]
+AI 战术
+[AIMaxima-Summary]
+平衡可持续发展与训练，然后集结军队发动波次进攻。
+[AIMaxima-Profile]
+核心策略: 将食物、工人、繁殖、训练、建设和战斗视为相互竞争的需求。部分依据估算的敌方实力确定军队规模，然后尽力有效投送军队。\n\n经济与发展: 根据食物和劳力安排繁殖，保留可用于训练的空闲机会，需要军事生产时停止增加多余工人。扩大训练容量，避免升级时同时停用过多设施。\n\n侦察与决策: 根据可见单位和记忆中的目击信息，使用拟合模型估算敌军。目标取决于价值、距离、塔、暴露的工人和持续攻击的考虑。水果任务支持食物多样性和招降。\n\n攻防战术: 为训练和防御预留士兵，再把符合条件的陆军集结在友方食物设施附近，随后发动波次进攻。采取局部防御措施，并评估通往殖民地的进路。\n\n攻势受阻时: 连续4次未能成功投送攻击波次后，改用持续增援的攻击旗。渡水进攻也可使用持续增援。这种后备办法并不能解决集结成形前遇到的所有堵塞。\n\n与其他AI相比: 更紧密地整合食物、训练、情报和部署。Cabino重视同时攻击多个建筑；Maxima重视估算需求并将集结的部队送到战场。\n\n优点与弱点: 适应食物压力和已观察到的威胁，同时维持成长和军队补充。需要食物、训练容量和开阔的集结空间；拥堵和长路线会妨碍兵力投送。\n\n应对建议: 在攻击波次集结前争夺暴露的小麦、食堂和兵营。将有补给的守军集中起来，扰乱增援路线。第一波之后仍要准备面对反复施压。\n\n侦察: 战力估算使用目击信息和观察历史，而非隐藏的敌军总数。
 [%0 has left the game]
 %0 离开了游戏
 [%0 level %1]
@@ -51,11 +57,11 @@ AI 说明
 [ai]
 人工智能
 [AICastor-Description]
-AICastor-描述
+在建设和训练的同时，让人口增长与食物供应相适应。
 [AICastor]
 AICastor
 [AINicowar-Description]
-AINicowar-描述
+发展人口，训练战士，然后发动进攻。
 [AINicowar]
 AINicowar
 [AINone-Description]
@@ -63,17 +69,21 @@ AINone-描述
 [AINone]
 AINone
 [AINumbi-Description]
-AINumbi-描述
+较为宽容的对手，但仍会扩张和进攻。
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-AIEcono-描述
+通过扩张和争取敌方单位投靠来竞争，不生产战士。
 [AIEcono]
 AIEcono
 [AIWarrush-Description]
-AIWarrush-描述
+快速进攻，考验你的早期防御。
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+擅长建设，并派出训练有素的进攻部队。
+[AICabino]
+Cabino
 [Alga]
 海藻
 [algae]
@@ -605,9 +615,9 @@ numlock
 [ok]
 确定
 [old islands terrain]
-古代岛屿地形
+崎岖群岛
 [old random terrain]
-古代随机地形
+破碎海岸
 [on press]
 按下时
 [On the spot]
@@ -1215,7 +1225,11 @@ Ysagoon 线上游戏
 [game speed help]
 仅限单人游戏和录像回放。多人游戏固定为1x速度。
 [AICortex-Description]
-Cortex向新的麦田扩张，利用前线食堂和医院支援一波又一波的战士进攻。难度中等，仍处于实验阶段。
+集结战士分波进攻，并提供食物和治疗支援。
+[AIMaxima-Description]
+侦察目标，发展食物供应，并集结战士分波进攻。
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 无法保存战役。请检查目标文件夹是否存在、是否可写，以及是否有可用空间。
 [AICortex]
@@ -1229,33 +1243,37 @@ Cortex
 [AI strategy & counterplay]
 AI策略与对抗
 [AICastor-Profile]
-核心策略:稳健发展，擅长应对资源稀少的地图。\n\n优势:克制的扩张方式适合资源匮乏的对局。\n\n可尝试的对策:尽早占领空间，不要以为资源匮乏就能削弱它。
+核心策略: 先投资于高产的殖民地和技术，再发动大规模进攻。按优先级安排建设项目，逐步发展聚居地；发展程度、军事设施和时间共同提高战争准备度。\n\n经济与发展: 分析水分、小麦生长、障碍物和工人的可达范围。在生产的同时管理食物扩张、升级和防御。\n\n攻防战术: 估算健康士兵的攻击力，在战力或时间条件满足时出击。偏好已发现且可到达的建筑，尤其是兵营和学校，并将攻击旗移向高价值目标。\n\n与其他AI相比: 比Numbi更仔细考虑地形和目标价值。比Warrush更有耐心，以较少的早期压力换取发达的基地和更强的部队。\n\n优点与弱点: 广泛的设施规划和高价值军事目标让进攻更有目的。但准备需要时间，快速的对手能在其主力就绪前争夺资源。\n\n应对建议: 尽早争夺扩张地点。除食物外，也要保护兵营和学校；进攻其发达聚居地时保留预备队。
 [AICastor-Summary]
-谨慎扩张；在稀缺资源下表现良好。
+先发展设防的殖民地，再打击军事和科研建筑。
 [AICortex-Profile]
-核心策略:管理粮食供应，向新的麦田扩张，集结一波又一波的战士。前线食堂和医院为远距离进攻提供支援。\n\n优势:集中增援、持续施压，并能应对粮食短缺。\n\n可尝试的对策:争夺新的麦田，打击前线支援设施，在其部队集结前施加压力。\n\n实验阶段的人工智能，难度中等。这些对策建议并非基准测试的评定结果。
+核心策略: 根据局势调整优先级，发展有效运转的经济，把剩余劳力投入食物、技术和军事压力。常规策略基于规则；学习型策略实验需要另外配置。\n\n经济与发展: 按人手需求调整工人生产，并持续繁殖。食物出问题时会压缩扩张和技术开支。水路能带来实质帮助时，会发展游泳能力。\n\n攻防战术: 根据观察到的敌方技术和可用部队准备进攻。渡水作战需要能游泳的士兵。依靠前线食堂和医院支持长期作战，也能在推进前集结部队。\n\n坚持进攻与紧急情况: 不会因小规模骚扰反复回防，而是维持攻势。严重袭击可以触发召回守军。早期危机可能使其只生产士兵并建造医院；饥荒可能促使它发动规模较小的拼死进攻。\n\n与其他AI相比: 比Warrush更重视前线支援。Maxima则进一步根据估算的敌方战力，统筹可持续的繁殖、训练和部署。\n\n优点与弱点: 将进攻压力与食物、治疗和可达性联系起来。前线设施必须持续获得补给，不断繁殖也可能持续挤压有限的食物。紧急优先级迫使它在成长和生存间取舍。\n\n应对建议: 争夺前线食堂、医院和小麦。集中守军抵挡推进；小规模骚扰未必能使其撤退。\n\n侦察: 使用已发现的敌方建筑和已观察到的敌方部队。
 [AICortex-Summary]
-保障粮食供应，并以支援设施维持多波进攻。
+依靠前线食物和治疗，支撑持续的军事攻势。
 [AINicowar-Profile]
-策略:迅速扩张，以庞大的军队攻击对手。\n\n优势:快速扩张支持侵略性的军事攻击。\n\n建议对策:防止其扩张。利用地形来减少可以同时作战的敌军数量。
+核心策略: 通过可同时满足的条件，将成长、训练、升级和战争结合起来。可以边扩张边进攻，供食失败时则把经济力量转向恢复。\n\n开局: 随游戏提供的激进配置在总单位数达到5时开始备战，在士兵达到5时允许开战，零级士兵也计入其中。目标是建立3面攻击旗，每面分配5名士兵。自定义策略文件可以修改这些门槛。\n\n经济与发展: 扩大食物和繁殖能力，训练工人，发展游泳和移动能力，并升级建筑。调整食物岗位人手，应对饥饿，争取水果。\n\n攻防战术: 从可达的敌方建筑中随机抽取进攻目标。可以用清理旗打开被资源堵塞的路线。防御旗覆盖受威胁的单位和建筑群。后期由受过地面攻击训练的探索者攻击敌方单位群。\n\n与其他AI相比: 与Warrush一样早期进攻性强，但后续发展更全面。与Cabino不同，它不会始终优先攻击医院和食堂。\n\n优点与弱点: 广泛的战术将早期压力与持续发展结合起来。随机选目标可能在低价值建筑上浪费力量。其门槛机制没有Maxima那样细致的敌方战力估算。\n\n应对建议: 做好应对早攻的准备。保护食物和工人，争夺扩张地点；若其达到高级训练阶段，还要防范探索者攻击。
 [AINicowar-Summary]
-迅速扩张并建立庞大的军队进行侵略性攻击。
+以农业、升级、防御和探索者攻击支持早期快攻。
 [AINone-Profile]
 核心策略:不发出任何人工智能命令。\n\n优势:行为可预测、保持不动的实验对手。\n\n弱点:不会扩张或适应局势。
 [AINone-Summary]
 用于实验的闲置殖民地。
 [AINumbi-Profile]
-核心策略:小规模快速扩张，适合练习殖民地管理。\n\n优势:让你有余地同时学习经济管理和战斗。\n\n可尝试的对策:先壮大经济、训练军队，再发动进攻。
+核心策略: 先发展食物和人口，再增加治疗、科研和训练，最后转向战争。总体阶段随时间推进，而非根据对手的发展调整。\n\n经济与发展: 按人口扩大建筑需求，并估算附近的小麦。后期加入升级、防御和扩张，支撑不断壮大的军队。\n\n攻防战术: 健康战斗单位足够或等待时间到期时发动进攻。在随机抽取的敌方建筑上放置战争旗。战力降得太低时撤下攻击旗，并提高下次进攻的门槛。\n\n与其他AI相比: 比Castor或Nicowar更容易预测。Castor更仔细考虑地形和目标价值；Nicowar则更早施压。\n\n优点与弱点: 不受干扰地发展后，广泛的支援设施会让它变得危险，但其时间表未必符合战局。简单的目标选择和损失后更长的停顿，使其攻击更容易预判。\n\n应对建议: 在军事阶段前施压。一边进攻一边在后方发展食物和训练，击退一次攻势后利用其停顿期。\n\n侦察: 攻击程序直接读取敌方建筑位置，不检查是否可见。
 [AINumbi-Summary]
-小规模快速扩张。
+按时间表逐步建设殖民地，然后依靠数量进攻。
 [AIEcono-Profile]
-策略:不攻击，但建立巨大的基地并积极地将敌方部队转变为己方。\n\n优点:扩张和单位转换无需直接攻击即可威胁对手。\n\n建议的对策:尽早发展你的殖民地，避免将部队派遣到敌人可以转换的地方。
+核心策略: 生产工人和探索者，扩张经济，用食物和水果吸引敌方单位。没有常规的士兵攻势。\n\n经济与发展: 在小麦附近建造食堂和孢子堆，增加教育和移动训练，并升级设施。追踪食物供应，在资源位置恶化时替换旧食堂和孢子堆。\n\n农业与招降: 保护水边可再生的小麦和木材。派探索者前往水果产地和敌方殖民地，并在争取水果供应时向敌方宣传食物。更好的食物和水果有助于吸引投靠。\n\n与其他AI相比: 最专注经济的对手。Cabino和Maxima也争取水果，但会配合军队使用。\n\n优点与弱点: 军事对手互相消耗时可以继续成长，招降则提供另一种竞争方式。它不生产能应对持续袭击的士兵。食物、水果、地理和胜利规则极大影响其机会。\n\n应对建议: 压迫暴露的扩张点。为自己的食堂供应食物和水果以留住单位。避免在它成长时用无谓战斗耗尽自己的殖民地。
 [AIEcono-Summary]
-不主动进攻，以巨大基地和招降敌军施压。
+不生产士兵，发展食物充足的殖民地并争取敌方单位投靠。
 [AIWarrush-Profile]
-核心策略:在对手完成建设前，发动迅速而猛烈的进攻。\n\n优势:善于打击无防备的扩张和缓慢的备战。\n\n可尝试的对策:维持经济，撑过首轮进攻后再反击。
+核心策略: 在对手完成长期经济或技术发展前发动进攻。希望在需要庞大支援网络之前，靠战斗决定胜负。\n\n经济与发展: 有6个单位能采收后，将生产比例设为4名工人、1名探索者和3名士兵。训练容量满时增加兵营，但限制新食堂。剩余建设力量通常用于医院和移动训练。\n\n攻防战术: 在已发现的敌方建筑上标记警戒区域，让士兵持续施压，不等待精心集结的攻击波次。清除挡路的木材，并保护部分可再生资源。\n\n水果政策: 禁止采集水果，避开水果带来的护甲惩罚，也不采用Econo的招降策略。\n\n与其他AI相比: 比Numbi或Castor更执着于早期压力。Nicowar也以激进开局，但随后有更广泛的升级和战术安排。\n\n优点与弱点: 惩罚缓慢开局，迫使对手尽早投入防御。系统升级有限、食物支援精简，导致攻势停滞时付出较大代价。地形和长途行军会削弱早期优势。\n\n应对建议: 尽早保护食堂和孢子堆。补充守军的同时补充工人，发展训练，等快攻势头减弱后反击。\n\n侦察: 开局探索旗直接使用敌方起始位置。之后放置攻击区域则要求目标可见。
 [AIWarrush-Summary]
-快速攻击考验你的早期防御能力。
+刻意精简支援经济，以士兵在早期持续施压。
+[AICabino-Profile]
+核心策略: 将单位生产分配给建设、升级、防御、进攻和探索。独立的管理模块申请并预留单位，使经济和军事共同发展。\n\n经济与发展: 建设和升级各种设施，管理食堂和塔的人手，清理建筑周边并保护可再生资源。侦察水果并宣传食物，争取敌方单位投靠。\n\n攻防战术: 选定敌人后，依次优先攻击医院、食堂和兵营。最多支持4路攻击，通常根据可用兵力和附近敌人，为每个目标分配8至20名士兵。在受威胁的建筑周围使用独立的防御旗。\n\n训练: 需要足够的合适士兵和已建成的兵营才能进攻，但不等待最高技术。持续升级和训练会加强后续攻势。\n\n与其他AI相比: 比Nicowar更明确地拆除支援建筑。比Maxima集结的波次更分散进攻，依靠单位预留来协调相互竞争的需求。\n\n优点与弱点: 结合成长、训练、防御和多路进攻。破坏食物和治疗可以削弱整个殖民地。随机选择对手和固定建筑优先级可能错失机会；多路进攻也可能分散兵力。\n\n应对建议: 防守医院和食堂。争夺暴露的扩张点，集中守军逐个应对攻势。在它能维持多条战线前破坏食物或训练。\n\n侦察: 攻击目标选择直接读取敌方建筑列表，没有显式可见性检查。部分经济比较直接使用敌方统计数据。
+[AICabino-Summary]
+协调殖民地成长与训练部队的进攻，先破坏治疗和食物。
 [Algae]
 海藻
 [Alliances]
@@ -1359,9 +1377,9 @@ AI策略与对抗
 [No AI orders]
 没有AI命令
 [Old islands]
-旧版岛屿生成
+崎岖群岛
 [Old random]
-旧版随机生成
+破碎海岸
 [Open at least one colony to start a match.]
 至少启用一个殖民地才能开始对局。
 [Open book]
@@ -1376,6 +1394,14 @@ AI策略与对抗
 预制地图
 [Preview ready. Start plays this exact map.]
 预览准备就绪。开始游戏时使用这张精确的地图。
+[Regenerate all]
+全部重新生成
+[Generating preview...]
+正在生成预览...
+[Preview unavailable]
+预览不可用
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+每种地貌都以当前大小和殖民地数量实际生成的地图显示。选择一个即可游玩所显示的地图。
 [Purple]
 紫色
 [Quick clash]
@@ -1538,6 +1564,10 @@ AI策略与对抗
 快速战斗:双倍速度；生成的地图以 8 个工人开始。
 [Reroll]
 生成另一张地图
+[Randomize]
+随机生成
+[Reset to defaults]
+恢复默认设置
 [Ruleset]
 规则集
 [Select a map from the library.]
@@ -1616,6 +1646,8 @@ AI策略与对抗
 完成
 [settings Edit shortcut]
 编辑键盘快捷键
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+在高分辨率屏幕上放大菜单、文字和侧边栏。
 [settings Flags]
 旗帜
 [settings Full]
@@ -1630,6 +1662,8 @@ AI策略与对抗
 游戏玩法
 [settings Graphics detail]
 图形细节
+[settings Interface scale]
+界面缩放
 [settings Keep]
 保留更改
 [settings Keep this display mode?]
@@ -1652,6 +1686,8 @@ AI策略与对抗
 等级
 [settings Map editor]
 地图编辑器
+[settings Match the desktop]
+与桌面相同
 [settings Missing font]
 缺少字体
 [settings Music volume]
@@ -1762,3 +1798,1589 @@ OpenGL 在此版本中不可用。
 自动环面视图
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 在地图上移动时自动显示圆环形状的地图概览 (OpenGL)。
+[settings Autosave]
+自动储存
+[settings Save the game automatically about every 10 seconds.]
+大约每10秒自动储存游戏。
+[Channel width]
+水道宽度
+[Land bridge width]
+陆桥宽度
+[Lake size]
+湖泊大小
+[Contested commons]
+争夺公地
+[Maze]
+迷宫
+[Fjord continent]
+峡湾大陆
+[Cell size]
+单元格大小
+[Corridor width]
+通道宽度
+[Spoke width]
+辐条宽度
+[Loopiness]
+回环程度
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+迷宫在横向和纵向上都至少需要两个单元格；请使用更大的地图或更小的单元格。
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+水道这么宽，每个单元格里剩下的草地太少；请使用更窄的水道或更大的单元格。
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+迷宫中的死胡同太少，不足以容纳这么多殖民地；请使用更大的地图或更小的单元格。
+[Home island size]
+起始岛屿大小
+[Commons size]
+公地区域大小
+[Moat width]
+护城河宽度
+[Bridge count]
+桥梁数量
+[Continent size]
+大陆大小
+[Coast roughness]
+海岸线曲折度
+[Fjord width]
+峡湾宽度
+[Lake connects to fjords]
+湖泊连通峡湾
+[Resource islands]
+资源岛屿
+[Watershed]
+流域
+[River density]
+河流密度
+[Dryness]
+干旱程度
+[Fords]
+浅滩
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+流域中的泛滥平原太少，容纳不下这么多殖民地；请使用更大的地图或减少殖民地数量。
+[Stone highlands]
+石质高地
+[Valley size]
+山谷大小
+[Pass width]
+山口宽度
+[Pond size]
+池塘大小
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+这些山谷对于地图来说太大；请使用更大的地图或更小的山谷。
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+高地空间太少，容纳不下这么多殖民地；请使用更大的地图或减少殖民地数量。
+[Symmetric arena]
+对称竞技场
+[Centre size]
+中心大小
+[Causeway width]
+堤道宽度
+[Causeways]
+堤道
+[Lakes]
+湖泊
+[Resource richness]
+资源丰富度
+[Symmetric arena needs 2, 4 or 8 colonies.]
+对称竞技场需要2、4或8个殖民地。
+[Eight colonies need a square map in the symmetric arena.]
+在对称竞技场中，八个殖民地需要正方形地图。
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+在这张地图上，中心太小，放不下果园；请使用更大的中心或更大的地图。
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+竞技场留给每个殖民地的空间太少；请使用更大的地图、更小的中心或更窄的护城河。
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+堤道之间靠得太近；请减少堤道数量或使用更窄的堤道，或者使用更大的中心。
+[Ring world]
+环形世界
+[Belt width]
+环带宽度
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+环带太短，容纳不下这么多殖民地；请使用更长的地图或减少殖民地数量。
+[City states]
+城邦
+[Strait width]
+海峡宽度
+[Valleys]
+山谷
+[Frontier richness]
+边疆富饶度
+[City states need at least one colony.]
+城邦至少需要一个殖民地。
+[Stone walls]
+石墙
+[Sand patches]
+沙地
+[Tidal flats]
+潮间带
+[Everglades]
+沼泽地
+[Pool spacing]
+水塘间距
+[Pool size]
+水塘大小
+[Clearing size]
+空地大小
+[Levee]
+堤坝
+[Sloughs]
+沼泽水道
+[Everglades need at least one colony.]
+沼泽地至少需要一个殖民地。
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+此地图的殖民地太多；请使用更大的地图或减少殖民地。
+[Coral]
+珊瑚
+[Fork angle]
+分枝角度
+[Lean]
+倾斜
+[Home size]
+基地大小
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+珊瑚无法放入此地图；请使用更大的地图、更窄的海峡或更少的殖民地。
+[Branching]
+分枝
+[Branch width]
+枝宽
+[Coral needs at least one colony.]
+珊瑚至少需要一个殖民地。
+[Coral needs a map at least 128 tiles across.]
+珊瑚需要宽度至少为 128 格的地图。
+[Carousel]
+旋转木马
+[Amphitheatre]
+圆形剧场
+[Switchbacks]
+之字山路
+[Court size]
+庭院大小
+[Court wall]
+庭院围墙
+[Plaza size]
+广场大小
+[Starting tower level]
+初始塔等级
+[Towers per colony]
+每个殖民地的塔数
+[Rings]
+环数
+[Ramp width]
+坡道宽度
+[Pit size]
+竞技场大小
+[Terrace width]
+台阶宽度
+[Bay size]
+海湾大小
+[Border wall]
+边界围墙
+[Plateau size]
+高原大小
+[Trail width]
+山路宽度
+[Wall between legs]
+弯道之间的墙
+[Farm building plots]
+农场建筑用地
+[Sand bridges over water]
+水上沙桥
+[Sand lanes through crops]
+穿过农田的沙道
+[Carousels need at least two colonies.]
+旋转木马至少需要两个殖民地。
+[Switchbacks need at least two colonies.]
+之字山路至少需要两个殖民地。
+[An amphitheatre needs at least two colonies.]
+圆形剧场至少需要两个殖民地。
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+此地图放不下旋转木马；请使用更大的地图、更小的基地或更少的殖民地。
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+此地图放不下之字山路；请使用更大的地图、更小的高原、更窄的山路或更少的殖民地。
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+此地图放不下圆形剧场；请使用更大的地图、更少的环、更窄的台阶或更少的殖民地。
+[Spider web]
+蜘蛛网
+[Spokes per colony]
+每个殖民地的辐射线
+[Ring spacing]
+环间距
+[Thread width]
+丝线宽度
+[Sag]
+下垂
+[Torn strands]
+断丝
+[Hub size]
+中心大小
+[Dew drops]
+露珠
+[Spiral]
+螺旋
+[Spider webs need at least one colony.]
+蜘蛛网至少需要一个殖民地。
+[Sandbars]
+沙洲
+[Tide pools]
+潮池
+[Lagoons]
+潟湖
+[Central island]
+中央岛
+[Tidal flats need at least one colony.]
+潮间带至少需要一个殖民地。
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+母岛无法容纳在这张地图上；请使用更大的地图、更少的殖民地或更小的岛屿。
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+公地区域与海峡留给基地的空间太少；请使用更大的地图、更少的殖民地、更小的公地区域或更窄的海峡。
+[Wheat amount]
+小麦数量
+[Wood amount]
+木材数量
+[Stone amount]
+石头数量
+[Algae amount]
+海藻数量
+[Fruit amount]
+水果数量
+[Stone on hilltops]
+山顶的石头
+[Winding river]
+蜿蜒的河流
+[Sandy beaches]
+沙滩
+[Land bridges]
+陆桥
+[Colony meadows]
+殖民地周围的草地
+[Extra starting deposit]
+额外的起始资源
+[Moat bridges]
+护城河上的桥梁
+[Jagged coastlines]
+曲折的海岸线
+[Sand roads]
+沙土路
+[Treasure in dead ends]
+死路尽头的宝藏
+[Fjord bank deposits]
+峡湾岸边的资源
+[Sandy lake shore]
+沙质湖岸
+[River delta]
+河口三角洲
+[Meandering rivers]
+曲流河道
+[Fruit in home valleys]
+起始山谷中的水果
+[Moat]
+护城河
+[Stone in the orchard]
+果园中的石头
+[Colonies on both coasts]
+两岸都有殖民地
+[Winding belt]
+蜿蜒的环带
+[Cell shape]
+格子形状
+[Squares]
+正方形
+[Hexagons]
+六边形
+[Warp]
+扭曲
+[Fingerprint]
+指纹
+[Wavelength]
+波长
+[Pattern]
+图案
+[Labyrinth]
+迷宫
+[Channels]
+沟槽
+[Barrier]
+屏障
+[Water]
+水
+[Grain]
+颗粒度
+[Rain shadow]
+雨影
+[Ridges]
+山脊
+[Slant]
+倾斜度
+[Ridge thickness]
+山脊厚度
+[Pass spacing]
+山口间距
+[Lee width]
+背风带宽度
+[Old growth]
+原始森林
+[Canals]
+运河
+[Forest density]
+森林密度
+[Hidden groves]
+隐蔽林地
+[Starting trails]
+初始小径
+[Block size]
+街区大小
+[Canal width]
+运河宽度
+[Extra bridges]
+额外桥梁
+[Polder]
+圩田
+[Old town]
+老城
+[Anthill]
+蚁丘
+[Row angle]
+行列角度
+[Diagonal]
+斜向
+[Dyke spacing]
+堤坝间距
+[Village size]
+村庄大小
+[Hamlets]
+小村落
+[City size]
+城市大小
+[Street width]
+街道宽度
+[Plazas]
+广场
+[Chamber spacing]
+巢室间距
+[Chamber size]
+巢室大小
+[Queen room]
+蚁后室
+[Tunnel width]
+隧道宽度
+[Loops]
+环路
+[Home pools]
+基地水池
+[Farm plots]
+农田地块
+[Tendril roads]
+藤蔓状道路
+[Random]
+随机
+[Vertical]
+纵向
+[Horizontal]
+横向
+[Inland lakes]
+内陆湖
+[Block shape]
+街区形状
+[Random parameters]
+随机参数
+[Randomize parameters]
+随机选取参数
+[Start quality]
+开局质量
+[Fairness]
+公平度
+[Fitness]
+强度
+[Win chance]
+胜率
+[Coefficient]
+系数
+[Average]
+平均
+[Fitted on games:]
+拟合对局数:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+每个殖民地的开局都在完成的地图上测量，并由以数千场实力相当对手之间的对局拟合出的模型，将这些测量转换为强度。强度表示该殖民地获胜的可能性。公平度表示这些机会分配得有多平均：当每个殖民地的获胜机会都相同时为 1，当单一殖民地会拿下整张地图时为 0。
+[Worst]
+最低
+[Best]
+最高
+[Map preview controls]
+拖动以跨越边界，滚轮缩放。右键或双击重置。
+[Map preview drag help]
+拖动移动；滚轮缩放。
+[Map preview loading]
+加载中...
+[Map preview failed]
+预览失败
+[Map preview retry]
+点击重试
+[Map preview please wait]
+请稍候
+[Stats births]
+出生
+[Stats deaths]
+死亡
+[Stats starvation]
+饿死
+[Stats wheat stock]
+小麦库存
+[Stats wheat loads]
+小麦搬运量
+[Stats meals]
+供餐次数
+[Stats new buildings]
+新建建筑
+[Stats upgrades]
+升级
+[Stats training]
+训练次数
+[Stats damage dealt]
+造成伤害
+[Stats damage received]
+受到伤害
+[Stats HP restored]
+恢复生命值
+[Stats since tick]
+起始刻
+[Stats combat deaths]
+战斗
+[Stats clearing deaths]
+清理受伤
+[Stats trapped deaths]
+受困
+[Stats unknown deaths]
+其他/未知
+[Stats conversions]
+转入 / 转出
+[Stats unavailable]
+无数据
+[Stats wheat per minute]
+搬运量/分
+[Stats meals per minute]
+食物/分
+[Stats occupancy]
+进食 / 治疗
+[Stats page one]
+统计 1/3 >
+[Stats page two]
+统计 2/3 >
+[Stats next page]
+页面 (P)
+[Map preview choose another]
+选择地图
+[Resources never grow or spread across the map.]
+资源永远不会在地图上生长或扩散。
+[Building sites complete immediately, skipping delivery.]
+建筑工地会立即完成，跳过运送阶段。
+[Units never grow hungry and never starve.]
+单位永远不会挨饿，也永远不会饿死。
+[Slows how often resources grow or spread across the map.]
+降低资源在地图上生长或扩散的频率。
+[Seeds each team's shared market/exchange resource pool at game start.]
+在游戏开始时，为每支队伍补满共享的市场/交易资源储备。
+[Grow normally]
+正常生长
+[No growth]
+不生长
+[Normal construction]
+正常建造
+[Instant]
+立即
+[Units get hungry]
+单位会挨饿
+[No hunger]
+没有饥饿
+[Off (today's growth)]
+关闭（目前的生长速度）
+[Scarce (2x slower)]
+稀少（慢 2x）
+[Very scarce (4x slower)]
+非常稀少（慢 4x）
+[Extremely scarce (8x slower)]
+极度稀少（慢 8x）
+[None (today's default)]
+无（目前默认值）
+[Small (+50 each)]
+小（各 +50）
+[Medium (+150 each)]
+中（各 +150）
+[Large (+300 each)]
+大（各 +300）
+[No resource growth]
+资源不生长
+[Economy]
+经济
+[Scarce resources]
+资源稀少
+[Instant construction]
+立即建造
+[Stockpile start]
+起始储备
+[Units still visit schools but never gain a level.]
+单位仍然会去学校上课，但永远不会升级。
+[Units fight to the death instead of retreating to heal.]
+单位会战斗至死，而不是撤退治疗。
+[Units are never permanently lost -- HP just stops at 1.]
+单位永远不会永久消失——生命值只会停在1。
+[Disables all combat between every team.]
+停用所有队伍之间的战斗。
+[Higher tiers deal more damage but have less HP and armor.]
+更高的等级会造成更多伤害，但生命值和护甲较低。
+[Higher tiers give every building much more HP.]
+更高的等级会让每座建筑物获得更多生命值。
+[Starting units spawn already leveled up. Changes the generated map.]
+初始单位一开始就已经升级。会改变生成的地图。
+[Trains normally]
+正常训练
+[No upgrades]
+不升级
+[Retreats when damaged]
+受伤时撤退
+[Fearless]
+无畏
+[Can die permanently]
+可能永久死亡
+[No permadeath]
+不会永久死亡
+[Normal combat]
+正常战斗
+[Peaceful mode]
+和平模式
+[Off (today's balance)]
+关闭（目前的平衡）
+[Glass cannon x2]
+玻璃大炮 x2
+[Glass cannon x3]
+玻璃大炮 x3
+[Off (today's HP)]
+关闭（目前的生命值）
+[Fortress x5]
+堡垒 x5
+[Fortress x10]
+堡垒 x10
+[Veteran]
+老兵
+[Elite]
+精英
+[Legendary]
+传奇
+[Combat]
+战斗
+[Glass cannon]
+玻璃大炮
+[Fortress buildings]
+堡垒化建筑
+[Veteran/Fast start]
+老兵/快速开局
+[Match ends at the timer; highest prestige at that instant wins.]
+比赛在计时器归零时结束；届时声望最高者获胜。
+[Off (no timer)]
+关闭（无计时器）
+[90 minutes]
+90 分钟
+[30 minutes]
+30 分钟
+[45 minutes]
+45 分钟
+[60 minutes]
+60 分钟
+[Sudden-death timer]
+猝死计时器
+[Stats page three]
+统计 3/3 >
+[Stats blocked units]
+单位 S/C
+[Stats blocked buildings]
+建筑物 S/C
+[Stats blocked buildings swim]
+游泳 S/C
+[Stats current blocked units]
+单位 C
+[Stats current blocked buildings]
+建筑物 C
+[Stats growth global]
+资源 +
+[Stats growth new tiles]
+资源 +#
+[Stats growth reductions]
+资源 -
+[Stats growth per minute]
+小麦 +/min
+[Stats growth near 8]
+资源 + <=8
+[Stats growth near 16]
+资源 + <=16
+[Stats growth near 32]
+资源 + <=32
+[Stats low HP 25]
+生命值 <=25%
+[Stats low HP 50]
+生命值 <=50%
+[Stats low HP 75]
+生命值 <=75%
+[Stats low food 25]
+食物 <=25%
+[Stats low food 50]
+食物 <=50%
+[Stats low food 75]
+食物 <=75%
+[Stats structural units]
+单位 S
+[Stats structural buildings]
+建筑物 S
+[Stats low HP ranges]
+生命值: <=25/50/75%
+[Stats low food ranges]
+食物: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+表情图案
+[Smiley]
+笑脸
+[Sad face]
+难过的脸
+[Winking face]
+眨眼的脸
+[Surprised face]
+惊讶的脸
+[Heart eyes]
+爱心眼
+[Sunglasses]
+太阳镜
+[Heart]
+爱心
+[Star]
+星星
+[Neutral face]
+面无表情
+[Sleeping face]
+睡脸
+[Grinning face]
+咧嘴笑
+[Kissing face]
+亲吻的脸
+[Angry face]
+生气的脸
+[Tongue out]
+吐舌头
+[Skull]
+骷髅
+[Flower]
+花
+[Four-leaf clover]
+四叶草
+[Teardrop]
+水滴
+[Cloud]
+云
+[Gem]
+宝石
+[Apple]
+苹果
+[Speech bubble]
+对话框
+[Shield]
+盾牌
+[Emoji style]
+表情样式
+[Outline]
+轮廓
+[Filled]
+实心
+[Emoji terrain]
+表情地形
+[Regular]
+常规
+[Inverse]
+反转
+[Crossings]
+通道
+[Forts]
+堡垒
+[Gate width]
+城门宽度
+[Braided Delta]
+辫状三角洲
+[Braid count]
+河汊数量
+[Rejoining frequency]
+汇合频率
+[Crossing spacing]
+渡口间距
+[Breachable highlands]
+可突破的高地
+[Ridge depth]
+山脊厚度
+[Extra open passes]
+额外开放山口
+[Wooded saddles]
+林木山口
+[Hedgerow Country]
+树篱田园
+[Field size]
+田块大小
+[Hedge thickness]
+树篱厚度
+[Existing gateways]
+现有通道
+[Wooded boundary share]
+林木边界比例
+[The Glacis]
+斜堤
+[Allotments]
+菜园地
+[Caravanserai]
+商队驿站
+[Mixed]
+混合
+[Fort size]
+堡垒大小
+[Bastions]
+棱堡
+[Four-pointed]
+四角星形
+[Five-pointed]
+五角星形
+[Six-pointed]
+六角星形
+[Glacis width]
+斜堤宽度
+[Gates]
+城门
+[Site size]
+地块大小
+[Plot width]
+菜畦宽度
+[Plot mix]
+菜畦组合
+[Tended]
+精心照料
+[Overgrown]
+荒芜
+[Commons]
+公地
+[Few]
+少
+[Some]
+一些
+[Home oasis size]
+家乡绿洲大小
+[Caravanserais per colony]
+每个殖民地的商队驿站
+[Desert]
+沙漠
+[Open erg]
+开阔沙海
+[Dunes and mesas]
+沙丘与桌山
+[Canyon country]
+峡谷地带
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+有堡垒无法到达它的浅滩；请使用更大的地图或更少的殖民地。
+[A wall would stand on a beach; try another seed.]
+有城墙会建在沙滩上；请尝试其他种子。
+[The fort is too small for its gardens; raise Fort size.]
+堡垒太小，容不下它的菜园；请增大堡垒大小。
+[The home oasis is too small; raise Home oasis size.]
+家乡绿洲太小；请增大家乡绿洲大小。
+[Braided river]
+辫状河
+[Braid width]
+辫状带宽度
+[Bar size]
+沙洲大小
+[Extra riffles]
+额外浅滩
+[Moraine hummocks]
+冰碛小丘
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+辫状带留给基地的阶地太少；请使用更大的地图或更窄的辫状带。
+[The map is too narrow across for a braid; use a bigger map.]
+地图的宽度太窄，容不下辫状河；请使用更大的地图。
+[Drumlin field]
+鼓丘原野
+[Drumlin spacing]
+鼓丘间距
+[Drumlin length]
+鼓丘长度
+[Water gap]
+水域间隙
+[Esker loops]
+蛇形丘环路
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+蛇形丘无法连接所有鼓丘；请减小水域间隙或使用更大的地图。
+[Continents]
+各大洲
+[Continent]
+大洲
+[North America]
+北美洲
+[South America]
+南美洲
+[Africa]
+非洲
+[Europe]
+欧洲
+[Asia]
+亚洲
+[Oceania]
+大洋洲
+[Orientation]
+方向
+[Turn to fit]
+旋转以适应
+[Upright]
+不旋转
+[Mountain ranges]
+山脉
+[Great rivers]
+大河
+[Islets]
+小岛
+[Oases]
+绿洲
+[The world atlas has no such continent.]
+世界地图集中没有这个大洲。
+[The map is too small to hold a continent.]
+地图太小，容纳不下一个大洲。
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+此大洲在这个地图大小下容纳不下这么多殖民地；请使用更大的地图或减少殖民地数量。
+[Savannah]
+稀树草原
+[Watering holes]
+水塘
+[Dry patches]
+干燥地带
+[Sparse]
+稀少
+[Normal]
+正常
+[Many]
+众多
+[Rice terraces]
+梯田
+[Unoccupied hills]
+无人山丘
+[Hill radius]
+山丘半径
+[Contour band width]
+等高带宽度
+[Stairs per hill]
+每座山丘的阶梯数
+[Valley river]
+山谷河流
+[Hills]
+丘陵
+[Hillsides]
+山坡
+[Terraces per slope]
+每坡梯田数
+[Waviness]
+波动程度
+[Stair spacing]
+台阶间距
+[Locust]
+蝗灾
+[Plantations]
+种植园
+[Plot size]
+建筑用地大小
+[Farm width]
+农田宽度
+[Islands per colony]
+每个殖民地的岛屿数
+[Outpost inns]
+前哨食堂
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+这些岛屿对于自己的建筑用地来说太小；请使用更大的地图、更小的建筑用地或减少殖民地数量。
+[Sierpiński Gardens]
+谢尔宾斯基花园
+[Hilbert River]
+希尔伯特河
+[Maximum nesting]
+最大嵌套层数
+[Minimum terminal district side]
+末级区域最小边长
+[Major crossing pairs]
+主要通道对数
+[Maximum fold depth]
+最大折叠深度
+[Minimum land spacing]
+最小陆地间距
+[Optional local crossings per parent]
+每个父区域的可选局部通道
+[Optional major shortcuts]
+可选主要捷径
+[Lava shield]
+熔岩盾
+[Lava tongues]
+熔岩舌数量
+[Long tongues]
+长熔岩舌
+[Crater rim width]
+火山口边缘宽度
+[Honeycomb isle]
+蜂巢岛
+[Blocks per colony]
+每个殖民地的街区数
+[Rubble]
+瓦砾
+[Outline gaps]
+轮廓缺口
+[Craters per colony]
+每个殖民地的弹坑数
+[Wheat fields]
+麦田
+[Bridges]
+桥梁
+[Karst towers]
+喀斯特石峰
+[Tower spacing]
+石峰间距
+[Tower density]
+石峰密度
+[Paddy depth]
+稻田纵深
+[Home design]
+基地样式
+[Horseshoe]
+马蹄形
+[Twin gates]
+双门
+[Three gates]
+三门
+[Four gates]
+四门
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+河流无法在基地之间找到路径；请使用更大的地图或更少的殖民地。
+[River meander]
+河道蜿蜒
+[Flooded terraces]
+淹水梯田
+[Sinkholes]
+落水洞
+[Bajada]
+冲积扇
+[Range spacing]
+山脉间距
+[Ridge width]
+山脊宽度
+[Passes]
+山口
+[Fans per range]
+每条山脉的冲积扇
+[Stream reach]
+溪流长度
+[Playa]
+盐湖
+[Broad fan]
+宽冲积扇
+[Long fan]
+长冲积扇
+[Twin springs]
+双泉
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+冲积扇山坡太窄，容不下基地；请使用更大的地图、更宽的山脉间距、更窄的山脊或更小的盐湖。
+[Central Quarry]
+中央采石场
+[Quarry size]
+采石场大小
+[Sand bars]
+沙洲
+[Woodland]
+林地
+[Central Quarry needs at least two colonies.]
+中央采石场至少需要两个殖民地。
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+湖泊放不进这张地图；请使用更小的湖泊或更大的地图。
+[A sand bar did not reach the island.]
+有一条沙洲没有连到岛上。
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+这张地图容纳不下这么多殖民地；请使用更大的地图或减少殖民地数量。
+[The island has no room for its quarry; use a bigger island.]
+岛上没有放置采石场的空间；请使用更大的岛屿。
+[Hidden Oasis]
+隐秘绿洲
+[Pond algae]
+池塘海藻
+[Starting towers]
+初始塔
+[Starting school]
+初始学校
+[Mesas]
+平顶山
+[Springs]
+泉水
+[Hidden Oasis needs at least two colonies.]
+隐秘绿洲至少需要两个殖民地。
+[Hidden Oasis holds at most eight colonies.]
+隐秘绿洲最多容纳八个殖民地。
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+岩石高地放不进这张地图；请使用更大的地图或更少的殖民地。
+[The pond has no room for that much algae; use a bigger pond.]
+池塘放不下这么多海藻；请使用更大的池塘。
+[Even Ground]
+公平原野
+[Balance]
+平衡度
+[Tight passes]
+狭窄通道
+[Solver effort]
+求解强度
+[Brief]
+简略
+[Patient]
+耐心
+[This map is too small to solve on; use a bigger map.]
+这张地图太小，无法求解；请使用更大的地图。
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+在这个大小的地图上殖民地太多，无法平衡；请使用更大的地图或减少殖民地数量。
+[The colonies could not be spread out on this map.]
+无法在这张地图上把殖民地分散开。
+[Marchland]
+边疆
+[Prizes on the rope]
+绳上的奖品
+[March width]
+边疆宽度
+[Levelling]
+均等化
+[A march needs a country on each side; use at least two colonies.]
+边疆需要两侧各有一个国度；请至少使用两个殖民地。
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+殖民地太多，这张地图无法为每个殖民地提供家园；请使用更大的地图或减少殖民地数量。
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+这张地图没有空间把殖民地分散开；请使用更大的地图或减少殖民地数量。
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+有殖民地的家园没有通往边疆的出口；请使用更大的地图或更窄的边疆。
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+有殖民地的家园没有放置孢子堆的空间；请使用更大的地图、更少的殖民地或更窄的边疆。
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+边疆的争夺地带太少，容纳不下这么多奖品；请减少奖品、加宽边疆或使用更大的地图。
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+边疆没有放置奖品的空间；请使用更大的地图、更少的殖民地或更宽的边疆。
+[Orchard Commons]
+共有果园
+[Orchard spacing]
+果园间距
+[Compact]
+紧凑
+[Balanced]
+均衡
+[Spread]
+分散
+[The Gauntlet]
+试炼竞技场
+[Partition thickness]
+隔墙厚度
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+试炼竞技场需要更大的地图或更少的殖民地，才能为每个殖民地安排两个设防入口。
+[The Comb]
+梳子
+[Peninsulas per shore]
+每岸半岛数
+[Encircled Kingdom]
+被包围的王国
+[Fortress plan]
+要塞布局
+[Automatic]
+自动
+[Elongated enclosure]
+狭长围城
+[Bastioned enclosure]
+棱堡围城
+[Paired courtyards]
+双庭院
+[Heartland farmland]
+腹地农田
+[The Faulted City]
+断层之城
+[Fault displacement]
+断层位移
+[Fault width]
+断层宽度
+[Ruin density]
+废墟密度
+[Surviving junctions]
+保留路口
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+断层之城要求每边为256或512格，并有一至十二个殖民地。
+[The city has too few usable junctions.]
+城市中可用的路口太少。
+[A city neighbourhood lacks reachable crops or building room.]
+某个城区缺少可到达的作物或建筑空间。
+[The city neighbourhoods are too unequal; try another seed.]
+各城区条件过于不均衡；请尝试其他种子。
+[The fractured civic plaza did not survive.]
+被断层分割的城市广场未能保留下来。
+[Who Ate the Map?]
+谁把地图吃了？
+[Appetite]
+胃口
+[A Little Nibble]
+咬一小口
+[Hungry]
+饿了
+[Portage Lakes]
+湖泊与林间通道
+[Lake elongation]
+湖泊狭长度
+[Portage depth]
+通道伐木厚度
+[Extra trails]
+额外小径
+[Portage Lakes needs sides between 64 and 512 tiles.]
+此地图的边长必须为64至512格。
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+此种子无法在湖岸安置定居点。
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+无法在每个定居点旁布置可再生的湖岸农田。
+[Portage Lakes cannot connect its shoreline trails.]
+无法连接湖岸小径。
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+此种子无法生成穿过干燥树林的有效捷径。
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+此种子无法生成有效的游泳捷径。
+[Portage Lakes needs separate swimming lakes on this seed.]
+使用此种子时，可供游泳的湖泊必须保持互不相连。
+[Drowned Forest]
+淹没森林
+[Sandbar connections]
+沙洲连接
+[Wooded neck thickness]
+林木屏障厚度
+[Neutral clearing size]
+中立林间空地大小
+[Bastion Keys]
+堡垒群岛
+[Plantation size]
+种植园大小
+[Outlying islands]
+外围岛屿
+[The Hungry Marches]
+饥饿边境
+[Opening ration]
+起始口粮
+[Central concentration]
+中央集中度
+[The Last Treeline]
+最后的林带
+[Woodland depth]
+树林宽度
+[Fertility]
+肥沃度
+[Deposits]
+储量
+[Room]
+空间
+[Isolation]
+隔离度
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+每个殖民地的开局都在完成的地图上测量：到小麦和木材的路程、土地的再生能力、可及范围内的储量和建筑用地，以及与对手的距离。每项因素按固定标准计 0 到 1 分，总分对其加权，公平度是最低殖民地的总分除以最高者，评分是最低总分乘以公平度。
+[ERROR_CANT_SAVE_MAP]
+无法保存地图。请检查目标位置和可用空间。您的编辑内容仍处于打开状态。
+[Loading headers]
+正在加载头信息...
+[Loading teams]
+正在加载队伍...
+[Loading terrain]
+正在加载地形...
+[Building gradients]
+正在生成梯度...
+[Loading players]
+正在加载玩家...
+[Loading scripts]
+正在加载脚本...
+[Generating map]
+正在生成地图...
+[ERROR_CANT_GENERATE_MAP]
+无法生成地图。请尝试其他生成设置。
+[Loading units]
+正在加载单位...
+[Loading buildings]
+正在加载建筑...
+[Resolving team links]
+正在解析队伍链接...
+[saving to storage]
+正在保存...
+[save failed retry]
+保存失败，请重试。
+[export save]
+导出存档
+[storage restore failed]
+无法恢复浏览器存储。现有已保存数据未被更改。您可以继续本次会话，但本地更改将无法保留。请从保存失败对话框导出重要存档。重新加载以再次尝试恢复存储。
+[continue]
+继续
+[export file]
+导出文件
+[export failed]
+文件导出失败
+[import file]
+导入
+[select import file]
+选择要导入的文件
+[validating import]
+正在验证文件...
+[import succeeded]
+文件已导入
+[import cancelled]
+导入已取消
+[import failed]
+导入失败：文件无效或不受支持
+[import persistence failed]
+未保存：选择“导入”重试，或“导出文件”
+[import progress]
+导入进度
+[export progress]
+导出进度
+[retry save]
+重试保存
+[campaign save failed]
+战役进度未保存。请重试或导出备份。
+[leave without saving]
+不保存退出
+[campaign import failed]
+进度文件无效或战役版本不同
+[network release mismatch]
+客户端与服务器协议不一致。请安装与服务器相同的 Glob2 版本。
+[settings continue]
+继续
+[settings save failed]
+设置保存尚未确认。请重试，或继续。
+[shutdown save failed]
+最终保存尚未确认。请重试，或不保存退出。
+[quit without saving]
+不保存退出
+[game closed]
+游戏已关闭。您可以关闭此窗口，或重新加载以再次游戏。
+[campaign editor save failed]
+尚未确认保存。“确定”重试；“取消”返回编辑器菜单。
+[Actions]
+操作
+[Minimap]
+小地图
+[Fast forward]
+快进
+[Hide keyboard]
+隐藏键盘
+[Dialog text size]
+对话框文字大小
+[Player slot]
+玩家槽位
+[Team color]
+队伍颜色
+[Alliance group]
+同盟分组
+[menu]
+菜单
+[Editor tools]
+工具
+[Pan map]
+平移地图
+[Edit map]
+编辑地图
+[Editor map]
+地图
+[Flags]
+旗帜
+[Pause]
+暂停
+[Speed]
+速度
+[Objectives]
+目标
+[Menu]
+菜单
+[Goals]
+目标
+[Teams]
+队伍
+[Use this landscape]
+使用此地形
+[Reset]
+重置
+[Generating...]
+生成中...
+[Players]
+玩家
+[Rules]
+规则
+[settings Interface layout]
+界面布局
+[settings Automatic]
+自动
+[settings Compact]
+紧凑
+[settings Spacious]
+宽敞
+[More]
+更多
+[No items]
+没有项目
+[Opponents]
+对手
+[Review]
+总览
+[Review & Play]
+检查并开始游戏
+[Edit opponents]
+编辑对手
+[Map settings]
+地图设定
+[Next]
+下一步
+[Done]
+完成
+[Contribution]
+贡献
+[Choose who controls this colony]
+选择由谁控制此殖民地
+[Settings]
+设定
+[settings Back]
+后退
+[settings Save the game automatically about every minute.]
+大约每分钟自动保存游戏。
+[AI opponents]
+电脑对手
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+宽敞布局在空间足够时使用侧边面板。紧凑布局使用工具栏和可展开的面板。
+[Assigned %0 · Target %1]
+已分配 %0 · 目标 %1
+[Range: %0]
+范围：%0
+[Player %0]
+玩家 %0
+[Brush %0]
+画笔 %0
+[Team %0]
+队伍 %0
+[Your colony]
+你的殖民地
+[%0 / %1 HP · %2]
+%0 / %1 生命值 · %2
+[Units: %0]
+单位：%0
+[Buildings: %0]
+建筑：%0
+[Need food: %0]
+需要食物：%0
+[Need healing: %0]
+需要治疗：%0
+[Attack: %0]
+攻击：%0
+[Defense: %0]
+防御：%0
+[Food: %0 / %1]
+食物：%0 / %1
+[View team %0]
+查看队伍 %0
+[P %0/%1/%2]
+声望 %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+画笔 %0x%1
+[Level %0]
+等级 %0
+[Manage teams (%0)]
+管理队伍（%0）
+[Team %0 / Level %1]
+队伍 %0 / 等级 %1
+[Files · %0]
+文件 · %0
+[Hint %0]
+提示 %0
+[Objective %0]
+目标 %0
+[Entry %0 of 8 · empty entries are omitted]
+第 %0 项，共 8 项 · 空白项将省略
+[Teams %0/%1]
+队伍 %0/%1
+[Elapsed time · %0]
+已用时间 · %0
+[Read-only building]
+只读建筑
+[Alliance and shared vision are fixed for this match.]
+本局的联盟和共享视野已固定。
+[Share vision]
+共享视野
+[Share food vision]
+共享食物视野
+[Share market vision]
+共享市场视野
+[Chat]
+聊天
+[No other players have editable diplomatic settings in this match.]
+本局没有其他玩家的外交设置可供编辑。
+[No briefing for this match.]
+本局没有任务简报。
+[Chat · recipients selected in Teams]
+聊天 · 在队伍中选择接收者
+[Filename]
+文件名
+[Reduced motion]
+减少动态效果
+[Send]
+发送
+[Close]
+关闭
+[Forbidden]
+禁止
+[Guard]
+守卫
+[Clear]
+清理
+[Paint]
+绘制
+[Erase]
+擦除
+[Release on valid terrain to place]
+在有效地形上松手以放置
+[Paint on the map; two fingers move]
+在地图上绘制；双指移动
+[Tutorial ▸]
+教程 ▸
+[Back to tools]
+返回工具
+[Starvation overlay]
+饥饿叠加层
+[Damage overlay]
+受损叠加层
+[Defense overlay]
+防御叠加层
+[Fertility overlay]
+肥沃度叠加层
+[Health and food bars]
+生命和食物条
+[Message history]
+消息历史
+[Mark map for allies]
+为盟友标记地图
+[Show zones]
+显示区域
+[Pan]
+平移
+[Select]
+选择
+[Show palette]
+显示面板
+[Release to place]
+松手以放置
+[Blocked placement]
+无法放置
+[File name]
+文件名称
+[Load map]
+加载地图
+[Save map]
+保存地图
+[No files in this folder]
+此文件夹中没有文件
+[No files saved yet]
+尚未保存任何文件
+[Export]
+导出
+[Tap to write the mission briefing]
+点击编写任务简报
+[Tap to write the map script]
+点击编写地图脚本
+[Script]
+脚本
+[Previous]
+上一项
+[Compile]
+编译
+[Tap to write this hint]
+点击编写此提示
+[Tap to write this objective]
+点击编写此目标
+[Mission briefing · tap to edit, swipe to scroll]
+任务简报 · 点击编辑，滑动滚动
+[Not enough recorded history yet.]
+记录的历史数据还不够。
+[Select a team to show its history.]
+选择队伍以显示其历史数据。
+[Back to chart]
+返回图表
+[Expand chart]
+展开图表
+[Slot]
+位置
+[Color]
+颜色
+[Player / AI]
+玩家 / AI
+[Group]
+组
+[Forbid]
+禁止
+[↓ Low]
+↓ 低
+[= Normal]
+= 普通
+[↑ High]
+↑ 高
+[Details]
+详情
+[Campaign name]
+战役名称
+[Unlocking]
+解锁
+[Parameters]
+参数
+[Blank map]
+空白地图
+[Generated]
+已生成
+[Preview]
+预览
+[Selected landscape]
+所选地形
+[Representative preview]
+示例预览
+[Starting terrain]
+初始地形
+[Hide parameters]
+隐藏参数
+[Size and parameters]
+大小和参数
+[Choose a landscape]
+选择地形
+[%0 / Browse]
+%0 / 浏览
+[%0 colonies · %1]
+%0个殖民地 · %1
+[%0 · Team %1]
+%0 · 队伍 %1
+[Colonies: %0]
+殖民地: %0
+[%0 colonies · %1 AI]
+%0个殖民地 · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 单位
+[settings Level %0]
+等级 %0
+[settings Match the desktop %0]
+与桌面相同 (%0)
+[settings Current display %0 %1 %2 %3]
+当前显示设置: %0 × %1 · %2 · %3
+[Fairness: %0]
+公平度: %0
+[Colony %0]
+殖民地 %0
+[Win chance: %0 · Fitness: %1]
+胜率: %0 · 强度: %1
+[%0 · Contribution: %1]
+%0 · 贡献: %1
+[Min required level %0]
+最小等级需求: %0
+[Confirm %0]
+确定: %0
+[Dialog text size %0]
+对话框文字大小: %0%
+[%0 %1]
+%0 %1

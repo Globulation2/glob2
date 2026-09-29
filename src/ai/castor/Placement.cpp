@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -16,6 +16,11 @@ using std::shared_ptr;
 
 std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical)
 {
+	telemetry.set(AITrace::AI2::AICastor_findGoodBuilding_input_critical, critical);
+	telemetry.set(AITrace::AI2::AICastor_findGoodBuilding_input_defense, defense);
+	telemetry.set(AITrace::AI2::AICastor_findGoodBuilding_input_food, food);
+	telemetry.set(AITrace::AI2::AICastor_findGoodBuilding_input_typeNum, typeNum);
+	telemetry.count(AITrace::AI2::AICastor_findGoodBuilding_calls);
 	int w=map->w;
 	int h=map->h;
 	int bw=globalContainer->buildingsTypes.get(typeNum)->width;
@@ -137,15 +142,22 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 				bestIndex=corner0;
 			}
 		}
-	
+
+	telemetry.set(AITrace::AI2::placement_bestScore, bestScore);
+	telemetry.set(AITrace::AI2::placement_bestIndex, bestIndex);
+	telemetry.set(AITrace::AI2::placement_minWork, minWork);
+	telemetry.set(AITrace::AI2::placement_bestWorkScore, bestWorkScore);
 	if (bestScore>0)
 	{
 		Sint32 x=(bestIndex&map->wMask);
 		Sint32 y=((bestIndex>>map->wDec)&map->hMask);
-		return shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1));
+		return telemetry.returnedOrder(
+			AITrace::AI2::AICastor_findGoodBuilding_result,
+			shared_ptr<Order>(new OrderCreate(team->teamNumber, x, y, typeNum, 1, 1)));
 	}
-	
-	return shared_ptr<Order>();
+
+	return telemetry.returnedOrder(AITrace::AI2::AICastor_findGoodBuilding_result,
+								   shared_ptr<Order>());
 }
 
 void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)

@@ -27,3 +27,17 @@ Glob2-*.dmg
 /build-server/
 
 /artifacts/
+
+# Local documentation and review work. Durable documentation belongs in the
+# categorized docs/ directories; generated evidence belongs in /artifacts/.
+/docs/**/.work/
+/docs/**/artifacts/
+/docs/**/evidence/
+/docs/**/validation/
+/tools/browser-emsdk/
+/build-browser/
+/build-browser.log
+/build-*-support.log
+/test/build/
+/build-*.log
+/browser/node_modules

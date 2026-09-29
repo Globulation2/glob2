@@ -3,12 +3,20 @@
 #include "CustomGameSetup.h"
 #include "Glob2Screen.h"
 #include "MapHeader.h"
+#include "StartQuality.h"
+#include <cstdint>
+#include <ScreenStack.h>
 #include <memory>
+#include <optional>
 #include <vector>
 class LobbyControls;
+class LandscapePickerScreen;
+class LandscapePreviewer;
 class CustomGameChoiceScreen : public Glob2Screen
 {
 	friend struct CustomGameSetupHarness;
+	friend struct MobilePresentationHarness;
+	friend struct MobileGallerySetup;
 	LobbyControls *controls;
 	std::string title;
 	std::vector<std::string> choices;
@@ -17,6 +25,9 @@ class CustomGameChoiceScreen : public Glob2Screen
 	std::vector<bool> enabled;
 
   public:
+    bool supportsCompactViewport() const override { return true; }
+    bool usesResponsiveViewport() const override;
+    void cancelExecutionInput() override;
 	CustomGameChoiceScreen(const std::string &, const std::vector<std::string> &, int, bool,
 						   const std::vector<bool> &);
 	void onSDLEvent(SDL_Event *) override;
@@ -27,12 +38,18 @@ class LobbyControls;
 class CustomGameScreen : public Glob2TabScreen
 {
   public:
+	void paint() override;
+    bool supportsCompactViewport() const override { return true; }
+    bool usesResponsiveViewport() const override;
+    friend struct MobilePresentationHarness;
+	friend struct MobileGallerySetup;
+	void cancelExecutionInput() override;
 	enum
 	{
 		OK = 1,
 		CANCEL = 2
 	};
-	CustomGameScreen();
+	explicit CustomGameScreen(GAGGUI::ScreenStack& screens);
 	~CustomGameScreen() override;
 	void onAction(Widget *, Action, int, int) override;
 	void onGroupActivated(int) override;
@@ -43,6 +60,9 @@ class CustomGameScreen : public Glob2TabScreen
 	GameHeader &getGameHeader();
 	int getSelectedColor(int) { return setup.humanColony().value_or(0); }
 	const std::string &sourceFile() const { return source; }
+	// Hands over a generated map, which this screen would otherwise delete when
+	// destroyed. Releasing the returned owner removes it.
+	std::shared_ptr<void> releaseSnapshot();
 	void launchFailed()
 	{
 		message = "Could not launch this map. Your setup is retained; try again.";
@@ -50,7 +70,9 @@ class CustomGameScreen : public Glob2TabScreen
 	int selectedSpeed() const { return setup.speed; }
 
   private:
+	friend struct MapPreviewHarness;
 	friend struct CustomGameSetupHarness;
+	GAGGUI::ScreenStack& screens;
 	CustomGameSetup setup;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
@@ -61,7 +83,28 @@ class CustomGameScreen : public Glob2TabScreen
 	unsigned previewRevision = ~0u;
 	bool previewPending = false;
 	Uint32 previewDue = 0;
+	// A seed the landscape picker showed a map for: the next preview reproduces that map.
+	std::optional<std::uint32_t> chosenSeed;
+	// How good a start each colony got on the map in the preview, as GenerationService scored
+	// it; measured only while the preview is a generated map.
+	MapGeneration::StartQualityReport quality;
+	// Random parameters (see randomizeParameters): draws still allowed when the world refuses a
+	// set, so the preview keeps redrawing until it shows a map.
+	int randomAttempts = 0;
+	static constexpr int kRandomAttempts = 6;
+	// The preview's candidate rolls run on the previewer's workers; the best-scoring one is then
+	// rolled again on this thread for the snapshot. candidateRevision is the draft they were
+	// rolled for, so an edit made meanwhile discards them.
+	std::unique_ptr<LandscapePreviewer> candidates;
+	unsigned candidateRevision = 0;
+	void startCandidates();
+	bool collectCandidates();
+	void finishPreview();
+	bool previewBusy() const { return previewPending || candidates != nullptr; }
 	bool validMap = false, userMaps = false;
+	// LandscapePickerScreen::SortOrder, kept as a plain int here so this header does not need
+	// that screen's full declaration; see CustomGamePreferences::landscapeSortOrder.
+	int landscapeSortOrder = 0;
 	bool separateMapLibraries = true;
 	int currentTab = 0;
 	int groups[3];
@@ -71,6 +114,15 @@ class CustomGameScreen : public Glob2TabScreen
 	std::string librarySelection[2];
 	bool expanded[3] = {false, false, false};
 	void renderLobby();
+    void renderPhoneLobby();
+	enum class PhonePage
+	{
+		Main,
+		Maps,
+		MapSettings,
+		Rules
+	};
+	PhonePage phonePage = PhonePage::Main;
 	void renderPlayers(int x, int y, int w, int h);
 	void renderRules(int x, int y, int w, int h);
 	void renderMap(int x, int y, int w, int h);
@@ -79,8 +131,14 @@ class CustomGameScreen : public Glob2TabScreen
 	void listMaps();
 	bool loadMap(const std::string &path);
 	bool generateMap();
-	int choose(const std::string &, const std::vector<std::string> &, int, bool profiles = false,
-			   const std::vector<bool> &enabled = {});
+	std::vector<std::pair<int, GenerationRequest>> landscapeEntries() const;
+	LandscapePickerScreen *chooseLandscape();
+	void applyLandscape(int method, std::optional<std::uint32_t> seed,
+						const GenerationRequest *shown = nullptr);
+	void resetParameters();
+	void randomizeParameters();
+	bool drawRandomParameters();
+	void showStartQuality();
 	void invalidate();
 	std::string colonyLabel(int) const;
 };

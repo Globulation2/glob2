@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "BuildingGradientSearch.h"
 #include "Map.h"
+#include "FileFormatVersions.h"
 #include "MapInternal.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -12,6 +14,7 @@
 #endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
+#include <stdexcept>
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <limits>
@@ -20,6 +23,11 @@
 
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
+{
+    return loadTask(stream, header, game).run();
+}
+
+GAGCore::CooperativeTask Map::loadTask(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 try
 {
 	GAGCore::BinaryInputStream::CheckedReads checked(stream);
@@ -28,6 +36,7 @@ try
 	Sint32 versionMinor = header.getVersionMinor();
 
 	clear();
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading terrain]");
 
 	stream->readEnterSection("Map");
 
@@ -36,15 +45,14 @@ try
 	if (memcmp(signature, "MapB", 4)!=0)
 	{
 		fprintf(stderr, "Map:: Failed to find signature at the beginning of Map.\n");
-		return false;
+		co_return false;
 	}
 
 	// We load and compute size:
 	wDec = stream->readSint32("wDec");
 	hDec = stream->readSint32("hDec");
-	if (wDec < 0 || hDec < 0 || wDec >= std::numeric_limits<int>::digits ||
-		hDec >= std::numeric_limits<int>::digits || wDec + hDec >= std::numeric_limits<int>::digits)
-		return false;
+	if (!supportedDimensions(wDec, hDec))
+		co_return false;
 	w = 1<<wDec;
 	h = 1<<hDec;
 	wMask = w-1;
@@ -71,13 +79,14 @@ try
 	stream->readEnterSection("cases");
 	for (size_t i=0; i<size; i++)
 	{
+        if (i % 512 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		stream->readEnterSection(i);
 		mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
 		tiles[i].terrain = stream->readUint16("terrain");
 		tiles[i].building = stream->readUint16("building");
 		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
-			return false;
+			co_return false;
 
 		stream->read(&(tiles[i].resource), 4, "ressource");
 		tiles[i].groundUnit = stream->readUint16("groundUnit");
@@ -114,7 +123,7 @@ try
 	wSector = stream->readSint32("wSector");
 	hSector = stream->readSint32("hSector");
 	if (wSector < 0 || hSector < 0 || wSector > w || hSector > h)
-		return false;
+		co_return false;
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
@@ -132,11 +141,12 @@ try
 	stream->readEnterSection("sectors");
 	for (int i=0; i<sizeSector; i++)
 	{
+        if (i % 512 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		stream->readEnterSection(i);
 		if (!sectors[i].load(stream, this->game, versionMinor))
 		{
 			stream->readLeaveSection(3);
-			return false;
+			co_return false;
 		}
 		stream->readLeaveSection();
 	}
@@ -148,7 +158,7 @@ try
 	if (memcmp(signature, "MapE", 4)!=0)
 	{
 		fprintf(stderr, "Map:: Failed to find signature at the end of Map.\n");
-		return false;
+		co_return false;
 	}
 
 	if (game)
@@ -175,13 +185,13 @@ try
 		}
 	}
 
-	return true;
+	co_return true;
 }
 catch (const std::ios_base::failure& error)
 {
 	std::cerr << "Map::load: " << error.what() << std::endl;
 	clear();
-	return false;
+	co_return false;
 }
 
 
@@ -250,6 +260,11 @@ void Map::save(GAGCore::OutputStream *stream)
 
 void Map::addTeam(void)
 {
+    addTeamTask().run();
+}
+
+GAGCore::CooperativeTask Map::addTeamTask(void)
+{
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	int oldNumberOfTeam=numberOfTeam-1;
 	assert(numberOfTeam>0);
@@ -266,10 +281,12 @@ void Map::addTeam(void)
 	assert(clearingAreaClaims[t] == NULL);
 	clearingAreaClaims[t] = new Uint16[size];
 	memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
+    co_return true;
 }
 
 void Map::removeTeam(void)
 {
+	gradientPipeline.reset();
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	assert(numberOfTeam<Team::MAX_COUNT);
 	
@@ -314,12 +331,8 @@ bool loadFlag(GAGCore::InputStream *stream, const char *name)
 void saveGradient(GAGCore::OutputStream *stream, const Uint16 *field, size_t size)
 {
 	stream->writeUint8(field != nullptr, "present");
-	if (field) for (size_t i=0; i<size; ++i)
-	{
-		stream->writeEnterSection(i);
-		stream->writeUint16(field[i], "value");
-		stream->writeLeaveSection();
-	}
+	if (field)
+		stream->writeUint16Sections(field, size, "value");
 }
 void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size)
 {
@@ -346,6 +359,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
+	stream->writeUint32(topologyGeneration, "topologyGeneration");
 	stream->writeEnterSection("cells");
 	for (size_t i=0; i<size; ++i)
 	{
@@ -402,11 +416,31 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
+				// Materialize the old full-field representation from its frozen inputs.
+				// This changes no routing answers, timestamps, RNG or save bytes.
+				finishBuildingGradient(building, sw);
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
+				stream->writeUint32(building->gradientGeneration[sw], "generation");
 				stream->writeLeaveSection();
 			}
+			stream->writeEnterSection("roundTrip");
+			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+			{
+				stream->writeEnterSection(sw);
+				stream->writeUint32(building->globalGradientUsedStep[sw], "usedStep");
+				for (int r=0; r<MAX_NB_RESOURCES; ++r)
+				{
+					stream->writeEnterSection(r);
+					saveGradient(stream, building->roundTripGradient[r][sw], size);
+					stream->writeUint32(building->roundTripGradientStep[r][sw], "step");
+					stream->writeUint32(building->roundTripGradientUsedStep[r][sw], "usedStep");
+					stream->writeLeaveSection();
+				}
+				stream->writeLeaveSection();
+			}
+			stream->writeLeaveSection();
 			stream->writeEnterSection("access");
 			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
 			{
@@ -422,13 +456,38 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	stream->writeEnterSection("gradientPipeline");
+	stream->writeUint8(gradientPipeline.enabled() ? gradientPipeline.delayTicks() : 8, "delay");
+	stream->writeUint8(gradientPipeline.pendingCount(), "count");
+	unsigned index=0;
+	gradientPipeline.visitPending([&](const GradientPipeline::Job &job, unsigned remaining) {
+		int destination=-1;
+		for (int t=0; t<game->teamsCount(); ++t)
+			for (int kind=0; kind<MAX_NB_RESOURCES+2; ++kind)
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+					auto *slot=kind<MAX_NB_RESOURCES ? &resourcesGradient[t][kind][sw]
+						: kind==MAX_NB_RESOURCES ? &guardAreasGradient[t][sw] : &clearAreasGradient[t][sw];
+					if (slot==job.slot) destination=(t*(MAX_NB_RESOURCES+2)+kind)*SWIM_CLASS_COUNT+sw;
+				}
+		if (destination<0) throw std::runtime_error("Unknown pending gradient destination");
+		stream->writeEnterSection(index++);
+		stream->writeUint16(destination, "destination");
+		stream->writeUint8(remaining, "remaining");
+		stream->writeUint8(job.superseded, "superseded");
+		saveGradient(stream, job.data.get(), size);
+		stream->writeLeaveSection();
+	});
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
-void Map::loadRuntimeState(GAGCore::InputStream *stream)
+void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+	gradientPipeline.reset();
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
+	if (versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION)
+		topologyGeneration=stream->readUint32("topologyGeneration");
 	fogOfWar=fogIsA ? fogOfWarA.data() : fogOfWarB.data();
 	stream->readEnterSection("cells");
 	for (size_t i=0; i<size; ++i)
@@ -486,9 +545,34 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream)
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->readEnterSection(sw);
+				// Existing saves contain complete fields; discard any previous queue
+				// before replacing its buffer, including when reusing a loaded object.
+				building->globalGradientSearch[sw].reset();
 				loadGradient(stream, building->globalGradient[sw], size);
 				building->dirtyGradient[sw]=loadFlag(stream,"dirty");
 				building->lastGlobalGradientUpdateStepCounter[sw]=stream->readUint32("lastUpdate");
+				// An older save restored its fields as current; keep them so.
+				building->gradientGeneration[sw]=versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION
+					? stream->readUint32("generation") : topologyGeneration;
+				stream->readLeaveSection();
+			}
+			if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)
+			{
+				stream->readEnterSection("roundTrip");
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				{
+					stream->readEnterSection(sw);
+					building->globalGradientUsedStep[sw]=stream->readUint32("usedStep");
+					for (int r=0; r<MAX_NB_RESOURCES; ++r)
+					{
+						stream->readEnterSection(r);
+						loadGradient(stream, building->roundTripGradient[r][sw], size);
+						building->roundTripGradientStep[r][sw]=stream->readUint32("step");
+						building->roundTripGradientUsedStep[r][sw]=stream->readUint32("usedStep");
+						stream->readLeaveSection();
+					}
+					stream->readLeaveSection();
+				}
 				stream->readLeaveSection();
 			}
 			stream->readEnterSection("access");
@@ -507,5 +591,28 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if (versionMinor>=FILE_FORMAT_VERSION_GRADIENT_PIPELINE) {
+		stream->readEnterSection("gradientPipeline");
+		const unsigned delay=stream->readUint8("delay"), count=stream->readUint8("count");
+		if (delay<1 || delay>16 || count>delay) throw std::runtime_error("Invalid saved gradient queue size");
+		configureGradientPipeline(1, delay);
+		for (unsigned index=0; index<count; ++index) {
+			stream->readEnterSection(index);
+			const unsigned destination=stream->readUint16("destination");
+			const unsigned sw=destination%SWIM_CLASS_COUNT;
+			const unsigned kind=(destination/SWIM_CLASS_COUNT)%(MAX_NB_RESOURCES+2);
+			const unsigned team=destination/(SWIM_CLASS_COUNT*(MAX_NB_RESOURCES+2));
+			if (team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
+			auto *slot=kind<MAX_NB_RESOURCES ? &resourcesGradient[team][kind][sw]
+				: kind==MAX_NB_RESOURCES ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
+			const unsigned remaining=stream->readUint8("remaining");
+			const bool superseded=loadFlag(stream,"superseded");
+			Uint16 *field=nullptr;
+			loadGradient(stream, field, size);
+			gradientPipeline.restoreCompleted(slot, sw, remaining, superseded, std::unique_ptr<Uint16[]>(field));
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+	}
 	stream->readLeaveSection();
 }

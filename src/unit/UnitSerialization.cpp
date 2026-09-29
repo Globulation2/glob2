@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <algorithm>
 #include "Unit.h"
+#include <BinaryStream.h>
+#include <stdexcept>
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -33,6 +36,14 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	gid = stream->readUint16("gid");
 	this->owner = owner;
 	isDead = stream->readSint32("isDead");
+	diagnosticDeathCause = GameplayMeasurements::UNKNOWN;
+	if (versionMinor >= FILE_FORMAT_VERSION_GAMEPLAY_STATS)
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		diagnosticDeathCause = stream->readSint32("diagnosticDeathCause");
+		if (diagnosticDeathCause < 0 || diagnosticDeathCause >= GameplayMeasurements::DEATH_CAUSES)
+			throw std::runtime_error("Invalid diagnostic death cause");
+	}
 
 	// position
 	posX = stream->readSint32("posX");
@@ -86,6 +97,12 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	// Harvest and build are one worker level. A save from before that could
+	// hold the two apart (the editor used to offer a box for each), so even
+	// such a worker out to the higher of the two.
+	if (versionMinor < FILE_FORMAT_VERSION_ONE_WORKER_LEVEL
+		&& canLearn[BUILD] && level[HARVEST] != level[BUILD])
+		setWorkerLevel(std::max(level[HARVEST], level[BUILD]));
 
 
 	experience = stream->readSint32("experience");
@@ -98,11 +115,28 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	previousClearingArea=std::nullopt;
 	previousClearingAreaDistance=0;
+	if (versionMinor >= FILE_FORMAT_VERSION_SIMULATION_CONTINUATION)
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		const Uint8 claimed = stream->readUint8("hasClearingClaim");
+		if (claimed > 1) throw std::runtime_error("Invalid unit clearing claim");
+		if (claimed)
+		{
+			const Uint32 x = stream->readUint32("clearingClaimX");
+			const Uint32 y = stream->readUint32("clearingClaimY");
+			previousClearingArea = ClearingAreaClaim{x, y};
+		}
+		previousClearingAreaDistance = stream->readUint32("clearingClaimDistance");
+	}
+
+	// Old replay headers were originally loaded with a reset idle timer.
+	// Keep that execution contract; new saves retain the timer read above.
+	if (versionMinor < FILE_FORMAT_VERSION_SIMULATION_CONTINUATION)
+		jobTimer = 0;
 
 	// gui
 	levelUpAnimation = 0;
 	magicActionAnimation = 0;
-	jobTimer = 0;
 
 	verbose = false;
 
@@ -120,6 +154,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	// identity
 	stream->writeUint16(gid, "gid");
 	stream->writeSint32(isDead, "isDead");
+	stream->writeSint32(diagnosticDeathCause, "diagnosticDeathCause");
 
 	// position
 	stream->writeSint32(posX, "posX");
@@ -175,6 +210,13 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(destinationPurpose, "destinationPurpose");
 	stream->writeSint32(carriedResource, "carriedRessource");
 	stream->writeSint32(jobTimer, "jobTimer");
+	stream->writeUint8(previousClearingArea.has_value(), "hasClearingClaim");
+	if (previousClearingArea)
+	{
+		stream->writeUint32(previousClearingArea->x, "clearingClaimX");
+		stream->writeUint32(previousClearingArea->y, "clearingClaimY");
+	}
+	stream->writeUint32(previousClearingAreaDistance, "clearingClaimDistance");
 
 
 	stream->writeLeaveSection();
