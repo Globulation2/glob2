@@ -145,14 +145,15 @@ those nested in round-trip construction or saving. Sum these two scopes to compa
 building-field construction, but do not then add inclusive round-trip/save timings
 to that total. Benchmark evidence belongs under `artifacts/`, not in this guide.
 
-## Experimental parallel gradient computation
+## Parallel AI polling and experimental map computation
 
 Structured `--run-game` accepts `--compute-threads N` (1–64 execution threads,
 including the submitting thread) and `--compute-experiments MODE`. Modes are
-`none`, `areas`, `initialize`, `hiring`, `ai`, and `all`. One thread defaults to `none`;
-explicitly requesting multiple threads defaults to `all`. These are opt-in
-prototype controls, not a change to normal play or simulation rules. For the
-serial reference of an experiment, specify its mode with one thread.
+`none`, `areas`, `initialize`, `hiring`, `ai`, and `all`. AI polling is the
+default mode. The default thread count is the smaller of four, the available
+hardware threads, and the number of AI controllers, with a minimum of one.
+Other compute modes remain experimental opt-ins. Specify one thread for a
+serial AI reference.
 
 Area jobs rebuild allocated forbidden/guard/clear fields at existing structural
 refresh boundaries. Initialization jobs use 4096-cell chunks on maps of at least
@@ -167,16 +168,16 @@ The `ai` experiment polls eligible AI controllers in a blocking batch after the
 GUI sync step. It binds their telemetry on the main thread, waits for every
 controller to return one order, then submits those orders in player order before
 the network update and simulation step. No AI work continues past the barrier.
-Paused games keep the serial order path.
-The ordinary one-thread path remains the default for normal games. `all` also
-includes AI polling. Worker-local implicit performance scopes are not merged
+Paused games keep the serial order path. `all` also includes AI polling.
+Worker-local implicit performance scopes are not merged
 into the main-thread collector; use batch metrics and process-level timing for
 threaded comparisons. Short or uneven AI workloads may cost more in dispatch
 and barrier overhead than they save in parallel work.
 
-Ordinary GUI games and legacy `--nox` runs can opt in with `--ai-threads N`
-(1–64, including the main thread). The default is one thread. Structured
-`--run-game` uses `--compute-threads N --compute-experiments ai` instead.
+Ordinary GUI games and legacy `--nox` runs use parallel AI polling by default
+when multiple controllers and CPUs are available. `--ai-threads N` overrides
+the thread count (1–64, including the main thread). Structured `--run-game`
+uses `--compute-threads N`; `--compute-experiments none` disables AI batching.
 
 A game-owned executor uses persistent workers, main-thread participation and a
 barrier before simulation resumes. Nested jobs run inline. Eager propagation

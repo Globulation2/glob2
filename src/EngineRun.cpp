@@ -6,6 +6,7 @@
 #include <FormatableString.h>
 
 #include "AINames.h"
+#include "AIThreading.h"
 #include "ChecksumSidecar.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
@@ -608,8 +609,9 @@ void Engine::beginSession(Uint64 now)
 {
     if (session) throw std::logic_error("Engine session is already active");
     if (!net) throw std::logic_error("Engine session requires an initialized game");
-	if (!globalContainer->structuredHeadless && globalContainer->aiThreads > 1)
-		gui.game.map.configureCompute(globalContainer->aiThreads, Map::ComputeAI);
+	if (!globalContainer->structuredHeadless)
+		gui.game.map.configureCompute(globalContainer->aiThreads ? globalContainer->aiThreads
+			: defaultAIThreadCount(gui.game), Map::ComputeAI);
     sessionEndingTarget = globalContainer->automaticEndingSteps;
     MainLoopState st{};
     st.adjustableGameSpeed = gui.canChangeGameSpeed();

@@ -27,9 +27,14 @@ def main():
     initial = str(fixture / 'initial.game')
     common = ['--load-game', initial, '--ticks', '1024', '--telemetry', 'checksums', '--replay', 'true', '--save', 'final']
     references = {}
-    for label, exe, extra in [('baseline', baseline, []), *[(f'{experiment}-{n}', binary, ['--compute-threads', str(n), '--compute-experiments', experiment]) for experiment in ('none', 'areas', 'initialize', 'hiring', 'ai', 'all') for n in (1, 2, 4, 8)]]:
+    for label, exe, extra in [('baseline', baseline, ['--compute-threads', '1', '--compute-experiments', 'none']),
+                              ('default', binary, []),
+                              *[(f'{experiment}-{n}', binary, ['--compute-threads', str(n), '--compute-experiments', experiment]) for experiment in ('none', 'areas', 'initialize', 'hiring', 'ai', 'all') for n in (1, 2, 4, 8)]]:
         run = output / label
-        execute(exe, common + extra, run)
+        execution = execute(exe, common + extra, run)
+        if label == 'default':
+            assert execution['result']['compute_experiments'] == 'ai'
+            assert 1 <= execution['result']['compute_threads'] <= 4
         hashes = {name: digest(run / name) for name in ('game.replay.checksums', 'game.replay', 'final.game')}
         if not references: references = hashes
         assert hashes == references, (label, hashes, references)
@@ -37,10 +42,10 @@ def main():
     tail_args = ['--load-game', str(output / 'baseline/final.game'), '--ticks', '1280', '--telemetry', 'checksums', '--save', 'final']
     full_args = ['--load-game', initial, '--ticks', '1280', '--telemetry', 'checksums', '--save', 'final']
     full = output / 'uninterrupted'
-    execute(baseline, full_args, full)
+    execute(baseline, full_args + ['--compute-threads', '1', '--compute-experiments', 'none'], full)
     full_ticks = detailed_ticks((full / 'game.replay.checksums').read_bytes())
     resumed = output / 'baseline-continuation'
-    execute(baseline, tail_args, resumed)
+    execute(baseline, tail_args + ['--compute-threads', '1', '--compute-experiments', 'none'], resumed)
     for n in (1, 2, 4, 8):
         run = output / f'continuation-{n}'
         execute(binary, tail_args + ['--compute-threads', str(n), '--compute-experiments', 'all'], run)

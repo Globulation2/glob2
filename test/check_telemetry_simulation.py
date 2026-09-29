@@ -46,7 +46,8 @@ def detailed_ticks(data: bytes) -> dict[int, bytes]:
 
 
 def main(binary: str, parallel_ai: bool = False) -> int:
-    compute = ["--compute-threads", "4", "--compute-experiments", "ai"] if parallel_ai else []
+    compute = (["--compute-threads", "4", "--compute-experiments", "ai"] if parallel_ai
+               else ["--compute-threads", "1", "--compute-experiments", "ai"])
     for save, ticks, fixture in SCENARIOS:
         with tempfile.TemporaryDirectory(prefix="glob2-telemetry-check-", dir=ROOT) as directory:
             output = Path(directory)
