@@ -883,9 +883,6 @@ jobs:
       - name: Verify gameplay telemetry leaves simulation checksums unchanged
         run: python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe
 
-      - name: Build the YOG server
-        run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
-
       - name: Report the cache statistics
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s -v
@@ -910,21 +907,99 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}
 
-  web:
-    name: browser
-    runs-on: ubuntu-24.04
-    timeout-minutes: 90
+  windows-server:
+    name: windows server (mingw-w64)
+    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.browser_only }}
+    runs-on: windows-latest
     env:
       CCACHE: 1
-      CCACHE_DIR: /tmp/glob2-ccache
+      CCACHE_DIR: ${{ github.workspace }}\.ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 5G
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-scons
+            mingw-w64-x86_64-SDL2
+            mingw-w64-x86_64-SDL2_image
+            mingw-w64-x86_64-SDL2_net
+            mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-libvorbis
+            mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-speex
+            mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-fribidi
+            mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-libepoxy
+            mingw-w64-x86_64-libsystre
+            mingw-w64-x86_64-ccache
+
+      - uses: actions/checkout@v4
+
+      - name: Restore the compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-winserver-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-winserver-
+
+      - name: Reset the cache statistics
+        id: cache_ready
+        run: |
+          ccache -z
+          echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
+
+      # The server shares no objects with the client, so it builds on its own
+      # runner instead of after the client's compile and tests.
+      - name: Build the YOG server
+        run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
+
+      - name: Report the cache statistics
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
+        run: ccache -s -v
+
+      # Keep only what this run compiled or reused (a hit refreshes an entry's
+      # timestamp), so a save never carries older commits' objects forward.
+      - name: Drop cache entries this run did not use
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
+
+      - name: Save the compiler cache
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-winserver-${{ github.run_id }}-${{ github.run_attempt }}
+
+  # The browser checks run as parallel jobs. The WebAssembly client and the
+  # native programs the browser tests drive are built once each, side by side,
+  # and handed to the test jobs as artifacts; the test suites then run on
+  # separate runners, with the Chromium suite split into shards by spec file.
+  web-build:
+    name: browser build (WebAssembly)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      CCACHE_DIR: /tmp/glob2-wasm-ccache
       CCACHE_COMPILERCHECK: content
       CCACHE_MAXSIZE: 500M
     steps:
       - uses: actions/checkout@v4
-      - name: Install native and build dependencies
+      - name: Install build dependencies
         run: |
-          # The hosted image adds an unpinned Chrome repository, while this job
-          # installs its pinned browsers through Playwright below.
+          # The hosted image adds an unpinned Chrome repository that no job here uses.
           sudo rm -f \
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
@@ -934,18 +1009,10 @@ jobs:
         run: python3 browser/setup.py
       - name: Test build identities
         run: python3 -m unittest discover -s tests/build_system -v
-      # Reuse the native client objects already populated by the main Linux job.
-      # This job only reads that cache; transport-specific misses stay local.
-      - name: Restore native compiler cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-main-ubuntu-24.04-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: ccache-main-ubuntu-24.04-
       - name: Restore WebAssembly compiler cache
         uses: actions/cache/restore@v4
         with:
-          path: /tmp/glob2-wasm-ccache
+          path: ${{ env.CCACHE_DIR }}
           key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-
       - name: Build WebAssembly client
@@ -953,7 +1020,6 @@ jobs:
         env:
           # Emscripten wraps its underlying clang, not the Python compiler driver.
           EM_COMPILER_WRAPPER: ccache
-          CCACHE_DIR: /tmp/glob2-wasm-ccache
         run: |
           ccache -z
           echo "WASM_CACHE_START=$(date +%s)" >> "$GITHUB_ENV"
@@ -961,88 +1027,25 @@ jobs:
           ccache -s -v
       - name: Prune WebAssembly compiler cache
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
-        env:
-          CCACHE_DIR: /tmp/glob2-wasm-ccache
         run: ccache --evict-older-than "$(( $(date +%s) - WASM_CACHE_START + 60 ))s"
       - name: Save WebAssembly compiler cache
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         uses: actions/cache/save@v4
         with:
-          path: /tmp/glob2-wasm-ccache
+          path: ${{ env.CCACHE_DIR }}
           key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
-      - name: Reset native compiler cache statistics
-        run: ccache -z
-      - name: Build and test gateway
-        run: |
-          scons role=gateway release=1 -j$(nproc)
-          python3 -m unittest discover -s tests/gateway -v
-      - name: Build headless router
-        run: scons CXX=g++-13 role=router release=1 -j$(nproc)
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: browser/package-lock.json
-      - name: Build transport integration fixture
-        run: |
-          # The browser's editor tests read the native generator catalog, then
-          # navigate the visible picker with real keyboard/pointer events.
-          scons CXX=g++-13 release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)
-          python3 test/run-network-transport-tests.py
-          python3 -m unittest discover -s tests/transport -v
-          ccache -s -v
-      - name: Install browser test dependencies
-        working-directory: browser
-        run: |
-          npm ci --ignore-scripts
-          npx playwright install --with-deps chromium firefox webkit
-          # Firefox needs an X display and an audio service. A null sink is silent.
-          sudo apt-get install -y pulseaudio
-          pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
-      - name: Test browser shell units
-        working-directory: browser
-        run: node --test unit/*.test.js
-      - name: Test Chromium behavior and renderer contracts
-        working-directory: browser
-        env:
-          GLOB2_TEST_RENDERER: software
-        # Includes rendering.spec.js, which explicitly selects its own renderers,
-        # and build-artifact.spec.js, which checks the shared WASM binary once.
-        run: xvfb-run -a npx playwright test --project=chromium
-      - name: Smoke-test Firefox and WebKit startup and viewport integration
-        working-directory: browser
-        env:
-          GLOB2_FIREFOX_HEADED: '1'
-          GLOB2_TEST_RENDERER: software
-        run: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox --project=webkit
-      - name: Test Chromium WebGL2 integration
-        working-directory: browser
-        env:
-          GLOB2_TEST_RENDERER: webgl2
-        # Repeat only tests whose gameURL() changes with the renderer setting.
-        run: xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js input.spec.js responsive-presentation.spec.js --project=chromium
-      - name: Test foreground and background lifecycle on both renderers
-        working-directory: browser
-        run: |
-          GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js
-          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
+      # The four files the browser tests serve. The test jobs restore them to
+      # the same directory the Playwright web server reads.
       - uses: actions/upload-artifact@v4
         with:
-          name: browser-determinism-wasm
-          path: artifacts/browser-determinism/wasm/
+          name: web-client
+          retention-days: 3
           if-no-files-found: error
-      - name: Test self-hosting with real TLS and persistent volumes
-        run: |
-          docker compose -f deploy/compose.yaml build lobby
-          python3 -m unittest discover -s tests/deployment -v
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: browser-failure-traces
-          retention-days: 7
           path: |
-            build/browser-test-results
-            build/browser-test-report
+            build/emscripten/client/release/index.html
+            build/emscripten/client/release/index.js
+            build/emscripten/client/release/index.wasm
+            build/emscripten/client/release/index.data
       - uses: actions/upload-artifact@v4
         if: github.event_name == 'workflow_dispatch'
         with:
@@ -1054,9 +1057,168 @@ jobs:
             build/emscripten/client/release/index.wasm
             build/emscripten/client/release/index.data
 
+  web-native:
+    name: browser gateway, router and transport
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      CCACHE: 1
+      CCACHE_DIR: /tmp/glob2-ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 500M
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+      # Reuse the native client objects already populated by the main Linux job.
+      # This job only reads that cache; transport-specific misses stay local.
+      - name: Restore native compiler cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-main-ubuntu-24.04-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-main-ubuntu-24.04-
+      - name: Reset native compiler cache statistics
+        run: ccache -z
+      - name: Build and test gateway
+        run: |
+          scons role=gateway release=1 -j$(nproc)
+          python3 -m unittest discover -s tests/gateway -v
+      - name: Build headless router
+        run: scons CXX=g++-13 role=router release=1 -j$(nproc)
+      - name: Build transport integration fixture
+        run: |
+          # The browser's editor tests read the native generator catalog, then
+          # navigate the visible picker with real keyboard/pointer events.
+          scons CXX=g++-13 release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)
+          python3 test/run-network-transport-tests.py
+          python3 -m unittest discover -s tests/transport -v
+          ccache -s -v
+      # A tarball keeps the executable bits that artifact uploads drop.
+      - name: Package the programs the browser tests drive
+        run: |
+          tar -czf web-native.tar.gz \
+            build/linux/client/release/src/glob2 \
+            build/linux/client/release/src/net-connection-test \
+            build/linux/client/release/src/native-multiplayer-peer \
+            build/linux/gateway/release/glob2-ws-gateway
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-native
+          retention-days: 3
+          if-no-files-found: error
+          path: web-native.tar.gz
+
+  web-deploy:
+    name: browser self-hosting deployment
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test self-hosting with real TLS and persistent volumes
+        run: |
+          docker compose -f deploy/compose.yaml build lobby
+          python3 -m unittest discover -s tests/deployment -v
+
+  web-test:
+    name: browser tests (${{ matrix.name }})
+    needs: [web-build, web-native]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Includes rendering.spec.js, which explicitly selects its own renderers,
+          # and build-artifact.spec.js, which checks the shared WASM binary once.
+          # Shards split the suite by spec file, so each file keeps its order.
+          - name: chromium 1/4
+            browsers: chromium
+            command: xvfb-run -a npx playwright test --project=chromium --shard=1/4
+          - name: chromium 2/4
+            browsers: chromium
+            command: xvfb-run -a npx playwright test --project=chromium --shard=2/4
+          - name: chromium 3/4
+            browsers: chromium
+            command: xvfb-run -a npx playwright test --project=chromium --shard=3/4
+          - name: chromium 4/4
+            browsers: chromium
+            command: xvfb-run -a npx playwright test --project=chromium --shard=4/4
+          - name: firefox and webkit
+            browsers: firefox webkit
+            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox --project=webkit
+          # Repeat only tests whose gameURL() changes with the renderer setting.
+          - name: chromium webgl2
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js input.spec.js responsive-presentation.spec.js --project=chromium
+          - name: lifecycle
+            browsers: chromium
+            command: |
+              node --test unit/*.test.js
+              GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js
+              GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
+    env:
+      GLOB2_TEST_RENDERER: ${{ matrix.renderer || 'software' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the libraries the native programs link against
+        run: |
+          # The hosted image adds an unpinned Chrome repository, while this job
+          # installs its pinned browsers through Playwright below.
+          sudo rm -f \
+            /etc/apt/sources.list.d/google-chrome.list \
+            /etc/apt/sources.list.d/google-chrome.sources
+          sudo apt-get update -qq
+          sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-client
+          path: build/emscripten/client/release
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-native
+      - name: Unpack the native programs
+        run: tar -xzf web-native.tar.gz
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: browser/package-lock.json
+      - name: Install browser test dependencies
+        working-directory: browser
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install --with-deps ${{ matrix.browsers }}
+      # Firefox needs an X display and an audio service. A null sink is silent.
+      - name: Start a silent audio service
+        if: contains(matrix.browsers, 'firefox')
+        run: |
+          sudo apt-get install -y pulseaudio
+          pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
+      - name: Run ${{ matrix.name }}
+        working-directory: browser
+        run: ${{ matrix.command }}
+      # Only the shard that ran determinism.spec.js writes a trace.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-determinism-wasm-${{ strategy.job-index }}
+          path: artifacts/browser-determinism/wasm/
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failure-traces-${{ strategy.job-index }}
+          retention-days: 7
+          path: |
+            build/browser-test-results
+            build/browser-test-report
+
   browser-determinism:
     name: browser/native simulation equivalence
-    needs: [linux, windows, web]
+    needs: [linux, windows, web-test]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/download-artifact@v4
