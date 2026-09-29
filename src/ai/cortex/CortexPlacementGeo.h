@@ -40,6 +40,9 @@ namespace Cortex
 		int distanceToNearestBuilding(int x, int y) const;
 		int distanceToNearestBuildingType(int x, int y, int type) const;
 		int nearestBuildingEdgeDist(int x, int y, int w, int h) const;
+		// Exact distance-gate membership for every candidate top-left corner.
+		// Empty means there are no typed buildings, so the gate accepts everywhere.
+		std::vector<unsigned char> buildingProximityMask(int w, int h, int maxGap) const;
 		bool candidateCrowdsInn(int x, int y, int w, int h) const;
 		bool candidateOverlapsReservedExpansion(int x, int y, int w, int h) const;
 	};

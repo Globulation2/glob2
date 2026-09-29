@@ -76,8 +76,10 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 	const int workers = 8;
 	for (int n = 0; n < workers; ++n)
 	{
-		Unit* unit = new Unit(siteX - 2, siteY - 2 + (n % 5), n, WORKER, team, 0);
-		team->myUnits[n] = unit;
+		// Spread candidates through the array, including its final slot.
+		const int slot = n * (Unit::MAX_COUNT - 1) / (workers - 1);
+		Unit* unit = new Unit(siteX - 2, siteY - 2 + (n % 5), slot, WORKER, team, 0);
+		team->myUnits[slot] = unit;
 		unit->performance[WALK] = 10;
 		unit->performance[HARVEST] = 10;
 		unit->activity = Unit::ACT_RANDOM;

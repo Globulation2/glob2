@@ -18,6 +18,22 @@ static unsigned compare(Game& game)
     unsigned checks = 0;
     auto* team = game.teams[0];
     Cortex::PlacementGeometry snapshot(team, game.map);
+    // Compare the mask against the independent per-building distance query,
+    // including footprints/radii that wrap or cover the whole map.
+    for (int w : {1, 2, 6, 20})
+        for (int h : {1, 3, 6, 20})
+            for (int gap : {0, 1, 4, 20})
+            {
+                const auto mask = snapshot.buildingProximityMask(w, h, gap);
+                for (int y = 0; y < game.map.getH(); ++y)
+                    for (int x = 0; x < game.map.getW(); ++x)
+                    {
+                        const int distance = snapshot.nearestBuildingEdgeDist(x, y, w, h);
+                        require((mask.empty() || mask[y * game.map.getW() + x]) ==
+                            (distance < 0 || distance <= gap));
+                        ++checks;
+                    }
+            }
     // Exhaustive candidates include wrapped, grown, and empty footprints.
     for (int x = -2; x < game.map.getW() + 2; ++x)
         for (int y = -2; y < game.map.getH() + 2; ++y)

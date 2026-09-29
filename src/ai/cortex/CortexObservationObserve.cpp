@@ -252,8 +252,9 @@ namespace Cortex
 			Map& map = game->map;
 			const int w = map.getW();
 			const int h = map.getH();
-			for (int x = 0; x < w && obs.fruitOnMap == 0; x++)
-				for (int y = 0; y < h; y++)
+			// This is an existence query; row order follows the map storage.
+			for (int y = 0; y < h && obs.fruitOnMap == 0; y++)
+				for (int x = 0; x < w; x++)
 					if (map.isResourceTakeable(x, y, CHERRY)
 					 || map.isResourceTakeable(x, y, ORANGE)
 					 || map.isResourceTakeable(x, y, PRUNE))
