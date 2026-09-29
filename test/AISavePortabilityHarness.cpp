@@ -42,7 +42,7 @@ struct AreaOrder : Order
 };
 
 template<class Order>
-static void checkArea(AIEcho::Echo& echo, Game& game, bool adding)
+static void checkArea(AISharedRuntime::Runtime& runtime, Game& game, bool adding)
 {
 	AreaOrder<Order> original(ClearingArea);
 	original.add_location(3, 17);
@@ -59,13 +59,13 @@ static void checkArea(AIEcho::Echo& echo, Game& game, bool adding)
 	GAGCore::BinaryOutputStream second(roundTrip);
 	restored.save(&second);
 	require(roundTrip->takeContents() == saved, "area coordinates survive save/load unchanged");
-	restored.modify(echo);
-	for (auto order : echo.orders)
+	restored.modify(runtime);
+	for (auto order : runtime.orders)
 	{
 		order->sender = 0;
 		game.executeOrder(order, 0);
 	}
-	echo.orders.clear();
+	runtime.orders.clear();
 	require(game.map.isClearArea(3, 17, 1) == adding &&
 		game.map.isClearArea(8, 29, 1) == adding, "restored order changes intended tiles");
 	require(!game.map.isClearArea(17, 3, 1) && !game.map.isClearArea(29, 8, 1),
@@ -109,12 +109,12 @@ int main(int argc, char** argv)
 			}
 		require(buildingCounts > 0, "Castor building count columns checked");
 		castor->~AICastor();
-		AIEcho::Echo echo(new NewNicowar, game.players[0]);
-		require(!echo.update_gm && echo.allies == 0 && echo.enemies == 0 &&
-			echo.inn_view == 0 && echo.market_view == 0 && echo.other_view == 0,
-			"Echo serialized fields initialized before first tick");
-		checkArea<AIEcho::Management::AddArea>(echo, game, true);
-		checkArea<AIEcho::Management::RemoveArea>(echo, game, false);
+		AISharedRuntime::Runtime runtime(new NewNicowar, game.players[0]);
+		require(!runtime.update_gm && runtime.allies == 0 && runtime.enemies == 0 &&
+			runtime.inn_view == 0 && runtime.market_view == 0 && runtime.other_view == 0,
+			"Runtime serialized fields initialized before first tick");
+		checkArea<AISharedRuntime::Management::AddArea>(runtime, game, true);
+		checkArea<AISharedRuntime::Management::RemoveArea>(runtime, game, false);
 
 		AIMaxima::Maxima maxima(game.players[0]);
 		maxima.getOrder(); // Initialize the director before sampling its policy state.
@@ -155,5 +155,5 @@ int main(int argc, char** argv)
 		}
 	}
 	globalContainer = nullptr;
-	std::puts("PASS Echo initialization, AddArea/RemoveArea serialization, Maxima reserved telemetry");
+	std::puts("PASS Runtime initialization, AddArea/RemoveArea serialization, Maxima reserved telemetry");
 }

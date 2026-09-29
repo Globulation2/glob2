@@ -8,30 +8,30 @@
 #include "Game.h"
 #include "Unit.h"
 
-using namespace AIEcho;
-using namespace AIEcho::Gradients;
-using namespace AIEcho::Construction;
-using namespace AIEcho::Management;
-using namespace AIEcho::Conditions;
-using namespace AIEcho::SearchTools;
+using namespace AISharedRuntime;
+using namespace AISharedRuntime::Gradients;
+using namespace AISharedRuntime::Construction;
+using namespace AISharedRuntime::Management;
+using namespace AISharedRuntime::Conditions;
+using namespace AISharedRuntime::SearchTools;
 using namespace boost::logic;
 
 
 
-int NewNicowar::choose_building_to_attack(Echo& echo)
+int NewNicowar::choose_building_to_attack(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_choose_building_to_attack_calls);
 	std::vector<int> buildings_to_attack;
 	buildings_to_attack.reserve(100);
 
-	AIEcho::Gradients::GradientInfo gi_building;
-	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+	AISharedRuntime::Gradients::GradientInfo gi_building;
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
-	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
+	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
-	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
+	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
-		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
+		Building* b=runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
 		if(gradient.get_height(b->posX, b->posY) != AI_NICOWAR_GRADIENT_UNREACHABLE)
 			buildings_to_attack.push_back(*ebi);
 	}
@@ -39,19 +39,19 @@ int NewNicowar::choose_building_to_attack(Echo& echo)
 	if(buildings_to_attack.size() == 0)
 		return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_to_attack_result, -1);
 
-	int num=echo.random() % buildings_to_attack.size();
+	int num=runtime.random() % buildings_to_attack.size();
 	return telemetry.returnedInt(AITrace::AI5::NewNicowar_choose_building_to_attack_result,
 								 buildings_to_attack[num]);
 }
 
 
-void NewNicowar::attack_building(Echo& echo)
+void NewNicowar::attack_building(Runtime& runtime)
 {
-	int building=choose_building_to_attack(echo);
+	int building=choose_building_to_attack(runtime);
 	if(building==-1)
 	{
 		if(!is_digging_out)
-			if(!dig_out_enemy(echo))
+			if(!dig_out_enemy(runtime))
 			{
 				target = AI_NICOWAR_NO_TARGET;
 			}
@@ -59,27 +59,27 @@ void NewNicowar::attack_building(Echo& echo)
 	}
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WAR_FLAG, strategy.war_phase_war_flag_units_assigned);
 	bo->add_constraint(new CenterOfBuilding(building));
-	unsigned int id=echo.add_building_order(bo);
+	unsigned int id=runtime.add_building_order(bo);
 
 	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(AI_NICOWAR_WAR_FLAG_MIN_LEVEL,id);
-	echo.add_management_order(mo_minimum);
+	runtime.add_management_order(mo_minimum);
 
 	ManagementOrder* mo_destroyed_1=new DestroyBuilding(id);
-	mo_destroyed_1->add_condition(new EnemyBuildingDestroyed(echo, building));
-	echo.add_management_order(mo_destroyed_1);
+	mo_destroyed_1->add_condition(new EnemyBuildingDestroyed(runtime, building));
+	runtime.add_management_order(mo_destroyed_1);
 
 	ManagementOrder* mo_destroyed_2=new SendMessage("attack finished "+std::to_string(id));
 	mo_destroyed_2->add_condition(new BuildingDestroyed(id));
-	echo.add_management_order(mo_destroyed_2);
+	runtime.add_management_order(mo_destroyed_2);
 	
 	attack_flags.push_back(id);
 }
 
 
-void NewNicowar::control_attacks(Echo& echo)
+void NewNicowar::control_attacks(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_control_attacks_calls);
-	choose_enemy_target(echo);
+	choose_enemy_target(runtime);
 
 	if(target!=AI_NICOWAR_NO_TARGET)
 	{
@@ -91,30 +91,30 @@ void NewNicowar::control_attacks(Echo& echo)
 
 		if(attack_flags.size() < number_attacks)
 		{
-			attack_building(echo);
+			attack_building(runtime);
 		}
 	}
 
-	BuildingSearch bs_pool(echo);
+	BuildingSearch bs_pool(runtime);
 	bs_pool.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
 	int num_pool=bs_pool.count_buildings();
 	
-	AIEcho::Gradients::GradientInfo gi_building;
-	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+	AISharedRuntime::Gradients::GradientInfo gi_building;
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
 	if(num_pool == 0)
 		gi_building.add_obstacle(new Entities::Water);
-	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
+	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 	
 	for(unsigned i=0; i<attack_flags.size(); ++i)
 	{
-		if(echo.get_building_register().is_building_found(attack_flags[i]))
+		if(runtime.get_building_register().is_building_found(attack_flags[i]))
 		{
-			Building* b = echo.get_building_register().get_building(attack_flags[i]);
+			Building* b = runtime.get_building_register().get_building(attack_flags[i]);
 			if(b && gradient.get_height(b->posX, b->posY) == AI_NICOWAR_GRADIENT_UNREACHABLE)
 			{
 				ManagementOrder* mo_destroy=new DestroyBuilding(attack_flags[i]);
-				echo.add_management_order(mo_destroy);
+				runtime.add_management_order(mo_destroy);
 			}
 		}
 	}
@@ -122,24 +122,24 @@ void NewNicowar::control_attacks(Echo& echo)
 
 
 
-void NewNicowar::choose_enemy_target(Echo& echo)
+void NewNicowar::choose_enemy_target(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_choose_enemy_target_calls);
-	AIEcho::Gradients::GradientInfo gi_building;
-	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+	AISharedRuntime::Gradients::GradientInfo gi_building;
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
-	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
+	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
-	if(target==AI_NICOWAR_NO_TARGET || !echo.player->game->teams[target]->isAlive)
+	if(target==AI_NICOWAR_NO_TARGET || !runtime.player->game->teams[target]->isAlive)
 	{
 		std::vector<int> available_reachable_targets;
 		std::vector<int> available_targets;
-		for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
+		for(enemy_team_iterator i(runtime); i!=enemy_team_iterator(); ++i)
 		{
-			if(echo.player->game->teams[*i]->isAlive)
+			if(runtime.player->game->teams[*i]->isAlive)
 			{
 				available_targets.push_back(*i);
-				enemy_building_iterator ebi(echo, *i, -1, -1, indeterminate);
+				enemy_building_iterator ebi(runtime, *i, -1, -1, indeterminate);
 				/* Make sure we know of at least one
 				   building that we can directly attack
 				   before committing to a particular enemy.
@@ -149,7 +149,7 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 				   cheating and has been fixed. */
 				for(; ebi != enemy_building_iterator(); ++ebi)
 				{
-					Building* b=echo.player->game->teams[*i]->myBuildings[Building::GIDtoID(*ebi)];
+					Building* b=runtime.player->game->teams[*i]->myBuildings[Building::GIDtoID(*ebi)];
 					if(gradient.get_height(b->posX, b->posY) != AI_NICOWAR_GRADIENT_UNREACHABLE)
 					{
 						available_reachable_targets.push_back(*i);
@@ -159,9 +159,9 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 			}
 		}
 		if(available_reachable_targets.size()!=0)
-			target=available_reachable_targets[echo.random() % available_reachable_targets.size()];
+			target=available_reachable_targets[runtime.random() % available_reachable_targets.size()];
 		else if(available_targets.size()!=0)
-			target=available_targets[echo.random() % available_targets.size()];
+			target=available_targets[runtime.random() % available_targets.size()];
 		else
 			target=AI_NICOWAR_NO_TARGET;
 	}
@@ -169,23 +169,23 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 
 
 
-bool NewNicowar::dig_out_enemy(Echo& echo)
+bool NewNicowar::dig_out_enemy(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_dig_out_enemy_calls);
 	///First choose an enemy building to dig out
 	std::vector<int> buildings_to_attack;
 	buildings_to_attack.reserve(100);
 
-	MapInfo mi(echo);
+	MapInfo mi(runtime);
 
-	AIEcho::Gradients::GradientInfo gi_building;
-	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
+	AISharedRuntime::Gradients::GradientInfo gi_building;
+	gi_building.add_source(new Entities::AnyTeamBuilding(runtime.player->team->teamNumber, false));
 	gi_building.add_obstacle(new Entities::AnyResource);
-	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
+	Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_building);
 
-	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
+	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
-		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
+		Building* b=runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
 		int bx = (b->posX + mi.get_width()) % mi.get_width();
 		int by = (b->posY + mi.get_height()) % mi.get_height();
 		if(gradient.get_height(bx, by) == AI_NICOWAR_GRADIENT_UNREACHABLE)
@@ -196,17 +196,17 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		return telemetry.returnedBool(AITrace::AI5::NewNicowar_dig_out_enemy_result,
 									  AITrace::AI5::NewNicowar_dig_out_enemy_true, false);
 
-	int num=echo.random() % buildings_to_attack.size();
+	int num=runtime.random() % buildings_to_attack.size();
 
 
 	int building=buildings_to_attack[num];
-	const int bx=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
-	const int by=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
+	const int bx=(runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
+	const int by=(runtime.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posY) % mi.get_height();
 
-	AIEcho::Gradients::GradientInfo gi_pathfind;
+	AISharedRuntime::Gradients::GradientInfo gi_pathfind;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
 	gi_pathfind.add_obstacle(new Entities::Resource(STONE));
-	Gradient& gradient_pathfind=echo.get_gradient_manager().get_gradient(gi_pathfind);
+	Gradient& gradient_pathfind=runtime.get_gradient_manager().get_gradient(gi_pathfind);
 
 	///Next, find the closest point manhattan distance wise, to the building that is accessible
 	int closest_x=0;
@@ -316,15 +316,15 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 			//Place it on the current point
 			bo_flag->add_constraint(new Construction::SinglePosition(xpos, ypos));
 			//Add the building order to the list of orders
-			unsigned int id_flag=echo.add_building_order(bo_flag);
+			unsigned int id_flag=runtime.add_building_order(bo_flag);
 
 			ManagementOrder* mo_destroyed=new DestroyBuilding(id_flag);
-			mo_destroyed->add_condition(new EnemyBuildingDestroyed(echo, building));
-			echo.add_management_order(mo_destroyed);
+			mo_destroyed->add_condition(new EnemyBuildingDestroyed(runtime, building));
+			runtime.add_management_order(mo_destroyed);
 
 
 			ManagementOrder* mo_completion=new ChangeFlagSize(AI_NICOWAR_DIG_FLAG_SIZE, id_flag);
-			echo.add_management_order(mo_completion);
+			runtime.add_management_order(mo_completion);
 		}
 		xpos = nxpos;
 		ypos = nypos;
@@ -332,8 +332,8 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 	}
 
 	ManagementOrder* mo_destroyed=new SendMessage("finished digging out");
-	mo_destroyed->add_condition(new EnemyBuildingDestroyed(echo, building));
-	echo.add_management_order(mo_destroyed);
+	mo_destroyed->add_condition(new EnemyBuildingDestroyed(runtime, building));
+	runtime.add_management_order(mo_destroyed);
 
 	is_digging_out=true;
 

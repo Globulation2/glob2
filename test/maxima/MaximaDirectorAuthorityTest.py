@@ -33,7 +33,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             "void Maxima::evaluate_strategy",
         )
         self.assertLess(cycle.index("allocate_resources()"),
-                        cycle.index("finalize_director_plan(echo)"))
+                        cycle.index("finalize_director_plan(runtime)"))
 
     def test_classic_authority_and_blending_cannot_return(self) -> None:
         # The active director owns the single strategy plan.
@@ -49,7 +49,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             self.source,
             "void Maxima::check_phases",
         )
-        self.assertEqual(body.count("director.evaluate(*this, echo);"), 1)
+        self.assertEqual(body.count("director.evaluate(*this, runtime);"), 1)
         self.assertNotIn("return;", body)
         self.assertNotIn("TeamStat", body)
 
@@ -90,15 +90,15 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             self.assertNotIn("strategy.", executor, start)
             if start == "void Maxima::development_cycle":
                 self.assertIn("collect_development_intents(world)", executor)
-                self.assertIn("collect_development_limits(echo)", executor)
+                self.assertIn("collect_development_limits(runtime)", executor)
             else:
                 self.assertIn("budget.", executor, start)
 
     def test_dirty_plan_is_recomputed_before_scheduled_executors(self) -> None:
         tick = function(self.source, "void Maxima::tick")
-        replan = tick.index("director.evaluate(*this, echo);")
-        for executor in ("manage_buildings(echo)", "control_offense(echo)",
-                         "update_farming(echo)", "update_fruit_flags(echo)"):
+        replan = tick.index("director.evaluate(*this, runtime);")
+        for executor in ("manage_buildings(runtime)", "control_offense(runtime)",
+                         "update_farming(runtime)", "update_fruit_flags(runtime)"):
             self.assertLess(replan, tick.index(executor))
         self.assertIn("director.invalidate();", self.source)
 
@@ -127,7 +127,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
 
     def test_active_tactical_loop_can_open_a_sealed_enemy_route(self) -> None:
         control = function(self.combat, "void Maxima::control_offense(")
-        self.assertIn("dig_out_enemy(echo);", control)
+        self.assertIn("dig_out_enemy(runtime);", control)
         self.assertIn("budget.tactical_dig_out_team>=0", control)
         planner = function(self.combat, "void Maxima::plan_offense")
         self.assertIn("strategy.tactics.dig_out_enabled", planner)
@@ -151,7 +151,7 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
         self.assertNotIn("food_emergency", update)
         self.assertNotIn("colony_emergency", update)
         self.assertIn("if(!budget.preemptive_defense_active)", update)
-        self.assertIn("clear_preemptive_defense(echo);", update)
+        self.assertIn("clear_preemptive_defense(runtime);", update)
         self.assertIn("budget.preemptive_effective_zone_max", update)
         self.assertIn("budget.preemptive_amphibious_active", update)
         self.assertIn("topologyRefreshRequired", update)

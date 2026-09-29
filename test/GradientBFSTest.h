@@ -23,11 +23,11 @@
 #include <SDL_stdinc.h>
 #include <vector>
 
-namespace AIEcho { class position; }
+namespace AISharedRuntime { class position; }
 
-// Friend of AIEcho::Gradients::Gradient (declared in AIEcho.h). Lives in the
+// Friend of AISharedRuntime::Gradients::Gradient (declared in AISharedRuntime.h). Lives in the
 // global namespace because production code only needs a single forward decl
-// to friend it without dragging the cppunit headers into AIEcho.h.
+// to friend it without dragging the cppunit headers into AISharedRuntime.h.
 class GradientBFSTest: public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( GradientBFSTest );
@@ -53,7 +53,7 @@ public:
 	// member (rather than a free helper) so it inherits this fixture's friend
 	// access to Gradient's private members.
 	static std::vector<Sint16> run_bfs(int width, int height,
-	                                   const std::vector<AIEcho::position>& sources,
-	                                   const std::vector<AIEcho::position>& obstacles);
+	                                   const std::vector<AISharedRuntime::position>& sources,
+	                                   const std::vector<AISharedRuntime::position>& obstacles);
 };
 

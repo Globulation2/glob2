@@ -17,7 +17,7 @@
  */
 
 #include "GradientBFSTest.h"
-#include "echo/Echo.h"
+#include "shared_runtime/Runtime.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -26,9 +26,9 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION( GradientBFSTest );
 
-using AIEcho::position;
-using AIEcho::Gradients::Gradient;
-using AIEcho::Gradients::GradientInfo;
+using AISharedRuntime::position;
+using AISharedRuntime::Gradients::Gradient;
+using AISharedRuntime::Gradients::GradientInfo;
 
 std::vector<Sint16> GradientBFSTest::run_bfs(int width, int height,
                                              const std::vector<position>& sources,

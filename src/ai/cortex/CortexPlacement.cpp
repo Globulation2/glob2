@@ -13,7 +13,7 @@
 // AICortex placement/scoring helper.
 //
 // This is the spatial-reasoning slice the direct binding does not inherit from
-// Echo. It answers "where could I put a building of this type?", ranked
+// Runtime. It answers "where could I put a building of this type?", ranked
 // best-first, and surfaces a bounded set of candidates so the policy never has
 // to emit an unbounded (x, y) action.
 //
@@ -21,9 +21,9 @@
 // a new one:
 //
 //   * Footprint + corner convention come from BuildingType (width/height) and
-//     match how AIEcho's BuildingOrder::find_location scans (ai/echo/
+//     match how AISharedRuntime's BuildingOrder::find_location scans (ai/shared_runtime/
 //     BuildingOrder.cpp:104-168) and how it feeds the result straight into an
-//     OrderCreate (ai/echo/Echo.cpp:176). The (x, y) we return is the tile of
+//     OrderCreate (ai/shared_runtime/Runtime.cpp:176). The (x, y) we return is the tile of
 //     the footprint's top-left corner, exactly the coordinate OrderCreate
 //     consumes (see also gui/GameGUIToolManager.cpp:387 and Order.h:75).
 //
@@ -40,7 +40,7 @@
 // colonies. A candidate's base score is higher the closer it sits to the
 // nearest existing live building of the team (Chebyshev / warpDistMax), with a
 // small bonus when the footprint borders a resource tile (the cheap stand-in
-// for Echo's resource gradients). Higher score == better.
+// for Runtime's resource gradients). Higher score == better.
 //
 // Determinism (this runs inside lockstep): we iterate the team building array by
 // index (never an std::set), scan map tiles in fixed (x, y) order, break ties
@@ -48,7 +48,7 @@
 // only as a final, fully-deterministic tie-break when even the score AND the
 // distance-to-colony are identical, so two equally good far-apart spots do not
 // always collapse to the lowest coordinate. We never read wall-clock or pointer
-// identity. BH-400 note: Echo's find_location reports "no placement" and "best
+// identity. BH-400 note: Runtime's find_location reports "no placement" and "best
 // at (0,0)" with the same (0,0) return; we never inherit that ambiguity because
 // emptiness is carried by the valid flag / return count, never by testing for
 // (0,0).

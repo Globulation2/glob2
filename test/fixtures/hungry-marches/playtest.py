@@ -88,7 +88,7 @@ for seed, width, height, teams in cases:
     if code:
         raise SystemExit(f'Map {seed}: exit {code}; see {folder}')
     if options.crowded:
-        # Nicowar's existing Echo iterator overruns a full twelve-team roster.
+        # Nicowar's existing shared AI runtime iterator overruns a full twelve-team roster.
         players = (['cortex', 'cabino', 'maxima'] * 4)[:teams]
     elif options.duel_mirror:
         players = ['nicowar'] * teams

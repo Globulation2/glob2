@@ -37,7 +37,7 @@ independent maintainer approvals. No human balance testing or Linux/Windows
 execution comparison was performed. Automated games show economic activity and
 combat, not proof of equal win rates or that raiding causes wins.
 
-Existing AI limits: Maxima can stall on dry finite-food starts; Nicowar's Echo
+Existing AI limits: Maxima can stall on dry finite-food starts; Nicowar's shared AI runtime
 iterator overruns a fully occupied12-team roster. Crowded completed games use
 Cortex/Cabino/Maxima. The failed Nicowar attempts and disk-full prototype runs are
 excluded. No AI or simulation changes are included in this map addition.
