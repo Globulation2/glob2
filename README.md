@@ -76,3 +76,7 @@ Browser integration follow-up: `96b1a6dfb` adapts master’s save-name regressio
 Five focused WebGL2 cases also pass, including replay reload and both landscape cancellation/retry paths; see `merge-validation/browser-webgl.log` and the selected-landscape captures.
 
 Latest integration revision: `8234d2460b37a0d9a510f365ee190cb05111bc8c`, including master through `37ffbcb05`. Master added an Echo continuation harness during the prior CI run; its missing main-macro reset caused the Windows link failure. The test now follows the other console harnesses. Native execution and a compile/symbol check with `-Dmain=SDL_main` pass (`echo-entry-test.log`, `echo-entry-symbol-check.log`). Hosted final-revision validation is pending.
+
+## Merge status
+
+PR #208 merged as `49b0844621847ce75064cf251c7035aca56d5f76` on 2026-09-29. All ten native/Android checks passed at merge time; browser validation was still running and the downstream browser/native equivalence check had not yet run. Final hosted validation is not complete. The tested branch head is `8234d2460b37a0d9a510f365ee190cb05111bc8c`.
