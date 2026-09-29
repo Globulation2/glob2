@@ -74,3 +74,5 @@ Local preview scheduling, landscape scrolling, mobile presentation, responsive m
 Browser integration follow-up: `96b1a6dfb` adapts master’s save-name regression to the native text field and replaces a frozen wall clock with an advancing one so SDL preview deadlines can expire. All four previously failing Chromium/software cases pass locally (`merge-validation/browser-fixed.log`). No production code changed in this follow-up.
 
 Five focused WebGL2 cases also pass, including replay reload and both landscape cancellation/retry paths; see `merge-validation/browser-webgl.log` and the selected-landscape captures.
+
+Latest integration revision: `8234d2460b37a0d9a510f365ee190cb05111bc8c`, including master through `37ffbcb05`. Master added an Echo continuation harness during the prior CI run; its missing main-macro reset caused the Windows link failure. The test now follows the other console harnesses. Native execution and a compile/symbol check with `-Dmain=SDL_main` pass (`echo-entry-test.log`, `echo-entry-symbol-check.log`). Hosted final-revision validation is pending.

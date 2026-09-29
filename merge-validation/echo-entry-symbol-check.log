@@ -1,0 +1,1 @@
+PASS: with -Dmain=SDL_main, the console test still exports main and no SDL_main symbol.
