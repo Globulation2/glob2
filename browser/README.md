@@ -181,7 +181,10 @@ self-hosting on its own runner. A spec that needs a native program must use one
 packaged by `web-native`, or add it there.
 
 `web-native` restores the main Ubuntu 24.04 native compiler cache read-only
-for its router and transport fixtures. Emscripten uses a separate bounded cache
+for its router and transport fixtures. It also restores its own SCons objects,
+keyed by the installed compiler binary, and recompiles `GlobalContainerArgs.cpp`
+to refresh the build banner. Master and manual workflow dispatches save those
+objects for later runs. Emscripten uses a separate bounded cache
 through `EM_COMPILER_WRAPPER=ccache`, keyed by runner OS/architecture and the
 pinned toolchain. Only master saves that compiler cache, after pruning unused
 entries; the first run for a new toolchain starts cold. The WebAssembly build

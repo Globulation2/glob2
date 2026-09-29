@@ -1690,9 +1690,30 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-main-ubuntu-24.04-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-main-ubuntu-24.04-
+      - name: Identify native compiler
+        id: native_compiler
+        run: |
+          digest=$(sha256sum "$(command -v g++-13)" | cut -d' ' -f1)
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+      - name: Restore native object tree
+        id: restore_native_object_tree
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/linux/**/.sconsign.dblite
+            build/linux/**/identity.json
+            build/linux/**/include/glob2/BuildConfig.h
+            build/linux/**/*.o
+            build/linux/**/*.a
+          key: native-objects-v1-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: native-objects-v1-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-
       - name: Reset native compiler cache statistics
         id: reset_native_compiler_cache_statistics
-        run: ccache -z
+        run: |
+          ccache -z
+          # Keep the build banner current even when every other object is reused.
+          find build/linux -name GlobalContainerArgs.o -delete 2>/dev/null || true
       - name: Build gateway
         id: build_gateway
         continue-on-error: true
@@ -1731,6 +1752,19 @@ jobs:
             build/linux/client/release/src/net-connection-test \
             build/linux/client/release/src/native-multiplayer-peer \
             build/linux/gateway/release/glob2-ws-gateway
+      - name: Save native object tree
+        id: save_native_object_tree
+        if: ${{ !cancelled() && steps.package_the_programs_the_browser_tests_drive.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build/linux/**/.sconsign.dblite
+            build/linux/**/identity.json
+            build/linux/**/include/glob2/BuildConfig.h
+            build/linux/**/*.o
+            build/linux/**/*.a
+          key: native-objects-v1-ubuntu-24.04-${{ steps.native_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         id: upload_artifact_1
         continue-on-error: true
