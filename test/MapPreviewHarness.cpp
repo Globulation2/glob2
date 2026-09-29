@@ -435,11 +435,16 @@ struct MapPreviewHarness
 		custom.setup.generator.hDec = 7;
 		custom.setup.setCapacity(4);
 		assert(custom.generateMap());
+		// generatedSnapshot lives in memory now (CustomGameScreen::generateMap); write it out
+		// once here purely so this evidence check and the retained artifact both have a file.
+		const auto generatedPath = output + "/generated-wide.map";
+		{
+			std::ofstream file(generatedPath, std::ios::binary);
+			file.write(custom.generatedSnapshot->data(), custom.generatedSnapshot->size());
+		}
 		MapThumbnail snapshot;
-		snapshot.loadFromMap(custom.snapshot);
+		snapshot.loadFromMap(generatedPath);
 		assert(snapshot.isLoaded() && snapshot.pixels()->rgb == lobby->thumbnail.pixels()->rgb);
-		std::filesystem::copy_file(glob2GzipWritePath(custom.snapshot), output + "/generated-wide.map.gz",
-								   std::filesystem::copy_options::overwrite_existing);
 		settle(custom, lobby);
 		globalContainer->gfx->printScreen(output + "/custom-wide-colonies.bmp");
 		area = lobby->mapArea();
