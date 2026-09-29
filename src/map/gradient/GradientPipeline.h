@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "GradientWorkspace.h"
+#include "kernel/GradientWorkspace.h"
 #include <atomic>
 #include <algorithm>
 #include <chrono>
@@ -29,6 +29,21 @@ public:
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
 		std::exception_ptr error;
+	};
+	// Stable save boundary. A view is valid only during visitPendingSnapshots;
+	// the owning queue and worker state remain private to the pipeline.
+	struct PendingSnapshot {
+		std::uint16_t **slot;
+		const std::uint16_t *data;
+		unsigned remaining;
+		bool superseded;
+	};
+	struct RestoredSnapshot {
+		std::uint16_t **slot;
+		int swim;
+		unsigned remaining;
+		bool superseded;
+		std::unique_ptr<std::uint16_t[]> data;
 	};
 	using Work = std::function<void(Job &, GradientWorkspace &)>;
 	using Factory = std::function<std::thread(std::function<void()>)>;
@@ -102,19 +117,21 @@ public:
 		delay = ticks;
 	}
 	// Saving completes private work without changing publication deadlines.
-	template<class Visitor> void visitPending(Visitor visitor) {
+	template<class Visitor> void visitPendingSnapshots(Visitor visitor) {
 		finish();
-		for (const auto &job : pending) visitor(*job, static_cast<unsigned>(job->due-tick));
+		for (const auto &job : pending)
+			visitor(PendingSnapshot{job->slot, job->data.get(),
+				static_cast<unsigned>(job->due-tick), job->superseded});
 	}
 	std::size_t pendingCount() const { return pending.size(); }
-	void restoreCompleted(std::uint16_t **slot, int swim, unsigned remaining,
-		bool superseded, std::unique_ptr<std::uint16_t[]> data) {
-		if (!enabled() || !slot || !*slot || !data || !remaining || remaining>delay ||
-			pending.size()>=delay || (!pending.empty() && pending.back()->due>=tick+remaining))
+	void restoreCompleted(RestoredSnapshot snapshot) {
+		if (!enabled() || !snapshot.slot || !*snapshot.slot || !snapshot.data ||
+			!snapshot.remaining || snapshot.remaining>delay || pending.size()>=delay ||
+			(!pending.empty() && pending.back()->due>=tick+snapshot.remaining))
 			throw std::runtime_error("Invalid saved gradient deadline or destination");
 		auto job=std::make_unique<Job>();
-		job->slot=slot; job->swim=swim; job->due=tick+remaining;
-		job->superseded=superseded; job->done=true; job->data=std::move(data);
+		job->slot=snapshot.slot; job->swim=snapshot.swim; job->due=tick+snapshot.remaining;
+		job->superseded=snapshot.superseded; job->done=true; job->data=std::move(snapshot.data);
 		pending.push_back(std::move(job));
 	}
 	// Execution is local configuration, never part of saved simulation state.

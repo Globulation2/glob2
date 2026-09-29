@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "GradientBucket.h"
+#include "kernel/GradientBucket.h"
 
 class Map;
 
