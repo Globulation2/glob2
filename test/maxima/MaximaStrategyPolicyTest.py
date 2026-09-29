@@ -34,9 +34,11 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         )
         for forbidden in ("getenv(", "ifstream", "ConfigVector", "GLOB2_NICOWAR"):
             self.assertNotIn(forbidden, consumers)
-        # Maxima resolves its own strategy; the game has no Maxima state.
+        # The game resolves Maxima defaults before parallel AI polling, but
+        # stores no Maxima-specific strategy state of its own.
         self.assertIn("StrategyResolver::resolveForPlayer(", self.maxima)
-        self.assertNotIn("Maxima", self.game)
+        self.assertIn("AIMaxima::StrategyResolver::resolveForPlayer(", self.game)
+        self.assertNotIn("Maxima", (ROOT / "src/Game.h").read_text())
 
     def test_current_save_omits_obsolete_plans_and_phases(self) -> None:
         version = (ROOT / "src/Version.h").read_text()

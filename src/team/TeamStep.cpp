@@ -349,6 +349,7 @@ void Team::syncStep(void)
 
 	int nbUsefulUnits = 0;
 	int nbUsefulUnitsAlone = 0;
+	bool hasFedOrFeedingUnit = false;
 	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
@@ -362,6 +363,12 @@ void Team::syncStep(void)
 					nbUsefulUnitsAlone++;
 			}
 			u->syncStep();
+			// Check after the step: admission lists and medical status can lag a meal.
+			if (!u->isDead && u->owner == this && u->typeNum != EXPLORER
+				&& ((!u->isUnitHungry() && u->hp > u->trigHP)
+					|| (u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == FEED
+						&& u->attachedBuilding && u->attachedBuilding->type->canFeedUnit)))
+				hasFedOrFeedingUnit = true;
 			if (u->isDead)
 			{
 				// Sim must not read GameGUI state. Route the selection
@@ -469,7 +476,7 @@ void Team::syncStep(void)
 
 	bool isDying= (playersMask==0)
 		|| allRemainingUnitsTrapped(*this)
-		|| (!isEnoughFoodInSwarm && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
+		|| (!isEnoughFoodInSwarm && !hasFedOrFeedingUnit && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
 	{
 		isAlive=false;
