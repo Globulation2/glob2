@@ -12,7 +12,7 @@
 #include <iostream>
 #include <valarray>
 #include <memory>
-#include <boost/optional.hpp>
+#include <optional>
 
 #include <set>
 #include <tuple>
@@ -164,7 +164,7 @@ namespace GAGCore
 		//! the underlying software SDL surface
 		SDL_Surface *sdlsurface;
 		// Texture dimensions
-		boost::optional<TextureInfo> textureInfo;
+		std::optional<TextureInfo> textureInfo;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
 		//! this surface has been modified since latest blit

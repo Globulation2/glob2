@@ -5,7 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#include "boost/integer_traits.hpp"
+#include <limits>
 #include <boost/random/uniform_int_distribution.hpp>
 //also the Perlin Noise stuff uses random that is not based on syncRand
 #include "Game.h"
@@ -71,14 +71,14 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 	obstacles.clear();
 	
 	bool cont=true;
-	int minDist = boost::integer_traits<int>::const_max;
+	int minDist = std::numeric_limits<int>::max();
 	while(cont)
 	{
-		minDist = boost::integer_traits<int>::const_max;
+		minDist = std::numeric_limits<int>::max();
 		bool changed=false;
 		for(unsigned int i=0; i<points.size(); ++i)
 		{
-			int best = boost::integer_traits<int>::const_max;
+			int best = std::numeric_limits<int>::max();
 			for(unsigned int j=0; j<points.size(); ++j)
 			{
 				if(i == j)
@@ -100,7 +100,7 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 					int ny = game.map.normalizeY(points[i].y + dy);
 					if(grid[ny * game.map.getW() + nx]  != areaN)
 						continue;
-					int score=boost::integer_traits<int>::const_max;
+					int score=std::numeric_limits<int>::max();
 					bool invalid=false;
 					for(unsigned int j=0; j<points.size(); ++j)
 					{
