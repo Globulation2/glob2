@@ -40,6 +40,8 @@ namespace GAGCore
 
 		// A single normalized texture target supports both legacy atlases and HD mipmaps.
 		isTextureSRectangle = false;
+		hasS3TCCompression = (strstr(glExtensions, "GL_EXT_texture_compression_s3tc") != NULL)
+			&& !std::getenv("GLOB2_DISABLE_S3TC");
 		const char *glVendor = (const char *)glGetString(GL_VENDOR);
 		if (strstr(glVendor, "ATI"))
 			useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
@@ -284,6 +286,9 @@ namespace GAGCore
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
 		releaseFrameCache();
 		freeOwnedSurface();
+#ifdef HAVE_OPENGL
+		if (context) destroyUnitShader();
+#endif
 		if (context) SDL_GL_DeleteContext(context);
 		if (window) SDL_DestroyWindow(window);
 		window = nullptr;
@@ -654,6 +659,9 @@ namespace GAGCore
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
 		watchingEvents = false;
 		releaseFrameCache();
+#ifdef HAVE_OPENGL
+		if (context) destroyUnitShader();
+#endif
 		if (context) SDL_GL_DeleteContext(context);
 		context = nullptr;
 		renderer.reset();
@@ -760,7 +768,13 @@ namespace GAGCore
 
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
+			{
 				glState.checkExtensions();
+				// A failed compile/link logs once and leaves hasUnitShader() false;
+				// callers fall back to the CPU team-color cache for this context's
+				// lifetime.
+				createUnitShader();
+			}
 			#endif // HAVE_OPENGL
 
 			// setup title and icon

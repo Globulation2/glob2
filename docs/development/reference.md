@@ -79,10 +79,16 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
 - Use `Utilities::syncRand()` for simulation randomness. Keep iteration and tie
   breaking deterministic; never depend on pointer ordering, hash-table iteration,
   thread scheduling or wall-clock budgets for simulation decisions.
-- `syncRand()`'s generator is `thread_local`: the simulation runs on one thread, so its
-  sequence is unchanged, and a background thread that generates maps (the lobby's
-  landscape previews) seeds its own stream without racing the UI thread's menu colony.
-  A new thread starts from the default seed; seed it before relying on its sequence.
+- Each AI controller has a saved random stream derived from the game seed and player
+  number. AI implementations receive that stream when created or loaded. During
+  `AI::getOrder()`, legacy helper calls to `syncRand()` are routed to the same AI
+  stream. This keeps one AI's random draws independent of other controllers' poll
+  order, but does not make their shared map and caches safe for concurrent access.
+  A controller must still have at most one `getOrder()` in flight; its stream
+  and decision state are mutable.
+- The non-AI `syncRand()` generator is `thread_local`: the simulation normally uses
+  one thread, while background map generation seeds its own stream. A new thread
+  starts from the default seed; seed it before relying on its sequence.
 - For behavior-preserving refactors and optimizations, compare base and changed
   builds using identical saves/maps, seeds, settings and orders. Compare per-tick
   state/checksums as well as replay bytes: matching orders alone do not prove that

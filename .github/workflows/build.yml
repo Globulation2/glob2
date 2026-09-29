@@ -150,6 +150,9 @@ jobs:
             map-render-resize-test \
             menu-colony-harness \
             speed-tests \
+            unit-render-tests \
+            unit-hd-cache-test \
+            runtime-pack-check \
             settings-tests \
             screen-test \
             session-test \
@@ -494,6 +497,15 @@ jobs:
       - name: Test game speed controls and playback
         run: |
           GLOB2_BUILD_DIR=build/linux/client/release xvfb-run -a python3 test/run-game-speed-tests.py
+
+      - name: Test unit rendering and HD cache
+        run: |
+          xvfb-run -a ./build/linux/client/release/src/DrawableSurfaceBlendTest
+          xvfb-run -a ./build/linux/client/release/src/UnitTeamShaderTest
+          xvfb-run -a ./build/linux/client/release/src/UnitTeamColorCacheTest
+          xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest
+          xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest software
+          xvfb-run -a ./build/linux/client/release/src/RuntimePackCheck
 
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
@@ -1138,10 +1150,15 @@ jobs:
 
   web-deploy:
     name: browser self-hosting deployment
+    needs: web-build
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-client
+          path: build/emscripten/client/release
       - name: Test self-hosting with real TLS and persistent volumes
         run: |
           docker compose -f deploy/compose.yaml build lobby

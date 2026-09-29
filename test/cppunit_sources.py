@@ -48,6 +48,7 @@ TurretScanTileTest.cpp
 ParticleCrossfadeTest.cpp
 
 UnitTimingTest.cpp
+UnitAnimationTest.cpp
 
 UnitDrawGeometryTest.cpp
 

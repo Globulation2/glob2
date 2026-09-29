@@ -1,6 +1,6 @@
-> Original-only PR: only the 60 verified original-derived frames ship here.
-> References below to approved upscales describe the separate follow-up PR;
-> all unavailable frames use classic artwork in this branch.
+> This pack contains 60 verified original-derived world frames and 1,792 unit poses
+> rendered from original Blender rigs. No AI assets are included; unavailable
+> frames retain classic artwork.
 
 # Original artwork
 
@@ -47,8 +47,7 @@ provenance/           Source URLs, archive paths, old repository paths and hashe
 
 `data/gfx/` remains the classic runtime artwork. `data/highres/` is the runtime
 pack. Historical experiments are excluded from Git and are not the
-original-source archive. Fifty-five frames (ten from the second archive, ten trees, eight wheat frames, three layered buildings and five papyrus and 24 area markers from the first) replace
-experimental art in the runtime pack. See [export recipes and coverage](RECOVERED-RUNTIME.md).
+original-source archive. Sixty world frames (ten from the second archive, ten trees, eight wheat frames, three layered buildings, five papyrus and 24 area markers) use verified original-derived artwork. The pack also includes 1,792 unit poses rendered from original Blender rigs. See [export recipes and coverage](RECOVERED-RUNTIME.md).
 Other layered buildings and remaining resources still need runtime migration; the two final ripe wheat color states still lack larger originals.
 
 ## Provenance and preservation
@@ -92,9 +91,9 @@ python3 tools/artwork/catalog_originals.py
 Blender units moved from `datasrc/gfx/globules/` to `datasrc/gfx/originals/units/`.
 Building models moved to `datasrc/gfx/originals/buildings/`; cursor models moved
 to `datasrc/gfx/originals/cursors/`. All historical basenames remain unchanged.
-Scripts outside this branch, including work associated with unit animation
-PR #201, should update their source directory using the path manifest above.
-Unit rendering work remains coordinated with that PR.
+The unit pipeline in `tools/unit-animation/` uses the new source directory.
+Other external scripts should update their source directory using the path
+manifest above. Approved unit renders follow the existing production layout.
 
 The old `rename_globules.py` helper lives in `tools/units/` within this tree.
 It operates on its current working directory; run it only in a disposable render

@@ -224,17 +224,19 @@ void SettingsScreen::buildGeneral()
 		info(tr("Adjust the pace of play."));
 		std::vector<std::string> labels;
 		Settings copy = s;
-		for (int i = 0; i <= Settings::GAME_SPEED_MAXIMUM; ++i)
+		for (int i = Settings::GAME_SPEED_MINIMUM; i <= Settings::GAME_SPEED_MAXIMUM; ++i)
 		{
 			copy.gameSpeed = i;
 			labels.push_back(copy.getGameSpeedText());
 		}
 		choice("gameplay.speed", "Game speed",
-			   "Single-player and replays only. Multiplayer runs at 1x.", s.gameSpeed, labels,
+			   "Single-player and replays only. Multiplayer runs at 1x.",
+			   s.gameSpeed - Settings::GAME_SPEED_MINIMUM, labels,
 			   [this](int v)
 			   {
 				   globalContainer->settings.gameSpeed =
-					   std::clamp(v, 0, int(Settings::GAME_SPEED_MAXIMUM));
+					   std::clamp(v + int(Settings::GAME_SPEED_MINIMUM),
+						int(Settings::GAME_SPEED_MINIMUM), int(Settings::GAME_SPEED_MAXIMUM));
 				   commit();
 			   });
 		toggle("gameplay.autosave", "Autosave", "Save the game automatically about every minute.",
