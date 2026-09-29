@@ -1,3 +1,5 @@
+const {clickCreateMap}=require('./editor-controls');
+const {editTextField}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL}=require('./main-menu');
 const fs=require('node:fs/promises');
@@ -10,13 +12,11 @@ for(const fault of ['quota','aborted transaction']) test(`editor save before qui
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
   await click(page,600,300);await screen(page,'NewMapScreen');
-  await click(page,440,650);await screen(page,'MapEditorScreen');
+  await clickCreateMap(page);await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
   await click(page,600,525);await screen(page,'MessageScreen');
   await click(page,390,570);await screen(page,'MapEditorScreen');
-  await click(page,600,515);await page.locator('#canvas').press('Home');
-  for(let i=0;i<40;i++)await page.locator('#canvas').press('Delete');
-  await page.locator('#canvas').pressSequentially('Editor durability',{delay:20});
+  await editTextField(page,'Editor durability');
   await page.evaluate(fault=>{
     window.editorStorageFault=true;
     const put=IDBObjectStore.prototype.put;

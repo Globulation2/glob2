@@ -3060,3 +3060,331 @@ Poistu tallentamatta
 Peli suljettu. Voit sulkea tämän ikkunan tai ladata sivun uudelleen pelataksesi taas.
 [campaign editor save failed]
 Tallennusta ei vahvistettu. OK yrittää uudelleen; Peruuta palaa editorin valikkoon.
+[Actions]
+Toiminnot
+[Minimap]
+Pienoiskartta
+[Fast forward]
+Pikakelaus
+[Hide keyboard]
+Piilota näppäimistö
+[Dialog text size]
+Valintaikkunoiden tekstikoko
+[Player slot]
+Pelaajapaikka
+[Team color]
+Joukkueen väri
+[Alliance group]
+Liittoumaryhmä
+[menu]
+Valikko
+[Editor tools]
+Työkalut
+[Pan map]
+Siirrä karttaa
+[Edit map]
+Muokkaa
+[Editor map]
+Kartta
+[Flags]
+Liput
+[Pause]
+Tauko
+[Speed]
+Nopeus
+[Objectives]
+Tavoitteet
+[Menu]
+Valikko
+[Goals]
+Tavoitteet
+[Teams]
+Joukkueet
+[Use this landscape]
+Käytä tätä maisemaa
+[Reset]
+Palauta
+[Generating...]
+Luodaan...
+[Players]
+Pelaajat
+[Rules]
+Säännöt
+[settings Interface layout]
+Käyttöliittymän asettelu
+[settings Automatic]
+Automaattinen
+[settings Compact]
+Tiivis
+[settings Spacious]
+Väljä
+[More]
+Lisää
+[No items]
+Ei kohteita
+[Opponents]
+Vastustajat
+[Review]
+Yhteenveto
+[Review & Play]
+Tarkista ja pelaa
+[Edit opponents]
+Muokkaa vastustajia
+[Map settings]
+Kartan asetukset
+[Next]
+Seuraava
+[Done]
+Valmis
+[Contribution]
+Osuus
+[Choose who controls this colony]
+Valitse, kuka ohjaa tätä siirtokuntaa
+[Settings]
+Asetukset
+[settings Back]
+Takaisin
+[settings Save the game automatically about every minute.]
+Tallenna peli automaattisesti noin minuutin välein.
+[AI opponents]
+Tietokonevastustajat
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Väljä asettelu käyttää sivupaneelia, kun tilaa on riittävästi. Tiivis asettelu käyttää työkalupalkkia ja avattavia paneeleja.
+[Assigned %0 · Target %1]
+Määrätty %0 · Tavoite %1
+[Range: %0]
+Kantama: %0
+[Player %0]
+Pelaaja %0
+[Brush %0]
+Sivellin %0
+[Team %0]
+Joukkue %0
+[Your colony]
+Oma siirtokuntasi
+[%0 / %1 HP · %2]
+%0 / %1 EP · %2
+[Units: %0]
+Yksiköt: %0
+[Buildings: %0]
+Rakennukset: %0
+[Need food: %0]
+Tarvitsevat ruokaa: %0
+[Need healing: %0]
+Tarvitsevat hoitoa: %0
+[Attack: %0]
+Hyökkäys: %0
+[Defense: %0]
+Puolustus: %0
+[Food: %0 / %1]
+Ruoka: %0 / %1
+[View team %0]
+Näytä joukkue %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Sivellin %0x%1
+[Level %0]
+Taso %0
+[Manage teams (%0)]
+Hallitse joukkueita (%0)
+[Team %0 / Level %1]
+Joukkue %0 / Taso %1
+[Files · %0]
+Tiedostot · %0
+[Hint %0]
+Vihje %0
+[Objective %0]
+Tavoite %0
+[Entry %0 of 8 · empty entries are omitted]
+Merkintä %0/8 · tyhjät merkinnät ohitetaan
+[Teams %0/%1]
+Joukkueet %0/%1
+[Elapsed time · %0]
+Kulunut aika · %0
+[Read-only building]
+Rakennus vain katseltavissa
+[Alliance and shared vision are fixed for this match.]
+Liittouma ja jaettu näkö ovat kiinteät tässä ottelussa.
+[Share vision]
+Jaa näkö
+[Share food vision]
+Jaa ruokanäkö
+[Share market vision]
+Jaa markkinanäkö
+[Chat]
+Keskustelu
+[No other players have editable diplomatic settings in this match.]
+Muilla pelaajilla ei ole muokattavia diplomatia-asetuksia tässä ottelussa.
+[No briefing for this match.]
+Ei ohjeistusta tälle ottelulle.
+[Chat · recipients selected in Teams]
+Keskustelu · vastaanottajat valitaan Joukkueet-valikossa
+[Filename]
+Tiedostonimi
+[Reduced motion]
+Vähennetty liike
+[Send]
+Lähetä
+[Close]
+Sulje
+[Forbidden]
+Kielletty
+[Guard]
+Vartioi
+[Clear]
+Raivaa
+[Paint]
+Maalaa
+[Erase]
+Pyyhi
+[Release on valid terrain to place]
+Sijoita vapauttamalla kelvollisen maaston päällä
+[Paint on the map; two fingers move]
+Maalaa kartalle; siirrä kahdella sormella
+[Tutorial ▸]
+Opastus ▸
+[Back to tools]
+Takaisin työkaluihin
+[Starvation overlay]
+Nälkäkerros
+[Damage overlay]
+Vauriokerros
+[Defense overlay]
+Puolustuskerros
+[Fertility overlay]
+Hedelmällisyyskerros
+[Health and food bars]
+Terveys- ja ruokapalkit
+[Message history]
+Viestihistoria
+[Mark map for allies]
+Merkitse karttaa liittolaisille
+[Show zones]
+Näytä alueet
+[Pan]
+Siirrä
+[Select]
+Valitse
+[Show palette]
+Näytä paletti
+[Release to place]
+Sijoita vapauttamalla
+[Blocked placement]
+Sijoitus estetty
+[File name]
+Tiedoston nimi
+[Load map]
+Lataa kartta
+[Save map]
+Tallenna kartta
+[No files in this folder]
+Ei tiedostoja tässä kansiossa
+[No files saved yet]
+Ei vielä tallennettuja tiedostoja
+[Export]
+Vie
+[Tap to write the mission briefing]
+Kirjoita tehtävän ohjeistus napauttamalla
+[Tap to write the map script]
+Kirjoita kartan skripti napauttamalla
+[Script]
+Skripti
+[Previous]
+Edellinen
+[Compile]
+Käännä
+[Tap to write this hint]
+Kirjoita tämä vihje napauttamalla
+[Tap to write this objective]
+Kirjoita tämä tavoite napauttamalla
+[Mission briefing · tap to edit, swipe to scroll]
+Tehtävän ohjeistus · muokkaa napauttamalla, vieritä pyyhkäisemällä
+[Not enough recorded history yet.]
+Tallennettua historiaa ei vielä ole tarpeeksi.
+[Select a team to show its history.]
+Näytä historia valitsemalla joukkue.
+[Back to chart]
+Takaisin kaavioon
+[Expand chart]
+Suurenna kaaviota
+[Slot]
+Paikka
+[Color]
+Väri
+[Player / AI]
+Pelaaja / TI
+[Group]
+Ryhmä
+[Forbid]
+Kiellä
+[↓ Low]
+↓ Matala
+[= Normal]
+= Normaali
+[↑ High]
+↑ Korkea
+[Details]
+Tiedot
+[Campaign name]
+Kampanjan nimi
+[Unlocking]
+Avaaminen
+[Parameters]
+Parametrit
+[Blank map]
+Tyhjä kartta
+[Generated]
+Luotu
+[Preview]
+Esikatselu
+[Selected landscape]
+Valittu maisema
+[Representative preview]
+Esimerkkiesikatselu
+[Starting terrain]
+Aloitusmaasto
+[Hide parameters]
+Piilota parametrit
+[Size and parameters]
+Koko ja parametrit
+[Choose a landscape]
+Valitse maisema
+[%0 / Browse]
+%0 / Selaa
+[%0 colonies · %1]
+%0 siirtokuntia · %1
+[%0 · Team %1]
+%0 · Joukkue %1
+[Colonies: %0]
+Siirtokunnat: %0
+[%0 colonies · %1 AI]
+%0 siirtokuntia · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Yksiköt
+[settings Level %0]
+Taso %0
+[settings Match the desktop %0]
+Työpöydän mukaan (%0)
+[settings Current display %0 %1 %2 %3]
+Nykyiset näyttöasetukset: %0 × %1 · %2 · %3
+[Fairness: %0]
+Tasapuolisuus: %0
+[Colony %0]
+Siirtokunta %0
+[Win chance: %0 · Fitness: %1]
+Voittomahdollisuus: %0 · Vahvuus: %1
+[%0 · Contribution: %1]
+%0 · Osuus: %1
+[Min required level %0]
+Alin vaadittu taso: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Valintaikkunoiden tekstikoko: %0%
+[%0 %1]
+%0 %1

@@ -3122,3 +3122,331 @@ Esci senza salvare
 Partita chiusa. Puoi chiudere questa finestra o ricaricare per giocare di nuovo.
 [campaign editor save failed]
 Salvataggio non confermato. Ok riprova; Annulla torna al menu dell'editor.
+[Actions]
+Azioni
+[Minimap]
+Minimappa
+[Fast forward]
+Avanti veloce
+[Hide keyboard]
+Nascondi tastiera
+[Dialog text size]
+Dimensione testo dei dialoghi
+[Player slot]
+Posto giocatore
+[Team color]
+Colore squadra
+[Alliance group]
+Gruppo di alleanza
+[menu]
+Menu
+[Editor tools]
+Strumenti
+[Pan map]
+Sposta mappa
+[Edit map]
+Modifica mappa
+[Editor map]
+Mappa
+[Flags]
+Bandiere
+[Pause]
+Pausa
+[Speed]
+Velocità
+[Objectives]
+Obiettivi
+[Menu]
+Menu
+[Goals]
+Obiettivi
+[Teams]
+Squadre
+[Use this landscape]
+Usa questo paesaggio
+[Reset]
+Ripristina
+[Generating...]
+Generazione...
+[Players]
+Giocatori
+[Rules]
+Regole
+[settings Interface layout]
+Disposizione dell’interfaccia
+[settings Automatic]
+Automatica
+[settings Compact]
+Ravvicinati
+[settings Spacious]
+Spaziosa
+[More]
+Altro
+[No items]
+Nessun elemento
+[Opponents]
+Avversari
+[Review]
+Riepilogo
+[Review & Play]
+Controlla e gioca
+[Edit opponents]
+Modifica avversari
+[Map settings]
+Impostazioni mappa
+[Next]
+Avanti
+[Done]
+Fatto
+[Contribution]
+Contributo
+[Choose who controls this colony]
+Scegli chi controlla questa colonia
+[Settings]
+Impostazioni
+[settings Back]
+Indietro
+[settings Save the game automatically about every minute.]
+Salva automaticamente la partita circa ogni minuto.
+[AI opponents]
+Avversari IA
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La disposizione spaziosa usa un pannello laterale quando c’è spazio. Quella compatta usa una barra degli strumenti e pannelli a scomparsa.
+[Assigned %0 · Target %1]
+Assegnati %0 · Obiettivo %1
+[Range: %0]
+Raggio: %0
+[Player %0]
+Giocatore %0
+[Brush %0]
+Pennello %0
+[Team %0]
+Squadra %0
+[Your colony]
+La tua colonia
+[%0 / %1 HP · %2]
+%0 / %1 PV · %2
+[Units: %0]
+Unità: %0
+[Buildings: %0]
+Edifici: %0
+[Need food: %0]
+Richiedono cibo: %0
+[Need healing: %0]
+Richiedono cure: %0
+[Attack: %0]
+Attacco: %0
+[Defense: %0]
+Difesa: %0
+[Food: %0 / %1]
+Cibo: %0 / %1
+[View team %0]
+Mostra squadra %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pennello %0x%1
+[Level %0]
+Livello %0
+[Manage teams (%0)]
+Gestisci squadre (%0)
+[Team %0 / Level %1]
+Squadra %0 / Livello %1
+[Files · %0]
+File · %0
+[Hint %0]
+Suggerimento %0
+[Objective %0]
+Obiettivo %0
+[Entry %0 of 8 · empty entries are omitted]
+Voce %0 di 8 · le voci vuote sono omesse
+[Teams %0/%1]
+Squadre %0/%1
+[Elapsed time · %0]
+Tempo trascorso · %0
+[Read-only building]
+Edificio in sola lettura
+[Alliance and shared vision are fixed for this match.]
+Alleanza e visione condivisa sono fisse per questa partita.
+[Share vision]
+Condividi visione
+[Share food vision]
+Condividi visione del cibo
+[Share market vision]
+Condividi visione dei mercati
+[Chat]
+Chat
+[No other players have editable diplomatic settings in this match.]
+Nessun altro giocatore ha impostazioni diplomatiche modificabili in questa partita.
+[No briefing for this match.]
+Nessuna introduzione per questa partita.
+[Chat · recipients selected in Teams]
+Chat · destinatari selezionati in Squadre
+[Filename]
+Nome file
+[Reduced motion]
+Movimento ridotto
+[Send]
+Invia
+[Close]
+Chiudi
+[Forbidden]
+Vietato
+[Guard]
+Sorveglia
+[Clear]
+Sgombra
+[Paint]
+Dipingi
+[Erase]
+Cancella
+[Release on valid terrain to place]
+Rilascia su terreno valido per posizionare
+[Paint on the map; two fingers move]
+Dipingi sulla mappa; sposta con due dita
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Torna agli strumenti
+[Starvation overlay]
+Livello fame
+[Damage overlay]
+Livello danni
+[Defense overlay]
+Livello difesa
+[Fertility overlay]
+Livello fertilità
+[Health and food bars]
+Barre salute e cibo
+[Message history]
+Cronologia messaggi
+[Mark map for allies]
+Segna la mappa per gli alleati
+[Show zones]
+Mostra zone
+[Pan]
+Sposta
+[Select]
+Seleziona
+[Show palette]
+Mostra tavolozza
+[Release to place]
+Rilascia per posizionare
+[Blocked placement]
+Posizionamento bloccato
+[File name]
+Nome del file
+[Load map]
+Carica mappa
+[Save map]
+Salva mappa
+[No files in this folder]
+Nessun file in questa cartella
+[No files saved yet]
+Nessun file ancora salvato
+[Export]
+Esporta
+[Tap to write the mission briefing]
+Tocca per scrivere l’introduzione della missione
+[Tap to write the map script]
+Tocca per scrivere lo script della mappa
+[Script]
+Script
+[Previous]
+Precedente
+[Compile]
+Compila
+[Tap to write this hint]
+Tocca per scrivere questo suggerimento
+[Tap to write this objective]
+Tocca per scrivere questo obiettivo
+[Mission briefing · tap to edit, swipe to scroll]
+Introduzione missione · tocca per modificare, scorri per navigare
+[Not enough recorded history yet.]
+Cronologia registrata ancora insufficiente.
+[Select a team to show its history.]
+Seleziona una squadra per mostrarne la cronologia.
+[Back to chart]
+Torna al grafico
+[Expand chart]
+Espandi grafico
+[Slot]
+Posto
+[Color]
+Colore
+[Player / AI]
+Giocatore / IA
+[Group]
+Gruppo
+[Forbid]
+Vieta
+[↓ Low]
+↓ Bassa
+[= Normal]
+= Normale
+[↑ High]
+↑ Alta
+[Details]
+Dettagli
+[Campaign name]
+Nome della campagna
+[Unlocking]
+Sblocco
+[Parameters]
+Parametri
+[Blank map]
+Mappa vuota
+[Generated]
+Generata
+[Preview]
+Anteprima
+[Selected landscape]
+Paesaggio selezionato
+[Representative preview]
+Anteprima rappresentativa
+[Starting terrain]
+Terreno iniziale
+[Hide parameters]
+Nascondi parametri
+[Size and parameters]
+Dimensioni e parametri
+[Choose a landscape]
+Scegli un paesaggio
+[%0 / Browse]
+%0 / Sfoglia
+[%0 colonies · %1]
+%0 colonie · %1
+[%0 · Team %1]
+%0 · Squadra %1
+[Colonies: %0]
+Colonie: %0
+[%0 colonies · %1 AI]
+%0 colonie · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unità
+[settings Level %0]
+Livello %0
+[settings Match the desktop %0]
+Come il desktop (%0)
+[settings Current display %0 %1 %2 %3]
+Impostazioni video attuali: %0 × %1 · %2 · %3
+[Fairness: %0]
+Equità: %0
+[Colony %0]
+Colonia %0
+[Win chance: %0 · Fitness: %1]
+Probabilità di vittoria: %0 · Idoneità: %1
+[%0 · Contribution: %1]
+%0 · Contributo: %1
+[Min required level %0]
+Livello min.richiesto: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Dimensione testo dei dialoghi: %0%
+[%0 %1]
+%0 %1

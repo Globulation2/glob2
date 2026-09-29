@@ -9,7 +9,9 @@ GAGCore::CooperativeTask generate(MapEdit &editor, GenerationRequest descriptor,
 {
 	co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	GenerationService generator;
-	descriptor.seed = generator.bestSeed(descriptor, seed);
+	// A chosen visual preview is reproduced exactly; unpreviewed drafts retain
+	// the existing best-roll selection.
+	if (!descriptor.seed) descriptor.seed = generator.bestSeed(descriptor, seed);
 	if (!generator.generate(editor.game, descriptor))
 		co_return false;
 	editor.mapHasBeenModified();

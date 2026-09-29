@@ -1,3 +1,4 @@
+const {clickCreateMap}=require('./editor-controls');
 const {test, expect} = require('@playwright/test');
 const {clickMainMenu,clickSettingsDone,clickCustomGameStart}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
@@ -130,7 +131,7 @@ test('WebGL context restoration retains settings, editor and confirmation contro
   await clickSettingsDone(page); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor'); await screen(page,'EditorMainMenu');
   await click(page,600,300); await screen(page,'NewMapScreen');
-  await click(page,440,650); await recover('MapEditorScreen');
+  await clickCreateMap(page); await recover('MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
   await click(page,600,525); await recover('MessageScreen');
   await page.screenshot({path:info.outputPath('webgl2-restored-editor-dialog.png')});

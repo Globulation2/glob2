@@ -139,13 +139,13 @@ void MapEdit::drawMiniMap(void)
 
 void MapEdit::drawMenu(void)
 {
- 	int menuStartW=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
+	int menuStartW=globalContainer->gfx->getW()-menuWidth();
 	int yposition=133;
 
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(menuStartW, yposition, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(menuStartW, yposition, menuWidth(), globalContainer->gfx->getH()-128, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(menuStartW, yposition, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
+		globalContainer->gfx->drawFilledRect(menuStartW, yposition, menuWidth(), globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
 	drawMenuEyeCandy();
 }
@@ -181,7 +181,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 
 		// we draw the building
 		sprite->setBaseColor(game.teams[team]->color);
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH());
 		int spriteIntensity = 127;
 		globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
 
@@ -252,12 +252,12 @@ void MapEdit::drawMenuEyeCandy()
 
 	// bar background
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 0);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-menuWidth(), 16, 0, 0, 0);
 	else
-		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 40, 180);
+		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-menuWidth(), 16, 0, 0, 40, 180);
 
 	// draw window bar
-	int pos=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-32;
+	int pos=globalContainer->gfx->getW()-menuWidth()-32;
 	for (int i=0; i<=pos; i+=32)
 	{
 		globalContainer->gfx->drawSprite(i, 16, globalContainer->gamegui, 16);

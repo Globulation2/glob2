@@ -3068,3 +3068,331 @@ Surt sense desar
 Partida tancada. Podeu tancar aquesta finestra o tornar a carregar per jugar de nou.
 [campaign editor save failed]
 Desat no confirmat. D'acord ho reintenta; Cancel·la torna al menú de l'editor.
+[Actions]
+Accions
+[Minimap]
+Minimapa
+[Fast forward]
+Avanç ràpid
+[Hide keyboard]
+Amaga el teclat
+[Dialog text size]
+Mida del text dels diàlegs
+[Player slot]
+Plaça de jugador
+[Team color]
+Color de l’equip
+[Alliance group]
+Grup d’aliança
+[menu]
+Menú
+[Editor tools]
+Eines
+[Pan map]
+Desplaça el mapa
+[Edit map]
+Edita el mapa
+[Editor map]
+Mapa
+[Flags]
+Banderes
+[Pause]
+Pausa
+[Speed]
+Velocitat
+[Objectives]
+Objectius
+[Menu]
+Menú
+[Goals]
+Objectius
+[Teams]
+Equips
+[Use this landscape]
+Fes servir aquest paisatge
+[Reset]
+Restableix
+[Generating...]
+S’està generant...
+[Players]
+Jugadors
+[Rules]
+Regles
+[settings Interface layout]
+Disposició de la interfície
+[settings Automatic]
+Automàtica
+[settings Compact]
+Propers
+[settings Spacious]
+Espaiosa
+[More]
+Més
+[No items]
+Cap element
+[Opponents]
+Adversaris
+[Review]
+Resum
+[Review & Play]
+Revisa i juga
+[Edit opponents]
+Edita els adversaris
+[Map settings]
+Opcions del mapa
+[Next]
+Següent
+[Done]
+Fet
+[Contribution]
+Contribució
+[Choose who controls this colony]
+Tria qui controla aquesta colònia
+[Settings]
+Opcions
+[settings Back]
+Enrere
+[settings Save the game automatically about every minute.]
+Desa la partida automàticament cada minut aproximadament.
+[AI opponents]
+Adversaris d’IA
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d’eines i panells desplegables.
+[Assigned %0 · Target %1]
+Assignats %0 · Objectiu %1
+[Range: %0]
+Abast: %0
+[Player %0]
+Jugador %0
+[Brush %0]
+Pinzell %0
+[Team %0]
+Equip %0
+[Your colony]
+La teva colònia
+[%0 / %1 HP · %2]
+%0 / %1 PV · %2
+[Units: %0]
+Unitats: %0
+[Buildings: %0]
+Edificis: %0
+[Need food: %0]
+Necessiten menjar: %0
+[Need healing: %0]
+Necessiten curació: %0
+[Attack: %0]
+Atac: %0
+[Defense: %0]
+Defensa: %0
+[Food: %0 / %1]
+Menjar: %0 / %1
+[View team %0]
+Mostra l’equip %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pinzell %0x%1
+[Level %0]
+Nivell %0
+[Manage teams (%0)]
+Gestiona equips (%0)
+[Team %0 / Level %1]
+Equip %0 / Nivell %1
+[Files · %0]
+Fitxers · %0
+[Hint %0]
+Pista %0
+[Objective %0]
+Objectiu %0
+[Entry %0 of 8 · empty entries are omitted]
+Entrada %0 de 8 · s’ometen les entrades buides
+[Teams %0/%1]
+Equips %0/%1
+[Elapsed time · %0]
+Temps transcorregut · %0
+[Read-only building]
+Edifici de només lectura
+[Alliance and shared vision are fixed for this match.]
+L’aliança i la visió compartida són fixes en aquesta partida.
+[Share vision]
+Comparteix visió
+[Share food vision]
+Comparteix visió del menjar
+[Share market vision]
+Comparteix visió dels mercats
+[Chat]
+Xat
+[No other players have editable diplomatic settings in this match.]
+Cap altre jugador té opcions diplomàtiques editables en aquesta partida.
+[No briefing for this match.]
+No hi ha instruccions per a aquesta partida.
+[Chat · recipients selected in Teams]
+Xat · destinataris triats a Equips
+[Filename]
+Nom de fitxer
+[Reduced motion]
+Moviment reduït
+[Send]
+Envia
+[Close]
+Tanca
+[Forbidden]
+Prohibit
+[Guard]
+Vigila
+[Clear]
+Neteja
+[Paint]
+Pinta
+[Erase]
+Esborra
+[Release on valid terrain to place]
+Deixa anar sobre terreny vàlid per col·locar
+[Paint on the map; two fingers move]
+Pinta al mapa; mou amb dos dits
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Torna a les eines
+[Starvation overlay]
+Capa de fam
+[Damage overlay]
+Capa de danys
+[Defense overlay]
+Capa de defensa
+[Fertility overlay]
+Capa de fertilitat
+[Health and food bars]
+Barres de salut i menjar
+[Message history]
+Historial de missatges
+[Mark map for allies]
+Marca el mapa per als aliats
+[Show zones]
+Mostra zones
+[Pan]
+Desplaça
+[Select]
+Selecciona
+[Show palette]
+Mostra paleta
+[Release to place]
+Deixa anar per col·locar
+[Blocked placement]
+Col·locació bloquejada
+[File name]
+Nom del fitxer
+[Load map]
+Carrega mapa
+[Save map]
+Desa mapa
+[No files in this folder]
+No hi ha fitxers en aquesta carpeta
+[No files saved yet]
+Encara no hi ha fitxers desats
+[Export]
+Exporta
+[Tap to write the mission briefing]
+Toca per escriure les instruccions de la missió
+[Tap to write the map script]
+Toca per escriure l’script del mapa
+[Script]
+Script
+[Previous]
+Anterior
+[Compile]
+Compila
+[Tap to write this hint]
+Toca per escriure aquesta pista
+[Tap to write this objective]
+Toca per escriure aquest objectiu
+[Mission briefing · tap to edit, swipe to scroll]
+Instruccions de missió · toca per editar, llisca per desplaçar
+[Not enough recorded history yet.]
+Encara no hi ha prou historial registrat.
+[Select a team to show its history.]
+Selecciona un equip per mostrar-ne l’historial.
+[Back to chart]
+Torna al gràfic
+[Expand chart]
+Amplia el gràfic
+[Slot]
+Lloc
+[Color]
+Color
+[Player / AI]
+Jugador / IA
+[Group]
+Grup
+[Forbid]
+Prohibeix
+[↓ Low]
+↓ Baixa
+[= Normal]
+= Normal
+[↑ High]
+↑ Alta
+[Details]
+Detalls
+[Campaign name]
+Nom de la campanya
+[Unlocking]
+Desbloqueig
+[Parameters]
+Paràmetres
+[Blank map]
+Mapa buit
+[Generated]
+Generat
+[Preview]
+Previsualització
+[Selected landscape]
+Paisatge seleccionat
+[Representative preview]
+Previsualització representativa
+[Starting terrain]
+Terreny inicial
+[Hide parameters]
+Amaga els paràmetres
+[Size and parameters]
+Mida i paràmetres
+[Choose a landscape]
+Tria un paisatge
+[%0 / Browse]
+%0 / Explora
+[%0 colonies · %1]
+%0 colònies · %1
+[%0 · Team %1]
+%0 · Equip %1
+[Colonies: %0]
+Colònies: %0
+[%0 colonies · %1 AI]
+%0 colònies · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unitats
+[settings Level %0]
+Nivell %0
+[settings Match the desktop %0]
+Segueix l'escriptori (%0)
+[settings Current display %0 %1 %2 %3]
+Configuració de pantalla actual: %0 × %1 · %2 · %3
+[Fairness: %0]
+Equitat: %0
+[Colony %0]
+Colònia %0
+[Win chance: %0 · Fitness: %1]
+Probabilitat de guanyar: %0 · Aptitud: %1
+[%0 · Contribution: %1]
+%0 · Contribució: %1
+[Min required level %0]
+Nivell mínim requerit: %0
+[Confirm %0]
+OK: %0
+[Dialog text size %0]
+Mida del text dels diàlegs: %0%
+[%0 %1]
+%0 %1

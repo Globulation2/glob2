@@ -1100,15 +1100,16 @@ static void measurementScreenshots(const std::string &directory)
 					gfx = globalContainer->gfx;
 					dispatchInit();
 				}
+				using EndGameScreen::drawResults;
 			} screen(&gui);
 			for (int page = 0; page < 6; ++page)
 			{
-				screen.dispatchPaint();
+				screen.selectMetric(page*6);
+				screen.drawResults();
 				require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
 									(directory + "/graphs-" + std::to_string(page) + "-" + suffix)
 										.c_str()) == 0,
 						"save graph screenshot");
-				screen.onAction(nullptr, GAGGUI::BUTTON_SHORTCUT, EndGameScreen::STAT_PAGE, 0);
 			}
 		}
 		globalContainer->gfx->drawFilledRect(0, 0, size.first, size.second, 0, 0, 32);

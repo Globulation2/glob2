@@ -3056,3 +3056,331 @@ Emoji
 Гру закрито. Можете закрити це вікно або перезавантажити сторінку, щоб зіграти знову.
 [campaign editor save failed]
 Збереження не підтверджено. «Гаразд» повторює спробу; «Скасувати» повертає до меню редактора.
+[Actions]
+Дії
+[Minimap]
+Мінімапа
+[Fast forward]
+Перемотування вперед
+[Hide keyboard]
+Сховати клавіатуру
+[Dialog text size]
+Розмір тексту діалогів
+[Player slot]
+Місце гравця
+[Team color]
+Колір команди
+[Alliance group]
+Група союзників
+[menu]
+Меню
+[Editor tools]
+Інструменти
+[Pan map]
+Переміщення мапи
+[Edit map]
+Редагувати мапу
+[Editor map]
+Карта
+[Flags]
+Прапори
+[Pause]
+Пауза
+[Speed]
+Швидкість
+[Objectives]
+Цілі
+[Menu]
+Меню
+[Goals]
+Цілі
+[Teams]
+Команди
+[Use this landscape]
+Використати цей ландшафт
+[Reset]
+Скинути
+[Generating...]
+Створення...
+[Players]
+Гравці
+[Rules]
+Правила
+[settings Interface layout]
+Компонування інтерфейсу
+[settings Automatic]
+Автоматично
+[settings Compact]
+Близько
+[settings Spacious]
+Просторе
+[More]
+Більше
+[No items]
+Немає елементів
+[Opponents]
+Суперники
+[Review]
+Огляд
+[Review & Play]
+Перевірити й грати
+[Edit opponents]
+Змінити суперників
+[Map settings]
+Налаштування мапи
+[Next]
+Далі
+[Done]
+Готово
+[Contribution]
+Внесок
+[Choose who controls this colony]
+Виберіть, хто керує цією колонією
+[Settings]
+Налаштування
+[settings Back]
+Назад
+[settings Save the game automatically about every minute.]
+Автоматично зберігати гру приблизно щохвилини.
+[AI opponents]
+Комп’ютерні суперники
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Просторе компонування використовує бічну панель, якщо вистачає місця. Компактне — панель інструментів і висувні панелі.
+[Assigned %0 · Target %1]
+Призначено %0 · Ціль %1
+[Range: %0]
+Радіус: %0
+[Player %0]
+Гравець %0
+[Brush %0]
+Пензель %0
+[Team %0]
+Команда %0
+[Your colony]
+Ваша колонія
+[%0 / %1 HP · %2]
+%0 / %1 ОЗ · %2
+[Units: %0]
+Юніти: %0
+[Buildings: %0]
+Будівлі: %0
+[Need food: %0]
+Потребують їжі: %0
+[Need healing: %0]
+Потребують лікування: %0
+[Attack: %0]
+Атака: %0
+[Defense: %0]
+Захист: %0
+[Food: %0 / %1]
+Їжа: %0 / %1
+[View team %0]
+Показати команду %0
+[P %0/%1/%2]
+П %0/%1/%2
+[CPU load %0]
+ЦП %0%
+[Brush %0x%1]
+Пензель %0x%1
+[Level %0]
+Рівень %0
+[Manage teams (%0)]
+Керування командами (%0)
+[Team %0 / Level %1]
+Команда %0 / Рівень %1
+[Files · %0]
+Файли · %0
+[Hint %0]
+Підказка %0
+[Objective %0]
+Ціль %0
+[Entry %0 of 8 · empty entries are omitted]
+Запис %0 із 8 · порожні записи пропускаються
+[Teams %0/%1]
+Команди %0/%1
+[Elapsed time · %0]
+Минулий час · %0
+[Read-only building]
+Будівля лише для перегляду
+[Alliance and shared vision are fixed for this match.]
+Союз і спільний огляд у цій грі незмінні.
+[Share vision]
+Ділитися оглядом
+[Share food vision]
+Ділитися оглядом їжі
+[Share market vision]
+Ділитися оглядом ринків
+[Chat]
+Чат
+[No other players have editable diplomatic settings in this match.]
+Інші гравці не мають змінюваних налаштувань дипломатії в цій грі.
+[No briefing for this match.]
+Немає інструктажу для цієї гри.
+[Chat · recipients selected in Teams]
+Чат · одержувачі обрані в розділі «Команди»
+[Filename]
+Ім’я файлу
+[Reduced motion]
+Менше руху
+[Send]
+Надіслати
+[Close]
+Закрити
+[Forbidden]
+Заборона
+[Guard]
+Охорона
+[Clear]
+Розчищення
+[Paint]
+Малювати
+[Erase]
+Стирати
+[Release on valid terrain to place]
+Відпустіть над придатною місцевістю для розміщення
+[Paint on the map; two fingers move]
+Малюйте на карті; рухайте двома пальцями
+[Tutorial ▸]
+Навчання ▸
+[Back to tools]
+Назад до інструментів
+[Starvation overlay]
+Шар голоду
+[Damage overlay]
+Шар пошкоджень
+[Defense overlay]
+Шар захисту
+[Fertility overlay]
+Шар родючості
+[Health and food bars]
+Смужки здоров’я та їжі
+[Message history]
+Історія повідомлень
+[Mark map for allies]
+Позначити карту для союзників
+[Show zones]
+Показати зони
+[Pan]
+Переміщувати
+[Select]
+Вибрати
+[Show palette]
+Показати палітру
+[Release to place]
+Відпустіть для розміщення
+[Blocked placement]
+Розміщення заблоковано
+[File name]
+Ім’я файлу
+[Load map]
+Завантажити карту
+[Save map]
+Зберегти карту
+[No files in this folder]
+У цій теці немає файлів
+[No files saved yet]
+Немає збережених файлів
+[Export]
+Експорт
+[Tap to write the mission briefing]
+Торкніться, щоб написати інструктаж місії
+[Tap to write the map script]
+Торкніться, щоб написати скрипт карти
+[Script]
+Скрипт
+[Previous]
+Назад
+[Compile]
+Компілювати
+[Tap to write this hint]
+Торкніться, щоб написати цю підказку
+[Tap to write this objective]
+Торкніться, щоб написати цю ціль
+[Mission briefing · tap to edit, swipe to scroll]
+Інструктаж місії · торкніться для правки, проведіть для прокручування
+[Not enough recorded history yet.]
+Поки що недостатньо записаної історії.
+[Select a team to show its history.]
+Виберіть команду, щоб показати її історію.
+[Back to chart]
+Назад до графіка
+[Expand chart]
+Розгорнути графік
+[Slot]
+Місце
+[Color]
+Колір
+[Player / AI]
+Гравець / ШІ
+[Group]
+Група
+[Forbid]
+Заборонити
+[↓ Low]
+↓ Низький
+[= Normal]
+= Звичайний
+[↑ High]
+↑ Високий
+[Details]
+Подробиці
+[Campaign name]
+Назва кампанії
+[Unlocking]
+Розблокування
+[Parameters]
+Параметри
+[Blank map]
+Порожня мапа
+[Generated]
+Згенерована
+[Preview]
+Попередній перегляд
+[Selected landscape]
+Вибраний ландшафт
+[Representative preview]
+Приблизний вигляд
+[Starting terrain]
+Початковий рельєф
+[Hide parameters]
+Приховати параметри
+[Size and parameters]
+Розмір і параметри
+[Choose a landscape]
+Виберіть ландшафт
+[%0 / Browse]
+%0 / Огляд
+[%0 colonies · %1]
+%0 колонії · %1
+[%0 · Team %1]
+%0 · Команда %1
+[Colonies: %0]
+Колонії: %0
+[%0 colonies · %1 AI]
+%0 колонії · %1 ШІ
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Істоти
+[settings Level %0]
+Рівень %0
+[settings Match the desktop %0]
+Як у системі (%0)
+[settings Current display %0 %1 %2 %3]
+Поточний режим екрана: %0 × %1 · %2 · %3
+[Fairness: %0]
+Справедливість: %0
+[Colony %0]
+Колонія %0
+[Win chance: %0 · Fitness: %1]
+Шанс перемоги: %0 · Сила: %1
+[%0 · Contribution: %1]
+%0 · Внесок: %1
+[Min required level %0]
+Мін. рівень: %0
+[Confirm %0]
+Гаразд: %0
+[Dialog text size %0]
+Розмір тексту діалогів: %0%
+[%0 %1]
+%0 %1

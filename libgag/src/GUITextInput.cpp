@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <GUITextInput.h>
+#include <BrowserTextInput.h>
 #include <GUIStyle.h>
 #include <assert.h>
 #include <Toolkit.h>
@@ -11,6 +12,37 @@ using namespace GAGCore;
 
 namespace GAGGUI
 {
+    TextInput::~TextInput() { forgetBrowserTextInput(this); }
+    void TextInput::activate() { activated=true;recomputeTextInfos();focusBrowserTextInput(this); }
+    void TextInput::presentBrowserInput(SDL_Rect bounds,int width,int height,const SDL_Rect* clip) {
+        if (!width || !height) {
+            auto* surface=parent->getSurface();
+            if (auto* overlay=dynamic_cast<OverlayScreen*>(parent)) {
+                surface=overlay->getParentContext();bounds.x+=overlay->decX;bounds.y+=overlay->decY;
+            }
+            width=surface->getW();height=surface->getH();
+        }
+        browserTextInput(this,bounds,width,height,text,password,maxLength,
+            [this](const std::string& value,size_t cursor,int action) {
+                for (auto* widget:parent->presentationWidgets())
+                    if (auto* input=dynamic_cast<TextInput*>(widget); input && input!=this) input->deactivate();
+                text=value;cursPos=std::min(cursor,text.size());activated=true;recomputeTextInfos();
+                parent->onAction(this,TEXT_MODIFIED,0,0);
+#ifdef __EMSCRIPTEN__
+                if (action && hasBrowserTextInput(this)) {
+                    // Use the same field validation and dialog shortcuts as SDL input.
+                    SDL_Event key{};key.type=SDL_KEYDOWN;key.key.state=SDL_PRESSED;
+                    key.key.keysym.sym=action==1 ? SDLK_RETURN : SDLK_ESCAPE;
+                    parent->dispatchEvents(&key);
+                    // Wake the owning game loop to consume the dialog result;
+                    // the DOM key event itself never enters SDL's event queue.
+                    SDL_Event wake{};wake.type=SDL_USEREVENT;
+                    SDL_PushEvent(&wake);
+                }
+#endif
+            },clip);
+    }
+
 	void TextInput::constructor(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, bool activated, size_t maxLength, bool password)
 	{
 		this->x=x;
@@ -264,6 +296,7 @@ namespace GAGGUI
 	{
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
+        presentBrowserInput({x,y,w,h});
 		
 		assert(parent);
 		assert(parent->getSurface());
@@ -394,4 +427,3 @@ namespace GAGGUI
 		return std::string("");
 	}
 }
-

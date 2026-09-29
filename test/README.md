@@ -110,6 +110,15 @@ count also make it a quick way to compare a shared primitive's before/after cost
 counts per generator repeat exactly across a behavior-preserving change, so a diff there is a
 signal something changed, not just an optimization's timing.
 
+## Android device execution
+
+The same CppUnit source list and selected client harnesses can run as native
+Android executables on a connected device. See the [device build and runner
+commands](../docs/mobile/development.md#native-tests-on-a-connected-android-device).
+Shell tests use SDL dummy video and have no audio or Java Activity; installed-APK
+interaction and lifecycle tests are separate. `python3 test/test_mobile_asset_bundle.py`
+checks the asset-index packaging regression independently of an Android SDK.
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
@@ -559,7 +568,7 @@ sequence/conflict handling. The shared dropdown checks cover anchoring, mouse an
 keyboard selection, dismissal, wrapping, and scrolling without committing a value.
 It runs at 640×480, 800×600, 1000×700, and 1280×900,
 plus software rendering and doubled English strings. `--quick` runs only 1000×700
-OpenGL; Linux CI runs this quick case. Persistence failures use a directory at the
+OpenGL; Linux CI runs the full six-configuration matrix. Persistence failures use a directory at the
 destination path so both settings and shortcut retries exercise the atomic writer.
 Window and drawable dimensions are logged so 1× runs are not mistaken
 for physical HiDPI validation.
@@ -767,3 +776,30 @@ both the headless harness and this graphical regression.
 behavior, for comparison with a baseline build. It reports delivery and scrolling
 times for 67 completed 256×256 thumbnails, plus terrain hashes and colony positions
 for three generators with root seed 71. Timings are evidence, not pass/fail limits.
+
+## Phone interface verification
+
+The native portable-renderer checks exercise real SDL touch dispatch in portrait
+and landscape, including placement/confirmation, camera gestures, building
+controls, replay actions, setup/settings navigation and modal viewport changes.
+Build and run commands are in [Mobile development](../docs/mobile/development.md#verification).
+The harnesses require a windowing display (Xvfb on Linux), use isolated
+`GLOB2_USER_DATA_DIR` profiles, and capture screenshots there. They complement
+Android/iOS device playtesting; they do not establish device lifecycle,
+performance, keyboard or cross-platform simulation compatibility.
+
+
+## Zone boundary rendering
+
+Build `scons release=1 portable-renderer-test` and run
+`build/<toolchain>/client/release/libgag/src/PortableRendererHarness` on a
+windowing display. The boundary regression checks every pixel along joined
+outlines at 25%, 33%, 50%, 75%, 100% and 150% zoom, with fractional camera offsets
+and toroidal copies. It covers software, SDL portable and (when compiled) OpenGL
+renderers and verifies that later map artwork retains its transform.
+Set `GLOB2_ZONE_EVIDENCE_DIR` to an existing ignored artifact directory to capture
+the 33% outline fixtures.
+
+Zone boundaries use `GraphicContext::drawMapBoundary`: positions snap to the
+active target's pixel grid and strokes remain at least one target pixel wide.
+Ordinary UI lines retain their existing sizing behavior.

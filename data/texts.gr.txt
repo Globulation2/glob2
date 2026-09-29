@@ -3130,3 +3130,331 @@ Emoji
 Το παιχνίδι έκλεισε. Μπορείτε να κλείσετε αυτό το παράθυρο ή να επαναφορτώσετε τη σελίδα για να παίξετε ξανά.
 [campaign editor save failed]
 Η αποθήκευση δεν επιβεβαιώθηκε. Το OK ξαναδοκιμάζει· η Ακύρωση επιστρέφει στο μενού του επεξεργαστή.
+[Actions]
+Ενέργειες
+[Minimap]
+Μικρός χάρτης
+[Fast forward]
+Γρήγορη προώθηση
+[Hide keyboard]
+Απόκρυψη πληκτρολογίου
+[Dialog text size]
+Μέγεθος κειμένου διαλόγων
+[Player slot]
+Θέση παίκτη
+[Team color]
+Χρώμα ομάδας
+[Alliance group]
+Ομάδα συμμαχίας
+[menu]
+Μενού
+[Editor tools]
+Εργαλεία
+[Pan map]
+Μετακίνηση χάρτη
+[Edit map]
+Επεξεργασία Χάρτη
+[Editor map]
+Χάρτης
+[Flags]
+Σημαίες
+[Pause]
+Παύση
+[Speed]
+Ταχύτητα
+[Objectives]
+Στόχοι
+[Menu]
+Μενού
+[Goals]
+Στόχοι
+[Teams]
+Ομάδες
+[Use this landscape]
+Χρήση αυτού του τοπίου
+[Reset]
+Επαναφορά
+[Generating...]
+Δημιουργία...
+[Players]
+Παίκτες
+[Rules]
+Κανόνες
+[settings Interface layout]
+Διάταξη διεπαφής
+[settings Automatic]
+Αυτόματο
+[settings Compact]
+Κοντινοί
+[settings Spacious]
+Ευρύχωρη
+[More]
+Περισσότερα
+[No items]
+Δεν υπάρχουν στοιχεία
+[Opponents]
+Αντίπαλοι
+[Review]
+Επισκόπηση
+[Review & Play]
+Έλεγχος και παιχνίδι
+[Edit opponents]
+Επεξεργασία αντιπάλων
+[Map settings]
+Ρυθμίσεις χάρτη
+[Next]
+Επόμενο
+[Done]
+Τέλος
+[Contribution]
+Συνεισφορά
+[Choose who controls this colony]
+Επιλέξτε ποιος ελέγχει αυτή την αποικία
+[Settings]
+Ρυθμίσεις
+[settings Back]
+Πίσω
+[settings Save the game automatically about every minute.]
+Αυτόματη αποθήκευση του παιχνιδιού περίπου κάθε λεπτό.
+[AI opponents]
+Αντίπαλοι υπολογιστή
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Η ευρύχωρη διάταξη χρησιμοποιεί πλευρικό πίνακα όταν υπάρχει χώρος. Η συμπαγής χρησιμοποιεί γραμμή εργαλείων και αναπτυσσόμενους πίνακες.
+[Assigned %0 · Target %1]
+Ανατεθειμένοι %0 · Στόχος %1
+[Range: %0]
+Εμβέλεια: %0
+[Player %0]
+Παίκτης %0
+[Brush %0]
+Πινέλο %0
+[Team %0]
+Ομάδα %0
+[Your colony]
+Η αποικία σας
+[%0 / %1 HP · %2]
+%0 / %1 ΖΩ · %2
+[Units: %0]
+Μονάδες: %0
+[Buildings: %0]
+Κτίρια: %0
+[Need food: %0]
+Χρειάζονται τροφή: %0
+[Need healing: %0]
+Χρειάζονται θεραπεία: %0
+[Attack: %0]
+Επίθεση: %0
+[Defense: %0]
+Άμυνα: %0
+[Food: %0 / %1]
+Τροφή: %0 / %1
+[View team %0]
+Προβολή ομάδας %0
+[P %0/%1/%2]
+Κ %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Πινέλο %0x%1
+[Level %0]
+Επίπεδο %0
+[Manage teams (%0)]
+Διαχείριση ομάδων (%0)
+[Team %0 / Level %1]
+Ομάδα %0 / Επίπεδο %1
+[Files · %0]
+Αρχεία · %0
+[Hint %0]
+Υπόδειξη %0
+[Objective %0]
+Στόχος %0
+[Entry %0 of 8 · empty entries are omitted]
+Εγγραφή %0 από 8 · οι κενές εγγραφές παραλείπονται
+[Teams %0/%1]
+Ομάδες %0/%1
+[Elapsed time · %0]
+Χρόνος που πέρασε · %0
+[Read-only building]
+Κτίριο μόνο για ανάγνωση
+[Alliance and shared vision are fixed for this match.]
+Η συμμαχία και η κοινή όραση είναι σταθερές σε αυτόν τον αγώνα.
+[Share vision]
+Κοινή όραση
+[Share food vision]
+Κοινή όραση τροφής
+[Share market vision]
+Κοινή όραση αγορών
+[Chat]
+Συνομιλία
+[No other players have editable diplomatic settings in this match.]
+Κανένας άλλος παίκτης δεν έχει επεξεργάσιμες ρυθμίσεις διπλωματίας σε αυτόν τον αγώνα.
+[No briefing for this match.]
+Δεν υπάρχει ενημέρωση για αυτόν τον αγώνα.
+[Chat · recipients selected in Teams]
+Συνομιλία · παραλήπτες επιλεγμένοι στις Ομάδες
+[Filename]
+Όνομα αρχείου
+[Reduced motion]
+Μειωμένη κίνηση
+[Send]
+Αποστολή
+[Close]
+Κλείσιμο
+[Forbidden]
+Απαγορευμένο
+[Guard]
+Φύλαξη
+[Clear]
+Καθαρισμός
+[Paint]
+Ζωγραφική
+[Erase]
+Διαγραφή
+[Release on valid terrain to place]
+Αφήστε πάνω σε κατάλληλο έδαφος για τοποθέτηση
+[Paint on the map; two fingers move]
+Ζωγραφίστε στον χάρτη· μετακινήστε με δύο δάχτυλα
+[Tutorial ▸]
+Εκμάθηση ▸
+[Back to tools]
+Πίσω στα εργαλεία
+[Starvation overlay]
+Στρώμα πείνας
+[Damage overlay]
+Στρώμα ζημιάς
+[Defense overlay]
+Στρώμα άμυνας
+[Fertility overlay]
+Στρώμα γονιμότητας
+[Health and food bars]
+Μπάρες υγείας και τροφής
+[Message history]
+Ιστορικό μηνυμάτων
+[Mark map for allies]
+Σήμανση χάρτη για συμμάχους
+[Show zones]
+Εμφάνιση ζωνών
+[Pan]
+Μετακίνηση
+[Select]
+Επιλογή
+[Show palette]
+Εμφάνιση παλέτας
+[Release to place]
+Αφήστε για τοποθέτηση
+[Blocked placement]
+Η τοποθέτηση εμποδίζεται
+[File name]
+Όνομα αρχείου
+[Load map]
+Φόρτωση χάρτη
+[Save map]
+Αποθήκευση χάρτη
+[No files in this folder]
+Δεν υπάρχουν αρχεία σε αυτόν τον φάκελο
+[No files saved yet]
+Δεν έχουν αποθηκευτεί αρχεία ακόμη
+[Export]
+Εξαγωγή
+[Tap to write the mission briefing]
+Πατήστε για να γράψετε την ενημέρωση αποστολής
+[Tap to write the map script]
+Πατήστε για να γράψετε το σενάριο χάρτη
+[Script]
+Σενάριο
+[Previous]
+Προηγούμενο
+[Compile]
+Μεταγλώττιση
+[Tap to write this hint]
+Πατήστε για να γράψετε αυτή την υπόδειξη
+[Tap to write this objective]
+Πατήστε για να γράψετε αυτόν τον στόχο
+[Mission briefing · tap to edit, swipe to scroll]
+Ενημέρωση αποστολής · πατήστε για επεξεργασία, σύρετε για κύλιση
+[Not enough recorded history yet.]
+Δεν έχει καταγραφεί αρκετό ιστορικό ακόμη.
+[Select a team to show its history.]
+Επιλέξτε ομάδα για να εμφανιστεί το ιστορικό της.
+[Back to chart]
+Πίσω στο γράφημα
+[Expand chart]
+Μεγέθυνση γραφήματος
+[Slot]
+Θέση
+[Color]
+Χρώμα
+[Player / AI]
+Παίκτης / ΤΝ
+[Group]
+Ομάδα
+[Forbid]
+Απαγόρευση
+[↓ Low]
+↓ Χαμηλή
+[= Normal]
+= Κανονική
+[↑ High]
+↑ Υψηλή
+[Details]
+Λεπτομέρειες
+[Campaign name]
+Όνομα εκστρατείας
+[Unlocking]
+Ξεκλείδωμα
+[Parameters]
+Παράμετροι
+[Blank map]
+Κενός χάρτης
+[Generated]
+Δημιουργημένος
+[Preview]
+Προεπισκόπηση
+[Selected landscape]
+Επιλεγμένο τοπίο
+[Representative preview]
+Ενδεικτική προεπισκόπηση
+[Starting terrain]
+Αρχικό έδαφος
+[Hide parameters]
+Απόκρυψη παραμέτρων
+[Size and parameters]
+Μέγεθος και παράμετροι
+[Choose a landscape]
+Επιλέξτε τοπίο
+[%0 / Browse]
+%0 / Περιήγηση
+[%0 colonies · %1]
+%0 αποικίες · %1
+[%0 · Team %1]
+%0 · Ομάδα %1
+[Colonies: %0]
+Αποικίες: %0
+[%0 colonies · %1 AI]
+%0 αποικίες · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Μονάδες
+[settings Level %0]
+Επίπεδο %0
+[settings Match the desktop %0]
+Όπως η επιφάνεια εργασίας (%0)
+[settings Current display %0 %1 %2 %3]
+Τρέχουσα λειτουργία προβολής: %0 × %1 · %2 · %3
+[Fairness: %0]
+Δικαιοσύνη: %0
+[Colony %0]
+Αποικία %0
+[Win chance: %0 · Fitness: %1]
+Πιθανότητα νίκης: %0 · Ισχύς: %1
+[%0 · Contribution: %1]
+%0 · Συνεισφορά: %1
+[Min required level %0]
+Ελάχιστο απαιτούμενο επίπεδο: %0
+[Confirm %0]
+Εντάξει: %0
+[Dialog text size %0]
+Μέγεθος κειμένου διαλόγων: %0%
+[%0 %1]
+%0 %1

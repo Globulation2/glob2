@@ -3060,3 +3060,331 @@ Ieși fără a salva
 Joc închis. Puteți închide această fereastră sau reîncărca pentru a juca din nou.
 [campaign editor save failed]
 Salvare neconfirmată. OK reîncearcă; Anulare revine la meniul editorului.
+[Actions]
+Acțiuni
+[Minimap]
+Minihartă
+[Fast forward]
+Derulare rapidă
+[Hide keyboard]
+Ascunde tastatura
+[Dialog text size]
+Dimensiunea textului din dialoguri
+[Player slot]
+Loc de jucător
+[Team color]
+Culoarea echipei
+[Alliance group]
+Grup de alianță
+[menu]
+Meniu
+[Editor tools]
+Unelte
+[Pan map]
+Deplasează harta
+[Edit map]
+Editează harta
+[Editor map]
+Hartă
+[Flags]
+Steaguri
+[Pause]
+Pauză
+[Speed]
+Viteză
+[Objectives]
+Obiective
+[Menu]
+Meniu
+[Goals]
+Obiective
+[Teams]
+Echipe
+[Use this landscape]
+Folosește acest peisaj
+[Reset]
+Resetează
+[Generating...]
+Se generează...
+[Players]
+Jucători
+[Rules]
+Reguli
+[settings Interface layout]
+Aranjarea interfeței
+[settings Automatic]
+Automat
+[settings Compact]
+Apropiate
+[settings Spacious]
+Spațioasă
+[More]
+Mai multe
+[No items]
+Niciun element
+[Opponents]
+Adversari
+[Review]
+Rezumat
+[Review & Play]
+Verifică și joacă
+[Edit opponents]
+Editează adversarii
+[Map settings]
+Setările hărții
+[Next]
+Următorul
+[Done]
+Gata
+[Contribution]
+Contribuție
+[Choose who controls this colony]
+Alege cine controlează această colonie
+[Settings]
+Setări
+[settings Back]
+Înapoi
+[settings Save the game automatically about every minute.]
+Salvează automat jocul aproximativ o dată pe minut.
+[AI opponents]
+Adversari IA
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Aranjarea spațioasă folosește un panou lateral când există loc. Cea compactă folosește o bară de instrumente și panouri extensibile.
+[Assigned %0 · Target %1]
+Alocați %0 · Țintă %1
+[Range: %0]
+Rază: %0
+[Player %0]
+Jucător %0
+[Brush %0]
+Pensulă %0
+[Team %0]
+Echipa %0
+[Your colony]
+Colonia ta
+[%0 / %1 HP · %2]
+%0 / %1 PV · %2
+[Units: %0]
+Unități: %0
+[Buildings: %0]
+Clădiri: %0
+[Need food: %0]
+Necesită hrană: %0
+[Need healing: %0]
+Necesită vindecare: %0
+[Attack: %0]
+Atac: %0
+[Defense: %0]
+Apărare: %0
+[Food: %0 / %1]
+Hrană: %0 / %1
+[View team %0]
+Vezi echipa %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pensulă %0x%1
+[Level %0]
+Nivel %0
+[Manage teams (%0)]
+Gestionează echipele (%0)
+[Team %0 / Level %1]
+Echipa %0 / Nivel %1
+[Files · %0]
+Fișiere · %0
+[Hint %0]
+Indiciu %0
+[Objective %0]
+Obiectiv %0
+[Entry %0 of 8 · empty entries are omitted]
+Intrarea %0 din 8 · intrările goale sunt omise
+[Teams %0/%1]
+Echipe %0/%1
+[Elapsed time · %0]
+Timp scurs · %0
+[Read-only building]
+Clădire doar pentru citire
+[Alliance and shared vision are fixed for this match.]
+Alianța și vederea partajată sunt fixe în acest meci.
+[Share vision]
+Partajează vederea
+[Share food vision]
+Partajează vederea hranei
+[Share market vision]
+Partajează vederea piețelor
+[Chat]
+Conversație
+[No other players have editable diplomatic settings in this match.]
+Niciun alt jucător nu are setări diplomatice editabile în acest meci.
+[No briefing for this match.]
+Nu există instructaj pentru acest meci.
+[Chat · recipients selected in Teams]
+Conversație · destinatari aleși în Echipe
+[Filename]
+Nume fișier
+[Reduced motion]
+Mișcare redusă
+[Send]
+Trimite
+[Close]
+Închide
+[Forbidden]
+Interzis
+[Guard]
+Păzește
+[Clear]
+Curăță
+[Paint]
+Pictează
+[Erase]
+Șterge
+[Release on valid terrain to place]
+Eliberează pe teren valid pentru a plasa
+[Paint on the map; two fingers move]
+Pictează pe hartă; deplasează cu două degete
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Înapoi la unelte
+[Starvation overlay]
+Strat de foamete
+[Damage overlay]
+Strat de daune
+[Defense overlay]
+Strat de apărare
+[Fertility overlay]
+Strat de fertilitate
+[Health and food bars]
+Bare de sănătate și hrană
+[Message history]
+Istoricul mesajelor
+[Mark map for allies]
+Marchează harta pentru aliați
+[Show zones]
+Arată zonele
+[Pan]
+Deplasează
+[Select]
+Selectează
+[Show palette]
+Arată paleta
+[Release to place]
+Eliberează pentru a plasa
+[Blocked placement]
+Plasare blocată
+[File name]
+Numele fișierului
+[Load map]
+Încarcă harta
+[Save map]
+Salvează harta
+[No files in this folder]
+Niciun fișier în acest dosar
+[No files saved yet]
+Niciun fișier salvat încă
+[Export]
+Exportă
+[Tap to write the mission briefing]
+Atinge pentru a scrie instructajul misiunii
+[Tap to write the map script]
+Atinge pentru a scrie scriptul hărții
+[Script]
+Script
+[Previous]
+Anterior
+[Compile]
+Compilează
+[Tap to write this hint]
+Atinge pentru a scrie acest indiciu
+[Tap to write this objective]
+Atinge pentru a scrie acest obiectiv
+[Mission briefing · tap to edit, swipe to scroll]
+Instructaj · atinge pentru editare, glisează pentru derulare
+[Not enough recorded history yet.]
+Istoric înregistrat insuficient deocamdată.
+[Select a team to show its history.]
+Selectează o echipă pentru a-i arăta istoricul.
+[Back to chart]
+Înapoi la grafic
+[Expand chart]
+Mărește graficul
+[Slot]
+Loc
+[Color]
+Culoare
+[Player / AI]
+Jucător / IA
+[Group]
+Grup
+[Forbid]
+Interzice
+[↓ Low]
+↓ Scăzută
+[= Normal]
+= Normală
+[↑ High]
+↑ Ridicată
+[Details]
+Detalii
+[Campaign name]
+Numele campaniei
+[Unlocking]
+Deblocare
+[Parameters]
+Parametri
+[Blank map]
+Hartă goală
+[Generated]
+Generată
+[Preview]
+Previzualizare
+[Selected landscape]
+Peisaj selectat
+[Representative preview]
+Previzualizare reprezentativă
+[Starting terrain]
+Teren inițial
+[Hide parameters]
+Ascunde parametrii
+[Size and parameters]
+Dimensiune și parametri
+[Choose a landscape]
+Alege un peisaj
+[%0 / Browse]
+%0 / Răsfoiește
+[%0 colonies · %1]
+%0 colonii · %1
+[%0 · Team %1]
+%0 · Echipa %1
+[Colonies: %0]
+Colonii: %0
+[%0 colonies · %1 AI]
+%0 colonii · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unităţi
+[settings Level %0]
+Nivel %0
+[settings Match the desktop %0]
+La fel ca desktopul (%0)
+[settings Current display %0 %1 %2 %3]
+Modul de afișare curent: %0 × %1 · %2 · %3
+[Fairness: %0]
+Echitate: %0
+[Colony %0]
+Colonie %0
+[Win chance: %0 · Fitness: %1]
+Șansă de câștig: %0 · Putere: %1
+[%0 · Contribution: %1]
+%0 · Contribuție: %1
+[Min required level %0]
+Nivel minim necesar: %0
+[Confirm %0]
+Acceptă: %0
+[Dialog text size %0]
+Dimensiunea textului din dialoguri: %0%
+[%0 %1]
+%0 %1

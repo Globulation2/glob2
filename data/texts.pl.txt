@@ -3060,3 +3060,331 @@ Wyjdź bez zapisywania
 Gra zamknięta. Możesz zamknąć to okno lub przeładować stronę, aby zagrać ponownie.
 [campaign editor save failed]
 Zapis niepotwierdzony. OK ponawia próbę; Anuluj wraca do menu edytora.
+[Actions]
+Działania
+[Minimap]
+Minimapa
+[Fast forward]
+Przewiń do przodu
+[Hide keyboard]
+Ukryj klawiaturę
+[Dialog text size]
+Rozmiar tekstu okien dialogowych
+[Player slot]
+Miejsce gracza
+[Team color]
+Kolor drużyny
+[Alliance group]
+Grupa sojuszu
+[menu]
+Menu
+[Editor tools]
+Narzędzia
+[Pan map]
+Przesuń mapę
+[Edit map]
+Edytuj Mapę
+[Editor map]
+Mapa
+[Flags]
+Flagi
+[Pause]
+Pauza
+[Speed]
+Prędkość
+[Objectives]
+Cele
+[Menu]
+Menu
+[Goals]
+Cele
+[Teams]
+Drużyny
+[Use this landscape]
+Użyj tego krajobrazu
+[Reset]
+Resetuj
+[Generating...]
+Generowanie...
+[Players]
+Gracze
+[Rules]
+Zasady
+[settings Interface layout]
+Układ interfejsu
+[settings Automatic]
+Automatyczny
+[settings Compact]
+Bliski
+[settings Spacious]
+Przestronny
+[More]
+Więcej
+[No items]
+Brak elementów
+[Opponents]
+Przeciwnicy
+[Review]
+Podsumowanie
+[Review & Play]
+Sprawdź i graj
+[Edit opponents]
+Edytuj przeciwników
+[Map settings]
+Ustawienia mapy
+[Next]
+Dalej
+[Done]
+Gotowe
+[Contribution]
+Wkład
+[Choose who controls this colony]
+Wybierz, kto kontroluje tę kolonię
+[Settings]
+Ustawienia
+[settings Back]
+Powrót
+[settings Save the game automatically about every minute.]
+Automatycznie zapisuj grę mniej więcej co minutę.
+[AI opponents]
+Przeciwnicy SI
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Przestronny układ używa panelu bocznego, gdy jest miejsce. Kompaktowy używa paska narzędzi i wysuwanych paneli.
+[Assigned %0 · Target %1]
+Przydzielono %0 · Cel %1
+[Range: %0]
+Zasięg: %0
+[Player %0]
+Gracz %0
+[Brush %0]
+Pędzel %0
+[Team %0]
+Drużyna %0
+[Your colony]
+Twoja kolonia
+[%0 / %1 HP · %2]
+%0 / %1 PŻ · %2
+[Units: %0]
+Jednostki: %0
+[Buildings: %0]
+Budynki: %0
+[Need food: %0]
+Potrzebują jedzenia: %0
+[Need healing: %0]
+Potrzebują leczenia: %0
+[Attack: %0]
+Atak: %0
+[Defense: %0]
+Obrona: %0
+[Food: %0 / %1]
+Jedzenie: %0 / %1
+[View team %0]
+Pokaż drużynę %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pędzel %0x%1
+[Level %0]
+Poziom %0
+[Manage teams (%0)]
+Zarządzaj drużynami (%0)
+[Team %0 / Level %1]
+Drużyna %0 / Poziom %1
+[Files · %0]
+Pliki · %0
+[Hint %0]
+Wskazówka %0
+[Objective %0]
+Cel %0
+[Entry %0 of 8 · empty entries are omitted]
+Wpis %0 z 8 · puste wpisy są pomijane
+[Teams %0/%1]
+Drużyny %0/%1
+[Elapsed time · %0]
+Upływ czasu · %0
+[Read-only building]
+Budynek tylko do odczytu
+[Alliance and shared vision are fixed for this match.]
+Sojusz i wspólne pole widzenia są stałe w tej rozgrywce.
+[Share vision]
+Udostępnij widok
+[Share food vision]
+Udostępnij widok jedzenia
+[Share market vision]
+Udostępnij widok rynków
+[Chat]
+Czat
+[No other players have editable diplomatic settings in this match.]
+Żaden inny gracz nie ma edytowalnych ustawień dyplomacji w tej rozgrywce.
+[No briefing for this match.]
+Brak odprawy dla tej rozgrywki.
+[Chat · recipients selected in Teams]
+Czat · odbiorcy wybrani w Drużynach
+[Filename]
+Nazwa pliku
+[Reduced motion]
+Ograniczony ruch
+[Send]
+Wyślij
+[Close]
+Zamknij
+[Forbidden]
+Zakaz
+[Guard]
+Strzeż
+[Clear]
+Oczyść
+[Paint]
+Maluj
+[Erase]
+Wymaż
+[Release on valid terrain to place]
+Puść nad odpowiednim terenem, aby umieścić
+[Paint on the map; two fingers move]
+Maluj na mapie; przesuwaj dwoma palcami
+[Tutorial ▸]
+Samouczek ▸
+[Back to tools]
+Wróć do narzędzi
+[Starvation overlay]
+Nakładka głodu
+[Damage overlay]
+Nakładka obrażeń
+[Defense overlay]
+Nakładka obrony
+[Fertility overlay]
+Nakładka żyzności
+[Health and food bars]
+Paski zdrowia i jedzenia
+[Message history]
+Historia wiadomości
+[Mark map for allies]
+Oznacz mapę dla sojuszników
+[Show zones]
+Pokaż strefy
+[Pan]
+Przesuwaj
+[Select]
+Wybierz
+[Show palette]
+Pokaż paletę
+[Release to place]
+Puść, aby umieścić
+[Blocked placement]
+Umieszczenie zablokowane
+[File name]
+Nazwa pliku
+[Load map]
+Wczytaj mapę
+[Save map]
+Zapisz mapę
+[No files in this folder]
+Brak plików w tym folderze
+[No files saved yet]
+Nie zapisano jeszcze plików
+[Export]
+Eksportuj
+[Tap to write the mission briefing]
+Dotknij, aby napisać odprawę misji
+[Tap to write the map script]
+Dotknij, aby napisać skrypt mapy
+[Script]
+Skrypt
+[Previous]
+Poprzedni
+[Compile]
+Kompiluj
+[Tap to write this hint]
+Dotknij, aby napisać tę wskazówkę
+[Tap to write this objective]
+Dotknij, aby napisać ten cel
+[Mission briefing · tap to edit, swipe to scroll]
+Odprawa misji · dotknij, aby edytować, przesuń, aby przewinąć
+[Not enough recorded history yet.]
+Za mało zapisanej historii.
+[Select a team to show its history.]
+Wybierz drużynę, aby pokazać jej historię.
+[Back to chart]
+Wróć do wykresu
+[Expand chart]
+Powiększ wykres
+[Slot]
+Miejsce
+[Color]
+Kolor
+[Player / AI]
+Gracz / SI
+[Group]
+Grupa
+[Forbid]
+Zabroń
+[↓ Low]
+↓ Niski
+[= Normal]
+= Normalny
+[↑ High]
+↑ Wysoki
+[Details]
+Szczegóły
+[Campaign name]
+Nazwa kampanii
+[Unlocking]
+Odblokowywanie
+[Parameters]
+Parametry
+[Blank map]
+Pusta mapa
+[Generated]
+Wygenerowana
+[Preview]
+Podgląd
+[Selected landscape]
+Wybrany krajobraz
+[Representative preview]
+Przykładowy podgląd
+[Starting terrain]
+Teren początkowy
+[Hide parameters]
+Ukryj parametry
+[Size and parameters]
+Rozmiar i parametry
+[Choose a landscape]
+Wybierz krajobraz
+[%0 / Browse]
+%0 / Przeglądaj
+[%0 colonies · %1]
+%0 kolonie · %1
+[%0 · Team %1]
+%0 · Drużyna %1
+[Colonies: %0]
+Kolonie: %0
+[%0 colonies · %1 AI]
+%0 kolonie · %1 SI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Jednostki
+[settings Level %0]
+Poziom %0
+[settings Match the desktop %0]
+Jak pulpit (%0)
+[settings Current display %0 %1 %2 %3]
+Bieżący tryb wyświetlania: %0 × %1 · %2 · %3
+[Fairness: %0]
+Sprawiedliwość: %0
+[Colony %0]
+Kolonia %0
+[Win chance: %0 · Fitness: %1]
+Szansa na wygraną: %0 · Siła: %1
+[%0 · Contribution: %1]
+%0 · Wkład: %1
+[Min required level %0]
+Min. wymagany poziom: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Rozmiar tekstu okien dialogowych: %0%
+[%0 %1]
+%0 %1

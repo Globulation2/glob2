@@ -3132,3 +3132,331 @@ Emoji
 遊戲已結束。您可以關閉此視窗，或重新載入以再次遊玩。
 [campaign editor save failed]
 尚未確認儲存。「確定」重試；「取消」返回編輯器選單。
+[Actions]
+操作
+[Minimap]
+小地圖
+[Fast forward]
+快轉
+[Hide keyboard]
+隱藏鍵盤
+[Dialog text size]
+對話框文字大小
+[Player slot]
+玩家欄位
+[Team color]
+隊伍顏色
+[Alliance group]
+同盟群組
+[menu]
+選單
+[Editor tools]
+工具
+[Pan map]
+平移地圖
+[Edit map]
+編輯地圖
+[Editor map]
+地圖
+[Flags]
+旗幟
+[Pause]
+暫停
+[Speed]
+速度
+[Objectives]
+目標
+[Menu]
+選單
+[Goals]
+目標
+[Teams]
+隊伍
+[Use this landscape]
+使用此地形
+[Reset]
+重設
+[Generating...]
+產生中...
+[Players]
+玩家
+[Rules]
+規則
+[settings Interface layout]
+介面配置
+[settings Automatic]
+自動
+[settings Compact]
+緊湊
+[settings Spacious]
+寬敞
+[More]
+更多
+[No items]
+沒有項目
+[Opponents]
+對手
+[Review]
+總覽
+[Review & Play]
+檢查並開始遊戲
+[Edit opponents]
+編輯對手
+[Map settings]
+地圖設定
+[Next]
+下一步
+[Done]
+完成
+[Contribution]
+貢獻
+[Choose who controls this colony]
+選擇由誰控制此殖民地
+[Settings]
+設定
+[settings Back]
+返回
+[settings Save the game automatically about every minute.]
+大約每分鐘自動儲存遊戲。
+[AI opponents]
+電腦對手
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+寬敞配置會在空間足夠時使用側邊面板。精簡配置使用工具列和可展開的面板。
+[Assigned %0 · Target %1]
+已分配 %0 · 目標 %1
+[Range: %0]
+範圍：%0
+[Player %0]
+玩家 %0
+[Brush %0]
+筆刷 %0
+[Team %0]
+隊伍 %0
+[Your colony]
+你的殖民地
+[%0 / %1 HP · %2]
+%0 / %1 生命值 · %2
+[Units: %0]
+單位：%0
+[Buildings: %0]
+建築：%0
+[Need food: %0]
+需要食物：%0
+[Need healing: %0]
+需要治療：%0
+[Attack: %0]
+攻擊：%0
+[Defense: %0]
+防禦：%0
+[Food: %0 / %1]
+食物：%0 / %1
+[View team %0]
+檢視隊伍 %0
+[P %0/%1/%2]
+聲望 %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+筆刷 %0x%1
+[Level %0]
+等級 %0
+[Manage teams (%0)]
+管理隊伍（%0）
+[Team %0 / Level %1]
+隊伍 %0 / 等級 %1
+[Files · %0]
+檔案 · %0
+[Hint %0]
+提示 %0
+[Objective %0]
+目標 %0
+[Entry %0 of 8 · empty entries are omitted]
+第 %0 項，共 8 項 · 空白項目將省略
+[Teams %0/%1]
+隊伍 %0/%1
+[Elapsed time · %0]
+經過時間 · %0
+[Read-only building]
+唯讀建築
+[Alliance and shared vision are fixed for this match.]
+本局的聯盟與共享視野已固定。
+[Share vision]
+共享視野
+[Share food vision]
+共享食物視野
+[Share market vision]
+共享市場視野
+[Chat]
+聊天
+[No other players have editable diplomatic settings in this match.]
+本局沒有其他玩家的外交設定可供編輯。
+[No briefing for this match.]
+本局沒有任務簡報。
+[Chat · recipients selected in Teams]
+聊天 · 在隊伍中選擇接收者
+[Filename]
+檔名
+[Reduced motion]
+減少動態效果
+[Send]
+傳送
+[Close]
+關閉
+[Forbidden]
+禁止
+[Guard]
+守衛
+[Clear]
+清理
+[Paint]
+繪製
+[Erase]
+擦除
+[Release on valid terrain to place]
+在有效地形上放開以放置
+[Paint on the map; two fingers move]
+在地圖上繪製；雙指移動
+[Tutorial ▸]
+教學 ▸
+[Back to tools]
+返回工具
+[Starvation overlay]
+飢餓疊加層
+[Damage overlay]
+受損疊加層
+[Defense overlay]
+防禦疊加層
+[Fertility overlay]
+肥沃度疊加層
+[Health and food bars]
+生命與食物條
+[Message history]
+訊息歷史
+[Mark map for allies]
+為盟友標記地圖
+[Show zones]
+顯示區域
+[Pan]
+平移
+[Select]
+選擇
+[Show palette]
+顯示面板
+[Release to place]
+放開以放置
+[Blocked placement]
+無法放置
+[File name]
+檔案名稱
+[Load map]
+載入地圖
+[Save map]
+儲存地圖
+[No files in this folder]
+此資料夾中沒有檔案
+[No files saved yet]
+尚未儲存任何檔案
+[Export]
+匯出
+[Tap to write the mission briefing]
+點選以撰寫任務簡報
+[Tap to write the map script]
+點選以撰寫地圖腳本
+[Script]
+腳本
+[Previous]
+上一項
+[Compile]
+編譯
+[Tap to write this hint]
+點選以撰寫此提示
+[Tap to write this objective]
+點選以撰寫此目標
+[Mission briefing · tap to edit, swipe to scroll]
+任務簡報 · 點選編輯，滑動捲動
+[Not enough recorded history yet.]
+記錄的歷史資料還不夠。
+[Select a team to show its history.]
+選擇隊伍以顯示其歷史資料。
+[Back to chart]
+返回圖表
+[Expand chart]
+展開圖表
+[Slot]
+欄位
+[Color]
+顏色
+[Player / AI]
+玩家 / AI
+[Group]
+群組
+[Forbid]
+禁止
+[↓ Low]
+↓ 低
+[= Normal]
+= 普通
+[↑ High]
+↑ 高
+[Details]
+詳細資訊
+[Campaign name]
+戰役名稱
+[Unlocking]
+解鎖
+[Parameters]
+參數
+[Blank map]
+空白地圖
+[Generated]
+已產生
+[Preview]
+預覽
+[Selected landscape]
+所選地形
+[Representative preview]
+示例預覽
+[Starting terrain]
+初始地形
+[Hide parameters]
+隱藏參數
+[Size and parameters]
+大小與參數
+[Choose a landscape]
+選擇地形
+[%0 / Browse]
+%0 / 瀏覽
+[%0 colonies · %1]
+%0個殖民地 · %1
+[%0 · Team %1]
+%0 · 隊伍 %1
+[Colonies: %0]
+殖民地: %0
+[%0 colonies · %1 AI]
+%0個殖民地 · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 單位
+[settings Level %0]
+等級 %0
+[settings Match the desktop %0]
+與桌面相同 (%0)
+[settings Current display %0 %1 %2 %3]
+目前顯示設定: %0 × %1 · %2 · %3
+[Fairness: %0]
+公平度: %0
+[Colony %0]
+殖民地 %0
+[Win chance: %0 · Fitness: %1]
+勝率: %0 · 強度: %1
+[%0 · Contribution: %1]
+%0 · 貢獻: %1
+[Min required level %0]
+最小等級需求: %0
+[Confirm %0]
+確定: %0
+[Dialog text size %0]
+對話框文字大小: %0%
+[%0 %1]
+%0 %1

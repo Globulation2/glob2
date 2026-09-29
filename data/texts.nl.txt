@@ -3084,3 +3084,331 @@ Afsluiten zonder op te slaan
 Spel gesloten. U kunt dit venster sluiten of herladen om opnieuw te spelen.
 [campaign editor save failed]
 Opslaan niet bevestigd. OK probeert opnieuw; Annuleren gaat terug naar het editormenu.
+[Actions]
+Acties
+[Minimap]
+Minikaart
+[Fast forward]
+Vooruitspoelen
+[Hide keyboard]
+Toetsenbord verbergen
+[Dialog text size]
+Tekstgrootte dialoogvensters
+[Player slot]
+Spelersplaats
+[Team color]
+Teamkleur
+[Alliance group]
+Alliantiegroep
+[menu]
+Menu
+[Editor tools]
+Gereedschap
+[Pan map]
+Kaart verschuiven
+[Edit map]
+Bewerken
+[Editor map]
+Kaart
+[Flags]
+Vlaggen
+[Pause]
+Pauze
+[Speed]
+Snelheid
+[Objectives]
+Doelen
+[Menu]
+Menu
+[Goals]
+Doelen
+[Teams]
+Teams
+[Use this landscape]
+Dit landschap gebruiken
+[Reset]
+Herstellen
+[Generating...]
+Genereren...
+[Players]
+Spelers
+[Rules]
+Regels
+[settings Interface layout]
+Interface-indeling
+[settings Automatic]
+Automatisch
+[settings Compact]
+Dicht bijeen
+[settings Spacious]
+Ruim
+[More]
+Meer
+[No items]
+Geen items
+[Opponents]
+Tegenstanders
+[Review]
+Overzicht
+[Review & Play]
+Controleren en spelen
+[Edit opponents]
+Tegenstanders aanpassen
+[Map settings]
+Kaartinstellingen
+[Next]
+Volgende
+[Done]
+Klaar
+[Contribution]
+Bijdrage
+[Choose who controls this colony]
+Kies wie deze kolonie bestuurt
+[Settings]
+Instellingen
+[settings Back]
+Terug
+[settings Save the game automatically about every minute.]
+Het spel ongeveer elke minuut automatisch opslaan.
+[AI opponents]
+AI-tegenstanders
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+De ruime indeling gebruikt een zijpaneel als er plaats is. De compacte indeling gebruikt een werkbalk en uitklapbare panelen.
+[Assigned %0 · Target %1]
+Toegewezen %0 · Doel %1
+[Range: %0]
+Bereik: %0
+[Player %0]
+Speler %0
+[Brush %0]
+Penseel %0
+[Team %0]
+Team %0
+[Your colony]
+Jouw kolonie
+[%0 / %1 HP · %2]
+%0 / %1 LP · %2
+[Units: %0]
+Eenheden: %0
+[Buildings: %0]
+Gebouwen: %0
+[Need food: %0]
+Voedsel nodig: %0
+[Need healing: %0]
+Genezing nodig: %0
+[Attack: %0]
+Aanval: %0
+[Defense: %0]
+Verdediging: %0
+[Food: %0 / %1]
+Voedsel: %0 / %1
+[View team %0]
+Team %0 bekijken
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Penseel %0x%1
+[Level %0]
+Niveau %0
+[Manage teams (%0)]
+Teams beheren (%0)
+[Team %0 / Level %1]
+Team %0 / Niveau %1
+[Files · %0]
+Bestanden · %0
+[Hint %0]
+Hint %0
+[Objective %0]
+Doel %0
+[Entry %0 of 8 · empty entries are omitted]
+Invoer %0 van 8 · lege invoer wordt weggelaten
+[Teams %0/%1]
+Teams %0/%1
+[Elapsed time · %0]
+Verstreken tijd · %0
+[Read-only building]
+Gebouw alleen-lezen
+[Alliance and shared vision are fixed for this match.]
+Bondgenootschap en gedeeld zicht staan vast voor dit spel.
+[Share vision]
+Zicht delen
+[Share food vision]
+Voedselzicht delen
+[Share market vision]
+Marktzicht delen
+[Chat]
+Chat
+[No other players have editable diplomatic settings in this match.]
+Geen andere spelers hebben bewerkbare diplomatieke instellingen in dit spel.
+[No briefing for this match.]
+Geen briefing voor dit spel.
+[Chat · recipients selected in Teams]
+Chat · ontvangers gekozen bij Teams
+[Filename]
+Bestandsnaam
+[Reduced motion]
+Minder beweging
+[Send]
+Versturen
+[Close]
+Sluiten
+[Forbidden]
+Verboden
+[Guard]
+Bewaken
+[Clear]
+Opruimen
+[Paint]
+Schilderen
+[Erase]
+Wissen
+[Release on valid terrain to place]
+Laat los op geldig terrein om te plaatsen
+[Paint on the map; two fingers move]
+Schilder op de kaart; verplaats met twee vingers
+[Tutorial ▸]
+Handleiding ▸
+[Back to tools]
+Terug naar gereedschap
+[Starvation overlay]
+Hongerlaag
+[Damage overlay]
+Schadelaag
+[Defense overlay]
+Verdedigingslaag
+[Fertility overlay]
+Vruchtbaarheidslaag
+[Health and food bars]
+Gezondheids- en voedselbalken
+[Message history]
+Berichtgeschiedenis
+[Mark map for allies]
+Kaart markeren voor bondgenoten
+[Show zones]
+Zones tonen
+[Pan]
+Verschuiven
+[Select]
+Selecteren
+[Show palette]
+Palet tonen
+[Release to place]
+Loslaten om te plaatsen
+[Blocked placement]
+Plaatsing geblokkeerd
+[File name]
+Bestandsnaam
+[Load map]
+Kaart laden
+[Save map]
+Kaart opslaan
+[No files in this folder]
+Geen bestanden in deze map
+[No files saved yet]
+Nog geen bestanden opgeslagen
+[Export]
+Exporteren
+[Tap to write the mission briefing]
+Tik om de missiebriefing te schrijven
+[Tap to write the map script]
+Tik om het kaartscript te schrijven
+[Script]
+Script
+[Previous]
+Vorige
+[Compile]
+Compileren
+[Tap to write this hint]
+Tik om deze hint te schrijven
+[Tap to write this objective]
+Tik om dit doel te schrijven
+[Mission briefing · tap to edit, swipe to scroll]
+Missiebriefing · tik om te bewerken, veeg om te scrollen
+[Not enough recorded history yet.]
+Nog onvoldoende geschiedenis vastgelegd.
+[Select a team to show its history.]
+Selecteer een team om de geschiedenis te tonen.
+[Back to chart]
+Terug naar grafiek
+[Expand chart]
+Grafiek vergroten
+[Slot]
+Plaats
+[Color]
+Kleur
+[Player / AI]
+Speler / AI
+[Group]
+Groep
+[Forbid]
+Verbieden
+[↓ Low]
+↓ Laag
+[= Normal]
+= Normaal
+[↑ High]
+↑ Hoog
+[Details]
+Details
+[Campaign name]
+Campagnenaam
+[Unlocking]
+Ontgrendeling
+[Parameters]
+Parameters
+[Blank map]
+Lege kaart
+[Generated]
+Gegenereerd
+[Preview]
+Voorbeeld
+[Selected landscape]
+Gekozen landschap
+[Representative preview]
+Representatief voorbeeld
+[Starting terrain]
+Beginterrein
+[Hide parameters]
+Parameters verbergen
+[Size and parameters]
+Grootte en parameters
+[Choose a landscape]
+Kies een landschap
+[%0 / Browse]
+%0 / Bladeren
+[%0 colonies · %1]
+%0 kolonies · %1
+[%0 · Team %1]
+%0 · Team %1
+[Colonies: %0]
+Kolonies: %0
+[%0 colonies · %1 AI]
+%0 kolonies · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Eenheden
+[settings Level %0]
+Niveau %0
+[settings Match the desktop %0]
+Zoals het bureaublad (%0)
+[settings Current display %0 %1 %2 %3]
+Huidige weergave: %0 × %1 · %2 · %3
+[Fairness: %0]
+Eerlijkheid: %0
+[Colony %0]
+Kolonie %0
+[Win chance: %0 · Fitness: %1]
+Winkans: %0 · Sterkte: %1
+[%0 · Contribution: %1]
+%0 · Bijdrage: %1
+[Min required level %0]
+Minimaal vereist niveau: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Tekstgrootte dialoogvensters: %0%
+[%0 %1]
+%0 %1

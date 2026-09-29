@@ -26,6 +26,7 @@
 
 
 class MapEdit;
+class PhoneEditor;
 
 ///This is a map editor widget, which is a widget that works within the map editor. Now to answer the crucial question, why not
 ///use libgag? Indeed, I had pondered on the use of libgag for quite some time, considering all of the odds and ends that would
@@ -52,10 +53,13 @@ public:
 	///This function handles a click with mouse positions relative to the widget. It can be overridden, but derived classes
 	///should be careful to call the base class version after there customized code
 	virtual void handleClick(int relMouseX, int relMouseY);
+    /// Invoke this widget's named action without desktop hit-test coordinates.
+    void activate();
 	///This function must be implemented by all derived classes. This is where the widget draws itself. It should use area.x
 	///and area.y to get the coordinates.
 	virtual void draw()=0;
 	friend class MapEdit;
+    friend class PhoneEditor;
 protected:
 	MapEdit& me;
 	RightAnchoredWidgetRectangle area;
@@ -283,6 +287,10 @@ public:
 	void draw();
 	void handleClick(int relMouseX, int relMouseY);
 	void setValues(Sint32* value, Sint32* max);
+    // Semantic value access shared by desktop and touch presentations.
+    int currentValue() const { return *value; }
+    int maximumValue() const { return *max; }
+    void setValue(int requested);
 	void setValues(Sint32* value);
 private:
 	Sint32* value;
@@ -366,6 +374,11 @@ private:
 class MapEdit
 {
 	friend class HighResolutionIntegrationHarness;
+    friend class PhoneEditor;
+    friend class GameGUITouchHarness;
+	friend class MobileGalleryGameplay;
+	std::unique_ptr<PhoneEditor> phone;
+    int menuWidth() const { return phone ? 0 : RIGHT_MENU_WIDTH; }
     bool editing = false, quitDecision = false;
     int editingResult = 0;
     GAGCore::InputState inputState;
@@ -383,6 +396,7 @@ public:
 	///Updates the editor after map generation
 	void update();
 
+    bool usesPhone() const { return bool(phone); }
     void beginEditing();
     void viewportResized(int oldWidth, int oldHeight, int width, int height);
     void requestLoad(std::string filename) { pendingLoadFilename = std::move(filename); }
@@ -475,6 +489,7 @@ private:
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.
 	void performAction(const std::string& action, int relMouseX=0, int relMouseY=0);
+    void selectActiveTeam(int selected);
 	///Handles view, scrolling, minimap and screen/dialog actions. Returns true if the action was handled.
 	bool performViewAction(const std::string& action, int relMouseX, int relMouseY);
 	///Handles building placement, terrain, zone, area and team-selection actions. Returns true if the action was handled.

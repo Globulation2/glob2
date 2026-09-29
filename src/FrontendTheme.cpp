@@ -92,7 +92,8 @@ void FrontendTheme::onFrame()
 		attempted = true;
 		colony->load();
 	}
-	SDL_Window *window = SDL_GetKeyboardFocus();
+	// An unfocused visible menu still animates (including the gallery host).
+	SDL_Window *window = SDL_GetWindowFromID(globalContainer->gfx->windowID());
 	const bool visible = window && !(SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED);
 	colony->update(SDL_GetTicks64(), visible);
 }

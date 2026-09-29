@@ -13,6 +13,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
@@ -123,6 +124,45 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					return;
 				}
 			}
+        // Keep exact flag hits above units/buildings as before. The extra
+        // touch-only selection halo claims otherwise empty ground, so it cannot
+        // steal direct clicks from a neighbouring building or unit.
+        if (touch->usesHUD() && !torusView.active() && !view.mouseUnit &&
+            game.map.getBuilding(mapX, mapY) == NOGBID)
+        {
+            constexpr double flagSelectionRadiusPoints = 24;
+            const double radius = flagSelectionRadiusPoints *
+                globalContainer->gfx->logicalUnitsPerPoint() / camera.zoom;
+            double nearestDistance = radius * radius;
+            Building *nearest = nullptr;
+            const double worldX = mx + viewportX * 32., worldY = my + viewportY * 32.;
+            const auto wrappedDistance = [](double delta, double period)
+            {
+                return MapCamera::wrap(delta + period / 2, period) - period / 2;
+            };
+            for (auto *flag : localTeam->virtualBuildings)
+            {
+                const double dx = wrappedDistance(worldX - (displayedPosX(*flag) * 32. + 16),
+                                                   game.map.getW() * 32.);
+                const double dy = wrappedDistance(worldY - (displayedPosY(*flag) * 32. + 16),
+                                                   game.map.getH() * 32.);
+                const double distance = dx * dx + dy * dy;
+                if (distance < nearestDistance ||
+                    (distance == nearestDistance && nearest && flag->gid < nearest->gid))
+                {
+                    nearest = flag;
+                    nearestDistance = distance;
+                }
+            }
+            if (nearest)
+            {
+                setSelection(BUILDING_SELECTION, nearest);
+                // A forgiving selection click must not move the flag onto the
+                // neighbouring tile on mouse-up. Direct flag grabs still drag.
+                selectionPushed = false;
+                return;
+            }
+        }
 		// then for unit
 		if (view.mouseUnit)
 		{

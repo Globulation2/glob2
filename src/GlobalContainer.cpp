@@ -163,6 +163,8 @@ void GlobalContainer::loadClient(void)
 		// create graphic context
 		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+		gfx->setCompactWindowAllowed(true);
+        gfx->refreshPresentation();
 		gfx->setMinRes(640, 480);
 		
 		// load data required for drawing progress screen
@@ -223,6 +225,9 @@ void GlobalContainer::loadClient(void)
 		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
 		Toolkit::loadFont(fontfile.c_str(), 13, "standard");
 		Toolkit::loadFont(fontfile.c_str(), 10, "little");
+        // Separate frontend aliases avoid changing gameplay/editor font metrics.
+        Toolkit::loadFont(fontfile.c_str(), 16, "frontend-body");
+        Toolkit::loadFont(fontfile.c_str(), 14, "frontend-support");
 		menuFont = Toolkit::getFont("menu");
 		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		standardFont = Toolkit::getFont("standard");

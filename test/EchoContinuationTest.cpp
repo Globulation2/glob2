@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
+#ifdef main
+#undef main
+#endif
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include "IntBuildingType.h"

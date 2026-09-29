@@ -23,6 +23,8 @@ class LobbyControls;
 class LandscapePickerScreen : public Glob2Screen
 {
 	friend struct CustomGameSetupHarness;
+	friend struct MobileGallerySetup;
+	friend struct MobilePresentationHarness;
 
   public:
 	enum
@@ -50,6 +52,9 @@ class LandscapePickerScreen : public Glob2Screen
 	LandscapePickerScreen(const std::string &title, std::vector<Entry> entries, int selected,
 						  SortOrder sortOrder = SortOrder::Random);
 	~LandscapePickerScreen() override;
+    bool supportsCompactViewport() const override { return true; }
+    bool usesResponsiveViewport() const override;
+    void cancelExecutionInput() override;
 	void onAction(Widget *, Action, int, int) override;
 	void onSDLEvent(SDL_Event *) override;
 	void onTimer(Uint32 tick) override;
@@ -72,6 +77,7 @@ class LandscapePickerScreen : public Glob2Screen
 	static constexpr int kRandomDraws = 6;
 	/// Includes off-screen slots, which cooperative hosts defer until browsed.
 	bool busy() const { return previewer.busy(); }
+	bool presentationSettled() const;
 	/// The shared width/height (tile exponents) and colony count every entry is currently shown
 	/// at - uniform across entries[] by construction (the caller's GenerationHistory already
 	/// carries these shared fields onto every method) and kept uniform by setShared(). A caller
@@ -98,6 +104,7 @@ class LandscapePickerScreen : public Glob2Screen
 	};
 	static std::vector<GenerationRequest> requestsOf(const std::vector<Entry> &);
 	void render();
+    void renderPhone();
 	void refresh();
 	void updatePreviewPriority();
 	void select(int index);
@@ -137,6 +144,7 @@ class LandscapePickerScreen : public Glob2Screen
 	int selected, columns = 1;
 	int activePreview = -1;
 	bool reveal = true;
+	bool settingsOpen = false;
 	bool layoutReady = false;
 	int priorityOffset = 0;
 	Uint32 nextPreviewTick = 0;

@@ -1,3 +1,4 @@
+const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 // Continuous trace screenshots force readback from both WebGL contexts on each
@@ -76,10 +77,7 @@ test('browser YOG login exchanges the native protocol through the real gateway',
   const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  await click(420, 510);
-  await page.locator('#canvas').press('Home');
-  for (let i = 0; i < 32; ++i) await page.locator('#canvas').press('Delete');
-  await page.keyboard.type('transportfixture');
+  await editTextField(page,'transportfixture');
   await click(810, 590);
   // Server information, then refusal of an unregistered test account. This
   // proves bidirectional native/Wasm codecs without publishing or using accounts.
@@ -99,14 +97,8 @@ test('registered browser player enters and leaves the native YOG lobby', async (
   const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  await click(420, 510);
-  await page.locator('#canvas').press('Home');
-  for (let i = 0; i < 32; ++i) await page.locator('#canvas').press('Delete');
-  await page.keyboard.type('transportplayer');
-  await click(420, 580);
-  await page.locator('#canvas').press('Home');
-  for (let i = 0; i < 32; ++i) await page.locator('#canvas').press('Delete');
-  await page.keyboard.type('fixture-only');
+  await editTextField(page,'transportplayer');
+  await editTextField(page,'fixture-only',true);
   await click(810, 590);
   await screen('YOGSessionScreen');
   await page.screenshot({path: testInfo.outputPath('yog-lobby.png')});
@@ -121,11 +113,8 @@ async function loginPlayer(page, name) {
   const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  for (const [y, value] of [[510, name], [580, 'fixture-only']]) {
-    await click(420, y); await page.locator('#canvas').press('Home');
-    for (let i = 0; i < 32; ++i) await page.locator('#canvas').press('Delete');
-    await page.keyboard.type(value);
-  }
+  await editTextField(page,name);
+  await editTextField(page,'fixture-only',true);
   await click(810, 590); await screen('YOGSessionScreen');
 }
 test('YOG registration remains scheduled through resize and cancellation', async ({page}) => {
@@ -470,7 +459,7 @@ test(`browser reports incompatible release before transmitting credentials (${mi
   const click=(x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
   await page.goto(gameURL());await screen('MainMenuScreen');
   await clickMainMenu(page,'yog');await screen('YOGLoginScreen');
-  await click(420,580);await page.keyboard.type('never-transmit-this');
+  await editTextField(page,'never-transmit-this',true);
   await click(810,590);
   await expect.poll(()=>received).toContain(mismatch==='client version'?7:10);
   await expect.poll(()=>sent).toContain(3); // Client processed refusal and disconnected.

@@ -3060,3 +3060,331 @@ Izhod brez shranjevanja
 Igra je zaprta. To okno lahko zaprete ali stran znova naložite, da igrate še enkrat.
 [campaign editor save failed]
 Shranjevanje ni potrjeno. V redu poskusi znova; Prekliči se vrne v meni urejevalnika.
+[Actions]
+Dejanja
+[Minimap]
+Mini zemljevid
+[Fast forward]
+Hitro naprej
+[Hide keyboard]
+Skrij tipkovnico
+[Dialog text size]
+Velikost besedila pogovornih oken
+[Player slot]
+Mesto igralca
+[Team color]
+Barva ekipe
+[Alliance group]
+Skupina zavezništva
+[menu]
+Meni
+[Editor tools]
+Orodja
+[Pan map]
+Premakni zemljevid
+[Edit map]
+Uredi zemljevid
+[Editor map]
+Zemljevid
+[Flags]
+Zastave
+[Pause]
+Premor
+[Speed]
+Hitrost
+[Objectives]
+Cilji
+[Menu]
+Meni
+[Goals]
+Cilji
+[Teams]
+Ekipe
+[Use this landscape]
+Uporabi to pokrajino
+[Reset]
+Ponastavi
+[Generating...]
+Ustvarjanje...
+[Players]
+Igralci
+[Rules]
+Pravila
+[settings Interface layout]
+Postavitev vmesnika
+[settings Automatic]
+Samodejno
+[settings Compact]
+Majhen
+[settings Spacious]
+Prostorna
+[More]
+Več
+[No items]
+Ni elementov
+[Opponents]
+Nasprotniki
+[Review]
+Pregled
+[Review & Play]
+Preglej in igraj
+[Edit opponents]
+Uredi nasprotnike
+[Map settings]
+Nastavitve zemljevida
+[Next]
+Naprej
+[Done]
+Končano
+[Contribution]
+Prispevek
+[Choose who controls this colony]
+Izberi, kdo nadzoruje to kolonijo
+[Settings]
+Nastavitve
+[settings Back]
+Nazaj
+[settings Save the game automatically about every minute.]
+Samodejno shrani igro približno vsako minuto.
+[AI opponents]
+Računalniški nasprotniki
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Prostorna postavitev uporablja stransko ploščo, kadar je dovolj prostora. Strnjena uporablja orodno vrstico in izvlečne plošče.
+[Assigned %0 · Target %1]
+Dodeljeno %0 · Cilj %1
+[Range: %0]
+Doseg: %0
+[Player %0]
+Igralec %0
+[Brush %0]
+Čopič %0
+[Team %0]
+Ekipa %0
+[Your colony]
+Tvoja kolonija
+[%0 / %1 HP · %2]
+%0 / %1 ŽT · %2
+[Units: %0]
+Enote: %0
+[Buildings: %0]
+Zgradbe: %0
+[Need food: %0]
+Potrebujejo hrano: %0
+[Need healing: %0]
+Potrebujejo zdravljenje: %0
+[Attack: %0]
+Napad: %0
+[Defense: %0]
+Obramba: %0
+[Food: %0 / %1]
+Hrana: %0 / %1
+[View team %0]
+Prikaži ekipo %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Čopič %0x%1
+[Level %0]
+Stopnja %0
+[Manage teams (%0)]
+Upravljaj ekipe (%0)
+[Team %0 / Level %1]
+Ekipa %0 / Stopnja %1
+[Files · %0]
+Datoteke · %0
+[Hint %0]
+Namig %0
+[Objective %0]
+Cilj %0
+[Entry %0 of 8 · empty entries are omitted]
+Vnos %0 od 8 · prazni vnosi se izpustijo
+[Teams %0/%1]
+Ekipe %0/%1
+[Elapsed time · %0]
+Pretečeni čas · %0
+[Read-only building]
+Zgradba samo za branje
+[Alliance and shared vision are fixed for this match.]
+Zavezništvo in skupni pogled sta v tej igri nespremenljiva.
+[Share vision]
+Deli pogled
+[Share food vision]
+Deli pogled na hrano
+[Share market vision]
+Deli pogled na trge
+[Chat]
+Klepet
+[No other players have editable diplomatic settings in this match.]
+Drugi igralci v tej igri nimajo spremenljivih diplomatskih nastavitev.
+[No briefing for this match.]
+Ni navodil za to igro.
+[Chat · recipients selected in Teams]
+Klepet · prejemniki izbrani v Ekipah
+[Filename]
+Ime datoteke
+[Reduced motion]
+Zmanjšano gibanje
+[Send]
+Pošlji
+[Close]
+Zapri
+[Forbidden]
+Prepovedano
+[Guard]
+Straži
+[Clear]
+Počisti
+[Paint]
+Riši
+[Erase]
+Briši
+[Release on valid terrain to place]
+Spusti nad veljavnim terenom za postavitev
+[Paint on the map; two fingers move]
+Riši po zemljevidu; premikaj z dvema prstoma
+[Tutorial ▸]
+Vadnica ▸
+[Back to tools]
+Nazaj k orodjem
+[Starvation overlay]
+Plast lakote
+[Damage overlay]
+Plast poškodb
+[Defense overlay]
+Plast obrambe
+[Fertility overlay]
+Plast rodovitnosti
+[Health and food bars]
+Vrstice zdravja in hrane
+[Message history]
+Zgodovina sporočil
+[Mark map for allies]
+Označi zemljevid za zaveznike
+[Show zones]
+Prikaži območja
+[Pan]
+Premikaj
+[Select]
+Izberi
+[Show palette]
+Prikaži paleto
+[Release to place]
+Spusti za postavitev
+[Blocked placement]
+Postavitev blokirana
+[File name]
+Ime datoteke
+[Load map]
+Naloži zemljevid
+[Save map]
+Shrani zemljevid
+[No files in this folder]
+V tej mapi ni datotek
+[No files saved yet]
+Ni še shranjenih datotek
+[Export]
+Izvozi
+[Tap to write the mission briefing]
+Tapni za pisanje navodil misije
+[Tap to write the map script]
+Tapni za pisanje skripta zemljevida
+[Script]
+Skript
+[Previous]
+Prejšnji
+[Compile]
+Prevedi
+[Tap to write this hint]
+Tapni za pisanje tega namiga
+[Tap to write this objective]
+Tapni za pisanje tega cilja
+[Mission briefing · tap to edit, swipe to scroll]
+Navodila misije · tapni za urejanje, podrsaj za pomikanje
+[Not enough recorded history yet.]
+Za zdaj ni dovolj zabeležene zgodovine.
+[Select a team to show its history.]
+Izberi ekipo za prikaz njene zgodovine.
+[Back to chart]
+Nazaj na graf
+[Expand chart]
+Povečaj graf
+[Slot]
+Mesto
+[Color]
+Barva
+[Player / AI]
+Igralec / UI
+[Group]
+Skupina
+[Forbid]
+Prepovej
+[↓ Low]
+↓ Nizka
+[= Normal]
+= Običajna
+[↑ High]
+↑ Visoka
+[Details]
+Podrobnosti
+[Campaign name]
+Ime kampanje
+[Unlocking]
+Odklepanje
+[Parameters]
+Parametri
+[Blank map]
+Prazen zemljevid
+[Generated]
+Ustvarjen
+[Preview]
+Predogled
+[Selected landscape]
+Izbrana pokrajina
+[Representative preview]
+Vzorčni predogled
+[Starting terrain]
+Začetni teren
+[Hide parameters]
+Skrij parametre
+[Size and parameters]
+Velikost in parametri
+[Choose a landscape]
+Izberite pokrajino
+[%0 / Browse]
+%0 / Prebrskaj
+[%0 colonies · %1]
+%0 kolonije · %1
+[%0 · Team %1]
+%0 · Ekipa %1
+[Colonies: %0]
+Kolonije: %0
+[%0 colonies · %1 AI]
+%0 kolonije · %1 UI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Enote
+[settings Level %0]
+Stopnja %0
+[settings Match the desktop %0]
+Kot namizje (%0)
+[settings Current display %0 %1 %2 %3]
+Trenutni način prikaza: %0 × %1 · %2 · %3
+[Fairness: %0]
+Pravičnost: %0
+[Colony %0]
+Kolonija %0
+[Win chance: %0 · Fitness: %1]
+Možnost zmage: %0 · Moč: %1
+[%0 · Contribution: %1]
+%0 · Prispevek: %1
+[Min required level %0]
+Najnižja zahtevana stopnja %0
+[Confirm %0]
+Potrdi: %0
+[Dialog text size %0]
+Velikost besedila pogovornih oken: %0%
+[%0 %1]
+%0 %1

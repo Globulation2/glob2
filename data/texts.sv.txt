@@ -3070,3 +3070,331 @@ Avsluta utan att spara
 Spelet stängt. Du kan stänga det här fönstret eller ladda om för att spela igen.
 [campaign editor save failed]
 Sparning ej bekräftad. OK försöker igen; Avbryt återgår till redigerarmenyn.
+[Actions]
+Åtgärder
+[Minimap]
+Minikarta
+[Fast forward]
+Spola framåt
+[Hide keyboard]
+Dölj tangentbordet
+[Dialog text size]
+Dialogtextstorlek
+[Player slot]
+Spelarplats
+[Team color]
+Lagfärg
+[Alliance group]
+Alliansgrupp
+[menu]
+Meny
+[Editor tools]
+Verktyg
+[Pan map]
+Flytta kartan
+[Edit map]
+Editera Karta
+[Editor map]
+Karta
+[Flags]
+Flaggor
+[Pause]
+Paus
+[Speed]
+Hastighet
+[Objectives]
+Mål
+[Menu]
+Meny
+[Goals]
+Mål
+[Teams]
+Lag
+[Use this landscape]
+Använd detta landskap
+[Reset]
+Återställ
+[Generating...]
+Genererar...
+[Players]
+Spelare
+[Rules]
+Regler
+[settings Interface layout]
+Gränssnittets layout
+[settings Automatic]
+Automatisk
+[settings Compact]
+Tätt
+[settings Spacious]
+Rymlig
+[More]
+Mer
+[No items]
+Inga objekt
+[Opponents]
+Motståndare
+[Review]
+Översikt
+[Review & Play]
+Granska och spela
+[Edit opponents]
+Redigera motståndare
+[Map settings]
+Kartinställningar
+[Next]
+Nästa
+[Done]
+Klar
+[Contribution]
+Bidrag
+[Choose who controls this colony]
+Välj vem som styr denna koloni
+[Settings]
+Inställningar
+[settings Back]
+Tillbaka
+[settings Save the game automatically about every minute.]
+Spara spelet automatiskt ungefär varje minut.
+[AI opponents]
+AI-motståndare
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Rymlig layout använder en sidopanel när det finns plats. Kompakt layout använder ett verktygsfält och utfällbara paneler.
+[Assigned %0 · Target %1]
+Tilldelade %0 · Mål %1
+[Range: %0]
+Räckvidd: %0
+[Player %0]
+Spelare %0
+[Brush %0]
+Pensel %0
+[Team %0]
+Lag %0
+[Your colony]
+Din koloni
+[%0 / %1 HP · %2]
+%0 / %1 HP · %2
+[Units: %0]
+Enheter: %0
+[Buildings: %0]
+Byggnader: %0
+[Need food: %0]
+Behöver mat: %0
+[Need healing: %0]
+Behöver vård: %0
+[Attack: %0]
+Anfall: %0
+[Defense: %0]
+Försvar: %0
+[Food: %0 / %1]
+Mat: %0 / %1
+[View team %0]
+Visa lag %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pensel %0x%1
+[Level %0]
+Nivå %0
+[Manage teams (%0)]
+Hantera lag (%0)
+[Team %0 / Level %1]
+Lag %0 / Nivå %1
+[Files · %0]
+Filer · %0
+[Hint %0]
+Tips %0
+[Objective %0]
+Mål %0
+[Entry %0 of 8 · empty entries are omitted]
+Post %0 av 8 · tomma poster utelämnas
+[Teams %0/%1]
+Lag %0/%1
+[Elapsed time · %0]
+Förfluten tid · %0
+[Read-only building]
+Skrivskyddad byggnad
+[Alliance and shared vision are fixed for this match.]
+Allians och delad sikt är fasta för denna match.
+[Share vision]
+Dela sikt
+[Share food vision]
+Dela matsikt
+[Share market vision]
+Dela marknadssikt
+[Chat]
+Chatt
+[No other players have editable diplomatic settings in this match.]
+Inga andra spelare har redigerbara diplomatiinställningar i denna match.
+[No briefing for this match.]
+Ingen genomgång för denna match.
+[Chat · recipients selected in Teams]
+Chatt · mottagare valda under Lag
+[Filename]
+Filnamn
+[Reduced motion]
+Minskad rörelse
+[Send]
+Skicka
+[Close]
+Stäng
+[Forbidden]
+Förbjudet
+[Guard]
+Bevaka
+[Clear]
+Röj
+[Paint]
+Måla
+[Erase]
+Radera
+[Release on valid terrain to place]
+Släpp på giltig terräng för att placera
+[Paint on the map; two fingers move]
+Måla på kartan; flytta med två fingrar
+[Tutorial ▸]
+Handledning ▸
+[Back to tools]
+Tillbaka till verktyg
+[Starvation overlay]
+Svältlager
+[Damage overlay]
+Skadelager
+[Defense overlay]
+Försvarslager
+[Fertility overlay]
+Bördighetslager
+[Health and food bars]
+Hälso- och matstaplar
+[Message history]
+Meddelandehistorik
+[Mark map for allies]
+Markera kartan för allierade
+[Show zones]
+Visa zoner
+[Pan]
+Panorera
+[Select]
+Välj
+[Show palette]
+Visa palett
+[Release to place]
+Släpp för att placera
+[Blocked placement]
+Placering blockerad
+[File name]
+Filnamn
+[Load map]
+Läs in karta
+[Save map]
+Spara karta
+[No files in this folder]
+Inga filer i denna mapp
+[No files saved yet]
+Inga filer sparade ännu
+[Export]
+Exportera
+[Tap to write the mission briefing]
+Tryck för att skriva uppdragsgenomgången
+[Tap to write the map script]
+Tryck för att skriva kartskriptet
+[Script]
+Skript
+[Previous]
+Föregående
+[Compile]
+Kompilera
+[Tap to write this hint]
+Tryck för att skriva detta tips
+[Tap to write this objective]
+Tryck för att skriva detta mål
+[Mission briefing · tap to edit, swipe to scroll]
+Uppdragsgenomgång · tryck för att redigera, svep för att rulla
+[Not enough recorded history yet.]
+Inte tillräckligt med registrerad historik ännu.
+[Select a team to show its history.]
+Välj ett lag för att visa dess historik.
+[Back to chart]
+Tillbaka till diagram
+[Expand chart]
+Förstora diagram
+[Slot]
+Plats
+[Color]
+Färg
+[Player / AI]
+Spelare / AI
+[Group]
+Grupp
+[Forbid]
+Förbjud
+[↓ Low]
+↓ Låg
+[= Normal]
+= Normal
+[↑ High]
+↑ Hög
+[Details]
+Detaljer
+[Campaign name]
+Kampanjnamn
+[Unlocking]
+Upplåsning
+[Parameters]
+Parametrar
+[Blank map]
+Tom karta
+[Generated]
+Genererad
+[Preview]
+Förhandsvisning
+[Selected landscape]
+Valt landskap
+[Representative preview]
+Representativ förhandsvisning
+[Starting terrain]
+Startterräng
+[Hide parameters]
+Dölj parametrar
+[Size and parameters]
+Storlek och parametrar
+[Choose a landscape]
+Välj ett landskap
+[%0 / Browse]
+%0 / Bläddra
+[%0 colonies · %1]
+%0 kolonier · %1
+[%0 · Team %1]
+%0 · Lag %1
+[Colonies: %0]
+Kolonier: %0
+[%0 colonies · %1 AI]
+%0 kolonier · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Enheter
+[settings Level %0]
+Nivå %0
+[settings Match the desktop %0]
+Följ skrivbordet (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuella visningsinställningar: %0 × %1 · %2 · %3
+[Fairness: %0]
+Rättvisa: %0
+[Colony %0]
+Koloni %0
+[Win chance: %0 · Fitness: %1]
+Vinstchans: %0 · Styrka: %1
+[%0 · Contribution: %1]
+%0 · Bidrag: %1
+[Min required level %0]
+Lägsta tillåtna nivå: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Dialogtextstorlek: %0%
+[%0 %1]
+%0 %1

@@ -1,3 +1,4 @@
+const {clickCreateMap}=require('./editor-controls');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
@@ -46,7 +47,7 @@ test('a running match survives resize and its open menu follows the new center',
 test('editor dialogs and discard controls follow viewport changes', async ({page}) => {
   await clickMainMenu(page,'editor'); await screen(page,'EditorMainMenu');
   await menu(page,320,90); await screen(page,'NewMapScreen');
-  await menu(page,160,440); await screen(page,'MapEditorScreen');
+  await clickCreateMap(page); await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
   await resize(page,1280,720);
   await click(page,640,435); await screen(page,'MessageScreen');

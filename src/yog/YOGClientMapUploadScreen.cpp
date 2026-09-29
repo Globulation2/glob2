@@ -22,6 +22,7 @@ using namespace GAGCore;
 YOGClientMapUploadScreen::YOGClientMapUploadScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const std::string mapFile)
 	: screens(screens), client(client), uploader(client), mapFile(mapFile)
 {
+    enablePhoneForm();
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]")));
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]"), UPLOAD, 13));

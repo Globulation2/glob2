@@ -3058,3 +3058,331 @@ Quit without saving
 Game closed. You can close this window or reload to play again.
 [campaign editor save failed]
 Save not confirmed. OK retries; Cancel returns to the editor menu.
+[Actions]
+Actions
+[Minimap]
+Minimap
+[Fast forward]
+Fast forward
+[Hide keyboard]
+Hide keyboard
+[Dialog text size]
+Dialog text size
+[Player slot]
+Player slot
+[Team color]
+Team color
+[Alliance group]
+Alliance group
+[menu]
+Menu
+[Editor tools]
+Tools
+[Pan map]
+Pan map
+[Edit map]
+Edit map
+[Editor map]
+Map
+[Flags]
+Flags
+[Pause]
+Pause
+[Speed]
+Speed
+[Objectives]
+Objectives
+[Menu]
+Menu
+[Goals]
+Goals
+[Teams]
+Teams
+[Use this landscape]
+Use this landscape
+[Reset]
+Reset
+[Generating...]
+Generating...
+[Players]
+Players
+[Rules]
+Rules
+[settings Interface layout]
+Interface layout
+[settings Automatic]
+Automatic
+[settings Compact]
+Compact
+[settings Spacious]
+Spacious
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.
+[More]
+More
+[No items]
+No items
+[Opponents]
+Opponents
+[Review]
+Review
+[Review & Play]
+Review & Play
+[Edit opponents]
+Edit opponents
+[Map settings]
+Map settings
+[Next]
+Next
+[Done]
+Done
+[Contribution]
+Contribution
+[Choose who controls this colony]
+Choose who controls this colony
+[Settings]
+Settings
+[settings Back]
+Back
+[settings Save the game automatically about every minute.]
+Save the game automatically about every minute.
+[AI opponents]
+AI opponents
+[Assigned %0 · Target %1]
+Assigned %0 · Target %1
+[Range: %0]
+Range: %0
+[Player %0]
+Player %0
+[Brush %0]
+Brush %0
+[Team %0]
+Team %0
+[Your colony]
+Your colony
+[%0 / %1 HP · %2]
+%0 / %1 HP · %2
+[Units: %0]
+Units: %0
+[Buildings: %0]
+Buildings: %0
+[Need food: %0]
+Need food: %0
+[Need healing: %0]
+Need healing: %0
+[Attack: %0]
+Attack: %0
+[Defense: %0]
+Defense: %0
+[Food: %0 / %1]
+Food: %0 / %1
+[View team %0]
+View team %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Brush %0x%1
+[Level %0]
+Level %0
+[Manage teams (%0)]
+Manage teams (%0)
+[Team %0 / Level %1]
+Team %0 / Level %1
+[Files · %0]
+Files · %0
+[Hint %0]
+Hint %0
+[Objective %0]
+Objective %0
+[Entry %0 of 8 · empty entries are omitted]
+Entry %0 of 8 · empty entries are omitted
+[Teams %0/%1]
+Teams %0/%1
+[Elapsed time · %0]
+Elapsed time · %0
+[Read-only building]
+Read-only building
+[Alliance and shared vision are fixed for this match.]
+Alliance and shared vision are fixed for this match.
+[Share vision]
+Share vision
+[Share food vision]
+Share food vision
+[Share market vision]
+Share market vision
+[Chat]
+Chat
+[No other players have editable diplomatic settings in this match.]
+No other players have editable diplomatic settings in this match.
+[No briefing for this match.]
+No briefing for this match.
+[Chat · recipients selected in Teams]
+Chat · recipients selected in Teams
+[Filename]
+Filename
+[Reduced motion]
+Reduced motion
+[Send]
+Send
+[Close]
+Close
+[Forbidden]
+Forbidden
+[Guard]
+Guard
+[Clear]
+Clear
+[Paint]
+Paint
+[Erase]
+Erase
+[Release on valid terrain to place]
+Release on valid terrain to place
+[Paint on the map; two fingers move]
+Paint on the map; two fingers move
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Back to tools
+[Starvation overlay]
+Starvation overlay
+[Damage overlay]
+Damage overlay
+[Defense overlay]
+Defense overlay
+[Fertility overlay]
+Fertility overlay
+[Health and food bars]
+Health and food bars
+[Message history]
+Message history
+[Mark map for allies]
+Mark map for allies
+[Show zones]
+Show zones
+[Pan]
+Pan
+[Select]
+Select
+[Show palette]
+Show palette
+[Release to place]
+Release to place
+[Blocked placement]
+Blocked placement
+[File name]
+File name
+[Load map]
+Load map
+[Save map]
+Save map
+[No files in this folder]
+No files in this folder
+[No files saved yet]
+No files saved yet
+[Export]
+Export
+[Tap to write the mission briefing]
+Tap to write the mission briefing
+[Tap to write the map script]
+Tap to write the map script
+[Script]
+Script
+[Previous]
+Previous
+[Compile]
+Compile
+[Tap to write this hint]
+Tap to write this hint
+[Tap to write this objective]
+Tap to write this objective
+[Mission briefing · tap to edit, swipe to scroll]
+Mission briefing · tap to edit, swipe to scroll
+[Not enough recorded history yet.]
+Not enough recorded history yet.
+[Select a team to show its history.]
+Select a team to show its history.
+[Back to chart]
+Back to chart
+[Expand chart]
+Expand chart
+[Slot]
+Slot
+[Color]
+Color
+[Player / AI]
+Player / AI
+[Group]
+Group
+[Forbid]
+Forbid
+[↓ Low]
+↓ Low
+[= Normal]
+= Normal
+[↑ High]
+↑ High
+[Details]
+Details
+[Campaign name]
+Campaign name
+[Unlocking]
+Unlocking
+[Parameters]
+Parameters
+[Blank map]
+Blank map
+[Generated]
+Generated
+[Preview]
+Preview
+[Selected landscape]
+Selected landscape
+[Representative preview]
+Representative preview
+[Starting terrain]
+Starting terrain
+[Hide parameters]
+Hide parameters
+[Size and parameters]
+Size and parameters
+[Choose a landscape]
+Choose a landscape
+[%0 / Browse]
+%0  /  Browse
+[%0 colonies · %1]
+%0 colonies · %1
+[%0 · Team %1]
+%0 · Team %1
+[Colonies: %0]
+Colonies: %0
+[%0 colonies · %1 AI]
+%0 colonies · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Units
+[settings Level %0]
+Level %0
+[settings Match the desktop %0]
+Match the desktop (%0)
+[settings Current display %0 %1 %2 %3]
+Current display: %0 × %1 · %2 · %3
+[Fairness: %0]
+Fairness: %0
+[Colony %0]
+Colony %0
+[Win chance: %0 · Fitness: %1]
+Win chance: %0 · Fitness: %1
+[%0 · Contribution: %1]
+%0 · Contribution: %1
+[Min required level %0]
+Minimum required level: %0
+[Confirm %0]
+Ok: %0
+[Dialog text size %0]
+Dialog text size: %0%
+[%0 %1]
+%0 %1

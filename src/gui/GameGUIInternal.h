@@ -155,6 +155,8 @@ public:
 	virtual ~InGameTextInput() { }
 	//! React on action from any widget (but there is only one anyway)
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	//! The composer view owns placement; the input retains native IME state.
+    TextInput* composerInput() const { return textInput; }
 	//! Return the text typed
 	std::string getText(void) const { return textInput->getText(); }
 	//! Set the text

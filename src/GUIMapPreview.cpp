@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GUIMapPreview.h"
 #include <StringTable.h>
+#include <TouchText.h>
 #include <Toolkit.h>
 #include <GUIStyle.h>
 #include <algorithm>
@@ -329,17 +330,43 @@ void MapPreview::paint()
 												   : "[GUIMapPreview text 0]";
 		auto font = Toolkit::getFont("standard");
 		const auto label = tr(key);
-		const int fh = font->getStringHeight(label);
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(235, 240, 224)));
-		target->drawString(b.x + std::max(4, (b.w - font->getStringWidth(label)) / 2),
-						   b.y + b.h / 2 - fh, font, label);
 		const auto second = tr(state == State::Empty    ? "[GUIMapPreview text 1]"
 							   : state == State::Failed ? (retry ? "[Map preview retry]"
 																 : "[Map preview choose another]")
 														: "[Map preview please wait]");
-		target->drawString(b.x + std::max(4, (b.w - font->getStringWidth(second)) / 2),
-						   b.y + b.h / 2, font, second);
-		font->popStyle();
+		if (std::max(font->getStringWidth(label), font->getStringWidth(second)) <= b.w - 8)
+		{
+			const int fh = font->getStringHeight(label);
+			font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(235, 240, 224)));
+			target->drawString(b.x + (b.w - font->getStringWidth(label)) / 2, b.y + b.h / 2 - fh,
+							   font, label);
+			target->drawString(b.x + (b.w - font->getStringWidth(second)) / 2, b.y + b.h / 2, font,
+							   second);
+			font->popStyle();
+		}
+		else
+		{
+			// Landscape previews can be tiny. Wrap their status at the smaller
+			// font size and mark overflow explicitly instead of clipping glyphs.
+			font = Toolkit::getFont("little");
+			font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(235, 240, 224)));
+			auto lines = GAGCore::wrapTouchText(font, label + "\n" + second, b.w - 8);
+			const int fh = font->getStringHeight(label);
+			const size_t capacity = std::max(1, b.h / std::max(1, fh));
+			if (lines.size() > capacity)
+			{
+				lines.resize(capacity);
+				lines.back() = "…";
+			}
+			int y = b.y + (b.h - int(lines.size()) * fh) / 2;
+			for (const auto &line : lines)
+			{
+				target->drawString(b.x + std::max(0, (b.w - font->getStringWidth(line)) / 2), y,
+								   font, line);
+				y += fh;
+			}
+			font->popStyle();
+		}
 	}
 	target->setClipRect(cx, cy, cw, ch);
 	Style::style->drawFrame(target, b.x, b.y, b.w, b.h, Color::ALPHA_TRANSPARENT);

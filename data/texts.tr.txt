@@ -3068,3 +3068,331 @@ Kaydetmeden çık
 Oyun kapatıldı. Bu pencereyi kapatabilir veya yeniden oynamak için sayfayı yenileyebilirsiniz.
 [campaign editor save failed]
 Kayıt onaylanmadı. Tamam yeniden dener; İptal düzenleyici menüsüne döner.
+[Actions]
+Eylemler
+[Minimap]
+Mini harita
+[Fast forward]
+İleri sar
+[Hide keyboard]
+Klavyeyi gizle
+[Dialog text size]
+İletişim kutusu yazı boyutu
+[Player slot]
+Oyuncu yuvası
+[Team color]
+Takım rengi
+[Alliance group]
+İttifak grubu
+[menu]
+Menü
+[Editor tools]
+Araçlar
+[Pan map]
+Haritayı kaydır
+[Edit map]
+Haritayı Düzenle
+[Editor map]
+Harita
+[Flags]
+Bayraklar
+[Pause]
+Duraklat
+[Speed]
+Hız
+[Objectives]
+Hedefler
+[Menu]
+Menü
+[Goals]
+Hedefler
+[Teams]
+Takımlar
+[Use this landscape]
+Bu manzarayı kullan
+[Reset]
+Sıfırla
+[Generating...]
+Oluşturuluyor...
+[Players]
+Oyuncular
+[Rules]
+Kurallar
+[settings Interface layout]
+Arayüz düzeni
+[settings Automatic]
+Otomatik
+[settings Compact]
+Yakın
+[settings Spacious]
+Geniş
+[More]
+Daha fazla
+[No items]
+Öğe yok
+[Opponents]
+Rakipler
+[Review]
+Özet
+[Review & Play]
+İncele ve oyna
+[Edit opponents]
+Rakipleri düzenle
+[Map settings]
+Harita ayarları
+[Next]
+İleri
+[Done]
+Tamam
+[Contribution]
+Katkı
+[Choose who controls this colony]
+Bu koloniyi kimin yöneteceğini seçin
+[Settings]
+Ayarlar
+[settings Back]
+Geri
+[settings Save the game automatically about every minute.]
+Oyunu yaklaşık her dakika otomatik olarak kaydet.
+[AI opponents]
+Yapay zeka rakipleri
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Geniş düzen, yer olduğunda yan panel kullanır. Kompakt düzen, araç çubuğu ve açılır paneller kullanır.
+[Assigned %0 · Target %1]
+Atanan %0 · Hedef %1
+[Range: %0]
+Menzil: %0
+[Player %0]
+Oyuncu %0
+[Brush %0]
+Fırça %0
+[Team %0]
+Takım %0
+[Your colony]
+Kolonin
+[%0 / %1 HP · %2]
+%0 / %1 CP · %2
+[Units: %0]
+Birimler: %0
+[Buildings: %0]
+Binalar: %0
+[Need food: %0]
+Yemek gereken: %0
+[Need healing: %0]
+İyileşme gereken: %0
+[Attack: %0]
+Saldırı: %0
+[Defense: %0]
+Savunma: %0
+[Food: %0 / %1]
+Yiyecek: %0 / %1
+[View team %0]
+%0 takımını göster
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Fırça %0x%1
+[Level %0]
+Seviye %0
+[Manage teams (%0)]
+Takımları yönet (%0)
+[Team %0 / Level %1]
+Takım %0 / Seviye %1
+[Files · %0]
+Dosyalar · %0
+[Hint %0]
+İpucu %0
+[Objective %0]
+Hedef %0
+[Entry %0 of 8 · empty entries are omitted]
+8 girdiden %0 · boş girdiler atlanır
+[Teams %0/%1]
+Takımlar %0/%1
+[Elapsed time · %0]
+Geçen süre · %0
+[Read-only building]
+Salt okunur bina
+[Alliance and shared vision are fixed for this match.]
+Bu maçta ittifak ve ortak görüş sabittir.
+[Share vision]
+Görüşü paylaş
+[Share food vision]
+Yiyecek görüşünü paylaş
+[Share market vision]
+Pazar görüşünü paylaş
+[Chat]
+Sohbet
+[No other players have editable diplomatic settings in this match.]
+Bu maçta diğer oyuncuların düzenlenebilir diplomasi ayarları yok.
+[No briefing for this match.]
+Bu maç için görev özeti yok.
+[Chat · recipients selected in Teams]
+Sohbet · alıcılar Takımlar bölümünde seçilir
+[Filename]
+Dosya adı
+[Reduced motion]
+Azaltılmış hareket
+[Send]
+Gönder
+[Close]
+Kapat
+[Forbidden]
+Yasak
+[Guard]
+Koru
+[Clear]
+Temizle
+[Paint]
+Boya
+[Erase]
+Sil
+[Release on valid terrain to place]
+Yerleştirmek için uygun arazide bırak
+[Paint on the map; two fingers move]
+Haritada boya; iki parmakla taşı
+[Tutorial ▸]
+Öğretici ▸
+[Back to tools]
+Araçlara dön
+[Starvation overlay]
+Açlık katmanı
+[Damage overlay]
+Hasar katmanı
+[Defense overlay]
+Savunma katmanı
+[Fertility overlay]
+Verimlilik katmanı
+[Health and food bars]
+Sağlık ve yiyecek çubukları
+[Message history]
+Mesaj geçmişi
+[Mark map for allies]
+Müttefikler için haritayı işaretle
+[Show zones]
+Bölgeleri göster
+[Pan]
+Kaydır
+[Select]
+Seç
+[Show palette]
+Paleti göster
+[Release to place]
+Yerleştirmek için bırak
+[Blocked placement]
+Yerleştirme engellendi
+[File name]
+Dosya adı
+[Load map]
+Harita yükle
+[Save map]
+Haritayı kaydet
+[No files in this folder]
+Bu klasörde dosya yok
+[No files saved yet]
+Henüz kaydedilmiş dosya yok
+[Export]
+Dışa aktar
+[Tap to write the mission briefing]
+Görev özetini yazmak için dokun
+[Tap to write the map script]
+Harita betiğini yazmak için dokun
+[Script]
+Betik
+[Previous]
+Önceki
+[Compile]
+Derle
+[Tap to write this hint]
+Bu ipucunu yazmak için dokun
+[Tap to write this objective]
+Bu hedefi yazmak için dokun
+[Mission briefing · tap to edit, swipe to scroll]
+Görev özeti · düzenlemek için dokun, kaydırmak için sürükle
+[Not enough recorded history yet.]
+Henüz yeterli kayıtlı geçmiş yok.
+[Select a team to show its history.]
+Geçmişini göstermek için bir takım seç.
+[Back to chart]
+Grafiğe dön
+[Expand chart]
+Grafiği büyüt
+[Slot]
+Yuva
+[Color]
+Renk
+[Player / AI]
+Oyuncu / YZ
+[Group]
+Grup
+[Forbid]
+Yasakla
+[↓ Low]
+↓ Düşük
+[= Normal]
+= Normal
+[↑ High]
+↑ Yüksek
+[Details]
+Ayrıntılar
+[Campaign name]
+Sefer adı
+[Unlocking]
+Kilidi açma
+[Parameters]
+Parametreler
+[Blank map]
+Boş harita
+[Generated]
+Oluşturulmuş
+[Preview]
+Önizleme
+[Selected landscape]
+Seçilen arazi
+[Representative preview]
+Örnek önizleme
+[Starting terrain]
+Başlangıç arazisi
+[Hide parameters]
+Parametreleri gizle
+[Size and parameters]
+Boyut ve parametreler
+[Choose a landscape]
+Bir arazi seçin
+[%0 / Browse]
+%0 / Göz at
+[%0 colonies · %1]
+%0 koloniler · %1
+[%0 · Team %1]
+%0 · Takım %1
+[Colonies: %0]
+Koloniler: %0
+[%0 colonies · %1 AI]
+%0 koloniler · %1 yapay zeka
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Birimler
+[settings Level %0]
+Seviye %0
+[settings Match the desktop %0]
+Masaüstüyle aynı (%0)
+[settings Current display %0 %1 %2 %3]
+Geçerli görüntüleme modu: %0 × %1 · %2 · %3
+[Fairness: %0]
+Adalet: %0
+[Colony %0]
+Koloni %0
+[Win chance: %0 · Fitness: %1]
+Kazanma şansı: %0 · Güç: %1
+[%0 · Contribution: %1]
+%0 · Katkı: %1
+[Min required level %0]
+Gerekli en düşük seviye: %0
+[Confirm %0]
+Tamam: %0
+[Dialog text size %0]
+İletişim kutusu yazı boyutu: %0%
+[%0 %1]
+%0 %1

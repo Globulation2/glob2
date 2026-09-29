@@ -3058,3 +3058,331 @@ Emoji
 تم إغلاق اللعبة. يمكنك إغلاق هذه النافذة أو إعادة التحميل للعب مرة أخرى.
 [campaign editor save failed]
 الحفظ غير مؤكد. موافق يعيد المحاولة؛ إلغاء يعود إلى قائمة المحرر.
+[Actions]
+إجراءات
+[Minimap]
+خريطة مصغرة
+[Fast forward]
+تقديم سريع
+[Hide keyboard]
+إخفاء لوحة المفاتيح
+[Dialog text size]
+حجم نص الحوار
+[Player slot]
+خانة اللاعب
+[Team color]
+لون الفريق
+[Alliance group]
+مجموعة التحالف
+[menu]
+القائمة
+[Editor tools]
+أدوات
+[Pan map]
+تحريك الخريطة
+[Edit map]
+ﺣﺮِّﺭ ﺍﻟﺨﺎﺭﻃﺔ
+[Editor map]
+خريطة
+[Flags]
+أعلام
+[Pause]
+إيقاف مؤقت
+[Speed]
+السرعة
+[Objectives]
+ﺍﻷﻫﺪﺍﻑ
+[Menu]
+القائمة
+[Goals]
+الأهداف
+[Teams]
+الفرق
+[Use this landscape]
+استخدام هذه التضاريس
+[Reset]
+إعادة تعيين
+[Generating...]
+جارٍ التوليد...
+[Players]
+ﺍﻟﻼﻋﺒﻮﻥ
+[Rules]
+القواعد
+[settings Interface layout]
+تخطيط الواجهة
+[settings Automatic]
+تلقائي
+[settings Compact]
+متقاربة
+[settings Spacious]
+واسع
+[More]
+المزيد
+[No items]
+لا توجد عناصر
+[Opponents]
+الخصوم
+[Review]
+مراجعة
+[Review & Play]
+مراجعة ولعب
+[Edit opponents]
+تعديل الخصوم
+[Map settings]
+إعدادات الخريطة
+[Next]
+التالي
+[Done]
+تم
+[Contribution]
+المساهمة
+[Choose who controls this colony]
+اختر من يتحكم في هذه المستعمرة
+[Settings]
+ﺍﻹﻋﺪﺍﺩﺍﺕ
+[settings Back]
+ﻋُﺪ
+[settings Save the game automatically about every minute.]
+احفظ اللعبة تلقائيًا كل دقيقة تقريبًا.
+[AI opponents]
+خصوم آليون
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+يستخدم التخطيط الواسع لوحة جانبية عند توفر مساحة. يستخدم التخطيط المضغوط شريط أدوات ولوحات قابلة للفتح.
+[Assigned %0 · Target %1]
+المعيّنون %0 · الهدف %1
+[Range: %0]
+المدى: %0
+[Player %0]
+اللاعب %0
+[Brush %0]
+الفرشاة %0
+[Team %0]
+الفريق %0
+[Your colony]
+مستعمرتك
+[%0 / %1 HP · %2]
+%0 / %1 صحة · %2
+[Units: %0]
+الوحدات: %0
+[Buildings: %0]
+المباني: %0
+[Need food: %0]
+بحاجة إلى طعام: %0
+[Need healing: %0]
+بحاجة إلى علاج: %0
+[Attack: %0]
+الهجوم: %0
+[Defense: %0]
+الدفاع: %0
+[Food: %0 / %1]
+الطعام: %0 / %1
+[View team %0]
+عرض الفريق %0
+[P %0/%1/%2]
+هيبة %0/%1/%2
+[CPU load %0]
+المعالج %0%
+[Brush %0x%1]
+الفرشاة %0x%1
+[Level %0]
+المستوى %0
+[Manage teams (%0)]
+إدارة الفرق (%0)
+[Team %0 / Level %1]
+الفريق %0 / المستوى %1
+[Files · %0]
+الملفات · %0
+[Hint %0]
+تلميح %0
+[Objective %0]
+هدف %0
+[Entry %0 of 8 · empty entries are omitted]
+الإدخال %0 من 8 · تُحذف الإدخالات الفارغة
+[Teams %0/%1]
+الفرق %0/%1
+[Elapsed time · %0]
+الوقت المنقضي · %0
+[Read-only building]
+مبنى للقراءة فقط
+[Alliance and shared vision are fixed for this match.]
+التحالف والرؤية المشتركة ثابتان في هذه المباراة.
+[Share vision]
+مشاركة الرؤية
+[Share food vision]
+مشاركة رؤية الطعام
+[Share market vision]
+مشاركة رؤية الأسواق
+[Chat]
+الدردشة
+[No other players have editable diplomatic settings in this match.]
+لا يملك لاعبون آخرون إعدادات دبلوماسية قابلة للتعديل في هذه المباراة.
+[No briefing for this match.]
+لا توجد تعليمات لهذه المباراة.
+[Chat · recipients selected in Teams]
+الدردشة · اختيار المستلمين من الفرق
+[Filename]
+اسم الملف
+[Reduced motion]
+تقليل الحركة
+[Send]
+إرسال
+[Close]
+إغلاق
+[Forbidden]
+ممنوع
+[Guard]
+حراسة
+[Clear]
+تنظيف
+[Paint]
+رسم
+[Erase]
+محو
+[Release on valid terrain to place]
+أفلت فوق أرض صالحة للوضع
+[Paint on the map; two fingers move]
+ارسم على الخريطة؛ حرّك بإصبعين
+[Tutorial ▸]
+التدريب ▸
+[Back to tools]
+العودة إلى الأدوات
+[Starvation overlay]
+طبقة الجوع
+[Damage overlay]
+طبقة الضرر
+[Defense overlay]
+طبقة الدفاع
+[Fertility overlay]
+طبقة الخصوبة
+[Health and food bars]
+أشرطة الصحة والطعام
+[Message history]
+سجل الرسائل
+[Mark map for allies]
+تحديد الخريطة للحلفاء
+[Show zones]
+إظهار المناطق
+[Pan]
+تحريك
+[Select]
+تحديد
+[Show palette]
+إظهار اللوحة
+[Release to place]
+أفلت للوضع
+[Blocked placement]
+الوضع محظور
+[File name]
+اسم الملف
+[Load map]
+تحميل خريطة
+[Save map]
+حفظ الخريطة
+[No files in this folder]
+لا توجد ملفات في هذا المجلد
+[No files saved yet]
+لم تُحفظ ملفات بعد
+[Export]
+تصدير
+[Tap to write the mission briefing]
+المس لكتابة تعليمات المهمة
+[Tap to write the map script]
+المس لكتابة برنامج الخريطة
+[Script]
+البرنامج
+[Previous]
+السابق
+[Compile]
+ترجمة برمجية
+[Tap to write this hint]
+المس لكتابة هذا التلميح
+[Tap to write this objective]
+المس لكتابة هذا الهدف
+[Mission briefing · tap to edit, swipe to scroll]
+تعليمات المهمة · المس للتعديل، واسحب للتمرير
+[Not enough recorded history yet.]
+لم يُسجل تاريخ كافٍ بعد.
+[Select a team to show its history.]
+اختر فريقًا لإظهار تاريخه.
+[Back to chart]
+العودة إلى الرسم البياني
+[Expand chart]
+تكبير الرسم البياني
+[Slot]
+خانة
+[Color]
+لون
+[Player / AI]
+لاعب / ذكاء اصطناعي
+[Group]
+مجموعة
+[Forbid]
+منع
+[↓ Low]
+↓ منخفضة
+[= Normal]
+= عادية
+[↑ High]
+↑ عالية
+[Details]
+التفاصيل
+[Campaign name]
+اسم الحملة
+[Unlocking]
+فتح القفل
+[Parameters]
+المعلمات
+[Blank map]
+خريطة فارغة
+[Generated]
+مولّدة
+[Preview]
+معاينة
+[Selected landscape]
+التضاريس المختارة
+[Representative preview]
+معاينة تمثيلية
+[Starting terrain]
+التضاريس الأولية
+[Hide parameters]
+إخفاء المعلمات
+[Size and parameters]
+الحجم والمعلمات
+[Choose a landscape]
+اختر تضاريس
+[%0 / Browse]
+%0 / تصفح
+[%0 colonies · %1]
+%0 مستعمرات · %1
+[%0 · Team %1]
+%0 · الفريق %1
+[Colonies: %0]
+المستعمرات: %0
+[%0 colonies · %1 AI]
+%0 مستعمرات · %1 ﺁﻟﻲ
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 وحدات
+[settings Level %0]
+ﺍﻟﻤﺴﺘﻮﻯ %0
+[settings Match the desktop %0]
+مطابقة سطح المكتب (%0)
+[settings Current display %0 %1 %2 %3]
+إعدادات العرض الحالية: %0 × %1 · %2 · %3
+[Fairness: %0]
+الإنصاف: %0
+[Colony %0]
+مستعمرة %0
+[Win chance: %0 · Fitness: %1]
+فرصة الفوز: %0 · القوة: %1
+[%0 · Contribution: %1]
+%0 · المساهمة: %1
+[Min required level %0]
+ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ: %0
+[Confirm %0]
+ﻧﻌﻢ: %0
+[Dialog text size %0]
+حجم نص الحوار: %0%
+[%0 %1]
+%0 %1

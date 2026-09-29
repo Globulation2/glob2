@@ -14,8 +14,9 @@ async function startAndSave(page) {
   await click(page,600,400);
   // Name the manual save explicitly: an autosave can arrive while persistence
   // completes, so selecting the first newly appearing file races with it.
-  await click(page,600,515);
-  await page.locator('#canvas').press('Home');
+  const nameField=page.getByRole('textbox',{name:'Game text field'});
+  await nameField.click();
+  await nameField.press('Home');
   await page.keyboard.type('Reload regression ',{delay:30});
   await click(page,520,555);
   await expect.poll(async()=>{

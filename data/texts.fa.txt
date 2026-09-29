@@ -3058,3 +3058,331 @@ Emoji
 بازی بسته شد. می‌توانید این پنجره را ببندید یا صفحه را دوباره بارگذاری کنید تا دوباره بازی کنید.
 [campaign editor save failed]
 ذخیره تأیید نشد. تأیید دوباره تلاش می‌کند؛ لغو به منوی ویرایشگر بازمی‌گردد.
+[Actions]
+عملیات
+[Minimap]
+نقشه کوچک
+[Fast forward]
+جلو بردن سریع
+[Hide keyboard]
+پنهان کردن صفحه‌کلید
+[Dialog text size]
+اندازه متن گفتگو
+[Player slot]
+جایگاه بازیکن
+[Team color]
+رنگ تیم
+[Alliance group]
+گروه اتحاد
+[menu]
+منو
+[Editor tools]
+ابزارها
+[Pan map]
+جابه‌جایی نقشه
+[Edit map]
+ویرایش نقشه
+[Editor map]
+نقشه
+[Flags]
+پرچم ها
+[Pause]
+مکث
+[Speed]
+سرعت
+[Objectives]
+هدفهای بازی
+[Menu]
+منو
+[Goals]
+اهداف
+[Teams]
+تیم‌ها
+[Use this landscape]
+استفاده از این چشم‌انداز
+[Reset]
+بازنشانی
+[Generating...]
+در حال تولید...
+[Players]
+بازیکنان
+[Rules]
+قوانین
+[settings Interface layout]
+چیدمان رابط
+[settings Automatic]
+خودکار
+[settings Compact]
+نزدیک
+[settings Spacious]
+جادار
+[More]
+بیشتر
+[No items]
+موردی نیست
+[Opponents]
+حریفان
+[Review]
+مرور
+[Review & Play]
+مرور و بازی
+[Edit opponents]
+ویرایش حریفان
+[Map settings]
+تنظیمات نقشه
+[Next]
+بعدی
+[Done]
+انجام شد
+[Contribution]
+سهم
+[Choose who controls this colony]
+انتخاب کنید چه کسی این مستعمره را کنترل کند
+[Settings]
+تنظیمها
+[settings Back]
+برگشتن
+[settings Save the game automatically about every minute.]
+بازی را تقریباً هر دقیقه به‌طور خودکار ذخیره کنید.
+[AI opponents]
+حریفان هوش مصنوعی
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+چیدمان جادار در صورت وجود فضا از پنل کناری استفاده می‌کند. چیدمان فشرده از نوار ابزار و پنل‌های بازشو استفاده می‌کند.
+[Assigned %0 · Target %1]
+تخصیص‌یافته %0 · هدف %1
+[Range: %0]
+برد: %0
+[Player %0]
+بازیکن %0
+[Brush %0]
+قلم‌مو %0
+[Team %0]
+تیم %0
+[Your colony]
+مستعمرهٔ شما
+[%0 / %1 HP · %2]
+%0 / %1 سلامت · %2
+[Units: %0]
+واحدها: %0
+[Buildings: %0]
+ساختمان‌ها: %0
+[Need food: %0]
+نیازمند غذا: %0
+[Need healing: %0]
+نیازمند درمان: %0
+[Attack: %0]
+حمله: %0
+[Defense: %0]
+دفاع: %0
+[Food: %0 / %1]
+غذا: %0 / %1
+[View team %0]
+نمایش تیم %0
+[P %0/%1/%2]
+اعتبار %0/%1/%2
+[CPU load %0]
+پردازنده %0%
+[Brush %0x%1]
+قلم‌مو %0x%1
+[Level %0]
+سطح %0
+[Manage teams (%0)]
+مدیریت تیم‌ها (%0)
+[Team %0 / Level %1]
+تیم %0 / سطح %1
+[Files · %0]
+پرونده‌ها · %0
+[Hint %0]
+راهنمایی %0
+[Objective %0]
+هدف %0
+[Entry %0 of 8 · empty entries are omitted]
+ورودی %0 از 8 · ورودی‌های خالی حذف می‌شوند
+[Teams %0/%1]
+تیم‌ها %0/%1
+[Elapsed time · %0]
+زمان سپری‌شده · %0
+[Read-only building]
+ساختمان فقط‌خواندنی
+[Alliance and shared vision are fixed for this match.]
+اتحاد و دید مشترک در این مسابقه ثابت هستند.
+[Share vision]
+اشتراک دید
+[Share food vision]
+اشتراک دید غذا
+[Share market vision]
+اشتراک دید بازارها
+[Chat]
+گفتگو
+[No other players have editable diplomatic settings in this match.]
+بازیکنان دیگر در این مسابقه تنظیمات دیپلماسی قابل ویرایش ندارند.
+[No briefing for this match.]
+توضیحی برای این مسابقه وجود ندارد.
+[Chat · recipients selected in Teams]
+گفتگو · گیرندگان در بخش تیم‌ها انتخاب می‌شوند
+[Filename]
+نام پرونده
+[Reduced motion]
+کاهش حرکت
+[Send]
+ارسال
+[Close]
+بستن
+[Forbidden]
+ممنوع
+[Guard]
+نگهبانی
+[Clear]
+پاک‌سازی
+[Paint]
+رسم
+[Erase]
+پاک کردن
+[Release on valid terrain to place]
+برای قرار دادن روی زمین معتبر رها کنید
+[Paint on the map; two fingers move]
+روی نقشه رسم کنید؛ با دو انگشت حرکت دهید
+[Tutorial ▸]
+آموزش ▸
+[Back to tools]
+بازگشت به ابزارها
+[Starvation overlay]
+لایهٔ گرسنگی
+[Damage overlay]
+لایهٔ آسیب
+[Defense overlay]
+لایهٔ دفاع
+[Fertility overlay]
+لایهٔ حاصلخیزی
+[Health and food bars]
+نوارهای سلامت و غذا
+[Message history]
+تاریخچهٔ پیام‌ها
+[Mark map for allies]
+علامت‌گذاری نقشه برای متحدان
+[Show zones]
+نمایش ناحیه‌ها
+[Pan]
+جابه‌جایی
+[Select]
+انتخاب
+[Show palette]
+نمایش پالت
+[Release to place]
+برای قرار دادن رها کنید
+[Blocked placement]
+قرار دادن مسدود است
+[File name]
+نام پرونده
+[Load map]
+بارگذاری نقشه
+[Save map]
+ذخیرهٔ نقشه
+[No files in this folder]
+پرونده‌ای در این پوشه نیست
+[No files saved yet]
+هنوز پرونده‌ای ذخیره نشده
+[Export]
+برون‌بری
+[Tap to write the mission briefing]
+برای نوشتن توضیح مأموریت لمس کنید
+[Tap to write the map script]
+برای نوشتن اسکریپت نقشه لمس کنید
+[Script]
+اسکریپت
+[Previous]
+قبلی
+[Compile]
+کامپایل
+[Tap to write this hint]
+برای نوشتن این راهنمایی لمس کنید
+[Tap to write this objective]
+برای نوشتن این هدف لمس کنید
+[Mission briefing · tap to edit, swipe to scroll]
+توضیح مأموریت · برای ویرایش لمس کنید، برای پیمایش بکشید
+[Not enough recorded history yet.]
+هنوز تاریخچهٔ کافی ثبت نشده است.
+[Select a team to show its history.]
+تیمی را برای نمایش تاریخچه‌اش انتخاب کنید.
+[Back to chart]
+بازگشت به نمودار
+[Expand chart]
+بزرگ کردن نمودار
+[Slot]
+جایگاه
+[Color]
+رنگ
+[Player / AI]
+بازیکن / هوش مصنوعی
+[Group]
+گروه
+[Forbid]
+ممنوع کردن
+[↓ Low]
+↓ پایین
+[= Normal]
+= عادی
+[↑ High]
+↑ بالا
+[Details]
+جزئیات
+[Campaign name]
+نام کارزار
+[Unlocking]
+باز کردن قفل
+[Parameters]
+پارامترها
+[Blank map]
+نقشهٔ خالی
+[Generated]
+تولیدشده
+[Preview]
+پیش‌نمایش
+[Selected landscape]
+چشم‌انداز انتخاب‌شده
+[Representative preview]
+پیش‌نمایش نمونه
+[Starting terrain]
+زمین اولیه
+[Hide parameters]
+پنهان کردن پارامترها
+[Size and parameters]
+اندازه و پارامترها
+[Choose a landscape]
+چشم‌اندازی انتخاب کنید
+[%0 / Browse]
+%0 / مرور
+[%0 colonies · %1]
+%0 مستعمرات · %1
+[%0 · Team %1]
+%0 · تیم %1
+[Colonies: %0]
+مستعمرات: %0
+[%0 colonies · %1 AI]
+%0 مستعمرات · %1 هوش مصنوعی
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 واحدها
+[settings Level %0]
+سطح %0
+[settings Match the desktop %0]
+مطابق با میزکار (%0)
+[settings Current display %0 %1 %2 %3]
+تنظیمات نمایش فعلی: %0 × %1 · %2 · %3
+[Fairness: %0]
+انصاف: %0
+[Colony %0]
+مستعمره %0
+[Win chance: %0 · Fitness: %1]
+احتمال پیروزی: %0 · توان: %1
+[%0 · Contribution: %1]
+%0 · سهم: %1
+[Min required level %0]
+حداقل رتبه‌ی لازم: %0
+[Confirm %0]
+قبول!: %0
+[Dialog text size %0]
+اندازه متن گفتگو: %0%
+[%0 %1]
+%0 %1

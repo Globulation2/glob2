@@ -3056,3 +3056,331 @@ Emoji
 ゲームが終了しました。このウィンドウを閉じるか、再読み込みして再度プレイできます。
 [campaign editor save failed]
 保存が確認されていません。OKで再試行、キャンセルでエディタメニューに戻ります。
+[Actions]
+操作
+[Minimap]
+ミニマップ
+[Fast forward]
+早送り
+[Hide keyboard]
+キーボードを隠す
+[Dialog text size]
+ダイアログの文字サイズ
+[Player slot]
+プレイヤー枠
+[Team color]
+チームの色
+[Alliance group]
+同盟グループ
+[menu]
+メニュー
+[Editor tools]
+ツール
+[Pan map]
+マップを移動
+[Edit map]
+マップを編集
+[Editor map]
+マップ
+[Flags]
+旗
+[Pause]
+一時停止
+[Speed]
+速度
+[Objectives]
+目標
+[Menu]
+メニュー
+[Goals]
+目標
+[Teams]
+チーム
+[Use this landscape]
+この地形を使用
+[Reset]
+リセット
+[Generating...]
+生成中...
+[Players]
+プレイヤー
+[Rules]
+ルール
+[settings Interface layout]
+インターフェースの配置
+[settings Automatic]
+自動
+[settings Compact]
+狭い
+[settings Spacious]
+ゆったり
+[More]
+その他
+[No items]
+項目なし
+[Opponents]
+対戦相手
+[Review]
+確認
+[Review & Play]
+確認してプレイ
+[Edit opponents]
+対戦相手を編集
+[Map settings]
+マップ設定
+[Next]
+次へ
+[Done]
+完了
+[Contribution]
+寄与度
+[Choose who controls this colony]
+このコロニーを操作するプレイヤーを選択
+[Settings]
+設定
+[settings Back]
+戻る
+[settings Save the game automatically about every minute.]
+約1分ごとにゲームを自動保存します。
+[AI opponents]
+AI対戦相手
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+ゆったり配置は十分な空間があるときにサイドパネルを使います。コンパクト配置はツールバーと開閉式パネルを使います。
+[Assigned %0 · Target %1]
+割り当て %0 · 目標 %1
+[Range: %0]
+範囲：%0
+[Player %0]
+プレイヤー %0
+[Brush %0]
+ブラシ %0
+[Team %0]
+チーム %0
+[Your colony]
+自分のコロニー
+[%0 / %1 HP · %2]
+%0 / %1 HP · %2
+[Units: %0]
+ユニット：%0
+[Buildings: %0]
+建物：%0
+[Need food: %0]
+食料が必要：%0
+[Need healing: %0]
+治療が必要：%0
+[Attack: %0]
+攻撃：%0
+[Defense: %0]
+防御：%0
+[Food: %0 / %1]
+食料：%0 / %1
+[View team %0]
+チーム %0 を表示
+[P %0/%1/%2]
+名声 %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+ブラシ %0x%1
+[Level %0]
+レベル %0
+[Manage teams (%0)]
+チーム管理（%0）
+[Team %0 / Level %1]
+チーム %0 / レベル %1
+[Files · %0]
+ファイル · %0
+[Hint %0]
+ヒント %0
+[Objective %0]
+目標 %0
+[Entry %0 of 8 · empty entries are omitted]
+項目 %0 / 8 · 空の項目は省略されます
+[Teams %0/%1]
+チーム %0/%1
+[Elapsed time · %0]
+経過時間 · %0
+[Read-only building]
+閲覧専用の建物
+[Alliance and shared vision are fixed for this match.]
+この対戦では同盟と共有視界は固定されています。
+[Share vision]
+視界を共有
+[Share food vision]
+食料の視界を共有
+[Share market vision]
+市場の視界を共有
+[Chat]
+チャット
+[No other players have editable diplomatic settings in this match.]
+この対戦では他のプレイヤーの外交設定を変更できません。
+[No briefing for this match.]
+この対戦には概要がありません。
+[Chat · recipients selected in Teams]
+チャット · チームで宛先を選択
+[Filename]
+ファイル名
+[Reduced motion]
+動きを減らす
+[Send]
+送信
+[Close]
+閉じる
+[Forbidden]
+禁止
+[Guard]
+警備
+[Clear]
+除去
+[Paint]
+描く
+[Erase]
+消す
+[Release on valid terrain to place]
+配置可能な地形で指を離すと配置
+[Paint on the map; two fingers move]
+地図に描画、2本指で移動
+[Tutorial ▸]
+チュートリアル ▸
+[Back to tools]
+ツールに戻る
+[Starvation overlay]
+飢餓表示
+[Damage overlay]
+損傷表示
+[Defense overlay]
+防御表示
+[Fertility overlay]
+肥沃度表示
+[Health and food bars]
+体力と食料のバー
+[Message history]
+メッセージ履歴
+[Mark map for allies]
+味方のために地図に印を付ける
+[Show zones]
+区域を表示
+[Pan]
+移動
+[Select]
+選択
+[Show palette]
+パレットを表示
+[Release to place]
+指を離して配置
+[Blocked placement]
+配置不可
+[File name]
+ファイル名
+[Load map]
+地図を読み込む
+[Save map]
+地図を保存
+[No files in this folder]
+このフォルダーにファイルはありません
+[No files saved yet]
+保存済みファイルはまだありません
+[Export]
+エクスポート
+[Tap to write the mission briefing]
+タップして任務の概要を入力
+[Tap to write the map script]
+タップして地図のスクリプトを入力
+[Script]
+スクリプト
+[Previous]
+前へ
+[Compile]
+コンパイル
+[Tap to write this hint]
+タップしてこのヒントを入力
+[Tap to write this objective]
+タップしてこの目標を入力
+[Mission briefing · tap to edit, swipe to scroll]
+任務の概要 · タップで編集、スワイプでスクロール
+[Not enough recorded history yet.]
+記録された履歴がまだ不十分です。
+[Select a team to show its history.]
+チームを選択すると履歴が表示されます。
+[Back to chart]
+グラフに戻る
+[Expand chart]
+グラフを拡大
+[Slot]
+枠
+[Color]
+色
+[Player / AI]
+プレイヤー / AI
+[Group]
+グループ
+[Forbid]
+禁止
+[↓ Low]
+↓ 低
+[= Normal]
+= 通常
+[↑ High]
+↑ 高
+[Details]
+詳細
+[Campaign name]
+キャンペーン名
+[Unlocking]
+解放条件
+[Parameters]
+パラメーター
+[Blank map]
+空の地図
+[Generated]
+自動生成
+[Preview]
+プレビュー
+[Selected landscape]
+選択した地形
+[Representative preview]
+代表的なプレビュー
+[Starting terrain]
+初期地形
+[Hide parameters]
+パラメーターを隠す
+[Size and parameters]
+サイズとパラメーター
+[Choose a landscape]
+地形を選択
+[%0 / Browse]
+%0 / 参照
+[%0 colonies · %1]
+%0コロニー · %1
+[%0 · Team %1]
+%0 · チーム %1
+[Colonies: %0]
+コロニー: %0
+[%0 colonies · %1 AI]
+%0コロニー · AI %1
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 ユニット
+[settings Level %0]
+レベル %0
+[settings Match the desktop %0]
+デスクトップに合わせる (%0)
+[settings Current display %0 %1 %2 %3]
+現在の表示設定: %0 × %1 · %2 · %3
+[Fairness: %0]
+公平性: %0
+[Colony %0]
+コロニー %0
+[Win chance: %0 · Fitness: %1]
+勝率: %0 · 強さ: %1
+[%0 · Contribution: %1]
+%0 · 寄与度: %1
+[Min required level %0]
+最低必要レベル： %0
+[Confirm %0]
+OK: %0
+[Dialog text size %0]
+ダイアログの文字サイズ: %0%
+[%0 %1]
+%0 %1

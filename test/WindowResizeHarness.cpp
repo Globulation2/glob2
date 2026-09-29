@@ -152,9 +152,16 @@ public:
 	Color pixel(int x, int y)
 	{
 		Color c;
+		// Callers use SDL window coordinates; Retina readback is in drawable
+		// pixels. Sample the same window position on either density.
+		int windowWidth, windowHeight;
+		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+		require(x >= 0 && x < windowWidth && y >= 0 && y < windowHeight, "Readback outside window");
 		if (getOptionFlags() & USEGPU)
 		{
 #ifdef HAVE_OPENGL
+			x = x * presentedWidth / windowWidth;
+			y = y * presentedHeight / windowHeight;
 			require(x >= 0 && x < presentedWidth && y >= 0 && y < presentedHeight, "Readback outside presented frame");
 			c = presentedPixels[(presentedHeight-y-1)*presentedWidth+x];
 #endif
@@ -162,6 +169,9 @@ public:
 		else
 		{
 			auto *surface = SDL_GetWindowSurface(window);
+			require(surface != nullptr, "Missing software window surface");
+			x = x * surface->w / windowWidth;
+			y = y * surface->h / windowHeight;
 			require(surface && x >= 0 && x < surface->w && y >= 0 && y < surface->h, "Readback outside software window surface");
 			Uint32 p = 0;
 			const int bytes = surface->format->BytesPerPixel;

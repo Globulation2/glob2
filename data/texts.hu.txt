@@ -3060,3 +3060,331 @@ Kilépés mentés nélkül
 A játék bezárult. Bezárhatja ezt az ablakot, vagy újratöltheti az oldalt az ismételt játékhoz.
 [campaign editor save failed]
 A mentés nincs megerősítve. Az OK újra próbálkozik; a Mégse visszatér a szerkesztő menüjébe.
+[Actions]
+Műveletek
+[Minimap]
+Minitérkép
+[Fast forward]
+Gyors előretekerés
+[Hide keyboard]
+Billentyűzet elrejtése
+[Dialog text size]
+Párbeszédszöveg mérete
+[Player slot]
+Játékoshely
+[Team color]
+Csapatszín
+[Alliance group]
+Szövetségi csoport
+[menu]
+Menü
+[Editor tools]
+Eszközök
+[Pan map]
+Térkép mozgatása
+[Edit map]
+Pálya szerkesztése
+[Editor map]
+Térkép
+[Flags]
+Zászlók
+[Pause]
+Szünet
+[Speed]
+Sebesség
+[Objectives]
+Célok
+[Menu]
+Menü
+[Goals]
+Célok
+[Teams]
+Csapatok
+[Use this landscape]
+Táj használata
+[Reset]
+Visszaállítás
+[Generating...]
+Generálás...
+[Players]
+Játékosok
+[Rules]
+Szabályok
+[settings Interface layout]
+Felület elrendezése
+[settings Automatic]
+Automatikus
+[settings Compact]
+Közeli
+[settings Spacious]
+Tágas
+[More]
+Továbbiak
+[No items]
+Nincsenek elemek
+[Opponents]
+Ellenfelek
+[Review]
+Áttekintés
+[Review & Play]
+Ellenőrzés és játék
+[Edit opponents]
+Ellenfelek szerkesztése
+[Map settings]
+Térképbeállítások
+[Next]
+Tovább
+[Done]
+Kész
+[Contribution]
+Hozzájárulás
+[Choose who controls this colony]
+Válaszd ki, ki irányítja ezt a kolóniát
+[Settings]
+Beállítások
+[settings Back]
+Vissza
+[settings Save the game automatically about every minute.]
+A játék automatikus mentése körülbelül percenként.
+[AI opponents]
+Gépi ellenfelek
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+A tágas elrendezés oldalsó panelt használ, ha van elég hely. A kompakt elrendezés eszköztárat és kinyitható paneleket használ.
+[Assigned %0 · Target %1]
+Kiosztva %0 · Cél %1
+[Range: %0]
+Hatótáv: %0
+[Player %0]
+Játékos %0
+[Brush %0]
+Ecset %0
+[Team %0]
+Csapat %0
+[Your colony]
+Saját kolóniád
+[%0 / %1 HP · %2]
+%0 / %1 ÉP · %2
+[Units: %0]
+Egységek: %0
+[Buildings: %0]
+Épületek: %0
+[Need food: %0]
+Élelemre szorul: %0
+[Need healing: %0]
+Gyógyításra szorul: %0
+[Attack: %0]
+Támadás: %0
+[Defense: %0]
+Védelem: %0
+[Food: %0 / %1]
+Élelem: %0 / %1
+[View team %0]
+%0. csapat megtekintése
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Ecset %0x%1
+[Level %0]
+Szint %0
+[Manage teams (%0)]
+Csapatok kezelése (%0)
+[Team %0 / Level %1]
+Csapat %0 / Szint %1
+[Files · %0]
+Fájlok · %0
+[Hint %0]
+Tipp %0
+[Objective %0]
+Cél %0
+[Entry %0 of 8 · empty entries are omitted]
+%0. bejegyzés a 8-ból · az üresek kimaradnak
+[Teams %0/%1]
+Csapatok %0/%1
+[Elapsed time · %0]
+Eltelt idő · %0
+[Read-only building]
+Csak megtekinthető épület
+[Alliance and shared vision are fixed for this match.]
+A szövetség és a közös látótér rögzített ebben a játékban.
+[Share vision]
+Látótér megosztása
+[Share food vision]
+Élelem látóterének megosztása
+[Share market vision]
+Piacok látóterének megosztása
+[Chat]
+Csevegés
+[No other players have editable diplomatic settings in this match.]
+Más játékosnak nincs módosítható diplomáciai beállítása ebben a játékban.
+[No briefing for this match.]
+Ehhez a játékhoz nincs eligazítás.
+[Chat · recipients selected in Teams]
+Csevegés · címzettek a Csapatoknál kiválasztva
+[Filename]
+Fájlnév
+[Reduced motion]
+Csökkentett mozgás
+[Send]
+Küldés
+[Close]
+Bezárás
+[Forbidden]
+Tiltott
+[Guard]
+Őrzés
+[Clear]
+Tisztítás
+[Paint]
+Festés
+[Erase]
+Törlés
+[Release on valid terrain to place]
+Elhelyezéshez engedd el megfelelő terep felett
+[Paint on the map; two fingers move]
+Fess a térképre; két ujjal mozgathatod
+[Tutorial ▸]
+Oktatás ▸
+[Back to tools]
+Vissza az eszközökhöz
+[Starvation overlay]
+Éhezési réteg
+[Damage overlay]
+Sérülési réteg
+[Defense overlay]
+Védelmi réteg
+[Fertility overlay]
+Termékenységi réteg
+[Health and food bars]
+Életerő- és élelemsávok
+[Message history]
+Üzenetelőzmények
+[Mark map for allies]
+Térkép jelölése a szövetségeseknek
+[Show zones]
+Zónák mutatása
+[Pan]
+Mozgatás
+[Select]
+Kijelölés
+[Show palette]
+Paletta mutatása
+[Release to place]
+Engedd el az elhelyezéshez
+[Blocked placement]
+Elhelyezés akadályozva
+[File name]
+Fájl neve
+[Load map]
+Térkép betöltése
+[Save map]
+Térkép mentése
+[No files in this folder]
+Nincs fájl ebben a mappában
+[No files saved yet]
+Még nincs mentett fájl
+[Export]
+Exportálás
+[Tap to write the mission briefing]
+Koppints a küldetés eligazításának megírásához
+[Tap to write the map script]
+Koppints a térkép szkriptjének megírásához
+[Script]
+Szkript
+[Previous]
+Előző
+[Compile]
+Fordítás
+[Tap to write this hint]
+Koppints e tipp megírásához
+[Tap to write this objective]
+Koppints e cél megírásához
+[Mission briefing · tap to edit, swipe to scroll]
+Küldetés eligazítása · koppints a szerkesztéshez, húzd a görgetéshez
+[Not enough recorded history yet.]
+Még nincs elég rögzített előzmény.
+[Select a team to show its history.]
+Válassz csapatot az előzményei megjelenítéséhez.
+[Back to chart]
+Vissza a diagramhoz
+[Expand chart]
+Diagram nagyítása
+[Slot]
+Hely
+[Color]
+Szín
+[Player / AI]
+Játékos / MI
+[Group]
+Csoport
+[Forbid]
+Tiltás
+[↓ Low]
+↓ Alacsony
+[= Normal]
+= Normál
+[↑ High]
+↑ Magas
+[Details]
+Részletek
+[Campaign name]
+Hadjárat neve
+[Unlocking]
+Feloldás
+[Parameters]
+Paraméterek
+[Blank map]
+Üres pálya
+[Generated]
+Generált
+[Preview]
+Előnézet
+[Selected landscape]
+Kiválasztott táj
+[Representative preview]
+Mintaelőnézet
+[Starting terrain]
+Kezdeti terep
+[Hide parameters]
+Paraméterek elrejtése
+[Size and parameters]
+Méret és paraméterek
+[Choose a landscape]
+Válassz tájat
+[%0 / Browse]
+%0 / Tallózás
+[%0 colonies · %1]
+%0 kolóniák · %1
+[%0 · Team %1]
+%0 · Csapat %1
+[Colonies: %0]
+Kolóniák: %0
+[%0 colonies · %1 AI]
+%0 kolóniák · %1 MI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Egységek
+[settings Level %0]
+Szint %0
+[settings Match the desktop %0]
+Az asztalhoz igazítva (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuális megjelenítési mód: %0 × %1 · %2 · %3
+[Fairness: %0]
+Méltányosság: %0
+[Colony %0]
+Kolónia %0
+[Win chance: %0 · Fitness: %1]
+Nyerési esély: %0 · Erősség: %1
+[%0 · Contribution: %1]
+%0 · Hozzájárulás: %1
+[Min required level %0]
+Minimális szükséges szint: %0
+[Confirm %0]
+Rendben: %0
+[Dialog text size %0]
+Párbeszédszöveg mérete: %0%
+[%0 %1]
+%0 %1

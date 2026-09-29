@@ -34,7 +34,7 @@ class YOGSessionScreen final : public Glob2TabScreen {
 public:
     YOGSessionScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client)
         : Glob2TabScreen(true), lobby(this, screens, client), options(this, client),
-          maps(this, screens, client) {}
+          maps(this, screens, client) { enablePhoneForm(); }
 };
 }
 

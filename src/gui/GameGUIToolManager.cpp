@@ -326,7 +326,16 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 
 
 
-void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
+bool GameGUIToolManager::confirmBuilding(int mouseX, int mouseY, int localteam, int viewportX, int viewportY)
+{
+    if (mode != PlaceBuilding) return false;
+    const auto* type=globalContainer->buildingsTypes.get(globalContainer->buildingsTypes.getPlaceableTypeNum(building));
+    int x,y;
+    game.map.cursorToBuildingPos(mouseX,mouseY,type->width,type->height,&x,&y,viewportX,viewportY);
+    return placeBuildingAt(x,y,localteam);
+}
+
+bool GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 {
 	// Count down whether a building site can be placed
 	if (game.teams[localteam]->noMoreBuildingSitesCountdown==0)
@@ -356,8 +365,10 @@ void GameGUIToolManager::placeBuildingAt(int mapX, int mapY, int localteam)
 				r = globalContainer->settings.defaultFlagRadius[bt->shortTypeNum - IntBuildingType::EXPLORATION_FLAG];
 			ghostManager.addBuilding(typeNum, mapX, mapY);
 			orders.push(std::shared_ptr<Order>(new OrderCreate(localteam, mapX, mapY, typeNum, unitWorking, unitWorkingFuture, r)));
+            return true;
 		}
 	}
+    return false;
 }
 
 

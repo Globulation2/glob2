@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {gameURL,clickMainMenu,clickCustomGameStart}=require('./main-menu');
+const {gameURL,clickMainMenu,clickCustomGameStart,clickResultsSave}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
 async function colonyVisible(page) {
@@ -30,7 +30,7 @@ test('menu presentation survives a match and nested menus',async({page},info)=>{
   await page.locator('#canvas').click({position:{x:600,y:500},delay:80});
   await screen(page,'EndGameScreen');
   await page.screenshot({path:info.outputPath('results.png')});
-  await page.locator('#canvas').click({position:{x:1060,y:815},delay:80});
+  await clickResultsSave(page);
   await screen(page,'LoadSaveScreen');
   await expect.poll(()=>require('./pixels').hasDarkText(page,{x:475,y:317,width:250,height:30})).toBe(true);
   await page.screenshot({path:info.outputPath('save-replay.png')});

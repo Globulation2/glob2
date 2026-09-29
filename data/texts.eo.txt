@@ -3058,3 +3058,331 @@ Eliri sen konservi
 La ludo fermiĝis. Vi povas fermi ĉi tiun fenestron aŭ reŝargi por denove ludi.
 [campaign editor save failed]
 Konservado ne konfirmita. Bone reprovas; Nuligi revenas al la redaktila menuo.
+[Actions]
+Agoj
+[Minimap]
+Mapeto
+[Fast forward]
+Rapide antaŭen
+[Hide keyboard]
+Kaŝi klavaron
+[Dialog text size]
+Dialoga tekstogrando
+[Player slot]
+Ludantloko
+[Team color]
+Teamkoloro
+[Alliance group]
+Alianca grupo
+[menu]
+Menuo
+[Editor tools]
+Iloj
+[Pan map]
+Movi mapon
+[Edit map]
+Redakti Karton
+[Editor map]
+Mapo
+[Flags]
+Flagoj
+[Pause]
+Paŭzo
+[Speed]
+Rapido
+[Objectives]
+Celtabulo
+[Menu]
+Menuo
+[Goals]
+Celoj
+[Teams]
+Teamoj
+[Use this landscape]
+Uzi ĉi tiun pejzaĝon
+[Reset]
+Restarigi
+[Generating...]
+Generado...
+[Players]
+Ludantoj
+[Rules]
+Reguloj
+[settings Interface layout]
+Interfaca aranĝo
+[settings Automatic]
+Aŭtomata
+[settings Compact]
+Proksimaj
+[settings Spacious]
+Vasta
+[More]
+Pli
+[No items]
+Neniuj eroj
+[Opponents]
+Kontraŭuloj
+[Review]
+Superrigardo
+[Review & Play]
+Kontroli kaj ludi
+[Edit opponents]
+Redakti kontraŭulojn
+[Map settings]
+Mapaj agordoj
+[Next]
+Sekva
+[Done]
+Farite
+[Contribution]
+Kontribuo
+[Choose who controls this colony]
+Elektu, kiu regas ĉi tiun kolonion
+[Settings]
+Elektaĵoj
+[settings Back]
+Reen
+[settings Save the game automatically about every minute.]
+Aŭtomate konservi la ludon proksimume ĉiun minuton.
+[AI opponents]
+Komputilaj kontraŭuloj
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La vasta aranĝo uzas flankan panelon kiam estas spaco. La kompakta uzas ilobreton kaj malfermeblajn panelojn.
+[Assigned %0 · Target %1]
+Asignitaj %0 · Celo %1
+[Range: %0]
+Atingo: %0
+[Player %0]
+Ludanto %0
+[Brush %0]
+Peniko %0
+[Team %0]
+Teamo %0
+[Your colony]
+Via kolonio
+[%0 / %1 HP · %2]
+%0 / %1 VP · %2
+[Units: %0]
+Unuoj: %0
+[Buildings: %0]
+Konstruaĵoj: %0
+[Need food: %0]
+Bezonas manĝon: %0
+[Need healing: %0]
+Bezonas kuracadon: %0
+[Attack: %0]
+Atako: %0
+[Defense: %0]
+Defendo: %0
+[Food: %0 / %1]
+Manĝo: %0 / %1
+[View team %0]
+Montri teamon %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Peniko %0x%1
+[Level %0]
+Nivelo %0
+[Manage teams (%0)]
+Administri teamojn (%0)
+[Team %0 / Level %1]
+Teamo %0 / Nivelo %1
+[Files · %0]
+Dosieroj · %0
+[Hint %0]
+Konsilo %0
+[Objective %0]
+Celo %0
+[Entry %0 of 8 · empty entries are omitted]
+Ero %0 el 8 · malplenaj eroj estas preterlasitaj
+[Teams %0/%1]
+Teamoj %0/%1
+[Elapsed time · %0]
+Pasinta tempo · %0
+[Read-only building]
+Nurlegebla konstruaĵo
+[Alliance and shared vision are fixed for this match.]
+Alianco kaj komuna vidado estas fiksitaj por ĉi tiu ludo.
+[Share vision]
+Kunhavigi vidon
+[Share food vision]
+Kunhavigi manĝovidon
+[Share market vision]
+Kunhavigi merkatvidon
+[Chat]
+Babilado
+[No other players have editable diplomatic settings in this match.]
+Neniu alia ludanto havas redakteblajn diplomatiajn agordojn en ĉi tiu ludo.
+[No briefing for this match.]
+Neniu instrukcio por ĉi tiu ludo.
+[Chat · recipients selected in Teams]
+Babilado · ricevantoj elektitaj ĉe Teamoj
+[Filename]
+Dosiernomo
+[Reduced motion]
+Malpli da moviĝo
+[Send]
+Sendi
+[Close]
+Fermi
+[Forbidden]
+Malpermesita
+[Guard]
+Gardi
+[Clear]
+Malplenigi
+[Paint]
+Pentri
+[Erase]
+Forviŝi
+[Release on valid terrain to place]
+Lasu sur valida tereno por loki
+[Paint on the map; two fingers move]
+Pentru sur la mapo; movu per du fingroj
+[Tutorial ▸]
+Instruilo ▸
+[Back to tools]
+Reen al iloj
+[Starvation overlay]
+Malsata tavolo
+[Damage overlay]
+Damaĝa tavolo
+[Defense overlay]
+Defenda tavolo
+[Fertility overlay]
+Fekundeca tavolo
+[Health and food bars]
+Sanaj kaj manĝaj bretoj
+[Message history]
+Mesaĝhistorio
+[Mark map for allies]
+Marki mapon por aliancanoj
+[Show zones]
+Montri zonojn
+[Pan]
+Movi
+[Select]
+Elekti
+[Show palette]
+Montri paletron
+[Release to place]
+Lasu por loki
+[Blocked placement]
+Lokado blokita
+[File name]
+Dosiernomo
+[Load map]
+Ŝargi mapon
+[Save map]
+Konservi mapon
+[No files in this folder]
+Neniuj dosieroj en ĉi tiu dosierujo
+[No files saved yet]
+Ankoraŭ neniuj konservitaj dosieroj
+[Export]
+Eksporti
+[Tap to write the mission briefing]
+Tuŝu por skribi la misiajn instrukciojn
+[Tap to write the map script]
+Tuŝu por skribi la mapan skripton
+[Script]
+Skripto
+[Previous]
+Antaŭa
+[Compile]
+Kompili
+[Tap to write this hint]
+Tuŝu por skribi ĉi tiun konsilon
+[Tap to write this objective]
+Tuŝu por skribi ĉi tiun celon
+[Mission briefing · tap to edit, swipe to scroll]
+Misiaj instrukcioj · tuŝu por redakti, ŝovu por rulumi
+[Not enough recorded history yet.]
+Ankoraŭ ne sufiĉas registrita historio.
+[Select a team to show its history.]
+Elektu teamon por montri ĝian historion.
+[Back to chart]
+Reen al diagramo
+[Expand chart]
+Pligrandigi diagramon
+[Slot]
+Loko
+[Color]
+Koloro
+[Player / AI]
+Ludanto / AI
+[Group]
+Grupo
+[Forbid]
+Malpermesi
+[↓ Low]
+↓ Malalta
+[= Normal]
+= Normala
+[↑ High]
+↑ Alta
+[Details]
+Detaloj
+[Campaign name]
+Kampanja nomo
+[Unlocking]
+Malŝlosado
+[Parameters]
+Parametroj
+[Blank map]
+Malplena mapo
+[Generated]
+Generita
+[Preview]
+Antaŭrigardo
+[Selected landscape]
+Elektita pejzaĝo
+[Representative preview]
+Ekzempla antaŭrigardo
+[Starting terrain]
+Komenca tereno
+[Hide parameters]
+Kaŝi parametrojn
+[Size and parameters]
+Grando kaj parametroj
+[Choose a landscape]
+Elektu pejzaĝon
+[%0 / Browse]
+%0 / Foliumi
+[%0 colonies · %1]
+%0 kolonioj · %1
+[%0 · Team %1]
+%0 · Teamo %1
+[Colonies: %0]
+Kolonioj: %0
+[%0 colonies · %1 AI]
+%0 kolonioj · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Globuloj
+[settings Level %0]
+Nivelo %0
+[settings Match the desktop %0]
+Kiel la labortablo (%0)
+[settings Current display %0 %1 %2 %3]
+Nunaj ekranagordoj: %0 × %1 · %2 · %3
+[Fairness: %0]
+Justeco: %0
+[Colony %0]
+Kolonio %0
+[Win chance: %0 · Fitness: %1]
+Ŝanco venki: %0 · Taŭgeco: %1
+[%0 · Contribution: %1]
+%0 · Kontribuo: %1
+[Min required level %0]
+Minimuma bezonata nivelo: %0
+[Confirm %0]
+Bone!: %0
+[Dialog text size %0]
+Dialoga tekstogrando: %0%
+[%0 %1]
+%0 %1

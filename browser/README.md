@@ -8,11 +8,17 @@ one. The pinned Emscripten 4.0.15 build
 shares game logic and the GPU renderer with desktop. The browser host schedules frames and cooperative jobs without Asyncify. Build and verification instructions below cover the desktop browser target.
 The browser ADRs under `docs/browser` describe the implementation boundaries and
 platform boundaries.
+Browser SDK calls for viewport metrics and text editing live in
+`browser/ApplicationHost.cpp`; shared UI code uses the `ApplicationHost` and
+`BrowserTextInput` interfaces, with native implementations in libgag.
 
 The desktop browser uses the system mouse cursor, including when an older profile
 had enabled the game cursor. Menus retain their colony background after leaving
-a match; the custom-game lobby draws its own panel over that background. Mobile
-playability is outside this PR.
+a match; the custom-game lobby draws its own panel over that background. Menus
+and gameplay share the native responsive presentation. Touch capability,
+logical viewport size, safe areas and interface scale determine the layout;
+device-pixel ratio only determines rendering resolution. Physical phone and tablet
+review remains necessary before release.
 
 ## Build
 
@@ -49,8 +55,12 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
-With WebGL2, press G in a match for the torus overview, and the map zoom controls
-work; the software renderer keeps the flat, unzoomed map.
+With WebGL2, press G in a match for the torus overview. Both rendering paths
+support the flat map camera's zoom and picking. Native HTML text fields handle
+browser keyboard editing, selection, paste, composition and password masking;
+visual-viewport changes occlude dialogs without changing the gameplay layout.
+Interface settings offer Automatic, Compact and Spacious. Compact remains usable
+with a mouse and keyboard; attaching a mouse does not replace touch-sized controls.
 High-quality graphics (including clouds) default to off for new browser profiles.
 You can enable them in Settings; existing saved preferences are preserved.
 
@@ -89,6 +99,12 @@ fixture under `browser/tests/fixtures`, without replacing shared determinism
 baselines. YOG distributes the host-selected map bytes to every player.
 
 ## Automated tests
+
+Build the native client and `transport-test` target before running the full
+suite. Editor generation tests read the native client's `--headless-catalog`
+to find named landscapes in the picker; this prevents additions to the catalog
+from silently changing which generator a test exercises. UI actions still use
+real pointer and keyboard events.
 
 The maintained Playwright suite starts an isolated local HTTP server and uses
 fresh browser profiles for every test. It covers page startup, a custom match,
@@ -132,8 +148,8 @@ release testing in actual Safari, nor Chromium for Edge.
 Use `GLOB2_TEST_RENDERER=webgl2` or `software` for renderer-sensitive tests.
 Dedicated renderer-contract tests select their own renderer explicitly.
 CI selects software for the full Chromium behavior suite
-and focused Firefox/WebKit startup and viewport checks, then repeats the
-renderer-sensitive startup, input, viewport and reload checks in Chromium WebGL2.
+and focused Firefox/WebKit startup, viewport, responsive-input and campaign-storage checks, then repeats the
+renderer-sensitive startup, input, viewport, responsive-presentation and reload checks in Chromium WebGL2.
 `rendering.spec.js` selects its own renderer and runs only in the full suite;
 `build-artifact.spec.js` checks the shared WASM binary once, without repeating it
 for each browser. Both renderers retain the separate visibility check. Otherwise

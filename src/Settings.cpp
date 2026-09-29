@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Settings.h"
+#include <InterfacePresentation.h>
 #include "GUIBase.h"
 #include "Utilities.h"
 #include <Stream.h>
@@ -41,6 +42,7 @@ Settings::Settings()
 	mute = 0;
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
+    mobileDialogTextPercent = 100;
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;
@@ -83,6 +85,7 @@ void Settings::setPasswd(std::string s) { password = s; }
 
 void Settings::load(std::string filename)
 {
+    interfacePresentation="automatic";
 	std::map<std::string, std::string> parsed;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
@@ -113,6 +116,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(uiScale);
+        READ_PARSED_STRING(interfacePresentation);
+        interfacePresentation=presentationPreferenceName(parsePresentationPreference(interfacePresentation));
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
@@ -124,6 +129,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(highResolutionArtwork);
 		READ_PARSED_INT(autosaveGames);
 		READ_PARSED_INT(gameSpeed);
+        READ_PARSED_INT(mobileDialogTextPercent);
+        mobileDialogTextPercent=std::clamp(mobileDialogTextPercent,100,150);
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_NORMAL),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 #ifndef YOG_SERVER_ONLY
@@ -158,6 +165,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(version);
 	}
 	delete stream;
+    presentationPreference=parsePresentationPreference(interfacePresentation);
 	
 	if(version < SETTINGS_VERSION)
 	{
@@ -180,6 +188,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
+        Utilities::streamprintf(stream, "interfacePresentation=%s\n", interfacePresentation.c_str());
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
@@ -191,6 +200,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
+        Utilities::streamprintf(stream,"mobileDialogTextPercent=%d\n",mobileDialogTextPercent);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
