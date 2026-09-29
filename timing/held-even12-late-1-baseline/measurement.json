@@ -1,0 +1,11 @@
+{
+  "case": "held-even12-late",
+  "variant": "baseline",
+  "directory": "held-even12-late-1-baseline",
+  "wall_s": 31.01463887002319,
+  "cpu_s": 32.19030799999997,
+  "run_s": 22.929046315,
+  "ticks": 41000,
+  "gradient_workers": 1,
+  "gradient_delay": 8
+}

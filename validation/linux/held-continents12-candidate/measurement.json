@@ -1,0 +1,15 @@
+{
+  "case": "held-continents12",
+  "variant": "candidate",
+  "directory": "held-continents12-candidate",
+  "wall_s": 10.88558513019234,
+  "cpu_s": null,
+  "run_s": 3.456313854,
+  "ticks": 8256,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "c21dd5917f709dac592d7592febe8c7bec16dc4cea2eb746e28bf88074075cba",
+  "order_sha256": "b60e39eb3d5042183d82e999254167b267be7141c274387beb222e0cf1ce3ee7",
+  "trace_ticks": 256,
+  "orders": 120
+}

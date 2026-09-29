@@ -1,0 +1,109 @@
+[
+  {
+    "id": "continents12",
+    "save": "inputs/continents12.game.gz",
+    "tick": 12000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": false,
+    "input_sha256": "ec020ea85fb507ee166c8635391ecdae3f4c98da506d3401b542213d73200804"
+  },
+  {
+    "id": "islands12",
+    "save": "inputs/islands12.game.gz",
+    "tick": 12000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": false,
+    "input_sha256": "47698adc741e5269eead1685ac5b25ca3fb87d2e892255a89cbe423b67922c1a"
+  },
+  {
+    "id": "even12",
+    "save": "inputs/even12.game.gz",
+    "tick": 12000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": true,
+    "input_sha256": "ac9c735fc96c629006bb1ca0590178baa5c5ca8e051df7ffc0e278ac02b606ad"
+  },
+  {
+    "id": "held-continents8",
+    "save": "inputs/held-continents8.game.gz",
+    "tick": 8000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": false,
+    "input_sha256": "cdb9e4622ea639fe3c64a63ef8776f31965bf4217ac277e49e38a97a82d0052a"
+  },
+  {
+    "id": "held-continents12",
+    "save": "inputs/held-continents12.game.gz",
+    "tick": 8000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": false,
+    "input_sha256": "b7da5776469b17b1922b93e02d01ba0efc9d460ef87d3303dd21561d5828083f"
+  },
+  {
+    "id": "held-even12",
+    "save": "inputs/held-even12.game.gz",
+    "tick": 8000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": false,
+    "input_sha256": "de5fdb2eb5472ae0be527b9f9f09941172ba5612bb55b750f8a7b7c2f391f0fd"
+  },
+  {
+    "id": "held-islands8",
+    "save": "inputs/held-islands8.game.gz",
+    "tick": 8000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": true,
+    "input_sha256": "bcc63bae38b444e6b3d0c913fea0fd278de830e21b05b3eb2ebe04990aaf99b1"
+  },
+  {
+    "id": "held-islands12",
+    "save": "inputs/held-islands12.game.gz",
+    "tick": 8000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": false,
+    "input_sha256": "ae75d247b0763e5b4e2802b144cac58f6553a57b882f4bb941eaf3c48f2b5c41"
+  },
+  {
+    "id": "held-even8",
+    "save": "inputs/held-even8.game.gz",
+    "tick": 8000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": false,
+    "input_sha256": "9703e35007c3f6a6230a91ded4488a9ef79645a250452f4ef7299ed2b25c8a24"
+  },
+  {
+    "id": "held-even12-late",
+    "save": "inputs/held-even12-late.game.gz",
+    "tick": 40000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": true,
+    "input_sha256": "0ada59f2d1186f546d4ec95cc26f2e8f785c1bdd4c99b7b90101286292d987d8"
+  },
+  {
+    "id": "held-islands12-late",
+    "save": "inputs/held-islands12-late.game.gz",
+    "tick": 40000,
+    "verify_ticks": 256,
+    "timing_ticks": 1000,
+    "benchmark": true,
+    "input_sha256": "52ab5b2b829045692051348f021a914c684d81d3499d2fecdb622594d6ac7ff5"
+  },
+  {
+    "id": "historic-v115",
+    "save": "inputs/historic-v115.game.gz",
+    "tick": 30000,
+    "verify_ticks": 512,
+    "benchmark": false,
+    "input_sha256": "7187bc9afbc6c4dd910a6081357f0f9f39187f7540a0aff089091daef64b1ba3"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "case": "held-islands12-late",
+  "variant": "baseline",
+  "directory": "held-islands12-late-2-baseline",
+  "wall_s": 40.72631539590657,
+  "cpu_s": 42.023612,
+  "run_s": 27.586289703,
+  "ticks": 41000,
+  "gradient_workers": 1,
+  "gradient_delay": 8
+}

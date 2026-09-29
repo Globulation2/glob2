@@ -1,0 +1,11 @@
+{
+  "case": "held-even12-late",
+  "variant": "candidate",
+  "directory": "held-even12-late-2-candidate",
+  "wall_s": 25.819966068957,
+  "cpu_s": 27.046500999999978,
+  "run_s": 17.709892797,
+  "ticks": 41000,
+  "gradient_workers": 1,
+  "gradient_delay": 8
+}

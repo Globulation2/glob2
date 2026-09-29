@@ -1,0 +1,499 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 15K of event 'cycles:u'
+# Event count (approx.): 298471154162
+#
+# Overhead;      Period;Command ;Shared Object       ;Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+ 11.14% ; 33244479501;baseline;baseline            ;[.] Map::propagateGradient(unsigned short*, int, int)
+ 7.50%  ; 22381045450;baseline;baseline            ;[.] AIMaximaPlacement::WorldState::normalizeX(int) const
+ 7.21%  ; 21514509903;baseline;baseline            ;[.] Map::updateGlobalGradient(Building*, int)
+ 5.98%  ; 17860273473;baseline;baseline            ;[.] AIMaximaPlacement::WorldState::normalizeY(int) const
+ 5.86%  ; 17477974665;baseline;baseline            ;[.] AIMaximaFoodLedger::Ledger::walk(AIMaximaFoodLedger::Input const&, int, int, int, int, int, int, std::vector<AIMaximaFoodLedger::Ledger::ReachCell, std::allocator<AIMaximaFoodLedger::Ledger::ReachCell> >&, std::vector<unsigned int, std::allocator<unsigned int> > const*, long long) const
+ 5.09%  ; 15178214059;baseline;baseline            ;[.] AIMaximaFoodLedger::Input::normalizeX(int) const
+ 4.13%  ; 12321624207;baseline;baseline            ;[.] AIMaximaPlacement::Planner::colonyFoodTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const
+ 3.54%  ; 10561371323;baseline;baseline            ;[.] BuildingGradientSearch::resolve(unsigned long)
+ 3.15%  ; 9396986230 ;baseline;baseline            ;[.] BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+ 3.07%  ; 9151910965 ;baseline;baseline            ;[.] AIMaximaFoodLedger::Input::normalizeY(int) const
+ 2.37%  ; 7059665160 ;baseline;libc.so.6           ;[.] __memset_avx2_unaligned_erms
+ 1.90%  ; 5662425015 ;baseline;baseline            ;[.] AIMaximaFoodLedger::Input::index(int, int) const
+ 1.85%  ; 5521792641 ;baseline;libc.so.6           ;[.] __memmove_avx_unaligned_erms
+ 1.80%  ; 5382488410 ;baseline;baseline            ;[.] AIMaximaPlacement::WorldState::index(int, int) const
+ 1.74%  ; 5201293854 ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const
+ 1.73%  ; 5161579480 ;baseline;baseline            ;[.] Map::updateResourcesGradient(int, unsigned char, int)
+ 1.20%  ; 3581284374 ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::addBuildCandidatesRange(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const&, unsigned int, bool, std::vector<AIMaximaPlacement::Planner::Candidate, std::allocator<AIMaximaPlacement::Planner::Candidate> >&, unsigned long&, unsigned long, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&, AIMaximaPlacement::DevelopmentAction&, bool&, unsigned long&)
+ 0.96%  ; 2874687300 ;baseline;baseline            ;[.] (anonymous namespace)::loadGradient(GAGCore::InputStream*, unsigned short*&, unsigned long)
+ 0.95%  ; 2840165754 ;baseline;baseline            ;[.] Map::updateRoundTripGradient(Building*, int, int)
+ 0.87%  ; 2591754737 ;baseline;baseline            ;[.] Building::gatherBringResourcesCandidates(Building::BringResourcesCandidate*, int)
+ 0.87%  ; 2591124687 ;baseline;baseline            ;[.] AIMaxima::Maxima::plan_offense(AIMaximaRuntime::Context&)::{lambda(int, int)#1}::operator()(int, int) const
+ 0.66%  ; 1971279496 ;baseline;baseline            ;[.] Map::updateGuardAreasGradient(int, int)
+ 0.65%  ; 1932266254 ;baseline;baseline            ;[.] Map::updateGlobalGradientTask(Map::_ZN3Map24updateGlobalGradientTaskEPh.Frame*) [clone .actor]
+ 0.62%  ; 1852459929 ;baseline;baseline            ;[.] AIMaximaRuntime::Gradients::Entities::AnyTeamBuilding::matches(Player*, int, int) const
+ 0.61%  ; 1813496367 ;baseline;baseline            ;[.] Unit::locationIsInEnemyGuardTowerRange(int, int) const
+ 0.59%  ; 1772515002 ;baseline;baseline            ;[.] Map::updateClearAreasGradient(int, int)
+ 0.59%  ; 1762423098 ;baseline;baseline            ;[.] GAGCore::BinaryInputStream::readEndianIndependent(void*, unsigned long, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+ 0.56%  ; 1674630436 ;baseline;baseline            ;[.] AICastor::computeHydratationMap()
+ 0.54%  ; 1616841999 ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::prepareScoringCaches(AIMaximaPlacement::WorldState const&) const
+ 0.51%  ; 1533002273 ;baseline;libz.so.1.3.1       ;[.] crc32_z
+ 0.47%  ; 1414433312 ;baseline;baseline            ;[.] BuildingGradientSearch::resolved(unsigned long) const
+ 0.45%  ; 1356998827 ;baseline;baseline            ;[.] Unit::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)
+ 0.41%  ; 1215900588 ;baseline;baseline            ;[.] AIMaxima::reachableFoodCapacity(Map*, Building*, unsigned int, bool, int, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const*, std::set<int, std::less<int>, std::allocator<int> >*, int)
+ 0.41%  ; 1215133556 ;baseline;baseline            ;[.] Building::selectUnitCarryingWantedResource(int const*, int const*, Building::BringResourcesSelection&)
+ 0.38%  ; 1136599681 ;baseline;baseline            ;[.] Map::resourceAvailable(int, int, int, int, int, int*)
+ 0.36%  ; 1083220428 ;baseline;[unknown]           ;[k] 0xffffffffb1e00b90
+ 0.36%  ; 1063541198 ;baseline;libz.so.1.3.1       ;[.] 0x00000000000043fa
+ 0.35%  ; 1056498551 ;baseline;baseline            ;[.] Map::growResources()
+ 0.34%  ; 1015938353 ;baseline;baseline            ;[.] AIMaxima::Maxima::build_farming_protection_plan(AIMaximaRuntime::Context&)
+ 0.33%  ; 996265857  ;baseline;baseline            ;[.] AIMaximaFoodLedger::Ledger::residualUpperBound(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int) const
+ 0.33%  ; 990289597  ;baseline;baseline            ;[.] GAGCore::StreamBackend::readExact(void*, unsigned long)
+ 0.33%  ; 978465485  ;baseline;baseline            ;[.] TeamStats::step(Team*, bool)
+ 0.33%  ; 973992894  ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004412
+ 0.32%  ; 955592953  ;baseline;baseline            ;[.] AIMaximaRuntime::SearchTools::MapInfo::is_discovered(int, int) const
+ 0.31%  ; 933336541  ;baseline;baseline            ;[.] AIMaxima::Maxima::worker_reachable_circulation(AIMaximaRuntime::Context&, bool) const
+ 0.31%  ; 917083819  ;baseline;baseline            ;[.] void AIMaximaPlacement::(anonymous namespace)::sortUnique<int>(std::vector<int, std::allocator<int> >&)
+ 0.31%  ; 915214701  ;baseline;baseline            ;[.] Building::selectFetcher(Building::BringResourcesCandidate const*, int, Building::BringResourcesSelection&)
+ 0.30%  ; 896528859  ;baseline;baseline            ;[.] GAGCore::MemoryStreamBackend::read(void*, unsigned long)
+ 0.27%  ; 816589891  ;baseline;baseline            ;[.] Building::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*)
+ 0.27%  ; 797679557  ;baseline;baseline            ;[.] Map::updateForbiddenGradient(int, int)
+ 0.26%  ; 777589182  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::routeArtery(AIMaximaPlacement::WorldState const&, std::vector<int, std::allocator<int> > const&, int, bool, unsigned int, std::vector<int, std::allocator<int> >&, AIMaximaPlacement::RejectionReason&) const
+ 0.25%  ; 737288228  ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004409
+ 0.25%  ; 737136300  ;baseline;baseline            ;[.] Building::integrity()
+ 0.25%  ; 735005600  ;baseline;baseline            ;[.] AIMaxima::Defense::computeDistanceField(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)
+ 0.24%  ; 709633730  ;baseline;baseline            ;[.] GAGCore::MemoryStreamBackend::getPosition()
+ 0.23%  ; 686304561  ;baseline;baseline            ;[.] void AIMaximaContinuation::Reader::operator()<int>(char const*, std::vector<int, std::allocator<int> >&)
+ 0.23%  ; 677557435  ;baseline;baseline            ;[.] Team::checkSum(std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*, std::vector<unsigned int, std::allocator<unsigned int> >*)
+ 0.22%  ; 655441319  ;baseline;baseline            ;[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]
+ 0.21%  ; 638149302  ;baseline;baseline            ;[.] AIMaximaRuntime::Gradients::Entities::AnyResource::matches(Player*, int, int) const
+ 0.21%  ; 631946442  ;baseline;libc.so.6           ;[.] malloc
+ 0.21%  ; 618105864  ;baseline;baseline            ;[.] Building::considerUnitForBuilding(Unit*, int*)
+ 0.21%  ; 618083690  ;baseline;baseline            ;[.] AIMaxima::Maxima::collect_development_world(AIMaximaRuntime::Context&, unsigned int*) const
+ 0.21%  ; 617447201  ;baseline;baseline            ;[.] AIMaximaRuntime::Gradients::Gradient::recalculate(Player*)
+ 0.20%  ; 597838539  ;baseline;baseline            ;[.] PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)
+ 0.20%  ; 596369034  ;baseline;baseline            ;[.] AICastor::updateGlobalGradient(unsigned char*)
+ 0.19%  ; 556854028  ;baseline;baseline            ;[.] AIMaxima::Defense::analyzeMode(AIMaxima::Defense::ModeInput const&, AIMaxima::Defense::Policy const&)
+ 0.19%  ; 555676297  ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035ec
+ 0.18%  ; 538149198  ;baseline;baseline            ;[.] Team::syncStep()
+ 0.18%  ; 530979554  ;baseline;libc.so.6           ;[.] cfree@GLIBC_2.2.5
+ 0.17%  ; 517762894  ;baseline;baseline            ;[.] Building::computeWishedResources(int*)
+ 0.16%  ; 489037072  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::prepareFoodLedger(AIMaximaPlacement::WorldState const&, int, int) const
+ 0.16%  ; 478741784  ;baseline;baseline            ;[.] AIMaximaPlacement::DevelopmentAction::DevelopmentAction()
+ 0.16%  ; 476738373  ;baseline;baseline            ;[.] Team::integrity()
+ 0.16%  ; 476488604  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::isCirculationReserved(int) const
+ 0.16%  ; 470914872  ;baseline;baseline            ;[.] AIMaxima::Maxima::collect_fruit_field(AIMaximaRuntime::Context&) const
+ 0.15%  ; 458592839  ;baseline;baseline            ;[.] AIMaxima::Maxima::build_maintenance_clearing_plan(AIMaximaRuntime::Context&)
+ 0.15%  ; 458071350  ;baseline;baseline            ;[.] AIMaxima::Maxima::sample_reconnaissance_forces(AIMaximaRuntime::Context&)
+ 0.15%  ; 457650164  ;baseline;baseline            ;[.] AIMaxima::Maxima::wheat_invasion_clearing_required(AIMaximaRuntime::Context&, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Maxima::WoodReserve const&) const
+ 0.15%  ; 438770229  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::prepareRouteCache(AIMaximaPlacement::WorldState const&, int) const
+ 0.13%  ; 398731082  ;baseline;baseline            ;[.] bool std::binary_search<__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int>(__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, int const&) [clone .isra.0]
+ 0.13%  ; 379051972  ;baseline;baseline            ;[.] Map::swimClass(int, int)
+ 0.12%  ; 359291204  ;baseline;baseline            ;[.] AIMaximaPlacement::WorldState::tile(int, int) const
+ 0.12%  ; 358867629  ;baseline;baseline            ;[.] AIMaxima::(anonymous namespace)::compute_preemptive_distance_field(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> >&)
+ 0.12%  ; 358795012  ;baseline;baseline            ;[.] Map::updateExploredArea(int)
+ 0.12%  ; 358676096  ;baseline;baseline            ;[.] AIMaximaRuntime::Gradients::GradientInfo::matches_source(Player*, int, int) const
+ 0.12%  ; 358614448  ;baseline;baseline            ;[.] AIMaximaPlacement::WorldState::reset(int, int)
+ 0.12%  ; 354601650  ;baseline;baseline            ;[.] Map::buildingGradientValue(Building*, int, unsigned long) const
+ 0.11%  ; 339088071  ;baseline;baseline            ;[.] AIMaximaRuntime::Gradients::Entities::Water::matches(Player*, int, int) const
+ 0.11%  ; 338977894  ;baseline;baseline            ;[.] AIMaxima::Maxima::available_expansion_neighbors(AIMaximaRuntime::Context&, int, int) const
+ 0.11%  ; 338971800  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::resourceDistanceAt(AIMaximaPlacement::WorldState const&, int, int) const
+ 0.11%  ; 338945740  ;baseline;baseline            ;[.] AIMaximaRuntime::Gradients::GradientInfo::matches_obstacle(Player*, int, int) const
+ 0.11%  ; 319162558  ;baseline;baseline            ;[.] Map::setMapDiscovered(int, int, unsigned int)
+ 0.11%  ; 315212728  ;baseline;baseline            ;[.] AIMaximaRuntime::Construction::BuildingRegister::observe_buildings() const
+ 0.10%  ; 299189950  ;baseline;baseline            ;[.] Unit::syncStep()
+ 0.10%  ; 299116992  ;baseline;baseline            ;[.] AICastor::computeBuildingNeighbourMap(int, int)
+ 0.09%  ; 279118693  ;baseline;baseline            ;[.] AIMaxima::Maxima::update_environment_model(AIMaximaRuntime::Context&)
+ 0.09%  ; 278906018  ;baseline;libstdc++.so.6.0.35 ;[.] std::_Rb_tree_insert_and_rebalance(bool, std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::_Rb_tree_node_base&)
+ 0.09%  ; 264211329  ;baseline;libc.so.6           ;[.] __memmove_avx_unaligned
+ 0.09%  ; 259174982  ;baseline;baseline            ;[.] Building::considerUnitForResource(Unit*, int, int*)
+ 0.08%  ; 252295564  ;baseline;baseline            ;[.] Map::getResourceGradient(int, int, int)
+ 0.08%  ; 239387608  ;baseline;baseline            ;[.] Building::updateCallLists()
+ 0.08%  ; 239300724  ;baseline;libc.so.6           ;[.] _int_malloc
+ 0.08%  ; 239165440  ;baseline;baseline            ;[.] AIMaxima::Maxima::apply_maintenance_clearing_plan(AIMaximaRuntime::Context&, AIMaxima::Maxima::MaintenanceClearingPlan const&)
+ 0.08%  ; 238630022  ;baseline;baseline            ;[.] AICastor::wheatGradientAt(unsigned long)
+ 0.08%  ; 236701210  ;baseline;libc.so.6           ;[.] _int_free_merge_chunk
+ 0.08%  ; 235939678  ;baseline;baseline            ;[.] AIMaxima::Farming::ExactFertilityCache::rebuild(int, int, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, AIMaxima::Farming::FertilityCalculationPath)
+ 0.08%  ; 233973960  ;baseline;baseline            ;[.] GAGCore::BinaryInputStream::readUint32(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+ 0.08%  ; 227278211  ;baseline;baseline            ;[.] void AIMaximaContinuation::Reader::operator()<unsigned char>(char const*, std::vector<unsigned char, std::allocator<unsigned char> >&)
+ 0.07%  ; 219389098  ;baseline;baseline            ;[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, __gnu_cxx::__normal_iterator<std::pair<int, int>*, std::vector<std::pair<int, int>, std::allocator<std::pair<int, int> > > >, long, __gnu_cxx::__ops::_Iter_less_iter) [clone .isra.0]
+ 0.07%  ; 219326308  ;baseline;baseline            ;[.] AI::getOrder(bool)
+ 0.07%  ; 219225523  ;baseline;baseline            ;[.] Team::buildingHasHigherPriority(Building*, Building*)
+ 0.07%  ; 211213800  ;baseline;libc.so.6           ;[.] __strlen_avx2
+ 0.07%  ; 199479361  ;baseline;baseline            ;[.] syncRandEngine()
+ 0.07%  ; 199468135  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::adjoiningBarracks(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&, std::vector<int, std::allocator<int> >&, std::vector<int, std::allocator<int> >&) const
+ 0.07%  ; 199465710  ;baseline;baseline            ;[.] Map::buildingAvailable(Building*, int, int, int, int*)
+ 0.07%  ; 199414670  ;baseline;baseline            ;[.] Building::desiredNumberOfWorkers()
+ 0.07%  ; 199410563  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::isFootprintReserved(int) const
+ 0.07%  ; 199371395  ;baseline;baseline            ;[.] AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const
+ 0.07%  ; 199265086  ;baseline;baseline            ;[.] AIMaximaFoodLedger::Ledger::evaluate(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const
+ 0.07%  ; 199098775  ;baseline;baseline            ;[.] std::vector<int, std::allocator<int> >::_M_fill_assign(unsigned long, int const&)
+ 0.07%  ; 198772671  ;baseline;baseline            ;[.] Unit::integrity()
+ 0.07%  ; 197083715  ;baseline;baseline            ;[.] AIMaxima::(anonymous namespace)::classify_farm_tile(AIMaximaRuntime::SearchTools::MapInfo&, Map*, AIMaxima::Farming::ExactFertilityCache const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, bool, int, int, int, unsigned int)
+ 0.06%  ; 179599142  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::parcelTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::DevelopmentTemplate const&) const
+ 0.06%  ; 179385873  ;baseline;baseline            ;[.] AIMaxima::ForceModel::predict(long const (&) [26])
+ 0.06%  ; 179269750  ;baseline;baseline            ;[.] Building::noteUnitFailing(Unit*, Building::UnitCantWorkReason)
+ 0.06%  ; 178612226  ;baseline;baseline            ;[.] Building::subscribeToBringResourcesStep()
+ 0.06%  ; 177841753  ;baseline;baseline            ;[.] TeamStats::observeMeasurementUnit(Unit*)
+ 0.06%  ; 175581808  ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035bb
+ 0.06%  ; 175532579  ;baseline;libstdc++.so.6.0.35 ;[.] std::_Rb_tree_increment(std::_Rb_tree_node_base*)
+ 0.06%  ; 173936629  ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003600
+ 0.06%  ; 172046547  ;baseline;baseline            ;[.] void std::vector<int, std::allocator<int> >::_M_realloc_append<int const&>(int const&)
+ 0.05%  ; 159815894  ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::prepareRetrySignature(AIMaximaPlacement::WorldState const&)
+ 0.05%  ; 159520623  ;baseline;baseline            ;[.] AIMaxima::(anonymous namespace)::rally_space(Map*, unsigned int, int, int, int, int)
+ 0.05%  ; 159420755  ;baseline;baseline            ;[.] AIMaxima::Maxima::reconnaissance_discovery_map(AIMaximaRuntime::Context&) const
+ 0.05%  ; 157385641  ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036a7
+ 0.05%  ; 153263253  ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035e7
+ 0.05%  ; 139688307  ;baseline;baseline            ;[.] bool Map::getGlobalGradientDestination<unsigned short>(unsigned short const*, int, int, int*, int*) const
+ 0.05%  ; 139574655  ;baseline;baseline            ;[.] TeamStats::observeMeasurementBuilding(Building*)
+ 0.05%  ; 139565277  ;baseline;baseline            ;[.] AIMaximaPlacement::UtilityComponents::UtilityComponents()
+ 0.05%  ; 139556816  ;baseline;baseline            ;[.] Unit::handleMovementAttackingAround()
+ 0.05%  ; 139509770  ;baseline;baseline            ;[.] Building::resetFailureTallies()
+ 0.05%  ; 139506438  ;baseline;baseline            ;[.] Building::fetchApportionment(int*, int*) const
+ 0.05%  ; 139461202  ;baseline;baseline            ;[.] Engine::gatherAndAdvanceOrders(bool)
+ 0.05%  ; 137996209  ;baseline;baseline            ;[.] Map::recordNaturalGrowth(int, int, int, int, int)
+ 0.04%  ; 134137371  ;baseline;baseline            ;[.] Map::loadRuntimeState(GAGCore::InputStream*, int)
+ 0.04%  ; 130635217  ;baseline;baseline            ;[.] Building::considerScanTile(int, int, int, int, unsigned int, Map*, Building::TurretTarget&) const
+ 0.04%  ; 119688629  ;baseline;baseline            ;[.] PerformanceTelemetry::collector()
+ 0.04%  ; 119597314  ;baseline;baseline            ;[.] AICastor::computeObstacleUnitMap()
+ 0.04%  ; 119589980  ;baseline;baseline            ;[.] Map::warpDist1d(int, int, int)
+ 0.04%  ; 119568397  ;baseline;baseline            ;[.] AIMaximaRuntime::SearchTools::MapInfo::is_resource(int, int, int) const
+ 0.04%  ; 119551604  ;baseline;baseline            ;[.] Team::updateAllBuildingTasks()
+ 0.04%  ; 116631246  ;baseline;libz.so.1.3.1       ;[.] 0x000000000000359b
+ 0.04%  ; 115052924  ;baseline;baseline            ;[.] memcpy@plt
+ 0.04%  ; 114967267  ;baseline;baseline            ;[.] std::enable_if<std::is_integral<bool>::value||std::is_enum<bool>::value, void>::type AIMaximaContinuation::Reader::operator()<bool>(char const*, bool&) [clone .isra.0]
+ 0.04%  ; 114109592  ;baseline;baseline            ;[.] AIMaxima::Maxima::initialize_farming_cache(AIMaximaRuntime::Context&)
+ 0.03%  ; 103016006  ;baseline;[unknown]           ;[k] 0xffffffffb1e00b93
+ 0.03%  ; 99751922   ;baseline;baseline            ;[.] AIMaximaRuntime::Construction::BuildingRegister::get_building(unsigned int) const
+ 0.03%  ; 99746845   ;baseline;baseline            ;[.] AICastor::computeSpaceForBuildingMap(int)
+ 0.03%  ; 99743746   ;baseline;baseline            ;[.] boost::random::mersenne_twister_engine<unsigned int, 32ul, 624ul, 397ul, 31ul, 2567483615u, 11ul, 4294967295u, 7ul, 2636928640u, 15ul, 4022730752u, 18ul, 1812433253u>::twist()
+ 0.03%  ; 99741860   ;baseline;baseline            ;[.] AIMaxima::Maxima::update_reconnaissance(AIMaximaRuntime::Context&)
+ 0.03%  ; 99688582   ;baseline;baseline            ;[.] Building::subscribeForFlagingStep()
+ 0.03%  ; 99685204   ;baseline;baseline            ;[.] AIMaxima::Maxima::modify_points(unsigned short*, int, int, int, int, int, int, std::__cxx11::list<int, std::allocator<int> >&)
+ 0.03%  ; 99681289   ;baseline;baseline            ;[.] GradientBucket::grow(unsigned long)
+ 0.03%  ; 99676531   ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::stateSignature(unsigned int) const
+ 0.03%  ; 99650804   ;baseline;baseline            ;[.] AIMaxima::Farming::ExactFertilityCache::at(int, int) const
+ 0.03%  ; 99646980   ;baseline;baseline            ;[.] Unit::handleMovementRemovingBlackAround()
+ 0.03%  ; 99599817   ;baseline;baseline            ;[.] AIMaximaFoodLedger::Ledger::prepareResidualSums(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result&) const
+ 0.03%  ; 99450985   ;baseline;baseline            ;[.] Map::syncStep(unsigned int)
+ 0.03%  ; 97583351   ;baseline;libstdc++.so.6.0.35 ;[.] operator new(unsigned long)
+ 0.03%  ; 95970588   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000360b
+ 0.03%  ; 94257808   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000043fd
+ 0.03%  ; 91135374   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035c3
+ 0.03%  ; 86022099   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000043c6
+ 0.03%  ; 84923137   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003625
+ 0.03%  ; 80281357   ;baseline;baseline            ;[.] GAGCore::StringTable::load(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+ 0.03%  ; 79815312   ;baseline;baseline            ;[.] AIMaximaFoodLedger::Ledger::reachableResidual(AIMaximaFoodLedger::Input const&, AIMaximaFoodLedger::Result const&, int, int, int, int, int, int, long long) const
+ 0.03%  ; 79795738   ;baseline;baseline            ;[.] AIMaxima::Farming::selectResourcePreservingCirculation(int, int, std::vector<int, std::allocator<int> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&, std::vector<int, std::allocator<int> > const&, std::vector<unsigned char, std::allocator<unsigned char> > const&)
+ 0.03%  ; 79794503   ;baseline;baseline            ;[.] Map::directionByGradient(unsigned int, int, int, int, unsigned short const*, int*, int*, bool) const
+ 0.03%  ; 79792404   ;baseline;libc.so.6           ;[.] unlink_chunk.isra.0
+ 0.03%  ; 79777425   ;baseline;baseline            ;[.] Map::pathfindPointToPoint(int, int, int, int, int*, int*, int, unsigned int, int)
+ 0.03%  ; 79759199   ;baseline;baseline            ;[.] Team::swapTask(Unit*)
+ 0.03%  ; 79738942   ;baseline;baseline            ;[.] BuildingUtils::turretScanTile(int, int, int, int, int, int&, int&)
+ 0.03%  ; 79731021   ;baseline;baseline            ;[.] AICastor::findGoodBuilding(int, bool, bool, bool)
+ 0.03%  ; 79664122   ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::footprintTiles(AIMaximaPlacement::WorldState const&, int, int, AIMaximaPlacement::Footprint const&) const
+ 0.03%  ; 79651511   ;baseline;baseline            ;[.] Building::totalWishedResource()
+ 0.03%  ; 79439990   ;baseline;baseline            ;[.] AIMaximaPlacement::DevelopmentAction::~DevelopmentAction()
+ 0.03%  ; 77177171   ;baseline;baseline            ;[.] AIMaximaRuntime::Gradients::GradientManager::loadExecutionState(GAGCore::InputStream*)
+ 0.02%  ; 72922536   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000040c4
+ 0.02%  ; 71492377   ;baseline;baseline            ;[.] void AIMaximaContinuation::Reader::operator()<unsigned long>(char const*, std::vector<unsigned long, std::allocator<unsigned long> >&)
+ 0.02%  ; 70596955   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035b7
+ 0.02%  ; 69772526   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000370b
+ 0.02%  ; 68197479   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036a2
+ 0.02%  ; 67485149   ;baseline;[unknown]           ;[k] 0xffffffffb3522315
+ 0.02%  ; 67346517   ;baseline;[unknown]           ;[k] 0xffffffffb25ebad0
+ 0.02%  ; 59884108   ;baseline;baseline            ;[.] AIMaxima::Farming::usefulExpansionCapacity(unsigned int, int, int, bool)
+ 0.02%  ; 59880705   ;baseline;[unknown]           ;[k] 0xffffffffb1e00ef0
+ 0.02%  ; 59878789   ;baseline;baseline            ;[.] Building::wantsAnotherDelivery(int, int const*, int const*)
+ 0.02%  ; 59873690   ;baseline;baseline            ;[.] TeamStats::beginMeasurementSnapshot(Team*)
+ 0.02%  ; 59856484   ;baseline;baseline            ;[.] AICastor::computeWheatCareMap()
+ 0.02%  ; 59839185   ;baseline;baseline            ;[.] AIMaximaRuntime::SearchTools::MapInfo::is_water(int, int) const
+ 0.02%  ; 59835310   ;baseline;baseline            ;[.] Map::pathfindResource(int, unsigned char, int, int, int, int*, int*, bool*, Building*)
+ 0.02%  ; 59822300   ;baseline;baseline            ;[.] PerformanceTelemetry::Scope::stop()
+ 0.02%  ; 59819975   ;baseline;baseline            ;[.] Unit::handleActivity()
+ 0.02%  ; 59817514   ;baseline;baseline            ;[.] Unit::tryClaimClearingAreaForHarvesting()
+ 0.02%  ; 59816623   ;baseline;baseline            ;[.] AIMaxima::Maxima::update_farming(AIMaximaRuntime::Context&)
+ 0.02%  ; 59813682   ;baseline;baseline            ;[.] std::_Rb_tree_node_base* std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_M_copy<false, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node>(std::_Rb_tree_node<std::pair<std::pair<int, int> const, int> >*, std::_Rb_tree_node_base*, std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_Alloc_node&) [clone .isra.0]
+ 0.02%  ; 59813583   ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::waterTierPasses(AIMaximaPlacement::WorldState const&, std::vector<int, std::allocator<int> > const&, int) const
+ 0.02%  ; 59807026   ;baseline;baseline            ;[.] AIMaximaPlacement::Footprint::Footprint()
+ 0.02%  ; 59799221   ;baseline;baseline            ;[.] AICastor::getOrder()
+ 0.02%  ; 59798458   ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::scoreCandidate(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::Planner::Candidate const&) const::{lambda(std::vector<int, std::allocator<int> > const&, int, int, int, int)#1}::operator()(std::vector<int, std::allocator<int> > const&, int, int, int, int) const [clone .isra.0]
+ 0.02%  ; 59790687   ;baseline;baseline            ;[.] Map::roundTripDistance(Building*, int, int, int, int, int*)
+ 0.02%  ; 59787386   ;baseline;baseline            ;[.] AIMaxima::Maxima::update_preemptive_defense(AIMaximaRuntime::Context&)
+ 0.02%  ; 59778776   ;baseline;baseline            ;[.] Map::setMapExploredByUnit(int, int, int, int, int)
+ 0.02%  ; 59773038   ;baseline;baseline            ;[.] AIMaxima::(anonymous namespace)::farm_management_area(AIMaximaRuntime::Context&, int)
+ 0.02%  ; 59744245   ;baseline;baseline            ;[.] AICastor::computeBuildingSum()
+ 0.02%  ; 59741058   ;baseline;baseline            ;[.] Team::removeBuildingNeedingWork(Building*, int)
+ 0.02%  ; 59067937   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000043d1
+ 0.02%  ; 58543408   ;baseline;baseline            ;[.] GAGCore::BinaryInputStream::readSint32(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >)
+ 0.02%  ; 58348903   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003663
+ 0.02%  ; 57960721   ;baseline;baseline            ;[.] void AIMaximaPlacement::Planner::executionState<AIMaximaContinuation::Reader>(AIMaximaContinuation::Reader&)
+ 0.02%  ; 56410306   ;baseline;baseline            ;[.] AIMaxima::Farming::ExactFertilityCache::buildWaterConvolution(std::vector<unsigned char, std::allocator<unsigned char> > const&)
+ 0.02%  ; 55342315   ;baseline;libstdc++.so.6.0.35 ;[.] operator delete(void*)
+ 0.02%  ; 53634150   ;baseline;baseline            ;[.] void AIMaximaContinuation::Reader::operator()<unsigned int>(char const*, std::vector<unsigned int, std::allocator<unsigned int> >&)
+ 0.02%  ; 53191466   ;baseline;[unknown]           ;[k] 0xffffffffb3536988
+ 0.02%  ; 51904246   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003c55
+ 0.02%  ; 48434339   ;baseline;baseline            ;[.] Map::loadTask(Map::_ZN3Map8loadTaskEPN7GAGCore11InputStreamER9MapHeaderP4Game.Frame*) [clone .actor]
+ 0.02%  ; 47789470   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004404
+ 0.02%  ; 47231148   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003631
+ 0.02%  ; 47194952   ;baseline;[unknown]           ;[k] 0xffffffffb351da3e
+ 0.02%  ; 46020246   ;baseline;[unknown]           ;[k] 0xffffffffb1e015f7
+ 0.02%  ; 45325508   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004017
+ 0.02%  ; 45043082   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003cc7
+ 0.02%  ; 44931997   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036f8
+ 0.02%  ; 44922766   ;baseline;libz.so.1.3.1       ;[.] inflate
+ 0.01%  ; 43947806   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000440d
+ 0.01%  ; 42479667   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036c8
+ 0.01%  ; 42450329   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003660
+ 0.01%  ; 42286945   ;baseline;[unknown]           ;[k] 0xffffffffb351da28
+ 0.01%  ; 42000797   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000043c3
+ 0.01%  ; 41526421   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000043e7
+ 0.01%  ; 39967105   ;baseline;baseline            ;[.] std::enable_if<std::is_integral<int>::value||std::is_enum<int>::value, void>::type AIMaximaContinuation::Reader::operator()<int>(char const*, int&) [clone .isra.0]
+ 0.01%  ; 39927731   ;baseline;[vdso]              ;[.] 0x00000000000009ec
+ 0.01%  ; 39915341   ;baseline;baseline            ;[.] Team::findBestUpgrade(Unit*)
+ 0.01%  ; 39901443   ;baseline;baseline            ;[.] Building::canUnitWorkHere(Unit*)
+ 0.01%  ; 39895189   ;baseline;baseline            ;[.] AIMaxima::Maxima::observe_wave_delivery()
+ 0.01%  ; 39891983   ;baseline;baseline            ;[.] Game::syncStep(int)
+ 0.01%  ; 39887228   ;baseline;baseline            ;[.] ThunkPrototype::propagateMarkForGC()
+ 0.01%  ; 39886688   ;baseline;baseline            ;[.] Sector::step()
+ 0.01%  ; 39881487   ;baseline;baseline            ;[.] Map::prepareBuildingGradient(Building*, int)
+ 0.01%  ; 39880133   ;baseline;baseline            ;[.] Map::isClearingAreaClaimed(int, int, int) const
+ 0.01%  ; 39878845   ;baseline;baseline            ;[.] PerformanceTelemetry::Scope::~Scope()
+ 0.01%  ; 39876514   ;baseline;baseline            ;[.] PerformanceTelemetry::Moments::add(unsigned long)
+ 0.01%  ; 39876400   ;baseline;baseline            ;[.] NetEngine::pushOrder(std::shared_ptr<Order>, int, bool)
+ 0.01%  ; 39871632   ;baseline;baseline            ;[.] Unit::handleMovementRandom()
+ 0.01%  ; 39870789   ;baseline;baseline            ;[.] AIMaxima::Maxima::manage_land_clearing(AIMaximaRuntime::Context&)
+ 0.01%  ; 39863832   ;baseline;baseline            ;[.] AIMaxima::Maxima::observe_labour(AIMaximaRuntime::Context&) const
+ 0.01%  ; 39859438   ;baseline;baseline            ;[.] Building::findBestTarget() const
+ 0.01%  ; 39854446   ;baseline;baseline            ;[.] AICastor::enoughFreeWorkers()
+ 0.01%  ; 39845393   ;baseline;baseline            ;[.] Unit::handleDisplacement()
+ 0.01%  ; 39836798   ;baseline;baseline            ;[.] AIMaximaPlacement::BuildingProfile::atLevel(int) const
+ 0.01%  ; 39836609   ;baseline;baseline            ;[.] Team::addBuildingNeedingWork(Building*, int)
+ 0.01%  ; 39835959   ;baseline;baseline            ;[.] AIMaximaRuntime::SearchTools::MapInfo::is_resource(int, int) const
+ 0.01%  ; 39829019   ;baseline;baseline            ;[.] AIMaximaPlacement::Footprint::empty() const
+ 0.01%  ; 39817315   ;baseline;[vdso]              ;[.] 0x0000000000000a09
+ 0.01%  ; 39808290   ;baseline;baseline            ;[.] ResourcesTypes::get(unsigned int) const
+ 0.01%  ; 39805596   ;baseline;baseline            ;[.] Building::neededResource(int)
+ 0.01%  ; 39799850   ;baseline;baseline            ;[.] AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+ 0.01%  ; 39794403   ;baseline;baseline            ;[.] AICastor::controlSwarms()
+ 0.01%  ; 39611599   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000040c9
+ 0.01%  ; 39572689   ;baseline;baseline            ;[.] AICastor::computeWorkAbilityMap()
+ 0.01%  ; 39484276   ;baseline;baseline            ;[.] std::enable_if<std::is_integral<unsigned int>::value||std::is_enum<unsigned int>::value, void>::type AIMaximaContinuation::Reader::operator()<unsigned int>(char const*, unsigned int&) [clone .isra.0]
+ 0.01%  ; 39336939   ;baseline;baseline            ;[.] Map::rebuildGrowthCoverage()
+ 0.01%  ; 39267194   ;baseline;[vdso]              ;[.] 0x00000000000009b1
+ 0.01%  ; 38899528   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003714
+ 0.01%  ; 38694979   ;baseline;baseline            ;[.] void AIMaximaPlacement::fields<AIMaximaContinuation::Reader>(AIMaximaContinuation::Reader&, AIMaximaPlacement::WorldTile&)
+ 0.01%  ; 36037082   ;baseline;baseline            ;[.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) [clone .constprop.0]
+ 0.01%  ; 31359126   ;baseline;baseline            ;[.] Map::setMapBuildingsDiscovered(int, int, unsigned int, Team**)
+ 0.01%  ; 31107537   ;baseline;baseline            ;[.] GAGCore::FileStreamBackend::getChar()
+ 0.01%  ; 30864158   ;baseline;[unknown]           ;[k] 0xffffffffb34ebcfb
+ 0.01%  ; 30294006   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000441d
+ 0.01%  ; 30227356   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035f5
+ 0.01%  ; 30190287   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000400b
+ 0.01%  ; 30163204   ;baseline;[unknown]           ;[k] 0xffffffffb3536985
+ 0.01%  ; 30160699   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004011
+ 0.01%  ; 30045828   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004423
+ 0.01%  ; 30020779   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003657
+ 0.01%  ; 29720505   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003594
+ 0.01%  ; 29534772   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000366c
+ 0.01%  ; 29020903   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004025
+ 0.01%  ; 28981708   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000040d6
+ 0.01%  ; 28637311   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003ff3
+ 0.01%  ; 28636431   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036c2
+ 0.01%  ; 28551929   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003ce4
+ 0.01%  ; 27783101   ;baseline;[unknown]           ;[k] 0xffffffffb1e01576
+ 0.01%  ; 26574483   ;baseline;libc.so.6           ;[.] __memcmp_avx2_movbe
+ 0.01%  ; 25693797   ;baseline;[unknown]           ;[k] 0xffffffffb25eba19
+ 0.01%  ; 25314211   ;baseline;[unknown]           ;[k] 0xffffffffb3522261
+ 0.01%  ; 24658282   ;baseline;[unknown]           ;[k] 0xffffffffb1e01605
+ 0.01%  ; 24638146   ;baseline;baseline            ;[.] void (anonymous namespace)::statValue<GAGCore::InputStream, int [4], 17ul>(GAGCore::InputStream*, char const*, int (&) [17ul][4])
+ 0.01%  ; 23750073   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000365a
+ 0.01%  ; 23667933   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000362e
+ 0.01%  ; 23521293   ;baseline;[unknown]           ;[k] 0xffffffffb3522298
+ 0.01%  ; 22639681   ;baseline;[unknown]           ;[k] 0xffffffffb3522291
+ 0.01%  ; 21521731   ;baseline;[unknown]           ;[k] 0xffffffffb34ebd57
+ 0.01%  ; 21077629   ;baseline;[unknown]           ;[k] 0xffffffffb22170f9
+ 0.01%  ; 19985198   ;baseline;baseline            ;[.] AICastor::computeEnemyRangeMap()
+ 0.01%  ; 19980778   ;baseline;baseline            ;[.] std::_Sp_counted_ptr<NullOrder*, (__gnu_cxx::_Lock_policy)2>::_M_dispose()
+ 0.01%  ; 19977268   ;baseline;baseline            ;[.] operator new(unsigned long)@plt
+ 0.01%  ; 19977145   ;baseline;baseline            ;[.] Map::clearImmobileUnit(int, int)
+ 0.01%  ; 19976427   ;baseline;baseline            ;[.] Map::pathfindRandom(Unit*)
+ 0.01%  ; 19971857   ;baseline;baseline            ;[.] AIMaximaRuntime::Management::ManagementOrder::ready(AIMaximaRuntime::Context&) const
+ 0.01%  ; 19971641   ;baseline;baseline            ;[.] AIMaxima::Maxima::apply_farming_protection(AIMaximaRuntime::Context&, AIMaxima::Maxima::FarmProtectionPlan const&, int&, int&)
+ 0.01%  ; 19970804   ;baseline;baseline            ;[.] AIMaxima::Maxima::plan_offense(AIMaximaRuntime::Context&)
+ 0.01%  ; 19970259   ;baseline;libstdc++.so.6.0.35 ;[.] std::_Rb_tree_decrement(std::_Rb_tree_node_base*)
+ 0.01%  ; 19968932   ;baseline;baseline            ;[.] AIMaxima::Farming::canProtectWithoutSplittingAccess(unsigned short)
+ 0.01%  ; 19961805   ;baseline;[unknown]           ;[k] 0xffffffffb224e396
+ 0.01%  ; 19961090   ;baseline;[vdso]              ;[.] 0x0000000000000a31
+ 0.01%  ; 19960633   ;baseline;baseline            ;[.] AIMaxima::Maxima::arbitrate_policy_bids()
+ 0.01%  ; 19958715   ;baseline;baseline            ;[.] AIMaxima::Maxima::apply_force_beliefs()
+ 0.01%  ; 19958702   ;baseline;libc.so.6           ;[.] _int_free_maybe_trim
+ 0.01%  ; 19958644   ;baseline;libstdc++.so.6.0.35 ;[.] operator delete(void*, unsigned long)
+ 0.01%  ; 19957616   ;baseline;baseline            ;[.] void std::__introsort_loop<__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const::{lambda(int, int)#1}> >(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<AIMaxima::Maxima::select_wood_reserve(AIMaximaRuntime::Context&) const::{lambda(int, int)#1}>)
+ 0.01%  ; 19956284   ;baseline;baseline            ;[.] AIMaximaRuntime::Gradients::Entities::Position::matches(Player*, int, int) const
+ 0.01%  ; 19955293   ;baseline;baseline            ;[.] NetEngine::retrieveOrder(int)
+ 0.01%  ; 19955124   ;baseline;baseline            ;[.] Map::buildingGradientDirection(Building*, int, int, int, int*, int*, bool) const
+ 0.01%  ; 19955029   ;baseline;baseline            ;[.] Unit::swimClass() const
+ 0.01%  ; 19954014   ;baseline;baseline            ;[.] std::_Rb_tree_iterator<std::pair<int const, int> > std::_Rb_tree<int, std::pair<int const, int>, std::_Select1st<std::pair<int const, int> >, std::less<int>, std::allocator<std::pair<int const, int> > >::_M_emplace_hint_unique<std::pair<int, int> >(std::_Rb_tree_const_iterator<std::pair<int const, int> >, std::pair<int, int>&&) [clone .isra.0]
+ 0.01%  ; 19953663   ;baseline;baseline            ;[.] AIMaxima::Maxima::getOrder()
+ 0.01%  ; 19952805   ;baseline;baseline            ;[.] Building::freeIdleGradients()
+ 0.01%  ; 19952616   ;baseline;baseline            ;[.] non-virtual thunk to AIMaxima::Maxima::tick(AIMaximaRuntime::Context&)
+ 0.01%  ; 19952219   ;baseline;baseline            ;[.] AIMaxima::Recon::Program::confidenceForAge(int, int, int)
+ 0.01%  ; 19949148   ;baseline;baseline            ;[.] AIMaxima::Farming::hasAdjacentProtectedWheat(std::vector<unsigned char, std::allocator<unsigned char> > const&, int, int, int, int)
+ 0.01%  ; 19949109   ;baseline;baseline            ;[.] Building::turretStep(unsigned int)
+ 0.01%  ; 19948989   ;baseline;baseline            ;[.] AI::bindTelemetry()
+ 0.01%  ; 19948844   ;baseline;baseline            ;[.] Race::getUnitType(int, int)
+ 0.01%  ; 19947966   ;baseline;baseline            ;[.] AIMaxima::Maxima::select_wood_clearing_target(AIMaximaRuntime::Context&) const
+ 0.01%  ; 19947417   ;baseline;baseline            ;[.] AICastor::computeWorkPowerMap()
+ 0.01%  ; 19946945   ;baseline;baseline            ;[.] AIMaximaRuntime::SearchTools::MapInfo::is_forbidden_area(int, int) const
+ 0.01%  ; 19946606   ;baseline;baseline            ;[.] BuildingUtils::GIDtoTeam(unsigned short)
+ 0.01%  ; 19943894   ;baseline;baseline            ;[.] Unit::handleMagic()
+ 0.01%  ; 19943846   ;baseline;baseline            ;[.] Building::step()
+ 0.01%  ; 19943824   ;baseline;baseline            ;[.] AIMaximaRuntime::SearchTools::enemy_team_iterator::advance()
+ 0.01%  ; 19941971   ;baseline;baseline            ;[.] AIMaximaPlacement::WorldState::building(int) const
+ 0.01%  ; 19940896   ;baseline;baseline            ;[.] std::vector<int, std::allocator<int> >::reserve(unsigned long)
+ 0.01%  ; 19940520   ;baseline;baseline            ;[.] std::_Rb_tree_iterator<std::pair<std::pair<int, int> const, int> > std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_M_emplace_hint_unique<std::piecewise_construct_t const&, std::tuple<std::pair<int, int>&&>, std::tuple<> >(std::_Rb_tree_const_iterator<std::pair<std::pair<int, int> const, int> >, std::piecewise_construct_t const&, std::tuple<std::pair<int, int>&&>&&, std::tuple<>&&) [clone .isra.0]
+ 0.01%  ; 19940414   ;baseline;baseline            ;[.] std::_Rb_tree<std::pair<int, int>, std::pair<std::pair<int, int> const, int>, std::_Select1st<std::pair<std::pair<int, int> const, int> >, std::less<std::pair<int, int> >, std::allocator<std::pair<std::pair<int, int> const, int> > >::_M_erase(std::_Rb_tree_node<std::pair<std::pair<int, int> const, int> >*) [clone .isra.0]
+ 0.01%  ; 19938570   ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::colonyAnchorDistance(AIMaximaPlacement::WorldState const&, int, int) const
+ 0.01%  ; 19938045   ;baseline;baseline            ;[.] TeamStats::getTotalUnits(int)
+ 0.01%  ; 19937317   ;baseline;libstdc++.so.6.0.35 ;[.] std::basic_streambuf<char, std::char_traits<char> >::xsputn(char const*, long)
+ 0.01%  ; 19937000   ;baseline;baseline            ;[.] AIMaxima::Maxima::control_offense_waves(AIMaximaRuntime::Context&)
+ 0.01%  ; 19936869   ;baseline;baseline            ;[.] Game::addUnit(int, int, int, int, int, int, int, int)
+ 0.01%  ; 19935696   ;baseline;baseline            ;[.] Team::dirtyGlobalGradient()
+ 0.01%  ; 19934525   ;baseline;baseline            ;[.] Map::doesUnitTouchResource(Unit*, int) const
+ 0.01%  ; 19932256   ;baseline;baseline            ;[.] AIMaxima::Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context&)
+ 0.01%  ; 19932214   ;baseline;baseline            ;[.] std::pair<std::_Rb_tree_iterator<int>, bool> std::_Rb_tree<int, int, std::_Identity<int>, std::less<int>, std::allocator<int> >::_M_insert_unique<int const&>(int const&)
+ 0.01%  ; 19932129   ;baseline;baseline            ;[.] NetEngine::advanceStep(unsigned int)
+ 0.01%  ; 19928666   ;baseline;baseline            ;[.] Game::executeOrder(std::shared_ptr<Order>, int)
+ 0.01%  ; 19928647   ;baseline;baseline            ;[.] MapScriptSGSL::checkSum()
+ 0.01%  ; 19928015   ;baseline;baseline            ;[.] AIMaximaPlacement::DevelopmentAction::operator=(AIMaximaPlacement::DevelopmentAction const&) [clone .isra.0]
+ 0.01%  ; 19927969   ;baseline;baseline            ;[.] AICastor::addProjects()
+ 0.01%  ; 19927795   ;baseline;libc.so.6           ;[.] _int_free_chunk
+ 0.01%  ; 19927216   ;baseline;baseline            ;[.] void std::vector<int, std::allocator<int> >::_M_range_insert<__gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > > >(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, __gnu_cxx::__normal_iterator<int const*, std::vector<int, std::allocator<int> > >, std::forward_iterator_tag) [clone .isra.0]
+ 0.01%  ; 19925540   ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::colonyBenefit(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentAction const&) const
+ 0.01%  ; 19919601   ;baseline;baseline            ;[.] GameAnimations::step()
+ 0.01%  ; 19918531   ;baseline;baseline            ;[.] AIMaximaRuntime::Construction::BuildingRegister::identity_of(Building const*) const
+ 0.01%  ; 19914630   ;baseline;baseline            ;[.] AIMaximaRuntime::Construction::BuildingRegister::tick()
+ 0.01%  ; 19914107   ;baseline;baseline            ;[.] Unit::flyToTarget()
+ 0.01%  ; 19913313   ;baseline;baseline            ;[.] NullOrder::NullOrder()
+ 0.01%  ; 19912405   ;baseline;libc.so.6           ;[.] __libc_malloc2
+ 0.01%  ; 19911509   ;baseline;baseline            ;[.] AIMaximaPlacement::WorldState::wrappedManhattan(int, int, int, int) const
+ 0.01%  ; 19911258   ;baseline;baseline            ;[.] OrderModifyBuilding::getOrderType()
+ 0.01%  ; 19908772   ;baseline;baseline            ;[.] Settings::getGameSpeedRenderInterval() const
+ 0.01%  ; 19907456   ;baseline;baseline            ;[.] AIMaximaRuntime::SearchTools::MapInfo::get_width() const
+ 0.01%  ; 19905227   ;baseline;baseline            ;[.] Map::stepCost(int, int, unsigned long, int) const
+ 0.01%  ; 19898134   ;baseline;baseline            ;[.] Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const
+ 0.01%  ; 19887778   ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::foodCandidatePasses(AIMaximaPlacement::WorldState const&, AIMaximaPlacement::DevelopmentIntent const*, AIMaximaPlacement::DevelopmentAction const&, AIMaximaPlacement::RejectionReason&) const
+ 0.01%  ; 19880309   ;baseline;baseline            ;[.] Value::markForGC()
+ 0.01%  ; 19870308   ;baseline;baseline            ;[.] AIMaxima::Farming::ExactFertilityCache::validFor(int, int) const
+ 0.01%  ; 19867745   ;baseline;baseline            ;[.] AIMaxima::Maxima::has_hard_farming_contract(int) const
+ 0.01%  ; 19863687   ;baseline;libc.so.6           ;[.] __strncmp_avx2
+ 0.01%  ; 19856235   ;baseline;baseline            ;[.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > AIMaxima::(anonymous namespace)::diagnostic_value<int>(int const&)
+ 0.01%  ; 19792563   ;baseline;baseline            ;[.] AICastor::updateGlobalGradientNoObstacle(unsigned char*)
+ 0.01%  ; 19743734   ;baseline;baseline            ;[.] AICastor::computeObstacleBuildingMap()
+ 0.01%  ; 19732666   ;baseline;libstdc++.so.6.0.35 ;[.] 0x000000000014df96
+ 0.01%  ; 19649823   ;baseline;baseline            ;[.] AICastor::computeWheatGrowthMap()
+ 0.01%  ; 19445346   ;baseline;baseline            ;[.] Building::swarmStep()
+ 0.01%  ; 19305498   ;baseline;baseline            ;[.] bool std::operator==<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, char const*)
+ 0.01%  ; 19285959   ;baseline;baseline            ;[.] void (anonymous namespace)::enterStatSection<char const*>(GAGCore::InputStream*, char const*)
+ 0.01%  ; 19270476   ;baseline;baseline            ;[.] Utilities::BitArray::assertPos(unsigned long) const
+ 0.01%  ; 19257982   ;baseline;baseline            ;[.] void (anonymous namespace)::statValue<GAGCore::InputStream, unsigned long, 15ul>(GAGCore::InputStream*, char const*, unsigned long (&) [15ul])
+ 0.01%  ; 19203391   ;baseline;baseline            ;[.] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) [clone .constprop.0]
+ 0.01%  ; 19186173   ;baseline;baseline            ;[.] (anonymous namespace)::statValue(GAGCore::InputStream*, char const*, int&)
+ 0.01%  ; 19155135   ;baseline;baseline            ;[.] AIMaxima::StrategyResolver::restoreValues(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, AIMaxima::MaximaStrategy&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, int)
+ 0.01%  ; 19078627   ;baseline;baseline            ;[.] AIMaximaPlacement::Planner::load(GAGCore::InputStream*, int)
+ 0.01%  ; 19074139   ;baseline;[unknown]           ;[k] 0xffffffffb26044cd
+ 0.01%  ; 18872677   ;baseline;baseline            ;[.] AITelemetry::load(GAGCore::InputStream*, std::vector<std::shared_ptr<AITelemetry::Series>, std::allocator<std::shared_ptr<AITelemetry::Series> > >&)
+ 0.01%  ; 18504737   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035b4
+ 0.01%  ; 17580273   ;baseline;[unknown]           ;[k] 0xffffffffb1e00b9c
+ 0.01%  ; 16472692   ;baseline;[unknown]           ;[k] 0xffffffffb25eba8e
+ 0.01%  ; 16328346   ;baseline;[unknown]           ;[k] 0xffffffffb25eba44
+ 0.01%  ; 15945390   ;baseline;[unknown]           ;[k] 0xffffffffb34ebc21
+ 0.01%  ; 15842868   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003693
+ 0.01%  ; 15800491   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000045b4
+ 0.01%  ; 15579131   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000040e6
+ 0.01%  ; 15567520   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004891
+ 0.01%  ; 15546547   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035ce
+ 0.01%  ; 15496819   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000400e
+ 0.01%  ; 15367951   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004ffd
+ 0.01%  ; 15359575   ;baseline;[unknown]           ;[k] 0xffffffffb233ab2d
+ 0.01%  ; 15281850   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004047
+ 0.01%  ; 15227284   ;baseline;[unknown]           ;[k] 0xffffffffb2217166
+ 0.01%  ; 15169433   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004ed7
+ 0.01%  ; 15135107   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004146
+ 0.01%  ; 15079762   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004298
+ 0.01%  ; 15041717   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003611
+ 0.01%  ; 15024018   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000043f6
+ 0.01%  ; 14991305   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000416f
+ 0.01%  ; 14962417   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003cdb
+ 0.00%  ; 14817385   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000418f
+ 0.00%  ; 14805955   ;baseline;[unknown]           ;[k] 0xffffffffb34ebc20
+ 0.00%  ; 14802967   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000045e5
+ 0.00%  ; 14750949   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004134
+ 0.00%  ; 14661014   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035a9
+ 0.00%  ; 14634322   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000050ea
+ 0.00%  ; 14632911   ;baseline;[unknown]           ;[k] 0xffffffffb34ebc91
+ 0.00%  ; 14591850   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004000
+ 0.00%  ; 14584493   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036fb
+ 0.00%  ; 14558552   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036ac
+ 0.00%  ; 14452438   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004275
+ 0.00%  ; 14388972   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000401a
+ 0.00%  ; 14379514   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036b5
+ 0.00%  ; 14364699   ;baseline;libz.so.1.3.1       ;[.] 0x000000000000484c
+ 0.00%  ; 14361122   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004212
+ 0.00%  ; 14342918   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035a2
+ 0.00%  ; 14323381   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000004223
+ 0.00%  ; 14276699   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000041af
+ 0.00%  ; 14271912   ;baseline;[unknown]           ;[k] 0xffffffffb22171a5
+ 0.00%  ; 14145857   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035c8
+ 0.00%  ; 14084473   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003c68
+ 0.00%  ; 14063042   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003cc3
+ 0.00%  ; 14013990   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000005094
+ 0.00%  ; 13732122   ;baseline;baseline            ;[.] std::_Rb_tree_iterator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >::_M_emplace_hint_unique<std::piecewise_construct_t const&, std::tuple<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>, std::tuple<> >(std::_Rb_tree_const_iterator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::piecewise_construct_t const&, std::tuple<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>&&, std::tuple<>&&) [clone .isra.0]
+ 0.00%  ; 13607436   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003ffd
+ 0.00%  ; 13563308   ;baseline;[unknown]           ;[k] 0xffffffffb34ebc80
+ 0.00%  ; 13497256   ;baseline;libz.so.1.3.1       ;[.] 0x00000000000036f5
+ 0.00%  ; 12715338   ;baseline;[unknown]           ;[k] 0xffffffffb1e00ba1
+ 0.00%  ; 12695716   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003952
+ 0.00%  ; 12491443   ;baseline;[unknown]           ;[k] 0xffffffffb233ab34
+ 0.00%  ; 12208649   ;baseline;ld-linux-x86-64.so.2;[.] _dl_find_object_from_map
+ 0.00%  ; 11637274   ;baseline;[unknown]           ;[k] 0xffffffffb34ebd1b
+ 0.00%  ; 11475410   ;baseline;[unknown]           ;[k] 0xffffffffb34ebeec
+ 0.00%  ; 11444212   ;baseline;libz.so.1.3.1       ;[.] 0x0000000000005092
+ 0.00%  ; 11276706   ;baseline;baseline            ;[.] AITelemetry::(anonymous namespace)::readSample(GAGCore::InputStream*, unsigned long)
+ 0.00%  ; 10904228   ;baseline;[unknown]           ;[k] 0xffffffffb34ebc74
+ 0.00%  ; 10820878   ;baseline;[unknown]           ;[k] 0xffffffffb25eba50
+ 0.00%  ; 8958430    ;baseline;libz.so.1.3.1       ;[.] 0x00000000000035f9
+ 0.00%  ; 8345814    ;baseline;libz.so.1.3.1       ;[.] 0x0000000000003bed
+ 0.00%  ; 7664964    ;baseline;baseline            ;[.] GAGCore::InputLineStream::readLine[abi:cxx11]()
+ 0.00%  ; 6109284    ;baseline;[unknown]           ;[k] 0xffffffffb34ebd61
+ 0.00%  ; 5844565    ;baseline;[unknown]           ;[k] 0xffffffffb34ebf0a
+ 0.00%  ; 5553165    ;baseline;[unknown]           ;[k] 0xffffffffb353698b
+ 0.00%  ; 5545688    ;baseline;[unknown]           ;[k] 0xffffffffb221732a
+ 0.00%  ; 5505187    ;baseline;[unknown]           ;[k] 0xffffffffb1e01570
+ 0.00%  ; 5490767    ;baseline;[unknown]           ;[k] 0xffffffffb352276f
+ 0.00%  ; 5488833    ;baseline;[unknown]           ;[k] 0xffffffffb3522335
+ 0.00%  ; 5485967    ;baseline;[unknown]           ;[k] 0xffffffffb233ab41
+ 0.00%  ; 5473944    ;baseline;[unknown]           ;[k] 0xffffffffb34ebd06
+ 0.00%  ; 5473695    ;baseline;[unknown]           ;[k] 0xffffffffb35222a9
+ 0.00%  ; 5472807    ;baseline;[unknown]           ;[k] 0xffffffffb221716c
+ 0.00%  ; 5466105    ;baseline;[unknown]           ;[k] 0xffffffffb351da41
+ 0.00%  ; 5462985    ;baseline;[unknown]           ;[k] 0xffffffffb2217313
+ 0.00%  ; 5459199    ;baseline;[unknown]           ;[k] 0xffffffffb3536980
+ 0.00%  ; 5441923    ;baseline;[unknown]           ;[k] 0xffffffffb25eb9fc
+ 0.00%  ; 5439834    ;baseline;[unknown]           ;[k] 0xffffffffb25eba47
+ 0.00%  ; 5416610    ;baseline;[unknown]           ;[k] 0xffffffffb34ebe00
+ 0.00%  ; 5386598    ;baseline;[unknown]           ;[k] 0xffffffffb25eba3c
+ 0.00%  ; 5375026    ;baseline;[unknown]           ;[k] 0xffffffffb25eba1c
+ 0.00%  ; 5334655    ;baseline;[unknown]           ;[k] 0xffffffffb34ebd24
+ 0.00%  ; 5273394    ;baseline;[unknown]           ;[k] 0xffffffffb22170f2
+ 0.00%  ; 5272037    ;baseline;[unknown]           ;[k] 0xffffffffb352226d
+ 0.00%  ; 4091390    ;baseline;[unknown]           ;[k] 0xffffffffb34ebc5b
+ 0.00%  ; 4059649    ;baseline;[unknown]           ;[k] 0xffffffffb34ebcda
+ 0.00%  ; 1488950    ;baseline;ld-linux-x86-64.so.2;[.] _dl_map_object_from_fd
+ 0.00%  ; 8749       ;baseline;ld-linux-x86-64.so.2;[.] __GI___tunables_init
+ 0.00%  ; 2          ;baseline;ld-linux-x86-64.so.2;[.] _dl_start
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

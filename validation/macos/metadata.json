@@ -1,0 +1,27 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "cpu": "Apple M3",
+  "binaries": {
+    "candidate": {
+      "path": "/Users/bradley/.codex/worktrees/nongradient-profile/glob2/artifacts/pr-final/candidate-macos",
+      "sha256": "c049b882cd5ca8d3f8be41a4c791e13808bbcf75d4a2f163e790697cad1c61c9"
+    }
+  },
+  "revisions": {
+    "baseline": "508942f082ed22e699792cb82b95a5feca65385d",
+    "candidate": "ef1f90ed1f0b0ed9557d90b3a75aef5e2531631a"
+  },
+  "argv": [
+    "artifacts/pr-final/evidence/run.py",
+    "verify",
+    "--candidate",
+    "artifacts/pr-final/candidate-macos",
+    "--root",
+    ".",
+    "--output",
+    "artifacts/pr-final/verify-macos-final",
+    "--jobs",
+    "2"
+  ]
+}

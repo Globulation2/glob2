@@ -1,0 +1,240 @@
+{
+  "continents12": {
+    "game_seed": 4201,
+    "map": "study-44-4101-r0",
+    "players": [
+      "maxima",
+      "castor",
+      "numbi",
+      "cortex",
+      "maxima",
+      "castor",
+      "numbi",
+      "cortex",
+      "maxima",
+      "castor",
+      "numbi",
+      "cortex"
+    ],
+    "generator": 44,
+    "width": 256,
+    "height": 256,
+    "map_seed": 4101
+  },
+  "islands12": {
+    "game_seed": 4202,
+    "map": "study-3-4102-r0",
+    "players": [
+      "maxima",
+      "castor",
+      "maxima",
+      "castor",
+      "maxima",
+      "castor",
+      "maxima",
+      "castor",
+      "maxima",
+      "castor",
+      "maxima",
+      "castor"
+    ],
+    "generator": 3,
+    "width": 512,
+    "height": 256,
+    "map_seed": 4102
+  },
+  "even12": {
+    "game_seed": 4203,
+    "map": "study-60-4103-r0",
+    "players": [
+      "maxima",
+      "castor",
+      "numbi",
+      "cortex",
+      "maxima",
+      "castor",
+      "numbi",
+      "cortex",
+      "maxima",
+      "castor",
+      "numbi",
+      "cortex"
+    ],
+    "generator": 60,
+    "width": 512,
+    "height": 512,
+    "map_seed": 4103
+  },
+  "held-continents8": {
+    "game_seed": 5301,
+    "map": "study-44-5201-r0",
+    "players": [
+      "maxima",
+      "castor",
+      "maxima",
+      "castor",
+      "maxima",
+      "castor",
+      "maxima",
+      "castor"
+    ],
+    "generator": 44,
+    "width": 256,
+    "height": 256,
+    "map_seed": 5201
+  },
+  "held-continents12": {
+    "game_seed": 5302,
+    "map": "study-44-5202-r0",
+    "players": [
+      "maxima",
+      "cortex",
+      "numbi",
+      "maxima",
+      "cortex",
+      "numbi",
+      "maxima",
+      "cortex",
+      "numbi",
+      "maxima",
+      "cortex",
+      "numbi"
+    ],
+    "generator": 44,
+    "width": 512,
+    "height": 256,
+    "map_seed": 5202
+  },
+  "held-even12": {
+    "game_seed": 5303,
+    "map": "study-60-5203-r0",
+    "players": [
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima"
+    ],
+    "generator": 60,
+    "width": 256,
+    "height": 256,
+    "map_seed": 5203
+  },
+  "held-islands8": {
+    "game_seed": 5304,
+    "map": "study-3-5204-r0",
+    "players": [
+      "castor",
+      "numbi",
+      "castor",
+      "numbi",
+      "castor",
+      "numbi",
+      "castor",
+      "numbi"
+    ],
+    "generator": 3,
+    "width": 256,
+    "height": 256,
+    "map_seed": 5204
+  },
+  "held-islands12": {
+    "game_seed": 5305,
+    "map": "study-3-5205-r0",
+    "players": [
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex"
+    ],
+    "generator": 3,
+    "width": 512,
+    "height": 256,
+    "map_seed": 5205
+  },
+  "held-even8": {
+    "game_seed": 5306,
+    "map": "study-60-5206-r0",
+    "players": [
+      "maxima",
+      "castor",
+      "numbi",
+      "cortex",
+      "maxima",
+      "castor",
+      "numbi",
+      "cortex"
+    ],
+    "generator": 60,
+    "width": 512,
+    "height": 256,
+    "map_seed": 5206
+  },
+  "held-even12-late": {
+    "game_seed": 5303,
+    "map": "study-60-5203-r0",
+    "players": [
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima",
+      "maxima"
+    ],
+    "generator": 60,
+    "width": 256,
+    "height": 256,
+    "map_seed": 5203
+  },
+  "held-islands12-late": {
+    "game_seed": 5305,
+    "map": "study-3-5205-r0",
+    "players": [
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex",
+      "maxima",
+      "cortex"
+    ],
+    "generator": 3,
+    "width": 512,
+    "height": 256,
+    "map_seed": 5205
+  },
+  "historic-v115": {
+    "game_seed": 19,
+    "map": "study-15-42-r0",
+    "players": [
+      "maxima",
+      "maxima"
+    ]
+  }
+}

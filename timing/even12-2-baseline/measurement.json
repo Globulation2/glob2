@@ -1,0 +1,11 @@
+{
+  "case": "even12",
+  "variant": "baseline",
+  "directory": "even12-2-baseline",
+  "wall_s": 17.240476861130446,
+  "cpu_s": 19.59666599999999,
+  "run_s": 7.822295882,
+  "ticks": 13000,
+  "gradient_workers": 1,
+  "gradient_delay": 8
+}

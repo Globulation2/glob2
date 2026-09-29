@@ -1,0 +1,13 @@
+{
+  "candidate": "ef1f90ed1f0b0ed9557d90b3a75aef5e2531631a",
+  "tracked_file_manifest": "source-manifest.json",
+  "native_source_checks": {
+    "therig.local": {
+      "mismatched_files": []
+    },
+    "devlaptop.local": {
+      "mismatched_files": []
+    }
+  },
+  "build_command": "scons release=1 server=0"
+}

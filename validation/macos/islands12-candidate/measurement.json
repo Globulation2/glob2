@@ -1,0 +1,15 @@
+{
+  "case": "islands12",
+  "variant": "candidate",
+  "directory": "islands12-candidate",
+  "wall_s": 13.306870208994951,
+  "cpu_s": null,
+  "run_s": 5.379823167,
+  "ticks": 12256,
+  "gradient_workers": 1,
+  "gradient_delay": 8,
+  "trace_sha256": "eb0eb8ecd892fdb77129126db4b44e24dbdb9e279ee445029d57d17858ec4783",
+  "order_sha256": "4730c71aa81681149fcf6c4ab154eda030441fc70a60c2c36286bf0807cdbfbf",
+  "trace_ticks": 256,
+  "orders": 203
+}
