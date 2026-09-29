@@ -22,17 +22,25 @@ jobs:
         arch: [arm64-v8a, armeabi-v7a, x86_64]
     steps:
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
       - name: Install build utilities
+        id: install_build_utilities
         run: sudo apt-get update -qq && sudo apt-get install -y scons pkg-config unzip zip autoconf automake libtool
       - name: Check build isolation and artifact validation
+        id: check_build_isolation
+        continue-on-error: true
         run: python3 -m unittest discover -s tests/build_system -v
       - name: Install verified NDK
+        id: install_verified_ndk
         run: python3 mobile/setup_ndk.py
       - name: Build pinned target dependencies
+        id: build_pinned_target_dependencies
         run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release
       - name: Compile and stage native application
+        id: compile_and_stage_native_application
         run: python3 mobile/android.py configure --arch '${{ matrix.arch }}' --release
       - uses: actions/upload-artifact@v4
+        id: actions_upload_artifact_v4_1
         if: always()
         with:
           name: android-${{ matrix.arch }}-diagnostics
@@ -42,3 +50,8 @@ jobs:
             build/android/**/vcpkg-buildtrees/**/*.log
             build/android/**/android-project/glob2-build.json
           if-no-files-found: ignore
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py

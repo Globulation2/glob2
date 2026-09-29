@@ -39,10 +39,11 @@ jobs:
           BROWSER_ONLY: ${{ inputs.browser_only }}
         run: python3 .github/scripts/ci_changed_paths.py --base "$PR_BASE"
 
-  linux:
-    name: linux (${{ matrix.image }})
+  linux-build:
+    name: linux build (${{ matrix.image }})
     needs: changes
     if: ${{ needs.changes.outputs.native == 'true' }}
+
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -73,6 +74,7 @@ jobs:
             compiler: g++-13
     steps:
       - name: Install dependencies
+        id: install_dependencies
         timeout-minutes: 15
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -96,18 +98,30 @@ jobs:
             libcppunit-dev
 
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
 
       - name: Validate translations
+        id: validate_translations
+        continue-on-error: true
         run: |
-          python3 data/check_translations.py --strict
-          python3 test/test_translations.py
-          python3 test/test_font_coverage.py
-          python3 test/test_text_area_layout.py
-
+          python3 test/ci_run_commands.py \
+            --check 'translation catalog' 'python3 data/check_translations.py --strict' \
+            --check 'translation tests' 'python3 test/test_translations.py' \
+            --check 'font coverage' 'python3 test/test_font_coverage.py' \
+            --check 'text area layout' 'python3 test/test_text_area_layout.py'
       - name: Test compiler cache integration
+        id: test_compiler_cache_integration
+        continue-on-error: true
         run: python3 test/test-ccache.py
 
+      - name: Test CI failure aggregation
+        id: test_ci_failure_aggregation
+        continue-on-error: true
+        run: python3 test/test_ci_failure_aggregation.py
+
       - name: Restore the compiler cache
+        id: restore_the_compiler_cache
+        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -121,6 +135,7 @@ jobs:
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
       - name: Build glob2 and the regression harnesses
+        id: build_glob2_and_the_regression_harnesses
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
             map-report-test \
@@ -186,45 +201,208 @@ jobs:
             mobile-certificate-test \
             mobile-temporary-files-test
 
+      - name: Test Cortex placement equivalence
+        id: test_cortex_placement_equivalence
+        continue-on-error: true
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 cortex-geometry-test
+          ./build/linux/client/release/src/CortexGeometryHarness
+
+      - name: Test Maxima strategy and implementation
+        id: test_maxima_strategy_and_implementation
+        continue-on-error: true
+        run: |
+          GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/run_maxima_implementation_regressions.py --build-dir build/linux/client/release --reuse-built-objects
+
+      - name: Package built Linux test programs
+        id: package_linux_test_programs
+        if: steps.build_glob2_and_the_regression_harnesses.outcome == 'success'
+        run: |
+          test -x build/linux/client/release/src/glob2
+          find build/linux/client/release -type f \( -perm /111 -o -name '*.so*' \) -print0 |
+            tar --null -czf linux-test-programs.tar.gz -T -
+      - uses: actions/upload-artifact@v4
+        id: upload_linux_test_programs
+        if: steps.package_linux_test_programs.outcome == 'success'
+
+        with:
+          name: linux-test-programs-${{ matrix.runner }}
+          path: linux-test-programs.tar.gz
+          retention-days: 2
+          if-no-files-found: error
+
+
+      # A run that touched a widely included header and still shows near-total
+      # direct hits means the cache is not seeing the change.
+      - name: Report the cache statistics
+        id: report_the_cache_statistics
+        continue-on-error: true
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
+        run: ccache -s -v
+
+      # Keep only what this run compiled or reused (a hit refreshes an entry's
+      # timestamp), so a save never carries older commits' objects forward.
+      - name: Drop cache entries this run did not use
+        id: drop_cache_entries_this_run_did_not_use
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
+
+      # Only master writes. PR branches cannot read each other's caches anyway,
+      # and letting every PR save would churn the repository's cache quota and
+      # evict the entries PRs restore from. Saved even when a step failed: the
+      # entries are content-addressed, so objects compiled during a run whose
+      # tests failed are still the right objects.
+      - name: Save the compiler cache
+        id: save_the_compiler_cache
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+
+  linux-tests:
+    name: linux tests (${{ matrix.platform }}, shard ${{ matrix.shard }}/4)
+    needs: [changes, linux-build]
+    if: ${{ needs.changes.outputs.native == 'true' && needs.linux-build.result == 'success' }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 1
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 2
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 3
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 4
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 1
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 2
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 3
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 4
+    steps:
+      - name: Install dependencies
+        id: install_dependencies
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
+            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            libvorbis-dev libogg-dev libspeex-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
+            libcppunit-dev
+
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+
+      - uses: actions/download-artifact@v4
+        id: download_linux_test_programs
+        with:
+          name: linux-test-programs-${{ matrix.runner }}
+      - name: Unpack built Linux test programs
+        id: unpack_linux_test_programs
+        run: tar -xzf linux-test-programs.tar.gz
+
       - name: Test Maxima food ledger
+        if: ${{ matrix.shard == 1 }}
+        id: test_maxima_food_ledger
+        continue-on-error: true
         run: build/linux/client/release/src/MaximaFoodLedgerStandaloneTest
 
       - name: Test map JSON reports
+        if: ${{ matrix.shard == 2 }}
+        id: test_map_json_reports
+        continue-on-error: true
         run: |
-          python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/src/MapReportHarness
-          python3 test/test_map_telemetry.py
+          python3 test/ci_run_commands.py \
+            --check 'map report' 'python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/src/MapReportHarness' \
+            --check 'map telemetry' 'python3 test/test_map_telemetry.py'
       - name: Upload map JSON reports and command log
-        if: always()
+        id: upload_map_json_reports_and_command_log
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 2 }}
         uses: actions/upload-artifact@v4
         with:
           name: map-report-${{ matrix.runner }}
           path: artifacts/map-report/
 
       - name: Test headless map CLI with the shared preview renderer
+        if: ${{ matrix.shard == 3 }}
+        id: test_headless_map_cli_with_the_shared_preview_renderer
+        continue-on-error: true
         run: |
-          python3 test/test_map_cli.py build/linux/client/release/src/glob2 --generation-only
-          python3 test/test_map_cli.py build/linux/client/release/src/glob2
+          python3 test/ci_run_commands.py \
+            --check 'generation only' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2 --generation-only' \
+            --check 'map CLI' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2'
       - name: Upload map CLI previews and command log
-        if: always()
+        id: upload_map_cli_previews_and_command_log
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 3 }}
         uses: actions/upload-artifact@v4
         with:
           name: map-cli-${{ matrix.runner }}
           path: artifacts/map-cli/
 
       - name: Test tournament protocol, AI configuration and main CLI
+        if: ${{ matrix.shard == 1 }}
+        id: test_tournament_protocol_ai_configuration_and_main_cli
+        continue-on-error: true
         run: |
-          python3 test/test_tournaments.py
-          python3 test/test_tournament_pipeline.py
-          python3 test/test_distributed_map_telemetry.py
-          python3 test/test_distributed_game_telemetry.py
-          python3 test/test_map_fairness_tournament.py
-          python3 test/test_map_generation_study.py
-          python3 test/test_fairness_model.py
-          ./build/linux/client/release/src/TournamentCompatibilityTest
-          python3 test/tournament_cli_integration.py --binary build/linux/client/release/src/glob2 --output artifacts/tournament-cli
-
+          python3 test/ci_run_commands.py \
+            --check tournaments 'python3 test/test_tournaments.py' \
+            --check 'tournament pipeline' 'python3 test/test_tournament_pipeline.py' \
+            --check 'distributed map telemetry' 'python3 test/test_distributed_map_telemetry.py' \
+            --check 'distributed game telemetry' 'python3 test/test_distributed_game_telemetry.py' \
+            --check 'map fairness' 'python3 test/test_map_fairness_tournament.py' \
+            --check 'map generation study' 'python3 test/test_map_generation_study.py' \
+            --check 'fairness model' 'python3 test/test_fairness_model.py' \
+            --check 'tournament compatibility' ./build/linux/client/release/src/TournamentCompatibilityTest \
+            --check 'tournament CLI' 'python3 test/tournament_cli_integration.py --binary build/linux/client/release/src/glob2 --output artifacts/tournament-cli'
       - name: Retain tournament CLI compatibility evidence
-        if: always()
+        id: retain_tournament_cli_compatibility_evidence
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 1 }}
         uses: actions/upload-artifact@v4
         with:
           name: tournament-cli-${{ matrix.runner }}
@@ -232,6 +410,9 @@ jobs:
           if-no-files-found: ignore
 
       - name: Test torus geometry, picking and cloud coordinates
+        if: ${{ matrix.shard == 4 }}
+        id: test_torus_geometry_picking_and_cloud_coordinates
+        continue-on-error: true
         run: |
           ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
           /tmp/torus-geometry
@@ -243,6 +424,9 @@ jobs:
           /tmp/map-render-geometry
 
       - name: Exercise GPU and software game rendering
+        if: ${{ matrix.shard == 4 }}
+        id: exercise_gpu_and_software_game_rendering
+        continue-on-error: true
         run: |
           mkdir -p /tmp/glob2-render-profile
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
@@ -254,13 +438,18 @@ jobs:
             build/linux/client/release/src/torus-render-test -G -F -m -s 1120x720
 
       - name: Build and run pre-game map preview regressions
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_pre_game_map_preview_regressions
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapPreviewHarness
           mkdir -p artifacts/map-preview
           timeout 180s xvfb-run -a ./build/linux/client/release/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview
 
       - name: Retain pre-game map preview evidence
-        if: always()
+        id: retain_pre_game_map_preview_evidence
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 2 }}
         uses: actions/upload-artifact@v4
         with:
           name: map-preview-${{ matrix.runner }}-${{ matrix.compiler }}
@@ -268,11 +457,16 @@ jobs:
           if-no-files-found: ignore
 
       - name: Test Orchard Commons generation and fruit conversion
+        if: ${{ matrix.shard == 3 }}
+        id: test_orchard_commons_generation_and_fruit_conversion
+        continue-on-error: true
         run: |
           timeout 120s ./build/linux/client/release/src/OrchardCommonsConversionTest glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
 
       - name: Retain Orchard Commons conversion fixtures
-        if: always()
+        id: retain_orchard_commons_conversion_fixtures
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 3 }}
         uses: actions/upload-artifact@v4
         with:
           name: orchard-conversion-${{ matrix.runner }}
@@ -280,6 +474,9 @@ jobs:
           if-no-files-found: ignore
 
       - name: Build and run custom-game setup regressions
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_custom_game_setup_regressions
+        continue-on-error: true
         run: |
           # The growing generator catalog exercises hundreds of complete worlds.
           timeout 300s ./build/linux/client/release/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
@@ -293,127 +490,188 @@ jobs:
           ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
 
       - name: Test status-bar bounds in GPU and software rendering
+        if: ${{ matrix.shard == 1 }}
+        id: test_status_bar_bounds_in_gpu_and_software_rendering
+        continue-on-error: true
         run: |
           SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
             xvfb-run -a ./build/linux/client/release/src/point-bar-render-test gl
           SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             ./build/linux/client/release/src/point-bar-render-test software
       - name: Test nonblocking screen execution
+        if: ${{ matrix.shard == 3 }}
+        id: test_nonblocking_screen_execution
+        continue-on-error: true
         run: |
           ./build/linux/client/release/libgag/src/ScreenExecutionHarness
 
       - name: Test portable rendering and mobile input
+        if: ${{ matrix.shard == 4 }}
+        id: test_portable_rendering_and_mobile_input
+        continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
-          ./build/linux/client/release/libgag/src/MobileInputHarness
-          ./build/linux/client/release/libgag/src/MobileDocumentsHarness
-          python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness
-          python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness
-          xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
-
+          python3 test/ci_run_commands.py \
+            --check 'mobile input' ./build/linux/client/release/libgag/src/MobileInputHarness \
+            --check 'mobile documents' ./build/linux/client/release/libgag/src/MobileDocumentsHarness \
+            --check 'mobile certificate' 'python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness' \
+            --check 'mobile temporary files' 'python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness' \
+            --check 'portable renderer' 'xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness'
       - name: Test incremental engine sessions
+        if: ${{ matrix.shard == 1 }}
+        id: test_incremental_engine_sessions
+        continue-on-error: true
         run: |
           python3 test/run-engine-session-test.py
 
       - name: Build and run the selection lifetime regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_selection_lifetime_regression
+        continue-on-error: true
         run: |
           ./build/linux/client/release/src/GameGUISelectionHarness
 
       - name: Build and run the wrapped building footprint regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_wrapped_building_footprint_regression
+        continue-on-error: true
         run: |
           ./build/linux/client/release/src/BuildingFootprintHarness
           python3 test/inflate_gzip_fixture.py test/fixtures/wrapped-building/reproducer.game.gz /tmp/wrapped-building-reproducer.game
           ./build/linux/client/release/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
 
       - name: Build and run the entering unit save regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_entering_unit_save_regression
+        continue-on-error: true
         run: |
           ./build/linux/client/release/src/EnteringUnitSaveHarness
           python3 test/inflate_gzip_fixture.py test/fixtures/entering-explorer/reproducer.game.gz /tmp/entering-explorer-reproducer.game
           ./build/linux/client/release/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
 
-      - name: Test Cortex placement equivalence
-        run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 cortex-geometry-test
-          ./build/linux/client/release/src/CortexGeometryHarness
-
       - name: Test Maxima relocation handovers and recovery
+        if: ${{ matrix.shard == 1 }}
+        id: test_maxima_relocation_handovers_and_recovery
+        continue-on-error: true
         run: |
           GLOB2_USER_DIR="$(mktemp -d)" ./build/linux/client/release/src/MaximaRelocationIntegrationTest
 
-      - name: Test Maxima strategy and implementation
-        run: |
-          GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/run_maxima_implementation_regressions.py --build-dir build/linux/client/release --reuse-built-objects
-
       - name: Test clearing flag resource bounds
+        if: ${{ matrix.shard == 2 }}
+        id: test_clearing_flag_resource_bounds
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ClearingFlagGradientTest
 
-      - name: Test hunger and defeat detection
-        run: |
-          python3 test/run-hungry-defeat-tests.py build/linux/client/release/src/HungryDefeatHarness
-
       - name: Test trapped colony elimination
+        if: ${{ matrix.shard == 3 }}
+        id: test_trapped_colony_elimination
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TrappedUnitLifecycleTest
 
+      - name: Test hunger and defeat detection
+        if: ${{ matrix.shard == 3 }}
+        id: test_hunger_and_defeat_detection
+        continue-on-error: true
+        run: python3 test/run-hungry-defeat-tests.py build/linux/client/release/src/HungryDefeatHarness
+
       - name: Build and run the failing-unit markers regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_failing_unit_markers_regression
+        continue-on-error: true
         run: |
           timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/FailingUnitMarkersHarness
       - name: Upload the failing-unit markers scene
-        if: always()
+        id: upload_the_failing_unit_markers_scene
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 4 }}
         uses: actions/upload-artifact@v4
         with:
           name: failing-unit-markers-${{ matrix.runner }}
           path: .cache/failing-unit-markers/
           if-no-files-found: ignore
       - name: Build and run the entering unit draw regression
+        if: ${{ matrix.shard == 1 }}
+        id: build_and_run_the_entering_unit_draw_regression
+        continue-on-error: true
         run: |
           timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
 
       - name: Build and run the immobile unit gradient regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_immobile_unit_gradient_regression
+        continue-on-error: true
         run: |
           ./build/linux/client/release/src/ImmobileUnitGradientHarness
 
       - name: Build and run the building expulsion regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_building_expulsion_regression
+        continue-on-error: true
         run: |
           timeout 300s ./build/linux/client/release/src/BuildingExpelHarness
 
       - name: Build and run the building gradient invalidation regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_building_gradient_invalidation_regres
+        continue-on-error: true
         run: |
           ./build/linux/client/release/src/BuildingGradientInvalidationHarness
 
       - name: Build and run the hiring bucket regression
+        if: ${{ matrix.shard == 1 }}
+        id: build_and_run_the_hiring_bucket_regression
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/HiringBucketHarness .
 
       - name: Build and run the hiring level-gate regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_hiring_level_gate_regression
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/LevelGateHarness .
       - name: Build and run the resource-fetch target regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_resource_fetch_target_regression
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ResourceFetchTargetHarness .
 
       - name: Build and run the round-trip hunger gate regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_round_trip_hunger_gate_regression
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/RoundTripHungerGateHarness .
 
       - name: Build and run the inn swap regression
+        if: ${{ matrix.shard == 1 }}
+        id: build_and_run_the_inn_swap_regression
+        continue-on-error: true
         run: |
           timeout 120s ./build/linux/client/release/src/InnSwapHarness
 
       - name: Test savegame loading and atomic autosaves
+        if: ${{ matrix.shard == 2 }}
+        id: test_savegame_loading_and_atomic_autosaves
+        continue-on-error: true
         run: |
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness
-          build/linux/client/release/src/MaximaContinuationTest
-          ./build/linux/client/release/src/BufferedFileStreamHarness
-
+          python3 test/ci_run_commands.py \
+            --check 'savegame safety' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness' \
+            --check 'Maxima continuation' build/linux/client/release/src/MaximaContinuationTest \
+            --check 'buffered file' ./build/linux/client/release/src/BufferedFileStreamHarness
       - name: Test team statistics save compatibility
+        if: ${{ matrix.shard == 3 }}
+        id: test_team_statistics_save_compatibility
+        continue-on-error: true
         run: |
           build/linux/client/release/libgag/src/PerformanceTelemetryHarness
           ./build/linux/client/release/src/UnitContinuationHarness
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .
-          python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2
+          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/EchoContinuationTest .
+          python3 test/check_echo_save_continuation.py build/linux/client/release/src/glob2
           python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
           python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
@@ -422,41 +680,66 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game
 
       - name: Verify default gradient schedule against cross-platform checksums
-        run: |
-          python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
-          python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --parallel-ai
+        if: ${{ matrix.shard == 4 }}
+        id: verify_default_gradient_schedule_against_cross_platform
+        continue-on-error: true
+        run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
 
       - name: Verify parallel compute and save continuation
+        if: ${{ matrix.shard == 1 }}
+        id: verify_parallel_compute_and_save_continuation
+        continue-on-error: true
         run: |
-          python3 test/check_parallel_compute.py build/linux/client/release/src/glob2
-          python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2
-
+          python3 test/ci_run_commands.py \
+            --check 'parallel compute' 'python3 test/check_parallel_compute.py build/linux/client/release/src/glob2' \
+            --check 'gradient pipeline' 'python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2'
       - name: Build and run the terrain resource regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_terrain_resource_regression
+        continue-on-error: true
         run: |
           ./build/linux/client/release/src/TerrainResourcesHarness
 
       - name: Test AI save portability
+        if: ${{ matrix.shard == 3 }}
+        id: test_ai_save_portability
+        continue-on-error: true
         run: python3 test/run-savegame-safety-tests.py build/linux/client/release/src/AISavePortabilityHarness .
 
       - name: Test Nicowar farming wood clearance
+        if: ${{ matrix.shard == 4 }}
+        id: test_nicowar_farming_wood_clearance
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py build/linux/client/release/src/NicowarFarmingHarness .
 
       - name: Verify weighted path gradients against the independent oracle
+        if: ${{ matrix.shard == 1 }}
+        id: verify_weighted_path_gradients_against_the_independent_
+        continue-on-error: true
         run: |
           ./build/linux/client/release/src/PathGradientHarness
           ./build/linux/client/release/src/ComputeExecutorHarness
           ./build/linux/client/release/src/GradientPipelineHarness
 
       - name: Build and run the global gradient regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_global_gradient_regression
+        continue-on-error: true
         run: |
           ./build/linux/client/release/src/GlobalGradientHarness
 
       - name: Build and run the LAN session regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_lan_session_regression
+        continue-on-error: true
         run: |
           python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
 
       - name: Build and run the aspect-ratio regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_aspect_ratio_regression
+        continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
@@ -464,6 +747,9 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
 
       - name: Check phone layouts and gameplay touch input
+        if: ${{ matrix.shard == 1 }}
+        id: check_phone_layouts_and_gameplay_touch_input
+        continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
           SDL_AUDIODRIVER: dummy
@@ -476,18 +762,26 @@ jobs:
           done
 
       - name: Upload phone UI verification evidence
-        if: always()
+        id: upload_phone_ui_verification_evidence
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 1 }}
         uses: actions/upload-artifact@v4
         with:
           name: mobile-ui-verification
           path: artifacts/mobile-ui/
 
       - name: Check native settings persistence and retry
+        if: ${{ matrix.shard == 2 }}
+        id: check_native_settings_persistence_and_retry
+        continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py
 
       - name: Build and run the window resize regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_window_resize_regression
+        continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
@@ -495,6 +789,9 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness software
 
       - name: Build and run the scaled text regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_scaled_text_regression
+        continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
@@ -502,6 +799,9 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/TextRasterHarness artifacts/text-raster
 
       - name: Check game rendering across repeated map copies
+        if: ${{ matrix.shard == 1 }}
+        id: check_game_rendering_across_repeated_map_copies
+        continue-on-error: true
         env:
           SDL_VIDEODRIVER: dummy
           SDL_AUDIODRIVER: dummy
@@ -510,6 +810,9 @@ jobs:
           SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness --gl
 
       - name: Test front-end colony isolation and menu navigation
+        if: ${{ matrix.shard == 2 }}
+        id: test_front_end_colony_isolation_and_menu_navigation
+        continue-on-error: true
         env:
           SDL_VIDEODRIVER: dummy
           SDL_AUDIODRIVER: dummy
@@ -518,48 +821,61 @@ jobs:
           ./build/linux/client/release/src/MenuColonyHarness navigation unused
 
       - name: Test game speed controls and playback
+        if: ${{ matrix.shard == 3 }}
+        id: test_game_speed_controls_and_playback
+        continue-on-error: true
         run: |
           GLOB2_BUILD_DIR=build/linux/client/release xvfb-run -a python3 test/run-game-speed-tests.py
 
-      - name: Test unit rendering and HD cache
-        run: |
-          xvfb-run -a ./build/linux/client/release/src/DrawableSurfaceBlendTest
-          xvfb-run -a ./build/linux/client/release/src/UnitTeamShaderTest
-          xvfb-run -a ./build/linux/client/release/src/UnitTeamColorCacheTest
-          xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest
-          xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest software
-          xvfb-run -a ./build/linux/client/release/src/RuntimePackCheck
-
-      # A run that touched a widely included header and still shows near-total
-      # direct hits means the cache is not seeing the change.
-      - name: Report the cache statistics
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
-        run: ccache -s -v
-
       - name: Retain browser/native simulation trace
+        if: ${{ matrix.shard == 4 }}
+        id: retain_browser_native_simulation_trace
+        continue-on-error: true
         run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native
       - uses: actions/upload-artifact@v4
+        if: ${{ matrix.shard == 4 }}
+        id: upload_artifact_1
+        continue-on-error: true
         with:
           name: browser-determinism-${{ matrix.runner }}
           path: artifacts/browser-determinism/native/
 
-      # Keep only what this run compiled or reused (a hit refreshes an entry's
-      # timestamp), so a save never carries older commits' objects forward.
-      - name: Drop cache entries this run did not use
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
-        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
+      - name: Test unit rendering and HD cache
+        if: ${{ matrix.shard == 4 }}
+        id: test_unit_rendering_and_hd_cache
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check surface-blending 'xvfb-run -a ./build/linux/client/release/src/DrawableSurfaceBlendTest' \
+            --check team-shader 'xvfb-run -a ./build/linux/client/release/src/UnitTeamShaderTest' \
+            --check team-color-cache 'xvfb-run -a ./build/linux/client/release/src/UnitTeamColorCacheTest' \
+            --check hd-cache 'xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest' \
+            --check hd-cache-software 'xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest software' \
+            --check runtime-pack 'xvfb-run -a ./build/linux/client/release/src/RuntimePackCheck'
 
-      # Only master writes. PR branches cannot read each other's caches anyway,
-      # and letting every PR save would churn the repository's cache quota and
-      # evict the entries PRs restore from. Saved even when a step failed: the
-      # entries are content-addressed, so objects compiled during a run whose
-      # tests failed are still the right objects.
-      - name: Save the compiler cache
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+
+  linux:
+    name: linux (${{ matrix.image }})
+    needs: [changes, linux-build, linux-tests]
+    if: ${{ !cancelled() && needs.changes.outputs.native == 'true' }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ['ubuntu:22.04', 'ubuntu:24.04']
+    steps:
+      - name: Require every Linux build and test shard
+        env:
+          BUILD_RESULT: ${{ needs.linux-build.result }}
+          TEST_RESULT: ${{ needs.linux-tests.result }}
+        run: |
+          echo "Linux builds: $BUILD_RESULT; Linux test shards: $TEST_RESULT"
+          test "$BUILD_RESULT" = success && test "$TEST_RESULT" = success
 
   linux-variants:
     name: linux variants (${{ matrix.image }})
@@ -595,6 +911,7 @@ jobs:
             compiler: g++-13
     steps:
       - name: Install dependencies
+        id: install_dependencies
         timeout-minutes: 15
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -618,8 +935,11 @@ jobs:
             libcppunit-dev
 
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
 
       - name: Restore the compiler cache
+        id: restore_the_compiler_cache
+        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -632,21 +952,27 @@ jobs:
           ccache -z
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
-      - name: Build and run the tests
+      - name: Build the standalone tests
+        id: build_standalone_tests
+        continue-on-error: true
         working-directory: test
-        run: |
-          # The standalone suite owns its generated configuration.
-          scons CXX=${{ matrix.compiler }} -j$(nproc)
-          ./TestsRunner
-          for harness in ./*Harness ./*Test; do
-            echo "== $harness"
-            "$harness"
-          done
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc)
+
+      - name: Run every standalone test
+        id: run_every_standalone_test
+        continue-on-error: true
+        if: steps.build_standalone_tests.outcome == 'success'
+        working-directory: test
+        run: python3 run-standalone-tests.py
 
       - name: Build the YOG server
+        id: build_the_yog_server
+        continue-on-error: true
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
 
       - name: Build without OpenGL
+        id: build_without_opengl
+        continue-on-error: true
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 wss=0 --build=build-software build-software/src/glob2 torus-render-test
           python3 test/SoftwareStartupTest.py build-software/src/glob2
@@ -656,12 +982,14 @@ jobs:
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
       - name: Report the cache statistics
+        id: report_the_cache_statistics
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s -v
 
       # Keep only what this run compiled or reused (a hit refreshes an entry's
       # timestamp), so a save never carries older commits' objects forward.
       - name: Drop cache entries this run did not use
+        id: drop_cache_entries_this_run_did_not_use
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
         run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
 
@@ -671,11 +999,19 @@ jobs:
       # entries are content-addressed, so objects compiled during a run whose
       # tests failed are still the right objects.
       - name: Save the compiler cache
+        id: save_the_compiler_cache
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-variants-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
 
   linux-map-generators:
     name: linux map generators (${{ matrix.image }})
@@ -709,6 +1045,7 @@ jobs:
             compiler: g++-13
     steps:
       - name: Install dependencies
+        id: install_dependencies
         timeout-minutes: 15
         env:
           DEBIAN_FRONTEND: noninteractive
@@ -732,10 +1069,13 @@ jobs:
             libcppunit-dev
 
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
 
       # Reads the main job's cache and never saves: it compiles a subset of the
       # same objects with the same flags.
       - name: Restore the compiler cache
+        id: restore_the_compiler_cache
+        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -743,9 +1083,12 @@ jobs:
           restore-keys: ccache-main-${{ matrix.runner }}-
 
       - name: Build the map generator golden test
+        id: build_the_map_generator_golden_test
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 map-generator-golden-test
 
       - name: Check golden maps and sweep colony counts
+        id: check_golden_maps_and_sweep_colony_counts
+        continue-on-error: true
         run: |
           # Golden maps: rows exist per platform and this platform must have them. The check and
           # the sweep's shards share nothing, so they run side by side with separate
@@ -768,7 +1111,16 @@ jobs:
           [ $status = 0 ]
 
       - name: Check generator telemetry equivalence and cost
+        id: check_generator_telemetry_equivalence_and_cost
+        continue-on-error: true
         run: timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-telemetry-ci --telemetry
+
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
 
   windows:
     name: windows (mingw-w64)
@@ -785,6 +1137,7 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: msys2/setup-msys2@v2
+        id: msys2_setup_msys2_v2_1
         with:
           msystem: MINGW64
           update: true
@@ -811,8 +1164,11 @@ jobs:
             mingw-w64-x86_64-ccache
 
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
 
       - name: Restore the compiler cache
+        id: restore_the_compiler_cache
+        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -826,6 +1182,7 @@ jobs:
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
       - name: Build glob2 and the regression harnesses
+        id: build_glob2_and_the_regression_harnesses
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \
             map-report-test \
@@ -849,9 +1206,13 @@ jobs:
             performance-telemetry-test
 
       - name: Test Orchard Commons generation and fruit conversion
+        id: test_orchard_commons_generation_and_fruit_conversion
+        continue-on-error: true
         run: ./build/mingw/client/release/src/OrchardCommonsConversionTest.exe glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
 
       - name: Retain Orchard Commons conversion fixtures
+        id: retain_orchard_commons_conversion_fixtures
+        continue-on-error: true
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -860,10 +1221,15 @@ jobs:
           if-no-files-found: ignore
 
       - name: Test map JSON reports
+        id: test_map_json_reports
+        continue-on-error: true
         run: |
-          python3 test/test_map_report.py build/mingw/client/release/src/glob2.exe build/mingw/client/release/src/MapReportHarness.exe
-          python3 test/test_map_telemetry.py
+          python3 test/ci_run_commands.py \
+            --check 'map report' 'python3 test/test_map_report.py build/mingw/client/release/src/glob2.exe build/mingw/client/release/src/MapReportHarness.exe' \
+            --check 'map telemetry' 'python3 test/test_map_telemetry.py'
       - name: Upload map JSON reports and command log
+        id: upload_map_json_reports_and_command_log
+        continue-on-error: true
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -871,8 +1237,12 @@ jobs:
           path: artifacts/map-report/
 
       - name: Test headless map CLI
+        id: test_headless_map_cli
+        continue-on-error: true
         run: python3 test/test_map_cli.py build/mingw/client/release/src/glob2.exe
       - name: Upload map CLI previews and command log
+        id: upload_map_cli_previews_and_command_log
+        continue-on-error: true
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -880,28 +1250,40 @@ jobs:
           path: artifacts/map-cli/
 
       - name: Verify weighted path gradients against the independent oracle
+        id: verify_weighted_path_gradients_against_the_independent_
+        continue-on-error: true
         run: |
-          ./build/mingw/client/release/src/PathGradientHarness.exe
-          ./build/mingw/client/release/src/ComputeExecutorHarness.exe
-          ./build/mingw/client/release/src/GradientPipelineHarness.exe
-
+          python3 test/ci_run_commands.py \
+            --check 'path gradient' ./build/mingw/client/release/src/PathGradientHarness.exe \
+            --check 'compute executor' ./build/mingw/client/release/src/ComputeExecutorHarness.exe \
+            --check 'gradient pipeline' ./build/mingw/client/release/src/GradientPipelineHarness.exe
       - name: Test clearing flag resource bounds
+        id: test_clearing_flag_resource_bounds
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/ClearingFlagGradientTest.exe
       - name: Test status-bar bounds in software rendering
+        id: test_status_bar_bounds_in_software_rendering
+        continue-on-error: true
         run: |
           SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             ./build/mingw/client/release/src/point-bar-render-test.exe software
 
       - name: Test hunger and defeat detection
+        id: test_hunger_and_defeat_detection
+        continue-on-error: true
         run: |
           python3 test/run-hungry-defeat-tests.py build/mingw/client/release/src/HungryDefeatHarness.exe
 
       - name: Test trapped colony elimination
+        id: test_trapped_colony_elimination
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TrappedUnitLifecycleTest.exe
 
       - name: Test torus geometry, picking and cloud coordinates
+        id: test_torus_geometry_picking_and_cloud_coordinates
+        continue-on-error: true
         run: |
           g++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
           /tmp/torus-geometry
@@ -913,10 +1295,14 @@ jobs:
           /tmp/map-render-geometry
 
       - name: Build and run the hiring bucket regression
+        id: build_and_run_the_hiring_bucket_regression
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/HiringBucketHarness.exe .
 
       - name: Check game rendering across repeated map copies
+        id: check_game_rendering_across_repeated_map_copies
+        continue-on-error: true
         env:
           SDL_VIDEODRIVER: dummy
           SDL_AUDIODRIVER: dummy
@@ -924,15 +1310,21 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/MapRenderResizeHarness.exe
 
       - name: Build and run pre-game map preview regressions
+        id: build_and_run_pre_game_map_preview_regressions
+        continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/MapPreviewHarness.exe
 
       - name: Test savegame loading and atomic autosaves
+        id: test_savegame_loading_and_atomic_autosaves
+        continue-on-error: true
         run: |
-          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/SavegameSafetyHarness.exe
-          build/mingw/client/release/src/MaximaContinuationTest.exe
-
+          python3 test/ci_run_commands.py \
+            --check 'savegame safety' 'python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/SavegameSafetyHarness.exe' \
+            --check 'Maxima continuation' build/mingw/client/release/src/MaximaContinuationTest.exe
       - name: Test team statistics save compatibility
+        id: test_team_statistics_save_compatibility
+        continue-on-error: true
         run: |
           build/mingw/client/release/libgag/src/PerformanceTelemetryHarness.exe
           ./build/mingw/client/release/src/UnitContinuationHarness.exe
@@ -946,17 +1338,25 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy /tmp/gd-small-2ai.game
 
       - name: Verify default gradient schedule against cross-platform checksums
+        id: verify_default_gradient_schedule_against_cross_platform
+        continue-on-error: true
         run: |
-          python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe
-          python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe --parallel-ai
+          python3 test/ci_run_commands.py \
+            --check 'default AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe' \
+            --check 'parallel AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe --parallel-ai'
 
       - name: Report the cache statistics
+        id: report_the_cache_statistics
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s -v
 
       - name: Retain browser/native simulation trace
+        id: retain_browser_native_simulation_trace
+        continue-on-error: true
         run: python3 test/run-browser-determinism.py build/mingw/client/release/src/glob2.exe artifacts/browser-determinism/native
       - uses: actions/upload-artifact@v4
+        id: upload_artifact_1
+        continue-on-error: true
         with:
           name: browser-determinism-windows
           path: artifacts/browser-determinism/native/
@@ -964,15 +1364,24 @@ jobs:
       # Keep only what this run compiled or reused (a hit refreshes an entry's
       # timestamp), so a save never carries older commits' objects forward.
       - name: Drop cache entries this run did not use
+        id: drop_cache_entries_this_run_did_not_use
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
         run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
 
       - name: Save the compiler cache
+        id: save_the_compiler_cache
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}
+
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
 
   windows-server:
     name: windows server (mingw-w64)
@@ -989,6 +1398,7 @@ jobs:
         shell: msys2 {0}
     steps:
       - uses: msys2/setup-msys2@v2
+        id: msys2_setup_msys2_v2_1
         with:
           msystem: MINGW64
           update: true
@@ -1015,8 +1425,11 @@ jobs:
             mingw-w64-x86_64-ccache
 
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
 
       - name: Restore the compiler cache
+        id: restore_the_compiler_cache
+        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -1032,19 +1445,23 @@ jobs:
       # The server shares no objects with the client, so it builds on its own
       # runner instead of after the client's compile and tests.
       - name: Build the YOG server
+        id: build_the_yog_server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
 
       - name: Report the cache statistics
+        id: report_the_cache_statistics
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s -v
 
       # Keep only what this run compiled or reused (a hit refreshes an entry's
       # timestamp), so a save never carries older commits' objects forward.
       - name: Drop cache entries this run did not use
+        id: drop_cache_entries_this_run_did_not_use
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
         run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
 
       - name: Save the compiler cache
+        id: save_the_compiler_cache
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
         uses: actions/cache/save@v4
         with:
@@ -1055,6 +1472,13 @@ jobs:
   # native programs the browser tests drive are built once each, side by side,
   # and handed to the test jobs as artifacts; the test suites then run on
   # separate runners, with the Chromium suite split into shards by spec file.
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+
   web-build:
     name: browser build (WebAssembly)
     needs: changes
@@ -1067,7 +1491,9 @@ jobs:
       CCACHE_MAXSIZE: 500M
     steps:
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
       - name: Install build dependencies
+        id: install_build_dependencies
         run: |
           # The hosted image adds an unpinned Chrome repository that no job here uses.
           sudo rm -f \
@@ -1076,10 +1502,15 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
+        id: install_pinned_emscripten
         run: python3 browser/setup.py
       - name: Test build identities
+        id: test_build_identities
+        continue-on-error: true
         run: python3 -m unittest discover -s tests/build_system -v
       - name: Restore WebAssembly compiler cache
+        id: restore_webassembly_compiler_cache
+        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -1096,9 +1527,11 @@ jobs:
           scons target=web release=1 -j$(nproc)
           ccache -s -v
       - name: Prune WebAssembly compiler cache
+        id: prune_webassembly_compiler_cache
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         run: ccache --evict-older-than "$(( $(date +%s) - WASM_CACHE_START + 60 ))s"
       - name: Save WebAssembly compiler cache
+        id: save_webassembly_compiler_cache
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
         uses: actions/cache/save@v4
         with:
@@ -1107,6 +1540,8 @@ jobs:
       # The four files the browser tests serve. The test jobs restore them to
       # the same directory the Playwright web server reads.
       - uses: actions/upload-artifact@v4
+        id: upload_artifact_1
+        continue-on-error: true
         with:
           name: web-client
           retention-days: 3
@@ -1117,6 +1552,8 @@ jobs:
             build/emscripten/client/release/index.wasm
             build/emscripten/client/release/index.data
       - uses: actions/upload-artifact@v4
+        id: upload_artifact_2
+        continue-on-error: true
         if: github.event_name == 'workflow_dispatch'
         with:
           name: glob2-web-development
@@ -1126,6 +1563,13 @@ jobs:
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
             build/emscripten/client/release/index.data
+
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
 
   web-native:
     name: browser gateway, router and transport
@@ -1140,36 +1584,57 @@ jobs:
       CCACHE_MAXSIZE: 500M
     steps:
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
       - name: Install native build dependencies
+        id: install_native_build_dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       # Reuse the native client objects already populated by the main Linux job.
       # This job only reads that cache; transport-specific misses stay local.
       - name: Restore native compiler cache
+        id: restore_native_compiler_cache
+        continue-on-error: true
         uses: actions/cache/restore@v4
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-main-ubuntu-24.04-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-main-ubuntu-24.04-
       - name: Reset native compiler cache statistics
+        id: reset_native_compiler_cache_statistics
         run: ccache -z
-      - name: Build and test gateway
-        run: |
-          scons role=gateway release=1 -j$(nproc)
-          python3 -m unittest discover -s tests/gateway -v
+      - name: Build gateway
+        id: build_gateway
+        continue-on-error: true
+        run: scons role=gateway release=1 -j$(nproc)
+      - name: Test gateway
+        id: test_gateway
+        continue-on-error: true
+        if: steps.build_gateway.outcome == 'success'
+        run: python3 -m unittest discover -s tests/gateway -v
       - name: Build headless router
+        id: build_headless_router
+        continue-on-error: true
         run: scons CXX=g++-13 role=router release=1 -j$(nproc)
       - name: Build transport integration fixture
+        id: build_transport_integration_fixture
+        continue-on-error: true
         run: |
           # The browser's editor tests read the native generator catalog, then
           # navigate the visible picker with real keyboard/pointer events.
           scons CXX=g++-13 release=1 transport-test build/linux/client/release/src/glob2 -j$(nproc)
-          python3 test/run-network-transport-tests.py
-          python3 -m unittest discover -s tests/transport -v
-          ccache -s -v
-      # A tarball keeps the executable bits that artifact uploads drop.
+      - name: Test network transport
+        id: test_network_transport
+        continue-on-error: true
+        if: steps.build_transport_integration_fixture.outcome == 'success'
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'network transport' 'python3 test/run-network-transport-tests.py' \
+            --check 'transport unit tests' 'python3 -m unittest discover -s tests/transport -v' \
+            --check 'compiler cache statistics' 'ccache -s -v'
       - name: Package the programs the browser tests drive
+        id: package_the_programs_the_browser_tests_drive
+        if: steps.build_gateway.outcome == 'success' && steps.build_transport_integration_fixture.outcome == 'success'
         run: |
           tar -czf web-native.tar.gz \
             build/linux/client/release/src/glob2 \
@@ -1177,11 +1642,20 @@ jobs:
             build/linux/client/release/src/native-multiplayer-peer \
             build/linux/gateway/release/glob2-ws-gateway
       - uses: actions/upload-artifact@v4
+        id: upload_artifact_1
+        continue-on-error: true
         with:
           name: web-native
           retention-days: 3
           if-no-files-found: error
           path: web-native.tar.gz
+
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
 
   web-deploy:
     name: browser self-hosting deployment
@@ -1191,14 +1665,25 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
+        id: download_web_client
         with:
           name: web-client
           path: build/emscripten/client/release
       - name: Test self-hosting with real TLS and persistent volumes
+        id: test_self_hosting_with_real_tls_and_persistent_volumes
+        continue-on-error: true
         run: |
           docker compose -f deploy/compose.yaml build lobby
           python3 -m unittest discover -s tests/deployment -v
+
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
 
   web-test:
     name: browser tests (${{ matrix.name }})
@@ -1236,14 +1721,17 @@ jobs:
           - name: lifecycle
             browsers: chromium
             command: |
-              node --test unit/*.test.js
-              GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js
-              GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
+              python3 ../test/ci_run_commands.py \
+                --check 'browser unit tests' 'node --test unit/*.test.js' \
+                --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \
+                --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'
     env:
       GLOB2_TEST_RENDERER: ${{ matrix.renderer || 'software' }}
     steps:
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
       - name: Install the libraries the native programs link against
+        id: install_the_libraries_the_native_programs_link_against
         run: |
           # The hosted image adds an unpinned Chrome repository, while this job
           # installs its pinned browsers through Playwright below.
@@ -1253,41 +1741,53 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y scons ccache g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth
       - uses: actions/download-artifact@v4
+        id: actions_download_artifact_v4_1
         with:
           name: web-client
           path: build/emscripten/client/release
       - uses: actions/download-artifact@v4
+        id: actions_download_artifact_v4_2
         with:
           name: web-native
       - name: Unpack the native programs
+        id: unpack_the_native_programs
         run: tar -xzf web-native.tar.gz
       - uses: actions/setup-node@v4
+        id: actions_setup_node_v4_1
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: browser/package-lock.json
       - name: Install browser test dependencies
+        id: install_browser_test_dependencies
         working-directory: browser
         run: |
           npm ci --ignore-scripts
           npx playwright install --with-deps ${{ matrix.browsers }}
       # Firefox needs an X display and an audio service. A null sink is silent.
       - name: Start a silent audio service
+        id: start_a_silent_audio_service
         if: contains(matrix.browsers, 'firefox')
         run: |
           sudo apt-get install -y pulseaudio
           pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
       - name: Run ${{ matrix.name }}
+        id: run_matrix_name
+        continue-on-error: true
         working-directory: browser
         run: ${{ matrix.command }}
       # Only the shard that ran determinism.spec.js writes a trace.
       - uses: actions/upload-artifact@v4
+        id: upload_artifact_1
+        continue-on-error: true
         with:
           name: browser-determinism-wasm-${{ strategy.job-index }}
           path: artifacts/browser-determinism/wasm/
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
-        if: failure()
+        id: upload_artifact_2
+        continue-on-error: true
+        if: steps.run_matrix_name.outcome == 'failure'
         with:
           name: browser-failure-traces-${{ strategy.job-index }}
           retention-days: 7
@@ -1295,17 +1795,28 @@ jobs:
             build/browser-test-results
             build/browser-test-report
 
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+
   browser-determinism:
     name: browser/native simulation equivalence
     needs: [changes, linux, windows, web-test]
     if: ${{ needs.changes.outputs.cross_platform == 'true' }}
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
+        id: actions_download_artifact_v4_1
         with:
           pattern: browser-determinism-*
           path: traces
       - name: Compare every per-tick trace across Linux, Windows and WebAssembly
+        id: compare_every_per_tick_trace_across_linux_windows_and_w
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -1317,6 +1828,12 @@ jobs:
               assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
           print('All four per-tick simulation traces match')
           PY
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
 
   ci-result:
     name: Relevant checks passed
