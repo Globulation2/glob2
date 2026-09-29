@@ -175,7 +175,7 @@ namespace Cortex
 	// --- wheat-protection tuning (all tunable AI design choices) -----------
 	// Cortex paints a checkerboard `forbidden` pattern over its wheat so
 	// workers harvest one half while the protected half stays full and reseeds it
-	// (forbidden blocks harvest, MapGradientGlobal.cpp:135, but NOT growth,
+	// (forbidden blocks harvest, MapGradientResource.cpp, but NOT growth,
 	// MapStep.cpp:80). See docs/AI/cortex/wheat-protection-plan.md and the
 	// geometry core in CortexWheat.h/.cpp.
 
@@ -336,7 +336,7 @@ namespace Cortex
 	/// (WHEAT) tiles within CORTEX_WHEAT_MIN_TILES_RADIUS Chebyshev tiles of its
 	/// footprint edge. "Harvestable" == WHEAT AND not forbidden for this team: the
 	/// checkerboard wheat-protection paint forbids half the field (forbidden blocks
-	/// harvest, MapGradientGlobal.cpp:135), and depleted tiles are no longer WHEAT at
+	/// harvest, MapGradientResource.cpp), and depleted tiles are no longer WHEAT at
 	/// all. The other wheat gates (nearestWheatDist / anyWheatWithin) only require ONE
 	/// WHEAT tile in reach and count forbidden tiles, which let a swarm land next to a
 	/// nearly-exhausted patch and an inn land on a field whose harvestable half was

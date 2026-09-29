@@ -94,7 +94,6 @@ public:
 		computeExperiments = experiments;
 	}
 	ComputeExecutor &computeExecutor() { return compute; }
-	GradientWorkspace &gradientWorkspace() { return gradientWorkspaces[compute.slot()]; }
 	bool computeEnabled(ComputeExperiment experiment) const { return computeExperiments & experiment; }
 	// Fixed chunks and synchronous barriers: thresholds affect execution only.
 	template<class Function> void initializeGradientCells(Function function) const
@@ -113,8 +112,6 @@ public:
 	void seedResourcesGradient(int team, Uint8 resource, int swim, Uint16 *gradient);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
 	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
-	void propagateGradientSnapshot(Uint16 *gradient, int swim, int maxCost,
-		GradientWorkspace &workspace, const std::uint8_t *water);
 	void advanceHiringGradients(Building *building);
 
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
@@ -703,7 +700,7 @@ public:
 	// buffer (0 = obstacle, 1 = free, any cell >= 3 = source); chamfer sweeps it
 	// forward and backward until stable. Only the AIs' own helper maps use it;
 	// the pathfinding gradients are built by propagateGradient. Defined in
-	// MapGradientGlobal.cpp.
+	// MapGradientChamfer.cpp.
 	void updateGlobalGradient(Uint8 *gradient);
 	//! Dijkstra from every seeded cell of a pathfinding gradient (see MapInternal.h).
 	//! Seeds may carry any cost up to GRADIENT_COST_LIMIT (0 for GRADIENT_AT_GOAL; e.g. a
