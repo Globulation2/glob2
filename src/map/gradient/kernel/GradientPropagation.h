@@ -7,7 +7,7 @@
 // The field and workspace must belong to this call alone. The terrain lookup
 // must remain stable until the call finishes; pipelined jobs use a water snapshot.
 #include "GradientRelaxation.h"
-#include "../GradientWorkspace.h"
+#include "GradientWorkspace.h"
 
 #include <algorithm>
 #include <cstddef>

@@ -131,6 +131,9 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   `kernel/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
   building fields. Both use `kernel/GradientRelaxation.h`. Keep their cell-cost
   and queue ordering contracts shared when tuning architecture-specific kernels.
+  `GradientConstants.h` owns the field encoding; `Map` keeps its pipeline and
+  per-executor scratch in an opaque `GradientRuntime`. Save/load reaches pending
+  work through snapshot views, not the pipeline's mutable jobs.
 - In `src/map/gradient/MapGradientChamfer.cpp` the chamfer distance transform's
   convergence-pass cap is bounded by the Uint8 value range (256), not by the
   Borgefors 1-pass result. Borgefors holds only on an obstacle-free grid; with

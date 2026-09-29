@@ -21,7 +21,7 @@
 #include <arm_neon.h>
 #endif
 
-// Building and reading the pathfinding gradients (cell values: MapInternal.h).
+// Building and reading the pathfinding gradients (cell values: GradientConstants.h).
 //
 // A gradient is built with Dial's bucket-queue Dijkstra from its seeded cells.
 // Every cell ends at its cheapest cost to a seed. That cost is unique, so the
@@ -61,11 +61,21 @@ namespace gradient_kernel
 		const std::uint16_t waterCardinalValue = valueAfter(waterSteps.cardinal), waterDiagonalValue = valueAfter(waterSteps.diagonal);
 		GradientBucket &landCardinal = queue[(unsigned(cur) + LAND_STEPS.cardinal) % BUCKETS];
 		GradientBucket &landDiagonal = queue[(unsigned(cur) + LAND_STEPS.diagonal) % BUCKETS];
-		GradientBucket &waterCardinal = queue[(unsigned(cur) + waterSteps.cardinal) % BUCKETS];
-		GradientBucket &waterDiagonal = queue[(unsigned(cur) + waterSteps.diagonal) % BUCKETS];
+		// In the uniform specialization waterSteps equals LAND_STEPS. Do not bind
+		// duplicate buckets or cursors there: distinct water buckets are required
+		// only by weighted classes (enforced by weightedStepsDistinct()).
+		GradientBucket *waterCardinal = nullptr, *waterDiagonal = nullptr;
+		if constexpr (Weighted)
+		{
+			waterCardinal = &queue[(unsigned(cur) + waterSteps.cardinal) % BUCKETS];
+			waterDiagonal = &queue[(unsigned(cur) + waterSteps.diagonal) % BUCKETS];
+		}
 		auto queued = [&]
 		{
-			return landCardinal.size + landDiagonal.size + (Weighted ? waterCardinal.size + waterDiagonal.size : 0);
+			if constexpr (Weighted)
+				return landCardinal.size + landDiagonal.size + waterCardinal->size + waterDiagonal->size;
+			else
+				return landCardinal.size + landDiagonal.size;
 		};
 		const size_t queuedBefore = queued();
 		// The relaxation vectors depend only on the terrain entered, so build both
@@ -117,15 +127,19 @@ namespace gradient_kernel
 			const size_t room = 4 * (chunkEnd - chunk);
 			landCardinal.reserveExtra(room);
 			landDiagonal.reserveExtra(room);
-			if (Weighted)
+			if constexpr (Weighted)
 			{
-				waterCardinal.reserveExtra(room);
-				waterDiagonal.reserveExtra(room);
+				waterCardinal->reserveExtra(room);
+				waterDiagonal->reserveExtra(room);
 			}
 			std::uint32_t *landCardinalEnd = landCardinal.cells.data() + landCardinal.size;
 			std::uint32_t *landDiagonalEnd = landDiagonal.cells.data() + landDiagonal.size;
-			std::uint32_t *waterCardinalEnd = Weighted ? waterCardinal.cells.data() + waterCardinal.size : nullptr;
-			std::uint32_t *waterDiagonalEnd = Weighted ? waterDiagonal.cells.data() + waterDiagonal.size : nullptr;
+			std::uint32_t *waterCardinalEnd = nullptr, *waterDiagonalEnd = nullptr;
+			if constexpr (Weighted)
+			{
+				waterCardinalEnd = waterCardinal->cells.data() + waterCardinal->size;
+				waterDiagonalEnd = waterDiagonal->cells.data() + waterDiagonal->size;
+			}
 			for (size_t ci = chunk; ci < chunkEnd; ci++)
 			{
 				const size_t i = cells[ci];
@@ -228,7 +242,7 @@ namespace gradient_kernel
 				else
 #endif
 				{
-					// This also handles toroidal seams, where a four-cell
+					// This also handles toroidal edges, where a four-cell
 					// vector load would cross a physical row boundary.
 					relax(above | left, diagonalValue, diagonalLimit, diagonalEnd);
 					relax(above | x, cardinalValue, cardinalLimit, cardinalEnd);
@@ -252,10 +266,10 @@ namespace gradient_kernel
 			}
 			landCardinal.size = size_t(landCardinalEnd - landCardinal.cells.data());
 			landDiagonal.size = size_t(landDiagonalEnd - landDiagonal.cells.data());
-			if (Weighted)
+			if constexpr (Weighted)
 			{
-				waterCardinal.size = size_t(waterCardinalEnd - waterCardinal.cells.data());
-				waterDiagonal.size = size_t(waterDiagonalEnd - waterDiagonal.cells.data());
+				waterCardinal->size = size_t(waterCardinalEnd - waterCardinal->cells.data());
+				waterDiagonal->size = size_t(waterDiagonalEnd - waterDiagonal->cells.data());
 			}
 		}
 		// Account for every appended entry, including duplicates that later

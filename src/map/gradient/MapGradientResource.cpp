@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "gradient/GradientRuntime.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "MapInternal.h"
@@ -21,7 +22,7 @@ Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass
 void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
 {
 	PERF_SCOPE_TIME(ResourceGradient);
-	gradientPipeline.invalidate(&resourcesGradient[teamNumber][resourceType][swimClass]);
+	gradientRuntime->pipeline.invalidate(&resourcesGradient[teamNumber][resourceType][swimClass]);
 	Uint16 *gradient = resourcesGradient[teamNumber][resourceType][swimClass];
 	seedResourcesGradient(teamNumber, resourceType, swimClass, gradient);
 	propagateGradient(gradient, swimClass);

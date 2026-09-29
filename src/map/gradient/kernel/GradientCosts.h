@@ -2,10 +2,10 @@
 #pragma once
 
 // Shared field encoding and movement costs. The queue and direction selector
-// must use the same costs to agree on the next tile. See MapInternal.h for the
+// must use the same costs to agree on the next tile. See GradientConstants.h for the
 // 0/1/0xFFFF sentinels and the stored value = 0xFFFF - cheapest cost rule.
 #include "GradientBucket.h"
-#include "MapInternal.h"
+#include "../GradientConstants.h"
 #include "UnitConsts.h"
 
 namespace gradient_kernel
