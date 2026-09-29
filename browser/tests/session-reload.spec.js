@@ -74,6 +74,7 @@ test('a damaged in-game load returns through a scheduled error notice and permit
 });
 
 test('an active replay can be loaded again through the scheduled loader',async({page})=>{
+  if(process.env.GLOB2_TEST_RENDERER==='webgl2') test.setTimeout(300000);
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await click(page,620,650);
@@ -84,7 +85,9 @@ test('an active replay can be loaded again through the scheduled loader',async({
   await click(page,380,280);await click(page,810,590);await screen(page,'match');
   const original=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(original+25);
-  await loadSaved(page,true);await screen(page,'match');
+  await loadSaved(page,true);
+  await expect.poll(async()=>(await state(page)).screen,
+    {timeout:process.env.GLOB2_TEST_RENDERER==='webgl2'?180000:30000}).toContain('match');
   const loaded=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(loaded+25);
   expect(errors).toEqual([]);

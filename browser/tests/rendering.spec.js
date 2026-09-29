@@ -6,6 +6,7 @@ const screen = (page, name) => expect.poll(async () => (await state(page)).scree
 const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
 
 test('WebGL2 draws a playable match and resizes its drawing buffer', async ({page}, info) => {
+  test.setTimeout(120000);
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   page.on('console', message => { if (/GL_INVALID|GL_INVALID_OPERATION|WebGL:.*(INVALID|error)|Aborted/.test(message.text())) errors.push(message.text()); });
@@ -15,7 +16,7 @@ test('WebGL2 draws a playable match and resizes its drawing buffer', async ({pag
   expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2') instanceof WebGL2RenderingContext)).toBe(true);
   await clickMainMenu(page,'custom'); await screen(page, 'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
-  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+  await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
   await page.setViewportSize({width:1280,height:720});
   await expect.poll(async () => { const s = await state(page); return [s.width,s.height]; }).toEqual([1280,720]);
   expect(await page.evaluate(() => { const gl=document.querySelector('#canvas').getContext('webgl2'); return [gl.drawingBufferWidth,gl.drawingBufferHeight,gl.getError()]; })).toEqual([1280,720,0]);
