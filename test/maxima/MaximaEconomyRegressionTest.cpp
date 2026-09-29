@@ -538,11 +538,14 @@ void armyBirthsMatchPlatformChecksums()
     const bool record=std::getenv("GLOB2_RECORD_ARMY_CHECKSUMS")!=nullptr;
     std::ifstream expected;
     std::ofstream output;
-    if(record)output.open(path);else expected.open(path);
+    // Record with serial execution of the default delayed schedule; normal
+    // verification uses its background worker and must match every tick.
+    if(record) { f.game.map.configureGradientPipeline(0,8); output.open(path); }
+    else expected.open(path);
     assert(record?output.good():expected.good());
     for(int tick=1;tick<=512;++tick) {
         f.game.syncStep(0);assert(f.game.stepCounter==unsigned(tick));
-        // Preserve the format-115 baseline across save-format bumps. With one
+        // Normalize the header to 115; the fixture uses eight-tick publication. With one
         // team and no players, the header version is rotated six times.
         const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true)
             ^ std::rotr(Uint32(f.game.mapHeader.getVersionMinor()^115),6);

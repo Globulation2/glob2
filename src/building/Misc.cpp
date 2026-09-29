@@ -93,9 +93,7 @@ void Building::kill(int diagnosticRemoval)
 	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 		owner->dirtyGlobalGradient();
-		owner->map->updateForbiddenGradient(owner->teamNumber);
-		owner->map->updateGuardAreasGradient(owner->teamNumber);
-		owner->map->updateClearAreasGradient(owner->teamNumber);
+		owner->map->updateTeamAreaGradients(owner->teamNumber);
 		if (type->isBuildingSite && type->level==0)
 		{
 			bool good=false;

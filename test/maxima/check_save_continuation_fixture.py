@@ -52,7 +52,7 @@ def check(binary, checkpoint_name, expected_name, stop_tick):
 
 
 def main(binary):
-    check(binary, "checkpoint-30000-v115.game.gz", "expected-30000-30512.json", 30512)
+    check(binary, "checkpoint-30000-v115.game.gz", "expected-gradient-pipeline-30000-30512.json", 30512)
 
 
 if __name__ == "__main__":

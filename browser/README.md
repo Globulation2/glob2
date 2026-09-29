@@ -170,7 +170,14 @@ uses deprecated ScriptProcessorNode.
 
 ### CI compiler caches
 
-The browser job restores the main Ubuntu 24.04 native compiler cache read-only
+CI builds the browser in parallel jobs. `web-build` compiles the WebAssembly
+client and `web-native` the gateway, router and transport fixtures; both hand
+their outputs to the `web-test` matrix as artifacts, which runs the Chromium
+suite in four shards (split by spec file) beside the Firefox/WebKit, WebGL2 and
+lifecycle suites. `web-deploy` checks self-hosting on its own runner. A spec
+that needs a native program must use one `web-native` packages, or add it there.
+
+`web-native` restores the main Ubuntu 24.04 native compiler cache read-only
 for its router and transport fixtures. Emscripten uses a separate bounded cache
 through `EM_COMPILER_WRAPPER=ccache`, keyed by runner OS/architecture and the
 pinned toolchain. Only master saves that cache, after pruning unused entries;

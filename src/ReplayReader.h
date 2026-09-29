@@ -28,7 +28,8 @@ static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 //! apportionment, round-trip routing and hiring, Echo building-order ids surviving a
 //! load, route fields invalidated by the map's topology generation, one worker level),
 //! so earlier replays would diverge from what happened.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 99;
+// Version 120 changes periodic routing publication to an eight-tick delay.
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 120;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

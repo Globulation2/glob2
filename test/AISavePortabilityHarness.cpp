@@ -10,6 +10,9 @@
 #include "Version.h"
 #include "Order.h"
 #include "AIMaxima.h"
+#include "AICastor.h"
+#include <algorithm>
+#include <new>
 #include "../src/ai/echo/Tribool.h"
 #include <list>
 #include <queue>
@@ -87,6 +90,24 @@ int main(int argc, char** argv)
 		game.teams[0]->race.loadDefault();
 		game.players[0] = new Player(0, "portability", game.teams[0], BasePlayer::P_LOCAL);
 		game.gameHeader.setNumberOfPlayers(1);
+		// A captured pre-boot Castor cache must not depend on allocator contents.
+		alignas(AICastor) unsigned char castorStorage[sizeof(AICastor)];
+		std::fill(std::begin(castorStorage), std::end(castorStorage), 0xa5);
+		auto *castor = new (castorStorage) AICastor(game.players[0]);
+		AITelemetry::Series castorSeries;
+		castorSeries.fields = AITelemetry::schema(2);
+		castorSeries.current.values.resize(castorSeries.fields.size());
+		castor->telemetry.series = &castorSeries;
+		castor->captureTelemetry();
+		unsigned buildingCounts = 0;
+		for (size_t i = 0; i < castorSeries.fields.size(); ++i)
+			if (castorSeries.fields[i].name.starts_with("state.buildingSum_"))
+			{
+				++buildingCounts;
+				require(castorSeries.current.values[i].bits == 0, "Castor pre-boot counts initialized");
+			}
+		require(buildingCounts > 0, "Castor building count columns checked");
+		castor->~AICastor();
 		AIEcho::Echo echo(new NewNicowar, game.players[0]);
 		require(!echo.update_gm && echo.allies == 0 && echo.enemies == 0 &&
 			echo.inn_view == 0 && echo.market_view == 0 && echo.other_view == 0,
