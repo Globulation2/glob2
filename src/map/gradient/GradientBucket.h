@@ -7,8 +7,8 @@
 #include <vector>
 
 // One cost layer of the gradient bucket queue: cell indices in [0, size).
-// cells.size() is capacity, so the kernel can reserve room once per expanded
-// cell and then append without branching.
+// cells.size() is capacity, so the kernel can reserve room for a run of
+// expanded cells and then append through a raw cursor without branching.
 struct GradientBucket
 {
 	// A power of two above the largest edge cost (42): each bucket then holds a
