@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
@@ -37,10 +38,16 @@
 // throttle. On correct code the loop exits in a handful of passes.
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
+	PERF_SCOPE_TIME(Propagation);
+    updateGlobalGradientTask(gradient).run();
+}
+
+GAGCore::CooperativeTask Map::updateGlobalGradientTask(Uint8 *gradient)
+{
 	// Values below 3 cannot raise a free cell above its seed of 1.
 	// Without a stronger source, the initialized buffer is already the final field.
 	if (std::none_of(gradient, gradient + size, [](Uint8 value) { return value >= 3; }))
-		return;
+		co_return true;
 
 	int passes = 0;
 	bool changed;
@@ -52,6 +59,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 		// Keep the in-place sweep order, including reads across the toroidal seams.
 		for (size_t y = 0; y < (size_t)h; y++)
 		{
+			if ((y & 15) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Building gradients]");
 			Uint8* row = gradient + (y << wDec);
 			const Uint8* previousRow = gradient + (((y - 1) & hMask) << wDec);
 			for (size_t x = 0; x < (size_t)w; x++)
@@ -75,6 +83,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 
 		for (size_t y = (size_t)h; y-- > 0; )
 		{
+			if ((y & 15) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Building gradients]");
 			Uint8* row = gradient + (y << wDec);
 			const Uint8* nextRow = gradient + (((y + 1) & hMask) << wDec);
 			for (size_t x = (size_t)w; x-- > 0; )
@@ -103,6 +112,7 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 			abort();
 		}
 	} while (changed);
+    co_return true;
 }
 
 
@@ -119,6 +129,7 @@ Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass
 
 void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
 {
+	PERF_SCOPE_TIME(ResourceGradient);
 	Uint16 *gradient=resourcesGradient[teamNumber][resourceType][swimClass];
 	assert(gradient);
 	bool canSwim = swimClass > 0;

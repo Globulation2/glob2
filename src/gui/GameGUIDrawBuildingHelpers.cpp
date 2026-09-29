@@ -16,6 +16,7 @@
 #include "TeamDisplay.h"
 #include "Unit.h"
 #include "UnitDisplayNames.h"
+#include "FailureShapes.h"
 
 void GameGUI::drawBuildingHeader(Building* selBuild, BuildingType* buildingType, int& ypos)
 {
@@ -107,13 +108,13 @@ void GameGUI::drawBuildingHP(Building* selBuild, BuildingType* buildingType, int
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos, globalContainer->littleFont, Toolkit::getStringTable()->getString("[hp]"));
 	globalContainer->littleFont->popStyle();
 
-	if (selBuild->hp <= buildingType->hpMax/5)
+	if (selBuild->hp <= selBuild->getEffectiveMaxHp()/5)
 		{ r=255; g=0; b=0; }
 	else
 		{ r=0; g=255; b=0; }
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormattableString("%0/%1").arg(selBuild->hp).arg(buildingType->hpMax).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormattableString("%0/%1").arg(selBuild->hp).arg(selBuild->getEffectiveMaxHp()).c_str());
 	globalContainer->littleFont->popStyle();
 }
 
@@ -390,6 +391,8 @@ void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* building
 // only for those two reasons. Table is indexed by Building::UnitCantWorkReason;
 // the static_assert keeps it locked to the enum size so future additions
 // to UnitCantWorkReason can't silently fall off the end.
+namespace { constexpr int FAILURE_SHAPE_HALF = 5; }
+
 static const char* failureReasonKey(Building::UnitCantWorkReason reason, bool isVirtual)
 {
 	static constexpr const char* kReasonKey[Building::UnitCantWorkReasonSize] = {
@@ -420,22 +423,31 @@ void GameGUI::drawBuildingFailureReasons(Building* selBuild, BuildingType* build
 	if (!((selBuild->owner->allies) & (1<<localTeamNo)))
 		return;
 
-	// Only show the failure-reason rows when a *real* obstruction exists.
-	// A building that merely lacks spare idle units (UnitNotAvailable only) is
-	// in its normal state and gets no rows; see shouldShowBuildingFailureReasons.
-	if (!shouldShowBuildingFailureReasons(selBuild->unitsFailingRequirements,
-	                                      Building::UnitCantWorkReasonSize,
-	                                      Building::UnitNotAvailable))
+	// Only show the failure-reason rows when the building is still asking for
+	// units and a *real* obstruction exists. A building that merely lacks spare
+	// idle units (UnitNotAvailable only) is in its normal state and gets no
+	// rows; see shouldShowFailingUnitMarkers, which the map view's badges ask
+	// too so that the rows and the badges cannot disagree.
+	if (!shouldShowFailingUnitMarkers(selBuild->unitsFailingRequirements,
+	                                  Building::UnitCantWorkReasonSize,
+	                                  Building::UnitNotAvailable,
+	                                  (int)selBuild->unitsWorking.size(),
+	                                  selBuild->desiredMaxUnitWorking))
 		return;
 
 	for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
 	{
 		int n = selBuild->unitsFailingRequirements[j];
-		if(n>0 && (int)selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
+		if(n>0)
 		{
-			const char* key = failureReasonKey(static_cast<Building::UnitCantWorkReason>(j), buildingType->isVirtual);
+			const Building::UnitCantWorkReason reason = static_cast<Building::UnitCantWorkReason>(j);
+			const char* key = failureReasonKey(reason, buildingType->isVirtual);
 			std::string s = FormattableString(Toolkit::getStringTable()->getString(key)).arg(n);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos, globalContainer->littleFont, s.c_str());
+			// The shape the same units wear in the map view.
+			const int shapeX = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10;
+			if (reason != Building::UnitNotAvailable)
+				drawFailureShape(globalContainer->gfx, shapeX+FAILURE_SHAPE_HALF, ypos+FAILURE_SHAPE_HALF+1, FAILURE_SHAPE_HALF, reason, failureShapeColor());
+			globalContainer->gfx->drawString(shapeX+2*FAILURE_SHAPE_HALF+6, ypos, globalContainer->littleFont, s.c_str());
 			ypos += YOFFSET_RESOURCE_LINE;
 		}
 	}
@@ -467,7 +479,7 @@ void GameGUI::drawBuildingActionButtons(Building* selBuild, BuildingType* buildi
 	}
 	else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE) && !buildingType->isBuildingSite)
 	{
-		if (selBuild->hp<buildingType->hpMax)
+		if (selBuild->hp<selBuild->getEffectiveMaxHp())
 		{
 			// repair
 			if (selBuild->type->regenerationSpeed==0 && selBuild->isHardSpaceForBuildingSite(Building::REPAIR) && localTeam->maxBuildLevel()>=buildingType->level)
@@ -661,7 +673,8 @@ void GameGUI::drawBuildingUpgradePreview(Building* selBuild, BuildingType* build
 	bt=globalContainer->buildingsTypes.get(bt->nextLevel);
 
 	if (bt->hpMax)
-		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE, bt->hpMax);
+		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_LINE,
+			bt->hpMax * selBuild->owner->game->gameHeader.getBuildingHpMultiplier());
 	if (bt->maxUnitInside)
 		drawValueAlignedRight(blueYpos+YOFFSET_TEXT_PARA+2*YOFFSET_TEXT_LINE, bt->maxUnitInside);
 	blueYpos += YOFFSET_ICON+YOFFSET_B_SEP;

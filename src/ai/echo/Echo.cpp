@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "echo/Echo.h"
 #include "Building.h"
 #include <map>
@@ -52,6 +53,9 @@ Echo::Echo(EchoAI* echoai, Player* player) : player(player), echoai(echoai), gm(
 unsigned int Echo::add_building_order(Construction::BuildingOrder* bo)
 {
 	building_orders.push_back(std::shared_ptr<Construction::BuildingOrder>(bo));
+	telemetry.count(telemetry.series && telemetry.series->implementation == 4
+						? AITrace::AI4::echo_building_queued
+						: AITrace::AI5::echo_building_queued);
 	bo->queue_gradients(get_gradient_manager());
 	unsigned int id=br.register_building();
 	bo->id=id;
@@ -62,6 +66,9 @@ unsigned int Echo::add_building_order(Construction::BuildingOrder* bo)
 void Echo::add_management_order(Management::ManagementOrder* mo)
 {
 	management_orders.push_back(std::shared_ptr<Management::ManagementOrder>(mo));
+	telemetry.count(telemetry.series && telemetry.series->implementation == 4
+						? AITrace::AI4::echo_management_queued
+						: AITrace::AI5::echo_management_queued);
 }
 
 
@@ -74,6 +81,9 @@ void Echo::update_management_orders()
 		{
 			size_t pos = i - management_orders.begin();
 			(*i)->modify(*this);
+			telemetry.count(telemetry.series && telemetry.series->implementation == 4
+								? AITrace::AI4::echo_management_applied
+								: AITrace::AI5::echo_management_applied);
 			management_orders.erase(management_orders.begin() + pos);
 			i = management_orders.begin() + pos;
 			continue;
@@ -84,6 +94,9 @@ void Echo::update_management_orders()
 		else
 		{
 			size_t pos = i - management_orders.begin();
+			telemetry.count(telemetry.series && telemetry.series->implementation == 4
+								? AITrace::AI4::echo_management_invalid
+								: AITrace::AI5::echo_management_invalid);
 			management_orders.erase(i);
 			i = management_orders.begin() + pos;
 			continue;
@@ -174,6 +187,9 @@ void Echo::update_building_orders()
 					add_management_order(mo_during_construction);
 				}
 				orders.push_back(shared_ptr<Order>(new OrderCreate(player->team->teamNumber, p.x, p.y, type, 1, 1)));
+				telemetry.count(telemetry.series && telemetry.series->implementation == 4
+									? AITrace::AI4::echo_building_emitted
+									: AITrace::AI5::echo_building_emitted);
 				previous_building_id=(*i)->id;
 				i=building_orders.erase(i);
 				break;
@@ -292,6 +308,7 @@ std::shared_ptr<Order> Echo::getOrder(void)
 	br.tick();
 	update_resource_trackers();
 	update_management_orders();
+	echoai->telemetry = telemetry;
 	echoai->tick(*this);
 	update_management_orders();
 	update_building_orders();

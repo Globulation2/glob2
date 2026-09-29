@@ -1,0 +1,41 @@
+{
+  "id": "fractal-registered-edges",
+  "generators": [
+    34,
+    35
+  ],
+  "map_seeds": [
+    20001,
+    30001
+  ],
+  "generator_params": {
+    "width": 8,
+    "height": 8,
+    "teams": 4
+  },
+  "grid": {
+    "width": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "height": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "teams": [
+      1,
+      2,
+      8,
+      12
+    ]
+  },
+  "candidates": 0,
+  "timeout_seconds": 120,
+  "outputs": {
+    "map": false
+  }
+}

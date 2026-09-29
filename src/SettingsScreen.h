@@ -5,10 +5,15 @@
 
 #include "Glob2Screen.h"
 #include "Settings.h"
+#include "gui/FrontendLayout.h"
 #include "KeyboardManager.h"
+#include <ApplicationHost.h>
+#include <InterfacePresentation.h>
+#include <TouchInput.h>
 #include <GUIDropdown.h>
 #include <array>
 #include <functional>
+#include <memory>
 #include <vector>
 
 // Native, settings-local form. A single screen owns layout, clipping and focus,
@@ -26,7 +31,8 @@ public:
         std::string id, label, help, value, extraId;
         Kind kind=Kind::Info;
         int number=0, minimum=0, maximum=1;
-        bool enabled=true, selected=false;
+		int buildingIcon = -1;
+		bool enabled=true, selected=false;
         std::vector<std::string> choices;
         std::function<void(int)> change;
         std::function<void()> action;
@@ -34,6 +40,10 @@ public:
         // Table entries share a line only when the viewport is wide enough.
         int columns=1, column=0;
     };
+    bool supportsCompactViewport() const override { return true; }
+    bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
+    void cancelExecutionInput() override { phoneGesture.cancel(); }
+    GAGCore::TouchInput phoneGesture;
     SettingsScreen();
     ~SettingsScreen() override;
     void paint() override;
@@ -44,7 +54,8 @@ public:
 
     // Stable semantic interface, also used by native integration tests.
     void selectCategory(Category category);
-    Category category() const { return current; }
+	std::vector<Category> visibleCategories() const;
+	Category category() const { return current; }
     const std::vector<Row>& rows();
     bool changeSetting(const std::string& id,int value);
     void activateSetting(const std::string& id);
@@ -54,6 +65,7 @@ public:
     bool displayConfirmationPending() const;
     void confirmDisplay(bool keep);
     void done();
+    void abandon();
 
 protected:
     virtual bool applyDisplayMode(int width,int height,Uint32 flags);
@@ -64,18 +76,26 @@ private:
     Modal modal=Modal::None;
     std::vector<Row> form;
     std::array<int,6> scroll{};
-    int modalScroll=0, contentHeight=0, buildingTab=0, scrollbarGrab=0;
+	int selectedBuilding = -1;
+	void buildBuildingDetail(int type);
+	int modalScroll=0, contentHeight=0, buildingTab=0, scrollbarGrab=0;
     GAGGUI::Dropdown dropdown;
     std::function<void(int)> dropdownChange;
     Rect panel, viewport, footer, scrollbar, categoryControl;
     bool compactNavigation=false;
-    int padding=24, sidebar=176;
+	bool phonePage() const;
+	Rect backControl;
+	int padding=24, sidebar=176;
     std::string focus, dragging, textDraft;
     bool editingText=false, selectAllText=false, scrollingBar=false;
     size_t textCursor=0;
     bool failed=false, settingsDirty=false;
     std::array<bool,2> keyboardDirty{};
     Uint32 saveAt=0, displayDeadline=0;
+    // Acknowledges the latest writes; native persistence completes immediately.
+    std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
+    // done() was called and is waiting on persistence to resolve before endExecute().
+    bool closing=false;
     bool displayError=false;
     Settings previousDisplay;
     KeyboardManager gameKeys, editorKeys;
@@ -113,8 +133,10 @@ private:
     void commitText();
     void closeModal();
     void changeDisplay(std::function<void(Settings&)> change);
+    void changeUiScale(int percent);
     int& scrollOffset();
     void focusNext(bool backward);
+    void navigateBack();
     void openCategoryPicker();
     void ensureFocusVisible();
     void invoke(Row row,int direction=0);

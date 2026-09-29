@@ -30,9 +30,14 @@ def createBundle(target, source, env) :
     # add icon -- TODO generate .icns file from png or svg
     iconFile = env['BUNDLE_ICON']
     run('cp %s %s/Contents/Resources' % (iconFile, bundleDir) )
-    # add dependent libraries, fixing all absolute paths
+    # add dependent libraries, fixing all absolute paths and re-signing everything
+    # install_name_tool touched (it invalidates a Mach-O's existing signature, and
+    # macOS refuses to run a binary carrying one)
     addDependentLibsToBundle( bundleDir )
-    
+    # the bundle's own seal (Info.plist, resources) still needs signing even though
+    # every binary inside it already was
+    run("codesign --force --sign - %s" % bundleDir )
+
 
 def createBundleMessage(target, source, env) :
     out ="Running Bundle builder\n"

@@ -1,3 +1,9 @@
+[AI strategy]
+تكتيكات AI
+[AIMaxima-Summary]
+يوازن النمو المستدام والتدريب، ثم يجمع الجيوش في موجات.
+[AIMaxima-Profile]
+الاستراتيجية الأساسية: يعامل الغذاء والعمال والولادات والتدريب والبناء والقتال كمطالب متنافسة. يحدد حجم جيشه جزئيًا وفق قوة العدو المقدّرة، ثم يحاول إيصال ذلك الجيش بفعالية.\n\nالاقتصاد والتطوير: يوازن الولادات مع الغذاء والعمالة، ويحافظ على فرص الفراغ للتدريب، ويتوقف عن إضافة عمال فائضين عند الحاجة إلى إنتاج عسكري. يوسّع قدرة التدريب ويتجنب تعطيل قدر كبير من البنية التحتية للترقيات.\n\nالاستطلاع والقرارات: يقدّر قوات العدو من الوحدات المرئية والمشاهدات المتذكّرة باستخدام نموذج ملائم للبيانات. تعتمد الأهداف على القيمة والمسافة والأبراج والعمال المكشوفين والاستمرار في الهجوم. تدعم مهام الفاكهة تنوع الغذاء واستمالة الوحدات.\n\nالهجوم والدفاع: يحتفظ بمحاربين للتدريب والدفاع، ثم يجمع القوات البرية المؤهلة قرب بنية الغذاء الصديقة قبل إطلاق الموجات. يستخدم استجابات دفاعية محلية ويقيّم طرق الاقتراب من المستعمرة.\n\nعندما تتعثر الهجمات: بعد أربعة إخفاقات متتالية في إيصال الموجات، ينتقل إلى أعلام هجوم تتلقى تعزيزًا مستمرًا. قد تستخدم الهجمات العابرة للماء تعزيزًا مستمرًا أيضًا. لا يحل هذا البديل كل انسداد يسبق تشكل التجمع.\n\nمقارنة بالذكاءات الأخرى: يدمج الغذاء والتدريب والمعلومات والنشر بصورة أوثق. يركز Cabino على عدة هجمات ضد المباني؛ ويركز Maxima على تقدير الحاجة وإيصال القوات المجمعة.\n\nنقاط القوة والضعف: يحافظ على النمو وتعويض الجيش مع التكيف مع ضغط الغذاء والتهديدات المرصودة. يحتاج إلى غذاء وقدرة تدريب ومساحة تجمع مفتوحة؛ وقد يعرقل الازدحام وطول الطرق إيصال القوات.\n\nمواجهة مقترحة: نازع على القمح والنُزل والثكنات المكشوفة قبل تجمع الموجات. أبقِ قوة دفاعية ممونة مجتمعة وعطّل طرق التعزيز. توقع ضغطًا متكررًا بعد الموجة الأولى.\n\nالاستطلاع: تستخدم تقديرات القوة المشاهدات وسجل الرصد، لا إجمالي قوات العدو المخفي.
 [%0 has left the game]
 ﺧﺮﺝ %0 ﻣﻦ ﺍﻟﻠﻌﺒﺔ
 [%0 level %1]
@@ -51,11 +57,11 @@ V: ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﺠﻤﻴﻊ ﺍﻟﻤﺒﺎﻧﻲ
 [ai]
 ﺁﻟﻲ
 [AICastor-Description]
-ﺍﻟﺠﺮﻱء - ﻳﻠﻌﺐ ﺑﺘﺤﻔﻆ ﻭﻳُﺤﺴِﻦ ﺍﻟﻠﻌﺐ ﻓﻲ ﺍﻟﺨﺮﺍﺋﻂ ﺫﺍﺕ ﺍﻟﻤﻮﺍﺭﺩ ﺍﻟﻘﻠﻴﻠﺔ. ﻣﺘﻮﺳﻂ ﺍﻟﺼﻌﻮﺑﺔ.
+يبني ويدرّب مع ضبط النمو بحسب إمدادات الطعام.
 [AICastor]
 ﺟﺮﻱء
 [AINicowar-Description]
-ﺍﻟﻨﺬﻝ - ﻳﻠﻌﺐ ﺑﻌﻨﻒ، ﻭﻳﻨﻤﻮ ﺳﺮﻳﻌًﺎ ﻭﻳﻠﻘﻲ ﺑﺠﻴﻮﺵ ﻛﺒﻴﺮﺓ ﻋﻠﻰ ﺧﺼﻮﻣﻪ. ﺷﺪﻳﺪ ﺍﻟﺼﻌﻮﺑﺔ.
+يزيد السكان ويدرّب المحاربين ثم يهاجم.
 [AINicowar]
 ﻧﺬﻝ
 [AINone-Description]
@@ -63,17 +69,21 @@ V: ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﺠﻤﻴﻊ ﺍﻟﻤﺒﺎﻧﻲ
 [AINone]
 ﻻ ﺷﻲء
 [AINumbi-Description]
-ﺍﻷﺧﺮﻕ - ﻳﺘَّﺴﻊ ﺑﺸﻜﻞ ﻗﻠﻴﻞ ﻭﺧﻔﻴﻒ. ﻗﻠﻴﻞ ﺍﻟﺼﻌﻮﺑﺔ.
+خصم متسامح نسبيًا، لكنه يواصل التوسع والهجوم.
 [AINumbi]
 ﺃﺧﺮﻕ
 [AIEcono-Description]
-ﻭﺻﻮﻝﺇﻟﻰﺍﻟﻼﻧﻬﺎﺋﻴﺔ - ﻻ ﻳﻬﺎﺟﻢ، ﻭﻟﻜﻨﻪ ﻳﺒﻨﻲ ﻗﻮﺍﻋﺪ ﻫﺎﺋﻠﺔ ﻭﻳﺤﻮﻝ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻨﻒ. ﻗﻠﻴﻞ ﺍﻟﺼﻌﻮﺑﺔ.
+يتوسع وينافس على استمالة الوحدات دون إنتاج محاربين.
 [AIEcono]
 ﻭﺻﻮﻝﺇﻟﻰﺍﻟﻼﻧﻬﺎﺋﻴﺔ
 [AIWarrush-Description]
-ﺍﻟﻤﻨﺪﻓﻊ - ﻳﻬﺎﺟﻢ ﺑﺴﺮﻋﺔ ﻭﻗﻮﺓ. ﻏﺎﻟﺒًﺎ ﻣﺎ ﻳﻠﻘﻲ ﺑﺎﻟﻼﻋﺐ ﺍﻟﻤﺪﺍﻓﻊ ﺇﻟﻰ ﻧﻬﺎﻳﺔ ﻟﻌﺒﺘﻪ. ﻣﺘﻮﺳﻂ ﺍﻟﺼﻌﻮﺑﺔ.
+هجمات سريعة تختبر دفاعاتك المبكرة.
 [AIWarrush]
 ﻣﻨﺪﻓﻊ
+[AICabino-Description]
+بنّاء قوي ينشر قوات هجومية مدرّبة.
+[AICabino]
+Cabino
 [Alga]
 ﻃﺤﺎﻟﺐ
 [algae]
@@ -607,9 +617,9 @@ meta-%0
 [ok]
 ﻧﻌﻢ
 [old islands terrain]
-ﺟُﺰﺭ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
+الأرخبيل الوعر
 [old random terrain]
-ﺗﻀﺎﺭﻳﺲ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
+الساحل المتشظي
 [on press]
 ﻋﻨﺪ ﺍﻟﻀﻐﻂ
 [On the spot]
@@ -1217,7 +1227,11 @@ tab
 [game speed help]
 ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
 [AICortex-Description]
-تتوسع Cortex نحو حقول القمح الجديدة وترسل مجموعات من المحاربين إلى المعركة، مدعومين بالنزل والمستشفيات القريبة من خط المواجهة. صعوبة متوسطة. تجريبي.
+يجمع موجات من المحاربين ويدعمها بالطعام والعلاج.
+[AIMaxima-Description]
+يستطلع ويعزز إمدادات الطعام ويجمع موجات المحاربين.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 ﺗﻌﺬﺭ ﺣﻔﻆ ﺍﻟﺤﻤﻠﺔ. ﺗﺤﻘﻖ ﻣﻦ ﻭﺟﻮﺩ ﺍﻟﻤﺠﻠﺪ ﺍﻟﻮﺟﻬﺔ ﻭﺇﻣﻜﺎﻧﻴﺔ ﺍﻟﻜﺘﺎﺑﺔ ﻓﻴﻪ ﻭﺗﻮﻓﺮ ﻣﺴﺎﺣﺔ ﺧﺎﻟﻴﺔ.
 [AICortex]
@@ -1231,33 +1245,37 @@ Cortex
 [AI strategy & counterplay]
 استراتيجية الذكاء الاصطناعي وطرق مواجهته
 [AICastor-Profile]
-الإستراتيجية: تتوسع بحذر وتعمل بشكل جيد على الخرائط بموارد قليلة.\n\nنقاط القوة: التوسع المحدود فعال في الألعاب ذات الموارد النادرة.\n\nاقتراح للمواجهة: احتلال الأراضي مبكرًا. لا تفترض أن نقص الموارد سيضعف هذا الذكاء الاصطناعي.
+الاستراتيجية الأساسية: يستثمر في مستعمرة منتجة وتقنية متقدمة قبل شن هجمات كبيرة. تطوّر مشاريع البناء ذات الأولوية مستوطنته؛ ويرفع التطور والبنية العسكرية ومرور الوقت استعداده للحرب.\n\nالاقتصاد والتطوير: يدرس الرطوبة ونمو القمح والعوائق ومدى وصول العمال. يدير توسيع الغذاء والترقيات والدفاع إلى جانب الإنتاج.\n\nالهجوم والدفاع: يقدّر قوة هجوم المحاربين الأصحاء ويبدأ الضربات عند تحقق شروط القوة أو التوقيت. يفضّل المباني التي رآها سابقًا ويمكن الوصول إليها، خصوصًا الثكنات والمدارس، وينقل أعلام الهجوم نحو الأهداف القيّمة.\n\nمقارنة بالذكاءات الأخرى: يراعي التضاريس وقيمة الأهداف بدقة أكبر من Numbi. أكثر صبرًا من Warrush، ويبادل الضغط المبكر بقاعدة متطورة وقوات أقوى.\n\nنقاط القوة والضعف: يمنح تخطيط البنية التحتية الواسع واختيار الأهداف العسكرية القيّمة ضرباته غاية واضحة. يستغرق التحضير وقتًا، ما يسمح للخصوم الأسرع بمنازعته الموارد قبل جاهزية قوته الرئيسية.\n\nمواجهة مقترحة: نازع على التوسع مبكرًا. احمِ الثكنات والمدارس إلى جانب الغذاء، واحتفظ باحتياط عند مهاجمة مستوطنته المتطورة.
 [AICastor-Summary]
-توسع حذر وأداء جيد مع ندرة الموارد.
+يطوّر مستعمرة محصنة، ثم يضرب المباني العسكرية والعلمية.
 [AICortex-Profile]
-الإستراتيجية: إدارة الإمدادات الغذائية والتوسع نحو حقول القمح الجديدة وتجميع مجموعات متتالية من المحاربين. تدعم النزل والمستشفيات القريبة من خط المواجهة الهجمات البعيدة عن القاعدة.\n\nنقاط القوة: يرسل التعزيزات معًا ويحافظ على الضغط العسكري ويتفاعل مع نقص الغذاء.\n\nاقتراح للمواجهة: القتال من أجل السيطرة على حقول القمح الجديدة ومهاجمة المباني الداعمة لها بالقرب من خط المواجهة. قم بالهجوم قبل أن تصبح مجموعات المحاربين جاهزة.\n\nذكاء اصطناعي تجريبي بصعوبة متوسطة. اقتراحات المواجهة ليست تقييمات أداء معيارية.
+الاستراتيجية الأساسية: يستخدم أولويات تستجيب للموقف لتنمية اقتصاد عامل وتحويل العمالة الفائضة إلى غذاء وتقنية وضغط عسكري. سياسته العادية قائمة على قواعد؛ وتتطلب تجارب السياسات المتعلّمة إعدادًا منفصلًا.\n\nالاقتصاد والتطوير: يضبط إنتاج العمال وفق الحاجة إلى الطواقم ويواصل الولادات. تقلل مشكلات الغذاء الإنفاق على التوسع والتقنية. يضيف السباحة عندما يفيد الوصول عبر الماء بصورة ملموسة.\n\nالهجوم والدفاع: يحضّر الهجمات وفق تقنية العدو المرصودة والقوات المتاحة. تحتاج الحملات العابرة للماء إلى محاربين قادرين على السباحة. يدعم الحملات الطويلة بنُزل ومستشفيات أمامية، ويمكنه حشد القوات قبل التقدم.\n\nالمثابرة والطوارئ: يواصل الهجوم رغم المضايقات الصغيرة بدل العودة المتكررة إلى القاعدة. قد تستدعي الهجمات الخطيرة المدافعين. قد تؤدي الطوارئ المبكرة إلى إنتاج المحاربين فقط وبناء مستشفى؛ وقد تؤدي المجاعة إلى هجوم يائس أصغر.\n\nمقارنة بالذكاءات الأخرى: يهتم بالدعم الأمامي أكثر من Warrush. يتقدم Maxima عليه في موازنة الولادات المستدامة والتدريب والنشر مقابل قوة العدو المقدّرة.\n\nنقاط القوة والضعف: يربط الضغط بالغذاء والعلاج وإمكان الوصول. يجب استمرار إمداد البنية الأمامية، وقد تبقي الولادات المستمرة الضغط على الغذاء المحدود. تفرض أولويات الطوارئ مفاضلات بين النمو والبقاء.\n\nمواجهة مقترحة: نازع على النُزل والمستشفيات والقمح الأمامي. أبقِ المدافعين مجتمعين لمواجهة تقدمه؛ فقد لا تدفعه المضايقات الصغيرة إلى الانسحاب.\n\nالاستطلاع: يستخدم مباني العدو المكتشفة وقواته المرصودة.
 [AICortex-Summary]
-توسع يراعي الغذاء وموجات هجوم مدعومة.
+يدعم تقدمًا عسكريًا مثابرًا بالغذاء والعلاج في الخطوط الأمامية.
 [AINicowar-Profile]
-الإستراتيجية: تتوسع بسرعة وتهاجم المعارضين بجيوش هائلة.\n\nنقاط القوة: التوسع السريع يدعم الهجمات العسكرية العدوانية.\n\nاقتراح للمواجهة: منع توسعه. استخدم التضاريس لتقليل عدد قوات العدو التي يمكنها القتال في وقت واحد.
+الاستراتيجية الأساسية: يجمع النمو والتدريب والترقيات والحرب عبر شروط متداخلة. يمكنه الهجوم أثناء التوسع، وإعادة توجيه الجهد الاقتصادي إلى التعافي عند تعثر التغذية.\n\nالبداية: يبدأ الملف الهجومي المرفق التحضير للحرب عند بلوغ خمس وحدات إجمالًا، ويسمح بالحرب عند امتلاك خمسة محاربين، بمن فيهم محاربو المستوى صفر. يهدف إلى ثلاثة أعلام هجوم بخمسة محاربين لكل علم. تستطيع ملفات الاستراتيجية المخصصة تغيير هذه العتبات.\n\nالاقتصاد والتطوير: يوسّع قدرة الغذاء والولادات، ويدرّب العمال، ويطوّر السباحة والحركة، ويرقّي المباني. يضبط عمال الغذاء، ويستجيب للجوع، ويسعى إلى الفاكهة.\n\nالهجوم والدفاع: يختار عينات عشوائية من مباني العدو القابلة للوصول للهجوم عليها. يمكنه استخدام أعلام الإزالة لفتح طرق تسدّها الموارد. تغطي أعلام الدفاع تجمعات الوحدات والمباني المهددة. لاحقًا يستهدف المستكشفون المدرّبون على الهجوم الأرضي مجموعات وحدات العدو.\n\nمقارنة بالذكاءات الأخرى: يشارك Warrush عدوانيته المبكرة، لكنه يملك متابعة أوسع. بخلاف Cabino، لا يعطي أولوية ثابتة للمستشفيات والنُزل.\n\nنقاط القوة والضعف: يجمع تنوعه التكتيكي الضغط المبكر مع التطور المستمر. قد يهدر اختيار الأهداف العشوائي الجهد على مبانٍ أقل قيمة. لا توفر عتباته تقدير Maxima المفصل لقوة الخصم القتالية.\n\nمواجهة مقترحة: توقّع هجومًا مبكرًا. احمِ الغذاء والعمال، ونازع على التوسع، واستعد لهجمات المستكشفين إذا بلغ التدريب المتقدم.
 [AINicowar-Summary]
-يتوسع بسرعة ويبني جيوشًا كبيرة لشن هجمات عدوانية.
+اندفاع مبكر تدعمه الزراعة والترقيات والدفاع وهجمات المستكشفين.
 [AINone-Profile]
 الاستراتيجية: لا يصدر الذكاء الاصطناعي أي أوامر.\n\nنقاط القوة: خصم خامل يمكن توقع سلوكه لإجراء التجارب.\n\nنقاط الضعف: لا يتوسع ولا يتكيف.
 [AINone-Summary]
 مستعمرة خاملة للتجارب.
 [AINumbi-Profile]
-الإستراتيجية: تتوسع بسرعة ولكن على نطاق صغير. خصم أسهل لممارسة إدارة المستعمرة.\n\nنقاط القوة: تتيح لك تعلم الإدارة الاقتصادية والقتال.\n\nاقتراح للمواجهة: قم بتطوير اقتصاد أقوى وقم بتدريب جيشك قبل الهجوم.
+الاستراتيجية الأساسية: يبني الغذاء والسكان أولًا، ثم يضيف العلاج والعلم والتدريب، وبعدها يتجه إلى الحرب. تتقدم مراحله العامة مع الزمن لا مع تقدم الخصم.\n\nالاقتصاد والتطوير: يزيد الطلب على المباني وفق السكان ويقدّر القمح القريب. تضيف المراحل اللاحقة ترقيات ودفاعات وتوسعًا لدعم جيشه المتنامي.\n\nالهجوم والدفاع: يهاجم عند توفر مقاتلين أصحاء كفاية أو انتهاء مدة الانتظار. يضع أعلام الحرب على مبانٍ معادية مختارة عشوائيًا. عندما تنخفض قوته القتالية كثيرًا، يزيل أعلام الهجوم ويرفع عتبات المحاولة التالية.\n\nمقارنة بالذكاءات الأخرى: أكثر قابلية للتوقع من Castor أو Nicowar. يدرس Castor التضاريس وقيمة الأهداف بعناية أكبر؛ ويمارس Nicowar الضغط في وقت أبكر بكثير.\n\nنقاط القوة والضعف: قد تجعله البنية الداعمة الواسعة خطرًا بعد نمو بلا إزعاج، لكن جدوله قد لا يلائم المعركة. يسهل توقع هجماته بسبب بساطة اختيار الأهداف وطول التوقف بعد الخسائر.\n\nمواجهة مقترحة: اضغط قبل مرحلته العسكرية. نمِّ الغذاء والتدريب خلف هجماتك، واستغل فترة التوقف بعد صدّ هجوم.\n\nالاستطلاع: يقرأ إجراء الهجوم مواقع مباني العدو مباشرة دون فحص الرؤية.
 [AINumbi-Summary]
-التوسع السريع على نطاق صغير.
+يبني المستعمرة تدريجيًا وفق جدول زمني، ثم يهاجم بالأعداد.
 [AIEcono-Profile]
-الإستراتيجية: لا تهاجم، ولكنها تبني قواعد هائلة وتحول وحدات العدو بشكل فعال إلى جانبها.\n\nنقاط القوة: التوسع وتحويل الوحدات يهدد الخصوم دون شن هجمات مباشرة.\n\nاقتراح للمواجهة: قم بتطوير مستعمرتك مبكرًا وتجنب إرسال الوحدات حيث يمكن للعدو تحويلها.
+الاستراتيجية الأساسية: ينتج العمال والمستكشفين، ويوسّع اقتصاده، ويجذب وحدات العدو بالغذاء والفاكهة. لا يملك هجومًا تقليديًا بالمحاربين.\n\nالاقتصاد والتطوير: يبني النُزل والأوكار قرب القمح، ويضيف التعليم والتدريب على الحركة، ويرقّي البنية التحتية. يتابع إمدادات الغذاء ويستبدل النُزل والأوكار القديمة عندما يتدهور موقعها بالنسبة للموارد.\n\nالزراعة والاستمالة: يحمي القمح والخشب المتجددين قرب الماء. يرسل المستكشفين إلى مصادر الفاكهة ومستعمرات العدو، ويعلن الغذاء للأعداء أثناء السعي إلى إمداد الفاكهة. قد يساعد الغذاء الأفضل والفاكهة على استمالة الوحدات.\n\nمقارنة بالذكاءات الأخرى: أكثر الخصوم تخصصًا في الاقتصاد. يسعى Cabino وMaxima إلى الفاكهة أيضًا، لكنهما يجمعانها مع الجيوش.\n\nنقاط القوة والضعف: يمكنه النمو بينما يستنزف الخصوم العسكريون أنفسهم، وتوفر الاستمالة شكلًا آخر من المنافسة. لا ينتج محاربين للرد على هجوم مستمر. يؤثر الغذاء والفاكهة والجغرافيا وقواعد الفوز بشدة في فرصه.\n\nمواجهة مقترحة: اضغط على توسعه المكشوف. زوّد نُزلك بالغذاء والفاكهة للاحتفاظ بوحداتك. تجنب استنزاف مستعمرتك في معارك غير ضرورية بينما ينمو.
 [AIEcono-Summary]
-قواعد ضخمة واستمالة وحدات العدو بدلًا من الهجوم.
+ينمّي مستعمرة غنية بالغذاء وينافس على استمالة الوحدات دون إنتاج محاربين.
 [AIWarrush-Profile]
-الاستراتيجية: يهاجم بسرعة وقوة قبل أن يكمل الخصوم استعداداتهم.\n\nنقاط القوة: يستغل التوسع غير المحمي وبطء الاستعداد العسكري.\n\nاقتراح للمواجهة: اصمد أمام الهجوم الأول مع الحفاظ على اقتصادك، ثم شن هجومًا مضادًا.
+الاستراتيجية الأساسية: يهاجم قبل أن ينهي الخصوم بناءً اقتصاديًا أو تقنيًا طويلًا. يتوقع حسم اللعبة بالقتال قبل الحاجة إلى شبكة دعم كبيرة.\n\nالاقتصاد والتطوير: عندما تستطيع ست وحدات الحصاد، يضبط نسب الإنتاج على أربعة عمال ومستكشف واحد وثلاثة محاربين. يضيف ثكنات عند امتلاء التدريب، لكنه يحدّ من النُزل الجديدة. غالبًا يوجّه قدرة البناء الفائضة إلى المستشفيات والتدريب على الحركة.\n\nالهجوم والدفاع: يحدد مباني العدو المكتشفة بمناطق حراسة ليواصل المحاربون الضغط. لا ينتظر موجة جُمعت بعناية. يزيل الخشب المعيق ويحمي بعض الموارد المتجددة.\n\nسياسة الفاكهة: يمنع حصاد الفاكهة، متجنبًا عقوبات الدرع المرتبطة بها ورافضًا استراتيجية Econo لاستمالة الوحدات.\n\nمقارنة بالذكاءات الأخرى: أكثر التزامًا بالضغط المبكر من Numbi أو Castor. يبدأ Nicowar بعدوانية أيضًا، لكنه يتبعها ببرنامج أوسع من الترقيات والتكتيكات.\n\nنقاط القوة والضعف: يعاقب البدايات البطيئة ويفرض إنفاقًا دفاعيًا مبكرًا. تجعل محدودية الترقيات المنهجية وقلة دعم الغذاء توقف الهجوم مكلفًا. قد تقلص التضاريس والمسافات الطويلة تفوقه المبكر.\n\nمواجهة مقترحة: احمِ النُزل والأوكار مبكرًا. عوّض العمال إلى جانب المدافعين، وطوّر التدريب، ثم هاجم مضادًا حين يفقد اندفاعه زخمه.\n\nالاستطلاع: تستخدم أعلام الاستكشاف الأولى مواقع بداية العدو مباشرة. لاحقًا يتطلب وضع مناطق الهجوم وجود رؤية.
 [AIWarrush-Summary]
-هجمات سريعة تختبر دفاعاتك المبكرة.
+ضغط مبكر بالمحاربين تدعمه عمدًا بنية اقتصادية مساندة محدودة.
+[AICabino-Profile]
+الاستراتيجية الأساسية: يقسم إنتاج الوحدات بين البناء والترقيات والدفاع والهجمات والاستكشاف. تطلب وحدات إدارة منفصلة الوحدات وتحجزها، مطوّرة الاقتصاد والجيش معًا.\n\nالاقتصاد والتطوير: يبني مستوطنة متنوعة ويرقّيها، ويدير طواقم النُزل والأبراج، وينظف محيط المباني ويحمي الموارد المتجددة. يستطلع الفاكهة ويعلن الغذاء للمنافسة على استمالة الوحدات.\n\nالهجوم والدفاع: يختار عدوًا ويعطي الأولوية للمستشفيات ثم النُزل ثم الثكنات. يدعم حتى أربع هجمات، ويخصص عادة ثمانية إلى عشرين محاربًا لكل هدف وفق المتاح والأعداء القريبين. يستخدم أعلام دفاع منفصلة حول المباني المهددة.\n\nالتدريب: يحتاج إلى محاربين مناسبين كفاية وثكنة مكتملة للهجوم، لكنه لا ينتظر أعلى تقنية. تعزز الترقيات والتدريب المستمران الهجمات اللاحقة.\n\nمقارنة بالذكاءات الأخرى: أكثر تعمدًا من Nicowar في تفكيك مباني الدعم. يوزّع الهجمات أكثر من موجات Maxima المجمعة، ويستخدم حجز الوحدات لإدارة الطلبات المتنافسة.\n\nنقاط القوة والضعف: يجمع النمو والتدريب والدفاع وعدة هجمات. قد يضعف تدمير الغذاء والعلاج المستعمرة كلها. قد يفوّت اختيار الخصم العشوائي وأولويات المباني الثابتة فرصًا؛ وقد تقسم الهجمات المتعددة قوته.\n\nمواجهة مقترحة: دافع عن المستشفيات والنُزل. نازع على التوسع المكشوف وركّز المدافعين على الهجمات كلٌّ على حدة. أضرّ بالغذاء أو التدريب قبل أن يستطيع دعم عدة جبهات.\n\nالاستطلاع: يقرأ محدد الهجوم قوائم مباني العدو دون فحص صريح للرؤية. تستخدم بعض المقارنات الاقتصادية إحصاءات العدو مباشرة.
+[AICabino-Summary]
+ينسق نمو المستعمرة والهجمات المدرّبة، مستهدفًا العلاج والغذاء أولًا.
 [Algae]
 ﻃﺤﺎﻟﺐ
 [Alliances]
@@ -1361,9 +1379,9 @@ Cortex
 [No AI orders]
 لا توجد أوامر الذكاء الاصطناعي
 [Old islands]
-الجزر القديمة
+الأرخبيل الوعر
 [Old random]
-عشوائية قديمة
+الساحل المتشظي
 [Open at least one colony to start a match.]
 افتح مستعمرة واحدة على الأقل لبدء المباراة.
 [Open book]
@@ -1378,6 +1396,14 @@ Cortex
 خرائط مسبقة الصنع
 [Preview ready. Start plays this exact map.]
 المعاينة جاهزة. بدء اللعبة يستخدم هذه الخريطة الدقيقة.
+[Regenerate all]
+إعادة إنشاء الكل
+[Generating preview...]
+جارٍ إنشاء المعاينة...
+[Preview unavailable]
+المعاينة غير متاحة
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+تُعرض كل تضاريس كخريطة حقيقية بحجمك الحالي وعدد مستعمراتك. اختر واحدة للعب الخريطة المعروضة.
 [Purple]
 بنفسجي
 [Quick clash]
@@ -1540,6 +1566,10 @@ Cortex
 معركة سريعة: سرعة مضاعفة؛ تبدأ الخرائط التي تم إنشاؤها بـ 8 عمال.
 [Reroll]
 إنشاء خريطة أخرى
+[Randomize]
+إنشاء عشوائي
+[Reset to defaults]
+استعادة الإعدادات الافتراضية
 [Ruleset]
 مجموعة القواعد
 [Select a map from the library.]
@@ -1618,6 +1648,8 @@ Cortex
 تم
 [settings Edit shortcut]
 تحرير اختصار لوحة المفاتيح
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+تكبير القوائم والنص والشريط الجانبي على شاشة عالية الدقة.
 [settings Flags]
 أعلام
 [settings Full]
@@ -1632,6 +1664,8 @@ Cortex
 أسلوب اللعب
 [settings Graphics detail]
 تفاصيل الرسومات
+[settings Interface scale]
+مقياس الواجهة
 [settings Keep]
 احتفظ بالتغييرات
 [settings Keep this display mode?]
@@ -1654,6 +1688,8 @@ Cortex
 ﺍﻟﻤﺴﺘﻮﻯ
 [settings Map editor]
 محرر الخرائط
+[settings Match the desktop]
+مطابقة سطح المكتب
 [settings Missing font]
 الخط مفقود
 [settings Music volume]
@@ -1764,3 +1800,1589 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الطارة تلقائيًا
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).
+[settings Autosave]
+ﺍﻟﺤﻔﻆ ﺍﻟﺘﻠﻘﺎﺋﻲ
+[settings Save the game automatically about every 10 seconds.]
+ﺣﻔﻆ ﺍﻟﻠﻌﺒﺔ ﺗﻠﻘﺎﺋﻴﺎ ﻛﻞ 10 ﺛﻮﺍﻥ ﺗﻘﺮﻳﺒﺎ.
+[Channel width]
+عرض القناة
+[Land bridge width]
+عرض الجسر البري
+[Lake size]
+حجم البحيرة
+[Contested commons]
+الأراضي المشاع المتنازع عليها
+[Maze]
+المتاهة
+[Fjord continent]
+قارة المضائق البحرية
+[Cell size]
+حجم الخلية
+[Corridor width]
+عرض الممر
+[Spoke width]
+عرض الأشعة
+[Loopiness]
+كثافة الحلقات
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+تحتاج المتاهة إلى خليتين على الأقل أفقيًا ورأسيًا؛ استخدم خريطة أكبر أو خلايا أصغر.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+القنوات بهذا العرض تترك عشبًا قليلًا جدًا في كل خلية؛ استخدم قنوات أضيق أو خلايا أكبر.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+لا تحتوي المتاهة على طرق مسدودة كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو خلايا أصغر.
+[Home island size]
+حجم جزيرة البداية
+[Commons size]
+حجم الأراضي المشاع
+[Moat width]
+عرض الخندق المائي
+[Bridge count]
+عدد الجسور
+[Continent size]
+حجم القارة
+[Coast roughness]
+وعورة الساحل
+[Fjord width]
+عرض المضيق البحري
+[Lake connects to fjords]
+البحيرة متصلة بالمضائق البحرية
+[Resource islands]
+جزر الموارد
+[Watershed]
+مستجمع المياه
+[River density]
+كثافة الأنهار
+[Dryness]
+الجفاف
+[Fords]
+المخاضات
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+لا يحتوي مستجمع المياه على سهول فيضية كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[Stone highlands]
+المرتفعات الحجرية
+[Valley size]
+حجم الوادي
+[Pass width]
+عرض الممر الجبلي
+[Pond size]
+حجم البركة
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+هذه الوديان أكبر من أن تتسع لها الخريطة؛ استخدم خريطة أكبر أو وديانًا أصغر.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+لا تتسع المرتفعات لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[Symmetric arena]
+الساحة المتناظرة
+[Centre size]
+حجم المركز
+[Causeway width]
+عرض الممر المرتفع
+[Causeways]
+الممرات المرتفعة
+[Lakes]
+البحيرات
+[Resource richness]
+وفرة الموارد
+[Symmetric arena needs 2, 4 or 8 colonies.]
+تحتاج الساحة المتناظرة إلى 2 أو 4 أو 8 مستعمرات.
+[Eight colonies need a square map in the symmetric arena.]
+تحتاج ثماني مستعمرات إلى خريطة مربعة في الساحة المتناظرة.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+المركز أصغر من أن يتسع لبستان في هذه الخريطة؛ استخدم مركزًا أكبر أو خريطة أكبر.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+لا تترك الساحة مساحة كافية لكل مستعمرة؛ استخدم خريطة أكبر أو مركزًا أصغر أو خندقًا مائيًا أضيق.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+الممرات المرتفعة متقاربة جدًا؛ استخدم ممرات مرتفعة أقل أو أضيق، أو مركزًا أكبر.
+[Ring world]
+العالم الحلقي
+[Belt width]
+عرض الحزام
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+الحزام أقصر من أن يتسع لهذا العدد من المستعمرات؛ استخدم خريطة أطول أو عددًا أقل من المستعمرات.
+[City states]
+دول المدن
+[Strait width]
+عرض المضيق
+[Valleys]
+الوديان
+[Frontier richness]
+ثراء الأراضي الجديدة
+[City states need at least one colony.]
+تحتاج دول المدن إلى مستعمرة واحدة على الأقل.
+[Stone walls]
+أسوار حجرية
+[Sand patches]
+بقع رملية
+[Tidal flats]
+السهول المدّية
+[Everglades]
+المستنقعات
+[Pool spacing]
+تباعد البرك
+[Pool size]
+حجم البرك
+[Clearing size]
+حجم الفسحة
+[Levee]
+السد الترابي
+[Sloughs]
+المستنقعات
+[Everglades need at least one colony.]
+تحتاج المستنقعات إلى مستعمرة واحدة على الأقل.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+عدد المستعمرات كبير جدًا لهذه الخريطة؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[Coral]
+المرجان
+[Fork angle]
+زاوية التفرّع
+[Lean]
+الميل
+[Home size]
+حجم الموطن
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+المرجان لا يتسع لهذه الخريطة؛ استخدم خريطة أكبر أو مضائق أضيق أو مستعمرات أقل.
+[Branching]
+التفرّع
+[Branch width]
+عرض الفروع
+[Coral needs at least one colony.]
+يحتاج المرجان إلى مستعمرة واحدة على الأقل.
+[Coral needs a map at least 128 tiles across.]
+يحتاج المرجان إلى خريطة بعرض 128 مربعًا على الأقل.
+[Carousel]
+الدوّامة
+[Amphitheatre]
+المدرج
+[Switchbacks]
+الطرق المتعرجة
+[Court size]
+حجم الساحات
+[Court wall]
+جدار الساحات
+[Plaza size]
+حجم الميدان
+[Starting tower level]
+مستوى الأبراج الأولية
+[Towers per colony]
+الأبراج لكل مستعمرة
+[Rings]
+الحلقات
+[Ramp width]
+عرض المنحدرات
+[Pit size]
+حجم الحفرة
+[Terrace width]
+عرض المدرجات
+[Bay size]
+حجم الخلجان
+[Border wall]
+الجدار الحدودي
+[Plateau size]
+حجم الهضبة
+[Trail width]
+عرض الدرب
+[Wall between legs]
+الجدار بين المنعطفات
+[Farm building plots]
+قطع بناء في المزارع
+[Sand bridges over water]
+جسور رملية فوق الماء
+[Sand lanes through crops]
+ممرات رملية عبر المحاصيل
+[Carousels need at least two colonies.]
+تحتاج الدوّامة إلى مستعمرتين على الأقل.
+[Switchbacks need at least two colonies.]
+تحتاج الطرق المتعرجة إلى مستعمرتين على الأقل.
+[An amphitheatre needs at least two colonies.]
+يحتاج المدرج إلى مستعمرتين على الأقل.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+لا تتسع هذه الخريطة للدوّامة؛ استخدم خريطة أكبر أو مواطن أصغر أو مستعمرات أقل.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+لا تتسع هذه الخريطة للطرق المتعرجة؛ استخدم خريطة أكبر أو هضبة أصغر أو دروبًا أضيق أو مستعمرات أقل.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+لا تتسع هذه الخريطة للمدرج؛ استخدم خريطة أكبر أو حلقات أقل أو مدرجات أضيق أو مستعمرات أقل.
+[Spider web]
+شبكة العنكبوت
+[Spokes per colony]
+أشعة لكل مستعمرة
+[Ring spacing]
+تباعد الحلقات
+[Thread width]
+عرض الخيوط
+[Sag]
+الارتخاء
+[Torn strands]
+خيوط ممزقة
+[Hub size]
+حجم المركز
+[Dew drops]
+قطرات الندى
+[Spiral]
+حلزوني
+[Spider webs need at least one colony.]
+تحتاج شبكة العنكبوت إلى مستعمرة واحدة على الأقل.
+[Sandbars]
+الحواجز الرملية
+[Tide pools]
+برك المد
+[Lagoons]
+البحيرات الشاطئية
+[Central island]
+الجزيرة المركزية
+[Tidal flats need at least one colony.]
+تحتاج السهول المدّية إلى مستعمرة واحدة على الأقل.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+الجزر الأم لا تتسع لهذه الخريطة؛ استخدم خريطة أكبر أو مستعمرات أقل أو جزرًا أصغر.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+الأراضي المشاع والمضيق لا يتركان مساحة كافية للقواعد؛ استخدم خريطة أكبر أو مستعمرات أقل أو أراضي مشاع أصغر أو مضيقًا أضيق.
+[Wheat amount]
+كمية القمح
+[Wood amount]
+كمية الخشب
+[Stone amount]
+كمية الحجر
+[Algae amount]
+كمية الطحالب
+[Fruit amount]
+كمية الفاكهة
+[Stone on hilltops]
+الحجارة على قمم التلال
+[Winding river]
+نهر متعرج
+[Sandy beaches]
+شواطئ رملية
+[Land bridges]
+الجسور البرية
+[Colony meadows]
+مروج حول المستعمرات
+[Extra starting deposit]
+رواسب إضافية عند البداية
+[Moat bridges]
+جسور فوق الخندق المائي
+[Jagged coastlines]
+سواحل متعرجة
+[Sand roads]
+طرق رملية
+[Treasure in dead ends]
+كنوز في الطرق المسدودة
+[Fjord bank deposits]
+رواسب على ضفاف المضائق البحرية
+[Sandy lake shore]
+شاطئ رملي حول البحيرة
+[River delta]
+دلتا النهر
+[Meandering rivers]
+أنهار كثيرة التعرج
+[Fruit in home valleys]
+الفاكهة في وديان البداية
+[Moat]
+الخندق المائي
+[Stone in the orchard]
+حجارة في البستان
+[Colonies on both coasts]
+مستعمرات على الساحلين
+[Winding belt]
+حزام متعرج
+[Cell shape]
+شكل الخلايا
+[Squares]
+مربعات
+[Hexagons]
+سداسيات
+[Warp]
+التواء
+[Fingerprint]
+بصمة الإصبع
+[Wavelength]
+الطول الموجي
+[Pattern]
+النمط
+[Labyrinth]
+متاهة
+[Channels]
+الأخاديد
+[Barrier]
+الحاجز
+[Water]
+ماء
+[Grain]
+التحبب
+[Rain shadow]
+ظل المطر
+[Ridges]
+الحواف الصخرية
+[Slant]
+الانحراف
+[Ridge thickness]
+سماكة الحواف الصخرية
+[Pass spacing]
+تباعد الممرات الجبلية
+[Lee width]
+عرض جانب الظل
+[Old growth]
+الغابة القديمة
+[Canals]
+القنوات
+[Forest density]
+كثافة الغابة
+[Hidden groves]
+بساتين مخفية
+[Starting trails]
+دروب البداية
+[Block size]
+حجم الكتلة السكنية
+[Canal width]
+عرض القناة
+[Extra bridges]
+جسور إضافية
+[Polder]
+بولدر
+[Old town]
+المدينة القديمة
+[Anthill]
+عش النمل
+[Row angle]
+زاوية الصفوف
+[Diagonal]
+قطري
+[Dyke spacing]
+تباعد السدود
+[Village size]
+حجم القرية
+[Hamlets]
+القرى الصغيرة
+[City size]
+حجم المدينة
+[Street width]
+عرض الشوارع
+[Plazas]
+الميادين
+[Chamber spacing]
+تباعد الحجرات
+[Chamber size]
+حجم الحجرات
+[Queen room]
+حجرة الملكة
+[Tunnel width]
+عرض الأنفاق
+[Loops]
+مسارات دائرية
+[Home pools]
+برك الموطن
+[Farm plots]
+قطع المزارع
+[Tendril roads]
+طرق متفرعة
+[Random]
+عشوائي
+[Vertical]
+عمودي
+[Horizontal]
+أفقي
+[Inland lakes]
+بحيرات داخلية
+[Block shape]
+شكل الكتل
+[Random parameters]
+معلمات عشوائية
+[Randomize parameters]
+اختر معلمات عشوائية
+[Start quality]
+جودة البداية
+[Fairness]
+الإنصاف
+[Fitness]
+القوة
+[Win chance]
+فرصة الفوز
+[Coefficient]
+المعامل
+[Average]
+المتوسط
+[Fitted on games:]
+عدد المباريات المستخدمة للملاءمة:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+تُقاس بداية كل مستعمرة على الخريطة النهائية، ويحوّل نموذج مُلاءَم على آلاف المباريات بين خصوم متكافئين هذه القياسات إلى قوة. تدل القوة على مدى احتمال فوز تلك المستعمرة. الإنصاف هو مدى تساوي توزيع هذه الفرص: 1 عندما تتساوى فرص فوز جميع المستعمرات، و0 عندما تستحوذ مستعمرة واحدة على الخريطة.
+[Worst]
+الأدنى
+[Best]
+الأعلى
+[Map preview controls]
+اسحب للالتفاف. استخدم العجلة للتكبير. انقر باليمين أو مرتين لإعادة الضبط.
+[Map preview drag help]
+اسحب للالتفاف؛ العجلة للتكبير.
+[Map preview loading]
+جارٍ التحميل...
+[Map preview failed]
+فشلت المعاينة
+[Map preview retry]
+انقر للمحاولة مجددًا
+[Map preview please wait]
+يرجى الانتظار
+[Stats births]
+الولادات
+[Stats deaths]
+الوفيات
+[Stats starvation]
+الجوع
+[Stats wheat stock]
+مخزون القمح
+[Stats wheat loads]
+حمولات القمح
+[Stats meals]
+الوجبات المقدمة
+[Stats new buildings]
+المباني الجديدة
+[Stats upgrades]
+الترقيات
+[Stats training]
+زيارات التدريب
+[Stats damage dealt]
+الضرر المسبب
+[Stats damage received]
+الضرر المتلقى
+[Stats HP restored]
+الصحة المستعادة
+[Stats since tick]
+منذ الدورة
+[Stats combat deaths]
+القتال
+[Stats clearing deaths]
+إصابات الإزالة
+[Stats trapped deaths]
+محاصرون
+[Stats unknown deaths]
+أخرى/غير معروف
+[Stats conversions]
+دخول / خروج
+[Stats unavailable]
+غير متاح
+[Stats wheat per minute]
+حمولات/دقيقة
+[Stats meals per minute]
+طعام/دقيقة
+[Stats occupancy]
+إطعام / علاج
+[Stats page one]
+إحصاءات 1/3 >
+[Stats page two]
+إحصاءات 2/3 >
+[Stats next page]
+صفحة (P)
+[Map preview choose another]
+اختر خريطة
+[Resources never grow or spread across the map.]
+الموارد لا تنمو ولا تنتشر أبدًا على الخريطة.
+[Building sites complete immediately, skipping delivery.]
+تكتمل مواقع البناء فورًا، متجاوزةً مرحلة التوصيل.
+[Units never grow hungry and never starve.]
+الوحدات لا تجوع أبدًا ولا تتضور جوعًا أبدًا.
+[Slows how often resources grow or spread across the map.]
+يبطئ معدل نمو الموارد وانتشارها على الخريطة.
+[Seeds each team's shared market/exchange resource pool at game start.]
+يهيئ رصيد مورد السوق/التبادل المشترك لكل فريق عند بداية اللعبة.
+[Grow normally]
+نمو طبيعي
+[No growth]
+بدون نمو
+[Normal construction]
+بناء عادي
+[Instant]
+فوري
+[Units get hungry]
+الوحدات تجوع
+[No hunger]
+بدون جوع
+[Off (today's growth)]
+معطّل (النمو الحالي)
+[Scarce (2x slower)]
+نادر (2x أبطأ)
+[Very scarce (4x slower)]
+نادر جدًا (4x أبطأ)
+[Extremely scarce (8x slower)]
+نادر للغاية (8x أبطأ)
+[None (today's default)]
+بدون (الافتراضي الحالي)
+[Small (+50 each)]
+صغير (+50 لكل نوع)
+[Medium (+150 each)]
+متوسط (+150 لكل نوع)
+[Large (+300 each)]
+كبير (+300 لكل نوع)
+[No resource growth]
+بدون نمو الموارد
+[Economy]
+الاقتصاد
+[Scarce resources]
+موارد نادرة
+[Instant construction]
+بناء فوري
+[Stockpile start]
+مخزون البداية
+[Units still visit schools but never gain a level.]
+لا تزال الوحدات تذهب إلى المدرسة، لكنها لا ترتقي أبدًا بمستوى.
+[Units fight to the death instead of retreating to heal.]
+تقاتل الوحدات حتى الموت بدلاً من التراجع للتعافي.
+[Units are never permanently lost -- HP just stops at 1.]
+لا تُفقد الوحدات نهائيًا أبدًا -- تتوقف نقاط صحتها ببساطة عند 1.
+[Disables all combat between every team.]
+يعطل كل قتال بين جميع الفرق.
+[Higher tiers deal more damage but have less HP and armor.]
+المستويات الأعلى تُلحق ضررًا أكبر لكنها تملك نقاط صحة ودرعًا أقل.
+[Higher tiers give every building much more HP.]
+المستويات الأعلى تمنح كل مبنى نقاط صحة أكبر بكثير.
+[Starting units spawn already leveled up. Changes the generated map.]
+تظهر الوحدات الأولية وهي بالفعل في مستوى أعلى. يغيّر الخريطة المولَّدة.
+[Trains normally]
+تتدرب بشكل طبيعي
+[No upgrades]
+بلا ترقيات
+[Retreats when damaged]
+تتراجع عند الإصابة
+[Fearless]
+بلا خوف
+[Can die permanently]
+يمكن أن تموت نهائيًا
+[No permadeath]
+بلا موت نهائي
+[Normal combat]
+قتال عادي
+[Peaceful mode]
+وضع سلمي
+[Off (today's balance)]
+معطّل (التوازن الحالي)
+[Glass cannon x2]
+مدفع زجاجي x2
+[Glass cannon x3]
+مدفع زجاجي x3
+[Off (today's HP)]
+معطّل (نقاط الصحة الحالية)
+[Fortress x5]
+قلعة x5
+[Fortress x10]
+قلعة x10
+[Veteran]
+مخضرم
+[Elite]
+نخبة
+[Legendary]
+أسطوري
+[Combat]
+قتال
+[Glass cannon]
+مدفع زجاجي
+[Fortress buildings]
+مبانٍ محصّنة
+[Veteran/Fast start]
+مخضرم/بداية سريعة
+[Match ends at the timer; highest prestige at that instant wins.]
+تنتهي الجولة عند انتهاء المؤقت؛ ويفوز صاحب أعلى هيبة في تلك اللحظة.
+[Off (no timer)]
+معطّل (بدون مؤقت)
+[90 minutes]
+90 دقيقة
+[30 minutes]
+30 دقيقة
+[45 minutes]
+45 دقيقة
+[60 minutes]
+60 دقيقة
+[Sudden-death timer]
+مؤقت الموت المفاجئ
+[Stats page three]
+إحصاءات 3/3 >
+[Stats blocked units]
+ﻭﺣﺪﺓ S/C
+[Stats blocked buildings]
+ﺍﻟﻤﺒﺎﻧﻲ S/C
+[Stats blocked buildings swim]
+ﺍﻟﺴﺒﺎﺣﺔ S/C
+[Stats current blocked units]
+ﻭﺣﺪﺓ C
+[Stats current blocked buildings]
+ﺍﻟﻤﺒﺎﻧﻲ C
+[Stats growth global]
+الموارد +
+[Stats growth new tiles]
+الموارد +#
+[Stats growth reductions]
+الموارد -
+[Stats growth per minute]
+ﻗﻤﺢ +/min
+[Stats growth near 8]
+الموارد + <=8
+[Stats growth near 16]
+الموارد + <=16
+[Stats growth near 32]
+الموارد + <=32
+[Stats low HP 25]
+ﻥﻕ <=25%
+[Stats low HP 50]
+ﻥﻕ <=50%
+[Stats low HP 75]
+ﻥﻕ <=75%
+[Stats low food 25]
+ﺍﻟﻄﻌﺎﻡ <=25%
+[Stats low food 50]
+ﺍﻟﻄﻌﺎﻡ <=50%
+[Stats low food 75]
+ﺍﻟﻄﻌﺎﻡ <=75%
+[Stats structural units]
+ﻭﺣﺪﺓ S
+[Stats structural buildings]
+ﺍﻟﻤﺒﺎﻧﻲ S
+[Stats low HP ranges]
+ﻥﻕ: <=25/50/75%
+[Stats low food ranges]
+ﺍﻟﻄﻌﺎﻡ: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+رمز تعبيري
+[Smiley]
+وجه مبتسم
+[Sad face]
+وجه حزين
+[Winking face]
+وجه يغمز
+[Surprised face]
+وجه متفاجئ
+[Heart eyes]
+عيون على شكل قلوب
+[Sunglasses]
+نظارات شمسية
+[Heart]
+قلب
+[Star]
+نجمة
+[Neutral face]
+وجه محايد
+[Sleeping face]
+وجه نائم
+[Grinning face]
+وجه ضاحك
+[Kissing face]
+وجه يرسل قبلة
+[Angry face]
+وجه غاضب
+[Tongue out]
+لسان مخرج
+[Skull]
+جمجمة
+[Flower]
+زهرة
+[Four-leaf clover]
+برسيم رباعي الأوراق
+[Teardrop]
+قطرة
+[Cloud]
+غيمة
+[Gem]
+جوهرة
+[Apple]
+تفاحة
+[Speech bubble]
+فقاعة كلام
+[Shield]
+درع
+[Emoji style]
+نمط الرمز التعبيري
+[Outline]
+مخطط
+[Filled]
+ممتلئ
+[Emoji terrain]
+تضاريس الرمز التعبيري
+[Regular]
+عادي
+[Inverse]
+معكوس
+[Crossings]
+معابر
+[Forts]
+حصون
+[Gate width]
+عرض البوابة
+[Braided Delta]
+دلتا متشعبة
+[Braid count]
+عدد الفروع
+[Rejoining frequency]
+تكرار الالتقاء
+[Crossing spacing]
+المسافة بين المعابر
+[Breachable highlands]
+مرتفعات قابلة للاختراق
+[Ridge depth]
+سماكة الحواف الجبلية
+[Extra open passes]
+ممرات مفتوحة إضافية
+[Wooded saddles]
+ممرات مشجرة
+[Hedgerow Country]
+ريف الأسيجة
+[Field size]
+حجم الحقول
+[Hedge thickness]
+سماكة الأسيجة
+[Existing gateways]
+الممرات الموجودة
+[Wooded boundary share]
+نسبة الحدود المشجرة
+[The Glacis]
+الغلاسيس
+[Allotments]
+قطع الأراضي
+[Caravanserai]
+الخان
+[Mixed]
+مختلط
+[Fort size]
+حجم القلعة
+[Bastions]
+الأبراج الركنية
+[Four-pointed]
+رباعية الرؤوس
+[Five-pointed]
+خماسية الرؤوس
+[Six-pointed]
+سداسية الرؤوس
+[Glacis width]
+عرض المنحدر الدفاعي
+[Gates]
+البوابات
+[Site size]
+حجم القطع
+[Plot width]
+عرض الأحواض
+[Plot mix]
+تشكيلة الأحواض
+[Tended]
+معتنى بها
+[Overgrown]
+مهملة
+[Commons]
+أراضٍ مشاعة
+[Few]
+قليل
+[Some]
+بعض
+[Home oasis size]
+حجم الواحة الأم
+[Caravanserais per colony]
+الخانات لكل مستعمرة
+[Desert]
+الصحراء
+[Open erg]
+عرق مفتوح
+[Dunes and mesas]
+كثبان وهضاب
+[Canyon country]
+بلاد الأخاديد
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+لا تستطيع قلعة الوصول إلى مخاضتها؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[A wall would stand on a beach; try another seed.]
+سيقوم سور على شاطئ؛ جرّب بذرة أخرى.
+[The fort is too small for its gardens; raise Fort size.]
+القلعة أصغر من أن تتسع لحدائقها؛ زِد حجم القلعة.
+[The home oasis is too small; raise Home oasis size.]
+الواحة الأم صغيرة جدًا؛ زِد حجم الواحة الأم.
+[Braided river]
+نهر مضفّر
+[Braid width]
+عرض الضفيرة
+[Bar size]
+حجم الحواجز الحصوية
+[Extra riffles]
+مخاضات إضافية
+[Moraine hummocks]
+روابي ركامية
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+الضفيرة لا تترك مدرجات كافية للمواطن؛ استخدم خريطة أكبر أو ضفيرة أضيق.
+[The map is too narrow across for a braid; use a bigger map.]
+الخريطة ضيقة جدًا بالعرض لضفيرة؛ استخدم خريطة أكبر.
+[Drumlin field]
+حقل الدرملن
+[Drumlin spacing]
+تباعد الدرملن
+[Drumlin length]
+طول الدرملن
+[Water gap]
+فجوة الماء
+[Esker loops]
+حلقات الإسكر
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+تعذّر على الإسكر وصل كل الدرملن؛ استخدم فجوة ماء أصغر أو خريطة أكبر.
+[Continents]
+القارات
+[Continent]
+القارة
+[North America]
+أمريكا الشمالية
+[South America]
+أمريكا الجنوبية
+[Africa]
+أفريقيا
+[Europe]
+أوروبا
+[Asia]
+آسيا
+[Oceania]
+أوقيانوسيا
+[Orientation]
+الاتجاه
+[Turn to fit]
+تدوير للملاءمة
+[Upright]
+بدون تدوير
+[Mountain ranges]
+سلاسل جبلية
+[Great rivers]
+أنهار كبرى
+[Islets]
+جزر صغيرة
+[Oases]
+واحات
+[The world atlas has no such continent.]
+لا توجد قارة بهذا الاسم في أطلس العالم.
+[The map is too small to hold a continent.]
+الخريطة أصغر من أن تتسع لقارة.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+لا تتسع هذه القارة لهذا العدد من المستعمرات بحجم الخريطة هذا؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[Savannah]
+السافانا
+[Watering holes]
+موارد المياه
+[Dry patches]
+مناطق جافة
+[Sparse]
+قليلة
+[Normal]
+عادي
+[Many]
+كثيرة
+[Rice terraces]
+مصاطب الأرز
+[Unoccupied hills]
+تلال غير مأهولة
+[Hill radius]
+نصف قطر التل
+[Contour band width]
+عرض النطاق الكنتوري
+[Stairs per hill]
+سلالم لكل تل
+[Valley river]
+نهر الوادي
+[Hills]
+تلال
+[Hillsides]
+سفوح
+[Terraces per slope]
+مدرجات لكل سفح
+[Waviness]
+التموج
+[Stair spacing]
+المسافة بين الدرجات
+[Locust]
+الجراد
+[Plantations]
+المزارع
+[Plot size]
+حجم قطعة البناء
+[Farm width]
+عرض المزرعة
+[Islands per colony]
+الجزر لكل مستعمرة
+[Outpost inns]
+نُزُل المخافر
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+الجزر أصغر من أن تتسع لقطع بنائها؛ استخدم خريطة أكبر أو قطعة بناء أصغر أو عددًا أقل من المستعمرات.
+[Sierpiński Gardens]
+حدائق سيربينسكي
+[Hilbert River]
+نهر هيلبرت
+[Maximum nesting]
+أقصى تداخل
+[Minimum terminal district side]
+أدنى طول ضلع للمناطق النهائية
+[Major crossing pairs]
+أزواج المعابر الرئيسية
+[Maximum fold depth]
+أقصى عمق للطيات
+[Minimum land spacing]
+أدنى تباعد لليابسة
+[Optional local crossings per parent]
+معابر محلية اختيارية لكل منطقة أم
+[Optional major shortcuts]
+اختصارات رئيسية اختيارية
+[Lava shield]
+درع الحمم
+[Lava tongues]
+ألسنة الحمم
+[Long tongues]
+الألسنة الطويلة
+[Crater rim width]
+عرض حافة الفوهة
+[Honeycomb isle]
+جزيرة قرص العسل
+[Blocks per colony]
+كتل لكل مستعمرة
+[Rubble]
+الأنقاض
+[Outline gaps]
+ثغرات المخططات
+[Craters per colony]
+فوهات لكل مستعمرة
+[Wheat fields]
+حقول القمح
+[Bridges]
+الجسور
+[Karst towers]
+قمم كارستية
+[Tower spacing]
+تباعد القمم الكارستية
+[Tower density]
+كثافة القمم الكارستية
+[Paddy depth]
+امتداد حقول الأرز
+[Home design]
+تصميم الموطن
+[Horseshoe]
+حدوة حصان
+[Twin gates]
+بوابتان متقابلتان
+[Three gates]
+ثلاث بوابات
+[Four gates]
+أربع بوابات
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+لم تجد الأنهار طريقًا بين المواطن؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[River meander]
+تعرّج النهر
+[Flooded terraces]
+المدرجات المغمورة
+[Sinkholes]
+الحفر الكارستية
+[Bajada]
+سفوح المراوح الغرينية
+[Range spacing]
+المسافة بين السلاسل الجبلية
+[Ridge width]
+عرض الحافة الجبلية
+[Passes]
+الممرات الجبلية
+[Fans per range]
+المراوح لكل سلسلة
+[Stream reach]
+امتداد الجداول
+[Playa]
+البحيرات الملحية
+[Broad fan]
+مروحة عريضة
+[Long fan]
+مروحة طويلة
+[Twin springs]
+نبعان توأمان
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+السفوح أضيق من أن تتسع للمواطن؛ استخدم خريطة أكبر أو مسافة أوسع بين السلاسل الجبلية أو حوافَّ أضيق أو بحيرات ملحية أصغر.
+[Central Quarry]
+المحجر المركزي
+[Quarry size]
+حجم المحجر
+[Sand bars]
+الحواجز الرملية
+[Woodland]
+الغابات
+[Central Quarry needs at least two colonies.]
+يحتاج المحجر المركزي إلى مستعمرتين على الأقل.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+البحيرة لا تتسع في هذه الخريطة؛ استخدم بحيرة أصغر أو خريطة أكبر.
+[A sand bar did not reach the island.]
+لم يصل حاجز رملي إلى الجزيرة.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+لا تتسع هذه الخريطة لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[The island has no room for its quarry; use a bigger island.]
+لا تتسع الجزيرة لمحجرها؛ استخدم جزيرة أكبر.
+[Hidden Oasis]
+الواحة الخفية
+[Pond algae]
+طحالب البركة
+[Starting towers]
+أبراج أولية
+[Starting school]
+مدرسة أولية
+[Mesas]
+هضاب صخرية
+[Springs]
+ينابيع
+[Hidden Oasis needs at least two colonies.]
+تحتاج الواحة الخفية إلى مستعمرتين على الأقل.
+[Hidden Oasis holds at most eight colonies.]
+تتسع الواحة الخفية لثماني مستعمرات على الأكثر.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+لا تتسع هذه الخريطة للكتلة الصخرية؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[The pond has no room for that much algae; use a bigger pond.]
+لا تتسع البركة لهذا القدر من الطحالب؛ استخدم بركة أكبر.
+[Even Ground]
+أرض متكافئة
+[Balance]
+الموازنة
+[Tight passes]
+ممرات ضيقة
+[Solver effort]
+جهد الحل
+[Brief]
+قصير
+[Patient]
+صبور
+[This map is too small to solve on; use a bigger map.]
+هذه الخريطة أصغر من أن تُحل؛ استخدم خريطة أكبر.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+عدد المستعمرات كبير جدًا على موازنتها في خريطة بهذا الحجم؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[The colonies could not be spread out on this map.]
+تعذّر توزيع المستعمرات على هذه الخريطة.
+[Marchland]
+المنطقة الحدودية
+[Prizes on the rope]
+الجوائز على الحبل
+[March width]
+عرض المنطقة الحدودية
+[Levelling]
+التسوية
+[A march needs a country on each side; use at least two colonies.]
+تحتاج المنطقة الحدودية إلى بلد على كل جانب؛ استخدم مستعمرتين على الأقل.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+عدد المستعمرات كبير جدًا على أن تمنح هذه الخريطة كلًا منها موطنًا؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+لا تتسع هذه الخريطة لتوزيع المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+ليس لموطن إحدى المستعمرات منفذ إلى المنطقة الحدودية؛ استخدم خريطة أكبر أو منطقة حدودية أضيق.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+لا يتسع موطن إحدى المستعمرات لوكر؛ استخدم خريطة أكبر أو مستعمرات أقل أو منطقة حدودية أضيق.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+الأرض المتنازع عليها في المنطقة الحدودية أقل من أن تكفي لهذا العدد من الجوائز؛ استخدم جوائز أقل أو منطقة حدودية أوسع أو خريطة أكبر.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+لا تتسع المنطقة الحدودية لجائزة؛ استخدم خريطة أكبر أو مستعمرات أقل أو منطقة حدودية أوسع.
+[Orchard Commons]
+البساتين المشتركة
+[Orchard spacing]
+تباعد البساتين
+[Compact]
+متقاربة
+[Balanced]
+متوازنة
+[Spread]
+متباعدة
+[The Gauntlet]
+ساحة التحدي
+[Partition thickness]
+سماكة الجدران الفاصلة
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+تحتاج ساحة التحدي إلى خريطة أكبر أو مستعمرات أقل لتوفير مدخلين محروسين لكل مستعمرة.
+[The Comb]
+المشط
+[Peninsulas per shore]
+عدد أشباه الجزر لكل ضفة
+[Encircled Kingdom]
+المملكة المطوّقة
+[Fortress plan]
+مخطط الحصن
+[Automatic]
+تلقائي
+[Elongated enclosure]
+سور ممدود
+[Bastioned enclosure]
+سور ذو معاقل
+[Paired courtyards]
+فناءان متجاوران
+[Heartland farmland]
+أراضي القلب الزراعية
+[The Faulted City]
+المدينة المتصدعة
+[Fault displacement]
+إزاحة الصدوع
+[Fault width]
+عرض الصدوع
+[Ruin density]
+كثافة الأطلال
+[Surviving junctions]
+التقاطعات الباقية
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+تتطلب المدينة المتصدعة 256 أو 512 خانة لكل ضلع ومن مستعمرة واحدة إلى اثنتي عشرة مستعمرة.
+[The city has too few usable junctions.]
+لا توجد في المدينة تقاطعات صالحة كافية.
+[A city neighbourhood lacks reachable crops or building room.]
+يفتقر أحد أحياء المدينة إلى محاصيل يمكن الوصول إليها أو مساحة للبناء.
+[The city neighbourhoods are too unequal; try another seed.]
+أحياء المدينة غير متكافئة إلى حد كبير؛ جرّب بذرة أخرى.
+[The fractured civic plaza did not survive.]
+لم تصمد الساحة العامة المتصدعة.
+[Who Ate the Map?]
+من أكل الخريطة؟
+[Appetite]
+الشهية
+[A Little Nibble]
+قضمة صغيرة
+[Hungry]
+جائع
+[Portage Lakes]
+بحيرات وممرات الغابة
+[Lake elongation]
+استطالة البحيرات
+[Portage depth]
+سماكة الغابة في الممر
+[Extra trails]
+دروب إضافية
+[Portage Lakes needs sides between 64 and 512 tiles.]
+يجب أن يتراوح طول ضلعي هذه الخريطة بين 64 و512 خانة.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+لا تسمح هذه البذرة بوضع مستوطنات على الضفاف.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+لا تتسع المساحة لحقول متجددة قرب كل مستوطنة.
+[Portage Lakes cannot connect its shoreline trails.]
+يتعذر وصل الدروب على الضفاف.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+لا تسمح هذه البذرة بإنشاء طريق مختصر مفيد عبر غابة جافة.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+لا تسمح هذه البذرة بإنشاء طريق مختصر مفيد بالسباحة.
+[Portage Lakes needs separate swimming lakes on this seed.]
+تحتاج هذه البذرة إلى بحيرات منفصلة للسباحة.
+[Drowned Forest]
+الغابة المغمورة
+[Sandbar connections]
+وصلات الممرات الرملية
+[Wooded neck thickness]
+سماكة الحواجز الشجرية
+[Neutral clearing size]
+حجم الفسحات المحايدة
+[Bastion Keys]
+جزر الحصون
+[Plantation size]
+حجم المزرعة
+[Outlying islands]
+الجزر الخارجية
+[The Hungry Marches]
+التخوم الجائعة
+[Opening ration]
+المؤونة الأولية
+[Central concentration]
+تركيز الغذاء في الوسط
+[The Last Treeline]
+الحزام الشجري الأخير
+[Woodland depth]
+عرض الغابة
+[Fertility]
+الخصوبة
+[Deposits]
+المخزون
+[Room]
+المساحة
+[Isolation]
+العزلة
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+يُقاس موقع بداية كل مستعمرة على الخريطة النهائية: المسافة إلى القمح وإلى الخشب، ومدى تجدد نمو أرضها، والمخزون ومواقع البناء في متناولها، وبُعدها عن المنافسين. يُقيَّم كل عامل من 0 إلى 1 مقابل حد ثابت، ويجمعها المجموع بأوزانها، والإنصاف هو مجموع أضعف مستعمرة مقسوماً على مجموع أفضلها، والنتيجة هي أضعف مجموع مضروباً في الإنصاف.
+[ERROR_CANT_SAVE_MAP]
+تعذر حفظ الخريطة. تحقق من الوجهة والمساحة المتاحة. تعديلاتك لا تزال مفتوحة.
+[Loading headers]
+جارٍ تحميل الترويسات...
+[Loading teams]
+جارٍ تحميل الفرق...
+[Loading terrain]
+جارٍ تحميل التضاريس...
+[Building gradients]
+جارٍ إنشاء التدرجات...
+[Loading players]
+جارٍ تحميل اللاعبين...
+[Loading scripts]
+جارٍ تحميل النصوص البرمجية...
+[Generating map]
+جارٍ إنشاء الخريطة...
+[ERROR_CANT_GENERATE_MAP]
+تعذر إنشاء الخريطة. جرّب إعدادات إنشاء مختلفة.
+[Loading units]
+جارٍ تحميل الوحدات...
+[Loading buildings]
+جارٍ تحميل المباني...
+[Resolving team links]
+جارٍ حل روابط الفرق...
+[saving to storage]
+جارٍ الحفظ...
+[save failed retry]
+فشل الحفظ. أعد المحاولة.
+[export save]
+تصدير الحفظ
+[storage restore failed]
+تعذرت استعادة تخزين المتصفح. البيانات المحفوظة الحالية لم تتغير. يمكنك متابعة هذه الجلسة، لكن التغييرات المحلية لن تُحفظ. صدّر الملفات المهمة من مربع حوار فشل الحفظ. أعد التحميل لمحاولة استعادة التخزين مرة أخرى.
+[continue]
+متابعة
+[export file]
+تصدير الملف
+[export failed]
+فشل تصدير الملف
+[import file]
+استيراد
+[select import file]
+اختر ملفًا للاستيراد
+[validating import]
+جارٍ التحقق من الملف...
+[import succeeded]
+تم استيراد الملف
+[import cancelled]
+تم إلغاء الاستيراد
+[import failed]
+فشل الاستيراد: ملف غير صالح أو غير مدعوم
+[import persistence failed]
+غير محفوظ: اختر استيراد لإعادة المحاولة أو تصدير الملف
+[import progress]
+تقدم الاستيراد
+[export progress]
+تقدم التصدير
+[retry save]
+إعادة محاولة الحفظ
+[campaign save failed]
+لم يتم حفظ تقدم الحملة. أعد المحاولة أو صدّر نسخة احتياطية.
+[leave without saving]
+الخروج دون حفظ
+[campaign import failed]
+ملف تقدم غير صالح أو إصدار حملة مختلف
+[network release mismatch]
+بروتوكولا العميل والخادم مختلفان. ثبّت نفس إصدار Glob2 المثبت على الخادم.
+[settings continue]
+متابعة
+[settings save failed]
+حفظ الإعدادات غير مؤكد. أعد المحاولة أو تابع.
+[shutdown save failed]
+الحفظ النهائي غير مؤكد. أعد المحاولة أو اخرج دون حفظ.
+[quit without saving]
+الخروج دون حفظ
+[game closed]
+تم إغلاق اللعبة. يمكنك إغلاق هذه النافذة أو إعادة التحميل للعب مرة أخرى.
+[campaign editor save failed]
+الحفظ غير مؤكد. موافق يعيد المحاولة؛ إلغاء يعود إلى قائمة المحرر.
+[Actions]
+إجراءات
+[Minimap]
+خريطة مصغرة
+[Fast forward]
+تقديم سريع
+[Hide keyboard]
+إخفاء لوحة المفاتيح
+[Dialog text size]
+حجم نص الحوار
+[Player slot]
+خانة اللاعب
+[Team color]
+لون الفريق
+[Alliance group]
+مجموعة التحالف
+[menu]
+القائمة
+[Editor tools]
+أدوات
+[Pan map]
+تحريك الخريطة
+[Edit map]
+ﺣﺮِّﺭ ﺍﻟﺨﺎﺭﻃﺔ
+[Editor map]
+خريطة
+[Flags]
+أعلام
+[Pause]
+إيقاف مؤقت
+[Speed]
+السرعة
+[Objectives]
+ﺍﻷﻫﺪﺍﻑ
+[Menu]
+القائمة
+[Goals]
+الأهداف
+[Teams]
+الفرق
+[Use this landscape]
+استخدام هذه التضاريس
+[Reset]
+إعادة تعيين
+[Generating...]
+جارٍ التوليد...
+[Players]
+ﺍﻟﻼﻋﺒﻮﻥ
+[Rules]
+القواعد
+[settings Interface layout]
+تخطيط الواجهة
+[settings Automatic]
+تلقائي
+[settings Compact]
+متقاربة
+[settings Spacious]
+واسع
+[More]
+المزيد
+[No items]
+لا توجد عناصر
+[Opponents]
+الخصوم
+[Review]
+مراجعة
+[Review & Play]
+مراجعة ولعب
+[Edit opponents]
+تعديل الخصوم
+[Map settings]
+إعدادات الخريطة
+[Next]
+التالي
+[Done]
+تم
+[Contribution]
+المساهمة
+[Choose who controls this colony]
+اختر من يتحكم في هذه المستعمرة
+[Settings]
+ﺍﻹﻋﺪﺍﺩﺍﺕ
+[settings Back]
+ﻋُﺪ
+[settings Save the game automatically about every minute.]
+احفظ اللعبة تلقائيًا كل دقيقة تقريبًا.
+[AI opponents]
+خصوم آليون
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+يستخدم التخطيط الواسع لوحة جانبية عند توفر مساحة. يستخدم التخطيط المضغوط شريط أدوات ولوحات قابلة للفتح.
+[Assigned %0 · Target %1]
+المعيّنون %0 · الهدف %1
+[Range: %0]
+المدى: %0
+[Player %0]
+اللاعب %0
+[Brush %0]
+الفرشاة %0
+[Team %0]
+الفريق %0
+[Your colony]
+مستعمرتك
+[%0 / %1 HP · %2]
+%0 / %1 صحة · %2
+[Units: %0]
+الوحدات: %0
+[Buildings: %0]
+المباني: %0
+[Need food: %0]
+بحاجة إلى طعام: %0
+[Need healing: %0]
+بحاجة إلى علاج: %0
+[Attack: %0]
+الهجوم: %0
+[Defense: %0]
+الدفاع: %0
+[Food: %0 / %1]
+الطعام: %0 / %1
+[View team %0]
+عرض الفريق %0
+[P %0/%1/%2]
+هيبة %0/%1/%2
+[CPU load %0]
+المعالج %0%
+[Brush %0x%1]
+الفرشاة %0x%1
+[Level %0]
+المستوى %0
+[Manage teams (%0)]
+إدارة الفرق (%0)
+[Team %0 / Level %1]
+الفريق %0 / المستوى %1
+[Files · %0]
+الملفات · %0
+[Hint %0]
+تلميح %0
+[Objective %0]
+هدف %0
+[Entry %0 of 8 · empty entries are omitted]
+الإدخال %0 من 8 · تُحذف الإدخالات الفارغة
+[Teams %0/%1]
+الفرق %0/%1
+[Elapsed time · %0]
+الوقت المنقضي · %0
+[Read-only building]
+مبنى للقراءة فقط
+[Alliance and shared vision are fixed for this match.]
+التحالف والرؤية المشتركة ثابتان في هذه المباراة.
+[Share vision]
+مشاركة الرؤية
+[Share food vision]
+مشاركة رؤية الطعام
+[Share market vision]
+مشاركة رؤية الأسواق
+[Chat]
+الدردشة
+[No other players have editable diplomatic settings in this match.]
+لا يملك لاعبون آخرون إعدادات دبلوماسية قابلة للتعديل في هذه المباراة.
+[No briefing for this match.]
+لا توجد تعليمات لهذه المباراة.
+[Chat · recipients selected in Teams]
+الدردشة · اختيار المستلمين من الفرق
+[Filename]
+اسم الملف
+[Reduced motion]
+تقليل الحركة
+[Send]
+إرسال
+[Close]
+إغلاق
+[Forbidden]
+ممنوع
+[Guard]
+حراسة
+[Clear]
+تنظيف
+[Paint]
+رسم
+[Erase]
+محو
+[Release on valid terrain to place]
+أفلت فوق أرض صالحة للوضع
+[Paint on the map; two fingers move]
+ارسم على الخريطة؛ حرّك بإصبعين
+[Tutorial ▸]
+التدريب ▸
+[Back to tools]
+العودة إلى الأدوات
+[Starvation overlay]
+طبقة الجوع
+[Damage overlay]
+طبقة الضرر
+[Defense overlay]
+طبقة الدفاع
+[Fertility overlay]
+طبقة الخصوبة
+[Health and food bars]
+أشرطة الصحة والطعام
+[Message history]
+سجل الرسائل
+[Mark map for allies]
+تحديد الخريطة للحلفاء
+[Show zones]
+إظهار المناطق
+[Pan]
+تحريك
+[Select]
+تحديد
+[Show palette]
+إظهار اللوحة
+[Release to place]
+أفلت للوضع
+[Blocked placement]
+الوضع محظور
+[File name]
+اسم الملف
+[Load map]
+تحميل خريطة
+[Save map]
+حفظ الخريطة
+[No files in this folder]
+لا توجد ملفات في هذا المجلد
+[No files saved yet]
+لم تُحفظ ملفات بعد
+[Export]
+تصدير
+[Tap to write the mission briefing]
+المس لكتابة تعليمات المهمة
+[Tap to write the map script]
+المس لكتابة برنامج الخريطة
+[Script]
+البرنامج
+[Previous]
+السابق
+[Compile]
+ترجمة برمجية
+[Tap to write this hint]
+المس لكتابة هذا التلميح
+[Tap to write this objective]
+المس لكتابة هذا الهدف
+[Mission briefing · tap to edit, swipe to scroll]
+تعليمات المهمة · المس للتعديل، واسحب للتمرير
+[Not enough recorded history yet.]
+لم يُسجل تاريخ كافٍ بعد.
+[Select a team to show its history.]
+اختر فريقًا لإظهار تاريخه.
+[Back to chart]
+العودة إلى الرسم البياني
+[Expand chart]
+تكبير الرسم البياني
+[Slot]
+خانة
+[Color]
+لون
+[Player / AI]
+لاعب / ذكاء اصطناعي
+[Group]
+مجموعة
+[Forbid]
+منع
+[↓ Low]
+↓ منخفضة
+[= Normal]
+= عادية
+[↑ High]
+↑ عالية
+[Details]
+التفاصيل
+[Campaign name]
+اسم الحملة
+[Unlocking]
+فتح القفل
+[Parameters]
+المعلمات
+[Blank map]
+خريطة فارغة
+[Generated]
+مولّدة
+[Preview]
+معاينة
+[Selected landscape]
+التضاريس المختارة
+[Representative preview]
+معاينة تمثيلية
+[Starting terrain]
+التضاريس الأولية
+[Hide parameters]
+إخفاء المعلمات
+[Size and parameters]
+الحجم والمعلمات
+[Choose a landscape]
+اختر تضاريس
+[%0 / Browse]
+%0 / تصفح
+[%0 colonies · %1]
+%0 مستعمرات · %1
+[%0 · Team %1]
+%0 · الفريق %1
+[Colonies: %0]
+المستعمرات: %0
+[%0 colonies · %1 AI]
+%0 مستعمرات · %1 ﺁﻟﻲ
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 وحدات
+[settings Level %0]
+ﺍﻟﻤﺴﺘﻮﻯ %0
+[settings Match the desktop %0]
+مطابقة سطح المكتب (%0)
+[settings Current display %0 %1 %2 %3]
+إعدادات العرض الحالية: %0 × %1 · %2 · %3
+[Fairness: %0]
+الإنصاف: %0
+[Colony %0]
+مستعمرة %0
+[Win chance: %0 · Fitness: %1]
+فرصة الفوز: %0 · القوة: %1
+[%0 · Contribution: %1]
+%0 · المساهمة: %1
+[Min required level %0]
+ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ: %0
+[Confirm %0]
+ﻧﻌﻢ: %0
+[Dialog text size %0]
+حجم نص الحوار: %0%
+[%0 %1]
+%0 %1

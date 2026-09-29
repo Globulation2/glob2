@@ -6,6 +6,7 @@
 #include "types.h"
 
 #include <functional>
+#include <mutex>
 #include <sstream>
 #include <type_traits>
 
@@ -43,8 +44,8 @@ struct NativeFunction: NativeCode
 template<typename This>
 struct NativeValuePrototype: Prototype
 {
-	NativeValuePrototype():
-		Prototype(nullptr) // heap is set later by NativeValue ctor; can't use the inherited member here, it's not constructed yet
+	NativeValuePrototype(Heap* heap):
+		Prototype(heap)
 	{
 	}
 	
@@ -63,17 +64,34 @@ private:
 	}
 };
 
+/// Every heap shares one static prototype per native type, and each NativeValue points it at
+/// its own heap and re-adds its methods there. Two games constructed on different threads
+/// would allocate those methods into each other's heaps, so that update is serialized.
+/// Recursive, since a prototype's methods may themselves construct native values.
+inline std::recursive_mutex& nativePrototypeMutex()
+{
+	static std::recursive_mutex mutex;
+	return mutex;
+}
+
 template<typename This>
 struct NativeValue: Value
 {
-	static NativeValuePrototype<This> prototype;
+	static NativeValuePrototype<This>* prototypeFor(Heap* heap) {
+		assert(heap);
+		const auto key = std::type_index(typeid(This));
+		auto found = heap->nativePrototypes.find(key);
+		if (found != heap->nativePrototypes.end()) return static_cast<NativeValuePrototype<This>*>(found->second);
+		auto* prototype = new NativeValuePrototype<This>(heap);
+		heap->nativePrototypes.emplace(key, prototype);
+		prototype->initialize();
+		return prototype;
+	}
 	
 	NativeValue(Heap* heap, const This& value):
-		Value(heap, &prototype),
+		Value(heap, prototypeFor(heap)),
 		value(value)
 	{
-		prototype.heap = heap;
-		prototype.initialize();
 	}
 	
 	const This value;
@@ -85,7 +103,6 @@ struct NativeValue: Value
 		stream << "= " << value;
 	}
 };
-template<typename This> NativeValuePrototype<This> NativeValue<This>::prototype;
 
 
 template<typename T>
@@ -328,4 +345,3 @@ inline void NativeValuePrototype<int>::initialize()
 	addMethod<bool(int, int)>("=", std::equal_to<int>());
 	addMethod<bool(int, int)>("!=", std::not_equal_to<int>());
 }
-

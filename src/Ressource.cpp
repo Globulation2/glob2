@@ -11,7 +11,7 @@ std::string getResourceName(int type)
 {
 	if(type == WOOD)
 		return Toolkit::getStringTable()->getString("[Wood]");
-	if(type == CORN)
+	if(type == WHEAT)
 		return Toolkit::getStringTable()->getString("[Wheat]");
 	if(type == PAPYRUS)
 		return Toolkit::getStringTable()->getString("[Papyrus]");

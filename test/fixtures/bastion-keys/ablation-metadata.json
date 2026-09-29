@@ -1,0 +1,287 @@
+{
+  "schema_version": 2,
+  "generator": {
+    "method": 67,
+    "id": "bastion-keys",
+    "revision": 1,
+    "editorOnly": false,
+    "nameKey": "Bastion Keys",
+    "controls": [
+      {
+        "id": "width",
+        "label": "Width",
+        "kind": "range",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 8,
+        "group": 3,
+        "powerOfTwo": true,
+        "values": [
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "id": "height",
+        "label": "Height",
+        "kind": "range",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 8,
+        "group": 3,
+        "powerOfTwo": true,
+        "values": [
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "id": "teams",
+        "label": "Colonies",
+        "kind": "range",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false,
+        "values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      },
+      {
+        "id": "workers",
+        "label": "Starting workers",
+        "kind": "range",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false,
+        "values": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      {
+        "id": "home-size",
+        "label": "Home size",
+        "kind": "range",
+        "min": 13,
+        "max": 15,
+        "step": 1,
+        "default": 14,
+        "group": 2,
+        "powerOfTwo": false,
+        "values": [
+          13,
+          14,
+          15
+        ]
+      },
+      {
+        "id": "plantation-size",
+        "label": "Plantation size",
+        "kind": "range",
+        "min": 14,
+        "max": 18,
+        "step": 2,
+        "default": 14,
+        "group": 2,
+        "powerOfTwo": false,
+        "values": [
+          14,
+          16,
+          18
+        ]
+      },
+      {
+        "id": "outer-islands",
+        "label": "Outlying islands",
+        "kind": "range",
+        "min": 1,
+        "max": 5,
+        "step": 1,
+        "default": 3,
+        "group": 2,
+        "powerOfTwo": false,
+        "values": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "wheat-amount",
+        "label": "Wheat amount",
+        "kind": "range",
+        "min": 0,
+        "max": 300,
+        "step": 25,
+        "default": 100,
+        "group": 1,
+        "powerOfTwo": false,
+        "values": [
+          0,
+          25,
+          50,
+          75,
+          100,
+          125,
+          150,
+          175,
+          200,
+          225,
+          250,
+          275,
+          300
+        ]
+      },
+      {
+        "id": "wood-amount",
+        "label": "Wood amount",
+        "kind": "range",
+        "min": 0,
+        "max": 300,
+        "step": 25,
+        "default": 100,
+        "group": 1,
+        "powerOfTwo": false,
+        "values": [
+          0,
+          25,
+          50,
+          75,
+          100,
+          125,
+          150,
+          175,
+          200,
+          225,
+          250,
+          275,
+          300
+        ]
+      },
+      {
+        "id": "stone-amount",
+        "label": "Stone amount",
+        "kind": "range",
+        "min": 0,
+        "max": 300,
+        "step": 25,
+        "default": 100,
+        "group": 1,
+        "powerOfTwo": false,
+        "values": [
+          0,
+          25,
+          50,
+          75,
+          100,
+          125,
+          150,
+          175,
+          200,
+          225,
+          250,
+          275,
+          300
+        ]
+      },
+      {
+        "id": "algae-amount",
+        "label": "Algae amount",
+        "kind": "range",
+        "min": 0,
+        "max": 300,
+        "step": 25,
+        "default": 100,
+        "group": 1,
+        "powerOfTwo": false,
+        "values": [
+          0,
+          25,
+          50,
+          75,
+          100,
+          125,
+          150,
+          175,
+          200,
+          225,
+          250,
+          275,
+          300
+        ]
+      },
+      {
+        "id": "fruit-amount",
+        "label": "Fruit amount",
+        "kind": "range",
+        "min": 0,
+        "max": 300,
+        "step": 25,
+        "default": 100,
+        "group": 1,
+        "powerOfTwo": false,
+        "values": [
+          0,
+          25,
+          50,
+          75,
+          100,
+          125,
+          150,
+          175,
+          200,
+          225,
+          250,
+          275,
+          300
+        ]
+      }
+    ]
+  },
+  "argv": [
+    ".agents/skills/glob2-map-design/scripts/control_study.py",
+    "bastion-keys",
+    "ablation",
+    "--out",
+    "/tmp/bastion-swim-controls",
+    "--binary",
+    "build/src/glob2",
+    "--jobs",
+    "6",
+    "--seeds",
+    "8"
+  ],
+  "binary": "/tmp/bastion-keys-review-20260919/build/src/glob2",
+  "binary_sha256": "2d954ffc4f9c94556c9f977c0aeef2e41eb75b0a8876c70b13b8a47f0e00165a"
+}

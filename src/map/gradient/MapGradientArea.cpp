@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -47,6 +48,7 @@ Uint16 *Map::getClearAreasGradient(int teamNumber, int swimClass)
 
 void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	Uint16 *gradient = forbiddenGradient[teamNumber][swimClass];
 	assert(gradient);
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
@@ -96,6 +98,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 
 void Map::updateForbiddenGradient(int teamNumber)
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	for (int c=0; c<SWIM_CLASS_COUNT; c++)
 		if (forbiddenGradient[teamNumber][c])
 			updateForbiddenGradient(teamNumber, c);
@@ -103,6 +106,7 @@ void Map::updateForbiddenGradient(int teamNumber)
 
 void Map::updateForbiddenGradient()
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 		updateForbiddenGradient(i);
 }
@@ -110,6 +114,7 @@ void Map::updateForbiddenGradient()
 
 void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
 	assert(gradient);
 	bool canSwim = swimClass > 0;
@@ -139,6 +144,7 @@ void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 
 void Map::updateGuardAreasGradient(int teamNumber)
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	for (int c=0; c<SWIM_CLASS_COUNT; c++)
 		if (guardAreasGradient[teamNumber][c])
 			updateGuardAreasGradient(teamNumber, c);
@@ -146,6 +152,7 @@ void Map::updateGuardAreasGradient(int teamNumber)
 
 void Map::updateGuardAreasGradient()
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 		updateGuardAreasGradient(i);
 }
@@ -153,6 +160,7 @@ void Map::updateGuardAreasGradient()
 
 void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
 	assert(gradient);
 	bool canSwim = swimClass > 0;
@@ -182,6 +190,7 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 
 void Map::updateClearAreasGradient(int teamNumber)
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	for (int c=0; c<SWIM_CLASS_COUNT; c++)
 		if (clearAreasGradient[teamNumber][c])
 			updateClearAreasGradient(teamNumber, c);
@@ -189,6 +198,7 @@ void Map::updateClearAreasGradient(int teamNumber)
 
 void Map::updateClearAreasGradient()
 {
+	PERF_SCOPE_TIME(AreaGradient);
 	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 		updateClearAreasGradient(i);
 }

@@ -16,6 +16,10 @@ inline std::vector<LobbyMapEntry> lobbyMapCatalog(const std::vector<std::filesys
 {
 	namespace fs = std::filesystem;
 	std::set<fs::path> seen;
+	// Keyed by the path a ".map.gz" file would have as plain ".map": lets a
+	// compressed copy replace an already-seen raw one (and vice versa) so a
+	// map stored both ways, or migrated from one form to the other, lists once.
+	std::map<fs::path, size_t> byLogicalPath;
 	std::vector<LobbyMapEntry> entries;
 	for (const auto &root : roots)
 	{
@@ -25,13 +29,28 @@ inline std::vector<LobbyMapEntry> lobbyMapCatalog(const std::vector<std::filesys
 			 end;
 			 it != end && !ec; it.increment(ec))
 		{
-			if (!it->is_regular_file(ec) || it->path().extension() != ".map")
+			if (!it->is_regular_file(ec))
+				continue;
+			const bool isGzMap = it->path().extension() == ".gz" &&
+				it->path().stem().extension() == ".map";
+			const bool isRawMap = it->path().extension() == ".map";
+			if (!isGzMap && !isRawMap)
 				continue;
 			auto canonical = fs::canonical(it->path(), ec);
 			if (ec || !seen.insert(canonical).second)
 				continue;
-			auto name = canonical.stem().string();
+			auto stem = isGzMap ? canonical.stem().stem() : canonical.stem();
+			auto name = stem.string();
 			std::replace(name.begin(), name.end(), '_', ' ');
+			const fs::path logicalPath = isGzMap ? fs::path(canonical).replace_extension() : canonical;
+			auto existing = byLogicalPath.find(logicalPath);
+			if (existing != byLogicalPath.end())
+			{
+				if (isGzMap)
+					entries[existing->second] = {canonical.string(), name};
+				continue; // a ".gz" copy already claimed this logical path; keep it
+			}
+			byLogicalPath[logicalPath] = entries.size();
 			entries.push_back({canonical.string(), name});
 		}
 	}

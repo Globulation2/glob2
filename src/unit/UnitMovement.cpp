@@ -85,7 +85,13 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 		// TODO : be sure this is the right thing to do and add a decent comment
 		if (movement == MOV_HARVESTING)
 		{
+			const Resource clearedBefore = map->getResource(posX + dx, posY + dy);
+			recordLethalDamage(race->getUnitType(typeNum, level[HARVEST])->harvestDamage,
+							   GameplayMeasurements::CLEARING);
 			map->decResource(posX + dx, posY + dy);
+			if (clearedBefore.type < MAX_NB_RESOURCES &&
+				clearedBefore.getUint32() != map->getResource(posX + dx, posY + dy).getUint32())
+				++owner->stats.measurements.cleared[clearedBefore.type];
 			hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 		}
 		for (int tdx = -1; tdx <= 1; tdx++)
@@ -243,7 +249,7 @@ void Unit::handleMovementAttackingAround()
 					if (gid!=NOGBID)
 					{
 						int team=Building::GIDtoTeam(gid);
-						if (owner->enemies & (1<<team))
+						if (owner->attackableTeams() & (1<<team))
 						{
 							int id=Building::GIDtoID(gid);
 							int newQuality=((x*x+y*y)<<Q8_FIXED_POINT_SHIFT);
@@ -259,7 +265,7 @@ void Unit::handleMovementAttackingAround()
 					{
 						int team=Unit::GIDtoTeam(gid);
 						Uint32 tm=(1<<team);
-						if (owner->enemies & tm)
+						if (owner->attackableTeams() & tm)
 						{
 							int id=Building::GIDtoID(gid);
 							Unit *u=owner->game->teams[team]->myUnits[id];
@@ -369,7 +375,13 @@ void Unit::handleMovementClearingResources()
 	Map *map=owner->map;
 	if (movement==MOV_HARVESTING)
 	{
-		map->decResource(posX+dx, posY+dy);
+		const Resource clearedBefore = map->getResource(posX + dx, posY + dy);
+		recordLethalDamage(race->getUnitType(typeNum, level[HARVEST])->harvestDamage,
+						   GameplayMeasurements::CLEARING);
+		map->decResource(posX + dx, posY + dy);
+		if (clearedBefore.type < MAX_NB_RESOURCES &&
+			clearedBefore.getUint32() != map->getResource(posX + dx, posY + dy).getUint32())
+			++owner->stats.measurements.cleared[clearedBefore.type];
 		hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 	}
 
@@ -557,15 +569,27 @@ void Unit::handleMovementGoingToResource()
 {
 	Map *map=owner->map;
 	int teamNumber=owner->teamNumber;
+	int swim=swimClass();
 	bool stopWork;
-	if (map->pathfindResource(teamNumber, destinationPurpose, swimClass(), posX, posY, &dx, &dy, &stopWork))
+	if (map->pathfindResource(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
-		// Routing can follow a rebuilt gradient while the stored target is stale.
-		// Recompute the target only when it no longer marks a resource goal.
-		if (map->getGradient(teamNumber, destinationPurpose, swimClass(), targetX, targetY)!=GRADIENT_AT_GOAL)
-			map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
+		// targetX/Y (also the debug path line, hotkey T) were set once, by
+		// ascending a gradient, when the fetch task started. pathfindResource
+		// above re-reads whichever gradient actually governs the step fresh
+		// every action -- the round-trip field when attachedBuilding has one
+		// and it is valid here, the plain resource gradient otherwise -- and
+		// either field can be rebuilt, or the preference between them can
+		// flip, while the unit is still walking. Re-ascend from here whenever
+		// the stored target has stopped being a peak of that same gradient;
+		// isGradientPeak is a cheap check to run every action, the ascent
+		// itself only when it actually goes stale.
+		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradient(attachedBuilding, destinationPurpose, swim) : NULL;
+		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
+			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim);
+		if (!map->isGradientPeak(gradient, targetX, targetY))
+			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}
 	else
 	{

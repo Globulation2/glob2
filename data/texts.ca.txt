@@ -1,3 +1,9 @@
+[AI strategy]
+Estratègia IA
+[AIMaxima-Summary]
+Equilibra creixement sostenible i entrenament, després reuneix exèrcits en onades.
+[AIMaxima-Profile]
+Estratègia principal: Tracta menjar, treballadors, naixements, entrenament, construcció i combat com demandes contraposades. Dimensiona part de l'exèrcit segons la força enemiga estimada i intenta portar-lo eficaçment al combat.\n\nEconomia i desenvolupament: Planifica naixements segons menjar i treball, preserva estones lliures per entrenar i deixa d'afegir treballadors sobrants quan cal producció militar. Amplia capacitat d'entrenament i evita paralitzar massa infraestructura per millorar-la.\n\nExploració i decisions: Estima forces enemigues amb unitats visibles i albiraments recordats mitjançant un model ajustat. Els objectius depenen de valor, distància, torres, treballadors exposats i persistència. Les missions de fruita afavoreixen varietat alimentària i conversió.\n\nAtac i defensa: Reserva guerrers per entrenament i defensa i reuneix forces terrestres aptes prop d'infraestructura alimentària amiga abans de llançar onades. Respon localment en defensa i avalua accessos a la colònia.\n\nQuan els atacs s'encallen: Després de quatre fallades consecutives d'arribada de les onades, passa a banderes reforçades contínuament. Els atacs amfibis també poden usar reforços continus. Aquesta alternativa no resol tots els bloquejos previs a formar una concentració.\n\nComparació amb altres IA: Integra més estretament alimentació, entrenament, informació i desplegament. Cabino prioritza atacs a diversos edificis; Maxima, demanda estimada i arribada de forces reunides.\n\nPunts forts i febles: Manté creixement i reposició militar adaptant-se a pressió alimentària i amenaces observades. Necessita menjar, entrenament i espai lliure de reunió; congestió i rutes llargues poden dificultar l'arribada.\n\nCom fer-hi front: Disputa blat, despenses i casernes exposats abans de reunir-se les onades. Mantén una defensa proveïda i unida i talla rutes de reforç. Espera pressió repetida després de la primera onada.\n\nExploració: Les estimacions usen albiraments i historial d'observacions, no totals ocults de tropes enemigues.
 [%0 has left the game]
 %0 ha marxat
 [%0 level %1]
@@ -51,11 +57,11 @@ IA
 [ai]
 IA
 [AICastor-Description]
-Castor juga de manera conservadora i se'n surt molt bé en mapes amb pocs recursos. Dificultat mitjana.
+Construeix i entrena, ajustant el creixement al subministrament de menjar.
 [AICastor]
 IACastor
 [AINicowar-Description]
-Nicowar juga agressivament, creix de pressa i envia exèrcits enormes contra els rivals. Dificultat alta.
+Augmenta la població, entrena guerrers i després ataca.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,17 +69,21 @@ Cap: no fa res.
 [AINone]
 Cap
 [AINumbi-Description]
-Numbi s'expandeix poc, però de pressa. Dificultat baixa.
+Un rival benèvol que també s’expandeix i ataca.
 [AINumbi]
 IANumbi
 [AIEcono-Description]
-Econo no ataca, però construeix bases enormes i intenta fer passar moltes unitats al seu bàndol. Dificultat baixa.
+S’expandeix i cerca conversions sense produir guerrers.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush ataca de pressa i amb duresa, sovint portant el defensor al límit. Dificultat mitjana.
+Atacs ràpids que posen a prova les primeres defenses.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Un constructor eficaç que desplega forces d’atac entrenades.
+[AICabino]
+Cabino
 [Alga]
 Algues
 [algae]
@@ -611,9 +621,9 @@ dels quals
 [ok]
 OK
 [old islands terrain]
-illes aleatòries antigues
+Arxipèlag Abrupte
 [old random terrain]
-vell terreny aleatori
+Costa Fragmentada
 [on press]
 En prémer
 [On the spot]
@@ -1225,7 +1235,11 @@ Velocitat: 1x (multijugador)
 [game speed help]
 Només per a un jugador i repeticions. Les partides multijugador van a 1x.
 [AICortex-Description]
-Cortex s'expandeix cap a nous camps de blat i envia grups de guerrers a la batalla, recolzats per fondes i hospitals prop de la línia del front. Dificultat mitjana. Experimental.
+Onades de guerrers agrupats amb suport de menjar i curació.
+[AIMaxima-Description]
+Explora, desenvolupa el subministrament de menjar i reuneix onades de guerrers.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 No s'ha pogut carregar el mapa: el fitxer està malmès o té una versió incompatible.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1241,33 +1255,37 @@ Encara treballant: %0
 [AI strategy & counterplay]
 Estratègia d'IA i contrajoc
 [AICastor-Profile]
-Estratègia: s'expandeix amb precaució i funciona bé en mapes amb pocs recursos.\n\nPunts forts: l'expansió limitada és efectiva en jocs amb recursos escassos.\n\nContrajoc suggerit: ocupar el territori abans d'hora. No assumeixis que la manca de recursos debilitarà aquesta IA.
+Estratègia principal: Inverteix en una colònia productiva i tecnologia abans d'atacs importants. Projectes de construcció prioritzats desenvolupen l'assentament; desenvolupament, infraestructura militar i temps augmenten la preparació bèl·lica.\n\nEconomia i desenvolupament: Estudia humitat, creixement del blat, obstacles i abast dels treballadors. Gestiona expansió alimentària, millores i defenses juntament amb la producció.\n\nAtac i defensa: Estima el poder ofensiu dels guerrers sans i ataca quan es compleixen condicions de força o temps. Prefereix edificis accessibles ja vistos, especialment casernes i escoles, i mou les banderes cap a objectius valuosos.\n\nComparació amb altres IA: Considera terreny i valor dels objectius amb més cura que Numbi. Més pacient que Warrush, canvia pressió inicial per una base desenvolupada i tropes fortes.\n\nPunts forts i febles: La planificació àmplia i els objectius militars valuosos donen propòsit als atacs. Preparar-se permet que rivals ràpids disputin recursos abans que la força principal estigui preparada.\n\nCom fer-hi front: Disputa l'expansió aviat. Protegeix casernes, escoles i menjar; conserva reserves quan ataquis l'assentament desenvolupat.
 [AICastor-Summary]
-Expansió prudent; funciona bé amb recursos escassos.
+Desenvolupa una colònia fortificada i després colpeja edificis militars i científics.
 [AICortex-Profile]
-Estratègia: Gestiona els subministraments d'aliments, s'expandeix cap a nous camps de blat i reuneix grups successius de guerrers. Fondes i hospitals propers a la primera línia donen suport als atacs lluny de la base.\n\nPunts forts: envia reforços junts, manté la pressió militar i reacciona davant l'escassetat d'aliments.\n\nContrajoc suggerit: lluita pel control de nous camps de blat i ataca els seus edificis de suport a prop de la primera línia. Ataca abans que els seus grups de guerrers estiguin preparats.\n\nIA experimental. Dificultat mitjana; les tàctiques suggerides no són valoracions basades en proves comparatives.
+Estratègia principal: Utilitza prioritats reactives per desenvolupar una economia funcional i convertir treball sobrant en menjar, tecnologia i pressió militar. La política normal usa regles; els experiments amb polítiques apreses requereixen configuració separada.\n\nEconomia i desenvolupament: Ajusta treballadors a la demanda de personal i manté els naixements. Els problemes alimentaris frenen despeses en expansió i tecnologia. Afegeix natació quan l'accés aquàtic ajuda significativament.\n\nAtac i defensa: Prepara atacs segons tecnologia enemiga observada i tropes disponibles. Travessar aigua exigeix guerrers nedadors. Sosté campanyes llargues amb despenses i hospitals avançats i pot concentrar forces abans d'avançar.\n\nCompromís i emergències: Manté l'ofensiva davant assetjament menor sense tornar contínuament. Atacs greus poden fer tornar defensors. Emergències inicials poden activar producció exclusiva de guerrers i un hospital; la fam pot provocar un atac desesperat menor.\n\nComparació amb altres IA: Més atent al suport avançat que Warrush. Maxima aprofundeix més en planificar naixements sostenibles, entrenament i desplegament segons la força enemiga estimada.\n\nPunts forts i febles: Vincula pressió, alimentació, curació i accessibilitat. La infraestructura avançada requereix subministraments i els naixements continus poden pressionar aliments limitats. Les prioritats d'emergència imposen compromisos entre creixement i supervivència.\n\nCom fer-hi front: Disputa despenses, hospitals i blat avançats. Mantén units els defensors; petites incursions potser no provocaran retirada.\n\nExploració: Utilitza edificis enemics descoberts i tropes enemigues observades.
 [AICortex-Summary]
-Expansió atenta als aliments i onades d’atac amb suport.
+Sosté ofensives persistents amb alimentació i curació avançades.
 [AINicowar-Profile]
-Estratègia: s'expandeix ràpidament i ataca els oponents amb exèrcits enormes.\n\nPunts forts: l'expansió ràpida afavoreix atacs militars agressius.\n\nContrajoc suggerit: evita la seva expansió. Utilitza el terreny per reduir el nombre de tropes enemigues que poden lluitar alhora.
+Estratègia principal: Combina creixement, entrenament, millores i guerra amb condicions superposades. Pot atacar mentre s'expandeix i orientar l'economia a recuperar-se quan falla l'alimentació.\n\nObertura: El perfil agressiu inclòs prepara la guerra amb cinc unitats totals i permet guerra amb cinc guerrers, inclosos els de nivell zero. Busca tres banderes d'atac de cinc guerrers cadascuna. Els fitxers d'estratègia personalitzats poden canviar aquests llindars.\n\nEconomia i desenvolupament: Amplia alimentació i naixements, entrena treballadors, desenvolupa natació i moviment i millora edificis. Ajusta personal alimentari, respon a la fam i busca fruita.\n\nAtac i defensa: Tria una mostra d'edificis enemics accessibles per atacar. Pot obrir rutes bloquejades per recursos amb banderes de neteja. Les banderes defensives cobreixen grups d'unitats i edificis amenaçats. Més endavant, exploradors entrenats en atac terrestre apunten a grups enemics.\n\nComparació amb altres IA: Comparteix l'agressivitat inicial de Warrush amb més continuïtat. A diferència de Cabino, no prioritza sistemàticament hospitals i despenses.\n\nPunts forts i febles: Les tàctiques àmplies combinen pressió inicial i desenvolupament continu. Els objectius aleatoris poden malgastar esforços en edificis menys valuosos. Els seus llindars no ofereixen l'estimació detallada del poder rival de Maxima.\n\nCom fer-hi front: Espera un atac primerenc. Protegeix menjar i treballadors, disputa l'expansió i prepara't per a exploradors si arriba a entrenament avançat.
 [AINicowar-Summary]
-S'expandeix ràpidament i construeix grans exèrcits per a atacs agressius.
+Assalt primerenc amb agricultura, millores, defensa i atacs d'exploradors.
 [AINone-Profile]
 Estratègia: la IA no dóna ordres.\n\nPunts forts: un oponent previsible i inactiu per als experiments.\n\nDebilitats: No s'expandeix ni s'adapta.
 [AINone-Summary]
 Una colònia ociosa per a experiments.
 [AINumbi-Profile]
-Estratègia: s'expandeix ràpidament però a petita escala. Un oponent més fàcil per practicar la gestió de colònies.\n\nPunts forts: et permet aprendre tant la gestió econòmica com el combat.\n\nContrajoc suggerit: desenvolupa una economia més forta i entrena el teu exèrcit abans d'atacar.
+Estratègia principal: Desenvolupa primer menjar i població, afegeix curació, ciència i entrenament i després passa a la guerra. Les fases generals segueixen el temps, no el progrés rival.\n\nEconomia i desenvolupament: Ajusta la demanda d'edificis a la població i estima el blat proper. Les fases posteriors afegeixen millores, defenses i expansió per sostenir l'exèrcit creixent.\n\nAtac i defensa: Ataca amb prou combatents sans o quan venç un termini. Col·loca banderes de guerra en una mostra d'edificis enemics. Si la força baixa massa, retira les banderes i apuja els llindars del següent intent.\n\nComparació amb altres IA: Més previsible que Castor o Nicowar. Castor considera millor el terreny i el valor dels objectius; Nicowar pressiona molt abans.\n\nPunts forts i febles: Una infraestructura de suport àmplia pot fer-lo perillós després de créixer sense interrupcions, però el calendari pot no encaixar amb la batalla. Els objectius simples i les pauses creixents després de pèrdues fan previsibles els atacs.\n\nCom fer-hi front: Pressiona abans de la fase militar. Desenvolupa menjar i entrenament darrere els atacs i aprofita la pausa després de repel·lir una ofensiva.\n\nExploració: La rutina d'atac llegeix directament les posicions d'edificis enemics sense comprovar la visibilitat.
 [AINumbi-Summary]
-Expansió ràpida a petita escala.
+Desenvolupa gradualment la colònia segons un calendari i després ataca en massa.
 [AIEcono-Profile]
-Estratègia: no ataca, però construeix bases enormes i converteix activament les unitats enemigues al seu propi bàndol.\n\nPunts forts: l'expansió i la conversió d'unitats amenacen els oponents sense atacs directes.\n\nContrajoc suggerit: desenvolupa la teva colònia aviat i evita enviar unitats on l'enemic les pugui convertir.
+Estratègia principal: Produeix treballadors i exploradors, amplia l'economia i atrau unitats enemigues amb menjar i fruita. No té ofensiva convencional de guerrers.\n\nEconomia i desenvolupament: Construeix despenses i granges prop del blat, afegeix educació i entrenament de moviment i millora infraestructura. Vigila aliments i substitueix despenses i granges velles quan empitjora la disponibilitat local de recursos.\n\nAgricultura i conversió: Protegeix blat i fusta renovables prop de l'aigua. Envia exploradors a dipòsits de fruita i colònies enemigues i anuncia menjar als enemics quan busca fruita. Una alimentació millor i la fruita poden atreure conversos.\n\nComparació amb altres IA: El rival econòmic més especialitzat. Cabino i Maxima també busquen fruita, però la combinen amb exèrcits.\n\nPunts forts i febles: Pot créixer mentre els rivals militars s'esgoten, amb la conversió com una altra competició. No produeix guerrers per respondre a assalts prolongats. Menjar, fruita, geografia i regles de victòria condicionen molt les oportunitats.\n\nCom fer-hi front: Pressiona expansions exposades. Abasteix les despenses amb menjar i fruita per retenir unitats. Evita esgotar la colònia en lluites innecessàries mentre creix.
 [AIEcono-Summary]
-Bases enormes i conversió en lloc d'atacs.
+Desenvolupa una colònia rica en menjar i competeix per conversos sense produir guerrers.
 [AIWarrush-Profile]
-Estratègia: ataca aviat i amb força, abans que els oponents s'acabin de preparar.\n\nPunts forts: aprofita l'expansió sense defensa i la preparació militar lenta.\n\nContrajoc suggerit: sobreviu al primer atac mantenint la teva economia i després contraataca.
+Estratègia principal: Ataca abans que els rivals acabin un llarg desenvolupament econòmic o tecnològic. Espera decidir la partida en combat abans de necessitar una gran xarxa de suport.\n\nEconomia i desenvolupament: Quan sis unitats poden recol·lectar, fixa la producció en quatre treballadors, un explorador i tres guerrers. Afegeix casernes quan l'entrenament se satura, però limita noves despenses. La construcció sobrant sovint es destina a hospitals i entrenament de moviment.\n\nAtac i defensa: Marca edificis enemics descoberts amb zones de guàrdia per mantenir la pressió guerrera. No espera una onada reunida amb cura. Retira fusta que obstrueix i protegeix alguns recursos renovables.\n\nPolítica de fruita: Prohibeix collir-ne, evitant penalitzacions d'armadura associades i renunciant a l'estratègia de conversió d'Econo.\n\nComparació amb altres IA: Més compromès amb la pressió inicial que Numbi o Castor. Nicowar també comença agressivament, però continua amb millores i tàctiques més àmplies.\n\nPunts forts i febles: Castiga inicis lents i obliga a despeses defensives aviat. Poques millores sistemàtiques i suport alimentari reduït encareixen una ofensiva encallada. Terreny i trajectes llargs poden erosionar l'avantatge inicial.\n\nCom fer-hi front: Protegeix aviat despenses i granges. Reposa treballadors i defensors, desenvolupa entrenament i contraataca quan l'assalt perdi empenta.\n\nExploració: Les banderes inicials utilitzen directament les posicions inicials enemigues. Les zones d'atac posteriors requereixen visibilitat.
 [AIWarrush-Summary]
-Atacs ràpids que posen a prova les teves primeres defenses.
+Pressió primerenca de guerrers amb una economia de suport deliberadament reduïda.
+[AICabino-Profile]
+Estratègia principal: Reparteix producció entre construcció, millores, defensa, atacs i exploració. Gestors separats demanen i reserven unitats, desenvolupant economia i exèrcit alhora.\n\nEconomia i desenvolupament: Construeix i millora un assentament variat, gestiona personal de despenses i torres, neteja voltants i protegeix recursos renovables. Explora fruita i anuncia menjar per disputar conversos.\n\nAtac i defensa: Tria un enemic i prioritza hospitals, després despenses i casernes. Sosté fins a quatre atacs, normalment assignant vuit a vint guerrers per objectiu segons disponibilitat i enemics propers. Usa banderes defensives separades al voltant d'edificis amenaçats.\n\nEntrenament: Requereix prou guerrers adequats i una caserna acabada per atacar, però no espera tecnologia màxima. Millores i entrenament continus reforcen atacs posteriors.\n\nComparació amb altres IA: Desmantella suport amb més intenció que Nicowar. Dispersa els atacs més que les onades reunides de Maxima, reservant unitats per gestionar demandes contraposades.\n\nPunts forts i febles: Combina creixement, entrenament, defensa i diversos atacs. Destruir alimentació i curació pot afeblir tota la colònia. Rivals aleatoris i prioritats fixes poden perdre oportunitats; diversos atacs poden dividir les forces.\n\nCom fer-hi front: Defensa hospitals i despenses. Disputa expansions exposades i concentra defensors contra cada atac. Danya alimentació o entrenament abans que sostingui diversos fronts.\n\nExploració: El selector d'atacs llegeix llistes d'edificis enemics sense comprovar explícitament la visibilitat. Algunes comparacions econòmiques usen estadístiques enemigues directament.
+[AICabino-Summary]
+Coordina creixement i atacs entrenats, prioritzant curació i menjar.
 [Algae]
 algues
 [Alliances]
@@ -1371,9 +1389,9 @@ Mitjana - Experimental
 [No AI orders]
 Sense ordres d'IA
 [Old islands]
-Illes (generador antic)
+Arxipèlag Abrupte
 [Old random]
-Aleatori (generador antic)
+Costa Fragmentada
 [Open at least one colony to start a match.]
 Obre almenys una colònia per iniciar una partida.
 [Open book]
@@ -1388,6 +1406,14 @@ Jugadors i equips
 Mapes predissenyats
 [Preview ready. Start plays this exact map.]
 Vista prèvia a punt. Per començar el joc s'utilitza aquest mapa exacte.
+[Regenerate all]
+Regenera-ho tot
+[Generating preview...]
+S'està generant la vista prèvia...
+[Preview unavailable]
+Vista prèvia no disponible
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Cada paisatge es mostra com un mapa real amb la mida i el nombre de colònies actuals. Tria'n un per jugar el mapa mostrat.
 [Purple]
 Lila
 [Quick clash]
@@ -1550,6 +1576,10 @@ No hi ha previsualització actual
 Batalla ràpida: velocitat doble; els mapes generats comencen amb 8 treballadors.
 [Reroll]
 Genera un altre mapa
+[Randomize]
+Genera aleatòriament
+[Reset to defaults]
+Restaura els valors per defecte
 [Ruleset]
 Conjunt de regles
 [Select a map from the library.]
@@ -1628,6 +1658,8 @@ Mostra el cursor Globulation 2.
 Fet
 [settings Edit shortcut]
 Edita la drecera del teclat
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Amplia els menús, el text i la barra lateral en una pantalla d'alta resolució.
 [settings Flags]
 Banderes
 [settings Full]
@@ -1642,6 +1674,8 @@ Velocitat del joc
 Jugabilitat
 [settings Graphics detail]
 Detall gràfic
+[settings Interface scale]
+Escala de la interfície
 [settings Keep]
 Mantén els canvis
 [settings Keep this display mode?]
@@ -1664,6 +1698,8 @@ Llengua utilitzada a tota la interfície.
 Nivell
 [settings Map editor]
 Editor de mapes
+[settings Match the desktop]
+Segueix l'escriptori
 [settings Missing font]
 Falta el tipus de lletra
 [settings Music volume]
@@ -1774,3 +1810,1589 @@ Aplica els gràfics quan es carregui la propera partida o l’editor de mapes (O
 Vista toroidal automàtica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostra automàticament la vista general toroidal mentre us desplaceu pel mapa (OpenGL).
+[settings Autosave]
+Desament automàtic
+[settings Save the game automatically about every 10 seconds.]
+Desa la partida automàticament cada 10 segons, aproximadament.
+[Channel width]
+Amplada del canal
+[Land bridge width]
+Amplada del pont de terra
+[Lake size]
+Mida del llac
+[Contested commons]
+Terres comunals disputades
+[Maze]
+Laberint
+[Fjord continent]
+Continent de fiords
+[Cell size]
+Mida de la cel·la
+[Corridor width]
+Amplada del passadís
+[Spoke width]
+Amplada dels radis
+[Loopiness]
+Densitat de bucles
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+El laberint necessita almenys dues cel·les d'amplada i d'alçada; feu servir un mapa més gran o cel·les més petites.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Uns canals tan amples deixen massa poca herba a cada cel·la; feu servir canals més estrets o cel·les més grans.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+El laberint té massa pocs atzucacs per a tantes colònies; feu servir un mapa més gran o cel·les més petites.
+[Home island size]
+Mida de l'illa inicial
+[Commons size]
+Mida de l'àrea comuna
+[Moat width]
+Amplada del fossat
+[Bridge count]
+Nombre de ponts
+[Continent size]
+Mida del continent
+[Coast roughness]
+Irregularitat de la costa
+[Fjord width]
+Amplada del fiord
+[Lake connects to fjords]
+Llac connectat als fiords
+[Resource islands]
+Illes de recursos
+[Watershed]
+Conca hidrogràfica
+[River density]
+Densitat de rius
+[Dryness]
+Aridesa
+[Fords]
+Guals
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+La conca té massa poca plana al·luvial per a tantes colònies; feu servir un mapa més gran o menys colònies.
+[Stone highlands]
+Terres altes de pedra
+[Valley size]
+Mida de la vall
+[Pass width]
+Amplada del pas
+[Pond size]
+Mida de la bassa
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Aquestes valls són massa grans per al mapa; feu servir un mapa més gran o valls més petites.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Les terres altes tenen massa poc espai per a tantes colònies; feu servir un mapa més gran o menys colònies.
+[Symmetric arena]
+Arena simètrica
+[Centre size]
+Mida del centre
+[Causeway width]
+Amplada de la calçada
+[Causeways]
+Calçades
+[Lakes]
+Llacs
+[Resource richness]
+Riquesa de recursos
+[Symmetric arena needs 2, 4 or 8 colonies.]
+L'arena simètrica necessita 2, 4 o 8 colònies.
+[Eight colonies need a square map in the symmetric arena.]
+Vuit colònies necessiten un mapa quadrat a l'arena simètrica.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+El centre és massa petit per a un fruiterar en aquest mapa; feu servir un centre més gran o un mapa més gran.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+L'arena deixa massa poc espai per a cada colònia; feu servir un mapa més gran, un centre més petit o un fossat més estret.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Les calçades són massa a prop entre elles; feu servir menys calçades o més estretes, o un centre més gran.
+[Ring world]
+Món anell
+[Belt width]
+Amplada del cinturó
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+El cinturó és massa curt per a tantes colònies; feu servir un mapa més llarg o menys colònies.
+[City states]
+Ciutats estat
+[Strait width]
+Amplada de l'estret
+[Valleys]
+Valls
+[Frontier richness]
+Riquesa de la frontera
+[City states need at least one colony.]
+Les ciutats estat necessiten almenys una colònia.
+[Stone walls]
+Murs de pedra
+[Sand patches]
+Clapes de sorra
+[Tidal flats]
+Planes de marea
+[Everglades]
+Aiguamolls
+[Pool spacing]
+Separació de les basses
+[Pool size]
+Mida de les basses
+[Clearing size]
+Mida de la clariana
+[Levee]
+Dic
+[Sloughs]
+Aiguamolls
+[Everglades need at least one colony.]
+Els aiguamolls necessiten almenys una colònia.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Massa colònies per a aquest mapa; useu un mapa més gran o menys colònies.
+[Coral]
+Corall
+[Fork angle]
+Angle de ramificació
+[Lean]
+Inclinació
+[Home size]
+Mida de la base
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+El corall no cap en aquest mapa; utilitzeu un mapa més gran, estrets més estrets o menys colònies.
+[Branching]
+Ramificació
+[Branch width]
+Amplada de les branques
+[Coral needs at least one colony.]
+El corall necessita almenys una colònia.
+[Coral needs a map at least 128 tiles across.]
+El corall necessita un mapa d'almenys 128 caselles d'amplada.
+[Carousel]
+Carrusel
+[Amphitheatre]
+Amfiteatre
+[Switchbacks]
+Ziga-zagues
+[Court size]
+Mida dels patis
+[Court wall]
+Mur dels patis
+[Plaza size]
+Mida de la plaça
+[Starting tower level]
+Nivell de les torres inicials
+[Towers per colony]
+Torres per colònia
+[Rings]
+Anells
+[Ramp width]
+Amplada de les rampes
+[Pit size]
+Mida del fossat
+[Terrace width]
+Amplada de les graderies
+[Bay size]
+Mida de les badies
+[Border wall]
+Mur fronterer
+[Plateau size]
+Mida de l'altiplà
+[Trail width]
+Amplada del camí
+[Wall between legs]
+Mur entre trams
+[Farm building plots]
+Solars a les granges
+[Sand bridges over water]
+Ponts de sorra sobre l'aigua
+[Sand lanes through crops]
+Camins de sorra entre els conreus
+[Carousels need at least two colonies.]
+El carrusel necessita almenys dues colònies.
+[Switchbacks need at least two colonies.]
+Els ziga-zagues necessiten almenys dues colònies.
+[An amphitheatre needs at least two colonies.]
+L'amfiteatre necessita almenys dues colònies.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+El carrusel no cap en aquest mapa; useu un mapa més gran, bases més petites o menys colònies.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Els ziga-zagues no caben en aquest mapa; useu un mapa més gran, un altiplà més petit, camins més estrets o menys colònies.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+L'amfiteatre no cap en aquest mapa; useu un mapa més gran, menys anells, graderies més estretes o menys colònies.
+[Spider web]
+Teranyina
+[Spokes per colony]
+Radis per colònia
+[Ring spacing]
+Separació dels anells
+[Thread width]
+Amplada dels fils
+[Sag]
+Caiguda
+[Torn strands]
+Fils trencats
+[Hub size]
+Mida del centre
+[Dew drops]
+Gotes de rosada
+[Spiral]
+Espiral
+[Spider webs need at least one colony.]
+Les teranyines necessiten almenys una colònia.
+[Sandbars]
+Bancs de sorra
+[Tide pools]
+Basses de marea
+[Lagoons]
+Llacunes
+[Central island]
+Illa central
+[Tidal flats need at least one colony.]
+Les planes de marea necessiten almenys una colònia.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Les illes natals no caben en aquest mapa; fes servir un mapa més gran, menys colònies o illes més petites.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+L'àrea comuna i l'estret deixen massa poc espai per a les bases; fes servir un mapa més gran, menys colònies, una àrea comuna més petita o un estret més estret.
+[Wheat amount]
+Quantitat de blat
+[Wood amount]
+Quantitat de fusta
+[Stone amount]
+Quantitat de pedra
+[Algae amount]
+Quantitat d'algues
+[Fruit amount]
+Quantitat de fruita
+[Stone on hilltops]
+Pedra als cims dels turons
+[Winding river]
+Riu sinuós
+[Sandy beaches]
+Platges de sorra
+[Land bridges]
+Ponts de terra
+[Colony meadows]
+Prats al voltant de les colònies
+[Extra starting deposit]
+Dipòsit inicial addicional
+[Moat bridges]
+Ponts sobre el fossat
+[Jagged coastlines]
+Costes retallades
+[Sand roads]
+Camins de sorra
+[Treasure in dead ends]
+Tresors als atzucacs
+[Fjord bank deposits]
+Dipòsits a les ribes dels fiords
+[Sandy lake shore]
+Riba sorrenca del llac
+[River delta]
+Delta del riu
+[Meandering rivers]
+Rius amb meandres
+[Fruit in home valleys]
+Fruita a les valls inicials
+[Moat]
+Fossat
+[Stone in the orchard]
+Pedra a l'hort
+[Colonies on both coasts]
+Colònies a les dues costes
+[Winding belt]
+Cinturó sinuós
+[Cell shape]
+Forma de les cel·les
+[Squares]
+Quadrats
+[Hexagons]
+Hexàgons
+[Warp]
+Deformació
+[Fingerprint]
+Empremta digital
+[Wavelength]
+Longitud d'onda
+[Pattern]
+Patró
+[Labyrinth]
+Laberint
+[Channels]
+Solcs
+[Barrier]
+Barrera
+[Water]
+Aigua
+[Grain]
+Gra
+[Rain shadow]
+Ombra pluviomètrica
+[Ridges]
+Crestes
+[Slant]
+Obliqüitat
+[Ridge thickness]
+Gruix de les crestes
+[Pass spacing]
+Separació dels passos
+[Lee width]
+Amplada del sotavent
+[Old growth]
+Bosc primari
+[Canals]
+Canals
+[Forest density]
+Densitat del bosc
+[Hidden groves]
+Boscatges amagats
+[Starting trails]
+Corriols inicials
+[Block size]
+Mida de les illes de cases
+[Canal width]
+Amplada dels canals
+[Extra bridges]
+Ponts addicionals
+[Polder]
+Pòlder
+[Old town]
+Ciutat vella
+[Anthill]
+Formiguer
+[Row angle]
+Angle de les fileres
+[Diagonal]
+Diagonals
+[Dyke spacing]
+Separació dels dics
+[Village size]
+Mida dels pobles
+[Hamlets]
+Llogarets
+[City size]
+Mida de la ciutat
+[Street width]
+Amplada dels carrers
+[Plazas]
+Places
+[Chamber spacing]
+Separació de les cambres
+[Chamber size]
+Mida de les cambres
+[Queen room]
+Cambra de la reina
+[Tunnel width]
+Amplada dels túnels
+[Loops]
+Bucles
+[Home pools]
+Basses de la base
+[Farm plots]
+Parcel·les de conreu
+[Tendril roads]
+Camins en circell
+[Random]
+Aleatori
+[Vertical]
+Verticals
+[Horizontal]
+Horitzontals
+[Inland lakes]
+Llacs interiors
+[Block shape]
+Forma de les illes de cases
+[Random parameters]
+Paràmetres aleatoris
+[Randomize parameters]
+Aleatoritzar paràmetres
+[Start quality]
+Qualitat de l'inici
+[Fairness]
+Equitat
+[Fitness]
+Aptitud
+[Win chance]
+Probabilitat de guanyar
+[Coefficient]
+Coeficient
+[Average]
+Mitjana
+[Fitted on games:]
+Ajustat amb partides:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+L'inici de cada colònia es mesura al mapa acabat, i un model ajustat a milers de partides entre rivals equivalents converteix aquestes mesures en aptitud. L'aptitud indica com de probable és que la colònia guanyi. L'equitat és com de repartides estan aquestes probabilitats: 1 quan totes les colònies tenen la mateixa probabilitat de guanyar, 0 quan una sola colònia s'emportaria el mapa.
+[Worst]
+Pitjor
+[Best]
+Millor
+[Map preview controls]
+Arrossega per veure la continuïtat. Roda per ampliar. Clic dret o doble clic per restablir.
+[Map preview drag help]
+Arrossega per desplaçar; roda per ampliar.
+[Map preview loading]
+S'està carregant...
+[Map preview failed]
+Ha fallat la previsualització
+[Map preview retry]
+Fes clic per tornar-ho a provar
+[Map preview please wait]
+Espera un moment
+[Stats births]
+Naixements
+[Stats deaths]
+Morts
+[Stats starvation]
+Inanició
+[Stats wheat stock]
+Reserva de blat
+[Stats wheat loads]
+Càrregues de blat
+[Stats meals]
+Àpats servits
+[Stats new buildings]
+Edificis nous
+[Stats upgrades]
+Millores
+[Stats training]
+Visites d’entrenament
+[Stats damage dealt]
+Dany causat
+[Stats damage received]
+Dany rebut
+[Stats HP restored]
+Vida recuperada
+[Stats since tick]
+Des del pas
+[Stats combat deaths]
+Combat
+[Stats clearing deaths]
+Lesions de neteja
+[Stats trapped deaths]
+Atrapats
+[Stats unknown deaths]
+Altres/desconegut
+[Stats conversions]
+Entrada / sortida
+[Stats unavailable]
+No disponible
+[Stats wheat per minute]
+Càrregues/min
+[Stats meals per minute]
+Menjar/min
+[Stats occupancy]
+Alimentació / cura
+[Stats page one]
+Estadístiques 1/3 >
+[Stats page two]
+Estadístiques 2/3 >
+[Stats next page]
+Pàgina (P)
+[Map preview choose another]
+Tria un mapa
+[Resources never grow or spread across the map.]
+Els recursos mai no creixen ni s'escampen pel mapa.
+[Building sites complete immediately, skipping delivery.]
+Les obres es completen immediatament, sense fase de repartiment.
+[Units never grow hungry and never starve.]
+Les unitats mai no passen gana ni moren de fam.
+[Slows how often resources grow or spread across the map.]
+Alenteix la freqüència amb què els recursos creixen o s'escampen pel mapa.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Estableix la reserva inicial del mercat/intercanvi compartit de cada equip a l'inici de la partida.
+[Grow normally]
+Creixement normal
+[No growth]
+Sense creixement
+[Normal construction]
+Construcció normal
+[Instant]
+Instantània
+[Units get hungry]
+Les unitats passen gana
+[No hunger]
+Sense gana
+[Off (today's growth)]
+Desactivat (creixement actual)
+[Scarce (2x slower)]
+Escàs (2x més lent)
+[Very scarce (4x slower)]
+Molt escàs (4x més lent)
+[Extremely scarce (8x slower)]
+Extremament escàs (8x més lent)
+[None (today's default)]
+Cap (per defecte actual)
+[Small (+50 each)]
+Petit (+50 cadascun)
+[Medium (+150 each)]
+Mitjà (+150 cadascun)
+[Large (+300 each)]
+Gran (+300 cadascun)
+[No resource growth]
+Sense creixement de recursos
+[Economy]
+Economia
+[Scarce resources]
+Recursos escassos
+[Instant construction]
+Construcció instantània
+[Stockpile start]
+Reserva inicial
+[Units still visit schools but never gain a level.]
+Les unitats continuen anant a l'escola, però mai pugen de nivell.
+[Units fight to the death instead of retreating to heal.]
+Les unitats lluiten fins a la mort en lloc de retirar-se per curar-se.
+[Units are never permanently lost -- HP just stops at 1.]
+Les unitats mai es perden definitivament -- la vida simplement s'atura a 1.
+[Disables all combat between every team.]
+Desactiva tot el combat entre tots els equips.
+[Higher tiers deal more damage but have less HP and armor.]
+Els nivells superiors infligeixen més mal però tenen menys vida i armadura.
+[Higher tiers give every building much more HP.]
+Els nivells superiors donen molta més vida a cada edifici.
+[Starting units spawn already leveled up. Changes the generated map.]
+Les unitats inicials apareixen ja amb el nivell pujat. Canvia el mapa generat.
+[Trains normally]
+S'entrena normalment
+[No upgrades]
+Sense millores
+[Retreats when damaged]
+Es retira quan està ferida
+[Fearless]
+Sense por
+[Can die permanently]
+Pot morir definitivament
+[No permadeath]
+Sense mort definitiva
+[Normal combat]
+Combat normal
+[Peaceful mode]
+Mode pacífic
+[Off (today's balance)]
+Desactivat (equilibri actual)
+[Glass cannon x2]
+Canó de vidre x2
+[Glass cannon x3]
+Canó de vidre x3
+[Off (today's HP)]
+Desactivat (vida actual)
+[Fortress x5]
+Fortalesa x5
+[Fortress x10]
+Fortalesa x10
+[Veteran]
+Veterà
+[Elite]
+Elit
+[Legendary]
+Llegendari
+[Combat]
+Combat
+[Glass cannon]
+Canó de vidre
+[Fortress buildings]
+Edificis fortificats
+[Veteran/Fast start]
+Veterà/Inici ràpid
+[Match ends at the timer; highest prestige at that instant wins.]
+La partida acaba al temporitzador; guanya qui tingui més prestigi en aquell instant.
+[Off (no timer)]
+Desactivat (sense temporitzador)
+[90 minutes]
+90 minuts
+[30 minutes]
+30 minuts
+[45 minutes]
+45 minuts
+[60 minutes]
+60 minuts
+[Sudden-death timer]
+Temporitzador de mort sobtada
+[Stats page three]
+Estadístiques 3/3 >
+[Stats blocked units]
+Unitats S/C
+[Stats blocked buildings]
+Edificis S/C
+[Stats blocked buildings swim]
+Nedar S/C
+[Stats current blocked units]
+Unitats C
+[Stats current blocked buildings]
+Edificis C
+[Stats growth global]
+Recursos +
+[Stats growth new tiles]
+Recursos +#
+[Stats growth reductions]
+Recursos -
+[Stats growth per minute]
+Blat +/min
+[Stats growth near 8]
+Recursos + <=8
+[Stats growth near 16]
+Recursos + <=16
+[Stats growth near 32]
+Recursos + <=32
+[Stats low HP 25]
+Vida <=25%
+[Stats low HP 50]
+Vida <=50%
+[Stats low HP 75]
+Vida <=75%
+[Stats low food 25]
+Menjar <=25%
+[Stats low food 50]
+Menjar <=50%
+[Stats low food 75]
+Menjar <=75%
+[Stats structural units]
+Unitats S
+[Stats structural buildings]
+Edificis S
+[Stats low HP ranges]
+Vida: <=25/50/75%
+[Stats low food ranges]
+Menjar: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Caràcter emoji
+[Smiley]
+Cara somrient
+[Sad face]
+Cara trista
+[Winking face]
+Picada d’ullet
+[Surprised face]
+Cara sorpresa
+[Heart eyes]
+Ulls de cor
+[Sunglasses]
+Ulleres de sol
+[Heart]
+Cor
+[Star]
+Estrella
+[Neutral face]
+Cara neutra
+[Sleeping face]
+Cara adormida
+[Grinning face]
+Cara rient
+[Kissing face]
+Cara fent un petó
+[Angry face]
+Cara enfadada
+[Tongue out]
+Llengua fora
+[Skull]
+Calavera
+[Flower]
+Flor
+[Four-leaf clover]
+Trèvol de quatre fulles
+[Teardrop]
+Gota
+[Cloud]
+Núvol
+[Gem]
+Gemma
+[Apple]
+Poma
+[Speech bubble]
+Bafarada
+[Shield]
+Escut
+[Emoji style]
+Estil de l’emoji
+[Outline]
+Contorn
+[Filled]
+Ple
+[Emoji terrain]
+Terreny de l’emoji
+[Regular]
+Normal
+[Inverse]
+Invertit
+[Crossings]
+Passos
+[Forts]
+Forts
+[Gate width]
+Amplada de la porta
+[Braided Delta]
+Delta trenat
+[Braid count]
+Nombre de braços
+[Rejoining frequency]
+Freqüència de confluències
+[Crossing spacing]
+Distància entre passos
+[Breachable highlands]
+Terres altes amb bretxes
+[Ridge depth]
+Gruix de les carenes
+[Extra open passes]
+Passos oberts addicionals
+[Wooded saddles]
+Colls boscosos
+[Hedgerow Country]
+Camps amb bardisses
+[Field size]
+Mida dels camps
+[Hedge thickness]
+Gruix de les bardisses
+[Existing gateways]
+Passos existents
+[Wooded boundary share]
+Proporció de límits arbrats
+[The Glacis]
+El Glacis
+[Allotments]
+Horts
+[Caravanserai]
+Caravanserrall
+[Mixed]
+Mixta
+[Fort size]
+Mida del fort
+[Bastions]
+Nombre de bastions
+[Four-pointed]
+De quatre puntes
+[Five-pointed]
+De cinc puntes
+[Six-pointed]
+De sis puntes
+[Glacis width]
+Amplada del glacis
+[Gates]
+Portes
+[Site size]
+Mida de les parcel·les
+[Plot width]
+Amplada dels bancals
+[Plot mix]
+Barreja de bancals
+[Tended]
+Cuidats
+[Overgrown]
+Abandonats
+[Commons]
+Terres comunals
+[Few]
+Pocs
+[Some]
+Alguns
+[Home oasis size]
+Mida de l'oasi natal
+[Caravanserais per colony]
+Caravanserralls per colònia
+[Desert]
+Paisatge desèrtic
+[Open erg]
+Erg obert
+[Dunes and mesas]
+Dunes i meses
+[Canyon country]
+Terra de canyons
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Un fort no pot arribar al seu gual; feu servir un mapa més gran o menys colònies.
+[A wall would stand on a beach; try another seed.]
+Un mur quedaria sobre una platja; proveu una altra llavor.
+[The fort is too small for its gardens; raise Fort size.]
+El fort és massa petit per als seus horts; augmenteu la mida del fort.
+[The home oasis is too small; raise Home oasis size.]
+L'oasi natal és massa petit; augmenteu la mida de l'oasi natal.
+[Braided river]
+Riu trenat
+[Braid width]
+Amplada de la trena
+[Bar size]
+Mida de les barres
+[Extra riffles]
+Guals extra
+[Moraine hummocks]
+Monticles de morrena
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+La trena deixa massa poca terrassa per a les bases; useu un mapa més gran o una trena més estreta.
+[The map is too narrow across for a braid; use a bigger map.]
+El mapa és massa estret per a una trena; useu un mapa més gran.
+[Drumlin field]
+Camp de drumlins
+[Drumlin spacing]
+Separació dels drumlins
+[Drumlin length]
+Longitud dels drumlins
+[Water gap]
+Franja d'aigua
+[Esker loops]
+Bucles d'eskers
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Els eskers no han pogut unir tots els drumlins; useu una franja d'aigua més estreta o un mapa més gran.
+[Continents]
+Continents
+[Continent]
+Continent
+[North America]
+Amèrica del Nord
+[South America]
+Amèrica del Sud
+[Africa]
+Àfrica
+[Europe]
+Europa
+[Asia]
+Àsia
+[Oceania]
+Oceania
+[Orientation]
+Orientació
+[Turn to fit]
+Girar per encaixar
+[Upright]
+Sense girar
+[Mountain ranges]
+Serralades
+[Great rivers]
+Grans rius
+[Islets]
+Illots
+[Oases]
+Oasis
+[The world atlas has no such continent.]
+L'atles del món no té aquest continent.
+[The map is too small to hold a continent.]
+El mapa és massa petit per contenir un continent.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Aquest continent no té espai per a tantes colònies amb aquesta mida de mapa; feu servir un mapa més gran o menys colònies.
+[Savannah]
+Sabana
+[Watering holes]
+Abeuradors
+[Dry patches]
+Zones seques
+[Sparse]
+Pocs
+[Normal]
+Normal
+[Many]
+Molts
+[Rice terraces]
+Terrasses d’arròs
+[Unoccupied hills]
+Turons desocupats
+[Hill radius]
+Radi dels turons
+[Contour band width]
+Amplada de les bandes de nivell
+[Stairs per hill]
+Escales per turó
+[Valley river]
+Riu de la vall
+[Hills]
+Turons
+[Hillsides]
+Vessants
+[Terraces per slope]
+Terrasses per vessant
+[Waviness]
+Ondulació
+[Stair spacing]
+Separació de les escales
+[Locust]
+Llagostes
+[Plantations]
+Plantacions
+[Plot size]
+Mida del solar
+[Farm width]
+Amplada del conreu
+[Islands per colony]
+Illes per colònia
+[Outpost inns]
+Despenses d'avançada
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Les illes són massa petites per als seus solars; useu un mapa més gran, un solar més petit o menys colònies.
+[Sierpiński Gardens]
+Jardins de Sierpiński
+[Hilbert River]
+Riu de Hilbert
+[Maximum nesting]
+Imbricació màxima
+[Minimum terminal district side]
+Costat mínim dels districtes terminals
+[Major crossing pairs]
+Parelles de passos principals
+[Maximum fold depth]
+Profunditat màxima dels plecs
+[Minimum land spacing]
+Separació mínima de terra
+[Optional local crossings per parent]
+Passos locals opcionals per regió superior
+[Optional major shortcuts]
+Dreceres principals opcionals
+[Lava shield]
+Escut de lava
+[Lava tongues]
+Llengües de lava
+[Long tongues]
+Llengües llargues
+[Crater rim width]
+Amplada de la vora del cràter
+[Honeycomb isle]
+Illa bresca
+[Blocks per colony]
+Illes de cases per colònia
+[Rubble]
+Runa
+[Outline gaps]
+Bretxes als contorns
+[Craters per colony]
+Cràters per colònia
+[Wheat fields]
+Camps de blat
+[Bridges]
+Ponts
+[Karst towers]
+Torres càrstiques
+[Tower spacing]
+Separació de les torres càrstiques
+[Tower density]
+Densitat de les torres càrstiques
+[Paddy depth]
+Extensió dels arrossars
+[Home design]
+Disseny de la base
+[Horseshoe]
+Ferradura
+[Twin gates]
+Portes bessones
+[Three gates]
+Tres portes
+[Four gates]
+Quatre portes
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Els rius no han trobat camí entre les bases; feu servir un mapa més gran o menys colònies.
+[River meander]
+Meandres del riu
+[Flooded terraces]
+Terrasses inundades
+[Sinkholes]
+Dolines
+[Bajada]
+Ventalls al·luvials
+[Range spacing]
+Separació de les serralades
+[Ridge width]
+Amplada de les carenes
+[Passes]
+Colls
+[Fans per range]
+Ventalls per serralada
+[Stream reach]
+Llargada dels rierols
+[Playa]
+Llacunes salades
+[Broad fan]
+Ventall ample
+[Long fan]
+Ventall llarg
+[Twin springs]
+Fonts bessones
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Els ventalls al·luvials són massa estrets per a les bases; feu servir un mapa més gran, una separació més gran de les serralades, carenes més estretes o llacunes salades més petites.
+[Central Quarry]
+Pedrera central
+[Quarry size]
+Mida de la pedrera
+[Sand bars]
+Bancs de sorra
+[Woodland]
+Bosc
+[Central Quarry needs at least two colonies.]
+Pedrera central necessita almenys dues colònies.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+El llac no cap en aquest mapa; utilitzeu un llac més petit o un mapa més gran.
+[A sand bar did not reach the island.]
+Un banc de sorra no ha arribat a l'illa.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Aquest mapa no té espai per a tantes colònies; utilitzeu un mapa més gran o menys colònies.
+[The island has no room for its quarry; use a bigger island.]
+L'illa no té espai per a la seva pedrera; utilitzeu una illa més gran.
+[Hidden Oasis]
+Oasi amagat
+[Pond algae]
+Algues de la bassa
+[Starting towers]
+Torres inicials
+[Starting school]
+Escola inicial
+[Mesas]
+Altiplans rocosos
+[Springs]
+Fonts
+[Hidden Oasis needs at least two colonies.]
+Oasi amagat necessita almenys dues colònies.
+[Hidden Oasis holds at most eight colonies.]
+Oasi amagat admet com a màxim vuit colònies.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
+[The pond has no room for that much algae; use a bigger pond.]
+La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.
+[Even Ground]
+Terreny igualat
+[Balance]
+Equilibratge
+[Tight passes]
+Passos estrets
+[Solver effort]
+Esforç del resolutor
+[Brief]
+Breu
+[Patient]
+Pacient
+[This map is too small to solve on; use a bigger map.]
+Aquest mapa és massa petit per resoldre'l; utilitzeu un mapa més gran.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Massa colònies per equilibrar en un mapa d'aquesta mida; utilitzeu un mapa més gran o menys colònies.
+[The colonies could not be spread out on this map.]
+No s'han pogut repartir les colònies en aquest mapa.
+[Marchland]
+Terra de ningú
+[Prizes on the rope]
+Premis a la corda
+[March width]
+Amplada de la terra de ningú
+[Levelling]
+Anivellament
+[A march needs a country on each side; use at least two colonies.]
+Una terra de ningú necessita un país a cada costat; utilitzeu almenys dues colònies.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Massa colònies perquè aquest mapa doni a cadascuna una terra natal; utilitzeu un mapa més gran o menys colònies.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Aquest mapa no té espai per repartir les colònies; utilitzeu un mapa més gran o menys colònies.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+La terra natal d'una colònia no té sortida a la terra de ningú; utilitzeu un mapa més gran o una terra de ningú més estreta.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+La terra natal d'una colònia no té espai per a una granja; utilitzeu un mapa més gran, menys colònies o una terra de ningú més estreta.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+La terra de ningú té massa poc terreny disputat per a tants premis; utilitzeu menys premis, una terra de ningú més ampla o un mapa més gran.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+La terra de ningú no té espai per a un premi; utilitzeu un mapa més gran, menys colònies o una terra de ningú més ampla.
+[Orchard Commons]
+Vergers comunals
+[Orchard spacing]
+Separació dels vergers
+[Compact]
+Propers
+[Balanced]
+Equilibrada
+[Spread]
+Separats
+[The Gauntlet]
+Arena de proves
+[Partition thickness]
+Gruix de les parets divisòries
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+L’Arena de proves necessita un mapa més gran o menys colònies per encabir dues entrades defensades per colònia.
+[The Comb]
+La Pinta
+[Peninsulas per shore]
+Penínsules per riba
+[Encircled Kingdom]
+Regne encerclat
+[Fortress plan]
+Planta de la fortalesa
+[Automatic]
+Automàtica
+[Elongated enclosure]
+Recinte allargat
+[Bastioned enclosure]
+Recinte amb baluards
+[Paired courtyards]
+Patis aparellats
+[Heartland farmland]
+Terres de conreu centrals
+[The Faulted City]
+La ciutat fracturada
+[Fault displacement]
+Desplaçament de les falles
+[Fault width]
+Amplada de les falles
+[Ruin density]
+Densitat de ruïnes
+[Surviving junctions]
+Encreuaments conservats
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+La ciutat fracturada requereix 256 o 512 caselles per costat i entre una i dotze colònies.
+[The city has too few usable junctions.]
+La ciutat té massa pocs encreuaments utilitzables.
+[A city neighbourhood lacks reachable crops or building room.]
+Un barri de la ciutat no té conreus accessibles o espai per construir.
+[The city neighbourhoods are too unequal; try another seed.]
+Els barris de la ciutat són massa desiguals; proveu una altra llavor.
+[The fractured civic plaza did not survive.]
+La plaça pública fracturada no ha sobreviscut.
+[Who Ate the Map?]
+Qui s’ha menjat el mapa?
+[Appetite]
+Gana
+[A Little Nibble]
+Una mossegadeta
+[Hungry]
+Afamat
+[Portage Lakes]
+Llacs i passos boscosos
+[Lake elongation]
+Allargament dels llacs
+[Portage depth]
+Gruix del pas boscós
+[Extra trails]
+Corriols addicionals
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Els costats d’aquest mapa han de fer entre 64 i 512 caselles.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Aquesta llavor no permet situar colònies a les ribes.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+No hi caben camps renovables al costat de cada colònia.
+[Portage Lakes cannot connect its shoreline trails.]
+No es poden connectar els corriols de les ribes.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Aquesta llavor no permet crear una drecera útil per un bosc sec.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Aquesta llavor no permet crear una drecera útil nedant.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Amb aquesta llavor, els llacs per nedar han de quedar separats.
+[Drowned Forest]
+Bosc inundat
+[Sandbar connections]
+Connexions de sorra
+[Wooded neck thickness]
+Gruix de les barreres d’arbres
+[Neutral clearing size]
+Mida de les clarianes neutrals
+[Bastion Keys]
+Illots fortificats
+[Plantation size]
+Mida de les plantacions
+[Outlying islands]
+Illes exteriors
+[The Hungry Marches]
+Les Marques Famolenques
+[Opening ration]
+Ració inicial
+[Central concentration]
+Concentració central
+[The Last Treeline]
+L’última franja de bosc
+[Woodland depth]
+Amplada dels bosquets
+[Fertility]
+Fertilitat
+[Deposits]
+Dipòsits
+[Room]
+Espai
+[Isolation]
+Aïllament
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+L'inici de cada colònia es mesura sobre el mapa acabat: el camí fins al blat i fins a la fusta, com de bé rebrota el seu terreny, els dipòsits i els llocs de construcció a l'abast, i la distància als rivals. Cada factor puntua de 0 a 1 respecte a un llindar fix, el total els pondera, l'equitat és el total de la pitjor colònia dividit pel de la millor, i la puntuació és el pitjor total multiplicat per l'equitat.
+[ERROR_CANT_SAVE_MAP]
+No s'ha pogut desar el mapa. Comproveu la destinació i l'espai disponible. Les vostres edicions encara estan obertes.
+[Loading headers]
+Carregant capçaleres...
+[Loading teams]
+Carregant equips...
+[Loading terrain]
+Carregant el terreny...
+[Building gradients]
+Generant gradients...
+[Loading players]
+Carregant jugadors...
+[Loading scripts]
+Carregant scripts...
+[Generating map]
+Generant el mapa...
+[ERROR_CANT_GENERATE_MAP]
+No s'ha pogut generar el mapa. Proveu altres paràmetres de generació.
+[Loading units]
+Carregant unitats...
+[Loading buildings]
+Carregant construccions...
+[Resolving team links]
+Resolent enllaços d'equip...
+[saving to storage]
+Desant...
+[save failed retry]
+Ha fallat el desat. Torneu-ho a provar.
+[export save]
+Exporta la partida desada
+[storage restore failed]
+No s'ha pogut restaurar l'emmagatzematge del navegador. Les dades desades existents no s'han modificat. Podeu continuar aquesta sessió, però els canvis locals no es podran conservar. Exporteu les partides importants des del diàleg d'error de desat. Torneu a carregar per reintentar la restauració de l'emmagatzematge.
+[continue]
+Continua
+[export file]
+Exporta el fitxer
+[export failed]
+Ha fallat l'exportació del fitxer
+[import file]
+Importa
+[select import file]
+Trieu un fitxer per importar
+[validating import]
+Validant el fitxer...
+[import succeeded]
+Fitxer importat
+[import cancelled]
+Importació cancel·lada
+[import failed]
+Ha fallat la importació: fitxer no vàlid o no compatible
+[import persistence failed]
+No desat: trieu Importa per reintentar-ho, o Exporta el fitxer
+[import progress]
+Progrés de la importació
+[export progress]
+Progrés de l'exportació
+[retry save]
+Reintenta el desat
+[campaign save failed]
+El progrés de la campanya no s'ha desat. Torneu-ho a provar o exporteu una còpia de seguretat.
+[leave without saving]
+Surt sense desar
+[campaign import failed]
+Fitxer de progrés no vàlid o versió de campanya diferent
+[network release mismatch]
+Els protocols del client i del servidor difereixen. Instal·leu la mateixa versió de Glob2 que el servidor.
+[settings continue]
+Continua
+[settings save failed]
+Desat dels ajustos no confirmat. Torneu-ho a provar, o continueu.
+[shutdown save failed]
+Desat final no confirmat. Torneu-ho a provar, o sortiu sense desar.
+[quit without saving]
+Surt sense desar
+[game closed]
+Partida tancada. Podeu tancar aquesta finestra o tornar a carregar per jugar de nou.
+[campaign editor save failed]
+Desat no confirmat. D'acord ho reintenta; Cancel·la torna al menú de l'editor.
+[Actions]
+Accions
+[Minimap]
+Minimapa
+[Fast forward]
+Avanç ràpid
+[Hide keyboard]
+Amaga el teclat
+[Dialog text size]
+Mida del text dels diàlegs
+[Player slot]
+Plaça de jugador
+[Team color]
+Color de l’equip
+[Alliance group]
+Grup d’aliança
+[menu]
+Menú
+[Editor tools]
+Eines
+[Pan map]
+Desplaça el mapa
+[Edit map]
+Edita el mapa
+[Editor map]
+Mapa
+[Flags]
+Banderes
+[Pause]
+Pausa
+[Speed]
+Velocitat
+[Objectives]
+Objectius
+[Menu]
+Menú
+[Goals]
+Objectius
+[Teams]
+Equips
+[Use this landscape]
+Fes servir aquest paisatge
+[Reset]
+Restableix
+[Generating...]
+S’està generant...
+[Players]
+Jugadors
+[Rules]
+Regles
+[settings Interface layout]
+Disposició de la interfície
+[settings Automatic]
+Automàtica
+[settings Compact]
+Propers
+[settings Spacious]
+Espaiosa
+[More]
+Més
+[No items]
+Cap element
+[Opponents]
+Adversaris
+[Review]
+Resum
+[Review & Play]
+Revisa i juga
+[Edit opponents]
+Edita els adversaris
+[Map settings]
+Opcions del mapa
+[Next]
+Següent
+[Done]
+Fet
+[Contribution]
+Contribució
+[Choose who controls this colony]
+Tria qui controla aquesta colònia
+[Settings]
+Opcions
+[settings Back]
+Enrere
+[settings Save the game automatically about every minute.]
+Desa la partida automàticament cada minut aproximadament.
+[AI opponents]
+Adversaris d’IA
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d’eines i panells desplegables.
+[Assigned %0 · Target %1]
+Assignats %0 · Objectiu %1
+[Range: %0]
+Abast: %0
+[Player %0]
+Jugador %0
+[Brush %0]
+Pinzell %0
+[Team %0]
+Equip %0
+[Your colony]
+La teva colònia
+[%0 / %1 HP · %2]
+%0 / %1 PV · %2
+[Units: %0]
+Unitats: %0
+[Buildings: %0]
+Edificis: %0
+[Need food: %0]
+Necessiten menjar: %0
+[Need healing: %0]
+Necessiten curació: %0
+[Attack: %0]
+Atac: %0
+[Defense: %0]
+Defensa: %0
+[Food: %0 / %1]
+Menjar: %0 / %1
+[View team %0]
+Mostra l’equip %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Pinzell %0x%1
+[Level %0]
+Nivell %0
+[Manage teams (%0)]
+Gestiona equips (%0)
+[Team %0 / Level %1]
+Equip %0 / Nivell %1
+[Files · %0]
+Fitxers · %0
+[Hint %0]
+Pista %0
+[Objective %0]
+Objectiu %0
+[Entry %0 of 8 · empty entries are omitted]
+Entrada %0 de 8 · s’ometen les entrades buides
+[Teams %0/%1]
+Equips %0/%1
+[Elapsed time · %0]
+Temps transcorregut · %0
+[Read-only building]
+Edifici de només lectura
+[Alliance and shared vision are fixed for this match.]
+L’aliança i la visió compartida són fixes en aquesta partida.
+[Share vision]
+Comparteix visió
+[Share food vision]
+Comparteix visió del menjar
+[Share market vision]
+Comparteix visió dels mercats
+[Chat]
+Xat
+[No other players have editable diplomatic settings in this match.]
+Cap altre jugador té opcions diplomàtiques editables en aquesta partida.
+[No briefing for this match.]
+No hi ha instruccions per a aquesta partida.
+[Chat · recipients selected in Teams]
+Xat · destinataris triats a Equips
+[Filename]
+Nom de fitxer
+[Reduced motion]
+Moviment reduït
+[Send]
+Envia
+[Close]
+Tanca
+[Forbidden]
+Prohibit
+[Guard]
+Vigila
+[Clear]
+Neteja
+[Paint]
+Pinta
+[Erase]
+Esborra
+[Release on valid terrain to place]
+Deixa anar sobre terreny vàlid per col·locar
+[Paint on the map; two fingers move]
+Pinta al mapa; mou amb dos dits
+[Tutorial ▸]
+Tutorial ▸
+[Back to tools]
+Torna a les eines
+[Starvation overlay]
+Capa de fam
+[Damage overlay]
+Capa de danys
+[Defense overlay]
+Capa de defensa
+[Fertility overlay]
+Capa de fertilitat
+[Health and food bars]
+Barres de salut i menjar
+[Message history]
+Historial de missatges
+[Mark map for allies]
+Marca el mapa per als aliats
+[Show zones]
+Mostra zones
+[Pan]
+Desplaça
+[Select]
+Selecciona
+[Show palette]
+Mostra paleta
+[Release to place]
+Deixa anar per col·locar
+[Blocked placement]
+Col·locació bloquejada
+[File name]
+Nom del fitxer
+[Load map]
+Carrega mapa
+[Save map]
+Desa mapa
+[No files in this folder]
+No hi ha fitxers en aquesta carpeta
+[No files saved yet]
+Encara no hi ha fitxers desats
+[Export]
+Exporta
+[Tap to write the mission briefing]
+Toca per escriure les instruccions de la missió
+[Tap to write the map script]
+Toca per escriure l’script del mapa
+[Script]
+Script
+[Previous]
+Anterior
+[Compile]
+Compila
+[Tap to write this hint]
+Toca per escriure aquesta pista
+[Tap to write this objective]
+Toca per escriure aquest objectiu
+[Mission briefing · tap to edit, swipe to scroll]
+Instruccions de missió · toca per editar, llisca per desplaçar
+[Not enough recorded history yet.]
+Encara no hi ha prou historial registrat.
+[Select a team to show its history.]
+Selecciona un equip per mostrar-ne l’historial.
+[Back to chart]
+Torna al gràfic
+[Expand chart]
+Amplia el gràfic
+[Slot]
+Lloc
+[Color]
+Color
+[Player / AI]
+Jugador / IA
+[Group]
+Grup
+[Forbid]
+Prohibeix
+[↓ Low]
+↓ Baixa
+[= Normal]
+= Normal
+[↑ High]
+↑ Alta
+[Details]
+Detalls
+[Campaign name]
+Nom de la campanya
+[Unlocking]
+Desbloqueig
+[Parameters]
+Paràmetres
+[Blank map]
+Mapa buit
+[Generated]
+Generat
+[Preview]
+Previsualització
+[Selected landscape]
+Paisatge seleccionat
+[Representative preview]
+Previsualització representativa
+[Starting terrain]
+Terreny inicial
+[Hide parameters]
+Amaga els paràmetres
+[Size and parameters]
+Mida i paràmetres
+[Choose a landscape]
+Tria un paisatge
+[%0 / Browse]
+%0 / Explora
+[%0 colonies · %1]
+%0 colònies · %1
+[%0 · Team %1]
+%0 · Equip %1
+[Colonies: %0]
+Colònies: %0
+[%0 colonies · %1 AI]
+%0 colònies · %1 IA
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Unitats
+[settings Level %0]
+Nivell %0
+[settings Match the desktop %0]
+Segueix l'escriptori (%0)
+[settings Current display %0 %1 %2 %3]
+Configuració de pantalla actual: %0 × %1 · %2 · %3
+[Fairness: %0]
+Equitat: %0
+[Colony %0]
+Colònia %0
+[Win chance: %0 · Fitness: %1]
+Probabilitat de guanyar: %0 · Aptitud: %1
+[%0 · Contribution: %1]
+%0 · Contribució: %1
+[Min required level %0]
+Nivell mínim requerit: %0
+[Confirm %0]
+OK: %0
+[Dialog text size %0]
+Mida del text dels diàlegs: %0%
+[%0 %1]
+%0 %1

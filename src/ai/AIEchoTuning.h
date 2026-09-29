@@ -78,7 +78,7 @@ namespace AIEcho
 	static constexpr int AI_ECHO_RTI_INN_DELETE_FOOD_PER_LEVEL = 24;
 	/// Min resource-tracker age (~100s) before a swarm becomes a destroy candidate.
 	static constexpr int AI_ECHO_RTI_SWARM_DELETE_AGE_TICKS = 2500;
-	/// Total-corn threshold below which a swarm is destroyed.
+	/// Total-wheat threshold below which a swarm is destroyed.
 	static constexpr int AI_ECHO_RTI_SWARM_DELETE_FOOD = 18;
 
 

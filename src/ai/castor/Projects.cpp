@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -16,10 +16,12 @@ using std::shared_ptr;
 
 bool AICastor::addProject(Project *project)
 {
+	telemetry.count(AITrace::AI2::AICastor_addProject_calls);
 	if (buildingSum[project->shortTypeNum][0]>=project->amount)
 	{
 		delete project;
-		return false;
+		return telemetry.returnedBool(AITrace::AI2::AICastor_addProject_result,
+									  AITrace::AI2::AICastor_addProject_true, false);
 	}
 	for (std::list<Project *>::iterator pi=projects.begin(); pi!=projects.end(); pi++)
 		if (project->shortTypeNum==(*pi)->shortTypeNum)
@@ -28,23 +30,27 @@ bool AICastor::addProject(Project *project)
 			{
 				(*pi)->timer=timer;
 				delete project;
-				return false;
+				return telemetry.returnedBool(AITrace::AI2::AICastor_addProject_result,
+											  AITrace::AI2::AICastor_addProject_true, false);
 			}
 			else
 			{
 				delete (*pi);
 				projects.erase(pi);
 				projects.push_back(project);
-				return true;
+				return telemetry.returnedBool(AITrace::AI2::AICastor_addProject_result,
+											  AITrace::AI2::AICastor_addProject_true, true);
 			}
 		}
 	projects.push_back(project);
-	return true;
+	return telemetry.returnedBool(AITrace::AI2::AICastor_addProject_result,
+								  AITrace::AI2::AICastor_addProject_true, true);
 }
 
 void AICastor::addProjects()
 {
-	
+	telemetry.count(AITrace::AI2::AICastor_addProjects_calls);
+
 	buildsAmount=-1;
 	
 	if (buildingSum[IntBuildingType::FOOD_BUILDING][0]==0)
@@ -202,10 +208,22 @@ void AICastor::addProjects()
 
 std::shared_ptr<Order>AICastor::continueProject(Project *project)
 {
+	telemetry.count(AITrace::AI2::AICastor_continueProject_calls);
+	telemetry.set(AITrace::AI2::project_shortTypeNum, project->shortTypeNum);
+	telemetry.set(AITrace::AI2::project_amount, project->amount);
+	telemetry.set(AITrace::AI2::project_subPhase, project->subPhase);
+	telemetry.set(AITrace::AI2::project_priority, project->priority);
+	telemetry.set(AITrace::AI2::project_triesLeft, project->triesLeft);
+	telemetry.set(AITrace::AI2::project_mainWorkers, project->mainWorkers);
+	telemetry.set(AITrace::AI2::project_foodWorkers, project->foodWorkers);
+	telemetry.set(AITrace::AI2::project_otherWorkers, project->otherWorkers);
+	telemetry.set(AITrace::AI2::project_critical, project->critical);
+	telemetry.set(AITrace::AI2::project_blocking, project->blocking);
 	// Phase alpha will make a new Food Building at any price.
 	
 	if (timer<project->timer+AI_CASTOR_PROJECT_STEP_INTERVAL)
-		return shared_ptr<Order>();
+		return telemetry.returnedOrder(AITrace::AI2::AICastor_continueProject_result,
+									   shared_ptr<Order>());
 
 	if (foodLock && !project->critical && project->shortTypeNum==IntBuildingType::SWARM_BUILDING)
 	{
@@ -227,7 +245,8 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		if (!project->critical && !enoughFreeWorkers())
 		{
 			project->timer=timer;
-			return shared_ptr<Order>();
+			return telemetry.returnedOrder(AITrace::AI2::AICastor_continueProject_result,
+										   shared_ptr<Order>());
 		}
 		// find any good building place
 		
@@ -257,7 +276,7 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 			else
 			{
 				project->subPhase=AICastor::AI_CASTOR_SUBPHASE_CHECK_SITES;
-				return gfbm;
+				return telemetry.returnedOrder(AITrace::AI2::AICastor_continueProject_result, gfbm);
 			}
 		}
 		else if (project->triesLeft>0)
@@ -336,7 +355,9 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 							b->maxUnitWorking=mainWorkers;
 							b->update();
 							project->timer=timer;
-							return shared_ptr<Order>(new OrderModifyBuilding(b->gid, mainWorkers));
+							return telemetry.returnedOrder(
+								AITrace::AI2::AICastor_continueProject_result,
+								shared_ptr<Order>(new OrderModifyBuilding(b->gid, mainWorkers)));
 						}
 					}
 					else
@@ -347,7 +368,9 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 							b->maxUnitWorking=finalWorkers;
 							b->update();
 							project->timer=timer;
-							return shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers));
+							return telemetry.returnedOrder(
+								AITrace::AI2::AICastor_continueProject_result,
+								shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers)));
 						}
 					}
 				}
@@ -360,7 +383,10 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 						b->maxUnitWorking=project->foodWorkers;
 						b->update();
 						project->timer=timer;
-						return shared_ptr<Order>(new OrderModifyBuilding(b->gid, project->foodWorkers));
+						return telemetry.returnedOrder(
+							AITrace::AI2::AICastor_continueProject_result,
+							shared_ptr<Order>(
+								new OrderModifyBuilding(b->gid, project->foodWorkers)));
 					}
 				}
 				else if (b->type->maxUnitWorking!=0)
@@ -371,7 +397,10 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 						b->maxUnitWorking=project->otherWorkers;
 						b->update();
 						project->timer=timer;
-						return shared_ptr<Order>(new OrderModifyBuilding(b->gid, project->otherWorkers));
+						return telemetry.returnedOrder(
+							AITrace::AI2::AICastor_continueProject_result,
+							shared_ptr<Order>(
+								new OrderModifyBuilding(b->gid, project->otherWorkers)));
 					}
 				}
 			}
@@ -423,7 +452,9 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 					b->maxUnitWorking++;
 					b->update();
 					project->timer=timer;
-					return shared_ptr<Order>(new OrderModifyBuilding(b->gid, b->maxUnitWorking));
+					return telemetry.returnedOrder(
+						AITrace::AI2::AICastor_continueProject_result,
+						shared_ptr<Order>(new OrderModifyBuilding(b->gid, b->maxUnitWorking)));
 				}
 			}
 		}
@@ -465,7 +496,9 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 					b->maxUnitWorking=finalWorkers;
 					b->update();
 					project->timer=timer;
-					return shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers));
+					return telemetry.returnedOrder(
+						AITrace::AI2::AICastor_continueProject_result,
+						shared_ptr<Order>(new OrderModifyBuilding(b->gid, finalWorkers)));
 				}
 			}
 		}
@@ -476,7 +509,8 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 	}
 	else
 		assert(false);
-	
-	return shared_ptr<Order>();
+
+	return telemetry.returnedOrder(AITrace::AI2::AICastor_continueProject_result,
+								   shared_ptr<Order>());
 }
 

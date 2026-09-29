@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <algorithm>
 #include <iostream>
 
 #include "AICastor.h"
@@ -28,7 +29,6 @@
 #include "Brush.h"
 #include "Bullet.h"
 #include "TextStream.h"
-#include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"
 
@@ -126,6 +126,14 @@ void Game::clearGame()
 // header paired with a smaller-team map.
 void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 {
+	GameHeader resolvedHeader = newGameHeader;
+	for (int p=0; p<Team::MAX_COUNT; ++p)
+	{
+		if (saveAI && gameHeader.getBasePlayer(p).type >= BasePlayer::P_AI)
+			resolvedHeader.setAIConfig(p, gameHeader.getAIConfig(p));
+		else
+			gameHeader.setAIConfig(p, newGameHeader.getAIConfig(p));
+	}
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		teams[i]->playersMask=0;
@@ -157,7 +165,33 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	if(newGameHeader.isMapDiscovered())
 		map.setMapDiscovered();
 
-	gameHeader = newGameHeader;
+	// Custom-game "stockpile start" rule: seed each team's shared market/
+	// exchange resource pool. Only feeds buildings with useTeamResources
+	// (markets/exchanges) -- a fresh regular building still starts empty.
+	// setGameHeader can run more than once before a match starts (e.g. the
+	// lobby's player list changing) AND when loading an existing save
+	// (GameGUI::loadFromHeaders calls Game::load(), which already restores
+	// each team's real, accumulated teamResources, before calling this).
+	// Re-seed only when the level actually changes from what gameHeader
+	// (the outgoing header, about to be replaced below) already had: a
+	// plain assignment -- like Team::init's own zeroing -- rather than an
+	// accumulating "+=", which would otherwise stack the bonus on every
+	// lobby re-call, but gated so a load (where the incoming and outgoing
+	// headers agree, since both were just read from the same save) leaves
+	// the just-restored real resources untouched instead of clobbering
+	// them back down to the stockpile amount.
+	if (newGameHeader.getStockpileStartLevel() != gameHeader.getStockpileStartLevel())
+	{
+		static constexpr Sint32 stockpileAmount[] = {0, 50, 150, 300};
+		const Sint32 stockpile = stockpileAmount[newGameHeader.getStockpileStartLevel()];
+		for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+				teams[i]->teamResources[r] = stockpile;
+	}
+
+	for (int p=0; p<Team::MAX_COUNT; ++p)
+		resolvedHeader.setAIConfig(p, gameHeader.getAIConfig(p));
+	gameHeader = resolvedHeader;
 	anyPlayerWaited=false;
 }
 
@@ -183,6 +217,34 @@ void Game::setAlliances(void)
 				teams[i]->enemies |= teams[j]->me;
 			}
 		}
+	}
+}
+
+void Game::applyStartingRules(void)
+{
+	const int hpDivisor = gameHeader.getGlassCannonScale();
+	const bool fearless = gameHeader.isUnitsFearless();
+	const int buildingHpMultiplier = gameHeader.getBuildingHpMultiplier();
+	for (int t=0; t<mapHeader.getNumberOfTeams(); ++t)
+	{
+		for (int i=0; i<Unit::MAX_COUNT; ++i)
+		{
+			Unit *unit = teams[t]->myUnits[i];
+			if (!unit)
+				continue;
+			if (hpDivisor != 1)
+			{
+				unit->performance[HP] = std::max(1, unit->performance[HP] / hpDivisor);
+				unit->hp = std::max(1, unit->hp / hpDivisor);
+				unit->trigHP /= hpDivisor;
+			}
+			if (fearless)
+				unit->trigHP = 0;
+		}
+		if (buildingHpMultiplier != 1)
+			for (int i=0; i<Building::MAX_COUNT; ++i)
+				if (teams[t]->myBuildings[i])
+					teams[t]->myBuildings[i]->hp *= buildingHpMultiplier;
 	}
 }
 

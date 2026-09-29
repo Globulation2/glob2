@@ -9,7 +9,7 @@
 #include "Ressource.h"
 
 // ResourceType describes the static configuration of a resource kind
-// (Wood, Corn, Papyrus, Stone, Alga, Cherry, Orange, Prune). Historically
+// (Wood, Wheat, Papyrus, Stone, Alga, Cherry, Orange, Prune). Historically
 // these values were loaded at runtime from data/resources.txt via the
 // EntitiesTypes<T> template; they are now baked into a compile-time const
 // table in resources.cpp. The fields remain Sint32 for ABI parity with the
@@ -29,13 +29,13 @@ struct ResourceType
 	Sint32 visibleToBeCollected; // whether the resource can only be collected if the fog of war is cleared on its location.
 	Sint32 minimapR, minimapG, minimapB;
 	// Whether a worker's clearArea action will remove this resource. Stone, Cherry,
-	// Orange and Prune are non-clearable; the rest (Wood, Corn, Papyrus, Alga) are
+	// Orange and Prune are non-clearable; the rest (Wood, Wheat, Papyrus, Alga) are
 	// clearable. Previously hard-coded as a type==X || type==Y predicate at the call sites.
 	Sint32 clearable;
 };
 
 // ResourcesTypes is the read-only registry of resource types, indexed by the
-// in-game ResourceType integer ID (WOOD=0, CORN=1, ..., PRUNE=7). The class
+// in-game ResourceType integer ID (WOOD=0, WHEAT=1, ..., PRUNE=7). The class
 // keeps the same accessor surface (.get / .size) as the old EntitiesTypes<T>
 // subclass so existing callers compile unchanged; it is now backed by a
 // compile-time const array rather than a parsed text file.

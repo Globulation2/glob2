@@ -1,0 +1,344 @@
+{
+  "opening-ration": {
+    "values": [
+      {
+        "value": 20,
+        "expected": 8,
+        "successful": 8,
+        "mean": 20
+      },
+      {
+        "value": 30,
+        "expected": 8,
+        "successful": 8,
+        "mean": 30
+      },
+      {
+        "value": 40,
+        "expected": 8,
+        "successful": 8,
+        "mean": 40
+      },
+      {
+        "value": 50,
+        "expected": 8,
+        "successful": 8,
+        "mean": 50
+      },
+      {
+        "value": 60,
+        "expected": 8,
+        "successful": 8,
+        "mean": 60
+      },
+      {
+        "value": 70,
+        "expected": 8,
+        "successful": 8,
+        "mean": 70
+      },
+      {
+        "value": 80,
+        "expected": 8,
+        "successful": 8,
+        "mean": 80
+      },
+      {
+        "value": 90,
+        "expected": 8,
+        "successful": 8,
+        "mean": 90
+      },
+      {
+        "value": 100,
+        "expected": 8,
+        "successful": 8,
+        "mean": 100
+      }
+    ],
+    "strictly_increasing": true
+  },
+  "central-concentration": {
+    "values": [
+      {
+        "value": 50,
+        "expected": 8,
+        "successful": 8,
+        "mean": 0.21082586731474684
+      },
+      {
+        "value": 55,
+        "expected": 8,
+        "successful": 8,
+        "mean": 0.24660212428289485
+      },
+      {
+        "value": 60,
+        "expected": 8,
+        "successful": 8,
+        "mean": 0.28182672037428214
+      },
+      {
+        "value": 65,
+        "expected": 8,
+        "successful": 8,
+        "mean": 0.32169336547501365
+      },
+      {
+        "value": 70,
+        "expected": 8,
+        "successful": 8,
+        "mean": 0.3698409165209313
+      },
+      {
+        "value": 75,
+        "expected": 8,
+        "successful": 8,
+        "mean": 0.41606665150821237
+      },
+      {
+        "value": 80,
+        "expected": 8,
+        "successful": 8,
+        "mean": 0.47278746171971225
+      }
+    ],
+    "strictly_increasing": true
+  },
+  "wheat-amount": {
+    "values": [
+      {
+        "value": 0,
+        "expected": 8,
+        "successful": 8,
+        "mean": 230.75
+      },
+      {
+        "value": 25,
+        "expected": 8,
+        "successful": 8,
+        "mean": 284.375
+      },
+      {
+        "value": 50,
+        "expected": 8,
+        "successful": 8,
+        "mean": 341.875
+      },
+      {
+        "value": 75,
+        "expected": 8,
+        "successful": 8,
+        "mean": 399.125
+      },
+      {
+        "value": 100,
+        "expected": 8,
+        "successful": 8,
+        "mean": 457.125
+      },
+      {
+        "value": 125,
+        "expected": 8,
+        "successful": 8,
+        "mean": 514.25
+      },
+      {
+        "value": 150,
+        "expected": 8,
+        "successful": 8,
+        "mean": 570.875
+      },
+      {
+        "value": 175,
+        "expected": 8,
+        "successful": 8,
+        "mean": 628.125
+      },
+      {
+        "value": 200,
+        "expected": 8,
+        "successful": 8,
+        "mean": 686
+      }
+    ],
+    "strictly_increasing": true
+  },
+  "wood-amount": {
+    "values": [
+      {
+        "value": 0,
+        "expected": 8,
+        "successful": 8,
+        "mean": 572.5
+      },
+      {
+        "value": 25,
+        "expected": 8,
+        "successful": 8,
+        "mean": 1125.25
+      },
+      {
+        "value": 50,
+        "expected": 8,
+        "successful": 8,
+        "mean": 1673.375
+      },
+      {
+        "value": 75,
+        "expected": 8,
+        "successful": 8,
+        "mean": 2206.375
+      },
+      {
+        "value": 100,
+        "expected": 8,
+        "successful": 8,
+        "mean": 2753
+      },
+      {
+        "value": 125,
+        "expected": 8,
+        "successful": 8,
+        "mean": 3301.125
+      },
+      {
+        "value": 150,
+        "expected": 8,
+        "successful": 8,
+        "mean": 3862.5
+      },
+      {
+        "value": 175,
+        "expected": 8,
+        "successful": 8,
+        "mean": 4400.875
+      },
+      {
+        "value": 200,
+        "expected": 8,
+        "successful": 8,
+        "mean": 4954
+      }
+    ],
+    "strictly_increasing": true
+  },
+  "stone-amount": {
+    "values": [
+      {
+        "value": 0,
+        "expected": 8,
+        "successful": 8,
+        "mean": 8
+      },
+      {
+        "value": 25,
+        "expected": 8,
+        "successful": 8,
+        "mean": 12
+      },
+      {
+        "value": 50,
+        "expected": 8,
+        "successful": 8,
+        "mean": 16
+      },
+      {
+        "value": 75,
+        "expected": 8,
+        "successful": 8,
+        "mean": 20
+      },
+      {
+        "value": 100,
+        "expected": 8,
+        "successful": 8,
+        "mean": 24
+      },
+      {
+        "value": 125,
+        "expected": 8,
+        "successful": 8,
+        "mean": 28
+      },
+      {
+        "value": 150,
+        "expected": 8,
+        "successful": 8,
+        "mean": 32
+      },
+      {
+        "value": 175,
+        "expected": 8,
+        "successful": 8,
+        "mean": 36
+      },
+      {
+        "value": 200,
+        "expected": 8,
+        "successful": 8,
+        "mean": 40
+      }
+    ],
+    "strictly_increasing": true
+  },
+  "algae-amount": {
+    "values": [
+      {
+        "value": 0,
+        "expected": 8,
+        "successful": 8,
+        "mean": 0
+      },
+      {
+        "value": 25,
+        "expected": 8,
+        "successful": 8,
+        "mean": 6
+      },
+      {
+        "value": 50,
+        "expected": 8,
+        "successful": 8,
+        "mean": 10.75
+      },
+      {
+        "value": 75,
+        "expected": 8,
+        "successful": 8,
+        "mean": 16.625
+      },
+      {
+        "value": 100,
+        "expected": 8,
+        "successful": 8,
+        "mean": 20.625
+      },
+      {
+        "value": 125,
+        "expected": 8,
+        "successful": 8,
+        "mean": 25.625
+      },
+      {
+        "value": 150,
+        "expected": 8,
+        "successful": 8,
+        "mean": 30.625
+      },
+      {
+        "value": 175,
+        "expected": 8,
+        "successful": 8,
+        "mean": 36.5
+      },
+      {
+        "value": 200,
+        "expected": 8,
+        "successful": 8,
+        "mean": 40.375
+      }
+    ],
+    "strictly_increasing": true
+  }
+}

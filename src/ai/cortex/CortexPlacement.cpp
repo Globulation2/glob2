@@ -90,7 +90,7 @@ namespace Cortex
 		}
 	} // namespace
 
-	// Chebyshev distance from tile (x, y) to the nearest CORN (wheat) resource
+	// Chebyshev distance from tile (x, y) to the nearest wheat resource
 	// tile, found by an outward "ring" scan capped at `cap`. Shared utility used
 	// by placeCandidates (wheatDist of each retained BuildCandidate) and by
 	// Cortex::observe (TrackedBuilding::nearestWheatDist for each tracked swarm
@@ -98,26 +98,26 @@ namespace Cortex
 	//
 	// Algorithm: for r = 0, 1, 2, ..., cap, iterate every tile at EXACTLY
 	// Chebyshev distance r from (x, y) — the square ring of side 2r+1. Return
-	// the first r at which a CORN tile is found. The scan terminates immediately
+	// the first r at which a WHEAT tile is found. The scan terminates immediately
 	// on the first hit at the current radius, not at the first hit overall, so we
-	// never report a radius larger than the true minimum. Return -1 if no CORN is
+	// never report a radius larger than the true minimum. Return -1 if no WHEAT is
 	// found within `cap`.
 	//
-	// CORN detection: map.getResource(x, y).type == CORN — identical to the
-	// isCorn() predicate in CortexWheat.cpp (anonymous namespace, line ~29) so
+	// WHEAT detection: map.getResource(x, y).type == WHEAT — identical to the
+	// isWheat() predicate in CortexWheat.cpp (anonymous namespace, line ~29) so
 	// the two subsystems agree on what counts as wheat.
-	// C++: Resource.h:#define CORN 1; Map::getResource (map/Map.h:302).
+	// C++: Resource.h:#define WHEAT 1; Map::getResource (map/Map.h:302).
 	//
 	// Determinism: fixed ring/scan order (top row → right col → bottom row →
 	// left col, no rand, no pointer reads), warp-safe via normalizeX/normalizeY.
-	int nearestCornDist(const Map& map, int x, int y, int cap)
+	int nearestWheatDist(const Map& map, int x, int y, int cap)
 	{
 		for (int r = 0; r <= cap; r++)
 		{
 			if (r == 0)
 			{
 				// Centre tile: radius-0 ring is just (x, y) itself.
-				if (map.getResource(map.normalizeX(x), map.normalizeY(y)).type == CORN)
+				if (map.getResource(map.normalizeX(x), map.normalizeY(y)).type == WHEAT)
 					return 0;
 				continue;
 			}
@@ -136,7 +136,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y - r);
-				if (map.getResource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == WHEAT)
 					return r;
 			}
 			// Right column: (x+r, y-r .. y+r-1)
@@ -144,7 +144,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + r);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == WHEAT)
 					return r;
 			}
 			// Bottom row: (x+r .. x-r+1, y+r) — right-to-left
@@ -152,7 +152,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + r);
-				if (map.getResource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == WHEAT)
 					return r;
 			}
 			// Left column: (x-r, y+r .. y-r+1) — bottom-to-top
@@ -160,11 +160,11 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x - r);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == WHEAT)
 					return r;
 			}
 		}
-		return -1; // no CORN within cap tiles
+		return -1; // no WHEAT within cap tiles
 	}
 
 	// AICortex war-flag offense-target surface.

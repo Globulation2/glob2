@@ -1,478 +1,56 @@
-source_files = Split("""
-ai/castor/Control.cpp
-ai/castor/GetOrder.cpp
-ai/castor/Lifecycle.cpp
-ai/castor/Maps.cpp
-ai/castor/Placement.cpp
-ai/castor/Projects.cpp
-ai/castor/State.cpp
-ai/AI.cpp
-ai/AIDescriptionScreen.cpp
-ai/echo/BuildingOrder.cpp
-ai/echo/BuildingRegister.cpp
-ai/echo/Conditions.cpp
-ai/echo/ConditionsBuilding.cpp
-ai/echo/ConditionsPopulation.cpp
-ai/echo/ConditionsTracker.cpp
-ai/echo/Construction.cpp
-ai/echo/ConstructionConstraints.cpp
-ai/echo/Echo.cpp
-ai/echo/EchoSerialization.cpp
-ai/echo/Entities.cpp
-ai/echo/EntitiesBuilding.cpp
-ai/echo/EntitiesResource.cpp
-ai/echo/EntitiesTerrain.cpp
-ai/echo/Gradient.cpp
-ai/echo/GradientBFS.cpp
-ai/echo/Management.cpp
-ai/echo/ManagementFlag.cpp
-ai/echo/ManagementMisc.cpp
-ai/echo/ManagementOrderBase.cpp
-ai/echo/ManagementTracker.cpp
-ai/echo/MapInfo.cpp
-ai/echo/Econo.cpp
-ai/echo/EconoBuilding.cpp
-ai/echo/EconoFlags.cpp
-ai/echo/SearchTools.cpp
-ai/AINames.cpp
-ai/nicowar/Attack.cpp
-ai/nicowar/Buildings.cpp
-ai/nicowar/Farming.cpp
-ai/nicowar/Flags.cpp
-ai/nicowar/Lifecycle.cpp
-ai/nicowar/Phases.cpp
-ai/nicowar/Strategy.cpp
-ai/nicowar/Upgrade.cpp
-ai/AINull.cpp
-ai/AINumbi.cpp
-ai/AINumbiEconomy.cpp
-ai/AINumbiMilitary.cpp
-ai/AINumbiPlacement.cpp
-ai/AIWarrush.cpp
-ai/cortex/CortexObservation.cpp
-ai/cortex/CortexObservationObserve.cpp
-ai/cortex/CortexPlacement.cpp
-ai/cortex/CortexPlacementCandidates.cpp
-ai/cortex/CortexPlacementGeo.cpp
-ai/cortex/CortexPolicy.cpp
-ai/cortex/CortexPolicyEconomy.cpp
-ai/cortex/CortexPolicyTech.cpp
-ai/cortex/CortexPolicyCombat.cpp
-ai/cortex/CortexTuning.cpp
-ai/cortex/CortexWheat.cpp
-ai/cortex/CortexWater.cpp
-ai/cortex/CortexNet.cpp
-ai/cortex/AICortex.cpp
-ai/cortex/AICortexFlags.cpp
-ai/cortex/AICortexTranslate.cpp
-ai/cortex/AICortexDebug.cpp
-BasePlayer.cpp
-BaseTeam.cpp
-BitArray.cpp
-Brush.cpp
-building/Lifecycle.cpp
-building/Construction.cpp
-building/Update.cpp
-building/Step.cpp
-building/TypeSteps.cpp
-building/Misc.cpp
-game/entities/Buildings.cpp
-game/entities/BuildingTypesColony.cpp
-game/entities/BuildingTypesDefence.cpp
-game/entities/BuildingTypesFlags.cpp
-game/entities/BuildingTypesUpgrade.cpp
-ChecksumSidecar.cpp
-DatasetWriter.cpp
-building/BuildingUtils.cpp
-Bullet.cpp
-Campaign.cpp
-CampaignEditor.cpp
-CampaignMainMenu.cpp
-CampaignMenuScreen.cpp
-CampaignSelectorScreen.cpp
-ChooseMapScreen.cpp
-CreditScreen.cpp
-CustomGameOtherOptions.cpp
-CustomGameScreen.cpp
-DynamicClouds.cpp
-EditorMainMenu.cpp
-EndGameScreen.cpp
-Engine.cpp
-EngineInit.cpp
-EngineLoaders.cpp
-EngineRun.cpp
-FertilityCalculator.cpp
-FertilityCalculatorDialog.cpp
-Game.cpp
-Game_orders.cpp
-Game_io.cpp
-Game_sync.cpp
-Game_editor.cpp
-render/GameRender.cpp
-render/GameRenderUnits.cpp
-render/GameRenderBuildings.cpp
-render/GameRenderTerrain.cpp
-render/GameRenderOverlay.cpp
-render/GameAnimations.cpp
-GameEvent.cpp
-gui/BuildingGuiState.cpp
-gui/GameGUI.cpp
-gui/GameGUIDefaultAssignManager.cpp
-gui/GameGUIDialog.cpp
-gui/GameGUIDraw.cpp
-gui/GameGUIDrawChoice.cpp
-gui/GameGUIDrawUnitInfos.cpp
-gui/GameGUIDrawBuildingInfos.cpp
-gui/GameGUIDrawBuildingHelpers.cpp
-gui/GameGUIDrawMiscPanels.cpp
-gui/GameGUIGhostBuildingManager.cpp
-gui/GameGUIInput.cpp
-gui/GameGUIInputKey.cpp
-gui/GameGUIInputMenu.cpp
-gui/GameGUIInputMenuClick.cpp
-gui/GameGUIInputMenuClickBuilding.cpp
-gui/GameGUIInputMouse.cpp
-gui/GameGUIKeyActions.cpp
-gui/GameGUILoadSave.cpp
-gui/GameGUIMessageManager.cpp
-gui/GameGUIOrders.cpp
-gui/GameMusicController.cpp
-gui/GameGUIParticles.cpp
-gui/GameGUIPersistence.cpp
-gui/GameGUIScript.cpp
-gui/GameGUISelection.cpp
-gui/GameGUIStep.cpp
-gui/GameGUIToolManager.cpp
-gui/TeamDisplay.cpp
-gui/UnitDisplayNames.cpp
-GameHeader.cpp
-GameHints.cpp
-GameObjectives.cpp
-GameUtilities.cpp
-Glob2.cpp
-Glob2Screen.cpp
-Glob2Style.cpp
-FrontendTheme.cpp
-MenuColony.cpp
-GlobalContainer.cpp
-GlobalContainerArgs.cpp
-GUIGlob2FileList.cpp
-GUIMapPreview.cpp
-map/generator/HeightMapGenerator.cpp
-building/IntBuildingType.cpp
-net/irc/IRC.cpp
-net/irc/IRCTextMessageHandler.cpp
-net/irc/IRCThread.cpp
-net/irc/IRCThreadMessage.cpp
-KeyboardManager.cpp
-LANFindScreen.cpp
-LANGameInformation.cpp
-LANMenuScreen.cpp
-MainMenuScreen.cpp
-map/Map.cpp
-map/gradient/MapGradientArea.cpp
-map/gradient/MapGradientBuilding.cpp
-map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientField.cpp
-map/io/MapExploredAreaIO.cpp
-map/io/MapIO.cpp
-map/MapMisc.cpp
-map/pathfind/MapPathfindArea.cpp
-map/pathfind/MapPathfindBuilding.cpp
-map/pathfind/MapPathfindRessource.cpp
-map/MapQuery.cpp
-map/MapResources.cpp
-map/MapStep.cpp
-map/MapTerrain.cpp
-render/MapView.cpp
-map/edit/Widgets.cpp
-map/edit/WidgetsTools.cpp
-map/edit/WidgetsUnit.cpp
-map/edit/WidgetsBuilding.cpp
-map/edit/MapEditCtor.cpp
-map/edit/MapEditIO.cpp
-map/edit/MapEditDraw.cpp
-map/edit/MapEditEvents.cpp
-map/edit/MapEditAction.cpp
-map/edit/MapEditActionView.cpp
-map/edit/MapEditActionTerrain.cpp
-map/edit/MapEditActionUnit.cpp
-map/edit/MapEditActionBuilding.cpp
-map/edit/MapEditDelegate.cpp
-map/edit/MapEditClicks.cpp
-map/edit/MapEditDialog.cpp
-map/edit/MapEditKeyActions.cpp
-map/generator/MapGenerationDescriptor.cpp
-map/generator/Generator.cpp
-map/generator/GeneratorDivide.cpp
-map/generator/GeneratorSplit.cpp
-map/generator/GeneratorPoints.cpp
-map/generator/GeneratorHeightmap.cpp
-map/generator/MapHomogen.cpp
-map/generator/MapOldRandom.cpp
-map/generator/MapRandom.cpp
-map/generator/MapOldIslands.cpp
-map/generator/GameMaps.cpp
-map/io/MapHeader.cpp
-MapScript.cpp
-MapScriptError.cpp
-MapScriptUSL.cpp
-map/io/MapThumbnail.cpp
-MarkManager.cpp
-render/Minimap.cpp
-MultiplayerGame.cpp
-MultiplayerGameEvent.cpp
-MultiplayerGameEventListener.cpp
-MultiplayerGameScreen.cpp
-net/NetBroadcaster.cpp
-net/NetBroadcastListener.cpp
-net/NetConnection.cpp
-net/NetConnectionThread.cpp
-net/NetConnectionThreadMessage.cpp
-net/NetEngine.cpp
-net/NetGamePlayerManager.cpp
-net/NetListener.cpp
-net/message/NetMessage.cpp
-net/message/AuthMessages.cpp
-net/message/FileTransferMessages.cpp
-net/message/GameCreateMessages.cpp
-net/message/GameHeaderMessages.cpp
-net/message/GameJoinMessages.cpp
-net/message/GameLaunchMessages.cpp
-net/message/GameTeamMessages.cpp
-net/message/LobbyMessages.cpp
-net/message/MapDatabaseMessages.cpp
-net/message/MapUploadMessages.cpp
-net/message/MessageRecipients.cpp
-net/message/OrderMessages.cpp
-net/message/RegistrationMessages.cpp
-net/message/RouterAdminMessages.cpp
-net/message/RouterMessages.cpp
-net/NetReteamingInformation.cpp
-net/NetTestSuite.cpp
-NewMapScreen.cpp
-Order.cpp
-OrderBuilding.cpp
-OrderModify.cpp
-OrderMisc.cpp
-OverlayAreas.cpp
-OverlayFill.cpp
-PerlinNoise.cpp
-Player.cpp
-game/entities/Race.cpp
-ReplayReader.cpp
-ReplayWriter.cpp
-Ressource.cpp
-game/entities/Resources.cpp
-ScriptEditorScreen.cpp
-Sector.cpp
-Settings.cpp
-TorusView.cpp
-TorusViewRender.cpp
-gui/GameGUITorus.cpp
-SettingsScreen.cpp
-SettingsScreenLayout.cpp
-SettingsScreenInput.cpp
-SettingsScreenGeneral.cpp
-SettingsScreenBuildings.cpp
-SettingsScreenKeyboard.cpp
-sgsl/Lexer.cpp
-sgsl/Parser.cpp
-sgsl/ParserSummon.cpp
-sgsl/ParserWait.cpp
-sgsl/SGSL.cpp
-sgsl/StoryActions.cpp
-sgsl/StoryConditions.cpp
-sgsl/StoryExecute.cpp
-SimplexNoise.cpp
-PlayerVoice.cpp
-SoundMixer.cpp
-team/Team.cpp
-team/TeamSerialization.cpp
-team/TeamLists.cpp
-team/TeamRouting.cpp
-team/TeamStep.cpp
-TeamStat.cpp
-unit/Unit.cpp
-unit/UnitAction.cpp
-unit/UnitActivity.cpp
-unit/UnitDisplacement.cpp
-unit/UnitGeometry.cpp
-unit/UnitMedical.cpp
-unit/UnitMovement.cpp
-unit/UnitSerialization.cpp
-render/UnitSkin.cpp
-unit/UnitStats.cpp
-game/entities/UnitType.cpp
-unit/UnitUtils.cpp
-Utilities.cpp
-VoiceRecorder.cpp
-WinningConditions.cpp
-yog/YOGAfterJoinGameInformation.cpp
-yog/YOGClientBlockedList.cpp
-yog/YOGClientBringup.cpp
-yog/YOGClientChatChannel.cpp
-yog/YOGClientChatListener.cpp
-yog/YOGClientCommandManager.cpp
-yog/YOGClientCommands.cpp
-yog/YOGClient.cpp
-yog/YOGClientDownloadableMapList.cpp
-yog/YOGClientDownloadableMapListener.cpp
-yog/YOGClientDownloadingMapScreen.cpp
-yog/YOGClientEvent.cpp
-yog/YOGClientEventListener.cpp
-yog/YOGClientFileAssembler.cpp
-yog/YOGClientGameConnectionDialog.cpp
-yog/YOGClientGameListListener.cpp
-yog/YOGClientGameListManager.cpp
-yog/YOGClientLobbyScreen.cpp
-yog/YOGClientMapDownloader.cpp
-yog/YOGClientMapDownloadScreen.cpp
-yog/YOGClientMapUploader.cpp
-yog/YOGClientMapUploadScreen.cpp
-yog/YOGClientOptionsScreen.cpp
-yog/YOGClientPlayerListListener.cpp
-yog/YOGClientPlayerListManager.cpp
-yog/YOGClientRatedMapList.cpp
-yog/YOGClientRouterAdministrator.cpp
-yog/YOGConnectionScreen.cpp
-yog/YOGConsts.cpp
-yog/YOGDownloadableMapInfo.cpp
-yog/YOGGameInfo.cpp
-yog/YOGGameResults.cpp
-yog/YOGLoginScreen.cpp
-yog/YOGMessage.cpp
-yog/YOGPlayerSessionInfo.cpp
-yog/YOGPlayerStoredInfo.cpp
-yog/YOGRegisterScreen.cpp
-yog/YOGServerAdministratorCommands.cpp
-yog/YOGServerAdministrator.cpp
-yog/YOGServerAdministratorList.cpp
-yog/YOGServerBannedIPListManager.cpp
-yog/YOGServerChatChannel.cpp
-yog/YOGServerChatChannelManager.cpp
-yog/YOGServer.cpp
-yog/YOGServerFileDistributationManager.cpp
-yog/YOGServerFileDistributor.cpp
-yog/YOGServerGame.cpp
-yog/YOGServerGameLog.cpp
-yog/YOGServerGameRouter.cpp
-yog/YOGServerMapDatabank.cpp
-yog/YOGServerPasswordRegistry.cpp
-yog/YOGServerPlayer.cpp
-yog/YOGServerPlayerScoreCalculator.cpp
-yog/YOGServerPlayerStoredInfoManager.cpp
-yog/YOGServerRouterAdministratorCommands.cpp
-yog/YOGServerRouterAdministrator.cpp
-yog/YOGServerRouter.cpp
-yog/YOGServerRouterManager.cpp
-yog/YOGServerRouterPlayer.cpp
-""")
-server_source_files=Split("""
-ai/AINames.cpp
-BasePlayer.cpp
-BaseTeam.cpp
-BitArray.cpp
-GameHeader.cpp
-LANGameInformation.cpp
-map/io/MapHeader.cpp
-net/NetBroadcaster.cpp
-net/NetConnection.cpp
-net/NetConnectionThread.cpp
-net/NetConnectionThreadMessage.cpp
-net/NetGamePlayerManager.cpp
-net/NetListener.cpp
-net/message/NetMessage.cpp
-net/message/AuthMessages.cpp
-net/message/FileTransferMessages.cpp
-net/message/GameCreateMessages.cpp
-net/message/GameHeaderMessages.cpp
-net/message/GameJoinMessages.cpp
-net/message/GameLaunchMessages.cpp
-net/message/GameTeamMessages.cpp
-net/message/LobbyMessages.cpp
-net/message/MapDatabaseMessages.cpp
-net/message/MapUploadMessages.cpp
-net/message/MessageRecipients.cpp
-net/message/OrderMessages.cpp
-net/message/RegistrationMessages.cpp
-net/message/RouterAdminMessages.cpp
-net/message/RouterMessages.cpp
-net/NetReteamingInformation.cpp
-net/NetTestSuite.cpp
-Order.cpp
-OrderBuilding.cpp
-OrderModify.cpp
-OrderMisc.cpp
-game/entities/Race.cpp
-game/entities/UnitType.cpp
-Utilities.cpp
-yog/YOGConsts.cpp
-yog/YOGGameInfo.cpp
-yog/YOGGameResults.cpp
-yog/YOGMessage.cpp
-yog/YOGPlayerSessionInfo.cpp
-yog/YOGPlayerStoredInfo.cpp
-building/BuildingUtils.cpp
-Bullet.cpp
-game/entities/Resources.cpp
-Glob2.cpp
-GlobalContainer.cpp
-GlobalContainerArgs.cpp
-map/Map.cpp
-map/gradient/MapGradientArea.cpp
-map/gradient/MapGradientBuilding.cpp
-map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientField.cpp
-map/io/MapExploredAreaIO.cpp
-map/io/MapIO.cpp
-map/MapMisc.cpp
-map/pathfind/MapPathfindArea.cpp
-map/pathfind/MapPathfindRessource.cpp
-map/MapQuery.cpp
-map/MapResources.cpp
-map/MapStep.cpp
-map/MapTerrain.cpp
-render/MapView.cpp
-map/io/MapThumbnail.cpp
-Sector.cpp
-Settings.cpp
-unit/UnitUtils.cpp
-yog/YOGAfterJoinGameInformation.cpp
-yog/YOGDownloadableMapInfo.cpp
-WinningConditions.cpp
-yog/YOGServerAdministratorCommands.cpp
-yog/YOGServerAdministrator.cpp
-yog/YOGServerAdministratorList.cpp
-yog/YOGServerBannedIPListManager.cpp
-yog/YOGServerChatChannel.cpp
-yog/YOGServerChatChannelManager.cpp
-yog/YOGServer.cpp
-yog/YOGServerFileDistributationManager.cpp
-yog/YOGServerFileDistributor.cpp
-yog/YOGServerGame.cpp
-yog/YOGServerGameLog.cpp
-yog/YOGServerGameRouter.cpp
-yog/YOGServerMapDatabank.cpp
-yog/YOGServerPasswordRegistry.cpp
-yog/YOGServerPlayer.cpp
-yog/YOGServerPlayerScoreCalculator.cpp
-yog/YOGServerPlayerStoredInfoManager.cpp
-yog/YOGServerRouterAdministratorCommands.cpp
-yog/YOGServerRouterAdministrator.cpp
-yog/YOGServerRouter.cpp
-yog/YOGServerRouterManager.cpp
-yog/YOGServerRouterPlayer.cpp
-""")
+from sources import CLIENT_SOURCES
+source_files = list(CLIENT_SOURCES)
+from sources import SERVER_SOURCES
+server_source_files = list(SERVER_SOURCES)
 Import('env')
+if not env.get('wss', True):
+    source_files.remove('net/WssTransport.cpp')
 local = env.Clone()
 #Add libgag and USL, not as a library, but as an object
 source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+if not env['server']:
+    ledger_env = local.Clone()
+    ledger_env.Append(CCFLAGS=['-UNDEBUG'])
+    ledger_test = local.Program('MaximaFoodLedgerStandaloneTest', [
+        ledger_env.Object('MaximaFoodLedgerStandaloneTest.o', '#test/maxima/MaximaFoodLedgerStandaloneTest.cpp'),
+        local.Object('ai/maxima/AIMaximaFoodLedger.cpp')])
+    local.Alias('maxima-food-ledger-test', ledger_test)
+
+if not env['server']:
+    continuation_env = local.Clone()
+    continuation_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    continuation_test = continuation_env.Program('MaximaContinuationTest', [
+        local.Object('MaximaContinuationTest.o', '#test/maxima/MaximaContinuationTest.cpp'),
+        '../libgag/src/libgag.a'])
+    local.Alias('maxima-continuation-test', continuation_test)
+
+if not env['server']:
+    echo_test_env = local.Clone()
+    echo_test_env.Append(CCFLAGS=['-UNDEBUG'])
+    echo_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    echo_sources += [source for source in source_files if not source.endswith('.cpp')]
+    echo_sources += echo_test_env.Object('EchoContinuationTest.o', '#test/EchoContinuationTest.cpp')
+    echo_link_env = local.Clone()
+    echo_link_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    echo_link_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    local.Alias('echo-continuation-test', echo_link_env.Program('EchoContinuationTest', echo_sources))
+
+if not env['server']:
+    geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
+    geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
+    geometry_test = local.Program('CortexGeometryHarness', geometry_sources)
+    local.Alias('cortex-geometry-test', geometry_test)
+
 # Optional integration executable; normal game/server builds do not build it.
 if not env['server']:
+    relocation_test = local.Program("MaximaRelocationIntegrationTest",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("MaximaRelocationIntegrationTest", "#test/maxima/MaximaRelocationIntegrationTest.cpp")])
+    local.Alias("maxima-relocation-test", relocation_test)
     render_test = local.Program("torus-render-test",
         [source for source in source_files if source != "Glob2.cpp"] +
         [local.Object("TorusRenderIntegrationTest", "#test/TorusRenderIntegrationTest.cpp")])
@@ -508,10 +86,34 @@ if not env['server']:
     local.Alias('terrain-test', terrain_test)
 
 if not env['server']:
+    farming_sources = [source for source in source_files if source != 'Glob2.cpp']
+    farming_sources += local.Object('NicowarFarmingHarness.o', '#test/NicowarFarmingHarness.cpp')
+    farming_test = local.Program('NicowarFarmingHarness', farming_sources)
+    local.Alias('nicowar-farming-test', farming_test)
+
+if not env['server']:
+    ai_save_sources = [source for source in source_files if source != 'Glob2.cpp']
+    ai_save_sources += local.Object('AISavePortabilityHarness.o', '#test/AISavePortabilityHarness.cpp')
+    ai_save_test = local.Program('AISavePortabilityHarness', ai_save_sources)
+    local.Alias('ai-save-portability-test', ai_save_test)
+
+
+if not env['server']:
     gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
     gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
     gradient_test = local.Program('GlobalGradientHarness', gradient_sources)
     local.Alias('global-gradient-test', gradient_test)
+
+# Uint16 pathfinding kernel oracle; links the actual production Map implementation.
+if not env['server']:
+    path_gradient_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    path_gradient_sources += [source for source in source_files if not source.endswith('.cpp')]
+    path_gradient_sources += local.Object('PathGradientHarness.o', '#test/PathGradientHarness.cpp')
+    path_gradient_env = local.Clone()
+    path_gradient_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    path_gradient_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    path_gradient_test = path_gradient_env.Program('PathGradientHarness', path_gradient_sources)
+    local.Alias('path-gradient-test', path_gradient_test)
 
 if not env['server']:
     lan_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -543,6 +145,26 @@ if not env['server']:
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
+if not env['server']:
+    # Compile with local, not clearing_env, to avoid rebuilding shared objects under a second environment.
+    clearing_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    clearing_sources += [source for source in source_files if not source.endswith('.cpp')]
+    clearing_sources += local.Object('ClearingFlagGradientTest.o', '#test/ClearingFlagGradientTest.cpp')
+    clearing_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
+    clearing_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    clearing_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    clearing_test = clearing_env.Program('ClearingFlagGradientTest', clearing_sources)
+    local.Alias('clearing-gradient-test', clearing_test)
+
+# Status-bar pixel regression: exercise the shared renderer without a map.
+if not env['server']:
+    bar_sources = [source for source in source_files if source != 'Glob2.cpp']
+    bar_sources += local.Object('PointBarRenderTest.o', '#test/PointBarRenderTest.cpp')
+    bar_test = local.Program('point-bar-render-test', bar_sources)
+    local.Alias('point-bar-render-test', bar_test)
+
+if not env['server']:
     # Use the real renderer and settings handlers. Access relaxation is confined
     # to the test translation unit; production objects retain their normal flags.
     render_env = savegame_env.Clone()
@@ -553,6 +175,14 @@ if not env['server']:
     render_test = savegame_env.Program('MapRenderResizeHarness', render_sources)
     local.Alias('map-render-resize-test', render_test)
 
+    session_sources = [source for source in source_files if source != 'Glob2.cpp']
+    session_sources += local.Object('EngineSessionHarness.o', '#test/EngineSessionHarness.cpp')
+    session_test = local.Program('engine-session-test', session_sources)
+    local.Alias('session-test', session_test)
+    portable_game_sources = [source for source in source_files if source != 'Glob2.cpp']
+    portable_game_sources += local.Object('PortableGameHarness.o', '#test/PortableGameHarness.cpp')
+    portable_game_test = local.Program('portable-game-test', portable_game_sources)
+    local.Alias('portable-game-test', portable_game_test)
 
 if not env['server']:
     # Compile with local, not trapped_env, to avoid rebuilding shared objects under a second environment.
@@ -566,9 +196,32 @@ if not env['server']:
     trapped_test = trapped_env.Program('TrappedUnitLifecycleTest', trapped_sources)
     local.Alias('trapped-unit-test', trapped_test)
 
+# Map analysis and UI contract tests use production generators and widgets.
+if not env['server']:
+    for alias, target in [('map-generator-study', 'MapGeneratorStudy'), ('map-generator-defaults-test', 'MapGeneratorDefaultsTest'),
+                          ('map-generator-golden-test', 'MapGeneratorGoldenTest'),
+                          ('map-generator-profile-fixture', 'MapGeneratorProfileFixture')]:
+        sources = [source for source in source_files if source != 'Glob2.cpp']
+        sources += local.Object(target + '.o', '#test/' + target + '.cpp')
+        local.Alias(alias, local.Program(target, sources))
+if not env['server']:
+    transport_sources = [source for source in source_files if source != 'Glob2.cpp']
+    transport_sources += local.Object('NetConnectionHarness.o', '#test/NetConnectionHarness.cpp')
+    transport_test = local.Program('net-connection-test', transport_sources)
+    local.Alias('transport-test', transport_test)
+    peer_sources = [source for source in source_files if source != 'Glob2.cpp']
+    peer_sources += local.Object('NativeMultiplayerPeer.o', '#test/NativeMultiplayerPeer.cpp')
+    peer_test = local.Program('native-multiplayer-peer', peer_sources)
+    local.Alias('transport-test', peer_test)
+    if env.get('wss', True):
+        wss_test = local.Program('wss-transport-test', [
+            'net/NetTransport.cpp', 'net/WssTransport.cpp',
+            local.Object('WssTransportHarness.o', '#test/WssTransportHarness.cpp')])
+        local.Alias('transport-test', wss_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
-p2 = local.Program("glob2-server", server_source_files)
+p2 = local.Program("glob2-router" if env.get("role") == "router" else "glob2-server", server_source_files)
 
 if not env['server']:
     local.Default(p1)
@@ -577,16 +230,16 @@ else:
 
 Import('env')
 Import("PackTar")
-    
+
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     env.Install(env["BINDIR"], "glob2")
     env.Alias("install", env["BINDIR"])
-    
+
     import os
     for file in os.listdir("."):
         if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
             PackTar(env["TARFILE"], file)
-    
+
     PackTar(env["TARFILE"], "SConscript")
 
 # Real engine save/load regression, built only by its explicit target.
@@ -615,6 +268,13 @@ if not env['server']:
     regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
     local.Alias('immobile-unit-gradient-test', regression_test)
 
+# Real engine regression for building placement and removal refreshing neighbouring route fields, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('BuildingGradientInvalidationHarness.o', '#test/BuildingGradientInvalidationHarness.cpp')
+    regression_test = local.Program('BuildingGradientInvalidationHarness', regression_sources)
+    local.Alias('building-gradient-invalidation-test', regression_test)
+
 # Real engine regression for resource-fetch target staleness, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -628,6 +288,11 @@ if not env['server']:
     regression_sources += local.Object('FetchApportionmentHarness.o', '#test/FetchApportionmentHarness.cpp')
     regression_test = local.Program('FetchApportionmentHarness', regression_sources)
     local.Alias('fetch-apportionment-test', regression_test)
+# Units a selected building could not hire wear the reason's shape in the map view.
+if not env['server'] and 'failing-unit-markers-test' in COMMAND_LINE_TARGETS:
+    markers_sources = [source for source in source_files if source != 'Glob2.cpp']
+    markers_sources += local.Object('FailingUnitMarkersHarness.o', '#test/FailingUnitMarkersHarness.cpp')
+    local.Alias('failing-unit-markers-test', local.Program('FailingUnitMarkersHarness', markers_sources))
 if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
     entering_draw_sources = [source for source in source_files if source != 'Glob2.cpp']
     entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')
@@ -650,11 +315,23 @@ if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
     hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
     local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))
 
+# Which workers a building may hire: completed buildings take any worker,
+# construction and upgrade sites keep the schooling-level gate.
+if not env['server'] and 'level-gate-test' in COMMAND_LINE_TARGETS:
+    level_gate_sources = [source for source in source_files if source != 'Glob2.cpp']
+    level_gate_sources += local.Object('LevelGateHarness.o', '#test/LevelGateHarness.cpp')
+    local.Alias('level-gate-test', local.Program('LevelGateHarness', level_gate_sources))
+
 if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_sources = [source for source in source_files if source != 'Glob2.cpp']
     custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')
     custom_test = local.Program('CustomGameSetupHarness', custom_sources)
     local.Alias('custom-setup-test', custom_test)
+
+if not env['server'] and 'map-preview-test' in COMMAND_LINE_TARGETS:
+    preview_sources = [source for source in source_files if source != 'Glob2.cpp']
+    preview_sources += local.Object('MapPreviewHarness.o', '#test/MapPreviewHarness.cpp')
+    local.Alias('map-preview-test', local.Program('MapPreviewHarness', preview_sources))
 
 # Real engine regression for units surviving building destruction, built only by its explicit target.
 if not env['server']:
@@ -662,3 +339,85 @@ if not env['server']:
     regression_sources += local.Object('BuildingExpelHarness.o', '#test/BuildingExpelHarness.cpp')
     regression_test = local.Program('BuildingExpelHarness', regression_sources)
     local.Alias('building-expel-test', regression_test)
+
+# Real engine regression for inn swaps between hungry units, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('InnSwapHarness.o', '#test/InnSwapHarness.cpp')
+    regression_test = local.Program('InnSwapHarness', regression_sources)
+    local.Alias('inn-swap-test', regression_test)
+
+# Real engine regression for the resource hunger gate, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('RoundTripHungerGateHarness.o', '#test/RoundTripHungerGateHarness.cpp')
+    regression_test = local.Program('RoundTripHungerGateHarness', regression_sources)
+    local.Alias('round-trip-hunger-gate-test', regression_test)
+
+if not env['server']:
+    tournament_env = local.Clone()
+    tournament_env['CXXFLAGS'] = local.Split(local['CXXFLAGS']) + ['-fno-access-control']
+    tournament_sources = [source for source in source_files if source != 'Glob2.cpp']
+    tournament_sources += tournament_env.Object('TournamentCompatibilityTest.o', '#test/TournamentCompatibilityTest.cpp')
+    local.Alias('tournament-compatibility-test', local.Program('TournamentCompatibilityTest', tournament_sources))
+# Map-report fixtures exercise analytic route lengths and read-only scoring.
+if not env['server']:
+    report_sources = [source for source in source_files if source != 'Glob2.cpp']
+    report_sources += local.Object('MapReportHarness.o', '#test/MapReportHarness.cpp')
+    report_test = local.Program('MapReportHarness', report_sources)
+    local.Alias('map-report-test', report_test)
+
+# Controlled fruit-conversion scenarios on Orchard Commons generated terrain.
+if not env['server']:
+    orchard_conversion_sources = [source for source in source_files if source != 'Glob2.cpp']
+    orchard_conversion_sources += local.Object('OrchardCommonsConversionTest.o', '#test/OrchardCommonsConversionTest.cpp')
+    orchard_conversion_env = local.Clone()
+    orchard_conversion_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    orchard_conversion_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    orchard_conversion_test = orchard_conversion_env.Program('OrchardCommonsConversionTest', orchard_conversion_sources)
+    local.Alias('orchard-conversion-test', orchard_conversion_test)
+
+# Comb contracts and cross-channel firing on generated terrain.
+if not env['server']:
+    comb_generator_sources = [source for source in source_files if source != 'Glob2.cpp']
+    comb_generator_sources += local.Object('CombGeneratorTest.o', '#test/CombGeneratorTest.cpp')
+    comb_generator_env = local.Clone()
+    comb_generator_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    comb_generator_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    comb_generator_test = comb_generator_env.Program('CombGeneratorTest', comb_generator_sources)
+    local.Alias('comb-generator-test', comb_generator_test)
+
+# Saved unit arbitration and activity state, linked without SDL's GUI entry point.
+if not env['server']:
+    unit_continuation_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    unit_continuation_sources += [source for source in source_files if not source.endswith('.cpp')]
+    unit_continuation_sources += local.Object('UnitContinuationHarness.o', '#test/UnitContinuationHarness.cpp')
+    unit_continuation_env = local.Clone()
+    unit_continuation_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    unit_continuation_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    unit_continuation_test = unit_continuation_env.Program('UnitContinuationHarness', unit_continuation_sources)
+    local.Alias('unit-continuation-test', unit_continuation_test)
+
+if not env['server'] and env.get('wss', True):
+    certificate_test = local.Program('MobileCertificateHarness', [
+        local.Object('MobileCertificateHarness.o', '#test/MobileCertificateHarness.cpp'),
+        local.Object('MobileCertificateTrust.o', '#mobile/CertificateTrust.cpp')])
+    local.Alias('mobile-certificate-test', certificate_test)
+
+if not env['server'] and not env.get('mingw'):
+    temporary_test = local.Program('MobileTemporaryFilesHarness', [
+        local.Object('MobileTemporaryFilesHarness.o', '#test/MobileTemporaryFilesHarness.cpp'),
+        local.Object('MobileTemporaryFiles.o', '#mobile/TemporaryFiles.cpp')])
+    local.Alias('mobile-temporary-files-test', temporary_test)
+
+if not env['server']:
+    for alias, harness in [('gameplay-touch-test', 'GameGUITouchHarness'), ('responsive-menu-test', 'ResponsiveMenuHarness'), ('mobile-presentation-test', 'MobilePresentationHarness')]:
+        sources = [source for source in source_files if source != 'Glob2.cpp']
+        sources += local.Object(harness + '.o', '#test/' + harness + '.cpp')
+        local.Alias(alias, local.Program(alias, sources))
+
+# Offline production-screen capture for the mobile design review gallery.
+if not env['server']:
+    gallery_sources = [source for source in source_files if source != 'Glob2.cpp']
+    gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
+    local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))

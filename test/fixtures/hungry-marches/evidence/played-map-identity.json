@@ -1,0 +1,170 @@
+[
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-101/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-101/map-r0.map",
+    "equal": true,
+    "sha256": "e6cf661b3da4d1a3877393290ef55df52c7d9c47b3d5ca892051ccc2e52b3962"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-101/map-r1.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-101/map-r1.map",
+    "equal": true,
+    "sha256": "2f51e744fe84902369746d068f45113e9e59a2bb79d25ddc22a4aa0946f1364b"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-101/map-r3.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-101/map-r3.map",
+    "equal": true,
+    "sha256": "104fe970a2ba5feca96535c2ac2a1400712b7c7c4dc909001e24c9c7024414d7"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-101/map-r2.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-101/map-r2.map",
+    "equal": true,
+    "sha256": "5636f3dd805007e35319ac3084b03cd89e27201640e892f2db3d87f5402c34b6"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-202/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-202/map-r0.map",
+    "equal": true,
+    "sha256": "870b11b1ef0aebac7172c53314b164110a48379472d805926963870add789468"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-202/map-r1.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-202/map-r1.map",
+    "equal": true,
+    "sha256": "8ed9f42613ed59d09d67b7d769a03a7b6df1799923759d330b53a41098c8038e"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-202/map-r3.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-202/map-r3.map",
+    "equal": true,
+    "sha256": "5c87f831bfe76150478ff0c387b51a0d52897dedb9c580c49411b0b4c80cf2bd"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-202/map-r2.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-202/map-r2.map",
+    "equal": true,
+    "sha256": "fdb8c1689b1e1a13643b0e8e12829a29c801574e81bf121f4ed41ae7133f6426"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-303/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-303/map-r0.map",
+    "equal": true,
+    "sha256": "793447e0597b53eb03adce86e3b80bf914553a28b9efb74e5ad2fe192503d7f7"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-303/map-r1.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-303/map-r1.map",
+    "equal": true,
+    "sha256": "5d3d7c5c7e8a5b5e7271f2c2de5edd8f85ea77d182c495087a74756b905b73d1"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-303/map-r3.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-303/map-r3.map",
+    "equal": true,
+    "sha256": "e2840a54a785f3cb457cc8f33ee87960a7587b12421e14f0d4a9ba975afecd07"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-303/map-r2.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-303/map-r2.map",
+    "equal": true,
+    "sha256": "2a0bf6ea919e65af5637f6b4a85f9d5df00230397b812132b494080ecde38b84"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-404/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-404/map-r0.map",
+    "equal": true,
+    "sha256": "fed21151ba26d30999f3c25cf2771bbdd9996d93f01206cc7a050da06db6e670"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-404/map-r1.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-404/map-r1.map",
+    "equal": true,
+    "sha256": "9663e8b4b58aa4b9263801578959c091dda428973020dd2f535496b779df137f"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-404/map-r3.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-404/map-r3.map",
+    "equal": true,
+    "sha256": "05c74801c08ad7d8b185b1e4115c15b9272840329e93467e998bf376597bf538"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/games/map-404/map-r2.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-games-map-404/map-r2.map",
+    "equal": true,
+    "sha256": "d5adf1f76cab745ee7e71fe6daf132f05b9a675d871adebda9be826f34da8b9b"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/compact/map-202/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-compact-map-202/map-r0.map",
+    "equal": true,
+    "sha256": "f500a7b89681d2bb18d163350bd215964410169c091b078930d2e27afcda2a80"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/compact/map-202/map-r1.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-compact-map-202/map-r1.map",
+    "equal": true,
+    "sha256": "769f1fc02596be16d407fba8d954813e1f19c2b16ad20ecb5378f8825d869ab9"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/compact/map-606/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-compact-map-606/map-r0.map",
+    "equal": true,
+    "sha256": "04a10aae5c547d2bcf7198f41623c48456290efbc54e79dfc06b55dcabfee356"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/compact/map-606/map-r1.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-compact-map-606/map-r1.map",
+    "equal": true,
+    "sha256": "17359eedc5ee33acd55d5b56a249b757ee1430bddabe8f8f5c69ee7a55fb2f6a"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/compact/map-606/map-r3.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-compact-map-606/map-r3.map",
+    "equal": true,
+    "sha256": "a19cadc1ac2672e93de8dc16699a2111afdb60037b975fd6f33544689c670baf"
+  },
+  {
+    "original": "artifacts/hungry-marches/v24/compact/map-606/map-r2.map",
+    "final": "artifacts/hungry-marches/final/identity/v24-compact-map-606/map-r2.map",
+    "equal": true,
+    "sha256": "7e2bf6233586e50987b7e7beaa5a2987eca24fec6e21470e3ee69f53fa8b0ce7"
+  },
+  {
+    "original": "artifacts/hungry-marches/v26/duels/map-202/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v26-duels-map-202/map-r0.map",
+    "equal": true,
+    "sha256": "f500a7b89681d2bb18d163350bd215964410169c091b078930d2e27afcda2a80"
+  },
+  {
+    "original": "artifacts/hungry-marches/v26/duels/map-202/map-r1.map",
+    "final": "artifacts/hungry-marches/final/identity/v26-duels-map-202/map-r1.map",
+    "equal": true,
+    "sha256": "769f1fc02596be16d407fba8d954813e1f19c2b16ad20ecb5378f8825d869ab9"
+  },
+  {
+    "original": "artifacts/hungry-marches/v26/duels/map-707/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v26-duels-map-707/map-r0.map",
+    "equal": true,
+    "sha256": "06023e926a7a6d823fb1a935987da8e37ab7be2331a41305b7271c89d7c7e0cc"
+  },
+  {
+    "original": "artifacts/hungry-marches/v26/duels/map-707/map-r1.map",
+    "final": "artifacts/hungry-marches/final/identity/v26-duels-map-707/map-r1.map",
+    "equal": true,
+    "sha256": "d9b949017e0cdeb1b430f9938696d52971a2f91606febb7ad238eaf698425ddf"
+  },
+  {
+    "original": "artifacts/hungry-marches/v26/crowded/map-101/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v26-crowded-map-101/map-r0.map",
+    "equal": true,
+    "sha256": "29442381adb87ad8d766344a72bf0fae21ff446b7cd99c63d9b69f7199f3f664"
+  },
+  {
+    "original": "artifacts/hungry-marches/v26/crowded/map-7/map-r0.map",
+    "final": "artifacts/hungry-marches/final/identity/v26-crowded-map-7/map-r0.map",
+    "equal": true,
+    "sha256": "dfaed5863dea7eccf2e7aaa2b86549e886147891620ac76d8134346abe8aac4f"
+  }
+]

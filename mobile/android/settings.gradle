@@ -1,0 +1,8 @@
+pluginManagement {
+    def toolchain = new groovy.json.JsonSlurper().parse(file('glob2-toolchain.json'))
+    plugins { id 'com.android.application' version toolchain.android.android_gradle_plugin }
+    repositories { google(); mavenCentral(); gradlePluginPortal() }
+}
+dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+rootProject.name = 'Glob2'
+include ':app'

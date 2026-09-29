@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "echo/Echo.h"
 #include "IntBuildingType.h"
 
@@ -15,6 +16,7 @@ using namespace AIEcho::SearchTools;
 //Explorer flags on the three nearest fruit trees
 void Econo::tick_explorer_flags_fruit(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_explorer_flags_fruit_calls);
 	if((timer%AI_ECHO_RTI_FRUIT_FLAG_INTERVAL_TICKS)==0)
 	{
 		if(echo.is_fruit_on_map())
@@ -123,6 +125,7 @@ void Econo::tick_explorer_flags_fruit(Echo& echo)
 //Place exploration flags on the enemy swarms
 void Econo::tick_explorer_flags_enemies(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_explorer_flags_enemies_calls);
 	if((timer%AI_ECHO_RTI_ENEMY_SCAN_INTERVAL_TICKS)==0)
 	{
 		if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=AI_ECHO_RTI_ENEMY_FLAG_EXPLORER_MIN)
@@ -158,6 +161,7 @@ void Econo::tick_explorer_flags_enemies(Echo& echo)
 //Farming wheat and wood near water
 void Econo::tick_farming_areas(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_farming_areas_calls);
 	if((timer%AI_ECHO_RTI_FARMING_INTERVAL_TICKS)==0)
 	{
 		AddArea* mo_farming=new AddArea(ForbiddenArea);
@@ -173,7 +177,7 @@ void Econo::tick_farming_areas(Echo& echo)
 				if((x%AI_ECHO_RTI_FARMING_PATTERN_STRIDE==1 && y%AI_ECHO_RTI_FARMING_PATTERN_STRIDE==1))
 				{
 					if((!mi.is_resource(x, y, WOOD) &&
-					    !mi.is_resource(x, y, CORN)) &&
+					    !mi.is_resource(x, y, WHEAT)) &&
 					    mi.is_forbidden_area(x, y))
 					{
 						mo_non_farming->add_location(x, y);
@@ -181,7 +185,7 @@ void Econo::tick_farming_areas(Echo& echo)
 					else
 					{
 						if((mi.is_resource(x, y, WOOD) ||
-						    mi.is_resource(x, y, CORN)) &&
+						    mi.is_resource(x, y, WHEAT)) &&
 						    mi.is_discovered(x, y) &&
 						    !mi.is_forbidden_area(x, y) &&
 						    gradient.within_dist(x, y, AI_ECHO_RTI_FARMING_WATER_MAX_DIST))

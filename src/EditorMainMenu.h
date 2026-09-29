@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Glob2Screen.h"
+#include <ScreenStack.h>
 
 namespace GAGGUI
 {
@@ -25,11 +26,14 @@ public:
 
 public:
 	//! Constructor
-	EditorMainMenu();
+	explicit EditorMainMenu(GAGGUI::ScreenStack& screens);
 	//! Destructor
 	virtual ~EditorMainMenu() { }
 	//! Action handler
 	void onAction(Widget *source, Action action, int par1, int par2);
+private:
+    GAGGUI::ScreenStack& screens;
+    void newMap();
 };
 
 

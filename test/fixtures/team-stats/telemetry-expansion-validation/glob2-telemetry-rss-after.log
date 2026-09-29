@@ -1,0 +1,23 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 0dbbc6ef
+automaticEndingGame ended: 2048 ticks, 1 minutes, 21 seconds
+GLOB2_GAME_END ticks=2048 winner_team=-1 seed=4 map="Oazis" orders=0 players=team0:local,team1:Castor,team2:Warrush,team3:Castor,team4:Warrush,team5:Castor,team6:Warrush,team7:Castor,team8:Warrush,team9:Castor,team10:Warrush,team0:Warrush
+        7.75 real         4.33 user         0.05 sys
+            74432512  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                4778  page reclaims
+                 209  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                8107  involuntary context switches
+         39080755824  instructions retired
+         11362447254  cycles elapsed
+            61129256  peak memory footprint

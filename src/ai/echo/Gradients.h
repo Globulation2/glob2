@@ -12,6 +12,7 @@
 #include "Tribool.h"
 
 class GradientBFSTest;
+class EchoContinuationTest;
 class Player;
 
 namespace AIEcho
@@ -272,6 +273,7 @@ namespace AIEcho
 		private:
 			friend class AIEcho::Gradients::GradientManager;
 			friend class ::GradientBFSTest;
+			friend class ::EchoContinuationTest;
 
 			///Causes the gradient to be updated
 			void recalculate(Map* map);
@@ -306,7 +308,10 @@ namespace AIEcho
 			bool is_updated(const GradientInfo& gi);
 		private:
 			friend class AIEcho::Echo;
+			friend class ::EchoContinuationTest;
 			void update();
+			void save(GAGCore::OutputStream* stream);
+			bool load(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor);
 			static int increment(const int x) { return x+1; }
 			std::vector<std::shared_ptr<Gradient> > gradients;
 			std::queue<int> queuedGradients;

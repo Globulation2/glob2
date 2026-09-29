@@ -14,6 +14,7 @@ class Settings
 public:
 	Settings();
 	void load(const std::string filename="preferences.txt");
+	// Checked atomic local replacement; callers separately await host persistence.
 	bool save(const std::string filename="preferences.txt");
 
 	/**
@@ -56,6 +57,8 @@ private:
 public:
 	int screenWidth;
 	int screenHeight;
+	//! interface scale in percent; 0 follows the desktop
+	int uiScale;
 	Uint32 screenFlags;
 	Uint32 optionFlags;
 	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.
@@ -67,9 +70,13 @@ public:
 	bool rememberUnit;
 	bool scrollWheelEnabled;
 	bool highResolutionArtwork;
+	/// Periodically saves the game in progress as "Auto save".
+	bool autosaveGames;
 	/// Simulation speed preset. Zero is the original 25 ticks/second;
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;
+    std::string interfacePresentation = "automatic";
+    int mobileDialogTextPercent; // Local UI preference; never part of saves/orders.
 
 	enum
 	{
@@ -111,4 +118,3 @@ public:
 
 //Version 1 - Resets default units assigned and keyboard shortcuts
 #define SETTINGS_VERSION 1
-

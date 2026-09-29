@@ -8,7 +8,7 @@ URL: http://www.globulation2.org/
 Source0: %{name}-%{version}.tar.gz
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: SDL,SDL_net,SDL_image,SDL_ttf,speex,libvorbis,libogg,zlib,fribidi
-BuildPrereq: scons,SDL-devel,SDL_net-devel,SDL_image-devel,SDL_ttf-devel,speex-devel,zlib-devel,fribidi-devel,libvorbis-devel,libogg-devel
+BuildPrereq: scons,SDL-devel,SDL_net-devel,SDL_image-devel,SDL_ttf-devel,speex-devel,zlib-devel,boost-devel,fribidi-devel,libvorbis-devel,libogg-devel
 %description
 Globulation 2 brings a new type of gameplay to RTS games. The player chooses
 the number of units to assign to various tasks, and the units do their best to

@@ -19,12 +19,12 @@ native widgets. This exercises compiled application code, not an HTML mockup.
 From the isolated worktree:
 
 ```sh
-scons -j8 release=1 custom-setup-test build/src/glob2
-build/src/CustomGameSetupHarness
+scons --build=build/native-tests -j8 release=1 custom-setup-test build/native-tests/src/glob2
+build/native-tests/src/CustomGameSetupHarness
 mkdir -p artifacts/visual-pass/compact artifacts/visual-pass/large
-build/src/CustomGameSetupHarness artifacts/visual-pass/compact
-build/src/CustomGameSetupHarness artifacts/visual-pass/large large
-build/src/CustomGameSetupHarness artifacts/visual-pass/compact ui
+build/native-tests/src/CustomGameSetupHarness artifacts/visual-pass/compact
+build/native-tests/src/CustomGameSetupHarness artifacts/visual-pass/large large
+build/native-tests/src/CustomGameSetupHarness artifacts/visual-pass/compact ui
 ```
 
 Use deterministic interaction assertions for selection, scrolling, dropdown
@@ -55,11 +55,11 @@ Use the catalog's legacy language code (`br` for Brazilian Portuguese, `si` for
 Slovenian, `cz` for Czech, and `dk` for Danish):
 
 ```sh
-scons -j8 release=1 server=0 menu-colony-harness
+scons --build=build/native-tests -j8 release=1 server=0 menu-colony-harness
 mkdir -p artifacts/localized-lobby
-GLOB2_PREVIEW_LANGUAGE=fr build/src/MenuColonyHarness capture custom-rules artifacts/localized-lobby/fr-rules.png 1000 700
-GLOB2_PREVIEW_LANGUAGE=ko build/src/MenuColonyHarness capture custom-players artifacts/localized-lobby/ko-players.png 1000 700
-GLOB2_PREVIEW_LANGUAGE=ar build/src/MenuColonyHarness capture custom artifacts/localized-lobby/ar-map.png 640 480
+GLOB2_PREVIEW_LANGUAGE=fr build/native-tests/src/MenuColonyHarness capture custom-rules artifacts/localized-lobby/fr-rules.png 1000 700
+GLOB2_PREVIEW_LANGUAGE=ko build/native-tests/src/MenuColonyHarness capture custom-players artifacts/localized-lobby/ko-players.png 1000 700
+GLOB2_PREVIEW_LANGUAGE=ar build/native-tests/src/MenuColonyHarness capture custom artifacts/localized-lobby/ar-map.png 640 480
 ```
 
 These are static rendering checks. Use the custom setup harness above for

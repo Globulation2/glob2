@@ -1,3 +1,9 @@
+[AI strategy]
+MI-stratégia
+[AIMaxima-Summary]
+Egyensúlyozza a fenntartható növekedést és képzést, majd hullámokba gyűjti seregeit.
+[AIMaxima-Profile]
+Alapstratégia: Az élelmet, munkásokat, születéseket, képzést, építkezést és harcot versengő igényekként kezeli. Seregét részben a becsült ellenséges erőhöz méretezi, majd igyekszik hatékonyan célba juttatni.\n\nGazdaság és fejlődés: A születéseket az élelemhez és munkaerőhöz igazítja, szabad időt hagy a képzésre, és katonai termelési igény esetén nem termel további fölös munkásokat. Növeli a képzési kapacitást, és kerüli túl sok infrastruktúra egyidejű kivonását a fejlesztések miatt.\n\nFelderítés és döntések: Látható egységekből és korábbi észlelésekből, illesztett modellel becsüli az ellenség erejét. Céljait az érték, távolság, tornyok, védtelen munkások és a kitartás befolyásolja. A gyümölcsküldetések az étrendi változatosságot és áttérítést támogatják.\n\nTámadás és védelem: Harcosokat tart fenn képzésre és védelemre, majd alkalmas szárazföldi erőit saját élelmezési infrastruktúrája közelében gyűjti össze, mielőtt hullámokat indítana. Helyi védelmi válaszokat alkalmaz, és felméri a kolónia megközelítési útvonalait.\n\nHa elakadnak a támadások: Miután négy egymást követő támadóhullám nem jut el a céljához, folyamatosan megerősített támadózászlókra vált. Kétéltű támadások is használhatnak folyamatos utánpótlást. Ez a tartalékmegoldás nem old meg minden akadályt, amely már a gyülekezés létrejötte előtt jelentkezik.\n\nMás MI-khez képest: Szorosabban kapcsolja össze az élelmet, képzést, hírszerzést és bevetést. Cabino több épület támadását hangsúlyozza; Maxima a becsült igényt és az összegyűjtött erők célba juttatását.\n\nErősségek és gyengeségek: Fenntartja a növekedést és katonai utánpótlást, miközben alkalmazkodik az élelmezési nyomáshoz és megfigyelt fenyegetésekhez. Élelemre, képzési kapacitásra és nyílt gyülekezőhelyre van szüksége; torlódás és hosszú útvonalak akadályozhatják a célba érést.\n\nLehetséges ellenszer: Támadd a védtelen búzaterületeket, étkezdéket és laktanyákat a hullámok gyülekezése előtt. Tarts együtt egy ellátott védőerőt, és zavard az utánpótlási útvonalakat. Az első hullám után is számíts ismételt nyomásra.\n\nFelderítés: Erőbecslései észlelésekre és megfigyelési előzményekre épülnek, nem a rejtett ellenséges csapatok teljes létszámára.
 [%0 has left the game]
 %0 kilépett a játékból.
 [%0 level %1]
@@ -51,11 +57,11 @@ MI
 [ai]
 MI
 [AICastor-Description]
-Castor óvatosan játszik, és nagyon jól boldogul a nyersanyagban szegény pályákon. Közepes nehézség.
+Épít és képez, a növekedést az élelemellátáshoz igazítva.
 [AICastor]
 MICastor
 [AINicowar-Description]
-Nicowar agresszívan játszik, gyorsan terjeszkedik, és hatalmas seregeket küld ellenfeleire. Nehéz.
+Növeli népességét, harcosokat képez, majd támad.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,17 +69,21 @@ Nincs MI — nem csinál semmit.
 [AINone]
 Nincs MI
 [AINumbi-Description]
-Numbi kis lépésekben, gyorsan terjeszkedik. Könnyű.
+Megengedő ellenfél, amely azért terjeszkedik és támad.
 [AINumbi]
 MINumbi
 [AIEcono-Description]
-Econo nem támad, de óriási bázisokat épít, és tömegesen térít át egységeket. Könnyű.
+Terjeszkedik és egységeket csábít át, harcosok nélkül.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush gyorsan és kíméletlenül támad, gyakran a végsőkig szorítva a védekező játékost. Közepes nehézség.
+Gyors támadásai próbára teszik a korai védelmet.
 [AIWarrush]
 MIWarrush
+[AICabino-Description]
+Erős építő, amely képzett támadóerőket állít ki.
+[AICabino]
+Cabino
 [Alga]
 Alga
 [algae]
@@ -605,9 +615,9 @@ ebből
 [ok]
 Rendben
 [old islands terrain]
-régi véletlenszerű szigetek
+Csipkézett szigetvilág
 [old random terrain]
-régi véletlenszerű terep
+Töredezett partvidék
 [on press]
 Lenyomás
 [On the spot]
@@ -1217,7 +1227,11 @@ Sebesség: 1x (többjátékos)
 [game speed help]
 Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
 [AICortex-Description]
-A Cortex új búzamezők felé terjeszkedik, és harcba küldi a harcosok csoportjait, akiket étkezdék és kórházak támogatnak a frontvonal közelében. Közepes nehézségű. Kísérleti.
+Összegyűjtött harcoshullámok élelmezési és gyógyítási támogatással.
+[AIMaxima-Description]
+Felderít, fejleszti élelemellátását és harcoshullámokat gyűjt.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 A térkép nem tölthető be: a fájl sérült vagy nem kompatibilis verziójú.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1233,33 +1247,37 @@ Még dolgozó egységek: %0
 [AI strategy & counterplay]
 MI-stratégia és ellenjáték
 [AICastor-Profile]
-Stratégia: Óvatosan bővül, és kevés erőforrással rendelkező térképeken jól teljesít.\n\nErősségek: A korlátozott bővítés hatékony a szűkös erőforrásokkal rendelkező játékokban.\n\nJavasolt ellenjáték: Foglald el a területet korán. Ne feltételezd, hogy az erőforrások hiánya gyengíti ezt az AI-t.
+Alapstratégia: A jelentős támadások előtt termelékeny kolóniába és technológiába fektet. Rangsorolt építési projektek fejlesztik települését; a fejlődés, a katonai infrastruktúra és az idő növeli harckészültségét.\n\nGazdaság és fejlődés: Vizsgálja a nedvességet, a búza növekedését, az akadályokat és a munkások által elérhető területeket. A termelés mellett élelmezési bővítéseket, fejlesztéseket és védelmet szervez.\n\nTámadás és védelem: Megbecsüli egészséges harcosai támadóerejét, és az erő- vagy időfeltételek teljesülésekor csap le. A korábban látott, elérhető épületeket kedveli, különösen a laktanyákat és iskolákat; támadózászlóit az értékes célpontok felé mozgatja.\n\nMás MI-khez képest: Numbinál tudatosabban mérlegeli a terepet és a célpontok értékét. Warrushnál türelmesebb: a korai nyomást fejlett bázisra és erősebb csapatokra cseréli.\n\nErősségek és gyengeségek: Átfogó infrastruktúra-tervezése és értékes katonai célpontjai célt adnak csapásainak. A felkészülés időigényes, így a gyorsabb ellenfelek főereje elkészülte előtt vitathatják az erőforrások birtoklását.\n\nLehetséges ellenszer: Akadályozd korán a terjeszkedését. Az élelmezés mellett a laktanyákat és iskolákat is védd, és tarts tartalékot, amikor fejlett települését támadod.
 [AICastor-Summary]
-Óvatos terjeszkedés; szűkös erőforrásokkal jól teljesít.
+Megerősített kolóniát fejleszt, majd katonai és tudományos épületekre csap le.
 [AICortex-Profile]
-Stratégia: Kezeli az élelmiszerellátást, terjeszkedik új búzaföldek felé, és egymás utáni harcoscsoportokat állít össze. A frontvonal közelében található étkezdék és kórházak támogatják a támadásokat a bázistól távol.\n\nErősségek: Erősítést küld együtt, fenntartja a katonai nyomást, és reagál az élelmiszerhiányra.\n\nJavasolt ellenjáték: Harcolj az új búzatáblák felett, és támadd meg a frontvonal közelében lévő támogató épületeket. Támadj, mielőtt a harcosok csoportjai készen állnak.\n\nKísérleti MI. Közepes nehézség; az ellenjátékra vonatkozó javaslatok nem összehasonlító teszteken alapuló értékelések.
+Alapstratégia: Helyzetfüggő prioritásokkal működő gazdaságot fejleszt, a szabad munkaerőt pedig élelemmé, technológiává és katonai nyomássá alakítja. Alapvető működése szabályalapú; a tanult döntési modellek kísérletei külön beállítást igényelnek.\n\nGazdaság és fejlődés: A munkástermelést a személyzeti igényekhez igazítja, és fenntartja a születéseket. Az élelmezési gondok visszafogják a terjeszkedési és technológiai kiadásokat. Úszást fejleszt, ha a vízi hozzáférés érdemben segít.\n\nTámadás és védelem: A megfigyelt ellenséges technológia és elérhető csapatok alapján készíti elő támadásait. A vízen átkelő hadjáratokhoz úszóképes harcosok kellenek. A hosszú hadjáratokat előretolt étkezdékkel és kórházakkal támogatja, és az előrenyomulás előtt gyülekeztethet.\n\nKitartás és vészhelyzetek: Kisebb zaklatás ellenére folytatja offenzíváját a folytonos hazamenetel helyett. Súlyos támadás visszahívhatja a védőket. Korai vészhelyzet kizárólagos harcostermelést és kórházépítést válthat ki; éhínség kisebb kétségbeesett támadást indíthat.\n\nMás MI-khez képest: Warrushnál jobban figyel az előretolt támogatásra. Maxima tovább megy a fenntartható születések, képzés és bevetés tervezésében a becsült ellenséges erőhöz képest.\n\nErősségek és gyengeségek: A nyomást élelmezéssel, gyógyítással és elérhetőséggel kapcsolja össze. Előretolt infrastruktúrája folyamatos ellátást igényel, a további születések pedig terhelhetik a szűk élelmezést. A vészhelyzeti prioritások választásra kényszerítenek növekedés és túlélés között.\n\nLehetséges ellenszer: Támadd előretolt étkezdéit, kórházait és búzáját. Tartsd együtt védőidet a nyomulása ellen; kisebb zaklatás nem feltétlenül készteti visszavonulásra.\n\nFelderítés: Felfedezett ellenséges épületekre és megfigyelt ellenséges csapatokra támaszkodik.
 [AICortex-Summary]
-Az élelmiszer-ellátást szem előtt tartva terjeszkedik, és támogatja támadó csapatait.
+Előretolt élelmezéssel és gyógyítással támogatja kitartó katonai támadásait.
 [AINicowar-Profile]
-Stratégia: Gyorsan terjeszkedik, és hatalmas seregekkel támadja meg az ellenfeleket.\n\nErősségek: A gyors terjeszkedés támogatja az agresszív katonai támadásokat.\n\nJavasolt ellenjáték: Akadályozd a terjeszkedését. Használd a terepet az egyszerre harcra képes ellenséges csapatok számának csökkentésére.
+Alapstratégia: Egymást átfedő feltételekkel kapcsolja össze a növekedést, képzést, fejlesztést és hadviselést. Terjeszkedés közben is támadhat, és az élelmezés összeomlásakor a helyreállításra fordíthatja gazdasági erőfeszítéseit.\n\nNyitás: A mellékelt agresszív profil összesen öt egységnél kezd háborús felkészülésbe, és öt harcosnál engedélyez háborút, a nullás szintű harcosokat is beleszámítva. Három támadózászlót céloz meg, egyenként öt harcossal. Egyéni stratégiafájlok módosíthatják ezeket a küszöböket.\n\nGazdaság és fejlődés: Bővíti az élelmezési és születési kapacitást, munkásokat képez, fejleszti az úszást és mozgást, valamint javítja az épületeket. Igazítja az élelmezés munkaerejét, reagál az éhezésre, és gyümölcsöt keres.\n\nTámadás és védelem: Az elérhető ellenséges épületek közül véletlenszerűen választ támadási célokat. Tisztító zászlókkal nyithatja meg az erőforrásokkal elzárt útvonalakat. Védőzászlói veszélyeztetett egység- és épületcsoportokat fednek le. Később földi támadásra képzett felderítői ellenséges egységcsoportokat támadnak.\n\nMás MI-khez képest: Warrushhoz hasonlóan korán agresszív, de sokoldalúbb folytatásra képes. Cabinóval ellentétben nem részesíti következetesen előnyben a kórházakat és étkezdéket.\n\nErősségek és gyengeségek: Széles taktikai eszköztára korai nyomást és folyamatos fejlődést egyesít. Véletlen célválasztása kevésbé értékes épületekre pazarolhat erőt. Küszöbei nem adják Maxima részletes becslését az ellenfél harci erejéről.\n\nLehetséges ellenszer: Számíts korai támadásra. Védd az élelmet és a munkásokat, akadályozd a terjeszkedést, és készülj felderítőtámadásokra, ha eléri a fejlett képzést.
 [AINicowar-Summary]
-Gyorsan terjeszkedik és nagy hadseregeket épít fel az agresszív támadásokhoz.
+Korai roham gazdálkodással, fejlesztésekkel, védelemmel és felderítőtámadásokkal.
 [AINone-Profile]
 Stratégia: Az AI nem ad parancsokat.\n\nErősségek: Kiszámítható, inaktív ellenfél a kísérletekben.\n\nGyengeségek: Nem terjeszkedik és nem alkalmazkodik.
 [AINone-Summary]
 Tétlen kolónia kísérletekhez.
 [AINumbi-Profile]
-Stratégia: Gyorsan, de kis léptékben bővül. Könnyebb ellenfél a telepkezelés gyakorlásához.\n\nErősségek: Lehetővé teszi a gazdaságirányítás és a harc elsajátítását.\n\nJavasolt ellenjáték: Fejlessz erősebb gazdaságot, és képezd ki a hadseregedet, mielőtt támadsz.
+Alapstratégia: Először az élelmezést és a népességet fejleszti, majd gyógyítást, tudományt és képzést épít ki, végül hadviselésre vált. Fő szakaszait az idő, nem az ellenfél fejlődése vezérli.\n\nGazdaság és fejlődés: Épületigényét a népességhez igazítja, és felbecsüli a közeli búzát. A későbbi szakaszok fejlesztésekkel, védelemmel és terjeszkedéssel támogatják növekvő seregét.\n\nTámadás és védelem: Akkor támad, ha elég egészséges harcosa van, vagy lejár a várakozási idő. Kiválasztott ellenséges épületekre hadizászlókat helyez. Ha harci ereje túl alacsonyra csökken, eltávolítja a támadózászlókat, és megemeli a következő kísérlet küszöbeit.\n\nMás MI-khez képest: Kiszámíthatóbb, mint Castor vagy Nicowar. Castor gondosabban mérlegeli a terepet és a célpontok értékét; Nicowar sokkal korábban kezd nyomást gyakorolni.\n\nErősségek és gyengeségek: Sokoldalú háttere veszélyessé teheti, ha zavartalanul fejlődhet, de időrendje nem feltétlenül igazodik a csatához. Egyszerű célválasztása és vereség utáni hosszabb szünetei miatt könnyebb előre látni támadásait.\n\nLehetséges ellenszer: Gyakorolj nyomást a katonai szakasza előtt. Támadásaid mögött fejleszd az élelmezést és a képzést, majd használd ki a visszavert roham utáni szünetet.\n\nFelderítés: Támadási rutinja láthatóságellenőrzés nélkül, közvetlenül olvassa az ellenséges épületek helyét.
 [AINumbi-Summary]
-Gyors bővítés kis léptékben.
+Időrend szerint, fokozatosan építi fel kolóniáját, majd túlerővel támad.
 [AIEcono-Profile]
-Stratégia: Nem támad, hanem hatalmas bázisokat épít fel, és aktívan a saját oldalára fordítja az ellenséges egységeket.\n\nErősségek: A terjeszkedés és az egységátalakítás közvetlen támadások nélkül fenyegeti az ellenfeleket.\n\nJavasolt ellenjáték: Fejleszd korán a kolóniádat, és ne küldj egységeket oda, ahol az ellenség átalakíthatja őket.
+Alapstratégia: Munkásokat és felderítőket termel, bővíti gazdaságát, és élelemmel, gyümölccsel csábítja át az ellenséges egységeket. Nincs hagyományos harcosoffenzívája.\n\nGazdaság és fejlődés: Búza közelébe épít étkezdéket és rajokat, oktatást és mozgásképzést hoz létre, és fejleszti infrastruktúráját. Figyeli az élelemkészleteket, és lecseréli a régi étkezdéket és rajokat, ha romlik erőforráshelyzetük.\n\nGazdálkodás és áttérítés: Védi a víz közelében megújuló búzát és fákat. Felderítőket küld a gyümölcslelőhelyekhez és ellenséges kolóniákhoz, és gyümölcsellátásának kiépítésekor élelmet hirdet az ellenfeleknek. A jobb étel és a gyümölcs áttérőket vonzhat.\n\nMás MI-khez képest: A leginkább gazdaságra szakosodott ellenfél. Cabino és Maxima is szerez gyümölcsöt, de sereggel egészíti ki.\n\nErősségek és gyengeségek: Növekedhet, miközben a katonai ellenfelek kimerítik magukat; az áttérítés másféle versengést kínál. Nem termel harcosokat a tartós roham kivédésére. Lehetőségeit erősen befolyásolja az élelem, a gyümölcs, a földrajz és a győzelmi szabályok.\n\nLehetséges ellenszer: Támadd a védtelen terjeszkedést. Tartsd saját étkezdéidet élelemmel és gyümölccsel ellátva, hogy megtartsd egységeidet. Ne merítsd ki kolóniádat felesleges csatákban, miközben ő növekszik.
 [AIEcono-Summary]
-Hatalmas bázisok és átalakítások támadások helyett.
+Élelemben gazdag kolóniát növeszt, és harcosgyártás nélkül verseng az áttérőkért.
 [AIWarrush-Profile]
-Stratégia: Korán és erőteljesen támad, mielőtt az ellenfél befejezné a felkészülést.\n\nErősségek: Kiaknázza a védtelen terjeszkedést és a lassú katonai felkészülést.\n\nJavasolt ellenjáték: Vészeld át az első támadást a gazdaságod fenntartásával, majd indíts ellentámadást.
+Alapstratégia: Még az ellenfelek hosszú gazdasági vagy technológiai felkészülése előtt támad. Arra számít, hogy a harc eldönti a játékot, mielőtt nagy támogató hálózatra lenne szüksége.\n\nGazdaság és fejlődés: Amint hat egység képes gyűjteni, a termelési arányt négy munkásra, egy felderítőre és három harcosra állítja. A képzőhelyek megtelésekor laktanyákat ad hozzá, de korlátozza az új étkezdéket. A fennmaradó építési kapacitást gyakran kórházakra és mozgásképzésre fordítja.\n\nTámadás és védelem: Őrterületekkel jelöli a felfedezett ellenséges épületeket, hogy harcosai folyamatos nyomást fejtsenek ki. Nem vár gondosan összegyűjtött támadóhullámra. Eltakarítja az akadályozó fákat, és védi a megújuló erőforrások egy részét.\n\nGyümölcspolitika: Megtiltja a gyümölcsszedést, elkerülve a gyümölcs okozta páncélbüntetést, és nem követi Econo áttérítésre épülő stratégiáját.\n\nMás MI-khez képest: Numbinál vagy Castornál erősebben összpontosít a korai nyomásra. Nicowar is agresszívan nyit, de szélesebb fejlesztési és taktikai programmal folytatja.\n\nErősségek és gyengeségek: Bünteti a lassú kezdést, és korai védelmi kiadásokra kényszerít. A korlátozott rendszeres fejlesztés és a szűk élelmezés költségessé teszi az elakadt támadást. A terep és a hosszú utak felőrölhetik kezdeti előnyét.\n\nLehetséges ellenszer: Védd korán az étkezdéket és rajokat. A védők mellett a munkásokat is pótold, fejleszd a képzést, majd támadj vissza, amikor rohama veszít lendületéből.\n\nFelderítés: Kezdeti felderítőzászlói közvetlenül az ellenség indulóhelyeit használják. A későbbi támadóterületek kijelölése láthatóságot igényel.
 [AIWarrush-Summary]
-Gyors támadások, amelyek tesztelik a korai védekezést.
+Korai harcosnyomás, szándékosan szűkre szabott támogató gazdasággal.
+[AICabino-Profile]
+Alapstratégia: Elosztja az egységtermelést építkezés, fejlesztés, védelem, támadás és felderítés között. Külön kezelők kérnek és foglalnak le egységeket, együtt fejlesztve a gazdaságot és a hadsereget.\n\nGazdaság és fejlődés: Sokoldalú települést épít és fejleszt, kezeli az étkezdék és tornyok személyzetét, megtisztítja az épületek környékét, és védi a megújuló erőforrásokat. Gyümölcsöt derít fel és élelmet hirdet az áttérőkért folyó versenyben.\n\nTámadás és védelem: Ellenfelet választ, és először a kórházakat, majd az étkezdéket, végül a laktanyákat célozza. Legfeljebb négy támadást tart fenn, általában célonként nyolc–húsz harcossal, az elérhetőség és a közeli ellenség függvényében. Külön védőzászlókat használ a veszélyeztetett épületek körül.\n\nKépzés: Támadásához elég alkalmas harcos és egy kész laktanya kell, de nem vár a legmagasabb technológiára. Folyamatos fejlesztés és képzés erősíti későbbi támadásait.\n\nMás MI-khez képest: Nicowarnál célzottabban rombolja a támogató épületeket. Maxima összegyűjtött hullámainál jobban szétosztja támadásait, és egységfoglalásokkal kezeli az egymással versengő igényeket.\n\nErősségek és gyengeségek: Növekedést, képzést, védelmet és több támadást egyesít. Az élelmezés és gyógyítás lerombolása az egész kolóniát gyengítheti. Véletlen ellenfélválasztása és rögzített épületprioritásai elszalaszthatnak alkalmakat; több támadás megoszthatja erejét.\n\nLehetséges ellenszer: Védd a kórházakat és étkezdéket. Támadd a védtelen terjeszkedést, és összpontosítsd a védőket az egyes támadásokra. Károsítsd az élelmezést vagy képzést, mielőtt több frontot tudna fenntartani.\n\nFelderítés: Támadásválasztója kifejezett láthatóságellenőrzés nélkül olvassa az ellenséges épületlistákat. Egyes gazdasági összehasonlítások közvetlenül az ellenség statisztikáit használják.
+[AICabino-Summary]
+Összehangolja a növekedést és képzett támadásait; először gyógyítást és élelmet támad.
 [Algae]
 Alga
 [Alliances]
@@ -1363,9 +1381,9 @@ Közepes – Kísérleti
 [No AI orders]
 Az MI nem ad parancsokat
 [Old islands]
-Régi szigetek
+Csipkézett szigetvilág
 [Old random]
-Régi véletlen
+Töredezett partvidék
 [Open at least one colony to start a match.]
 Nyisson meg legalább egy kolóniát a mérkőzés elindításához.
 [Open book]
@@ -1380,6 +1398,14 @@ Játékosok és csapatok
 Előre elkészített térképek
 [Preview ready. Start plays this exact map.]
 Az előnézet készen áll. A játék elindítása pontosan ezt a térképet használja.
+[Regenerate all]
+Összes újragenerálása
+[Generating preview...]
+Előnézet készítése...
+[Preview unavailable]
+Az előnézet nem érhető el
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Minden táj valódi térképként jelenik meg a jelenlegi mérettel és kolóniaszámmal. Válassz egyet a megjelenített térkép játszásához.
 [Purple]
 Lila
 [Quick clash]
@@ -1542,6 +1568,10 @@ Nincs aktuális előnézet
 Gyors csata: dupla sebesség; A generált térképek 8 munkással kezdődnek.
 [Reroll]
 Hozzon létre egy másik térképet
+[Randomize]
+Véletlenszerű generálás
+[Reset to defaults]
+Alapértelmezett értékek visszaállítása
 [Ruleset]
 Szabálykészlet
 [Select a map from the library.]
@@ -1620,6 +1650,8 @@ Jelenítse meg a Globulation 2 kurzort.
 Kész
 [settings Edit shortcut]
 Billentyűparancs szerkesztése
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Nagyítja a menüket, a szöveget és az oldalsávot nagy felbontású képernyőn.
 [settings Flags]
 Zászlók
 [settings Full]
@@ -1634,6 +1666,8 @@ Játéksebesség
 Játékmenet
 [settings Graphics detail]
 Grafikai részletesség
+[settings Interface scale]
+Felület mérete
 [settings Keep]
 Megtartás
 [settings Keep this display mode?]
@@ -1656,6 +1690,8 @@ Az egész felületen használt nyelv.
 Szint
 [settings Map editor]
 Térképszerkesztő
+[settings Match the desktop]
+Az asztalhoz igazítva
 [settings Missing font]
 Hiányzó betűtípus
 [settings Music volume]
@@ -1766,3 +1802,1589 @@ A kiválasztott grafika a játék vagy a térképszerkesztő következő betölt
 Automatikus tórusznézet
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 A tórusz alakú térkép áttekintésének automatikus megjelenítése a térképen való mozgás közben (OpenGL).
+[settings Autosave]
+Automatikus mentés
+[settings Save the game automatically about every 10 seconds.]
+Körülbelül 10 másodpercenként automatikusan menti a játékot.
+[Channel width]
+Csatorna szélessége
+[Land bridge width]
+Földhíd szélessége
+[Lake size]
+Tó mérete
+[Contested commons]
+Vitatott közös terület
+[Maze]
+Labirintus
+[Fjord continent]
+Fjordos kontinens
+[Cell size]
+Cella mérete
+[Corridor width]
+Folyosó szélessége
+[Spoke width]
+Küllők szélessége
+[Loopiness]
+Huroksűrűség
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+A labirintusnak szélességben és magasságban is legalább két cellára van szüksége; használjon nagyobb térképet vagy kisebb cellákat.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Ilyen széles csatornák mellett minden cellában túl kevés fű marad; használjon keskenyebb csatornákat vagy nagyobb cellákat.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+A labirintusban túl kevés a zsákutca ennyi kolóniához; használjon nagyobb térképet vagy kisebb cellákat.
+[Home island size]
+Kezdősziget mérete
+[Commons size]
+Közös terület mérete
+[Moat width]
+Várárok szélessége
+[Bridge count]
+Hidak száma
+[Continent size]
+Kontinens mérete
+[Coast roughness]
+Partvonal tagoltsága
+[Fjord width]
+Fjord szélessége
+[Lake connects to fjords]
+A tó kapcsolódik a fjordokhoz
+[Resource islands]
+Nyersanyagszigetek
+[Watershed]
+Vízgyűjtő
+[River density]
+Folyók sűrűsége
+[Dryness]
+Szárazság
+[Fords]
+Gázlók
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+A vízgyűjtőn túl kevés az ártér ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
+[Stone highlands]
+Köves felföld
+[Valley size]
+Völgy mérete
+[Pass width]
+Hágó szélessége
+[Pond size]
+Tavacska mérete
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ezek a völgyek túl nagyok a térképhez; használjon nagyobb térképet vagy kisebb völgyeket.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+A felföldön túl kevés a hely ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
+[Symmetric arena]
+Szimmetrikus aréna
+[Centre size]
+Középrész mérete
+[Causeway width]
+Töltésút szélessége
+[Causeways]
+Töltésutak
+[Lakes]
+Tavak
+[Resource richness]
+Nyersanyagbőség
+[Symmetric arena needs 2, 4 or 8 colonies.]
+A szimmetrikus arénához 2, 4 vagy 8 kolónia kell.
+[Eight colonies need a square map in the symmetric arena.]
+Nyolc kolóniához négyzet alakú térkép kell a szimmetrikus arénában.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+A középrész túl kicsi egy gyümölcsöshöz ezen a térképen; használjon nagyobb középrészt vagy nagyobb térképet.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Az aréna túl kevés helyet hagy minden kolóniának; használjon nagyobb térképet, kisebb középrészt vagy keskenyebb várárkot.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+A töltésutak túl közel vannak egymáshoz; használjon kevesebb vagy keskenyebb töltésutat, vagy nagyobb középrészt.
+[Ring world]
+Gyűrűvilág
+[Belt width]
+Öv szélessége
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Az öv túl rövid ennyi kolóniához; használjon hosszabb térképet vagy kevesebb kolóniát.
+[City states]
+Városállamok
+[Strait width]
+Szoros szélessége
+[Valleys]
+Völgyek
+[Frontier richness]
+A határvidék gazdagsága
+[City states need at least one colony.]
+A városállamokhoz legalább egy kolónia kell.
+[Stone walls]
+Kőfalak
+[Sand patches]
+Homokfoltok
+[Tidal flats]
+Árapálysíkság
+[Everglades]
+Mocsárvidék
+[Pool spacing]
+Tavacskák távolsága
+[Pool size]
+Tavacskák mérete
+[Clearing size]
+Tisztás mérete
+[Levee]
+Gát
+[Sloughs]
+Holtágak
+[Everglades need at least one colony.]
+A mocsárvidékhez legalább egy kolónia kell.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Túl sok kolónia ehhez a térképhez; használj nagyobb térképet vagy kevesebb kolóniát.
+[Coral]
+Korall
+[Fork angle]
+Elágazási szög
+[Lean]
+Dőlés
+[Home size]
+Otthon mérete
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+A korall nem fér el ezen a térképen; használj nagyobb térképet, keskenyebb szorosokat vagy kevesebb kolóniát.
+[Branching]
+Elágazás
+[Branch width]
+Ágszélesség
+[Coral needs at least one colony.]
+A korallhoz legalább egy kolónia kell.
+[Coral needs a map at least 128 tiles across.]
+A korallhoz legalább 128 mező széles térkép kell.
+[Carousel]
+Körhinta
+[Amphitheatre]
+Amfiteátrum
+[Switchbacks]
+Szerpentinek
+[Court size]
+Udvarok mérete
+[Court wall]
+Udvarfal
+[Plaza size]
+Tér mérete
+[Starting tower level]
+Kezdő tornyok szintje
+[Towers per colony]
+Tornyok kolóniánként
+[Rings]
+Gyűrűk
+[Ramp width]
+Rámpák szélessége
+[Pit size]
+Aréna mérete
+[Terrace width]
+Teraszok szélessége
+[Bay size]
+Öblök mérete
+[Border wall]
+Határfal
+[Plateau size]
+Fennsík mérete
+[Trail width]
+Ösvény szélessége
+[Wall between legs]
+Fal a kanyarok között
+[Farm building plots]
+Építési telkek a farmokon
+[Sand bridges over water]
+Homokhidak a víz felett
+[Sand lanes through crops]
+Homokösvények a termésen át
+[Carousels need at least two colonies.]
+A körhintához legalább két kolónia kell.
+[Switchbacks need at least two colonies.]
+A szerpentinekhez legalább két kolónia kell.
+[An amphitheatre needs at least two colonies.]
+Az amfiteátrumhoz legalább két kolónia kell.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+A körhinta nem fér el ezen a térképen; használj nagyobb térképet, kisebb otthonokat vagy kevesebb kolóniát.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+A szerpentinek nem férnek el ezen a térképen; használj nagyobb térképet, kisebb fennsíkot, keskenyebb ösvényeket vagy kevesebb kolóniát.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Az amfiteátrum nem fér el ezen a térképen; használj nagyobb térképet, kevesebb gyűrűt, keskenyebb teraszokat vagy kevesebb kolóniát.
+[Spider web]
+Pókháló
+[Spokes per colony]
+Küllők kolóniánként
+[Ring spacing]
+Gyűrűk távolsága
+[Thread width]
+Szálszélesség
+[Sag]
+Belógás
+[Torn strands]
+Szakadt szálak
+[Hub size]
+Középpont mérete
+[Dew drops]
+Harmatcseppek
+[Spiral]
+Spirál
+[Spider webs need at least one colony.]
+A pókhálóhoz legalább egy kolónia kell.
+[Sandbars]
+Homokpadok
+[Tide pools]
+Árapálytavak
+[Lagoons]
+Lagúnák
+[Central island]
+Középső sziget
+[Tidal flats need at least one colony.]
+Az árapálysíksághoz legalább egy kolónia kell.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Az otthoni szigetek nem férnek el ezen a térképen; használj nagyobb térképet, kevesebb kolóniát vagy kisebb szigeteket.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+A közös terület és a szoros túl kevés helyet hagy a bázisoknak; használj nagyobb térképet, kevesebb kolóniát, kisebb közös területet vagy keskenyebb szorost.
+[Wheat amount]
+Búza mennyisége
+[Wood amount]
+Fa mennyisége
+[Stone amount]
+Kő mennyisége
+[Algae amount]
+Alga mennyisége
+[Fruit amount]
+Gyümölcs mennyisége
+[Stone on hilltops]
+Kő a dombtetőkön
+[Winding river]
+Kanyargó folyó
+[Sandy beaches]
+Homokos strandok
+[Land bridges]
+Földhidak
+[Colony meadows]
+Rétek a kolóniák körül
+[Extra starting deposit]
+Extra kezdő lelőhely
+[Moat bridges]
+Hidak a várárkon
+[Jagged coastlines]
+Tagolt partok
+[Sand roads]
+Homokutak
+[Treasure in dead ends]
+Kincsek a zsákutcákban
+[Fjord bank deposits]
+Lelőhelyek a fjordok partján
+[Sandy lake shore]
+Homokos tópart
+[River delta]
+Folyódelta
+[Meandering rivers]
+Kanyargó folyók
+[Fruit in home valleys]
+Gyümölcs a kezdővölgyekben
+[Moat]
+Várárok
+[Stone in the orchard]
+Kő a gyümölcsösben
+[Colonies on both coasts]
+Kolóniák mindkét parton
+[Winding belt]
+Kanyargó öv
+[Cell shape]
+Cellák alakja
+[Squares]
+Négyzetek
+[Hexagons]
+Hatszögek
+[Warp]
+Torzítás
+[Fingerprint]
+Ujjlenyomat
+[Wavelength]
+Hullámhossz
+[Pattern]
+Minta
+[Labyrinth]
+Labirintus
+[Channels]
+Barázdák
+[Barrier]
+Akadály
+[Water]
+Víz
+[Grain]
+Szemcsésség
+[Rain shadow]
+Esőárnyék
+[Ridges]
+Gerincek
+[Slant]
+Ferdeség
+[Ridge thickness]
+Gerincek vastagsága
+[Pass spacing]
+Hágók távolsága
+[Lee width]
+Szélárnyék szélessége
+[Old growth]
+Őserdő
+[Canals]
+Csatornák
+[Forest density]
+Erdő sűrűsége
+[Hidden groves]
+Rejtett ligetek
+[Starting trails]
+Kezdő ösvények
+[Block size]
+Háztömb mérete
+[Canal width]
+Csatorna szélessége
+[Extra bridges]
+További hidak
+[Polder]
+Polder
+[Old town]
+Óváros
+[Anthill]
+Hangyaboly
+[Row angle]
+Sorok szöge
+[Diagonal]
+Átlós
+[Dyke spacing]
+Gátak távolsága
+[Village size]
+Falvak mérete
+[Hamlets]
+Tanyák
+[City size]
+Város mérete
+[Street width]
+Utcák szélessége
+[Plazas]
+Terek
+[Chamber spacing]
+Kamrák távolsága
+[Chamber size]
+Kamrák mérete
+[Queen room]
+Királynő kamrája
+[Tunnel width]
+Járatok szélessége
+[Loops]
+Hurkok
+[Home pools]
+Otthoni tavacskák
+[Farm plots]
+Szántóparcellák
+[Tendril roads]
+Kacsutak
+[Random]
+Véletlenszerű
+[Vertical]
+Függőleges
+[Horizontal]
+Vízszintes
+[Inland lakes]
+Belső tavak
+[Block shape]
+Háztömbök alakja
+[Random parameters]
+Véletlen paraméterek
+[Randomize parameters]
+Paraméterek véletlenszerűen
+[Start quality]
+Kezdés minősége
+[Fairness]
+Méltányosság
+[Fitness]
+Erősség
+[Win chance]
+Nyerési esély
+[Coefficient]
+Együttható
+[Average]
+Átlag
+[Fitted on games:]
+Illesztve játszmákra:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Minden kolónia kezdését a kész térképen mérjük, és egy egyenrangú ellenfelek közötti több ezer játszmára illesztett modell ezekből a mérésekből erősséget számol. Az erősség megmutatja, mennyire valószínű, hogy a kolónia nyer. A méltányosság azt mutatja, mennyire egyenletesen oszlanak meg ezek az esélyek: 1, ha minden kolóniának ugyanakkora esélye van a győzelemre, 0, ha egyetlen kolónia vinné el a térképet.
+[Worst]
+Leggyengébb
+[Best]
+Legjobb
+[Map preview controls]
+Húzással lépjen át a széleken. Görgővel nagyíthat. Jobb vagy dupla kattintással alaphelyzetbe állíthat.
+[Map preview drag help]
+Húzással mozgathat; görgővel nagyíthat.
+[Map preview loading]
+Betöltés...
+[Map preview failed]
+Az előnézet sikertelen
+[Map preview retry]
+Kattintson az újrapróbáláshoz
+[Map preview please wait]
+Kérem, várjon
+[Stats births]
+Születések
+[Stats deaths]
+Halálozások
+[Stats starvation]
+Éhhalál
+[Stats wheat stock]
+Búzakészlet
+[Stats wheat loads]
+Búzarakományok
+[Stats meals]
+Felszolgált ételek
+[Stats new buildings]
+Új épületek
+[Stats upgrades]
+Fejlesztések
+[Stats training]
+Képzési látogatások
+[Stats damage dealt]
+Okozott sebzés
+[Stats damage received]
+Elszenvedett sebzés
+[Stats HP restored]
+Visszaállított életerő
+[Stats since tick]
+Ettől a lépéstől
+[Stats combat deaths]
+Harc
+[Stats clearing deaths]
+Tisztítási sérülés
+[Stats trapped deaths]
+Csapdába esett
+[Stats unknown deaths]
+Egyéb/ismeretlen
+[Stats conversions]
+Be / ki
+[Stats unavailable]
+Nem elérhető
+[Stats wheat per minute]
+Rakomány/perc
+[Stats meals per minute]
+Étel/perc
+[Stats occupancy]
+Etetés / gyógyítás
+[Stats page one]
+Statisztika 1/3 >
+[Stats page two]
+Statisztika 2/3 >
+[Stats next page]
+Oldal (P)
+[Map preview choose another]
+Válasszon térképet
+[Resources never grow or spread across the map.]
+Az erőforrások soha nem nőnek és nem terjednek a térképen.
+[Building sites complete immediately, skipping delivery.]
+Az építkezések azonnal befejeződnek, a szállítási szakasz kihagyásával.
+[Units never grow hungry and never starve.]
+Az egységek soha nem éheznek és soha nem halnak éhen.
+[Slows how often resources grow or spread across the map.]
+Lassítja, hogy az erőforrások milyen gyakran nőnek vagy terjednek a térképen.
+[Seeds each team's shared market/exchange resource pool at game start.]
+A játék kezdetén feltölti minden csapat közös piaci/csere-erőforráskészletét.
+[Grow normally]
+Normál növekedés
+[No growth]
+Nincs növekedés
+[Normal construction]
+Normál építkezés
+[Instant]
+Azonnali
+[Units get hungry]
+Az egységek megéheznek
+[No hunger]
+Nincs éhség
+[Off (today's growth)]
+Kikapcsolva (mai növekedés)
+[Scarce (2x slower)]
+Ritka (2x lassabb)
+[Very scarce (4x slower)]
+Nagyon ritka (4x lassabb)
+[Extremely scarce (8x slower)]
+Rendkívül ritka (8x lassabb)
+[None (today's default)]
+Nincs (mai alapértelmezett)
+[Small (+50 each)]
+Kicsi (+50 egyenként)
+[Medium (+150 each)]
+Közepes (+150 egyenként)
+[Large (+300 each)]
+Nagy (+300 egyenként)
+[No resource growth]
+Nincs erőforrás-növekedés
+[Economy]
+Gazdaság
+[Scarce resources]
+Ritka erőforrások
+[Instant construction]
+Azonnali építkezés
+[Stockpile start]
+Kezdő készlet
+[Units still visit schools but never gain a level.]
+Az egységek továbbra is iskolába járnak, de sosem lépnek szintet.
+[Units fight to the death instead of retreating to heal.]
+Az egységek a halálig harcolnak ahelyett, hogy visszavonulnának gyógyulni.
+[Units are never permanently lost -- HP just stops at 1.]
+Az egységek soha nem vesznek el véglegesen -- az életpontjuk egyszerűen megáll 1-en.
+[Disables all combat between every team.]
+Kikapcsolja az összes harcot minden csapat között.
+[Higher tiers deal more damage but have less HP and armor.]
+A magasabb szintek több sebzést okoznak, de kevesebb életpontjuk és páncéljuk van.
+[Higher tiers give every building much more HP.]
+A magasabb szintek sokkal több életpontot adnak minden épületnek.
+[Starting units spawn already leveled up. Changes the generated map.]
+A kezdő egységek már feljebb léptetve jelennek meg. Megváltoztatja a generált térképet.
+[Trains normally]
+Normálisan képződik
+[No upgrades]
+Nincs fejlesztés
+[Retreats when damaged]
+Visszavonul sérüléskor
+[Fearless]
+Rettenthetetlen
+[Can die permanently]
+Véglegesen meghalhat
+[No permadeath]
+Nincs végleges halál
+[Normal combat]
+Normál harc
+[Peaceful mode]
+Békés mód
+[Off (today's balance)]
+Kikapcsolva (mai egyensúly)
+[Glass cannon x2]
+Üvegágyú x2
+[Glass cannon x3]
+Üvegágyú x3
+[Off (today's HP)]
+Kikapcsolva (mai életpont)
+[Fortress x5]
+Erőd x5
+[Fortress x10]
+Erőd x10
+[Veteran]
+Veterán
+[Elite]
+Elit
+[Legendary]
+Legendás
+[Combat]
+Harc
+[Glass cannon]
+Üvegágyú
+[Fortress buildings]
+Megerősített épületek
+[Veteran/Fast start]
+Veterán/Gyors kezdés
+[Match ends at the timer; highest prestige at that instant wins.]
+A mérkőzés az időzítő lejártával ér véget; ekkor a legnagyobb presztízzsel rendelkező nyer.
+[Off (no timer)]
+Kikapcsolva (nincs időzítő)
+[90 minutes]
+90 perc
+[30 minutes]
+30 perc
+[45 minutes]
+45 perc
+[60 minutes]
+60 perc
+[Sudden-death timer]
+Hirtelen halál időzítő
+[Stats page three]
+Statisztika 3/3 >
+[Stats blocked units]
+Egységek S/C
+[Stats blocked buildings]
+Épületek S/C
+[Stats blocked buildings swim]
+Úszik S/C
+[Stats current blocked units]
+Egységek C
+[Stats current blocked buildings]
+Épületek C
+[Stats growth global]
+Erőforrások +
+[Stats growth new tiles]
+Erőforrások +#
+[Stats growth reductions]
+Erőforrások -
+[Stats growth per minute]
+Búza +/min
+[Stats growth near 8]
+Erőforrások + <=8
+[Stats growth near 16]
+Erőforrások + <=16
+[Stats growth near 32]
+Erőforrások + <=32
+[Stats low HP 25]
+Életpont <=25%
+[Stats low HP 50]
+Életpont <=50%
+[Stats low HP 75]
+Életpont <=75%
+[Stats low food 25]
+Élelmiszer <=25%
+[Stats low food 50]
+Élelmiszer <=50%
+[Stats low food 75]
+Élelmiszer <=75%
+[Stats structural units]
+Egységek S
+[Stats structural buildings]
+Épületek S
+[Stats low HP ranges]
+Életpont: <=25/50/75%
+[Stats low food ranges]
+Élelmiszer: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Emodzsi karakter
+[Smiley]
+Mosolygó arc
+[Sad face]
+Szomorú arc
+[Winking face]
+Kacsintó arc
+[Surprised face]
+Meglepett arc
+[Heart eyes]
+Szívszemek
+[Sunglasses]
+Napszemüveg
+[Heart]
+Szív
+[Star]
+Csillag
+[Neutral face]
+Semleges arc
+[Sleeping face]
+Alvó arc
+[Grinning face]
+Vigyorgó arc
+[Kissing face]
+Csókot adó arc
+[Angry face]
+Dühös arc
+[Tongue out]
+Kinyújtott nyelv
+[Skull]
+Koponya
+[Flower]
+Virág
+[Four-leaf clover]
+Négylevelű lóhere
+[Teardrop]
+Csepp
+[Cloud]
+Felhő
+[Gem]
+Drágakő
+[Apple]
+Alma
+[Speech bubble]
+Szövegbuborék
+[Shield]
+Pajzs
+[Emoji style]
+Emodzsi stílusa
+[Outline]
+Körvonal
+[Filled]
+Kitöltött
+[Emoji terrain]
+Emodzsi terepe
+[Regular]
+Normál
+[Inverse]
+Fordított
+[Crossings]
+Átkelők
+[Forts]
+Erődök
+[Gate width]
+Kapuszélesség
+[Braided Delta]
+Fonatos delta
+[Braid count]
+Folyóágak száma
+[Rejoining frequency]
+Összefolyások gyakorisága
+[Crossing spacing]
+Átkelők távolsága
+[Breachable highlands]
+Áttörhető felföld
+[Ridge depth]
+Hegygerincek vastagsága
+[Extra open passes]
+További nyitott hágók
+[Wooded saddles]
+Erdős nyergek
+[Hedgerow Country]
+Sövényes vidék
+[Field size]
+Mezőméret
+[Hedge thickness]
+Sövényvastagság
+[Existing gateways]
+Meglévő átjárók
+[Wooded boundary share]
+Fás határok aránya
+[The Glacis]
+A Glacis
+[Allotments]
+Kiskertek
+[Caravanserai]
+Karavánszeráj
+[Mixed]
+Vegyes
+[Fort size]
+Erőd mérete
+[Bastions]
+Bástyák
+[Four-pointed]
+Négyágú
+[Five-pointed]
+Ötágú
+[Six-pointed]
+Hatágú
+[Glacis width]
+Glacis szélessége
+[Gates]
+Kapuk
+[Site size]
+Parcellák mérete
+[Plot width]
+Ágyások szélessége
+[Plot mix]
+Ágyások keveréke
+[Tended]
+Gondozott
+[Overgrown]
+Elvadult
+[Commons]
+Közlegelők
+[Few]
+Kevés
+[Some]
+Néhány
+[Home oasis size]
+Szülőoázis mérete
+[Caravanserais per colony]
+Karavánszerájok kolóniánként
+[Desert]
+Sivatag
+[Open erg]
+Nyílt erg
+[Dunes and mesas]
+Dűnék és tanúhegyek
+[Canyon country]
+Kanyonvidék
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Egy erőd nem éri el a gázlóját; használj nagyobb térképet vagy kevesebb kolóniát.
+[A wall would stand on a beach; try another seed.]
+Egy fal homokparton állna; próbálj másik magot.
+[The fort is too small for its gardens; raise Fort size.]
+Az erőd túl kicsi a kertjeihez; növeld az erőd méretét.
+[The home oasis is too small; raise Home oasis size.]
+A szülőoázis túl kicsi; növeld a szülőoázis méretét.
+[Braided river]
+Fonatos folyó
+[Braid width]
+Fonat szélessége
+[Bar size]
+Zátonyok mérete
+[Extra riffles]
+További gázlók
+[Moraine hummocks]
+Morénahalmok
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+A fonat túl kevés teraszt hagy az otthonoknak; használj nagyobb térképet vagy keskenyebb fonatot.
+[The map is too narrow across for a braid; use a bigger map.]
+A térkép keresztben túl keskeny egy fonathoz; használj nagyobb térképet.
+[Drumlin field]
+Drumlinmező
+[Drumlin spacing]
+Drumlinek távolsága
+[Drumlin length]
+Drumlinek hossza
+[Water gap]
+Vízsáv
+[Esker loops]
+Eskerhurkok
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Az eskerek nem tudták összekötni az összes drumlint; használj keskenyebb vízsávot vagy nagyobb térképet.
+[Continents]
+Kontinensek
+[Continent]
+Kontinens
+[North America]
+Észak-Amerika
+[South America]
+Dél-Amerika
+[Africa]
+Afrika
+[Europe]
+Európa
+[Asia]
+Ázsia
+[Oceania]
+Óceánia
+[Orientation]
+Tájolás
+[Turn to fit]
+Elforgatás, ha kell
+[Upright]
+Forgatás nélkül
+[Mountain ranges]
+Hegyláncok
+[Great rivers]
+Nagy folyók
+[Islets]
+Szigetecskék
+[Oases]
+Oázisok
+[The world atlas has no such continent.]
+A világatlaszban nincs ilyen kontinens.
+[The map is too small to hold a continent.]
+A térkép túl kicsi egy kontinenshez.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Ezen a kontinensen ekkora térképméretnél nincs hely ennyi kolóniának; használjon nagyobb térképet vagy kevesebb kolóniát.
+[Savannah]
+Szavanna
+[Watering holes]
+Itatóhelyek
+[Dry patches]
+Száraz foltok
+[Sparse]
+Kevés
+[Normal]
+Normál
+[Many]
+Sok
+[Rice terraces]
+Rizsteraszok
+[Unoccupied hills]
+Lakatlan dombok
+[Hill radius]
+Dombsugár
+[Contour band width]
+Szintvonalas sávok szélessége
+[Stairs per hill]
+Lépcsők dombonként
+[Valley river]
+Völgyi folyó
+[Hills]
+Dombok
+[Hillsides]
+Lejtők
+[Terraces per slope]
+Teraszok lejtőnként
+[Waviness]
+Hullámosság
+[Stair spacing]
+Lépcsők távolsága
+[Locust]
+Sáskák
+[Plantations]
+Ültetvények
+[Plot size]
+Építési telek mérete
+[Farm width]
+Szántóföld szélessége
+[Islands per colony]
+Szigetek kolóniánként
+[Outpost inns]
+Előőrsi étkezdék
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+A szigetek túl kicsik a telkeikhez; használj nagyobb térképet, kisebb telket vagy kevesebb kolóniát.
+[Sierpiński Gardens]
+Sierpiński kertjei
+[Hilbert River]
+Hilbert folyója
+[Maximum nesting]
+Legnagyobb beágyazás
+[Minimum terminal district side]
+Végső körzet legkisebb oldala
+[Major crossing pairs]
+Fő átkelőpárok
+[Maximum fold depth]
+Legnagyobb hajtásmélység
+[Minimum land spacing]
+Legkisebb szárazföldi távolság
+[Optional local crossings per parent]
+Választható helyi átkelők szülőrégiónként
+[Optional major shortcuts]
+Választható fő rövidítések
+[Lava shield]
+Lávapajzs
+[Lava tongues]
+Lávanyelvek
+[Long tongues]
+Hosszú lávanyelvek
+[Crater rim width]
+Kráterperem szélessége
+[Honeycomb isle]
+Méhsejtsziget
+[Blocks per colony]
+Háztömbök kolóniánként
+[Rubble]
+Törmelék
+[Outline gaps]
+Rések a körvonalban
+[Craters per colony]
+Kráterek kolóniánként
+[Wheat fields]
+Búzamezők
+[Bridges]
+Hidak
+[Karst towers]
+Karszttornyok
+[Tower spacing]
+Karszttornyok távolsága
+[Tower density]
+Karszttornyok sűrűsége
+[Paddy depth]
+Rizsföldek kiterjedése
+[Home design]
+Otthon kialakítása
+[Horseshoe]
+Patkó
+[Twin gates]
+Ikerkapuk
+[Three gates]
+Három kapu
+[Four gates]
+Négy kapu
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+A folyók nem találtak utat az otthonok között; használj nagyobb térképet vagy kevesebb kolóniát.
+[River meander]
+Folyó kanyargása
+[Flooded terraces]
+Elárasztott teraszok
+[Sinkholes]
+Víznyelők
+[Bajada]
+Hordalékkúpok
+[Range spacing]
+Hegyláncok távolsága
+[Ridge width]
+Gerincek szélessége
+[Passes]
+Hágók
+[Fans per range]
+Hordalékkúpok lánconként
+[Stream reach]
+Patakok hossza
+[Playa]
+Sós tavak
+[Broad fan]
+Széles kúp
+[Long fan]
+Hosszú kúp
+[Twin springs]
+Ikerforrások
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+A hordalékkúpos lejtők túl keskenyek az otthonokhoz; használj nagyobb térképet, nagyobb hegyláncok közti távolságot, keskenyebb gerinceket vagy kisebb sós tavakat.
+[Central Quarry]
+Központi kőbánya
+[Quarry size]
+Kőbánya mérete
+[Sand bars]
+Homokpadok
+[Woodland]
+Erdőség
+[Central Quarry needs at least two colonies.]
+A Központi kőbányához legalább két kolónia szükséges.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+A tó nem fér el ezen a térképen; használj kisebb tavat vagy nagyobb térképet.
+[A sand bar did not reach the island.]
+Egy homokpad nem érte el a szigetet.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Ezen a térképen nincs hely ennyi kolóniának; használj nagyobb térképet vagy kevesebb kolóniát.
+[The island has no room for its quarry; use a bigger island.]
+A szigeten nincs hely a kőbányának; használj nagyobb szigetet.
+[Hidden Oasis]
+Rejtett oázis
+[Pond algae]
+A tavacska algái
+[Starting towers]
+Kezdő tornyok
+[Starting school]
+Kezdő iskola
+[Mesas]
+Táblahegyek
+[Springs]
+Források
+[Hidden Oasis needs at least two colonies.]
+A Rejtett oázishoz legalább két kolónia szükséges.
+[Hidden Oasis holds at most eight colonies.]
+A Rejtett oázis legfeljebb nyolc kolóniát fogad be.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+A masszívum nem fér el ezen a térképen; használj nagyobb térképet vagy kevesebb kolóniát.
+[The pond has no room for that much algae; use a bigger pond.]
+A tavacskában nincs hely ennyi algának; használj nagyobb tavacskát.
+[Even Ground]
+Egyenlő terep
+[Balance]
+Kiegyensúlyozás
+[Tight passes]
+Szűk átjárók
+[Solver effort]
+Megoldó ráfordítása
+[Brief]
+Rövid
+[Patient]
+Türelmes
+[This map is too small to solve on; use a bigger map.]
+Ez a térkép túl kicsi a megoldáshoz; használj nagyobb térképet.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Túl sok kolónia ahhoz, hogy ekkora térképen kiegyensúlyozhatók legyenek; használj nagyobb térképet vagy kevesebb kolóniát.
+[The colonies could not be spread out on this map.]
+A kolóniákat nem sikerült elosztani ezen a térképen.
+[Marchland]
+Határvidék
+[Prizes on the rope]
+Díjak a kötélen
+[March width]
+A határvidék szélessége
+[Levelling]
+Kiegyenlítés
+[A march needs a country on each side; use at least two colonies.]
+A határvidékhez mindkét oldalon kell egy ország; használj legalább két kolóniát.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Túl sok kolónia ahhoz, hogy ez a térkép mindegyiknek hazát adjon; használj nagyobb térképet vagy kevesebb kolóniát.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Ezen a térképen nincs hely a kolóniák elosztására; használj nagyobb térképet vagy kevesebb kolóniát.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Egy kolónia hazájának nincs kijárata a határvidékre; használj nagyobb térképet vagy keskenyebb határvidéket.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Egy kolónia hazájában nincs hely rajnak; használj nagyobb térképet, kevesebb kolóniát vagy keskenyebb határvidéket.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+A határvidéken túl kevés a vitatott terület ennyi díjhoz; használj kevesebb díjat, szélesebb határvidéket vagy nagyobb térképet.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+A határvidéken nincs hely díjnak; használj nagyobb térképet, kevesebb kolóniát vagy szélesebb határvidéket.
+[Orchard Commons]
+Közös gyümölcsösök
+[Orchard spacing]
+Gyümölcsösök távolsága
+[Compact]
+Közeli
+[Balanced]
+Kiegyensúlyozott
+[Spread]
+Távoli
+[The Gauntlet]
+Próbák arénája
+[Partition thickness]
+Válaszfalak vastagsága
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+A Próbák arénájához nagyobb térkép vagy kevesebb kolónia kell, hogy minden kolóniának elférjen két őrzött bejárata.
+[The Comb]
+A Fésű
+[Peninsulas per shore]
+Félszigetek partonként
+[Encircled Kingdom]
+Körülzárt királyság
+[Fortress plan]
+Erőd alaprajza
+[Automatic]
+Automatikus
+[Elongated enclosure]
+Hosszúkás erőd
+[Bastioned enclosure]
+Bástyás erőd
+[Paired courtyards]
+Kettős udvar
+[Heartland farmland]
+Központi termőföld
+[The Faulted City]
+A szétszakadt város
+[Fault displacement]
+Vetődések eltolódása
+[Fault width]
+Vetődések szélessége
+[Ruin density]
+Romsűrűség
+[Surviving junctions]
+Megmaradt csomópontok
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+A szétszakadt városhoz oldalanként 256 vagy 512 mező és egy–tizenkét kolónia szükséges.
+[The city has too few usable junctions.]
+A városban túl kevés a használható csomópont.
+[A city neighbourhood lacks reachable crops or building room.]
+Egy városnegyedben nincs elérhető termény vagy elegendő hely az építkezéshez.
+[The city neighbourhoods are too unequal; try another seed.]
+A városnegyedek túl egyenlőtlenek; próbálj másik magot.
+[The fractured civic plaza did not survive.]
+A szétszakadt városi tér nem maradt fenn.
+[Who Ate the Map?]
+Ki ette meg a térképet?
+[Appetite]
+Étvágy
+[A Little Nibble]
+Egy kis harapás
+[Hungry]
+Éhes
+[Portage Lakes]
+Tavak és erdei átjárók
+[Lake elongation]
+Tavak nyújtottsága
+[Portage depth]
+Erdei átjáró vastagsága
+[Extra trails]
+További ösvények
+[Portage Lakes needs sides between 64 and 512 tiles.]
+A térkép oldalainak 64 és 512 mező közé kell esniük.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+Ezzel a maggal nem helyezhetők telepek a partokra.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Nem férnek el megújuló parti földek minden telep mellett.
+[Portage Lakes cannot connect its shoreline trails.]
+A parti ösvények nem köthetők össze.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+Ezzel a maggal nem alakítható ki hasznos rövidítés száraz erdőn át.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+Ezzel a maggal nem alakítható ki hasznos úszó rövidítés.
+[Portage Lakes needs separate swimming lakes on this seed.]
+Ezzel a maggal az úszásra szolgáló tavaknak különállónak kell maradniuk.
+[Drowned Forest]
+Elárasztott erdő
+[Sandbar connections]
+Homokpadi összeköttetések
+[Wooded neck thickness]
+Erdős akadályok vastagsága
+[Neutral clearing size]
+Semleges tisztások mérete
+[Bastion Keys]
+Bástyaszigetek
+[Plantation size]
+Ültetvény mérete
+[Outlying islands]
+Külső szigetek
+[The Hungry Marches]
+Az éhező határvidék
+[Opening ration]
+Kezdő élelemkészlet
+[Central concentration]
+Központi koncentráció
+[The Last Treeline]
+Az utolsó erdősáv
+[Woodland depth]
+Ligetek szélessége
+[Fertility]
+Termékenység
+[Deposits]
+Készletek
+[Room]
+Hely
+[Isolation]
+Elszigeteltség
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Minden kolónia kezdését a kész térképen mérjük: az út a búzáig és a fáig, mennyire nő vissza a talaja, az elérhető készletek és építési helyek, valamint a távolság a riválisoktól. Minden tényező 0-tól 1-ig pontoz egy rögzített mércéhez képest, az összeg súlyozza őket, a méltányosság a leggyengébb kolónia összege osztva a legjobbéval, a pontszám pedig a leggyengébb összeg szorozva a méltányossággal.
+[ERROR_CANT_SAVE_MAP]
+A térképet nem sikerült menteni. Ellenőrizze a célt és a rendelkezésre álló helyet. A szerkesztések továbbra is nyitva vannak.
+[Loading headers]
+Fejlécek betöltése...
+[Loading teams]
+Csapatok betöltése...
+[Loading terrain]
+Terep betöltése...
+[Building gradients]
+Színátmenetek építése...
+[Loading players]
+Játékosok betöltése...
+[Loading scripts]
+Szkriptek betöltése...
+[Generating map]
+Térkép generálása...
+[ERROR_CANT_GENERATE_MAP]
+A térképet nem sikerült legenerálni. Próbáljon más generálási beállításokat.
+[Loading units]
+Egységek betöltése...
+[Loading buildings]
+Épületek betöltése...
+[Resolving team links]
+Csapatkapcsolatok feloldása...
+[saving to storage]
+Mentés...
+[save failed retry]
+A mentés sikertelen. Próbálja újra.
+[export save]
+Mentés exportálása
+[storage restore failed]
+A böngésző tárolóját nem sikerült helyreállítani. A meglévő mentett adatok nem változtak. Folytathatja ezt a munkamenetet, de a helyi változtatások nem menthetők meg tartósan. Exportálja a fontos mentéseket a mentési hiba párbeszédpaneléből. Töltse újra az oldalt, hogy újra megpróbálja helyreállítani a tárolót.
+[continue]
+Folytatás
+[export file]
+Fájl exportálása
+[export failed]
+A fájl exportálása sikertelen
+[import file]
+Importálás
+[select import file]
+Válasszon importálandó fájlt
+[validating import]
+Fájl ellenőrzése...
+[import succeeded]
+Fájl importálva
+[import cancelled]
+Az importálás megszakítva
+[import failed]
+Az importálás sikertelen: érvénytelen vagy nem támogatott fájl
+[import persistence failed]
+Nincs mentve: válassza az Importálás lehetőséget az újrapróbálkozáshoz, vagy a Fájl exportálását
+[import progress]
+Importálás folyamata
+[export progress]
+Exportálás folyamata
+[retry save]
+Mentés újrapróbálása
+[campaign save failed]
+A hadjárat haladása nem mentődött. Próbálja újra, vagy exportáljon biztonsági mentést.
+[leave without saving]
+Kilépés mentés nélkül
+[campaign import failed]
+Érvénytelen haladásfájl vagy eltérő hadjáratverzió
+[network release mismatch]
+A kliens és a szerver protokollja eltér. Telepítse a szerverrel megegyező Glob2-verziót.
+[settings continue]
+Folytatás
+[settings save failed]
+A beállítások mentése nincs megerősítve. Próbálja újra, vagy folytassa.
+[shutdown save failed]
+A végső mentés nincs megerősítve. Próbálja újra, vagy lépjen ki mentés nélkül.
+[quit without saving]
+Kilépés mentés nélkül
+[game closed]
+A játék bezárult. Bezárhatja ezt az ablakot, vagy újratöltheti az oldalt az ismételt játékhoz.
+[campaign editor save failed]
+A mentés nincs megerősítve. Az OK újra próbálkozik; a Mégse visszatér a szerkesztő menüjébe.
+[Actions]
+Műveletek
+[Minimap]
+Minitérkép
+[Fast forward]
+Gyors előretekerés
+[Hide keyboard]
+Billentyűzet elrejtése
+[Dialog text size]
+Párbeszédszöveg mérete
+[Player slot]
+Játékoshely
+[Team color]
+Csapatszín
+[Alliance group]
+Szövetségi csoport
+[menu]
+Menü
+[Editor tools]
+Eszközök
+[Pan map]
+Térkép mozgatása
+[Edit map]
+Pálya szerkesztése
+[Editor map]
+Térkép
+[Flags]
+Zászlók
+[Pause]
+Szünet
+[Speed]
+Sebesség
+[Objectives]
+Célok
+[Menu]
+Menü
+[Goals]
+Célok
+[Teams]
+Csapatok
+[Use this landscape]
+Táj használata
+[Reset]
+Visszaállítás
+[Generating...]
+Generálás...
+[Players]
+Játékosok
+[Rules]
+Szabályok
+[settings Interface layout]
+Felület elrendezése
+[settings Automatic]
+Automatikus
+[settings Compact]
+Közeli
+[settings Spacious]
+Tágas
+[More]
+Továbbiak
+[No items]
+Nincsenek elemek
+[Opponents]
+Ellenfelek
+[Review]
+Áttekintés
+[Review & Play]
+Ellenőrzés és játék
+[Edit opponents]
+Ellenfelek szerkesztése
+[Map settings]
+Térképbeállítások
+[Next]
+Tovább
+[Done]
+Kész
+[Contribution]
+Hozzájárulás
+[Choose who controls this colony]
+Válaszd ki, ki irányítja ezt a kolóniát
+[Settings]
+Beállítások
+[settings Back]
+Vissza
+[settings Save the game automatically about every minute.]
+A játék automatikus mentése körülbelül percenként.
+[AI opponents]
+Gépi ellenfelek
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+A tágas elrendezés oldalsó panelt használ, ha van elég hely. A kompakt elrendezés eszköztárat és kinyitható paneleket használ.
+[Assigned %0 · Target %1]
+Kiosztva %0 · Cél %1
+[Range: %0]
+Hatótáv: %0
+[Player %0]
+Játékos %0
+[Brush %0]
+Ecset %0
+[Team %0]
+Csapat %0
+[Your colony]
+Saját kolóniád
+[%0 / %1 HP · %2]
+%0 / %1 ÉP · %2
+[Units: %0]
+Egységek: %0
+[Buildings: %0]
+Épületek: %0
+[Need food: %0]
+Élelemre szorul: %0
+[Need healing: %0]
+Gyógyításra szorul: %0
+[Attack: %0]
+Támadás: %0
+[Defense: %0]
+Védelem: %0
+[Food: %0 / %1]
+Élelem: %0 / %1
+[View team %0]
+%0. csapat megtekintése
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Ecset %0x%1
+[Level %0]
+Szint %0
+[Manage teams (%0)]
+Csapatok kezelése (%0)
+[Team %0 / Level %1]
+Csapat %0 / Szint %1
+[Files · %0]
+Fájlok · %0
+[Hint %0]
+Tipp %0
+[Objective %0]
+Cél %0
+[Entry %0 of 8 · empty entries are omitted]
+%0. bejegyzés a 8-ból · az üresek kimaradnak
+[Teams %0/%1]
+Csapatok %0/%1
+[Elapsed time · %0]
+Eltelt idő · %0
+[Read-only building]
+Csak megtekinthető épület
+[Alliance and shared vision are fixed for this match.]
+A szövetség és a közös látótér rögzített ebben a játékban.
+[Share vision]
+Látótér megosztása
+[Share food vision]
+Élelem látóterének megosztása
+[Share market vision]
+Piacok látóterének megosztása
+[Chat]
+Csevegés
+[No other players have editable diplomatic settings in this match.]
+Más játékosnak nincs módosítható diplomáciai beállítása ebben a játékban.
+[No briefing for this match.]
+Ehhez a játékhoz nincs eligazítás.
+[Chat · recipients selected in Teams]
+Csevegés · címzettek a Csapatoknál kiválasztva
+[Filename]
+Fájlnév
+[Reduced motion]
+Csökkentett mozgás
+[Send]
+Küldés
+[Close]
+Bezárás
+[Forbidden]
+Tiltott
+[Guard]
+Őrzés
+[Clear]
+Tisztítás
+[Paint]
+Festés
+[Erase]
+Törlés
+[Release on valid terrain to place]
+Elhelyezéshez engedd el megfelelő terep felett
+[Paint on the map; two fingers move]
+Fess a térképre; két ujjal mozgathatod
+[Tutorial ▸]
+Oktatás ▸
+[Back to tools]
+Vissza az eszközökhöz
+[Starvation overlay]
+Éhezési réteg
+[Damage overlay]
+Sérülési réteg
+[Defense overlay]
+Védelmi réteg
+[Fertility overlay]
+Termékenységi réteg
+[Health and food bars]
+Életerő- és élelemsávok
+[Message history]
+Üzenetelőzmények
+[Mark map for allies]
+Térkép jelölése a szövetségeseknek
+[Show zones]
+Zónák mutatása
+[Pan]
+Mozgatás
+[Select]
+Kijelölés
+[Show palette]
+Paletta mutatása
+[Release to place]
+Engedd el az elhelyezéshez
+[Blocked placement]
+Elhelyezés akadályozva
+[File name]
+Fájl neve
+[Load map]
+Térkép betöltése
+[Save map]
+Térkép mentése
+[No files in this folder]
+Nincs fájl ebben a mappában
+[No files saved yet]
+Még nincs mentett fájl
+[Export]
+Exportálás
+[Tap to write the mission briefing]
+Koppints a küldetés eligazításának megírásához
+[Tap to write the map script]
+Koppints a térkép szkriptjének megírásához
+[Script]
+Szkript
+[Previous]
+Előző
+[Compile]
+Fordítás
+[Tap to write this hint]
+Koppints e tipp megírásához
+[Tap to write this objective]
+Koppints e cél megírásához
+[Mission briefing · tap to edit, swipe to scroll]
+Küldetés eligazítása · koppints a szerkesztéshez, húzd a görgetéshez
+[Not enough recorded history yet.]
+Még nincs elég rögzített előzmény.
+[Select a team to show its history.]
+Válassz csapatot az előzményei megjelenítéséhez.
+[Back to chart]
+Vissza a diagramhoz
+[Expand chart]
+Diagram nagyítása
+[Slot]
+Hely
+[Color]
+Szín
+[Player / AI]
+Játékos / MI
+[Group]
+Csoport
+[Forbid]
+Tiltás
+[↓ Low]
+↓ Alacsony
+[= Normal]
+= Normál
+[↑ High]
+↑ Magas
+[Details]
+Részletek
+[Campaign name]
+Hadjárat neve
+[Unlocking]
+Feloldás
+[Parameters]
+Paraméterek
+[Blank map]
+Üres pálya
+[Generated]
+Generált
+[Preview]
+Előnézet
+[Selected landscape]
+Kiválasztott táj
+[Representative preview]
+Mintaelőnézet
+[Starting terrain]
+Kezdeti terep
+[Hide parameters]
+Paraméterek elrejtése
+[Size and parameters]
+Méret és paraméterek
+[Choose a landscape]
+Válassz tájat
+[%0 / Browse]
+%0 / Tallózás
+[%0 colonies · %1]
+%0 kolóniák · %1
+[%0 · Team %1]
+%0 · Csapat %1
+[Colonies: %0]
+Kolóniák: %0
+[%0 colonies · %1 AI]
+%0 kolóniák · %1 MI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Egységek
+[settings Level %0]
+Szint %0
+[settings Match the desktop %0]
+Az asztalhoz igazítva (%0)
+[settings Current display %0 %1 %2 %3]
+Aktuális megjelenítési mód: %0 × %1 · %2 · %3
+[Fairness: %0]
+Méltányosság: %0
+[Colony %0]
+Kolónia %0
+[Win chance: %0 · Fitness: %1]
+Nyerési esély: %0 · Erősség: %1
+[%0 · Contribution: %1]
+%0 · Hozzájárulás: %1
+[Min required level %0]
+Minimális szükséges szint: %0
+[Confirm %0]
+Rendben: %0
+[Dialog text size %0]
+Párbeszédszöveg mérete: %0%
+[%0 %1]
+%0 %1

@@ -28,6 +28,11 @@ namespace
 	{
 		return shouldShowBuildingFailureReasons(counts, kReasonCount, kAvailability);
 	}
+
+	bool mark(const uint32_t (&counts)[kReasonCount], int working, int desired)
+	{
+		return shouldShowFailingUnitMarkers(counts, kReasonCount, kAvailability, working, desired);
+	}
 }
 
 class BuildingFailureDisplayTest: public CPPUNIT_NS::TestCase
@@ -38,6 +43,9 @@ CPPUNIT_TEST_SUITE(BuildingFailureDisplayTest);
 		CPPUNIT_TEST(testRealObstructionShown);
 		CPPUNIT_TEST(testUnavailablePlusRealShown);
 		CPPUNIT_TEST(testLastReasonShown);
+		CPPUNIT_TEST(testMarkersFollowTheRows);
+		CPPUNIT_TEST(testMarkersHiddenWhenNotAsking);
+		CPPUNIT_TEST(testMarkersHiddenWhenOverstaffed);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -74,6 +82,30 @@ protected:
 	{
 		uint32_t counts[kReasonCount] = {0, 0, 0, 0, 0, 0, 0, 1};
 		CPPUNIT_ASSERT(show(counts) == true);
+	}
+	// A building still short of its ratio shows badges exactly when it shows
+	// rows: the marker gate adds a condition, it never relaxes one.
+	void testMarkersFollowTheRows(void)
+	{
+		uint32_t real[kReasonCount] = {5, 0, 2, 0, 0, 0, 0, 0};
+		uint32_t onlyUnavailable[kReasonCount] = {5, 0, 0, 0, 0, 0, 0, 0};
+		CPPUNIT_ASSERT(mark(real, 1, 3) == true);
+		CPPUNIT_ASSERT(mark(onlyUnavailable, 1, 3) == false);
+	}
+
+	// Staffed to its ratio, the building has stopped asking for units and its
+	// tallies are the leftovers of its last scan: no rows, so no badges.
+	void testMarkersHiddenWhenNotAsking(void)
+	{
+		uint32_t real[kReasonCount] = {5, 0, 2, 0, 0, 0, 0, 0};
+		CPPUNIT_ASSERT(mark(real, 3, 3) == false);
+	}
+
+	// The ratio can be dragged below what is already hired.
+	void testMarkersHiddenWhenOverstaffed(void)
+	{
+		uint32_t real[kReasonCount] = {0, 4, 0, 0, 0, 0, 0, 0};
+		CPPUNIT_ASSERT(mark(real, 5, 2) == false);
 	}
 };
 

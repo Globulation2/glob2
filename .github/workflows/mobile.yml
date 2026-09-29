@@ -1,0 +1,43 @@
+name: mobile foundations
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - 'scons/**'
+      - 'SConstruct'
+      - 'libgag/**'
+      - 'src/**'
+      - 'test/**'
+      - 'tests/build_system/**'
+      - '.github/workflows/mobile.yml'
+jobs:
+  android-native:
+    name: Android native (${{ matrix.arch }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64-v8a, armeabi-v7a, x86_64]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build utilities
+        run: sudo apt-get update -qq && sudo apt-get install -y scons pkg-config unzip zip autoconf automake libtool
+      - name: Check build isolation and artifact validation
+        run: python3 -m unittest discover -s tests/build_system -v
+      - name: Install verified NDK
+        run: python3 mobile/setup_ndk.py
+      - name: Build pinned target dependencies
+        run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release
+      - name: Compile and stage native application
+        run: python3 mobile/android.py configure --arch '${{ matrix.arch }}' --release
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-${{ matrix.arch }}-diagnostics
+          path: |
+            build/android/**/toolchain.json
+            build/android/**/compile_commands.json
+            build/android/**/vcpkg-buildtrees/**/*.log
+            build/android/**/android-project/glob2-build.json
+          if-no-files-found: ignore

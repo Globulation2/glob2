@@ -3,6 +3,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include "Minimap.h"
 #include "EngineTiming.h"
 #include "FixedPoint.h"
@@ -49,10 +50,17 @@ void Minimap::setGame(Game& ngame)
 	game = &ngame;
 }
 
+void Minimap::resizeViewport(int width)
+{
+	gameWidth = width;
+	if (!noX && game) computeMinimapPositioning();
+}
+
 
 
 void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
 {
+	PERF_SCOPE_TIME(Minimap);
 	if (noX) return;
 
   // Compute the position of the minimap if it needs to be scaled & centered
@@ -420,4 +428,3 @@ void Minimap::computeColors(int row, int localTeam)
 		surface->drawPixel(dx+decX, dy+decY, r, g, b, Color::ALPHA_OPAQUE);
 	}
 }
-

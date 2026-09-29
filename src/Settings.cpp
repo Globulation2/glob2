@@ -2,11 +2,13 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Settings.h"
+#include <InterfacePresentation.h>
 #include "GUIBase.h"
 #include "Utilities.h"
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <GAG.h>
+#include <FileManager.h>
 #include <StringTable.h>
 #include <string>
 #include <algorithm>
@@ -31,6 +33,7 @@ Settings::Settings()
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
 	screenWidth = 800;
 	screenHeight = 600;
+	uiScale = 0;
 	optionFlags = 0;
 	automaticTorus = false;
 	language = "en";
@@ -39,12 +42,14 @@ Settings::Settings()
 	mute = 0;
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
+    mobileDialogTextPercent = 100;
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;
 	
 	scrollWheelEnabled=true;
 	highResolutionArtwork=true;
+	autosaveGames=true;
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
 	
@@ -80,6 +85,7 @@ void Settings::setPasswd(std::string s) { password = s; }
 
 void Settings::load(std::string filename)
 {
+    interfacePresentation="automatic";
 	std::map<std::string, std::string> parsed;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
@@ -109,6 +115,9 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
+		READ_PARSED_INT(uiScale);
+        READ_PARSED_STRING(interfacePresentation);
+        interfacePresentation=presentationPreferenceName(parsePresentationPreference(interfacePresentation));
 		READ_PARSED_INT(optionFlags);
 		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
@@ -118,7 +127,10 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
 		READ_PARSED_INT(highResolutionArtwork);
+		READ_PARSED_INT(autosaveGames);
 		READ_PARSED_INT(gameSpeed);
+        READ_PARSED_INT(mobileDialogTextPercent);
+        mobileDialogTextPercent=std::clamp(mobileDialogTextPercent,100,150);
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_NORMAL),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 #ifndef YOG_SERVER_ONLY
@@ -153,6 +165,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(version);
 	}
 	delete stream;
+    presentationPreference=parsePresentationPreference(interfacePresentation);
 	
 	if(version < SETTINGS_VERSION)
 	{
@@ -167,15 +180,15 @@ void Settings::load(std::string filename)
  */
 bool Settings::save(std::string filename)
 {
-	auto* buffer = new MemoryStreamBackend();
-	OutputStream *stream = new BinaryOutputStream(buffer);
-	// Memory output starts at EOF; it is writable regardless of its read position.
-	{
+	return Toolkit::getFileManager()->writeAtomically(filename, [this](OutputStream& output) {
+		OutputStream* stream = &output;
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
+		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
+        Utilities::streamprintf(stream, "interfacePresentation=%s\n", interfacePresentation.c_str());
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
 		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
@@ -185,7 +198,9 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
+		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
+        Utilities::streamprintf(stream,"mobileDialogTextPercent=%d\n",mobileDialogTextPercent);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
@@ -210,10 +225,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
 		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
-	}
-	const std::string contents(buffer->getBuffer(), buffer->getPosition());
-	delete stream;
-	return Toolkit::getFileManager()->writeFileAtomic(filename, contents);
+	});
 }
 
 

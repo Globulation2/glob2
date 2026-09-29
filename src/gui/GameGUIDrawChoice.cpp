@@ -149,7 +149,7 @@ void GameGUI::drawChoiceInfoPanel(const std::string& type)
 	const int colLeftX = panelLeftX + 4 + (RIGHT_MENU_WIDTH - 128) / 2;
 	const int colRightX = colLeftX + 64;
 
-	// maxResource[] indexes are the engine-wide resource ordering: 0=Wood, 1=Corn,
+	// maxResource[] indexes are the engine-wide resource ordering: 0=Wood, 1=Wheat,
 	// 2=Papyrus, 3=Stone, 4=Alga. Don't reorder without auditing every consumer.
 	globalContainer->gfx->drawString(colLeftX, buildingInfoStart + 6, globalContainer->littleFont,
 		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxResource[0]).c_str());
@@ -159,7 +159,7 @@ void GameGUI::drawChoiceInfoPanel(const std::string& type)
 	globalContainer->gfx->drawString(colRightX, buildingInfoStart + 6, globalContainer->littleFont,
 		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxResource[4]).c_str());
 	globalContainer->gfx->drawString(colRightX, buildingInfoStart + 17, globalContainer->littleFont,
-		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxResource[1]).c_str());
+		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wheat]")).arg(bt->maxResource[1]).c_str());
 
 	globalContainer->gfx->drawString(colLeftX, buildingInfoStart + 28, globalContainer->littleFont,
 		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxResource[2]).c_str());

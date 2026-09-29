@@ -1,0 +1,3 @@
+PASS gd-large-4ai.game: 1024 ticks, identical checksum sidecar: 3f36e16da805f072bb5bc52481dcde29043814e1cd15457b9a3400f2d9faf1c5
+PASS gd-bigarena-long.game: 2048 ticks, identical checksum sidecar: 9890c690cd768897e79458f8bd70c590c3b5b9d6a184434069a8751889fbdf86
+PASS v108 checkpoint: 256 reloaded ticks, identical parent team/entity checksum records

@@ -3,9 +3,12 @@
 
 #include "Version.h"
 #include "MapHeader.h"
-#include "Game.h"
 #include <algorithm>
+#include <map>
+#include <cassert>
+#include <cstring>
 #include "FileManager.h"
+#include <BinaryStream.h>
 
 MapHeader::MapHeader()
 {
@@ -29,9 +32,20 @@ void MapHeader::reset()
 
 bool MapHeader::load(GAGCore::InputStream *stream)
 {
+	// The same header is read from local files, imports and network messages.
+	// Do not expose partially read fields if validation fails.
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
+	MapHeader candidate;
+	if (!candidate.loadFields(stream)) return false;
+	*this = candidate;
+	return true;
+}
+
+bool MapHeader::loadFields(GAGCore::InputStream *stream)
+{
 	///First, check if its an old format map
 	Uint32 pos = stream->getPosition();
-	char* signature[4];
+	char signature[4];
 	stream->read(signature, 4, "signature");
 	if(memcmp(signature, "SEGb",4) == 0)
 	{
@@ -43,12 +57,16 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 	mapName = stream->readText("mapName");
 	versionMajor = stream->readSint32("versionMajor");
 	versionMinor = stream->readSint32("versionMinor");
+	if (versionMajor != VERSION_MAJOR || versionMinor < MINIMUM_VERSION_MINOR || versionMinor > VERSION_MINOR)
+		return false;
 
 	numberOfTeams = stream->readSint32("numberOfTeams");
 	mapOffset = stream->readUint32("mapOffset");
-	isSavedGame = stream->readUint8("isSavedGame");
+	const Uint8 saved = stream->readUint8("isSavedGame");
+	if (saved > 1) return false;
+	isSavedGame = saved != 0;
 
-	if(numberOfTeams > Team::MAX_COUNT)
+	if(numberOfTeams < 0 || numberOfTeams > Team::MAX_COUNT)
 	{
 		return false;
 	}
@@ -75,7 +93,7 @@ bool MapHeader::load(GAGCore::InputStream *stream)
 
 
 	
-void MapHeader::save(GAGCore::OutputStream *stream) const
+void MapHeader::save(GAGCore::OutputStream *stream, size_t *sha1Position) const
 {
 	stream->writeEnterSection("MapHeader");
 	stream->writeText(mapName, "mapName");
@@ -84,6 +102,8 @@ void MapHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeSint32(numberOfTeams, "numberOfTeams");
 	stream->writeUint32(mapOffset, "mapOffset");
 	stream->writeUint8(isSavedGame, "isSavedGame");
+	if (sha1Position)
+		*sha1Position = stream->getPosition();
 	stream->write(SHA1, 20, "SHA1");
 	stream->writeEnterSection("teams");
 	for(int i=0; i<numberOfTeams; ++i)
@@ -256,7 +276,7 @@ bool MapHeader::operator==(const MapHeader& rhs) const
 		rhs.mapOffset == mapOffset &&
 		rhs.isSavedGame == isSavedGame &&
 		rhs.mapName == mapName &&
-		std::equal(SHA1, SHA1+20, rhs.SHA1)==0)
+		std::equal(SHA1, SHA1+20, rhs.SHA1))
 		return true;
 	return false;
 }
@@ -264,13 +284,20 @@ bool MapHeader::operator==(const MapHeader& rhs) const
 
 std::string glob2FilenameToName(const std::string& filename)
 {
+	// Strip a ".gz" container suffix first so "Foo.map.gz"/"Foo.game.gz" resolve
+	// their display name exactly like the uncompressed "Foo.map"/"Foo.game" did.
+	std::string trimmed = filename;
+	static const std::string gzSuffix = ".gz";
+	if (trimmed.size() >= gzSuffix.size() && trimmed.compare(trimmed.size()-gzSuffix.size(), gzSuffix.size(), gzSuffix) == 0)
+		trimmed.resize(trimmed.size() - gzSuffix.size());
+
 	std::string mapName;
-	if(filename.find(".game")!=std::string::npos)
-		mapName=filename.substr(filename.find("/")+1, filename.size()-6-filename.find("/"));
-	else if(filename.find(".replay")!=std::string::npos)
-		mapName=filename.substr(filename.find("/")+1, filename.size()-8-filename.find("/"));
+	if(trimmed.find(".game")!=std::string::npos)
+		mapName=trimmed.substr(trimmed.find("/")+1, trimmed.size()-6-trimmed.find("/"));
+	else if(trimmed.find(".replay")!=std::string::npos)
+		mapName=trimmed.substr(trimmed.find("/")+1, trimmed.size()-8-trimmed.find("/"));
 	else
-		mapName=filename.substr(filename.find("/")+1, filename.size()-5-filename.find("/"));
+		mapName=trimmed.substr(trimmed.find("/")+1, trimmed.size()-5-trimmed.find("/"));
 	size_t pos = mapName.find("_");
 	while(pos != std::string::npos)
 	{
@@ -305,5 +332,65 @@ std::string glob2NameToFilename(const std::string& dir, const std::string& name,
 		fullFileName += extension;
 	}
 	return fullFileName;
+}
+
+namespace
+{
+	bool endsWithGz(const std::string& path)
+	{
+		static const std::string suffix = ".gz";
+		return path.size() >= suffix.size() && path.compare(path.size()-suffix.size(), suffix.size(), suffix) == 0;
+	}
+}
+
+std::string glob2GzipWritePath(const std::string& path)
+{
+	return endsWithGz(path) ? path : path + ".gz";
+}
+
+bool glob2IsGzipPath(const std::string& path)
+{
+	return endsWithGz(path);
+}
+
+std::string glob2PreferGzipReadPath(GAGCore::FileManager& files, const std::string& path)
+{
+	if (endsWithGz(path))
+		return path;
+	const std::string gzipped = path + ".gz";
+	return files.exists(gzipped) ? gzipped : path;
+}
+
+GAGCore::StreamBackend *glob2OpenMapOrSaveInputStreamBackend(GAGCore::FileManager& files, const std::string& path)
+{
+	return files.openInflatingInputStreamBackend(glob2PreferGzipReadPath(files, path));
+}
+
+std::vector<std::string> glob2ListMapOrSaveFiles(GAGCore::FileManager& files, const std::string& dir, const std::string& baseExtension)
+{
+	std::vector<std::string> result;
+	std::map<std::string, size_t> indexByName;
+	auto scan = [&](const std::string& extension, bool isGzip)
+	{
+		if (!files.initDirectoryListing(dir.c_str(), extension, false))
+			return;
+		std::string fileName;
+		while (!(fileName = files.getNextDirectoryEntry()).empty())
+		{
+			std::string name = isGzip ? fileName.substr(0, fileName.size()-3) : fileName;
+			std::string fullFileName = dir + DIR_SEPARATOR + fileName;
+			auto it = indexByName.find(name);
+			if (it != indexByName.end())
+				result[it->second] = fullFileName; // the later (".gz") scan wins
+			else
+			{
+				indexByName[name] = result.size();
+				result.push_back(fullFileName);
+			}
+		}
+	};
+	scan(baseExtension, false);
+	scan(baseExtension + ".gz", true);
+	return result;
 }
 

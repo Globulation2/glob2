@@ -4,6 +4,7 @@
 #include "BinaryStream.h"
 #include "FileManager.h"
 #include "FileTransferMessages.h"
+#include "MapHeader.h"
 #include "Toolkit.h"
 #include "YOGServerFileDistributor.h"
 #include "YOGServerPlayer.h"
@@ -35,14 +36,15 @@ void YOGServerFileDistributor::loadFromPlayer(std::shared_ptr<YOGServerPlayer> n
 
 void YOGServerFileDistributor::saveToFile(const std::string& file)
 {
-	std::shared_ptr<BinaryOutputStream> stream(new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(file+".gz")));
-	for(unsigned int i=0; i<chunks.size(); ++i)
-	{
-		stream->write(chunks[i]->getBuffer(), chunks[i]->getChunkSize(), "");
-	}
-	stream.reset();
-	//unzip file
-	Toolkit::getFileManager()->gunzip(file+".gz", file);
+	// The wire payload is always a single gzip layer of the map bytes; store it
+	// directly as the new on-disk container (atomically, so a crash mid-write
+	// can't leave a corrupt file) instead of unzipping to a raw file. An older
+	// receiver's gunzip-to-raw still works on this same payload, so this is
+	// compatible with peers running that code.
+	Toolkit::getFileManager()->writeAtomically(file+".gz", [&](OutputStream& stream) {
+		for(unsigned int i=0; i<chunks.size(); ++i)
+			stream.write(chunks[i]->getBuffer(), chunks[i]->getChunkSize(), "");
+	});
 }
 
 
@@ -153,8 +155,17 @@ void YOGServerFileDistributor::loadDataFromFile()
 	if(!startedLoading)
 	{
 		startedLoading=true;
-		Toolkit::getFileManager()->gzip(fileName, fileName+".gz");
-		std::shared_ptr<BinaryInputStream> istream(new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(fileName+".gz")));
+		FileManager& files = *Toolkit::getFileManager();
+		const std::string resolved = glob2PreferGzipReadPath(files, fileName);
+		// A locally compressed map is already the wire payload; only a legacy raw
+		// map needs gzipping once before it is sent.
+		std::string gzipFile = resolved;
+		if (!glob2IsGzipPath(resolved))
+		{
+			files.gzip(resolved, resolved+".gz");
+			gzipFile = resolved+".gz";
+		}
+		std::shared_ptr<BinaryInputStream> istream(new BinaryInputStream(files.openInputStreamBackend(gzipFile)));
 		istream->seekFromEnd(0);
 		int size=istream->getPosition();
 		istream->seekFromStart(0);

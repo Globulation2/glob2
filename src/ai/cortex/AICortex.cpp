@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "AITelemetryFields.h"
 #include "AICortex.h"
 #include "CortexObservation.h"
 #include "CortexWheat.h"
 
 #include "Order.h"
+#include "OrderMessages.h"
 #include "Player.h"
 #include "team/Team.h"
 #include "IntBuildingType.h"
@@ -23,6 +25,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <stdexcept>
 
 using std::shared_ptr;
 
@@ -34,7 +37,7 @@ AICortex::AICortex(Player* player)
 AICortex::AICortex(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor)
 {
 	init(player);
-	load(stream, player, versionMinor);
+	if (!load(stream, player, versionMinor)) throw std::runtime_error("invalid Cortex execution state");
 }
 
 AICortex::~AICortex()
@@ -50,6 +53,12 @@ AICortex::~AICortex()
 void AICortex::init(Player* player)
 {
 	this->player = player;
+	const auto& saved = player->game->gameHeader.getAIConfig(player->number);
+	runtimeTuning = saved.empty() ? Cortex::cortexTuning() : Cortex::CortexTuning();
+	std::string error;
+	if (!saved.empty() && !Cortex::applyTuning(runtimeTuning, saved, error))
+		throw std::runtime_error(error);
+	player->game->gameHeader.setAIConfig(player->number, Cortex::tuningValues(runtimeTuning));
 	timer = 0;
 	for (int t = 0; t < Cortex::CORTEX_BUILDING_TYPES; t++)
 		buildCooldownUntil[t] = 0; // per-type build cooldown; none pending at start.
@@ -86,7 +95,7 @@ void AICortex::init(Player* player)
 	decideTraceOpenAttempted = false; // open the decision trace at most once, even if it fails.
 	innTraceFile = nullptr; // gated inn-diagnostic trace; lazily opened, never serialized.
 	innTraceOpenAttempted = false; // open the inn trace at most once, even if it fails.
-	innFinishedTick.clear(); // RAM-only inn settle clock; rebuilt as inns are seen.
+	innFinishedTick.clear(); // Persisted settle clock, initially empty.
 	swarmKickstarted = false; // start-of-game swarm worker kickstart not yet done.
 }
 
@@ -140,9 +149,51 @@ bool AICortex::load(GAGCore::InputStream* stream, Player* player, Sint32 version
 	// every load and desync replays. -1 means a pre-wheat save (or a game that has
 	// not reached its first decision cycle yet) — getOrder draws it next cycle.
 	wheatOpenMargin = stream->readSint32("wheatOpenMargin");
+	if (versionMinor >= 101)
+	{
+		swarmKickstarted = stream->readUint8("swarmKickstarted");
+		policy.expandWantStreak_ = stream->readSint32("expandWantStreak");
+		stream->readEnterSection("unownedFlagSeen");
+		const Uint32 unownedCount = stream->readUint32("count");
+		if (unownedCount > Building::MAX_COUNT) return false;
+		unownedFlagSeen.clear();
+		for (Uint32 i=0; i<unownedCount; ++i)
+		{
+			stream->readEnterSection(i);
+			const Uint16 gid = stream->readUint16("gid");
+			unownedFlagSeen[gid] = stream->readSint32("tick");
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		stream->readEnterSection("innFinishedTick");
+		const Uint32 count = stream->readUint32("count");
+		if (count > Building::MAX_COUNT) return false;
+		innFinishedTick.clear();
+		for (Uint32 i=0; i<count; ++i)
+		{
+			stream->readEnterSection(i);
+			const Uint16 gid = stream->readUint16("gid");
+			innFinishedTick[gid] = stream->readSint32("tick");
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		stream->readEnterSection("orderQueue");
+		const Uint32 orders = stream->readUint32("count");
+		if (orders > 65536) return false;
+		while (!orderQueue.empty()) orderQueue.pop();
+		for (Uint32 i=0; i<orders; ++i)
+		{
+			stream->readEnterSection(i);
+			NetSendOrder envelope;
+			envelope.setDecodeVersionMinor(versionMinor);
+			envelope.decodeData(stream);
+			if (!envelope.getOrder()) return false;
+			orderQueue.push(envelope.getOrder());
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+	}
 	stream->readLeaveSection();
-	// orderQueue is transient working state, not persisted; it refills on the
-	// next decision cycle after load.
 	return true;
 }
 
@@ -192,6 +243,42 @@ void AICortex::save(GAGCore::OutputStream* stream)
 	stream->writeSint32(flagPosture, "flagPosture");
 	stream->writeSint32(offenseHoldUntil, "offenseHoldUntil");
 	stream->writeSint32(wheatOpenMargin, "wheatOpenMargin");
+	stream->writeUint8(swarmKickstarted, "swarmKickstarted");
+	stream->writeSint32(policy.expandWantStreak_, "expandWantStreak");
+	stream->writeEnterSection("unownedFlagSeen");
+	stream->writeUint32(unownedFlagSeen.size(), "count");
+	int flagIndex=0;
+	for (const auto &entry : unownedFlagSeen)
+	{
+		stream->writeEnterSection(flagIndex++);
+		stream->writeUint16(entry.first, "gid");
+		stream->writeSint32(entry.second, "tick");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeEnterSection("innFinishedTick");
+	stream->writeUint32(innFinishedTick.size(), "count");
+	int index=0;
+	for (const auto &entry : innFinishedTick)
+	{
+		stream->writeEnterSection(index++);
+		stream->writeUint16(entry.first, "gid");
+		stream->writeSint32(entry.second, "tick");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeEnterSection("orderQueue");
+	stream->writeUint32(orderQueue.size(), "count");
+	auto orders=orderQueue;
+	index=0;
+	while (!orders.empty())
+	{
+		stream->writeEnterSection(index++);
+		NetSendOrder(orders.front()).encodeData(stream);
+		orders.pop();
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
@@ -206,7 +293,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 	// upgrade gate require:
 	//   - buildingState == ALIVE                          (C++: Construction.cpp:95)
 	//   - !type->isBuildingSite                           (C++: Construction.cpp:95)
-	//   - hp == type->hpMax  (else launchConstruction REPAIRS, not upgrades)
+	//   - hp == getEffectiveMaxHp()  (else launchConstruction REPAIRS, not upgrades)
 	//                                                      (C++: Construction.cpp:97-108)
 	//   - constructionResultState == NO_CONSTRUCTION (not already up/repairing)
 	//   - type->nextLevel != BUILDING_LEVEL_NONE (not already at max level)
@@ -236,7 +323,7 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 			continue;
 		if (b->type->nextLevel == BUILDING_LEVEL_NONE)
 			continue;
-		if (b->hp != b->type->hpMax)
+		if (b->hp != b->getEffectiveMaxHp())
 			continue; // hp < hpMax would launch a REPAIR; > can't happen.
 		if (b->constructionResultState != Building::NO_CONSTRUCTION)
 			continue;
@@ -280,6 +367,8 @@ Building* AICortex::findUpgradeTarget(int buildingType) const
 
 shared_ptr<Order> AICortex::getOrder(void)
 {
+	Cortex::TuningScope tuningScope(runtimeTuning);
+	policy.telemetry = telemetry;
 	// Drain any Orders queued by a prior decision cycle, one per tick.
 	if (!orderQueue.empty())
 	{
@@ -403,39 +492,39 @@ shared_ptr<Order> AICortex::getOrder(void)
 			// Per-inn wheat-gate detail (feedCap root-cause). feedCapacity sums only
 			// inns that pass the gate (harvestable >= CORTEX_WHEAT_MIN_TILES=5).
 			// nearestWheat is forbidden-BLIND; harvestable is forbidden-AWARE. When
-			// feedCap==0: corn-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
+			// feedCap==0: wheat-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
 			// nearestWheat large/-1 => DEPLETED/ABSENT (c).
 			for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
 			{
 				const Cortex::TrackedBuilding& n = obs.trackedInns[i];
 				if (!n.valid) continue;
 				std::cerr << "CORTEX_INN t=" << obs.tick << " inn=" << i
-				          << " corn=" << n.corn << "/" << n.maxCorn
+				          << " wheat=" << n.wheat << "/" << n.maxWheat
 				          << " haulers=" << n.maxUnitWorking
 				          << " restockReq=" << n.restockTripsNeeded
 				          << " inside=" << n.unitsInside << "/" << n.maxUnitInside
 				          << " nearestWheat=" << n.nearestWheatDist
-				          << " blindCorn=" << n.diagBlindCornNearby
+				          << " blindWheat=" << n.diagBlindWheatNearby
 				          << " harvestable=" << n.harvestableWheatNearby
 				          << " feedsGate=" << (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES ? 1 : 0)
 				          << "\n";
 			}
-			// Per-swarm corn buffer + assigned haulers: contrast against the inns above to
-			// see whether the scarce haulers are feeding PRODUCTION (swarm corn full) while
+			// Per-swarm wheat buffer + assigned haulers: contrast against the inns above to
+			// see whether the scarce haulers are feeding PRODUCTION (swarm wheat full) while
 			// the inns (FEEDING) sit empty.
 			for (int i = 0; i < obs.swarmCount && i < CORTEX_MAX_TRACKED_SWARMS; i++)
 			{
 				const Cortex::TrackedBuilding& s = obs.trackedSwarms[i];
 				if (!s.valid) continue;
 				std::cerr << "CORTEX_SWARM t=" << obs.tick << " swarm=" << i
-				          << " corn=" << s.corn << "/" << s.maxCorn
+				          << " wheat=" << s.wheat << "/" << s.maxWheat
 				          << " haulers=" << s.maxUnitWorking
 				          << " prio=" << s.priority
 				          << " harvestable=" << s.harvestableWheatNearby
 				          << "\n";
 			}
 			// Direct engine-gradient probe per real inn: is COLLECTABLE (ripe, reachable)
-			// corn actually available at the inn? cornAvail=0 with corn tiles nearby ⇒ the
+			// wheat actually available at the inn? wheatAvail=0 with wheat tiles nearby ⇒ the
 			// local wheat is unripe/over-harvested, not merely fogged — that is why
 			// restockTripsNeeded computes 0 and the inn never refills.
 			{
@@ -451,9 +540,9 @@ shared_ptr<Order> AICortex::getOrder(void)
 						continue;
 					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
 					          << " at=" << bb->posX << "," << bb->posY
-					          << " corn=" << bb->resources[CORN] << "/" << bb->type->maxResource[CORN]
-					          << " cornAvail=" << (g->map.resourceAvailable(tm->teamNumber, CORN, 0, bb->posX, bb->posY) ? 1 : 0)
-					          << " cornGrad=" << (int)g->map.getGradient(tm->teamNumber, CORN, 0, bb->posX, bb->posY)
+					          << " wheat=" << bb->resources[WHEAT] << "/" << bb->type->maxResource[WHEAT]
+					          << " wheatAvail=" << (g->map.resourceAvailable(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY) ? 1 : 0)
+					          << " wheatGrad=" << (int)g->map.getGradient(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY)
 					          << "\n";
 				}
 			}
@@ -742,6 +831,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		}
 		else
 			action = policy.decide(obs);
+		telemetry.set(AITrace::AI6::economy_selected_action, action.kind);
 		translateAction(action, obs);
 
 		// War-flag management runs EVERY decision cycle, in PARALLEL with decide()'s
@@ -757,6 +847,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		// bands did not move); only the economy-vs-combat single-slot contention is
 		// gone. ACTION_NOOP when no flag wants to move this cycle enqueues nothing.
 		Cortex::CortexAction combat = policy.decideCombat(obs);
+		telemetry.set(AITrace::AI6::combat_selected_action, combat.kind);
 		translateAction(combat, obs);
 
 		// Defense-flag teardown runs EVERY decision cycle, in PARALLEL with the action

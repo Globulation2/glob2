@@ -12,7 +12,10 @@
     "fribidi",
     "libogg",
     "libvorbis",
+    "boost-asio",
+    "boost-beast",
     "speex",
+    "openssl",
     "opengl",
     "libepoxy",
     "pcre"

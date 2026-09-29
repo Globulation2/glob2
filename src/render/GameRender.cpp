@@ -6,6 +6,7 @@
 #include "AICastor.h"
 #include "AINicowar.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <string.h>
 
@@ -25,7 +26,6 @@
 
 #include "Brush.h"
 #include "DynamicClouds.h"
-#include "FertilityCalculatorDialog.h"
 
 
 #include "GameRenderInternal.h"
@@ -37,7 +37,10 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 {
 	assert(maxLength>=0);
 	assert(maxLength<65536);
-	assert(actLength<=maxLength);
+	// Live counts may exceed the displayed capacity. Bound both sections;
+	// drawing a status bar must not abort gameplay or spill outside the bar.
+	actLength = std::clamp(actLength, 0, maxLength);
+	secondActLength = std::clamp(secondActLength, 0, maxLength - actLength);
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
@@ -273,7 +276,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						// TODO : find better color for this
 						if (type->hpMax)
 						{
-							float hpRatio=(float)building->hp/(float)type->hpMax;
+							float hpRatio=(float)building->hp/(float)building->getEffectiveMaxHp();
 							drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio);
 						}
 
@@ -283,7 +286,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
 
 						if ((type->canFeedUnit) || (type->unitProductionTime))
-							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[CORN], building->resources[CORN], 255, 255, 120);
+							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120);
 					}
 				});
 			}
@@ -303,7 +306,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						Uint8 *gradient=ai->hydratationMap;
 						//Uint8 *gradient=ai->enemyWarriorsMap;
 						//Uint8 *gradient=map.forbiddenGradient[1][0];
-						//Uint8 *gradient=map.resourcesGradient[0][CORN][0];
+						//Uint8 *gradient=map.resourcesGradient[0][WHEAT][0];
 
 						assert(gradient);
 						size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);

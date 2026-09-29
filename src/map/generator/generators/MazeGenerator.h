@@ -1,0 +1,12 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+#include "GenerationRequest.h"
+#include "GeneratorDefinition.h"
+struct MazeOptions
+{
+	int cellShape, cellSize, channelWidth, loopiness, warp;
+	int wheat, wood, stone, algae, fruit; // percentages of the default amounts
+	bool sandRoads, treasure;
+	explicit MazeOptions(const GenerationRequest &r);
+};
+GeneratorDefinition mazeDefinition();

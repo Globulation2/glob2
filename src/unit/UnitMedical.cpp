@@ -136,12 +136,16 @@ void Unit::handleMagic(void)
 						Sint32 targetTeam = Unit::GIDtoTeam(targetGUID);
 						Uint16 targetID = Unit::GIDtoID(targetGUID);
 						Uint32 targetTeamMask = 1<<targetTeam;
-						if (owner->enemies & targetTeamMask)
+						if (owner->attackableTeams() & targetTeamMask)
 						{
 							Unit *enemyUnit = teams[targetTeam]->myUnits[targetID];
-							Sint32 damage = attackForce + experienceLevel - enemyUnit->getRealArmor(true);
+							Sint32 damage = (attackForce + experienceLevel) * owner->game->gameHeader.getGlassCannonScale() - enemyUnit->getRealArmor(true);
 							if (damage > 0)
 							{
+								TeamStats::recordDamage(
+									owner, enemyUnit->owner, GameplayMeasurements::MAGIC,
+									GameplayMeasurements::UNIT, enemyUnit->hp, damage);
+								enemyUnit->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
 								enemyUnit->hp -= damage;
 
 								enemyUnit->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->game->stepCounter, xi, yi, enemyUnit->typeNum));
@@ -159,7 +163,10 @@ void Unit::handleMagic(void)
 
 		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
 		if (hasUsedMagicAction)
+		{
+			++owner->stats.measurements.shots[GameplayMeasurements::MAGIC];
 			magicActionTimeout = race->getUnitType(typeNum, level[magicLevel])->magicActionCooldown;
+		}
 	}
 }
 
@@ -188,9 +195,16 @@ void Unit::handleMedical(void)
 
 	if (verbose)
 		printf("guid=(%d) handleMedical...\n", gid);
-	hungry -= hungriness;
-	if (hungry<=0)
-		hp--;
+	// Custom-game "no hunger" rule: units never grow hungry or starve.
+	if (!owner->game->gameHeader.isHungerDisabled())
+	{
+		hungry -= hungriness;
+		if (hungry<=0)
+		{
+			recordLethalDamage(1, GameplayMeasurements::STARVATION);
+			hp--;
+		}
+	}
 
 	medical=MED_FREE;
 	if (isUnitHungry())
@@ -198,10 +212,16 @@ void Unit::handleMedical(void)
 	else if (hp<=trigHP)
 		medical=MED_DAMAGED;
 
+	// Custom-game "no permadeath" rule: clamp back up instead of letting the
+	// unit cross the death threshold; like the rule's description, HP stops at 1.
+	if (owner->game->gameHeader.isPermadeathDisabled() && hp<UNIT_HP_DEATH_THRESHOLD+1)
+		hp = UNIT_HP_DEATH_THRESHOLD+1;
+
 	if (hp<UNIT_HP_DEATH_THRESHOLD)
 	{
 		if (!isDead)
 		{
+			++owner->stats.measurements.deaths[typeNum][diagnosticDeathCause];
 			// disconnect from building
 			if (attachedBuilding)
 			{

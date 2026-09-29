@@ -3,6 +3,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #pragma once
+#include <CooperativeTask.h>
 
 #include <iostream>
 #include <memory>
@@ -25,7 +26,6 @@ namespace GAGCore
 	class OutputStream;
 }
 using namespace GAGCore;
-class MapGenerationDescriptor;
 class GameGUI;
 class MapEdit;
 
@@ -111,17 +111,27 @@ static constexpr int SLOT_INDEX_NONE = -1;
 //! See Game_editor.cpp:113, 139.
 static constexpr float TEAM_COLOR_HUE_DEGREES = 360.0f;
 
-//! Padding (in tiles) added on each side of the rectangle passed to
-//! Map::dirtyBuildingGradients when a building/flag changes. The width/height
-//! of the dirty rect therefore grows by 2 * GRADIENT_DIRTY_BORDER_TILES.
-//! See Game_orders.cpp:193, 279, 360, 496.
-static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
+//! A binary game save whose SHA1 is left for later, so that hashing can run
+//! off the game thread. The hash covers [start, end) as first written: the
+//! header bytes there were since backpatched, so initialHeader keeps them.
+struct DeferredGameSHA1
+{
+	size_t start = 0;
+	size_t end = 0;
+	size_t headerOffset = 0;
+	std::string initialHeader;
+	size_t sha1Offset = 0;
+	//! Stores the hash in contents, giving the bytes an inline-hashed save writes.
+	void apply(std::string& contents) const;
+};
 
 class Game
 {
+	friend class PointBarRenderTest;
 	bool hasSavedRandomState = false;
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
+	friend class FailingUnitMarkersHarness;
 	static const bool verbose = false;
 public:
 	/// Per-client viewer state (selection + mouse). Defined below; forward-
@@ -137,12 +147,14 @@ public:
 
 	///Loads data from a stream
 	bool load(GAGCore::InputStream *stream);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream);
 
 	//! Check some available integrity constraints
 	bool integrity(void);
 
-	///Saves data to a stream
-	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);
+	///Saves data to a stream. With deferredSHA1, a binary stream gets a zero
+	///SHA1 and deferredSHA1 receives what apply() needs to fill it in.
+	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name, DeferredGameSHA1* deferredSHA1 = nullptr);
 	void saveBuildProjects(GAGCore::OutputStream* stream) const;
 	void loadBuildProjects(GAGCore::InputStream* stream);
 
@@ -205,6 +217,8 @@ public:
 	// Editor stuff
 	// add & remove teams, used by the map editor and the random map generator
 	void addTeam(int pos=TEAM_POS_END);
+    // Preparation only: a cancelled task leaves a partial game to discard.
+    GAGCore::CooperativeTask addTeamTask(int pos=TEAM_POS_END);
 	void removeTeam(int pos=TEAM_POS_END);
 	//! If a team is uncontrolled (playerMask == 0), remove units and buildings from map
 	void clearingUncontrolledTeams(void);
@@ -349,6 +363,11 @@ public:
 
 	/// Sets the alliances from the GameHeader alliance teams
 	void setAlliances(void);
+	///Applies the custom-game rules that change stored unit and building stats (glass cannon
+	///HP, fearless, fortress buildings) to the units and buildings a map starts with, which
+	///were created before this match's header existed. Call once, when a map (not a saved
+	///game) starts; anything created later picks the rules up on creation.
+	void applyStartingRules(void);
 
 public:
 	///This is a static header for a map. It remains the same in between games on the same map.
@@ -412,11 +431,6 @@ public:
 
 	Team *getTeamWithMostPrestige(void);
 	bool isPrestigeWinCondition(void);
-
-public:
-	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
-	bool makeRandomMap(MapGenerationDescriptor &descriptor);
-	bool generateMap(MapGenerationDescriptor &descriptor);
 
 protected:
 	int ticksGameSum[TICK_PROFILE_BUF_LEN];

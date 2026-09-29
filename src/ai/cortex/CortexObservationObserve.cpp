@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include <PerformanceTelemetry.h>
 #include "CortexObservation.h"
 #include "CortexPlacement.h"
 #include "CortexPlacementGeo.h"
@@ -23,6 +24,7 @@ namespace Cortex
 {
 	CortexObservation observe(Player* player, int openMargin, Uint16 offenseFlagGid)
 	{
+		PERF_SCOPE_TIME(AIObserve);
 		CortexObservation obs = makeEmptyObservation();
 
 		// Echo the seeded open margin N regardless; even an early-return (no team)

@@ -1,9 +1,28 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
+
+#ifdef __APPLE__
+#	include <CoreFoundation/CoreFoundation.h>
+#	include <sys/param.h>
+#endif
+
+#include <ApplicationHost.h>
+#include <cstdlib>
+#ifdef GLOB2_MOBILE
+#include "mobile/MobilePaths.h"
+#include <exception>
+#include <SDL_log.h>
+#endif
 #include "Glob2.h"
 #include "GlobalContainer.h"
 #include "YOGServer.h"
+#ifdef GLOB2_ROUTER_ONLY
+#include "YOGServerRouter.h"
+#endif
 
 #ifndef YOG_SERVER_ONLY
 
@@ -12,10 +31,15 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
+#include "Headless.h"
+#include "Application.h"
+#include "SinglePlayerFlow.h"
 #include "Game.h"
+#include "GenerationContext.h"
+#include "GenerationService.h"
+#include "GeneratorRegistry.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
-#include "MapGenerator.h"
 #include "SettingsScreen.h"
 #include <StringTable.h>
 #include "Utilities.h"
@@ -46,13 +70,9 @@
 #	include <time.h>
 #endif
 
-#ifdef __APPLE__
-#	include <Carbon/Carbon.h>
-#	include <sys/param.h>
-#endif
-
 #ifndef YOG_SERVER_ONLY
 #include "FrontendTheme.h"
+#include "MapCommand.h"
 #endif
 
 using std::shared_ptr;
@@ -75,43 +95,6 @@ GlobalContainer *globalContainer=NULL;
 
 #ifndef YOG_SERVER_ONLY
 
-void Glob2::drawYOGSplashScreen(void)
-{
-	int w, h;
-	w=globalContainer->gfx->getW();
-	h=globalContainer->gfx->getH();
-	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
-	std::string text[3];
-	text[0]=Toolkit::getStringTable()->getString("[connecting to]");
-	text[1]=Toolkit::getStringTable()->getString("[yog]");
-	text[2]=Toolkit::getStringTable()->getString("[please wait]");
-	for (int i=0; i<3; ++i)
-	{
-		int size=globalContainer->menuFont->getStringWidth(text[i]);
-		int dec=(w-size)>>1;
-		globalContainer->gfx->drawString(dec, 150+i*50, globalContainer->menuFont, text[i]);
-	}
-	globalContainer->gfx->nextFrame();
-}
-
-void Glob2::multiplayerYOG(void)
-{
-	if (verbose)
-		printf("Glob2:: starting YOGLoginScreen...\n");
-	shared_ptr<YOGClient> client(new YOGClient);
-	YOGLoginScreen yogLoginScreen(client);
-	int yogReturnCode=yogLoginScreen.execute(globalContainer->gfx, 40);
-	if (yogReturnCode==YOGLoginScreen::Cancelled)
-		return;
-	if (yogReturnCode==-1)
-	{
-		isRunning=false;
-		return;
-	}
-	if (verbose)
-		printf("Glob2::YOGLoginScreen has ended ...\n");
-}
-
 int Glob2::runNoX()
 {
 	printf("nox::running %d times %d steps:\n", globalContainer->runNoXCountRuns, globalContainer->automaticEndingSteps);
@@ -129,7 +112,12 @@ int Glob2::runNoX()
 
 int Glob2::runTestGames()
 {
-	globalContainer->automaticEndingSteps=90000;
+	// GLOB2_TEST_MAX_TICKS overrides the 90,000-tick cap for tooling that
+	// trades game length for throughput (tools/map_fairness_tournament.py).
+	// The cap only decides when the driver stops the game; it never changes
+	// how a tick is simulated.
+	const char* envMaxTicks = getenv("GLOB2_TEST_MAX_TICKS");
+	globalContainer->automaticEndingSteps = (envMaxTicks && atoi(envMaxTicks) > 0) ? atoi(envMaxTicks) : 90000;
 	int maxRuns = globalContainer->runTestGamesCount;
 	int run = 0;
 	while(maxRuns == 0 || run < maxRuns)
@@ -166,47 +154,29 @@ int Glob2::runTestMapGeneration()
 	setSyncRandSeed(t);
 	while(true)
 	{
-		MapGenerationDescriptor descriptor;
+		GenerationRequest descriptor;
 		
-		int type = (syncRand() % 7) + 1;
-		int wDec = (syncRand() % 4) + 6;
-		int hDec = (syncRand() % 4) + 6;
-		int teams = (syncRand() % 12) + 1;
-		int workers = (syncRand() % 8) + 1;
-		int repeat = (syncRand() % 5);
-		int smooth = (syncRand() % 8) + 1;
-		
-		int oldBeach = (syncRand() % 4);
-		
-		descriptor.method = static_cast<MapGenerationDescriptor::Method>(type);
-		descriptor.nbTeams = teams;
-		descriptor.wDec=wDec;
-		descriptor.hDec=hDec;
-		descriptor.smooth = smooth;
-		descriptor.oldBeach=oldBeach;
-		descriptor.nbWorkers=workers;
-		descriptor.logRepeatAreaTimes = repeat;
-		
-		descriptor.waterRatio=syncRand() % 100;
-		descriptor.sandRatio=syncRand() % 100;
-		descriptor.grassRatio=syncRand() % 100;
-		descriptor.desertRatio=syncRand() % 100;
-		descriptor.wheatRatio=syncRand() % 100;
-		descriptor.woodRatio=syncRand() % 100;
-		descriptor.algaeRatio=syncRand() % 100;
-		descriptor.stoneRatio=syncRand() % 100;
-		descriptor.fruitRatio=syncRand() % 100;
-		descriptor.riverDiameter=syncRand() % 100;
-		descriptor.craterDensity=syncRand() % 100;
-		descriptor.extraIslands=syncRand() % 9;
-		//eISLANDS
-		descriptor.oldIslandSize=syncRand() % 74;
-		
+		using D = GenerationRequest;
+		const auto methods=GeneratorRegistry::builtins().methods(false);
+		auto method=methods[syncRand()%methods.size()];
+		descriptor.setMethodDefaults(method);
+		auto controls = D::sharedControls();
+		const auto& specific = D::controls(method);
+		controls.insert(controls.end(), specific.begin(), specific.end());
+		for (const auto& control : controls)
+		{
+			int choices = (control.maximum - control.minimum) / control.step + 1;
+			control.set(descriptor, control.minimum + (syncRand() % choices) * control.step);
+		}
+		if (!descriptor.hasTerrainWeight())
+			continue;
 
 		std::cout<<"Generating Map"<<std::endl;		
-		MapGenerator generator;
+		GenerationService generator;
 		Game game(NULL);
-		generator.generateMap(game, descriptor);
+		descriptor.seed=syncRand();
+		auto result=generator.generate(game, descriptor);
+		if(!result) std::cerr << result.diagnostic() << std::endl;
 	}
 	return 0;
 }
@@ -214,13 +184,13 @@ int Glob2::runTestMapGeneration()
 
 
 #ifndef YOG_SERVER_ONLY
-// Headless tooling: dump a map's CORN (wheat) layout and team start positions as
+// Headless tooling: dump a map's wheat layout and team start positions as
 // ASCII, to sanity-check AI wheat-protection field geometry. Reuses the real
 // Game::load path so the data matches what the engine sees. Not a gameplay feature.
 static int dumpResources(const std::string& mapName)
 {
 	using namespace GAGCore;
-	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	InputStream* stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), mapName));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "dump-resources: cannot open " << mapName << std::endl;
@@ -239,28 +209,28 @@ static int dumpResources(const std::string& mapName)
 	Map& map = game.map;
 	const int w = map.getW();
 	const int h = map.getH();
-	int cornCount = 0;
+	int wheatCount = 0;
 	int minX = w, minY = h, maxX = -1, maxY = -1;
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
-			if (map.getResource(x, y).type == CORN)
+			if (map.getResource(x, y).type == WHEAT)
 			{
-				cornCount++;
+				wheatCount++;
 				if (x < minX) minX = x; if (x > maxX) maxX = x;
 				if (y < minY) minY = y; if (y > maxY) maxY = y;
 			}
 
 	const int teamCount = game.mapHeader.getNumberOfTeams();
 	std::cout << "Map " << mapName << " : " << w << "x" << h
-	          << ", teams=" << teamCount << ", CORN tiles=" << cornCount;
-	if (cornCount > 0)
-		std::cout << ", CORN bbox=(" << minX << "," << minY << ")-(" << maxX << "," << maxY << ")";
+	          << ", teams=" << teamCount << ", WHEAT tiles=" << wheatCount;
+	if (wheatCount > 0)
+		std::cout << ", WHEAT bbox=(" << minX << "," << minY << ")-(" << maxX << "," << maxY << ")";
 	std::cout << std::endl;
 	for (int t = 0; t < teamCount; t++)
 		if (game.teams[t])
 			std::cout << "  team " << t << " start=(" << game.teams[t]->startPosX
 			          << "," << game.teams[t]->startPosY << ")" << std::endl;
-	std::cout << "  legend: C=corn ~=water #=non-walkable .=land  digit=team start" << std::endl;
+	std::cout << "  legend: C=wheat ~=water #=non-walkable .=land  digit=team start" << std::endl;
 
 	for (int y = 0; y < h; y++)
 	{
@@ -268,7 +238,7 @@ static int dumpResources(const std::string& mapName)
 		for (int x = 0; x < w; x++)
 		{
 			char c;
-			if (map.getResource(x, y).type == CORN)      c = 'C';
+			if (map.getResource(x, y).type == WHEAT)      c = 'C';
 			else if (map.isWater(x, y))                    c = '~';
 			else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
 			else                                           c = '.';
@@ -294,7 +264,7 @@ static int dumpResources(const std::string& mapName)
 static int dumpWheatPlan(const std::string& mapName, int team)
 {
 	using namespace GAGCore;
-	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	InputStream* stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), mapName));
 	if (stream->isEndOfStream())
 	{
 		std::cerr << "dump-wheat: cannot open " << mapName << std::endl;
@@ -376,7 +346,7 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	          << ", consumer seeds=" << seeds.size()
 	          << ", region=(" << boxMinX << "," << boxMinY << ")-(" << boxMaxX << "," << boxMaxY << ")"
 	          << " [fog bypassed]" << std::endl;
-	std::cout << "  legend: ~=water #=blocked .=land c=corn(unreached) o=open-margin"
+	std::cout << "  legend: ~=water #=blocked .=land c=wheat(unreached) o=open-margin"
 	             " +=harvest-half X=forbidden S=seed " << team << "=start" << std::endl;
 
 	for (int N = 0; N <= 2; N++)
@@ -404,7 +374,7 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 				else if (cls == Cortex::WC_OPEN_MARGIN)    c = 'o';
 				else if (cls == Cortex::WC_FORBIDDEN)      c = 'X';
 				else if (cls == Cortex::WC_CHECKER_OPEN)   c = '+';
-				else if (map.getResource(x, y).type == CORN) c = 'c';
+				else if (map.getResource(x, y).type == WHEAT) c = 'c';
 				else if (map.isWater(x, y))                c = '~';
 				else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
 				else                                       c = '.';
@@ -420,6 +390,17 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 
 int Glob2::run(int argc, char *argv[])
 {
+#ifndef YOG_SERVER_ONLY
+	// --generate-map has a native file/report interface and a structured job interface.
+	// The latter is selected explicitly by --output-dir; preserve native CLI parsing.
+	bool structuredMap = false;
+	for (int i = 2; i < argc; ++i)
+		if (std::string(argv[i]) == "--output-dir") structuredMap = true;
+	if (argc > 1 && isMapCommand(argv[1]) && !structuredMap)
+		return runMapCommand(argc, argv);
+	const int headless = runHeadlessCommand(argc, argv);
+	if (headless >= 0) return headless;
+#endif
 	srand(time(NULL));
 
 	globalContainer=new GlobalContainer();
@@ -454,9 +435,19 @@ int Glob2::run(int argc, char *argv[])
 	}
 	atexit(SDLNet_Quit);
 
+
+#ifdef GLOB2_ROUTER_ONLY
+	const char* lobbyHost = std::getenv("GLOB2_YOG_HOST");
+	YOGServerRouter router(lobbyHost ? lobbyHost : "127.0.0.1");
+	int routerResult = router.run();
+	delete globalContainer;
+	return routerResult;
+#endif
 	if (globalContainer->hostServer)
 	{
-		YOGServer server(YOGRequirePassword, YOGMultipleGames);
+		const char* externalRouter = std::getenv("GLOB2_EXTERNAL_ROUTER");
+		YOGServer server(YOGRequirePassword, YOGMultipleGames,
+		    !(externalRouter && std::string(externalRouter) == "1"));
 		int rc = server.run();
 		delete globalContainer;
 		return rc;
@@ -496,149 +487,13 @@ int Glob2::run(int argc, char *argv[])
 		return ret;
 	}
 
-	isRunning=true;
-
-	auto frontend = std::make_unique<FrontendTheme>();
-	// Replay the game specified by the command line
-	if (globalContainer->replaying)
-	{
-		Engine engine;
-		int rc_e = engine.loadReplay(globalContainer->replayFileName);
-		if (rc_e == Engine::EE_NO_ERROR)
-			isRunning = (engine.run() != -1);
-		else if(rc_e == -1)
-			isRunning = false;
-	}
- 
-	while (isRunning)
-	{
-		switch (MainMenuScreen::menu())
-		{
-			case -1:
-			{
-				isRunning = false;
-			}
-			break;
-			case MainMenuScreen::CAMPAIGN:
-			{
-				CampaignMainMenu ccs;
-				int rccs=ccs.execute(globalContainer->gfx, 40);
-				if(rccs == Screen::QUIT_APPLICATION)
-				{
-					isRunning = false;
-				}
-			}
-			break;
-			case MainMenuScreen::TUTORIAL:
-			{
-				Campaign campaign;
-				if(campaign.load("games/Tutorial_Campaign.txt"))
-				{
-					CampaignMenuScreen cms("games/Tutorial_Campaign.txt");
-					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms == -1)
-					{
-						isRunning = false;
-					}
-				}
-				else
-				{
-					CampaignMenuScreen cms("campaigns/Tutorial_Campaign.txt");
-					cms.setNewCampaign();
-					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms == -1)
-					{
-						isRunning = false;
-					}
-				}
-			}
-			break;
-			case MainMenuScreen::LOAD_GAME:
-			{
-				Engine engine;
-				int rc_e = engine.initLoadGame();
-				if (rc_e == Engine::EE_NO_ERROR)
-					isRunning = (engine.run() != -1);
-				else if(rc_e == -1)
-					isRunning = false;
-			}
-			break;
-			case MainMenuScreen::CUSTOM:
-			{
-				bool cont=true;
-				while(cont && isRunning)
-				{
-					Engine engine;
-					int rc_e = engine.initCustom();
-					if (rc_e ==  Engine::EE_NO_ERROR)
-					{
-						isRunning = (engine.run() != -1);
-					}
-					else if(rc_e == -1)
-					{
-						isRunning = false;
-					}
-					else
-					{
-						cont=false;	
-					}
-				}
-			}
-			break;
-			case MainMenuScreen::MULTIPLAYERS_YOG:
-			{
-				multiplayerYOG();
-			}
-			break;
-			case MainMenuScreen::MULTIPLAYERS_LAN:
-			{
-				LANMenuScreen lanms;
-				int rc_lms = lanms.execute(globalContainer->gfx, 40);
-				if(rc_lms == -1)
-					isRunning=false;
-			}
-			break;
-			case MainMenuScreen::GAME_SETUP:
-			{
-				SettingsScreen settingsScreen;
-				int rc_ss = settingsScreen.execute(globalContainer->gfx, 40);
-				if( rc_ss == -1)
-				{
-					isRunning=false;
-				}
-			}
-			break;
-			case MainMenuScreen::EDITOR:
-			{
-				EditorMainMenu editorMainMenu;
-				int rc=editorMainMenu.execute(globalContainer->gfx, 40);
-				if (rc==-1)
-				{
-					isRunning=false;
-				}
-			}
-			break;
-			case MainMenuScreen::CREDITS:
-			{
-				CreditScreen creditScreen;
-				if (creditScreen.execute(globalContainer->gfx, 40)==-1)
-					isRunning=false;
-			}
-			break;
-			case MainMenuScreen::QUIT:
-			{
-				isRunning=false;
-			}
-			break;
-			default:
-			break;
-		}
-	}
-
-	frontend.reset();
-	// This is for the text shot code
-	GAGCore::DrawableSurface::printFinishingText();
-	delete globalContainer;
+    GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
+        GAGCore::DrawableSurface::printFinishingText();
+        delete globalContainer;
+        globalContainer = nullptr;
+        GAGCore::ApplicationHost::exited(0);
+    });
+    return HOSTED_RUN;
 
 #endif  // !YOG_SERVER_ONLY
 
@@ -647,6 +502,16 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+#ifdef GLOB2_MOBILE
+    try { initializeMobilePaths(); }
+    catch(const std::exception& error) {
+        // Android does not expose native stderr in logcat. Keep early asset and
+        // storage failures diagnosable even before the game logger is available.
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Mobile startup: %s", error.what());
+        fprintf(stderr,"Mobile startup: %s\n",error.what());
+        return 1;
+    }
+#endif
 	// Line-buffer stderr/stdout so abort() and assert failures don't swallow
 	// the last log line. macOS block-buffers redirected stdio, and abort()
 	// is not required to flush — without this, "fprintf(stderr, ...) ; abort()"
@@ -654,25 +519,31 @@ int main(int argc, char *argv[])
 	setvbuf(stderr, NULL, _IOLBF, 0);
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
-#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY)
-	/* SDL has this annoying "feature" of setting working directory to parent
-	   of bundle during static initialization.  We want to set it back to the
-	   main bundle directory so we can find our Resources directory. */
-	CFBundleRef mainBundle = CFBundleGetMainBundle();
-	assert(mainBundle);
-	CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
-	assert(mainBundleURL);
-	CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
-	assert(cfStringRef);
+#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY) && !defined(GLOB2_MOBILE)
+	// Map tools resolve input and output paths relative to the caller.
+	if (!(argc > 1 && isMapCommand(argv[1])))
+	{
+		/* SDL has this annoying "feature" of setting working directory to parent
+		   of bundle during static initialization.  We want to set it back to the
+		   main bundle directory so we can find our Resources directory. */
+		CFBundleRef mainBundle = CFBundleGetMainBundle();
+		assert(mainBundle);
+		CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+		assert(mainBundleURL);
+		CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
+		assert(cfStringRef);
 
-	char path[MAXPATHLEN];
-	CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
-	chdir(path);
+		char path[MAXPATHLEN];
+		CFStringGetCString(cfStringRef, path, MAXPATHLEN, kCFStringEncodingASCII);
+		chdir(path);
 
-	CFRelease(mainBundleURL);
-	CFRelease(cfStringRef);
+		CFRelease(mainBundleURL);
+		CFRelease(cfStringRef);
+	}
 #endif
 
 	Glob2 glob2;
-	return glob2.run(argc, argv);
+	int result = glob2.run(argc, argv);
+	if (result != Glob2::HOSTED_RUN) GAGCore::ApplicationHost::exited(result);
+	return result == Glob2::HOSTED_RUN ? 0 : result;
 }

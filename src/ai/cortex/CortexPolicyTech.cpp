@@ -83,7 +83,7 @@ namespace Cortex
 	}
 
 	// --- Priority 3: school (SCIENCE) — the first tech building. Trains workers'
-	// HARVEST (more CORN carried per haul → fuller swarm/inn buffers, easing the
+	// HARVEST (more WHEAT carried per haul → fuller swarm/inn buffers, easing the
 	// very supply pressure the economy lives on) and BUILD (faster construction +
 	// raises team maxBuildLevel, the engine gate that unlocks every building
 	// upgrade). Built once the economy is established and spare labour exists, so

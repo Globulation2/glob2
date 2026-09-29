@@ -26,9 +26,9 @@ namespace Cortex
 		const int NB_DX[4] = { 0, -1, 1, 0 };
 		const int NB_DY[4] = { -1, 0, 0, 1 };
 
-		bool isCorn(Map& map, int x, int y)
+		bool isWheat(Map& map, int x, int y)
 		{
-			return map.getResource(x, y).type == CORN;
+			return map.getResource(x, y).type == WHEAT;
 		}
 	} // namespace
 
@@ -62,9 +62,9 @@ namespace Cortex
 		auto inBox = [&](int x, int y) {
 			return x >= boxMinX && x <= boxMaxX && y >= boxMinY && y <= boxMaxY;
 		};
-		// A CORN tile counts as field only if the team can see it (unless the
+		// A WHEAT tile counts as field only if the team can see it (unless the
 		// debug caller bypasses fog on a freshly-loaded, fully-fogged map).
-		auto cornVisible = [&](int x, int y) {
+		auto wheatVisible = [&](int x, int y) {
 			return ignoreFOW || map.isFOWDiscovered(x, y, teamMask);
 		};
 		// A tile belongs to our field if it is discovered wheat inside the
@@ -73,7 +73,7 @@ namespace Cortex
 		// depth). Forbidden status is ignored on purpose so our own paint never
 		// changes the measured depth (keeps the reconcile stable).
 		auto isField = [&](int x, int y) {
-			return inBox(x, y) && isCorn(map, x, y) && cornVisible(x, y);
+			return inBox(x, y) && isWheat(map, x, y) && wheatVisible(x, y);
 		};
 		auto isLand = [&](int x, int y) {
 			return inBox(x, y) && map.isFreeForGroundUnitNoForbidden(x, y, false);
@@ -197,7 +197,7 @@ namespace Cortex
 				for (int x = boxMinX; x <= boxMaxX; x++)
 				{
 					const int idx = static_cast<int>(map.coordToIndex(x, y));
-					if (seen[idx] || !isCorn(map, x, y) || !cornVisible(x, y)
+					if (seen[idx] || !isWheat(map, x, y) || !wheatVisible(x, y)
 					    || depth[idx] == INT_MAX)
 						continue;
 					res.componentCount++;
@@ -214,7 +214,7 @@ namespace Cortex
 						{
 							const int nx = ccx + NB_DX[kk];
 							const int ny = ccy + NB_DY[kk];
-							if (!inBox(nx, ny) || !isCorn(map, nx, ny) || !cornVisible(nx, ny))
+							if (!inBox(nx, ny) || !isWheat(map, nx, ny) || !wheatVisible(nx, ny))
 								continue;
 							const int ni = static_cast<int>(map.coordToIndex(nx, ny));
 							if (seen[ni] || depth[ni] == INT_MAX)
@@ -276,7 +276,7 @@ namespace Cortex
 				const int y = idx / w;
 				if (!ignoreFOW && !map.isFOWDiscovered(x, y, teamMask))
 					continue; // in fog: confirmation pending, leave the paint.
-				if (isCorn(map, x, y))
+				if (isWheat(map, x, y))
 					continue; // still field wheat: keep protecting it.
 			}
 			res.del.push_back(idx);

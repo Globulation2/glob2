@@ -64,13 +64,13 @@ namespace Cortex
 	/// we have not yet discovered any enemy building.
 	int placeFlagTargets(Game* game, Team* team, BuildCandidate out[CORTEX_FLAG_TARGETS]);
 
-	/// Chebyshev distance from tile (x, y) to the nearest CORN (wheat) tile, found
+	/// Chebyshev distance from tile (x, y) to the nearest wheat tile, found
 	/// by an outward radial scan bounded at `cap` rings. Returns the distance in
-	/// [0, cap], or -1 when no CORN lies within `cap` tiles. Warp-safe (uses Map's
+	/// [0, cap], or -1 when no WHEAT lies within `cap` tiles. Warp-safe (uses Map's
 	/// coordinate normalization). Deterministic (fixed scan order, no rand). Shared
 	/// by placeCandidates (a candidate site's BuildCandidate::wheatDist) and
 	/// Cortex::observe (a tracked swarm/inn's TrackedBuilding::nearestWheatDist), so
 	/// the wheat-distance metric is defined in exactly one place. Pass
 	/// CORTEX_WHEAT_SCAN_CAP for `cap`.
-	int nearestCornDist(const Map& map, int x, int y, int cap);
+	int nearestWheatDist(const Map& map, int x, int y, int cap);
 }

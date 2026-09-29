@@ -20,24 +20,21 @@ namespace GAGCore
 	class DrawableSurface;
 }
 
-///This dialog shows progress of the fertility computation
-class YOGClientGameConnectionDialog:public GAGGUI::OverlayScreen, public MultiplayerGameEventListener
+///Scheduled progress screen while joining a multiplayer game.
+class YOGClientGameConnectionDialog:public GAGGUI::Screen, public MultiplayerGameEventListener
 {
 public:
-	YOGClientGameConnectionDialog(GAGCore::GraphicContext *parentCtx, std::shared_ptr<MultiplayerGame> game);
+	YOGClientGameConnectionDialog(std::shared_ptr<MultiplayerGame> game);
 	virtual ~YOGClientGameConnectionDialog();
 	virtual void onAction(GAGGUI::Widget *source, GAGGUI::Action action, int par1, int par2);
 	virtual void onTimer(Uint32 tick);
-
-	using OverlayScreen::execute; // keep base 2-arg execute visible alongside our no-arg overload
-	///This screen is modal, this executes it
-	void execute();
 
 	///These are the possible end values
 	enum EndValue
 	{
 		Success,
 		Failed,
+		Cancelled,
 	};
 private:
 	///This function updates the multiplayer game
@@ -45,8 +42,6 @@ private:
 	///This handles an event from the multiplayer game
 	void handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event);
 
-	GAGCore::GraphicContext *parentCtx;
 	std::shared_ptr<MultiplayerGame> game;
 };
-
 

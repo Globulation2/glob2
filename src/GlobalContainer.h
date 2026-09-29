@@ -91,6 +91,8 @@ public:
 
 	std::string videoshotName; //!< the name of videoshot to record. If empty, do not record videoshot
 	bool runNoX;
+	bool structuredHeadless = false;
+	bool headlessReplay = false;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;
