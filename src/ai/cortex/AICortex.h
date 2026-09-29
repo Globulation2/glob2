@@ -2,6 +2,7 @@
 // Copyright (C) 2026 The Globulation 2 Authors
 
 #pragma once
+#include "CortexTuning.h"
 
 #include "AIImplementation.h"
 #include "CortexTypes.h"
@@ -35,6 +36,11 @@ class Building;
 class AICortex : public AIImplementation
 {
 public:
+  void captureTelemetry() override;
+  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+  {
+	  return AITelemetry::schema(6);
+  }
 	explicit AICortex(Player* player);
 	AICortex(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor);
 	~AICortex();
@@ -45,6 +51,7 @@ public:
 	std::shared_ptr<Order> getOrder(void);
 
 private:
+	Cortex::CortexTuning runtimeTuning;
 	/// Ticks between policy invocations. The observation/policy run at this
 	/// cadence; Order emission stays at tick rate via the queue. 25 ticks = 1
 	/// second at the engine's 40 ms tick.
@@ -441,10 +448,7 @@ private:
 	/// CORTEX_INN_TUNE_DELAY_TICKS (it starts at an empty 0/10 buffer and must not be
 	/// worker-spiked before its first haulers fill it). Keyed by gid (deterministic);
 	/// never iterated to PRODUCE an order, only for keyed lookup/insert/prune, so
-	/// std::map order does not affect lockstep. RAM-only (NOT serialized): it rebuilds
-	/// identically from the same seed on a continuous run, and all clients reload a
-	/// save together and re-stamp in lockstep, so a reload merely re-arms the settle
-	/// window uniformly — no desync. (Cortex has no persisted saves to preserve yet.)
+	/// std::map order does not affect lockstep. Persisted in version 101 saves.
 	std::map<Uint16, Sint32> innFinishedTick;
 
 	/// Orphan-sweep settle window: maps each currently-UNOWNED own WAR_FLAG's gid to the
@@ -454,16 +458,12 @@ private:
 	/// and rediscoverFlag's latch is spared — only a truly orphaned flag (its slot torn
 	/// down mid-create) is swept. Keyed lookup only; the OrderDeletes are produced by
 	/// iterating team->virtualBuildings (insertion order, deterministic), so std::map order
-	/// never affects lockstep. RAM-only (NOT serialized) like innFinishedTick: it rebuilds
-	/// identically from the same seed on a continuous run, and all clients reload a save
-	/// together and re-arm the window in lockstep, so a reload merely re-settles uniformly —
-	/// no desync.
+	/// never affects lockstep. Persisted so loading retains the settle window.
 	std::map<Uint16, Sint32> unownedFlagSeen;
 
 	/// One-shot guard for the start-of-game swarm worker kickstart
 	/// (SWARM_START_WORKERS): set once the starting swarm has been jumped to its
-	/// baseline hauler count. RAM-only — reloading a (hypothetical) save merely
-	/// re-kickstarts uniformly on every client, and Cortex has no persisted saves.
+	/// baseline hauler count. Persisted so loading does not repeat the kickstart.
 	bool swarmKickstarted;
 
 	/// Orders awaiting emission, one popped per getOrder() call.
@@ -473,7 +473,7 @@ private:
 	/// One-shot guard so the under-attack state dump fires only the FIRST decision
 	/// cycle on which the colony is taking fire. Gated behind the CORTEX_DUMP_ATTACK
 	/// env var; pure read of the observation + ground-truth Game state to stderr, so
-	/// it cannot perturb the sync stream. RAM-only like orderQueue.
+	/// it cannot perturb the sync stream. RAM-only; never affects simulation state.
 	bool attackDumped;
 	/// Print the under-attack characterization (scouting / economy / timing / enemy)
 	/// to stderr. Diagnostic; does not touch RNG, orders, or any persisted state.
@@ -519,7 +519,7 @@ private:
 	/// cycle appends one CSV row per valid tracked INN to <prefix>.team<N>.csv — the
 	/// inn-side companion to the swarm worker trace, for debugging worker allocation
 	/// to inns (restock demand, wheat gate, the production-mix tiers). Each row is the
-	/// inn's observed state this cycle (corn buffer, restockTripsNeeded, wheat
+	/// inn's observed state this cycle (wheat buffer, restockTripsNeeded, wheat
 	/// diagnostics), the worker cap the tune action chose (or the current one when it
 	/// left the inn unchanged), and the colony-level context + tier facts (recomputed
 	/// via the pure CortexPolicy::computeFacts, since getOrder() has no DecideFacts to

@@ -8,7 +8,6 @@
 #include "ReplayReader.h"
 #include "GameGUIKeyActions.h"
 #include <GUISelector.h>
-#include <GUIButton.h>
 #include <GUIText.h>
 #include <GUIList.h>
 #include <StringTable.h>
@@ -23,9 +22,7 @@ using namespace GAGGUI;
 struct TestSettingsScreen : SettingsScreen {
     TestSettingsScreen() { gfx=globalContainer->gfx; dispatchInit(); selectCategory(Category::Gameplay); }
     Row speed() { for(const auto& r:rows()) if(r.id=="gameplay.speed") return r; assert(false); return {}; }
-    // The presets start below 1x, so a speed value and its row index differ by
-    // GAME_SPEED_MINIMUM. Callers pass the speed; the row index is derived.
-    void select(int value) { assert(changeSetting("gameplay.speed",value-Settings::GAME_SPEED_MINIMUM)); }
+    void select(int value) { assert(changeSetting("gameplay.speed", value-Settings::GAME_SPEED_MINIMUM)); }
     int speedRow(int value) const { return value-Settings::GAME_SPEED_MINIMUM; }
 };
 
@@ -58,7 +55,7 @@ int main(int argc, char** argv) {
     }
     assert(previous==0);
     for(int i=0;i<3;++i) {
-        settings.gameSpeed=i-3;
+        settings.gameSpeed=Settings::GAME_SPEED_MINIMUM+i;
         const int durations[]={160,80,53};
         const char* labels[]={"0.25x","0.5x","0.75x"};
         assert(settings.getGameSpeedStepDuration()==durations[i]);
@@ -67,13 +64,13 @@ int main(int argc, char** argv) {
     }
     settings.gameSpeed=10;
     settings.changeGameSpeed(1); assert(settings.gameSpeed==10);
-    settings.changeGameSpeed(-100); assert(settings.gameSpeed==-3);
-    settings.changeGameSpeed(-1); assert(settings.gameSpeed==-3);
+    settings.changeGameSpeed(-100); assert(settings.gameSpeed==Settings::GAME_SPEED_MINIMUM);
+    settings.changeGameSpeed(-1); assert(settings.gameSpeed==Settings::GAME_SPEED_MINIMUM);
     const std::string profile=globalContainer->fileManager->getDir(0);
     for(int invalid:{-99,999}) {
         { std::ofstream f(profile+"/speed-invalid.txt"); f<<"gameSpeed="<<invalid<<"\n"; }
         Settings loaded; loaded.load("speed-invalid.txt");
-        assert(loaded.gameSpeed==(invalid<0?-3:10));
+        assert(loaded.gameSpeed==(invalid<0?Settings::GAME_SPEED_MINIMUM:10));
     }
     { std::ofstream f(profile+"/speed-legacy.txt"); f<<"musicVolume=70\n"; }
     Settings legacy; legacy.load("speed-legacy.txt"); assert(legacy.gameSpeed==0);
@@ -161,29 +158,44 @@ int main(int argc, char** argv) {
         gui.processEvent(&key); assert(settings.gameSpeed==8);
         globalContainer->replaying=false;
         gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_LOCAL;
-        // Same wall time with very different GUI call rates should scroll equally.
+        // The same elapsed time with different GUI call rates should scroll equally.
         int distance[2];
         for(int pass=0;pass<2;++pass) {
-            // Drain startup/window events and the preceding pass before measuring.
-            gui.step();
             SDL_Event mouse={}; mouse.type=SDL_MOUSEMOTION;
             mouse.motion.x=0; mouse.motion.y=200;
-            gui.processEvent(&mouse);
             const int before=gui.viewportX;
             const Uint64 start=SDL_GetTicks64();
-            while(SDL_GetTicks64()-start<480) {
-                SDL_PushEvent(&mouse);
-                gui.step();
-                SDL_Delay(pass==0?40:1);
-            }
-            // Account for the final sleep in both cadence measurements.
-            SDL_PushEvent(&mouse);
-            gui.step();
+            gui.step({mouse}, start);
+            const int cadence=pass==0?40:1;
+            for(int elapsed=cadence;elapsed<=480;elapsed+=cadence)
+                gui.step({}, start+elapsed);
             distance[pass]=(before-gui.viewportX)&gui.game.map.getMaskW();
         }
         std::cerr<<"Camera distances: "<<distance[0]<<"/"<<distance[1]<<std::endl;
         assert(distance[0]>=10 && distance[0]<=14);
         assert(std::abs(distance[0]-distance[1])<=2);
+        SDL_Event centered{};
+        centered.type = SDL_MOUSEMOTION;
+        centered.motion.x = 200; centered.motion.y = 200;
+        SDL_Event held{};
+        held.type = SDL_KEYDOWN;
+        held.key.keysym.sym = SDLK_LEFT;
+        held.key.keysym.scancode = SDL_SCANCODE_LEFT;
+        const Uint64 inputStart = SDL_GetTicks64() + 40;
+        gui.step({centered, held}, inputStart);
+        const int heldX = gui.viewportX;
+        gui.step({}, inputStart + 40);
+        assert(gui.viewportX == ((heldX - 1) & gui.game.map.getMaskW()));
+        SDL_Event focus{};
+        focus.type = SDL_WINDOWEVENT;
+        focus.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+        gui.step({focus}, inputStart + 80);
+        const int releasedX = gui.viewportX;
+        gui.step({}, inputStart + 120);
+        focus.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+        gui.step({focus}, inputStart + 160);
+        assert(gui.viewportX == releasedX);
+        std::cout << "PASS: supplied input, held-key scrolling and focus cleanup\n";
         std::cout<<"PASS: multiplayer controls, replay eligibility, camera cadence "
                  <<distance[0]<<"/"<<distance[1]<<" cells\n";
     }

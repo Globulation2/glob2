@@ -9,6 +9,10 @@
 class MapCamera
 {
 public:
+    //! Zoom range. At MIN_ZOOM one screen pixel shows four map pixels, so a
+    //! tile is 8 px across and the view holds four times the map it does at 1.
+    static constexpr double MIN_ZOOM = .25, MAX_ZOOM = 3.0;
+
     double zoom = 1, originX = 0, originY = 0;
     double width = 0, height = 0, mapWidth = 0, mapHeight = 0;
     double offsetX = 0, offsetY = 0;
@@ -18,14 +22,15 @@ public:
         return size > 0 ? value - std::floor(value / size) * size : value;
     }
 
-    void resize(double w, double h, double mw, double mh)
+    void resize(double w, double h, double mw, double mh, double x=0, double y=0)
     {
         if (width > 0 && height > 0)
         {
-            auto center = screenToWorld(width / 2, height / 2);
+            auto center = screenToWorld(offsetX+width / 2, offsetY+height / 2);
             originX = center.first - w / (2 * zoom);
             originY = center.second - h / (2 * zoom);
         }
+        offsetX=x;offsetY=y;
         width = w;
         height = h;
         mapWidth = mw;
@@ -37,8 +42,6 @@ public:
     {
         originX = wrap(originX, mapWidth);
         originY = wrap(originY, mapHeight);
-        offsetX = 0;
-        offsetY = 0;
     }
 
     double visibleW() const { return width / zoom; }
@@ -57,9 +60,7 @@ public:
     void setZoom(double value, double x, double y)
     {
         auto anchor = screenToWorld(x, y);
-        zoom = std::clamp(value, .5, 3.0);
-        offsetX = 0;
-        offsetY = 0;
+        zoom = std::clamp(value, MIN_ZOOM, MAX_ZOOM);
         originX = anchor.first - (x - offsetX) / zoom;
         originY = anchor.second - (y - offsetY) / zoom;
         normalize();
@@ -85,6 +86,6 @@ public:
     }
     bool contains(double x, double y) const
     {
-        return x >= offsetX && y >= offsetY && x < width - offsetX && y < height - offsetY;
+        return x >= offsetX && y >= offsetY && x < offsetX+width && y < offsetY+height;
     }
 };

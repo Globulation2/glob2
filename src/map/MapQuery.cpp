@@ -172,7 +172,8 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 	int bestTime=ENEMY_TOUCH_BEST_TIME_NONE;//Shorter is better
 	int bdx=0, bdy=0;
 
-	Uint32 enemies=unit->owner->enemies;
+	// Team::attackableTeams(), spelled out: this file links into standalone map tests without Team.cpp.
+	Uint32 enemies=unit->owner->game->gameHeader.isPeacefulModeEnabled() ? 0 : unit->owner->enemies;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
 		{

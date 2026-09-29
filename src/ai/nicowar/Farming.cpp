@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "AINicowar.h"
+#include "Building.h"
 #include "Unit.h"
 
 using namespace AIEcho;
@@ -16,9 +18,12 @@ using namespace boost::logic;
 
 void NewNicowar::update_farming(Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_update_farming_calls);
 	//Farming wheat and wood in areas near water
 	AddArea* mo_farming=new AddArea(ForbiddenArea);
 	RemoveArea* mo_non_farming=new RemoveArea(ForbiddenArea);
+	AddArea* mo_clearing=new AddArea(ClearingArea);
+	RemoveArea* mo_non_clearing=new RemoveArea(ClearingArea);
 	AIEcho::Gradients::GradientInfo gi_water;
 	gi_water.add_source(new Entities::Water);
 	Gradient& water_gradient=echo.get_gradient_manager().get_gradient(gi_water);
@@ -34,7 +39,7 @@ void NewNicowar::update_farming(Echo& echo)
 				const int wheat_dist = AI_NICOWAR_FARM_WHEAT_WATER_DIST;
 
 				bool is_wood = mi.is_resource(x, y, WOOD);
-				bool is_wheat = mi.is_resource(x, y, CORN);
+				bool is_wheat = mi.is_resource(x, y, WHEAT);
 
 				bool is_in_wheat_zone = water_gradient.within_dist(x, y, wheat_dist);
 				bool is_in_wood_zone = water_gradient.within_dist(x, y, wood_dist);
@@ -57,7 +62,7 @@ void NewNicowar::update_farming(Echo& echo)
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x-1, y, CORN) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_grass(x+1,y))
+					else if(is_wheat && mi.is_resource(x-1, y, WHEAT) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_grass(x+1,y))
 					{
 						farm_spot = true;
 					}
@@ -65,7 +70,7 @@ void NewNicowar::update_farming(Echo& echo)
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x+1, y, CORN) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_grass(x-1,y))
+					else if(is_wheat && mi.is_resource(x+1, y, WHEAT) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_grass(x-1,y))
 					{
 						farm_spot = true;
 					}
@@ -78,7 +83,7 @@ void NewNicowar::update_farming(Echo& echo)
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x, y-1, CORN) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_grass(x,y+1))
+					else if(is_wheat && mi.is_resource(x, y-1, WHEAT) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_grass(x,y+1))
 					{
 						farm_spot = true;
 					}
@@ -86,14 +91,41 @@ void NewNicowar::update_farming(Echo& echo)
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_resource(x, y+1, CORN) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_grass(x,y-1))
+					else if(is_wheat && mi.is_resource(x, y+1, WHEAT) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_grass(x,y-1))
 					{
 						farm_spot = true;
 					}
 				}
 
 
-				if(farm_spot && mi.is_clearing_area(x,y))
+				bool clear_wood = is_wood &&
+					((is_in_wheat_zone && !is_in_wood_zone) || mi.is_resource(x-1, y, WHEAT) ||
+					 mi.is_resource(x+1, y, WHEAT) || mi.is_resource(x, y-1, WHEAT) ||
+					 mi.is_resource(x, y+1, WHEAT) || mi.is_resource(x-1, y-1, WHEAT) ||
+					 mi.is_resource(x-1, y+1, WHEAT) || mi.is_resource(x+1, y-1, WHEAT) ||
+					 mi.is_resource(x+1, y+1, WHEAT));
+				bool clearing_area = mi.is_clearing_area(x,y);
+				if(clear_wood && !clearing_area)
+					mo_clearing->add_location(x, y);
+				else if(!is_wood && clearing_area)
+				{
+					// Keep building clearance; release cleared farm tiles for wheat.
+					bool beside_building = false;
+					for(int dx=-1; dx<=1; ++dx)
+						for(int dy=-1; dy<=1; ++dy)
+						{
+							int gid = echo.player->map->getBuilding(x+dx, y+dy);
+							if(gid!=NOGBID && Building::GIDtoTeam(gid)==echo.player->team->teamNumber)
+								beside_building = true;
+						}
+					if(!beside_building)
+					{
+						mo_non_clearing->add_location(x, y);
+						clearing_area = false;
+					}
+				}
+
+				if(farm_spot && (clear_wood || clearing_area))
 				{
 					farm_spot = false;
 				}
@@ -114,13 +146,16 @@ void NewNicowar::update_farming(Echo& echo)
 			}
 		}
 	}
+	echo.add_management_order(mo_non_clearing);
 	echo.add_management_order(mo_farming);
 	echo.add_management_order(mo_non_farming);
+	echo.add_management_order(mo_clearing);
 }
 
 
 void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_update_fruit_flags_calls);
 	if(fruit_phase && !exploration_on_fruit)
 	{
 		//Constraints around nearby settlement
@@ -183,6 +218,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 
 void NewNicowar::update_fruit_alliances(AIEcho::Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_update_fruit_alliances_calls);
 	bool activated=fruit_phase;
 
 	for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)

@@ -231,6 +231,11 @@ void NativeCode::dumpSpecific(std::ostream &stream) const
 }
 
 
+void ConstCode::markForGC() { if (value) value->markForGC(); }
+
+template <typename ThunkType>
+void CreateCode<ThunkType>::markForGC() { if (prototype) prototype->markForGC(); }
+
 template <typename ThunkType>
 CreateCode<ThunkType>::CreateCode(typename ThunkType::Prototype* prototype):
 	prototype(prototype)
@@ -263,4 +268,3 @@ void CreateCode<ThunkType>::dumpSpecific(std::ostream &stream) const
 template struct CreateCode<Thunk>;
 template struct CreateCode<Scope>;
 template struct CreateCode<Function>;
-

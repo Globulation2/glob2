@@ -33,7 +33,7 @@ namespace
 	/// higher is preferred.
 	int bringResourcesLevel(const Unit* unit)
 	{
-		return unit->level[HARVEST] * HARVEST_LEVEL_WEIGHT + unit->level[WALK];
+		return unit->workerLevel() * HARVEST_LEVEL_WEIGHT + unit->level[WALK];
 	}
 }
 
@@ -146,6 +146,7 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 
 void Building::gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource)
 {
+	owner->map->advanceHiringGradients(this);
 	// The tallies count units, and the same unit is offered every resource the
 	// building tries to staff, so start each scan from zero: what the info panel
 	// ends up showing is one coherent pass, for the last resource attempted.
@@ -550,7 +551,7 @@ bool Building::subscribeForFlagingStep()
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist = distances[n];
 					int value=dist-timeLeft-hp;
-					int level = unit->level[HARVEST];
+					int level = unit->workerLevel();
 					//We want to minimize the level of harvesting units, so that the higher level
 					//units are available for more important work.
 					if ((level < minLevel) || (level==minLevel && value<minValue))

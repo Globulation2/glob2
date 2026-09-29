@@ -14,6 +14,27 @@
 #include "Order.h"
 #include "Integrity.h"
 
+// Custom-game "fortress buildings" rule: mirrors the getRealAttackStrength()/
+// getRealArmor() unit pattern -- scale once, on read, at a single accessor,
+// rather than touching every one of the many direct type->hpMax/hpInit
+// reads across building logic, rendering and the GUI.
+// A map's starting buildings predate the match's header, so their stored hp
+// is scaled once by Game::applyStartingRules.
+int Building::getEffectiveMaxHp(void) const
+{
+	return type->hpMax * owner->game->gameHeader.getBuildingHpMultiplier();
+}
+
+int Building::getEffectiveInitHp(void) const
+{
+	return type->hpInit * owner->game->gameHeader.getBuildingHpMultiplier();
+}
+
+int Building::getEffectiveHpInc(void) const
+{
+	return type->hpInc * owner->game->gameHeader.getBuildingHpMultiplier();
+}
+
 void Building::releaseAllWorkers()
 {
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
@@ -24,12 +45,13 @@ void Building::releaseAllWorkers()
 	unitsWorking.clear();
 }
 
-void Building::kill(void)
+void Building::kill(int diagnosticRemoval)
 {
 	if (buildingState==DEAD)
 		return;
 
-
+	if (!type->isVirtual)
+		++owner->stats.measurements.removed[diagnosticRemoval][type->shortTypeNum][getLongLevel()];
 	// Units inside need the footprint freed before they can be placed.
 	std::vector<Unit *> unitsToExpel;
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
@@ -71,9 +93,7 @@ void Building::kill(void)
 	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 		owner->dirtyGlobalGradient();
-		owner->map->updateForbiddenGradient(owner->teamNumber);
-		owner->map->updateGuardAreasGradient(owner->teamNumber);
-		owner->map->updateClearAreasGradient(owner->teamNumber);
+		owner->map->updateTeamAreaGradients(owner->teamNumber);
 		if (type->isBuildingSite && type->level==0)
 		{
 			bool good=false;
@@ -97,6 +117,8 @@ void Building::kill(void)
 			u->expelFromBuilding(x, y, dx, dy);
 		else
 		{
+			if (!u->isDead)
+				++u->owner->stats.measurements.deaths[u->typeNum][u->hp < UNIT_HP_DEATH_THRESHOLD ? u->diagnosticDeathCause : GameplayMeasurements::TRAPPED];
 			u->isDead=true;
 			u->standardRandomActivity();
 		}
@@ -140,8 +162,7 @@ bool Building::canUnitWorkHere(Unit* unit)
 	}
 	else if(unit->typeNum ==  WORKER)
 	{
-		int actLevel=unit->level[HARVEST];
-		if(type->level <= actLevel)
+		if(type->level <= unit->workerLevel())
 			return true;
 	}
 	return false;
@@ -192,9 +213,16 @@ void Building::updateResourcesPointer()
 
 void Building::addResourceIntoBuilding(int resourceType)
 {
+	const int before = resources[resourceType];
 	resources[resourceType]+=type->multiplierResource[resourceType];
 	//You can not exceed the maximum amount
 	resources[resourceType] = std::min(resources[resourceType], type->maxResource[resourceType]);
+	const int accepted = std::max(0, resources[resourceType] - before);
+	owner->stats.measurements.delivered[resourceType] += accepted;
+	if (type->canExchange)
+		owner->stats.measurements.transferredIn[resourceType] += accepted;
+	if (constructionResultState == REPAIR)
+		owner->stats.measurements.repairDelivered[resourceType] += accepted;
 	switch (constructionResultState)
 	{
 		case NO_CONSTRUCTION:
@@ -202,8 +230,8 @@ void Building::addResourceIntoBuilding(int resourceType)
 		case NEW_BUILDING:
 		case UPGRADE:
 		{
-			hp+=type->hpInc;
-			hp = std::min(hp, type->hpMax);
+			hp+=getEffectiveHpInc();
+			hp = std::min(hp, getEffectiveMaxHp());
 		}
 		break;
 
@@ -214,8 +242,11 @@ void Building::addResourceIntoBuilding(int resourceType)
 				totResources+=type->maxResource[i];
 			if (totResources>0)
 			{
-				hp += type->hpMax/totResources;
-				hp = std::min(hp, type->hpMax);
+				// Scaled like the cap below: full resource delivery must
+				// repair up to the fortress-scaled ceiling, not the
+				// type's authored (unscaled) hpMax.
+				hp += getEffectiveMaxHp()/totResources;
+				hp = std::min(hp, getEffectiveMaxHp());
 			}
 		}
 		break;
@@ -230,8 +261,12 @@ void Building::addResourceIntoBuilding(int resourceType)
 
 void Building::removeResourceFromBuilding(int resourceType)
 {
+	const int before = resources[resourceType];
 	resources[resourceType]-=type->multiplierResource[resourceType];
 	resources[resourceType]= std::max(resources[resourceType], 0);
+	owner->stats.measurements.withdrawn[resourceType] += before - resources[resourceType];
+	if (type->canExchange)
+		owner->stats.measurements.transferredOut[resourceType] += before - resources[resourceType];
 	updateCallLists();
 }
 
@@ -395,8 +430,10 @@ int Building::getLongLevel(void)
 
 Uint32 Building::eatOnce(Uint32 *mask)
 {
-	resources[CORN]--;
-	assert(resources[CORN]>=0);
+	resources[WHEAT]--;
+	++owner->stats.measurements.meals;
+	++owner->stats.measurements.consumed[GameplayMeasurements::MEAL][WHEAT];
+	assert(resources[WHEAT]>=0);
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
 	for (int i=0; i<HAPPINESS_COUNT; i++)
@@ -405,6 +442,7 @@ Uint32 Building::eatOnce(Uint32 *mask)
 		if (resources[resId])
 		{
 			resources[resId]--;
+			++owner->stats.measurements.consumed[GameplayMeasurements::MEAL][resId];
 			fruitMask|=(1<<i);
 			fruitCount++;
 		}
@@ -417,7 +455,7 @@ Uint32 Building::eatOnce(Uint32 *mask)
 int Building::availableHappynessLevel()
 {
 	int inside = (int)unitsInside.size();
-	if (resources[CORN] <= inside)
+	if (resources[WHEAT] <= inside)
 		return 0;
 	int happyness = 1;
 	for (int i = 0; i < HAPPINESS_COUNT; i++)
@@ -431,7 +469,7 @@ bool Building::canConvertUnit(void)
 	assert(type->canFeedUnit);
 	return
 			canNotConvertUnitTimer<=0 &&
-			((int)unitsInside.size()<resources[CORN]) && 
+			((int)unitsInside.size()<resources[WHEAT]) && 
 			((int)unitsInside.size()<maxUnitInside);
 }
 

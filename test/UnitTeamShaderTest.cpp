@@ -6,8 +6,8 @@
 //      action/direction).
 //   2. The single-pose and stacked multi-pose combined
 //      base+team framebuffer result, against a CPU reference that composites
-//      each pose in premultiplied space and blends poses in shutter order.
-// Both backends' whole-shutter native fallback for an incomplete HD pack, and
+//      each pose in premultiplied space and blends stacked poses in draw order.
+// Both backends' action-block native fallback for an incomplete HD pack, and
 // the GLOB2_DISABLE_UNIT_SHADER escape hatch, are covered by
 // UnitTeamColorCacheTest.cpp instead, since they don't need pixel comparison.
 #include <Toolkit.h>

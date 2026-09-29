@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cmath>
 
@@ -51,7 +52,7 @@ bool allRemainingUnitsTrapped(Team& team)
 	if (freeUnitSlot)
 		for (Building* swarm : team.swarms)
 		{
-			if (swarm->resources[CORN] < swarm->type->resourceForOneUnit
+			if (swarm->resources[WHEAT] < swarm->type->resourceForOneUnit
 				&& swarm->productionTimeout >= 0)
 				continue;
 			// Ratios can still be changed by the player, including from zero.
@@ -144,6 +145,7 @@ void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
 
 void Team::updateAllBuildingTasks()
 {
+	PERF_SCOPE_TIME(Tasks);
 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
 		std::sort(i->second.begin(), i->second.end(), Team::buildingHasHigherPriority);
@@ -347,6 +349,7 @@ void Team::syncStep(void)
 
 	int nbUsefulUnits = 0;
 	int nbUsefulUnitsAlone = 0;
+	PerformanceTelemetry::Scope unitTime(PerformanceTelemetry::Id::Units);
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		Unit *u = myUnits[i];
@@ -370,6 +373,8 @@ void Team::syncStep(void)
 		}
 	}
 
+	unitTime.stop();
+	PerformanceTelemetry::Scope buildingTime(PerformanceTelemetry::Id::Buildings);
 	bool isDirtyGlobalGradient=false;
 	for (std::list<Building *>::iterator it=buildingsWaitingForDestruction.begin(); it!=buildingsWaitingForDestruction.end();)
 	{
@@ -380,6 +385,9 @@ void Team::syncStep(void)
 			{
 				if (!building->type->isVirtual)
 				{
+					++stats.measurements
+						  .removed[GameplayMeasurements::DEMOLISHED][building->type->shortTypeNum]
+								  [building->getLongLevel()];
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
 					isDirtyGlobalGradient=true;
 				}
@@ -397,9 +405,7 @@ void Team::syncStep(void)
 	if (isDirtyGlobalGradient)
 	{
 		dirtyGlobalGradient();
-		map->updateForbiddenGradient(teamNumber);
-		map->updateGuardAreasGradient(teamNumber);
-		map->updateClearAreasGradient(teamNumber);
+		map->updateTeamAreaGradients(teamNumber);
 	}
 
 	for (std::list<Building *>::iterator it=buildingsToBeDestroyed.begin(); it!=buildingsToBeDestroyed.end(); ++it)
@@ -453,7 +459,7 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
-			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->resources[CORN]>(*it)->type->resourceForOneUnit)
+			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->resources[WHEAT]>(*it)->type->resourceForOneUnit)
 				isEnoughFoodInSwarm=true;
 			(*it)->swarmStep();
 		}
@@ -469,6 +475,7 @@ void Team::syncStep(void)
 		isAlive=false;
 	}
 
+	buildingTime.stop();
 	stats.step(this);
 	updateEvents();
 }

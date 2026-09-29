@@ -94,6 +94,11 @@ Map::~Map(void)
 
 void Map::clear()
 {
+	gradientPipeline.reset();
+	growthCoverage.clear();
+	for (auto &counts : growthCoverageCounts) counts.clear();
+	for (auto &buildings : growthCoverageBuildings) buildings.clear();
+	growthCoverageValid = false;
 	topologyGeneration=1;
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
@@ -213,5 +218,3 @@ void Map::setGame(Game *game)
 	game->animations->resize(sizeSector);
 #endif  // !YOG_SERVER_ONLY
 }
-
-

@@ -3,9 +3,14 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include <CooperativeTask.h>
+#include "ComputeExecutor.h"
+#include "gradient/GradientWorkspace.h"
+#include "gradient/GradientPipeline.h"
 
 #include <list>
 #include <optional>
+#include <vector>
 #include <assert.h>
 
 #include "Building.h"
@@ -25,7 +30,6 @@ class Unit;
 
 class Map;
 class Game;
-class MapGenerationDescriptor;
 class SessionGame;
 class MapHeader;
 
@@ -75,7 +79,43 @@ enum AreaType
 */
 class Map
 {
+	mutable ComputeExecutor compute;
+	std::vector<GradientWorkspace> gradientWorkspaces{1};
+	unsigned computeExperiments = 0;
+	mutable GradientPipeline gradientPipeline;
 public:
+	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
+	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4 };
+	void configureCompute(unsigned threads, unsigned experiments)
+	{
+		compute.configure(threads);
+		gradientWorkspaces.resize(compute.threadCount());
+		computeExperiments = experiments;
+	}
+	ComputeExecutor &computeExecutor() { return compute; }
+	GradientWorkspace &gradientWorkspace() { return gradientWorkspaces[compute.slot()]; }
+	bool computeEnabled(ComputeExperiment experiment) const { return computeExperiments & experiment; }
+	// Fixed chunks and synchronous barriers: thresholds affect execution only.
+	template<class Function> void initializeGradientCells(Function function) const
+	{
+		constexpr size_t chunk = 4096;
+		if (!computeEnabled(ComputeInitialize) || size < 16384)
+		{ function(0, size); return; }
+		compute.run((size + chunk - 1) / chunk, [&](size_t part) {
+			const size_t begin = part * chunk;
+			function(begin, std::min(begin + chunk, size));
+		});
+	}
+	GradientPipeline &pipeline() { return gradientPipeline; }
+	void configureGradientPipeline(unsigned workers, unsigned delay);
+	void updateTeamAreaGradients(int teamNumber);
+	void seedResourcesGradient(int team, Uint8 resource, int swim, Uint16 *gradient);
+	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
+	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
+	void propagateGradientSnapshot(Uint16 *gradient, int swim, int maxCost,
+		GradientWorkspace &workspace, const std::uint8_t *water);
+	void advanceHiringGradients(Building *building);
+
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
 	void loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor);
 	//! Type of terrain (used for undermap)
@@ -100,6 +140,16 @@ public:
 	static constexpr Uint16 ASTAR_COST_INFINITY = static_cast<Uint16>(-1);
 
 public:
+	static constexpr int MIN_SUPPORTED_SIZE_EXPONENT = 4;
+	static constexpr int MAX_SUPPORTED_SIZE_EXPONENT = 9;
+	static constexpr bool supportedDimensions(int widthExponent, int heightExponent)
+	{
+		return widthExponent >= MIN_SUPPORTED_SIZE_EXPONENT &&
+			widthExponent <= MAX_SUPPORTED_SIZE_EXPONENT &&
+			heightExponent >= MIN_SUPPORTED_SIZE_EXPONENT &&
+			heightExponent <= MAX_SUPPORTED_SIZE_EXPONENT;
+	}
+
 	//! Map constructor
 	Map();
 	//! Map destructor
@@ -113,6 +163,7 @@ public:
 	void setGame(Game *game);
 	//! Load a map from a stream and relink with associated game
 	bool load(GAGCore::InputStream *stream, MapHeader& header, Game *game=NULL);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, MapHeader& header, Game *game);
 	//! Save a map
 	void save(GAGCore::OutputStream *stream);
 	//! Write the per-team explored area. Saved games only; save() decides.
@@ -125,10 +176,13 @@ public:
 	// add & remove teams, used by the map editor and the random map generator
 	// Have to be called *after* session.numberOfTeam has been changed.
 	void addTeam(void);
+    GAGCore::CooperativeTask addTeamTask(void);
 	void removeTeam(void);
 
 	//! Grow resources on map
 	void growResources(void);
+	void recordNaturalGrowth(int x, int y, int resourceType, int oldType, int oldAmount);
+	void rebuildGrowthCoverage();
 #ifndef YOG_SERVER_ONLY
 	//! Do a step associated with map (grow resources and process bullets)
 	void syncStep(Uint32 stepCounter);
@@ -452,6 +506,13 @@ public:
 	bool incResource(int x, int y, int resourceType, int variety);
 
 private:
+	//! Allocate/refresh and mark use, without exposing the possibly partial field.
+	bool prepareBuildingGradient(Building *building, int swimClass);
+	//! Read or move on a prepared field. Both settle their input cell first;
+	//! neither refreshes the field or changes its use timestamp.
+	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell) const;
+	bool buildingGradientDirection(Building *building, int swimClass, int x, int y,
+		int *dx, int *dy, bool strict) const;
 	//! Per-tile predicate driver shared by isFree*/isHardSpace*.
 	//! Each flag toggles whether one occupancy/terrain test contributes to rejection.
 	struct TileChecks {
@@ -646,9 +707,10 @@ public:
 	//! Dijkstra from every seeded cell of a pathfinding gradient (see MapInternal.h).
 	//! Seeds may carry any cost up to GRADIENT_COST_LIMIT (0 for GRADIENT_AT_GOAL; e.g. a
 	//! resource tile seeded with its distance to a building); do not pass a completed
-	//! field. With maxCost, cells that would cost more stay unreachable. Uses shared
-	//! scratch storage: calls across all Maps must be serial and non-reentrant.
+	//! field. With maxCost, cells that would cost more stay unreachable. Uses worker-owned
+	//! scratch storage: parallel calls must use this Map's executor and distinct fields.
 	//! swimClass must be in [0, SWIM_CLASS_COUNT).
+    GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
@@ -662,7 +724,8 @@ public:
 	void pathfindRandom(Unit *unit);
 #endif  // !YOG_SERVER_ONLY
 
-	//! Rebuild the building's full-map gradient for a swim class.
+	//! Initialize a fresh building field and retain its search frontier. Point
+	//! queries extend it on demand; buildingGradient returns a complete field.
 	void updateGlobalGradient(Building *building, int swimClass);
 	//! Rebuild the building's round-trip gradient for a resource type and swim class:
 	//! every tile of that resource is seeded with its distance to the building, so a
@@ -675,8 +738,11 @@ public:
 	//! building, read from a round-trip gradient a fetcher's walk has already built. False
 	//! when there is none or no such trip; the caller then scores by the plain distances.
 	bool roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
-	//! The building's gradient for a swim class, built or refreshed as needed; NULL if the building is unreachable.
+	//! Complete field, refreshed as needed; NULL when locked. Point queries use
+	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
 	const Uint16 *buildingGradient(Building *building, int swimClass);
+	//! Finish a cached field without refreshing its age or last-use timestamp.
+	void finishBuildingGradient(Building *building, int swimClass) const;
 	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y)
 	bool pathfindBuilding(Building *building, int swimClass, int x, int y, int *dx, int *dy);
@@ -714,6 +780,15 @@ public:
 	
 public:
 	Game *game;
+	// Diagnostic tile masks and per-team overlap counts. Building changes update
+	// only their footprints, keeping growth-event lookups contiguous and O(1).
+	// Three 12-team masks fit one 64-bit tile entry, so an event fetches one
+	// cache line rather than three separately allocated band planes.
+	std::vector<Uint64> growthCoverage;
+	std::vector<Uint32> growthCoverageCounts[3];
+	std::vector<TeamStats::CoverageBuilding> growthCoverageBuildings[Team::MAX_COUNT];
+	Uint32 growthCoverageGeneration[Team::MAX_COUNT]{};
+	bool growthCoverageValid = false;
 public:
 	std::vector<Tile> tiles;
 	Sint32 w, h;
@@ -728,6 +803,8 @@ protected:
 	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const;
 
 public:
+	// Rebuild rendered terrain after bulk undermap edits.
+	void rebuildTerrain() { regenerateMap(0, 0, w, h); }
     // here we handle terrain
 	// mapDiscovered
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
@@ -851,13 +928,8 @@ public:
 
 public:
 	void makeHomogenMap(TerrainType terrainType);
+    GAGCore::CooperativeTask makeHomogenMapTask(TerrainType terrainType);
 	void controlSand(void);
 	void smoothResources(int times);
-	bool makeRandomMap(MapGenerationDescriptor &descriptor);
-	bool oldMakeRandomMap(MapGenerationDescriptor &descriptor);
-	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
-	void oldAddResourcesRandomMap(MapGenerationDescriptor &descriptor);
-	void oldAddResourcesIslandsMap(MapGenerationDescriptor &descriptor);
 
 };
-

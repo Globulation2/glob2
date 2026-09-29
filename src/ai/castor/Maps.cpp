@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include <PerformanceTelemetry.h>
 #include "AICastor.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -18,6 +18,7 @@ using std::shared_ptr;
 
 void AICastor::computeObstacleUnitMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
@@ -42,6 +43,7 @@ void AICastor::computeObstacleUnitMap()
 
 void AICastor::computeObstacleBuildingMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
@@ -62,6 +64,7 @@ void AICastor::computeObstacleBuildingMap()
 
 void AICastor::computeSpaceForBuildingMap(int max)
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -107,7 +110,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	Uint8 *gradient=buildingNeighbourMap;
 	const auto& tiles=map->tiles;
 	
-	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][WHEAT][canSwim];
 	
 	// we skip building with already a neighbour:
 	bool neighbour=false;
@@ -220,6 +223,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 
 void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	
@@ -282,6 +286,7 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 
 void AICastor::computeWorkPowerMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -360,6 +365,7 @@ void AICastor::computeWorkPowerMap()
 
 void AICastor::computeWorkRangeMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -392,6 +398,7 @@ void AICastor::computeWorkRangeMap()
 
 void AICastor::computeWorkAbilityMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
@@ -411,6 +418,7 @@ void AICastor::computeWorkAbilityMap()
 
 void AICastor::computeHydratationMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	int wMask=map->wMask;
@@ -464,6 +472,7 @@ void AICastor::computeHydratationMap()
 
 void AICastor::computeNotGrassMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
@@ -484,11 +493,12 @@ void AICastor::computeNotGrassMap()
 
 void AICastor::computeWheatCareMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
 	size_t sizeMask=(size-1);
-	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][WHEAT][canSwim];
 	
 	Uint8 *temp=wheatCareMap[1];
 	wheatCareMap[1]=wheatCareMap[0];
@@ -512,7 +522,7 @@ void AICastor::computeWheatCareMap()
 // Castor's wheat maps and thresholds keep the historical 8-bit scale of 255 - tiles.
 Uint8 AICastor::wheatGradientAt(size_t index)
 {
-	Uint16 g=map->getResourceGradient(team->teamNumber, CORN, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index];
+	Uint16 g=map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index];
 	if (g<=GRADIENT_UNREACHABLE)
 		return (Uint8)g;
 	int tiles=gradientTiles(g);
@@ -521,6 +531,7 @@ Uint8 AICastor::wheatGradientAt(size_t index)
 
 void AICastor::computeWheatGrowthMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	if (lastWheatGrowthMapComputed==timer)
 		return;
 	
@@ -553,6 +564,7 @@ void AICastor::computeWheatGrowthMap()
 
 void AICastor::computeEnemyPowerMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	if (lastEnemyPowerMapComputed==timer)
 		return;
 	lastEnemyPowerMapComputed=timer;
@@ -631,6 +643,7 @@ void AICastor::computeEnemyPowerMap()
 
 void AICastor::computeEnemyRangeMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	if (lastEnemyRangeMapComputed==timer)
 		return;
 	lastEnemyRangeMapComputed=timer;
@@ -673,6 +686,7 @@ void AICastor::computeEnemyRangeMap()
 
 void AICastor::computeEnemyWarriorsMap()
 {
+	PERF_SCOPE_TIME(AIObserve);
 	if (lastEnemyWarriorsMapComputed==timer)
 		return;
 	lastEnemyWarriorsMapComputed=timer;

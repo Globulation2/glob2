@@ -7,6 +7,8 @@
 #include <iostream>
 #include <string>
 #include <GUIButton.h>
+#include <GUITextArea.h>
+#include <InterfacePresentation.h>
 using namespace GAGGUI;
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -179,8 +181,27 @@ void ScrollingText::onTimer(Uint32 tick)
 CreditScreen::CreditScreen()
 {
 	addWidget(new TextButton(20, 20, 100,  40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Back]"), 0, 27));
-	
-	addWidget(new ScrollingText(0, 0 , 0, 0, ALIGN_FILL, ALIGN_FILL, "standard", "data/authors.txt"));
+
+	if (phonePresentationRequested())
+	{
+		enablePhoneForm();
+		InputLineStream input(
+			Toolkit::getFileManager()->openInputStreamBackend("data/authors.txt"));
+		std::string credits;
+		while (!input.isEndOfStream())
+		{
+			auto line = input.readLine();
+			const auto first = line.find('<'), last = line.rfind('>');
+			if (first != std::string::npos && last != std::string::npos && last >= first)
+				line.erase(first, last - first + 1);
+			if (line.find('*') == std::string::npos)
+				credits += line + "\n";
+		}
+		addWidget(new TextArea(0, 0, 0, 0, ALIGN_FILL, ALIGN_FILL, "standard", true, credits));
+	}
+	else
+		addWidget(
+			new ScrollingText(0, 0, 0, 0, ALIGN_FILL, ALIGN_FILL, "standard", "data/authors.txt"));
 }
 
 void CreditScreen::onAction(Widget *source, Action action, int par1, int par2)

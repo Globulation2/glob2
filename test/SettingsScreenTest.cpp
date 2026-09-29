@@ -154,16 +154,21 @@ int main(int argc,char** argv)
         }
         screen.selectCategory(SettingsScreen::Category::Gameplay);
         assert(screen.changeSetting("gameplay.speed",4));loaded.load();assert(loaded.gameSpeed==4);
+        assert(s.autosaveGames);assert(screen.changeSetting("gameplay.autosave",0));loaded.load();assert(!loaded.autosaveGames);
+        assert(screen.changeSetting("gameplay.autosave",1));loaded.load();assert(loaded.autosaveGames);
         const auto before=readFile(profile+"/preferences.txt");
         const auto permissions=std::filesystem::status(profile+"/preferences.txt").permissions();
         const auto directoryTarget=profile+"/atomic-directory";
         std::filesystem::create_directory(directoryTarget);
         assert(!Toolkit::getFileManager()->writeFileAtomic(directoryTarget,"must not replace directory"));
         assert(std::filesystem::is_directory(directoryTarget));
-        std::filesystem::create_directory(profile+"/preferences.txt.tmp");
-        assert(screen.changeSetting("gameplay.speed",5));assert(screen.saveFailed());assert(readFile(profile+"/preferences.txt")==before);
+        std::filesystem::rename(profile+"/preferences.txt", profile+"/preferences.backup");
+        std::filesystem::create_directory(profile+"/preferences.txt");
+        assert(screen.changeSetting("gameplay.speed",5));assert(screen.saveFailed());assert(readFile(profile+"/preferences.backup")==before);
         screen.capture(std::string(argv[5])+"/save-error.bmp");
-        std::filesystem::remove(profile+"/preferences.txt.tmp");screen.finishInteraction();assert(!screen.saveFailed());loaded.load();assert(loaded.gameSpeed==5);
+        std::filesystem::remove(profile+"/preferences.txt");
+        std::filesystem::rename(profile+"/preferences.backup", profile+"/preferences.txt");
+        screen.finishInteraction();assert(!screen.saveFailed());loaded.load();assert(loaded.gameSpeed==5);
         assert(std::filesystem::status(profile+"/preferences.txt").permissions()==permissions);
         screen.selectCategory(SettingsScreen::Category::Player);
         screen.activateSetting("player.name");screen.key(SDLK_a,KMOD_CTRL);
@@ -191,10 +196,13 @@ int main(int argc,char** argv)
         for(const auto& b:check.getKeyboardShortcuts())if(b.getKeyPress(0).getKey()=="f11"){++matches;assert(b.getAction()==2 && b.getKeyPressCount()==1);}assert(matches==1);
         const std::string keyFile=GameGUIKeyActions::getConfigurationFile();
         const auto savedKeys=readFile(profile+"/"+keyFile);
-        std::filesystem::create_directory(profile+"/"+keyFile+".tmp");
+        std::filesystem::rename(profile+"/"+keyFile, profile+"/"+keyFile+".backup");
+        std::filesystem::create_directory(profile+"/"+keyFile);
         screen.activateSetting("keys.add.3");screen.key(SDLK_F8);screen.activateSetting("binding.save");
-        assert(screen.saveFailed() && readFile(profile+"/"+keyFile)==savedKeys);
-        std::filesystem::remove(profile+"/"+keyFile+".tmp");screen.finishInteraction();assert(!screen.saveFailed());
+        assert(screen.saveFailed() && readFile(profile+"/"+keyFile+".backup")==savedKeys);
+        std::filesystem::remove(profile+"/"+keyFile);
+        std::filesystem::rename(profile+"/"+keyFile+".backup", profile+"/"+keyFile);
+        screen.finishInteraction();assert(!screen.saveFailed());
         screen.activateSetting("keys.mode.1");screen.capture(std::string(argv[5])+"/editor-shortcuts.bmp");
         assert(s.highResolutionArtwork==originalArtwork);
         screen.selectCategory(SettingsScreen::Category::Display);
@@ -206,6 +214,17 @@ int main(int argc,char** argv)
         screen.changeSetting("graphics.torus",!previousTorus);
         saved.load();assert(saved.automaticTorus==!previousTorus);
         screen.changeSetting("graphics.torus",previousTorus);
+        for (const auto& [value,name] : std::vector<std::pair<int,std::string>>{{1,"compact"},{2,"spacious"},{0,"automatic"}}) {
+            assert(screen.changeSetting("display.presentation",value));
+            saved.load();assert(saved.interfacePresentation==name);
+        }
+        const auto sample=profile+"/presentation-preference.txt";
+        for (const char* contents : {"interfacePresentation=invalid\n", "username=Legacy profile\n"}) {
+            {std::ofstream file(sample);file<<contents;}
+            saved.interfacePresentation="compact";saved.load(sample);
+            assert(saved.interfacePresentation=="automatic");
+        }
+        std::filesystem::remove(sample);
         screen.done();
     }
     std::cout<<"PASS: layout, persistence, automatic saving, display confirmation, building defaults, bindings, localization\n";

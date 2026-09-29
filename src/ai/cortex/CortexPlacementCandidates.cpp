@@ -46,81 +46,6 @@ namespace Cortex
 			return false;
 		}
 
-		// Chebyshev edge-to-edge gap from the candidate footprint (x, y, w x h) to the
-		// nearest live building owned by `team`. Returns -1 when the team has no
-		// buildings (first placement: the cap is meaningless). Warp-safe.
-		//
-		// distanceToNearestBuilding above measures CORNER-to-corner Chebyshev distance,
-		// which inflates with the footprint size; this measures EDGE-to-edge gap (0 when
-		// the boxes touch), the right quantity for the hard "stay clustered" cap so a
-		// large building is not penalised for its own extent.
-		int nearestBuildingEdgeDist(Game* game, Team* team, const Map& map,
-		                            int x, int y, int w, int h)
-		{
-			const int mapW = map.getW();
-			const int mapH = map.getH();
-			int best = -1;
-			for (int i = 0; i < Building::MAX_COUNT; i++)
-			{
-				Building* b = team->myBuildings[i];
-				if (b == NULL || b->buildingState == Building::DEAD)
-					continue;
-				if (b->type == NULL)
-					continue;
-				const int g = rectEdgeChebyshev(x, w, y, h,
-				                                b->posX, b->type->width,
-				                                b->posY, b->type->height, mapW, mapH);
-				if (best < 0 || g < best)
-					best = g;
-			}
-			return best;
-		}
-
-		// Chebyshev distance from tile (x, y) to the nearest live SWARM_BUILDING
-		// owned by `team`. Returns -1 when the team has no swarms yet. Used to
-		// enforce CORTEX_SWARM_MIN_SPACING so two swarms do not share one wheat
-		// catchment. Mirrors distanceToNearestBuilding but filtered to swarms.
-		// C++: shortTypeNum == IntBuildingType::SWARM_BUILDING (same test as
-		// AICortex.cpp:324).
-		int distanceToNearestSwarm(Game* game, Team* team, int x, int y)
-		{
-			int best = -1;
-			for (int i = 0; i < Building::MAX_COUNT; i++)
-			{
-				Building* b = team->myBuildings[i];
-				if (b == NULL || b->buildingState == Building::DEAD)
-					continue;
-				if (b->type == NULL || b->type->shortTypeNum != IntBuildingType::SWARM_BUILDING)
-					continue;
-				int d = game->map.warpDistMax(x, y, b->posX, b->posY);
-				if (best < 0 || d < best)
-					best = d;
-			}
-			return best;
-		}
-
-		// Chebyshev distance from tile (x, y) to the nearest live FOOD_BUILDING (inn)
-		// owned by `team`. Returns -1 when the team has no inns yet. Used to enforce
-		// CORTEX_INN_MIN_SPACING so inns do not pile on top of each other (workers
-		// would contend for the same wheat and the colony loses feed coverage).
-		// Mirrors distanceToNearestSwarm but filtered to inns.
-		int distanceToNearestInn(Game* game, Team* team, int x, int y)
-		{
-			int best = -1;
-			for (int i = 0; i < Building::MAX_COUNT; i++)
-			{
-				Building* b = team->myBuildings[i];
-				if (b == NULL || b->buildingState == Building::DEAD)
-					continue;
-				if (b->type == NULL || b->type->shortTypeNum != IntBuildingType::FOOD_BUILDING)
-					continue;
-				int d = game->map.warpDistMax(x, y, b->posX, b->posY);
-				if (best < 0 || d < best)
-					best = d;
-			}
-			return best;
-		}
-
 		// Insert one candidate into a best-first top-K buffer. Strict-greater
 		// comparison preserves scan order on ties (first-seen wins), keeping the
 		// ranking deterministic. `count` is updated in place.
@@ -213,6 +138,8 @@ namespace Cortex
 		const int mapW = map.getW();
 		const int mapH = map.getH();
 
+		const PlacementGeometry geometry(team, map);
+
 		ScoredSpot heap[CORTEX_BUILD_CANDIDATES];
 		int count = 0;
 
@@ -264,6 +191,15 @@ namespace Cortex
 						continue;
 				}
 
+				// Fog-of-war: the footprint must be discovered (mirrors AIEcho's
+				// find_location). Check both corners of the grown box, like the
+				// engine path does.
+				if (!map.isMapDiscovered(map.normalizeX(gx), map.normalizeY(gy),
+				                         team->allies) ||
+				    !map.isMapDiscovered(map.normalizeX(gx + ew - 1),
+				                         map.normalizeY(gy + eh - 1), team->allies))
+					continue;
+
 				// Canonical engine validity gate — identical to the predicate
 				// behind Game::checkHardRoomForBuilding for a non-virtual
 				// building, so a resulting OrderCreate will not be rejected. We gate
@@ -290,19 +226,10 @@ namespace Cortex
 				if (forward != NULL && !map.isFreeForBuilding(x, y, w, h))
 					continue;
 
-				// Fog-of-war: the footprint must be discovered (mirrors AIEcho's
-				// find_location). Check both corners of the grown box, like the
-				// engine path does.
-				if (!map.isMapDiscovered(map.normalizeX(gx), map.normalizeY(gy),
-				                         team->allies) ||
-				    !map.isMapDiscovered(map.normalizeX(gx + ew - 1),
-				                         map.normalizeY(gy + eh - 1), team->allies))
-					continue;
-
 				// Geography rejects for wheat-fed buildings.
 				//
-				// HARD REJECT (swarm and inn): no CORN within the maximum haul
-				// distance. Engine fact: a swarm L0 stalls when its CORN buffer
+				// HARD REJECT (swarm and inn): no WHEAT within the maximum haul
+				// distance. Engine fact: a swarm L0 stalls when its WHEAT buffer
 				// drops below 5 (building/TypeSteps.cpp:31); a unit on a field tile
 				// more than ~5 tiles away cannot keep the buffer above the stall
 				// line within one production cycle of 150 ticks. CORTEX_WHEAT_MAX_DIST
@@ -310,7 +237,7 @@ namespace Cortex
 				// avoid scanning far on a reject; the full SCAN_CAP is used only for
 				// the retained candidates' wheatDist field at copy-out.
 				if (isWheatFed &&
-				    nearestCornDist(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
+				    nearestWheatDist(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
 					continue;
 
 				// HARD REJECT (swarm and inn): the field must hold a real CLUSTER of
@@ -322,36 +249,36 @@ namespace Cortex
 				// it WILL be once the checkerboard settles: a candidate near freshly-
 				// revealed wheat (not yet painted) no longer passes on the full field only
 				// to have the reconcile paint half of it away and leave the inn below the
-				// threshold within a cycle. Depleted tiles are no longer CORN, so this
+				// threshold within a cycle. Depleted tiles are no longer WHEAT, so this
 				// still rejects a swarm hugging a nearly-exhausted patch and an inn dropped
 				// on a field whose wheat is already gone (both observed in play).
 				if (isWheatFed &&
-				    countSurvivingCornWithin(map, x, y, w, h,
+				    countSurvivingWheatWithin(map, x, y, w, h,
 				                             CORTEX_WHEAT_MIN_TILES_RADIUS)
 				        < CORTEX_WHEAT_MIN_TILES)
 					continue;
 
 				// HARD REJECT (swarm only): the swarm's footprint EDGE must sit within
-				// CORTEX_SWARM_WHEAT_EDGE_DIST tiles of a CORN tile. This is STRICTER
-				// than the shared corner-based nearestCornDist check above (which still
+				// CORTEX_SWARM_WHEAT_EDGE_DIST tiles of a WHEAT tile. This is STRICTER
+				// than the shared corner-based nearestWheatDist check above (which still
 				// gates inns): a swarm spawns the haulers that feed the whole colony, so
-				// it must hug the wheat far more tightly than an inn does. anyCornWithin
+				// it must hug the wheat far more tightly than an inn does. anyWheatWithin
 				// is edge-aware (it scans the footprint expanded by `dist`), so this is
 				// measured from the footprint edge, not the top-left corner.
-				if (isSwarm && !anyCornWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
+				if (isSwarm && !anyWheatWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
 					continue;
 
 				// HARD REJECT (inn only): the inn's GROWN footprint edge must sit within
-				// CORTEX_INN_WHEAT_EDGE_DIST tiles of a HARVESTABLE (surviving-parity) CORN
-				// tile. Unlike the cluster gate above (which counts surviving corn within a
+				// CORTEX_INN_WHEAT_EDGE_DIST tiles of a HARVESTABLE (surviving-parity) WHEAT
+				// tile. Unlike the cluster gate above (which counts surviving wheat within a
 				// wide radius of the PLACED 2x2 to prove a real field exists), this measures
 				// from the GROWN box (gx, gy, ew x eh) so the expansion area is included: the
 				// inn — at its final size — hugs the wheat with at most a one-tile gap and
 				// never blocks the lane its haulers use to reach the field. countSurviving
-				// CornWithin scans the box expanded by `dist`, so dist == 1 means "wheat
+				// WheatWithin scans the box expanded by `dist`, so dist == 1 means "wheat
 				// touching or one tile off the grown edge".
 				if (isInn &&
-				    countSurvivingCornWithin(map, gx, gy, ew, eh, CORTEX_INN_WHEAT_EDGE_DIST)
+				    countSurvivingWheatWithin(map, gx, gy, ew, eh, CORTEX_INN_WHEAT_EDGE_DIST)
 				        < 1)
 					continue;
 
@@ -362,7 +289,7 @@ namespace Cortex
 				// reject in that case (first swarm goes wherever wheat exists).
 				if (isSwarm)
 				{
-					const int swarmDist = distanceToNearestSwarm(game, team, x, y);
+					const int swarmDist = geometry.distanceToNearestBuildingType(x, y, IntBuildingType::SWARM_BUILDING);
 					if (swarmDist >= 0 && swarmDist < CORTEX_SWARM_MIN_SPACING)
 						continue;
 				}
@@ -373,7 +300,7 @@ namespace Cortex
 				// no inn exists yet; the first inn places freely.
 				if (isInn)
 				{
-					const int innDist = distanceToNearestInn(game, team, x, y);
+					const int innDist = geometry.distanceToNearestBuildingType(x, y, IntBuildingType::FOOD_BUILDING);
 					if (innDist >= 0 && innDist < CORTEX_INN_MIN_SPACING)
 						continue;
 				}
@@ -382,7 +309,7 @@ namespace Cortex
 				// sit close to wheat. Every other building type is pushed back beyond
 				// CORTEX_WHEAT_CLEAR_DIST so its footprint does not block workers'
 				// paths into the field. AI-design rule, no engine analogue.
-				if (!isWheatFed && anyCornWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
+				if (!isWheatFed && anyWheatWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
 					continue;
 
 				// EDGE-DISTANCE CAP (non-wheat-fed only): keep tech/military buildings
@@ -394,7 +321,7 @@ namespace Cortex
 				// design — the target-distance window above bounds it instead).
 				if (!isInn && !isSwarm && forward == NULL)
 				{
-					const int edgeDist = nearestBuildingEdgeDist(game, team, map, x, y, w, h);
+					const int edgeDist = geometry.nearestBuildingEdgeDist(x, y, w, h);
 					if (edgeDist >= 0 && edgeDist > CORTEX_MAX_BUILD_EDGE_DIST)
 						continue;
 				}
@@ -415,7 +342,7 @@ namespace Cortex
 				// existing inns. The candidate is offered at its grown footprint
 				// (ew x eh) so an inn's expansion tiles are accounted for. Keeps the
 				// rule symmetric regardless of build order.
-				if (candidateCrowdsInn(game, team, map, gx, gy, ew, eh))
+				if (geometry.candidateCrowdsInn(gx, gy, ew, eh))
 					continue;
 
 				// RESERVED-EXPANSION CLEARANCE: do not place into the expansion tiles an
@@ -425,10 +352,10 @@ namespace Cortex
 				// they will expand into and block the upgrade. We test the candidate's
 				// own GROWN box (gx, gy, ew x eh) against each existing growable type's
 				// reserved box, so neither side's future expansion collides.
-				if (candidateOverlapsReservedExpansion(game, team, map, gx, gy, ew, eh))
+				if (geometry.candidateOverlapsReservedExpansion(gx, gy, ew, eh))
 					continue;
 
-				const int distToColony = distanceToNearestBuilding(game, team, x, y);
+				const int distToColony = geometry.distanceToNearestBuilding(x, y);
 				int score = scoreFromDistance(distToColony);
 				if (footprintBordersResource(map, x, y, w, h))
 					score += 250; // resource adjacency bonus
@@ -476,7 +403,7 @@ namespace Cortex
 			out[i].x = heap[i].x;
 			out[i].y = heap[i].y;
 			out[i].score = heap[i].score;
-			out[i].wheatDist = nearestCornDist(map, heap[i].x, heap[i].y,
+			out[i].wheatDist = nearestWheatDist(map, heap[i].x, heap[i].y,
 			                                   CORTEX_WHEAT_SCAN_CAP);
 		}
 

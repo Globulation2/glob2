@@ -6,7 +6,25 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 97
+#define VERSION_MINOR 120
+// version 120 preserves pending periodic gradients and eight-tick publication.
+// version 119 preserves Echo/Nicowar gradient caches and construction scheduling.
+// version 118 removes the obsolete Maxima rolling maturity cache.
+// version 117 preserves Maxima's rolling wheat maturity checks and pending changes.
+// version 116 preserves Maxima wave delivery and its permanent streaming fallback.
+// version 115 requires the current Maxima strategy and continuation schema.
+// version 114 preserves the team construction cooldown.
+// version 113 preserves unit clearing/idle state and ordered building/service lists.
+// version 112 persists Maxima offensive waves and their strategy controls.
+// version 111 persists Maxima fitted force beliefs and their observation cadence.
+// version 110 persists Maxima reachable fruit supply configuration.
+// version 109 persists Maxima labour observations, budgets and swarm allowances.
+// version 108 persists extended diagnostic gameplay measurements.
+// version 107 persists Maxima relocation relationships and fractional food supply.
+// version 101 persists resolved per-player runtime AI configuration in all header forms
+//             and Cortex queued orders, settle clocks and policy debounce for continuation.
+// version 105 preserves diagnostic gameplay measurements and damage attribution.
+// version 106 persists per-player AI telemetry schemas and samples.
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -108,12 +126,30 @@
 // version 97 rebuilds route fields from a map topology generation instead of a proximity
 //            walk, and saves the generation so a loaded game rebuilds on the same ticks:
 //            the simulation changed again
+// version 98 adds AI::ImplementationID::CABINO, a resurrected port of the original
+//            (2005-2007) Nicowar: independent specialist modules (defense, attack,
+//            construction, upgrades, unit/swarm management) that cooperate rather
+//            than a phase-driven strategy. Purely additive: older clients simply
+//            can't load a save that names this AI (see AI::load's default case).
+// version 99 reads one worker level (build) where hiring used to read harvest and
+//            the upgrade menu build, and evens the two out on load
+// version 100 adds AI::ImplementationID::MAXIMA, a standalone AI that develops a colony
+//            and attacks relentlessly, with its saved execution state. Purely additive,
+//            like Cabino. Maxima's save gates read the numbers its development saves
+//            used (98 for the current offense state, 99 for the retired swarm records,
+//            100 for relocation), so it starts at 100 to satisfy all of them.
+// version 102 adds the custom-game economy rules: no resource growth, scarce resources,
+//             instant construction, stockpile start and no hunger
+// version 103 adds the custom-game combat rules: no upgrades, glass cannon, fearless,
+//             no permadeath, peaceful mode and fortress buildings
+// version 104 adds the custom-game sudden-death timer win condition (a new winning-condition
+//             type in the existing list; no new GameHeader field)
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 29
+#define NET_PROTOCOL_VERSION 43
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 29
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 43
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
@@ -123,4 +159,24 @@
 // version 27 reordered the NetMessages so that reverse compatibility with future game versions can be done, added random seed in GameHeader
 // version 28 Nicowar's behavior was changed
 // version 29 the pathfinding simulation changed (#184); older clients would desync, so they are refused
+// version 30 GameHeader carries resolved per-player runtime AI configuration
+// version 31 GameHeader carries the custom-game economy rules; older clients would misread it
+// version 32 GameHeader carries the custom-game combat rules; older clients would misread it
+// version 33 GameHeader can carry the sudden-death winning condition, which older clients can't decode
 
+// version 34 changes Maxima labour and combat decisions; peers run AIs locally.
+// version 35 enables Maxima reachable fruit supply; peers run AIs locally.
+// version 36 enables Maxima fitted force inference; peers run AIs locally.
+
+// version 37 adds Maxima army growth and gathered attack waves; peers run AIs locally.
+
+// version 38 transfers the complete continuation state when joining saved games.
+
+// version 39 transfers construction cooldown state when joining saved games.
+// version 40 changes Maxima wave fallback decisions and their saved state.
+
+// version 41 adds symmetric version admission and the versioned YOG server greeting.
+
+// version 42 transfers Echo/Nicowar continuation fields when joining saved games.
+
+// version 43 uses delayed gradient publication and transfers its pending fields.

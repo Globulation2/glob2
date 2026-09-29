@@ -96,6 +96,26 @@ static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
 //! (MapIO.cpp:350, 410, 451, 514).
 static constexpr int FILE_FORMAT_VERSION_TOPOLOGY_GENERATION = 97;
 
+//! Harvest and build became one worker level. Saves before this could hold the
+//! two apart — the map editor offered a box for each — so the loader evens a
+//! worker out to the higher of the two (UnitSerialization.cpp:90).
+static constexpr int FILE_FORMAT_VERSION_ONE_WORKER_LEVEL = 99;
+
+//! Custom-game economy rules: resourceGrowthDisabled, resourceScarcityLevel,
+//! instantConstruction, stockpileStartLevel, hungerDisabled (GameHeader.cpp).
+static constexpr int FILE_FORMAT_VERSION_ECONOMY_RULES = 102;
+
+//! Custom-game combat rules: unitUpgradesDisabled, glassCannonLevel,
+//! unitsFearless, permadeathDisabled, peacefulMode, buildingHpLevel
+//! (GameHeader.cpp).
+static constexpr int FILE_FORMAT_VERSION_COMBAT_RULES = 103;
+//! Diagnostic gameplay measurements; no simulation or protocol change.
+static constexpr int FILE_FORMAT_VERSION_GAMEPLAY_STATS = 105;
+
+static constexpr int FILE_FORMAT_VERSION_AI_TELEMETRY = 106;
+//! Sampled blockage, health-band and nearby natural growth diagnostics.
+static constexpr int FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS = 108;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend
@@ -127,3 +147,14 @@ inline constexpr const char FILE_SIG_CHECKSUM_SIDECAR[5] = "GCS1";
 //! SHA-1 hash byte length, used by the checksum sidecar (Game_io.cpp:459-461).
 static constexpr int SHA1_BYTE_LEN = 20;
 
+//! Unit clearing/idle state, building service state and ordered team/unit lists.
+static constexpr int FILE_FORMAT_VERSION_SIMULATION_CONTINUATION = 113;
+
+//! Team cooldown that temporarily blocks new construction orders.
+static constexpr int FILE_FORMAT_VERSION_CONSTRUCTION_COOLDOWN = 114;
+
+//! Echo shared gradient fields, queued refreshes and construction scheduling.
+static constexpr int FILE_FORMAT_VERSION_ECHO_CONTINUATION = 119;
+
+// Completed private fields and remaining fixed publication deadlines.
+static constexpr int FILE_FORMAT_VERSION_GRADIENT_PIPELINE = 120;

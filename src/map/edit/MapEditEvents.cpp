@@ -6,24 +6,33 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "PhoneEditor.h"
 #include "MapEditKeyActions.h"
 #include "SDLCompat.h"
 
 void MapEdit::processEvent(SDL_Event& event)
 {
 	updateCamera();
+    inputState.observe(event);
+    if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+        suspendInput();
+    }
+    if (!inputState.hasFocus() && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP ||
+        event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP ||
+        event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEWHEEL)) return;
+
 	if (event.type==SDL_QUIT)
 	{
 		doFullQuit=true;
 	}
 #	ifdef USE_OSX
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
 	{
 		doFullQuit=true;
 	}
 #	endif
 #	ifdef USE_WIN32
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
 	{
 		doFullQuit=true;
 	}
@@ -34,7 +43,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		delegateMenu(event);
 		return;
 	}
-    else if(event.type==SDL_MOUSEWHEEL && (SDL_GetModState() & KMOD_ALT))
+    else if(event.type==SDL_MOUSEWHEEL && (inputState.modifiers() & KMOD_ALT))
     {
         double delta=event.wheel.y;
 #if SDL_VERSION_ATLEAST(2,0,18)
@@ -57,12 +66,12 @@ void MapEdit::processEvent(SDL_Event& event)
 		}
 		else if(isDraggingZone)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("zone drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingTerrain)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("terrain drag motion", relMouseX, relMouseY);
 		}
 		else if(isScrollDragging)
@@ -112,7 +121,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 {
 	if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
-		if(!findAction(event.button.x, event.button.y) && camera.contains(mouseX,mouseY) && widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
+		if((phone || !findAction(event.button.x, event.button.y)) && camera.contains(mouseX,mouseY) && widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
 			//The button wasn't clicked in any registered area
 			if(selectionMode==PlaceBuilding)
@@ -135,7 +144,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 				performAction("select map building");
 			}
 		}
-		else if(widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
+		else if(widgetRectangle(globalContainer->gfx->getW()-menuWidth()+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
 			performAction("minimap drag start");
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_RIGHT)
@@ -292,3 +301,17 @@ void MapEdit::handleKeyPressed(SDL_Keysym key, bool pressed)
 }
 
 
+
+void MapEdit::suspendInput()
+{
+    if(phone) phone->cancel();
+    inputState.clearHeld();
+    xSpeed = ySpeed = 0;
+    isDraggingMinimap = isScrollDragging = false;
+    isDraggingZone = isDraggingTerrain = isDraggingDelete = false;
+    isDraggingArea = isDraggingNoResourceGrowthArea = false;
+    // The parent will not receive pointer motion while its child is active.
+    // Neutralize edge scrolling until a new motion event arrives.
+    mouseX = globalContainer->gfx->getW() / 2;
+    mouseY = globalContainer->gfx->getH() / 2;
+}

@@ -1,3 +1,9 @@
+[AI strategy]
+Strategija UI
+[AIMaxima-Summary]
+Uravnoteži vzdržno rast in urjenje, nato zbira vojske v valove.
+[AIMaxima-Profile]
+Osnovna strategija: Hrano, delavce, rojstva, urjenje, gradnjo in boj obravnava kot tekmujoče potrebe. Velikost vojske delno prilagodi ocenjeni sovražnikovi moči, nato jo poskuša učinkovito pripeljati v boj.\n\nGospodarstvo in razvoj: Rojstva načrtuje glede na hrano in delovno silo, ohranja prosti čas za urjenje in neha dodajati odvečne delavce, ko potrebuje vojaško proizvodnjo. Prilagaja zmogljivost urjenja in preprečuje, da bi nadgradnje izključile preveč infrastrukture.\n\nIzvidovanje in odločitve: Sovražne sile ocenjuje iz vidnih enot in zapomnjenih opažanj s prilagojenim modelom. Cilji so odvisni od vrednosti, razdalje, stolpov, izpostavljenih delavcev in vztrajanja pri cilju. Odprave po sadje podpirajo raznolikost hrane in prestope.\n\nNapad in obramba: Vojake rezervira za urjenje in obrambo, nato pred pošiljanjem valov zbere primerne kopenske sile ob lastni prehranski infrastrukturi. Uporablja lokalne obrambne odzive in ocenjuje dostope do kolonije.\n\nKo se napadi ustavijo: Po štirih zaporednih neuspehih pri dostavi valov preklopi na stalno okrepljene napadalne zastave. Tudi amfibijski napadi lahko uporabljajo neprekinjene okrepitve. Ta nadomestni način ne reši vsake zapore, preden nastane zbirališče.\n\nPrimerjava z drugimi AI: Tesneje povezuje hrano, urjenje, podatke o sovražniku in razporejanje. Cabino poudarja več napadov na stavbe; Maxima ocenjene potrebe in dostavo zbranih sil.\n\nPrednosti in slabosti: Vzdržuje rast in nadomeščanje vojske ter se prilagaja prehranskemu pritisku in opaženim grožnjam. Potrebuje hrano, zmogljivost urjenja in odprt zbirni prostor; zastoji in dolge poti lahko ovirajo dostavo sil.\n\nKako se zoperstaviti: Borite se za izpostavljeno pšenico, restavracije in vojašnice, preden se zberejo valovi. Oskrbovane branilce držite skupaj in prekinjajte poti okrepitev. Po prvem valu pričakujte ponoven pritisk.\n\nIzvidovanje: Ocene sil uporabljajo opažanja in njihovo zgodovino, ne skritih skupnih števil sovražnih enot.
 [%0 has left the game]
 %0 je zapustil igro.
 [%0 level %1]
@@ -51,11 +57,11 @@ UI
 [ai]
 UI
 [AICastor-Description]
-Castor igra previdno in se dobro obnese na zemljevidih z malo surovin. Srednja težavnost.
+Gradi in uri vojsko, rast pa prilagaja zalogam hrane.
 [AICastor]
 AICastor
 [AINicowar-Description]
-Nicowar igra napadalno, se hitro širi in nad nasprotnike pošilja ogromne vojske. Visoka težavnost.
+Povečuje prebivalstvo, uri bojevnike in nato napade.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -63,17 +69,21 @@ Brez – ne naredi ničesar.
 [AINone]
 Brez UI
 [AINumbi-Description]
-Numbi se širi v manjšem obsegu, a hitro. Nizka težavnost.
+Prizanesljiv nasprotnik, ki se vseeno širi in napada.
 [AINumbi]
 AINumbi
 [AIEcono-Description]
-Econo ne napada, a gradi ogromne baze in vztrajno pridobiva tuje enote na svojo stran. Nizka težavnost.
+Širi se in pridobiva tuje enote brez ustvarjanja bojevnikov.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Warrush napada hitro in silovito ter branilca pogosto potisne do meja njegovih zmožnosti. Srednja težavnost.
+Hitri napadi preverijo vašo zgodnjo obrambo.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Spreten graditelj, ki uporablja izurjene napadalne sile.
+[AICabino]
+Cabino
 [Alga]
 Alga
 [algae]
@@ -1217,7 +1227,11 @@ Hitrost: 1x (več igralcev)
 [game speed help]
 Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
 [AICortex-Description]
-Cortex se širi proti novim pšeničnim poljem in v boj pošilja skupine bojevnikov, ki jih podpirajo restavracije in bolnišnice blizu frontne črte. Srednja težavnost. Eksperimentalno.
+Strnjeni valovi bojevnikov s podporo hrane in zdravljenja.
+[AIMaxima-Description]
+Izviduje, razvija oskrbo s hrano in zbira valove bojevnikov.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Zemljevida ni mogoče naložiti: datoteka je poškodovana ali ima nezdružljivo različico.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1233,33 +1247,37 @@ Znotraj: %0
 [AI strategy & counterplay]
 Strategija UI in protiigra
 [AICastor-Profile]
-Strategija: širi se previdno in dobro deluje na zemljevidih z malo viri.\n\nPrednosti: Omejena razširitev je učinkovita v igrah z omejenimi viri.\n\nPredlagana protiigra: zgodaj zasedite ozemlje. Ne domnevajte, da bo pomanjkanje virov oslabilo to umetno inteligenco.
+Osnovna strategija: Vlaga v produktivno kolonijo in tehnologijo, preden začne večje napade. Naselbino razvija z gradbenimi projekti po prednostnem vrstnem redu; razvoj, vojaška infrastruktura in čas povečujejo pripravljenost na vojno.\n\nGospodarstvo in razvoj: Preučuje navlaženost, rast pšenice, ovire in doseg delavcev. Poleg proizvodnje upravlja širitev oskrbe s hrano, nadgradnje in obrambo.\n\nNapad in obramba: Ocenjuje napadalno moč zdravih vojakov in začne napade ob izpolnjenih pogojih glede moči ali časa. Daje prednost že opaženim dostopnim stavbam, zlasti vojašnicam in šolam, ter premika napadalne zastave k dragocenim ciljem.\n\nPrimerjava z drugimi AI: Bolj premišljeno kot Numbi upošteva teren in vrednost ciljev. Je potrpežljivejši kot Warrush ter zamenja zgodnji pritisk za razvito bazo in močnejše enote.\n\nPrednosti in slabosti: Obsežno načrtovanje infrastrukture in pomembni vojaški cilji dajejo napadom namen. Priprave zahtevajo čas, zato se lahko hitrejši nasprotniki borijo za vire, preden je glavna vojska pripravljena.\n\nKako se zoperstaviti: Zgodaj tekmujte za območja širitve. Poleg hrane zaščitite vojašnice in šole ter ob napadu na razvito naselbino ohranite rezervo.
 [AICastor-Summary]
-Previdna širitev; dobro deluje z omejenimi viri.
+Razvije utrjeno kolonijo, nato napade vojaške in znanstvene stavbe.
 [AICortex-Profile]
-Strategija: upravlja z zalogami hrane, se širi proti novim pšeničnim poljem in sestavlja zaporedne skupine bojevnikov. Restavracije in bolnišnice blizu prve črte podpirajo napade daleč od baze.\n\nPrednosti: Pošlje okrepitve skupaj, vzdržuje vojaški pritisk in se odzove na pomanjkanje hrane.\n\nPredlagana protiigra: Borite se za nadzor nad novimi pšeničnimi polji in napadite njihove podporne zgradbe blizu frontne črte. Napadite, preden so njegove skupine bojevnikov pripravljene.\n\nEksperimentalna UI. Srednja težavnost; predlogi protiigre niso ocene iz primerjalnih preizkusov.
+Osnovna strategija: S prednostnimi nalogami, ki se odzivajo na razmere, razvija delujoče gospodarstvo in proste delavce usmerja v hrano, tehnologijo in vojaški pritisk. Običajno odločanje temelji na pravilih; poskusi z naučenim odločanjem zahtevajo ločeno nastavitev.\n\nGospodarstvo in razvoj: Proizvodnjo delavcev prilagaja potrebam po osebju in ohranja rojevanje. Težave s hrano omejijo porabo za širitev in tehnologijo. Doda plavanje, ko dostop čez vodo občutno pomaga.\n\nNapad in obramba: Napade pripravlja glede na opaženo sovražnikovo tehnologijo in razpoložljive enote. Pohodi čez vodo potrebujejo vojake, ki znajo plavati. Dolge pohode podpira s prednjimi restavracijami in bolnišnicami ter lahko pred napredovanjem zbere sile.\n\nVztrajnost in nujne razmere: Ofenzivo nadaljuje kljub manjšim nadlegovanjem, namesto da bi se stalno vračal domov. Resni napadi lahko prikličejo branilce. Zgodnje krize lahko sprožijo proizvodnjo samo vojakov in gradnjo bolnišnice; lakota lahko sproži manjši obupan napad.\n\nPrimerjava z drugimi AI: Bolj kot Warrush skrbi za prednjo podporo. Maxima gre dlje pri načrtovanju vzdržnega rojevanja, urjenja in razporejanja glede na ocenjeno sovražnikovo moč.\n\nPrednosti in slabosti: Povezuje pritisk s hrano, zdravljenjem in dosegljivostjo. Prednja infrastruktura mora ostati oskrbljena, nadaljnja rojstva pa lahko dodatno obremenjujejo omejeno hrano. Nujne prednostne naloge silijo v izbiro med rastjo in preživetjem.\n\nKako se zoperstaviti: Borite se za prednje restavracije, bolnišnice in pšenico. Branilce držite skupaj proti prodoru; manjše nadlegovanje ga morda ne bo prepričalo v umik.\n\nIzvidovanje: Uporablja odkrite sovražnikove stavbe in opažene sovražnikove enote.
 [AICortex-Summary]
-Razširi se z mislijo na zaloge hrane in podpira svoje napadalne čete.
+Vztrajne vojaške prodore podpira s prednjo oskrbo s hrano in zdravljenjem.
 [AINicowar-Profile]
-Strategija: hitro se širi in napada nasprotnike z ogromnimi vojskami.\n\nPrednosti: Hitra širitev podpira agresivne vojaške napade.\n\nPredlagana protiigra: Preprečite njeno širitev. Uporabite teren, da zmanjšate število sovražnih čet, ki se lahko borijo hkrati.
+Osnovna strategija: Združuje rast, urjenje, nadgradnje in vojno s prekrivajočimi se pogoji. Lahko napada med širitvijo in ob težavah s hranjenjem preusmeri gospodarska prizadevanja v okrevanje.\n\nZačetek: Priloženi napadalni profil začne vojne priprave pri skupno petih enotah in dovoli vojno pri petih vojakih, tudi ničelne ravni. Cilja na tri napadalne zastave s po petimi vojaki. Prilagojene strateške datoteke lahko te pragove spremenijo.\n\nGospodarstvo in razvoj: Povečuje zmogljivosti za hrano in rojevanje, uri delavce, razvija plavanje in gibanje ter nadgrajuje stavbe. Prilagaja delavce pri oskrbi s hrano, se odziva na stradanje in pridobiva sadje.\n\nNapad in obramba: Naključno izbira dosegljive sovražnikove stavbe za napad. S čistilnimi zastavami lahko odpre poti, ki jih zapirajo viri. Obrambne zastave pokrivajo skupine ogroženih enot in stavb. Pozneje izurjeni raziskovalci s kopenskim napadom ciljajo skupine sovražnih enot.\n\nPrimerjava z drugimi AI: Deli zgodnjo napadalnost Warrush, a ima širši načrt nadaljevanja. V nasprotju s Cabino ne daje dosledne prednosti bolnišnicam in restavracijam.\n\nPrednosti in slabosti: Širok nabor taktik združuje zgodnji pritisk z nadaljnjim razvojem. Naključna izbira ciljev lahko troši trud za manj pomembne stavbe. Njegovi pragovi ne zagotavljajo podrobne ocene nasprotnikove bojne moči, ki jo uporablja Maxima.\n\nKako se zoperstaviti: Pričakujte zgodnji napad. Zaščitite hrano in delavce, ovirajte širitev in se pripravite na napade raziskovalcev, če doseže napredno urjenje.
 [AINicowar-Summary]
-Hitro se širi in gradi velike vojske za agresivne napade.
+Zgodnji naval podpira s kmetijstvom, nadgradnjami, obrambo in napadi raziskovalcev.
 [AINone-Profile]
 Strategija: AI ne daje nobenih ukazov.\n\nPrednosti: predvidljiv, neaktiven nasprotnik za eksperimente.\n\nSlabosti: Ne širi se ali prilagaja.
 [AINone-Summary]
 Nedejavna kolonija za eksperimente.
 [AINumbi-Profile]
-Strategija: Hitro se širi, vendar v majhnem obsegu. Lažji nasprotnik za vadbo upravljanja kolonije.\n\nPrednosti: Omogoča vam, da se naučite ekonomskega upravljanja in bojevanja.\n\nPredlagana protiigra: Razvijte močnejše gospodarstvo in izurite svojo vojsko pred napadom.
+Osnovna strategija: Najprej gradi oskrbo s hrano in prebivalstvo, doda zdravljenje, znanost in urjenje, nato se usmeri v vojno. Glavne faze napredujejo s časom, ne z nasprotnikovim napredkom.\n\nGospodarstvo in razvoj: Potrebe po stavbah prilagaja prebivalstvu in ocenjuje bližnjo pšenico. Poznejše faze dodajo nadgradnje, obrambo in širitev za podporo rastoči vojski.\n\nNapad in obramba: Napade, ko ima dovolj zdravih borcev ali poteče časovna omejitev. Vojne zastave postavlja na izbrane sovražnikove stavbe. Ko bojna moč preveč pade, odstrani napadalne zastave in zviša pragove za naslednji poskus.\n\nPrimerjava z drugimi AI: Bolj predvidljiv kot Castor ali Nicowar. Castor skrbneje upošteva teren in vrednost ciljev; Nicowar pritiska veliko prej.\n\nPrednosti in slabosti: Obsežna podporna infrastruktura ga lahko po nemotenem razvoju naredi nevarnega, a časovni načrt morda ne ustreza bitki. Preprosta izbira ciljev in daljši premori po izgubah olajšajo predvidevanje napadov.\n\nKako se zoperstaviti: Pritiskajte pred njegovo vojaško fazo. V zaledju svojih napadov razvijajte hrano in urjenje ter izkoristite premor po odbitem napadu.\n\nIzvidovanje: Napadalna rutina neposredno bere položaje sovražnikovih stavb brez preverjanja vidljivosti.
 [AINumbi-Summary]
-Hitra širitev v majhnem obsegu.
+Postopoma gradi kolonijo po časovnem načrtu, nato napade s številčno močjo.
 [AIEcono-Profile]
-Strategija: Ne napada, ampak gradi ogromne baze in aktivno spreminja sovražne enote na svojo stran.\n\nPrednosti: Razširitev in pretvorba enot ogrožata nasprotnike brez neposrednih napadov.\n\nPredlagana protiigra: zgodaj razvijte svojo kolonijo in se izogibajte pošiljanju enot, kamor jih lahko sovražnik spremeni.
+Osnovna strategija: Proizvaja delavce in raziskovalce, širi gospodarstvo ter s hrano in sadjem privablja sovražnikove enote. Nima običajne vojaške ofenzive.\n\nGospodarstvo in razvoj: Ob pšenici gradi restavracije in porodnišnice, dodaja izobraževanje in urjenje gibanja ter nadgrajuje infrastrukturo. Spremlja zaloge hrane in zamenja stare restavracije in porodnišnice, ko se njihov dostop do virov poslabša.\n\nKmetijstvo in prestopi: Varuje obnovljivo pšenico in les ob vodi. Raziskovalce pošilja k sadju in sovražnikovim kolonijam ter pri pridobivanju sadja sovražnikom oglašuje hrano. Boljša hrana in sadje lahko privabita prestopnike.\n\nPrimerjava z drugimi AI: Gospodarsko najbolj specializiran nasprotnik. Tudi Cabino in Maxima pridobivata sadje, vendar ga združujeta z vojsko.\n\nPrednosti in slabosti: Lahko raste, medtem ko se vojaški nasprotniki izčrpavajo, prestopi pa omogočajo drug način tekmovanja. Ne proizvaja vojakov za odgovor na vztrajen napad. Hrana, sadje, geografija in pravila zmage močno vplivajo na njegove možnosti.\n\nKako se zoperstaviti: Pritiskajte na nezaščiteno širitev. Lastne restavracije oskrbujte s hrano in sadjem, da obdržite enote. Ne izčrpavajte kolonije z nepotrebnimi boji, medtem ko on raste.
 [AIEcono-Summary]
-Ogromne baze in pretvorba namesto napadov.
+Razvija kolonijo z obilico hrane in privablja prestopnike brez proizvodnje vojakov.
 [AIWarrush-Profile]
-Strategija: Napade zgodaj in odločno, preden se nasprotniki končajo s pripravami.\n\nPrednosti: izkorišča nebranjeno širitev in počasne vojaške priprave.\n\nPredlagana protiigra: Preživite prvi napad in hkrati ohranite gospodarstvo, nato pa izvedite protinapad.
+Osnovna strategija: Napada, preden nasprotniki končajo dolg gospodarski ali tehnološki razvoj. Pričakuje, da bo boj odločil igro, preden bo potrebno veliko podporno omrežje.\n\nGospodarstvo in razvoj: Ko šest enot zna žeti, nastavi proizvodno razmerje na štiri delavce, enega raziskovalca in tri vojake. Ko se urjenje zapolni, dodaja vojašnice, a omejuje nove restavracije. Proste gradbene zmogljivosti pogosto porabi za bolnišnice in urjenje gibanja.\n\nNapad in obramba: Odkrite sovražnikove stavbe označi s stražnimi območji, da vojaki vzdržujejo pritisk. Ne čaka na skrbno sestavljen val. Odstranjuje ovirajoči les in varuje nekatere obnovljive vire.\n\nRavnanje s sadjem: Prepoveduje nabiranje sadja, s čimer se izogne z njim povezanim kaznim za oklep in zavrne strategijo prestopov, ki jo uporablja Econo.\n\nPrimerjava z drugimi AI: Bolj kot Numbi ali Castor se zanaša na zgodnji pritisk. Tudi Nicowar začne napadalno, a nadaljuje s širšim programom nadgradenj in taktik.\n\nPrednosti in slabosti: Kaznuje počasne začetke in prisili v zgodnje obrambne izdatke. Omejeno sistematično nadgrajevanje in skromna oskrba s hrano naredita zaustavljeno ofenzivo drago. Teren in dolge poti lahko zmanjšajo zgodnjo prednost.\n\nKako se zoperstaviti: Zgodaj zaščitite restavracije in porodnišnice. Nadomeščajte delavce in branilce, razvijajte urjenje in nato izvedite protinapad, ko naval izgubi zagon.\n\nIzvidovanje: Začetne raziskovalne zastave neposredno uporabljajo začetne položaje sovražnikov. Poznejše postavljanje napadalnih območij zahteva vidljivost.
 [AIWarrush-Summary]
-Hitri napadi, ki preizkusijo vašo zgodnjo obrambo.
+Zgodnji pritisk vojakov podpira z namerno varčnim podpornim gospodarstvom.
+[AICabino-Profile]
+Osnovna strategija: Proizvodnjo enot deli med gradnjo, nadgradnje, obrambo, napade in raziskovanje. Ločeni upravljavci zahtevajo in rezervirajo enote ter skupaj razvijajo gospodarstvo in vojsko.\n\nGospodarstvo in razvoj: Gradi in nadgrajuje obsežno naselbino, upravlja osebje restavracij in stolpov, čisti okolico stavb in varuje obnovljive vire. Išče sadje in oglašuje hrano, da tekmuje za prestopnike.\n\nNapad in obramba: Izbere sovražnika in daje prednost bolnišnicam, nato restavracijam in vojašnicam. Podpira do štiri napade, običajno z osmimi do dvajsetimi vojaki na cilj glede na razpoložljivost in bližnje sovražnike. Okoli ogroženih stavb uporablja ločene obrambne zastave.\n\nUrjenje: Za napad zahteva dovolj ustreznih vojakov in dokončano vojašnico, vendar ne čaka na najvišjo tehnologijo. Nadaljnje nadgradnje in urjenje okrepijo poznejše napade.\n\nPrimerjava z drugimi AI: Bolj načrtno kot Nicowar ruši podporne stavbe. Napade razprši bolj kot zbrani valovi Maxima in z rezervacijami enot upravlja tekmujoče potrebe.\n\nPrednosti in slabosti: Združuje rast, urjenje, obrambo in več napadov. Uničenje hrane in zdravljenja lahko oslabi celotno kolonijo. Naključna izbira nasprotnika in stalne prednostne stavbe lahko zgrešijo priložnosti; več napadov lahko razdeli sile.\n\nKako se zoperstaviti: Branite bolnišnice in restavracije. Ovirajte nezaščiteno širitev in združite branilce proti posameznim napadom. Poškodujte oskrbo ali urjenje, preden vzdržuje več front.\n\nIzvidovanje: Izbiranje napadov bere sezname sovražnikovih stavb brez izrecnega preverjanja vidljivosti. Nekatere gospodarske primerjave neposredno uporabljajo sovražnikove statistike.
+[AICabino-Summary]
+Usklajuje rast kolonije in izurjene napade ter najprej cilja zdravljenje in hrano.
 [Algae]
 Alge
 [Alliances]
@@ -1380,6 +1398,14 @@ Igralci in ekipe
 Pripravljeni zemljevidi
 [Preview ready. Start plays this exact map.]
 Predogled pripravljen. Začetek igre uporablja točno ta zemljevid.
+[Regenerate all]
+Znova ustvari vse
+[Generating preview...]
+Ustvarjanje predogleda ...
+[Preview unavailable]
+Predogled ni na voljo
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+Vsaka pokrajina je prikazana kot pravi zemljevid v vaši trenutni velikosti in številu kolonij. Izberite eno, da igrate prikazani zemljevid.
 [Purple]
 Vijolična
 [Quick clash]
@@ -1542,6 +1568,10 @@ Ni trenutnega predogleda
 Hitra bitka: dvojna hitrost; generirani zemljevidi se začnejo z 8 delavci.
 [Reroll]
 Ustvarite drug zemljevid
+[Randomize]
+Naključno ustvari
+[Reset to defaults]
+Obnovi privzete vrednosti
 [Ruleset]
 Nabor pravil
 [Select a map from the library.]
@@ -1772,9 +1802,1589 @@ Izbrana grafika se uporabi ob naslednjem nalaganju igre ali urejevalnika zemljev
 Samodejni torusni pogled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljevidu (OpenGL).
+[settings Autosave]
+Samodejno shranjevanje
+[settings Save the game automatically about every 10 seconds.]
+Samodejno shrani igro približno vsakih 10 sekund.
 [Channel width]
 Širina kanala
 [Land bridge width]
 Širina kopenskega mostu
 [Lake size]
 Velikost jezera
+[Contested commons]
+Sporno skupno ozemlje
+[Maze]
+Labirint
+[Fjord continent]
+Fjordska celina
+[Cell size]
+Velikost celice
+[Corridor width]
+Širina hodnika
+[Spoke width]
+Širina prečk
+[Loopiness]
+Gostota zank
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirint potrebuje vsaj dve celici v širino in v višino; uporabite večji zemljevid ali manjše celice.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Tako široki kanali v vsaki celici pustijo premalo trave; uporabite ožje kanale ali večje celice.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirint ima premalo slepih ulic za toliko kolonij; uporabite večji zemljevid ali manjše celice.
+[Home island size]
+Velikost začetnega otoka
+[Commons size]
+Velikost skupnega ozemlja
+[Moat width]
+Širina vodnega jarka
+[Bridge count]
+Število mostov
+[Continent size]
+Velikost celine
+[Coast roughness]
+Razgibanost obale
+[Fjord width]
+Širina fjorda
+[Lake connects to fjords]
+Jezero povezano s fjordi
+[Resource islands]
+Otoki z viri
+[Watershed]
+Porečje
+[River density]
+Gostota rek
+[Dryness]
+Sušnost
+[Fords]
+Brodi
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Porečje ima premalo poplavne ravnice za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
+[Stone highlands]
+Kamnito višavje
+[Valley size]
+Velikost doline
+[Pass width]
+Širina prelaza
+[Pond size]
+Velikost mlake
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Te doline so prevelike za zemljevid; uporabite večji zemljevid ali manjše doline.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Višavje ima premalo prostora za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
+[Symmetric arena]
+Simetrična arena
+[Centre size]
+Velikost središča
+[Causeway width]
+Širina nasipa
+[Causeways]
+Nasipi
+[Lakes]
+Jezera
+[Resource richness]
+Bogastvo virov
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Simetrična arena potrebuje 2, 4 ali 8 kolonij.
+[Eight colonies need a square map in the symmetric arena.]
+Osem kolonij potrebuje v simetrični areni kvadraten zemljevid.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Središče je na tem zemljevidu premajhno za sadovnjak; uporabite večje središče ali večji zemljevid.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena pušča premalo prostora za vsako kolonijo; uporabite večji zemljevid, manjše središče ali ožji vodni jarek.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Nasipi so preblizu skupaj; uporabite manj nasipov, ožje nasipe ali večje središče.
+[Ring world]
+Obročasti svet
+[Belt width]
+Širina pasu
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Pas je prekratek za toliko kolonij; uporabite daljši zemljevid ali manj kolonij.
+[City states]
+Mestne države
+[Strait width]
+Širina ožine
+[Valleys]
+Doline
+[Frontier richness]
+Bogastvo obmejnih dežel
+[City states need at least one colony.]
+Mestne države potrebujejo vsaj eno kolonijo.
+[Stone walls]
+Kamniti zidovi
+[Sand patches]
+Peščene zaplate
+[Tidal flats]
+Plimske ravnice
+[Everglades]
+Močvirja
+[Pool spacing]
+Razmik med mlakami
+[Pool size]
+Velikost mlak
+[Clearing size]
+Velikost jase
+[Levee]
+Nasip
+[Sloughs]
+Mrtvice
+[Everglades need at least one colony.]
+Močvirja potrebujejo vsaj eno kolonijo.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Preveč kolonij za ta zemljevid; uporabite večji zemljevid ali manj kolonij.
+[Coral]
+Korala
+[Fork angle]
+Kot razvejanja
+[Lean]
+Nagib
+[Home size]
+Velikost doma
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+Korala ne gre na ta zemljevid; uporabite večji zemljevid, ožje ožine ali manj kolonij.
+[Branching]
+Razvejanost
+[Branch width]
+Širina vej
+[Coral needs at least one colony.]
+Korala potrebuje vsaj eno kolonijo.
+[Coral needs a map at least 128 tiles across.]
+Korala potrebuje zemljevid, širok vsaj 128 polj.
+[Carousel]
+Vrtiljak
+[Amphitheatre]
+Amfiteater
+[Switchbacks]
+Serpentine
+[Court size]
+Velikost dvorišč
+[Court wall]
+Zid dvorišč
+[Plaza size]
+Velikost trga
+[Starting tower level]
+Raven začetnih stolpov
+[Towers per colony]
+Stolpi na kolonijo
+[Rings]
+Obroči
+[Ramp width]
+Širina klančin
+[Pit size]
+Velikost jame
+[Terrace width]
+Širina teras
+[Bay size]
+Velikost zalivov
+[Border wall]
+Mejni zid
+[Plateau size]
+Velikost planote
+[Trail width]
+Širina poti
+[Wall between legs]
+Zid med ovinki
+[Farm building plots]
+Gradbene parcele na kmetijah
+[Sand bridges over water]
+Peščeni mostovi čez vodo
+[Sand lanes through crops]
+Peščene poti skozi posevke
+[Carousels need at least two colonies.]
+Vrtiljak potrebuje vsaj dve koloniji.
+[Switchbacks need at least two colonies.]
+Serpentine potrebujejo vsaj dve koloniji.
+[An amphitheatre needs at least two colonies.]
+Amfiteater potrebuje vsaj dve koloniji.
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+Vrtiljak ne gre na ta zemljevid; uporabite večji zemljevid, manjše domove ali manj kolonij.
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+Serpentine ne gredo na ta zemljevid; uporabite večji zemljevid, manjšo planoto, ožje poti ali manj kolonij.
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+Amfiteater ne gre na ta zemljevid; uporabite večji zemljevid, manj obročev, ožje terase ali manj kolonij.
+[Spider web]
+Pajčevina
+[Spokes per colony]
+Žarki na kolonijo
+[Ring spacing]
+Razmik obročev
+[Thread width]
+Širina niti
+[Sag]
+Povešenost
+[Torn strands]
+Pretrgane niti
+[Hub size]
+Velikost središča
+[Dew drops]
+Kapljice rose
+[Spiral]
+Spirala
+[Spider webs need at least one colony.]
+Pajčevina potrebuje vsaj eno kolonijo.
+[Sandbars]
+Peščene sipine
+[Tide pools]
+Plimski tolmuni
+[Lagoons]
+Lagune
+[Central island]
+Osrednji otok
+[Tidal flats need at least one colony.]
+Plimske ravnice potrebujejo vsaj eno kolonijo.
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+Domači otoki ne gredo na ta zemljevid; uporabite večji zemljevid, manj kolonij ali manjše otoke.
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+Skupno ozemlje in ožina puščata premalo prostora za domače baze; uporabite večji zemljevid, manj kolonij, manjše skupno ozemlje ali ožjo ožino.
+[Wheat amount]
+Količina pšenice
+[Wood amount]
+Količina lesa
+[Stone amount]
+Količina kamenja
+[Algae amount]
+Količina alg
+[Fruit amount]
+Količina sadja
+[Stone on hilltops]
+Kamenje na vrhovih gričev
+[Winding river]
+Vijugasta reka
+[Sandy beaches]
+Peščene plaže
+[Land bridges]
+Kopenski mostovi
+[Colony meadows]
+Travniki okoli kolonij
+[Extra starting deposit]
+Dodatno začetno nahajališče
+[Moat bridges]
+Mostovi čez vodni jarek
+[Jagged coastlines]
+Razčlenjene obale
+[Sand roads]
+Peščene poti
+[Treasure in dead ends]
+Zakladi v slepih ulicah
+[Fjord bank deposits]
+Nahajališča na bregovih fjordov
+[Sandy lake shore]
+Peščena obala jezera
+[River delta]
+Rečna delta
+[Meandering rivers]
+Vijugaste reke
+[Fruit in home valleys]
+Sadje v začetnih dolinah
+[Moat]
+Vodni jarek
+[Stone in the orchard]
+Kamenje v sadovnjaku
+[Colonies on both coasts]
+Kolonije na obeh obalah
+[Winding belt]
+Vijugast pas
+[Cell shape]
+Oblika celic
+[Squares]
+Kvadrati
+[Hexagons]
+Šestkotniki
+[Warp]
+Popačenje
+[Fingerprint]
+Prstni odtis
+[Wavelength]
+Valovna dolžina
+[Pattern]
+Vzorec
+[Labyrinth]
+Labirint
+[Channels]
+Brazde
+[Barrier]
+Pregrada
+[Water]
+Voda
+[Grain]
+Zrnatost
+[Rain shadow]
+Padavinska senca
+[Ridges]
+Grebeni
+[Slant]
+Poševnost
+[Ridge thickness]
+Debelina grebenov
+[Pass spacing]
+Razmik prelazov
+[Lee width]
+Širina zavetrne strani
+[Old growth]
+Pragozd
+[Canals]
+Kanali
+[Forest density]
+Gostota gozda
+[Hidden groves]
+Skriti gaji
+[Starting trails]
+Začetne poti
+[Block size]
+Velikost blokov
+[Canal width]
+Širina kanalov
+[Extra bridges]
+Dodatni mostovi
+[Polder]
+Polder
+[Old town]
+Staro mesto
+[Anthill]
+Mravljišče
+[Row angle]
+Kot vrst
+[Diagonal]
+Diagonalno
+[Dyke spacing]
+Razmik nasipov
+[Village size]
+Velikost vasi
+[Hamlets]
+Zaselki
+[City size]
+Velikost mesta
+[Street width]
+Širina ulic
+[Plazas]
+Trgi
+[Chamber spacing]
+Razmik komor
+[Chamber size]
+Velikost komor
+[Queen room]
+Kraljičina komora
+[Tunnel width]
+Širina rovov
+[Loops]
+Zanke
+[Home pools]
+Mlake ob domu
+[Farm plots]
+Njivske parcele
+[Tendril roads]
+Vitičaste poti
+[Random]
+Naključno
+[Vertical]
+Navpično
+[Horizontal]
+Vodoravno
+[Inland lakes]
+Celinska jezera
+[Block shape]
+Oblika blokov
+[Random parameters]
+Naključni parametri
+[Randomize parameters]
+Naključno izberi parametre
+[Start quality]
+Kakovost začetka
+[Fairness]
+Pravičnost
+[Fitness]
+Moč
+[Win chance]
+Možnost zmage
+[Coefficient]
+Koeficient
+[Average]
+Povprečje
+[Fitted on games:]
+Prilagojeno na igrah:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+Začetek vsake kolonije se izmeri na dokončanem zemljevidu, model, prilagojen na tisoče iger med enakovrednimi nasprotniki, pa te meritve pretvori v moč. Moč pove, kako verjetno bo kolonija zmagala. Pravičnost pove, kako enakomerno so te možnosti porazdeljene: 1, ko ima vsaka kolonija enako možnost za zmago, 0, ko bi ena sama kolonija prevzela zemljevid.
+[Worst]
+Najslabši
+[Best]
+Najboljši
+[Map preview controls]
+Povlecite za premik čez robove. Kolešček za povečavo. Desni ali dvojni klik za ponastavitev.
+[Map preview drag help]
+Povlecite za premik; kolešček za povečavo.
+[Map preview loading]
+Nalaganje...
+[Map preview failed]
+Predogled ni uspel
+[Map preview retry]
+Kliknite za ponovni poskus
+[Map preview please wait]
+Počakajte
+[Stats births]
+Rojstva
+[Stats deaths]
+Smrti
+[Stats starvation]
+Stradanje
+[Stats wheat stock]
+Zaloga pšenice
+[Stats wheat loads]
+Tovori pšenice
+[Stats meals]
+Postreženi obroki
+[Stats new buildings]
+Nove zgradbe
+[Stats upgrades]
+Nadgradnje
+[Stats training]
+Obiski urjenja
+[Stats damage dealt]
+Povzročena škoda
+[Stats damage received]
+Prejeta škoda
+[Stats HP restored]
+Obnovljeno zdravje
+[Stats since tick]
+Od koraka
+[Stats combat deaths]
+Boj
+[Stats clearing deaths]
+Poškodba pri čiščenju
+[Stats trapped deaths]
+Ujeti
+[Stats unknown deaths]
+Drugo/neznano
+[Stats conversions]
+Prihodi / odhodi
+[Stats unavailable]
+Ni na voljo
+[Stats wheat per minute]
+Tovori/min
+[Stats meals per minute]
+Hrana/min
+[Stats occupancy]
+Hranjenje / zdravljenje
+[Stats page one]
+Statistika 1/3 >
+[Stats page two]
+Statistika 2/3 >
+[Stats next page]
+Stran (P)
+[Map preview choose another]
+Izberite zemljevid
+[Resources never grow or spread across the map.]
+Viri na zemljevidu nikoli ne rastejo ali se širijo.
+[Building sites complete immediately, skipping delivery.]
+Gradbišča se dokončajo takoj, brez faze dostave.
+[Units never grow hungry and never starve.]
+Enote nikoli ne postanejo lačne in nikoli ne umrejo od lakote.
+[Slows how often resources grow or spread across the map.]
+Upočasni, kako pogosto viri rastejo ali se širijo po zemljevidu.
+[Seeds each team's shared market/exchange resource pool at game start.]
+Ob začetku igre napolni skupno zalogo tržnice/menjave vsake ekipe.
+[Grow normally]
+Običajna rast
+[No growth]
+Brez rasti
+[Normal construction]
+Običajna gradnja
+[Instant]
+Takojšnja
+[Units get hungry]
+Enote postanejo lačne
+[No hunger]
+Brez lakote
+[Off (today's growth)]
+Izklopljeno (današnja rast)
+[Scarce (2x slower)]
+Redki (2x počasneje)
+[Very scarce (4x slower)]
+Zelo redki (4x počasneje)
+[Extremely scarce (8x slower)]
+Izjemno redki (8x počasneje)
+[None (today's default)]
+Brez (današnja privzeta vrednost)
+[Small (+50 each)]
+Majhna (+50 vsak)
+[Medium (+150 each)]
+Srednja (+150 vsak)
+[Large (+300 each)]
+Velika (+300 vsak)
+[No resource growth]
+Brez rasti virov
+[Economy]
+Gospodarstvo
+[Scarce resources]
+Redki viri
+[Instant construction]
+Takojšnja gradnja
+[Stockpile start]
+Začetna zaloga
+[Units still visit schools but never gain a level.]
+Enote še vedno obiskujejo šolo, vendar nikoli ne napredujejo na višjo stopnjo.
+[Units fight to the death instead of retreating to heal.]
+Enote se borijo do smrti namesto umika za zdravljenje.
+[Units are never permanently lost -- HP just stops at 1.]
+Enote nikoli niso trajno izgubljene -- zdravje se preprosto ustavi pri 1.
+[Disables all combat between every team.]
+Onemogoči ves boj med vsemi ekipami.
+[Higher tiers deal more damage but have less HP and armor.]
+Višje stopnje povzročijo več škode, a imajo manj zdravja in oklepa.
+[Higher tiers give every building much more HP.]
+Višje stopnje dajo vsaki zgradbi veliko več zdravja.
+[Starting units spawn already leveled up. Changes the generated map.]
+Začetne enote se pojavijo že na višji stopnji. Spremeni ustvarjeni zemljevid.
+[Trains normally]
+Trenira normalno
+[No upgrades]
+Brez izboljšav
+[Retreats when damaged]
+Umakne se ob poškodbi
+[Fearless]
+Neustrašna
+[Can die permanently]
+Lahko trajno umre
+[No permadeath]
+Brez trajne smrti
+[Normal combat]
+Običajen boj
+[Peaceful mode]
+Miroljuben način
+[Off (today's balance)]
+Izklopljeno (današnje ravnotežje)
+[Glass cannon x2]
+Stekleni top x2
+[Glass cannon x3]
+Stekleni top x3
+[Off (today's HP)]
+Izklopljeno (današnje zdravje)
+[Fortress x5]
+Trdnjava x5
+[Fortress x10]
+Trdnjava x10
+[Veteran]
+Veteran
+[Elite]
+Elita
+[Legendary]
+Legendarna
+[Combat]
+Boj
+[Glass cannon]
+Stekleni top
+[Fortress buildings]
+Utrjene zgradbe
+[Veteran/Fast start]
+Veteran/Hiter začetek
+[Match ends at the timer; highest prestige at that instant wins.]
+Tekma se konča z odštevalnikom; zmaga tisti, ki ima v tistem trenutku največ ugleda.
+[Off (no timer)]
+Izklopljeno (brez odštevalnika)
+[90 minutes]
+90 minut
+[30 minutes]
+30 minut
+[45 minutes]
+45 minut
+[60 minutes]
+60 minut
+[Sudden-death timer]
+Odštevalnik nenadne smrti
+[Stats page three]
+Statistika 3/3 >
+[Stats blocked units]
+Enote S/C
+[Stats blocked buildings]
+Stavbe S/C
+[Stats blocked buildings swim]
+Plavanje S/C
+[Stats current blocked units]
+Enote C
+[Stats current blocked buildings]
+Stavbe C
+[Stats growth global]
+Viri +
+[Stats growth new tiles]
+Viri +#
+[Stats growth reductions]
+Viri -
+[Stats growth per minute]
+Pšenica +/min
+[Stats growth near 8]
+Viri + <=8
+[Stats growth near 16]
+Viri + <=16
+[Stats growth near 32]
+Viri + <=32
+[Stats low HP 25]
+Zdravje <=25%
+[Stats low HP 50]
+Zdravje <=50%
+[Stats low HP 75]
+Zdravje <=75%
+[Stats low food 25]
+Hrana <=25%
+[Stats low food 50]
+Hrana <=50%
+[Stats low food 75]
+Hrana <=75%
+[Stats structural units]
+Enote S
+[Stats structural buildings]
+Stavbe S
+[Stats low HP ranges]
+Zdravje: <=25/50/75%
+[Stats low food ranges]
+Hrana: <=25/50/75%
+[Emoji]
+Emoji
+[Emoji character]
+Znak emoji
+[Smiley]
+Nasmejan obraz
+[Sad face]
+Žalosten obraz
+[Winking face]
+Pomežik
+[Surprised face]
+Presenečen obraz
+[Heart eyes]
+Srčaste oči
+[Sunglasses]
+Sončna očala
+[Heart]
+Srce
+[Star]
+Zvezda
+[Neutral face]
+Nevtralen obraz
+[Sleeping face]
+Speč obraz
+[Grinning face]
+Režeč obraz
+[Kissing face]
+Poljubljajoč obraz
+[Angry face]
+Jezen obraz
+[Tongue out]
+Iztegnjen jezik
+[Skull]
+Lobanja
+[Flower]
+Cvet
+[Four-leaf clover]
+Štiriperesna deteljica
+[Teardrop]
+Kapljica
+[Cloud]
+Oblak
+[Gem]
+Dragulj
+[Apple]
+Jabolko
+[Speech bubble]
+Oblaček z besedilom
+[Shield]
+Ščit
+[Emoji style]
+Slog emojija
+[Outline]
+Obris
+[Filled]
+Zapolnjeno
+[Emoji terrain]
+Teren emojija
+[Regular]
+Običajno
+[Inverse]
+Obrnjeno
+[Crossings]
+Prehodi
+[Forts]
+Trdnjave
+[Gate width]
+Širina vrat
+[Braided Delta]
+Razvejana delta
+[Braid count]
+Število rokavov
+[Rejoining frequency]
+Pogostost sotočij
+[Crossing spacing]
+Razmik med prehodi
+[Breachable highlands]
+Prebojno višavje
+[Ridge depth]
+Debelina grebenov
+[Extra open passes]
+Dodatni odprti prelazi
+[Wooded saddles]
+Gozdnata sedla
+[Hedgerow Country]
+Pokrajina živih mej
+[Field size]
+Velikost polj
+[Hedge thickness]
+Debelina živih mej
+[Existing gateways]
+Obstoječi prehodi
+[Wooded boundary share]
+Delež gozdnatih meja
+[The Glacis]
+Predpolje
+[Allotments]
+Vrtički
+[Caravanserai]
+Karavanseraj
+[Mixed]
+Mešano
+[Fort size]
+Velikost trdnjave
+[Bastions]
+Bastijoni
+[Four-pointed]
+Štirikraka
+[Five-pointed]
+Peterokraka
+[Six-pointed]
+Šesterokraka
+[Glacis width]
+Širina glacisa
+[Gates]
+Vrata
+[Site size]
+Velikost parcel
+[Plot width]
+Širina gredic
+[Plot mix]
+Mešanica gredic
+[Tended]
+Negovane
+[Overgrown]
+Zaraščene
+[Commons]
+Gmajne
+[Few]
+Malo
+[Some]
+Nekaj
+[Home oasis size]
+Velikost domače oaze
+[Caravanserais per colony]
+Karavanseraji na kolonijo
+[Desert]
+Puščava
+[Open erg]
+Odprti erg
+[Dunes and mesas]
+Sipine in mize
+[Canyon country]
+Dežela kanjonov
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+Trdnjava ne more doseči svojega broda; uporabite večji zemljevid ali manj kolonij.
+[A wall would stand on a beach; try another seed.]
+Zid bi stal na plaži; poskusite drugo seme.
+[The fort is too small for its gardens; raise Fort size.]
+Trdnjava je premajhna za svoje vrtove; povečajte velikost trdnjave.
+[The home oasis is too small; raise Home oasis size.]
+Domača oaza je premajhna; povečajte velikost domače oaze.
+[Braided river]
+Prepletena reka
+[Braid width]
+Širina prepleta
+[Bar size]
+Velikost prodišč
+[Extra riffles]
+Dodatni brodi
+[Moraine hummocks]
+Morenski grički
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+Preplet pušča domovom premalo terase; uporabite večji zemljevid ali ožji preplet.
+[The map is too narrow across for a braid; use a bigger map.]
+Zemljevid je počez preozek za preplet; uporabite večji zemljevid.
+[Drumlin field]
+Drumlinsko polje
+[Drumlin spacing]
+Razmik drumlinov
+[Drumlin length]
+Dolžina drumlinov
+[Water gap]
+Vodna vrzel
+[Esker loops]
+Zanke eskerjev
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+Eskerji niso mogli povezati vseh drumlinov; uporabite manjšo vodno vrzel ali večji zemljevid.
+[Continents]
+Celine
+[Continent]
+Celina
+[North America]
+Severna Amerika
+[South America]
+Južna Amerika
+[Africa]
+Afrika
+[Europe]
+Evropa
+[Asia]
+Azija
+[Oceania]
+Oceanija
+[Orientation]
+Usmerjenost
+[Turn to fit]
+Zavrti po potrebi
+[Upright]
+Brez vrtenja
+[Mountain ranges]
+Gorske verige
+[Great rivers]
+Velike reke
+[Islets]
+Otočki
+[Oases]
+Oaze
+[The world atlas has no such continent.]
+Svetovni atlas nima take celine.
+[The map is too small to hold a continent.]
+Zemljevid je premajhen za celino.
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+Ta celina pri tej velikosti zemljevida nima prostora za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
+[Savannah]
+Savana
+[Watering holes]
+Napajališča
+[Dry patches]
+Suha območja
+[Sparse]
+Malo
+[Normal]
+Običajno
+[Many]
+Veliko
+[Rice terraces]
+Riževe terase
+[Unoccupied hills]
+Nezasedeni hribi
+[Hill radius]
+Polmer hriba
+[Contour band width]
+Širina višinskih pasov
+[Stairs per hill]
+Stopnišča na hrib
+[Valley river]
+Reka v dolini
+[Hills]
+Hribi
+[Hillsides]
+Pobočja
+[Terraces per slope]
+Teras na pobočje
+[Waviness]
+Valovitost
+[Stair spacing]
+Razmik stopnic
+[Locust]
+Kobilice
+[Plantations]
+Nasadi
+[Plot size]
+Velikost gradbene parcele
+[Farm width]
+Širina njiv
+[Islands per colony]
+Otoki na kolonijo
+[Outpost inns]
+Oporiščne restavracije
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+Otoki so premajhni za svoje parcele; uporabite večji zemljevid, manjšo parcelo ali manj kolonij.
+[Sierpiński Gardens]
+Sierpińskijevi vrtovi
+[Hilbert River]
+Hilbertova reka
+[Maximum nesting]
+Največje gnezdenje
+[Minimum terminal district side]
+Najmanjša stranica končnih območij
+[Major crossing pairs]
+Pari glavnih prehodov
+[Maximum fold depth]
+Največja globina pregibov
+[Minimum land spacing]
+Najmanjši razmik kopnega
+[Optional local crossings per parent]
+Izbirni lokalni prehodi na nadrejeno območje
+[Optional major shortcuts]
+Izbirne glavne bližnjice
+[Lava shield]
+Lavin ščit
+[Lava tongues]
+Jeziki lave
+[Long tongues]
+Dolgi jeziki
+[Crater rim width]
+Širina roba kraterja
+[Honeycomb isle]
+Satasti otok
+[Blocks per colony]
+Blokov na kolonijo
+[Rubble]
+Ruševine
+[Outline gaps]
+Vrzeli v obrisih
+[Craters per colony]
+Kraterjev na kolonijo
+[Wheat fields]
+Pšenična polja
+[Bridges]
+Mostovi
+[Karst towers]
+Kraški stolpi
+[Tower spacing]
+Razmik kraških stolpov
+[Tower density]
+Gostota kraških stolpov
+[Paddy depth]
+Obseg riževih polj
+[Home design]
+Oblika doma
+[Horseshoe]
+Podkev
+[Twin gates]
+Dvojna vrata
+[Three gates]
+Troje vrat
+[Four gates]
+Četvero vrat
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+Reke niso našle poti med domovi; uporabite večji zemljevid ali manj kolonij.
+[River meander]
+Vijugavost reke
+[Flooded terraces]
+Poplavljene terase
+[Sinkholes]
+Vrtače
+[Bajada]
+Vršaji
+[Range spacing]
+Razmik gorovij
+[Ridge width]
+Širina grebenov
+[Passes]
+Prelazi
+[Fans per range]
+Vršajev na gorovje
+[Stream reach]
+Dolžina potokov
+[Playa]
+Slana jezera
+[Broad fan]
+Širok vršaj
+[Long fan]
+Dolg vršaj
+[Twin springs]
+Dva izvira
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+Pobočja z vršaji so preozka za domove; uporabite večji zemljevid, večji razmik gorovij, ožje grebene ali manjša slana jezera.
+[Central Quarry]
+Osrednji kamnolom
+[Quarry size]
+Velikost kamnoloma
+[Sand bars]
+Peščine
+[Woodland]
+Gozdovi
+[Central Quarry needs at least two colonies.]
+Osrednji kamnolom potrebuje vsaj dve koloniji.
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+Jezero ne gre na ta zemljevid; uporabite manjše jezero ali večji zemljevid.
+[A sand bar did not reach the island.]
+Peščina ni dosegla otoka.
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+Na tem zemljevidu ni prostora za toliko kolonij; uporabite večji zemljevid ali manj kolonij.
+[The island has no room for its quarry; use a bigger island.]
+Na otoku ni prostora za kamnolom; uporabite večji otok.
+[Hidden Oasis]
+Skrita oaza
+[Pond algae]
+Alge v mlaki
+[Starting towers]
+Začetni stolpi
+[Starting school]
+Začetna šola
+[Mesas]
+Mizaste gore
+[Springs]
+Izviri
+[Hidden Oasis needs at least two colonies.]
+Skrita oaza potrebuje vsaj dve koloniji.
+[Hidden Oasis holds at most eight colonies.]
+Skrita oaza sprejme največ osem kolonij.
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+Masiv ne gre na ta zemljevid; uporabite večji zemljevid ali manj kolonij.
+[The pond has no room for that much algae; use a bigger pond.]
+V mlaki ni prostora za toliko alg; uporabite večjo mlako.
+[Even Ground]
+Izenačen teren
+[Balance]
+Uravnoteženje
+[Tight passes]
+Ozki prehodi
+[Solver effort]
+Trud reševalnika
+[Brief]
+Kratko
+[Patient]
+Potrpežljivo
+[This map is too small to solve on; use a bigger map.]
+Ta zemljevid je premajhen za reševanje; uporabite večji zemljevid.
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+Preveč kolonij za uravnoteženje na zemljevidu te velikosti; uporabite večji zemljevid ali manj kolonij.
+[The colonies could not be spread out on this map.]
+Kolonij na tem zemljevidu ni bilo mogoče razporediti.
+[Marchland]
+Obmejni pas
+[Prizes on the rope]
+Nagrade na vrvi
+[March width]
+Širina obmejnega pasu
+[Levelling]
+Izenačevanje
+[A march needs a country on each side; use at least two colonies.]
+Obmejni pas potrebuje deželo na vsaki strani; uporabite vsaj dve koloniji.
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+Preveč kolonij, da bi ta zemljevid vsaki dal domovino; uporabite večji zemljevid ali manj kolonij.
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+Na tem zemljevidu ni prostora za razporeditev kolonij; uporabite večji zemljevid ali manj kolonij.
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+Domovina kolonije nima izhoda na obmejni pas; uporabite večji zemljevid ali ožji obmejni pas.
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+Domovina kolonije nima prostora za porodnišnico; uporabite večji zemljevid, manj kolonij ali ožji obmejni pas.
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+Obmejni pas ima premalo spornega ozemlja za toliko nagrad; uporabite manj nagrad, širši obmejni pas ali večji zemljevid.
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+Obmejni pas nima prostora za nagrado; uporabite večji zemljevid, manj kolonij ali širši obmejni pas.
+[Orchard Commons]
+Skupni sadovnjaki
+[Orchard spacing]
+Razmik med sadovnjaki
+[Compact]
+Majhen
+[Balanced]
+Uravnotežen
+[Spread]
+Velik
+[The Gauntlet]
+Arena preizkušenj
+[Partition thickness]
+Debelina predelnih zidov
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+Arena preizkušenj potrebuje večji zemljevid ali manj kolonij, da bo pri vsaki koloniji dovolj prostora za dva varovana vhoda.
+[The Comb]
+Glavnik
+[Peninsulas per shore]
+Polotoki na vsakem bregu
+[Encircled Kingdom]
+Obkoljeno kraljestvo
+[Fortress plan]
+Načrt trdnjave
+[Automatic]
+Samodejno
+[Elongated enclosure]
+Podolgovata utrdba
+[Bastioned enclosure]
+Utrdba z bastijoni
+[Paired courtyards]
+Dve dvorišči
+[Heartland farmland]
+Osrednja kmetijska zemljišča
+[The Faulted City]
+Razlomljeno mesto
+[Fault displacement]
+Premik prelomov
+[Fault width]
+Širina prelomov
+[Ruin density]
+Gostota ruševin
+[Surviving junctions]
+Ohranjena križišča
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+Razlomljeno mesto zahteva 256 ali 512 polj na vsaki stranici in eno do dvanajst kolonij.
+[The city has too few usable junctions.]
+Mesto ima premalo uporabnih križišč.
+[A city neighbourhood lacks reachable crops or building room.]
+Mestni četrti manjka dostopnih poljščin ali prostora za gradnjo.
+[The city neighbourhoods are too unequal; try another seed.]
+Mestne četrti so preveč neuravnotežene; poskusite drugo seme.
+[The fractured civic plaza did not survive.]
+Razlomljeni mestni trg se ni ohranil.
+[Who Ate the Map?]
+Kdo je pojedel zemljevid?
+[Appetite]
+Tek
+[A Little Nibble]
+Majhen grižljaj
+[Hungry]
+Lačen
+[Portage Lakes]
+Jezera in gozdni prehodi
+[Lake elongation]
+Podolgovatost jezer
+[Portage depth]
+Debelina gozdnega prehoda
+[Extra trails]
+Dodatne poti
+[Portage Lakes needs sides between 64 and 512 tiles.]
+Stranice tega zemljevida morajo meriti od 64 do 512 polj.
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+S tem semenom kolonij ni mogoče postaviti na bregove.
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+Ob vsaki koloniji ni prostora za obnovljiva obrežna polja.
+[Portage Lakes cannot connect its shoreline trails.]
+Obrežnih poti ni mogoče povezati.
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+S tem semenom ni mogoče ustvariti uporabne bližnjice skozi suh gozd.
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+S tem semenom ni mogoče ustvariti uporabne plavalne bližnjice.
+[Portage Lakes needs separate swimming lakes on this seed.]
+S tem semenom morajo jezera za plavanje ostati ločena.
+[Drowned Forest]
+Poplavljen gozd
+[Sandbar connections]
+Peščene povezave
+[Wooded neck thickness]
+Debelina gozdnih pregrad
+[Neutral clearing size]
+Velikost nevtralnih jas
+[Bastion Keys]
+Utrjeni otočki
+[Plantation size]
+Velikost plantaže
+[Outlying islands]
+Zunanji otoki
+[The Hungry Marches]
+Lačno obmejno ozemlje
+[Opening ration]
+Začetna zaloga hrane
+[Central concentration]
+Zgoščenost v središču
+[The Last Treeline]
+Zadnji gozdni pas
+[Woodland depth]
+Širina gozdičkov
+[Fertility]
+Rodovitnost
+[Deposits]
+Zaloge
+[Room]
+Prostor
+[Isolation]
+Odmaknjenost
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+Začetek vsake kolonije se meri na dokončanem zemljevidu: pot do pšenice in do lesa, kako dobro se njena zemlja obnavlja, zaloge in gradbena mesta v dosegu ter razdalja do tekmecev. Vsak dejavnik dobi oceno od 0 do 1 glede na stalno merilo, skupni seštevek jih uteži, pravičnost je seštevek najslabše kolonije deljen s seštevkom najboljše, ocena pa je najslabši seštevek pomnožen s pravičnostjo.
+[ERROR_CANT_SAVE_MAP]
+Zemljevida ni bilo mogoče shraniti. Preverite cilj in razpoložljiv prostor. Vaše spremembe so še vedno odprte.
+[Loading headers]
+Nalaganje glav...
+[Loading teams]
+Nalaganje ekip...
+[Loading terrain]
+Nalaganje terena...
+[Building gradients]
+Ustvarjanje gradientov...
+[Loading players]
+Nalaganje igralcev...
+[Loading scripts]
+Nalaganje skriptov...
+[Generating map]
+Ustvarjanje zemljevida...
+[ERROR_CANT_GENERATE_MAP]
+Zemljevida ni bilo mogoče ustvariti. Poskusite druge nastavitve ustvarjanja.
+[Loading units]
+Nalaganje enot...
+[Loading buildings]
+Nalaganje stavb...
+[Resolving team links]
+Razreševanje povezav ekip...
+[saving to storage]
+Shranjevanje...
+[save failed retry]
+Shranjevanje ni uspelo. Poskusite znova.
+[export save]
+Izvozi shranjeno igro
+[storage restore failed]
+Shrambe brskalnika ni bilo mogoče obnoviti. Obstoječi shranjeni podatki niso bili spremenjeni. To sejo lahko nadaljujete, vendar lokalnih sprememb ne bo mogoče ohraniti. Pomembne shranjene igre izvozite iz pogovornega okna napake shranjevanja. Za nov poskus obnovitve shrambe stran znova naložite.
+[continue]
+Nadaljuj
+[export file]
+Izvozi datoteko
+[export failed]
+Izvoz datoteke ni uspel
+[import file]
+Uvozi
+[select import file]
+Izberite datoteko za uvoz
+[validating import]
+Preverjanje datoteke...
+[import succeeded]
+Datoteka uvožena
+[import cancelled]
+Uvoz preklican
+[import failed]
+Uvoz ni uspel: neveljavna ali nepodprta datoteka
+[import persistence failed]
+Ni shranjeno: izberite Uvozi za nov poskus, ali Izvozi datoteko
+[import progress]
+Napredek uvoza
+[export progress]
+Napredek izvoza
+[retry save]
+Poskusi znova shraniti
+[campaign save failed]
+Napredek pohoda ni bil shranjen. Poskusite znova ali izvozite varnostno kopijo.
+[leave without saving]
+Izhod brez shranjevanja
+[campaign import failed]
+Neveljavna datoteka napredka ali druga različica pohoda
+[network release mismatch]
+Protokola odjemalca in strežnika se razlikujeta. Namestite enako različico Glob2 kot strežnik.
+[settings continue]
+Nadaljuj
+[settings save failed]
+Shranjevanje nastavitev ni potrjeno. Poskusite znova ali nadaljujte.
+[shutdown save failed]
+Končno shranjevanje ni potrjeno. Poskusite znova ali izstopite brez shranjevanja.
+[quit without saving]
+Izhod brez shranjevanja
+[game closed]
+Igra je zaprta. To okno lahko zaprete ali stran znova naložite, da igrate še enkrat.
+[campaign editor save failed]
+Shranjevanje ni potrjeno. V redu poskusi znova; Prekliči se vrne v meni urejevalnika.
+[Actions]
+Dejanja
+[Minimap]
+Mini zemljevid
+[Fast forward]
+Hitro naprej
+[Hide keyboard]
+Skrij tipkovnico
+[Dialog text size]
+Velikost besedila pogovornih oken
+[Player slot]
+Mesto igralca
+[Team color]
+Barva ekipe
+[Alliance group]
+Skupina zavezništva
+[menu]
+Meni
+[Editor tools]
+Orodja
+[Pan map]
+Premakni zemljevid
+[Edit map]
+Uredi zemljevid
+[Editor map]
+Zemljevid
+[Flags]
+Zastave
+[Pause]
+Premor
+[Speed]
+Hitrost
+[Objectives]
+Cilji
+[Menu]
+Meni
+[Goals]
+Cilji
+[Teams]
+Ekipe
+[Use this landscape]
+Uporabi to pokrajino
+[Reset]
+Ponastavi
+[Generating...]
+Ustvarjanje...
+[Players]
+Igralci
+[Rules]
+Pravila
+[settings Interface layout]
+Postavitev vmesnika
+[settings Automatic]
+Samodejno
+[settings Compact]
+Majhen
+[settings Spacious]
+Prostorna
+[More]
+Več
+[No items]
+Ni elementov
+[Opponents]
+Nasprotniki
+[Review]
+Pregled
+[Review & Play]
+Preglej in igraj
+[Edit opponents]
+Uredi nasprotnike
+[Map settings]
+Nastavitve zemljevida
+[Next]
+Naprej
+[Done]
+Končano
+[Contribution]
+Prispevek
+[Choose who controls this colony]
+Izberi, kdo nadzoruje to kolonijo
+[Settings]
+Nastavitve
+[settings Back]
+Nazaj
+[settings Save the game automatically about every minute.]
+Samodejno shrani igro približno vsako minuto.
+[AI opponents]
+Računalniški nasprotniki
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+Prostorna postavitev uporablja stransko ploščo, kadar je dovolj prostora. Strnjena uporablja orodno vrstico in izvlečne plošče.
+[Assigned %0 · Target %1]
+Dodeljeno %0 · Cilj %1
+[Range: %0]
+Doseg: %0
+[Player %0]
+Igralec %0
+[Brush %0]
+Čopič %0
+[Team %0]
+Ekipa %0
+[Your colony]
+Tvoja kolonija
+[%0 / %1 HP · %2]
+%0 / %1 ŽT · %2
+[Units: %0]
+Enote: %0
+[Buildings: %0]
+Zgradbe: %0
+[Need food: %0]
+Potrebujejo hrano: %0
+[Need healing: %0]
+Potrebujejo zdravljenje: %0
+[Attack: %0]
+Napad: %0
+[Defense: %0]
+Obramba: %0
+[Food: %0 / %1]
+Hrana: %0 / %1
+[View team %0]
+Prikaži ekipo %0
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+Čopič %0x%1
+[Level %0]
+Stopnja %0
+[Manage teams (%0)]
+Upravljaj ekipe (%0)
+[Team %0 / Level %1]
+Ekipa %0 / Stopnja %1
+[Files · %0]
+Datoteke · %0
+[Hint %0]
+Namig %0
+[Objective %0]
+Cilj %0
+[Entry %0 of 8 · empty entries are omitted]
+Vnos %0 od 8 · prazni vnosi se izpustijo
+[Teams %0/%1]
+Ekipe %0/%1
+[Elapsed time · %0]
+Pretečeni čas · %0
+[Read-only building]
+Zgradba samo za branje
+[Alliance and shared vision are fixed for this match.]
+Zavezništvo in skupni pogled sta v tej igri nespremenljiva.
+[Share vision]
+Deli pogled
+[Share food vision]
+Deli pogled na hrano
+[Share market vision]
+Deli pogled na trge
+[Chat]
+Klepet
+[No other players have editable diplomatic settings in this match.]
+Drugi igralci v tej igri nimajo spremenljivih diplomatskih nastavitev.
+[No briefing for this match.]
+Ni navodil za to igro.
+[Chat · recipients selected in Teams]
+Klepet · prejemniki izbrani v Ekipah
+[Filename]
+Ime datoteke
+[Reduced motion]
+Zmanjšano gibanje
+[Send]
+Pošlji
+[Close]
+Zapri
+[Forbidden]
+Prepovedano
+[Guard]
+Straži
+[Clear]
+Počisti
+[Paint]
+Riši
+[Erase]
+Briši
+[Release on valid terrain to place]
+Spusti nad veljavnim terenom za postavitev
+[Paint on the map; two fingers move]
+Riši po zemljevidu; premikaj z dvema prstoma
+[Tutorial ▸]
+Vadnica ▸
+[Back to tools]
+Nazaj k orodjem
+[Starvation overlay]
+Plast lakote
+[Damage overlay]
+Plast poškodb
+[Defense overlay]
+Plast obrambe
+[Fertility overlay]
+Plast rodovitnosti
+[Health and food bars]
+Vrstice zdravja in hrane
+[Message history]
+Zgodovina sporočil
+[Mark map for allies]
+Označi zemljevid za zaveznike
+[Show zones]
+Prikaži območja
+[Pan]
+Premikaj
+[Select]
+Izberi
+[Show palette]
+Prikaži paleto
+[Release to place]
+Spusti za postavitev
+[Blocked placement]
+Postavitev blokirana
+[File name]
+Ime datoteke
+[Load map]
+Naloži zemljevid
+[Save map]
+Shrani zemljevid
+[No files in this folder]
+V tej mapi ni datotek
+[No files saved yet]
+Ni še shranjenih datotek
+[Export]
+Izvozi
+[Tap to write the mission briefing]
+Tapni za pisanje navodil misije
+[Tap to write the map script]
+Tapni za pisanje skripta zemljevida
+[Script]
+Skript
+[Previous]
+Prejšnji
+[Compile]
+Prevedi
+[Tap to write this hint]
+Tapni za pisanje tega namiga
+[Tap to write this objective]
+Tapni za pisanje tega cilja
+[Mission briefing · tap to edit, swipe to scroll]
+Navodila misije · tapni za urejanje, podrsaj za pomikanje
+[Not enough recorded history yet.]
+Za zdaj ni dovolj zabeležene zgodovine.
+[Select a team to show its history.]
+Izberi ekipo za prikaz njene zgodovine.
+[Back to chart]
+Nazaj na graf
+[Expand chart]
+Povečaj graf
+[Slot]
+Mesto
+[Color]
+Barva
+[Player / AI]
+Igralec / UI
+[Group]
+Skupina
+[Forbid]
+Prepovej
+[↓ Low]
+↓ Nizka
+[= Normal]
+= Običajna
+[↑ High]
+↑ Visoka
+[Details]
+Podrobnosti
+[Campaign name]
+Ime kampanje
+[Unlocking]
+Odklepanje
+[Parameters]
+Parametri
+[Blank map]
+Prazen zemljevid
+[Generated]
+Ustvarjen
+[Preview]
+Predogled
+[Selected landscape]
+Izbrana pokrajina
+[Representative preview]
+Vzorčni predogled
+[Starting terrain]
+Začetni teren
+[Hide parameters]
+Skrij parametre
+[Size and parameters]
+Velikost in parametri
+[Choose a landscape]
+Izberite pokrajino
+[%0 / Browse]
+%0 / Prebrskaj
+[%0 colonies · %1]
+%0 kolonije · %1
+[%0 · Team %1]
+%0 · Ekipa %1
+[Colonies: %0]
+Kolonije: %0
+[%0 colonies · %1 AI]
+%0 kolonije · %1 UI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 Enote
+[settings Level %0]
+Stopnja %0
+[settings Match the desktop %0]
+Kot namizje (%0)
+[settings Current display %0 %1 %2 %3]
+Trenutni način prikaza: %0 × %1 · %2 · %3
+[Fairness: %0]
+Pravičnost: %0
+[Colony %0]
+Kolonija %0
+[Win chance: %0 · Fitness: %1]
+Možnost zmage: %0 · Moč: %1
+[%0 · Contribution: %1]
+%0 · Prispevek: %1
+[Min required level %0]
+Najnižja zahtevana stopnja %0
+[Confirm %0]
+Potrdi: %0
+[Dialog text size %0]
+Velikost besedila pogovornih oken: %0%
+[%0 %1]
+%0 %1

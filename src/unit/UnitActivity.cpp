@@ -124,6 +124,8 @@ void Unit::handleActivity(void)
 					// If free slot, do the conversion, change owner and ID
 					if (targetID!=UNIT_TARGETID_NONE)
 					{
+						++currentTeam->stats.measurements.conversionsOut[typeNum];
+						++targetTeam->stats.measurements.conversionsIn[typeNum];
 						Sint32 currentID=Unit::GIDtoID(gid);
 						assert(currentTeam->myUnits[currentID]);
 						currentTeam->myUnits[currentID]=NULL;

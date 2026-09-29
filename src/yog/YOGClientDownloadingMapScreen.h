@@ -20,6 +20,7 @@ namespace GAGGUI
 	class Widget;
 	class List;
 	class ProgressBar;
+	class ScreenStack;
 }
 
 class YOGClient;
@@ -33,7 +34,8 @@ class YOGClientDownloadingMapScreen : public Glob2Screen
 public:
 
 	/// Constructor
-	YOGClientDownloadingMapScreen(std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info);
+	YOGClientDownloadingMapScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info);
+	~YOGClientDownloadingMapScreen() override;
 
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
@@ -47,6 +49,7 @@ public:
 		FINISHED,
 	};
 private:
+	ScreenStack& screens;
 	YOGDownloadableMapInfo info;
 	MapPreview* preview;
 	std::shared_ptr<YOGClient> client;
@@ -56,8 +59,6 @@ private:
 	ProgressBar* downloadStatus;
 	YOGClientMapDownloader downloader;
 };
-
-
 
 
 

@@ -44,7 +44,7 @@ struct World
 		Building* b = game.addBuilding(x, y, typeNum, 0);
 		require(b != nullptr, "inn placed");
 		game.map.setBuilding(x, y, b->type->width, b->type->height, b->gid);
-		b->resources[CORN] = meals;
+		b->resources[WHEAT] = meals;
 		b->update();
 		return b;
 	}

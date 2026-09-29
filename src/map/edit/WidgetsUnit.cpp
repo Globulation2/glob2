@@ -201,6 +201,12 @@ void ValueScrollBox::handleClick(int relMouseX, int relMouseY)
 
 
 
+void ValueScrollBox::setValue(int requested)
+{
+    *value = std::clamp(requested, 0, std::max(0, int(*max)));
+    activate();
+}
+
 void ValueScrollBox::setValues(Sint32* aValue, Sint32* aMax)
 {
 	value=aValue;

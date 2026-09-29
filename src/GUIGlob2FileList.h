@@ -20,7 +20,11 @@ public:
 
 	//! converts glob2 file name to displayed name
 	virtual std::string fileToList(const std::string fileName) const;
-	//! converts displayed name to glob2 file name
+	//! converts displayed name to glob2 file name, preferring an existing ".gz" copy
 	virtual std::string listToFile(const std::string listName) const;
+	//! Also lists "<extension>.gz" files, deduplicated by display name (see
+	//! GUIFileList::generateListFromExtensions), so maps/saves show up
+	//! regardless of whether they are stored compressed or as legacy raw files.
+	virtual void generateList();
 
 };

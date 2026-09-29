@@ -250,10 +250,16 @@ namespace GAGGUI
 	{
 		fontPtr = Toolkit::getFont(font);
 		assert(fontPtr);
-		textHeight = fontPtr->getStringHeight(" ");
+		textHeight = std::max(minimumRowHeight, unsigned(fontPtr->getStringHeight(" ")));
 		assert(textHeight > 0);
 	}
 	
+    void List::setMinimumRowHeight(unsigned height)
+    {
+        minimumRowHeight = height;
+        if(fontPtr) textHeight = std::max(height, unsigned(fontPtr->getStringHeight(" ")));
+    }
+
 	void List::paint(void)
 	{
 		// this code is required for layouting
@@ -334,7 +340,7 @@ namespace GAGGUI
 	{
 		assert(element < strings.size());
 		assert(strings[element].c_str());
-		parent->getSurface()->drawString(x, y, fontPtr, (strings[element]).c_str());
+		parent->getSurface()->drawString(x, y + (int(textHeight) - fontPtr->getStringHeight(" ")) / 2, fontPtr, (strings[element]).c_str());
 	}
 	
 	void List::handleItemClick(size_t element, int mx, int my)

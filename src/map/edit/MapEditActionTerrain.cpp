@@ -6,7 +6,6 @@
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
 void MapEdit::beginZonePlacement(BrushType type)
@@ -295,16 +294,18 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	}
 	else if(action=="select active team")
 	{
-		int n=relMouseX/16 + (relMouseY/16)*6;
-		if(game.teams[n])
-		{
-			team=n;
-			game.map.computeDisplayedForbidden(team);
-			game.map.computeDisplayedClearArea(team);
-			game.map.computeDisplayedGuardArea(team);
-		}
+		selectActiveTeam(relMouseX/16 + (relMouseY/16)*6);
 	}
 	else
 		return false;
 	return true;
+}
+
+// Shared semantic team selection; touch controls do not emulate sidebar pixels.
+void MapEdit::selectActiveTeam(int selected) {
+    if(selected<0 || selected>=Team::MAX_COUNT || !game.teams[selected]) return;
+    team=selected;
+    game.map.computeDisplayedForbidden(team);
+    game.map.computeDisplayedClearArea(team);
+    game.map.computeDisplayedGuardArea(team);
 }

@@ -95,19 +95,21 @@ Usl::Usl()
 	}
 }
 
-Usl::~Usl() {
-	collectGarbage();
-}
+Usl::~Usl() = default;
 
 void Usl::markGarbage() const
 {
 	root->markForGC();
-//	for_each(threads.begin(), threads.end(), mem_fun_ref(&Thread::markForGC));
+	for (const auto& thread : threads) thread.markForGC();
 }
 
 void Usl::collectGarbage()
 {
 	// mark
+	// These two objects are uniquely owned, outside heap.values. The sweep
+	// cannot reset their marks, so reset them before each root traversal.
+	root->clearGCMark();
+	prototype->clearGCMark();
 	markGarbage();
 
 	// sweep

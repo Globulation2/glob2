@@ -6,12 +6,14 @@
 #include <SDL_rwops.h>
 
 #include <memory>
+#include "AITelemetry.h"
 namespace GAGCore
 {
 	class InputStream;
 	class OutputStream;
 }
 class Player;
+class Team;
 class Order;
 class AIImplementation;
 /*
@@ -37,6 +39,14 @@ public:
 		NICOWAR=5,
 		///Reference to AICortex (direct AIImplementation binding)
 		CORTEX=6,
+		///Standalone Maxima strategy AI.
+		MAXIMA=7,
+		///Reference to AICabino, a resurrected port of the original (2005-2007)
+		///Nicowar: a set of independent specialist modules (defense, attack,
+		///construction, upgrades, unit/swarm management) that each act on
+		///their own but cooperate toward one game plan, direct AIImplementation
+		///binding, no AIEcho involved.
+		CABINO=8,
 
 		SIZE
 	};
@@ -47,6 +57,11 @@ public:
 	AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AI();
 
+	void bindTelemetry();
+	void captureTelemetry();
+	std::shared_ptr<AITelemetry::Series> telemetrySeries;
+	Team *telemetryTeam = nullptr;
+	bool resumeTelemetry = false;
 	AIImplementation *aiImplementation;
 	ImplementationID implementationID;
 

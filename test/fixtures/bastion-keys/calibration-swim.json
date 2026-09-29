@@ -1,0 +1,274 @@
+[
+  {
+    "ai": "cabino",
+    "team": 0,
+    "ticks": 20000,
+    "units": 6,
+    "buildings": 2,
+    "births": 10,
+    "worker_starvation": 9,
+    "wheat": 82,
+    "wood": 0,
+    "swimming_training": 11,
+    "trained_swimmers": [
+      4,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "cabino",
+    "team": 1,
+    "ticks": 20000,
+    "units": 7,
+    "buildings": 2,
+    "births": 10,
+    "worker_starvation": 9,
+    "wheat": 85,
+    "wood": 0,
+    "swimming_training": 5,
+    "trained_swimmers": [
+      1,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "cabino",
+    "team": 2,
+    "ticks": 20000,
+    "units": 7,
+    "buildings": 2,
+    "births": 10,
+    "worker_starvation": 9,
+    "wheat": 82,
+    "wood": 0,
+    "swimming_training": 7,
+    "trained_swimmers": [
+      2,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "cabino",
+    "team": 3,
+    "ticks": 20000,
+    "units": 7,
+    "buildings": 2,
+    "births": 10,
+    "worker_starvation": 9,
+    "wheat": 85,
+    "wood": 0,
+    "swimming_training": 5,
+    "trained_swimmers": [
+      1,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "nicowar",
+    "team": 0,
+    "ticks": 20000,
+    "units": 58,
+    "buildings": 9,
+    "births": 34,
+    "worker_starvation": 0,
+    "wheat": 396,
+    "wood": 39,
+    "swimming_training": 13,
+    "trained_swimmers": [
+      14,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "nicowar",
+    "team": 1,
+    "ticks": 20000,
+    "units": 51,
+    "buildings": 9,
+    "births": 31,
+    "worker_starvation": 0,
+    "wheat": 345,
+    "wood": 41,
+    "swimming_training": 17,
+    "trained_swimmers": [
+      18,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "nicowar",
+    "team": 2,
+    "ticks": 20000,
+    "units": 107,
+    "buildings": 10,
+    "births": 51,
+    "worker_starvation": 0,
+    "wheat": 704,
+    "wood": 50,
+    "swimming_training": 19,
+    "trained_swimmers": [
+      16,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "nicowar",
+    "team": 3,
+    "ticks": 20000,
+    "units": 80,
+    "buildings": 10,
+    "births": 45,
+    "worker_starvation": 0,
+    "wheat": 499,
+    "wood": 52,
+    "swimming_training": 19,
+    "trained_swimmers": [
+      20,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "maxima",
+    "team": 0,
+    "ticks": 20000,
+    "units": 22,
+    "buildings": 3,
+    "births": 11,
+    "worker_starvation": 0,
+    "wheat": 126,
+    "wood": 9,
+    "swimming_training": 11,
+    "trained_swimmers": [
+      11,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "maxima",
+    "team": 1,
+    "ticks": 20000,
+    "units": 23,
+    "buildings": 3,
+    "births": 12,
+    "worker_starvation": 0,
+    "wheat": 130,
+    "wood": 10,
+    "swimming_training": 11,
+    "trained_swimmers": [
+      11,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "maxima",
+    "team": 2,
+    "ticks": 20000,
+    "units": 22,
+    "buildings": 3,
+    "births": 11,
+    "worker_starvation": 0,
+    "wheat": 127,
+    "wood": 10,
+    "swimming_training": 12,
+    "trained_swimmers": [
+      12,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "maxima",
+    "team": 3,
+    "ticks": 20000,
+    "units": 23,
+    "buildings": 3,
+    "births": 12,
+    "worker_starvation": 0,
+    "wheat": 133,
+    "wood": 11,
+    "swimming_training": 13,
+    "trained_swimmers": [
+      13,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "cortex",
+    "team": 0,
+    "ticks": 6146,
+    "units": 5,
+    "buildings": 2,
+    "births": 0,
+    "worker_starvation": 0,
+    "wheat": 8,
+    "wood": 0,
+    "swimming_training": 3,
+    "trained_swimmers": [
+      3,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "cortex",
+    "team": 1,
+    "ticks": 6146,
+    "units": 5,
+    "buildings": 2,
+    "births": 0,
+    "worker_starvation": 0,
+    "wheat": 8,
+    "wood": 0,
+    "swimming_training": 3,
+    "trained_swimmers": [
+      3,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "cortex",
+    "team": 2,
+    "ticks": 6146,
+    "units": 5,
+    "buildings": 2,
+    "births": 0,
+    "worker_starvation": 0,
+    "wheat": 8,
+    "wood": 0,
+    "swimming_training": 3,
+    "trained_swimmers": [
+      3,
+      0,
+      0
+    ]
+  },
+  {
+    "ai": "cortex",
+    "team": 3,
+    "ticks": 6146,
+    "units": 5,
+    "buildings": 2,
+    "births": 0,
+    "worker_starvation": 0,
+    "wheat": 8,
+    "wood": 0,
+    "swimming_training": 3,
+    "trained_swimmers": [
+      3,
+      0,
+      0
+    ]
+  }
+]

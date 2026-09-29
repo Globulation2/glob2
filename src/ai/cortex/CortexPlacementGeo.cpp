@@ -122,7 +122,7 @@ namespace Cortex
 		    && axisSignedGap(ay, ah, by, bh, mapH) < 0;
 	}
 
-	int innOccupiedSides(const Map& map, int innX, int innY, int innW, int innH,
+	static unsigned innOccupiedSideMask(const Map& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH)
 	{
 		const bool haveCand = (candW > 0 && candH > 0);
@@ -161,10 +161,21 @@ namespace Cortex
 			}
 		}
 
+		return sides;
+	}
+
+	static int sideCount(unsigned sides)
+	{
 		int count = 0;
-		for (int m = sides; m != 0; m >>= 1)
-			count += (m & 1);
+		for (; sides; sides >>= 1) count += sides & 1;
 		return count;
+	}
+
+	int innOccupiedSides(const Map& map, int innX, int innY, int innW, int innH,
+	                     int candX, int candY, int candW, int candH)
+	{
+		return sideCount(innOccupiedSideMask(map, innX, innY, innW, innH,
+		                                    candX, candY, candW, candH));
 	}
 
 	void grownFootprint(const BuildingType* bt, int& w, int& h)
@@ -227,55 +238,55 @@ namespace Cortex
 		h  = maxY - minY;
 	}
 
-	bool anyCornWithin(const Map& map, int x, int y, int w, int h, int dist)
+	bool anyWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
 	{
 		// The footprint expanded by `dist` in Chebyshev distance is exactly the
 		// rectangle [x-dist, x+w+dist) x [y-dist, y+h+dist). The footprint interior
-		// cannot hold CORN (it passed isHardSpaceForBuilding), so scanning it too is
+		// cannot hold WHEAT (it passed isHardSpaceForBuilding), so scanning it too is
 		// harmless. Early-out on the first wheat tile.
 		for (int dy = -dist; dy < h + dist; dy++)
 			for (int dx = -dist; dx < w + dist; dx++)
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == WHEAT)
 					return true;
 			}
 		return false;
 	}
 
-	int countCornWithin(const Map& map, int x, int y, int w, int h, int dist)
+	int countWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
 	{
-		// Forbidden-BLIND companion to countHarvestableCornWithin: counts every CORN
+		// Forbidden-BLIND companion to countHarvestableWheatWithin: counts every WHEAT
 		// tile in the expanded footprint regardless of the forbidden mask. The gap
 		// between this and the harvestable count is exactly the forbidden-but-present
-		// corn — the discriminator between checkerboard-forbidding and field depletion.
+		// wheat — the discriminator between checkerboard-forbidding and field depletion.
 		int count = 0;
 		for (int dy = -dist; dy < h + dist; dy++)
 			for (int dx = -dist; dx < w + dist; dx++)
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == WHEAT)
 					count++;
 			}
 		return count;
 	}
 
-	int countSurvivingCornWithin(const Map& map, int x, int y, int w, int h, int dist)
+	int countSurvivingWheatWithin(const Map& map, int x, int y, int w, int h, int dist)
 	{
-		// Parity-aware count of the CORN tiles that SURVIVE Cortex's wheat-protection
-		// checkerboard — the open half the paint leaves harvestable: CORN tiles whose
+		// Parity-aware count of the WHEAT tiles that SURVIVE Cortex's wheat-protection
+		// checkerboard — the open half the paint leaves harvestable: WHEAT tiles whose
 		// (x+y) parity is NOT the protected WHEAT_PARITY half (CortexWheat.cpp:179).
 		//
-		// Why not countHarvestableCornWithin (CORN AND !forbidden)? That reads the LIVE
+		// Why not countHarvestableWheatWithin (WHEAT AND !forbidden)? That reads the LIVE
 		// forbidden mask, so it answers "harvestable RIGHT NOW" — which swings with the
 		// paint's drain/repaint timing and reads ~zero on a freshly-revealed field the
 		// checkerboard reconcile has not yet covered. This counts the SUSTAINED set: the
 		// tiles that remain open once protection settles, independent of paint timing.
 		// That is the durable signal placement and feedCapacity want — "will this field
 		// keep an inn fed", not "is every open tile painted this exact tick". Depleted
-		// tiles are no longer CORN, so genuine field exhaustion still zeroes it; only our
+		// tiles are no longer WHEAT, so genuine field exhaustion still zeroes it; only our
 		// own (recoverable) checkerboard no longer does.
 		int count = 0;
 		for (int dy = -dist; dy < h + dist; dy++)
@@ -283,7 +294,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type != CORN)
+				if (map.getResource(nx, ny).type != WHEAT)
 					continue;
 				if (((nx + ny) & 1) == WHEAT_PARITY)
 					continue; // the checkerboard-forbidden half: not sustained.
@@ -292,13 +303,13 @@ namespace Cortex
 		return count;
 	}
 
-	int countHarvestableCornWithin(const Map& map, Uint32 teamMask,
+	int countHarvestableWheatWithin(const Map& map, Uint32 teamMask,
 	                               int x, int y, int w, int h, int dist)
 	{
-		// Same expanded-footprint scan box as anyCornWithin ([x-dist, x+w+dist) x
-		// [y-dist, y+h+dist)), but COUNTS the CORN tiles this team may actually
-		// harvest: a tile counts only when it is CORN AND not forbidden for teamMask.
-		// Depleted field tiles are no longer CORN, and the checkerboard wheat-
+		// Same expanded-footprint scan box as anyWheatWithin ([x-dist, x+w+dist) x
+		// [y-dist, y+h+dist)), but COUNTS the WHEAT tiles this team may actually
+		// harvest: a tile counts only when it is WHEAT AND not forbidden for teamMask.
+		// Depleted field tiles are no longer WHEAT, and the checkerboard wheat-
 		// protection paint sets `forbidden` on the protected half (which blocks
 		// harvest but not regrowth), so both are excluded — leaving the live,
 		// harvestable wheat the caller's MIN_TILES threshold is measured against.
@@ -308,7 +319,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getResource(nx, ny).type != CORN)
+				if (map.getResource(nx, ny).type != WHEAT)
 					continue;
 				if (map.isForbidden(nx, ny, teamMask))
 					continue;
@@ -396,4 +407,103 @@ namespace Cortex
 		}
 		return false;
 	}
+	PlacementGeometry::PlacementGeometry(Team* team, Map& map) : map(map)
+	{
+		if (!team) return;
+		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		{
+			const Building* b = team->myBuildings[i];
+			if (!b || b->buildingState == Building::DEAD) continue;
+			buildings.push_back({b->posX, b->posY, 0, 0});
+			if (!b->type) continue;
+			const int type = b->type->shortTypeNum;
+			typedBuildings.push_back({{b->posX, b->posY, b->type->width, b->type->height}, type});
+			if (type == IntBuildingType::FOOD_BUILDING)
+			{
+				int w, h;
+				grownFootprint(b->type, w, h);
+				inns.push_back({{b->posX, b->posY, w, h},
+					innOccupiedSideMask(map, b->posX, b->posY, w, h, -1, -1, 0, 0)});
+			}
+			if (type == IntBuildingType::FOOD_BUILDING ||
+			    type == IntBuildingType::WALKSPEED_BUILDING ||
+			    type == IntBuildingType::SWIMSPEED_BUILDING)
+			{
+				int ox, oy, w, h;
+				grownFootprintBox(b->type, ox, oy, w, h);
+				reservations.push_back({b->posX + ox, b->posY + oy, w, h});
+			}
+		}
+	}
+
+	int PlacementGeometry::distanceToNearestBuilding(int x, int y) const
+	{
+		int best = -1;
+		for (const Box& b : buildings)
+		{
+			const int distance = map.warpDistMax(x, y, b.x, b.y);
+			if (best < 0 || distance < best) best = distance;
+		}
+		return best;
+	}
+
+	int PlacementGeometry::distanceToNearestBuildingType(int x, int y, int type) const
+	{
+		int best = -1;
+		for (const BuildingBox& b : typedBuildings)
+		{
+			if (b.type != type) continue;
+			const int distance = map.warpDistMax(x, y, b.box.x, b.box.y);
+			if (best < 0 || distance < best) best = distance;
+		}
+		return best;
+	}
+
+	int PlacementGeometry::nearestBuildingEdgeDist(int x, int y, int w, int h) const
+	{
+		int best = -1;
+		for (const BuildingBox& b : typedBuildings)
+		{
+			const int distance = rectEdgeChebyshev(x, w, y, h,
+				b.box.x, b.box.w, b.box.y, b.box.h, map.getW(), map.getH());
+			if (best < 0 || distance < best) best = distance;
+		}
+		return best;
+	}
+
+	bool PlacementGeometry::candidateCrowdsInn(int x, int y, int w, int h) const
+	{
+		if (w <= 0 || h <= 0) return false;
+		const int clear = CORTEX_INN_SIDE_CLEARANCE;
+		for (const Inn& inn : inns)
+		{
+			const Box& b = inn.box;
+			unsigned sides = inn.sides;
+			// The four strips include corners, which occupy both adjacent sides.
+			const Box strips[] = {
+				{b.x - clear, b.y - clear, clear, b.h + 2 * clear},
+				{b.x + b.w, b.y - clear, clear, b.h + 2 * clear},
+				{b.x - clear, b.y - clear, b.w + 2 * clear, clear},
+				{b.x - clear, b.y + b.h, b.w + 2 * clear, clear}
+			};
+			for (unsigned i = 0; i < 4; ++i)
+				if (!(sides & (1u << i)) &&
+				    rectsOverlap(x, w, y, h, strips[i].x, strips[i].w,
+				                 strips[i].y, strips[i].h, map.getW(), map.getH()))
+					sides |= 1u << i;
+			const int count = sideCount(sides);
+			if (count > CORTEX_INN_MAX_TOUCH_SIDES && count > sideCount(inn.sides))
+				return true;
+		}
+		return false;
+	}
+
+	bool PlacementGeometry::candidateOverlapsReservedExpansion(int x, int y, int w, int h) const
+	{
+		for (const Box& b : reservations)
+			if (rectsOverlap(x, w, y, h, b.x, b.w, b.y, b.h, map.getW(), map.getH()))
+				return true;
+		return false;
+	}
+
 }

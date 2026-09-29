@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "echo/Echo.h"
 #include "IntBuildingType.h"
 
@@ -90,6 +91,7 @@ void Econo::tick(Echo& echo)
 
 void Econo::tick_initial_setup(Echo& echo)
 {
+	telemetry.count(AITrace::AI4::Econo_tick_initial_setup_calls);
 	if(timer==1)
 	{
 		BuildingSearch bs(echo);
@@ -104,12 +106,12 @@ void Econo::tick_initial_setup(Echo& echo)
 				mo_ratios->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 				echo.add_management_order(mo_ratios);
 
-				ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, *i);
+				ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, WHEAT, *i);
 				echo.add_management_order(mo_tracker);
 			}
 			if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 			{
-				ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, *i);
+				ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, WHEAT, *i);
 				echo.add_management_order(mo_tracker);
 			}
 		}
@@ -126,7 +128,7 @@ void Econo::handle_message(Echo& echo, const std::string& message)
 
 		//Constraints around the location of wheat
 		AIEcho::Gradients::GradientInfo gi_wheat;
-		gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
+		gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(WHEAT));
 		//You want to be close to wheat
 		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_ECHO_RTI_INN_WHEAT_WEIGHT));
 		//You can't be farther than 10 units from wheat
@@ -165,7 +167,7 @@ void Econo::handle_message(Echo& echo, const std::string& message)
 		mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_completion);
 
-		ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, id);
+		ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, WHEAT, id);
 		mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_tracker);
 	}

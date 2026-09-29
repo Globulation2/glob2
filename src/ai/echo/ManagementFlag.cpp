@@ -292,7 +292,10 @@ bool AddArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	for(Uint32 location_index=0; location_index<size; ++location_index)
 	{
 		stream->readEnterSection(location_index);
-		locations[location_index]=position(stream->readUint32("posx"), stream->readUint32("posy"));
+		// Stream reads must be sequenced: argument evaluation order varies by compiler.
+		const Uint32 x = stream->readUint32("posx");
+		const Uint32 y = stream->readUint32("posy");
+		locations[location_index] = position(x, y);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -361,7 +364,10 @@ bool RemoveArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 	for(Uint32 location_index=0; location_index<size; ++location_index)
 	{
 		stream->readEnterSection(location_index);
-		locations[location_index]=position(stream->readUint32("posx"), stream->readUint32("posy"));
+		// Stream reads must be sequenced: argument evaluation order varies by compiler.
+		const Uint32 x = stream->readUint32("posx");
+		const Uint32 y = stream->readUint32("posy");
+		locations[location_index] = position(x, y);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

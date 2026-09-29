@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "AITelemetryFields.h"
 #include "AINicowar.h"
 #include <string>
 #include "Utilities.h"
@@ -19,6 +20,7 @@ using namespace boost::logic;
 
 void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_compute_defense_flag_positioning_calls);
 	//This algorithm works by finding all units and buildings under attack, and creating a potential
 	//field by adding 1 to all squares within range of the units or buildings under attack. The result
 	//will be that the highest square will have the largest number of buildings or units that need
@@ -325,6 +327,7 @@ void NewNicowar::modify_points(Uint16* counts, int w, int h, int x, int y, int d
 
 void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 {
+	telemetry.count(AITrace::AI5::NewNicowar_compute_explorer_flag_attack_positioning_calls);
 	//The algorithm here is interesting. Basically, an enemy unit is selected. Every enemy unit within 4 squares of this unit
 	//is counted as part of the larger group, and every unit 4 squares from those and so on, as long as it doesn't go past
 	//6 squares from the average. Flags are put on the average x and y of largest groups

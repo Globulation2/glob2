@@ -5,6 +5,7 @@
 
 #include <climits>
 #include <list>
+#include <memory>
 #include <vector>
 
 #include "BuildingUtils.h"
@@ -22,6 +23,7 @@ namespace GAGCore
 class Unit;
 class Team;
 class Map;
+class BuildingGradientSearch;
 struct BuildingType;
 class BuildingsTypes;
 class Order;
@@ -52,7 +54,9 @@ static constexpr int SWIM_VARIANT_CAN_SWIM = 1;
 
 class Building : public BuildingUtils
 {
-public:
+	friend struct TeamStatsMeasurementFixture;
+
+  public:
 	static const int MAX_COUNT=1024;
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
@@ -136,6 +140,15 @@ public:
 	void saveCrossRef(GAGCore::OutputStream *stream);
 
 	bool isResourceFull(void);
+	///Custom-game "fortress buildings" rule: type->hpMax scaled by the
+	///configured multiplier. Use this instead of reading type->hpMax
+	///directly anywhere the result affects simulation or display.
+	int getEffectiveMaxHp(void) const;
+	///Same rule, for type->hpInit.
+	int getEffectiveInitHp(void) const;
+	///Same rule, for type->hpInc: a site delivered in full must still reach
+	///the scaled hpInit, or every new building would finish badly damaged.
+	int getEffectiveHpInc(void) const;
 	int neededResource(void);
 	/**
 	 * calls neededResource(int res) for all possible resources.
@@ -220,7 +233,7 @@ public:
 	void turretStep(Uint32 stepCounter);
 	/// Kills the building: releases its workers, expels the units inside onto
 	/// the footprint or the ring around it, and queues it for deletion.
-	void kill(void);
+	void kill(int diagnosticRemoval = 2);
 
 	/// This function removes the unit from the list of units working on the building. Units will remove themselves
 	/// when they run out of food, for example. This does not handle units state, just the buildings.
@@ -585,6 +598,9 @@ public:
 	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
 	Uint16 *globalGradient[SWIM_CLASS_COUNT];
+	//! Retained propagation queues. Never serialized: saving completes
+	//! their fields first. Null for loaded or locked fields; owned with globalGradient.
+	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[SWIM_CLASS_COUNT];
 	//! Set when the map changed nearby; rebuilt on use once DIRTY_REBUILD_TICKS
 	//! have elapsed since the last rebuild.
 	bool dirtyGradient[SWIM_CLASS_COUNT];

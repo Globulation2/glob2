@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Software alpha-blend precision under many stacked draws onto the same
-// pixels, as a wide motion-blur shutter produces. A single draw's rounding
+// pixels, as repeated translucent effects produce. A single draw's rounding
 // bias is invisible; this catches it compounding into a visible darkening.
 #include <Toolkit.h>
 #include <GraphicContext.h>

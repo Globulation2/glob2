@@ -5,6 +5,7 @@
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
+#include "Game.h"
 
 #include "Building.h"
 
@@ -17,13 +18,18 @@ int Unit::getRealArmor(bool isMagic) const
 	if (isMagic) //magic bypasses armor yet fruit penalties still apply
 		return 0 - fruitCount * armorReductionPerHappyness;
 	else
-		return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
+	{
+		// Custom-game "glass cannon" rule: armor is reduced by the same
+		// factor attack strength is scaled up, below. Only the armor itself
+		// shrinks; the fruit penalty stays whole.
+		return performance[ARMOR] / owner->game->gameHeader.getGlassCannonScale() - fruitCount * armorReductionPerHappyness;
+	}
 }
 
 //! Return the real attack strength, taking into account the experience level
 int Unit::getRealAttackStrength(void) const
 {
-	return performance[ATTACK_STRENGTH] + experienceLevel;
+	return (performance[ATTACK_STRENGTH] + experienceLevel) * owner->game->gameHeader.getGlassCannonScale();
 }
 
 //! Return the amount of experience to level-up

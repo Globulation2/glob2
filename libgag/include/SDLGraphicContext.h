@@ -24,6 +24,7 @@
 
 namespace GAGCore
 {
+    class RenderBackend;
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{
@@ -330,6 +331,7 @@ namespace GAGCore
 			//! Allow windowed logical dimensions to follow the window size
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
+			PORTABLEGPU = 32,
 		};
 		
 	protected:
@@ -337,6 +339,12 @@ namespace GAGCore
 		int minW, minH;
 		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
 		int windowW = 0, windowH = 0;
+        int fixedLogicalW=0, fixedLogicalH=0;
+        bool responsiveViewport=false, compactWindowAllowed=false;
+        bool uiTransformActive=false;
+        SDL_Rect uiSavedClip{}, uiBounds{};
+        float uiTransformScale=1, uiTransformX=0, uiTransformY=0;
+        int responsiveMinW=0, responsiveMinH=0;
 		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
 		int drawableW = 0, drawableH = 0;
 		//! resolution asked of setRes(), before the interface scale divides it
@@ -352,10 +360,15 @@ namespace GAGCore
 		void applyWindowMinimumSize(void);
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
+		//! target pixels per logical pixel for the rasteriser: the offscreen target while one is set, the window otherwise
+		float rasterScale(void);
+		//! target pixels per logical pixel while drawing into an offscreen target; 0 while drawing into the window
+		float renderTargetScale = 0.0f;
 		bool mapTransformActive=false;
         bool periodicCopy=false;
 		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
 		float overlayScale=1;
+        float mapCopyTranslateX=0, mapCopyTranslateY=0;
 		unsigned long drawCalls=0;
 		int mapClipX=0,mapClipY=0,mapClipW=0,mapClipH=0;
 		//! the GL viewport that fits the logical resolution into the drawable without distorting its aspect ratio, letterboxed/pillarboxed as needed
@@ -406,6 +419,13 @@ namespace GAGCore
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
 		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
+		std::unique_ptr<RenderBackend> renderer;
+        // Rasterizes transformed passes into the existing software framebuffer.
+        std::unique_ptr<RenderBackend> softwareRasterizer;
+        bool softwareTransform=false;
+        void beginSoftwareTransform();
+        void endSoftwareTransform();
+		std::string pendingScreenshot;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -422,6 +442,22 @@ namespace GAGCore
 
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
+        // Resize a software render target without replacing its window or assets.
+        bool resizeViewport(int w, int h);
+        bool setResponsiveViewport(bool enabled, int minimumWidth=0, int minimumHeight=0);
+        bool refreshPresentation();
+        void setCompactWindowAllowed(bool allowed) {
+            if (compactWindowAllowed==allowed) return;
+            compactWindowAllowed=allowed;applyWindowMinimumSize();
+        }
+        bool isResponsiveViewport() const { return responsiveViewport; }
+        bool hasPortableRenderer() const { return bool(renderer); }
+        double logicalUnitsPerPoint() const;
+        void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
+        Uint32 windowID() const { return SDL_GetWindowID(window); }
+#ifdef GLOB2_WEBGL2
+        static void restoreBrowserContext();
+#endif
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
 		//! the resolution asked of setRes(), which the interface scale then divides
 		int getRequestedW(void) const { return requestedW; }
@@ -432,6 +468,8 @@ namespace GAGCore
 		float getUiScale(void) const { return uiScale; }
 		//! the scale the last setRes() was asked for, before the window floor reduced it
 		float getWantedUiScale(void) const { return wantedUiScale; }
+		//! drawable pixels per logical pixel for text drawn on this context, 1 when unscaled
+		float textRenderScale(void);
 		//! the interface scale the desktop asks for, or 0 when nothing reports one
 		static float querySystemUiScale(void);
 		//! the scale actually used for a preference; 0 follows the desktop, GLOB2_UI_SCALE wins
@@ -441,6 +479,9 @@ namespace GAGCore
 		bool toggleFullscreen();
 		void beginMapTransform(float zoom,float x,float y,int clipX,int clipY,int clipW,int clipH);
 		void endMapTransform();
+        //! Axis-aligned world boundary, snapped to target pixels with a minimum one-pixel stroke.
+        //! Unlike ordinary UI lines, this remains visible when the map is zoomed out.
+        void drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color);
         // Repeat a presentation-only pass. Its primary invocation advances visual
         // state once; subsequent invocations must only draw.
         void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);
@@ -453,6 +494,10 @@ namespace GAGCore
 		void windowToLogical(Sint32 &x, Sint32 &y);
 		//! set a GL line width in logical pixels; GL rasterises lines in window pixels, which the viewport does not scale
 		void setScaledLineWidth(float width);
+		//! declare that drawing now goes to an offscreen target with this many of its pixels per logical pixel; 0 restores the window
+		void setRenderTargetScale(float pixelsPerLogicalPixel) {renderTargetScale = pixelsPerLogicalPixel;}
+		//! target pixels per logical pixel the rasteriser is drawing at right now
+		float getRasterScale(void) {return rasterScale();}
 		//! translate SDL_GetMouseState coordinates through the active context's scaling
 		static void translateMouseCoordinates(int &x, int &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
@@ -470,7 +515,7 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum) { }
 		
 		// reimplemented drawing commands for HW (GPU / GL) accelerated version
-		virtual bool canDrawStretchedSprite(void) { return (optionFlags & USEGPU) != 0; }
+		virtual bool canDrawStretchedSprite(void) { return renderer || (optionFlags & USEGPU) != 0; }
 		
 		virtual void drawPixel(int x, int y, const Color& color);
 		virtual void drawPixel(float x, float y, const Color& color);
@@ -501,7 +546,7 @@ namespace GAGCore
 
 		void finishDrawingSprite(Sprite* sprite, Uint8 alpha);
 
-		//! Draw one shutter pose combining a base and team-colour layer with the
+		//! Draw a unit pose combining a base and team-colour layer with the
 		//! unit shader, at logical position (x,y) and explicit destination size
 		//! (independent of the sampled textures' own size, so an HD source
 		//! layer still draws at the sprite's logical dimensions), alpha applied
@@ -657,12 +702,10 @@ namespace GAGCore
 		bool isDynamicTeamColor() const { return dynamicTeamColor; }
 		size_t getTeamColorCacheBytes() const { return teamColorBytes; }
 		size_t getTeamColorCacheEntries() const { return teamColorList.size(); }
-		//! True when every frame in index's 32-phase action/direction block (the
-		//! span one motion-blur shutter can draw, see UnitAnimation.h) has a
-		//! matching HD layer wherever the native one exists. A shutter samples
-		//! one resolution throughout; an incomplete block falls back to native
-		//! for all of it rather than mixing resolutions pose to pose. One
-		//! drawSprite call per pose calls this, so the answer is cached
+		//! True when every frame in index's 32-phase action/direction block has a
+		//! matching HD layer wherever the native one exists. An incomplete block
+		//! falls back to native throughout the action rather than switching
+		//! resolutions from pose to pose. DrawSprite calls this per pose, so it is cached
 		//! (recomputeBlockCompleteHD) rather than rescanned every time.
 		bool blockHasCompleteHD(int index) const;
 		//! Hue shift, in degrees, from this sprite's base team colour to actColor;

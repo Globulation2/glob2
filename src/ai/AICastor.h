@@ -128,6 +128,11 @@ public:
 private:
 	void firstInit();
 public:
+  void captureTelemetry() override;
+  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+  {
+	  return AITelemetry::schema(2);
+  }
 	AICastor(Player *player);
 	~AICastor();
 
@@ -185,7 +190,7 @@ private:
 public:
 	void updateGlobalGradientNoObstacle(Uint8 *gradient);
 	void updateGlobalGradient(Uint8 *gradient);
-	//! The map's corn gradient for Castor's workers, on Castor's 8-bit scale.
+	//! The map's wheat gradient for Castor's workers, on Castor's 8-bit scale.
 	Uint8 wheatGradientAt(size_t index);
 	
 	std::list<Project *> projects;

@@ -8,36 +8,47 @@
 #include "Glob2Screen.h"
 #include <GUINumber.h>
 #include <string>
+#include <memory>
+#include <ApplicationHost.h>
+class FileImport;
 
 namespace GAGGUI
 {
-	class Button;
-	class TextButton;
-	class Text;
-	class Number;
-	class OnOffButton;
-}
+class Button;
+class TextButton;
+class Text;
+class Number;
+class OnOffButton;
+} // namespace GAGGUI
 class Glob2FileList;
 class MapPreview;
 
 //! This screen is the basic screen used to selected map and games, Can have an alternate directory if desired
 class ChooseMapScreen : public Glob2Screen
 {
-public:
+    friend struct MobileGallerySetup;
+  public:
 	/// Constructor. Directory is the source of the listed files.
 	/// extension is the file extension to show. If recurse is true,
 	/// subdirectories are shown and can be opened.
-	ChooseMapScreen(const char *directory, const char *extension, bool recurse, const char* alternateDirectory=NULL, const char* alternateExtension=NULL, const bool alternateRecurse=false);
+	ChooseMapScreen(const char *directory, const char *extension, bool recurse,
+					const char *alternateDirectory = NULL, const char *alternateExtension = NULL,
+					const bool alternateRecurse = false);
 	//! Destructor
 	virtual ~ChooseMapScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	
+	void onTimer(Uint32) override;
+	bool usesResponsiveViewport() const override;
+	bool supportsCompactViewport() const override { return true; }
+	void paint() override;
+	void handleExecutionEvent(SDL_Event) override;
+
 	/// Returns the mapHeader of the map that is currently selected
-	MapHeader& getMapHeader();
-	
+	MapHeader &getMapHeader();
+
 	/// Returns the gameHeader, with all of the customized options,
 	/// for the currently selected map.
-	GameHeader& getGameHeader();
+	GameHeader &getGameHeader();
 
 	enum
 	{
@@ -62,18 +73,18 @@ public:
 	/// Returns the type of the currently selected loadable (NONE, GAME, MAP or REPLAY)
 	LoadableType getSelectedType();
 
-protected:
+  protected:
+	bool importBusy() const;
 	/// Handle called when a valid map has been selected.
 	/// This is to be overwritten by the derived class.
-	virtual void validMapSelectedhandler(void) { }
+	virtual void validMapSelectedhandler(void) {}
 
 	/// The map header of the currently selected map
 	MapHeader mapHeader;
 	/// The game header of the currently selected map
 	GameHeader gameHeader;
 
-private:
-
+  private:
 	enum DirectoryMode
 	{
 		DisplayRegular,
@@ -92,6 +103,12 @@ private:
 	Button *deleteMap;
 	//! the switch type button
 	TextButton *switchType = nullptr;
+	TextButton *exportButton = nullptr;
+	TextButton *importButton = nullptr;
+	std::unique_ptr<GAGCore::ApplicationHost::FileSelection> fileSelection;
+	std::unique_ptr<FileImport> fileImport;
+	std::string importExtension;
+	void updateImportStatus();
 	//! The list of maps or games
 	Glob2FileList *fileList;
 	//! The alternate list of maps or games
@@ -111,7 +128,7 @@ private:
 	void updateMapInformation();
 
 	/// Returns the file list currently shown: fileList when DisplayRegular, alternateFileList when DisplayAlternate.
-	Glob2FileList* activeFileList() const;
+	Glob2FileList *activeFileList() const;
 
 	/// Returns the LoadableType paired with the active list: type1 when DisplayRegular, type2 when DisplayAlternate.
 	LoadableType activeType() const;
@@ -125,4 +142,3 @@ private:
 	/// Designates whether there will be verbose debugging output.
 	static const bool verbose = false;
 };
-

@@ -4,6 +4,7 @@
 #include <iostream>
 #include "MultiplayerGame.h"
 #include "AuthMessages.h"
+#include "Version.h"
 #include "FileTransferMessages.h"
 #include "GameCreateMessages.h"
 #include "LobbyMessages.h"
@@ -65,7 +66,8 @@ void YOGClient::initialize()
 void YOGClient::connect(const std::string& server)
 {
 	initialize();
-	nc.openConnection(server, YOG_SERVER_PORT);
+	const char* gateway = std::getenv("GLOB2_YOG_URL");
+    nc.openConnection(server == YOG_SERVER_IP && gateway ? gateway : server, YOG_SERVER_PORT);
 	connectionState = NeedToSendClientInformation;
 	wasConnecting=true;
 }
@@ -131,19 +133,27 @@ void YOGClient::update()
 	{
 		Uint8 type = message->getMessageType();
 		//This receives the server information
-		if(type==MNetSendServerInformation)
-		{
+        if(type==MNetSendServerInformation)
+        {
+            if (connectionState != WaitingForServerInformation) { disconnect(); return; }
 			shared_ptr<NetSendServerInformation> info = static_pointer_cast<NetSendServerInformation>(message);
+            if (info->getNetVersion() != NET_PROTOCOL_VERSION) {
+                loginState = YOGClientVersionTooOld;
+                disconnect();
+                sendToListeners(std::make_shared<YOGLoginRefusedEvent>(loginState));
+                return;
+            }
 			loginPolicy = info->getLoginPolicy();
 			gamePolicy = info->getGamePolicy();
 			playerID = info->getPlayerID();
-			shared_ptr<YOGConnectedEvent> event(new YOGConnectedEvent);
-			sendToListeners(event);
-			connectionState = WaitingForLoginInformation;
+            connectionState = WaitingForLoginInformation;
+            shared_ptr<YOGConnectedEvent> event(new YOGConnectedEvent);
+            sendToListeners(event);
 		}
 		//This receives a login acceptance message
-		if(type==MNetLoginSuccessful)
-		{
+        if(type==MNetLoginSuccessful)
+        {
+            if (connectionState != WaitingForLoginReply) { disconnect(); return; }
 			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
@@ -156,14 +166,16 @@ void YOGClient::update()
 		if(type==MNetRefuseLogin)
 		{
 			shared_ptr<NetRefuseLogin> info = static_pointer_cast<NetRefuseLogin>(message);
-			connectionState = WaitingForLoginInformation;
-			loginState = info->getRefusalReason();
-			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
+            connectionState = WaitingForLoginInformation;
+            loginState = info->getRefusalReason();
+            if (loginState == YOGClientVersionTooOld) disconnect();
+            shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
 			sendToListeners(event);
 		}
 		//This receives a registration acceptance message
-		if(type==MNetRegistrationAccepted)
-		{
+        if(type==MNetRegistrationAccepted)
+        {
+            if (connectionState != WaitingForRegistrationReply) { disconnect(); return; }
 			shared_ptr<NetRegistrationAccepted> info = static_pointer_cast<NetRegistrationAccepted>(message);
 			connectionState = ClientOnStandby;
 			loginState = YOGLoginSuccessful;
@@ -176,9 +188,10 @@ void YOGClient::update()
 		if(type==MNetRegistrationRefused)
 		{
 			shared_ptr<NetRegistrationRefused> info = static_pointer_cast<NetRegistrationRefused>(message);
-			connectionState = WaitingForLoginInformation;
-			loginState = info->getRefusalReason();
-			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
+            connectionState = WaitingForLoginInformation;
+            loginState = info->getRefusalReason();
+            if (loginState == YOGClientVersionTooOld) disconnect();
+            shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
 			sendToListeners(event);
 		}
 		///This receives a game list update message
@@ -366,7 +379,9 @@ void YOGClient::update()
 		message = nc.getMessage();
 	}
 
-	if(gameConnection)
+    // Keep router orders queued while the host cooperatively initializes its
+    // engine. Dropping them here would desynchronize peers with different load times.
+	if(gameConnection && (!joinedGame || !joinedGame->isWaitingForEngine()))
 	{		
 		shared_ptr<NetMessage> message = gameConnection->getMessage();
 		while(message)
@@ -438,6 +453,7 @@ YOGPlayerID YOGClient::getPlayerID() const
 
 void YOGClient::attemptLogin(const std::string& nusername, const std::string& password)
 {
+    if (connectionState != WaitingForLoginInformation) return;
 	username = nusername;
 	shared_ptr<NetAttemptLogin> message(new NetAttemptLogin(username, password));
 	nc.sendMessage(message);
@@ -447,6 +463,7 @@ void YOGClient::attemptLogin(const std::string& nusername, const std::string& pa
 
 void YOGClient::attemptRegistration(const std::string& nusername, const std::string& password)
 {
+    if (connectionState != WaitingForLoginInformation) return;
 	username = nusername;
 	shared_ptr<NetRegistrationRequest> message(new NetRegistrationRequest(username, password));
 	nc.sendMessage(message);

@@ -5,6 +5,9 @@
 
 #include "Glob2Screen.h"
 #include "Campaign.h"
+#include "FrontendTheme.h"
+#include <ScreenStack.h>
+#include <ApplicationHost.h>
 #include "GUIText.h"
 #include "GUIButton.h"
 #include "GUIList.h"
@@ -14,9 +17,14 @@
 
 class CampaignEditor : public Glob2Screen
 {
-public:
-	CampaignEditor(const std::string& name);
+  public:
+	CampaignEditor(const std::string &name, GAGGUI::ScreenStack &screens);
 	void onAction(Widget *source, Action action, int par1, int par2);
+	bool usesResponsiveViewport() const override { return true; }
+	bool supportsCompactViewport() const override { return true; }
+	void paint() override;
+	void handleExecutionEvent(SDL_Event) override;
+	void onTimer(Uint32 tick) override;
 	enum
 	{
 		ADDMAP,
@@ -25,8 +33,16 @@ public:
 		OK,
 		CANCEL,
 	};
-private:
+
+  private:
+	friend struct MobileGallerySetup;
+	FrontendScope theme{true};
+	bool phoneFooter(Widget *widget) const override { return widget == ok || widget == cancel; }
 	Campaign campaign;
+	int mobilePage = 0;
+	TextButton *detailsTab, *mapsTab;
+	Text *nameLabel, *descriptionLabel;
+	GAGGUI::ScreenStack &screens;
 	/// Title of the screen, depends on the directory given in parameter
 	Text *title;
 	/// The ok button
@@ -34,37 +50,48 @@ private:
 	/// The cancel button
 	Button *cancel;
 	/// List of maps in the campaign
-	List* mapList;
+	List *mapList;
 	/// Opens the map selection screen, and then the editor to add a new map
-	Button* addMap;
+	Button *addMap;
 	/// Opens the map editor screen and edits the selected map
-	Button* editMap;
+	Button *editMap;
 	/// Removes the map from the list of maps
-	Button* removeMap;
+	Button *removeMap;
 	/// Text editor changes the name of the campaign
-	TextInput* nameEditor;
+	TextInput *nameEditor;
 	/// Text editor for description
-	TextArea* description;
+	TextArea *description;
+	TextArea *saveStatus;
+	std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
+	void saveCampaign();
+	void saveFailed();
 
 	///Adds all of the maps in the campaign to the mapList
 	void syncMapList();
 };
 
-
 class CampaignMapEntryEditor : public Glob2Screen
 {
-public:
-	CampaignMapEntryEditor(Campaign& campaign, CampaignMapEntry& mapEntry);
+  public:
+	CampaignMapEntryEditor(Campaign &campaign, CampaignMapEntry &mapEntry);
 	void onAction(Widget *source, Action action, int par1, int par2);
+	bool usesResponsiveViewport() const override { return true; }
+	bool supportsCompactViewport() const override { return true; }
+	void paint() override;
+	void handleExecutionEvent(SDL_Event) override;
 	enum
 	{
 		OK,
 		CANCEL,
 		ISUNLOCKED,
 	};
-private:
-	CampaignMapEntry& entry;
-	Campaign& campaign;
+
+  private:
+	friend struct MobileGallerySetup;
+	int mobilePage = 0;
+	TextButton *detailsTab, *unlockTab;
+	CampaignMapEntry &entry;
+	Campaign &campaign;
 	/// Title of the screen, depends on the directory given in parameter
 	Text *title;
 	/// The ok button
@@ -72,11 +99,11 @@ private:
 	/// The cancel button
 	Button *cancel;
 	/// List of maps that unlock the map thats being edited
-	CheckList* mapsUnlockedBy;
+	CheckList *mapsUnlockedBy;
 	/// The label for mapsUnlockedBy
 	Text *mapsUnlockedByLabel;
 	/// Text editor changes the name of the map in the campaign
-	TextInput* nameEditor;
+	TextInput *nameEditor;
 	/// The label for nameEditor
 	Text *nameEditorLabel;
 	/// The text editor for the description
@@ -84,8 +111,7 @@ private:
 	/// The label for the descriptionEditor
 	Text *descriptionEditorLabel;
 	/// The button that says whether this entry is unlocked by default
-	OnOffButton* isUnlocked;
+	OnOffButton *isUnlocked;
 	/// The label for isUnlocked
 	Text *isUnlockedLabel;
 };
-

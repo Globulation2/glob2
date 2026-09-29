@@ -47,6 +47,11 @@ class AIWarrush : public AIImplementation
 {
 	static const bool verbose = false;
 public:
+  void captureTelemetry() override;
+  const std::vector<AITelemetry::Field> &telemetrySchema() const override
+  {
+	  return AITelemetry::schema(3);
+  }
 	AIWarrush(Player *player);
 	AIWarrush(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AIWarrush();

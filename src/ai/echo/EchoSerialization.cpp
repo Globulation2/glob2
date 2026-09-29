@@ -3,6 +3,8 @@
 
 #include "echo/Echo.h"
 #include "Order.h"
+#include "Game.h"
+#include "FileFormatVersions.h"
 #include <tuple>
 
 using namespace AIEcho;
@@ -121,6 +123,31 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 
 	signature_check(stream, player, versionMinor);
 
+	if(versionMinor>=FILE_FORMAT_VERSION_ECHO_CONTINUATION)
+	{
+		stream->readEnterSection("continuation");
+		previous_building_id=stream->readSint32("previousBuildingId");
+		from_load_timer=stream->readSint32("fromLoadTimer");
+		is_fruit=stream->readUint8("isFruit")!=0;
+		const int owner=stream->readSint32("gradientOwner");
+		if(owner < -1 || owner > player->number) return false;
+		if(owner==player->number)
+		{
+			gm=std::make_shared<Gradients::GradientManager>(player->map);
+			if(!gm->load(stream,player,versionMinor)) return false;
+		}
+		else if(owner>=0)
+		{
+			// Players load in slot order. Only the first sharer writes the
+			// manager; all later Echo players restore the same instance.
+			Player* prior=player->team->game->players[owner];
+			Echo* echo=prior && prior->type>=BasePlayer::P_AI && prior->ai ? dynamic_cast<Echo*>(prior->ai->aiImplementation) : nullptr;
+			if(!echo || !echo->gm) return false;
+			gm=echo->gm;
+		}
+		stream->readLeaveSection();
+	}
+
 	stream->readLeaveSection();
 	signature_check(stream, player, versionMinor);
 
@@ -233,6 +260,25 @@ void Echo::save(GAGCore::OutputStream *stream)
 
 
 	signature_write(stream);
+
+	stream->writeEnterSection("continuation");
+	stream->writeSint32(previous_building_id,"previousBuildingId");
+	stream->writeSint32(from_load_timer,"fromLoadTimer");
+	stream->writeUint8(is_fruit,"isFruit");
+	int owner=-1;
+	if(gm)
+	{
+		owner=player->number;
+		for(int i=0;i<player->number;++i)
+		{
+			Player* prior=player->team->game->players[i];
+			Echo* echo=prior && prior->type>=BasePlayer::P_AI && prior->ai ? dynamic_cast<Echo*>(prior->ai->aiImplementation) : nullptr;
+			if(echo && echo->gm==gm){owner=i;break;}
+		}
+	}
+	stream->writeSint32(owner,"gradientOwner");
+	if(owner==player->number)gm->save(stream);
+	stream->writeLeaveSection();
 
 	stream->writeLeaveSection();
 	signature_write(stream);

@@ -27,6 +27,7 @@ namespace GAGGUI
 		
 		///Gets the current key
 		KeyPress getKey();
+        const std::string& caption() const { return text; }
 		
 		///Sets the key
 		void setKey(const KeyPress& key);

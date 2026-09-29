@@ -69,12 +69,12 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 	     << " maxBuildLevel=" << obs.maxBuildLevel
 	     << " warFlagsActive=" << obs.warFlagsActive << "\n";
 
-	// per-swarm CORN buffer / workers — shows whether the economy loop has stalled.
+	// per-swarm WHEAT buffer / workers — shows whether the economy loop has stalled.
 	for (int i = 0; i < obs.swarmCount && i < CORTEX_MAX_TRACKED_SWARMS; i++)
 	{
 		const TrackedBuilding& s = obs.trackedSwarms[i];
 		if (!s.valid) continue;
-		cerr << "CORTEX_DUMP   swarm[" << i << "] corn=" << s.corn << "/" << s.maxCorn
+		cerr << "CORTEX_DUMP   swarm[" << i << "] wheat=" << s.wheat << "/" << s.maxWheat
 		     << " maxUnitWorking=" << s.maxUnitWorking
 		     << " inside=" << s.unitsInside
 		     << " priority=" << s.priority
@@ -84,7 +84,7 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 
 	// per-inn wheat-gate detail (DIAGNOSTIC: feedCap root-cause). feedCapacity sums
 	// only inns that pass the gate (harvestable >= CORTEX_WHEAT_MIN_TILES). nearestWheat
-	// is forbidden-BLIND; harvestable is the forbidden-AWARE gate count. corn-present
+	// is forbidden-BLIND; harvestable is the forbidden-AWARE gate count. wheat-present
 	// (nearestWheat small) but gate-fail (harvestable < MIN) => wheat is FORBIDDEN (b);
 	// nearestWheat large/-1 => wheat DEPLETED/ABSENT (c).
 	for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
@@ -92,7 +92,7 @@ void AICortex::dumpAttackState(const Cortex::CortexObservation& obs) const
 		const TrackedBuilding& n = obs.trackedInns[i];
 		if (!n.valid) continue;
 		const bool feeds = (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES);
-		cerr << "CORTEX_DUMP   inn[" << i << "] corn=" << n.corn << "/" << n.maxCorn
+		cerr << "CORTEX_DUMP   inn[" << i << "] wheat=" << n.wheat << "/" << n.maxWheat
 		     << " maxUnitWorking=" << n.maxUnitWorking
 		     << " inside=" << n.unitsInside << "/" << n.maxUnitInside
 		     << " nearestWheat=" << n.nearestWheatDist
@@ -195,7 +195,7 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 		// "a" positions at end, so a non-zero offset means the file already has rows;
 		// only the first writer emits the header.
 		if (std::ftell(traceFile) == 0)
-			std::fputs("tick,team,swarm_index,gid,corn,maxCorn,maxUnitWorking,"
+			std::fputs("tick,team,swarm_index,gid,wheat,maxWheat,maxUnitWorking,"
 			           "unitsInside,maxUnitInside,nearestWheatDist,harvestableWheatNearby,"
 			           "freeWorkers,totalFree,totalNeeded,workers,swarmCount,feedCapacity,"
 			           "starvingUnits,needFood,maxBuildLevel,desired\n", traceFile);
@@ -212,7 +212,7 @@ void AICortex::dumpWorkerTrace(const Cortex::CortexObservation& obs,
 		const int desired = (haveTune && tune.swarmWorkers[i] >= 0)
 		                  ? tune.swarmWorkers[i] : t.maxUnitWorking;
 		row << obs.tick << ',' << me << ',' << i << ',' << t.gid << ','
-		    << t.corn << ',' << t.maxCorn << ',' << t.maxUnitWorking << ','
+		    << t.wheat << ',' << t.maxWheat << ',' << t.maxUnitWorking << ','
 		    << t.unitsInside << ',' << t.maxUnitInside << ','
 		    << t.nearestWheatDist << ',' << t.harvestableWheatNearby << ','
 		    << obs.freeWorkers << ',' << obs.totalFree << ',' << obs.totalNeeded << ','
@@ -300,7 +300,7 @@ void AICortex::dumpDecideTrace(const Cortex::CortexObservation& obs,
 // INN DIAGNOSTIC TRACE (docs debugging Cortex-vs-Nicowar worker allocation to inns).
 // The inn-side companion to dumpWorkerTrace: appends one CSV row per valid tracked
 // inn to <prefix>.team<N>.csv, where <prefix> is GLOB2_CORTEX_INN_TRACE. Each row is
-// the inn's observed state this decision cycle (corn buffer, restock demand, the
+// the inn's observed state this decision cycle (wheat buffer, restock demand, the
 // forbidden-blind/aware wheat diagnostics), the worker cap the tune action chose (the
 // same `desired` convention as the swarm trace), plus colony-level context and the
 // production-mix tier facts. The tiers are recomputed here via the pure
@@ -337,9 +337,9 @@ void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
 		// "a" positions at end, so a non-zero offset means the file already has rows;
 		// only the first writer emits the header.
 		if (std::ftell(innTraceFile) == 0)
-			std::fputs("tick,team,inn_index,gid,corn,maxCorn,maxUnitWorking,unitsInside,"
+			std::fputs("tick,team,inn_index,gid,wheat,maxWheat,maxUnitWorking,unitsInside,"
 			           "maxUnitInside,nearestWheatDist,harvestableWheatNearby,"
-			           "diagBlindCornNearby,restockTripsNeeded,priority,ticksSinceFinished,"
+			           "diagBlindWheatNearby,restockTripsNeeded,priority,ticksSinceFinished,"
 			           "desired,freeWorkers,workers,warriors,totalUnit,feedCapacity,"
 			           "starvingUnits,needFood,growWorker,growWarrior,tierBase,tierMid,"
 			           "tierNeeds\n", innTraceFile);
@@ -366,10 +366,10 @@ void AICortex::dumpInnTrace(const Cortex::CortexObservation& obs,
 		const int desired = (haveTune && tune.innWorkers[i] >= 0)
 		                  ? tune.innWorkers[i] : n.maxUnitWorking;
 		row << obs.tick << ',' << me << ',' << i << ',' << n.gid << ','
-		    << n.corn << ',' << n.maxCorn << ',' << n.maxUnitWorking << ','
+		    << n.wheat << ',' << n.maxWheat << ',' << n.maxUnitWorking << ','
 		    << n.unitsInside << ',' << n.maxUnitInside << ','
 		    << n.nearestWheatDist << ',' << n.harvestableWheatNearby << ','
-		    << n.diagBlindCornNearby << ',' << n.restockTripsNeeded << ','
+		    << n.diagBlindWheatNearby << ',' << n.restockTripsNeeded << ','
 		    << n.priority << ',' << n.ticksSinceFinished << ',' << desired << ','
 		    << obs.freeWorkers << ',' << obs.workers << ',' << obs.warriors << ','
 		    << obs.totalUnit << ',' << obs.feedCapacity << ',' << obs.starvingUnits << ','

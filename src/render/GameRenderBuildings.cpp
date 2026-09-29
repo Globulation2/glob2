@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <PerformanceTelemetry.h>
 #include <iostream>
 
 #include "AICastor.h"
@@ -26,7 +27,6 @@
 
 
 #include "Brush.h"
-#include "FertilityCalculatorDialog.h"
 
 
 // Building rendering. Split from Game_render.cpp.
@@ -81,8 +81,8 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		// hpMax+1 (not hpMax) so that at full HP the integer division stays strictly
 		// below gameSpriteCount, leaving damageImgShift == 0 (pristine sprite). Using
 		// plain hpMax would yield shift == -1 at hp == hpMax and trip the assert below.
-		assert(building->hp <= type->hpMax);
-		int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (type->hpMax+1)) - 1;
+		assert(building->hp <= building->getEffectiveMaxHp());
+		int damageImgShift = type->gameSpriteCount - ((building->hp * type->gameSpriteCount) / (building->getEffectiveMaxHp()+1)) - 1;
 		assert(damageImgShift >= 0);
 		imgid = type->gameSpriteImage + damageImgShift;
 	}
@@ -123,7 +123,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		if (type->hpMax)
 		{
 			int maxWidth, actWidth, addDec;
-			float hpRatio=(float)building->hp/(float)type->hpMax;
+			float hpRatio=(float)building->hp/(float)building->getEffectiveMaxHp();
 			if (type->width==1)
 			{
 				maxWidth=8;
@@ -139,7 +139,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			int decy=(type->height*32);
 			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
 
-			if (building->hp!=type->hpMax || !building->type->crossConnectMultiImage)
+			if (building->hp!=building->getEffectiveMaxHp() || !building->type->crossConnectMultiImage)
 				drawHealthBar(x+healDecx, y+decy-4, maxWidth, actWidth, hpRatio);
 		}
 
@@ -149,7 +149,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
 
 		if ((type->canFeedUnit) || (type->unitProductionTime))
-			drawBuildingResourceBar(x+1, y+1, type, type->maxResource[CORN], building->resources[CORN], 255, 255, 120);
+			drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120);
 
 		if (type->maxBullets)
 			drawBuildingResourceBar(x+1, y+1, type, type->maxBullets, building->bullets, 200, 200, 200);
@@ -177,6 +177,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 
 void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState)
 {
+	PERF_SCOPE_TIME(GroundBuildings);
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 

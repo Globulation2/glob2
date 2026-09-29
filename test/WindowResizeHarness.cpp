@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
+#include <ApplicationHost.h>
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -40,6 +41,24 @@ public:
 	int cachedPresentations = 0;
 	Context(bool gpu) : GraphicContext(640, 480, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
 	void nextFrame() override { ++frames; GraphicContext::nextFrame(); }
+	void checkHostPolling()
+	{
+		struct Probe : ApplicationHost::Loop
+		{
+			Context &context;
+			int frames = 0;
+			explicit Probe(Context &context) : context(context) {}
+			bool frame(std::uint32_t, const std::vector<SDL_Event> &) override
+			{
+				if (frames++ == 0) { context.resize(800, 600); return true; }
+				require(context.getW() == 800 && context.getH() == 600,
+					"Native host did not apply the window size before dispatching a frame");
+				return false;
+			}
+			std::uint32_t delay(std::uint32_t) override { return 0; }
+		};
+		ApplicationHost::run(std::make_unique<Probe>(*this), [] {});
+	}
 	void benchmark()
 	{
 		readback = false; // Pixel readback would dominate the work being measured.
@@ -133,9 +152,16 @@ public:
 	Color pixel(int x, int y)
 	{
 		Color c;
+		// Callers use SDL window coordinates; Retina readback is in drawable
+		// pixels. Sample the same window position on either density.
+		int windowWidth, windowHeight;
+		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+		require(x >= 0 && x < windowWidth && y >= 0 && y < windowHeight, "Readback outside window");
 		if (getOptionFlags() & USEGPU)
 		{
 #ifdef HAVE_OPENGL
+			x = x * presentedWidth / windowWidth;
+			y = y * presentedHeight / windowHeight;
 			require(x >= 0 && x < presentedWidth && y >= 0 && y < presentedHeight, "Readback outside presented frame");
 			c = presentedPixels[(presentedHeight-y-1)*presentedWidth+x];
 #endif
@@ -143,6 +169,9 @@ public:
 		else
 		{
 			auto *surface = SDL_GetWindowSurface(window);
+			require(surface != nullptr, "Missing software window surface");
+			x = x * surface->w / windowWidth;
+			y = y * surface->h / windowHeight;
 			require(surface && x >= 0 && x < surface->w && y >= 0 && y < surface->h, "Readback outside software window surface");
 			Uint32 p = 0;
 			const int bytes = surface->format->BytesPerPixel;
@@ -236,6 +265,7 @@ int main(int argc, char **argv)
 			gfx.expose();
 			require(gfx.pixel(size.first-5, size.second-5).r > 240, "New frame does not cover resized window");
 		}
+		gfx.checkHostPolling();
 		gfx.resize(300, 200); gfx.applyResize();
 		require(gfx.getW() >= 640 && gfx.getH() >= 480, "Minimum size not enforced");
 		{

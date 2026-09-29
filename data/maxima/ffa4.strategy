@@ -1,0 +1,3 @@
+# Four-player FFA converts its early economy more reliably when military demand
+# begins competing for construction priority before the field reaches full scale.
+demands.military_population_threshold = 20

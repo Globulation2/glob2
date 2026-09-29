@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include <PerformanceTelemetry.h>
 #include "AICastor.h"
 
 #include <assert.h>
@@ -21,7 +21,6 @@
 
 
 #include "Brush.h"
-#include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"
 
@@ -31,6 +30,7 @@
 
 void Game::buildProjectSyncStep(Sint32 localTeam)
 {
+	PERF_SCOPE_TIME(Projects);
 	for (std::list<BuildProject>::iterator bpi=buildProjects.begin(); bpi!=buildProjects.end();)
 	{
 		int posX=bpi->posX&map.getMaskW();
@@ -105,6 +105,7 @@ void Game::wonSyncStep(void)
 
 void Game::scriptSyncStep()
 {
+	PERF_SCOPE_TIME(Scripts);
 	// Decorative games have no GUI or mission script context. Normal and
 	// headless Engine sessions both supply a GameGUI, as before.
 	if (!gui) return;
@@ -135,12 +136,16 @@ void Game::syncStep(Sint32 localTeam)
 {
 	if (!anyPlayerWaited)
 	{
+		PERF_SCOPE_TIME(Tick);
 		if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 		{
 			globalContainer->replayWriter->advanceStep();
 		}
 
 		Uint64 startTick=SDL_GetTicks64();
+
+		if (!map.pipeline().enabled()) map.configureGradientPipeline(1, 8);
+		map.pipeline().advance();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();

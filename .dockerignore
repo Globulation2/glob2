@@ -1,0 +1,16 @@
+.git
+build
+build-*
+artifacts
+docs/.work
+tools/browser-emsdk
+browser/node_modules
+.codex
+**/__pycache__
+*.o
+*.a
+.scons*
+config.h
+
+.env
+**/.env

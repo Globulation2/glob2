@@ -6,7 +6,6 @@
 #include "GlobalContainer.h"
 #include <GUIButton.h>
 #include "GUIMapPreview.h"
-#include "GUIMessageBox.h"
 #include <GUIText.h>
 #include <GUITextInput.h>
 #include <GUIProgressBar.h>
@@ -15,15 +14,18 @@
 #include "Toolkit.h"
 #include "YOGClient.h"
 #include "YOGClientMapUploadScreen.h"
+#include <ScreenStack.h>
+#include "MessageScreen.h"
 
 using namespace GAGCore;
 
-YOGClientMapUploadScreen::YOGClientMapUploadScreen(std::shared_ptr<YOGClient> client, const std::string mapFile)
-	: client(client), uploader(client), mapFile(mapFile)
+YOGClientMapUploadScreen::YOGClientMapUploadScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const std::string mapFile)
+	: screens(screens), client(client), uploader(client), mapFile(mapFile)
 {
+    enablePhoneForm();
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]")));
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]"), UPLOAD, 27));
+	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]"), UPLOAD, 13));
 	preview = new MapPreview(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
 	addWidget(preview);
 	
@@ -67,6 +69,8 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(std::shared_ptr<YOGClient> cl
 
 
 
+YOGClientMapUploadScreen::~YOGClientMapUploadScreen() { uploader.cancelUpload(); }
+
 void YOGClientMapUploadScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
@@ -97,14 +101,21 @@ void YOGClientMapUploadScreen::onAction(Widget *source, Action action, int par1,
 
 
 
+void YOGClientMapUploadScreen::showError(const char* key, int result)
+{
+	screens.push(std::make_unique<MessageScreen>(Toolkit::getStringTable()->getString(key),
+		std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}),
+		[this, result](Screen&, int) { endExecute(result); });
+}
+
 void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 {
 	client->update();
 	uploader.update();
 	if(!client->isConnected())
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map upload failure: connection lost]"), Toolkit::getStringTable()->getString("[ok]"));
-		endExecute(CONNECTIONLOST);
+		showError("[Map upload failure: connection lost]", CONNECTIONLOST);
+		return;
 	}
 	
 	uploadStatus->visible = false;
@@ -114,13 +125,13 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		{
 			if(uploader.getRefusalReason() == YOGMapUploadReasonMapNameAlreadyExists)
 			{
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map upload failure: map name in use]"), Toolkit::getStringTable()->getString("[ok]"));
+				showError("[Map upload failure: map name in use]", UPLOADFAILED);
 			}
 			else
 			{
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map upload failure: unknown reason]"), Toolkit::getStringTable()->getString("[ok]"));
+				showError("[Map upload failure: unknown reason]", UPLOADFAILED);
 			}
-			endExecute(UPLOADFAILED);
+			return;
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::WaitingForUploadReply)
 		{
@@ -138,5 +149,3 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		}
 	}
 }
-
-

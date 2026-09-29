@@ -9,7 +9,6 @@
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
 void MapEdit::addWidget(MapEditorWidget* widget)
@@ -217,7 +216,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						game.removeUnallowedUnitsAndBuildings(x-2, y-2, 4, 4);
 						break;
 					case TerrainSelector::Wheat:
-						resToSet=CORN;
+						resToSet=WHEAT;
 						break;
 					case TerrainSelector::Trees:
 						resToSet=WOOD;
@@ -268,7 +267,7 @@ void MapEdit::handleTerrainClick(int mx, int my)
 								game.map.getResource(tx, ty).clear();
 						break;
 					case TerrainSelector::Wheat:
-						if(game.map.isResourceTakeable(x, y, CORN))
+						if(game.map.isResourceTakeable(x, y, WHEAT))
 							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Trees:

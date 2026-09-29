@@ -1,0 +1,233 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "save": "/Users/bradley/glob2-pr-help-5/games/gd-bigarena-long.game",
+  "save_sha256": "11dd4fcadf0ff8cd2341408e665ce4207e69849c14d105f780762baeed3fffdc",
+  "ticks": 2048,
+  "pairs": 6,
+  "order": "abba",
+  "commands": {
+    "before": [
+      "/private/tmp/glob2-telemetry-baseline",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-5/games/gd-bigarena-long.game",
+      "--ticks",
+      "2048",
+      "--output-dir",
+      "<temp>"
+    ],
+    "after": [
+      "/Users/bradley/glob2-pr-help-5/build/src/glob2",
+      "--run-game",
+      "--load-game",
+      "/Users/bradley/glob2-pr-help-5/games/gd-bigarena-long.game",
+      "--ticks",
+      "2048",
+      "--output-dir",
+      "<temp>"
+    ]
+  },
+  "binary_sha256": {
+    "before": "167be8eef900cc8f031ff11f5f4b81c9abc200132de4852bd473cddee2b59c4b",
+    "after": "f8c8e678c980010231900e20e8466f3c03b4d52f0ca4ff5a1366ad4e28940c05"
+  },
+  "measurements": [
+    {
+      "pair": 0,
+      "slot": 0,
+      "variant": "before",
+      "wall_s": 7.10559829196427,
+      "user_s": 4.749357,
+      "system_s": 0.094246
+    },
+    {
+      "pair": 0,
+      "slot": 1,
+      "variant": "after",
+      "wall_s": 8.699845166993327,
+      "user_s": 4.808926,
+      "system_s": 0.09901599999999999
+    },
+    {
+      "pair": 0,
+      "slot": 2,
+      "variant": "after",
+      "wall_s": 7.204549082904123,
+      "user_s": 4.630840000000001,
+      "system_s": 0.07978800000000003
+    },
+    {
+      "pair": 0,
+      "slot": 3,
+      "variant": "before",
+      "wall_s": 7.098877917043865,
+      "user_s": 4.688601,
+      "system_s": 0.08174999999999999
+    },
+    {
+      "pair": 1,
+      "slot": 0,
+      "variant": "after",
+      "wall_s": 7.153974042041227,
+      "user_s": 4.731652999999998,
+      "system_s": 0.08557199999999998
+    },
+    {
+      "pair": 1,
+      "slot": 1,
+      "variant": "before",
+      "wall_s": 6.931841790908948,
+      "user_s": 4.618264,
+      "system_s": 0.08202399999999999
+    },
+    {
+      "pair": 1,
+      "slot": 2,
+      "variant": "before",
+      "wall_s": 18.816527833929285,
+      "user_s": 4.891832999999998,
+      "system_s": 0.13352600000000003
+    },
+    {
+      "pair": 1,
+      "slot": 3,
+      "variant": "after",
+      "wall_s": 13.57200358400587,
+      "user_s": 4.893533000000005,
+      "system_s": 0.13855699999999993
+    },
+    {
+      "pair": 2,
+      "slot": 0,
+      "variant": "before",
+      "wall_s": 14.95530745794531,
+      "user_s": 4.861923999999995,
+      "system_s": 0.13797900000000007
+    },
+    {
+      "pair": 2,
+      "slot": 1,
+      "variant": "after",
+      "wall_s": 15.588302875054069,
+      "user_s": 4.8265460000000004,
+      "system_s": 0.12778500000000004
+    },
+    {
+      "pair": 2,
+      "slot": 2,
+      "variant": "after",
+      "wall_s": 16.912776291021146,
+      "user_s": 4.923763000000001,
+      "system_s": 0.12403399999999998
+    },
+    {
+      "pair": 2,
+      "slot": 3,
+      "variant": "before",
+      "wall_s": 12.76524950005114,
+      "user_s": 4.934915000000004,
+      "system_s": 0.12920500000000001
+    },
+    {
+      "pair": 3,
+      "slot": 0,
+      "variant": "after",
+      "wall_s": 10.2102774590021,
+      "user_s": 4.902764999999995,
+      "system_s": 0.11158899999999994
+    },
+    {
+      "pair": 3,
+      "slot": 1,
+      "variant": "before",
+      "wall_s": 12.390441708965227,
+      "user_s": 5.020946000000009,
+      "system_s": 0.125629
+    },
+    {
+      "pair": 3,
+      "slot": 2,
+      "variant": "before",
+      "wall_s": 10.93254533293657,
+      "user_s": 4.939064999999999,
+      "system_s": 0.12220900000000001
+    },
+    {
+      "pair": 3,
+      "slot": 3,
+      "variant": "after",
+      "wall_s": 12.54995637491811,
+      "user_s": 4.939886999999999,
+      "system_s": 0.12382300000000002
+    },
+    {
+      "pair": 4,
+      "slot": 0,
+      "variant": "before",
+      "wall_s": 11.908719207975082,
+      "user_s": 4.930284,
+      "system_s": 0.12025799999999998
+    },
+    {
+      "pair": 4,
+      "slot": 1,
+      "variant": "after",
+      "wall_s": 12.456724040908739,
+      "user_s": 4.888100999999992,
+      "system_s": 0.12348000000000003
+    },
+    {
+      "pair": 4,
+      "slot": 2,
+      "variant": "after",
+      "wall_s": 12.0785845000064,
+      "user_s": 4.954442999999998,
+      "system_s": 0.12673900000000016
+    },
+    {
+      "pair": 4,
+      "slot": 3,
+      "variant": "before",
+      "wall_s": 13.375051000039093,
+      "user_s": 4.923407000000012,
+      "system_s": 0.1251859999999998
+    },
+    {
+      "pair": 5,
+      "slot": 0,
+      "variant": "after",
+      "wall_s": 12.818372166948393,
+      "user_s": 4.922018999999992,
+      "system_s": 0.12317700000000009
+    },
+    {
+      "pair": 5,
+      "slot": 1,
+      "variant": "before",
+      "wall_s": 12.668677665991709,
+      "user_s": 4.912823000000003,
+      "system_s": 0.12485599999999986
+    },
+    {
+      "pair": 5,
+      "slot": 2,
+      "variant": "before",
+      "wall_s": 13.459393540979363,
+      "user_s": 4.804986999999997,
+      "system_s": 0.11633199999999988
+    },
+    {
+      "pair": 5,
+      "slot": 3,
+      "variant": "after",
+      "wall_s": 12.5873070419766,
+      "user_s": 4.800716000000008,
+      "system_s": 0.11898900000000001
+    }
+  ],
+  "median_user_s": {
+    "before": 4.902328000000001,
+    "after": 4.890816999999998
+  },
+  "change_percent": -0.23480681015228821
+}
