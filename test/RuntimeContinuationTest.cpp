@@ -15,6 +15,10 @@
 #include <cassert>
 #include <iostream>
 
+// SDL compiler flags may rename main even when SDL_MAIN_HANDLED is set.
+#ifdef main
+#undef main
+#endif
 GlobalContainer* globalContainer=nullptr;
 using namespace AISharedRuntime::Gradients;
 using namespace GAGCore;

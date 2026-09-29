@@ -9,9 +9,9 @@ Run AI games without a GUI to generate `.replay` files for cross-codebase fideli
 Version 121 gives each AI controller an independent saved random stream. Version
 122 also gives each Econo and Nicowar controller a private gradient cache. AI
 orders and game trajectories can differ from earlier versions for the same
-seed. Replays recorded before version 122 are refused; older saved games still
+seed. Replays recorded before version 123 are refused; older saved games still
 load, with shared gradient cache state copied into each controller. Network
-protocol version 45 rejects clients that still share these caches.
+protocol version 46 rejects clients that still share these caches.
 
 Headless runs and scripted `-test-games` runs default autosaving off for that
 process. Normal-play preferences are preserved. Use explicit initial saves or
@@ -312,7 +312,9 @@ Version 120 makes periodic resource, guard and clear fields publish eight ticks
 after seeding, with one background worker by default. Saves retain completed
 pending fields and their remaining deadlines without publishing them early;
 older saves remain loadable and start with an empty queue. The save compatibility
-floor remains 58. Replay versions before 120 are rejected because their routing
-schedule differs. Network protocol 43 rejects older and newer clients. Worker
+floor remains 58. Version 123 narrows forbidden-zone invalidations to affected
+fields and gives escape fields an independent bounded refresh schedule. Replay
+versions before 123 are rejected because their routing schedule differs. Network
+protocol 46 rejects older and newer clients. Worker
 availability affects wall time only: the serial fallback publishes on the same
 ticks. Headless `--gradient-workers 0` is the deterministic serial control.

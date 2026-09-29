@@ -1,8 +1,8 @@
 # Browser replay import fixture
 
-`cross-replay.replay` is an import/playback fixture recorded at file format 121
-from the repository's unchanged `games/cross-replay.game` (seed 42), for 1,500
-ticks. The replay reader's current minimum accepted format is 121.
+`cross-replay.replay` is an import/playback fixture recorded at file format 123
+from the repository's unchanged `games/cross-replay.game.gz` (seed 42), for 1,500
+ticks. The replay reader's current minimum accepted format is 123.
 
 Re-record when the accepted replay floor changes, using an isolated profile:
 
@@ -10,7 +10,7 @@ Re-record when the accepted replay floor changes, using an isolated profile:
 GLOB2_USER_DIR=/tmp/glob2-browser-fixture-profile \
 GLOB2_REPLAY_PATH="$PWD/browser/tests/fixtures/cross-replay.replay" \
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
-./build/darwin/client/release/src/glob2 --nox games/cross-replay.game 1500 1
+./build/darwin/client/release/src/glob2 --nox games/cross-replay.game.gz 1500 1
 ```
 
 Use the corresponding native build path on other platforms. This fixture is

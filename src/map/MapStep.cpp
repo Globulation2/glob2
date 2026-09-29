@@ -273,6 +273,51 @@ void Map::syncStep(Uint32 stepCounter)
 			updateExploredArea(team);
 	}
 	
+	// Bound escape-field staleness independently of forbidden orders.
+	// At most one allocated field per eight map ticks; no extra saved state.
+	// Normal cycle: 8 * teams * SWIM_CLASS_COUNT ticks; counter wrap can
+	// extend one interval to less than two cycles.
+	const int escapeSlots = game->mapHeader.getNumberOfTeams() * SWIM_CLASS_COUNT;
+	if (escapeSlots && (stepCounter & 7) == 0)
+	{
+		const int slot = (stepCounter >> 3) % escapeSlots;
+		const int escapeTeam = slot / SWIM_CLASS_COUNT;
+		const int escapeSwim = slot % SWIM_CLASS_COUNT;
+		const Uint16* field = forbiddenGradient[escapeTeam][escapeSwim];
+		if (field)
+		{
+			// Class 0 and SWIM_CLASS_EVEN have fixed edge costs. Their propagated fields retain the
+			// obstacle/free-goal/forbidden-interior partition used to seed it.
+			// Matching partitions imply matching seeds, including border seeds.
+			// MapGradientField.cpp statically asserts EVEN water cost equals land.
+			// Other swimmers can change costs without changing these markers, so
+			// conservatively refresh their scheduled fields unconditionally.
+			bool changed = escapeSwim != 0 && escapeSwim != SWIM_CLASS_EVEN;
+			if (!changed)
+			{
+				const Uint32 teamMask = Team::teamNumberToMask(escapeTeam);
+				for (size_t i = 0; i < size; ++i)
+				{
+					const Tile& tile = tiles[i];
+					const bool blocked = tile.resource.type != NO_RES_TYPE
+						|| tile.building != NOGBID || (escapeSwim == 0 && isWater((unsigned)i))
+						|| immobileUnits[i] != IMMOBILE_UNIT_NONE;
+					const bool goal = !blocked && !(tile.forbidden & teamMask);
+					if ((field[i] == GRADIENT_FORBIDDEN) != blocked
+						|| (field[i] == GRADIENT_AT_GOAL) != goal)
+					{
+						changed = true;
+						break;
+					}
+				}
+			}
+			if (changed)
+			{
+				updateForbiddenGradient(escapeTeam, escapeSwim);
+			}
+		}
+	}
+
 	auto dispatch = [&](Uint16 **slot, int swim, auto seed) {
 		gradientRuntime->pipeline.submit(slot, swim, [&](GradientPipeline::Job &job) {
 			seed(job.data.get());

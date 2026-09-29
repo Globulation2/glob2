@@ -41,7 +41,7 @@ def check(binary, checkpoint_name, expected_name, stop_tick):
         resumed = output / "resumed"
         result = subprocess.run(
             [str(Path(binary).resolve()), "--run-game", "--load-game",
-             str(output / "run/checkpoint-30256.game"), "--ticks", str(stop_tick),
+             str(output / "run/checkpoint-30256.game.gz"), "--ticks", str(stop_tick),
              "--telemetry", "checksums", "--output-dir", str(resumed)],
             cwd=ROOT, capture_output=True, text=True,
         )
@@ -52,7 +52,7 @@ def check(binary, checkpoint_name, expected_name, stop_tick):
 
 
 def main(binary):
-    check(binary, "checkpoint-30000-v115.game.gz", "expected-gradient-pipeline-30000-30512.json", 30512)
+    check(binary, "checkpoint-30000-v115.game.gz", "expected-scoped-gradients-30000-30512.json", 30512)
 
 
 if __name__ == "__main__":

@@ -13,14 +13,14 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SCENARIOS = (
     (ROOT / "games/gd-large-4ai.game", 1024,
-     ROOT / "test/fixtures/gradient-pipeline/gd-large-4ai-1024.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/gd-large-4ai-1024.checksums.gz"),
     (ROOT / "games/gd-bigarena-long.game", 2048,
-     ROOT / "test/fixtures/gradient-pipeline/gd-bigarena-2048.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/gd-bigarena-2048.checksums.gz"),
     (ROOT / "test/fixtures/ai-random-streams/numbi-castor-v121.game.gz", 2048,
-     ROOT / "test/fixtures/ai-random-streams/numbi-castor-2048.checksums.gz"),
+     ROOT / "test/fixtures/scoped-gradients/numbi-castor-2048.checksums.gz"),
 )
 CHECKPOINT = ROOT / "test/fixtures/team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz"
-PARENT_RELOAD = ROOT / "test/fixtures/gradient-pipeline/v108-reload-256.checksums.gz"
+PARENT_RELOAD = ROOT / "test/fixtures/scoped-gradients/v108-reload-256.checksums.gz"
 
 
 def detailed_ticks(data: bytes) -> dict[int, bytes]:
@@ -73,7 +73,7 @@ def main(binary: str, parallel_ai: bool = False) -> int:
             with gzip.open(fixture, "rb") as stream:
                 expected = stream.read()
             if actual != expected:
-                print(f"{save.name}: per-tick checksums differ from the eight-tick serial reference",
+                print(f"{save.name}: per-tick checksums differ from the version-123 serial reference",
                       file=sys.stderr)
                 print(f"expected SHA-256 {hashlib.sha256(expected).hexdigest()}", file=sys.stderr)
                 print(f"actual   SHA-256 {hashlib.sha256(actual).hexdigest()}", file=sys.stderr)
@@ -101,7 +101,7 @@ def main(binary: str, parallel_ai: bool = False) -> int:
             expected = detailed_ticks(stream.read())
         actual = detailed_ticks((output / "game.replay.checksums").read_bytes())
         if actual != expected:
-            print("legacy checkpoint differs from eight-tick team/entity reference", file=sys.stderr)
+            print("legacy checkpoint differs from version-123 team/entity reference", file=sys.stderr)
             return 1
         print(f"PASS v108 checkpoint: {len(actual)} reloaded ticks, identical eight-tick "
               "team/entity checksum records")

@@ -241,8 +241,8 @@ Saving waits for private computation without publishing early, then stores each
 pending field, destination, supersession flag and remaining deadline. Loading
 restores that queue; worker count is local execution configuration and is not
 saved. Format 120 adds this state while keeping the save compatibility floor at
-58. Older saves start with an empty queue. Replays before 120 are rejected, and
-network protocol 43 prevents mixed scheduling semantics. Platforms without worker
+58. Older saves start with an empty queue. The current scoped-invalidation policy raises the replay floor to 123 and
+network protocol to 46; version-120 saves remain supported. Platforms without worker
 threads use the same delayed serial schedule. Routing decisions may use periodic
 fields eight ticks older than before; synchronous refreshes still take effect
 immediately.

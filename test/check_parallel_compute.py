@@ -66,7 +66,8 @@ def main():
         if legacy_reference is None: legacy_reference = hashes
         assert hashes == legacy_reference, f'v121 shared-runtime continuation differs: {n}'
     for label, players in (('runtime-new', ('econo', 'nicowar', 'econo', 'nicowar')),
-                           ('castor-new', ('castor',) * 4)):
+                           ('castor-new', ('castor',) * 4),
+                           ('numbi-new', ('numbi',) * 4)):
         fixture = output / f'{label}-fixture'
         setup = ['--map-file', str(ROOT / 'maps/FourSquares1.map.gz'),
                  '--game-seed', '123']
@@ -84,7 +85,7 @@ def main():
                       ('game.replay.checksums', 'game.replay', 'final.game')}
             if reference is None: reference = hashes
             assert hashes == reference, f'{label} game differs: {n}'
-    print('PASS compute experiments: exact traces, replay bytes, final saves, and runtime/Castor continuation at 1/2/4/8 threads')
+    print('PASS compute experiments: exact traces, replay bytes, final saves, and runtime/Castor/Numbi continuation at 1/2/4/8 threads')
 
 
 if __name__ == '__main__':

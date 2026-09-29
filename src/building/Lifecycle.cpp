@@ -164,6 +164,14 @@ void Building::resetPathfindGradients()
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
+	}
+	resetRoundTripGradients();
+}
+
+void Building::resetRoundTripGradients()
+{
+	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	{
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
 			delete[] roundTripGradient[r][i];

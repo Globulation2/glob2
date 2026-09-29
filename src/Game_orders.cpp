@@ -277,49 +277,57 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 
 void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer)
 {
-	if (oaa.type == BrushTool::MODE_ADD)
-	{
-		size_t orderMaskIndex = 0;
-		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
-			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
+	assert(oaa.type == BrushTool::MODE_ADD || oaa.type == BrushTool::MODE_DEL);
+	const bool adding = oaa.type == BrushTool::MODE_ADD;
+	const Uint32 oldGeneration = map.topologyGeneration;
+	const Uint32 teamMask = teams[oaa.teamNumber]->me;
+	bool changed = false, walkingChanged = false, clearingChanged = false;
+	size_t maskIndex = 0;
+	for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; ++y)
+		for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; ++x, ++maskIndex)
+		{
+			if (!oaa.mask.get(maskIndex)) continue;
+			const Tile& tile = map.getTile(x, y);
+			if (bool(tile.forbidden & teamMask) != adding)
 			{
-				if (oaa.mask.get(orderMaskIndex))
-				{
-					// Update real map
-					map.addForbidden(x, y, oaa.teamNumber);
-					// Update local map
-					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.displayedForbiddenView.set(map.coordToIndex(x, y), true);
-				}
-				orderMaskIndex++;
+				changed = true;
+				// Resources already block walking, but can be harvesting/clearing goals.
+				walkingChanged |= tile.resource.type == NO_RES_TYPE;
+				clearingChanged |= (tile.clearArea & teamMask) != 0;
+				if (adding) map.addForbidden(x, y, oaa.teamNumber);
+				else map.removeForbidden(x, y, oaa.teamNumber);
 			}
-		teams[oaa.teamNumber]->dirtyGlobalGradient();
-	}
-	else if (oaa.type == BrushTool::MODE_DEL)
-	{
-		size_t orderMaskIndex = 0;
-		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
-			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
-			{
-				if (oaa.mask.get(orderMaskIndex))
-				{
-					// Update real map
-					map.removeForbidden(x, y, oaa.teamNumber);
-					// Update local map
-					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.displayedForbiddenView.set(map.coordToIndex(x, y), false);
-				}
-				orderMaskIndex++;
-			}
+			if (oaa.teamNumber == players[localPlayer]->teamNumber)
+				map.displayedForbiddenView.set(map.coordToIndex(x, y), adding);
+		}
+	if (!changed) return;
 
-		// We remove, so we need to refresh the gradients, unfortunately
-		teams[oaa.teamNumber]->dirtyGlobalGradient();
+	for (int team=0; team<mapHeader.getNumberOfTeams(); ++team)
+		for (int id=0; id<Building::MAX_COUNT; ++id)
+		{
+			Building* building = teams[team]->myBuildings[id];
+			if (!building) continue;
+			const bool ownTeam = team == oaa.teamNumber;
+			const bool clearingFlag = building->type->isVirtual && building->type->zonable[WORKER];
+			if (ownTeam && (walkingChanged || clearingFlag))
+				building->resetPathfindGradients();
+			else
+			{
+				// A team-local edit must not newly stale unrelated walking fields.
+				// Keep earlier staleness, dirty flags and unfinished searches intact.
+				for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
+					if (building->gradientGeneration[swim] == oldGeneration)
+						building->gradientGeneration[swim] = map.topologyGeneration;
+				if (ownTeam) building->resetRoundTripGradients();
+			}
+		}
+	if (walkingChanged)
+	{
+		map.updateForbiddenGradient(oaa.teamNumber);
+		map.updateGuardAreasGradient(oaa.teamNumber);
 	}
-	else
-		assert(false);
-	map.updateForbiddenGradient(oaa.teamNumber);
-	map.updateGuardAreasGradient(oaa.teamNumber);
-	map.updateClearAreasGradient(oaa.teamNumber);
+	if (walkingChanged || clearingChanged)
+		map.updateClearAreasGradient(oaa.teamNumber);
 }
 
 void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer)
