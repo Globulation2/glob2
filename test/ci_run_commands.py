@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 
@@ -11,10 +12,13 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='append', nargs=2, metavar=('NAME', 'COMMAND'), required=True)
     args = parser.parse_args(argv)
+    bash = shutil.which('bash')
+    if not bash:
+        parser.error('bash is required to run CI commands')
     failed = []
     for name, command in args.check:
         print(f'::group::{name}', flush=True)
-        result = subprocess.run(command, shell=True, executable='/bin/bash')
+        result = subprocess.run([bash, '-c', command])
         print('::endgroup::', flush=True)
         if result.returncode:
             failed.append((name, result.returncode))

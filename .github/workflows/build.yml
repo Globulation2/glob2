@@ -1343,7 +1343,7 @@ jobs:
         run: |
           python3 test/ci_run_commands.py \
             --check 'default AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe' \
-            --check 'parallel AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe --parallel-ai' 
+            --check 'parallel AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/mingw/client/release/src/glob2.exe --parallel-ai'
 
       - name: Report the cache statistics
         id: report_the_cache_statistics
