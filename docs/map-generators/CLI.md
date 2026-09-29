@@ -29,7 +29,11 @@ build/src/glob2 --generate-map coral --seed 7 \
   --output artifacts/coral.map --preview artifacts/coral.png
 ```
 
-`--output` writes a playable `.map` using the normal engine serializer.
+`--output` writes a playable `.map.gz` using the normal engine serializer inside
+a gzip container. A `.gz` suffix is appended unless already present; the example
+above writes `artifacts/coral.map.gz`. Preview loading accepts both compressed
+files and legacy raw maps/saves, and a bare `.map` or `.game` path prefers an
+existing `.gz` sibling.
 `--preview` writes a PNG. `--json FILE` writes a detailed map report. Supply any
 combination of these three outputs. See the [JSON format and metric definitions](REPORT.md)
 for units, fairness formulas, terrain/resource percentages, and travel distances. Generation uses the production

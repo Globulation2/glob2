@@ -92,7 +92,7 @@ def main():
             '--param','width=7','--param','height=7','--param','teams=2',
             '--param','workers=4','--candidates','0','--rotations','2','--write-map','true'])
         assert rotated['rotations_verified'],(generator,seed)
-        assert all((directory/f'map-r{rotation}.map').is_file() for rotation in range(2))
+        assert all((directory/f'map-r{rotation}.map.gz').is_file() for rotation in range(2))
     invalid,_=run('invalid-generator',['--generate-map','--generator','15','--map-seed','42','--param','teams=0'],2)
     assert invalid['status']=='invalid_request'
     assert invalid['map_report']['report_type']=='generation_failure'
