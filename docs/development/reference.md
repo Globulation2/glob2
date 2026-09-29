@@ -50,6 +50,9 @@ scons -C test                 # rebuild the separate test suite
   opt-in is not persisted in `options_cache.py`. CI keeps one cache per job and, before
   master saves it, drops every entry that run did not use, so the saved cache is the
   working set rather than an accumulation bounded only by `CCACHE_MAXSIZE`.
+  The main Linux CI builds also restore SCons objects and configuration probes
+  keyed by compiler contents. They rebuild `GlobalContainerArgs.cpp` each run
+  because it embeds the compilation date and time.
 - `release=1` outside macOS strips binaries (`-s`), so it also drops `-g`: debug
   information there only slowed compilation and multiplied object and cache sizes.
 - Keep harness runs out of personal profiles: use the existing disposable-profile
