@@ -62,7 +62,14 @@ viewport compatibility checks. Focused Chromium runs cover WebGL2 and real-windo
 visibility in addition to the software-renderer suite. Persistence, import/export,
 context recovery, YOG, and browser/native cross-play remain in the complete suite.
 Manual workflow runs accept `browser_only` when a follow-up changes only the web
-host or its tests; ordinary pull requests and pushes still run every platform job.
+host or its tests. Pull requests select native, browser, map-generator, and
+self-hosting deployment jobs from changed paths. AI, GUI, rendering, and networking
+changes skip the map-generator sweep; browser shell, AI, GUI, and rendering changes
+skip the deployment check.
+Shared build, data, and cross-platform fixture changes still run every platform
+job and the checksum comparison. An unreadable diff also runs every job. Pushes
+to `master` run the full workflow and refresh compiler caches. A final check
+verifies that every selected job succeeded.
 
 The operational commands live in [the browser README](../../browser/README.md).
 WebKit automation is not a substitute for manual testing in shipping Safari, and
