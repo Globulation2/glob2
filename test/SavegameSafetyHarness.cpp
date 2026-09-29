@@ -490,11 +490,19 @@ static void checkImports(const std::string& bytes, const fs::path& directory)
     {
         std::string compressed;
         assert(gzipCompress(bytes, 6, compressed));
-        FileImport operation(selected("Compressed.game.gz", compressed), "game");
+        FileImport operation(selected("Compressed.GAME.GZ", compressed), "game");
         validate(operation); operation.advance();
         assert(operation.state() == FileImport::State::Succeeded);
         assert(operation.path() == "games/Compressed.game.gz");
         assert(contents(directory / operation.path()) == compressed);
+        FileImport rawSibling(selected("Compressed.game", bytes), "game");
+        validate(rawSibling); rawSibling.advance();
+        assert(rawSibling.state() == FileImport::State::Succeeded);
+        assert(rawSibling.path() == "games/Compressed_(1).game");
+        FileImport gzipSibling(selected("Compressed_(1).game.gz", compressed), "game");
+        validate(gzipSibling); gzipSibling.advance();
+        assert(gzipSibling.state() == FileImport::State::Succeeded);
+        assert(gzipSibling.path() == "games/Compressed_(1)_(1).game.gz");
         for (const auto& corrupt : {compressed.substr(0, compressed.size()-1), compressed + "extra"}) {
             FileImport invalid(selected("invalid.game.gz", corrupt), "game");
             validate(invalid); assert(invalid.state() == FileImport::State::Failed);

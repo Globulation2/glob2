@@ -66,11 +66,11 @@ FileImport::~FileImport()
 CooperativeTask FileImport::validate()
 {
 	if ((extension != "game" && extension != "map" && extension != "replay") ||
-		!validName(file.name, extension + (glob2IsGzipPath(file.name) && extension != "replay" ? ".gz" : "")) || file.bytes.empty() ||
+		!validName(file.name, extension + (glob2IsGzipPath(lower(file.name)) && extension != "replay" ? ".gz" : "")) || file.bytes.empty() ||
 		file.bytes.size() > 64u * 1024u * 1024u)
 		co_return false;
 	std::string decoded;
-	if (glob2IsGzipPath(file.name))
+	if (glob2IsGzipPath(lower(file.name)))
 	{
 		if (extension == "replay" || !gzipDecompress(
 			std::string(file.bytes.begin(), file.bytes.end()), decoded, 64u * 1024u * 1024u))
@@ -157,14 +157,16 @@ void FileImport::advance()
 			const auto directory = extension == "game"  ? "games"
 								   : extension == "map" ? "maps"
 														: "replays";
-			const auto storedExtension = extension + (glob2IsGzipPath(file.name) ? ".gz" : "");
+			const auto storedExtension = extension + (glob2IsGzipPath(lower(file.name)) ? ".gz" : "");
 			const auto name = file.name.substr(0, file.name.size() - storedExtension.size() - 1);
 			for (unsigned suffix = 0; suffix < 10000; ++suffix)
 			{
 				const auto candidate = glob2NameToFilename(
 					directory, name + (suffix ? " (" + std::to_string(suffix) + ")" : ""),
 					storedExtension);
-				if (files.exists(candidate))
+				const auto rawCandidate = glob2IsGzipPath(candidate) ? candidate.substr(0, candidate.size()-3) : candidate;
+				if (files.exists(candidate) || (extension != "replay" &&
+					(files.exists(rawCandidate) || files.exists(rawCandidate + ".gz"))))
 					continue;
 				if (!files.writeAtomically(
 						candidate, [this](OutputStream &output)
