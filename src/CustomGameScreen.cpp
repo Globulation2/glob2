@@ -767,6 +767,11 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 		(currentTab != groups[2] || phonePage != PhonePage::Main || !validMap || previewBusy() ||
 		 (setup.random && previewRevision != setup.mapRevision)))
 		return;
+	// A random map still resolving in the background: let the button's own
+	// disabled state (renderLobby/renderPhoneLobby) explain why, instead of
+	// blocking here on finishPreview()'s busy-wait with no visible feedback.
+	if (code == OK && setup.random && previewBusy())
+		return;
 	if (code == OK && setup.validation().empty())
 	{
 		if (setup.random && candidates)
@@ -983,6 +988,8 @@ void CustomGameScreen::renderLobby()
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
 		error = tr("Select a valid map.");
+	else if (setup.random && previewBusy())
+		error = tr("Generating preview...");
 	ui.text(x + 4, height - 77,
 			tr(setup.format) + "  /  " + std::to_string(setup.activeColonies()) + " " +
 				tr("colonies") + "  /  " + tr(setup.ruleset) + "  /  " + speed.getGameSpeedText(),
