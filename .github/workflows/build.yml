@@ -269,7 +269,7 @@ jobs:
         run: python3 test/ci_step_summary.py
 
   linux-tests:
-    name: linux tests (${{ matrix.platform }}, shard ${{ matrix.shard }}/4)
+    name: linux tests (${{ matrix.platform }}, shard ${{ matrix.shard }}/5)
     needs: [changes, linux-build]
     if: ${{ needs.changes.outputs.native == 'true' && needs.linux-build.result == 'success' }}
     runs-on: ${{ matrix.runner }}
@@ -293,6 +293,10 @@ jobs:
             runner: ubuntu-22.04
             compiler: g++-11
             shard: 4
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 5
           - platform: ubuntu-24.04
             runner: ubuntu-24.04
             compiler: g++-13
@@ -309,6 +313,10 @@ jobs:
             runner: ubuntu-24.04
             compiler: g++-13
             shard: 4
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 5
     steps:
       - name: Install dependencies
         id: install_dependencies
@@ -498,7 +506,7 @@ jobs:
           ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
 
       - name: Check map generator defaults
-        if: ${{ matrix.shard == 1 }}
+        if: ${{ matrix.shard == 5 }}
         id: check_map_generator_defaults
         continue-on-error: true
         run: |
@@ -1031,7 +1039,7 @@ jobs:
         run: python3 test/ci_step_summary.py
 
   linux-map-generators:
-    name: linux map generators (${{ matrix.image }})
+    name: linux map generators (${{ matrix.image }}, ${{ matrix.suite }})
     needs: changes
     if: ${{ needs.changes.outputs.map_generators == 'true' }}
     runs-on: ${{ matrix.runner }}
@@ -1057,9 +1065,19 @@ jobs:
           - image: ubuntu:22.04
             runner: ubuntu-22.04
             compiler: g++-11
+            suite: sweep
           - image: ubuntu:24.04
             runner: ubuntu-24.04
             compiler: g++-13
+            suite: sweep
+          - image: ubuntu:22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            suite: telemetry
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            suite: telemetry
     steps:
       - name: Install dependencies
         id: install_dependencies
@@ -1105,6 +1123,7 @@ jobs:
 
       - name: Check golden maps and sweep colony counts
         id: check_golden_maps_and_sweep_colony_counts
+        if: ${{ matrix.suite == 'sweep' }}
         continue-on-error: true
         run: |
           # Golden maps: rows exist per platform and this platform must have them. The check and
@@ -1129,6 +1148,7 @@ jobs:
 
       - name: Check generator telemetry equivalence and cost
         id: check_generator_telemetry_equivalence_and_cost
+        if: ${{ matrix.suite == 'telemetry' }}
         continue-on-error: true
         run: timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-telemetry-ci --telemetry
 
@@ -1543,6 +1563,18 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-
+      - name: Restore WebAssembly object tree
+        id: restore_webassembly_object_tree
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/emscripten/client/release/.sconsign.dblite
+            build/emscripten/client/release/identity.json
+            build/emscripten/client/release/include/glob2/BuildConfig.h
+            build/emscripten/client/release/obj
+          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-
       - name: Build WebAssembly client
         id: build_web
         env:
@@ -1551,8 +1583,23 @@ jobs:
         run: |
           ccache -z
           echo "WASM_CACHE_START=$(date +%s)" >> "$GITHUB_ENV"
+          # This source embeds __DATE__ and __TIME__. Refresh it after restoring
+          # objects so the binary still reports the current compilation time.
+          rm -f build/emscripten/client/release/obj/src/GlobalContainerArgs.cpp.o
           scons target=web release=1 -j$(nproc)
           ccache -s -v
+      - name: Save WebAssembly object tree
+        id: save_webassembly_object_tree
+        if: ${{ !cancelled() && steps.build_web.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build/emscripten/client/release/.sconsign.dblite
+            build/emscripten/client/release/identity.json
+            build/emscripten/client/release/include/glob2/BuildConfig.h
+            build/emscripten/client/release/obj
+          key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Prune WebAssembly compiler cache
         id: prune_webassembly_compiler_cache
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
@@ -1722,40 +1769,60 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Includes rendering.spec.js, which explicitly selects its own renderers,
-          # and build-artifact.spec.js, which checks the shared WASM binary once.
-          # Shards split the suite by spec file, so each file keeps its order.
-          # Torus rendering runs separately because software GPU transitions
-          # dominated the third Chromium shard in a measured full CI run.
-          - name: chromium 1/4
+          # The main suite keeps file order and includes build-artifact.spec.js
+          # once. Long renderer and storage specs run in dedicated jobs.
+          - name: chromium 1/5
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=1/4 --grep-invert='torus\.spec\.js'
-          - name: chromium 2/4
+            command: xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
+          - name: chromium 2/5
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=2/4 --grep-invert='torus\.spec\.js'
-          - name: chromium 3/4
+            command: xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
+          - name: chromium 3/5
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=3/4 --grep-invert='torus\.spec\.js'
-          - name: chromium 4/4
+            command: xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
+          - name: chromium 4/5
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=4/4 --grep-invert='torus\.spec\.js'
+            command: xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
+          - name: chromium 5/5
+            browsers: chromium
+            command: xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
           - name: chromium torus
             browsers: chromium
             command: xvfb-run -a npx playwright test torus.spec.js --project=chromium
-          - name: firefox and webkit
-            browsers: firefox webkit
-            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox --project=webkit
-          # Repeat renderer-sensitive tests on WebGL2. These groups place the
-          # three long, independent reload cases on separate runners while
-          # untagged new cases stay in the first group by default.
-          - name: chromium webgl2 input and match reload
+          - name: chromium rendering
+            browsers: chromium
+            command: xvfb-run -a npx playwright test rendering.spec.js --project=chromium
+          - name: chromium settings storage
+            browsers: chromium
+            command: xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium
+          - name: firefox
+            browsers: firefox
+            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
+          - name: webkit
+            browsers: webkit
+            command: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
+          # Repeat renderer-sensitive tests on WebGL2. New untagged reload
+          # cases stay with the first reload group by default.
+          - name: chromium webgl2 input
             browsers: chromium
             renderer: webgl2
-            command: xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js input.spec.js responsive-presentation.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'
-          - name: chromium webgl2 viewport and damaged load
+            command: xvfb-run -a npx playwright test input.spec.js --project=chromium
+          - name: chromium webgl2 responsive and startup
             browsers: chromium
             renderer: webgl2
-            command: xvfb-run -a npx playwright test viewport.spec.js session-reload.spec.js --project=chromium --grep='viewport\.spec\.js|@webgl2-reload-b'
+            command: xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium
+          - name: chromium webgl2 match reload
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'
+          - name: chromium webgl2 viewport
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test viewport.spec.js --project=chromium
+          - name: chromium webgl2 damaged load
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'
           - name: chromium webgl2 replay reload
             browsers: chromium
             renderer: webgl2
