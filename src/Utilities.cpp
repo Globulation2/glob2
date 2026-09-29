@@ -27,10 +27,29 @@ using ssize_t = SSIZE_T;
 #endif
 
 
+namespace
+{
+	thread_local boost::mt19937 *activeSyncRandEngine = nullptr;
+	boost::mt19937 &gameSyncRandEngine()
+	{
+		thread_local boost::mt19937 engine;
+		return engine;
+	}
+}
+
+SyncRandScope::SyncRandScope(boost::mt19937 &engine) : previous(activeSyncRandEngine)
+{
+	activeSyncRandEngine = &engine;
+}
+
+SyncRandScope::~SyncRandScope()
+{
+	activeSyncRandEngine = previous;
+}
+
 boost::mt19937 &syncRandEngine()
 {
-	thread_local boost::mt19937 engine;
-	return engine;
+	return activeSyncRandEngine ? *activeSyncRandEngine : gameSyncRandEngine();
 }
 
 int distSquare(int x1, int y1, int x2, int y2)
@@ -43,22 +62,22 @@ int distSquare(int x1, int y1, int x2, int y2)
 void setSyncRandSeed()
 {
 	///Sets the default seed
-	syncRandEngine().seed();
+	gameSyncRandEngine().seed();
 }
 void setSyncRandSeed(Uint32 seed)
 {
-	syncRandEngine().seed(seed);
+	gameSyncRandEngine().seed(seed);
 }
 
 void setRandomSyncRandSeed()
 {
-	syncRandEngine().seed(std::random_device{}());
+	gameSyncRandEngine().seed(std::random_device{}());
 }
 
 std::string getSyncRandState()
 {
 	std::ostringstream stream;
-	stream<<syncRandEngine();
+	stream<<gameSyncRandEngine();
 	return stream.str();
 }
 
@@ -73,7 +92,7 @@ bool setSyncRandState(const std::string& state)
 	stream>>restored;
 	if(stream.fail())
 		return false;
-	syncRandEngine()=restored;
+	gameSyncRandEngine()=restored;
 	return true;
 }
 
@@ -230,5 +249,3 @@ namespace Utilities
 		}
 	}
 }
-
-

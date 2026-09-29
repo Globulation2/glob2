@@ -391,7 +391,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		{
 			const int span = Cortex::WHEAT_OPEN_MARGIN_MAX - Cortex::WHEAT_OPEN_MARGIN_MIN + 1;
 			wheatOpenMargin = Cortex::WHEAT_OPEN_MARGIN_MIN
-			                + static_cast<int>(syncRand() % span);
+			                + static_cast<int>(random() % span);
 		}
 
 		// Pass the FIRST offense wave's flag gid: the observation captures that flag's

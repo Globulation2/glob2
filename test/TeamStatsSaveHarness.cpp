@@ -769,10 +769,10 @@ static void measurementAttributionFields()
 
 static void measurementReplayBoundaries()
 {
-	require(REPLAY_MINIMUM_VERSION_MINOR == 120 && NET_PROTOCOL_VERSION == 43 &&
-				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 43,
-			"gradient scheduling uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, VERSION_MINOR, VERSION_MINOR+1})
+	require(REPLAY_MINIMUM_VERSION_MINOR == 121 && NET_PROTOCOL_VERSION == 44 &&
+				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 44,
+			"AI random streams use current replay and network gates");
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
