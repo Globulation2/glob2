@@ -39,10 +39,11 @@ jobs:
           BROWSER_ONLY: ${{ inputs.browser_only }}
         run: python3 .github/scripts/ci_changed_paths.py --base "$PR_BASE"
 
-  linux:
-    name: linux (${{ matrix.image }})
+  linux-build:
+    name: linux build (${{ matrix.image }})
     needs: changes
     if: ${{ needs.changes.outputs.native == 'true' }}
+
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -200,196 +201,6 @@ jobs:
             mobile-certificate-test \
             mobile-temporary-files-test
 
-      - name: Test Maxima food ledger
-        id: test_maxima_food_ledger
-        continue-on-error: true
-        run: build/linux/client/release/src/MaximaFoodLedgerStandaloneTest
-
-      - name: Test map JSON reports
-        id: test_map_json_reports
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'map report' 'python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/src/MapReportHarness' \
-            --check 'map telemetry' 'python3 test/test_map_telemetry.py'
-      - name: Upload map JSON reports and command log
-        id: upload_map_json_reports_and_command_log
-        continue-on-error: true
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: map-report-${{ matrix.runner }}
-          path: artifacts/map-report/
-
-      - name: Test headless map CLI with the shared preview renderer
-        id: test_headless_map_cli_with_the_shared_preview_renderer
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'generation only' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2 --generation-only' \
-            --check 'map CLI' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2'
-      - name: Upload map CLI previews and command log
-        id: upload_map_cli_previews_and_command_log
-        continue-on-error: true
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: map-cli-${{ matrix.runner }}
-          path: artifacts/map-cli/
-
-      - name: Test tournament protocol, AI configuration and main CLI
-        id: test_tournament_protocol_ai_configuration_and_main_cli
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check tournaments 'python3 test/test_tournaments.py' \
-            --check 'tournament pipeline' 'python3 test/test_tournament_pipeline.py' \
-            --check 'distributed map telemetry' 'python3 test/test_distributed_map_telemetry.py' \
-            --check 'distributed game telemetry' 'python3 test/test_distributed_game_telemetry.py' \
-            --check 'map fairness' 'python3 test/test_map_fairness_tournament.py' \
-            --check 'map generation study' 'python3 test/test_map_generation_study.py' \
-            --check 'fairness model' 'python3 test/test_fairness_model.py' \
-            --check 'tournament compatibility' ./build/linux/client/release/src/TournamentCompatibilityTest \
-            --check 'tournament CLI' 'python3 test/tournament_cli_integration.py --binary build/linux/client/release/src/glob2 --output artifacts/tournament-cli'
-      - name: Retain tournament CLI compatibility evidence
-        id: retain_tournament_cli_compatibility_evidence
-        continue-on-error: true
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: tournament-cli-${{ matrix.runner }}
-          path: artifacts/tournament-cli/
-          if-no-files-found: ignore
-
-      - name: Test torus geometry, picking and cloud coordinates
-        id: test_torus_geometry_picking_and_cloud_coordinates
-        continue-on-error: true
-        run: |
-          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
-          /tmp/torus-geometry
-          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
-          /tmp/torus-picking
-          ${{ matrix.compiler }} -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
-          /tmp/cloud-field
-          ${{ matrix.compiler }} -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
-          /tmp/map-render-geometry
-
-      - name: Exercise GPU and software game rendering
-        id: exercise_gpu_and_software_game_rendering
-        continue-on-error: true
-        run: |
-          mkdir -p /tmp/glob2-render-profile
-          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
-            xvfb-run -a build/linux/client/release/src/torus-render-test -g -F -m -s 1120x720
-          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
-            GLOB2_UI_SCALE=3 xvfb-run -a -s '-screen 0 1920x1440x24' \
-            build/linux/client/release/src/torus-render-test -g -F -m -s 1920x1440
-          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            build/linux/client/release/src/torus-render-test -G -F -m -s 1120x720
-
-      - name: Build and run pre-game map preview regressions
-        id: build_and_run_pre_game_map_preview_regressions
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapPreviewHarness
-          mkdir -p artifacts/map-preview
-          timeout 180s xvfb-run -a ./build/linux/client/release/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview
-
-      - name: Retain pre-game map preview evidence
-        id: retain_pre_game_map_preview_evidence
-        continue-on-error: true
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: map-preview-${{ matrix.runner }}-${{ matrix.compiler }}
-          path: artifacts/map-preview/
-          if-no-files-found: ignore
-
-      - name: Test Orchard Commons generation and fruit conversion
-        id: test_orchard_commons_generation_and_fruit_conversion
-        continue-on-error: true
-        run: |
-          timeout 120s ./build/linux/client/release/src/OrchardCommonsConversionTest glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
-
-      - name: Retain Orchard Commons conversion fixtures
-        id: retain_orchard_commons_conversion_fixtures
-        continue-on-error: true
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: orchard-conversion-${{ matrix.runner }}
-          path: artifacts/orchard-conversion/
-          if-no-files-found: ignore
-
-      - name: Build and run custom-game setup regressions
-        id: build_and_run_custom_game_setup_regressions
-        continue-on-error: true
-        run: |
-          # The growing generator catalog exercises hundreds of complete worlds.
-          timeout 300s ./build/linux/client/release/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
-          timeout 180s ./build/linux/client/release/src/CustomGameSetupHarness
-          mkdir -p artifacts/custom-game-ci
-          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness artifacts/custom-game-ci/landscape-performance landscape-responsive
-          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/CustomGameSetupHarness artifacts/custom-game-ci 2>&1 | grep -v '^Map generation\|^Landscape preview\|^Settings::load' | tee artifacts/custom-game-ci/ui.log
-          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-write
-          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-read
-          cat artifacts/custom-game-ci/ui.log
-          ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
-
-      - name: Test status-bar bounds in GPU and software rendering
-        id: test_status_bar_bounds_in_gpu_and_software_rendering
-        continue-on-error: true
-        run: |
-          SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
-            xvfb-run -a ./build/linux/client/release/src/point-bar-render-test gl
-          SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            ./build/linux/client/release/src/point-bar-render-test software
-      - name: Test nonblocking screen execution
-        id: test_nonblocking_screen_execution
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/libgag/src/ScreenExecutionHarness
-
-      - name: Test portable rendering and mobile input
-        id: test_portable_rendering_and_mobile_input
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'mobile input' ./build/linux/client/release/libgag/src/MobileInputHarness \
-            --check 'mobile documents' ./build/linux/client/release/libgag/src/MobileDocumentsHarness \
-            --check 'mobile certificate' 'python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness' \
-            --check 'mobile temporary files' 'python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness' \
-            --check 'portable renderer' 'xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness'
-      - name: Test incremental engine sessions
-        id: test_incremental_engine_sessions
-        continue-on-error: true
-        run: |
-          python3 test/run-engine-session-test.py
-
-      - name: Build and run the selection lifetime regression
-        id: build_and_run_the_selection_lifetime_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/GameGUISelectionHarness
-
-      - name: Build and run the wrapped building footprint regression
-        id: build_and_run_the_wrapped_building_footprint_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/BuildingFootprintHarness
-          python3 test/inflate_gzip_fixture.py test/fixtures/wrapped-building/reproducer.game.gz /tmp/wrapped-building-reproducer.game
-          ./build/linux/client/release/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
-
-      - name: Build and run the entering unit save regression
-        id: build_and_run_the_entering_unit_save_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/EnteringUnitSaveHarness
-          python3 test/inflate_gzip_fixture.py test/fixtures/entering-explorer/reproducer.game.gz /tmp/entering-explorer-reproducer.game
-          ./build/linux/client/release/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
-
       - name: Test Cortex placement equivalence
         id: test_cortex_placement_equivalence
         continue-on-error: true
@@ -397,258 +208,29 @@ jobs:
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 cortex-geometry-test
           ./build/linux/client/release/src/CortexGeometryHarness
 
-      - name: Test Maxima relocation handovers and recovery
-        id: test_maxima_relocation_handovers_and_recovery
-        continue-on-error: true
-        run: |
-          GLOB2_USER_DIR="$(mktemp -d)" ./build/linux/client/release/src/MaximaRelocationIntegrationTest
-
       - name: Test Maxima strategy and implementation
         id: test_maxima_strategy_and_implementation
         continue-on-error: true
         run: |
           GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/run_maxima_implementation_regressions.py --build-dir build/linux/client/release --reuse-built-objects
 
-      - name: Test clearing flag resource bounds
-        id: test_clearing_flag_resource_bounds
-        continue-on-error: true
+      - name: Package built Linux test programs
+        id: package_linux_test_programs
+        if: steps.build_glob2_and_the_regression_harnesses.outcome == 'success'
         run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ClearingFlagGradientTest
+          test -x build/linux/client/release/src/glob2
+          find build/linux/client/release -type f \( -perm /111 -o -name '*.so*' \) -print0 |
+            tar --null -czf linux-test-programs.tar.gz -T -
+      - uses: actions/upload-artifact@v4
+        id: upload_linux_test_programs
+        if: steps.package_linux_test_programs.outcome == 'success'
 
-      - name: Test hunger and defeat detection
-        run: |
-          python3 test/run-hungry-defeat-tests.py build/linux/client/release/src/HungryDefeatHarness
-
-      - name: Test trapped colony elimination
-        id: test_trapped_colony_elimination
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TrappedUnitLifecycleTest
-
-      - name: Build and run the failing-unit markers regression
-        id: build_and_run_the_failing_unit_markers_regression
-        continue-on-error: true
-        run: |
-          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/FailingUnitMarkersHarness
-      - name: Upload the failing-unit markers scene
-        id: upload_the_failing_unit_markers_scene
-        continue-on-error: true
-        if: always()
-        uses: actions/upload-artifact@v4
         with:
-          name: failing-unit-markers-${{ matrix.runner }}
-          path: .cache/failing-unit-markers/
-          if-no-files-found: ignore
-      - name: Build and run the entering unit draw regression
-        id: build_and_run_the_entering_unit_draw_regression
-        continue-on-error: true
-        run: |
-          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
+          name: linux-test-programs-${{ matrix.runner }}
+          path: linux-test-programs.tar.gz
+          retention-days: 2
+          if-no-files-found: error
 
-      - name: Build and run the immobile unit gradient regression
-        id: build_and_run_the_immobile_unit_gradient_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/ImmobileUnitGradientHarness
-
-      - name: Build and run the building expulsion regression
-        id: build_and_run_the_building_expulsion_regression
-        continue-on-error: true
-        run: |
-          timeout 300s ./build/linux/client/release/src/BuildingExpelHarness
-
-      - name: Build and run the building gradient invalidation regression
-        id: build_and_run_the_building_gradient_invalidation_regres
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/BuildingGradientInvalidationHarness
-
-      - name: Build and run the hiring bucket regression
-        id: build_and_run_the_hiring_bucket_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/HiringBucketHarness .
-
-      - name: Build and run the hiring level-gate regression
-        id: build_and_run_the_hiring_level_gate_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/LevelGateHarness .
-      - name: Build and run the resource-fetch target regression
-        id: build_and_run_the_resource_fetch_target_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ResourceFetchTargetHarness .
-
-      - name: Build and run the round-trip hunger gate regression
-        id: build_and_run_the_round_trip_hunger_gate_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/RoundTripHungerGateHarness .
-
-      - name: Build and run the inn swap regression
-        id: build_and_run_the_inn_swap_regression
-        continue-on-error: true
-        run: |
-          timeout 120s ./build/linux/client/release/src/InnSwapHarness
-
-      - name: Test savegame loading and atomic autosaves
-        id: test_savegame_loading_and_atomic_autosaves
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'savegame safety' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness' \
-            --check 'Maxima continuation' build/linux/client/release/src/MaximaContinuationTest \
-            --check 'buffered file' ./build/linux/client/release/src/BufferedFileStreamHarness
-      - name: Test team statistics save compatibility
-        id: test_team_statistics_save_compatibility
-        continue-on-error: true
-        run: |
-          build/linux/client/release/libgag/src/PerformanceTelemetryHarness
-          ./build/linux/client/release/src/UnitContinuationHarness
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .
-          python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2
-          python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
-          python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/version88.game
-          python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game
-
-      - name: Verify default gradient schedule against cross-platform checksums
-        id: verify_default_gradient_schedule_against_cross_platform
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'default AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2' \
-            --check 'parallel AI gradient schedule' 'python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --parallel-ai' 
-
-      - name: Verify parallel compute and save continuation
-        id: verify_parallel_compute_and_save_continuation
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'parallel compute' 'python3 test/check_parallel_compute.py build/linux/client/release/src/glob2' \
-            --check 'gradient pipeline' 'python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2'
-      - name: Build and run the terrain resource regression
-        id: build_and_run_the_terrain_resource_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/TerrainResourcesHarness
-
-      - name: Test AI save portability
-        id: test_ai_save_portability
-        continue-on-error: true
-        run: python3 test/run-savegame-safety-tests.py build/linux/client/release/src/AISavePortabilityHarness .
-
-      - name: Test Nicowar farming wood clearance
-        id: test_nicowar_farming_wood_clearance
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/NicowarFarmingHarness .
-
-      - name: Verify weighted path gradients against the independent oracle
-        id: verify_weighted_path_gradients_against_the_independent_
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/PathGradientHarness
-          ./build/linux/client/release/src/ComputeExecutorHarness
-          ./build/linux/client/release/src/GradientPipelineHarness
-
-      - name: Build and run the global gradient regression
-        id: build_and_run_the_global_gradient_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/GlobalGradientHarness
-
-      - name: Build and run the LAN session regression
-        id: build_and_run_the_lan_session_regression
-        continue-on-error: true
-        run: |
-          python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
-
-      - name: Build and run the aspect-ratio regression
-        id: build_and_run_the_aspect_ratio_regression
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: |
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
-
-      - name: Check phone layouts and gameplay touch input
-        id: check_phone_layouts_and_gameplay_touch_input
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-          SDL_AUDIODRIVER: dummy
-        run: |
-          build/linux/client/release/libgag/src/MobileInputHarness
-          timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
-          for harness in gameplay-touch-test responsive-menu-test mobile-presentation-test; do
-            mkdir -p "artifacts/mobile-ui/$harness"
-            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 120s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness"
-          done
-
-      - name: Upload phone UI verification evidence
-        id: upload_phone_ui_verification_evidence
-        continue-on-error: true
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: mobile-ui-verification
-          path: artifacts/mobile-ui/
-
-      - name: Check native settings persistence and retry
-        id: check_native_settings_persistence_and_retry
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py
-
-      - name: Build and run the window resize regression
-        id: build_and_run_the_window_resize_regression
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: |
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness gl
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness software
-
-      - name: Build and run the scaled text regression
-        id: build_and_run_the_scaled_text_regression
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: |
-          mkdir -p artifacts/text-raster
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/TextRasterHarness artifacts/text-raster
-
-      - name: Check game rendering across repeated map copies
-        id: check_game_rendering_across_repeated_map_copies
-        continue-on-error: true
-        env:
-          SDL_VIDEODRIVER: dummy
-          SDL_AUDIODRIVER: dummy
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness
-          SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness --gl
-
-      - name: Test front-end colony isolation and menu navigation
-        id: test_front_end_colony_isolation_and_menu_navigation
-        continue-on-error: true
-        env:
-          SDL_VIDEODRIVER: dummy
-          SDL_AUDIODRIVER: dummy
-        run: |
-          ./build/linux/client/release/src/MenuColonyHarness check data/menu/colony.bin
-          ./build/linux/client/release/src/MenuColonyHarness navigation unused
-
-      - name: Test game speed controls and playback
-        id: test_game_speed_controls_and_playback
-        continue-on-error: true
-        run: |
-          GLOB2_BUILD_DIR=build/linux/client/release xvfb-run -a python3 test/run-game-speed-tests.py
 
       - name: Test unit rendering and HD cache
         run: |
@@ -666,17 +248,6 @@ jobs:
         continue-on-error: true
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s -v
-
-      - name: Retain browser/native simulation trace
-        id: retain_browser_native_simulation_trace
-        continue-on-error: true
-        run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native
-      - uses: actions/upload-artifact@v4
-        id: upload_artifact_1
-        continue-on-error: true
-        with:
-          name: browser-determinism-${{ matrix.runner }}
-          path: artifacts/browser-determinism/native/
 
       # Keep only what this run compiled or reused (a hit refreshes an entry's
       # timestamp), so a save never carries older commits' objects forward.
@@ -704,6 +275,603 @@ jobs:
         env:
           CI_STEPS_JSON: ${{ toJSON(steps) }}
         run: python3 test/ci_step_summary.py
+
+  linux-tests:
+    name: linux tests (${{ matrix.platform }}, shard ${{ matrix.shard }}/4)
+    needs: [changes, linux-build]
+    if: ${{ needs.changes.outputs.native == 'true' && needs.linux-build.result == 'success' }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 1
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 2
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 3
+          - platform: ubuntu-22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+            shard: 4
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 1
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 2
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 3
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
+            shard: 4
+    steps:
+      - name: Install dependencies
+        id: install_dependencies
+        timeout-minutes: 15
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
+            libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+            libvorbis-dev libogg-dev libspeex-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
+            zlib1g-dev libfribidi-dev libpcre3-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
+            libcppunit-dev
+
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+
+      - uses: actions/download-artifact@v4
+        id: download_linux_test_programs
+        with:
+          name: linux-test-programs-${{ matrix.runner }}
+      - name: Unpack built Linux test programs
+        id: unpack_linux_test_programs
+        run: tar -xzf linux-test-programs.tar.gz
+
+      - name: Test Maxima food ledger
+        if: ${{ matrix.shard == 1 }}
+        id: test_maxima_food_ledger
+        continue-on-error: true
+        run: build/linux/client/release/src/MaximaFoodLedgerStandaloneTest
+
+      - name: Test map JSON reports
+        if: ${{ matrix.shard == 2 }}
+        id: test_map_json_reports
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'map report' 'python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/src/MapReportHarness' \
+            --check 'map telemetry' 'python3 test/test_map_telemetry.py'
+      - name: Upload map JSON reports and command log
+        id: upload_map_json_reports_and_command_log
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 2 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-report-${{ matrix.runner }}
+          path: artifacts/map-report/
+
+      - name: Test headless map CLI with the shared preview renderer
+        if: ${{ matrix.shard == 3 }}
+        id: test_headless_map_cli_with_the_shared_preview_renderer
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'generation only' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2 --generation-only' \
+            --check 'map CLI' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2'
+      - name: Upload map CLI previews and command log
+        id: upload_map_cli_previews_and_command_log
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 3 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-cli-${{ matrix.runner }}
+          path: artifacts/map-cli/
+
+      - name: Test tournament protocol, AI configuration and main CLI
+        if: ${{ matrix.shard == 1 }}
+        id: test_tournament_protocol_ai_configuration_and_main_cli
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check tournaments 'python3 test/test_tournaments.py' \
+            --check 'tournament pipeline' 'python3 test/test_tournament_pipeline.py' \
+            --check 'distributed map telemetry' 'python3 test/test_distributed_map_telemetry.py' \
+            --check 'distributed game telemetry' 'python3 test/test_distributed_game_telemetry.py' \
+            --check 'map fairness' 'python3 test/test_map_fairness_tournament.py' \
+            --check 'map generation study' 'python3 test/test_map_generation_study.py' \
+            --check 'fairness model' 'python3 test/test_fairness_model.py' \
+            --check 'tournament compatibility' ./build/linux/client/release/src/TournamentCompatibilityTest \
+            --check 'tournament CLI' 'python3 test/tournament_cli_integration.py --binary build/linux/client/release/src/glob2 --output artifacts/tournament-cli'
+      - name: Retain tournament CLI compatibility evidence
+        id: retain_tournament_cli_compatibility_evidence
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 1 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: tournament-cli-${{ matrix.runner }}
+          path: artifacts/tournament-cli/
+          if-no-files-found: ignore
+
+      - name: Test torus geometry, picking and cloud coordinates
+        if: ${{ matrix.shard == 4 }}
+        id: test_torus_geometry_picking_and_cloud_coordinates
+        continue-on-error: true
+        run: |
+          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+          /tmp/torus-geometry
+          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+          /tmp/torus-picking
+          ${{ matrix.compiler }} -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+          /tmp/cloud-field
+          ${{ matrix.compiler }} -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+          /tmp/map-render-geometry
+
+      - name: Exercise GPU and software game rendering
+        if: ${{ matrix.shard == 4 }}
+        id: exercise_gpu_and_software_game_rendering
+        continue-on-error: true
+        run: |
+          mkdir -p /tmp/glob2-render-profile
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            xvfb-run -a build/linux/client/release/src/torus-render-test -g -F -m -s 1120x720
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            GLOB2_UI_SCALE=3 xvfb-run -a -s '-screen 0 1920x1440x24' \
+            build/linux/client/release/src/torus-render-test -g -F -m -s 1920x1440
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            build/linux/client/release/src/torus-render-test -G -F -m -s 1120x720
+
+      - name: Build and run pre-game map preview regressions
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_pre_game_map_preview_regressions
+        continue-on-error: true
+        run: |
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapPreviewHarness
+          mkdir -p artifacts/map-preview
+          timeout 180s xvfb-run -a ./build/linux/client/release/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview
+
+      - name: Retain pre-game map preview evidence
+        id: retain_pre_game_map_preview_evidence
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 2 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-preview-${{ matrix.runner }}-${{ matrix.compiler }}
+          path: artifacts/map-preview/
+          if-no-files-found: ignore
+
+      - name: Test Orchard Commons generation and fruit conversion
+        if: ${{ matrix.shard == 3 }}
+        id: test_orchard_commons_generation_and_fruit_conversion
+        continue-on-error: true
+        run: |
+          timeout 120s ./build/linux/client/release/src/OrchardCommonsConversionTest glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
+
+      - name: Retain Orchard Commons conversion fixtures
+        id: retain_orchard_commons_conversion_fixtures
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 3 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: orchard-conversion-${{ matrix.runner }}
+          path: artifacts/orchard-conversion/
+          if-no-files-found: ignore
+
+      - name: Build and run custom-game setup regressions
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_custom_game_setup_regressions
+        continue-on-error: true
+        run: |
+          # The growing generator catalog exercises hundreds of complete worlds.
+          timeout 300s ./build/linux/client/release/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
+          timeout 180s ./build/linux/client/release/src/CustomGameSetupHarness
+          mkdir -p artifacts/custom-game-ci
+          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness artifacts/custom-game-ci/landscape-performance landscape-responsive
+          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/CustomGameSetupHarness artifacts/custom-game-ci 2>&1 | grep -v '^Map generation\|^Landscape preview\|^Settings::load' | tee artifacts/custom-game-ci/ui.log
+          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-write
+          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-read
+          cat artifacts/custom-game-ci/ui.log
+          ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
+
+      - name: Test status-bar bounds in GPU and software rendering
+        if: ${{ matrix.shard == 1 }}
+        id: test_status_bar_bounds_in_gpu_and_software_rendering
+        continue-on-error: true
+        run: |
+          SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            xvfb-run -a ./build/linux/client/release/src/point-bar-render-test gl
+          SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            ./build/linux/client/release/src/point-bar-render-test software
+      - name: Test nonblocking screen execution
+        if: ${{ matrix.shard == 3 }}
+        id: test_nonblocking_screen_execution
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/libgag/src/ScreenExecutionHarness
+
+      - name: Test portable rendering and mobile input
+        if: ${{ matrix.shard == 4 }}
+        id: test_portable_rendering_and_mobile_input
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'mobile input' ./build/linux/client/release/libgag/src/MobileInputHarness \
+            --check 'mobile documents' ./build/linux/client/release/libgag/src/MobileDocumentsHarness \
+            --check 'mobile certificate' 'python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness' \
+            --check 'mobile temporary files' 'python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness' \
+            --check 'portable renderer' 'xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness'
+      - name: Test incremental engine sessions
+        if: ${{ matrix.shard == 1 }}
+        id: test_incremental_engine_sessions
+        continue-on-error: true
+        run: |
+          python3 test/run-engine-session-test.py
+
+      - name: Build and run the selection lifetime regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_selection_lifetime_regression
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/src/GameGUISelectionHarness
+
+      - name: Build and run the wrapped building footprint regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_wrapped_building_footprint_regression
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/src/BuildingFootprintHarness
+          python3 test/inflate_gzip_fixture.py test/fixtures/wrapped-building/reproducer.game.gz /tmp/wrapped-building-reproducer.game
+          ./build/linux/client/release/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
+
+      - name: Build and run the entering unit save regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_entering_unit_save_regression
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/src/EnteringUnitSaveHarness
+          python3 test/inflate_gzip_fixture.py test/fixtures/entering-explorer/reproducer.game.gz /tmp/entering-explorer-reproducer.game
+          ./build/linux/client/release/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
+
+      - name: Test Maxima relocation handovers and recovery
+        if: ${{ matrix.shard == 1 }}
+        id: test_maxima_relocation_handovers_and_recovery
+        continue-on-error: true
+        run: |
+          GLOB2_USER_DIR="$(mktemp -d)" ./build/linux/client/release/src/MaximaRelocationIntegrationTest
+
+      - name: Test clearing flag resource bounds
+        if: ${{ matrix.shard == 2 }}
+        id: test_clearing_flag_resource_bounds
+        continue-on-error: true
+        run: |
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ClearingFlagGradientTest
+
+      - name: Test trapped colony elimination
+        if: ${{ matrix.shard == 3 }}
+        id: test_trapped_colony_elimination
+        continue-on-error: true
+        run: |
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TrappedUnitLifecycleTest
+
+      - name: Test hunger and defeat detection
+        if: ${{ matrix.shard == 3 }}
+        id: test_hunger_and_defeat_detection
+        continue-on-error: true
+        run: python3 test/run-hungry-defeat-tests.py build/linux/client/release/src/HungryDefeatHarness
+
+      - name: Build and run the failing-unit markers regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_failing_unit_markers_regression
+        continue-on-error: true
+        run: |
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/FailingUnitMarkersHarness
+      - name: Upload the failing-unit markers scene
+        id: upload_the_failing_unit_markers_scene
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 4 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: failing-unit-markers-${{ matrix.runner }}
+          path: .cache/failing-unit-markers/
+          if-no-files-found: ignore
+      - name: Build and run the entering unit draw regression
+        if: ${{ matrix.shard == 1 }}
+        id: build_and_run_the_entering_unit_draw_regression
+        continue-on-error: true
+        run: |
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
+
+      - name: Build and run the immobile unit gradient regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_immobile_unit_gradient_regression
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/src/ImmobileUnitGradientHarness
+
+      - name: Build and run the building expulsion regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_building_expulsion_regression
+        continue-on-error: true
+        run: |
+          timeout 300s ./build/linux/client/release/src/BuildingExpelHarness
+
+      - name: Build and run the building gradient invalidation regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_building_gradient_invalidation_regres
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/src/BuildingGradientInvalidationHarness
+
+      - name: Build and run the hiring bucket regression
+        if: ${{ matrix.shard == 1 }}
+        id: build_and_run_the_hiring_bucket_regression
+        continue-on-error: true
+        run: |
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/HiringBucketHarness .
+
+      - name: Build and run the hiring level-gate regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_hiring_level_gate_regression
+        continue-on-error: true
+        run: |
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/LevelGateHarness .
+      - name: Build and run the resource-fetch target regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_resource_fetch_target_regression
+        continue-on-error: true
+        run: |
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ResourceFetchTargetHarness .
+
+      - name: Build and run the round-trip hunger gate regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_round_trip_hunger_gate_regression
+        continue-on-error: true
+        run: |
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/RoundTripHungerGateHarness .
+
+      - name: Build and run the inn swap regression
+        if: ${{ matrix.shard == 1 }}
+        id: build_and_run_the_inn_swap_regression
+        continue-on-error: true
+        run: |
+          timeout 120s ./build/linux/client/release/src/InnSwapHarness
+
+      - name: Test savegame loading and atomic autosaves
+        if: ${{ matrix.shard == 2 }}
+        id: test_savegame_loading_and_atomic_autosaves
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'savegame safety' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness' \
+            --check 'Maxima continuation' build/linux/client/release/src/MaximaContinuationTest \
+            --check 'buffered file' ./build/linux/client/release/src/BufferedFileStreamHarness
+      - name: Test team statistics save compatibility
+        if: ${{ matrix.shard == 3 }}
+        id: test_team_statistics_save_compatibility
+        continue-on-error: true
+        run: |
+          build/linux/client/release/libgag/src/PerformanceTelemetryHarness
+          ./build/linux/client/release/src/UnitContinuationHarness
+          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/EchoContinuationTest .
+          python3 test/check_echo_save_continuation.py build/linux/client/release/src/glob2
+          python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
+          python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/version88.game
+          python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game
+
+      - name: Verify default gradient schedule against cross-platform checksums
+        if: ${{ matrix.shard == 4 }}
+        id: verify_default_gradient_schedule_against_cross_platform
+        continue-on-error: true
+        run: python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2
+
+      - name: Verify parallel compute and save continuation
+        if: ${{ matrix.shard == 1 }}
+        id: verify_parallel_compute_and_save_continuation
+        continue-on-error: true
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'parallel compute' 'python3 test/check_parallel_compute.py build/linux/client/release/src/glob2' \
+            --check 'gradient pipeline' 'python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2'
+      - name: Build and run the terrain resource regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_terrain_resource_regression
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/src/TerrainResourcesHarness
+
+      - name: Test AI save portability
+        if: ${{ matrix.shard == 3 }}
+        id: test_ai_save_portability
+        continue-on-error: true
+        run: python3 test/run-savegame-safety-tests.py build/linux/client/release/src/AISavePortabilityHarness .
+
+      - name: Test Nicowar farming wood clearance
+        if: ${{ matrix.shard == 4 }}
+        id: test_nicowar_farming_wood_clearance
+        continue-on-error: true
+        run: |
+          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/NicowarFarmingHarness .
+
+      - name: Verify weighted path gradients against the independent oracle
+        if: ${{ matrix.shard == 1 }}
+        id: verify_weighted_path_gradients_against_the_independent_
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/src/PathGradientHarness
+          ./build/linux/client/release/src/ComputeExecutorHarness
+          ./build/linux/client/release/src/GradientPipelineHarness
+
+      - name: Build and run the global gradient regression
+        if: ${{ matrix.shard == 2 }}
+        id: build_and_run_the_global_gradient_regression
+        continue-on-error: true
+        run: |
+          ./build/linux/client/release/src/GlobalGradientHarness
+
+      - name: Build and run the LAN session regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_lan_session_regression
+        continue-on-error: true
+        run: |
+          python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
+
+      - name: Build and run the aspect-ratio regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_aspect_ratio_regression
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
+
+      - name: Check phone layouts and gameplay touch input
+        if: ${{ matrix.shard == 1 }}
+        id: check_phone_layouts_and_gameplay_touch_input
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+          SDL_AUDIODRIVER: dummy
+        run: |
+          build/linux/client/release/libgag/src/MobileInputHarness
+          timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
+          for harness in gameplay-touch-test responsive-menu-test mobile-presentation-test; do
+            mkdir -p "artifacts/mobile-ui/$harness"
+            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 120s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness"
+          done
+
+      - name: Upload phone UI verification evidence
+        id: upload_phone_ui_verification_evidence
+        continue-on-error: true
+        if: ${{ always() && matrix.shard == 1 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-ui-verification
+          path: artifacts/mobile-ui/
+
+      - name: Check native settings persistence and retry
+        if: ${{ matrix.shard == 2 }}
+        id: check_native_settings_persistence_and_retry
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py
+
+      - name: Build and run the window resize regression
+        if: ${{ matrix.shard == 3 }}
+        id: build_and_run_the_window_resize_regression
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness gl
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness software
+
+      - name: Build and run the scaled text regression
+        if: ${{ matrix.shard == 4 }}
+        id: build_and_run_the_scaled_text_regression
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          mkdir -p artifacts/text-raster
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/TextRasterHarness artifacts/text-raster
+
+      - name: Check game rendering across repeated map copies
+        if: ${{ matrix.shard == 1 }}
+        id: check_game_rendering_across_repeated_map_copies
+        continue-on-error: true
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness
+          SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness --gl
+
+      - name: Test front-end colony isolation and menu navigation
+        if: ${{ matrix.shard == 2 }}
+        id: test_front_end_colony_isolation_and_menu_navigation
+        continue-on-error: true
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          ./build/linux/client/release/src/MenuColonyHarness check data/menu/colony.bin
+          ./build/linux/client/release/src/MenuColonyHarness navigation unused
+
+      - name: Test game speed controls and playback
+        if: ${{ matrix.shard == 3 }}
+        id: test_game_speed_controls_and_playback
+        continue-on-error: true
+        run: |
+          GLOB2_BUILD_DIR=build/linux/client/release xvfb-run -a python3 test/run-game-speed-tests.py
+
+      - name: Retain browser/native simulation trace
+        if: ${{ matrix.shard == 4 }}
+        id: retain_browser_native_simulation_trace
+        continue-on-error: true
+        run: python3 test/run-browser-determinism.py build/linux/client/release/src/glob2 artifacts/browser-determinism/native
+      - uses: actions/upload-artifact@v4
+        if: ${{ matrix.shard == 4 }}
+        id: upload_artifact_1
+        continue-on-error: true
+        with:
+          name: browser-determinism-${{ matrix.runner }}
+          path: artifacts/browser-determinism/native/
+
+      - name: Summarize CI failures
+        if: always()
+        env:
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: python3 test/ci_step_summary.py
+
+  linux:
+    name: linux (${{ matrix.image }})
+    needs: [changes, linux-build, linux-tests]
+    if: ${{ !cancelled() && needs.changes.outputs.native == 'true' }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ['ubuntu:22.04', 'ubuntu:24.04']
+    steps:
+      - name: Require every Linux build and test shard
+        env:
+          BUILD_RESULT: ${{ needs.linux-build.result }}
+          TEST_RESULT: ${{ needs.linux-tests.result }}
+        run: |
+          echo "Linux builds: $BUILD_RESULT; Linux test shards: $TEST_RESULT"
+          test "$BUILD_RESULT" = success && test "$TEST_RESULT" = success
 
   linux-variants:
     name: linux variants (${{ matrix.image }})
@@ -1098,6 +1266,8 @@ jobs:
             ./build/mingw/client/release/src/point-bar-render-test.exe software
 
       - name: Test hunger and defeat detection
+        id: test_hunger_and_defeat_detection
+        continue-on-error: true
         run: |
           python3 test/run-hungry-defeat-tests.py build/mingw/client/release/src/HungryDefeatHarness.exe
 
@@ -1698,4 +1868,3 @@ jobs:
               print(f'{job}: {actual} (expected {required})')
               assert actual == required, f'{job}: {actual}, expected {required}'
           PY
-

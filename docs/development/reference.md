@@ -57,7 +57,10 @@ scons -C test                 # rebuild the separate test suite
   required check failed. Keep build prerequisites as prerequisites, and use
   `test/ci_run_commands.py` or `test/run-standalone-tests.py` when several
   independent commands share one step. Artifact uploads run after failed checks
-  so reviewers can inspect the available evidence.
+  so reviewers can inspect the available evidence. The Linux client builds once
+  per supported toolchain, then distributes its built programs to four parallel
+  test shards per toolchain. The original `linux (...)` checks require every
+  build and shard to pass, preserving their merge-blocking status.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as
