@@ -52,6 +52,12 @@ scons -C test                 # rebuild the separate test suite
   information there only slowed compilation and multiplied object and cache sizes.
 - Keep harness runs out of personal profiles: use the existing disposable-profile
   runners and retain fixtures, seeds, logs and checksums needed to reproduce a result.
+- CI lets independent test steps finish after a failure and records their raw
+  outcomes in the job summary. The final summary step fails the job if any
+  required check failed. Keep build prerequisites as prerequisites, and use
+  `test/ci_run_commands.py` or `test/run-standalone-tests.py` when several
+  independent commands share one step. Artifact uploads run after failed checks
+  so reviewers can inspect the available evidence.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as

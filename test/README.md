@@ -592,8 +592,8 @@ scons -j8 RuntimeBuildingOrderSaveLoadTest
 ./RuntimeBuildingOrderSaveLoadTest
 ```
 
-Linux CI runs it through this directory's "Build and run the tests" step, which
-executes `./TestsRunner` and then every `./*Harness` and `./*Test` binary.
+Linux CI builds this directory's suite, then runs `./TestsRunner` and every
+`./*Harness` and `./*Test` binary. It reports all failing executables together.
 
 ### Native main Settings redesign
 
