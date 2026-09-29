@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Planting.h"
+#include "Morphology.h"
 #include "GenerationContext.h"
 #include "GenerationResult.h"
 #include "Resources.h"
@@ -29,6 +30,29 @@ bool clearGround(const Map &map, int x, int y)
 {
 	return map.isGrass(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
 		   map.getGroundUnit(x, y) == NOGUID;
+}
+
+int plantFieldInteriors(Map &map, const Torus &t, const std::vector<int> &tiles, int type,
+						int wanted)
+{
+	if (wanted <= 0)
+		return 0;
+	std::vector<unsigned char> mask(t.size(), 0);
+	std::vector<int> candidates;
+	for (int i : tiles)
+		if (!mask[i] && clearGround(map, i % t.w, i / t.w) &&
+			map.isResourceAllowed(i % t.w, i / t.w, type))
+		{
+			mask[i] = 1;
+			candidates.push_back(i);
+		}
+	const auto depth = clearance(t, mask);
+	std::sort(candidates.begin(), candidates.end(),
+			  [&](int a, int b) { return depth[a] != depth[b] ? depth[a] > depth[b] : a < b; });
+	const int count = std::min(wanted, int(candidates.size()));
+	for (int k = 0; k < count; ++k)
+		map.setResource(candidates[k] % t.w, candidates[k] / t.w, type, 1);
+	return count;
 }
 
 std::vector<unsigned char> swarmSurroundings(const Torus &t, const GenerationContext &context,

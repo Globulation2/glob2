@@ -1,6 +1,6 @@
 # The Last Treeline
 
-`last-treeline` (numeric ID 70, revision 2) is a retreating lake basin whose surviving
+`last-treeline` (numeric ID 70, revision 3) is a retreating lake basin whose surviving
 woodland is the contested construction resource. Dry outer settlements feed themselves;
 a broken wooded shoreline supplies continued building. The open lakebed and outer
 plain offer alternate approaches, so losing one gathering front leaves another.
@@ -27,9 +27,12 @@ wood is nongranular, so collecting it clears the tile irrespective of tree size.
 
 The generator accepts 256 and 512 tile sides, including rectangles, and 2–8
 colonies. Larger maps retain compact first contact and add outer land for
-flanking and construction among irregular wetlands and sandy terraces. Open wheat
-sections on verified dry ground add finite harvest reserves without farm borders. No extra
-timber is planted there: wood remains the reason to contest the shoreline. Starting sites are randomly dealt to colony indices.
+flanking and construction among irregular wetlands with grassy inland approaches.
+The central dry lakebed remains. Broken dry terraces add contrast farther inland,
+but every water body keeps a broad grassy apron: new terrace corners stay at least
+22 tiles from pure water and outside the home buffers. This preserves buildable
+lake approaches instead of trading them for decoration. Clean wheat sections meet the existing wetland shores and provide renewable
+expansion food, with inn openings and verified fertility. No extra timber is planted there: wood remains the reason to contest the shoreline. Starting sites are randomly dealt to colony indices.
 Alliances are a game/lobby choice; the generator request does not carry alliances
 and does not automatically group allied starts. Duels, FFA and team games use the
 same resource geography.

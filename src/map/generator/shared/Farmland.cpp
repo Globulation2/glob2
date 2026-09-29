@@ -3,6 +3,8 @@
 #include "GenerationContext.h"
 #include "LatticeNoise.h"
 #include "Morphology.h"
+#include "Growth.h"
+#include "Room.h"
 #include "Map.h"
 #include "Resources.h"
 #include "Planting.h"
@@ -39,6 +41,189 @@ std::vector<int> stampContainedPlot(TerrainSketch &sketch, const Torus &t,
 			inside.count(t.at(i % t.w + 1, i / t.w + 1)))
 			tiles.push_back(i);
 	return tiles;
+}
+
+std::vector<ShoreField> layShoreFields(TerrainSketch &terrain, const Torus &t,
+									   const std::vector<unsigned char> &allowed,
+									   std::vector<int> &plotOf, int firstPlot, bool contained)
+{
+	auto stamp = [&](const std::vector<int> &shape)
+	{
+		if (contained) return stampContainedPlot(terrain, t, shape, 1);
+		for (int i : shape) terrain[i] = GRASS;
+		const auto inside = tileMask(t, shape);
+		std::vector<int> tiles;
+		for (int i : shape)
+			if (inside[t.at(i % t.w + 1, i / t.w)] &&
+				inside[t.at(i % t.w, i / t.w + 1)] &&
+				inside[t.at(i % t.w + 1, i / t.w + 1)]) tiles.push_back(i);
+		return tiles;
+	};
+	const auto water = pureTiles(terrain, t, WATER);
+	const auto distance = stepsFrom(t, water);
+	std::vector<unsigned char> corners(t.size(), 0);
+	for (int i = 0; i < t.size(); ++i)
+	{
+		if (!allowed[i] || terrain[i] == WATER || distance[i] < 2 || distance[i] > 8)
+			continue;
+		bool fits = true;
+		for (int y = -2; y <= 2 && fits; ++y)
+			for (int x = -2; x <= 2 && fits; ++x)
+			{
+				const int q = t.at(i % t.w + x, i / t.w + y);
+				fits = plotOf[q] < 0 && (terrain[q] != GRASS || allowed[q]) &&
+					   (std::abs(x) > 1 || std::abs(y) > 1 || terrain[q] != WATER);
+			}
+		corners[i] = fits;
+	}
+	// Remove thin tendrils before drawing, rather than decorating their fringe.
+	corners = openMask(t, corners, 1);
+	const auto regions = connectedRegions(corners, t.w, t.h, true, GridNeighbors::Eight);
+	std::vector<std::vector<int>> groups;
+	for (int i = 0; i < t.size(); ++i)
+		if (regions[i] >= 0)
+		{
+			if (int(groups.size()) <= regions[i])
+				groups.resize(regions[i] + 1);
+			groups[regions[i]].push_back(i);
+		}
+	const auto original = terrain;
+	std::vector<ShoreField> fields(groups.size());
+	for (size_t k = 0; k < groups.size(); ++k)
+		fields[k].tiles = stamp(groups[k]);
+	const auto fertility = cropGrowthField(terrain, t);
+	std::vector<ShoreField> accepted;
+	std::vector<std::vector<int>> acceptedCorners;
+	for (size_t k = 0; k < fields.size(); ++k)
+	{
+		auto &field = fields[k];
+		auto inside = tileMask(t, field.tiles);
+		const auto anchors = buildAnchors(t, inside, 4);
+		int best = -1;
+		for (int i : field.tiles)
+			if (anchors[i] &&
+				(best < 0 || fertility.at(i % t.w, i / t.w) > fertility.at(best % t.w, best / t.w)))
+				best = i;
+		if (best < 0)
+			continue;
+		field.court = best;
+		std::vector<int> queue, parent(t.size(), -2);
+		for (int y = 0; y < 4; ++y)
+			for (int x = 0; x < 4; ++x)
+			{
+				int q = t.at(best % t.w + x, best / t.w + y);
+				parent[q] = -1;
+				queue.push_back(q);
+			}
+		int exit = -1;
+		for (size_t head = 0; head < queue.size() && exit < 0; ++head)
+			for (auto step : kCardinalSteps)
+			{
+				int i = queue[head], q = t.at(i % t.w + step[0], i / t.w + step[1]);
+				if (!inside[q])
+				{
+					// Open toward land, not into a beach enclosed by a ring of crops.
+					if (distance[q] > distance[i] && terrain[q] != WATER)
+					{
+						exit = i;
+						break;
+					}
+					continue;
+				}
+				if (parent[q] == -2)
+				{
+					parent[q] = i;
+					queue.push_back(q);
+				}
+			}
+		if (exit < 0)
+			continue;
+		std::vector<unsigned char> opening(t.size(), 0);
+		for (int i = exit; i >= 0; i = parent[i])
+			opening[i] = 1;
+		std::uint64_t potential = 0;
+		int shore = 0;
+		for (int i : field.tiles)
+		{
+			const bool court = t.x(i % t.w - best % t.w) < 4 && t.y(i / t.w - best / t.w) < 4;
+			const auto value = fertility.at(i % t.w, i / t.w);
+			if (!court && !opening[i] && value >= Fertility::kScale / 64)
+			{
+				field.seedTiles.push_back(i);
+				potential += value;
+				shore += distance[i] <= 3;
+			}
+		}
+		if (field.seedTiles.size() < 24 || shore < 6 || potential < 2 * Fertility::kScale)
+			continue;
+		accepted.push_back(std::move(field));
+		acceptedCorners.push_back(std::move(groups[k]));
+	}
+	// Reclaiming sandy banks can change another field's mirrored sand probe.
+	// Recheck the completed terrain after rejected candidates are removed. Each
+	// failed pass removes a field, so this terminates independently of wall time.
+	for (;;)
+	{
+		terrain = original;
+		for (const auto &shape : acceptedCorners)
+			stamp(shape);
+		const auto finalGrowth = cropGrowthField(terrain, t);
+		bool removed = false;
+		for (size_t k = accepted.size(); k-- > 0;)
+		{
+			auto &field = accepted[k];
+			field.growthPotential = 0;
+			int shore = 0;
+			field.seedTiles.erase(
+				std::remove_if(
+					field.seedTiles.begin(), field.seedTiles.end(), [&](int i)
+					{ return finalGrowth.at(i % t.w, i / t.w) < Fertility::kScale / 64; }),
+				field.seedTiles.end());
+			for (int i : field.seedTiles)
+			{
+				field.growthPotential += finalGrowth.at(i % t.w, i / t.w);
+				shore += distance[i] <= 3;
+			}
+			if (field.seedTiles.size() < 24 || shore < 6 ||
+				field.growthPotential < 2 * Fertility::kScale)
+			{
+				accepted.erase(accepted.begin() + k);
+				acceptedCorners.erase(acceptedCorners.begin() + k);
+				removed = true;
+			}
+		}
+		if (!removed)
+			break;
+	}
+	for (size_t k = 0; k < accepted.size(); ++k)
+		for (int i : accepted[k].tiles)
+			plotOf[i] = firstPlot + int(k);
+	return accepted;
+}
+
+int plantShoreFields(Map &map, const Torus &t, const std::vector<ShoreField> &fields,
+					 const Fertility::Field &fertility, int percent)
+{
+	int planted = 0;
+	for (const auto &field : fields)
+	{
+		std::vector<int> fertile;
+		for (int i : field.seedTiles)
+			if (fertility.at(i % t.w, i / t.w) >= Fertility::kScale / 64)
+				fertile.push_back(i);
+		const int wanted = std::min(int(fertile.size()), int(scaledCount(fertile.size(), percent)));
+		std::vector<int> rim;
+		for (int i : fertile)
+		{
+			const int dx = t.offsetX(field.court % t.w, i % t.w);
+			const int dy = t.offsetY(field.court / t.w, i / t.w);
+			if (dx >= -1 && dx <= 4 && dy >= -1 && dy <= 4)
+				rim.push_back(i);
+		}
+		const int near = plantFieldInteriors(map, t, rim, WHEAT, std::min(wanted, 12));
+		planted += near + plantFieldInteriors(map, t, fertile, WHEAT, wanted - near);
+	}
+	return planted;
 }
 
 int plantContainedPlot(Map &map, const Torus &t, const std::vector<int> &tiles,

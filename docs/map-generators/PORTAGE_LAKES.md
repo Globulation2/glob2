@@ -1,6 +1,6 @@
 # Portage Lakes
 
-Portage Lakes (ID 65, revision 2) is natural lake country: crooked lakes, dry wooded ridges,
+Portage Lakes (ID 65, revision 3) is natural lake country: crooked lakes, dry wooded ridges,
 pale trails and farms in sheltered bays. Its two investments change different
 connections. Cutting opens a public land shortcut through a ridge; swimming
 opens a crossing between opposite shores. Initial land routes connect every
@@ -20,19 +20,31 @@ than the opening town.
 Wheat and renewable timber occupy irregular sand-contained shore plots. Full-size
 wheat fields are larger than compact fields; crowded maps use an intermediate
 size. Their footprints stay fixed while sowing uses more of the available ground. Candidate fields must meet seed and productive-fertility floors before being accepted.
+Each substantial lake also receives additional shore wheat fields: two where
+space permits on full maps, with at least one per lake; compact maps receive one.
+Full maps budget the first field after home farms; additional fields fit around
+neutral bays, roads and landing clearings once those are secured. Compact maps
+place their field after the landing clearings, which have less room to move.
+They may clear ordinary shoreline woodland while preserving the designated
+portage plugs. These fields use smaller footprints where the shore is tight and
+scale their sowing with wheat amount; they are empty at 0%. No new water is added.
 Every substantial wheat field leaves an unseeded 4×4 opening for an inn and a short
 entrance to its edge. Both checkerboard harvesting parities must have an available
 3×3 inn site beside planted wheat, and workers must initially reach the court.
-On long compact maps the opening faces home and grain is sown around its rim,
+Starter-field openings face home and grain is sown around the court rim,
 so early haulers reveal a usable inn site. Scarce sowing is redistributed around
 the court when necessary, without increasing the requested seed budget.
 These are opening construction sites: unused courts can grow over naturally.
 Their area and entrances are excluded from the productive-fertility floor. Dry
 ridge wood remains at every abundance: its zero growth probability is checked
 against the completed terrain. No generated tile disables resource growth.
-Open gaps in the dry woodland carry additional wheat sections, without new sand
-rims or ponds. These are finite harvest reserves, scaled by wheat amount; trails,
-landing clearings, their cleared approaches and the structural portage plugs remain protected.
+Additional fields directly follow existing lake shores, with only the beach
+margin between grain and water. They use smooth shore-aligned outlines, never
+per-tile random thinning. Accepted fields must have at least six productive tiles
+within three steps of pure water and two tile-equivalents of exact growth
+potential outside their inn court and entrance. Dry scattered wheat is not used
+as a substitute for renewable farmland. Trails, landings and portage plugs remain
+protected.
 Algae occupies separate small pools, so the main swimming lakes remain clear.
 Stone outcrops shape some woodland crossings without enclosing every clearing.
 Full maps guarantee two designated portages; the largest maps target up to four
@@ -68,7 +80,8 @@ Seed-dependent geometry failures return a diagnostic rather than a partial map.
 
 ## Verification and retained evidence
 
-The historical validation below describes revision 1. Revision 2 increases wheat
+The historical validation below describes revision 1. Revision 3 replaces dry scattered grain with productive per-lake
+shore fields. Revision 2 increases wheat
 in existing shore farms and open woodland gaps, and preserves inn openings in
 neutral wheat fields. It changes newly generated maps; simulation rules, save
 formats, replay versions and network gates are unchanged.
@@ -171,3 +184,8 @@ review; native-speaker review of every language has not occurred.
 
 The pre-integration evidence uses provisional ID 58. Integration assigns ID 65
 to preserve the generators already merged into the catalog.
+
+The largest spare lawns receive occasional small fruit copses and rocky outcrops,
+with broad clear aisles between them. They stay away from home building space,
+working fields, roads and reserved landings. These features use the fruit and
+stone abundance controls and add no sand enclosures or renewable woodland.

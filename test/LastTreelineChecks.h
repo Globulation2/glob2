@@ -106,7 +106,7 @@ inline void run()
 			finiteTypes[i] = plain.map.getResource(i % t.w, i / t.w).type;
 		}
 	assert(std::count(finiteTypes.begin(), finiteTypes.end(), WOOD) >= 48 * 4);
-	assert(std::count(finiteTypes.begin(), finiteTypes.end(), WHEAT) > 0);
+	assert(std::count(finiteTypes.begin(), finiteTypes.end(), WHEAT) == 0);
 	for (int tick = 0; tick < 2048; ++tick)
 		plain.map.growResources();
 	for (int i = 0; i < t.size(); ++i)

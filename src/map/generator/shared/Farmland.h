@@ -27,6 +27,25 @@ namespace MapGeneration
 // round a long row nor cut through one; and a ring round the building plot keeps crops off it. Walls
 // round a farm are the map's business, not the farm's.
 
+struct ShoreField
+{
+	std::vector<int> tiles, seedTiles;
+	int court = -1;
+	std::uint64_t growthPotential = 0;
+};
+/// Broad crop sections following EXISTING water. Only the beach and a one-corner
+/// landward growth boundary separate them from surrounding terrain by default.
+/// With contained=false, omit the landward boundary; the caller must validate
+/// natural spread against its protected ground. Caller masks
+/// provide map-specific expansion ground and protect towns, roads and existing farms.
+/// Each field reaches within three tiles of pure water, has an accessible 4x4 inn
+/// opening, and has at least two tile-equivalents of exact growth potential.
+std::vector<ShoreField> layShoreFields(TerrainSketch &, const Torus &,
+									   const std::vector<unsigned char> &allowed,
+									   std::vector<int> &plotOf, int firstPlot, bool contained = true);
+int plantShoreFields(Map &, const Torus &, const std::vector<ShoreField> &,
+					 const Fertility::Field &, int percent);
+
 /// An irregular grass plot surrounded by sand. `corners` is an arbitrary, nonempty set of
 /// undermap vertices; a Chebyshev margin seals diagonal growth across the wrap.
 /// The default two rows preserve existing gardens; one row is a thinner, still sealed bund.

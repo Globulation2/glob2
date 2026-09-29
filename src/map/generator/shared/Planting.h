@@ -39,6 +39,11 @@ struct ResourceStock
 /// or invalid resource type is a programming error reported as GenerationFailure.
 ResourceStock capResourceStock(Map &, int type, int maximumAmount);
 
+/// Fill the interiors of existing field sections before their edges, without
+/// random holes or per-tile speckling. The supplied habitat and exact tile budget
+/// remain the caller's; this adds no terrain, water, or containment margins.
+int plantFieldInteriors(Map &, const Torus &, const std::vector<int> &tiles, int type, int wanted);
+
 /// Grows a compact patch of one resource outward from a seed tile, breadth-first over the four
 /// cardinal neighbours, onto tiles the predicate allows. Returns how many tiles it placed.
 template <typename Eligible>

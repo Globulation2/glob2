@@ -50,6 +50,36 @@ Flood cropSpreadEnvelope(const Map &map, const Fertility::Field *fertility)
 	return result;
 }
 
+std::vector<unsigned char> fertileCropEnvelope(const Map &map, const Fertility::Field &fertility)
+{
+	const Torus t(map);
+	std::vector<unsigned char> reached(t.size(), 0);
+	std::vector<int> queue;
+	for (int i = 0; i < t.size(); ++i)
+	{
+		const int type = map.getResource(i % t.w, i / t.w).type;
+		if (type == WHEAT || type == WOOD)
+		{
+			reached[i] = 1;
+			if (fertility.at(i % t.w, i / t.w) > 0) queue.push_back(i);
+		}
+	}
+	for (size_t head = 0; head < queue.size(); ++head)
+	{
+		const int i = queue[head];
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				const int q = t.at(i % t.w + dx, i / t.w + dy);
+				if (reached[q] || !map.isGrass(q % t.w, q / t.w) ||
+					!map.canResourcesGrow(q % t.w, q / t.w)) continue;
+				reached[q] = 1;
+				if (fertility.at(q % t.w, q / t.w) > 0) queue.push_back(q);
+			}
+	}
+	return reached;
+}
+
 Fertility::Field cropGrowthField(const TerrainSketch &sketch, const Torus &t)
 {
 	const std::vector<unsigned char> water = pureTiles(sketch, t, WATER);
