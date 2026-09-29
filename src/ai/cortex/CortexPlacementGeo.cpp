@@ -4,6 +4,7 @@
 #include "CortexPlacementGeo.h"
 
 #include "CortexTypes.h"
+#include <algorithm>
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
@@ -469,6 +470,29 @@ namespace Cortex
 			if (best < 0 || distance < best) best = distance;
 		}
 		return best;
+	}
+
+	std::vector<unsigned char> PlacementGeometry::buildingProximityMask(int w, int h, int maxGap) const
+	{
+		if (typedBuildings.empty()) return {};
+		const int mapW = map.getW(), mapH = map.getH();
+		std::vector<unsigned char> mask(mapW * mapH, 0);
+		for (const BuildingBox& building : typedBuildings)
+		{
+			const Box& b = building.box;
+			// The edge gap counts empty tiles: touching boxes have gap zero.
+			// These inclusive bounds also cover overlap and both sides of a seam.
+			const int x0 = b.x - w - maxGap, y0 = b.y - h - maxGap;
+			const int columns = std::min(mapW, w + b.w + 2 * maxGap + 1);
+			const int rows = std::min(mapH, h + b.h + 2 * maxGap + 1);
+			for (int dy = 0; dy < rows; ++dy)
+			{
+				const int row = map.normalizeY(y0 + dy) * mapW;
+				for (int dx = 0; dx < columns; ++dx)
+					mask[row + map.normalizeX(x0 + dx)] = 1;
+			}
+		}
+		return mask;
 	}
 
 	bool PlacementGeometry::candidateCrowdsInn(int x, int y, int w, int h) const

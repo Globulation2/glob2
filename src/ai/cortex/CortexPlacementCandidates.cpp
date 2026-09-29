@@ -169,11 +169,21 @@ namespace Cortex
 		if (reserveGrown)
 			grownFootprintBox(bt, gox, goy, ew, eh);
 
+		// Non-food buildings must stay close to an existing building edge;
+		// forward bases and empty colonies are exempt. Precompute that gate once
+		// instead of scanning every building for each candidate, keeping scan order.
+		const std::vector<unsigned char> proximity = !isWheatFed && forward == NULL
+			? geometry.buildingProximityMask(w, h, CORTEX_MAX_BUILD_EDGE_DIST)
+			: std::vector<unsigned char>();
+
 		// Deterministic scan: fixed (x, y) order over every top-left corner.
 		for (int x = 0; x < mapW; x++)
 		{
 			for (int y = 0; y < mapH; y++)
 			{
+				if (!proximity.empty() && !proximity[y * mapW + x])
+					continue;
+
 				// Grown-footprint top-left corner: the placed corner shifted by the
 				// upgrade box offset (zero for non-growing types and for the inn; up/
 				// left for the centered racetrack/pool growth).
@@ -311,20 +321,6 @@ namespace Cortex
 				// paths into the field. AI-design rule, no engine analogue.
 				if (!isWheatFed && anyWheatWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
 					continue;
-
-				// EDGE-DISTANCE CAP (non-wheat-fed only): keep tech/military buildings
-				// clustered with the colony. The soft compactness score alone can let a
-				// far-flung spot win; this hard cap forbids any spot whose footprint edge
-				// is more than CORTEX_MAX_BUILD_EDGE_DIST tiles from the nearest existing
-				// building. Skipped when the team has no buildings yet (first placement),
-				// and in FORWARD mode (a forward hospital is far from the colony by
-				// design — the target-distance window above bounds it instead).
-				if (!isInn && !isSwarm && forward == NULL)
-				{
-					const int edgeDist = geometry.nearestBuildingEdgeDist(x, y, w, h);
-					if (edgeDist >= 0 && edgeDist > CORTEX_MAX_BUILD_EDGE_DIST)
-						continue;
-				}
 
 				// INN SIDE-CLEARANCE (placing an inn): the inn may touch a building on
 				// at most CORTEX_INN_MAX_TOUCH_SIDES of its four sides; the rest keep
