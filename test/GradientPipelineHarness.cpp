@@ -5,6 +5,11 @@
 #include <iostream>
 #include <stdexcept>
 
+// These standalone tests do not use SDL's entry-point shim.
+#ifdef main
+#undef main
+#endif
+
 int main()
 {
 	for (unsigned workers : {0, 1, 2, 4, 8}) for (unsigned delay : {1, 2, 3, 8}) {

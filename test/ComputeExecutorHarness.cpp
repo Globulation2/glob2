@@ -5,6 +5,11 @@
 #include <iostream>
 #include <stdexcept>
 
+// These standalone tests do not use SDL's entry-point shim.
+#ifdef main
+#undef main
+#endif
+
 int main()
 {
 	ComputeExecutor executor;
