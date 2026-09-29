@@ -9,12 +9,16 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <type_traits>
 #include <utility>
 #include <vector>
-// GLOB2_GRADIENT_SCALAR selects the portable relaxation on x86 too, so tests can cover it.
+// GLOB2_GRADIENT_SCALAR selects the portable relaxation on SIMD targets too, so tests can cover it.
 #if defined(__SSE2__) && !defined(GLOB2_GRADIENT_SCALAR)
 #define GLOB2_GRADIENT_SSE2 1
 #include <emmintrin.h>
+#elif defined(__ARM_NEON) && !defined(GLOB2_GRADIENT_SCALAR)
+#define GLOB2_GRADIENT_NEON 1
+#include <arm_neon.h>
 #endif
 
 // Building and reading the pathfinding gradients (cell values: MapInternal.h).
@@ -58,104 +62,214 @@ namespace
 
 	constexpr EntrySteps LAND_STEPS = entrySteps(GRADIENT_STEP);
 
+	// Classes 0 and EVEN pay the land rate everywhere; the others are weighted.
+	constexpr bool weightedClass(int swimClass)
+	{
+		return swimClass != 0 && WATER_STEP[swimClass] != GRADIENT_STEP;
+	}
+
+	// A weighted layer appends to four buckets, one per entry step, so each keeps
+	// its own cursor. That needs the four steps to be distinct in every class.
+	constexpr bool weightedStepsDistinct()
+	{
+		for (int c = 0; c < SWIM_CLASS_COUNT; c++)
+		{
+			if (!weightedClass(c))
+				continue;
+			const EntrySteps water = entrySteps(WATER_STEP[c]);
+			const unsigned steps[4] = { LAND_STEPS.cardinal, LAND_STEPS.diagonal, water.cardinal, water.diagonal };
+			for (int a = 0; a < 4; a++)
+				for (int b = a + 1; b < 4; b++)
+					if (steps[a] == steps[b])
+						return false;
+		}
+		return true;
+	}
+	static_assert(weightedStepsDistinct());
+
+	// Cells expanded between capacity reservations. Each appends at most four
+	// entries to each target bucket, so reserving 4 * CHUNK lets the loop append
+	// without checks while holding the bucket ends in registers.
+	constexpr size_t CHUNK = 64;
+
 	// Expand one complete cost layer. Positive edge costs cannot append to the
 	// current bucket. Sharing this kernel keeps eager and resumed fields equal.
-	template<typename StepsAt>
+	// Weighted layers read isWater(i) and charge waterSteps to enter water cells.
+	template<bool Weighted, typename IsWater>
 	void expandBucket(Uint16 *__restrict gradient, GradientBucket *queue, size_t &pending,
-		int cur, int limit, int widthMask, int heightMask, int widthShift, StepsAt stepsAt)
+		int cur, int limit, int widthMask, int heightMask, int widthShift, EntrySteps waterSteps, IsWater isWater)
 	{
 		GradientBucket &bucket = queue[unsigned(cur) % BUCKETS];
 		const size_t wMask = size_t(widthMask), hMask = size_t(heightMask);
 		const unsigned wDec = unsigned(widthShift);
 		const Uint16 curValue = Uint16(GRADIENT_AT_GOAL - cur);
+		// A capped value of one admits no cell.
+		auto valueAfter = [&](unsigned step)
+		{
+			const unsigned cost = unsigned(cur) + step;
+			return cost <= unsigned(limit) ? Uint16(GRADIENT_AT_GOAL - cost) : Uint16(1);
+		};
+		const Uint16 landCardinalValue = valueAfter(LAND_STEPS.cardinal), landDiagonalValue = valueAfter(LAND_STEPS.diagonal);
+		const Uint16 waterCardinalValue = valueAfter(waterSteps.cardinal), waterDiagonalValue = valueAfter(waterSteps.diagonal);
+		GradientBucket &landCardinal = queue[(unsigned(cur) + LAND_STEPS.cardinal) % BUCKETS];
+		GradientBucket &landDiagonal = queue[(unsigned(cur) + LAND_STEPS.diagonal) % BUCKETS];
+		GradientBucket &waterCardinal = queue[(unsigned(cur) + waterSteps.cardinal) % BUCKETS];
+		GradientBucket &waterDiagonal = queue[(unsigned(cur) + waterSteps.diagonal) % BUCKETS];
+		auto queued = [&]
+		{
+			return landCardinal.size + landDiagonal.size + (Weighted ? waterCardinal.size + waterDiagonal.size : 0);
+		};
+		const size_t queuedBefore = queued();
 		// Relaxations append to other buckets but never to this one (each step is
 		// positive and less than BUCKETS), so these stay valid.
 		const Uint32 *const cells = bucket.cells.data();
 		const size_t count = bucket.size;
-		for (size_t ci = 0; ci < count; ci++)
+		for (size_t chunk = 0; chunk < count; chunk += CHUNK)
 		{
-			const size_t i = cells[ci];
-			if (gradient[i] != curValue)
-				continue; // stale entry, a cheaper path was found later
-			const size_t x = i & wMask;
-			const size_t y = i >> wDec;
-			const size_t left = (x - 1) & wMask;
-			const size_t right = (x + 1) & wMask;
-			const size_t above = ((y - 1) & hMask) << wDec;
-			const size_t row = y << wDec;
-			const size_t below = ((y + 1) & hMask) << wDec;
-			// All reverse edges enter i, so they share its two terrain costs.
-			const EntrySteps steps = stepsAt(i);
-			const unsigned cardinalCost = unsigned(cur) + steps.cardinal;
-			const unsigned diagonalCost = unsigned(cur) + steps.diagonal;
-			// A capped value of one admits no cell.
-			const Uint16 cardinalValue = cardinalCost <= unsigned(limit) ? Uint16(GRADIENT_AT_GOAL - cardinalCost) : 1;
-			const Uint16 diagonalValue = diagonalCost <= unsigned(limit) ? Uint16(GRADIENT_AT_GOAL - diagonalCost) : 1;
-			GradientBucket &cardinalBucket = queue[cardinalCost % BUCKETS];
-			GradientBucket &diagonalBucket = queue[diagonalCost % BUCKETS];
-			cardinalBucket.reserveExtra(4);
-			diagonalBucket.reserveExtra(4);
-			Uint32 *const cardinalStart = cardinalBucket.cells.data() + cardinalBucket.size;
-			Uint32 *const diagonalStart = diagonalBucket.cells.data() + diagonalBucket.size;
-			Uint32 *cardinalEnd = cardinalStart;
-			Uint32 *diagonalEnd = diagonalStart;
-			// Zero wraps to the maximum, so one compare rejects obstacles and cells
-			// that are no worse. The slot is always written and kept on improvement.
-			auto relax = [&](size_t n, Uint16 value, Uint32 *&end)
+			const size_t chunkEnd = std::min(count, chunk + CHUNK);
+			const size_t room = 4 * (chunkEnd - chunk);
+			landCardinal.reserveExtra(room);
+			landDiagonal.reserveExtra(room);
+			if (Weighted)
 			{
-				const Uint16 g = gradient[n];
-				const bool better = Uint16(g - 1) < Uint16(value - 1);
-				gradient[n] = better ? value : g;
-				*end = Uint32(n);
-				end += better;
-			};
-#ifdef GLOB2_GRADIENT_SSE2
-			if (x >= 1 && x + 2 <= wMask)
+				waterCardinal.reserveExtra(room);
+				waterDiagonal.reserveExtra(room);
+			}
+			Uint32 *landCardinalEnd = landCardinal.cells.data() + landCardinal.size;
+			Uint32 *landDiagonalEnd = landDiagonal.cells.data() + landDiagonal.size;
+			Uint32 *waterCardinalEnd = Weighted ? waterCardinal.cells.data() + waterCardinal.size : nullptr;
+			Uint32 *waterDiagonalEnd = Weighted ? waterDiagonal.cells.data() + waterDiagonal.size : nullptr;
+			for (size_t ci = chunk; ci < chunkEnd; ci++)
 			{
-				// NW, N, NE and SW, S, SE as two lane groups; lanes 3 and 7 (x + 2) never improve.
-				Uint16 *aboveRun = gradient + above + x - 1;
-				Uint16 *belowRun = gradient + below + x - 1;
-				const __m128i g = _mm_unpacklo_epi64(_mm_loadl_epi64((const __m128i *)aboveRun),
-					_mm_loadl_epi64((const __m128i *)belowRun));
-				const __m128i value = _mm_setr_epi16(short(diagonalValue), short(cardinalValue), short(diagonalValue), 1,
-					short(diagonalValue), short(cardinalValue), short(diagonalValue), 1);
-				const __m128i one = _mm_set1_epi16(1);
-				const __m128i bias = _mm_set1_epi16(short(0x8000));
-				const __m128i better = _mm_cmplt_epi16(_mm_xor_si128(_mm_sub_epi16(g, one), bias),
-					_mm_xor_si128(_mm_sub_epi16(value, one), bias));
-				const unsigned mask = unsigned(_mm_movemask_epi8(better));
-				if (mask)
+				const size_t i = cells[ci];
+				if (gradient[i] != curValue)
+					continue; // stale entry, a cheaper path was found later
+				const size_t x = i & wMask;
+				const size_t y = i >> wDec;
+				const size_t left = (x - 1) & wMask;
+				const size_t right = (x + 1) & wMask;
+				const size_t above = ((y - 1) & hMask) << wDec;
+				const size_t row = y << wDec;
+				const size_t below = ((y + 1) & hMask) << wDec;
+				// All reverse edges enter i, so they share its two terrain costs.
+				const bool water = Weighted && isWater(i);
+				const Uint16 cardinalValue = water ? waterCardinalValue : landCardinalValue;
+				const Uint16 diagonalValue = water ? waterDiagonalValue : landDiagonalValue;
+				Uint32 *cardinalEnd = water ? waterCardinalEnd : landCardinalEnd;
+				Uint32 *diagonalEnd = water ? waterDiagonalEnd : landDiagonalEnd;
+				// Zero wraps to the maximum, so one compare rejects obstacles and cells
+				// that are no worse. The slot is always written and kept on improvement.
+				// Comparing in 32 bits spares a 16-bit truncation on targets like ARM.
+				const unsigned cardinalLimit = unsigned(cardinalValue) - 1u;
+				const unsigned diagonalLimit = unsigned(diagonalValue) - 1u;
+				auto relax = [&](size_t n, Uint16 value, unsigned valueLimit, Uint32 *&end)
 				{
-					const __m128i merged = _mm_or_si128(_mm_and_si128(better, value), _mm_andnot_si128(better, g));
-					_mm_storel_epi64((__m128i *)aboveRun, merged);
-					_mm_storel_epi64((__m128i *)belowRun, _mm_unpackhi_epi64(merged, merged));
-					const Uint32 a = Uint32(above | x), b = Uint32(below | x);
-					*diagonalEnd = a - 1; diagonalEnd += (mask >> 0) & 1;
-					*cardinalEnd = a; cardinalEnd += (mask >> 2) & 1;
-					*diagonalEnd = a + 1; diagonalEnd += (mask >> 4) & 1;
-					*diagonalEnd = b - 1; diagonalEnd += (mask >> 8) & 1;
-					*cardinalEnd = b; cardinalEnd += (mask >> 10) & 1;
-					*diagonalEnd = b + 1; diagonalEnd += (mask >> 12) & 1;
+					const Uint16 g = gradient[n];
+					const bool better = unsigned(g) - 1u < valueLimit;
+					gradient[n] = better ? value : g;
+					*end = Uint32(n);
+					end += better;
+				};
+#ifdef GLOB2_GRADIENT_SSE2
+				if (x >= 1 && x + 2 <= wMask)
+				{
+					// NW, N, NE and SW, S, SE as two lane groups; lanes 3 and 7 (x + 2) never improve.
+					Uint16 *aboveRun = gradient + above + x - 1;
+					Uint16 *belowRun = gradient + below + x - 1;
+					const __m128i g = _mm_unpacklo_epi64(_mm_loadl_epi64((const __m128i *)aboveRun),
+						_mm_loadl_epi64((const __m128i *)belowRun));
+					const __m128i value = _mm_setr_epi16(short(diagonalValue), short(cardinalValue), short(diagonalValue), 1,
+						short(diagonalValue), short(cardinalValue), short(diagonalValue), 1);
+					const __m128i one = _mm_set1_epi16(1);
+					const __m128i bias = _mm_set1_epi16(short(0x8000));
+					const __m128i better = _mm_cmplt_epi16(_mm_xor_si128(_mm_sub_epi16(g, one), bias),
+						_mm_xor_si128(_mm_sub_epi16(value, one), bias));
+					const unsigned mask = unsigned(_mm_movemask_epi8(better));
+					if (mask)
+					{
+						const __m128i merged = _mm_or_si128(_mm_and_si128(better, value), _mm_andnot_si128(better, g));
+						_mm_storel_epi64((__m128i *)aboveRun, merged);
+						_mm_storel_epi64((__m128i *)belowRun, _mm_unpackhi_epi64(merged, merged));
+						const Uint32 a = Uint32(above | x), b = Uint32(below | x);
+						*diagonalEnd = a - 1; diagonalEnd += (mask >> 0) & 1;
+						*cardinalEnd = a; cardinalEnd += (mask >> 2) & 1;
+						*diagonalEnd = a + 1; diagonalEnd += (mask >> 4) & 1;
+						*diagonalEnd = b - 1; diagonalEnd += (mask >> 8) & 1;
+						*cardinalEnd = b; cardinalEnd += (mask >> 10) & 1;
+						*diagonalEnd = b + 1; diagonalEnd += (mask >> 12) & 1;
+					}
+					relax(row | right, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(row | left, cardinalValue, cardinalLimit, cardinalEnd);
 				}
-				relax(row | right, cardinalValue, cardinalEnd);
-				relax(row | left, cardinalValue, cardinalEnd);
-			}
-			else
+				else
+#elif defined(GLOB2_GRADIENT_NEON)
+				if (x >= 1 && x + 2 <= wMask)
+				{
+					// Columns x - 1 .. x + 2 of the three rows. Lanes at x + 2 and at the
+					// cell itself get value 1, which never improves.
+					Uint16 *aboveRun = gradient + above + x - 1;
+					Uint16 *rowRun = gradient + row + x - 1;
+					Uint16 *belowRun = gradient + below + x - 1;
+					const uint16x8_t g = vcombine_u16(vld1_u16(aboveRun), vld1_u16(belowRun));
+					const uint16x4_t gRow = vld1_u16(rowRun);
+					const uint16x4_t one = vdup_n_u16(1);
+					const uint16x4_t outer = vset_lane_u16(1, vset_lane_u16(cardinalValue, vdup_n_u16(diagonalValue), 1), 3);
+					const uint16x8_t value = vcombine_u16(outer, outer);
+					const uint16x4_t valueRow = vset_lane_u16(cardinalValue, vset_lane_u16(cardinalValue, one, 0), 2);
+					const uint16x8_t better = vcltq_u16(vsubq_u16(g, vdupq_n_u16(1)), vsubq_u16(value, vdupq_n_u16(1)));
+					const uint16x4_t betterRow = vclt_u16(vsub_u16(gRow, one), vsub_u16(valueRow, one));
+					// One byte per above/below lane, sixteen bits per row lane.
+					const uint64_t mask = vget_lane_u64(vreinterpret_u64_u8(vshrn_n_u16(better, 8)), 0);
+					const uint64_t rowMask = vget_lane_u64(vreinterpret_u64_u16(betterRow), 0);
+					if (mask | rowMask)
+					{
+						const uint16x8_t merged = vbslq_u16(better, value, g);
+						vst1_u16(aboveRun, vget_low_u16(merged));
+						vst1_u16(belowRun, vget_high_u16(merged));
+						vst1_u16(rowRun, vbsl_u16(betterRow, valueRow, gRow));
+						const Uint32 a = Uint32(above | x), b = Uint32(below | x), r = Uint32(i);
+						*diagonalEnd = a - 1; diagonalEnd += (mask >> 0) & 1;
+						*cardinalEnd = a; cardinalEnd += (mask >> 8) & 1;
+						*diagonalEnd = a + 1; diagonalEnd += (mask >> 16) & 1;
+						*diagonalEnd = b - 1; diagonalEnd += (mask >> 32) & 1;
+						*cardinalEnd = b; cardinalEnd += (mask >> 40) & 1;
+						*diagonalEnd = b + 1; diagonalEnd += (mask >> 48) & 1;
+						*cardinalEnd = r - 1; cardinalEnd += (rowMask >> 0) & 1;
+						*cardinalEnd = r + 1; cardinalEnd += (rowMask >> 32) & 1;
+					}
+				}
+				else
 #endif
-			{
-				relax(above | left, diagonalValue, diagonalEnd);
-				relax(above | x, cardinalValue, cardinalEnd);
-				relax(above | right, diagonalValue, diagonalEnd);
-				relax(row | right, cardinalValue, cardinalEnd);
-				relax(below | right, diagonalValue, diagonalEnd);
-				relax(below | x, cardinalValue, cardinalEnd);
-				relax(below | left, diagonalValue, diagonalEnd);
-				relax(row | left, cardinalValue, cardinalEnd);
+				{
+					relax(above | left, diagonalValue, diagonalLimit, diagonalEnd);
+					relax(above | x, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(above | right, diagonalValue, diagonalLimit, diagonalEnd);
+					relax(row | right, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(below | right, diagonalValue, diagonalLimit, diagonalEnd);
+					relax(below | x, cardinalValue, cardinalLimit, cardinalEnd);
+					relax(below | left, diagonalValue, diagonalLimit, diagonalEnd);
+					relax(row | left, cardinalValue, cardinalLimit, cardinalEnd);
+				}
+				if (water)
+				{
+					waterCardinalEnd = cardinalEnd;
+					waterDiagonalEnd = diagonalEnd;
+				}
+				else
+				{
+					landCardinalEnd = cardinalEnd;
+					landDiagonalEnd = diagonalEnd;
+				}
 			}
-			cardinalBucket.size += size_t(cardinalEnd - cardinalStart);
-			diagonalBucket.size += size_t(diagonalEnd - diagonalStart);
-			pending += size_t(cardinalEnd - cardinalStart) + size_t(diagonalEnd - diagonalStart);
+			landCardinal.size = size_t(landCardinalEnd - landCardinal.cells.data());
+			landDiagonal.size = size_t(landDiagonalEnd - landDiagonal.cells.data());
+			if (Weighted)
+			{
+				waterCardinal.size = size_t(waterCardinalEnd - waterCardinal.cells.data());
+				waterDiagonal.size = size_t(waterDiagonalEnd - waterDiagonal.cells.data());
+			}
 		}
+		pending += queued() - queuedBefore;
 		pending -= count;
 		bucket.clear();
 	}
@@ -223,9 +337,8 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 		}
 	std::sort(deferredSeeds.begin(), deferredSeeds.end());
 	// Class zero never enters water; class EVEN pays the land rate there.
-	// Specializing this common case lets the compiler hoist both edge costs
-	// and queue references out of the per-cell loop.
-	auto sweep = [&](auto stepAt)
+	// Specializing this common case skips the per-cell terrain lookup.
+	auto sweep = [&](auto weighted, EntrySteps waterSteps, auto waterAt)
 	{
 		size_t nextSeed = 0;
 		for (int cur = 0; (pending > 0 || nextSeed < deferredSeeds.size()) && cur <= limit; cur++)
@@ -237,16 +350,14 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 				buckets[unsigned(cur) % BUCKETS].push(Uint32(deferredSeeds[nextSeed].second));
 				pending++;
 			}
-			expandBucket(gradient, buckets, pending, cur, limit, wMask, hMask, wDec, stepAt);
+			expandBucket<decltype(weighted)::value>(gradient, buckets, pending, cur, limit, wMask, hMask, wDec,
+				waterSteps, waterAt);
 		}
 	};
-	if (swimClass == 0 || swimClass == SWIM_CLASS_EVEN)
-		sweep([](size_t) { return LAND_STEPS; });
+	if (!weightedClass(swimClass))
+		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	else
-	{
-		const EntrySteps waterSteps = entrySteps(WATER_STEP[swimClass]);
-		sweep([&](size_t i) { return isWater((unsigned)i) ? waterSteps : LAND_STEPS; });
-	}
+		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [&](size_t i) { return isWater((unsigned)i); });
 }
 
 void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim)
@@ -260,7 +371,7 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	currentCost = 0;
 	pending = 0;
 	for (auto &bucket : buckets) bucket.clear();
-	const bool weighted = swim != 0 && swim != Map::SWIM_CLASS_EVEN;
+	const bool weighted = weightedClass(swim);
 	if (weighted) water.resize(cells);
 	else water.clear();
 	// Building fields have only zero-cost seeds, so no deferred seeds are needed.
@@ -289,22 +400,22 @@ void BuildingGradientSearch::resolve(std::size_t target)
 	assert(target <= cells);
 	if (complete() || (target < cells && resolved(target))) return;
 	PERF_SCOPE_TIME(BuildingGradientResume);
-	auto sweep = [&](auto stepAt)
+	auto sweep = [&](auto weighted, EntrySteps waterSteps, auto waterAt)
 	{
 		while (pending && (target == cells || !resolved(target)))
 		{
 			assert(currentCost <= COST_LIMIT);
-			expandBucket(gradient, buckets.data(), pending, currentCost, COST_LIMIT,
-				widthMask, heightMask, widthShift, stepAt);
+			expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost, COST_LIMIT,
+				widthMask, heightMask, widthShift, waterSteps, waterAt);
 			++currentCost;
 		}
 	};
 	if (water.empty())
-		sweep([](size_t) { return LAND_STEPS; });
+		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	else
 	{
-		const EntrySteps waterSteps = entrySteps(WATER_STEP[swimClass]);
-		sweep([&](size_t i) { return water[i] ? waterSteps : LAND_STEPS; });
+		const std::uint8_t *const waterCells = water.data();
+		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [waterCells](size_t i) { return waterCells[i] != 0; });
 	}
 }
 
