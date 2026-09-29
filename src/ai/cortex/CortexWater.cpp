@@ -134,8 +134,9 @@ namespace Cortex
 		// grows on water and is harvestable only by swimmers, so a revealed algae
 		// tile is a direct reason to train SWIM. FOW-gated (team->allies vision),
 		// exactly like the placement / fruit scans — never unfogged truth.
-		for (int x = 0; x < w && out.algaeDiscovered == 0; x++)
-			for (int y = 0; y < h; y++)
+		// Only existence matters, so visit adjacent tiles in storage order.
+		for (int y = 0; y < h && out.algaeDiscovered == 0; y++)
+			for (int x = 0; x < w; x++)
 				if (map.isResourceTakeable(x, y, ALGA)
 				 && map.isMapDiscovered(x, y, team->allies))
 				{
