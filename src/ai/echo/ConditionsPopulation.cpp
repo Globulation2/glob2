@@ -5,7 +5,6 @@
 
 using namespace AIEcho;
 using namespace AIEcho::Conditions;
-using namespace boost::logic;
 
 
 EitherCondition::EitherCondition(Condition* condition1, Condition* condition2) : condition1(condition1), condition2(condition2)
@@ -23,7 +22,7 @@ EitherCondition::~EitherCondition()
 
 
 
-boost::logic::tribool EitherCondition::passes(Echo& echo)
+tribool EitherCondition::passes(Echo& echo)
 {
 	tribool p1=condition1->passes(echo);
 	tribool p2=condition2->passes(echo);
@@ -72,7 +71,7 @@ Population::Population(bool workers, bool explorers, bool warriors, int num, Pop
 
 
 
-boost::logic::tribool Population::passes(Echo& echo)
+tribool Population::passes(Echo& echo)
 {
 	int amount=0;
 	if(workers)

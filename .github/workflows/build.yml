@@ -24,10 +24,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Both ends of the supported toolchain range: 22.04 is g++ 11 / Boost
-        # 1.74 (catches C++20 features the oldest supported compiler lacks),
-        # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
-        # that no longer come in transitively).
+        # Both ends of the supported toolchain range: 22.04 is g++ 11
+        # (catches C++20 features the oldest supported compiler lacks),
+        # 24.04 is g++ 13 (catches new diagnostics and headers that no
+        # longer come in transitively).
         include:
           - image: ubuntu:22.04
             runner: ubuntu-22.04
@@ -54,7 +54,6 @@ jobs:
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
@@ -95,6 +94,15 @@ jobs:
           /tmp/cloud-field
           ${{ matrix.compiler }} -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
           /tmp/map-render-geometry
+
+      - name: Test the RNG, tribool and local time that replaced Boost
+        run: |
+          ${{ matrix.compiler }} -std=c++20 -O2 test/MersenneTwisterTest.cpp -o /tmp/mersenne-twister
+          /tmp/mersenne-twister
+          ${{ matrix.compiler }} -std=c++20 -O2 test/TriboolTest.cpp -o /tmp/tribool
+          /tmp/tribool
+          ${{ matrix.compiler }} -std=c++20 -O2 test/LocalTimeTest.cpp -o /tmp/local-time
+          /tmp/local-time
 
       - name: Exercise GPU and software game rendering
         run: |
@@ -296,7 +304,6 @@ jobs:
             mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi
             mingw-w64-x86_64-pcre
-            mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy
             mingw-w64-x86_64-libsystre
 
@@ -320,6 +327,15 @@ jobs:
           /tmp/cloud-field
           g++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
           /tmp/map-render-geometry
+
+      - name: Test the RNG, tribool and local time that replaced Boost
+        run: |
+          g++ -std=c++20 -O2 test/MersenneTwisterTest.cpp -o /tmp/mersenne-twister
+          /tmp/mersenne-twister
+          g++ -std=c++20 -O2 test/TriboolTest.cpp -o /tmp/tribool
+          /tmp/tribool
+          g++ -std=c++20 -O2 test/LocalTimeTest.cpp -o /tmp/local-time
+          /tmp/local-time
 
       - name: Build and run the hiring bucket regression
         run: |

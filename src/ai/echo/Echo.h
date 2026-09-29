@@ -172,7 +172,7 @@ namespace AIEcho
 	/// (SearchTools.h:113-116, SearchTools.cpp:314).
 	static constexpr int AI_ECHO_WILDCARD_LEVEL = -1;
 
-	// On-disk encoding of boost::logic::tribool inside AI Echo save streams.
+	// On-disk encoding of tribool inside AI Echo save streams.
 	// Used by BuildingRegister and ChangeAlliances. NOT a wire-format enum —
 	// these bytes only appear in saved-game/AI snapshots.
 	static constexpr int AI_ECHO_TRIBOOL_FALSE = 0;

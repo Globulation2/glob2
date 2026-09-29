@@ -7,7 +7,6 @@
 
 using namespace AIEcho;
 using namespace AIEcho::Conditions;
-using namespace boost::logic;
 
 
 ParticularBuilding::ParticularBuilding(BuildingCondition* condition, int id) : condition(condition), id(id)
@@ -24,7 +23,7 @@ ParticularBuilding::~ParticularBuilding()
 
 
 
-boost::logic::tribool ParticularBuilding::passes(Echo& echo)
+tribool ParticularBuilding::passes(Echo& echo)
 {
 	if(!echo.get_building_register().is_building_found(id) && !echo.get_building_register().is_building_pending(id))
 	{
@@ -74,7 +73,7 @@ BuildingDestroyed::BuildingDestroyed(int id) : id(id)
 
 
 
-boost::logic::tribool BuildingDestroyed::passes(Echo& echo)
+tribool BuildingDestroyed::passes(Echo& echo)
 {
 	if(!echo.get_building_register().is_building_found(id) && !echo.get_building_register().is_building_pending(id))
 	{
@@ -121,7 +120,7 @@ EnemyBuildingDestroyed::EnemyBuildingDestroyed(Echo& echo, int gbid) : gbid(gbid
 
 
 
-boost::logic::tribool EnemyBuildingDestroyed::passes(Echo& echo)
+tribool EnemyBuildingDestroyed::passes(Echo& echo)
 {
 	Building* b=echo.player->game->teams[Building::GIDtoTeam(gbid)]->myBuildings[Building::GIDtoID(gbid)];
 	if(b==NULL)

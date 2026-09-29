@@ -8,7 +8,7 @@
 #include <iterator>
 #include <memory>
 #include <vector>
-#include <boost/logic/tribool.hpp>
+#include "Tribool.h"
 
 namespace AIEcho
 {
@@ -113,7 +113,7 @@ namespace AIEcho
 			///These are the three pieces of information you are provided with. If building_type or level are -1,
 			///they are considered a wildcard, any building will match. If construction_site is indeterminate,
 			///the same thing applies, its a wildcard, any building will match.
-			enemy_building_iterator(Echo& echo, int team, int building_type, int level, boost::logic::tribool construction_site);
+			enemy_building_iterator(Echo& echo, int team, int building_type, int level, tribool construction_site);
 
 			const unsigned int operator*();
 			enemy_building_iterator& operator++();
@@ -133,7 +133,7 @@ namespace AIEcho
 			int team;
 			int building_type;
 			int level;
-			boost::logic::tribool construction_site;
+			tribool construction_site;
 			bool is_end;
 			Echo* echo;
 		};

@@ -69,7 +69,7 @@ void Echo::update_management_orders()
 {
 	for(std::vector<std::shared_ptr<Management::ManagementOrder> >::iterator i=management_orders.begin(); i!=management_orders.end();)
 	{
-		boost::logic::tribool passes=(*i)->passes_conditions(*this);
+		tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
 		{
 			size_t pos = i - management_orders.begin();
@@ -150,7 +150,7 @@ void Echo::update_building_orders()
 {
 	for(std::vector<std::shared_ptr<Construction::BuildingOrder> >::iterator i=building_orders.begin(); i!=building_orders.end();)
 	{
-		boost::logic::tribool passes=(*i)->passes_conditions(*this);
+		tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
 		{
 			if(!(previous_building_id==-1 || br.is_building_found(previous_building_id) || !br.is_building_pending(previous_building_id)))

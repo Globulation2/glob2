@@ -72,8 +72,8 @@ bool YOGServerFileDistributor::wasUploadingCanceled()
 
 void YOGServerFileDistributor::update()
 {
-	boost::posix_time::ptime localtime = boost::posix_time::second_clock::local_time();
-	for(std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> >::iterator i = players.begin(); i!=players.end();)
+	LocalTime localtime = LocalClock::now();
+	for(std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, LocalTime, int> >::iterator i = players.begin(); i!=players.end();)
 	{
 		if(!std::get<0>(*i)->isConnected())
 		{
@@ -97,7 +97,7 @@ void YOGServerFileDistributor::update()
 		{
 			std::get<0>(*i)->sendMessage(chunks[std::get<2>(*i)-1]);
 			std::get<2>(*i) += 1;
-			std::get<1>(*i) = localtime + boost::posix_time::microseconds(100);
+			std::get<1>(*i) = localtime + std::chrono::microseconds(100);
 		}
 		++i;
 	}
@@ -108,14 +108,14 @@ void YOGServerFileDistributor::update()
 void YOGServerFileDistributor::addMapRequestee(std::shared_ptr<YOGServerPlayer> player)
 {
 	guaranteeDataRequested();
-	players.push_back(std::make_tuple(player, boost::posix_time::second_clock::local_time(), 0));
+	players.push_back(std::make_tuple(player, LocalClock::now(), 0));
 }
 
 
 
 void YOGServerFileDistributor::removeMapRequestee(std::shared_ptr<YOGServerPlayer> player)
 {
-	for(std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> >::iterator i = players.begin(); i!=players.end(); ++i)
+	for(std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, LocalTime, int> >::iterator i = players.begin(); i!=players.end(); ++i)
 	{
 		if(std::get<0>(*i) == player)
 		{

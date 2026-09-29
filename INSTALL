@@ -35,7 +35,6 @@ the SDL 1.2 packages are *not* needed and installing them does not help.
      apt install g++ python3 scons pkg-config \
        libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
        libvorbis-dev libogg-dev libspeex-dev \
-       libboost-date-time-dev libboost-thread-dev libboost-system-dev \
        zlib1g-dev libfribidi-dev libpcre3-dev \
        libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
 

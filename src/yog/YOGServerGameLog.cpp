@@ -13,9 +13,9 @@ using namespace GAGCore;
 
 YOGServerGameLog::YOGServerGameLog()
 {
-	boost::posix_time::ptime local = boost::posix_time::second_clock::local_time();
-	hour =  local - boost::posix_time::seconds(local.time_of_day().seconds()%3600);
-	flushTime = local + boost::posix_time::minutes(5);
+	LocalTime local = LocalClock::now();
+	hour = std::chrono::floor<std::chrono::hours>(local);
+	flushTime = local + std::chrono::minutes(5);
 	modified=false;
 	load();
 }
@@ -32,8 +32,8 @@ void YOGServerGameLog::addGameResults(YOGGameResults results)
 
 void YOGServerGameLog::update()
 {
-	boost::posix_time::ptime local = boost::posix_time::second_clock::local_time();
-	boost::posix_time::ptime new_hour =  local - boost::posix_time::seconds(local.time_of_day().total_seconds()%3600);
+	LocalTime local = LocalClock::now();
+	LocalTime new_hour = std::chrono::floor<std::chrono::hours>(local);
 	if(new_hour != hour)
 	{
 		if(modified)
@@ -52,7 +52,7 @@ void YOGServerGameLog::update()
 			save();
 			modified=false;
 		}
-		flushTime = local + boost::posix_time::minutes(5);
+		flushTime = local + std::chrono::minutes(5);
 	}
 }
 
@@ -62,7 +62,7 @@ void YOGServerGameLog::save()
 {
 	std::stringstream s;
 	s<<YOG_SERVER_FOLDER+"gamelog/gamelog";
-	s<<hour;
+	s<<toString(hour);
 	s<<".log";
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(s.str()));
 	
@@ -82,7 +82,7 @@ void YOGServerGameLog::load()
 	games.clear();
 	std::stringstream s;
 	s<<YOG_SERVER_FOLDER+"gamelog/gamelog";
-	s<<hour;
+	s<<toString(hour);
 	s<<".log";
 	StreamBackend* backend = Toolkit::getFileManager()->openInputStreamBackend(s.str());
 	if(!backend->isEndOfStream())

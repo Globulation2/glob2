@@ -11,7 +11,6 @@
 
 using namespace AIEcho;
 using namespace AIEcho::Gradients;
-using namespace boost::logic;
 
 
 GradientInfo::GradientInfo()

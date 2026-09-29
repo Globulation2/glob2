@@ -10,7 +10,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <boost/logic/tribool.hpp>
+#include "Tribool.h"
 
 namespace AIEcho
 {
@@ -60,7 +60,7 @@ namespace AIEcho
 			///that its impossible to execute, false means wait some more and true means ready to execute
 			///For example, the ChangeFlagSize order requires that the building be in existence, and
 			///that it's a flag.
-			virtual boost::logic::tribool wait(Echo& echo)=0;
+			virtual tribool wait(Echo& echo)=0;
 
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			virtual void save(GAGCore::OutputStream *stream);
@@ -69,11 +69,11 @@ namespace AIEcho
 			///Shared wait() implementation for orders that target a single building:
 			///true once the building is constructed, false while it's pending,
 			///indeterminate once it has gone away (so the order is dropped).
-			static boost::logic::tribool wait_for_building(Echo& echo, int building_id);
+			static tribool wait_for_building(Echo& echo, int building_id);
 
 		private:
 			friend class AIEcho::Echo;
-			boost::logic::tribool passes_conditions(Echo& echo);
+			tribool passes_conditions(Echo& echo);
 			static ManagementOrder* load_order(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			static void save_order(ManagementOrder* mo, GAGCore::OutputStream *stream);
 
@@ -88,7 +88,7 @@ namespace AIEcho
 			explicit AssignWorkers(int number_of_workers, int building_id);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -105,7 +105,7 @@ namespace AIEcho
 			ChangeSwarm(int worker_ratio, int explorer_ratio, int warrior_ratio, int building_id);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -124,7 +124,7 @@ namespace AIEcho
 			DestroyBuilding(int building_id);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -168,7 +168,7 @@ namespace AIEcho
 			AddResourceTracker() : length(0), building_id(0), resource(0) {}
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -185,7 +185,7 @@ namespace AIEcho
 			PauseResourceTracker(int building_id);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -200,7 +200,7 @@ namespace AIEcho
 			UnPauseResourceTracker(int building_id);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -215,7 +215,7 @@ namespace AIEcho
 			explicit ChangeFlagSize(int size, int building_id);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -234,7 +234,7 @@ namespace AIEcho
 			explicit ChangeFlagMinimumLevel(int minimum_level, int building_id);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -251,7 +251,7 @@ namespace AIEcho
 			explicit ChangeFlagPosition(int x, int y, int building_id);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -276,7 +276,7 @@ namespace AIEcho
 			AdjustPriority(int building_id, BuildingPriority priority);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -297,7 +297,7 @@ namespace AIEcho
 			void add_location(int x, int y);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -317,7 +317,7 @@ namespace AIEcho
 			void add_location(int x, int y);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -334,20 +334,20 @@ namespace AIEcho
 			///You pass in a team number, that can be retrieved from enemy_team_iterator or a similar method. Then you pass in modifiers
 			///on each of the possible alliances. If you pass in true, that alliance mode is set. If you pass in false, that alliance
 			///mode is unset. If you pass in indeterminate, that alliance mode is not changed, keeping whatever value it had before.
-			ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other);
+			ChangeAlliances(int team, tribool is_allied, tribool is_enemy, tribool view_market, tribool view_inn, tribool view_other);
 		protected:
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
 		private:
 			int team;
-			boost::logic::tribool is_allied;
-			boost::logic::tribool is_enemy;
-			boost::logic::tribool view_market;
-			boost::logic::tribool view_inn;
-			boost::logic::tribool view_other;
+			tribool is_allied;
+			tribool is_enemy;
+			tribool view_market;
+			tribool view_inn;
+			tribool view_other;
 		};
 
 		///This order calls for a particular building to be upgraded or repaired with the provided number of workers.
@@ -359,7 +359,7 @@ namespace AIEcho
 			friend class ManagementOrder;
 			UpgradeRepair() {}
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
@@ -380,7 +380,7 @@ namespace AIEcho
 			friend class ManagementOrder;
 			SendMessage() {}
 			void modify(Echo& echo);
-			boost::logic::tribool wait(Echo& echo);
+			tribool wait(Echo& echo);
 			ManagementOrderType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);

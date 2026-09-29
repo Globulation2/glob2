@@ -7,11 +7,10 @@
 
 using namespace AIEcho;
 using namespace AIEcho::Management;
-using namespace boost::logic;
 using std::shared_ptr;
 
 
-ChangeAlliances::ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other) : team(team), is_allied(is_allied), is_enemy(is_enemy), view_market(view_market), view_inn(view_inn), view_other(view_other)
+ChangeAlliances::ChangeAlliances(int team, tribool is_allied, tribool is_enemy, tribool view_market, tribool view_inn, tribool view_other) : team(team), is_allied(is_allied), is_enemy(is_enemy), view_market(view_market), view_inn(view_inn), view_other(view_other)
 {
 
 }
@@ -65,7 +64,7 @@ void ChangeAlliances::modify(Echo& echo)
 
 
 
-boost::logic::tribool ChangeAlliances::wait(Echo& echo)
+tribool ChangeAlliances::wait(Echo& echo)
 {
 	return true;
 }
@@ -183,7 +182,7 @@ void UpgradeRepair::modify(Echo& echo)
 
 
 
-boost::logic::tribool UpgradeRepair::wait(Echo& echo)
+tribool UpgradeRepair::wait(Echo& echo)
 {
 	return wait_for_building(echo, id);
 }
@@ -231,7 +230,7 @@ void SendMessage::modify(Echo& echo)
 
 
 
-boost::logic::tribool SendMessage::wait(Echo& echo)
+tribool SendMessage::wait(Echo& echo)
 {
 	return true;
 }

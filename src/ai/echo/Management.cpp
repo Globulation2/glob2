@@ -91,12 +91,12 @@ void ManagementOrder::save_order(ManagementOrder* mo, GAGCore::OutputStream *str
 
 
 
-boost::logic::tribool ManagementOrder::wait_for_building(Echo& echo, int building_id)
+tribool ManagementOrder::wait_for_building(Echo& echo, int building_id)
 {
 	if(echo.get_building_register().is_building_found(building_id))
 		return true;
 	if(echo.get_building_register().is_building_pending(building_id))
 		return false;
-	return boost::logic::indeterminate;
+	return indeterminate;
 }
 

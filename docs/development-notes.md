@@ -31,7 +31,7 @@ scons -C test                 # rebuild the separate test suite
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
-  Boost date_time, zlib, fribidi and pcre; PortAudio is optional.
+  zlib, fribidi and pcre; PortAudio is optional.
 - `CCACHE=1` opts into the shared compiler cache. Unset it when generating
   `compile_commands.json`; do not add `CCACHE_SLOPPINESS` settings that weaken
   content or time-macro validation (`include_file_mtime`, `include_file_ctime`,

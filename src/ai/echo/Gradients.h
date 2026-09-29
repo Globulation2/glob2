@@ -9,7 +9,7 @@
 #include <memory>
 #include <queue>
 #include <vector>
-#include <boost/logic/tribool.hpp>
+#include "Tribool.h"
 
 class GradientBFSTest;
 class Player;
@@ -243,7 +243,7 @@ namespace AIEcho
 			bool operator==(const GradientInfo& rhs) const;
 			std::vector<std::shared_ptr<Entities::Entity> > sources;
 			std::vector<std::shared_ptr<Entities::Entity> > obstacles;
-			mutable boost::logic::tribool needs_updated;
+			mutable tribool needs_updated;
 		};
 
 		///Heres a few convience functions for creating a Gradient Info

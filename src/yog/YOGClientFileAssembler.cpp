@@ -19,7 +19,7 @@ YOGClientFileAssembler::YOGClientFileAssembler(std::weak_ptr<YOGClient> client, 
 	mode = NoTransfer;
 	size = 0;
 	finished=0;
-	sendTime = boost::posix_time::second_clock::local_time();
+	sendTime = LocalClock::now();
 }
 
 
@@ -28,11 +28,11 @@ void YOGClientFileAssembler::update()
 {
 	if(mode == SendingFile && finished < size)
 	{
-		boost::posix_time::ptime current = boost::posix_time::second_clock::local_time();
+		LocalTime current = LocalClock::now();
 		if(sendTime < current)
 		{
 			sendNextChunk();
-			sendTime = current+boost::posix_time::microseconds(100);
+			sendTime = current+std::chrono::microseconds(100);
 		}
 	}
 }

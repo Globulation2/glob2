@@ -4,10 +4,10 @@
 #include "YOGPlayerStoredInfo.h"
 
 #include "Stream.h"
-#include <sstream>
 
 YOGPlayerStoredInfo::YOGPlayerStoredInfo()
 {
+	unmute_time = notADateTime();
 	banned=false;
 	moderator=false;
 	///The default rating is 1000
@@ -16,7 +16,7 @@ YOGPlayerStoredInfo::YOGPlayerStoredInfo()
 
 
 
-void YOGPlayerStoredInfo::setMuted(boost::posix_time::ptime nunmute_time)
+void YOGPlayerStoredInfo::setMuted(LocalTime nunmute_time)
 {
 	unmute_time = nunmute_time;
 }
@@ -25,15 +25,15 @@ void YOGPlayerStoredInfo::setMuted(boost::posix_time::ptime nunmute_time)
 
 void YOGPlayerStoredInfo::setUnmuted()
 {
-	unmute_time = boost::posix_time::ptime();
+	unmute_time = notADateTime();
 }
 
 
 
 bool YOGPlayerStoredInfo::isMuted() const
 {
-	boost::posix_time::ptime current_time = boost::posix_time::second_clock::local_time();
-	if(unmute_time == boost::posix_time::ptime() || unmute_time < current_time)
+	LocalTime current_time = LocalClock::now();
+	if(unmute_time == notADateTime() || unmute_time < current_time)
 	{
 		return false;
 	}
@@ -94,9 +94,7 @@ int YOGPlayerStoredInfo::getPlayerRating() const
 void YOGPlayerStoredInfo::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("YOGPlayerStoredInfo");
-	std::stringstream time;
-	time<<unmute_time;
-	stream->writeText(time.str(), "unmute_time");
+	stream->writeText(toString(unmute_time), "unmute_time");
 	stream->writeUint8(banned, "banned");
 	stream->writeUint8(moderator, "moderator");
 	stream->writeUint32(rating, "rating");
@@ -109,9 +107,7 @@ void YOGPlayerStoredInfo::decodeData(GAGCore::InputStream* stream, Uint32 dataVe
 {
 	stream->readEnterSection("YOGPlayerStoredInfo");
 	std::string b = stream->readText("unmute_time");
-	std::stringstream time;
-	time<<b;
-	time>>unmute_time;
+	parseLocalTime(b, unmute_time);
 	banned=stream->readUint8("banned");
 	moderator=stream->readUint8("moderator");
 	rating=stream->readUint32("rating");

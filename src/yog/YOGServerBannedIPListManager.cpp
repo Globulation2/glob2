@@ -38,8 +38,8 @@ void YOGServerBannedIPListManager::update()
 		saveCountdown -= 1;
 	}
 	
-	boost::posix_time::ptime current_time = boost::posix_time::second_clock::local_time();
-	for(std::map<std::string, boost::posix_time::ptime>::iterator i=bannedIPs.begin(); i!=bannedIPs.end();)
+	LocalTime current_time = LocalClock::now();
+	for(std::map<std::string, LocalTime>::iterator i=bannedIPs.begin(); i!=bannedIPs.end();)
 	{
 		if(i->second < current_time)
 		{
@@ -55,7 +55,7 @@ void YOGServerBannedIPListManager::update()
 
 
 
-void YOGServerBannedIPListManager::addBannedIP(const std::string& bannedIP, boost::posix_time::ptime unban_time)
+void YOGServerBannedIPListManager::addBannedIP(const std::string& bannedIP, LocalTime unban_time)
 {
 	modified=true;
 	bannedIPs[bannedIP] = unban_time;
@@ -79,12 +79,10 @@ void YOGServerBannedIPListManager::saveBannedIPList()
 	OutputStream* stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(YOG_SERVER_FOLDER+"bannedips"));
 	stream->writeUint32(VERSION_MINOR, "version");
 	stream->writeUint32(bannedIPs.size(), "size");
-	for(std::map<std::string, boost::posix_time::ptime>::iterator i = bannedIPs.begin(); i!=bannedIPs.end(); ++i)
+	for(std::map<std::string, LocalTime>::iterator i = bannedIPs.begin(); i!=bannedIPs.end(); ++i)
 	{
 		stream->writeText(i->first, "ip");
-		std::stringstream time;
-		time<<i->second;
-		stream->writeText(time.str(), "time");
+		stream->writeText(toString(i->second), "time");
 	}
 	delete stream;
 }
@@ -103,10 +101,8 @@ void YOGServerBannedIPListManager::loadBannedIPList()
 			std::string ip = stream->readText("ip");
 			std::string b = stream->readText("time");
 			
-			std::stringstream time;
-			boost::posix_time::ptime unban_time;
-			time<<b;
-			time>>unban_time;
+			LocalTime unban_time = notADateTime();
+			parseLocalTime(b, unban_time);
 			bannedIPs[ip]=unban_time;
 		}
 	}

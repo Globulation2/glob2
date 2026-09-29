@@ -4,7 +4,7 @@
 #pragma once
 
 #include "YOGGameResults.h"
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include "LocalTime.h"
 #include "SDL_net.h"
 
 ///This class keeps a complete list of games played
@@ -25,11 +25,11 @@ private:
 	///This loads the game log
 	void load();
 	///This is the current hour
-	boost::posix_time::ptime hour;
+	LocalTime hour;
 	///This is the list of games from this hour
 	std::vector<YOGGameResults> games;
 	///This is the next time the list will be flushed
-	boost::posix_time::ptime flushTime;
+	LocalTime flushTime;
 	///This is set when the list has changed
 	bool modified;
 };

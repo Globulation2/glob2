@@ -6,7 +6,6 @@
 #include <stdlib.h>
 
 #include <limits>
-#include <boost/random/uniform_int_distribution.hpp>
 //also the Perlin Noise stuff uses random that is not based on syncRand
 #include "Game.h"
 #include "MapGenerator.h"
@@ -151,7 +150,7 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 	// std::random_shuffle + boost::random_number_generator pairing.
 	for (size_t i = 1; i < points.size(); ++i)
 	{
-		size_t j = boost::random::uniform_int_distribution<size_t>(0, i)(randomGenerator);
+		size_t j = uniformInt(randomGenerator, Uint32(i));
 		if (i != j)
 			std::swap(points[i], points[j]);
 	}

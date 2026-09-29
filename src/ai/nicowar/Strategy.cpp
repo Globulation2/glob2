@@ -11,7 +11,6 @@ using namespace AIEcho::Construction;
 using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
-using namespace boost::logic;
 
 
 void NicowarStrategy::loadFromConfigFile(const ConfigBlock *configBlock)

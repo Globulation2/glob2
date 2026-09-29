@@ -133,25 +133,9 @@ def configure(env, server_only):
         print("Could not find regex.h")
         missing.append("regex")
 
-    boost_date_time = ''
-    if conf.CheckLib("boost_date_time") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_date_time="boost_date_time"
-    elif conf.CheckLib("boost_date_time-mt") and conf.CheckCXXHeader("boost/date_time/posix_time/posix_time.hpp"):
-        boost_date_time="boost_date_time-mt"
-    else:
-        print("Could not find libboost_date_time or libboost_date_time-mt or boost/date_time/posix_time/posix_time.hpp")
-        missing.append("libboost_date_time")
-    env.Append(LIBS=[boost_date_time])
-    # Optional, unlike the checks above: Boost.System is header-only from 1.69 on,
-    # so there is nothing to link against on a modern Boost.
-    if conf.CheckLib("boost_system"):
-        env.Append(LIBS=["boost_system"])
     env.Append(LIBS=["pthread"])
     
 
-    if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):
-        print("Could not find boost/logic/tribool.hpp")
-        missing.append("boost/logic/tribool.hpp")
      
     #Do checks for OpenGL, which is different on every system
     gl_libraries = []

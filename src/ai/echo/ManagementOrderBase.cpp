@@ -7,7 +7,6 @@
 using namespace AIEcho;
 using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
-using namespace boost::logic;
 using std::shared_ptr;
 
 
@@ -54,11 +53,11 @@ void ManagementOrder::add_condition(Condition* condition)
 
 
 
-boost::logic::tribool ManagementOrder::passes_conditions(Echo& echo)
+tribool ManagementOrder::passes_conditions(Echo& echo)
 {
 	for(unsigned int i=0; i<conditions.size(); ++i)
 	{
-		boost::logic::tribool passes=conditions[i]->passes(echo);
+		tribool passes=conditions[i]->passes(echo);
 		if(passes)
 			continue;
 		else if(!passes)
@@ -68,7 +67,7 @@ boost::logic::tribool ManagementOrder::passes_conditions(Echo& echo)
 
 	}
 
-	boost::logic::tribool passes=wait(echo);
+	tribool passes=wait(echo);
 	if(passes)
 		return true;
 	if(!passes)
@@ -91,7 +90,7 @@ void AssignWorkers::modify(Echo& echo)
 
 
 
-boost::logic::tribool AssignWorkers::wait(Echo& echo)
+tribool AssignWorkers::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }
@@ -138,7 +137,7 @@ void ChangeSwarm::modify(Echo& echo)
 
 
 
-boost::logic::tribool ChangeSwarm::wait(Echo& echo)
+tribool ChangeSwarm::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }
@@ -187,7 +186,7 @@ void DestroyBuilding::modify(Echo& echo)
 
 
 
-boost::logic::tribool DestroyBuilding::wait(Echo& echo)
+tribool DestroyBuilding::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }

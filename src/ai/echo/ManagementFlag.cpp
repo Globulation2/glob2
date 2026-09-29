@@ -7,7 +7,6 @@
 
 using namespace AIEcho;
 using namespace AIEcho::Management;
-using namespace boost::logic;
 using std::shared_ptr;
 
 
@@ -74,7 +73,7 @@ void ChangeFlagSize::modify(Echo& echo)
 
 
 
-boost::logic::tribool ChangeFlagSize::wait(Echo& echo)
+tribool ChangeFlagSize::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }
@@ -118,7 +117,7 @@ void ChangeFlagMinimumLevel::modify(Echo& echo)
 
 
 
-boost::logic::tribool ChangeFlagMinimumLevel::wait(Echo& echo)
+tribool ChangeFlagMinimumLevel::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }
@@ -162,7 +161,7 @@ void ChangeFlagPosition::modify(Echo& echo)
 
 
 
-boost::logic::tribool ChangeFlagPosition::wait(Echo& echo)
+tribool ChangeFlagPosition::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }
@@ -215,7 +214,7 @@ void AdjustPriority::modify(Echo& echo)
 
 
 
-boost::logic::tribool AdjustPriority::wait(Echo& echo)
+tribool AdjustPriority::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }
@@ -274,7 +273,7 @@ void AddArea::modify(Echo& echo)
 
 
 
-boost::logic::tribool AddArea::wait(Echo& echo)
+tribool AddArea::wait(Echo& echo)
 {
 	return true;
 }
@@ -343,7 +342,7 @@ void RemoveArea::modify(Echo& echo)
 
 
 
-boost::logic::tribool RemoveArea::wait(Echo& echo)
+tribool RemoveArea::wait(Echo& echo)
 {
 	return true;
 }

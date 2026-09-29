@@ -10,7 +10,6 @@
 using namespace AIEcho;
 using namespace AIEcho::Construction;
 using namespace AIEcho::SearchTools;
-using namespace boost::logic;
 
 
 FlagMap::FlagMap(Echo& echo) : flagmap(echo.player->map->getW()*echo.player->map->getH(), NOGBID), width(echo.player->map->getW()), echo(echo)
@@ -144,7 +143,7 @@ bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32
 		Uint32 building_type=stream->readUint32("building_type");
 		Uint32 gid=stream->readUint32("gid");
 		Uint8 upgrade_status=stream->readUint8("upgrade_status");
-		boost::logic::tribool t;
+		tribool t;
 		if(upgrade_status==AI_ECHO_TRIBOOL_FALSE)
 			t=false;
 		else if(upgrade_status==AI_ECHO_TRIBOOL_TRUE)

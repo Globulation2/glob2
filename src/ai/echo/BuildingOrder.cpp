@@ -11,7 +11,6 @@ using namespace AIEcho;
 using namespace AIEcho::Gradients;
 using namespace AIEcho::Construction;
 using namespace AIEcho::Conditions;
-using namespace boost::logic;
 
 
 BuildingOrder::BuildingOrder(int building_type, int number_of_workers) : building_type(building_type), number_of_workers(number_of_workers)
@@ -169,11 +168,11 @@ position BuildingOrder::find_location(Echo& echo, Map* map, GradientManager& man
 
 
 
-boost::logic::tribool BuildingOrder::passes_conditions(Echo& echo)
+tribool BuildingOrder::passes_conditions(Echo& echo)
 {
 	for(unsigned int i=0; i<conditions.size(); ++i)
 	{
-		boost::logic::tribool passes=conditions[i]->passes(echo);
+		tribool passes=conditions[i]->passes(echo);
 		if(passes)
 			continue;
 		else if(!passes)

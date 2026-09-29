@@ -10,7 +10,7 @@
 
 #include <SDL_net.h>
 
-#include <boost/random/mersenne_twister.hpp>
+#include "MersenneTwister.h"
 
 namespace GAGCore
 {
@@ -19,7 +19,7 @@ namespace GAGCore
 }
 
 //Mersenne twister implementation
-extern boost::mt19937 randomGenerator;
+extern MersenneTwister randomGenerator;
 
 inline Uint32 syncRand(void)
 {

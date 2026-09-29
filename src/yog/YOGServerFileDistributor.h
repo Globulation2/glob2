@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include "LocalTime.h"
 #include <memory>
 #include <tuple>
 #include "SDL_net.h"
@@ -64,7 +64,7 @@ private:
 	std::shared_ptr<YOGServerPlayer> player;
 	std::shared_ptr<NetSendFileInformation> fileInfo;
 	std::vector<std::shared_ptr<NetSendFileChunk> > chunks;
-	std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, boost::posix_time::ptime, int> > players;
+	std::vector<std::tuple<std::shared_ptr<YOGServerPlayer>, LocalTime, int> > players;
 
 };
 

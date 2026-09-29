@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "boost/date_time/posix_time/posix_time.hpp"
+#include "LocalTime.h"
 #include "SDL_net.h"
 
 namespace GAGCore
@@ -20,7 +20,7 @@ public:
 	YOGPlayerStoredInfo();
 	
 	///Sets this player to be muted until the given time
-	void setMuted(boost::posix_time::ptime unmute_time);
+	void setMuted(LocalTime unmute_time);
 	
 	///Sets this player to be unmuted
 	void setUnmuted();
@@ -59,7 +59,7 @@ public:
 	bool operator==(const YOGPlayerStoredInfo& rhs) const;
 	bool operator!=(const YOGPlayerStoredInfo& rhs) const;
 private:
-	boost::posix_time::ptime unmute_time;
+	LocalTime unmute_time;
 	bool banned;
 	bool moderator;
 	int rating;

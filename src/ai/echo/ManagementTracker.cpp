@@ -6,7 +6,6 @@
 
 using namespace AIEcho;
 using namespace AIEcho::Management;
-using namespace boost::logic;
 
 
 ResourceTracker::ResourceTracker(Echo& echo, int building_id, int length, int resource) : record(length, 0), position(0), timer(0), length(length), echo(echo), building_id(building_id), resource(resource)
@@ -102,7 +101,7 @@ void AddResourceTracker::modify(Echo& echo)
 
 
 
-boost::logic::tribool AddResourceTracker::wait(Echo& echo)
+tribool AddResourceTracker::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }
@@ -148,7 +147,7 @@ void PauseResourceTracker::modify(Echo& echo)
 
 
 
-boost::logic::tribool PauseResourceTracker::wait(Echo& echo)
+tribool PauseResourceTracker::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }
@@ -190,7 +189,7 @@ void UnPauseResourceTracker::modify(Echo& echo)
 
 
 
-boost::logic::tribool UnPauseResourceTracker::wait(Echo& echo)
+tribool UnPauseResourceTracker::wait(Echo& echo)
 {
 	return wait_for_building(echo, building_id);
 }

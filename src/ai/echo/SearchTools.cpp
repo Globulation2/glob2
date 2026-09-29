@@ -15,7 +15,6 @@ using namespace AIEcho::Construction;
 using namespace AIEcho::Management;
 using namespace AIEcho::Conditions;
 using namespace AIEcho::SearchTools;
-using namespace boost::logic;
 using std::shared_ptr;
 
 
@@ -243,7 +242,7 @@ enemy_building_iterator::enemy_building_iterator() : is_end(true)
 
 
 
-enemy_building_iterator::enemy_building_iterator(Echo& echo, int team, int building_type, int level, boost::logic::tribool construction_site) : current_gid(AI_ECHO_ITER_NOT_STARTED), team(team), building_type(building_type), level(level), construction_site(construction_site), is_end(false), echo(&echo)
+enemy_building_iterator::enemy_building_iterator(Echo& echo, int team, int building_type, int level, tribool construction_site) : current_gid(AI_ECHO_ITER_NOT_STARTED), team(team), building_type(building_type), level(level), construction_site(construction_site), is_end(false), echo(&echo)
 {
 	set_to_next();
 }
