@@ -351,6 +351,26 @@ from `Map::buildingGradient`: `ring-after`, `ring-other-team` and `ring-flag` al
 fail. `ring-before` passes either way by construction — nothing is cached before
 the ring exists — which is why it is not on its own sufficient.
 
+## Forbidden-zone invalidation and escape recovery
+
+Build `scons -j8 release=1 server=0 gradient-invalidation-test` and run
+`MapGradientInvalidationTest` from the native build's `src` directory. The harness
+checks all seven swim classes against freshly rebuilt fields after forbidden
+brushes, including resource-only edits, clearing goals, other teams and previously
+stale caches. It also checks resource, terrain, building and immobility transitions,
+a depleted escape exit, unreachable pockets and the refresh budget across tick wrap.
+
+Forbidden edits preserve unaffected walking fields and pending searches; own-team
+harvest round trips and clearing destinations still invalidate. Escape fields have
+an independent slot every eight ticks, cycling across team/swim combinations.
+Uniform-cost classes first check input markers to skip unchanged propagation.
+The normal visit interval is `8 * teams * SWIM_CLASS_COUNT`; unsigned tick wrap
+can extend one interval to less than twice that bound. This schedule uses the saved
+game tick and preserves saved fields, with no new scheduling state.
+
+This changes simulation decisions: replay floor 123 and network protocol 46 separate
+it from previous clients. The supported save-format floor remains 58.
+
 ## Building expulsion regression
 
 From the repository root, run `scons -j8 release=1 server=0 building-expel-test`
@@ -566,7 +586,7 @@ state cannot be recovered from them. A subsequent format-119 save preserves the
 reconstructed state. Network protocol 42 gates transfers containing the new fields;
 the replay floor for that version remained unchanged. Version 122 gives each
 controller its own manager, loads and copies legacy shared-manager state, and
-raises the replay floor to 122 and network protocol to 45.
+raises the replay floor to 123 and network protocol to 46.
 
 ## Shared AI runtime building-order id save compatibility
 

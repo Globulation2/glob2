@@ -40,6 +40,17 @@ if not env['server']:
     local.Alias('runtime-continuation-test', runtime_link_env.Program('RuntimeContinuationTest', runtime_sources))
 
 if not env['server']:
+    gradient_test_env = local.Clone()
+    gradient_test_env.Append(CCFLAGS=['-UNDEBUG'])
+    gradient_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    gradient_sources += [source for source in source_files if not source.endswith('.cpp')]
+    gradient_sources += gradient_test_env.Object('MapGradientInvalidationTest.o', '#test/MapGradientInvalidationTest.cpp')
+    gradient_link_env = local.Clone()
+    gradient_link_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    gradient_link_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    local.Alias('gradient-invalidation-test', gradient_link_env.Program('MapGradientInvalidationTest', gradient_sources))
+
+if not env['server']:
     geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
     geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
     geometry_test = local.Program('CortexGeometryHarness', geometry_sources)

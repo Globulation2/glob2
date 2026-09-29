@@ -131,6 +131,7 @@ class Building : public BuildingUtils
 	void freeGradients();
 	// Drop the pathfinding gradients (call after the building moves or its range changes).
 	void resetPathfindGradients();
+	void resetRoundTripGradients();
 	// Request a rebuild on use once the refresh throttle permits (map changed nearby).
 	void dirtyGradients();
 

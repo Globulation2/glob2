@@ -53,7 +53,7 @@ def main():
         run = subprocess.run([str(binary),'--run-game','--output-dir',str(dest),*args],capture_output=True,text=True)
         (output/f'rejection-{index}.log').write_text(run.stdout+run.stderr)
         assert run.returncode != 0, args
-        assert not list(dest.glob('*.game')) and not list(dest.glob('*.replay')), args
+        assert not list(dest.glob('*.game*')) and not list(dest.glob('*.replay')), args
     print('PASS pipeline defaults, trace determinism, eight-phase save continuation and invalid option rejection')
 
 

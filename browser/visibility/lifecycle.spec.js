@@ -94,6 +94,6 @@ test('background single-player suspends and returns without catching up', async 
     if(browser) await browser.close();
     if(child.exitCode===null) child.kill();
     await exited;
-    await fs.rm(profile,{recursive:true,force:true});
+    await fs.rm(profile,{recursive:true,force:true,maxRetries:5,retryDelay:100});
   }
 });

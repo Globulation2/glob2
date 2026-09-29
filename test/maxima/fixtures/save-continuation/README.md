@@ -4,9 +4,10 @@
 30000 on a 128×128 symmetric arena (map seed 42, game seed 19). The expected
 JSON maps each of the 512 ticks from 30000 through 30511 to the SHA-256 of its
 ordered team/entity checksum record when continuing that retained checkpoint with
-the current AI policy. The current baseline includes permanent wheat seed protection,
-renewable wood reserves and no supplemental expansion support. It was verified
-against matching macOS and Linux continuations. The original v115 checkpoint
+the current AI policy and version-123 scoped-gradient routing schedule.
+`expected-scoped-gradients-30000-30512.json` is the active trajectory; prior
+expected trajectories remain retained for their earlier scheduling policies. The current baseline includes permanent wheat seed protection,
+renewable wood reserves and no supplemental expansion support. CI compares platform continuations against this same trajectory. The original v115 checkpoint
 is retained to keep testing older-save loading. The test also saves at tick 30256,
 reloads, and compares all remaining records against the uninterrupted continuation
 to verify save/load continuity independently of the fixed baseline. Aggregate hashes
