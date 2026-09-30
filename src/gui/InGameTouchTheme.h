@@ -70,6 +70,7 @@ inline constexpr double peekSide = 300;
 inline constexpr int peekMinimapSize = 256;
 inline constexpr unsigned peekPressMs = 400;
 inline constexpr double peekZoomStep = 1.25;
+inline constexpr double peekButtonColumn = 96; // Landscape: buttons beside the map.
 inline constexpr double dragThreshold = 8;
 inline constexpr double fingerLift = 48;
 inline constexpr double edgePanMargin = 24;

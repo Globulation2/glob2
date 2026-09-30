@@ -714,6 +714,13 @@
       "group": "Map & campaign editor"
     },
     {
+      "id": "editor-map-peek",
+      "title": "Editor \u00b7 map peek",
+      "description": "The Map button in the far bottom corner opens a large minimap: drag to steer the view, zoom buttons beside or below it, Done or a tap outside closes it.",
+      "group": "Map & campaign editor",
+      "availability": "mobile"
+    },
+    {
       "id": "editor-brush-undo",
       "title": "Editor \u00b7 brush undo",
       "description": "After a zone, script-area or no-growth stroke the rail offers Undo for a few seconds; terrain and delete strokes do not. Desktop shows its existing brush selector.",

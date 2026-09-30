@@ -363,6 +363,38 @@ class GameGUITouchHarness
 		require(!touch.inspecting() && touch.paletteMode == 2,
 				"Closing inspector did not restore palette");
 		{
+			// The editor's Map button opens the map peek: drag steers, buttons zoom,
+			// a tap outside closes it, and the map's contents never change.
+			touch.chooseMode(0);
+			touch.prepare();
+			require(touch.showsMapButton(), "The editor shows its Map button");
+			const auto before = checksum();
+			tap(centre(touch.mapButton()));
+			require(touch.peekOpen && !touch.showsMapButton(), "The Map button opens the editor peek");
+			touch.draw();
+			const auto peek = touch.peekRect();
+			const GAGCore::ViewPoint a{peek.x + peek.w * .3, peek.y + peek.h * .3}, b{peek.x + peek.w * .7, peek.y + peek.h * .6};
+			finger(SDL_FINGERDOWN, 1, a);
+			finger(SDL_FINGERMOTION, 1, b);
+			const int dragX = editor.viewportX, dragY = editor.viewportY;
+			touch.navigatePeek(b);
+			require(editor.viewportX == dragX && editor.viewportY == dragY, "Dragging in the editor peek steers the view");
+			touch.navigatePeek(a);
+			require(editor.viewportX != dragX || editor.viewportY != dragY, "Editor peek fixture moves the view");
+			finger(SDL_FINGERUP, 1, b);
+			touch.draw();
+			gfx->printScreen("touch-editor-peek.bmp");
+			gfx->nextFrame();
+			const double zoom = editor.camera.zoom;
+			tap(centre(touch.peekButtons()[2]));
+			require(editor.camera.zoom > zoom && touch.peekOpen, "Editor peek + zooms in");
+			tap(centre(touch.peekButtons()[1]));
+			const GAGCore::ViewPoint outside{touch.content.x + 4 * u, touch.content.y + 4 * u};
+			require(!peek.contains(outside), "Outside fixture must miss the editor peek");
+			tap(outside);
+			require(!touch.peekOpen && checksum() == before, "A tap outside closes the peek without editing the map");
+		}
+		{
 			// Terrain strokes remove things, so they offer no Undo.
 			touch.chooseMode(0);
 			editor.performAction("select sand");

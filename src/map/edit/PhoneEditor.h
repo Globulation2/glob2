@@ -14,6 +14,7 @@
 class MapEdit;
 class MapEditorWidget;
 class ValueScrollBox;
+class Minimap;
 struct Tile;
 namespace Utilities
 {
@@ -119,6 +120,16 @@ class PhoneEditor
 	};
 	std::optional<EditorUndo> undo;
 	void applyUndo();
+	// The map peek: a large minimap for one-thumb navigation, opened from a
+	// Map button in the content's far bottom corner.
+	bool peekOpen = false;
+	std::unique_ptr<Minimap> peekMinimap;
+	bool showsMapButton() const;
+	GAGCore::ViewRect mapButton() const;
+	GAGCore::ViewRect peekRect() const;
+	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in.
+	void navigatePeek(GAGCore::ViewPoint point);
+	void drawPeek();
 	void drawInteractionPreview();
 	void clearTool();
 	void prepare();

@@ -37,7 +37,8 @@ Tapping it centres the camera there; dragging keeps steering the camera and clam
 at the minimap's edge when the finger leaves it. A still 400 ms press on it, or the
 map lens, opens a map peek: a large minimap over the dimmed map that steers the
 camera while dragged, with Done, zoom out and zoom in (nearest the thumb) below
-it; a tap outside, Done, focus loss or rotation closes it. On compact layouts the
+it (beside it, zoom in lowest, on landscape screens); a tap outside, Done, focus
+loss or rotation closes it. On compact layouts the
 Tools button opens a lens strip in the thumb corner instead of the tactical list:
 No overlay and the four overlays (mutually exclusive), health bars, statistics,
 the map peek, message history, map marks and chat, each running the same
@@ -201,7 +202,10 @@ Pan, sizes). Zone, script-area and no-growth strokes offer Undo for six seconds,
 restoring the covered tiles and displayed zone bits exactly; terrain, resource
 and delete strokes remove units, buildings and resources, so they offer none.
 The editor does not pan while a stroke is held at an edge: its strokes are
-replayed in screen coordinates on release, so use Pan instead. The brush rail chooses the mask. Pending
+replayed in screen coordinates on release, so use Pan instead. A Map button in
+the content's bottom corner away from the thumb opens the same map peek as in
+gameplay (buttons below it in portrait, beside it in landscape) over the editor's
+own minimap; it only moves the view. The brush rail chooses the mask. Pending
 strokes draw their coverage before release without changing the map. Presentation measurements and drag thresholds are point-based
 policies at the top of `PhoneEditor.cpp`.
 

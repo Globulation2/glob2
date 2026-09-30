@@ -118,22 +118,40 @@ void GameGUITouch::drawOverlayLegend()
 	}
 }
 
+// Portrait puts the buttons in a row below the map; landscape in a column on
+// the thumb side, zoom in lowest.
 ViewRect GameGUITouch::peekRect() const
 {
 	const auto ui = layout();
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	const double buttons = (InGameTouchTheme::target + 8) * unit;
-	const double side = std::min({InGameTouchTheme::peekSide * unit, ui.safe.w - 32 * unit,
-								  ui.world.h - buttons - 24 * unit});
-	return {ui.safe.x + (ui.safe.w - side) / 2, ui.world.y + (ui.world.h - side - buttons) / 2, side, side};
+	const auto area = ui.world;
+	const double column = InGameTouchTheme::peekButtonColumn * unit, gap = 8 * unit;
+	if (area.w > area.h)
+	{
+		const double side = std::min({InGameTouchTheme::peekSide * unit, area.h - 24 * unit, area.w - column - 5 * gap});
+		const double x = area.x + (area.w - side - gap - column) / 2;
+		return {ThumbSide::left() ? x + column + gap : x, area.y + (area.h - side) / 2, side, side};
+	}
+	const double buttons = InGameTouchTheme::target * unit + gap;
+	const double side = std::min({InGameTouchTheme::peekSide * unit, ui.safe.w - 32 * unit, area.h - buttons - 24 * unit});
+	return {ui.safe.x + (ui.safe.w - side) / 2, area.y + (area.h - side - buttons) / 2, side, side};
 }
 
 std::vector<ViewRect> GameGUITouch::peekButtons() const
 {
 	const auto map = peekRect();
-	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	const double h = InGameTouchTheme::target * unit, gap = 8 * unit, w = (map.w - 2 * gap) / 3;
+	const auto area = layout().world;
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint(), gap = 8 * unit;
 	std::vector<ViewRect> buttons;
+	if (area.w > area.h)
+	{
+		const double w = InGameTouchTheme::peekButtonColumn * unit, h = (map.h - 2 * gap) / 3;
+		const double x = ThumbSide::left() ? map.x - gap - w : map.x + map.w + gap;
+		for (int i = 0; i < 3; ++i) // Done, zoom out, zoom in (lowest).
+			buttons.push_back({x, map.y + i * (h + gap), w, h});
+		return buttons;
+	}
+	const double h = InGameTouchTheme::target * unit, w = (map.w - 2 * gap) / 3;
 	for (int i = 0; i < 3; ++i)
 	{
 		// Done, zoom out, zoom in; zoom in sits on the thumb side.
@@ -182,8 +200,17 @@ void GameGUITouch::drawPeek()
 	gfx->drawFilledRect(int(ui.world.x), int(ui.world.y), int(ui.world.w), int(ui.world.h), Color(0, 0, 0, 120));
 	const auto rect = peekRect();
 	const auto buttons = peekButtons();
-	gfx->drawFilledRect(int(rect.x - 6 * unit), int(rect.y - 6 * unit), int(rect.w + 12 * unit),
-						int(buttons[0].y + buttons[0].h - rect.y + 12 * unit), InGameTouchTheme::paper);
+	{
+		double x0 = rect.x, y0 = rect.y, x1 = rect.x + rect.w, y1 = rect.y + rect.h;
+		for (const auto &b : buttons)
+		{
+			x0 = std::min(x0, b.x);
+			x1 = std::max(x1, b.x + b.w);
+			y1 = std::max(y1, b.y + b.h);
+		}
+		gfx->drawFilledRect(int(x0 - 6 * unit), int(y0 - 6 * unit), int(x1 - x0 + 12 * unit),
+							int(y1 - y0 + 12 * unit), InGameTouchTheme::paper);
+	}
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
 	gfx->setUITransform(rect.w / size, rect.x - (gfx->getW() - size) * rect.w / size, rect.y, &clip);
 	peekMinimap->setMinimapMode(Minimap::ShowFOW);

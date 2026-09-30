@@ -37,6 +37,7 @@ void PhoneEditor::cancel()
 	if (drag && drag->moving)
 		editor.performAction("unselect");
 	railTouched = -1;
+	peekOpen = false;
 	touch.cancel();
 	stopScrolling();
 	held = -1;
@@ -172,6 +173,19 @@ int PhoneEditor::hit(ViewPoint p) const
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	if (!safe.contains(p))
 		return -1;
+	if (peekOpen)
+	{
+		// The map peek owns every touch until it closes.
+		if (peekRect().contains(p))
+			return -300;
+		const auto buttons = peekButtons();
+		for (int i = 0; i < int(buttons.size()); ++i)
+			if (buttons[i].contains(p))
+				return -301 - i;
+		return -304;
+	}
+	if (showsMapButton() && mapButton().contains(p))
+		return -305;
 	if (inspecting())
 	{
 		if (ViewRect{inspector.x + inspector.w - 48 * unit, inspector.y + 4 * unit, 44 * unit,
@@ -481,6 +495,28 @@ void PhoneEditor::act(const TouchAction &action)
 	{
 		editor.suspendInput();
 		editor.performAction("open teams editor");
+		return;
+	}
+	if (held == -300)
+	{
+		navigatePeek(p);
+		return;
+	}
+	if (held == -302 || held == -303)
+	{
+		editor.zoomMap((held == -303 ? 1 : -1) * std::log(InGameTouchTheme::peekZoomStep) / std::log(1.1),
+					   content.x + content.w / 2, content.y + content.h / 2);
+		return;
+	}
+	if (held == -301 || held == -304)
+	{
+		peekOpen = false; // Done, or a tap outside the peek.
+		return;
+	}
+	if (held == -305)
+	{
+		cancel();
+		peekOpen = true;
 		return;
 	}
 	if (held <= -200 && held > -200 - int(BrushTool::BRUSH_COUNT))
@@ -807,6 +843,8 @@ bool PhoneEditor::event(SDL_Event event)
 	}
 	else if (phase == 1)
 	{
+		if (key == touchKey && held == -300 && peekOpen)
+			navigatePeek(p);
 		if (key == touchKey && railTouched >= 0)
 			if (const int detent = BrushHUD::detentAt(rail(), p); detent >= 0)
 			{
@@ -938,6 +976,7 @@ void PhoneEditor::draw()
 		BrushHUD::draw(rail(), state);
 	}
 	drawZoomReadout();
+	drawPeek(); // The Map button, or the open peek over everything.
 	if (!tools)
 	{
 		gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h),

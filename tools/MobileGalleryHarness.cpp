@@ -1100,6 +1100,9 @@ class MobileGalleryGameplay
 		{
 			editor.phone->undo.reset();
 			editor.performAction("select water");
+			editor.phone->peekOpen = true;
+			editCapture("editor-map-peek");
+			editor.phone->peekOpen = false;
 		}
 
 		if (editor.phone)
