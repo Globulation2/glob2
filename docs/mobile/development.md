@@ -290,9 +290,10 @@ screenshots, logs and replay checksums under `artifacts/`.
 ### Automated Google Play internal releases
 
 `.github/workflows/android-play-internal.yml` is public for review, but its
-release job runs only from the owner's `genixpro/glob2-release` mirror on
-`master` after a manual dispatch. The mirror is a separate public repository
-with owner-only write access. Copy reviewed upstream commits into the mirror
+release job runs only from the owner's `genixpro/glob2-android-release` mirror on
+`master` after a manual dispatch. This public Android mirror is separate from
+the private mirror used by other platform releases and has owner-only write
+access. Copy reviewed upstream commits into the Android mirror
 when ready, then manually dispatch and approve its workflow. An unprivileged
 job installs the pinned Android toolchain and dependencies, assigns a
 time-based Play version code, and builds and verifies the arm64 release bundle.
@@ -312,7 +313,7 @@ One-time account setup is required before the first workflow run:
    repository ID, the owner's numeric actor ID, the `workflow_dispatch` event,
    public visibility, the `google-play-internal` environment, GitHub-hosted runners,
    `refs/heads/master`, and
-   `genixpro/glob2-release/.github/workflows/android-play-internal.yml`.
+   `genixpro/glob2-android-release/.github/workflows/android-play-internal.yml`.
    Grant only that repository identity `roles/iam.workloadIdentityUser` on the
    service account. Do not create a Google service account key for this workflow.
 3. In Play Console **Users and permissions**, invite the service account's email
@@ -368,7 +369,7 @@ git merge --ff-only upstream/master
 git push origin master
 ```
 
-If fast-forwarding fails because the release mirror diverged, inspect the
+If fast-forwarding fails because the Android mirror diverged, inspect the
 commits and reconcile them deliberately. Do not force-push a release branch.
 
 After syncing, run **Actions → Android Play internal release → Run workflow**

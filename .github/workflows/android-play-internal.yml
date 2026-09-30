@@ -18,7 +18,7 @@ concurrency:
 jobs:
   build:
     if: >-
-      github.repository_id == 1397722696 &&
+      github.repository_id == 1397984618 &&
       github.actor_id == 6193625 &&
       github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/master'
