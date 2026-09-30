@@ -32,8 +32,8 @@ notes exist. The GitHub
 publication run builds it.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
-`data/screenshots/`; its commit-pinned URL is in the AppStream metadata. Keep
-that commit reachable and confirm the URL resolves before publication. Add the
+`data/screenshots/`; its `master` URL is in the AppStream metadata. Keep that
+path stable and confirm the URL resolves before publication. Add the
 release notes once the release candidate is settled. The
 256x256 application icon is derived from the existing desktop artwork and is
 installed with other icon sizes.
