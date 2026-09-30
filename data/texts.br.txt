@@ -3156,6 +3156,14 @@ Padrão do sistema
 Arrastar para cima aproxima
 [settings Drag down zooms in]
 Arrastar para baixo aproxima
+[settings Thumb side]
+Lado do polegar
+[settings Phone controls gather in this bottom corner.]
+Os controles no celular ficam neste canto inferior.
+[settings Right]
+Direita
+[settings Left]
+Esquerda
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

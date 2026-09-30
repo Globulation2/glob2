@@ -3236,6 +3236,14 @@ Systemstandard
 Træk op zoomer ind
 [settings Drag down zooms in]
 Træk ned zoomer ind
+[settings Thumb side]
+Tommelfingerside
+[settings Phone controls gather in this bottom corner.]
+Telefonens knapper samles i dette nederste hjørne.
+[settings Right]
+Højre
+[settings Left]
+Venstre
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

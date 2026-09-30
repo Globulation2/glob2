@@ -3222,6 +3222,14 @@ Predefinito di sistema
 Trascina in su per ingrandire
 [settings Drag down zooms in]
 Trascina in giù per ingrandire
+[settings Thumb side]
+Lato del pollice
+[settings Phone controls gather in this bottom corner.]
+Sul telefono i comandi si raccolgono in questo angolo in basso.
+[settings Right]
+Destra
+[settings Left]
+Sinistra
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

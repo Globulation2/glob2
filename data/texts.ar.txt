@@ -3158,6 +3158,14 @@ Emoji
 السحب لأعلى يكبّر
 [settings Drag down zooms in]
 السحب لأسفل يكبّر
+[settings Thumb side]
+جهة الإبهام
+[settings Phone controls gather in this bottom corner.]
+تتجمع عناصر التحكم في الهاتف في هذه الزاوية السفلية.
+[settings Right]
+اليمين
+[settings Left]
+اليسار
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -3166,6 +3166,14 @@ Predefinição do sistema
 Arrastar para cima amplia
 [settings Drag down zooms in]
 Arrastar para baixo amplia
+[settings Thumb side]
+Lado do polegar
+[settings Phone controls gather in this bottom corner.]
+No telemóvel, os controlos ficam neste canto inferior.
+[settings Right]
+Direita
+[settings Left]
+Esquerda
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

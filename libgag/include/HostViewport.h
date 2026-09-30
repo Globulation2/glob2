@@ -3,6 +3,8 @@
 #include <GraphicContext.h>
 #include <ViewportTransform.h>
 #include <InterfacePresentation.h>
+#include <cmath>
+#include <vector>
 #ifdef __ANDROID__
 #include <SDL_system.h>
 #include <jni.h>
@@ -69,6 +71,35 @@ inline double mobileKeyboardInset(GraphicContext* gfx) {
     return presentationViewport.keyboardInset;
 #else
     return 0;
+#endif
+}
+
+// Asks the host not to start system edge gestures (Android Back) inside these
+// rectangles, given in drawable units. Android 10+ honours the request, capped
+// by the system per edge; other hosts have no such gestures and ignore it.
+inline void hostGestureExclusion([[maybe_unused]] GraphicContext* gfx,
+                                 [[maybe_unused]] const std::vector<ViewRect>& rects) {
+#ifdef __ANDROID__
+    auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    if (!env) return;
+    auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    if (!activity) return;
+    int w,h;SDL_GetWindowSize(SDL_GetWindowFromID(gfx->windowID()),&w,&h);
+    const double sx=gfx->getW()>0 ? double(w)/gfx->getW() : 1, sy=gfx->getH()>0 ? double(h)/gfx->getH() : 1;
+    std::vector<jint> values;
+    for (const auto& r : rects) {
+        values.push_back(jint(std::floor(r.x*sx)));values.push_back(jint(std::floor(r.y*sy)));
+        values.push_back(jint(std::ceil((r.x+r.w)*sx)));values.push_back(jint(std::ceil((r.y+r.h)*sy)));
+    }
+    if (auto array=env->NewIntArray(jsize(values.size()))) {
+        if (!values.empty()) env->SetIntArrayRegion(array,0,jsize(values.size()),values.data());
+        auto cls=env->GetObjectClass(activity);
+        auto method=env->GetMethodID(cls,"setGestureExclusion","([I)V");
+        if (method) env->CallVoidMethod(activity,method,array);
+        env->DeleteLocalRef(cls);env->DeleteLocalRef(array);
+    }
+    if (env->ExceptionCheck()) env->ExceptionClear();
+    env->DeleteLocalRef(activity);
 #endif
 }
 

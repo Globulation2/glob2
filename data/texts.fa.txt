@@ -3158,6 +3158,14 @@ Emoji
 کشیدن به بالا بزرگ‌نمایی می‌کند
 [settings Drag down zooms in]
 کشیدن به پایین بزرگ‌نمایی می‌کند
+[settings Thumb side]
+سمت انگشت شست
+[settings Phone controls gather in this bottom corner.]
+کنترل‌های گوشی در این گوشهٔ پایین جمع می‌شوند.
+[settings Right]
+راست
+[settings Left]
+چپ
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

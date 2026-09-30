@@ -3168,6 +3168,14 @@ Predeterminat del sistema
 Arrossegar amunt apropa
 [settings Drag down zooms in]
 Arrossegar avall apropa
+[settings Thumb side]
+Costat del polze
+[settings Phone controls gather in this bottom corner.]
+Els controls del mòbil es col·loquen en aquest cantó inferior.
+[settings Right]
+Dreta
+[settings Left]
+Esquerra
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

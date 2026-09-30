@@ -44,6 +44,7 @@ Settings::Settings()
 	gameSpeed = GAME_SPEED_NORMAL;
     mobileDialogTextPercent = 100;
 	oneFingerZoomDirection = ONE_FINGER_ZOOM_PLATFORM;
+	thumbSide = THUMB_RIGHT;
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;
@@ -146,6 +147,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(oneFingerZoomDirection);
 		oneFingerZoomDirection = std::clamp(oneFingerZoomDirection,
 			int(ONE_FINGER_ZOOM_PLATFORM), int(ONE_FINGER_ZOOM_DOWN_IN));
+		READ_PARSED_INT(thumbSide);
+		thumbSide = std::clamp(thumbSide, int(THUMB_RIGHT), int(THUMB_LEFT));
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 #ifndef YOG_SERVER_ONLY
@@ -221,6 +224,7 @@ bool Settings::save(std::string filename)
         Utilities::streamprintf(stream,"touchScrollBounce=%d\n",touchScrollBounce);
         Utilities::streamprintf(stream,"mapScrollMomentum=%d\n",mapScrollMomentum);
 		Utilities::streamprintf(stream, "oneFingerZoomDirection=%d\n", oneFingerZoomDirection);
+		Utilities::streamprintf(stream, "thumbSide=%d\n", thumbSide);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{

@@ -3160,6 +3160,14 @@ Predeterminado del sistema
 Arrastrar hacia arriba acerca
 [settings Drag down zooms in]
 Arrastrar hacia abajo acerca
+[settings Thumb side]
+Lado del pulgar
+[settings Phone controls gather in this bottom corner.]
+Los controles del móvil se agrupan en esta esquina inferior.
+[settings Right]
+Derecha
+[settings Left]
+Izquierda
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

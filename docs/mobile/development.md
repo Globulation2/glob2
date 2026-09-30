@@ -60,7 +60,14 @@ centres, independent of zoom. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.
 Halo clicks select without moving the flag; direct flag grabs retain dragging.
 Desktop mouse selection retains its original exact-tile hit area.
-Flags and zones share one fitted row. Inspectors group production ratios side by
+On compact layouts the build and flag palettes are a rail rising from the
+bottom corner under the thumb: two columns of buildings in portrait (four in
+landscape), flags and zones in one column (one row in landscape), filled
+row by row from the corner so the first choice sits nearest the thumb. The rail
+is inset from the side edge, and a rail taller than its space scrolls toward the
+thumb. The Thumb side setting (right by default) mirrors the rail and the
+placement bar; corner-anchored components mirror through `ThumbSide`, never on
+their own. Inspectors group production ratios side by
 side and use horizontal room for worker/priority and action controls. Ordinary
 phone inspectors fit without scrolling; overflow remains available for constrained
 safe areas and enlarged interfaces. Drawing, hit testing and slider geometry use
@@ -81,7 +88,11 @@ cancels held input and invalidates layout when this happens. The UI presentation
 harness injects host-point gutters through `mobileSafeInsetsForTesting` and checks
 every screen and dialog fixture against them on phones, tablets and desktops.
 Keep this override unset outside tests. Device checks
-must also cover Android gesture/three-button navigation and rotation.
+must also cover Android gesture/three-button navigation and rotation. While the
+rail is open the HUD asks Android 10+ to exclude its rectangle from the system
+Back gesture (`hostGestureExclusion`), resending only when the rectangle
+changes; Android honours at most about 200 dp of exclusion per edge, so check
+that a drag out of the rail places a building rather than navigating back.
 
 ### Gameplay responsibilities and action flow
 
@@ -89,7 +100,7 @@ must also cover Android gesture/three-button navigation and rotation.
   and restores the previous palette after inspection. It never draws the desktop
   sidebar or forwards touch controls to its pixel hit tests.
 - `GameGUITouchPalette.cpp` reads available building/flag choices and draws artwork
-  in a content-sized grid. Zone entries enter painting mode instead of placement.
+  in the thumb-corner rail (compact) or the side grid (Spacious). Zone entries enter painting mode instead of placement.
 - `GameGUITouchView.cpp` draws independently bounded HUD components, the minimap,
   tutorial, tactical panel and contextual headers. It shares primitives, not the
   desktop sidebar composition.

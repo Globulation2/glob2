@@ -3156,6 +3156,14 @@ Emoji
 Угору — наблизити
 [settings Drag down zooms in]
 Униз — наблизити
+[settings Thumb side]
+Бік великого пальця
+[settings Phone controls gather in this bottom corner.]
+На телефоні елементи керування збираються в цьому нижньому куті.
+[settings Right]
+Праворуч
+[settings Left]
+Ліворуч
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

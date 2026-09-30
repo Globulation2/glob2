@@ -5,6 +5,8 @@
 #include <FormatableString.h>
 #include <InterfacePresentation.h>
 #include "MobileSafeArea.h"
+#include <HostViewport.h>
+#include "ThumbSide.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
@@ -61,17 +63,27 @@ MobileLayout GameGUITouch::layout() const
 	result.status.h = 28;
 	if ((result.persistentPanel || panelOpen) && showsBuildPalette())
 	{
-		const int columns = gui.displayMode == GameGUI::FLAG_VIEW ? int(paletteItems().size()) :
-			result.persistentPanel || result.safe.w > result.safe.h
-								? 4
-								: std::max(1, int(result.safe.w / 60));
-		const double width = std::min(result.safe.w, columns * 60.0 + 8);
-		const double height = std::min(result.world.h - 80,
-									   std::ceil(paletteItems().size() / double(columns)) * 60 + 8);
-		result.panel = {result.safe.x + result.safe.w - width, result.actions.y - height, width,
-						height};
+		const int columns = paletteColumns(result);
+		const double stride = InGameTouchTheme::paletteCell + InGameTouchTheme::gap;
+		const double rows = std::ceil(paletteItems().size() / double(columns));
 		if (result.persistentPanel)
-			result.panel.y = result.safe.y + 104;
+		{
+			const double width = std::min(result.safe.w, columns * 60.0 + 8);
+			const double height = std::min(result.world.h - 80, rows * 60 + 8);
+			result.panel = {result.safe.x + result.safe.w - width, result.safe.y + 104, width, height};
+		}
+		else
+		{
+			// A rail rising from the thumb corner; taller palettes scroll.
+			const double width = std::min(result.safe.w - InGameTouchTheme::railInset,
+										  columns * stride + InGameTouchTheme::gap);
+			const double height =
+				std::min(result.world.h - 80,
+						 std::min(rows, double(InGameTouchTheme::railMaximumRows)) * stride +
+							 InGameTouchTheme::gap);
+			result.panel = ThumbSide::corner(result.safe, width, height, InGameTouchTheme::railInset,
+											 result.actions.y, ThumbSide::left());
+		}
 	}
 	if ((result.persistentPanel || panelOpen) && inspectedBuilding())
 	{
@@ -118,11 +130,14 @@ void GameGUITouch::clampScroll()
 	actionAxis.sync(actionScroll,
 					std::max(0.0, buildingActionsHeight(content.w / unit) - content.h / unit),
 					content.h / unit);
-	const int columns = gui.displayMode == GameGUI::FLAG_VIEW ? int(paletteItems().size()) :
-		std::max(1, int((content.w / unit - 8 + .01) / 60));
-	const double height = showsBuildPalette()
-							  ? std::ceil(paletteItems().size() / double(columns)) * 60 + 8
-							  : tacticalActions().size() * 56;
+	const auto ui = layout();
+	const int columns = paletteColumns(ui);
+	const double height =
+		showsBuildPalette()
+			? std::ceil(paletteItems().size() / double(columns)) *
+					  (paletteRail(ui) ? InGameTouchTheme::paletteCell + InGameTouchTheme::gap : 60) +
+				  (paletteRail(ui) ? InGameTouchTheme::gap : 8)
+			: tacticalActions().size() * 56;
 	panelAxis.sync(panelScroll, std::max(0.0, height - content.h / unit), content.h / unit);
 	tutorialAxis.sync(tutorialScroll, tutorialMaximum(), tutorialRect().h / unit);
 }
@@ -165,7 +180,29 @@ void GameGUITouch::advanceScroll(Uint64 now)
 			panel->axis.step(now);
 	clampScroll();
 }
-GameGUITouch::~GameGUITouch() = default;
+GameGUITouch::~GameGUITouch()
+{
+	if (!gestureExclusion.empty())
+		hostGestureExclusion(globalContainer->gfx, {});
+}
+void GameGUITouch::syncGestureExclusion()
+{
+	std::vector<ViewRect> wanted;
+	if (usesHUD() && !activeDialog())
+	{
+		const auto ui = layout();
+		if (showsBuildPalette() && paletteRail(ui) && ui.panel.w > 0 && ui.panel.h > 0)
+			wanted.push_back(ui.panel);
+	}
+	auto same = [](const ViewRect &a, const ViewRect &b)
+	{ return a.x == b.x && a.y == b.y && a.w == b.w && a.h == b.h; };
+	if (wanted.size() == gestureExclusion.size() &&
+		std::equal(wanted.begin(), wanted.end(), gestureExclusion.begin(), same))
+		return;
+	gestureExclusion = std::move(wanted);
+	++gestureExclusionUpdates;
+	hostGestureExclusion(globalContainer->gfx, gestureExclusion);
+}
 ViewRect GameGUITouch::world() const
 {
 	if (usesHUD())
@@ -182,13 +219,13 @@ ViewRect GameGUITouch::controls() const
 	rect.y = globalContainer->gfx->getH() - rect.h;
 	return rect;
 }
-// The phone HUD puts OK on the thumb's side of the bar (right-handed until
-// thumb side becomes a setting); the legacy touch layout keeps OK on the left.
+// The phone HUD puts OK on the thumb's side of the bar; the legacy touch
+// layout keeps OK on the left.
 ViewRect GameGUITouch::confirmRect() const
 {
 	auto rect = controls();
 	rect.w /= 2;
-	if (usesHUD())
+	if (usesHUD() && !ThumbSide::left())
 		rect.x += rect.w;
 	return rect;
 }
@@ -196,7 +233,7 @@ ViewRect GameGUITouch::cancelRect() const
 {
 	auto rect = controls();
 	rect.w /= 2;
-	if (!usesHUD())
+	if (!(usesHUD() && !ThumbSide::left()))
 		rect.x += rect.w;
 	return rect;
 }
@@ -342,7 +379,7 @@ bool GameGUITouch::process(SDL_Event &event)
 		if (key == SDLK_PAGEDOWN || key == SDLK_PAGEUP)
 		{
 			const double delta = key == SDLK_PAGEDOWN ? 144 : -144;
-			panelScroll += delta;
+			panelScroll += delta * paletteScrollSign();
 			actionScroll += delta;
 			clampScroll();
 			return true;
@@ -370,7 +407,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			if (inspectedBuilding())
 				actionScroll -= delta;
 			else
-				panelScroll -= delta;
+				panelScroll -= delta * paletteScrollSign();
 			clampScroll();
 			return true;
 		}
@@ -597,7 +634,10 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 				clampScroll();
 				auto &panel = ownerRegion == 7 ? tutorialAxis : inspectedBuilding() ? actionAxis : panelAxis;
 				if (action.kind == TouchActionKind::Pan)
-					panel.axis.drag(action.time, -point.y / unit);
+					// The thumb rail fills from the bottom, so its content follows the
+					// finger with the opposite sign.
+					panel.axis.drag(action.time, -point.y / unit *
+													 (&panel == &panelAxis ? paletteScrollSign() : 1));
 				else
 					panel.axis.endDrag(action.time);
 				clampScroll();
@@ -1015,6 +1055,7 @@ void GameGUITouch::prepareDraw()
 		clampScroll();
 		prepareTutorial();
 	}
+	syncGestureExclusion();
 	if (gui.selectionMode != GameGUI::TOOL_SELECTION ||
 		previewType != gui.toolManager.getBuildingName())
 		preview.reset();

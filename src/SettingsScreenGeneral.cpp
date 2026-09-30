@@ -203,6 +203,15 @@ void SettingsScreen::buildGeneral()
 									  int(Settings::ONE_FINGER_ZOOM_DOWN_IN));
 					   commit();
 				   });
+		if (touchLayout)
+			choice("display.thumb", "Thumb side", "Phone controls gather in this bottom corner.",
+				   s.thumbSide, {tr("Right"), tr("Left")},
+				   [this](int v)
+				   {
+					   globalContainer->settings.thumbSide =
+						   std::clamp(v, int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT));
+					   commit();
+				   });
 	}
 	else if (current == Category::Audio)
 	{

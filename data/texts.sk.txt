@@ -3168,6 +3168,14 @@ Predvolené systémom
 Ťahaním nahor priblížiť
 [settings Drag down zooms in]
 Ťahaním nadol priblížiť
+[settings Thumb side]
+Strana palca
+[settings Phone controls gather in this bottom corner.]
+Ovládacie prvky na telefóne sa sústredia do tohto dolného rohu.
+[settings Right]
+Vpravo
+[settings Left]
+Vľavo
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

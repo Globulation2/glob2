@@ -3160,6 +3160,14 @@ Systemstandard
 Nach oben ziehen vergrößert
 [settings Drag down zooms in]
 Nach unten ziehen vergrößert
+[settings Thumb side]
+Daumenseite
+[settings Phone controls gather in this bottom corner.]
+Die Steuerelemente auf dem Telefon sammeln sich in dieser unteren Ecke.
+[settings Right]
+Rechts
+[settings Left]
+Links
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

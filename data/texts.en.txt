@@ -3128,6 +3128,14 @@ Platform default
 Drag up zooms in
 [settings Drag down zooms in]
 Drag down zooms in
+[settings Thumb side]
+Thumb side
+[settings Phone controls gather in this bottom corner.]
+Phone controls gather in this bottom corner.
+[settings Right]
+Right
+[settings Left]
+Left
 [zoom factor %0]
 %0×
 [More]

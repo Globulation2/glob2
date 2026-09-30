@@ -3170,6 +3170,14 @@ Systemstandard
 Dra uppåt zoomar in
 [settings Drag down zooms in]
 Dra nedåt zoomar in
+[settings Thumb side]
+Tumsida
+[settings Phone controls gather in this bottom corner.]
+På telefonen samlas kontrollerna i det här nedre hörnet.
+[settings Right]
+Höger
+[settings Left]
+Vänster
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -3160,6 +3160,14 @@ Privzeto za sistem
 Vlečenje navzgor poveča
 [settings Drag down zooms in]
 Vlečenje navzdol poveča
+[settings Thumb side]
+Stran palca
+[settings Phone controls gather in this bottom corner.]
+Na telefonu se kontrolniki zberejo v tem spodnjem kotu.
+[settings Right]
+Desno
+[settings Left]
+Levo
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -3156,6 +3156,14 @@ AI対戦相手
 上にドラッグで拡大
 [settings Drag down zooms in]
 下にドラッグで拡大
+[settings Thumb side]
+親指の側
+[settings Phone controls gather in this bottom corner.]
+スマートフォンでは操作ボタンがこの下隅に集まります。
+[settings Right]
+右
+[settings Left]
+左
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

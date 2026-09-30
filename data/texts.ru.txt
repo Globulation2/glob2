@@ -3158,6 +3158,14 @@ Emoji
 Вверх — приблизить
 [settings Drag down zooms in]
 Вниз — приблизить
+[settings Thumb side]
+Сторона большого пальца
+[settings Phone controls gather in this bottom corner.]
+На телефоне элементы управления собираются в этом нижнем углу.
+[settings Right]
+Справа
+[settings Left]
+Слева
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

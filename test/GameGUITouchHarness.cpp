@@ -800,18 +800,110 @@ class GameGUITouchHarness
 			tap(100, 200); // Activate touch after the resize cancellation.
 			const float unit = gfx->logicalUnitsPerPoint();
 			gui.clearSelection();
+			const bool portrait = width < height;
+			const double gap = InGameTouchTheme::gap * unit;
+			auto about = [](double a, double b) { return std::abs(a - b) < 0.5; };
+			for (int side : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
+			{
+				// The palette is a rail rising from the thumb corner, in both orientations.
+				globalContainer->settings.thumbSide = side;
+				const bool left = side == Settings::THUMB_LEFT;
+				gui.displayMode = GameGUI::FLAG_VIEW;
+				gui.touch->panelOpen = true;
+				gui.touch->panelScroll = 0;
+				gui.touch->clampScroll();
+				auto ui = gui.touch->layout();
+				auto content = gui.touch->panelContent();
+				const auto firstFlag = gui.touch->paletteItemRect(0);
+				for (size_t i = 0; i < gui.touch->paletteItems().size(); ++i)
+				{
+					const auto box = gui.touch->paletteItemRect(i);
+					require(box.x >= content.x && box.y >= content.y && box.x + box.w <= content.x + content.w &&
+								box.y + box.h <= content.y + content.h,
+							"All flags and zones must fit in the visible rail");
+					require(portrait ? box.x == firstFlag.x : box.y == firstFlag.y,
+							"Flags and zones form one column in portrait and one row in landscape");
+				}
+				require(about(ui.panel.y + ui.panel.h, ui.actions.y), "The rail rises from the toolbar");
+				require(about(left ? ui.panel.x - ui.safe.x : ui.safe.x + ui.safe.w - ui.panel.x - ui.panel.w,
+							 InGameTouchTheme::railInset * unit),
+						"The rail hugs the thumb-side edge, clear of the back-gesture strip");
+				require(about(firstFlag.y + firstFlag.h + gap, content.y + content.h) &&
+							about(left ? firstFlag.x - gap : firstFlag.x + firstFlag.w + gap,
+								 left ? content.x : content.x + content.w),
+						"The first choice sits nearest the thumb corner");
+				const auto mini = gui.touch->minimapRect();
+				require(ui.panel.y >= mini.y + mini.h - 0.5, "The rail leaves the minimap visible");
+				require((gui.touch->confirmRect().x > gui.touch->cancelRect().x) == !left,
+						"Placement OK follows the thumb side");
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+				gui.touch->panelScroll = 0;
+				gui.touch->clampScroll();
+				ui = gui.touch->layout();
+				const int columns = gui.touch->paletteColumns(ui);
+				require(columns == (portrait ? 2 : 4), "Buildings use a two-column rail in portrait");
+				const auto b0 = gui.touch->paletteItemRect(0), b1 = gui.touch->paletteItemRect(1),
+						   above = gui.touch->paletteItemRect(columns);
+				require(b1.y == b0.y && (left ? b1.x > b0.x : b1.x < b0.x),
+						"The second choice sits beside the first, away from the thumb");
+				require(above.x == b0.x && above.y < b0.y, "Later rows rise above the first");
+				gui.touch->prepareDraw();
+				const int updates = gui.touch->gestureExclusionUpdates;
+				gui.touch->prepareDraw();
+				require(gui.touch->gestureExclusionUpdates == updates &&
+							gui.touch->gestureExclusion.size() == 1 &&
+							about(gui.touch->gestureExclusion[0].x, ui.panel.x) &&
+							about(gui.touch->gestureExclusion[0].h, ui.panel.h),
+						"The rail is excluded from system edge gestures, synchronised only on change");
+				if (left)
+				{
+					gui.drawAll(0);
+					gfx->printScreen(portrait ? "touch-build-left-portrait.bmp" : "touch-build-left-landscape.bmp");
+					gfx->nextFrame();
+				}
+			}
+			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
+			{
+				// A rail taller than its space scrolls toward the thumb: dragging it
+				// down reveals the higher rows. Pad the list so it overflows.
+				const auto names = gui.buildingsChoiceName;
+				const auto states = gui.buildingsChoiceState;
+				while (gui.buildingsChoiceName.size() < 24)
+				{
+					gui.buildingsChoiceName.push_back("inn");
+					gui.buildingsChoiceState.push_back(true);
+				}
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+				gui.touch->panelScroll = 0;
+				gui.touch->clampScroll();
+				auto content = gui.touch->panelContent();
+				const size_t count = gui.touch->paletteItems().size();
+				const auto top = gui.touch->paletteItemRect(count - 1);
+				require(top.y < content.y, "Padded rail fixture must overflow");
+				{
+					const double before = gui.touch->panelScroll;
+					finger(SDL_FINGERDOWN, 1, content.x + content.w / 2, content.y + 8 * unit);
+					finger(SDL_FINGERMOTION, 1, content.x + content.w / 2, content.y + 60 * unit);
+					finger(SDL_FINGERUP, 1, content.x + content.w / 2, content.y + 60 * unit);
+					require(gui.touch->panelScroll > before &&
+								gui.touch->paletteItemRect(count - 1).y > top.y,
+							"Dragging an overflowing rail down reveals its higher rows");
+					gui.touch->panelScroll = 1e6;
+					gui.touch->clampScroll();
+					require(gui.touch->paletteItemRect(count - 1).y >= content.y - 0.5,
+							"A fully scrolled rail shows its top row");
+				}
+				gui.buildingsChoiceName = names;
+				gui.buildingsChoiceState = states;
+				gui.touch->panelScroll = 0;
+				noOrder();
+			}
+			gui.touch->panelOpen = false;
+			gui.touch->prepareDraw();
+			require(gui.touch->gestureExclusion.empty(), "A closed rail releases its gesture exclusion");
 			gui.displayMode = GameGUI::FLAG_VIEW;
 			gui.touch->panelOpen = true;
-			const auto flagContent = gui.touch->panelContent();
-			const auto firstFlag = gui.touch->paletteItemRect(0);
-			for (size_t i = 0; i < gui.touch->paletteItems().size(); ++i)
-			{
-				const auto box = gui.touch->paletteItemRect(i);
-				require(box.y == firstFlag.y && box.x >= flagContent.x &&
-							box.x + box.w <= flagContent.x + flagContent.w &&
-							box.y + box.h <= flagContent.y + flagContent.h,
-						"All flags and zones must fit in one visible row");
-			}
+			gui.touch->panelScroll = 0;
 			gui.drawAll(0);
 			gfx->printScreen(width < height ? "touch-flags-portrait.bmp"
 											: "touch-flags-landscape.bmp");
@@ -2109,20 +2201,24 @@ class GameGUITouchHarness
 		const auto panel = gui.touch->panelContent();
 		// The panel's left margin has no palette items, whose touch starts a placement.
 		const float px = float(panel.x + 1), py = float(panel.y + panel.h / 2);
+		// The thumb rail fills from the bottom, so its content follows the finger with the
+		// opposite sign; mirroring the finger keeps every check about the same end.
+		const double sign = gui.touch->paletteScrollSign();
+		auto along = [&](double offset) { return float(py + offset * sign); };
 		require(gui.touch->interfaceRegion({px, py}) == 3, "The panel margin is the panel region");
-		for (float y : {py + 60, py, py - 30, py + 40, py - 40})
+		for (float y : {along(60), py, along(-30), along(40), along(-40)})
 			require(!gui.touch->paletteItemAt({px, y}), "The gestures avoid palette items");
-		finger(SDL_FINGERDOWN, px, py + 60);
+		finger(SDL_FINGERDOWN, px, along(60));
 		frame(16);
 		finger(SDL_FINGERMOTION, px, py);
 		require(gui.touch->panelScroll > maximum, "Pulling past the end stretches the palette");
 		require(gui.touch->panelScroll < maximum + 60, "The stretch is shorter than the finger's move");
 		const double stretched = gui.touch->panelScroll;
 		frame(16);
-		finger(SDL_FINGERMOTION, px, py - 30);
+		finger(SDL_FINGERMOTION, px, along(-30));
 		require(gui.touch->panelScroll > stretched, "Pulling further stretches further");
 		frame(80); // the finger rests before lifting
-		finger(SDL_FINGERUP, px, py - 30);
+		finger(SDL_FINGERUP, px, along(-30));
 		require(gui.touch->scrollAnimating(), "Released stretched content springs back");
 		frames = 0;
 		previous = gui.touch->panelScroll;
@@ -2136,7 +2232,7 @@ class GameGUITouchHarness
 		require(frames < 600, "The spring settles");
 		require(gui.touch->panelScroll == maximum, "The palette settles at its end");
 		// A flick reaches the end at once and hands its speed to the spring.
-		flick(px, py + 40, 0, -20);
+		flick(px, along(40), 0, float(-20 * sign));
 		require(gui.touch->scrollAnimating(), "A flick keeps the palette moving");
 		bool overshot = false;
 		frames = 0;
@@ -2150,15 +2246,15 @@ class GameGUITouchHarness
 		require(overshot && frames < 600, "The flick overshoots the end and settles");
 		require(gui.touch->panelScroll == maximum, "The palette rests at its end after the flick");
 		// A touch mid-bounce holds the stretch, and lifting lets it finish.
-		flick(px, py + 40, 0, -20);
+		flick(px, along(40), 0, float(-20 * sign));
 		frame(16);
 		require(gui.touch->panelScroll > maximum && gui.touch->scrollAnimating(), "mid-bounce");
-		finger(SDL_FINGERDOWN, px, py);
+		finger(SDL_FINGERDOWN, px, along(0));
 		require(!gui.touch->scrollAnimating(), "A touch stops the bounce");
 		const double caught = gui.touch->panelScroll;
 		frame(100);
 		require(gui.touch->panelScroll == caught, "The stopped palette holds its stretch");
-		finger(SDL_FINGERUP, px, py);
+		finger(SDL_FINGERUP, px, along(0));
 		require(gui.touch->scrollAnimating(), "Lifting lets the stretch spring back");
 		frames = 0;
 		while (gui.touch->scrollAnimating() && frames++ < 600)
@@ -2186,13 +2282,13 @@ class GameGUITouchHarness
 		};
 		gui.touch->panelScroll = 0;
 		gui.touch->clampScroll();
-		mouse(SDL_MOUSEBUTTONDOWN, int(px), int(py + 40));
+		mouse(SDL_MOUSEBUTTONDOWN, int(px), int(along(40)));
 		for (int i = 1; i <= 4; ++i)
 		{
 			frame(16);
-			mouse(SDL_MOUSEMOTION, int(px), int(py + 40 - 20 * i));
+			mouse(SDL_MOUSEMOTION, int(px), int(along(40 - 20 * i)));
 		}
-		mouse(SDL_MOUSEBUTTONUP, int(px), int(py - 40));
+		mouse(SDL_MOUSEBUTTONUP, int(px), int(along(-40)));
 		require(gui.touch->panelScroll == maximum, "A mouse drag neither stretches nor coasts");
 		require(!gui.touch->scrollAnimating(), "A mouse drag has no momentum");
 		require(gui.selectionMode == GameGUI::NO_SELECTION, "Panel gestures never start a placement");
