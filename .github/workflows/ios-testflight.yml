@@ -167,7 +167,7 @@ jobs:
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID"
 
-      - name: Save signed archive for diagnosis
+      - name: Save archive for diagnosis
         if: always()
         uses: actions/upload-artifact@v4
         with:
