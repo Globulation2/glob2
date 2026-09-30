@@ -72,20 +72,16 @@ jobs:
       - name: Compile game and generate Xcode project
         run: |
           python3 mobile/ios.py configure --environment device --release \
-            --team "$TEAM_ID" --build-number "$BUILD_NUMBER" --jobs 2
+            --unsigned --build-number "$BUILD_NUMBER" --jobs 2
 
-      - name: Archive and sign iPhone app
+      - name: Archive iPhone app
         run: |
           set -euo pipefail
           project=build/ios/device/arm64/15.0/client/release/xcode-project/build/Glob2.xcodeproj
           archive="$GITHUB_WORKSPACE/artifacts/ios-testflight/Glob2.xcarchive"
           mkdir -p "$(dirname "$archive")"
           xcodebuild -project "$project" -scheme Glob2 -configuration Release \
-            -destination 'generic/platform=iOS' -archivePath "$archive" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$ASC_KEY_PATH" \
-            -authenticationKeyID "$ASC_KEY_ID" \
-            -authenticationKeyIssuerID "$ASC_ISSUER_ID" archive
+            -destination 'generic/platform=iOS' -archivePath "$archive" archive
           echo "ARCHIVE_PATH=$archive" >> "$GITHUB_ENV"
 
       - name: Verify archive and retain matching symbols
@@ -96,15 +92,52 @@ jobs:
           symbols="$ARCHIVE_PATH/dSYMs/Glob2.app.dSYM"
           test -x "$app/Glob2"
           test -d "$source_symbols"
-          test -s "$app/embedded.mobileprovision"
           test "$(plutil -extract CFBundleIdentifier raw "$app/Info.plist")" = "$BUNDLE_ID"
           test "$(plutil -extract CFBundleVersion raw "$app/Info.plist")" = "$BUILD_NUMBER"
-          codesign --verify --deep --strict "$app"
           ditto "$source_symbols" "$symbols"
           binary_uuid="$(dwarfdump --uuid "$app/Glob2" | awk '{print $2}')"
           symbol_uuid="$(dwarfdump --uuid "$symbols" | awk '{print $2}')"
           test "$binary_uuid" = "$symbol_uuid"
           plutil -p "$ARCHIVE_PATH/Info.plist"
+
+      - name: Export and validate signed iPhone app
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import plistlib
+          from pathlib import Path
+
+          options = {
+              'destination': 'export',
+              'method': 'app-store-connect',
+              'signingStyle': 'automatic',
+              'teamID': os.environ['TEAM_ID'],
+              'manageAppVersionAndBuildNumber': False,
+              'testFlightInternalTestingOnly': True,
+              'uploadSymbols': True,
+          }
+          (Path(os.environ['RUNNER_TEMP']) / 'Glob2-ValidateOptions.plist').write_bytes(
+              plistlib.dumps(options))
+          PY
+          xcodebuild -exportArchive -archivePath "$ARCHIVE_PATH" \
+            -exportPath "$RUNNER_TEMP/glob2-signed-export" \
+            -exportOptionsPlist "$RUNNER_TEMP/Glob2-ValidateOptions.plist" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          ipa="$(find "$RUNNER_TEMP/glob2-signed-export" -maxdepth 1 -name '*.ipa' -print -quit)"
+          test -n "$ipa"
+          ditto -xk "$ipa" "$RUNNER_TEMP/glob2-signed-inspect"
+          app="$RUNNER_TEMP/glob2-signed-inspect/Payload/Glob2.app"
+          test -s "$app/embedded.mobileprovision"
+          test "$(plutil -extract CFBundleIdentifier raw "$app/Info.plist")" = "$BUNDLE_ID"
+          test "$(plutil -extract CFBundleVersion raw "$app/Info.plist")" = "$BUILD_NUMBER"
+          codesign --verify --deep --strict "$app"
+          xcrun altool --validate-app "$ipa" \
+            --api-key "$ASC_KEY_ID" --api-issuer "$ASC_ISSUER_ID" \
+            --p8-file-path "$ASC_KEY_PATH"
 
       - name: Upload internal-only build to TestFlight
         run: |

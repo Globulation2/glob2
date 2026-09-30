@@ -309,8 +309,10 @@ included in Xcode archives for TestFlight distribution.
 It runs only from `master`, uses the Xcode 27 runner and the registered
 `org.globulation2.glob2` App ID on
 team `CL2MNNYQX3`. Each run builds pinned iOS dependencies from source, compiles
-the game, archives and signs the iPhone app, checks the bundle ID and build number,
-retains matching dSYMs, and uploads an internal-only TestFlight build. Its build
+the game, archives the iPhone app, checks the bundle ID and build number, retains
+matching dSYMs, exports and validates an App Store signed IPA, and uploads an
+internal-only TestFlight build. Distribution signing occurs during export, so
+archiving does not require a registered test device. Its build
 number is `100 × GITHUB_RUN_NUMBER + GITHUB_RUN_ATTEMPT`, so reruns get a new number.
 The uploaded build cannot be submitted for external testing or App Store release.
 
