@@ -28,11 +28,11 @@ class AndroidReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             for path in ("mobile/android-release.json", "scons/build_layout.py",
-                         "fdroid/metadata/org.globulation.glob2.yml"):
+                         "fdroid/metadata/org.globulation2.glob2.yml"):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())
-            recipe = root / "fdroid/metadata/org.globulation.glob2.yml"
+            recipe = root / "fdroid/metadata/org.globulation2.glob2.yml"
             recipe.write_text(recipe.read_text().replace("versionCode: 905003", "versionCode: 905004"))
             with self.assertRaisesRegex(ValueError, "every ABI"):
                 android_release.check_recipe(root)
@@ -41,7 +41,7 @@ class AndroidReleaseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             for path in ("mobile/android-release.json", "scons/build_layout.py",
-                         "fdroid/metadata/org.globulation.glob2.yml"):
+                         "fdroid/metadata/org.globulation2.glob2.yml"):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())
@@ -82,7 +82,7 @@ class AndroidReleaseTests(unittest.TestCase):
             with mock.patch.object(android_release.subprocess, "run", return_value=subprocess.CompletedProcess([], 0)):
                 with self.assertRaisesRegex(ValueError, "unsigned"):
                     android_release.verify_apk(apk, "arm64-v8a", root, require_dependency_manifest=False)
-            badging = "package: name='org.globulation.glob2' versionCode='905001' versionName='0.9.5.0'\n"
+            badging = "package: name='org.globulation2.glob2' versionCode='905001' versionName='0.9.5.0'\n"
             with mock.patch.object(android_release.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)), mock.patch.object(android_release.subprocess, "check_output", return_value=badging):
                 with self.assertRaisesRegex(ValueError, "version code"):
                     android_release.verify_apk(apk, "arm64-v8a", root, require_dependency_manifest=False)

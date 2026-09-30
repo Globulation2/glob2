@@ -100,7 +100,7 @@ jobs:
           test "$ready" -eq 1
           python3 mobile/android.py sign --arch x86_64 --release --fdroid
           python3 mobile/android.py install --arch x86_64 --release --fdroid --serial emulator-5580 --adb-port 15037
-          python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64 --package org.globulation.glob2
+          python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64 --package org.globulation2.glob2
           python3 mobile/emulator.py stop --arch x86_64
       - name: Report Android compiler cache
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}

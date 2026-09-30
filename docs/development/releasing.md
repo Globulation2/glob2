@@ -90,11 +90,12 @@ screenshots.
 
 ### F-Droid Android release
 
-The main F-Droid repository builds and signs `org.globulation.glob2` from a
-public `vVERSION` tag. The `--fdroid` Android variant preserves this ID;
-the separate Play variant uses `org.globulation2.glob2`. The upstream build recipe is
-`fdroid/metadata/org.globulation.glob2.yml`; submit its tested contents to
-F-Droid's `fdroiddata` project. `mobile/android-release.json` gives the version
+The main F-Droid repository builds and signs `org.globulation2.glob2` from a
+public `vVERSION` tag. This is the same application ID used by Play. The
+`--fdroid` build mode applies F-Droid's version codes and unsigned APK checks.
+The upstream build recipe is `fdroid/metadata/org.globulation2.glob2.yml`;
+submit its tested contents to F-Droid's `fdroiddata` project.
+`mobile/android-release.json` gives the version
 name and base code, and the `armeabi-v7a`, `arm64-v8a`, and `x86_64` APKs use
 `10 * base + 1`, `+ 2`, and `+ 3`, respectively. The `fastlane/metadata/android/`
 tree contains the listing text, icon, per-APK changelogs, and Android screenshots.
@@ -105,7 +106,10 @@ desktop or browser screenshot as an Android screenshot.
 The mobile and release workflows build unsigned APKs and retain them only as
 validation artifacts. They are not GitHub release assets and cannot be installed
 as public releases. A temporary developer signature supports emulator and
-device checks. F-Droid's signature is the sole public Android update channel.
+device checks. F-Droid's signature is the sole public F-Droid update channel.
+Play and F-Droid use different signing keys, so Android cannot update an
+installation from one store with an APK from the other. A store switch requires
+uninstalling the installed copy; export or back up saves first.
 Before tagging, test all three builds with `fdroid lint` and `fdroid checkupdates`.
 For the `fdroid build --server` trial, use a disposable copy of the recipe whose
 three `commit` fields point to the reviewed candidate commit SHA; the public tag

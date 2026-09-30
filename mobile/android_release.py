@@ -12,7 +12,7 @@ import zipfile
 from asset_bundle import verify_apk_assets
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = "org.globulation.glob2"
+PACKAGE = "org.globulation2.glob2"
 ABI_CODES = {"armeabi-v7a": 1, "arm64-v8a": 2, "x86_64": 3}
 
 
@@ -83,7 +83,7 @@ def check_listing(root=ROOT):
 
 
 def check_recipe(root=ROOT):
-    recipe = (root / "fdroid/metadata/org.globulation.glob2.yml").read_text()
+    recipe = (root / "fdroid/metadata/org.globulation2.glob2.yml").read_text()
     identity = release_identity(root)
     codes = [int(code) for code in re.findall(r"^    versionCode: (\d+)$", recipe, re.MULTILINE)]
     names = re.findall(r"^  - versionName: ([^\n]+)$", recipe, re.MULTILINE)

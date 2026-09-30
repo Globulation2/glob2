@@ -28,8 +28,7 @@ def main():
     parser.add_argument('--avd', required=True)
     parser.add_argument('--adb-port', type=int, default=15037)
     parser.add_argument('--output', default='build/mobile-smoke')
-    parser.add_argument('--package', choices=('org.globulation2.glob2', 'org.globulation.glob2'),
-                        default=PACKAGE)
+    parser.add_argument('--package', choices=(PACKAGE,), default=PACKAGE)
     args = parser.parse_args()
     package = args.package
     validate_target(args.serial, args.adb_port, args.avd)

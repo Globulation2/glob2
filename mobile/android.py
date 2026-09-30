@@ -22,7 +22,7 @@ def main():
     parser.add_argument('--arch',default='arm64-v8a',choices=['arm64-v8a','armeabi-v7a','x86_64'])
     parser.add_argument('--release',action='store_true')
     parser.add_argument('--china',action='store_true',help='Package the China local-play client')
-    parser.add_argument('--fdroid',action='store_true',help='Build the unsigned F-Droid package identity')
+    parser.add_argument('--fdroid',action='store_true',help='Apply F-Droid release codes and unsigned APK checks')
     parser.add_argument('--android-sdk',default=str(ROOT/'build/mobile-tools/android-sdk'))
     parser.add_argument('--gradle')
     parser.add_argument('--jobs',type=int,default=8,help='SCons native compiler jobs')
@@ -33,10 +33,13 @@ def main():
     parser.add_argument('--serial',help='Required for install/launch; never select an arbitrary device')
     parser.add_argument('--adb-port',type=int,default=5037,help='ADB server port; use a separate port for isolated emulators')
     args=parser.parse_args()
+    package_name='org.globulation2.glob2'
     if args.jobs < 1: raise ValueError('--jobs must be positive')
     if not 1<=args.adb_port<=65535: raise ValueError('--adb-port must be between 1 and 65535')
     if args.fdroid:
-        from android_release import PACKAGE as fdroid_package, release_identity, version_code, verify_apk
+        from android_release import PACKAGE as release_package, release_identity, version_code, verify_apk
+        if release_package != package_name:
+            raise ValueError('F-Droid and Play Android package IDs differ')
         if not args.release or args.china or args.command in ('bundle','sign-bundle'):
             raise ValueError('F-Droid requires the standard release APK')
         expected_code=version_code(args.arch)
@@ -48,7 +51,6 @@ def main():
         args.version_code=expected_code
         args.version_name=expected_name
     else:
-        fdroid_package='org.globulation2.glob2'
         args.version_code=1 if args.version_code is None else args.version_code
     if args.version_code < 1: raise ValueError('--version-code must be positive')
     version_name=args.version_name or (PACKAGE_VERSION if args.release else '0.9.5-mobile-dev')
@@ -102,7 +104,7 @@ def main():
             apk=developer_apk.verified(ROOT,sdk,project) if args.release else project/f'app/build/outputs/apk/{variant}/app-{variant}.apk'
             subprocess.run(adb+['install','-r',str(apk)],check=True)
         else:
-            subprocess.run(adb+['shell','am','start','-n',fdroid_package+'/org.globulation2.glob2.Glob2Activity'],check=True)
+            subprocess.run(adb+['shell','am','start','-n',package_name+'/org.globulation2.glob2.Glob2Activity'],check=True)
         return
     arch={'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[args.arch]
     prefix=output/'vcpkg-installed'/('glob2-'+arch+'-android')
@@ -124,7 +126,7 @@ def main():
         if args.fdroid: native_command.append('--fdroid')
         (project/'glob2-build.json').write_text(json.dumps({'root':str(ROOT),'command':native_command,
             'release':args.release,'version_code':args.version_code,
-            'version_name':version_name,'arch':args.arch,'package_name':fdroid_package},indent=2)+'\n')
+            'version_name':version_name,'arch':args.arch,'package_name':package_name},indent=2)+'\n')
         generated=project/'app/generated'
         if generated.exists(): shutil.rmtree(generated)
         generated.mkdir(parents=True)
