@@ -156,8 +156,9 @@ The workflow does not submit a listing for certification or publish it to retail
 
 Keep the release mirror public and owner-controlled: disable pull requests,
 issues, projects, wiki and discussions; leave `genixpro` as its only
-collaborator; restrict `master` updates to that user and block force pushes and
-deletion. Restrict Actions execution to `genixpro`, allow only the pinned actions
+collaborator; restrict creation, updates and deletion of every mirror branch to
+that user, while `master` also blocks force pushes and deletion. Restrict Actions
+execution to `genixpro`, allow only the pinned actions
 needed by the mirror workflows, and keep the default `GITHUB_TOKEN` read-only.
 Enable secret scanning and push protection. Public repositories remain readable
 and forkable, so never put credentials in code, workflow inputs, logs or
