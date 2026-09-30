@@ -12,7 +12,9 @@ concurrency:
 
 jobs:
   upload:
+    if: ${{ github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master' }}
     name: Build, sign, and upload iPhone app
+    environment: ios-testflight
     runs-on: xcode-27
     timeout-minutes: 180
     env:
@@ -30,7 +32,7 @@ jobs:
           test "$(uname -m)" = arm64
           xcodebuild -version
           python3 mobile/doctor.py ios
-          build_number=$((GITHUB_RUN_NUMBER * 100 + GITHUB_RUN_ATTEMPT))
+          build_number=$((1000000 + GITHUB_RUN_NUMBER * 100 + GITHUB_RUN_ATTEMPT))
           echo "BUILD_NUMBER=$build_number" >> "$GITHUB_ENV"
           echo "Build number: $build_number"
 
