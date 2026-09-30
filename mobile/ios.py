@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import plistlib
 import shutil
 import subprocess
 import sys
@@ -11,6 +12,8 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
 from build_layout import build_identity, default_directory, write_if_changed
 from mobile_toolchain import ROOT, discover
 from sources import INCLUDE_DIRECTORIES
+
+BUNDLE_ID = 'org.globulation2.glob2'
 
 
 def cmake_quote(value):
@@ -22,6 +25,8 @@ def main():
     parser.add_argument('command',choices=['configure','build','install','launch'])
     parser.add_argument('--environment',default='simulator',choices=['device','simulator'])
     parser.add_argument('--release',action='store_true')
+    parser.add_argument('--build-number',default='1',help='Numeric CFBundleVersion for this build')
+    parser.add_argument('--jobs',type=int,default=8,help='Maximum parallel SCons jobs')
     parser.add_argument('--developer-dir')
     signing=parser.add_mutually_exclusive_group()
     signing.add_argument('--team',help='Local Apple development team for device signing')
@@ -31,6 +36,10 @@ def main():
                         help='Isolated simulator device set for install/launch')
     parser.add_argument('--cmake',default='cmake')
     args=parser.parse_args()
+    if not args.build_number.isdecimal() or int(args.build_number) < 1:
+        raise ValueError('--build-number must be a positive integer')
+    if args.jobs < 1:
+        raise ValueError('--jobs must be positive')
     if args.command=='install' and args.environment=='device' and args.unsigned:
         raise ValueError('An unsigned iOS device app cannot be installed; rebuild with --team and a local signing identity/profile')
     # Reject incomplete requests before probing SDKs or compiling the core.
@@ -50,32 +59,38 @@ def main():
     if args.developer_dir: env['DEVELOPER_DIR']=args.developer_dir
     if args.command in ('install','launch'):
         if args.environment=='simulator':
-            command=['xcrun','simctl','--set',str(Path(args.simulator_set).resolve()),args.command,args.device,str(app) if args.command=='install' else 'org.globulation.glob2']
+            command=['xcrun','simctl','--set',str(Path(args.simulator_set).resolve()),args.command,args.device,str(app) if args.command=='install' else BUNDLE_ID]
         else:
-            command=['xcrun','devicectl','device']+(['install','app','--device',args.device,str(app)] if args.command=='install' else ['process','launch','--device',args.device,'org.globulation.glob2'])
+            command=['xcrun','devicectl','device']+(['install','app','--device',args.device,str(app)] if args.command=='install' else ['process','launch','--device',args.device,BUNDLE_ID])
         subprocess.run(command,env=env,check=True);return
     triplet='glob2-arm64-ios'+('-simulator' if args.environment=='simulator' else '')
     prefix=output/'vcpkg-installed'/triplet
     if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with mobile/dependencies.py --target ios --environment '+args.environment)
     scons=shutil.which('scons')
     if not scons: raise ValueError('SCons is required')
-    command=[scons]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j8']
+    command=[scons]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
     subprocess.run(command,cwd=ROOT,env=env,check=True)
     project.mkdir(parents=True,exist_ok=True)
+    info=plistlib.loads((ROOT/'mobile/ios/Info.plist.in').read_bytes())
+    if info['CFBundleIdentifier'] != BUNDLE_ID:
+        raise ValueError('iOS Info.plist bundle ID does not match the Xcode project')
+    info['CFBundleVersion']=args.build_number
+    write_if_changed(project/'Info.plist',plistlib.dumps(info).decode())
     manifest=json.loads((prefix/'manifest.json').read_text())
     include=[output/'include',prefix/'include',prefix/'include/SDL2']+[ROOT/p for p in INCLUDE_DIRECTORIES]
     libraries=[output/'lib/libglob2.a']+[prefix/p for p in manifest['archives']]
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',
         'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/'src/Glob2.cpp')+')',
+        'install(TARGETS Glob2 BUNDLE DESTINATION Applications)',
         'target_compile_definitions(Glob2 PRIVATE HAVE_CONFIG_H)',
         'target_include_directories(Glob2 PRIVATE '+' '.join(map(cmake_quote,include))+')',
         'add_custom_target(Glob2Core COMMAND '+' '.join(map(cmake_quote,command))+' WORKING_DIRECTORY '+cmake_quote(ROOT)+' VERBATIM)',
         'add_dependencies(Glob2 Glob2Core)',
         'target_link_libraries(Glob2 PRIVATE '+' '.join(map(cmake_quote,libraries))+')',
         'target_link_options(Glob2 PRIVATE -ObjC)',
-        'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER org.globulation.glob2 XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
-        'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(ROOT/'mobile/ios/Info.plist.in')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
+        'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER '+BUNDLE_ID+' XCODE_ATTRIBUTE_INSTALL_PATH /Applications XCODE_ATTRIBUTE_SKIP_INSTALL NO XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
+        'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(project/'Info.plist')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
     # Xcode compiles the catalog and merges its icon metadata into Info.plist.
     icons=ROOT/'mobile/ios/Assets.xcassets'
     lines += [
@@ -103,7 +118,13 @@ def main():
     else: raise ValueError('Device packaging needs --team with a local signing identity/profile, or --unsigned for compilation without credentials')
     subprocess.run(configure,env=env,check=True)
     print('Xcode project:',project/'build/Glob2.xcodeproj')
-    if args.command=='build': subprocess.run([args.cmake,'--build',str(project/'build'),'--config',configuration],env=env,check=True)
+    if args.command=='build':
+        # Xcode archive may leave an app symlink into its temporary archive tree.
+        if app.is_symlink(): app.unlink()
+        build=[args.cmake,'--build',str(project/'build'),'--config',configuration]
+        if args.environment=='device' and args.team:
+            build += ['--','-allowProvisioningUpdates']
+        subprocess.run(build,env=env,check=True)
 
 if __name__=='__main__':
     try: main()
