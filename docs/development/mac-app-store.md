@@ -22,7 +22,9 @@ sandbox container. Existing direct-distribution profiles in `~/.glob2` do not
 migrate automatically, so migration needs a separate user-facing decision before
 release to existing desktop users. The generated Mac icon includes required large
 sizes, but those are enlarged from the existing 128-pixel artwork and need visual
-review.
+review. Apple Distribution-signed App Store builds cannot be launched directly
+before Apple delivers them; test the ad hoc candidate locally and the processed
+distribution build through TestFlight.
 
 ## Manual GitHub Actions release
 
@@ -91,6 +93,13 @@ reviewers can add another release gate.
 | `APPLE_API_KEY_P8_BASE64` | App Store Connect team API private key (`.p8`) |
 | `APPLE_API_KEY_ID` | API key ID |
 | `APPLE_API_ISSUER_ID` | API issuer ID |
+
+Use an App Store Connect API key with the Developer role for uploads. Team keys
+apply to every app in the team, so keep the key in this environment and revoke it
+if exposed. Export the `.p12` files in a format accepted by macOS Keychain and
+test a `security import` into a temporary keychain before storing their base64
+encodings. OpenSSL 3's default PKCS#12 encryption may be rejected by Keychain;
+`openssl pkcs12 -export -legacy` produced an importable export during setup.
 
 The workflow creates a temporary keychain, imports the certificates, and removes
 the temporary keychain and profile after the job. Apple Distribution signs the
