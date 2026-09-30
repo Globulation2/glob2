@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <vector>
+#include <string>
+#include <map>
+#include <set>
+#include <utility>
 #include <memory>
 #include "AIMaximaContinuation.h"
 #include <TextStream.h>

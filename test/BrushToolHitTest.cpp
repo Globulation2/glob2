@@ -15,6 +15,7 @@
 // and hitTest is inline, so this links nothing — no globalContainer, no SDL.
 
 #include "Glob2Test.h"
+#include <string>
 
 #include <optional>
 

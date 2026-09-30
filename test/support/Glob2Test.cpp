@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <string>
+#include <filesystem>
+#include <cstdio>
 
 #include <glob2/BuildConfig.h>
 #include <Toolkit.h>

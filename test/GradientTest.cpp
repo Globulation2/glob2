@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "GradientTest.h"
+#include <cmath>
 
 #include "Map.h"
 #include "MapInternal.h"

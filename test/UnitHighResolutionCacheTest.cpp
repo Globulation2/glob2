@@ -4,6 +4,7 @@
 // shader-vs-CPU pixel comparisons and UnitTeamColorCacheTest.cpp for the
 // bounded CPU cache itself.
 #include "Glob2Test.h"
+#include <cmath>
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL_image.h>

@@ -1,4 +1,5 @@
 #include "EngineFixtures.h"
+#include <algorithm>
 #include "Version.h"
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "../../src/GlobalContainer.h"

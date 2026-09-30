@@ -13,6 +13,7 @@
 // ctors are stubbed so only OrderMessages.cpp's behaviour is under test.
 
 #include "Glob2Test.h"
+#include <exception>
 #include "unit/stubs/OrderStubs.h"
 
 #include <cstdio>

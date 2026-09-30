@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise runtime loading, all manifest frames, recoloring, zoom and cache release.
 #include "Glob2Test.h"
+#include <string>
+#include <utility>
 #include <FileManager.h>
 #include <GraphicContext.h>
 #include <Toolkit.h>

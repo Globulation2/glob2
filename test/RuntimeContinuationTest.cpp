@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include <string>
+#include <memory>
+#include <iostream>
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include "IntBuildingType.h"

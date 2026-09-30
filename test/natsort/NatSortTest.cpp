@@ -2,6 +2,8 @@
 // Copyright (C) 2010 Leo Wandersleb
 
 #include "NatSortTest.h"
+#include <vector>
+#include <string>
 TEST_SUITE("NatSort")
 {
 	TEST_CASE_FIXTURE(NatSortTest, "Strnatcmp") { testStrnatcmp(); }

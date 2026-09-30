@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
 #include "CustomGameSetup.h"
+#include <vector>
+#include <string>
+#include <iostream>
+#include <stdexcept>
+#include <cstdlib>
+#include <cstdint>
 #include "Contact.h"
 #include "FertilityField.h"
 #include "Game.h"

@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapThumbnail.h"
+#include <vector>
+#include <string>
+#include <utility>
+#include <cmath>
 #include "MapPreviewGeometry.h"
 #include "GUIMapPreview.h"
 #include "CustomGameScreen.h"

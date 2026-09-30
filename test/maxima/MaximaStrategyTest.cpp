@@ -1,4 +1,5 @@
 #include "EngineFixtures.h"
+#include <string>
 #include "../../src/Version.h"
 #include <vector>
 #include "../../src/GlobalContainer.h"

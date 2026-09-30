@@ -15,6 +15,8 @@
 // Links libgag_server.a for the Stream surface GameHeader.cpp pulls in.
 
 #include "Glob2Test.h"
+#include <optional>
+#include <initializer_list>
 #include <cstdio>
 #include <SDL.h>
 #include "GameHeader.h"

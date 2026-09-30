@@ -3,6 +3,7 @@
 // pixels, as repeated translucent effects produce. A single draw's rounding
 // bias is invisible; this catches it compounding into a visible darkening.
 #include "Glob2Test.h"
+#include <cmath>
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL.h>

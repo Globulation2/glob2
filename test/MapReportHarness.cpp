@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapReport.h"
+#include <string>
+#include <cstdio>
+#include <exception>
 #include "GenerationRequest.h"
 #include "GenerationResult.h"
 #include "GenerationService.h"

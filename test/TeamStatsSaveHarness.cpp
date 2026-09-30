@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include <vector>
+#include <algorithm>
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"

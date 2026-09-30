@@ -3,6 +3,12 @@
 // platform gutters and text scales, checking the framework invariants and saving
 // captures for review. Run with SDL_VIDEODRIVER=dummy and a disposable profile.
 #include "EngineFixtures.h"
+#include <vector>
+#include <string>
+#include <memory>
+#include <utility>
+#include <cstdlib>
+#include <exception>
 #include "GlobalContainer.h"
 #include "CampaignEditor.h"
 #include "CampaignMainMenu.h"

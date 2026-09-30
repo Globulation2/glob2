@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // A real native simulation peer for browser/native cross-play integration tests.
 #include "GlobalContainer.h"
+#include <memory>
+#include <exception>
 #include "YOGClient.h"
 #include "YOGClientGameListManager.h"
 #include "MultiplayerGame.h"

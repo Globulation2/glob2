@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Loaded-game benchmark. Uses an isolated profile and generates no desktop input.
 #include "GlobalContainer.h"
+#include <vector>
 #include "TorusPicking.h"
 #include "DynamicClouds.h"
 #define private public

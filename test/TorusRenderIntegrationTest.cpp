@@ -2,6 +2,10 @@
 // Real game rendering regression. Run with an isolated GLOB2_USER_DIR and
 // either -g (OpenGL) or -G (software). No desktop input is generated.
 #include "EngineFixtures.h"
+#include <vector>
+#include <algorithm>
+#include <utility>
+#include <cstdlib>
 #include "GlobalContainer.h"
 #include "TorusPicking.h"
 #include "TorusGeometry.h"

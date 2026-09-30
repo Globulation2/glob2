@@ -20,6 +20,8 @@
 // nothing — no globalContainer, no SDL.
 
 #include "Glob2Test.h"
+#include <string>
+#include <utility>
 
 #include <optional>
 

@@ -1,5 +1,6 @@
 // Exercise public AI registration and the normal game/save loading path.
 #include "EngineFixtures.h"
+#include <string>
 #include "GlobalContainer.h"
 #include "Engine.h"
 #include "Utilities.h"

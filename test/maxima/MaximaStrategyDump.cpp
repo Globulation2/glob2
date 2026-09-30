@@ -6,6 +6,7 @@
 //   MaximaStrategyDump --dump-maxima-strategy --maxima-format <format>
 //       [--maxima-base <file>] [--maxima-layer <file>]... [--maxima-overrides <assignments>]
 #include "../../src/GlobalContainer.h"
+#include <string>
 #include "../../src/ai/maxima/AIMaximaStrategy.h"
 #include <cstring>
 #include <iostream>

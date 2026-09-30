@@ -5,6 +5,13 @@
 // here before it shows up as a changed golden fingerprint somewhere downstream. Needs the
 // globals loaded: building and resource types.
 #include "BalancedStarts.h"
+#include <array>
+#include <utility>
+#include <random>
+#include <cstdlib>
+#include <cstdint>
+#include <climits>
+#include <exception>
 #include "Building.h"
 #include "BuildingType.h"
 #include "RecursiveGeometry.h"

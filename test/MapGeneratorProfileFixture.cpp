@@ -24,6 +24,7 @@
 // --performance modes for that).
 #define SDL_MAIN_HANDLED
 #include "Game.h"
+#include <cstdint>
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
 #include "GlobalContainer.h"

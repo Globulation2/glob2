@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "Glob2Test.h"
+#include <string>
 #include "NetGamePlayerManager.h"
 #include "AINames.h"
 #include "BinaryStream.h"

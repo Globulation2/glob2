@@ -17,6 +17,7 @@
 // Links libgag_server.a for TextStream + MemoryStreamBackend.
 
 #include "Glob2Test.h"
+#include <string>
 #include <cstdio>
 #include <memory>
 #include <SDL.h>

@@ -22,6 +22,7 @@
 // the stream backends.
 
 #include "Glob2Test.h"
+#include <algorithm>
 #include "unit/stubs/OrderStubs.h"
 #include "unit/stubs/GameGUIStubs.h"
 

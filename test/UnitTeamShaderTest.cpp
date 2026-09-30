@@ -11,6 +11,8 @@
 // the GLOB2_DISABLE_UNIT_SHADER escape hatch, are covered by
 // UnitTeamColorCacheTest.cpp instead, since they don't need pixel comparison.
 #include "Glob2Test.h"
+#include <utility>
+#include <cstdlib>
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL.h>

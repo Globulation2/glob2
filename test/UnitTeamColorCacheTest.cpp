@@ -11,6 +11,7 @@
 //     the same Sprite object (portraits/editor previews/indicators all route
 //     through the same DrawableSurface::drawSprite as world units).
 #include "Glob2Test.h"
+#include <utility>
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #ifdef __APPLE__

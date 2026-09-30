@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "FertilityFieldTest.h"
+#include <utility>
 #include <cmath>
 #include <cstdlib>
 

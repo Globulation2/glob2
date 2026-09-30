@@ -1,5 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GeneratorRegistry.h"
+#include <vector>
+#include <string>
+#include <map>
+#include <fstream>
+#include <utility>
+#include <mutex>
+#include <cstdio>
+#include <cstdint>
 #include "AIImplementation.h"
 #include "AINames.h"
 #include "CustomGameScreen.h"

@@ -1,5 +1,8 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
+#include <algorithm>
+#include <utility>
+#include <iterator>
 #include "../../src/GlobalContainer.h"
 #include "../../src/Game.h"
 #include "../../src/team/Team.h"

@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include <vector>
+#include <string>
+#include <utility>
+#include <iterator>
 #include "GlobalContainer.h"
 #include "SettingsScreen.h"
 #include "FrontendTheme.h"

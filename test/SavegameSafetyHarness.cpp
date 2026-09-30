@@ -1,5 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include <vector>
+#include <string>
+#include <utility>
+#include <chrono>
+#include <iterator>
+#include <exception>
 #include <PerformanceTelemetry.h>
 #include "GlobalContainer.h"
 #include "Version.h"

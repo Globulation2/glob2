@@ -3,6 +3,7 @@
 // spread its fetchers across them, instead of sending everyone to whichever
 // resource happens to be nearest and leaving the others with nobody.
 #include "EngineFixtures.h"
+#include <list>
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL.h>

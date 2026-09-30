@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <algorithm>
+#include <cstdlib>
 #include <TouchInput.h>
 #include <MapCamera.h>
 #include <InterfacePresentation.h>

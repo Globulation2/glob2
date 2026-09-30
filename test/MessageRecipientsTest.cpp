@@ -10,6 +10,8 @@
 // silently drop out-of-range ones.
 
 #include "Glob2Test.h"
+#include <vector>
+#include <cstdint>
 
 #include "MessageRecipients.h"
 

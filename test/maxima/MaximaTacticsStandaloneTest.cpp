@@ -1,4 +1,6 @@
 #include "Glob2Test.h"
+#include <vector>
+#include <map>
 #include "../../src/ai/maxima/AIMaximaTactics.h"
 #include <climits>
 

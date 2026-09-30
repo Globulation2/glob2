@@ -1,4 +1,5 @@
 #include "Glob2Test.h"
+#include <vector>
 #include "../../src/ai/maxima/AIMaximaDefense.h"
 
 #include <algorithm>

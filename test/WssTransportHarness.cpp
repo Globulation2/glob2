@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetTransport.h"
+#include <vector>
+#include <string>
+#include <exception>
 #include <chrono>
 #include <iostream>
 #include <stdexcept>

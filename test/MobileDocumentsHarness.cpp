@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <vector>
+#include <string>
 #include "../mobile/Documents.h"
 #include <thread>
 

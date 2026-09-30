@@ -17,6 +17,7 @@
  */
 
 #include "GradientBFSTest.h"
+#include <cmath>
 #include "shared_runtime/Runtime.h"
 
 #include <algorithm>

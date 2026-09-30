@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <memory>
+#include <utility>
+#include <chrono>
+#include <thread>
+#include <cstdint>
 #include "map/gradient/GradientPipeline.h"
 #include <array>
 #include <stdexcept>

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <vector>
 #include <cmath>
 #include <cstdlib>
 #include "../src/TorusPicking.h"

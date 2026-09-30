@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <string>
+#include <cstdint>
 #include <PerformanceTelemetry.h>
 #include <cmath>
 #include <sstream>

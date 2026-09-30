@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Link the production game renderer; expose internals only in this test TU.
 #include "EngineFixtures.h"
+#include <vector>
+#include <string>
+#include <set>
+#include <algorithm>
+#include <utility>
 #include <cmath>
 #include <cstdlib>
 #include "GlobalContainer.h"

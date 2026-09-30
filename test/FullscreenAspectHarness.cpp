@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real SDL presentation, GL clipping, input mapping and screen capture.
 #include "Glob2Test.h"
+#include <utility>
+#include <cstdlib>
 #include "GraphicContextPrivate.h"
 #include <algorithm>
 #include <cmath>

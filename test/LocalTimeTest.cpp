@@ -5,6 +5,7 @@
 // Boost's text form. Expected strings below are what Boost 1.83 printed.
 
 #include "Glob2Test.h"
+#include <chrono>
 #include "../src/yog/LocalTime.h"
 #include <string>
 

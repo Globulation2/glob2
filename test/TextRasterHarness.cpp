@@ -2,6 +2,8 @@
 // Text drawn on a scaled screen must be rasterised for the pixels it actually covers,
 // while the sizes it reports stay those of the authored font size.
 #include "Glob2Test.h"
+#include <utility>
+#include <cstdlib>
 #include "GraphicContextPrivate.h"
 #include <TrueTypeFont.h>
 #include <SDL_ttf.h>

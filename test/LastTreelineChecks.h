@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "MapGeneratorFrameworkChecks.h"
+#include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <cmath>
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
 #include "Growth.h"

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise the real Uint16 pathfinding kernel against an independent heap oracle.
 #include "Glob2Test.h"
+#include <array>
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "BuildingGradientSearch.h"

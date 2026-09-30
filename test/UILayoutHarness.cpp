@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Layout-engine checks without fonts or a window: fixed-advance text, recording canvas.
 #include "Glob2Test.h"
+#include <string>
+#include <functional>
+#include <utility>
 #include <ui/Containers.h>
 #include <ui/Controls.h>
 #include <ui/Host.h>

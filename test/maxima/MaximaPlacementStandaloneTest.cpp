@@ -1,4 +1,8 @@
 #include "Glob2Test.h"
+#include <vector>
+#include <string>
+#include <utility>
+#include <cmath>
 #include "../../src/ai/maxima/AIMaximaPlacement.h"
 #include "../../src/Version.h"
 #include <BinaryStream.h>

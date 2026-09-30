@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetConnection.h"
+#include <vector>
+#include <string>
+#include <memory>
+#include <utility>
+#include <exception>
 #include "NetListener.h"
 #include "message/AuthMessages.h"
 #include "message/RegistrationMessages.h"

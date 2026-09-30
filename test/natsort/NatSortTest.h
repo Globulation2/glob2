@@ -4,6 +4,8 @@
 #pragma once
 
 #include "Glob2Test.h"
+#include <vector>
+#include <string>
 
 extern "C"
 {

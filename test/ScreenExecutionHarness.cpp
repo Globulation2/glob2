@@ -1,5 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <vector>
+#include <string>
+#include <memory>
+#include <functional>
+#include <utility>
+#include <chrono>
+#include <cstdint>
 #include <GUIBase.h>
 #include <ScreenStack.h>
 #include <InputState.h>

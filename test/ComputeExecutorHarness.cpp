@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
+#include <vector>
+#include <functional>
+#include <utility>
+#include <thread>
+#include <atomic>
 #include "ComputeExecutor.h"
 #include <array>
 #include <stdexcept>
