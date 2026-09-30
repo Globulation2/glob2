@@ -31,15 +31,19 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.version.outputs.version }}
+      revision: ${{ steps.version.outputs.revision }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
           fetch-depth: 0
       - name: Validate selected revision
         id: version
         env:
           TAG: ${{ inputs.tag }}
         run: |
+          set -euo pipefail
           if [[ -n "$TAG" ]]; then
             [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
             git fetch --no-tags https://github.com/Globulation2/glob2.git \
@@ -49,6 +53,7 @@ jobs:
             version="$(python3 tools/release/release.py check)"
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   source:
     needs: preflight
@@ -56,6 +61,8 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
           fetch-depth: 0
       - name: Create reproducible source archive
         env:
@@ -79,6 +86,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
       - name: Install build and runtime dependencies
         run: |
           sudo apt-get update -qq
@@ -151,6 +161,9 @@ jobs:
       - name: Install dependencies
         run: ${{ matrix.install }}
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
       - name: Build from source
         run: |
           scons -j2 release=1 server=0
@@ -169,6 +182,9 @@ jobs:
             zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel \
             libepoxy-devel
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: release-source
@@ -211,6 +227,9 @@ jobs:
             mingw-w64-x86_64-openssl mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
       - name: Build and package Windows client
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
@@ -234,6 +253,9 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
       - name: Install dependencies
         run: |
           brew install scons sdl2 sdl2_image sdl2_net sdl2_ttf \
@@ -255,15 +277,20 @@ jobs:
       options: --privileged
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
       - name: Pin upstream source
+        env:
+          REVISION: ${{ needs.preflight.outputs.revision }}
         run: |
-          python3 tools/release/render_flatpak.py "$GITHUB_SHA" \
+          python3 tools/release/render_flatpak.py "$REVISION" \
             flatpak/org.globulation2.Globulation2.yml
       - uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6
         with:
           bundle: glob2.flatpak
           manifest-path: flatpak/org.globulation2.Globulation2.yml
-          cache-key: glob2-flatpak-${{ github.sha }}
+          cache-key: glob2-flatpak-${{ needs.preflight.outputs.revision }}
           upload-artifact: false
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -278,6 +305,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
+          ref: ${{ inputs.tag || github.sha }}
       - uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1
         id: snap
       - name: Test installed snap

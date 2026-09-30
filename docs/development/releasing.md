@@ -20,14 +20,17 @@ The release repository permits only an explicit list of SHA-pinned actions.
 When changing a release workflow's actions, pin each action to a reviewed
 commit and add only that exact reference to the release repository's allowed
 actions list before running it there.
-The selected public `vVERSION` tag must resolve to the release mirror's HEAD.
-Mirror only reviewed public commits. Review of workflow changes is essential:
+The selected public `vVERSION` tag supplies the game source for every
+publication build. The release mirror's `master` supplies the reviewed workflow
+and the secrets; its HEAD can differ from the public tag because the mirror has
+owner-only changes. `tools/release/release.py check --tag` verifies the checked
+out public source and tag identify the same commit. Mirror only reviewed public
+commits. Review of workflow changes is essential:
 the mirror and dispatch gates alone do not make unreviewed code safe to run.
 Before tagging a new release, choose an unused version, update
 `PACKAGE_VERSION` in `scons/build_layout.py`, `vcpkg.json`, and
 `fedora/glob2.spec`, and add its AppStream release notes. Do not move an
-existing tag. `tools/release/release.py check --tag` requires the tag and the
-release mirror's HEAD to identify the same commit.
+existing tag.
 Build-only runs leave Flatpak off by default while its first listing metadata is
 being prepared; select `build_flatpak` after adding AppStream release notes to
 exercise that recipe. Flathub's linter rejects the current metadata until those
