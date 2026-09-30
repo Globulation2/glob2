@@ -146,7 +146,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 		building->locked[canSwim] = !reachable;
 		if (!reachable)
 		{
-			building->globalGradientSearch[swimClass].reset();
+			recycleBuildingGradientSearch(std::move(building->globalGradientSearch[swimClass]));
 			return;
 		}
 	}
@@ -154,7 +154,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 		building->locked[canSwim]=false;
 
 	auto &search = building->globalGradientSearch[swimClass];
-	if (!search) search = std::make_unique<BuildingGradientSearch>();
+	if (!search) search = acquireBuildingGradientSearch();
 	search->begin(*this, gradient, swimClass);
 }
 

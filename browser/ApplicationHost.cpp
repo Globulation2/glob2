@@ -221,6 +221,7 @@ void exited(int result)
     }, result);
 }
 void roomReady(bool canStart) { EM_ASM({ Module.glob2RoomCanStart = Boolean($0); }, canStart); }
+void customGameReady(bool canStart) { EM_ASM({ Module.glob2CustomGameReady = Boolean($0); }, canStart); }
 void matchFrame(bool paused)
 {
     EM_ASM({

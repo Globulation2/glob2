@@ -81,8 +81,9 @@ template <class Tab> class SessionFixture final : public SessionTabsScreen
 	std::shared_ptr<YOGClient> client;
 	std::shared_ptr<MultiplayerGame> game;
 	std::unique_ptr<Tab> tab;
-	// Offline, a game room's timer notices the missing server and leaves; the
-	// fixture shows the room as it looks while connected instead.
+	// Offline, a session tab's timer notices the missing server and leaves or
+	// pushes a "connection lost" message over the fixture; the fixture shows
+	// the tab as it looks while connected instead.
 	bool timers;
 
   public:
@@ -101,7 +102,7 @@ template <class Tab> class SessionFixture final : public SessionTabsScreen
 template <class Tab, class... Args> std::unique_ptr<GAGGUI::Screen> session(Args &&...args)
 {
 	auto client = std::make_shared<YOGClient>();
-	return std::make_unique<SessionFixture<Tab>>(client, nullptr, std::make_unique<Tab>(std::forward<Args>(args)..., client));
+	return std::make_unique<SessionFixture<Tab>>(client, nullptr, std::make_unique<Tab>(std::forward<Args>(args)..., client), false);
 }
 std::unique_ptr<GAGGUI::Screen> gameRoom(GAGGUI::ScreenStack &s)
 {

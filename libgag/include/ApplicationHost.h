@@ -83,5 +83,7 @@ void matchFrame(bool paused);
 void overviewDrawn(bool drawn);
 // Read-only presentation diagnostic for the active multiplayer room.
 void roomReady(bool canStart);
+// Whether the custom-game lobby can launch its current map.
+void customGameReady(bool canStart);
 void exited(int result);
 } // namespace GAGCore::ApplicationHost

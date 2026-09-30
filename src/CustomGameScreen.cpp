@@ -19,6 +19,7 @@
 #include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <ApplicationHost.h>
 #include <algorithm>
 #include <cstdio>
 #include <filesystem>
@@ -106,6 +107,7 @@ Element CustomGameChoiceScreen::build(const Presentation &p)
 
 CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(screens)
 {
+	GAGCore::ApplicationHost::customGameReady(false);
 	username = globalContainer->settings.getUsername();
 	// Windows uses a shared working-directory map folder. Unix can also lack
 	// a per-user root when HOME is unavailable; do not hide those shipped maps.
@@ -229,6 +231,7 @@ GameHeader &CustomGameScreen::getGameHeader()
 
 CustomGameScreen::~CustomGameScreen()
 {
+	GAGCore::ApplicationHost::customGameReady(false);
 	savePreferences();
 }
 std::shared_ptr<std::string> CustomGameScreen::releaseSnapshot()
@@ -759,6 +762,7 @@ void CustomGameScreen::showAIProfile(int colony)
 
 Element CustomGameScreen::build(const Presentation &p)
 {
+	GAGCore::ApplicationHost::customGameReady(validMap && !previewBusy() && setup.validation().empty());
 	const bool narrow = p.compact() || p.safe.w < p.pt(720);
 	auto speed = globalContainer->settings;
 	speed.gameSpeed = setup.speed;
