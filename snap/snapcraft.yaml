@@ -9,6 +9,7 @@ license: GPL-3.0-or-later
 website: https://globulation2.org/
 source-code: https://github.com/Globulation2/glob2
 issues: https://github.com/Globulation2/glob2/issues
+icon: data/icons/glob2-icon-256x256.png
 grade: stable
 confinement: strict
 
@@ -19,7 +20,7 @@ apps:
     desktop: usr/share/applications/org.globulation2.Globulation2.desktop
     environment:
       GLOB2_ASSET_DIR: $SNAP/usr/share/glob2
-      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/pulseaudio:$SNAP/usr/lib
     plugs:
       - audio-playback
       - desktop
@@ -66,6 +67,7 @@ parts:
       - libspeex1
       - libfribidi0
       - libpcre3
+      - libpulse0
       - libgl1
       - libglu1-mesa
       - libepoxy0
@@ -77,3 +79,5 @@ parts:
         INSTALLDIR="$CRAFT_PART_INSTALL/usr/share" \
         DATADIR=/usr/share install
       python3 tools/release/release.py verify-install --stage "$CRAFT_PART_INSTALL"
+      sed -i 's|^Icon=glob2$|Icon=${SNAP}/usr/share/icons/hicolor/256x256/apps/glob2.png|' \
+        "$CRAFT_PART_INSTALL/usr/share/applications/org.globulation2.Globulation2.desktop"
