@@ -1,9 +1,12 @@
 # Release packaging
 
 The public `.github/workflows/release.yml` builds packages without publishing.
-The public desktop publication workflows are mirrored to the owner-controlled
-`genixpro/glob2-release` repository. Configure release credentials as restricted
-GitHub environment secrets there; the repository itself is public.
+The public desktop publication workflows are mirrored to the owner-controlled,
+private `genixpro/glob2-release` repository. Configure release credentials as
+restricted GitHub environment secrets there. Keep the workflow and packaging
+definitions public here, and mirror only reviewed commits to the private
+repository. Check the mirror's visibility and branch protection before adding
+credentials.
 Run `publish-desktop.yml` manually with the public `vVERSION` tag to publish the
 GitHub release, publish Snap stable, and propose the Flathub update in that
 order. Each channel retains a separate manual workflow for retries; no
@@ -63,6 +66,44 @@ publication requires the exact version tag on the checked-out commit. The
 source checksum on a build-only run is for testing, not a release announcement.
 
 ## Store setup
+
+### Epic Games Store
+
+The first Epic artifact is Windows. Create a free base offer and a Windows
+artifact in the Epic Developer Portal. Finish the Dev listing with product and
+offer images, at least one 1920x1080 image from the actual game in the media
+carousel, accurate Windows requirements, support details, and regions and
+ratings. Keep illustrated key art distinct from gameplay screenshots. Confirm
+trader, tax, and payout onboarding in the portal before requesting review.
+
+For each candidate, create a public `vVERSION` tag and mirror that reviewed
+commit to the private repository's protected `master` branch. Dispatch
+`epic-windows-release.yml` there with the tag. Its preflight checks that the
+public tag, version, and mirrored HEAD agree. The packaging and smoke-test jobs
+have no Epic credentials. The upload job verifies every staged file against a
+SHA-256 manifest before it receives the BPT secret through the `epic-dev`
+environment. The workflow uploads to Epic **Dev** only; inspect the launcher
+install, move the candidate through Stage and review, and promote it to Live in
+the portal.
+
+In the private repository, set `EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`,
+`EPIC_WINDOWS_ARTIFACT_ID`, `EPIC_BPT_CLIENT_ID`, and `EPIC_BPT_SHA256` as
+`epic-dev` environment variables. Store `EPIC_BPT_CLIENT_SECRET` as an
+environment secret. Create those BPT credentials from the product's BPT
+Credentials page; EOS credentials are different. Download the current
+BuildPatchTool from Epic, place its ZIP as the private `BuildPatchTool.zip`
+asset on the private `epic-bpt` release, and set `EPIC_BPT_SHA256` to its ZIP
+digest. Verify the archive contains one `BuildPatchTool.exe`. Never put BPT
+credentials or the private tool archive in the public source tree.
+
+After each upload, retain the workflow's staged manifest, version, source
+commit, and BPT log. Install through Epic on a fresh Windows machine and check
+startup, assets, campaign and save continuity, and multiplayer against a
+non-Epic PC build. If simulation behavior changed, compare replay acceptance
+and per-tick checksums across platforms. Repeat this process with a new build
+version for updates; do not reuse a previous Epic artifact version.
+
+### Snap, GitHub, and Flathub
 
 Before publishing a Snap, register the `globulation2` name in the Snap Store,
 build and install a candidate, and set the `snap-release` environment secret
