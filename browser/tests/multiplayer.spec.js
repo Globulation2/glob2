@@ -76,7 +76,7 @@ test('browser YOG login exchanges the native protocol through the real gateway',
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  await editTextField(page,'transportfixture');
+  await editTextField(page,'transportfixture',false,'nickname');
   await clickControl(page,'login');
   // Server information, then refusal of an unregistered test account. This
   // proves bidirectional native/Wasm codecs without publishing or using accounts.
@@ -95,7 +95,7 @@ test('registered browser player enters and leaves the native YOG lobby', async (
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  await editTextField(page,'transportplayer');
+  await editTextField(page,'transportplayer',false,'nickname');
   await editTextField(page,'fixture-only',true);
   await clickControl(page,'login');
   await screen('SessionTabsScreen');
@@ -110,7 +110,7 @@ async function loginPlayer(page, name) {
   const screen = target => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(target);
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  await editTextField(page,name);
+  await editTextField(page,name,false,'nickname');
   await editTextField(page,'fixture-only',true);
   await clickControl(page,'login'); await screen('SessionTabsScreen');
 }

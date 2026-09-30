@@ -13,6 +13,7 @@ async function startAndSave(page) {
   await clickControl(page,'save');
   // Name the manual save explicitly: an autosave can arrive while persistence
   // completes, so selecting the first newly appearing file races with it.
+  await clickControl(page,'name');
   const nameField=page.getByRole('textbox',{name:'Game text field'});
   await nameField.click();
   await nameField.press('Home');

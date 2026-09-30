@@ -70,6 +70,7 @@ test.describe('responsive mixed input',()=>{
     await page.locator('#canvas').press('Escape');
     await matchFrame(page);
     await tapControl(page,'save');
+    await tapControl(page,'name');
     const field=page.locator('input[aria-label="Game text field"]');
     await expect(field).toBeVisible();await field.fill('Responsive phone');
     await page.screenshot({path:info.outputPath('phone-save-dialog.png')});

@@ -130,20 +130,22 @@ Element MainMenuScreen::build(const Presentation &p)
 		auto body = scroll("menu/scroll", column(std::move(content), {p.pt(8)}));
 		return center(sized({w, panelHeight}, card(column({header, expanded(body)}, {p.pt(12)}), cardOptions)));
 	}
-	// Desktop: the tall panel at the left over the live colony.
-	const int panelW = p.pt(p.safe.h < p.pt(600) ? 312 : 368);
-	const int panelH = std::min(p.safe.h - p.pt(40), p.pt(620));
+	// Desktop: the tall panel at the left over the live colony. Short windows
+	// keep every action in view with the smaller sizes the menu always used.
+	const bool compact = p.safe.h < p.pt(640);
+	const int panelW = p.pt(compact ? 312 : 368);
+	const int panelH = std::min(p.safe.h - p.pt(compact ? 16 : 40), p.pt(620));
 	loadWordmark(std::max(64, panelW - 2 * p.pt(24)));
 	ButtonOptions launch;
-	launch.role = FontRole::Heading;
-	launch.minHeight = 42;
+	launch.role = compact ? FontRole::Body : FontRole::Heading;
+	launch.minHeight = compact ? 30 : 42;
 	ButtonOptions primary = launch;
 	primary.primary = true;
-	primary.minHeight = 48;
+	primary.minHeight = compact ? 38 : 48;
 	primary.shortcut = SDLK_RETURN;
 	ButtonOptions utility;
 	utility.role = FontRole::Body;
-	utility.minHeight = 32;
+	utility.minHeight = compact ? 28 : 32;
 	std::vector<Element> content;
 	content.push_back(canvas("", {p.pt(36), p.pt(4)},
 							 [](Canvas &c, Rect r, const Frame &frame) { c.fillRounded(r, r.h / 2, frame.layout.theme.palette.accent); }));
@@ -152,17 +154,17 @@ Element MainMenuScreen::build(const Presentation &p)
 		content.push_back(image(wordmark.get(), {true}));
 	else
 		content.push_back(title("Globulation 2"));
-	content.push_back(spacer(p.pt(16)));
+	content.push_back(spacer(p.pt(compact ? 8 : 16)));
 	content.push_back(action("[custom game]", CUSTOM, primary));
 	content.push_back(action("[campaign]", CAMPAIGN, launch));
 	content.push_back(action("[load game]", LOAD_GAME, launch));
 	content.push_back(action("[tutorial]", TUTORIAL, launch));
-	content.push_back(spacer(p.pt(12)));
+	content.push_back(spacer(p.pt(compact ? 6 : 12)));
 	content.push_back(action("[yog]", MULTIPLAYERS_YOG, utility));
 #ifndef __EMSCRIPTEN__
 	content.push_back(action("[lan]", MULTIPLAYERS_LAN, utility));
 #endif
-	content.push_back(spacer(p.pt(12)));
+	content.push_back(spacer(p.pt(compact ? 6 : 12)));
 	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility), action("[editor]", EDITOR, utility),
 								   action("[credits]", CREDITS, utility)};
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
@@ -172,9 +174,9 @@ Element MainMenuScreen::build(const Presentation &p)
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;
 	content.push_back(wrap(std::move(utilities), grid));
-	cardOptions.padding = p.pt(24);
+	cardOptions.padding = p.pt(compact ? 16 : 24);
 	auto panel = sized({panelW, panelH},
-					   card(column({expanded(scroll("menu/scroll", column(std::move(content), {p.pt(6)}))), caption(PACKAGE_VERSION)}, {p.pt(6)}),
+					   card(column({expanded(scroll("menu/scroll", column(std::move(content), {p.pt(compact ? 4 : 6)}))), caption(PACKAGE_VERSION)}, {p.pt(6)}),
 							cardOptions));
 	const int margin = std::clamp(p.safe.w / 20, p.pt(20), p.pt(72));
 	return padding({margin, 0, 0, 0}, align(Alignment::Left, panel));

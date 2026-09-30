@@ -109,8 +109,10 @@ exports.clickCustomAIProfile = (page, colony) => exports.clickControl(page, `col
 
 // Exercise the visible editing surface with actual mouse and keyboard events.
 // Filling the DOM value directly would miss focus, deletion and key routing bugs.
-exports.editTextField = async (page, value, password = false) => {
-  const {expect} = require('@playwright/test');
+// The browser input exists while a field is being edited, so start with the
+// field's own control (by key) as a player would.
+exports.editTextField = async (page, value, password = false, key = password ? 'password' : 'name') => {
+  await exports.clickControl(page, key);
   const field = page.locator(password ? 'input[aria-label="Password"]' : 'input[aria-label="Game text field"]');
   await field.click();
   await expect(field).toBeFocused();
