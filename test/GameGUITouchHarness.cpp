@@ -999,8 +999,14 @@ class GameGUITouchHarness
 				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
 				gui.touch->prepareDraw();
 				noOrder();
+				gui.brush.setFigure(6); // 3x3, so the footprint capture is legible.
 				finger(SDL_FINGERDOWN, 1, spot.x, spot.y);
 				finger(SDL_FINGERMOTION, 1, spot.x + 40 * unit, spot.y);
+				require(gui.touch->stroke.points.size() == 2, "Stroke buffers its points until release");
+				gui.drawAll(0);
+				gfx->printScreen(width < height ? "touch-stroke-portrait.bmp" : "touch-stroke-landscape.bmp");
+				gfx->nextFrame();
+				noOrder(); // The preview never paints.
 				finger(SDL_FINGERUP, 1, spot.x + 40 * unit, spot.y);
 				require(forbidden(), "A painted drag must not wait");
 				drain();

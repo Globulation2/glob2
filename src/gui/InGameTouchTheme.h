@@ -12,6 +12,11 @@ inline const GAGCore::Color field{65, 43, 88, 235};
 inline const GAGCore::Color selected{114, 78, 111, 245};
 inline const GAGCore::Color border{199, 165, 87};
 inline const GAGCore::Color readout{29, 18, 46, 240};
+// Pending zone-brush cells, indexed by GameGUIToolManager::ZoneType (forbidden,
+// guard, clearing): tinted like the zone they add, dark when erasing.
+inline const GAGCore::Color zonePreview[3] = {{235, 80, 70, 110}, {80, 130, 255, 120}, {245, 225, 90, 110}};
+inline const GAGCore::Color zonePreviewEdge[3] = {{255, 150, 140}, {160, 190, 255}, {255, 240, 150}};
+inline const GAGCore::Color erasePreview{20, 14, 30, 140};
 inline constexpr double textScale = 1.0;
 inline constexpr double target = 48;
 inline constexpr double inspectorRow = 44;

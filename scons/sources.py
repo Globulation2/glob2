@@ -87,6 +87,7 @@ CLIENT_SOURCES = (
     'BaseTeam.cpp',
     'BitArray.cpp',
     'Brush.cpp',
+    'BrushCoverage.cpp',
     'building/Lifecycle.cpp',
     'building/Construction.cpp',
     'building/Update.cpp',

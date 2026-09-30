@@ -125,7 +125,10 @@ must also cover Android gesture/three-button navigation and rotation.
   Axis labels stay outside the curves.
 
 A session cannot commit after a second finger, focus loss, rotation, selection
-change, or release over UI. Drag previews are lifted above the finger; edge panning
+change, or release over UI. While a zone stroke is held or a paint tap waits, the
+HUD draws the exact cells it will paint, tinted like the zone (dark when erasing),
+using `BrushCoverage`, the same helper the phone editor's preview uses; the
+desktop hover cursor is hidden in the phone HUD because touch never moves it. Drag previews are lifted above the finger; edge panning
 continues while held. Tap previews survive ordinary input suspension and require a
 new confirmation gesture. Painting buffers an unfinished stroke; release applies
 its existing brush operations, while interruption discards it. Completed strokes

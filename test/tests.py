@@ -99,6 +99,7 @@ UNIT_TESTS = [
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',
     'BrushAccumulatorTest.cpp',
+    'BrushCoverageTest.cpp',
     'BrushToolHitTest.cpp',
     'BuildingFailureDisplayTest.cpp',
     'CortexUpgradeTest.cpp',
@@ -186,6 +187,7 @@ UNIT_TESTS = [
 UNIT_PRODUCTION_SOURCES = [
     '#src/BitArray.cpp',
     '#src/Brush.cpp',
+    '#src/BrushCoverage.cpp',
     '#src/OverlayFill.cpp',
     '#src/PlayerVoice.cpp',
     '#src/Utilities.cpp',

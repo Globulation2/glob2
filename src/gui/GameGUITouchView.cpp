@@ -6,6 +6,8 @@
 #include "GameGUITouch.h"
 #include "InGameTouchTheme.h"
 #include "TouchReadout.h"
+#include "Brush.h"
+#include "BrushCoverage.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
@@ -145,30 +147,39 @@ void GameGUITouch::drawHUD()
 	const auto ui = layout();
 	const double unit = gfx->logicalUnitsPerPoint();
 	gfx->setClipRect();
-	// A stroke preview is transient presentation state. Painting the actual
-	// map starts only after release, so this trail can disappear on cancellation.
-	if (stroke.points.size() > 1)
+	// Pending brush cells are transient presentation state: painting the map
+	// starts only after release (or after a held tap's window), so the preview
+	// can vanish on cancellation. Cells match the zone orders exactly.
+	const auto &pending = !stroke.points.empty() ? stroke
+						  : deferredStroke     ? deferredStroke->stroke
+											   : stroke;
+	if (!pending.points.empty() && gui.selectionMode == GameGUI::BRUSH_SELECTION)
 	{
-		auto screenPoint = [&](ViewPoint p)
+		const auto &map = gui.game.map;
+		std::vector<BrushCoverage::Cell> centres;
+		for (const auto &p : pending.points)
+			centres.push_back({(int(p.x) >> 5) & map.getMaskW(), (int(p.y) >> 5) & map.getMaskH()});
+		const auto area = world();
+		const int zone = std::clamp(pending.zone, 0, 2);
+		const Color fill = pending.mode == BrushTool::MODE_DEL ? InGameTouchTheme::erasePreview
+																 : InGameTouchTheme::zonePreview[zone];
+		const int size = std::max(2, int(std::ceil(32 * gui.camera.zoom)));
+		auto wrap = [](double value, double extent) { return value - std::floor(value / extent) * extent; };
+		gfx->setClipRect(int(area.x), int(area.y), int(area.w), int(area.h));
+		for (const auto &[x, y] : BrushCoverage::cells(pending.figure, centres))
 		{
-			auto wrap = [](double value, double extent)
-			{ return value - std::floor(value / extent) * extent; };
-			return ViewPoint{(wrap(p.x - gui.viewportX * 32, gui.game.map.getW() * 32) -
-							  gui.camera.fractionX()) *
-									 gui.camera.zoom +
-								 gui.camera.offsetX,
-							 (wrap(p.y - gui.viewportY * 32, gui.game.map.getH() * 32) -
-							  gui.camera.fractionY()) *
-									 gui.camera.zoom +
-								 gui.camera.offsetY};
-		};
-		for (size_t i = 1; i < stroke.points.size(); ++i)
-		{
-			const auto a = screenPoint(stroke.points[i - 1]), b = screenPoint(stroke.points[i]);
-			if (world().contains(a) && world().contains(b) &&
-				std::hypot(a.x - b.x, a.y - b.y) < world().w / 2)
-				gfx->drawLine(int(a.x), int(a.y), int(b.x), int(b.y), InGameTouchTheme::border);
+			const double sx = (wrap(x * 32.0 - gui.viewportX * 32, map.getW() * 32) - gui.camera.fractionX()) *
+								  gui.camera.zoom +
+							  gui.camera.offsetX,
+						 sy = (wrap(y * 32.0 - gui.viewportY * 32, map.getH() * 32) - gui.camera.fractionY()) *
+								  gui.camera.zoom +
+							  gui.camera.offsetY;
+			if (sx >= area.x + area.w || sy >= area.y + area.h || sx + size <= area.x || sy + size <= area.y)
+				continue;
+			gfx->drawFilledRect(int(sx), int(sy), size, size, fill);
+			gfx->drawRect(int(sx), int(sy), size, size, InGameTouchTheme::zonePreviewEdge[zone]);
 		}
+		gfx->setClipRect();
 	}
 	const double available =
 		std::min(ui.world.x + ui.world.w, minimapRect().x - 4 * unit) - ui.world.x;
