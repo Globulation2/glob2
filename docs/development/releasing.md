@@ -79,6 +79,9 @@ The release environment requires `GLOB2_BROWSER_WIF_PROVIDER` and
 `GLOB2_BROWSER_SERVICE_ACCOUNT` variables. The dedicated `glob2-browser-release`
 provider restricts tokens by repository ID, owner actor ID, manual event,
 `master`, public visibility, hosted runner, environment and exact workflow path.
+The service-account federation binding must match the repository's immutable
+GitHub subject (`repo:genixpro@6193625/glob2-release@1397722696:environment:browser-release`);
+the older subject without numeric IDs will fail impersonation.
 Its service account has `roles/storage.objectUser` on this bucket only, with no
 project-wide storage role or persistent service-account key. Add the pinned
 `google-github-actions/setup-gcloud` reference from the workflow to the mirror's
