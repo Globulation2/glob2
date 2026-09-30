@@ -80,6 +80,8 @@ class ChooseMapScreen : public Glob2UI::Screen
 	bool validMapSelected = false;
 	std::string title, status;
 	std::string mapName, mapInfo, mapVersion, mapSize, mapDate;
+	// The experiments a selected save carries; empty for maps, replays and plain saves.
+	std::string mapExperiments;
 	std::unique_ptr<MapPreview> mapPreview;
 	std::unique_ptr<GAGCore::ApplicationHost::FileSelection> fileSelection;
 	std::unique_ptr<FileImport> fileImport;

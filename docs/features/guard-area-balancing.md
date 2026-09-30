@@ -32,8 +32,12 @@ constants in `src/map/MapInternal.h`. Every one of them reads
   and summed with two sliding-window passes, rows then columns, both row-major.
   The torus wrap is the same index masking the gradients use. Each pass is
   linear in map size, independent of warrior count and radius, and both only run
-  for a team that has painted tiles and warriors. Guard fields of different teams
-  and swim classes rebuild in parallel, so the scratch grids are per thread.
+  for a team that has painted tiles and warriors: the plain seeding pass counts
+  painted tiles, and a team that painted nothing pays nothing more. Guard fields of
+  different teams and swim classes rebuild in parallel, so the scratch grids live
+  in each compute slot's gradient workspace. Every warrior outside a building
+  counts, including one attached to a war flag, so a war flag beside a guard area
+  makes that area read as more crowded.
 - **Seeding.** A painted tile is seeded at `GRADIENT_AT_GOAL` minus
   `GUARD_CROWD_COST_PER_WARRIOR` per counted warrior, scaled by
   `GUARD_CROWD_REFERENCE_AREA` over the painted count and capped at
@@ -106,8 +110,10 @@ on a blank 64x64 map with one team and 24 level-0 warriors, seeded so runs repea
 exactly. Two 5x5 areas are painted, "near" 18 tiles from the spawn block and "far"
 32 tiles away on the other axis. Counts are warriors within 7 tiles of an area's
 centre. The first case runs the spawn and drain scenarios **without** the
-experiment and expects the old outcome (24 / 0, nobody leaves), which is what
-proves the gate. The balancing cases run at the three refresh cadences a game can
+experiment, expects the old outcome (24 / 0, nobody leaves), and compares the
+default game's per-100-tick checksums against
+`test/fixtures/guard-area/off-path-checksums.txt` (`[golden]`; `run_tests.py
+--update-fixtures` rewrites it when a default-path change is intended). The balancing cases run at the three refresh cadences a game can
 have (every tick, about every 10 ticks with a small game's resource fields, about
 every 170 with a large game's).
 
@@ -124,41 +130,14 @@ every 170 with a large game's).
 | crowding | The box sum equals a brute-force count across the torus seam. |
 | timing (`[benchmark]`) | Rebuild wall time on 64x64 and 256x256 maps. |
 
-Warriors at each area after 4,500 ticks in the original development harness
-(macOS arm64, release build, seed 1):
-
-| Scenario | Off (near / far) | On, every-tick refresh | On, ~10-tick refresh | On, ~170-tick refresh |
-| --- | --- | --- | --- | --- |
-| spawn: both areas painted, warriors arrive | 24 / 0 | 13 / 11 | 13 / 11 | 11 / 13 |
-| drain: 24 inside near, then far painted | 24 / 0 | 11 / 13 | 11 / 13 | 11 / 13 |
-| patches: near is two 3x3 patches 3 tiles apart (18 painted tiles) | 24 / 0 | 11 / 13 | 12 / 12 | 9 / 15 |
-| size: near 5x5, far 9x9 | 24 / 0 | 4 / 20 | 5 / 19 | 10 / 14 |
-| three: near / far / third at 18, 32 and 45 tiles | 24 / 0 / 0 | 5 / 10 / 9 | | |
-| erase: far erased after settling | | 24 / 0 | | |
-
-Over seeds 1-10 at all three cadences, the first area in `drain` dips 1 to 5
-warriors below where it settles before they come back (mean 2.4). Settled guards
-(`spins`, 500 ticks sampled after 4,000): the share of on-paint ticks with no
-direction fell from 100% (1x1 and sparse paint), 81 to 85% (checkerboard) and 72
-to 74% (packed 5x5) to 0 to 24%, 0%, 0% and 0.6 to 2.5%, with no warrior held on
-one painted tile for the whole sample on any layout. What remains on a 1x1 is the
-one guard boxed in by the crowd pressing round its single tile.
-
-Guard-gradient rebuild wall time, median of 200 rebuilds with two 5x5 areas
-painted: 64x64 map 31 to 32 us before, 36 us with 24 warriors after, of which one
-box-sum pass is 5 us; 256x256 map 444 to 510 us before, 529 to 582 us after, box
-sum 73 to 90 us. A team that has painted nothing pays nothing beyond the old
-seeding pass. Full simulation step in the spawn scenario: 16.0 us before and 15.8
-us after with 24 warriors; with 96 warriors 181.9 us before and 70.0 us after,
-because warriors blocked around a packed area retry the area pathfinder and a
-blocked retry rebuilds the whole guard gradient.
+Shares and timings measured during development are recorded in the pull request
+that introduced the experiment (#451, from #265), not here.
 
 ## Feel
 
 Arrival at a first area is slower than before when a whole batch walks together:
 the crowd counts against the area it approaches from eight tiles out and part of
-it diverts, so 90 percent of a 24-warrior block is in some area by tick 1,000
-instead of 250. A packed area no longer spills warriors onto the tiles around it.
+it diverts. A packed area no longer spills warriors onto the tiles around it.
 An over-full area empties as a trickle over a couple of thousand ticks, not at
 once. Warrush, which paints guard areas on the enemy buildings it has found,
 spreads its attack across them instead of massing on the nearest. These are the

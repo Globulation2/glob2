@@ -3394,8 +3394,12 @@ Ludoj
 Aldoni AI
 [settings Experiments]
 Eksperimentoj
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Provu funkciojn, kiujn ni ankoraŭ testas. Ili validas por novaj ludoj, kiujn vi komencas aŭ gastigas; konservita ludo tenas la aron, kun kiu ĝi komenciĝis. Eksperimentoj povas ŝanĝi ekvilibron kaj ritmon.
+[settings Try features we are still testing. They can change balance and pacing.]
+Provu funkciojn, kiujn ni ankoraŭ testas. Ili povas ŝanĝi ekvilibron kaj ritmon.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Eksperimentoj validas por novaj ludoj, kiujn vi komencas aŭ gastigas, neniam por kampanjaj misioj. Konservita ludo tenas tiujn, kun kiuj ĝi komenciĝis.
+[Experiments set by the host]
+Eksperimentoj elektitaj de la gastiganto
 [settings No experiments in this build.]
 Neniu eksperimento en ĉi tiu versio.
 [Experiments]

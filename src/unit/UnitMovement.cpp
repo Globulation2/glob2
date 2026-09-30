@@ -282,17 +282,11 @@ void Unit::handleMovementAttackingAround()
 		}
 	}
 
-	// No enemy in reach: follow the guard field. Outside an area it leads to
-	// the nearest area (under guard-area balancing, nearest once crowding is
-	// counted); inside one it may, under that experiment, lead out of an
-	// over-full area (Map::pathfindArea). Where it gives no move, a warrior
-	// inside an area or in a war flag's range wanders the least explored
-	// painted tiles, and one with no area to go to wanders freely.
+	// if we haven't found anything satisfactory, follow guard area gradients
 	if (movement == MOV_RANDOM_GROUND)
 	{
-		// "Inside" a guard area is the field's goal value, as it always was.
-		// Under guard-area balancing a crowded area's tiles sit below that
-		// value, so the painted bit is what says inside there.
+		// Under guard-area balancing a crowded area's tiles sit below the goal
+		// value, so "inside" is the painted bit there.
 		const bool balancing = owner->game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);
 		auto insideGuardArea = [&](int x, int y)
 		{

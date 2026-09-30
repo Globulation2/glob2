@@ -9,19 +9,27 @@ covers what players see, the compatibility rules, and how to add an experiment.
 
 - **Settings → Experiments** lists one switch per experiment in this build, with
   a line explaining what it changes. The page says when a build has none.
-- The set applies to **new games only**: a custom game, a campaign mission, a map
-  file played from the load screen, a headless `-test-games` match, and a
-  multiplayer game the player hosts on YOG or LAN. A joiner plays with the host's
-  set, whatever their own settings say.
-- The custom-game lobby footer shows "Experiments: …" when any are enabled, and the
-  multiplayer **Other options** dialog lists the game's set read-only for every
-  player in the lobby.
+- The set applies to **new games only**: a custom game, a map file played from the
+  load screen, a headless `-test-games` match, and a multiplayer game the player
+  hosts on YOG or LAN. A joiner plays with the host's set, whatever their own
+  settings say.
+- **Campaign missions and the tutorial never take experiments**: scripted content
+  plays as its author tested it.
 - A **saved game or replay keeps the set it was started with**, even if the player
   has since changed the setting. Loading a save never applies current settings.
+- Where the set shows: the custom-game lobby footer ("Experiments: …"), the
+  multiplayer lobby's side panel and its **Other options** dialog ("Experiments set
+  by the host: …", read-only for every player), and the load screen's details for a
+  saved game that carries any.
 - Experiments can change balance and pacing. Nothing in the default game changes
   while every switch is off.
 
 ## Compatibility
+
+`Engine::applyLocalExperiments` (`src/EngineInit.cpp`) is the one place the
+new-game rule lives: it copies the settings into a header unless the map is a saved
+game, and every entry point above calls it. A hosted multiplayer game sends its
+header with the map, so joiners see the set in the lobby.
 
 The set lives in `GameHeader` (`src/GameHeader.h`) as an `ExperimentSet`
 (`src/ExperimentalFeatures.h`), written after the custom-game rules and gated on
@@ -67,12 +75,16 @@ game's experiments. See [headless replays](../development/headless-replays.md).
    `syncRand()` differently under the experiment is fine, because the set is baked
    into the game.
 3. Add `[experiment <key>]` and `[experiment <key> help]` to `data/texts.keys.txt`
-   and to every catalog in `data/texts.list.txt`; `python3
-   data/check_translations.py --strict` and `test/test_translations.py` reject a
-   missing or untranslated entry.
+   and to every catalog in `data/texts.list.txt`, with the English text equal to the
+   definition's label and help. The `SettingsExperiments` test fails when a registry
+   entry's keys are missing from `texts.keys.txt` or the English table differs, and
+   `python3 data/check_translations.py --strict` then requires every catalog to
+   translate them.
 4. Cover both sides of the gate in a doctest case (`test/README.md`): the
-   `GuardAreaBalance` suite is the pattern, starting its games with
-   `glob2test::GameOptions::experiments` set.
+   `GuardAreaBalance` suite is the pattern. It starts its games with
+   `glob2test::GameOptions::experiments` set, and its first case checks the default
+   game's per-100-tick checksums against a golden, so an unintended change to the
+   default path fails.
 5. Write a short design and measurement guide under `docs/features/` and link it
    from the table above. No version bump is needed for an added experiment: the
    header format only changes when the framework itself does.

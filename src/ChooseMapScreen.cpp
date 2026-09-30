@@ -79,6 +79,7 @@ void ChooseMapScreen::clearSelection()
 	validMapSelected = false;
 	selectedType = NONE;
 	mapDate.clear();
+	mapExperiments.clear();
 	mapVersion.clear();
 	mapInfo.clear();
 	mapSize.clear();
@@ -124,6 +125,21 @@ void ChooseMapScreen::select(int index)
 			if (!validMapSelected)
 				selectedType = NONE;
 			mapHeader.setMapName(glob2FilenameToName(mapFileName));
+			if (validMapSelected && activeType() == GAME)
+			{
+				// A save keeps the experiments it was started with, whatever the
+				// settings say now, so name them. A header that will not read is
+				// the loader's to report, not the listing's.
+				try
+				{
+					GameHeader saved;
+					if (saved.load(stream.get(), mapHeader.getVersionMinor()) && !saved.getExperiments().empty())
+						mapExperiments = tr("[Experiments]") + ": " + experimentLabelList(saved.getExperiments());
+				}
+				catch (std::exception &)
+				{
+				}
+			}
 			if (validMapSelected)
 			{
 				updateMapInformation();
@@ -320,7 +336,7 @@ Element ChooseMapScreen::build(const Presentation &p)
 	auto list = listView("files", catalog.names(), activeSelection(), [this](int i) { select(i); },
 						 {{}, {}, {}, [this](int) { accept(); }, {}, 10, tr("[No items]")});
 	std::vector<Element> detailLines;
-	for (const auto &line : {mapName, mapSize, mapInfo, mapVersion, mapDate})
+	for (const auto &line : {mapName, mapSize, mapInfo, mapVersion, mapDate, mapExperiments})
 		if (!line.empty())
 			detailLines.push_back(paragraph(line));
 	auto preview = Glob2UI::mapPreview("preview", *this->mapPreview, 160);

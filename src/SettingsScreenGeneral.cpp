@@ -278,7 +278,8 @@ void SettingsScreen::buildGeneral()
 	}
 	else if (current == Category::Experiments)
 	{
-		info(tr("Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing."));
+		info(tr("Try features we are still testing. They can change balance and pacing."));
+		info(tr("Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with."));
 		if (experimentDefinitions().empty())
 			info(tr("No experiments in this build."));
 		auto *strings = Toolkit::getStringTable();

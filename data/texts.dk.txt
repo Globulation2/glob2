@@ -3472,8 +3472,12 @@ Spil
 Tilføj AI
 [settings Experiments]
 Eksperimenter
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Prøv funktioner, vi stadig tester. De gælder for nye spil, du starter eller er vært for; et gemt spil beholder det sæt, det startede med. Eksperimenter kan ændre balance og tempo.
+[settings Try features we are still testing. They can change balance and pacing.]
+Prøv funktioner, vi stadig tester. De kan ændre balance og tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Eksperimenter gælder for nye spil, du starter eller er vært for, aldrig for kampagnemissioner. Et gemt spil beholder dem, det startede med.
+[Experiments set by the host]
+Eksperimenter valgt af værten
 [settings No experiments in this build.]
 Ingen eksperimenter i denne version.
 [Experiments]

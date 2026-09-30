@@ -3396,8 +3396,12 @@ Partidas
 Añadir IA
 [settings Experiments]
 Experimentos
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Prueba funciones que todavía estamos probando. Se aplican a las partidas nuevas que inicies o alojes; una partida guardada conserva el conjunto con el que empezó. Los experimentos pueden cambiar el equilibrio y el ritmo.
+[settings Try features we are still testing. They can change balance and pacing.]
+Prueba funciones que todavía estamos probando. Pueden cambiar el equilibrio y el ritmo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Los experimentos se aplican a las partidas nuevas que inicias o alojas, nunca a las misiones de campaña. Una partida guardada conserva los que tenía al empezar.
+[Experiments set by the host]
+Experimentos elegidos por el anfitrión
 [settings No experiments in this build.]
 No hay experimentos en esta versión.
 [Experiments]

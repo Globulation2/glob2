@@ -3394,8 +3394,12 @@ Emoji
 إضافة لاعب آلي
 [settings Experiments]
 التجارب
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-جرّب ميزات ما زلنا نختبرها. تنطبق على الألعاب الجديدة التي تبدأها أو تستضيفها؛ وتحتفظ اللعبة المحفوظة بالمجموعة التي بدأت بها. قد تغيّر التجارب التوازن والإيقاع.
+[settings Try features we are still testing. They can change balance and pacing.]
+جرّب ميزات ما زلنا نختبرها. قد تغيّر التوازن والإيقاع.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+تنطبق التجارب على الألعاب الجديدة التي تبدأها أو تستضيفها، ولا تنطبق أبداً على مهام الحملة. تحتفظ اللعبة المحفوظة بالتجارب التي بدأت بها.
+[Experiments set by the host]
+تجارب اختارها المضيف
 [settings No experiments in this build.]
 لا توجد تجارب في هذا الإصدار.
 [Experiments]

@@ -3404,8 +3404,12 @@ Partides
 Afegeix IA
 [settings Experiments]
 Funcions experimentals
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Prova funcions que encara estem provant. S'apliquen a les partides noves que inicies o allotges; una partida desada conserva el conjunt amb què va començar. Les funcions experimentals poden canviar l'equilibri i el ritme.
+[settings Try features we are still testing. They can change balance and pacing.]
+Prova funcions que encara estem provant. Poden canviar l'equilibri i el ritme.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Les funcions experimentals s'apliquen a les partides noves que inicies o allotges, mai a les missions de campanya. Una partida desada conserva les que tenia en començar.
+[Experiments set by the host]
+Funcions experimentals triades per l'amfitrió
 [settings No experiments in this build.]
 No hi ha funcions experimentals en aquesta versió.
 [Experiments]

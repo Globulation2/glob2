@@ -3394,8 +3394,12 @@ Emoji
 Добавить ИИ
 [settings Experiments]
 Эксперименты
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Попробуйте функции, которые мы ещё тестируем. Они действуют для новых игр, которые вы начинаете или размещаете; сохранённая игра сохраняет набор, с которым началась. Эксперименты могут изменить баланс и темп.
+[settings Try features we are still testing. They can change balance and pacing.]
+Попробуйте функции, которые мы ещё тестируем. Они могут изменить баланс и темп.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Эксперименты действуют в новых играх, которые вы начинаете или размещаете, но никогда в миссиях кампании. Сохранённая игра сохраняет те, с которыми началась.
+[Experiments set by the host]
+Эксперименты, выбранные хостом
 [settings No experiments in this build.]
 В этой сборке нет экспериментов.
 [Experiments]

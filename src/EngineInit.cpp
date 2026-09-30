@@ -45,11 +45,16 @@ GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign
     if (players.getNumberOfPlayers() == 0) players = prepareCampaign(map, gui.localPlayer, gui.localTeamNo);
     else { gui.localPlayer = 0; gui.localTeamNo = players.getBasePlayer(0).teamNumber; }
     if (campaign) players.getBasePlayer(0).name = campaign->getPlayerName();
-    // A fresh mission takes the player's experiments; a saved one keeps its own.
-    if (!map.getIsSavedGame()) players.setExperiments(globalContainer->settings.experiments);
+    // Missions and the tutorial play as authored: never with experiments.
+    if (!map.getIsSavedGame()) players.getExperiments().clear();
     const bool loaded = co_await initGameTask(map, players);
     if (loaded && campaign) gui.setCampaignGame(*campaign, mission);
     co_return loaded;
+}
+void Engine::applyLocalExperiments(GameHeader& header, const MapHeader& map)
+{
+    if (!map.getIsSavedGame())
+        header.setExperiments(globalContainer->settings.experiments);
 }
 int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam, const std::string& sourceFileName)
 {
@@ -87,9 +92,7 @@ GAGCore::CooperativeTask Engine::initCustomTask(std::string filename)
     auto players = loadGameHeader(filename);
     for (int p = 0; p < players.getNumberOfPlayers(); ++p)
         if (players.getBasePlayer(p).type == BasePlayer::P_IP) players.getBasePlayer(p).makeItAI(AI::toggleAI);
-    // Playing a map file starts a new game and takes the player's experiments; a
-    // saved game keeps the set it was started with.
-    if (!map.getIsSavedGame()) players.setExperiments(globalContainer->settings.experiments);
+    applyLocalExperiments(players, map);
     co_return co_await initGameTask(map, players, true, false, true, filename);
 }
 
@@ -285,7 +288,7 @@ void Engine::createRandomGame()
 	{
 		game.setRandomSeed(globalContainer->testGamesSeed);
 	}
-	game.setExperiments(globalContainer->settings.experiments);
+	applyLocalExperiments(game, map);
 	applyTestRules(game);
 	std::cout<<"Random Seed gameheader: "<<game.getRandomSeed();
 	for (int p=0; p<game.getNumberOfPlayers(); p++)

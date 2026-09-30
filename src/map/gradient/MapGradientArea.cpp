@@ -11,20 +11,7 @@
 #include "MapInternal.h"
 
 #include <algorithm>
-#include <vector>
-
-namespace
-{
-	// Scratch for the crowding box sums. Guard fields of different swim classes
-	// and teams rebuild in parallel (Map::updateTeamAreaGradients, the gradient
-	// pipeline), so the scratch is per thread rather than shared.
-	thread_local std::vector<Uint16> crowdCells;
-	thread_local std::vector<Uint16> paintCells;
-	thread_local std::vector<Uint16> crowdRows;
-	thread_local std::vector<int> crowdColumnSums;
-	thread_local std::vector<size_t> crowdPositions;
-	thread_local std::vector<size_t> guardSeeds;
-}
+#include <atomic>
 
 
 
@@ -140,6 +127,7 @@ bool Map::computeWarriorCrowding(int teamNumber, Uint16 *out) const
 {
 	// Gather positions first: a team without warriors costs one pass over its
 	// unit slots and nothing over the map.
+	auto &crowdPositions = gradientRuntime->workspaces[compute.slot()].crowding.positions;
 	crowdPositions.clear();
 	const Team *team = game->teams[teamNumber];
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
@@ -170,7 +158,10 @@ void Map::boxSumInPlace(Uint16 *grid) const
 {
 	// A window wider than the map would count a cell twice.
 	const int r = std::min<int>(GUARD_CROWD_RADIUS, std::min((int)w - 1, (int)h - 1) / 2);
-	crowdRows.assign(size, 0);
+	auto &scratch = gradientRuntime->workspaces[compute.slot()].crowding;
+	auto &crowdRows = scratch.rows;
+	auto &crowdColumnSums = scratch.columnSums;
+	crowdRows.resize(size); // every cell is written below
 	// Rows: window [x-r, x+r] slides right; entering x+r+1, leaving x-r.
 	for (int y = 0; y < (int)h; y++)
 	{
@@ -218,9 +209,11 @@ void Map::boxSumInPlace(Uint16 *grid) const
 void Map::seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const
 {
 	// Seeds are the cells the plain seeding left at the goal value: painted and
-	// not blocked. Both box sums are skipped for a team that painted nothing
-	// (the common case) and for a team with no warriors, whose painted tiles
-	// stay at cost zero.
+	// not blocked. A team with no warriors keeps its painted tiles at cost zero.
+	auto &scratch = gradientRuntime->workspaces[compute.slot()].crowding;
+	auto &guardSeeds = scratch.seeds;
+	auto &crowdCells = scratch.warriors;
+	auto &paintCells = scratch.paint;
 	guardSeeds.clear();
 	for (size_t i = 0; i < size; i++)
 		if (gradient[i] == GRADIENT_AT_GOAL)
@@ -259,7 +252,9 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 	bool canSwim = swimClass > 0;
 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	std::atomic<size_t> painted{0};
 	initializeGradientCells([&](size_t begin, size_t end) {
+	size_t paintedHere = 0;
 	for (size_t i=begin; i<end; i++)
 	{
 		const Tile& c=tiles[i];
@@ -274,13 +269,18 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 		else if (!canSwim && isWater(i))
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.guardArea & teamMask)
+		{
 			gradient[i] = GRADIENT_AT_GOAL;
+			++paintedHere;
+		}
 		else
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
+	painted += paintedHere;
 	});
 
-	if (game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing))
+	// A team that painted nothing (most teams) pays nothing more than this pass.
+	if (painted && game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing))
 		seedGuardAreaCrowding(teamNumber, gradient);
 }
 

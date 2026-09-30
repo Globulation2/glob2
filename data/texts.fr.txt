@@ -3406,8 +3406,12 @@ Parties
 Ajouter une IA
 [settings Experiments]
 Expérimentations
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Essayez des fonctionnalités encore en test. Elles s'appliquent aux nouvelles parties que vous lancez ou hébergez ; une partie sauvegardée conserve l'ensemble avec lequel elle a commencé. Les expérimentations peuvent changer l'équilibre et le rythme.
+[settings Try features we are still testing. They can change balance and pacing.]
+Essayez des fonctionnalités encore en test. Elles peuvent changer l'équilibre et le rythme.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Les expérimentations s'appliquent aux nouvelles parties que vous lancez ou hébergez, jamais aux missions de campagne. Une partie sauvegardée garde celles avec lesquelles elle a commencé.
+[Experiments set by the host]
+Expérimentations choisies par l'hôte
 [settings No experiments in this build.]
 Aucune expérimentation dans cette version.
 [Experiments]

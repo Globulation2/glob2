@@ -3396,8 +3396,12 @@ Spiele
 KI hinzufügen
 [settings Experiments]
 Experimente
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Probiere Funktionen aus, die wir noch testen. Sie gelten für neue Spiele, die du startest oder hostest; ein gespeichertes Spiel behält die Auswahl, mit der es begonnen wurde. Experimente können Balance und Tempo verändern.
+[settings Try features we are still testing. They can change balance and pacing.]
+Probiere Funktionen aus, die wir noch testen. Sie können Balance und Tempo verändern.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experimente gelten für neue Spiele, die du startest oder hostest, nie für Kampagnenmissionen. Ein gespeichertes Spiel behält die, mit denen es begonnen hat.
+[Experiments set by the host]
+Vom Host gewählte Experimente
 [settings No experiments in this build.]
 Keine Experimente in dieser Version.
 [Experiments]

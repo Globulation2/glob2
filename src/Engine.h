@@ -130,6 +130,13 @@ public:
 
 	///This will load the game header of the game with the given filename
 	static GameHeader loadGameHeader(const std::string &filename);
+
+	/// Copies the player's Settings > Experiments into the header of a new game.
+	/// A saved game keeps the set it was started with, so this leaves one alone.
+	/// The one place the new-game rule lives: the custom lobby, map files, headless
+	/// test games and hosted multiplayer call it; campaign missions and joined
+	/// multiplayer games deliberately do not (docs/features/experimental-features.md).
+	static void applyLocalExperiments(GameHeader &header, const MapHeader &map);
 	
 private:
 	/// Initiates a game, provided the map and game header. This initiates the net

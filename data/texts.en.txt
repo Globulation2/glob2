@@ -3394,8 +3394,12 @@ Games
 Add AI
 [settings Experiments]
 Experiments
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.
+[settings Try features we are still testing. They can change balance and pacing.]
+Try features we are still testing. They can change balance and pacing.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.
+[Experiments set by the host]
+Experiments set by the host
 [settings No experiments in this build.]
 No experiments in this build.
 [Experiments]

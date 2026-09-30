@@ -3396,8 +3396,12 @@ Pelit
 Lisää AI
 [settings Experiments]
 Kokeilut
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Kokeile ominaisuuksia, joita vielä testaamme. Ne koskevat uusia pelejä, jotka aloitat tai joita isännöit; tallennettu peli säilyttää joukon, jolla se alkoi. Kokeilut voivat muuttaa tasapainoa ja tempoa.
+[settings Try features we are still testing. They can change balance and pacing.]
+Kokeile ominaisuuksia, joita vielä testaamme. Ne voivat muuttaa tasapainoa ja tempoa.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Kokeilut koskevat uusia pelejä, jotka aloitat tai joita isännöit, eivät koskaan kampanjatehtäviä. Tallennettu peli säilyttää ne, joilla se alkoi.
+[Experiments set by the host]
+Isännän valitsemat kokeilut
 [settings No experiments in this build.]
 Tässä versiossa ei ole kokeiluja.
 [Experiments]

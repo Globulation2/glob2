@@ -3396,8 +3396,12 @@ Igre
 Dodaj UI
 [settings Experiments]
 Poskusi
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Preizkusite funkcije, ki jih še testiramo. Veljajo za nove igre, ki jih začnete ali gostite; shranjena igra obdrži nabor, s katerim se je začela. Poskusi lahko spremenijo ravnovesje in tempo.
+[settings Try features we are still testing. They can change balance and pacing.]
+Preizkusite funkcije, ki jih še testiramo. Lahko spremenijo ravnovesje in tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Poskusi veljajo za nove igre, ki jih začnete ali gostite, nikoli za misije kampanje. Shranjena igra obdrži tiste, s katerimi se je začela.
+[Experiments set by the host]
+Poskusi, ki jih je izbral gostitelj
 [settings No experiments in this build.]
 V tej različici ni poskusov.
 [Experiments]

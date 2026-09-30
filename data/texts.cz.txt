@@ -3396,8 +3396,12 @@ Hry
 Přidat počítač
 [settings Experiments]
 Experimenty
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Vyzkoušejte funkce, které stále testujeme. Platí pro nové hry, které založíte nebo hostujete; uložená hra si ponechá sadu, se kterou začala. Experimenty mohou změnit vyváženost a tempo.
+[settings Try features we are still testing. They can change balance and pacing.]
+Vyzkoušejte funkce, které stále testujeme. Mohou změnit vyváženost a tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experimenty platí pro nové hry, které založíte nebo hostujete, nikdy pro mise kampaně. Uložená hra si ponechá ty, se kterými začala.
+[Experiments set by the host]
+Experimenty zvolené hostitelem
 [settings No experiments in this build.]
 V tomto sestavení nejsou žádné experimenty.
 [Experiments]

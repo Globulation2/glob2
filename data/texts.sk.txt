@@ -3404,8 +3404,12 @@ Hry
 Pridať UI
 [settings Experiments]
 Experimenty
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Vyskúšajte funkcie, ktoré ešte testujeme. Platia pre nové hry, ktoré založíte alebo hostujete; uložená hra si ponechá sadu, s ktorou začala. Experimenty môžu zmeniť vyváženosť a tempo.
+[settings Try features we are still testing. They can change balance and pacing.]
+Vyskúšajte funkcie, ktoré ešte testujeme. Môžu zmeniť vyváženosť a tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experimenty platia pre nové hry, ktoré založíte alebo hostujete, nikdy pre misie kampane. Uložená hra si ponechá tie, s ktorými začala.
+[Experiments set by the host]
+Experimenty zvolené hostiteľom
 [settings No experiments in this build.]
 V tomto zostavení nie sú žiadne experimenty.
 [Experiments]

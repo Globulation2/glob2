@@ -114,6 +114,9 @@ Element MultiplayerGameScreen::build(const Presentation &p)
 			players.push_back(fe::caption(fe::tr("[open]")));
 	}
 	std::vector<Element> side;
+	if (!gh.getExperiments().empty())
+		side.push_back(fe::paragraph(fe::tr("[Experiments set by the host]") + ": " + experimentLabelList(gh.getExperiments()),
+									 {fe::FontRole::Support}));
 	if (readyToGo && hosting())
 	{
 		std::vector<Element> ais;

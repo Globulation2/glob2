@@ -69,18 +69,12 @@ void Map::pathfindRandom(Unit *unit)
 	}
 	else
 	{
-		// Guard-area balancing: a warrior standing in a guard area wanders onto
-		// its free painted neighbours first. Off the paint a warrior is a free
-		// warrior again to the guard field, which is free to send it to another
-		// area, so stepping off whenever it could is how a full area would empty
-		// all at once. When no painted neighbour is free, though, it takes the
-		// ordinary random step like any other unit: a packed or sparse area
-		// keeps some warriors beside the paint rather than holding them still,
-		// which the renderer would draw as a unit trapped in place. Without the
-		// experiment every unit takes the ordinary step.
+		// Guard-area balancing: a warrior on the paint steps onto a free painted
+		// neighbour first, so a full area does not empty all at once, and takes
+		// the ordinary step when none is free rather than standing still.
 		const bool keepInGuardArea = unit->typeNum == WARRIOR
 			&& unit->owner->game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing)
-			&& (tiles[x+(y<<wDec)].guardArea & unit->owner->me);
+			&& (tiles[coordToIndex(x, y)].guardArea & unit->owner->me);
 		bool da[8];
 		int count=0;
 		for (int pass = keepInGuardArea ? 0 : 1; pass < 2 && count == 0; pass++)
@@ -89,7 +83,7 @@ void Map::pathfindRandom(Unit *unit)
 			{
 				int tx=(x+tabClose[di][0])&wMask;
 				int ty=(y+tabClose[di][1])&hMask;
-				if (pass == 0 && !(tiles[tx+(ty<<wDec)].guardArea & unit->owner->me))
+				if (pass == 0 && !(tiles[coordToIndex(tx, ty)].guardArea & unit->owner->me))
 					da[di]=false;
 				else if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
 				{

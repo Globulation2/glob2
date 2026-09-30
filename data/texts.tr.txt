@@ -3404,8 +3404,12 @@ Oyunlar
 Yapay zeka ekle
 [settings Experiments]
 Deneyler
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Hâlâ test ettiğimiz özellikleri deneyin. Başlattığınız veya barındırdığınız yeni oyunlar için geçerlidir; kayıtlı bir oyun başladığı seti korur. Deneyler dengeyi ve tempoyu değiştirebilir.
+[settings Try features we are still testing. They can change balance and pacing.]
+Hâlâ test ettiğimiz özellikleri deneyin. Dengeyi ve tempoyu değiştirebilirler.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Deneyler başlattığınız veya barındırdığınız yeni oyunlar için geçerlidir, sefer görevleri için asla. Kayıtlı bir oyun başladığı deneyleri korur.
+[Experiments set by the host]
+Ev sahibinin seçtiği deneyler
 [settings No experiments in this build.]
 Bu sürümde deney yok.
 [Experiments]

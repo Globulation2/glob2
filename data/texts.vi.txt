@@ -3392,8 +3392,12 @@ Trò chơi
 Thêm trí tuệ nhân tạo
 [settings Experiments]
 Thử nghiệm
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Hãy thử các tính năng chúng tôi vẫn đang thử nghiệm. Chúng áp dụng cho các ván mới bạn bắt đầu hoặc làm chủ; ván đã lưu giữ nguyên bộ mà nó bắt đầu. Thử nghiệm có thể thay đổi cân bằng và nhịp độ.
+[settings Try features we are still testing. They can change balance and pacing.]
+Hãy thử các tính năng chúng tôi vẫn đang thử nghiệm. Chúng có thể thay đổi cân bằng và nhịp độ.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Thử nghiệm áp dụng cho các ván mới bạn bắt đầu hoặc làm chủ, không bao giờ cho nhiệm vụ chiến dịch. Ván đã lưu giữ các thử nghiệm mà nó bắt đầu cùng.
+[Experiments set by the host]
+Thử nghiệm do chủ phòng chọn
 [settings No experiments in this build.]
 Không có thử nghiệm nào trong bản dựng này.
 [Experiments]

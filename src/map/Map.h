@@ -790,13 +790,6 @@ public:
 	void updateGuardAreasGradient(int teamNumber, int swimClass);
 	void updateGuardAreasGradient(int teamNumber);
 	void updateGuardAreasGradient();
-	//! Guard-area balancing: replace the zero cost of every painted seed in
-	//! gradient with its crowding cost (MapInternal.h). Only runs when the game
-	//! carries the experiment.
-	void seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const;
-	//! Replace every cell of grid with the sum of the cells within GUARD_CROWD_RADIUS
-	//! of it (Chebyshev, torus): two row-major sliding-window passes.
-	void boxSumInPlace(Uint16 *grid) const;
 	//! Update the clear area gradient
 	void updateClearAreasGradient(int teamNumber, int swimClass);
 	void updateClearAreasGradient(int teamNumber);
@@ -873,6 +866,12 @@ protected:
 	
 	// Used to attract idle warriors into guard areas
 	Uint16 *guardAreasGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+	//! Guard-area balancing: replace the zero cost of every painted seed in
+	//! gradient with its crowding cost (MapInternal.h).
+	void seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const;
+	//! Replace every cell of grid with the sum of the cells within GUARD_CROWD_RADIUS
+	//! of it (Chebyshev, torus): two row-major sliding-window passes.
+	void boxSumInPlace(Uint16 *grid) const;
 	
 	// Used to attract idle workers into clearing
 	// areas that aren't clear

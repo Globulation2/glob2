@@ -3396,8 +3396,12 @@ Emoji
 Додај ВИ
 [settings Experiments]
 Експерименти
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Испробајте функције које још тестирамо. Важе за нове игре које започнете или хостујете; сачувана игра задржава скуп са којим је почела. Експерименти могу да промене баланс и темпо.
+[settings Try features we are still testing. They can change balance and pacing.]
+Испробајте функције које још тестирамо. Могу да промене баланс и темпо.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Експерименти важе за нове игре које започнете или хостујете, никада за мисије кампање. Сачувана игра задржава оне са којима је почела.
+[Experiments set by the host]
+Експерименти које је изабрао домаћин
 [settings No experiments in this build.]
 У овој верзији нема експеримената.
 [Experiments]

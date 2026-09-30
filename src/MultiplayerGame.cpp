@@ -101,6 +101,11 @@ void MultiplayerGame::update()
 	
 			shared_ptr<NetSendMapHeader> message2(new NetSendMapHeader(mapHeader));
 			client->sendNetMessage(message2);
+
+			// The header carries the host's experiments: send it now so joiners
+			// see them in the lobby, not only once the game starts.
+			shared_ptr<NetSendGameHeader> message3(new NetSendGameHeader(gameHeader));
+			client->sendNetMessage(message3);
 			
 			state = ConnectingToGameRouter;
 		}
@@ -210,15 +215,22 @@ void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 {
 	mapHeader = nmapHeader;
 
-	// A hosted saved game keeps the experiments it was started with; a fresh map
-	// takes the host's Settings > Experiments choices. Joiners receive the header
-	// from the server, so the whole game runs the same set.
+	const GameHeader fileHeader = Engine::loadGameHeader(mapHeader.getFileName());
+	// A hosted save keeps the experiments it was started with; a fresh map takes
+	// the host's settings. Joiners get the header from the server. Only the
+	// experiments are carried from a hosted save: its other custom rules are not
+	// (pre-existing), since Game::setGameHeader replaces the header wholesale.
 	if (mapHeader.getIsSavedGame())
-		gameHeader.setExperiments(Engine::loadGameHeader(mapHeader.getFileName()).getExperiments());
+	{
+		if (fileHeader.getNumberOfPlayers() == 0)
+			std::cerr << "MultiplayerGame: cannot read the game header of " << mapHeader.getFileName()
+					  << "; hosting it without experiments" << std::endl;
+		gameHeader.setExperiments(fileHeader.getExperiments());
+	}
 	else
-		gameHeader.setExperiments(globalContainer->settings.experiments);
+		Engine::applyLocalExperiments(gameHeader, mapHeader);
 
-	NetReteamingInformation info = constructReteamingInformation(mapHeader.getFileName());
+	NetReteamingInformation info = constructReteamingInformation(fileHeader);
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 	playerManager.setReteamingInformation(info);
 	needToSendMapHeader=true;
@@ -660,10 +672,9 @@ void MultiplayerGame::sendToListeners(std::shared_ptr<MultiplayerGameEvent> even
 
 
 
-NetReteamingInformation MultiplayerGame::constructReteamingInformation(const std::string& file)
+NetReteamingInformation MultiplayerGame::constructReteamingInformation(const GameHeader& game)
 {
 	NetReteamingInformation info;
-	GameHeader game = Engine::loadGameHeader(file);
 	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
 		if(game.getBasePlayer(i).type == Player::P_IP)

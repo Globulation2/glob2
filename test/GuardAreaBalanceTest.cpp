@@ -12,9 +12,10 @@
 // centre, so a warrior milling around a full area still counts as guarding it.
 // Warriors are kept fed so hunger never takes them away.
 //
-// The experiment is baked into the game's header (GameOptions::experiments);
-// the first case runs the same scenario without it and expects the old outcome,
-// which is what proves the gate.
+// The experiment is baked into the game's header (GameOptions::experiments).
+// The first case runs the same scenarios without it, expects the old outcome,
+// and compares the default game's per-100-tick checksums against a checked-in
+// golden, so any change to the default path through this code shows up.
 
 #include "EngineFixtures.h"
 #include "Brush.h"
@@ -28,7 +29,9 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <iomanip>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -413,6 +416,8 @@ namespace
 			{"solid 5x5, few", 2, options.warriors / 3, nullptr, 5.0},
 			{"solid 9x9", 4, options.warriors, nullptr, 5.0},
 		};
+		// Tuning bounds, not physics: a movement change is expected to move them.
+		const std::string retune = " (tuning bound; re-tune it if movement code changed on purpose)";
 		std::printf("[spins] %-15s  on-paint ticks  no direction  moves/warrior  held still  within %d tiles\n", "paint", NEAR.countRadius);
 		for (const Layout& layout : layouts)
 		{
@@ -454,10 +459,10 @@ namespace
 			const int heldStill = (int)std::count_if(stillOn.begin(), stillOn.end(), [](int tile) { return tile >= 0; });
 			const double share = onPaint ? 100.0 * noDirection / onPaint : 0.0;
 			std::printf("[spins] %-15s  %14ld  %11.1f%%  %13.1f  %10d  %d of %d\n", layout.name, onPaint, share, (double)moved / layout.warriors, heldStill, held, layout.warriors);
-			GLOB2_CHECK(onPaint > 0, std::string(layout.name) + ": some warrior stands on the paint");
-			GLOB2_CHECK(share < layout.maxNoDirection, std::string(layout.name) + ": warriors on the paint are not left with no direction");
-			GLOB2_CHECK(heldStill == 0, std::string(layout.name) + ": no warrior stands on one painted tile for the whole sample");
-			GLOB2_CHECK(held >= layout.warriors * 3 / 4, std::string(layout.name) + ": the area keeps most of its warriors around it");
+			GLOB2_CHECK(onPaint > 0, std::string(layout.name) + ": some warrior stands on the paint" + retune);
+			GLOB2_CHECK(share < layout.maxNoDirection, std::string(layout.name) + ": warriors on the paint are not left with no direction" + retune);
+			GLOB2_CHECK(heldStill == 0, std::string(layout.name) + ": no warrior stands on one painted tile for the whole sample" + retune);
+			GLOB2_CHECK(held >= layout.warriors * 3 / 4, std::string(layout.name) + ": the area keeps most of its warriors around it" + retune);
 		}
 	}
 
@@ -492,7 +497,7 @@ namespace
 		BinaryInputStream input(source);
 		REQUIRE(restored.load(&input));
 		REQUIRE(restored.game.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing));
-		// The saved-game loader replaces the player header after loading.
+		// Mirrors GameGUI::loadFromHeaders, which applies the player header after Game::load.
 		restored.game.setGameHeader(world.game.gameHeader, true);
 		Team* restoredTeam = restored.game.teams[0];
 		for (int i = 0; i < 1000; ++i)
@@ -507,6 +512,32 @@ namespace
 		}
 		std::printf("[saveload] near %d  far %d after 2500 ticks, 1000 of them after a load\n",
 			world.countNear(NEAR), world.countNear(FAR));
+	}
+
+	// The default game on the code paths the experiment touches: the spawn
+	// scenario without it, a checksum of the whole simulation every 100 ticks.
+	std::string offPathTrace()
+	{
+		Options options;
+		options.experiment = false;
+		World world(options);
+		world.paint(NEAR);
+		world.paint(FAR);
+		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
+		std::ostringstream text;
+		for (int tick = 0; tick <= options.ticks; tick += 100)
+		{
+			if (tick)
+				world.run(100);
+			Uint32 hash = 2166136261u; // FNV-1a over every checksum word
+			for (Uint32 word : simulationState(world.game))
+			{
+				hash ^= word;
+				hash *= 16777619u;
+			}
+			text << tick << ' ' << std::hex << std::setw(8) << std::setfill('0') << hash << std::dec << '\n';
+		}
+		return text.str();
 	}
 
 	// The separable box sum must equal a brute-force count, including across the
@@ -595,13 +626,14 @@ namespace
 
 TEST_SUITE("GuardAreaBalance")
 {
-	TEST_CASE("without the experiment every warrior takes the nearest area and nobody leaves it")
+	TEST_CASE("without the experiment every warrior takes the nearest area; nobody leaves it; the default game's checksums are unchanged [golden]")
 	{
 		glob2test::HeadlessGlobals globals;
 		Options options;
 		options.experiment = false;
 		spawnSplitsBetweenAreas(options);
 		clumpDrainsIntoNewArea(options);
+		glob2test::expectGolden("guard-area/off-path-checksums.txt", offPathTrace());
 	}
 	TEST_CASE("crowding box sum matches brute force across the torus seam")
 	{

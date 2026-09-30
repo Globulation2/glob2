@@ -3468,8 +3468,12 @@ CPU %0%
 新增人工智慧
 [settings Experiments]
 實驗功能
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-試用我們仍在測試的功能。它們適用於你開始或主持的新遊戲；已儲存的遊戲保留其開始時的設定。實驗功能可能改變平衡和節奏。
+[settings Try features we are still testing. They can change balance and pacing.]
+試用我們仍在測試的功能。它們可能改變平衡和節奏。
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+實驗功能適用於你開始或主持的新遊戲，從不適用於戰役任務。已儲存的遊戲保留其開始時的實驗功能。
+[Experiments set by the host]
+主機選擇的實驗功能
 [settings No experiments in this build.]
 此版本中沒有實驗功能。
 [Experiments]

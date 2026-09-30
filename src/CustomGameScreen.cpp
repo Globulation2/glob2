@@ -2,6 +2,7 @@
 #include "CustomGameScreen.h"
 #include "AINames.h"
 #include "CustomGamePreferences.h"
+#include "Engine.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
@@ -219,7 +220,8 @@ std::string colorName(Color c)
 GameHeader &CustomGameScreen::getGameHeader()
 {
 	setup.writeHeader(gameHeader, username);
-	gameHeader.setExperiments(globalContainer->settings.experiments);
+	gameHeader.getExperiments().clear();
+	Engine::applyLocalExperiments(gameHeader, mapHeader);
 	for (int i = 0; i < gameHeader.getNumberOfPlayers(); ++i)
 	{
 		auto &player = gameHeader.getBasePlayer(i);
@@ -572,7 +574,7 @@ bool CustomGameScreen::generateMap()
 		GameHeader initial;
 		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
-		initial.setExperiments(globalContainer->settings.experiments);
+		Engine::applyLocalExperiments(initial, game->mapHeader);
 		game->setGameHeader(initial);
 		// GameLoadScreen reads these bytes directly (Engine::initCustomFromBytesTask): a map
 		// this process just generated and is about to load right back gets no benefit from a

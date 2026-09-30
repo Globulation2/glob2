@@ -3406,8 +3406,12 @@ Partidak
 Gehitu AI
 [settings Experiments]
 Esperimentuak
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Probatu oraindik probatzen ari garen funtzioak. Hasten edo ostatatzen dituzun partida berrietan aplikatzen dira; gordetako partida batek hasi zen multzoa gordetzen du. Esperimentuek oreka eta erritmoa alda ditzakete.
+[settings Try features we are still testing. They can change balance and pacing.]
+Probatu oraindik probatzen ari garen funtzioak. Oreka eta erritmoa alda ditzakete.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Esperimentuak hasten edo ostatatzen dituzun partida berrietan aplikatzen dira, inoiz ez kanpainako misioetan. Gordetako partida batek hasieran zituenak gordetzen ditu.
+[Experiments set by the host]
+Ostalariak aukeratutako esperimentuak
 [settings No experiments in this build.]
 Ez dago esperimenturik bertsio honetan.
 [Experiments]

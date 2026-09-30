@@ -3420,8 +3420,12 @@ Spellen
 AI toevoegen
 [settings Experiments]
 Experimenten
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Probeer functies die we nog testen. Ze gelden voor nieuwe spellen die je start of host; een opgeslagen spel behoudt de set waarmee het begon. Experimenten kunnen balans en tempo veranderen.
+[settings Try features we are still testing. They can change balance and pacing.]
+Probeer functies die we nog testen. Ze kunnen balans en tempo veranderen.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experimenten gelden voor nieuwe spellen die je start of host, nooit voor campagnemissies. Een opgeslagen spel behoudt de experimenten waarmee het begon.
+[Experiments set by the host]
+Experimenten gekozen door de host
 [settings No experiments in this build.]
 Geen experimenten in deze versie.
 [Experiments]

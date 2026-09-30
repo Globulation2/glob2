@@ -119,6 +119,14 @@ def main():
     assert tick_records(normal/'game.replay.checksums')==tick_records(isolated/'game.replay.checksums')
     run('invalid-override',base+['--ai-param','0:tierMidDiv=0'],2)
     run('duplicate-override',base+['--ai-param','0:swarmWorkerCap=4','--ai-param','0:swarmWorkerCap=5'],2)
+    assert value['resolved']['experiments']==[],value['resolved']
+    experiment,_=run('experiment',['--run-game','--map-file',str(map_dir/'map-r0.map.gz'),'--player','cortex','--player','cortex',
+                     '--game-seed','19','--ticks','64','--experiment','guard-area-balancing'])
+    assert experiment['resolved']['experiments']==['guard-area-balancing'],experiment['resolved']
+    unknown,_=run('unknown-experiment',base+['--experiment','retired-experiment'],2)
+    assert unknown['status']=='invalid_request',unknown
+    run('experiment-on-save',['--run-game','--load-game',str(original/'initial.game.gz'),'--ticks',str(args.ticks),
+        '--experiment','guard-area-balancing'],2)
     for name in ('maxima',):
         config=['--run-game','--map-file',str(map_dir/'map-r0.map.gz'),'--player','maxima','--player','maxima',
                 '--game-seed','23','--ticks',str(args.ticks),'--telemetry','checksums',

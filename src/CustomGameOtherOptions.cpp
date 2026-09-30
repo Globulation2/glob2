@@ -60,10 +60,9 @@ Element CustomGameOtherOptions::build(const Presentation &p)
 										   [this](bool v) { WinningCondition::setPrestigeWinCondition(gameHeader.getWinningConditions(), v); }, !readOnly),
 									toggle("discovered", tr("[Map Discovered]"), gameHeader.isMapDiscovered(),
 										   [this](bool v) { gameHeader.setMapDiscovered(v); }, !readOnly)};
-	// The host's Settings > Experiments choices travel with the header; joiners can
-	// see them here but only the host's settings decide them.
+	// Read-only: the host's Settings > Experiments decide these.
 	if (!gameHeader.getExperiments().empty())
-		optionRows.push_back(caption(tr("[Experiments]") + ": " + experimentLabelList(gameHeader.getExperiments())));
+		optionRows.push_back(caption(tr("[Experiments set by the host]") + ": " + experimentLabelList(gameHeader.getExperiments())));
 	auto options = column(std::move(optionRows));
 	auto playersColumn = column(std::move(players));
 	Element body = adaptive(

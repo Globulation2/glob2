@@ -236,6 +236,8 @@ public:
 	///from Settings > Experiments when a game is created; saves, replays and
 	///multiplayer peers keep the set the game was started with.
 	inline const ExperimentSet& getExperiments() const { return experiments; }
+	///Mutable access, for building a header before the game starts only: changing
+	///it once the game runs would desync peers and replays.
 	inline ExperimentSet& getExperiments() { return experiments; }
 	inline void setExperiments(const ExperimentSet& set) { experiments = set; }
 	///The hot-path read for simulation code: is this experiment on in this game?

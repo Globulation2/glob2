@@ -3392,8 +3392,12 @@ Permainan
 Tambah AI
 [settings Experiments]
 Eksperimen
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Coba fitur yang masih kami uji. Berlaku untuk permainan baru yang Anda mulai atau jadi tuan rumahnya; permainan tersimpan mempertahankan set yang dipakai saat dimulai. Eksperimen dapat mengubah keseimbangan dan tempo.
+[settings Try features we are still testing. They can change balance and pacing.]
+Coba fitur yang masih kami uji. Fitur ini dapat mengubah keseimbangan dan tempo.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Eksperimen berlaku untuk permainan baru yang Anda mulai atau jadi tuan rumahnya, tidak pernah untuk misi kampanye. Permainan tersimpan mempertahankan eksperimen yang dipakai saat dimulai.
+[Experiments set by the host]
+Eksperimen pilihan tuan rumah
 [settings No experiments in this build.]
 Tidak ada eksperimen dalam versi ini.
 [Experiments]

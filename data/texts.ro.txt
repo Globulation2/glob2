@@ -3396,8 +3396,12 @@ Jocuri
 Adaugă IA
 [settings Experiments]
 Experimente
-[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
-Încearcă funcții pe care încă le testăm. Se aplică jocurilor noi pe care le începi sau le găzduiești; un joc salvat păstrează setul cu care a început. Experimentele pot schimba echilibrul și ritmul.
+[settings Try features we are still testing. They can change balance and pacing.]
+Încearcă funcții pe care încă le testăm. Pot schimba echilibrul și ritmul.
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+Experimentele se aplică jocurilor noi pe care le începi sau le găzduiești, niciodată misiunilor de campanie. Un joc salvat le păstrează pe cele cu care a început.
+[Experiments set by the host]
+Experimente alese de gazdă
 [settings No experiments in this build.]
 Nu există experimente în această versiune.
 [Experiments]
