@@ -104,6 +104,9 @@ struct TextFieldOptions
 	bool enabled = true;
 	// Keep edits in a draft until Enter or focus loss; Escape discards them.
 	bool commitOnSubmit = false;
+	// With commitOnSubmit, also receives the draft as it changes, and the
+	// committed value again when Escape discards the draft.
+	std::function<void(const std::string &)> preview;
 };
 // Single-line editor. `change` receives the draft on every edit.
 Element textField(const std::string &key, const std::string &value,

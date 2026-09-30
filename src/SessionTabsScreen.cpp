@@ -56,9 +56,14 @@ void SessionTabsScreen::onEscape()
 
 void SessionTabsScreen::onTimer(Uint32 tick)
 {
+	// A tab's timer can remove and destroy another tab (the lobby owns the
+	// game room), so only tick tabs that are still registered.
 	for (auto &entry : std::vector<Entry>(tabs))
-		if (entry.tab)
+	{
+		const bool present = std::any_of(tabs.begin(), tabs.end(), [&](const Entry &e) { return e.tab == entry.tab; });
+		if (present && entry.tab)
 			entry.tab->onTimer(tick);
+	}
 	for (auto &entry : tabs)
 		if (entry.primary && entry.tab->finished())
 		{

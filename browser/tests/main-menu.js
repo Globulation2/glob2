@@ -6,11 +6,18 @@ const {expect} = require('@playwright/test');
 // Layout runs inside the game's animation frame; two frames after a resize or
 // rebuild the published bounds are current.
 const settled = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+// The logical surface always fills the window at one uniform scale, so bounds
+// published for a previous window size (their surface has another aspect
+// ratio) are stale after a resize and must not be clicked.
+function current(page, bounds) {
+  const {width, height} = page.viewportSize();
+  return Math.abs(width / bounds.surface.w - height / bounds.surface.h) < 0.02;
+}
 async function control(page, key, {timeout = 30000, enabled = true} = {}) {
   let found;
   await expect.poll(async () => {
     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
-    return Boolean(found && (!enabled || found.enabled));
+    return Boolean(found && (!enabled || found.enabled) && current(page, found));
   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
   await settled(page);
   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
@@ -86,14 +93,24 @@ function visibleCenter(page, bounds) {
   const v = shown(bounds) ? bounds.visible : bounds;
   return css(page, bounds, {x: v.x + v.w / 2, y: v.y + v.h / 2});
 }
+// Input is consumed at the game's next host frame; return only once that
+// frame ran, so a test's next step (a resize, say) cannot overtake the click.
+async function consumed(page) {
+  const loop = () => page.evaluate(() => glob2Diagnostics.snapshot().loop);
+  const before = await loop();
+  await expect.poll(loop, {timeout: 30000, message: 'the game did not process the input'}).toBeGreaterThan(before);
+}
+exports.consumed = consumed;
 exports.clickControl = async (page, key, options = {}) => {
   const bounds = await controlOnScreen(page, key, options);
-  return page.locator('#canvas').click({position: visibleCenter(page, bounds), delay: 80, ...(options.click || {})});
+  await page.locator('#canvas').click({position: visibleCenter(page, bounds), delay: 80, ...(options.click || {})});
+  await consumed(page);
 };
 exports.tapControl = async (page, key, options = {}) => {
   const bounds = await control(page, key, options);
   const at = center(page, bounds);
-  return page.touchscreen.tap(at.x, at.y);
+  await page.touchscreen.tap(at.x, at.y);
+  await consumed(page);
 };
 // List rows are published as "<list>/<index>" with the text they show.
 exports.clickListRow = async (page, list, match, options = {}) => {

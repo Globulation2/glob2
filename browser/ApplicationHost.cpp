@@ -50,7 +50,11 @@ void scheduledFrame(void* opaque)
     std::vector<SDL_Event> events;
     SDL_Event event;
     while (SDL_PollEvent(&event)) events.push_back(event);
-    if (!state->loop->frame(SDL_GetTicks(), events)) {
+    const bool running = state->loop->frame(SDL_GetTicks(), events);
+    // Diagnostics: one increment per processed host frame, so tests can wait
+    // for queued input to be consumed.
+    EM_ASM({ Module.glob2Loop = (Module.glob2Loop || 0) + 1; });
+    if (!running) {
         state->loop.reset();
         auto complete = std::move(state->complete);
         delete state;
@@ -222,6 +226,7 @@ void exited(int result)
 }
 void roomReady(bool canStart) { EM_ASM({ Module.glob2RoomCanStart = Boolean($0); }, canStart); }
 void customGameReady(bool canStart) { EM_ASM({ Module.glob2CustomGameReady = Boolean($0); }, canStart); }
+bool controlsObserved() { return true; }
 void controlsChanged(const void *owner, const char *json)
 {
     EM_ASM({

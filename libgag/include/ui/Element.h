@@ -30,6 +30,8 @@ struct NodeState
 {
 	int scroll = 0;
 	std::string text;
+	// The model value when the current edit began; a draft returns to it.
+	std::string committed;
 	std::size_t cursor = 0;
 	bool editing = false;
 	int highlight = -1;

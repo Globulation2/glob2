@@ -49,7 +49,7 @@ void Host::setPresentation(const Presentation &presentation)
 	metricsValue = resolveMetrics(themeValue, current);
 	dirty = true;
 	needsLayout = true;
-	cancelInput();
+	cancelGestures();
 }
 
 LayoutContext Host::context() const
@@ -233,12 +233,21 @@ void Host::endEditing(bool cancelled)
 void Host::cancelInput()
 {
 	touch.cancel();
+	cancelGestures();
+	pressedKey.clear();
+	pressedNode = nullptr;
+}
+
+void Host::cancelGestures()
+{
+	// Captures and pans cannot continue across a layout change. A plain press
+	// stays pending: its release re-hit-tests and only lands on the same key,
+	// so a click whose release is already queued when the window resizes is
+	// not lost.
 	if (!capturedKey.empty())
 		if (auto *node = find(capturedKey))
 			node->pointer(PointerPhase::Cancel, downPoint, *this);
 	capturedKey.clear();
-	pressedKey.clear();
-	pressedNode = nullptr;
 	panKey.clear();
 	panning = false;
 }
@@ -428,9 +437,10 @@ bool Host::event(const SDL_Event &event)
 				return node->textInput(event.text.text, *this);
 		return false;
 	case SDL_WINDOWEVENT:
-		if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
-			event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+		if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
 			cancelInput();
+		else if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+			cancelGestures();
 		return false;
 	case SDL_APP_WILLENTERBACKGROUND:
 		cancelInput();

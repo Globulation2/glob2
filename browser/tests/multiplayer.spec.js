@@ -138,7 +138,7 @@ test('YOG map selection and upload screens resize and return to their owning tab
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   // The Maps tab and its Upload action use the same scheduled child ownership.
-  await clickControl(page,'session/tab/1'); await clickControl(page,'maps/upload'); await screen('ChooseMapScreen');
+  await clickControl(page,'session/tab/2'); await clickControl(page,'maps/upload'); await screen('ChooseMapScreen');
   await clickListRow(page,'files',0); await clickControl(page,'ok'); await screen('YOGClientMapUploadScreen');
   await page.setViewportSize({width:1200,height:900});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1200);

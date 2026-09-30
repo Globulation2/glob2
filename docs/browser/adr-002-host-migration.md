@@ -21,7 +21,8 @@ include Emscripten APIs. Static dependency tests enforce that boundary.
 `controls` map lists the visible screens' and dialogs' interactive controls by
 key with logical-pixel bounds and the `visible` part left after scroll-region
 clipping, so browser tests click real controls (scrolling them into view first)
-instead of mirroring layout arithmetic. It reports
+instead of mirroring layout arithmetic; `loop` counts processed host frames so
+a test can wait until queued input has been consumed. It reports
 screen, simulation, rendering, persistence, audio, save, multiplayer, and custom-game readiness state.
 It cannot issue orders, advance simulation, alter files, or navigate menus.
 

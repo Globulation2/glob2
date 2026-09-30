@@ -554,9 +554,14 @@ class TextField : public Node
 	}
 	void save(NodeState &state) const override
 	{
-		state.cursor = cursor;
+		// A browser edit writes the draft straight into the state; a rebuild
+		// must not replace it with what this node was built with.
+		if (!(options.commitOnSubmit && state.editing))
+		{
+			state.cursor = cursor;
+			state.text = value;
+		}
 		state.editing = editing;
-		state.text = value;
 		state.highlight = selectAll ? 1 : 0;
 		state.detail = 1;
 	}
@@ -566,6 +571,8 @@ class TextField : public Node
 			return;
 		editing = true;
 		auto &state = host.state(key);
+		if (!state.editing)
+			state.committed = value;
 		state.editing = true;
 		state.text = value;
 		host.beginEditing(key);
@@ -582,6 +589,12 @@ class TextField : public Node
 			auto callback = change;
 			host.invalidate();
 			callback(state.text);
+		}
+		else if (options.commitOnSubmit && cancelled && options.preview && state.text != committed)
+		{
+			auto preview = options.preview;
+			host.invalidate();
+			preview(committed);
 		}
 		host.invalidate();
 	}
@@ -605,6 +618,8 @@ class TextField : public Node
 			state.text = next;
 			state.editing = true;
 			host.relayout();
+			if (options.preview)
+				options.preview(next);
 			return;
 		}
 		auto callback = change;
@@ -780,17 +795,23 @@ class TextField : public Node
 			return;
 		bound = true;
 		auto &state = host.state(key);
-		committed = value;
+		// While a draft is open, rebuilds must keep the value the edit started
+		// from (the model may already show the previewed draft).
+		if (state.editing)
+			committed = state.committed;
+		else
+			committed = state.committed = value;
 		adoptDraft(state);
 		cursor = std::min(cursor, value.size());
 		browserOwner = &state;
 		auto callback = change;
 		auto submit = options.submit;
+		auto preview = options.preview;
 		const std::string k = key;
 		Host *h = &host;
 		const bool deferred = options.commitOnSubmit;
 		const std::string original = committed;
-		browserChange = [h, k, callback, submit, deferred, original](const std::string &text, std::size_t at, int action)
+		browserChange = [h, k, callback, submit, preview, deferred, original](const std::string &text, std::size_t at, int action)
 		{
 			// Mirror commit(): the typed text is the draft (restored across rebuilds)
 			// and, for commit-on-submit fields, reaches the model on Enter or blur.
@@ -803,6 +824,8 @@ class TextField : public Node
 				if (action == 0)
 				{
 					h->relayout();
+					if (preview)
+						preview(text);
 					return;
 				}
 				h->invalidate();

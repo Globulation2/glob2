@@ -7,15 +7,24 @@
 
 using namespace Glob2UI;
 
+namespace
+{
+// The login and register screens coexist and share the cached sprite; only
+// the last one releases it.
+int earthUsers = 0;
+} // namespace
+
 YOGConnectionScreen::YOGConnectionScreen(std::shared_ptr<YOGClient> client)
 	: status(tr("[YESTS_CREATED]")), client(client)
 {
 	earth = GAGCore::Toolkit::getSprite("data/gfx/rotatingEarth");
+	++earthUsers;
 }
 
 YOGConnectionScreen::~YOGConnectionScreen()
 {
-	GAGCore::Toolkit::releaseSprite("data/gfx/rotatingEarth");
+	if (--earthUsers == 0)
+		GAGCore::Toolkit::releaseSprite("data/gfx/rotatingEarth");
 	if (globalContainer && globalContainer->gfx)
 		globalContainer->gfx->cursorManager.setNextType(GAGCore::CursorManager::CURSOR_NORMAL);
 }

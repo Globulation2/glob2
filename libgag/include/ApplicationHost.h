@@ -90,5 +90,8 @@ void customGameReady(bool canStart);
 // logical-pixel bounds, or null when the host goes away. Tests drive the real
 // controls through their keys instead of hard-coded coordinates.
 void controlsChanged(const void *owner, const char *json);
+// Whether anything observes controlsChanged; hosts skip building the JSON
+// otherwise.
+bool controlsObserved();
 void exited(int result);
 } // namespace GAGCore::ApplicationHost

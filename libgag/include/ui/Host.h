@@ -52,6 +52,8 @@ class Host
 	void update(Uint32 tick);
 	void paint(Canvas &canvas, Uint32 tick);
 	void cancelInput();
+	// Drop captures and pans but keep a pending press (window resize, presentation change).
+	void cancelGestures();
 
 	// Services for nodes.
 	StateStore &states() { return store; }

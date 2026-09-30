@@ -298,6 +298,24 @@ void checkTapVersusPan()
 	require(taps == 1, "focus loss cancels a held press");
 }
 
+void checkPressSurvivesResize()
+{
+	// A release already queued when the window resizes still lands on the
+	// element it was pressed on.
+	int clicks = 0;
+	Fixture f([&](const Presentation &) { return column({button("go", "Go", [&] { ++clicks; })}); }, 300, 100);
+	SDL_Event e{};
+	e.type = SDL_MOUSEBUTTONDOWN;
+	e.button.button = SDL_BUTTON_LEFT;
+	e.button.x = 20;
+	e.button.y = 10;
+	f.host.event(e);
+	f.resize(320, 120);
+	e.type = SDL_MOUSEBUTTONUP;
+	f.host.event(e);
+	require(clicks == 1, "a press survives a resize before its release");
+}
+
 void checkFocusAndKeyboard()
 {
 	std::vector<std::string> activated;
@@ -449,6 +467,7 @@ int main()
 		checkFooterFolds();
 		checkScrollClampAndWheel();
 		checkTapVersusPan();
+		checkPressSurvivesResize();
 		checkFocusAndKeyboard();
 		checkChoicePopup();
 		checkTextField();

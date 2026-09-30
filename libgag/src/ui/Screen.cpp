@@ -54,6 +54,8 @@ void appendTree(std::ostringstream &out, bool &first, Node &node, Rect clip)
 
 void publishControls(const void *owner, const Host &host)
 {
+	if (!GAGCore::ApplicationHost::controlsObserved())
+		return;
 	std::ostringstream out;
 	out << "{\"surface\":{\"w\":" << host.presentation().viewport.w << ",\"h\":" << host.presentation().viewport.h << "},\"root\":{\"x\":"
 		<< host.rootBounds().x << ",\"y\":" << host.rootBounds().y << ",\"w\":" << host.rootBounds().w << ",\"h\":" << host.rootBounds().h
@@ -171,7 +173,9 @@ void UIScreen::viewportResized(int, int, int, int)
 	hostValue.relayout();
 }
 
-void UIScreen::cancelExecutionInput() { hostValue.cancelInput(); }
+// The stack calls this for size and presentation changes as well as focus
+// loss; the host handles focus loss itself from the window event.
+void UIScreen::cancelExecutionInput() { hostValue.cancelGestures(); }
 
 void UIScreen::paintFrame(Uint32 tick)
 {

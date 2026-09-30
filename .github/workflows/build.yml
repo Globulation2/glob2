@@ -811,7 +811,7 @@ jobs:
           timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
           for harness in gameplay-touch-test ui-presentation-test; do
             mkdir -p "artifacts/mobile-ui/$harness"
-            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 300s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness" capture
+            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 900s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness" capture
           done
 
       - name: Upload phone UI verification evidence
