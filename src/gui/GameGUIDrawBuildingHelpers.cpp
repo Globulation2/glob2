@@ -154,7 +154,7 @@ void GameGUI::drawBuildingFlagInfo(Building* selBuild, BuildingType* buildingTyp
 		return;
 
 	// get flag stat — feed the displayed (optimistic) position and range
-	// so the count tracks the cursor during a flag drag or scroll-resize.
+	// so the count tracks the cursor during a flag move or range edit.
 	int goingTo, onSpot;
 	computeFlagStatDisplayed(*selBuild,
 		displayedPosX(*selBuild), displayedPosY(*selBuild),

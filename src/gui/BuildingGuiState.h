@@ -15,7 +15,7 @@ class Building;
 
 /// Per-building GUI-side optimistic shadow of pending orders.
 ///
-/// When the local player drags a flag or scrolls a building's worker count,
+/// When the local player moves a flag or changes a building's worker count,
 /// the change is queued as an Order and won't take effect on the simulation
 /// until the network round-trip completes. To make the UI feel responsive,
 /// the GUI stores the intended value here and renders it in preference to

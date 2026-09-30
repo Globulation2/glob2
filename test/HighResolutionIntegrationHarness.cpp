@@ -172,12 +172,12 @@ public:
                 auto w=gui.camera.screenToWorld(300,300);int x,y;
                 gui.game.map.displayToMapCaseAligned(gui.mapMouseX(300),gui.mapMouseY(300),&x,&y,gui.viewportX,gui.viewportY);
                 assert(x==int(MapCamera::wrap(w.first,gui.camera.mapWidth)/32));assert(y==int(MapCamera::wrap(w.second,gui.camera.mapHeight)/32));
-                const auto orders=gui.orderQueue.size();SDL_SetModState(KMOD_ALT);
+				const auto orders=gui.orderQueue.size();
                 SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=1;
 #if SDL_VERSION_ATLEAST(2,0,18)
                 wheel.wheel.preciseY=.25f;
 #endif
-                gui.processEvent(&wheel);assert(gui.orderQueue.size()==orders);SDL_SetModState(KMOD_NONE);
+				gui.processEvent(&wheel);assert(gui.orderQueue.size()==orders);
                 gui.camera.setZoom(zoom,300,300);gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
                 gfx->resetDrawCallCount();auto start=std::chrono::steady_clock::now();
                 for(int i=0;i<10;++i){gui.drawAll(0);glFinish();}
@@ -242,6 +242,39 @@ public:
                 editor.game.map.getTile(x,y).canResourcesGrow=old;
 
             }
+            editor.camera.setZoom(1,300,300);
+            editor.viewportX=editor.camera.tileX();editor.viewportY=editor.camera.tileY();
+            editor.mouseX=300;editor.mouseY=300;
+            SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=1;
+#if SDL_VERSION_ATLEAST(2,0,18)
+            wheel.wheel.preciseY=1;
+#endif
+            editor.processEvent(wheel);
+            assert(editor.camera.zoom>1);
+            SDL_Event down{};down.type=SDL_MOUSEBUTTONDOWN;down.button.button=SDL_BUTTON_LEFT;
+            down.button.x=300;down.button.y=300;
+            editor.processEvent(down);
+            assert(editor.isLeftScrollDragging && editor.isScrollDragging);
+            editor.mouseX=1;editor.handleMapScroll();assert(editor.xSpeed==0);
+            editor.mouseX=300;
+            const double beforePan=editor.camera.originX;
+            SDL_Event motion{};motion.type=SDL_MOUSEMOTION;motion.motion.x=312;motion.motion.y=308;
+            motion.motion.xrel=12;motion.motion.yrel=8;motion.motion.state=SDL_BUTTON(SDL_BUTTON_LEFT);
+            editor.processEvent(motion);
+            assert(std::abs(editor.camera.originX-
+                MapCamera::wrap(beforePan-12/editor.camera.zoom,editor.camera.mapWidth))<0.01);
+            SDL_Event up=down;up.type=SDL_MOUSEBUTTONUP;up.button.x=312;up.button.y=308;
+            editor.processEvent(up);
+            assert(!editor.isLeftScrollDragging && !editor.isScrollDragging);
+            editor.performAction("select forbidden zone");
+            const double paintingZoom=editor.camera.zoom;
+            editor.processEvent(wheel);
+            assert(editor.camera.zoom>paintingZoom);
+            editor.processEvent(down);
+            assert(editor.isDraggingZone && !editor.isLeftScrollDragging);
+            editor.processEvent(motion);
+            editor.processEvent(up);
+            assert(!editor.isDraggingZone && !editor.isScrollDragging);
         }
         {
             MapEdit small;small.game.map.setSize(4,4,GRASS);small.game.map.setGame(&small.game);small.game.addTeam(0);
@@ -285,7 +318,7 @@ public:
             }
         }
         assert(Sprite::highResolutionStats().cpuBytes==0);
-        std::cout<<"PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release\n";
+        std::cout<<"PASS gameplay/editor conversions, wheel zoom, zoom controls, replay drawing, stable simulation checksums and resource release\n";
     }
 };
 int main(int argc,char **argv)

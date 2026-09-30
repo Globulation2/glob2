@@ -78,7 +78,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
-    if (emptyMapPanPushed) return;
+    if (mapPanPushed) return;
     if (torusView.active()) {
         if (!torusPointerDown || !torusMapPointer(mx, my, mx, my)) return;
     }
@@ -171,7 +171,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 				it away. */
 			if (wasMouseMotion
 				&& (lastMouseButtonState & SDL_BUTTON(1)) // are we dragging? (should not be hard-coding this condition but should be abstract somehow)
-				&& (emptyMapPanPushed || (mouseMapX != oldMouseMapX)
+				&& (mapPanPushed || (mouseMapX != oldMouseMapX)
 					|| (mouseMapY != oldMouseMapY))
 			)
 			{
@@ -221,8 +221,6 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	if (wasMouseMotion)
 		processEvent(&mouseMotionEvent);
 
-
-	flushScrollWheelOrders();
 
 	int oldViewportX = viewportX;
 	int oldViewportY = viewportY;
@@ -448,38 +446,4 @@ void GameGUI::showEndOfReplayScreen()
 		gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true));
 		miniMapPushed=false;
 	}
-}
-
-// Emit the orders for the scroll-wheel deltas accumulated over the frame. Each
-// delta was already routed to the worker or stay-range accumulator at event
-// time (see accumulateScrollWheelDelta), so both fields can move in a single
-// frame if the user scrolled with and without SHIFT before the flush. Each
-// accumulator is only committed when the selected building actually exposes the
-// matching field.
-void GameGUI::flushScrollWheelOrders()
-{
-	if ((scrollWheelWorkingChanges!=0 || scrollWheelStayRangeChanges!=0) &&
-		selectionMode==BUILDING_SELECTION)
-	{
-		Building* selBuild=selectionBuilding();
-		if ((selBuild->owner->teamNumber==localTeamNo) &&
-			(selBuild->buildingState==Building::ALIVE))
-		{
-			if (selBuild->type->maxUnitWorking && scrollWheelWorkingChanges!=0)
-			{
-				const int requested = std::min((int)MAX_UNIT_WORKING, std::max(0, displayedMaxUnitWorking(*selBuild) + scrollWheelWorkingChanges));
-				pendingFor(selBuild->gid).pendingMaxUnitWorking = requested;
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, requested)));
-				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, requested);
-			}
-			if (selBuild->type->defaultUnitStayRange && scrollWheelStayRangeChanges!=0)
-			{
-				const int requested = std::min((int)selBuild->type->maxUnitStayRange, std::max(0, displayedUnitStayRange(*selBuild) + scrollWheelStayRangeChanges));
-				pendingFor(selBuild->gid).pendingUnitStayRange = requested;
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, requested)));
-			}
-		}
-	}
-	scrollWheelWorkingChanges=0;
-	scrollWheelStayRangeChanges=0;
 }

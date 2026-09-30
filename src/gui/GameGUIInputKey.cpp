@@ -78,7 +78,7 @@ void GameGUI::toggleTorusView()
     if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
     torusPointerDown=false;
     torusView.toggle();
-    selectionPushed = panPushed = emptyMapPanPushed = miniMapPushed = false;
+    selectionPushed = panPushed = mapPanPushed = miniMapPushed = false;
     viewportSpeedX = viewportSpeedY = 0;
 }
 

@@ -138,6 +138,7 @@ void MapEdit::handleMapScroll()
 	xSpeed = 0;
 	ySpeed = 0;
 	int scrollAreaWidth=10; // if the cursor is that close to the border the viewport will scroll
+	const bool edgeScroll = !isLeftScrollDragging;
 
 	if (!inputState.hasFocus()) return;
 	const Uint8 *keystate = inputState.keyboard();
@@ -184,7 +185,7 @@ void MapEdit::handleMapScroll()
 			keystate[SDL_SCANCODE_KP_7] ||
 			keystate[SDL_SCANCODE_KP_8] ||
 			keystate[SDL_SCANCODE_KP_9] ||
-			mouseY<scrollAreaWidth)
+			(edgeScroll && mouseY<scrollAreaWidth))
 	{
 		ySpeed += -yMotion;
 	}
@@ -193,7 +194,7 @@ void MapEdit::handleMapScroll()
 			keystate[SDL_SCANCODE_KP_1] || 
 			keystate[SDL_SCANCODE_KP_2] || 
 			keystate[SDL_SCANCODE_KP_3] ||
-			globalContainer->gfx->getH()-mouseY<scrollAreaWidth)
+			(edgeScroll && globalContainer->gfx->getH()-mouseY<scrollAreaWidth))
 	{
 		ySpeed += yMotion;
 	}
@@ -202,7 +203,7 @@ void MapEdit::handleMapScroll()
 			keystate[SDL_SCANCODE_KP_1] || 
 			keystate[SDL_SCANCODE_KP_4] || 
 			keystate[SDL_SCANCODE_KP_7] ||
-			mouseX<scrollAreaWidth)
+			(edgeScroll && mouseX<scrollAreaWidth))
 	{
 		xSpeed += -xMotion;
 	}
@@ -211,7 +212,7 @@ void MapEdit::handleMapScroll()
 			keystate[SDL_SCANCODE_KP_3] || 
 			keystate[SDL_SCANCODE_KP_6] || 
 			keystate[SDL_SCANCODE_KP_9] ||
-			globalContainer->gfx->getW()-mouseX<scrollAreaWidth)
+			(edgeScroll && globalContainer->gfx->getW()-mouseX<scrollAreaWidth))
 	{
 		xSpeed += xMotion;
 	}
@@ -230,4 +231,3 @@ void MapEdit::updateCoordinatesLabel()
 	s << "X: " << x << " Y: " << y;
 	mapCoordinatesLabel->setLabel(s.str());
 }
-
