@@ -153,9 +153,10 @@ established pack capture operation to retain approved inputs under
 `production/original-derived`. Other frame families, icons and all native sprites
 are preserved. Later packaging needs only `tools/artwork/package_runtime.py`.
 
-Build `unit-hd-cache-test`, then run `build/src/UnitHighResolutionCacheTest` and
-its `software` mode after installing the pack. These cover every unit layer's
-resolution mapping, all action/direction/team-color combinations, cached versus
-repeated HD compositing, sharp fallback, texture invalidation on artwork changes,
-and map zoom. `highres-integration-test` exercises the game's camera/editor/replay
-integration; the existing speed tests remain applicable.
+After installing the pack, run
+`python3 test/run_tests.py --filter 'UnitHighResolutionCache/*' --filter 'RuntimePack/*'`.
+These cover every unit layer's resolution mapping, all action/direction/team-color
+combinations, cached versus repeated HD compositing, sharp fallback, texture
+invalidation on artwork changes, and map zoom. The `HighResolutionIntegration`
+suite exercises the game's camera/editor/replay integration; the `GameSpeed` suite
+remains applicable.

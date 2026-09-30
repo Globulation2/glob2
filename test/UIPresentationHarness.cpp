@@ -2,6 +2,7 @@
 // Renders every declarative screen at phone, tablet and desktop viewports with
 // platform gutters and text scales, checking the framework invariants and saving
 // captures for review. Run with SDL_VIDEODRIVER=dummy and a disposable profile.
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "CampaignEditor.h"
 #include "CampaignMainMenu.h"
@@ -45,16 +46,13 @@
 #include <set>
 #include <stdexcept>
 
-GlobalContainer *globalContainer = nullptr;
-
 using namespace GAGGUI::ui;
 
 namespace
 {
 void require(bool value, const std::string &message)
 {
-	if (!value)
-		throw std::runtime_error(message);
+	GLOB2_REQUIRE(value, message);
 }
 
 struct Viewport
@@ -326,91 +324,79 @@ void verify(UIScreen &screen, const std::string &label)
 		}
 	require(host.focusOrder().size() >= 1, label + ": nothing is focusable");
 }
-} // namespace
-
-int main(int argc, char **argv)
+void run()
 {
-	if (!SDL_getenv("GLOB2_USER_DATA_DIR"))
+	glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+	                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU | GAGCore::GraphicContext::RESIZABLE};
+	glob2test::HeadlessGlobals globals(options);
+	auto theme = std::make_unique<FrontendTheme>();
+	int checked = 0;
+	const bool capture = true;
+	for (const char *presentation : {"0", "1"})
 	{
-		std::fprintf(stderr, "Set GLOB2_USER_DATA_DIR to a disposable profile\n");
-		return 2;
-	}
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	const bool capture = argc > 1 && std::string(argv[1]) == "capture";
-	try
-	{
-		globalContainer = new GlobalContainer("glob2-ui-presentation-test");
-		globalContainer->settings.screenWidth = 800;
-		globalContainer->settings.screenHeight = 600;
-		globalContainer->settings.screenFlags =
-			GAGCore::GraphicContext::PORTABLEGPU | GAGCore::GraphicContext::RESIZABLE;
-		globalContainer->settings.mute = true;
-		globalContainer->load();
-		auto theme = std::make_unique<FrontendTheme>();
-		int checked = 0;
-		for (const char *presentation : {"0", "1"})
+		SDL_setenv("GLOB2_MOBILE_UI", presentation, 1);
+		for (const auto &viewport : viewports)
 		{
-			SDL_setenv("GLOB2_MOBILE_UI", presentation, 1);
-			for (const auto &viewport : viewports)
+			if (presentation[0] == '0' && viewport.width < 600)
+				continue;
+			resize(viewport.width, viewport.height);
+			for (const auto &insets : insetSets)
 			{
-				if (presentation[0] == '0' && viewport.width < 600)
-					continue;
-				resize(viewport.width, viewport.height);
-				for (const auto &insets : insetSets)
+				GAGCore::mobileSafeInsetsForTesting = insets;
+				for (const auto &fixture : fixtures())
 				{
-					GAGCore::mobileSafeInsetsForTesting = insets;
-					for (const auto &fixture : fixtures())
+					if (const char *only = SDL_getenv("GLOB2_UI_ONLY"); only && *only && std::string(only) != fixture.name)
+						continue;
+					GAGGUI::ScreenStack stack(*globalContainer->gfx);
+					auto owned = fixture.make(stack);
+					auto *screen = dynamic_cast<UIScreen *>(owned.get());
+					require(screen != nullptr, std::string(fixture.name) + " is not a UIScreen");
+					stack.push(std::move(owned));
+					stack.frame(0, {});
+					stack.frame(40, {});
+					require(stack.running(), std::string(fixture.name) + " ended during warm-up");
+					const std::string label = std::string(fixture.name) + " " + viewport.name +
+											  " touch=" + presentation + " bottom=" +
+											  std::to_string(int(insets.bottom));
+					if (capture && insets.bottom == 0)
+						globalContainer->gfx->printScreen("ui-" + std::string(fixture.name) + "-" +
+														  viewport.name + "-touch" + presentation + ".bmp");
+					verifyOrDump(*screen, label);
+					stack.frame(80, {});
+					// Tab reaches every control and never throws.
+					for (std::size_t i = 0; fixture.navigable && i < screen->host().focusOrder().size(); ++i)
 					{
-						if (const char *only = SDL_getenv("GLOB2_UI_ONLY"); only && *only && std::string(only) != fixture.name)
-							continue;
-						GAGGUI::ScreenStack stack(*globalContainer->gfx);
-						auto owned = fixture.make(stack);
-						auto *screen = dynamic_cast<UIScreen *>(owned.get());
-						require(screen != nullptr, std::string(fixture.name) + " is not a UIScreen");
-						stack.push(std::move(owned));
-						stack.frame(0, {});
-						stack.frame(40, {});
-						require(stack.running(), std::string(fixture.name) + " ended during warm-up");
-						const std::string label = std::string(fixture.name) + " " + viewport.name +
-												  " touch=" + presentation + " bottom=" +
-												  std::to_string(int(insets.bottom));
-						if (capture && insets.bottom == 0)
-							globalContainer->gfx->printScreen("ui-" + std::string(fixture.name) + "-" +
-															  viewport.name + "-touch" + presentation + ".bmp");
-						verifyOrDump(*screen, label);
-						stack.frame(80, {});
-						// Tab reaches every control and never throws.
-						for (std::size_t i = 0; fixture.navigable && i < screen->host().focusOrder().size(); ++i)
-						{
-							SDL_Event tab{};
-							tab.type = SDL_KEYDOWN;
-							tab.key.keysym.sym = SDLK_TAB;
-							stack.frame(120 + Uint32(i), {tab});
-						}
-						if (fixture.navigable && screen->host().focused().empty())
-						{
-							std::string order;
-							for (const auto &key : screen->host().focusOrder())
-								order += key + " ";
-							require(false, label + ": tab never focused a control (order: " + order + ", editing: " + screen->host().editing() + ")");
-						}
-						screen->endExecute(0);
-						stack.frame(200, {});
-						++checked;
+						SDL_Event tab{};
+						tab.type = SDL_KEYDOWN;
+						tab.key.keysym.sym = SDLK_TAB;
+						stack.frame(120 + Uint32(i), {tab});
 					}
+					if (fixture.navigable && screen->host().focused().empty())
+					{
+						std::string order;
+						for (const auto &key : screen->host().focusOrder())
+							order += key + " ";
+						require(false, label + ": tab never focused a control (order: " + order + ", editing: " + screen->host().editing() + ")");
+					}
+					screen->endExecute(0);
+					stack.frame(200, {});
+					++checked;
 				}
 			}
 		}
-		GAGCore::mobileSafeInsetsForTesting.reset();
-		theme.reset();
-		delete globalContainer;
-		globalContainer = nullptr;
-		std::printf("PASS ui presentation: %d screen/viewport combinations verified\n", checked);
-		return 0;
 	}
-	catch (const std::exception &error)
+	GAGCore::mobileSafeInsetsForTesting.reset();
+	theme.reset();
+	SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+	glob2test::retainFromProfile(".bmp");
+	std::printf("PASS ui presentation: %d screen/viewport combinations verified\n", checked);
+}
+} // namespace
+
+TEST_SUITE("UIPresentation")
+{
+	TEST_CASE("every screen lays out; navigates and captures across viewports; presentations and insets [display:1600x1400][artifacts][slow]")
 	{
-		std::fprintf(stderr, "FAIL: %s\n", error.what());
-		return 1;
+		run();
 	}
 }

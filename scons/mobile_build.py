@@ -75,26 +75,61 @@ def build_mobile(directory, identity, arguments):
         objects = [env.SharedObject(str(object_root / (name + '.o')), name) for name in files]
         program = env.SharedLibrary(str(output / 'lib/main'), objects)
         if 'android-tests' in COMMAND_LINE_TARGETS:
-            # Run the real client harnesses as Android PIE executables under
-            # adb shell. Reuse the same cross-compiled game objects; only the
-            # entry point differs. SDL's dummy drivers avoid requiring a Java
-            # Activity for these deterministic/input regression tests.
+            # Cross-compile the two doctest binaries from test/tests.py as Android PIE
+            # executables for adb shell (mobile/android_device_tests.py). They reuse the
+            # same game objects; test/support/TestMain.cpp is the entry point and
+            # mobile/NativeTestMain.cpp interposes the platform bridges.
+            import sys
+            sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
+            import tests as registry
             tests = env.Clone()
             tests['CPPDEFINES'] = ['HAVE_CONFIG_H', 'SDL_MAIN_HANDLED']
-            client_objects = [obj for name, obj in zip(files, objects)
-                              if name != 'src/Glob2.cpp']
-            harnesses = ('GameGUITouchHarness',
-                         'EngineSessionHarness', 'GameGUISelectionHarness',
-                         'TerrainResourcesHarness', 'TeamStatsSaveHarness')
-            binaries = []
-            for harness in harnesses:
-                entry = tests.Object(str(object_root / 'tests' / (harness + '.o')),
-                                     'test/' + harness + '.cpp')
-                entry += tests.Object(str(object_root / 'tests' / (harness + '-main.o')),
-                                      'mobile/NativeTestMain.cpp')
-                binaries += tests.Program(str(output / 'tests' / harness),
-                                          (client_objects if harness != 'MobileInputHarness' else []) + entry)
-            env.Alias('android-tests', binaries)
+            tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
+            by_source = dict(zip(files, objects))
+            client_objects = [obj for name, obj in by_source.items() if name != 'src/Glob2.cpp']
+            library_objects = [obj for name, obj in by_source.items()
+                               if name.startswith('libgag/') or name.startswith('libusl/')]
+
+            def available(options):
+                required = options.get('require', ())
+                # Android builds have no desktop OpenGL and are not MinGW.
+                return 'opengl' not in required
+
+            def test_objects(entries, prefix):
+                out = []
+                for entry in entries:
+                    source, options = (entry, {}) if isinstance(entry, str) else entry
+                    if not available(options):
+                        continue
+                    compile_env = tests
+                    if options.get('cxxflags') or options.get('defines'):
+                        compile_env = tests.Clone()
+                        compile_env.Append(CXXFLAGS=options.get('cxxflags', []))
+                        compile_env.Append(CPPDEFINES=options.get('defines', []))
+                    path = source[1:] if source.startswith('#') else 'test/' + source
+                    name = prefix + path.replace('/', '_').rsplit('.', 1)[0]
+                    out += compile_env.Object(str(object_root / 'tests' / (name + '.o')), path)
+                return out
+
+            def production_objects(entries):
+                out = []
+                for entry in entries:
+                    source, options = (entry, {}) if isinstance(entry, str) else entry
+                    key = source.lstrip('#')
+                    if key in by_source and not options.get('defines') and not options.get('cxxflags'):
+                        out.append(by_source[key])
+                    else:
+                        out += test_objects([entry], 'unit-')
+                return out
+
+            bridge = tests.Object(str(object_root / 'tests' / 'NativeTestMain.o'), 'mobile/NativeTestMain.cpp')
+            engine = tests.Program(str(output / 'tests' / 'glob2-engine-tests'),
+                                   test_objects(registry.SUPPORT + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
+                                   + bridge + client_objects)
+            unit = tests.Program(str(output / 'tests' / 'glob2-unit-tests'),
+                                 test_objects(registry.SUPPORT + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
+                                 + production_objects(registry.UNIT_PRODUCTION_SOURCES) + bridge + library_objects)
+            env.Alias('android-tests', engine + unit)
     else:
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()

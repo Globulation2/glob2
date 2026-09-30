@@ -209,17 +209,17 @@ press and release land on the same element.
   adaptive re-choice after resize, footer folding, scroll clamping, wrapping,
   ellipsis, focus order, capture, tap versus pan, popup routing, per-key state
   across rebuilds and text editing.
-- `scons ui-presentation-test` builds `ui-presentation-test`, which
-  instantiates every screen and dialog fixture at phone, tablet and desktop
-  viewports in both touch and pointer presentations, with and without platform
-  gutters, and requires: every interactive element inside the safe rectangle,
-  touch targets at least the theme minimum, no overlapping interactive
-  elements, unique keys, something focusable, and a valid focus and scroll
-  state after resize. Run it with `capture` to write one image per screen and
-  viewport under the working directory. `GLOB2_UI_ONLY=<fixture>` restricts a
-  run.
-- `gameplay-touch-test`, `custom-setup-test`, `settings-tests`,
-  `session-test`, `map-preview-test`, `menu-colony-harness` and
+- The `UIPresentation` suite in `glob2-engine-tests`
+  (`python3 test/run_tests.py --filter 'UIPresentation/*'`) instantiates every
+  screen and dialog fixture at phone, tablet and desktop viewports in both touch
+  and pointer presentations, with and without platform gutters, and requires:
+  every interactive element inside the safe rectangle, touch targets at least
+  the theme minimum, no overlapping interactive elements, unique keys, something
+  focusable, and a valid focus and scroll state after resize. It writes one
+  image per screen and viewport into its artifact directory.
+  `GLOB2_UI_ONLY=<fixture>` restricts a run.
+- The `GameGUITouch`, `Settings`, `EngineSession` and `GameSpeed` suites,
+  `custom-setup-test`, `map-preview-test`, `menu-colony-harness` and
   `mobile-gallery` drive the ported screens through their keys and semantic
   entry points; run them after changing a shared builder or the host.
 - `GLOB2_UI_DEBUG=1` draws element bounds and keys over any screen.

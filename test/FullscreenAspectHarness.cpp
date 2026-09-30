@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise real SDL presentation, GL clipping, input mapping and screen capture.
+#include "Glob2Test.h"
 #include "GraphicContextPrivate.h"
 #include <algorithm>
 #include <cmath>
@@ -30,7 +31,7 @@ public:
 
 void require(bool condition, const char* message)
 {
-	if (!condition) throw std::runtime_error(message);
+	GLOB2_REQUIRE(condition, message);
 }
 
 Color pixel(SDL_Surface* surface, int x, int y)
@@ -170,20 +171,22 @@ void run(Context& context, bool gpu, int w, int h)
 }
 }
 
-int main(int argc, char** argv)
+namespace
 {
-	bool gpu=argc==2 && std::string(argv[1])=="gl";
+void aspect(bool gpu)
+{
 #ifndef HAVE_OPENGL
-	if (gpu) { std::fprintf(stderr, "OpenGL support is required\n"); return 1; }
+	if (gpu) { MESSAGE("OpenGL support is not compiled in; skipping"); return; }
 #endif
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	try
-	{
-		Context context(gpu);
-		if (!gpu) checkSoftwareClipping();
-		for (auto size : {std::pair{640, 480}, {1280, 800}, {800, 1280}, {853, 641}, {480, 270}})
-			run(context, gpu, size.first, size.second);
-	}
-	catch (const std::exception& error) { std::fprintf(stderr, "FAIL: %s\n", error.what()); return 1; }
-	return 0;
+	Context context(gpu);
+	if (!gpu) checkSoftwareClipping();
+	for (auto size : {std::pair{640, 480}, {1280, 800}, {800, 1280}, {853, 641}, {480, 270}})
+		run(context, gpu, size.first, size.second);
+}
+}
+
+TEST_SUITE("FullscreenAspect")
+{
+	TEST_CASE("presentation; clipping; captures and input translation in software rendering [display:1600x1400]") { aspect(false); }
+	TEST_CASE("presentation; clipping; captures and input translation in OpenGL [display:1600x1400]") { aspect(true); }
 }

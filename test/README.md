@@ -293,25 +293,24 @@ bounds startup, execution, and child cleanup. Logs and captures are written unde
 
 ## Aspect-ratio and screen-capture regression
 
-`FullscreenAspectHarness` links libgag and opens a real SDL window. It checks
-presentation pixels, clipping, logical-resolution screen captures, and translated
-mouse motion/button events and polling at equal, wide, tall, odd, and downscaled
-window sizes. It exercises the same scaling path used by desktop fullscreen.
-The software run also checks every pixel in 24 opaque/translucent rectangle
-intersections, including rectangles above the clip area and empty rectangles.
-It does not load a game profile or change saved display settings.
+The `FullscreenAspect` suite (`test/FullscreenAspectHarness.cpp`) opens a real SDL
+window and checks presentation pixels, clipping, logical-resolution screen captures,
+and translated mouse motion/button events and polling at equal, wide, tall, odd, and
+downscaled window sizes. It exercises the same scaling path used by desktop
+fullscreen. The software case also checks every pixel in 24 opaque/translucent
+rectangle intersections, including rectangles above the clip area and empty
+rectangles. It does not load a game profile or change saved display settings.
 
 ```sh
-scons -j2 release=1 server=0 aspect-test
-./build/native-tests/libgag/src/FullscreenAspectHarness gl
-./build/native-tests/libgag/src/FullscreenAspectHarness software
+python3 test/run_tests.py --filter 'FullscreenAspect/*'
 ```
 
-Ubuntu CI runs both under `xvfb-run -a -s '-screen 0 1600x1400x24'`, using Mesa
-software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`). Xvfb and xauth must be installed.
-The GL run requires an OpenGL-enabled build. On macOS, the Homebrew SDL workaround
-described above also applies. To run with sanitizers, use the flags in the selection
-regression instructions with the `aspect-test` target instead.
+Both cases are tagged `[display:1600x1400]`: the runner opens that Xvfb screen on
+Linux without a `DISPLAY` and uses Mesa software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`)
+in CI. The OpenGL case is skipped in `opengl=0` builds. The same goes for the
+`WindowResize` suite (`test/WindowResizeHarness.cpp`), which resizes the window
+through the cache, callbacks, reflow, context recreation and minimum-size paths and
+needs a desktop at least 1100x850 when run natively.
 
 ## Wrapped building footprint regression
 
@@ -345,8 +344,8 @@ Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtur
 
 ## Entering unit draw regression
 
-From the repository root, run `scons -j8 release=1 server=0 entering-unit-draw-test`
-and `xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness`.
+Run `python3 test/run_tests.py --filter 'EnteringUnitDraw/*'`; the case is tagged
+`[display:1024x768][artifacts]`.
 
 A unit on its final step into a building keeps its map slot on the tile it is
 leaving (`Unit::handleActionEnteringBuilding`) while `posX`/`posY` already name
@@ -359,21 +358,14 @@ against the 32 px tile size. It protects the fix in `src/render/UnitDrawGeometry
 for issue #230, where the sprite was anchored on the stale map slot and the glob
 walked backwards into the square it came from.
 
-Frames land in `.cache/entering-unit-draw-check/`: `entering-delta<N>.png` and,
-on failure, `walking-delta<N>.png` for the unit-only comparison, plus
-`scene-delta<N>.png` with terrain and the inn for looking at by eye. The
-comparison itself stays on the unit-only render, which has no animated water or
-clouds to make two frames differ by themselves.
-
-It needs a display and a GL context. CI already installs `xvfb` and mesa for the
-fullscreen aspect harness, so a job step is a two-liner:
-
-```yaml
-      - name: Build and run the entering unit draw regression
-        run: |
-          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
-          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
-```
+Frames land in the case's artifact directory (`artifacts/tests/EnteringUnitDraw/...`
+or `GLOB2_TEST_ARTIFACTS`): `entering-delta<N>.png` and, on failure,
+`walking-delta<N>.png` for the unit-only comparison, plus `scene-delta<N>.png` with
+terrain and the inn for looking at by eye. The comparison itself stays on the
+unit-only render, which has no animated water or clouds to make two frames differ
+by themselves. The `FailingUnitMarkers` suite works the same way and leaves its
+scene captures next to them. Both need a display and a GL context and are left
+out of `opengl=0` builds.
 
 ## Immobile unit gradient regression
 
@@ -687,19 +679,19 @@ suite of `glob2-unit-tests`.
 
 ### Native main Settings redesign
 
-Build `scons -j6 release=1 settings-tests speed-tests` and run
-`python3 test/run-settings-tests.py`. The harness uses disposable profiles and
-writes native captures to `artifacts/settings-redesign/`. It covers all six
-categories, building stages, automatic saving and retry, software display
-confirmation/rollback, pending OpenGL changes, language refresh, and keyboard
-sequence/conflict handling. The shared dropdown checks cover anchoring, mouse and
-keyboard selection, dismissal, wrapping, and scrolling without committing a value.
-It runs at 640×480, 800×600, 1000×700, and 1280×900,
-plus software rendering and doubled English strings. `--quick` runs only 1000×700
-OpenGL; Linux CI runs the full six-configuration matrix. Persistence failures use a directory at the
+Run `python3 test/run_tests.py --filter 'Settings/*'`. The `Settings` suite
+(`test/SettingsScreenTest.cpp`) runs one case per configuration of the old matrix:
+640×480, 800×600, 1000×700 and 1280×900 in OpenGL, 1000×700 in software rendering,
+and 640×480 with expanded English strings written into the case's disposable
+profile. Each case uses its own profile and writes its native captures to its
+artifact directory. It covers all six categories, building stages, automatic
+saving and retry, software display confirmation/rollback, pending OpenGL changes,
+language refresh, and keyboard sequence/conflict handling. The shared dropdown
+checks cover anchoring, mouse and keyboard selection, dismissal, wrapping, and
+scrolling without committing a value. Persistence failures use a directory at the
 destination path so both settings and shortcut retries exercise the atomic writer.
-Window and drawable dimensions are logged so 1× runs are not mistaken
-for physical HiDPI validation.
+Window and drawable dimensions are logged so 1× runs are not mistaken for physical
+HiDPI validation.
 
 The redesigned screen exposes semantic row IDs (for example `gameplay.speed`)
 for tests; do not locate settings controls by pixel coordinates. Slider updates
@@ -707,10 +699,15 @@ preview immediately and commit on release/idle, whereas discrete changes save
 immediately. Bindings commit only after a complete edit. Legacy preference and
 keyboard file formats remain unchanged.
 
-`python3 test/run-game-speed-tests.py --settings-only` runs the main/in-game
-settings, language, persistence, keyboard, multiplayer eligibility and camera
-cadence regressions without starting the unrelated engine/replay scenarios.
-The full invocation remains available and reports buffered diagnostics on timeout.
+The `GameSpeed` suite (`test/GameSpeedTest.cpp`) has a headless case for the speed
+presets, bounds, legacy settings and persistence, a display case for the main and
+in-game settings, language refresh, keyboard shortcuts, multiplayer eligibility and
+camera cadence, and a display case that runs the live engine at normal and maximum
+speed, through pause and hard pause, and plays the recorded replay back at 1x,
+maximum and fast-forward. The last case captures the engine's per-run checksums
+and requires the first four (speed and pause) and the last three (playback) to
+agree. `python3 test/run_tests.py --filter 'GameSpeed/settings*'` runs the settings
+case alone.
 
 ## Pre-game map preview regression
 
@@ -910,17 +907,17 @@ The native portable-renderer checks exercise real SDL touch dispatch in portrait
 and landscape, including placement/confirmation, camera gestures, building
 controls, replay actions, setup/settings navigation and modal viewport changes.
 Build and run commands are in [Mobile development](../docs/mobile/development.md#verification).
-The harnesses require a windowing display (Xvfb on Linux), use isolated
-`GLOB2_USER_DATA_DIR` profiles, and capture screenshots there. They complement
+The `GameGUITouch` and `UIPresentation` cases need a windowing display (Xvfb on
+Linux), run in isolated profiles and copy their screenshots into their artifact
+directories. They complement
 Android/iOS device playtesting; they do not establish device lifecycle,
 performance, keyboard or cross-platform simulation compatibility.
 
 
 ## Zone boundary rendering
 
-Build `scons release=1 portable-renderer-test` and run
-`build/<toolchain>/client/release/libgag/src/PortableRendererHarness` on a
-windowing display. The boundary regression checks every pixel along joined
+Run `python3 test/run_tests.py --filter 'PortableRenderer/*'` on a windowing
+display. The boundary regression checks every pixel along joined
 outlines at 25%, 33%, 50%, 75%, 100% and 150% zoom, with fractional camera offsets
 and toroidal copies. It covers software, SDL portable and (when compiled) OpenGL
 renderers and verifies that later map artwork retains its transform.

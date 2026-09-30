@@ -217,6 +217,20 @@ namespace glob2test
 		out << text;
 	}
 
+	int retainFromProfile(const std::string& extension)
+	{
+		int copied = 0;
+		const std::filesystem::path target = artifactDir();
+		for (const auto& entry : std::filesystem::recursive_directory_iterator(profileDir()))
+			if (entry.is_regular_file() && entry.path().extension() == extension)
+			{
+				std::error_code ignored;
+				std::filesystem::copy_file(entry.path(), target / entry.path().filename(), std::filesystem::copy_options::overwrite_existing, ignored);
+				++copied;
+			}
+		return copied;
+	}
+
 	ToolkitScope::ToolkitScope(const char* profileName)
 	{
 		GAGCore::Toolkit::init(profileName);

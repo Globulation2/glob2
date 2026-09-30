@@ -96,6 +96,10 @@ namespace glob2test
 	std::string readFile(const std::filesystem::path& path);
 	void writeFile(const std::filesystem::path& path, const std::string& text);
 
+	// Copies files with the given extension (".bmp", ".png") from the disposable
+	// profile into artifactDir(), so screenshots survive the profile's removal.
+	int retainFromProfile(const std::string& extension);
+
 	// GAGCore::Toolkit::init/close for one test case, for tests that need a FileManager
 	// (it opens the disposable profile) without an engine GlobalContainer.
 	struct ToolkitScope

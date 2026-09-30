@@ -62,9 +62,9 @@ cursor animation. Continuous simulation during a drag would require a separate
 state-ownership design. Prolonged resizing may stall a network match; multiplayer
 recovery was verified in the Windows LAN acceptance test below.
 
-Build the integration harnesses with `scons resize-test aspect-test`. Run
-`build/libgag/src/WindowResizeHarness` and `FullscreenAspectHarness` with `software`
-and `gl`. The resize harness checks cached pixels after incomplete drawing,
+Run `python3 test/run_tests.py --filter 'WindowResize/*' --filter 'FullscreenAspect/*'`;
+each suite has a software and an OpenGL case in `glob2-engine-tests`. The resize
+suite checks cached pixels after incomplete drawing,
 callback guards, normal-frame counts, GL state restoration, grow/shrink reflow,
 context identity, input coordinates, minimum dimensions, and cache invalidation
 on window recreation. OpenGL pixels are captured at the swap boundary rather
@@ -195,14 +195,15 @@ mode follows the OS dimensions and ignores resolution-list selection events.
 
 ### Permanent regression coverage
 
-Build `scons map-render-resize-test`, then run:
+Build `scons release=1 engine-tests`, then run:
 
 ```sh
-SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness
-SDL_VIDEODRIVER=x11 SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness --gl
+python3 test/run_tests.py --filter 'MapRenderResize/*'
 ```
 
-The harness links production rendering and settings code, checks pixels across six
+The `MapRenderResize` suite has a headless software case and an OpenGL case tagged
+`[display:1920x1200]`; the runner checks that neither rewrites the profile's
+preferences. It links production rendering and settings code, checks pixels across six
 map copies, crosses path seams in both directions on square and rectangular maps,
 pans corner selections into view, shrinks/grows the window, checks
 sidebar clipping, and exercises settings toggles, tab changes, and the live

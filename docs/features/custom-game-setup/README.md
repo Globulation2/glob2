@@ -86,7 +86,7 @@ fallbacks outside the documented shared-vocabulary allowlist.
 Run from the repository root on a machine with the native dependencies:
 
 ```sh
-scons -j8 release=1 custom-setup-test speed-tests build/src/glob2
+scons -j8 release=1 custom-setup-test engine-tests build/src/glob2
 build/src/CustomGameSetupHarness
 mkdir -p artifacts/custom-game/compact artifacts/custom-game/large
 build/src/CustomGameSetupHarness artifacts/custom-game/compact
@@ -94,7 +94,7 @@ build/src/CustomGameSetupHarness artifacts/custom-game/large large
 build/src/CustomGameSetupHarness artifacts/custom-game/compact ui
 build/src/CustomGameSetupHarness preferences-write
 build/src/CustomGameSetupHarness preferences-read
-python3 test/run-game-speed-tests.py
+python3 test/run_tests.py --filter 'GameSpeed/*'
 python3 data/check_translations.py --strict
 python3 test/test_translations.py
 python3 test/test_font_coverage.py

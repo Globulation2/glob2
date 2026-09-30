@@ -24,6 +24,8 @@ namespace glob2test
 		globals.settings.screenWidth = options.width;
 		globals.settings.screenHeight = options.height;
 		globals.settings.screenFlags = options.screenFlags;
+		if (options.beforeLoad)
+			options.beforeLoad(globals);
 		if (options.display || options.loadStrings)
 			globals.load();
 		else

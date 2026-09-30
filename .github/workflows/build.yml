@@ -112,10 +112,12 @@ jobs:
         continue-on-error: true
         run: python3 test/test-ccache.py
 
-      - name: Test CI failure aggregation
+      - name: Test CI failure aggregation and the test runner
         id: test_ci_failure_aggregation
         continue-on-error: true
-        run: python3 test/test_ci_failure_aggregation.py
+        run: |
+          python3 test/test_ci_failure_aggregation.py
+          python3 test/test_run_tests.py
 
       - name: Restore the compiler cache
         id: restore_the_compiler_cache
@@ -162,26 +164,12 @@ jobs:
             engine-tests \
             maxima-strategy-dump \
             map-report-test \
-            torus-render-test \
             map-preview-test \
             custom-setup-test \
             map-generator-defaults-test \
             map-generator-golden-test \
-            failing-unit-markers-test \
-            entering-unit-draw-test \
             lan-test \
-            aspect-test \
-            resize-test \
-            text-raster-test \
-            menu-colony-harness \
-            speed-tests \
-            unit-render-tests \
-            unit-hd-cache-test \
-            runtime-pack-check \
-            settings-tests \
-            portable-renderer-test \
-            gameplay-touch-test \
-            ui-presentation-test
+            menu-colony-harness
 
       - name: Test Maxima strategy configuration and policies
         id: test_maxima_strategy_configuration_and_policies
@@ -223,7 +211,6 @@ jobs:
             build/linux/client/release/**/*.a
           key: linux-objects-v1-${{ matrix.runner }}-${{ steps.linux_compiler.outputs.digest }}-${{ github.run_id }}-${{ github.run_attempt }}
 
-
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
       - name: Report the cache statistics
@@ -251,7 +238,6 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
-
 
       - name: Summarize CI failures
         if: always()
@@ -413,20 +399,6 @@ jobs:
           path: artifacts/tournament-cli/
           if-no-files-found: ignore
 
-      - name: Exercise GPU and software game rendering
-        if: ${{ matrix.shard == 4 }}
-        id: exercise_gpu_and_software_game_rendering
-        continue-on-error: true
-        run: |
-          mkdir -p /tmp/glob2-render-profile
-          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
-            xvfb-run -a build/linux/client/release/src/torus-render-test -g -F -m -s 1120x720
-          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
-            GLOB2_UI_SCALE=3 xvfb-run -a -s '-screen 0 1920x1440x24' \
-            build/linux/client/release/src/torus-render-test -g -F -m -s 1920x1440
-          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            build/linux/client/release/src/torus-render-test -G -F -m -s 1120x720
-
       - name: Build and run pre-game map preview regressions
         if: ${{ matrix.shard == 2 }}
         id: build_and_run_pre_game_map_preview_regressions
@@ -469,35 +441,6 @@ jobs:
           path: artifacts/custom-game-ci/
           if-no-files-found: ignore
 
-      - name: Test the portable renderer
-        if: ${{ matrix.shard == 4 }}
-        id: test_the_portable_renderer
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
-      - name: Build and run the failing-unit markers regression
-        if: ${{ matrix.shard == 4 }}
-        id: build_and_run_the_failing_unit_markers_regression
-        continue-on-error: true
-        run: |
-          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/FailingUnitMarkersHarness
-      - name: Upload the failing-unit markers scene
-        id: upload_the_failing_unit_markers_scene
-        continue-on-error: true
-        if: ${{ always() && matrix.shard == 4 }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: failing-unit-markers-${{ matrix.runner }}
-          path: .cache/failing-unit-markers/
-          if-no-files-found: ignore
-      - name: Build and run the entering unit draw regression
-        if: ${{ matrix.shard == 1 }}
-        id: build_and_run_the_entering_unit_draw_regression
-        continue-on-error: true
-        run: |
-          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
-
       - name: Verify save continuation traces
         if: ${{ matrix.shard == 3 }}
         id: verify_save_continuation_traces
@@ -528,67 +471,6 @@ jobs:
         run: |
           python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
 
-      - name: Build and run the aspect-ratio regression
-        if: ${{ matrix.shard == 4 }}
-        id: build_and_run_the_aspect_ratio_regression
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: |
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
-
-      - name: Check phone layouts and gameplay touch input
-        if: ${{ matrix.shard == 1 }}
-        id: check_phone_layouts_and_gameplay_touch_input
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-          SDL_AUDIODRIVER: dummy
-        run: |
-          timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
-          for harness in gameplay-touch-test ui-presentation-test; do
-            mkdir -p "artifacts/mobile-ui/$harness"
-            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 900s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness" capture
-          done
-
-      - name: Upload phone UI verification evidence
-        id: upload_phone_ui_verification_evidence
-        continue-on-error: true
-        if: ${{ always() && matrix.shard == 1 }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: mobile-ui-verification
-          path: artifacts/mobile-ui/
-
-      - name: Check native settings persistence and retry
-        if: ${{ matrix.shard == 2 }}
-        id: check_native_settings_persistence_and_retry
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: xvfb-run -a -s '-screen 0 1600x1400x24' python3 test/run-settings-tests.py
-
-      - name: Build and run the window resize regression
-        if: ${{ matrix.shard == 3 }}
-        id: build_and_run_the_window_resize_regression
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: |
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness gl
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness software
-
-      - name: Build and run the scaled text regression
-        if: ${{ matrix.shard == 4 }}
-        id: build_and_run_the_scaled_text_regression
-        continue-on-error: true
-        env:
-          LIBGL_ALWAYS_SOFTWARE: 1
-        run: |
-          mkdir -p artifacts/text-raster
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/TextRasterHarness artifacts/text-raster
-
       - name: Test front-end colony isolation and menu navigation
         if: ${{ matrix.shard == 2 }}
         id: test_front_end_colony_isolation_and_menu_navigation
@@ -599,13 +481,6 @@ jobs:
         run: |
           ./build/linux/client/release/src/MenuColonyHarness check data/menu/colony.bin
           ./build/linux/client/release/src/MenuColonyHarness navigation unused
-
-      - name: Test game speed controls and playback
-        if: ${{ matrix.shard == 3 }}
-        id: test_game_speed_controls_and_playback
-        continue-on-error: true
-        run: |
-          GLOB2_BUILD_DIR=build/linux/client/release xvfb-run -a python3 test/run-game-speed-tests.py
 
       - name: Retain browser/native simulation trace
         if: ${{ matrix.shard == 4 }}
@@ -619,19 +494,6 @@ jobs:
         with:
           name: browser-determinism-${{ matrix.runner }}
           path: artifacts/browser-determinism/native/
-
-      - name: Test unit rendering and HD cache
-        if: ${{ matrix.shard == 4 }}
-        id: test_unit_rendering_and_hd_cache
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check surface-blending 'xvfb-run -a ./build/linux/client/release/src/DrawableSurfaceBlendTest' \
-            --check team-shader 'xvfb-run -a ./build/linux/client/release/src/UnitTeamShaderTest' \
-            --check team-color-cache 'xvfb-run -a ./build/linux/client/release/src/UnitTeamColorCacheTest' \
-            --check hd-cache 'xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest' \
-            --check hd-cache-software 'xvfb-run -a ./build/linux/client/release/src/UnitHighResolutionCacheTest software' \
-            --check runtime-pack 'xvfb-run -a ./build/linux/client/release/src/RuntimePackCheck'
 
       - name: Summarize CI failures
         if: always()
@@ -740,10 +602,9 @@ jobs:
         id: build_without_opengl
         continue-on-error: true
         run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 wss=0 --build=build-software build-software/src/glob2 torus-render-test
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 wss=0 --build=build-software build-software/src/glob2 engine-tests
           python3 test/SoftwareStartupTest.py build-software/src/glob2
-          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            build-software/src/torus-render-test -g -F -m -s 1120x720
+          python3 test/run_tests.py --binary engine --build-dir build-software --no-display --filter 'TorusRender/*software*' --junit artifacts/tests/software-junit.xml
 
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
@@ -771,7 +632,6 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-variants-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
-
 
       - name: Summarize CI failures
         if: always()
@@ -920,7 +780,6 @@ jobs:
           wait "$defaults" || status=1
           cat /tmp/map-telemetry.log /tmp/map-defaults.log
           [ "$status" -eq 0 ]
-
 
       - name: Summarize CI failures
         if: always()
@@ -1094,7 +953,6 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}
-
 
       - name: Summarize CI failures
         if: always()
@@ -1309,7 +1167,6 @@ jobs:
             build/emscripten/client/release/index.wasm
             build/emscripten/client/release/index.data
 
-
       - name: Summarize CI failures
         if: always()
         env:
@@ -1431,7 +1288,6 @@ jobs:
           if-no-files-found: error
           path: web-native.tar.gz
 
-
       - name: Summarize CI failures
         if: always()
         env:
@@ -1458,7 +1314,6 @@ jobs:
         run: |
           docker compose -f deploy/compose.yaml build lobby
           python3 -m unittest discover -s tests/deployment -v
-
 
       - name: Summarize CI failures
         if: always()
@@ -1615,7 +1470,6 @@ jobs:
           path: |
             build/browser-test-results
             build/browser-test-report
-
 
       - name: Summarize CI failures
         if: always()

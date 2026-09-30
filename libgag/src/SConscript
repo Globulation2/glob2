@@ -13,20 +13,6 @@ l2 = env.StaticLibrary("gag_server", libgag_just_server)
 
 if not env['server']:
     Default(l1)
-    aspect_env = env.Clone()
-    aspect_env.Append(CPPPATH=['#libgag/src'])
-    aspect_test = aspect_env.Program('FullscreenAspectHarness',
-        [aspect_env.Object('FullscreenAspectHarness.o', '#test/FullscreenAspectHarness.cpp'), l1])
-    env.Alias('aspect-test', aspect_test)
-    resize_test = aspect_env.Program('WindowResizeHarness',
-        [aspect_env.Object('WindowResizeHarness.o', '#test/WindowResizeHarness.cpp'), l1])
-    env.Alias('resize-test', resize_test)
-    text_raster_test = aspect_env.Program('TextRasterHarness',
-        [aspect_env.Object('TextRasterHarness.o', '#test/TextRasterHarness.cpp'), l1])
-    env.Alias('text-raster-test', text_raster_test)
-    portable_test = env.Program('PortableRendererHarness',
-        [env.Object('PortableRendererHarness.o', '#test/PortableRendererHarness.cpp'), l1])
-    env.Alias('portable-renderer-test', portable_test)
 else:
     Default(l2)
 

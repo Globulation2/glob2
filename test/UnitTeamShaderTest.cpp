@@ -10,6 +10,7 @@
 // Both backends' action-block native fallback for an incomplete HD pack, and
 // the GLOB2_DISABLE_UNIT_SHADER escape hatch, are covered by
 // UnitTeamColorCacheTest.cpp instead, since they don't need pixel comparison.
+#include "Glob2Test.h"
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL.h>
@@ -19,7 +20,6 @@
 #include <epoxy/gl.h>
 #endif
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -149,11 +149,13 @@ namespace
 	}
 }
 
-int main()
+TEST_SUITE("UnitTeamShader")
 {
-	Toolkit::init("codex-glob2-unit-shader-test");
+TEST_CASE("shader hue shifts match the CPU reference over every pose and hue [display]")
+{
+	glob2test::ToolkitScope toolkit;
 	auto *gfx = Toolkit::initGraphic(256, 256, GraphicContext::USEGPU, "Unit shader validation");
-	assert(gfx->hasUnitShader() && "GLSL 1.20 unit shader failed to compile/link on this driver");
+	REQUIRE((gfx->hasUnitShader() && "GLSL 1.20 unit shader failed to compile/link on this driver"));
 
 	// HiDPI: the drawable can be a multiple of the logical resolution: to
 	// compare rendered pixels 1:1 against source texture pixels, sizes must be
@@ -163,7 +165,7 @@ int main()
 	const float pixelScale = static_cast<float>(viewport[2]) / gfx->getW();
 
 	InspectUnitSprite sprite;
-	assert(sprite.load("data/gfx/unit"));
+	REQUIRE(sprite.load("data/gfx/unit"));
 
 	// The 12 in-game team hues (Team::setCorrectColor's wheel, Game.h's
 	// TEAM_COLOR_HUE_DEGREES / numTeams) plus the existing 16-hue test palette.
@@ -213,8 +215,8 @@ int main()
 
 	std::cout << "Shader vs CPU HSV: mean=" << (totalError / channels) << "/255 max=" << maxError
 	          << "/255 alpha mismatches=" << alphaMismatches << " comparisons=" << channels / 3 << std::endl;
-	assert(alphaMismatches == 0);
-	assert(maxError <= 2);
+	REQUIRE(alphaMismatches == 0);
+	REQUIRE(maxError <= 2);
 
 	// 3) Single-pose and stacked framebuffer comparison: shader-rendered sequence
 	// vs. an independent CPU reference that composites base+team per pose in
@@ -272,7 +274,7 @@ int main()
 		double maxFrameError = 0;
 		size_t frameChannels = 0;
 		sprite.setBaseColor(colors[0]);
-		assert(sprite.teamHueShiftDegrees() == hueShifts[0]);
+		REQUIRE(sprite.teamHueShiftDegrees() == hueShifts[0]);
 		for (bool experiment : {false, true})
 		for (int base = 0; base <= 384; base += 64)
 		for (int dir = 0; dir < 8; ++dir)
@@ -322,11 +324,11 @@ int main()
 		          << frameChannels / 3 << std::endl;
 		// Mesa's 8-bit framebuffer blending can differ slightly from the
 		// double-precision reference across stacked translucent poses.
-		assert(maxFrameError <= 4);
+		REQUIRE(maxFrameError <= 4);
 	}
 
 	std::cout << "PASS: shader vs CPU HSV over all 1,792 poses / 12 team hues + 16-hue palette; "
 	             "single and stacked framebuffer within tolerance of an independent CPU reference"
 	          << std::endl;
-	Toolkit::close();
+}
 }

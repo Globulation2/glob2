@@ -3,6 +3,7 @@
 // drawSprite's direct per-pose drawing. See UnitTeamShaderTest.cpp for
 // shader-vs-CPU pixel comparisons and UnitTeamColorCacheTest.cpp for the
 // bounded CPU cache itself.
+#include "Glob2Test.h"
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL_image.h>
@@ -12,7 +13,6 @@
 #include <epoxy/gl.h>
 #endif
 #include <algorithm>
-#include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -24,24 +24,24 @@ struct InspectUnitSprite : Sprite
 {
 	void checkLayers(bool high) const
 	{
-		assert(images.size() == 1792 && rotated.size() == 1792);
+		REQUIRE((images.size() == 1792 && rotated.size() == 1792));
 		for (size_t i = 0; i < images.size(); ++i)
 		{
-			assert(bool(experimentImages[i]) == (high && bool(images[i])));
-			assert(bool(experimentRotated[i]) == (high && bool(rotated[i])));
+			REQUIRE(bool(experimentImages[i]) == (high && bool(images[i])));
+			REQUIRE(bool(experimentRotated[i]) == (high && bool(rotated[i])));
 			if (high)
 			{
 				// Every unit HD layer renders onto a fixed pixel canvas
 				// regardless of this frame's own native size (32, 38 or 40).
 				if (images[i])
 				{
-					assert(experimentImages[i]->getW() == Sprite::highResolutionTextureSize);
-					assert(experimentImages[i]->getH() == Sprite::highResolutionTextureSize);
+					REQUIRE(experimentImages[i]->getW() == Sprite::highResolutionTextureSize);
+					REQUIRE(experimentImages[i]->getH() == Sprite::highResolutionTextureSize);
 				}
 				if (rotated[i])
 				{
-					assert(experimentRotated[i]->orig->getW() == Sprite::highResolutionTextureSize);
-					assert(experimentRotated[i]->orig->getH() == Sprite::highResolutionTextureSize);
+					REQUIRE(experimentRotated[i]->orig->getW() == Sprite::highResolutionTextureSize);
+					REQUIRE(experimentRotated[i]->orig->getH() == Sprite::highResolutionTextureSize);
 				}
 			}
 		}
@@ -67,44 +67,45 @@ struct InspectUnitSprite : Sprite
 	}
 };
 
-int main(int argc, char **argv)
+namespace
 {
-	const bool software = argc > 1 && std::string(argv[1]) == "software";
+void run(bool software)
+{
 	// This test compares pixel alignment; lossy S3TC texture blocks obscure
 	// that comparison on Mesa when the two draw paths upload different layers.
 	SDL_setenv("GLOB2_DISABLE_S3TC", "1", 1);
-	Toolkit::init("glob2-unit-hd-cache-test");
+	glob2test::ToolkitScope toolkit;
 	auto gfx = Toolkit::initGraphic(640, 480, software ? 0 : GraphicContext::USEGPU, "HD unit cache checks");
 	Sprite::setHighResolution(true);
 	{
 		InspectUnitSprite sprite;
-		assert(sprite.load("data/gfx/unit"));
+		REQUIRE(sprite.load("data/gfx/unit"));
 		sprite.checkLayers(!software);
-		assert(sprite.getTeamColorCacheEntries() == 0);
+		REQUIRE(sprite.getTeamColorCacheEntries() == 0);
 
 		// Whole-block native fallback: index 256 and 257 share a 32-phase
 		// action/direction block (see UnitAnimation.h); dropping 257's HD team
 		// layer must make the whole block ineligible for HD, not just 257.
 		if (!software)
 		{
-			assert(sprite.blockHasCompleteHD(256) && sprite.blockHasCompleteHD(257));
+			REQUIRE((sprite.blockHasCompleteHD(256) && sprite.blockHasCompleteHD(257)));
 			sprite.dropExperimentRotated(257);
-			assert(!sprite.blockHasCompleteHD(256));
-			assert(!sprite.blockHasCompleteHD(257));
+			REQUIRE(!sprite.blockHasCompleteHD(256));
+			REQUIRE(!sprite.blockHasCompleteHD(257));
 			sprite.setBaseColor(Color(255, 60, 40));
 			gfx->drawFilledRect(0, 0, 640, 480, 10, 10, 10);
 			gfx->drawSprite(0, 0, &sprite, 256); // still has its own HD team layer
 			gfx->drawSprite(40, 0, &sprite, 257); // HD team layer missing; native still intact
-			assert(glGetError() == GL_NO_ERROR);
+			REQUIRE(glGetError() == GL_NO_ERROR);
 			// Neither draw grew the CPU cache: the shader drew both at native
 			// resolution (256 forced there by its corrupted block-mate).
-			assert(sprite.getTeamColorCacheEntries() == 0);
+			REQUIRE(sprite.getTeamColorCacheEntries() == 0);
 
 			// A frame with no team layer at all draws base-only, no GL error.
 			sprite.dropRotated(258);
 			gfx->drawSprite(80, 0, &sprite, 258);
-			assert(glGetError() == GL_NO_ERROR);
-			assert(sprite.getTeamColorCacheEntries() == 0);
+			REQUIRE(glGetError() == GL_NO_ERROR);
+			REQUIRE(sprite.getTeamColorCacheEntries() == 0);
 		}
 
 		// All actions/directions/colors at logical size, HD active throughout.
@@ -122,17 +123,17 @@ int main(int argc, char **argv)
 					gfx->drawSprite(0, 0, &sprite, index);
 				}
 		if (!software)
-			assert(glGetError() == GL_NO_ERROR);
+			REQUIRE(glGetError() == GL_NO_ERROR);
 
 		// Disabling HD drops back to native logical dimensions (unchanged) and
 		// clears the bounded cache; re-enabling restores HD layer mapping.
 		Sprite::setHighResolution(false);
 		sprite.checkLayers(false);
-		assert(sprite.getTeamColorCacheEntries() == 0);
+		REQUIRE(sprite.getTeamColorCacheEntries() == 0);
 		Sprite::setHighResolution(true);
 		{
 			InspectUnitSprite fresh;
-			assert(fresh.load("data/gfx/unit"));
+			REQUIRE(fresh.load("data/gfx/unit"));
 			fresh.checkLayers(!software);
 		}
 
@@ -143,7 +144,7 @@ int main(int argc, char **argv)
 				gfx->beginMapTransform(zoom, 0, 0, 0, 0, 640, 480);
 				gfx->drawSprite(10, 10, &sprite, 256);
 				gfx->endMapTransform();
-				assert(glGetError() == GL_NO_ERROR);
+				REQUIRE(glGetError() == GL_NO_ERROR);
 			}
 
 			// Pixel-alignment regression check for the sized drawSprite overload
@@ -177,16 +178,22 @@ int main(int argc, char **argv)
 				int maxDiff = 0;
 				for (size_t i = 0; i < sized.size(); ++i)
 					maxDiff = std::max(maxDiff, std::abs(static_cast<int>(sized[i]) - static_cast<int>(zoomed[i])));
-				assert(glGetError() == GL_NO_ERROR);
+				REQUIRE(glGetError() == GL_NO_ERROR);
 				std::cout << "Sized-overload vs. zoomed-shader alignment: max diff=" << maxDiff << "/255" << std::endl;
 				// Mesa's two draw paths differ by up to 8/255 in filtering on
 				// both supported Ubuntu runners; a layer offset is far larger.
-				assert(maxDiff <= 10);
+				REQUIRE(maxDiff <= 10);
 			}
 		}
 		std::cout << "PASS all 1792 layer mappings, whole-block HD/native fallback, HD/classic "
 		             "switching, zoom, and no CPU team-color cache growth under the shader"
 		          << std::endl;
 	}
-	Toolkit::close();
+}
+}
+
+TEST_SUITE("UnitHighResolutionCache")
+{
+	TEST_CASE("HD layer mappings and fallbacks in software rendering") { run(true); }
+	TEST_CASE("HD layer mappings; fallbacks; zoom and shader cache behaviour [display]") { run(false); }
 }

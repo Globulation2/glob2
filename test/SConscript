@@ -12,7 +12,7 @@ sys.path.insert(0, Dir('.').srcnode().abspath)
 import tests as registry
 
 test_env = env.Clone()
-test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src/render')])
+test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src/render'), Dir('#libgag/src')])
 # Console entry point for every test binary: no -mwindows, no SDL2main.
 test_env['LINKFLAGS'] = [flag for flag in test_env.Split(test_env['LINKFLAGS']) if flag != '-mwindows']
 test_env['LIBS'] = [lib for lib in test_env['LIBS'] if lib != 'SDL2main']

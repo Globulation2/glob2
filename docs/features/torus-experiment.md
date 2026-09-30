@@ -219,20 +219,17 @@ view. No torus camera state is serialized or sent over the network.
 
 ### Rendering regression
 
-Build the optional integration executable with
-`scons release=1 opengl=1 torus-render-test`. From the repository root, run:
+The `TorusRender` suite in `glob2-engine-tests` (`scons release=1 engine-tests`)
+covers this. From the repository root, run:
 
 ```sh
-mkdir -p experiment/test-profile
-GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy \
-  build/src/torus-render-test -g -F -m -s 1120x720
-GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-  build/src/torus-render-test -G -F -m -s 1120x720
+python3 test/run_tests.py --filter 'TorusRender/*'
 ```
 
-The first needs a display with compatibility OpenGL; Linux can use Xvfb. The
-second renders a loaded game through software and checks that torus inputs stay
-inactive. The same executable can be built with `opengl=0`, including a run with
+The OpenGL cases need a display with compatibility OpenGL; the runner opens an Xvfb
+screen on Linux. The software case renders a loaded game through software and
+checks that torus inputs stay inactive. The same binary can be built with
+`opengl=0`, including a run with
 `-g` requested to exercise the software fallback. The GPU test covers cloud
 transitions, both navigation axes, picking, return to 2D, and repeated teardown
 and recreation. No desktop input is generated.

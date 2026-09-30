@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Run cross-compiled regression suites on one explicitly selected Android device.
+"""Run the cross-compiled doctest binaries on one explicitly selected Android device.
 
 Uses disposable /data/local/tmp directories, never the installed app's data.
-These are CPU/input/persistence tests with SDL dummy drivers; they complement,
-not replace, installed-APK keyboard, renderer, lifecycle and interaction checks.
+These are CPU/input/persistence tests with SDL dummy drivers ([display] cases are
+excluded); they complement, not replace, installed-APK keyboard, renderer,
+lifecycle and interaction checks.
 """
 import argparse
 import json
@@ -16,10 +17,7 @@ import tempfile
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
-HARNESSES = ('TestsRunner', 'MobileInputHarness', 'ResponsiveMenuHarness',
-             'MobilePresentationHarness', 'GameGUITouchHarness',
-             'EngineSessionHarness', 'GameGUISelectionHarness',
-             'TerrainResourcesHarness', 'TeamStatsSaveHarness')
+BINARIES = ('glob2-unit-tests', 'glob2-engine-tests')
 
 
 def main():
@@ -28,7 +26,7 @@ def main():
     parser.add_argument('--android-sdk', type=Path, required=True)
     parser.add_argument('--arch', choices=('arm64-v8a', 'armeabi-v7a', 'x86_64'), default='arm64-v8a')
     parser.add_argument('--output', type=Path, default=ROOT / 'artifacts/android/device-tests')
-    parser.add_argument('--harness', action='append', choices=HARNESSES)
+    parser.add_argument('--binary', action='append', choices=BINARIES)
     args = parser.parse_args()
     adb = [str(args.android_sdk / 'platform-tools/adb'), '-s', args.serial]
     def command(*parts, **kwargs):
@@ -39,10 +37,10 @@ def main():
     if args.arch not in abis.strip().split(','):
         raise RuntimeError('Device does not support ' + args.arch)
     build = ROOT / f'build/android/device/{args.arch}/26/client/release'
-    names = args.harness or HARNESSES
+    names = args.binary or BINARIES
     for name in names:
         if not (build / 'tests' / name).is_file():
-            raise RuntimeError('Build android-tests and android-unit-tests before running: ' + name)
+            raise RuntimeError('Build android-tests before running: ' + name)
     ndk = json.loads((ROOT / 'mobile/toolchain.json').read_text())['android']['ndk']
     prebuilt = next((args.android_sdk / 'ndk' / ndk / 'toolchains/llvm/prebuilt').iterdir())
     remote = '/data/local/tmp/glob2-tests-' + uuid.uuid4().hex
@@ -66,10 +64,9 @@ def main():
         command('push', str(payload), remote, stdout=subprocess.DEVNULL)
     for name in names:
         profile = remote + '/profiles/' + name
-        extra = ['android-session'] if name == 'EngineSessionHarness' else []
-        if name == 'TeamStatsSaveHarness':
-            extra = ['glob2-save-test-android', remote]
-        timeout = 240
+        # Cases that open a window are for the desktop runner; keep the rest in-process.
+        extra = ['-tce=*[display*', '-r=junit', '-o=' + remote + '/' + name + '.xml']
+        timeout = 600
         invocation = ['env', 'LD_LIBRARY_PATH=' + remote, 'SDL_VIDEODRIVER=dummy',
                       'SDL_RENDER_DRIVER=software', 'SDL_AUDIODRIVER=dummy',
                       'GLOB2_USER_DATA_DIR=' + profile, 'GLOB2_ASSET_DIR=' + remote,

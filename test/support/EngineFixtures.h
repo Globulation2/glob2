@@ -13,6 +13,7 @@
 #include "Team.h"
 #include "Unit.h"
 
+#include <functional>
 #include <string>
 
 namespace glob2test
@@ -26,6 +27,9 @@ namespace glob2test
 		Uint32 seed = 0;             // nonzero: setSyncRandSeed(seed); zero leaves the default state
 		std::string profileName = "glob2-tests";
 		bool addSourceRoot = true;   // data/ and maps/ resolve from any working directory
+		// Runs after the settings above are applied and before load(): language,
+		// extra data directories, anything the old harness set before loading.
+		std::function<void(GlobalContainer&)> beforeLoad;
 	};
 
 	struct GameOptions

@@ -10,6 +10,7 @@
 //   - The cache is shared by both a "world unit" draw and a "preview" draw of
 //     the same Sprite object (portraits/editor previews/indicators all route
 //     through the same DrawableSurface::drawSprite as world units).
+#include "Glob2Test.h"
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #ifdef __APPLE__
@@ -17,8 +18,8 @@
 #else
 #include <epoxy/gl.h>
 #endif
-#include <cassert>
 #include <cstdlib>
+#include <optional>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -65,59 +66,61 @@ namespace
 	}
 }
 
-int main(int argc, char **argv)
+namespace
 {
-	const bool software = argc > 1 && std::string(argv[1]) == "software";
-	Toolkit::init("glob2-unit-team-color-cache-test");
+void run(bool software)
+{
+	std::optional<glob2test::ToolkitScope> toolkit;
+	toolkit.emplace();
 	auto *gfx = Toolkit::initGraphic(200, 200, software ? 0 : GraphicContext::USEGPU, "Unit team-color cache checks");
 
 	{
 		Sprite sprite;
-		assert(sprite.load("data/gfx/unit"));
-		assert(sprite.isDynamicTeamColor());
+		REQUIRE(sprite.load("data/gfx/unit"));
+		REQUIRE(sprite.isDynamicTeamColor());
 
 		if (!software)
 		{
-			assert(gfx->hasUnitShader() && "GLSL 1.20 unit shader failed to compile/link on this driver");
+			REQUIRE((gfx->hasUnitShader() && "GLSL 1.20 unit shader failed to compile/link on this driver"));
 			// GPU rendering creates zero team-colored surfaces: single, then stacked.
 			drawManyPosesAndColors(gfx, &sprite, false, 40);
-			assert(sprite.getTeamColorCacheEntries() == 0);
-			assert(sprite.getTeamColorCacheBytes() == 0);
+			REQUIRE(sprite.getTeamColorCacheEntries() == 0);
+			REQUIRE(sprite.getTeamColorCacheBytes() == 0);
 			drawManyPosesAndColors(gfx, &sprite, true, 40);
-			assert(sprite.getTeamColorCacheEntries() == 0);
-			assert(sprite.getTeamColorCacheBytes() == 0);
+			REQUIRE(sprite.getTeamColorCacheEntries() == 0);
+			REQUIRE(sprite.getTeamColorCacheBytes() == 0);
 			std::cout << "PASS: GPU unit rendering created zero team-colored surfaces, single and stacked draws"
 			          << std::endl;
 		}
 	}
-	Toolkit::close();
+	toolkit.reset();
 
 	// Fresh context with the shader disabled (the software renderer takes this
 	// path unconditionally too): every draw now goes through the bounded cache.
 	if (!software)
 		setenv("GLOB2_DISABLE_UNIT_SHADER", "1", 1);
-	Toolkit::init("glob2-unit-team-color-cache-test-fallback");
+	toolkit.emplace();
 	gfx = Toolkit::initGraphic(200, 200, software ? 0 : GraphicContext::USEGPU, "Unit team-color cache fallback checks");
 	if (!software)
-		assert(!gfx->hasUnitShader());
+		REQUIRE(!gfx->hasUnitShader());
 	{
 		Sprite sprite;
-		assert(sprite.load("data/gfx/unit"));
+		REQUIRE(sprite.load("data/gfx/unit"));
 
 		// Hit reuse: the same (frame, color) key returns the same surface and
 		// does not grow the cache further.
 		sprite.setBaseColor(Color(255, 60, 40));
 		gfx->drawSprite(0, 0, &sprite, 256);
 		const size_t afterFirst = sprite.getTeamColorCacheEntries();
-		assert(afterFirst > 0);
+		REQUIRE(afterFirst > 0);
 		gfx->drawSprite(0, 0, &sprite, 256);
-		assert(sprite.getTeamColorCacheEntries() == afterFirst);
+		REQUIRE(sprite.getTeamColorCacheEntries() == afterFirst);
 
 		// Shared cache: a "world unit" draw (index 256) and a "preview" draw of
 		// a different frame/color both land in the same sprite-wide cache.
 		sprite.setBaseColor(Color(0, 255, 128));
 		gfx->drawSprite(0, 0, &sprite, 512);
-		assert(sprite.getTeamColorCacheEntries() == afterFirst + 1);
+		REQUIRE(sprite.getTeamColorCacheEntries() == afterFirst + 1);
 
 		// Exceed 64 MiB with many distinct colors; the bound holds throughout
 		// except for at most one active oversized entry (not the case here:
@@ -126,30 +129,38 @@ int main(int argc, char **argv)
 		{
 			sprite.setBaseColor(Color(i & 255, (i >> 8) & 255, 99));
 			gfx->drawSprite(0, 0, &sprite, 256 + (i % 32));
-			assert(sprite.getTeamColorCacheBytes() <= 64u * 1024u * 1024u);
+			REQUIRE(sprite.getTeamColorCacheBytes() <= 64u * 1024u * 1024u);
 		}
 		const size_t boundedBytes = sprite.getTeamColorCacheBytes();
 		const size_t boundedEntries = sprite.getTeamColorCacheEntries();
 		std::cout << "Bounded fallback cache: entries=" << boundedEntries << " bytes=" << boundedBytes
 		          << std::endl;
-		assert(boundedBytes <= 64u * 1024u * 1024u);
-		assert(boundedBytes > 0);
+		REQUIRE(boundedBytes <= 64u * 1024u * 1024u);
+		REQUIRE(boundedBytes > 0);
 
 		// The most recently used entries stayed hits (LRU keeps the working set);
 		// long-evicted colors regenerate correctly rather than erroring.
 		sprite.setBaseColor(Color(19999 & 255, (19999 >> 8) & 255, 99));
 		const auto beforeRehit = sprite.getTeamColorCacheEntries();
 		gfx->drawSprite(0, 0, &sprite, 256 + (19999 % 32));
-		assert(sprite.getTeamColorCacheEntries() == beforeRehit); // hit, not a new entry
+		REQUIRE(sprite.getTeamColorCacheEntries() == beforeRehit); // hit, not a new entry
 		sprite.setBaseColor(Color(255, 60, 40)); // the very first color, long since evicted
 		gfx->drawSprite(0, 0, &sprite, 256);
 		if (!software)
-			assert(glGetError() == GL_NO_ERROR);
+			REQUIRE(glGetError() == GL_NO_ERROR);
 
 		std::cout << "PASS: software/fallback team-color cache stays within 64 MiB, evicts "
 		             "least-recently-used entries, keeps recent frames as hits, and regenerates "
 		             "evicted frames correctly"
 		          << std::endl;
 	}
-	Toolkit::close();
+	toolkit.reset();
+	unsetenv("GLOB2_DISABLE_UNIT_SHADER");
+}
+}
+
+TEST_SUITE("UnitTeamColorCache")
+{
+	TEST_CASE("team colour cache stays bounded in software rendering") { run(true); }
+	TEST_CASE("team colour cache is bypassed by the shader and bounded without it [display]") { run(false); }
 }
