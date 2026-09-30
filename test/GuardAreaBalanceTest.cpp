@@ -212,10 +212,11 @@ namespace
 		std::printf("[%s] %5d  %8d  %8d  %9d  %4d\n", scenario, tick, na, nb, total - na - nb, world.countFree());
 	}
 
-	// The two areas every scenario below shares: "near" is 18 tiles east of the
+	// The two areas every scenario below shares (named so they do not collide with
+	// the NEAR/FAR macros of the Windows headers): "near" is 18 tiles east of the
 	// spawn block, "far" 32 tiles south of it.
-	const Zone NEAR{"near", 30, 12, 2, 7};
-	const Zone FAR{"far", 12, 44, 2, 7};
+	const Zone NEAR_AREA{"near", 30, 12, 2, 7};
+	const Zone FAR_AREA{"far", 12, 44, 2, 7};
 	const int SPAWN_X = 12, SPAWN_Y = 12;
 
 	// The three guard-field refresh cadences a game can have.
@@ -236,30 +237,30 @@ namespace
 	void spawnSplitsBetweenAreas(const Options& options)
 	{
 		World world(options);
-		world.paint(NEAR);
-		world.paint(FAR);
+		world.paint(NEAR_AREA);
+		world.paint(FAR_AREA);
 		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
 		REQUIRE(world.game.integrity());
 
-		printHeader("spawn", NEAR, FAR);
+		printHeader("spawn", NEAR_AREA, FAR_AREA);
 		const int sample = 250;
 		double stepMicros = 0;
 		int arrived = -1;
 		for (int tick = 0; tick < options.ticks; tick += sample)
 		{
-			printRow(world, "spawn", tick, NEAR, FAR, options.warriors);
-			if (arrived < 0 && world.countNear(NEAR) + world.countNear(FAR) >= options.warriors * 9 / 10)
+			printRow(world, "spawn", tick, NEAR_AREA, FAR_AREA, options.warriors);
+			if (arrived < 0 && world.countNear(NEAR_AREA) + world.countNear(FAR_AREA) >= options.warriors * 9 / 10)
 				arrived = tick;
 			stepMicros += world.run(std::min(sample, options.ticks - tick)) * std::min(sample, options.ticks - tick);
 		}
 		int moved = 0;
 		stepMicros += world.run(500, &moved) * 500;
-		printRow(world, "spawn", options.ticks + 500, NEAR, FAR, options.warriors);
+		printRow(world, "spawn", options.ticks + 500, NEAR_AREA, FAR_AREA, options.warriors);
 		std::printf("[spawn] average step %.1f us, tile moves per warrior over the last 500 ticks %.2f, 90%% arrived by tick %d\n",
 			stepMicros / (options.ticks + 500), (double)moved / options.warriors, arrived);
 		REQUIRE(world.game.integrity());
 
-		const int na = world.countNear(NEAR), nb = world.countNear(FAR);
+		const int na = world.countNear(NEAR_AREA), nb = world.countNear(FAR_AREA);
 		if (!options.experiment)
 		{
 			// The game as it always was: the whole batch takes the near area.
@@ -279,44 +280,44 @@ namespace
 	void clumpDrainsIntoNewArea(const Options& options)
 	{
 		World world(options);
-		world.paint(NEAR);
-		world.spawnWarriors(NEAR.x, NEAR.y, options.warriors);
+		world.paint(NEAR_AREA);
+		world.spawnWarriors(NEAR_AREA.x, NEAR_AREA.y, options.warriors);
 		world.run(300);
-		REQUIRE(world.countNear(NEAR) == options.warriors);
-		world.paint(FAR);
+		REQUIRE(world.countNear(NEAR_AREA) == options.warriors);
+		world.paint(FAR_AREA);
 		REQUIRE(world.game.integrity());
 
-		printHeader("drain", NEAR, FAR);
+		printHeader("drain", NEAR_AREA, FAR_AREA);
 		const int sample = 250;
 		int lowestNear = options.warriors;
 		for (int tick = 0; tick < options.ticks; tick += 50)
 		{
 			if (tick % sample == 0)
-				printRow(world, "drain", tick, NEAR, FAR, options.warriors);
-			lowestNear = std::min(lowestNear, world.countNear(NEAR));
+				printRow(world, "drain", tick, NEAR_AREA, FAR_AREA, options.warriors);
+			lowestNear = std::min(lowestNear, world.countNear(NEAR_AREA));
 			world.run(std::min(50, options.ticks - tick));
 		}
 		int moved = 0;
 		world.run(500, &moved);
-		printRow(world, "drain", options.ticks + 500, NEAR, FAR, options.warriors);
+		printRow(world, "drain", options.ticks + 500, NEAR_AREA, FAR_AREA, options.warriors);
 		std::printf("[drain] tile moves per warrior over the last 500 ticks %.2f, lowest count in the first area %d, final %d\n",
-			(double)moved / options.warriors, lowestNear, world.countNear(NEAR));
+			(double)moved / options.warriors, lowestNear, world.countNear(NEAR_AREA));
 		REQUIRE(world.game.integrity());
 
 		if (!options.experiment)
 		{
-			GLOB2_CHECK(world.countNear(FAR) == 0, "without the experiment nobody leaves the first area");
+			GLOB2_CHECK(world.countNear(FAR_AREA) == 0, "without the experiment nobody leaves the first area");
 			return;
 		}
-		GLOB2_CHECK(world.countNear(FAR) >= options.warriors / 4, "at least a quarter of the clump migrates to the new area");
-		GLOB2_CHECK(world.countNear(NEAR) >= options.warriors / 4, "the first area keeps at least a quarter");
+		GLOB2_CHECK(world.countNear(FAR_AREA) >= options.warriors / 4, "at least a quarter of the clump migrates to the new area");
+		GLOB2_CHECK(world.countNear(NEAR_AREA) >= options.warriors / 4, "the first area keeps at least a quarter");
 		// A warrior with no free painted neighbour takes an ordinary random step
 		// off the paint, where the guard field may send it on to the other area,
 		// so the first area can dip a few warriors below where it settles before
 		// they come back: 1 to 5 of 24 over seeds 1-10 at all three cadences.
 		// What this guards against is the herd effect, an area emptying out and
 		// refilling, so the bound is a quarter of the warriors.
-		GLOB2_CHECK(lowestNear >= world.countNear(NEAR) - options.warriors / 4, "the first area drains without emptying out and refilling");
+		GLOB2_CHECK(lowestNear >= world.countNear(NEAR_AREA) - options.warriors / 4, "the first area drains without emptying out and refilling");
 	}
 
 	// Two unconnected patches three tiles apart count as one position of their
@@ -329,7 +330,7 @@ namespace
 		const Zone b{"patchB", 30, 17, 1, 5};
 		world.paint(a);
 		world.paint(b);
-		world.paint(FAR);
+		world.paint(FAR_AREA);
 		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
 		world.run(options.ticks);
 		int nab = 0;
@@ -337,7 +338,7 @@ namespace
 			if (Unit* u = world.team->myUnits[i])
 				if (world.game.map.warpDistSquare(u->posX, u->posY, 30, 14) <= 8 * 8)
 					++nab;
-		const int nfar = world.countNear(FAR);
+		const int nfar = world.countNear(FAR_AREA);
 		std::printf("[patches] near pair %d  far %d  elsewhere %d\n", nab, nfar, options.warriors - nab - nfar);
 		GLOB2_CHECK(nfar >= options.warriors / 4, "the far area still gets its share next to a pair of patches");
 		GLOB2_CHECK(nab >= options.warriors / 4, "the pair of patches gets its share");
@@ -348,13 +349,13 @@ namespace
 	void largerAreaTakesMore(const Options& options)
 	{
 		World world(options);
-		const Zone small{"small", 30, 12, 2, 7};  // 5x5, 18 tiles away
-		const Zone large{"large", 12, 44, 4, 9};  // 9x9, 32 tiles away
-		world.paint(small);
-		world.paint(large);
+		const Zone smallArea{"small", 30, 12, 2, 7};  // 5x5, 18 tiles away
+		const Zone largeArea{"large", 12, 44, 4, 9};  // 9x9, 32 tiles away
+		world.paint(smallArea);
+		world.paint(largeArea);
 		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
 		world.run(options.ticks);
-		const int ns = world.countNear(small), nl = world.countNear(large);
+		const int ns = world.countNear(smallArea), nl = world.countNear(largeArea);
 		std::printf("[size] small 5x5 %d  large 9x9 %d  elsewhere %d\n", ns, nl, options.warriors - ns - nl);
 		GLOB2_CHECK(nl > ns, "the larger area holds more warriors than the smaller nearer one");
 		GLOB2_CHECK(ns >= options.warriors / 8, "the smaller area is not abandoned");
@@ -365,12 +366,12 @@ namespace
 	{
 		World world(options);
 		const Zone c{"third", 44, 44, 2, 7}; // about 45 tiles from the spawn block
-		world.paint(NEAR);
-		world.paint(FAR);
+		world.paint(NEAR_AREA);
+		world.paint(FAR_AREA);
 		world.paint(c);
 		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
 		world.run(options.ticks);
-		const int na = world.countNear(NEAR), nb = world.countNear(FAR), nc = world.countNear(c);
+		const int na = world.countNear(NEAR_AREA), nb = world.countNear(FAR_AREA), nc = world.countNear(c);
 		std::printf("[three] near %d  far %d  third %d  elsewhere %d\n", na, nb, nc, options.warriors - na - nb - nc);
 		GLOB2_CHECK(na + nb + nc >= options.warriors * 9 / 10, "nearly every warrior reaches one of the three areas");
 		GLOB2_CHECK(na >= options.warriors / 8 && nb >= options.warriors / 8 && nc >= options.warriors / 8, "every area gets at least an eighth");
@@ -381,14 +382,14 @@ namespace
 	void erasedAreaReleasesItsWarriors(const Options& options)
 	{
 		World world(options);
-		world.paint(NEAR);
-		world.paint(FAR);
+		world.paint(NEAR_AREA);
+		world.paint(FAR_AREA);
 		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
 		world.run(options.ticks);
-		const int beforeFar = world.countNear(FAR);
-		world.paint(FAR, BrushTool::MODE_DEL);
+		const int beforeFar = world.countNear(FAR_AREA);
+		world.paint(FAR_AREA, BrushTool::MODE_DEL);
 		world.run(options.ticks);
-		const int na = world.countNear(NEAR), nb = world.countNear(FAR);
+		const int na = world.countNear(NEAR_AREA), nb = world.countNear(FAR_AREA);
 		std::printf("[erase] far held %d before erasing; after: near %d  far %d  elsewhere %d\n", beforeFar, na, nb, options.warriors - na - nb);
 		GLOB2_CHECK(beforeFar >= options.warriors / 4, "the far area was guarded before it was erased");
 		GLOB2_CHECK(nb == 0, "nobody stays on the erased area");
@@ -418,11 +419,11 @@ namespace
 		};
 		// Tuning bounds, not physics: a movement change is expected to move them.
 		const std::string retune = " (tuning bound; re-tune it if movement code changed on purpose)";
-		std::printf("[spins] %-15s  on-paint ticks  no direction  moves/warrior  held still  within %d tiles\n", "paint", NEAR.countRadius);
+		std::printf("[spins] %-15s  on-paint ticks  no direction  moves/warrior  held still  within %d tiles\n", "paint", NEAR_AREA.countRadius);
 		for (const Layout& layout : layouts)
 		{
 			World world(options);
-			const Zone zone{layout.name, NEAR.x, NEAR.y, layout.half, NEAR.countRadius};
+			const Zone zone{layout.name, NEAR_AREA.x, NEAR_AREA.y, layout.half, NEAR_AREA.countRadius};
 			world.paint(zone, BrushTool::MODE_ADD, layout.keep);
 			world.spawnWarriors(SPAWN_X, SPAWN_Y, layout.warriors);
 			world.run(options.ticks);
@@ -474,8 +475,8 @@ namespace
 	void savedGameContinuesIdentically(const Options& options)
 	{
 		World world(options);
-		world.paint(NEAR);
-		world.paint(FAR);
+		world.paint(NEAR_AREA);
+		world.paint(FAR_AREA);
 		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
 		world.run(1500);
 
@@ -511,7 +512,7 @@ namespace
 			}
 		}
 		std::printf("[saveload] near %d  far %d after 2500 ticks, 1000 of them after a load\n",
-			world.countNear(NEAR), world.countNear(FAR));
+			world.countNear(NEAR_AREA), world.countNear(FAR_AREA));
 	}
 
 	// The default game on the code paths the experiment touches: the spawn
@@ -521,8 +522,8 @@ namespace
 		Options options;
 		options.experiment = false;
 		World world(options);
-		world.paint(NEAR);
-		world.paint(FAR);
+		world.paint(NEAR_AREA);
+		world.paint(FAR_AREA);
 		world.spawnWarriors(SPAWN_X, SPAWN_Y, options.warriors);
 		std::ostringstream text;
 		for (int tick = 0; tick <= options.ticks; tick += 100)
