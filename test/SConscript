@@ -22,7 +22,12 @@ test_env['LIBS'] = [lib for lib in test_env['LIBS'] if lib != 'SDL2main']
 
 
 def not_sdl_main(item):
-    return not (item == 'main=SDL_main' or (isinstance(item, tuple) and item[0] == 'main'))
+    # ParseConfig stores -Dmain=SDL_main as ['main', 'SDL_main']; accept every spelling.
+    if isinstance(item, str):
+        return item.split('=', 1)[0] != 'main'
+    if isinstance(item, (list, tuple)) and item:
+        return item[0] != 'main'
+    return True
 
 
 defines = test_env.get('CPPDEFINES', [])

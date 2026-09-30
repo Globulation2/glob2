@@ -179,6 +179,11 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
             mouse.motion.x=0; mouse.motion.y=200;
             const int before=gui.viewportX;
             const Uint64 start=SDL_GetTicks64();
+            // The scroll timer starts when the GUI is built; catch it up with the pointer
+            // centred so a slow machine does not scroll the backlog on the first edge step.
+            SDL_Event resting={}; resting.type=SDL_MOUSEMOTION;
+            resting.motion.x=200; resting.motion.y=200;
+            gui.step({resting}, start);
             gui.step({mouse}, start);
             const int cadence=pass==0?40:1;
             for(int elapsed=cadence;elapsed<=480;elapsed+=cadence)
