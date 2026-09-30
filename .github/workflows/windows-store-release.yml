@@ -1,0 +1,181 @@
+name: Windows Store release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Four-part Store package version (increase for every upload)
+        required: true
+        default: 1.0.0.0
+      upload:
+        description: Upload the package to the configured Partner Center branch
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-store-release
+  cancel-in-progress: false
+
+jobs:
+  package:
+    runs-on: windows-2025
+    timeout-minutes: 90
+    environment: windows-store
+    env:
+      STORE_ID: ${{ vars.STORE_ID }}
+      STORE_IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
+      STORE_PUBLISHER: ${{ vars.STORE_PUBLISHER }}
+      STORE_PUBLISHER_DISPLAY_NAME: ${{ vars.STORE_PUBLISHER_DISPLAY_NAME }}
+      STORE_BRANCH: ${{ vars.STORE_BRANCH }}
+      STORE_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Partner Center identity
+        shell: pwsh
+        run: |
+          foreach ($name in @('STORE_ID', 'STORE_IDENTITY_NAME', 'STORE_PUBLISHER', 'STORE_PUBLISHER_DISPLAY_NAME')) {
+            if (-not [Environment]::GetEnvironmentVariable($name)) {
+              throw "Configure $name in the windows-store GitHub environment before running this workflow."
+            }
+          }
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-binutils
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-python-pillow
+            mingw-w64-x86_64-scons
+            mingw-w64-x86_64-SDL2
+            mingw-w64-x86_64-SDL2_image
+            mingw-w64-x86_64-SDL2_net
+            mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-libvorbis
+            mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-speex
+            mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-fribidi
+            mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-libepoxy
+            mingw-w64-x86_64-libsystre
+
+      - name: Check release staging logic
+        shell: msys2 {0}
+        run: python test/test_windows_store_release.py -v
+
+      - name: Build Windows client
+        shell: msys2 {0}
+        run: scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+
+      - name: Stage game, DLLs, assets and Store identity
+        shell: msys2 {0}
+        run: |
+          python .github/scripts/windows_store_release.py \
+            --root . \
+            --exe build/mingw/client/release/src/glob2.exe \
+            --dll-dir /mingw64/bin \
+            --dest artifacts/windows-store/content \
+            --identity-name "$STORE_IDENTITY_NAME" \
+            --publisher "$STORE_PUBLISHER" \
+            --publisher-display-name "$STORE_PUBLISHER_DISPLAY_NAME" \
+            --store-id "$STORE_ID" \
+            --version "$STORE_VERSION" \
+            --commit "$GITHUB_SHA"
+
+      - name: Install Microsoft GDK
+        shell: pwsh
+        run: |
+          winget install --id Microsoft.Gaming.GDK --exact --source winget --silent `
+            --accept-package-agreements --accept-source-agreements --disable-interactivity
+          if ($LASTEXITCODE -ne 0) { throw "GDK installation failed: $LASTEXITCODE" }
+
+      - name: Build and validate MSIXVC package
+        id: package
+        shell: pwsh
+        run: |
+          $tool = Get-ChildItem 'C:\Program Files (x86)\Microsoft GDK' -Recurse -Filter MakePkg.exe |
+            Sort-Object FullName -Descending | Select-Object -First 1
+          if (-not $tool) { throw 'MakePkg.exe was not found in the GDK installation.' }
+          $content = (Resolve-Path artifacts/windows-store/content).Path
+          $output = Join-Path $PWD 'artifacts/windows-store/package'
+          New-Item -ItemType Directory -Force $output | Out-Null
+          $layout = Join-Path $PWD 'artifacts/windows-store/layout.xml'
+          & $tool.FullName genmap /f $layout /d $content
+          if ($LASTEXITCODE -ne 0) { throw 'MakePkg genmap failed.' }
+          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos /l
+          if ($LASTEXITCODE -ne 0) { throw 'MakePkg pack failed.' }
+          $package = Get-ChildItem $output -Filter *.msixvc | Select-Object -First 1
+          $ekb = Get-ChildItem $output -Filter *.ekb | Select-Object -First 1
+          $validator = Get-ChildItem $output -Filter Validator_*.xml | Select-Object -First 1
+          if (-not $package -or -not $ekb -or -not $validator) {
+            throw 'Expected MSIXVC, EKB and submission validator report in the package directory.'
+          }
+          "package_path=$($package.FullName)" >> $env:GITHUB_OUTPUT
+          "ekb_path=$($ekb.FullName)" >> $env:GITHUB_OUTPUT
+          "validator_path=$($validator.FullName)" >> $env:GITHUB_OUTPUT
+
+      - name: Retain package for install testing and review
+        uses: actions/upload-artifact@v4
+        with:
+          name: glob2-windows-store-${{ inputs.version }}
+          path: |
+            artifacts/windows-store/package/*
+            artifacts/windows-store/layout.xml
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload to Partner Center
+        if: ${{ inputs.upload }}
+        shell: pwsh
+        env:
+          STORE_TENANT_ID: ${{ secrets.STORE_TENANT_ID }}
+          STORE_CLIENT_ID: ${{ secrets.STORE_CLIENT_ID }}
+          STORE_CLIENT_SECRET: ${{ secrets.STORE_CLIENT_SECRET }}
+          PACKAGE_PATH: ${{ steps.package.outputs.package_path }}
+          EKB_PATH: ${{ steps.package.outputs.ekb_path }}
+          VALIDATOR_PATH: ${{ steps.package.outputs.validator_path }}
+        run: |
+          foreach ($name in @('STORE_TENANT_ID', 'STORE_CLIENT_ID', 'STORE_CLIENT_SECRET', 'STORE_BRANCH')) {
+            if (-not [Environment]::GetEnvironmentVariable($name)) { throw "Missing $name for Partner Center upload." }
+          }
+          $version = '3.2.1'
+          $archive = Join-Path $env:RUNNER_TEMP 'PackageUploader.zip'
+          Invoke-WebRequest "https://github.com/microsoft/PackageUploader/releases/download/v$version/PackageUploader.$version.win-x64.zip" -OutFile $archive
+          $digest = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($digest -ne '80d6f9475ef3fccdd79659b034c876338acae73dfb42de34d750ad9c413c0184') {
+            throw 'PackageUploader checksum mismatch.'
+          }
+          $toolDir = Join-Path $env:RUNNER_TEMP 'PackageUploader'
+          Expand-Archive $archive $toolDir
+          $uploader = Get-ChildItem $toolDir -Recurse -Filter PackageUploader.exe | Select-Object -First 1
+          if (-not $uploader) { throw 'PackageUploader.exe is missing from its archive.' }
+          $config = @{
+            operationName = 'UploadXvcPackage'
+            aadAuthInfo = @{ tenantId = $env:STORE_TENANT_ID; clientId = $env:STORE_CLIENT_ID }
+            bigId = $env:STORE_ID
+            branchFriendlyName = $env:STORE_BRANCH
+            marketGroupName = 'default'
+            packageFilePath = $env:PACKAGE_PATH
+            deltaUpload = $false
+            gameAssets = @{
+              ekbFilePath = $env:EKB_PATH
+              subValFilePath = $env:VALIDATOR_PATH
+            }
+            minutesToWaitForProcessing = 60
+          }
+          $configPath = Join-Path $env:RUNNER_TEMP 'UploadXvcPackage.json'
+          $config | ConvertTo-Json -Depth 5 | Set-Content $configPath
+          & $uploader.FullName UploadXvcPackage -c $configPath -a AppSecret -s $env:STORE_CLIENT_SECRET
+          if ($LASTEXITCODE -ne 0) { throw "Partner Center upload failed: $LASTEXITCODE" }

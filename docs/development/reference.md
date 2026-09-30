@@ -37,6 +37,7 @@ scons -C test                 # rebuild the separate test suite
 - `mingw=1` builds natively on Windows; `mingwcross=1` cross-compiles. Dependencies
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
+
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
@@ -87,6 +88,52 @@ Test runners use the current host’s native release directory. Set
 `GLOB2_BUILD_DIR` when using `--build`, a debug build, or `wss=0` (whose client
 role directory is `client-tcp`). Pass explicit binary paths to CLI tools when
 comparing builds; do not pick an old binary by modification time.
+
+### Windows Store release
+
+`.github/workflows/windows-store-release.yml` is a manual `workflow_dispatch` on
+`windows-2025`. It builds the existing MinGW x64 client, stages its runtime DLLs,
+game assets and GPL license, creates `MicrosoftGame.config` and shell logos, then
+uses the Microsoft GDK to produce an MSIXVC package. The package, encryption key
+blob and validator report are retained as a GitHub Actions artifact. Set `upload`
+to true when dispatching to send that package to an existing Partner Center branch.
+The workflow does not submit a listing for certification or publish it to retail.
+
+Before the first run, create the Globulation 2 PC game in Partner Center and a
+GitHub Actions environment named `windows-store`. Add these environment variables
+using the exact values from Partner Center's product identity:
+
+| Variable | Value |
+| --- | --- |
+| `STORE_ID` | 12-character Store ID (also the Package Uploader Big ID) |
+| `STORE_IDENTITY_NAME` | Package Identity Name |
+| `STORE_PUBLISHER` | Package Identity Publisher, including `CN=` |
+| `STORE_PUBLISHER_DISPLAY_NAME` | Publisher display name |
+| `STORE_BRANCH` | Existing Partner Center branch for package upload |
+
+For upload, register an Entra application in the tenant connected to Partner
+Center, grant it **Publishing: Read/Write** for this product, and add its tenant
+ID, application ID and client secret as environment secrets named
+`STORE_TENANT_ID`, `STORE_CLIENT_ID`, and `STORE_CLIENT_SECRET`.
+The `STORE_BRANCH` variable is required for upload. Keep this environment
+restricted to trusted maintainers because its secret can upload packages.
+
+Run the workflow from **Actions → Windows Store release → Run workflow** with a
+four-part package version greater than previous uploads. Leave `upload` false for
+the first run. Download the artifact and install the MSIXVC on a clean Windows PC
+with Gaming Services; verify launch, sound, saves, settings, uninstall and a
+subsequent version update. Windows saves and preferences default to SDL's per-user
+preference directory, while bundled data remains read from the installation
+directory. After the package passes installation testing, rerun with `upload` true
+and advance the Partner Center submission through its listing, age rating and
+certification steps. Keep the corresponding GPL source available with each
+distributed version.
+
+The Store package uses original MSIXVC, supported by the currently released
+GDK. A future MSIXVC2 migration needs its own Partner Center package branch.
+See Microsoft's [PC packaging guide](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/overviews/packaging-getting-started-for-pc),
+[MakePkg reference](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg),
+and [Package Uploader setup](https://github.com/microsoft/PackageUploader).
 
 ## Simulation verification and diagnostics
 
