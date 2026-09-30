@@ -38,7 +38,9 @@ repository. Keep them in the mirror's restricted `mac-app-store` environment.
 
 For a release, first sync the reviewed public source to the owner-controlled
 release mirror, `genixpro/glob2-release`, on `master`. The mirror is public;
-keep its write access limited to the owner. The owner then runs **Mac App
+keep its write access limited to the owner. Workflow logs and artifacts in that
+mirror are public, so never print credentials or include them in artifacts.
+The owner then runs **Mac App
 Store release** manually from that mirror's Actions tab. Enter a `build_number`
 larger than every previously uploaded build number. Leave `upload` off to
 compile and smoke-test an ad hoc sandboxed candidate. Set `upload` to true to
