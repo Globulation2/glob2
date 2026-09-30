@@ -201,7 +201,7 @@ jobs:
               git g++ python3 scons pkg-config libsdl2-dev libsdl2-image-dev
               libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev
               libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev
-              libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+              libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
           - name: Fedora 43
             image: fedora:43
             install: >-
@@ -222,7 +222,7 @@ jobs:
               zypper --non-interactive install git gcc-c++ python3 scons pkg-config
               SDL2-devel SDL2_image-devel SDL2_net-devel SDL2_ttf-devel
               libvorbis-devel libogg-devel speex-devel boost-devel libopenssl-devel
-              zlib-devel fribidi-devel pcre-devel Mesa-libGL-devel Mesa-libGLU-devel
+              zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel
               libepoxy-devel
     steps:
       - name: Install dependencies
