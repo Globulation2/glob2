@@ -57,7 +57,7 @@ jobs:
           sdk="$PWD/build/mobile-tools/android-sdk"
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
-            'platforms;android-35' 'build-tools;35.0.0' platform-tools
+            'platforms;android-36' 'build-tools;35.0.0' platform-tools
       - name: Build pinned target dependencies
         id: build_pinned_target_dependencies
         run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release --jobs 2

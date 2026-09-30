@@ -98,7 +98,7 @@ jobs:
           sdk="$PWD/build/mobile-tools/android-sdk"
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
-            'platforms;android-35' 'build-tools;35.0.0' platform-tools
+            'platforms;android-36' 'build-tools;35.0.0' platform-tools
       - name: Build source dependencies and release APK
         run: |
           set -o pipefail

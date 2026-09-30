@@ -28,7 +28,8 @@ dated reports and pull-request artifacts do not belong here.
 - **Map generators:** [design and implementation index](map-generators/README.md).
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
-- **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md).
+- **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
+  [Android privacy policy](mobile/privacy-policy.md).
 
 - **Browser platform:** [build and play](../browser/README.md),
   [architecture](browser/implementation.md), [storage](browser/storage.md),

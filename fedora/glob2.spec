@@ -57,4 +57,10 @@ scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}"
 
 %changelog
 * Wed Sep 30 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.9.5.3-1
+- Prepare F-Droid Android candidate
+
+* Wed Sep 30 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.9.5.2-1
+- Prepare Windows desktop candidate and Epic packaging
+
+* Wed Sep 30 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.9.5.0-1
 - Prepare package recipe for the next upstream release
