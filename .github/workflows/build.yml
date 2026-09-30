@@ -1855,7 +1855,7 @@ jobs:
       fail-fast: false
       # Leave runner capacity for Linux test shards once the browser build
       # finishes; all browser cases still run before the required check passes.
-      max-parallel: 10
+      max-parallel: 8
       matrix:
         include:
           # The main suite keeps file order and includes build-artifact.spec.js
@@ -1872,26 +1872,32 @@ jobs:
           - name: chromium 4/5
             browsers: chromium
             command: xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
-          - name: chromium 5/5
-            browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
           - name: chromium torus
             browsers: chromium
             command: xvfb-run -a npx playwright test torus.spec.js --project=chromium
-          # Start the long reload and startup groups in the first batch when
-          # max-parallel limits the matrix. Short storage/WebKit jobs release
-          # slots for the remaining renderer checks.
+          # Start long torus/reload and lifecycle checks in the first batch;
+          # the short storage job releases a slot for the remaining checks.
           - name: chromium webgl2 match reload
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'
+          - name: lifecycle
+            browsers: chromium
+            command: |
+              python3 ../test/ci_run_commands.py \
+                --check 'browser unit tests' 'node --test unit/*.test.js' \
+                --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \
+                --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'
+          - name: chromium settings storage
+            browsers: chromium
+            command: xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium
+          - name: chromium 5/5
+            browsers: chromium
+            command: xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
           - name: chromium webgl2 responsive and startup
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium
-          - name: chromium settings storage
-            browsers: chromium
-            command: xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium
           - name: webkit
             browsers: webkit
             command: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
@@ -1919,13 +1925,6 @@ jobs:
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'
-          - name: lifecycle
-            browsers: chromium
-            command: |
-              python3 ../test/ci_run_commands.py \
-                --check 'browser unit tests' 'node --test unit/*.test.js' \
-                --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \
-                --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'
     env:
       GLOB2_TEST_RENDERER: ${{ matrix.renderer || 'software' }}
     steps:
