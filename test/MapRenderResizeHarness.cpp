@@ -277,7 +277,9 @@ int main(int argc, char **argv)
 	if (gpu)
 	{
 		gui.setSelection(GameGUI::RESOURCE_SELECTION,static_cast<unsigned>(3+3*16));
-		for (double zoom : {0.5,2.0})
+		// This 16x16 map is smaller than the viewport, so MapCamera clamps
+		// zoom below 1 to 1. Check the two zoom levels it can display.
+		for (double zoom : {1.0,2.0})
 		{
 			gui.camera=MapCamera{}; gui.camera.zoom=zoom;
 			gui.viewportX=gui.viewportY=0;
@@ -291,7 +293,7 @@ int main(int argc, char **argv)
 		}
 		gui.camera=MapCamera{}; gui.viewportX=gui.viewportY=0;
 		gui.clearSelection();
-		std::cout << "PASS repeated selections at half and double map zoom\n";
+		std::cout << "PASS repeated selections at normal and double map zoom\n";
 	}
 
 	// A complete production map frame catches the separate virtual-flag pass.

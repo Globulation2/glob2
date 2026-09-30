@@ -98,6 +98,7 @@ void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}
 void overviewDrawn(bool) {}
 void roomReady(bool) {}
+void customGameReady(bool) {}
 void exited(int) {}
 } // namespace GAGCore::ApplicationHost
 

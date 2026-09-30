@@ -22,6 +22,7 @@
 #include <FileManager.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <ApplicationHost.h>
 #include <algorithm>
 #include <cstdio>
 #include <filesystem>
@@ -218,6 +219,7 @@ std::string colorName(Color c)
 CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens)
 	: Glob2TabScreen(false, true), screens(screens)
 {
+	GAGCore::ApplicationHost::customGameReady(false);
 	gfx = globalContainer->gfx;
 	username = globalContainer->settings.getUsername();
 	// Windows uses a shared working-directory map folder. Unix can also lack
@@ -282,6 +284,7 @@ GameHeader &CustomGameScreen::getGameHeader()
 }
 CustomGameScreen::~CustomGameScreen()
 {
+	GAGCore::ApplicationHost::customGameReady(false);
 	savePreferences();
 }
 std::shared_ptr<std::string> CustomGameScreen::releaseSnapshot()
@@ -906,6 +909,8 @@ void CustomGameScreen::paint()
 
 void CustomGameScreen::renderLobby()
 {
+	GAGCore::ApplicationHost::customGameReady(validMap && !previewBusy() &&
+											  setup.validation().empty());
 	if (FrontendLayout::resolve(globalContainer->gfx).singleColumn())
 	{
 		renderPhoneLobby();

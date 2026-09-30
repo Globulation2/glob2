@@ -104,11 +104,14 @@ exports.clickSettingsCancel = (page) => {
 };
 
 // Mirrors CustomGameScreen::renderLobby()'s "start" button rect
-// (src/CustomGameScreen.cpp). Starting also prepares the selected landscape
-// if its preview is still pending.
-exports.clickCustomGameStart = (page) => {
+// (src/CustomGameScreen.cpp). The button ignores input while its preview is
+// pending, so wait for the same ready state the lobby uses.
+exports.clickCustomGameStart = async (page) => {
+  const {expect} = require('@playwright/test');
   const {width, height} = page.viewportSize();
   const w = Math.min(width - 32, 1120), x = Math.floor((width - w) / 2);
+  await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().customGameReady),
+    {timeout: 60000}).toBe(true);
   return page.locator('#canvas').click({position: {x: x + w - 165 + 82, y: height - 52 + 17}, delay: 80});
 };
 
