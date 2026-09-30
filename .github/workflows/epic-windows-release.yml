@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing public vVERSION tag at the mirrored HEAD
+        description: Existing public vVERSION tag to build
         required: true
         type: string
 
@@ -22,27 +22,31 @@ jobs:
     if: >-
       github.repository_id == 1397722696 &&
       github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
       github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     outputs:
       version: ${{ steps.check.outputs.version }}
       short_sha: ${{ steps.check.outputs.short_sha }}
+      source_sha: ${{ steps.check.outputs.source_sha }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          repository: Globulation2/glob2
+          ref: ${{ inputs.tag }}
           fetch-depth: 0
-      - name: Verify public release tag and mirror commit
+          persist-credentials: false
+      - name: Verify public release tag and source commit
         id: check
         env:
           TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
           [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
-          git fetch --no-tags https://github.com/Globulation2/glob2.git \
-            "refs/tags/$TAG:refs/tags/$TAG"
           version="$(python3 tools/release/release.py check --tag "$TAG")"
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "short_sha=$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
+          echo "source_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   package:
     needs: preflight
@@ -66,6 +70,10 @@ jobs:
             mingw-w64-x86_64-openssl mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.source_sha }}
+          persist-credentials: false
       - name: Build and stage Epic install directory
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
@@ -75,23 +83,26 @@ jobs:
             --manifest artifacts/epic/SHA256SUMS.txt
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: epic-windows-${{ github.sha }}
+          name: epic-windows-${{ needs.preflight.outputs.source_sha }}
           path: artifacts/epic/
           if-no-files-found: error
           retention-days: 30
 
   smoke-test:
-    needs: package
+    needs: [preflight, package]
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.source_sha }}
           sparse-checkout: games/cross-replay.game.gz
           sparse-checkout-cone-mode: false
           path: fixture
+          persist-credentials: false
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: epic-windows-${{ github.sha }}
+          name: epic-windows-${{ needs.preflight.outputs.source_sha }}
           path: ${{ runner.temp }}/epic-candidate
       - name: Run staged game without build tools
         shell: pwsh
@@ -113,7 +124,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: epic-windows-${{ github.sha }}
+          name: epic-windows-${{ needs.preflight.outputs.source_sha }}
           path: ${{ runner.temp }}/epic-candidate
       - name: Verify complete staged manifest
         shell: pwsh
@@ -173,6 +184,7 @@ jobs:
           EPIC_BPT_CLIENT_SECRET: ${{ secrets.EPIC_BPT_CLIENT_SECRET }}
           RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
           SHORT_SHA: ${{ needs.preflight.outputs.short_sha }}
+          SOURCE_SHA: ${{ needs.preflight.outputs.source_sha }}
         run: |
           $ErrorActionPreference = 'Stop'
           foreach ($key in @('EPIC_ORGANIZATION_ID','EPIC_PRODUCT_ID',
@@ -195,5 +207,5 @@ jobs:
           )
           & $env:BPT_EXE @bptArgs
           if ($LASTEXITCODE -ne 0) { throw "BuildPatchTool failed: $LASTEXITCODE" }
-          "Uploaded Epic Dev candidate $buildVersion from $env:GITHUB_SHA. Stage, review, and Live promotion remain in the Epic Developer Portal." |
+          "Uploaded Epic Dev candidate $buildVersion from public commit $env:SOURCE_SHA. Stage, review, and Live promotion remain in the Epic Developer Portal." |
             Out-File -Append $env:GITHUB_STEP_SUMMARY

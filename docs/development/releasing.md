@@ -76,11 +76,12 @@ carousel, accurate Windows requirements, support details, and regions and
 ratings. Keep illustrated key art distinct from gameplay screenshots. Confirm
 trader, tax, and payout onboarding in the portal before requesting review.
 
-For each candidate, create a public `vVERSION` tag and mirror that reviewed
-commit to the private repository's protected `master` branch. Dispatch
-`epic-windows-release.yml` there with the tag. Its preflight checks that the
-public tag, version, and mirrored HEAD agree. The packaging and smoke-test jobs
-have no Epic credentials. The upload job verifies every staged file against a
+For each candidate, create a public `vVERSION` tag and mirror the reviewed
+Epic workflow to the private repository's protected `master` branch. Dispatch
+`epic-windows-release.yml` there with the tag. Its preflight checks the public
+tag and version, then records the exact public source commit. The packaging
+and smoke-test jobs check out that commit and have no Epic credentials. The
+upload job verifies every staged file against a
 SHA-256 manifest before it receives the BPT secret through the `epic-dev`
 environment. The workflow uploads to Epic **Dev** only; inspect the launcher
 install, move the candidate through Stage and review, and promote it to Live in
