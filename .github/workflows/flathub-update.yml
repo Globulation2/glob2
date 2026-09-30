@@ -28,11 +28,13 @@ jobs:
         env:
           REPOSITORY_ID: ${{ github.repository_id }}
           ACTOR_ID: ${{ github.actor_id }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          EVENT_NAME: ${{ github.event_name }}
           REF: ${{ github.ref }}
         run: |
           set -euo pipefail
-          if [[ "$REPOSITORY_ID" != 1397722696 || "$ACTOR_ID" != 6193625 || "$REF" != refs/heads/master ]]; then
-            echo '::error::Flathub publication requires the release repository, its owner account, and master.'
+          if [[ "$REPOSITORY_ID" != 1397722696 || "$ACTOR_ID" != 6193625 || "$TRIGGERING_ACTOR" != genixpro || "$EVENT_NAME" != workflow_dispatch || "$REF" != refs/heads/master ]]; then
+            echo '::error::Flathub publication requires a manual dispatch from the release repository master by its owner.'
             exit 1
           fi
 

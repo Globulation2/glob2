@@ -8,8 +8,9 @@ Run `publish-desktop.yml` manually with the public `vVERSION` tag to publish the
 GitHub release, publish Snap stable, and propose the Flathub update in that
 order. Each channel retains a separate manual workflow for retries; no
 publication workflow runs on ordinary pushes or pull requests.
-Each publication workflow fails before building packages unless it runs from
-the release repository's `master` branch under the owner account. It then
+Each publication workflow fails before building packages unless it is manually
+dispatched from the release repository's `master` branch by the owner account;
+the same check applies to a re-run's initiator. It then
 checks its required release-repository secret (and the Flathub fork variable)
 and fails if any are missing. The public `release.yml` remains a build-only
 workflow and does not use publication credentials.
