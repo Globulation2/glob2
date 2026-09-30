@@ -801,12 +801,13 @@ per-tick hashes, and reproduction commands are in
 Build `scons release=1 server=0 custom-setup-test`, then run:
 
 ```sh
+./build/darwin/client/release/src/CustomGameSetupHarness snapshot-load
 mkdir -p artifacts/ai-profiles-small artifacts/ai-profiles-large
 ./build/native-tests/src/CustomGameSetupHarness artifacts/ai-profiles-small profiles
 ./build/native-tests/src/CustomGameSetupHarness artifacts/ai-profiles-large profiles-large
 ```
 
-These focused modes capture the Players & Teams strategy button and every AI profile at its top and bottom, at 640×480 and 1000×700. They check that profile/summary keys resolve, including Maxima. The existing `ui` mode exercises opening the strategy screen from the lobby and choosing an AI before launching each controller mode. The harness uses its dedicated `glob2-custom-setup-tests` profile.
+`snapshot-load` checks that a freshly serialized map launches through the lobby's in-memory load path. The other focused modes capture the Players & Teams strategy button and every AI profile at its top and bottom, at 640×480 and 1000×700. They check that profile/summary keys resolve, including Maxima. The existing `ui` mode exercises opening the strategy screen from the lobby and choosing an AI before launching each controller mode. The harness uses its dedicated `glob2-custom-setup-tests` profile.
 
 An optional language code after the mode (for example, `profiles ja` or
 `profiles-large ar`) captures that catalog, including localized section headings.
