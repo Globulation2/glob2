@@ -9,6 +9,8 @@ import re
 import struct
 import subprocess
 import tarfile
+import urllib.error
+import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -50,8 +52,17 @@ def validate(tag=None):
         if metainfo.find(f"./releases/release[@version='{current}']") is None:
             raise SystemExit(f"AppStream release notes for {current} are required before publishing")
         screenshot = metainfo.find("./screenshots/screenshot/image")
-        if screenshot is None or not (screenshot.text or "").startswith("https://"):
+        screenshot_url = (screenshot.text or "").strip() if screenshot is not None else ""
+        if not screenshot_url.startswith("https://"):
             raise SystemExit("a hosted gameplay screenshot is required before publishing")
+        screenshot_path = ROOT / "data" / "screenshots" / "globulation2-gameplay.png"
+        try:
+            with urllib.request.urlopen(screenshot_url, timeout=15) as response:
+                hosted_screenshot = response.read()
+        except (OSError, urllib.error.URLError) as error:
+            raise SystemExit(f"gameplay screenshot URL is unavailable: {error}") from None
+        if hashlib.sha256(hosted_screenshot).digest() != hashlib.sha256(screenshot_path.read_bytes()).digest():
+            raise SystemExit("hosted gameplay screenshot does not match the release checkout")
         icon = ROOT / "data" / "icons" / "glob2-icon-256x256.png"
         png = icon.read_bytes() if icon.is_file() else b""
         if len(png) < 24 or png[:8] != b"\x89PNG\r\n\x1a\n" or struct.unpack(">II", png[16:24]) != (256, 256):

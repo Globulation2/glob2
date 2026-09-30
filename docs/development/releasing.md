@@ -16,9 +16,9 @@ being prepared; select `build_flatpak` to exercise that recipe. The GitHub
 publication run builds it.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
-`data/screenshots/`; its version-tagged URL is in the AppStream metadata. Confirm
-that URL resolves after
-tagging. Add the release notes once the release candidate is settled. The
+`data/screenshots/`; its commit-pinned URL is in the AppStream metadata. Keep
+that commit reachable and confirm the URL resolves before publication. Add the
+release notes once the release candidate is settled. The
 256x256 application icon is derived from the existing desktop artwork and is
 installed with other icon sizes.
 Flathub reads the AppStream screenshot from the installed metainfo file. The
