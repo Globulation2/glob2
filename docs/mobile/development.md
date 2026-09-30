@@ -353,13 +353,12 @@ when upgrading them.
 On the mirror, keep the owner as the sole collaborator, protect `master` against
 force pushes and deletion, and require approval from the owner for the
 `google-play-internal` environment without administrator bypass. Keep the
-default workflow token read-only, require full commit SHA pins for actions,
-allow only the four pinned actions used by the release workflow, and require
-approval before any external fork PR workflow runs. Disable unrelated
-workflows in the mirror, and recheck that setting after each upstream sync.
-The owner's GitHub account remains a critical trust
-boundary: protect it with strong two-factor authentication and review every
-upstream commit before syncing code that the release build will execute.
+default workflow token read-only, require full commit SHA pins for release
+actions, and require approval before any external fork PR workflow runs.
+Review every enabled platform workflow and its environment before syncing
+upstream changes. The owner's GitHub account remains a critical trust boundary:
+protect it with strong two-factor authentication and review every upstream
+commit before syncing code that a release build will execute.
 
 To sync from a local clone of the release mirror, configure `upstream` once as
 `https://github.com/Globulation2/glob2.git`, then use:
