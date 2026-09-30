@@ -3168,6 +3168,8 @@ Puhelimessa säätimet kootaan tähän alakulmaan.
 Oikea
 [settings Left]
 Vasen
+[Undo stroke]
+Kumoa
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

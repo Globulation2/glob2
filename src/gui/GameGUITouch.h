@@ -4,6 +4,7 @@
 #include <ScrollPhysics.h>
 #include "TouchInteractionSession.h"
 #include "TouchDial.h"
+#include "BrushHUD.h"
 #include <SDL.h>
 #include <string>
 #include <optional>
@@ -20,6 +21,7 @@ class DrawableSurface;
 class GameGUI;
 class Building;
 class Minimap;
+class Order;
 class GameGUITouch
 {
   public:
@@ -80,6 +82,23 @@ class GameGUITouch
 	bool processAllocationPointer(const SDL_Event &event, GAGCore::ViewPoint point);
 	TouchStrokeSession stroke;
 	std::optional<TouchDeferredStroke> deferredStroke;
+	// Zone painting with one thumb: the brush rail, a Pan mode, panning while a
+	// held stroke touches a map edge, and undo of the last stroke's changes.
+	BrushHUD::Layout brushHUD() const;
+	std::vector<GAGCore::ViewRect> brushBarButtons() const; // Forbid, Guard, Clear, Done.
+	bool brushPan = false;
+	int railTouched = -1;
+	std::optional<TouchPlacementSession> strokeHold;
+	bool edgePan(GAGCore::ViewPoint point, std::uint64_t &lastUpdate);
+	struct ZoneUndo
+	{
+		std::vector<std::shared_ptr<Order>> orders; // Inverse orders for the changed cells only.
+		std::vector<std::pair<size_t, bool>> displayed; // Displayed-view bits to restore.
+		int zone = 0;
+		std::uint64_t expires = 0;
+	};
+	std::optional<ZoneUndo> zoneUndo;
+	void applyZoneUndo();
 	void replayStroke(const TouchStrokeSession &completed);
 	bool strokeMatchesTool(const TouchStrokeSession &candidate) const;
 	void commitDeferredStroke();

@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <ScrollPhysics.h>
 #include <TouchInput.h>
+#include "gui/BrushHUD.h"
 #include <memory>
 #include <optional>
 #include <set>
@@ -13,6 +14,11 @@
 class MapEdit;
 class MapEditorWidget;
 class ValueScrollBox;
+struct Tile;
+namespace Utilities
+{
+class BitArray;
+}
 class PhoneEditor
 {
   public:
@@ -92,14 +98,27 @@ class PhoneEditor
 		GAGCore::ViewRect rect;
 	};
 	std::vector<Property> properties;
-	GAGCore::ViewRect inspector, inspectorBody, brushPanel;
+	GAGCore::ViewRect inspector, inspectorBody;
 	double inspectorScroll = 0, inspectorMaximum = 0;
 	int inspectorIdentity = -1;
-	bool brushOpen = false;
 	bool inspecting() const;
 	void prepareInspector();
 	void drawInspector();
-	void drawBrushPanel();
+	// Brush tools show the shared rail on the thumb edge: sizes, Paint/Erase
+	// where it applies, Pan, and Undo for zone, area and no-growth strokes.
+	bool paintMode() const;
+	BrushHUD::Layout rail() const;
+	int railTouched = -1;
+	struct EditorUndo
+	{
+		std::vector<std::pair<int, int>> cells;
+		std::vector<Tile> tiles;
+		std::vector<char> view; // Displayed zone bits, zone strokes only.
+		Utilities::BitArray *zoneView = nullptr;
+		std::uint64_t expires = 0;
+	};
+	std::optional<EditorUndo> undo;
+	void applyUndo();
 	void drawInteractionPreview();
 	void clearTool();
 	void prepare();

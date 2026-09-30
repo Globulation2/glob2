@@ -3176,6 +3176,8 @@ Telefonda kontroller bu alt köşede toplanır.
 Sağ
 [settings Left]
 Sol
+[Undo stroke]
+Geri al
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -170,38 +170,6 @@ void PhoneEditor::drawInspector()
 				InGameTouchTheme::border);
 	}
 }
-void PhoneEditor::drawBrushPanel()
-{
-	if (!brushOpen)
-		return;
-	auto *gfx = globalContainer->gfx;
-	const double u = gfx->logicalUnitsPerPoint();
-	surface(brushPanel);
-	for (unsigned i = 0; i < BrushTool::BRUSH_COUNT; ++i)
-	{
-		ViewRect r{brushPanel.x + (i % 4) * brushPanel.w / 4, brushPanel.y + (i / 4) * 56 * u,
-				   brushPanel.w / 4 - 2 * u, 54 * u};
-		surface(r, editor.brush.getFigure() == i ? InGameTouchTheme::selected
-												 : InGameTouchTheme::field);
-		SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
-		gfx->setUITransform(u, r.x + (r.w - 32 * u) / 2, r.y + 10 * u, &clip);
-		gfx->drawSprite(0, 0, globalContainer->brush, 2 + i);
-		gfx->setUITransform();
-		gfx->setClipRect();
-	}
-	if (editor.selectionMode == MapEdit::PlaceZone)
-	{
-		const double y = brushPanel.y + 112 * u;
-		ViewRect paint{brushPanel.x, y, brushPanel.w / 2 - 2 * u, 44 * u},
-			erase{brushPanel.x + brushPanel.w / 2, y, brushPanel.w / 2 - 2 * u, 44 * u};
-		surface(paint, editor.brush.getType() == BrushTool::MODE_ADD ? InGameTouchTheme::selected
-																	 : InGameTouchTheme::field);
-		surface(erase, editor.brush.getType() == BrushTool::MODE_DEL ? InGameTouchTheme::selected
-																	 : InGameTouchTheme::field);
-		label(paint, GAGCore::Toolkit::getStringTable()->getString("[Paint]"));
-		label(erase, GAGCore::Toolkit::getStringTable()->getString("[Erase]"));
-	}
-}
 void PhoneEditor::drawInteractionPreview()
 {
 	auto *gfx = globalContainer->gfx;

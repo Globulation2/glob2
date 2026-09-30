@@ -3166,6 +3166,8 @@ La telefonaj regiloj kolektiĝas en ĉi tiu malsupra angulo.
 Dekstre
 [settings Left]
 Maldekstre
+[Undo stroke]
+Malfari
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

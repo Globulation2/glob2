@@ -2,6 +2,9 @@
 #include <FormatableString.h>
 #include "InGameTouchTheme.h"
 #include "gui/TouchReadout.h"
+#include "gui/ThumbSide.h"
+#include "BrushCoverage.h"
+#include "Map.h"
 #include "MapEdit.h"
 #include "PhoneEditor.h"
 #include "MobileSafeArea.h"
@@ -11,6 +14,7 @@
 #include <StringTable.h>
 #include <cmath>
 #include <cstdio>
+#include <set>
 using namespace GAGCore;
 namespace
 {
@@ -32,7 +36,7 @@ void PhoneEditor::cancel()
 {
 	if (drag && drag->moving)
 		editor.performAction("unselect");
-	brushOpen = false;
+	railTouched = -1;
 	touch.cancel();
 	stopScrolling();
 	held = -1;
@@ -58,9 +62,6 @@ void PhoneEditor::prepare()
 	modeBar = {safe.x, safe.y + safe.h - dock, safe.w, modeHeight * unit};
 	tray = {safe.x, modeBar.y + modeBar.h, safe.w, tools ? paletteHeight * unit : 0};
 	rows.clear();
-	brushPanel = {safe.x + std::max(0., (safe.w - 240 * unit) / 2), safe.y + 48 * unit,
-				  std::min(safe.w, 240 * unit),
-				  (editor.selectionMode == MapEdit::PlaceZone ? 156 : 112) * unit};
 	if (inspecting())
 	{
 		prepareInspector();
@@ -158,6 +159,7 @@ void PhoneEditor::clearTool()
 void PhoneEditor::chooseMode(int mode)
 {
 	cancel();
+	undo.reset();
 	paletteMode = mode;
 	offset = 0;
 	tools = true;
@@ -170,15 +172,6 @@ int PhoneEditor::hit(ViewPoint p) const
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	if (!safe.contains(p))
 		return -1;
-	if (brushOpen)
-	{
-		if (!brushPanel.contains(p))
-			return -29;
-		if (p.y >= brushPanel.y + 112 * unit)
-			return p.x < brushPanel.x + brushPanel.w / 2 ? -120 : -121;
-		return -100 - int((p.x - brushPanel.x) * 4 / brushPanel.w) -
-			   4 * int((p.y - brushPanel.y) / (56 * unit));
-	}
 	if (inspecting())
 	{
 		if (ViewRect{inspector.x + inspector.w - 48 * unit, inspector.y + 4 * unit, 44 * unit,
@@ -213,6 +206,18 @@ int PhoneEditor::hit(ViewPoint p) const
 		for (size_t i = 0; i < rows.size(); ++i)
 			if (rows[i].rect.contains(p))
 				return int(i);
+	if (paintMode())
+	{
+		const auto railHit = BrushHUD::hit(rail(), p);
+		if (railHit.part == BrushHUD::Part::Detent)
+			return -200 - railHit.index;
+		if (railHit.part == BrushHUD::Part::Pan)
+			return -210;
+		if (railHit.part == BrushHUD::Part::Mode)
+			return -211;
+		if (railHit.part == BrushHUD::Part::Undo)
+			return -213;
+	}
 	return -1;
 }
 void PhoneEditor::placeAt(ViewPoint p)
@@ -230,10 +235,75 @@ void PhoneEditor::placeAt(ViewPoint p)
 		editor.performAction("select map building");
 	}
 }
+bool PhoneEditor::paintMode() const
+{
+	const auto mode = editor.selectionMode;
+	return !inspecting() && editor.panelMode != MapEdit::Teams &&
+		   (mode == MapEdit::PlaceTerrain || mode == MapEdit::PlaceZone || mode == MapEdit::RemoveObject ||
+			mode == MapEdit::ChangeAreas || mode == MapEdit::ChangeNoResourceGrowthAreas);
+}
+BrushHUD::Layout PhoneEditor::rail() const
+{
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint(), inset = 8 * unit;
+	// Paint/Erase applies to zones, areas, no-growth areas and resources, not
+	// to grass/sand/water or deletion.
+	const bool mode = editor.selectionMode != MapEdit::RemoveObject &&
+					  !(editor.selectionMode == MapEdit::PlaceTerrain && editor.terrainType <= TerrainSelector::Water);
+	return BrushHUD::layout({content.x + inset, content.y + inset, content.w - 2 * inset, content.h - 2 * inset},
+							ThumbSide::left(), unit, mode, true, bool(undo));
+}
+// Zone, area and no-growth strokes only change tile masks, so their tiles (and
+// the displayed zone bits) are restored exactly. Terrain and delete strokes
+// remove units, buildings and resources and are not undoable.
+void PhoneEditor::applyUndo()
+{
+	if (!undo)
+		return;
+	auto &map = editor.game.map;
+	for (size_t i = 0; i < undo->cells.size(); ++i)
+	{
+		const auto [x, y] = undo->cells[i];
+		map.getTile(x, y) = undo->tiles[i];
+		if (undo->zoneView)
+			undo->zoneView->set(size_t(map.w * y + x), undo->view[i]);
+	}
+	editor.game.regenerateDiscoveryMap();
+	editor.hasMapBeenModified = true;
+	undo.reset();
+}
 void PhoneEditor::paintStroke()
 {
 	if (stroke.empty())
 		return;
+	auto &map = editor.game.map;
+	const bool undoable = editor.selectionMode == MapEdit::PlaceZone ||
+						  editor.selectionMode == MapEdit::ChangeAreas ||
+						  editor.selectionMode == MapEdit::ChangeNoResourceGrowthAreas;
+	EditorUndo snapshot;
+	if (undoable)
+	{
+		// Snapshot the covered cells with a one-cell margin.
+		std::vector<BrushCoverage::Cell> centres;
+		for (const auto &p : stroke)
+		{
+			const auto [wx, wy] = editor.camera.screenToWorld(p.x, p.y);
+			centres.push_back(BrushCoverage::cellAt(wx, wy));
+		}
+		std::set<std::pair<int, int>> cells;
+		for (const auto &[cx, cy] : BrushCoverage::cells(editor.brush.getFigure(), centres))
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+					cells.insert({(cx + dx) & map.wMask, (cy + dy) & map.hMask});
+		if (editor.selectionMode == MapEdit::PlaceZone)
+			snapshot.zoneView = &editor.areaBrushTarget().view;
+		for (const auto &cell : cells)
+		{
+			snapshot.cells.push_back(cell);
+			snapshot.tiles.push_back(map.getTile(cell.first, cell.second));
+			if (snapshot.zoneView)
+				snapshot.view.push_back(snapshot.zoneView->get(size_t(map.w * cell.second + cell.first)));
+		}
+	}
 	const char *prefix = editor.selectionMode == MapEdit::PlaceTerrain   ? "terrain"
 						 : editor.selectionMode == MapEdit::PlaceZone    ? "zone"
 						 : editor.selectionMode == MapEdit::RemoveObject ? "delete"
@@ -249,6 +319,21 @@ void PhoneEditor::paintStroke()
 	}
 	editor.performAction(std::string(prefix) + " drag end");
 	stroke.clear();
+	undo.reset();
+	bool changed = false;
+	for (size_t i = 0; i < snapshot.cells.size() && !changed; ++i)
+	{
+		const auto &now = map.getTile(snapshot.cells[i].first, snapshot.cells[i].second);
+		const auto &was = snapshot.tiles[i];
+		changed = now.forbidden != was.forbidden || now.guardArea != was.guardArea ||
+				  now.clearArea != was.clearArea || now.scriptAreas != was.scriptAreas ||
+				  now.canResourcesGrow != was.canResourcesGrow;
+	}
+	if (changed)
+	{
+		snapshot.expires = SDL_GetTicks64() + InGameTouchTheme::brushUndoMs;
+		undo = std::move(snapshot);
+	}
 }
 bool PhoneEditor::zoomArmed(Uint32 ticks, ViewPoint point) const
 {
@@ -398,21 +483,25 @@ void PhoneEditor::act(const TouchAction &action)
 		editor.performAction("open teams editor");
 		return;
 	}
-	if (held == -29)
+	if (held <= -200 && held > -200 - int(BrushTool::BRUSH_COUNT))
 	{
-		brushOpen = false;
+		editor.brush.setFigure(unsigned(-200 - held));
 		return;
 	}
-	if (held <= -100 && held > -108)
+	if (held == -210)
 	{
-		editor.brush.setFigure(-100 - held);
-		brushOpen = false;
+		pan = !pan;
 		return;
 	}
-	if (held == -120 || held == -121)
+	if (held == -211)
 	{
-		editor.brush.setType(held == -120 ? BrushTool::MODE_ADD : BrushTool::MODE_DEL);
-		brushOpen = false;
+		editor.brush.setType(editor.brush.getType() == BrushTool::MODE_DEL ? BrushTool::MODE_ADD
+																			: BrushTool::MODE_DEL);
+		return;
+	}
+	if (held == -213)
+	{
+		applyUndo();
 		return;
 	}
 	if (held >= 1000 && inspecting())
@@ -455,7 +544,6 @@ void PhoneEditor::act(const TouchAction &action)
 		editor.performAction("open menu screen");
 		return;
 	}
-	const bool zone = editor.selectionMode == MapEdit::PlaceZone;
 	if (held == -5)
 	{
 		if (editor.selectionMode != MapEdit::PlaceNothing)
@@ -470,19 +558,13 @@ void PhoneEditor::act(const TouchAction &action)
 	const bool objects = paletteMode >= 2;
 	if (held == -3)
 	{
+		// Brush modes show their size here; the rail changes it.
 		if (objects)
 			editor.selectActiveTeam((editor.team + 1) % editor.game.teamsCount());
-		else
-			brushOpen = !brushOpen;
 		return;
 	}
 	if (held == -4)
 	{
-		if (zone)
-		{
-			brushOpen = !brushOpen;
-			return;
-		}
 		if (objects)
 		{
 			if (editor.selectionMode == MapEdit::PlaceUnit)
@@ -700,6 +782,10 @@ bool PhoneEditor::event(SDL_Event event)
 			touchKey = key;
 			touchStart = touchPoint = p;
 			touchTravelled = false;
+			// Touching a rail size selects it at once; the thumb can then scrub.
+			railTouched = held <= -200 && held > -200 - int(BrushTool::BRUSH_COUNT) ? -200 - held : -1;
+			if (railTouched >= 0)
+				editor.brush.setFigure(unsigned(railTouched));
 			if (held >= 0 && held < int(rows.size()) &&
 				(dynamic_cast<BuildingSelectorWidget *>(rows[held].widget) ||
 				 dynamic_cast<UnitSelector *>(rows[held].widget)))
@@ -721,6 +807,12 @@ bool PhoneEditor::event(SDL_Event event)
 	}
 	else if (phase == 1)
 	{
+		if (key == touchKey && railTouched >= 0)
+			if (const int detent = BrushHUD::detentAt(rail(), p); detent >= 0)
+			{
+				editor.brush.setFigure(unsigned(detent));
+				railTouched = detent;
+			}
 		if (key == touchKey)
 		{
 			touchPoint = p;
@@ -733,6 +825,8 @@ bool PhoneEditor::event(SDL_Event event)
 	{
 		eventTicks = event.common.timestamp;
 		actions = touch.up(device, id, {p.x / unit, p.y / unit}, time);
+		if (key == touchKey)
+			railTouched = -1;
 	}
 	for (const auto &a : actions)
 		act(a);
@@ -809,14 +903,13 @@ void PhoneEditor::draw()
 	}
 	else if (editor.selectionMode == MapEdit::RemoveObject)
 		labels[2] = GAGCore::Toolkit::getStringTable()->getString("[delete]");
-	// Zones need both an owner and brush controls. Two fingers still pan,
-	// so the last toolbar slot can expose Paint/Erase while this tool is active.
+	// Zones show Paint/Erase beside the size; the rail also changes both, and
+	// its Pan toggle moves the map with one finger.
 	if (editor.selectionMode == MapEdit::PlaceZone)
 	{
-		labels[2] = GAGCore::FormattableString(
-						GAGCore::Toolkit::getStringTable()->getString("[Brush %0x%1]"))
-						.arg(BrushTool::getBrushWidth(editor.brush.getFigure()))
-						.arg(BrushTool::getBrushHeight(editor.brush.getFigure()));
+		labels[2] = editor.brush.getType() == BrushTool::MODE_DEL
+						? GAGCore::Toolkit::getStringTable()->getString("[Erase]")
+						: GAGCore::Toolkit::getStringTable()->getString("[Paint]");
 		labels[3] = GAGCore::Toolkit::getStringTable()->getString("[Done]");
 	}
 	for (int i = 0; i < 4; ++i)
@@ -829,6 +922,21 @@ void PhoneEditor::draw()
 								int(3 * unit), editor.game.teams[editor.team]->color);
 	}
 	drawInteractionPreview();
+	if (undo && (!paintMode() || SDL_GetTicks64() >= undo->expires))
+		undo.reset();
+	if (paintMode())
+	{
+		auto *strings = Toolkit::getStringTable();
+		BrushHUD::State state;
+		state.figure = editor.brush.getFigure();
+		state.erase = editor.brush.getType() == BrushTool::MODE_DEL;
+		state.pan = pan;
+		state.touched = railTouched;
+		state.modeLabel = state.erase ? strings->getString("[Erase]") : strings->getString("[Paint]");
+		state.panLabel = strings->getString("[Pan]");
+		state.undoLabel = strings->getString("[Undo stroke]");
+		BrushHUD::draw(rail(), state);
+	}
 	drawZoomReadout();
 	if (!tools)
 	{
@@ -874,5 +982,4 @@ void PhoneEditor::draw()
 		gfx->drawFilledRect(
 			int(tray.x + offset / (maximum + tray.w) * tray.w), int(tray.y + tray.h - 2 * unit),
 			int(tray.w * tray.w / (maximum + tray.w)), int(2 * unit), InGameTouchTheme::border);
-	drawBrushPanel();
 }

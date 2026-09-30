@@ -3178,6 +3178,8 @@ Telefonoko kontrolak beheko izkina honetan biltzen dira.
 Eskuina
 [settings Left]
 Ezkerra
+[Undo stroke]
+Desegin
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

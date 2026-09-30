@@ -3240,6 +3240,8 @@ Emoji
 右側
 [settings Left]
 左側
+[Undo stroke]
+復原
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

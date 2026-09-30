@@ -3168,6 +3168,8 @@ Pe telefon, comenzile se grupează în acest colț de jos.
 Dreapta
 [settings Left]
 Stânga
+[Undo stroke]
+Anulează
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -3192,6 +3192,8 @@ Op de telefoon staan de bedieningselementen in deze onderhoek.
 Rechts
 [settings Left]
 Links
+[Undo stroke]
+Ongedaan
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

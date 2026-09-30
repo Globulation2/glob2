@@ -573,6 +573,18 @@ class MobileGalleryGameplay
 			}
 		}
 		capture("game-zone-paint");
+		if (!desktopPresentation)
+		{
+			// The rail with a size under the thumb, then the Undo chip a stroke
+			// leaves. Neither sends an order or changes the fixture's zones.
+			gui.touch->railTouched = 5;
+			capture("game-brush-rail");
+			gui.touch->railTouched = -1;
+			gui.touch->zoneUndo = GameGUITouch::ZoneUndo{};
+			gui.touch->zoneUndo->expires = SDL_GetTicks64() + 600000;
+			capture("game-brush-undo");
+			gui.touch->zoneUndo.reset();
+		}
 		gui.touch->cancel();
 		gui.clearSelection();
 		if (!desktopPresentation)
@@ -1054,13 +1066,26 @@ class MobileGalleryGameplay
 		editor.performAction("select water");
 		if (editor.phone)
 		{
+			// The brush rail with a size under the thumb, magnified beside it.
 			editor.phone->tools = true;
 			editor.phone->prepare();
-			editor.phone->brushOpen = true;
+			editor.phone->railTouched = 7;
 		}
 		editCapture("editor-brush-choices");
 		if (editor.phone)
-			editor.phone->brushOpen = false;
+		{
+			editor.phone->railTouched = -1;
+			// The Undo chip a zone stroke leaves, without changing the fixture map.
+			editor.performAction("select forbidden zone");
+			editor.phone->undo = PhoneEditor::EditorUndo{};
+			editor.phone->undo->expires = SDL_GetTicks64() + 600000;
+		}
+		editCapture("editor-brush-undo");
+		if (editor.phone)
+		{
+			editor.phone->undo.reset();
+			editor.performAction("select water");
+		}
 
 		if (editor.phone)
 			editor.phone->tools = false;
