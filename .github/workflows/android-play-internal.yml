@@ -29,7 +29,7 @@ jobs:
       CCACHE_COMPILERCHECK: content
       CCACHE_MAXSIZE: 1G
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install build utilities
         run: |
@@ -61,7 +61,7 @@ jobs:
           PY
 
       - name: Cache Android compiler output
-        uses: actions/cache@v4
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
         with:
           path: ${{ env.CCACHE_DIR }}
           key: play-android-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/triplets/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
@@ -83,7 +83,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import base64, os, pathlib
-          encoded = os.environ['GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64']
+          encoded = ''.join(os.environ['GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64'].split())
           if not encoded:
               raise ValueError('The Play upload keystore secret is missing')
           key = pathlib.Path(os.environ['RUNNER_TEMP']) / 'glob2-upload.p12'
@@ -104,7 +104,7 @@ jobs:
         run: rm -f "$RUNNER_TEMP/glob2-upload.p12"
 
       - name: Upload signed bundle for audit
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: glob2-play-internal-${{ steps.version.outputs.code }}
           path: build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release-play.aab
@@ -112,7 +112,7 @@ jobs:
           retention-days: 14
 
       - name: Authenticate to Google Play
-        uses: google-github-actions/auth@v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
           workload_identity_provider: ${{ vars.GLOB2_PLAY_WIF_PROVIDER }}
           service_account: ${{ vars.GLOB2_PLAY_SERVICE_ACCOUNT }}
