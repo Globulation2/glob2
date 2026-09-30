@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import platform
 import shutil
 import subprocess
 import sys
@@ -58,9 +59,15 @@ def main():
     ndk_link.parent.mkdir(exist_ok=True)
     if not ndk_link.exists():
         ndk_link.symlink_to(source_ndk, target_is_directory=True)
-    gradle = ROOT / "build/mobile-tools/gradle-8.13/bin/gradle"
     env = build_environment()
-    subprocess.run([sys.executable, "mobile/setup_tools.py", "--gradle-only"], cwd=ROOT, env=env, check=True)
+    # Use the same checksum-pinned JDK as the GitHub validation build. The
+    # buildserver image's default JDK changes the optimized classes.dex.
+    subprocess.run([sys.executable, "mobile/setup_tools.py"], cwd=ROOT, env=env, check=True)
+    jdk = json.loads((ROOT / "mobile/android-tools.json").read_text())[
+        f"jdk-{platform.system()}-{platform.machine()}"
+    ]
+    env["JAVA_HOME"] = str(ROOT / "build/mobile-tools" / jdk["directory"] / jdk["java_home"])
+    gradle = ROOT / "build/mobile-tools/gradle-8.13/bin/gradle"
     subprocess.run([sys.executable, "mobile/dependencies.py", "--arch", arch, "--release", "--jobs", "2",
                     "--android-sdk", str(sdk)], cwd=ROOT, env=env, check=True)
     subprocess.run([sys.executable, "mobile/android.py", "build", "--arch", arch, "--release", "--fdroid", "--jobs", "2",
