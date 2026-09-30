@@ -61,16 +61,15 @@ scons -C test                 # rebuild the separate test suite
   `artifacts/mac-app-store/Glob2.app`, sets its App Store version and build number,
   adds Retina icon sizes from the existing 128-pixel artwork, applies
   `darwin/AppStore.entitlements`, and verifies its signature. Its default
-  ad hoc signature is for local testing. For submission, supply `--identity` with
-  an Apple Distribution identity, `--installer-identity` with a Mac Installer
-  Distribution identity, an App Store provisioning `--profile`, and a unique
-  increasing `--build`; set `--bundle-id` to the registered App ID if it differs
-  from the current bundle ID. The script then makes a signed `.pkg` beside the app.
+  ad hoc signature is for local testing. The staging default uses the iPhone App
+  ID, `org.globulation2.glob2`. The private release mirror supplies the Mac
+  signing identities and provisioning profile, then makes a signed `.pkg` beside
+  the app.
   The existing `package` target remains the direct distribution DMG path. Test
   saves, map import, LAN hosting and YOG connections in the sandboxed app before
   upload; local signing alone does not establish App Store acceptance. See the
-  [Mac App Store release process](mac-app-store.md) for the manual GitHub Actions
-  workflow and required signing credentials.
+  [Mac App Store release process](mac-app-store.md) for the private mirror's
+  manual GitHub Actions workflow and required signing credentials.
 - Keep harness runs out of personal profiles: use the existing disposable-profile
   runners and retain fixtures, seeds, logs and checksums needed to reproduce a result.
 - CI lets independent test steps finish after a failure and records their raw

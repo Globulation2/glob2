@@ -15,7 +15,7 @@ on:
         required: true
         type: string
       upload:
-        description: Sign and upload this build to App Store Connect
+        description: Sign and upload from genixpro/glob2-release master only
         required: true
         default: false
         type: boolean
@@ -36,11 +36,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Require master for an upload
-        if: ${{ inputs.upload }}
+      - name: Require private mirror master for an upload
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.upload }}
         env:
           RELEASE_REF: ${{ github.ref }}
-        run: test "$RELEASE_REF" = refs/heads/master
+          RELEASE_REPOSITORY: ${{ github.repository }}
+        run: |
+          test "$RELEASE_REPOSITORY" = genixpro/glob2-release
+          test "$RELEASE_REF" = refs/heads/master
 
       - name: Install macOS build dependencies
         run: |
@@ -91,12 +94,23 @@ jobs:
 
   upload:
     name: Sign and upload to App Store Connect
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.upload }}
+    if: ${{ github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.upload }}
     needs: build
     runs-on: macos-26
     environment: mac-app-store
     timeout-minutes: 60
     steps:
+      - name: Confirm private mirror release context
+        env:
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_REF: ${{ github.ref }}
+          RELEASE_EVENT: ${{ github.event_name }}
+          RELEASE_UPLOAD: ${{ inputs.upload }}
+        run: |
+          test "$RELEASE_REPOSITORY" = genixpro/glob2-release
+          test "$RELEASE_REF" = refs/heads/master
+          test "$RELEASE_EVENT" = workflow_dispatch
+          test "$RELEASE_UPLOAD" = true
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
