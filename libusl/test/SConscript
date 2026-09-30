@@ -10,4 +10,4 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
 
 env.Program("usl_runner", ["usl_runner.cpp"],
             LIBS=["usl"],
-            LIBPATH=["#build/libusl/src"])
+            LIBPATH=[Dir("../src")])

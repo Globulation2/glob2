@@ -55,9 +55,10 @@ the engine's swimming movement predicate.
 The generator uses existing simulation rules. It changes no engine behavior,
 save format, replay acceptance, network protocol, AI, or existing generator.
 
-Checked-in [review evidence](../../test/fixtures/bastion-keys/README.md) includes
-native maps and a final save, parameter measurements, gameplay counters,
-cross-platform checksums, translation review and profiling results.
+The review evidence (native maps and a final save, parameter measurements, gameplay
+counters, cross-platform checksums, translation review and profiling results) was
+reviewed in PR #354 and is available from that PR and from git history
+(`git show b932161e0:test/fixtures/bastion-keys/README.md`), not in the tree.
 
 The final swimming layout passed 2,508 supported requests across control,
 random and shape studies; 2,773 unsupported requests were rejected explicitly.

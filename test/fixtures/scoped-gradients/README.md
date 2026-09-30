@@ -1,8 +1,9 @@
 # Scoped gradient scheduling reference traces
 
 These fixtures pin the version-123 scoped invalidation and bounded escape refresh
-policy combined with the eight-tick periodic gradient pipeline. The preceding
-version-120 traces remain in `../gradient-pipeline/`.
+policy combined with the eight-tick periodic gradient pipeline. The superseded
+version-120 traces were removed with the test-suite cleanup and remain in git history
+(commit `508942f08`, PR #390).
 
 `test/check_telemetry_simulation.py` checks these traces across CI platforms.
 Generate from the legacy saves named by that script with `--run-game --load-game`
