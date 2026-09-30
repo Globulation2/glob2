@@ -107,6 +107,8 @@ def main():
     info["CFBundleIdentifier"] = args.bundle_id
     info["CFBundleShortVersionString"] = args.version
     info["CFBundleVersion"] = args.build
+    # The arm64 release and its bundled Homebrew libraries are built on macos-26.
+    info["LSMinimumSystemVersion"] = "26.0"
     info["LSApplicationCategoryType"] = "public.app-category.strategy-games"
     info["NSHumanReadableCopyright"] = "Copyright Globulation 2 contributors"
     with info_path.open("wb") as file:
@@ -114,7 +116,9 @@ def main():
     run("plutil", "-lint", info_path)
     write_icon(output / "Contents/Resources/Glob2.icns")
     if args.profile:
-        shutil.copyfile(args.profile, output / "Contents/embedded.provisionprofile")
+        embedded_profile = output / "Contents/embedded.provisionprofile"
+        shutil.copyfile(args.profile, embedded_profile)
+        embedded_profile.chmod(0o644)
 
     frameworks = output / "Contents/Frameworks"
     for code in sorted(frameworks.glob("*.dylib")):

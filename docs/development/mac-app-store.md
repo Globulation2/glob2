@@ -53,6 +53,10 @@ The workflow does not submit an uploaded build for App Review; processing and
 submission are separate actions in App Store Connect.
 
 Both build paths run on GitHub's arm64 `macos-26` runner with Xcode 26 or newer.
+The current App Store package declares macOS 26.0 as its minimum because the
+arm64 game and bundled Homebrew libraries are built on that runner. Supporting
+older macOS versions requires building and testing the entire dependency set
+with an older deployment target.
 The public check compiles the game and lists generators from the raw binary. It
 does not run `codesign` or use any release signing identity.
 The release mirror run also bundles the app, stages its sandboxed candidate,
