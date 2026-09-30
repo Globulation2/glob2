@@ -19,10 +19,10 @@ import fdroid_monitor
 
 class AndroidReleaseTests(unittest.TestCase):
     def test_version_codes_and_desktop_version(self):
-        self.assertEqual(android_release.release_identity()["versionName"], "0.9.5.0")
+        self.assertEqual(android_release.release_identity()["versionName"], "0.9.5.2")
         self.assertEqual({arch: android_release.version_code(arch) for arch in android_release.ABI_CODES},
-                         {"armeabi-v7a": 905001, "arm64-v8a": 905002, "x86_64": 905003})
-        self.assertEqual(android_release.check_recipe(), [905001, 905002, 905003])
+                         {"armeabi-v7a": 905021, "arm64-v8a": 905022, "x86_64": 905023})
+        self.assertEqual(android_release.check_recipe(), [905021, 905022, 905023])
 
     def test_recipe_rejects_missing_abi(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -33,7 +33,7 @@ class AndroidReleaseTests(unittest.TestCase):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())
             recipe = root / "fdroid/metadata/org.globulation2.glob2.yml"
-            recipe.write_text(recipe.read_text().replace("versionCode: 905003", "versionCode: 905004"))
+            recipe.write_text(recipe.read_text().replace("versionCode: 905023", "versionCode: 905024"))
             with self.assertRaisesRegex(ValueError, "every ABI"):
                 android_release.check_recipe(root)
 
@@ -46,23 +46,23 @@ class AndroidReleaseTests(unittest.TestCase):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())
             (root / "mobile/android-release.json").write_text(
-                json.dumps({"versionName": "0.9.5.1", "versionCodeBase": 90501}))
-            (root / "scons/build_layout.py").write_text('PACKAGE_VERSION = "0.9.5.1"\n')
-            self.assertEqual(android_release.check_recipe(root), [905001, 905002, 905003])
+                json.dumps({"versionName": "0.9.5.3", "versionCodeBase": 90503}))
+            (root / "scons/build_layout.py").write_text('PACKAGE_VERSION = "0.9.5.3"\n')
+            self.assertEqual(android_release.check_recipe(root), [905021, 905022, 905023])
 
     def test_version_manifest_rejects_mismatch(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "mobile").mkdir()
             (root / "scons").mkdir()
-            (root / "scons/build_layout.py").write_text('PACKAGE_VERSION = "0.9.5.0"\n')
-            (root / "mobile/android-release.json").write_text(json.dumps({"versionName": "0.9.5.0", "versionCodeBase": 90501}))
+            (root / "scons/build_layout.py").write_text('PACKAGE_VERSION = "0.9.5.2"\n')
+            (root / "mobile/android-release.json").write_text(json.dumps({"versionName": "0.9.5.2", "versionCodeBase": 90501}))
             with self.assertRaisesRegex(ValueError, "does not encode"):
                 android_release.release_identity(root)
 
     def test_preflight_rejects_reused_tag_at_other_commit(self):
         with mock.patch.object(android_release.subprocess, "check_output",
-                               side_effect=["v0.9.5.0\n", "new-commit\n", "old-commit\n"]):
+                               side_effect=["v0.9.5.2\n", "new-commit\n", "old-commit\n"]):
             with self.assertRaisesRegex(ValueError, "already points to another commit"):
                 android_release.check_prior_tags()
 
@@ -82,7 +82,7 @@ class AndroidReleaseTests(unittest.TestCase):
             with mock.patch.object(android_release.subprocess, "run", return_value=subprocess.CompletedProcess([], 0)):
                 with self.assertRaisesRegex(ValueError, "unsigned"):
                     android_release.verify_apk(apk, "arm64-v8a", root, require_dependency_manifest=False)
-            badging = "package: name='org.globulation2.glob2' versionCode='905001' versionName='0.9.5.0'\n"
+            badging = "package: name='org.globulation2.glob2' versionCode='905021' versionName='0.9.5.2'\n"
             with mock.patch.object(android_release.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)), mock.patch.object(android_release.subprocess, "check_output", return_value=badging):
                 with self.assertRaisesRegex(ValueError, "version code"):
                     android_release.verify_apk(apk, "arm64-v8a", root, require_dependency_manifest=False)
@@ -107,12 +107,12 @@ class AndroidReleaseTests(unittest.TestCase):
 
     def test_monitor_state_transitions(self):
         now = dt.datetime(2026, 10, 4, tzinfo=dt.timezone.utc)
-        release = {"tag_name": "v0.9.5.0", "published_at": "2026-09-30T00:00:00Z"}
-        package = {"packages": [{"versionName": "0.9.5.0", "versionCode": 905001},
-                                {"versionName": "0.9.5.0", "versionCode": 905002}]}
+        release = {"tag_name": "v0.9.5.2", "published_at": "2026-09-30T00:00:00Z"}
+        package = {"packages": [{"versionName": "0.9.5.2", "versionCode": 905021},
+                                {"versionName": "0.9.5.2", "versionCode": 905022}]}
         self.assertEqual(fdroid_monitor.status(release, package, now)["state"], "overdue")
-        self.assertEqual(fdroid_monitor.status(release, package, now)["missing_codes"], [905003])
-        package["packages"].append({"versionName": "0.9.5.0", "versionCode": 905003})
+        self.assertEqual(fdroid_monitor.status(release, package, now)["missing_codes"], [905023])
+        package["packages"].append({"versionName": "0.9.5.2", "versionCode": 905023})
         self.assertEqual(fdroid_monitor.status(release, package, now)["state"], "complete")
 
 
