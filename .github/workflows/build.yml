@@ -1884,12 +1884,27 @@ jobs:
           - name: chromium torus
             browsers: chromium
             command: xvfb-run -a npx playwright test torus.spec.js --project=chromium
-          # Start long torus/reload and lifecycle checks in the first batch;
-          # the short storage job releases a slot for the remaining checks.
+          - name: chromium 5/5
+            browsers: chromium
+            command: xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
+          # Start the longest renderer checks in the first browser wave. The
+          # shorter lifecycle and storage checks take the slots they release.
           - name: chromium webgl2 match reload
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'
+          - name: chromium webgl2 replay reload
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'
+          - name: chromium webgl2 viewport
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test viewport.spec.js --project=chromium
+          - name: chromium webgl2 damaged load
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'
           - name: lifecycle
             browsers: chromium
             command: |
@@ -1900,17 +1915,10 @@ jobs:
           - name: chromium settings storage
             browsers: chromium
             command: xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium
-          - name: chromium webgl2 replay reload
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'
           - name: chromium webgl2 responsive and startup
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium
-          - name: chromium 5/5
-            browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
           - name: webkit
             browsers: webkit
             command: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
@@ -1926,14 +1934,6 @@ jobs:
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test input.spec.js --project=chromium
-          - name: chromium webgl2 viewport
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test viewport.spec.js --project=chromium
-          - name: chromium webgl2 damaged load
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'
     env:
       GLOB2_TEST_RENDERER: ${{ matrix.renderer || 'software' }}
     steps:
