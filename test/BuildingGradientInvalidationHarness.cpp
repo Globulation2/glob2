@@ -137,6 +137,43 @@ struct World
 	void tick(Uint32 n) { game.stepCounter += n; }
 };
 
+static void idleFieldStorageIsReusedWithoutStaleRoutes()
+{
+	World world;
+	Building* first = world.place(12, 12);
+	Building* second = world.place(44, 44);
+	require(second->globalGradient[0] == nullptr, "second building starts without a field");
+	const size_t cells = static_cast<size_t>(world.game.map.getW()) * world.game.map.getH();
+	const Uint16* firstField = world.game.map.buildingGradient(first, 0);
+	require(firstField != nullptr, "first building field exists");
+	BuildingGradientSearch* firstSearch = first->globalGradientSearch[0].get();
+	require(firstSearch != nullptr, "first building search exists");
+	const std::vector<Uint16> expected(firstField, firstField + cells);
+
+	world.tick(768);
+	first->freeIdleGradients();
+	require(first->globalGradient[0] == nullptr, "idle building drops its field");
+	const Uint16* secondField = world.game.map.buildingGradient(second, 0);
+	require(secondField == firstField, "another building reuses the idle field storage");
+	require(second->globalGradientSearch[0].get() == firstSearch,
+		"another building reuses the idle search queues");
+	require(std::vector<Uint16>(secondField, secondField + cells) != expected,
+		"reused storage contains the second building's field");
+	const Uint16* rebuilt = world.game.map.buildingGradient(first, 0);
+	require(std::vector<Uint16>(rebuilt, rebuilt + cells) == expected,
+		"reactivated building rebuilds the same route values");
+	const std::vector<Uint16> secondExpected(secondField, secondField + cells);
+	BuildingGradientSearch* secondSearch = second->globalGradientSearch[0].get();
+	second->resetPathfindGradients();
+	require(second->globalGradient[0] == nullptr, "invalidation drops the old field");
+	const Uint16* invalidated = world.game.map.buildingGradient(second, 0);
+	require(invalidated == secondField && second->globalGradientSearch[0].get() == secondSearch,
+		"invalidation reuses field storage and search queues");
+	require(std::vector<Uint16>(invalidated, invalidated + cells) == secondExpected,
+		"invalidation rebuilds the same route values");
+	std::puts("PASS idle and invalidated field storage is reused without stale routes");
+}
+
 // Leo's experiment on feat/task-switch-penalty: the centre site is placed first,
 // so its field exists (units were already being offered it) when the ring closes.
 static void ringPlacedAroundAnExistingField()
@@ -387,6 +424,7 @@ int main(int argc, char** argv)
 	if (std::strcmp(scenario, "all") == 0) publicReadsResolveTheirInputs();
 	if (std::strcmp(scenario, "all") == 0) parallelFields();
 	if (std::strcmp(scenario, "all") == 0) delayedFields();
+	if (std::strcmp(scenario, "all") == 0) idleFieldStorageIsReusedWithoutStaleRoutes();
 	std::puts("Building gradient invalidation regressions passed");
 	return 0;
 }

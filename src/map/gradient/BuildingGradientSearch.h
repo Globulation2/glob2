@@ -4,6 +4,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 #include "kernel/GradientBucket.h"
@@ -34,4 +35,11 @@ public:
 	bool complete() const { return pending == 0; }
 	bool resolved(std::size_t target) const;
 	std::uint64_t poppedEntries() const { return popped; }
+	std::size_t retainedBytes() const;
+	void clearForReuse();
 };
+
+// Bounded scratch reuse; neither the search nor its queues are serialized.
+std::unique_ptr<BuildingGradientSearch> acquireBuildingGradientSearch();
+void recycleBuildingGradientSearch(std::unique_ptr<BuildingGradientSearch> search);
+void clearBuildingGradientSearchPool();

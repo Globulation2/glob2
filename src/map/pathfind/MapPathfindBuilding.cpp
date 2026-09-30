@@ -51,7 +51,7 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass)
 	bool rebuild=false;
 	if (gradient==NULL)
 	{
-		gradient=new Uint16[size];
+		gradient=acquireBuildingGradientBuffer();
 		rebuild=true;
 	}
 	else if ((building->dirtyGradient[swimClass] || building->gradientGeneration[swimClass]!=topologyGeneration)
@@ -118,7 +118,7 @@ const Uint16 *Map::roundTripGradient(Building *building, int resourceType, int s
 	if (gradient!=NULL && building->roundTripGradientStep[resourceType][swimClass]+ROUND_TRIP_REFRESH_TICKS>now)
 		return gradient;
 	if (gradient==NULL)
-		gradient=new Uint16[size];
+		gradient=acquireBuildingGradientBuffer();
 	updateRoundTripGradient(building, resourceType, swimClass);
 	return gradient;
 }

@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "BuildingGradientSearch.h"
+#include <mutex>
 #include "Map.h"
 #include "MapInternal.h"
 #include "kernel/GradientRelaxation.h"
@@ -82,4 +83,77 @@ void BuildingGradientSearch::resolve(std::size_t target)
 		const std::uint8_t *const waterCells = water.data();
 		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]), [waterCells](size_t i) { return waterCells[i] != 0; });
 	}
+}
+
+std::size_t BuildingGradientSearch::retainedBytes() const
+{
+	std::size_t bytes = sizeof(*this) + water.capacity() * sizeof(water[0]);
+	for (const auto &bucket : buckets)
+		bytes += bucket.cells.capacity() * sizeof(bucket.cells[0]);
+	return bytes;
+}
+
+void BuildingGradientSearch::clearForReuse()
+{
+	gradient = nullptr;
+	cells = pending = 0;
+	water.clear();
+	for (auto &bucket : buckets) bucket.clear();
+}
+
+namespace
+{
+struct SearchPool
+{
+	// Covers the observed burst of detached searches while bounding retained
+	// bucket storage across games and worker threads.
+	static constexpr std::size_t SLOTS = 64;
+	static constexpr std::size_t BYTES = 8 * 1024 * 1024;
+	std::mutex mutex;
+	std::array<std::unique_ptr<BuildingGradientSearch>, SLOTS> searches;
+	std::size_t count = 0, bytes = 0;
+};
+
+SearchPool &searchPool()
+{
+	static SearchPool pool;
+	return pool;
+}
+}
+
+std::unique_ptr<BuildingGradientSearch> acquireBuildingGradientSearch()
+{
+	auto &pool = searchPool();
+	{
+		std::lock_guard<std::mutex> lock(pool.mutex);
+		if (pool.count)
+		{
+			auto search = std::move(pool.searches[--pool.count]);
+			pool.bytes -= search->retainedBytes();
+			return search;
+		}
+	}
+	return std::make_unique<BuildingGradientSearch>();
+}
+
+void recycleBuildingGradientSearch(std::unique_ptr<BuildingGradientSearch> search)
+{
+	if (!search) return;
+	search->clearForReuse();
+	const std::size_t bytes = search->retainedBytes();
+	auto &pool = searchPool();
+	std::lock_guard<std::mutex> lock(pool.mutex);
+	if (pool.count < SearchPool::SLOTS && bytes <= SearchPool::BYTES - pool.bytes)
+	{
+		pool.bytes += bytes;
+		pool.searches[pool.count++] = std::move(search);
+	}
+}
+
+void clearBuildingGradientSearchPool()
+{
+	auto &pool = searchPool();
+	std::lock_guard<std::mutex> lock(pool.mutex);
+	while (pool.count) pool.searches[--pool.count].reset();
+	pool.bytes = 0;
 }

@@ -304,7 +304,9 @@ scenarios.
 ## Building gradient invalidation regression
 
 The building invalidation harness also checks that public distance and movement
-queries resolve their own inputs and that the array API returns a complete field.
+queries resolve their own inputs, that the array API returns a complete field,
+and that idle and invalidated field storage and search queues can be reused
+without stale routes.
 
 Building propagation is always lazy. Build `path-gradient-test` and run
 `PathGradientHarness` from your native build directory. Its independent heap oracle

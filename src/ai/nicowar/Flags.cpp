@@ -7,6 +7,7 @@
 #include "Utilities.h"
 #include "Game.h"
 #include "Unit.h"
+#include <vector>
 
 using namespace AISharedRuntime;
 using namespace AISharedRuntime::Gradients;
@@ -15,6 +16,17 @@ using namespace AISharedRuntime::Management;
 using namespace AISharedRuntime::Conditions;
 using namespace AISharedRuntime::SearchTools;
 
+namespace
+{
+	struct DefenseScanScratch
+	{
+		std::vector<Uint16> counts;
+		std::vector<Uint16> buildingGID;
+		std::vector<Uint16> unitGID;
+	};
+	// Independent per AI worker; each scan resets every tile before reading it.
+	thread_local DefenseScanScratch defenseScanScratch;
+}
 
 
 void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runtime)
@@ -37,12 +49,13 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 	const int   h      = mi.get_height();
 	const int   RADIUS = AI_NICOWAR_DEFENSE_FLAG_RADIUS;
 	
-	Uint16* counts = new Uint16[w * h];
-	Uint16* buildingGID = new Uint16[w * h];
-	Uint16* unitGID = new Uint16[w * h];
-	memset(counts, 0, sizeof(Uint16) * w * h);
-	memset(buildingGID, NOGBID, sizeof(Uint16) * w * h);
-	memset(unitGID, NOGUID, sizeof(Uint16) * w * h);
+	const size_t cells = static_cast<size_t>(w) * h;
+	defenseScanScratch.counts.assign(cells, 0);
+	defenseScanScratch.buildingGID.assign(cells, NOGBID);
+	defenseScanScratch.unitGID.assign(cells, NOGUID);
+	Uint16* counts = defenseScanScratch.counts.data();
+	Uint16* buildingGID = defenseScanScratch.buildingGID.data();
+	Uint16* unitGID = defenseScanScratch.unitGID.data();
 	std::list<int> locations;
 	
 	//For every unit thats under attack, increment in the squares surrounding it.
@@ -288,9 +301,6 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 		runtime.add_management_order(mo_destroyed);
 	}
 	
-	delete[] counts;
-	delete[] unitGID;
-	delete[] buildingGID;
 }
 
 
@@ -518,5 +528,4 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 		runtime.add_management_order(mo_destroyed);
 	}
 }
-
 

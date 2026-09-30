@@ -43,6 +43,8 @@ namespace Cortex
 		// Exact distance-gate membership for every candidate top-left corner.
 		// Empty means there are no typed buildings, so the gate accepts everywhere.
 		std::vector<unsigned char> buildingProximityMask(int w, int h, int maxGap) const;
+		void buildingProximityMask(int w, int h, int maxGap,
+		                           std::vector<unsigned char>& mask) const;
 		bool candidateCrowdsInn(int x, int y, int w, int h) const;
 		bool candidateOverlapsReservedExpansion(int x, int y, int w, int h) const;
 	};

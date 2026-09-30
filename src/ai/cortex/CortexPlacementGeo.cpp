@@ -474,9 +474,17 @@ namespace Cortex
 
 	std::vector<unsigned char> PlacementGeometry::buildingProximityMask(int w, int h, int maxGap) const
 	{
-		if (typedBuildings.empty()) return {};
+		std::vector<unsigned char> mask;
+		buildingProximityMask(w, h, maxGap, mask);
+		return mask;
+	}
+
+	void PlacementGeometry::buildingProximityMask(int w, int h, int maxGap,
+	                                              std::vector<unsigned char>& mask) const
+	{
+		if (typedBuildings.empty()) { mask.clear(); return; }
 		const int mapW = map.getW(), mapH = map.getH();
-		std::vector<unsigned char> mask(mapW * mapH, 0);
+		mask.assign(mapW * mapH, 0);
 		for (const BuildingBox& building : typedBuildings)
 		{
 			const Box& b = building.box;
@@ -492,7 +500,6 @@ namespace Cortex
 					mask[row + map.normalizeX(x0 + dx)] = 1;
 			}
 		}
-		return mask;
 	}
 
 	bool PlacementGeometry::candidateCrowdsInn(int x, int y, int w, int h) const
