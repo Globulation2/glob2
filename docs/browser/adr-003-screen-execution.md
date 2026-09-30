@@ -86,13 +86,13 @@ inside the scheduled stack.
 
 The retained compatibility surface is deliberately finite:
 
-- `Screen::execute`, `Glob2Screen::execute`, and `Glob2TabScreen::execute` run a
-  native polling loop for older native callers.
+- `Screen::execute` runs a native polling loop for the end-of-run screen in
+  `Engine::run` and for the screen lifecycle tests.
 - `ScreenStack::execute` is the native adapter around the same frame-driven
   stack used by the browser.
-- `OverlayScreen::execute`, `OverlayScreen::executeModal`, and the message-box
-  modal helper remain for native-only dialogs. Browser-reachable game, editor,
-  replay, and persistence overlays are driven by their owning screen instead.
+- Dialogs are `ui::UIDialog` instances driven by their owning screen, gameplay
+  or editor host (see the UI framework guide); there is no modal overlay loop
+  or message-box helper left to migrate.
 - `Engine::run` and `Engine::runOneGameSession` remain for command-line and
   native synchronous entry points. `GameSessionScreen` owns interactive browser
   sessions and their end screens.

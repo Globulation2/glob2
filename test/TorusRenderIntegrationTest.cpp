@@ -20,7 +20,6 @@
 #include "Unit.h"
 #include "GameGUIKeyActions.h"
 #include "CloudField.h"
-#include "GUIButton.h"
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

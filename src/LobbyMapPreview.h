@@ -19,8 +19,5 @@ class LobbyMapPreview : public MapPreview
 		std::vector<Start> starts;
 	};
 	std::vector<CachedMap> cache;
-	LobbyMapPreview() : MapPreview(430, 115, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED)
-	{
-		w = h = 180;
-	}
+	LobbyMapPreview() { w = h = 180; }
 };

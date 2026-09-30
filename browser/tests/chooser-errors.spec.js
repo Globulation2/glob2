@@ -1,8 +1,7 @@
 const {test, expect} = require('@playwright/test');
-const {clickMainMenu,gameURL}=require('./main-menu');
+const {clickMainMenu,gameURL,clickListRow}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
-const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
 
 test('corrupt local files leave the chooser responsive and cannot accept an old selection', async ({page}) => {
   const errors = [];
@@ -15,8 +14,8 @@ test('corrupt local files leave the chooser responsive and cannot accept an old 
     FS.writeFile('/home/web_user/.glob2/games/AAB_Corrupt.game.gz', new Uint8Array([98,97,100]));
   });
   await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen');
-  await click(page,380,280);
-  await click(page,380,300);
+  await clickListRow(page,'files',0);
+  await clickListRow(page,'files',1);
   await page.locator('#canvas').press('Enter', {delay:80});
   await screen(page,'ChooseMapScreen');
   await page.setViewportSize({width:800,height:600});

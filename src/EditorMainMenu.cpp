@@ -6,89 +6,66 @@
 #include "CampaignEditor.h"
 #include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
-#include "EditorMainMenu.h"
-#include "GlobalContainer.h"
+#include "EditorGenerateScreen.h"
+#include "EditorLoadScreen.h"
 #include "MapEdit.h"
 #include "MapEditorScreen.h"
-#include "EditorLoadScreen.h"
-#include "EditorGenerateScreen.h"
-#include <ctime>
 #include "MessageScreen.h"
-#include "MapGenerator.h"
 #include "NewMapScreen.h"
-#include "Utilities.h"
-#include <GUIButton.h>
-#include <GUIMessageBox.h>
-#include <GUIText.h>
-#include <StringTable.h>
-#include <Toolkit.h>
+#include <ctime>
 
-using namespace GAGGUI;
+using namespace Glob2UI;
 
-EditorMainMenu::EditorMainMenu(GAGGUI::ScreenStack& screens) : screens(screens)
+EditorMainMenu::EditorMainMenu(GAGGUI::ScreenStack &screens) : screens(screens) {}
+
+Element EditorMainMenu::build(const Presentation &p)
 {
-    enableResponsiveMenu(Toolkit::getStringTable()->getString("[editor]"));
-	addWidget(new TextButton(0, 70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
-							 Toolkit::getStringTable()->getString("[new map]"), NEWMAP, 13));
-	addWidget(new TextButton(0, 130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
-							 Toolkit::getStringTable()->getString("[load map]"), LOADMAP));
-	addWidget(new TextButton(0, 190, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
-							 Toolkit::getStringTable()->getString("[new campaign]"), NEWCAMPAIGN));
-	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
-							 Toolkit::getStringTable()->getString("[load campaign]"),
-							 LOADCAMPAIGN));
-	addWidget(new TextButton(0, 310, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
-							 Toolkit::getStringTable()->getString("[goto main menu]"), CANCEL, 27));
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu",
-					   Toolkit::getStringTable()->getString("[editor]")));
+	return menu(tr("[editor]"),
+				{{"new-map", tr("[new map]"), [this] { newMap(); }, true, SDLK_RETURN},
+				 {"load-map", tr("[load map]"), [this] { loadMap(); }},
+				 {"new-campaign", tr("[new campaign]"), [this] { screens.push(std::make_unique<CampaignEditor>("", screens)); }},
+				 {"load-campaign", tr("[load campaign]"), [this] { loadCampaign(); }},
+				 {"back", tr("[goto main menu]"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE}},
+				p);
 }
 
 void EditorMainMenu::newMap()
 {
-    screens.push(std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &screens), [this](Screen& screen, int result) {
+    screens.push(std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &screens), [this](GAGGUI::Screen& screen, int result) {
         if (result != NewMapScreen::OK) return;
         screens.push(std::make_unique<EditorGenerateScreen>(static_cast<NewMapScreen&>(screen).descriptor,
-            static_cast<Uint32>(std::time(nullptr))), [this](Screen& generated, int result) {
+            static_cast<Uint32>(std::time(nullptr))), [this](GAGGUI::Screen& generated, int result) {
                 if (result == 1)
                     screens.push(std::make_unique<MapEditorScreen>(screens, static_cast<EditorGenerateScreen&>(generated).takeEditor()));
                 else if (result == 2) {
-                    auto& strings = *Toolkit::getStringTable();
-                    screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_GENERATE_MAP]"),
-                        std::vector<std::string>{strings.getString("[ok]")}), [this](Screen&, int) { newMap(); });
+                    screens.push(std::make_unique<MessageScreen>(tr("[ERROR_CANT_GENERATE_MAP]"),
+                        std::vector<std::string>{tr("[ok]")}), [this](GAGGUI::Screen&, int) { newMap(); });
                 } else newMap();
             });
     });
 }
 
-void EditorMainMenu::onAction(Widget*, Action action, int choice, int)
+void EditorMainMenu::loadMap()
 {
-    if (action != BUTTON_RELEASED && action != BUTTON_SHORTCUT) return;
-    switch (choice) {
-    case NEWMAP: newMap(); break;
-    case LOADMAP:
-        screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false, "games", "game", false),
-            [this](Screen& screen, int result) {
-                if (result != ChooseMapScreen::OK) return;
-                const auto filename = static_cast<ChooseMapScreen&>(screen).getMapHeader().getFileName();
-                screens.push(std::make_unique<EditorLoadScreen>(filename), [this](Screen& loading, int result) {
-                    if (result == 1)
-                        screens.push(std::make_unique<MapEditorScreen>(screens,
-                            static_cast<EditorLoadScreen&>(loading).takeEditor()));
-                    else if (result == 2) {
-                        auto& strings = *Toolkit::getStringTable();
-                        screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_LOAD_MAP]"),
-                            std::vector<std::string>{strings.getString("[ok]")}));
-                    }
-                });
-            });
-        break;
-    case NEWCAMPAIGN: screens.push(std::make_unique<CampaignEditor>("", screens)); break;
-    case LOADCAMPAIGN:
-        screens.push(std::make_unique<CampaignSelectorScreen>(), [this](Screen& screen, int result) {
-            if (result == CampaignSelectorScreen::OK)
-                screens.push(std::make_unique<CampaignEditor>(static_cast<CampaignSelectorScreen&>(screen).getCampaignName(), screens));
-        });
-        break;
-    case CANCEL: endExecute(CANCEL); break;
-    }
+	screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false, "games", "game", false),
+		[this](GAGGUI::Screen& screen, int result) {
+			if (result != ChooseMapScreen::OK) return;
+			const auto filename = static_cast<ChooseMapScreen&>(screen).getMapHeader().getFileName();
+			screens.push(std::make_unique<EditorLoadScreen>(filename), [this](GAGGUI::Screen& loading, int result) {
+				if (result == 1)
+					screens.push(std::make_unique<MapEditorScreen>(screens,
+						static_cast<EditorLoadScreen&>(loading).takeEditor()));
+				else if (result == 2)
+					screens.push(std::make_unique<MessageScreen>(tr("[ERROR_CANT_LOAD_MAP]"),
+						std::vector<std::string>{tr("[ok]")}));
+			});
+		});
+}
+
+void EditorMainMenu::loadCampaign()
+{
+	screens.push(std::make_unique<CampaignSelectorScreen>(), [this](GAGGUI::Screen& screen, int result) {
+		if (result == CampaignSelectorScreen::OK)
+			screens.push(std::make_unique<CampaignEditor>(static_cast<CampaignSelectorScreen&>(screen).getCampaignName(), screens));
+	});
 }

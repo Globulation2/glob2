@@ -2,10 +2,6 @@
 #include "EditorLoadScreen.h"
 #include "MapEdit.h"
 #include "Utilities.h"
-#include <GUIText.h>
-#include <GUIButton.h>
-#include <Toolkit.h>
-#include <StringTable.h>
 #include <iostream>
 #include <PerformanceTelemetry.h>
 EditorLoadScreen::EditorLoadScreen(const std::string &filename, GAGCore::CooperativeSlice slice)
@@ -17,14 +13,15 @@ EditorLoadScreen::EditorLoadScreen(Initializer initialize, const char *caption,
 								   GAGCore::CooperativeSlice slice)
 	: slice(std::move(slice)), previousRng(getSyncRandState()), editor(std::make_unique<MapEdit>())
 {
-	auto &strings = *GAGCore::Toolkit::getStringTable();
-	status = new GAGGUI::Text(0, 180, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard",
-							  strings.getString(caption));
-	addWidget(status);
-	addWidget(new GAGGUI::TextButton(230, 340, 180, 40, ALIGN_SCREEN_CENTERED,
-									 ALIGN_SCREEN_CENTERED, "menu", strings.getString("[Cancel]"),
-									 0, 27));
+	status = Glob2UI::tr(caption);
 	task.emplace(initialize(*editor));
+}
+Glob2UI::Element EditorLoadScreen::build(const Glob2UI::Presentation &p)
+{
+	using namespace Glob2UI;
+	return page("", center(paragraph(status, {FontRole::Body, false, TextAlign::Center})),
+				actions({{"cancel", tr("[Cancel]"), [this] { endExecute(0); }, false, SDLK_ESCAPE}}, p),
+				p, 480);
 }
 EditorLoadScreen::~EditorLoadScreen()
 {
@@ -51,16 +48,15 @@ void EditorLoadScreen::onTimer(Uint32)
 			endExecute(task->result() ? 1 : 2);
 			return;
 		}
-		status->setText(GAGCore::Toolkit::getStringTable()->getString(task->stage()));
+		if (const std::string stage = Glob2UI::tr(task->stage()); stage != status)
+		{
+			status = stage;
+			invalidate();
+		}
 	}
 	catch (const std::exception &error)
 	{
 		std::cerr << "Editor preparation failed: " << error.what() << '\n';
 		endExecute(2);
 	}
-}
-void EditorLoadScreen::onAction(GAGGUI::Widget *, GAGGUI::Action action, int, int)
-{
-	if (action == GAGGUI::BUTTON_RELEASED || action == GAGGUI::BUTTON_SHORTCUT)
-		endExecute(0);
 }

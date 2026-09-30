@@ -7,11 +7,10 @@
 #include <optional>
 #include <memory>
 #include <vector>
-namespace GAGGUI
+namespace GAGGUI::ui
 {
-class Widget;
-class OverlayScreen;
-} // namespace GAGGUI
+class UIDialog;
+}
 namespace GAGCore
 {
 class DrawableSurface;
@@ -34,43 +33,17 @@ class GameGUITouch
 	GAGCore::ViewRect worldBounds() const { return world(); }
 	void drawHUD();
 	void drawPanel();
-	bool drawDialog();
 	bool hasPreview() const { return preview.has_value(); }
 
   private:
 	friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
 	GameGUI &gui;
-	GAGGUI::OverlayScreen *activeDialog() const;
+	// The dialog GameGUI is showing (menu, chat composer or history); the HUD
+	// yields to it and never synthesizes its input.
+	GAGGUI::ui::UIDialog *activeDialog() const;
 	void menuAction(int action);
-	struct DialogRow
-	{
-		GAGGUI::Widget *widget;
-		std::string text;
-		int kind = 0, index = 0;
-		bool selected = false, footer = false;
-		GAGCore::ViewRect rect;
-		int team = -1;
-		enum class Role
-		{
-			Body,
-			Title,
-			Section,
-			Player
-		} role = Role::Body;
-	};
-	std::vector<DialogRow> dialogRows;
-	GAGGUI::OverlayScreen *dialogOwner = nullptr;
-	GAGGUI::Widget *heldDialogWidget = nullptr;
-	int heldDialogIndex = 0, heldDialogKind = -1;
-	double dialogScroll = 0, dialogMaximum = 0, lastDialogHeight = 0;
-	GAGGUI::Widget *editingDialogWidget = nullptr;
-	std::string chatComposition;
-	GAGCore::ViewRect dialogContent, dialogBounds;
 	std::optional<GAGCore::ViewRect> labelClip;
-	int objectivePage = 1;
-	void prepareDialog();
-	void tapDialog(GAGCore::ViewPoint point);
 	std::vector<std::string> pointLines(const std::string &text, double width,
 										double textScale = 1.15) const;
 	Building *allocationBuilding() const;
@@ -132,10 +105,9 @@ class GameGUITouch
 	const void *ownerDialog = nullptr;
 	bool panelOpen = false;
 	bool showStatistics = false;
-	bool reducedMotion = false;
 	bool restorePalette = false, previousPanelOpen = false;
 	int previousDisplayMode = 0;
-	bool dialogHUDDrawn = false, swallowMouseRelease = false, ignoreTouchSequence = false;
+	bool swallowMouseRelease = false, ignoreTouchSequence = false;
 	double panelScroll = 144;
 	bool tutorialCollapsed = false;
 	std::string tutorialText;

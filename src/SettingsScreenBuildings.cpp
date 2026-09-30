@@ -13,13 +13,13 @@ void SettingsScreen::buildBuildings()
 {
 	// Detail starts with the selected building, not the list's global defaults
 	// explanation and remember toggle. Those remain on the parent list.
-	if (FrontendLayout::resolve(globalContainer->gfx).phone && selectedBuilding >= 0)
+	if (phoneLayout && selectedBuilding >= 0)
 	{
 		buildBuildingDetail(selectedBuilding);
 		return;
 	}
 	auto &s = globalContainer->settings;
-	if (FrontendLayout::resolve(globalContainer->gfx).phone)
+	if (phoneLayout)
 	{
 		for (int t = 0; t < IntBuildingType::NB_BUILDING; ++t)
 		{
@@ -31,7 +31,7 @@ void SettingsScreen::buildBuildings()
 				[this, t]
 				{
 					selectedBuilding = t;
-					scroll[int(current)] = 0;
+					resetScroll();
 				});
 			form.back().buildingIcon = t;
 		}
@@ -61,7 +61,7 @@ void SettingsScreen::buildBuildings()
 			[this, i]
 			{
 				buildingTab = i;
-				scroll[int(current)] = 0;
+				resetScroll();
 			},
 			buildingTab == i);
 		form.back().columns = 4;
@@ -70,7 +70,7 @@ void SettingsScreen::buildBuildings()
 	if (buildingTab == 3)
 	{
 		info(tr("Starting unit counts and radius for newly placed flags."));
-		const bool table = viewport.w >= 620;
+		const bool table = wideTable;
 		if (table)
 		{
 			int col = 0;
@@ -126,7 +126,7 @@ void SettingsScreen::buildBuildings()
 							   : "Unit counts while a building is being upgraded."));
 	// At wide sizes use a real comparison table. Narrow forms group levels by
 	// building instead; both layouts are generated from the same slot mapping.
-	const bool table = viewport.w >= 620;
+	const bool table = wideTable;
 	const int columns = buildingTab == 0 ? 4 : buildingTab == 1 ? 2 : 3;
 	if (table)
 	{

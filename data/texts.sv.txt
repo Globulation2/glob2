@@ -3398,3 +3398,9 @@ Ok: %0
 Dialogtextstorlek: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Återuppta spelet
+[games]
+Spel
+[Add AI]
+Lägg till AI

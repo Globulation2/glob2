@@ -5,16 +5,10 @@
 #include <typeinfo>
 #include <stdexcept>
 #include <GUIBase.h>
-#include <InterfacePresentation.h>
 #include <GUIStyle.h>
 #include <assert.h>
 #include <GraphicContext.h>
 #include <SDLCompat.h>
-#include <cmath>
-
-#include <Toolkit.h>
-
-#define SCREEN_ANIMATION_FRAME_COUNT 10
 
 using namespace GAGCore;
 
@@ -47,169 +41,7 @@ namespace GAGGUI
 			fprintf(stderr, "GAG : UCS16toUTF8 : Error, can handle UTF16 characters\n");
 		}
 	}
-	
-	// this function support full unicode (UCS32)
-	unsigned getNextUTF8Char(unsigned char c)
-	{
-		if (c>0xFC)
-		{
-			return 6;
-		}
-		else if (c>0xF8)
-		{
-			return 5;
-		}
-		else if (c>0xF0)
-		{
-			return 4;
-		}
-		else if (c>0xE0)
-		{
-			return 3;
-		}
-		else if (c>0xC0)
-		{
-			return 2;
-		}
-		else
-		{
-			return 1;
-		}
-	}
-	
-	unsigned getNextUTF8Char(const std::string text, unsigned pos)
-	{
-		unsigned next=pos+getNextUTF8Char(text[pos]);
-		assert(next<=text.length());
-		return next;
-	}
-	
-	unsigned getPrevUTF8Char(const std::string text, unsigned pos)
-	{
-		// TODO : have a more efficient algo
-		unsigned last=0, i=0;
-		while (i<(unsigned)pos)
-		{
-			last=i;
-			i+=getNextUTF8Char(text[i]);
-		}
-		return last;
-	}
-	
-	void Widget::setTooltip(const std::string &text, const std::string &font)
-	{
-		tooltip=text;
-		tooltipFont=font;
-		tooltipFontPtr=Toolkit::getFont(font.c_str());
-		lastIdleTick=currentTick=0;
-		mx=my=-1;
-	}
 
-	Widget::Widget()
-	{
-		this->tooltipFontPtr = NULL;
-		visible=true;
-		parent=NULL;
-	}
-	
-	Widget::Widget(const std::string& tooltip, const std::string &tooltipFont)
-	{
-		this->tooltipFontPtr = NULL;
-		this->tooltip = tooltip;
-		this->tooltipFont = tooltipFont;
-		lastIdleTick = 0;
-		my = -1;
-		mx = -1;
-		visible = true;
-		parent = NULL;
-	}
-	
-	Widget::~Widget()
-	{
-		
-	}
-
-	void Widget::init(void)
-	{
-		if(tooltipFont.length() != 0 && tooltip.length() != 0) {
-			this->tooltipFontPtr = Toolkit::getFont(tooltipFont.c_str());
-		}
-		internalInit();
-	}
-
-	void Widget::timerTick(Uint32 tick)
-	{
-		currentTick = tick;
-		onTimer(tick);
-	}
-
-	void Widget::SDLMouseMotion(SDL_Event *event)
-	{
-		assert(event->type == SDL_MOUSEMOTION);
-		// Mouse has moved
-		lastIdleTick = currentTick;
-		mx = event->motion.x;
-		my = event->motion.y;
-		onSDLMouseMotion(event);
-	}
-	
-	void Widget::displayTooltip()
-	{
-		// We have a tooltip and the mouse is idle on our widget for some ticks (1 SDL tick = 1ms)
-		if(GAGCore::presentationState.hover && tooltipFontPtr != NULL && !tooltip.empty() && (currentTick - lastIdleTick) > 1000 && isOnWidget(mx, my))
-		{
-			DrawableSurface *gfx = parent->getSurface();
-			assert(gfx);
-			
-			int width = tooltipFontPtr->getStringWidth(tooltip.c_str());
-			int height = tooltipFontPtr->getStringHeight(tooltip.c_str());
-			int x = mx - width - 10;
-			if(x < 0) x = 0;
-			int y = my - height - 10;
-			if(y < 0) y = 0;
-			
-			gfx->drawFilledRect(x + 1, y + 1, width + 1, height, 22, 0, 0, 128);
-			gfx->drawRect(x,y, width + 2, height + 1, 255, 255, 255);
-			gfx->drawString(x, y, tooltipFontPtr, tooltip);
-
-		}
-	}
-	RectangularWidget::RectangularWidget()
-	{
-		x=y=w=h=hAlignFlag=vAlignFlag=0;
-	}
-
-	RectangularWidget::RectangularWidget(const std::string& tooltip, const std::string &tooltipFont)
-		: Widget(tooltip, tooltipFont)
-	{
-		x=y=w=h=hAlignFlag=vAlignFlag=0;
-	}
-
-	bool RectangularWidget::isOnWidget(int _x, int _y)
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		return (isPtInRect(_x, _y, x, y, w, h));
-	}
-
-	void RectangularWidget::show(void)
-	{
-		visible = true;
-	}
-	
-	void RectangularWidget::hide(void)
-	{
-		visible = false;
-	}
-	
-	void RectangularWidget::setVisible(bool newState)
-	{
-		if (newState)
-			show();
-		else
-			hide();
-	}
-	
 	float splineInterpolation(float T, float V0, float V1, float x)
 	{
 		assert(T > 0);
@@ -219,179 +51,9 @@ namespace GAGGUI
 		float d = V0;
 		return a * (x * x * x) + b * (x * x) + c * x + d;
 	}
-	
-	void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
-	{
-		assert(sx);
-		assert(sy);
-		assert(sw);
-		assert(sh);
-		assert(parent);
-		assert(parent->getSurface());
-	
-		int screenw = parent->getSurface()->getW();
-		int screenh = parent->getSurface()->getH();
-		
-		switch (hAlignFlag)
-		{
-			case ALIGN_LEFT:
-				*sx=x;
-				*sw=w;
-				break;
-	
-			case ALIGN_RIGHT:
-				*sx=screenw-w-x;
-				*sw=w;
-				break;
-	
-			case ALIGN_FILL:
-				*sx=x;
-				*sw=screenw-w-x;
-				break;
-				
-			case ALIGN_SCREEN_CENTERED:
-				*sx=x+((screenw-640)>>1);
-				*sw=w;
-				break;
-				
-			case ALIGN_CENTERED:
-				*sx = (screenw - w) >> 1;
-				*sw = w;
-				break;
-	
-			default:
-				assert(false);
-		}
-	
-		switch (vAlignFlag)
-		{
-			case ALIGN_LEFT:
-				*sy=y;
-				*sh=h;
-				break;
-	
-			case ALIGN_RIGHT:
-				*sy=screenh-h-y;
-				*sh=h;
-				break;
-	
-			case ALIGN_FILL:
-				*sy=y;
-				*sh=screenh-h-y;
-				break;
-				
-			case ALIGN_SCREEN_CENTERED:
-				*sy=y+((screenh-480)>>1);
-				*sh=h;
-				break;
-				
-			case ALIGN_CENTERED:
-				*sy = (screenh - h) >> 1;
-				*sh = h;
-				break;
-	
-			default:
-				assert(false);
-		}
-	}
-	
-	HighlightableWidget::HighlightableWidget()
-	: totalAnimationTime(10)
-	{
-		assert(totalAnimationTime > 0);
-		highlighted = false;
-		prevHighlightValue = 0;
-		nextHighlightValue = 0;
-		actAnimationTime = 0;
-		this->returnCode = 0;
-	}
 
-	HighlightableWidget::HighlightableWidget(const std::string& tooltip, const std::string &tooltipFont, Sint32 returnCode)
-		: RectangularWidget(tooltip, tooltipFont), totalAnimationTime(10)
-	{
-		assert(totalAnimationTime > 0);
-		highlighted = false;
-		prevHighlightValue = 0;
-		nextHighlightValue = 0;
-		actAnimationTime = 0;
-		this->returnCode = returnCode;
-	}
-	
-	HighlightableWidget::HighlightableWidget(Sint32 returnCode)
-	: totalAnimationTime(10)
-	{
-		assert(totalAnimationTime > 0);
-		highlighted = false;
-		prevHighlightValue = 0;
-		nextHighlightValue = 0;
-		actAnimationTime = 0;
-		this->returnCode = returnCode;
-	}
-
-	HighlightableWidget::HighlightableWidget(const std::string& tooltip, const std::string & tooltipFont)
-		: RectangularWidget(tooltip, tooltipFont), totalAnimationTime(10)
-	{
-		assert(totalAnimationTime > 0);
-		highlighted = false;
-		prevHighlightValue = 0;
-		nextHighlightValue = 0;
-		actAnimationTime = 0;
-		this->returnCode = 0;
-	}
-	
-	void HighlightableWidget::onSDLMouseMotion(SDL_Event *event)
-	{
-		assert(event->type == SDL_MOUSEMOTION);
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		if (isPtInRect(event->motion.x, event->motion.y, x, y, w, h))
-		{
-			if (!highlighted)
-			{
-				highlighted = true;
-				parent->onAction(this, BUTTON_GOT_MOUSEOVER, returnCode, 0);
-				prevHighlightValue = actAnimationTime/totalAnimationTime;
-				nextHighlightValue = 1;
-				actAnimationTime = totalAnimationTime-actAnimationTime;
-			}
-		}
-		else
-		{
-			if (highlighted)
-			{
-				highlighted = false;
-				parent->onAction(this, BUTTON_LOST_MOUSEOVER, returnCode, 0);
-				prevHighlightValue = 1 - actAnimationTime/totalAnimationTime;
-				nextHighlightValue = 0;
-				actAnimationTime = totalAnimationTime-actAnimationTime;
-			}
-		}
-	}
-	
-	unsigned HighlightableWidget::getNextHighlightValue(void)
-	{
-		float actHighlight;
-		if (actAnimationTime > 0)
-		{
-			// as actAnimationTime is decreasing over time, we have to invert prev and next highlight values
-			actHighlight = splineInterpolation(totalAnimationTime,  nextHighlightValue, prevHighlightValue, actAnimationTime);
-			actAnimationTime--;
-		}
-		else
-			actHighlight = nextHighlightValue;
-			
-		return static_cast<unsigned>(255.0 * actHighlight);
-	}
-	
-	void HighlightableWidget::paint(void)
-	{
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		
-		Style::style->drawFrame(parent->getSurface(), x, y, w, h, getNextHighlightValue());
-	}
-	
 	bool Screen::scrollWheelEnabled = true;
+
 	Screen::Screen()
 	{
 		gfx = NULL;
@@ -399,15 +61,11 @@ namespace GAGGUI
 		run = false;
 		executionActive = false;
 	}
-	
+
 	Screen::~Screen()
 	{
-		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-		{
-			delete (*it);
-		}
 	}
-	
+
 	void Screen::beginExecution(DrawableSurface *surface)
 	{
 		if (executionActive) throw std::logic_error("Screen execution is already active");
@@ -417,13 +75,12 @@ namespace GAGGUI
 		run = true;
 		executionActive = true;
 		ApplicationHost::screenChanged(typeid(*this).name());
-		dispatchInit();
-		onAction(NULL, SCREEN_CREATED, 0, 0);
+		onScreenCreated();
 	}
 
 	void Screen::updateExecution(Uint32 tick)
 	{
-		if (run) dispatchTimer(tick);
+		if (run) onTimer(tick);
 	}
 
 	void Screen::handleExecutionEvent(SDL_Event event)
@@ -452,12 +109,18 @@ namespace GAGGUI
 			}
 #endif
 		}
-		dispatchEvents(&event);
+		if (event.type == SDL_MOUSEWHEEL && !scrollWheelEnabled) return;
+		onSDLEvent(&event);
 	}
 
 	void Screen::drawExecution()
 	{
-		if (run) dispatchPaint();
+		if (!run) return;
+		assert(gfx);
+		Style::style->onFrame();
+		gfx->setClipRect();
+		paint();
+		gfx->nextFrame();
 	}
 
 	int Screen::finishExecution()
@@ -467,7 +130,7 @@ namespace GAGGUI
 		if (executionActive)
 		{
 			executionActive = false;
-			onAction(NULL, SCREEN_DESTROYED, 0, 0);
+			onScreenDestroyed();
 		}
 		return result;
 	}
@@ -514,314 +177,25 @@ namespace GAGGUI
 		run=false;
 		this->returnCode=returnCode;
 	}
-	
-	void Screen::addWidget(Widget* widget)
-	{
-		assert(widget);
-		widget->parent=this;
-		// this option enable or disable the multiple add check
-		widgets.insert(widget);
-	}
-	
-	void Screen::removeWidget(Widget* widget)
-	{
-		assert(widget);
-		assert(widget->parent==this);
-		widgets.erase(widget);
-	}
-	
-	void Screen::dispatchEvents(SDL_Event *event)
-	{
-        updateLayout();
-		onSDLEvent(event);
-		// We put the switch here in order to avoid
-		// a switch in each specific onSDLEvent method
-		// we never receive neither SDL_QUIT nor
-		// SDL_VIDEORESIZE (not dispatched)
-		// For the moment, we do not take the following event in account :
-		// SDL_SYSWMEVENT, SDL_JOY*****, 
-		switch(event->type)
-		{
-			case SDL_WINDOWEVENT:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLActive(event);
-				}
-				break;
-			case SDL_KEYDOWN:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLKeyDown(event);
-				}
-				break;
-			case SDL_KEYUP:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLKeyUp(event);
-				}
-				break;
-			case SDL_MOUSEMOTION:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->SDLMouseMotion(event);
-				}
-				break;
-			case SDL_MOUSEBUTTONUP:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLMouseButtonUp(event);
-				}
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLMouseButtonDown(event);
-				}
-				break;
-			case SDL_TEXTINPUT:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLTextInput(event);
-				}
-				break;
-			case SDL_MOUSEWHEEL:
-				if (!scrollWheelEnabled)
-					break;
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLMouseWheel(event);
-				}
-				break;
 
-			default:
-				// Every other event is passed to onSDLEvent
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLOtherEvent(event);
-				}
-				break;
-
-		}
-	}
-	
-	void Screen::dispatchTimer(Uint32 tick)
-	{
-		onTimer(tick);
-		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-		{
-			if ((*it)->visible)
-				(*it)->timerTick(tick);
-		}
-	}
-	
-	void Screen::dispatchInit(void)
-	{
-		animationFrame = 0;
-		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-		{
-			(*it)->init();
-		}
-	}
-	
-	void Screen::dispatchPaint(bool present)
-	{
-		updateLayout();
-		Style::style->onFrame();
-		assert(gfx);
-		gfx->setClipRect();
-		paint();
-		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-		{
-			if ((*it)->visible)
-				(*it)->paint();
-		}
-		/* We need a second loop in order to have tooltip over everything else */
-		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-		{
-			if ((*it)->visible)
-				(*it)->displayTooltip();
-		}
-		if (present) gfx->nextFrame();
-		
-		if (animationFrame < SCREEN_ANIMATION_FRAME_COUNT)
-			animationFrame++;
-	}
-	
 	void Screen::paint(void)
 	{
 		gfx->drawFilledRect(0, 0, getW(), getH(), Style::style->backColor);
 	}
-	
+
 	int Screen::getW(void)
 	{
 		if (gfx)
 			return gfx->getW();
 		else
 			return 0;
-	
 	}
-	
+
 	int Screen::getH(void)
 	{
 		if (gfx)
 			return gfx->getH();
 		else
 			return 0;
-	}
-	
-	// Overlay screen, used for non full frame dialog
-	
-	OverlayScreen::OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h)
-		: parentContext(parentCtx)
-	{
-		gfx = new DrawableSurface(w, h);
-		decX = std::max(0, (parentCtx->getW()-static_cast<int>(w))/2);
-		decY = std::max(0, (parentCtx->getH()-static_cast<int>(h))/2);
-		endValue = -1;
-	}
-	
-    void OverlayScreen::updateLayout()
-    {
-        decX = std::max(0, std::min(decX, parentContext->getW() - getW()));
-        decY = std::max(0, std::min(decY, parentContext->getH() - getH()));
-    }
-
-    void OverlayScreen::viewportResized(int, int, int width, int height)
-    {
-        // Preserve the mobile/browser host's recenter-on-rotation policy.
-        decX = std::max(0, (width - getW()) / 2);
-        decY = std::max(0, (height - getH()) / 2);
-    }
-
-	OverlayScreen::~OverlayScreen()
-	{
-		delete gfx;
-	}
-	
-	int OverlayScreen::execute(DrawableSurface *gfx, int stepLength)
-	{
-		return Screen::execute(this->gfx, stepLength);
-	}
-	
-	void repostQuitEvent()
-	{
-		SDL_Event quitEvent;
-		SDL_zero(quitEvent);
-		quitEvent.type = SDL_QUIT;
-		SDL_PushEvent(&quitEvent);
-	}
-
-	int OverlayScreen::executeModal(GraphicContext *parentCtx)
-	{
-		// Preserve the backdrop because nextFrame() leaves the GL back buffer stale.
-		parentCtx->setClipRect();
-		DrawableSurface *background = new DrawableSurface(parentCtx->getW(), parentCtx->getH());
-		background->drawSurface(0, 0, parentCtx);
-
-		dispatchPaint();
-		run = true;
-		bool quitApplication = false;
-
-		while (endValue < 0 && run)
-		{
-			const Uint64 frameStart = SDL_GetTicks64();
-
-			SDL_Event event;
-			while (GAGCore::GraphicContext::pollEvent(&event))
-			{
-				GAGCore::GraphicContext::translateMouseEvent(&event);
-				if (event.type == SDL_QUIT)
-				{
-					quitApplication = true;
-					break;
-				}
-				if (event.type == SDL_KEYDOWN)
-				{
-#					ifdef USE_OSX
-					if (event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
-					{
-						quitApplication = true;
-						break;
-					}
-#					endif
-#					ifdef USE_WIN32
-					if (event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
-					{
-						quitApplication = true;
-						break;
-					}
-#					endif
-				}
-				translateAndProcessEvent(&event);
-			}
-
-			if (quitApplication)
-			{
-				run = false;
-				returnCode = QUIT_APPLICATION;
-				break;
-			}
-
-			dispatchTimer(frameStart);
-
-			dispatchPaint();
-			parentCtx->setClipRect();
-			parentCtx->drawSurface(0, 0, parentCtx->getW(), parentCtx->getH(), background);
-			parentCtx->drawSurface(decX, decY, getSurface());
-			parentCtx->nextFrame();
-
-			const Uint64 frameEnd = SDL_GetTicks64();
-			const Sint64 elapsed = static_cast<Sint64>(frameEnd) - static_cast<Sint64>(frameStart);
-			GAGCore::ApplicationHost::wait(static_cast<Uint32>(std::max<Sint64>(40 - elapsed, 0)));
-		}
-
-		delete background;
-		if (quitApplication)
-		{
-			repostQuitEvent();
-			return QUIT_APPLICATION;
-		}
-		return endValue;
-	}
-
-	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
-	{
-		updateLayout();
-		int newX, newY;
-		SDL_Event ev=*event;
-		switch (ev.type)
-		{
-			case SDL_MOUSEMOTION:
-				newX = (int)ev.motion.x - decX;
-				newY = (int)ev.motion.y - decY;
-				ev.motion.x = (unsigned)std::max(0, newX);
-				ev.motion.y = (unsigned)std::max(0, newY);
-				break;
-			case SDL_MOUSEBUTTONDOWN:
-			case SDL_MOUSEBUTTONUP:
-				newX = (int)ev.button.x - decX;
-				newY = (int)ev.button.y - decY;
-				ev.button.x = (unsigned)std::max(0, newX);
-				ev.button.y = (unsigned)std::max(0, newY);
-				break;
-			default:
-				break;
-		}
-		dispatchEvents(&ev);
-	}
-	
-	void OverlayScreen::paint(void)
-	{
-		gfx->drawFilledRect(0, 0, getW(), getH(), Style::style->backOverlayColor);
-		Style::style->drawFrame(gfx, 0, 0, getW(), getH(), Color::ALPHA_TRANSPARENT);
 	}
 }

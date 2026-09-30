@@ -1,75 +1,66 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
-
 #pragma once
-
 #include "Campaign.h"
+#include "ui/FrontendUI.h"
 #include <ApplicationHost.h>
 #include <ScreenStack.h>
-#include "Glob2Screen.h"
-#include "GUIButton.h"
-#include "GUICheckList.h"
-#include "GUIText.h"
-#include "GUITextInput.h"
-#include "GUITextArea.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 class MapPreview;
 
-///This is the main campaign screen
-class CampaignMenuScreen : public Glob2Screen
+///The main campaign screen: pick an unlocked mission and play it.
+class CampaignMenuScreen : public Glob2UI::Screen
 {
-public:
-	CampaignMenuScreen(const std::string& name, GAGGUI::ScreenStack& screens);
-	void onAction(Widget *source, Action action, int par1, int par2);
+  public:
+	CampaignMenuScreen(const std::string &name, GAGGUI::ScreenStack &screens);
+	~CampaignMenuScreen() override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void setNewCampaign();
-    void onTimer(Uint32) override;
+	void onTimer(Uint32) override;
 	enum
 	{
 		EXIT,
 		START,
 	};
-private:
+
+  protected:
+	void onEscape() override { leave(); }
+
+  private:
 	Campaign campaign;
-    bool dirty = false, saveFailed = false, leaveAfterSave = false;
-    std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
-    std::unique_ptr<GAGCore::ApplicationHost::FileSelection> fileSelection;
-    TextButton *importButton = nullptr, *exportButton = nullptr, *retryButton = nullptr;
-    void saveProgress(bool leave = false);
-    void saveFailure();
-    void exportProgress();
-    std::vector<unsigned char> previousFile;
-    bool previousCaptured = false, previousExisted = false;
-    std::string progressPath() const;
-    bool readProgressFile(std::vector<unsigned char>& bytes) const;
-    void capturePrevious();
-    bool restorePrevious();
-    GAGGUI::ScreenStack& screens;
+	bool dirty = false, saveFailed = false, leaveAfterSave = false;
+	std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
+	std::unique_ptr<GAGCore::ApplicationHost::FileSelection> fileSelection;
+	void saveProgress(bool leave = false);
+	void saveFailure();
+	void exportProgress();
+	void importProgress();
+	void startMission();
+	void leave();
+	std::vector<unsigned char> previousFile;
+	bool previousCaptured = false, previousExisted = false;
+	std::string progressPath() const;
+	bool readProgressFile(std::vector<unsigned char> &bytes) const;
+	void capturePrevious();
+	bool restorePrevious();
+	GAGGUI::ScreenStack &screens;
 
-	/// Title of the screen
-	Text* title;
-	/// The exit to menu screen button
-	TextButton* exitButton;
-	/// The "start mission" button
-	Button* startMission;
-
-	/// The box where the players name is put
-	TextInput* playerName;
-
-	/// The list of missions that are currently unlocked
-	CheckList* availableMissions;
-	
-	/// Map description
-	TextArea* description;
-	
-	//! The widget that will show a preview of the selection map
-	MapPreview *mapPreview;
+	std::string status;
+	std::string playerName;
+	std::vector<std::string> missionNames;
+	std::vector<bool> missionCompleted;
+	int selectedMission = -1;
+	std::string description;
+	std::unique_ptr<MapPreview> mapPreview;
+	bool persisted = false;
 
 	//! Rebuild the displayed mission list from the current campaign state.
 	void repopulateAvailableMissions();
-
-	//! The campaign entry for the currently selected list row, or nullptr when
-	//! nothing is selected (or the selected name no longer maps to an unlocked map).
-	CampaignMapEntry* getSelectedMission();
+	void selectMission(int index);
+	//! The campaign entry for the selected row, or nullptr when nothing is selected.
+	CampaignMapEntry *getSelectedMission();
+	void showStatus(const std::string &text);
 };
-
-

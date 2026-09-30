@@ -15,7 +15,7 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` |
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/` |
 | AI implementations | `src/ai/`, behind `AIImplementation` |
-| Rendering, menus and editor | `src/render/`, `src/gui/`, `src/*Screen*`, `src/map/edit/` |
+| Rendering, menus and editor | `src/render/`, `src/gui/`, `src/*Screen*`, `src/map/edit/`; menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
 | Network and multiplayer service | `src/net/`, `src/yog/` |
 | Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/sgsl/` |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |

@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile}=require('./main-menu');
+const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl}=require('./main-menu');
 const snapshot=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await snapshot(page)).screen).toContain(name);
 async function matchFrame(page) {
@@ -15,9 +15,9 @@ test.describe('responsive mixed input',()=>{
     expect(await page.evaluate(()=>Module.presentationMetrics.touch)).toBe(true);
     await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
     const canvas=page.locator('#canvas');
-    // Touch settings omit the desktop keyboard-controls category.
-    for(let i=0;i<5;++i) await canvas.press('Tab');
-    await canvas.press('Enter');
+    // The player name lives in the Player category.
+    await clickControl(page,'nav.5');
+    await clickControl(page,'player.name');
     const field=page.locator('input[aria-label="Game text field"]');
     await expect(field).toBeVisible();
     await field.click();await field.fill('Zoë 🌱');
@@ -69,7 +69,8 @@ test.describe('responsive mixed input',()=>{
     await touchMatch(page,630,366);
     await page.locator('#canvas').press('Escape');
     await matchFrame(page);
-    await page.touchscreen.tap(420,88);
+    await tapControl(page,'save');
+    await tapControl(page,'name');
     const field=page.locator('input[aria-label="Game text field"]');
     await expect(field).toBeVisible();await field.fill('Responsive phone');
     await page.screenshot({path:info.outputPath('phone-save-dialog.png')});
@@ -83,7 +84,7 @@ test.describe('responsive mixed input',()=>{
     await page.reload();await screen(page,'MainMenuScreen');
     expect(await digest()).toEqual(saved);
     await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');
-    await page.touchscreen.tap(300,88);
+    await tapControl(page,'files/0');
     await page.locator('#canvas').press('Enter');
     await screen(page,'match');
     await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);

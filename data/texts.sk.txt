@@ -3396,3 +3396,9 @@ Ok: %0
 Veľkosť textu dialógov: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Pokračovať v hre
+[games]
+Hry
+[Add AI]
+Pridať UI

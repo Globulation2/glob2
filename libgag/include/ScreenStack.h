@@ -20,6 +20,8 @@ class ScreenStack
 	bool running() const { return !stopped && (!screens.empty() || !pending.empty()); }
 	Uint32 delay(Uint32 now, Uint32 fallback);
 	int result() const { return lastResult; }
+	// The screen receiving input, or null while the stack is empty.
+	Screen *top() const { return screens.empty() ? nullptr : screens.back().screen.get(); }
 	// Transitional SDL host. Browser scheduling will call frame directly.
 	int execute(unsigned stepLength = 40);
 	void stop();

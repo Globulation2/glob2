@@ -13,8 +13,9 @@ permission failure.
 Use `CustomGameSetupHarness` to drive the **production SDL event loop** with
 `SDL_PushEvent`. Queue mouse down/up pairs and keyboard events, run the real lobby
 and nested profile screen, then assert the resulting setup and launched game
-state. Render screenshots with `dispatchPaint` / `printScreen` from the actual
-native widgets. This exercises compiled application code, not an HTML mockup.
+state. Drive controls through their keys (`host().bounds("start")`) and render
+screenshots with `paintFrame` / `printScreen` from the production screens. This
+exercises compiled application code, not an HTML mockup.
 
 From the isolated worktree:
 

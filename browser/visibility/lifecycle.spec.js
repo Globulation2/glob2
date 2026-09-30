@@ -3,7 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const {spawn} = require('node:child_process');
-const {clickMainMenu, clickCustomGameStart, gameURL} = require('../tests/main-menu');
+const {clickMainMenu, clickCustomGameStart, clickControl, controlBox, gameURL} = require('../tests/main-menu');
 
 // Playwright's normal focus override keeps background documents visible.
 // Use a real browser window and the default context without that override.
@@ -39,11 +39,6 @@ test('background single-player suspends and returns without catching up', async 
     await page.setViewportSize({width:1200,height:900});
     const snapshot=()=>page.evaluate(()=>glob2Diagnostics.snapshot());
     const screen=name=>expect.poll(async ()=>(await snapshot()).screen).toContain(name);
-    const click=async (x,y)=>{
-      const s=await snapshot(), box=await page.locator('#canvas').boundingBox();
-      await page.locator('#canvas').click({position:{x:(x+(s.width-640)/2)*box.width/s.width,
-        y:(y+(s.height-480)/2)*box.height/s.height},delay:80});
-    };
     await page.bringToFront();
     await page.goto(new URL(gameURL(), baseURL).href); await screen('MainMenuScreen');
     await page.evaluate(()=>{
@@ -77,11 +72,10 @@ test('background single-player suspends and returns without catching up', async 
     await page.locator('#canvas').press('Escape',{delay:80});
     // The menu does not set the explicit simulation-pause flag. Wait for the
     // presented Quit label instead of treating frame count as menu readiness.
-    await expect.poll(()=>require('../tests/pixels').hasLightText(page,
-      {x:460,y:482,width:280,height:34})).toBe(true);
+    await expect.poll(async ()=>require('../tests/pixels').hasClassicButton(page, await controlBox(page,'quit'))).toBe(true);
     const frames=(await snapshot()).frames;
     await expect.poll(async ()=>(await snapshot()).frames).toBeGreaterThan(frames+2);
-    await click(320,290); await screen('EndGameScreen');
+    await clickControl(page,'quit'); await screen('EndGameScreen');
   } catch (error) {
     console.log('Browser process diagnostics:', launchLog);
     if (page && !page.isClosed()) {

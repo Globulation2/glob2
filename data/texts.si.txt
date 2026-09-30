@@ -3388,3 +3388,9 @@ Potrdi: %0
 Velikost besedila pogovornih oken: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Nadaljuj igro
+[games]
+Igre
+[Add AI]
+Dodaj UI

@@ -1,151 +1,115 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
+#include "YOGClientMapUploadScreen.h"
 #include "Engine.h"
 #include "FormatableString.h"
-#include "GlobalContainer.h"
-#include <GUIButton.h>
 #include "GUIMapPreview.h"
-#include <GUIText.h>
-#include <GUITextInput.h>
-#include <GUIProgressBar.h>
+#include "GlobalContainer.h"
 #include "MapHeader.h"
-#include "StringTable.h"
-#include "Toolkit.h"
-#include "YOGClient.h"
-#include "YOGClientMapUploadScreen.h"
-#include <ScreenStack.h>
 #include "MessageScreen.h"
+#include "YOGClient.h"
+#include <ScreenStack.h>
 
-using namespace GAGCore;
+using namespace Glob2UI;
 
-YOGClientMapUploadScreen::YOGClientMapUploadScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const std::string mapFile)
-	: screens(screens), client(client), uploader(client), mapFile(mapFile)
+YOGClientMapUploadScreen::YOGClientMapUploadScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client, const std::string mapFile)
+	: screens(screens), client(client), uploader(client), mapFile(mapFile), authorName(globalContainer->settings.getUsername())
 {
-    enablePhoneForm();
-	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]")));
-	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Upload Map]"), UPLOAD, 13));
-	preview = new MapPreview(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
-	addWidget(preview);
-	
-	mapName=new TextInput(173, 60, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", false, 255);
-	addWidget(mapName);
-	mapInfo=new Text(173, 60+30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapInfo);
-	mapVersion=new Text(173, 60+60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapVersion);
-	mapSize=new Text(173, 60+90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapSize);
-	mapDate=new Text(173, 60+120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 180);
-	addWidget(mapDate);
-	authorNameText=new Text(20, 60+150,  ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Map Upload: Author Name]"), 180);
-	addWidget(authorNameText);
-	authorName=new TextInput(173, 60+150, 150, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 255);
-	addWidget(authorName);
-	
-	uploadStatus = new ProgressBar(20, 300, 600, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
-	uploadStatus->visible = false;
-	addWidget(uploadStatus);
-	uploadStatusText = new Text(0, 300, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", ""); 
-	addWidget(uploadStatusText);
-	
-	// update map name & info
+	preview = std::make_unique<MapPreview>();
 	preview->setMapThumbnail(mapFile.c_str());
 	Engine engine;
 	MapHeader mapHeader = engine.loadMapHeader(mapFile);
-	mapName->setText(mapHeader.getMapName());
-	std::string textTemp;
-	textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
-	mapInfo->setText(textTemp);
-	textTemp = FormattableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
-	mapVersion->setText(textTemp);
-	textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
-	mapSize->setText(textTemp);
-	isUploading = false;
+	mapName = mapHeader.getMapName();
+	mapInfo = GAGCore::FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(tr("[teams]"));
+	mapVersion = GAGCore::FormattableString("%0 %1.%2").arg(tr("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
+	mapSize = GAGCore::FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
 }
-
-
-
-
 
 YOGClientMapUploadScreen::~YOGClientMapUploadScreen() { uploader.cancelUpload(); }
 
-void YOGClientMapUploadScreen::onAction(Widget *source, Action action, int par1, int par2)
+Element YOGClientMapUploadScreen::build(const Presentation &p)
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (par1==CANCEL)
+	auto details = column({field(tr("[Upload Map]"), textField("name", mapName, [this](const std::string &v) { mapName = v; }, {false, 255, "", {}, false, !isUploading})),
+						   paragraph(mapInfo), paragraph(mapVersion), paragraph(mapSize),
+						   field(tr("[Map Upload: Author Name]"), textField("author", authorName, [this](const std::string &v) { authorName = v; }, {false, 255, "", {}, false, !isUploading}))});
+	auto previewElement = Glob2UI::mapPreview("preview", *preview, 160);
+	std::vector<Element> parts;
+	parts.push_back(adaptive(
+		[details, previewElement](const LayoutContext &ctx, Size available)
 		{
-			client->update();
-			uploader.cancelUpload();
-			endExecute(CANCEL);
-		}
-		else if (par1==UPLOAD)
-		{
-			if(!isUploading)
-			{
-				uploader.startUploading(mapFile.c_str(), mapName->getText(), authorName->getText(), preview->getLastWidth(), preview->getLastHeight());
-				isUploading=true;
-			}
-		}
-	}
-	if (action==TEXT_ACTIVATED)
-	{
-		if (source==authorName)
-			mapName->deactivate();
-		else if (source==mapName)
-			authorName->deactivate();
-	}
+			if (available.w < ctx.presentation.pt(560))
+				return column({center(previewElement), details});
+			return row({previewElement, expanded(details)}, {-1, CrossAlign::Start});
+		}));
+	if (uploadPercent >= 0)
+		parts.push_back(progress(uploadPercent, 100));
+	if (!uploadStatusText.empty())
+		parts.push_back(paragraph(uploadStatusText, {FontRole::Body, false, TextAlign::Center}));
+	return page(tr("[Upload Map]"), scroll("upload/scroll", column(std::move(parts))),
+				actions({{"upload", tr("[Upload Map]"), [this] { upload(); }, true, SDLK_RETURN, !isUploading},
+						 {"cancel", tr("[Cancel]"), [this] { cancel(); }, false, SDLK_ESCAPE}},
+						p),
+				p, 720);
 }
 
-
-
-void YOGClientMapUploadScreen::showError(const char* key, int result)
+void YOGClientMapUploadScreen::cancel()
 {
-	screens.push(std::make_unique<MessageScreen>(Toolkit::getStringTable()->getString(key),
-		std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}),
-		[this, result](Screen&, int) { endExecute(result); });
+	client->update();
+	uploader.cancelUpload();
+	endExecute(CANCEL);
 }
 
-void YOGClientMapUploadScreen::onTimer(Uint32 tick)
+void YOGClientMapUploadScreen::upload()
+{
+	if (isUploading)
+		return;
+	uploader.startUploading(mapFile.c_str(), mapName, authorName, preview->getLastWidth(), preview->getLastHeight());
+	isUploading = true;
+	invalidate();
+}
+
+void YOGClientMapUploadScreen::showError(const char *key, int result)
+{
+	screens.push(std::make_unique<MessageScreen>(tr(key), std::vector<std::string>{tr("[ok]")}),
+				 [this, result](GAGGUI::Screen &, int) { endExecute(result); });
+}
+
+void YOGClientMapUploadScreen::onTimer(Uint32)
 {
 	client->update();
 	uploader.update();
-	if(!client->isConnected())
+	if (!client->isConnected())
 	{
 		showError("[Map upload failure: connection lost]", CONNECTIONLOST);
 		return;
 	}
-	
-	uploadStatus->visible = false;
-	if(isUploading)
+	int percent = -1;
+	std::string statusText;
+	if (isUploading)
 	{
-		if(uploader.getUploadingState() == YOGClientMapUploader::Nothing)
+		const auto state = uploader.getUploadingState();
+		if (state == YOGClientMapUploader::Nothing)
 		{
-			if(uploader.getRefusalReason() == YOGMapUploadReasonMapNameAlreadyExists)
-			{
-				showError("[Map upload failure: map name in use]", UPLOADFAILED);
-			}
-			else
-			{
-				showError("[Map upload failure: unknown reason]", UPLOADFAILED);
-			}
+			showError(uploader.getRefusalReason() == YOGMapUploadReasonMapNameAlreadyExists
+						  ? "[Map upload failure: map name in use]"
+						  : "[Map upload failure: unknown reason]",
+					  UPLOADFAILED);
 			return;
 		}
-		else if(uploader.getUploadingState() == YOGClientMapUploader::WaitingForUploadReply)
-		{
-			uploadStatusText->setText(FormattableString(Toolkit::getStringTable()->getString("[Map Upload: Waiting for reply]")));
-		}
-		else if(uploader.getUploadingState() == YOGClientMapUploader::Finished)
+		if (state == YOGClientMapUploader::WaitingForUploadReply)
+			statusText = tr("[Map Upload: Waiting for reply]");
+		else if (state == YOGClientMapUploader::Finished)
 		{
 			endExecute(UPLOADFINISHED);
+			return;
 		}
 		else
-		{
-			uploadStatus->visible = true;
-			uploadStatus->setValue(uploader.getPercentUploaded());
-			uploadStatusText->setText("");
-		}
+			percent = uploader.getPercentUploaded();
+	}
+	if (percent != uploadPercent || statusText != uploadStatusText)
+	{
+		uploadPercent = percent;
+		uploadStatusText = statusText;
+		invalidate();
 	}
 }

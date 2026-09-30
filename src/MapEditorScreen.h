@@ -11,7 +11,6 @@ class MapEditorScreen : public GAGGUI::Screen
   public:
 	MapEditorScreen(GAGGUI::ScreenStack &screens, std::unique_ptr<MapEdit> editor);
 	~MapEditorScreen() override;
-	void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
 	void updateExecution(Uint32 tick) override;
 	void suspendExecution() override;
 	void viewportResized(int oldWidth, int oldHeight, int width, int height) override;

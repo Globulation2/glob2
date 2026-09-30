@@ -149,6 +149,7 @@ public:
 
 	// Variables related to the showing of replays:
 	bool liveSpectating = false; //!< Live AI-only viewing; never replay playback.
+	bool reducedMotion = false; //!< Session UI preference: skip decorative animation.
 	bool isViewingGame() const { return replaying || liveSpectating; }
 	bool replaying; //!< Whether the current game is a replay or a usual game
 	std::string replayFileName; //!< The name of the replay file.

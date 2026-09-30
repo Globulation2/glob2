@@ -202,7 +202,7 @@ if not env['server']:
     render_env = savegame_env.Clone()
     render_env['CXXFLAGS'] = local.Split(local['CXXFLAGS']) + ['-fno-access-control']
     render_sources = [obj for obj in savegame_sources
-                      if str(obj).split('/')[-1] not in ('SavegameSafetyHarness.o', 'CreditScreen.o')]
+                      if str(obj).split('/')[-1] != 'SavegameSafetyHarness.o']
     render_sources += render_env.Object('MapRenderResizeHarness.o', '#test/MapRenderResizeHarness.cpp')
     render_test = savegame_env.Program('MapRenderResizeHarness', render_sources)
     local.Alias('map-render-resize-test', render_test)
@@ -454,7 +454,7 @@ if not env['server'] and not env.get('mingw'):
     local.Alias('mobile-temporary-files-test', temporary_test)
 
 if not env['server']:
-    for alias, harness in [('gameplay-touch-test', 'GameGUITouchHarness'), ('responsive-menu-test', 'ResponsiveMenuHarness'), ('mobile-presentation-test', 'MobilePresentationHarness')]:
+    for alias, harness in [('gameplay-touch-test', 'GameGUITouchHarness'), ('ui-presentation-test', 'UIPresentationHarness')]:
         sources = [source for source in source_files if source != 'Glob2.cpp']
         sources += local.Object(harness + '.o', '#test/' + harness + '.cpp')
         local.Alias(alias, local.Program(alias, sources))

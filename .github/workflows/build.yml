@@ -107,8 +107,7 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'translation catalog' 'python3 data/check_translations.py --strict' \
             --check 'translation tests' 'python3 test/test_translations.py' \
-            --check 'font coverage' 'python3 test/test_font_coverage.py' \
-            --check 'text area layout' 'python3 test/test_text_area_layout.py'
+            --check 'font coverage' 'python3 test/test_font_coverage.py'
       - name: Test compiler cache integration
         id: test_compiler_cache_integration
         continue-on-error: true
@@ -218,8 +217,7 @@ jobs:
             portable-renderer-test \
             mobile-input-test \
             gameplay-touch-test \
-            responsive-menu-test \
-            mobile-presentation-test \
+            ui-presentation-test \
             mobile-documents-test \
             mobile-certificate-test \
             mobile-temporary-files-test
@@ -811,9 +809,9 @@ jobs:
         run: |
           build/linux/client/release/libgag/src/MobileInputHarness
           timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
-          for harness in gameplay-touch-test responsive-menu-test mobile-presentation-test; do
+          for harness in gameplay-touch-test ui-presentation-test; do
             mkdir -p "artifacts/mobile-ui/$harness"
-            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 120s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness"
+            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 900s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness" capture
           done
 
       - name: Upload phone UI verification evidence

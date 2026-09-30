@@ -1,46 +1,27 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
 #pragma once
-
-#include <vector>
-#include "Glob2Screen.h"
-#include <memory>
 #include "YOGClientMapUploader.h"
-
-namespace GAGGUI
-{
-	class Text;
-	class TextInput;
-	class TextArea;
-	class TextButton;
-	class TabScreen;
-	class Widget;
-	class List;
-	class ProgressBar;
-	class ScreenStack;
-}
+#include "ui/FrontendUI.h"
+#include <memory>
+#include <string>
 
 class YOGClient;
 class MapPreview;
-
-using namespace GAGGUI;
-
-/// A widget that maintains the list of players, and draws an icon based
-/// on whether that player is from YOG or from IRC
-class YOGClientMapUploadScreen : public Glob2Screen
+namespace GAGGUI
 {
-public:
+class ScreenStack;
+}
 
-	/// Constructor
-	YOGClientMapUploadScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const std::string mapFile);
+/// Uploads a map to YOG with a name and author.
+class YOGClientMapUploadScreen : public Glob2UI::Screen
+{
+  public:
+	YOGClientMapUploadScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client, const std::string mapFile);
 	~YOGClientMapUploadScreen() override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void onTimer(Uint32 tick) override;
 
-	///Responds to widget events
-	void onAction(Widget *source, Action action, int par1, int par2);
-	///Responds to timer events
-	void onTimer(Uint32 tick);
-	
 	enum
 	{
 		CANCEL,
@@ -49,19 +30,20 @@ public:
 		UPLOADFINISHED,
 		CONNECTIONLOST,
 	};
-private:
-	void showError(const char* key, int result);
-	ScreenStack& screens;
-	MapPreview* preview;
+
+  protected:
+	void onEscape() override { cancel(); }
+
+  private:
+	void showError(const char *key, int result);
+	void cancel();
+	void upload();
+	GAGGUI::ScreenStack &screens;
+	std::unique_ptr<MapPreview> preview;
 	std::shared_ptr<YOGClient> client;
 	YOGClientMapUploader uploader;
-	Text* uploadStatusText;
-	ProgressBar* uploadStatus;
-	//! The textual informations about the selected map
-	Text *mapInfo, *mapVersion, *mapSize, *mapDate;
-	TextInput* mapName;
-	Text *authorNameText;
-	TextInput* authorName;
-	std::string mapFile;
-	bool isUploading;
+	std::string mapFile, mapName, authorName;
+	std::string mapInfo, mapVersion, mapSize, uploadStatusText;
+	int uploadPercent = -1;
+	bool isUploading = false;
 };

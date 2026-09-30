@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
 #include "InGameTouchTheme.h"
-#include "EditorFileView.h"
 #include "MapEdit.h"
 #include "PhoneEditor.h"
-#include "PhoneForm.h"
 #include "MobileSafeArea.h"
 #include "GlobalContainer.h"
-#include <GUIButton.h>
 #include <TouchText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -26,72 +23,7 @@ PhoneEditor::PhoneEditor(MapEdit &editor) : editor(editor) {}
 PhoneEditor::~PhoneEditor() = default;
 bool PhoneEditor::hasOverlay() const
 {
-	return editor.showingMenuScreen || editor.showingLoad || editor.showingSave ||
-		   editor.showingScriptEditor || editor.showingTeamsEditor || editor.isShowingAreaName;
-}
-void PhoneEditor::syncOverlay()
-{
-	GAGGUI::OverlayScreen *current = nullptr;
-	if (editor.showingMenuScreen)
-		current = editor.menuScreen;
-	if (editor.showingLoad || editor.showingSave)
-		current = editor.loadSaveScreen;
-	if (editor.showingScriptEditor)
-		current = editor.scriptEditor->phoneDialog();
-	if (editor.showingTeamsEditor)
-		current = editor.teamsEditor;
-	if (editor.isShowingAreaName)
-		current = editor.areaName;
-	if (editor.isShowingAreaName || editor.showingMenuScreen || editor.showingTeamsEditor ||
-		(editor.showingScriptEditor && current == editor.scriptEditor))
-	{
-		form.reset();
-		fileView.reset();
-		overlay = nullptr;
-		return;
-	}
-	if (current == overlay)
-		return;
-	form.reset();
-	fileView.reset();
-	overlay = current;
-	if (auto *file = dynamic_cast<LoadSaveScreen *>(current))
-	{
-		fileView = std::make_unique<EditorFileView>(*file);
-		return;
-	}
-	if (current)
-		form = std::make_unique<PhoneForm>(
-			*current,
-			[this](auto *widget)
-			{
-				return editor.showingTeamsEditor ? editor.teamsEditor->phoneLabel(widget)
-												 : std::string{};
-			},
-			[](auto *) { return true; },
-			[this](auto *widget)
-			{
-				auto *button = dynamic_cast<GAGGUI::TextButton *>(widget);
-				if (!button)
-					return false;
-				const auto caption = button->caption();
-				auto *strings = Toolkit::getStringTable();
-				return caption == strings->getString("[ok]") ||
-					   caption == strings->getString("[Cancel]") ||
-					   caption == strings->getString("[return to editor]");
-			});
-}
-void PhoneEditor::closeOverlay()
-{
-	fileView.reset();
-	form.reset();
-	overlay = nullptr;
-}
-void PhoneEditor::showFailure()
-{
-	syncOverlay();
-	if (form)
-		form->scrollToTop();
+	return editor.hasDialog();
 }
 void PhoneEditor::cancel()
 {
@@ -105,18 +37,8 @@ void PhoneEditor::cancel()
 	drag.reset();
 	stroke.clear();
 	quarantined.clear();
-	if (form)
-		form->cancel();
-	if (fileView)
-		fileView->cancel();
-	if (editor.isShowingAreaName)
-		editor.areaName->cancelTouch();
-	if (editor.showingMenuScreen)
-		editor.menuScreen->cancelTouch();
-	if (editor.showingTeamsEditor)
-		editor.teamsEditor->cancelTouch();
-	if (editor.showingScriptEditor)
-		editor.scriptEditor->cancelTouch();
+	if (auto *dialog = editor.activeDialog())
+		dialog->cancelInput();
 }
 // All rectangles are independent editor presentation bounds. Palette widgets
 // contribute only their individual artwork and named selection actions.
@@ -478,64 +400,10 @@ void PhoneEditor::act(const TouchAction &action)
 }
 bool PhoneEditor::event(SDL_Event event)
 {
-	syncOverlay();
-	bool direct = false;
-	if (editor.isShowingAreaName)
+	if (editor.hasDialog())
 	{
-		editor.areaName->eventTouch(event);
-		direct = true;
-	}
-	else if (editor.showingMenuScreen)
-	{
-		editor.menuScreen->eventTouch(event);
-		direct = true;
-	}
-	else if (editor.showingTeamsEditor)
-	{
-		editor.teamsEditor->eventTouch(event);
-		direct = true;
-	}
-	else if (editor.showingScriptEditor &&
-			 editor.scriptEditor->phoneDialog() == editor.scriptEditor)
-	{
-		editor.scriptEditor->eventTouch(event);
-		direct = true;
-	}
-	if (direct)
-	{
-		SDL_Event idle{};
-		editor.delegateMenu(idle);
+		editor.delegateMenu(event);
 		return true;
-	}
-	if (fileView)
-	{
-		if (fileView->event(event))
-		{
-			SDL_Event idle{};
-			if (overlay->endValue >= 0)
-			{
-				fileView.reset();
-				overlay = nullptr;
-			}
-			editor.delegateMenu(idle);
-			return true;
-		}
-		return false;
-	}
-	if (form)
-	{
-		if (form->event(event))
-		{
-			SDL_Event idle{};
-			if (overlay->endValue >= 0)
-			{
-				form.reset();
-				overlay = nullptr;
-			}
-			editor.delegateMenu(idle);
-			return true;
-		}
-		return false;
 	}
 	if (event.type == SDL_WINDOWEVENT && (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
 										  event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
@@ -702,35 +570,9 @@ void PhoneEditor::label(ViewRect r, const std::string &text)
 }
 void PhoneEditor::draw()
 {
-	syncOverlay();
-	if (editor.isShowingAreaName)
+	if (editor.hasDialog())
 	{
-		editor.areaName->drawTouch();
-		return;
-	}
-	if (editor.showingMenuScreen)
-	{
-		editor.menuScreen->drawTouch();
-		return;
-	}
-	if (editor.showingTeamsEditor)
-	{
-		editor.teamsEditor->drawTouch();
-		return;
-	}
-	if (editor.showingScriptEditor && editor.scriptEditor->phoneDialog() == editor.scriptEditor)
-	{
-		editor.scriptEditor->drawTouch();
-		return;
-	}
-	if (fileView)
-	{
-		fileView->draw();
-		return;
-	}
-	if (form)
-	{
-		form->draw();
+		editor.drawDialog();
 		return;
 	}
 	prepare();

@@ -197,7 +197,7 @@ void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height
     }
     updateCamera();
     viewportChanged(oldX, viewportX, oldY, viewportY);
-    if (gameMenuScreen) gameMenuScreen->viewportResized(oldWidth, oldHeight, width, height);
+    if (auto *dialog = activeDialog()) dialog->cancelInput();
 }
 
 void GameGUI::suspendInput()

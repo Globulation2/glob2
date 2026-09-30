@@ -7,9 +7,6 @@
 #include "KeyboardManager.h"
 #include "ReplayReader.h"
 #include "GameGUIKeyActions.h"
-#include <GUISelector.h>
-#include <GUIText.h>
-#include <GUIList.h>
 #include <StringTable.h>
 #include <SDL_net.h>
 #include <cassert>
@@ -20,7 +17,7 @@ GlobalContainer *globalContainer = NULL;
 using namespace GAGGUI;
 
 struct TestSettingsScreen : SettingsScreen {
-    TestSettingsScreen() { gfx=globalContainer->gfx; dispatchInit(); selectCategory(Category::Gameplay); }
+    TestSettingsScreen() { beginExecution(globalContainer->gfx); selectCategory(Category::Gameplay); }
     Row speed() { for(const auto& r:rows()) if(r.id=="gameplay.speed") return r; assert(false); return {}; }
     void select(int value) { assert(changeSetting("gameplay.speed", value-Settings::GAME_SPEED_MINIMUM)); }
     int speedRow(int value) const { return value-Settings::GAME_SPEED_MINIMUM; }
@@ -120,11 +117,10 @@ int main(int argc, char** argv) {
     {
         GameGUI gui;
         InGameOptionScreen screen(&gui);
-        assert(screen.gameSpeed->getValue()==10);
-        screen.gameSpeed->setValue(13);
-        screen.onAction(screen.gameSpeed, VALUE_CHANGED, 10, 0);
+        assert(screen.adjustableGameSpeed && settings.gameSpeed==7);
+        screen.setGameSpeed(13);
         assert(settings.gameSpeed==10);
-        assert(screen.gameSpeedText->getText()=="Game speed: Maximum");
+        assert(screen.gameSpeedText()=="Game speed: Maximum");
     }
     { Settings loaded; loaded.load(); assert(loaded.gameSpeed==10); }
     {
@@ -147,10 +143,9 @@ int main(int argc, char** argv) {
         gui.processEvent(&key); assert(settings.gameSpeed==9);
         {
             InGameOptionScreen screen(&gui);
-            assert(!screen.gameSpeed->visible);
-            assert(screen.gameSpeedText->getText()=="Game speed: 1x (multiplayer)");
-            screen.gameSpeed->setValue(0);
-            screen.onAction(screen.gameSpeed,VALUE_CHANGED,0,0);
+            assert(!screen.adjustableGameSpeed);
+            assert(screen.gameSpeedText()=="Game speed: 1x (multiplayer)");
+            screen.setGameSpeed(0);
             assert(settings.gameSpeed==9);
         }
         globalContainer->replaying=true;

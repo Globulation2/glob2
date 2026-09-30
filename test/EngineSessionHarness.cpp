@@ -3,13 +3,11 @@
 #include "Unit.h"
 #include "Building.h"
 #include "GameSessionScreen.h"
-#include "GameGUILoadSave.h"
 #include "GameUtilities.h"
 #include "MapEdit.h"
 #include "YOGLoginScreen.h"
 #include "SettingsScreen.h"
 #include "ChooseMapScreen.h"
-#include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -18,10 +16,8 @@
 #include "YOGClient.h"
 #include "YOGClientEvent.h"
 #include "GameLaunchMessages.h"
-#include <GUITextArea.h>
-#include <GUITextInput.h>
-#include "EditorTouchWidgets.h"
-#include <GUITabScreenWindow.h>
+#include "gui/LoadSaveDialog.h"
+#include "SessionTabsScreen.h"
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
 #include "EditorLoadScreen.h"
@@ -49,63 +45,6 @@
 
 GlobalContainer* globalContainer = nullptr;
 void require(bool value, const char* message) { if (!value) throw std::runtime_error(message); }
-// Inspect composition bounds, without a global keyboard mock or a platform
-// override. Real hosts pass the same reduced rectangle after native insets.
-struct ScriptEditorTouchTestAccess
-{
-	static void validate(ScriptEditorScreen &screen, GAGCore::ViewRect available)
-	{
-		require(screen.compactKeyboardWorkspace,
-				"Short keyboard viewport did not select the editing workspace");
-		require(screen.touchControls.size() == 1 &&
-					screen.touchControls[0].action == ScriptEditorScreen::HIDE_KEYBOARD,
-				"Short keyboard workspace must show only its dismissal action");
-		auto contains = [&](GAGCore::ViewRect r)
-		{
-			return r.x >= available.x && r.y >= available.y &&
-				   r.x + r.w <= available.x + available.w && r.y + r.h <= available.y + available.h;
-		};
-		require(contains(screen.touchBounds) && contains(screen.touchContent) &&
-					contains(screen.touchControls[0].bounds),
-				"Keyboard workspace escaped its usable viewport");
-		const auto bar = screen.touchControls[0].bounds;
-		require(bar.y + bar.h <= screen.touchContent.y,
-				"Keyboard toolbar overlaps the editing canvas");
-		require(screen.touchContent.h > 0, "Keyboard workspace lost its editing canvas");
-	}
-	static void validateEntryNavigation(ScriptEditorScreen &screen)
-	{
-		screen.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::TAB_HINTS, 0);
-		screen.prepareTouch({0, 0, 320, 568}, false);
-		for (const auto &control : screen.touchControls)
-			require(control.bounds.w >= 44 && control.bounds.h >= 44,
-					"Phone entry navigation has undersized touch targets");
-		screen.touchAction(ScriptEditorScreen::NEXT_ENTRY);
-		require(screen.touchItem == 1, "Next entry did not advance stable hint ID");
-		screen.touchAction(ScriptEditorScreen::PREVIOUS_ENTRY);
-		require(screen.touchItem == 0, "Previous entry did not restore stable hint ID");
-		screen.prepareTouch();
-		const auto target=screen.touchControls[2].bounds;
-		auto finger=[&](Uint32 type, SDL_FingerID id) {
-			SDL_Event event{}; event.type=type; event.tfinger.touchId=1; event.tfinger.fingerId=id;
-			event.tfinger.x=float(target.x+target.w/2)/globalContainer->gfx->getW();
-			event.tfinger.y=float(target.y+target.h/2)/globalContainer->gfx->getH();
-			screen.eventTouch(event);
-		};
-		finger(SDL_FINGERDOWN,1); finger(SDL_FINGERDOWN,2);
-		finger(SDL_FINGERUP,1); finger(SDL_FINGERUP,2);
-		require(screen.touchTab==ScriptEditorScreen::TAB_HINTS,
-				"Second-finger interruption activated a script tab");
-		finger(SDL_FINGERDOWN,1); screen.cancelTouch(); finger(SDL_FINGERUP,1);
-		require(screen.touchTab==ScriptEditorScreen::TAB_HINTS,
-				"Cancelled script gesture activated on release");
-
-	}
-	static bool compact(const ScriptEditorScreen &screen)
-	{
-		return screen.compactKeyboardWorkspace;
-	}
-};
 GAGCore::CooperativeSlice fixedSlice()
 {
 	return GAGCore::CooperativeSlice([] { return GAGCore::CooperativeSlice::Time{}; },
@@ -171,41 +110,26 @@ int main(int argc, char **argv)
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
     {
-        struct SelectionProbe : ChooseMapScreen {
-            SelectionProbe() : ChooseMapScreen("maps", "map", false) {}
-            void select(const std::string& filename) {
-                for (auto* widget : widgets) if (auto* list = dynamic_cast<Glob2FileList*>(widget)) {
-                    list->addText(list->fileToList(filename));
-                    list->setSelection(list->getCount() - 1);
-                    list->selectionChanged();
-                    return;
-                }
-                require(false, "Map chooser has no file list");
-            }
-            bool hasPreview() {
-                for (auto* widget : widgets) if (auto* preview = dynamic_cast<MapPreview*>(widget))
-                    return preview->isThumbnailLoaded();
-                throw std::runtime_error("Map chooser has no preview");
-            }
-        } chooser;
+        // Both fixtures are listed at construction; one is then removed, the other truncated.
+        for (const char* fixture : {"browser-missing-fixture.map", "browser-corrupt-fixture.map"}) {
+            GAGCore::BinaryOutputStream output(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(std::string("maps/") + fixture));
+            output.write("bad", 3, "truncated header");
+        }
+        ChooseMapScreen chooser("maps", "map", false);
+        GAGCore::Toolkit::getFileManager()->remove("maps/browser-missing-fixture.map");
         chooser.beginExecution(globalContainer->gfx);
-        for (const char* invalid : {"browser_missing_fixture.map", "browser_corrupt_fixture.map"}) {
-            if (std::string(invalid).find("corrupt") != std::string::npos) {
-                GAGCore::BinaryOutputStream output(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(std::string("maps/") + invalid));
-                output.write("bad", 3, "truncated header");
-            }
-            chooser.select("balanced.map");
-            require(chooser.getSelectedType() == ChooseMapScreen::MAP && chooser.hasPreview(), "Valid map must be selectable");
-            chooser.select(invalid);
+        for (const char* invalid : {"browser-missing-fixture", "browser-corrupt-fixture"}) {
+            require(chooser.selectNamed("balanced") && chooser.getSelectedType() == ChooseMapScreen::MAP && chooser.hasPreview(), "Valid map must be selectable");
+            require(chooser.selectNamed(invalid), "Fixture map must be listed");
             require(chooser.getSelectedType() == ChooseMapScreen::NONE && !chooser.hasPreview(), "Failed map read retained the previous selection or preview");
             SDL_Event enter{}; enter.type = SDL_KEYDOWN; enter.key.keysym.sym = SDLK_RETURN;
             chooser.handleExecutionEvent(enter);
             require(chooser.isExecutionRunning(), "Invalid map was accepted by Enter");
             chooser.drawExecution();
         }
-        chooser.select("balanced.map");
-        require(chooser.getSelectedType() == ChooseMapScreen::MAP, "Chooser did not recover after invalid files");
+        require(chooser.selectNamed("balanced") && chooser.getSelectedType() == ChooseMapScreen::MAP, "Chooser did not recover after invalid files");
         chooser.endExecute(ChooseMapScreen::CANCEL); chooser.finishExecution();
+        GAGCore::Toolkit::getFileManager()->remove("maps/browser-corrupt-fixture.map");
         std::cout << "PASS map selection clears stale data and recovers from missing/corrupt files without a modal loop" << std::endl;
     }
     {
@@ -231,13 +155,13 @@ int main(int argc, char **argv)
     {
         struct LoginProbe : YOGLoginScreen {
             using YOGLoginScreen::YOGLoginScreen;
-            std::string status() { return statusText->getText(); }
+            std::string statusText() { return status; }
         };
         GAGGUI::ScreenStack screens(*globalContainer->gfx);
         LoginProbe login(screens, std::make_shared<YOGClient>());
         login.beginExecution(globalContainer->gfx);
         static_cast<YOGClientEventListener&>(login).handleYOGClientEvent(std::make_shared<YOGLoginRefusedEvent>(YOGClientVersionTooOld));
-        require(login.status().find("same Glob2 release") != std::string::npos,
+        require(login.statusText().find("same Glob2 release") != std::string::npos,
                 "Protocol rejection must provide a translated actionable status");
         login.drawExecution();
         std::cout << "PASS protocol rejection provides an actionable translated status" << std::endl;
@@ -265,24 +189,33 @@ int main(int argc, char **argv)
     }
 
     {
-        struct TabProbe : GAGGUI::TabScreenWindow {
-            using TabScreenWindow::TabScreenWindow;
-            using TabScreenWindow::endExecute;
+        struct TabProbe : SessionTab {
+            std::string name;
+            explicit TabProbe(std::string name) : name(std::move(name)) {}
+            std::string title() const override { return name; }
+            Glob2UI::Element build(const Glob2UI::Presentation&) override { return Glob2UI::label(name); }
         };
-        GAGGUI::TabScreen tabs(true);
-        auto first = std::make_unique<TabProbe>(&tabs, "First");
-        TabProbe remaining(&tabs, "Remaining");
+        SessionTabsScreen tabs;
+        auto first = std::make_unique<TabProbe>("First");
+        TabProbe remaining("Remaining");
+        tabs.addTab(first.get(), false);
+        tabs.addTab(&remaining, true);
         tabs.beginExecution(globalContainer->gfx);
-        const int firstID = first->getTabNumber();
-        first->endExecute(7);
+        first->finish(7);
         tabs.onTimer(SDL_GetTicks());
-        require(tabs.getReturnCode(firstID) == 7 && remaining.isActivated(),
-                "Completing an owned tab must activate the remaining tab");
+        require(tabs.isExecutionRunning() && first->returnCode() == 7,
+                "Completing an owned tab must not end the session");
+        tabs.removeTab(first.get());
         first.reset();
-        require(tabs.isExecutionRunning() && remaining.isActivated(),
-                "Destroying a completed tab must preserve the surviving session");
+        tabs.onTimer(SDL_GetTicks());
+        require(tabs.isExecutionRunning() && remaining.isActivated() && tabs.activeTab() == &remaining,
+                "Destroying a completed tab must activate the surviving tab");
         tabs.drawExecution();
-        tabs.endExecute(0); tabs.finishExecution();
+        remaining.finish(0);
+        tabs.onTimer(SDL_GetTicks());
+        require(!tabs.isExecutionRunning(), "The primary tab ends the session");
+        tabs.removeTab(&remaining);
+        tabs.finishExecution();
         std::cout << "PASS owned tab destruction preserves surviving tabs" << std::endl;
     }
 
@@ -349,14 +282,14 @@ int main(int argc, char **argv)
             PersistenceState current = PersistenceState::Pending;
             PersistenceState state() const override { return current; }
         };
-        LoadSaveScreen dialog("games", "game", false, "Save", "test", glob2FilenameToName, glob2NameToFilename);
+        LoadSaveDialog dialog("games", "game", false, "Save", "test", glob2FilenameToName, glob2NameToFilename);
         auto operation = std::make_unique<ControlledPersistence>();
         auto* control = operation.get();
         dialog.beginPersistence(std::move(operation));
-        dialog.onAction(nullptr, GAGGUI::BUTTON_RELEASED, LoadSaveScreen::CANCEL, 0);
-        require(dialog.endValue == -1 && !dialog.pollPersistence(), "Pending save must not close or claim completion");
+        dialog.cancelPresentedFile();
+        require(!dialog.finished() && !dialog.pollPersistence(), "Pending save must not close or claim completion");
         control->current = PersistenceState::Failed;
-        require(!dialog.pollPersistence() && dialog.endValue == -1, "Failed persistence must retain the dialog");
+        require(!dialog.pollPersistence() && !dialog.finished(), "Failed persistence must retain the dialog");
         operation = std::make_unique<ControlledPersistence>(); control = operation.get();
         dialog.beginPersistence(std::move(operation));
         control->current = PersistenceState::Succeeded;
@@ -603,8 +536,11 @@ int main(int argc, char **argv)
         require(screens.running() && original->game.checkSum() == checksum && getSyncRandState() == rng,
                 "Failed or cancelled replacement must preserve the existing map and RNG");
         screens.frame(165, {escape});
+        require(original->hasDialog() && original->activeDialog(), "Escape must open the editor menu");
+        original->activeDialog()->draw(0);
+        const auto quit = original->activeDialog()->host().bounds("quit");
         SDL_Event down{}; down.type = SDL_MOUSEBUTTONDOWN; down.button.button = SDL_BUTTON_LEFT;
-        down.button.x = 400; down.button.y = 375;
+        down.button.x = quit.x + quit.w / 2; down.button.y = quit.y + quit.h / 2;
         SDL_Event up = down; up.type = SDL_MOUSEBUTTONUP;
         screens.frame(198, {down, up}); screens.frame(231, {});
         require(original->needsQuitDecision(), "Replacement failure/cancellation must preserve unsaved edits");
@@ -625,125 +561,95 @@ int main(int argc, char **argv)
         require(editor.load("maps/balanced.map"), "Restore the shared editor fixture after save tests");
         // Opening a script file dialog must return to the host without polling
         // input or suspending the C++ stack. Escape closes only that child.
-        for (int action : {ScriptEditorScreen::LOAD, ScriptEditorScreen::SAVE}) {
+        for (bool load : {true, false}) {
             ScriptEditorScreen script(&editor.game);
-            script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, action, 0);
-            script.dispatchTimer(0);
-            script.dispatchPaint();
-            script.drawFileDialog();
+            script.attach(*globalContainer->gfx);
+            script.loadSave(load, "scripts", "sgsl");
+            require(script.fileDialog() != nullptr, "Script load/save must open its file dialog");
+            script.update(0);
+            script.draw(0);
+            script.fileDialog()->draw(0);
             SDL_Event escape{};
             escape.type = SDL_KEYDOWN;
             escape.key.keysym.sym = SDLK_ESCAPE;
-            script.translateAndProcessEvent(&escape);
-            require(script.endValue < 0, "Cancelling script file dialog must retain its parent");
-            SDL_Event click{};
-            click.type = SDL_MOUSEBUTTONDOWN;
-            click.button.button = SDL_BUTTON_LEFT;
-            click.button.x = script.decX + 170;
-            click.button.y = script.decY + 380;
-            script.translateAndProcessEvent(&click);
-            click.type = SDL_MOUSEBUTTONUP;
-            script.translateAndProcessEvent(&click);
-            require(script.endValue == ScriptEditorScreen::CANCEL, "Script editor must remain usable after child cancellation");
+            script.fileDialog()->event(escape);
+            require(script.fileDialog()->finished(), "Escape must close the script file dialog");
+            script.finishFileDialog();
+            require(!script.fileDialog() && !script.finished(), "Cancelling script file dialog must retain its parent");
+            script.draw(0);
+            const auto cancel = script.host().bounds("cancel");
+            script.host().tapAt({cancel.x + cancel.w / 2, cancel.y + cancel.h / 2});
+            require(script.finished() && script.result() == ScriptEditorScreen::CANCEL, "Script editor must remain usable after child cancellation");
         }
-		// The touch workspace must edit the retained draft, not a flattened
-		// label. Composition stays provisional and switching entry slots flushes
-		// multiline text without changing the live mission until OK.
+		// The script canvas edits the retained draft, not a flattened label:
+		// composition stays provisional and tab changes keep every entry until OK.
 		{
-			struct InspectScript : ScriptEditorScreen
+			ScriptEditorScreen script(&editor.game);
+			script.attach(*globalContainer->gfx);
+			script.draw(0);
+			auto tapKey = [&](const std::string &key)
 			{
-				using ScriptEditorScreen::ScriptEditorScreen;
-				GAGGUI::TextArea *code() { return scriptEditor; }
-				std::string hint(int slot) { return hints[slot]->getText(); }
-			} script(&editor.game);
-			script.drawTouch();
-			const auto canvas =
-				static_cast<EditorTouch::TextCanvas *>(script.code())->canvasRectangle();
-			auto tap = [&](int x, int y)
-			{
+				script.draw(0);
+				const auto r = script.host().bounds(key);
 				SDL_Event event{};
 				event.type = SDL_MOUSEBUTTONDOWN;
 				event.button.button = SDL_BUTTON_LEFT;
-				event.button.x = x;
-				event.button.y = y;
-				script.eventTouch(event);
+				event.button.x = r.x + 8;
+				event.button.y = r.y + 8;
+				script.event(event);
 				event.type = SDL_MOUSEBUTTONUP;
-				script.eventTouch(event);
+				script.event(event);
 			};
-			tap(canvas.x + 8, canvas.y + 8);
-			const auto before = script.code()->getText();
+			tapKey("script");
+			const auto before = script.scriptText();
 			SDL_Event composition{};
 			composition.type = SDL_TEXTEDITING;
 			SDL_strlcpy(composition.edit.text, "provisional", sizeof(composition.edit.text));
-			script.eventTouch(composition);
+			script.event(composition);
 			SDL_Event key{};
 			key.type = SDL_KEYDOWN;
 			key.key.keysym.sym = SDLK_RETURN;
-			script.eventTouch(key);
-			require(script.code()->getText() == before,
+			script.event(key);
+			require(script.scriptText() == before,
 					"IME preedit or confirmation leaked into the script draft");
 			SDL_Event text{};
 			text.type = SDL_TEXTINPUT;
 			SDL_strlcpy(text.text.text, "draft", sizeof(text.text.text));
-			script.eventTouch(text);
-			require(script.code()->getText().find("draft") != std::string::npos,
-					"Touch script canvas did not accept committed text");
-			script.eventTouch(key);
-			require(script.code()->getText().size() == before.size() + 6,
-					"Touch script canvas lost multiline editing");
-			script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::TAB_HINTS, 0);
-			script.drawTouch();
-			tap(globalContainer->gfx->getW() / 2, globalContainer->gfx->getH() / 2);
+			script.event(text);
+			require(script.scriptText().find("draft") != std::string::npos,
+					"Script canvas did not accept committed text");
+			script.event(key);
+			require(script.scriptText().size() == before.size() + 6,
+					"Script canvas lost multiline editing");
+			script.showTab(ScriptEditorScreen::TAB_HINTS);
+			tapKey("hint/0");
 			SDL_strlcpy(text.text.text, "First line", sizeof(text.text.text));
-			script.eventTouch(text);
-			script.eventTouch(key);
-			SDL_strlcpy(text.text.text, "Second line", sizeof(text.text.text));
-			script.eventTouch(text);
-			script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::TAB_BRIEFING, 0);
-			require(script.hint(0).find("First line\nSecond line") != std::string::npos,
-					"Hint workspace did not preserve its multiline entry on tab change");
-			const auto retainedCode = script.code()->getText();
+			script.event(text);
+			script.showTab(ScriptEditorScreen::TAB_BRIEFING);
+			require(script.hint(0).find("First line") != std::string::npos,
+					"Hint entry did not preserve its text on tab change");
+			const auto retainedCode = script.scriptText();
 			const auto retainedHint = script.hint(0);
-			ScriptEditorTouchTestAccess::validateEntryNavigation(script);
-			const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-			for (double height : {96., 144., 220.})
-			{
-				const GAGCore::ViewRect reduced{
-					8 * unit, 8 * unit, globalContainer->gfx->getW() - 16 * unit, height * unit};
-				script.drawTouchInViewport(reduced, true);
-				ScriptEditorTouchTestAccess::validate(script, reduced);
-				require(script.code()->getText() == retainedCode && script.hint(0) == retainedHint,
-						"Keyboard viewport change modified an editing draft");
-			}
-			script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::HIDE_KEYBOARD, 0);
-			require(!SDL_IsTextInputActive(), "Hide keyboard did not stop native text input");
-			script.drawTouch();
-			require(!ScriptEditorTouchTestAccess::compact(script),
-					"Keyboard dismissal did not restore the full workspace");
-			script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, ScriptEditorScreen::CANCEL, 0);
-			require(script.endValue == ScriptEditorScreen::CANCEL,
-					"Touch workspace cancellation failed");
-			std::cout << "PASS touch script and hint canvases, provisional IME, multiline drafts "
+			script.showTab(ScriptEditorScreen::TAB_SCRIPT);
+			script.draw(0);
+			require(script.scriptText() == retainedCode && script.hint(0) == retainedHint,
+					"Tab change modified an editing draft");
+			key.key.keysym.sym = SDLK_ESCAPE;
+			script.event(key);
+			require(script.finished() && script.result() == ScriptEditorScreen::CANCEL,
+					"Script workspace cancellation failed");
+			std::cout << "PASS script and hint entries, provisional IME, multiline drafts "
 						 "and tab retention"
 					  << std::endl;
 		}
 		{
-			struct EntryProbe : CampaignMapEntryEditor {
-				using CampaignMapEntryEditor::CampaignMapEntryEditor;
-				GAGGUI::TextArea *canvas() {
-					for (auto *widget : widgets)
-						if (auto *area = dynamic_cast<GAGGUI::TextArea *>(widget); area && !area->isReadOnly()) return area;
-					throw std::runtime_error("Missing campaign description canvas");
-				}
-			};
 			Campaign campaign;
 			CampaignMapEntry entry("Test", "maps/balanced.map");
 			entry.setDescription("First line\nSecond line");
-			EntryProbe editor(campaign, entry);
+			CampaignMapEntryEditor editor(campaign, entry);
 			editor.beginExecution(globalContainer->gfx);
 			editor.drawExecution();
-			auto *area = editor.canvas();
-			const auto bounds = area->getScreenRect();
+			const auto bounds = editor.host().bounds("description");
 			const int x = bounds.x, y = bounds.y, h = bounds.h;
 			auto finger = [&](Uint32 type, int py) {
 				SDL_Event event{}; event.type=type; event.tfinger.fingerId=1;
@@ -752,18 +658,19 @@ int main(int argc, char **argv)
 				editor.handleExecutionEvent(event);
 			};
 			finger(SDL_FINGERDOWN,y+5); finger(SDL_FINGERUP,y+5);
-			require(SDL_IsTextInputActive(), "Campaign description tap did not open text input");
+			require(editor.host().editing() == "description", "Campaign description tap did not open text input");
 			SDL_Event composition{}; composition.type=SDL_TEXTEDITING;
 			SDL_strlcpy(composition.edit.text,"provisional",sizeof(composition.edit.text));
 			editor.handleExecutionEvent(composition);
-			require(area->getText()=="First line\nSecond line", "Campaign preedit changed the draft");
+			require(editor.draftDescription()=="First line\nSecond line", "Campaign preedit changed the draft");
 			SDL_Event text{}; text.type=SDL_TEXTINPUT;
 			SDL_strlcpy(text.text.text,"New\n",sizeof(text.text.text)); editor.handleExecutionEvent(text);
-			require(area->getText()=="New\nFirst line\nSecond line", "Campaign touch cursor or multiline insertion failed");
+			require(editor.draftDescription()=="New\nFirst line\nSecond line", "Campaign touch cursor or multiline insertion failed");
 			require(entry.getDescription()=="First line\nSecond line", "Campaign entry changed before confirmation");
-			const auto draft=area->getText();
+			const auto draft=editor.draftDescription();
 			finger(SDL_FINGERDOWN,y+h-5); finger(SDL_FINGERMOTION,y+5); finger(SDL_FINGERUP,y+5);
-			require(area->getText()==draft, "Campaign scroll altered its draft");
+			require(editor.draftDescription()==draft, "Campaign scroll altered its draft");
+			editor.endExecute(CampaignMapEntryEditor::CANCEL); editor.finishExecution();
 			SDL_StopTextInput();
 		}
 		const auto originalRng = getSyncRandState();
@@ -877,12 +784,15 @@ int main(int argc, char **argv)
         open.type = SDL_KEYDOWN;
         open.key.keysym.sym = SDLK_ESCAPE;
         open.key.keysym.scancode = SDL_SCANCODE_ESCAPE;
+        require(editor.advanceEditing({open}, 1000), "Editor must accept menu input incrementally");
+        require(editor.hasDialog(), "Escape must open the editor menu");
+        editor.activeDialog()->draw(0);
+        const auto quitButton = editor.activeDialog()->host().bounds("quit");
         SDL_Event down{};
         down.type = SDL_MOUSEBUTTONDOWN;
         down.button.button = SDL_BUTTON_LEFT;
-        down.button.x = 400; down.button.y = 375;
+        down.button.x = quitButton.x + quitButton.w / 2; down.button.y = quitButton.y + quitButton.h / 2;
         SDL_Event up = down; up.type = SDL_MOUSEBUTTONUP;
-        require(editor.advanceEditing({open}, 1000), "Editor must accept menu input incrementally");
         require(editor.advanceEditing({down, up}, 1033) && editor.needsQuitDecision(),
                 "Modified editor must request an explicit quit decision");
         editor.drawEditing();

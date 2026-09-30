@@ -3398,3 +3398,9 @@ Accepter: %0
 Taille du texte des dialogues: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Reprendre le jeu
+[games]
+Parties
+[Add AI]
+Ajouter une IA

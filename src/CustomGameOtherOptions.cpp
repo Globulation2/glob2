@@ -1,176 +1,75 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
 #include "CustomGameOtherOptions.h"
 #include "AllyTeamWidgetIndex.h"
 
-#include <Toolkit.h>
-#include <StringTable.h>
-#include <GUIButton.h>
-#include <GUIText.h>
-#include <optional>
-#include <sstream>
+using namespace Glob2UI;
 
-CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)
-	:	gameHeader(gameHeader), oldGameHeader(gameHeader)
+CustomGameOtherOptions::CustomGameOtherOptions(GameHeader &gameHeader, MapHeader &mapHeader, bool readOnly)
+	: gameHeader(gameHeader), mapHeader(mapHeader), oldGameHeader(gameHeader), readOnly(readOnly)
 {
-	ok = new TextButton(440, (readOnly ? 420 : 360), 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
-	addWidget(ok);
-	
-	if(!readOnly)
-	{
-		cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
-		addWidget(cancel);
-	}
-	
-	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Other Options]"));
-	addWidget(title);
-
-	for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
-	{
-		playerNames[i] = new Text(125, 60+25*i, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", gameHeader.getBasePlayer(i).name);
-		color[i] = new ColorButton(100, 60+25*i, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 100+i);
-		allyTeamNumbers[i] = new MultiTextButton(250, 60+25*i, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 200+i);
-		allyTeamNumbers[i]->clearTexts();
-		for(int j=0; j<mapHeader.getNumberOfTeams(); ++j)
-		{
-			std::stringstream s;
-			s<<j+1;
-			allyTeamNumbers[i]->addText(s.str());
-		}
-		allyTeamNumbers[i]->setIndex(allyTeamNumberToWidgetIndex(
-			gameHeader.getAllyTeamNumber(gameHeader.getBasePlayer(i).teamNumber),
-			mapHeader.getNumberOfTeams()));
-
-		color[i]->clearColors();
-		color[i]->addColor(mapHeader.getBaseTeam(gameHeader.getBasePlayer(i).teamNumber).color);
-		color[i]->setSelectedColor(0);
-		
-		if(readOnly)
-		{
-			allyTeamNumbers[i]->setClickable(false);
-		}
-		
-		addWidget(playerNames[i]);
-		addWidget(color[i]);
-		addWidget(allyTeamNumbers[i]);
-	}
-	
-	teamsFixed = new OnOffButton(300, 60, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.areAllyTeamsFixed(), TEAMSFIXED);
-	addWidget(teamsFixed);
-	teamsFixedText = new Text(325, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Teams Fixed]"));
-	addWidget(teamsFixedText);
-	if(readOnly)
-		teamsFixed->setClickable(false);
-	
-	//These are for winning conditions
-	prestigeWinEnabled = new OnOffButton(300, 90, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, true, PRESTIGEWINENABLED);
-	addWidget(prestigeWinEnabled);
-	prestigeWinEnabledText = new Text(325, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Prestige Win Enabled]"));
-	addWidget(prestigeWinEnabledText);
-	updateScreenWinningConditions();
-	if(readOnly)
-		prestigeWinEnabled->setClickable(false);
-	
-	//Map discovered.
-	mapDiscovered = new OnOffButton(300, 120, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, gameHeader.isMapDiscovered(), MAPDISCOVERED);
-	addWidget(mapDiscovered);
-	mapDiscoveredText = new Text(325, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Map Discovered]"));
-	addWidget(mapDiscoveredText);
-	if(readOnly)
-		mapDiscovered->setClickable(false);
 }
 
-
-
-CustomGameOtherOptions::~CustomGameOtherOptions()
+void CustomGameOtherOptions::onEscape()
 {
-
-}
-
-
-void CustomGameOtherOptions::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
+	if (readOnly)
+		endExecute(Finished);
+	else
 	{
-		if(par1 == OK)
-		{
-			endExecute(Finished);
-		}
-		if(par1 == CANCEL)
-		{
-			gameHeader = oldGameHeader;
-			endExecute(Canceled);
-		}
-	}
-	else if (action==BUTTON_STATE_CHANGED)
-	{
-		if(par1>=200 && par1<300)
-		{
-			///Find which player row this widget is for. The lookup can
-			///genuinely fail (e.g. a stale event for a widget of a player
-			///slot that no longer exists); there is nothing to update then.
-			std::optional<int> playerRow;
-			for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
-			{
-				if(allyTeamNumbers[i] == source)
-				{
-					playerRow = i;
-					break;
-				}
-			}
-			if(!playerRow)
-				return;
-			const int team = gameHeader.getBasePlayer(*playerRow).teamNumber;
-			const int allyIndex = allyTeamNumbers[*playerRow]->getIndex();
-			///Adjust all widgets that have this team number
-			for(int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
-			{
-				if(gameHeader.getBasePlayer(i).teamNumber == team)
-				{
-					allyTeamNumbers[i]->setIndex(allyIndex);
-				}
-			}
-			///Widget indices are 0-based; ally team numbers are 1-based
-			gameHeader.setAllyTeamNumber(team, allyIndex+1);
-		}
-		else if(par1 == TEAMSFIXED)
-		{
-			gameHeader.setAllyTeamsFixed(teamsFixed->getState());
-		}
-		else if(par1 == PRESTIGEWINENABLED)
-		{
-			updateGameHeaderWinningConditions();
-		}
-		else if(par1 == MAPDISCOVERED)
-		{
-			gameHeader.setMapDiscovered(mapDiscovered->getState());
-		}
+		gameHeader = oldGameHeader;
+		endExecute(Canceled);
 	}
 }
 
-
-
-void CustomGameOtherOptions::updateGameHeaderWinningConditions()
+bool CustomGameOtherOptions::prestigeWinEnabled() const
 {
-	WinningCondition::setPrestigeWinCondition(gameHeader.getWinningConditions(), prestigeWinEnabled->getState());
+	for (const auto &condition : gameHeader.getWinningConditions())
+		if (condition->getType() == WCPrestige)
+			return true;
+	return false;
 }
 
-
-
-void CustomGameOtherOptions::updateScreenWinningConditions()
+void CustomGameOtherOptions::setAllyTeam(int player, int widgetIndex)
 {
-	std::list<std::shared_ptr<WinningCondition> >& winningConditions = gameHeader.getWinningConditions();
-	
-	//Update the prestige condition
-	prestigeWinEnabled->setState(false);
-	for(std::list<std::shared_ptr<WinningCondition> >::iterator i = winningConditions.begin(); i!=winningConditions.end(); ++i)
+	const int team = gameHeader.getBasePlayer(player).teamNumber;
+	// Widget indices are 0-based; ally team numbers are 1-based.
+	gameHeader.setAllyTeamNumber(team, widgetIndex + 1);
+}
+
+Element CustomGameOtherOptions::build(const Presentation &p)
+{
+	std::vector<std::string> teamChoices;
+	for (int j = 0; j < mapHeader.getNumberOfTeams(); ++j)
+		teamChoices.push_back(std::to_string(j + 1));
+	std::vector<Element> players;
+	for (int i = 0; i < gameHeader.getNumberOfPlayers(); ++i)
 	{
-		if((*i)->getType() == WCPrestige)
-		{
-			prestigeWinEnabled->setState(true);
-			break;
-		}
+		const auto &player = gameHeader.getBasePlayer(i);
+		const auto color = mapHeader.getBaseTeam(player.teamNumber).color;
+		const int allyIndex = allyTeamNumberToWidgetIndex(gameHeader.getAllyTeamNumber(player.teamNumber), mapHeader.getNumberOfTeams());
+		ChoiceOptions options;
+		options.controlEnabled = !readOnly;
+		players.push_back(row({swatch(color), expanded(label(player.name)),
+							   width(p.pt(96), choice("ally/" + std::to_string(i), teamChoices, allyIndex,
+													  [this, i](int v) { setAllyTeam(i, v); }, options))},
+							  {-1, CrossAlign::Center}));
 	}
+	auto options = column({toggle("teams-fixed", tr("[Teams Fixed]"), gameHeader.areAllyTeamsFixed(),
+								  [this](bool v) { gameHeader.setAllyTeamsFixed(v); }, !readOnly),
+						   toggle("prestige", tr("[Prestige Win Enabled]"), prestigeWinEnabled(),
+								  [this](bool v) { WinningCondition::setPrestigeWinCondition(gameHeader.getWinningConditions(), v); }, !readOnly),
+						   toggle("discovered", tr("[Map Discovered]"), gameHeader.isMapDiscovered(),
+								  [this](bool v) { gameHeader.setMapDiscovered(v); }, !readOnly)});
+	auto playersColumn = column(std::move(players));
+	Element body = adaptive(
+		[playersColumn, options](const LayoutContext &ctx, Size available)
+		{
+			if (available.w < ctx.presentation.pt(640))
+				return scroll("options/scroll", column({playersColumn, divider(), options}));
+			return scroll("options/scroll", row({expanded(playersColumn), expanded(options)}, {-1, CrossAlign::Start}));
+		});
+	std::vector<MenuAction> buttons{{"ok", tr("[ok]"), [this] { endExecute(Finished); }, true, SDLK_RETURN}};
+	if (!readOnly)
+		buttons.push_back({"cancel", tr("[Cancel]"), [this] { onEscape(); }, false, SDLK_ESCAPE});
+	return page(tr("[Other Options]"), body, actions(std::move(buttons), p), p, 800);
 }
-

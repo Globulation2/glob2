@@ -1,13 +1,11 @@
-const {clickCreateMap,clickCampaignFooter,campaignFrame,chooseEditorLandscape}=require('./editor-controls');
+const {clickCreateMap,clickCampaignFooter,chooseEditorLandscape}=require('./editor-controls');
 const {editTextField}=require('./main-menu');
-const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile,clickControl,clickListRow,controlBox}=require('./main-menu');
 const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
-const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
-const menu = (page, x, y) => click(page, x + 280, y + 210);
 
 // Hold the first scheduled turn after entering a loader. The real Escape event
 // can then reach a pending job without racing a fast machine's completed load.
@@ -70,7 +68,7 @@ test('campaign selector returns to its suspended parent and can reopen', async (
   await clickMainMenu(page, 'campaign');
   await screen(page, 'CampaignMainMenu');
   for (let attempt = 0; attempt < 2; ++attempt) {
-    await menu(page, 320, 90);
+    await clickControl(page, 'new');
     await screen(page, 'CampaignSelectorScreen');
     await page.locator('#canvas').press('Escape');
     await screen(page, 'CampaignMainMenu');
@@ -83,12 +81,12 @@ test('tutorial sessions quit through the end screen and can restart', async ({pa
   await clickMainMenu(page, 'tutorial');
   await screen(page, 'CampaignMenuScreen');
   for (let attempt = 0; attempt < 2; ++attempt) {
-    await menu(page, 100, 60);
-    await menu(page, 160, 450);
+    await clickListRow(page, 'missions', 0);
+    await clickControl(page, 'start');
     await screen(page, 'match');
     await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
     await page.locator('#canvas').press('Escape');
-    await click(page, 600, 500);
+    await clickControl(page, 'quit');
     await screen(page, 'EndGameScreen');
     await page.locator('#canvas').press('Enter');
     await screen(page, 'CampaignMenuScreen');
@@ -102,23 +100,23 @@ test('game rules and AI descriptions return to setup, and a finished game return
   await screen(page, 'CustomGameScreen');
   // The lobby redesign (#237) folded "other options" into inline Game Rules
   // rows - no separate screen to navigate to and back from anymore.
-  await click(page, 969, 35); // Game Rules tab.
-  await click(page, 452, 133); // "Quick clash" tile.
+  await clickControl(page, 'tab/2'); // Game Rules tab.
+  await clickControl(page, 'ruleset/1'); // "Quick clash" tile.
   // The AI profile picker (Players & Teams tab, a colony's Info button) is a
   // screen CustomGameScreen pushes - see CustomGameScreen::showAIProfile.
   // It must actually be pushed, not blocking-executed: the browser host has
   // no Asyncify, so the old choose()/Screen::execute() pattern this replaced
   // threw and froze the page (docs/browser/adr-003-screen-execution.md).
-  await click(page, 593, 35); // Players & Teams tab.
+  await clickControl(page, 'tab/1'); // Players & Teams tab.
   await clickCustomAIProfile(page, 3);
   await screen(page, 'CustomGameChoiceScreen');
-  await click(page, 213, 201); // Warrush row.
-  await click(page, 728, 862); // "Use Warrush".
+  await clickListRow(page, 'profile/list', /Warrush/); // Warrush row.
+  await clickControl(page, 'profile/use'); // "Use Warrush".
   await screen(page, 'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('Escape');
-  await click(page, 600, 500);
+  await clickControl(page, 'quit');
   await screen(page, 'EndGameScreen');
   await page.locator('#canvas').press('Enter');
   await screen(page, 'CustomGameScreen');
@@ -141,9 +139,9 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   expect((await state(page)).tick).toBe(paused.tick);
 
   await page.locator('#canvas').press('Escape', {delay:80});
-  await click(page, 600, 400);
+  await clickControl(page, 'save');
   await editTextField(page,'Browser regression');
-  await click(page, 520, 555);
+  await clickControl(page, 'ok');
   const digest = () => page.evaluate(() => glob2Diagnostics.saveDigest('Browser_regression.game.gz'));
   await expect.poll(digest).not.toBeNull();
   await expect.poll(async () => (await state(page)).persisting).toBe(false);
@@ -155,19 +153,19 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   // Each test owns a fresh browser context; only this test's save exists.
   expect(await page.evaluate(() => glob2Diagnostics.saves())).toEqual(['Browser_regression.game.gz']);
   await clickMainMenu(page, 'load'); await screen(page, 'ChooseMapScreen');
-  await menu(page, 100, 70);
+  await clickListRow(page, 'files', 0);
   const downloadEvent = page.waitForEvent('download');
-  await menu(page, 340, 320);
+  await clickControl(page, 'export');
   const download = await downloadEvent;
   expect(download.suggestedFilename()).toBe('Browser_regression.game.gz');
   const bytes = await require('node:fs/promises').readFile(await download.path());
   expect({size:bytes.length,sha256:require('node:crypto').createHash('sha256').update(bytes).digest('hex')}).toEqual(saved);
-  await menu(page, 530, 440); await screen(page, 'MainMenuScreen');
+  await clickControl(page, 'cancel'); await screen(page, 'MainMenuScreen');
 
   await clickMainMenu(page, 'load');
   await screen(page, 'ChooseMapScreen');
-  await menu(page, 100, 70);
-  await menu(page, 530, 380);
+  await clickListRow(page, 'files', 0);
+  await clickControl(page, 'ok');
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThanOrEqual(paused.tick);
   // Muted startup now leaves the audio device closed until the player unmutes.
   expect((await state(page)).audio).toBe('inactive');
@@ -179,22 +177,21 @@ test('editor setup and campaign entry dialogs return to their retained parents',
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'editor');
   await screen(page, 'EditorMainMenu');
-  await menu(page, 320, 90);
+  await clickControl(page, 'new-map');
   await screen(page, 'NewMapScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'EditorMainMenu');
-  await menu(page, 320, 210);
+  await clickControl(page, 'new-campaign');
   await screen(page, 'CampaignEditor');
-  const campaign=campaignFrame(page);
-  await click(page,campaign.x+(campaign.w+20)/2+74,campaign.footer-34);
+  await clickControl(page, 'add');
   await screen(page, 'ChooseMapScreen');
-  await menu(page, 100, 70);
-  await menu(page, 530, 380);
+  await clickListRow(page, 'files', 0);
+  await clickControl(page, 'ok');
   await screen(page, 'CampaignMapEntryEditor');
   await clickCampaignFooter(page,true);
   await screen(page, 'CampaignEditor');
-  await click(page,campaign.x+(campaign.w+20)/2+80,campaign.y+44);
-  await click(page,campaign.x+(campaign.w+20)/2+230,campaign.footer-34);
+  await clickListRow(page, 'maps', 0);
+  await clickControl(page, 'edit');
   await screen(page, 'CampaignMapEntryEditor');
   await clickCampaignFooter(page,false);
   await screen(page, 'CampaignEditor');
@@ -210,19 +207,19 @@ test('map editor frames resume after cancelling quit and can discard a new map',
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'editor');
   await screen(page, 'EditorMainMenu');
-  await menu(page, 320, 90);
+  await clickControl(page, 'new-map');
   await screen(page, 'NewMapScreen');
   await clickCreateMap(page);
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
-  await click(page, 600, 525);
+  await clickControl(page, 'quit');
   await screen(page, 'MessageScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
-  await click(page, 600, 525);
+  await clickControl(page, 'quit');
   await screen(page, 'MessageScreen');
-  await menu(page, 320, 360);
+  await clickControl(page, 'choice/1'); // Quit without saving.
   await screen(page, 'EditorMainMenu');
   expect(errors).toEqual([]);
 });
@@ -231,23 +228,23 @@ test('map editor frames resume after cancelling quit and can discard a new map',
 test('editor save cancellation keeps edits open and completed fertility saves the map', async ({page}) => {
   await clickMainMenu(page, 'editor');
   await screen(page, 'EditorMainMenu');
-  await menu(page, 320, 90);
+  await clickControl(page, 'new-map');
   await screen(page, 'NewMapScreen');
   await clickCreateMap(page);
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
-  await click(page, 600, 525);
+  await clickControl(page, 'quit');
   await screen(page, 'MessageScreen');
-  await menu(page, 110, 360); // Save before quit.
+  await clickControl(page, 'choice/0'); // Save before quit.
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80}); // Cancel file selection.
   await page.locator('#canvas').press('Escape', {delay:80}); // Reopen editor menu.
-  await click(page, 600, 525);
+  await clickControl(page, 'quit');
   await screen(page, 'MessageScreen'); // Unsaved edits are still present.
-  await menu(page, 110, 360);
+  await clickControl(page, 'choice/0');
   await screen(page, 'MapEditorScreen');
   await editTextField(page,'Browser editor');
-  await click(page, 520, 555);
+  await clickControl(page, 'ok');
   await screen(page, 'EditorMainMenu'); // Returns only after job and map write complete.
   const digest = () => page.evaluate(() => glob2Diagnostics.mapDigest('Browser_editor.map.gz'));
   await expect.poll(digest).not.toBeNull();
@@ -266,17 +263,17 @@ test('editor map loading can be cancelled and restarted', async ({page}) => {
   await clickMainMenu(page, 'editor');
   await screen(page, 'EditorMainMenu');
   for (const cancel of [true, false]) {
-    await menu(page, 320, 150);
+    await clickControl(page, 'load-map');
     await screen(page, 'ChooseMapScreen');
-    await menu(page, 100, 70);
+    await clickListRow(page, 'files', 0);
     if (cancel) await holdLoader(page, 'EditorLoadScreen');
-    await menu(page, 530, 380);
+    await clickControl(page, 'ok');
     if (cancel) {
       await cancelHeldLoader(page, 'EditorLoadScreen');
     } else {
       await screen(page, 'MapEditorScreen');
       await page.locator('#canvas').press('Escape', {delay:80});
-      await click(page, 600, 525);
+      await clickControl(page, 'quit');
     }
     await screen(page, 'EditorMainMenu');
   }
@@ -296,12 +293,12 @@ test('custom and tutorial startup can be cancelled and retried', async ({page}) 
   await screen(page, 'MainMenuScreen');
   await clickMainMenu(page, 'tutorial');
   await screen(page, 'CampaignMenuScreen');
-  await menu(page, 100, 60);
+  await clickListRow(page, 'missions', 0);
   await holdLoader(page, 'GameLoadScreen');
-  await menu(page, 160, 450);
+  await clickControl(page, 'start');
   await cancelHeldLoader(page, 'GameLoadScreen');
   await screen(page, 'CampaignMenuScreen');
-  await menu(page, 160, 450); // The same selected mission remains available.
+  await clickControl(page, 'start'); // The same selected mission remains available.
   await screen(page, 'match');
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   expect(errors).toEqual([]);
@@ -312,8 +309,7 @@ test('a generated custom map loads after its setup screen closes', async ({page}
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');
-  const {width} = page.viewportSize();
-  await click(page, Math.floor((width - Math.min(width - 32, 1120)) / 2) + 225, 100); // "Random map"
+  await clickControl(page, 'map/mode/1'); // "Random map"
   await clickCustomGameStart(page);
   await screen(page, 'match');
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
@@ -323,12 +319,8 @@ test('a generated custom map loads after its setup screen closes', async ({page}
 test('the custom game preview draws the selected map', async ({page}) => {
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');
-  // Mirrors CustomGameScreen::renderMap()'s preview square on the Map tab.
-  const {width, height} = page.viewportSize();
-  const w = Math.min(width - 32, 1120), leftW = w < 800 ? 280 : Math.floor(w * 46 / 100);
-  const rightX = Math.floor((width - w) / 2) + leftW + 24, rightW = w - leftW - 24;
-  const size = Math.min(rightW, height - 181 - 126);
-  const clip = {x: rightX + Math.floor((rightW - size) / 2), y: 179, width: size, height: size};
+  // The preview square on the Map tab, as the lobby lays it out.
+  const clip = await controlBox(page, 'map/preview');
   // A fresh profile previews FourSquares1: water and grass, not a flat panel.
   await expect.poll(() => darkShare(page, clip)).toBeGreaterThan(0.25);
 });
@@ -338,16 +330,16 @@ test('cancelling an editor replacement preserves edits and a completed load repl
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'editor');
   await screen(page, 'EditorMainMenu');
-  await menu(page, 320, 90);
+  await clickControl(page, 'new-map');
   await screen(page, 'NewMapScreen');
   await clickCreateMap(page);
   await screen(page, 'MapEditorScreen');
   for (const cancel of [true, false]) {
     await page.locator('#canvas').press('Escape', {delay:80});
-    await click(page, 600, 325); // Load map from inside the editor.
-    await click(page, 500, 365);
+    await clickControl(page, 'load'); // Load map from inside the editor.
+    await clickListRow(page, 'files', 0);
     await holdLoader(page, 'EditorLoadScreen');
-    await click(page, 520, 555);
+    await clickControl(page, 'ok');
     if (cancel) await cancelHeldLoader(page, 'EditorLoadScreen');
     else {
       await screen(page, 'EditorLoadScreen');
@@ -355,7 +347,7 @@ test('cancelling an editor replacement preserves edits and a completed load repl
     }
     await screen(page, 'MapEditorScreen');
     await page.locator('#canvas').press('Escape', {delay:80});
-    await click(page, 600, 525);
+    await clickControl(page, 'quit');
     if (cancel) {
       await screen(page, 'MessageScreen'); // The original unsaved map is retained.
       await page.locator('#canvas').press('Escape', {delay:80});
@@ -374,7 +366,7 @@ test(`map generation can be cancelled before retrying (${terrain.name})`, async 
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'editor');
   await screen(page, 'EditorMainMenu');
-  await menu(page, 320, 90);
+  await clickControl(page, 'new-map');
   await screen(page, 'NewMapScreen');
   // The preview starts at 256 × 256; choose a partition generator first.
   await chooseEditorLandscape(page,'concrete islands');
@@ -387,9 +379,9 @@ test(`map generation can be cancelled before retrying (${terrain.name})`, async 
   await clickCreateMap(page);
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
-  await click(page, 600, 525);
+  await clickControl(page, 'quit');
   await screen(page, 'MessageScreen');
-  await menu(page, 320, 360);
+  await clickControl(page, 'choice/1');
   await screen(page, 'EditorMainMenu');
   expect(errors).toEqual([]);
 });
@@ -399,16 +391,14 @@ test(`map generation can be cancelled before retrying (${terrain.name})`, async 
 test('landscape picker and start-quality details return to the retained custom setup', async ({page}, info) => {
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
-  await click(page,260,100); // Random map.
-  await click(page,280,160); await screen(page,'LandscapePickerScreen');
+  await clickControl(page,'map/mode/1'); // Random map.
+  await clickControl(page,'generator/landscape'); await screen(page,'LandscapePickerScreen');
   await page.screenshot({path:info.outputPath('landscape-picker.png')});
   await page.locator('#canvas').press('Escape',{delay:80});
   await screen(page,'CustomGameScreen');
   // The info button appears once the preview has finished generating.
-  await expect.poll(async () => {
-    await click(page,1146,164);
-    return (await state(page)).screen;
-  }).toContain('StartQualityScreen');
+  await clickControl(page,'quality/info',{timeout:60000});
+  await screen(page,'StartQualityScreen');
   await page.screenshot({path:info.outputPath('start-quality.png')});
   await page.locator('#canvas').press('Escape',{delay:80});
   await screen(page,'CustomGameScreen');

@@ -3388,3 +3388,9 @@ Acceptă: %0
 Dimensiunea textului din dialoguri: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Reia jocul
+[games]
+Jocuri
+[Add AI]
+Adaugă IA

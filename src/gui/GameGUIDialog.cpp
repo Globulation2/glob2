@@ -1,632 +1,649 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <string>
-#include <sstream>
 #include "GameGUIDialog.h"
+#include "FormatableString.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
-#include "GUIAnimation.h"
-#include "GUIButton.h"
-#include "GUISelector.h"
-#include "GUITextArea.h"
-#include "GUIText.h"
-#include "FormatableString.h"
 #include "Player.h"
 #include "SoundMixer.h"
 #include "StringTable.h"
 #include "Toolkit.h"
+#include <algorithm>
+#include <cmath>
+#include <sstream>
 
+namespace fe = Glob2UI;
+using fe::Element;
+using fe::Presentation;
+
+namespace
+{
+std::string localized(const std::string &text)
+{
+	if (GAGCore::Toolkit::getStringTable()->doesStringExist(text.c_str()))
+		return GAGCore::Toolkit::getStringTable()->getString(text.c_str());
+	return text;
+}
+} // namespace
 
 //! Main menu screen
-InGameMainScreen::InGameMainScreen(bool isReplay)
-:OverlayScreen(globalContainer->gfx, 320, (isReplay ? 210 : 260))
+InGameMainScreen::InGameMainScreen(bool isReplay, bool canSave, bool paused)
+	: replay(isReplay), canSave(canSave), paused(paused)
 {
-	if (isReplay)
-	{
-		addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load replay]"), LOAD_GAME));
-		addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Options]"), OPTIONS));
-		addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the replay]"), QUIT_GAME));
-		addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to replay]"), RETURN_GAME, 27));
-	}
-	else
-	{
-		addWidget(new TextButton(0, 10, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[load game]"), LOAD_GAME));
-		addWidget(new TextButton(0, 60, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[save game]"), SAVE_GAME));
-		addWidget(new TextButton(0, 110, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Options]"), OPTIONS));
-		addWidget(new TextButton(0, 160, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[quit the game]"), QUIT_GAME));
-		addWidget(new TextButton(0, 210, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[return to game]"), RETURN_GAME, 27));
-	}
-	dispatchInit();
 }
 
-void InGameMainScreen::onAction(Widget *source, Action action, int par1, int par2)
+Element InGameMainScreen::build(const Presentation &p)
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-		endValue=par1;
+	const std::string returnLabel = fe::tr(replay ? "[return to replay]" : "[return to game]");
+	const std::string loadLabel = fe::tr(replay ? "[load replay]" : "[load game]");
+	const std::string quitLabel = fe::tr(replay ? "[quit the replay]" : "[quit the game]");
+	if (classic())
+	{
+		// The classic desktop menu: a column of gold buttons, Return last.
+		std::vector<Element> buttons;
+		buttons.push_back(classicButton("load", loadLabel, [this] { finish(LOAD_GAME); }));
+		if (!replay && canSave)
+			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
+		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
+		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
+		buttons.push_back(classicButton("return", returnLabel, [this] { finish(RETURN_GAME); }, SDLK_ESCAPE));
+		return fe::column(std::move(buttons), {p.pt(10)});
+	}
+	// The touch sheet: titled, Return highlighted at the bottom.
+	auto item = [&](const char *key, const std::string &label, int code, bool selected = false, SDL_Keycode shortcut = SDLK_UNKNOWN)
+	{
+		fe::ButtonOptions options;
+		options.selected = selected;
+		options.shortcut = shortcut;
+		options.minHeight = 44;
+		return fe::button(key, label, [this, code] { finish(code); }, options);
+	};
+	std::vector<Element> buttons;
+	if (!replay && canSave)
+		buttons.push_back(item("save", fe::tr("[save game]"), SAVE_GAME));
+	buttons.push_back(item("load", loadLabel, LOAD_GAME));
+	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
+	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
+	buttons.push_back(item("pause", fe::tr(paused ? "[resume game]" : "[pause game]"), PAUSE_GAME));
+	// Return stays pinned below the list so it is always in reach.
+	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
+					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),
+								  item("return", returnLabel, RETURN_GAME, true, SDLK_ESCAPE))},
+					  {p.pt(12)});
 }
 
-InGameEndOfGameScreen::InGameEndOfGameScreen(std::string title, bool canContinue)
-:OverlayScreen(globalContainer->gfx, 320, 100 + (canContinue ? 50 : 0) + (globalContainer->replaying ? 50 : 0)), title(title), canContinue(canContinue)
+InGameEndOfGameScreen::InGameEndOfGameScreen(std::string title, bool canContinue, std::optional<GAGCore::Color> teamColor,
+											 bool won)
+	: title(std::move(title)), canContinue(canContinue), teamColor(teamColor), won(won)
 {
-	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_LEFT, "menu", title));
-	addWidget(new TextButton(10, 50, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[ok]"), QUIT, 13));
+}
+
+Element InGameEndOfGameScreen::build(const Presentation &p)
+{
+	std::vector<Element> parts;
+	if (!classic() && teamColor && globalContainer->unitmini)
+	{
+		const GAGCore::Color color = *teamColor;
+		const bool animate = won && !(globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) &&
+							 !(globalContainer->reducedMotion);
+		parts.push_back(fe::canvas("outcome/art", {p.pt(200), p.pt(72)},
+								   [color, animate, unit = p.unit](fe::Canvas &c, fe::Rect r, const fe::Frame &frame)
+								   {
+									   c.fillRect({r.x, r.y, r.w, std::max(1, int(4 * unit))}, color);
+									   auto *sprite = globalContainer->unitmini;
+									   sprite->setBaseColor(color);
+									   for (int i = 0; i < 3; ++i)
+									   {
+										   const double bob = animate ? std::sin(frame.tick / 220.0 + i) * 3 * unit : 0;
+										   const int w = sprite->getW(i);
+										   c.transformed(2 * unit, {r.x + r.w / 2 + int((i - 1) * 44 * unit) - int(w * unit), r.y + int(12 * unit + bob)}, r,
+														 [&] { c.surface()->drawSprite(0, 0, sprite, i); });
+									   }
+								   }));
+	}
+	parts.push_back(fe::paragraph(title, {classic() ? fe::FontRole::Heading : fe::FontRole::Title, false, fe::TextAlign::Center}));
+	std::vector<fe::MenuAction> actions;
+	// The classic order: Ok first, then the ways to stay.
+	actions.push_back({"ok", fe::tr("[ok]"), [this] { finish(QUIT); }, true, SDLK_RETURN});
 	if (canContinue)
 	{
 		if (globalContainer->replaying)
 		{
-			addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[look around]"), CONTINUE, 27));
-			addWidget(new TextButton(10, 150, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[watch again]"), WATCH_AGAIN, 27));
+			actions.push_back({"continue", fe::tr("[look around]"), [this] { finish(CONTINUE); }, false, SDLK_ESCAPE});
+			actions.push_back({"watch", fe::tr("[watch again]"), [this] { finish(WATCH_AGAIN); }});
 		}
 		else
-		{
-			addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[Continue playing]"), CONTINUE, 27));
-		}
+			actions.push_back({"continue", fe::tr("[Continue playing]"), [this] { finish(CONTINUE); }, false, SDLK_ESCAPE});
 	}
 	else if (globalContainer->replaying)
+		actions.push_back({"watch", fe::tr("[watch again]"), [this] { finish(WATCH_AGAIN); }});
+	if (!classic())
+		std::rotate(actions.begin(), actions.begin() + 1, actions.end());
+	std::vector<Element> buttons;
+	for (const auto &item : actions)
 	{
-		addWidget(new TextButton(10, 100, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu",  Toolkit::getStringTable()->getString("[watch again]"), WATCH_AGAIN, 27));
-	}
-	dispatchInit();
-}
-
-void InGameEndOfGameScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+		if (classic())
 		{
-			endValue=par1;
+			buttons.push_back(classicButton(item.key, item.label, item.action, item.shortcut));
+			continue;
 		}
+		fe::ButtonOptions options;
+		options.primary = item.primary;
+		options.shortcut = item.shortcut;
+		options.minHeight = 44;
+		buttons.push_back(fe::button(item.key, item.label, item.action, options));
+	}
+	parts.push_back(fe::column(std::move(buttons), {p.pt(classic() ? 10 : 8)}));
+	return fe::column(std::move(parts), {p.pt(12)});
 }
 
 //! Alliance screen
-InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, (gameGUI->game.gameHeader.getNumberOfPlayers() - countNumberPlayersForLocalTeam(gameGUI->game.gameHeader, gameGUI->localTeamNo)<=8) ? 320 : 600, 395)
+InGameAllianceScreen::InGameAllianceScreen(GameGUI *gameGUI) : gameGUI(gameGUI)
 {
-
-	// fill the slots
-	int i;
-	int xBase=0;
-	int yBase=0;
-	int n=0;
-	for (i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
+	Game &game = gameGUI->game;
+	players = game.gameHeader.getNumberOfPlayers();
+	editable = !globalContainer->replaying;
+	const bool fixed = game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying;
+	for (int i = 0; i < players; i++)
 	{
-		int otherTeam = gameGUI->game.players[i]->teamNumber;
-		Uint32 otherTeamMask = 1 << otherTeam;
-
-		std::string pname;
-		if (gameGUI->game.players[i]->type>=Player::P_AI || gameGUI->game.players[i]->type==Player::P_IP || gameGUI->game.players[i]->type==Player::P_LOCAL)
-		{
-			pname = gameGUI->game.players[i]->name;
-		}
+		const int otherTeam = game.players[i]->teamNumber;
+		const Uint32 otherTeamMask = 1 << otherTeam;
+		teamOf[i] = otherTeam;
+		ownAlliance[i] = (gameGUI->localTeam->allies & otherTeamMask) != 0;
+		ownNormal[i] = (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0;
+		ownFood[i] = (gameGUI->localTeam->sharedVisionFood & otherTeamMask) != 0;
+		ownMarket[i] = (gameGUI->localTeam->sharedVisionExchange & otherTeamMask) != 0;
+		ownChat[i] = ((gameGUI->chatMask) & (1 << i)) != 0;
+		if (otherTeam == gameGUI->localTeamNo)
+			continue;
+		Entry entry;
+		entry.player = i;
+		entry.team = otherTeam;
+		const auto type = game.players[i]->type;
+		if (type >= Player::P_AI || type == Player::P_IP || type == Player::P_LOCAL)
+			entry.name = game.players[i]->name;
 		else
-		{
-			pname ="(";
-			pname += gameGUI->game.players[i]->name;
-			pname += ")";
-		}
-
-		texts[i] = new Text(10+xBase, 37+yBase, ALIGN_LEFT, ALIGN_LEFT, "menu", pname.c_str());
-		Team *team = gameGUI->game.players[i]->team;
-		texts[i]->setStyle(Font::Style(Font::STYLE_NORMAL, team->color));
-		addWidget(texts[i]);
-		
-	
-		alliance[i]=new OnOffButton(172+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->allies & otherTeamMask) != 0, ALLIED+i);
-		addWidget(alliance[i]);
-	
-		normalVision[i]=new OnOffButton(196+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionOther & otherTeamMask) != 0, NORMAL_VISION+i);
-		addWidget(normalVision[i]);
-		
-		if(gameGUI->game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying)
-		{
-			alliance[i]->visible=false;
-			normalVision[i]->visible=false;
-		}
-		
-		foodVision[i]=new OnOffButton(220+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionFood & otherTeamMask) != 0, FOOD_VISION+i);
-		addWidget(foodVision[i]);
-		
-		marketVision[i]=new OnOffButton(244+xBase, 40+yBase,  20, 20, ALIGN_LEFT, ALIGN_LEFT, (gameGUI->localTeam->sharedVisionExchange & otherTeamMask) != 0, MARKET_VISION+i);
-		addWidget(marketVision[i]);
-
-		bool chatState = (((gameGUI->chatMask)&(1<<i))!=0);
-		chat[i]=new OnOffButton(268+xBase, 40+yBase, 20, 20, ALIGN_LEFT, ALIGN_LEFT, chatState, CHAT+i);
-		addWidget(chat[i]);
-		
-		if(otherTeam == gameGUI->localTeamNo)
-		{
-			alliance[i]->visible=false;
-			normalVision[i]->visible=false;
-			texts[i]->visible=false;
-			foodVision[i]->visible=false;
-			marketVision[i]->visible=false;
-			chat[i]->visible=false;
-		}
-		else
-		{
-			yBase += 25;
-			if(n==7)
-			{
-				xBase += 300;
-				yBase = 0;
-			}
-			n+=1;
-		}
-		
-		// Disable these buttons if it's a replay
-		if (globalContainer->replaying)
-		{
-			alliance[i]->setClickable(false);
-			normalVision[i]->setClickable(false);
-			foodVision[i]->setClickable(false);
-			marketVision[i]->setClickable(false);
-			chat[i]->setClickable(false);
-		}
-	}
-	for (;i<16;i++)
-	{
-		texts[i] = NULL;
-		alliance[i] = NULL;
-		normalVision[i] = NULL;
-		foodVision[i] = NULL;
-		marketVision[i] = NULL;
-		chat[i] = NULL;
-	}
-	
-	//Put locks if needed
-	if(gameGUI->game.gameHeader.areAllyTeamsFixed() && !globalContainer->replaying)
-	{
-		int np = std::max(2, gameGUI->game.gameHeader.getNumberOfPlayers() - countNumberPlayersForLocalTeam(gameGUI->game.gameHeader, gameGUI->localTeamNo));
-		//Although this is the animation widget, we are just using it to display a still frame
-		addWidget(new Animation(172, 40 + std::min(4, np/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
-		addWidget(new Animation(196, 40 + std::min(4, np/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
-		
-		if(np>8)
-		{
-			addWidget(new Animation(172, 40 + std::min(4, (np-8)/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
-			addWidget(new Animation(196, 40 + std::min(4, (np-8)/2)*25 - 16, ALIGN_LEFT, ALIGN_TOP, "data/gfx/gamegui", 35));
-		}
-	}
-
-	// add static text and images
-	addWidget(new Text(172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A")); 
-	addWidget(new Text(196+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "V"));
-	addWidget(new Text(220, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "fV"));
-	addWidget(new Text(244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
-	addWidget(new Text(268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
-	
-	if (gameGUI->game.gameHeader.getNumberOfPlayers() > 8)
-	{
-		addWidget(new Text(300+172+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "A")); 
-		addWidget(new Text(300+196+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "V"));
-		addWidget(new Text(300+220, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "fV"));
-		addWidget(new Text(300+244, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "mV"));
-		addWidget(new Text(300+268+3, 13, ALIGN_LEFT, ALIGN_LEFT, "standard", "C"));
-	}
-	
-	// add ok button
-	addWidget(new TextButton(0, 345, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	
-	// add keyboard shortcut explanations
-	addWidget(new Text(10, 245, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation A]")));
-	addWidget(new Text(10, 258, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation V]")));
-	addWidget(new Text(10, 271, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation fV]")));
-	addWidget(new Text(10, 284, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation mV]")));
-	addWidget(new Text(10, 297, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[abreaviation explanation C]")));
-	
-	addWidget(new Text(10, 310, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation enter]")));
-	addWidget(new Text(10, 323, ALIGN_LEFT, ALIGN_LEFT, "little", Toolkit::getStringTable()->getString("[shortcut explanation v]")));
-	
-	this->gameGUI=gameGUI;
-	dispatchInit();
-}
-
-void InGameAllianceScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		endValue = par1;
-	}
-	else if (action == BUTTON_STATE_CHANGED)
-	{
-		for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
-			if ((source == alliance[i]) ||
-				(source == normalVision[i]) ||
-				(source == foodVision[i]) ||
-				(source == marketVision[i]))
-			{
-				setCorrectValueForPlayer(i);
-				break;
-			}
+			entry.name = "(" + game.players[i]->name + ")";
+		entry.color = game.players[i]->team->color;
+		entry.alliance = ownAlliance[i];
+		entry.normalVision = ownNormal[i];
+		entry.foodVision = ownFood[i];
+		entry.marketVision = ownMarket[i];
+		entry.chat = ownChat[i];
+		entry.diplomacy = !fixed;
+		rows.push_back(entry);
 	}
 }
 
+bool &InGameAllianceScreen::field(Entry &entry, Setting setting) const
+{
+	switch (setting)
+	{
+	case Alliance:
+		return entry.alliance;
+	case NormalVision:
+		return entry.normalVision;
+	case FoodVision:
+		return entry.foodVision;
+	case MarketVision:
+		return entry.marketVision;
+	default:
+		return entry.chat;
+	}
+}
 
+void InGameAllianceScreen::mirror(int player, Setting setting)
+{
+	if (setting == Chat)
+		return;
+	Entry *source = nullptr;
+	for (auto &entry : rows)
+		if (entry.player == player)
+			source = &entry;
+	if (!source)
+		return;
+	// Two players of the same team must have the same alliance and vision.
+	for (auto &entry : rows)
+		if (entry.player != player && entry.team == source->team)
+			field(entry, setting) = field(*source, setting);
+}
 
-int InGameAllianceScreen::countNumberPlayersForLocalTeam(GameHeader& gameHeader, int localteam)
+void InGameAllianceScreen::set(int player, Setting setting, bool value)
+{
+	for (auto &entry : rows)
+		if (entry.player == player)
+		{
+			field(entry, setting) = value;
+			mirror(player, setting);
+			invalidate();
+			return;
+		}
+}
+
+Element InGameAllianceScreen::build(const Presentation &p)
+{
+	const bool compact = p.compact();
+	const char *shortLabels[] = {"A", "V", "fV", "mV", "C"};
+	const char *explanations[] = {"[abreaviation explanation A]", "[abreaviation explanation V]", "[abreaviation explanation fV]",
+								  "[abreaviation explanation mV]", "[abreaviation explanation C]"};
+	const char *longLabels[] = {"[Alliance]", "[Share vision]", "[Share food vision]", "[Share market vision]", "[Chat]"};
+	auto notesColumn = [&]
+	{
+		std::vector<Element> notes;
+		for (int s = 0; s < 5; ++s)
+			notes.push_back(fe::paragraph(fe::tr(explanations[s]), {fe::FontRole::Caption, true}));
+		notes.push_back(fe::paragraph(fe::tr("[shortcut explanation enter]"), {fe::FontRole::Caption, true}));
+		notes.push_back(fe::paragraph(fe::tr("[shortcut explanation v]"), {fe::FontRole::Caption, true}));
+		return fe::column(std::move(notes), {p.pt(2)});
+	};
+	if (classic())
+	{
+		// The classic box: names in team colours, five checkbox columns under
+		// their abbreviations, the explanations below, Ok at the bottom.
+		const int nameWidth = p.pt(160), cell = p.pt(24);
+		std::vector<Element> header{fe::width(nameWidth, fe::empty())};
+		for (int s = 0; s < 5; ++s)
+			header.push_back(fe::width(cell, fe::label(shortLabels[s], {fe::FontRole::Body, false, fe::TextAlign::Center})));
+		std::vector<Element> table{fe::row(std::move(header), {p.pt(4), fe::CrossAlign::Center})};
+		for (auto &entry : rows)
+		{
+			fe::TextOptions nameStyle;
+			nameStyle.color = entry.color;
+			nameStyle.role = fe::FontRole::Heading;
+			std::vector<Element> cells{fe::width(nameWidth, fe::label(entry.name, nameStyle))};
+			for (int s = 0; s < 5; ++s)
+			{
+				const auto setting = Setting(s);
+				const bool locked = !entry.diplomacy && (setting == Alliance || setting == NormalVision);
+				const std::string key = "ally/" + std::to_string(entry.player) + "/" + shortLabels[s];
+				const int player = entry.player;
+				cells.push_back(fe::width(cell, locked ? fe::empty()
+														: fe::toggle(key, "", field(entry, setting),
+																	 [this, player, setting](bool value) { set(player, setting, value); }, editable)));
+			}
+			table.push_back(fe::row(std::move(cells), {p.pt(4), fe::CrossAlign::Center}));
+		}
+		std::vector<Element> parts{fe::column(std::move(table), {p.pt(2)})};
+		if (rows.empty())
+			parts.push_back(fe::paragraph(fe::tr("[No other players have editable diplomatic settings in this match.]"), {fe::FontRole::Body, true}));
+		else if (!rows.front().diplomacy)
+			parts.push_back(fe::paragraph(fe::tr("[Alliance and shared vision are fixed for this match.]"), {fe::FontRole::Support, true}));
+		parts.push_back(fe::spacer(p.pt(40)));
+		parts.push_back(notesColumn());
+		parts.push_back(classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN));
+		return fe::column(std::move(parts), {p.pt(10)});
+	}
+	std::vector<Element> list;
+	for (auto &entry : rows)
+	{
+		std::vector<Element> toggles;
+		for (int s = 0; s < 5; ++s)
+		{
+			const auto setting = Setting(s);
+			if (!entry.diplomacy && (setting == Alliance || setting == NormalVision))
+				continue;
+			const std::string key = "ally/" + std::to_string(entry.player) + "/" + shortLabels[s];
+			const int player = entry.player;
+			toggles.push_back(fe::toggle(key, compact ? fe::tr(longLabels[s]) : std::string(shortLabels[s]), field(entry, setting),
+										 [this, player, setting](bool value) { set(player, setting, value); }, editable));
+		}
+		fe::TextOptions nameStyle;
+		nameStyle.color = entry.color;
+		fe::WrapOptions grid;
+		grid.minChildWidth = p.pt(compact ? 150 : 64);
+		fe::CardOptions plain;
+		plain.shadow = false;
+		if (compact)
+			list.push_back(fe::card(fe::column({fe::label(entry.name, nameStyle), fe::wrap(std::move(toggles), grid)}, {p.pt(6)}), plain));
+		else
+			list.push_back(fe::row({fe::width(p.pt(160), fe::label(entry.name, nameStyle)), fe::expanded(fe::wrap(std::move(toggles), grid))},
+								   {p.pt(8), fe::CrossAlign::Center}));
+	}
+	std::vector<Element> parts;
+	parts.push_back(fe::paragraph(fe::tr("[Teams]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}));
+	if (rows.empty())
+		parts.push_back(fe::paragraph(fe::tr("[No other players have editable diplomatic settings in this match.]"), {fe::FontRole::Body, true}));
+	else if (!rows.front().diplomacy)
+		parts.push_back(fe::paragraph(fe::tr("[Alliance and shared vision are fixed for this match.]"), {fe::FontRole::Support, true}));
+	std::vector<Element> body = {fe::column(std::move(list), {p.pt(compact ? 8 : 4)})};
+	if (!compact)
+	{
+		body.push_back(fe::divider());
+		body.push_back(notesColumn());
+	}
+	parts.push_back(fe::scroll("ally/scroll", fe::column(std::move(body), {p.pt(8)})));
+	fe::ButtonOptions okOptions;
+	okOptions.primary = true;
+	okOptions.shortcut = SDLK_RETURN;
+	okOptions.minHeight = 44;
+	auto ok = fe::button("ok", fe::tr("[ok]"), [this] { finish(OK); }, okOptions);
+	return fe::column({fe::footer(fe::column(std::move(parts), {p.pt(10)}), ok)});
+}
+
+int InGameAllianceScreen::countNumberPlayersForLocalTeam(GameHeader &gameHeader, int localteam)
 {
 	int count = 0;
-	for (int i=0; i<gameHeader.getNumberOfPlayers(); i++)
-	{
-		if(gameHeader.getBasePlayer(i).teamNumber == localteam)
-		{
+	for (int i = 0; i < gameHeader.getNumberOfPlayers(); i++)
+		if (gameHeader.getBasePlayer(i).teamNumber == localteam)
 			count += 1;
-		}
-	}
 	return count;
 }
 
-
-
-void InGameAllianceScreen::setCorrectValueForPlayer(int i)
+namespace
 {
-	Game *game=&(gameGUI->game);
-	assert(i<game->gameHeader.getNumberOfPlayers());
-	for (int j=0; j<game->gameHeader.getNumberOfPlayers(); j++)
+template <class Own, class Pick>
+Uint32 mask(int players, const std::vector<InGameAllianceScreen::Entry> &rows, const Own &own, Pick pick, bool invert = false)
+{
+	Uint32 result = 0;
+	for (int i = 0; i < players; i++)
 	{
-		if (j != i)
-		{
-			// if two players are the same team, we must have the same alliance and vision
-			if (game->players[j]->teamNumber == game->players[i]->teamNumber)
-			{
-				alliance[j]->setState(alliance[i]->getState());
-				normalVision[j]->setState(normalVision[i]->getState());
-				foodVision[j]->setState(foodVision[i]->getState());
-				marketVision[j]->setState(marketVision[i]->getState());
-			}
-		}
+		bool state = own[i];
+		for (const auto &entry : rows)
+			if (entry.player == i)
+				state = pick(entry);
+		if (state != invert)
+			result |= 1 << i;
 	}
+	return result;
+}
+} // namespace
+
+Uint32 InGameAllianceScreen::getAlliedMask() const
+{
+	return mask(players, rows, ownAlliance, [](const Entry &e) { return e.alliance; });
 }
 
-Uint32 InGameAllianceScreen::getAlliedMask(void)
+Uint32 InGameAllianceScreen::getEnemyMask() const
 {
-	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
-	{
-		if (alliance[i]->getState())
-			mask |= 1<<i;
-	}
-	return mask;
+	return mask(players, rows, ownAlliance, [](const Entry &e) { return e.alliance; }, true);
 }
 
-Uint32 InGameAllianceScreen::getEnemyMask(void)
+Uint32 InGameAllianceScreen::getExchangeVisionMask() const
 {
-	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
-	{
-		if (!alliance[i]->getState())
-			mask |= 1<<i;
-	}
-	return mask;
+	return mask(players, rows, ownMarket, [](const Entry &e) { return e.marketVision; });
 }
 
-Uint32 InGameAllianceScreen::getExchangeVisionMask(void)
+Uint32 InGameAllianceScreen::getFoodVisionMask() const
 {
-	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
-	{
-		if (marketVision[i]->getState())
-			mask |= 1<<i;
-	}
-	return mask;
+	return mask(players, rows, ownFood, [](const Entry &e) { return e.foodVision; });
 }
 
-Uint32 InGameAllianceScreen::getFoodVisionMask(void)
+Uint32 InGameAllianceScreen::getOtherVisionMask() const
 {
-	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
-	{
-		if (foodVision[i]->getState())
-			mask |= 1<<i;
-	}
-	return mask;
+	return mask(players, rows, ownNormal, [](const Entry &e) { return e.normalVision; });
 }
 
-Uint32 InGameAllianceScreen::getOtherVisionMask(void)
+Uint32 InGameAllianceScreen::getChatMask() const
 {
-	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
-	{
-		if (normalVision[i]->getState())
-			mask |= 1<<i;
-	}
-	return mask;
-}
-
-
-Uint32 InGameAllianceScreen::getChatMask(void)
-{
-	Uint32 mask = 0;
-	for (int i=0; i<gameGUI->game.gameHeader.getNumberOfPlayers(); i++)
-	{
-		if (chat[i]->getState())
-			mask |= 1<<i;
-	}
-	return mask;
+	return mask(players, rows, ownChat, [](const Entry &e) { return e.chat; });
 }
 
 //! Option Screen
-InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, 320, 360)
+InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI) : gameGUI(gameGUI)
 {
-	adjustableGameSpeed=gameGUI->canChangeGameSpeed();
-	Text *audioMuteText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Mute]"), 200);
-	addWidget(audioMuteText);
-
-	mute = new OnOffButton(19, 50, 20, 20, ALIGN_LEFT, ALIGN_TOP, globalContainer->settings.mute, MUTE);
-	addWidget(mute);	
-
-	musicVolText=new Text(10, 80, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Music volume]"));
-	addWidget(musicVolText);
-
-	voiceVolText=new Text(10, 130, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Voice volume]"));
-	addWidget(voiceVolText);
-	
-	musicVol=new Selector(19, 110, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.musicVolume, 256, true);
-	addWidget(musicVol);
-	
-	voiceVol=new Selector(19, 160, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.voiceVolume, 256, true);
-	addWidget(voiceVol);
-
-	gameSpeedText=new Text(10, 195, ALIGN_LEFT, ALIGN_TOP, "standard", "");
-	addWidget(gameSpeedText);
-	gameSpeed=new Selector(19, 225, ALIGN_LEFT, ALIGN_TOP, 256,
-		globalContainer->settings.gameSpeed-Settings::GAME_SPEED_MINIMUM,
-		Settings::GAME_SPEED_MAXIMUM-Settings::GAME_SPEED_MINIMUM, true);
-	addWidget(gameSpeed);
-	gameSpeed->visible=adjustableGameSpeed;
-	updateGameSpeedText();
-
-	if(globalContainer->settings.mute)
-	{
-		musicVol->visible=false;
-		voiceVol->visible=false;
-		musicVolText->visible=false;
-		voiceVolText->visible=false;
-	}
-
-	addWidget(new TextButton(0, 310, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	
-	std::ostringstream oss;
-	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-		oss << " GL";
-	else
-		oss << " SDL";
-		
-	addWidget(new Text(0, 260, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
-	dispatchInit();
+	adjustableGameSpeed = gameGUI->canChangeGameSpeed();
 }
-
-
 
 InGameOptionScreen::~InGameOptionScreen()
 {
 	globalContainer->settings.save();
 }
 
-
-
-void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int par2)
+void InGameOptionScreen::applyVolume()
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		endValue=par1;
-	}
-	else if (action==VALUE_CHANGED)
-	{
-		if(source==gameSpeed)
-		{
-			if(!adjustableGameSpeed)
-				return;
-			globalContainer->settings.gameSpeed=gameSpeed->getValue()+Settings::GAME_SPEED_MINIMUM;
-			updateGameSpeedText();
-		}
-		else
-		{
-			globalContainer->settings.musicVolume = musicVol->getValue();
-			globalContainer->settings.voiceVolume = voiceVol->getValue();
-			globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
-		}
-	}
-	else if (action==BUTTON_STATE_CHANGED)
-	{
-		globalContainer->settings.mute = mute->getState();
-		musicVol->visible = ! globalContainer->settings.mute;
-		voiceVol->visible = ! globalContainer->settings.mute;
-		musicVolText->visible = ! globalContainer->settings.mute;
-		voiceVolText->visible = ! globalContainer->settings.mute;
-		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
-	}
+	auto &settings = globalContainer->settings;
+	globalContainer->mix->setVolume(settings.musicVolume, settings.voiceVolume, settings.mute);
 }
 
-
-
-void InGameOptionScreen::updateGameSpeedText(void)
+void InGameOptionScreen::setMute(bool value)
 {
-	if(!adjustableGameSpeed)
-	{
-		gameSpeedText->setText(Toolkit::getStringTable()->getString("[multiplayer game speed]"));
+	globalContainer->settings.mute = value;
+	applyVolume();
+	invalidate();
+}
+
+void InGameOptionScreen::setGameSpeed(int speed)
+{
+	if (!adjustableGameSpeed)
 		return;
-	}
-	gameSpeedText->setText(FormattableString("%0: %1")
-		.arg(Toolkit::getStringTable()->getString("[game speed]"))
-		.arg(globalContainer->settings.getGameSpeedText()));
+	globalContainer->settings.gameSpeed = std::clamp(speed, int(Settings::GAME_SPEED_MINIMUM), int(Settings::GAME_SPEED_MAXIMUM));
+	invalidate();
 }
 
-
-
-InGameObjectivesScreen::InGameObjectivesScreen(GameGUI* gui, bool showBriefing)
-:OverlayScreen(globalContainer->gfx, 470, 390)
+std::string InGameOptionScreen::gameSpeedText() const
 {
+	if (!adjustableGameSpeed)
+		return fe::tr("[multiplayer game speed]");
+	return GAGCore::FormattableString("%0: %1").arg(fe::tr("[game speed]")).arg(globalContainer->settings.getGameSpeedText());
+}
 
-	int second_offset = 0;
-	int hints_x = 317;
-	if(gui->game.missionBriefing.empty())
+Element InGameOptionScreen::build(const Presentation &p)
+{
+	auto &settings = globalContainer->settings;
+	std::vector<Element> parts;
+	if (!classic())
+		parts.push_back(fe::paragraph(fe::tr("[Options]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}));
+	parts.push_back(fe::toggle("mute", fe::tr("[Mute]"), settings.mute, [this](bool value) { setMute(value); }));
+	if (!settings.mute)
 	{
-		hints_x = 163;
-		second_offset = 163/2;
+		fe::SliderOptions music;
+		music.caption = fe::tr("[Music volume]");
+		parts.push_back(fe::slider("music", settings.musicVolume, 0, 256,
+								   [this](int value)
+								   {
+									   globalContainer->settings.musicVolume = value;
+									   applyVolume();
+								   },
+								   music));
+		fe::SliderOptions voice;
+		voice.caption = fe::tr("[Voice volume]");
+		parts.push_back(fe::slider("voice", settings.voiceVolume, 0, 256,
+								   [this](int value)
+								   {
+									   globalContainer->settings.voiceVolume = value;
+									   applyVolume();
+								   },
+								   voice));
+	}
+	if (adjustableGameSpeed)
+	{
+		fe::SliderOptions speed;
+		speed.caption = gameSpeedText();
+		speed.valueText = settings.getGameSpeedText();
+		parts.push_back(fe::slider("speed", settings.gameSpeed, Settings::GAME_SPEED_MINIMUM, Settings::GAME_SPEED_MAXIMUM,
+								   [this](int value) { setGameSpeed(value); }, speed));
 	}
 	else
+		parts.push_back(fe::paragraph(gameSpeedText(), {fe::FontRole::Body, true}));
+	if (p.touch)
 	{
-		addWidget(new TextButton(163, 40, 144, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[briefing]"), BRIEFING));
+		parts.push_back(fe::toggle("motion", fe::tr("[Reduced motion]"), globalContainer->reducedMotion,
+								   [this](bool value)
+								   {
+									   globalContainer->reducedMotion = value;
+									   invalidate();
+								   }));
+		const int percent = settings.mobileDialogTextPercent;
+		const int selected = percent >= 150 ? 2 : percent >= 125 ? 1 : 0;
+		std::vector<std::string> sizes;
+		for (int i = 0; i < 3; ++i)
+			sizes.push_back(GAGCore::FormattableString(fe::tr("[Dialog text size %0]")).arg(100 + i * 25));
+		parts.push_back(fe::label(fe::tr("[Dialog text size]"), {fe::FontRole::Support, true}));
+		parts.push_back(fe::segments("text-size", sizes, selected,
+									 [this](int index)
+									 {
+										 globalContainer->settings.mobileDialogTextPercent = 100 + index * 25;
+										 invalidate();
+									 }));
 	}
-	addWidget(new TextButton(second_offset+10, 40, 143, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[objectives]"), OBJECTIVES));
-	addWidget(new TextButton(second_offset+hints_x, 40, 143, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hints]"), HINTS));
-	
-	
-	
-	objectives = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[objectives]"));
-	briefing = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[briefing]"));
-	hints = new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[hints]"));
-
-	std::vector<Widget*>& objectivesWidgets = widgetsForTab(OBJECTIVES);
-	std::vector<Widget*>& briefingWidgets = widgetsForTab(BRIEFING);
-	std::vector<Widget*>& hintsWidgets = widgetsForTab(HINTS);
-
-	objectivesWidgets.push_back(objectives);
-	briefingWidgets.push_back(briefing);
-	hintsWidgets.push_back(hints);
-	
-	
-	std::string text;
-	
-	//This group of widgets is all for the objectives tab
-	objectivesWidgets.push_back(new Text(10, 70, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Primary Objectives]")));
-	int n=0;
-	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
+	std::ostringstream oss;
+	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
+	if (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU)
+		oss << " GL";
+	else
+		oss << " SDL";
+	parts.push_back(fe::paragraph(oss.str(), {fe::FontRole::Caption, true, fe::TextAlign::Center}));
+	if (classic())
 	{
-		if(gui->game.objectives.isObjectiveVisible(i) && gui->game.objectives.getObjectiveType(i) == GameObjectives::Primary)
-		{
-			text = gui->game.objectives.getGameObjectiveText(i);
-			if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
-				text = Toolkit::getStringTable()->getString(text.c_str());
-			objectivesWidgets.push_back(new Text(50, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
-			Uint8 state = 0;
-			if(gui->game.objectives.isObjectiveComplete(i))
-				state = 1;
-			else if(gui->game.objectives.isObjectiveFailed(i))
-				state = 2;
-			TriButton* b = new TriButton(20, 100 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, state, i);
-			b->setClickable(false);
-			objectivesWidgets.push_back(b);
-			n+=1;
-		}
+		parts.push_back(fe::spacer(p.pt(10)));
+		parts.push_back(classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN));
+		return fe::column(std::move(parts), {p.pt(10)});
 	}
-	if(n == 0)
-	{
-		objectivesWidgets.push_back(new Text(50, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[No Objectives]")));
-		n+=1;
-	}
-	
-	bool isSecondary = false;
-	for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
-	{
-		if(gui->game.objectives.getObjectiveType(i) == GameObjectives::Secondary)
-		{
-			isSecondary = true;
-			break;
-		}
-	}
-	
-	if(isSecondary)
-	{
-		objectivesWidgets.push_back(new Text(10, 100 + 30*n, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Secondary Objectives]")));
-		for(int i=0; i<gui->game.objectives.getNumberOfObjectives(); ++i)
-		{
-			if(gui->game.objectives.isObjectiveVisible(i) && gui->game.objectives.getObjectiveType(i) == GameObjectives::Secondary)
-			{
-				text = gui->game.objectives.getGameObjectiveText(i);
-				if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
-					text = Toolkit::getStringTable()->getString(text.c_str());
-				objectivesWidgets.push_back(new Text(50, 130 + 30*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
-				Uint8 state = 0;
-				if(gui->game.objectives.isObjectiveComplete(i))
-					state = 1;
-				else if(gui->game.objectives.isObjectiveFailed(i))
-					state = 2;
-				TriButton* b = new TriButton(20, 130 + 30*n, 20, 20, ALIGN_LEFT, ALIGN_TOP, state, i);
-				b->setClickable(false);
-				objectivesWidgets.push_back(b);
-				n+=1;
-			}
-		}
-	}
-	
-	text = gui->game.missionBriefing;
-	if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
-		text = Toolkit::getStringTable()->getString(text.c_str());
-		
-	//This group of widgets is for the mission briefing tab
-	briefingWidgets.push_back(new TextArea(10, 70, 450, 260, ALIGN_LEFT, ALIGN_TOP, "standard", true, text.c_str()));
-	
-	//This group of widgets is for the hints tab
-	n=0;
-	for(int i=0; i<gui->game.gameHints.getNumberOfHints(); ++i)
-	{
-		if(gui->game.gameHints.isHintVisible(i))
-		{
-			text = gui->game.gameHints.getGameHintText(i);
-			if(Toolkit::getStringTable()->doesStringExist(text.c_str()))
-				text = Toolkit::getStringTable()->getString(text.c_str());
-			text = std::to_string(n+1) + ") " + text;
-			hintsWidgets.push_back(new Text(50, 70 + 25*n, ALIGN_LEFT, ALIGN_TOP, "standard", text.c_str()));
-			n+=1;
-		}
-	}
-	if(n == 0)
-	{
-		hintsWidgets.push_back(new Text(50, 70 + 25*n, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[No Hints]")));
-		n+=1;
-	}
-	
-	//Add the widgets to the menu
-	for(int tab=0; tab<TAB_COUNT; tab++)
-	{
-		for(unsigned int i=0; i<tabWidgets[tab].size(); i++)
-			addWidget(tabWidgets[tab][i]);
-	}
-	showTab(showBriefing ? BRIEFING : OBJECTIVES);
-
-	// add ok button
-	addWidget(new TextButton(0, 340, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
-	dispatchInit();
+	fe::ButtonOptions okOptions;
+	okOptions.primary = true;
+	okOptions.shortcut = SDLK_RETURN;
+	okOptions.minHeight = 44;
+	auto ok = fe::button("ok", fe::tr("[ok]"), [this] { finish(OK); }, okOptions);
+	return fe::column({fe::footer(fe::scroll("options/scroll", fe::column(std::move(parts), {p.pt(10)})), ok)});
 }
 
-
-
-void InGameObjectivesScreen::onAction(Widget *source, Action action, int par1, int par2)
+InGameObjectivesScreen::InGameObjectivesScreen(GameGUI *gui, bool showBriefing)
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
+	briefing = localized(gui->game.missionBriefing);
+	for (int i = 0; i < gui->game.objectives.getNumberOfObjectives(); ++i)
 	{
-		if(par1 == OK)
-		{
-			endValue=par1;
-		}
-		else if(par1 == OBJECTIVES || par1 == BRIEFING || par1 == HINTS)
-		{
-			showTab(par1);
-		}
+		if (!gui->game.objectives.isObjectiveVisible(i))
+			continue;
+		Line line;
+		line.text = localized(gui->game.objectives.getGameObjectiveText(i));
+		line.state = gui->game.objectives.isObjectiveComplete(i) ? 1 : gui->game.objectives.isObjectiveFailed(i) ? 2 : 0;
+		if (gui->game.objectives.getObjectiveType(i) == GameObjectives::Primary)
+			primary.push_back(line);
+		else
+			secondary.push_back(line);
 	}
+	for (int i = 0; i < gui->game.objectives.getNumberOfObjectives(); ++i)
+		if (gui->game.objectives.getObjectiveType(i) == GameObjectives::Secondary)
+			hasSecondary = true;
+	int n = 0;
+	for (int i = 0; i < gui->game.gameHints.getNumberOfHints(); ++i)
+		if (gui->game.gameHints.isHintVisible(i))
+		{
+			Line line;
+			line.text = std::to_string(++n) + ") " + localized(gui->game.gameHints.getGameHintText(i));
+			hints.push_back(line);
+		}
+	page = showBriefing && !briefing.empty() ? BRIEFING : OBJECTIVES;
 }
-
-
-
-std::vector<Widget*>& InGameObjectivesScreen::widgetsForTab(int tab)
-{
-	assert(tab >= FIRST_TAB && tab < FIRST_TAB + TAB_COUNT);
-	return tabWidgets[tab - FIRST_TAB];
-}
-
-
 
 void InGameObjectivesScreen::showTab(int tab)
 {
-	for(int t=0; t<TAB_COUNT; t++)
-	{
-		bool isShownTab = (FIRST_TAB + t == tab);
-		for(unsigned int i=0; i<tabWidgets[t].size(); i++)
-			tabWidgets[t][i]->visible = isShownTab;
-	}
+	page = tab;
+	invalidate();
 }
 
+Element InGameObjectivesScreen::build(const Presentation &p)
+{
+	std::vector<std::string> tabs;
+	std::vector<int> ids;
+	if (!briefing.empty())
+	{
+		tabs.push_back(fe::tr("[briefing]"));
+		ids.push_back(BRIEFING);
+	}
+	tabs.push_back(fe::tr("[objectives]"));
+	ids.push_back(OBJECTIVES);
+	tabs.push_back(fe::tr("[hints]"));
+	ids.push_back(HINTS);
+	int selected = 0;
+	for (std::size_t i = 0; i < ids.size(); ++i)
+		if (ids[i] == page)
+			selected = int(i);
+	auto lines = [&](const std::vector<Line> &items, const char *emptyKey)
+	{
+		std::vector<Element> result;
+		if (items.empty())
+			result.push_back(fe::paragraph(fe::tr(emptyKey), {fe::FontRole::Body, true}));
+		for (const auto &line : items)
+		{
+			if (line.state < 0)
+			{
+				result.push_back(fe::paragraph(line.text));
+				continue;
+			}
+			const int state = line.state;
+			auto mark = fe::canvas("", {p.pt(20), p.pt(20)},
+								   [state](fe::Canvas &c, fe::Rect r, const fe::Frame &frame)
+								   {
+									   const auto &palette = frame.layout.theme.palette;
+									   c.strokeRect(r, palette.line);
+									   if (state == 1)
+										   c.fillRect(r.inset(std::max(2, r.w / 5)), palette.accent);
+									   else if (state == 2)
+									   {
+										   c.line({r.x + 3, r.y + 3}, {r.right() - 4, r.bottom() - 4}, palette.danger);
+										   c.line({r.right() - 4, r.y + 3}, {r.x + 3, r.bottom() - 4}, palette.danger);
+									   }
+								   });
+			result.push_back(fe::row({mark, fe::expanded(fe::paragraph(line.text))}, {p.pt(8), fe::CrossAlign::Start}));
+		}
+		return result;
+	};
+	std::vector<Element> content;
+	if (page == BRIEFING)
+		content.push_back(fe::paragraph(briefing));
+	else if (page == HINTS)
+		content = lines(hints, "[No Hints]");
+	else
+	{
+		content.push_back(fe::paragraph(fe::tr("[Primary Objectives]"), {fe::FontRole::Heading}));
+		for (auto &element : lines(primary, "[No Objectives]"))
+			content.push_back(element);
+		if (hasSecondary)
+		{
+			content.push_back(fe::paragraph(fe::tr("[Secondary Objectives]"), {fe::FontRole::Heading}));
+			for (auto &element : lines(secondary, "[No Objectives]"))
+				content.push_back(element);
+		}
+	}
+	auto header = fe::segments("objectives/tab", tabs, selected, [this, ids](int index) { showTab(ids[std::size_t(index)]); });
+	auto body = fe::scroll("objectives/scroll", fe::column(std::move(content), {p.pt(8)}));
+	if (classic())
+	{
+		auto ok = classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN);
+		return fe::column({header, fe::height(p.pt(300), body), ok}, {p.pt(10)});
+	}
+	fe::ButtonOptions okOptions;
+	okOptions.primary = true;
+	okOptions.shortcut = SDLK_RETURN;
+	okOptions.minHeight = 44;
+	auto ok = fe::button("ok", fe::tr("[ok]"), [this] { finish(OK); }, okOptions);
+	return fe::column({header, fe::expanded(fe::footer(body, ok))}, {p.pt(10)});
+}
+
+InGameTextInput::InGameTextInput() = default;
+
+GAGGUI::ui::Rect InGameTextInput::available(const GAGGUI::ui::Presentation &presentation, const GAGGUI::ui::Metrics &metrics)
+{
+	if (!classic())
+		return InGameDialog::available(presentation, metrics);
+	// The classic composer sits at the bottom left of the map.
+	GAGGUI::ui::Rect area = presentation.dialog.inset(metrics.padding);
+	area.w = std::min(area.w, presentation.pt(maxWidth()));
+	return area;
+}
+
+GAGGUI::ui::Rect InGameTextInput::place(GAGGUI::ui::Size measured, GAGGUI::ui::Rect area)
+{
+	const int w = area.w;
+	const int h = std::min(area.h, measured.h);
+	return {area.x, area.bottom() - h, w, h};
+}
+
+Element InGameTextInput::build(const Presentation &p)
+{
+	fe::TextFieldOptions options;
+	options.maxLength = 256;
+	options.autoFocus = true;
+	options.placeholder = fe::tr("[Chat · recipients selected in Teams]");
+	options.submit = [this](const std::string &) { finish(0); };
+	auto entry = fe::textField("chat", text, [this](const std::string &value) { text = value; }, options);
+	if (classic())
+		return entry;
+	fe::ButtonOptions sendOptions;
+	sendOptions.primary = true;
+	auto send = fe::button("send", fe::tr("[Send]"), [this] { finish(0); }, sendOptions);
+	auto close = fe::button("close", fe::tr("[Close]"), [this] { finish(1); });
+	return fe::row({fe::expanded(entry), send, close}, {p.pt(6), fe::CrossAlign::Center});
+}

@@ -171,7 +171,6 @@ class ExportMapPreview : public MapPreview
 {
   public:
 	ExportMapPreview(int width, int height)
-		: MapPreview(0, 0, ALIGN_LEFT, ALIGN_TOP, "", "standard")
 	{
 		animateChanges = false;
 		setDimensions(width, height);
@@ -204,19 +203,12 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 		~RestoreStyle() { Style::style = previous; }
 	} restore;
 	Style::style = &style;
-	struct ExportScreen : Screen
-	{
-		explicit ExportScreen(DrawableSurface *target) { gfx = target; }
-		void onAction(Widget *, Action, int, int) override {}
-	} screen(&target);
-	auto *preview = new ExportMapPreview(width, height);
-	screen.addWidget(preview);
-	screen.dispatchInit();
-	preview->setMapThumbnail(thumbnail);
+	ExportMapPreview preview(width, height);
+	preview.setMapThumbnail(thumbnail);
 	for (int i = 0; i < game.teamsCount(); ++i)
-		preview->starts.push_back(
+		preview.starts.push_back(
 			{game.teams[i]->startPosX, game.teams[i]->startPosY, game.teams[i]->color});
-	preview->paint();
+	preview.paint(&target);
 	if (IMG_SavePNG(target.getSDLSurface(), path.c_str()) != 0)
 		throw std::runtime_error("Cannot write PNG " + path + ": " + SDL_GetError());
 }

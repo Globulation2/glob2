@@ -813,9 +813,8 @@ mkdir -p artifacts/ai-profiles-small artifacts/ai-profiles-large
 
 An optional language code after the mode (for example, `profiles ja` or
 `profiles-large ar`) captures that catalog, including localized section headings.
-Use `GLOB2_USER_DIR` to isolate captures in a disposable profile. The
-`test_text_area_layout.py` checks also cover lobby paragraph wrapping for unspaced
-CJK text and long words, preserving complete UTF-8 characters.
+Use `GLOB2_USER_DIR` to isolate captures in a disposable profile. Text wrapping
+for unspaced CJK text and long words is covered by `UILayoutHarness`.
 
 ### Landscape preview scheduling and scrolling
 

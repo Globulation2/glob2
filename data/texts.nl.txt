@@ -3412,3 +3412,9 @@ Ok: %0
 Tekstgrootte dialoogvensters: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Hervat het spel
+[games]
+Spellen
+[Add AI]
+AI toevoegen

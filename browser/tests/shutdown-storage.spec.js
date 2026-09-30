@@ -1,8 +1,7 @@
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL,clickSettingsDone}=require('./main-menu');
+const {clickMainMenu,gameURL,clickSettingsDone,clickControl,controlBox,rootBox}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
-const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
 
 async function start(page){
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');
@@ -46,10 +45,12 @@ test('quit offers visible retry after a failed final save',async({page},info)=>{
   await start(page); await failWrites(page);
   await clickMainMenu(page,'quit'); await screen(page,'ShutdownScreen');
   await expect.poll(async()=>(await state(page)).persistence).toBe('failed');
-  await expect.poll(()=>require('./pixels').hasLightText(page,{x:300,y:440,width:600,height:24})).toBe(true);
+  // The failure notice sits above the Retry action inside the panel.
+  const retry=await controlBox(page,'retry'), panel=await rootBox(page,'retry');
+  await expect.poll(()=>require('./pixels').hasDarkText(page,{x:panel.x,y:panel.y,width:panel.width,height:Math.max(24,retry.y-panel.y)})).toBe(true);
   await page.screenshot({path:info.outputPath('shutdown-save-failure.png')});
   await page.evaluate(()=>window.failShutdownWrite=false);
-  await click(page,440,570); await screen(page,'exited');
+  await clickControl(page,'retry'); await screen(page,'exited');
   expect((await state(page)).persistence).toBe('persisted');
 });
 
@@ -58,6 +59,6 @@ test('failed final save requires an explicit quit without saving',async({page})=
   await clickMainMenu(page,'quit'); await screen(page,'ShutdownScreen');
   await expect.poll(async()=>(await state(page)).persistence).toBe('failed');
   await page.locator('#canvas').press('Escape',{delay:80}); await screen(page,'ShutdownScreen');
-  await click(page,760,570); await screen(page,'exited');
+  await clickControl(page,'leave'); await screen(page,'exited');
   expect((await state(page)).persistence).toBe('failed');
 });

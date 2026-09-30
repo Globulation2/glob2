@@ -6,11 +6,7 @@
 #include <string>
 #include <list>
 #include "GUIBase.h"
-
-namespace GAGGUI
-{
-	class List;
-}
+#include "ui/FrontendUI.h"
 
 using namespace GAGGUI;
 using namespace GAGCore;
@@ -69,29 +65,22 @@ private:
 };
 
 
-///This class represents a self-contained Overlay screen that allows for scrolling message history
-class InGameScrollableHistory : public OverlayScreen
+///The scrolling chat history, shown above the chat area until closed.
+class InGameScrollableHistory : public Glob2UI::InGameDialog
 {
 public:
-	/// InGameScrollableHistory constructor
-	InGameScrollableHistory(GraphicContext *context, const std::list<InGameMessage>& messageHistory);
-	/// InGameScrollableText destructor
-	virtual ~InGameScrollableHistory() { }
+	explicit InGameScrollableHistory(const std::list<InGameMessage>& messageHistory);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
-	///Handles an event
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-
-	///Handles timer presses
-	void onTimer(Uint32 tick);
 protected:
-	/// Updates the messageList from the history
-	void updateList();
+	bool scrim() const override { return false; }
+	void onEscape() override { finish(0); }
+	void onUpdate(Uint32 tick) override;
+	GAGGUI::ui::Rect place(GAGGUI::ui::Size measured, GAGGUI::ui::Rect area) override;
 	/// The list of messages
 	const std::list<InGameMessage>& history;
 	/// The last known size of the history, to count for changes
-	size_t lastSize;
-	/// The widget
-	List *messageList;	
+	size_t lastSize = 0;
 };
 
 
