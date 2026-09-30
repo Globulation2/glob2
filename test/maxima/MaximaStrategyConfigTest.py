@@ -22,10 +22,13 @@ def find_game_binary() -> Path | None:
 
 
 def find_dump_binary() -> Path | None:
-    # test/maxima/run_maxima_implementation_regressions.py builds MaximaStrategyDump
-    # and passes its path here.
+    # `scons maxima-strategy-dump` builds the tool next to the test binaries;
+    # MAXIMA_STRATEGY_DUMP overrides the location.
     path = os.environ.get("MAXIMA_STRATEGY_DUMP")
-    return Path(path) if path and Path(path).is_file() else None
+    if path:
+        return Path(path) if Path(path).is_file() else None
+    candidate = native_build_directory() / "test" / ("MaximaStrategyDump" + (".exe" if os.name == "nt" else ""))
+    return candidate if candidate.is_file() else None
 
 
 class MaximaStrategyConfigTest(unittest.TestCase):
@@ -33,7 +36,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.binary = find_dump_binary()
         if cls.binary is None:
-            raise unittest.SkipTest("run through test/maxima/run_maxima_implementation_regressions.py")
+            raise unittest.SkipTest("build MaximaStrategyDump first: scons release=1 server=0 maxima-strategy-dump")
         cls.game_binary = find_game_binary()
         schema = cls.run_binary("--dump-maxima-schema")
         cls.schema = json.loads(schema.stdout)

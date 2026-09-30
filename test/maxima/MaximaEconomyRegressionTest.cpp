@@ -1,3 +1,4 @@
+#include "EngineFixtures.h"
 #include "Version.h"
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "../../src/GlobalContainer.h"
@@ -22,11 +23,9 @@
 #include <string>
 #include <vector>
 // Access the scheduler boundary without adding a production testing API.
-#define private public
 #include "../../src/ai/maxima/AIMaximaRuntime.h"
 #include "../../src/ai/maxima/AIMaxima.h"
 #include "../../src/ai/maxima/AIMaximaSwarmController.h"
-#undef private
 #include "../../src/building/Building.h"
 #include "../../src/game/entities/BuildingType.h"
 #include "../../src/building/IntBuildingType.h"
@@ -35,14 +34,12 @@
 #include <BinaryStream.h>
 #include <GzipUtil.h>
 #include <StreamBackend.h>
-#include <cassert>
 #include <bit>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <memory>
 
-GlobalContainer* globalContainer = NULL;
 using namespace AIMaximaRuntime;
 
 namespace
@@ -72,7 +69,7 @@ struct Fixture
     {
         Building* b=game.addBuilding(x,y,
             globalContainer->buildingsTypes.getTypeNum("swarm",0,false),0,workers,workers);
-        assert(b); return b;
+        REQUIRE(b); return b;
     }
     void supply(int x,int y)
     {
@@ -96,15 +93,15 @@ struct Fixture
             if(auto assignment=std::dynamic_pointer_cast<OrderModifyBuilding>(order))
             {
                 Building* b=player.team->myBuildings[Building::GIDtoID(assignment->gid)];
-                assert(b); b->maxUnitWorking=assignment->numberRequested;
+                REQUIRE(b); b->maxUnitWorking=assignment->numberRequested;
             }
             else if(auto ratios=std::dynamic_pointer_cast<OrderModifySwarm>(order))
             {
                 Building* b=player.team->myBuildings[Building::GIDtoID(ratios->gid)];
-                assert(b);
+                REQUIRE(b);
                 for(int type=0;type<NB_UNIT_TYPE;++type) b->ratio[type]=ratios->ratio[type];
             }
-            else assert(false);
+            else REQUIRE(false);
         }
         c.orders.clear();
     }
@@ -117,8 +114,8 @@ void birthBudgetScalesBeyondTwenty()
     // disabling every birth despite having enough supply to fund one worker.
     for(int supply:{2483,6554,6901,15984,17699,23193,23594})
     {
-        assert(plan(4,4,0,0,supply,275,25,6,6,65536).workers==1);
-        assert(plan(4,4,0,0,supply/65536,275,25,6,6).workers==0);
+        REQUIRE(plan(4,4,0,0,supply,275,25,6,6,65536).workers==1);
+        REQUIRE(plan(4,4,0,0,supply/65536,275,25,6,6).workers==0);
     }
     {
         Fixture opening;
@@ -130,30 +127,30 @@ void birthBudgetScalesBeyondTwenty()
         ai.environment.accessible_corn=0;
         ai.environment.accessible_corn_fraction=17699;
         ai.build_policy_bids(); ai.arbitrate_policy_bids();
-        assert(ai.budget.swarm_workers==1);
+        REQUIRE(ai.budget.swarm_workers==1);
         ai.manage_swarm(ai.context,0); opening.applyStaffing();
-        assert(swarm->ratio[WORKER]>0);
+        REQUIRE(swarm->ratio[WORKER]>0);
         ai.environment.accessible_corn_fraction=0;
         ai.build_policy_bids(); ai.arbitrate_policy_bids();
         ai.manage_swarm(ai.context,0); opening.applyStaffing();
-        assert(swarm->ratio[WORKER]+swarm->ratio[EXPLORER]+swarm->ratio[WARRIOR]==0);
+        REQUIRE(swarm->ratio[WORKER]+swarm->ratio[EXPLORER]+swarm->ratio[WARRIOR]==0);
     }
     // Physical boundaries and monotonic responses, across realistic domains.
     for(int w=0;w<=1000;w+=5) for(int food:{0,5,50,500,5000}) {
         auto p=plan(w,1000,0,0,food,250,100,3,6);
-        assert(plan(w,1000,0,0,food*65536LL,250,100,3,6,65536).workers==p.workers);
-        assert(p.workers>=0 && p.workers<=w && p.swarms>=1);
-        assert(plan(w+1,1000,0,0,food,250,100,3,6).workers>=p.workers);
-        assert(plan(w,1000,0,0,food+1,250,100,3,6).workers>=p.workers);
-        assert(plan(w,1000,100,0,food,250,100,3,6).workers<=p.workers);
-        if(food==0) assert(p.workers==0 && p.swarms==1);
+        REQUIRE(plan(w,1000,0,0,food*65536LL,250,100,3,6,65536).workers==p.workers);
+        REQUIRE((p.workers>=0 && p.workers<=w && p.swarms>=1));
+        REQUIRE(plan(w+1,1000,0,0,food,250,100,3,6).workers>=p.workers);
+        REQUIRE(plan(w,1000,0,0,food+1,250,100,3,6).workers>=p.workers);
+        REQUIRE(plan(w,1000,100,0,food,250,100,3,6).workers<=p.workers);
+        if(food==0) REQUIRE((p.workers==0 && p.swarms==1));
     }
-    assert(plan(1000,1000,0,0,5000,250,100,3,6).workers>20);
+    REQUIRE(plan(1000,1000,0,0,5000,250,100,3,6).workers>20);
     auto a=plan(100,100,11,0,1000,250,100,3,6);
     auto b=plan(100,100,12,0,1000,250,100,3,6);
     auto c=plan(100,100,13,0,1000,250,100,3,6);
-    assert(a.workers-b.workers<=1 && b.workers-c.workers<=1 && c.workers>0);
-    assert(plan(100,100,12,12,1000,250,100,3,6).workers==b.workers);
+    REQUIRE((a.workers-b.workers<=1 && b.workers-c.workers<=1 && c.workers>0));
+    REQUIRE(plan(100,100,12,12,1000,250,100,3,6).workers==b.workers);
     Fixture f; auto& ai=*f.ai;
     ai.snapshot.population=180; ai.snapshot.workers=120;
     ai.environment.accessible_corn=1000;
@@ -165,7 +162,7 @@ void birthBudgetScalesBeyondTwenty()
         ai.environment.threat_pressure=pressure;
         ai.large_economy_committed=existing>1;
         ai.build_policy_bids(); ai.arbitrate_policy_bids();
-        assert(ai.budget.swarm_workers==workers && ai.budget.desired_swarms==count);
+        REQUIRE((ai.budget.swarm_workers==workers && ai.budget.desired_swarms==count));
     }
     // Expansion has its own construction permission even with no production
     // deficit. Core and colony intents remain distinct and share staffing.
@@ -175,15 +172,15 @@ void birthBudgetScalesBeyondTwenty()
     int colonies=0;
     for(const auto& intent:ai.collect_development_intents(world))
         if(intent.buildingType==IntBuildingType::SWARM_BUILDING) {
-            assert(intent.purpose==AIMaximaPlacement::ColonySeed);
-            assert(intent.unmetCount==1); ++colonies;
+            REQUIRE(intent.purpose==AIMaximaPlacement::ColonySeed);
+            REQUIRE(intent.unmetCount==1); ++colonies;
         }
-    assert(colonies==1);
+    REQUIRE(colonies==1);
     ai.budget.colony_swarm_requested=false;
     for(const auto& intent:ai.collect_development_intents(world))
-        assert(intent.buildingType!=IntBuildingType::SWARM_BUILDING);
+        REQUIRE(intent.buildingType!=IntBuildingType::SWARM_BUILDING);
     ai.snapshot.critical_food=30; ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.budget.swarm_workers>0 && ai.budget.swarm_workers<workers);
+    REQUIRE((ai.budget.swarm_workers>0 && ai.budget.swarm_workers<workers));
 }
 
 void colonyStartupAndAffordability()
@@ -194,15 +191,15 @@ void colonyStartupAndAffordability()
     ai.snapshot.free_workers=10; ai.snapshot.worker_jobs_open=0;
     ai.posture=AIMaxima::Maxima::PostureRecover;
     ai.finalize_director_plan(ai.context);
-    assert(ai.budget.colony_swarm_requested); // Recovery is not an expansion veto.
+    REQUIRE(ai.budget.colony_swarm_requested); // Recovery is not an expansion veto.
     ai.snapshot.free_workers=0;
     ai.finalize_director_plan(ai.context);
-    assert(!ai.budget.colony_swarm_requested);
+    REQUIRE(!ai.budget.colony_swarm_requested);
     ai.snapshot.free_workers=10;
     int id=-1;
     for(const auto& entry:ai.context.get_building_register().found())
         if(ai.context.get_building_register().get_building(entry.first)==swarm)id=entry.first;
-    assert(id>=0);
+    REQUIRE(id>=0);
     AIMaximaPlacement::DevelopmentAction action;
     action.id=123; action.buildingId=id; action.purpose=AIMaximaPlacement::ColonySeed;
     action.state=AIMaximaPlacement::Completed;
@@ -210,15 +207,15 @@ void colonyStartupAndAffordability()
     auto& actions=const_cast<std::map<int,AIMaximaPlacement::DevelopmentAction>&>(ai.development_planner.actions());
     actions[action.id]=action;
     ai.finalize_director_plan(ai.context);
-    assert(!ai.budget.colony_swarm_requested);
-    Unit* worker=f.game.addUnit(20,20,0,WORKER,0,0,0,0); assert(worker);
+    REQUIRE(!ai.budget.colony_swarm_requested);
+    Unit* worker=f.game.addUnit(20,20,0,WORKER,0,0,0,0); REQUIRE(worker);
     swarm->unitsWorking.push_back(worker);
     swarm->resources[WHEAT]=swarm->type->resourceForOneUnit;
     ai.finalize_director_plan(ai.context);
-    assert(ai.budget.colony_swarm_requested);
+    REQUIRE(ai.budget.colony_swarm_requested);
     swarm->unitsWorking.clear(); swarm->resources[WHEAT]=0;
     ai.finalize_director_plan(ai.context);
-    assert(ai.budget.colony_swarm_requested); // Later idleness is not a new startup.
+    REQUIRE(ai.budget.colony_swarm_requested); // Later idleness is not a new startup.
 }
 
 void growingFoodFundsCapacity()
@@ -234,9 +231,9 @@ void growingFoodFundsCapacity()
     for(int y=12;y<=20;++y) for(int x=12;x<=20;++x)
         if(f.game.map.isGrass(x,y)) f.game.map.setResource(x,y,WHEAT,1);
     ai.update_environment_model(c); ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.environment.accessible_corn>food);
-    assert(ai.budget.swarm_workers>workers);
-    assert(ai.budget.desired_swarms>1);
+    REQUIRE(ai.environment.accessible_corn>food);
+    REQUIRE(ai.budget.swarm_workers>workers);
+    REQUIRE(ai.budget.desired_swarms>1);
 }
 
 void distantWheatFundsRecovery()
@@ -244,30 +241,30 @@ void distantWheatFundsRecovery()
     Fixture f;auto swarm=f.swarm(10,10);f.supply(30,10);
     auto& ai=*f.ai;auto& c=ai.context;c.initialize();
     ai.snapshot.population=4;ai.snapshot.workers=4;ai.budget.swarm_supply_radius=12;
-    assert(ai.nearby_farm_capacity(c,0)==0);
+    REQUIRE(ai.nearby_farm_capacity(c,0)==0);
     ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();
-    assert(ai.environment.accessible_corn*65536LL+ai.environment.accessible_corn_fraction>0);
-    assert(ai.budget.swarm_workers>0);
-    ai.manage_swarm(c,0);f.applyStaffing();assert(swarm->ratio[WORKER]>0);
+    REQUIRE(ai.environment.accessible_corn*65536LL+ai.environment.accessible_corn_fraction>0);
+    REQUIRE(ai.budget.swarm_workers>0);
+    ai.manage_swarm(c,0);f.applyStaffing();REQUIRE(swarm->ratio[WORKER]>0);
     // Full stores cannot manufacture recurring capacity when no wheat remains.
     f.game.map.setNoResource(36,11,1);
     swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
     ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();
-    assert(ai.budget.swarm_workers==0);
+    REQUIRE(ai.budget.swarm_workers==0);
     f.game.map.setResource(36,11,WHEAT,1);
     // A full water barrier (including the wrap edge) cuts off nonswimmers.
     for(int y=0;y<64;++y)for(int x:{0,25})f.game.map.getTile(x,y).terrain=256;
     ai.fertility_cache=AIMaxima::Farming::ExactFertilityCache();
     ai.budget.can_swim=false;
     ai.update_environment_model(c);ai.build_policy_bids();ai.arbitrate_policy_bids();
-    assert(ai.budget.swarm_workers==0);
+    REQUIRE(ai.budget.swarm_workers==0);
 }
 
 void soleSwarmStaffsFromItsOwnStock()
 {
     Fixture f;Building* swarm=f.swarm(10,10,0);
     auto& ai=*f.ai;auto& c=ai.context;c.initialize();
-    assert(ai.nearby_farm_capacity(c,0)==0);
+    REQUIRE(ai.nearby_farm_capacity(c,0)==0);
     // Seed neutralised: these cases exercise the control loop, not the
     // starting staffing a newly built building is given.
     ai.budget.staffing_new_swarm_workers=1;
@@ -282,11 +279,11 @@ void soleSwarmStaffsFromItsOwnStock()
     for(int budget:{10,0,2}) {
         ai.budget.swarm_workers=budget;
         for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
-        assert(swarm->maxUnitWorking==1);
+        REQUIRE(swarm->maxUnitWorking==1);
     }
     swarm->resources[WHEAT]=0;
     for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
-    assert(swarm->maxUnitWorking>1);
+    REQUIRE(swarm->maxUnitWorking>1);
 }
 
 void nearbyCornDeterminesStaffing()
@@ -299,7 +296,7 @@ void nearbyCornDeterminesStaffing()
     ai.budget.swarm_supply_radius=6; ai.budget.swarm_workers=10;
 
     const long long before=ai.nearby_farm_capacity(c,0);
-    assert(before>0);
+    REQUIRE(before>0);
     const int originalAmount=f.game.map.getTile(16,11).resource.amount;
     // A cell with no wheat is no supply. A cell with wheat supplies its
     // recurring growth plus the stock standing on it, amortised over the
@@ -311,21 +308,21 @@ void nearbyCornDeterminesStaffing()
     {
         f.game.map.getTile(16,11).resource.amount=amount;
         const long long capacity=ai.nearby_farm_capacity(c,0);
-        if(amount==0) assert(capacity==0);
-        else assert(capacity>0 && capacity>=previous);
+        if(amount==0) REQUIRE(capacity==0);
+        else REQUIRE((capacity>0 && capacity>=previous));
         previous=capacity;
     }
     f.game.map.getTile(16,11).resource.amount=originalAmount;
     auto world=ai.collect_development_world(c);
-    assert(world.tile(16,11).foodOpportunity>0);
-    assert(world.tile(15,11).fertility>0);
-    assert(world.tile(15,11).foodOpportunity==0);
-    assert(world.tile(15,11).farmCapacity==0);
+    REQUIRE(world.tile(16,11).foodOpportunity>0);
+    REQUIRE(world.tile(15,11).fertility>0);
+    REQUIRE(world.tile(15,11).foodOpportunity==0);
+    REQUIRE(world.tile(15,11).farmCapacity==0);
     f.game.map.setNoResource(16,11,1);
-    assert(ai.nearby_farm_capacity(c,0)==0);
+    REQUIRE(ai.nearby_farm_capacity(c,0)==0);
     world=ai.collect_development_world(c);
-    assert(world.tile(16,11).foodOpportunity==0);
-    assert(world.tile(16,11).farmCapacity==0);
+    REQUIRE(world.tile(16,11).foodOpportunity==0);
+    REQUIRE(world.tile(16,11).farmCapacity==0);
     f.game.map.setResource(16,11,WHEAT,1);
     ai.budget.staffing_new_swarm_workers=1;
     ai.budget.staffing_window_samples=2;
@@ -342,8 +339,8 @@ void nearbyCornDeterminesStaffing()
         for(int id=0;id<2;++id) ai.manage_swarm(c,id);
         f.applyStaffing();
     }
-    assert(first->maxUnitWorking>second->maxUnitWorking);
-    assert(first->maxUnitWorking>0 && second->maxUnitWorking>0);
+    REQUIRE(first->maxUnitWorking>second->maxUnitWorking);
+    REQUIRE((first->maxUnitWorking>0 && second->maxUnitWorking>0));
     std::set<int> shared;
     // Two readings of the same patch at the same moment must agree, and the
     // second must take nothing, because the first claimed every tile. The
@@ -352,11 +349,11 @@ void nearbyCornDeterminesStaffing()
     // which admits tiles that were forbidden before, so the colony genuinely
     // reaches more wheat than it did then.
     const long long steady=ai.nearby_farm_capacity(c,0);
-    assert(steady>0);
-    assert(ai.nearby_farm_capacity(c,0,&shared)==steady);
-    assert(ai.nearby_farm_capacity(c,0,&shared)==0);
+    REQUIRE(steady>0);
+    REQUIRE(ai.nearby_farm_capacity(c,0,&shared)==steady);
+    REQUIRE(ai.nearby_farm_capacity(c,0,&shared)==0);
     f.game.map.unsetMapDiscovered();
-    assert(ai.nearby_farm_capacity(c,0)==0);
+    REQUIRE(ai.nearby_farm_capacity(c,0)==0);
 }
 
 void cornPileInteriorIsSupply()
@@ -365,19 +362,19 @@ void cornPileInteriorIsSupply()
     f.swarm(30,10); f.supply(30,10); f.supply(10,10);
     Building* inn=f.game.addBuilding(10,10,
         globalContainer->buildingsTypes.getTypeNum("inn",0,false),0,0,0);
-    assert(inn);
+    REQUIRE(inn);
     auto& ai=*f.ai; auto& c=ai.context; c.initialize();
     ai.budget.swarm_supply_radius=10;
     const long long before=ai.nearby_farm_capacity(c,0);
     for(int y=9;y<=11;++y) for(int x=37;x<=39;++x)
         f.game.map.setResource(x,y,WHEAT,1);
     const long long planted=ai.nearby_farm_capacity(c,0);
-    assert(planted>before);
+    REQUIRE(planted>before);
     f.game.map.setResource(38,10,STONE,1);
     const long long withoutCenter=ai.nearby_farm_capacity(c,0);
-    assert(withoutCenter<planted);
+    REQUIRE(withoutCenter<planted);
     f.game.map.setNoResource(38,10,1);
-    assert(ai.nearby_farm_capacity(c,0)==withoutCenter);
+    REQUIRE(ai.nearby_farm_capacity(c,0)==withoutCenter);
     // Staffing is a closed loop on the inn's own stock: an empty inn asks for
     // another carrier, a full one hands them back, and it never falls below the
     // minimum. Wheat growing nearby does not enter into the decision.
@@ -391,10 +388,10 @@ void cornPileInteriorIsSupply()
     ai.budget.staffing_maximum_workers=20;
     inn->resources[WHEAT]=0;
     for(int pass=0;pass<6;++pass){ai.manage_inn(c,1); f.applyStaffing();}
-    assert(inn->maxUnitWorking>=2);
+    REQUIRE(inn->maxUnitWorking>=2);
     inn->resources[WHEAT]=inn->type->maxResource[WHEAT];
     for(int pass=0;pass<12;++pass){ai.manage_inn(c,1); f.applyStaffing();}
-    assert(inn->maxUnitWorking==1);
+    REQUIRE(inn->maxUnitWorking==1);
 }
 
 void explorerTargetAlwaysGetsProduction()
@@ -422,13 +419,13 @@ void explorerTargetAlwaysGetsProduction()
         offense.explorer_ratio=requestedWeight;
         growth.swarm_workers=birthWorkers;
         ai.arbitrate_policy_bids();
-        assert(ai.budget.desired_explorers==14);
-        assert(ai.budget.explorer_ratio==std::max(1,requestedWeight));
+        REQUIRE(ai.budget.desired_explorers==14);
+        REQUIRE(ai.budget.explorer_ratio==std::max(1,requestedWeight));
         ai.manage_swarm(c,0); ai.manage_swarm(c,1); f.applyStaffing();
         const int expected=birthWorkers>0 && explorers<14
             ? std::max(1,requestedWeight) : 0;
-        assert(first->ratio[EXPLORER]==expected);
-        assert(second->ratio[EXPLORER]==expected);
+        REQUIRE(first->ratio[EXPLORER]==expected);
+        REQUIRE(second->ratio[EXPLORER]==expected);
     }
 }
 
@@ -439,7 +436,7 @@ void armyDemandFundsTrainingAndBirthMix()
         auto* swarm=f.swarm(40,40,6);f.supply(40,40);
         // The saved colony had one working barracks and four upgrade sites.
         for(int i=0;i<5;++i)
-            assert(f.game.addBuilding(4+6*i,4,globalContainer->buildingsTypes
+            REQUIRE(f.game.addBuilding(4+6*i,4,globalContainer->buildingsTypes
                 .getTypeNum("barracks",i<3?2:1,i!=0),0));
         auto& a=*f.ai;auto& c=a.context;c.initialize();
         a.snapshot.population=533;a.snapshot.workers=491;
@@ -457,24 +454,24 @@ void armyDemandFundsTrainingAndBirthMix()
         defense.desired_warriors=120;defense.desired_barracks=3;
         defense.utility=100;defense.warrior_ratio=3;
         a.arbitrate_policy_bids();
-        assert(a.budget.desired_barracks>5);
-        assert(a.budget.worker_ratio==0 && a.budget.warrior_ratio==3);
+        REQUIRE(a.budget.desired_barracks>5);
+        REQUIRE((a.budget.worker_ratio==0 && a.budget.warrior_ratio==3));
         f.player.team->stats.getLatestStat()->numberUnitPerType[WARRIOR]=30;
         a.manage_swarm(c,0);f.applyStaffing();
-        assert(swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]==3);
+        REQUIRE((swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]==3));
         // Backpressure must pause surplus-worker births too, not redirect
         // all funded food into workers when the training queue fills.
         a.snapshot.warriors=60;
         a.arbitrate_policy_bids();
-        assert(a.budget.worker_ratio==0 && a.budget.warrior_ratio==0);
+        REQUIRE((a.budget.worker_ratio==0 && a.budget.warrior_ratio==0));
         // Genuine job growth still funds replacements and expansion.
         a.snapshot.worker_jobs_open=400;
         a.arbitrate_policy_bids();
-        assert(a.budget.worker_ratio==5);
+        REQUIRE(a.budget.worker_ratio==5);
         // The military preference ends when its target is met.
         a.snapshot.worker_jobs_open=43;a.snapshot.warriors=120;
         a.arbitrate_policy_bids();
-        assert(a.budget.worker_ratio==5);
+        REQUIRE(a.budget.worker_ratio==5);
     }
 }
 
@@ -483,13 +480,13 @@ void barracksUpgradesKeepTrainingOpen()
     using namespace AIMaximaPlacement;
     Fixture f;
     for(int i=0;i<2;++i)
-        assert(f.game.addBuilding(4+6*i,4,globalContainer->buildingsTypes
+        REQUIRE(f.game.addBuilding(4+6*i,4,globalContainer->buildingsTypes
             .getTypeNum("barracks",0,false),0));
     auto& a=*f.ai;auto& c=a.context;c.initialize();
     a.snapshot.warriors=20;a.snapshot.trained_warriors=0;
     a.budget.upgrade_level1_barracks_weight=50;
     auto limits=a.collect_development_limits(c);
-    assert(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    REQUIRE(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
     DevelopmentAction action;
     action.id=7;action.type=UpgradeBuilding;action.state=CreateIssued;
     action.buildingType=IntBuildingType::ATTACK_BUILDING;
@@ -497,18 +494,18 @@ void barracksUpgradesKeepTrainingOpen()
     auto& actions=const_cast<std::map<int,DevelopmentAction>&>(a.development_planner.actions());
     actions[action.id]=action;
     const auto seats=a.barracks_capacity(c);
-    assert(seats.first==2 && seats.second==6);
+    REQUIRE((seats.first==2 && seats.second==6));
     limits=a.collect_development_limits(c);
-    assert(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)==0);
+    REQUIRE(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)==0);
     // An unissued reservation must not prevent its own first upgrade.
     actions[action.id].state=ParcelReserved;
     limits=a.collect_development_limits(c,action.id);
-    assert(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    REQUIRE(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
     // Once the army is trained, this queue-protection gate no longer applies.
     actions[action.id].state=CreateIssued;
     a.snapshot.trained_warriors=20;
     limits=a.collect_development_limits(c);
-    assert(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    REQUIRE(limits.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
 }
 
 void armyBirthsMatchPlatformChecksums()
@@ -517,9 +514,9 @@ void armyBirthsMatchPlatformChecksums()
     Fixture f;
     f.game.gameHeader.setHungerDisabled(true);
     auto* swarm=f.swarm(10,10,6);f.supply(10,10);
-    assert(f.game.addBuilding(18,10,globalContainer->buildingsTypes
+    REQUIRE(f.game.addBuilding(18,10,globalContainer->buildingsTypes
         .getTypeNum("barracks",0,false),0));
-    for(int i=0;i<50;++i)assert(f.game.addUnit(24+i%10,24+i/10,0,WORKER,0,0,0,0));
+    for(int i=0;i<50;++i)REQUIRE(f.game.addUnit(24+i%10,24+i/10,0,WORKER,0,0,0,0));
     // addBuilding is the editor path; a playable map also builds team lists.
     f.player.team->playersMask=1;
     f.player.team->createLists();
@@ -531,10 +528,11 @@ void armyBirthsMatchPlatformChecksums()
     growth.worker_ratio=5;growth.swarm_workers=6;
     defense.desired_warriors=12;defense.warrior_ratio=3;defense.utility=100;
     a.arbitrate_policy_bids();a.manage_swarm(c,0);f.applyStaffing();
-    assert(swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]>0);
+    REQUIRE((swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]>0));
     swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
     swarm->productionTimeout=-1;
-    const char* path="test/maxima/fixtures/army-birth-checksums.txt";
+    const std::string fixtureFile=(glob2test::sourceRoot() / "test/maxima/fixtures/army-birth-checksums.txt").string();
+    const char* path=fixtureFile.c_str();
     const bool record=std::getenv("GLOB2_RECORD_ARMY_CHECKSUMS")!=nullptr;
     std::ifstream expected;
     std::ofstream output;
@@ -542,9 +540,9 @@ void armyBirthsMatchPlatformChecksums()
     // verification uses its background worker and must match every tick.
     if(record) { f.game.map.configureGradientPipeline(0,8); output.open(path); }
     else expected.open(path);
-    assert(record?output.good():expected.good());
+    REQUIRE((record?output.good():expected.good()));
     for(int tick=1;tick<=512;++tick) {
-        f.game.syncStep(0);assert(f.game.stepCounter==unsigned(tick));
+        f.game.syncStep(0);REQUIRE(f.game.stepCounter==unsigned(tick));
         // Normalize the header to 115; the fixture uses eight-tick publication. With one
         // team and no players, the header version is rotated six times.
         const Uint32 checksum=f.game.checkSum(nullptr,nullptr,nullptr,true)
@@ -552,19 +550,19 @@ void armyBirthsMatchPlatformChecksums()
         if(record)output<<tick<<' '<<checksum<<'\n';
         else {
             int expectedTick;Uint32 expectedChecksum;
-            assert(expected>>expectedTick>>expectedChecksum);
+            REQUIRE((expected>>expectedTick>>expectedChecksum));
             if(expectedTick!=tick || expectedChecksum!=checksum)
                 std::cerr<<"Army birth checksum mismatch: tick="<<tick
                     <<" actual="<<checksum<<" expected="<<expectedChecksum<<'\n';
-            assert(expectedTick==tick && expectedChecksum==checksum);
+            REQUIRE((expectedTick==tick && expectedChecksum==checksum));
         }
     }
     int workers=0,warriors=0;
     for(int i=0;i<Unit::MAX_COUNT;++i)if(auto* u=f.player.team->myUnits[i]) {
         workers+=u->typeNum==WORKER;warriors+=u->typeNum==WARRIOR;
     }
-    assert(workers==50 && warriors>0);
-    if(!record){expected>>std::ws;assert(expected.eof());}
+    REQUIRE((workers==50 && warriors>0));
+    if(!record){expected>>std::ws;REQUIRE(expected.eof());}
 }
 
 void crisisProductionPause()
@@ -584,12 +582,12 @@ void crisisProductionPause()
         access.explorer_ratio=1; access.desired_explorers=5;
         defense.warrior_ratio=2; defense.desired_warriors=10;
         ai.arbitrate_policy_bids();
-        assert(ai.budget.swarm_workers==0);
+        REQUIRE(ai.budget.swarm_workers==0);
         ai.manage_swarm(c,0); f.applyStaffing();
         // A zero birth budget pauses production through the ratios. Carriers
         // are the building's own business now and keep their minimum.
-        assert(swarm->maxUnitWorking>=1);
-        for(int type=0;type<NB_UNIT_TYPE;++type) assert(swarm->ratio[type]==0);
+        REQUIRE(swarm->maxUnitWorking>=1);
+        for(int type=0;type<NB_UNIT_TYPE;++type) REQUIRE(swarm->ratio[type]==0);
         swarm->resources[WHEAT]=20;
         swarm->productionTimeout=expiredTimer;
         const int before=f.population();
@@ -597,19 +595,19 @@ void crisisProductionPause()
         // The existing engine cannot cancel an already-expired timer through
         // AI orders. That one pending birth may finish; further births stop.
         const int pending=expiredTimer<0 ? 1 : 0;
-        assert(f.population()==before+pending && swarm->resources[WHEAT]==20-5*pending);
-        assert(swarm->productionTimeout==(pending ? swarm->type->unitProductionTime : expiredTimer));
+        REQUIRE((f.population()==before+pending && swarm->resources[WHEAT]==20-5*pending));
+        REQUIRE(swarm->productionTimeout==(pending ? swarm->type->unitProductionTime : expiredTimer));
 
         // Funding returns through the same director and executor path.
         ai.snapshot.unserved_food=0;
         growth.swarm_workers=6;
         ai.arbitrate_policy_bids();
-        assert(ai.budget.swarm_workers==6);
+        REQUIRE(ai.budget.swarm_workers==6);
         ai.manage_swarm(c,0); f.applyStaffing();
-        assert(swarm->ratio[WORKER]==4 && swarm->ratio[EXPLORER]==1
-            && swarm->ratio[WARRIOR]==2);
+        REQUIRE((swarm->ratio[WORKER]==4 && swarm->ratio[EXPLORER]==1
+            && swarm->ratio[WARRIOR]==2));
         for(int tick=0;tick<=swarm->type->unitProductionTime;++tick) swarm->swarmStep();
-        assert(f.population()==before+pending+1 && swarm->resources[WHEAT]==15-5*pending);
+        REQUIRE((f.population()==before+pending+1 && swarm->resources[WHEAT]==15-5*pending));
     }
 }
 
@@ -627,18 +625,18 @@ void completionReallocatesColony()
     action.buildingType=IntBuildingType::SWARM_BUILDING;
     action.centerX=30; action.centerY=30; action.workers=2;
     action.initialFootprint=AIMaximaPlacement::Footprint(-2,-2,4,4);
-    assert(ai.issue_development_action(c,action));
+    REQUIRE(ai.issue_development_action(c,action));
     const int id=c.previousBuildingId;
     Building* fresh=f.game.addBuilding(28,28,
         globalContainer->buildingsTypes.getTypeNum("swarm",0,true),0,1,1);
-    assert(fresh);
+    REQUIRE(fresh);
     c.orders.clear(); c.buildings.tick(); f.applyStaffing();
     // The construction site carries the workers the placement action asked for.
-    assert(fresh->maxUnitWorking==2);
+    REQUIRE(fresh->maxUnitWorking==2);
     for(int resource=0;resource<MAX_RESOURCES;++resource)
         fresh->resources[resource]=fresh->type->maxResource[resource];
     fresh->updateBuildingSite();
-    assert(fresh->maxUnitWorking==1);
+    REQUIRE(fresh->maxUnitWorking==1);
     // Completion no longer redistributes a colony total. Each swarm runs its
     // own loop, so both stay staffed and both share the explorer stream.
     ai.budget.staffing_window_samples=2;
@@ -652,8 +650,8 @@ void completionReallocatesColony()
         ai.manage_swarm(c,id);
         f.applyStaffing();
     }
-    assert(old->maxUnitWorking>=1 && fresh->maxUnitWorking>=1);
-    assert(old->ratio[EXPLORER]==1 && fresh->ratio[EXPLORER]==1);
+    REQUIRE((old->maxUnitWorking>=1 && fresh->maxUnitWorking>=1));
+    REQUIRE((old->ratio[EXPLORER]==1 && fresh->ratio[EXPLORER]==1));
 }
 
 struct IdleAI : RuntimeAI
@@ -677,25 +675,25 @@ void trackerLogicalCadence()
         auto tracker=c.get_resource_tracker(0);
         const auto tick=[&]() {++f.game.stepCounter; c.getOrder(idle);};
         for(int i=0;i<9;++i) tick();
-        assert(tracker->get_age()==9 && tracker->get_total_level()==0);
+        REQUIRE((tracker->get_age()==9 && tracker->get_total_level()==0));
         for(int i=0;i<3;++i) c.push_order(std::shared_ptr<Order>(new NullOrder));
         for(int i=0;i<3;++i) tick();
-        assert(tracker->get_age()==9);
+        REQUIRE(tracker->get_age()==9);
         tick();
-        assert(tracker->get_age()==10 && tracker->get_total_level()==20);
+        REQUIRE((tracker->get_age()==10 && tracker->get_total_level()==20));
         for(int i=10;i<250;++i) tick();
-        assert(tracker->get_age()==250 && tracker->get_total_level()==500);
+        REQUIRE((tracker->get_age()==250 && tracker->get_total_level()==500));
         swarm->resources[WHEAT]=0;
         for(int i=0;i<250;++i) tick();
-        assert(tracker->get_age()==500 && tracker->get_total_level()==0);
+        REQUIRE((tracker->get_age()==500 && tracker->get_total_level()==0));
     }
 }
 
 void holidayHarvestCapacity()
 {
     Game game(NULL);
-    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend("maps/Holiday_Island_2.map.gz"));
-    assert(input.isValid()); assert(game.load(&input));
+    BinaryInputStream input(GAGCore::openInflatingFileStreamBackend((glob2test::sourceRoot() / "maps/Holiday_Island_2.map.gz").string()));
+    REQUIRE(input.isValid()); REQUIRE(game.load(&input));
     Player player; player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player); auto& c=ai.context; c.initialize();
     ai.budget.can_swim=true;
@@ -707,12 +705,12 @@ void holidayHarvestCapacity()
     buildings.add_condition(new Conditions::NotUnderConstruction);
     for(auto i=buildings.begin();i!=buildings.end();++i)
         before[*i]=ai.nearby_farm_capacity(c,*i);
-    assert(!before.empty());
+    REQUIRE(!before.empty());
     int productive=0; for(auto entry:before) productive+=entry.second>0;
-    assert(productive>0);
+    REQUIRE(productive>0);
     for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x)
         if(map.getResource(x,y).type==WHEAT) map.setNoResource(x,y,1);
-    for(auto entry:before) assert(ai.nearby_farm_capacity(c,entry.first)==0);
+    for(auto entry:before) REQUIRE(ai.nearby_farm_capacity(c,entry.first)==0);
 }
 
 }
@@ -723,7 +721,7 @@ void newBuildingsStartStaffed()
     Building* swarm=f.swarm(10,10,0);
     Building* inn=f.game.addBuilding(30,10,
         globalContainer->buildingsTypes.getTypeNum("inn",0,false),0,0,0);
-    assert(inn);
+    REQUIRE(inn);
     auto& ai=*f.ai; auto& c=ai.context; c.initialize();
     ai.budget.staffing_new_swarm_workers=8;
     ai.budget.staffing_new_inn_workers=4;
@@ -734,8 +732,8 @@ void newBuildingsStartStaffed()
     // A newly built building starts where it is useful instead of climbing
     // from one carrier at a cooldown apiece.
     ai.manage_swarm(c,0); ai.manage_inn(c,1); f.applyStaffing();
-    assert(swarm->maxUnitWorking==8);
-    assert(inn->maxUnitWorking==4);
+    REQUIRE(swarm->maxUnitWorking==8);
+    REQUIRE(inn->maxUnitWorking==4);
     // The seed applies once. From here the loop owns the number, so a building
     // that stays full hands carriers back below its starting count.
     swarm->resources[WHEAT]=swarm->type->maxResource[WHEAT];
@@ -744,8 +742,8 @@ void newBuildingsStartStaffed()
     {
         ai.manage_swarm(c,0); ai.manage_inn(c,1); f.applyStaffing();
     }
-    assert(swarm->maxUnitWorking<8);
-    assert(inn->maxUnitWorking<4);
+    REQUIRE(swarm->maxUnitWorking<8);
+    REQUIRE(inn->maxUnitWorking<4);
 }
 
 static void schoolsDoNotRequireKnownAlgae()
@@ -759,7 +757,7 @@ static void schoolsDoNotRequireKnownAlgae()
     ai.demands.technology=100;
     ai.known_algae_units=0; ai.accessible_algae_units=0;
     ai.build_policy_bids(); ai.arbitrate_policy_bids(); ai.finalize_director_plan(c);
-    assert(ai.budget.desired_schools>0);
+    REQUIRE(ai.budget.desired_schools>0);
     AIMaximaPlacement::WorldState world;
     const auto intents=ai.collect_development_intents(world);
     bool schoolRequested=false;
@@ -767,9 +765,9 @@ static void schoolsDoNotRequireKnownAlgae()
         if(intent.buildingType==IntBuildingType::SCIENCE_BUILDING)
         {
             schoolRequested=true;
-            assert(intent.requiredResourceType==-1);
+            REQUIRE(intent.requiredResourceType==-1);
         }
-    assert(schoolRequested);
+    REQUIRE(schoolRequested);
 }
 
 static void strandedAlgaeKeepsPoolDemand()
@@ -785,21 +783,21 @@ static void strandedAlgaeKeepsPoolDemand()
     access.utility=100;
     access.desired_pools=1;
 
-    assert(ai.labour_swimming_matters());
+    REQUIRE(ai.labour_swimming_matters());
     ai.arbitrate_policy_bids();
-    assert(ai.budget.desired_pools==1);
+    REQUIRE(ai.budget.desired_pools==1);
 
     // Connected maps without stranded water resources retain the cheap
     // suppression that avoids spending labour on useless swimming lessons.
     ai.walk_accessible_algae_units=ai.known_algae_units;
-    assert(!ai.labour_swimming_matters());
+    REQUIRE(!ai.labour_swimming_matters());
     ai.arbitrate_policy_bids();
-    assert(ai.budget.desired_pools==0);
+    REQUIRE(ai.budget.desired_pools==0);
 
     // Fragmented terrain remains sufficient even before algae is discovered.
     ai.environment.mobility_opportunity=15;
     ai.known_algae_units=ai.walk_accessible_algae_units=0;
-    assert(ai.labour_swimming_matters());
+    REQUIRE(ai.labour_swimming_matters());
 }
 
 static void labourContinuation()
@@ -822,11 +820,11 @@ static void labourContinuation()
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     AIMaxima::Maxima restored(&input,&f.player,VERSION_MINOR);
-    assert(restored.labour_observation.workers==24);
-    assert(restored.labour_observation.idle==9);
-    assert(restored.labour_plan.trainingReserve==5);
-    assert(restored.labour_plan.swarmCap==2);
-    assert(restored.swarm_allowance==a.swarm_allowance);
+    REQUIRE(restored.labour_observation.workers==24);
+    REQUIRE(restored.labour_observation.idle==9);
+    REQUIRE(restored.labour_plan.trainingReserve==5);
+    REQUIRE(restored.labour_plan.swarmCap==2);
+    REQUIRE(restored.swarm_allowance==a.swarm_allowance);
     // A completion event before the next building pass must retain the cap.
     for(auto* ai:{&a,&restored})
     {
@@ -836,39 +834,33 @@ static void labourContinuation()
         for(auto order:ai->context.managementOrders)
             if(auto request=dynamic_cast<Management::AssignWorkers*>(order.get()))
             {
-                assert(request->workers==2);
+                REQUIRE(request->workers==2);
                 assigned=true;
             }
-        assert(assigned);
+        REQUIRE(assigned);
     }
 
 }
 
-int main()
+TEST_SUITE("Maxima.Economy")
 {
-    GlobalContainer container; globalContainer=&container; container.runNoX=true;
-    container.buildingsTypes.init();
-    IntBuildingType::init();
-
-
-    labourContinuation();
-    strandedAlgaeKeepsPoolDemand();
-    schoolsDoNotRequireKnownAlgae();
-    birthBudgetScalesBeyondTwenty();
-    growingFoodFundsCapacity();
-    colonyStartupAndAffordability();
-    distantWheatFundsRecovery();
-    soleSwarmStaffsFromItsOwnStock();
-    newBuildingsStartStaffed();
-    nearbyCornDeterminesStaffing();
-    cornPileInteriorIsSupply();
-    explorerTargetAlwaysGetsProduction();
-    armyDemandFundsTrainingAndBirthMix();
-    barracksUpgradesKeepTrainingOpen();
-    armyBirthsMatchPlatformChecksums();
-    crisisProductionPause();
-    completionReallocatesColony();
-    trackerLogicalCadence();
-    holidayHarvestCapacity();
-    std::cout<<"Maxima economy regression tests passed\n";
+	TEST_CASE("labour continuation") { glob2test::HeadlessGlobals globals; labourContinuation(); }
+	TEST_CASE("stranded algae keeps pool demand") { glob2test::HeadlessGlobals globals; strandedAlgaeKeepsPoolDemand(); }
+	TEST_CASE("schools do not require known algae") { glob2test::HeadlessGlobals globals; schoolsDoNotRequireKnownAlgae(); }
+	TEST_CASE("birth budget scales beyond twenty") { glob2test::HeadlessGlobals globals; birthBudgetScalesBeyondTwenty(); }
+	TEST_CASE("growing food funds capacity") { glob2test::HeadlessGlobals globals; growingFoodFundsCapacity(); }
+	TEST_CASE("colony startup and affordability") { glob2test::HeadlessGlobals globals; colonyStartupAndAffordability(); }
+	TEST_CASE("distant wheat funds recovery") { glob2test::HeadlessGlobals globals; distantWheatFundsRecovery(); }
+	TEST_CASE("sole swarm staffs from its own stock") { glob2test::HeadlessGlobals globals; soleSwarmStaffsFromItsOwnStock(); }
+	TEST_CASE("new buildings start staffed") { glob2test::HeadlessGlobals globals; newBuildingsStartStaffed(); }
+	TEST_CASE("nearby corn determines staffing") { glob2test::HeadlessGlobals globals; nearbyCornDeterminesStaffing(); }
+	TEST_CASE("corn pile interior is supply") { glob2test::HeadlessGlobals globals; cornPileInteriorIsSupply(); }
+	TEST_CASE("explorer target always gets production") { glob2test::HeadlessGlobals globals; explorerTargetAlwaysGetsProduction(); }
+	TEST_CASE("army demand funds training and birth mix") { glob2test::HeadlessGlobals globals; armyDemandFundsTrainingAndBirthMix(); }
+	TEST_CASE("barracks upgrades keep training open") { glob2test::HeadlessGlobals globals; barracksUpgradesKeepTrainingOpen(); }
+	TEST_CASE("army births match platform checksums") { glob2test::HeadlessGlobals globals; armyBirthsMatchPlatformChecksums(); }
+	TEST_CASE("crisis production pause") { glob2test::HeadlessGlobals globals; crisisProductionPause(); }
+	TEST_CASE("completion reallocates colony") { glob2test::HeadlessGlobals globals; completionReallocatesColony(); }
+	TEST_CASE("tracker logical cadence") { glob2test::HeadlessGlobals globals; trackerLogicalCadence(); }
+	TEST_CASE("holiday harvest capacity") { glob2test::HeadlessGlobals globals; holidayHarvestCapacity(); }
 }

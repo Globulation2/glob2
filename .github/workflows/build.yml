@@ -160,6 +160,7 @@ jobs:
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
             unit-tests \
             engine-tests \
+            maxima-strategy-dump \
             map-report-test \
             torus-render-test \
             map-preview-test \
@@ -182,11 +183,13 @@ jobs:
             gameplay-touch-test \
             ui-presentation-test
 
-      - name: Test Maxima strategy and implementation
-        id: test_maxima_strategy_and_implementation
+      - name: Test Maxima strategy configuration and policies
+        id: test_maxima_strategy_configuration_and_policies
         continue-on-error: true
         run: |
-          GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/run_maxima_implementation_regressions.py --build-dir build/linux/client/release --reuse-built-objects
+          python3 test/ci_run_commands.py \
+            --check 'Maxima strategy config' 'MAXIMA_STRATEGY_DUMP=build/linux/client/release/test/MaximaStrategyDump GLOB2_BUILD_DIR=build/linux/client/release GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/MaximaStrategyConfigTest.py' \
+            --check 'Maxima policy tests' 'python3 -m unittest discover -s test/maxima -p "*Test.py"'
 
       - name: Package built Linux test programs
         id: package_linux_test_programs

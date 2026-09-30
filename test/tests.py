@@ -57,6 +57,14 @@ ENGINE_TESTS = [
     'EngineSessionHarness.cpp',
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'PointBarRenderTest.cpp',
+    ('maxima/MaximaCombatIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'maxima/MaximaDiagnosticsTest.cpp',
+    ('maxima/MaximaDirectorRegressionTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('maxima/MaximaEconomyRegressionTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('maxima/MaximaFarmingIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('maxima/MaximaImplementationIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'maxima/MaximaLifecycleTest.cpp',
+    'maxima/MaximaStrategyTest.cpp',
 ]
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
@@ -135,6 +143,14 @@ UNIT_TESTS = [
     'PathGradientHarness.cpp',
     'maxima/MaximaContinuationTest.cpp',
     'maxima/MaximaFoodLedgerStandaloneTest.cpp',
+    'maxima/MaximaDefenseStandaloneTest.cpp',
+    'maxima/MaximaFarmingStandaloneTest.cpp',
+    'maxima/MaximaForceModelStandaloneTest.cpp',
+    'maxima/MaximaLabourStandaloneTest.cpp',
+    'maxima/MaximaPlacementStandaloneTest.cpp',
+    'maxima/MaximaReconStandaloneTest.cpp',
+    'maxima/MaximaStaffingControlStandaloneTest.cpp',
+    'maxima/MaximaTacticsStandaloneTest.cpp',
 ]
 
 # Production sources the unit binary links. Plain entries reuse the client build's
@@ -145,7 +161,13 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/OverlayFill.cpp',
     '#src/PlayerVoice.cpp',
     '#src/Utilities.cpp',
+    '#src/ai/maxima/AIMaximaDefense.cpp',
+    '#src/ai/maxima/AIMaximaFarming.cpp',
     '#src/ai/maxima/AIMaximaFoodLedger.cpp',
+    '#src/ai/maxima/AIMaximaForceModel.cpp',
+    '#src/ai/maxima/AIMaximaPlacement.cpp',
+    '#src/ai/maxima/AIMaximaRecon.cpp',
+    '#src/ai/maxima/AIMaximaTactics.cpp',
     '#src/ai/shared_runtime/GradientBFS.cpp',
     '#src/building/BuildingUtils.cpp',
     '#src/gui/GameGUIKeyActions.cpp',
@@ -203,6 +225,7 @@ PROGRAMS = [
     ('MapReportHarness', 'MapReportHarness.cpp', 'map-report-test', 'test'),
     ('net-connection-test', 'NetConnectionHarness.cpp', 'transport-test', 'test'),
     ('native-multiplayer-peer', 'NativeMultiplayerPeer.cpp', 'transport-test', 'test'),
+    ('MaximaStrategyDump', 'maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
 ]
 
 # Old per-harness alias -> test binary. Kept for one release so documented commands and

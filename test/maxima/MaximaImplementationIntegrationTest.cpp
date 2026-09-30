@@ -1,4 +1,5 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
+#include "EngineFixtures.h"
 #include "../../src/GlobalContainer.h"
 #include "../../src/Game.h"
 #include "../../src/team/Team.h"
@@ -25,11 +26,9 @@
 #include <string>
 #include <vector>
 // Access the scheduler boundary without adding a production testing API.
-#define private public
 #include "../../src/ai/maxima/AIMaximaRuntime.h"
 #include "../../src/ai/maxima/AIMaxima.h"
 #include "../../src/ai/maxima/AIMaximaSwarmController.h"
-#undef private
 #include "../../src/ai/maxima/AIMaximaContinuation.h"
 #include "../../src/building/Building.h"
 #include "../../src/game/entities/BuildingType.h"
@@ -37,11 +36,9 @@
 #include "../../src/unit/Unit.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include <cassert>
 #include <iostream>
 #include <memory>
 
-GlobalContainer* globalContainer = NULL;
 using namespace AIMaximaRuntime;
 
 static std::string saved(const Gradients::Entities::Entity& value)
@@ -58,8 +55,8 @@ static void entityRoundTrip(const Gradients::Entities::Entity& original)
     GAGCore::BinaryInputStream stream(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     stream.seekFromStart(0);
     std::unique_ptr<Gradients::Entities::Entity> loaded(Gradients::Entities::Entity::load(&stream));
-    assert(loaded.get() && original.equals(*loaded));
-    assert(saved(*loaded)==bytes);
+    REQUIRE((loaded.get() && original.equals(*loaded)));
+    REQUIRE(saved(*loaded)==bytes);
 }
 
 template<class T> static void payloadRoundTrip(const T& original)
@@ -74,7 +71,7 @@ template<class T> static void payloadRoundTrip(const T& original)
     GAGCore::MemoryStreamBackend* second=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream roundtrip(second);
     loaded->save(&roundtrip);
-    assert(std::string(second->getBuffer(),second->getPosition())==bytes);
+    REQUIRE(std::string(second->getBuffer(),second->getPosition())==bytes);
 }
 
 
@@ -101,7 +98,7 @@ static void maximaBootstrapRegression()
         GAGCore::BinaryOutputStream output(backend); ai->save(&output);
         const std::string bytes(backend->getBuffer(),backend->getPosition());
         if(reference.empty()) reference=bytes;
-        else assert(bytes==reference);
+        else REQUIRE(bytes==reference);
         std::destroy_at(ai);
     }
 }
@@ -127,10 +124,10 @@ static void preemptiveSchedulingRegression()
     ai.budget.preemptive_recompute_ticks=500;
     ai.preemptive_building_signature=ai.compute_preemptive_building_signature(context);
     ai.update_preemptive_defense(context);
-    assert(ai.last_preemptive_defense_tick==900);
+    REQUIRE(ai.last_preemptive_defense_tick==900);
     ai.timer=1500;
     ai.update_preemptive_defense(context);
-    assert(ai.last_preemptive_defense_tick==1500);
+    REQUIRE(ai.last_preemptive_defense_tick==1500);
 }
 
 static void integrationRegressions()
@@ -152,12 +149,12 @@ static void integrationRegressions()
     // A saved empty pre-growth tile must still belong to the applied mask.
     game.map.setMapDiscovered(10,10,player.team->me);
     game.map.addForbidden(10,10,player.team->teamNumber);
-    assert(!game.map.isResource(10,10));
+    REQUIRE(!game.map.isResource(10,10));
     ai.initialize_farming_cache(context);
-    assert(ai.applied_farm_protection_mask[10*64+10]);
+    REQUIRE(ai.applied_farm_protection_mask[10*64+10]);
     ai.budget.farming_enabled=false;
     ai.update_farming(context);
-    assert(!ai.applied_farm_protection_mask[10*64+10]);
+    REQUIRE(!ai.applied_farm_protection_mask[10*64+10]);
     bool removed=false;
     for(size_t i=0;i<context.managementOrders.size();++i)
     {
@@ -166,13 +163,13 @@ static void integrationRegressions()
         for(size_t j=0;j<area->locations.size();++j)
             if(area->locations[j].x==10 && area->locations[j].y==10) removed=true;
     }
-    assert(removed);
+    REQUIRE(removed);
     context.managementOrders.clear();
 
     // A hidden replacement has reused a remembered building's slot/GID.
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
     ::Building* replacement=game.addBuilding(45,45,innType,1);
-    assert(replacement);
+    REQUIRE(replacement);
     const int gid=replacement->gid;
     std::vector<int> living(1,1);
     ai.reconnaissance.beginObservation(0,living);
@@ -182,21 +179,21 @@ static void integrationRegressions()
     ai.reconnaissance.finishObservation();
     ai.timer=1;
     ai.update_reconnaissance(context);
-    assert(ai.reconnaissance.opponent(1)->buildings.count(gid)==1);
+    REQUIRE(ai.reconnaissance.opponent(1)->buildings.count(gid)==1);
     game.map.setMapDiscovered(5,5,replacement->type->width,
         replacement->type->height,player.team->me);
-    assert(!game.map.isFOWDiscovered(45,45,player.team->me));
+    REQUIRE(!game.map.isFOWDiscovered(45,45,player.team->me));
     ai.timer=2;
     ai.update_reconnaissance(context);
-    assert(ai.reconnaissance.opponent(1)->buildings.count(gid)==0);
+    REQUIRE(ai.reconnaissance.opponent(1)->buildings.count(gid)==0);
 
     // Two unmatched flags both cover the same local warrior. They must share
     // the remaining reserve instead of each independently claiming it.
     const int flagType=globalContainer->buildingsTypes.getTypeNum("warflag",0,false);
-    assert(flagType>=0);
-    assert(game.addBuilding(20,20,flagType,0,8,8));
-    assert(game.addBuilding(23,20,flagType,0,8,8));
-    assert(game.addUnit(21,20,1,WARRIOR,0,0,0,0));
+    REQUIRE(flagType>=0);
+    REQUIRE(game.addBuilding(20,20,flagType,0,8,8));
+    REQUIRE(game.addBuilding(23,20,flagType,0,8,8));
+    REQUIRE(game.addUnit(21,20,1,WARRIOR,0,0,0,0));
     context.get_building_register().initiate();
     ai.defense_flags.push_back(0);
     ai.defense_flags.push_back(1);
@@ -214,17 +211,17 @@ static void integrationRegressions()
         if(assignment) assigned+=assignment->workers;
         if(dynamic_cast<Management::DestroyBuilding*>(context.managementOrders[i].get())) ++destroyed;
     }
-    assert(assigned==3 && destroyed==1);
+    REQUIRE((assigned==3 && destroyed==1));
     context.managementOrders.clear();
     ai.budget.defense_reserve=0;
     ai.compute_defense_flag_positioning(context);
     destroyed=0;
     for(size_t i=0;i<context.managementOrders.size();++i)
     {
-        assert(!dynamic_cast<Management::AssignWorkers*>(context.managementOrders[i].get()));
+        REQUIRE(!dynamic_cast<Management::AssignWorkers*>(context.managementOrders[i].get()));
         if(dynamic_cast<Management::DestroyBuilding*>(context.managementOrders[i].get())) ++destroyed;
     }
-    assert(destroyed==2);
+    REQUIRE(destroyed==2);
 }
 
 // Exercise policy-to-runtime handoffs against the engine's actual objects.
@@ -243,27 +240,27 @@ static void executionRegressions()
     Context& c=ai.context;
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
     const int scoutType=globalContainer->buildingsTypes.getTypeNum("explorationflag",0,false);
-    assert(game.addBuilding(10,10,innType,0));
+    REQUIRE(game.addBuilding(10,10,innType,0));
     c.initialize(); c.activeAI=&ai;
 
     // Both axes, negative coordinates, and multiple laps must wrap before lookup.
     Gradients::GradientInfo source;
     source.add_source(new Gradients::Entities::Position(0,0));
     Gradients::Gradient& gradient=c.gradients.get_gradient(source);
-    assert(gradient.get_height(64,0)==0);
-    assert(gradient.get_height(0,64)==0);
-    assert(gradient.get_height(-64,-128)==0);
-    assert(gradient.get_height(-1,64)==gradient.get_height(63,0));
+    REQUIRE(gradient.get_height(64,0)==0);
+    REQUIRE(gradient.get_height(0,64)==0);
+    REQUIRE(gradient.get_height(-64,-128)==0);
+    REQUIRE(gradient.get_height(-1,64)==gradient.get_height(63,0));
     Construction::BuildingOrder wrapped(IntBuildingType::WAR_FLAG,4);
     wrapped.add_constraint(new Construction::SinglePosition(64,-64));
     bool complete=false;
     PlacementResult location=wrapped.find_location(c,1,complete);
-    assert(complete && location.found && location.value.x==0 && location.value.y==0);
+    REQUIRE((complete && location.found && location.value.x==0 && location.value.y==0));
     // Explorer strikes need visible space and a warrior force to follow.
     for(int y=0;y<64;++y) for(int x=0;x<64;++x)
         game.map.setMapDiscovered(x,y,player.team->me);
     for(int i=0;i<8;++i) {
-        Unit* warrior=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); assert(warrior);
+        Unit* warrior=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); REQUIRE(warrior);
         warrior->medical=Unit::MED_FREE;
         warrior->activity=Unit::ACT_RANDOM;
         warrior->level[ATTACK_SPEED]=warrior->level[ATTACK_STRENGTH]=1;
@@ -271,8 +268,8 @@ static void executionRegressions()
 
     // A raid retarget can happen between director ticks. Explorers follow that
     // live mission, not the unset or obsolete legacy target.
-    assert(game.addUnit(30,30,1,WARRIOR,0,0,0,0));
-    assert(game.addUnit(40,40,2,WARRIOR,0,0,0,0));
+    REQUIRE(game.addUnit(30,30,1,WARRIOR,0,0,0,0));
+    REQUIRE(game.addUnit(40,40,2,WARRIOR,0,0,0,0));
     game.map.setMapDiscovered(30,30,player.team->me);
     game.map.setMapDiscovered(40,40,player.team->me);
     ai.target=-1;
@@ -285,12 +282,12 @@ static void executionRegressions()
     for(int team=1; team<=2; ++team) {
         ai.tactical_mission.targetTeam=team;
         ai.compute_explorer_flag_attack_positioning(c);
-        assert(ai.explorer_attack_flags.size()==1);
+        REQUIRE(ai.explorer_attack_flags.size()==1);
         location=c.buildingOrders.back()->find_location(c,1,complete);
-        assert(location.found && location.value.x==(team==1 ? 30 : 40));
+        REQUIRE((location.found && location.value.x==(team==1 ? 30 : 40)));
         c.cancel_or_destroy_building(ai.explorer_attack_flags.front());
         c.update_management_orders();
-        assert(ai.explorer_attack_flags.empty());
+        REQUIRE(ai.explorer_attack_flags.empty());
     }
     c.orders.clear();
 
@@ -303,31 +300,31 @@ static void executionRegressions()
     ai.budget.tactical_requested_force=6;
     ai.control_offense(c);
     int pending=ai.tactical_mission.flagId;
-    assert(pending>=0 && ai.offense_waves.size()==1);
+    REQUIRE((pending>=0 && ai.offense_waves.size()==1));
     ai.end_offense(c,"economic_emergency");
     c.update_management_orders(); c.update_building_orders();
-    assert(!c.buildings.is_building_pending(pending));
-    assert(c.buildingOrders.empty() && c.orders.empty() && ai.attack_flags.empty());
+    REQUIRE(!c.buildings.is_building_pending(pending));
+    REQUIRE((c.buildingOrders.empty() && c.orders.empty() && ai.attack_flags.empty()));
 
     // Ending it after OrderCreate was issued still deletes the eventual flag.
     ai.control_offense(c);
     pending=ai.tactical_mission.flagId;
-    assert(pending>=0 && ai.offense_waves.size()==1);
+    REQUIRE((pending>=0 && ai.offense_waves.size()==1));
     c.update_building_orders();
-    assert(c.orders.size()==1);
+    REQUIRE(c.orders.size()==1);
     auto create=std::dynamic_pointer_cast<OrderCreate>(c.orders.front());
-    assert(create);
+    REQUIRE(create);
     c.orders.clear();
     ai.end_offense(c,"economic_emergency");
     ::Building* flag=game.addBuilding(create->posX,create->posY,create->typeNum,0);
-    assert(flag);
+    REQUIRE(flag);
     c.buildings.tick(); c.update_management_orders();
     bool deleted=false;
     for(auto order:c.orders) {
         auto remove=std::dynamic_pointer_cast<OrderDelete>(order);
         if(remove && remove->gid==flag->gid) deleted=true;
     }
-    assert(deleted);
+    REQUIRE(deleted);
     c.orders.clear(); c.managementOrders.clear(); ai.attack_flags.clear();
     c.managementOrders.clear();
 
@@ -342,37 +339,37 @@ static void fruitSupplyRoutes()
     for(auto& tile:field.tiles)tile.passable=true;
     field.tiles[field.index(10,10)].passable=false;
     field.build();
-    assert(field.assessBuilding(10,10,1,1).available==0);
+    REQUIRE(field.assessBuilding(10,10,1,1).available==0);
     auto& cherry=field.tiles[field.index(12,10)];
     cherry.variety=0;cherry.passable=false;cherry.visible=true;
     field.build();
     auto one=field.assessBuilding(10,10,1,1);
-    assert(one.available==1 && one.collectable==1 && one.distance[0]==1);
+    REQUIRE((one.available==1 && one.collectable==1 && one.distance[0]==1));
     field.tiles[field.index(13,10)]=cherry;field.build();
-    assert(field.assessBuilding(10,10,1,1).varietyCount==1);
+    REQUIRE(field.assessBuilding(10,10,1,1).varietyCount==1);
     field.tiles[field.index(10,12)].variety=1;field.build();
-    assert(field.assessBuilding(10,10,1,1).varietyCount==2);
+    REQUIRE(field.assessBuilding(10,10,1,1).varietyCount==2);
 
     Field island;island.width=64;island.height=64;island.tiles.resize(4096);
     island.tiles[island.index(14,10)]=cherry;
     island.tiles[island.index(11,10)].passable=true;
-    island.build();assert(island.assessBuilding(10,10,1,1).available==0);
+    island.build();REQUIRE(island.assessBuilding(10,10,1,1).available==0);
     // Opening a previously impassable route models newly available swimming.
     for(int x=12;x<14;++x)island.tiles[island.index(x,10)].passable=true;
-    island.build();assert(island.assessBuilding(10,10,1,1).available==1);
+    island.build();REQUIRE(island.assessBuilding(10,10,1,1).available==1);
     auto& patch=island.tiles[island.index(14,10)];patch.buildingVision=true;
-    assert(island.assessBuilding(10,10,1,1).covered==1);
+    REQUIRE(island.assessBuilding(10,10,1,1).covered==1);
     patch.visible=false;
-    assert(island.assessBuilding(10,10,1,1).collectable==0);
+    REQUIRE(island.assessBuilding(10,10,1,1).collectable==0);
     patch.buildingVision=false;
-    assert(island.assessBuilding(10,10,1,1).covered==0);
+    REQUIRE(island.assessBuilding(10,10,1,1).covered==0);
 
     Field wrapped;wrapped.width=128;wrapped.height=128;wrapped.tiles.resize(16384);
     for(auto& tile:wrapped.tiles)tile.passable=true;
     wrapped.tiles[wrapped.index(127,10)]=cherry;wrapped.build();
-    assert(wrapped.assessBuilding(1,10,1,1).distance[0]==1);
+    REQUIRE(wrapped.assessBuilding(1,10,1,1).distance[0]==1);
     auto distant=wrapped.assessBuilding(64,64,1,1);
-    assert(distant.available==1 && distant.distance[0]>32);
+    REQUIRE((distant.available==1 && distant.distance[0]>32));
 }
 
 static void fruitStrategyRegressions()
@@ -382,7 +379,7 @@ static void fruitStrategyRegressions()
     Player player;player.setTeam(game.teams[0]);
     player.team->enemies=game.teams[1]->me;
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
-    ::Building* inn=game.addBuilding(10,10,innType,0);assert(inn);
+    ::Building* inn=game.addBuilding(10,10,innType,0);REQUIRE(inn);
     AIMaxima::Maxima ai(&player);Context& c=ai.context;
     ai.strategy.fruit.enabled=true;
     ai.budget.fruit_active=true;ai.budget.fruit_units_per_flag=1;
@@ -393,32 +390,32 @@ static void fruitStrategyRegressions()
     int innId=-1;
     for(const auto& entry:c.buildings.found())
         if(c.buildings.get_building(entry.first)==inn)innId=entry.first;
-    assert(innId>=0);
+    REQUIRE(innId>=0);
     game.map.setMapDiscovered(24,10,player.team->me);
     auto field=ai.collect_fruit_field(c);
     auto opportunity=field.assessBuilding(10,10,inn->type->width,inn->type->height);
-    assert(opportunity.available==1 && opportunity.covered==0);
+    REQUIRE((opportunity.available==1 && opportunity.covered==0));
     ai.update_fruit_flags(c);
-    assert(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.resource_flags(CHERRY).size()==1);
     bool advertisesInn=false;
     for(const auto& order:c.managementOrders)
         if(auto* alliance=dynamic_cast<Management::ChangeAlliances*>(order.get()))
         {
-            assert(alliance->market==KeepValue);
+            REQUIRE(alliance->market==KeepValue);
             advertisesInn|=alliance->inn==SetValue;
         }
-    assert(advertisesInn);
+    REQUIRE(advertisesInn);
     ai.update_fruit_flags(c);
-    assert(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.resource_flags(CHERRY).size()==1);
     for(auto posture:{AIMaxima::Maxima::PostureDefend,AIMaxima::Maxima::PostureRecover})
     {
         ai.posture=posture;
         ai.snapshot.population=1;
         ai.finalize_director_plan(c);
-        assert(ai.budget.fruit_active);
-        assert(ai.budget.desired_explorers>=ai.strategy.fruit.units_per_flag);
+        REQUIRE(ai.budget.fruit_active);
+        REQUIRE(ai.budget.desired_explorers>=ai.strategy.fruit.units_per_flag);
         ai.update_fruit_flags(c);
-        assert(c.resource_flags(CHERRY).size()==1);
+        REQUIRE(c.resource_flags(CHERRY).size()==1);
     }
     // Pending mission identity survives a save; the next pass must reuse it.
     auto* backend=new GAGCore::MemoryStreamBackend;
@@ -428,23 +425,23 @@ static void fruitStrategyRegressions()
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     AIMaxima::Maxima restored(&player);
-    assert(restored.load(&input,&player,VERSION_MINOR));
-    assert(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    REQUIRE(restored.load(&input,&player,VERSION_MINOR));
+    REQUIRE(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
     restored.update_fruit_flags(restored.context);
-    assert(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
+    REQUIRE(restored.context.resource_flags(CHERRY)==c.resource_flags(CHERRY));
     // Completed building vision replaces the pending explorer assignment.
-    ::Building* covering=game.addBuilding(22,11,innType,0);assert(covering);
+    ::Building* covering=game.addBuilding(22,11,innType,0);REQUIRE(covering);
     const int coverId=c.buildings.register_building();
     c.buildings.issue_order(coverId,22,11,IntBuildingType::FOOD_BUILDING);
     c.buildings.tick();
     ai.update_fruit_flags(c);
-    assert(c.resource_flags(CHERRY).empty());
+    REQUIRE(c.resource_flags(CHERRY).empty());
     covering->kill();player.team->syncStep();c.buildings.tick();
     ai.update_fruit_flags(c);
-    assert(c.resource_flags(CHERRY).size()==1);
+    REQUIRE(c.resource_flags(CHERRY).size()==1);
     ai.strategy.fruit.enabled=false;ai.budget.fruit_active=false;
     ai.update_fruit_flags(c);
-    assert(c.resource_flags(CHERRY).empty());
+    REQUIRE(c.resource_flags(CHERRY).empty());
 }
 
 static void reviewBugRegressions()
@@ -456,9 +453,9 @@ static void reviewBugRegressions()
     Player player; player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player); Context& c=ai.context;
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
-    assert(game.addBuilding(10,10,innType,0));
-    ::Building* ally=game.addBuilding(35,35,innType,1); assert(ally);
-    ::Building* enemy=game.addBuilding(50,50,innType,2); assert(enemy);
+    REQUIRE(game.addBuilding(10,10,innType,0));
+    ::Building* ally=game.addBuilding(35,35,innType,1); REQUIRE(ally);
+    ::Building* enemy=game.addBuilding(50,50,innType,2); REQUIRE(enemy);
     player.team->allies|=game.teams[1]->me;
     player.team->enemies&=~game.teams[1]->me;
     player.team->enemies|=game.teams[2]->me;
@@ -466,13 +463,13 @@ static void reviewBugRegressions()
     enemy->seenByMask|=player.team->me;
     c.initialize();
     auto world=ai.collect_development_world(c);
-    assert(world.tile(35,35).threat==0);
-    assert(world.tile(50,50).threat==ai.strategy.placement.enemy_threat_base);
+    REQUIRE(world.tile(35,35).threat==0);
+    REQUIRE(world.tile(50,50).threat==ai.strategy.placement.enemy_threat_base);
     // Diplomacy changes must affect the next placement world as well.
     player.team->enemies|=game.teams[1]->me;
     player.team->allies&=~game.teams[1]->me;
     world=ai.collect_development_world(c);
-    assert(world.tile(35,35).threat==ai.strategy.placement.enemy_threat_base);
+    REQUIRE(world.tile(35,35).threat==ai.strategy.placement.enemy_threat_base);
 
     // Two islands separated by a narrow channel. The old selector chose
     // (19,30) on the home island for a target on the opposite shore.
@@ -482,7 +479,7 @@ static void reviewBugRegressions()
         game.map.setMapDiscovered(x,y,player.team->me);
     }
     c.gradients.invalidate();
-    ::Building* across=game.addBuilding(27,30,innType,2); assert(across);
+    ::Building* across=game.addBuilding(27,30,innType,2); REQUIRE(across);
     across->seenByMask|=player.team->me;
     ai.reconnaissance.beginObservation(ai.timer,std::vector<int>(1,2));
     ai.reconnaissance.observeBuilding(AIMaxima::Recon::BuildingSighting(
@@ -491,29 +488,29 @@ static void reviewBugRegressions()
     ai.reconnaissance.finishObservation();
     ai.strategy.tactics.min_force=4;
     for(int i=0;i<8;++i) {
-        Unit* walker=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); assert(walker);
+        Unit* walker=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); REQUIRE(walker);
         walker->medical=Unit::MED_FREE; walker->activity=Unit::ACT_RANDOM;
         walker->level[ATTACK_SPEED]=walker->level[ATTACK_STRENGTH]=1;
         walker->performance[SWIM]=0;
     }
     // Walkers cannot reach the far island, so no offense is planned.
     ai.plan_offense(c);
-    assert(ai.budget.tactical_kind==AIMaxima::Tactics::MissionNone);
-    assert(ai.offense_diagnostics.rejections["too_few_reachable"]==1);
+    REQUIRE(ai.budget.tactical_kind==AIMaxima::Tactics::MissionNone);
+    REQUIRE(ai.offense_diagnostics.rejections["too_few_reachable"]==1);
     for(int i=0;i<4;++i) {
-        Unit* swimmer=game.addUnit(6+i,8,0,WARRIOR,1,1,1,1); assert(swimmer);
+        Unit* swimmer=game.addUnit(6+i,8,0,WARRIOR,1,1,1,1); REQUIRE(swimmer);
         swimmer->medical=Unit::MED_FREE; swimmer->activity=Unit::ACT_RANDOM;
         swimmer->level[ATTACK_SPEED]=swimmer->level[ATTACK_STRENGTH]=1;
         swimmer->performance[SWIM]=1;
     }
     ai.plan_offense(c);
-    assert(ai.budget.tactical_kind==AIMaxima::Tactics::MissionSiege);
-    assert(ai.budget.tactical_target_gid==across->gid);
+    REQUIRE(ai.budget.tactical_kind==AIMaxima::Tactics::MissionSiege);
+    REQUIRE(ai.budget.tactical_target_gid==across->gid);
     ai.budget.tactics_enabled=true;
     ai.control_offense(c);
-    assert(ai.offense_waves.empty());
-    assert(ai.tactical_mission.flagId>=0);
-    assert(c.buildings.is_building_pending(ai.tactical_mission.flagId));
+    REQUIRE(ai.offense_waves.empty());
+    REQUIRE(ai.tactical_mission.flagId>=0);
+    REQUIRE(c.buildings.is_building_pending(ai.tactical_mission.flagId));
 
     // Shoreline contracts are covered through actual farming output in
     // MaximaFarmingIntegrationTest, including every direction and map seams.
@@ -538,22 +535,22 @@ static void missionForceRegressions()
     Context& c=ai.context;
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
     ::Building* home=game.addBuilding(10,10,innType,1);
-    assert(home && game.addBuilding(25,25,innType,0));
+    REQUIRE((home && game.addBuilding(25,25,innType,0)));
     ::Building* enemy=game.addBuilding(40,40,innType,2);
     ::Building* flag=game.addBuilding(15,15,
         globalContainer->buildingsTypes.getTypeNum("warflag",0,false),1);
-    assert(enemy && flag);
+    REQUIRE((enemy && flag));
     c.initialize();
     int flagId=-1;
     for(auto record:c.buildings.found())
         if(record.second.gid==flag->gid) flagId=record.first;
-    assert(flagId>=0 && flagId!=flag->gid);
+    REQUIRE((flagId>=0 && flagId!=flag->gid));
     for(int y=0; y<64; ++y) for(int x=0; x<64; ++x)
         game.map.setMapDiscovered(x,y,player.team->me);
     std::vector<Unit*> army;
     for(int n=0; n<12; ++n) {
         Unit* unit=game.addUnit(5+n,5,1,WARRIOR,1,0,0,0);
-        assert(unit);
+        REQUIRE(unit);
         unit->medical=Unit::MED_FREE;
         unit->activity=Unit::ACT_RANDOM;
         army.push_back(unit);
@@ -582,18 +579,18 @@ static void missionForceRegressions()
         flag->unitsWorking.push_back(unit);
     }
     ai.plan_offense(c);
-    assert(ai.budget.tactical_target_gid==enemy->gid);
+    REQUIRE(ai.budget.tactical_target_gid==enemy->gid);
     // Troops committed elsewhere must not be borrowed by this exception.
     for(Unit* unit:army) unit->attachedBuilding=home;
     flag->unitsWorking.clear();
     ai.plan_offense(c);
-    assert(ai.budget.tactical_kind==AIMaxima::Tactics::MissionNone);
+    REQUIRE(ai.budget.tactical_kind==AIMaxima::Tactics::MissionNone);
     for(Unit* unit:army) {
         unit->attachedBuilding=NULL;
         unit->activity=Unit::ACT_RANDOM;
     }
     ai.plan_offense(c);
-    assert(ai.budget.tactical_target_gid==enemy->gid);
+    REQUIRE(ai.budget.tactical_target_gid==enemy->gid);
 }
 
 // Apply emitted geometry/selector orders to the real engine flag, then ask
@@ -626,7 +623,7 @@ static void directorExecutionRegressions()
     Player player; player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player); Context& c=ai.context;
     const int swarmType=globalContainer->buildingsTypes.getTypeNum("swarm",0,false);
-    assert(game.addBuilding(10,10,swarmType,0));
+    REQUIRE(game.addBuilding(10,10,swarmType,0));
     c.initialize(); c.activeAI=&ai;
     TeamStat* stat=player.team->stats.getLatestStat();
     stat->totalUnit=400;
@@ -639,7 +636,7 @@ static void directorExecutionRegressions()
     ai.environment.accessible_corn=1000; // Fund the current colony birth controller.
     ai.demands.aggression=100; ai.demands.military=100;
     ai.build_policy_bids(); ai.arbitrate_policy_bids(); ai.finalize_director_plan(c);
-    assert(ai.budget.desired_warriors>0 && ai.budget.warrior_ratio>0);
+    REQUIRE((ai.budget.desired_warriors>0 && ai.budget.warrior_ratio>0));
     const auto birthRatio=[&](int warriors) {
         stat->numberUnitPerType[WARRIOR]=warriors;
         c.managementOrders.clear(); ai.manage_swarm(c,0);
@@ -647,14 +644,14 @@ static void directorExecutionRegressions()
         for(auto order:c.managementOrders)
             if(auto* change=dynamic_cast<Management::ChangeSwarm*>(order.get()))
                 ratio=change->warrior;
-        assert(ratio>=0); return ratio;
+        REQUIRE(ratio>=0); return ratio;
     };
     // Use current stats even when the director snapshot still says 100 warriors.
-    assert(birthRatio(ai.budget.desired_warriors-1)>0);
-    assert(birthRatio(ai.budget.desired_warriors)==0);
-    assert(birthRatio(ai.budget.desired_warriors+1)==0);
+    REQUIRE(birthRatio(ai.budget.desired_warriors-1)>0);
+    REQUIRE(birthRatio(ai.budget.desired_warriors)==0);
+    REQUIRE(birthRatio(ai.budget.desired_warriors+1)==0);
     ai.budget.desired_warriors=0;
-    assert(birthRatio(0)==0);
+    REQUIRE(birthRatio(0)==0);
 
     // Births are pulled by barracks seats: two untrained warriors per seat.
     ai.labour_observation.barracksSeats=4;
@@ -665,15 +662,15 @@ static void directorExecutionRegressions()
     ai.snapshot.warriors=backlog+20;
     ai.snapshot.trained_warriors=20;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.policy_bids[AIMaxima::Maxima::PolicyOffense].warrior_ratio>0);
-    assert(ai.budget.warrior_ratio==0);
+    REQUIRE(ai.policy_bids[AIMaxima::Maxima::PolicyOffense].warrior_ratio>0);
+    REQUIRE(ai.budget.warrior_ratio==0);
     ++ai.snapshot.trained_warriors;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.budget.warrior_ratio>0);
+    REQUIRE(ai.budget.warrior_ratio>0);
     --ai.snapshot.trained_warriors;
     ai.strategy.military.warrior_training_backlog_throttle_enabled=false;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.budget.warrior_ratio>0);
+    REQUIRE(ai.budget.warrior_ratio>0);
 }
 
 static void directorUpgradeRegressions()
@@ -685,7 +682,7 @@ static void directorUpgradeRegressions()
     Player player; player.setTeam(game.teams[0]);
     AIMaxima::Maxima ai(&player); Context& c=ai.context;
     const int raceType=globalContainer->buildingsTypes.getTypeNum("racetrack",0,false);
-    assert(game.addBuilding(25,25,raceType,0));
+    REQUIRE(game.addBuilding(25,25,raceType,0));
     c.initialize(); c.activeAI=&ai;
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         game.map.setMapDiscovered(x,y,player.team->me);
@@ -699,29 +696,29 @@ static void directorUpgradeRegressions()
     ai.development_planner.adoptStartingBuildings(world);
     DevelopmentAction action;
     DevelopmentLimits limits=ai.collect_development_limits(c);
-    assert(ai.development_planner.selectAction(world,{},limits,action));
-    assert(action.type==UpgradeBuilding);
-    assert(action.utility.unmetDemand==ai.budget.upgrade_level1_racetrack_weight);
+    REQUIRE(ai.development_planner.selectAction(world,{},limits,action));
+    REQUIRE(action.type==UpgradeBuilding);
+    REQUIRE(action.utility.unmetDemand==ai.budget.upgrade_level1_racetrack_weight);
     // A pending result loses authorization when Recover zeros its priority.
     ai.posture=AIMaxima::Maxima::PostureRecover;
     ai.finalize_director_plan(c);
     limits=ai.collect_development_limits(c);
     RejectionReason reason=RejectedTerrain;
-    assert(!ai.development_planner.revalidateSelection(world,{},limits,action,&reason));
-    assert(reason==RejectedAuthorization);
-    assert(!ai.issue_development_action(c,action));
-    assert(c.orders.empty());
-    assert(!ai.development_planner.selectAction(world,{},limits,action));
+    REQUIRE(!ai.development_planner.revalidateSelection(world,{},limits,action,&reason));
+    REQUIRE(reason==RejectedAuthorization);
+    REQUIRE(!ai.issue_development_action(c,action));
+    REQUIRE(c.orders.empty());
+    REQUIRE(!ai.development_planner.selectAction(world,{},limits,action));
     ai.posture=AIMaxima::Maxima::PostureDevelop;
     ai.finalize_director_plan(c);
     limits=ai.collect_development_limits(c);
-    assert(ai.development_planner.selectAction(world,{},limits,action));
+    REQUIRE(ai.development_planner.selectAction(world,{},limits,action));
 
     // Prestige is a school level-two to level-three upgrade. Its thresholds
     // must use the current workforce and completed schools, not stale snapshots.
     const int schoolType=IntBuildingType::SCIENCE_BUILDING;
     const int trainingSchool=globalContainer->buildingsTypes.getTypeNum("school",1,false);
-    assert(game.addBuilding(10,10,trainingSchool,0)); c.buildings.initiate();
+    REQUIRE(game.addBuilding(10,10,trainingSchool,0)); c.buildings.initiate();
     ai.budget.allow_level2_upgrades=true; ai.finalize_director_plan(c);
     world=ai.collect_development_world(c);
     world.buildings.erase(std::remove_if(world.buildings.begin(),world.buildings.end(),
@@ -731,21 +728,21 @@ static void directorUpgradeRegressions()
         return ai.development_planner.selectAction(world,{},ai.collect_development_limits(c),action);
     };
     stat->upgradeState[BUILD][2]=ai.budget.first_prestige_trained_workers-1;
-    assert(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
-    assert(!selectPrestige());
+    REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
+    REQUIRE(!selectPrestige());
     ++stat->upgradeState[BUILD][2];
-    assert(ai.collect_development_limits(c).upgradePriority(schoolType,2)!=0);
-    assert(selectPrestige() && action.fromLevel==2 && action.targetLevel==3);
+    REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)!=0);
+    REQUIRE((selectPrestige() && action.fromLevel==2 && action.targetLevel==3));
     const int prestigeType=globalContainer->buildingsTypes.getTypeNum("school",2,false);
-    assert(game.addBuilding(45,45,prestigeType,0)); c.buildings.initiate();
+    REQUIRE(game.addBuilding(45,45,prestigeType,0)); c.buildings.initiate();
     stat->upgradeState[BUILD][2]=ai.budget.second_prestige_trained_workers-1;
-    assert(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
+    REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
     ++stat->upgradeState[BUILD][2];
     stat->totalUnit=ai.budget.second_prestige_population_min-1;
-    assert(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
+    REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)==0);
     ++stat->totalUnit;
-    assert(ai.collect_development_limits(c).upgradePriority(schoolType,2)!=0);
-    assert(selectPrestige());
+    REQUIRE(ai.collect_development_limits(c).upgradePriority(schoolType,2)!=0);
+    REQUIRE(selectPrestige());
 }
 
 // Economy authority must survive arbitration and the runtime order handoff.
@@ -766,31 +763,31 @@ static void economyStaffingRegressions()
     // Births are pulled by barracks seats: two untrained warriors per seat.
     ai.labour_observation.barracksSeats=5;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.policy_bids[AIMaxima::Maxima::PolicyOffense].warrior_ratio>0);
-    assert(ai.budget.warrior_ratio==0);
+    REQUIRE(ai.policy_bids[AIMaxima::Maxima::PolicyOffense].warrior_ratio>0);
+    REQUIRE(ai.budget.warrior_ratio==0);
     // Resume below the threshold, and preserve the switch's opt-out behavior.
     ai.snapshot.trained_warriors=31;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.budget.warrior_ratio>0);
+    REQUIRE(ai.budget.warrior_ratio>0);
     ai.snapshot.trained_warriors=30;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.budget.warrior_ratio==0);
+    REQUIRE(ai.budget.warrior_ratio==0);
     ai.strategy.military.warrior_training_backlog_throttle_enabled=false;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.budget.warrior_ratio>0);
+    REQUIRE(ai.budget.warrior_ratio>0);
 
     // Survival utility cannot overwrite the coherent birth controller.
     ai.demands.food=100; ai.demands.survival=100;
     ai.environment.accessible_corn=1000;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
-    assert(ai.budget.swarm_workers>0);
+    REQUIRE(ai.budget.swarm_workers>0);
     ai.policy_bids[AIMaxima::Maxima::PolicyGrowth].swarm_workers=8;
     ai.policy_bids[AIMaxima::Maxima::PolicySurvival].swarm_workers=2;
-    ai.arbitrate_policy_bids(); assert(ai.budget.swarm_workers==8);
+    ai.arbitrate_policy_bids(); REQUIRE(ai.budget.swarm_workers==8);
 
     const int swarmType=globalContainer->buildingsTypes.getTypeNum("swarm",0,false);
-    assert(game.addBuilding(10,10,swarmType,0));
-    assert(game.addBuilding(30,30,swarmType,0));
+    REQUIRE(game.addBuilding(10,10,swarmType,0));
+    REQUIRE(game.addBuilding(30,30,swarmType,0));
     c.initialize();
     TeamStat* stat=player.team->stats.getLatestStat(); stat->totalUnit=100;
     ai.budget.desired_warriors=5; ai.budget.warrior_ratio=3;
@@ -803,7 +800,7 @@ static void economyStaffingRegressions()
         int ratio=-1;
         for(auto order:c.managementOrders)
             if(auto r=dynamic_cast<Management::ChangeSwarm*>(order.get())) ratio=r->warrior;
-        assert(ratio==(count<5 ? 3 : 0));
+        REQUIRE(ratio==(count<5 ? 3 : 0));
         c.managementOrders.clear();
     }
 }
@@ -837,20 +834,20 @@ static void executionStateSaveRegression()
     input.seekFromStart(0);
     AIMaximaContinuation::Reader reader(&input);
     loaded.executionState(reader);
-    assert(loaded.budget.second_prestige_population_min==11);
-    assert(loaded.food_burden_since==source.food_burden_since);
-    assert(loaded.food_retirement_issued==source.food_retirement_issued);
-    assert(loaded.last_food_retirement_tick==4321);
-    assert(loaded.food_supported_inns==3 && loaded.food_supported_swarms==2);
-    assert(loaded.food_ledger_valid);
-    assert(loaded.last_farming_tick==777 && loaded.development_cycle_pending);
-    assert(loaded.relocation_target_building==7 && loaded.relocation_since.at(3)==55);
-    assert(loaded.last_food_relocation_tick==4242);
+    REQUIRE(loaded.budget.second_prestige_population_min==11);
+    REQUIRE(loaded.food_burden_since==source.food_burden_since);
+    REQUIRE(loaded.food_retirement_issued==source.food_retirement_issued);
+    REQUIRE(loaded.last_food_retirement_tick==4321);
+    REQUIRE((loaded.food_supported_inns==3 && loaded.food_supported_swarms==2));
+    REQUIRE(loaded.food_ledger_valid);
+    REQUIRE((loaded.last_farming_tick==777 && loaded.development_cycle_pending));
+    REQUIRE((loaded.relocation_target_building==7 && loaded.relocation_since.at(3)==55));
+    REQUIRE(loaded.last_food_relocation_tick==4242);
     auto* roundtripBackend=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream roundtripOutput(roundtripBackend);
     AIMaximaContinuation::Writer roundtripWriter(&roundtripOutput);
     loaded.executionState(roundtripWriter);
-    assert(std::string(roundtripBackend->getBuffer(),roundtripBackend->getPosition())==bytes);
+    REQUIRE(std::string(roundtripBackend->getBuffer(),roundtripBackend->getPosition())==bytes);
 
     for(int retiredVersion:{98,99,114})
     {
@@ -863,8 +860,8 @@ static void executionStateSaveRegression()
         {
             rejected=std::string(error.what()).find("retired strategy format")!=std::string::npos;
         }
-        assert(rejected);
-        assert(retiredInput.getPosition()==0);
+        REQUIRE(rejected);
+        REQUIRE(retiredInput.getPosition()==0);
     }
 }
 
@@ -878,7 +875,7 @@ static void foodRelocationExecutorRegression()
     game.addTeam(); game.teams[0]->race.loadDefault();
     Player player; player.setTeam(game.teams[0]);
     const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
-    assert(game.addBuilding(10,10,innType,0)); assert(game.addBuilding(30,30,innType,0));
+    REQUIRE(game.addBuilding(10,10,innType,0)); REQUIRE(game.addBuilding(30,30,innType,0));
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
     ai.initialize_farming_cache(c); ai.configure_development_planner();
@@ -889,32 +886,32 @@ static void foodRelocationExecutorRegression()
     ai.snapshot.critical_food=0; ai.snapshot.own_buildings_under_attack=0;
     ai.snapshot.own_units_under_attack=0; ai.snapshot.population=0;
     WorldState world=ai.collect_development_world(c);
-    assert(world.building(0)&&world.building(1));
+    REQUIRE((world.building(0)&&world.building(1)));
 
     // No protected wheat anywhere: both inns sit at the unreachable penalty, so
     // both start their confirmation and the lowest id is nominated once it ends.
     ai.timer=100; ai.update_food_relocation(c,world);
-    assert(ai.relocation_since.count(0)&&ai.relocation_since.count(1));
-    assert(ai.relocation_target_building==-1);
+    REQUIRE((ai.relocation_since.count(0)&&ai.relocation_since.count(1)));
+    REQUIRE(ai.relocation_target_building==-1);
     ai.timer=1100; ai.snapshot.critical_food=3; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==-1); // not while anyone starves
+    REQUIRE(ai.relocation_target_building==-1); // not while anyone starves
     ai.snapshot.critical_food=0; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==0&&ai.relocation_target_since==1100);
+    REQUIRE((ai.relocation_target_building==0&&ai.relocation_target_since==1100));
     bool offered=false;
     for(const auto& intent:ai.collect_development_intents(world))
         if(intent.purpose==Relocation&&intent.replacesBuildingId==0
            &&intent.buildingType==IntBuildingType::FOOD_BUILDING) offered=true;
-    assert(offered);
+    REQUIRE(offered);
 
     // The planner never finds a site: the offer expires after the offer window.
     ai.timer=3099; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==0);
+    REQUIRE(ai.relocation_target_building==0);
     ai.timer=3100; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==3100);
+    REQUIRE((ai.relocation_target_building==-1&&ai.last_food_relocation_tick==3100));
 
     // A completed replacement retires the old building, once, when it is safe.
     ai.timer=6000; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==0);
+    REQUIRE(ai.relocation_target_building==0);
     DevelopmentAction action; action.id=77; action.type=BuildStandalone;
     action.purpose=Relocation; action.replacesBuildingId=0; action.buildingId=1;
     action.buildingType=IntBuildingType::FOOD_BUILDING; action.state=SiteObserved;
@@ -922,69 +919,69 @@ static void foodRelocationExecutorRegression()
     offered=false;
     for(const auto& intent:ai.collect_development_intents(world))
         if(intent.purpose==Relocation) offered=true;
-    assert(!offered); // an action is underway
+    REQUIRE(!offered); // an action is underway
     ai.timer=6200; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==0&&c.managementOrders.empty());
+    REQUIRE((ai.relocation_target_building==0&&c.managementOrders.empty()));
     ai.development_planner.actionMap[77].state=Completed;
     ai.snapshot.critical_food=1; ai.update_food_relocation(c,world);
-    assert(c.managementOrders.empty()&&ai.relocation_completed_tick==6200); // not while hungry
+    REQUIRE((c.managementOrders.empty()&&ai.relocation_completed_tick==6200)); // not while hungry
     ai.snapshot.critical_food=0; ai.snapshot.own_units_under_attack=2; // attacks do not block
     ai.update_food_relocation(c,world);
     ai.snapshot.own_units_under_attack=0;
     int destroyed=0;
     for(auto order:c.managementOrders)
         if(auto d=dynamic_cast<Management::DestroyBuilding*>(order.get())) destroyed+=d->id==0;
-    assert(destroyed==1&&ai.relocation_destroy_issued.count(0));
+    REQUIRE((destroyed==1&&ai.relocation_destroy_issued.count(0)));
     ai.update_food_relocation(c,world);
     destroyed=0;
     for(auto order:c.managementOrders)
         if(auto d=dynamic_cast<Management::DestroyBuilding*>(order.get())) destroyed+=d->id==0;
-    assert(destroyed==1); // issued once
+    REQUIRE(destroyed==1); // issued once
     // The old building disappears: the relocation is done and the cooldown restarts.
     world.buildings.erase(world.buildings.begin());
-    assert(!world.building(0));
+    REQUIRE(!world.building(0));
     ai.timer=6400; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==6400);
-    assert(!ai.relocation_destroy_issued.count(0));
+    REQUIRE((ai.relocation_target_building==-1&&ai.last_food_relocation_tick==6400));
+    REQUIRE(!ai.relocation_destroy_issued.count(0));
 
     // A planner that scanned every site and refused them all abandons at once.
     ai.timer=9000; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==1);
+    REQUIRE(ai.relocation_target_building==1);
     ai.development_planner.refusedRelocations.insert(1);
     ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==9000);
+    REQUIRE((ai.relocation_target_building==-1&&ai.last_food_relocation_tick==9000));
     // Renominating clears the stale refusal.
     ai.timer=11000; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==1&&!ai.development_planner.relocationRefused(1));
+    REQUIRE((ai.relocation_target_building==1&&!ai.development_planner.relocationRefused(1)));
 
     // A failed build abandons the nomination.
     ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==1);
+    REQUIRE(ai.relocation_target_building==1);
     DevelopmentAction failed=action; failed.id=78; failed.replacesBuildingId=1;
     failed.buildingId=-1; failed.state=EngineRejected;
     ai.development_planner.actionMap[78]=failed;
     ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==11000);
+    REQUIRE((ai.relocation_target_building==-1&&ai.last_food_relocation_tick==11000));
 
     // A completed pair whose destroy stays deferred is given up after the cooldown.
     ai.timer=13000; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==1);
+    REQUIRE(ai.relocation_target_building==1);
     DevelopmentAction stuck=action; stuck.id=79; stuck.replacesBuildingId=1;
     stuck.buildingId=1; stuck.state=Completed;
     ai.development_planner.actionMap[79]=stuck;
     ai.snapshot.critical_food=1; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==1&&ai.relocation_completed_tick==13000);
+    REQUIRE((ai.relocation_target_building==1&&ai.relocation_completed_tick==13000));
     ai.timer=14999; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==1);
+    REQUIRE(ai.relocation_target_building==1);
     ai.timer=15000; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==15000);
+    REQUIRE((ai.relocation_target_building==-1&&ai.last_food_relocation_tick==15000));
     ai.snapshot.critical_food=0; ai.development_planner.actionMap.erase(79);
 
     // Switching relocation off clears every nomination.
     ai.timer=18000; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==1);
+    REQUIRE(ai.relocation_target_building==1);
     ai.budget.food_relocation_enabled=false; ai.update_food_relocation(c,world);
-    assert(ai.relocation_target_building==-1&&ai.relocation_since.empty());
+    REQUIRE((ai.relocation_target_building==-1&&ai.relocation_since.empty()));
 }
 
 static void innCompletionStaffingRegressions()
@@ -1000,10 +997,10 @@ static void innCompletionStaffingRegressions()
     action.buildingType=IntBuildingType::FOOD_BUILDING;
     action.centerX=20; action.centerY=20; action.workers=2;
     action.initialFootprint=AIMaximaPlacement::Footprint(-1,-1,2,2);
-    assert(ai.issue_development_action(c,action));
+    REQUIRE(ai.issue_development_action(c,action));
     const int id=c.previousBuildingId;
     const int siteType=globalContainer->buildingsTypes.getTypeNum("inn",0,true);
-    Building* inn=game.addBuilding(19,19,siteType,0,1,1); assert(inn);
+    Building* inn=game.addBuilding(19,19,siteType,0,1,1); REQUIRE(inn);
     c.orders.clear(); c.buildings.tick(); c.update_management_orders();
     c.orders.clear();
     // Finish through the engine so its one-worker post-construction default
@@ -1011,8 +1008,8 @@ static void innCompletionStaffingRegressions()
     for(int resource=0;resource<MAX_RESOURCES;++resource)
         inn->resources[resource]=inn->type->maxResource[resource];
     inn->updateBuildingSite();
-    assert(inn->constructionResultState==Building::NO_CONSTRUCTION);
-    assert(inn->maxUnitWorking==1);
+    REQUIRE(inn->constructionResultState==Building::NO_CONSTRUCTION);
+    REQUIRE(inn->maxUnitWorking==1);
     c.buildings.tick(); c.update_management_orders();
     for(auto order:c.orders)
         if(auto a=std::dynamic_pointer_cast<OrderModifyBuilding>(order))
@@ -1020,7 +1017,7 @@ static void innCompletionStaffingRegressions()
                 // Staffing is a closed loop on the inn's own stock and every
                 // building keeps at least one carrier. The old policy released
                 // them outright when no wheat grew nearby.
-                assert(a->numberRequested>=1);
+                REQUIRE(a->numberRequested>=1);
     (void)id;
 }
 
@@ -1037,18 +1034,18 @@ static void directorUpgradePriorityRegressions()
     const auto limits=ai.collect_development_limits(c);
     for(int level:{1,2})
     {
-        assert(limits.upgradePriority(IntBuildingType::FOOD_BUILDING,level)
+        REQUIRE(limits.upgradePriority(IntBuildingType::FOOD_BUILDING,level)
             ==ai.strategy.upgrades.recovery_inn_weight);
         for(int type:{IntBuildingType::HEAL_BUILDING,IntBuildingType::WALKSPEED_BUILDING,
                       IntBuildingType::SWIMSPEED_BUILDING,IntBuildingType::ATTACK_BUILDING})
-            assert(limits.upgradePriority(type,level)==0);
+            REQUIRE(limits.upgradePriority(type,level)==0);
     }
     ai.posture=AIMaxima::Maxima::PostureExpand;
     ai.finalize_director_plan(c);
     const auto healthy=ai.collect_development_limits(c);
-    assert(healthy.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)
+    REQUIRE(healthy.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)
         ==ai.budget.upgrade_level1_barracks_weight);
-    assert(healthy.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
+    REQUIRE(healthy.upgradePriority(IntBuildingType::ATTACK_BUILDING,1)>0);
 }
 
 static void placementMaintenanceRegressions()
@@ -1066,14 +1063,14 @@ static void placementMaintenanceRegressions()
             if(x<20||x>=24||y<20||y>=24)game.map.setResource(x,y,WOOD,1);
         }
         game.map.setNoResource(17,21,0);
-        assert(game.addUnit(17,21,0,WORKER,0,0,0,0));
+        REQUIRE(game.addUnit(17,21,0,WORKER,0,0,0,0));
         ai.initialize_farming_cache(c);ai.configure_development_planner();
         WorldState world=ai.collect_development_world(c);
         DevelopmentIntent intent;intent.buildingType=IntBuildingType::WALKSPEED_BUILDING;
         intent.unmetCount=1;intent.priority=100;intent.workers=2;
         DevelopmentLimits limits;limits.newConstruction=1;DevelopmentAction action;
-        assert(ai.development_planner.selectAction(world,{intent},limits,action));
-        assert(ai.development_planner.reserve(world,action));
+        REQUIRE(ai.development_planner.selectAction(world,{intent},limits,action));
+        REQUIRE(ai.development_planner.reserve(world,action));
         ai.budget.farming_enabled=true;ai.budget.farming_maintenance_clearing_enabled=true;
         ai.budget.farming_resource_preserving_circulation_enabled=true;
         ai.budget.farming_wood_firebreak_enabled=false;
@@ -1099,7 +1096,7 @@ static void placementMaintenanceRegressions()
         // expansion tiles must survive, including after loading old clearing masks.
         if(futureResources!=20 || clearedResources!=1 || removedResources!=19)
             std::cerr<<"parcel resources="<<futureResources<<" cleared="<<clearedResources<<" removed="<<removedResources<<" action="<<action.centerX<<","<<action.centerY<<"\n";
-        assert(futureResources==20 && clearedResources==1 && removedResources==19);
+        REQUIRE((futureResources==20 && clearedResources==1 && removedResources==19));
         // Clearing the requested cells must connect the actual outside worker
         // to the site, not merely open an enclosed tile beside its footprint.
         std::vector<Uint8> reached(64*64,0);std::vector<int> queue={21*64+17};
@@ -1113,7 +1110,7 @@ static void placementMaintenanceRegressions()
                    ||ai.maintenance_circulation_mask[index]))
                 {reached[index]=1;queue.push_back(index);}
             }
-        assert(reached[21*64+20]);
+        REQUIRE(reached[21*64+20]);
     }
     {
         Game game(NULL);game.map.setSize(6,6,GRASS);game.map.setGame(&game);
@@ -1122,7 +1119,7 @@ static void placementMaintenanceRegressions()
         AIMaxima::Maxima ai(&player);Context& c=ai.context;c.initialize();
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
         ai.initialize_farming_cache(c);ai.configure_development_planner();
-        assert(game.addUnit(10,10,0,WORKER,0,0,0,0));
+        REQUIRE(game.addUnit(10,10,0,WORKER,0,0,0,0));
         DevelopmentIntent intent;intent.buildingType=IntBuildingType::HEAL_BUILDING;
         intent.unmetCount=4;intent.priority=100;intent.workers=2;
         DevelopmentLimits limits;limits.newConstruction=4;
@@ -1130,19 +1127,19 @@ static void placementMaintenanceRegressions()
         for(int member=0;member<4;++member)
         {
             WorldState world=ai.collect_development_world(c);DevelopmentAction action;
-            assert(ai.development_planner.selectAction(world,{intent},limits,action));
-            assert(action.templateId==HospitalCompact);
-            assert(ai.development_planner.reserve(world,action));
-            assert(ai.issue_development_action(c,action));
+            REQUIRE(ai.development_planner.selectAction(world,{intent},limits,action));
+            REQUIRE(action.templateId==HospitalCompact);
+            REQUIRE(ai.development_planner.reserve(world,action));
+            REQUIRE(ai.issue_development_action(c,action));
             Building* building=game.addBuilding(
                 game.map.normalizeX(action.centerX+action.initialFootprint.left),
                 game.map.normalizeY(action.centerY+action.initialFootprint.top),
                 globalContainer->buildingsTypes.getTypeNum("hospital",0,false),0);
-            assert(building);members.push_back(building);
+            REQUIRE(building);members.push_back(building);
             c.orders.clear();c.buildings.tick();
             ai.development_planner.observe(ai.collect_development_world(c));
         }
-        assert(ai.development_planner.campuses().size()==1);
+        REQUIRE(ai.development_planner.campuses().size()==1);
         const auto& reservation=ai.development_planner.reservations().begin()->second;
         for(int index:reservation.circulationTiles)game.map.setResource(index%64,index/64,WOOD,1);
         ai.budget.farming_enabled=true;ai.budget.farming_maintenance_clearing_enabled=true;
@@ -1159,11 +1156,11 @@ static void placementMaintenanceRegressions()
                         for(int dx=0;dx<member->type->width;++dx)
                             entrance|=game.map.warpDistMax(index%64,index/64,
                                 member->posX+dx,member->posY+dy)<=1;
-            assert(entrance);
+            REQUIRE(entrance);
         }
         int preserved=0;
         for(int index:reservation.circulationTiles)preserved+=!ai.maintenance_circulation_mask[index];
-        assert(preserved>0);
+        REQUIRE(preserved>0);
     }
 }
 
@@ -1177,7 +1174,7 @@ static void upgradeClearingRegressions()
         Player player;player.setTeam(game.teams[0]);
         Building* building=game.addBuilding(20,20,
             globalContainer->buildingsTypes.getTypeNum("racetrack",0,false),0);
-        assert(building);assert(game.addUnit(10,10,0,WORKER,1,0,0,0));
+        REQUIRE(building);REQUIRE(game.addUnit(10,10,0,WORKER,1,0,0,0));
         AIMaxima::Maxima ai(&player);Context& c=ai.context;c.initialize();
         for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
         ai.initialize_farming_cache(c);ai.configure_development_planner();
@@ -1190,7 +1187,7 @@ static void upgradeClearingRegressions()
             game.map.setResource(index%64,index/64,WOOD,1);
             expansion.push_back(index);
         }
-        assert(expansion.size()==20);
+        REQUIRE(expansion.size()==20);
         ai.budget.construction_sites=0;ai.budget.allow_upgrades=true;ai.budget.allow_level2_upgrades=false;
         ai.budget.upgrade_level1_racetrack_weight=100;
         player.team->stats.getLatestStat()->upgradeState[BUILD][1]=ai.budget.upgrade_level1_trained_units_per_slot;
@@ -1198,29 +1195,29 @@ static void upgradeClearingRegressions()
         ai.budget.farming_resource_preserving_circulation_enabled=true;
         ai.budget.farming_wood_firebreak_enabled=false;ai.budget.farming_wheat_invasion_clearing_enabled=false;
         for(int step=0;step<8&&ai.development_planner.actions().empty();++step)ai.development_cycle(c);
-        assert(ai.development_planner.actions().size()==1);
+        REQUIRE(ai.development_planner.actions().size()==1);
         const int actionId=ai.development_planner.actions().begin()->first;
-        assert(ai.development_planner.actions().at(actionId).state==ParcelReserved);
-        for(auto order:c.orders)assert(!std::dynamic_pointer_cast<OrderConstruction>(order));
+        REQUIRE(ai.development_planner.actions().at(actionId).state==ParcelReserved);
+        for(auto order:c.orders)REQUIRE(!std::dynamic_pointer_cast<OrderConstruction>(order));
         ai.update_maintenance_clearing_areas(c);
-        for(int index:expansion)assert(ai.maintenance_circulation_mask[index]);
+        for(int index:expansion)REQUIRE(ai.maintenance_circulation_mask[index]);
         if(cancel)
         {
             ai.budget.allow_upgrades=false;ai.development_cycle(c);
-            assert(ai.development_planner.actions().at(actionId).state==UpgradeBlocked);
-            assert(ai.development_planner.reservations().size()==1);
+            REQUIRE(ai.development_planner.actions().at(actionId).state==UpgradeBlocked);
+            REQUIRE(ai.development_planner.reservations().size()==1);
             ai.update_maintenance_clearing_areas(c);
             int cleared=0;for(int index:expansion)cleared+=ai.maintenance_circulation_mask[index]!=0;
-            assert(cleared<20);
+            REQUIRE(cleared<20);
         }
         else
         {
             for(int index:expansion)game.map.setNoResource(index%64,index/64,0);
             ai.development_cycle(c);
-            assert(ai.development_planner.actions().at(actionId).state==CreateIssued);
+            REQUIRE(ai.development_planner.actions().at(actionId).state==CreateIssued);
             bool issued=false;for(auto order:c.orders)issued|=bool(std::dynamic_pointer_cast<OrderConstruction>(order));
-            assert(issued);
-            assert(building->isHardSpaceForBuildingSite(Building::UPGRADE));
+            REQUIRE(issued);
+            REQUIRE(building->isHardSpaceForBuildingSite(Building::UPGRADE));
         }
     }
 }
@@ -1233,7 +1230,7 @@ static void rejectedPlacementUpgradeRegressions()
     Player player;player.setTeam(game.teams[0]);
     Building* building=game.addBuilding(20,20,
         globalContainer->buildingsTypes.getTypeNum("racetrack",0,false),0);
-    assert(building);
+    REQUIRE(building);
     AIMaxima::Maxima ai(&player);Context& c=ai.context;c.initialize();
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
     ai.initialize_farming_cache(c);ai.configure_development_planner();
@@ -1243,30 +1240,30 @@ static void rejectedPlacementUpgradeRegressions()
     action.buildingType=IntBuildingType::WALKSPEED_BUILDING;
     action.buildingId=id;action.fromLevel=1;action.targetLevel=2;action.workers=4;
     action.centerX=22;action.centerY=22;
-    assert(ai.development_planner.reserve(world,action));
+    REQUIRE(ai.development_planner.reserve(world,action));
     ai.budget.allow_upgrades=true;
     ai.budget.upgrade_level1_racetrack_weight=10;
-    assert(ai.issue_development_action(c,action));
+    REQUIRE(ai.issue_development_action(c,action));
     // Merely draining a queued order must not drop the optimistic upgrade flag.
     auto dispatched=c.getOrder(ai);
-    assert(std::dynamic_pointer_cast<OrderConstruction>(dispatched));
-    assert(c.buildings.is_building_upgrading(id));
+    REQUIRE(std::dynamic_pointer_cast<OrderConstruction>(dispatched));
+    REQUIRE(c.buildings.is_building_upgrading(id));
     game.map.setResource(19,19,WOOD,1);
     building->launchConstruction(1,1);
-    assert(building->constructionResultState==Building::NO_CONSTRUCTION);
-    c.buildings.tick();assert(!c.buildings.is_building_upgrading(id));
+    REQUIRE(building->constructionResultState==Building::NO_CONSTRUCTION);
+    c.buildings.tick();REQUIRE(!c.buildings.is_building_upgrading(id));
     ai.timer=1000;ai.development_planner.observe(ai.collect_development_world(c));
-    assert(ai.development_planner.actions().at(100).state==UpgradeBlocked);
-    assert(ai.collect_development_limits(c).activeLevel1Upgrades==0);
+    REQUIRE(ai.development_planner.actions().at(100).state==UpgradeBlocked);
+    REQUIRE(ai.collect_development_limits(c).activeLevel1Upgrades==0);
     // An accepted repair shares the same register state and remains tracked
     // throughout its actual construction lifetime.
     building->hp-=1;
-    assert(c.issue_upgrade_repair(id,true));c.orders.clear();
+    REQUIRE(c.issue_upgrade_repair(id,true));c.orders.clear();
     building->launchConstruction(1,1);c.buildings.tick();
-    assert(building->constructionResultState!=Building::NO_CONSTRUCTION);
-    assert(c.buildings.is_building_upgrading(id));
+    REQUIRE(building->constructionResultState!=Building::NO_CONSTRUCTION);
+    REQUIRE(c.buildings.is_building_upgrading(id));
     building->cancelConstruction(1);c.buildings.tick();
-    assert(!c.buildings.is_building_upgrading(id));
+    REQUIRE(!c.buildings.is_building_upgrading(id));
 }
 
 // All swarms share specialist production, independently of prestige and labor share.
@@ -1276,7 +1273,7 @@ static void explorerSwarmStaffingRegressions()
     game.addTeam(); game.teams[0]->race.loadDefault();
     Player player; player.setTeam(game.teams[0]);
     const int swarmType=globalContainer->buildingsTypes.getTypeNum("swarm",0,false);
-    for(int position:{10,30,50}) assert(game.addBuilding(position,position,swarmType,0));
+    for(int position:{10,30,50}) REQUIRE(game.addBuilding(position,position,swarmType,0));
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
     TeamStat* stat=player.team->stats.getLatestStat(); stat->totalUnit=100;
     ai.budget.desired_explorers=5; ai.budget.explorer_ratio=1;
@@ -1326,15 +1323,15 @@ static void explorerSwarmStaffingRegressions()
             if(explorers>0)
             {
                 ++producers;
-                assert(explorers==ai.budget.explorer_ratio);
+                REQUIRE(explorers==ai.budget.explorer_ratio);
             }
             // Every building keeps at least one carrier, whatever its stock.
-            assert(workers[id]>=1);
+            REQUIRE(workers[id]>=1);
         }
         // The starving swarm asks for more than the ones that are already full.
-        assert(workers[0]>workers[1] && workers[0]>workers[2]);
+        REQUIRE((workers[0]>workers[1] && workers[0]>workers[2]));
         // Birth funding stays a colony decision even though staffing is local.
-        assert(producers==(budget>0 ? 3 : 0));
+        REQUIRE(producers==(budget>0 ? 3 : 0));
     }
     // Reaching demand still disables the stream at every swarm.
     stat->numberUnitPerType[EXPLORER]=ai.budget.desired_explorers;
@@ -1342,7 +1339,7 @@ static void explorerSwarmStaffingRegressions()
     {
         c.managementOrders.clear(); ai.manage_swarm(c,id);
         for(auto order:c.managementOrders)
-            if(auto r=dynamic_cast<Management::ChangeSwarm*>(order.get())) assert(r->explorer==0);
+            if(auto r=dynamic_cast<Management::ChangeSwarm*>(order.get())) REQUIRE(r->explorer==0);
     }
 }
 
@@ -1353,8 +1350,8 @@ static void completedSwarmBudgetRegressions()
     Player player; player.setTeam(game.teams[0]);
     const int completeType=globalContainer->buildingsTypes.getTypeNum("swarm",0,false);
     const int siteType=globalContainer->buildingsTypes.getTypeNum("swarm",0,true);
-    Building* complete=game.addBuilding(10,10,completeType,0); assert(complete);
-    Building* site=game.addBuilding(30,30,siteType,0); assert(site);
+    Building* complete=game.addBuilding(10,10,completeType,0); REQUIRE(complete);
+    Building* site=game.addBuilding(30,30,siteType,0); REQUIRE(site);
     AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
     for(int tick=0;tick<32;++tick) player.team->stats.step(player.team,true);
     ai.large_economy_committed=true;
@@ -1363,11 +1360,11 @@ static void completedSwarmBudgetRegressions()
     ai.demands.growth=60;
     const auto verify=[&](int completed) {
         ai.snapshot=ai.collect_snapshot(c);
-        assert(ai.snapshot.swarms==2 && ai.snapshot.completed_swarms==completed);
+        REQUIRE((ai.snapshot.swarms==2 && ai.snapshot.completed_swarms==completed));
         ai.snapshot.population=100; ai.snapshot.workers=60;
         ai.environment.accessible_corn=1000;
         ai.build_policy_bids(); ai.arbitrate_policy_bids();
-        assert(ai.budget.swarm_workers==AIMaxima::SwarmController::plan(60,100,0,0,1000,
+        REQUIRE(ai.budget.swarm_workers==AIMaxima::SwarmController::plan(60,100,0,0,1000,
             ai.strategy.economy.swarm_labor_scale_percent,ai.strategy.economy.swarm_food_per_worker_percent,
             ai.strategy.economy.swarm_pressure_sensitivity,ai.strategy.economy.swarm_workers_per_building).workers);
     };
@@ -1376,7 +1373,7 @@ static void completedSwarmBudgetRegressions()
     site->updateBuildingSite(); verify(2);
     // Repair changes available producers, not the colony-wide labor budget.
     complete->hp/=2; complete->launchConstruction(1,1);
-    assert(complete->constructionResultState==Building::REPAIR); verify(1);
+    REQUIRE(complete->constructionResultState==Building::REPAIR); verify(1);
 }
 
 static void economicResourceAccessRegressions()
@@ -1384,8 +1381,8 @@ static void economicResourceAccessRegressions()
     Game game(NULL); game.map.setSize(6,6,GRASS); game.map.setGame(&game);
     game.addTeam(); game.teams[0]->race.loadDefault();
     Player player; player.setTeam(game.teams[0]);
-    assert(game.addBuilding(10,10,globalContainer->buildingsTypes.getTypeNum("swarm",0,false),0));
-    Unit* worker=game.addUnit(12,16,0,WORKER,0,0,0,0); assert(worker);
+    REQUIRE(game.addBuilding(10,10,globalContainer->buildingsTypes.getTypeNum("swarm",0,false),0));
+    Unit* worker=game.addUnit(12,16,0,WORKER,0,0,0,0); REQUIRE(worker);
     // Both vertical water strips close the route around the toroidal map.
     for(int y=0;y<64;++y)
     { game.map.getTile(0,y).terrain=256; game.map.getTile(16,y).terrain=256; }
@@ -1400,12 +1397,12 @@ static void economicResourceAccessRegressions()
     // These two sparse deposits together are below one full productive tile.
     ai.initialize_farming_cache(c);
     const auto fertility=ai.fertility_cache.at(13,20)+ai.fertility_cache.at(19,11);
-    assert(fertility>0 && fertility<65536);
+    REQUIRE((fertility>0 && fertility<65536));
     const auto verify=[&](int wood,int stone) {
         ai.update_environment_model(c);
-        assert(ai.environment.accessible_corn==0);
-        assert(ai.environment.accessible_wood==wood);
-        assert(ai.environment.accessible_stone==stone);
+        REQUIRE(ai.environment.accessible_corn==0);
+        REQUIRE(ai.environment.accessible_wood==wood);
+        REQUIRE(ai.environment.accessible_stone==stone);
     };
     verify(0,0);
     worker->performance[SWIM]=1; verify(1,1);
@@ -1414,7 +1411,7 @@ static void economicResourceAccessRegressions()
     game.map.getTile(19,12).forbidden&=~player.team->me;
     worker->performance[SWIM]=0; verify(0,0);
     // A local worker on the second island can reach its resources without swimming.
-    assert(game.addUnit(20,16,0,WORKER,0,0,0,0)); verify(1,1);
+    REQUIRE(game.addUnit(20,16,0,WORKER,0,0,0,0)); verify(1,1);
 
     // Sharing connectivity must preserve algae's unit counts and shore access.
     game.map.setResource(16,24,ALGA,1);
@@ -1423,10 +1420,10 @@ static void economicResourceAccessRegressions()
     game.map.setResource(21,19,ALGA,1);
     game.map.getTile(21,19).resource.amount=3;
     ai.update_environment_model(c);
-    assert(ai.known_algae_units==7 && ai.walk_accessible_algae_units==4);
-    assert(ai.accessible_algae_units==4 && ai.environment.accessible_algae==1);
+    REQUIRE((ai.known_algae_units==7 && ai.walk_accessible_algae_units==4));
+    REQUIRE((ai.accessible_algae_units==4 && ai.environment.accessible_algae==1));
     worker->performance[SWIM]=1; ai.update_environment_model(c);
-    assert(ai.accessible_algae_units==7 && ai.environment.accessible_algae==2);
+    REQUIRE((ai.accessible_algae_units==7 && ai.environment.accessible_algae==2));
 }
 
 static void repairLaborContractRegressions()
@@ -1438,7 +1435,7 @@ static void repairLaborContractRegressions()
         game.addTeam(); game.teams[0]->race.loadDefault();
         Player player; player.setTeam(game.teams[0]);
         Building* inn=game.addBuilding(20,20,globalContainer->buildingsTypes.getTypeNum("inn",level,false),0);
-        assert(inn); inn->hp/=2;
+        REQUIRE(inn); inn->hp/=2;
         AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
         ai.finalize_director_plan(c);
         ai.configure_development_planner();
@@ -1446,10 +1443,10 @@ static void repairLaborContractRegressions()
         DevelopmentLimits limits; limits.allowRepairs=true; limits.allowUpgrades=false;
         limits.newConstruction=1;
         DevelopmentAction action;
-        assert(ai.development_planner.selectAction(world,
+        REQUIRE(ai.development_planner.selectAction(world,
             std::vector<DevelopmentIntent>(),limits,action));
-        assert(action.type==RepairBuilding && action.workers==1);
-        assert(ai.issue_development_action(c,action));
+        REQUIRE((action.type==RepairBuilding && action.workers==1));
+        REQUIRE(ai.issue_development_action(c,action));
         inn->launchConstruction(1,1);
         // launchConstruction leaves the building evacuating rather than ALIVE.
         // The engine drops worker orders until its site is live, so stand the
@@ -1460,10 +1457,10 @@ static void repairLaborContractRegressions()
         for(auto order:c.orders)
             if(auto a=std::dynamic_pointer_cast<OrderModifyBuilding>(order))
             {
-                assert(a->gid==inn->gid && a->numberRequested==action.workers);
+                REQUIRE((a->gid==inn->gid && a->numberRequested==action.workers));
                 assigned=true;
             }
-        assert(assigned);
+        REQUIRE(assigned);
     }
 }
 
@@ -1477,10 +1474,10 @@ static void schoolPopulationScalingRegressions()
     for(const auto& test:std::vector<std::pair<int,int>>{{47,0},{48,3},{279,3},{280,4},{350,5},{700,10}})
     {
         ai.snapshot.population=test.first;ai.build_policy_bids();
-        assert(ai.policy_bids[AIMaxima::Maxima::PolicyTechnology].desired_schools==test.second);
+        REQUIRE(ai.policy_bids[AIMaxima::Maxima::PolicyTechnology].desired_schools==test.second);
     }
     ai.snapshot.population=100;ai.demands.technology=25;ai.build_policy_bids();
-    assert(ai.policy_bids[AIMaxima::Maxima::PolicyTechnology].desired_schools==1);
+    REQUIRE(ai.policy_bids[AIMaxima::Maxima::PolicyTechnology].desired_schools==1);
 }
 
 // Upgrade commitments count before orders reach the engine, independently
@@ -1497,7 +1494,7 @@ static void categoryMaintenanceCapacityRegressions()
         game.addTeam();game.teams[0]->race.loadDefault();
         Player player;player.setTeam(game.teams[0]);
         const int engineType=globalContainer->buildingsTypes.getTypeNum(name,0,false);
-        for(int i=0;i<count;++i)assert(game.addBuilding(4+i*9,20,engineType,0));
+        for(int i=0;i<count;++i)REQUIRE(game.addBuilding(4+i*9,20,engineType,0));
         AIMaxima::Maxima ai(&player);Context& c=ai.context;c.initialize();
         ai.budget.allow_upgrades=true;
         ai.budget.upgrade_level1_inn_weight=10;
@@ -1511,47 +1508,47 @@ static void categoryMaintenanceCapacityRegressions()
         const int allowed=std::max(1,count/2);
         for(int i=0;i<allowed;++i)
         {
-            assert(ai.collect_development_limits(c).upgradePriority(type,1)!=0);
+            REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)!=0);
             const bool repair=(i%2==0)==repairFirst;
             if(repair)--c.buildings.get_building(ids[i])->hp;
-            assert(ai.collect_development_limits(c).repairAllowed(type));
+            REQUIRE(ai.collect_development_limits(c).repairAllowed(type));
             DevelopmentAction action;action.id=100+i;
             action.type=repair?RepairBuilding:UpgradeBuilding;
             action.buildingType=type;action.buildingId=ids[i];
             action.fromLevel=1;action.targetLevel=repair?1:2;action.workers=4;
             const bool issued=ai.issue_development_action(c,action);
             if(!issued)std::cerr << "category " << name << " count " << count << " index " << i << "\n";
-            assert(issued);
+            REQUIRE(issued);
         }
         if(count==1)continue;
-        assert(ai.collect_development_limits(c).upgradePriority(type,1)==0);
+        REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)==0);
         DevelopmentAction next;next.id=200;next.type=UpgradeBuilding;
         next.buildingType=type;next.buildingId=ids[allowed];
         next.fromLevel=1;next.targetLevel=2;
-        assert(!ai.issue_development_action(c,next));
+        REQUIRE(!ai.issue_development_action(c,next));
         --c.buildings.get_building(ids[allowed])->hp;
         next.type=RepairBuilding;next.targetLevel=1;
-        assert(!ai.collect_development_limits(c).repairAllowed(type));
-        assert(!ai.issue_development_action(c,next));
+        REQUIRE(!ai.collect_development_limits(c).repairAllowed(type));
+        REQUIRE(!ai.issue_development_action(c,next));
         // Adding a new site must not permit another simultaneous upgrade.
         const int siteType=globalContainer->buildingsTypes.getTypeNum(name,0,true);
-        assert(game.addBuilding(4,40,siteType,0));
-        assert(ai.collect_development_limits(c).upgradePriority(type,1)==0);
+        REQUIRE(game.addBuilding(4,40,siteType,0));
+        REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)==0);
         // The pending flag survives a saved registry round trip.
         GAGCore::MemoryStreamBackend* memory=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(memory);c.buildings.save(&output);
         std::string bytes(memory->getBuffer(),memory->getPosition());
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         input.seekFromStart(0);c.buildings.load(&input);
-        assert(ai.collect_development_limits(c).upgradePriority(type,1)==0);
-        assert(!ai.collect_development_limits(c).repairAllowed(type));
+        REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)==0);
+        REQUIRE(!ai.collect_development_limits(c).repairAllowed(type));
         // A rejected order frees its slot when the registry observes rejection.
         c.orders.clear();c.buildings.tick();
         // The independent barracks-seat safeguard also credits the new site;
         // clear its training backlog to isolate the category commitment here.
         ai.snapshot.trained_warriors=ai.snapshot.warriors;
-        assert(ai.collect_development_limits(c).upgradePriority(type,1)!=0);
-        assert(ai.collect_development_limits(c).repairAllowed(type));
+        REQUIRE(ai.collect_development_limits(c).upgradePriority(type,1)!=0);
+        REQUIRE(ai.collect_development_limits(c).repairAllowed(type));
     }
 }
 
@@ -1567,7 +1564,7 @@ void upgradeWorkerPriorityRegressions()
     AIMaxima::Maxima ai(&player); Context& c=ai.context;
     const int raceType=globalContainer->buildingsTypes.getTypeNum("racetrack",0,false);
     ::Building* track=game.addBuilding(25,25,raceType,0);
-    assert(track);
+    REQUIRE(track);
     c.initialize(); c.activeAI=&ai;
     for(int y=0;y<64;++y)for(int x=0;x<64;++x)
         game.map.setMapDiscovered(x,y,player.team->me);
@@ -1581,9 +1578,9 @@ void upgradeWorkerPriorityRegressions()
     ai.development_planner.adoptStartingBuildings(world);
     DevelopmentAction action;
     DevelopmentLimits limits=ai.collect_development_limits(c);
-    assert(ai.development_planner.selectAction(world,{},limits,action));
-    assert(action.type==UpgradeBuilding);
-    assert(ai.issue_development_action(c,action));
+    REQUIRE(ai.development_planner.selectAction(world,{},limits,action));
+    REQUIRE(action.type==UpgradeBuilding);
+    REQUIRE(ai.issue_development_action(c,action));
 
     auto priorities=[&]()
     {
@@ -1605,8 +1602,8 @@ void upgradeWorkerPriorityRegressions()
     // The engine has not started the site yet; nothing is due.
     c.orders.clear();
     c.update_management_orders();
-    assert(priorities().empty());
-    assert(workerRequests().empty());
+    REQUIRE(priorities().empty());
+    REQUIRE(workerRequests().empty());
 
     // The upgrade has begun but the building is still evacuating into its
     // site, so it is not ALIVE. Priority applies regardless, but the engine
@@ -1615,117 +1612,101 @@ void upgradeWorkerPriorityRegressions()
     track->buildingState=::Building::WAITING_FOR_CONSTRUCTION;
     c.orders.clear();
     c.update_management_orders();
-    assert(priorities()==std::vector<int>({1}));
-    assert(workerRequests().empty());
+    REQUIRE(priorities()==std::vector<int>({1}));
+    REQUIRE(workerRequests().empty());
 
     // Once the site is live it receives the configured upgrade staffing.
     track->buildingState=::Building::ALIVE;
     c.orders.clear();
     c.update_management_orders();
-    assert(workerRequests()==std::vector<int>({ai.budget.upgrade_level1_workers}));
+    REQUIRE(workerRequests()==std::vector<int>({ai.budget.upgrade_level1_workers}));
 
     // While it is still building, nothing further is issued.
     c.orders.clear();
     c.update_management_orders();
-    assert(priorities().empty());
+    REQUIRE(priorities().empty());
 
     // Completion restores the normal priority exactly once.
     track->constructionResultState=::Building::NO_CONSTRUCTION;
     c.buildings.tick();
     c.orders.clear();
     c.update_management_orders();
-    assert(priorities()==std::vector<int>({0}));
+    REQUIRE(priorities()==std::vector<int>({0}));
     c.orders.clear();
     c.update_management_orders();
-    assert(priorities().empty());
+    REQUIRE(priorities().empty());
 }
 
-int main(int argc,char** argv)
+TEST_SUITE("Maxima.Implementation")
 {
-    entityRoundTrip(Gradients::Entities::Building(7,2,true));
-    entityRoundTrip(Gradients::Entities::Building(3,5,false));
-    entityRoundTrip(Gradients::Entities::AnyTeamBuilding(4,true));
-    entityRoundTrip(Gradients::Entities::Position(17,93));
-    Management::AssignWorkers workers(7,103);
-    payloadRoundTrip<Management::ManagementOrder>(workers);
-    Construction::SinglePosition anchor(29,117);
-    payloadRoundTrip<Construction::Constraint>(anchor);
+	TEST_CASE("gradient dependencies; payload round trips and cache expiry")
+	{
+		glob2test::HeadlessGlobals globals;
+	    entityRoundTrip(Gradients::Entities::Building(7,2,true));
+	    entityRoundTrip(Gradients::Entities::Building(3,5,false));
+	    entityRoundTrip(Gradients::Entities::AnyTeamBuilding(4,true));
+	    entityRoundTrip(Gradients::Entities::Position(17,93));
+	    Management::AssignWorkers workers(7,103);
+	    payloadRoundTrip<Management::ManagementOrder>(workers);
+	    Construction::SinglePosition anchor(29,117);
+	    payloadRoundTrip<Construction::Constraint>(anchor);
 
-    GlobalContainer container;
-    globalContainer=&container;
-    container.runNoX=true;
-    container.buildingsTypes.init();
-    {
-        Map map;
-        map.setSize(9,9,GRASS);
-        Player player;
-        player.map=&map;
-        Context context(&player);
-        Gradients::GradientInfo first;
-        first.add_source(new Gradients::Entities::Position(13,27));
-        first.add_obstacle(new Gradients::Entities::AnyResource);
-        Gradients::GradientInfo second;
-        second.add_source(new Gradients::Entities::Position(71,19));
-        second.add_obstacle(new Gradients::Entities::AnyResource);
-        Construction::BuildingOrder order(0,1);
-        order.add_constraint(new Construction::MinimizedDistance(first,1));
-        order.add_constraint(new Construction::MinimizedDistance(second,1));
-        Gradients::GradientManager& manager=context.get_gradient_manager();
-        order.queue_gradients(manager);
-        manager.update(0);
-        manager.update(1);
-        assert(order.conditions_pass(context)==Conditions::Ready);
-        // A 512x512 search takes longer than the 150-tick cache lifetime.
-        // Every expiry must queue all stale dependencies and eventually resume.
-        for(int epoch=0;epoch<4;++epoch)
-        {
-            const int start=2+epoch*160;
-            for(int step=start;step<start+155;++step) manager.update(step);
-            assert(order.conditions_pass(context)==Conditions::Waiting);
-            manager.update(start+155);
-            manager.update(start+156);
-            assert(order.conditions_pass(context)==Conditions::Ready);
-        }
-    }
-
-    if(argc>1&&std::string(argv[1])=="--production-only")
-    {
-        IntBuildingType::init();
-
-        explorerSwarmStaffingRegressions();
-        completedSwarmBudgetRegressions();
-        std::cout << "explorer production and swarm budget regressions passed\n";
-        return 0;
-    }
-    placementMaintenanceRegressions();
-    upgradeClearingRegressions();
-    rejectedPlacementUpgradeRegressions();
-    if(argc>1&&std::string(argv[1])=="--placement-only")
-    {
-        std::cout << "placement maintenance and upgrade lifecycle regressions passed\n";
-        return 0;
-    }
-    preemptiveSchedulingRegression();
-    maximaBootstrapRegression();
-    integrationRegressions();
-    executionRegressions();
-    fruitSupplyRoutes();
-    fruitStrategyRegressions();
-    reviewBugRegressions();
-    missionForceRegressions();
-    economyStaffingRegressions();
-    executionStateSaveRegression();
-    foodRelocationExecutorRegression();
-    explorerSwarmStaffingRegressions();
-    completedSwarmBudgetRegressions();
-    economicResourceAccessRegressions();
-    repairLaborContractRegressions();
-    innCompletionStaffingRegressions();
-    directorUpgradePriorityRegressions();
-    directorExecutionRegressions();
-    directorUpgradeRegressions();
-    upgradeWorkerPriorityRegressions();
-    categoryMaintenanceCapacityRegressions();
-    schoolPopulationScalingRegressions();
-    std::cout << "save, gradient refresh, farming restoration, reused GID and defense reserve regressions passed\n";
+	    {
+	        Map map;
+	        map.setSize(9,9,GRASS);
+	        Player player;
+	        player.map=&map;
+	        Context context(&player);
+	        Gradients::GradientInfo first;
+	        first.add_source(new Gradients::Entities::Position(13,27));
+	        first.add_obstacle(new Gradients::Entities::AnyResource);
+	        Gradients::GradientInfo second;
+	        second.add_source(new Gradients::Entities::Position(71,19));
+	        second.add_obstacle(new Gradients::Entities::AnyResource);
+	        Construction::BuildingOrder order(0,1);
+	        order.add_constraint(new Construction::MinimizedDistance(first,1));
+	        order.add_constraint(new Construction::MinimizedDistance(second,1));
+	        Gradients::GradientManager& manager=context.get_gradient_manager();
+	        order.queue_gradients(manager);
+	        manager.update(0);
+	        manager.update(1);
+	        REQUIRE(order.conditions_pass(context)==Conditions::Ready);
+	        // A 512x512 search takes longer than the 150-tick cache lifetime.
+	        // Every expiry must queue all stale dependencies and eventually resume.
+	        for(int epoch=0;epoch<4;++epoch)
+	        {
+	            const int start=2+epoch*160;
+	            for(int step=start;step<start+155;++step) manager.update(step);
+	            REQUIRE(order.conditions_pass(context)==Conditions::Waiting);
+	            manager.update(start+155);
+	            manager.update(start+156);
+	            REQUIRE(order.conditions_pass(context)==Conditions::Ready);
+	        }
+	    }
+	}
+	TEST_CASE("placement maintenance regressions") { glob2test::HeadlessGlobals globals; placementMaintenanceRegressions(); }
+	TEST_CASE("upgrade clearing regressions") { glob2test::HeadlessGlobals globals; upgradeClearingRegressions(); }
+	TEST_CASE("rejected placement upgrade regressions") { glob2test::HeadlessGlobals globals; rejectedPlacementUpgradeRegressions(); }
+	TEST_CASE("preemptive scheduling regression") { glob2test::HeadlessGlobals globals; preemptiveSchedulingRegression(); }
+	TEST_CASE("maxima bootstrap regression") { glob2test::HeadlessGlobals globals; maximaBootstrapRegression(); }
+	TEST_CASE("integration regressions") { glob2test::HeadlessGlobals globals; integrationRegressions(); }
+	TEST_CASE("execution regressions") { glob2test::HeadlessGlobals globals; executionRegressions(); }
+	TEST_CASE("fruit supply routes") { glob2test::HeadlessGlobals globals; fruitSupplyRoutes(); }
+	TEST_CASE("fruit strategy regressions") { glob2test::HeadlessGlobals globals; fruitStrategyRegressions(); }
+	TEST_CASE("review bug regressions") { glob2test::HeadlessGlobals globals; reviewBugRegressions(); }
+	TEST_CASE("mission force regressions") { glob2test::HeadlessGlobals globals; missionForceRegressions(); }
+	TEST_CASE("economy staffing regressions") { glob2test::HeadlessGlobals globals; economyStaffingRegressions(); }
+	TEST_CASE("execution state save regression") { glob2test::HeadlessGlobals globals; executionStateSaveRegression(); }
+	TEST_CASE("food relocation executor regression") { glob2test::HeadlessGlobals globals; foodRelocationExecutorRegression(); }
+	TEST_CASE("explorer swarm staffing regressions") { glob2test::HeadlessGlobals globals; explorerSwarmStaffingRegressions(); }
+	TEST_CASE("completed swarm budget regressions") { glob2test::HeadlessGlobals globals; completedSwarmBudgetRegressions(); }
+	TEST_CASE("economic resource access regressions") { glob2test::HeadlessGlobals globals; economicResourceAccessRegressions(); }
+	TEST_CASE("repair labor contract regressions") { glob2test::HeadlessGlobals globals; repairLaborContractRegressions(); }
+	TEST_CASE("inn completion staffing regressions") { glob2test::HeadlessGlobals globals; innCompletionStaffingRegressions(); }
+	TEST_CASE("director upgrade priority regressions") { glob2test::HeadlessGlobals globals; directorUpgradePriorityRegressions(); }
+	TEST_CASE("director execution regressions") { glob2test::HeadlessGlobals globals; directorExecutionRegressions(); }
+	TEST_CASE("director upgrade regressions") { glob2test::HeadlessGlobals globals; directorUpgradeRegressions(); }
+	TEST_CASE("upgrade worker priority regressions") { glob2test::HeadlessGlobals globals; upgradeWorkerPriorityRegressions(); }
+	TEST_CASE("category maintenance capacity regressions") { glob2test::HeadlessGlobals globals; categoryMaintenanceCapacityRegressions(); }
+	TEST_CASE("school population scaling regressions") { glob2test::HeadlessGlobals globals; schoolPopulationScalingRegressions(); }
 }

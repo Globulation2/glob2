@@ -1,4 +1,5 @@
 // Exercise public AI registration and the normal game/save loading path.
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Engine.h"
 #include "Utilities.h"
@@ -8,12 +9,12 @@
 #include "AIMaxima.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include <cassert>
 #include <iostream>
 #include <memory>
 #include <vector>
 
-GlobalContainer* globalContainer=nullptr;
+namespace
+{
 using namespace GAGCore;
 static std::vector<Uint32> state(Game& game)
 {
@@ -47,10 +48,10 @@ static void run(Uint32 seed)
     for(int seat=0;seat<2;++seat)
         header.getBasePlayer(seat)=BasePlayer(seat,"Maxima",seat,
             BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
-    assert(original.loadFromHeaders(map,header,true,true));
+    REQUIRE(original.loadFromHeaders(map,header,true,true));
     for(int tick=0;tick<600;++tick) step(original.game);
     auto* maxima=dynamic_cast<AIMaxima::Maxima*>(original.game.players[0]->ai->aiImplementation);
-    assert(maxima);
+    REQUIRE(maxima);
     // Registration and the ordinary load path are what this test covers; the
     // save/load continuation below exercises the AI's own state end to end.
     auto* storage=new MemoryStreamBackend;
@@ -66,7 +67,7 @@ static void run(Uint32 seed)
     }
     GameGUI restored;
     BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));
-    input.seekFromStart(0);assert(restored.load(&input));
+    input.seekFromStart(0);REQUIRE(restored.load(&input));
     restored.game.setGameHeader(header,true);
     for(int tick=0;tick<300;++tick)
     {
@@ -75,18 +76,23 @@ static void run(Uint32 seed)
         {
             std::cerr<<"Continuation mismatch seed="<<seed<<" tick="<<tick
                 <<" orders="<<(orders==expectedOrders[tick])<<"\n";
-            assert(false);
+            REQUIRE(false);
         }
     }
     std::cout<<"seed "<<seed<<": 300 resumed orders and simulation checksums match\n";
 }
-int main()
+}
+
+TEST_SUITE("Maxima.Diagnostics")
 {
-    GlobalContainer globals("glob2-maxima-test");globalContainer=&globals;globals.runNoX=true;globals.load();
-    assert(AI::CORTEX==6 && AI::MAXIMA==7);
-    assert(AINames::parseAIName("maxima")==AI::MAXIMA);
-    assert(AINames::getAIText(AI::MAXIMA)=="Maxima");
-    assert(AINames::getAIText(AI::CORTEX)=="Cortex");
-    assert(!AINames::getAIDescription(AI::MAXIMA).empty());
-    run(123456);run(731);
+	TEST_CASE("names; descriptions and two seeded diagnostic runs")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+	    REQUIRE((AI::CORTEX==6 && AI::MAXIMA==7));
+	    REQUIRE(AINames::parseAIName("maxima")==AI::MAXIMA);
+	    REQUIRE(AINames::getAIText(AI::MAXIMA)=="Maxima");
+	    REQUIRE(AINames::getAIText(AI::CORTEX)=="Cortex");
+	    REQUIRE(!AINames::getAIDescription(AI::MAXIMA).empty());
+	    run(123456);run(731);
+	}
 }

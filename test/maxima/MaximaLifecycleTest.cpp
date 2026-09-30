@@ -1,4 +1,5 @@
 // Exercise public AI registration and the normal game/save loading path.
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Engine.h"
 #include "Utilities.h"
@@ -8,7 +9,6 @@
 #include "YOGConsts.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <memory>
@@ -17,7 +17,8 @@
 #include <fstream>
 #include <stdexcept>
 
-GlobalContainer* globalContainer=nullptr;
+namespace
+{
 using namespace GAGCore;
 static std::vector<Uint32> state(Game& game)
 {
@@ -57,7 +58,7 @@ static void rejectedStateThrows(Game& game)
     try { restored.load(&input,114); }
     catch(const std::runtime_error& error)
     { rejected=std::string(error.what()).find("retired strategy format")!=std::string::npos; }
-    assert(rejected);
+    REQUIRE(rejected);
     const std::string settings=game.gameHeader.getAIConfig(player->number);
     game.gameHeader.setAIConfig(player->number,"retired.strategy=true");
     rejected=false;
@@ -65,13 +66,13 @@ static void rejectedStateThrows(Game& game)
     catch(const std::runtime_error& error)
     { rejected=std::string(error.what()).find("Maxima strategy error")!=std::string::npos; }
     game.gameHeader.setAIConfig(player->number,settings);
-    assert(rejected);
+    REQUIRE(rejected);
 }
 
 static void run(Uint32 seed)
 {
-    assert(!isSupportedYOGClientVersion(39));
-    assert(isSupportedYOGClientVersion(NET_PROTOCOL_VERSION));
+    REQUIRE(!isSupportedYOGClientVersion(39));
+    REQUIRE(isSupportedYOGClientVersion(NET_PROTOCOL_VERSION));
     GameGUI original;
     auto map=Engine::loadMapHeader("maps/balanced.map");
     GameHeader header;
@@ -79,18 +80,18 @@ static void run(Uint32 seed)
     for(int seat=0;seat<2;++seat)
         header.getBasePlayer(seat)=BasePlayer(seat,"Maxima",seat,
             BasePlayer::playerTypeFromImplementationID(AI::MAXIMA));
-    assert(original.loadFromHeaders(map,header,true,true));
+    REQUIRE(original.loadFromHeaders(map,header,true,true));
     std::vector<std::string> initialAIConfigs;
     for(int seat=0;seat<2;++seat)
     {
         initialAIConfigs.push_back(original.game.gameHeader.getAIConfig(seat));
-        assert(!initialAIConfigs.back().empty());
+        REQUIRE(!initialAIConfigs.back().empty());
     }
     for(int tick=0;tick<600;++tick)
     {
         step(original.game);
         for(int seat=0;seat<2;++seat)
-            assert(original.game.gameHeader.getAIConfig(seat)==initialAIConfigs[seat]);
+            REQUIRE(original.game.gameHeader.getAIConfig(seat)==initialAIConfigs[seat]);
     }
     rejectedStateThrows(original.game);
     auto* storage=new MemoryStreamBackend;
@@ -112,7 +113,7 @@ static void run(Uint32 seed)
     setenv("GLOB2_MAXIMA_LAYERS",layer.string().c_str(),1);
     GameGUI restored;
     BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));
-    input.seekFromStart(0);assert(restored.load(&input));
+    input.seekFromStart(0);REQUIRE(restored.load(&input));
     restored.game.setGameHeader(header,true);
     unsetenv("GLOB2_MAXIMA_LAYERS");
     std::filesystem::remove(layer);
@@ -123,18 +124,23 @@ static void run(Uint32 seed)
         {
             std::cerr<<"Continuation mismatch seed="<<seed<<" tick="<<tick
                 <<" orders="<<(orders==expectedOrders[tick])<<"\n";
-            assert(false);
+            REQUIRE(false);
         }
     }
     std::cout<<"seed "<<seed<<": 300 resumed orders and simulation checksums match\n";
 }
-int main()
+}
+
+TEST_SUITE("Maxima.Lifecycle")
 {
-    GlobalContainer globals("glob2-maxima-test");globalContainer=&globals;globals.runNoX=true;globals.load();
-    assert(AI::CORTEX==6 && AI::MAXIMA==7);
-    assert(AINames::parseAIName("maxima")==AI::MAXIMA);
-    assert(AINames::getAIText(AI::MAXIMA)=="Maxima");
-    assert(AINames::getAIText(AI::CORTEX)=="Cortex");
-    assert(!AINames::getAIDescription(AI::MAXIMA).empty());
-    run(123456);run(731);
+	TEST_CASE("names; descriptions and two seeded lifecycles")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+	    REQUIRE((AI::CORTEX==6 && AI::MAXIMA==7));
+	    REQUIRE(AINames::parseAIName("maxima")==AI::MAXIMA);
+	    REQUIRE(AINames::getAIText(AI::MAXIMA)=="Maxima");
+	    REQUIRE(AINames::getAIText(AI::CORTEX)=="Cortex");
+	    REQUIRE(!AINames::getAIDescription(AI::MAXIMA).empty());
+	    run(123456);run(731);
+	}
 }

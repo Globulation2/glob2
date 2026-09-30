@@ -1,4 +1,5 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
+#include "EngineFixtures.h"
 #include "../../src/GlobalContainer.h"
 #include "../../src/Version.h"
 #include "../../src/Game.h"
@@ -23,24 +24,20 @@
 #include <string>
 #include <vector>
 // Access the scheduler boundary without adding a production testing API.
-#define private public
 #include "../../src/ai/maxima/AIMaximaRuntime.h"
 #include "../../src/ai/maxima/AIMaxima.h"
-#undef private
 #include "../../src/building/Building.h"
 #include "../../src/game/entities/BuildingType.h"
 #include "../../src/building/IntBuildingType.h"
 #include "../../src/unit/Unit.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include <cassert>
 #include <bit>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <memory>
 
-GlobalContainer* globalContainer = NULL;
 using namespace AIMaximaRuntime;
 
 // Combat policy must survive the handoff to real flag and engine behavior.
@@ -90,7 +87,7 @@ struct Fixture
     {
         ::Building* result=game.addBuilding(game.map.normalizeX(x),game.map.normalizeY(y),
             globalContainer->buildingsTypes.getTypeNum(type,level,false),team);
-        assert(result);
+        REQUIRE(result);
         return result;
     }
 
@@ -98,14 +95,14 @@ struct Fixture
     {
         for(auto record:ai->context.buildings.found())
             if(record.second.gid==building->gid) return record.first;
-        assert(false);
+        REQUIRE(false);
         return -1;
     }
 
     Unit* warrior(int x, int y, int level=1)
     {
         Unit* unit=game.addUnit(x,y,0,WARRIOR,level,0,0,0);
-        assert(unit);
+        REQUIRE(unit);
         unit->medical=Unit::MED_FREE;
         unit->activity=Unit::ACT_RANDOM;
         return unit;
@@ -166,7 +163,7 @@ static void defenseWrapsBuildingOrigins()
         a.budget.reactive_defense_advantage_min=3;
         a.budget.defense_reserve=10;
         a.compute_defense_flag_positioning(a.context);
-        assert(!a.context.buildingOrders.empty());
+        REQUIRE(!a.context.buildingOrders.empty());
         building->posX=x;
         building->posY=y;
     }
@@ -186,7 +183,7 @@ static void defenseCoverage()
         for(auto& point:points) {
             Unit* unit=f.game.addUnit((point[0]+shift)%64,(point[1]+shift)%64,
                 invaders ? 1 : 0,invaders ? WARRIOR : WORKER,1,0,0,0);
-            assert(unit);
+            REQUIRE(unit);
             if(!invaders) unit->underAttackTimer=100;
         }
         a.budget.reactive_defense_enabled=true;
@@ -200,17 +197,17 @@ static void defenseCoverage()
         for(auto order:c.buildingOrders) {
             bool complete=false;
             auto location=order->find_location(c,1,complete);
-            assert(complete && location.found);
+            REQUIRE((complete && location.found));
             flags.push_back(location.value);
             allocation+=order->workers;
         }
-        assert(allocation<=a.budget.defense_reserve);
+        REQUIRE(allocation<=a.budget.defense_reserve);
         for(auto& point:points) {
             bool covered=false;
             for(auto flag:flags)
                 covered|=f.game.map.warpDistSquare((point[0]+shift)%64,
                     (point[1]+shift)%64,flag.x,flag.y)<=25;
-            assert(covered);
+            REQUIRE(covered);
         }
     }
 }
@@ -229,20 +226,20 @@ static void economicRecoveryPreservesMilitaryBudget()
     a.allocate_resources();
     const int reserve=a.budget.defense_reserve;
     const int attack=a.budget.attack_units;
-    assert(a.budget.attack_flags==1 && attack>0);
+    REQUIRE((a.budget.attack_flags==1 && attack>0));
     a.snapshot.unserved_food=50;
     a.snapshot.critical_food=50;
     a.posture=Maxima::PostureRecover;
     a.allocate_resources();
-    assert(a.severe_food_emergency());
-    assert(a.budget.attack_flags==1 && a.budget.attack_units==attack);
-    assert(a.budget.defense_reserve==reserve);
+    REQUIRE(a.severe_food_emergency());
+    REQUIRE((a.budget.attack_flags==1 && a.budget.attack_units==attack));
+    REQUIRE(a.budget.defense_reserve==reserve);
     a.posture=Maxima::PostureCampaign;
     a.posture_since=0;
     a.campaign.cooldown_until=0;
     a.select_posture();
-    assert(a.posture==Maxima::PostureRecover);
-    assert(a.campaign.cooldown_until==0); // Recovery cannot inject a military cooldown.
+    REQUIRE(a.posture==Maxima::PostureRecover);
+    REQUIRE(a.campaign.cooldown_until==0); // Recovery cannot inject a military cooldown.
 }
 
 static void forbiddenDefenseZones()
@@ -268,19 +265,19 @@ static void forbiddenDefenseZones()
             if(x<5||x>50||y<20||y>27||(x>=16&&x<=38))
                 f.game.map.addForbidden(x,y,f.player.team->teamNumber);
         a.update_preemptive_defense(c);
-        assert(a.preemptive_guard_tiles.empty());
+        REQUIRE(a.preemptive_guard_tiles.empty());
         for(int y=20;y<=27;++y) for(int x=16;x<=38;++x)
             f.game.map.removeForbidden(x,y,f.player.team->teamNumber);
         a.timer+=a.budget.preemptive_recompute_ticks;
         a.update_preemptive_defense(c);
-        assert(!a.preemptive_guard_tiles.empty());
+        REQUIRE(!a.preemptive_guard_tiles.empty());
         for(int i:a.preemptive_guard_tiles) {
-            assert(!f.game.map.isForbidden(i%64,i/64,f.player.team->me));
+            REQUIRE(!f.game.map.isForbidden(i%64,i/64,f.player.team->me));
             f.game.map.addGuardArea(i%64,i/64,0);
         }
         f.game.map.getGuardAreasGradient(0,amphibious);
         f.game.map.updateGuardAreasGradient(0,amphibious);
-        assert(f.game.map.getGuardAreasGradient(0,amphibious)[22*64+8]>1);
+        REQUIRE(f.game.map.getGuardAreasGradient(0,amphibious)[22*64+8]>1);
     }
 }
 
@@ -301,7 +298,7 @@ static void defenseDeadbandPreservesCoverage()
         } else {
             auto unit=f.game.addUnit(x,y,threatKind==0?1:0,
                 threatKind==0?WARRIOR:WORKER,1,0,0,0);
-            assert(unit);
+            REQUIRE(unit);
             if(threatKind==1) unit->underAttackTimer=100;
         }
         auto flag=f.building(x-(covered?4:6),y,0,"warflag");
@@ -321,9 +318,9 @@ static void defenseDeadbandPreservesCoverage()
             auto move=dynamic_cast<Management::ChangeFlagPosition*>(order.get());
             if(move) { moved=true; finalX=move->x; finalY=move->y; }
         }
-        assert(moved==!covered);
-        assert(c.buildingOrders.empty());
-        assert(f.game.map.warpDistSquare(finalX,finalY,x,y)<=25);
+        REQUIRE(moved==!covered);
+        REQUIRE(c.buildingOrders.empty());
+        REQUIRE(f.game.map.warpDistSquare(finalX,finalY,x,y)<=25);
     }
 }
 
@@ -336,9 +333,9 @@ static ::Building* materializeFlag(Fixture& f)
     std::shared_ptr<OrderCreate> create;
     for(auto order:c.orders)
         if(auto candidate=std::dynamic_pointer_cast<OrderCreate>(order)) create=candidate;
-    assert(create);
+    REQUIRE(create);
     auto flag=f.game.addBuilding(create->posX,create->posY,create->typeNum,0);
-    assert(flag);
+    REQUIRE(flag);
     c.buildings.tick();
     c.orders.clear();
     c.update_management_orders();
@@ -370,7 +367,7 @@ static void placeAtRally(Fixture& f, ::Building* flag, const std::vector<Unit*>&
                 unit->posX=x;unit->posY=y;
                 f.game.map.setGroundUnit(x,y,unit->gid);placed=true;
             }
-        assert(placed);
+        REQUIRE(placed);
     }
 }
 
@@ -397,10 +394,10 @@ static void nearbyWarriorsCountAsRallied()
                 f.game.map.setGroundUnit(unit->posX,unit->posY,NOGUID);
                 unit->posX=x;unit->posY=y;f.game.map.setGroundUnit(x,y,unit->gid);
             }
-        assert(placed==15);
+        REQUIRE(placed==15);
         a.timer+=100;
         a.plan_offense(c);a.control_offense(c);
-        assert((a.offense_waves[0].phase==Tactics::WaveAdvance)==withinTolerance);
+        REQUIRE((a.offense_waves[0].phase==Tactics::WaveAdvance)==withinTolerance);
     }
 }
 
@@ -415,16 +412,16 @@ static void rallyRejectsBlockedGround()
     // A reachable nine-tile pocket is still too small for the wave.
     for(int y=7;y<10;++y)for(int x=7;x<10;++x)f.game.map.removeForbidden(x,y,0);
     a.plan_offense(c);a.control_offense(c);
-    assert(a.offense_waves.empty());
+    REQUIRE(a.offense_waves.empty());
     // No room to muster must not fall through to an ungathered attack flag.
-    assert(c.buildingOrders.empty());
+    REQUIRE(c.buildingOrders.empty());
     f.building(40,40,0);
     c.buildings.tick();
     a.plan_offense(c);a.control_offense(c);
-    assert(a.offense_waves.size()==1);
+    REQUIRE(a.offense_waves.size()==1);
     auto* flag=materializeFlag(f);
-    assert(f.game.map.warpDistMax(flag->posX,flag->posY,40,40)<=10);
-    assert(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
+    REQUIRE(f.game.map.warpDistMax(flag->posX,flag->posY,40,40)<=10);
+    REQUIRE(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
     const int oldX=flag->posX,oldY=flag->posY;
     f.building(oldX,oldY,0);
     a.timer+=100;
@@ -432,22 +429,23 @@ static void rallyRejectsBlockedGround()
     bool moved=false;
     for(auto order:c.managementOrders)
         if(auto move=dynamic_cast<Management::ChangeFlagPosition*>(order.get())) {
-            assert(f.game.map.getBuilding(move->x,move->y)==NOGBID);
-            assert(!f.game.map.isForbidden(move->x,move->y,f.player.team->me));
+            REQUIRE(f.game.map.getBuilding(move->x,move->y)==NOGBID);
+            REQUIRE(!f.game.map.isForbidden(move->x,move->y,f.player.team->me));
             moved=true;
         }
-    assert(moved && a.offense_waves[0].phase==Tactics::WaveMuster);
+    REQUIRE((moved && a.offense_waves[0].phase==Tactics::WaveMuster));
 }
 
 static void rallyAssemblesByMovement()
 {
-    const char* tracePath="test/maxima/fixtures/rally-movement-checksums.txt";
+    const std::string traceFile=(glob2test::sourceRoot() / "test/maxima/fixtures/rally-movement-checksums.txt").string();
+    const char* tracePath=traceFile.c_str();
     const bool record=std::getenv("GLOB2_RECORD_RALLY_CHECKSUMS")!=nullptr;
     std::ifstream expected;
     std::ofstream output;
     if(record)output.open(tracePath);
     else expected.open(tracePath);
-    assert(record ? output.good() : expected.good());
+    REQUIRE((record ? output.good() : expected.good()));
     for(int shift:{0,52}) {
         setSyncRandSeed(5489);
         Fixture f;
@@ -459,10 +457,10 @@ static void rallyAssemblesByMovement()
         for(int i=0;i<20;++i)warriors.push_back(f.warrior(wrap(2+i%5),wrap(2+i/5),3));
         auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
         a.plan_offense(c);a.control_offense(c);
-        assert(a.offense_waves.size()==1);
+        REQUIRE(a.offense_waves.size()==1);
         auto* flag=materializeFlag(f);
-        assert(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
-        assert(flag->unitStayRange==4);
+        REQUIRE(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
+        REQUIRE(flag->unitStayRange==4);
         for(auto* warrior:warriors) {
             warrior->subscriptionSuccess(flag,false);
             flag->unitsWorking.push_back(warrior);
@@ -474,7 +472,7 @@ static void rallyAssemblesByMovement()
         for(int tick=0;tick<2000 && arrived<15;++tick) {
             const auto previousStep=f.game.stepCounter;
             f.game.syncStep(0);
-            assert(f.game.stepCounter==previousStep+1);
+            REQUIRE(f.game.stepCounter==previousStep+1);
             // Keep the format-115 baseline: this fixture's header version is
             // rotated eight times by MapHeader/Game checksums (three teams,
             // no players). A save-format bump must not change movement evidence.
@@ -484,12 +482,12 @@ static void rallyAssemblesByMovement()
             else {
                 int expectedShift;
                 Uint32 expectedStep,expectedChecksum;
-                assert(expected >> expectedShift >> expectedStep >> expectedChecksum);
+                REQUIRE((expected >> expectedShift >> expectedStep >> expectedChecksum));
                 if(expectedShift!=shift || expectedStep!=f.game.stepCounter || expectedChecksum!=checksum)
                     std::cerr << "Rally checksum mismatch: shift=" << shift
                         << " step=" << f.game.stepCounter << " actual=" << checksum
                         << " expected=" << expectedChecksum << '\n';
-                assert(expectedShift==shift && expectedStep==f.game.stepCounter && expectedChecksum==checksum);
+                REQUIRE((expectedShift==shift && expectedStep==f.game.stepCounter && expectedChecksum==checksum));
             }
             arrived=0;
             for(auto* warrior:warriors)
@@ -499,19 +497,19 @@ static void rallyAssemblesByMovement()
         if(arrived<15)
             std::cerr << "Rally movement: shift=" << shift << " arrived=" << arrived
                 << " radius=" << arrivalRadius << '\n';
-        assert(arrived>=15);
+        REQUIRE(arrived>=15);
         std::set<std::pair<int,int>> occupied;
         for(auto* warrior:warriors) {
-            assert(f.game.map.getBuilding(warrior->posX,warrior->posY)==NOGBID);
-            assert(occupied.insert({warrior->posX,warrior->posY}).second);
+            REQUIRE(f.game.map.getBuilding(warrior->posX,warrior->posY)==NOGBID);
+            REQUIRE(occupied.insert({warrior->posX,warrior->posY}).second);
         }
         a.timer+=100;
         a.plan_offense(c);a.control_offense(c);
-        assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
+        REQUIRE(a.offense_waves[0].phase==Tactics::WaveAdvance);
     }
     if(!record) {
         expected >> std::ws;
-        assert(expected.eof());
+        REQUIRE(expected.eof());
     }
 }
 
@@ -526,28 +524,28 @@ static void waveAssemblyAndPipeline()
     a.director.dirty=false;
     a.budget.tactical_kind=Tactics::MissionNone;
     a.control_offense(c);
-    assert(!a.director.dirty); // Idle wave reviews must not reschedule the economy.
+    REQUIRE(!a.director.dirty); // Idle wave reviews must not reschedule the economy.
     a.plan_offense(c);
-    assert(a.budget.tactical_requested_force==40);
+    REQUIRE(a.budget.tactical_requested_force==40);
     a.control_offense(c);
-    assert(a.offense_waves.size()==1);
-    assert(a.offense_waves[0].requestedForce==20);
+    REQUIRE(a.offense_waves.size()==1);
+    REQUIRE(a.offense_waves[0].requestedForce==20);
     const int first=a.offense_waves[0].flagId;
     auto flag=materializeFlag(f);
-    assert(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
-    assert(f.game.map.warpDistMax(flag->posX,flag->posY,10,10)<=10);
+    REQUIRE(f.game.map.getBuilding(flag->posX,flag->posY)==NOGBID);
+    REQUIRE(f.game.map.warpDistMax(flag->posX,flag->posY,10,10)<=10);
     for(int i=0;i<20;++i)f.attach(warriors[i],flag);
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
     // Enrollment alone must not release the cohort; nobody has arrived.
-    assert(a.offense_waves.size()==1);
-    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    REQUIRE(a.offense_waves.size()==1);
+    REQUIRE(a.offense_waves[0].phase==Tactics::WaveMuster);
     placeAtRally(f,flag,warriors,15);
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
-    assert(a.offense_waves.size()==2);
-    assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
-    assert(a.offense_waves[1].phase==Tactics::WaveMuster);
+    REQUIRE(a.offense_waves.size()==2);
+    REQUIRE(a.offense_waves[0].phase==Tactics::WaveAdvance);
+    REQUIRE(a.offense_waves[1].phase==Tactics::WaveMuster);
     bool moved=false,lowPriority=false;
     for(auto order:c.managementOrders) {
         if(auto move=dynamic_cast<Management::ChangeFlagPosition*>(order.get()))
@@ -555,7 +553,7 @@ static void waveAssemblyAndPipeline()
         if(auto priority=dynamic_cast<Management::ChangePriority*>(order.get()))
             lowPriority=lowPriority || (priority->id==first && priority->priority==-1);
     }
-    assert(moved && lowPriority);
+    REQUIRE((moved && lowPriority));
     // Save with one advancing and one pending muster flag. Restore the real
     // Maxima execution queue and verify all wave fields, including clocks.
     auto* saved=new GAGCore::MemoryStreamBackend;
@@ -572,18 +570,18 @@ static void waveAssemblyAndPipeline()
         archive("waves",waves);
         return std::string(storage->getBuffer(),storage->getPosition());
     };
-    assert(waveBytes(restored.offense_waves)==waveBytes(a.offense_waves));
-    assert(restored.context.get_building_register().is_building_pending(a.offense_waves[1].flagId));
+    REQUIRE(waveBytes(restored.offense_waves)==waveBytes(a.offense_waves));
+    REQUIRE(restored.context.get_building_register().is_building_pending(a.offense_waves[1].flagId));
     a.timer+=100;restored.timer+=100;
     a.control_offense(c);restored.control_offense(restored.context);
-    assert(waveBytes(restored.offense_waves)==waveBytes(a.offense_waves));
-    assert(restored.context.managementOrders.size()==c.managementOrders.size());
+    REQUIRE(waveBytes(restored.offense_waves)==waveBytes(a.offense_waves));
+    REQUIRE(restored.context.managementOrders.size()==c.managementOrders.size());
     // A flag lifecycle notification cannot discard another live cohort.
     a.handle_event(c,RuntimeEvent(RuntimeEvent::AttackFinished,first));
-    assert(a.offense_waves.size()==1);
-    assert(a.tactical_mission.flagId==a.offense_waves[0].flagId);
+    REQUIRE(a.offense_waves.size()==1);
+    REQUIRE(a.tactical_mission.flagId==a.offense_waves[0].flagId);
     a.end_offense(c,"test");
-    assert(a.offense_waves.empty() && a.attack_flags.empty());
+    REQUIRE((a.offense_waves.empty() && a.attack_flags.empty()));
 }
 
 static void waveDeliveryFallback()
@@ -607,27 +605,27 @@ static void waveDeliveryFallback()
         Tactics::Wave wave;wave.flagId=id;wave.phase=Tactics::WaveAdvance;
         wave.targetX=35;wave.targetY=30;a.offense_waves.push_back(wave);
         a.observe_wave_delivery();
-        assert(a.wave_delivery.at(id).launched==20);
+        REQUIRE(a.wave_delivery.at(id).launched==20);
     };
     const auto spent=[&](bool retired=false) {
         const int before=a.failed_waves;
         for(auto* warrior:warriors){warrior->posY=2;warrior->attachedBuilding=nullptr;}
         // More than a quarter left: do not assess it yet.
         flag->unitsWorking.resize(6);a.observe_wave_delivery();
-        assert(a.failed_waves==before);
+        REQUIRE(a.failed_waves==before);
         flag->unitsWorking.resize(5);
         if(retired)a.offense_waves.clear();
         a.observe_wave_delivery();
         const int after=a.failed_waves;
         a.offense_waves.clear();a.observe_wave_delivery();
-        assert(a.failed_waves==after); // Retirement must not count it twice.
+        REQUIRE(a.failed_waves==after); // Retirement must not count it twice.
     };
-    launch(6);spent();assert(a.failed_waves==1); // 30% is below 33%.
-    launch(0);spent();assert(a.failed_waves==2);
-    launch(7);spent();assert(a.failed_waves==0); // Peak delivery survives departures.
-    launch(0);spent(true);assert(a.failed_waves==1);
-    launch(0);spent();assert(a.failed_waves==2);
-    launch(0);spent();assert(a.failed_waves==3);
+    launch(6);spent();REQUIRE(a.failed_waves==1); // 30% is below 33%.
+    launch(0);spent();REQUIRE(a.failed_waves==2);
+    launch(7);spent();REQUIRE(a.failed_waves==0); // Peak delivery survives departures.
+    launch(0);spent(true);REQUIRE(a.failed_waves==1);
+    launch(0);spent();REQUIRE(a.failed_waves==2);
+    launch(0);spent();REQUIRE(a.failed_waves==3);
     launch(0);
     // Save with three failures and an unassessed fourth wave.
     auto* saved=new GAGCore::MemoryStreamBackend;
@@ -636,11 +634,11 @@ static void waveDeliveryFallback()
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     Maxima restored(&input,&f.player,VERSION_MINOR);
-    assert(restored.failed_waves==3 && restored.wave_delivery.at(id).launched==20);
+    REQUIRE((restored.failed_waves==3 && restored.wave_delivery.at(id).launched==20));
     spent();restored.observe_wave_delivery();
-    assert(a.failed_waves==4 && restored.failed_waves==4);
-    assert(a.offense_waves.empty() && restored.offense_waves.empty());
-    assert(a.wave_delivery.empty() && restored.wave_delivery.empty());
+    REQUIRE((a.failed_waves==4 && restored.failed_waves==4));
+    REQUIRE((a.offense_waves.empty() && restored.offense_waves.empty()));
+    REQUIRE((a.wave_delivery.empty() && restored.wave_delivery.empty()));
     // The latch survives ordinary mission cleanup and uses the real old executor.
     a.end_offense(c,"test");
     a.budget.tactics_enabled=true;
@@ -649,15 +647,15 @@ static void waveDeliveryFallback()
     a.budget.tactical_target_x=35;a.budget.tactical_target_y=30;
     a.budget.tactical_requested_force=10;
     a.control_offense(c);
-    assert(a.failed_waves==4 && a.offense_waves.empty());
-    assert(a.tactical_mission.flagId>=0 && !c.buildingOrders.empty());
+    REQUIRE((a.failed_waves==4 && a.offense_waves.empty()));
+    REQUIRE((a.tactical_mission.flagId>=0 && !c.buildingOrders.empty()));
     auto* latched=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream latchOutput(latched);a.save(&latchOutput);
     const std::string latchBytes(latched->getBuffer(),latched->getPosition());
     GAGCore::BinaryInputStream latchInput(new GAGCore::MemoryStreamBackend(latchBytes.data(),latchBytes.size()));
     latchInput.seekFromStart(0);
     Maxima resumed(&latchInput,&f.player,VERSION_MINOR);
-    assert(resumed.failed_waves==4 && !resumed.control_offense_waves(resumed.context));
+    REQUIRE((resumed.failed_waves==4 && !resumed.control_offense_waves(resumed.context)));
     std::cout << "wave delivery: threshold, reset, retirement, one-way handoff and saved latch PASS\n";
 }
 
@@ -674,21 +672,21 @@ static void waveAssemblyFallback()
     // A slow rally must get its full existing assembly allowance.
     a.timer=rally.startedTick+a.strategy.assault.muster_max_ticks-1;
     a.control_offense(c);
-    assert(a.failed_waves==0 && a.offense_waves.front().phase==Tactics::WaveMuster);
+    REQUIRE((a.failed_waves==0 && a.offense_waves.front().phase==Tactics::WaveMuster));
     for(int failures=1;failures<=4;++failures) {
         a.timer=a.offense_waves.front().startedTick+a.strategy.assault.muster_max_ticks;
         a.control_offense(c);
-        assert(a.failed_waves==failures && a.offense_waves.empty());
+        REQUIRE((a.failed_waves==failures && a.offense_waves.empty()));
         a.observe_wave_delivery();
-        assert(a.failed_waves==failures); // No double counting after retirement.
+        REQUIRE(a.failed_waves==failures); // No double counting after retirement.
         if(failures<4) {
             // Reuse the real flag for another synthetic timed-out attempt.
             auto next=rally;next.startedTick=next.progressTick=++a.timer;
             a.offense_waves.push_back(next);
         }
     }
-    assert(flag && a.tactical_mission.flagId>=0 && !c.buildingOrders.empty());
-    assert(!a.control_offense_waves(c)); // Streaming remains latched.
+    REQUIRE((flag && a.tactical_mission.flagId>=0 && !c.buildingOrders.empty()));
+    REQUIRE(!a.control_offense_waves(c)); // Streaming remains latched.
     std::cout << "wave assembly: full timeout, four failures and streaming handoff PASS\n";
 }
 
@@ -717,61 +715,61 @@ static void streamingScalesWithArmy()
             c.update_building_orders();drain();c.buildings.tick();
             c.update_management_orders();drain();
         }
-        assert(c.buildingOrders.empty());
+        REQUIRE(c.buildingOrders.empty());
     };
     const auto allocation=[&](int total) {
         int assigned=0;std::set<int> gids;
         for(int id:a.attack_flags) {
-            auto* flag=c.buildings.get_building(id);assert(flag);
-            assert(flag->maxUnitWorking<=a.strategy.military.attack_unit_cap);
+            auto* flag=c.buildings.get_building(id);REQUIRE(flag);
+            REQUIRE(flag->maxUnitWorking<=a.strategy.military.attack_unit_cap);
             assigned+=flag->maxUnitWorking;gids.insert(flag->gid);
-            assert(f.game.map.warpDistMax(flag->posX,flag->posY,
+            REQUIRE(f.game.map.warpDistMax(flag->posX,flag->posY,
                 a.budget.tactical_target_x,a.budget.tactical_target_y)<=flag->unitStayRange);
         }
-        assert(assigned==total && gids.size()==a.attack_flags.size());
+        REQUIRE((assigned==total && gids.size()==a.attack_flags.size()));
     };
-    a.plan_offense(c);assert(a.budget.tactical_requested_force==45);
-    a.control_offense(c);apply();assert(a.attack_flags.size()==3);allocation(45);
+    a.plan_offense(c);REQUIRE(a.budget.tactical_requested_force==45);
+    a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==3);allocation(45);
     const auto first=a.attack_flags;
     for(int i=0;i<45;++i)f.attach(army[i],c.buildings.get_building(first[i/20]));
     a.plan_offense(c);
-    assert(a.offense_diagnostics.eligibleWarriors==45 && a.budget.tactical_requested_force==45);
-    a.control_offense(c);assert(a.attack_flags==first && c.buildingOrders.empty());
+    REQUIRE((a.offense_diagnostics.eligibleWarriors==45 && a.budget.tactical_requested_force==45));
+    a.control_offense(c);REQUIRE((a.attack_flags==first && c.buildingOrders.empty()));
     for(int i=0;i<20;++i)army.push_back(f.warrior(i,2,3));
-    a.plan_offense(c);assert(a.budget.tactical_requested_force==65);
-    a.control_offense(c);apply();assert(a.attack_flags.size()==4);allocation(65);
-    assert(std::equal(first.begin(),first.end(),a.attack_flags.begin()));
+    a.plan_offense(c);REQUIRE(a.budget.tactical_requested_force==65);
+    a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==4);allocation(65);
+    REQUIRE(std::equal(first.begin(),first.end(),a.attack_flags.begin()));
     for(int i=25;i<65;++i)army[i]->medical=Unit::MED_DAMAGED;
-    a.plan_offense(c);assert(a.budget.tactical_requested_force==25);
-    a.control_offense(c);apply();assert(a.attack_flags.size()==2);allocation(25);
-    assert(a.attack_flags[0]==first[0] && a.attack_flags[1]==first[1]);
+    a.plan_offense(c);REQUIRE(a.budget.tactical_requested_force==25);
+    a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==2);allocation(25);
+    REQUIRE((a.attack_flags[0]==first[0] && a.attack_flags[1]==first[1]));
     // A lost primary must promote a survivor without cancelling the mission.
     c.buildings.get_building(first[0])->kill();c.buildings.tick();
     a.handle_event(c,RuntimeEvent(RuntimeEvent::AttackFinished,first[0]));
-    assert(a.tactical_mission.flagId==first[1] && a.campaign.state==Maxima::CampaignActive);
-    a.control_offense(c);apply();assert(a.attack_flags.size()==2);allocation(25);
-    assert(a.attack_flags.front()==first[1]);
+    REQUIRE((a.tactical_mission.flagId==first[1] && a.campaign.state==Maxima::CampaignActive));
+    a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==2);allocation(25);
+    REQUIRE(a.attack_flags.front()==first[1]);
     a.budget.tactical_target_x=40;a.budget.tactical_target_y=40;
     a.control_offense(c);apply();allocation(25);
     for(int id:a.attack_flags) {
         auto* flag=c.buildings.get_building(id);
-        assert(flag->posX==40 && flag->posY==40);
+        REQUIRE((flag->posX==40 && flag->posY==40));
     }
     auto* saved=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(saved);a.save(&output);
     const std::string bytes(saved->getBuffer(),saved->getPosition());
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);Maxima restored(&input,&f.player,VERSION_MINOR);
-    assert(restored.attack_flags==a.attack_flags && restored.failed_waves==4);
+    REQUIRE((restored.attack_flags==a.attack_flags && restored.failed_waves==4));
     restored.control_offense(restored.context);
-    assert(restored.attack_flags==a.attack_flags && restored.context.buildingOrders.empty());
+    REQUIRE((restored.attack_flags==a.attack_flags && restored.context.buildingOrders.empty()));
     const auto active=a.attack_flags;a.end_offense(c,"test");
-    assert(a.attack_flags.empty());
+    REQUIRE(a.attack_flags.empty());
     for(int id:active) {
         bool cancelled=false;
         for(auto order:c.managementOrders)
             if(auto* destroy=dynamic_cast<Management::DestroyBuilding*>(order.get()))cancelled|=destroy->id==id;
-        assert(cancelled);
+        REQUIRE(cancelled);
     }
     std::cout << "streaming: real flags, full army, growth, shrink, loss, retarget and reload PASS\n";
 }
@@ -785,28 +783,28 @@ static void smallWaveKeepsRecruiting()
     for(int i=0;i<4;++i)warriors.push_back(f.warrior(i,0,3));
     auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
     a.plan_offense(c);a.control_offense(c);
-    assert(a.offense_waves.size()==1 && a.offense_waves[0].requestedForce==4);
+    REQUIRE((a.offense_waves.size()==1 && a.offense_waves[0].requestedForce==4));
     auto flag=materializeFlag(f);
     for(auto warrior:warriors)f.attach(warrior,flag);
     placeAtRally(f,flag,warriors,4);
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
     // Four of four present is not a full wave: allow time for the army to grow.
-    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    REQUIRE(a.offense_waves[0].phase==Tactics::WaveMuster);
     for(int i=4;i<20;++i)warriors.push_back(f.warrior(20+i%10,20+i/10,3));
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
-    assert(a.offense_waves[0].requestedForce==20);
-    assert(assigned(c,a.offense_waves[0].flagId,20));
+    REQUIRE(a.offense_waves[0].requestedForce==20);
+    REQUIRE(assigned(c,a.offense_waves[0].flagId,20));
     for(int i=4;i<20;++i)f.attach(warriors[i],flag);
     a.timer+=a.strategy.assault.muster_stall_ticks;
     a.plan_offense(c);a.control_offense(c);
     // A timeout cannot launch four arrived warriors with sixteen stragglers.
-    assert(a.offense_waves[0].phase==Tactics::WaveMuster);
+    REQUIRE(a.offense_waves[0].phase==Tactics::WaveMuster);
     placeAtRally(f,flag,warriors,15);
     a.timer+=100;
     a.plan_offense(c);a.control_offense(c);
-    assert(a.offense_waves[0].phase==Tactics::WaveAdvance);
+    REQUIRE(a.offense_waves[0].phase==Tactics::WaveAdvance);
 }
 
 static void warriorEligibility()
@@ -840,7 +838,7 @@ static void warriorEligibility()
             unit->level[ability]=1;
         }
         a.plan_offense(c);
-        assert(a.budget.tactical_kind==Tactics::MissionNone);
+        REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
     }
     for(auto unit:swimmers) {
         unit->level[ATTACK_SPEED]=unit->level[ATTACK_STRENGTH]=1;
@@ -848,16 +846,16 @@ static void warriorEligibility()
             unit->performance[ability]=unit->race->getUnitType(WARRIOR,1)->performance[ability];
     }
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionSiege);
-    assert(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
+    REQUIRE(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
     a.control_offense(c);
-    assert(a.tactical_mission.flagId>=0 && a.tactical_mission.kind==Tactics::MissionSiege);
+    REQUIRE((a.tactical_mission.flagId>=0 && a.tactical_mission.kind==Tactics::MissionSiege));
     auto flag=materializeFlag(f);
-    assert(flag->maxUnitWorking==a.offense_diagnostics.eligibleWarriors && flag->minLevelToFlag==1);
+    REQUIRE((flag->maxUnitWorking==a.offense_diagnostics.eligibleWarriors && flag->minLevelToFlag==1));
     flag->updateCallLists();
     for(int step=0; step<33; ++step) flag->subscribeForFlagingStep();
-    assert(flag->unitsWorking.size()==4);
-    for(auto unit:flag->unitsWorking) assert(unit->performance[SWIM]>0);
+    REQUIRE(flag->unitsWorking.size()==4);
+    for(auto unit:flag->unitsWorking) REQUIRE(unit->performance[SWIM]>0);
 }
 
 static void untrainedWarriorsFightAtLevelOne()
@@ -870,8 +868,8 @@ static void untrainedWarriorsFightAtLevelOne()
         auto& a=*f.ai; auto& c=a.context; c.initialize(); f.remember(target);
         a.strategy.tactics.flag_minimum_level=level;
         a.plan_offense(c);
-        assert((a.budget.tactical_kind==Tactics::MissionSiege)==(level==1));
-        assert(level==1 || a.offense_diagnostics.eligibleWarriors==0);
+        REQUIRE((a.budget.tactical_kind==Tactics::MissionSiege)==(level==1));
+        REQUIRE((level==1 || a.offense_diagnostics.eligibleWarriors==0));
     }
 }
 
@@ -886,28 +884,28 @@ static void loweredFlagLevelSurvivesReview()
     a.opponents[1].alive=true;
     a.opponents[1].estimated_warriors=1;
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionSiege);
-    assert(a.budget.tactical_flag_level==1);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
+    REQUIRE(a.budget.tactical_flag_level==1);
     a.control_offense(c);
     const int flagId=a.tactical_mission.flagId;
-    assert(flagId>=0);
+    REQUIRE(flagId>=0);
     // A director refresh must not reset the level while creation is pending.
     a.finalize_director_plan(c);
     a.plan_offense(c);
-    assert(a.budget.tactical_flag_level==1);
-    assert(a.budget.tactical_target_gid==target->gid);
+    REQUIRE(a.budget.tactical_flag_level==1);
+    REQUIRE(a.budget.tactical_target_gid==target->gid);
     auto flag=materializeFlag(f);
-    assert(flag->minLevelToFlag==0);
+    REQUIRE(flag->minLevelToFlag==0);
     flag->updateCallLists();
     for(int step=0;step<33;++step) flag->subscribeForFlagingStep();
-    assert(!flag->unitsWorking.empty());
+    REQUIRE(!flag->unitsWorking.empty());
     // Even a stale budget must defer to the actual flag after creation.
     a.budget.tactical_flag_level=2;
     a.plan_offense(c);
-    assert(a.budget.tactical_flag_level==1);
-    assert(a.budget.tactical_target_gid==target->gid);
+    REQUIRE(a.budget.tactical_flag_level==1);
+    REQUIRE(a.budget.tactical_target_gid==target->gid);
     a.control_offense(c);
-    assert(a.tactical_mission.flagId==flagId);
+    REQUIRE(a.tactical_mission.flagId==flagId);
 }
 
 static void minimumForceGate()
@@ -919,11 +917,11 @@ static void minimumForceGate()
         for(int i=0;i<warriors;++i) f.warrior(15+i,15);
         auto& a=*f.ai; auto& c=a.context; c.initialize(); f.remember(target);
         a.plan_offense(c);
-        assert(a.offense_diagnostics.eligibleWarriors==warriors);
-        assert((a.budget.tactical_kind==Tactics::MissionSiege)==(warriors>=4));
+        REQUIRE(a.offense_diagnostics.eligibleWarriors==warriors);
+        REQUIRE((a.budget.tactical_kind==Tactics::MissionSiege)==(warriors>=4));
         a.control_offense(c);
-        assert((a.tactical_mission.flagId>=0)==(warriors>=4));
-        assert(c.buildingOrders.empty()==(warriors<4));
+        REQUIRE((a.tactical_mission.flagId>=0)==(warriors>=4));
+        REQUIRE(c.buildingOrders.empty()==(warriors<4));
     }
 }
 
@@ -939,20 +937,20 @@ static void barracksAreFilledBeforeAttacking()
         for(int i=0;i<warriors;++i) army.push_back(f.warrior(15+i,15));
         auto& a=*f.ai; auto& c=a.context; c.initialize(); f.remember(target);
         a.plan_offense(c);
-        assert(a.offense_diagnostics.openTrainingSlots==4);
+        REQUIRE(a.offense_diagnostics.openTrainingSlots==4);
         // Six warriors leave only two beyond the barracks; eight leave four.
-        assert((a.budget.tactical_kind==Tactics::MissionSiege)==(warriors==8));
+        REQUIRE((a.budget.tactical_kind==Tactics::MissionSiege)==(warriors==8));
         if(warriors==8) {
-            assert(a.budget.tactical_requested_force==4);
+            REQUIRE(a.budget.tactical_requested_force==4);
             a.control_offense(c);
-            assert(a.tactical_mission.requestedForce==4);
+            REQUIRE(a.tactical_mission.requestedForce==4);
             // Two warriors enter training: the flag gives up two seats to them.
             barracks->unitsInside.push_back(army[0]); barracks->unitsInside.push_back(army[1]);
             a.plan_offense(c);
-            assert(a.budget.tactical_requested_force==6); // 8 eligible - 2 open slots
+            REQUIRE(a.budget.tactical_requested_force==6); // 8 eligible - 2 open slots
             c.managementOrders.clear();
             a.control_offense(c);
-            assert(a.tactical_mission.requestedForce==6 && assigned(c,a.tactical_mission.flagId,6));
+            REQUIRE((a.tactical_mission.requestedForce==6 && assigned(c,a.tactical_mission.flagId,6)));
         }
     }
 }
@@ -968,9 +966,9 @@ static void unusableTrainingDoesNotBlockAttacks()
         for(int i=0;i<untrained;++i)f.warrior(20+i,22,1);
         auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
         a.plan_offense(c);
-        assert(a.offense_diagnostics.openTrainingSlots==std::min(2,untrained));
-        assert(a.budget.tactical_kind==Tactics::MissionSiege);
-        assert(a.budget.tactical_requested_force==4+untrained-std::min(2,untrained));
+        REQUIRE(a.offense_diagnostics.openTrainingSlots==std::min(2,untrained));
+        REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
+        REQUIRE(a.budget.tactical_requested_force==4+untrained-std::min(2,untrained));
     }
 }
 
@@ -987,8 +985,8 @@ static void trainingReservationsMatchDifferentLevels()
     auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
     a.strategy.tactics.flag_minimum_level=1;
     a.plan_offense(c);
-    assert(a.offense_diagnostics.openTrainingSlots==2);
-    assert(a.budget.tactical_requested_force==4);
+    REQUIRE(a.offense_diagnostics.openTrainingSlots==2);
+    REQUIRE(a.budget.tactical_requested_force==4);
 }
 
 static void foodPostureDoesNotVetoCombat()
@@ -1005,24 +1003,24 @@ static void foodPostureDoesNotVetoCombat()
     a.trends.food_pressure=100;
     a.strategy.emergencies.food_enabled=true;
     a.strategy.emergencies.food_critical_percent=20;
-    assert(a.severe_food_emergency());
+    REQUIRE(a.severe_food_emergency());
     a.budget.food_emergency=true;
     for(auto posture:{Maxima::PostureExpand,Maxima::PostureDevelop,
             Maxima::PostureRecover,Maxima::PostureDefend,Maxima::PostureCampaign}) {
         a.posture=posture;
         a.plan_offense(c);
-        assert(a.budget.tactical_kind==Tactics::MissionSiege);
+        REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
     }
     a.control_offense(c);
-    assert(a.tactical_mission.flagId>=0);
+    REQUIRE(a.tactical_mission.flagId>=0);
     // A colony emergency is the one thing that recalls the army.
     a.strategy.emergencies.colony_enabled=true;
     a.snapshot.visible_colony_threat=a.strategy.emergencies.colony_threat_threshold;
-    assert(a.severe_colony_emergency());
+    REQUIRE(a.severe_colony_emergency());
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionNone);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
     a.control_offense(c);
-    assert(a.tactical_mission.flagId<0 && a.attack_flags.empty());
+    REQUIRE((a.tactical_mission.flagId<0 && a.attack_flags.empty()));
 }
 
 static void sealedTargetOpensRoute()
@@ -1042,12 +1040,12 @@ static void sealedTargetOpensRoute()
         a.opponents[2].score=100;
         a.plan_offense(c);
         if(sealed) {
-            assert(a.budget.tactical_kind==Tactics::MissionNone);
-            assert(a.budget.tactical_dig_out_team==(labor ? 2 : -1));
-            assert(a.offense_diagnostics.rejections["no_route"]==1);
+            REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
+            REQUIRE(a.budget.tactical_dig_out_team==(labor ? 2 : -1));
+            REQUIRE(a.offense_diagnostics.rejections["no_route"]==1);
         } else {
-            assert(a.budget.tactical_kind==Tactics::MissionSiege);
-            assert(a.budget.tactical_target_team==2);
+            REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
+            REQUIRE(a.budget.tactical_target_team==2);
         }
     }
 }
@@ -1068,34 +1066,34 @@ static void offenseFollowsDestroyedTargets()
     a.snapshot.swimming_warriors=4;
     f.remember(first); f.remember(next);
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionSiege);
-    assert(a.budget.tactical_target_gid==first->gid); // Nearer, same value.
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
+    REQUIRE(a.budget.tactical_target_gid==first->gid); // Nearer, same value.
     a.control_offense(c);
     const int flagId=a.tactical_mission.flagId;
-    assert(flagId>=0 && a.campaign.state==Maxima::CampaignActive);
-    assert(a.attack_flag_targets[flagId]==first->gid);
+    REQUIRE((flagId>=0 && a.campaign.state==Maxima::CampaignActive));
+    REQUIRE(a.attack_flag_targets[flagId]==first->gid);
     // A better target within the margin does not move the flag.
     a.plan_offense(c);
-    assert(a.budget.tactical_target_gid==first->gid);
+    REQUIRE(a.budget.tactical_target_gid==first->gid);
     c.managementOrders.clear();
     a.control_offense(c);
     for(auto order:c.managementOrders)
-        assert(!dynamic_cast<Management::ChangeFlagPosition*>(order.get()));
+        REQUIRE(!dynamic_cast<Management::ChangeFlagPosition*>(order.get()));
     // Once the dwell has passed, a quarantined target hands the flag to the
     // next building without tearing the flag down.
     a.attack_target_quarantine_until[first->gid]=a.timer+1000;
     a.timer+=a.strategy.tactics.dwell_ticks;
     a.plan_offense(c);
-    assert(a.budget.tactical_target_gid==next->gid);
+    REQUIRE(a.budget.tactical_target_gid==next->gid);
     c.managementOrders.clear();
     a.control_offense(c);
-    assert(a.tactical_mission.flagId==flagId && a.tactical_mission.targetGid==next->gid);
-    assert(a.campaign.buildings_destroyed==0); // The first building still stands.
+    REQUIRE((a.tactical_mission.flagId==flagId && a.tactical_mission.targetGid==next->gid));
+    REQUIRE(a.campaign.buildings_destroyed==0); // The first building still stands.
     bool moved=false;
     for(auto order:c.managementOrders)
         if(auto move=dynamic_cast<Management::ChangeFlagPosition*>(order.get()))
             moved|=move->x==a.budget.tactical_target_x && move->y==a.budget.tactical_target_y;
-    assert(moved);
+    REQUIRE(moved);
     // Destruction is credited when recon no longer remembers the flag's target.
     const int nextGid=next->gid;
     next->kill();
@@ -1103,7 +1101,7 @@ static void offenseFollowsDestroyedTargets()
     a.reconnaissance.beginObservation(a.timer,{1});
     a.reconnaissance.confirmBuildingAbsent(1,nextGid);
     a.reconnaissance.finishObservation();
-    assert(!a.reconnaissance.opponent(1)->buildings.count(nextGid));
+    REQUIRE(!a.reconnaissance.opponent(1)->buildings.count(nextGid));
     a.budget.tactical_kind=Tactics::MissionSiege;
     a.budget.tactical_target_team=1;
     a.budget.tactical_target_gid=first->gid;
@@ -1111,12 +1109,12 @@ static void offenseFollowsDestroyedTargets()
     a.budget.tactical_requested_force=a.strategy.military.attack_unit_cap;
     c.managementOrders.clear();
     a.control_offense(c);
-    assert(a.campaign.buildings_destroyed==1 && a.tactical_mission.targetGid==first->gid);
+    REQUIRE((a.campaign.buildings_destroyed==1 && a.tactical_mission.targetGid==first->gid));
     // Without any remembered target the flag comes down.
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionNone);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
     a.control_offense(c);
-    assert(a.tactical_mission.flagId<0 && a.campaign.state==Maxima::CampaignIdle);
+    REQUIRE((a.tactical_mission.flagId<0 && a.campaign.state==Maxima::CampaignIdle));
 }
 
 static void stalledTargetIsQuarantined()
@@ -1142,20 +1140,20 @@ static void stalledTargetIsQuarantined()
     mission.lastProgressTick=a.timer-a.strategy.tactics.stall_ticks;
     target->seenByMask|=f.player.team->me;
     a.plan_offense(c);
-    assert(a.budget.tactical_target_gid==target->gid); // Same target keeps the flag.
+    REQUIRE(a.budget.tactical_target_gid==target->gid); // Same target keeps the flag.
     a.control_offense(c);
-    assert(a.attack_target_quarantine_until.count(target->gid));
+    REQUIRE(a.attack_target_quarantine_until.count(target->gid));
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionNone);
-    assert(a.offense_diagnostics.rejections["quarantined"]==1);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
+    REQUIRE(a.offense_diagnostics.rejections["quarantined"]==1);
     a.control_offense(c);
-    assert(a.tactical_mission.flagId<0);
+    REQUIRE(a.tactical_mission.flagId<0);
     // The fixture flag never actually disappears; release its warriors by hand.
     for(auto unit:army) { unit->attachedBuilding=NULL; unit->activity=Unit::ACT_RANDOM; }
     flag->unitsWorking.clear();
     a.timer=a.attack_target_quarantine_until[target->gid];
     a.plan_offense(c);
-    assert(a.budget.tactical_target_gid==target->gid);
+    REQUIRE(a.budget.tactical_target_gid==target->gid);
 }
 
 static void raidsOutscoreDistantBuildings()
@@ -1173,16 +1171,16 @@ static void raidsOutscoreDistantBuildings()
     rules.workerWeight=a.strategy.raiding.worker_weight;
     a.tactics.finishObservation(rules);
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionRaid);
-    assert(a.budget.tactical_target_gid==-1 && a.budget.tactical_target_team==1);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionRaid);
+    REQUIRE((a.budget.tactical_target_gid==-1 && a.budget.tactical_target_team==1));
     a.control_offense(c);
-    assert(a.tactical_mission.kind==Tactics::MissionRaid && a.campaign.state==Maxima::CampaignActive);
-    assert(a.offense_waves.size()==1);
+    REQUIRE((a.tactical_mission.kind==Tactics::MissionRaid && a.campaign.state==Maxima::CampaignActive));
+    REQUIRE(a.offense_waves.size()==1);
     // Once the workers vanish the flag moves on to the building.
     a.tactics.beginObservation(a.timer);
     a.tactics.finishObservation(rules);
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionSiege);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
 }
 
 static void offensiveControlSwitches()
@@ -1200,11 +1198,11 @@ static void offensiveControlSwitches()
         a.strategy.tactics.siege_enabled=siege;
         a.finalize_director_plan(c);
         a.plan_offense(c);
-        assert((a.budget.tactical_kind==Tactics::MissionSiege)==(parent && siege && eligible));
+        REQUIRE((a.budget.tactical_kind==Tactics::MissionSiege)==(parent && siege && eligible));
         a.control_offense(c);
-        assert((a.tactical_mission.kind==Tactics::MissionSiege)==(parent && siege && eligible));
-        if(parent && siege && eligible) assert(!c.buildingOrders.empty());
-        else assert(c.buildingOrders.empty());
+        REQUIRE((a.tactical_mission.kind==Tactics::MissionSiege)==(parent && siege && eligible));
+        if(parent && siege && eligible) REQUIRE(!c.buildingOrders.empty());
+        else REQUIRE(c.buildingOrders.empty());
     }
     for(bool enabled:{false,true}) for(bool eligible:{false,true})
     {
@@ -1220,13 +1218,13 @@ static void offensiveControlSwitches()
         a.strategy.emergencies.colony_enabled=false;
         a.target=1;
         auto enemy=f.game.addUnit(35,35,1,WARRIOR,0,0,0,0);
-        assert(enemy);
+        REQUIRE(enemy);
         a.allocate_resources();
         a.finalize_director_plan(c);
-        assert(a.budget.explorer_campaign_active==(enabled && eligible));
+        REQUIRE(a.budget.explorer_campaign_active==(enabled && eligible));
         c.buildingOrders.clear(); c.managementOrders.clear();
         a.compute_explorer_flag_attack_positioning(c);
-        assert(c.buildingOrders.empty()!= (enabled && eligible));
+        REQUIRE(c.buildingOrders.empty()!= (enabled && eligible));
     }
     {
         Fixture f;
@@ -1239,12 +1237,12 @@ static void offensiveControlSwitches()
         a.allocate_resources();
         a.finalize_director_plan(c);
         a.control_offense(c);
-        assert(a.attack_flags.empty());
+        REQUIRE(a.attack_flags.empty());
         bool removed=false;
         for(auto order:c.managementOrders)
             removed|=dynamic_cast<Management::DestroyBuilding*>(order.get())!=nullptr;
-        assert(removed);
-        assert(!a.budget.explorer_campaign_active);
+        REQUIRE(removed);
+        REQUIRE(!a.budget.explorer_campaign_active);
     }
     std::cout << "offensive controls: tactics/siege eligible, ineligible, parent-disabled; explorer eligible/ineligible; inherited flag removal PASS\n";
 }
@@ -1258,29 +1256,29 @@ static void fittedForceUsesOnlyVisibleUnits()
     std::fill(f.game.map.fogOfWarA.begin(),f.game.map.fogOfWarA.end(),0);
     std::fill(f.game.map.fogOfWarB.begin(),f.game.map.fogOfWarB.end(),0);
     Unit* seen=f.game.addUnit(30,30,1,WARRIOR,1,0,0,0);
-    assert(seen);f.game.map.setMapDiscovered(30,30,f.player.team->me);
+    REQUIRE(seen);f.game.map.setMapDiscovered(30,30,f.player.team->me);
     a.update_reconnaissance(c);
-    assert(a.force_beliefs.count(1));
+    REQUIRE(a.force_beliefs.count(1));
     const auto baseline=a.force_beliefs.at(1);
-    assert(baseline.features[ForceModel::VisibleWarriors]==1);
+    REQUIRE(baseline.features[ForceModel::VisibleWarriors]==1);
     // Adding hidden forces cannot affect any input or prediction.
-    assert(f.game.addUnit(50,50,1,WARRIOR,3,0,0,0));
-    assert(f.game.addUnit(51,50,1,WORKER,0,0,0,0));
+    REQUIRE(f.game.addUnit(50,50,1,WARRIOR,3,0,0,0));
+    REQUIRE(f.game.addUnit(51,50,1,WORKER,0,0,0,0));
     a.force_beliefs.clear();a.update_reconnaissance(c);
     const auto& hidden=a.force_beliefs.at(1);
-    for(int i=0;i<ForceModel::FeatureCount;++i) assert(hidden.features[i]==baseline.features[i]);
+    for(int i=0;i<ForceModel::FeatureCount;++i) REQUIRE(hidden.features[i]==baseline.features[i]);
     for(int t=0;t<ForceModel::TargetCount;++t)
         for(int q=0;q<ForceModel::QuantileCount;++q)
-            assert(hidden.prediction.values[t][q]==baseline.prediction.values[t][q]);
-    assert(a.reconnaissance.opponent(1)->estimatedWarriors==hidden.prediction.rounded(ForceModel::Warriors));
+            REQUIRE(hidden.prediction.values[t][q]==baseline.prediction.values[t][q]);
+    REQUIRE(a.reconnaissance.opponent(1)->estimatedWarriors==hidden.prediction.rounded(ForceModel::Warriors));
     a.sample_reconnaissance_forces(c);
-    assert(a.reconnaissance.opponent(1)->estimatedWarriors==hidden.prediction.rounded(ForceModel::Warriors));
+    REQUIRE(a.reconnaissance.opponent(1)->estimatedWarriors==hidden.prediction.rounded(ForceModel::Warriors));
     a.update_opponent_models(c);
-    assert(a.opponents[1].estimated_warriors==a.reconnaissance.opponent(1)->estimatedWarriors);
+    REQUIRE(a.opponents[1].estimated_warriors==a.reconnaissance.opponent(1)->estimatedWarriors);
     a.strategy.reconnaissance.force_memory_enabled=false;
     a.reconnaissance.configure(10000,2500,2500,false);
     a.sample_reconnaissance_forces(c);
-    assert(a.reconnaissance.opponent(1)->estimatedWarriors==1);
+    REQUIRE(a.reconnaissance.opponent(1)->estimatedWarriors==1);
 }
 
 static void fittedHistorySurvivesSave()
@@ -1296,19 +1294,19 @@ static void fittedHistorySurvivesSave()
     const std::string bytes(storage->getBuffer(),storage->getPosition());
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
-    Maxima restored(&f.player);assert(restored.load(&input,&f.player,VERSION_MINOR));
+    Maxima restored(&f.player);REQUIRE(restored.load(&input,&f.player,VERSION_MINOR));
     auto& after=restored.force_beliefs.at(1);
-    assert(after.initialized);
-    for(int i=0;i<ForceModel::FeatureCount;++i) assert(after.features[i]==before.features[i]);
+    REQUIRE(after.initialized);
+    for(int i=0;i<ForceModel::FeatureCount;++i) REQUIRE(after.features[i]==before.features[i]);
     for(int t=0;t<ForceModel::TargetCount;++t)
-        for(int q=0;q<ForceModel::QuantileCount;++q) assert(after.prediction.values[t][q]==before.prediction.values[t][q]);
+        for(int q=0;q<ForceModel::QuantileCount;++q) REQUIRE(after.prediction.values[t][q]==before.prediction.values[t][q]);
     observation[ForceModel::Tick]=2600;after.observe(observation);before.observe(observation);
-    assert(after.features[ForceModel::Tick]==2200); // Cadence also survives loading.
+    REQUIRE(after.features[ForceModel::Tick]==2200); // Cadence also survives loading.
     observation[ForceModel::Tick]=3400;after.observe(observation);before.observe(observation);
     after.forecast(3600);before.forecast(3600);
-    for(int i=0;i<ForceModel::FeatureCount;++i) assert(after.features[i]==before.features[i]);
+    for(int i=0;i<ForceModel::FeatureCount;++i) REQUIRE(after.features[i]==before.features[i]);
     for(int t=0;t<ForceModel::TargetCount;++t)
-        for(int q=0;q<ForceModel::QuantileCount;++q) assert(after.prediction.values[t][q]==before.prediction.values[t][q]);
+        for(int q=0;q<ForceModel::QuantileCount;++q) REQUIRE(after.prediction.values[t][q]==before.prediction.values[t][q]);
 }
 
 static void fittedPowerControlsAttackGate()
@@ -1321,60 +1319,48 @@ static void fittedPowerControlsAttackGate()
     auto& belief=a.force_beliefs[1];belief.initialized=true;
     belief.prediction.values[ForceModel::Power][ForceModel::Median]=1000000*ForceModel::Scale;
     a.plan_offense(c);
-    assert(a.offense_diagnostics.gate.find("not strong enough")!=std::string::npos);
+    REQUIRE(a.offense_diagnostics.gate.find("not strong enough")!=std::string::npos);
     belief.prediction.values[ForceModel::Power][ForceModel::Median]=ForceModel::Scale;
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionSiege);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
     // Without force memory, only observed defenders constrain the attack.
     a.strategy.reconnaissance.force_memory_enabled=false;
     belief.prediction.values[ForceModel::Power][ForceModel::Median]=1000000*ForceModel::Scale;
     a.plan_offense(c);
-    assert(a.budget.tactical_kind==Tactics::MissionSiege);
+    REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
 }
 
-static void run()
+}
+
+TEST_SUITE("Maxima.Combat")
 {
-    fittedForceUsesOnlyVisibleUnits();
-    fittedPowerControlsAttackGate();
-    fittedHistorySurvivesSave();
-    nearbyWarriorsCountAsRallied();
-    rallyRejectsBlockedGround();
-    rallyAssemblesByMovement();
-    waveAssemblyAndPipeline();
-    waveDeliveryFallback();
-    waveAssemblyFallback();
-    streamingScalesWithArmy();
-    smallWaveKeepsRecruiting();
-    defenseWrapsBuildingOrigins();
-    defenseCoverage();
-    warriorEligibility();
-    untrainedWarriorsFightAtLevelOne();
-    minimumForceGate();
-    loweredFlagLevelSurvivesReview();
-    barracksAreFilledBeforeAttacking();
-    unusableTrainingDoesNotBlockAttacks();
-    trainingReservationsMatchDifferentLevels();
-    foodPostureDoesNotVetoCombat();
-    sealedTargetOpensRoute();
-    offenseFollowsDestroyedTargets();
-    stalledTargetIsQuarantined();
-    raidsOutscoreDistantBuildings();
-    economicRecoveryPreservesMilitaryBudget();
-    forbiddenDefenseZones();
-    defenseDeadbandPreservesCoverage();
-    offensiveControlSwitches();
-    std::cout << "combat execution regressions passed\n";
-}
-}
-
-int main()
-{
-    GlobalContainer container;
-    globalContainer=&container;
-    container.runNoX=true;
-    container.buildingsTypes.init();
-
-    IntBuildingType::init();
-
-    combat_regressions::run();
+	TEST_CASE("fitted force uses only visible units") { glob2test::HeadlessGlobals globals; combat_regressions::fittedForceUsesOnlyVisibleUnits(); }
+	TEST_CASE("fitted power controls attack gate") { glob2test::HeadlessGlobals globals; combat_regressions::fittedPowerControlsAttackGate(); }
+	TEST_CASE("fitted history survives save") { glob2test::HeadlessGlobals globals; combat_regressions::fittedHistorySurvivesSave(); }
+	TEST_CASE("nearby warriors count as rallied") { glob2test::HeadlessGlobals globals; combat_regressions::nearbyWarriorsCountAsRallied(); }
+	TEST_CASE("rally rejects blocked ground") { glob2test::HeadlessGlobals globals; combat_regressions::rallyRejectsBlockedGround(); }
+	TEST_CASE("rally assembles by movement") { glob2test::HeadlessGlobals globals; combat_regressions::rallyAssemblesByMovement(); }
+	TEST_CASE("wave assembly and pipeline") { glob2test::HeadlessGlobals globals; combat_regressions::waveAssemblyAndPipeline(); }
+	TEST_CASE("wave delivery fallback") { glob2test::HeadlessGlobals globals; combat_regressions::waveDeliveryFallback(); }
+	TEST_CASE("wave assembly fallback") { glob2test::HeadlessGlobals globals; combat_regressions::waveAssemblyFallback(); }
+	TEST_CASE("streaming scales with army") { glob2test::HeadlessGlobals globals; combat_regressions::streamingScalesWithArmy(); }
+	TEST_CASE("small wave keeps recruiting") { glob2test::HeadlessGlobals globals; combat_regressions::smallWaveKeepsRecruiting(); }
+	TEST_CASE("defense wraps building origins") { glob2test::HeadlessGlobals globals; combat_regressions::defenseWrapsBuildingOrigins(); }
+	TEST_CASE("defense coverage") { glob2test::HeadlessGlobals globals; combat_regressions::defenseCoverage(); }
+	TEST_CASE("warrior eligibility") { glob2test::HeadlessGlobals globals; combat_regressions::warriorEligibility(); }
+	TEST_CASE("untrained warriors fight at level one") { glob2test::HeadlessGlobals globals; combat_regressions::untrainedWarriorsFightAtLevelOne(); }
+	TEST_CASE("minimum force gate") { glob2test::HeadlessGlobals globals; combat_regressions::minimumForceGate(); }
+	TEST_CASE("lowered flag level survives review") { glob2test::HeadlessGlobals globals; combat_regressions::loweredFlagLevelSurvivesReview(); }
+	TEST_CASE("barracks are filled before attacking") { glob2test::HeadlessGlobals globals; combat_regressions::barracksAreFilledBeforeAttacking(); }
+	TEST_CASE("unusable training does not block attacks") { glob2test::HeadlessGlobals globals; combat_regressions::unusableTrainingDoesNotBlockAttacks(); }
+	TEST_CASE("training reservations match different levels") { glob2test::HeadlessGlobals globals; combat_regressions::trainingReservationsMatchDifferentLevels(); }
+	TEST_CASE("food posture does not veto combat") { glob2test::HeadlessGlobals globals; combat_regressions::foodPostureDoesNotVetoCombat(); }
+	TEST_CASE("sealed target opens route") { glob2test::HeadlessGlobals globals; combat_regressions::sealedTargetOpensRoute(); }
+	TEST_CASE("offense follows destroyed targets") { glob2test::HeadlessGlobals globals; combat_regressions::offenseFollowsDestroyedTargets(); }
+	TEST_CASE("stalled target is quarantined") { glob2test::HeadlessGlobals globals; combat_regressions::stalledTargetIsQuarantined(); }
+	TEST_CASE("raids outscore distant buildings") { glob2test::HeadlessGlobals globals; combat_regressions::raidsOutscoreDistantBuildings(); }
+	TEST_CASE("economic recovery preserves military budget") { glob2test::HeadlessGlobals globals; combat_regressions::economicRecoveryPreservesMilitaryBudget(); }
+	TEST_CASE("forbidden defense zones") { glob2test::HeadlessGlobals globals; combat_regressions::forbiddenDefenseZones(); }
+	TEST_CASE("defense deadband preserves coverage") { glob2test::HeadlessGlobals globals; combat_regressions::defenseDeadbandPreservesCoverage(); }
+	TEST_CASE("offensive control switches") { glob2test::HeadlessGlobals globals; combat_regressions::offensiveControlSwitches(); }
 }
