@@ -306,7 +306,7 @@ jobs:
         run: python3 test/ci_step_summary.py
 
   linux-tests:
-    name: linux tests (${{ matrix.platform }}, shard ${{ matrix.shard }}/5)
+    name: linux tests (${{ matrix.platform }}, shard ${{ matrix.shard }}/4)
     needs: [changes, linux-build]
     if: ${{ needs.changes.outputs.native == 'true' && needs.linux-build.result == 'success' }}
     runs-on: ${{ matrix.runner }}
@@ -330,10 +330,6 @@ jobs:
             runner: ubuntu-22.04
             compiler: g++-11
             shard: 4
-          - platform: ubuntu-22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-            shard: 5
           - platform: ubuntu-24.04
             runner: ubuntu-24.04
             compiler: g++-13
@@ -350,10 +346,6 @@ jobs:
             runner: ubuntu-24.04
             compiler: g++-13
             shard: 4
-          - platform: ubuntu-24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
-            shard: 5
     steps:
       - name: Install dependencies
         id: install_dependencies
@@ -541,14 +533,6 @@ jobs:
           timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-read
           cat artifacts/custom-game-ci/ui.log
           ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
-
-      - name: Check map generator defaults
-        if: ${{ matrix.shard == 5 }}
-        id: check_map_generator_defaults
-        continue-on-error: true
-        run: |
-          # The growing generator catalog exercises hundreds of complete worlds.
-          timeout 300s ./build/linux/client/release/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
 
       - name: Test status-bar bounds in GPU and software rendering
         if: ${{ matrix.shard == 1 }}
@@ -1164,7 +1148,12 @@ jobs:
 
       - name: Build the map generator golden test
         id: build_the_map_generator_golden_test
-        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 map-generator-golden-test
+        run: |
+          targets=(map-generator-golden-test)
+          if [ '${{ matrix.suite }}' = telemetry ]; then
+            targets+=(map-generator-defaults-test)
+          fi
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 "${targets[@]}"
 
       - name: Check golden maps and sweep colony counts
         id: check_golden_maps_and_sweep_colony_counts
@@ -1203,7 +1192,15 @@ jobs:
         id: check_generator_telemetry_equivalence_and_cost
         if: ${{ matrix.suite == 'telemetry' }}
         continue-on-error: true
-        run: timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-telemetry-ci --telemetry
+        run: |
+          # These checks use separate profiles and can share the runner's cores.
+          timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-telemetry-ci --telemetry > /tmp/map-telemetry.log 2>&1 & telemetry=$!
+          timeout 300s ./build/linux/client/release/src/MapGeneratorDefaultsTest glob2-map-defaults-ci > /tmp/map-defaults.log 2>&1 & defaults=$!
+          status=0
+          wait "$telemetry" || status=1
+          wait "$defaults" || status=1
+          cat /tmp/map-telemetry.log /tmp/map-defaults.log
+          [ "$status" -eq 0 ]
 
 
       - name: Summarize CI failures
@@ -1881,32 +1878,35 @@ jobs:
           - name: chromium torus
             browsers: chromium
             command: xvfb-run -a npx playwright test torus.spec.js --project=chromium
-          - name: chromium rendering
-            browsers: chromium
-            command: xvfb-run -a npx playwright test rendering.spec.js --project=chromium
-          - name: chromium settings storage
-            browsers: chromium
-            command: xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium
-          - name: firefox
-            browsers: firefox
-            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
-          - name: webkit
-            browsers: webkit
-            command: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
-          # Repeat renderer-sensitive tests on WebGL2. New untagged reload
-          # cases stay with the first reload group by default.
-          - name: chromium webgl2 input
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test input.spec.js --project=chromium
-          - name: chromium webgl2 responsive and startup
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium
+          # Start the long reload and startup groups in the first batch when
+          # max-parallel limits the matrix. Short storage/WebKit jobs release
+          # slots for the remaining renderer checks.
           - name: chromium webgl2 match reload
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'
+          - name: chromium webgl2 responsive and startup
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium
+          - name: chromium settings storage
+            browsers: chromium
+            command: xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium
+          - name: webkit
+            browsers: webkit
+            command: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
+          - name: chromium rendering
+            browsers: chromium
+            command: xvfb-run -a npx playwright test rendering.spec.js --project=chromium
+          - name: firefox
+            browsers: firefox
+            command: GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=firefox
+          # Repeat the remaining renderer-sensitive tests on WebGL2. New
+          # untagged reload cases stay with the match reload group by default.
+          - name: chromium webgl2 input
+            browsers: chromium
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test input.spec.js --project=chromium
           - name: chromium webgl2 viewport
             browsers: chromium
             renderer: webgl2

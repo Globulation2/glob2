@@ -63,7 +63,7 @@ scons -C test                 # rebuild the separate test suite
   `test/ci_run_commands.py` or `test/run-standalone-tests.py` when several
   independent commands share one step. Artifact uploads run after failed checks
   so reviewers can inspect the available evidence. The Linux client builds once
-  per supported toolchain, then distributes its built programs to five parallel
+  per supported toolchain, then distributes its built programs to four parallel
   test shards per toolchain. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
   with their base commit, and master pushes compare with the pre-push commit;
@@ -173,8 +173,9 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   a time. Builds that need other options (`server=1`, `opengl=0`, `test/`) belong in
   the `linux variants` job, and long CPU-bound checks in a job of their own, as the
   golden-map sweep does; its four sweep shards are split between two jobs per
-  toolchain, alongside a separate telemetry job. Jobs run in parallel. The Linux
-  variants matrix owns the YOG server build on both supported toolchains; the main
+  toolchain, alongside a job for telemetry and generator defaults. Jobs run in
+  parallel. The Linux variants matrix owns the YOG server build on both supported
+  toolchains; the main
   Linux jobs do not repeat that build. On Windows the `windows server` job owns it
   for the same reason.
   Browser checks follow the same rule: build once per job, pass outputs to the
