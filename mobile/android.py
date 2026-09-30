@@ -9,7 +9,7 @@ import shutil
 import subprocess
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
-from build_layout import build_identity, default_directory, BuildLock
+from build_layout import build_identity, default_directory, BuildLock, PACKAGE_VERSION
 from mobile_toolchain import ROOT, LOCK
 from mobile_artifacts import verify_android_shared_library, verify_android_symbols, verify_android_archive_symbols
 import developer_apk
@@ -21,9 +21,11 @@ def main():
     parser.add_argument('command',choices=['configure','build','bundle','sign','sign-bundle','install','launch'])
     parser.add_argument('--arch',default='arm64-v8a',choices=['arm64-v8a','armeabi-v7a','x86_64'])
     parser.add_argument('--release',action='store_true')
+    parser.add_argument('--china',action='store_true',help='Package the China local-play client')
     parser.add_argument('--android-sdk',default=str(ROOT/'build/mobile-tools/android-sdk'))
     parser.add_argument('--gradle')
     parser.add_argument('--version-code',type=int,default=1,help='Play version code; increase it for each upload')
+    parser.add_argument('--version-name',help='Android release version name')
     parser.add_argument('--keystore',type=Path,help='Private upload keystore for sign-bundle')
     parser.add_argument('--key-alias',help='Upload key alias for sign-bundle')
     parser.add_argument('--serial',help='Required for install/launch; never select an arbitrary device')
@@ -31,8 +33,11 @@ def main():
     args=parser.parse_args()
     if not 1<=args.adb_port<=65535: raise ValueError('--adb-port must be between 1 and 65535')
     if args.version_code < 1: raise ValueError('--version-code must be positive')
+    version_name=args.version_name or (PACKAGE_VERSION if args.release else '0.9.5-mobile-dev')
+    if not version_name or any(ch in version_name for ch in '\r\n'):
+        raise ValueError('--version-name must be nonempty and on one line')
     if args.command=='bundle' and not args.release: raise ValueError('Play bundles must be release builds')
-    identity=build_identity({'target':'android','arch':args.arch,'release':int(args.release)})
+    identity=build_identity({'target':'android','arch':args.arch,'release':int(args.release),'china':int(args.china)})
     output=ROOT/default_directory(identity)
     project=output/'android-project'
     sdk=Path(args.android_sdk).resolve()
@@ -84,6 +89,7 @@ def main():
     arch={'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[args.arch]
     prefix=output/'vcpkg-installed'/('glob2-'+arch+'-android')
     subprocess.run(['scons','target=android','arch='+args.arch,'release='+str(int(args.release)),
+        'china='+str(int(args.china)),
         'android_sdk='+str(sdk),'mobile_deps='+str(prefix),'-j8'],cwd=ROOT,check=True)
     with BuildLock(output):
         # Only refresh the generated source inputs, leaving Gradle build products intact.
@@ -94,9 +100,12 @@ def main():
         shutil.copy2(LOCK,project/'glob2-toolchain.json')
         native_command=[sys.executable,str(ROOT/'mobile/android.py'),'configure','--arch',args.arch,
             '--android-sdk',str(sdk),'--version-code',str(args.version_code)]
+        if args.version_name: native_command.extend(['--version-name',args.version_name])
         if args.release: native_command.append('--release')
+        if args.china: native_command.append('--china')
         (project/'glob2-build.json').write_text(json.dumps({'root':str(ROOT),'command':native_command,
-            'release':args.release,'version_code':args.version_code},indent=2)+'\n')
+            'release':args.release,'version_code':args.version_code,
+            'version_name':version_name},indent=2)+'\n')
         generated=project/'app/generated'
         if generated.exists(): shutil.rmtree(generated)
         generated.mkdir(parents=True)

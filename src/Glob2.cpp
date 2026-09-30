@@ -406,6 +406,15 @@ int Glob2::run(int argc, char *argv[])
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
+#ifdef GLOB2_CHINA_RELEASE
+	if (globalContainer->hostServer || globalContainer->hostRouter || globalContainer->adminRouter)
+	{
+		std::cerr << "The China client does not run public lobby or router services.\n";
+		delete globalContainer;
+		globalContainer = nullptr;
+		return 1;
+	}
+#endif
 
 #ifndef YOG_SERVER_ONLY
 	// Headless tooling hook (AI wheat-protection sanity check): -dump-resources <map>

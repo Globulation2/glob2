@@ -19,6 +19,9 @@ def build_identity(arguments, host=None):
     role = arguments.get('role', 'server' if enabled(arguments.get('server', 0)) else 'client')
     if role not in ('client', 'server', 'router', 'gateway'):
         raise ValueError('role must be client, server, router, or gateway')
+    china = enabled(arguments.get('china', 0))
+    if china and (target == 'web' or role != 'client'):
+        raise ValueError('china=1 supports native and mobile clients only')
     if target in ('android', 'ios'):
         if role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0)):
             raise ValueError('mobile targets support only the client role and their own cross compiler')
@@ -40,9 +43,12 @@ def build_identity(arguments, host=None):
             import re
             if not re.fullmatch(r'\d+\.\d+', api) or tuple(map(int, api.split('.'))) < (15, 0):
                 raise ValueError('iOS deployment must be a major.minor version >= 15.0')
-        return {'target': target, 'role': role, 'toolchain': target,
+        identity = {'target': target, 'role': role, 'toolchain': target,
                 'mode': 'release' if enabled(arguments.get('release', 0)) else 'debug',
                 'arch': architecture, 'environment': environment, 'api': api}
+        if china:
+            identity['china'] = True
+        return identity
     if target == 'web' and (role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0))):
         raise ValueError('web supports only the client role and cannot use a native cross compiler')
     toolchain = 'mingwcross' if enabled(arguments.get('mingwcross', 0)) else ('mingw' if enabled(arguments.get('mingw', 0)) else (host or platform.system().lower()))
@@ -50,18 +56,23 @@ def build_identity(arguments, host=None):
         toolchain = 'emscripten'
     mode = 'profile' if enabled(arguments.get('profile', 0)) else ('release' if enabled(arguments.get('release', 0)) else 'debug')
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
-    return {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
-            'native_wss': native_wss}
+    identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
+                'native_wss': native_wss}
+    if china:
+        identity['china'] = True
+    return identity
 
 
 def default_directory(identity):
     if identity['target'] in ('android', 'ios'):
-        return (Path('build') / identity['toolchain'] / identity['environment'] /
+        path = (Path('build') / identity['toolchain'] / identity['environment'] /
                 identity['arch'] / identity['api'] / identity['role'] / identity['mode'])
+        return path / 'china' if identity.get('china') else path
     role = identity['role']
     if role == 'client' and identity['target'] == 'native' and not identity['native_wss']:
         role += '-tcp'
-    return Path('build') / identity['toolchain'] / role / identity['mode']
+    path = Path('build') / identity['toolchain'] / role / identity['mode']
+    return path / 'china' if identity.get('china') else path
 
 
 def write_if_changed(path, content):

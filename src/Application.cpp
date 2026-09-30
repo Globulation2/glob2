@@ -15,6 +15,9 @@
 #include "YOGLoginScreen.h"
 #include "YOGClient.h"
 #include "ui/FrontendUI.h"
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
 
 namespace
 {
@@ -162,7 +165,9 @@ void Application::choose(int choice)
 		screens.push(std::make_unique<LANMenuScreen>(screens));
 		break;
 	case MainMenuScreen::MULTIPLAYERS_YOG:
+#ifndef GLOB2_CHINA_RELEASE
 		screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()));
+#endif
 		break;
 	case MainMenuScreen::QUIT:
 		screens.stop();
