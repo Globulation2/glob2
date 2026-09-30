@@ -64,7 +64,7 @@ jobs:
           BUNDLE_ID: ${{ vars.APPLE_BUNDLE_ID }}
         run: |
           python3 darwin/package_app_store.py --build "$BUILD_NUMBER" \
-            --bundle-id "${BUNDLE_ID:-com.globulation2.Glob2}"
+            --bundle-id "${BUNDLE_ID:-org.globulation2.glob2}"
 
       - name: Smoke test sandboxed candidate
         env:
@@ -74,7 +74,7 @@ jobs:
           codesign --verify --deep --strict "$app"
           "$app/Contents/MacOS/glob2" --list-map-generators > artifacts/mac-app-store/generators.txt
           test -s artifacts/mac-app-store/generators.txt
-          map="$HOME/Library/Containers/${BUNDLE_ID:-com.globulation2.Glob2}/Data/release-smoke.map.gz"
+          map="$HOME/Library/Containers/${BUNDLE_ID:-org.globulation2.glob2}/Data/release-smoke.map.gz"
           "$app/Contents/MacOS/glob2" --generate-map maze --seed 7 \
             --width 64 --height 64 --teams 2 --output "$map"
           test -s "$map"
@@ -161,7 +161,7 @@ jobs:
           python3 darwin/package_app_store.py \
             --source artifacts/mac-app-store/source/Glob2.app \
             --output artifacts/mac-app-store/signed/Glob2.app \
-            --bundle-id "${BUNDLE_ID:-com.globulation2.Glob2}" \
+            --bundle-id "${BUNDLE_ID:-org.globulation2.glob2}" \
             --build "$BUILD_NUMBER" \
             --identity "$APP_IDENTITY" \
             --installer-identity "$INSTALLER_IDENTITY" \

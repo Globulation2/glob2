@@ -47,10 +47,12 @@ are retained as workflow artifacts for 14 days.
 
 ### One-time App Store Connect setup
 
-Create the macOS app record and a matching registered bundle ID. Set repository
-variable `APPLE_BUNDLE_ID` if it differs from `com.globulation2.Glob2`. Set these
-repository variables to the exact names of the certificates imported into the
-workflow keychain:
+Add macOS to the existing iPhone App Store Connect record using its registered
+bundle ID, `org.globulation2.glob2`. The App Store staging step writes that ID
+into its app copy; the existing direct-distribution bundle is unchanged. The
+optional repository variable `APPLE_BUNDLE_ID` can override the ID if the App
+Store Connect setup changes. Set these repository variables to the exact names
+of the certificates imported into the workflow keychain:
 
 | Variable | Value |
 | --- | --- |

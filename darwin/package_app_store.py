@@ -67,7 +67,7 @@ def main():
     parser.add_argument("--identity", default="-", help="Apple Distribution identity; '-' makes a local test build")
     parser.add_argument("--installer-identity", help="Mac Installer Distribution identity for a submission .pkg")
     parser.add_argument("--profile", type=Path, help="App Store provisioning profile (required for .pkg)")
-    parser.add_argument("--bundle-id", default="com.globulation2.Glob2")
+    parser.add_argument("--bundle-id", default="org.globulation2.glob2")
     parser.add_argument("--version", default=".".join(PACKAGE_VERSION.split(".")[:3]))
     parser.add_argument("--build", default="1", help="App Store build number (increase for every upload)")
     args = parser.parse_args()
