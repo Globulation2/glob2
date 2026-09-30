@@ -10,6 +10,8 @@ on:
       - 'src/**'
       - 'test/**'
       - 'tests/build_system/**'
+      - 'fdroid/**'
+      - 'fastlane/**'
       - '!tests/build_system/test_ci_changed_paths.py'
       - '.github/workflows/mobile.yml'
 
@@ -19,8 +21,8 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  android-native:
-    name: Android native (${{ matrix.arch }})
+  android-release-apk:
+    name: Android release APK (${{ matrix.arch }})
     runs-on: ubuntu-24.04
     env:
       CCACHE: 1
@@ -34,19 +36,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
+        with:
+          fetch-depth: 0
+      - name: Validate Android release contract and F-Droid listing
+        run: |
+          python3 mobile/android_release.py check
+          python3 mobile/android_release.py check-listing
       - name: Install build utilities
         id: install_build_utilities
         run: sudo apt-get update -qq && sudo apt-get install -y scons pkg-config unzip zip autoconf automake libtool ccache
       - name: Check build isolation and artifact validation
         id: check_build_isolation
-        continue-on-error: true
         run: python3 -m unittest discover -s tests/build_system -v
       - name: Install verified NDK
         id: install_verified_ndk
         run: python3 mobile/setup_ndk.py
+      - name: Install pinned Android packaging tools
+        run: |
+          python3 mobile/setup_tools.py
+          sdk="$PWD/build/mobile-tools/android-sdk"
+          "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
+          "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
+            'platforms;android-35' 'build-tools;35.0.0' platform-tools
       - name: Build pinned target dependencies
         id: build_pinned_target_dependencies
-        run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release
+        run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release --jobs 2
       - name: Restore Android compiler cache
         id: restore_android_compiler_cache
         continue-on-error: true
@@ -62,7 +76,32 @@ jobs:
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
       - name: Compile and stage native application
         id: compile_and_stage_native_application
-        run: python3 mobile/android.py configure --arch '${{ matrix.arch }}' --release
+        run: |
+          set -o pipefail
+          python3 mobile/android.py build --arch '${{ matrix.arch }}' --release --fdroid --jobs 2 2>&1 \
+            | tee "build/android-${{ matrix.arch }}-build.log"
+      - name: Verify release package
+        run: |
+          apk="build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
+          python3 mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
+      - name: Exercise x86_64 release APK in an emulator
+        if: matrix.arch == 'x86_64'
+        run: |
+          sudo chmod a+rw /dev/kvm
+          python3 mobile/setup_tools.py --emulator
+          python3 mobile/emulator.py configure --arch x86_64
+          nohup python3 mobile/emulator.py adb-server > build/mobile-adb-server.log 2>&1 &
+          nohup python3 mobile/emulator.py run --arch x86_64 > build/mobile-emulator.log 2>&1 &
+          ready=0
+          for attempt in $(seq 1 90); do
+            if python3 mobile/emulator.py status --arch x86_64 >/dev/null 2>&1; then ready=1; break; fi
+            sleep 5
+          done
+          test "$ready" -eq 1
+          python3 mobile/android.py sign --arch x86_64 --release --fdroid
+          python3 mobile/android.py install --arch x86_64 --release --fdroid --serial emulator-5580 --adb-port 15037
+          python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64 --package org.globulation.glob2
+          python3 mobile/emulator.py stop --arch x86_64
       - name: Report Android compiler cache
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s
@@ -75,6 +114,18 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-android-${{ matrix.arch }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/triplets/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-${{ matrix.arch }}-release-apk
+          path: |
+            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
+            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.sha256
+            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json
+            build/mobile-smoke/**
+            build/mobile-emulator.log
+            build/android-${{ matrix.arch }}-build.log
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         id: actions_upload_artifact_v4_1
         if: always()

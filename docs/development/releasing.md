@@ -88,6 +88,44 @@ screenshots.
 
 ## Distribution maintainers
 
+### F-Droid Android release
+
+The main F-Droid repository builds and signs `org.globulation.glob2` from a
+public `vVERSION` tag. The `--fdroid` Android variant preserves this ID;
+the separate Play variant uses `org.globulation2.glob2`. The upstream build recipe is
+`fdroid/metadata/org.globulation.glob2.yml`; submit its tested contents to
+F-Droid's `fdroiddata` project. `mobile/android-release.json` gives the version
+name and base code, and the `armeabi-v7a`, `arm64-v8a`, and `x86_64` APKs use
+`10 * base + 1`, `+ 2`, and `+ 3`, respectively. The `fastlane/metadata/android/`
+tree contains the listing text, icon, per-APK changelogs, and Android screenshots.
+Release preflight checks all three recipe codes and rejects missing listing
+material. Do not use a
+desktop or browser screenshot as an Android screenshot.
+
+The mobile and release workflows build unsigned APKs and retain them only as
+validation artifacts. They are not GitHub release assets and cannot be installed
+as public releases. A temporary developer signature supports emulator and
+device checks. F-Droid's signature is the sole public Android update channel.
+Before tagging, test all three builds with `fdroid lint` and `fdroid checkupdates`.
+For the `fdroid build --server` trial, use a disposable copy of the recipe whose
+three `commit` fields point to the reviewed candidate commit SHA; the public tag
+does not exist until these gates pass. Restore the tag references before submitting
+the recipe to `fdroiddata`. Play the candidate on real ARM64 and 32-bit ARM
+devices and an x86_64 emulator. Record APK digests, logs, screenshots, save/load,
+rotation, lifecycle, keyboard, touch, and editor results under `artifacts/` for
+review. For each ABI, run `python3 mobile/compare_fdroid_apks.py --arch ABI
+--github-apk GITHUB_APK --fdroid-apk FDROID_APK` and review any native library
+differences against the retained symbol/build records. The daily
+`fdroid-publication.yml` workflow checks F-Droid's package API
+for all three codes after the GitHub release and opens one tracking issue when
+publication remains incomplete after 72 hours.
+
+F-Droid's initial listing requires an accepted `fdroiddata` merge request.
+Subsequent tagged updates use F-Droid's update checker; GitHub Actions does not
+publish directly to the main F-Droid repository. Review the shipped asset
+licenses against `docs/assets/source-attribution.md` and the font licenses with
+the first submission.
+
 The Fedora spec in `fedora/glob2.spec` is a starting recipe for the new source
 archive. The checked-in `debian/` directory is historic and is **not** used by
 this workflow; work with the Debian Games Team's Salsa package before proposing

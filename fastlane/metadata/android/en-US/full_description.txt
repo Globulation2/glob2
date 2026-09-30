@@ -1,0 +1,3 @@
+Globulation 2 is a real time strategy game built around assigning units to tasks rather than directing each unit individually.
+
+Build a colony, manage resources, play against computer opponents, and create maps in the editor. The Android edition uses the same game sources and SDL renderer as the desktop edition.

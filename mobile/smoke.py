@@ -28,7 +28,10 @@ def main():
     parser.add_argument('--avd', required=True)
     parser.add_argument('--adb-port', type=int, default=15037)
     parser.add_argument('--output', default='build/mobile-smoke')
+    parser.add_argument('--package', choices=('org.globulation2.glob2', 'org.globulation.glob2'),
+                        default=PACKAGE)
     args = parser.parse_args()
+    package = args.package
     validate_target(args.serial, args.adb_port, args.avd)
     output = (ROOT / args.output).resolve()
     if not output.is_relative_to(ROOT / 'build'):
@@ -53,7 +56,7 @@ def main():
         raise ValueError('Selected target is not an emulator')
 
     def logs(): return run('logcat', '-d', '-v', 'threadtime')
-    def pid(): return run('shell', 'pidof', PACKAGE).strip()
+    def pid(): return run('shell', 'pidof', package).strip()
     def wait_for(predicate, description, timeout=90):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
@@ -66,12 +69,15 @@ def main():
         (output/(name+'.png')).write_bytes(png)
         return struct.unpack('>II', png[16:24])
     def start():
-        result = run('shell', 'am', 'start', '-W', '-n', PACKAGE+'/.Glob2Activity', timeout=60)
-        if 'Error:' in result or 'Status: ok' not in result:
+        result = run('shell', 'am', 'start', '-W', '-n', package+'/org.globulation2.glob2.Glob2Activity', timeout=60)
+        # A saturated emulator can time out the activity-manager wait while the
+        # process is still starting. The subsequent screen/foreground checks
+        # determine whether the launch actually completed.
+        if 'Error:' in result or not any(status in result for status in ('Status: ok', 'Status: timeout')):
             raise RuntimeError('Activity did not start: ' + result)
     def foreground():
         state = run('shell', 'dumpsys', 'activity', 'activities')
-        return any(PACKAGE in line and ('mResumedActivity' in line or 'topResumedActivity' in line) for line in state.splitlines())
+        return any(package in line and ('mResumedActivity' in line or 'topResumedActivity' in line) for line in state.splitlines())
 
     # Fresh images apply resource overlays after sys.boot_completed. Wait for
     # their configuration to settle before launching SDL's native process.
@@ -91,7 +97,7 @@ def main():
     summary = {'serial': args.serial, 'avd': args.avd, 'checks': [], 'passed': False}
     first_log = ''
     try:
-        run('shell', 'am', 'force-stop', PACKAGE)
+        run('shell', 'am', 'force-stop', package)
         run('logcat', '-c')
         start()
         wait_for(lambda: 'Glob2 screen ready:' in logs() and 'MainMenuScreen' in logs(), 'native main menu and bundled assets')
@@ -117,7 +123,7 @@ def main():
                 raise RuntimeError('Display did not rotate to the requested orientation')
         summary['checks'].append('landscape/portrait rotation')
         first_log = logs()
-        run('shell', 'am', 'force-stop', PACKAGE)
+        run('shell', 'am', 'force-stop', package)
         run('logcat', '-c')
         start()
         wait_for(lambda: 'Glob2 screen ready:' in logs() and 'MainMenuScreen' in logs(), 'fresh-process startup')
@@ -137,12 +143,13 @@ def main():
         log = first_log + '\n' + logs()
         (output/'logcat.txt').write_text(log)
         (output/'activity.txt').write_text(run('shell', 'dumpsys', 'activity', 'activities'))
-        (output/'memory.txt').write_text(run('shell', 'dumpsys', 'meminfo', PACKAGE))
-        if re.search(r'ANR in org\.globulation\.glob2|Fatal signal[^\n]*org\.globulation\.glob2|Process: org\.globulation\.glob2, PID:', log):
+        (output/'memory.txt').write_text(run('shell', 'dumpsys', 'meminfo', package))
+        escaped = re.escape(package)
+        if re.search(r'ANR in '+escaped+r'|Fatal signal[^\n]*'+escaped+r'|Process: '+escaped+r', PID:', log):
             summary['passed'] = False
             summary['error'] = 'App crash or ANR found in logcat'
         (output/'result.json').write_text(json.dumps(summary, indent=2)+'\n')
-        run('shell', 'am', 'force-stop', PACKAGE)
+        run('shell', 'am', 'force-stop', package)
     if not summary['passed']: raise RuntimeError(summary.get('error', 'Smoke checks failed'))
     print('PASS ' + ', '.join(summary['checks']))
 
