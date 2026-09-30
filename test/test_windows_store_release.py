@@ -8,6 +8,8 @@ from argparse import Namespace
 from pathlib import Path
 from unittest.mock import patch
 
+from PIL import Image
+
 
 SCRIPT = Path(__file__).resolve().parents[1] / ".github/scripts/windows_store_release.py"
 spec = importlib.util.spec_from_file_location("windows_store_release", SCRIPT)
@@ -59,8 +61,19 @@ class WindowsStoreReleaseTest(unittest.TestCase):
             self.assertEqual(game.find("Identity").attrib["Publisher"], "CN=Example")
             self.assertEqual(game.find("StoreId").text, "9ABCDEFGHIJK")
             self.assertEqual(game.find("ExecutableList/Executable").attrib["TargetDeviceFamily"], "PC")
+            self.assertEqual(game.find("ShellVisuals").attrib["SplashScreenImage"], "SplashScreen.png")
             self.assertIsNone(game.find("TitleId"))
             self.assertIsNone(game.find("MSAAppId"))
+
+    def test_shell_images_include_full_hd_splash(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            destination = Path(temporary)
+            icon = destination / "icon.png"
+            Image.new("RGBA", (128, 128), (255, 255, 255, 255)).save(icon)
+            release.write_shell_images(icon, destination)
+            with Image.open(destination / "SplashScreen.png") as splash:
+                self.assertEqual(splash.size, (1920, 1080))
+                self.assertEqual(splash.mode, "RGB")
 
 
 if __name__ == "__main__":

@@ -73,9 +73,22 @@ def write_game_config(destination: Path, args: argparse.Namespace) -> None:
         "Square150x150Logo": "Logo150.png",
         "Square44x44Logo": "Logo44.png",
         "Square480x480Logo": "Logo480.png",
+        "SplashScreenImage": "SplashScreen.png",
     })
     ET.indent(game)
     ET.ElementTree(game).write(destination / "MicrosoftGame.config", encoding="utf-8", xml_declaration=True)
+
+
+def write_shell_images(icon: Path, destination: Path) -> None:
+    with Image.open(icon) as image:
+        source = image.convert("RGBA")
+    for name, size in (("StoreLogo.png", 100), ("Logo150.png", 150),
+                       ("Logo44.png", 44), ("Logo480.png", 480)):
+        source.resize((size, size), Image.Resampling.LANCZOS).save(destination / name)
+    splash = Image.new("RGBA", (1920, 1080), (23, 48, 90, 255))
+    mark = source.resize((512, 512), Image.Resampling.LANCZOS)
+    splash.alpha_composite(mark, ((1920 - 512) // 2, (1080 - 512) // 2))
+    splash.convert("RGB").save(destination / "SplashScreen.png")
 
 
 def main() -> None:
@@ -123,11 +136,7 @@ def main() -> None:
     stage_dlls(args.exe, args.dll_dir, destination)
 
     icon = args.root / "data/icons/glob2-icon-128x128.png"
-    with Image.open(icon) as source:
-        source = source.convert("RGBA")
-        for name, size in (("StoreLogo.png", 100), ("Logo150.png", 150),
-                           ("Logo44.png", 44), ("Logo480.png", 480)):
-            source.resize((size, size), Image.Resampling.LANCZOS).save(destination / name)
+    write_shell_images(icon, destination)
     write_game_config(destination, args)
     print(f"Staged {destination} with {len(list(destination.glob('*.dll')))} DLLs")
 
