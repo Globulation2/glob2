@@ -42,7 +42,8 @@ def main():
     if args.amazon_apk and (args.china or version_name != PACKAGE_VERSION):
         raise ValueError('--amazon-apk requires the standard package and PACKAGE_VERSION')
     if args.command=='bundle' and not args.release: raise ValueError('Play bundles must be release builds')
-    identity=build_identity({'target':'android','arch':args.arch,'release':int(args.release),'china':int(args.china)})
+    identity=build_identity({'target':'android','arch':args.arch,'release':int(args.release),
+                             'china':int(args.china),'amazon':int(args.amazon_apk)})
     output=ROOT/default_directory(identity)
     project=output/'android-project'
     sdk=Path(args.android_sdk).resolve()
@@ -92,11 +93,14 @@ def main():
             subprocess.run(adb+['shell','am','start','-n','org.globulation2.glob2/.Glob2Activity'],check=True)
         return
     arches=('arm64-v8a','armeabi-v7a') if args.amazon_apk else (args.arch,)
-    outputs={abi:ROOT/default_directory(build_identity({'target':'android','arch':abi,'release':int(args.release),'china':int(args.china)})) for abi in arches}
-    prefixes={abi:outputs[abi]/'vcpkg-installed'/('glob2-'+{'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[abi]+'-android') for abi in arches}
+    base_options={'target':'android','release':int(args.release),'china':int(args.china)}
+    outputs={abi:ROOT/default_directory(build_identity(dict(base_options,arch=abi,
+             amazon=int(args.amazon_apk)))) for abi in arches}
+    dependency_outputs={abi:ROOT/default_directory(build_identity(dict(base_options,arch=abi))) for abi in arches}
+    prefixes={abi:dependency_outputs[abi]/'vcpkg-installed'/('glob2-'+{'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[abi]+'-android') for abi in arches}
     for abi in arches:
         subprocess.run(['scons','target=android','arch='+abi,'release='+str(int(args.release)),
-            'china='+str(int(args.china)),
+            'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
             'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j8'],cwd=ROOT,check=True)
     with BuildLock(output):
         # Only refresh the generated source inputs, leaving Gradle build products intact.
@@ -133,7 +137,7 @@ def main():
             library_sets.append({p.name for p in jni.glob('*.so')})
         if len(library_sets)>1 and library_sets[0]!=library_sets[1]:
             raise ValueError('Amazon APK needs matching native libraries in both ARM ABIs')
-        java=list((output/'vcpkg-buildtrees/sdl2/src').glob('*/android-project/app/src/main/java'))
+        java=list((dependency_outputs[args.arch]/'vcpkg-buildtrees/sdl2/src').glob('*/android-project/app/src/main/java'))
         if len(java)!=1: raise ValueError('Expected one pinned SDL Java source tree; clean the SDL dependency buildtree and rebuild dependencies')
         shutil.copytree(java[0],generated/'java')
         assets=generated/'assets/glob2-bundle';assets.mkdir(parents=True)

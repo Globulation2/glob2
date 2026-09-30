@@ -69,7 +69,7 @@ void YOGClient::initialize()
 void YOGClient::connect(const std::string& server)
 {
 	initialize();
-#ifdef GLOB2_CHINA_RELEASE
+#if defined(GLOB2_CHINA_RELEASE) || defined(GLOB2_AMAZON_RELEASE)
 	// LAN sessions use their discovered host; the public YOG service is excluded.
 	if (server == YOG_SERVER_IP)
 		return;
@@ -672,4 +672,3 @@ std::shared_ptr<YOGClientPlayerListManager> YOGClient::getPlayerListManager()
 {
 	return playerListManager;
 }
-

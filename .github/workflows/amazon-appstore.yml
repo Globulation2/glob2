@@ -96,7 +96,7 @@ jobs:
           set -euo pipefail
           code="$(python3 mobile/amazon_release.py version-code)"
           python3 mobile/android.py build --arch arm64-v8a --release --amazon-apk --version-code "$code"
-          apk=build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
+          apk=build/android/device/arm64-v8a/26/client/release/amazon/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
           mkdir -p artifacts/amazon-appstore
           cp "$apk" artifacts/amazon-appstore/glob2-fire-unsigned.apk
           cp "${apk%.apk}.json" artifacts/amazon-appstore/glob2-fire-unsigned.json
