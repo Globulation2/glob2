@@ -9,17 +9,17 @@ on:
         default: Automated Globulation 2 internal test build.
         type: string
 
-# Only manual runs of the default branch can access the release environment.
+# Release credentials exist only in the owner's private mirror. The public
+# upstream contains this configuration so it can be reviewed, but cannot run it.
 concurrency:
   group: android-play-internal
   cancel-in-progress: false
 
 jobs:
   release:
-    if: github.ref == 'refs/heads/master'
+    if: github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     timeout-minutes: 180
-    environment: google-play-internal
     permissions:
       contents: read
       id-token: write
