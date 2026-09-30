@@ -1,0 +1,360 @@
+name: release package build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing public vVERSION tag (optional for packaging checks)
+        required: false
+        type: string
+      build_flatpak:
+        description: Build the Flatpak recipe
+        required: false
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+      build_flatpak:
+        required: false
+        default: true
+        type: boolean
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate selected revision
+        id: version
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          if [[ -n "$TAG" ]]; then
+            [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
+            git fetch --no-tags https://github.com/Globulation2/glob2.git \
+              "refs/tags/$TAG:refs/tags/$TAG"
+            version="$(python3 tools/release/release.py check --tag "$TAG")"
+          else
+            version="$(python3 tools/release/release.py check)"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Validate Android release identity
+        run: python3 mobile/android_release.py check
+      - name: Validate F-Droid listing for publication
+        run: python3 mobile/android_release.py check-listing
+      - name: Test Android release preflight and package checks
+        run: python3 -m unittest tests.build_system.test_android_release -v
+
+  source:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create reproducible source archive
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          if [[ -n "$TAG" ]]; then
+            git fetch --no-tags https://github.com/Globulation2/glob2.git \
+              "refs/tags/$TAG:refs/tags/$TAG"
+            python3 tools/release/release.py archive --tag "$TAG" --output artifacts/release-output
+          else
+            python3 tools/release/release.py archive --output artifacts/release-output
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-source
+          path: artifacts/release-output/*
+          if-no-files-found: error
+
+  android-package:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [armeabi-v7a, arm64-v8a, x86_64]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native build utilities
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends scons pkg-config unzip zip autoconf automake libtool cmake ninja-build
+      - name: Install pinned Android toolchain
+        run: |
+          python3 mobile/setup_ndk.py
+          python3 mobile/setup_tools.py
+          sdk="$PWD/build/mobile-tools/android-sdk"
+          "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
+          "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
+            'platforms;android-35' 'build-tools;35.0.0' platform-tools
+      - name: Build source dependencies and release APK
+        run: |
+          set -o pipefail
+          code="$(python3 mobile/android_release.py code --arch '${{ matrix.arch }}')"
+          sdk="$PWD/build/mobile-tools/android-sdk"
+          python3 mobile/fdroid_build.py --version-code "$code" --android-sdk "$sdk" \
+            --android-ndk "$sdk/ndk/28.2.13676358" 2>&1 \
+            | tee "build/android-${{ matrix.arch }}-build.log"
+          apk="build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
+          python3 mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
+      - name: Launch x86_64 release candidate in an emulator
+        if: matrix.arch == 'x86_64'
+        run: |
+          sudo chmod a+rw /dev/kvm
+          python3 mobile/setup_tools.py --emulator
+          python3 mobile/emulator.py configure --arch x86_64
+          nohup python3 mobile/emulator.py adb-server > build/mobile-adb-server.log 2>&1 &
+          nohup python3 mobile/emulator.py run --arch x86_64 > build/mobile-emulator.log 2>&1 &
+          ready=0
+          for attempt in $(seq 1 90); do
+            if python3 mobile/emulator.py status --arch x86_64 >/dev/null 2>&1; then ready=1; break; fi
+            sleep 5
+          done
+          test "$ready" -eq 1
+          python3 mobile/android.py sign --arch x86_64 --release
+          python3 mobile/android.py install --arch x86_64 --release --serial emulator-5580 --adb-port 15037
+          python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64
+          python3 mobile/emulator.py stop --arch x86_64
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-${{ matrix.arch }}-release-validation
+          path: |
+            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
+            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.sha256
+            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json
+            build/fdroid-output.apk
+            build/mobile-smoke/**
+            build/mobile-emulator.log
+            build/android-${{ matrix.arch }}-build.log
+          if-no-files-found: ignore
+
+  linux-package:
+    needs: preflight
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build and runtime dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            g++ python3 scons pkg-config libsdl2-dev libsdl2-image-dev \
+            libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev \
+            libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev \
+            libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+      - name: Build and stage Linux client
+        run: |
+          stage="$PWD/artifacts/release-stage"
+          scons -j2 release=1 server=0 \
+            BINDIR="$stage/usr/bin" INSTALLDIR="$stage/usr/share" \
+            DATADIR=/usr/share install
+          python3 tools/release/release.py verify-install --stage "$stage"
+          "$stage/usr/bin/glob2" --version
+      - name: Package Linux installation
+        env:
+          VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          mkdir -p artifacts/release-output
+          tar -C artifacts/release-stage -czf \
+            "artifacts/release-output/glob2-${VERSION}-linux-x86_64-ubuntu22.04.tar.gz" usr
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-linux
+          path: artifacts/release-output/*
+          if-no-files-found: error
+
+  distro-build:
+    needs: preflight
+    name: Source build on ${{ matrix.name }}
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Debian trixie
+            image: debian:trixie
+            install: >-
+              apt-get update -qq && apt-get install -y --no-install-recommends
+              git g++ python3 scons pkg-config libsdl2-dev libsdl2-image-dev
+              libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev
+              libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev
+              libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          - name: Fedora 43
+            image: fedora:43
+            install: >-
+              dnf install -y git gcc-c++ python3 scons pkgconf-pkg-config
+              SDL2-devel SDL2_image-devel SDL2_net-devel SDL2_ttf-devel
+              libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel
+              zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel
+              libepoxy-devel
+          - name: Arch Linux
+            image: archlinux:base-devel
+            install: >-
+              pacman -Syu --noconfirm --needed git python scons pkgconf sdl2
+              sdl2_image sdl2_net sdl2_ttf libvorbis libogg speex boost openssl
+              zlib fribidi pcre glu libepoxy
+          - name: openSUSE Tumbleweed
+            image: opensuse/tumbleweed
+            install: >-
+              zypper --non-interactive install git gcc-c++ python3 scons pkg-config
+              SDL2-devel SDL2_image-devel SDL2_net-devel SDL2_ttf-devel
+              libvorbis-devel libogg-devel speex-devel boost-devel libopenssl-devel
+              zlib-devel fribidi-devel pcre-devel Mesa-libGL-devel Mesa-libGLU-devel
+              libepoxy-devel
+    steps:
+      - name: Install dependencies
+        run: ${{ matrix.install }}
+      - uses: actions/checkout@v4
+      - name: Build from source
+        run: |
+          scons -j2 release=1 server=0
+          build/linux/client/release/src/glob2 --version
+
+  rpm-package:
+    needs: [preflight, source]
+    runs-on: ubuntu-24.04
+    container: fedora:43
+    steps:
+      - name: Install RPM tools and build dependencies
+        run: |
+          dnf install -y git rpm-build gcc-c++ python3 scons pkgconf-pkg-config \
+            SDL2-devel SDL2_image-devel SDL2_net-devel SDL2_ttf-devel \
+            libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel \
+            zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel \
+            libepoxy-devel
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-source
+          path: artifacts/release-source
+      - name: Build source and binary RPMs
+        env:
+          VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          top="$GITHUB_WORKSPACE/artifacts/rpmbuild"
+          mkdir -p "$top"/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+          cp "artifacts/release-source/glob2-${VERSION}.tar.gz" "$top/SOURCES/"
+          rpmbuild -ba fedora/glob2.spec --define "_topdir $top"
+          mkdir -p artifacts/release-output
+          find "$top/RPMS" "$top/SRPMS" -name '*.rpm' -exec cp '{}' artifacts/release-output/ \;
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-rpm
+          path: artifacts/release-output/*.rpm
+          if-no-files-found: error
+
+  windows-package:
+    needs: preflight
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-python mingw-w64-x86_64-scons
+            mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image
+            mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-speex mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-openssl mingw-w64-x86_64-boost
+            mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre
+      - uses: actions/checkout@v4
+      - name: Build and package Windows client
+        env:
+          VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          scons -j2 release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+          ./build/mingw/client/release/src/glob2.exe --version
+          python3 tools/release/package_windows.py \
+            build/mingw/client/release/src/glob2.exe \
+            "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
+          python3 -c 'import sys, zipfile; zipfile.ZipFile(sys.argv[1]).extractall("artifacts/release-smoke")' \
+            "artifacts/release-output/glob2-${VERSION}-windows-x86_64.zip"
+          ./artifacts/release-smoke/Globulation2/glob2.exe --version
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-windows
+          path: artifacts/release-output/*
+          if-no-files-found: error
+
+  macos-package:
+    needs: preflight
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          brew install scons sdl2 sdl2_image sdl2_net sdl2_ttf \
+            libvorbis libogg speex boost openssl@3 fribidi pcre libepoxy
+      - name: Build application and DMG
+        run: scons -j2 release=1 server=0 package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-macos
+          path: Glob2-*.dmg
+          if-no-files-found: error
+
+  flatpak-package:
+    if: ${{ inputs.build_flatpak }}
+    needs: preflight
+    runs-on: ubuntu-24.04
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pin upstream source
+        run: |
+          python3 tools/release/render_flatpak.py "$GITHUB_SHA" \
+            flatpak/org.globulation2.Globulation2.yml
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: glob2.flatpak
+          manifest-path: flatpak/org.globulation2.Globulation2.yml
+          cache-key: glob2-flatpak-${{ github.sha }}
+          upload-artifact: false
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-flatpak
+          path: |
+            glob2.flatpak
+            flatpak/org.globulation2.Globulation2.yml
+          if-no-files-found: error
+
+  snap-package:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: snapcore/action-build@v1
+        id: snap
+      - name: Test installed snap
+        env:
+          SNAP: ${{ steps.snap.outputs.snap }}
+        run: |
+          sudo snap install --dangerous "$SNAP"
+          snap run globulation2 --version
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-snap
+          path: ${{ steps.snap.outputs.snap }}
+          if-no-files-found: error

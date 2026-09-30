@@ -1,0 +1,201 @@
+name: Epic Windows candidate
+
+# Public source of truth. Mirror a reviewed commit to genixpro/glob2-release;
+# only that repository can run the credential-bearing jobs below.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing public vVERSION tag at the mirrored HEAD
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: epic-windows-candidate
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: >-
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      short_sha: ${{ steps.check.outputs.short_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Verify public release tag and mirror commit
+        id: check
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
+          git fetch --no-tags https://github.com/Globulation2/glob2.git \
+            "refs/tags/$TAG:refs/tags/$TAG"
+          version="$(python3 tools/release/release.py check --tag "$TAG")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
+
+  package:
+    needs: preflight
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-python mingw-w64-x86_64-scons
+            mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image
+            mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-libvorbis mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-speex mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-openssl mingw-w64-x86_64-boost
+            mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Build and stage Epic install directory
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+          python3 tools/release/package_windows.py \
+            build/mingw/client/release/src/glob2.exe \
+            --stage-dir artifacts/epic/windows \
+            --manifest artifacts/epic/SHA256SUMS.txt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: epic-windows-${{ github.sha }}
+          path: artifacts/epic/
+          if-no-files-found: error
+          retention-days: 30
+
+  smoke-test:
+    needs: package
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          sparse-checkout: games/cross-replay.game.gz
+          sparse-checkout-cone-mode: false
+          path: fixture
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: epic-windows-${{ github.sha }}
+          path: ${{ runner.temp }}/epic-candidate
+      - name: Run staged game without build tools
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = Join-Path $env:RUNNER_TEMP 'epic-candidate/windows'
+          $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'glob2-profile'
+          $env:GLOB2_ASSET_DIR = $root
+          Set-Location $root
+          & .\glob2.exe --nox "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" 10 1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  upload-dev:
+    needs: [preflight, smoke-test]
+    runs-on: windows-2022
+    environment: epic-dev
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: epic-windows-${{ github.sha }}
+          path: ${{ runner.temp }}/epic-candidate
+      - name: Verify complete staged manifest
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = Join-Path $env:RUNNER_TEMP 'epic-candidate/windows'
+          $manifest = Join-Path $env:RUNNER_TEMP 'epic-candidate/SHA256SUMS.txt'
+          if (!(Test-Path $manifest -PathType Leaf)) { throw 'Missing manifest' }
+          $expected = @{}
+          foreach ($line in Get-Content $manifest) {
+            if ($line -cnotmatch '^([0-9a-f]{64})  (.+)$') { throw 'Invalid manifest entry' }
+            $digest = $Matches[1]; $relative = $Matches[2]
+            if ([IO.Path]::IsPathRooted($relative) -or $relative.Contains(':') -or
+                ($relative -split '/') -contains '..' -or $expected.ContainsKey($relative)) {
+              throw "Unsafe or duplicate path: $relative"
+            }
+            $file = Join-Path $root $relative
+            if (!(Test-Path -LiteralPath $file -PathType Leaf)) { throw "Missing file: $relative" }
+            if ((Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $digest) {
+              throw "Checksum mismatch: $relative"
+            }
+            $expected[$relative] = $true
+          }
+          $actual = @(Get-ChildItem $root -Recurse -File | ForEach-Object {
+            $_.FullName.Substring($root.Length + 1).Replace('\', '/')
+          })
+          if ($actual.Count -ne $expected.Count) { throw 'Unlisted files in build root' }
+          foreach ($relative in $actual) {
+            if (!$expected.ContainsKey($relative)) { throw "Unlisted file: $relative" }
+          }
+          if (!$expected.ContainsKey('glob2.exe')) { throw 'Missing launcher executable' }
+      - name: Retrieve pinned BuildPatchTool from private release asset
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BPT_SHA256: ${{ vars.EPIC_BPT_SHA256 }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:BPT_SHA256 -notmatch '^[0-9a-fA-F]{64}$') { throw 'Set EPIC_BPT_SHA256' }
+          $dir = Join-Path $env:RUNNER_TEMP 'bpt'
+          New-Item -ItemType Directory -Force $dir | Out-Null
+          gh release download epic-bpt --repo $env:GITHUB_REPOSITORY --pattern BuildPatchTool.zip --dir $dir
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot download private BPT asset' }
+          $zip = Join-Path $dir 'BuildPatchTool.zip'
+          if ((Get-FileHash $zip -Algorithm SHA256).Hash -ine $env:BPT_SHA256) {
+            throw 'BuildPatchTool digest mismatch'
+          }
+          Expand-Archive $zip -DestinationPath (Join-Path $dir 'extracted')
+          $tools = @(Get-ChildItem (Join-Path $dir 'extracted') -Recurse -Filter BuildPatchTool.exe -File)
+          if ($tools.Count -ne 1) { throw 'Expected one BuildPatchTool.exe' }
+          "BPT_EXE=$($tools[0].FullName)" | Out-File -Append $env:GITHUB_ENV
+      - name: Upload candidate to Epic Dev
+        shell: pwsh
+        env:
+          EPIC_ORGANIZATION_ID: ${{ vars.EPIC_ORGANIZATION_ID }}
+          EPIC_PRODUCT_ID: ${{ vars.EPIC_PRODUCT_ID }}
+          EPIC_WINDOWS_ARTIFACT_ID: ${{ vars.EPIC_WINDOWS_ARTIFACT_ID }}
+          EPIC_BPT_CLIENT_ID: ${{ vars.EPIC_BPT_CLIENT_ID }}
+          EPIC_BPT_CLIENT_SECRET: ${{ secrets.EPIC_BPT_CLIENT_SECRET }}
+          RELEASE_VERSION: ${{ needs.preflight.outputs.version }}
+          SHORT_SHA: ${{ needs.preflight.outputs.short_sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($key in @('EPIC_ORGANIZATION_ID','EPIC_PRODUCT_ID',
+                            'EPIC_WINDOWS_ARTIFACT_ID','EPIC_BPT_CLIENT_ID',
+                            'EPIC_BPT_CLIENT_SECRET')) {
+            if (![Environment]::GetEnvironmentVariable($key)) { throw "Missing $key" }
+          }
+          $buildVersion = "$env:RELEASE_VERSION-win-$env:SHORT_SHA-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          $root = Join-Path $env:RUNNER_TEMP 'epic-candidate/windows'
+          $cloud = Join-Path $env:RUNNER_TEMP 'epic-cloud'
+          New-Item -ItemType Directory -Force $cloud | Out-Null
+          $bptArgs = @(
+            "-OrganizationId=$env:EPIC_ORGANIZATION_ID",
+            "-ProductId=$env:EPIC_PRODUCT_ID",
+            "-ArtifactId=$env:EPIC_WINDOWS_ARTIFACT_ID",
+            "-ClientId=$env:EPIC_BPT_CLIENT_ID",
+            '-ClientSecretEnvVar=EPIC_BPT_CLIENT_SECRET',
+            '-mode=UploadBinary', "-BuildRoot=$root", "-CloudDir=$cloud",
+            "-BuildVersion=$buildVersion", '-AppLaunch=glob2.exe', '-AppArgs='
+          )
+          & $env:BPT_EXE @bptArgs
+          if ($LASTEXITCODE -ne 0) { throw "BuildPatchTool failed: $LASTEXITCODE" }
+          "Uploaded Epic Dev candidate $buildVersion from $env:GITHUB_SHA. Stage, review, and Live promotion remain in the Epic Developer Portal." |
+            Out-File -Append $env:GITHUB_STEP_SUMMARY

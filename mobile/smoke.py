@@ -67,7 +67,10 @@ def main():
         return struct.unpack('>II', png[16:24])
     def start():
         result = run('shell', 'am', 'start', '-W', '-n', PACKAGE+'/.Glob2Activity', timeout=60)
-        if 'Error:' in result or 'Status: ok' not in result:
+        # A saturated emulator can time out the activity-manager wait while the
+        # process is still starting. The subsequent screen/foreground checks
+        # determine whether the launch actually completed.
+        if 'Error:' in result or not any(status in result for status in ('Status: ok', 'Status: timeout')):
             raise RuntimeError('Activity did not start: ' + result)
     def foreground():
         state = run('shell', 'dumpsys', 'activity', 'activities')

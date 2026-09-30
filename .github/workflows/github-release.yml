@@ -1,0 +1,56 @@
+name: Publish GitHub desktop release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing public vVERSION tag at the mirrored HEAD
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-desktop-release
+  cancel-in-progress: false
+
+jobs:
+  packages:
+    if: >-
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: ${{ inputs.tag }}
+      build_flatpak: true
+    permissions:
+      contents: read
+
+  publish:
+    needs: packages
+    runs-on: ubuntu-24.04
+    environment: github-release
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: release-*
+          merge-multiple: true
+          path: artifacts/release-output
+      - name: Publish tagged source and packages to public GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.PUBLIC_RELEASE_GH_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          test -n "$GH_TOKEN"
+          cd artifacts/release-output
+          rm -f SHA256SUMS
+          sha256sum glob2-*.tar.gz glob2-*.zip glob2-*.rpm glob2.flatpak globulation2_*.snap Glob2-*.dmg > SHA256SUMS
+          gh release create "$TAG" --repo Globulation2/glob2 \
+            --verify-tag --generate-notes \
+            glob2-*.tar.gz glob2-*.zip glob2-*.rpm glob2.flatpak globulation2_*.snap Glob2-*.dmg SHA256SUMS
+          echo "Published GitHub release $TAG from $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"

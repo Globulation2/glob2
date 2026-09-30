@@ -10,10 +10,13 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
             env.Install(env["INSTALLDIR"] + "/glob2/data", file)
         
     
-    env.Install(env["INSTALLDIR"] + "/applications", "glob2.desktop")
+    env.InstallAs(env["INSTALLDIR"] + "/applications/org.globulation2.Globulation2.desktop", "glob2.desktop")
+    env.Install(env["INSTALLDIR"] + "/metainfo", "org.globulation2.Globulation2.metainfo.xml")
     env.Alias("install", env["INSTALLDIR"]+"/glob2/data")
     env.Alias("install", env["INSTALLDIR"]+"/applications")
+    env.Alias("install", env["INSTALLDIR"]+"/metainfo")
     PackTar(env["TARFILE"], "glob2.desktop")
+    PackTar(env["TARFILE"], "org.globulation2.Globulation2.metainfo.xml")
     PackTar(env["TARFILE"], "SConscript")
     
 SConscript("maxima/SConscript")

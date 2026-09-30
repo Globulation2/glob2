@@ -1,43 +1,54 @@
-Name: glob2
-Summary:  Innovative Strategy Game Globulation 2
-Version: 0.9.3
-Release: 1
-License: GPL Version 3
-Group: Amusements/Games
-URL: http://www.globulation2.org/
-Source0: %{name}-%{version}.tar.gz
-Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires: SDL,SDL_net,SDL_image,SDL_ttf,speex,libvorbis,libogg,zlib,fribidi
-BuildPrereq: scons,SDL-devel,SDL_net-devel,SDL_image-devel,SDL_ttf-devel,speex-devel,zlib-devel,boost-devel,fribidi-devel,libvorbis-devel,libogg-devel
-%description
-Globulation 2 brings a new type of gameplay to RTS games. The player chooses
-the number of units to assign to various tasks, and the units do their best to
-satisfy the requests. This allows players to manage more units and focus on
-strategy rather than individual unit's jobs. Globulation 2 also features AI
-allowing single-player games or any possible combination of human-computer
-teams. Also included is a scripting language for versatile gameplay or
-tutorials and an integrated map editor. Globulation2 can be played in single
-player mode, through your local network, or over the Internet with Ysagoon
-Online Gaming (or YOG for short).
+Name:           glob2
+Version:        0.9.5.0
+Release:        1%{?dist}
+Summary:        Real time strategy game with automatic unit task assignment
+License:        GPL-3.0-or-later
+URL:            https://globulation2.org/
+Source0:        https://github.com/Globulation2/glob2/releases/download/v%{version}/glob2-%{version}.tar.gz
 
+BuildRequires:  gcc-c++
+BuildRequires:  python3
+BuildRequires:  scons
+BuildRequires:  SDL2-devel
+BuildRequires:  SDL2_image-devel
+BuildRequires:  SDL2_net-devel
+BuildRequires:  SDL2_ttf-devel
+BuildRequires:  libvorbis-devel
+BuildRequires:  libogg-devel
+BuildRequires:  speex-devel
+BuildRequires:  boost-devel
+BuildRequires:  openssl-devel
+BuildRequires:  zlib-devel
+BuildRequires:  fribidi-devel
+BuildRequires:  pcre-devel
+BuildRequires:  mesa-libGL-devel
+BuildRequires:  mesa-libGLU-devel
+BuildRequires:  libepoxy-devel
+
+%description
+Globulation 2 lets players assign units to tasks instead of directing each
+unit individually. It includes computer opponents, a map editor, and
+multiplayer play.
 
 %prep
-%setup -q
+%autosetup -n glob2-%{version}
 
 %build
-scons release=True INSTALLDIR="%{buildroot}/usr/share" DATADIR="/usr/share" BINDIR="%{buildroot}/usr/bin"
+scons -j2 release=1 server=0 BINDIR=%{_bindir} INSTALLDIR=%{_datadir} DATADIR=%{_datadir}
 
 %install
-rm -fr %{buildroot}
-scons install
-
-%clean
-rm -rf %{buildroot}
+scons -j2 release=1 server=0 BINDIR=%{buildroot}%{_bindir} \
+    INSTALLDIR=%{buildroot}%{_datadir} DATADIR=%{_datadir} install
 
 %files
-%defattr(-,root,root) 
-/usr/bin/glob2
-/usr/share/glob2/*
-/usr/share/applications/glob2.desktop
-/usr/share/icons/*
+%license COPYING
+%doc README.md
+%{_bindir}/glob2
+%{_datadir}/glob2/
+%{_datadir}/applications/org.globulation2.Globulation2.desktop
+%{_datadir}/metainfo/org.globulation2.Globulation2.metainfo.xml
+%{_datadir}/icons/hicolor/*/apps/glob2.png
 
+%changelog
+* Wed Sep 30 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.9.5.0-1
+- Prepare package recipe for the next upstream release

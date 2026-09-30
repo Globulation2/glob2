@@ -24,7 +24,7 @@ def establish_options(env):
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-        opts.Add(PathVariable("INSTALLDIR", "Installation Directory", "./"))
+        opts.Add("INSTALLDIR", "Installation Directory", "./")
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")

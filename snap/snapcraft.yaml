@@ -1,0 +1,79 @@
+name: globulation2
+base: core24
+adopt-info: glob2
+summary: Real time strategy with automatic unit task assignment
+description: |
+  Globulation 2 is a real time strategy game that lets players assign
+  units to tasks rather than directing each unit individually.
+license: GPL-3.0-or-later
+website: https://globulation2.org/
+source-code: https://github.com/Globulation2/glob2
+issues: https://github.com/Globulation2/glob2/issues
+grade: stable
+confinement: strict
+
+apps:
+  globulation2:
+    command: usr/bin/glob2
+    common-id: org.globulation2.Globulation2
+    desktop: usr/share/applications/org.globulation2.Globulation2.desktop
+    environment:
+      GLOB2_ASSET_DIR: $SNAP/usr/share/glob2
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:$SNAP/usr/lib
+    plugs:
+      - audio-playback
+      - desktop
+      - desktop-legacy
+      - home
+      - network
+      - network-bind
+      - opengl
+      - wayland
+      - x11
+
+parts:
+  glob2:
+    plugin: nil
+    source: .
+    parse-info:
+      - data/org.globulation2.Globulation2.metainfo.xml
+    build-packages:
+      - g++
+      - python3
+      - scons
+      - libsdl2-dev
+      - libsdl2-image-dev
+      - libsdl2-net-dev
+      - libsdl2-ttf-dev
+      - libvorbis-dev
+      - libogg-dev
+      - libspeex-dev
+      - libboost-dev
+      - libssl-dev
+      - zlib1g-dev
+      - libfribidi-dev
+      - libpcre3-dev
+      - libgl1-mesa-dev
+      - libglu1-mesa-dev
+      - libepoxy-dev
+    stage-packages:
+      - libsdl2-2.0-0
+      - libsdl2-image-2.0-0
+      - libsdl2-net-2.0-0
+      - libsdl2-ttf-2.0-0
+      - libvorbisfile3
+      - libogg0
+      - libspeex1
+      - libfribidi0
+      - libpcre3
+      - libgl1
+      - libglu1-mesa
+      - libepoxy0
+      - libssl3
+    override-build: |
+      craftctl set version="$(python3 tools/release/release.py check)"
+      scons -j2 release=1 server=0 \
+        BINDIR="$CRAFT_PART_INSTALL/usr/bin" \
+        INSTALLDIR="$CRAFT_PART_INSTALL/usr/share" \
+        DATADIR=/usr/share install
+      python3 tools/release/release.py verify-install --stage "$CRAFT_PART_INSTALL"
