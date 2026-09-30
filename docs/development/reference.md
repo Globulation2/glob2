@@ -37,7 +37,8 @@ scons -C test                 # rebuild the separate test suite
 - `mingw=1` builds natively on Windows; `mingwcross=1` cross-compiles. Dependencies
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
-- The manually triggered **Steam Windows package** workflow builds the MinGW release
+- The **Steam Windows package** workflow runs manually or when its packaging files
+  change in a pull request. It builds the MinGW release
   client and stages `glob2.exe`, its runtime DLL dependency closure, game assets,
   license, and attribution in one depot folder. A separate Windows job downloads
   that artifact and runs a short headless game without the build toolchain. Download
