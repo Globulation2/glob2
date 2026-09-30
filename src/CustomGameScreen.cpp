@@ -286,6 +286,8 @@ CustomGameScreen::~CustomGameScreen()
 }
 std::shared_ptr<std::string> CustomGameScreen::releaseSnapshot()
 {
+	if (!setup.random)
+		return {};
 	return std::move(generatedSnapshot);
 }
 void CustomGameScreen::savePreferences()
@@ -528,6 +530,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 		mapHeader = entry.header;
 		setup.setCapacity(mapHeader.getNumberOfTeams());
 		source = path;
+		generatedSnapshot.reset();
 		validMap = true;
 		preview->setMapThumbnail(entry.terrain);
 		preview->starts = entry.starts;

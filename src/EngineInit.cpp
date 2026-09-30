@@ -444,7 +444,11 @@ GAGCore::CooperativeTask Engine::initCustomFromBytesTask(MapHeader map, GameHead
     }
     // BinaryInputStream owns and deletes its backend; the copy the backend takes here is
     // the same one loadTask's file-based sibling pays for on the read side of a real file.
-    GAGCore::BinaryInputStream stream(new GAGCore::MemoryStreamBackend(bytes->data(), bytes->size()));
+    auto *backend = new GAGCore::MemoryStreamBackend(bytes->data(), bytes->size());
+    // The memory backend copies its input through write(), leaving its cursor at
+    // the end. Start at the map header, as file-backed streams do.
+    backend->seekFromStart(0);
+    GAGCore::BinaryInputStream stream(backend);
     bool error = false;
     try
     {

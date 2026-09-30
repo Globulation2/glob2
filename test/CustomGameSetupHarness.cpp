@@ -1806,7 +1806,8 @@ int main(int argc, char **argv)
 {
 	GlobalContainer globals("glob2-custom-setup-tests");
 	globalContainer = &globals;
-	globals.runNoX = argc < 2 || std::string(argv[1]) == "preview-restart" ||
+	globals.runNoX = argc < 2 || std::string(argv[1]) == "snapshot-load" ||
+				 std::string(argv[1]) == "preview-restart" ||
 					 std::string(argv[1]) == "preview-queue";
 	globals.settings.rememberUnit = false;
 	globals.settings.screenWidth = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 1000 : 640;
@@ -1816,6 +1817,26 @@ int main(int argc, char **argv)
 	if (argc > 3 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
 		globals.settings.language = argv[3];
 	globals.load();
+	if (argc > 1 && std::string(argv[1]) == "snapshot-load")
+	{
+		Game map(nullptr);
+		GAGCore::BinaryInputStream source(
+			Toolkit::getFileManager()->openInflatingInputStreamBackend("maps/balanced.map.gz"));
+		assert(map.load(&source));
+		CustomGameSetup setup;
+		setup.setCapacity(map.mapHeader.getNumberOfTeams());
+		GameHeader players;
+		setup.writeHeader(players, "snapshot test");
+		map.setGameHeader(players);
+		auto *backend = new GAGCore::MemoryStreamBackend();
+		GAGCore::BinaryOutputStream serialized(backend);
+		map.save(&serialized, true, "Snapshot test");
+		auto bytes = std::make_shared<std::string>(backend->takeContents());
+		Engine engine;
+		assert(engine.initCustomFromBytesTask(map.mapHeader, players, 0, -1, bytes).run());
+		std::cout << "PASS generated map snapshot launches from memory\n";
+		return 0;
+	}
 	if (argc > 1 && std::string(argv[1]) == "preview-queue")
 	{
 		CustomGameSetupHarness::previewPriority();
