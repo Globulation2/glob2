@@ -14,13 +14,16 @@ from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIE
 
 def build_mobile(directory, identity, arguments):
     output = Path(directory).resolve()
-    toolchain = discover(identity, arguments)
+    # The Amazon flavor changes game behavior, not its pinned native dependencies.
+    dependency_identity = dict(identity)
+    dependency_identity.pop('amazon', None)
+    toolchain = discover(dependency_identity, arguments)
     prefix = Path(arguments.get('mobile_deps', output / 'deps')).resolve()
     manifest = prefix / 'manifest.json'
     if not manifest.is_file():
         raise ValueError(f'Missing cross-compiled dependency manifest {manifest}; see docs/mobile/development.md. Host libraries are never used.')
     dependencies = json.loads(manifest.read_text())
-    if dependencies.get('identity') != identity or dependencies.get('toolchain') != toolchain['fingerprint']:
+    if dependencies.get('identity') != dependency_identity or dependencies.get('toolchain') != toolchain['fingerprint']:
         raise ValueError('Mobile dependencies belong to a different target/compiler configuration')
     artifacts = dependencies.get('archives', {})
     if not artifacts:
@@ -57,7 +60,8 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_MOBILE 1
 #define GLOB2_NATIVE_WSS 1
 #define GLOB2_NO_VOICE 1
-''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else ''))
+''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
+        + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else ''))
     env.Append(CPPPATH=[str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])

@@ -6,7 +6,7 @@ import platform
 import tempfile
 
 
-PACKAGE_VERSION = "0.9.5.1"
+PACKAGE_VERSION = "0.9.5.2"
 
 def enabled(value):
     return str(value).lower() in ('1', 'true', 'yes', 'on')
@@ -22,6 +22,9 @@ def build_identity(arguments, host=None):
     china = enabled(arguments.get('china', 0))
     if china and (target == 'web' or role != 'client'):
         raise ValueError('china=1 supports native and mobile clients only')
+    amazon = enabled(arguments.get('amazon', 0))
+    if amazon and (target != 'android' or role != 'client' or china or not enabled(arguments.get('release', 0))):
+        raise ValueError('amazon=1 supports only the standard Android release client')
     if target in ('android', 'ios'):
         if role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0)):
             raise ValueError('mobile targets support only the client role and their own cross compiler')
@@ -48,6 +51,8 @@ def build_identity(arguments, host=None):
                 'arch': architecture, 'environment': environment, 'api': api}
         if china:
             identity['china'] = True
+        if amazon:
+            identity['amazon'] = True
         return identity
     if target == 'web' and (role != 'client' or enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0))):
         raise ValueError('web supports only the client role and cannot use a native cross compiler')
@@ -67,7 +72,9 @@ def default_directory(identity):
     if identity['target'] in ('android', 'ios'):
         path = (Path('build') / identity['toolchain'] / identity['environment'] /
                 identity['arch'] / identity['api'] / identity['role'] / identity['mode'])
-        return path / 'china' if identity.get('china') else path
+        if identity.get('china'):
+            return path / 'china'
+        return path / 'amazon' if identity.get('amazon') else path
     role = identity['role']
     if role == 'client' and identity['target'] == 'native' and not identity['native_wss']:
         role += '-tcp'

@@ -188,6 +188,13 @@ class MobileBuildTests(unittest.TestCase):
         paths = [default_directory(build_identity(args)) for args in options]
         self.assertEqual(len(paths), len(set(paths)))
 
+    def test_amazon_release_isolated_from_standard_android_but_reuses_toolchain(self):
+        standard = build_identity({'target':'android','release':'1'})
+        amazon = build_identity({'target':'android','release':'1','amazon':'1'})
+        self.assertNotEqual(default_directory(standard), default_directory(amazon))
+        self.assertEqual(default_directory(amazon), default_directory(standard)/'amazon')
+        self.assertEqual({key:value for key,value in amazon.items() if key!='amazon'}, standard)
+
     def test_wrong_architecture_cannot_reuse_output(self):
         with tempfile.TemporaryDirectory() as directory:
             prepare_directory(directory, build_identity({'target':'android'}))
@@ -199,7 +206,9 @@ class MobileBuildTests(unittest.TestCase):
             dict(target='android', arch='arm64'), dict(target='ios', arch='x86_64'),
             dict(target='android', api='25'), dict(target='android', api='../26'),
             dict(target='ios', deployment='14.0'), dict(target='ios', deployment='../15.0'),
-            dict(target='android', environment='simulator'), dict(target='ios', profile='1')]
+            dict(target='android', environment='simulator'), dict(target='ios', profile='1'),
+            dict(target='android', amazon='1'), dict(target='ios', release='1', amazon='1'),
+            dict(target='android', release='1', china='1', amazon='1')]
         for options in invalid:
             with self.subTest(options=options), self.assertRaises(ValueError):
                 build_identity(options)
