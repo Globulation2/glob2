@@ -148,6 +148,19 @@ class Node
 	virtual void scrollBy(int pixels, Host &) {}
 	virtual int scrollOffset() const { return 0; }
 	virtual int scrollMaximum() const { return 0; }
+	// Absolute scroll position; the node clamps and returns what it applied.
+	virtual int scrollTo(int pixels, Host &host)
+	{
+		scrollBy(pixels - scrollOffset(), host);
+		return scrollOffset();
+	}
+	// Touch drags coast after release and rubber-band past the ends (scroll, list,
+	// text). Other scrollables only receive plain scrollBy steps.
+	virtual bool inertial() const { return false; }
+	// Transient displacement beyond the clamped range while rubber-banding or
+	// bouncing; painted, never persisted.
+	virtual void setOverscroll(int, Host &) {}
+	virtual int overscroll() const { return 0; }
 	virtual bool stateful() const { return false; }
 	virtual void restore(const NodeState &, const LayoutContext &) {}
 	virtual void save(NodeState &) const {}

@@ -318,11 +318,24 @@ class Scroll : public Wrapper
 	const char *name() const override { return "scroll"; }
 	bool stateful() const override { return true; }
 	bool scrollable() const override { return true; }
+	bool inertial() const override { return true; }
 	bool clipsChildren() const override { return true; }
-	void restore(const NodeState &state, const LayoutContext &) override { offset = state.scroll; }
+	void restore(const NodeState &state, const LayoutContext &) override
+	{
+		offset = state.scroll;
+		over = 0;
+	}
 	void save(NodeState &state) const override { state.scroll = offset; }
 	int scrollOffset() const override { return offset; }
 	int scrollMaximum() const override { return maximum; }
+	int overscroll() const override { return over; }
+	void setOverscroll(int pixels, Host &host) override
+	{
+		if (pixels == over)
+			return;
+		over = pixels;
+		host.relayout();
+	}
 	int barWidth(const LayoutContext &ctx) const { return ctx.metrics.scrollbar + ctx.metrics.halfGap; }
 
 	Size measure(const LayoutContext &ctx, Constraints c) override
@@ -360,7 +373,7 @@ class Scroll : public Wrapper
 		contentHeight = content.h;
 		maximum = std::max(0, content.h - rect.h);
 		offset = std::clamp(offset, 0, maximum);
-		child()->arrange(ctx, {rect.x, rect.y - offset, inner.maxW, content.h});
+		child()->arrange(ctx, {rect.x, rect.y - offset - over, inner.maxW, content.h});
 	}
 
 	Rect thumb(const LayoutContext &ctx) const
@@ -409,13 +422,16 @@ class Scroll : public Wrapper
 		offset = std::clamp(int(std::lround(double(top) * maximum / travel)), 0, maximum);
 		host.relayout();
 	}
-	void scrollBy(int pixels, Host &host) override
+	void scrollBy(int pixels, Host &host) override { scrollTo(offset + pixels, host); }
+	int scrollTo(int pixels, Host &host) override
 	{
-		const int next = std::clamp(offset + pixels, 0, maximum);
-		if (next == offset)
-			return;
-		offset = next;
-		host.relayout();
+		const int next = std::clamp(pixels, 0, maximum);
+		if (next != offset)
+		{
+			offset = next;
+			host.relayout();
+		}
+		return offset;
 	}
 	// Painter-independent thumb geometry cached at arrange time for hit tests.
 	void cacheThumb(const LayoutContext &ctx)
@@ -426,7 +442,7 @@ class Scroll : public Wrapper
 
   private:
 	ScrollOptions options;
-	int offset = 0, maximum = 0, contentHeight = 0, grab = 0, lastScrollbar = 6;
+	int offset = 0, over = 0, maximum = 0, contentHeight = 0, grab = 0, lastScrollbar = 6;
 	bool showBar = false;
 	Rect thumbRect;
 };

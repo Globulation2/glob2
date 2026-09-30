@@ -73,6 +73,8 @@ struct Fixture
 {
 	Host host;
 	Presentation presentation;
+	// Event timestamps and Host::update ticks come from this clock only.
+	Uint32 clock = 1000;
 	Fixture(Host::Builder build, int width, int height, bool touch = false)
 		: host(theme, std::move(build)), presentation(Presentation::forSurface(width, height, 1, touch))
 	{
@@ -101,26 +103,67 @@ struct Fixture
 		host.event(e);
 		return e;
 	}
-	void click(Point p)
+	void mouse(Uint32 type, Point p)
 	{
 		SDL_Event e{};
-		e.type = SDL_MOUSEBUTTONDOWN;
-		e.button.button = SDL_BUTTON_LEFT;
-		e.button.x = p.x;
-		e.button.y = p.y;
+		e.type = type;
+		e.common.timestamp = clock;
+		if (type == SDL_MOUSEMOTION)
+		{
+			e.motion.x = p.x;
+			e.motion.y = p.y;
+		}
+		else
+		{
+			e.button.button = SDL_BUTTON_LEFT;
+			e.button.x = p.x;
+			e.button.y = p.y;
+		}
 		host.event(e);
-		e.type = SDL_MOUSEBUTTONUP;
-		host.event(e);
+	}
+	void click(Point p)
+	{
+		mouse(SDL_MOUSEBUTTONDOWN, p);
+		mouse(SDL_MOUSEBUTTONUP, p);
 	}
 	void finger(Uint32 type, Point p)
 	{
 		SDL_Event e{};
 		e.type = type;
+		e.tfinger.timestamp = clock;
 		e.tfinger.touchId = 1;
 		e.tfinger.fingerId = 1;
 		e.tfinger.x = float(p.x) / presentation.viewport.w;
 		e.tfinger.y = float(p.y) / presentation.viewport.h;
 		host.event(e);
+	}
+	// Let `ms` pass and give the host its frame.
+	void advance(Uint32 ms)
+	{
+		clock += ms;
+		host.update(clock);
+	}
+	// Frames until coasting and bouncing stop; returns the offsets visited.
+	std::vector<int> settle(const std::string &key)
+	{
+		std::vector<int> visited;
+		for (int i = 0; i < 1000 && host.animating(); ++i)
+		{
+			advance(16);
+			visited.push_back(host.find(key)->scrollOffset() + host.find(key)->overscroll());
+		}
+		return visited;
+	}
+	// A finger flick upward: four 20 px moves 16 ms apart, then release.
+	void flick(Point from)
+	{
+		finger(SDL_FINGERDOWN, from);
+		for (int i = 1; i <= 4; ++i)
+		{
+			advance(16);
+			finger(SDL_FINGERMOTION, {from.x, from.y - 20 * i});
+		}
+		finger(SDL_FINGERUP, {from.x, from.y - 80});
 	}
 	void wheel(int y, Point at)
 	{
@@ -429,10 +472,13 @@ void checkTapVersusPan()
 	f.finger(SDL_FINGERUP, {50, 20});
 	require(taps == 1, "a tap activates the button under the finger");
 	f.finger(SDL_FINGERDOWN, {50, 80});
+	f.advance(16);
 	f.finger(SDL_FINGERMOTION, {50, 40});
+	f.advance(60); // the finger rests before lifting: no momentum
 	f.finger(SDL_FINGERUP, {50, 40});
 	require(taps == 1, "a drag scrolls instead of tapping");
 	require(f.host.find("list")->scrollOffset() == 40, "drag distance becomes scroll offset");
+	require(!f.host.animating(), "a rested finger leaves no momentum");
 	f.finger(SDL_FINGERDOWN, {50, 20});
 	SDL_Event lost{};
 	lost.type = SDL_WINDOWEVENT;
@@ -581,6 +627,211 @@ void checkAdaptiveAndField()
 	require(b.host.editing() == "name", "editing survives the rebuild after an edit");
 }
 
+Host::Builder buttonList(int &taps)
+{
+	return [&taps](const Presentation &)
+	{
+		std::vector<Element> rows;
+		for (int i = 0; i < 20; ++i)
+			rows.push_back(button("b" + std::to_string(i), "B", [&taps] { ++taps; }, {false, false, true, false, false, false, SDLK_UNKNOWN, FontRole::Body, 40}));
+		return scroll("list", column(rows, {0}));
+	};
+}
+
+void checkFlingContinues()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, true);
+	f.flick({50, 90});
+	auto *list = f.host.find("list");
+	require(list->scrollOffset() == 80, "the drag itself moved the content");
+	require(f.host.animating(), "a flick keeps the content moving after release");
+	f.advance(16);
+	require(f.host.find("list")->scrollOffset() > 80, "the content coasts on the next frame");
+	const auto path = f.settle("list");
+	require(!f.host.animating() && !path.empty(), "coasting ends");
+	for (std::size_t i = 1; i < path.size(); ++i)
+		require(path[i] >= path[i - 1], "coasting never reverses");
+	const int rest = f.host.find("list")->scrollOffset();
+	require(rest > 80 && rest <= f.host.find("list")->scrollMaximum(), "the content rests further along, inside the range");
+	require(f.host.find("list")->overscroll() == 0, "no stretch remains after coasting");
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	require(f.host.find("list")->scrollOffset() == rest, "the resting offset survives a rebuild");
+	require(taps == 0, "a flick never taps");
+	// Content that stops mid-way keeps its offset on later frames.
+	f.advance(500);
+	require(f.host.find("list")->scrollOffset() == rest, "idle content stays put");
+}
+
+void checkOverscrollSpringsBack()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, true);
+	f.host.find("list")->scrollBy(100000, f.host);
+	f.host.layoutIfNeeded();
+	const int end = f.host.find("list")->scrollMaximum();
+	require(end > 0 && f.host.find("list")->scrollOffset() == end, "starts at the end");
+	const int listTop = f.host.find("list")->bounds.y;
+	f.finger(SDL_FINGERDOWN, {50, 90});
+	f.advance(16);
+	f.finger(SDL_FINGERMOTION, {50, 40});
+	auto *list = f.host.find("list");
+	require(list->scrollOffset() == end, "the clamped offset stays at the maximum");
+	const int stretch = list->overscroll();
+	require(stretch > 0 && stretch < 50, "pulling past the end stretches less than the finger moved");
+	f.host.layoutIfNeeded();
+	require(f.host.find("b0")->bounds.y == listTop - end - stretch, "children shift by the stretch");
+	f.advance(16);
+	f.finger(SDL_FINGERMOTION, {50, 10});
+	require(f.host.find("list")->overscroll() > stretch, "pulling further stretches further");
+	require(f.host.find("list")->overscroll() < 100, "the stretch stays inside the viewport");
+	f.advance(60);
+	f.finger(SDL_FINGERUP, {50, 10});
+	require(f.host.animating(), "released stretched content springs back");
+	// A rebuild mid-bounce persists only the clamped offset.
+	f.host.invalidate();
+	f.host.layoutIfNeeded();
+	require(f.host.state("list").scroll == end, "persisted state never includes the stretch");
+	require(f.host.find("list")->overscroll() == 0, "a rebuilt node starts unstretched");
+	f.advance(16);
+	require(f.host.find("list")->overscroll() > 0, "the bounce continues on the rebuilt node");
+	const auto path = f.settle("list");
+	for (std::size_t i = 1; i < path.size(); ++i)
+		require(path[i] <= path[i - 1] + 1, "the spring never overshoots back");
+	require(f.host.find("list")->overscroll() == 0, "the stretch is gone");
+	require(f.host.find("list")->scrollOffset() == end, "the content rests at the end");
+	f.host.layoutIfNeeded();
+	require(f.host.find("b0")->bounds.y == listTop - end, "children return to their place");
+	require(taps == 0, "stretching never taps");
+}
+
+void checkTouchStopsFling()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, true);
+	f.flick({50, 90});
+	f.advance(16);
+	require(f.host.animating(), "coasting");
+	f.finger(SDL_FINGERDOWN, {50, 50});
+	require(!f.host.animating(), "a touch stops the coasting content");
+	const int held = f.host.find("list")->scrollOffset();
+	f.advance(100);
+	require(f.host.find("list")->scrollOffset() == held, "stopped content stays where the finger caught it");
+	f.finger(SDL_FINGERUP, {50, 50});
+	require(taps == 0, "the stopping touch is not a tap");
+	require(!f.host.animating(), "nothing moves after the stopping touch lifts");
+	f.finger(SDL_FINGERDOWN, {50, 50});
+	f.finger(SDL_FINGERUP, {50, 50});
+	require(taps == 1, "the next touch taps as usual");
+	// Wheel input also stops a fling and scrolls by control heights from there.
+	f.flick({50, 90});
+	f.advance(16);
+	const int before = f.host.find("list")->scrollOffset();
+	f.wheel(1, {50, 50});
+	require(!f.host.animating(), "the wheel stops coasting");
+	require(f.host.find("list")->scrollOffset() == before - f.host.metrics().control, "the wheel scrolls from where the content was");
+	// Content moved by something else drops the animation instead of fighting it.
+	f.flick({50, 90});
+	f.advance(16);
+	f.host.scrollIntoView("b0");
+	f.host.layoutIfNeeded();
+	f.advance(16);
+	require(!f.host.animating(), "scrollIntoView ends coasting");
+	require(f.host.find("list")->scrollOffset() == 0, "the programmatic position wins");
+}
+
+void checkScrollbarPressStopsFling()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, true);
+	f.flick({50, 90});
+	f.advance(16);
+	require(f.host.animating(), "coasting");
+	auto *list = f.host.find("list");
+	const Point track{list->bounds.right() - 2, list->bounds.y + 50};
+	require(list->capturesPointer(track), "the scrollbar track captures the pointer");
+	f.finger(SDL_FINGERDOWN, track);
+	require(!f.host.animating(), "grabbing the scrollbar stops coasting");
+	f.finger(SDL_FINGERUP, track);
+	require(!f.host.animating(), "the thumb release leaves the content still");
+}
+
+void checkMouseDragDoesNotFling()
+{
+	int taps = 0;
+	Fixture f(buttonList(taps), 200, 100, false);
+	f.mouse(SDL_MOUSEBUTTONDOWN, {50, 90});
+	for (int i = 1; i <= 4; ++i)
+	{
+		f.advance(16);
+		f.mouse(SDL_MOUSEMOTION, {50, 90 - 20 * i});
+	}
+	f.mouse(SDL_MOUSEBUTTONUP, {50, 10});
+	require(f.host.find("list")->scrollOffset() == 80, "a mouse drag scrolls by the pointer distance");
+	require(!f.host.animating(), "a mouse drag has no momentum");
+	f.advance(100);
+	require(f.host.find("list")->scrollOffset() == 80, "the content stays where the mouse left it");
+	f.host.find("list")->scrollBy(100000, f.host);
+	f.host.layoutIfNeeded();
+	f.mouse(SDL_MOUSEBUTTONDOWN, {50, 90});
+	f.advance(16);
+	f.mouse(SDL_MOUSEMOTION, {50, 40});
+	require(f.host.find("list")->overscroll() == 0, "a mouse drag past the end does not stretch");
+	f.mouse(SDL_MOUSEBUTTONUP, {50, 40});
+	require(taps == 0, "mouse drags never tap");
+}
+
+void checkListAndTextOverscroll()
+{
+	int selected = 0;
+	std::vector<std::string> items;
+	for (int i = 0; i < 30; ++i)
+		items.push_back("item " + std::to_string(i));
+	Fixture f([&](const Presentation &) { return column({listView("files", items, selected, [&](int i) { selected = i; }, {{}, {}, {}, {}, {}, 5})}); }, 200, 400, true);
+	auto *list = f.host.find("files");
+	list->scrollBy(100000, f.host);
+	f.host.layoutIfNeeded();
+	list = f.host.find("files");
+	const int maximum = list->scrollMaximum();
+	require(maximum > 0, "the list overflows");
+	const int lastRowTop = list->subTargets().back().bounds.y;
+	f.finger(SDL_FINGERDOWN, {50, list->bounds.y + 90});
+	f.advance(16);
+	f.finger(SDL_FINGERMOTION, {50, list->bounds.y + 40});
+	list = f.host.find("files");
+	require(list->scrollOffset() == maximum && list->overscroll() > 0, "a list stretches past its last row");
+	require(list->subTargets().back().bounds.y == lastRowTop - list->overscroll(), "list rows shift by the stretch");
+	f.advance(60);
+	f.finger(SDL_FINGERUP, {50, list->bounds.y + 40});
+	f.settle("files");
+	require(f.host.find("files")->overscroll() == 0 && f.host.find("files")->scrollOffset() == maximum, "the list springs back");
+	require(selected == 0, "stretching a list selects nothing");
+
+	std::string text;
+	for (int i = 0; i < 40; ++i)
+		text += "line " + std::to_string(i) + "\n";
+	Fixture t([&](const Presentation &) { return column({textEditor("log", text, {}, {true, 4})}); }, 200, 400, true);
+	auto *editor = t.host.find("log");
+	editor->scrollBy(100000, t.host);
+	t.host.layoutIfNeeded();
+	editor = t.host.find("log");
+	require(editor->scrollMaximum() > 0, "the log overflows");
+	auto before = t.paint();
+	t.finger(SDL_FINGERDOWN, {50, editor->bounds.y + 60});
+	t.advance(16);
+	t.finger(SDL_FINGERMOTION, {50, editor->bounds.y + 20});
+	editor = t.host.find("log");
+	require(editor->overscroll() > 0, "a text log stretches past its last line");
+	auto during = t.paint();
+	require(!before.texts.empty() && !during.texts.empty(), "lines are painted");
+	require(during.texts.back().first.y == before.texts.back().first.y - editor->overscroll(), "painted lines shift by the stretch");
+	t.advance(60);
+	t.finger(SDL_FINGERUP, {50, editor->bounds.y + 20});
+	t.settle("log");
+	require(t.host.find("log")->overscroll() == 0, "the log springs back");
+}
+
 void checkInvariants()
 {
 	Fixture f(
@@ -613,6 +864,12 @@ TEST_SUITE("UILayout")
 	TEST_CASE("footer folds") { checkFooterFolds(); }
 	TEST_CASE("scroll clamp and wheel") { checkScrollClampAndWheel(); }
 	TEST_CASE("tap versus pan") { checkTapVersusPan(); }
+	TEST_CASE("fling continues after release") { checkFlingContinues(); }
+	TEST_CASE("overscroll springs back") { checkOverscrollSpringsBack(); }
+	TEST_CASE("touch wheel and programmatic scroll stop a fling") { checkTouchStopsFling(); }
+	TEST_CASE("scrollbar press stops a fling") { checkScrollbarPressStopsFling(); }
+	TEST_CASE("mouse drag does not fling") { checkMouseDragDoesNotFling(); }
+	TEST_CASE("list and text overscroll") { checkListAndTextOverscroll(); }
 	TEST_CASE("press survives resize") { checkPressSurvivesResize(); }
 	TEST_CASE("focus and keyboard") { checkFocusAndKeyboard(); }
 	TEST_CASE("choice popup") { checkChoicePopup(); }

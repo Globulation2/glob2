@@ -250,6 +250,47 @@ void Host::cancelGestures()
 	capturedKey.clear();
 	panKey.clear();
 	panning = false;
+	dropScroll();
+}
+
+void Host::writeScroll()
+{
+	if (!scrolling)
+		return;
+	auto *node = find(scrolling->key);
+	if (!node)
+	{
+		scrolling.reset();
+		return;
+	}
+	const auto &axis = scrolling->axis;
+	node->scrollTo(int(std::lround(axis.clampedOffset())), *this);
+	node->setOverscroll(int(std::lround(axis.overscroll())), *this);
+	scrolling->lastWritten = node->scrollOffset();
+}
+
+void Host::dropScroll()
+{
+	if (!scrolling)
+		return;
+	if (auto *node = find(scrolling->key))
+		node->setOverscroll(0, *this);
+	scrolling.reset();
+}
+
+// The finger lifted without dragging: stretched content springs back, settled
+// content releases the axis.
+void Host::settleScroll(GAGCore::Ticks time)
+{
+	if (!scrolling || scrolling->axis.isDragging())
+		return;
+	if (!scrolling->axis.isAnimating())
+		scrolling->axis.settle(time);
+	if (!scrolling->axis.isAnimating())
+	{
+		writeScroll();
+		scrolling.reset();
+	}
 }
 
 Node *Host::interactiveAt(Point point) const
@@ -270,7 +311,7 @@ Node *Host::scrollableAt(Point point) const
 	return root->hitTest(point, [](const Node &n) { return n.scrollable(); });
 }
 
-void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point)
+void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point, std::int64_t device)
 {
 	for (const auto &action : actions)
 	{
@@ -282,9 +323,48 @@ void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point)
 				pressedKey.clear();
 				pressedNode = nullptr;
 			}
-			if (!panKey.empty())
-				if (auto *node = find(panKey))
-					node->scrollBy(-int(std::lround(action.point.y)), *this);
+			if (panKey.empty())
+				continue;
+			auto *node = find(panKey);
+			if (!node)
+				continue;
+			if (!node->inertial())
+			{
+				node->scrollBy(-int(std::lround(action.point.y)), *this);
+				continue;
+			}
+			if (!scrolling || scrolling->key != panKey)
+				scrolling = ActiveScroll{panKey, GAGCore::ScrollAxis(), 0};
+			auto &axis = scrolling->axis;
+			if (!axis.isDragging())
+			{
+				// A mouse drag follows the pointer and stops with it; a finger
+				// gets momentum and bounce. Content stopped mid-bounce by this
+				// touch keeps its stretch and continues from there.
+				axis.setConfig(device == -1 ? GAGCore::ScrollPresets::mouse() : GAGCore::ScrollPresets::widget());
+				axis.setBounds(0, node->scrollMaximum(), node->bounds.h);
+				if (axis.overscroll() == 0)
+					axis.setOffset(node->scrollOffset());
+				axis.beginDrag(action.time);
+			}
+			axis.drag(action.time, -action.point.y);
+			writeScroll();
+		}
+		else if (action.kind == GAGCore::TouchActionKind::PanEnd)
+		{
+			if (scrolling && scrolling->axis.isDragging())
+			{
+				scrolling->axis.endDrag(action.time);
+				writeScroll();
+				if (scrolling && !scrolling->axis.isAnimating())
+					scrolling.reset();
+			}
+		}
+		else if (action.kind == GAGCore::TouchActionKind::Select && swallowTap)
+		{
+			swallowTap = false;
+			pressedKey.clear();
+			pressedNode = nullptr;
 		}
 		else if (action.kind == GAGCore::TouchActionKind::Select)
 		{
@@ -308,17 +388,27 @@ void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point)
 		{
 			pressedKey.clear();
 			pressedNode = nullptr;
+			dropScroll();
 		}
 	}
 }
 
-void Host::pointer(PointerPhase phase, Point point, std::int64_t device, std::int64_t finger)
+void Host::pointer(PointerPhase phase, Point point, std::int64_t device, std::int64_t finger, GAGCore::Ticks time)
 {
 	layoutIfNeeded();
 	if (phase == PointerPhase::Down)
 	{
 		downPoint = point;
 		panning = false;
+		swallowTap = false;
+		if (scrolling && scrolling->axis.isAnimating())
+		{
+			// A touch on coasting content stops it where it is and is not a tap.
+			scrolling->axis.interrupt();
+			writeScroll();
+			auto *under = scrollableAt(point);
+			swallowTap = scrolling && under && under->key == scrolling->key;
+		}
 		if (popup && !popup->bounds.contains(point))
 		{
 			closePopup();
@@ -341,7 +431,7 @@ void Host::pointer(PointerPhase phase, Point point, std::int64_t device, std::in
 		}
 		auto *scrollNode = scrollableAt(point);
 		panKey = scrollNode ? scrollNode->key : "";
-		apply(touch.down(device, finger, {double(point.x), double(point.y)}), point);
+		apply(touch.down(device, finger, {double(point.x), double(point.y)}, time), point, device);
 		return;
 	}
 	if (!capturedKey.empty())
@@ -358,17 +448,20 @@ void Host::pointer(PointerPhase phase, Point point, std::int64_t device, std::in
 		return;
 	}
 	if (phase == PointerPhase::Move)
-		apply(touch.move(device, finger, {double(point.x), double(point.y)}), point);
+		apply(touch.move(device, finger, {double(point.x), double(point.y)}, time), point, device);
 	else if (phase == PointerPhase::Up)
-		apply(touch.up(device, finger, {double(point.x), double(point.y)}), point);
+	{
+		apply(touch.up(device, finger, {double(point.x), double(point.y)}, time), point, device);
+		settleScroll(time);
+	}
 	else
-		apply(touch.cancel(), point);
+		apply(touch.cancel(), point, device);
 }
 
 void Host::tapAt(Point point)
 {
-	pointer(PointerPhase::Down, point, -1, 0);
-	pointer(PointerPhase::Up, point, -1, 0);
+	pointer(PointerPhase::Down, point, -1, 0, lastTick);
+	pointer(PointerPhase::Up, point, -1, 0, lastTick);
 }
 
 bool Host::event(const SDL_Event &event)
@@ -376,6 +469,7 @@ bool Host::event(const SDL_Event &event)
 	layoutIfNeeded();
 	if (touchMouse(event))
 		return true;
+	const GAGCore::Ticks time = GAGCore::widenTicks(event.common.timestamp, lastTick);
 	switch (event.type)
 	{
 	case SDL_FINGERDOWN:
@@ -387,7 +481,7 @@ bool Host::event(const SDL_Event &event)
 		const auto phase = event.type == SDL_FINGERDOWN   ? PointerPhase::Down
 						   : event.type == SDL_FINGERUP ? PointerPhase::Up
 														  : PointerPhase::Move;
-		pointer(phase, point, event.tfinger.touchId, event.tfinger.fingerId);
+		pointer(phase, point, event.tfinger.touchId, event.tfinger.fingerId, time);
 		return true;
 	}
 	case SDL_MOUSEBUTTONDOWN:
@@ -397,12 +491,12 @@ bool Host::event(const SDL_Event &event)
 		hover = {event.button.x, event.button.y};
 		hoverValid = true;
 		pointer(event.type == SDL_MOUSEBUTTONDOWN ? PointerPhase::Down : PointerPhase::Up, hover,
-				-1, 0);
+				-1, 0, time);
 		return true;
 	case SDL_MOUSEMOTION:
 		hover = {event.motion.x, event.motion.y};
 		hoverValid = true;
-		pointer(PointerPhase::Move, hover, -1, 0);
+		pointer(PointerPhase::Move, hover, -1, 0, time);
 		return true;
 	case SDL_MOUSEWHEEL:
 	{
@@ -625,6 +719,20 @@ void Host::scrollIntoView(const std::string &key)
 void Host::update(Uint32 tick)
 {
 	lastTick = tick;
+	if (scrolling && scrolling->axis.isAnimating())
+	{
+		auto *node = find(scrolling->key);
+		if (!node || node->scrollOffset() != scrolling->lastWritten)
+			dropScroll(); // Something else moved the content; it wins.
+		else
+		{
+			scrolling->axis.setBounds(0, node->scrollMaximum(), node->bounds.h);
+			scrolling->axis.step(tick);
+			writeScroll();
+			if (scrolling && !scrolling->axis.isAnimating())
+				scrolling.reset();
+		}
+	}
 	layoutIfNeeded();
 }
 
