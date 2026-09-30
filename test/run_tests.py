@@ -263,6 +263,7 @@ def run_job(job, args, build_dir):
             env.setdefault('LIBGL_ALWAYS_SOFTWARE', '1')
     else:
         env['SDL_VIDEODRIVER'] = 'dummy'
+        env['SDL_RENDER_DRIVER'] = 'software'  # the dummy driver has no accelerated renderer
     if args.update_fixtures:
         env['GLOB2_TEST_UPDATE_FIXTURES'] = '1'
     if args.artifacts:

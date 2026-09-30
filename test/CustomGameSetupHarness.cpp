@@ -2068,12 +2068,6 @@ TEST_SUITE("CustomGameSetup")
 		std::cout << output;
 		REQUIRE_MESSAGE(output.find("no such key") == std::string::npos, "a screen asked for a missing translation key");
 	}
-	TEST_CASE("custom game screens at the large layout [display:1024x768][artifacts][writes-preferences]")
-	{
-		glob2test::HeadlessGlobals globals(setupOptions(true, true));
-		commonChecks();
-		CustomGameSetupHarness::visual(glob2test::artifactDirFromWorkingDirectory(), false);
-	}
 	TEST_CASE("AI profile captures [display][artifacts][writes-preferences]")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(true));

@@ -16,6 +16,20 @@ test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src
 # Console entry point for every test binary: no -mwindows, no SDL2main.
 test_env['LINKFLAGS'] = [flag for flag in test_env.Split(test_env['LINKFLAGS']) if flag != '-mwindows']
 test_env['LIBS'] = [lib for lib in test_env['LIBS'] if lib != 'SDL2main']
+# The mingw SDL configuration renames main to SDL_main so SDL2main's WinMain can call
+# it; these binaries carry their own console main, so drop the rename and tell SDL's
+# headers not to repeat it.
+
+
+def not_sdl_main(item):
+    return not (item == 'main=SDL_main' or (isinstance(item, tuple) and item[0] == 'main'))
+
+
+defines = test_env.get('CPPDEFINES', [])
+test_env['CPPDEFINES'] = [d for d in ([defines] if isinstance(defines, str) else list(defines)) if not_sdl_main(d)]
+for var in ('CCFLAGS', 'CXXFLAGS', 'CPPFLAGS'):
+    test_env[var] = [flag for flag in test_env.Split(test_env.get(var, [])) if flag != '-Dmain=SDL_main']
+test_env.Append(CPPDEFINES=['SDL_MAIN_HANDLED'])
 
 
 def available(options):

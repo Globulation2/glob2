@@ -2,7 +2,9 @@
 // Entry point shared by glob2-engine-tests and glob2-unit-tests. Makes a bare
 // invocation from a shell safe: the process always runs in a disposable profile with
 // SDL's dummy drivers unless the caller (normally test/run_tests.py) decides otherwise.
+#ifndef SDL_MAIN_HANDLED
 #define SDL_MAIN_HANDLED
+#endif
 #include <SDL.h>
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "Glob2Test.h"
@@ -41,7 +43,10 @@ namespace
 		// video driver; everything else renders nowhere.
 		const char* display = std::getenv("GLOB2_TEST_DISPLAY");
 		if (!display || !*display || std::string(display) == "0")
+		{
 			SDL_setenv("SDL_VIDEODRIVER", "dummy", 0);
+			SDL_setenv("SDL_RENDER_DRIVER", "software", 0);  // the dummy driver has no accelerated renderer
+		}
 		SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
 	}
 
