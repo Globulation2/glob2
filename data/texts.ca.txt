@@ -3178,6 +3178,8 @@ Dreta
 Esquerra
 [Undo stroke]
 Desfés
+[No overlay]
+Sense capa
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

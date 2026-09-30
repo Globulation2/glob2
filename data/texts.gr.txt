@@ -3240,6 +3240,8 @@ Emoji
 Αριστερά
 [Undo stroke]
 Αναίρεση
+[No overlay]
+Χωρίς επίστρωση
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

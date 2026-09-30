@@ -147,6 +147,7 @@ CLIENT_SOURCES = (
     'gui/ThumbSide.cpp',
     'gui/TouchDial.cpp',
     'gui/BrushHUD.cpp',
+    'gui/GameGUITouchLens.cpp',
     'gui/GameGUITouchDial.cpp',
     'map/edit/PhoneEditor.cpp',
     'map/edit/PhoneEditorView.cpp',

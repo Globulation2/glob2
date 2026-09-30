@@ -1342,6 +1342,115 @@ class GameGUITouchHarness
 				gui.clearSelection();
 				require(!gui.touch->zoneUndo && !gui.touch->brushPan, "Leaving the brush forgets Undo and Pan");
 			}
+			{
+				// Tools opens the lens strip; lenses run the tactical actions.
+				auto centre = [](const GAGCore::ViewRect &r) { return GAGCore::ViewPoint{r.x + r.w / 2, r.y + r.h / 2}; };
+				gui.clearSelection();
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+				gui.touch->panelOpen = false;
+				gui.touch->lensOpen = false;
+				const auto bar = gui.touch->layout().actions;
+				tap(bar.x + bar.w * 2.5f / 6, bar.y + bar.h / 2);
+				require(gui.touch->lensVisible(), "Tools opens the lens strip");
+				const auto ui = gui.touch->layout();
+				const auto rects = gui.touch->lensRects(ui);
+				const auto items = gui.touch->lenses();
+				auto at = [&](int action)
+				{
+					for (size_t i = 0; i < items.size(); ++i)
+						if (items[i].action == action)
+							return centre(rects[i]);
+					throw std::runtime_error("Missing lens");
+				};
+				const auto mini = gui.touch->minimapRect();
+				for (const auto &r : rects)
+					require(r.x >= ui.safe.x && r.x + r.w <= ui.safe.x + ui.safe.w && r.y + r.h <= ui.actions.y &&
+								r.y >= mini.y + mini.h,
+							"Lenses sit between the minimap and the toolbar");
+				require(std::abs(rects[0].y + rects[0].h - (ui.actions.y - 8 * unit)) < 1 &&
+							rects[0].x + rects[0].w > ui.safe.x + ui.safe.w - 24 * unit,
+						"The first lens sits in the thumb corner");
+				const auto checksum = gui.game.checkSum();
+				bool *flags[] = {&gui.showStarvingMap, &gui.showDamagedMap, &gui.showDefenseMap, &gui.showFertilityMap};
+				for (int k = 0; k < 4; ++k)
+				{
+					const auto p = at(20 + k);
+					tap(p.x, p.y);
+					for (int j = 0; j < 4; ++j)
+						require(*flags[j] == (j == k), "Overlay lenses are mutually exclusive");
+				}
+				gui.drawAll(0);
+				gfx->printScreen(width < height ? "touch-lenses-portrait.bmp" : "touch-lenses-landscape.bmp");
+				gfx->nextFrame();
+				gui.touch->lensOpen = false;
+				gui.drawAll(0);
+				gfx->printScreen(width < height ? "touch-legend-portrait.bmp" : "touch-legend-landscape.bmp");
+				gfx->nextFrame();
+				gui.touch->lensOpen = true;
+				auto p = at(-10);
+				tap(p.x, p.y);
+				require(!gui.showStarvingMap && !gui.showDamagedMap && !gui.showDefenseMap && !gui.showFertilityMap,
+						"The No overlay lens clears overlays");
+				const bool bars = gui.drawHealthFoodBar;
+				p = at(6);
+				tap(p.x, p.y);
+				require(gui.drawHealthFoodBar != bars, "The health bar lens toggles bars");
+				tap(p.x, p.y);
+				require(gui.drawHealthFoodBar == bars && gui.touch->lensVisible(), "Lenses stay open while toggled");
+				noOrder();
+				require(gui.orderQueue.empty() && gui.game.checkSum() == checksum, "Lenses change no simulation state");
+				// The map lens opens the peek: drag to steer, buttons zoom, outside closes.
+				p = at(50);
+				tap(p.x, p.y);
+				require(gui.touch->peekOpen && !gui.touch->lensVisible(), "The map lens opens the map peek");
+				gui.drawAll(0); // Builds the peek's minimap.
+				const auto peek = gui.touch->peekRect();
+				require(peek.w >= 200 * unit || peek.w >= ui.world.h - 120 * unit, "The map peek is large");
+				const GAGCore::ViewPoint a{peek.x + peek.w * .3, peek.y + peek.h * .3}, b{peek.x + peek.w * .7, peek.y + peek.h * .6};
+				finger(SDL_FINGERDOWN, 1, a.x, a.y);
+				finger(SDL_FINGERMOTION, 1, b.x, b.y);
+				const int dragX = gui.viewportX, dragY = gui.viewportY;
+				gui.touch->navigatePeek(b);
+				require(gui.viewportX == dragX && gui.viewportY == dragY, "Dragging in the peek steers the camera");
+				gui.touch->navigatePeek(a);
+				require(gui.viewportX != dragX || gui.viewportY != dragY, "Peek drag fixture moves the camera");
+				finger(SDL_FINGERUP, 1, b.x, b.y);
+				gui.drawAll(0);
+				gfx->printScreen(width < height ? "touch-peek-portrait.bmp" : "touch-peek-landscape.bmp");
+				gfx->nextFrame();
+				const auto buttons = gui.touch->peekButtons();
+				gui.updateCamera();
+				gui.camera.setZoom(1, gfx->getW() / 2, gfx->getH() / 2);
+				tap(centre(buttons[2]).x, centre(buttons[2]).y);
+				require(std::abs(gui.camera.zoom - InGameTouchTheme::peekZoomStep) < 0.01, "Peek + zooms in");
+				tap(centre(buttons[1]).x, centre(buttons[1]).y);
+				require(std::abs(gui.camera.zoom - 1) < 0.01 && gui.touch->peekOpen, "Peek − zooms out");
+				const GAGCore::ViewPoint outside{ui.world.x + 8 * unit, ui.world.y + 8 * unit};
+				require(!peek.contains(outside), "Outside fixture must miss the peek");
+				tap(outside.x, outside.y);
+				require(!gui.touch->peekOpen && gui.touch->lensVisible(), "A tap outside closes the peek");
+				noOrder();
+				// A still press on the minimap opens the peek; its release does nothing.
+				gui.touch->lensOpen = false;
+				finger(SDL_FINGERDOWN, 1, centre(mini).x, centre(mini).y);
+				gui.touch->minimapPress = SDL_GetTicks64() - 1000;
+				gui.touch->prepareDraw();
+				require(gui.touch->peekOpen, "A still press on the minimap opens the map peek");
+				const int heldX = gui.viewportX, heldY = gui.viewportY;
+				finger(SDL_FINGERUP, 1, centre(mini).x, centre(mini).y);
+				require(gui.touch->peekOpen && gui.viewportX == heldX && gui.viewportY == heldY,
+						"Releasing the press neither navigates nor closes the peek");
+				SDL_Event focus{};
+				focus.type = SDL_WINDOWEVENT;
+				focus.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+				gui.processEvent(&focus);
+				focus.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+				gui.processEvent(&focus);
+				require(!gui.touch->peekOpen, "Focus loss closes the peek");
+				gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+				gui.touch->panelOpen = true; // The palette state the following cases start from.
+				noOrder();
+			}
 			auto ui = gui.touch->layout();
 			const int cameraX = gui.viewportX, cameraY = gui.viewportY;
 			finger(SDL_FINGERDOWN, 1, ui.panel.x + 2 * unit, ui.panel.y + 70 * unit);

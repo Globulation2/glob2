@@ -3176,6 +3176,8 @@ Direita
 Esquerda
 [Undo stroke]
 Anular
+[No overlay]
+Sem camada
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -124,6 +124,21 @@ MobileLayout GameGUITouch::layout() const
 	}
 	if (dial && gui.selectionMode != GameGUI::BRUSH_SELECTION)
 		result.panel = dialLayout(result).bounds;
+	// The compact lens strip replaces the tactical list's drawer.
+	if (lensOpen && usesHUD() && !result.persistentPanel && gui.selectionMode == GameGUI::NO_SELECTION &&
+		gui.displayMode == GameGUI::STAT_TEXT_VIEW && !globalContainer->isViewingGame() && !peekOpen)
+	{
+		const auto rects = lensRects(result);
+		double x0 = rects.front().x, y0 = rects.front().y, x1 = x0, y1 = y0;
+		for (const auto &r : rects)
+		{
+			x0 = std::min(x0, r.x);
+			y0 = std::min(y0, r.y);
+			x1 = std::max(x1, r.x + r.w);
+			y1 = std::max(y1, r.y + r.h);
+		}
+		result.panel = {x0, y0, x1 - x0, y1 - y0};
+	}
 	return result;
 }
 double GameGUITouch::tutorialMaximum() const
@@ -200,7 +215,8 @@ void GameGUITouch::syncGestureExclusion()
 	if (usesHUD() && !activeDialog())
 	{
 		const auto ui = layout();
-		if (((showsBuildPalette() && paletteRail(ui)) || (inspectedBuilding() && !ui.persistentPanel)) &&
+		if (((showsBuildPalette() && paletteRail(ui)) || (inspectedBuilding() && !ui.persistentPanel) ||
+			 lensVisible()) &&
 			ui.panel.w > 0 && ui.panel.h > 0)
 			wanted.push_back(ui.panel);
 	}
@@ -270,6 +286,8 @@ void GameGUITouch::cancel(bool preservePreview)
 	placementHold.reset();
 	strokeHold.reset();
 	railTouched = -1;
+	peekOpen = false;
+	minimapPress.reset();
 	allocation.reset();
 	stroke.cancel();
 	commitDeferredStroke(); // A completed tap is not undone by an interruption.
@@ -292,6 +310,17 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 {
 	if (gui.inGameMenu || gui.typingInputScreen || gui.scrollableText)
 		return 4;
+	if (usesHUD() && peekOpen)
+	{
+		// The map peek owns every touch until it closes.
+		if (peekRect().contains(point))
+			return 40;
+		const auto buttons = peekButtons();
+		for (int i = 0; i < int(buttons.size()); ++i)
+			if (buttons[i].contains(point))
+				return 41 + i;
+		return 44;
+	}
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION && controls().contains(point))
 		return 9;
 	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION &&
@@ -342,6 +371,14 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	{
 		targets = {confirmRect(), cancelRect()};
 	}
+	if (peekOpen)
+	{
+		targets = peekButtons();
+		targets.insert(targets.begin(), peekRect());
+		return targets;
+	}
+	if (lensVisible())
+		return lensRects(layout());
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION)
 	{
 		targets = brushBarButtons();
@@ -595,6 +632,11 @@ bool GameGUITouch::process(SDL_Event &event)
 					railTouched = hit.index;
 				}
 			}
+			// A still press on the minimap opens the map peek (see prepareDraw).
+			if (ownerRegion == 8)
+				minimapPress = SDL_GetTicks64();
+			else
+				minimapPress.reset();
 			if (natural == TouchMode::Paint && !zoomDrag && ownerRegion == 0)
 				strokeHold = TouchPlacementSession{key, point, {}, true, {}, point, SDL_GetTicks64(), gui.localTeamNo};
 			else
@@ -628,6 +670,8 @@ bool GameGUITouch::process(SDL_Event &event)
 		// its edge so a fast sweep never drops the drag.
 		if (usesHUD() && ownerRegion == 8 && fingers.size() == 1 && fingers.front() == key)
 			navigateMinimap(minimapRect().clamp(point));
+		if (usesHUD() && ownerRegion == 40 && peekOpen && fingers.size() == 1 && fingers.front() == key)
+			navigatePeek(point);
 		if (!fingers.empty() && fingers.front() == key)
 		{
 			touchPoint = point;
@@ -643,7 +687,10 @@ bool GameGUITouch::process(SDL_Event &event)
 		if (strokeHold && strokeHold->pointer == key)
 			strokeHold.reset();
 		if (fingers.size() <= 1)
+		{
 			railTouched = -1;
+			minimapPress.reset();
+		}
 		auto changes = gesture.up(key.first, key.second, {point.x / scale, point.y / scale}, time);
 		// A completed tap on the world arms one-finger zoom for the next contact.
 		const bool worldTap = changes.size() == 1 && !interfaceGesture && world().contains(point) &&
@@ -936,6 +983,22 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 {
 	if (activeDialog())
 		return;
+	if (usesHUD() && peekOpen)
+	{
+		const int region = interfaceRegion(point);
+		if (region == 40)
+			navigatePeek(point);
+		else if (region == 42 || region == 43)
+		{
+			const auto area = world();
+			gui.updateCamera();
+			gui.zoomMap((region == 43 ? 1 : -1) * std::log(InGameTouchTheme::peekZoomStep) / std::log(1.1),
+						int(area.x + area.w / 2), int(area.y + area.h / 2));
+		}
+		else
+			peekOpen = false; // Done, or a tap outside the peek.
+		return;
+	}
 	if (usesHUD() && interfaceRegion(point) == 38)
 	{
 		gui.clearSelection();
@@ -1053,11 +1116,21 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 				return;
 			if (button < 2)
 			{
+				lensOpen = false;
 				const auto mode = button == 0 ? GameGUI::CONSTRUCTION_VIEW : GameGUI::FLAG_VIEW;
 				panelOpen = !(panelOpen && gui.displayMode == mode &&
 							  gui.selectionMode == GameGUI::NO_SELECTION);
 				gui.clearSelection();
 				gui.displayMode = mode;
+			}
+			else if (gui.selectionMode == GameGUI::NO_SELECTION && !globalContainer->isViewingGame() &&
+					 !layout().persistentPanel)
+			{
+				// Compact: Tools opens the lens strip in the thumb corner.
+				lensOpen = !(lensOpen && !panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW);
+				panelOpen = false;
+				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+				gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
 			}
 			else
 			{
@@ -1092,6 +1165,15 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 	}
 	else if (hudInput && layout().panel.contains(point))
 	{
+		if (lensVisible())
+		{
+			const auto items = lenses();
+			const auto rects = lensRects(layout());
+			for (size_t i = 0; i < items.size() && i < rects.size(); ++i)
+				if (rects[i].contains(point))
+					menuAction(items[i].action);
+			return;
+		}
 		if (showsBuildPalette())
 			tapBuildPalette(point);
 		else if (inspectedBuilding())
@@ -1208,6 +1290,15 @@ void GameGUITouch::prepareDraw()
 	if (deferredStroke &&
 		SDL_GetTicks64() - deferredStroke->ticks >= InGameTouchTheme::doubleTapWindowMs)
 		commitDeferredStroke();
+	if (minimapPress && (touchTravelled || fingers.size() != 1 || ownerRegion != 8))
+		minimapPress.reset();
+	if (minimapPress && SDL_GetTicks64() - *minimapPress >= InGameTouchTheme::peekPressMs)
+	{
+		// The press became a request for the large map; its release does nothing.
+		peekOpen = true;
+		minimapPress.reset();
+		ignoreTouchSequence = true;
+	}
 	if (gui.selectionMode != GameGUI::BRUSH_SELECTION)
 	{
 		zoneUndo.reset();
@@ -1265,6 +1356,17 @@ void GameGUITouch::menuAction(int action)
 	{
 		showStatistics = false;
 		panelScroll = 0;
+		return;
+	}
+	if (action == -10)
+	{
+		// No overlay.
+		gui.showStarvingMap = gui.showDamagedMap = gui.showDefenseMap = gui.showFertilityMap = false;
+		return;
+	}
+	if (action == 50)
+	{
+		peekOpen = true;
 		return;
 	}
 	gui.closeDialog();

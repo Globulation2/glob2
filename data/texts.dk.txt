@@ -3246,6 +3246,8 @@ Højre
 Venstre
 [Undo stroke]
 Fortryd
+[No overlay]
+Intet lag
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

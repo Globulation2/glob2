@@ -3166,6 +3166,8 @@ Emoji
 왼쪽
 [Undo stroke]
 실행 취소
+[No overlay]
+오버레이 없음
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

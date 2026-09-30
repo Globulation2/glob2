@@ -645,6 +645,20 @@
       "availability": "mobile"
     },
     {
+      "id": "game-lens-legend",
+      "title": "Overlay legend",
+      "description": "With a lens active and the strip closed, a legend in the far corner names the overlay and shows its intensity ramp.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
+      "id": "game-map-peek",
+      "title": "Map peek",
+      "description": "A large minimap over the dimmed map, opened from the map lens or a long press on the minimap: drag to steer, zoom buttons below with + under the thumb, Done or a tap outside closes it.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
       "id": "game-zoom-drag",
       "title": "One-finger zoom",
       "description": "Mid-gesture: tap, then press again and drag. The zoom factor sits above the finger; releasing without travel restores 1:1.",
@@ -654,7 +668,7 @@
     {
       "id": "game-tactical-tools",
       "title": "Tactical tools",
-      "description": "Map overlays, allied markers, statistics and message history, separate from session actions.",
+      "description": "Phones: Tools opens a lens strip in the thumb corner (overlays, health bars, statistics, the map peek, history, map marks, chat). Spacious tablets and desktop keep the tactical list.",
       "group": "Gameplay"
     },
     {

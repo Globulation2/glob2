@@ -34,7 +34,16 @@ uses the portable renderer.
 The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
 alliances and the session menu. The minimap is a separate top-right HUD component.
 Tapping it centres the camera there; dragging keeps steering the camera and clamps
-at the minimap's edge when the finger leaves it;
+at the minimap's edge when the finger leaves it. A still 400 ms press on it, or the
+map lens, opens a map peek: a large minimap over the dimmed map that steers the
+camera while dragged, with Done, zoom out and zoom in (nearest the thumb) below
+it; a tap outside, Done, focus loss or rotation closes it. On compact layouts the
+Tools button opens a lens strip in the thumb corner instead of the tactical list:
+No overlay and the four overlays (mutually exclusive), health bars, statistics,
+the map peek, message history, map marks and chat, each running the same
+`menuAction` as the list. Once the strip closes, a legend in the far corner names
+the active overlay and shows its intensity ramp (`OverlayArea::colorOf`). Spacious
+layouts and replays keep the tactical list;
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
 leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains

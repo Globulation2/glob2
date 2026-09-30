@@ -3194,6 +3194,8 @@ Rechts
 Links
 [Undo stroke]
 Ongedaan
+[No overlay]
+Geen laag
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

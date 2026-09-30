@@ -3168,6 +3168,8 @@ Emoji
 اليسار
 [Undo stroke]
 تراجع
+[No overlay]
+بلا طبقة
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -3168,6 +3168,8 @@ Dekstre
 Maldekstre
 [Undo stroke]
 Malfari
+[No overlay]
+Sen tavolo
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -110,6 +110,30 @@ class GameGUITouch
 	GAGCore::ViewRect minimapRect() const;
 	void drawMinimap();
 	void navigateMinimap(GAGCore::ViewPoint point);
+	void navigateMinimapIn(Minimap &minimap, GAGCore::ViewRect rect, int size, GAGCore::ViewPoint point);
+	// Compact tactical tools: a lens strip in the thumb corner (overlays, health
+	// bars, statistics, the map peek, history, marks, chat), a legend for the
+	// active overlay, and a large map peek for one-thumb navigation.
+	struct Lens
+	{
+		std::string label;
+		int action;
+		bool selected;
+	};
+	bool lensOpen = false;
+	bool lensVisible() const;
+	std::vector<Lens> lenses() const;
+	std::vector<GAGCore::ViewRect> lensRects(const GAGCore::MobileLayout &ui) const;
+	void drawLenses();
+	GAGCore::ViewRect overlayLegendRect() const;
+	void drawOverlayLegend();
+	bool peekOpen = false;
+	std::unique_ptr<Minimap> peekMinimap;
+	std::optional<std::uint64_t> minimapPress;
+	GAGCore::ViewRect peekRect() const; // The map square.
+	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in (thumb side last).
+	void navigatePeek(GAGCore::ViewPoint point);
+	void drawPeek();
 	void drawBuildPalette();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();

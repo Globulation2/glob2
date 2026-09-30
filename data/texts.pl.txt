@@ -3170,6 +3170,8 @@ Prawa
 Lewa
 [Undo stroke]
 Cofnij
+[No overlay]
+Bez nakładki
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

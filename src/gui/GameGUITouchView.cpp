@@ -112,6 +112,11 @@ void GameGUITouch::drawPanel()
 		drawAllocation();
 		return;
 	}
+	if (lensVisible())
+	{
+		drawLenses();
+		return;
+	}
 	gfx->drawFilledRect(int(panel.x), int(panel.y), int(panel.w), int(panel.h),
 						InGameTouchTheme::paper);
 	if (showsBuildPalette())
@@ -254,6 +259,12 @@ void GameGUITouch::drawHUD()
 		drawPanel();
 	}
 	drawMinimap();
+	if (!activeDialog())
+	{
+		drawOverlayLegend();
+		if (peekOpen)
+			drawPeek();
+	}
 	if (gesture.zoomDragging())
 		TouchReadout::draw(touchPoint, zoomReadout(), ui.safe);
 	if (activeDialog())
@@ -542,19 +553,7 @@ void GameGUITouch::drawMinimap()
 }
 void GameGUITouch::navigateMinimap(ViewPoint point)
 {
-	const auto rect = minimapRect();
-	int x, y;
-	hudMinimap->convertToMap(globalContainer->gfx->getW() - 128 +
-								 int((point.x - rect.x) * 128 / rect.w),
-							 int((point.y - rect.y) * 128 / rect.h), x, y);
-	gui.updateCamera();
-	const int oldX = gui.viewportX, oldY = gui.viewportY;
-	gui.camera.originX = x * 32 - gui.camera.visibleW() / 2;
-	gui.camera.originY = y * 32 - gui.camera.visibleH() / 2;
-	gui.camera.normalize();
-	gui.viewportX = gui.camera.tileX();
-	gui.viewportY = gui.camera.tileY();
-	gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
+	navigateMinimapIn(*hudMinimap, minimapRect(), 128, point);
 }
 std::vector<std::pair<std::string, int>> GameGUITouch::tacticalActions() const
 {

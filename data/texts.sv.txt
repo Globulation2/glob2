@@ -3180,6 +3180,8 @@ Höger
 Vänster
 [Undo stroke]
 Ångra
+[No overlay]
+Inget lager
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]
