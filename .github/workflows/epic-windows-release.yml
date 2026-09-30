@@ -30,6 +30,14 @@ jobs:
       short_sha: ${{ steps.check.outputs.short_sha }}
       source_sha: ${{ steps.check.outputs.source_sha }}
     steps:
+      - name: Require private release repository
+        env:
+          REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
+        run: |
+          if [[ "$REPOSITORY_PRIVATE" != true ]]; then
+            echo '::error::The release repository must be private before dispatching Epic uploads.'
+            exit 1
+          fi
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: Globulation2/glob2
@@ -122,6 +130,10 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Reject BPT secret stored as a variable
+        if: ${{ vars.EPIC_BPT_CLIENT_SECRET != '' }}
+        shell: pwsh
+        run: throw 'EPIC_BPT_CLIENT_SECRET must be an epic-dev environment secret, never a variable'
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: epic-windows-${{ needs.preflight.outputs.source_sha }}
