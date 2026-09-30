@@ -47,26 +47,26 @@ scons -C test                 # rebuild the separate test suite
   are the files to place at the root of a Windows Steam depot. The workflow does
   not upload to Steam or publish a release. The separate **Upload Steam Windows
   depot** workflow is stored here for review and synchronization, but its package
-  and upload jobs run only when manually dispatched in the owner-only private
+  and upload jobs run only when manually dispatched in the owner-controlled public
   `genixpro/glob2-release` mirror from `master`. Its upload job uses the
   `steam-release` environment, restricted to that branch, and reads Steam
-  credentials only there. The public repository has no Steam credentials, cannot
+  credentials only there. The `Globulation2/glob2` source repository has no Steam credentials, cannot
   pass credentials into the package workflow, and cannot start an upload job.
   The owner syncs the mirror and dispatches each upload; no push, pull request,
   `workflow_run`, or repository event starts it. The upload creates an unpublished
   SteamPipe build. It does not set a Steam branch live or publish store changes.
   Configure `STEAM_APP_ID`, `STEAM_WINDOWS_DEPOT_ID`, and
   `STEAM_BUILD_USERNAME` as environment variables and
-  `STEAM_CONFIG_VDF_BASE64` as an environment secret on the private mirror only.
+  `STEAM_CONFIG_VDF_BASE64` as an environment secret on the release mirror only.
   The latter is the base64-encoded `config/config.vdf` from a dedicated SteamCMD
   builder account after an interactive Steam Guard login; preserve and refresh it
   if SteamCMD updates the login token. Never place it in a depot, workflow artifact,
-  public repository secret, or the public workflow. Steamworks must have a Windows
+  source repository secret, or the source workflow. Steamworks must have a Windows
   depot assigned to the app and its test package, with a `glob2.exe` launch option.
   Check the result interactively on a clean Windows installation before using it
-  in Steamworks. Current Windows gameplay can write saves under the depot's
-  `games/` directory when `GLOB2_USER_DATA_DIR` is unset, so validate save and
-  load under the intended Steam install permissions before setting a build live.
+  in Steamworks. Windows gameplay now defaults saves to SDL's per-user preference
+  directory when `GLOB2_USER_DATA_DIR` is unset; validate save and load before
+  setting a build live.
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
@@ -133,6 +133,86 @@ Test runners use the current host’s native release directory. Set
 `GLOB2_BUILD_DIR` when using `--build`, a debug build, or `wss=0` (whose client
 role directory is `client-tcp`). Pass explicit binary paths to CLI tools when
 comparing builds; do not pick an old binary by modification time.
+
+### Windows Store release
+
+`.github/workflows/windows-store-release.yml` is a manual `workflow_dispatch` on
+`windows-2025`. Its sole job is gated to the owner of `genixpro/glob2-release`
+on `master`:
+the public `Globulation2/glob2` repository stores the workflow and build code for
+review, but dispatching it there cannot build, sign, upload or publish a release.
+The owner syncs the public changes into the public release mirror and starts each
+release there manually. Merge public `master` into the mirror's `master` so
+mirror-only release configuration stays in place. The workflow builds the existing MinGW x64
+client, stages its runtime DLLs, game assets and GPL license, creates
+`MicrosoftGame.config` and shell logos, then
+uses the Microsoft GDK to produce an MSIXVC package. With `upload: false`, it
+creates an installable test-signed package and retains the package and validator
+report as a publicly accessible GitHub Actions artifact. With `upload: true`, it
+creates a submission-encrypted package and sends it with its encryption key blob
+directly to an existing Partner Center branch; neither is retained as a public
+artifact. Keep credentials out of workflow logs and artifacts.
+The workflow does not submit a listing for certification or publish it to retail.
+
+The individual Windows developer account for Bradley Arsenault is enrolled, and
+the [Globulation 2 PC game product](https://partner.microsoft.com/en-US/dashboard/products/9PH4FCRMX19F/setup)
+has been reserved in Partner Center. Its package identity and initial package
+branch are:
+
+| Partner Center field | Value |
+| --- | --- |
+| Store ID | `9PH4FCRMX19F` |
+| Package Identity Name | `BradleyArsenault.Globulation2` |
+| Package Identity Publisher | `CN=EBC9B192-6200-443B-BFEB-9B00B0B78F67` |
+| Publisher display name | `Bradley Arsenault` |
+| Package branch | `Main` |
+
+The product has not been submitted for certification. On the
+**release mirror only**, create a GitHub Actions environment named `windows-store`,
+restrict deployment branches to `master`, and set these environment variables
+from Partner Center:
+
+| Variable | Value |
+| --- | --- |
+| `STORE_ID` | 12-character Store ID (also the Package Uploader Big ID) |
+| `STORE_IDENTITY_NAME` | Package Identity Name |
+| `STORE_PUBLISHER` | Package Identity Publisher, including `CN=` |
+| `STORE_PUBLISHER_DISPLAY_NAME` | Publisher display name |
+| `STORE_BRANCH` | Existing Partner Center branch for package upload |
+
+For upload, associate a Microsoft Entra tenant with this Partner Center developer
+account. The first release tenant may be temporary. Register an Entra application
+in that tenant, grant it **Publishing: Read/Write** for this product,
+and add its tenant ID, application ID and client secret as environment secrets named
+`STORE_TENANT_ID`, `STORE_CLIENT_ID`, and `STORE_CLIENT_SECRET`.
+The `STORE_BRANCH` variable is required for upload. Never add these secrets,
+the environment or a privileged trigger to `Globulation2/glob2`.
+
+When a permanent organization tenant is ready, associate it with the same Partner
+Center account, register a new product-scoped publishing application there, and
+replace the three `STORE_*` upload secrets in the release mirror environment.
+Verify an upload with the new credentials before revoking the temporary
+application and removing its Partner Center tenant association. This is a
+credential and Partner Center association change, not a tenant transfer. The
+Store product identity above stays with the Partner Center product.
+
+After syncing the mirror, run the workflow from its **Actions → Windows Store
+release → Run workflow** page on `master`, with a
+four-part package version greater than previous uploads. Leave `upload` false for
+the first run. Download the artifact and install the MSIXVC on a clean Windows PC
+with Gaming Services; verify launch, sound, saves, settings, uninstall and a
+subsequent version update. Windows saves and preferences default to SDL's per-user
+preference directory, while bundled data remains read from the installation
+directory. After the package passes installation testing, rerun with `upload` true
+and advance the Partner Center submission through its listing, age rating and
+certification steps. Keep the corresponding GPL source available with each
+distributed version.
+
+The Store package uses original MSIXVC, supported by the currently released
+GDK. A future MSIXVC2 migration needs its own Partner Center package branch.
+See Microsoft's [PC packaging guide](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/overviews/packaging-getting-started-for-pc),
+[MakePkg reference](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg),
+and [Package Uploader setup](https://github.com/microsoft/PackageUploader).
 
 ## Simulation verification and diagnostics
 

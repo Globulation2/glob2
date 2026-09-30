@@ -25,6 +25,7 @@ def main():
     parser.add_argument('--android-sdk',default=str(ROOT/'build/mobile-tools/android-sdk'))
     parser.add_argument('--gradle')
     parser.add_argument('--version-code',type=int,default=1,help='Play version code; increase it for each upload')
+    parser.add_argument('--amazon-apk',action='store_true',help='Package both ARM ABIs for the Amazon Appstore')
     parser.add_argument('--version-name',help='Android release version name')
     parser.add_argument('--keystore',type=Path,help='Private upload keystore for sign-bundle')
     parser.add_argument('--key-alias',help='Upload key alias for sign-bundle')
@@ -33,9 +34,13 @@ def main():
     args=parser.parse_args()
     if not 1<=args.adb_port<=65535: raise ValueError('--adb-port must be between 1 and 65535')
     if args.version_code < 1: raise ValueError('--version-code must be positive')
+    if args.amazon_apk and (not args.release or args.arch != 'arm64-v8a' or args.command not in ('configure','build')):
+        raise ValueError('--amazon-apk requires an arm64-v8a release configure or build')
     version_name=args.version_name or (PACKAGE_VERSION if args.release else '0.9.5-mobile-dev')
     if not version_name or any(ch in version_name for ch in '\r\n'):
         raise ValueError('--version-name must be nonempty and on one line')
+    if args.amazon_apk and (args.china or version_name != PACKAGE_VERSION):
+        raise ValueError('--amazon-apk requires the standard package and PACKAGE_VERSION')
     if args.command=='bundle' and not args.release: raise ValueError('Play bundles must be release builds')
     identity=build_identity({'target':'android','arch':args.arch,'release':int(args.release),'china':int(args.china)})
     output=ROOT/default_directory(identity)
@@ -86,11 +91,13 @@ def main():
         else:
             subprocess.run(adb+['shell','am','start','-n','org.globulation2.glob2/.Glob2Activity'],check=True)
         return
-    arch={'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[args.arch]
-    prefix=output/'vcpkg-installed'/('glob2-'+arch+'-android')
-    subprocess.run(['scons','target=android','arch='+args.arch,'release='+str(int(args.release)),
-        'china='+str(int(args.china)),
-        'android_sdk='+str(sdk),'mobile_deps='+str(prefix),'-j8'],cwd=ROOT,check=True)
+    arches=('arm64-v8a','armeabi-v7a') if args.amazon_apk else (args.arch,)
+    outputs={abi:ROOT/default_directory(build_identity({'target':'android','arch':abi,'release':int(args.release),'china':int(args.china)})) for abi in arches}
+    prefixes={abi:outputs[abi]/'vcpkg-installed'/('glob2-'+{'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[abi]+'-android') for abi in arches}
+    for abi in arches:
+        subprocess.run(['scons','target=android','arch='+abi,'release='+str(int(args.release)),
+            'china='+str(int(args.china)),
+            'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j8'],cwd=ROOT,check=True)
     with BuildLock(output):
         # Only refresh the generated source inputs, leaving Gradle build products intact.
         for source_tree in ('app/src/main/java', 'app/src/androidTest/java'):
@@ -100,6 +107,7 @@ def main():
         shutil.copy2(LOCK,project/'glob2-toolchain.json')
         native_command=[sys.executable,str(ROOT/'mobile/android.py'),'configure','--arch',args.arch,
             '--android-sdk',str(sdk),'--version-code',str(args.version_code)]
+        if args.amazon_apk: native_command.append('--amazon-apk')
         if args.version_name: native_command.extend(['--version-name',args.version_name])
         if args.release: native_command.append('--release')
         if args.china: native_command.append('--china')
@@ -109,17 +117,22 @@ def main():
         generated=project/'app/generated'
         if generated.exists(): shutil.rmtree(generated)
         generated.mkdir(parents=True)
-        jni=generated/'jniLibs'/args.arch;jni.mkdir(parents=True)
-        shutil.copy2(output/'lib/libmain.so',jni/'libmain.so')
-        manifest=json.loads((prefix/'manifest.json').read_text())
-        for filename in manifest['archives']:
-            if filename.endswith('.so'): shutil.copy2(prefix/filename,jni/Path(filename).name)
         ndk=sdk/'ndk'/json.loads(LOCK.read_text())['android']['ndk']
         prebuilt=next((ndk/'toolchains/llvm/prebuilt').iterdir())
-        triple={'arm64-v8a':'aarch64-linux-android','armeabi-v7a':'arm-linux-androideabi','x86_64':'x86_64-linux-android'}[args.arch]
-        shutil.copy2(prebuilt/'sysroot/usr/lib'/triple/'libc++_shared.so',jni/'libc++_shared.so')
-        for library in jni.glob('*.so'):
-            verify_android_shared_library(library,args.arch)
+        library_sets=[]
+        for abi in arches:
+            jni=generated/'jniLibs'/abi;jni.mkdir(parents=True)
+            shutil.copy2(outputs[abi]/'lib/libmain.so',jni/'libmain.so')
+            manifest=json.loads((prefixes[abi]/'manifest.json').read_text())
+            for filename in manifest['archives']:
+                if filename.endswith('.so'): shutil.copy2(prefixes[abi]/filename,jni/Path(filename).name)
+            triple={'arm64-v8a':'aarch64-linux-android','armeabi-v7a':'arm-linux-androideabi','x86_64':'x86_64-linux-android'}[abi]
+            shutil.copy2(prebuilt/'sysroot/usr/lib'/triple/'libc++_shared.so',jni/'libc++_shared.so')
+            for library in jni.glob('*.so'):
+                verify_android_shared_library(library,abi)
+            library_sets.append({p.name for p in jni.glob('*.so')})
+        if len(library_sets)>1 and library_sets[0]!=library_sets[1]:
+            raise ValueError('Amazon APK needs matching native libraries in both ARM ABIs')
         java=list((output/'vcpkg-buildtrees/sdl2/src').glob('*/android-project/app/src/main/java'))
         if len(java)!=1: raise ValueError('Expected one pinned SDL Java source tree; clean the SDL dependency buildtree and rebuild dependencies')
         shutil.copytree(java[0],generated/'java')
@@ -167,9 +180,15 @@ def main():
                 aligned.unlink(missing_ok=True)
         developer_apk.verify_alignment(ROOT,sdk,apk)
         verify_apk_assets(apk)
-        build_id = verify_android_symbols(apk, output/'lib/libmain.so', args.arch, readelf)
-        apk.with_suffix('.symbols.json').write_text(json.dumps({'build_id':build_id, 'architecture':args.arch}, indent=2)+'\n')
-        print('Verified Android symbol build ID:', build_id)
+        build_ids={abi:verify_android_symbols(apk, outputs[abi]/'lib/libmain.so', abi, readelf) for abi in arches}
+        if args.amazon_apk:
+            apk.with_suffix('.json').write_text(json.dumps({'sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),
+                'version_code':args.version_code,'version_name':PACKAGE_VERSION,
+                'package':'org.globulation2.glob2','architectures':list(arches),
+                'build_ids':build_ids},indent=2)+'\n')
+        else:
+            apk.with_suffix('.symbols.json').write_text(json.dumps({'build_id':build_ids[args.arch], 'architecture':args.arch}, indent=2)+'\n')
+        print('Verified Android symbol build IDs:',build_ids)
 
 if __name__=='__main__':
     try: main()

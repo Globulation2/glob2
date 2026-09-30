@@ -79,6 +79,16 @@ namespace GAGCore
             std::filesystem::create_directories(path);
             addDir(path.string());
         }
+		#ifdef WIN32
+		else {
+			// Store packages and ordinary installs should keep saves and settings
+			// in a writable per-user folder, ahead of the bundled asset directory.
+			char* prefPath = SDL_GetPrefPath("Globulation2", "glob2");
+			if (!prefPath) throw std::runtime_error("Unable to create Glob2 user data directory");
+			addDir(prefPath);
+			SDL_free(prefPath);
+		}
+		#endif
 		#ifndef WIN32
 		const char *experimentDir = getenv("GLOB2_USER_DIR");
 		const char *home = getenv("HOME");
@@ -99,6 +109,20 @@ namespace GAGCore
 #endif
 		const char* assets = SDL_getenv("GLOB2_ASSET_DIR");
 		if (assets && *assets) addDir(assets);
+		#ifdef WIN32
+		// Store launches do not promise that the current directory is the
+		// installed game's directory.
+		std::vector<char> executablePath(260);
+		DWORD length = 0;
+		for (;;) {
+			length = GetModuleFileNameA(NULL, executablePath.data(),
+				static_cast<DWORD>(executablePath.size()));
+			if (length == 0 || length < executablePath.size()) break;
+			executablePath.resize(executablePath.size() * 2);
+		}
+		if (length > 0)
+			addDir(std::filesystem::path(std::string(executablePath.data(), length)).parent_path().string());
+		#endif
 		addDir(".");
 
 		#ifndef WIN32
