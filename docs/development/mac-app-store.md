@@ -31,7 +31,8 @@ repository. Changes to the workflow, SCons bundle code, or `darwin/` trigger a
 compile and raw-binary smoke test on public pull requests. Public manual runs and
 private mirror pull requests skip the build job. Bundling, sandbox staging, and
 signing occur only on a manual run from the private mirror's `master` branch.
-The upload job also requires that repository, branch, event, and `upload=true`.
+Both private jobs require GitHub to report the mirror as private; the upload job
+also requires that repository, branch, event, and `upload=true`.
 Do not configure Mac release secrets in the public repository.
 
 For a release, first sync the reviewed public source to the owner-only private

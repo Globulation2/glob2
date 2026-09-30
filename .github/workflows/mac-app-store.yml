@@ -31,7 +31,7 @@ concurrency:
 jobs:
   build:
     name: Build game and test candidate
-    if: ${{ (github.repository == 'Globulation2/glob2' && github.event_name == 'pull_request') || (github.repository == 'genixpro/glob2-release' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
+    if: ${{ (github.repository == 'Globulation2/glob2' && github.event_name == 'pull_request') || (github.repository == 'genixpro/glob2-release' && github.event.repository.private && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
     runs-on: macos-26
     timeout-minutes: 90
     steps:
@@ -42,9 +42,11 @@ jobs:
         env:
           RELEASE_REF: ${{ github.ref }}
           RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
           RELEASE_EVENT: ${{ github.event_name }}
         run: |
           test "$RELEASE_REPOSITORY" = genixpro/glob2-release
+          test "$RELEASE_REPOSITORY_PRIVATE" = true
           test "$RELEASE_REF" = refs/heads/master
           test "$RELEASE_EVENT" = workflow_dispatch
 
@@ -115,7 +117,7 @@ jobs:
 
   upload:
     name: Sign and upload to App Store Connect
-    if: ${{ github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.upload }}
+    if: ${{ github.repository == 'genixpro/glob2-release' && github.event.repository.private && github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.upload }}
     needs: build
     runs-on: macos-26
     environment: mac-app-store
@@ -124,11 +126,13 @@ jobs:
       - name: Confirm private mirror release context
         env:
           RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
           RELEASE_REF: ${{ github.ref }}
           RELEASE_EVENT: ${{ github.event_name }}
           RELEASE_UPLOAD: ${{ inputs.upload }}
         run: |
           test "$RELEASE_REPOSITORY" = genixpro/glob2-release
+          test "$RELEASE_REPOSITORY_PRIVATE" = true
           test "$RELEASE_REF" = refs/heads/master
           test "$RELEASE_EVENT" = workflow_dispatch
           test "$RELEASE_UPLOAD" = true
