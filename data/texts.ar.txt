@@ -3392,3 +3392,15 @@ Emoji
 الألعاب
 [Add AI]
 إضافة لاعب آلي
+[settings Experiments]
+التجارب
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+جرّب ميزات ما زلنا نختبرها. تنطبق على الألعاب الجديدة التي تبدأها أو تستضيفها؛ وتحتفظ اللعبة المحفوظة بالمجموعة التي بدأت بها. قد تغيّر التجارب التوازن والإيقاع.
+[settings No experiments in this build.]
+لا توجد تجارب في هذا الإصدار.
+[Experiments]
+التجارب
+[experiment guard-area-balancing]
+موازنة مناطق الحراسة
+[experiment guard-area-balancing help]
+يتوزع المحاربون الأحرار بين مناطق الحراسة المرسومة بدلاً من التوجه جميعاً إلى الأقرب: تحصل المنطقة الأكبر على عدد أكبر منهم، والمنطقة المكتظة تتناقص لصالح المناطق الأخرى.

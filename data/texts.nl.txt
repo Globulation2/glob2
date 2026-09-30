@@ -3418,3 +3418,15 @@ Hervat het spel
 Spellen
 [Add AI]
 AI toevoegen
+[settings Experiments]
+Experimenten
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Probeer functies die we nog testen. Ze gelden voor nieuwe spellen die je start of host; een opgeslagen spel behoudt de set waarmee het begon. Experimenten kunnen balans en tempo veranderen.
+[settings No experiments in this build.]
+Geen experimenten in deze versie.
+[Experiments]
+Experimenten
+[experiment guard-area-balancing]
+Balans van bewakingsgebieden
+[experiment guard-area-balancing help]
+Vrije krijgers verdelen zich over de geschilderde bewakingsgebieden in plaats van allemaal het dichtstbijzijnde te kiezen: een groter gebied krijgt er meer, en een overvol gebied loopt langzaam leeg naar de andere.

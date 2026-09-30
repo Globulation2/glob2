@@ -196,7 +196,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--alliance","--win-condition","--game-seed"})
+			for(const auto &key : {"--player","--ai-param","--alliance","--win-condition","--game-seed","--experiment"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(Engine::loadGameHeader(saved).getNumberOfPlayers()==0) throw std::invalid_argument("saved game has no players");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
@@ -232,6 +232,14 @@ struct HeadlessRunner
 				else if(condition=="script") value=std::make_shared<WinningConditionScript>();
 				else throw std::invalid_argument("unknown winning condition: " + condition);
 				header.getWinningConditions().push_back(value);
+			}
+			// Structured runs are explicit: the profile's Settings > Experiments do
+			// not apply here, only --experiment does.
+			for(const auto &key : many(options,"--experiment"))
+			{
+				const auto id=parseExperimentKey(key);
+				if(!id) throw std::invalid_argument("unknown experiment: " + key);
+				header.getExperiments().set(*id);
 			}
 			std::map<int,std::string> overrides;
 			std::set<std::pair<int,std::string>> seen;
@@ -333,6 +341,9 @@ struct HeadlessRunner
 			<< ",\"save_version\":" << VERSION_MINOR << ",\"winning_conditions\":[";
 		bool comma=false;
 		for(const auto &c:game.gameHeader.getWinningConditions()) { if(comma)result<<',';comma=true;result<<int(c->getType()); }
+		result << "],\"experiments\":[";
+		comma=false;
+		for(const auto &key:game.gameHeader.getExperiments().keys()) { if(comma)result<<',';comma=true;result<<quote(key); }
 		result << "]},\"players\":[";
 		for(int p=0;p<game.gameHeader.getNumberOfPlayers();++p)
 		{
@@ -429,7 +440,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

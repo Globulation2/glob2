@@ -3466,3 +3466,15 @@ CPU %0%
 遊戲
 [Add AI]
 新增人工智慧
+[settings Experiments]
+實驗功能
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+試用我們仍在測試的功能。它們適用於你開始或主持的新遊戲；已儲存的遊戲保留其開始時的設定。實驗功能可能改變平衡和節奏。
+[settings No experiments in this build.]
+此版本中沒有實驗功能。
+[Experiments]
+實驗功能
+[experiment guard-area-balancing]
+警戒區均衡
+[experiment guard-area-balancing help]
+空閒的戰士會分散到各個已繪製的警戒區，而不是全部湧向最近的一個：更大的區域獲得更多戰士，過於擁擠的區域會逐漸向其他區域分流。

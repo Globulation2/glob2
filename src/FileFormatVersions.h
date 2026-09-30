@@ -161,3 +161,7 @@ static constexpr int FILE_FORMAT_VERSION_SHARED_RUNTIME_PRIVATE_GRADIENTS = 122;
 
 // Completed private fields and remaining fixed publication deadlines.
 static constexpr int FILE_FORMAT_VERSION_GRADIENT_PIPELINE = 120;
+
+//! The experiments list in GameHeader (ExperimentalFeatures.h). The default
+//! simulation is unchanged; only a game that carries an experiment differs.
+static constexpr int FILE_FORMAT_VERSION_EXPERIMENTS = 124;

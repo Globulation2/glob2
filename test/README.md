@@ -960,3 +960,15 @@ worker counts under the same delayed schedule. `check_gradient_pipeline.py` also
 checks the one-worker/eight-tick defaults and save/resume at each of the eight
 deadline phases with zero, one and two workers. Pending fields, supersession and
 remaining deadlines are versioned save state; worker count is not.
+
+## Experimental features and guard-area balancing
+
+`ExperimentalFeatures` (`glob2-unit-tests`) covers the experiments registry and
+the set a game carries: stable keys, the preferences text form, binary and text
+stream round trips, unknown keys dropped, and the `GameHeader` forms with a
+version 123 header reading no experiment. `SettingsExperiments` and the
+`experiments` case of `CustomGameSetup` (`glob2-engine-tests`) cover the
+preferences round trip and the baked-in rule: a new game takes Settings →
+Experiments, its save keeps that set after the setting is turned off, and a fresh
+map then carries nothing. The `Settings` display cases toggle the switch on the
+settings page. See [experimental features](../docs/features/experimental-features.md).

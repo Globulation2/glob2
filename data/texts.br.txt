@@ -3390,3 +3390,15 @@ Retomar jogo
 Jogos
 [Add AI]
 Adicionar IA
+[settings Experiments]
+Experimentos
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Experimente recursos que ainda estamos testando. Eles valem para novos jogos que você inicia ou hospeda; um jogo salvo mantém o conjunto com que começou. Experimentos podem mudar o equilíbrio e o ritmo.
+[settings No experiments in this build.]
+Nenhum experimento nesta versão.
+[Experiments]
+Experimentos
+[experiment guard-area-balancing]
+Equilíbrio das áreas de guarda
+[experiment guard-area-balancing help]
+Guerreiros livres se distribuem entre as áreas de guarda pintadas em vez de irem todos para a mais próxima: uma área maior recebe mais deles, e uma área lotada se esvazia aos poucos para as outras.

@@ -3394,3 +3394,15 @@ Reia jocul
 Jocuri
 [Add AI]
 Adaugă IA
+[settings Experiments]
+Experimente
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Încearcă funcții pe care încă le testăm. Se aplică jocurilor noi pe care le începi sau le găzduiești; un joc salvat păstrează setul cu care a început. Experimentele pot schimba echilibrul și ritmul.
+[settings No experiments in this build.]
+Nu există experimente în această versiune.
+[Experiments]
+Experimente
+[experiment guard-area-balancing]
+Echilibrarea zonelor de gardă
+[experiment guard-area-balancing help]
+Războinicii liberi se împart între zonele de gardă desenate în loc să meargă toți la cea mai apropiată: o zonă mai mare primește mai mulți, iar o zonă supraaglomerată se golește treptat spre celelalte.

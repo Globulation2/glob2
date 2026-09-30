@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
+#include "ExperimentalFeatures.h"
 #include "GlobalContainer.h"
 #include "SoundMixer.h"
 #include <InterfacePresentation.h>
@@ -274,5 +275,26 @@ void SettingsScreen::buildGeneral()
 		auto &r =
 			add("player.name", Kind::Text, tr("Player name"), tr("Name shown to other players."));
 		r.value = s.getUsername();
+	}
+	else if (current == Category::Experiments)
+	{
+		info(tr("Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing."));
+		if (experimentDefinitions().empty())
+			info(tr("No experiments in this build."));
+		auto *strings = Toolkit::getStringTable();
+		for (const auto &definition : experimentDefinitions())
+		{
+			// Labels come from the experiment's own keys rather than the
+			// "[settings ...]" prefix, so the lobby and this page share them.
+			const std::string key = definition.key;
+			auto &r = add("experiments." + key, Kind::Toggle, strings->getString("[experiment " + key + "]"),
+						  strings->getString("[experiment " + key + " help]"));
+			r.number = s.experiments.has(definition.id);
+			r.change = [this, id = definition.id](int v)
+			{
+				globalContainer->settings.experiments.set(id, v != 0);
+				commit();
+			};
+		}
 	}
 }

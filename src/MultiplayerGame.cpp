@@ -3,6 +3,7 @@
 
 #include "MultiplayerGame.h"
 #include "Engine.h"
+#include "GlobalContainer.h"
 #include "Player.h"
 #include "YOGClientFileAssembler.h"
 #include "FileTransferMessages.h"
@@ -208,6 +209,14 @@ YOGServerGameJoinRefusalReason MultiplayerGame::getGameJoinState()
 void MultiplayerGame::setMapHeader(MapHeader& nmapHeader)
 {
 	mapHeader = nmapHeader;
+
+	// A hosted saved game keeps the experiments it was started with; a fresh map
+	// takes the host's Settings > Experiments choices. Joiners receive the header
+	// from the server, so the whole game runs the same set.
+	if (mapHeader.getIsSavedGame())
+		gameHeader.setExperiments(Engine::loadGameHeader(mapHeader.getFileName()).getExperiments());
+	else
+		gameHeader.setExperiments(globalContainer->settings.experiments);
 
 	NetReteamingInformation info = constructReteamingInformation(mapHeader.getFileName());
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());

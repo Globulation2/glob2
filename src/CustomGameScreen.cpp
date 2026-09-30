@@ -219,6 +219,7 @@ std::string colorName(Color c)
 GameHeader &CustomGameScreen::getGameHeader()
 {
 	setup.writeHeader(gameHeader, username);
+	gameHeader.setExperiments(globalContainer->settings.experiments);
 	for (int i = 0; i < gameHeader.getNumberOfPlayers(); ++i)
 	{
 		auto &player = gameHeader.getBasePlayer(i);
@@ -571,6 +572,7 @@ bool CustomGameScreen::generateMap()
 		GameHeader initial;
 		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
+		initial.setExperiments(globalContainer->settings.experiments);
 		game->setGameHeader(initial);
 		// GameLoadScreen reads these bytes directly (Engine::initCustomFromBytesTask): a map
 		// this process just generated and is about to load right back gets no benefit from a
@@ -814,6 +816,9 @@ Element CustomGameScreen::build(const Presentation &p)
 	std::vector<Element> summaryParts{fe::caption(summary)};
 	if (!note.empty())
 		summaryParts.push_back(fe::paragraph(note, {fe::FontRole::Support}));
+	// Experiments come from Settings, not the lobby, so say which ones this match will carry.
+	if (!globalContainer->settings.experiments.empty())
+		summaryParts.push_back(fe::paragraph(tr("Experiments") + ": " + experimentLabelList(globalContainer->settings.experiments), {fe::FontRole::Support}));
 	// Desktop: summary at the left, compact Back / Start at the right, as before.
 	Element footerColumn = p.touch ? fe::column({fe::column(std::move(summaryParts), {p.pt(4)}), actionRow}, {p.pt(6)})
 								   : fe::row({fe::expanded(fe::column(std::move(summaryParts), {p.pt(4)})), actionRow}, {p.pt(8), fe::CrossAlign::Center});

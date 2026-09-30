@@ -23,7 +23,8 @@ class SettingsScreen : public Glob2UI::Screen
 		Gameplay,
 		Buildings,
 		Controls,
-		Player
+		Player,
+		Experiments
 	};
 	enum class Kind
 	{

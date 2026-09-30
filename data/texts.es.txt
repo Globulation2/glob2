@@ -3394,3 +3394,15 @@ Reanudar partida
 Partidas
 [Add AI]
 Añadir IA
+[settings Experiments]
+Experimentos
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Prueba funciones que todavía estamos probando. Se aplican a las partidas nuevas que inicies o alojes; una partida guardada conserva el conjunto con el que empezó. Los experimentos pueden cambiar el equilibrio y el ritmo.
+[settings No experiments in this build.]
+No hay experimentos en esta versión.
+[Experiments]
+Experimentos
+[experiment guard-area-balancing]
+Equilibrio de zonas de guardia
+[experiment guard-area-balancing help]
+Los guerreros libres se reparten entre las zonas de guardia pintadas en lugar de ir todos a la más cercana: una zona más grande recibe más, y una zona saturada se vacía poco a poco hacia las demás.

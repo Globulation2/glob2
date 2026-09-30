@@ -80,7 +80,7 @@ void SettingsScreen::resetScroll()
 
 std::string SettingsScreen::categoryName(Category category) const
 {
-	const char *names[] = {"Display & graphics", "Audio", "Gameplay", "Building defaults", "Controls", "Language & player"};
+	const char *names[] = {"Display & graphics", "Audio", "Gameplay", "Building defaults", "Controls", "Language & player", "Experiments"};
 	return tr(names[int(category)]);
 }
 
@@ -176,6 +176,7 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 	if (!touchLayout)
 		result.push_back(Category::Controls);
 	result.push_back(Category::Player);
+	result.push_back(Category::Experiments);
 	return result;
 }
 

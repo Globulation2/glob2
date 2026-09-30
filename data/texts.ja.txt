@@ -3390,3 +3390,15 @@ OK: %0
 ゲーム
 [Add AI]
 AIを追加
+[settings Experiments]
+実験機能
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+まだテスト中の機能を試せます。自分で開始またはホストする新しいゲームに適用され、保存したゲームは開始時の設定を保持します。実験機能はバランスやテンポを変えることがあります。
+[settings No experiments in this build.]
+このビルドには実験機能がありません。
+[Experiments]
+実験機能
+[experiment guard-area-balancing]
+警備エリアの分散
+[experiment guard-area-balancing help]
+自由な戦士は最も近い警備エリアに全員集まるのではなく、塗られた警備エリアの間で分散します。大きなエリアほど多くの戦士を受け入れ、混みすぎたエリアからは他のエリアへ少しずつ移動します。

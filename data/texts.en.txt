@@ -3392,3 +3392,15 @@ Resume game
 Games
 [Add AI]
 Add AI
+[settings Experiments]
+Experiments
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.
+[settings No experiments in this build.]
+No experiments in this build.
+[Experiments]
+Experiments
+[experiment guard-area-balancing]
+Guard-area balancing
+[experiment guard-area-balancing help]
+Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others.

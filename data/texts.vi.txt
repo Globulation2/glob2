@@ -3390,3 +3390,15 @@ Tiếp tục trò chơi
 Trò chơi
 [Add AI]
 Thêm trí tuệ nhân tạo
+[settings Experiments]
+Thử nghiệm
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Hãy thử các tính năng chúng tôi vẫn đang thử nghiệm. Chúng áp dụng cho các ván mới bạn bắt đầu hoặc làm chủ; ván đã lưu giữ nguyên bộ mà nó bắt đầu. Thử nghiệm có thể thay đổi cân bằng và nhịp độ.
+[settings No experiments in this build.]
+Không có thử nghiệm nào trong bản dựng này.
+[Experiments]
+Thử nghiệm
+[experiment guard-area-balancing]
+Cân bằng vùng canh gác
+[experiment guard-area-balancing help]
+Chiến binh rảnh rỗi phân bố giữa các vùng canh gác đã vẽ thay vì tất cả đi đến vùng gần nhất: vùng lớn hơn nhận nhiều hơn, và vùng quá đông dần dần vơi sang các vùng khác.

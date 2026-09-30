@@ -3390,3 +3390,15 @@ Lanjutkan Permainan
 Permainan
 [Add AI]
 Tambah AI
+[settings Experiments]
+Eksperimen
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Coba fitur yang masih kami uji. Berlaku untuk permainan baru yang Anda mulai atau jadi tuan rumahnya; permainan tersimpan mempertahankan set yang dipakai saat dimulai. Eksperimen dapat mengubah keseimbangan dan tempo.
+[settings No experiments in this build.]
+Tidak ada eksperimen dalam versi ini.
+[Experiments]
+Eksperimen
+[experiment guard-area-balancing]
+Penyeimbangan area jaga
+[experiment guard-area-balancing help]
+Prajurit bebas menyebar di antara area jaga yang dilukis alih-alih semuanya ke yang terdekat: area yang lebih besar mendapat lebih banyak, dan area yang terlalu penuh perlahan mengalir ke area lain.

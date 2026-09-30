@@ -3470,3 +3470,15 @@ Genoptag spillet
 Spil
 [Add AI]
 Tilføj AI
+[settings Experiments]
+Eksperimenter
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Prøv funktioner, vi stadig tester. De gælder for nye spil, du starter eller er vært for; et gemt spil beholder det sæt, det startede med. Eksperimenter kan ændre balance og tempo.
+[settings No experiments in this build.]
+Ingen eksperimenter i denne version.
+[Experiments]
+Eksperimenter
+[experiment guard-area-balancing]
+Balancering af vagtområder
+[experiment guard-area-balancing help]
+Frie krigere fordeler sig mellem de malede vagtområder i stedet for alle at tage det nærmeste: et større område får flere af dem, og et overfyldt område tyndes ud til de andre.

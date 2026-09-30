@@ -3392,3 +3392,15 @@ Daŭrigi ludon
 Ludoj
 [Add AI]
 Aldoni AI
+[settings Experiments]
+Eksperimentoj
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Provu funkciojn, kiujn ni ankoraŭ testas. Ili validas por novaj ludoj, kiujn vi komencas aŭ gastigas; konservita ludo tenas la aron, kun kiu ĝi komenciĝis. Eksperimentoj povas ŝanĝi ekvilibron kaj ritmon.
+[settings No experiments in this build.]
+Neniu eksperimento en ĉi tiu versio.
+[Experiments]
+Eksperimentoj
+[experiment guard-area-balancing]
+Ekvilibrigo de gardozonoj
+[experiment guard-area-balancing help]
+Liberaj militistoj disiĝas inter la pentritaj gardozonoj anstataŭ ĉiuj iri al la plej proksima: pli granda zono ricevas pli da ili, kaj troplena zono iom post iom malpleniĝas al la aliaj.

@@ -3404,3 +3404,15 @@ Jarraitu partida
 Partidak
 [Add AI]
 Gehitu AI
+[settings Experiments]
+Esperimentuak
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Probatu oraindik probatzen ari garen funtzioak. Hasten edo ostatatzen dituzun partida berrietan aplikatzen dira; gordetako partida batek hasi zen multzoa gordetzen du. Esperimentuek oreka eta erritmoa alda ditzakete.
+[settings No experiments in this build.]
+Ez dago esperimenturik bertsio honetan.
+[Experiments]
+Esperimentuak
+[experiment guard-area-balancing]
+Zaintza-eremuen oreka
+[experiment guard-area-balancing help]
+Gerlari libreak margotutako zaintza-eremuen artean banatzen dira, guztiak hurbilenera joan beharrean: eremu handiago batek gehiago jasotzen ditu, eta gainezka dagoen eremu bat pixkanaka husten da besteetara.

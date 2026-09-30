@@ -66,6 +66,7 @@ GameHeader makeFixtureHeader()
 	header.setPermadeathDisabled(true);
 	header.setPeacefulModeEnabled(true);
 	header.setBuildingHpLevel(1);
+	header.getExperiments().set(ExperimentId::GuardAreaBalancing);
 	for (int i = 0; i < 4; ++i)
 	{
 		char name[32];
@@ -129,6 +130,7 @@ void testFullRoundTrip()
 	check(loaded.isPermadeathDisabled(), "full: permadeathDisabled preserved");
 	check(loaded.isPeacefulModeEnabled(), "full: peacefulMode preserved");
 	check(loaded.getBuildingHpLevel() == 1, "full: buildingHpLevel preserved");
+	check(loaded.hasExperiment(ExperimentId::GuardAreaBalancing), "full: experiments preserved");
 	check(playersMatch(original, loaded, 4), "full: players preserved");
 	// allyTeamNumbers values are NOT asserted: save() writes all 32 entries
 	// under the single repeated key "allyTeamNumber" (no per-index section),
@@ -185,7 +187,17 @@ void testBinaryHeaderFormsAndLegacy()
 		// The custom-game rule bytes (version 102 on) follow it in the full and
 		// player-less forms.
 		const size_t ruleBytes=5+6; // economy (102), combat (103)
-		if (form!=1) extension+=ruleBytes;
+		// The experiments list (version 124) follows the rules; measure it rather
+		// than hard-coding its key lengths.
+		size_t experimentBytes=0;
+		{
+			auto *section=new MemoryStreamBackend;
+			BinaryOutputStream sectionOut(section);
+			original.getExperiments().save(&sectionOut);
+			sectionOut.flush();
+			experimentBytes=section->getPosition();
+		}
+		if (form!=1) extension+=ruleBytes+experimentBytes;
 		memory->seekFromEnd(0);
 		const size_t legacySize=memory->getPosition()-extension;
 		auto *oldBytes=new MemoryStreamBackend(memory->getBuffer(),legacySize);
@@ -200,7 +212,7 @@ void testBinaryHeaderFormsAndLegacy()
 		{
 			// Version 101 ended before the custom-game rule bytes: its headers load
 			// exactly, with every rule off.
-			const size_t v101Size=memory->getPosition()-ruleBytes;
+			const size_t v101Size=memory->getPosition()-ruleBytes-experimentBytes;
 			auto *v101Bytes=new MemoryStreamBackend(memory->getBuffer(),v101Size);
 			v101Bytes->seekFromStart(0);
 			BinaryInputStream v101(v101Bytes);
@@ -209,7 +221,7 @@ void testBinaryHeaderFormsAndLegacy()
 			check(read && v101Bytes->getPosition()==v101Size && ruled.getAIConfig(0)==original.getAIConfig(0)
 				&& !ruled.isResourceGrowthDisabled() && ruled.getResourceScarcityLevel()==0
 				&& !ruled.isInstantConstructionEnabled() && ruled.getStockpileStartLevel()==0
-				&& !ruled.isHungerDisabled(),
+				&& !ruled.isHungerDisabled() && ruled.getExperiments().empty(),
 				"version 101 header loads without rule bytes, rules off");
 		}
 	}

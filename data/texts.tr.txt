@@ -3402,3 +3402,15 @@ Oyuna Devam Et
 Oyunlar
 [Add AI]
 Yapay zeka ekle
+[settings Experiments]
+Deneyler
+[settings Try features we are still testing. They apply to new games you start or host; a saved game keeps the set it was started with. Experiments can change balance and pacing.]
+Hâlâ test ettiğimiz özellikleri deneyin. Başlattığınız veya barındırdığınız yeni oyunlar için geçerlidir; kayıtlı bir oyun başladığı seti korur. Deneyler dengeyi ve tempoyu değiştirebilir.
+[settings No experiments in this build.]
+Bu sürümde deney yok.
+[Experiments]
+Deneyler
+[experiment guard-area-balancing]
+Nöbet alanı dengeleme
+[experiment guard-area-balancing help]
+Serbest savaşçılar hepsi en yakınına gitmek yerine boyanmış nöbet alanları arasında dağılır: daha büyük bir alan daha fazlasını alır ve aşırı dolu bir alan yavaş yavaş diğerlerine boşalır.

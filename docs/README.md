@@ -22,6 +22,7 @@ dated reports and pull-request artifacts do not belong here.
   [save continuation](development/savegame-continuation.md), and the
   [historical architecture overview](development/legacy-architecture.txt).
 - **Features:** [custom-game setup](features/custom-game-setup/README.md),
+  [experimental features](features/experimental-features.md),
   [map previews](features/pre-game-map-preview.md),
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).
