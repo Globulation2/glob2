@@ -23,7 +23,9 @@ def main():
     arch = matching[0]
     source_sdk = args.android_sdk.resolve()
     source_ndk = args.android_ndk.resolve()
-    for required in ("platforms/android-35", "build-tools/35.0.0", "platform-tools"):
+    toolchain = json.loads((ROOT / "mobile/toolchain.json").read_text())["android"]
+    for required in (f"platforms/android-{toolchain['compile_api']}",
+                     f"build-tools/{toolchain['build_tools']}", "platform-tools"):
         if not (source_sdk / required).exists():
             raise ValueError("F-Droid Android SDK is missing " + required)
     if not (source_ndk / "source.properties").is_file():
@@ -34,7 +36,6 @@ def main():
         link = sdk / name
         if not link.exists() and (source_sdk / name).exists():
             link.symlink_to(source_sdk / name, target_is_directory=True)
-    toolchain = json.loads((ROOT / "mobile/toolchain.json").read_text())["android"]
     ndk_revision = toolchain["ndk"]
     properties = source_ndk.joinpath("source.properties").read_text().splitlines()
     installed_revision = next((line.split("=", 1)[1].strip() for line in properties

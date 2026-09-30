@@ -85,11 +85,15 @@ def check_listing(root=ROOT):
 def check_recipe(root=ROOT):
     recipe = (root / "fdroid/metadata/org.globulation2.glob2.yml").read_text()
     identity = release_identity(root)
+    toolchain = json.loads((root / "mobile/toolchain.json").read_text())["android"]
     codes = [int(code) for code in re.findall(r"^    versionCode: (\d+)$", recipe, re.MULTILINE)]
     names = re.findall(r"^  - versionName: ([^\n]+)$", recipe, re.MULTILINE)
     commits = re.findall(r"^    commit: ([^\n]+)$", recipe, re.MULTILINE)
     commands = re.findall(r"^    build: ([^\n]+)$", recipe, re.MULTILINE)
     outputs = re.findall(r"^    output: ([^\n]+)$", recipe, re.MULTILINE)
+    prebuilds = re.findall(r"^    prebuild: ([^\n]+)$", recipe, re.MULTILINE)
+    expected_prebuild = (f"sdkmanager 'platforms;android-{toolchain['compile_api']}' "
+                         f"'build-tools;{toolchain['build_tools']}' 'platform-tools'")
     operations = re.search(r"^VercodeOperation:\n((?:  - [^\n]+\n)+)", recipe, re.MULTILINE)
     operation_lines = [line.strip().removeprefix("- ") for line in operations.group(1).splitlines()] if operations else []
     expected_operations = [f"10 * %c + {suffix}" for suffix in ABI_CODES.values()]
@@ -107,6 +111,7 @@ def check_recipe(root=ROOT):
             codes != expected_codes or names != [template_name] * len(ABI_CODES) or
             commits != ["v" + template_name] * len(ABI_CODES) or
             len(commands) != len(ABI_CODES) or
+            prebuilds != [expected_prebuild] * len(ABI_CODES) or
             any("--version-code $$VERCODE$$" not in command for command in commands) or
             outputs != ["build/fdroid-output.apk"] * len(ABI_CODES) or
             operation_lines != expected_operations or
