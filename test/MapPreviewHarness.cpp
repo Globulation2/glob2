@@ -3,6 +3,7 @@
 #include "MapPreviewGeometry.h"
 #include "GUIMapPreview.h"
 #include "CustomGameScreen.h"
+#include <FileManager.h>
 #include <memory>
 #include "LobbyMapPreview.h"
 #include "GlobalContainer.h"
@@ -442,13 +443,11 @@ struct MapPreviewHarness
 		custom.setup.generator.hDec = 7;
 		custom.setup.setCapacity(4);
 		assert(custom.generateMap());
-		// generatedSnapshot lives in memory now (CustomGameScreen::generateMap); write it out
-		// once here purely so this evidence check and the retained artifact both have a file.
+		// The generated snapshot lives in memory (CustomGameScreen::generateMap). Write it
+		// out as the gzip file the library would hold, so this check and the retained
+		// artifact go through the same loader as a premade map.
 		const auto generatedPath = output + "/generated-wide.map";
-		{
-			std::ofstream file(generatedPath, std::ios::binary);
-			file.write(custom.generatedSnapshot->data(), custom.generatedSnapshot->size());
-		}
+		assert(Toolkit::getFileManager()->writeGzipAtomic(glob2GzipWritePath(generatedPath), *custom.generatedSnapshot));
 		MapThumbnail snapshot;
 		snapshot.loadFromMap(generatedPath);
 		assert(snapshot.isLoaded() && snapshot.pixels()->rgb == lobby->thumbnail.pixels()->rgb);

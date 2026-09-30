@@ -1616,8 +1616,11 @@ struct CustomGameSetupHarness
                screen.preview->starts[i].color.b == starts[i].color.b);
       {
         Game shownMap(nullptr);
-        GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(
-            screen.generatedSnapshot->data(), screen.generatedSnapshot->size()));
+        // The memory backend copies its input through write() and leaves its
+        // cursor at the end; read from the start as the loader does.
+        auto *bytes = new GAGCore::MemoryStreamBackend(screen.generatedSnapshot->data(), screen.generatedSnapshot->size());
+        bytes->seekFromStart(0);
+        GAGCore::BinaryInputStream in(bytes);
         assert(shownMap.load(&in) && shownMap.gameHeader.getRandomSeed() == seed);
       }
       capture("landscape-applied");
