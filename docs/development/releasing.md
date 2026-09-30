@@ -1,9 +1,13 @@
 # Release packaging
 
 The public `.github/workflows/release.yml` builds packages without publishing.
-The public Epic, GitHub, Snap, and Flathub workflow definitions are mirrored to
-the owner-controlled private `genixpro/glob2-release` repository, which stores
-release credentials. Each channel has a separate manual `workflow_dispatch` run.
+The public desktop publication workflows are mirrored to the owner-controlled
+private `genixpro/glob2-release` repository, which stores release credentials.
+Run `publish-desktop.yml` manually with the public `vVERSION` tag to publish the
+GitHub release, publish Snap stable, and propose the Flathub update in that
+order. Its optional `upload_epic_dev` input also uploads a Windows candidate to
+Epic Dev. Each channel retains a separate manual workflow for retries; no
+publication workflow runs on ordinary pushes or pull requests.
 The selected public `vVERSION` tag must resolve to the private mirror's HEAD.
 Mirror only reviewed public commits. Review of workflow changes is essential:
 the private repository alone does not make unreviewed code safe to run.
@@ -12,8 +16,8 @@ being prepared; select `build_flatpak` to exercise that recipe. The GitHub
 publication run builds it.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
-`data/screenshots/` and its
-version-tagged URL is in the AppStream metadata; confirm that URL resolves after
+`data/screenshots/`; its version-tagged URL is in the AppStream metadata. Confirm
+that URL resolves after
 tagging. Add the release notes once the release candidate is settled. The
 256x256 application icon is derived from the existing desktop artwork and is
 installed with other icon sizes.
@@ -105,40 +109,6 @@ test. Check whether any other PC store offers Globulation 2 achievements before
 marking achievements unnecessary on Epic.
 
 ## Distribution maintainers
-
-### F-Droid Android release
-
-The main F-Droid repository builds and signs `org.globulation.glob2` from a
-public `vVERSION` tag. The upstream build recipe is
-`fdroid/metadata/org.globulation.glob2.yml`; submit its tested contents to
-F-Droid's `fdroiddata` project. `mobile/android-release.json` gives the version
-name and base code, and the `armeabi-v7a`, `arm64-v8a`, and `x86_64` APKs use
-`10 * base + 1`, `+ 2`, and `+ 3`, respectively. The `fastlane/metadata/android/`
-tree contains the listing text, icon, per-APK changelogs, and Android screenshots.
-Release preflight checks all three recipe codes and rejects missing listing
-material. Do not use a
-desktop or browser screenshot as an Android screenshot.
-
-The mobile and release workflows build unsigned APKs and retain them only as
-validation artifacts. They are not GitHub release assets and cannot be installed
-as public releases. A temporary developer signature supports emulator and
-device checks. F-Droid's signature is the sole public Android update channel.
-Before tagging, test all three builds with `fdroid lint`, `fdroid checkupdates`,
-and `fdroid build --server`, then play the candidate on real ARM64 and 32-bit ARM
-devices and an x86_64 emulator. Record APK digests, logs, screenshots, save/load,
-rotation, lifecycle, keyboard, touch, and editor results under `artifacts/` for
-review. For each ABI, run `python3 mobile/compare_fdroid_apks.py --arch ABI
---github-apk GITHUB_APK --fdroid-apk FDROID_APK` and review any native library
-differences against the retained symbol/build records. The daily
-`fdroid-publication.yml` workflow checks F-Droid's package API
-for all three codes after the GitHub release and opens one tracking issue when
-publication remains incomplete after 72 hours.
-
-F-Droid's initial listing requires an accepted `fdroiddata` merge request.
-Subsequent tagged updates use F-Droid's update checker; GitHub Actions does not
-publish directly to the main F-Droid repository. Review the shipped asset
-licenses against `docs/assets/source-attribution.md` and the font licenses with
-the first submission.
 
 The Fedora spec in `fedora/glob2.spec` is a starting recipe for the new source
 archive. The checked-in `debian/` directory is historic and is **not** used by

@@ -38,26 +38,22 @@ def ensure_sdk_metadata(destination, artifact):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--emulator',action='store_true',help='Also install the pinned host emulator and matching API 35 image')
-    parser.add_argument('--gradle-only',action='store_true',help='Only install pinned Gradle; use the supplied SDK and JDK')
     args=parser.parse_args()
     lock=json.loads((ROOT/'mobile/android-tools.json').read_text())
     tools=ROOT/'build/mobile-tools';tools.mkdir(parents=True,exist_ok=True)
     with BuildLock(tools):
         selected=[lock['gradle']]
-        if args.emulator and args.gradle_only:
-            parser.error('--emulator and --gradle-only cannot be combined')
         if args.emulator:
             emulators=json.loads((ROOT/'mobile/emulator.json').read_text())['archives']
             host=platform.system()+'-'+platform.machine()
             if host not in emulators: raise ValueError('No pinned emulator for '+host)
             arch='arm64-v8a' if platform.machine() in ('arm64','aarch64') else 'x86_64'
             selected.extend([emulators[host],emulators[arch]])
-        if not args.gradle_only:
-            sdk=lock.get('sdk-tools-'+platform.system())
-            if sdk: selected.append(sdk)
-            jdk=lock.get('jdk-'+platform.system()+'-'+platform.machine())
-            if jdk: selected.append(jdk)
-            else: print('Install JDK 17 for this host and set JAVA_HOME when running Gradle.')
+        sdk=lock.get('sdk-tools-'+platform.system())
+        if sdk: selected.append(sdk)
+        jdk=lock.get('jdk-'+platform.system()+'-'+platform.machine())
+        if jdk: selected.append(jdk)
+        else: print('Install JDK 17 for this host and set JAVA_HOME when running Gradle.')
         for artifact in selected:
             destination=tools/artifact['directory']
             if destination.exists():

@@ -49,12 +49,6 @@ jobs:
             version="$(python3 tools/release/release.py check)"
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
-      - name: Validate Android release identity
-        run: python3 mobile/android_release.py check
-      - name: Validate F-Droid listing for publication
-        run: python3 mobile/android_release.py check-listing
-      - name: Test Android release preflight and package checks
-        run: python3 -m unittest tests.build_system.test_android_release -v
 
   source:
     needs: preflight
@@ -79,67 +73,6 @@ jobs:
           name: release-source
           path: artifacts/release-output/*
           if-no-files-found: error
-
-  android-package:
-    needs: preflight
-    runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [armeabi-v7a, arm64-v8a, x86_64]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install native build utilities
-        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends scons pkg-config unzip zip autoconf automake libtool cmake ninja-build
-      - name: Install pinned Android toolchain
-        run: |
-          python3 mobile/setup_ndk.py
-          python3 mobile/setup_tools.py
-          sdk="$PWD/build/mobile-tools/android-sdk"
-          "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
-          "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
-            'platforms;android-35' 'build-tools;35.0.0' platform-tools
-      - name: Build source dependencies and release APK
-        run: |
-          set -o pipefail
-          code="$(python3 mobile/android_release.py code --arch '${{ matrix.arch }}')"
-          sdk="$PWD/build/mobile-tools/android-sdk"
-          python3 mobile/fdroid_build.py --version-code "$code" --android-sdk "$sdk" \
-            --android-ndk "$sdk/ndk/28.2.13676358" 2>&1 \
-            | tee "build/android-${{ matrix.arch }}-build.log"
-          apk="build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
-          python3 mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
-      - name: Launch x86_64 release candidate in an emulator
-        if: matrix.arch == 'x86_64'
-        run: |
-          sudo chmod a+rw /dev/kvm
-          python3 mobile/setup_tools.py --emulator
-          python3 mobile/emulator.py configure --arch x86_64
-          nohup python3 mobile/emulator.py adb-server > build/mobile-adb-server.log 2>&1 &
-          nohup python3 mobile/emulator.py run --arch x86_64 > build/mobile-emulator.log 2>&1 &
-          ready=0
-          for attempt in $(seq 1 90); do
-            if python3 mobile/emulator.py status --arch x86_64 >/dev/null 2>&1; then ready=1; break; fi
-            sleep 5
-          done
-          test "$ready" -eq 1
-          python3 mobile/android.py sign --arch x86_64 --release
-          python3 mobile/android.py install --arch x86_64 --release --serial emulator-5580 --adb-port 15037
-          python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64
-          python3 mobile/emulator.py stop --arch x86_64
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: android-${{ matrix.arch }}-release-validation
-          path: |
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.sha256
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json
-            build/fdroid-output.apk
-            build/mobile-smoke/**
-            build/mobile-emulator.log
-            build/android-${{ matrix.arch }}-build.log
-          if-no-files-found: ignore
 
   linux-package:
     needs: preflight

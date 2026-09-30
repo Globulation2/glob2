@@ -1,1 +1,0 @@
-Real time strategy with automatic unit task assignment
