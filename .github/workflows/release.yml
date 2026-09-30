@@ -201,7 +201,7 @@ jobs:
             image: debian:trixie
             install: >-
               apt-get update -qq && apt-get install -y --no-install-recommends
-              git g++ python3 scons pkg-config libsdl2-dev libsdl2-image-dev
+              git ca-certificates g++ python3 scons pkg-config libsdl2-dev libsdl2-image-dev
               libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev
               libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev
               libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
