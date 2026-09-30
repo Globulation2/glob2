@@ -79,6 +79,11 @@ void MapEdit::beginEditing()
     editingResult = 0;
 }
 
+bool MapEdit::touchAnimating() const
+{
+	return phone && phone->animating();
+}
+
 bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 {
     if (!editing || quitDecision || fertilityRequested || !pendingLoadFilename.empty()) return editing;
@@ -107,6 +112,7 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 	if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
 	{
 		if (!phone) handleMapScroll();
+		if (phone) phone->advance(tick);
 		updateCamera();
 		camera.originX+=xSpeed*32/camera.zoom;
 		camera.originY+=ySpeed*32/camera.zoom;

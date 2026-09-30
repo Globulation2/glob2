@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <SDL.h>
+#include <ScrollPhysics.h>
 #include <TouchInput.h>
 #include <memory>
 #include <optional>
@@ -17,6 +18,9 @@ class PhoneEditor
 	void draw();
 	void cancel();
 	bool hasOverlay() const;
+	// Per-frame momentum for the map, the tool tray and the inspector.
+	void advance(Uint32 tick);
+	bool animating() const;
 
   private:
 	friend class GameGUITouchHarness;
@@ -48,7 +52,16 @@ class PhoneEditor
 	void paintStroke();
 	void placeAt(GAGCore::ViewPoint point);
 	void label(GAGCore::ViewRect rect, const std::string &text);
-	double offset = 0, maximum = 0, panX = 0, panY = 0;
+	double offset = 0, maximum = 0;
+	// Momentum and bounce; syncTray() and syncInspector() keep the axes and
+	// the plain `offset` and `inspectorScroll` variables in step.
+	GAGCore::ScrollMotion mapMotion;
+	GAGCore::TrackedScrollAxis trayAxis, inspectorAxis;
+	Uint64 lastTick = 0;
+	bool fingerIsTouch = false; // momentum follows real fingers, not the mouse
+	void syncTray();
+	void syncInspector();
+	void stopScrolling();
 	int held = -1;
 	struct Property
 	{

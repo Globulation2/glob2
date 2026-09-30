@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include "Engine.h"
 #include "GameGUITouch.h"
+#include <MapCamera.h>
 #include "InGameTouchTheme.h"
 #include "GameGUIDialog.h"
 #include "LoadSaveDialog.h"
@@ -1713,9 +1714,438 @@ class GameGUITouchHarness
 		editorFileInteractions();
 		editorAreaNameInteractions();
 	}
+
+	// Touch scroll physics in a match: the map coasts after a flick and wraps
+	// across the seam, a touch or suspendInput stops it, the phone build palette
+	// coasts and rubber-bands, a mouse drag has no momentum, and nothing reaches
+	// the simulation. Time is explicit: event timestamps and gui.step(now).
+	static void scrollPhysics()
+	{
+		GameGUI gui;
+		auto map = Engine::loadMapHeader("maps/balanced.map");
+		GameHeader players;
+		players.setNumberOfPlayers(1);
+		players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+		require(gui.loadFromHeaders(map, players, true, true), "Fixture load failed");
+		gui.localTeamNo = 0;
+		gui.localPlayer = 0;
+		gui.adjustLocalTeam();
+		gui.viewportX = gui.viewportY = 0;
+		gui.updateCamera();
+		auto *gfx = globalContainer->gfx;
+		const double mapWidth = gui.game.map.getW() * 32.0;
+		Uint64 now = 5000;
+		auto finger = [&](Uint32 type, float x, float y)
+		{
+			SDL_Event event{};
+			event.type = type;
+			event.tfinger.timestamp = Uint32(now);
+			event.tfinger.touchId = 7;
+			event.tfinger.fingerId = 1;
+			event.tfinger.x = x / gfx->getW();
+			event.tfinger.y = y / gfx->getH();
+			gui.processEvent(&event);
+		};
+		auto frame = [&](Uint64 ms)
+		{
+			now += ms;
+			gui.step({}, now);
+		};
+		// Four moves 16 ms apart, then an immediate release.
+		auto flick = [&](float x, float y, float dx, float dy)
+		{
+			finger(SDL_FINGERDOWN, x, y);
+			for (int i = 1; i <= 4; ++i)
+			{
+				frame(16);
+				finger(SDL_FINGERMOTION, x + dx * i, y + dy * i);
+			}
+			finger(SDL_FINGERUP, x + dx * 4, y + dy * 4);
+		};
+		auto placeCamera = [&](double x, double y)
+		{
+			gui.camera.originX = x;
+			gui.camera.originY = y;
+			gui.camera.normalize();
+			gui.viewportX = gui.camera.tileX();
+			gui.viewportY = gui.camera.tileY();
+		};
+		const auto checksum = gui.game.checkSum();
+		require(!gui.touch->scrollAnimating(), "Nothing moves before a gesture");
+		// A rightward flick moves the origin left; from 300 px it coasts past zero.
+		placeCamera(300, 300);
+		flick(400, 300, 40, 0);
+		require(gui.touch->scrollAnimating(), "A flick keeps the map coasting");
+		double previous = gui.camera.originX, travelled = 0;
+		int frames = 0;
+		bool wrapped = false;
+		while (gui.touch->scrollAnimating() && frames < 600)
+		{
+			frame(16);
+			++frames;
+			const double delta = MapCamera::wrap(previous - gui.camera.originX, mapWidth);
+			require(delta >= 0 && delta < mapWidth / 2, "Coasting keeps the flick's direction");
+			require(gui.viewportX == (gui.camera.tileX() & gui.game.map.getMaskW()),
+					"The tile viewport follows the camera while coasting");
+			if (gui.camera.originX > previous)
+				wrapped = true;
+			travelled += delta;
+			previous = gui.camera.originX;
+		}
+		require(frames > 1 && frames < 600, "Coasting ends on its own");
+		require(travelled > 200, "Coasting carries the map well past the drag");
+		require(wrapped, "Coasting crosses the toroidal seam");
+		require(gui.game.checkSum() == checksum, "Coasting never touches the simulation");
+		// A touch catches the map where it is and is not a pan.
+		placeCamera(1000, 300);
+		flick(400, 300, 40, 0);
+		frame(16);
+		require(gui.touch->scrollAnimating(), "The map coasts again");
+		finger(SDL_FINGERDOWN, 400, 300);
+		require(!gui.touch->scrollAnimating(), "A finger stops the coasting map");
+		const double held = gui.camera.originX;
+		frame(100);
+		require(std::abs(gui.camera.originX - held) < 1e-6, "The stopped map stays under the finger");
+		finger(SDL_FINGERMOTION, 412, 300);
+		frame(80); // the finger rests before lifting
+		finger(SDL_FINGERUP, 412, 300);
+		frame(16);
+		require(!gui.touch->scrollAnimating(), "A finger that rests before lifting leaves no momentum");
+		require(std::abs(MapCamera::wrap(held - gui.camera.originX, mapWidth) - 12) < 1e-6, "The drag after the stop still pans");
+		// Suspending input stops coasting too.
+		flick(400, 300, 0, 40);
+		frame(16);
+		require(gui.touch->scrollAnimating(), "A vertical flick coasts");
+		gui.suspendInput();
+		require(!gui.touch->scrollAnimating(), "suspendInput stops coasting");
+		const double suspended = gui.camera.originY;
+		frame(100);
+		require(std::abs(gui.camera.originY - suspended) < 1e-6, "Nothing moves after suspendInput");
+		require(gui.game.checkSum() == checksum, "Touch navigation leaves the simulation alone");
+
+		// The phone HUD: the build palette coasts, rubber-bands and springs back.
+		SDL_setenv("GLOB2_MOBILE_UI", "1", 1);
+		gfx->setResponsiveViewport(true, 800, 600);
+		auto resizeWindow = [&](int width, int height)
+		{
+			const int oldW = gfx->getW(), oldH = gfx->getH();
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			SDL_Event resize{};
+			resize.type = SDL_WINDOWEVENT;
+			resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resize);
+			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+		};
+		resizeWindow(568, 320);
+		require(gui.touch->usesHUD(), "Phone HUD must be active");
+		gui.clearSelection();
+		gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+		gui.touch->panelOpen = true;
+		gui.touch->panelScroll = 0;
+		gui.touch->clampScroll();
+		// The phone panel is sized to its palette, so its range is the end itself:
+		// pulling stretches the palette past the end and releasing springs back.
+		const double maximum = gui.touch->panelAxis.axis.maximum();
+		const auto panel = gui.touch->panelContent();
+		// The panel's left margin has no palette items, whose touch starts a placement.
+		const float px = float(panel.x + 1), py = float(panel.y + panel.h / 2);
+		require(gui.touch->interfaceRegion({px, py}) == 3, "The panel margin is the panel region");
+		for (float y : {py + 60, py, py - 30, py + 40, py - 40})
+			require(!gui.touch->paletteItemAt({px, y}), "The gestures avoid palette items");
+		finger(SDL_FINGERDOWN, px, py + 60);
+		frame(16);
+		finger(SDL_FINGERMOTION, px, py);
+		require(gui.touch->panelScroll > maximum, "Pulling past the end stretches the palette");
+		require(gui.touch->panelScroll < maximum + 60, "The stretch is shorter than the finger's move");
+		const double stretched = gui.touch->panelScroll;
+		frame(16);
+		finger(SDL_FINGERMOTION, px, py - 30);
+		require(gui.touch->panelScroll > stretched, "Pulling further stretches further");
+		frame(80); // the finger rests before lifting
+		finger(SDL_FINGERUP, px, py - 30);
+		require(gui.touch->scrollAnimating(), "Released stretched content springs back");
+		frames = 0;
+		previous = gui.touch->panelScroll;
+		while (gui.touch->scrollAnimating() && frames++ < 600)
+		{
+			frame(16);
+			require(gui.touch->panelScroll >= maximum, "The spring never overshoots back");
+			require(gui.touch->panelScroll <= previous + 1e-9, "The spring only returns");
+			previous = gui.touch->panelScroll;
+		}
+		require(frames < 600, "The spring settles");
+		require(gui.touch->panelScroll == maximum, "The palette settles at its end");
+		// A flick reaches the end at once and hands its speed to the spring.
+		flick(px, py + 40, 0, -20);
+		require(gui.touch->scrollAnimating(), "A flick keeps the palette moving");
+		bool overshot = false;
+		frames = 0;
+		while (gui.touch->scrollAnimating() && frames++ < 600)
+		{
+			frame(16);
+			require(gui.touch->panelScroll >= maximum, "The flick never leaves the range on the wrong side");
+			require(gui.touch->panelScroll < maximum + panel.h, "The flick's stretch stays inside the panel");
+			overshot = overshot || gui.touch->panelScroll > maximum;
+		}
+		require(overshot && frames < 600, "The flick overshoots the end and settles");
+		require(gui.touch->panelScroll == maximum, "The palette rests at its end after the flick");
+		// A touch mid-bounce holds the stretch, and lifting lets it finish.
+		flick(px, py + 40, 0, -20);
+		frame(16);
+		require(gui.touch->panelScroll > maximum && gui.touch->scrollAnimating(), "mid-bounce");
+		finger(SDL_FINGERDOWN, px, py);
+		require(!gui.touch->scrollAnimating(), "A touch stops the bounce");
+		const double caught = gui.touch->panelScroll;
+		frame(100);
+		require(gui.touch->panelScroll == caught, "The stopped palette holds its stretch");
+		finger(SDL_FINGERUP, px, py);
+		require(gui.touch->scrollAnimating(), "Lifting lets the stretch spring back");
+		frames = 0;
+		while (gui.touch->scrollAnimating() && frames++ < 600)
+			frame(16);
+		require(gui.touch->panelScroll == maximum, "The palette returns to its end");
+		// A mouse drag (a synthetic finger) scrolls the palette without momentum.
+		auto mouse = [&](Uint32 type, int x, int y)
+		{
+			SDL_Event event{};
+			event.type = type;
+			event.common.timestamp = Uint32(now);
+			if (type == SDL_MOUSEMOTION)
+			{
+				event.motion.x = x;
+				event.motion.y = y;
+				event.motion.state = SDL_BUTTON_LMASK;
+			}
+			else
+			{
+				event.button.button = SDL_BUTTON_LEFT;
+				event.button.x = x;
+				event.button.y = y;
+			}
+			gui.processEvent(&event);
+		};
+		gui.touch->panelScroll = 0;
+		gui.touch->clampScroll();
+		mouse(SDL_MOUSEBUTTONDOWN, int(px), int(py + 40));
+		for (int i = 1; i <= 4; ++i)
+		{
+			frame(16);
+			mouse(SDL_MOUSEMOTION, int(px), int(py + 40 - 20 * i));
+		}
+		mouse(SDL_MOUSEBUTTONUP, int(px), int(py - 40));
+		require(gui.touch->panelScroll == maximum, "A mouse drag neither stretches nor coasts");
+		require(!gui.touch->scrollAnimating(), "A mouse drag has no momentum");
+		require(gui.selectionMode == GameGUI::NO_SELECTION, "Panel gestures never start a placement");
+		require(gui.game.checkSum() == checksum, "HUD scrolling leaves the simulation alone");
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		resizeWindow(800, 600);
+	}
+
+	// The phone editor: touch pans move the camera by the finger distance (no
+	// whole-tile steps), the map coasts and wraps after a flick, a pinch zooms
+	// by the finger ratio, and the tool tray coasts.
+	static void editorScrollPhysics()
+	{
+		MapEdit editor;
+		require(editor.load("maps/balanced.map"), "Editor fixture loads");
+		editor.phone = std::make_unique<PhoneEditor>(editor);
+		auto &touch = *editor.phone;
+		auto *gfx = globalContainer->gfx;
+		const double unit = gfx->logicalUnitsPerPoint();
+		touch.chooseMode(0);
+		touch.prepare();
+		editor.updateCamera();
+		Uint32 tick = 9000;
+		auto finger = [&](Uint32 kind, int id, GAGCore::ViewPoint p)
+		{
+			SDL_Event event{};
+			event.type = kind;
+			event.tfinger.timestamp = tick;
+			event.tfinger.touchId = 19;
+			event.tfinger.fingerId = id;
+			event.tfinger.x = p.x / gfx->getW();
+			event.tfinger.y = p.y / gfx->getH();
+			touch.event(event);
+		};
+		auto frame = [&](Uint32 ms)
+		{
+			tick += ms;
+			touch.advance(tick);
+		};
+		auto placeCamera = [&](double x, double y)
+		{
+			editor.updateCamera();
+			editor.camera.originX = x;
+			editor.camera.originY = y;
+			editor.camera.normalize();
+			editor.viewportX = editor.camera.tileX();
+			editor.viewportY = editor.camera.tileY();
+		};
+		const double mapWidth = editor.game.map.getW() * 32.0;
+		auto checksum = [&] { return editor.game.checkSum(nullptr, nullptr, nullptr, true); };
+		const auto before = checksum();
+		const GAGCore::ViewPoint start{touch.content.x + touch.content.w / 2,
+									   touch.content.y + touch.content.h / 2};
+		// A short drag pans by exactly the finger distance.
+		placeCamera(300, 300);
+		finger(SDL_FINGERDOWN, 1, start);
+		frame(16);
+		finger(SDL_FINGERMOTION, 1, {start.x + 10 * unit, start.y});
+		require(std::abs(MapCamera::wrap(300 - editor.camera.originX, mapWidth) - 10 * unit) < 1e-6,
+				"A ten point drag pans the editor map by ten points");
+		require(editor.viewportX == (editor.camera.tileX() & editor.game.map.wMask),
+				"The editor tile viewport follows its camera");
+		frame(80);
+		finger(SDL_FINGERUP, 1, {start.x + 10 * unit, start.y});
+		require(!touch.animating(), "A finger that rests before lifting leaves no momentum");
+		// A flick coasts, wraps across the seam and stops; terrain is untouched.
+		placeCamera(200, 300);
+		finger(SDL_FINGERDOWN, 1, start);
+		for (int i = 1; i <= 4; ++i)
+		{
+			frame(16);
+			finger(SDL_FINGERMOTION, 1, {start.x + 40 * unit * i, start.y});
+		}
+		finger(SDL_FINGERUP, 1, {start.x + 160 * unit, start.y});
+		require(touch.animating(), "A flick keeps the editor map coasting");
+		double previous = editor.camera.originX;
+		int frames = 0;
+		bool wrapped = false;
+		while (touch.animating() && frames < 600)
+		{
+			frame(16);
+			++frames;
+			const double delta = MapCamera::wrap(previous - editor.camera.originX, mapWidth);
+			require(delta >= 0 && delta < mapWidth / 2, "Editor coasting keeps its direction");
+			require(editor.viewportX == (editor.camera.tileX() & editor.game.map.wMask),
+					"The editor tile viewport follows the coasting camera");
+			if (editor.camera.originX > previous)
+				wrapped = true;
+			previous = editor.camera.originX;
+		}
+		require(frames > 1 && frames < 600 && wrapped, "Editor coasting wraps and ends on its own");
+		require(checksum() == before, "Coasting never touches the map data");
+		// A touch catches the map where it is.
+		placeCamera(1000, 300);
+		finger(SDL_FINGERDOWN, 1, start);
+		for (int i = 1; i <= 4; ++i)
+		{
+			frame(16);
+			finger(SDL_FINGERMOTION, 1, {start.x + 40 * unit * i, start.y});
+		}
+		finger(SDL_FINGERUP, 1, {start.x + 160 * unit, start.y});
+		frame(16);
+		require(touch.animating(), "The editor map coasts again");
+		finger(SDL_FINGERDOWN, 1, start);
+		require(!touch.animating(), "A finger stops the coasting editor map");
+		const double held = editor.camera.originX;
+		frame(100);
+		require(std::abs(editor.camera.originX - held) < 1e-6, "The stopped editor map stays put");
+		finger(SDL_FINGERMOTION, 1, {start.x + 12 * unit, start.y});
+		frame(80);
+		finger(SDL_FINGERUP, 1, {start.x + 12 * unit, start.y});
+		require(!touch.animating(), "A rested release leaves the editor map still");
+		// A pinch zooms by the finger ratio.
+		editor.camera.zoom = 1;
+		finger(SDL_FINGERDOWN, 1, start);
+		finger(SDL_FINGERDOWN, 2, {start.x + 100, start.y});
+		frame(16);
+		finger(SDL_FINGERMOTION, 2, {start.x + 150, start.y});
+		require(std::abs(editor.camera.zoom - 1.5) < 0.01, "A 1.5x pinch zooms the editor map 1.5x");
+		finger(SDL_FINGERUP, 2, {start.x + 150, start.y});
+		finger(SDL_FINGERUP, 1, start);
+		touch.cancel();
+		// The tool tray: pulling past its end stretches it and releasing springs
+		// back; a flick overshoots the end and settles there; a mouse drag does
+		// neither. (The fixture's palettes fit the tray, so the end is at zero.)
+		touch.chooseMode(0);
+		touch.prepare();
+		const double trayEnd = touch.maximum;
+		const auto row = touch.rows.front().rect;
+		const GAGCore::ViewPoint at{row.x + row.w / 2, row.y + row.h / 2};
+		require(touch.hit(at) == 0, "The gesture starts on the first tray item");
+		finger(SDL_FINGERDOWN, 1, at);
+		frame(16);
+		finger(SDL_FINGERMOTION, 1, {at.x - 40 * unit, at.y});
+		require(touch.offset > trayEnd && touch.offset < trayEnd + 40 * unit,
+				"Pulling past the end stretches the tray by less than the finger moved");
+		const double stretched = touch.offset;
+		frame(16);
+		finger(SDL_FINGERMOTION, 1, {at.x - 70 * unit, at.y});
+		require(touch.offset > stretched, "Pulling further stretches the tray further");
+		frame(80);
+		finger(SDL_FINGERUP, 1, {at.x - 70 * unit, at.y});
+		require(touch.animating(), "The released tray springs back");
+		frames = 0;
+		double last = touch.offset;
+		while (touch.animating() && frames++ < 600)
+		{
+			frame(16);
+			require(touch.offset >= trayEnd && touch.offset <= last + 1e-9, "The tray spring only returns");
+			last = touch.offset;
+		}
+		require(frames < 600 && touch.offset == trayEnd, "The tray settles at its end");
+		touch.prepare();
+		require(touch.offset == trayEnd, "Layout keeps the tray at its end");
+		finger(SDL_FINGERDOWN, 1, at);
+		for (int i = 1; i <= 4; ++i)
+		{
+			frame(16);
+			finger(SDL_FINGERMOTION, 1, {at.x - 20 * unit * i, at.y});
+		}
+		finger(SDL_FINGERUP, 1, {at.x - 80 * unit, at.y});
+		require(touch.animating(), "A flick keeps the tray moving");
+		bool overshot = false;
+		frames = 0;
+		while (touch.animating() && frames++ < 600)
+		{
+			frame(16);
+			require(touch.offset >= trayEnd && touch.offset < trayEnd + touch.tray.w, "The flick's stretch stays inside the tray");
+			overshot = overshot || touch.offset > trayEnd;
+		}
+		require(overshot && frames < 600 && touch.offset == trayEnd, "The flick overshoots the end and settles there");
+		// A mouse drag on the tray (device -1) neither stretches nor coasts.
+		SDL_Event mouse{};
+		mouse.type = SDL_MOUSEBUTTONDOWN;
+		mouse.common.timestamp = tick;
+		mouse.button.button = SDL_BUTTON_LEFT;
+		mouse.button.x = int(at.x);
+		mouse.button.y = int(at.y);
+		touch.event(mouse);
+		for (int i = 1; i <= 4; ++i)
+		{
+			frame(16);
+			SDL_Event motion{};
+			motion.type = SDL_MOUSEMOTION;
+			motion.common.timestamp = tick;
+			motion.motion.x = int(at.x - 20 * unit * i);
+			motion.motion.y = int(at.y);
+			touch.event(motion);
+			require(touch.offset == trayEnd, "A mouse drag past the end does not stretch the tray");
+		}
+		mouse.type = SDL_MOUSEBUTTONUP;
+		mouse.common.timestamp = tick;
+		mouse.button.x = int(at.x - 80 * unit);
+		touch.event(mouse);
+		require(!touch.animating() && touch.offset == trayEnd, "A mouse drag has no momentum");
+		require(checksum() == before, "Tray scrolling never touches the map data");
+	}
 };
 TEST_SUITE("GameGUITouch")
 {
+	GLOB2_TEST_CASE("touch scroll momentum on the map; the HUD palette and the editor", "[display]")
+	{
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
+		                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU};
+		glob2test::HeadlessGlobals globals(options);
+		REQUIRE(SDLNet_Init() == 0);
+		GameGUITouchHarness::scrollPhysics();
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		GameGUITouchHarness::editorScrollPhysics();
+		SDLNet_Quit();
+		SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+	}
 	TEST_CASE("actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]")
 	{
 		// Exercise the legacy mouse sidebar first, even on touch-capable hosts;
