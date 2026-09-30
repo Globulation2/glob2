@@ -173,15 +173,26 @@ uses deprecated ScriptProcessorNode.
 CI builds the browser in parallel jobs. `web-build` compiles the WebAssembly
 client and `web-native` the gateway, router and transport fixtures; both hand
 their outputs to the `web-test` matrix as artifacts, which runs the Chromium
-suite in four shards (split by spec file) beside the Firefox/WebKit, WebGL2 and
-lifecycle suites. `web-deploy` checks self-hosting on its own runner. A spec
-that needs a native program must use one `web-native` packages, or add it there.
+suite in five shards (split by spec file) beside separate torus, rendering and
+settings-storage jobs, one job each for Firefox and WebKit, six focused WebGL2
+jobs, and the lifecycle suite. Each long WebGL2 reload case runs on its own
+runner; new untagged reload cases run with the match reload group. `web-deploy` checks
+self-hosting on its own runner. A spec that needs a native program must use one
+packaged by `web-native`, or add it there.
+The browser test matrix runs at most ten jobs at once so Linux test shards can
+start promptly during a full workflow run.
 
 `web-native` restores the main Ubuntu 24.04 native compiler cache read-only
-for its router and transport fixtures. Emscripten uses a separate bounded cache
+for its router and transport fixtures. It also restores its own SCons objects,
+keyed by the installed compiler binary, and recompiles `GlobalContainerArgs.cpp`
+to refresh the build banner. Master and manual workflow dispatches save those
+objects for later runs. Emscripten uses a separate bounded cache
 through `EM_COMPILER_WRAPPER=ccache`, keyed by runner OS/architecture and the
-pinned toolchain. Only master saves that cache, after pruning unused entries;
-the first run for a new toolchain starts cold.
+pinned toolchain. Only master saves that compiler cache, after pruning unused
+entries; the first run for a new toolchain starts cold. The WebAssembly build
+also restores SCons object files from the most recent master build. It rebuilds
+`GlobalContainerArgs.cpp` on every run so the compile-time banner stays current;
+manual workflow dispatches can warm this object cache on their own branch.
 Compiler contents and input files remain validated; no timestamp or time-macro
 sloppiness is enabled. Cache statistics are printed for native and WASM builds.
 The Emscripten ports/system-library directory and linked output are rebuilt on

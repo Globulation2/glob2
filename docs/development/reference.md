@@ -50,6 +50,9 @@ scons -C test                 # rebuild the separate test suite
   opt-in is not persisted in `options_cache.py`. CI keeps one cache per job and, before
   master saves it, drops every entry that run did not use, so the saved cache is the
   working set rather than an accumulation bounded only by `CCACHE_MAXSIZE`.
+  The main Linux CI builds also restore SCons objects and configuration probes
+  keyed by compiler contents. They rebuild `GlobalContainerArgs.cpp` each run
+  because it embeds the compilation date and time.
 - `release=1` outside macOS strips binaries (`-s`), so it also drops `-g`: debug
   information there only slowed compilation and multiplied object and cache sizes.
 - Keep harness runs out of personal profiles: use the existing disposable-profile
@@ -169,9 +172,12 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   it: a separate `scons` call per step re-reads the whole build and compiles one file at
   a time. Builds that need other options (`server=1`, `opengl=0`, `test/`) belong in
   the `linux variants` job, and long CPU-bound checks in a job of their own, as the
-  golden-map sweep does; jobs run in parallel. The Linux variants matrix owns
-  the YOG server build on both supported toolchains; the main Linux jobs do not
-  repeat that build. On Windows the `windows server` job owns it for the same reason.
+  golden-map sweep does; its four sweep shards are split between two jobs per
+  toolchain, alongside a job for telemetry and generator defaults. Jobs run in
+  parallel. The Linux variants matrix owns the YOG server build on both supported
+  toolchains; the main
+  Linux jobs do not repeat that build. On Windows the `windows server` job owns it
+  for the same reason.
   Browser checks follow the same rule: build once per job, pass outputs to the
   test jobs as artifacts, and shard long suites rather than lengthening one job.
 - A map generator's `revision` is enforced by `MapGeneratorGoldenTest`: a seed's map changing
