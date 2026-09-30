@@ -720,6 +720,17 @@ class TextField : public Node
 		const auto &mt = frame.layout.metrics;
 		const auto &m = frame.canvas.measurer();
 		const bool active = frame.editing(key);
+		if (active && options.commitOnSubmit && frame.layout.states)
+		{
+			// A browser edit updates the draft directly; show it, not the value this
+			// node was built with.
+			const auto &state = frame.layout.states->get(key);
+			if (state.editing && state.text != value)
+			{
+				value = state.text;
+				cursor = std::min(state.cursor, value.size());
+			}
+		}
 		frame.canvas.fillRounded(bounds, mt.radius, options.enabled ? p.field : p.disabled);
 		frame.canvas.strokeRect(bounds, active ? p.ink : p.line);
 		const Rect inner = bounds.inset(Insets::symmetric(mt.gap, 0));
@@ -774,14 +785,37 @@ class TextField : public Node
 		auto submit = options.submit;
 		const std::string k = key;
 		Host *h = &host;
-		browserChange = [h, k, callback, submit](const std::string &text, std::size_t at, int action)
+		const bool deferred = options.commitOnSubmit;
+		const std::string original = committed;
+		browserChange = [h, k, callback, submit, deferred, original](const std::string &text, std::size_t at, int action)
 		{
-			h->state(k).cursor = at;
-			h->invalidate();
-			if (callback)
-				callback(text);
-			if (action && submit)
+			// Mirror commit(): the typed text is the draft (restored across rebuilds)
+			// and, for commit-on-submit fields, reaches the model on Enter or blur.
+			auto &state = h->state(k);
+			state.cursor = at;
+			state.text = text;
+			if (deferred)
+			{
+				state.editing = action == 0;
+				if (action == 0)
+				{
+					h->relayout();
+					return;
+				}
+				h->invalidate();
+				if (callback && text != original)
+					callback(text);
+			}
+			else
+			{
+				h->invalidate();
+				if (callback)
+					callback(text);
+			}
+			if (action == 1 && submit)
 				submit(text);
+			if (action)
+				h->endEditing(action == 2);
 		};
 	}
 

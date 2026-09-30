@@ -1,7 +1,7 @@
 // The editor's screens publish their controls by key (see main-menu.js); no
 // game actions are invoked through diagnostics, so the tests still exercise
 // hit testing on the real controls.
-const {clickControl, rootBox} = require('./main-menu');
+const {clickControl, clickByLabel, rootBox} = require('./main-menu');
 exports.clickCreateMap = page => clickControl(page, 'create');
 exports.campaignFrame = page => rootBox(page, 'ok');
 exports.clickCampaignFooter = (page, save) => clickControl(page, save ? 'ok' : 'cancel');
@@ -31,13 +31,11 @@ exports.chooseEditorLandscape = async (page,name) => {
   const canvas=page.locator('#canvas');
   const screen=()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen);
   const names=editorLandscapeNames();
-  const index=names.findIndex(label=>label.toLowerCase()===name.toLowerCase());
-  if(index<0) throw new Error('Unknown editor landscape fixture: '+name);
+  if(!names.some(label=>label.toLowerCase()===name.toLowerCase())) throw new Error('Unknown editor landscape fixture: '+name);
   await clickControl(page,'landscape');
   await expect.poll(screen).toContain('LandscapePickerScreen');
   await clickControl(page,'landscape/sort/1'); // Alphabetical.
-  for(let i=0;i<names.length;++i) await canvas.press('ArrowLeft');
-  for(let i=0;i<index;++i) await canvas.press('ArrowRight');
+  await clickByLabel(page,/^landscape\/\d+$/,name); // The card carries the landscape's name.
   // Confirmation is disabled while the selected preview is being generated.
   await expect(async()=>{
     await canvas.press('Enter');

@@ -98,7 +98,7 @@ test('registered browser player enters and leaves the native YOG lobby', async (
   await editTextField(page,'transportplayer',false,'nickname');
   await editTextField(page,'fixture-only',true);
   await clickControl(page,'login');
-  await screen('SessionTabsScreen');
+  await screen('YOGSessionScreen');
   await page.screenshot({path: testInfo.outputPath('yog-lobby.png')});
   await page.locator('#canvas').press('Escape');
   await screen('MainMenuScreen');
@@ -112,7 +112,7 @@ async function loginPlayer(page, name) {
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
   await editTextField(page,name,false,'nickname');
   await editTextField(page,'fixture-only',true);
-  await clickControl(page,'login'); await screen('SessionTabsScreen');
+  await clickControl(page,'login'); await screen('YOGSessionScreen');
 }
 test('YOG registration remains scheduled through resize and cancellation', async ({page}) => {
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
@@ -136,13 +136,13 @@ test('YOG map selection and upload screens resize and return to their owning tab
   await clickControl(page,'lobby/host'); await screen('ChooseMapScreen');
   await page.setViewportSize({width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
-  await page.locator('#canvas').press('Escape'); await screen('SessionTabsScreen');
+  await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   // The Maps tab and its Upload action use the same scheduled child ownership.
   await clickControl(page,'session/tab/1'); await clickControl(page,'maps/upload'); await screen('ChooseMapScreen');
   await clickListRow(page,'files',0); await clickControl(page,'ok'); await screen('YOGClientMapUploadScreen');
   await page.setViewportSize({width:1200,height:900});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1200);
-  await page.locator('#canvas').press('Escape'); await screen('SessionTabsScreen');
+  await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   await page.locator('#canvas').press('Escape'); await screen('MainMenuScreen');
 });
 
@@ -156,7 +156,7 @@ test('YOG match settings resize and return to their room', async ({page}) => {
   await clickControl(page,'options'); await screen('CustomGameOtherOptions');
   await page.setViewportSize({width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
-  await page.locator('#canvas').press('Escape'); await screen('SessionTabsScreen');
+  await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   const lists = types().filter(type => type === 50).length;
   await clickControl(page,'cancel'); // Leave the room; the lobby lists games again.
   await expect.poll(() => types().filter(type => type === 50).length).toBeGreaterThan(lists);
@@ -239,7 +239,7 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
     await clickListRow(guest, 'lobby/games', 0); await clickControl(guest, 'lobby/join');
     await expect.poll(guestTypes).toContain(18); // NetGameJoinAccepted
     await expect.poll(guestSent).toContain(47); // NetSetGameInRouter
-    await expect.poll(async () => (await guest.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('SessionTabsScreen');
+    await expect.poll(async () => (await guest.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('YOGSessionScreen');
     await guest.screenshot({path: testInfo.outputPath('joined-room.png')});
     if (ai.id) {
       await clickControl(page, 'ai/' + ai.id);
@@ -269,7 +269,7 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
       await clickControl(target, 'quit');
       await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('EndGameScreen');
       await target.locator('#canvas').press('Enter');
-      await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('SessionTabsScreen');
+      await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('YOGSessionScreen');
     }
     expect(errors).toEqual([]);
   } finally { await other.close(); }
@@ -346,7 +346,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     const compared = Math.min(checksums.length, Math.ceil(count / orderRate));
     for (let i = 0; i < compared; ++i) expect(checksums[i]).toBe(native.get(i * orderRate));
     await page.locator('#canvas').press('Enter');
-    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('SessionTabsScreen');
+    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('YOGSessionScreen');
 
   } finally {
     await stop(peer);

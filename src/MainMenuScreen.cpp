@@ -166,10 +166,7 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
 	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility), action("[editor]", EDITOR, utility),
-								   action("[credits]", CREDITS, utility)};
-#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
-	utilities.push_back(action("[quit]", QUIT, utility));
-#endif
+								   action("[credits]", CREDITS, utility), action("[quit]", QUIT, utility)};
 	WrapOptions grid;
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;

@@ -82,6 +82,7 @@ test('imports a custom map and starts it through the normal setup screen', async
   await page.locator('#canvas').press('Escape'); await screen(page,'MainMenuScreen');
 
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
+  await clickControl(page,'map/mode/0'); // Premade maps.
   await clickControl(page,'map/library/1'); // "Your maps" library.
   await clickListRow(page,'map/list/1',0); // The imported map's row (only entry in a fresh profile).
   await clickCustomGameStart(page);

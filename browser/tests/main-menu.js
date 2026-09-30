@@ -3,14 +3,33 @@
 // ApplicationHost::controlsChanged and glob2Diagnostics.snapshot().controls).
 // Tests drive those real controls rather than mirroring layout arithmetic.
 const {expect} = require('@playwright/test');
+// Layout runs inside the game's animation frame; two frames after a resize or
+// rebuild the published bounds are current.
+const settled = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 async function control(page, key, {timeout = 30000, enabled = true} = {}) {
   let found;
   await expect.poll(async () => {
     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
     return Boolean(found && (!enabled || found.enabled));
   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
-  return found;
+  await settled(page);
+  return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
 }
+// The first control whose key matches and whose text is the label shown.
+exports.clickByLabel = async (page, keyPattern, label, options = {}) => {
+  const source = keyPattern.source;
+  let key;
+  await expect.poll(async () => {
+    key = await page.evaluate(({source, label}) => {
+      const pattern = new RegExp(source);
+      for (const [key, value] of Object.entries(glob2Diagnostics.snapshot().controls))
+        if (pattern.test(key) && value.label.toLowerCase() === label.toLowerCase()) return key;
+      return null;
+    }, {source, label});
+    return Boolean(key);
+  }, {timeout: options.timeout || 30000, message: `no control matching ${source} labelled "${label}"`}).toBe(true);
+  return exports.clickControl(page, key, options);
+};
 // Logical → CSS pixels: the canvas fills the window at the logical surface size,
 // scaled by any interface scale setting.
 function css(page, bounds, point) {
