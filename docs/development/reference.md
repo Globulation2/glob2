@@ -154,6 +154,16 @@ directly to an existing Partner Center branch; neither is retained as a public
 artifact. Keep credentials out of workflow logs and artifacts.
 The workflow does not submit a listing for certification or publish it to retail.
 
+Keep the release mirror public and owner-controlled: disable pull requests,
+issues, projects, wiki and discussions; leave `genixpro` as its only
+collaborator; restrict creation, updates and deletion of every mirror branch to
+that user, while `master` also blocks force pushes and deletion. Restrict Actions
+execution to `genixpro`, allow only the pinned actions
+needed by the mirror workflows, and keep the default `GITHUB_TOKEN` read-only.
+Enable secret scanning and push protection. Public repositories remain readable
+and forkable, so never put credentials in code, workflow inputs, logs or
+artifacts. Only the mirror's restricted environments hold release credentials.
+
 The individual Windows developer account for Bradley Arsenault is enrolled, and
 the [Globulation 2 PC game product](https://partner.microsoft.com/en-US/dashboard/products/9PH4FCRMX19F/setup)
 has been reserved in Partner Center. Its package identity and initial package
@@ -187,6 +197,10 @@ and add its tenant ID, application ID and client secret as environment secrets n
 `STORE_TENANT_ID`, `STORE_CLIENT_ID`, and `STORE_CLIENT_SECRET`.
 The `STORE_BRANCH` variable is required for upload. Never add these secrets,
 the environment or a privileged trigger to `Globulation2/glob2`.
+The mirror's `windows-store` environment allows deployments only from `master`
+and requires approval from `genixpro` before the job can access its variables
+and secrets. Allow the dispatching owner to approve because that account is
+the sole reviewer.
 
 When a permanent organization tenant is ready, associate it with the same Partner
 Center account, register a new product-scoped publishing application there, and
@@ -198,7 +212,9 @@ Store product identity above stays with the Partner Center product.
 
 After syncing the mirror, run the workflow from its **Actions → Windows Store
 release → Run workflow** page on `master`, with a
-four-part package version greater than previous uploads. Leave `upload` false for
+four-part package version greater than previous uploads, with the fourth part
+(revision) set to `0` as required by GDK PC packaging; for example, use
+`1.0.1.0` after `1.0.0.0`. Leave `upload` false for
 the first run. Download the artifact and install the MSIXVC on a clean Windows PC
 with Gaming Services; verify launch, sound, saves, settings, uninstall and a
 subsequent version update. Windows saves and preferences default to SDL's per-user

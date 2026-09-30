@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Four-part Store package version (increase for every upload)
+        description: Four-part Store package version, ending in .0 (increase for every upload)
         required: true
         default: 1.0.0.0
       upload:
@@ -46,6 +46,18 @@ jobs:
           foreach ($name in @('STORE_ID', 'STORE_IDENTITY_NAME', 'STORE_PUBLISHER', 'STORE_PUBLISHER_DISPLAY_NAME')) {
             if (-not [Environment]::GetEnvironmentVariable($name)) {
               throw "Configure $name in the release mirror's windows-store GitHub environment."
+            }
+          }
+
+      - name: Check PC package version
+        shell: pwsh
+        run: |
+          if ($env:STORE_VERSION -notmatch '^[1-9]\d*\.\d+\.\d+\.0$') {
+            throw 'PC Store package versions must have four numeric parts, a nonzero major version, and end in .0.'
+          }
+          foreach ($part in ($env:STORE_VERSION -split '\.')) {
+            if ([bigint]::Parse($part) -gt 65535) {
+              throw 'Each PC Store package version component must be at most 65535.'
             }
           }
 
