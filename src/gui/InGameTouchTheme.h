@@ -37,6 +37,23 @@ inline constexpr int railColumnsPortrait = 2;
 inline constexpr int railColumnsLandscape = 4;
 inline constexpr int railMaximumRows = 6;
 inline constexpr double railInset = 12;
+// The compact inspector's thumb dial: quarter rings centred on the thumb corner
+// (outer radius shrinks to fit), swept from along the toolbar (start) to nearly
+// straight up (end), stopping short of the screen edge.
+inline constexpr double dialRadius = 262;
+inline constexpr double dialMinimumRadius = 150;
+inline constexpr double dialRingThickness = 44;
+inline constexpr double dialRingGap = 16;
+inline constexpr double dialSweepStart = 4;
+inline constexpr double dialSweepEnd = 78;
+inline constexpr double dialPad = 44; // Arc length of the −/+ pads at a slider's ends,
+inline constexpr double dialPadMaximumAngle = 18; // capped so short inner arcs keep a slider.
+inline constexpr double dialChipWidth = 104;
+inline constexpr double dialChipHeight = 44;
+inline const GAGCore::Color dialTrack{29, 20, 43, 225};
+inline const GAGCore::Color dialFill{199, 165, 87, 190};
+inline const GAGCore::Color dialPadFill{82, 56, 108, 245};
+inline const GAGCore::Color destroy{81, 36, 60, 235};
 inline constexpr double dragThreshold = 8;
 inline constexpr double fingerLift = 48;
 inline constexpr double edgePanMargin = 24;

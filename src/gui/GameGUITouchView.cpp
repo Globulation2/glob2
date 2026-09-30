@@ -102,6 +102,12 @@ void GameGUITouch::drawPanel()
 		return;
 	auto *gfx = globalContainer->gfx;
 	gfx->setClipRect();
+	if (inspectedBuilding() && usesDial())
+	{
+		drawDial();
+		drawAllocation();
+		return;
+	}
 	gfx->drawFilledRect(int(panel.x), int(panel.y), int(panel.w), int(panel.h),
 						InGameTouchTheme::paper);
 	if (showsBuildPalette())
@@ -416,6 +422,8 @@ ViewRect GameGUITouch::allocationRect() const
 	auto rect = layout().panel;
 	if (!inspectedBuilding() || rect.h <= 0)
 		return {};
+	if (usesDial())
+		return dialLayout(layout()).header;
 	rect.h = InGameTouchTheme::inspectorHeader * globalContainer->gfx->logicalUnitsPerPoint();
 	return rect;
 }

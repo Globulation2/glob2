@@ -265,8 +265,22 @@
     {
       "id": "game-inspector-production",
       "title": "Inspector \u00b7 production",
-      "description": "A real swarm selected to review production ratios and shared allocation controls.",
+      "description": "A real swarm selected to review production ratios and shared allocation controls. Phones show the thumb dial: workers on the outer ring, the chosen unit's ratio inside it, priority innermost, and unit and action chips on the far side.",
       "group": "Gameplay"
+    },
+    {
+      "id": "game-inspector-dial-drag",
+      "title": "Inspector \u00b7 dial drag",
+      "description": "Mid-gesture on a phone: the thumb sweeps the worker ring and the requested count sits above the finger; releasing sends one order. Spacious tablets show their row inspector.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
+      "id": "game-inspector-left-thumb",
+      "title": "Inspector \u00b7 left thumb",
+      "description": "The Thumb side setting mirrors the dial and its chips into the bottom-left corner.",
+      "group": "Gameplay",
+      "availability": "mobile"
     },
     {
       "id": "game-inspector-enemy",

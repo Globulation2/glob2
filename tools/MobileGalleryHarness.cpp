@@ -5,6 +5,7 @@
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
 #include "GlobalContainer.h"
 #include <cmath>
+#include <algorithm>
 #include "MainMenuScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignSelectorScreen.h"
@@ -667,6 +668,42 @@ class MobileGalleryGameplay
 				enemy = gui.game.teams[1]->myBuildings[i];
 		}
 		inspect("game-inspector-production", production);
+		if (!desktopPresentation)
+		{
+			// Phones: a real drag along the dial's worker ring, captured mid-gesture
+			// with its readout; cancelling afterwards sends no order. Spacious
+			// tablets show their row inspector unchanged.
+			if (gui.touch->usesDial())
+			{
+				const auto g = gui.touch->dialLayout(gui.touch->layout()).geometry;
+				const auto regions = gui.touch->dialRegions();
+				const auto arc = std::find_if(regions.begin(), regions.end(), [](const auto &r)
+											  { return r.part == GameGUITouch::DialRegion::Arc && r.action.kind == 6; });
+				if (arc != regions.end())
+				{
+					Uint32 ticks = SDL_GetTicks();
+					auto send = [&](Uint32 type, GAGCore::ViewPoint p)
+					{
+						SDL_Event event{};
+						event.type = type;
+						event.tfinger.timestamp = ticks += 60;
+						event.tfinger.touchId = 8;
+						event.tfinger.fingerId = 1;
+						event.tfinger.x = float(p.x / globalContainer->gfx->getW());
+						event.tfinger.y = float(p.y / globalContainer->gfx->getH());
+						gui.processEvent(&event);
+					};
+					const double radius = g.rings[arc->ring].middle();
+					send(SDL_FINGERDOWN, TouchDial::point(g, radius, arc->from + 1));
+					send(SDL_FINGERMOTION, TouchDial::point(g, radius, arc->from + (arc->to - arc->from) * .6));
+				}
+			}
+			capture("game-inspector-dial-drag");
+			gui.touch->cancel();
+			globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
+			inspect("game-inspector-left-thumb", production);
+			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
+		}
 		inspect("game-inspector-enemy", enemy);
 		const int hp = building->hp;
 		building->hp = std::max(1, hp / 2);
