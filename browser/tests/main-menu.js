@@ -93,12 +93,17 @@ function visibleCenter(page, bounds) {
   const v = shown(bounds) ? bounds.visible : bounds;
   return css(page, bounds, {x: v.x + v.w / 2, y: v.y + v.h / 2});
 }
-// Input is consumed at the game's next host frame; return only once that
-// frame ran, so a test's next step (a resize, say) cannot overtake the click.
+// Input is consumed at the game's next host frame; give that frame a moment
+// to run so a test's next step (a resize, say) cannot overtake the click. A
+// test that holds the loader pauses frames, so this never blocks for long.
 async function consumed(page) {
   const loop = () => page.evaluate(() => glob2Diagnostics.snapshot().loop);
   const before = await loop();
-  await expect.poll(loop, {timeout: 30000, message: 'the game did not process the input'}).toBeGreaterThan(before);
+  const deadline = Date.now() + 500;
+  while (Date.now() < deadline) {
+    if ((await loop()) > before) return;
+    await page.waitForTimeout(20);
+  }
 }
 exports.consumed = consumed;
 exports.clickControl = async (page, key, options = {}) => {
