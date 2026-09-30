@@ -2,15 +2,20 @@
 
 The public `.github/workflows/release.yml` builds packages without publishing.
 The public desktop publication workflows are mirrored to the owner-controlled
-private `genixpro/glob2-release` repository, which stores release credentials.
+`genixpro/glob2-release` repository. Configure release credentials as restricted
+GitHub environment secrets there; the repository itself is public.
 Run `publish-desktop.yml` manually with the public `vVERSION` tag to publish the
 GitHub release, publish Snap stable, and propose the Flathub update in that
-order. Its optional `upload_epic_dev` input also uploads a Windows candidate to
-Epic Dev. Each channel retains a separate manual workflow for retries; no
+order. Each channel retains a separate manual workflow for retries; no
 publication workflow runs on ordinary pushes or pull requests.
-The selected public `vVERSION` tag must resolve to the private mirror's HEAD.
+The selected public `vVERSION` tag must resolve to the release mirror's HEAD.
 Mirror only reviewed public commits. Review of workflow changes is essential:
-the private repository alone does not make unreviewed code safe to run.
+the mirror and dispatch gates alone do not make unreviewed code safe to run.
+Before tagging a new release, choose an unused version, update
+`PACKAGE_VERSION` in `scons/build_layout.py`, `vcpkg.json`, and
+`fedora/glob2.spec`, and add its AppStream release notes. Do not move an
+existing tag. `tools/release/release.py check --tag` requires the tag and the
+release mirror's HEAD to identify the same commit.
 Build-only runs leave Flatpak off by default while its first listing metadata is
 being prepared; select `build_flatpak` to exercise that recipe. The GitHub
 publication run builds it.
@@ -52,11 +57,11 @@ source checksum on a build-only run is for testing, not a release announcement.
 ## Store setup
 
 Before publishing a Snap, register the `globulation2` name in the Snap Store,
-build and install a candidate, and set the private `snap-release` environment secret
+build and install a candidate, and set the `snap-release` environment secret
 `SNAPCRAFT_STORE_CREDENTIALS` from a restricted `snapcraft export-login` token
 with package access, push, update and release rights for that name. The
 `snap-release.yml` workflow publishes only Snap stable. Configure the
-`PUBLIC_RELEASE_GH_TOKEN` secret in the private `github-release` environment
+`PUBLIC_RELEASE_GH_TOKEN` secret in the `github-release` environment
 with permission to create releases in `Globulation2/glob2`. The
 `github-release.yml` workflow publishes the GitHub packages independently.
 
@@ -72,41 +77,6 @@ open a PR). `flathub-update.yml` then opens a Flathub update PR. A Flathub maint
 review and merge it; the workflow does not bypass that review. Keep the
 upstream AppStream metadata in `data/` updated with each release's notes and
 screenshots.
-
-## Epic Games Store
-
-The publisher signs in to the [Epic Developer Portal](https://dev.epicgames.com/portal),
-creates its organization and Globulation 2 product, accepts the distribution
-agreement, completes business and payout details, and pays the submission fee.
-Configure a free base offer, product page, ratings, support details and a Windows
-artifact. Obtain the dedicated BuildPatchTool client ID and secret in Product
-Settings; these are separate from Epic Online Services credentials.
-
-In the private repository's `epic-dev` environment, set variables
-`EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`, `EPIC_WINDOWS_ARTIFACT_ID`, and
-`EPIC_BPT_CLIENT_ID`, plus secret `EPIC_BPT_CLIENT_SECRET`. Download the current
-Windows BuildPatchTool ZIP from the product's Artifacts and Binaries page. Upload
-it as `BuildPatchTool.zip` to a private `epic-bpt` release in
-`genixpro/glob2-release` and set `EPIC_BPT_SHA256` to the ZIP's SHA-256 in the
-same environment. Review tool updates before replacing the asset and digest.
-
-`epic-windows-release.yml` builds a Windows install directory, hashes every file,
-smoke-tests the artifact on a separate Windows runner, verifies the hashes again,
-then uploads the candidate to Epic **Dev**. The credential-bearing job does not
-execute game or source-tree scripts. Retain the workflow's manifest and log as
-release evidence. The unique Epic build version contains the source commit and
-workflow run number.
-
-Install the candidate through the Epic launcher and test launch, assets, saves,
-and multiplayer with a non-Epic PC build. Use the Developer Portal to move it
-through Stage, review, and Live as required. BuildPatchTool upload alone does not
-publish a listing; Epic's self-service documentation does not describe a
-supported API for portal promotion. Add macOS after validating its `.app` through
-the same launcher and gameplay checks. Linux continues through other channels.
-Epic requires crossplay between PC storefronts for multiplayer games; the
-existing YOG/LAN implementation may satisfy this only after an actual mixed-store
-test. Check whether any other PC store offers Globulation 2 achievements before
-marking achievements unnecessary on Epic.
 
 ## Distribution maintainers
 
