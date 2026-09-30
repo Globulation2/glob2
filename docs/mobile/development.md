@@ -298,7 +298,36 @@ The simulator tools use an isolated device set under
 `build/mobile-tools/ios-simulators`. Device builds use `--environment device` and
 require either `--team TEAM_ID` with local provisioning or `--unsigned` for a
 compile-only build. An unsigned device app cannot be installed. Release symbols
-are retained alongside the application.
+are retained alongside the application. With `--team`, Xcode must have the Apple
+Developer account added in Settings > Accounts; the build allows Xcode to create
+or update the provisioning profile for the bundle ID. The generated target is
+included in Xcode archives for TestFlight distribution.
+
+### Internal TestFlight upload
+
+`.github/workflows/ios-testflight.yml` is manually triggered from GitHub Actions.
+It runs only from `master`, uses the Xcode 27 runner and the registered
+`org.globulation2.glob2` App ID on
+team `CL2MNNYQX3`. Each run builds pinned iOS dependencies from source, compiles
+the game, archives and signs the iPhone app, checks the bundle ID and build number,
+retains matching dSYMs, and uploads an internal-only TestFlight build. Its build
+number is `100 × GITHUB_RUN_NUMBER + GITHUB_RUN_ATTEMPT`, so reruns get a new number.
+The uploaded build cannot be submitted for external testing or App Store release.
+
+One-time repository setup requires an App Store Connect **team** API key with
+permissions to manage signing assets and upload builds. Individual API keys cannot
+access provisioning endpoints. Store the key ID, issuer ID and single-line Base64
+encoding of the downloaded `.p8` private key as repository secrets named
+`IOS_ASC_KEY_ID`, `IOS_ASC_ISSUER_ID` and `IOS_ASC_KEY_P8_BASE64`. Never commit the
+private key or signing certificate. The workflow writes the key only to the
+ephemeral runner, outside the checked-out repository. Configure the app's internal
+TestFlight group for automatic distribution in App Store Connect if testers should
+receive every processed build without another manual step.
+
+The workflow uploads an `.xcarchive` artifact for diagnosis. A successful upload
+means Apple accepted the transfer; Apple processes the build afterward. Check the
+TestFlight build status and any export-compliance questions in App Store Connect
+before expecting testers to install it. Keep the App Store release step separate.
 
 ## Verification
 
