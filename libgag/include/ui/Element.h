@@ -118,6 +118,15 @@ class Node
 	// Interaction. Interactive nodes receive taps and keyboard activation.
 	virtual bool interactive() const { return false; }
 	virtual bool enabled() const { return true; }
+	// Addressable parts inside one interactive node (list rows), for diagnostics
+	// and harnesses: key suffix, bounds and the text shown.
+	struct SubTarget
+	{
+		std::string suffix;
+		Rect bounds;
+		std::string label;
+	};
+	virtual std::vector<SubTarget> subTargets() const { return {}; }
 	virtual bool focusable() const { return interactive() && enabled(); }
 	// Drags own the pointer from press to release (sliders, scrollbars).
 	virtual bool capturesPointer(Point) const { return false; }

@@ -38,6 +38,10 @@ class Host
 	void setAvailable(Available available) { availableFn = std::move(available); }
 	void setPlacement(Placement placement) { placeFn = std::move(placement); }
 	void setEscape(std::function<void()> handler) { escape = std::move(handler); }
+	// Called after every measure/arrange pass (tree or popup), for diagnostics.
+	void setLayoutListener(std::function<void()> listener) { layoutListener = std::move(listener); }
+	// Popup items ("popup/<i>") when a choice is open, else null.
+	Node *popupRoot() const;
 
 	// Rebuild from the model at the next layout.
 	void invalidate();
@@ -86,7 +90,7 @@ class Host
 	Metrics metricsValue;
 	Available availableFn;
 	Placement placeFn;
-	std::function<void()> escape;
+	std::function<void()> escape, layoutListener;
 	Element tree;
 	Rect availableRect, rootRect;
 	bool dirty = true, needsLayout = true, built = false;

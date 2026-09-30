@@ -222,6 +222,15 @@ void exited(int result)
 }
 void roomReady(bool canStart) { EM_ASM({ Module.glob2RoomCanStart = Boolean($0); }, canStart); }
 void customGameReady(bool canStart) { EM_ASM({ Module.glob2CustomGameReady = Boolean($0); }, canStart); }
+void controlsChanged(const void *owner, const char *json)
+{
+    EM_ASM({
+        Module.glob2Controls ||= new Map();
+        const text = $1 ? UTF8ToString($1) : '';
+        if (text) Module.glob2Controls.set($0, JSON.parse(text));
+        else Module.glob2Controls.delete($0);
+    }, owner, json);
+}
 void matchFrame(bool paused)
 {
     EM_ASM({

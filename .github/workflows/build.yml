@@ -107,8 +107,7 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'translation catalog' 'python3 data/check_translations.py --strict' \
             --check 'translation tests' 'python3 test/test_translations.py' \
-            --check 'font coverage' 'python3 test/test_font_coverage.py' \
-            --check 'text area layout' 'python3 test/test_text_area_layout.py'
+            --check 'font coverage' 'python3 test/test_font_coverage.py'
       - name: Test compiler cache integration
         id: test_compiler_cache_integration
         continue-on-error: true

@@ -1,8 +1,7 @@
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
+const {clickMainMenu,gameURL,clickCustomGameStart,clickControl,controlBox}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
-const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
 
 test('reload and address-bar shortcuts remain available with game focus',async({page})=>{
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
@@ -45,8 +44,8 @@ test('click coordinates stay correct when browser motion delivery is missing',as
   await page.setViewportSize({width:1000,height:700});
   await expect.poll(async()=>(await state(page)).width).toBe(1000);
   await page.locator('#canvas').press('Escape',{delay:80});
-  await expect.poll(()=>require('./pixels').hasLightText(page,{x:360,y:382,width:280,height:34})).toBe(true);
-  await click(page,500,400);await screen(page,'EndGameScreen');
+  await expect.poll(async()=>require('./pixels').hasLightText(page,await controlBox(page,'quit'))).toBe(true);
+  await clickControl(page,'quit');await screen(page,'EndGameScreen');
 });
 
 test('desktop right-click cancels a selection and cycles sidebar views without a browser menu',async({page},info)=>{
@@ -72,7 +71,7 @@ test('desktop right-click cancels a selection and cycles sidebar views without a
   await page.waitForTimeout(160);
   expect((await page.screenshot({clip:panel})).equals(construction)).toBe(true);
   // Select the first building tool, then cancel it with a secondary click.
-  await click(page,1075,205);
+  await page.locator('#canvas').click({position:{x:1075,y:205},delay:80});
   await page.mouse.click(400,350,{button:'right',delay:80});
   await page.waitForTimeout(160);
   expect((await page.screenshot({clip:panel})).equals(construction)).toBe(true);

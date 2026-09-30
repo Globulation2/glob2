@@ -85,5 +85,10 @@ void overviewDrawn(bool drawn);
 void roomReady(bool canStart);
 // Whether the custom-game lobby can launch its current map.
 void customGameReady(bool canStart);
+// Read-only presentation diagnostic: the interactive controls of one element
+// host (a screen or dialog) after layout, as JSON keyed by control key with
+// logical-pixel bounds, or null when the host goes away. Tests drive the real
+// controls through their keys instead of hard-coded coordinates.
+void controlsChanged(const void *owner, const char *json);
 void exited(int result);
 } // namespace GAGCore::ApplicationHost

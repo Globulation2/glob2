@@ -1,15 +1,14 @@
 const {campaignFrame,clickCampaignFooter}=require('./editor-controls');
-const {editTextField}=require('./main-menu');
+const {editTextField,clickControl,controlBox}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
-const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
 const digest=page=>page.evaluate(()=>glob2Diagnostics.campaignDefinitionDigest('Browser_Campaign.txt'));
 async function edit(page){
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
-  await click(page,600,420);await screen(page,'CampaignEditor');
+  await clickControl(page,'new-campaign');await screen(page,'CampaignEditor');
   await editTextField(page,'Browser Campaign');
 }
 
@@ -47,7 +46,9 @@ test('campaign authoring retains the editor on quota failure and can retry',asyn
   await clickCampaignFooter(page,true);
   await expect.poll(async()=>(await state(page)).persistence).toBe('failed');
   await screen(page,'CampaignEditor');
-  await expect.poll(()=>require('./pixels').hasLightText(page,{x:campaignFrame(page).x,y:campaignFrame(page).y+34,width:campaignFrame(page).w,height:48})).toBe(true);
+  // The failure notice is the first line of the editor panel, above the map list.
+  const frame=await campaignFrame(page), maps=await controlBox(page,'maps');
+  await expect.poll(()=>require('./pixels').hasDarkText(page,{x:frame.x,y:frame.y,width:frame.width,height:Math.max(24,maps.y-frame.y)})).toBe(true);
   await page.screenshot({path:info.outputPath('campaign-editor-save-failure.png')});
   const restored=await context.newPage();await restored.goto(gameURL());await screen(restored,'MainMenuScreen');
   expect(await digest(restored)).toBeNull();await restored.close();

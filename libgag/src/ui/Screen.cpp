@@ -1,10 +1,66 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <ApplicationHost.h>
+#include <sstream>
+#include <typeinfo>
 #include <ui/Screen.h>
 #include <GraphicContext.h>
 #include <GUIStyle.h>
 
 namespace GAGGUI::ui
 {
+namespace
+{
+std::string quoted(const std::string &text)
+{
+	std::string out = "\"";
+	for (unsigned char c : text)
+	{
+		if (c == '"' || c == '\\')
+			out += '\\';
+		if (c < 0x20)
+			out += ' ';
+		else
+			out += char(c);
+	}
+	return out + "\"";
+}
+void appendTarget(std::ostringstream &out, bool &first, const std::string &key, Rect r, bool enabled, const std::string &label)
+{
+	if (key.empty())
+		return;
+	out << (first ? "" : ",") << quoted(key) << ":{\"x\":" << r.x << ",\"y\":" << r.y << ",\"w\":" << r.w << ",\"h\":" << r.h
+		<< ",\"enabled\":" << (enabled ? "true" : "false") << ",\"label\":" << quoted(label) << "}";
+	first = false;
+}
+void appendTree(std::ostringstream &out, bool &first, Node &root)
+{
+	root.visit(
+		[&](Node &node)
+		{
+			if (!node.interactive())
+				return;
+			appendTarget(out, first, node.key, node.bounds, node.enabled(), node.accessibleText());
+			for (const auto &target : node.subTargets())
+				appendTarget(out, first, node.key + "/" + target.suffix, target.bounds, node.enabled(), target.label);
+		});
+}
+} // namespace
+
+void publishControls(const void *owner, const Host &host)
+{
+	std::ostringstream out;
+	out << "{\"surface\":{\"w\":" << host.presentation().viewport.w << ",\"h\":" << host.presentation().viewport.h << "},\"root\":{\"x\":"
+		<< host.rootBounds().x << ",\"y\":" << host.rootBounds().y << ",\"w\":" << host.rootBounds().w << ",\"h\":" << host.rootBounds().h
+		<< "},\"controls\":{";
+	bool first = true;
+	if (auto *root = host.root())
+		appendTree(out, first, *root);
+	if (auto *popup = host.popupRoot())
+		appendTree(out, first, *popup);
+	out << "}}";
+	GAGCore::ApplicationHost::controlsChanged(owner, out.str().c_str());
+}
+
 namespace
 {
 bool quitRequest(const SDL_Event &event)
@@ -43,9 +99,10 @@ UIScreen::UIScreen(const Theme &theme)
 	hostValue.setAvailable([this](const Presentation &p, const Metrics &m) { return available(p, m); });
 	hostValue.setPlacement([this](Size measured, Rect area) { return place(measured, area); });
 	hostValue.setEscape([this] { onEscape(); });
+	hostValue.setLayoutListener([this] { publishControls(this, hostValue); });
 }
 
-UIScreen::~UIScreen() = default;
+UIScreen::~UIScreen() { GAGCore::ApplicationHost::controlsChanged(this, nullptr); }
 
 Rect UIScreen::available(const Presentation &p, const Metrics &) { return p.dialog; }
 
@@ -136,6 +193,7 @@ UIDialog::UIDialog(const Theme &theme)
 	hostValue.setAvailable([this](const Presentation &p, const Metrics &m) { return available(p, m); });
 	hostValue.setPlacement([this](Size measured, Rect area) { return place(measured, area); });
 	hostValue.setEscape([this] { onEscape(); });
+	hostValue.setLayoutListener([this] { publishControls(this, hostValue); });
 }
 
 Rect UIDialog::available(const Presentation &p, const Metrics &m)
@@ -155,7 +213,7 @@ Rect UIDialog::place(Size measured, Rect area)
 	return Rect{area.x + (area.w - w) / 2, area.y + (area.h - h) / 2, w, h};
 }
 
-UIDialog::~UIDialog() = default;
+UIDialog::~UIDialog() { GAGCore::ApplicationHost::controlsChanged(this, nullptr); }
 
 void UIDialog::attach(GAGCore::DrawableSurface &target)
 {
@@ -231,5 +289,6 @@ void UIDialog::finish(int result)
 	done = true;
 	resultValue = result;
 	hostValue.endEditing();
+	GAGCore::ApplicationHost::controlsChanged(this, nullptr);
 }
 } // namespace GAGGUI::ui

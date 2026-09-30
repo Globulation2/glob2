@@ -1169,6 +1169,17 @@ class ListView : public Node
 		return index >= 0 && index < int(items.size()) ? index : -1;
 	}
 	bool rowEnabled(int index) const { return options.enabled.empty() || options.enabled[std::size_t(index)]; }
+	std::vector<SubTarget> subTargets() const override
+	{
+		std::vector<SubTarget> rows;
+		for (int i = 0; rowHeight > 0 && i < int(items.size()); ++i)
+		{
+			const Rect row{bounds.x, bounds.y + i * rowHeight - offset, bounds.w, rowHeight};
+			if (row.bottom() > bounds.y && row.y < bounds.bottom())
+				rows.push_back({std::to_string(i), row, items[std::size_t(i)]});
+		}
+		return rows;
+	}
 	void choose(Host &host, int index)
 	{
 		if (index < 0 || index >= int(items.size()) || !rowEnabled(index))

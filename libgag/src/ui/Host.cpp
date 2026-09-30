@@ -98,6 +98,7 @@ void Host::restoreStates()
 
 void Host::layoutIfNeeded()
 {
+	bool laidOut = false;
 	if (dirty)
 	{
 		saveStates();
@@ -122,6 +123,7 @@ void Host::layoutIfNeeded()
 	}
 	if (needsLayout && tree)
 	{
+		laidOut = true;
 		const auto ctx = context();
 		availableRect = availableFn(current, metricsValue);
 		const Size measured = tree->measure(ctx, Constraints::loose(availableRect.size()));
@@ -131,7 +133,11 @@ void Host::layoutIfNeeded()
 		if (popup)
 			layoutPopup();
 	}
+	if (laidOut && layoutListener)
+		layoutListener();
 }
+
+Node *Host::popupRoot() const { return popup && popup->tree ? popup->tree.get() : nullptr; }
 
 Node *Host::find(const std::string &key) const
 {
@@ -701,12 +707,16 @@ void Host::layoutPopup()
 	y = std::clamp(y, safe.y + margin, std::max(safe.y + margin, safe.bottom() - measured.h - margin));
 	popup->bounds = {x, y, width, measured.h};
 	popup->tree->arrange(ctx, popup->bounds);
+	if (layoutListener)
+		layoutListener();
 }
 
 void Host::closePopup()
 {
 	popup.reset();
 	store.erase("popup/scroll");
+	if (layoutListener)
+		layoutListener();
 }
 
 void Host::pickPopup(int index)

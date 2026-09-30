@@ -1,36 +1,64 @@
-const point = (width, height, action) => {
-  const compact = height < 640;
-  const panelX = Math.max(20, Math.min(72, Math.floor(width / 20)));
-  const panelH = Math.min(height - 40, 620);
-  const panelY = Math.floor((height - panelH) / 2);
-  const panelW = compact ? 312 : 368;
-  const x = panelX + 24;
-  const w = panelW - 48;
-  let y = panelY + (compact ? 74 : 110);
-  const entries = {};
-  const add = (name, h) => {
-    entries[name] = {x: x + Math.floor(w / 2), y: y + Math.floor(h / 2)};
-    y += h;
-  };
-  add('custom', compact ? 38 : 46);
-  y += 8;
-  add('campaign', compact ? 30 : 38);
-  y += 6;
-  add('load', compact ? 30 : 38);
-  y += 6;
-  add('tutorial', compact ? 30 : 38);
-  y += compact ? 12 : 18;
-  add('yog', compact ? 28 : 34);
-  y += 4 + (compact ? 12 : 18);
-  const utilityH = compact ? 28 : 32;
-  const utilityW = Math.floor(w / 2) - 4;
-  for (const [index, name] of ['settings', 'editor', 'credits', 'quit'].entries()) {
-    entries[name] = {
-      x: x + (index % 2) * (Math.floor(w / 2) + 4) + Math.floor(utilityW / 2),
-      y: y + Math.floor(index / 2) * (utilityH + 4) + Math.floor(utilityH / 2),
-    };
-  }
-  return entries[action];
+// Screens and dialogs publish their interactive controls, keyed by the same
+// stable keys the native harnesses use, with bounds in logical pixels (see
+// ApplicationHost::controlsChanged and glob2Diagnostics.snapshot().controls).
+// Tests drive those real controls rather than mirroring layout arithmetic.
+const {expect} = require('@playwright/test');
+async function control(page, key, {timeout = 30000, enabled = true} = {}) {
+  let found;
+  await expect.poll(async () => {
+    found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
+    return Boolean(found && (!enabled || found.enabled));
+  }, {timeout, message: `control "${key}" is not available`}).toBe(true);
+  return found;
+}
+// Logical → CSS pixels: the canvas fills the window at the logical surface size,
+// scaled by any interface scale setting.
+function css(page, bounds, point) {
+  const {width, height} = page.viewportSize();
+  const sx = width / bounds.surface.w, sy = height / bounds.surface.h;
+  return {x: point.x * sx, y: point.y * sy};
+}
+function center(page, bounds) {
+  return css(page, bounds, {x: bounds.x + bounds.w / 2, y: bounds.y + bounds.h / 2});
+}
+exports.control = control;
+// The control's bounds in CSS pixels, for pixel checks near a known control.
+exports.controlBox = async (page, key, options) => {
+  const bounds = await control(page, key, {enabled: false, ...options});
+  const origin = css(page, bounds, {x: bounds.x, y: bounds.y});
+  const corner = css(page, bounds, {x: bounds.x + bounds.w, y: bounds.y + bounds.h});
+  return {x: origin.x, y: origin.y, width: corner.x - origin.x, height: corner.y - origin.y};
+};
+// The panel of the host owning a control, in CSS pixels.
+exports.rootBox = async (page, key) => {
+  const bounds = await control(page, key, {enabled: false});
+  const origin = css(page, bounds, {x: bounds.root.x, y: bounds.root.y});
+  const corner = css(page, bounds, {x: bounds.root.x + bounds.root.w, y: bounds.root.y + bounds.root.h});
+  return {x: origin.x, y: origin.y, width: corner.x - origin.x, height: corner.y - origin.y};
+};
+exports.clickControl = async (page, key, options = {}) => {
+  const bounds = await control(page, key, options);
+  return page.locator('#canvas').click({position: center(page, bounds), delay: 80, ...(options.click || {})});
+};
+exports.tapControl = async (page, key, options = {}) => {
+  const bounds = await control(page, key, options);
+  const at = center(page, bounds);
+  return page.touchscreen.tap(at.x, at.y);
+};
+// List rows are published as "<list>/<index>" with the text they show.
+exports.clickListRow = async (page, list, match, options = {}) => {
+  let key;
+  await expect.poll(async () => {
+    const rows = await page.evaluate(list => {
+      const controls = glob2Diagnostics.snapshot().controls;
+      return Object.entries(controls).filter(([key]) => key.startsWith(list + '/')).map(([key, value]) => ({key, label: value.label}));
+    }, list);
+    const row = typeof match === 'number' ? rows.find(row => row.key === list + '/' + match)
+      : rows.find(row => match instanceof RegExp ? match.test(row.label) : row.label === match);
+    key = row?.key;
+    return Boolean(key);
+  }, {timeout: options.timeout || 30000, message: `row ${match} of list "${list}" is not available`}).toBe(true);
+  return exports.clickControl(page, key, options);
 };
 
 exports.gameURL = () => {
@@ -45,85 +73,39 @@ exports.gameURL = () => {
   return url.pathname + url.search;
 };
 
+const mainMenuCodes = {campaign:0, tutorial:1, load:2, custom:3, yog:4, lan:5, settings:6, editor:7, credits:8, quit:9};
 exports.clickMainMenu = async (page, action) => {
-  const {width, height} = page.viewportSize();
-  const touch = await page.evaluate(() => Boolean(Module.presentationMetrics?.touch));
-  if (touch || width < 640 || height < 480) {
-    // MainMenuScreen::renderMobile uses a centred play card and a settings
-    // button in its header; utilities live in the More card.
-    const w=Math.min(440,width-24), x=(width-w)/2;
-    const top=(height-Math.min(height-24,420))/2;
-    const click=(x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
-    if(action==='settings') return click(x+w-60,top+32);
-    const landscape=width>height && height<480;
-    if(action==='custom') return click(width/2,top+100);
-    const index=['campaign','load','tutorial','more'].indexOf(action);
-    const secondary=index>=0?index:3;
-    if(landscape) {
-      const half=Math.floor((w-32)/2);
-      await click(x+12+(secondary%2)*(half+8)+half/2,top+160+Math.floor(secondary/2)*56);
-    } else {
-      await click(width/2,top+148+secondary*64+24+(secondary===3?12:0));
-    }
-    if(index>=0) return;
-    const moreTop=(height-Math.min(height-24,596))/2;
-    const utility=['yog','editor','credits'].indexOf(action);
-    if(utility<0) throw new Error('Unavailable mobile menu action: '+action);
-    return click(width/2,moreTop+72+64+utility*64+28);
+  const code = mainMenuCodes[action];
+  if (code === undefined) throw new Error('Unknown main menu action: ' + action);
+  const keys = action === 'settings' ? ['menu/6', 'menu/settings'] : ['menu/' + code];
+  const present = () => page.evaluate(keys => {
+    const controls = glob2Diagnostics.snapshot().controls;
+    return keys.find(key => controls[key]) || (controls['menu/more'] ? 'menu/more' : null);
+  }, keys);
+  await expect.poll(present, {timeout: 30000, message: 'main menu is not showing'}).not.toBeNull();
+  let key = await present();
+  // Phones keep the utilities one level away behind More.
+  if (key === 'menu/more' && !keys.includes('menu/more')) {
+    await exports.clickControl(page, 'menu/more');
+    key = keys[0];
   }
-  return page.locator('#canvas').click({position: point(width, height, action), delay: 80});
+  return exports.clickControl(page, key);
 };
 
-// Mirrors SettingsScreen::layout()'s panel/footer math (src/SettingsScreenLayout.cpp)
-// for the footer's two buttons. Assumes the footer status line stays on one
-// line, which holds at every viewport this suite resizes to while Settings
-// is open; a panel narrower than ~500px could wrap it and shift these.
-const settingsFooter = (width, height) => {
-  const panelW = Math.min(width - 32, 960);
-  const panelH = Math.min(height - 32, 720);
-  const panelX = Math.floor((width - panelW) / 2);
-  const panelY = Math.floor((height - panelH) / 2);
-  const footH = 64;
-  const footerX = panelX, footerY = panelY + panelH - footH, footerW = panelW;
-  const doneX = footerX + footerW - 112, doneY = footerY + 12;
-  return {
-    done: {x: doneX + 48, y: doneY + 20},
-    // Always visible, and always closes Settings in one click regardless of
-    // any save failure — see SettingsScreen::abandon().
-    cancel: {x: doneX - 52, y: doneY + 20},
-  };
-};
-exports.settingsFooter = settingsFooter;
-exports.clickSettingsDone = (page) => {
-  const {width, height} = page.viewportSize();
-  return page.locator('#canvas').click({position: settingsFooter(width, height).done, delay: 80});
-};
-exports.clickSettingsCancel = (page) => {
-  const {width, height} = page.viewportSize();
-  return page.locator('#canvas').click({position: settingsFooter(width, height).cancel, delay: 80});
-};
+exports.clickSettingsDone = page => exports.clickControl(page, 'done');
+// Always visible, and always closes Settings in one click regardless of any
+// save failure — see SettingsScreen::abandon().
+exports.clickSettingsCancel = page => exports.clickControl(page, 'cancel');
 
-// Mirrors CustomGameScreen::renderLobby()'s "start" button rect
-// (src/CustomGameScreen.cpp). The button ignores input while its preview is
-// pending, so wait for the same ready state the lobby uses.
-exports.clickCustomGameStart = async (page) => {
-  const {expect} = require('@playwright/test');
-  const {width, height} = page.viewportSize();
-  const w = Math.min(width - 32, 1120), x = Math.floor((width - w) / 2);
+// The lobby's Start ignores input while its preview is pending; wait for the
+// same ready state the lobby publishes.
+exports.clickCustomGameStart = async page => {
   await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().customGameReady),
     {timeout: 60000}).toBe(true);
-  return page.locator('#canvas').click({position: {x: x + w - 165 + 82, y: height - 52 + 17}, delay: 80});
+  return exports.clickControl(page, 'start');
 };
-
-// The unscrolled Players & Teams rows share this geometry at every viewport.
-exports.clickCustomAIProfile = (page, colony) => {
-  const {width} = page.viewportSize();
-  const w = Math.min(width - 32, 1120), x = Math.floor((width - w) / 2);
-  const rowHeight = w < 760 ? 80 : 100;
-  return page.locator('#canvas').click({
-    position: {x: x + w - 150 + 64, y: 85 + 42 + colony * rowHeight + 42 + 14}, delay: 80,
-  });
-};
+// The AI profile picker behind a colony's info button on the Players & Teams tab.
+exports.clickCustomAIProfile = (page, colony) => exports.clickControl(page, `colony/${colony}/info`);
 
 // Exercise the visible editing surface with actual mouse and keyboard events.
 // Filling the DOM value directly would miss focus, deletion and key routing bugs.
@@ -142,11 +124,7 @@ exports.editTextField = async (page, value, password = false) => {
   if (password) await expect(field).toHaveAttribute('type', 'password');
 };
 
-// EndGameScreen::drawResults places Save replay in the middle footer slot.
-exports.clickResultsSave = page => {
-  const {width,height}=page.viewportSize();
-  return page.locator('#canvas').click({position:{x:width/2,y:height-32},delay:80});
-};
+exports.clickResultsSave = page => exports.clickControl(page, 'save-replay');
 
 // Export binary evidence compactly: tracing a JS number per byte can consume
 // minutes and hundreds of MB for a replay. This leaves the exact bytes intact.

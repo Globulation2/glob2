@@ -6,6 +6,9 @@
 
 namespace GAGGUI::ui
 {
+// Publish a host's interactive controls to ApplicationHost::controlsChanged.
+void publishControls(const void *owner, const Host &host);
+
 // A screen whose whole content is one element tree rebuilt from its model.
 class UIScreen : public Screen
 {

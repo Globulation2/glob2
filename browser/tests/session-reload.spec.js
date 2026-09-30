@@ -1,9 +1,8 @@
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
+const {clickMainMenu,gameURL,clickCustomGameStart,clickControl,clickListRow}=require('./main-menu');
 const path=require('node:path');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
-const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
 
 async function startAndSave(page) {
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
@@ -11,14 +10,14 @@ async function startAndSave(page) {
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,600,400);
+  await clickControl(page,'save');
   // Name the manual save explicitly: an autosave can arrive while persistence
   // completes, so selecting the first newly appearing file races with it.
   const nameField=page.getByRole('textbox',{name:'Game text field'});
   await nameField.click();
   await nameField.press('Home');
   await page.keyboard.type('Reload regression ',{delay:30});
-  await click(page,520,555);
+  await clickControl(page,'ok');
   await expect.poll(async()=>{
     const saves=await page.evaluate(()=>glob2Diagnostics.saves());
     return saves.filter(name=>name.startsWith('Reload_regression_')).length;
@@ -28,13 +27,13 @@ async function startAndSave(page) {
 }
 async function loadSaved(page,replay=false,observeLoading=true) {
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,600,replay?375:350);
+  await clickControl(page,'load');
   // Game loads retain the last saved name; the first row may be an autosave.
   // The imported replay is selected explicitly because it has a different name.
-  if(replay) await click(page,500,360);
+  if(replay) await clickListRow(page,'files',/^AAA Replay/);
   // Start observing before the click so a fast cooperative load is not missed.
   const loading=observeLoading ? page.waitForFunction(()=>glob2Diagnostics.snapshot().screenClass.includes('GameLoadScreen')) : Promise.resolve();
-  await click(page,520,555);await loading;
+  await clickControl(page,'ok');await loading;
 }
 
 test('an active match can load the same saved game repeatedly through the scheduled loader',async({page})=>{
@@ -78,12 +77,12 @@ test('an active replay can be loaded again through the scheduled loader',{tag:'@
   if(process.env.GLOB2_TEST_RENDERER==='webgl2') test.setTimeout(420000);
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
-  await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await click(page,620,650);
-  const chooser=page.waitForEvent('filechooser');await click(page,340,695);
+  await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await clickControl(page,'switch');
+  const chooser=page.waitForEvent('filechooser');await clickControl(page,'import');
   await (await chooser).setFiles({name:'AAA Replay.replay',mimeType:'application/octet-stream',
     buffer:await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'))});
   await expect.poll(async()=>(await state(page)).import).toBe('succeeded');
-  await click(page,380,280);await click(page,810,590);
+  await clickListRow(page,'files',/^AAA Replay/);await clickControl(page,'ok');
   await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('match');
   const original=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(original+25);
