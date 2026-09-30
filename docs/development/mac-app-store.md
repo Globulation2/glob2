@@ -5,33 +5,34 @@ sandboxed app. Direct-distribution DMGs use `scons release=1 package` and are no
 used for App Store uploads. Apple requires the App Sandbox entitlement and a
 signed installer package for the Mac App Store.
 
-## Local candidate
+## Local build check
 
 On macOS, run:
 
 ```sh
-scons release=1 bundle -j2
-python3 darwin/package_app_store.py --build 1
+scons release=1 -j2
 ```
 
-The default ad hoc signature is for local sandbox testing. The candidate is in
-the ignored `artifacts/mac-app-store/Glob2.app`. Check launch, settings, saves,
-map import, LAN hosting, and YOG sign-in and connection. The app's profile data
-is placed inside its sandbox container. Existing direct-distribution profiles in
-`~/.glob2` do not migrate automatically, so migration needs a separate user-facing
-decision before release to existing desktop users. The generated Mac icon includes
-required large sizes, but those are enlarged from the existing 128-pixel artwork
-and need visual review.
+This compiles the game without packaging or release signing it. On Apple silicon,
+the linker may add an ad hoc signature to the raw executable. To produce a sandboxed
+candidate, use a manual run in the private mirror with `upload` off, then download
+that run's app artifact. Check launch, settings, saves, map import, LAN hosting,
+and YOG sign-in and connection. The app's profile data is placed inside its
+sandbox container. Existing direct-distribution profiles in `~/.glob2` do not
+migrate automatically, so migration needs a separate user-facing decision before
+release to existing desktop users. The generated Mac icon includes required large
+sizes, but those are enlarged from the existing 128-pixel artwork and need visual
+review.
 
 ## Manual GitHub Actions release
 
 Keep this workflow and the packaging code in the public `Globulation2/glob2`
 repository. Changes to the workflow, SCons bundle code, or `darwin/` trigger a
-build-only pull-request check there. A public run cannot enter the signing job,
-even if someone manually requests `upload`: the build job rejects that request,
-and the signing job separately requires the private repository, `master`, a
-manual dispatch, and `upload=true`. Do not configure Mac release secrets in the
-public repository.
+compile and raw-binary smoke test on public pull requests. Public manual runs and
+private mirror pull requests skip the build job. Bundling, sandbox staging, and
+signing occur only on a manual run from the private mirror's `master` branch.
+The upload job also requires that repository, branch, event, and `upload=true`.
+Do not configure Mac release secrets in the public repository.
 
 For a release, first sync the reviewed public source to the owner-only private
 mirror, `genixpro/glob2-release`, on `master`. The owner then runs **Mac App
@@ -44,12 +45,14 @@ Connect. The public version comes from `PACKAGE_VERSION` in
 The workflow does not submit an uploaded build for App Review; processing and
 submission are separate actions in App Store Connect.
 
-The build job runs on GitHub's arm64 `macos-26` runner with Xcode 26 or newer. It
-installs the native Homebrew dependencies, runs `scons release=1 bundle`, stages
-the sandboxed app, checks its signature, lists generators, and writes a map in
-its container. The private mirror's signed job uses the exact app artifact from
-that run's build job. Both the source app archive and signed `.pkg` are retained
-as workflow artifacts for 14 days in the repository where the run occurred.
+Both build paths run on GitHub's arm64 `macos-26` runner with Xcode 26 or newer.
+The public check compiles the game and lists generators from the raw binary. It
+does not run `codesign` or use any release signing identity.
+The private mirror run also bundles the app, stages its sandboxed candidate,
+checks the signature, lists generators, and writes a map in its container. Its
+signed job uses the exact app artifact from that run's build job. Both the source
+app archive and signed `.pkg` are retained as private mirror workflow artifacts
+for 14 days.
 
 ### One-time App Store Connect setup
 

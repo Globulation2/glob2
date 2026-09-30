@@ -56,20 +56,22 @@ scons -C test                 # rebuild the separate test suite
   because it embeds the compilation date and time.
 - `release=1` outside macOS strips binaries (`-s`), so it also drops `-g`: debug
   information there only slowed compilation and multiplied object and cache sizes.
-- To stage a Mac App Store sandbox candidate, run `scons release=1 bundle` and then
-  `python3 darwin/package_app_store.py`. The script copies the bundle to the ignored
+- The public Mac pull-request check compiles with `scons release=1` and runs a
+  raw-binary command-line smoke test without release signing. On a manual run
+  from the private release mirror's `master`, the workflow runs
+  `scons release=1 bundle` and then
+  `darwin/package_app_store.py`. The script copies the bundle to the ignored
   `artifacts/mac-app-store/Glob2.app`, sets its App Store version and build number,
   adds Retina icon sizes from the existing 128-pixel artwork, applies
-  `darwin/AppStore.entitlements`, and verifies its signature. Its default
-  ad hoc signature is for local testing. The staging default uses the iPhone App
-  ID, `org.globulation2.glob2`. The private release mirror supplies the Mac
-  signing identities and provisioning profile, then makes a signed `.pkg` beside
-  the app.
-  The existing `package` target remains the direct distribution DMG path. Test
-  saves, map import, LAN hosting and YOG connections in the sandboxed app before
-  upload; local signing alone does not establish App Store acceptance. See the
-  [Mac App Store release process](mac-app-store.md) for the private mirror's
-  manual GitHub Actions workflow and required signing credentials.
+  `darwin/AppStore.entitlements`, and verifies its signature. Its App ID defaults
+  to the iPhone ID, `org.globulation2.glob2`. When `upload` is selected, the
+  private mirror supplies the Mac distribution identities and provisioning
+  profile, then makes a signed `.pkg` beside the app. The existing `package`
+  target remains the direct distribution DMG path. Test saves, map import, LAN
+  hosting and YOG connections in the sandboxed app before upload; local testing
+  alone does not establish App Store acceptance. See the
+  [Mac App Store release process](mac-app-store.md) for the mirror-only manual
+  workflow and required signing credentials.
 - Keep harness runs out of personal profiles: use the existing disposable-profile
   runners and retain fixtures, seeds, logs and checksums needed to reproduce a result.
 - CI lets independent test steps finish after a failure and records their raw

@@ -23,27 +23,30 @@ on:
 permissions:
   contents: read
 
-# Manual releases serialize; superseded PR build checks can be cancelled.
+# Manual releases serialize; superseded public PR build checks can be cancelled.
 concurrency:
   group: mac-app-store-${{ github.event_name == 'workflow_dispatch' && 'release' || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
-    name: Build and test sandboxed app
+    name: Build game and test candidate
+    if: ${{ (github.repository == 'Globulation2/glob2' && github.event_name == 'pull_request') || (github.repository == 'genixpro/glob2-release' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
     runs-on: macos-26
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 
-      - name: Require private mirror master for an upload
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.upload }}
+      - name: Confirm private mirror release context
+        if: ${{ github.repository == 'genixpro/glob2-release' }}
         env:
           RELEASE_REF: ${{ github.ref }}
           RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_EVENT: ${{ github.event_name }}
         run: |
           test "$RELEASE_REPOSITORY" = genixpro/glob2-release
           test "$RELEASE_REF" = refs/heads/master
+          test "$RELEASE_EVENT" = workflow_dispatch
 
       - name: Install macOS build dependencies
         run: |
@@ -54,14 +57,29 @@ jobs:
           test "${sdk_version%%.*}" -ge 26
           test "$(uname -m)" = arm64
 
-      - name: Compile and bundle
+      - name: Compile game; bundle only in private mirror
         run: |
           openssl="$(brew --prefix openssl@3)"
-          scons release=1 bundle -j2 \
-            CXXFLAGS="-I$openssl/include" \
-            LINKFLAGS="-L$openssl/lib"
+          if [[ "$GITHUB_REPOSITORY" == genixpro/glob2-release ]]; then
+            scons release=1 bundle -j2 \
+              CXXFLAGS="-I$openssl/include" \
+              LINKFLAGS="-L$openssl/lib"
+          else
+            scons release=1 -j2 \
+              CXXFLAGS="-I$openssl/include" \
+              LINKFLAGS="-L$openssl/lib"
+          fi
+
+      - name: Smoke test public compiled game
+        if: ${{ github.repository == 'Globulation2/glob2' }}
+        run: |
+          game=build/darwin/client/release/src/glob2
+          test -x "$game"
+          "$game" --list-map-generators > "$RUNNER_TEMP/glob2-generators.txt"
+          test -s "$RUNNER_TEMP/glob2-generators.txt"
 
       - name: Stage sandbox candidate
+        if: ${{ github.repository == 'genixpro/glob2-release' }}
         env:
           BUILD_NUMBER: ${{ inputs.build_number || github.run_number }}
           BUNDLE_ID: ${{ vars.APPLE_BUNDLE_ID }}
@@ -70,6 +88,7 @@ jobs:
             --bundle-id "${BUNDLE_ID:-org.globulation2.glob2}"
 
       - name: Smoke test sandboxed candidate
+        if: ${{ github.repository == 'genixpro/glob2-release' }}
         env:
           BUNDLE_ID: ${{ vars.APPLE_BUNDLE_ID }}
         run: |
@@ -83,9 +102,11 @@ jobs:
           test -s "$map"
 
       - name: Archive app for signing job
+        if: ${{ github.repository == 'genixpro/glob2-release' }}
         run: ditto -c -k --keepParent artifacts/mac-app-store/Glob2.app artifacts/mac-app-store/source-app.zip
 
       - uses: actions/upload-artifact@v4
+        if: ${{ github.repository == 'genixpro/glob2-release' }}
         with:
           name: mac-app-store-source-app
           path: artifacts/mac-app-store/source-app.zip
