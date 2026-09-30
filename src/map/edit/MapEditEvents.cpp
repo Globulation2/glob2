@@ -43,7 +43,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		delegateMenu(event);
 		return;
 	}
-    else if(event.type==SDL_MOUSEWHEEL && (inputState.modifiers() & KMOD_ALT))
+    else if(event.type==SDL_MOUSEWHEEL)
     {
         double delta=event.wheel.y;
 #if SDL_VERSION_ATLEAST(2,0,18)
@@ -142,6 +142,11 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 			{
 				performAction("select map unit");
 				performAction("select map building");
+				if (!phone)
+				{
+					isLeftScrollDragging = true;
+					if (!isScrollDragging) performAction("scroll drag start");
+				}
 			}
 		}
 		else if(widgetRectangle(globalContainer->gfx->getW()-menuWidth()+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
@@ -156,7 +161,8 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_MIDDLE)
 	{
-		performAction("scroll drag start");
+		isMiddleScrollDragging = true;
+		if (!isScrollDragging) performAction("scroll drag start");
 	}
 	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_LEFT)
 	{
@@ -172,11 +178,16 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 			performAction("area drag end");
 		if(isDraggingNoResourceGrowthArea)
 			performAction("no ressource growth area drag end");
+		if(isLeftScrollDragging)
+		{
+			isLeftScrollDragging = false;
+			if (!isMiddleScrollDragging) performAction("scroll drag stop");
+		}
 	}
 	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_MIDDLE)
 	{
-		if(isScrollDragging)
-			performAction("scroll drag stop");
+		isMiddleScrollDragging = false;
+		if(isScrollDragging && !isLeftScrollDragging) performAction("scroll drag stop");
 	}
 }
 
@@ -308,6 +319,7 @@ void MapEdit::suspendInput()
     inputState.clearHeld();
     xSpeed = ySpeed = 0;
     isDraggingMinimap = isScrollDragging = false;
+    isLeftScrollDragging = isMiddleScrollDragging = false;
     isDraggingZone = isDraggingTerrain = isDraggingDelete = false;
     isDraggingArea = isDraggingNoResourceGrowthArea = false;
     // The parent will not receive pointer motion while its child is active.

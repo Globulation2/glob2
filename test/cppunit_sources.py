@@ -64,8 +64,6 @@ EditorWidgetLayoutTest.cpp
 
 GUIListSelectionTest.cpp
 
-ScrollWheelTargetTest.cpp
-
 BuildingFailureDisplayTest.cpp
 
 OverlayFillTest.cpp

@@ -270,6 +270,8 @@ MapEdit::MapEdit()
 	isDraggingTerrain=false;
 	isDraggingDelete=false;
 	isScrollDragging=false;
+	isLeftScrollDragging=false;
+	isMiddleScrollDragging=false;
 	isDraggingArea=false;
 	isDraggingNoResourceGrowthArea=false;
 

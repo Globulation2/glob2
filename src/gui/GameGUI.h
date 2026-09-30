@@ -371,8 +371,8 @@ private:
 	//! the "still N units" message). Ally-gated. No ypos advance.
 	void drawBuildingInsideStats(Building* selBuild, BuildingType* buildingType, int ypos);
 	//! Draw a flag building's "in way" / "on the spot" unit counts using the
-	//! displayed (optimistic) flag position/range so the numbers track a drag
-	//! or scroll-resize. Ally-gated. No ypos advance.
+	//! displayed (optimistic) flag position/range so the numbers track flag
+	//! movement or range edits. Ally-gated. No ypos advance.
 	void drawBuildingFlagInfo(Building* selBuild, BuildingType* buildingType, int ypos);
 	//! Draw the "working" label, count, and the maxUnitWorking scrollbox.
 	//! Queues the tutorial highlight arrow when active. Ally-gated. Advances
@@ -531,8 +531,8 @@ private:
 	bool putMark;
 	//! True if we are panning
 	bool panPushed;
-	//! True while a left-button drag that began on empty map ground is panning
-	bool emptyMapPanPushed = false;
+	//! True while a left-button drag on the map is panning (excluding flag and tool drags)
+	bool mapPanPushed = false;
 	//! Coordinate of mouse when began panning
 	int panMouseX, panMouseY;
 	//! Coordinate of viewport when began panning
@@ -658,21 +658,6 @@ private:
 	GameGUIDefaultAssignManager defaultAssign;
 	
 	GameGUIGhostBuildingManager ghostManager;
-
-	///Because it's possible to move the scroll wheel faster than the engine can
-	///handle it, multiple scroll wheel events compound within one frame. The
-	///modifier keys are sampled per event (see accumulateScrollWheelDelta), so a
-	///SHIFT release mid-frame can no longer misroute the deltas scrolled while it
-	///was held. Each accumulator holds the net delta destined for one field.
-	int scrollWheelWorkingChanges;   ///< pending assigned-worker delta this frame
-	int scrollWheelStayRangeChanges; ///< pending stay-range delta this frame
-
-	///Route one scroll-wheel delta into the pending accumulators, sampling the
-	///modifier keys now (at event time) rather than at frame flush.
-	void accumulateScrollWheelDelta(int delta);
-
-	///This function flushes orders from the scrollWheel at the end of every frame
-	void flushScrollWheelOrders();
 
 	///Per-building GUI-side pending order state (optimistic shadow).
 	///See BuildingGuiState.h. Public so render code can read pending positions.
