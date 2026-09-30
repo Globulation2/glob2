@@ -62,6 +62,8 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 | `[artifacts]` | writes review evidence under `glob2test::artifactDir()` |
 | `[golden]` | compares against a checked-in text; `--update-fixtures` rewrites it |
 | `[writes-preferences]` | legitimately saves settings |
+| `[benchmark]` | timing evidence, not pass/fail; runs only with `--tag benchmark` |
+| `[map-generators]` | the full generator contract; CI runs it in the map-generators job, the shards use `--exclude-tag map-generators` |
 | `[maxima]`, `[save-format]` | selection only |
 
 Where a test goes: `glob2-unit-tests` if it needs neither `GlobalContainer` nor any
@@ -711,11 +713,9 @@ case alone.
 
 ## Pre-game map preview regression
 
-Build `scons -j6 release=1 server=0 map-preview-test`, then run
-`python3 test/run-savegame-safety-tests.py --check-preferences build/native-tests/src/MapPreviewHarness`.
-For native software captures, run
-`./build/native-tests/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview` (under `xvfb-run -a` on
-headless Linux). Linux CI builds and runs both modes. Fixtures exercise rectangular
+Run `python3 test/run_tests.py --filter 'MapPreview/*'`: three headless cases (geometry,
+codec, network) and one `[display][artifacts]` case that writes the native software
+captures into its artifact directory. Fixtures exercise rectangular
 placement, toroidal dragging, legacy/new codecs, malformed input, network frame
 bounds, thumbnail request deduplication, timeout/retry and bounded cache reuse.
 See [pre-game preview behavior and compatibility](../docs/features/pre-game-map-preview.md).
@@ -861,34 +861,32 @@ per-tick hashes, and reproduction commands are in
 
 ### AI strategy profile captures
 
-Build `scons release=1 server=0 custom-setup-test`, then run:
+The `CustomGameSetup` suite (`test/CustomGameSetupHarness.cpp`) has one case per
+mode of the old command line:
 
 ```sh
-./build/darwin/client/release/src/CustomGameSetupHarness snapshot-load
-mkdir -p artifacts/ai-profiles-small artifacts/ai-profiles-large
-./build/native-tests/src/CustomGameSetupHarness artifacts/ai-profiles-small profiles
-./build/native-tests/src/CustomGameSetupHarness artifacts/ai-profiles-large profiles-large
+python3 test/run_tests.py --filter 'CustomGameSetup/*'
+python3 test/run_tests.py --filter 'CustomGameSetup/generated map snapshot*'
+python3 test/run_tests.py --filter 'CustomGameSetup/AI strategy profiles*'
 ```
 
-`snapshot-load` checks that a freshly serialized map launches through the lobby's in-memory load path. The other focused modes capture the Players & Teams strategy button and every AI profile at its top and bottom, at 640×480 and 1000×700. They check that profile/summary keys resolve, including Maxima. The existing `ui` mode exercises opening the strategy screen from the lobby and choosing an AI before launching each controller mode. The harness uses its dedicated `glob2-custom-setup-tests` profile.
+The snapshot case checks that a freshly serialized map launches through the lobby's in-memory load path. The strategy profile cases capture the Players & Teams strategy button and every AI profile at its top and bottom, at 640×480 and 1000×700. They check that profile/summary keys resolve, including Maxima. The player control widgets case exercises opening the strategy screen from the lobby and choosing an AI before launching each controller mode. Every case uses its own disposable `glob2-custom-setup-tests` profile and leaves captures in its artifact directory.
 
-An optional language code after the mode (for example, `profiles ja` or
-`profiles-large ar`) captures that catalog, including localized section headings.
-Use `GLOB2_USER_DIR` to isolate captures in a disposable profile. Text wrapping
-for unspaced CJK text and long words is covered by the `UILayout` unit suite.
+The strategy profile cases run in English; to capture another catalog with its
+localized section headings, pass that language code to `setupOptions` in a local
+copy of the case. Text wrapping for unspaced CJK text and long words is covered by
+the `UILayout` unit suite.
 
 ### Landscape preview scheduling and scrolling
 
-The existing `custom-setup-test` target also provides focused checks:
+The same suite provides focused checks:
 
 ```sh
-./build/darwin/client/release/src/CustomGameSetupHarness preview-queue
-./build/darwin/client/release/src/CustomGameSetupHarness artifacts/landscape landscape-responsive
+python3 test/run_tests.py --filter 'CustomGameSetup/preview queue*'
+python3 test/run_tests.py --filter 'CustomGameSetup/landscape preview*'
 ```
 
-Use the corresponding native build directory on other platforms and `xvfb-run -a`
-for the graphical mode on headless Linux. Run in a disposable home/profile as with
-other UI harnesses. `preview-queue` checks deferred startup, viewport-center
+The preview queue case checks deferred startup, viewport-center
 priority for grid and single-column layouts, scrolling/filtering, unchanged seeds,
 cooperative viewport-only polling, retries, and restart/reroll behavior. The
 normal headless harness also runs these checks. `landscape-responsive` verifies

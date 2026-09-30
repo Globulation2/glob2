@@ -133,11 +133,11 @@ resource placement. These checks establish connectivity, not traffic capacity,
 long-term AI success or the value of every possible shortcut.
 
 ```sh
-scons release=1 server=0 -j4 map-generator-study map-generator-defaults-test \
-  map-generator-golden-test custom-setup-test build/src/glob2
-build/src/MapGeneratorDefaultsTest glob2-hedgerow-contracts
+scons release=1 server=0 -j4 map-generator-study engine-tests \
+  map-generator-golden-test build/src/glob2
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/MapGeneratorGoldenTest glob2-hedgerow-golden --require-rows
-build/src/CustomGameSetupHarness
+python3 test/run_tests.py --filter 'CustomGameSetup/*'
 build/src/glob2 --generate-map hedgerow-country --seed 19 \
   --width 256 --height 256 --teams 4 \
   --output artifacts/hedgerow-country/default.map \

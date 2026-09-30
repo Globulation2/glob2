@@ -111,15 +111,15 @@ metadata, so the download dialog does not initially show `0 x 0`.
 From the repository root:
 
 ```sh
-scons -j6 release=1 server=0 map-preview-test custom-setup-test
-python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapPreviewHarness
-./build/src/MapPreviewHarness glob2-map-preview-tests --visual artifacts/map-preview
-./build/src/CustomGameSetupHarness
+scons -j6 release=1 server=0 engine-tests
+python3 test/run_tests.py --filter 'MapPreview/*'
+python3 test/run_tests.py --filter 'CustomGameSetup/*'
 ```
 
-The visual invocation opens an 800x600 software window and writes native BMP
-captures and selection timings. On headless Linux, run it under `xvfb-run -a`.
-The harness uses the `glob2-map-preview-tests` profile. Core tests cover positive
+The `[display]` case opens an 800x600 software window and writes native BMP
+captures and selection timings to its artifact directory; the runner opens an Xvfb
+screen on headless Linux and checks that no case rewrites the profile's
+preferences. Core tests cover positive
 and negative wraparound, rectangular coordinates, legacy/new wire images,
 truncated and corrupt data, noisy-map frame bounds, request deduplication,
 timeout/retry, cache refresh/invalidation and eviction. Linux CI runs the core

@@ -52,6 +52,10 @@ namespace glob2test
 	// runner sets it, otherwise artifacts/tests/<suite>/<case> under the source root.
 	// Created on first use.
 	std::filesystem::path artifactDir();
+	// artifactDir() as a path relative to the working directory, for harnesses whose
+	// captures go through the file manager: GraphicContext::printScreen prefixes each
+	// search directory, of which "." is one, so only a relative path reaches the disk.
+	std::string artifactDirFromWorkingDirectory();
 
 	// A fresh empty directory under the profile, removed on destruction.
 	struct TempDir

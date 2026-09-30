@@ -57,8 +57,8 @@ exits, every court connection, and permanent circulation after crop spread.
 ## Verification and reproduction
 
 ```sh
-scons release=1 server=0 -j8 build/src/glob2 map-generator-defaults-test map-generator-golden-test
-build/src/MapGeneratorDefaultsTest gauntlet-contracts --gauntlet-only
+scons release=1 server=0 -j8 build/src/glob2 engine-tests map-generator-golden-test
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/Gauntlet*'
 build/src/glob2 --generate-map gauntlet --seed 1 --width 256 --height 256 --teams 4 \
   --preview gauntlet.png --json gauntlet.json --output gauntlet.map
 ```

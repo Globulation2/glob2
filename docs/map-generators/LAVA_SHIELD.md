@@ -277,7 +277,7 @@ those sites using the same callback and unchanged RNG state. Rejected trials nev
 mutate the destination. The proposal list is the work budget. This is separate
 from the legacy `BalancedStarts` placement model and changes no existing caller.
 
-Regression coverage lives in the existing `MapGeneratorDefaultsTest` toolkit
+Regression coverage lives in the existing `MapGeneratorDefaults` toolkit
 checks, already run by CI. It includes monotone radius and drift limits, terminal
 width, repeatability, malformed input, seam-aware spacing, complete road width,
 water/protected terrain preservation, atomic route failure, advanced named-stream
@@ -340,11 +340,11 @@ fallback; tracked `SConstruct` is unchanged.
 Reproduce the core checks after building the corresponding SCons targets:
 
 ```sh
-build/src/MapGeneratorDefaultsTest lava-shield-contracts-final
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/MapGeneratorGoldenTest lava-shield-golden --require-rows
 build/src/MapGeneratorGoldenTest lava-shield-golden --telemetry
 build/src/MapGeneratorGoldenTest lava-shield-sweep --sweep 21/31
-build/src/CustomGameSetupHarness
+python3 test/run_tests.py --filter 'CustomGameSetup/*'
 ```
 
 The sweep shard is the current zero-based playable catalog position out of 31;

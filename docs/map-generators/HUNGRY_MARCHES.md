@@ -86,8 +86,8 @@ See `test/HungryMarchesContracts.h` for telemetry repeatability, supported shape
 resource extremes, late growth and deliberate corruption checks. Reproduce with:
 
 ```sh
-scons release=1 server=0 -j6 build/src/glob2 map-generator-defaults-test
-build/src/MapGeneratorDefaultsTest hungry-marches-contracts --hungry-marches-only
+scons release=1 server=0 -j6 build/src/glob2 engine-tests
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/Hungry Marches*'
 build/src/glob2 --generate-map hungry-marches --seed 101 --width 256 --height 256 \
   --teams 4 --preview artifacts/hungry-marches.png --json artifacts/hungry-marches.json
 ```

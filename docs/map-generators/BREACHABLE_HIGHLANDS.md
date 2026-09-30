@@ -214,13 +214,13 @@ than silently shrinking settlements or removing all saddles.
 ## Reproduce
 
 ```sh
-scons release=1 server=0 -j4 map-generator-defaults-test map-generator-golden-test map-generator-study build/src/glob2
+scons release=1 server=0 -j4 engine-tests map-generator-golden-test map-generator-study build/src/glob2
 build/src/glob2 --generate-map breachable-highlands --seed 1 \
   --width 256 --height 256 --teams 4 \
   --output artifacts/breachable-highlands/play.map \
   --preview artifacts/breachable-highlands/play.png \
   --json artifacts/breachable-highlands/play.json
-build/src/MapGeneratorDefaultsTest breachable-contracts
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/MapGeneratorGoldenTest breachable-golden --require-rows
 build/src/MapGeneratorGoldenTest breachable-telemetry --telemetry
 python3 tools/map_telemetry.py collect --generators breachable-highlands \

@@ -97,7 +97,7 @@ Temporary debug instrumentation is useful for one hypothesis: every rejected poi
 
 ## Verification
 
-`MapGeneratorDefaultsTest` exercises typed values, bounds, disabled collection and partial failure traces. `test/test_map_report.py` verifies JSON types/escaping, failure output, malformed request serialization, schema rejection, no map-byte changes when JSON is requested, and repeatability. `MapGeneratorGoldenTest <profile> --telemetry` compares enabled/disabled full serialized worlds and RNG state for all generators, checks repeatable traces, and prints separate generation timings. Timing differences are reported rather than asserted against a flaky wall-clock threshold. Existing golden rows still protect pre-change maps; telemetry-only changes should not require generator revision bumps.
+The `MapGeneratorDefaults` suite exercises typed values, bounds, disabled collection and partial failure traces. `test/test_map_report.py` verifies JSON types/escaping, failure output, malformed request serialization, schema rejection, no map-byte changes when JSON is requested, and repeatability. `MapGeneratorGoldenTest <profile> --telemetry` compares enabled/disabled full serialized worlds and RNG state for all generators, checks repeatable traces, and prints separate generation timings. Timing differences are reported rather than asserted against a flaky wall-clock threshold. Existing golden rows still protect pre-change maps; telemetry-only changes should not require generator revision bumps.
 
 ## Fractal generator records
 

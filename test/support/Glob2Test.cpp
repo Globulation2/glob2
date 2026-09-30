@@ -104,6 +104,14 @@ namespace glob2test
 		return dir;
 	}
 
+	std::string artifactDirFromWorkingDirectory()
+	{
+		const auto dir = artifactDir();
+		std::error_code ignored;
+		const auto relative = std::filesystem::relative(dir, std::filesystem::current_path(), ignored);
+		return (relative.empty() ? dir : relative).string();
+	}
+
 	TempDir::TempDir(const std::string& prefix)
 	{
 		path = profileDir() / (prefix + "-" + std::to_string(uniqueCounter++));

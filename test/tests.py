@@ -84,6 +84,10 @@ ENGINE_TESTS = [
     'GameSpeedTest.cpp',
     'UIPresentationHarness.cpp',
     'GameGUITouchHarness.cpp',
+    # Command-line harnesses whose modes became cases.
+    'CustomGameSetupHarness.cpp',
+    'MapPreviewHarness.cpp',
+    ('MapGeneratorDefaultsTest.cpp', dict(cxxflags=['-fno-access-control'])),
 ]
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
@@ -239,11 +243,10 @@ UNIT_STUBS = [
 ]
 
 # Standalone programs: (target, source, alias, group). group 'test' programs are run by
-# CI through their own runners; 'tools' are developer utilities and benchmarks.
+# CI through their own runners; 'tools' are developer utilities and benchmarks. The
+# transport programs the browser tests drive stay in src/SConscript under 'transport-test'.
 PROGRAMS = [
     ('MapReportHarness', 'MapReportHarness.cpp', 'map-report-test', 'test'),
-    ('net-connection-test', 'NetConnectionHarness.cpp', 'transport-test', 'test'),
-    ('native-multiplayer-peer', 'NativeMultiplayerPeer.cpp', 'transport-test', 'test'),
     ('MaximaStrategyDump', 'maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
 ]
 
@@ -301,6 +304,9 @@ LEGACY_ALIASES = {
     'speed-tests': 'glob2-engine-tests',
     'gameplay-touch-test': 'glob2-engine-tests',
     'ui-presentation-test': 'glob2-engine-tests',
+    'custom-setup-test': 'glob2-engine-tests',
+    'map-preview-test': 'glob2-engine-tests',
+    'map-generator-defaults-test': 'glob2-engine-tests',
     'buffered-file-test': 'glob2-unit-tests',
     'compute-executor-test': 'glob2-unit-tests',
     'gradient-pipeline-test': 'glob2-unit-tests',

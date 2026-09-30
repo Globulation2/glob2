@@ -114,12 +114,12 @@ Old numeric IDs and descriptor bytes remain stable. The adapter resolves histori
 Build and run the contract checks:
 
 ```sh
-scons release=1 -j12 map-generator-study map-generator-defaults-test custom-setup-test
-build/src/MapGeneratorDefaultsTest glob2-generator-contracts
-build/src/CustomGameSetupHarness
+scons release=1 -j12 map-generator-study engine-tests
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
+python3 test/run_tests.py --filter 'CustomGameSetup/*'
 ```
 
-The defaults test injects a test-only generator at ID 101, constructs its actual editor controls, edits its custom option, and generates a map. It also checks defaults, ranges, mode memory, codec roundtrips, legacy sentinels, interleaved repeatability, gameplay RNG restoration and structured failures.
+The `MapGeneratorDefaults` suite injects a test-only generator at ID 101, constructs its actual editor controls, edits its custom option, and generates a map. It also checks defaults, ranges, mode memory, codec roundtrips, legacy sentinels, interleaved repeatability, gameplay RNG restoration and structured failures.
 
 Run all registered playable defaults without maintaining another generator list:
 

@@ -8,6 +8,7 @@
 #include "CustomGamePreferences.h"
 #include "Engine.h"
 #include "FrontendTheme.h"
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "LandscapePickerScreen.h"
 #include "StartQualityScreen.h"
@@ -23,7 +24,6 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <atomic>
-#include <cassert>
 #include <chrono>
 #include <algorithm>
 #include <filesystem>
@@ -35,7 +35,8 @@
 #include <optional>
 #include <unistd.h>
 
-GlobalContainer *globalContainer = nullptr;
+namespace
+{
 struct CountingAI : AIImplementation {
   int calls = 0;
   bool load(GAGCore::InputStream *, Player *, Sint32) override { return true; }
@@ -45,6 +46,9 @@ struct CountingAI : AIImplementation {
     return std::make_shared<NullOrder>();
   }
 };
+} // namespace
+
+// Named in friend declarations, so it stays at global scope.
 struct CustomGameSetupHarness
 {
 	// Every field() is set to its declared maximum, but only the options
@@ -72,11 +76,11 @@ struct CustomGameSetupHarness
 	}
 	static void checkExtraRules(const CustomGameSetup &s)
 	{
-		assert(s.noResourceGrowth && s.instantConstruction && s.noHunger);
-		assert(s.resourceScarcity == 3 && s.stockpileStart == 3);
-		assert(s.unitUpgradesDisabled && s.unitsFearless && s.permadeathDisabled && s.peacefulMode);
-		assert(s.glassCannonLevel == 2 && s.buildingHpLevel == 2);
-		assert(s.startingUnitLevel == 3 && s.suddenDeathMinutes == 90);
+		REQUIRE((s.noResourceGrowth && s.instantConstruction && s.noHunger));
+		REQUIRE((s.resourceScarcity == 3 && s.stockpileStart == 3));
+		REQUIRE((s.unitUpgradesDisabled && s.unitsFearless && s.permadeathDisabled && s.peacefulMode));
+		REQUIRE((s.glassCannonLevel == 2 && s.buildingHpLevel == 2));
+		REQUIRE((s.startingUnitLevel == 3 && s.suddenDeathMinutes == 90));
 	}
 	static void preferencesModel()
 	{
@@ -101,23 +105,23 @@ struct CustomGameSetupHarness
 		original.setup.ruleset = "Custom";
 		setExtraRules(original.setup);
 		original.setup.colonies[11].controller = CustomGameSetup::Closed;
-		assert(original.setup.setController(3, CustomGameSetup::Shared));
+		REQUIRE(original.setup.setController(3, CustomGameSetup::Shared));
 		original.setup.colonies[3].ai = AI::CORTEX;
 		original.setup.colonies[11].alliance = 7;
 		original.setup.colonies[11].ai = AI::NICOWAR;
 		CustomGamePreferences restored;
 		const auto encoded = original.encode();
-		assert(restored.decode(encoded) && restored.encode() == encoded);
+		REQUIRE((restored.decode(encoded) && restored.encode() == encoded));
 		checkExtraRules(restored.setup);
-		assert(restored.setup.mapRevision == 0);
-		assert(restored.landscapeSortOrder == 1);
+		REQUIRE(restored.setup.mapRevision == 0);
+		REQUIRE(restored.landscapeSortOrder == 1);
 		// Both older formats still load; omitted rules take their normal defaults.
 		for (int version : {1, 2})
 		{
 			auto old = encoded;
 			auto removeLine = [&](const std::string &prefix) {
 				const auto at = old.find("\n" + prefix), eol = old.find('\n', at + 1);
-				assert(at != std::string::npos && eol != std::string::npos);
+				REQUIRE((at != std::string::npos && eol != std::string::npos));
 				old.erase(at, eol - at);
 			};
 			removeLine("rules ");
@@ -125,15 +129,15 @@ struct CustomGameSetupHarness
 			old.replace(0, std::string("glob2-custom-game 3").size(),
 				"glob2-custom-game " + std::to_string(version));
 			CustomGamePreferences fromOld;
-			assert(fromOld.decode(old) && fromOld.landscapeSortOrder == version - 1);
-			assert(fromOld.setup.premadeMap == original.setup.premadeMap);
-			assert(!fromOld.setup.unitUpgradesDisabled && !fromOld.setup.noHunger);
-			assert(fromOld.setup.startingUnitLevel == 0 && fromOld.setup.suddenDeathMinutes == 0);
+			REQUIRE((fromOld.decode(old) && fromOld.landscapeSortOrder == version - 1));
+			REQUIRE(fromOld.setup.premadeMap == original.setup.premadeMap);
+			REQUIRE((!fromOld.setup.unitUpgradesDisabled && !fromOld.setup.noHunger));
+			REQUIRE((fromOld.setup.startingUnitLevel == 0 && fromOld.setup.suddenDeathMinutes == 0));
 		}
 		for (size_t length : {size_t(0), size_t(10), encoded.size() / 2, encoded.size() - 5})
 		{
-			assert(!restored.decode(encoded.substr(0, length)));
-			assert(restored.encode() == encoded);
+			REQUIRE(!restored.decode(encoded.substr(0, length)));
+			REQUIRE(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
 			{"glob2-custom-game 3", "glob2-custom-game 4"},
@@ -146,16 +150,16 @@ struct CustomGameSetupHarness
 		{
 			auto corrupt = encoded;
 			auto at = corrupt.find(replacement.first);
-			assert(at != std::string::npos);
+			REQUIRE(at != std::string::npos);
 			corrupt.replace(at, replacement.first.size(), replacement.second);
-			assert(!restored.decode(corrupt) && restored.encode() == encoded);
+			REQUIRE((!restored.decode(corrupt) && restored.encode() == encoded));
 		}
-		assert(!restored.decode(encoded + "trailing junk"));
-		assert(!restored.decode(std::string(65537, 'x')));
+		REQUIRE(!restored.decode(encoded + "trailing junk"));
+		REQUIRE(!restored.decode(std::string(65537, 'x')));
 		// Unfinished drafts remain editable rather than losing the user's choices.
 		for (auto &c : original.setup.colonies) c.controller = CustomGameSetup::Closed;
-		assert(restored.decode(original.encode()));
-		assert(!restored.setup.validation().empty());
+		REQUIRE(restored.decode(original.encode()));
+		REQUIRE(!restored.setup.validation().empty());
 		std::cout << "PASS preferences round trip, hidden slots, bounds and corrupt-file recovery\n";
 	}
 	// Controls with no legacy descriptor field (every newer generator's, switches included) are
@@ -178,11 +182,11 @@ struct CustomGameSetupHarness
 		const int fjord = GeneratorRegistry::builtins().idOf("fjord-continent"), ring = GeneratorRegistry::builtins().idOf("ring-world");
 		// Fjord's lake size shares the legacy field that held the old generators' "use the
 		// default" sentinel 50, and used to reload as 30.
-		assert(roundTrip(fjord, {{"lake-size", 50}}));
+		REQUIRE(roundTrip(fjord, {{"lake-size", 50}}));
 		// Fjord's lake size 0 and 90, and Ring world's lake density 0, lie outside the legacy
 		// fields' old bounds and used to make the whole file fail to load.
-		assert(roundTrip(fjord, {{"lake-size", 0}}) && roundTrip(fjord, {{"lake-size", 90}}));
-		assert(roundTrip(ring, {{"lake-density", 0}}));
+		REQUIRE((roundTrip(fjord, {{"lake-size", 0}}) && roundTrip(fjord, {{"lake-size", 90}})));
+		REQUIRE(roundTrip(ring, {{"lake-density", 0}}));
 		// Every control's whole range survives, whether it lives in a legacy field or not.
 		for (int method : GeneratorRegistry::builtins().methods(false))
 			for (const auto &c : GenerationRequest::controls(method))
@@ -190,7 +194,7 @@ struct CustomGameSetupHarness
 				if (!roundTrip(method, {{c.id, c.minimum}}) || !roundTrip(method, {{c.id, c.maximum}}))
 					std::cerr << "control " << c.id << " of " << GeneratorRegistry::builtins().at(method).id
 							  << " does not survive its range " << c.minimum << ".." << c.maximum << "\n";
-				assert(roundTrip(method, {{c.id, c.minimum}}) && roundTrip(method, {{c.id, c.maximum}}));
+				REQUIRE((roundTrip(method, {{c.id, c.minimum}}) && roundTrip(method, {{c.id, c.maximum}})));
 			}
 
 		CustomGamePreferences original;
@@ -203,18 +207,18 @@ struct CustomGameSetupHarness
 		original.setup.capacity = g.nbTeams;
 		const auto encoded = original.encode();
 		CustomGamePreferences restored;
-		assert(restored.decode(encoded) && restored.encode() == encoded);
-		assert(restored.setup.generator.options == g.options);
+		REQUIRE((restored.decode(encoded) && restored.encode() == encoded));
+		REQUIRE(restored.setup.generator.options == g.options);
 
 		// The same file as an older build wrote it, without the options section.
 		const auto at = encoded.find("\noptions ") + 1, eol = encoded.find('\n', at);
 		const auto end = encoded.find("colonies\n");
-		assert(at > 0 && eol < end);
-		assert(restored.decode(encoded.substr(0, at) + encoded.substr(end)));
+		REQUIRE((at > 0 && eol < end));
+		REQUIRE(restored.decode(encoded.substr(0, at) + encoded.substr(end)));
 		GenerationRequest defaults;
 		defaults.setMethodDefaults(fjord);
 		for (const auto &c : GenerationRequest::controls(fjord))
-			assert(c.get(restored.setup.generator) == (c.id == "lake-size" ? 50 : c.get(defaults)));
+			REQUIRE(c.get(restored.setup.generator) == (c.id == "lake-size" ? 50 : c.get(defaults)));
 
 		// An option this build doesn't have is ignored; a value outside its domain is corrupt.
 		const int count = std::stoi(encoded.substr(at + 8, eol - at - 8));
@@ -222,14 +226,14 @@ struct CustomGameSetupHarness
 			return encoded.substr(0, at) + "options " + std::to_string(count + 1) + "\n" + line +
 				   "\n" + encoded.substr(eol + 1);
 		};
-		assert(restored.decode(withOption("retired-option 5")));
-		assert(restored.setup.generator.options == g.options && restored.encode() == encoded);
+		REQUIRE(restored.decode(withOption("retired-option 5")));
+		REQUIRE((restored.setup.generator.options == g.options && restored.encode() == encoded));
 		for (const char *corrupt : {"lake-connected 2", "resource-islands 21", "coast-roughness -1"})
 		{
-			assert(!restored.decode(withOption(corrupt)));
-			assert(restored.encode() == encoded);
+			REQUIRE(!restored.decode(withOption(corrupt)));
+			REQUIRE(restored.encode() == encoded);
 		}
-		assert(!restored.decode(encoded.substr(0, at) + "options 3\nlake-connected 1\n" +
+		REQUIRE(!restored.decode(encoded.substr(0, at) + "options 3\nlake-connected 1\n" +
 								encoded.substr(end)));
 		std::cout << "PASS preferences keep every generator option, and older files still load\n";
 	}
@@ -255,13 +259,13 @@ struct CustomGameSetupHarness
 		std::iota(identity.begin(), identity.end(), 0);
 		LandscapePickerScreen first("Landscape", shown, 0);
 		LandscapePickerScreen second("Landscape", shown, 0);
-		assert(first.sortOrder == LandscapePickerScreen::SortOrder::Random &&
-			  second.sortOrder == LandscapePickerScreen::SortOrder::Random);
+		REQUIRE((first.sortOrder == LandscapePickerScreen::SortOrder::Random &&
+			  second.sortOrder == LandscapePickerScreen::SortOrder::Random));
 		// A real shuffle, not the untouched catalog order left alone...
-		assert(first.visible != identity);
+		REQUIRE(first.visible != identity);
 		// ...but the SAME shuffle every time within this one process run, however many sheets are
 		// opened - the process-lifetime permutation this fix's refinement asked for.
-		assert(first.visible == second.visible);
+		REQUIRE(first.visible == second.visible);
 		// Touching a filter must not redraw it either: narrowing still respects the one order
 		// this run drew, just with the excluded entries missing from it.
 		LandscapePickerScreen third("Landscape", shown, 0);
@@ -272,13 +276,13 @@ struct CustomGameSetupHarness
 			third.filters[0].clear();
 			third.rebuild();
 		}
-		assert(third.visible == first.visible);
+		REQUIRE(third.visible == first.visible);
 		// Alphabetical stays the deterministic alternative: same entries, same order, every time.
 		LandscapePickerScreen sortedA("Landscape", shown, 0,
 									  LandscapePickerScreen::SortOrder::Alphabetical);
 		LandscapePickerScreen sortedB("Landscape", shown, 0,
 									  LandscapePickerScreen::SortOrder::Alphabetical);
-		assert(sortedA.visible == sortedB.visible);
+		REQUIRE(sortedA.visible == sortedB.visible);
 		std::cout << "PASS landscape picker Random order is a real shuffle drawn once per process "
 					 "run, Alphabetical stays stable\n";
 	}
@@ -290,69 +294,69 @@ struct CustomGameSetupHarness
 		request.nbTeams = 1;
 		LandscapePreviewer queue({request, request, request}, -1, true);
 		queue.poll();
-		assert(queue.finished() == 0 && queue.attempts == std::vector<int>({0, 0, 0}));
+		REQUIRE((queue.finished() == 0 && queue.attempts == std::vector<int>({0, 0, 0})));
 		const auto seeds = queue.seeds;
 		queue.prioritize({2, 0, 1});
 		queue.poll(std::vector<std::size_t>{});
-		assert(queue.finished() == 0);
+		REQUIRE(queue.finished() == 0);
 		queue.poll(std::vector<std::size_t>{0});
-		assert(queue.preview(0).state == LandscapePreviewer::State::Ready && queue.finished() == 1);
+		REQUIRE((queue.preview(0).state == LandscapePreviewer::State::Ready && queue.finished() == 1));
 		// Reset while preserving roots so the unrestricted sequence checks exactly the same maps.
 		queue.regenerate();
 		queue.seeds = seeds;
 		queue.prioritize({2, 0, 1});
 		queue.poll();
-		assert(queue.preview(2).state == LandscapePreviewer::State::Ready);
-		assert(queue.finished() == 1 &&
-			   queue.preview(0).state == LandscapePreviewer::State::Pending);
+		REQUIRE(queue.preview(2).state == LandscapePreviewer::State::Ready);
+		REQUIRE((queue.finished() == 1 &&
+			   queue.preview(0).state == LandscapePreviewer::State::Pending));
 		queue.prioritize({1, 1, 1000}); // Duplicates/out-of-range indices cannot lose work.
 		queue.poll();
-		assert(queue.preview(1).state == LandscapePreviewer::State::Ready && queue.finished() == 2);
+		REQUIRE((queue.preview(1).state == LandscapePreviewer::State::Ready && queue.finished() == 2));
 		queue.poll();
-		assert(!queue.busy() && queue.finished() == 3 && queue.seeds == seeds);
+		REQUIRE((!queue.busy() && queue.finished() == 3 && queue.seeds == seeds));
 		for (std::size_t i = 0; i < seeds.size(); ++i)
 		{
 			const auto expected = LandscapePreviewer::roll(request, seeds[i]);
 			const auto actual = queue.preview(i);
-			assert(actual.seed == expected.seed && actual.score == expected.score &&
-				   actual.thumbnail.pixels()->rgb == expected.thumbnail.pixels()->rgb);
+			REQUIRE((actual.seed == expected.seed && actual.score == expected.score &&
+				   actual.thumbnail.pixels()->rgb == expected.thumbnail.pixels()->rgb));
 		}
 		// The same priority survives regeneration; failed requests terminate in one attempt.
 		GenerationRequest invalid = request;
 		invalid.method = -1;
 		queue.restart({invalid, invalid, invalid});
 		queue.poll();
-		assert(queue.preview(1).state == LandscapePreviewer::State::Failed &&
-			   queue.finished() == 1);
+		REQUIRE((queue.preview(1).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 1));
 		queue.regenerate();
-		assert(queue.attempts == std::vector<int>({0, 0, 0}));
+		REQUIRE(queue.attempts == std::vector<int>({0, 0, 0}));
 		queue.poll();
-		assert(queue.preview(1).state == LandscapePreviewer::State::Failed &&
-			   queue.finished() == 1);
+		REQUIRE((queue.preview(1).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 1));
 		// Uniform places one team: asking for two forces all three placement retries.
 		auto retry = request;
 		retry.nbTeams = 2;
 		queue.restart({retry, request});
 		queue.prioritize({0, 1});
 		queue.poll();
-		assert(queue.preview(0).state == LandscapePreviewer::State::Pending &&
-			   queue.finished() == 0);
+		REQUIRE((queue.preview(0).state == LandscapePreviewer::State::Pending &&
+			   queue.finished() == 0));
 		queue.prioritize({1, 0});
 		queue.poll();
-		assert(queue.preview(1).state == LandscapePreviewer::State::Ready);
+		REQUIRE(queue.preview(1).state == LandscapePreviewer::State::Ready);
 		queue.poll();
-		assert(queue.preview(0).state == LandscapePreviewer::State::Pending);
+		REQUIRE(queue.preview(0).state == LandscapePreviewer::State::Pending);
 		queue.poll();
-		assert(queue.preview(0).state == LandscapePreviewer::State::Failed &&
-			   queue.finished() == 2);
+		REQUIRE((queue.preview(0).state == LandscapePreviewer::State::Failed &&
+			   queue.finished() == 2));
 		queue.reroll(0, request);
 		queue.poll();
-		assert(queue.preview(0).state == LandscapePreviewer::State::Ready &&
-			   queue.attempts[0] == 1);
+		REQUIRE((queue.preview(0).state == LandscapePreviewer::State::Ready &&
+			   queue.attempts[0] == 1));
 		queue.restart({});
 		queue.prioritize({0});
 		queue.poll();
-		assert(!queue.busy() && queue.finished() == 0);
+		REQUIRE((!queue.busy() && queue.finished() == 0));
 		std::cout << "PASS deferred viewport priority, reprioritization, stable seeds, yielding "
 					 "retries, restart/reroll\n";
 	}
@@ -371,7 +375,7 @@ struct CustomGameSetupHarness
 			request.wDec = request.hDec = 8;
 			request.nbTeams = 4;
 			const auto result = LandscapePreviewer::roll(request, 71);
-			assert(result.state == LandscapePreviewer::State::Ready);
+			REQUIRE(result.state == LandscapePreviewer::State::Ready);
 			std::uint64_t hash = 14695981039346656037ULL;
 			for (auto byte : result.thumbnail.pixels()->rgb)
 			{
@@ -428,7 +432,7 @@ struct CustomGameSetupHarness
 				++uploaded;
 		std::cout << "BENCH initial_uploaded " << uploaded << " / " << entries.size() << "\n";
 		if (verify)
-			assert(uploaded > 0 && uploaded < int(entries.size()));
+			REQUIRE((uploaded > 0 && uploaded < int(entries.size())));
 		auto capture = [&](const char *name)
 		{
 			globalContainer->gfx->printScreen(output + "/" + name);
@@ -438,7 +442,7 @@ struct CustomGameSetupHarness
 		capture("top.bmp");
 		std::vector<double> frames;
 		auto *grid = picker.host().find("landscape/grid");
-		assert(grid);
+		REQUIRE(grid);
 		for (int step = 0; step < 80; ++step)
 		{
 			const int target = grid->scrollMaximum() * (step < 40 ? step : 79 - step) / 39;
@@ -449,7 +453,7 @@ struct CustomGameSetupHarness
 			if (verify)
 				for (const auto &tile : picker.tiles)
 					if (tile.widget)
-						assert(!tile.widget->transitioning && !tile.widget->transitionPending);
+						REQUIRE((!tile.widget->transitioning && !tile.widget->transitionPending));
 			if (step == 20)
 				capture("middle.bmp");
 			if (step == 39)
@@ -461,7 +465,7 @@ struct CustomGameSetupHarness
 		if (verify)
 		{
 			for (const char *name : {"top.bmp", "middle.bmp", "bottom.bmp"})
-				assert(std::filesystem::exists(output + "/" + name));
+				REQUIRE(std::filesystem::exists(output + "/" + name));
 			std::cout << "PASS offscreen previews stay CPU-only; scrolling never fades\n";
 		}
 		picker.endExecute(0);
@@ -478,10 +482,10 @@ struct CustomGameSetupHarness
 			CustomGameScreen screen(screens);
 			// Nothing saved: a random map (FEEDBACK 2026-09-14). The premade library is what this
 			// file is written with, so switch to it first.
-			assert(screen.setup.random && screen.previewPending && screen.setup.capacity == 4);
+			REQUIRE((screen.setup.random && screen.previewPending && screen.setup.capacity == 4));
 			screen.setMapMode(false);
-			assert(!screen.setup.random && screen.validMap);
-			assert(screen.setup.setController(2, CustomGameSetup::Shared));
+			REQUIRE((!screen.setup.random && screen.validMap));
+			REQUIRE(screen.setup.setController(2, CustomGameSetup::Shared));
 			screen.setup.colonies[2].ai = AI::CORTEX;
 			screen.setup.colonies[0].alliance = 2;
 			screen.setup.colonies[11].ai = AI::NICOWAR;
@@ -495,7 +499,7 @@ struct CustomGameSetupHarness
 			// Persist while the screen is still open, as normal edits do.
 			screen.onTimer(SDL_GetTicks());
 			CustomGamePreferences disk;
-			assert(disk.load(*files) && disk.setup.colonies[2].controller == CustomGameSetup::Shared);
+			REQUIRE((disk.load(*files) && disk.setup.colonies[2].controller == CustomGameSetup::Shared));
 		}
 		else
 		{
@@ -503,46 +507,46 @@ struct CustomGameSetupHarness
 			{
 				GAGGUI::ScreenStack screens(*globalContainer->gfx);
 				CustomGameScreen screen(screens);
-				assert(screen.validMap && !screen.setup.random && screen.setup.capacity == 4);
-				assert(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
-				assert(screen.setup.colonies[2].ai == AI::CORTEX);
-				assert(screen.setup.colonies[0].alliance == 2);
-				assert(screen.setup.colonies[11].ai == AI::NICOWAR && screen.setup.colonies[11].alliance == 7);
-				assert(screen.setup.speed == 3 && screen.setup.ruleset == "Quick clash");
+				REQUIRE((screen.validMap && !screen.setup.random && screen.setup.capacity == 4));
+				REQUIRE(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
+				REQUIRE(screen.setup.colonies[2].ai == AI::CORTEX);
+				REQUIRE(screen.setup.colonies[0].alliance == 2);
+				REQUIRE((screen.setup.colonies[11].ai == AI::NICOWAR && screen.setup.colonies[11].alliance == 7));
+				REQUIRE((screen.setup.speed == 3 && screen.setup.ruleset == "Quick clash"));
 				checkExtraRules(screen.setup);
-				assert(screen.expanded[1]);
-				assert(screen.userMaps == screen.separateMapLibraries);
-				assert(screen.librarySelection[1] == "maps/favorite-user-map.map");
+				REQUIRE(screen.expanded[1]);
+				REQUIRE(screen.userMaps == screen.separateMapLibraries);
+				REQUIRE(screen.librarySelection[1] == "maps/favorite-user-map.map");
 				// Only the options Islands actually registers survive the
 				// GenerationRequest round trip; compare against the same
 				// achievable conversion rather than the raw field maximums.
 				const auto expected = toLegacyDescriptor(fromLegacyDescriptor(maxedLegacy(MapGenerationDescriptor::eISLANDS, 3), 0));
 				const auto restoredLegacy = toLegacyDescriptor(screen.setup.generator);
 				for (const auto &field : CustomGamePreferences::fields())
-					assert(restoredLegacy.*(field.member) == expected.*(field.member));
-				assert(restoredLegacy.logRepeatAreaTimes == expected.logRepeatAreaTimes);
+					REQUIRE(restoredLegacy.*(field.member) == expected.*(field.member));
+				REQUIRE(restoredLegacy.logRepeatAreaTimes == expected.logRepeatAreaTimes);
 				premade = screen.setup.premadeMap;
 				screen.setup.generator.nbTeams = 4;
 				screen.setMapMode(true);
-				assert(screen.previewPending);
+				REQUIRE(screen.previewPending);
 			}
 			{
 				GAGGUI::ScreenStack screens(*globalContainer->gfx);
 				CustomGameScreen screen(screens);
-				assert(screen.setup.random && screen.previewPending && !screen.validMap);
-				assert(!screen.generatedSnapshot && screen.source.empty());
-				assert(screen.setup.premadeMap == premade);
+				REQUIRE((screen.setup.random && screen.previewPending && !screen.validMap));
+				REQUIRE((!screen.generatedSnapshot && screen.source.empty()));
+				REQUIRE(screen.setup.premadeMap == premade);
 				// Switching back restores the premade choice without disturbing teams.
 				screen.setMapMode(false);
-				assert(screen.validMap && screen.setup.colonies[0].alliance == 2);
+				REQUIRE((screen.validMap && screen.setup.colonies[0].alliance == 2));
 				screen.setup.premadeMap = "/missing/saved-map.map";
 			}
 			{
 				GAGGUI::ScreenStack screens(*globalContainer->gfx);
 				CustomGameScreen screen(screens);
-				assert(!screen.validMap && !screen.setup.random && !screen.message.empty());
-				assert(screen.setup.colonies[2].ai == AI::CORTEX && screen.setup.speed == 3);
-				assert(screen.setup.premadeMap == "/missing/saved-map.map");
+				REQUIRE((!screen.validMap && !screen.setup.random && !screen.message.empty()));
+				REQUIRE((screen.setup.colonies[2].ai == AI::CORTEX && screen.setup.speed == 3));
+				REQUIRE(screen.setup.premadeMap == "/missing/saved-map.map");
 			}
 			files->writeAtomically(CustomGamePreferences::filename, [](GAGCore::OutputStream &out) {
 				const std::string truncated = "glob2-custom-game 1\nsetup";
@@ -553,8 +557,8 @@ struct CustomGameSetupHarness
 				// its preview pending (FEEDBACK 2026-09-14: random maps are the default tab).
 				GAGGUI::ScreenStack screens(*globalContainer->gfx);
 				CustomGameScreen screen(screens);
-				assert(screen.setup.random && screen.previewPending && !screen.validMap &&
-					   screen.setup.capacity == 4 && screen.setup.speed == 0);
+				REQUIRE((screen.setup.random && screen.previewPending && !screen.validMap &&
+					   screen.setup.capacity == 4 && screen.setup.speed == 0));
 			}
 			files->remove(CustomGamePreferences::filename);
 		}
@@ -603,7 +607,7 @@ struct CustomGameSetupHarness
 			auto top = [&]
 			{
 				auto *screen = dynamic_cast<GAGGUI::ui::UIScreen *>(screens.top());
-				assert(screen);
+				REQUIRE(screen);
 				return screen;
 			};
 			auto click = [&](const std::string &key)
@@ -658,7 +662,7 @@ struct CustomGameSetupHarness
 			click("colony/1/info");
 			{
 				auto *profile = dynamic_cast<CustomGameChoiceScreen *>(screens.top());
-				assert(profile);
+				REQUIRE(profile);
 				profile->choose(AINames::selectionIndex(AI::NICOWAR));
 				click("profile/use");
 			}
@@ -668,7 +672,7 @@ struct CustomGameSetupHarness
 			click("map/mode/1");
 			for (Uint32 started = SDL_GetTicks(); (!lobby->validMap || lobby->previewBusy()) && SDL_GetTicks() - started < 60000;)
 				frames(1);
-			assert(lobby->validMap && !lobby->previewBusy());
+			REQUIRE((lobby->validMap && !lobby->previewBusy()));
 			key(SDLK_2, KMOD_CTRL);
 			if (control != CustomGameSetup::Shared)
 			{
@@ -679,19 +683,19 @@ struct CustomGameSetupHarness
 			click("start");
 			for (int i = 0; i < 200 && screens.running(); ++i)
 				frames(1);
-			assert(!screens.running());
+			REQUIRE(!screens.running());
 			const bool loaded = load && load->run();
 			mapFile.reset();
-			assert(loaded);
-			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
-			assert(globalContainer->settings.gameSpeed == 3);
-			assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
+			REQUIRE(loaded);
+			REQUIRE(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
+			REQUIRE(globalContainer->settings.gameSpeed == 3);
+			REQUIRE(engine.gui.game.gameHeader.getNumberOfPlayers() ==
 				   (control == CustomGameSetup::Shared ? 5 : 4));
-			assert(engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
+			REQUIRE(engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
 					   ->ai->implementationID == AI::NICOWAR);
-			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
+			REQUIRE(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
 				   engine.gui.game.gameHeader.getAllyTeamNumber(1));
-			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
+			REQUIRE(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
 				   engine.gui.game.gameHeader.getAllyTeamNumber(2));
 			if (globalContainer->liveSpectating)
 			{
@@ -699,9 +703,9 @@ struct CustomGameSetupHarness
 				pause.type = SDL_KEYDOWN;
 				pause.key.keysym.sym = SDLK_p;
 				engine.gui.processEvent(&pause);
-				assert(engine.gui.hardPause);
+				REQUIRE(engine.gui.hardPause);
 				engine.gui.processEvent(&pause);
-				assert(!engine.gui.hardPause);
+				REQUIRE(!engine.gui.hardPause);
 			}
 			globalContainer->settings.save(); // Simulate persisting in-game options.
 			globalContainer->automaticEndingGame = true;
@@ -715,10 +719,10 @@ struct CustomGameSetupHarness
 												  std::to_string(control) + ".bmp");
 			}
 		}
-		assert(globalContainer->settings.gameSpeed == 7);
+		REQUIRE(globalContainer->settings.gameSpeed == 7);
 		Settings persisted;
 		persisted.load();
-		assert(persisted.gameSpeed == 7);
+		REQUIRE(persisted.gameSpeed == 7);
 		std::cout << "PASS full SDL UI flow mode " << control
 				  << ": clicks, nested choices, shared control, presets, profiles, "
 					 "random preview, "
@@ -744,8 +748,8 @@ struct CustomGameSetupHarness
 		for (int id : AINames::selectionOrder())
 		{
 			auto text = AINames::getAIProfile(id);
-			assert(text.find("-Profile]") == std::string::npos);
-			assert(text.find("-Summary]") == std::string::npos);
+			REQUIRE(text.find("-Profile]") == std::string::npos);
+			REQUIRE(text.find("-Summary]") == std::string::npos);
 			CustomGameChoiceScreen profile(Toolkit::getStringTable()->getString("[AI strategy & counterplay]"), labels,
 				AINames::selectionIndex(id), true, {});
 			profile.beginExecution(globalContainer->gfx);
@@ -776,7 +780,7 @@ struct CustomGameSetupHarness
 			profile.paintFrame(0);
 			globalContainer->gfx->printScreen(output + "/ai-profile.bmp");
 			profile.use();
-			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
+			REQUIRE(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
 			profile.finishExecution();
 		}
 		if (onlyAIProfile)
@@ -802,15 +806,15 @@ struct CustomGameSetupHarness
     auto paint = [&] { screen.paintFrame(SDL_GetTicks()); };
     // With nothing saved the lobby opens on a random map (FEEDBACK 2026-09-14); the premade
     // library is a click away and is what the catalog checks below exercise.
-    assert(screen.setup.random && screen.previewPending && !screen.validMap &&
-           screen.setup.capacity == 4);
+    REQUIRE((screen.setup.random && screen.previewPending && !screen.validMap &&
+           screen.setup.capacity == 4));
     // The first visit to the library preselects FourSquares1, the old opening map.
     screen.setMapMode(false);
-    assert(!screen.setup.random && screen.validMap && !screen.previewPending &&
-           std::filesystem::path(screen.setup.premadeMap).filename() == "FourSquares1.map.gz");
+    REQUIRE((!screen.setup.random && screen.validMap && !screen.previewPending &&
+           std::filesystem::path(screen.setup.premadeMap).filename() == "FourSquares1.map.gz"));
     screen.separateMapLibraries = false;
     screen.listMaps();
-    assert(std::any_of(
+    REQUIRE(std::any_of(
         screen.mapPaths.begin(), screen.mapPaths.end(), [](const auto &path) {
           return std::filesystem::path(path).filename() == "FourSquares1.map.gz";
         }));
@@ -837,7 +841,7 @@ struct CustomGameSetupHarness
     auto node = [&](const std::string &id) {
       paint();
       auto *found = host.find(id);
-      assert(found);
+      REQUIRE(found);
       return found;
     };
     auto pointerAt = [&](int x, int y, Uint32 type) {
@@ -871,13 +875,13 @@ struct CustomGameSetupHarness
     auto scrollOf = [&](const char *key) {
       paint();
       auto *found = host.find(key);
-      assert(found);
+      REQUIRE(found);
       return found->scrollOffset();
     };
     auto scrollTo = [&](const char *key, int offset) {
       paint();
       auto *found = host.find(key);
-      assert(found);
+      REQUIRE(found);
       found->scrollBy(offset - found->scrollOffset(), host);
       paint();
     };
@@ -896,11 +900,11 @@ struct CustomGameSetupHarness
                                               fixture / "alias");
     auto catalog = lobbyMapCatalog(
         {fixture / "one", fixture / "one", fixture / "alias", fixture / "two"});
-    assert(catalog.size() == 3 && catalog[0].name.find("Alpha") == 0 &&
-           catalog[1].name.find("Alpha") == 0 && catalog[2].name == "zebra");
-    assert(catalog[0].name != catalog[1].name);
+    REQUIRE((catalog.size() == 3 && catalog[0].name.find("Alpha") == 0 &&
+           catalog[1].name.find("Alpha") == 0 && catalog[2].name == "zebra"));
+    REQUIRE(catalog[0].name != catalog[1].name);
     std::filesystem::remove_all(fixture);
-    assert(std::set<std::string>(screen.mapPaths.begin(), screen.mapPaths.end())
+    REQUIRE(std::set<std::string>(screen.mapPaths.begin(), screen.mapPaths.end())
                .size() == screen.mapPaths.size());
     paint();
     // Selecting a row, moving the selection and switching libraries keep the list where it was.
@@ -912,54 +916,54 @@ struct CustomGameSetupHarness
       pointerAt(list.x + 20, list.y + 20, SDL_MOUSEBUTTONUP);
       paint();
     }
-    assert(scrollOf("map/list/0") == savedOffset);
+    REQUIRE(scrollOf("map/list/0") == savedOffset);
     keyEvent(SDLK_DOWN);
-    assert(scrollOf("map/list/0") == savedOffset);
+    REQUIRE(scrollOf("map/list/0") == savedOffset);
     clickControl("map/library/1");
     clickControl("map/library/0");
-    assert(scrollOf("map/list/0") == savedOffset);
-    assert(screen.librarySelection[0] == screen.source);
+    REQUIRE(scrollOf("map/list/0") == savedOffset);
+    REQUIRE(screen.librarySelection[0] == screen.source);
     screen.loadMap("maps/FourSquares1.map");
     screen.selectTab(1);
     paint();
     auto alliances = screen.setup.colonies;
     clickControl("colony/0/controller");
-    assert(host.popupOpen());
+    REQUIRE(host.popupOpen());
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
-    assert(screen.setup.colonies[0].controller == CustomGameSetup::Computer);
+    REQUIRE(screen.setup.colonies[0].controller == CustomGameSetup::Computer);
     for (int i = 0; i < 4; ++i)
-      assert(screen.setup.colonies[i].alliance == alliances[i].alliance);
-    assert(host.focused() == "colony/0/controller");
+      REQUIRE(screen.setup.colonies[i].alliance == alliances[i].alliance);
+    REQUIRE(host.focused() == "colony/0/controller");
     clickControl("colony/0/controller");
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
-    assert(screen.setup.colonies[0].controller == CustomGameSetup::Shared);
+    REQUIRE(screen.setup.colonies[0].controller == CustomGameSetup::Shared);
     clickControl("colony/1/ai");
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_ESCAPE);
-    assert(screen.setup.colonies[1].ai == AI::NUMBI);
+    REQUIRE(screen.setup.colonies[1].ai == AI::NUMBI);
     clickControl("colony/1/ai");
-    assert(host.popupOpen());
+    REQUIRE(host.popupOpen());
     pointerAt(0, 0, SDL_MOUSEBUTTONDOWN);
     pointerAt(0, 0, SDL_MOUSEBUTTONUP);
     paint();
-    assert(!host.popupOpen());
+    REQUIRE(!host.popupOpen());
     clickControl("format/1");
-    assert(screen.setup.colonies[0].alliance ==
+    REQUIRE(screen.setup.colonies[0].alliance ==
            screen.setup.colonies[1].alliance);
     screen.selectTab(2);
     paint();
     clickControl("rule/1/1");
-    assert(screen.setup.revealed && screen.setup.ruleset == "Custom");
-    assert(!screen.setup.unitUpgradesDisabled);
+    REQUIRE((screen.setup.revealed && screen.setup.ruleset == "Custom"));
+    REQUIRE(!screen.setup.unitUpgradesDisabled);
     screen.setup.unitUpgradesDisabled = true;
     const int rulesOffset = scrollOf("lobby/rules");
     clickControl("rule/1/0");
-    assert(!screen.setup.revealed && scrollOf("lobby/rules") == rulesOffset);
-    assert(screen.setup.unitUpgradesDisabled);
+    REQUIRE((!screen.setup.revealed && scrollOf("lobby/rules") == rulesOffset));
+    REQUIRE(screen.setup.unitUpgradesDisabled);
     clickControl("ruleset/1");
-    assert(screen.setup.speed == 3 && screen.setup.generator.nbWorkers == 8);
+    REQUIRE((screen.setup.speed == 3 && screen.setup.generator.nbWorkers == 8));
     screen.setup = CustomGameSetup();
     screen.loadMap("maps/FourSquares1.map");
     scrollTo("lobby/rules", 0);
@@ -978,8 +982,8 @@ struct CustomGameSetupHarness
     };
     capture("map-640");
     // Randomize, Reset to defaults and Random parameters only apply to random maps.
-    assert(!has("map/randomize") && !has("generator/reset") && !has("generator/random") &&
-           !has("quality/info"));
+    REQUIRE((!has("map/randomize") && !has("generator/reset") && !has("generator/random") &&
+           !has("quality/info")));
     screen.selectTab(1);
     capture("players-640");
     screen.setup.colonies[1].ai = AI::CORTEX;
@@ -1004,32 +1008,32 @@ struct CustomGameSetupHarness
     capture("generator-expanded");
     scrollTo("lobby/map", 0);
     // Preview appears from the timer, without a Generate control or click.
-    assert(!has("map/generate"));
+    REQUIRE(!has("map/generate"));
     screen.onTimer(screen.previewDue - 1);
-    assert(!screen.validMap);
+    REQUIRE(!screen.validMap);
     {
       // A held slider defers the preview until it is released.
       host.scrollIntoView("generator/water");
       paint();
       const auto slider = host.bounds("generator/water");
       pointerAt(slider.x + slider.w / 2, slider.y + slider.h / 2, SDL_MOUSEBUTTONDOWN);
-      assert(host.interacting());
+      REQUIRE(host.interacting());
       preview();
-      assert(!screen.validMap);
+      REQUIRE(!screen.validMap);
       pointerAt(slider.x + slider.w / 2, slider.y + slider.h / 2, SDL_MOUSEBUTTONUP);
       paint();
-      assert(!host.interacting());
+      REQUIRE(!host.interacting());
     }
     preview();
-    assert(screen.validMap && !screen.previewPending);
+    REQUIRE((screen.validMap && !screen.previewPending));
     auto first = screen.generatedSnapshot;
     auto revision = screen.previewRevision;
-    assert(first && !first->empty());
+    REQUIRE((first && !first->empty()));
     capture("random-preview-640");
     screen.setup.colonies[1].ai = AI::CASTOR;
     screen.setup.presetTeams(1);
     screen.onTimer(SDL_GetTicks() + 1000);
-    assert(screen.previewRevision == revision && screen.generatedSnapshot == first);
+    REQUIRE((screen.previewRevision == revision && screen.generatedSnapshot == first));
     {
       // Nudging the slider from the keyboard is one edit: one invalidation, one step.
       host.focus("generator/water", true);
@@ -1039,16 +1043,16 @@ struct CustomGameSetupHarness
       motion.motion.x = 0;
       motion.motion.y = 0;
       screen.handleExecutionEvent(motion);
-      assert(screen.setup.generator.options["water"] == water);
+      REQUIRE(screen.setup.generator.options["water"] == water);
       keyEvent(SDLK_RIGHT);
-      assert(screen.setup.generator.options["water"] == water + 1);
-      assert(!screen.validMap && screen.setup.mapRevision != revision);
+      REQUIRE(screen.setup.generator.options["water"] == water + 1);
+      REQUIRE((!screen.validMap && screen.setup.mapRevision != revision));
     }
-    assert(screen.setup.colonies[0].alliance ==
+    REQUIRE(screen.setup.colonies[0].alliance ==
            screen.setup.colonies[1].alliance);
 
-    assert(screen.generateMap());
-    assert(screen.generatedSnapshot != first);
+    REQUIRE(screen.generateMap());
+    REQUIRE(screen.generatedSnapshot != first);
     // Randomize rolls the same settings again with a new seed, through the
     // normal preview path, and releases the snapshot it replaces.
     {
@@ -1056,12 +1060,12 @@ struct CustomGameSetupHarness
       const auto mapRevision = screen.setup.mapRevision;
       const auto replaced = screen.generatedSnapshot;
       clickControl("map/randomize");
-      assert(!screen.validMap && screen.previewPending);
+      REQUIRE((!screen.validMap && screen.previewPending));
       preview();
-      assert(screen.validMap && screen.generatedSnapshot != replaced);
-      assert(screen.setup.generator.method == settings.method &&
+      REQUIRE((screen.validMap && screen.generatedSnapshot != replaced));
+      REQUIRE((screen.setup.generator.method == settings.method &&
              screen.setup.generator.options == settings.options &&
-             screen.setup.mapRevision == mapRevision);
+             screen.setup.mapRevision == mapRevision));
       capture("randomize-640");
     }
     // Reset to defaults restores this landscape's registered values, keeping
@@ -1071,31 +1075,31 @@ struct CustomGameSetupHarness
       expected.setMethodDefaults(screen.setup.generator.method);
       const auto method = screen.setup.generator.method;
       const auto workers = screen.setup.generator.nbWorkers;
-      assert(screen.setup.generator.options != expected.options);
+      REQUIRE(screen.setup.generator.options != expected.options);
       clickControl("generator/reset");
-      assert(screen.setup.generator.method == method &&
+      REQUIRE((screen.setup.generator.method == method &&
              screen.setup.generator.nbWorkers == workers &&
              screen.setup.generator.options == expected.options &&
              screen.setup.generator.wDec == expected.wDec &&
              screen.setup.generator.hDec == expected.hDec &&
              screen.setup.capacity == expected.nbTeams && !screen.validMap &&
-             screen.previewPending);
+             screen.previewPending));
       paint();
       auto *reset = node("generator/reset");
-      assert(!reset->enabled());
+      REQUIRE(!reset->enabled());
       // Reset to defaults sits at the top of the column, right under the landscape chooser,
       // with Random parameters beside it (FEEDBACK 2026-09-14).
       auto *landscape = node("generator/landscape");
       auto *random = node("generator/random");
-      assert(reset->bounds.y > landscape->bounds.y && reset->bounds.y < landscape->bounds.y + 80 &&
-             random->bounds.y == reset->bounds.y && random->bounds.x > reset->bounds.x && random->enabled());
+      REQUIRE((reset->bounds.y > landscape->bounds.y && reset->bounds.y < landscape->bounds.y + 80 &&
+             random->bounds.y == reset->bounds.y && random->bounds.x > reset->bounds.x && random->enabled()));
       host.root()->visit([&](GAGGUI::ui::Node &n) {
         if (n.key.rfind("generator/", 0) == 0 && n.key != "generator/landscape" &&
             n.key != "generator/reset" && n.key != "generator/random")
-          assert(n.bounds.y >= reset->bounds.y);
+          REQUIRE(n.bounds.y >= reset->bounds.y);
       });
       preview();
-      assert(screen.validMap);
+      REQUIRE(screen.validMap);
       capture("reset-640");
     }
     // Random parameters draws every one of the landscape's controls at random, keeping the size,
@@ -1111,12 +1115,12 @@ struct CustomGameSetupHarness
         clickControl("generator/random");
         changed = screen.setup.generator.options != before.options;
       }
-      assert(changed && !screen.validMap && screen.previewPending && !screen.chosenSeed);
-      assert(screen.setup.generator.method == before.method &&
+      REQUIRE((changed && !screen.validMap && screen.previewPending && !screen.chosenSeed));
+      REQUIRE((screen.setup.generator.method == before.method &&
              screen.setup.generator.nbWorkers == before.nbWorkers &&
              screen.setup.generator.wDec == before.wDec &&
-             screen.setup.generator.hDec == before.hDec && screen.setup.capacity == capacity);
-      assert(validateGenerationRequest(screen.setup.generator, definition).empty());
+             screen.setup.generator.hDec == before.hDec && screen.setup.capacity == capacity));
+      REQUIRE(validateGenerationRequest(screen.setup.generator, definition).empty());
       // A random set the world refuses on every seed is redrawn by the preview itself, one
       // more round of candidates per draw; give it those rounds, and a fresh click should even
       // the last draw fail, so the check does not hang on one unlucky stream.
@@ -1127,11 +1131,11 @@ struct CustomGameSetupHarness
              ++round)
           preview();
       }
-      assert(screen.validMap && screen.quality.measured &&
-             screen.quality.colonies.size() == size_t(capacity));
+      REQUIRE((screen.validMap && screen.quality.measured &&
+             screen.quality.colonies.size() == size_t(capacity)));
       paint();
       // The start quality line under the preview: fairness and score, and its (i).
-      assert(has("quality/info") && node("quality/info")->enabled());
+      REQUIRE((has("quality/info") && node("quality/info")->enabled()));
       capture("random-parameters-640");
       {
         std::vector<std::string> labels;
@@ -1144,12 +1148,12 @@ struct CustomGameSetupHarness
         breakdown.beginExecution(globalContainer->gfx);
         breakdown.paintFrame(0);
         globalContainer->gfx->printScreen(output + "/start-quality.bmp");
-        assert(breakdown.host().find("back"));
+        REQUIRE(breakdown.host().find("back"));
         SDL_Event e = {};
         e.type = SDL_KEYDOWN;
         e.key.keysym.sym = SDLK_ESCAPE;
         breakdown.handleExecutionEvent(e);
-        assert(breakdown.returnCode == StartQualityScreen::BACK);
+        REQUIRE(breakdown.returnCode == StartQualityScreen::BACK);
         breakdown.finishExecution();
         paint();
       }
@@ -1157,62 +1161,62 @@ struct CustomGameSetupHarness
       clickControl("generator/reset");
       GenerationRequest expected;
       expected.setMethodDefaults(before.method);
-      assert(screen.setup.generator.options == expected.options && screen.quality.measured &&
+      REQUIRE((screen.setup.generator.options == expected.options && screen.quality.measured &&
              screen.quality.fairness == retainedQuality.fairness &&
-             screen.quality.score == retainedQuality.score);
+             screen.quality.score == retainedQuality.score));
       preview();
-      assert(screen.validMap);
+      REQUIRE(screen.validMap);
     }
     screen.setup.presetRules(1);
     screen.invalidatePreview();
-    assert(!screen.validMap);
+    REQUIRE(!screen.validMap);
     auto assignments = screen.setup.colonies;
     screen.setup.generator.options["water"] =
         screen.setup.generator.options["sand"] =
             screen.setup.generator.options["grass"] =
                 screen.setup.generator.options["desert"] = 0;
     preview();
-    assert(!screen.validMap && !screen.previewPending);
+    REQUIRE((!screen.validMap && !screen.previewPending));
     for (int i = 0; i < 4; ++i)
-      assert(screen.setup.colonies[i].alliance == assignments[i].alliance);
+      REQUIRE(screen.setup.colonies[i].alliance == assignments[i].alliance);
     screen.setup.generator.options["water"] =
         screen.setup.generator.options["sand"] =
             screen.setup.generator.options["grass"] =
                 screen.setup.generator.options["desert"] = 50;
     screen.invalidatePreview();
     preview();
-    assert(screen.validMap);
+    REQUIRE(screen.validMap);
 
     // Apply a landscape the way the picker's result does, then drive the same steppers used
     // by players, including measured five-unit steps. The picker itself is exercised below.
     auto landscape = [&](int method) {
       screen.applyLandscape(method, std::nullopt);
       paint();
-      assert(screen.setup.generator.method == method);
+      REQUIRE(screen.setup.generator.method == method);
     };
     landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
-    assert(screen.setup.generator.options["channel-width"] == 5 &&
-           screen.setup.generator.options["extra-islands"] == 3);
+    REQUIRE((screen.setup.generator.options["channel-width"] == 5 &&
+           screen.setup.generator.options["extra-islands"] == 3));
     step("generator/channel-width", 1);
-    assert(screen.setup.generator.options["channel-width"] == 6);
+    REQUIRE(screen.setup.generator.options["channel-width"] == 6);
     capture("concrete-controls");
     landscape(MapGenerationDescriptor::eISLES);
-    assert(screen.setup.generator.options["island-size"] == 60);
+    REQUIRE(screen.setup.generator.options["island-size"] == 60);
     step("generator/island-size", 1);
-    assert(screen.setup.generator.options["island-size"] == 65);
+    REQUIRE(screen.setup.generator.options["island-size"] == 65);
     step("generator/bridge-width", 1);
-    assert(screen.setup.generator.options["bridge-width"] == 5);
+    REQUIRE(screen.setup.generator.options["bridge-width"] == 5);
     capture("isles-controls");
     landscape(MapGenerationDescriptor::eCRATERLAKES);
-    assert(screen.setup.generator.options["lake-size"] == 25 &&
-           screen.setup.generator.options["grass"] == 75);
+    REQUIRE((screen.setup.generator.options["lake-size"] == 25 &&
+           screen.setup.generator.options["grass"] == 75));
     step("generator/lake-size", 1);
-    assert(screen.setup.generator.options["lake-size"] == 30);
+    REQUIRE(screen.setup.generator.options["lake-size"] == 30);
     capture("crater-controls");
     landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
-    assert(screen.setup.generator.options["channel-width"] == 6);
+    REQUIRE(screen.setup.generator.options["channel-width"] == 6);
     landscape(MapGenerationDescriptor::eOLDISLANDS);
-    assert(screen.setup.generator.options["island-size"] == 65);
+    REQUIRE(screen.setup.generator.options["island-size"] == 65);
     capture("rugged-archipelago-controls");
     landscape(MapGenerationDescriptor::eOLDRANDOM);
     capture("shattered-coast-controls");
@@ -1221,30 +1225,30 @@ struct CustomGameSetupHarness
     landscape(GeneratorRegistry::builtins().idOf("fjord-continent"));
     screen.expanded[0] = screen.expanded[1] = screen.expanded[2] = true;
     preview();
-    assert(screen.validMap);
+    REQUIRE(screen.validMap);
     {
       auto &options = screen.setup.generator.options;
       const auto revision = screen.setup.mapRevision;
-      assert(options["lake-connected"] == 0);
+      REQUIRE(options["lake-connected"] == 0);
       clickControl("generator/lake-connected");
-      assert(options["lake-connected"] == 1 && screen.setup.mapRevision != revision &&
-             !screen.validMap && screen.previewPending);
-      assert(host.focused() == "generator/lake-connected");
+      REQUIRE((options["lake-connected"] == 1 && screen.setup.mapRevision != revision &&
+             !screen.validMap && screen.previewPending));
+      REQUIRE(host.focused() == "generator/lake-connected");
       host.focus("generator/lake-connected", true);
       keyEvent(SDLK_SPACE);
-      assert(options["lake-connected"] == 0);
+      REQUIRE(options["lake-connected"] == 0);
       keyEvent(SDLK_RETURN);
-      assert(options["lake-connected"] == 1);
+      REQUIRE(options["lake-connected"] == 1);
       // Tab walks off the checkbox and Shift+Tab back onto it, like any other control.
       keyEvent(SDLK_TAB);
-      assert(host.focused() != "generator/lake-connected");
+      REQUIRE(host.focused() != "generator/lake-connected");
       keyEvent(SDLK_TAB, KMOD_SHIFT);
-      assert(host.focused() == "generator/lake-connected");
+      REQUIRE(host.focused() == "generator/lake-connected");
       preview();
-      assert(screen.validMap);
+      REQUIRE(screen.validMap);
       capture("map-checkboxes");
       clickControl("generator/lake-connected");
-      assert(options["lake-connected"] == 0);
+      REQUIRE(options["lake-connected"] == 0);
     }
     landscape(MapGenerationDescriptor::eRIVER);
 
@@ -1257,7 +1261,7 @@ struct CustomGameSetupHarness
       screen.setup.generator.hDec = dimensions.second;
       screen.setup.setCapacity(4);
       screen.invalidatePreview();
-      assert(screen.generateMap());
+      REQUIRE(screen.generateMap());
       // The preview only records its rectangle while painted, so bring it back
       // into view after the generator controls scrolled it off.
       paint();
@@ -1271,14 +1275,14 @@ struct CustomGameSetupHarness
       capture(name);
       const auto rect = screen.preview->mapArea();
       const int mapW = screen.preview->getLastWidth(), mapH = screen.preview->getLastHeight();
-      assert(std::abs(rect.w * mapH - rect.h * mapW) < std::max(mapW, mapH));
+      REQUIRE(std::abs(rect.w * mapH - rect.h * mapW) < std::max(mapW, mapH));
       SDL_Surface *bmp = SDL_LoadBMP((output + "/" + name + ".bmp").c_str());
-      assert(bmp);
+      REQUIRE(bmp);
       SDL_Surface *rgba = SDL_ConvertSurfaceFormat(bmp, SDL_PIXELFORMAT_RGBA32, 0);
       SDL_FreeSurface(bmp);
-      assert(rgba);
+      REQUIRE(rgba);
       auto pixel = [&](int x, int y) {
-        assert(x >= 0 && y >= 0 && x < rgba->w && y < rgba->h);
+        REQUIRE((x >= 0 && y >= 0 && x < rgba->w && y < rgba->h));
         return static_cast<const Uint8 *>(rgba->pixels) + y * rgba->pitch + x * 4;
       };
       // Markers stay centered on terrain and repeat across the torus seams.
@@ -1304,12 +1308,12 @@ struct CustomGameSetupHarness
       for (int x = rect.x + 1; x < rect.x + rect.w - 1; ++x)
         if (!underMarker(x, rect.y + 1)) {
           const auto p = pixel(x, rect.y + 1);
-          assert(p[0] || p[1] || p[2]);
+          REQUIRE((p[0] || p[1] || p[2]));
         }
       for (int y = rect.y + 1; y < rect.y + rect.h - 1; ++y)
         if (!underMarker(rect.x + 1, y)) {
           const auto p = pixel(rect.x + 1, y);
-          assert(p[0] || p[1] || p[2]);
+          REQUIRE((p[0] || p[1] || p[2]));
         }
       for (size_t i = 0; i < expectedStarts.size(); ++i) {
         const int sampleX = rect.x + (markerX[i] - rect.x - 7 + rect.w) % rect.w;
@@ -1335,7 +1339,7 @@ struct CustomGameSetupHarness
                       " %d,%d,%d got %d,%d,%d\n",
                       name.c_str(), start.x, start.y, mapW, mapH, rect.x, rect.y, rect.w, rect.h,
                       start.color.r, start.color.g, start.color.b, swatch[0], swatch[1], swatch[2]);
-        assert(swatch[0] == start.color.r && swatch[1] == start.color.g && swatch[2] == start.color.b);
+        REQUIRE((swatch[0] == start.color.r && swatch[1] == start.color.g && swatch[2] == start.color.b));
       }
       SDL_FreeSurface(rgba);
     }
@@ -1350,12 +1354,12 @@ struct CustomGameSetupHarness
       screen.setup.setCapacity(4);
       screen.invalidatePreview();
       paint();
-      assert(has("generator/landscape"));
+      REQUIRE(has("generator/landscape"));
       const auto entries = screen.landscapeEntries();
-      assert(entries.size() == GeneratorRegistry::builtins().methods(false).size());
+      REQUIRE(entries.size() == GeneratorRegistry::builtins().methods(false).size());
       for (const auto &[method, request] : entries)
-        assert(request.method == method && request.nbTeams == 4 && request.wDec == 8 &&
-               request.hDec == 8);
+        REQUIRE((request.method == method && request.nbTeams == 4 && request.wDec == 8 &&
+               request.hDec == 8));
       std::vector<LandscapePickerScreen::Entry> shown;
       for (const auto &[method, request] : entries)
         shown.push_back({GenerationRequest::methodName(method), request});
@@ -1365,23 +1369,23 @@ struct CustomGameSetupHarness
       picker.beginExecution(globalContainer->gfx);
       auto &pickerHost = picker.host();
       auto pickerPaint = [&] { picker.paintFrame(SDL_GetTicks()); };
-      assert(picker.previewer.threadCount() == 1 && picker.busy());
+      REQUIRE((picker.previewer.threadCount() == 1 && picker.busy()));
       pickerPaint(); // placeholders while every tile is still pending
       globalContainer->gfx->printScreen(output + "/landscape-picker-pending.bmp");
       // Cards in view roll first, and scrolling the grid moves that eligible set with it.
       picker.updatePreviewPriority();
-      assert(!picker.viewportSlots.empty() && picker.priorityOrder.size() == shown.size());
-      assert(std::find(picker.viewportSlots.begin(), picker.viewportSlots.end(),
+      REQUIRE((!picker.viewportSlots.empty() && picker.priorityOrder.size() == shown.size()));
+      REQUIRE(std::find(picker.viewportSlots.begin(), picker.viewportSlots.end(),
                        picker.priorityOrder.front()) != picker.viewportSlots.end());
       {
         auto *grid = pickerHost.find("landscape/grid");
-        assert(grid && grid->scrollMaximum() > 0);
+        REQUIRE((grid && grid->scrollMaximum() > 0));
         const auto initial = picker.viewportSlots;
         grid->scrollBy(grid->scrollMaximum(), pickerHost);
         pickerPaint();
         picker.updatePreviewPriority();
-        assert(picker.viewportSlots != initial);
-        assert(std::find(picker.viewportSlots.begin(), picker.viewportSlots.end(),
+        REQUIRE(picker.viewportSlots != initial);
+        REQUIRE(std::find(picker.viewportSlots.begin(), picker.viewportSlots.end(),
                          picker.priorityOrder.front()) != picker.viewportSlots.end());
         grid->scrollBy(-grid->scrollOffset(), pickerHost);
         pickerPaint();
@@ -1389,7 +1393,7 @@ struct CustomGameSetupHarness
       auto settle = [&] {
         const Uint32 deadline = SDL_GetTicks() + 120000;
         while (picker.busy()) {
-          assert(Sint32(SDL_GetTicks() - deadline) < 0);
+          REQUIRE(Sint32(SDL_GetTicks() - deadline) < 0);
           SDL_Delay(10);
           picker.onTimer(SDL_GetTicks());
         }
@@ -1439,33 +1443,33 @@ struct CustomGameSetupHarness
           return;
         }
         pick("landscape/more");
-        assert(pickerHost.popupOpen());
+        REQUIRE(pickerHost.popupOpen());
         pick("popup/" + std::to_string(menuIndex));
-        assert(!pickerHost.popupOpen());
+        REQUIRE(!pickerHost.popupOpen());
       };
       settle();
       globalContainer->gfx->printScreen(output + "/landscape-picker.bmp");
       auto seedsShown = [&] {
         std::vector<std::uint32_t> seeds;
         for (const auto &tile : picker.tiles) {
-			assert(tile.preview.state == LandscapePreviewer::State::Ready &&
+			REQUIRE((tile.preview.state == LandscapePreviewer::State::Ready &&
 				   tile.preview.width == 256 && tile.preview.height == 256 &&
-				   tile.preview.starts.size() == 4);
+				   tile.preview.starts.size() == 4));
 			seeds.push_back(tile.preview.seed);
         }
-        assert(std::set<std::uint32_t>(seeds.begin(), seeds.end()).size() == seeds.size());
+        REQUIRE(std::set<std::uint32_t>(seeds.begin(), seeds.end()).size() == seeds.size());
         return seeds;
       };
       const auto first = seedsShown();
-      assert(picker.selection() == current && picker.chosenSeed() == first[current]);
+      REQUIRE((picker.selection() == current && picker.chosenSeed() == first[current]));
       // A click selects; arrows move by one tile or one row; Escape cancels.
       const int other = (current + 1) % int(shown.size());
       pick("landscape/" + std::to_string(other));
-      assert(picker.selection() == other && picker.returnCode == 0);
+      REQUIRE((picker.selection() == other && picker.returnCode == 0));
       // Native image gestures inspect without confirming the selected landscape.
       {
         auto *widget = picker.tiles[other].widget;
-        assert(widget);
+        REQUIRE(widget);
         pickerHost.scrollIntoView("landscape/" + std::to_string(other));
         pickerPaint();
         const auto area = widget->mapArea();
@@ -1476,9 +1480,9 @@ struct CustomGameSetupHarness
         e.motion.x = area.x + 2 * area.w / 3;
         e.motion.y = area.y + 2 * area.h / 3;
         picker.handleExecutionEvent(e);
-        assert(widget->dragging && widget->view.offsetX > 0 && picker.returnCode == 0);
+        REQUIRE((widget->dragging && widget->view.offsetX > 0 && picker.returnCode == 0));
         pickerPointer(-20, -20, SDL_MOUSEBUTTONUP);
-        assert(!widget->dragging && picker.returnCode == 0);
+        REQUIRE((!widget->dragging && picker.returnCode == 0));
         // The picker intentionally reserves the wheel for grid scrolling, even
         // above a preview. MapPreviewHarness separately checks anchored zoom.
         e = {};
@@ -1489,7 +1493,7 @@ struct CustomGameSetupHarness
         const auto previewZoom = widget->zoom;
         const auto previewX = widget->view.offsetX, previewY = widget->view.offsetY;
         auto *grid = pickerHost.find("landscape/grid");
-        assert(grid && grid->scrollMaximum() > 0);
+        REQUIRE((grid && grid->scrollMaximum() > 0));
         bool scrolled = false;
         for (int direction : {-1, 1}) {
           const int before = grid->scrollOffset();
@@ -1499,72 +1503,72 @@ struct CustomGameSetupHarness
           picker.handleExecutionEvent(e);
           pickerPaint();
           const int after = grid->scrollOffset();
-          assert(after >= 0 && after <= grid->scrollMaximum());
-          assert(direction > 0 ? after <= before : after >= before);
+          REQUIRE((after >= 0 && after <= grid->scrollMaximum()));
+          REQUIRE((direction > 0 ? after <= before : after >= before));
           scrolled |= after != before;
-          assert(widget->zoom == previewZoom && widget->view.offsetX == previewX &&
-                 widget->view.offsetY == previewY && picker.returnCode == 0);
+          REQUIRE((widget->zoom == previewZoom && widget->view.offsetX == previewX &&
+                 widget->view.offsetY == previewY && picker.returnCode == 0));
         }
-        assert(scrolled);
+        REQUIRE(scrolled);
       }
       // Keyboard navigation follows the displayed sort/filter order, not the
       // registry identity of a landscape (these differ in Random order).
       const auto position = std::find(picker.visible.begin(), picker.visible.end(), other);
-      assert(position != picker.visible.end());
+      REQUIRE(position != picker.visible.end());
       const int left = std::max(0, int(position - picker.visible.begin()) - 1);
       pickerKey(SDLK_LEFT);
-      assert(picker.selection() == picker.visible[left]);
+      REQUIRE(picker.selection() == picker.visible[left]);
       pickerKey(SDLK_DOWN);
-      assert(picker.selection() == picker.visible[
+      REQUIRE(picker.selection() == picker.visible[
           std::min(int(picker.visible.size()) - 1, left + picker.columns)]);
       pickerKey(SDLK_ESCAPE);
-      assert(picker.returnCode == LandscapePickerScreen::CANCEL);
+      REQUIRE(picker.returnCode == LandscapePickerScreen::CANCEL);
       // Escape ended the execution; keep driving the same picker for the remaining checks.
       picker.run = true;
       picker.returnCode = 0;
       // Regenerate all rolls every landscape again with fresh seeds.
       pickAction("regenerate", 0);
-      assert(picker.busy());
-      assert(!picker.chosenSeed());
+      REQUIRE(picker.busy());
+      REQUIRE(!picker.chosenSeed());
       const int pendingReturnCode = picker.returnCode;
       picker.confirm();
-      assert(picker.returnCode == pendingReturnCode);
+      REQUIRE(picker.returnCode == pendingReturnCode);
       settle();
       const auto second = seedsShown();
       for (size_t i = 0; i < first.size(); ++i)
-        assert(first[i] != second[i]);
+        REQUIRE(first[i] != second[i]);
       // Randomize parameters rolls every landscape with its controls drawn at random: the sheet
       // still fills with maps (a refused set is redrawn), and each tile's request is one its
       // generator accepts, at the lobby's size and colony count.
       pickAction("randomize", 1);
-      assert(picker.busy());
+      REQUIRE(picker.busy());
       settle();
       seedsShown();
       {
         bool anyDiffer = false;
         for (size_t i = 0; i < shown.size(); ++i) {
           const GenerationRequest rolled = picker.previewer.request(i);
-          assert(rolled.method == shown[i].request.method && rolled.nbTeams == 4 &&
-                 rolled.wDec == 8 && rolled.hDec == 8);
-          assert(validateGenerationRequest(rolled, GeneratorRegistry::builtins().at(rolled.method))
+          REQUIRE((rolled.method == shown[i].request.method && rolled.nbTeams == 4 &&
+                 rolled.wDec == 8 && rolled.hDec == 8));
+          REQUIRE(validateGenerationRequest(rolled, GeneratorRegistry::builtins().at(rolled.method))
                      .empty());
           anyDiffer = anyDiffer || rolled.options != shown[i].request.options;
         }
-        assert(anyDiffer);
+        REQUIRE(anyDiffer);
       }
       globalContainer->gfx->printScreen(output + "/landscape-picker-randomized.bmp");
       // Reset to defaults puts every landscape back on its registered controls at the sheet's
       // size and colony count, and rolls the sheet again.
       pickAction("reset", 2);
-      assert(picker.busy());
+      REQUIRE(picker.busy());
       settle();
       seedsShown();
       for (size_t i = 0; i < shown.size(); ++i) {
         const GenerationRequest rolled = picker.previewer.request(i);
         GenerationRequest expected;
         expected.setMethodDefaults(shown[i].request.method);
-        assert(rolled.options == expected.options && rolled.nbTeams == 4 && rolled.wDec == 8 &&
-               rolled.hDec == 8);
+        REQUIRE((rolled.options == expected.options && rolled.nbTeams == 4 && rolled.wDec == 8 &&
+               rolled.hDec == 8));
       }
       pickAction("randomize", 1);
       settle();
@@ -1573,11 +1577,11 @@ struct CustomGameSetupHarness
       {
         pick("landscape/" + std::to_string(other));
         const GenerationRequest rolled = picker.chosenRequest();
-        assert(rolled.method == entries[other].first);
+        REQUIRE(rolled.method == entries[other].first);
         screen.applyLandscape(entries[other].first, picker.chosenSeed(), &rolled);
-        assert(screen.setup.generator.method == entries[other].first &&
+        REQUIRE((screen.setup.generator.method == entries[other].first &&
                screen.setup.generator.options == rolled.options &&
-               screen.setup.generator.nbTeams == 4);
+               screen.setup.generator.nbTeams == 4));
         // Back to the landscapes' own parameters for the checks below. Reset, not Regenerate:
         // regenerating keeps the random draw, and a random ridge layout can fail validation
         // once the map is resized below.
@@ -1588,11 +1592,11 @@ struct CustomGameSetupHarness
       // Return confirms the selection, as does clicking the selected tile.
       pick("landscape/" + std::to_string(other));
       pickerKey(SDLK_RETURN);
-      assert(picker.returnCode == other);
+      REQUIRE(picker.returnCode == other);
       pick("landscape/" + std::to_string(other));
-      assert(picker.returnCode == other);
+      REQUIRE(picker.returnCode == other);
       pick("landscape/use");
-      assert(picker.returnCode == other);
+      REQUIRE(picker.returnCode == other);
       globalContainer->gfx->printScreen(output + "/landscape-picker-selected.bmp");
       // The lobby then rolls the very seed the picker showed: same starts, same map header.
       const auto seed = *picker.chosenSeed();
@@ -1602,18 +1606,18 @@ struct CustomGameSetupHarness
       const GenerationRequest request = picker.chosenRequest();
       picker.finishExecution();
       screen.applyLandscape(entries[other].first, seed, &request);
-      assert(screen.previewPending && screen.chosenSeed == seed &&
+      REQUIRE((screen.previewPending && screen.chosenSeed == seed &&
              screen.setup.generator.options == request.options &&
-             screen.setup.generator.method == entries[other].first);
+             screen.setup.generator.method == entries[other].first));
       preview();
-      assert(screen.validMap && !screen.chosenSeed);
-      assert(screen.preview->starts.size() == starts.size());
+      REQUIRE((screen.validMap && !screen.chosenSeed));
+      REQUIRE(screen.preview->starts.size() == starts.size());
       for (size_t i = 0; i < starts.size(); ++i)
-        assert(screen.preview->starts[i].x == starts[i].x &&
+        REQUIRE((screen.preview->starts[i].x == starts[i].x &&
                screen.preview->starts[i].y == starts[i].y &&
                screen.preview->starts[i].color.r == starts[i].color.r &&
                screen.preview->starts[i].color.g == starts[i].color.g &&
-               screen.preview->starts[i].color.b == starts[i].color.b);
+               screen.preview->starts[i].color.b == starts[i].color.b));
       {
         Game shownMap(nullptr);
         // The memory backend copies its input through write() and leaves its
@@ -1621,20 +1625,20 @@ struct CustomGameSetupHarness
         auto *bytes = new GAGCore::MemoryStreamBackend(screen.generatedSnapshot->data(), screen.generatedSnapshot->size());
         bytes->seekFromStart(0);
         GAGCore::BinaryInputStream in(bytes);
-        assert(shownMap.load(&in) && shownMap.gameHeader.getRandomSeed() == seed);
+        REQUIRE((shownMap.load(&in) && shownMap.gameHeader.getRandomSeed() == seed));
       }
       capture("landscape-applied");
       // An edit after the pick drops the shown seed: the next preview samples candidates again.
       screen.applyLandscape(entries[other].first, seed);
-      assert(screen.chosenSeed == seed);
+      REQUIRE(screen.chosenSeed == seed);
       clickControl("generator/width");
-      assert(host.popupOpen());
+      REQUIRE(host.popupOpen());
       // Enlarge it: shrinking can violate the selected landscape's minimum home spacing.
       keyEvent(SDLK_DOWN);
       keyEvent(SDLK_RETURN);
-      assert(!screen.chosenSeed && screen.previewPending);
+      REQUIRE((!screen.chosenSeed && screen.previewPending));
       preview();
-      assert(screen.validMap);
+      REQUIRE(screen.validMap);
       std::cout << "PASS landscape picker: " << shown.size() << " previews on "
                 << picker.previewer.threadCount()
                 << " threads, selection, regeneration and the shown map played\n";
@@ -1643,19 +1647,19 @@ struct CustomGameSetupHarness
     screen.setup.setCapacity(12);
     screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
     screen.invalidatePreview();
-    assert(screen.generateMap());
+    REQUIRE(screen.generateMap());
     screen.setup.setController(0, CustomGameSetup::Computer);
     screen.selectTab(1);
     capture("players-12-1000");
     clickControl("colony/0/controller");
-    assert(host.popupOpen());
-    assert(!screen.setup.setController(0, CustomGameSetup::Shared));
+    REQUIRE(host.popupOpen());
+    REQUIRE(!screen.setup.setController(0, CustomGameSetup::Shared));
     capture("controller-limit");
     keyEvent(SDLK_HOME);
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
-    assert(host.popupOpen() && screen.setup.controllerCount() == 12);
+    REQUIRE((host.popupOpen() && screen.setup.controllerCount() == 12));
     keyEvent(SDLK_ESCAPE);
     scrollTo("lobby/players", node("lobby/players")->scrollMaximum());
     capture("players-12-scrolled");
@@ -1663,7 +1667,7 @@ struct CustomGameSetupHarness
     const int rosterOffset = scrollOf("lobby/players");
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
-    assert(scrollOf("lobby/players") == rosterOffset);
+    REQUIRE(scrollOf("lobby/players") == rosterOffset);
     // Sequential keyboard focus scrolls an off-screen control into view.
     host.focus("colony/11/team", true);
     keyEvent(SDLK_TAB);
@@ -1679,44 +1683,44 @@ struct CustomGameSetupHarness
 	static void model()
 	{
 		CustomGameSetup s;
-		assert(s.capacity == 4 && s.activeColonies() == 4 && s.controllerCount() == 4 &&
-			   s.humanColony() == 0);
-		assert(s.presetTeams(1));
+		REQUIRE((s.capacity == 4 && s.activeColonies() == 4 && s.controllerCount() == 4 &&
+			   s.humanColony() == 0));
+		REQUIRE(s.presetTeams(1));
 		auto alliances = s.colonies;
 		s.colonies[2].ai = AI::CASTOR;
 		for (int i = 0; i < 4; ++i)
-			assert(s.colonies[i].alliance == alliances[i].alliance);
-		assert(s.setController(0, CustomGameSetup::Shared) && s.controllerCount() == 5);
+			REQUIRE(s.colonies[i].alliance == alliances[i].alliance);
+		REQUIRE((s.setController(0, CustomGameSetup::Shared) && s.controllerCount() == 5));
 		s.setCapacity(2);
 		s.setCapacity(4);
-		assert(s.colonies[3].alliance == alliances[3].alliance);
-		assert(s.setController(3, CustomGameSetup::Human));
-		assert(s.humanColony() == 3 && s.colonies[0].controller == CustomGameSetup::Computer);
+		REQUIRE(s.colonies[3].alliance == alliances[3].alliance);
+		REQUIRE(s.setController(3, CustomGameSetup::Human));
+		REQUIRE((s.humanColony() == 3 && s.colonies[0].controller == CustomGameSetup::Computer));
 		GameHeader h;
 		s.writeHeader(h, "test");
-		assert(h.getBasePlayer(0).teamNumber == 3 && h.getNumberOfPlayers() == 4);
-		assert(s.setController(3, CustomGameSetup::Shared));
+		REQUIRE((h.getBasePlayer(0).teamNumber == 3 && h.getNumberOfPlayers() == 4));
+		REQUIRE(s.setController(3, CustomGameSetup::Shared));
 		s.writeHeader(h, "test");
-		assert(h.getNumberOfPlayers() == 5);
-		assert(h.getBasePlayer(4).teamNumber == 3);
+		REQUIRE(h.getNumberOfPlayers() == 5);
+		REQUIRE(h.getBasePlayer(4).teamNumber == 3);
 		s.setCapacity(12);
-		assert(!s.validation().empty());
-		assert(!s.setController(2, CustomGameSetup::Shared));
-		assert(s.setController(3, CustomGameSetup::Computer));
-		assert(s.controllerCount() == 12 && !s.humanColony());
-		assert(!s.presetTeams(1) && !s.presetTeams(2));
-		assert(s.presetTeams(0));
+		REQUIRE(!s.validation().empty());
+		REQUIRE(!s.setController(2, CustomGameSetup::Shared));
+		REQUIRE(s.setController(3, CustomGameSetup::Computer));
+		REQUIRE((s.controllerCount() == 12 && !s.humanColony()));
+		REQUIRE((!s.presetTeams(1) && !s.presetTeams(2)));
+		REQUIRE(s.presetTeams(0));
 		s.setCapacity(4);
 		auto revision = s.mapRevision;
 		s.presetRules(1);
-		assert(s.speed == 3 && s.generator.nbWorkers == 8 && s.mapRevision > revision);
+		REQUIRE((s.speed == 3 && s.generator.nbWorkers == 8 && s.mapRevision > revision));
 		s.presetRules(2);
-		assert(s.revealed && s.prestige);
+		REQUIRE((s.revealed && s.prestige));
 		s.presetRules(3);
-		assert(!s.prestige);
+		REQUIRE(!s.prestige);
 		for (int i = 0; i < 4; ++i)
 			s.setController(i, CustomGameSetup::Closed);
-		assert(!s.validation().empty());
+		REQUIRE(!s.validation().empty());
 		std::cout << "PASS model: defaults, alliances, restoration, shared "
 					 "control, human "
 					 "movement, limits, presets\n";
@@ -1730,9 +1734,9 @@ struct CustomGameSetupHarness
 		s.setController(0, (CustomGameSetup::Controller)control);
 		GameHeader game;
 		s.writeHeader(game, "test");
-		assert(e.initGame(header, game, true, false, false, map) == Engine::EE_NO_ERROR);
-		assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
-		assert(!globalContainer->replaying);
+		REQUIRE(e.initGame(header, game, true, false, false, map) == Engine::EE_NO_ERROR);
+		REQUIRE(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
+		REQUIRE(!globalContainer->replaying);
 		std::vector<CountingAI *> counters;
 		for (int i = 0; i < e.gui.game.gameHeader.getNumberOfPlayers(); ++i)
 			if (e.gui.game.players[i]->ai)
@@ -1747,18 +1751,18 @@ struct CustomGameSetupHarness
 		{
 			e.gui.localPlayer = 2; // Optional viewpoint must not change controller routing.
 			e.gui.orderQueue.push_back(std::make_shared<PlayerQuitsGameOrder>(0));
-			assert(e.gui.getOrder()->getOrderType() == ORDER_NULL);
-			assert(e.gui.orderQueue.empty());
-			assert(globalContainer->replayVisibleTeams == 0xffffffffu &&
-				   !globalContainer->replayShowFog);
+			REQUIRE(e.gui.getOrder()->getOrderType() == ORDER_NULL);
+			REQUIRE(e.gui.orderQueue.empty());
+			REQUIRE((globalContainer->replayVisibleTeams == 0xffffffffu &&
+				   !globalContainer->replayShowFog));
 		}
 		e.gatherAndAdvanceOrders(true);
 		for (auto ai : counters)
-			assert(ai->calls == 1);
+			REQUIRE(ai->calls == 1);
 		// Repeating a not-ready tick must not ask any AI twice.
 		e.gatherAndAdvanceOrders(false);
 		for (auto ai : counters)
-			assert(ai->calls == 1);
+			REQUIRE(ai->calls == 1);
 		std::cout << "PASS order routing: mode " << control
 				  << ", every AI once, no duplicate polls\n";
 		// Restore real AIs before serializing; counting AIs have no wire state.
@@ -1784,7 +1788,7 @@ struct CustomGameSetupHarness
 									("glob2-live-test-" + std::to_string(getpid()) + ".map"))
 									   .string();
 			const std::string transient = glob2IsGzipPath(resolvedMap) ? glob2GzipWritePath(transientBase) : transientBase;
-			std::filesystem::copy_file(resolvedMap, transient,
+			std::filesystem::copy_file(glob2test::sourceRoot() / resolvedMap, transient,
 									   std::filesystem::copy_options::overwrite_existing);
 			Engine e;
 			auto header = Engine::loadMapHeader(transient);
@@ -1796,15 +1800,15 @@ struct CustomGameSetupHarness
 					setup.setController(i, CustomGameSetup::Closed);
 			GameHeader players;
 			setup.writeHeader(players, "test");
-			assert(e.initGame(header, players, true, false, false, transient) ==
+			REQUIRE(e.initGame(header, players, true, false, false, transient) ==
 				   Engine::EE_NO_ERROR);
 			std::filesystem::remove(transient);
 			e.run();
 		}
 		{
 			Engine e;
-			assert(e.loadReplay("replays/last_game.replay") == Engine::EE_NO_ERROR);
-			assert(globalContainer->replaying && !globalContainer->liveSpectating);
+			REQUIRE(e.loadReplay("replays/last_game.replay") == Engine::EE_NO_ERROR);
+			REQUIRE((globalContainer->replaying && !globalContainer->liveSpectating));
 			globalContainer->automaticEndingSteps = 250;
 			e.run();
 			e.clearReplayState();
@@ -1816,9 +1820,9 @@ struct CustomGameSetupHarness
 	static void reload(const std::string &save, bool watching, int controllers)
 	{
 		Engine e;
-		assert(e.initCustom(save) == Engine::EE_NO_ERROR);
-		assert(globalContainer->liveSpectating == watching);
-		assert(e.gui.game.gameHeader.getNumberOfPlayers() == controllers);
+		REQUIRE(e.initCustom(save) == Engine::EE_NO_ERROR);
+		REQUIRE(globalContainer->liveSpectating == watching);
+		REQUIRE(e.gui.game.gameHeader.getNumberOfPlayers() == controllers);
 		std::cout << "PASS save/load: " << (watching ? "AI-only" : "human/shared") << "\n";
 	}
 };
@@ -1833,96 +1837,42 @@ static void checkPreviewRestart()
     while (previewer.preview(0).state == LandscapePreviewer::State::Pending &&
            SDL_GetTicks64() - started < 10000)
         SDL_Delay(1);
-    assert(previewer.preview(0).state == LandscapePreviewer::State::Generating);
+    REQUIRE(previewer.preview(0).state == LandscapePreviewer::State::Generating);
     previewer.restart({});
-    assert(!previewer.busy() && previewer.finished() == 0);
+    REQUIRE((!previewer.busy() && previewer.finished() == 0));
     // Destruction joins the in-flight worker after restart has removed its slot.
 }
 
-int main(int argc, char **argv)
+// The modes the old command line selected, one case each. Display cases open the
+// 640x480 window (1000x700 for the large layouts) the wrapper commands used to ask for.
+static glob2test::GlobalsOptions setupOptions(bool display, bool large = false, const char* language = nullptr)
 {
-	GlobalContainer globals("glob2-custom-setup-tests");
-	globalContainer = &globals;
-	globals.runNoX = argc < 2 || std::string(argv[1]) == "snapshot-load" ||
-				 std::string(argv[1]) == "preview-restart" ||
-					 std::string(argv[1]) == "preview-queue";
-	globals.settings.rememberUnit = false;
-	globals.settings.screenWidth = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 1000 : 640;
-	globals.settings.screenHeight = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 700 : 480;
-	globals.settings.screenFlags = GraphicContext::USEGPU;
-	globals.settings.mute = true;
-	if (argc > 3 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
-		globals.settings.language = argv[3];
-	globals.load();
-	if (argc > 1 && std::string(argv[1]) == "snapshot-load")
-	{
-		Game map(nullptr);
-		GAGCore::BinaryInputStream source(
-			Toolkit::getFileManager()->openInflatingInputStreamBackend("maps/balanced.map.gz"));
-		assert(map.load(&source));
-		CustomGameSetup setup;
-		setup.setCapacity(map.mapHeader.getNumberOfTeams());
-		GameHeader players;
-		setup.writeHeader(players, "snapshot test");
-		map.setGameHeader(players);
-		auto *backend = new GAGCore::MemoryStreamBackend();
-		GAGCore::BinaryOutputStream serialized(backend);
-		map.save(&serialized, true, "Snapshot test");
-		auto bytes = std::make_shared<std::string>(backend->takeContents());
-		Engine engine;
-		assert(engine.initCustomFromBytesTask(map.mapHeader, players, 0, -1, bytes).run());
-		std::cout << "PASS generated map snapshot launches from memory\n";
-		return 0;
-	}
-	if (argc > 1 && std::string(argv[1]) == "preview-queue")
-	{
-		CustomGameSetupHarness::previewPriority();
-		checkPreviewRestart();
-		return 0;
-	}
-	if (argc > 2 && (std::string(argv[2]) == "landscape-performance" ||
-					 std::string(argv[2]) == "landscape-responsive"))
-	{
-		CustomGameSetupHarness::landscapePerformance(argv[1], std::string(argv[2]) ==
-																  "landscape-responsive");
-		return 0;
-	}
-	if (argc > 1 && std::string(argv[1]) == "preview-restart")
-	{
-		checkPreviewRestart();
-		std::cout << "PASS preview restart joins superseded workers safely\n";
-		return 0;
-	}
-	if (argc > 1 && (std::string(argv[1]) == "preferences-write" || std::string(argv[1]) == "preferences-read"))
-	{
-		CustomGameSetupHarness::preferencesScreen(std::string(argv[1]) == "preferences-write");
-		return 0;
-	}
+	glob2test::GlobalsOptions options{.display = display, .loadStrings = true, .width = large ? 1000 : 640, .height = large ? 700 : 480,
+	                                  .screenFlags = GraphicContext::USEGPU, .profileName = "glob2-custom-setup-tests"};
+	if (language)
+		options.beforeLoad = [language](GlobalContainer& globals) { globals.settings.language = language; };
+	return options;
+}
+
+// Preferences model, options, landscape order and preview priority precede every mode
+// that drives the setup screens.
+static void commonChecks()
+{
 	Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
 	CustomGameSetupHarness::preferencesModel();
 	CustomGameSetupHarness::preferencesOptions();
 	CustomGameSetupHarness::landscapeRandomOrder();
 	CustomGameSetupHarness::previewPriority();
-	assert(SDLNet_Init() == 0);
-	if (argc > 2 && std::string(argv[2]) == "ui")
+	REQUIRE(SDLNet_Init() == 0);
+}
+
+TEST_SUITE("CustomGameSetup")
+{
+	TEST_CASE("preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [writes-preferences]")
 	{
-		for (int control : {int(CustomGameSetup::Computer), int(CustomGameSetup::Human),
-							int(CustomGameSetup::Shared)})
-			CustomGameSetupHarness::ui(argv[1], control);
-		return 0;
-	}
-	if (argc > 2 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
-	{
-		assert(Toolkit::getStringTable()->getString("[language-code]") == globals.settings.language);
-		CustomGameSetupHarness::strategyVisual(argv[1]);
-		return 0;
-	}
-	if (argc > 1)
-	{
-		CustomGameSetupHarness::visual(argv[1], argc > 2 && std::string(argv[2]) == "ai-profile");
-		return 0;
-	}
-	assert(SDLNet_Init() == 0);
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		commonChecks();
+	REQUIRE(SDLNet_Init() == 0);
 	checkPreviewRestart();
 	const auto playableMethods = GeneratorRegistry::builtins().methods(false);
 	for (int method : playableMethods)
@@ -1937,30 +1887,30 @@ int main(int argc, char **argv)
 			request.seed = 0x5eed0000u + unsigned(method * 16 + retry);
 			generated = generator.generateMap(game, request) && game.teamsCount() == 4;
 		}
-		assert(generated);
+		REQUIRE(generated);
 	}
 	std::cout << "PASS all " << playableMethods.size() << " playable generator landscapes\n";
 
 	CustomGameSetupHarness::model();
 	const auto &selection = AINames::selectionOrder();
-	assert(selection.back() == AI::NONE);
-	assert((std::set<int>(selection.begin(), selection.end()) ==
+	REQUIRE(selection.back() == AI::NONE);
+	REQUIRE((std::set<int>(selection.begin(), selection.end()) ==
 		std::set<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX,
 			AI::CABINO, AI::NICOWAR, AI::MAXIMA, AI::NONE}));
-	assert(selection.size() == 9);
+	REQUIRE(selection.size() == 9);
 	for (size_t i = 1; i + 1 < selection.size(); ++i)
-		assert(AINames::getAIStrength(selection[i-1]) <= AINames::getAIStrength(selection[i]));
+		REQUIRE(AINames::getAIStrength(selection[i-1]) <= AINames::getAIStrength(selection[i]));
 	for (int id : selection)
 		if (id != AI::NONE)
-			assert(AINames::getAISelectorText(id).find("(" +
+			REQUIRE(AINames::getAISelectorText(id).find("(" +
 				std::to_string(AINames::getAIStrength(id)) + ")") != std::string::npos);
 	for (int id : AINames::selectionOrder())
-		assert(AINames::selectionOrder()[AINames::selectionIndex(id)] == id);
+		REQUIRE(AINames::selectionOrder()[AINames::selectionIndex(id)] == id);
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
-	assert(AINames::parseAIName("Econo") == AI::ECONO);
-	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
-	assert(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);
-	assert(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths and weaknesses:") != std::string::npos);
+	REQUIRE(AINames::parseAIName("Econo") == AI::ECONO);
+	REQUIRE(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy (" + std::to_string(AINames::getAIStrength(AI::ECONO)) + ") - No warriors");
+	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);
+	REQUIRE(AINames::getAIProfile(AI::CORTEX).find("\n\nStrengths and weaknesses:") != std::string::npos);
 	const auto dir =
 		std::filesystem::temp_directory_path() / ("glob2-setup-test-" + std::to_string(getpid()));
 	std::filesystem::create_directory(dir);
@@ -1991,7 +1941,7 @@ int main(int argc, char **argv)
 			if (generator.generateMap(*candidate, d) && candidate->teamsCount() == 4)
 				generated = std::move(candidate);
 		}
-		assert(generated);
+		REQUIRE(generated);
 		Game &g = *generated;
 		CustomGameSetup setup;
 		GameHeader header;
@@ -2004,19 +1954,19 @@ int main(int argc, char **argv)
 		}
 		Game loaded(nullptr);
 		GAGCore::BinaryInputStream in(Toolkit::getFileManager()->openInputStreamBackend(map));
-		assert(loaded.load(&in));
-		assert(g.map.getW() == loaded.map.getW());
-		assert(g.map.getH() == loaded.map.getH());
+		REQUIRE(loaded.load(&in));
+		REQUIRE(g.map.getW() == loaded.map.getW());
+		REQUIRE(g.map.getH() == loaded.map.getH());
 		for (int y = 0; y < g.map.getH(); ++y)
 			for (int x = 0; x < g.map.getW(); ++x)
 			{
-				assert(g.map.getTerrain(x, y) == loaded.map.getTerrain(x, y));
-				assert(g.map.getResource(x, y).type == loaded.map.getResource(x, y).type);
+				REQUIRE(g.map.getTerrain(x, y) == loaded.map.getTerrain(x, y));
+				REQUIRE(g.map.getResource(x, y).type == loaded.map.getResource(x, y).type);
 			}
 		for (int i = 0; i < 4; ++i)
 		{
-			assert(g.teams[i]->startPosX == loaded.teams[i]->startPosX);
-			assert(g.teams[i]->startPosY == loaded.teams[i]->startPosY);
+			REQUIRE(g.teams[i]->startPosX == loaded.teams[i]->startPosX);
+			REQUIRE(g.teams[i]->startPosY == loaded.teams[i]->startPosY);
 		}
 		std::cout << "PASS generated snapshot round trip: all terrain, resources, "
 					 "and starts identical\n";
@@ -2042,7 +1992,7 @@ int main(int argc, char **argv)
 		request.wDec = request.hDec = 8;
 		request.nbTeams = 4;
 		MapGenerator generator;
-		assert(generator.generateMap(game, request));
+		REQUIRE(generator.generateMap(game, request));
 		const auto fractalMap = (dir / (std::string(id) + ".map")).string();
 		{
 			GAGCore::BinaryOutputStream out(
@@ -2055,4 +2005,100 @@ int main(int argc, char **argv)
 
 	std::filesystem::remove_all(dir);
 	std::cout << "ALL CUSTOM SETUP TESTS PASSED\n";
+	}
+	TEST_CASE("generated map snapshot launches from memory")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		Game map(nullptr);
+		GAGCore::BinaryInputStream source(
+			Toolkit::getFileManager()->openInflatingInputStreamBackend("maps/balanced.map.gz"));
+		REQUIRE(map.load(&source));
+		CustomGameSetup setup;
+		setup.setCapacity(map.mapHeader.getNumberOfTeams());
+		GameHeader players;
+		setup.writeHeader(players, "snapshot test");
+		map.setGameHeader(players);
+		auto *backend = new GAGCore::MemoryStreamBackend();
+		GAGCore::BinaryOutputStream serialized(backend);
+		map.save(&serialized, true, "Snapshot test");
+		auto bytes = std::make_shared<std::string>(backend->takeContents());
+		Engine engine;
+		REQUIRE(engine.initCustomFromBytesTask(map.mapHeader, players, 0, -1, bytes).run());
+		std::cout << "PASS generated map snapshot launches from memory\n";
+	}
+	TEST_CASE("preview queue priority and restart")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		CustomGameSetupHarness::previewPriority();
+		checkPreviewRestart();
+		std::cout << "PASS preview restart joins superseded workers safely\n";
+	}
+	TEST_CASE("landscape preview performance [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true));
+		CustomGameSetupHarness::landscapePerformance(glob2test::artifactDirFromWorkingDirectory(), false);
+	}
+	TEST_CASE("landscape preview stays responsive [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true));
+		CustomGameSetupHarness::landscapePerformance(glob2test::artifactDirFromWorkingDirectory(), true);
+	}
+	TEST_CASE("custom game screens; captures and translated keys [display:1024x768][artifacts][writes-preferences]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true));
+		commonChecks();
+		std::string output;
+		{
+			// The old CI step failed on any "no such key" line in the log; keep that check here.
+			glob2test::CapturedStdout out;
+			glob2test::CapturedStderr err;
+			CustomGameSetupHarness::visual(glob2test::artifactDirFromWorkingDirectory(), false);
+			output = out.text() + err.text();
+		}
+		std::cout << output;
+		REQUIRE_MESSAGE(output.find("no such key") == std::string::npos, "a screen asked for a missing translation key");
+	}
+	TEST_CASE("custom game screens at the large layout [display:1024x768][artifacts][writes-preferences]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true, true));
+		commonChecks();
+		CustomGameSetupHarness::visual(glob2test::artifactDirFromWorkingDirectory(), false);
+	}
+	TEST_CASE("AI profile captures [display][artifacts][writes-preferences]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true));
+		commonChecks();
+		CustomGameSetupHarness::visual(glob2test::artifactDirFromWorkingDirectory(), true);
+	}
+	TEST_CASE("player control widgets [display][artifacts][writes-preferences]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true));
+		commonChecks();
+		for (int control : {int(CustomGameSetup::Computer), int(CustomGameSetup::Human), int(CustomGameSetup::Shared)})
+			CustomGameSetupHarness::ui(glob2test::artifactDirFromWorkingDirectory(), control);
+	}
+	TEST_CASE("AI strategy profiles in English [display][artifacts][writes-preferences]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true, false, "en"));
+		commonChecks();
+		REQUIRE(Toolkit::getStringTable()->getString("[language-code]") == globalContainer->settings.language);
+		CustomGameSetupHarness::strategyVisual(glob2test::artifactDirFromWorkingDirectory());
+	}
+	TEST_CASE("AI strategy profiles in English at the large layout [display:1024x768][artifacts][writes-preferences]")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(true, true, "en"));
+		commonChecks();
+		CustomGameSetupHarness::strategyVisual(glob2test::artifactDirFromWorkingDirectory());
+	}
+	TEST_CASE("preferences screen writes then reads back [display][writes-preferences]")
+	{
+		{
+			glob2test::HeadlessGlobals globals(setupOptions(true));
+			CustomGameSetupHarness::preferencesScreen(true);
+		}
+		{
+			glob2test::HeadlessGlobals globals(setupOptions(true));
+			CustomGameSetupHarness::preferencesScreen(false);
+		}
+	}
 }

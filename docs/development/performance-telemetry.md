@@ -96,9 +96,9 @@ Use a named `PerformanceTelemetry::Scope` and `stop()` where only part of a func
 to the scope. Keep timers outside entity/cell inner loops. Background threads must publish
 explicit aggregates through existing synchronization; the implicit collector is thread-local.
 
-Run `scons -j8 release=1 server=0 unit-tests team-stats-save-test savegame-safety-test`
-and `python3 test/run_tests.py --binary unit --filter 'PerformanceTelemetry/*'`. Run the
-save/statistics harnesses through `test/run-savegame-safety-tests.py` as documented in the test README. The dedicated collector
+Run `scons -j8 release=1 server=0 tests`, then
+`python3 test/run_tests.py --binary unit --filter 'PerformanceTelemetry/*'` and
+`python3 test/run_tests.py --filter 'TeamStatsSave/*' --filter 'SavegameSafety/*'`. The dedicated collector
 harness uses an injected clock; the save harness checks background completion/failure counts.
 
 Validate performance against the preceding AI-only executable using identical fixtures and

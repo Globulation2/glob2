@@ -98,7 +98,7 @@ band widths/counts, stair angle/count, river water corners and crop budget satur
 ## Reproduction
 
 ```sh
-scons release=1 server=0 -j6 map-generator-defaults-test map-generator-golden-test build/src/glob2
+scons release=1 server=0 -j6 engine-tests map-generator-golden-test build/src/glob2
 build/src/glob2 --generate-map hills --seed 7 --width 256 --height 256 --teams 4 --output artifacts/hills/seed-7.map --preview artifacts/hills/seed-7.png --json artifacts/hills/seed-7.json
 python3 tools/map_telemetry.py collect --generators hills --seed-start 20001 --count 8 --set width=256 --set height=256 --set teams=4 --jobs 2 --out artifacts/hills/held-out
 python3 tools/map_telemetry.py summarize artifacts/hills/held-out

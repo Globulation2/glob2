@@ -218,8 +218,8 @@ press and release land on the same element.
   focusable, and a valid focus and scroll state after resize. It writes one
   image per screen and viewport into its artifact directory.
   `GLOB2_UI_ONLY=<fixture>` restricts a run.
-- The `GameGUITouch`, `Settings`, `EngineSession` and `GameSpeed` suites,
-  `custom-setup-test`, `map-preview-test`, `menu-colony-harness` and
+- The `GameGUITouch`, `Settings`, `EngineSession`, `GameSpeed`,
+  `CustomGameSetup` and `MapPreview` suites, `menu-colony-harness` and
   `mobile-gallery` drive the ported screens through their keys and semantic
   entry points; run them after changing a shared builder or the host.
 - `GLOB2_UI_DEBUG=1` draws element bounds and keys over any screen.

@@ -7,6 +7,7 @@
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GenerationValidation.h"
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "LegacyGenerationDescriptor.h"
@@ -25,7 +26,6 @@
 #include <SDL_image.h>
 #include <Toolkit.h>
 #include <algorithm>
-#include <cassert>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
@@ -34,7 +34,6 @@
 #include <tuple>
 #include <utility>
 
-GlobalContainer *globalContainer = nullptr;
 using D = GenerationRequest;
 
 class MapGeneratorDefaultsTest
@@ -43,11 +42,11 @@ class MapGeneratorDefaultsTest
 	static void select(NewMapScreen &s, int method) { s.chooseMethod(method); }
 	static void sameControls(const D &a, const D &b)
 	{
-		assert(a.method == b.method);
+		REQUIRE(a.method == b.method);
 		for (const auto &c : D::controls(a.method))
-			assert(c.get(a) == c.get(b));
+			REQUIRE(c.get(a) == c.get(b));
 		for (const auto &c : D::sharedControls())
-			assert(c.get(a) == c.get(b));
+			REQUIRE(c.get(a) == c.get(b));
 	}
 	// Edits the control the form shows under `label`, the way the screen's own choice or
 	// toggle callback would.
@@ -66,13 +65,13 @@ class MapGeneratorDefaultsTest
 			if (std::strcmp(c->label, label) != 0)
 				continue;
 			if (c->isToggle())
-				assert(value == 0 || value == 1);
+				REQUIRE((value == 0 || value == 1));
 			c->set(s.descriptor, value);
 			s.invalidatePreview();
-			assert(c->get(s.descriptor) == value);
+			REQUIRE(c->get(s.descriptor) == value);
 			return;
 		}
-		assert(false);
+		REQUIRE(false);
 	}
 	static void generationContracts()
 	{
@@ -93,7 +92,7 @@ class MapGeneratorDefaultsTest
 			auto surrounding = syncRandEngine();
 			Game first(nullptr);
 			auto a = service.generate(first, request);
-			assert(syncRandEngine() == surrounding);
+			REQUIRE(syncRandEngine() == surrounding);
 			auto hash = mapFingerprint(first);
 			auto checksum = first.checkSum(nullptr, nullptr, nullptr, true);
 			D intervening;
@@ -107,30 +106,30 @@ class MapGeneratorDefaultsTest
 				std::fprintf(stderr,
 							 "Not repeatable after an intervening map: generator %d (%s, %s)\n",
 							 method, a.diagnostic().c_str(), b.diagnostic().c_str());
-			assert(bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat));
-			assert(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
-			assert(request.seed == 22001 && request.options == DWithDefaults(method).options);
+			REQUIRE((bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat)));
+			REQUIRE(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
+			REQUIRE((request.seed == 22001 && request.options == DWithDefaults(method).options));
 			if (method == GeneratorRegistry::builtins().idOf("lava-shield"))
 			{
 				if (!a)
 					std::cerr << a.diagnostic() << std::endl;
-				assert(a); // A repeatable failure is not a valid default map.
+				REQUIRE(a); // A repeatable failure is not a valid default map.
 				GenerationContext probe(request);
 				const auto &definition = GeneratorRegistry::builtins().at(method);
-				assert(definition.validateWorld(first, probe).empty());
+				REQUIRE(definition.validateWorld(first, probe).empty());
 				// Removing all rock must be caught by the generator's actual final-world
 				// validator, not merely by a golden hash. Corrupt the unused repeated copy.
 				for (int y = 0; y < repeat.map.getH(); ++y)
 					for (int x = 0; x < repeat.map.getW(); ++x)
 						if (repeat.map.getResource(x, y).type == STONE)
 							repeat.map.setNoResource(x, y, 1);
-				assert(!definition.validateWorld(repeat, probe).empty());
+				REQUIRE(!definition.validateWorld(repeat, probe).empty());
 			}
 			if (a)
 			{
 				auto rejected = service.generate(first, request);
-				assert(rejected.error == GenerationError::NonEmptyTarget);
-				assert(mapFingerprint(first) == hash);
+				REQUIRE(rejected.error == GenerationError::NonEmptyTarget);
+				REQUIRE(mapFingerprint(first) == hash);
 			}
 			if (method != D::eUNIFORM)
 				for (auto dimensions : {std::pair{9, 7}, std::pair{7, 9}})
@@ -145,19 +144,19 @@ class MapGeneratorDefaultsTest
 					if (const auto &d = GeneratorRegistry::builtins().at(method);
 						d.validateRequest && !d.validateRequest(rectangular).empty())
 					{
-						assert(service.generate(world, rectangular).error ==
+						REQUIRE(service.generate(world, rectangular).error ==
 							   GenerationError::InvalidRequest);
 						continue;
 					}
-					assert(service.generate(world, rectangular));
-					assert(world.map.getW() == (1 << dimensions.first));
-					assert(world.map.getH() == (1 << dimensions.second));
+					REQUIRE(service.generate(world, rectangular));
+					REQUIRE(world.map.getW() == (1 << dimensions.first));
+					REQUIRE(world.map.getH() == (1 << dimensions.second));
 					for (int team = 0; team < rectangular.nbTeams; ++team)
 					{
-						assert(world.teams[team]->startPosX >= 0 &&
-							   world.teams[team]->startPosX < world.map.getW());
-						assert(world.teams[team]->startPosY >= 0 &&
-							   world.teams[team]->startPosY < world.map.getH());
+						REQUIRE((world.teams[team]->startPosX >= 0 &&
+							   world.teams[team]->startPosX < world.map.getW()));
+						REQUIRE((world.teams[team]->startPosY >= 0 &&
+							   world.teams[team]->startPosY < world.map.getH()));
 					}
 				}
 			for (const auto &c : D::controls(method))
@@ -166,7 +165,7 @@ class MapGeneratorDefaultsTest
 				invalid.options[c.id] = c.maximum + c.step;
 				Game fresh(nullptr);
 				auto failure = service.generate(fresh, invalid);
-				assert(failure.error == GenerationError::InvalidRequest && fresh.teamsCount() == 0);
+				REQUIRE((failure.error == GenerationError::InvalidRequest && fresh.teamsCount() == 0));
 			}
 		}
 		// Contested commons spreads its colonies with the whole-region search, which used to run
@@ -183,7 +182,7 @@ class MapGeneratorDefaultsTest
 				const auto outcome = service.generate(world, crowded);
 				if (!outcome)
 					std::cerr << outcome.diagnostic() << std::endl;
-				assert(outcome && world.teamsCount() == teams);
+				REQUIRE((outcome && world.teamsCount() == teams));
 			}
 		// These combined controls exhausted real coastal towns/approaches in held-out
 		// seeds. Reject them before world mutation, while retaining the full control
@@ -195,18 +194,18 @@ class MapGeneratorDefaultsTest
 			lava.wDec = lava.hDec = dims;
 			lava.nbTeams = dims == 7 ? 2 : 8;
 			const auto &definition = GeneratorRegistry::builtins().at(lava.method);
-			assert(validateGenerationRequest(lava, definition).empty());
+			REQUIRE(validateGenerationRequest(lava, definition).empty());
 			for (const char *key : {"tongue-count", "rim-width"})
 			{
 				D crowded = lava;
 				crowded.options[key] = std::string(key) == "tongue-count" ? 9 : 12;
 				Game untouched(nullptr);
 				const auto result = service.generate(untouched, crowded);
-				assert(result.error == GenerationError::InvalidRequest &&
-					   untouched.teamsCount() == 0);
+				REQUIRE((result.error == GenerationError::InvalidRequest &&
+					   untouched.teamsCount() == 0));
 				crowded.wDec = crowded.hDec = 8;
 				crowded.nbTeams = 4;
-				assert(validateGenerationRequest(crowded, definition).empty());
+				REQUIRE(validateGenerationRequest(crowded, definition).empty());
 			}
 		}
 		// Scoped RNG restoration must also hold when placement fails.
@@ -215,10 +214,10 @@ class MapGeneratorDefaultsTest
 		D invalid;
 		invalid.method = 99999;
 		Game fresh(nullptr);
-		assert(service.generate(fresh, invalid).error == GenerationError::InvalidRequest);
+		REQUIRE(service.generate(fresh, invalid).error == GenerationError::InvalidRequest);
 		invalid = DWithDefaults(D::eRIVER);
 		invalid.wDec = 31;
-		assert(service.generate(fresh, invalid).error == GenerationError::InvalidRequest);
+		REQUIRE(service.generate(fresh, invalid).error == GenerationError::InvalidRequest);
 		invalid = DWithDefaults(D::eSWAMP);
 		// An all-water swamp can still fit its colonies on a big map, so pin this failure to 128x128
 		// whatever the default size is.
@@ -226,9 +225,9 @@ class MapGeneratorDefaultsTest
 		invalid.options["water"] = 100;
 		invalid.options["grass"] = 0;
 		auto failed = service.generate(fresh, invalid);
-		assert(!failed && failed.error == GenerationError::PlacementFailed &&
-			   !failed.stage.empty());
-		assert(syncRandEngine() == savedFailureRng);
+		REQUIRE((!failed && failed.error == GenerationError::PlacementFailed &&
+			   !failed.stage.empty()));
+		REQUIRE(syncRandEngine() == savedFailureRng);
 		// Legacy sentinel conversion belongs exclusively to the adapter.
 		for (auto pair : {std::pair{D::eCRATERLAKES, 30}, std::pair{D::eCONCRETEISLANDS, 6},
 						  std::pair{D::eISLES, 4}})
@@ -240,7 +239,7 @@ class MapGeneratorDefaultsTest
 			const char *key = pair.first == D::eCRATERLAKES ? "lake-size"
 							  : pair.first == D::eISLES     ? "bridge-width"
 															: "channel-width";
-			assert(converted.option(key) == pair.second);
+			REQUIRE(converted.option(key) == pair.second);
 		}
 		// New registrations need no ordinal dispatch, UI edits or new descriptor fields.
 		std::vector<GeneratorDefinition> definitions;
@@ -269,8 +268,8 @@ class MapGeneratorDefaultsTest
 			 [](Game &game, GenerationContext &context)
 			 {
 				 const int elevation = context.request.option("test-elevation");
-				 assert(elevation == 8);
-				 assert(context.request.option("test-switch") == 1);
+				 REQUIRE(elevation == 8);
+				 REQUIRE(context.request.option("test-switch") == 1);
 				 game.map.makeHomogenMap(GRASS);
 				 for (int team = 0; team < context.request.nbTeams; ++team)
 				 {
@@ -305,23 +304,23 @@ class MapGeneratorDefaultsTest
 				return false;
 			};
 			const auto on = GeneratorControl::toggle("switch", "Lake connects to fjords", true);
-			assert(on.isToggle() && on.defaultValue == 1 &&
-				   on.values() == std::vector<int>({0, 1}));
-			assert(!rejected(on));
+			REQUIRE((on.isToggle() && on.defaultValue == 1 &&
+				   on.values() == std::vector<int>({0, 1})));
+			REQUIRE(!rejected(on));
 			const auto amount = GeneratorControl::percentage("amount", "Fruit");
-			assert(!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount));
+			REQUIRE((!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount)));
 			// A choice stores the index of its named option and is shown by name.
 			const auto shape =
 				GeneratorControl::choice("shape", "Cell shape", {"Squares", "Hexagons"}, 1);
-			assert(shape.isChoice() && !shape.isToggle() && shape.defaultValue == 1 &&
+			REQUIRE((shape.isChoice() && !shape.isToggle() && shape.defaultValue == 1 &&
 				   shape.values() == std::vector<int>({0, 1}) &&
 				   std::string(shape.valueLabel(1)) == "Hexagons" && !shape.valueLabel(2) &&
-				   shape.normalize(5) == 1 && !rejected(shape));
+				   shape.normalize(5) == 1 && !rejected(shape)));
 			auto unnamed = shape;
 			unnamed.valueLabels.pop_back();
 			auto blank = shape;
 			blank.valueLabels[0] = "";
-			assert(rejected(unnamed) && rejected(blank) && !on.isChoice() && !on.valueLabel(0));
+			REQUIRE((rejected(unnamed) && rejected(blank) && !on.isChoice() && !on.valueLabel(0)));
 			std::vector<GeneratorControl> broken(6, on);
 			broken[0].maximum = 2;
 			broken[1].minimum = broken[1].defaultValue = 1;
@@ -330,30 +329,30 @@ class MapGeneratorDefaultsTest
 			broken[4].allowedValues = {0, 1};
 			broken[5].defaultValue = 2;
 			for (const auto &control : broken)
-				assert(rejected(control));
+				REQUIRE(rejected(control));
 		}
 		GeneratorRegistry registry(std::move(definitions));
 		NewMapScreen screen(registry);
 		select(screen, 101);
-		assert(screen.descriptor.option("test-elevation") == 6);
-		assert(screen.descriptor.option("test-switch") == 0);
+		REQUIRE(screen.descriptor.option("test-elevation") == 6);
+		REQUIRE(screen.descriptor.option("test-switch") == 0);
 		edit(screen, "Island size", 16);
 		edit(screen, "Channel width", 5);
 		edit(screen, "Lake connects to fjords", 1);
-		assert(screen.descriptor.option("test-shape") == 0);
+		REQUIRE(screen.descriptor.option("test-shape") == 0);
 		edit(screen, "Cell shape", 1);
 		select(screen, D::eRIVER);
 		select(screen, 101);
-		assert(screen.descriptor.option("test-cell") == 16 &&
+		REQUIRE((screen.descriptor.option("test-cell") == 16 &&
 			   screen.descriptor.option("test-gap") == 5 &&
 			   screen.descriptor.option("test-shape") == 1 &&
-			   screen.descriptor.option("test-switch") == 1);
+			   screen.descriptor.option("test-switch") == 1));
 		edit(screen, "Smoothing", 8);
-		assert(registry.selectionIndex(101) == int(GeneratorRegistry::builtins().methods().size()));
+		REQUIRE(registry.selectionIndex(101) == int(GeneratorRegistry::builtins().methods().size()));
 		const auto playable = registry.methods(false);
-		assert(std::find(playable.begin(), playable.end(), 101) != playable.end());
+		REQUIRE(std::find(playable.begin(), playable.end(), 101) != playable.end());
 		Game generated(nullptr);
-		assert(GenerationService(registry).generate(generated, screen.descriptor));
+		REQUIRE(GenerationService(registry).generate(generated, screen.descriptor));
 		// Candidate sampling picks the best-scoring roll and hands back its seed, which the
 		// editor then regenerates. That only works because generation is deterministic and
 		// because the score is a pure function of the finished map.
@@ -369,9 +368,9 @@ class MapGeneratorDefaultsTest
 			Game first(nullptr), second(nullptr);
 			const auto a = service.generate(first, winner);
 			const auto b = service.generate(second, winner);
-			assert(a && b && a.quality.measured);
-			assert(a.quality.score == b.quality.score);
-			assert(service.bestSeed(sampled, root) == chosen);
+			REQUIRE((a && b && a.quality.measured));
+			REQUIRE(a.quality.score == b.quality.score);
+			REQUIRE(service.bestSeed(sampled, root) == chosen);
 			// It is one of the candidates, and none of the others scores higher.
 			bool sawChosen = false;
 			for (int attempt = 0; attempt < GenerationService::kSampledCandidates; ++attempt)
@@ -382,9 +381,9 @@ class MapGeneratorDefaultsTest
 				sawChosen = sawChosen || roll.seed == chosen;
 				Game world(nullptr);
 				const auto rolled = service.generate(world, roll);
-				assert(!rolled || rolled.quality.score <= a.quality.score);
+				REQUIRE((!rolled || rolled.quality.score <= a.quality.score));
 			}
-			assert(sawChosen);
+			REQUIRE(sawChosen);
 		}
 		puts("PASS registration extension, explicit seeds, interleaved repeatability, RNG "
 			 "isolation, errors and legacy sentinels");
@@ -409,9 +408,9 @@ class MapGeneratorDefaultsTest
 			if (!result)
 				std::cerr << "Gauntlet " << (1 << dims) << "x" << (1 << dims) << ", "
 						  << teams << " colonies: " << result.diagnostic() << std::endl;
-			assert(result && world.teamsCount() == teams);
+			REQUIRE((result && world.teamsCount() == teams));
 			GenerationContext probe(sized);
-			assert(definition.validateWorld(world, probe).empty());
+			REQUIRE(definition.validateWorld(world, probe).empty());
 		}
 		for (auto [width, height, teams] : {std::tuple{7, 7, 4}, std::tuple{9, 7, 4},
 										   std::tuple{8, 8, 1}, std::tuple{9, 9, 13}})
@@ -421,18 +420,18 @@ class MapGeneratorDefaultsTest
 			invalid.hDec = height;
 			invalid.nbTeams = teams;
 			Game untouched(nullptr);
-			assert(!validateGenerationRequest(invalid, definition).empty());
-			assert(service.generate(untouched, invalid).error == GenerationError::InvalidRequest);
-			assert(untouched.teamsCount() == 0);
+			REQUIRE(!validateGenerationRequest(invalid, definition).empty());
+			REQUIRE(service.generate(untouched, invalid).error == GenerationError::InvalidRequest);
+			REQUIRE(untouched.teamsCount() == 0);
 		}
 		// Test the final-world validator, not just generator success or a golden hash.
 		for (int corruption = 0; corruption < 3; ++corruption)
 		{
 			Game world(nullptr);
 			const auto result = service.generate(world, request, true);
-			assert(result);
+			REQUIRE(result);
 			GenerationContext probe(request);
-			assert(definition.validateWorld(world, probe).empty());
+			REQUIRE(definition.validateWorld(world, probe).empty());
 			int changed = 0;
 			for (int y = 0; y < world.map.getH(); ++y)
 				for (int x = 0; x < world.map.getW(); ++x)
@@ -455,7 +454,7 @@ class MapGeneratorDefaultsTest
 				for (const auto &record : result.telemetry.records())
 					if (record.key == "gauntlet.arena.outer-radius")
 						outer = std::get<double>(record.value);
-				assert(outer > 0);
+				REQUIRE(outer > 0);
 				for (int y = 0; y < world.map.getH(); ++y)
 					for (int x = 0; x < world.map.getW(); ++x)
 						if (std::abs(std::hypot(x - world.map.getW() / 2.,
@@ -466,13 +465,13 @@ class MapGeneratorDefaultsTest
 							++changed;
 						}
 			}
-			assert(changed > 0);
+			REQUIRE(changed > 0);
 			const auto error = definition.validateWorld(world, probe);
-			assert(!error.empty());
+			REQUIRE(!error.empty());
 			if (corruption == 1)
-				assert(error.find("orchard") != std::string::npos);
+				REQUIRE(error.find("orchard") != std::string::npos);
 			if (corruption == 2)
-				assert(error.find("entrance") != std::string::npos);
+				REQUIRE(error.find("entrance") != std::string::npos);
 		}
 	}
 	// scatterResources used to group algae candidates by land component, and land components
@@ -502,10 +501,10 @@ class MapGeneratorDefaultsTest
 			{
 				if (game.map.getResource(x, y).type != ALGA)
 					continue;
-				assert(game.map.isWater(x, y));
+				REQUIRE(game.map.isWater(x, y));
 				(x >= 24 && x < 40 && y >= 24 && y < 40 ? lake : sea) += 1;
 			}
-		assert(sea > 0 && lake > 0);
+		REQUIRE((sea > 0 && lake > 0));
 		puts("PASS scatterResources places algae on water, in every water body");
 	}
 	static D DWithDefaults(int method)
@@ -533,9 +532,9 @@ class MapGeneratorDefaultsTest
 		D editorFirst, lobbyFirst;
 		editorFirst.setMethodDefaults(GeneratorRegistry::builtins().methods().front());
 		lobbyFirst.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
-		assert(GeneratorRegistry::builtins().methods(false).front() ==
+		REQUIRE(GeneratorRegistry::builtins().methods(false).front() ==
 			   GeneratorRegistry::builtins().idOf("fingerprint"));
-		assert(s.descriptor.method == GeneratorRegistry::builtins().methods().front());
+		REQUIRE(s.descriptor.method == GeneratorRegistry::builtins().methods().front());
 		sameControls(s.descriptor, editorFirst);
 		sameControls(lobby.generator, lobbyFirst);
 		for (int m : GeneratorRegistry::builtins().methods())
@@ -552,13 +551,13 @@ class MapGeneratorDefaultsTest
 			std::set<std::string> labels;
 			for (const auto &c : D::controls(method))
 			{
-				assert(labels.insert(c.label).second);
-				assert(c.step > 0 && c.maximum >= c.minimum);
-				assert(!c.allowedValues.empty() || (c.maximum - c.minimum) % c.step == 0);
-				assert(c.get(expected) == c.defaultValue);
-				assert(c.normalize(c.defaultValue) == c.defaultValue);
-				assert(c.normalize(c.minimum - 100) == c.minimum);
-				assert(c.normalize(c.maximum + 100) == c.maximum);
+				REQUIRE(labels.insert(c.label).second);
+				REQUIRE((c.step > 0 && c.maximum >= c.minimum));
+				REQUIRE((!c.allowedValues.empty() || (c.maximum - c.minimum) % c.step == 0));
+				REQUIRE(c.get(expected) == c.defaultValue);
+				REQUIRE(c.normalize(c.defaultValue) == c.defaultValue);
+				REQUIRE(c.normalize(c.minimum - 100) == c.minimum);
+				REQUIRE(c.normalize(c.maximum + 100) == c.maximum);
 				// The actual editor must expose every value, including 75 grass and 65 size.
 				for (int v : c.values())
 					edit(s, c.label, v);
@@ -569,7 +568,7 @@ class MapGeneratorDefaultsTest
 			{
 				auto encoded = toLegacyDescriptor(s.descriptor);
 				MapGenerationDescriptor decoded;
-				assert(decoded.setData(encoded.getData(), encoded.getDataLength()));
+				REQUIRE(decoded.setData(encoded.getData(), encoded.getDataLength()));
 				sameControls(fromLegacyDescriptor(decoded, 0), expected);
 			}
 			if (output &&
@@ -577,7 +576,7 @@ class MapGeneratorDefaultsTest
 			{
 				s.paintFrame(0);
 				std::string path = std::string(output) + "/editor-" + std::to_string(m) + ".png";
-				assert(IMG_SavePNG(s.gfx->getSDLSurface(), path.c_str()) == 0);
+				REQUIRE(IMG_SavePNG(s.gfx->getSDLSurface(), path.c_str()) == 0);
 			}
 		}
 		// Every switch is a check button in the editor, and clicking one flips the request's value.
@@ -591,9 +590,9 @@ class MapGeneratorDefaultsTest
 					continue;
 				const int before = c.get(s.descriptor);
 				edit(s, c.label, 1 - before);
-				assert(c.get(s.descriptor) == 1 - before);
+				REQUIRE(c.get(s.descriptor) == 1 - before);
 				edit(s, c.label, before);
-				assert(c.get(s.descriptor) == before);
+				REQUIRE(c.get(s.descriptor) == before);
 			}
 		}
 		select(s, D::eRIVER);
@@ -609,92 +608,99 @@ class MapGeneratorDefaultsTest
 			select(s, method);
 			lobby.generatorHistory.select(lobby.generator, method);
 			sameControls(s.descriptor, lobby.generator);
-			assert(s.descriptor.wDec == 8 && s.descriptor.nbTeams == 6);
+			REQUIRE((s.descriptor.wDec == 8 && s.descriptor.nbTeams == 6));
 		}
-		assert(s.descriptor.options["water"] == 37);
+		REQUIRE(s.descriptor.options["water"] == 37);
 		lobby.random = true;
 		lobby.generator.options["water"] = lobby.generator.options["grass"] =
 			lobby.generator.options["sand"] = lobby.generator.options["desert"] = 0;
-		assert(!lobby.validation().empty());
+		REQUIRE(!lobby.validation().empty());
 		lobby.generator.options["grass"] = 75;
-		assert(lobby.validation().empty());
+		REQUIRE(lobby.validation().empty());
 		puts("PASS shared presets, ranges and steps; all editor values; lobby/editor mode memory; "
 			 "serialization and validation");
 	}
 };
-int main(int argc, char **argv)
+namespace
 {
-	assert(argc == 2 || argc == 3);
-	SDL_SetMainReady();
-	SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	GlobalContainer globals(argv[1]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.load();
-	globals.gfx = GAGCore::Toolkit::initGraphic(640, 480, 0, "Map defaults test", "");
-	GAGCore::Toolkit::loadFont("data/fonts/sans.ttf", 20, "menu");
-	GAGCore::Toolkit::loadFont("data/fonts/sans.ttf", 13, "standard");
-	// Fast iteration over reusable primitives and their raster/economy fixtures.
-	// The ordinary invocation still runs the complete registry/editor/defaults
-	// contract; this option never weakens that CI path or changes generated worlds.
-	if (argc == 3 && std::string(argv[2]) == "--toolkit-only")
+// Globals, a dummy-driver graphic context and the menu fonts the editor screen draws with.
+struct DefaultsFixture
+{
+	glob2test::HeadlessGlobals globals{{.loadStrings = true}};
+	DefaultsFixture()
 	{
+		globalContainer->gfx = GAGCore::Toolkit::initGraphic(640, 480, 0, "Map defaults test", "");
+		GAGCore::Toolkit::loadFont("data/fonts/sans.ttf", 20, "menu");
+		GAGCore::Toolkit::loadFont("data/fonts/sans.ttf", 13, "standard");
+	}
+};
+}
+
+// The --*-only flags of the old program are the fast cases; the last case is the
+// complete registry/editor/defaults contract the map-generators CI job runs.
+TEST_SUITE("MapGeneratorDefaults")
+{
+	TEST_CASE("toolkit geometry; raster; resource and home contracts")
+	{
+		DefaultsFixture fixture;
 		ToolkitChecks::toolkitChecks();
 		puts("PASS toolkit-only geometry, raster, resource and home contracts");
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--bastion-keys-only")
+	TEST_CASE("Bastion Keys contracts")
 	{
+		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::bastionKeysContracts();
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--eaten-only")
+	TEST_CASE("Who Ate the Map contracts")
 	{
+		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::eatenMapContracts();
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--drowned-forest-only")
+	TEST_CASE("Drowned Forest contracts [slow]")
 	{
+		DefaultsFixture fixture;
 		GeneratorContracts::drownedForestContracts();
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--gauntlet-only")
+	TEST_CASE("Gauntlet shapes; request rejection and final-world corruption checks")
 	{
+		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		MapGeneratorDefaultsTest::gauntletContracts();
 		puts("PASS Gauntlet supported shapes, request rejection and final-world corruption checks");
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--hungry-marches-only")
+	TEST_CASE("Hungry Marches contracts")
 	{
+		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::hungryMarchesContracts();
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--faulted-city-only")
+	TEST_CASE("Faulted City contracts")
 	{
+		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::faultedCityContracts();
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--portage-lakes-only")
+	TEST_CASE("Portage Lakes contracts [slow]")
 	{
+		DefaultsFixture fixture;
 		MapGeneratorDefaultsTest::globalsInit();
 		GeneratorContracts::portageLakesContracts();
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--treeline-only")
+	TEST_CASE("Last Treeline checks")
 	{
+		DefaultsFixture fixture;
 		LastTreelineChecks::run();
-		return 0;
 	}
-	if (argc == 3 && std::string(argv[2]) == "--treeline-profile")
+	TEST_CASE("Last Treeline profile [benchmark]")
 	{
+		DefaultsFixture fixture;
 		LastTreelineChecks::profile();
-		return 0;
 	}
-	MapGeneratorDefaultsTest::run(argc == 3 ? argv[2] : nullptr);
+	TEST_CASE("full registry; editor and defaults contract [slow][map-generators]")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::run(nullptr);
+	}
 }

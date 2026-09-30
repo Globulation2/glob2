@@ -34,9 +34,9 @@ if not env['server']:
         + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
     local.Alias('twelve-team-benchmark', twelve_team_benchmark)
 
-# Map analysis and UI contract tests use production generators and widgets.
+# Map analysis tools and the golden test use production generators and widgets.
 if not env['server']:
-    for alias, target in [('map-generator-study', 'MapGeneratorStudy'), ('map-generator-defaults-test', 'MapGeneratorDefaultsTest'),
+    for alias, target in [('map-generator-study', 'MapGeneratorStudy'),
                           ('map-generator-golden-test', 'MapGeneratorGoldenTest'),
                           ('map-generator-profile-fixture', 'MapGeneratorProfileFixture')]:
         sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -79,17 +79,6 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
             PackTar(env["TARFILE"], file)
 
     PackTar(env["TARFILE"], "SConscript")
-
-if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
-    custom_sources = [source for source in source_files if source != 'Glob2.cpp']
-    custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')
-    custom_test = local.Program('CustomGameSetupHarness', custom_sources)
-    local.Alias('custom-setup-test', custom_test)
-
-if not env['server'] and 'map-preview-test' in COMMAND_LINE_TARGETS:
-    preview_sources = [source for source in source_files if source != 'Glob2.cpp']
-    preview_sources += local.Object('MapPreviewHarness.o', '#test/MapPreviewHarness.cpp')
-    local.Alias('map-preview-test', local.Program('MapPreviewHarness', preview_sources))
 
 # Offline production-screen capture for the mobile design review gallery.
 if not env['server']:

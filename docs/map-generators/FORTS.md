@@ -105,13 +105,13 @@ map scans for collection.
 From the repository root:
 
 ```sh
-scons release=1 server=0 -j4 map-generator-defaults-test map-generator-golden-test build/src/glob2
+scons release=1 server=0 -j4 engine-tests map-generator-golden-test build/src/glob2
 build/src/glob2 --list-map-generators forts
 GLOB2_USER_DIR=/tmp/glob2-forts-preview build/src/glob2 --generate-map forts \
   --seed 1 --width 256 --height 256 --teams 4 \
   --output artifacts/forts/forts-1.map --preview artifacts/forts/forts-1.png \
   --json artifacts/forts/forts-1.json
-build/src/MapGeneratorDefaultsTest glob2-forts-contracts
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/MapGeneratorGoldenTest glob2-forts-golden --require-rows
 build/src/MapGeneratorGoldenTest glob2-forts-telemetry --telemetry
 python3 tools/map_telemetry.py collect --generators forts --seed-start 20001 \

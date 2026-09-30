@@ -192,9 +192,9 @@ Near-duplicates survive a batch even after the shared files merge: two ways to s
 Use an optimized client for measurements and choose build concurrency for available memory. The following are entry points, not a claim they have been run for a new design:
 
 ```sh
-scons release=1 server=0 map-generator-study map-generator-defaults-test map-generator-golden-test custom-setup-test
-build/src/MapGeneratorDefaultsTest glob2-map-design-contracts
-build/src/CustomGameSetupHarness
+scons release=1 server=0 map-generator-study engine-tests map-generator-golden-test
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
+python3 test/run_tests.py --filter 'CustomGameSetup/*'
 build/src/MapGeneratorGoldenTest glob2-map-design-golden --require-rows
 build/src/MapGeneratorGoldenTest glob2-map-design-sweep --sweep
 build/src/MapGeneratorGoldenTest glob2-map-design-perf --performance

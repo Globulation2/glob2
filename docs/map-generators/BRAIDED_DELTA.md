@@ -161,11 +161,11 @@ adds no RNG draws or terrain analysis when collection is disabled.
 ## Reproduction and review
 
 ```sh
-scons release=1 server=0 -j6 build/src/glob2 map-generator-defaults-test map-generator-golden-test
+scons release=1 server=0 -j6 build/src/glob2 engine-tests map-generator-golden-test
 build/src/glob2 --generate-map braided-delta --seed 7 --width 256 --height 256 --teams 4 \
   --output artifacts/braided-delta/seed-7.map \
   --preview artifacts/braided-delta/seed-7.png --json artifacts/braided-delta/seed-7.json
-build/src/MapGeneratorDefaultsTest glob2-braided-contracts
+python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'
 build/src/MapGeneratorGoldenTest glob2-braided-golden --require-rows
 build/src/MapGeneratorGoldenTest glob2-braided-telemetry --telemetry
 ```
