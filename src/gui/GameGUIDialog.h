@@ -32,6 +32,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
+	double maxWidth() const override { return classic() ? 300 : -1; }
 
   private:
 	bool replay, canSave, paused;
@@ -54,6 +55,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(canContinue ? CONTINUE : QUIT); }
+	double maxWidth() const override { return classic() ? 300 : -1; }
 
   private:
 	std::optional<GAGCore::Color> teamColor;
@@ -100,6 +102,7 @@ class InGameAllianceScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(OK); }
+	double maxWidth() const override { return classic() ? (rows.size() > 8 ? 580 : 300) : -1; }
 
   private:
 	GameGUI *gameGUI;
@@ -133,6 +136,7 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(OK); }
+	double maxWidth() const override { return classic() ? 300 : -1; }
 
   private:
 	GameGUI *gameGUI;
@@ -156,7 +160,8 @@ class InGameTextInput : public Glob2UI::InGameDialog
   protected:
 	bool scrim() const override { return false; }
 	void onEscape() override { finish(1); }
-	double maxWidth() const override { return 560; }
+	double maxWidth() const override { return classic() ? 400 : 560; }
+	GAGGUI::ui::Rect available(const GAGGUI::ui::Presentation &presentation, const GAGGUI::ui::Metrics &metrics) override;
 	GAGGUI::ui::Rect place(GAGGUI::ui::Size measured, GAGGUI::ui::Rect area) override;
 
   private:
@@ -183,7 +188,8 @@ class InGameObjectivesScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(OK); }
-	bool fillHeight() const override { return true; }
+	bool fillHeight() const override { return !classic(); }
+	double maxWidth() const override { return classic() ? 450 : -1; }
 
   private:
 	struct Line

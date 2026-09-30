@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "Geometry.h"
+#include <functional>
 #include "Presentation.h"
 #include <GraphicContext.h>
 #include <array>
@@ -36,6 +38,12 @@ struct Palette
 	GAGCore::Color danger{170, 60, 50};
 };
 
+class Canvas;
+struct ButtonPaintState
+{
+	bool primary = false, selected = false, enabled = true, hovered = false, pressed = false;
+};
+
 // Metrics are host points; `Metrics` is their per-frame pixel resolution.
 struct Theme
 {
@@ -49,6 +57,9 @@ struct Theme
 	double dialogMaxWidth = 640, panelMaxWidth = 960;
 	double scrollbarWidth = 6, touchScrollbarWidth = 10;
 	double focusRing = 2, lineGap = 4, stepperSide = 32, touchStepperSide = 48;
+	// Optional classic painter for button backgrounds; return false to use the
+	// palette. Lets a theme reuse legacy sprite artwork for an unchanged look.
+	std::function<bool(Canvas &, Rect, const ButtonPaintState &)> buttonPainter;
 
 	const std::string &fontName(FontRole role, bool touch) const
 	{

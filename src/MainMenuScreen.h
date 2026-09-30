@@ -25,11 +25,19 @@ class MainMenuScreen : public Glob2UI::Screen
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
   protected:
-	void onEscape() override { endExecute(QUIT); }
+	void onEscape() override
+	{
+		if (more)
+			showMore(false);
+		else
+			endExecute(QUIT);
+	}
 	bool panel() const override { return false; }
 
   private:
 	std::unique_ptr<GAGCore::DrawableSurface> wordmark;
 	void loadWordmark(int width);
+	void showMore(bool value);
+	bool more = false;
 	int wordmarkWidth = 0;
 };

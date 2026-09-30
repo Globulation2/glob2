@@ -539,7 +539,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 	switch (r.kind)
 	{
 	case Kind::Section:
-		return padding({0, p.pt(12), 0, 0}, heading(r.label));
+		return padding({0, p.pt(12), 0, 0}, p.touch ? heading(r.label) : label(r.label, {FontRole::Body}));
 	case Kind::Info:
 		return paragraph(r.label, {FontRole::Body, true});
 	case Kind::Toggle:
@@ -555,7 +555,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 		auto change = r.change;
 		ChoiceOptions options;
 		options.controlEnabled = r.enabled;
-		return field(r.label, Glob2UI::choice(r.id, r.choices, r.number, [change](int v) { if (change) change(v); }, options), {help});
+		return field(r.label, Glob2UI::choice(r.id, r.choices, r.number, [change](int v) { if (change) change(v); }, options), {help, p.touch ? 220.0 : 140.0});
 	}
 	case Kind::Slider:
 	{
@@ -563,7 +563,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 		SliderOptions options;
 		options.enabled = r.enabled;
 		options.valueText = r.value;
-		return field(r.label, slider(r.id, r.number, r.minimum, r.maximum, [change](int v) { if (change) change(v); }, options), {help});
+		return field(r.label, slider(r.id, r.number, r.minimum, r.maximum, [change](int v) { if (change) change(v); }, options), {help, p.touch ? 220.0 : 140.0});
 	}
 	case Kind::Number:
 	{
@@ -574,7 +574,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 		auto control = stepper(r.id, r.number, r.minimum, r.maximum, [change](int v) { if (change) change(v); }, options);
 		if (r.label.empty())
 			return control;
-		return field(r.label, control, {help});
+		return field(r.label, control, {help, p.touch ? 220.0 : 140.0});
 	}
 	case Kind::Text:
 	{
@@ -588,7 +588,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 									 commit();
 								 },
 								 options);
-		return field(r.label, control, {help});
+		return field(r.label, control, {help, p.touch ? 220.0 : 140.0});
 	}
 	case Kind::Button:
 	{
@@ -687,6 +687,9 @@ Element SettingsScreen::build(const Presentation &p)
 		}
 		else
 			content.push_back(rowElement(form[i], p));
+		// Desktop rows sit on ruled lines, as before.
+		if (!p.touch && form[i].kind != Kind::Section && form[i].kind != Kind::Info && form[i].kind != Kind::Button)
+			content.push_back(divider());
 		i = end;
 	}
 	const std::string scrollKey = modal != Modal::None ? "settings/modal" : "settings/" + std::to_string(int(current));
@@ -706,7 +709,7 @@ Element SettingsScreen::build(const Presentation &p)
 			buttons.push_back({"cancel", tr(failed ? "continue" : "Cancel"), [this] { abandon(); }});
 		buttons.push_back({"done", tr(modal == Modal::None ? "Done" : modal == Modal::Display ? "Revert" : "Cancel"), [this] { dismiss(); }, true});
 	}
-	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p)}, {-1, CrossAlign::Center});
+	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p, ActionStyle::Compact)}, {-1, CrossAlign::Center});
 
 	const bool sidebar = modal == Modal::None && !p.compact() && p.safe.w >= p.pt(760);
 	Element page;
@@ -730,5 +733,11 @@ Element SettingsScreen::build(const Presentation &p)
 	CardOptions cardOptions;
 	cardOptions.padding = p.pt(phonePage() ? 12 : 20);
 	const int maxW = std::min(p.safe.w, p.pt(960));
+	if (!p.touch)
+	{
+		// The desktop panel keeps its former size: up to 960x720 with a margin.
+		const int h = std::min(p.safe.h - 2 * p.pt(20), p.pt(720));
+		return center(sized({maxW, h}, card(page, cardOptions)));
+	}
 	return center(maxWidth(maxW, card(page, cardOptions)));
 }

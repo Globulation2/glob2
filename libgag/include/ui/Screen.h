@@ -74,6 +74,7 @@ class UIDialog
 	void resume() { done = false; }
 	Host &host() { return hostValue; }
 	const Presentation &presentation() const { return hostValue.presentation(); }
+	const Theme &theme() const { return themeValue; }
 	Rect panelBounds() const;
 
   protected:

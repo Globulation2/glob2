@@ -136,19 +136,24 @@ class Button : public Node
 			fill = p.disabled;
 		if (options.danger && options.enabled)
 			fill = p.field;
-		if (!options.flat || options.selected || options.primary || hovered || pressed)
-			frame.canvas.fillRounded(bounds, radius, fill);
-		if (hovered)
-			frame.canvas.fillRounded(bounds, radius, p.hover.applyAlpha(70));
-		if (pressed)
-			frame.canvas.fillRounded(bounds, radius, GAGCore::Color(92, 130, 71, 55));
-		if (!options.flat)
-			frame.canvas.strokeRect(bounds, options.primary ? p.accentInk.applyAlpha(60) : p.line);
+		const auto &painter = frame.layout.theme.buttonPainter;
+		const bool classic = painter && painter(frame.canvas, bounds, {options.primary, options.selected, options.enabled, hovered, pressed});
+		if (!classic)
+		{
+			if (!options.flat || options.selected || options.primary || hovered || pressed)
+				frame.canvas.fillRounded(bounds, radius, fill);
+			if (hovered)
+				frame.canvas.fillRounded(bounds, radius, p.hover.applyAlpha(70));
+			if (pressed)
+				frame.canvas.fillRounded(bounds, radius, GAGCore::Color(92, 130, 71, 55));
+			if (!options.flat)
+				frame.canvas.strokeRect(bounds, options.primary ? p.accentInk.applyAlpha(60) : p.line);
+		}
 		const auto &m = frame.canvas.measurer();
 		const int inset = frame.layout.metrics.halfGap * 2;
 		const Rect textRect = bounds.inset(Insets::symmetric(inset, frame.layout.metrics.halfGap));
 		const auto block = layoutText(m, options.role, text, std::max(1, textRect.w), frame.layout.metrics.lineGap);
-		GAGCore::Color ink = options.primary ? p.accentInk : inkFor(frame, options.enabled, false);
+		GAGCore::Color ink = options.primary || classic ? p.accentInk : inkFor(frame, options.enabled, false);
 		if (options.danger && options.enabled)
 			ink = p.danger;
 		drawLines(frame, textRect, options.role, block.lines,

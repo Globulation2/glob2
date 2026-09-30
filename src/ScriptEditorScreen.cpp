@@ -271,7 +271,8 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 {
 	fe::TextEditorOptions options;
 	options.lines = 14;
-	auto editor = fe::expanded(fe::textEditor("script", script, [this](const std::string &value) { script = value; }, options));
+	auto editorControl = fe::textEditor("script", script, [this](const std::string &value) { script = value; }, options);
+	auto editor = classic() ? editorControl : fe::expanded(editorControl);
 	fe::TextOptions resultStyle;
 	resultStyle.role = fe::FontRole::Support;
 	if (!compilation.empty())
@@ -300,7 +301,7 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	tools.push_back({"compile", fe::tr("[compile]"), [this] { testCompile(); }});
 	tools.push_back({"load", fe::tr("[load]"), [this, ext] { loadSave(true, "scripts", ext); }});
 	tools.push_back({"save", fe::tr("[Save]"), [this, ext] { loadSave(false, "scripts", ext); }});
-	return fe::column({editor, status, fe::actions(std::move(tools), p)}, {p.pt(6)});
+	return fe::column({editor, status, fe::actions(std::move(tools), p, fe::ActionStyle::Compact)}, {p.pt(6)});
 }
 
 Element ScriptEditorScreen::entriesTab(const Presentation &p, std::string *entries, const std::string &prefix, int firstNumber)
@@ -346,5 +347,7 @@ Element ScriptEditorScreen::build(const Presentation &p)
 	std::vector<fe::MenuAction> actions;
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { confirm(); }, true});
 	actions.push_back({"cancel", fe::tr("[Cancel]"), [this] { finish(CANCEL); }, false, SDLK_ESCAPE});
-	return fe::column({header, fe::expanded(fe::footer(body, fe::actions(std::move(actions), p)))}, {p.pt(8)});
+	if (classic())
+		return fe::column({header, body, fe::actions(std::move(actions), p, fe::ActionStyle::Compact)}, {p.pt(8)});
+	return fe::column({header, fe::expanded(fe::footer(body, fe::actions(std::move(actions), p, fe::ActionStyle::Compact)))}, {p.pt(8)});
 }

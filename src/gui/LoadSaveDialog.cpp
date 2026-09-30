@@ -204,7 +204,8 @@ Element LoadSaveDialog::build(const Presentation &p)
 	list.activate = [this](int) { confirmPresentedFile(); };
 	if (busy)
 		list.enabled.assign(files.size(), false);
-	parts.push_back(fe::expanded(fe::listView("files", files, selected, [this](int index) { selectPresentedFile(index); }, list)));
+	auto fileList = fe::listView("files", files, selected, [this](int index) { selectPresentedFile(index); }, list);
+	parts.push_back(classic() ? fileList : fe::expanded(fileList));
 	if (!isLoad)
 	{
 		fe::TextFieldOptions entry;
@@ -218,5 +219,10 @@ Element LoadSaveDialog::build(const Presentation &p)
 	std::vector<fe::MenuAction> actions;
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { confirmPresentedFile(); }, true, SDLK_RETURN, !busy && !name.empty()});
 	actions.push_back({"cancel", fe::tr("[Cancel]"), [this] { cancelPresentedFile(); }, false, SDLK_ESCAPE, !busy});
-	return fe::footer(fe::column(std::move(parts), {p.pt(10)}), fe::actions(std::move(actions), p));
+	if (classic())
+	{
+		parts.push_back(dialogActions(std::move(actions), p));
+		return fe::column(std::move(parts), {p.pt(10)});
+	}
+	return fe::footer(fe::column(std::move(parts), {p.pt(10)}), dialogActions(std::move(actions), p));
 }

@@ -57,7 +57,12 @@ two themes, translation and shared page builders. Screens contain a model and a
     method on the screen (`selectTab`, `setServer`, `confirm`) rather than
     giving tests widget internals. Screens may name harness structs as
     friends for state inspection.
-11. **Register new text keys** in `data/texts.keys.txt` with English fallback
+11. **Keep the established look.** The builders above already reproduce the
+    former desktop and phone layouts. Before changing how a screen looks,
+    compare it against the previous release with the gallery
+    (`tools/mobile_gallery/capture.py`) at a desktop and a phone size; the
+    framework is a means of keeping screens responsive, not a redesign.
+12. **Register new text keys** in `data/texts.keys.txt` with English fallback
     text in `data/texts.en.txt`; the capture runs fail on missing keys.
 
 ## Anatomy of a screen
@@ -131,20 +136,37 @@ browser text input), `textEditor` (multi-line), `listView` (virtualized rows
 with selection and activation), `progress`, `image`, `sprite`, `swatch`,
 `canvas` (custom painter with pointer and wheel callbacks).
 
-Game-side builders in `Glob2UI`: `menu()` (title over a scrolling grid of
-large actions), `actions()` (wrapping action row), `page()` (title, body and
-pinned actions in a centered card), `animation()`, `mapPreview()` (hosts a
-`MapPreview` in a canvas).
+Game-side builders in `Glob2UI` reproduce the game's established look on
+each host, so a screen written with them looks as it did before the
+framework:
+
+- `page()`: on pointer hosts the classic centered 640x480 paper panel with
+  the title in the menu font, a scrolling body and 180-point menu-font
+  buttons at the bottom right; on touch hosts a content-sized card with a
+  folding footer.
+- `menu()`: on pointer hosts the narrow panel of 300-point buttons with the
+  Escape action pinned at the bottom; on touch hosts a grid of large actions.
+- `actions(items, p, style)`: `ActionStyle::Classic` gives the 180-point
+  menu-font buttons (wrapping into a grid when they cannot fit);
+  `ActionStyle::Compact` gives content-sized body-font buttons for the
+  screens that always had small ones (settings, the lobby).
+- `animation()` and `mapPreview()` (hosts a `MapPreview` in a canvas).
 
 ### Theme
 
 `Theme` carries a palette (ink, muted, paper, panel, field, accent, selected,
 focus, scrim, disabled, danger), font roles (Title, Heading, Body, Support,
 Caption mapped to toolkit font names) and metrics in points. `frontendTheme()`
-is the paper look for menus; `inGameTheme()` is the dark in-match look used by
-gameplay and editor dialogs and the end-game screen. Controls take colors and
-sizes from the theme only; a screen that needs a color for data (a team
-swatch) passes it to `swatch()` or `TextOptions::color`.
+is the paper look for menus. In-game dialogs pick their theme from the host:
+`classicInGameTheme()` on pointer hosts is the navy box with the sprite frame
+and gold 40-point buttons (the theme's `buttonPainter` hook hands button
+backgrounds to the classic `Style` sprites), `inGameTheme()` on touch hosts is
+the dark purple sheet of the touch HUD. `InGameDialog::classic()` tells a
+dialog which one it got, so classic builds omit titles, use `classicButton()`
+and `dialogActions()`, and keep their former fixed widths through
+`maxWidth()`. Controls take colors and sizes from the theme only; a screen
+that needs a color for data (a team swatch) passes it to `swatch()` or
+`TextOptions::color`.
 
 ### Hosting a dialog
 

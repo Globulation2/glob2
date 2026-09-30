@@ -3,6 +3,7 @@
 #include "GlobalContainer.h"
 #include "GUIMapPreview.h"
 #include "gui/InGameTouchTheme.h"
+#include "InterfacePresentation.h"
 #include <GUIStyle.h>
 #include <StringTable.h>
 #include <Toolkit.h>
@@ -50,6 +51,51 @@ const Theme &inGameTheme()
 	return theme;
 }
 
+const Theme &classicInGameTheme()
+{
+	static const Theme theme = []
+	{
+		Theme t;
+		t.fonts = {"menu", "menu", "standard", "little", "little"};
+		t.touchFonts = t.fonts;
+		// The classic overlay: navy panel, white text, gold sprite buttons.
+		auto &c = t.palette;
+		c.ink = GAGCore::Color(255, 255, 255);
+		c.muted = GAGCore::Color(200, 200, 220);
+		c.paper = GAGCore::Color(0, 0, 40);
+		c.panel = GAGCore::Color(0, 0, 40);
+		c.field = GAGCore::Color(20, 20, 70);
+		c.rail = GAGCore::Color(12, 12, 55);
+		c.line = GAGCore::Color(199, 165, 87);
+		c.accent = GAGCore::Color(222, 190, 110);
+		c.accentInk = GAGCore::Color(24, 22, 48);
+		c.selected = GAGCore::Color(60, 60, 120);
+		c.hover = GAGCore::Color(120, 120, 200);
+		c.focus = GAGCore::Color(255, 214, 120);
+		c.disabled = GAGCore::Color(40, 40, 70);
+		t.controlHeight = 28;
+		t.radius = 12;
+		t.padding = 10;
+		// The gold sprite buttons are drawn at exactly 40 logical pixels; other
+		// sizes and scales fall back to the palette's rounded gold.
+		t.buttonPainter = [](Canvas &canvas, Rect r, const ButtonPaintState &state)
+		{
+			auto *surface = canvas.surface();
+			if (!surface || !GAGGUI::Style::style || r.h != 40 || !state.enabled)
+				return false;
+			GAGGUI::Style::style->drawTextButtonBackground(surface, r.x, r.y, r.w, r.h, state.pressed ? 255 : state.hovered ? 128 : 0);
+			return true;
+		};
+		return t;
+	}();
+	return theme;
+}
+
+bool touchPresentation()
+{
+	return phonePresentationRequested();
+}
+
 std::string tr(const std::string &key)
 {
 	return GAGCore::Toolkit::getStringTable()->getString(key);
@@ -93,11 +139,58 @@ double Dialog::textScale(const Presentation &presentation) const
 	return frontendTextScale(presentation);
 }
 
-InGameDialog::InGameDialog() : UIDialog(inGameTheme()) {}
+InGameDialog::InGameDialog()
+	: UIDialog(touchPresentation() ? inGameTheme() : classicInGameTheme()), classicLook(!touchPresentation())
+{
+}
 
 double InGameDialog::textScale(const Presentation &presentation) const
 {
 	return frontendTextScale(presentation);
+}
+
+void InGameDialog::paintPanel(Canvas &canvas, Rect panel)
+{
+	if (!classicLook)
+	{
+		UIDialog::paintPanel(canvas, panel);
+		return;
+	}
+	canvas.fillRect(panel, GAGCore::Color(0, 0, 40));
+	auto *surface = canvas.surface();
+	if (surface && GAGGUI::Style::style)
+		GAGGUI::Style::style->drawFrame(surface, panel.x, panel.y, panel.w, panel.h, 0);
+	else
+		canvas.strokeRect(panel, theme().palette.line);
+}
+
+Element InGameDialog::dialogActions(std::vector<MenuAction> items, const Presentation &p) const
+{
+	if (!classicLook)
+		return actions(std::move(items), p);
+	std::vector<Element> buttons;
+	for (const auto &item : items)
+	{
+		ButtonOptions options;
+		options.shortcut = item.shortcut;
+		options.enabled = item.enabled;
+		options.role = FontRole::Heading;
+		options.minHeight = 40;
+		buttons.push_back(width(p.pt(135), button(item.key, item.label, item.action, options)));
+	}
+	return row(std::move(buttons), {p.pt(10), CrossAlign::Center, MainAlign::End});
+}
+
+Element InGameDialog::classicButton(const std::string &key, const std::string &label, std::function<void()> action,
+									SDL_Keycode shortcut, bool enabled, double widthPoints) const
+{
+	ButtonOptions options;
+	options.shortcut = shortcut;
+	options.enabled = enabled;
+	options.role = FontRole::Heading;
+	options.minHeight = 40;
+	const auto &p = presentation();
+	return center(width(p.pt(widthPoints), button(key, label, std::move(action), options)));
 }
 
 namespace
@@ -115,13 +208,55 @@ Element actionButton(const MenuAction &action, bool large)
 	}
 	return button(action.key, action.label, action.action, options);
 }
+
+// A classic frontend button: menu font, 40 points tall, plain paper.
+Element classicButton(const MenuAction &action, const Presentation &p, double widthPoints)
+{
+	ButtonOptions options;
+	options.shortcut = action.shortcut;
+	options.enabled = action.enabled;
+	options.role = FontRole::Heading;
+	options.minHeight = 40;
+	return constrained({p.pt(widthPoints), 0, Constraints::Unbounded, Constraints::Unbounded},
+					   button(action.key, action.label, action.action, options));
+}
 } // namespace
 
 Element menu(const std::string &titleText, std::vector<MenuAction> items, const Presentation &p)
 {
+	if (!p.touch)
+	{
+		// The classic narrow panel: 300-point buttons stacked from the top, the
+		// escape route pinned at the bottom.
+		std::vector<Element> parts;
+		Element escape;
+		for (const auto &item : items)
+		{
+			auto element = classicButton(item, p, 300);
+			if (item.shortcut == SDLK_ESCAPE && !escape)
+				escape = element;
+			else
+				parts.push_back(element);
+		}
+		std::vector<Element> body;
+		if (!titleText.empty())
+			body.push_back(paragraph(titleText, {FontRole::Heading, false, TextAlign::Center}));
+		body.push_back(column(std::move(parts), {p.pt(20)}));
+		body.push_back(expandedSpacer());
+		if (escape)
+			body.push_back(escape);
+		CardOptions cardOptions;
+		cardOptions.padding = p.pt(12);
+		const int panelHeight = std::min(p.safe.h - 2 * p.pt(8), p.pt(titleText.empty() ? 405 : 440));
+		return center(sized({p.pt(324), panelHeight}, card(column(std::move(body), {p.pt(10)}), cardOptions)));
+	}
 	std::vector<Element> buttons;
-	for (const auto &item : items)
+	for (auto item : items)
+	{
+		// Touch menus list plain actions, as before.
+		item.primary = false;
 		buttons.push_back(actionButton(item, true));
+	}
 	WrapOptions grid;
 	grid.minChildWidth = p.pt(260);
 	grid.maxColumns = 2;
@@ -132,8 +267,43 @@ Element menu(const std::string &titleText, std::vector<MenuAction> items, const 
 	return center(maxWidth(p.pt(640), card(column(std::move(parts), {p.pt(12)}))));
 }
 
-Element actions(std::vector<MenuAction> items, const Presentation &p)
+Element actions(std::vector<MenuAction> items, const Presentation &p, ActionStyle style)
 {
+	if (!p.touch)
+	{
+		if (style == ActionStyle::Classic)
+		{
+			// 180-point menu-font buttons at the right; a row that cannot fit
+			// becomes a grid, as the previous action rows did.
+			return adaptive(
+				[items, p](const LayoutContext &ctx, Size available) -> Element
+				{
+					int needed = 0;
+					std::vector<Element> buttons;
+					for (const auto &item : items)
+					{
+						needed += std::max(p.pt(180), ctx.text.width(FontRole::Heading, item.label) + 2 * ctx.metrics.padding) + ctx.metrics.gap;
+						buttons.push_back(classicButton(item, p, 180));
+					}
+					if (needed <= available.w)
+						return row(std::move(buttons), {p.pt(10), CrossAlign::Center, MainAlign::End});
+					WrapOptions grid;
+					grid.minChildWidth = p.pt(180);
+					return wrap(std::move(buttons), grid);
+				});
+		}
+		std::vector<Element> buttons;
+		for (const auto &item : items)
+		{
+			ButtonOptions options;
+			options.primary = item.primary;
+			options.shortcut = item.shortcut;
+			options.enabled = item.enabled;
+			buttons.push_back(constrained({p.pt(90), 0, Constraints::Unbounded, Constraints::Unbounded},
+										  padding(Insets::symmetric(p.pt(10), 0), button(item.key, item.label, item.action, options))));
+		}
+		return row(std::move(buttons), {p.pt(10), CrossAlign::Center, MainAlign::End});
+	}
 	std::vector<Element> buttons;
 	for (const auto &item : items)
 		buttons.push_back(actionButton(item, p.touch));
@@ -148,6 +318,18 @@ Element page(const std::string &titleText, Element body, Element actionRow, cons
 	std::vector<Element> parts;
 	if (!titleText.empty())
 		parts.push_back(paragraph(titleText, {FontRole::Heading, false, TextAlign::Center}));
+	if (!p.touch)
+	{
+		// The classic 640x480 paper panel (plus its 12-point margin), centered.
+		// Content taller than the panel scrolls rather than pushing the actions out.
+		parts.push_back(expanded(scroll("page/body", std::move(body))));
+		parts.push_back(actionRow);
+		CardOptions cardOptions;
+		cardOptions.padding = p.pt(12);
+		const int w = std::min(p.safe.w - 2 * p.pt(8), p.pt(std::max(640.0, maxWidthPoints) + 24));
+		const int h = std::min(p.safe.h - 2 * p.pt(8), p.pt(504));
+		return center(sized({w, h}, card(column(std::move(parts), {p.pt(12)}), cardOptions)));
+	}
 	parts.push_back(footer(std::move(body), std::move(actionRow)));
 	return center(maxWidth(p.pt(maxWidthPoints), card(column(std::move(parts), {p.pt(12)}))));
 }

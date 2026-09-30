@@ -341,8 +341,8 @@ Element ChooseMapScreen::build(const Presentation &p)
 		{
 			if (available.w < ctx.presentation.pt(640))
 				return scroll("choose/scroll", column({statusLine, row({preview, expanded(details)}, {-1, CrossAlign::Start}), list, toolRow}));
-			auto side = column({preview, details, statusLine});
-			return column({expanded(row({expanded(column({expanded(list), toolRow}), 3), width(ctx.presentation.pt(260), side)}, {-1, CrossAlign::Stretch}))});
+			auto side = column({align(Alignment::TopLeft, preview), details, statusLine});
+			return column({expanded(row({width(ctx.presentation.pt(300), column({expanded(list), toolRow})), expanded(side)}, {-1, CrossAlign::Stretch}))});
 		});
 	return page(title, body,
 				actions({{"ok", tr("[ok]"), [this] { accept(); }, true, SDLK_RETURN, validMapSelected && !busy},

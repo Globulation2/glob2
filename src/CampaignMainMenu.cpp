@@ -10,7 +10,7 @@ CampaignMainMenu::CampaignMainMenu(GAGGUI::ScreenStack &screens) : screens(scree
 
 Element CampaignMainMenu::build(const Presentation &p)
 {
-	return menu(tr("[campaign]"),
+	return menu("",
 				{{"new", tr("[start new campaign]"), [this] { runCampaignSelection(true); }, true},
 				 {"load", tr("[load campaign]"), [this] { runCampaignSelection(false); }, false, SDLK_RETURN},
 				 {"back", tr("[goto main menu]"), [this] { endExecute(CANCELLED); }, false, SDLK_ESCAPE}},

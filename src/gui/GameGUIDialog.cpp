@@ -9,6 +9,7 @@
 #include "SoundMixer.h"
 #include "StringTable.h"
 #include "Toolkit.h"
+#include <algorithm>
 #include <cmath>
 #include <sstream>
 
@@ -34,25 +35,41 @@ InGameMainScreen::InGameMainScreen(bool isReplay, bool canSave, bool paused)
 
 Element InGameMainScreen::build(const Presentation &p)
 {
-	std::vector<fe::MenuAction> items;
-	items.push_back({"return", fe::tr(replay ? "[return to replay]" : "[return to game]"), [this] { finish(RETURN_GAME); }, true, SDLK_ESCAPE});
-	if (!replay && canSave)
-		items.push_back({"save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }});
-	items.push_back({"load", fe::tr(replay ? "[load replay]" : "[load game]"), [this] { finish(LOAD_GAME); }});
-	items.push_back({"pause", fe::tr(paused ? "[resume game]" : "[pause game]"), [this] { finish(PAUSE_GAME); }});
-	items.push_back({"options", fe::tr("[Options]"), [this] { finish(OPTIONS); }});
-	items.push_back({"quit", fe::tr(replay ? "[quit the replay]" : "[quit the game]"), [this] { finish(QUIT_GAME); }});
-	std::vector<Element> buttons;
-	for (const auto &item : items)
+	const std::string returnLabel = fe::tr(replay ? "[return to replay]" : "[return to game]");
+	const std::string loadLabel = fe::tr(replay ? "[load replay]" : "[load game]");
+	const std::string quitLabel = fe::tr(replay ? "[quit the replay]" : "[quit the game]");
+	if (classic())
+	{
+		// The classic desktop menu: a column of gold buttons, Return last.
+		std::vector<Element> buttons;
+		buttons.push_back(classicButton("load", loadLabel, [this] { finish(LOAD_GAME); }));
+		if (!replay && canSave)
+			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
+		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
+		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
+		buttons.push_back(classicButton("return", returnLabel, [this] { finish(RETURN_GAME); }, SDLK_ESCAPE));
+		return fe::column(std::move(buttons), {p.pt(10)});
+	}
+	// The touch sheet: titled, Return highlighted at the bottom.
+	auto item = [&](const char *key, const std::string &label, int code, bool selected = false, SDL_Keycode shortcut = SDLK_UNKNOWN)
 	{
 		fe::ButtonOptions options;
-		options.primary = item.primary;
-		options.shortcut = item.shortcut;
+		options.selected = selected;
+		options.shortcut = shortcut;
 		options.minHeight = 44;
-		buttons.push_back(fe::button(item.key, item.label, item.action, options));
-	}
+		return fe::button(key, label, [this, code] { finish(code); }, options);
+	};
+	std::vector<Element> buttons;
+	if (!replay && canSave)
+		buttons.push_back(item("save", fe::tr("[save game]"), SAVE_GAME));
+	buttons.push_back(item("load", loadLabel, LOAD_GAME));
+	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
+	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
+	buttons.push_back(item("pause", fe::tr(paused ? "[resume game]" : "[pause game]"), PAUSE_GAME));
+	// Return stays pinned below the list so it is always in reach.
 	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
-					   fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)}))},
+					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),
+								  item("return", returnLabel, RETURN_GAME, true, SDLK_ESCAPE))},
 					  {p.pt(12)});
 }
 
@@ -65,7 +82,7 @@ InGameEndOfGameScreen::InGameEndOfGameScreen(std::string title, bool canContinue
 Element InGameEndOfGameScreen::build(const Presentation &p)
 {
 	std::vector<Element> parts;
-	if (teamColor && globalContainer->unitmini)
+	if (!classic() && teamColor && globalContainer->unitmini)
 	{
 		const GAGCore::Color color = *teamColor;
 		const bool animate = won && !(globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) &&
@@ -79,15 +96,16 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
 									   for (int i = 0; i < 3; ++i)
 									   {
 										   const double bob = animate ? std::sin(frame.tick / 220.0 + i) * 3 * unit : 0;
-										   const int w = sprite->getW(i), h = sprite->getH(i);
+										   const int w = sprite->getW(i);
 										   c.transformed(2 * unit, {r.x + r.w / 2 + int((i - 1) * 44 * unit) - int(w * unit), r.y + int(12 * unit + bob)}, r,
 														 [&] { c.surface()->drawSprite(0, 0, sprite, i); });
-										   (void)h;
 									   }
 								   }));
 	}
-	parts.push_back(fe::paragraph(title, {fe::FontRole::Title, false, fe::TextAlign::Center}));
+	parts.push_back(fe::paragraph(title, {classic() ? fe::FontRole::Heading : fe::FontRole::Title, false, fe::TextAlign::Center}));
 	std::vector<fe::MenuAction> actions;
+	// The classic order: Ok first, then the ways to stay.
+	actions.push_back({"ok", fe::tr("[ok]"), [this] { finish(QUIT); }, true, SDLK_RETURN});
 	if (canContinue)
 	{
 		if (globalContainer->replaying)
@@ -100,17 +118,23 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
 	}
 	else if (globalContainer->replaying)
 		actions.push_back({"watch", fe::tr("[watch again]"), [this] { finish(WATCH_AGAIN); }});
-	actions.push_back({"ok", fe::tr("[ok]"), [this] { finish(QUIT); }, true, SDLK_RETURN});
+	if (!classic())
+		std::rotate(actions.begin(), actions.begin() + 1, actions.end());
 	std::vector<Element> buttons;
 	for (const auto &item : actions)
 	{
+		if (classic())
+		{
+			buttons.push_back(classicButton(item.key, item.label, item.action, item.shortcut));
+			continue;
+		}
 		fe::ButtonOptions options;
 		options.primary = item.primary;
 		options.shortcut = item.shortcut;
 		options.minHeight = 44;
 		buttons.push_back(fe::button(item.key, item.label, item.action, options));
 	}
-	parts.push_back(fe::column(std::move(buttons), {p.pt(8)}));
+	parts.push_back(fe::column(std::move(buttons), {p.pt(classic() ? 10 : 8)}));
 	return fe::column(std::move(parts), {p.pt(12)});
 }
 
@@ -204,6 +228,52 @@ Element InGameAllianceScreen::build(const Presentation &p)
 	const char *explanations[] = {"[abreaviation explanation A]", "[abreaviation explanation V]", "[abreaviation explanation fV]",
 								  "[abreaviation explanation mV]", "[abreaviation explanation C]"};
 	const char *longLabels[] = {"[Alliance]", "[Share vision]", "[Share food vision]", "[Share market vision]", "[Chat]"};
+	auto notesColumn = [&]
+	{
+		std::vector<Element> notes;
+		for (int s = 0; s < 5; ++s)
+			notes.push_back(fe::paragraph(fe::tr(explanations[s]), {fe::FontRole::Caption, true}));
+		notes.push_back(fe::paragraph(fe::tr("[shortcut explanation enter]"), {fe::FontRole::Caption, true}));
+		notes.push_back(fe::paragraph(fe::tr("[shortcut explanation v]"), {fe::FontRole::Caption, true}));
+		return fe::column(std::move(notes), {p.pt(2)});
+	};
+	if (classic())
+	{
+		// The classic box: names in team colours, five checkbox columns under
+		// their abbreviations, the explanations below, Ok at the bottom.
+		const int nameWidth = p.pt(160), cell = p.pt(24);
+		std::vector<Element> header{fe::width(nameWidth, fe::empty())};
+		for (int s = 0; s < 5; ++s)
+			header.push_back(fe::width(cell, fe::label(shortLabels[s], {fe::FontRole::Body, false, fe::TextAlign::Center})));
+		std::vector<Element> table{fe::row(std::move(header), {p.pt(4), fe::CrossAlign::Center})};
+		for (auto &entry : rows)
+		{
+			fe::TextOptions nameStyle;
+			nameStyle.color = entry.color;
+			nameStyle.role = fe::FontRole::Heading;
+			std::vector<Element> cells{fe::width(nameWidth, fe::label(entry.name, nameStyle))};
+			for (int s = 0; s < 5; ++s)
+			{
+				const auto setting = Setting(s);
+				const bool locked = !entry.diplomacy && (setting == Alliance || setting == NormalVision);
+				const std::string key = "ally/" + std::to_string(entry.player) + "/" + shortLabels[s];
+				const int player = entry.player;
+				cells.push_back(fe::width(cell, locked ? fe::empty()
+														: fe::toggle(key, "", field(entry, setting),
+																	 [this, player, setting](bool value) { set(player, setting, value); }, editable)));
+			}
+			table.push_back(fe::row(std::move(cells), {p.pt(4), fe::CrossAlign::Center}));
+		}
+		std::vector<Element> parts{fe::column(std::move(table), {p.pt(2)})};
+		if (rows.empty())
+			parts.push_back(fe::paragraph(fe::tr("[No other players have editable diplomatic settings in this match.]"), {fe::FontRole::Body, true}));
+		else if (!rows.front().diplomacy)
+			parts.push_back(fe::paragraph(fe::tr("[Alliance and shared vision are fixed for this match.]"), {fe::FontRole::Support, true}));
+		parts.push_back(fe::spacer(p.pt(40)));
+		parts.push_back(notesColumn());
+		parts.push_back(classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN));
+		return fe::column(std::move(parts), {p.pt(10)});
+	}
 	std::vector<Element> list;
 	for (auto &entry : rows)
 	{
@@ -239,13 +309,8 @@ Element InGameAllianceScreen::build(const Presentation &p)
 	std::vector<Element> body = {fe::column(std::move(list), {p.pt(compact ? 8 : 4)})};
 	if (!compact)
 	{
-		std::vector<Element> notes;
-		for (int s = 0; s < 5; ++s)
-			notes.push_back(fe::paragraph(fe::tr(explanations[s]), {fe::FontRole::Caption, true}));
-		notes.push_back(fe::paragraph(fe::tr("[shortcut explanation enter]"), {fe::FontRole::Caption, true}));
-		notes.push_back(fe::paragraph(fe::tr("[shortcut explanation v]"), {fe::FontRole::Caption, true}));
 		body.push_back(fe::divider());
-		body.push_back(fe::column(std::move(notes), {p.pt(2)}));
+		body.push_back(notesColumn());
 	}
 	parts.push_back(fe::scroll("ally/scroll", fe::column(std::move(body), {p.pt(8)})));
 	fe::ButtonOptions okOptions;
@@ -357,7 +422,8 @@ Element InGameOptionScreen::build(const Presentation &p)
 {
 	auto &settings = globalContainer->settings;
 	std::vector<Element> parts;
-	parts.push_back(fe::paragraph(fe::tr("[Options]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}));
+	if (!classic())
+		parts.push_back(fe::paragraph(fe::tr("[Options]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}));
 	parts.push_back(fe::toggle("mute", fe::tr("[Mute]"), settings.mute, [this](bool value) { setMute(value); }));
 	if (!settings.mute)
 	{
@@ -418,6 +484,12 @@ Element InGameOptionScreen::build(const Presentation &p)
 	else
 		oss << " SDL";
 	parts.push_back(fe::paragraph(oss.str(), {fe::FontRole::Caption, true, fe::TextAlign::Center}));
+	if (classic())
+	{
+		parts.push_back(fe::spacer(p.pt(10)));
+		parts.push_back(classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN));
+		return fe::column(std::move(parts), {p.pt(10)});
+	}
 	fe::ButtonOptions okOptions;
 	okOptions.primary = true;
 	okOptions.shortcut = SDLK_RETURN;
@@ -525,17 +597,32 @@ Element InGameObjectivesScreen::build(const Presentation &p)
 				content.push_back(element);
 		}
 	}
+	auto header = fe::segments("objectives/tab", tabs, selected, [this, ids](int index) { showTab(ids[std::size_t(index)]); });
+	auto body = fe::scroll("objectives/scroll", fe::column(std::move(content), {p.pt(8)}));
+	if (classic())
+	{
+		auto ok = classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN);
+		return fe::column({header, fe::height(p.pt(300), body), ok}, {p.pt(10)});
+	}
 	fe::ButtonOptions okOptions;
 	okOptions.primary = true;
 	okOptions.shortcut = SDLK_RETURN;
 	okOptions.minHeight = 44;
 	auto ok = fe::button("ok", fe::tr("[ok]"), [this] { finish(OK); }, okOptions);
-	auto header = fe::segments("objectives/tab", tabs, selected, [this, ids](int index) { showTab(ids[std::size_t(index)]); });
-	auto body = fe::scroll("objectives/scroll", fe::column(std::move(content), {p.pt(8)}));
 	return fe::column({header, fe::expanded(fe::footer(body, ok))}, {p.pt(10)});
 }
 
 InGameTextInput::InGameTextInput() = default;
+
+GAGGUI::ui::Rect InGameTextInput::available(const GAGGUI::ui::Presentation &presentation, const GAGGUI::ui::Metrics &metrics)
+{
+	if (!classic())
+		return InGameDialog::available(presentation, metrics);
+	// The classic composer sits at the bottom left of the map.
+	GAGGUI::ui::Rect area = presentation.dialog.inset(metrics.padding);
+	area.w = std::min(area.w, presentation.pt(maxWidth()));
+	return area;
+}
 
 GAGGUI::ui::Rect InGameTextInput::place(GAGGUI::ui::Size measured, GAGGUI::ui::Rect area)
 {
@@ -552,6 +639,8 @@ Element InGameTextInput::build(const Presentation &p)
 	options.placeholder = fe::tr("[Chat · recipients selected in Teams]");
 	options.submit = [this](const std::string &) { finish(0); };
 	auto entry = fe::textField("chat", text, [this](const std::string &value) { text = value; }, options);
+	if (classic())
+		return entry;
 	fe::ButtonOptions sendOptions;
 	sendOptions.primary = true;
 	auto send = fe::button("send", fe::tr("[Send]"), [this] { finish(0); }, sendOptions);

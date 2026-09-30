@@ -564,9 +564,9 @@
     {
       "id": "main-more",
       "title": "Main menu \u00b7 More",
-      "description": "Retired: the main menu shows every action in one scrolling list on every size.",
+      "description": "Secondary utilities and platform-appropriate network/quit actions.",
       "group": "Menus & campaigns",
-      "availability": "retired"
+      "availability": "mobile"
     },
     {
       "id": "landscape-settings",
@@ -692,4 +692,4 @@
       "reason": "The frontend adapts phone and tablet composition separately. Desktop captures use mouse controls at 1280\u00d7800 and 1920\u00d71080. Language variants, accessibility scales and device-specific input combinations remain outside this image matrix."
     }
   ]
-}
+}\n

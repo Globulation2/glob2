@@ -120,9 +120,8 @@ Glob2UI::Element InGameScrollableHistory::build(const Glob2UI::Presentation &p)
 	options.readOnly = true;
 	options.lines = 6;
 	options.scrollToEnd = true;
-	auto ok = Glob2UI::button("ok", Glob2UI::tr("[ok]"), [this] { finish(0); }, {true, false, true, false, false, false, SDLK_ESCAPE});
 	return Glob2UI::column({Glob2UI::label(Glob2UI::tr("[Message history]"), {Glob2UI::FontRole::Support, true}),
 							Glob2UI::textEditor("history", log, {}, options),
-							Glob2UI::row({Glob2UI::expandedSpacer(), ok})},
+							dialogActions({{"ok", Glob2UI::tr("[ok]"), [this] { finish(0); }, true, SDLK_ESCAPE}}, p)},
 						   {p.pt(6)});
 }

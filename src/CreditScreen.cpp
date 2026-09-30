@@ -69,8 +69,15 @@ Element CreditScreen::build(const Presentation &p)
 	}
 	rows.push_back(spacer(p.pt(120)));
 	auto body = scroll("credits", column(std::move(rows), {p.pt(4)}), {false, false});
-	return column({expanded(body), actions({{"back", tr("[Back]"), [this] { endExecute(0); }, false, SDLK_ESCAPE}}, p)},
-				  {p.pt(8)});
+	auto content = column({expanded(body), actions({{"back", tr("[Back]"), [this] { endExecute(0); }, false, SDLK_ESCAPE}}, p)}, {p.pt(8)});
+	if (p.touch)
+		return content;
+	// The desktop credits roll on a paper panel filling the window, as before.
+	CardOptions panel;
+	panel.radius = 0;
+	panel.shadow = false;
+	panel.padding = p.pt(12);
+	return card(content, panel);
 }
 
 void CreditScreen::onTimer(Uint32 tick)

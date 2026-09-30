@@ -793,7 +793,10 @@ Element CustomGameScreen::build(const Presentation &p)
 	const bool narrow = p.compact() || p.safe.w < p.pt(720);
 	auto speed = globalContainer->settings;
 	speed.gameSpeed = setup.speed;
-	const std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
+	// Phones keep the former Map / Opponents / Review flow with Back and Next.
+	const bool phoneFlow = p.compact();
+	const std::vector<std::string> titles = localized(phoneFlow ? std::vector<std::string>{"Map", "Opponents", "Review"}
+															   : std::vector<std::string>{"Map", "Players & Teams", "Game Rules"});
 	const std::vector<std::string> details = {
 		setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName(),
 		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + tr(setup.format), tr(setup.ruleset)};
@@ -803,8 +806,9 @@ Element CustomGameScreen::build(const Presentation &p)
 		fe::ButtonOptions options;
 		options.selected = currentTab == i;
 		options.role = narrow ? fe::FontRole::Body : fe::FontRole::Heading;
-		tabs.push_back(fe::expanded(fe::button("tab/" + std::to_string(i), narrow ? titles[std::size_t(i)] : titles[std::size_t(i)] + "\n" + details[std::size_t(i)],
-											   [this, i] { selectTab(i); }, options)));
+		auto tab = fe::button("tab/" + std::to_string(i), titles[std::size_t(i)], [this, i] { selectTab(i); }, options);
+		// Desktop tabs carry their current choice underneath, as before.
+		tabs.push_back(fe::expanded(narrow ? tab : fe::column({tab, fe::caption(details[std::size_t(i)])}, {p.pt(2)})));
 	}
 	Element body = currentTab == 1 ? playersTab(p, narrow) : currentTab == 2 ? rulesTab(p, narrow) : mapTab(p, narrow);
 	std::string error = setup.validation();
@@ -816,40 +820,74 @@ Element CustomGameScreen::build(const Presentation &p)
 	const bool ready = error.empty() && (!narrow || (validMap && !previewBusy() && (!setup.random || previewRevision == setup.mapRevision)));
 	const std::string startLabel = !setup.humanColony() ? tr(setup.random && !validMap ? "Generate & watch" : "Watch game")
 													  : tr(setup.random ? (validMap ? "Play this map" : "Generate & play") : "Start game");
-	std::vector<Element> footerParts{fe::caption(summary)};
+	std::vector<fe::MenuAction> footerActions;
+	if (phoneFlow)
+	{
+		const int tab = currentTab;
+		footerActions.push_back({"back", tr("Back"), [this, tab] { tab > 0 ? selectTab(tab - 1) : endExecute(CANCEL); }, false, SDLK_ESCAPE});
+		if (tab < 2)
+			footerActions.push_back({"start", tr("Next"), [this, tab] { selectTab(tab + 1); }, true, SDLK_RETURN});
+		else
+			footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready});
+	}
+	else
+	{
+		footerActions.push_back({"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE});
+		footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready});
+	}
+	auto actionRow = fe::actions(std::move(footerActions), p, fe::ActionStyle::Compact);
+	std::vector<Element> summaryParts{fe::caption(summary)};
 	if (!note.empty())
-		footerParts.push_back(fe::paragraph(note, {fe::FontRole::Support}));
-	footerParts.push_back(fe::actions({{"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE},
-									   {"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready}},
-									  p));
-	auto footerColumn = fe::column(std::move(footerParts), {p.pt(6)});
+		summaryParts.push_back(fe::paragraph(note, {fe::FontRole::Support}));
+	// Desktop: summary at the left, compact Back / Start at the right, as before.
+	Element footerColumn = p.touch ? fe::column({fe::column(std::move(summaryParts), {p.pt(4)}), actionRow}, {p.pt(6)})
+								   : fe::row({fe::expanded(fe::column(std::move(summaryParts), {p.pt(4)})), actionRow}, {p.pt(8), fe::CrossAlign::Center});
 	fe::CardOptions cardOptions;
 	cardOptions.color = GAGCore::Color(232, 237, 218);
 	cardOptions.padding = p.pt(narrow ? 10 : 16);
-	return fe::center(fe::maxWidth(p.pt(1120), fe::card(fe::column({fe::row(std::move(tabs), {p.pt(6)}), fe::expanded(body), fe::divider(), footerColumn},
-																 {p.pt(8)}),
-													   cardOptions)));
+	auto panel = fe::card(fe::column({fe::row(std::move(tabs), {p.pt(6)}), fe::expanded(body), fe::divider(), footerColumn}, {p.pt(8)}), cardOptions);
+	if (p.touch)
+		return fe::center(fe::maxWidth(p.pt(1120), panel));
+	// The desktop lobby fills the window inside a margin, as before.
+	const int margin = std::clamp(p.safe.w / 24, p.pt(8), p.pt(50));
+	return fe::padding(fe::Insets::symmetric(margin, p.pt(8)), panel);
 }
 
 Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> left;
-	left.push_back(fe::segments("map/mode", localized({"Premade maps", "Random map"}), setup.random, [this](int value) { setMapMode(value); }));
+	// Content-sized pills at the left on desktop, stretched segments on touch.
+	auto pills = [&](const std::string &key, const std::vector<std::string> &labels, int selected, std::function<void(int)> change)
+	{
+		if (p.touch)
+			return fe::segments(key, labels, selected, change);
+		std::vector<Element> buttons;
+		for (int i = 0; i < int(labels.size()); ++i)
+		{
+			fe::ButtonOptions options;
+			options.selected = selected == i;
+			buttons.push_back(fe::constrained({p.pt(120), 0, fe::Constraints::Unbounded, fe::Constraints::Unbounded},
+											  fe::padding(fe::Insets::symmetric(p.pt(8), 0),
+														  fe::button(key + "/" + std::to_string(i), labels[std::size_t(i)], [change, i] { change(i); }, options))));
+		}
+		return fe::row(std::move(buttons), {p.pt(8), fe::CrossAlign::Center, fe::MainAlign::Start});
+	};
+	left.push_back(pills("map/mode", localized({"Premade maps", "Random map"}), setup.random, [this](int value) { setMapMode(value); }));
 	if (!setup.random)
 	{
 		if (separateMapLibraries)
-			left.push_back(fe::segments("map/library", localized({"Built-in maps", "Your maps"}), userMaps,
-										[this](int value)
-										{
-											if (userMaps != bool(value))
-											{
-												userMaps = value;
-												listMaps();
-												if (!librarySelection[userMaps].empty())
-													loadMap(librarySelection[userMaps]);
-												invalidate();
-											}
-										}));
+			left.push_back(pills("map/library", localized({"Built-in maps", "Your maps"}), userMaps,
+								 [this](int value)
+								 {
+									 if (userMaps != bool(value))
+									 {
+										 userMaps = value;
+										 listMaps();
+										 if (!librarySelection[userMaps].empty())
+											 loadMap(librarySelection[userMaps]);
+										 invalidate();
+									 }
+								 }));
 		const auto found = std::find(mapPaths.begin(), mapPaths.end(), librarySelection[userMaps]);
 		const int selected = found == mapPaths.end() ? -1 : int(found - mapPaths.begin());
 		fe::ListOptions listOptions;
@@ -964,6 +1002,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 				left.push_back(fe::caption(tr(section == 1 ? "This landscape uses fixed resource placement." : "Dimensions and colony count are set above.")));
 		}
 	}
+	auto leftParts = left;
 	auto leftColumn = fe::column(std::move(left), {p.pt(8)});
 
 	std::vector<Element> right;
@@ -986,7 +1025,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 	// A reroll invalidates the launch snapshot, not the image being displayed.
 	// Keep its geometry, terrain and instructions until the replacement is ready.
 	const bool displayPreview = validMap || (previewBusy() && preview->isThumbnailLoaded());
-	const int previewSize = narrow ? 240 : 320;
+	const int previewSize = narrow ? 240 : 440;
 	if (displayPreview)
 	{
 		right.push_back(fe::center(fe::mapPreview("map/preview", *preview, previewSize)));
@@ -1012,7 +1051,16 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 											  {false, false, setup.validation().empty() && !previewBusy()})));
 	auto rightColumn = fe::column(std::move(right), {p.pt(8)});
 	if (narrow)
+	{
+		// Phones: the map mode first, the preview, then the library, as before.
+		if (p.compact() && !leftParts.empty())
+		{
+			Element mode = leftParts.front();
+			leftParts.erase(leftParts.begin());
+			return fe::scroll("lobby/map", fe::column({mode, rightColumn, fe::column(std::move(leftParts), {p.pt(8)})}, {p.pt(12)}));
+		}
 		return fe::scroll("lobby/map", fe::column({rightColumn, leftColumn}, {p.pt(12)}));
+	}
 	return fe::row({fe::expanded(fe::scroll("lobby/map", leftColumn), 11), fe::expanded(fe::scroll("lobby/map/side", rightColumn), 9)},
 				   {p.pt(16), fe::CrossAlign::Stretch});
 }

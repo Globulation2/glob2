@@ -56,6 +56,7 @@ class LoadSaveDialog : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { cancelPresentedFile(); }
+	double maxWidth() const override { return classic() ? 280 : -1; }
 
   private:
 	bool isLoad;

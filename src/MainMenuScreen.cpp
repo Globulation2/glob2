@@ -59,64 +59,129 @@ void MainMenuScreen::loadWordmark(int logoWidth)
 
 Element MainMenuScreen::build(const Presentation &p)
 {
-	const bool compact = p.compact() || p.heightClass() == SizeClass::Compact;
-	const int panelWidth = std::min(p.safe.w - 2 * p.pt(12), p.pt(compact ? 340 : 400));
-	loadWordmark(std::max(64, panelWidth - 2 * p.pt(24)));
-
 	auto choose = [this](int code) { return [this, code] { endExecute(code); }; };
-	auto launch = [&](const char *key, int code, bool primary = false)
+	auto action = [&](const char *key, int code, ButtonOptions options)
+	{ return button("menu/" + std::to_string(code), tr(key), choose(code), options); };
+	CardOptions cardOptions;
+	cardOptions.color = GAGCore::Color(230, 231, 210, 248);
+	cardOptions.radius = p.pt(10);
+	if (p.touch)
 	{
-		ButtonOptions options;
-		options.primary = primary;
-		options.role = FontRole::Heading;
-		options.minHeight = primary ? 48 : 42;
-		if (primary)
-			options.shortcut = SDLK_RETURN;
-		return button("menu/" + std::to_string(code), tr(key), choose(code), options);
-	};
-	auto utility = [&](const char *key, int code)
-	{
-		ButtonOptions options;
-		options.role = FontRole::Body;
-		options.minHeight = compact ? 40 : 34;
-		return button("menu/" + std::to_string(code), tr(key), choose(code), options);
-	};
-
-	std::vector<Element> utilities{utility("[settings]", GAME_SETUP), utility("[editor]", EDITOR),
-								   utility("[credits]", CREDITS)};
-#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
-	utilities.push_back(utility("[quit]", QUIT));
-#endif
-	std::vector<Element> network{utility("[yog]", MULTIPLAYERS_YOG)};
+		// Phones: launch choices prominent, utilities one level away behind More,
+		// settings beside the wordmark.
+		const int w = std::min(p.pt(440), p.safe.w - p.pt(24));
+		const int panelHeight = std::min(p.safe.h - p.pt(24), p.pt(more ? 596 : 420));
+		loadWordmark(std::max(64, w - p.pt(140)));
+		ButtonOptions gear;
+		gear.role = FontRole::Body;
+		gear.minHeight = 48;
+		auto header = row({expanded(wordmark ? image(wordmark.get(), {false}) : title("Globulation 2")),
+						   button("menu/settings", tr("[settings]"), choose(GAME_SETUP), gear)},
+						  {p.pt(8), CrossAlign::Center});
+		ButtonOptions rowStyle;
+		rowStyle.alignLeft = true;
+		rowStyle.minHeight = 56;
+		ButtonOptions primaryStyle = rowStyle;
+		primaryStyle.primary = true;
+		ButtonOptions small;
+		small.minHeight = 48;
+		std::vector<Element> content;
+		if (!more)
+		{
+			content.push_back(action("[custom game]", CUSTOM, primaryStyle));
+			const bool landscape = p.landscape() && p.safe.h < p.pt(480);
+			if (landscape)
+			{
+				// Keep every top-level destination visible on short phones.
+				WrapOptions grid;
+				grid.maxColumns = 2;
+				grid.minChildWidth = 1;
+				content.push_back(wrap({action("[campaign]", CAMPAIGN, small), action("[load game]", LOAD_GAME, small),
+										action("[tutorial]", TUTORIAL, small),
+										button("menu/more", tr("[More]"), [this] { showMore(true); }, small)},
+									   grid));
+			}
+			else
+			{
+				content.push_back(spacer(p.pt(4)));
+				content.push_back(action("[campaign]", CAMPAIGN, rowStyle));
+				content.push_back(action("[load game]", LOAD_GAME, rowStyle));
+				content.push_back(action("[tutorial]", TUTORIAL, rowStyle));
+				content.push_back(spacer(p.pt(4)));
+				content.push_back(button("menu/more", tr("[More]"), [this] { showMore(true); }, small));
+			}
+		}
+		else
+		{
+			ButtonOptions back = small;
+			back.shortcut = SDLK_ESCAPE;
+			content.push_back(button("menu/back", tr("[Back]"), [this] { showMore(false); }, back));
+			content.push_back(action("[yog]", MULTIPLAYERS_YOG, rowStyle));
 #ifndef __EMSCRIPTEN__
-	network.push_back(utility("[lan]", MULTIPLAYERS_LAN));
+			content.push_back(action("[lan]", MULTIPLAYERS_LAN, rowStyle));
 #endif
-
+			content.push_back(action("[editor]", EDITOR, rowStyle));
+			content.push_back(action("[credits]", CREDITS, rowStyle));
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
+			content.push_back(action("[quit]", QUIT, rowStyle));
+#endif
+		}
+		cardOptions.padding = p.pt(12);
+		auto body = scroll("menu/scroll", column(std::move(content), {p.pt(8)}));
+		return center(sized({w, panelHeight}, card(column({header, expanded(body)}, {p.pt(12)}), cardOptions)));
+	}
+	// Desktop: the tall panel at the left over the live colony.
+	const int panelW = p.pt(p.safe.h < p.pt(600) ? 312 : 368);
+	const int panelH = std::min(p.safe.h - p.pt(40), p.pt(620));
+	loadWordmark(std::max(64, panelW - 2 * p.pt(24)));
+	ButtonOptions launch;
+	launch.role = FontRole::Heading;
+	launch.minHeight = 42;
+	ButtonOptions primary = launch;
+	primary.primary = true;
+	primary.minHeight = 48;
+	primary.shortcut = SDLK_RETURN;
+	ButtonOptions utility;
+	utility.role = FontRole::Body;
+	utility.minHeight = 32;
 	std::vector<Element> content;
+	content.push_back(canvas("", {p.pt(36), p.pt(4)},
+							 [](Canvas &c, Rect r, const Frame &frame) { c.fillRounded(r, r.h / 2, frame.layout.theme.palette.accent); }));
+	content.push_back(spacer(p.pt(4)));
 	if (wordmark)
 		content.push_back(image(wordmark.get(), {true}));
 	else
 		content.push_back(title("Globulation 2"));
-	content.push_back(spacer(p.pt(compact ? 8 : 16)));
-	content.push_back(launch("[custom game]", CUSTOM, true));
-	content.push_back(launch("[campaign]", CAMPAIGN));
-	content.push_back(launch("[load game]", LOAD_GAME));
-	content.push_back(launch("[tutorial]", TUTORIAL));
-	content.push_back(spacer(p.pt(4)));
-	content.push_back(wrap(std::move(network), {-1, p.pt(120)}));
-	content.push_back(spacer(p.pt(4)));
-	content.push_back(wrap(std::move(utilities), {-1, p.pt(120)}));
-	content.push_back(spacer(p.pt(4)));
-	content.push_back(caption(PACKAGE_VERSION));
-
-	auto body = scroll("menu/scroll", column(std::move(content), {p.pt(6)}));
-	CardOptions cardOptions;
-	cardOptions.color = GAGCore::Color(230, 231, 210, 248);
-	cardOptions.radius = p.pt(10);
-	auto panel = maxWidth(panelWidth, card(body, cardOptions));
-	if (p.compact())
-		return center(panel);
-	// Desktop: the panel sits at the left over the live colony.
+	content.push_back(spacer(p.pt(16)));
+	content.push_back(action("[custom game]", CUSTOM, primary));
+	content.push_back(action("[campaign]", CAMPAIGN, launch));
+	content.push_back(action("[load game]", LOAD_GAME, launch));
+	content.push_back(action("[tutorial]", TUTORIAL, launch));
+	content.push_back(spacer(p.pt(12)));
+	content.push_back(action("[yog]", MULTIPLAYERS_YOG, utility));
+#ifndef __EMSCRIPTEN__
+	content.push_back(action("[lan]", MULTIPLAYERS_LAN, utility));
+#endif
+	content.push_back(spacer(p.pt(12)));
+	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility), action("[editor]", EDITOR, utility),
+								   action("[credits]", CREDITS, utility)};
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
+	utilities.push_back(action("[quit]", QUIT, utility));
+#endif
+	WrapOptions grid;
+	grid.maxColumns = 2;
+	grid.minChildWidth = 1;
+	content.push_back(wrap(std::move(utilities), grid));
+	cardOptions.padding = p.pt(24);
+	auto panel = sized({panelW, panelH},
+					   card(column({expanded(scroll("menu/scroll", column(std::move(content), {p.pt(6)}))), caption(PACKAGE_VERSION)}, {p.pt(6)}),
+							cardOptions));
 	const int margin = std::clamp(p.safe.w / 20, p.pt(20), p.pt(72));
-	return padding({margin, p.pt(20), 0, p.pt(20)}, align(Alignment::Left, panel));
+	return padding({margin, 0, 0, 0}, align(Alignment::Left, panel));
+}
+
+void MainMenuScreen::showMore(bool value)
+{
+	more = value;
+	invalidate();
 }

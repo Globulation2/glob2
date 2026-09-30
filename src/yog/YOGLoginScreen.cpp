@@ -64,10 +64,12 @@ Element YOGLoginScreen::build(const Presentation &p)
 	passwordOptions.submit = [this](const std::string &) { login(); };
 	auto body = scroll("login/scroll",
 					   column({statusRow(p),
-							   form({field(tr("[Enter your nickname :]"),
-										   textField("nickname", nickname, [this](const std::string &v) { nickname = v; }, {false, 32})),
-									 field(tr("[Enter your password :]"),
-										   textField("password", password, [this](const std::string &v) { password = v; }, passwordOptions))}),
+							   maxWidth(p.pt(320), form({field(tr("[Enter your nickname :]"),
+															   textField("nickname", nickname, [this](const std::string &v) { nickname = v; }, {false, 32}),
+															   {"", 300, true}),
+														 field(tr("[Enter your password :]"),
+															   textField("password", password, [this](const std::string &v) { password = v; }, passwordOptions),
+															   {"", 300, true})})),
 							   toggle("remember", tr("[Remember YOG password localy]"), rememberPassword,
 									  [this](bool v) { rememberPassword = v; })}));
 	return page(tr("[yog]"), body,

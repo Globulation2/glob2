@@ -247,9 +247,17 @@ struct MobileGallerySetup
 	{
 		// Keep a real menu beneath modal screens, matching the application's theme lifecycle.
 		auto main = std::make_unique<MainMenuScreen>();
+		auto *mainScreen = main.get();
 		stack.push(std::move(main));
 		frame(stack);
 		stackShot(stack, "main-menu");
+		if (mainScreen->host().find("menu/more"))
+		{
+			// Phones keep the utilities one level away behind More.
+			press(stack, *mainScreen, "menu/more");
+			stackShot(stack, "main-more");
+			press(stack, *mainScreen, "menu/back");
+		}
 		screenShot(stack, "campaign-menu", std::make_unique<CampaignMainMenu>(stack));
 		screenShot(stack, "campaign-select", std::make_unique<CampaignSelectorScreen>());
 		screenShot(stack, "campaign-saves", std::make_unique<CampaignSelectorScreen>(true));
