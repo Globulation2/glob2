@@ -47,6 +47,8 @@ jobs:
           [[ "$SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
           git fetch --no-tags https://github.com/Globulation2/glob2.git "$SOURCE_COMMIT"
           test "$(git rev-parse FETCH_HEAD)" = "$SOURCE_COMMIT"
+          # Release preflight must see tags created by other store pipelines.
+          git fetch --tags https://github.com/Globulation2/glob2.git
           if [[ -n "$RELEASE_TAG" ]]; then
             [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]
             git fetch --no-tags https://github.com/Globulation2/glob2.git \
