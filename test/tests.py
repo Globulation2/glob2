@@ -164,6 +164,7 @@ UNIT_TESTS = [
     ('MobileTemporaryFilesHarness.cpp', dict(require={'not-mingw'})),
     'PerformanceTelemetryHarness.cpp',
     'ScreenExecutionHarness.cpp',
+    'ScrollPhysicsTest.cpp',
     'SoundMixerTrackSelectionHarness.cpp',
     'UILayoutHarness.cpp',
     'GlobalGradientHarness.cpp',
