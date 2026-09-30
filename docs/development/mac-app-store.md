@@ -31,11 +31,12 @@ smoke-test an ad hoc sandboxed candidate without release credentials. Set
 `upload` to true to sign the app, build a `.pkg`, validate it with Apple, and upload
 it to App Store Connect. The public version comes from `PACKAGE_VERSION` in
 `scons/build_layout.py`, so update it in the release source before dispatching.
-Uploads are allowed only from `master`. The workflow
-has no push or pull-request trigger, and it does not submit the uploaded build
-for App Review. Processing and submission are separate actions in App Store
-Connect. The `mac-app-store` GitHub environment can be configured with required
-reviewers for an additional release gate.
+Uploads are allowed only from `master`. Changes to the release workflow, SCons
+bundle code, or `darwin/` also trigger a build-only pull-request check; that
+check has no access to the signing job and cannot upload. The workflow does not
+submit an uploaded build for App Review. Processing and submission are separate
+actions in App Store Connect. The `mac-app-store` GitHub environment can be
+configured with required reviewers for an additional release gate.
 
 The build job runs on GitHub's arm64 `macos-26` runner with Xcode 26 or newer. It
 installs the native Homebrew dependencies, runs `scons release=1 bundle`, stages

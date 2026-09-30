@@ -1,6 +1,13 @@
 name: Mac App Store release
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/mac-app-store.yml'
+      - 'SConstruct'
+      - 'scons/bundle.py'
+      - 'scons/addDependentLibsToBundle.py'
+      - 'darwin/**'
   workflow_dispatch:
     inputs:
       build_number:
@@ -16,10 +23,10 @@ on:
 permissions:
   contents: read
 
-# A manual release must not race another build number or upload.
+# Manual releases serialize; superseded PR build checks can be cancelled.
 concurrency:
-  group: mac-app-store-release
-  cancel-in-progress: false
+  group: mac-app-store-${{ github.event_name == 'workflow_dispatch' && 'release' || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -53,7 +60,7 @@ jobs:
 
       - name: Stage sandbox candidate
         env:
-          BUILD_NUMBER: ${{ inputs.build_number }}
+          BUILD_NUMBER: ${{ inputs.build_number || github.run_number }}
           BUNDLE_ID: ${{ vars.APPLE_BUNDLE_ID }}
         run: |
           python3 darwin/package_app_store.py --build "$BUILD_NUMBER" \
@@ -84,7 +91,7 @@ jobs:
 
   upload:
     name: Sign and upload to App Store Connect
-    if: ${{ inputs.upload }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.upload }}
     needs: build
     runs-on: macos-26
     environment: mac-app-store
