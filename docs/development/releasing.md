@@ -31,11 +31,11 @@ Before tagging a new release, choose an unused version, update
 `PACKAGE_VERSION` in `scons/build_layout.py`, `vcpkg.json`, and
 `fedora/glob2.spec`, and add its AppStream release notes. Do not move an
 existing tag.
-Build-only runs leave Flatpak off by default while its first listing metadata is
-being prepared; select `build_flatpak` after adding AppStream release notes to
-exercise that recipe. Flathub's linter rejects the current metadata until those
-notes exist. The GitHub
-publication run builds it.
+Build-only runs leave Flatpak off by default because it takes longer to build;
+select `build_flatpak` to exercise that recipe. An untagged run builds its other
+packages from the mirror checkout and pins the Flatpak recipe to the latest
+public source commit contained in that checkout. Tagged publication builds pin
+the selected public tag. The GitHub publication run builds Flatpak.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
 `data/screenshots/`; its `master` URL is in the AppStream metadata. Keep that

@@ -49,11 +49,17 @@ jobs:
             git fetch --no-tags https://github.com/Globulation2/glob2.git \
               "refs/tags/$TAG:refs/tags/$TAG"
             version="$(python3 tools/release/release.py check --tag "$TAG")"
+            revision="$(git rev-parse HEAD)"
           else
             version="$(python3 tools/release/release.py check)"
+            git fetch --no-tags https://github.com/Globulation2/glob2.git master
+            if ! revision="$(git merge-base HEAD FETCH_HEAD)"; then
+              echo '::error::Release checkout does not share history with the public source repository.'
+              exit 1
+            fi
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
       - name: Validate Android release identity
         run: python3 mobile/android_release.py check
       - name: Validate F-Droid listing for publication
