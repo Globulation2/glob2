@@ -304,26 +304,33 @@ included in Xcode archives for TestFlight distribution.
 
 ### Internal TestFlight upload
 
-`.github/workflows/ios-testflight.yml` is manually triggered from GitHub Actions.
-It runs only from `master`, uses the Xcode 27 runner and the registered
-`org.globulation2.glob2` App ID on
+`.github/workflows/ios-testflight.yml` is kept in the public source repository,
+but its upload job runs only when manually dispatched from `master` in the
+owner-only `genixpro/glob2-release` mirror. The owner syncs the public source and
+workflow to the mirror and chooses when to run it. Dispatches in the public
+`Globulation2/glob2` repository skip the job. The mirror uses the Xcode 27 runner
+and the registered `org.globulation2.glob2` App ID on
 team `CL2MNNYQX3`. Each run builds pinned iOS dependencies from source, compiles
 the game, archives the iPhone app, checks the bundle ID and build number, retains
 matching dSYMs, exports and validates an App Store signed IPA, and uploads an
 internal-only TestFlight build. Distribution signing occurs during export, so
 archiving does not require a registered test device. Its build
-number is `100 × GITHUB_RUN_NUMBER + GITHUB_RUN_ATTEMPT`, so reruns get a new number.
+number is `1,000,000 + 100 × GITHUB_RUN_NUMBER + GITHUB_RUN_ATTEMPT`, so mirror
+runs and reruns get unique numbers after earlier public test uploads.
 The uploaded build cannot be submitted for external testing or App Store release.
 
-One-time repository setup requires an App Store Connect **team** API key with
+One-time mirror setup requires an App Store Connect **team** API key with
 permissions to manage signing assets and upload builds. Individual API keys cannot
-access provisioning endpoints. Store the key ID, issuer ID and single-line Base64
-encoding of the downloaded `.p8` private key as repository secrets named
-`IOS_ASC_KEY_ID`, `IOS_ASC_ISSUER_ID` and `IOS_ASC_KEY_P8_BASE64`. Never commit the
-private key or signing certificate. The workflow writes the key only to the
-ephemeral runner, outside the checked-out repository. Configure the app's internal
-TestFlight group for automatic distribution in App Store Connect if testers should
-receive every processed build without another manual step.
+access provisioning endpoints. In the **private mirror**, create an
+`ios-testflight` environment restricted to the `master` branch and store the key
+ID, issuer ID and single-line Base64 encoding of the downloaded `.p8` private
+key there as environment secrets named `IOS_ASC_KEY_ID`, `IOS_ASC_ISSUER_ID` and
+`IOS_ASC_KEY_P8_BASE64`. Do not place release credentials in the public
+repository, its Actions secrets, or source code. The workflow writes the key
+only to the ephemeral mirror runner, outside the checked-out repository.
+Configure the app's internal TestFlight group for automatic distribution in App
+Store Connect if testers should receive every processed build without another
+manual step.
 
 The workflow uploads an `.xcarchive` artifact for diagnosis. A successful upload
 means Apple accepted the transfer; Apple processes the build afterward. Check the
