@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for Building::canUnitWorkHere: the schooling gate
 // reads the one worker level (build), not the harvest half.
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL.h>
@@ -20,11 +17,11 @@
 #include <cstdio>
 #include <cstdlib>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 // One hiring pass: a worker of the given schooling level, carrying `carried`,
@@ -60,32 +57,23 @@ static bool hiringPass(const char* kind, int level, bool site, int carried, int 
 		kind, level + 1, site ? "site" : "completed", workerLevel, hired ? "hired" : "refused", *tooLowLevel);
 	return hired;
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("LevelGate")
 {
-	SDL_SetMainReady();
-	require(argc == 3, "usage: harness PROFILE ROOT");
-	require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
-	GlobalContainer globals(argv[1]);
-	globals.fileManager->addDir(argv[2]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-
-	Uint32 tooLow = 0;
-	// The gate compares the building's tier with the worker level.
-	require(hiringPass("inn", 0, false, WHEAT, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-1 inn");
-	require(!hiringPass("inn", 1, false, WHEAT, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn");
-	require(hiringPass("inn", 1, false, WHEAT, 1, &tooLow) && tooLow == 0, "level-1 worker stocks a level-2 inn");
-	require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn site");
-	require(hiringPass("inn", 1, true, WOOD, 1, &tooLow) && tooLow == 0, "level-1 worker builds a level-2 inn site");
-	require(hiringPass("inn", 2, true, WOOD, 2, &tooLow) && tooLow == 0, "level-2 worker builds a level-3 inn site");
-	// It reads the worker level (build); a stale harvest value does not matter.
-	require(hiringPass("inn", 1, true, WOOD, 1, &tooLow, 0) && tooLow == 0, "build level 1 with harvest 0 builds a level-2 inn site");
-	require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow, 1) && tooLow == 1, "build level 0 with harvest 1 is refused by a level-2 inn site");
-	std::puts("PASS the hiring gate reads the one worker level");
-	return 0;
+	TEST_CASE("completed buildings hire any worker while sites keep the schooling gate")
+	{
+		glob2test::HeadlessGlobals globals;
+		Uint32 tooLow = 0;
+		// The gate compares the building's tier with the worker level.
+		require(hiringPass("inn", 0, false, WHEAT, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-1 inn");
+		require(!hiringPass("inn", 1, false, WHEAT, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn");
+		require(hiringPass("inn", 1, false, WHEAT, 1, &tooLow) && tooLow == 0, "level-1 worker stocks a level-2 inn");
+		require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn site");
+		require(hiringPass("inn", 1, true, WOOD, 1, &tooLow) && tooLow == 0, "level-1 worker builds a level-2 inn site");
+		require(hiringPass("inn", 2, true, WOOD, 2, &tooLow) && tooLow == 0, "level-2 worker builds a level-3 inn site");
+		// It reads the worker level (build); a stale harvest value does not matter.
+		require(hiringPass("inn", 1, true, WOOD, 1, &tooLow, 0) && tooLow == 0, "build level 1 with harvest 0 builds a level-2 inn site");
+		require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow, 1) && tooLow == 1, "build level 0 with harvest 1 is refused by a level-2 inn site");
+	}
 }

@@ -17,21 +17,33 @@
 
 namespace glob2test
 {
+	struct GlobalsOptions
+	{
+		bool display = false;        // create a real window and load graphics
+		bool loadStrings = false;    // run GlobalContainer::load() (texts, key layouts)
+		int width = 640, height = 480;
+		Uint32 screenFlags = 0;
+		Uint32 seed = 0;             // nonzero: setSyncRandSeed(seed); zero leaves the default state
+		std::string profileName = "glob2-tests";
+		bool addSourceRoot = true;   // data/ and maps/ resolve from any working directory
+	};
+
+	struct GameOptions
+	{
+		int wDec = 5, hDec = 5;
+		TerrainType terrain = GRASS;
+		int teams = 1;
+		bool discovered = false;      // reveal the whole map to every team
+		bool clearImmobile = false;   // clear immobile-unit bookkeeping on every tile
+		bool loadDefaultRace = false; // team->race.loadDefault() for each team
+	};
+
 	// Owns the process-wide GlobalContainer for the scope of a test case. Headless by
 	// default: no window, no sprites, no sound, building types and races initialised,
 	// the repository root on the data search path and the simulation RNG seeded.
 	struct HeadlessGlobals
 	{
-		struct Options
-		{
-			bool display = false;        // create a real window and load graphics
-			bool loadStrings = false;    // run GlobalContainer::load() (texts, key layouts)
-			int width = 640, height = 480;
-			Uint32 screenFlags = 0;
-			Uint32 seed = 110;
-			std::string profileName = "glob2-tests";
-			bool addSourceRoot = true;   // data/ and maps/ resolve from any working directory
-		};
+		using Options = GlobalsOptions;
 
 		GlobalContainer globals;
 
@@ -47,15 +59,7 @@ namespace glob2test
 	// A game with one team on a 2^wDec x 2^hDec torus. Requires a live HeadlessGlobals.
 	struct HeadlessGame
 	{
-		struct Options
-		{
-			int wDec = 5, hDec = 5;
-			TerrainType terrain = GRASS;
-			int teams = 1;
-			bool discovered = false;      // reveal the whole map to every team
-			bool clearImmobile = false;   // clear immobile-unit bookkeeping on every tile
-			bool loadDefaultRace = false; // team->race.loadDefault() for each team
-		};
+		using Options = GameOptions;
 
 		GameGUI gui;
 		Game& game;

@@ -1,4 +1,5 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
+#include "EngineFixtures.h"
 #include "../../src/GlobalContainer.h"
 #include "../../src/Game.h"
 #include "../../src/team/Team.h"
@@ -21,10 +22,8 @@
 #include <string>
 #include <vector>
 // Access the scheduler boundary without adding a production testing API.
-#define private public
 #include "../../src/ai/maxima/AIMaximaRuntime.h"
 #include "../../src/ai/maxima/AIMaxima.h"
-#undef private
 #include "../../src/building/Building.h"
 #include "../../src/game/entities/BuildingType.h"
 #include "../../src/building/IntBuildingType.h"
@@ -34,7 +33,8 @@
 #include <cassert>
 #include <iostream>
 
-GlobalContainer* globalContainer = NULL;
+namespace
+{
 using namespace AIMaximaRuntime;
 
 
@@ -228,15 +228,28 @@ void savedRelationships()
 
 }
 }
+}
 
-int main(int argc,char** argv)
+TEST_SUITE("Maxima.Relocation")
 {
-    GlobalContainer container; globalContainer=&container;
-    container.runNoX=true; container.buildingsTypes.init(); IntBuildingType::init();
-    const std::string selected=argc>1?argv[1]:"all";
-    if(selected=="all"||selected=="deletion")deletionSafety();
-    if(selected=="all"||selected=="recovery")lostReplacement();
-    if(selected=="all"||selected=="retry")deferredRetry();
-    if(selected=="all"||selected=="save")savedRelationships();
-    std::cout << "Maxima relocation " << selected << " regressions passed\n";
+	TEST_CASE("deletion safety")
+	{
+		glob2test::HeadlessGlobals globals;
+		deletionSafety();
+	}
+	TEST_CASE("lost replacement")
+	{
+		glob2test::HeadlessGlobals globals;
+		lostReplacement();
+	}
+	TEST_CASE("deferred retry")
+	{
+		glob2test::HeadlessGlobals globals;
+		deferredRetry();
+	}
+	TEST_CASE("saved relationships")
+	{
+		glob2test::HeadlessGlobals globals;
+		savedRelationships();
+	}
 }

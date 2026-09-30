@@ -2,10 +2,7 @@
 // Real-engine regression: the hunger check that decides whether a unit may be
 // hired for a resource must measure the walk to that resource, not the length
 // of the whole fetch-and-carry trip.
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL.h>
@@ -25,21 +22,23 @@
 #include <cstdio>
 #include <cstdlib>
 
-GlobalContainer* globalContainer = nullptr;
-
-static void require(bool ok, const char* message)
-{
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
-}
-
-// considerUnitForResource is private; a friend fixture reaches it without
-// exposing it to game callers, the way GameGUISelectionHarness does.
+// Named in a friend declaration, so it stays outside the anonymous namespace.
 class RoundTripHungerGateHarness
 {
 public:
 	static bool consider(Building* building, Unit* unit, int resource, int* dist)
 		{ return building->considerUnitForResource(unit, resource, dist); }
 };
+
+namespace
+{
+static void require(bool ok, const char* message)
+{
+	GLOB2_REQUIRE(ok, message);
+}
+
+// considerUnitForResource is private; a friend fixture reaches it without
+// exposing it to game callers, the way GameGUISelectionHarness does.
 
 static void aUnitIsJudgedOnTheWalkToTheResource()
 {
@@ -162,22 +161,18 @@ static void theFallbackScoresAWholeRoundTrip()
 
 	std::puts("PASS the fallback score is a whole round trip, not a one-way walk");
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("RoundTripHungerGate")
 {
-	SDL_SetMainReady();
-	require(argc == 3, "usage: harness PROFILE ROOT");
-	require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
-	GlobalContainer globals(argv[1]);
-	globals.fileManager->addDir(argv[2]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	aUnitIsJudgedOnTheWalkToTheResource();
-	theFallbackScoresAWholeRoundTrip();
-	std::puts("Round-trip hunger gate regressions passed");
-	return 0;
+	TEST_CASE("a unit is judged on the walk to the resource")
+	{
+		glob2test::HeadlessGlobals globals;
+		aUnitIsJudgedOnTheWalkToTheResource();
+	}
+	TEST_CASE("the fallback scores a whole round trip")
+	{
+		glob2test::HeadlessGlobals globals;
+		theFallbackScoresAWholeRoundTrip();
+	}
 }

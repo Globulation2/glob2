@@ -159,66 +159,28 @@ jobs:
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
             unit-tests \
+            engine-tests \
             map-report-test \
-            orchard-conversion-test \
-            maxima-food-ledger-test \
-            tournament-compatibility-test \
             torus-render-test \
             map-preview-test \
             custom-setup-test \
             map-generator-defaults-test \
             map-generator-golden-test \
-            point-bar-render-test \
-            selection-test \
-            building-footprint-test \
-            entering-unit-save-test \
-            clearing-gradient-test \
-            trapped-unit-test \
-            hungry-defeat-test \
             failing-unit-markers-test \
             entering-unit-draw-test \
-            immobile-unit-gradient-test \
-            building-expel-test \
-            building-gradient-invalidation-test \
-            hiring-bucket-test \
-            level-gate-test \
-            resource-fetch-target-test \
-            round-trip-hunger-gate-test \
-            inn-swap-test \
-            savegame-safety-test \
-            maxima-continuation-test \
-            maxima-relocation-test \
-            team-stats-save-test \
-            unit-continuation-test \
-            runtime-continuation-test \
-            gradient-invalidation-test \
-            terrain-test \
-            global-gradient-test \
-            path-gradient-test \
-            nicowar-farming-test \
-            ai-save-portability-test \
             lan-test \
             aspect-test \
             resize-test \
             text-raster-test \
-            map-render-resize-test \
             menu-colony-harness \
             speed-tests \
             unit-render-tests \
             unit-hd-cache-test \
             runtime-pack-check \
             settings-tests \
-            session-test \
             portable-renderer-test \
             gameplay-touch-test \
             ui-presentation-test
-
-      - name: Test Cortex placement equivalence
-        id: test_cortex_placement_equivalence
-        continue-on-error: true
-        run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 cortex-geometry-test
-          ./build/linux/client/release/src/CortexGeometryHarness
 
       - name: Test Maxima strategy and implementation
         id: test_maxima_strategy_and_implementation
@@ -375,20 +337,20 @@ jobs:
         id: run_the_unit_tests
         continue-on-error: true
         run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --junit artifacts/tests/unit-junit.xml
+      - name: Run the engine tests
+        id: run_the_engine_tests
+        continue-on-error: true
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --shard ${{ matrix.shard }}/4 --junit artifacts/tests/engine-junit.xml
       - name: Upload native test results
-        if: ${{ always() && matrix.shard == 4 }}
+        if: always()
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: native-test-results-${{ matrix.runner }}
+          name: native-test-results-${{ matrix.runner }}-${{ matrix.shard }}
           path: artifacts/tests/
           if-no-files-found: ignore
-
-      - name: Test Maxima food ledger
-        if: ${{ matrix.shard == 1 }}
-        id: test_maxima_food_ledger
-        continue-on-error: true
-        run: build/linux/client/release/src/MaximaFoodLedgerStandaloneTest
 
       - name: Test map JSON reports
         if: ${{ matrix.shard == 2 }}
@@ -437,7 +399,6 @@ jobs:
             --check 'map fairness' 'python3 test/test_map_fairness_tournament.py' \
             --check 'map generation study' 'python3 test/test_map_generation_study.py' \
             --check 'fairness model' 'python3 test/test_fairness_model.py' \
-            --check 'tournament compatibility' ./build/linux/client/release/src/TournamentCompatibilityTest \
             --check 'tournament CLI' 'python3 test/tournament_cli_integration.py --binary build/linux/client/release/src/glob2 --output artifacts/tournament-cli'
       - name: Retain tournament CLI compatibility evidence
         id: retain_tournament_cli_compatibility_evidence
@@ -482,23 +443,6 @@ jobs:
           path: artifacts/map-preview/
           if-no-files-found: ignore
 
-      - name: Test Orchard Commons generation and fruit conversion
-        if: ${{ matrix.shard == 3 }}
-        id: test_orchard_commons_generation_and_fruit_conversion
-        continue-on-error: true
-        run: |
-          timeout 120s ./build/linux/client/release/src/OrchardCommonsConversionTest glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
-
-      - name: Retain Orchard Commons conversion fixtures
-        id: retain_orchard_commons_conversion_fixtures
-        continue-on-error: true
-        if: ${{ always() && matrix.shard == 3 }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: orchard-conversion-${{ matrix.runner }}
-          path: artifacts/orchard-conversion/
-          if-no-files-found: ignore
-
       - name: Build and run custom-game setup regressions
         if: ${{ matrix.shard == 2 }}
         id: build_and_run_custom_game_setup_regressions
@@ -522,15 +466,6 @@ jobs:
           path: artifacts/custom-game-ci/
           if-no-files-found: ignore
 
-      - name: Test status-bar bounds in GPU and software rendering
-        if: ${{ matrix.shard == 1 }}
-        id: test_status_bar_bounds_in_gpu_and_software_rendering
-        continue-on-error: true
-        run: |
-          SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
-            xvfb-run -a ./build/linux/client/release/src/point-bar-render-test gl
-          SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            ./build/linux/client/release/src/point-bar-render-test software
       - name: Test the portable renderer
         if: ${{ matrix.shard == 4 }}
         id: test_the_portable_renderer
@@ -538,65 +473,6 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
-      - name: Test incremental engine sessions
-        if: ${{ matrix.shard == 1 }}
-        id: test_incremental_engine_sessions
-        continue-on-error: true
-        run: |
-          python3 test/run-engine-session-test.py
-
-      - name: Build and run the selection lifetime regression
-        if: ${{ matrix.shard == 2 }}
-        id: build_and_run_the_selection_lifetime_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/GameGUISelectionHarness
-
-      - name: Build and run the wrapped building footprint regression
-        if: ${{ matrix.shard == 3 }}
-        id: build_and_run_the_wrapped_building_footprint_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/BuildingFootprintHarness
-          python3 test/inflate_gzip_fixture.py test/fixtures/wrapped-building/reproducer.game.gz /tmp/wrapped-building-reproducer.game
-          ./build/linux/client/release/src/BuildingFootprintHarness --load /tmp/wrapped-building-reproducer.game
-
-      - name: Build and run the entering unit save regression
-        if: ${{ matrix.shard == 4 }}
-        id: build_and_run_the_entering_unit_save_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/EnteringUnitSaveHarness
-          python3 test/inflate_gzip_fixture.py test/fixtures/entering-explorer/reproducer.game.gz /tmp/entering-explorer-reproducer.game
-          ./build/linux/client/release/src/EnteringUnitSaveHarness --load /tmp/entering-explorer-reproducer.game
-
-      - name: Test Maxima relocation handovers and recovery
-        if: ${{ matrix.shard == 1 }}
-        id: test_maxima_relocation_handovers_and_recovery
-        continue-on-error: true
-        run: |
-          GLOB2_USER_DIR="$(mktemp -d)" ./build/linux/client/release/src/MaximaRelocationIntegrationTest
-
-      - name: Test clearing flag resource bounds
-        if: ${{ matrix.shard == 2 }}
-        id: test_clearing_flag_resource_bounds
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ClearingFlagGradientTest
-
-      - name: Test trapped colony elimination
-        if: ${{ matrix.shard == 3 }}
-        id: test_trapped_colony_elimination
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TrappedUnitLifecycleTest
-
-      - name: Test hunger and defeat detection
-        if: ${{ matrix.shard == 3 }}
-        id: test_hunger_and_defeat_detection
-        continue-on-error: true
-        run: python3 test/run-hungry-defeat-tests.py build/linux/client/release/src/HungryDefeatHarness
-
       - name: Build and run the failing-unit markers regression
         if: ${{ matrix.shard == 4 }}
         id: build_and_run_the_failing_unit_markers_regression
@@ -619,83 +495,14 @@ jobs:
         run: |
           timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
 
-      - name: Build and run the immobile unit gradient regression
-        if: ${{ matrix.shard == 2 }}
-        id: build_and_run_the_immobile_unit_gradient_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/ImmobileUnitGradientHarness
-
-      - name: Build and run the building expulsion regression
+      - name: Verify save continuation traces
         if: ${{ matrix.shard == 3 }}
-        id: build_and_run_the_building_expulsion_regression
-        continue-on-error: true
-        run: |
-          timeout 300s ./build/linux/client/release/src/BuildingExpelHarness
-
-      - name: Build and run the building gradient invalidation regression
-        if: ${{ matrix.shard == 4 }}
-        id: build_and_run_the_building_gradient_invalidation_regres
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/BuildingGradientInvalidationHarness
-
-      - name: Build and run the hiring bucket regression
-        if: ${{ matrix.shard == 1 }}
-        id: build_and_run_the_hiring_bucket_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/HiringBucketHarness .
-
-      - name: Build and run the hiring level-gate regression
-        if: ${{ matrix.shard == 2 }}
-        id: build_and_run_the_hiring_level_gate_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/LevelGateHarness .
-      - name: Build and run the resource-fetch target regression
-        if: ${{ matrix.shard == 3 }}
-        id: build_and_run_the_resource_fetch_target_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ResourceFetchTargetHarness .
-
-      - name: Build and run the round-trip hunger gate regression
-        if: ${{ matrix.shard == 4 }}
-        id: build_and_run_the_round_trip_hunger_gate_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/RoundTripHungerGateHarness .
-
-      - name: Build and run the inn swap regression
-        if: ${{ matrix.shard == 1 }}
-        id: build_and_run_the_inn_swap_regression
-        continue-on-error: true
-        run: |
-          timeout 120s ./build/linux/client/release/src/InnSwapHarness
-
-      - name: Test savegame loading and atomic autosaves
-        if: ${{ matrix.shard == 2 }}
-        id: test_savegame_loading_and_atomic_autosaves
+        id: verify_save_continuation_traces
         continue-on-error: true
         run: |
           python3 test/ci_run_commands.py \
-            --check 'savegame safety' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness' \
-            --check 'Maxima continuation' build/linux/client/release/src/MaximaContinuationTest
-      - name: Test team statistics save compatibility
-        if: ${{ matrix.shard == 3 }}
-        id: test_team_statistics_save_compatibility
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'unit continuation' ./build/linux/client/release/src/UnitContinuationHarness \
-            --check 'runtime continuation' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .' \
-            --check 'gradient invalidation' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/MapGradientInvalidationTest .' \
             --check 'shared runtime save continuation' 'python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2' \
-            --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2' \
-            --check 'team statistics' 'python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .' \
-            --check 'team statistics version 88' 'python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game && python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/version88.game' \
-            --check 'team statistics version 84' 'python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game && python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game'
+            --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2'
 
       - name: Verify default gradient schedule against cross-platform checksums
         if: ${{ matrix.shard == 4 }}
@@ -711,40 +518,6 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'parallel compute' 'python3 test/check_parallel_compute.py build/linux/client/release/src/glob2' \
             --check 'gradient pipeline' 'python3 test/check_gradient_pipeline.py build/linux/client/release/src/glob2'
-      - name: Build and run the terrain resource regression
-        if: ${{ matrix.shard == 2 }}
-        id: build_and_run_the_terrain_resource_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/TerrainResourcesHarness
-
-      - name: Test AI save portability
-        if: ${{ matrix.shard == 3 }}
-        id: test_ai_save_portability
-        continue-on-error: true
-        run: python3 test/run-savegame-safety-tests.py build/linux/client/release/src/AISavePortabilityHarness .
-
-      - name: Test Nicowar farming wood clearance
-        if: ${{ matrix.shard == 4 }}
-        id: test_nicowar_farming_wood_clearance
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/NicowarFarmingHarness .
-
-      - name: Verify weighted path gradients against the independent oracle
-        if: ${{ matrix.shard == 1 }}
-        id: verify_weighted_path_gradients_against_the_independent_
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/PathGradientHarness
-
-      - name: Build and run the global gradient regression
-        if: ${{ matrix.shard == 2 }}
-        id: build_and_run_the_global_gradient_regression
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/src/GlobalGradientHarness
-
       - name: Build and run the LAN session regression
         if: ${{ matrix.shard == 3 }}
         id: build_and_run_the_lan_session_regression
@@ -812,17 +585,6 @@ jobs:
         run: |
           mkdir -p artifacts/text-raster
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/TextRasterHarness artifacts/text-raster
-
-      - name: Check game rendering across repeated map copies
-        if: ${{ matrix.shard == 1 }}
-        id: check_game_rendering_across_repeated_map_copies
-        continue-on-error: true
-        env:
-          SDL_VIDEODRIVER: dummy
-          SDL_AUDIODRIVER: dummy
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness
-          SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness --gl
 
       - name: Test front-end colony isolation and menu navigation
         if: ${{ matrix.shard == 2 }}
@@ -1227,43 +989,18 @@ jobs:
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \
             unit-tests \
+            engine-tests \
             map-report-test \
-            orchard-conversion-test \
-            tournament-compatibility-test \
-            clearing-gradient-test \
-            path-gradient-test \
-            point-bar-render-test \
-            trapped-unit-test \
-            hungry-defeat-test \
-            hiring-bucket-test \
-            map-render-resize-test \
-            map-preview-test \
-            savegame-safety-test \
-            maxima-continuation-test \
-            team-stats-save-test \
-            unit-continuation-test \
-            runtime-continuation-test \
-            gradient-invalidation-test
-
-      - name: Test Orchard Commons generation and fruit conversion
-        id: test_orchard_commons_generation_and_fruit_conversion
-        continue-on-error: true
-        run: ./build/mingw/client/release/src/OrchardCommonsConversionTest.exe glob2-orchard-ci "$PWD" "$PWD/artifacts/orchard-conversion"
-
-      - name: Retain Orchard Commons conversion fixtures
-        id: retain_orchard_commons_conversion_fixtures
-        continue-on-error: true
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: orchard-conversion-windows
-          path: artifacts/orchard-conversion/
-          if-no-files-found: ignore
+            map-preview-test
 
       - name: Run the unit tests
         id: run_the_unit_tests
         continue-on-error: true
         run: python3 test/run_tests.py --binary unit --build-dir build/mingw/client/release --junit artifacts/tests/unit-junit.xml
+      - name: Run the engine tests
+        id: run_the_engine_tests
+        continue-on-error: true
+        run: python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release --junit artifacts/tests/engine-junit.xml
       - name: Upload native test results
         if: always()
         continue-on-error: true
@@ -1302,76 +1039,19 @@ jobs:
           name: map-cli-windows
           path: artifacts/map-cli/
 
-      - name: Verify weighted path gradients against the independent oracle
-        id: verify_weighted_path_gradients_against_the_independent_
-        continue-on-error: true
-        run: |
-          ./build/mingw/client/release/src/PathGradientHarness.exe
-      - name: Test clearing flag resource bounds
-        id: test_clearing_flag_resource_bounds
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/ClearingFlagGradientTest.exe
-      - name: Test status-bar bounds in software rendering
-        id: test_status_bar_bounds_in_software_rendering
-        continue-on-error: true
-        run: |
-          SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            ./build/mingw/client/release/src/point-bar-render-test.exe software
-
-      - name: Test hunger and defeat detection
-        id: test_hunger_and_defeat_detection
-        continue-on-error: true
-        run: |
-          python3 test/run-hungry-defeat-tests.py build/mingw/client/release/src/HungryDefeatHarness.exe
-
-      - name: Test trapped colony elimination
-        id: test_trapped_colony_elimination
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TrappedUnitLifecycleTest.exe
-
-      - name: Build and run the hiring bucket regression
-        id: build_and_run_the_hiring_bucket_regression
-        continue-on-error: true
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/HiringBucketHarness.exe .
-
-      - name: Check game rendering across repeated map copies
-        id: check_game_rendering_across_repeated_map_copies
-        continue-on-error: true
-        env:
-          SDL_VIDEODRIVER: dummy
-          SDL_AUDIODRIVER: dummy
-        run: |
-          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/MapRenderResizeHarness.exe
-
       - name: Build and run pre-game map preview regressions
         id: build_and_run_pre_game_map_preview_regressions
         continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/MapPreviewHarness.exe
 
-      - name: Test savegame loading and atomic autosaves
-        id: test_savegame_loading_and_atomic_autosaves
+      - name: Verify save continuation traces
+        id: verify_save_continuation_traces
         continue-on-error: true
         run: |
           python3 test/ci_run_commands.py \
-            --check 'savegame safety' 'python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/SavegameSafetyHarness.exe' \
-            --check 'Maxima continuation' build/mingw/client/release/src/MaximaContinuationTest.exe
-      - name: Test team statistics save compatibility
-        id: test_team_statistics_save_compatibility
-        continue-on-error: true
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'unit continuation' ./build/mingw/client/release/src/UnitContinuationHarness.exe \
-            --check 'runtime continuation' 'python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/RuntimeContinuationTest.exe .' \
-            --check 'gradient invalidation' 'python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/MapGradientInvalidationTest.exe .' \
             --check 'shared runtime save continuation' 'python3 test/check_shared_runtime_save_continuation.py build/mingw/client/release/src/glob2.exe' \
-            --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/mingw/client/release/src/glob2.exe' \
-            --check 'team statistics' 'python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TeamStatsSaveHarness.exe .' \
-            --check 'team statistics version 88' 'python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game && python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy /tmp/version88.game' \
-            --check 'team statistics version 84' 'python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game && python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy /tmp/gd-small-2ai.game'
+            --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/mingw/client/release/src/glob2.exe'
 
       - name: Verify default gradient schedule against cross-platform checksums
         id: verify_default_gradient_schedule_against_cross_platform

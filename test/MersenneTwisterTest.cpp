@@ -15,7 +15,7 @@ namespace
 {
 void check(bool ok, const std::string& what)
 {
-	CHECK_MESSAGE(ok, what);
+	CHECK_MESSAGE(ok, (what));
 }
 
 std::string text(const MersenneTwister& mt)

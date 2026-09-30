@@ -1,14 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "Glob2Test.h"
 #include <memory>
 #include "AIMaximaContinuation.h"
 #include <TextStream.h>
-#include <iostream>
 #include <array>
-#include "../../gnupg/sha1.c"
 // Hide the binary dynamic type to exercise the unchanged scalar archive path.
 class ScalarStream : public GAGCore::OutputStream
 {
@@ -64,7 +59,10 @@ Saved save(const Probe::Record& r,bool binary,bool scalarPath) {
  if(binary)dynamic_cast<GAGCore::BinaryOutputStream*>(s.get())->finishSHA1(result.hash.data());
  result.bytes=m->takeContents();return result;
 }
-int main(int, char**) {
+TEST_SUITE("Maxima.Continuation")
+{
+TEST_CASE("binary bytes; SHA1; text fallback; nested records; signed limits; 64-bit order; strings; container boundaries and interleaved writes are identical [save-format]")
+{
  for(size_t n: {0u,1u,4095u,4096u,4097u,65536u}) {
   Probe::Record r;r.small.resize(n);r.wide.resize(n);
   for(size_t i=0;i<n;++i){r.small[i]=static_cast<int8_t>(i);r.wide[i]=uint64_t(i)*0x123456789ABCDEFu;}
@@ -72,9 +70,8 @@ int main(int, char**) {
   r.entries[{-3,UINT32_MAX}]={INT32_MIN,-1,0,INT32_MAX};r.keys={-2,0,65535};
   for(bool binary:{true,false}) {
    auto old=save(r,binary,true);auto now=save(r,binary,false);
-   if(!(old==now)){std::cerr<<"mismatch "<<n<<" "<<binary<<"\n";return 1;}
+   REQUIRE_MESSAGE(old==now, "mismatch " << n << " " << binary);
   }
  }
- std::cout<<"Binary bytes, SHA1, text fallback, nested records, signed limits, 64-bit low/high order, strings, container boundaries and interleaved direct writes: identical\n";
- return 0;
+}
 }

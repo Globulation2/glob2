@@ -7,6 +7,7 @@
 // ring is incomplete. The last two pin the cases a proximity walk over the changed
 // footprint structurally could not reach - another team's buildings, and a virtual
 // flag, which is never written into the building tile grid.
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "EngineTiming.h"
 #include "Game.h"
@@ -26,11 +27,11 @@
 #include <cstdlib>
 #include <cstring>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 // An invalidated field is rebuilt on its next use once GRADIENT_DIRTY_REBUILD_TICKS
@@ -402,29 +403,53 @@ static void delayedFields()
 	}
 	std::puts("PASS delayed resource/guard/clear publication, synchronous supersession, teardown");
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("BuildingGradientInvalidation")
 {
-	const char* scenario = argc > 1 ? argv[1] : "all";
-	require(argc <= 2 && (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-after") == 0
-		|| std::strcmp(scenario, "ring-before") == 0 || std::strcmp(scenario, "ring-other-team") == 0
-		|| std::strcmp(scenario, "ring-flag") == 0), "expected all, ring-after, ring-before, ring-other-team or ring-flag");
-	GlobalContainer globals;
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-before") == 0) centrePlacedInsideAnExistingRing();
-	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-after") == 0) ringPlacedAroundAnExistingField();
-	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-other-team") == 0) aRivalTeamsRingCutsOffACachedField();
-	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "ring-flag") == 0) aRingCutsOffAVirtualFlagsField();
-	if (std::strcmp(scenario, "all") == 0) aPausedFieldKeepsItsOriginalObstacles();
-	if (std::strcmp(scenario, "all") == 0) publicReadsResolveTheirInputs();
-	if (std::strcmp(scenario, "all") == 0) parallelFields();
-	if (std::strcmp(scenario, "all") == 0) delayedFields();
-	if (std::strcmp(scenario, "all") == 0) idleFieldStorageIsReusedWithoutStaleRoutes();
-	std::puts("Building gradient invalidation regressions passed");
-	return 0;
+	TEST_CASE("centre placed inside an existing ring")
+	{
+		glob2test::HeadlessGlobals globals;
+		centrePlacedInsideAnExistingRing();
+	}
+	TEST_CASE("ring placed around an existing field")
+	{
+		glob2test::HeadlessGlobals globals;
+		ringPlacedAroundAnExistingField();
+	}
+	TEST_CASE("a rival teams ring cuts off a cached field")
+	{
+		glob2test::HeadlessGlobals globals;
+		aRivalTeamsRingCutsOffACachedField();
+	}
+	TEST_CASE("a ring cuts off a virtual flags field")
+	{
+		glob2test::HeadlessGlobals globals;
+		aRingCutsOffAVirtualFlagsField();
+	}
+	TEST_CASE("a paused field keeps its original obstacles")
+	{
+		glob2test::HeadlessGlobals globals;
+		aPausedFieldKeepsItsOriginalObstacles();
+	}
+	TEST_CASE("public reads resolve their inputs")
+	{
+		glob2test::HeadlessGlobals globals;
+		publicReadsResolveTheirInputs();
+	}
+	TEST_CASE("parallel fields")
+	{
+		glob2test::HeadlessGlobals globals;
+		parallelFields();
+	}
+	TEST_CASE("delayed fields")
+	{
+		glob2test::HeadlessGlobals globals;
+		delayedFields();
+	}
+	TEST_CASE("idle field storage is reused without stale routes")
+	{
+		glob2test::HeadlessGlobals globals;
+		idleFieldStorageIsReusedWithoutStaleRoutes();
+	}
 }

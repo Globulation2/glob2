@@ -9,6 +9,7 @@
 
 #include <cstdio>
 #include <filesystem>
+#include <sstream>
 #include <string>
 
 // Tags are bracketed words at the end of a test-case name, e.g.
@@ -20,8 +21,20 @@
 // Boolean assertions with a message, for conditions that doctest cannot decompose
 // (anything with && or ||) and for migrated require(cond, "message") calls. Prefer
 // REQUIRE/CHECK with a single binary comparison when the operands are worth printing.
-#define GLOB2_REQUIRE(cond, ...) REQUIRE_MESSAGE(static_cast<bool>(cond), __VA_ARGS__)
-#define GLOB2_CHECK(cond, ...) CHECK_MESSAGE(static_cast<bool>(cond), __VA_ARGS__)
+#define GLOB2_REQUIRE(cond, message) REQUIRE_MESSAGE(static_cast<bool>(cond), glob2test::messageText(message))
+#define GLOB2_CHECK(cond, message) CHECK_MESSAGE(static_cast<bool>(cond), glob2test::messageText(message))
+
+namespace glob2test
+{
+	// doctest prints a `const char*` variable as an address; stream it instead.
+	template <typename T>
+	std::string messageText(const T& value)
+	{
+		std::ostringstream text;
+		text << value;
+		return text.str();
+	}
+}
 
 namespace glob2test
 {

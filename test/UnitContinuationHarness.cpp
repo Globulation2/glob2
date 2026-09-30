@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise clearing arbitration and idle activity across a real game save/load.
-#ifdef NDEBUG
-#undef NDEBUG
-#endif
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "GameGUI.h"
 #include "Unit.h"
@@ -14,12 +8,10 @@
 #include "Utilities.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include <cassert>
-#include <iostream>
 #include <vector>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static std::vector<Uint32> state(Game& game)
 {
     std::vector<Uint32> result, buildings, units;
@@ -90,18 +82,18 @@ static void checkContinuation(int checkpoint)
     }
     auto* first = game.addUnit(7, 12, 0, WORKER, 0, 0, 0, 0);
     auto* second = game.addUnit(7, 14, 0, WORKER, 0, 0, 0, 0);
-    assert(first && second);
+    REQUIRE((first && second));
     const int innType = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
     auto* firstInn = game.addBuilding(4, 4, innType, 0);
     auto* secondInn = game.addBuilding(20, 4, innType, 0);
-    assert(firstInn && secondInn);
+    REQUIRE((firstInn && secondInn));
     // Availability order deliberately differs from building-id order.
     secondInn->resources[WHEAT] = 10;
     secondInn->update();
     firstInn->resources[WHEAT] = 10;
     firstInn->update();
     auto* flyer = game.addUnit(12, 4, 0, EXPLORER, 0, 0, 0, 0);
-    assert(flyer && game.teams[0]->findNearestFood(flyer) == firstInn);
+    REQUIRE((flyer && game.teams[0]->findNearestFood(flyer) == firstInn));
     first->jobTimer = 40;
     second->jobTimer = 7;
     // A current reservation and a retained distance without a current reservation
@@ -127,9 +119,9 @@ static void checkContinuation(int checkpoint)
     GameGUI restored;
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
     input.seekFromStart(0);
-    assert(restored.game.load(&input));
+    REQUIRE(restored.game.load(&input));
     restored.game.setWaitingOnMask(0);
-    assert(state(restored.game) == before);
+    REQUIRE(state(restored.game) == before);
     for (int i = 0; i < 256; ++i)
     {
         restored.game.syncStep(0);
@@ -139,15 +131,15 @@ static void checkContinuation(int checkpoint)
             std::abort();
         }
     }
-    assert(syncRandEngine() == expectedRandom);
+    REQUIRE(syncRandEngine() == expectedRandom);
+}
 }
 
-int main()
+TEST_SUITE("UnitContinuation")
 {
-    GlobalContainer globals("glob2-unit-continuation-test");
-    globalContainer = &globals;
-    globals.runNoX = true;
-    globals.load();
-    for (int checkpoint : {0, 1, 31, 64, 127}) checkContinuation(checkpoint);
-    std::cout << "Unit continuation: five checkpoints, 256 ticks each, state and RNG match\n";
+	TEST_CASE("five checkpoints replay 256 ticks with matching state and RNG")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+	    for (int checkpoint : {0, 1, 31, 64, 127}) checkContinuation(checkpoint);
+	}
 }

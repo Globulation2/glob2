@@ -78,6 +78,9 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 		ticksGameSum[i]=0;
 
 	maskAwayPlayer = 0;
+	// Only setGameHeader and setWaitingOnMask assigned this before; a Game that never
+	// receives a header (headless tests) otherwise gates every syncStep on garbage.
+	anyPlayerWaited = false;
 }
 
 

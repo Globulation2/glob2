@@ -34,7 +34,8 @@ namespace glob2test
 			GameGUIKeyActions::init();
 			MapEditKeyActions::init();
 		}
-		setSyncRandSeed(options.seed);
+		if (options.seed != 0)
+			setSyncRandSeed(options.seed);
 	}
 
 	HeadlessGlobals::~HeadlessGlobals()

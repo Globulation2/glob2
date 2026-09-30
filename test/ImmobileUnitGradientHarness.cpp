@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for immobile bookkeeping and weighted building routes.
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -18,11 +19,11 @@
 #include <cstdlib>
 #include <cstring>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 struct World
@@ -146,21 +147,23 @@ static void paintingForbiddenAreaRefreshesGradients()
 	}
 	std::puts("PASS painting and erasing refresh all weighted building routes");
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("ImmobileUnitGradient")
 {
-	const char* scenario = argc > 1 ? argv[1] : "all";
-	require(argc <= 2 && (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "fresh") == 0 || std::strcmp(scenario, "occupancy") == 0 || std::strcmp(scenario, "forbidden") == 0), "expected all, fresh, occupancy or forbidden");
-	GlobalContainer globals;
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "fresh") == 0) freshMapHasNoImmobileUnits();
-	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "occupancy") == 0) immobileUnitBlocksItsOwnTile();
-	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "forbidden") == 0) paintingForbiddenAreaRefreshesGradients();
-	std::puts("Immobile unit gradient regressions passed");
-	return 0;
+	TEST_CASE("fresh map has no immobile units")
+	{
+		glob2test::HeadlessGlobals globals;
+		freshMapHasNoImmobileUnits();
+	}
+	TEST_CASE("immobile unit blocks its own tile")
+	{
+		glob2test::HeadlessGlobals globals;
+		immobileUnitBlocksItsOwnTile();
+	}
+	TEST_CASE("painting forbidden area refreshes gradients")
+	{
+		glob2test::HeadlessGlobals globals;
+		paintingForbiddenAreaRefreshesGradients();
+	}
 }

@@ -23,21 +23,21 @@ temporary test binaries and requires no external services.
 | Rally arrival, recruitment and attack waves | `MaximaTacticsStandaloneTest`, `MaximaCombatIntegrationTest` |
 | Runtime orders, building lifetimes and continuation | `MaximaImplementationIntegrationTest`, `MaximaLifecycleTest`, `MaximaDiagnosticsTest` |
 
-The top-level build also exposes dedicated harnesses:
+Three of these suites are doctest cases in the shared test binaries:
 
 ```sh
-scons release=1 server=0 maxima-food-ledger-test maxima-relocation-test maxima-continuation-test
-build/src/MaximaFoodLedgerStandaloneTest
-build/src/MaximaRelocationIntegrationTest
-build/src/MaximaContinuationTest
+scons release=1 server=0 tests
+python3 test/run_tests.py --filter 'Maxima.FoodLedger/*' --filter 'Maxima.Continuation/*'   # glob2-unit-tests
+python3 test/run_tests.py --filter 'Maxima.Relocation/*'                                    # glob2-engine-tests
 ```
 
-The food-ledger harness checks capped-query ordering, wrapped reach and scratch
-buffer reuse, and accepts `--benchmark` for CPU timings and deterministic
-result digests at several map sizes. Timing is informational. The relocation
-harness checks pending deletions, capacity protection, failed replacements and
-saved handovers against real buildings. The continuation harness checks binary
-and text archives, signed limits, nested records and buffered writes.
+The food-ledger suite checks capped-query ordering, wrapped reach and scratch
+buffer reuse; its `timing benchmark [benchmark]` case (run with `--tag benchmark`)
+prints CPU timings and deterministic result digests at several map sizes. Timing
+is informational. The relocation suite checks pending deletions, capacity
+protection, failed replacements and saved handovers against real buildings. The
+continuation suite checks binary and text archives, signed limits, nested records
+and buffered writes.
 
 See [Maxima](../../docs/ai/maxima/README.md) for current strategy behaviour and
 [engine tests](../README.md) for shared save, replay and simulation harnesses.

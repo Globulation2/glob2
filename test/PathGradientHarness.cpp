@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise the real Uint16 pathfinding kernel against an independent heap oracle.
-#define SDL_MAIN_HANDLED
+#include "Glob2Test.h"
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "BuildingGradientSearch.h"
-#ifdef main
-#undef main
-#endif
 
 #include <algorithm>
 #include <cinttypes>
@@ -19,7 +16,6 @@
 #include <utility>
 #include <vector>
 
-GlobalContainer* globalContainer = nullptr;
 
 namespace
 {
@@ -51,7 +47,7 @@ struct PathMap : Map
 uint64_t cases = 0, cellsChecked = 0, digest = 1469598103934665603ULL;
 void require(bool condition, const char* message)
 {
-	if (!condition) { std::fprintf(stderr, "PathGradientHarness: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(condition, message);
 }
 
 std::vector<Uint16> oracle(const std::vector<Uint16>& seeds,
@@ -267,66 +263,68 @@ void analyticOracleCheck()
 }
 } // namespace
 
-int main()
+TEST_SUITE("PathGradient")
 {
-	analyticOracleCheck();
-	parallelChecks();
-	lazyBuildingChecks();
-	std::mt19937 random(0x71A6D19u);
-	constexpr int caps[] = {INT_MIN, -1, 0, 1, 4, 5, 7, 9, 10, 13, 14, 29, 30, 41, 42, 43, 44, 120, 65490, 65491, 65492, INT_MAX};
-	constexpr Uint16 terrainKinds[] = {0, 255, 256, 257, 271, 272, 65535};
-	// Explicit bucket-window and sentinel frontiers, including out-of-contract
-	// expensive seeds as robustness checks of the existing preserved behavior.
-	constexpr int seedCosts[] = {0, 1, 41, 42, 43, 44, 65490, 65491, 65492, 65533};
-	for (const auto shape : std::vector<std::pair<int, int>>{{0,0},{0,5},{5,0},{1,1},{1,6},{6,1},{3,4}})
-		for (int swim = 0; swim < 7; ++swim)
-			for (int cap : caps)
-			{
-				const size_t size = size_t(1) << (shape.first + shape.second);
-				std::vector<Uint16> seeds(size, Unreached), terrain(size);
-				for (size_t i = 0; i < size; ++i)
+	TEST_CASE("analytic oracle") { analyticOracleCheck(); }
+	TEST_CASE("parallel searches") { parallelChecks(); }
+	TEST_CASE("lazy building fields") { lazyBuildingChecks(); }
+	TEST_CASE("boundary; random and exhaustive seeds against the heap oracle")
+	{
+		std::mt19937 random(0x71A6D19u);
+		constexpr int caps[] = {INT_MIN, -1, 0, 1, 4, 5, 7, 9, 10, 13, 14, 29, 30, 41, 42, 43, 44, 120, 65490, 65491, 65492, INT_MAX};
+		constexpr Uint16 terrainKinds[] = {0, 255, 256, 257, 271, 272, 65535};
+		// Explicit bucket-window and sentinel frontiers, including out-of-contract
+		// expensive seeds as robustness checks of the existing preserved behavior.
+		constexpr int seedCosts[] = {0, 1, 41, 42, 43, 44, 65490, 65491, 65492, 65533};
+		for (const auto shape : std::vector<std::pair<int, int>>{{0,0},{0,5},{5,0},{1,1},{1,6},{6,1},{3,4}})
+			for (int swim = 0; swim < 7; ++swim)
+				for (int cap : caps)
 				{
-					terrain[i] = terrainKinds[i % 7];
-					if (i % 5 == 0) seeds[i] = Blocked;
-					if (i % 3 == 0) seeds[i] = Goal - seedCosts[(i / 3 + swim) % 10];
+					const size_t size = size_t(1) << (shape.first + shape.second);
+					std::vector<Uint16> seeds(size, Unreached), terrain(size);
+					for (size_t i = 0; i < size; ++i)
+					{
+						terrain[i] = terrainKinds[i % 7];
+						if (i % 5 == 0) seeds[i] = Blocked;
+						if (i % 3 == 0) seeds[i] = Goal - seedCosts[(i / 3 + swim) % 10];
+					}
+					check(shape.first, shape.second, seeds, terrain, swim, cap, "boundary");
 				}
-				check(shape.first, shape.second, seeds, terrain, swim, cap, "boundary");
-			}
-	for (int trial = 0; trial < 420; ++trial)
-	{
-		const int ws = random() % 7, hs = random() % 7, swim = trial % 7;
-		const size_t size = size_t(1) << (ws + hs);
-		std::vector<Uint16> seeds(size, Unreached), terrain(size);
-		for (size_t i = 0; i < size; ++i)
+		for (int trial = 0; trial < 420; ++trial)
 		{
-			terrain[i] = terrainKinds[random() % 7];
-			if (random() % 4 == 0) seeds[i] = Blocked;
-			if (random() % 17 == 0) seeds[i] = Goal - random() % 65534;
+			const int ws = random() % 7, hs = random() % 7, swim = trial % 7;
+			const size_t size = size_t(1) << (ws + hs);
+			std::vector<Uint16> seeds(size, Unreached), terrain(size);
+			for (size_t i = 0; i < size; ++i)
+			{
+				terrain[i] = terrainKinds[random() % 7];
+				if (random() % 4 == 0) seeds[i] = Blocked;
+				if (random() % 17 == 0) seeds[i] = Goal - random() % 65534;
+			}
+			if (trial % 3 == 0) seeds[random() % size] = Goal;
+			check(ws, hs, seeds, terrain, swim, caps[trial % 22], "random");
 		}
-		if (trial % 3 == 0) seeds[random() % size] = Goal;
-		check(ws, hs, seeds, terrain, swim, caps[trial % 22], "random");
+		for (int swim = 0; swim < 7; ++swim)
+		{
+			// Every possible Uint16 seed value, mixed terrain, and dense deferred queue.
+			std::vector<Uint16> seeds(65536), terrain(65536);
+			for (size_t i = 0; i < seeds.size(); ++i) { seeds[i] = static_cast<Uint16>(i); terrain[i] = terrainKinds[i % 7]; }
+			check(8, 8, seeds, terrain, swim, CostLimit, "all seed values");
+			std::fill(seeds.begin(), seeds.end(), Blocked);
+			check(8, 8, seeds, terrain, swim, CostLimit, "all blocked");
+			std::fill(seeds.begin(), seeds.end(), Unreached);
+			check(8, 8, seeds, terrain, swim, CostLimit, "no sources");
+			// Long serpentine corridor, isolated from toroidal edges. Its distant tail
+			// lies beyond the cost cap; a disconnected island must remain unreachable.
+			std::fill(seeds.begin(), seeds.end(), Blocked);
+			std::fill(terrain.begin(), terrain.end(), 0);
+			for (int y = 1; y < 253; ++y)
+				if (y % 2) for (int x = 1; x < 254; ++x) seeds[y * 256 + x] = Unreached;
+				else seeds[y * 256 + ((y / 2) % 2 ? 253 : 1)] = Unreached;
+			seeds[257] = Goal;
+			seeds[254 * 256 + 128] = Unreached;
+			check(8, 8, seeds, terrain, swim, CostLimit, "long capped corridor");
+		}
+		MESSAGE("cases=" << cases << " exact_cells=" << cellsChecked << " digest=" << digest);
 	}
-	for (int swim = 0; swim < 7; ++swim)
-	{
-		// Every possible Uint16 seed value, mixed terrain, and dense deferred queue.
-		std::vector<Uint16> seeds(65536), terrain(65536);
-		for (size_t i = 0; i < seeds.size(); ++i) { seeds[i] = static_cast<Uint16>(i); terrain[i] = terrainKinds[i % 7]; }
-		check(8, 8, seeds, terrain, swim, CostLimit, "all seed values");
-		std::fill(seeds.begin(), seeds.end(), Blocked);
-		check(8, 8, seeds, terrain, swim, CostLimit, "all blocked");
-		std::fill(seeds.begin(), seeds.end(), Unreached);
-		check(8, 8, seeds, terrain, swim, CostLimit, "no sources");
-		// Long serpentine corridor, isolated from toroidal edges. Its distant tail
-		// lies beyond the cost cap; a disconnected island must remain unreachable.
-		std::fill(seeds.begin(), seeds.end(), Blocked);
-		std::fill(terrain.begin(), terrain.end(), 0);
-		for (int y = 1; y < 253; ++y)
-			if (y % 2) for (int x = 1; x < 254; ++x) seeds[y * 256 + x] = Unreached;
-			else seeds[y * 256 + ((y / 2) % 2 ? 253 : 1)] = Unreached;
-		seeds[257] = Goal;
-		seeds[254 * 256 + 128] = Unreached;
-		check(8, 8, seeds, terrain, swim, CostLimit, "long capped corridor");
-	}
-	std::printf("PASS PathGradientHarness cases=%" PRIu64 " exact_cells=%" PRIu64 " digest=%" PRIu64 "\n", cases, cellsChecked, digest);
-	return 0;
 }

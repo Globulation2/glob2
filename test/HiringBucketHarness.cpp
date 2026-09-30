@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression: each building gets a hiring attempt before retries,
 // even when subscription reorders the live bucket.
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL.h>
@@ -20,11 +17,11 @@
 #include <cstdio>
 #include <cstdlib>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 static void hiringRoundIsFair()
@@ -58,20 +55,13 @@ static void hiringRoundIsFair()
         "each competing inn gets one worker before either retries");
     std::puts("PASS hiring follows building identity while the bucket reorders");
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("HiringBucket")
 {
-	SDL_SetMainReady();
-	require(argc == 3, "usage: harness PROFILE ROOT");
-	require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
-	GlobalContainer globals(argv[1]);
-	globals.fileManager->addDir(argv[2]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	hiringRoundIsFair();
-	return 0;
+	TEST_CASE("hiring round is fair")
+	{
+		glob2test::HeadlessGlobals globals;
+		hiringRoundIsFair();
+	}
 }

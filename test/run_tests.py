@@ -162,6 +162,8 @@ def select(cases, args):
             continue
         if args.quick and case.has('slow'):
             continue
+        if case.has('benchmark') and 'benchmark' not in args.tag:
+            continue
         if case.display and not display_ok:
             skipped.append(case)
             continue
@@ -273,10 +275,27 @@ def run_job(job, args, build_dir):
             status = 'fail'
             output += '\n[run_tests] the test changed the profile preferences; tag it [writes-preferences] if that is intended\n'
     junit_text = junit.read_text(encoding='utf-8', errors='replace') if junit.exists() else ''
+    if status != 'pass' and junit_text:
+        output += failure_details(junit_text)
     result = Result(job, status, seconds, output, junit_text, str(root))
     if not keep:
         shutil.rmtree(root, ignore_errors=True)
     return result
+
+
+def failure_details(junit_text):
+    """The doctest JUnit reporter is the only reporter running, so surface its messages."""
+    try:
+        document = ET.fromstring(junit_text)
+    except ET.ParseError:
+        return ''
+    lines = []
+    for testcase in document.iter('testcase'):
+        for element in list(testcase.findall('failure')) + list(testcase.findall('error')):
+            lines.append(f"[{element.tag}] {testcase.get('name', '')}: {element.get('message', '')}")
+            if element.text and element.text.strip():
+                lines.append(element.text.strip())
+    return ('\n' + '\n'.join(lines) + '\n') if lines else ''
 
 
 def terminate(process):

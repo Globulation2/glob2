@@ -12,7 +12,7 @@ namespace
 {
 void check(bool ok, const std::string& what)
 {
-	CHECK_MESSAGE(ok, what);
+	CHECK_MESSAGE(ok, (what));
 }
 
 LocalTime at(int year, unsigned month, unsigned day, int h, int m, int s, int us = 0)

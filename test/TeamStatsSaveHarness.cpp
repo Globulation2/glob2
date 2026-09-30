@@ -1,8 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -38,12 +35,75 @@
 #include <cstdlib>
 #include <memory>
 
-GlobalContainer* globalContainer = nullptr;
-
 static void require(bool ok, const char* message)
 {
-    if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
+
+// Named in friend declarations (Unit.h, Building.h), so it stays outside the anonymous namespace.
+struct TeamStatsMeasurementFixture
+{
+	static void allowConversion(Building *b) { b->canNotConvertUnitTimer = 0; }
+	static void fire(Building *b)
+	{
+		b->shootingCooldown = 0;
+		b->bullets = 1;
+		b->turretStep(0);
+	}
+	static void medical(Unit *u) { u->handleMedical(); }
+	static void activity(Unit *u) { u->handleActivity(); }
+	static void magic(Unit *u) { u->handleMagic(); }
+	static void displacement(Unit *u) { u->handleDisplacement(); }
+	static void clear(Unit *u) { u->tryClaimClearingAreaForHarvesting(); }
+	static void partial(Unit *u) { u->applyPartialInsideBenefit(); }
+	static void ammunition(Building *b) { b->convertStoneToBullet(); }
+
+	GameGUI gui;
+	Game &game = gui.game;
+	TeamStatsMeasurementFixture()
+	{
+		game.map.setSize(5, 5, GRASS);
+		game.map.setGame(&game);
+		for (int t = 0; t < 2; ++t)
+		{
+			game.addTeam(t);
+			game.teams[t]->race.loadDefault();
+		}
+	}
+	Building *building(const char *name, int x = 8, int y = 8, int team = 0, bool site = false,
+					   int level = 0)
+	{
+		int type = globalContainer->buildingsTypes.getTypeNum(name, level, site);
+		require(type >= 0, "scenario building type exists");
+		auto *b = game.addBuilding(x, y, type, team);
+		require(b != nullptr, "scenario building exists");
+		game.map.setBuilding(x, y, b->type->width, b->type->height, b->gid);
+		return b;
+	}
+	Unit *unit(int type = WORKER, int x = 20, int y = 20, int team = 0)
+	{
+		auto *u = game.addUnit(x, y, team, type, 0, 0, 0, 0);
+		require(u != nullptr, "scenario unit exists");
+		return u;
+	}
+	void inside(Unit *u, Building *b, int purpose, int timeout = 0)
+	{
+		u->clearOccupiedMapSlot();
+		u->posX = b->getMidX();
+		u->posY = b->getMidY();
+		u->attachedBuilding = b;
+		u->setTargetBuilding(b);
+		u->activity = Unit::ACT_UPGRADING;
+		u->displacement = Unit::DIS_INSIDE;
+		u->movement = Unit::MOV_INSIDE;
+		u->destinationPurpose = purpose;
+		u->insideTimeout = timeout;
+		b->unitsInside.push_back(u);
+	}
+};
+
+namespace
+{
 
 static void compare(TeamStats& expected, TeamStats& actual)
 {
@@ -224,66 +284,6 @@ static void textRoundTrip()
 
 using Measurements = GameplayMeasurements;
 
-struct TeamStatsMeasurementFixture
-{
-	static void allowConversion(Building *b) { b->canNotConvertUnitTimer = 0; }
-	static void fire(Building *b)
-	{
-		b->shootingCooldown = 0;
-		b->bullets = 1;
-		b->turretStep(0);
-	}
-	static void medical(Unit *u) { u->handleMedical(); }
-	static void activity(Unit *u) { u->handleActivity(); }
-	static void magic(Unit *u) { u->handleMagic(); }
-	static void displacement(Unit *u) { u->handleDisplacement(); }
-	static void clear(Unit *u) { u->tryClaimClearingAreaForHarvesting(); }
-	static void partial(Unit *u) { u->applyPartialInsideBenefit(); }
-	static void ammunition(Building *b) { b->convertStoneToBullet(); }
-
-	GameGUI gui;
-	Game &game = gui.game;
-	TeamStatsMeasurementFixture()
-	{
-		game.map.setSize(5, 5, GRASS);
-		game.map.setGame(&game);
-		for (int t = 0; t < 2; ++t)
-		{
-			game.addTeam(t);
-			game.teams[t]->race.loadDefault();
-		}
-	}
-	Building *building(const char *name, int x = 8, int y = 8, int team = 0, bool site = false,
-					   int level = 0)
-	{
-		int type = globalContainer->buildingsTypes.getTypeNum(name, level, site);
-		require(type >= 0, "scenario building type exists");
-		auto *b = game.addBuilding(x, y, type, team);
-		require(b != nullptr, "scenario building exists");
-		game.map.setBuilding(x, y, b->type->width, b->type->height, b->gid);
-		return b;
-	}
-	Unit *unit(int type = WORKER, int x = 20, int y = 20, int team = 0)
-	{
-		auto *u = game.addUnit(x, y, team, type, 0, 0, 0, 0);
-		require(u != nullptr, "scenario unit exists");
-		return u;
-	}
-	void inside(Unit *u, Building *b, int purpose, int timeout = 0)
-	{
-		u->clearOccupiedMapSlot();
-		u->posX = b->getMidX();
-		u->posY = b->getMidY();
-		u->attachedBuilding = b;
-		u->setTargetBuilding(b);
-		u->activity = Unit::ACT_UPGRADING;
-		u->displacement = Unit::DIS_INSIDE;
-		u->movement = Unit::MOV_INSIDE;
-		u->destinationPurpose = purpose;
-		u->insideTimeout = timeout;
-		b->unitsInside.push_back(u);
-	}
-};
 
 static void measurementScenarios()
 {
@@ -880,7 +880,7 @@ static void aiTelemetryContinuation(const char *path)
 		{
 			std::fprintf(stderr, "AI continuation simulation differs at tick %u\n",
 						 loaded->game.stepCounter);
-			std::exit(1);
+			FAIL("fatal condition in a harness helper");
 		}
 		unsigned ai = 0;
 		for (int p = 0; p < loaded->game.gameHeader.getNumberOfPlayers(); ++p)
@@ -896,7 +896,7 @@ static void aiTelemetryContinuation(const char *path)
 							std::fprintf(stderr, "AI %d telemetry %s differs at tick %u\n",
 										 series.implementation, series.fields[f].name.c_str(),
 										 actual.tick);
-					std::exit(1);
+					FAIL("fatal condition in a harness helper");
 				}
 			}
 	}
@@ -1121,121 +1121,145 @@ static void measurementScreenshots(const std::string &directory)
 			"save expanded live panel screenshot");
 	}
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("TeamStatsSave")
 {
-    SDL_SetMainReady();
-    require(argc == 3 || argc == 5, "usage: harness PROFILE ROOT [--write-fixture FILE | --legacy FILE]");
-    require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
-    GlobalContainer globals(argv[1]);
-    globals.fileManager->addDir(argv[2]);
-    globalContainer = &globals;
-	if (argc == 5 && std::string(argv[3]) == "--screenshots")
+	TEST_CASE("32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]")
 	{
-		globals.runNoX = false;
-		globals.settings.screenWidth = 640;
-		globals.settings.screenHeight = 480;
-		globals.settings.screenFlags = 0;
-		globals.settings.mute = 1;
-		globals.settings.rememberUnit = false;
-		globals.load();
-		measurementScreenshots(argv[4]);
-		return 0;
+		glob2test::HeadlessGlobals globals;
+		    GameGUI gui;
+		    Game& game = gui.game;
+		    game.map.setSize(5, 5, GRASS);
+		    game.map.setGame(&game);
+		    game.addTeam();
+		    game.teams[0]->race.loadDefault();
+		    require(game.addUnit(5, 5, 0, WORKER, 0, 0, 0, 0) != nullptr, "fixture worker exists");
+		    // Fill and wrap the 128-snapshot ring before testing every smoothing phase.
+		    for (unsigned tick = 0; tick < 4096; ++tick)
+		        sample(game, tick);
+		    if (glob2test::updatingFixtures())
+		    {
+		        for (unsigned tick = 4096; tick < 4107; ++tick) sample(game, tick);
+		        auto* bytes = new GAGCore::MemoryStreamBackend;
+		        GAGCore::BinaryOutputStream writer(bytes);
+		        game.save(&writer, false, "team statistics legacy fixture");
+		        bytes->seekFromEnd(0);
+		        std::ofstream file(glob2test::artifactDir() / "team-stats-fixture.game", std::ios::binary);
+		        file.write(bytes->getBuffer(), bytes->getPosition());
+		        file.close();
+		        require(!file.fail(), "write saved fixture");
+		        MESSAGE("wrote a save format " << VERSION_MINOR << " fixture under the artifact directory");
+		    }
+		    for (unsigned phase = 0; phase < 32; ++phase)
+		    {
+		        auto loaded = roundTrip(game);
+		        compare(game.teams[0]->stats, loaded->game.teams[0]->stats);
+		        // Repeated loads must not advance the sampling position either.
+		        auto reloaded = roundTrip(loaded->game);
+		        compare(game.teams[0]->stats, reloaded->game.teams[0]->stats);
+		        const unsigned start = game.stepCounter;
+		        for (unsigned delta = 1; delta <= 65; ++delta)
+		        {
+		            sample(game, start + delta);
+		            sample(loaded->game, start + delta);
+		            sample(reloaded->game, start + delta);
+		            compare(game.teams[0]->stats, loaded->game.teams[0]->stats);
+		            compare(game.teams[0]->stats, reloaded->game.teams[0]->stats);
+		        }
+		    }
+			aiTelemetryScenarios();
+			measurementScenarios();
+			measurementContinuation();
+			std::printf("Measurement snapshot memory: %zu bytes per team/sample\n", sizeof(GameplayMeasurements));
+			measurementAttributionFields();
+			measurementReplayBoundaries();
+			malformedStats(game);
+			textRoundTrip();
 	}
-	globals.runNoX = true;
-    globals.settings.rememberUnit = false;
-    globals.buildingsTypes.init();
-    IntBuildingType::init();
-    GameGUIKeyActions::init();
-    MapEditKeyActions::init();
-	if (argc == 5 && std::string(argv[3]) == "--ai-continuation")
+	TEST_CASE("legacy version 88 fixture replays the golden trace [save-format][golden]")
 	{
-		aiTelemetryContinuation(argv[4]);
-		return 0;
+		glob2test::HeadlessGlobals globals;
+		glob2test::CapturedStdout trace;
+		const std::string legacyPath = glob2test::inflated("team-stats/version88.game.gz").string();
+		        FILE* file = std::fopen(legacyPath.c_str(), "rb");
+		        require(file != nullptr, "open legacy fixture");
+		        GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
+		        GameGUI restored;
+		        require(restored.game.load(&reader), "legacy save loads");
+		        Game& game = restored.game;
+				for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+				{
+					require(game.teams[t]->stats.coverageStartTick == game.stepCounter,
+							"old measurements start at loaded tick");
+					require(game.teams[t]->stats.measurementHistory.empty(),
+							"old new-history is unavailable, not zero samples");
+					require(TeamStats::graphValue(game.teams[t]->stats.measurements, 0) == 0,
+							"loading does not count births");
+				}
+				require(game.mapHeader.getVersionMinor() <= 88, "fixture is a genuine legacy format");
+				std::printf("LEGACY version=%d teams=%d\n", game.mapHeader.getVersionMinor(), game.mapHeader.getNumberOfTeams());
+		        for (unsigned step = 0; step < 65; ++step)
+		        {
+		            for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		            {
+		                auto& stats = game.teams[t]->stats;
+		                const auto& stat = *stats.getLatestStat();
+		                std::printf("%u %d %d %d %d %d %d %d %d %zu\n", step, t,
+		                    stat.totalUnit, stat.totalHP, stat.needFood, stat.needFoodCritical,
+		                    stat.needHeal, stat.totalFree, stat.totalNeeded, stats.getEndOfGameStats().size());
+		                stats.step(game.teams[t]);
+		            }
+		            ++game.stepCounter;
+		        }
+		glob2test::expectGolden("team-stats/version88.expected.txt", trace.text());
 	}
-	if (argc == 5 && std::string(argv[3]) == "--legacy")
-    {
-        FILE* file = std::fopen(argv[4], "rb");
-        require(file != nullptr, "open legacy fixture");
-        GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
-        GameGUI restored;
-        require(restored.game.load(&reader), "legacy save loads");
-        Game& game = restored.game;
-		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
-		{
-			require(game.teams[t]->stats.coverageStartTick == game.stepCounter,
-					"old measurements start at loaded tick");
-			require(game.teams[t]->stats.measurementHistory.empty(),
-					"old new-history is unavailable, not zero samples");
-			require(TeamStats::graphValue(game.teams[t]->stats.measurements, 0) == 0,
-					"loading does not count births");
-		}
-		require(game.mapHeader.getVersionMinor() <= 88, "fixture is a genuine legacy format");
-		std::printf("LEGACY version=%d teams=%d\n", game.mapHeader.getVersionMinor(), game.mapHeader.getNumberOfTeams());
-        for (unsigned step = 0; step < 65; ++step)
-        {
-            for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
-            {
-                auto& stats = game.teams[t]->stats;
-                const auto& stat = *stats.getLatestStat();
-                std::printf("%u %d %d %d %d %d %d %d %d %zu\n", step, t,
-                    stat.totalUnit, stat.totalHP, stat.needFood, stat.needFoodCritical,
-                    stat.needHeal, stat.totalFree, stat.totalNeeded, stats.getEndOfGameStats().size());
-                stats.step(game.teams[t]);
-            }
-            ++game.stepCounter;
-        }
-        return 0;
-    }
-    GameGUI gui;
-    Game& game = gui.game;
-    game.map.setSize(5, 5, GRASS);
-    game.map.setGame(&game);
-    game.addTeam();
-    game.teams[0]->race.loadDefault();
-    require(game.addUnit(5, 5, 0, WORKER, 0, 0, 0, 0) != nullptr, "fixture worker exists");
-    // Fill and wrap the 128-snapshot ring before testing every smoothing phase.
-    for (unsigned tick = 0; tick < 4096; ++tick)
-        sample(game, tick);
-    if (argc == 5 && std::string(argv[3]) == "--write-fixture")
-    {
-        for (unsigned tick = 4096; tick < 4107; ++tick) sample(game, tick);
-        auto* bytes = new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream writer(bytes);
-        game.save(&writer, false, "team statistics legacy fixture");
-        bytes->seekFromEnd(0);
-        std::ofstream file(argv[4], std::ios::binary);
-        file.write(bytes->getBuffer(), bytes->getPosition());
-        file.close();
-        require(!file.fail(), "write saved fixture");
-        std::printf("Wrote save format %d fixture\n", VERSION_MINOR);
-        return 0;
-    }
-    for (unsigned phase = 0; phase < 32; ++phase)
-    {
-        auto loaded = roundTrip(game);
-        compare(game.teams[0]->stats, loaded->game.teams[0]->stats);
-        // Repeated loads must not advance the sampling position either.
-        auto reloaded = roundTrip(loaded->game);
-        compare(game.teams[0]->stats, reloaded->game.teams[0]->stats);
-        const unsigned start = game.stepCounter;
-        for (unsigned delta = 1; delta <= 65; ++delta)
-        {
-            sample(game, start + delta);
-            sample(loaded->game, start + delta);
-            sample(reloaded->game, start + delta);
-            compare(game.teams[0]->stats, loaded->game.teams[0]->stats);
-            compare(game.teams[0]->stats, reloaded->game.teams[0]->stats);
-        }
-    }
-	aiTelemetryScenarios();
-	measurementScenarios();
-	measurementContinuation();
-	std::printf("Measurement snapshot memory: %zu bytes per team/sample\n", sizeof(GameplayMeasurements));
-	measurementAttributionFields();
-	measurementReplayBoundaries();
-	malformedStats(game);
-	textRoundTrip();
-    std::puts("Team statistics save regressions passed: 32 sampling phases, ring wrap, repeated loads, text streams and corruption controls");
-    return 0;
+	TEST_CASE("legacy version 84 fixture replays the golden trace [save-format][golden]")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::CapturedStdout trace;
+		const std::string legacyPath = glob2test::inflated("games/gd-small-2ai.game.gz").string();
+		        FILE* file = std::fopen(legacyPath.c_str(), "rb");
+		        require(file != nullptr, "open legacy fixture");
+		        GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
+		        GameGUI restored;
+		        require(restored.game.load(&reader), "legacy save loads");
+		        Game& game = restored.game;
+				for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+				{
+					require(game.teams[t]->stats.coverageStartTick == game.stepCounter,
+							"old measurements start at loaded tick");
+					require(game.teams[t]->stats.measurementHistory.empty(),
+							"old new-history is unavailable, not zero samples");
+					require(TeamStats::graphValue(game.teams[t]->stats.measurements, 0) == 0,
+							"loading does not count births");
+				}
+				require(game.mapHeader.getVersionMinor() <= 88, "fixture is a genuine legacy format");
+				std::printf("LEGACY version=%d teams=%d\n", game.mapHeader.getVersionMinor(), game.mapHeader.getNumberOfTeams());
+		        for (unsigned step = 0; step < 65; ++step)
+		        {
+		            for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		            {
+		                auto& stats = game.teams[t]->stats;
+		                const auto& stat = *stats.getLatestStat();
+		                std::printf("%u %d %d %d %d %d %d %d %d %zu\n", step, t,
+		                    stat.totalUnit, stat.totalHP, stat.needFood, stat.needFoodCritical,
+		                    stat.needHeal, stat.totalFree, stat.totalNeeded, stats.getEndOfGameStats().size());
+		                stats.step(game.teams[t]);
+		            }
+		            ++game.stepCounter;
+		        }
+		glob2test::expectGolden("team-stats/version84.expected.txt", trace.text());
+	}
+	TEST_CASE("measurement screenshots [display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 640, .height = 480});
+		measurementScreenshots(glob2test::artifactDir().string().c_str());
+	}
+	TEST_CASE("AI telemetry continues across a save [save-format]")
+	{
+		glob2test::HeadlessGlobals globals;
+		// A four-controller game saved at tick 256 (see test/fixtures/echo/README.md).
+		aiTelemetryContinuation(glob2test::inflated("echo/v121-shared-gradient-256.game.gz").string().c_str());
+	}
 }

@@ -1,8 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -16,11 +13,11 @@
 #include <string>
 #include <vector>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-    if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 struct Colony
@@ -109,63 +106,57 @@ static std::vector<Uint32> checkFeeding(int type, int corn)
     std::printf("TRACE type=%d corn=%d seed=110 ticks=%zu digest=%08x\n", type, corn, c.trace.size(), unsigned(digest));
     return c.trace;
 }
+}
 
-int main(int argc, char** argv)
+TEST_SUITE("HungryDefeat")
 {
-    SDL_SetMainReady();
-    require(argc == 2 && std::string(argv[1]).find("glob2-hunger-test-") == 0,
-            "run through test/run-hungry-defeat-tests.py");
-    GlobalContainer globals(argv[1]);
-    globalContainer = &globals;
-    globals.runNoX = true;
-    globals.settings.rememberUnit = false;
-    globals.buildingsTypes.init();
-    IntBuildingType::init();
-    for (int type : {WORKER, WARRIOR})
-    for (int corn : {1, 10})
-    {
-        const auto first = checkFeeding(type, corn);
-        const auto second = checkFeeding(type, corn);
-        require(first == second, "identical seeds and fixtures reproduce every team checksum");
-    }
-    {
-        Colony c;
-        c.step(false, "an empty colony without a swarm still loses");
-    }
-    {
-        Colony c;
-        Unit* u = c.unit();
-        u->medical = Unit::MED_FREE;
-        u->hungry = Unit::HUNGRY_MAX;
-        c.inn->resources[WHEAT] = 0;
-        c.inn->updateCallLists();
-        c.step(true, "a healthy worker without food still sustains a colony");
-    }
-    {
-        Colony c;
-        c.inn->resources[WHEAT] = 0;
-        c.inn->updateCallLists();
-        c.unit();
-        c.step(false, "hungry colony with no food still loses");
-    }
-    {
-        Colony c(0);
-        Unit* u = c.unit();
-        u->hungry = Unit::HUNGRY_MAX;
-        u->hp = u->trigHP;
-        c.step(false, "being fed does not override needing unavailable healing");
-    }
-    {
-        Colony c;
-        c.unit(EXPLORER)->delta = 255;
-        c.step(false, "an explorer reservation alone does not sustain a colony");
-    }
-    {
-        Colony c;
-        c.unit()->delta = 255;
-        c.team->playersMask = 0;
-        c.step(false, "food reservations do not override lost player control");
-    }
-    std::puts("PASS: hunger defeat regression and defeat controls");
-    return 0;
+	TEST_CASE("feeding reserves the last inn place and defeat controls hold")
+	{
+		glob2test::HeadlessGlobals globals;
+	    for (int type : {WORKER, WARRIOR})
+	    for (int corn : {1, 10})
+	    {
+	        const auto first = checkFeeding(type, corn);
+	        const auto second = checkFeeding(type, corn);
+	        require(first == second, "identical seeds and fixtures reproduce every team checksum");
+	    }
+	    {
+	        Colony c;
+	        c.step(false, "an empty colony without a swarm still loses");
+	    }
+	    {
+	        Colony c;
+	        Unit* u = c.unit();
+	        u->medical = Unit::MED_FREE;
+	        u->hungry = Unit::HUNGRY_MAX;
+	        c.inn->resources[WHEAT] = 0;
+	        c.inn->updateCallLists();
+	        c.step(true, "a healthy worker without food still sustains a colony");
+	    }
+	    {
+	        Colony c;
+	        c.inn->resources[WHEAT] = 0;
+	        c.inn->updateCallLists();
+	        c.unit();
+	        c.step(false, "hungry colony with no food still loses");
+	    }
+	    {
+	        Colony c(0);
+	        Unit* u = c.unit();
+	        u->hungry = Unit::HUNGRY_MAX;
+	        u->hp = u->trigHP;
+	        c.step(false, "being fed does not override needing unavailable healing");
+	    }
+	    {
+	        Colony c;
+	        c.unit(EXPLORER)->delta = 255;
+	        c.step(false, "an explorer reservation alone does not sustain a colony");
+	    }
+	    {
+	        Colony c;
+	        c.unit()->delta = 255;
+	        c.team->playersMask = 0;
+	        c.step(false, "food reservations do not override lost player control");
+	    }
+	}
 }

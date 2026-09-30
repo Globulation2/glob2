@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Units survive their building being destroyed (issue #185).
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -9,14 +10,13 @@
 #include "IntBuildingType.h"
 #include "Race.h"
 #include <cstdio>
-#include <cstdlib>
 #include <vector>
 
-GlobalContainer* globalContainer = nullptr;
-
+namespace
+{
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 struct World
@@ -233,20 +233,28 @@ static void stepsWithoutAnyGradient()
 	world.step(3);
 	std::puts("PASS a world without gradients keeps stepping");
 }
+}
 
-int main()
+TEST_SUITE("BuildingExpel")
 {
-	GlobalContainer globals;
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
-	stepsWithoutAnyGradient();
-	destroyedInnExpelsEveryone();
-	noRoomKillsTheSurplus();
-	healingIsKeptProRata();
-	std::puts("Building expulsion regressions passed");
-	return 0;
+	TEST_CASE("steps without any gradient")
+	{
+		glob2test::HeadlessGlobals globals;
+		stepsWithoutAnyGradient();
+	}
+	TEST_CASE("destroyed inn expels everyone")
+	{
+		glob2test::HeadlessGlobals globals;
+		destroyedInnExpelsEveryone();
+	}
+	TEST_CASE("no room kills the surplus")
+	{
+		glob2test::HeadlessGlobals globals;
+		noRoomKillsTheSurplus();
+	}
+	TEST_CASE("healing is kept pro rata")
+	{
+		glob2test::HeadlessGlobals globals;
+		healingIsKeptProRata();
+	}
 }
