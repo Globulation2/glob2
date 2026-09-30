@@ -196,6 +196,10 @@ and add its tenant ID, application ID and client secret as environment secrets n
 `STORE_TENANT_ID`, `STORE_CLIENT_ID`, and `STORE_CLIENT_SECRET`.
 The `STORE_BRANCH` variable is required for upload. Never add these secrets,
 the environment or a privileged trigger to `Globulation2/glob2`.
+The mirror's `windows-store` environment allows deployments only from `master`
+and requires approval from `genixpro` before the job can access its variables
+and secrets. Allow the dispatching owner to approve because that account is
+the sole reviewer.
 
 When a permanent organization tenant is ready, associate it with the same Partner
 Center account, register a new product-scoped publishing application there, and
