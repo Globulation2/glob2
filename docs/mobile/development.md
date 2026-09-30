@@ -287,6 +287,13 @@ API. The workflow does not create the first listing. Protect the release
 repository's `master` branch and release tags in both repositories; restrict dispatch and
 environment access to maintainers. Configure these private environment values:
 
+After the public change and its release tag are reviewed and merged, fetch the
+public tag into the release mirror and push that exact tag ref there. The
+selected tag must be reachable from public `master` and point to the same
+source commit in both repositories. Do not recreate it on the mirror's merge
+commit. Dispatch the workflow from mirror `master` only after that merge is
+present there.
+
 | Name | Type | Purpose |
 | --- | --- | --- |
 | `GLOB2_AMAZON_KEYSTORE_BASE64` | secret | Base64 PKCS#12 upload keystore |
