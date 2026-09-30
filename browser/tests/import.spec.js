@@ -1,4 +1,4 @@
-const {editTextField}=require('./main-menu');
+const {editTextField,clickControl,clickListRow}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
 const fs = require('node:fs/promises');
@@ -7,12 +7,10 @@ const {createHash} = require('node:crypto');
 const {gunzipSync,gzipSync} = require('node:zlib');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
-const click = (page,x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
-const menu = (page,x,y) => click(page,x+280,y+210);
 const digest = bytes => ({size:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});
 async function select(page,name,bytes) {
   const chooser = page.waitForEvent('filechooser');
-  await menu(page,60,485);
+  await clickControl(page,'import');
   await (await chooser).setFiles({name,mimeType:'application/octet-stream',buffer:bytes});
 }
 async function imported(page) { await expect.poll(async () => (await state(page)).import).toBe('succeeded'); }
@@ -20,7 +18,7 @@ async function chooseSave(page,name) {
   const names=await page.evaluate(() => glob2Diagnostics.saves());
   const index=names.indexOf(name);
   expect(index).toBeGreaterThanOrEqual(0);
-  await menu(page,100,70+16*index);
+  await clickListRow(page,'files',index);
 }
 async function exportedSave(page) {
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
@@ -29,14 +27,14 @@ async function exportedSave(page) {
   await page.locator('#canvas').press('p',{delay:80});
   await expect.poll(async () => (await state(page)).paused).toBe(true);
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,600,400);
+  await clickControl(page,'save');
   await editTextField(page,'Original');
-  await click(page,520,555);
+  await clickControl(page,'ok');
   await expect.poll(() => page.evaluate(() => glob2Diagnostics.saveDigest('Original.game.gz'))).not.toBeNull();
   await expect.poll(async () => (await state(page)).persistence).toBe('persisted');
   await page.reload(); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen'); await chooseSave(page,'Original.game.gz');
-  const download = page.waitForEvent('download'); await menu(page,340,320);
+  const download = page.waitForEvent('download'); await clickControl(page,'export');
   const file=await download;
   expect(file.suggestedFilename()).toBe('Original.game.gz');
   return fs.readFile(await file.path());
@@ -61,7 +59,7 @@ test('imports an exported save, preserves duplicate names, rejects corruption an
   await page.reload(); await screen(page,'MainMenuScreen');
   expect(await page.evaluate(() => glob2Diagnostics.saveDigest('Original_(1).game.gz'))).toEqual(expected);
   await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen');
-  await chooseSave(page,'Original_(1).game.gz'); await menu(page,530,380);
+  await chooseSave(page,'Original_(1).game.gz'); await clickControl(page,'ok');
   await expect.poll(async () => (await state(page)).screen).toBe('match');
   const loaded=(await state(page)).tick;
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(loaded+25);
@@ -75,7 +73,7 @@ test('imports a custom map and starts it through the normal setup screen', async
   // map still only happens through the editor's "Load Map" chooser, which
   // writes into the same maps/ library the lobby's "Your maps" tab lists.
   await clickMainMenu(page,'editor'); await screen(page,'EditorMainMenu');
-  await menu(page,320,150); await screen(page,'ChooseMapScreen');
+  await clickControl(page,'load-map'); await screen(page,'ChooseMapScreen');
   await select(page,'Imported.map.gz',bytes); await imported(page);
   expect(await page.evaluate(() => glob2Diagnostics.mapDigest('Imported.map.gz'))).toEqual(digest(bytes));
   await page.screenshot({path:info.outputPath('imported-map.png')});
@@ -84,22 +82,23 @@ test('imports a custom map and starts it through the normal setup screen', async
   await page.locator('#canvas').press('Escape'); await screen(page,'MainMenuScreen');
 
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
-  await click(page,425,141); // "Your maps" library.
-  await click(page,291,176); // The imported map's row (only entry in a fresh profile).
+  await clickControl(page,'map/mode/0'); // Premade maps.
+  await clickControl(page,'map/library/1'); // "Your maps" library.
+  await clickListRow(page,'map/list/1',0); // The imported map's row (only entry in a fresh profile).
   await clickCustomGameStart(page);
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
 });
 
 test('imports a complete replay and rejects a truncated command stream', async ({page}) => {
   const bytes=await fs.readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'));
-  await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen'); await menu(page,340,440);
+  await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen'); await clickControl(page,'switch');
   await select(page,'Broken.replay',bytes.subarray(0,bytes.length-1));
   await expect.poll(async () => (await state(page)).import).toBe('invalid');
   await select(page,'Imported.replay',bytes); await imported(page);
   expect(await page.evaluate(() => glob2Diagnostics.replayDigest('Imported.replay'))).toEqual(digest(bytes));
-  const download=page.waitForEvent('download'); await menu(page,340,320);
+  const download=page.waitForEvent('download'); await clickControl(page,'export');
   expect(digest(await fs.readFile(await (await download).path()))).toEqual(digest(bytes));
-  await menu(page,530,380);
+  await clickControl(page,'ok');
   await expect.poll(async () => (await state(page)).screen).toBe('match');
   const loaded=(await state(page)).tick;
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(loaded+25);
@@ -120,7 +119,7 @@ test('failed import persistence offers export and retry without overwriting a sa
   await expect.poll(async () => (await state(page)).import).toBe('failed');
   await page.screenshot({path:info.outputPath('import-persistence-failure.png')});
   expect(await page.evaluate(() => glob2Diagnostics.saveDigest('Original.game.gz'))).toEqual(digest(bytes));
-  const download=page.waitForEvent('download'); await menu(page,340,320);
+  const download=page.waitForEvent('download'); await clickControl(page,'export');
   expect(digest(await fs.readFile(await (await download).path()))).toEqual(digest(bytes));
   const restored=await context.newPage();
   await restored.goto(gameURL()); await screen(restored,'MainMenuScreen');
@@ -128,7 +127,7 @@ test('failed import persistence offers export and retry without overwriting a sa
   expect(await restored.evaluate(() => glob2Diagnostics.saveDigest('Original_(1).game.gz'))).toBeNull();
   await restored.close();
   await page.evaluate(() => window.importQuota=false);
-  await menu(page,60,485); await imported(page);
+  await clickControl(page,'import'); await imported(page);
   await page.reload(); await screen(page,'MainMenuScreen');
   expect(await page.evaluate(() => glob2Diagnostics.saveDigest('Original_(1).game.gz'))).toEqual(digest(bytes));
 });

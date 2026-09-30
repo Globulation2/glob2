@@ -1,5 +1,5 @@
 const {editTextField}=require('./main-menu');
-const {gameURL,clickMainMenu}=require('./main-menu');
+const {gameURL,clickMainMenu,clickControl,clickListRow,controlBox,rootBox}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 // Continuous trace screenshots force readback from both WebGL contexts on each
 // input action. Keep diagnostic traces and capture gameplay explicitly below.
@@ -74,18 +74,17 @@ test('browser YOG login exchanges the native protocol through the real gateway',
     return result;
   };
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
-  const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  await editTextField(page,'transportfixture');
-  await click(810, 590);
+  await editTextField(page,'transportfixture',false,'nickname');
+  await clickControl(page,'login');
   // Server information, then refusal of an unregistered test account. This
   // proves bidirectional native/Wasm codecs without publishing or using accounts.
   await expect.poll(() => types(received)).toContain(10);
   await expect.poll(() => types(sent)).toContain(9);
   await expect.poll(() => types(sent)).toContain(1);
   await expect.poll(() => types(received)).toContain(7);
-  await click(810, 650); await screen('MainMenuScreen');
+  await clickControl(page,'cancel'); await screen('MainMenuScreen');
   expect(errors).toEqual([]);
 });
 
@@ -94,12 +93,11 @@ test('registered browser player enters and leaves the native YOG lobby', async (
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
-  const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  await editTextField(page,'transportplayer');
+  await editTextField(page,'transportplayer',false,'nickname');
   await editTextField(page,'fixture-only',true);
-  await click(810, 590);
+  await clickControl(page,'login');
   await screen('YOGSessionScreen');
   await page.screenshot({path: testInfo.outputPath('yog-lobby.png')});
   await page.locator('#canvas').press('Escape');
@@ -110,25 +108,23 @@ test('registered browser player enters and leaves the native YOG lobby', async (
 async function loginPlayer(page, name) {
   await page.addInitScript(base => { globalThis.glob2Config = {websocketBase: base}; }, endpoint);
   const screen = target => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(target);
-  const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
-  await editTextField(page,name);
+  await editTextField(page,name,false,'nickname');
   await editTextField(page,'fixture-only',true);
-  await click(810, 590); await screen('YOGSessionScreen');
+  await clickControl(page,'login'); await screen('YOGSessionScreen');
 }
 test('YOG registration remains scheduled through resize and cancellation', async ({page}) => {
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
-  const click = (x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
   await page.goto(gameURL()); await screen('MainMenuScreen');
   await clickMainMenu(page,'yog'); await screen('YOGLoginScreen');
   for(const viewport of [{width:1000,height:700},{width:1200,height:900}]) {
     const previous = page.viewportSize();
-    await click(previous.width/2+210,previous.height/2+80);
+    await clickControl(page,'register');
     await screen('YOGRegisterScreen');
     await page.setViewportSize(viewport);
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(viewport.width);
-    await click(viewport.width/2+210,viewport.height/2+200);
+    await clickControl(page,'cancel');
     await screen('YOGLoginScreen');
   }
   await page.locator('#canvas').press('Escape'); await screen('MainMenuScreen');
@@ -136,15 +132,14 @@ test('YOG registration remains scheduled through resize and cancellation', async
 
 test('YOG map selection and upload screens resize and return to their owning tabs', async ({page}) => {
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
-  const click = (x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
   await loginPlayer(page,'transportplayer');
-  await click(1090,815); await screen('ChooseMapScreen');
+  await clickControl(page,'lobby/host'); await screen('ChooseMapScreen');
   await page.setViewportSize({width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   // The Maps tab and its Upload action use the same scheduled child ownership.
-  await click(480,90); await click(890,615); await screen('ChooseMapScreen');
-  await click(280,180); await click(710,490); await screen('YOGClientMapUploadScreen');
+  await clickControl(page,'session/tab/2'); await clickControl(page,'maps/upload'); await screen('ChooseMapScreen');
+  await clickListRow(page,'files',0); await clickControl(page,'ok'); await screen('YOGClientMapUploadScreen');
   await page.setViewportSize({width:1200,height:900});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1200);
   await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
@@ -154,19 +149,18 @@ test('YOG map selection and upload screens resize and return to their owning tab
 test('YOG match settings resize and return to their room', async ({page}) => {
   const types = receivedTypes(page);
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
-  const click = (x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
   await loginPlayer(page,'transportplayer');
-  await click(1090,815); await screen('ChooseMapScreen');
-  await click(380,280); await click(810,590);
+  await clickControl(page,'lobby/host'); await screen('ChooseMapScreen');
+  await clickListRow(page,'files',0); await clickControl(page,'ok');
   await expect.poll(types).toContain(16);
-  await click(1090,435); await screen('CustomGameOtherOptions');
+  await clickControl(page,'options'); await screen('CustomGameOtherOptions');
   await page.setViewportSize({width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   const lists = types().filter(type => type === 50).length;
-  await click(890,525);
+  await clickControl(page,'cancel'); // Leave the room; the lobby lists games again.
   await expect.poll(() => types().filter(type => type === 50).length).toBeGreaterThan(lists);
-  await click(890,665); await screen('MainMenuScreen');
+  await clickControl(page,'lobby/quit'); await screen('MainMenuScreen');
 });
 
 test('YOG disconnect message remains scheduled and returns cleanly after resize', async ({page}) => {
@@ -234,29 +228,28 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
     const hostChecksums = sentChecksums(page), guestChecksums = sentChecksums(guest);
     const errors = [];
     for (const target of [page, guest]) target.on('pageerror', error => errors.push(String(error)));
-    const click = (target, x, y) => target.locator('#canvas').click({position: {x, y}, delay: 80});
     await loginPlayer(page, 'transportplayer');
     await loginPlayer(guest, 'transportguest');
     const lists = guestTypes().filter(type => type === 50).length;
-    await click(page, 1090, 815);
+    await clickControl(page, 'lobby/host');
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('ChooseMapScreen');
-    await click(page, 380, 280); await click(page, 810, 590);
+    await clickListRow(page, 'files', 0); await clickControl(page, 'ok');
     await expect.poll(hostTypes).toContain(16); // NetCreateGameAccepted
     await expect.poll(() => guestTypes().filter(type => type === 50).length).toBeGreaterThan(lists);
-    await click(guest, 100, 130); await click(guest, 1090, 245);
+    await clickListRow(guest, 'lobby/games', 0); await clickControl(guest, 'lobby/join');
     await expect.poll(guestTypes).toContain(18); // NetGameJoinAccepted
     await expect.poll(guestSent).toContain(47); // NetSetGameInRouter
     await expect.poll(async () => (await guest.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('YOGSessionScreen');
     await guest.screenshot({path: testInfo.outputPath('joined-room.png')});
     if (ai.id) {
-      await click(page, 1090, 410 - 30 * (ai.id - 1));
+      await clickControl(page, 'ai/' + ai.id);
       await expect.poll(hostSent).toContain(12); // NetAddAI
     }
     const ready = hostTypes().filter(type => type === 26).length;
-    await click(guest, 1170, 455);
+    await clickControl(guest, 'ready');
     await expect.poll(guestSent).toContain(26);
     await expect.poll(() => hostTypes().filter(type => type === 26).length).toBeGreaterThan(ready);
-    await click(page, 1090, 475);
+    await clickControl(page, 'start');
     for (const target of [page, guest])
       await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).tick, {timeout:60000}).toBeGreaterThan(100);
     for (const target of [page, guest])
@@ -272,8 +265,8 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
     // by closing browser contexts while the match is still running.
     for (const target of [page, guest]) {
       await target.locator('#canvas').press('Escape',{delay:80});
-      await expect.poll(() => require('./pixels').hasLightText(target, {x:460,y:482,width:280,height:34})).toBe(true);
-      await click(target, 600, 500);
+      await expect.poll(async () => require('./pixels').hasClassicButton(target, await controlBox(target,'quit'))).toBe(true);
+      await clickControl(target, 'quit');
       await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('EndGameScreen');
       await target.locator('#canvas').press('Enter');
       await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('YOGSessionScreen');
@@ -291,11 +284,10 @@ test(`browser and native players complete matching simulation checkpoints (${tra
   try {
     const hostTypes = receivedTypes(page), checksums = sentChecksums(page);
     const readyPlayers = receivedTypes(page, 'framereceived', body => body[0] === 26 ? body.readUInt16BE(1) : null);
-    const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
     await loginPlayer(page, 'transportplayer');
-    await click(1090, 815);
+    await clickControl(page, 'lobby/host');
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('ChooseMapScreen');
-    await click(380, 280); await click(810, 590);
+    await clickListRow(page,'files',0); await clickControl(page,'ok');
     await expect.poll(hostTypes).toContain(16);
     const started = await start(path.join(root, `build/${platform}/client/release/src/native-multiplayer-peer`),
       transport === 'WSS' ? [nativeProfile, secureEndpoint, path.join(work, 'cert.pem')] : [nativeProfile],
@@ -310,14 +302,14 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await expect.poll(readyPlayers).toContain(nativePlayerID);
     // Wire observation precedes the next SDL frame; wait for the actual control.
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).roomCanStart).toBe(true);
-    await click(1090, 475);
+    await clickControl(page, 'start');
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(125);
     expect((await page.evaluate(() => glob2Diagnostics.snapshot())).screenClass).toContain('GameSessionScreen');
     await page.screenshot({path: testInfo.outputPath('native-cross-play.png')});
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(250);
     await page.locator('#canvas').press('Escape',{delay:80});
-    await expect.poll(() => require('./pixels').hasLightText(page, {x:460,y:482,width:280,height:34})).toBe(true);
-    await click(600, 500);
+    await expect.poll(async () => require('./pixels').hasClassicButton(page, await controlBox(page,'quit'))).toBe(true);
+    await clickControl(page, 'quit');
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('EndGameScreen');
     await expect.poll(() => peer.exitCode !== null || peer.signalCode !== null, {timeout:45000}).toBe(true);
     expect(peer.signalCode).toBeNull();
@@ -456,16 +448,17 @@ test(`browser reports incompatible release before transmitting credentials (${mi
     });
   });
   const screen=name=>expect.poll(async()=>(await page.evaluate(()=>glob2Diagnostics.snapshot())).screen).toContain(name);
-  const click=(x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
   await page.goto(gameURL());await screen('MainMenuScreen');
   await clickMainMenu(page,'yog');await screen('YOGLoginScreen');
   await editTextField(page,'never-transmit-this',true);
-  await click(810,590);
+  await clickControl(page,'login');
   await expect.poll(()=>received).toContain(mismatch==='client version'?7:10);
   await expect.poll(()=>sent).toContain(3); // Client processed refusal and disconnected.
   await screen('YOGLoginScreen');
   expect(sent).toContain(9);expect(sent).not.toContain(1);expect(sent).not.toContain(2);
-  await expect.poll(()=>require('./pixels').hasLightText(page,{x:305,y:345,width:590,height:110})).toBe(true);
+  // The refusal is the status line above the login form.
+  const panel=await rootBox(page,'nickname'), nickname=await controlBox(page,'nickname');
+  await expect.poll(()=>require('./pixels').hasDarkText(page,{x:panel.x,y:panel.y,width:panel.width,height:Math.max(24,nickname.y-panel.y)})).toBe(true);
   await page.screenshot({path:info.outputPath('incompatible-release.png')});
-  await click(810,650);await screen('MainMenuScreen');
+  await clickControl(page,'cancel');await screen('MainMenuScreen');
 });

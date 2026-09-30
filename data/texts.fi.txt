@@ -3388,3 +3388,9 @@ Ok: %0
 Valintaikkunoiden tekstikoko: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Jatka peliä
+[games]
+Pelit
+[Add AI]
+Lisää AI

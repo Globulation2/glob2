@@ -1,23 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "CustomGameSetup.h"
-#include "Glob2Screen.h"
 #include "MapHeader.h"
 #include "StartQuality.h"
-#include <cstdint>
+#include "ui/FrontendUI.h"
 #include <ScreenStack.h>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <vector>
-class LobbyControls;
 class LandscapePickerScreen;
 class LandscapePreviewer;
-class CustomGameChoiceScreen : public Glob2Screen
+class LobbyMapPreview;
+
+// A titled list of choices with a description for the selected one (AI profiles).
+class CustomGameChoiceScreen : public Glob2UI::Screen
 {
 	friend struct CustomGameSetupHarness;
-	friend struct MobilePresentationHarness;
-	friend struct MobileGallerySetup;
-	LobbyControls *controls;
 	std::string title;
 	std::vector<std::string> choices;
 	int selected;
@@ -25,37 +24,27 @@ class CustomGameChoiceScreen : public Glob2Screen
 	std::vector<bool> enabled;
 
   public:
-    bool supportsCompactViewport() const override { return true; }
-    bool usesResponsiveViewport() const override;
-    void cancelExecutionInput() override;
-	CustomGameChoiceScreen(const std::string &, const std::vector<std::string> &, int, bool,
-						   const std::vector<bool> &);
-	void onSDLEvent(SDL_Event *) override;
-	void onAction(Widget *, Action, int, int) override;
+	CustomGameChoiceScreen(const std::string &, const std::vector<std::string> &, int, bool, const std::vector<bool> &);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void choose(int index) { selected = index; invalidate(); }
+	void use() { endExecute(selected); }
+
+  protected:
+	void onEscape() override { endExecute(-2); }
 };
-class LobbyMapPreview;
-class LobbyControls;
-class CustomGameScreen : public Glob2TabScreen
+
+class CustomGameScreen : public Glob2UI::Screen
 {
   public:
-	void paint() override;
-    bool supportsCompactViewport() const override { return true; }
-    bool usesResponsiveViewport() const override;
-    friend struct MobilePresentationHarness;
-	friend struct MobileGallerySetup;
-	void cancelExecutionInput() override;
 	enum
 	{
 		OK = 1,
 		CANCEL = 2
 	};
-	explicit CustomGameScreen(GAGGUI::ScreenStack& screens);
+	explicit CustomGameScreen(GAGGUI::ScreenStack &screens);
 	~CustomGameScreen() override;
-	void onAction(Widget *, Action, int, int) override;
-	void onGroupActivated(int) override;
-	void onSDLEvent(SDL_Event *) override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32 tick) override;
-	void updateLayout() override;
 	MapHeader &getMapHeader() { return mapHeader; }
 	GameHeader &getGameHeader();
 	int getSelectedColor(int) { return setup.humanColony().value_or(0); }
@@ -67,13 +56,23 @@ class CustomGameScreen : public Glob2TabScreen
 	void launchFailed()
 	{
 		message = "Could not launch this map. Your setup is retained; try again.";
+		invalidate();
 	}
 	int selectedSpeed() const { return setup.speed; }
+	// Semantic entry points shared with the harnesses.
+	void selectTab(int tab);
+	int tab() const { return currentTab; }
+	void launch();
+
+  protected:
+	void onEscape() override { endExecute(CANCEL); }
+	bool interceptEvent(const SDL_Event &event) override;
 
   private:
 	friend struct MapPreviewHarness;
+	friend struct MobileGallerySetup;
 	friend struct CustomGameSetupHarness;
-	GAGGUI::ScreenStack& screens;
+	GAGGUI::ScreenStack &screens;
 	CustomGameSetup setup;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
@@ -111,25 +110,14 @@ class CustomGameScreen : public Glob2TabScreen
 	int landscapeSortOrder = 0;
 	bool separateMapLibraries = true;
 	int currentTab = 0;
-	int groups[3];
-	LobbyMapPreview *preview;
-	LobbyControls *controls;
+	std::unique_ptr<LobbyMapPreview> preview;
 	std::vector<std::string> mapPaths, mapNames;
 	std::string librarySelection[2];
 	bool expanded[3] = {false, false, false};
-	void renderLobby();
-    void renderPhoneLobby();
-	enum class PhonePage
-	{
-		Main,
-		Maps,
-		MapSettings,
-		Rules
-	};
-	PhonePage phonePage = PhonePage::Main;
-	void renderPlayers(int x, int y, int w, int h);
-	void renderRules(int x, int y, int w, int h);
-	void renderMap(int x, int y, int w, int h);
+	Glob2UI::Element mapTab(const Glob2UI::Presentation &p, bool narrow);
+	Glob2UI::Element playersTab(const Glob2UI::Presentation &p, bool narrow);
+	Glob2UI::Element rulesTab(const Glob2UI::Presentation &p, bool narrow);
+	Glob2UI::Element ruleControl(int index, const Glob2UI::Presentation &p, std::string &help);
 	void setMapMode(bool random);
 	void showAIProfile(int colony);
 	void listMaps();
@@ -137,12 +125,12 @@ class CustomGameScreen : public Glob2TabScreen
 	bool generateMap();
 	std::vector<std::pair<int, GenerationRequest>> landscapeEntries() const;
 	LandscapePickerScreen *chooseLandscape();
-	void applyLandscape(int method, std::optional<std::uint32_t> seed,
-						const GenerationRequest *shown = nullptr);
+	void applyLandscape(int method, std::optional<std::uint32_t> seed, const GenerationRequest *shown = nullptr);
 	void resetParameters();
 	void randomizeParameters();
 	bool drawRandomParameters();
 	void showStartQuality();
-	void invalidate();
+	// Discard the current preview and schedule a new one after the edit settles.
+	void invalidatePreview();
 	std::string colonyLabel(int) const;
 };

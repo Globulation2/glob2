@@ -2,10 +2,6 @@
 #include "GameLoadScreen.h"
 #include "Engine.h"
 #include "Utilities.h"
-#include <GUIText.h>
-#include <GUIButton.h>
-#include <Toolkit.h>
-#include <StringTable.h>
 #include <iostream>
 #include <PerformanceTelemetry.h>
 GameLoadScreen::GameLoadScreen(Initializer initialize, GAGCore::CooperativeSlice slice)
@@ -18,14 +14,15 @@ GameLoadScreen::GameLoadScreen(std::unique_ptr<Engine> engine, Initializer initi
 {
 	if (!this->engine)
 		throw std::invalid_argument("A loader requires an engine");
-	auto &strings = *GAGCore::Toolkit::getStringTable();
-	status = new GAGGUI::Text(0, 180, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard",
-							  strings.getString("[Loading headers]"));
-	addWidget(status);
-	addWidget(new GAGGUI::TextButton(230, 340, 180, 40, ALIGN_SCREEN_CENTERED,
-									 ALIGN_SCREEN_CENTERED, "menu", strings.getString("[Cancel]"),
-									 0, 27));
+	status = Glob2UI::tr("[Loading headers]");
 	task.emplace(initialize(*this->engine));
+}
+Glob2UI::Element GameLoadScreen::build(const Glob2UI::Presentation &p)
+{
+	using namespace Glob2UI;
+	return page("", center(paragraph(status, {FontRole::Body, false, TextAlign::Center})),
+				actions({{"cancel", tr("[Cancel]"), [this] { endExecute(0); }, false, SDLK_ESCAPE}}, p),
+				p, 480);
 }
 GameLoadScreen::~GameLoadScreen()
 {
@@ -55,17 +52,15 @@ void GameLoadScreen::onTimer(Uint32)
 			return;
 		}
 		const char *stage = task->stage();
-		if (*stage)
-			status->setText(GAGCore::Toolkit::getStringTable()->getString(stage));
+		if (*stage && status != Glob2UI::tr(stage))
+		{
+			status = Glob2UI::tr(stage);
+			invalidate();
+		}
 	}
 	catch (const std::exception &error)
 	{
 		std::cerr << "Game initialization failed: " << error.what() << '\n';
 		endExecute(2);
 	}
-}
-void GameLoadScreen::onAction(GAGGUI::Widget *, GAGGUI::Action action, int, int)
-{
-	if (action == GAGGUI::BUTTON_RELEASED || action == GAGGUI::BUTTON_SHORTCUT)
-		endExecute(0);
 }

@@ -1,62 +1,35 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
 #pragma once
-
-#include <vector>
-#include "GUITabScreenWindow.h"
+#include "SessionTabsScreen.h"
 #include <memory>
-
-
-namespace GAGGUI
-{
-	class TextInput;
-	class TextArea;
-	class TextButton;
-	class TabScreen;
-	class Widget;
-	class List;
-}
+#include <string>
+#include <vector>
 
 class YOGClient;
 
-using namespace GAGGUI;
-
-/// A widget that maintains the list of players, and draws an icon based
-/// on whether that player is from YOG or from IRC
-class YOGClientOptionsScreen : public TabScreenWindow
+/// Online options: the list of blocked players.
+class YOGClientOptionsScreen : public SessionTab
 {
-public:
+  public:
+	explicit YOGClientOptionsScreen(std::shared_ptr<YOGClient> client);
+	std::string title() const override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void onActivated() override;
 
-	/// Constructor
-	YOGClientOptionsScreen(TabScreen* parent, std::shared_ptr<YOGClient> client);
-
-	///Called when this tab is activated
-	void onActivated();
-	///Responds to widget events
-	void onAction(Widget *source, Action action, int par1, int par2);
-	
 	enum
 	{
 		QUIT,
 		REMOVEBLOCKEDPLAYER,
 		ADDBLOCKEDPLAYER,
 	};
-private:
 
-	///Updates the list of blocked player
+  private:
 	void updateBlockedPlayerList();
-	///Adds a blocked player from the text box
-	void updateBlockedPlayerAdd();
-	///Removes a blocked player from the text move
-	void updateBlockedPlayerRemove();
-
+	void addBlocked();
+	void removeBlocked();
 	std::shared_ptr<YOGClient> client;
-	
-	List* blockedPlayers;
-	Text* blockedPlayersText;
-	TextButton* removeBlockedPlayer;
-	TextInput* addBlockedPlayerText;
-	TextButton* addBlockedPlayer;
+	std::vector<std::string> blocked;
+	int selected = -1;
+	std::string draft;
 };
-

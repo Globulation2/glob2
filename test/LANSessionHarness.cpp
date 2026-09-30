@@ -8,9 +8,9 @@
 #include "MultiplayerGameScreen.h"
 #include "YOGServer.h"
 #include "FileManager.h"
-#include "GUITextInput.h"
 #include "Toolkit.h"
 #include <ScreenStack.h>
+#include <ui/Screen.h>
 
 #include <cstdio>
 #include <filesystem>
@@ -26,22 +26,22 @@ using namespace GAGCore;
 
 namespace
 {
-void click(int x, int y)
+// Timer callbacks run on SDL's timer thread, so they only queue a request;
+// the join loop presses the control wherever the live lobby layout put it.
+enum PressRequest
+{
+	PressReady = 1,
+	PressLeave = 2
+};
+void request(int code)
 {
 	SDL_Event event{};
-	event.type = SDL_MOUSEBUTTONDOWN;
-	event.button.button = SDL_BUTTON_LEFT;
-	event.button.state = SDL_PRESSED;
-	event.button.x = x;
-	event.button.y = y;
-	SDL_PushEvent(&event);
-	event.type = SDL_MOUSEBUTTONUP;
-	event.button.state = SDL_RELEASED;
+	event.type = SDL_USEREVENT;
+	event.user.code = code;
 	SDL_PushEvent(&event);
 }
-
-Uint32 readyTimer(Uint32, void*) { click(610, 450); return 0; }
-Uint32 leaveTimer(Uint32, void*) { click(530, 525); return 0; }
+Uint32 readyTimer(Uint32, void*) { request(PressReady); return 0; }
+Uint32 leaveTimer(Uint32, void*) { request(PressLeave); return 0; }
 Uint32 timeoutTimer(Uint32, void*)
 {
 	SDL_Event event{};
@@ -55,10 +55,8 @@ class JoinScreen : public LANFindScreen
 public:
 	JoinScreen(ScreenStack& screens, const std::string& address, const std::string& capture) : LANFindScreen(screens), capture(capture)
 	{
-		// Use the real form's public widget API; no networking is stubbed.
-		for (Widget* widget : widgets)
-			if (auto* input = dynamic_cast<TextInput*>(widget))
-				if (input->getText() == "localhost") input->setText(address);
+		// Use the real form's entry points; no networking is stubbed.
+		setServer(address);
 	}
     ~JoinScreen() override {
         for (auto timer : timers) if (timer) SDL_RemoveTimer(timer);
@@ -71,7 +69,7 @@ public:
             timers[0] = SDL_AddTimer(5000, readyTimer, nullptr);
             timers[1] = SDL_AddTimer(25000, leaveTimer, nullptr);
             timers[2] = SDL_AddTimer(40000, timeoutTimer, nullptr);
-            LANFindScreen::onAction(nullptr, BUTTON_RELEASED, CONNECT, 0);
+            connect();
             return;
         }
         // Parent updates resume only after the scheduled LAN session returns.
@@ -86,6 +84,33 @@ private:
     Uint64 start = 0;
     SDL_TimerID timers[3]{};
 };
+
+// Turn a queued press request into a click on the named control of the
+// screen currently receiving input. The lobby lays itself out for the window,
+// so the harness asks the layout rather than assuming pixel positions.
+bool press(ScreenStack& screens, int code, std::vector<SDL_Event>& events)
+{
+	const char* key = code == PressReady ? "ready" : "cancel";
+	auto* screen = dynamic_cast<GAGGUI::ui::UIScreen*>(screens.top());
+	auto* node = screen ? screen->host().find(key) : nullptr;
+	if (!node)
+	{
+		std::printf("JOIN FAIL: no '%s' control on the current screen\n", key);
+		return false;
+	}
+	const auto r = node->bounds;
+	SDL_Event event{};
+	event.type = SDL_MOUSEBUTTONDOWN;
+	event.button.button = SDL_BUTTON_LEFT;
+	event.button.state = SDL_PRESSED;
+	event.button.x = r.x + r.w / 2;
+	event.button.y = r.y + r.h / 2;
+	events.push_back(event);
+	event.type = SDL_MOUSEBUTTONUP;
+	event.button.state = SDL_RELEASED;
+	events.push_back(event);
+	return true;
+}
 
 class HostObserver
 {
@@ -266,7 +291,21 @@ int main(int argc, char** argv)
 		std::filesystem::remove(downloaded);
         ScreenStack screens(*globals.gfx);
         screens.push(std::make_unique<JoinScreen>(screens, argv[2], std::string(argv[4]) + "-" + std::to_string(cycle + 1) + ".bmp"));
-        rc = screens.execute(20);
+        while (screens.running())
+        {
+            std::vector<SDL_Event> events;
+            SDL_Event event;
+            bool failed = false;
+            while (SDL_PollEvent(&event))
+            {
+                if (event.type == SDL_USEREVENT) failed = !press(screens, event.user.code, events) || failed;
+                else events.push_back(event);
+            }
+            if (failed) { rc = 1; break; }
+            screens.frame(SDL_GetTicks(), events);
+            SDL_Delay(20);
+        }
+        if (!rc) rc = screens.result();
 		std::ifstream original(glob2PreferGzipReadPath(*globals.fileManager, "maps/FourSquares1.map"), std::ios::binary);
 		std::ifstream received(downloaded, std::ios::binary);
 		std::string expected((std::istreambuf_iterator<char>(original)), {});

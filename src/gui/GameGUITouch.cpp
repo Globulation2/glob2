@@ -11,6 +11,7 @@
 #include "Unit.h"
 #include "BuildingType.h"
 #include "Order.h"
+#include "Player.h"
 #include "TeamStat.h"
 #include "render/Minimap.h"
 #include <Toolkit.h>
@@ -141,10 +142,13 @@ ViewPoint GameGUITouch::previewCursor() const
 	return {wrap(preview->x - gui.viewportX * 32, map.getW() * 32),
 			wrap(preview->y - gui.viewportY * 32, map.getH() * 32)};
 }
+GAGGUI::ui::UIDialog *GameGUITouch::activeDialog() const
+{
+	return gui.activeDialog();
+}
+
 void GameGUITouch::cancel(bool preservePreview)
 {
-	if (!preservePreview)
-		chatComposition.clear();
 	if (placement)
 	{
 		gui.clearSelection();
@@ -203,14 +207,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 {
 	std::vector<ViewRect> targets;
 	if (activeDialog())
-	{
-		prepareDialog();
-		for (const auto &row : dialogRows)
-			if (row.kind && (row.footer || dialogContent.contains({row.rect.x + row.rect.w / 2,
-																   row.rect.y + row.rect.h / 2})))
-				targets.push_back(row.rect);
 		return targets;
-	}
 	const auto ui = layout();
 	for (int i = 0; i < 6; ++i)
 		targets.push_back(
@@ -245,24 +242,6 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 
 bool GameGUITouch::process(SDL_Event &event)
 {
-	// SDL_TEXTEDITING is provisional IME text, not a chat command or committed
-	// draft. In particular, Return while choosing a candidate must not send.
-	if (usesHUD() && gui.typingInputScreen)
-	{
-		if (event.type == SDL_TEXTEDITING)
-		{
-			chatComposition = event.edit.text;
-			return true;
-		}
-		if (event.type == SDL_TEXTINPUT)
-			chatComposition.clear();
-		if (event.type == SDL_KEYDOWN && !chatComposition.empty())
-		{
-			if (event.key.keysym.sym == SDLK_ESCAPE)
-				chatComposition.clear();
-			return true;
-		}
-	}
 	if (dispatching)
 		return false;
 	if (usesHUD() && event.type == SDL_KEYDOWN)
@@ -278,7 +257,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			return true;
 		}
 		if ((key == SDLK_RETURN || key == SDLK_SPACE) && keyboardFocus >= 0 &&
-			!editingDialogWidget && !gui.typingInputScreen && !event.key.repeat)
+			!gui.typingInputScreen && !event.key.repeat)
 		{
 			const auto targets = keyboardTargets();
 			if (keyboardFocus < int(targets.size()))
@@ -298,14 +277,9 @@ bool GameGUITouch::process(SDL_Event &event)
 		if (key == SDLK_PAGEDOWN || key == SDLK_PAGEUP)
 		{
 			const double delta = key == SDLK_PAGEDOWN ? 144 : -144;
-			if (activeDialog())
-				dialogScroll = std::clamp(dialogScroll + delta, 0.0, dialogMaximum);
-			else
-			{
-				panelScroll += delta;
-				actionScroll += delta;
-				clampScroll();
-			}
+			panelScroll += delta;
+			actionScroll += delta;
+			clampScroll();
 			return true;
 		}
 	}
@@ -333,11 +307,6 @@ bool GameGUITouch::process(SDL_Event &event)
 			else
 				panelScroll -= delta;
 			clampScroll();
-			return true;
-		}
-		if (activeDialog())
-		{
-			dialogScroll = std::clamp(dialogScroll - delta, 0.0, dialogMaximum);
 			return true;
 		}
 	}
@@ -435,20 +404,6 @@ bool GameGUITouch::process(SDL_Event &event)
 						heldActionLabel = row->label;
 					}
 			}
-			heldDialogWidget = nullptr;
-			heldDialogKind = -1;
-			if (usesHUD() && activeDialog())
-			{
-				prepareDialog();
-				for (const auto &row : dialogRows)
-					if (row.rect.contains(point) && (row.footer || dialogContent.contains(point)))
-					{
-						heldDialogWidget = row.widget;
-						heldDialogIndex = row.index;
-						heldDialogKind = row.kind;
-						break;
-					}
-			}
 			interfaceGesture = ownerRegion != 0;
 			ownerSelection = gui.selectionMode;
 			ownerMenu = gui.inGameMenu;
@@ -521,14 +476,6 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 		}
 		if (interfaceGesture)
 		{
-			if (usesHUD() && ownerRegion == 4 && activeDialog() &&
-				action.kind == TouchActionKind::Pan)
-			{
-				dialogScroll = std::clamp(
-					dialogScroll - point.y / globalContainer->gfx->logicalUnitsPerPoint(), 0.0,
-					dialogMaximum);
-				prepareDialog();
-			}
 			if (usesHUD() && ownerRegion == 7 && action.kind == TouchActionKind::Pan)
 			{
 				const double unit = globalContainer->gfx->logicalUnitsPerPoint();
@@ -625,11 +572,8 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 
 void GameGUITouch::interfaceTap(ViewPoint point)
 {
-	if (usesHUD() && activeDialog())
-	{
-		tapDialog(point);
+	if (activeDialog())
 		return;
-	}
 	if (usesHUD() && interfaceRegion(point) == 38)
 	{
 		gui.clearSelection();
@@ -765,20 +709,11 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		}
 		// Touch opens dialogs by intent, never by synthesizing desktop pixels.
 		if (button == 3)
-		{
-			gui.inGameMenu = GameGUI::IGM_OBJECTIVES;
-			gui.gameMenuScreen = std::make_unique<InGameObjectivesScreen>(&gui, false);
-		}
+			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
 		else if (button == 4)
-		{
-			gui.inGameMenu = GameGUI::IGM_ALLIANCE;
-			gui.gameMenuScreen = std::make_unique<InGameAllianceScreen>(&gui);
-		}
+			gui.openDialog(GameGUI::IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(&gui));
 		else
-		{
-			gui.inGameMenu = GameGUI::IGM_MAIN;
-			gui.gameMenuScreen = std::make_unique<InGameMainScreen>(globalContainer->replaying);
-		}
+			gui.openMainMenu();
 		return;
 	}
 	else if (hudInput && layout().panel.contains(point))
@@ -894,18 +829,6 @@ void GameGUITouch::prepareDraw()
 {
 	if (!active())
 		return;
-	if (usesHUD() && gui.typingInputScreen && gui.typingInputScreenInc < 0)
-	{
-		delete gui.typingInputScreen;
-		gui.typingInputScreen = nullptr;
-	}
-	if (dialogOwner && activeDialog() != dialogOwner)
-	{
-		dialogOwner = nullptr;
-		editingDialogWidget = nullptr;
-		dialogRows.clear();
-		SDL_StopTextInput();
-	}
 	gui.checkSelection();
 	advancePlacement();
 	if (restorePalette && !inspectedBuilding())
@@ -937,5 +860,96 @@ void GameGUITouch::prepareDraw()
 			int((cursor.x - gui.camera.fractionX()) * gui.camera.zoom + gui.camera.offsetX);
 		gui.mouseY =
 			int((cursor.y - gui.camera.fractionY()) * gui.camera.zoom + gui.camera.offsetY);
+	}
+}
+
+void GameGUITouch::menuAction(int action)
+{
+	if (action == -2)
+		return;
+	if (action == -1)
+	{
+		showStatistics = false;
+		panelScroll = 0;
+		return;
+	}
+	gui.closeDialog();
+	if (action >= 20 && action < 24)
+	{
+		bool *states[] = {&gui.showStarvingMap, &gui.showDamagedMap, &gui.showDefenseMap,
+						  &gui.showFertilityMap};
+		const bool enabled = !*states[action - 20];
+		for (auto *state : states)
+			*state = false;
+		*states[action - 20] = enabled;
+		const OverlayArea::OverlayType types[] = {OverlayArea::Starving, OverlayArea::Damage,
+												  OverlayArea::Defence, OverlayArea::Fertility};
+		gui.overlay.compute(gui.game, types[action - 20], gui.localTeamNo);
+		return;
+	}
+	if (globalContainer->replaying && action >= 31 && action < 56)
+	{
+		if (action == 31)
+			globalContainer->replayShowFog = !globalContainer->replayShowFog;
+		else if (action == 32)
+			globalContainer->replayVisibleTeams =
+				globalContainer->replayVisibleTeams == 0xffffffff ? gui.localTeam->me : 0xffffffff;
+		else if (action == 33)
+			globalContainer->replayShowAreas = !globalContainer->replayShowAreas;
+		else if (action == 34)
+			globalContainer->replayShowFlags = !globalContainer->replayShowFlags;
+		else if (action >= 40 && action - 40 < gui.game.teamsCount())
+		{
+			gui.clearSelection();
+			gui.localTeamNo = action - 40;
+			gui.adjustLocalTeam();
+			for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); ++i)
+				if (gui.game.players[i]->teamNumber == gui.localTeamNo)
+				{
+					gui.localPlayer = i;
+					break;
+				}
+			if (globalContainer->replayVisibleTeams != 0xffffffff)
+				globalContainer->replayVisibleTeams = gui.localTeam->me;
+		}
+		return;
+	}
+	switch (action)
+	{
+	case 0:
+		if (globalContainer->replaying)
+			gui.gamePaused = !gui.gamePaused;
+		else if (!globalContainer->isViewingGame())
+			gui.orderQueue.push_back(std::make_shared<PauseGameOrder>(!gui.gamePaused));
+		break;
+	case 1:
+		gui.openChat();
+		break;
+	case 2:
+		panelOpen = true;
+		gui.clearSelection();
+		panelScroll = 0;
+		break;
+	case 3:
+		showStatistics = true;
+		panelOpen = true;
+		gui.clearSelection();
+		gui.replayDisplayMode = GameGUI::RDM_STAT_GRAPH_VIEW;
+		gui.displayMode = GameGUI::STAT_GRAPH_VIEW;
+		panelScroll = 0;
+		break;
+	case 4:
+		gui.toggleHistory();
+		break;
+	case 5:
+		gui.putMark = true;
+		break;
+	case 6:
+		gui.drawHealthFoodBar = !gui.drawHealthFoodBar;
+		break;
+	case 30:
+		globalContainer->replayFastForward = !globalContainer->replayFastForward;
+		gui.gamePaused = false;
+		break;
 	}
 }

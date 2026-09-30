@@ -3396,3 +3396,9 @@ Tamam: %0
 İletişim kutusu yazı boyutu: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Oyuna Devam Et
+[games]
+Oyunlar
+[Add AI]
+Yapay zeka ekle

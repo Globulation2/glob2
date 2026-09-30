@@ -1,15 +1,30 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
+#include "ui/FrontendUI.h"
+#include <string>
+#include <vector>
 
-#include "Glob2Screen.h"
-
-class CreditScreen : public Glob2Screen
+// Auto-scrolling credits; dragging or the wheel takes over the scroll position.
+class CreditScreen : public Glob2UI::Screen
 {
-public:
+  public:
 	CreditScreen();
-	virtual ~CreditScreen() { }
-	void onAction(Widget *source, Action action, int par1, int par2);
-};
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void onTimer(Uint32 tick) override;
 
+  protected:
+	void onEscape() override { endExecute(0); }
+	void onEvent(const SDL_Event &event) override;
+
+  private:
+	struct Line
+	{
+		std::string text;
+		bool decoration = false;
+	};
+	std::vector<Line> lines;
+	bool autoScroll = true;
+	Uint32 lastStep = 0;
+	int walkFrame = 0;
+};

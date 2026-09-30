@@ -1,43 +1,31 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
 #pragma once
-
-#include "GUITabScreenWindow.h"
-#include <memory>
+#include "SessionTabsScreen.h"
 #include "YOGClientDownloadableMapListener.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace GAGGUI
 {
-	class TextInput;
-	class TextArea;
-	class TextButton;
-	class TabScreen;
-	class Widget;
-	class Number;
-	class MultiTextButton;
-	class ScreenStack;
+class ScreenStack;
 }
-
 class YOGClient;
 class MapPreview;
 class YOGDownloadableMapInfo;
 
-using namespace GAGGUI;
-
-///This is the main YOG screen
-class YOGClientMapDownloadScreen : public TabScreenWindow, public YOGClientDownloadableMapListener
+///Maps shared on YOG: browse, rate, download and upload.
+class YOGClientMapDownloadScreen : public SessionTab, public YOGClientDownloadableMapListener
 {
-public:
-	YOGClientMapDownloadScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<YOGClient> client);
-	~YOGClientMapDownloadScreen();
-	///Responds to timer events
-	virtual void onTimer(Uint32 tick);
-	///Responds to widget events
-	void onAction(Widget *source, Action action, int par1, int par2);
-	///Called when this tab is activated
-	void onActivated();
-	
+  public:
+	YOGClientMapDownloadScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client);
+	~YOGClientMapDownloadScreen() override;
+	std::string title() const override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void onTimer(Uint32 tick) override;
+	void onActivated() override;
+
 	enum
 	{
 		QUIT,
@@ -47,73 +35,40 @@ public:
 		SUBMITRATING,
 		SORTMETHOD,
 	};
-	
-	///Updates the list of maps
-	void mapListUpdated();
-	///Updates the list of maps
-	void mapThumbnailsUpdated();
-	
-private:
-	///This requests the list of maps from the server
+
+	void mapListUpdated() override;
+	void mapThumbnailsUpdated() override;
+
+  private:
 	void requestMaps();
-	///This updates the map info
-	void updateMapInfo();
-	///This updates the visibility
-	void updateVisibility();
-	///This updates the map preview
 	void updateMapPreview();
-
-
+	void uploadMap();
+	void downloadSelected();
+	std::string selectedMap() const;
 	std::shared_ptr<YOGClient> client;
-	ScreenStack& screens;
-	List* mapList;
-	//! The widget that will show a preview of the selection map
-	MapPreview *mapPreview;
-	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapSize, *mapAuthor, *mapRating, *mapDownloadSize;
-	//! This is the button for adding a map
-	TextButton* addMap;
-	//! this button requests an update to the list
-	TextButton* refresh;
-	//! this button requests a map to be downloaded
-	TextButton* downloadMap;
-	//! A piece of text showing "loading map list"
-	Text* loadingMapList;
-	//! A button used to submit a rating
-	TextButton* submitRating;
-	//! A number box used to select a rating to give
-	Number* rating;
-	//! A text displayed when you select a map you have already rated
-	Text* mapRatedAlready;
-	//! A label for the various kinds of sorting
-	Text* sortMethodLabel;
-	//! Allows the map list to be sorted in different ways
-	MultiTextButton* sortMethod;
-	
-	bool mapValid;
-	bool mapsRequested;
-	
-	//! True when the selected map is valid
-	bool validMapSelected;
+	GAGGUI::ScreenStack &screens;
+	std::vector<std::string> mapNames;
+	int selected = -1;
+	int sortMethod = 0;
+	int rating = 5;
+	std::unique_ptr<MapPreview> mapPreview;
+	bool mapsRequested = false;
+	bool waiting = false;
 };
 
 ///This class will sort a list of YOGDownloadableMapInfo
 class MapListSorter
 {
-public:
+  public:
 	enum SortMethod
 	{
 		Name,
 		Size,
 		Rating,
 	};
-	
-	///Creates the sorting functor with the given sort method
-	MapListSorter(SortMethod sortmethod);
-	
-	///Compares two downloadable map info
-	bool operator()(const YOGDownloadableMapInfo& lhs, const YOGDownloadableMapInfo& rhs);
-private:
+	explicit MapListSorter(SortMethod sortmethod);
+	bool operator()(const YOGDownloadableMapInfo &lhs, const YOGDownloadableMapInfo &rhs);
+
+  private:
 	SortMethod sortMethod;
 };
-

@@ -289,7 +289,6 @@ int main()
 					: context(context), sprite(sprite)
 				{
 				}
-				void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
 				void updateExecution(Uint32) override {}
 				void drawExecution() override
 				{
@@ -374,7 +373,6 @@ int main()
 			struct ViewportScreen : GAGGUI::Screen
 			{
 				int changes = 0;
-				void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
 				bool usesResponsiveViewport() const override { return true; }
 				std::pair<int, int> minimumViewportSize() const override { return {800, 600}; }
 				void updateExecution(Uint32) override {}
@@ -383,7 +381,6 @@ int main()
 			};
 			struct Child : GAGGUI::Screen
 			{
-				void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
 				void updateExecution(Uint32) override { endExecute(0); }
 				void drawExecution() override {}
 			};

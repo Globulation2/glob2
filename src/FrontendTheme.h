@@ -5,6 +5,9 @@
 #include <memory>
 class MenuColony;
 
+// The frontend presentation outside the framework: the live colony backdrop and
+// the paper panel, painted with the frontend Theme palette so every colour has
+// one home. Widget painting itself lives in the framework controls.
 class FrontendTheme : public GAGGUI::Style
 {
   public:
@@ -16,19 +19,9 @@ class FrontendTheme : public GAGGUI::Style
 	void background(GAGCore::DrawableSurface *, bool panel = true,
 					const SDL_Rect *content = nullptr);
 	void onFrame() override;
-	void drawButtonSelection(GAGCore::DrawableSurface *, int, int, int, int) override;
-	bool usesThemeTextColor() const override { return true; }
-	void drawFieldBackground(GAGCore::DrawableSurface *, int, int, int, int) override;
-	void drawSelectionBackground(GAGCore::DrawableSurface *, int, int, int, int) override;
-	bool drawSelector(GAGCore::DrawableSurface *, int, int, int, int, unsigned, unsigned) override;
 	void drawTextButtonBackground(GAGCore::DrawableSurface *, int, int, int, int,
 								  unsigned) override;
 	void drawFrame(GAGCore::DrawableSurface *, int, int, int, int, unsigned) override;
-	void drawOnOffButton(GAGCore::DrawableSurface *, int, int, int, int, unsigned, bool) override;
-	void drawTriButton(GAGCore::DrawableSurface *, int, int, int, int, unsigned, Uint8) override;
-	void drawScrollBar(GAGCore::DrawableSurface *, int, int, int, int, int, int) override;
-	void drawProgressBar(GAGCore::DrawableSurface *, int, int, int, int, int) override;
-	int getStyleMetric(StyleMetrics) override;
 	std::unique_ptr<MenuColony> colony;
 	GAGGUI::Style *original;
 	GAGCore::Font::Style originalFonts[3];

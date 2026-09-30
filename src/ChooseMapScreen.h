@@ -1,64 +1,44 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
-
-#include "MapHeader.h"
 #include "GameHeader.h"
-#include "Glob2Screen.h"
-#include <GUINumber.h>
-#include <string>
-#include <memory>
+#include "MapHeader.h"
+#include "ui/FileListing.h"
+#include "ui/FrontendUI.h"
 #include <ApplicationHost.h>
-class FileImport;
+#include <memory>
+#include <optional>
+#include <string>
 
-namespace GAGGUI
-{
-class Button;
-class TextButton;
-class Text;
-class Number;
-class OnOffButton;
-} // namespace GAGGUI
-class Glob2FileList;
+class FileImport;
 class MapPreview;
 
-//! This screen is the basic screen used to selected map and games, Can have an alternate directory if desired
-class ChooseMapScreen : public Glob2Screen
+//! Selects a map, a saved game or a replay, optionally switching between two directories.
+class ChooseMapScreen : public Glob2UI::Screen
 {
-    friend struct MobileGallerySetup;
   public:
-	/// Constructor. Directory is the source of the listed files.
-	/// extension is the file extension to show. If recurse is true,
-	/// subdirectories are shown and can be opened.
+	/// Directory is the source of the listed files and extension the file
+	/// extension to show; an alternate directory adds a switch button.
 	ChooseMapScreen(const char *directory, const char *extension, bool recurse,
-					const char *alternateDirectory = NULL, const char *alternateExtension = NULL,
-					const bool alternateRecurse = false);
-	//! Destructor
-	virtual ~ChooseMapScreen();
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
+					const char *alternateDirectory = nullptr, const char *alternateExtension = nullptr,
+					bool alternateRecurse = false);
+	~ChooseMapScreen() override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32) override;
-	bool usesResponsiveViewport() const override;
-	bool supportsCompactViewport() const override { return true; }
-	void paint() override;
-	void handleExecutionEvent(SDL_Event) override;
 
-	/// Returns the mapHeader of the map that is currently selected
+	/// The map header of the currently selected map
 	MapHeader &getMapHeader();
-
-	/// Returns the gameHeader, with all of the customized options,
-	/// for the currently selected map.
+	/// The game header, with all customized options, for the selected map
 	GameHeader &getGameHeader();
 
 	enum
 	{
-		//! Value returned upon screen execution completion when a valid map/game is selected
+		//! A valid map/game is selected
 		OK = 1,
-		//! Value returned upon screen execution completion when the map/game selection is canceled
+		//! The selection was cancelled
 		CANCEL = 2,
-		//! Value returned if screen is for games and delete button has been pressed
+		//! Kept for callers; deletion now happens inside the screen
 		DELETEGAME = 3,
-		//! Value returned if screen if the button to switch between games and maps has been pressed
 		SWITCHTYPE = 4,
 	};
 
@@ -70,14 +50,19 @@ class ChooseMapScreen : public Glob2Screen
 		REPLAY
 	};
 
-	/// Returns the type of the currently selected loadable (NONE, GAME, MAP or REPLAY)
+	/// The type of the currently selected loadable (NONE, GAME, MAP or REPLAY)
 	LoadableType getSelectedType();
+	/// Selects the listed file with this display name; false when it is not listed.
+	bool selectNamed(const std::string &name);
+	/// Whether the preview shows the selected map.
+	bool hasPreview() const;
+
+	void select(int index);
 
   protected:
-	bool importBusy() const;
-	/// Handle called when a valid map has been selected.
-	/// This is to be overwritten by the derived class.
-	virtual void validMapSelectedhandler(void) {}
+	void onEscape() override { endExecute(CANCEL); }
+	/// Called when a valid map has been selected; overridable by subclasses.
+	virtual void validMapSelectedhandler() {}
 
 	/// The map header of the currently selected map
 	MapHeader mapHeader;
@@ -85,60 +70,34 @@ class ChooseMapScreen : public Glob2Screen
 	GameHeader gameHeader;
 
   private:
-	enum DirectoryMode
-	{
-		DisplayRegular,
-		DisplayAlternate,
-	} currentDirectoryMode;
-
-	LoadableType selectedType;
-
-	//! Title of the screen, depends on the directory given in parameter
-	Text *title;
-	//! The ok button
-	Button *ok;
-	//! The cancel button
-	Button *cancel;
-	//! the delete map button
-	Button *deleteMap;
-	//! the switch type button
-	TextButton *switchType = nullptr;
-	TextButton *exportButton = nullptr;
-	TextButton *importButton = nullptr;
+	bool importBusy() const;
+	Glob2UI::FileCatalog primary;
+	std::optional<Glob2UI::FileCatalog> alternate;
+	bool showingAlternate = false;
+	int selection[2] = {-1, -1};
+	LoadableType type1, type2;
+	LoadableType selectedType = NONE;
+	bool validMapSelected = false;
+	std::string title, status;
+	std::string mapName, mapInfo, mapVersion, mapSize, mapDate;
+	std::unique_ptr<MapPreview> mapPreview;
 	std::unique_ptr<GAGCore::ApplicationHost::FileSelection> fileSelection;
 	std::unique_ptr<FileImport> fileImport;
 	std::string importExtension;
-	void updateImportStatus();
-	//! The list of maps or games
-	Glob2FileList *fileList;
-	//! The alternate list of maps or games
-	Glob2FileList *alternateFileList = nullptr;
-	//! The widget that will show a preview of the selection map
-	MapPreview *mapPreview;
-	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
-	//! True when the selected map is valid
-	bool validMapSelected;
-	//! Default type
-	LoadableType type1;
-	//! Alternate type
-	LoadableType type2;
+	bool canImport = false, canExport = false, canDelete = false;
 
-	/// Called after a new mapHeader and gameHeader have been loaded.
-	void updateMapInformation();
-
-	/// Returns the file list currently shown: fileList when DisplayRegular, alternateFileList when DisplayAlternate.
-	Glob2FileList *activeFileList() const;
-
-	/// Returns the LoadableType paired with the active list: type1 when DisplayRegular, type2 when DisplayAlternate.
-	LoadableType activeType() const;
-
-	/// Maps a LoadableType to its display string ([the games]/[the maps]/[the replays]). Asserts on NONE.
+	Glob2UI::FileCatalog &activeCatalog();
+	int &activeSelection() { return selection[showingAlternate ? 1 : 0]; }
+	LoadableType activeType() const { return showingAlternate ? type2 : type1; }
 	static std::string loadableTypeName(LoadableType type);
-
-	/// Switches to newMode: flips list visibility, sets the switchType button label to the other list's type name, and fires selectionChanged() on the newly-active list.
-	void setDirectoryMode(DirectoryMode newMode);
-
-	/// Designates whether there will be verbose debugging output.
-	static const bool verbose = false;
+	void showStatus(const std::string &text);
+	void clearSelection();
+	void updateMapInformation();
+	void updateImportStatus();
+	void beginImport();
+	void exportSelected();
+	void deleteSelected();
+	void switchType();
+	void accept();
+	void cancel();
 };

@@ -1,17 +1,15 @@
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL,clickSettingsDone,clickSettingsCancel}=require('./main-menu');
+const {clickMainMenu,gameURL,clickSettingsDone,clickSettingsCancel,clickControl,controlBox}=require('./main-menu');
 const {hasDarkText}=require('./pixels');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
-const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
 const preferences=page=>page.evaluate(()=>glob2Diagnostics.preferences());
-// Coordinates below are specific to the suite's fixed 1200×900 default
-// viewport (settings-storage tests never resize) and to the Display &
-// graphics category, which is selected by default when Settings opens.
-const AUDIO_TAB=(page)=>click(page,208,233); // Sidebar "Audio" entry.
-const MUTE_ROW=(page)=>click(page,700,224); // Anywhere on the "Mute audio" row toggles it.
-const openGraphicsDetail=(page)=>click(page,950,588); // "Graphics detail" choice control.
-const selectFull=(page)=>click(page,950,625); // "Full" option in the opened dropdown.
+// Settings controls carry the setting ids; the Display & graphics category is
+// selected by default when Settings opens.
+const AUDIO_TAB=(page)=>clickControl(page,'nav.1'); // Sidebar "Audio" entry.
+const MUTE_ROW=(page)=>clickControl(page,'audio.mute');
+const openGraphicsDetail=(page)=>clickControl(page,'graphics.detail');
+const selectFull=(page)=>clickControl(page,'popup/0'); // "Full" is the first option of the opened dropdown.
 
 test('new browser profiles are muted and an explicit unmute survives reload',async({page})=>{
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
@@ -53,7 +51,9 @@ for (const fault of ['quota','aborted transaction']) test(`settings survive ${fa
   await expect.poll(async()=>(await state(page)).persistence,{timeout:10000}).toBe('failed');
   await clickSettingsDone(page); // Retries the write; still fails while the fault is active.
   await screen(page,'SettingsScreen');
-  await expect.poll(()=>hasDarkText(page,{x:144,y:758,width:150,height:26})).toBe(true);
+  // The status line sits at the left of the footer, on the Done button's row.
+  const done=await controlBox(page,'done'), panel=await require('./main-menu').rootBox(page,'done');
+  await expect.poll(()=>hasDarkText(page,{x:panel.x,y:done.y,width:Math.max(24,done.x-panel.x-160),height:done.height})).toBe(true);
   await page.screenshot({path:info.outputPath('settings-save-failure.png')});
   const restored=await context.newPage(); await restored.goto(gameURL()); await screen(restored,'MainMenuScreen');
   expect(await preferences(restored)).toEqual({optionFlags:1,mute:1}); await restored.close();

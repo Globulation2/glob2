@@ -1,10 +1,8 @@
 const {clickCreateMap}=require('./editor-controls');
-const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await snapshot(page)).screen).toContain(name);
-const click = (page,x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
-const menu = (page,x,y) => { const {width,height}=page.viewportSize(); return click(page,x+(width-640)/2,y+(height-480)/2); };
 async function resize(page,width,height,backingScale=1) {
   await page.setViewportSize({width,height});
   await expect.poll(async () => { const s=await snapshot(page); return [s.width,s.height]; }).toEqual([width*backingScale,height*backingScale]);
@@ -41,18 +39,18 @@ test('a running match survives resize and its open menu follows the new center',
   await expect.poll(async () => (await snapshot(page)).frames).toBeGreaterThan(beforeMenu + 2);
   await resize(page,1280,720);
   await page.screenshot({path:info.outputPath('resized-game-menu.png')});
-  await click(page,640,410); await screen(page,'EndGameScreen');
+  await clickControl(page,'quit'); await screen(page,'EndGameScreen');
   await page.locator('#canvas').press('Enter'); await screen(page,'CustomGameScreen');
 });
 test('editor dialogs and discard controls follow viewport changes', async ({page}) => {
   await clickMainMenu(page,'editor'); await screen(page,'EditorMainMenu');
-  await menu(page,320,90); await screen(page,'NewMapScreen');
+  await clickControl(page,'new-map'); await screen(page,'NewMapScreen');
   await clickCreateMap(page); await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
   await resize(page,1280,720);
-  await click(page,640,435); await screen(page,'MessageScreen');
+  await clickControl(page,'quit'); await screen(page,'MessageScreen');
   await resize(page,1000,800);
-  await menu(page,320,360); await screen(page,'EditorMainMenu');
+  await clickControl(page,'choice/1'); await screen(page,'EditorMainMenu');
 });
 
 test('small viewports retain the active screen and continue rendering', async ({page}, info) => {
@@ -96,13 +94,11 @@ test('interface scale survives resizing and keeps settings controls clickable', 
   // Software applies scale immediately; WebGL follows master's restart requirement.
   test.skip((await snapshot(page)).renderer !== 'software');
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
-  await click(page,950,430);
-  await click(page,950,550); // Interface scale: 125%.
+  await clickControl(page,'display.uiscale');
+  await clickControl(page,'popup/1'); // Interface scale: 125%.
   await page.setViewportSize({width:1400,height:1000});
   await expect.poll(async () => (await snapshot(page)).width).toBe(1400);
-  const logicalWidth=1120, logicalHeight=800, scale=1.25;
-  const done=require('./main-menu').settingsFooter(logicalWidth,logicalHeight).done;
   await page.screenshot({path:info.outputPath('scaled-settings-after-resize.png')});
-  await click(page,done.x*scale,done.y*scale);
+  await clickSettingsDone(page); // Published bounds already account for the interface scale.
   await screen(page,'MainMenuScreen');
 });

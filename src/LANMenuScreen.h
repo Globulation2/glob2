@@ -1,21 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
+#include "ui/FrontendUI.h"
 
-#include "Glob2Screen.h"
-
-namespace GAGGUI { class ScreenStack; }
-
-class LANMenuScreen : public Glob2Screen
+namespace GAGGUI
 {
-public:
+class ScreenStack;
+}
 
-	///Constructs a LAN menu screen
-	LANMenuScreen(GAGGUI::ScreenStack& screens);
-	virtual ~LANMenuScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
+class LANMenuScreen : public Glob2UI::Screen
+{
+  public:
+	explicit LANMenuScreen(GAGGUI::ScreenStack &screens);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
 	enum
 	{
@@ -24,15 +22,11 @@ public:
 		QuitMenu
 	};
 
-private:
-    GAGGUI::ScreenStack& screens;
-public:
+  protected:
+	void onEscape() override { endExecute(QuitMenu); }
 
-	enum
-	{
-		HOST = 1,
-		JOIN = 4,
-		QUIT = 5
-	};
+  private:
+	GAGGUI::ScreenStack &screens;
+	void host();
+	void join();
 };
-

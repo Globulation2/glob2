@@ -3388,3 +3388,9 @@ Ok: %0
 Rozmiar tekstu okien dialogowych: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Wznów grę
+[games]
+Gry
+[Add AI]
+Dodaj SI

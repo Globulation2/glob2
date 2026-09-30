@@ -58,8 +58,12 @@ std::optional<SlashCommand> parseSlashCommand(const std::string& message)
 
 bool GameGUI::processScrollableWidget(SDL_Event *event)
 {
-	scrollableText->translateAndProcessEvent(event);
-	return true;
+	if (!scrollableText)
+		return false;
+	const bool consumed = scrollableText->event(*event);
+	if (scrollableText->finished())
+		scrollableText.reset();
+	return consumed;
 }
 
 // Forward events to the in-game chat input while it is open. Returns true if
@@ -70,15 +74,11 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 	if (!typingInputScreen)
 		return false;
 
-	if ((event->type==SDL_KEYDOWN) && (event->key.keysym.sym == SDLK_ESCAPE))
-	{
-		typingInputScreenInc=-TYPING_INPUT_BASE_INC;
-		typingInputScreen->endValue=1;
-	}
+	const bool consumed = typingInputScreen->event(*event);
+	if (!typingInputScreen->finished())
+		return consumed;
 
-	typingInputScreen->translateAndProcessEvent(event);
-
-	if (typingInputScreen->endValue==0)
+	if (typingInputScreen->result()==0)
 	{
 		//Interpret message
 		std::string message = typingInputScreen->getText();
@@ -104,21 +104,16 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 		}
 
 		if (!message.empty())
-		{
 			orderQueue.push_back(shared_ptr<Order>(new MessageOrder(nchatMask, MessageOrder::NORMAL_MESSAGE_TYPE, message.c_str())));
-			typingInputScreen->setText("");
-		}
-		typingInputScreenInc=-TYPING_INPUT_BASE_INC;
-		typingInputScreen->endValue=1;
-		return true;
 	}
-	return false;
+	closeChat();
+	return true;
 }
 
 void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
-    if (touch && touch->process(*event)) return;
+    if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_MIDDLE) ||
         (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST))
         panPushed = false;
@@ -129,6 +124,7 @@ void GameGUI::processEvent(SDL_Event *event)
         selectionPushed = false;
         mapPanPushed = false;
         if (touch) touch->cancel();
+        if (auto *dialog = activeDialog()) dialog->cancelInput();
         torusView.stopMoving();
         toolManager.cancelDrag(localTeamNo);
         torusPointerDown = false;
@@ -156,23 +152,22 @@ void GameGUI::processEvent(SDL_Event *event)
 		handleKeyDump(event->key);
 
 
-	if (event->type == SDL_MOUSEBUTTONDOWN)
-		handleMenuIconClick(event->button);
-
-
-	// if there is a menu he get events first
+	// An open dialog gets every event; only the panel icons can still switch menus.
 	if (inGameMenu)
 	{
 		notmenu=true;
-		processGameMenu(event);
+		if (!processGameMenu(event) && event->type == SDL_MOUSEBUTTONDOWN)
+			handleMenuIconClick(event->button);
 	}
 	else
 	{
 		notmenu=false;
-		if (scrollableText)
-		{
-			processScrollableWidget(event);
-		}
+		if (event->type == SDL_MOUSEBUTTONDOWN)
+			handleMenuIconClick(event->button);
+		if (inGameMenu)
+			return;
+		if (processScrollableWidget(event))
+			return;
 		if (event->type==SDL_KEYDOWN)
 		{
 			handleKey(event->key.keysym, true, event->key.repeat != 0);
@@ -251,25 +246,21 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 
 		if (menu != -1)
 		{
-			if (inGameMenu != IGM_NONE)
-			{
-				gameMenuScreen.reset();
-			}
 			if (inGameMenu == menu)
-				inGameMenu = IGM_NONE;
-			else
-				inGameMenu = static_cast<InGameMenu>(menu);
-
+			{
+				closeDialog();
+				return;
+			}
 			switch (menu)
 			{
 			case IGM_MAIN:
-				gameMenuScreen.reset(new InGameMainScreen(globalContainer->replaying));
+				openMainMenu();
 				break;
 			case IGM_ALLIANCE:
-				gameMenuScreen.reset(new InGameAllianceScreen(this));
+				openDialog(IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(this));
 				break;
 			case IGM_OBJECTIVES:
-				gameMenuScreen.reset(new InGameObjectivesScreen(this, false));
+				openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, false));
 				break;
 			default:
 				assert(false);

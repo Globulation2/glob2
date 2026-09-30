@@ -1,18 +1,17 @@
 const {editTextField}=require('./main-menu');
-const {gameURL,clickMainMenu,clickSettingsCancel,clickCustomGameStart}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsCancel,clickCustomGameStart,clickControl}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async ()=>(await state(page)).screen).toContain(name);
-const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
 async function save(page) {
   await page.locator('#canvas').press('Escape',{delay:80});
   const frames=(await state(page)).frames;
   await expect.poll(async ()=>(await state(page)).frames).toBeGreaterThan(frames+2);
-  await click(page,600,400);
+  await clickControl(page,'save');
   await editTextField(page,'Durability regression');
-  await click(page,520,555);
+  await clickControl(page,'ok');
 }
 for (const fault of ['abort','quota']) test(`${fault} failure retains the previous durable save and can retry`,async ({page,context},info)=>{
   // Inject a failure at the browser database boundary, not into game behavior.
@@ -51,7 +50,7 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   await expect.poll(async ()=>(await state(page)).persistence).toBe('failed');
   const changed=await digest(); expect(changed).not.toEqual(original);
   const downloadEvent=page.waitForEvent('download');
-  await click(page,600,422);
+  await clickControl(page,'export');
   const download=await downloadEvent;
   expect(download.suggestedFilename()).toBe('Durability_regression.game.gz');
   const exported=await fs.readFile(await download.path());
@@ -63,7 +62,7 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   await restored.close();
   await page.evaluate(()=>storageFault.disable());
   // The original save dialog is retained; click OK to retry the operation.
-  await click(page,520,555);
+  await clickControl(page,'ok');
   await expect.poll(async ()=>(await state(page)).persistence).toBe('persisted');
   // Retry serializes the current game again; compare with that replacement,
   // rather than assuming every local GUI field is unchanged since the failure.
@@ -87,7 +86,7 @@ test('restore failure is explained before entering the game', async ({page},info
   expect((await state(page)).restore).toBe('failed');
   expect((await state(page)).persistence).toBe('restore-failed');
   await page.screenshot({path:info.outputPath('storage-restore-failure.png')});
-  await click(page,390,570); await screen(page,'MainMenuScreen');
+  await clickControl(page,'choice/0'); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   await clickSettingsCancel(page); await screen(page,'MainMenuScreen');
   // Startup and settings writes must not retry the database after failed restore.

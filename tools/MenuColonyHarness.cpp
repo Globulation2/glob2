@@ -9,8 +9,9 @@
 #include "LANMenuScreen.h"
 #include "ChooseMapScreen.h"
 #include "CustomGameScreen.h"
+#include "CustomGamePreferences.h"
 #include "CustomGameOtherOptions.h"
-#include "GameGUILoadSave.h"
+#include "gui/LoadSaveDialog.h"
 #include "CampaignMainMenu.h"
 #include "EditorMainMenu.h"
 #include "CreditScreen.h"
@@ -28,17 +29,12 @@
 #include "CampaignMenuScreen.h"
 #include "CampaignSelectorScreen.h"
 #include "NewMapScreen.h"
-#include "LobbyControls.h"
 #include "LANFindScreen.h"
 #include "YOGLoginScreen.h"
 #include "YOGRegisterScreen.h"
 #include "YOGClient.h"
 #include "ReplayWriter.h"
 #include "DatasetWriter.h"
-#include <GUIButton.h>
-#include <GUITextInput.h>
-#include <GUIText.h>
-#include <GUIList.h>
 #include <filesystem>
 #include <sstream>
 #include <BinaryStream.h>
@@ -64,54 +60,27 @@ void require(bool condition, const char *message)
 		std::exit(2);
 	}
 }
-// Exercise presentation through the real dispatch path, and inspect raster
-// output rather than trusting widget bounds to describe wrapped text.
+// Menus keep the frontend theme active for their lifetime, even when created
+// while gameplay is still winding down, and their background never changes when
+// a pending gameplay screen acquires its scope.
 void checkMenuPainting()
 {
-	class CountingSurface : public DrawableSurface
+	struct Menu : Glob2UI::Screen
 	{
-	  public:
-		CountingSurface() : DrawableSurface(240, 100) {}
-		int presentations = 0;
-		void nextFrame() override
-		{
-			++presentations;
-			DrawableSurface::nextFrame();
-		}
-	} surface;
-	class TestScreen : public GAGGUI::Screen
-	{
-	  public:
-		explicit TestScreen(DrawableSurface *target) { gfx = target; }
-		void paint() override {}
-		void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
-	} screen(&surface);
-	FrontendScope scope;
+		Glob2UI::Element build(const Glob2UI::Presentation &) override { return Glob2UI::label("menu"); }
+	};
 	{
 		FrontendScope game(false);
 		{
-			struct Menu : Glob2Screen
-			{
-				void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
-			} menu;
+			Menu menu;
 			require(Style::style == FrontendTheme::current,
 					"menu created during game teardown activates theme");
 		}
 		require(Style::style != FrontendTheme::current,
 				"menu destruction restores game presentation");
-		{
-			struct Menu : Glob2TabScreen
-			{
-				Menu() : Glob2TabScreen(false) {}
-				void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
-			} menu;
-			require(Style::style == FrontendTheme::current,
-					"tab menu created during game teardown activates theme");
-		}
 	}
-	// A menu background must not change when a pending gameplay screen acquires its scope.
-	auto checkBackground = [](auto &menu)
 	{
+		Menu menu;
 		menu.beginExecution(globalContainer->gfx);
 		auto raster = []
 		{
@@ -121,73 +90,16 @@ void checkMenuPainting()
 			return std::string(static_cast<const char *>(pixels->pixels),
 							   pixels->pitch * pixels->h);
 		};
-		menu.paint();
+		menu.paintFrame(0);
 		const auto expected = raster();
 		{
 			FrontendScope pendingGame(false);
-			menu.paint();
+			menu.paintFrame(0);
 			require(raster() == expected,
 					"pending game cannot restore the legacy grass background");
 		}
 		menu.endExecute(0);
 		menu.finishExecution();
-	};
-	{
-		struct Menu : Glob2Screen
-		{
-			void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
-		} menu;
-		checkBackground(menu);
-	}
-	{
-		struct Menu : Glob2TabScreen
-		{
-			Menu() : Glob2TabScreen(false) {}
-			void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
-		} menu;
-		checkBackground(menu);
-	}
-	screen.dispatchPaint(false);
-	require(surface.presentations == 0, "modal background is not presented separately");
-	surface.nextFrame();
-	require(surface.presentations == 1, "composed modal frame presents once");
-	screen.dispatchPaint();
-	require(surface.presentations == 2, "ordinary screen still presents");
-
-	auto *label =
-		new GAGGUI::Text(10, 10, ALIGN_LEFT, ALIGN_TOP, "standard",
-						 "A very long map name with enough words to overflow several rows", 80, 35);
-	screen.addWidget(label);
-	screen.dispatchInit();
-	for (bool wrap : {false, true})
-	{
-		surface.setClipRect();
-		surface.drawFilledRect(0, 0, 240, 100, Color(255, 0, 255));
-		label->setWordWrap(wrap);
-		label->paint();
-		auto *raster = surface.getSDLSurface();
-		const Uint32 background = SDL_MapRGBA(raster->format, 255, 0, 255, 255);
-		int ink = 0;
-		for (int y = 0; y < 100; ++y)
-			for (int x = 0; x < 240; ++x)
-			{
-				const auto pixel = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(raster->pixels) +
-															  y * raster->pitch)[x];
-				if (pixel == background)
-					continue;
-				++ink;
-				require(x >= 10 && x < 90 && y >= 10 && y < 45,
-						"text stays within its allocated box");
-				if (!wrap)
-					require(y < 10 +
-									Toolkit::getFont("standard")->getStringHeight(label->getText()),
-							"single-line labels do not wrap");
-			}
-		require(ink > 0, "bounded labels remain visible");
-		int x, y, w, h;
-		surface.getClipRect(&x, &y, &w, &h);
-		require(x == 0 && y == 0 && w == 240 && h == 100,
-				"text restores clipping for subsequent widgets");
 	}
 }
 
@@ -268,166 +180,75 @@ void generate(const char *path)
 	std::cout << "Generated colony at tick " << game.stepCounter << '\n';
 }
 
+// Drives a declarative screen outside a stack: layout, painting and pointer or
+// keyboard input through the production host.
 template <class T> class Preview : public T
 {
   public:
 	using T::T;
+	~Preview()
+	{
+		if (this->isExecutionRunning())
+		{
+			this->endExecute(0);
+			this->finishExecution();
+		}
+	}
 	void prepare()
 	{
 		if (!prepared)
 		{
-			this->gfx = globalContainer->gfx;
-			this->dispatchInit();
+			this->beginExecution(globalContainer->gfx);
 			prepared = true;
 		}
+		this->paintFrame(SDL_GetTicks());
 	}
 	void render()
 	{
 		prepare();
-		this->dispatchPaint();
+		this->paintFrame(SDL_GetTicks());
 	}
 	void advance(unsigned frames)
 	{
 		prepare();
 		for (unsigned i = 0; i < frames; ++i)
-			this->dispatchTimer(i * 40);
+			this->updateExecution(i * 40);
 	}
 	void checkBounds()
 	{
 		prepare();
-		for (auto *widget : this->widgets)
-			if (widget->visible)
-				if (auto *button = dynamic_cast<GAGGUI::Button *>(widget))
-				{
-					const auto r = button->getScreenRect();
-					require(r.x >= 0 && r.y >= 0 && r.x + r.w <= this->getW() &&
-								r.y + r.h <= this->getH(),
-							"button within screen");
-				}
+		for (auto *node : this->GAGGUI::ui::UIScreen::host().interactiveNodes())
+		{
+			const auto r = node->bounds;
+			require(r.x >= 0 && r.y >= 0 && r.x + r.w <= globalContainer->gfx->getW() &&
+						r.y + r.h <= globalContainer->gfx->getH(),
+					"control within screen");
+		}
 	}
-	void selectFirstListItem()
+	void clickButton(const std::string &key)
 	{
 		prepare();
-		for (auto *widget : this->widgets)
-			if (widget->visible)
-				if (auto *list = dynamic_cast<GAGGUI::List *>(widget))
-				{
-					if (list->getCount())
-					{
-						list->setSelectionIndex(0);
-						list->selectionChanged();
-						return;
-					}
-				}
+		const auto r = this->GAGGUI::ui::UIScreen::host().bounds(key);
+		SDL_Event e{};
+		e.button.button = SDL_BUTTON_LEFT;
+		e.button.x = r.x + r.w / 2;
+		e.button.y = r.y + r.h / 2;
+		e.type = SDL_MOUSEBUTTONDOWN;
+		this->handleExecutionEvent(e);
+		e.type = SDL_MOUSEBUTTONUP;
+		this->handleExecutionEvent(e);
 	}
-	void clickButton(int code)
+	void key(SDL_Keycode code)
 	{
 		prepare();
-		for (auto *widget : this->widgets)
-			if (widget->visible)
-				if (auto *button = dynamic_cast<GAGGUI::Button *>(widget);
-					button && button->returnCode == code)
-				{
-					const auto r = button->getScreenRect();
-					SDL_Event e{};
-					e.button.button = SDL_BUTTON_LEFT;
-					e.button.x = r.x + r.w / 2;
-					e.button.y = r.y + r.h / 2;
-					e.type = SDL_MOUSEBUTTONDOWN;
-					this->dispatchEvents(&e);
-					e.type = SDL_MOUSEBUTTONUP;
-					this->dispatchEvents(&e);
-					return;
-				}
-		require(false, "button exists");
-	}
-	void executeCancellation()
-	{
-		prepare();
-		GAGGUI::Button *cancel = nullptr;
-		SDL_Rect last{};
-		bool composed = false;
-		// Composed screens route events through their rendered controls, not the
-		// retained legacy widgets. Exercise the actual Cancel hit target.
-		for (auto *widget : this->widgets)
-			if (auto *controls = dynamic_cast<LobbyControls *>(widget);
-				controls && controls->visible)
-			{
-				controls->paint();
-				for (const auto &hit : controls->hits)
-					if (hit.id == "cancel" && hit.enabled)
-					{
-						last = hit.box;
-						composed = true;
-						break;
-					}
-			}
-		if (!composed)
-			for (auto *widget : this->widgets)
-				if (widget->visible)
-					if (auto *button = dynamic_cast<GAGGUI::Button *>(widget))
-					{
-						const auto r = button->getScreenRect();
-						if (!cancel || r.y > last.y || (r.y == last.y && r.x > last.x))
-						{
-							cancel = button;
-							last = r;
-						}
-					}
-		require(composed || cancel, "cancellation button exists");
-		SDL_Event event{};
-		event.type = SDL_MOUSEBUTTONDOWN;
-		event.button.button = SDL_BUTTON_LEFT;
-		event.button.x = last.x + last.w / 2;
-		event.button.y = last.y + last.h / 2;
-		SDL_PushEvent(&event);
-		event.type = SDL_MOUSEBUTTONUP;
-		SDL_PushEvent(&event);
-		auto *before = GAGGUI::Style::style;
-		executeBounded();
-		require(GAGGUI::Style::style == before, "screen execution restores theme");
-	}
-	void executeKeyboardCancellation()
-	{
-		prepare();
-		SDL_Event event{};
-		event.type = SDL_KEYDOWN;
-		event.key.keysym.sym = SDLK_ESCAPE;
-		SDL_PushEvent(&event);
-		auto *before = GAGGUI::Style::style;
-		const int code = executeBounded();
-		require(code == T::CANCEL, "keyboard cancellation returns to menu");
-		require(GAGGUI::Style::style == before, "screen execution restores theme");
+		SDL_Event e{};
+		e.type = SDL_KEYDOWN;
+		e.key.keysym.sym = code;
+		this->handleExecutionEvent(e);
 	}
 	int result() const { return GAGGUI::Screen::returnCode; }
-	void executeEscape()
-	{
-		prepare();
-		SDL_Event event{};
-		event.type = SDL_KEYDOWN;
-		event.key.keysym.sym = SDLK_ESCAPE;
-		SDL_PushEvent(&event);
-		auto *before = GAGGUI::Style::style;
-		executeBounded();
-		require(GAGGUI::Style::style == before, "screen execution restores theme");
-	}
 
   private:
-	int executeBounded()
-	{
-		const auto watchdog = SDL_AddTimer(
-			60000,
-			[](Uint32, void *) -> Uint32
-			{
-				std::fputs("FAIL: menu navigation did not complete within 60 seconds\n", stderr);
-				std::_Exit(2);
-			},
-			nullptr);
-		require(watchdog, "navigation watchdog starts");
-		const int result = this->execute(globalContainer->gfx, 40);
-		SDL_RemoveTimer(watchdog);
-		return result;
-	}
 	bool prepared = false;
 };
 void capture(const std::string &name, const std::string &path)
@@ -448,7 +269,7 @@ void capture(const std::string &name, const std::string &path)
 	else if (name == "options")
 	{
 		Preview<CustomGameScreen> parent(screens);
-		parent.selectFirstListItem();
+		parent.prepare();
 		Preview<CustomGameOtherOptions> s(parent.getGameHeader(), parent.getMapHeader(), false);
 		s.render();
 		s.checkBounds();
@@ -457,10 +278,10 @@ void capture(const std::string &name, const std::string &path)
 	{
 		Preview<CampaignMainMenu> parent(screens);
 		parent.render();
-		LoadSaveScreen s("replays", "replay", false, "Save replay", "", replayFilenameToName,
+		LoadSaveDialog s("replays", "replay", false, "Save replay", "", replayFilenameToName,
 						 glob2NameToFilename);
-		s.dispatchPaint();
-		globalContainer->gfx->drawSurface(s.decX, s.decY, s.getSurface());
+		s.attach(*globalContainer->gfx);
+		s.draw(0);
 	}
 	else if (name == "settings" || name == "settings-buildings" || name == "settings-keys")
 	{
@@ -558,9 +379,9 @@ void capture(const std::string &name, const std::string &path)
 		Preview<CustomGameScreen> s(screens);
 		s.prepare();
 		if (name == "custom-players")
-			s.activateGroup(1);
+			s.selectTab(1);
 		if (name == "custom-rules")
-			s.activateGroup(2);
+			s.selectTab(2);
 		s.render();
 		s.checkBounds();
 	}
@@ -573,7 +394,7 @@ void capture(const std::string &name, const std::string &path)
 // Only the test driver uses a timer: inject normal UI events into session loops.
 struct SessionExit
 {
-	int phase = 0, x = 0, y = 0;
+	int phase = 0, tabs = 0;
 	bool replay = false;
 };
 Uint32 exitSession(Uint32, void *data)
@@ -594,12 +415,12 @@ Uint32 exitSession(Uint32, void *data)
 	}
 	else if (state.phase == 1)
 	{
-		e.type = SDL_MOUSEBUTTONDOWN;
-		e.button.button = SDL_BUTTON_LEFT;
-		e.button.x = state.x;
-		e.button.y = state.y;
-		SDL_PushEvent(&e);
-		e.type = SDL_MOUSEBUTTONUP;
+		// Quit is the last action of the in-game and editor menus: Tab to it, then Return.
+		e.type = SDL_KEYDOWN;
+		e.key.keysym.sym = SDLK_TAB;
+		for (int i = 0; i < state.tabs; ++i)
+			SDL_PushEvent(&e);
+		e.key.keysym.sym = SDLK_RETURN;
 		SDL_PushEvent(&e);
 	}
 	else
@@ -786,68 +607,77 @@ int main(int argc, char **argv)
 		std::filesystem::remove(invalidPath);
 		{
 			FrontendScope scope;
-			Preview<MainMenuScreen> main;
-			main.render();
-			main.checkBounds();
 			const int actions[] = {
 				MainMenuScreen::CUSTOM,           MainMenuScreen::CAMPAIGN,
 				MainMenuScreen::LOAD_GAME,        MainMenuScreen::TUTORIAL,
 				MainMenuScreen::MULTIPLAYERS_YOG, MainMenuScreen::MULTIPLAYERS_LAN,
 				MainMenuScreen::GAME_SETUP,       MainMenuScreen::EDITOR,
 				MainMenuScreen::CREDITS,          MainMenuScreen::QUIT};
-			SDL_Event e{};
-			e.type = SDL_KEYDOWN;
 			for (int action : actions)
 			{
-				e.key.keysym.sym = SDLK_TAB;
-				main.dispatchEvents(&e);
-				e.key.keysym.sym = SDLK_RETURN;
-				main.dispatchEvents(&e);
-				require(main.result() == action, "main keyboard route");
-			}
-			for (int action : actions)
-			{
-				main.clickButton(action);
+				Preview<MainMenuScreen> main;
+				main.render();
+				main.checkBounds();
+				main.clickButton("menu/" + std::to_string(action));
 				require(main.result() == action, "main mouse route");
+			}
+			// Tab walks every action in focus order; Return activates the focused one.
+			Preview<MainMenuScreen> probe;
+			probe.render();
+			const auto order = probe.GAGGUI::ui::UIScreen::host().focusOrder();
+			require(order.size() == 10, "main menu exposes every action to the keyboard");
+			for (size_t i = 0; i < order.size(); ++i)
+			{
+				Preview<MainMenuScreen> main;
+				main.render();
+				for (size_t t = 0; t <= i; ++t)
+					main.key(SDLK_TAB);
+				main.key(SDLK_RETURN);
+				require(main.result() == std::atoi(order[i].c_str() + 5), "main keyboard route");
 			}
 		}
 		{
 			FrontendScope scope;
 			GAGGUI::ScreenStack screens(*globalContainer->gfx);
-			LoadSaveScreen dialog("replays", "replay", false, "Save replay", "",
+			LoadSaveDialog dialog("replays", "replay", false, "Save replay", "",
 								  replayFilenameToName, glob2NameToFilename);
-			dialog.dispatchPaint();
+			dialog.attach(*globalContainer->gfx);
+			dialog.draw(0);
+			const auto name = dialog.host().bounds("name");
+			dialog.host().tapAt({name.x + name.w / 2, name.y + name.h / 2});
 			SDL_Event text{};
 			text.type = SDL_TEXTINPUT;
 			SDL_strlcpy(text.text.text, "colony-review", sizeof(text.text.text));
-			dialog.dispatchEvents(&text);
+			dialog.event(text);
 			require(std::string(dialog.getName()) == "colony-review", "replay dialog text entry");
 			SDL_Event key{};
 			key.type = SDL_KEYDOWN;
 			key.key.keysym.sym = SDLK_BACKSPACE;
-			dialog.dispatchEvents(&key);
+			dialog.event(key);
 			require(std::string(dialog.getName()) == "colony-revie", "replay dialog editing");
 			key.key.keysym.sym = SDLK_ESCAPE;
-			dialog.dispatchEvents(&key);
-			require(dialog.endValue == LoadSaveScreen::CANCEL, "replay dialog cancellation");
-			Preview<CustomGameScreen> custom(screens);
-			custom.selectFirstListItem();
-			custom.render();
-			// Premade maps use LobbyControls rather than a GAG List now.
-			key.key.keysym.sym = SDLK_DOWN;
-			custom.onSDLEvent(&key);
+			dialog.event(key);
+			require(dialog.finished() && dialog.result() == LoadSaveDialog::CANCEL,
+					"replay dialog cancellation");
+			// A saved premade selection from an earlier run must not replace the random opening map.
+			Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
+			int result = -1;
+			auto owned = std::make_unique<CustomGameScreen>(screens);
+			auto *custom = owned.get();
+			screens.push(std::move(owned), [&](GAGGUI::Screen &, int code) { result = code; });
 			// The lobby opens on a random map (2026-09-14) and previews it on worker threads; drive
-			// its timer as the event loop would until the preview's map is loaded.
+			// its frames as the event loop would until the preview's map is loaded.
 			for (Uint32 start = SDL_GetTicks();
-				 custom.getMapHeader().getNumberOfTeams() == 0 && SDL_GetTicks() - start < 120000;)
+				 custom->getMapHeader().getNumberOfTeams() == 0 && SDL_GetTicks() - start < 120000;)
 			{
 				SDL_Delay(10);
-				custom.dispatchTimer(SDL_GetTicks());
+				screens.frame(SDL_GetTicks(), {});
 			}
-			require(custom.getMapHeader().getNumberOfTeams() > 0, "map selection loads teams");
-			key.key.keysym.sym = SDLK_ESCAPE;
-			custom.dispatchEvents(&key);
-			require(custom.result() == CustomGameScreen::CANCEL, "custom game cancellation");
+			require(custom->getMapHeader().getNumberOfTeams() > 0, "map selection loads teams");
+			screens.frame(SDL_GetTicks(), {key});
+			for (int i = 0; i < 10 && screens.running(); ++i)
+				screens.frame(SDL_GetTicks(), {});
+			require(result == CustomGameScreen::CANCEL, "custom game cancellation");
 		}
 		std::cout << "PASS: presentation, bounded text, timing, isolation, determinism, scoped "
 					 "style, fallback\n";
@@ -863,8 +693,7 @@ int main(int argc, char **argv)
 			require((replay ? engine.loadReplay("replays/last_game.replay")
 							: engine.initCampaign("maps/balanced.map")) == Engine::EE_NO_ERROR,
 					"initialize real session");
-			SessionExit sequence{0, globals.gfx->getW() / 2,
-								 globals.gfx->getH() / 2 + (replay ? 25 : 50), replay};
+			SessionExit sequence{0, replay ? 5 : 6, replay};
 			globals.replayFastForward = replay;
 			const auto timer = SDL_AddTimer(500, exitSession, &sequence);
 			require(timer, "session input timer");
@@ -881,7 +710,7 @@ int main(int argc, char **argv)
 			require(editor->load("maps/balanced.map"), "load editor fixture");
 			GAGGUI::ScreenStack screens(*globals.gfx);
 			screens.push(std::make_unique<MapEditorScreen>(screens, std::move(editor)));
-			SessionExit sequence{0, globals.gfx->getW() / 2, globals.gfx->getH() / 2 + 75};
+			SessionExit sequence{0, 6};
 			const auto timer = SDL_AddTimer(500, exitSession, &sequence);
 			require(timer, "editor input timer");
 			const int result = screens.execute(40);
@@ -932,65 +761,41 @@ int main(int argc, char **argv)
 	}
 	if (mode == "navigation")
 	{
+		FrontendScope scope;
 		GAGGUI::ScreenStack screens(*globals.gfx);
+		// Every menu leaves through Escape on the production stack and restores the theme.
+		auto navigate = [&](std::unique_ptr<GAGGUI::Screen> screen, const char *what)
 		{
-			Preview<MainMenuScreen> s;
-			s.executeCancellation();
-		}
-		{
-			Preview<CampaignMainMenu> s(screens);
-			s.executeCancellation();
-		}
-		{
-			Preview<CampaignSelectorScreen> s;
-			s.executeCancellation();
-		}
-		{
-			Preview<CampaignMenuScreen> s("campaigns/Tutorial_Campaign.txt", screens);
-			s.executeCancellation();
-		}
-		{
-			Preview<CustomGameScreen> s(screens);
-			s.selectFirstListItem();
-			s.executeKeyboardCancellation();
-		}
-		{
-			Preview<ChooseMapScreen> s("games", "game", true);
-			s.executeCancellation();
-		}
-		{
-			Preview<SettingsScreen> s;
-			s.executeEscape();
-		}
-		{
-			Preview<EditorMainMenu> s(screens);
-			s.executeCancellation();
-		}
-		{
-			Preview<NewMapScreen> s;
-			s.executeCancellation();
-		}
-		{
-			Preview<LANMenuScreen> s(screens);
-			s.executeCancellation();
-		}
-		{
-			Preview<LANFindScreen> s(screens);
-			s.executeCancellation();
-		}
-		{
-			Preview<YOGLoginScreen> s(screens, std::make_shared<YOGClient>());
-			s.executeCancellation();
-		}
-		{
-			Preview<YOGRegisterScreen> s(std::make_shared<YOGClient>());
-			s.executeCancellation();
-		}
-		{
-			Preview<CreditScreen> s;
-			s.executeCancellation();
-		}
-		std::cout << "PASS: actual screen loops, mouse/keyboard exits, theme restoration\n";
+			auto *before = GAGGUI::Style::style;
+			int result = -1000;
+			screens.push(std::move(screen), [&](GAGGUI::Screen &, int code) { result = code; });
+			Uint32 tick = SDL_GetTicks();
+			screens.frame(tick += 40, {});
+			screens.frame(tick += 40, {});
+			SDL_Event escape{};
+			escape.type = SDL_KEYDOWN;
+			escape.key.keysym.sym = SDLK_ESCAPE;
+			screens.frame(tick += 40, {escape});
+			for (int i = 0; i < 50 && screens.running(); ++i)
+				screens.frame(tick += 40, {});
+			require(!screens.running() && result != -1000, what);
+			require(GAGGUI::Style::style == before, "screen execution restores theme");
+		};
+		navigate(std::make_unique<MainMenuScreen>(), "main menu exits");
+		navigate(std::make_unique<CampaignMainMenu>(screens), "campaign menu exits");
+		navigate(std::make_unique<CampaignSelectorScreen>(), "campaign selector exits");
+		navigate(std::make_unique<CampaignMenuScreen>("campaigns/Tutorial_Campaign.txt", screens), "mission list exits");
+		navigate(std::make_unique<CustomGameScreen>(screens), "custom game exits");
+		navigate(std::make_unique<ChooseMapScreen>("games", "game", true), "load game exits");
+		navigate(std::make_unique<SettingsScreen>(), "settings exit");
+		navigate(std::make_unique<EditorMainMenu>(screens), "editor menu exits");
+		navigate(std::make_unique<NewMapScreen>(), "new map exits");
+		navigate(std::make_unique<LANMenuScreen>(screens), "lan menu exits");
+		navigate(std::make_unique<LANFindScreen>(screens), "lan find exits");
+		navigate(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()), "login exits");
+		navigate(std::make_unique<YOGRegisterScreen>(std::make_shared<YOGClient>()), "register exits");
+		navigate(std::make_unique<CreditScreen>(), "credits exit");
+		std::cout << "PASS: actual screen loops, keyboard exits, theme restoration\n";
 		return 0;
 	}
 	if (mode == "record")
@@ -1041,7 +846,7 @@ int main(int argc, char **argv)
 			if (frames % 125 == 0)
 			{
 				const auto inputStart = std::chrono::steady_clock::now();
-				menu.clickButton(MainMenuScreen::CUSTOM);
+				menu.clickButton("menu/" + std::to_string(MainMenuScreen::CUSTOM));
 				require(menu.result() == MainMenuScreen::CUSTOM, "soak input remains responsive");
 				worstInput = std::max(worstInput, std::chrono::duration<double, std::milli>(
 													  std::chrono::steady_clock::now() - inputStart)

@@ -83,15 +83,19 @@ def archive_object_name(source):
 
 def verify_android_symbols(apk, library, architecture, readelf):
     """Require the packaged main library and retained symbols to share a build ID."""
+    return verify_android_archive_symbols(apk, library, 'lib/' + architecture + '/libmain.so', readelf)
+
+
+def verify_android_archive_symbols(archive_path, library, member, readelf):
+    """Require a packaged native library to match the retained debug symbols."""
     import re
     import subprocess
     import tempfile
     import zipfile
-    apk, library = Path(apk), Path(library)
-    member = 'lib/' + architecture + '/libmain.so'
-    with zipfile.ZipFile(apk) as archive, tempfile.TemporaryDirectory(prefix='symbol-check-', dir=apk.parent) as temporary:
+    archive_path, library = Path(archive_path), Path(library)
+    with zipfile.ZipFile(archive_path) as archive, tempfile.TemporaryDirectory(prefix='symbol-check-', dir=archive_path.parent) as temporary:
         if archive.namelist().count(member) != 1:
-            raise ValueError('APK must contain exactly one main library for ' + architecture)
+            raise ValueError('Package must contain exactly one main library: ' + member)
         packaged = Path(temporary) / 'libmain.so'
         packaged.write_bytes(archive.read(member))
         identifiers = []

@@ -3384,3 +3384,9 @@ Cấp tối thiểu: %0
 Cỡ chữ hộp thoại: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Tiếp tục trò chơi
+[games]
+Trò chơi
+[Add AI]
+Thêm trí tuệ nhân tạo

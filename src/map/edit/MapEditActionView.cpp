@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <GAG.h>
-#include "GameGUILoadSave.h"
+#include "gui/LoadSaveDialog.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
@@ -12,7 +12,6 @@
 
 bool MapEdit::performViewAction(const std::string& action, int relMouseX, int relMouseY)
 {
-    if(phone && action.starts_with("close ")) phone->closeOverlay();
 	if(action=="scroll drag start")
 	{
 		isScrollDragging=true;
@@ -106,13 +105,13 @@ bool MapEdit::performViewAction(const std::string& action, int relMouseX, int re
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		menuScreen=new MapEditMenuScreen;
+		menuScreen=std::make_unique<MapEditMenuScreen>();
+		attachDialog(*menuScreen);
 		showingMenuScreen=true;
 	}
 	else if(action=="close menu screen")
 	{
-		delete menuScreen;
-		menuScreen=NULL;
+		menuScreen.reset();
 		showingMenuScreen=false;
 	}
 	else if(action=="open load screen")
@@ -120,43 +119,43 @@ bool MapEdit::performViewAction(const std::string& action, int relMouseX, int re
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=new LoadSaveScreen("maps", "map", true, Toolkit::getStringTable()->getString("[load game]"), game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=std::make_unique<LoadSaveDialog>("maps", "map", true, Toolkit::getStringTable()->getString("[load map]"), game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		attachDialog(*loadSaveScreen);
 		showingLoad=true;
 	}
 	else if(action=="close load screen")
 	{
-		delete loadSaveScreen;
+		loadSaveScreen.reset();
 		showingLoad=false;
-		loadSaveScreen=NULL;
 	}
 	else if(action=="open save screen")
 	{
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=new LoadSaveScreen("maps", "map", false, Toolkit::getStringTable()->getString("[save game]"), game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=std::make_unique<LoadSaveDialog>("maps", "map", false, Toolkit::getStringTable()->getString("[save map]"), game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		attachDialog(*loadSaveScreen);
 		showingSave=true;
 	}
 	else if(action=="close save screen")
 	{
-		delete loadSaveScreen;
+		loadSaveScreen.reset();
 		showingSave=false;
-		loadSaveScreen=NULL;
 	}
 	else if(action=="open scenario editor")
 	{
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		scriptEditor=new ScriptEditorScreen(&game);
+		scriptEditor=std::make_unique<ScriptEditorScreen>(&game);
+		attachDialog(*scriptEditor);
 		showingScriptEditor=true;
 		hasMapBeenModified=true;
 	}
 	else if(action=="close scenario editor")
 	{
-		delete scriptEditor;
+		scriptEditor.reset();
 		showingScriptEditor=false;
-		scriptEditor=NULL;
 	}
 	else if(action=="open teams editor")
 	{
@@ -169,31 +168,31 @@ bool MapEdit::performViewAction(const std::string& action, int relMouseX, int re
 			game.mapHeader.getBaseTeam(i)=*game.teams[i];
 		}
 
-		teamsEditor=new TeamsEditor(&game);
+		teamsEditor=std::make_unique<TeamsEditor>(&game);
+		attachDialog(*teamsEditor);
 		showingTeamsEditor=true;
 		hasMapBeenModified=true;
 	}
 	else if(action=="close teams editor")
 	{
-		delete teamsEditor;
+		teamsEditor.reset();
 		showingTeamsEditor=false;
-		teamsEditor=NULL;
 	}
 	else if(action=="open area name")
 	{
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		areaName=new AskForTextInput("[Change Area Name]", game.map.getAreaName(areaNumber->getIndex()));
+		areaName=std::make_unique<AskForTextInput>("[Change Area Name]", game.map.getAreaName(areaNumber->getIndex()));
+		attachDialog(*areaName);
 		isShowingAreaName=true;
 	}
 	else if(action=="close area name")
 	{
 		game.map.setAreaName(areaNumber->getIndex(), areaName->getText());
 		performAction("update script area number");
-		delete areaName;
+		areaName.reset();
 		isShowingAreaName=false;
-		areaName=NULL;
 	}
 	else if(action=="update script area number")
 	{

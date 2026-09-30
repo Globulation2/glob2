@@ -30,6 +30,7 @@ def establish_options(env):
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
     opts.Add("DATADIR", "Directory where data will be put, set to the same as INSTALLDIR", "/usr/local/share")
     opts.Add(BoolVariable("release", "Build for release", 0))
+    opts.Add(BoolVariable("china", "Build the mainland China local-play client", 0))
     opts.Add(BoolVariable("opengl", "Enable OpenGL detection; set to 0 for software rendering only", 1))
     opts.Add(BoolVariable("wss", "Enable native secure WebSocket transport", 1))
     opts.Add(BoolVariable("profile", "Build with profiling on", 0))
@@ -87,6 +88,8 @@ def configure(env, server_only):
     if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
         configfile.add("USE_WIN32", "Set when this build is Win32")
     configfile.add("PRIMARY_FONT", "This is the primary font Globulation 2 will use", "\"" + env["font"] + "\"")
+    if env['china']:
+        configfile.add("GLOB2_CHINA_RELEASE", "Mainland China local-play client", "1")
 
     missing=[]
 
@@ -438,13 +441,14 @@ def main():
               
     PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     #packaging for apple
-    if isDarwinPlatform and env["release"] and "package" in COMMAND_LINE_TARGETS:
+    if isDarwinPlatform and env["release"] and any(
+            target in COMMAND_LINE_TARGETS for target in ("bundle", "package")):
         bundle.generate(env)
         dmg.generate(env)
         env.Replace(
             BUNDLE_NAME=bdir+"/Glob2",
             BUNDLE_BINARIES=[bdir+"/src/glob2"],
-            BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
+            BUNDLE_RESOURCEDIRS=["data","maps", "campaigns", "scripts"],
             BUNDLE_PLIST="darwin/Info.plist",
             BUNDLE_ICON="darwin/Glob2.icns" )
         # Go through the builders rather than calling their actions directly.
@@ -462,9 +466,10 @@ def main():
         # A Dir node, not a string: bundleEmitter looks the app up as a directory,
         # and a string target would already have been created as a File.
         application = env.Bundle(env.Dir(env["BUNDLE_NAME"] + ".app"), env["BUNDLE_BINARIES"])
-        image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)
-        env.Alias("bundle", [application, image])
-        env.Alias("package", [application, image])
+        env.Alias("bundle", application)
+        if "package" in COMMAND_LINE_TARGETS:
+            image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)
+            env.Alias("package", [application, image])
 
         import subprocess
         arch = subprocess.check_output(["uname", "-p"], text=True).strip()

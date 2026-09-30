@@ -10,7 +10,7 @@ import struct
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = 'org.globulation.glob2'
+PACKAGE = 'org.globulation2.glob2'
 
 
 def validate_target(serial, adb_port, avd):

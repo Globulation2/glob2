@@ -2,7 +2,6 @@
 #include <TouchInput.h>
 #include <MapCamera.h>
 #include <InterfacePresentation.h>
-#include <ResponsiveMenu.h>
 #include <cstdio>
 #include <stdexcept>
 using namespace GAGCore;
@@ -146,29 +145,6 @@ int main()
 					}
 					if (layout.persistentPanel)
 						require(layout.world.w >= 480, "Persistent panel crowds map");
-				}
-		for (auto size : {ViewPoint{320, 568}, {568, 320}, {360, 640}, {640, 360}, {768, 1024}})
-			for (double scale : {1.0, 1.5, 2.0})
-				for (double keyboard : {0.0, 200.0})
-				{
-					ViewRect safe{12, 24, size.x - 24, size.y - 48 - keyboard};
-					auto menu = ResponsiveMenu::calculate(safe, 10, 224 * scale, 0, scale);
-					for (size_t i = 0; i < menu.buttons.size(); ++i)
-					{
-						auto rect = menu.buttons[i];
-						require(rect.h >= 48 * scale && rect.w >= 48,
-								"Menu touch target too small");
-						require(rect.x >= safe.x && rect.x + rect.w <= safe.x + safe.w,
-								"Menu exceeds safe width");
-					}
-					menu = ResponsiveMenu::calculate(safe, 10, 224 * scale, 100000, scale);
-					auto last = menu.buttons.back();
-					require(last.y + last.h <= menu.content.y + menu.content.h + 0.001,
-							"Last action cannot scroll into view");
-					if (menu.content.h >= last.h)
-						require(menu.hit({last.x + last.w / 2, last.y + last.h / 2}) == 9,
-								"Scrolled action hit mismatch");
-					require(menu.hit({0, 0}) == -1, "Header or safe inset activates action");
 				}
 		TouchInput touch;
 		require(touch.down(1, 1, {20, 20}).empty(), "Tap selected on down");

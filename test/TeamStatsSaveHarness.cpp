@@ -1093,19 +1093,12 @@ static void measurementScreenshots(const std::string &directory)
 		const std::string suffix =
 			std::to_string(size.first) + "x" + std::to_string(size.second) + ".png";
 		{
-			struct CaptureScreen : EndGameScreen
-			{
-				explicit CaptureScreen(GameGUI *gui) : EndGameScreen(gui)
-				{
-					gfx = globalContainer->gfx;
-					dispatchInit();
-				}
-				using EndGameScreen::drawResults;
-			} screen(&gui);
+			EndGameScreen screen(&gui);
+			screen.beginExecution(globalContainer->gfx);
 			for (int page = 0; page < 6; ++page)
 			{
 				screen.selectMetric(page*6);
-				screen.drawResults();
+				screen.paintFrame(0);
 				require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(),
 									(directory + "/graphs-" + std::to_string(page) + "-" + suffix)
 										.c_str()) == 0,

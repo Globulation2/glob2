@@ -5,7 +5,7 @@ import os
 import runpy
 from pathlib import Path
 from SCons.Script import Environment, Default, Delete, COMMAND_LINE_TARGETS
-from build_layout import write_if_changed, prepare_directory
+from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
 import ccache
 from mobile_toolchain import discover, LOCK
 from mobile_artifacts import verify_android_library, archive_object_name
@@ -47,17 +47,17 @@ def build_mobile(directory, identity, arguments):
     if ccache.enabled():
         ccache.enable(env)
     config = output / 'include/glob2/BuildConfig.h'
-    write_if_changed(config, '''#pragma once
+    write_if_changed(config, f'''#pragma once
 #define PACKAGE "glob2"
 #define PACKAGE_NAME "Globulation 2"
-#define PACKAGE_VERSION "0.9.5.0"
+#define PACKAGE_VERSION "{PACKAGE_VERSION}"
 #define PACKAGE_DATA_DIR "."
 #define PACKAGE_SOURCE_DIR "."
 #define PRIMARY_FONT "sans.ttf"
 #define GLOB2_MOBILE 1
 #define GLOB2_NATIVE_WSS 1
 #define GLOB2_NO_VOICE 1
-''')
+''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else ''))
     env.Append(CPPPATH=[str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])

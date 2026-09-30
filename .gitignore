@@ -41,3 +41,4 @@ Glob2-*.dmg
 /test/build/
 /build-*.log
 /browser/node_modules
+gha-creds-*.json

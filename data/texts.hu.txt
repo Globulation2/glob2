@@ -3388,3 +3388,9 @@ Rendben: %0
 Párbeszédszöveg mérete: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Játék folytatása
+[games]
+Játékok
+[Add AI]
+MI hozzáadása

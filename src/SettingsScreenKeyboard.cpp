@@ -4,6 +4,7 @@
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
 #include "GameGUIKeyActions.h"
+#include <GUIBase.h>
 #include "MapEditKeyActions.h"
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -38,7 +39,7 @@ void SettingsScreen::buildKeyboard()
         form.back().columns=2;form.back().column=i;
     }
     info(tr("Choose a binding to change it, or add another shortcut for an action."));
-    button("keys.restore",tr("Restore default shortcuts"),[this]{modal=Modal::Restore;modalScroll=0;focus="restore.cancel";});
+    button("keys.restore",tr("Restore default shortcuts"),[this]{modal=Modal::Restore;pendingFocus="restore.cancel";});
     auto& bindings=keyboard().getKeyboardShortcuts();
     const int count=shortcutMode==GameGUIShortcuts?int(GameGUIKeyActions::ActionSize):int(MapEditKeyActions::ActionSize);
     for(int action=0;action<count;++action){
@@ -67,8 +68,8 @@ void SettingsScreen::editBinding(int index,Uint32 action)
         for(size_t i=0;i<it->getKeyPressCount();++i)bindingKeys.push_back(it->getKeyPress(i));
     }
     if(bindingKeys.empty())bindingKeys.push_back(KeyPress());
-    modal=Modal::Binding;modalScroll=0;captureKey=0;bindingAdvanced=bindingKeys.size()>1;
-    returnFocus=focus;focus="binding.key.0";
+    modal=Modal::Binding;captureKey=0;bindingAdvanced=bindingKeys.size()>1;
+    pendingFocus="binding.key.0";invalidate();
 }
 void SettingsScreen::saveBinding(bool replace)
 {
@@ -86,7 +87,7 @@ void SettingsScreen::saveBinding(bool replace)
                 if(match)conflicts.push_back(index);
             }++index;
         }
-        if(!conflicts.empty()){modal=Modal::Conflict;modalScroll=0;captureKey=-1;focus="conflict.cancel";return;}
+        if(!conflicts.empty()){modal=Modal::Conflict;captureKey=-1;pendingFocus="conflict.cancel";invalidate();return;}
     }
     int index=0;
     for(auto it=list.begin();it!=list.end();){
@@ -107,7 +108,7 @@ void SettingsScreen::deleteBinding()
 }
 void SettingsScreen::closeModal()
 {
-    modal=Modal::None;modalScroll=0;captureKey=-1;focus=returnFocus;
+    modal=Modal::None;captureKey=-1;invalidate();
 }
 void SettingsScreen::buildModal()
 {
@@ -128,7 +129,7 @@ void SettingsScreen::buildModal()
             if(std::find(conflicts.begin(),conflicts.end(),index)!=conflicts.end())info(b.formatTranslated(shortcutMode));++index;
         }
         button("conflict.replace",tr("Replace conflicting bindings"),[this]{saveBinding(true);});
-        button("conflict.cancel",tr("Cancel"),[this]{modal=Modal::Binding;modalScroll=0;focus="binding.save";});return;
+        button("conflict.cancel",tr("Cancel"),[this]{modal=Modal::Binding;pendingFocus="binding.save";});return;
     }
     info(tr("Edit shortcut"));
     const auto name=shortcutMode==GameGUIShortcuts?GameGUIKeyActions::getName(bindingAction):MapEditKeyActions::getName(bindingAction);
@@ -146,7 +147,7 @@ void SettingsScreen::buildModal()
     button("binding.advanced",tr("Advanced binding")+(bindingAdvanced?" −":" +"),[this]{bindingAdvanced=!bindingAdvanced;},bindingAdvanced);
     if(bindingAdvanced){
         info(tr("Keys form a sequence in order. Each key can trigger on press or release."));
-        button("binding.addkey",tr("Add key to sequence"),[this]{bindingKeys.push_back(KeyPress());captureKey=int(bindingKeys.size())-1;focus="binding.key."+std::to_string(captureKey);});
+        button("binding.addkey",tr("Add key to sequence"),[this]{bindingKeys.push_back(KeyPress());captureKey=int(bindingKeys.size())-1;pendingFocus="binding.key."+std::to_string(captureKey);});
     }
     button("binding.save",tr("Save shortcut"),[this]{saveBinding();});
     bool valid=!bindingKeys.empty();for(const auto& k:bindingKeys)valid &= k.getKey()!="no key";form.back().enabled=valid;

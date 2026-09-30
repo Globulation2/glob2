@@ -1,124 +1,79 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #include "LANFindScreen.h"
 #include "GlobalContainer.h"
-#include <GUIText.h>
-#include <GUITextInput.h>
 #include "LANSessionScreen.h"
-#include <ScreenStack.h>
-#include <GUIList.h>
-#include <GUIButton.h>
-#include <Toolkit.h>
-#include <StringTable.h>
-#include "MultiplayerGameScreen.h"
 #include "YOGClient.h"
-#include "YOGClientGameListManager.h"
+#include <ScreenStack.h>
 
-using namespace GAGGUI;
-using std::shared_ptr;
+using namespace Glob2UI;
 
-LANFindScreen::LANFindScreen(ScreenStack& screens) : screens(screens)
-{
-    enablePhoneForm();
-	serverName=new TextInput(20, 170, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "localhost", true);
-	addWidget(serverName);
-
-	playerName=new TextInput(20, 270, 280, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 32);
-	addWidget(playerName);
-
-	serverText=new Text(20, 145, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[svr hostname]"));
-	addWidget(serverText);
-
-	playerText=new Text(20, 245, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[player name]"));
-	addWidget(playerText);
-
-	availableGamesText=new Text(340, 55, ALIGN_SCREEN_CENTERED, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[available lan games]"));
-	addWidget(availableGamesText);
-
-	statusText=new Text(20, 390, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
-	addWidget(statusText);
-
-	addWidget(new TextButton( 10, 20, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[connect]"), CONNECT, 13));
-	addWidget(new TextButton(330, 20, 300, 40, ALIGN_SCREEN_CENTERED, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[goto main menu]"), QUIT, 27));
-	
-	lanServers=new List(340, 80, 280, 100, ALIGN_SCREEN_CENTERED, ALIGN_FILL, "standard");
-	addWidget(lanServers);
-	
-	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[join a game]")));
-
-	wasVisible=false;
-}
-
-LANFindScreen::~LANFindScreen()
+LANFindScreen::LANFindScreen(GAGGUI::ScreenStack &screens)
+	: screens(screens), playerName(globalContainer->settings.getUsername())
 {
 }
 
+LANFindScreen::~LANFindScreen() = default;
 
-void LANFindScreen::onTimer(Uint32 tick)
+Element LANFindScreen::build(const Presentation &p)
+{
+	auto formPart = form({
+		field(tr("[svr hostname]"), textField("server", serverName, [this](const std::string &v) { serverName = v; })),
+		field(tr("[player name]"), textField("player", playerName, [this](const std::string &v) { playerName = v; }, {false, 32})),
+	});
+	auto gameList = column({label(tr("[available lan games]")),
+							listView("games", games, selectedGame,
+									 [this](int i)
+									 {
+										 selectedGame = i;
+										 serverName = listener.getIPAddress(i);
+									 },
+									 {{}, {}, {}, [this](int) { connect(); }, {}, 6, tr("[No items]")})});
+	Element body = adaptive(
+		[formPart, gameList](const LayoutContext &ctx, Size available)
+		{
+			if (available.w < ctx.presentation.pt(640))
+				return scroll("find/scroll", column({formPart, gameList}));
+			return row({expanded(formPart), expanded(gameList)}, {-1, CrossAlign::Start});
+		});
+	return page(tr("[join a game]"), body,
+				actions({{"connect", tr("[connect]"), [this] { connect(); }, true, SDLK_RETURN},
+						 {"back", tr("[goto main menu]"), [this] { endExecute(QUIT); }, false, SDLK_ESCAPE}},
+						p),
+				p, 800);
+}
+
+void LANFindScreen::setServer(const std::string &address)
+{
+	serverName = address;
+	invalidate();
+}
+
+void LANFindScreen::connect()
+{
+	auto client = std::make_shared<YOGClient>();
+	client->connect(serverName);
+	listener.disableListening();
+	screens.push(std::make_unique<LANSessionScreen>(screens, client, playerName),
+				 [this](GAGGUI::Screen &, int result)
+				 {
+					 listener.enableListening();
+					 if (result == GAGGUI::Screen::QUIT_APPLICATION)
+						 endExecute(result);
+				 });
+}
+
+void LANFindScreen::onTimer(Uint32)
 {
 	listener.update();
-	
-	int s = lanServers->getSelectionIndex();
-
-	lanServers->clear();
-	const std::vector<LANGameInformation>& games = listener.getLANGames();
-	for(unsigned i=0; i<games.size(); ++i)
+	std::vector<std::string> names;
+	for (const auto &game : listener.getLANGames())
+		names.push_back(game.getGameInformation().getGameName());
+	if (names != games)
 	{
-		lanServers->addText(games[i].getGameInformation().getGameName());
+		games = std::move(names);
+		selectedGame = std::min(selectedGame, int(games.size()) - 1);
+		invalidate();
 	}
-	
-	lanServers->setSelectionIndex(std::min(s, int(games.size()-1)));
-}
-
-void LANFindScreen::onSDLEvent(SDL_Event *event)
-{
-
-}
-
-
-void LANFindScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (par1==CONNECT)
-		{
-            auto client = std::make_shared<YOGClient>();
-            client->connect(serverName->getText());
-            listener.disableListening();
-            screens.push(std::make_unique<LANSessionScreen>(screens, client, playerName->getText()),
-                [this](Screen&, int result) {
-                    listener.enableListening();
-                    if (result == Screen::QUIT_APPLICATION) endExecute(result);
-                });
-		}
-		else if (par1==QUIT)
-		{
-			endExecute(QUIT);
-		}
-		else if (par1==-1)
-		{
-			endExecute(-1);
-		}
-		else
-			assert(false);
-	}
-	else if (action==TEXT_ACTIVATED)
-	{
-		// we deactivate others texts inputs:
-		if (source!=serverName)
-			serverName->deactivate();
-		if (source!=playerName)
-			playerName->deactivate();
-	}
-	else if (action==LIST_ELEMENT_SELECTED)
-	{
-		if (source==lanServers)
-		{
-			int s = lanServers->getSelectionIndex();
-			serverName->setText(listener.getIPAddress(s));
-		}
-	}
-
 }

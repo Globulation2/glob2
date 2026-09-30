@@ -3464,3 +3464,9 @@ Ok: %0
 Dialogtekststørrelse: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Genoptag spillet
+[games]
+Spil
+[Add AI]
+Tilføj AI

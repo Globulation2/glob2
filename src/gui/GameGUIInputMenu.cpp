@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <stdio.h>
 #include <iostream>
+#include <stdio.h>
 
-
-#include <FileManager.h>
-#include <StringTable.h>
-#include <Stream.h>
 #include <BinaryStream.h>
+#include <FileManager.h>
+#include <Stream.h>
+#include <StringTable.h>
 #include <Toolkit.h>
 
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
-#include "GameGUILoadSave.h"
+#include "GameGUITouch.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
+#include "LoadSaveDialog.h"
 #include "Order.h"
 #include "Player.h"
 #include "Unit.h"
@@ -24,55 +24,138 @@
 using std::shared_ptr;
 using std::static_pointer_cast;
 
+Glob2UI::InGameDialog *GameGUI::activeDialog() const
+{
+	if (gameMenuScreen)
+		return gameMenuScreen.get();
+	if (typingInputScreen)
+		return typingInputScreen.get();
+	return scrollableText.get();
+}
+
+void GameGUI::openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog> dialog)
+{
+	if (touch)
+		touch->cancel(true);
+	inGameMenu = menu;
+	gameMenuScreen = std::move(dialog);
+	if (gameMenuScreen && !globalContainer->runNoX)
+		gameMenuScreen->attach(*globalContainer->gfx);
+}
+
+void GameGUI::closeDialog()
+{
+	inGameMenu = IGM_NONE;
+	gameMenuScreen.reset();
+}
+
+void GameGUI::openMainMenu()
+{
+	openDialog(IGM_MAIN, std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused));
+}
+
+void GameGUI::openChat()
+{
+	if (typingInputScreen)
+		return;
+	if (touch)
+		touch->cancel(true);
+	typingInputScreen = std::make_unique<InGameTextInput>();
+	if (!globalContainer->runNoX)
+		typingInputScreen->attach(*globalContainer->gfx);
+}
+
+void GameGUI::closeChat()
+{
+	typingInputScreen.reset();
+}
+
+void GameGUI::toggleHistory()
+{
+	if (scrollableText)
+	{
+		scrollableText.reset();
+		return;
+	}
+	if (touch)
+		touch->cancel(true);
+	scrollableText.reset(messageManager.createScrollableHistoryScreen());
+	if (!globalContainer->runNoX)
+		scrollableText->attach(*globalContainer->gfx);
+}
+
+void GameGUI::saveGameTo(LoadSaveDialog &dialog)
+{
+	waitForAutosave();
+	const std::string locationName = dialog.getFileName();
+	const std::string name = dialog.getName();
+	if (!Toolkit::getFileManager()->writeGzipAtomically(glob2GzipWritePath(locationName), [&](OutputStream &stream) { save(&stream, name); }))
+	{
+		std::cerr << "GGU: Save failed; previous file retained: " << locationName << std::endl;
+		dialog.showSaveFailure();
+		return;
+	}
+	defaultGameSaveName = name;
+	dialog.beginPersistence(GAGCore::ApplicationHost::persistStorage());
+}
+
+// Feed the event to the open dialog and act on its result. Returns true when
+// the dialog consumed the event or completed.
 bool GameGUI::processGameMenu(SDL_Event *event)
 {
-	gameMenuScreen->translateAndProcessEvent(event);
+	if (!gameMenuScreen)
+		return false;
+	bool consumed = false;
+	if (event && event->type != SDL_USEREVENT)
+		consumed = gameMenuScreen->event(*event);
+	if (!gameMenuScreen->finished())
+		return consumed;
+	const int result = gameMenuScreen->result();
 	switch (inGameMenu)
 	{
 		case IGM_MAIN:
 		{
-			switch (gameMenuScreen->endValue)
+			switch (result)
 			{
 				case InGameMainScreen::LOAD_GAME:
 				{
-					inGameMenu=IGM_LOAD;
 					if (globalContainer->replaying)
-						gameMenuScreen.reset(new LoadSaveScreen("replays", "replay", true, std::string(Toolkit::getStringTable()->getString("[load replay]")), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
+						openDialog(IGM_LOAD, std::make_unique<LoadSaveDialog>("replays", "replay", true, Toolkit::getStringTable()->getString("[load replay]"), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					else
-						gameMenuScreen.reset(new LoadSaveScreen("games", "game", true, std::string(Toolkit::getStringTable()->getString("[load game]")), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
+						openDialog(IGM_LOAD, std::make_unique<LoadSaveDialog>("games", "game", true, Toolkit::getStringTable()->getString("[load game]"), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					return true;
 				}
-				break;
 				case InGameMainScreen::SAVE_GAME:
 				{
-					inGameMenu=IGM_SAVE;
-					gameMenuScreen.reset(new LoadSaveScreen("games", "game", false, std::string(Toolkit::getStringTable()->getString("[save game]")), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
+					openDialog(IGM_SAVE, std::make_unique<LoadSaveDialog>("games", "game", false, Toolkit::getStringTable()->getString("[save game]"), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					return true;
 				}
-				break;
 				case InGameMainScreen::OPTIONS:
 				{
-					inGameMenu=IGM_OPTION;
-					gameMenuScreen.reset(new InGameOptionScreen(this));
+					openDialog(IGM_OPTION, std::make_unique<InGameOptionScreen>(this));
 					return true;
 				}
-				break;
+				case InGameMainScreen::PAUSE_GAME:
+				{
+					closeDialog();
+					if (globalContainer->replaying)
+						gamePaused = !gamePaused;
+					else if (!globalContainer->isViewingGame())
+						orderQueue.push_back(std::make_shared<PauseGameOrder>(!gamePaused));
+					return true;
+				}
 				case InGameMainScreen::RETURN_GAME:
 				{
-					inGameMenu=IGM_NONE;
-					gameMenuScreen.reset();
+					closeDialog();
 					return true;
 				}
-				break;
 				case InGameMainScreen::QUIT_GAME:
 				{
-					inGameMenu=IGM_NONE;
-					gameMenuScreen.reset();
+					closeDialog();
 					orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 					flushOutgoingAndExit=true;
 					return true;
 				}
-				break;
 				default:
 				return false;
 			}
@@ -80,114 +163,88 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 		case IGM_ALLIANCE:
 		{
-			switch (gameMenuScreen->endValue)
-			{
-				case InGameAllianceScreen::OK :
-				{
-					Uint32 playerMask[5];
-					Uint32 teamMask[5];
-					playerMask[0]=((InGameAllianceScreen *)gameMenuScreen.get())->getAlliedMask();
-					playerMask[1]=((InGameAllianceScreen *)gameMenuScreen.get())->getEnemyMask();
-					playerMask[2]=((InGameAllianceScreen *)gameMenuScreen.get())->getExchangeVisionMask();
-					playerMask[3]=((InGameAllianceScreen *)gameMenuScreen.get())->getFoodVisionMask();
-					playerMask[4]=((InGameAllianceScreen *)gameMenuScreen.get())->getOtherVisionMask();
-					teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
-
-					// mask are for players, we need to convert them to team.
-					for (int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
-					{
-						int otherTeam=game.players[pi]->teamNumber;
-						for (int mi=0; mi<5; mi++)
-						{
-							if (playerMask[mi]&(1<<pi))
-							{
-								// player is set, set team
-								teamMask[mi]|=(1<<otherTeam);
-							}
-						}
-					}
-
-					// we have a special cases for uncontrolled Teams:
-					// FIXME : remove this
-					for (int ti=0; ti<game.mapHeader.getNumberOfTeams(); ti++)
-						if (game.teams[ti]->playersMask==0)
-							teamMask[1]|=(1<<ti); // we want to hit them.
-
-					orderQueue.push_back(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,
-						teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4])));
-					chatMask=((InGameAllianceScreen *)gameMenuScreen.get())->getChatMask();
-					inGameMenu=IGM_NONE;
-					gameMenuScreen.reset();
-				}
-				return true;
-
-				default:
+			if (result != InGameAllianceScreen::OK)
 				return false;
+			auto *alliance = static_cast<InGameAllianceScreen *>(gameMenuScreen.get());
+			Uint32 playerMask[5];
+			Uint32 teamMask[5];
+			playerMask[0]=alliance->getAlliedMask();
+			playerMask[1]=alliance->getEnemyMask();
+			playerMask[2]=alliance->getExchangeVisionMask();
+			playerMask[3]=alliance->getFoodVisionMask();
+			playerMask[4]=alliance->getOtherVisionMask();
+			teamMask[0]=teamMask[1]=teamMask[2]=teamMask[3]=teamMask[4]=0;
+
+			// mask are for players, we need to convert them to team.
+			for (int pi=0; pi<game.gameHeader.getNumberOfPlayers(); pi++)
+			{
+				int otherTeam=game.players[pi]->teamNumber;
+				for (int mi=0; mi<5; mi++)
+				{
+					if (playerMask[mi]&(1<<pi))
+					{
+						// player is set, set team
+						teamMask[mi]|=(1<<otherTeam);
+					}
+				}
 			}
+
+			// we have a special cases for uncontrolled Teams:
+			// FIXME : remove this
+			for (int ti=0; ti<game.mapHeader.getNumberOfTeams(); ti++)
+				if (game.teams[ti]->playersMask==0)
+					teamMask[1]|=(1<<ti); // we want to hit them.
+
+			orderQueue.push_back(shared_ptr<Order>(new SetAllianceOrder(localTeamNo,
+				teamMask[0], teamMask[1], teamMask[2], teamMask[3], teamMask[4])));
+			chatMask=alliance->getChatMask();
+			closeDialog();
+			return true;
 		}
 
 		case IGM_OPTION:
 		{
-			if (gameMenuScreen->endValue == InGameOptionScreen::OK)
+			if (result == InGameOptionScreen::OK)
 			{
-				inGameMenu=IGM_NONE;
-				gameMenuScreen.reset();
+				closeDialog();
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 
 		case IGM_OBJECTIVES:
 		{
-			if (gameMenuScreen->endValue == InGameObjectivesScreen::OK)
+			if (result == InGameObjectivesScreen::OK)
 			{
-				inGameMenu=IGM_NONE;
-				gameMenuScreen.reset();
+				closeDialog();
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 
 		case IGM_LOAD:
 		case IGM_SAVE:
 		{
-			switch (gameMenuScreen->endValue)
+			auto *files = static_cast<LoadSaveDialog *>(gameMenuScreen.get());
+			switch (result)
 			{
-				case LoadSaveScreen::OK:
+				case LoadSaveDialog::OK:
 				{
-					std::string locationName=((LoadSaveScreen *)gameMenuScreen.get())->getFileName();
+					std::string locationName = files->getFileName();
 					if (inGameMenu==IGM_LOAD)
 					{
 						toLoadGameFileName = locationName;
 						orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 						flushOutgoingAndExit=true;
+						closeDialog();
 					}
 					else
-					{
-                        waitForAutosave();
-                        const std::string name = static_cast<LoadSaveScreen*>(gameMenuScreen.get())->getName();
-                        if (!Toolkit::getFileManager()->writeGzipAtomically(glob2GzipWritePath(locationName), [&](OutputStream& stream) {
-                            save(&stream, name);
-                        })) {
-                            std::cerr << "GGU: Save failed; previous file retained: " << locationName << std::endl;
-                            static_cast<LoadSaveScreen*>(gameMenuScreen.get())->showSaveFailure();
-                            return true;
-                        }
-                        defaultGameSaveName = name;
-                        static_cast<LoadSaveScreen*>(gameMenuScreen.get())->beginPersistence(GAGCore::ApplicationHost::persistStorage());
-                        return true;
-					}
+						saveGameTo(*files);
+					return true;
 				}
 
-				case LoadSaveScreen::CANCEL:
-				inGameMenu=IGM_NONE;
-				gameMenuScreen.reset();
+				case LoadSaveDialog::CANCEL:
+				closeDialog();
 				return true;
 
 				default:
@@ -197,21 +254,21 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 		case IGM_END_OF_GAME:
 		{
-			switch (gameMenuScreen->endValue)
+			switch (result)
 			{
 				case InGameEndOfGameScreen::QUIT:
 				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 				flushOutgoingAndExit=true;
+				closeDialog();
+				return true;
 
 				case InGameEndOfGameScreen::CONTINUE:
-				inGameMenu=IGM_NONE;
-				gameMenuScreen.reset();
+				closeDialog();
 				return true;
 
 				case InGameEndOfGameScreen::WATCH_AGAIN:
 				assert(globalContainer->replaying);
-				inGameMenu=IGM_NONE;
-				gameMenuScreen.reset();
+				closeDialog();
 				toLoadGameFileName = globalContainer->replayFileName;
 				orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 				flushOutgoingAndExit=true;

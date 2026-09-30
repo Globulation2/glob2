@@ -4,6 +4,7 @@
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
 #include "SoundMixer.h"
+#include <InterfacePresentation.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <FormatableString.h>
@@ -20,7 +21,7 @@ void SettingsScreen::buildGeneral()
 	{
 		info(tr("Choose how the game looks on your screen."));
 #ifndef GLOB2_MOBILE
-		if (!FrontendLayout::resolve(globalContainer->gfx).touch)
+		if (!touchLayout)
 		{
 			// Mobile uses the OS-managed viewport and portable renderer.
 			section("Display");
@@ -141,7 +142,7 @@ void SettingsScreen::buildGeneral()
 				   commit();
 			   });
 #ifndef GLOB2_MOBILE
-		if (!FrontendLayout::resolve(globalContainer->gfx).touch)
+		if (!touchLayout)
 		{
 			toggle("graphics.artwork", "High-resolution artwork",
 				   "Apply artwork on the next game or editor load (OpenGL).",
@@ -272,6 +273,6 @@ void SettingsScreen::buildGeneral()
 			   });
 		auto &r =
 			add("player.name", Kind::Text, tr("Player name"), tr("Name shown to other players."));
-		r.value = editingText ? textDraft : s.getUsername();
+		r.value = s.getUsername();
 	}
 }

@@ -1,21 +1,20 @@
 const {clickCreateMap}=require('./editor-controls');
-const {editTextField}=require('./main-menu');
+const {editTextField,clickControl}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL}=require('./main-menu');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
-const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
 
 for(const fault of ['quota','aborted transaction']) test(`editor save before quit survives ${fault} with export and retry`,async({page,context},info)=>{
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
-  await click(page,600,300);await screen(page,'NewMapScreen');
+  await clickControl(page,'new-map');await screen(page,'NewMapScreen');
   await clickCreateMap(page);await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,600,525);await screen(page,'MessageScreen');
-  await click(page,390,570);await screen(page,'MapEditorScreen');
+  await clickControl(page,'quit');await screen(page,'MessageScreen');
+  await clickControl(page,'choice/0');await screen(page,'MapEditorScreen'); // Save before quitting.
   await editTextField(page,'Editor durability');
   await page.evaluate(fault=>{
     window.editorStorageFault=true;
@@ -28,12 +27,12 @@ for(const fault of ['quota','aborted transaction']) test(`editor save before qui
       return put.apply(this,args);
     };
   },fault);
-  await click(page,520,555);
+  await clickControl(page,'ok');
   await expect.poll(async()=>(await state(page)).persistence).toBe('failed');
   await screen(page,'MapEditorScreen');
   const digest=()=>page.evaluate(()=>glob2Diagnostics.mapDigest('Editor_durability.map.gz'));
   const local=await digest();expect(local).not.toBeNull();
-  const downloadEvent=page.waitForEvent('download');await click(page,600,422);
+  const downloadEvent=page.waitForEvent('download');await clickControl(page,'export');
   const download=await downloadEvent;expect(download.suggestedFilename()).toBe('Editor_durability.map.gz');
   const bytes=await fs.readFile(await download.path());
   expect({size:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')}).toEqual(local);
@@ -42,7 +41,7 @@ for(const fault of ['quota','aborted transaction']) test(`editor save before qui
   expect(await restored.evaluate(()=>glob2Diagnostics.mapDigest('Editor_durability.map.gz'))).toBeNull();
   await restored.close();
   await page.evaluate(()=>window.editorStorageFault=false);
-  await click(page,520,555);await screen(page,'EditorMainMenu');
+  await clickControl(page,'ok');await screen(page,'EditorMainMenu');
   await expect.poll(async()=>(await state(page)).persistence).toBe('persisted');
   const saved=await digest();expect(saved).not.toBeNull();
   await page.reload();await screen(page,'MainMenuScreen');expect(await digest()).toEqual(saved);

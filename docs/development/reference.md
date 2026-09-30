@@ -18,6 +18,7 @@ scons                        # default client: debug information, no optimizatio
 scons release=1 server=0       # optimized client, including headless runs
 scons release=1 server=1       # server with the correct stripped library
 scons release=1 package        # macOS signed app bundle and DMG
+scons release=1 bundle         # macOS app bundle without the DMG
 scons -C test                 # rebuild the separate test suite
 (cd test && ./TestsRunner && ./WinningConditionsHarness)
 ```
@@ -37,7 +38,35 @@ scons -C test                 # rebuild the separate test suite
 - `mingw=1` builds natively on Windows; `mingwcross=1` cross-compiles. Dependencies
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
-
+- The **Steam Windows package** workflow runs manually, as a reusable workflow, or
+  when its packaging files change in a pull request. It builds the MinGW release
+  client and stages `glob2.exe`, its runtime DLL dependency closure, game assets,
+  license, and attribution in one depot folder. A separate Windows job downloads
+  that artifact and runs a short headless game without the build toolchain. Download
+  the `glob2-steam-windows-<commit>` artifact from the workflow run; its contents
+  are the files to place at the root of a Windows Steam depot. The workflow does
+  not upload to Steam or publish a release. The separate **Upload Steam Windows
+  depot** workflow is stored here for review and synchronization, but its package
+  and upload jobs run only when manually dispatched in the owner-only private
+  `genixpro/glob2-release` mirror from `master`. Its upload job uses the
+  `steam-release` environment, restricted to that branch, and reads Steam
+  credentials only there. The public repository has no Steam credentials, cannot
+  pass credentials into the package workflow, and cannot start an upload job.
+  The owner syncs the mirror and dispatches each upload; no push, pull request,
+  `workflow_run`, or repository event starts it. The upload creates an unpublished
+  SteamPipe build. It does not set a Steam branch live or publish store changes.
+  Configure `STEAM_APP_ID`, `STEAM_WINDOWS_DEPOT_ID`, and
+  `STEAM_BUILD_USERNAME` as environment variables and
+  `STEAM_CONFIG_VDF_BASE64` as an environment secret on the private mirror only.
+  The latter is the base64-encoded `config/config.vdf` from a dedicated SteamCMD
+  builder account after an interactive Steam Guard login; preserve and refresh it
+  if SteamCMD updates the login token. Never place it in a depot, workflow artifact,
+  public repository secret, or the public workflow. Steamworks must have a Windows
+  depot assigned to the app and its test package, with a `glob2.exe` launch option.
+  Check the result interactively on a clean Windows installation before using it
+  in Steamworks. Windows gameplay now defaults saves to SDL's per-user preference
+  directory when `GLOB2_USER_DATA_DIR` is unset; validate save and load before
+  setting a build live.
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
@@ -56,6 +85,22 @@ scons -C test                 # rebuild the separate test suite
   because it embeds the compilation date and time.
 - `release=1` outside macOS strips binaries (`-s`), so it also drops `-g`: debug
   information there only slowed compilation and multiplied object and cache sizes.
+- The public Mac pull-request check compiles with `scons release=1` and runs a
+  raw-binary command-line smoke test without release signing. On a manual run
+  from the owner-controlled release mirror's `master`, the workflow runs
+  `scons release=1 bundle` and then
+  `darwin/package_app_store.py`. The script copies the bundle to the ignored
+  `artifacts/mac-app-store/Glob2.app`, sets its App Store version and build number,
+  adds Retina icon sizes from the existing 128-pixel artwork, applies
+  `darwin/AppStore.entitlements`, and verifies its signature. Its App ID defaults
+  to the iPhone ID, `org.globulation2.glob2`. When `upload` is selected, the
+  release mirror supplies the Mac distribution identities and provisioning
+  profile, then makes a signed `.pkg` beside the app. The existing `package`
+  target remains the direct distribution DMG path. Test saves, map import, LAN
+  hosting and YOG connections in the sandboxed app before upload; local testing
+  alone does not establish App Store acceptance. See the
+  [Mac App Store release process](mac-app-store.md) for the mirror-only manual
+  workflow and required signing credentials.
 - Keep harness runs out of personal profiles: use the existing disposable-profile
   runners and retain fixtures, seeds, logs and checksums needed to reproduce a result.
 - CI lets independent test steps finish after a failure and records their raw

@@ -12,7 +12,6 @@
 #include "IRC.h"
 #include <iostream>
 #include <GAG.h>
-#include "GameGUIDialog.h"
 #include "GlobalContainer.h"
 
 // version related stuff
@@ -271,14 +270,11 @@ void IRC::interpretIRCMessage(const std::string &message)
 		
 		else
 		{
-			const std::string &nicktaken = Toolkit::getStringTable()->getString("[nick taken]");
-			const std::string &ok = Toolkit::getStringTable()->getString("[ok]");
-			int res = (int)MessageBox(globalContainer->gfx, "standard", MB_ONEBUTTON, nicktaken.c_str(), ok.c_str());
-		
-			if (res != 0 )
-			{
-				assert(false);
-			}
+			// Reported through the lobby's notice stream; IRC runs off the UI thread.
+			InfoMessage msg(IRC_MSG_NOTICE);
+			msg.source = "IRC";
+			msg.message = Toolkit::getStringTable()->getString("[nick taken]");
+			infoMessages.push_back(msg);
 		}
 	}
 }

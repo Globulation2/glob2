@@ -9,7 +9,8 @@
 
 #include "Brush.h"
 #include "GAGSys.h"
-#include "GameGUILoadSave.h"
+#include "gui/LoadSaveDialog.h"
+#include <memory>
 #include "Game.h"
 #include "KeyboardManager.h"
 #include "MapEditDialog.h"
@@ -404,6 +405,11 @@ public:
     void suspendInput();
     bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick);
     void drawEditing();
+	///The dialog receiving input: a menu, file dialog, editor or the area name box.
+	bool hasDialog() const;
+	Glob2UI::InGameDialog *activeDialog() const;
+	void attachDialog(Glob2UI::InGameDialog &dialog);
+	void drawDialog();
     bool needsFertility() const { return fertilityRequested; }
     bool finishFertility(bool completed);
     bool needsQuitDecision() const { return quitDecision; }
@@ -727,21 +733,22 @@ private:
 
 	///Tells whether the menu screen is being drawn right now
 	bool showingMenuScreen;
-	MapEditMenuScreen* menuScreen;
+	std::unique_ptr<MapEditMenuScreen> menuScreen;
 
 	///Tells whether the load-game menu screen is being drawn right now
 	bool showingLoad;
 	///Tells whether the save-game menu screen is being drawn right now
 	bool showingSave;
-	LoadSaveScreen* loadSaveScreen;
+	std::unique_ptr<LoadSaveDialog> loadSaveScreen;
 
 	///Tells whether the script editor is being drawn
 	bool showingScriptEditor;
-	ScriptEditorScreen* scriptEditor;
+	std::unique_ptr<ScriptEditorScreen> scriptEditor;
 	
 	///Tells whether the teams editor is being drawn
 	bool showingTeamsEditor;
-	TeamsEditor* teamsEditor;
+	std::unique_ptr<TeamsEditor> teamsEditor;
+
 
 
 	///The various types of brushes for placing a zone
@@ -817,7 +824,7 @@ private:
 	
 	///Tells whether the text input box
 	bool isShowingAreaName;
-	AskForTextInput* areaName;
+	std::unique_ptr<AskForTextInput> areaName;
 	///Tells whether we are dragging the area placement tool
 	bool isDraggingArea;
 	///Handles a click or drag of the script area placement tool

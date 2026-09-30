@@ -1,530 +1,320 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
+#include "YOGClientLobbyScreen.h"
 #include "ChooseMapScreen.h"
-#include <FormatableString.h>
 #include "GlobalContainer.h"
-#include <GUIButton.h>
-#include <GUIList.h>
-#include <GUITextArea.h>
-#include <GUIText.h>
-#include <GUITextInput.h>
+#include "MessageScreen.h"
 #include "MultiplayerGameScreen.h"
-#include <stdio.h>
-#include <string.h>
-#include <StringTable.h>
-#include <Toolkit.h>
+#include "YOGClient.h"
 #include "YOGClientChatChannel.h"
 #include "YOGClientCommandManager.h"
 #include "YOGClientEvent.h"
-#include "YOGClientGameListManager.h"
-#include "YOGClient.h"
-#include "YOGClientLobbyScreen.h"
-#include "YOGClientPlayerListManager.h"
 #include "YOGClientGameConnectionDialog.h"
+#include "YOGClientGameListManager.h"
+#include "YOGClientPlayerListManager.h"
 #include "YOGMessage.h"
+#include <FormatableString.h>
 #include <ScreenStack.h>
-#include "MessageScreen.h"
+#include <StringTable.h>
+#include <Toolkit.h>
+#include <Toolkit.h>
 
-YOGClientPlayerList::YOGClientPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font)
-	: List(x, y, w, h, hAlign, vAlign, font)
+namespace fe = Glob2UI;
+using fe::Element;
+using fe::Presentation;
+
+YOGClientLobbyScreen::YOGClientLobbyScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client) : client(client), screens(screens)
 {
 	networkSprite = Toolkit::getSprite("data/gui/yog");
-}
-
-
-
-YOGClientPlayerList::~YOGClientPlayerList()
-{
-	Toolkit::releaseSprite("data/gui/yog");
-}
-
-
-
-void YOGClientPlayerList::addPlayer(const std::string &nick, NetworkType network)
-{
-	addText(nick);
-	networks.push_back(network);
-}
-
-
-
-void YOGClientPlayerList::clear(void)
-{
-	List::clear();
-	networks.clear();
-}
-
-
-
-void YOGClientPlayerList::drawItem(int x, int y, size_t element)
-{
-	assert(networkSprite);
-	if(element < getCount())
-	{
-		int xShift = 20;
-		int spriteYShift = (textHeight-16) >> 1;
-		if (networks[element] == ALL_NETWORK)
-			xShift = 0;
-		else if (networks[element] == YOG_NETWORK)
-			parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 0);
-		else if (networks[element] == IRC_NETWORK)
-			parent->getSurface()->drawSprite(x, y+spriteYShift, networkSprite, 1);
-		parent->getSurface()->drawString(x+xShift, y, fontPtr, (strings[element]).c_str());
-	}
-}
-
-
-
-YOGClientLobbyScreen::YOGClientLobbyScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<YOGClient> client)
-	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Lobby]")), client(client), screens(screens)
-{
-	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[yog]")));
-
-	hostButton = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[create game]"), CREATE_GAME);
-	addWidget(hostButton);
-	
-	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), CANCEL, 27));
-
-	gameList=new List(20, 120, 220, 140, ALIGN_FILL, ALIGN_TOP, "standard");
-	addWidget(gameList);
-	gameInfo=new TextArea(20, 120, 180, 95, ALIGN_RIGHT, ALIGN_TOP, "standard");
-	addWidget(gameInfo);
-	joinButton=new TextButton(20, 225, 180, 40, ALIGN_RIGHT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[join]"), JOIN);
-	addWidget(joinButton);
-
-	playerList=new YOGClientPlayerList(20, 280, 180, 135, ALIGN_RIGHT, ALIGN_FILL, "standard");
-	addWidget(playerList);
-
-	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard", true, "", "data/gui/yog");
-	addWidget(chatWindow);
-	textInput=new TextInput(20, 90, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
-	addWidget(textInput);
-	
 	lobbyChat.reset(new YOGClientChatChannel(LOBBY_CHAT_CHANNEL, client));
-
 	ircChat.reset(new IRCTextMessageHandler);
 	ircChat->addTextMessageListener(this);
 	ircChat->startIRC(client->getUsername());
-	
 	client->addEventListener(this);
 	client->getGameListManager()->addListener(this);
 	client->getPlayerListManager()->addListener(this);
 	lobbyChat->addListener(this);
-	
-	gameScreen=-1;
+	updateGameList();
+	updatePlayerList();
 }
-
-
 
 YOGClientLobbyScreen::~YOGClientLobbyScreen()
 {
+	if (ownedGameScreen && session)
+		session->removeTab(ownedGameScreen.get());
 	ownedGameScreen.reset();
 	client->setMultiplayerGame({});
 	ircChat->removeTextMessageListener(this);
 	ircChat->stopIRC();
-	
 	lobbyChat->removeListener(this);
 	client->removeEventListener(this);
 	client->getGameListManager()->removeListener(this);
 	client->getPlayerListManager()->removeListener(this);
+	Toolkit::releaseSprite("data/gui/yog");
 }
 
+std::string YOGClientLobbyScreen::title() const { return fe::tr("[Lobby]"); }
 
-void YOGClientLobbyScreen::onAction(Widget *source, Action action, int par1, int par2)
+bool YOGClientLobbyScreen::onEscape()
 {
-	TabScreenWindow::onAction(source, action, par1, par2);
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (par1==CANCEL)
-		{
-			endExecute(CANCEL);
-			parent->completeEndExecute(CANCEL);
-		}
-		else if (par1==CREATE_GAME)
-		{
-			hostGame();
-		}
-		else if (par1==JOIN)
-		{
-			joinGame();
-		}
-	}
-	else if (action==TEXT_MODIFIED)
-	{
-		std::string message = textInput->getText();
-		int msglen = message.length()-1;
-		if( message[msglen] == 9 )
-		{
-			autoCompleteNick();
-		}
-	}
-	else if (action==TEXT_TABBED)
-	{
-		autoCompleteNick();
-	}
-	else if (action==TEXT_VALIDATED)
-	{
-		if(textInput->getText() != "")
-		{
-			//First test if its a client command like /block
-			std::string result = client->getCommandManager()->executeClientCommand(textInput->getText());
-			if(!result.empty())
-			{
-				receiveInternalMessage(result);
-				textInput->setText("");
-			}
-			else
-			{
-				std::shared_ptr<YOGMessage> message(new YOGMessage);
-				message->setSender(client->getUsername());
-				message->setMessage(textInput->getText());
-				message->setMessageType(YOGNormalMessage);
-				lobbyChat->sendMessage(message);
-
-				ircChat->sendCommand(textInput->getText());
-				textInput->setText("");
-			}
-		}
-	}
-	else if (action==LIST_ELEMENT_SELECTED)
-	{
-		if(source == gameList)
-		{
-			playerList->setSelectionIndex(-1);
-		}
-		else if(source == playerList)
-		{
-			gameList->setSelectionIndex(-1);
-		}
-		updateBoxInfo();
-	}
+	finish(Cancelled);
+	return true;
 }
 
-void YOGClientLobbyScreen::onTimer(Uint32 tick)
+void YOGClientLobbyScreen::sendChat()
 {
-	if(gameScreen != -1)
+	if (chatDraft.empty())
+		return;
+	// A client command like /block answers locally; anything else goes to the channel.
+	const std::string result = client->getCommandManager()->executeClientCommand(chatDraft);
+	if (!result.empty())
+		receiveInternalMessage(result);
+	else
 	{
-		int rc = parent->getReturnCode(gameScreen);
-		if(rc!=-1)
+		std::shared_ptr<YOGMessage> message(new YOGMessage);
+		message->setSender(client->getUsername());
+		message->setMessage(chatDraft);
+		message->setMessageType(YOGNormalMessage);
+		lobbyChat->sendMessage(message);
+		ircChat->sendCommand(chatDraft);
+	}
+	chatDraft.clear();
+	refresh();
+}
+
+std::string YOGClientLobbyScreen::selectedGameInfo() const
+{
+	auto &strings = *Toolkit::getStringTable();
+	if (selectedGame >= 0 && selectedGame < int(games.size()))
+	{
+		for (const auto &game : client->getGameListManager()->getGameList())
+			if (games[std::size_t(selectedGame)] == game.getGameName())
+				return game.getGameName() + "\n" + FormattableString(strings.getString("[Map name: %0]")).arg(game.getMapName()) + "\n" +
+					   FormattableString(strings.getString("[number of players: %0 (%1 AI)]")).arg(int(game.getPlayersJoined()) + int(game.getAIJoined())).arg(int(game.getAIJoined())) + "\n" +
+					   FormattableString(strings.getString("[number of teams: %0]")).arg(int(game.getNumberOfTeams()));
+	}
+	else if (selectedPlayer >= 0 && selectedPlayer < int(players.size()))
+	{
+		const auto &name = players[std::size_t(selectedPlayer)].name;
+		if (client->getPlayerListManager()->doesPlayerExist(name))
 		{
-			std::shared_ptr<MultiplayerGame> game(client->getMultiplayerGame());
-			if(rc == MultiplayerGameScreen::Kicked)
-				receiveInternalMessage(Toolkit::getStringTable()->getString("[You where kicked from the game]"));
-			else if(rc == MultiplayerGameScreen::GameCancelled)
-				receiveInternalMessage(Toolkit::getStringTable()->getString("[The host has cancelled the game]"));
-			else if(rc == MultiplayerGameScreen::GameRefused)
-			{
-				if(game->getGameJoinState() == YOGServerGameHasAlreadyStarted)
-					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game has started]"));
-				else if(game->getGameJoinState() == YOGServerGameIsFull)
-					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game is full]"));
-				else if(game->getGameJoinState() == YOGServerGameDoesntExist)
-					receiveInternalMessage(Toolkit::getStringTable()->getString("[Can't join game, game doesn't exist]"));
-				else if(game->getGameCreationState() == YOGCreateRefusalUnknown)
-					receiveInternalMessage("Game was refused by server");
-			}
-			ownedGameScreen.reset();
-			client->setMultiplayerGame(std::shared_ptr<MultiplayerGame>());
-			gameScreen=-1;
-			updateButtonVisibility();
+			const auto info = client->getPlayerListManager()->getPlayerInfo(name);
+			return info.getPlayerName() + "\n" + FormattableString(strings.getString("[player rating %0]")).arg(info.getPlayerStoredInfo().getPlayerRating());
 		}
 	}
+	return {};
+}
 
-	TabScreenWindow::onTimer(tick);
+Element YOGClientLobbyScreen::build(const Presentation &p)
+{
+	const bool inGame = ownedGameScreen != nullptr;
+	fe::ListOptions gameOptions;
+	gameOptions.visibleRows = 6;
+	gameOptions.emptyText = fe::tr("[No items]");
+	gameOptions.activate = [this](int) { joinGame(); };
+	auto gameList = fe::listView("lobby/games", games, selectedGame,
+								 [this](int i)
+								 {
+									 selectedGame = i;
+									 selectedPlayer = -1;
+								 },
+								 gameOptions);
+	std::vector<std::string> playerNames;
+	for (const auto &entry : players)
+		playerNames.push_back(entry.name);
+	fe::ListOptions playerOptions;
+	playerOptions.visibleRows = 8;
+	playerOptions.paintRow = [this](fe::Canvas &canvas, fe::Rect row, int index, bool)
+	{
+		const auto &entry = players[std::size_t(index)];
+		int textX = row.x;
+		if (networkSprite)
+		{
+			canvas.drawSprite({row.x, row.y + (row.h - 16) / 2}, networkSprite, entry.irc ? 1 : 0);
+			textX += 20;
+		}
+		canvas.text({textX, row.y + (row.h - canvas.measurer().lineHeight(fe::FontRole::Body)) / 2}, fe::FontRole::Body,
+					fe::ellipsize(canvas.measurer(), fe::FontRole::Body, entry.name, row.right() - textX), Glob2UI::frontendTheme().palette.ink);
+	};
+	auto playerList = fe::listView("lobby/players", playerNames, selectedPlayer,
+								   [this](int i)
+								   {
+									   selectedPlayer = i;
+									   selectedGame = -1;
+								   },
+								   playerOptions);
+	fe::TextFieldOptions chatOptions;
+	chatOptions.maxLength = 256;
+	chatOptions.submit = [this](const std::string &) { sendChat(); };
+	auto chat = fe::column({fe::expanded(fe::textEditor("lobby/chat", chatLog, {}, {true, 8, false, true})),
+							fe::textField("lobby/input", chatDraft, [this](const std::string &v) { chatDraft = v; }, chatOptions)},
+						   {p.pt(6)});
+	std::vector<Element> gameSide{fe::label(fe::tr("[games]")), gameList, fe::paragraph(selectedGameInfo(), {fe::FontRole::Support, true})};
+	if (!inGame)
+		gameSide.push_back(fe::wrap({fe::button("lobby/join", fe::tr("[join]"), [this] { joinGame(); }, {false, false, selectedGame >= 0}),
+									 fe::button("lobby/host", fe::tr("[create game]"), [this] { hostGame(); }, {true})},
+									{-1, p.pt(140)}));
+	auto gameColumn = fe::column(std::move(gameSide), {p.pt(6)});
+	auto playerColumn = fe::column({fe::label(fe::tr("[players]")), playerList}, {p.pt(6)});
+	Element body = fe::adaptive(
+		[gameColumn, playerColumn, chat](const fe::LayoutContext &ctx, fe::Size available) -> fe::Element
+		{
+			if (available.w < ctx.presentation.pt(720))
+				return fe::scroll("lobby/scroll", fe::column({gameColumn, fe::height(ctx.presentation.pt(240), chat), playerColumn}, {ctx.presentation.pt(12)}));
+			return fe::row({fe::expanded(fe::column({gameColumn, fe::expanded(chat)}, {ctx.presentation.pt(10)}), 3), fe::expanded(playerColumn, 2)},
+						   {ctx.presentation.pt(16), fe::CrossAlign::Stretch});
+		});
+	return fe::column({fe::expanded(body), fe::divider(), fe::actions({{"lobby/quit", fe::tr("[quit]"), [this] { finish(Cancelled); }, false, SDLK_ESCAPE}}, p)}, {p.pt(8)});
+}
 
+void YOGClientLobbyScreen::onTimer(Uint32)
+{
+	if (ownedGameScreen && ownedGameScreen->finished())
+	{
+		const int rc = ownedGameScreen->returnCode();
+		std::shared_ptr<MultiplayerGame> game(client->getMultiplayerGame());
+		auto &strings = *Toolkit::getStringTable();
+		if (rc == MultiplayerGameScreen::Kicked)
+			receiveInternalMessage(strings.getString("[You where kicked from the game]"));
+		else if (rc == MultiplayerGameScreen::GameCancelled)
+			receiveInternalMessage(strings.getString("[The host has cancelled the game]"));
+		else if (rc == MultiplayerGameScreen::GameRefused)
+		{
+			if (game->getGameJoinState() == YOGServerGameHasAlreadyStarted)
+				receiveInternalMessage(strings.getString("[Can't join game, game has started]"));
+			else if (game->getGameJoinState() == YOGServerGameIsFull)
+				receiveInternalMessage(strings.getString("[Can't join game, game is full]"));
+			else if (game->getGameJoinState() == YOGServerGameDoesntExist)
+				receiveInternalMessage(strings.getString("[Can't join game, game doesn't exist]"));
+			else if (game->getGameCreationState() == YOGCreateRefusalUnknown)
+				receiveInternalMessage("Game was refused by server");
+		}
+		if (session)
+		{
+			session->removeTab(ownedGameScreen.get());
+			session->activate(this);
+		}
+		ownedGameScreen.reset();
+		client->setMultiplayerGame(std::shared_ptr<MultiplayerGame>());
+		refresh();
+	}
 	ircChat->update();
 	client->update();
-
-	if(ircChat->hasUserListBeenModified())
+	if (ircChat->hasUserListBeenModified())
 		updatePlayerList();
 }
 
-
-
 void YOGClientLobbyScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
-	Uint8 type = event->getEventType();
-	if(type == YEConnectionLost)
-	{
-		screens.push(std::make_unique<MessageScreen>(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"),
-			std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}),
-			[this](Screen&, int) { parent->completeEndExecute(ConnectionLost); });
-	}
-	else if(type == YEPlayerBanned)
-	{
-		screens.push(std::make_unique<MessageScreen>(Toolkit::getStringTable()->getString("[Your username was banned]"),
-			std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}));
-	}
-	else if(type == YEIPBanned)
-	{
-		screens.push(std::make_unique<MessageScreen>(Toolkit::getStringTable()->getString("[Your IP address was temporarily banned]"),
-			std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}));
-	}
+	const Uint8 type = event->getEventType();
+	auto &strings = *Toolkit::getStringTable();
+	if (type == YEConnectionLost)
+		screens.push(std::make_unique<MessageScreen>(strings.getString("[YESTS_CONNECTION_LOST]"), std::vector<std::string>{strings.getString("[ok]")}),
+					 [this](GAGGUI::Screen &, int) { finish(ConnectionLost); });
+	else if (type == YEPlayerBanned)
+		screens.push(std::make_unique<MessageScreen>(strings.getString("[Your username was banned]"), std::vector<std::string>{strings.getString("[ok]")}));
+	else if (type == YEIPBanned)
+		screens.push(std::make_unique<MessageScreen>(strings.getString("[Your IP address was temporarily banned]"), std::vector<std::string>{strings.getString("[ok]")}));
 }
 
-
-
-void YOGClientLobbyScreen::handleIRCTextMessage(const std::string& message)
+void YOGClientLobbyScreen::handleIRCTextMessage(const std::string &message)
 {
-	chatWindow->addText(message);
-	chatWindow->addImage(1);
-	chatWindow->addText("\n");
-	chatWindow->scrollToBottom();
+	chatLog += "[IRC] " + message + "\n";
+	refresh();
 }
-
-
 
 void YOGClientLobbyScreen::receiveTextMessage(std::shared_ptr<YOGMessage> message)
 {
-	chatWindow->addText(message->formatForReading());
-	chatWindow->addImage(0);
-	chatWindow->addText("\n");
-	chatWindow->scrollToBottom();
+	chatLog += message->formatForReading() + "\n";
+	refresh();
 }
 
-
-
-void YOGClientLobbyScreen::receiveInternalMessage(const std::string& message)
+void YOGClientLobbyScreen::receiveInternalMessage(const std::string &message)
 {
-	chatWindow->addText(message);
-	chatWindow->addText("\n");
-	chatWindow->addImage(-1);
-	for(unsigned int c=0; c<message.size(); ++c)
-		if(message[c] == '\n')
-			chatWindow->addImage(-1);
-	chatWindow->scrollToBottom();
+	chatLog += message + "\n";
+	refresh();
 }
 
-
-
-void YOGClientLobbyScreen::gameListUpdated()
-{
-	updateGameList();
-}
-
-
-
-void YOGClientLobbyScreen::playerListUpdated()
-{
-	updatePlayerList();
-}
-
-
+void YOGClientLobbyScreen::gameListUpdated() { updateGameList(); }
+void YOGClientLobbyScreen::playerListUpdated() { updatePlayerList(); }
 
 void YOGClientLobbyScreen::hostGame()
 {
 	screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false, "games", "game", false),
-		[this](Screen& selection, int rc) {
-			if(rc != ChooseMapScreen::OK) return;
-			auto game = std::make_shared<MultiplayerGame>(client);
-			client->setMultiplayerGame(game);
-			std::string name = FormattableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
-			game->createNewGame(name);
-			game->setMapHeader(static_cast<ChooseMapScreen&>(selection).getMapHeader());
-			showGame(game);
-		});
+				 [this](GAGGUI::Screen &selection, int rc)
+				 {
+					 if (rc != ChooseMapScreen::OK)
+						 return;
+					 auto game = std::make_shared<MultiplayerGame>(client);
+					 client->setMultiplayerGame(game);
+					 const std::string name = FormattableString(Toolkit::getStringTable()->getString("[%0's game]")).arg(client->getUsername());
+					 game->createNewGame(name);
+					 game->setMapHeader(static_cast<ChooseMapScreen &>(selection).getMapHeader());
+					 showGame(game);
+				 });
 }
 
 void YOGClientLobbyScreen::showGame(std::shared_ptr<MultiplayerGame> game)
 {
-	ownedGameScreen = std::make_unique<MultiplayerGameScreen>(parent, screens, game, client, ircChat);
-	gameScreen = ownedGameScreen->getTabNumber();
-	updateButtonVisibility();
-	parent->activateGroup(gameScreen);
+	ownedGameScreen = std::make_unique<MultiplayerGameScreen>(screens, game, client, ircChat);
+	if (session)
+	{
+		session->addTab(ownedGameScreen.get());
+		session->activate(ownedGameScreen.get());
+	}
+	refresh();
 }
-
-
-
 
 void YOGClientLobbyScreen::joinGame()
 {
-	if(gameList->selection())
-	{
-		std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
-		client->setMultiplayerGame(game);
-		Uint16 id = 0;
-		for (std::list<YOGGameInfo>::const_iterator game=client->getGameListManager()->getGameList().begin(); game!=client->getGameListManager()->getGameList().end(); ++game)
+	if (selectedGame < 0 || selectedGame >= int(games.size()))
+		return;
+	std::shared_ptr<MultiplayerGame> game(new MultiplayerGame(client));
+	client->setMultiplayerGame(game);
+	Uint16 id = 0;
+	for (const auto &info : client->getGameListManager()->getGameList())
+		if (games[std::size_t(selectedGame)] == info.getGameName())
 		{
-			if(gameList->get() == game->getGameName())
-			{
-				id = game->getGameID();
-				break;
-			}
+			id = info.getGameID();
+			break;
 		}
-		game->joinGame(id);
-		screens.push(std::make_unique<YOGClientGameConnectionDialog>(game),
-			[this, game](Screen&, int result) {
-				if(result == YOGClientGameConnectionDialog::Success) showGame(game);
-				else { game->leaveGame(); client->setMultiplayerGame({}); }
-			});
-	}
+	game->joinGame(id);
+	screens.push(std::make_unique<YOGClientGameConnectionDialog>(game),
+				 [this, game](GAGGUI::Screen &, int result)
+				 {
+					 if (result == YOGClientGameConnectionDialog::Success)
+						 showGame(game);
+					 else
+					 {
+						 game->leaveGame();
+						 client->setMultiplayerGame({});
+					 }
+				 });
 }
 
-
-
-void YOGClientLobbyScreen::updateGameList(void)
+void YOGClientLobbyScreen::updateGameList()
 {
-	int i = gameList->getSelectionIndex();
-	gameList->clear();
-	for (std::list<YOGGameInfo>::const_iterator game=client->getGameListManager()->getGameList().begin(); game!=client->getGameListManager()->getGameList().end(); ++game)
-	{
-		if(game->getGameState() == YOGGameInfo::GameOpen)
-			gameList->addText(game->getGameName());
-	}
-	gameList->setSelectionIndex(i);
-
-	updateBoxInfo();
+	const std::string previous = selectedGame >= 0 && selectedGame < int(games.size()) ? games[std::size_t(selectedGame)] : "";
+	games.clear();
+	for (const auto &game : client->getGameListManager()->getGameList())
+		if (game.getGameState() == YOGGameInfo::GameOpen)
+			games.push_back(game.getGameName());
+	selectedGame = -1;
+	for (std::size_t i = 0; i < games.size(); ++i)
+		if (games[i] == previous)
+			selectedGame = int(i);
+	refresh();
 }
 
-
-
-void YOGClientLobbyScreen::updatePlayerList(void)
+void YOGClientLobbyScreen::updatePlayerList()
 {
-
-	// update YOG one
-	playerList->clear();
-	for (std::list<YOGPlayerSessionInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
-	{
-		std::string listEntry = player->getPlayerName();
-		playerList->addPlayer(listEntry, YOGClientPlayerList::YOG_NETWORK);
-	}
-
-	// update irc entries, remove one already on YOG
-	for(unsigned i=0; i<ircChat->getUsers().size(); ++i)
-	{
-		const std::string &user = ircChat->getUsers()[i];
+	players.clear();
+	for (const auto &player : client->getPlayerListManager()->getPlayerList())
+		players.push_back({player.getPlayerName(), false});
+	// IRC entries, minus users already on YOG.
+	for (const auto &user : ircChat->getUsers())
 		if (user.compare(0, 5, "[YOG]") != 0)
-			playerList->addPlayer(user, YOGClientPlayerList::IRC_NETWORK);
-	}
-
-}
-
-
-
-void YOGClientLobbyScreen::updateBoxInfo()
-{
-	if (gameList->selection())
-	{
-		for (std::list<YOGGameInfo>::const_iterator game=client->getGameListManager()->getGameList().begin(); game!=client->getGameListManager()->getGameList().end(); ++game)
-		{
-			if(gameList->get() == game->getGameName())
-			{
-				gameInfo->setText("");
-				std::string s;
-				s += game->getGameName() + "\n";
-				gameInfo->addText(s.c_str());
-				s = FormattableString(Toolkit::getStringTable()->getString("[Map name: %0]")).arg(game->getMapName()) + "\n";
-				gameInfo->addText(s.c_str());
-				s = FormattableString(Toolkit::getStringTable()->getString("[number of players: %0 (%1 AI)]")).arg((int)game->getPlayersJoined() + (int)game->getAIJoined()).arg((int)game->getAIJoined()) + "\n";
-				gameInfo->addText(s.c_str());
-				s = FormattableString(Toolkit::getStringTable()->getString("[number of teams: %0]")).arg((int)game->getNumberOfTeams()) + "\n";
-				gameInfo->addText(s.c_str());
-				gameInfo->addChar('\n');
-			}
-		}
-	}
-	else if(playerList->selection())
-	{
-		if(client->getPlayerListManager()->doesPlayerExist(playerList->get()))
-		{
-			gameInfo->setText("");
-			std::string s;
-			s += client->getPlayerListManager()->getPlayerInfo(playerList->get()).getPlayerName() + "\n";
-			gameInfo->addText(s.c_str());
-			int r = client->getPlayerListManager()->getPlayerInfo(playerList->get()).getPlayerStoredInfo().getPlayerRating();
-			s = FormattableString(Toolkit::getStringTable()->getString("[player rating %0]")).arg(r) + "\n";
-			gameInfo->addText(s.c_str());
-		}
-		else
-		{
-			gameInfo->setText("");
-		}
-	}
-	else
-	{
-		gameInfo->setText("");
-	}
-}
-
-
-
-void YOGClientLobbyScreen::autoCompleteNick()
-{
-	std::string message = textInput->getText();
-	int msglen = message.length()-1;
-	std::string foundNick;
-	std::string msg;
-	std::string beginningOfNick;
-	int startlen;
-	int found = 0;
-
-	startlen = message.rfind(' ');
-	if( startlen == -1 )
-	{
-		startlen = 0;
-	}
-	beginningOfNick = message.substr(startlen, msglen);
-
-	if( beginningOfNick.compare("") != 0 )
-	{
-		for (std::list<YOGPlayerSessionInfo>::const_iterator player=client->getPlayerListManager()->getPlayerList().begin(); player!=client->getPlayerListManager()->getPlayerList().end(); ++player)
-		{
-			const std::string &user = (std::string)player->getPlayerName();
-			if( user.find(beginningOfNick) == 0 )
-			{
-				foundNick = user;
-				found = 1;
-				break;
-			}
-		}
-
-
-		if(found == 0)
-		{
-			for(unsigned i=0; i<ircChat->getUsers().size(); ++i)
-			{
-				const std::string &user = ircChat->getUsers()[i];
-				if( user.find(beginningOfNick) == 0 )
-				{
-					if (user.compare(0, 5, "[YOG]") != 0)
-					{
-						foundNick = user;
-						found = 1;
-						break;
-					}
-				}
-			}
-		}
-
-	}
-	
-	if( found == 1 )
-	{
-		msg = foundNick;
-		msg += ": ";
-		textInput->setText(msg);
-		textInput->setCursorPos(msg.length());
-	}
-}
-
-
-void YOGClientLobbyScreen::updateButtonVisibility()
-{
-	if(gameScreen != -1)
-	{
-		joinButton->visible=false;
-		hostButton->visible=false;
-	}
-	else
-	{
-		joinButton->visible=isActivated();
-		hostButton->visible=isActivated();
-	}
-}
-
-
-void YOGClientLobbyScreen::onActivated()
-{
-	updateButtonVisibility();
+			players.push_back({user, true});
+	selectedPlayer = std::min(selectedPlayer, int(players.size()) - 1);
+	refresh();
 }

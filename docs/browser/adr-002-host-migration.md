@@ -17,11 +17,16 @@ export, durable-storage requests, and optional diagnostics. Browser interop is
 implemented under `browser/`; shared game, AI, UI, and renderer code does not
 include Emscripten APIs. Static dependency tests enforce that boundary.
 
-`glob2Diagnostics` is a versioned, read-only browser test interface. It reports
+`glob2Diagnostics` is a versioned, read-only browser test interface. Its
+`controls` map lists the visible screens' and dialogs' interactive controls by
+key with logical-pixel bounds and the `visible` part left after scroll-region
+clipping, so browser tests click real controls (scrolling them into view first)
+instead of mirroring layout arithmetic; `loop` counts processed host frames so
+a test can wait until queued input has been consumed. It reports
 screen, simulation, rendering, persistence, audio, save, multiplayer, and custom-game readiness state.
 It cannot issue orders, advance simulation, alter files, or navigate menus.
 
-Legacy synchronous `Screen::execute`, `OverlayScreen::execute`, message-box, and
+Legacy synchronous `Screen::execute` and
 engine adapters remain for native command-line and desktop call sites. The web
 entry points use `Application`, `ScreenStack`, and cooperative jobs and are
 tested to ensure the linked runtime contains no Asyncify instrumentation.
