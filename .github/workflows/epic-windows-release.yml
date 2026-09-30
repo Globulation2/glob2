@@ -211,5 +211,5 @@ jobs:
           )
           & $env:BPT_EXE @bptArgs
           if ($LASTEXITCODE -ne 0) { throw "BuildPatchTool failed: $LASTEXITCODE" }
-          "Uploaded Epic Dev candidate $buildVersion from public commit $env:SOURCE_SHA. Stage, review, and Live promotion remain in the Epic Developer Portal." |
+          "Uploaded Epic Dev candidate $buildVersion from public commit $env:SOURCE_SHA. In the Epic Developer Portal, make the new binary active for Windows in Dev, install and test it through the launcher, then handle Stage, review, and Live promotion." |
             Out-File -Append $env:GITHUB_STEP_SUMMARY

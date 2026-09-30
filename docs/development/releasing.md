@@ -89,9 +89,12 @@ tag and version, then records the exact public source commit. The packaging
 and smoke-test jobs check out that commit and have no Epic credentials. The
 upload job verifies every staged file against a
 SHA-256 manifest before it receives the BPT secret through the `epic-dev`
-environment. The workflow uploads to Epic **Dev** only; inspect the launcher
-install, move the candidate through Stage and review, and promote it to Live in
-the portal.
+environment. The workflow uploads to Epic **Dev** only. In the portal's
+Artifacts and Binaries page, open the Windows artifact and make the new binary
+active for Windows; newly uploaded binaries are inactive and scheduled for
+deletion until activated. Install and test that active Dev build through the
+Epic launcher, then move the candidate through Stage and review, and promote
+it to Live in the portal.
 
 In the release repository, set `EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`,
 `EPIC_WINDOWS_ARTIFACT_ID`, `EPIC_BPT_CLIENT_ID`, and `EPIC_BPT_SHA256` as
