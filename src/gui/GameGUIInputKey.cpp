@@ -102,7 +102,7 @@ void GameGUI::changeGameSpeed(int amount)
 
 void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 {
-	if (typingInputScreen == NULL)
+	if (!typingInputScreen)
 	{
 		if(key.sym == SDLK_SPACE && pressed && swallowSpaceKey)
 		{
@@ -155,10 +155,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 				case GameGUIKeyActions::ShowMainMenu:
 				{
 					if (inGameMenu==IGM_NONE)
-					{
-						gameMenuScreen.reset(new InGameMainScreen(globalContainer->replaying));
-						inGameMenu=IGM_MAIN;
-					}
+						openMainMenu();
 				}
 				break;
 				case GameGUIKeyActions::UpgradeBuilding:
@@ -209,9 +206,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 				break;
 				case GameGUIKeyActions::OpenChatBox:
 				{
-					typingInputScreen=new InGameTextInput(globalContainer->gfx);
-					typingInputScreenInc=TYPING_INPUT_BASE_INC;
-					typingInputScreenPos=0;
+					openChat();
 				}
 				break;
 				case GameGUIKeyActions::IterateSelection:
@@ -324,13 +319,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 					break;
 				case GameGUIKeyActions::ViewHistory:
 				{
-					if ( ! scrollableText)
-						scrollableText = messageManager.createScrollableHistoryScreen();
-					else
-					{
-						delete scrollableText;
-						scrollableText=NULL;
-					}
+					toggleHistory();
 				}
 				break;
 				case GameGUIKeyActions::SelectConstructInn:
@@ -484,11 +473,11 @@ void GameGUI::handleKeyAlways(void)
 			camera.originY += yMotion*32;
 		if (keystate[SDL_SCANCODE_KP_2])
 			camera.originY += yMotion*32;
-		if ((keystate[SDL_SCANCODE_LEFT]) && (typingInputScreen == NULL)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+		if ((keystate[SDL_SCANCODE_LEFT]) && (!typingInputScreen)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 			camera.originX -= xMotion*32;
 		if (keystate[SDL_SCANCODE_KP_4])
 			camera.originX -= xMotion*32;
-		if ((keystate[SDL_SCANCODE_RIGHT]) && (typingInputScreen == NULL)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+		if ((keystate[SDL_SCANCODE_RIGHT]) && (!typingInputScreen)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 			camera.originX += xMotion*32;
 		if (keystate[SDL_SCANCODE_KP_6])
 			camera.originX += xMotion*32;

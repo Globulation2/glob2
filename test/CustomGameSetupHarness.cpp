@@ -11,7 +11,7 @@
 #include "GlobalContainer.h"
 #include "LandscapePickerScreen.h"
 #include "StartQualityScreen.h"
-#include "LobbyControls.h"
+#include <ui/Screen.h>
 #include "LobbyMapCatalog.h"
 #include "LobbyMapPreview.h"
 #include "MapGenerator.h"
@@ -20,7 +20,6 @@
 #include "ReplayWriter.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
-#include <GUIList.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <atomic>
@@ -354,37 +353,6 @@ struct CustomGameSetupHarness
 		queue.prioritize({0});
 		queue.poll();
 		assert(!queue.busy() && queue.finished() == 0);
-		std::vector<LandscapePickerScreen::Entry> entries(9, {"Landscape", invalid});
-		LandscapePickerScreen picker("Landscape", entries, 0);
-		const SDL_Rect viewport{0, 0, 300, 100};
-		picker.controls->regions[30].box = viewport;
-		auto layout = [&](const std::vector<int> &indices, int columns, int offset)
-		{
-			picker.controls->hits.clear();
-			picker.controls->regions[30].offset = offset;
-			for (std::size_t position = 0; position < indices.size(); ++position)
-			{
-				const SDL_Rect box{int(position % columns) * 100,
-								   int(position / columns) * 100 - offset, 100, 100};
-				picker.controls->hits.push_back({"landscape/" + std::to_string(indices[position]),
-												 box, viewport, [] {}, true, 30});
-			}
-			picker.updatePreviewPriority();
-		};
-		layout({0, 1, 2, 3, 4, 5, 6, 7, 8}, 3, 0);
-		assert(picker.priorityOrder.front() == 1);
-		assert(picker.viewportSlots == std::vector<std::size_t>({0, 1, 2}));
-		layout({0, 1, 2, 3, 4, 5, 6, 7, 8}, 3, 100);
-		assert(picker.priorityOrder.front() == 4);
-		assert(picker.viewportSlots == std::vector<std::size_t>({3, 4, 5}));
-		layout({8, 7, 6, 5, 4, 3, 2, 1, 0}, 3, 0);
-		assert(picker.priorityOrder.front() == 7);
-		layout({8, 5}, 3, 0);
-		assert(picker.priorityOrder.front() == 5);
-		assert(picker.viewportSlots == std::vector<std::size_t>({8, 5}));
-		layout({8, 5, 2}, 1, 100);
-		assert(picker.priorityOrder.front() == 5);
-		assert(picker.viewportSlots == std::vector<std::size_t>({5}));
 		std::cout << "PASS deferred viewport priority, reprioritization, stable seeds, yielding "
 					 "retries, restart/reroll\n";
 	}
@@ -425,11 +393,11 @@ struct CustomGameSetupHarness
 		}
 		LandscapePickerScreen picker("Landscape", entries, 0,
 									 LandscapePickerScreen::SortOrder::Alphabetical);
-		picker.dispatchInit();
-		picker.dispatchPaint(false);
+		picker.beginExecution(globalContainer->gfx);
+		picker.paintFrame(0);
 		while (picker.busy())
 		{
-			picker.dispatchTimer(SDL_GetTicks());
+			picker.onTimer(SDL_GetTicks());
 			SDL_Delay(1);
 		}
 		Map map;
@@ -452,7 +420,7 @@ struct CustomGameSetupHarness
 		}
 		const auto delivery = Clock::now();
 		picker.refresh();
-		picker.dispatchPaint(false);
+		picker.paintFrame(SDL_GetTicks());
 		std::cout << "BENCH delivery_ms " << elapsed(delivery) << "\n";
 		int uploaded = 0;
 		for (const auto &tile : picker.tiles)
@@ -469,12 +437,14 @@ struct CustomGameSetupHarness
 		};
 		capture("top.bmp");
 		std::vector<double> frames;
-		auto &region = picker.controls->regions[30];
+		auto *grid = picker.host().find("landscape/grid");
+		assert(grid);
 		for (int step = 0; step < 80; ++step)
 		{
-			region.offset = region.maximum * (step < 40 ? step : 79 - step) / 39;
+			const int target = grid->scrollMaximum() * (step < 40 ? step : 79 - step) / 39;
+			grid->scrollBy(target - grid->scrollOffset(), picker.host());
 			const auto frame = Clock::now();
-			picker.dispatchPaint(false);
+			picker.paintFrame(SDL_GetTicks());
 			frames.push_back(elapsed(frame));
 			if (verify)
 				for (const auto &tile : picker.tiles)
@@ -494,6 +464,8 @@ struct CustomGameSetupHarness
 				assert(std::filesystem::exists(output + "/" + name));
 			std::cout << "PASS offscreen previews stay CPU-only; scrolling never fades\n";
 		}
+		picker.endExecute(0);
+		picker.finishExecution();
 	}
 
 	static void preferencesScreen(bool write)
@@ -592,101 +564,6 @@ struct CustomGameSetupHarness
 	{
 		Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
 		FrontendTheme theme;
-		struct Driver
-		{
-			struct Step
-			{
-				std::string name;
-				std::function<void()> action;
-				Uint32 delay;
-			};
-			std::vector<Step> steps;
-			std::atomic<size_t> next{0};
-			static Uint32 tick(Uint32, void *data)
-			{
-				auto &driver = *static_cast<Driver *>(data);
-				size_t index = driver.next.fetch_add(1);
-				if (index >= driver.steps.size())
-				{
-					SDL_Event quit = {};
-					quit.type = SDL_QUIT;
-					SDL_PushEvent(&quit);
-					return 0;
-				}
-				auto &step = driver.steps[index];
-				std::cout << "UI step " << index + 1 << ": " << step.name << std::endl;
-				step.action();
-				return index + 1 == driver.steps.size() ? 0 : step.delay;
-			}
-		} driver;
-		auto click = [&](std::string name, int x, int y, Uint32 delay = 220)
-		{
-			driver.steps.push_back(
-				{name,
-				 [=]
-				 {
-					 for (Uint32 type : {Uint32(SDL_MOUSEBUTTONDOWN), Uint32(SDL_MOUSEBUTTONUP)})
-					 {
-						 SDL_Event event = {};
-						 event.type = type;
-						 event.button.button = SDL_BUTTON_LEFT;
-						 event.button.state =
-							 type == SDL_MOUSEBUTTONDOWN ? SDL_PRESSED : SDL_RELEASED;
-						 event.button.x = x;
-						 event.button.y = y;
-						 SDL_PushEvent(&event);
-					 }
-				 },
-				 delay});
-		};
-		auto key = [&](SDL_Keycode code, SDL_Keymod modifiers = KMOD_NONE, int repeats = 1)
-		{
-			driver.steps.push_back({"key " + std::to_string(code),
-									[=]
-									{
-										for (int i = 0; i < repeats; ++i)
-										{
-											SDL_Event event = {};
-											event.type = SDL_KEYDOWN;
-											event.key.keysym.sym = code;
-											event.key.keysym.mod = modifiers;
-											SDL_PushEvent(&event);
-										}
-									},
-									220});
-		};
-		// The lobby opens on a random map (2026-09-14); the flow was written from the premade
-		// library, so start there and let the later Random mode click switch as it always did.
-		click("Premade maps", 90, 100);
-		click("Players tab", 320, 30);
-		click("Inline controller", 170, 143);
-		key(SDLK_DOWN);
-		key(SDLK_RETURN);
-		click("Shared control", 170, 143);
-		key(SDLK_DOWN);
-		key(SDLK_RETURN);
-		click("2 vs 2 preset", 235, 100);
-		click("Second colony AI", 350, 223);
-		// Select the following row; the profile interaction below moves up once.
-		const int aiSteps = AINames::selectionIndex(AI::NICOWAR) + 1 - AINames::selectionIndex(AI::NUMBI);
-		key(aiSteps >= 0 ? SDLK_DOWN : SDLK_UP, KMOD_NONE, aiSteps >= 0 ? aiSteps : -aiSteps);
-		key(SDLK_RETURN);
-		click("Second colony profile", 550, 262);
-		key(SDLK_UP);
-		key(SDLK_RETURN);
-		key(SDLK_3, KMOD_CTRL);
-		click("Quick clash tile", 420, 127);
-		key(SDLK_1, KMOD_CTRL);
-		click("Random mode (automatic preview)", 225, 100, 1800);
-		key(SDLK_2, KMOD_CTRL);
-		if (control != CustomGameSetup::Shared)
-		{
-			click("Final controller", 170, 143);
-			key(SDLK_UP, KMOD_NONE, control == CustomGameSetup::Computer ? 1 : 2);
-			key(SDLK_RETURN);
-		}
-		click("Launch", 540, 445);
-
 		globalContainer->settings.gameSpeed = 7;
 		{
 			Engine engine;
@@ -694,7 +571,9 @@ struct CustomGameSetupHarness
 			std::optional<GAGCore::CooperativeTask> load;
 			std::shared_ptr<void> mapFile;
 			std::string source;
-			screens.push(std::make_unique<CustomGameScreen>(screens),
+			auto owned = std::make_unique<CustomGameScreen>(screens);
+			auto *lobby = owned.get();
+			screens.push(std::move(owned),
 				[&](GAGGUI::Screen &screen, int result)
 				{
 					if (result != CustomGameScreen::OK) return;
@@ -706,26 +585,99 @@ struct CustomGameSetupHarness
 						selected.getSelectedColor(0), selected.selectedSpeed(), source));
 					mapFile = selected.releaseSnapshot();
 				});
-			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
-			assert(timer);
-			auto watchdog = SDL_AddTimer(
-				20000,
-				[](Uint32, void *) -> Uint32
+			Uint32 tick = SDL_GetTicks();
+			auto frames = [&](int count, std::vector<SDL_Event> events = {})
+			{
+				for (int i = 0; i < count && screens.running(); ++i)
 				{
-					SDL_Event event = {};
-					event.type = SDL_QUIT;
-					SDL_PushEvent(&event);
-					return 0;
-				},
-				nullptr);
-			screens.execute();
-			SDL_RemoveTimer(timer);
-			SDL_RemoveTimer(watchdog);
+					screens.frame(tick += 40, i == 0 ? events : std::vector<SDL_Event>{});
+					SDL_Delay(1);
+				}
+			};
+			auto top = [&]
+			{
+				auto *screen = dynamic_cast<GAGGUI::ui::UIScreen *>(screens.top());
+				assert(screen);
+				return screen;
+			};
+			auto click = [&](const std::string &key)
+			{
+				std::cout << "UI step: click " << key << std::endl;
+				frames(1);
+				top()->host().scrollIntoView(key);
+				frames(1);
+				const auto r = top()->host().bounds(key);
+				SDL_Event down{};
+				down.type = SDL_MOUSEBUTTONDOWN;
+				down.button.button = SDL_BUTTON_LEFT;
+				down.button.state = SDL_PRESSED;
+				down.button.x = r.x + r.w / 2;
+				down.button.y = r.y + r.h / 2;
+				SDL_Event up = down;
+				up.type = SDL_MOUSEBUTTONUP;
+				up.button.state = SDL_RELEASED;
+				frames(1, {down, up});
+				frames(2);
+			};
+			auto key = [&](SDL_Keycode code, SDL_Keymod modifiers = KMOD_NONE, int repeats = 1)
+			{
+				std::cout << "UI step: key " << code << std::endl;
+				for (int i = 0; i < repeats; ++i)
+				{
+					SDL_Event event{};
+					event.type = SDL_KEYDOWN;
+					event.key.keysym.sym = code;
+					event.key.keysym.mod = modifiers;
+					frames(1, {event});
+				}
+				frames(1);
+			};
+			frames(3);
+			// The lobby opens on a random map (2026-09-14); the flow was written from the premade
+			// library, so start there and let the later Random mode click switch as it always did.
+			click("map/mode/0");
+			click("tab/1");
+			click("colony/0/controller");
+			key(SDLK_DOWN);
+			key(SDLK_RETURN);
+			click("colony/0/controller");
+			key(SDLK_DOWN);
+			key(SDLK_RETURN);
+			click("format/1");
+			click("colony/1/ai");
+			// Select the following row; the profile interaction below moves back once.
+			const int aiSteps = AINames::selectionIndex(AI::NICOWAR) + 1 - AINames::selectionIndex(AI::NUMBI);
+			key(aiSteps >= 0 ? SDLK_DOWN : SDLK_UP, KMOD_NONE, aiSteps >= 0 ? aiSteps : -aiSteps);
+			key(SDLK_RETURN);
+			click("colony/1/info");
+			{
+				auto *profile = dynamic_cast<CustomGameChoiceScreen *>(screens.top());
+				assert(profile);
+				profile->choose(AINames::selectionIndex(AI::NICOWAR));
+				click("profile/use");
+			}
+			key(SDLK_3, KMOD_CTRL);
+			click("ruleset/1");
+			key(SDLK_1, KMOD_CTRL);
+			click("map/mode/1");
+			for (Uint32 started = SDL_GetTicks(); (!lobby->validMap || lobby->previewBusy()) && SDL_GetTicks() - started < 60000;)
+				frames(1);
+			assert(lobby->validMap && !lobby->previewBusy());
+			key(SDLK_2, KMOD_CTRL);
+			if (control != CustomGameSetup::Shared)
+			{
+				click("colony/0/controller");
+				key(SDLK_UP, KMOD_NONE, control == CustomGameSetup::Computer ? 1 : 2);
+				key(SDLK_RETURN);
+			}
+			click("start");
+			for (int i = 0; i < 200 && screens.running(); ++i)
+				frames(1);
+			assert(!screens.running());
 			const bool loaded = load && load->run();
 			mapFile.reset();
 			assert(loaded);
 			assert(!std::filesystem::exists(std::filesystem::path(source).parent_path()));
-			assert(driver.next == driver.steps.size());
 			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
 			assert(globalContainer->settings.gameSpeed == 3);
 			assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
@@ -774,12 +726,14 @@ struct CustomGameSetupHarness
 		FrontendScope scope;
 		GAGGUI::ScreenStack screens(*globalContainer->gfx);
 		CustomGameScreen screen(screens);
-		screen.gfx = globalContainer->gfx;
-		screen.dispatchInit();
-		screen.activateGroup(screen.groups[1]);
+		screen.beginExecution(globalContainer->gfx);
+		screen.selectTab(1);
 		screen.setup.colonies[1].ai = AI::MAXIMA;
-		screen.dispatchPaint(false);
+		screen.invalidate();
+		screen.paintFrame(0);
 		globalContainer->gfx->printScreen(output + "/players.bmp");
+		screen.endExecute(0);
+		screen.finishExecution();
 		std::vector<std::string> labels;
 		for (int id : AINames::selectionOrder()) labels.push_back(AINames::getAISelectorText(id));
 		for (int id : AINames::selectionOrder())
@@ -789,13 +743,16 @@ struct CustomGameSetupHarness
 			assert(text.find("-Summary]") == std::string::npos);
 			CustomGameChoiceScreen profile(Toolkit::getStringTable()->getString("[AI strategy & counterplay]"), labels,
 				AINames::selectionIndex(id), true, {});
-			profile.dispatchInit();
-			profile.dispatchPaint(false);
+			profile.beginExecution(globalContainer->gfx);
+			profile.paintFrame(0);
 			globalContainer->gfx->printScreen(output + "/" + AINames::getCLIName(id) + ".bmp");
-			profile.controls->regions[21].offset = 10000;
-			profile.dispatchPaint(false);
-			profile.dispatchPaint(false);
+			if (auto *details = profile.host().find("profile/details"))
+				details->scrollBy(100000, profile.host());
+			profile.paintFrame(0);
+			profile.paintFrame(0);
 			globalContainer->gfx->printScreen(output + "/" + AINames::getCLIName(id) + "-bottom.bmp");
+			profile.endExecute(0);
+			profile.finishExecution();
 		}
 		std::cout << "PASS strategy profiles and scrolling for every AI\n";
 	}
@@ -810,11 +767,12 @@ struct CustomGameSetupHarness
 		{
 			CustomGameChoiceScreen profile("AI strategy & counterplay", labels, AINames::selectionIndex(AI::CORTEX), true,
 										   {});
-			profile.dispatchInit();
-			profile.dispatchPaint(false);
+			profile.beginExecution(globalContainer->gfx);
+			profile.paintFrame(0);
 			globalContainer->gfx->printScreen(output + "/ai-profile.bmp");
-			profile.onAction(nullptr, GAGGUI::BUTTON_SHORTCUT, -3, 0);
+			profile.use();
 			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
+			profile.finishExecution();
 		}
 		if (onlyAIProfile)
 			return;
@@ -822,8 +780,21 @@ struct CustomGameSetupHarness
     GAGGUI::ScreenStack screens(*globalContainer->gfx);
 
     CustomGameScreen screen(screens);
-    screen.gfx = globalContainer->gfx;
-    screen.dispatchInit();
+    screen.beginExecution(globalContainer->gfx);
+    struct Finish
+    {
+      CustomGameScreen &screen;
+      ~Finish()
+      {
+        if (screen.isExecutionRunning())
+        {
+          screen.endExecute(0);
+          screen.finishExecution();
+        }
+      }
+    } finish{screen};
+    auto &host = screen.host();
+    auto paint = [&] { screen.paintFrame(SDL_GetTicks()); };
     // With nothing saved the lobby opens on a random map (FEEDBACK 2026-09-14); the premade
     // library is a click away and is what the catalog checks below exercise.
     assert(screen.setup.random && screen.previewPending && !screen.validMap &&
@@ -841,7 +812,6 @@ struct CustomGameSetupHarness
     screen.separateMapLibraries = true;
     screen.listMaps();
 
-    auto paint = [&] { screen.dispatchPaint(false); };
     // The preview rolls its candidates on worker threads; wait for them as the timer would.
     auto preview = [&] {
       screen.onTimer(screen.previewDue);
@@ -852,37 +822,58 @@ struct CustomGameSetupHarness
       e.type = SDL_KEYDOWN;
       e.key.keysym.sym = key;
       e.key.keysym.mod = modifiers;
-      screen.dispatchEvents(&e);
+      screen.handleExecutionEvent(e);
       paint();
+    };
+    auto has = [&](const std::string &id) {
+      paint();
+      return host.find(id) != nullptr;
+    };
+    auto node = [&](const std::string &id) {
+      paint();
+      auto *found = host.find(id);
+      assert(found);
+      return found;
+    };
+    auto pointerAt = [&](int x, int y, Uint32 type) {
+      SDL_Event e = {};
+      e.type = type;
+      e.button.button = SDL_BUTTON_LEFT;
+      e.button.x = x;
+      e.button.y = y;
+      screen.handleExecutionEvent(e);
     };
     auto clickControl = [&](const std::string &id) {
       paint();
-      auto find = [&] {
-        return std::find_if(screen.controls->hits.begin(),
-                            screen.controls->hits.end(),
-                            [&](const auto &hit) { return hit.id == id; });
-      };
-      auto hit = find();
-      assert(hit != screen.controls->hits.end());
-      if (hit->region >= 0) {
-        auto &r = screen.controls->regions[hit->region];
-        if (hit->box.y < r.box.y)
-          screen.controls->scroll(hit->region, hit->box.y - r.box.y);
-        else if (hit->box.y + hit->box.h > r.box.y + r.box.h)
-          screen.controls->scroll(hit->region,
-                                  hit->box.y + hit->box.h - r.box.y - r.box.h);
-        paint();
-        hit = find();
-      }
-      auto r = hit->box;
-      for (auto type : {SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP}) {
-        SDL_Event e = {};
-        e.type = type;
-        e.button.button = SDL_BUTTON_LEFT;
-        e.button.x = r.x + r.w / 2;
-        e.button.y = r.y + r.h / 2;
-        screen.dispatchEvents(&e);
-      }
+      host.scrollIntoView(id);
+      paint();
+      const auto r = host.bounds(id);
+      pointerAt(r.x + r.w / 2, r.y + r.h / 2, SDL_MOUSEBUTTONDOWN);
+      pointerAt(r.x + r.w / 2, r.y + r.h / 2, SDL_MOUSEBUTTONUP);
+      paint();
+    };
+    // Steppers step from their end caps; the middle shows the value.
+    auto step = [&](const std::string &id, int direction) {
+      paint();
+      host.scrollIntoView(id);
+      paint();
+      const auto r = host.bounds(id);
+      const int x = direction > 0 ? r.x + r.w - 8 : r.x + 8;
+      pointerAt(x, r.y + r.h / 2, SDL_MOUSEBUTTONDOWN);
+      pointerAt(x, r.y + r.h / 2, SDL_MOUSEBUTTONUP);
+      paint();
+    };
+    auto scrollOf = [&](const char *key) {
+      paint();
+      auto *found = host.find(key);
+      assert(found);
+      return found->scrollOffset();
+    };
+    auto scrollTo = [&](const char *key, int offset) {
+      paint();
+      auto *found = host.find(key);
+      assert(found);
+      found->scrollBy(offset - found->scrollOffset(), host);
       paint();
     };
     // Canonical identity, including repeated roots and symlink aliases.
@@ -907,31 +898,34 @@ struct CustomGameSetupHarness
     assert(std::set<std::string>(screen.mapPaths.begin(), screen.mapPaths.end())
                .size() == screen.mapPaths.size());
     paint();
-    auto &mapRegion = screen.controls->regions[10];
-    mapRegion.offset = std::min(56, mapRegion.maximum);
-    paint();
-    int savedOffset = mapRegion.offset;
-    int row = savedOffset / 28 + 1;
-    clickControl("map/entry/" + std::to_string(row));
-    assert(mapRegion.offset == savedOffset);
+    // Selecting a row, moving the selection and switching libraries keep the list where it was.
+    scrollTo("map/list/0", std::min(56, node("map/list/0")->scrollMaximum()));
+    const int savedOffset = scrollOf("map/list/0");
+    {
+      const auto list = host.bounds("map/list/0");
+      pointerAt(list.x + 20, list.y + 20, SDL_MOUSEBUTTONDOWN);
+      pointerAt(list.x + 20, list.y + 20, SDL_MOUSEBUTTONUP);
+      paint();
+    }
+    assert(scrollOf("map/list/0") == savedOffset);
     keyEvent(SDLK_DOWN);
-    assert(mapRegion.offset == savedOffset);
+    assert(scrollOf("map/list/0") == savedOffset);
     clickControl("map/library/1");
     clickControl("map/library/0");
-    assert(mapRegion.offset == savedOffset);
+    assert(scrollOf("map/list/0") == savedOffset);
     assert(screen.librarySelection[0] == screen.source);
     screen.loadMap("maps/FourSquares1.map");
-    screen.activateGroup(screen.groups[1]);
+    screen.selectTab(1);
     paint();
     auto alliances = screen.setup.colonies;
     clickControl("colony/0/controller");
-    assert(screen.controls->popup.open);
+    assert(host.popupOpen());
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
     assert(screen.setup.colonies[0].controller == CustomGameSetup::Computer);
     for (int i = 0; i < 4; ++i)
       assert(screen.setup.colonies[i].alliance == alliances[i].alliance);
-    assert(screen.controls->focus == "colony/0/controller");
+    assert(host.focused() == "colony/0/controller");
     clickControl("colony/0/controller");
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
@@ -941,82 +935,86 @@ struct CustomGameSetupHarness
     keyEvent(SDLK_ESCAPE);
     assert(screen.setup.colonies[1].ai == AI::NUMBI);
     clickControl("colony/1/ai");
-    SDL_Event outside = {};
-    outside.type = SDL_MOUSEBUTTONDOWN;
-    outside.button.x = 0;
-    outside.button.y = 0;
-    screen.dispatchEvents(&outside);
-    assert(!screen.controls->popup.open);
+    assert(host.popupOpen());
+    pointerAt(0, 0, SDL_MOUSEBUTTONDOWN);
+    pointerAt(0, 0, SDL_MOUSEBUTTONUP);
+    paint();
+    assert(!host.popupOpen());
     clickControl("format/1");
     assert(screen.setup.colonies[0].alliance ==
            screen.setup.colonies[1].alliance);
-    screen.activateGroup(screen.groups[2]);
+    screen.selectTab(2);
     paint();
     clickControl("rule/1/1");
     assert(screen.setup.revealed && screen.setup.ruleset == "Custom");
     assert(!screen.setup.unitUpgradesDisabled);
     screen.setup.unitUpgradesDisabled = true;
-    int rulesOffset = screen.controls->regions[2].offset;
+    const int rulesOffset = scrollOf("lobby/rules");
     clickControl("rule/1/0");
-    assert(!screen.setup.revealed &&
-           screen.controls->regions[2].offset == rulesOffset);
+    assert(!screen.setup.revealed && scrollOf("lobby/rules") == rulesOffset);
     assert(screen.setup.unitUpgradesDisabled);
     clickControl("ruleset/1");
     assert(screen.setup.speed == 3 && screen.setup.generator.nbWorkers == 8);
     screen.setup = CustomGameSetup();
     screen.loadMap("maps/FourSquares1.map");
-    screen.controls->regions[2].offset = 0;
-    screen.activateGroup(screen.groups[0]);
-    screen.controls->regions[10].offset = 0;
+    scrollTo("lobby/rules", 0);
+    screen.selectTab(0);
+    scrollTo("map/list/0", 0);
     std::cout << "PASS canonical map catalog, selection stability, inline "
                  "controls, popup cancel, focus preservation and rules\n";
     auto capture = [&](const std::string &name) {
-      screen.dispatchPaint(false);
+      paint();
       if (screen.preview->transitioning) {
         screen.preview->transitionPending = false;
         screen.preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
-        screen.dispatchPaint(false);
+        paint();
       }
       globalContainer->gfx->printScreen(output + "/" + name + ".bmp");
     };
     capture("map-640");
     // Randomize, Reset to defaults and Random parameters only apply to random maps.
-    assert(std::none_of(screen.controls->hits.begin(), screen.controls->hits.end(),
-                        [](const auto &h) {
-                          return h.id == "map/randomize" || h.id == "generator/reset" ||
-                                 h.id == "generator/random" || h.id == "quality/info";
-                        }));
-    screen.activateGroup(screen.groups[1]);
+    assert(!has("map/randomize") && !has("generator/reset") && !has("generator/random") &&
+           !has("quality/info"));
+    screen.selectTab(1);
     capture("players-640");
     screen.setup.colonies[1].ai = AI::CORTEX;
+    screen.invalidate();
     capture("cortex-640");
     clickControl("colony/1/ai");
     capture("ai-dropdown");
     keyEvent(SDLK_ESCAPE);
 
-    screen.activateGroup(screen.groups[2]);
+    screen.selectTab(2);
     capture("rules-640");
     screen.setup.random = true;
     // The slider/failure checks below exercise River terrain weights explicitly.
     screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
-    screen.invalidate();
-    screen.activateGroup(screen.groups[0]);
+    screen.invalidatePreview();
+    screen.selectTab(0);
     capture("random-controls-640");
     screen.expanded[0] = screen.expanded[1] = screen.expanded[2] = true;
+    screen.invalidate();
     paint();
-    screen.controls->regions[3].offset = 180;
+    scrollTo("lobby/map", 180);
     capture("generator-expanded");
-    screen.controls->regions[3].offset = 0;
+    scrollTo("lobby/map", 0);
     // Preview appears from the timer, without a Generate control or click.
-    assert(std::none_of(screen.controls->hits.begin(),
-                        screen.controls->hits.end(),
-                        [](const auto &h) { return h.id == "map/generate"; }));
+    assert(!has("map/generate"));
     screen.onTimer(screen.previewDue - 1);
     assert(!screen.validMap);
-    screen.controls->pressed = "generator/water";
-    preview();
-    assert(!screen.validMap);
-    screen.controls->pressed.clear();
+    {
+      // A held slider defers the preview until it is released.
+      host.scrollIntoView("generator/water");
+      paint();
+      const auto slider = host.bounds("generator/water");
+      pointerAt(slider.x + slider.w / 2, slider.y + slider.h / 2, SDL_MOUSEBUTTONDOWN);
+      assert(host.interacting());
+      preview();
+      assert(!screen.validMap);
+      pointerAt(slider.x + slider.w / 2, slider.y + slider.h / 2, SDL_MOUSEBUTTONUP);
+      paint();
+      assert(!host.interacting());
+    }
     preview();
     assert(screen.validMap && !screen.previewPending);
     auto first = screen.snapshot;
@@ -1027,17 +1025,20 @@ struct CustomGameSetupHarness
     screen.setup.presetTeams(1);
     screen.onTimer(SDL_GetTicks() + 1000);
     assert(screen.previewRevision == revision && screen.sourceFile() == first);
-    clickControl("generator/water");
-    assert(!screen.validMap && screen.setup.mapRevision != revision);
-    auto water = screen.setup.generator.options["water"];
-    SDL_Event motion = {};
-    motion.type = SDL_MOUSEMOTION;
-    motion.motion.x = 0;
-    motion.motion.y = 0;
-    screen.dispatchEvents(&motion);
-    assert(screen.setup.generator.options["water"] == water);
-    keyEvent(SDLK_RIGHT);
-    assert(screen.setup.generator.options["water"] == water + 1);
+    {
+      // Nudging the slider from the keyboard is one edit: one invalidation, one step.
+      host.focus("generator/water", true);
+      const auto water = screen.setup.generator.options["water"];
+      SDL_Event motion = {};
+      motion.type = SDL_MOUSEMOTION;
+      motion.motion.x = 0;
+      motion.motion.y = 0;
+      screen.handleExecutionEvent(motion);
+      assert(screen.setup.generator.options["water"] == water);
+      keyEvent(SDLK_RIGHT);
+      assert(screen.setup.generator.options["water"] == water + 1);
+      assert(!screen.validMap && screen.setup.mapRevision != revision);
+    }
     assert(screen.setup.colonies[0].alliance ==
            screen.setup.colonies[1].alliance);
 
@@ -1076,25 +1077,19 @@ struct CustomGameSetupHarness
              screen.setup.capacity == expected.nbTeams && !screen.validMap &&
              screen.previewPending);
       paint();
-      const auto reset = std::find_if(
-          screen.controls->hits.begin(), screen.controls->hits.end(),
-          [](const auto &h) { return h.id == "generator/reset"; });
-      assert(reset != screen.controls->hits.end() && !reset->enabled);
+      auto *reset = node("generator/reset");
+      assert(!reset->enabled());
       // Reset to defaults sits at the top of the column, right under the landscape chooser,
       // with Random parameters beside it (FEEDBACK 2026-09-14).
-      const auto landscape = std::find_if(
-          screen.controls->hits.begin(), screen.controls->hits.end(),
-          [](const auto &h) { return h.id == "generator/landscape"; });
-      const auto random = std::find_if(
-          screen.controls->hits.begin(), screen.controls->hits.end(),
-          [](const auto &h) { return h.id == "generator/random"; });
-      assert(landscape != screen.controls->hits.end() && random != screen.controls->hits.end());
-      assert(reset->box.y > landscape->box.y && reset->box.y < landscape->box.y + 80 &&
-             random->box.y == reset->box.y && random->box.x > reset->box.x && random->enabled);
-      for (const auto &h : screen.controls->hits)
-        if (h.id.rfind("generator/", 0) == 0 && h.id != "generator/landscape" &&
-            h.id != "generator/reset" && h.id != "generator/random")
-          assert(h.box.y >= reset->box.y);
+      auto *landscape = node("generator/landscape");
+      auto *random = node("generator/random");
+      assert(reset->bounds.y > landscape->bounds.y && reset->bounds.y < landscape->bounds.y + 80 &&
+             random->bounds.y == reset->bounds.y && random->bounds.x > reset->bounds.x && random->enabled());
+      host.root()->visit([&](GAGGUI::ui::Node &n) {
+        if (n.key.rfind("generator/", 0) == 0 && n.key != "generator/landscape" &&
+            n.key != "generator/reset" && n.key != "generator/random")
+          assert(n.bounds.y >= reset->bounds.y);
+      });
       preview();
       assert(screen.validMap);
       capture("reset-640");
@@ -1132,8 +1127,7 @@ struct CustomGameSetupHarness
              screen.quality.colonies.size() == size_t(capacity));
       paint();
       // The start quality line under the preview: fairness and score, and its (i).
-      assert(std::any_of(screen.controls->hits.begin(), screen.controls->hits.end(),
-                         [](const auto &h) { return h.id == "quality/info" && h.enabled; }));
+      assert(has("quality/info") && node("quality/info")->enabled());
       capture("random-parameters-640");
       {
         std::vector<std::string> labels;
@@ -1143,16 +1137,17 @@ struct CustomGameSetupHarness
           colors.push_back(screen.preview->starts[i].color);
         }
         StartQualityScreen breakdown(screen.quality, labels, colors);
-        breakdown.dispatchInit();
-        breakdown.dispatchPaint(false);
+        breakdown.beginExecution(globalContainer->gfx);
+        breakdown.paintFrame(0);
         globalContainer->gfx->printScreen(output + "/start-quality.bmp");
-        assert(std::any_of(breakdown.controls->hits.begin(), breakdown.controls->hits.end(),
-                           [](const auto &h) { return h.id == "quality/back"; }));
+        assert(breakdown.host().find("back"));
         SDL_Event e = {};
         e.type = SDL_KEYDOWN;
         e.key.keysym.sym = SDLK_ESCAPE;
-        breakdown.dispatchEvents(&e);
+        breakdown.handleExecutionEvent(e);
         assert(breakdown.returnCode == StartQualityScreen::BACK);
+        breakdown.finishExecution();
+        paint();
       }
       const auto retainedQuality = screen.quality;
       clickControl("generator/reset");
@@ -1165,7 +1160,7 @@ struct CustomGameSetupHarness
       assert(screen.validMap);
     }
     screen.setup.presetRules(1);
-    screen.invalidate();
+    screen.invalidatePreview();
     assert(!screen.validMap);
     auto assignments = screen.setup.colonies;
     screen.setup.generator.options["water"] =
@@ -1180,7 +1175,7 @@ struct CustomGameSetupHarness
         screen.setup.generator.options["sand"] =
             screen.setup.generator.options["grass"] =
                 screen.setup.generator.options["desert"] = 50;
-    screen.invalidate();
+    screen.invalidatePreview();
     preview();
     assert(screen.validMap);
 
@@ -1194,20 +1189,20 @@ struct CustomGameSetupHarness
     landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
     assert(screen.setup.generator.options["channel-width"] == 5 &&
            screen.setup.generator.options["extra-islands"] == 3);
-    clickControl("generator/channel-width/+");
+    step("generator/channel-width", 1);
     assert(screen.setup.generator.options["channel-width"] == 6);
     capture("concrete-controls");
     landscape(MapGenerationDescriptor::eISLES);
     assert(screen.setup.generator.options["island-size"] == 60);
-    clickControl("generator/island-size/+");
+    step("generator/island-size", 1);
     assert(screen.setup.generator.options["island-size"] == 65);
-    clickControl("generator/bridge-width/+");
+    step("generator/bridge-width", 1);
     assert(screen.setup.generator.options["bridge-width"] == 5);
     capture("isles-controls");
     landscape(MapGenerationDescriptor::eCRATERLAKES);
     assert(screen.setup.generator.options["lake-size"] == 25 &&
            screen.setup.generator.options["grass"] == 75);
-    clickControl("generator/lake-size/+");
+    step("generator/lake-size", 1);
     assert(screen.setup.generator.options["lake-size"] == 30);
     capture("crater-controls");
     landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
@@ -1230,16 +1225,17 @@ struct CustomGameSetupHarness
       clickControl("generator/lake-connected");
       assert(options["lake-connected"] == 1 && screen.setup.mapRevision != revision &&
              !screen.validMap && screen.previewPending);
-      assert(screen.controls->focus == "generator/lake-connected");
+      assert(host.focused() == "generator/lake-connected");
+      host.focus("generator/lake-connected", true);
       keyEvent(SDLK_SPACE);
       assert(options["lake-connected"] == 0);
       keyEvent(SDLK_RETURN);
       assert(options["lake-connected"] == 1);
       // Tab walks off the checkbox and Shift+Tab back onto it, like any other control.
       keyEvent(SDLK_TAB);
-      assert(screen.controls->focus != "generator/lake-connected");
+      assert(host.focused() != "generator/lake-connected");
       keyEvent(SDLK_TAB, KMOD_SHIFT);
-      assert(screen.controls->focus == "generator/lake-connected");
+      assert(host.focused() == "generator/lake-connected");
       preview();
       assert(screen.validMap);
       capture("map-checkboxes");
@@ -1248,7 +1244,7 @@ struct CustomGameSetupHarness
     }
     landscape(MapGenerationDescriptor::eRIVER);
 
-    screen.activateGroup(screen.groups[0]);
+    screen.selectTab(0);
     capture("map-1000");
     // Rectangular terrain and markers must use the same cropped preview area.
     for (auto dimensions : {std::pair{9, 7}, std::pair{7, 9}, std::pair{9, 6}, std::pair{6, 9}}) {
@@ -1256,15 +1252,20 @@ struct CustomGameSetupHarness
       screen.setup.generator.wDec = dimensions.first;
       screen.setup.generator.hDec = dimensions.second;
       screen.setup.setCapacity(4);
-      screen.invalidate();
+      screen.invalidatePreview();
       assert(screen.generateMap());
+      // The preview only records its rectangle while painted, so bring it back
+      // into view after the generator controls scrolled it off.
+      paint();
+      host.scrollIntoView("map/preview");
+      paint();
       const std::string name = "rectangular-" + std::to_string(1 << dimensions.first) + "x" + std::to_string(1 << dimensions.second);
       const auto expectedStarts = screen.preview->starts;
       // Old premade maps can contain equivalent coordinates across a torus seam.
       screen.preview->starts[0].x -= (1 << dimensions.first);
       screen.preview->starts[0].y += (1 << dimensions.second);
       capture(name);
-      const auto rect = screen.preview->getScreenRect();
+      const auto rect = screen.preview->mapArea();
       const int mapW = screen.preview->getLastWidth(), mapH = screen.preview->getLastHeight();
       assert(std::abs(rect.w * mapH - rect.h * mapW) < std::max(mapW, mapH));
       SDL_Surface *bmp = SDL_LoadBMP((output + "/" + name + ".bmp").c_str());
@@ -1314,13 +1315,13 @@ struct CustomGameSetupHarness
             sampleY == rect.y || sampleY == rect.y + rect.h - 1)
           continue;
         bool covered = false;
-for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
-  for (int dy = -1; dy <= 1; ++dy)
-    for (int dx = -1; dx <= 1; ++dx) {
-      const int cx = markerX[j] + dx * rect.w, cy = markerY[j] + dy * rect.h;
-      covered = covered || (sampleX >= cx - 10 && sampleX < cx + 10 &&
-                            sampleY >= cy - 10 && sampleY < cy + 10);
-    }
+        for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
+          for (int dy = -1; dy <= 1; ++dy)
+            for (int dx = -1; dx <= 1; ++dx) {
+              const int cx = markerX[j] + dx * rect.w, cy = markerY[j] + dy * rect.h;
+              covered = covered || (sampleX >= cx - 10 && sampleX < cx + 10 &&
+                                    sampleY >= cy - 10 && sampleY < cy + 10);
+            }
         if (covered)
           continue;
         const auto &start = expectedStarts[i];
@@ -1343,10 +1344,9 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
                                            GeneratorRegistry::builtins().idOf("contested-commons"));
       screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
       screen.setup.setCapacity(4);
-      screen.invalidate();
+      screen.invalidatePreview();
       paint();
-      assert(std::any_of(screen.controls->hits.begin(), screen.controls->hits.end(),
-                         [](const auto &h) { return h.id == "generator/landscape"; }));
+      assert(has("generator/landscape"));
       const auto entries = screen.landscapeEntries();
       assert(entries.size() == GeneratorRegistry::builtins().methods(false).size());
       for (const auto &[method, request] : entries)
@@ -1358,63 +1358,86 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       const int current =
           GeneratorRegistry::builtins().selectionIndex(screen.setup.generator.method, false);
       LandscapePickerScreen picker("Landscape", shown, current);
-      picker.dispatchInit();
-	  assert(picker.previewer.threadCount() == 1 && picker.busy());
-	  picker.dispatchPaint(false); // placeholders while every tile is still pending
+      picker.beginExecution(globalContainer->gfx);
+      auto &pickerHost = picker.host();
+      auto pickerPaint = [&] { picker.paintFrame(SDL_GetTicks()); };
+      assert(picker.previewer.threadCount() == 1 && picker.busy());
+      pickerPaint(); // placeholders while every tile is still pending
       globalContainer->gfx->printScreen(output + "/landscape-picker-pending.bmp");
+      // Cards in view roll first, and scrolling the grid moves that eligible set with it.
+      picker.updatePreviewPriority();
+      assert(!picker.viewportSlots.empty() && picker.priorityOrder.size() == shown.size());
+      assert(std::find(picker.viewportSlots.begin(), picker.viewportSlots.end(),
+                       picker.priorityOrder.front()) != picker.viewportSlots.end());
+      {
+        auto *grid = pickerHost.find("landscape/grid");
+        assert(grid && grid->scrollMaximum() > 0);
+        const auto initial = picker.viewportSlots;
+        grid->scrollBy(grid->scrollMaximum(), pickerHost);
+        pickerPaint();
+        picker.updatePreviewPriority();
+        assert(picker.viewportSlots != initial);
+        assert(std::find(picker.viewportSlots.begin(), picker.viewportSlots.end(),
+                         picker.priorityOrder.front()) != picker.viewportSlots.end());
+        grid->scrollBy(-grid->scrollOffset(), pickerHost);
+        pickerPaint();
+      }
       auto settle = [&] {
         const Uint32 deadline = SDL_GetTicks() + 120000;
         while (picker.busy()) {
           assert(Sint32(SDL_GetTicks() - deadline) < 0);
           SDL_Delay(10);
-          picker.dispatchTimer(SDL_GetTicks());
+          picker.onTimer(SDL_GetTicks());
         }
-        picker.dispatchTimer(SDL_GetTicks());
-        picker.dispatchPaint(false);
+        picker.onTimer(SDL_GetTicks());
+        pickerPaint();
         for (auto &tile : picker.tiles) {
           if (tile.widget && tile.widget->transitioning) {
             tile.widget->transitionPending = false;
             tile.widget->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
           }
         }
-        picker.dispatchPaint(false);
+        pickerPaint();
       };
+      auto pickerPointer = [&](int x, int y, Uint32 type) {
+        SDL_Event e = {};
+        e.type = type;
+        e.button.button = SDL_BUTTON_LEFT;
+        e.button.x = x;
+        e.button.y = y;
+        picker.handleExecutionEvent(e);
+      };
+      // Tiles are pressed below their preview image, which owns drag and zoom gestures.
       auto pick = [&](const std::string &id) {
-        picker.dispatchPaint(false);
-        auto find = [&] {
-          return std::find_if(picker.controls->hits.begin(), picker.controls->hits.end(),
-                              [&](const auto &h) { return h.id == id; });
-        };
-        auto hit = find();
-        assert(hit != picker.controls->hits.end());
-        if (hit->region >= 0) {
-          // Tiles below the fold are clipped, so bring one into view before clicking it.
-          auto &region = picker.controls->regions[hit->region];
-          if (hit->box.y < region.box.y)
-            picker.controls->scroll(hit->region, hit->box.y - region.box.y);
-          else if (hit->box.y + hit->box.h > region.box.y + region.box.h)
-            picker.controls->scroll(hit->region,
-                                    hit->box.y + hit->box.h - region.box.y - region.box.h);
-          picker.dispatchPaint(false);
-          hit = find();
-        }
-        const auto r = hit->box;
-        for (auto type : {SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP}) {
-          SDL_Event e = {};
-          e.type = type;
-          e.button.button = SDL_BUTTON_LEFT;
-          e.button.x = r.x + r.w / 2;
-          e.button.y = hit->region == 30 ? r.y + r.h - 24 : r.y + r.h / 2;
-          picker.dispatchEvents(&e);
-        }
-        picker.dispatchPaint(false);
+        pickerPaint();
+        pickerHost.scrollIntoView(id);
+        pickerPaint();
+        const auto r = pickerHost.bounds(id);
+        const bool tile = id.size() > 10 && std::isdigit(static_cast<unsigned char>(id[10]));
+        const int y = tile ? r.y + r.h - 16 : r.y + r.h / 2;
+        pickerPointer(r.x + r.w / 2, y, SDL_MOUSEBUTTONDOWN);
+        pickerPointer(r.x + r.w / 2, y, SDL_MOUSEBUTTONUP);
+        pickerPaint();
       };
       auto pickerKey = [&](SDL_Keycode key) {
         SDL_Event e = {};
         e.type = SDL_KEYDOWN;
         e.key.keysym.sym = key;
-        picker.dispatchEvents(&e);
-        picker.dispatchPaint(false);
+        picker.handleExecutionEvent(e);
+        pickerPaint();
+      };
+      // Sheet-wide actions are buttons on wide windows and items of the "More" menu on
+      // narrow ones, in the order regenerate, randomize, reset.
+      auto pickAction = [&](const std::string &name, int menuIndex) {
+        pickerPaint();
+        if (pickerHost.find("landscape/" + name)) {
+          pick("landscape/" + name);
+          return;
+        }
+        pick("landscape/more");
+        assert(pickerHost.popupOpen());
+        pick("popup/" + std::to_string(menuIndex));
+        assert(!pickerHost.popupOpen());
       };
       settle();
       globalContainer->gfx->printScreen(output + "/landscape-picker.bmp");
@@ -1438,43 +1461,47 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       // Native image gestures inspect without confirming the selected landscape.
       {
         auto *widget = picker.tiles[other].widget;
+        assert(widget);
+        pickerHost.scrollIntoView("landscape/" + std::to_string(other));
+        pickerPaint();
         const auto area = widget->mapArea();
+        pickerPointer(area.x + area.w / 3, area.y + area.h / 3, SDL_MOUSEBUTTONDOWN);
         SDL_Event e = {};
-        e.type = SDL_MOUSEBUTTONDOWN; e.button.button = SDL_BUTTON_LEFT;
-        e.button.x = area.x + area.w / 3; e.button.y = area.y + area.h / 3;
-        picker.dispatchEvents(&e);
-        e = {}; e.type = SDL_MOUSEMOTION; e.motion.state = SDL_BUTTON_LMASK;
-        e.motion.x = area.x + 2 * area.w / 3; e.motion.y = area.y + 2 * area.h / 3;
-        picker.dispatchEvents(&e);
+        e.type = SDL_MOUSEMOTION;
+        e.motion.state = SDL_BUTTON_LMASK;
+        e.motion.x = area.x + 2 * area.w / 3;
+        e.motion.y = area.y + 2 * area.h / 3;
+        picker.handleExecutionEvent(e);
         assert(widget->dragging && widget->view.offsetX > 0 && picker.returnCode == 0);
-        e = {}; e.type = SDL_MOUSEBUTTONUP; e.button.button = SDL_BUTTON_LEFT;
-        e.button.x = -20; e.button.y = -20;
-        picker.dispatchEvents(&e);
-        assert(!widget->dragging && picker.activePreview == -1 && picker.returnCode == 0);
+        pickerPointer(-20, -20, SDL_MOUSEBUTTONUP);
+        assert(!widget->dragging && picker.returnCode == 0);
         // The picker intentionally reserves the wheel for grid scrolling, even
         // above a preview. MapPreviewHarness separately checks anchored zoom.
-        e = {}; e.type = SDL_MOUSEMOTION;
-        e.motion.x = area.x + area.w / 2; e.motion.y = area.y + area.h / 2;
-        picker.dispatchEvents(&e);
+        e = {};
+        e.type = SDL_MOUSEMOTION;
+        e.motion.x = area.x + area.w / 2;
+        e.motion.y = area.y + area.h / 2;
+        picker.handleExecutionEvent(e);
         const auto previewZoom = widget->zoom;
         const auto previewX = widget->view.offsetX, previewY = widget->view.offsetY;
-        auto &grid = picker.controls->regions[30];
-        assert(grid.maximum > 0);
+        auto *grid = pickerHost.find("landscape/grid");
+        assert(grid && grid->scrollMaximum() > 0);
         bool scrolled = false;
         for (int direction : {-1, 1}) {
-          const int before = grid.offset;
-          e = {}; e.type = SDL_MOUSEWHEEL; e.wheel.y = direction;
-          picker.dispatchEvents(&e);
-          assert(grid.offset == std::clamp(before - direction * 36, 0, grid.maximum));
-          scrolled |= grid.offset != before;
+          const int before = grid->scrollOffset();
+          e = {};
+          e.type = SDL_MOUSEWHEEL;
+          e.wheel.y = direction;
+          picker.handleExecutionEvent(e);
+          pickerPaint();
+          const int after = grid->scrollOffset();
+          assert(after >= 0 && after <= grid->scrollMaximum());
+          assert(direction > 0 ? after <= before : after >= before);
+          scrolled |= after != before;
           assert(widget->zoom == previewZoom && widget->view.offsetX == previewX &&
                  widget->view.offsetY == previewY && picker.returnCode == 0);
         }
         assert(scrolled);
-        e = {}; e.type = SDL_MOUSEBUTTONDOWN; e.button.button = SDL_BUTTON_RIGHT;
-        e.button.x = area.x + area.w / 2; e.button.y = area.y + area.h / 2;
-        picker.dispatchEvents(&e);
-        assert(widget->zoom == 1 && widget->view.offsetX == 0 && picker.returnCode == 0);
       }
       // Keyboard navigation follows the displayed sort/filter order, not the
       // registry identity of a landscape (these differ in Random order).
@@ -1488,8 +1515,11 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
           std::min(int(picker.visible.size()) - 1, left + picker.columns)]);
       pickerKey(SDLK_ESCAPE);
       assert(picker.returnCode == LandscapePickerScreen::CANCEL);
+      // Escape ended the execution; keep driving the same picker for the remaining checks.
+      picker.run = true;
+      picker.returnCode = 0;
       // Regenerate all rolls every landscape again with fresh seeds.
-      pick("landscape/regenerate");
+      pickAction("regenerate", 0);
       assert(picker.busy());
       assert(!picker.chosenSeed());
       const int pendingReturnCode = picker.returnCode;
@@ -1502,7 +1532,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       // Randomize parameters rolls every landscape with its controls drawn at random: the sheet
       // still fills with maps (a refused set is redrawn), and each tile's request is one its
       // generator accepts, at the lobby's size and colony count.
-      pick("landscape/randomize");
+      pickAction("randomize", 1);
       assert(picker.busy());
       settle();
       seedsShown();
@@ -1521,7 +1551,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       globalContainer->gfx->printScreen(output + "/landscape-picker-randomized.bmp");
       // Reset to defaults puts every landscape back on its registered controls at the sheet's
       // size and colony count, and rolls the sheet again.
-      pick("landscape/reset");
+      pickAction("reset", 2);
       assert(picker.busy());
       settle();
       seedsShown();
@@ -1532,7 +1562,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
         assert(rolled.options == expected.options && rolled.nbTeams == 4 && rolled.wDec == 8 &&
                rolled.hDec == 8);
       }
-      pick("landscape/randomize");
+      pickAction("randomize", 1);
       settle();
       seedsShown();
       // Using a randomized landscape hands the lobby the parameters it was shown with.
@@ -1547,7 +1577,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
         // Back to the landscapes' own parameters for the checks below. Reset, not Regenerate:
         // regenerating keeps the random draw, and a random ridge layout can fail validation
         // once the map is resized below.
-        pick("landscape/reset");
+        pickAction("reset", 2);
         settle();
         seedsShown();
       }
@@ -1566,6 +1596,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       // As the lobby's Use does: the parameters travel with the seed. Without them the lobby
       // would keep the random draw it was handed above and roll a different map.
       const GenerationRequest request = picker.chosenRequest();
+      picker.finishExecution();
       screen.applyLandscape(entries[other].first, seed, &request);
       assert(screen.previewPending && screen.chosenSeed == seed &&
              screen.setup.generator.options == request.options &&
@@ -1590,7 +1621,7 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
       screen.applyLandscape(entries[other].first, seed);
       assert(screen.chosenSeed == seed);
       clickControl("generator/width");
-      assert(screen.controls->popup.open);
+      assert(host.popupOpen());
       // Enlarge it: shrinking can violate the selected landscape's minimum home spacing.
       keyEvent(SDLK_DOWN);
       keyEvent(SDLK_RETURN);
@@ -1604,32 +1635,35 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
     screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
     screen.setup.setCapacity(12);
     screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
-    screen.invalidate();
+    screen.invalidatePreview();
     assert(screen.generateMap());
     screen.setup.setController(0, CustomGameSetup::Computer);
-    screen.activateGroup(screen.groups[1]);
+    screen.selectTab(1);
     capture("players-12-1000");
     clickControl("colony/0/controller");
-    assert(!screen.controls->popup.enabled[CustomGameSetup::Shared]);
+    assert(host.popupOpen());
+    assert(!screen.setup.setController(0, CustomGameSetup::Shared));
     capture("controller-limit");
+    keyEvent(SDLK_HOME);
+    keyEvent(SDLK_DOWN);
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
-    assert(screen.controls->popup.open && screen.setup.controllerCount() == 12);
+    assert(host.popupOpen() && screen.setup.controllerCount() == 12);
     keyEvent(SDLK_ESCAPE);
-    screen.controls->regions[1].offset = screen.controls->regions[1].maximum;
+    scrollTo("lobby/players", node("lobby/players")->scrollMaximum());
     capture("players-12-scrolled");
     clickControl("colony/11/ai");
-    int rosterOffset = screen.controls->regions[1].offset;
+    const int rosterOffset = scrollOf("lobby/players");
     keyEvent(SDLK_DOWN);
     keyEvent(SDLK_RETURN);
-    assert(screen.controls->regions[1].offset == rosterOffset);
+    assert(scrollOf("lobby/players") == rosterOffset);
     // Sequential keyboard focus scrolls an off-screen control into view.
-    screen.controls->focus = "colony/11/team";
+    host.focus("colony/11/team", true);
     keyEvent(SDLK_TAB);
 
-		screen.activateGroup(screen.groups[2]);
+		screen.selectTab(2);
 		capture("rules-1000");
-		screen.controls->regions[2].offset = screen.controls->regions[2].maximum;
+		scrollTo("lobby/rules", node("lobby/rules")->scrollMaximum());
 		capture("rules-scrolled");
 		std::cout << "PASS native rendering, snapshot reroll ownership, "
 					 "invalidation, failure "

@@ -6,8 +6,6 @@
 #include <math.h>
 
 
-#include <GUITextInput.h>
-#include <GUIList.h>
 #include <BackgroundFileWriter.h>
 #include <SDLCompat.h>
 #include <Toolkit.h>
@@ -17,7 +15,7 @@
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
-#include "GameGUILoadSave.h"
+#include "LoadSaveDialog.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
@@ -31,22 +29,6 @@
 
 using std::shared_ptr;
 using std::static_pointer_cast;
-
-InGameTextInput::InGameTextInput(GraphicContext *parentCtx)
-:OverlayScreen(parentCtx, 492, 34)
-{
-	textInput=new TextInput(5, 5, 482, 24, ALIGN_LEFT, ALIGN_LEFT, "standard", "", true, 256);
-	addWidget(textInput);
-	dispatchInit();
-}
-
-void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2)
-{
-	if (action==TEXT_VALIDATED)
-	{
-		endValue=0;
-	}
-}
 
 GameGUI::GameGUI(bool persistPreferences)
 	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
@@ -132,9 +114,8 @@ void GameGUI::init()
 
 	inGameMenu=IGM_NONE;
 	gameMenuScreen.reset();
-	typingInputScreen=NULL;
-	scrollableText=NULL;
-	typingInputScreenPos=0;
+	typingInputScreen.reset();
+	scrollableText.reset();
 
 	eventGoTypeIterator = 0;
 	localTeam=NULL;

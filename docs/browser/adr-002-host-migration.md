@@ -21,7 +21,7 @@ include Emscripten APIs. Static dependency tests enforce that boundary.
 screen, simulation, rendering, persistence, audio, save, and multiplayer state.
 It cannot issue orders, advance simulation, alter files, or navigate menus.
 
-Legacy synchronous `Screen::execute`, `OverlayScreen::execute`, message-box, and
+Legacy synchronous `Screen::execute` and
 engine adapters remain for native command-line and desktop call sites. The web
 entry points use `Application`, `ScreenStack`, and cooperative jobs and are
 tested to ensure the linked runtime contains no Asyncify instrumentation.

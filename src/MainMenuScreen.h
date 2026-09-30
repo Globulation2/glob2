@@ -1,21 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
-
-#include "Glob2Screen.h"
-#include <InterfacePresentation.h>
-#include <vector>
+#include "ui/FrontendUI.h"
 #include <memory>
 
-class MainMenuButton;
-class LobbyControls;
-
-class MainMenuScreen:public Glob2Screen
+class MainMenuScreen : public Glob2UI::Screen
 {
-	friend struct MobileGallerySetup;
-    friend struct ResponsiveMenuHarness;
-
   public:
 	enum
 	{
@@ -30,26 +20,16 @@ class MainMenuScreen:public Glob2Screen
 		CREDITS,
 		QUIT,
 	};
-	
-public:
-  bool usesResponsiveViewport() const override { return GAGCore::phonePresentationRequested(); }
-  bool supportsCompactViewport() const override { return true; }
-  MainMenuScreen();
-  ~MainMenuScreen() override;
-  void onAction(Widget *source, Action action, int par1, int par2) override;
-  void paint(void) override;
-  void cancelExecutionInput() override;
-  void onSDLEvent(SDL_Event *event) override;
-  void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
+	MainMenuScreen();
+	~MainMenuScreen() override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
-private:
-	std::vector<MainMenuButton*> buttons;
+  protected:
+	void onEscape() override { endExecute(QUIT); }
+	bool panel() const override { return false; }
+
+  private:
 	std::unique_ptr<GAGCore::DrawableSurface> wordmark;
-	int focusedButton = -1;
-	int panelX, panelY, panelW, panelH;
-	LobbyControls *mobileControls = nullptr;
-	bool more = false;
-	void renderMobile();
-	bool compact = false;
-	void layout(int width, int height);
+	void loadWordmark(int width);
+	int wordmarkWidth = 0;
 };

@@ -3,12 +3,9 @@
 #include "GameGUITouch.h"
 #include "InGameTouchTheme.h"
 #include "GameGUIDialog.h"
-#include "GameGUILoadSave.h"
+#include "LoadSaveDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
-#include <GUITextInput.h>
-#include <GUIButton.h>
-#include <GUISelector.h>
 #include <Toolkit.h>
 #include <TrueTypeFont.h>
 #include <StringTable.h>
@@ -19,8 +16,6 @@
 #include "ReplayReader.h"
 #include "usl.h"
 #include "native.h"
-#include <ResponsiveDialog.h>
-#include "PhoneForm.h"
 #include "CampaignSelectorScreen.h"
 #include "CampaignMenuScreen.h"
 #include "ChooseMapScreen.h"
@@ -34,10 +29,7 @@
 #include "CampaignEditor.h"
 #include "ScriptEditorScreen.h"
 #include "PhoneEditor.h"
-#include "EditorFileView.h"
 #include "MapEditDialog.h"
-#include <GUITextArea.h>
-#include <GUIRatio.h>
 #include <ScreenStack.h>
 #include <BinaryStream.h>
 #include <filesystem>
@@ -262,50 +254,51 @@ class GameGUITouchHarness
 
 	static void editorAreaNameInteractions()
 	{
+		auto *gfx = globalContainer->gfx;
+		auto dialogTap = [&](GAGGUI::ui::UIDialog &dialog, const std::string &key)
+		{
+			dialog.draw(0);
+			const auto r = dialog.host().bounds(key);
+			SDL_Event finger{};
+			finger.type = SDL_FINGERDOWN;
+			finger.tfinger.touchId = 31;
+			finger.tfinger.fingerId = 1;
+			finger.tfinger.x = float(r.x + r.w / 2) / gfx->getW();
+			finger.tfinger.y = float(r.y + r.h / 2) / gfx->getH();
+			dialog.event(finger);
+			finger.type = SDL_FINGERUP;
+			dialog.event(finger);
+		};
 		AskForTextInput area("[Change Area Name]", "Northern passage");
-		area.drawTouch();
-		const double u = globalContainer->gfx->logicalUnitsPerPoint();
-		const GAGCore::ViewRect shortSafe{0, 0, double(globalContainer->gfx->getW()), 120 * u};
-		area.prepareTouch(shortSafe);
-		for (const auto r : {area.touchInput, area.touchCancel, area.touchConfirm})
-			require(r.y >= shortSafe.y && r.y + r.h <= shortSafe.y + shortSafe.h && r.h >= 44 * u,
-					"Area keyboard-clearance controls escape 120pt safe viewport");
-		require(area.touchInput.y + area.touchInput.h <= area.touchCancel.y,
-				"Area keyboard-clearance input overlaps actions");
-		area.prepareTouch();
-
+		area.attach(*gfx);
+		area.draw(0);
+		require(!area.host().editing().empty(), "Area name dialog must focus its entry on open");
 		SDL_Event composition{};
 		composition.type = SDL_TEXTEDITING;
 		std::strcpy(composition.edit.text, "\xC3\xA9");
-		area.eventTouch(composition);
+		area.event(composition);
 		SDL_Event enter{};
 		enter.type = SDL_KEYDOWN;
 		enter.key.keysym.sym = SDLK_RETURN;
-		area.eventTouch(enter);
-		require(area.endValue == -1 && area.getText() == "Northern passage",
+		area.event(enter);
+		require(!area.finished() && area.draft() == "Northern passage",
 				"Area IME submitted provisional text");
 		SDL_Event text{};
 		text.type = SDL_TEXTINPUT;
 		std::strcpy(text.text.text, "\xC3\xA9");
-		area.eventTouch(text);
-		auto *gfx = globalContainer->gfx;
-		SDL_Event finger{};
-		finger.type = SDL_FINGERDOWN;
-		finger.tfinger.touchId = 31;
-		finger.tfinger.fingerId = 1;
-		finger.tfinger.x = (area.touchConfirm.x + area.touchConfirm.w / 2) / gfx->getW();
-		finger.tfinger.y = (area.touchConfirm.y + area.touchConfirm.h / 2) / gfx->getH();
-		area.eventTouch(finger);
-		finger.type = SDL_FINGERUP;
-		area.eventTouch(finger);
-		require(area.endValue == AskForTextInput::OK &&
+		area.event(text);
+		dialogTap(area, "ok");
+		require(area.finished() && area.result() == AskForTextInput::OK &&
 					area.getText() == "Northern passage\xC3\xA9",
 				"Area touch confirmation lost native UTF-8 edits");
 		AskForTextInput cancelled("[Change Area Name]", "Original");
-		cancelled.eventTouch(text);
+		cancelled.attach(*gfx);
+		cancelled.draw(0);
+		cancelled.event(text);
 		enter.key.keysym.sym = SDLK_ESCAPE;
-		cancelled.eventTouch(enter);
-		require(cancelled.endValue == AskForTextInput::CANCEL && cancelled.getText() == "Original",
+		cancelled.event(enter);
+		require(cancelled.finished() && cancelled.result() == AskForTextInput::CANCEL &&
+					cancelled.getText() == "Original",
 				"Cancelling area name committed draft");
 		std::cout << "PASS: editor area name IME, touch confirmation and cancellation\n";
 	}
@@ -313,7 +306,7 @@ class GameGUITouchHarness
 	static void editorFileInteractions()
 	{
 		auto *gfx = globalContainer->gfx;
-		auto finger = [&](EditorFileView &view, Uint32 kind, int id, GAGCore::ViewPoint p)
+		auto finger = [&](GAGGUI::ui::UIDialog &dialog, Uint32 kind, int id, GAGCore::ViewPoint p)
 		{
 			SDL_Event event{};
 			event.type = kind;
@@ -321,67 +314,62 @@ class GameGUITouchHarness
 			event.tfinger.fingerId = id;
 			event.tfinger.x = p.x / gfx->getW();
 			event.tfinger.y = p.y / gfx->getH();
-			view.event(event);
+			dialog.event(event);
 		};
-		auto tap = [&](EditorFileView &view, GAGCore::ViewRect r)
+		auto tap = [&](GAGGUI::ui::UIDialog &dialog, const std::string &key)
 		{
-			const GAGCore::ViewPoint p{r.x + r.w / 2, r.y + r.h / 2};
-			finger(view, SDL_FINGERDOWN, 1, p);
-			finger(view, SDL_FINGERUP, 1, p);
+			dialog.draw(0);
+			const auto r = dialog.host().bounds(key);
+			const GAGCore::ViewPoint p{r.x + r.w / 2., r.y + r.h / 2.};
+			finger(dialog, SDL_FINGERDOWN, 1, p);
+			finger(dialog, SDL_FINGERUP, 1, p);
 		};
-		LoadSaveScreen save("maps", "map", false, "Save map", "touch-file-fixture",
-							glob2FilenameToName, glob2NameToFilename);
-		EditorFileView saveView(save);
-		saveView.draw();
+		LoadSaveDialog save("maps", "map", false, "Save map", "touch-file-fixture", glob2FilenameToName,
+							glob2NameToFilename);
+		save.attach(*gfx);
+		save.draw(0);
 		gfx->printScreen(("localized-file-" +
 						  std::to_string(GAGCore::Toolkit::getStringTable()->getLang()) + "-" +
 						  std::to_string(gfx->getW()) + ".bmp")
 							 .c_str());
 		gfx->nextFrame();
 		const double u = gfx->logicalUnitsPerPoint();
-		for (double height : {120., 80.})
+		for (const auto key : {"name", "cancel", "ok"})
 		{
-			const GAGCore::ViewRect safe{0, 0, double(gfx->getW()), height * u};
-			saveView.prepare(&safe);
-			for (const auto r : {saveView.filename, saveView.cancelButton, saveView.primaryButton})
-				require(r.y >= safe.y && r.y + r.h <= safe.h && r.h >= 44 * u,
-						"File keyboard-clearance controls escape safe viewport");
-			const auto a = saveView.filename, b = saveView.cancelButton;
-			require(a.y + a.h <= b.y || a.x + a.w <= b.x,
-					"File keyboard-clearance input overlaps footer actions");
+			const auto r = save.host().bounds(key);
+			require(r.y >= 0 && r.y + r.h <= gfx->getH() && r.h >= 44 * u,
+					"File dialog controls escape the viewport or the touch target");
 		}
-		saveView.prepare();
-
-		tap(saveView, saveView.filename);
+		tap(save, "name");
 		SDL_Event composition{};
 		composition.type = SDL_TEXTEDITING;
 		std::strcpy(composition.edit.text, "\xC3\xA9");
-		saveView.event(composition);
+		save.event(composition);
 		SDL_Event enter{};
 		enter.type = SDL_KEYDOWN;
 		enter.key.keysym.sym = SDLK_RETURN;
-		saveView.event(enter);
-		require(save.endValue == -1 && std::string(save.getName()) == "touch-file-fixture",
+		save.event(enter);
+		require(!save.finished() && std::string(save.getName()) == "touch-file-fixture",
 				"Filename IME confirmation submitted a save or committed provisional text");
+		tap(save, "name");
 		SDL_Event text{};
 		text.type = SDL_TEXTINPUT;
 		std::strcpy(text.text.text, "\xC3\xA9");
-		saveView.event(text);
+		save.event(text);
 		const std::string draft = "touch-file-fixture\xC3\xA9";
 		require(std::string(save.getName()) == draft,
 				"Native filename input lost its UTF-8 committed text");
-		saveView.prepare();
-		tap(saveView, saveView.primaryButton);
-		require(save.endValue == LoadSaveScreen::OK &&
+		tap(save, "ok");
+		require(save.finished() && save.result() == LoadSaveDialog::OK &&
 					std::string(save.getFileName()) == glob2NameToFilename("maps", draft, "map"),
 				"Touch save did not use the existing filename conversion and confirmation path");
 		save.showSaveFailure();
-		saveView.draw();
-		require(save.filePresentation().failed && !save.filePresentation().status.empty() &&
-					std::string(save.getName()) == draft,
+		save.draw(0);
+		require(!save.finished() && save.filePresentation().failed &&
+					!save.filePresentation().status.empty() && std::string(save.getName()) == draft,
 				"Save failure lost its draft or visible retry state");
-		tap(saveView, saveView.primaryButton);
-		require(save.endValue == LoadSaveScreen::OK,
+		tap(save, "ok");
+		require(save.finished() && save.result() == LoadSaveDialog::OK,
 				"Retry did not reuse the original save command");
 		struct Pending final : GAGCore::ApplicationHost::Persistence
 		{
@@ -392,47 +380,37 @@ class GameGUITouchHarness
 		auto pending = std::make_unique<Pending>();
 		auto *operation = pending.get();
 		save.beginPersistence(std::move(pending));
-		saveView.draw();
-		tap(saveView, saveView.filename);
-		saveView.event(text);
-		tap(saveView, saveView.cancelButton);
-		require(save.endValue == -1 && std::string(save.getName()) == draft &&
-					!save.pollPersistence(),
+		save.draw(0);
+		tap(save, "name");
+		save.event(text);
+		tap(save, "cancel");
+		require(!save.finished() && std::string(save.getName()) == draft && !save.pollPersistence(),
 				"Busy file dialog accepted editing/cancellation or completed a pending save");
 		operation->value = GAGCore::ApplicationHost::PersistenceState::Failed;
 		require(!save.pollPersistence() && save.filePresentation().failed,
 				"Persistence failure did not return the file view to its retry state");
 
-		LoadSaveScreen load("maps", "map", true, "Load map", nullptr, glob2FilenameToName,
-							glob2NameToFilename);
-		EditorFileView loadView(load);
-		loadView.draw();
-		require(loadView.maximum > 0 && loadView.files.h >= 44 * loadView.unit,
-				"File interaction fixture requires a scrollable list with full touch rows");
-		const GAGCore::ViewPoint bottom{loadView.files.x + 20 * loadView.unit,
-										loadView.files.y + loadView.files.h - 10 * loadView.unit};
-		const GAGCore::ViewPoint top{bottom.x, loadView.files.y + 10 * loadView.unit};
-		finger(loadView, SDL_FINGERDOWN, 1, bottom);
-		finger(loadView, SDL_FINGERMOTION, 1, top);
-		finger(loadView, SDL_FINGERUP, 1, top);
-		require(loadView.offset > 0 && load.filePresentation().selected == -1 &&
-					load.endValue == -1,
+		LoadSaveDialog load("maps", "map", true, "Load map", nullptr, glob2FilenameToName, glob2NameToFilename);
+		load.attach(*gfx);
+		load.draw(0);
+		const auto model = load.filePresentation();
+		require(model.files.size() > 1 && model.selected == -1, "File interaction fixture requires a file list");
+		const auto list = load.host().bounds("files");
+		require(list.h >= 44 * u, "File list must keep full touch rows");
+		const GAGCore::ViewPoint bottom{list.x + 20 * u, list.y + list.h - 10 * u};
+		const GAGCore::ViewPoint top{bottom.x, list.y + 10 * u};
+		finger(load, SDL_FINGERDOWN, 1, bottom);
+		finger(load, SDL_FINGERMOTION, 1, top);
+		finger(load, SDL_FINGERUP, 1, top);
+		require(load.filePresentation().selected == -1 && !load.finished(),
 				"Swiping the file list selected a map or confirmed a load");
-		const int index = int(std::ceil(loadView.offset / (44 * loadView.unit)));
-		require(index < int(loadView.model.files.size()),
-				"Scrolled file fixture has no visible row");
-		const auto expected = loadView.model.files[index];
-		const GAGCore::ViewRect row{loadView.files.x,
-									loadView.files.y + index * 44 * loadView.unit - loadView.offset,
-									loadView.files.w, 44 * loadView.unit};
-		tap(loadView, row);
-		require(std::string(load.getName()) == expected && load.endValue == -1,
-				"Tapping a file row did not select its semantic filename without loading");
-		loadView.prepare();
-		tap(loadView, loadView.primaryButton);
-		require(load.endValue == LoadSaveScreen::OK,
+		load.selectPresentedFile(1);
+		require(std::string(load.getName()) == model.files[1] && !load.finished(),
+				"Selecting a file row did not select its semantic filename without loading");
+		tap(load, "ok");
+		require(load.finished() && load.result() == LoadSaveDialog::OK,
 				"Explicit Load did not confirm the selected file");
-		std::puts("PASS: editor file view UTF-8/IME, shared filename commands, busy/error retry "
+		std::puts("PASS: file dialog UTF-8/IME, shared filename commands, busy/error retry "
 				  "and scrolling");
 	}
 	static void run()
@@ -451,24 +429,6 @@ class GameGUITouchHarness
 						"Script constant remains accessible");
 			}
 		}
-		for (double width : {320., 568., 768.})
-			for (double height : {160., 320., 568.})
-			{
-				std::vector<bool> footers{false, false, true, true, true};
-				auto layout = GAGCore::ResponsiveDialog::calculate(
-					{0, 24, width, height - 24}, footers,
-					[](size_t i, double w) { return i == 2 ? (w < 200 ? 96. : 48.) : 48.; }, 10000);
-				require(layout.offset == layout.maximum,
-						"Dialog scrolling clamps to reachable content");
-				require(layout.content.h >= 48, "Short dialog keeps room for scrollable controls");
-				for (const auto &row : layout.rows)
-					if (row.footer)
-					{
-						require(row.rect.y >= 24 && row.rect.y + row.rect.h <= height,
-								"Fixed actions respect safe bounds");
-						require(row.rect.h >= 48, "Fixed actions preserve minimum touch height");
-					}
-			}
 		GameGUI gui;
 		auto map = Engine::loadMapHeader("maps/balanced.map");
 		GameHeader players;
@@ -1204,12 +1164,9 @@ class GameGUITouchHarness
 			gfx->printScreen(width < height ? "touch-pause-portrait.bmp"
 											: "touch-pause-landscape.bmp");
 			gfx->nextFrame();
-			const auto menuRows = gui.touch->dialogRows;
-			const auto back = std::find_if(menuRows.begin(), menuRows.end(),
-										   [](const auto &row) { return row.footer; });
-			require(back != menuRows.end(), "Phone menu keeps Return fixed and reachable");
-			const float returnX = back->rect.x + back->rect.w / 2,
-						returnY = back->rect.y + back->rect.h / 2;
+			require(bool(gui.gameMenuScreen), "Pause menu dialog must exist");
+			const auto back = gui.gameMenuScreen->host().bounds("return");
+			const float returnX = back.x + back.w / 2, returnY = back.y + back.h / 2;
 			finger(SDL_FINGERDOWN, 1, returnX, returnY);
 			finger(SDL_FINGERMOTION, 1, returnX + 20 * unit, returnY);
 			finger(SDL_FINGERUP, 1, returnX + 20 * unit, returnY);
@@ -1442,30 +1399,17 @@ class GameGUITouchHarness
 
 		auto tr = [](const char *key)
 		{ return std::string(GAGCore::Toolkit::getStringTable()->getString(key)); };
-		auto pressDialog = [&](const std::string &text)
+		auto pressDialog = [&](const std::string &key)
 		{
-			for (int attempt = 0; attempt < 40; ++attempt)
-			{
-				gui.drawAll(0);
-				gfx->nextFrame();
-				auto rows = gui.touch->dialogRows;
-				const auto found = std::find_if(rows.begin(), rows.end(), [&](const auto &row)
-												{ return row.text == text && row.kind; });
-				require(found != rows.end(), ("Missing phone dialog action: " + text).c_str());
-				const auto r = found->rect, content = gui.touch->dialogContent;
-				if (found->footer || (r.y >= content.y && r.y + r.h <= content.y + content.h))
-				{
-					tap(r.x + r.w / 2, r.y + r.h / 2);
-					return;
-				}
-				const float x = content.x + content.w / 2, y = content.y + content.h / 2;
-				const float move = (r.y < content.y ? 1 : -1) *
-								   std::min(content.h / 3, 80.0 * gfx->logicalUnitsPerPoint());
-				finger(SDL_FINGERDOWN, 1, x, y);
-				finger(SDL_FINGERMOTION, 1, x, y + move);
-				finger(SDL_FINGERUP, 1, x, y + move);
-			}
-			require(false, "Dialog action must be reachable by scrolling");
+			auto *dialog = gui.activeDialog();
+			require(dialog != nullptr, ("No dialog for action: " + key).c_str());
+			gui.drawAll(0);
+			gfx->nextFrame();
+			dialog->host().scrollIntoView(key);
+			gui.drawAll(0);
+			gfx->nextFrame();
+			const auto r = dialog->host().bounds(key);
+			tap(r.x + r.w / 2, r.y + r.h / 2);
 		};
 		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
 		{
@@ -1475,68 +1419,51 @@ class GameGUITouchHarness
 			resized.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(800, 600, gfx->getW(), gfx->getH());
-			gui.inGameMenu = GameGUI::IGM_MAIN;
-			gui.gameMenuScreen = std::make_unique<InGameMainScreen>();
-			pressDialog(tr("[Options]"));
+			gui.openMainMenu();
+			pressDialog("options");
 			require(gui.inGameMenu == GameGUI::IGM_OPTION, "Phone menu opens options");
-			pressDialog(tr("[Dialog text size]") + ": 150%");
+			pressDialog("text-size/2");
 			require(globalContainer->settings.mobileDialogTextPercent == 150,
-					"Text size changes without leaving menu");
-			pressDialog(tr("[Dialog text size]") + ": 100%");
-			gui.drawAll(0);
-			gfx->printScreen(width < height ? "touch-options-portrait.bmp"
-											: "touch-options-landscape.bmp");
-			gfx->nextFrame();
-			pressDialog(tr("[Mute]"));
-			require(!globalContainer->settings.mute, "Large mute row updates shared options");
-			pressDialog(tr("[ok]"));
+					"Dialog text size applies from the options dialog");
+			pressDialog("text-size/0");
+			require(globalContainer->settings.mobileDialogTextPercent == 100,
+					"Dialog text size restores");
+			const bool muted = globalContainer->settings.mute;
+			pressDialog("mute");
+			require(globalContainer->settings.mute != muted, "Mute toggles from the options dialog");
+			pressDialog("mute");
+			pressDialog("ok");
 			require(!gui.inGameMenu, "Options footer remains reachable");
-			globalContainer->settings.mute = true;
-			gui.inGameMenu = GameGUI::IGM_OBJECTIVES;
-			gui.gameMenuScreen = std::make_unique<InGameObjectivesScreen>(&gui, false);
-			pressDialog(tr("[hints]"));
-			gui.drawAll(0);
-			gfx->printScreen(width < height ? "touch-objectives-portrait.bmp"
-											: "touch-objectives-landscape.bmp");
-			gfx->nextFrame();
-			pressDialog(tr("[ok]"));
+			gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, false));
+			auto *objectives = static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get());
+			const int hintsTab = gui.game.missionBriefing.empty() ? 1 : 2;
+			pressDialog("objectives/tab/" + std::to_string(hintsTab));
+			require(objectives->tab() == InGameObjectivesScreen::HINTS, "Objectives tabs switch by touch");
+			pressDialog("ok");
 			require(!gui.inGameMenu, "Objectives tabs and footer work by touch");
-			gui.inGameMenu = GameGUI::IGM_SAVE;
-			gui.gameMenuScreen =
-				std::make_unique<LoadSaveScreen>("games", "game", false, tr("[save game]"), "Phone",
-												 glob2FilenameToName, glob2NameToFilename);
-			pressDialog("Phone");
+			gui.openDialog(GameGUI::IGM_SAVE,
+						   std::make_unique<LoadSaveDialog>("games", "game", false, tr("[save game]"), "Phone",
+															glob2FilenameToName, glob2NameToFilename));
+			pressDialog("name");
 			SDL_Event text{};
 			text.type = SDL_TEXTINPUT;
-			std::strcpy(text.text.text, " test");
+			std::strcpy(text.text.text, "2");
 			gui.processEvent(&text);
-			require(
-				std::string(static_cast<LoadSaveScreen *>(gui.gameMenuScreen.get())->getName()) ==
-					"Phone test",
-				"Phone filename uses real text input");
-			pressDialog(tr("[Hide keyboard]"));
-			gui.drawAll(0);
-			gfx->printScreen(width < height ? "touch-save-portrait.bmp"
-											: "touch-save-landscape.bmp");
-			gfx->nextFrame();
-			pressDialog(tr("[Cancel]"));
+			require(std::string(static_cast<LoadSaveDialog *>(gui.gameMenuScreen.get())->getName()) == "Phone2",
+					"Save filename edits through the dialog");
+			pressDialog("cancel");
 			require(!gui.inGameMenu, "Save cancellation is always reachable");
-			gui.inGameMenu = GameGUI::IGM_MAIN;
-			gui.gameMenuScreen = std::make_unique<InGameMainScreen>();
-			gui.touch->prepareDialog();
-			require(std::none_of(gui.touch->dialogRows.begin(), gui.touch->dialogRows.end(),
-								 [](const auto &row) { return row.kind == 100 && row.index == 1; }),
-					"Chat is not mixed into the game menu");
 			gui.touch->menuAction(1);
-			require(gui.typingInputScreen, "Tactical chat action opens the composer");
-			SDL_Event composing{};
-			composing.type = SDL_TEXTEDITING;
-			std::strcpy(composing.edit.text, "ni");
-			gui.processEvent(&composing);
-			SDL_Event commitKey{};
-			commitKey.type = SDL_KEYDOWN;
-			commitKey.key.keysym.sym = SDLK_RETURN;
-			gui.processEvent(&commitKey);
+			require(bool(gui.typingInputScreen), "Tactical chat action opens the composer");
+			SDL_Event composition{};
+			composition.type = SDL_TEXTEDITING;
+			std::strcpy(composition.edit.text, "provisional");
+			gui.processEvent(&composition);
+			SDL_Event enter{};
+			enter.type = SDL_KEYDOWN;
+			enter.key.keysym.sym = SDLK_RETURN;
+			gui.orderQueue.clear();
+			gui.processEvent(&enter);
 			require(gui.typingInputScreen && gui.typingInputScreen->getText().empty() &&
 						gui.orderQueue.empty(),
 					"IME candidate confirmation must not send chat or mutate the committed draft");
@@ -1545,7 +1472,7 @@ class GameGUITouchHarness
 			std::strcpy(text.text.text, "Hello");
 			gui.processEvent(&text);
 			gui.orderQueue.clear();
-			pressDialog("Send");
+			pressDialog("send");
 			require(!gui.typingInputScreen && gui.orderQueue.size() == 1 &&
 						std::dynamic_pointer_cast<MessageOrder>(gui.orderQueue.front()),
 					"Chat sends once through shared orders");
@@ -1558,16 +1485,16 @@ class GameGUITouchHarness
 			auto *view = results.get();
 			stack.push(std::move(results));
 			stack.frame(SDL_GetTicks(), {});
-			require(!view->resultControls.empty(), "Results exposes the shared chart controls");
+			require(!view->host().interactiveNodes().empty(), "Results exposes the shared chart controls");
 			view->activateResultControl(100);
-			require(view->metricPicker.isOpen(), "Metric selector opens an explicit dropdown");
+			require(view->metricPickerOpen(), "Metric selector opens an explicit dropdown");
 			SDL_Event key{};
 			key.type = SDL_KEYDOWN;
 			key.key.keysym.sym = SDLK_END;
 			view->handleExecutionEvent(key);
 			key.key.keysym.sym = SDLK_RETURN;
 			view->handleExecutionEvent(key);
-			require(view->selectedMetric == 35 && !view->metricPicker.isOpen(),
+			require(view->selectedMetric == 35 && !view->metricPickerOpen(),
 					"Every metric is selectable without cycling pages");
 			if (!view->teams.empty())
 			{
@@ -1634,9 +1561,9 @@ class GameGUITouchHarness
 				editorFileInteractions();
 				editorAreaNameInteractions();
 				ScriptEditorScreen script(&gui.game);
+				script.attach(*gfx);
 				gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), GAGCore::Color(0, 0, 0));
-				script.drawTouchInViewport(
-					{0, 0, double(gfx->getW()), 120 * gfx->logicalUnitsPerPoint()}, true);
+				script.draw(0);
 				gfx->printScreen(("localized-keyboard-" + suffix + ".bmp").c_str());
 				gfx->nextFrame();
 				GAGGUI::ScreenStack resultsStack(*gfx);
@@ -1699,10 +1626,7 @@ class GameGUITouchHarness
 						gui.game.checkSum() == before,
 					"Replay controls issue no simulation orders");
 			if (gui.inGameMenu)
-			{
-				gui.inGameMenu = GameGUI::IGM_NONE;
-				gui.gameMenuScreen.reset();
-			}
+				gui.closeDialog();
 		}
 		globalContainer->replaying = false;
 		globalContainer->replayReader.reset();

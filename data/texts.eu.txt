@@ -3398,3 +3398,9 @@ Ados: %0
 Elkarrizketako testuaren tamaina: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Jarraitu partida
+[games]
+Partidak
+[Add AI]
+Gehitu AI

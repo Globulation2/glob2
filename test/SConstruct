@@ -82,6 +82,17 @@ for source in ('MersenneTwisterTest.cpp', 'TriboolTest.cpp', 'LocalTimeTest.cpp'
   env.Program(target=source.removesuffix('.cpp'), source=source)
 
 
+# Layout-engine harness for the declarative UI framework (libgag/include/ui).
+# Pure layout: fixed-advance text and a recording canvas, no fonts or window.
+ui_env = env.Clone()
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  ui_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+ui_sources = [ui_env.Object('ui-harness-' + name + '.o', '../libgag/src/ui/' + name + '.cpp')
+              for name in Split("TextLayout Element Host Containers Controls")]
+ui_layout_test = ui_env.Program(target='UILayoutHarness',
+  source=[ui_env.Object('UILayoutHarness.o', 'UILayoutHarness.cpp')] + ui_sources)
+env.Alias('ui-layout-test', ui_layout_test)
+
 # Standalone behaviour-equivalence harness for WinningConditions.cpp.
 # Emits a deterministic golden text stream covering every WC predicate
 # (Death/Allies/Prestige/Script/OpponentsDefeated). To verify a refactor of

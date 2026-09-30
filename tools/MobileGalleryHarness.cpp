@@ -14,7 +14,6 @@
 #include "EditorMainMenu.h"
 #include "NewMapScreen.h"
 #include "ChooseMapScreen.h"
-#include "GUIGlob2FileList.h"
 #include "CreditScreen.h"
 #include "LANMenuScreen.h"
 #include "LANFindScreen.h"
@@ -27,7 +26,6 @@
 #include "CustomGameScreen.h"
 #include "CustomGameOtherOptions.h"
 #include "StartQualityScreen.h"
-#include "LobbyControls.h"
 #include "GUIMapPreview.h"
 #include "LobbyMapPreview.h"
 #include "LandscapePickerScreen.h"
@@ -35,7 +33,7 @@
 #include "Engine.h"
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
-#include "GameGUILoadSave.h"
+#include "LoadSaveDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
 #include "EndGameScreen.h"
@@ -103,10 +101,27 @@ static void screenShot(GAGGUI::ScreenStack &stack, const std::string &name,
 	ptr->endExecute(0);
 	frame(stack);
 }
+// Activate a control of the running screen the way a tap would.
+static void press(GAGGUI::ScreenStack &stack, GAGGUI::ui::UIScreen &screen, const std::string &key)
+{
+	frame(stack);
+	screen.host().scrollIntoView(key);
+	frame(stack);
+	const auto r = screen.host().bounds(key);
+	SDL_Event down{};
+	down.type = SDL_MOUSEBUTTONDOWN;
+	down.button.button = SDL_BUTTON_LEFT;
+	down.button.x = r.x + r.w / 2;
+	down.button.y = r.y + r.h / 2;
+	auto up = down;
+	up.type = SDL_MOUSEBUTTONUP;
+	stack.frame(tick += frameMilliseconds, {down, up});
+	frame(stack);
+}
 } // namespace
 
-// Setup friendship is limited to selecting existing model states and reading
-// production hit rectangles. Rendering and event dispatch remain in the real UI.
+// Setup friendship is limited to selecting existing model states. Rendering and
+// event dispatch remain in the real UI.
 struct MobileGallerySetup
 {
 	static void run()
@@ -138,12 +153,13 @@ struct MobileGallerySetup
 			const auto name = "Frontier mission " + std::to_string(i + 1);
 			CampaignMapEntry extra(name, "maps/balanced.map");
 			editor->campaign.appendMap(extra);
-			editor->mapList->addText(name);
 		}
+		editor->syncMapList();
 		stack.push(std::move(owned));
 		frame(stack);
 		stackShot(stack, "campaign-editor");
-		editor->onAction(editor->mapsTab, BUTTON_RELEASED, 101, 0);
+		editor->selectedMap = 0;
+		editor->invalidate();
 		stackShot(stack, "campaign-editor-maps");
 		Campaign campaign = editor->campaign;
 		editor->endExecute(CampaignEditor::CANCEL);
@@ -161,13 +177,9 @@ struct MobileGallerySetup
 		stack.push(std::move(mission));
 		frame(stack);
 		stackShot(stack, "campaign-map-entry");
-		view->onAction(view->unlockTab, BUTTON_RELEASED, 101, 0);
-		stackShot(stack, "campaign-map-unlocking");
-		view->onAction(view->detailsTab, BUTTON_RELEASED, 100, 0);
-		frame(stack);
 		if (!desktopPresentation)
 		{
-			const auto bounds = view->descriptionEditor->getScreenRect();
+			const auto bounds = view->host().bounds("description");
 			const int x = bounds.x, y = bounds.y;
 			SDL_Event down{};
 			down.type = SDL_FINGERDOWN;
@@ -178,6 +190,8 @@ struct MobileGallerySetup
 			up.type = SDL_FINGERUP;
 			stack.frame(tick += frameMilliseconds, {down, up});
 		}
+		else
+			press(stack, *view, "description");
 		stackShot(stack, "campaign-description-editing");
 		SDL_StopTextInput();
 		view->endExecute(CampaignMapEntryEditor::CANCEL);
@@ -190,15 +204,7 @@ struct MobileGallerySetup
 		auto *screen = chooser.get();
 		stack.push(std::move(chooser));
 		frame(stack);
-		if (screen->fileList->getCount() > 0)
-		{
-			int index = 0;
-			for (unsigned i = 0; i < screen->fileList->getCount(); ++i)
-				if (screen->fileList->getText(i) == "balanced")
-					index = int(i);
-			screen->fileList->setSelectionIndex(index);
-			screen->onAction(screen->fileList, LIST_ELEMENT_SELECTED, index, 0);
-		}
+		screen->selectNamed("balanced");
 		stackShot(stack, "load-map");
 		screen->endExecute(ChooseMapScreen::CANCEL);
 		frame(stack);
@@ -206,20 +212,20 @@ struct MobileGallerySetup
 	static void captureMapCreation(GAGGUI::ScreenStack &stack)
 	{
 		auto blank = std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &stack);
-		blank->descriptor.setMethodDefaults(GenerationRequest::eUNIFORM);
-		blank->updateControls();
+		blank->chooseMethod(GenerationRequest::eUNIFORM);
 		screenShot(stack, "new-map", std::move(blank));
 		auto screen = std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &stack);
 		auto *creation = screen.get();
-		creation->descriptor.setMethodDefaults(GenerationRequest::eRIVER);
-		creation->updateControls();
+		creation->chooseMethod(GenerationRequest::eRIVER);
 		stack.push(std::move(screen));
 		frame(stack);
 		frame(stack);
 		stackShot(stack, "new-map-generated");
 		creation->parameters = true;
+		creation->invalidate();
 		stackShot(stack, "new-map-parameters");
 		creation->parameters = false;
+		creation->invalidate();
 		auto *picker = creation->chooseLandscape();
 		frame(stack);
 		const auto started = SDL_GetTicks();
@@ -241,16 +247,9 @@ struct MobileGallerySetup
 	{
 		// Keep a real menu beneath modal screens, matching the application's theme lifecycle.
 		auto main = std::make_unique<MainMenuScreen>();
-		auto *menu = main.get();
 		stack.push(std::move(main));
 		frame(stack);
 		stackShot(stack, "main-menu");
-		if (!desktopPresentation)
-		{
-			menu->more = true;
-			stackShot(stack, "main-more");
-			menu->more = false;
-		}
 		screenShot(stack, "campaign-menu", std::make_unique<CampaignMainMenu>(stack));
 		screenShot(stack, "campaign-select", std::make_unique<CampaignSelectorScreen>());
 		screenShot(stack, "campaign-saves", std::make_unique<CampaignSelectorScreen>(true));
@@ -305,7 +304,7 @@ struct MobileGallerySetup
 			for (int page = 0; page < 10; ++page)
 				stack.frame(tick += frameMilliseconds, {pageDown});
 			stackShot(stack, std::string("settings-") + categories[i] + "-bottom");
-			if (i == 3 && FrontendLayout::resolve(globalContainer->gfx).phone)
+			if (i == 3 && ptr->presentation().phone())
 			{
 				ptr->activateSetting("buildings.open.0");
 				stackShot(stack, "settings-building-detail");
@@ -325,47 +324,6 @@ struct MobileGallerySetup
 		auto *lobby = owned.get();
 		stack.push(std::move(owned));
 		frame(stack);
-		auto press = [&](const std::string &id)
-		{
-			for (const auto &item : lobby->controls->hits)
-				if (item.id == id && item.region >= 0)
-				{
-					auto &region = lobby->controls->regions[item.region];
-					if (item.box.y < region.box.y)
-						region.offset -= region.box.y - item.box.y;
-					else if (item.box.y + item.box.h > region.box.y + region.box.h)
-						region.offset += item.box.y + item.box.h - region.box.y - region.box.h;
-					break;
-				}
-			frame(stack);
-			for (const auto &item : lobby->controls->hits)
-				if (item.id == id)
-				{
-					auto r = item.box;
-					SDL_Event down{};
-					down.type = SDL_FINGERDOWN;
-					down.tfinger.touchId = 1;
-					down.tfinger.fingerId = 1;
-					down.tfinger.x = float(r.x + r.w / 2) / globalContainer->gfx->getW();
-					down.tfinger.y = float(r.y + r.h / 2) / globalContainer->gfx->getH();
-					auto up = down;
-					up.type = SDL_FINGERUP;
-					if (desktopPresentation)
-					{
-						down = {};
-						down.type = SDL_MOUSEBUTTONDOWN;
-						down.button.button = SDL_BUTTON_LEFT;
-						down.button.x = r.x + r.w / 2;
-						down.button.y = r.y + r.h / 2;
-						up = down;
-						up.type = SDL_MOUSEBUTTONUP;
-					}
-					stack.frame(tick += frameMilliseconds, {down, up});
-					frame(stack);
-					return;
-				}
-			throw std::runtime_error("Missing control: " + id);
-		};
 		// A settled premade fixture must not inherit last-session preferences or
 		// race the automatic generated-map preview in a freshly opened lobby.
 		lobby->setMapMode(false);
@@ -405,12 +363,15 @@ struct MobileGallerySetup
 			throw std::runtime_error("Generated preview did not finish its transition");
 		stackShot(stack, "setup-generated");
 		lobby->preview->setState(MapPreview::State::Loading);
+		lobby->invalidate();
 		stackShot(stack, "setup-preview-loading");
 		lobby->preview->setState(MapPreview::State::Failed);
+		lobby->invalidate();
 		stackShot(stack, "setup-preview-error");
 		// Loading/Failed intentionally discard pixels. Restore the actual snapshot,
 		// not just the Ready enum, before capturing any subsequent child pages.
 		lobby->preview->setMapThumbnail(lobby->sourceFile());
+		lobby->invalidate();
 		const auto restored = SDL_GetTicks();
 		do
 		{
@@ -419,12 +380,6 @@ struct MobileGallerySetup
 		} while (!lobby->preview->isPresentationSettled() && SDL_GetTicks() - restored < 3000);
 		if (!lobby->preview->isThumbnailLoaded() || !lobby->preview->isPresentationSettled())
 			throw std::runtime_error("Fixture failed to restore the preview after error states");
-		if (FrontendLayout::resolve(globalContainer->gfx).phone)
-		{
-			lobby->phonePage = CustomGameScreen::PhonePage::MapSettings;
-			stackShot(stack, "setup-map-settings");
-			lobby->phonePage = CustomGameScreen::PhonePage::Main;
-		}
 		// Open through the shared action: its button can be below the fold in
 		// short landscape layouts. This tool captures states, not navigation tests.
 		auto *picker = lobby->chooseLandscape();
@@ -438,29 +393,18 @@ struct MobileGallerySetup
 		if (!picker->presentationSettled())
 			throw std::runtime_error("Landscape previews did not settle within 45 seconds");
 		stackShot(stack, "landscape-picker");
-		if (FrontendLayout::resolve(globalContainer->gfx).phone)
-		{
-			picker->settingsOpen = true;
-			stackShot(stack, "landscape-settings");
-			picker->settingsOpen = false;
-		}
 		SDL_Event escape{};
 		escape.type = SDL_KEYDOWN;
 		escape.key.keysym.sym = SDLK_ESCAPE;
 		stack.frame(tick += frameMilliseconds, {escape});
 		frame(stack);
-		press("tab/1");
+		lobby->selectTab(1);
 		stackShot(stack, "setup-players");
-		press("colony/0/controller");
+		press(stack, *lobby, "colony/0/controller");
 		stackShot(stack, "setup-controller");
-		lobby->controls->popup.open = false;
+		lobby->host().closePopup();
 		frame(stack);
-		press("tab/2");
-		if (FrontendLayout::resolve(globalContainer->gfx).phone)
-		{
-			stackShot(stack, "setup-review");
-			lobby->phonePage = CustomGameScreen::PhonePage::Rules;
-		}
+		lobby->selectTab(2);
 		stackShot(stack, "setup-rules");
 		std::vector<std::string> aiChoices;
 		for (int id : AINames::selectionOrder())
@@ -485,9 +429,10 @@ struct MobileGallerySetup
 		stack.push(std::move(report));
 		frame(stack);
 		stackShot(stack, "start-quality");
-		if (FrontendLayout::resolve(globalContainer->gfx).phone)
+		if (reportPtr->presentation().phone())
 		{
 			reportPtr->expanded.insert(0);
+			reportPtr->invalidate();
 			stackShot(stack, "start-quality-colony");
 		}
 		reportPtr->endExecute(0);
@@ -674,34 +619,31 @@ class MobileGalleryGameplay
 		gui.clearSelection();
 		gui.touch->panelOpen = false;
 		auto dialog = [&](const std::string &name, GameGUI::InGameMenu mode,
-						  std::unique_ptr<GAGGUI::OverlayScreen> screen)
+						  std::unique_ptr<Glob2UI::InGameDialog> screen, int objectivesTab = 0)
 		{
-			gui.inGameMenu = mode;
-			if (mode == GameGUI::IGM_OBJECTIVES)
-				gui.touch->objectivePage = name == "game-briefing" ? 0 : 1;
-			gui.gameMenuScreen = std::move(screen);
-			gui.touch->dialogScroll = 0;
+			gui.openDialog(mode, std::move(screen));
+			if (objectivesTab)
+				static_cast<InGameObjectivesScreen *>(gui.gameMenuScreen.get())->showTab(objectivesTab);
 			capture(name);
-			gui.inGameMenu = GameGUI::IGM_NONE;
-			gui.gameMenuScreen.reset();
+			gui.closeDialog();
 		};
 		dialog("game-pause", GameGUI::IGM_MAIN, std::make_unique<InGameMainScreen>());
 		dialog("game-options", GameGUI::IGM_OPTION, std::make_unique<InGameOptionScreen>(&gui));
 		dialog("game-alliances", GameGUI::IGM_ALLIANCE,
 			   std::make_unique<InGameAllianceScreen>(&gui));
 		dialog("game-objectives", GameGUI::IGM_OBJECTIVES,
-			   std::make_unique<InGameObjectivesScreen>(&gui, false));
+			   std::make_unique<InGameObjectivesScreen>(&gui, false), InGameObjectivesScreen::OBJECTIVES);
 		dialog("game-briefing", GameGUI::IGM_OBJECTIVES,
-			   std::make_unique<InGameObjectivesScreen>(&gui, true));
+			   std::make_unique<InGameObjectivesScreen>(&gui, true), InGameObjectivesScreen::BRIEFING);
 		dialog("game-save", GameGUI::IGM_SAVE,
-			   std::make_unique<LoadSaveScreen>("games", "game", false, "Save game", "Review game",
+			   std::make_unique<LoadSaveDialog>("games", "game", false, "Save game", "Review game",
 												glob2FilenameToName, glob2NameToFilename));
 		dialog("game-load", GameGUI::IGM_LOAD,
-			   std::make_unique<LoadSaveScreen>("games", "game", true, "Load game", "",
+			   std::make_unique<LoadSaveDialog>("games", "game", true, "Load game", "",
 												glob2FilenameToName, glob2NameToFilename));
 		gui.localTeam->hasWon = true;
 		dialog("game-victory", GameGUI::IGM_END_OF_GAME,
-			   std::make_unique<InGameEndOfGameScreen>("Victory", true));
+			   std::make_unique<InGameEndOfGameScreen>("Victory", true, gui.localTeam->color, true));
 		gui.localTeam->hasWon = false;
 		globalContainer->replayReader = std::make_unique<ReplayReader>();
 		if (!globalContainer->replayReader->loadReplay("replays/gallery-match.replay"))
@@ -717,14 +659,10 @@ class MobileGalleryGameplay
 		capture("replay-controls");
 		gui.touch->panelOpen = false;
 		globalContainer->replaying = false;
-		gui.typingInputScreen = new InGameTextInput(gfx);
+		gui.openChat();
 		gui.typingInputScreen->setText("Meet at the northern crossing.");
-		// Desktop normally animates this panel into view over several frames.
-		if (desktopPresentation)
-			gui.typingInputScreenPos = TYPING_INPUT_MAX_POS;
 		capture("game-chat");
-		delete gui.typingInputScreen;
-		gui.typingInputScreen = nullptr;
+		gui.closeChat();
 		if (!desktopPresentation)
 		{
 			// Record actual SDL pointer dispatch through production placement.
@@ -801,12 +739,12 @@ class MobileGalleryGameplay
 			{
 			  public:
 				using EndGameScreen::EndGameScreen;
-				void showFilters() { teamFiltersOpen = true; }
+				void showFilters() { showTeamFilters(true); }
 				void inspectValue()
 				{
-					teamFiltersOpen = false;
-					statWidget->inspectScreenPoint(globalContainer->gfx->getW() / 2,
-												   globalContainer->gfx->getH() / 2);
+					showTeamFilters(false);
+					paintFrame(SDL_GetTicks());
+					inspect(globalContainer->gfx->getW() / 2, globalContainer->gfx->getH() / 2);
 				}
 			};
 			GAGGUI::ScreenStack stack(*gfx);
@@ -1033,95 +971,57 @@ class MobileGalleryGameplay
 
 		if (editor.phone)
 			editor.phone->tools = false;
-		// MapEdit's legacy overlay fields borrow raw pointers. Keep ownership here
-		// and detach the phone form before destroying each overlay, even on error.
-		auto withOverlay =
-			[&]<typename T>(std::unique_ptr<T> screen, T *&slot, bool &visible, auto capture)
+		// The editor owns its dialogs; open and close them through its own actions.
+		auto withDialog = [&](const char *open, const char *close, auto capture)
 		{
-			slot = screen.get();
-			visible = true;
-			struct Detach
-			{
-				MapEdit &editor;
-				T *&slot;
-				bool &visible;
-				~Detach()
-				{
-					if (editor.phone)
-						editor.phone->closeOverlay();
-					slot = nullptr;
-					visible = false;
-				}
-			} detach{editor, slot, visible};
+			editor.performAction(open);
+			if (!editor.hasDialog())
+				throw std::runtime_error(std::string("Editor dialog did not open: ") + open);
 			capture();
+			editor.performAction(close);
 		};
-		withOverlay(std::make_unique<MapEditMenuScreen>(), editor.menuScreen,
-					editor.showingMenuScreen, [&] { editCapture("editor-pause"); });
-		withOverlay(std::make_unique<AskForTextInput>("[Change Area Name]", "Northern passage"), editor.areaName,
-					editor.isShowingAreaName, [&] {
-                        editCapture("editor-area-name");
-                        if(editor.phone) {
-                            auto *gfx=globalContainer->gfx;
-                            editor.drawMap(0,0,gfx->getW(),gfx->getH());
-                            editor.areaName->drawTouchInViewport({0,0,double(gfx->getW()),120*gfx->logicalUnitsPerPoint()});
-                            queueShot("editor-area-name-keyboard");gfx->nextFrame();
-                        } else editCapture("editor-area-name-keyboard");
-                    });
-		withOverlay(std::make_unique<TeamsEditor>(&editor.game), editor.teamsEditor,
-					editor.showingTeamsEditor, [&] { editCapture("editor-teams"); });
-		withOverlay(std::make_unique<ScriptEditorScreen>(&editor.game), editor.scriptEditor,
-					editor.showingScriptEditor,
-					[&]
-					{
-						editCapture("editor-script");
-						for (auto [action, name] :
-							 {std::pair{ScriptEditorScreen::LOAD, "editor-script-load"},
-							  std::pair{ScriptEditorScreen::SAVE, "editor-script-save"}})
-						{
-							editor.scriptEditor->onAction(nullptr, GAGGUI::BUTTON_RELEASED, action,
-														  0);
-							editCapture(name);
-							auto *child =
-								dynamic_cast<LoadSaveScreen *>(editor.scriptEditor->phoneDialog());
-							if (!child)
-								throw std::runtime_error("Missing script file dialog fixture");
-							if (editor.phone)
-								editor.phone->closeOverlay();
-							child->cancelPresentedFile();
-							SDL_Event idle{};
-							editor.scriptEditor->translateAndProcessEvent(&idle);
-						}
-
-						if (editor.phone)
-						{
-							auto *gfx = globalContainer->gfx;
-							const double unit = gfx->logicalUnitsPerPoint();
-							// Host-only clearance fixture: intentionally no fake
-							// OS keyboard. The gallery labels the simulated inset.
-							editor.drawMap(0, 0, gfx->getW(), gfx->getH());
-							editor.scriptEditor->drawTouchInViewport(
-								{0, 0, double(gfx->getW()), 160 * unit}, true);
-							queueShot("editor-script-keyboard");
-							gfx->nextFrame();
-						}
-						else
-							editCapture("editor-script-keyboard");
-
-						for (auto [tab, name] :
-							 {std::pair{ScriptEditorScreen::TAB_OBJECTIVES, "objectives"},
-							  {ScriptEditorScreen::TAB_BRIEFING, "briefing"},
-							  {ScriptEditorScreen::TAB_HINTS, "hints"}})
-						{
-							editor.scriptEditor->onAction(nullptr, GAGGUI::BUTTON_RELEASED, tab, 0);
-							editCapture(std::string("editor-script-") + name);
-						}
-					});
-		withOverlay(std::make_unique<LoadSaveScreen>("maps", "map", false, "Save map", "Review map",
-													 glob2FilenameToName, glob2NameToFilename),
-					editor.loadSaveScreen, editor.showingSave, [&] { editCapture("editor-save"); });
-		withOverlay(std::make_unique<LoadSaveScreen>("maps", "map", true, "Load map", "",
-													 glob2FilenameToName, glob2NameToFilename),
-					editor.loadSaveScreen, editor.showingLoad, [&] { editCapture("editor-load"); });
+		withDialog("open menu screen", "close menu screen", [&] { editCapture("editor-pause"); });
+		withDialog("open area name", "close area name",
+				   [&]
+				   {
+					   static_cast<AskForTextInput *>(editor.activeDialog())->setText("Northern passage");
+					   editCapture("editor-area-name");
+				   });
+		withDialog("open teams editor", "close teams editor", [&] { editCapture("editor-teams"); });
+		withDialog("open scenario editor", "close scenario editor",
+				   [&]
+				   {
+					   auto *script = dynamic_cast<ScriptEditorScreen *>(editor.activeDialog());
+					   if (!script)
+						   throw std::runtime_error("Missing scenario editor fixture");
+					   editCapture("editor-script");
+					   for (auto [load, name] : {std::pair{true, "editor-script-load"}, std::pair{false, "editor-script-save"}})
+					   {
+						   script->loadSave(load, "scripts", "sgsl");
+						   auto *child = script->fileDialog();
+						   if (!child)
+							   throw std::runtime_error("Missing script file dialog fixture");
+						   editCapture(name);
+						   child->cancelPresentedFile();
+						   SDL_Event idle{};
+						   idle.type = SDL_USEREVENT;
+						   editor.delegateMenu(idle);
+					   }
+					   for (auto [tab, name] : {std::pair{ScriptEditorScreen::TAB_OBJECTIVES, "objectives"},
+												{ScriptEditorScreen::TAB_BRIEFING, "briefing"},
+												{ScriptEditorScreen::TAB_HINTS, "hints"}})
+					   {
+						   script->showTab(tab);
+						   editCapture(std::string("editor-script-") + name);
+					   }
+				   });
+		withDialog("open save screen", "close save screen",
+				   [&]
+				   {
+					   static_cast<LoadSaveDialog *>(editor.activeDialog())->setName("Review map");
+					   editCapture("editor-save");
+				   });
+		withDialog("open load screen", "close load screen", [&] { editCapture("editor-load"); });
 	}
 };
 namespace

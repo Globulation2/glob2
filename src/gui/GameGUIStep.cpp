@@ -2,7 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
-#include "GameGUILoadSave.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -23,6 +22,7 @@
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
+#include "LoadSaveDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
@@ -125,10 +125,10 @@ void GameGUI::step(void)
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 {
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
-        static_cast<LoadSaveScreen*>(gameMenuScreen.get())->pollPersistence()) {
-        gameMenuScreen.reset();
-        inGameMenu = IGM_NONE;
-    }
+        static_cast<LoadSaveDialog*>(gameMenuScreen.get())->pollPersistence())
+        closeDialog();
+    if (auto *dialog = activeDialog())
+        dialog->update(Uint32(now));
 	PERF_SCOPE_TIME(GUI);
 	SDL_Event mouseMotionEvent;
 	bool wasMouseMotion=false;
@@ -311,8 +311,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	{
 		if(game.missionBriefing != "")
 		{
-			inGameMenu=IGM_OBJECTIVES;
-			gameMenuScreen.reset(new InGameObjectivesScreen(this, true));
+			openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, true));
 		}
 	}
 
@@ -390,8 +389,7 @@ void GameGUI::checkWonConditions(void)
 
     if(globalContainer->liveSpectating) {
         for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
-            inGameMenu=IGM_END_OF_GAME;
-            gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Match finished]"),true));
+            openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[Match finished]"), true, game.teams[i]->color, true));
             hasEndOfGameDialogBeenShown=true;
             miniMapPushed=false;
             break;
@@ -403,8 +401,7 @@ void GameGUI::checkWonConditions(void)
 	{
 		if (inGameMenu==IGM_NONE)
 		{
-			inGameMenu=IGM_END_OF_GAME;
-			gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Total prestige reached]"), true));
+			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[Total prestige reached]"), true, localTeam->color, localTeam->hasWon));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}
@@ -413,8 +410,7 @@ void GameGUI::checkWonConditions(void)
 	{
 		if (inGameMenu==IGM_NONE)
 		{
-			inGameMenu=IGM_END_OF_GAME;
-			gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have lost]"), true));
+			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[you have lost]"), true, localTeam->color, false));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}
@@ -427,8 +423,7 @@ void GameGUI::checkWonConditions(void)
 			{
 				campaign->setCompleted(missionName);
 			}
-			inGameMenu=IGM_END_OF_GAME;
-			gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[you have won]"), true));
+			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[you have won]"), true, localTeam->color, true));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}
@@ -443,8 +438,7 @@ void GameGUI::showEndOfReplayScreen()
 	{
 		hasEndOfGameDialogBeenShown = true;
 
-		inGameMenu=IGM_END_OF_GAME;
-		gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[replay ended]"), true));
+		openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[replay ended]"), true));
 		miniMapPushed=false;
 	}
 }

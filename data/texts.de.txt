@@ -3388,3 +3388,9 @@ Ok: %0
 Dialogschriftgröße: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Spiel fortsetzen
+[games]
+Spiele
+[Add AI]
+KI hinzufügen

@@ -2,7 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
-#include "GameGUILoadSave.h"
+#include "gui/LoadSaveDialog.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
@@ -12,12 +12,51 @@
 #include "Utilities.h"
 #include "SDLCompat.h"
 
+bool MapEdit::hasDialog() const
+{
+	return showingMenuScreen || showingLoad || showingSave || showingScriptEditor || showingTeamsEditor || isShowingAreaName;
+}
+
+Glob2UI::InGameDialog *MapEdit::activeDialog() const
+{
+	if (showingMenuScreen)
+		return menuScreen.get();
+	if (showingLoad || showingSave)
+		return loadSaveScreen.get();
+	if (showingScriptEditor)
+		return scriptEditor->fileDialog() ? static_cast<Glob2UI::InGameDialog *>(scriptEditor->fileDialog()) : scriptEditor.get();
+	if (showingTeamsEditor)
+		return teamsEditor.get();
+	if (isShowingAreaName)
+		return areaName.get();
+	return nullptr;
+}
+
+void MapEdit::attachDialog(Glob2UI::InGameDialog &dialog)
+{
+	if (!globalContainer->runNoX)
+		dialog.attach(*globalContainer->gfx);
+}
+
+void MapEdit::drawDialog()
+{
+	if (auto *dialog = activeDialog())
+	{
+		globalContainer->gfx->setClipRect();
+		dialog->draw(SDL_GetTicks());
+	}
+}
+
+// Route an event to the open dialog and act once it completes. A user event
+// carries no input and only polls for completion.
 void MapEdit::delegateMenu(SDL_Event& event)
 {
-	if(showingMenuScreen)
+	auto *dialog = activeDialog();
+	if (dialog && event.type != SDL_USEREVENT)
+		dialog->event(event);
+	if(showingMenuScreen && menuScreen->finished())
 	{
-			menuScreen->translateAndProcessEvent(&event);
-		switch (menuScreen->endValue)
+		switch (menuScreen->result())
 		{
 			case MapEditMenuScreen::LOAD_MAP:
 			{
@@ -56,39 +95,37 @@ void MapEdit::delegateMenu(SDL_Event& event)
 			break;
 		}
 	}
-	if(showingLoad)
+	if(showingLoad && loadSaveScreen->finished())
 	{
-		loadSaveScreen->translateAndProcessEvent(&event);
-		switch (loadSaveScreen->endValue)
+		switch (loadSaveScreen->result())
 		{
-			case LoadSaveScreen::OK:
+			case LoadSaveDialog::OK:
 			{
 				requestLoad(loadSaveScreen->getFileName());
 				performAction("close load screen");
 			}
 			break;
-			case LoadSaveScreen::CANCEL:
+			case LoadSaveDialog::CANCEL:
 			{
 				performAction("close load screen");
 			}
 			break;
 		}
 	}
-	if(showingSave)
+	if(showingSave && loadSaveScreen->finished())
 	{
-		loadSaveScreen->translateAndProcessEvent(&event);
-		switch (loadSaveScreen->endValue)
+		switch (loadSaveScreen->result())
 		{
-			case LoadSaveScreen::OK:
+			case LoadSaveDialog::OK:
 			{
-                if(!*loadSaveScreen->getName()) {loadSaveScreen->showSaveFailure();if(phone) phone->showFailure();break;}
+                if(!*loadSaveScreen->getName()) {loadSaveScreen->showSaveFailure();break;}
                 pendingSaveFilename = loadSaveScreen->getFileName();
                 pendingSaveName = loadSaveScreen->getName();
                 fertilityRequested = true;
-                loadSaveScreen->endValue = -1;
+                loadSaveScreen->resume();
             }
             break;
-			case LoadSaveScreen::CANCEL:
+			case LoadSaveDialog::CANCEL:
 			{
                 doQuitAfterLoadSave = false;
 				performAction("close save screen");
@@ -97,39 +134,18 @@ void MapEdit::delegateMenu(SDL_Event& event)
 	}
 	if(showingScriptEditor)
 	{
-		scriptEditor->translateAndProcessEvent(&event);
-		switch(scriptEditor->endValue)
-		{
-			case ScriptEditorScreen::OK:
-			case ScriptEditorScreen::CANCEL:
-			{
-				performAction("close scenario editor");
-			}
-		}
+		if (scriptEditor->fileDialog() && scriptEditor->fileDialog()->finished())
+			scriptEditor->finishFileDialog();
+		else if (scriptEditor->finished())
+			performAction("close scenario editor");
 	}
-	if(showingTeamsEditor)
+	if(showingTeamsEditor && teamsEditor->finished())
 	{
-		teamsEditor->translateAndProcessEvent(&event);
-		switch(teamsEditor->endValue)
-		{
-			case ScriptEditorScreen::OK:
-			case ScriptEditorScreen::CANCEL:
-			{
-				performAction("close teams editor");
-			}
-		}
+		performAction("close teams editor");
 	}
-	if(isShowingAreaName)
+	if(isShowingAreaName && areaName->finished())
 	{
-		areaName->translateAndProcessEvent(&event);
-		switch(areaName->endValue)
-		{
-			case AskForTextInput::OK:
-			case AskForTextInput::CANCEL:
-			{
-				performAction("close area name");
-			}
-		}
+		performAction("close area name");
 	}
 }
 

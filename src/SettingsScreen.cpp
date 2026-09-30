@@ -2,25 +2,25 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
-#include <BrowserTextInput.h>
 #include "GlobalContainer.h"
+#include "IntBuildingType.h"
 #include "SoundMixer.h"
-#include <Toolkit.h>
 #include <StringTable.h>
+#include <Toolkit.h>
 #include <algorithm>
+#include <cstdio>
 
 using namespace GAGCore;
+using namespace Glob2UI;
 
 SettingsScreen::SettingsScreen() : gameKeys(GameGUIShortcuts), editorKeys(MapEditShortcuts) {}
+
 SettingsScreen::~SettingsScreen()
 {
-	GAGCore::forgetBrowserTextInput(this);
 	if (modal == Modal::Display)
 		confirmDisplay(false);
-	commitText();
 	if (settingsDirty || keyboardDirty[0] || keyboardDirty[1])
 		persist();
-	SDL_StopTextInput();
 }
 
 std::string SettingsScreen::tr(const std::string &text)
@@ -28,8 +28,7 @@ std::string SettingsScreen::tr(const std::string &text)
 	return Toolkit::getStringTable()->getString("[settings " + text + "]");
 }
 
-SettingsScreen::Row &SettingsScreen::add(const std::string &id, Kind kind, const std::string &label,
-										 const std::string &help)
+SettingsScreen::Row &SettingsScreen::add(const std::string &id, Kind kind, const std::string &label, const std::string &help)
 {
 	Row r;
 	r.id = id;
@@ -39,41 +38,31 @@ SettingsScreen::Row &SettingsScreen::add(const std::string &id, Kind kind, const
 	form.push_back(std::move(r));
 	return form.back();
 }
-void SettingsScreen::section(const std::string &label)
-{
-	add("", Kind::Section, tr(label));
-}
-void SettingsScreen::info(const std::string &label)
-{
-	add("", Kind::Info, label);
-}
-void SettingsScreen::button(const std::string &id, const std::string &label,
-							std::function<void()> action, bool selected)
+void SettingsScreen::section(const std::string &label) { add("", Kind::Section, tr(label)); }
+void SettingsScreen::info(const std::string &label) { add("", Kind::Info, label); }
+void SettingsScreen::button(const std::string &id, const std::string &label, std::function<void()> action, bool selected)
 {
 	auto &r = add(id, Kind::Button, label);
 	r.action = std::move(action);
 	r.selected = selected;
 }
-void SettingsScreen::choice(const std::string &id, const std::string &label,
-							const std::string &help, int value, std::vector<std::string> labels,
-							std::function<void(int)> change)
+void SettingsScreen::choice(const std::string &id, const std::string &label, const std::string &help, int value,
+							std::vector<std::string> labels, std::function<void(int)> change)
 {
 	auto &r = add(id, Kind::Choice, tr(label), help.empty() ? "" : tr(help));
 	r.number = value;
 	r.choices = std::move(labels);
 	r.change = std::move(change);
 	if (value >= 0 && value < int(r.choices.size()))
-		r.value = r.choices[value];
+		r.value = r.choices[std::size_t(value)];
 }
-void SettingsScreen::toggle(const std::string &id, const std::string &label,
-							const std::string &help, bool value, std::function<void(int)> change)
+void SettingsScreen::toggle(const std::string &id, const std::string &label, const std::string &help, bool value, std::function<void(int)> change)
 {
 	auto &r = add(id, Kind::Toggle, tr(label), help.empty() ? "" : tr(help));
 	r.number = value;
 	r.change = std::move(change);
 }
-void SettingsScreen::number(const std::string &id, const std::string &label, int value, int minimum,
-							int maximum, std::function<void(int)> change)
+void SettingsScreen::number(const std::string &id, const std::string &label, int value, int minimum, int maximum, std::function<void(int)> change)
 {
 	auto &r = add(id, Kind::Number, label);
 	r.number = value;
@@ -83,19 +72,21 @@ void SettingsScreen::number(const std::string &id, const std::string &label, int
 	r.value = std::to_string(value);
 }
 
-bool SettingsScreen::phonePage() const
+void SettingsScreen::resetScroll()
 {
-	return modal == Modal::None && FrontendLayout::resolve(globalContainer->gfx).phone;
+	host().state("settings/" + std::to_string(int(current))).scroll = 0;
+	invalidate();
 }
+
+std::string SettingsScreen::categoryName(Category category) const
+{
+	const char *names[] = {"Display & graphics", "Audio", "Gameplay", "Building defaults", "Controls", "Language & player"};
+	return tr(names[int(category)]);
+}
+
 void SettingsScreen::buildRows()
 {
 	form.clear();
-	if (phonePage() && !(current == Category::Buildings && selectedBuilding >= 0))
-	{
-		const char *names[] = {"Display & graphics", "Audio",    "Gameplay",
-							   "Building defaults",  "Controls", "Language & player"};
-		button("nav.current", tr(names[int(current)]), [this] { openCategoryPicker(); });
-	}
 	if (modal != Modal::None)
 		buildModal();
 	else if (current == Category::Buildings)
@@ -104,25 +95,50 @@ void SettingsScreen::buildRows()
 		buildKeyboard();
 	else
 		buildGeneral();
-	if (phonePage())
-	{
-		info(failed          ? tr("Could not save")
-			 : settingsDirty ? tr("Saving…")
-							 : tr("Changes saved automatically"));
-		button("done", tr(failed ? "Retry" : "Done"), [this] { done(); });
-	}
-	if (current == Category::Buildings && FrontendLayout::resolve(globalContainer->gfx).touch)
+	if (current == Category::Buildings && touchLayout)
 		for (auto &row : form)
 			if (row.kind == Kind::Number)
 				row.kind = Kind::Slider;
 }
+
+// Rows keyed by id read their laid-out rectangles from the host.
+void SettingsScreen::measureRows()
+{
+	host().layoutIfNeeded();
+	for (auto &row : form)
+	{
+		auto assign = [&](const std::string &key, Rect &target)
+		{
+			if (key.empty())
+				return;
+			if (auto *node = host().find(key))
+				target = {node->bounds.x, node->bounds.y, node->bounds.w, node->bounds.h};
+			else if (SDL_getenv("GLOB2_UI_DEBUG"))
+				std::fprintf(stderr, "settings: no element for row %s\n", key.c_str());
+		};
+		assign(row.id, row.control);
+		row.bounds = row.control;
+		if (!row.extraId.empty())
+			if (auto *node = host().find(row.extraId))
+			{
+				const Glob2UI::Rect extra = node->bounds;
+				const int right = std::max(row.bounds.x + row.bounds.w, extra.x + extra.w);
+				const int bottom = std::max(row.bounds.y + row.bounds.h, extra.y + extra.h);
+				row.bounds.x = std::min(row.bounds.x, extra.x);
+				row.bounds.y = std::min(row.bounds.y, extra.y);
+				row.bounds.w = right - row.bounds.x;
+				row.bounds.h = bottom - row.bounds.y;
+			}
+	}
+}
+
 const std::vector<SettingsScreen::Row> &SettingsScreen::rows()
 {
-	layout();
-	buildRows();
-	layout();
+	invalidate();
+	measureRows();
 	return form;
 }
+
 bool SettingsScreen::changeSetting(const std::string &id, int value)
 {
 	buildRows();
@@ -136,55 +152,50 @@ bool SettingsScreen::changeSetting(const std::string &id, int value)
 			if (r.kind == Kind::Toggle)
 				value = !!value;
 			r.change(value);
+			invalidate();
 			return true;
 		}
 	return false;
 }
+
 void SettingsScreen::activateSetting(const std::string &id)
 {
-	buildRows();
-	layout();
-	for (auto r : form)
-		if (r.enabled)
-		{
-			if (r.id == id)
-			{
-				focus = id;
-				invoke(r);
-				return;
-			}
-			if (!r.extraId.empty() && r.extraId == id)
-			{
-				focus = id;
-				r.change(0);
-				return;
-			}
-		}
+	invalidate();
+	host().layoutIfNeeded();
+	if (auto *node = host().find(id))
+	{
+		host().focus(id, true);
+		node->activate(host(), 0);
+		invalidate();
+	}
 }
+
 std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 {
-	std::vector<Category> result{Category::Display, Category::Audio, Category::Gameplay,
-								 Category::Buildings};
-	if (!FrontendLayout::resolve(globalContainer->gfx).touch)
+	std::vector<Category> result{Category::Display, Category::Audio, Category::Gameplay, Category::Buildings};
+	if (!touchLayout)
 		result.push_back(Category::Controls);
 	result.push_back(Category::Player);
 	return result;
 }
+
 void SettingsScreen::selectCategory(Category category)
 {
 	const auto categories = visibleCategories();
 	if (std::find(categories.begin(), categories.end(), category) == categories.end())
 		return;
-	dropdown.close();
+	host().closePopup();
 	selectedBuilding = -1;
 	if (modal == Modal::Display)
 		confirmDisplay(false);
-	commitText();
+	host().endEditing();
 	finishInteraction();
 	current = category;
 	modal = Modal::None;
-	focus.clear();
+	host().focus("", false);
+	invalidate();
 }
+
 void SettingsScreen::commit(bool defer)
 {
 	settingsDirty = true;
@@ -192,7 +203,9 @@ void SettingsScreen::commit(bool defer)
 		saveAt = SDL_GetTicks() + 300;
 	else
 		persist();
+	invalidate();
 }
+
 bool SettingsScreen::persist()
 {
 	saveAt = 0;
@@ -213,8 +226,6 @@ bool SettingsScreen::persist()
 		// The write above is already durable on native builds. In the browser it
 		// lands in Emscripten's virtual filesystem first and needs this separate
 		// flush to survive a reload; poll it from onTimer rather than block here.
-		// Every write needs an acknowledgement for its own storage generation.
-		// An earlier request may finish while these newer writes are pending.
 		persistence.reset();
 		if (!failed)
 		{
@@ -233,33 +244,22 @@ bool SettingsScreen::persist()
 		failed = true;
 		persistence.reset();
 	}
+	invalidate();
 	return !failed;
 }
+
 void SettingsScreen::finishInteraction()
 {
-	dragging.clear();
 	if (settingsDirty || keyboardDirty[0] || keyboardDirty[1])
 		persist();
 }
-void SettingsScreen::commitText()
-{
-	if (!editingText)
-		return;
-	editingText = false;
-	SDL_StopTextInput();
-	if (textDraft != globalContainer->settings.getUsername())
-	{
-		globalContainer->settings.setUsername(textDraft);
-		commit();
-	}
-}
+
 void SettingsScreen::done()
 {
-	dropdown.close();
+	host().closePopup();
 	if (modal == Modal::Display)
 		confirmDisplay(false);
-	commitText();
-	dragging.clear();
+	host().endEditing();
 	// Always confirm durability on close, not just when something in this
 	// session is dirty: a prior browser storage-restore failure can leave
 	// already-committed settings unflushed.
@@ -273,34 +273,92 @@ void SettingsScreen::done()
 			endExecute(1);
 	}
 }
+
 void SettingsScreen::abandon()
 {
 	// Always closes in one click, whether or not anything is dirty or
 	// failed: every change is already live and auto-saved as it's made, so
-	// there is nothing to discard, and this never retries persist() or
-	// claims a pending durable write succeeded.
-	dropdown.close();
+	// there is nothing to discard.
+	host().closePopup();
 	if (modal == Modal::Display)
 		confirmDisplay(false);
-	commitText();
-	dragging.clear();
+	host().endEditing();
 	endExecute(1);
 }
-void SettingsScreen::onAction(Widget *, Action action, int, int)
+
+void SettingsScreen::dismiss()
 {
-	if (action == SCREEN_DESTROYED)
+	if (modal == Modal::Display)
+		confirmDisplay(false);
+	else if (modal == Modal::Conflict)
 	{
-		if (modal == Modal::Display)
-			confirmDisplay(false);
-		commitText();
-		finishInteraction();
+		modal = Modal::Binding;
+		invalidate();
 	}
+	else if (modal != Modal::None)
+		closeModal();
+	else
+		done();
 }
+
+// The fixed Back button follows the visible hierarchy; detail pages do not
+// need a second, competing Back action inside their scrollable content.
+void SettingsScreen::navigateBack()
+{
+	host().endEditing();
+	finishInteraction();
+	if (phonePage() && current == Category::Buildings && selectedBuilding >= 0)
+	{
+		selectedBuilding = -1;
+		resetScroll();
+		return;
+	}
+	abandon();
+}
+
+void SettingsScreen::onEscape()
+{
+	if (phonePage() && current == Category::Buildings && selectedBuilding >= 0)
+		navigateBack();
+	else
+		dismiss();
+}
+
+// Shortcut capture must see raw keys before the framework interprets them.
+bool SettingsScreen::interceptEvent(const SDL_Event &event)
+{
+	if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+	{
+		finishInteraction();
+		captureKey = -1;
+		return false;
+	}
+	if (modal != Modal::Binding || captureKey < 0 || event.type != SDL_KEYDOWN)
+		return false;
+	const SDL_Keycode key = event.key.keysym.sym;
+	if (key == SDLK_ESCAPE)
+	{
+		captureKey = -1;
+		invalidate();
+		return true;
+	}
+	if (key == SDLK_LSHIFT || key == SDLK_RSHIFT || key == SDLK_LCTRL || key == SDLK_RCTRL || key == SDLK_LALT ||
+		key == SDLK_RALT || key == SDLK_LGUI || key == SDLK_RGUI)
+		return true;
+	bindingKeys[std::size_t(captureKey)] = KeyPress(event.key.keysym, bindingKeys[std::size_t(captureKey)].getPressed());
+	captureKey = -1;
+	invalidate();
+	return true;
+}
+
 void SettingsScreen::onTimer(Uint32 tick)
 {
+	lastTick = tick;
 	if (modal == Modal::Display && Sint32(tick - displayDeadline) >= 0)
 		confirmDisplay(false);
-	if (saveAt && dragging.empty() && Sint32(tick - saveAt) >= 0)
+	if (modal == Modal::Display)
+		invalidate(); // countdown text
+	if (saveAt && Sint32(tick - saveAt) >= 0)
 		persist();
 	if (persistence)
 	{
@@ -318,6 +376,7 @@ void SettingsScreen::onTimer(Uint32 tick)
 				saveAt = tick + 300;
 			}
 			persistence.reset();
+			invalidate();
 			if (closing && !failed && !settingsDirty && !keyboardDirty[0] && !keyboardDirty[1])
 			{
 				closing = false;
@@ -325,11 +384,20 @@ void SettingsScreen::onTimer(Uint32 tick)
 			}
 		}
 	}
+	if (!pendingFocus.empty())
+	{
+		host().layoutIfNeeded();
+		if (host().find(pendingFocus))
+		{
+			host().focus(pendingFocus, true);
+			host().scrollIntoView(pendingFocus);
+		}
+		pendingFocus.clear();
+	}
 }
-bool SettingsScreen::displayConfirmationPending() const
-{
-	return modal == Modal::Display;
-}
+
+bool SettingsScreen::displayConfirmationPending() const { return modal == Modal::Display; }
+
 bool SettingsScreen::restartRequired() const
 {
 #ifdef GLOB2_MOBILE
@@ -338,15 +406,15 @@ bool SettingsScreen::restartRequired() const
 #else
 	const auto &s = globalContainer->settings;
 	auto *g = globalContainer->gfx;
-	const Uint32 mask =
-		GraphicContext::USEGPU | GraphicContext::FULLSCREEN | GraphicContext::CUSTOMCURSOR;
-	return (s.screenFlags & mask) != (g->getOptionFlags() & mask) ||
-		   s.screenWidth != g->getRequestedW() || s.screenHeight != g->getRequestedH() ||
+	const Uint32 mask = GraphicContext::USEGPU | GraphicContext::FULLSCREEN | GraphicContext::CUSTOMCURSOR;
+	return (s.screenFlags & mask) != (g->getOptionFlags() & mask) || s.screenWidth != g->getRequestedW() ||
+		   s.screenHeight != g->getRequestedH() ||
 		   // The preference is resolved against the desktop, and the window floor may
 		   // have reduced the scale in use, so compare what setRes() was asked for.
 		   GraphicContext::effectiveUiScale(s.uiScale / 100.0f) != g->getWantedUiScale();
 #endif
 }
+
 void SettingsScreen::changeUiScale(int percent)
 {
 	auto &s = globalContainer->settings;
@@ -359,18 +427,19 @@ void SettingsScreen::changeUiScale(int percent)
 	if (!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU))
 		applyDisplayMode(s.screenWidth, s.screenHeight, s.screenFlags);
 }
+
 bool SettingsScreen::applyDisplayMode(int width, int height, Uint32 flags)
 {
 	return globalContainer->gfx->setRes(width, height, flags);
 }
+
 void SettingsScreen::changeDisplay(std::function<void(Settings &)> change)
 {
 	auto &s = globalContainer->settings;
 	Settings candidate = s;
 	change(candidate);
 	displayError = false;
-	if (candidate.screenWidth == s.screenWidth && candidate.screenHeight == s.screenHeight &&
-		candidate.screenFlags == s.screenFlags)
+	if (candidate.screenWidth == s.screenWidth && candidate.screenHeight == s.screenHeight && candidate.screenFlags == s.screenFlags)
 		return;
 	// A GPU context cannot switch to a software surface in place.
 	if ((candidate.screenFlags | globalContainer->gfx->getOptionFlags()) & GraphicContext::USEGPU)
@@ -384,6 +453,7 @@ void SettingsScreen::changeDisplay(std::function<void(Settings &)> change)
 	{
 		applyDisplayMode(s.screenWidth, s.screenHeight, s.screenFlags);
 		displayError = true;
+		invalidate();
 		return;
 	}
 	if (candidate.screenWidth == s.screenWidth && candidate.screenHeight == s.screenHeight &&
@@ -398,10 +468,11 @@ void SettingsScreen::changeDisplay(std::function<void(Settings &)> change)
 	picker.maximum = candidate.screenHeight;
 	picker.minimum = int(candidate.screenFlags);
 	modal = Modal::Display;
-	modalScroll = 0;
-	focus = "display.keep";
+	pendingFocus = "display.keep";
 	displayDeadline = SDL_GetTicks() + 15000;
+	invalidate();
 }
+
 void SettingsScreen::confirmDisplay(bool keep)
 {
 	if (modal != Modal::Display)
@@ -414,15 +485,250 @@ void SettingsScreen::confirmDisplay(bool keep)
 		s.screenFlags = Uint32(picker.minimum);
 		commit();
 	}
-	else if (!applyDisplayMode(previousDisplay.screenWidth, previousDisplay.screenHeight,
-							   previousDisplay.screenFlags))
-	{
+	else if (!applyDisplayMode(previousDisplay.screenWidth, previousDisplay.screenHeight, previousDisplay.screenFlags))
 		displayError = true;
-	}
 	modal = Modal::None;
-	focus.clear();
+	host().focus("", false);
+	invalidate();
 }
-int SettingsScreen::menu()
+
+// Layout ------------------------------------------------------------------
+
+Glob2UI::Rect SettingsScreen::available(const Presentation &p, const Metrics &m)
 {
-	return SettingsScreen().execute(globalContainer->gfx, 30);
+	// Text editing on phones keeps the keyboard-reduced rectangle.
+	return p.dialog;
+}
+
+Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
+{
+	const auto categories = visibleCategories();
+	if (sidebar)
+	{
+		std::vector<Element> items;
+		for (auto category : categories)
+		{
+			ButtonOptions options;
+			options.flat = true;
+			options.alignLeft = true;
+			options.selected = category == current && modal == Modal::None;
+			options.minHeight = 42;
+			items.push_back(Glob2UI::button("nav." + std::to_string(int(category)), categoryName(category),
+											[this, category] { selectCategory(category); }, options));
+		}
+		return column(std::move(items), {p.pt(4)});
+	}
+	std::vector<std::string> names;
+	int selected = 0;
+	for (std::size_t i = 0; i < categories.size(); ++i)
+	{
+		names.push_back(categoryName(categories[i]));
+		if (categories[i] == current)
+			selected = int(i);
+	}
+	return Glob2UI::choice("nav.current", names, selected, [this, categories](int v)
+						   {
+							   if (v >= 0 && v < int(categories.size()))
+								   selectCategory(categories[std::size_t(v)]);
+						   });
+}
+
+Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
+{
+	const std::string help = r.help;
+	switch (r.kind)
+	{
+	case Kind::Section:
+		return padding({0, p.pt(12), 0, 0}, heading(r.label));
+	case Kind::Info:
+		return paragraph(r.label, {FontRole::Body, true});
+	case Kind::Toggle:
+	{
+		auto change = r.change;
+		auto control = Glob2UI::toggle(r.id, r.label, r.number != 0, [change](bool v) { if (change) change(v ? 1 : 0); }, r.enabled);
+		if (help.empty())
+			return control;
+		return column({control, padding({p.pt(36), 0, 0, 0}, paragraph(help, {FontRole::Support, true}))}, {p.pt(2)});
+	}
+	case Kind::Choice:
+	{
+		auto change = r.change;
+		ChoiceOptions options;
+		options.controlEnabled = r.enabled;
+		return field(r.label, Glob2UI::choice(r.id, r.choices, r.number, [change](int v) { if (change) change(v); }, options), {help});
+	}
+	case Kind::Slider:
+	{
+		auto change = r.change;
+		SliderOptions options;
+		options.enabled = r.enabled;
+		options.valueText = r.value;
+		return field(r.label, slider(r.id, r.number, r.minimum, r.maximum, [change](int v) { if (change) change(v); }, options), {help});
+	}
+	case Kind::Number:
+	{
+		auto change = r.change;
+		StepperOptions options;
+		options.enabled = r.enabled;
+		options.valueText = r.value;
+		auto control = stepper(r.id, r.number, r.minimum, r.maximum, [change](int v) { if (change) change(v); }, options);
+		if (r.label.empty())
+			return control;
+		return field(r.label, control, {help});
+	}
+	case Kind::Text:
+	{
+		TextFieldOptions options;
+		options.maxLength = BasePlayer::MAX_NAME_LENGTH;
+		options.commitOnSubmit = true;
+		auto control = textField(r.id, r.value,
+								 [this](const std::string &value)
+								 {
+									 globalContainer->settings.setUsername(value);
+									 commit();
+								 },
+								 options);
+		return field(r.label, control, {help});
+	}
+	case Kind::Button:
+	{
+		ButtonOptions options;
+		options.selected = r.selected;
+		options.enabled = r.enabled;
+		auto action = r.action;
+		auto control = Glob2UI::button(r.id, r.label, [this, action]
+									   {
+										   if (action)
+											   action();
+										   invalidate();
+									   },
+									   options);
+		if (r.buildingIcon < 0)
+			return control;
+		// Building rows lead with the building's own artwork.
+		const auto name = IntBuildingType::typeFromShortNumber(r.buildingIcon);
+		GAGCore::Sprite *artwork = nullptr;
+		int frame = -1;
+		if (auto *type = globalContainer->buildingsTypes.getByType(name, 0, false))
+		{
+			artwork = type->miniSpriteImage >= 0 ? type->miniSpritePtr : type->gameSpritePtr;
+			frame = type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
+		}
+		if (!artwork || frame < 0)
+			return control;
+		return row({sized({p.pt(56), p.pt(56)}, sprite(artwork, frame, Size{p.pt(56), p.pt(56)})), expanded(control)}, {-1, CrossAlign::Center});
+	}
+	case Kind::Binding:
+	{
+		ButtonOptions options;
+		options.enabled = r.enabled;
+		options.alignLeft = true;
+		auto action = r.action;
+		auto change = r.change;
+		std::vector<Element> parts{expanded(Glob2UI::button(r.id, r.value, [this, action]
+															{
+																if (action)
+																	action();
+																invalidate();
+															},
+															options))};
+		if (!r.extraId.empty())
+			parts.push_back(width(p.pt(48), Glob2UI::button(r.extraId, "+", [this, change]
+															{
+																if (change)
+																	change(0);
+																invalidate();
+															})));
+		return field(r.label, row(std::move(parts)), {help, 300});
+	}
+	}
+	return empty();
+}
+
+Element SettingsScreen::build(const Presentation &p)
+{
+	touchLayout = p.touch;
+	phoneLayout = p.phone();
+	wideTable = !p.compact() && p.safe.w >= p.pt(900);
+	buildRows();
+	// Rows sharing a column count form a grid row; everything else stacks.
+	std::vector<Element> content;
+	for (std::size_t i = 0; i < form.size();)
+	{
+		const int cols = form[i].columns;
+		std::size_t end = i + 1;
+		if (cols > 1 && form[i].column == 0)
+			while (end < form.size() && form[end].columns == cols && form[end].column != 0)
+				++end;
+		if (cols > 1 && wideTable)
+		{
+			std::vector<Element> cells;
+			for (std::size_t n = i; n < end; ++n)
+				cells.push_back(rowElement(form[n], p));
+			WrapOptions grid;
+			grid.minChildWidth = 1;
+			grid.maxColumns = cols;
+			content.push_back(wrap(std::move(cells), grid));
+		}
+		else if (cols > 1)
+		{
+			std::vector<Element> cells;
+			for (std::size_t n = i; n < end; ++n)
+				if (form[n].kind != Kind::Info || form[n].label != "—")
+					cells.push_back(rowElement(form[n], p));
+			if (form[i].kind == Kind::Button)
+			{
+				WrapOptions grid;
+				grid.minChildWidth = p.pt(140);
+				content.push_back(wrap(std::move(cells), grid));
+			}
+			else
+				content.push_back(column(std::move(cells), {p.pt(4)}));
+		}
+		else
+			content.push_back(rowElement(form[i], p));
+		i = end;
+	}
+	const std::string scrollKey = modal != Modal::None ? "settings/modal" : "settings/" + std::to_string(int(current));
+	auto body = scroll(scrollKey, column(std::move(content), {p.pt(10)}));
+
+	std::string status = failed ? tr("Could not save") : settingsDirty ? tr("Saving…") : restartRequired() ? tr("Saved — restart required") : tr("Changes saved automatically");
+	std::vector<MenuAction> buttons;
+	if (phonePage())
+	{
+		if (current == Category::Buildings && selectedBuilding >= 0)
+			buttons.push_back({"back", tr("Back"), [this] { navigateBack(); }, false, SDLK_ESCAPE});
+		buttons.push_back({"done", tr(failed ? "Retry" : "Done"), [this] { done(); }, true});
+	}
+	else
+	{
+		if (modal == Modal::None)
+			buttons.push_back({"cancel", tr(failed ? "continue" : "Cancel"), [this] { abandon(); }});
+		buttons.push_back({"done", tr(modal == Modal::None ? "Done" : modal == Modal::Display ? "Revert" : "Cancel"), [this] { dismiss(); }, true});
+	}
+	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p)}, {-1, CrossAlign::Center});
+
+	const bool sidebar = modal == Modal::None && !p.compact() && p.safe.w >= p.pt(760);
+	Element page;
+	if (sidebar)
+	{
+		auto rail = padding({0, 0, p.pt(8), 0}, width(p.pt(176), categoryNavigation(p, true)));
+		page = column({heading(tr("Settings")), expanded(row({rail, expanded(body)}, {-1, CrossAlign::Stretch})), divider(), footerRow}, {p.pt(10)});
+	}
+	else
+	{
+		std::vector<Element> parts;
+		if (!phonePage())
+			parts.push_back(heading(tr("Settings")));
+		if (modal == Modal::None)
+			parts.push_back(categoryNavigation(p, false));
+		parts.push_back(expanded(body));
+		parts.push_back(divider());
+		parts.push_back(footerRow);
+		page = column(std::move(parts), {p.pt(10)});
+	}
+	CardOptions cardOptions;
+	cardOptions.padding = p.pt(phonePage() ? 12 : 20);
+	const int maxW = std::min(p.safe.w, p.pt(960));
+	return center(maxWidth(maxW, card(page, cardOptions)));
 }

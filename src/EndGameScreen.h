@@ -5,76 +5,12 @@
 #pragma once
 
 #include "GameGUI.h"
-#include "Glob2Screen.h"
-#include "FrontendTheme.h"
-#include "gui/PhoneGraphic.h"
-#include <GUIDropdown.h>
-#include <TouchInput.h>
+#include "ui/FrontendUI.h"
+#include <memory>
+#include <string>
+#include <vector>
 
-class LoadSaveScreen;
-
-namespace GAGGUI
-{
-class Text;
-class TextButton;
-class OnOffButton;
-} // namespace GAGGUI
-
-//! Widget to display stats at end of game
-class EndGameStat : public RectangularWidget, public PhoneGraphic
-{
-  public:
-	//! Constructor, takes position and initial map name
-	EndGameStat(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, Game *game);
-	//! Destructor
-	virtual ~EndGameStat();
-	void paintPhone(int width, int height) override;
-	void inspectPhone(int x, int y) override
-	{
-		mouse_x = x;
-		mouse_y = y;
-	}
-	// Shared results view sends viewport coordinates, unlike PhoneGraphic's
-	// historical local-coordinate adapter.
-	void inspectScreenPoint(int x, int y)
-	{
-		int left, top, width, height;
-		getScreenPos(&left, &top, &width, &height);
-		mouse_x = x >= left && x < left + width ? x - left : -1;
-		mouse_y = y >= top && y < top + height ? y - top : -1;
-	}
-	//! Set the type of stats (units, buildings, prestige) to draw
-	void setStatType(int type);
-	void paintMeasurements();
-	//! Enables / disables a particular team
-	void setEnabledState(int teamNum, bool isEnabled);
-	//! paint routine
-	virtual void paint(void);
-
-  protected:
-	//! Returns the value at the given point, by interpolating
-	double getValue(double position, int team, int type);
-
-	//! Returns the text for a particular time from seconds
-	std::string getTimeText(int seconds);
-
-	//! Returns the text for the right-scale
-	std::string getRightScaleText(int value, int digits);
-
-	/// Get the label of the end game stat
-	std::string getStatLabel();
-
-	//! the type of the stat beeing drawn
-	int type;
-	//! Pointer to game, used for drawing
-	Game *game;
-	//! List of true/false values for each team's enabled status
-	bool *isTeamEnabled;
-	//! This moves the circle indicating the score at the current mouse position.
-	virtual void onSDLMouseMotion(SDL_Event *event);
-	int mouse_x;
-	int mouse_y;
-};
+class LoadSaveDialog;
 
 struct TeamEntry
 {
@@ -85,12 +21,14 @@ struct TeamEntry
 	bool enabled = true;
 };
 
-class EndGameScreen : public Glob2Screen
+//! The results after a match: one metric at a time as a chart over the match,
+//! with the teams to show chosen by the player, and a replay save.
+class EndGameScreen : public GAGGUI::ui::UIScreen
 {
 	friend class GameGUITouchHarness;
 
   public:
-	//! Return values passed by the screen's buttons to onAction
+	//! Return values passed by the screen's buttons
 	enum ButtonId
 	{
 		//! stat selector buttons use their int as id
@@ -100,48 +38,55 @@ class EndGameScreen : public Glob2Screen
 		QUIT = 38,
 		SAVE_REPLAY = 39
 	};
+	explicit EndGameScreen(GameGUI *gui);
+	~EndGameScreen() override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void updateExecution(Uint32 tick) override;
 
-  protected:
-	std::vector<TeamEntry> teams;
-	EndGameStat *statWidget;
-	int selectedMetric = 0;
-	GAGGUI::Dropdown metricPicker;
-	GAGCore::TouchInput resultGesture;
-	struct ResultControl
-	{
-		GAGCore::ViewRect rect;
-		int action;
-	};
-	std::vector<ResultControl> resultControls;
-	bool expandedChart = false;
-	bool teamFiltersOpen = false;
-	double teamFilterScroll = 0;
-	void drawResults();
+	// Semantic entry points shared with harnesses and captures.
+	void selectMetric(int metric);
+	void toggleTeam(int row);
+	void expandChart(bool expanded);
+	void showTeamFilters(bool open);
+	// Inspect the chart at a viewport point (the value marker follows it).
+	void inspect(int x, int y);
+	// Legacy action codes: 100 opens the metric picker, 101 toggles the expanded
+	// chart, 102 the team filters, 200+ toggles a team row, else a ButtonId.
 	void activateResultControl(int action);
+	bool metricPickerOpen() { return host().popupOpen(); }
 
   protected:
+	double textScale(const Glob2UI::Presentation &presentation) const override;
+	void paintBackground(Glob2UI::Canvas &canvas) override;
+	Glob2UI::Rect available(const Glob2UI::Presentation &presentation, const Glob2UI::Metrics &metrics) override;
+	void onEscape() override;
+	bool interceptEvent(const SDL_Event &event) override;
+	void afterPaint(Glob2UI::Canvas &canvas) override;
+	void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
+
 	//! resort players
 	void sortAndSet(int type);
-
 	//! Translated short name of a stat type, used for its selector button and the graph label
 	static std::string statTypeName(int type);
-
+	std::vector<TeamEntry> teams;
+	int selectedMetric = 0;
+	bool expandedChart = false;
+	bool teamFiltersOpen = false;
 	//! pointer to the game, necessary for correctly saving replays
 	Game *game;
 
-  public:
-	EndGameScreen(GameGUI *gui);
-	void selectMetric(int metric);
-	~EndGameScreen() override;
-	bool usesResponsiveViewport() const override { return true; }
-	void updateExecution(Uint32 tick) override;
-	void handleExecutionEvent(SDL_Event event) override;
-	void drawExecution() override;
-	void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-
   private:
-	std::unique_ptr<LoadSaveScreen> replaySave;
-	std::unique_ptr<PhoneForm> replayForm;
+	std::unique_ptr<LoadSaveDialog> replaySave;
+	// Chart-local pointer position, or -1 when outside.
+	int hoverX = -1, hoverY = -1;
+	Glob2UI::Rect chartBounds;
+	bool teamEnabled(int teamNum) const;
+	void paintChart(Glob2UI::Canvas &canvas, Glob2UI::Rect r);
+	void paintCurves(GAGCore::DrawableSurface &surface, Glob2UI::Rect r);
+	void paintMeasurements(GAGCore::DrawableSurface &surface, Glob2UI::Rect r);
+	double getValue(double position, int team, int type) const;
+	static std::string getTimeText(int seconds);
+	static std::string getRightScaleText(int value, int digits);
 	void saveReplay(const char *dir, const char *ext);
+	Glob2UI::Element teamRows(const Glob2UI::Presentation &p);
 };

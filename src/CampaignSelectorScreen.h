@@ -1,46 +1,36 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
-
 #pragma once
-
 #include "Campaign.h"
-#include "Glob2Screen.h"
-#include "GUIText.h"
-#include "GUIButton.h"
-#include "GUIFileList.h"
-#include "GUITextArea.h"
-
+#include "ui/FrontendUI.h"
 #include <string>
+#include <vector>
 
-class CampaignSelectorScreen : public Glob2Screen
+class CampaignSelectorScreen : public Glob2UI::Screen
 {
-public:
-	CampaignSelectorScreen(bool isSelectingSave=false);
-	void onAction(Widget *source, Action action, int par1, int par2);
+  public:
+	explicit CampaignSelectorScreen(bool isSelectingSave = false);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	std::string getCampaignName() const;
 
 	enum
 	{
-		//! Value returned upon screen execution completion when a valid campaign is selected
+		//! A valid campaign is selected
 		OK = 1,
-		//! Value returned upon screen execution completion when the campaign selection is canceled
+		//! The selection was cancelled
 		CANCEL = 2,
 	};
-private:
-	//! Title of the screen, depends on the directory given in parameter
-	Text *title;
-	//! The ok button
-	Button *ok;
-	//! The cancel button
-	Button *cancel;
-	/// The list of campaigns
-	FileList *fileList;
-	/// The description
-	TextArea* description;
+
+  protected:
+	void onEscape() override { endExecute(CANCEL); }
+
+  private:
+	std::string directory;
+	std::vector<std::string> names;
+	int selected = -1;
+	std::string description;
 	/// Descriptions already read from disk, so highlighting the same file
 	/// twice doesn't re-parse the whole campaign file each time
 	CampaignDescriptionCache descriptionCache;
+	void select(int index);
 };
-
-
-

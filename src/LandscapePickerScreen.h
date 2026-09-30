@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "GenerationRequest.h"
-#include "Glob2Screen.h"
+#include "ui/FrontendUI.h"
 #include "LandscapePreviewer.h"
 #include <cstdint>
 #include <memory>
 #include <optional>
 #include <string>
 #include <vector>
-class LobbyControls;
 
 /// A full-window modal showing every landscape as a freshly generated map, for picking one by
 /// sight. execute() returns the chosen entry's index, CANCEL, or QUIT_APPLICATION; chosenSeed()
@@ -20,11 +19,10 @@ class LobbyControls;
 /// change which entries are visible and in what order they are drawn (`visible`), not their
 /// identity, so a caller's mapping from index back to its own data (a generator method, say)
 /// stays valid regardless of how the sheet was browsed.
-class LandscapePickerScreen : public Glob2Screen
+class LandscapePickerScreen : public Glob2UI::Screen
 {
 	friend struct CustomGameSetupHarness;
 	friend struct MobileGallerySetup;
-	friend struct MobilePresentationHarness;
 
   public:
 	enum
@@ -52,12 +50,12 @@ class LandscapePickerScreen : public Glob2Screen
 	LandscapePickerScreen(const std::string &title, std::vector<Entry> entries, int selected,
 						  SortOrder sortOrder = SortOrder::Random);
 	~LandscapePickerScreen() override;
-    bool supportsCompactViewport() const override { return true; }
-    bool usesResponsiveViewport() const override;
-    void cancelExecutionInput() override;
-	void onAction(Widget *, Action, int, int) override;
-	void onSDLEvent(SDL_Event *) override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32 tick) override;
+	/// Selects entries[index] and reveals its card.
+	void select(int index);
+	/// Finishes with the selection once its preview is ready.
+	void confirm();
 	int selection() const { return selected; }
 	/// The seed behind the preview shown for the selection, once that preview is ready.
 	std::optional<std::uint32_t> chosenSeed() const;
@@ -94,21 +92,24 @@ class LandscapePickerScreen : public Glob2Screen
 	/// whole grid of how every landscape responds, not editing one map's parameters in isolation.
 	void setShared(const GeneratorControl &control, int value);
 
+  protected:
+	void onEscape() override { endExecute(CANCEL); }
+	void onEvent(const SDL_Event &event) override;
+	bool interceptEvent(const SDL_Event &event) override;
+
   private:
 	struct Tile
 	{
 		LandscapePreviewer::Preview preview;
-		// Screen-owned shared preview widget, retained while its replacement rolls.
+		// Screen-owned preview (see previews), retained while its replacement rolls.
 		MapPreview *widget = nullptr;
 		unsigned revision = ~0u;
 	};
+	std::vector<std::unique_ptr<MapPreview>> previews;
 	static std::vector<GenerationRequest> requestsOf(const std::vector<Entry> &);
-	void render();
-    void renderPhone();
+	Glob2UI::Element tile(int index, const Glob2UI::Presentation &presentation, bool compact);
 	void refresh();
 	void updatePreviewPriority();
-	void select(int index);
-	void confirm();
 	/// Whether entries[index] matches every active filter except filterCategories[skip] (skip < 0
 	/// checks all of them) - the faceted-search rule that keeps a category's own dropdown, and
 	/// `rebuild`'s final list, from ever offering a choice that empties the results: a category's
@@ -142,15 +143,12 @@ class LandscapePickerScreen : public Glob2Screen
 	std::vector<std::string> filterCategories;
 	std::vector<std::string> filters;
 	int selected, columns = 1;
-	int activePreview = -1;
 	bool reveal = true;
-	bool settingsOpen = false;
 	bool layoutReady = false;
 	int priorityOffset = 0;
 	Uint32 nextPreviewTick = 0;
 	std::vector<std::size_t> priorityOrder;
 	std::vector<std::size_t> viewportSlots;
 	SortOrder sortOrder;
-	LobbyControls *controls;
 	LandscapePreviewer previewer;
 };

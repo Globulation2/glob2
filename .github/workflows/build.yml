@@ -196,8 +196,7 @@ jobs:
             portable-renderer-test \
             mobile-input-test \
             gameplay-touch-test \
-            responsive-menu-test \
-            mobile-presentation-test \
+            ui-presentation-test \
             mobile-documents-test \
             mobile-certificate-test \
             mobile-temporary-files-test
@@ -767,9 +766,9 @@ jobs:
         run: |
           build/linux/client/release/libgag/src/MobileInputHarness
           timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
-          for harness in gameplay-touch-test responsive-menu-test mobile-presentation-test; do
+          for harness in gameplay-touch-test ui-presentation-test; do
             mkdir -p "artifacts/mobile-ui/$harness"
-            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 120s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness"
+            GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/$harness" timeout 300s xvfb-run -a -s '-screen 0 1600x1400x24' "build/linux/client/release/src/$harness" capture
           done
 
       - name: Upload phone UI verification evidence

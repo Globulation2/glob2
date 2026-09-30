@@ -3,7 +3,6 @@
 #include "SettingsScreen.h"
 #include "FrontendTheme.h"
 #include "GameGUIKeyActions.h"
-#include "GameGUIDialog.h"
 #include "KeyboardManager.h"
 #include "FileManager.h"
 #include <Toolkit.h>
@@ -13,51 +12,27 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <functional>
 
 GlobalContainer* globalContainer=nullptr;
 using namespace GAGCore;
 using namespace GAGGUI;
 struct NativeSettings : SettingsScreen {
     bool failNextDisplay=false;
-    NativeSettings(){gfx=globalContainer->gfx;dispatchInit();}
+    NativeSettings(){beginExecution(globalContainer->gfx);}
     bool applyDisplayMode(int w,int h,Uint32 flags) override {
         if(failNextDisplay){failNextDisplay=false;return false;}
         return SettingsScreen::applyDisplayMode(w,h,flags);
     }
     Row row(const std::string& id){for(auto r:rows())if(r.id==id)return r;assert(false);return {};}
-    void key(SDL_Keycode k,Uint16 modifiers=0){SDL_Event e{};e.type=SDL_KEYDOWN;e.key.keysym.sym=k;e.key.keysym.mod=modifiers;onSDLEvent(&e);}
-    void click(const std::string& id){auto r=row(id);SDL_Event e{};e.type=SDL_MOUSEBUTTONDOWN;e.button.button=SDL_BUTTON_LEFT;e.button.x=r.control.x+10;e.button.y=r.control.y+10;onSDLEvent(&e);}
-    void capture(const std::string& path){dispatchPaint();dispatchPaint();const auto name=std::filesystem::path(path).filename().string();
-        globalContainer->gfx->printScreen(name);
+    void event(SDL_Event e){handleExecutionEvent(e);}
+    void key(SDL_Keycode k,Uint16 modifiers=0){SDL_Event e{};e.type=SDL_KEYDOWN;e.key.keysym.sym=k;e.key.keysym.mod=modifiers;handleExecutionEvent(e);}
+    void click(const std::string& id){auto r=row(id);host().tapAt({r.control.x+10,r.control.y+10});}
+    void capture(const std::string& path){paintFrame(SDL_GetTicks());const auto name=std::filesystem::path(path).filename().string();
+        globalContainer->gfx->printScreen(name);paintFrame(SDL_GetTicks());globalContainer->gfx->nextFrame();
         std::filesystem::copy_file(Toolkit::getFileManager()->getDir(0)+"/"+name,path,std::filesystem::copy_options::overwrite_existing);}
 };
 static std::string readFile(const std::string& p){std::ifstream f(p);return {std::istreambuf_iterator<char>(f),{}};}
-static void testDropdown()
-{
-    Dropdown menu;auto* font=Toolkit::getFont("standard");
-    auto key=[&](SDL_Keycode k){SDL_Event e{};e.type=SDL_KEYDOWN;e.key.keysym.sym=k;return menu.handleEvent(e);};
-    const SDL_Rect available{16,16,608,380},anchor{200,110,180,36};
-    menu.open(anchor,available,{"Windowed","Fullscreen"},0,font);
-    assert(menu.isOpen() && menu.bounds().y==anchor.y+anchor.h+2);
-    key(SDLK_DOWN);assert(menu.isOpen() && menu.highlighted()==1);
-    assert(key(SDLK_RETURN)==1 && !menu.isOpen());
-    menu.open(anchor,available,{"Windowed","Fullscreen"},0,font);
-    key(SDLK_ESCAPE);assert(!menu.isOpen());
-    menu.open(anchor,available,{"Windowed","Fullscreen"},0,font);
-    SDL_Event click{};click.type=SDL_MOUSEBUTTONDOWN;click.button.button=SDL_BUTTON_LEFT;click.button.x=18;click.button.y=18;
-    assert(menu.handleEvent(click)==-1 && !menu.isOpen());
-    menu.open(anchor,available,{"Windowed","Fullscreen"},0,font);
-    auto item=menu.itemBounds(1);click.button.x=item.x+8;click.button.y=item.y+8;
-    assert(menu.handleEvent(click)==1 && !menu.isOpen());
-    std::vector<std::string> choices;for(int i=0;i<80;++i)choices.push_back("A deliberately long translated option to exercise wrapping "+std::to_string(i));
-    menu.open({420,340,180,36},available,choices,79,font);
-    auto box=menu.bounds();assert(box.x>=available.x && box.y>=available.y && box.x+box.w<=624 && box.y+box.h<=396);
-    item=menu.itemBounds(79);assert(item.y>=box.y && item.y+item.h<=box.y+box.h);
-    key(SDLK_HOME);assert(menu.highlighted()==0);item=menu.itemBounds(0);assert(item.y>=box.y);
-    SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=-2;menu.handleEvent(wheel);
-    assert(menu.isOpen() && menu.highlighted()==0 && menu.itemBounds(0).y<item.y);
-    key(SDLK_END);assert(key(SDLK_RETURN)==79);
-}
 int main(int argc,char** argv)
 {
     assert(argc==6 && std::string(argv[1]).find("glob2-settings-test-")==0);
@@ -76,12 +51,14 @@ int main(int argc,char** argv)
     {
         FrontendTheme theme;
         FrontendScope frontend;
-        testDropdown();
         NativeSettings screen;
         for(int category=0;category<6;++category){
             screen.selectCategory(SettingsScreen::Category(category));
             for(const auto& r:screen.rows()){
                 if(r.id.empty())continue;
+                if(!(r.control.w>0 && r.control.h>0)){std::cerr<<"row without bounds: "<<r.id<<"\n";
+                    std::function<void(GAGGUI::ui::Node&,int)> dump=[&](GAGGUI::ui::Node& n,int d){std::cerr<<std::string(size_t(d)*2,' ')<<n.name()<<" "<<n.key<<" "<<n.bounds.x<<","<<n.bounds.y<<" "<<n.bounds.w<<"x"<<n.bounds.h<<"\n";for(auto& c:n.children)dump(*c,d+1);};
+                    dump(*screen.host().root(),0);}
                 assert(r.control.w>0 && r.control.h>0);
                 assert(r.control.x>=r.bounds.x && r.control.x+r.control.w<=r.bounds.x+r.bounds.w);
                 assert(r.control.y>=r.bounds.y && r.control.y+r.control.h<=r.bounds.y+r.bounds.h);
@@ -172,7 +149,7 @@ int main(int argc,char** argv)
         assert(std::filesystem::status(profile+"/preferences.txt").permissions()==permissions);
         screen.selectCategory(SettingsScreen::Category::Player);
         screen.activateSetting("player.name");screen.key(SDLK_a,KMOD_CTRL);
-        SDL_Event input{};input.type=SDL_TEXTINPUT;strcpy(input.text.text,"New player");screen.onSDLEvent(&input);screen.key(SDLK_RETURN);
+        SDL_Event input{};input.type=SDL_TEXTINPUT;strcpy(input.text.text,"New player");screen.event(input);screen.key(SDLK_RETURN);
         loaded.load();assert(loaded.getUsername()=="New player");
         screen.activateSetting("player.name");screen.key(SDLK_BACKSPACE);screen.key(SDLK_ESCAPE);assert(s.getUsername()=="New player");
         screen.changeSetting("player.language",Toolkit::getStringTable()->getLangCode("fr"));

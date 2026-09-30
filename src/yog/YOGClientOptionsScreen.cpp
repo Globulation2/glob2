@@ -1,114 +1,60 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
-#include <algorithm>
-#include <GUIButton.h>
-#include <GUIList.h>
-#include "GUITabScreen.h"
-#include <GUIText.h>
-#include <GUITextInput.h>
-#include "StringTable.h"
-#include "Toolkit.h"
-#include "YOGClientBlockedList.h"
-#include "YOGClient.h"
 #include "YOGClientOptionsScreen.h"
+#include "YOGClient.h"
+#include "YOGClientBlockedList.h"
+#include <algorithm>
 
-using namespace GAGCore;
+namespace fe = Glob2UI;
 
-YOGClientOptionsScreen::YOGClientOptionsScreen(TabScreen* parent, std::shared_ptr<YOGClient> client)
-	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Options]")), client(client)
-{
-	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Options]")));
-	blockedPlayers = new List(50, 200, 150, 200, ALIGN_LEFT, ALIGN_TOP, "standard");
-	blockedPlayersText = new Text(50, 180, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Blocked Players]"));
-	removeBlockedPlayer = new TextButton(230, 200, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Remove]"), REMOVEBLOCKEDPLAYER);
-	addBlockedPlayerText = new TextInput(230, 250, 100, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "");
-	addBlockedPlayer = new TextButton(230, 285, 100, 40, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Add]"), ADDBLOCKEDPLAYER);
-	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
+YOGClientOptionsScreen::YOGClientOptionsScreen(std::shared_ptr<YOGClient> client) : client(client) { updateBlockedPlayerList(); }
 
-	
-	addWidget(blockedPlayers);
-	addWidget(blockedPlayersText);
-	addWidget(removeBlockedPlayer);
-	addWidget(addBlockedPlayerText);
-	addWidget(addBlockedPlayer);
-}
+std::string YOGClientOptionsScreen::title() const { return fe::tr("[Options]"); }
 
-
-
-void YOGClientOptionsScreen::onActivated()
-{
-	updateBlockedPlayerList();
-}
-
-
-
-void YOGClientOptionsScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	TabScreenWindow::onAction(source, action, par1, par2);
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (par1==QUIT)
-		{
-			endExecute(QUIT);
-			parent->completeEndExecute(QUIT);
-		}
-		if(par1 == REMOVEBLOCKEDPLAYER)
-		{
-			updateBlockedPlayerRemove();
-		}
-		if(par1 == ADDBLOCKEDPLAYER)
-		{
-			updateBlockedPlayerAdd();
-		}
-	}
-	else if(action == TEXT_VALIDATED)
-	{
-		if(source == addBlockedPlayerText)
-		{
-			updateBlockedPlayerAdd();
-		}
-	}
-}
-
-
+void YOGClientOptionsScreen::onActivated() { updateBlockedPlayerList(); }
 
 void YOGClientOptionsScreen::updateBlockedPlayerList()
 {
-	int n = blockedPlayers->getSelectionIndex();
-	blockedPlayers->clear();
-	const std::set<std::string>& blocked =  client->getBlockedList()->getBlockedPlayers();
-	for(std::set<std::string>::const_iterator i = blocked.begin(); i!=blocked.end(); ++i)
-	{
-		blockedPlayers->addText(*i);
-	}
-	
-	blockedPlayers->setSelectionIndex(std::min(int(blocked.size())-1, n));
+	// The list exists once the client is logged in; before that there is nothing to show.
+	blocked.clear();
+	if (auto list = client->getBlockedList())
+		blocked.assign(list->getBlockedPlayers().begin(), list->getBlockedPlayers().end());
+	selected = std::min(selected, int(blocked.size()) - 1);
+	refresh();
 }
 
-
-void YOGClientOptionsScreen::updateBlockedPlayerAdd()
+void YOGClientOptionsScreen::addBlocked()
 {
-	std::string name = addBlockedPlayerText->getText();
-	if(!name.empty() && !client->getBlockedList()->isPlayerBlocked(name))
+	auto list = client->getBlockedList();
+	if (list && !draft.empty() && !list->isPlayerBlocked(draft))
 	{
-		client->getBlockedList()->addBlockedPlayer(name);
-		blockedPlayers->addText(name);
-		client->getBlockedList()->save();
+		list->addBlockedPlayer(draft);
+		list->save();
 	}
-	addBlockedPlayerText->setText("");
+	draft.clear();
+	updateBlockedPlayerList();
 }
 
-
-void YOGClientOptionsScreen::updateBlockedPlayerRemove()
+void YOGClientOptionsScreen::removeBlocked()
 {
-	if (auto sel = blockedPlayers->selection())
-	{
-		std::string name = blockedPlayers->get();
-		client->getBlockedList()->removeBlockedPlayer(name);
-		blockedPlayers->removeText(*sel);
-		blockedPlayers->setSelectionIndex(std::min(int(blockedPlayers->getCount())-1, int(*sel)));
-		client->getBlockedList()->save();
-	}
+	auto list = client->getBlockedList();
+	if (!list || selected < 0 || selected >= int(blocked.size()))
+		return;
+	list->removeBlockedPlayer(blocked[std::size_t(selected)]);
+	list->save();
+	updateBlockedPlayerList();
 }
 
+fe::Element YOGClientOptionsScreen::build(const fe::Presentation &p)
+{
+	fe::TextFieldOptions options;
+	options.submit = [this](const std::string &) { addBlocked(); };
+	auto body = fe::scroll("options/scroll",
+						   fe::column({fe::label(fe::tr("[Blocked Players]")),
+									   fe::listView("options/blocked", blocked, selected, [this](int i) { selected = i; }, {{}, {}, {}, {}, {}, 8, fe::tr("[No items]")}),
+									   fe::wrap({fe::button("options/remove", fe::tr("[Remove]"), [this] { removeBlocked(); }, {false, false, selected >= 0})}, {-1, p.pt(140)}),
+									   fe::field(fe::tr("[Add]"), fe::textField("options/name", draft, [this](const std::string &v) { draft = v; }, options)),
+									   fe::wrap({fe::button("options/add", fe::tr("[Add]"), [this] { addBlocked(); }, {false, false, !draft.empty()})}, {-1, p.pt(140)})},
+									  {p.pt(8)}));
+	return fe::column({fe::expanded(body), fe::divider(), fe::actions({{"options/quit", fe::tr("[quit]"), [this] { finish(QUIT); }, false, SDLK_ESCAPE}}, p)}, {p.pt(8)});
+}

@@ -384,8 +384,9 @@
     {
       "id": "campaign-map-unlocking",
       "title": "Campaign mission \u00b7 prerequisites",
-      "description": "Unlocking controls and populated prerequisite list.",
-      "group": "Map & campaign editor"
+      "description": "Retired: the campaign mission editor now shows unlocking controls and prerequisites inline in the campaign-map-entry capture.",
+      "group": "Map & campaign editor",
+      "availability": "retired"
     },
     {
       "id": "campaign-description-editing",
@@ -425,9 +426,10 @@
     },
     {
       "id": "editor-area-name-keyboard",
-      "title": "Editor area name · keyboard clearance",
-      "description": "Simulated 120-point usable height; no OS keyboard is rendered. Actual Android/iOS keyboard testing is still required.",
-      "group": "Map & campaign editor"
+      "title": "Editor area name \u00b7 keyboard clearance",
+      "description": "Retired: the area-name dialog is a framework dialog whose keyboard clearance is checked by the UI presentation harness at every viewport and inset, not by a staged capture.",
+      "group": "Map & campaign editor",
+      "availability": "retired"
     },
     {
       "id": "editor-area-name",
@@ -450,8 +452,9 @@
     {
       "id": "editor-script-keyboard",
       "title": "Script editor \u00b7 keyboard clearance",
-      "description": "Touch workspace with a simulated keyboard inset leaving 160 points of usable height. No OS keyboard is rendered; desktop shows its normal workspace. Actual Android/iOS keyboard behavior still requires device testing.",
-      "group": "Map & campaign editor"
+      "description": "Retired: the script editor is a framework dialog whose keyboard clearance is checked by the UI presentation harness at every viewport and inset, not by a staged capture.",
+      "group": "Map & campaign editor",
+      "availability": "retired"
     },
     {
       "id": "editor-save",
@@ -541,15 +544,15 @@
       "id": "setup-review",
       "title": "Review & Play",
       "group": "Custom game setup",
-      "description": "Review & Play",
-      "availability": "phone"
+      "description": "Retired: phones no longer have a separate review page; the setup tabs and footer show the same summary on every size.",
+      "availability": "retired"
     },
     {
       "id": "setup-map-settings",
       "title": "Map settings",
       "group": "Custom game setup",
-      "description": "Map settings",
-      "availability": "phone"
+      "description": "Retired: map settings are inline in the map tab on every size (see setup-map and setup-generated).",
+      "availability": "retired"
     },
     {
       "id": "settings-building-detail",
@@ -561,16 +564,16 @@
     {
       "id": "main-more",
       "title": "Main menu \u00b7 More",
-      "description": "Secondary utilities and platform-appropriate network/quit actions.",
+      "description": "Retired: the main menu shows every action in one scrolling list on every size.",
       "group": "Menus & campaigns",
-      "availability": "mobile"
+      "availability": "retired"
     },
     {
       "id": "landscape-settings",
       "title": "Landscape \u00b7 settings",
-      "description": "Dimensions and colony count behind the phone settings action.",
+      "description": "Retired: dimensions and colony count are inline in the landscape picker header on every size (see landscape-picker).",
       "group": "Custom game setup",
-      "availability": "phone"
+      "availability": "retired"
     },
     {
       "id": "setup-preview-loading",

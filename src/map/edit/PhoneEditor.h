@@ -2,19 +2,12 @@
 #pragma once
 #include <SDL.h>
 #include <TouchInput.h>
-#include <ResponsiveDialog.h>
 #include <memory>
 #include <optional>
 #include <set>
 class MapEdit;
 class MapEditorWidget;
-class PhoneForm;
 class ValueScrollBox;
-class EditorFileView;
-namespace GAGGUI
-{
-class OverlayScreen;
-}
 class PhoneEditor
 {
   public:
@@ -23,8 +16,6 @@ class PhoneEditor
 	bool event(SDL_Event event);
 	void draw();
 	void cancel();
-	void closeOverlay();
-	void showFailure();
 	bool hasOverlay() const;
 
   private:
@@ -40,9 +31,6 @@ class PhoneEditor
 	GAGCore::TouchInput touch;
 	std::vector<Row> rows;
 	GAGCore::ViewRect safe, content;
-	GAGGUI::OverlayScreen *overlay = nullptr;
-	std::unique_ptr<PhoneForm> form;
-	std::unique_ptr<EditorFileView> fileView;
 	bool tools = true, pan = false, onMap = false;
 	int paletteMode = 2; // Terrain, resources, buildings, flags/units.
 	GAGCore::ViewRect tray, modeBar;
@@ -80,7 +68,6 @@ class PhoneEditor
 	void drawInteractionPreview();
 	void clearTool();
 	void prepare();
-	void syncOverlay();
 	int hit(GAGCore::ViewPoint point) const;
 	void act(const GAGCore::TouchAction &action);
 };

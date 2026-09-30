@@ -1,25 +1,22 @@
-#include "GenerationContext.h"
-#include "GeneratorRegistry.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
-#include "gui/FrontendLayout.h"
-#include "CustomGamePreferences.h"
 #include "AINames.h"
-#include "LobbyMapPreview.h"
+#include "CustomGamePreferences.h"
+#include "Game.h"
+#include "GenerationContext.h"
+#include "GenerationService.h"
+#include "GeneratorRegistry.h"
+#include "GlobalContainer.h"
 #include "LandscapePickerScreen.h"
 #include "LandscapePreviewer.h"
-#include "Game.h"
-#include "GenerationService.h"
-#include "GlobalContainer.h"
-#include "LobbyControls.h"
-#include <InterfacePresentation.h>
-#include "gui/MobileSafeArea.h"
 #include "LobbyMapCatalog.h"
+#include "LobbyMapPreview.h"
 #include "Player.h"
-#include "Unit.h"
 #include "StartQualityScreen.h"
+#include "Unit.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
+#include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -28,13 +25,16 @@
 #include <fstream>
 #include <random>
 
+namespace fe = Glob2UI;
+using fe::Element;
+using fe::Presentation;
+
 namespace
 {
 std::string tr(const std::string &s)
 {
 	return Toolkit::getStringTable()->getString("[" + s + "]");
 }
-const Uint32 A = ALIGN_SCREEN_CENTERED;
 std::vector<std::string> localized(std::vector<std::string> v)
 {
 	for (auto &s : v)
@@ -43,145 +43,139 @@ std::vector<std::string> localized(std::vector<std::string> v)
 }
 } // namespace
 
-CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
-											   const std::vector<std::string> &choices,
-											   int selected, bool profiles,
-											   const std::vector<bool> &enabled)
+// AI profile / choice screen ---------------------------------------------------------
+
+CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title, const std::vector<std::string> &choices,
+											   int selected, bool profiles, const std::vector<bool> &enabled)
 	: title(title), choices(choices), selected(selected), profiles(profiles), enabled(enabled)
 {
-	gfx = globalContainer->gfx;
-	controls = new LobbyControls();
-	controls->regions[20].offset = std::max(0, (selected + 1) * 58 - (gfx->getH() - 135));
-	addWidget(controls);
-	controls->render = [this]
-	{
-		auto &ui = *controls;
-		const bool phone = GAGCore::phonePresentationRequested();
-		int w = std::min(gfx->getW() - 32, 1000), x = (gfx->getW() - w) / 2, height = gfx->getH();
-		int top = 0;
-		if (phone)
-		{
-			const auto safe = GAGCore::mobileDialogSafe(globalContainer->gfx);
-			x = int(safe.x) + 16;
-			w = int(safe.w) - 32;
-			top = int(safe.y);
-			height = int(safe.y + safe.h);
-		}
-		ui.setDimensions(gfx->getW(), gfx->getH());
-		ui.box({x - 8, top + 8, w + 16, height - top - 16}, Color(232, 237, 218), 8);
-		ui.text(x + 8, top + 20, this->title, "standard", w - 16);
-		int left = w < 800 ? 174 : 235, right = x + left + 22, rightW = w - left - 22;
-		if (phone)
-		{
-			ui.dropdown("profile/select", {x, top + 56, w, 48}, this->choices, this->selected,
-						[this](int v)
-						{
-							this->selected = v;
-							controls->regions[21].offset = 0;
-						});
-			right = x;
-			rightW = w;
-		}
-		if (!phone)
-		{
-			ui.beginRegion(20, {x, 60, left, height - 135});
-			int yy = 60 - ui.regions[20].offset;
-			for (size_t i = 0; i < this->choices.size(); ++i)
-			{
-				auto name = this->choices[i];
-				auto split = name.find(" - ");
-				if (split != std::string::npos)
-					name = name.substr(0, split);
-				ui.button(
-					"profile/" + std::to_string(i), {x, yy + int(i) * 58, left - 8, 52}, "",
-					[this, i]
-					{
-						this->selected = i;
-						controls->regions[21].offset = 0;
-					},
-					int(i) == this->selected);
-				ui.text(x + 9, yy + int(i) * 58 + 8, name, "standard", left - 25);
-				auto full = this->choices[i];
-				auto separator = full.find(" - ");
-				if (separator != std::string::npos)
-					full = full.substr(separator + 3);
-				ui.text(x + 9, yy + int(i) * 58 + 31, full, "little", left - 25, true);
-			}
-			ui.endRegion(this->choices.size() * 58);
-		}
-		const int detailTop = phone ? top + 116 : 60;
-		ui.beginRegion(21, {right, detailTop, rightW, height - detailTop - 75});
-		int yy = detailTop - ui.regions[21].offset;
-		int start = yy;
-		ui.text(right, yy, this->choices[this->selected], "standard", rightW - 15);
-		yy += 32;
-		std::string content =
-			this->profiles ? AINames::getAIProfile(AINames::selectionOrder()[this->selected]) : "";
-		auto first = content.find("\n\n");
-		if (first != std::string::npos)
-			content = content.substr(first + 2);
-		size_t pos = 0;
-		while (pos < content.size())
-		{
-			size_t end = content.find("\n\n", pos);
-			auto part =
-				content.substr(pos, end == std::string::npos ? std::string::npos : end - pos);
-			auto colon = part.find(':');
-			if (colon != std::string::npos)
-			{
-				yy += ui.paragraph(right, yy, rightW - 18, part.substr(0, colon), "standard", false,
-								   false) +
-					  8;
-				part = part.substr(colon + 1);
-			}
-			yy += ui.paragraph(right, yy, rightW - 18, part, "standard") + 20;
-			if (end == std::string::npos)
-				break;
-			pos = end + 2;
-		}
-		ui.endRegion(yy - start);
-		ui.button(
-			"profile/back", {x, height - (phone ? 64 : 55), 100, phone ? 48 : 34}, tr("Back"),
-			[this] { endExecute(-2); }, false, true, true);
-		ui.button(
-			"profile/use",
-			{phone ? x + 108 : right, height - (phone ? 64 : 55), phone ? w - 108 : rightW,
-			 phone ? 48 : 34},
-			tr("Use") + " " +
-				this->choices[this->selected].substr(0, this->choices[this->selected].find(" - ")),
-			[this] { endExecute(this->selected); }, true);
-	};
 }
-void CustomGameChoiceScreen::onSDLEvent(SDL_Event *e)
+
+Element CustomGameChoiceScreen::build(const Presentation &p)
 {
-	if (controls->handle(e))
-		return;
-	if (e->type != SDL_KEYDOWN)
-		return;
-	if (e->key.keysym.sym == SDLK_ESCAPE)
-		endExecute(-2);
-	if (e->key.keysym.sym == SDLK_RETURN)
-		endExecute(selected);
-	if (e->key.keysym.sym == SDLK_UP || e->key.keysym.sym == SDLK_DOWN)
+	std::vector<std::string> names, descriptions;
+	for (const auto &full : choices)
 	{
-		selected = std::clamp(selected + (e->key.keysym.sym == SDLK_UP ? -1 : 1), 0,
-							  int(choices.size()) - 1);
-		controls->regions[21].offset = 0;
-		auto &region = controls->regions[20];
-		if (selected * 58 < region.offset)
-			region.offset = selected * 58;
-		else if ((selected + 1) * 58 > region.offset + region.box.h)
-			region.offset = (selected + 1) * 58 - region.box.h;
+		const auto split = full.find(" - ");
+		names.push_back(split == std::string::npos ? full : full.substr(0, split));
+		descriptions.push_back(split == std::string::npos ? std::string() : full.substr(split + 3));
+	}
+	const int current = std::clamp(selected, 0, std::max(0, int(choices.size()) - 1));
+	std::vector<Element> detail{fe::heading(choices.empty() ? std::string() : choices[std::size_t(current)])};
+	std::string content = profiles && !choices.empty() ? AINames::getAIProfile(AINames::selectionOrder()[std::size_t(current)]) : "";
+	auto first = content.find("\n\n");
+	if (first != std::string::npos)
+		content = content.substr(first + 2);
+	std::size_t pos = 0;
+	while (pos < content.size())
+	{
+		const std::size_t end = content.find("\n\n", pos);
+		auto part = content.substr(pos, end == std::string::npos ? std::string::npos : end - pos);
+		const auto colon = part.find(':');
+		if (colon != std::string::npos)
+		{
+			detail.push_back(fe::paragraph(part.substr(0, colon), {fe::FontRole::Body}));
+			part = part.substr(colon + 1);
+		}
+		detail.push_back(fe::paragraph(part, {fe::FontRole::Body, true}));
+		if (end == std::string::npos)
+			break;
+		pos = end + 2;
+	}
+	auto details = fe::scroll("profile/details", fe::column(std::move(detail), {p.pt(8)}));
+	fe::ListOptions listOptions;
+	listOptions.enabled = enabled;
+	listOptions.visibleRows = 12;
+	listOptions.activate = [this](int) { use(); };
+	auto list = fe::listView("profile/list", names, current, [this](int i) { choose(i); }, listOptions);
+	Element body = fe::adaptive(
+		[list, details, names, current, this](const fe::LayoutContext &ctx, fe::Size available)
+		{
+			if (available.w < ctx.presentation.pt(640))
+				return fe::column({fe::choice("profile/select", names, current, [this](int i) { choose(i); }), fe::expanded(details)});
+			return fe::row({fe::width(ctx.presentation.pt(260), list), fe::expanded(details)}, {-1, fe::CrossAlign::Stretch});
+		});
+	const std::string useLabel = tr("Use") + (choices.empty() ? std::string() : " " + names[std::size_t(current)]);
+	return fe::page(title, body,
+					fe::actions({{"profile/back", tr("Back"), [this] { endExecute(-2); }, false, SDLK_ESCAPE},
+								 {"profile/use", useLabel, [this] { use(); }, true, SDLK_RETURN, !choices.empty()}},
+								p),
+					p, 1000);
+}
+
+// Lobby ------------------------------------------------------------------------------
+
+CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens) : screens(screens)
+{
+	username = globalContainer->settings.getUsername();
+	// Windows uses a shared working-directory map folder. Unix can also lack
+	// a per-user root when HOME is unavailable; do not hide those shipped maps.
+	auto files = Toolkit::getFileManager();
+	const auto firstRoot = files->getDirCount() ? files->getDir(0) : std::string();
+	separateMapLibraries = !firstRoot.empty() && firstRoot != "." && firstRoot != "./Contents/Resources";
+	preview = std::make_unique<LobbyMapPreview>();
+	CustomGamePreferences preferences;
+	if (preferences.load(*files))
+	{
+		setup = preferences.setup;
+		userMaps = preferences.userMaps && separateMapLibraries;
+		landscapeSortOrder = preferences.landscapeSortOrder;
+		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
+		listMaps();
+		if (setup.random)
+			invalidatePreview();
+		else
+			loadMap(setup.premadeMap);
+		// The visible library may differ from the selected map (e.g. an empty library).
+		std::copy(std::begin(preferences.librarySelection), std::end(preferences.librarySelection), librarySelection);
+	}
+	else
+	{
+		// No saved lobby: a random map at four colonies (random maps are the default).
+		listMaps();
+		setup.random = true;
+		setup.setCapacity(4);
+		validMap = false;
+		source.clear();
+		invalidatePreview();
 	}
 }
-void CustomGameChoiceScreen::onAction(Widget *, Action action, int code, int)
+
+void CustomGameScreen::selectTab(int tab)
 {
-	if (action == BUTTON_RELEASED || action == BUTTON_SHORTCUT)
+	currentTab = std::clamp(tab, 0, 2);
+	preview->cancelDrag();
+	host().closePopup();
+	invalidate();
+}
+
+bool CustomGameScreen::interceptEvent(const SDL_Event &event)
+{
+	if (event.type == SDL_KEYDOWN && (event.key.keysym.mod & KMOD_CTRL) && event.key.keysym.sym >= SDLK_1 &&
+		event.key.keysym.sym <= SDLK_3)
 	{
-		if (code == -2)
-			endExecute(-2);
-		if (code == -3)
-			endExecute(selected);
+		selectTab(event.key.keysym.sym - SDLK_1);
+		return true;
+	}
+	return false;
+}
+
+void CustomGameScreen::launch()
+{
+	if (!setup.validation().empty())
+		return;
+	if (setup.random && candidates)
+		finishPreview();
+	if (setup.random && (!validMap || previewRevision != setup.mapRevision))
+		if (!generateMap())
+		{
+			invalidate();
+			return;
+		}
+	if (validMap)
+	{
+		savePreferences();
+		endExecute(OK);
 	}
 }
 
@@ -216,59 +210,6 @@ std::string colorName(Color c)
 }
 } // namespace
 
-CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack &screens)
-	: Glob2TabScreen(false, true), screens(screens)
-{
-	gfx = globalContainer->gfx;
-	username = globalContainer->settings.getUsername();
-	// Windows uses a shared working-directory map folder. Unix can also lack
-	// a per-user root when HOME is unavailable; do not hide those shipped maps.
-	auto files = Toolkit::getFileManager();
-	const auto firstRoot = files->getDirCount() ? files->getDir(0) : std::string();
-	separateMapLibraries =
-		!firstRoot.empty() && firstRoot != "." && firstRoot != "./Contents/Resources";
-	groups[0] = addGroup(tr("Map"));
-	groups[1] = addGroup(tr("Players & Teams"));
-	groups[2] = addGroup(tr("Game Rules"));
-	// TabScreen still owns activation; the lobby supplies composed tab headers.
-	for (auto widget : widgets)
-		widget->visible = false;
-	preview = new LobbyMapPreview();
-	addWidget(preview);
-	preview->visible = false;
-	controls = new LobbyControls();
-	controls->render = [this] { renderLobby(); };
-	addWidget(controls);
-	CustomGamePreferences preferences;
-	if (preferences.load(*files))
-	{
-		setup = preferences.setup;
-		userMaps = preferences.userMaps && separateMapLibraries;
-		landscapeSortOrder = preferences.landscapeSortOrder;
-		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
-		listMaps();
-		if (setup.random)
-			invalidate();
-		else
-			loadMap(setup.premadeMap);
-		// The visible library may differ from the selected map (e.g. an empty library).
-		std::copy(std::begin(preferences.librarySelection), std::end(preferences.librarySelection),
-				  librarySelection);
-	}
-	else
-	{
-		// No saved lobby: a random map at four colonies (FEEDBACK 2026-09-14: random maps are the
-		// default, not the premade library).
-		listMaps();
-		setup.random = true;
-		setup.setCapacity(4);
-		validMap = false;
-		source.clear();
-		invalidate();
-	}
-
-	activateGroup(groups[0]);
-}
 GameHeader &CustomGameScreen::getGameHeader()
 {
 	setup.writeHeader(gameHeader, username);
@@ -281,6 +222,7 @@ GameHeader &CustomGameScreen::getGameHeader()
 	}
 	return gameHeader;
 }
+
 CustomGameScreen::~CustomGameScreen()
 {
 	savePreferences();
@@ -290,6 +232,7 @@ CustomGameScreen::~CustomGameScreen()
 		std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path(), error);
 	}
 }
+
 std::shared_ptr<void> CustomGameScreen::releaseSnapshot()
 {
 	if (snapshot.empty())
@@ -303,6 +246,7 @@ std::shared_ptr<void> CustomGameScreen::releaseSnapshot()
 									 std::filesystem::remove_all(directory, error);
 								 });
 }
+
 void CustomGameScreen::savePreferences()
 {
 	CustomGamePreferences preferences;
@@ -320,13 +264,7 @@ void CustomGameScreen::savePreferences()
 	else
 		preferencesRetryAt = SDL_GetTicks() + 5000;
 }
-void CustomGameScreen::onGroupActivated(int group)
-{
-	currentTab = group;
-	preview->cancelDrag();
-}
-// One request per playable landscape, exactly as picking it would leave the draft: the
-// settings last used with it, or its defaults, at the current size and colony count.
+
 std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntries() const
 {
 	std::vector<std::pair<int, GenerationRequest>> entries;
@@ -339,6 +277,7 @@ std::vector<std::pair<int, GenerationRequest>> CustomGameScreen::landscapeEntrie
 	}
 	return entries;
 }
+
 LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 {
 	const auto entries = landscapeEntries();
@@ -376,7 +315,7 @@ LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 						 setup.generator.nbTeams = picker.sharedTeams();
 						 setup.setCapacity(picker.sharedTeams());
 						 ++setup.mapRevision;
-						 invalidate();
+						 invalidatePreview();
 					 }
 					 if (result == QUIT_APPLICATION)
 						 endExecute(QUIT_APPLICATION);
@@ -388,6 +327,7 @@ LandscapePickerScreen *CustomGameScreen::chooseLandscape()
 				 });
 	return result;
 }
+
 void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> seed,
 									  const GenerationRequest *shown)
 {
@@ -399,12 +339,11 @@ void CustomGameScreen::applyLandscape(int method, std::optional<std::uint32_t> s
 	chosenSeed = seed;
 	randomAttempts = 0;
 	++setup.mapRevision;
-	invalidate();
+	invalidatePreview();
 	// An explicit choice, not an edit in progress: preview it now rather than after the debounce.
 	previewDue = SDL_GetTicks();
 }
-// Reset keeps the chosen landscape and the Game Rules tab's starting workers, and returns every
-// other field in the map column to the landscape's registered defaults.
+
 void CustomGameScreen::resetParameters()
 {
 	GenerationRequest reset;
@@ -417,13 +356,9 @@ void CustomGameScreen::resetParameters()
 	chosenSeed.reset();
 	randomAttempts = 0;
 	++setup.mapRevision;
-	invalidate();
+	invalidatePreview();
 }
-// Random parameters (FEEDBACK 2026-09-14): every one of the landscape's own controls drawn at
-// random, keeping the size, colony count and workers the player chose. Some combinations make no
-// map: a draw the generator refuses up front is redrawn on the spot (randomizeControls), and one
-// the world refuses is redrawn when the preview's candidates come back empty (collectCandidates),
-// up to kRandomAttempts times, so the first set that generates a valid map is the one kept.
+
 void CustomGameScreen::randomizeParameters()
 {
 	randomAttempts = kRandomAttempts;
@@ -435,9 +370,10 @@ void CustomGameScreen::randomizeParameters()
 	}
 	chosenSeed.reset();
 	++setup.mapRevision;
-	invalidate();
+	invalidatePreview();
 	previewDue = SDL_GetTicks();
 }
+
 bool CustomGameScreen::drawRandomParameters()
 {
 	auto draft = setup.generator;
@@ -447,6 +383,7 @@ bool CustomGameScreen::drawRandomParameters()
 	setup.generator = draft;
 	return true;
 }
+
 void CustomGameScreen::showStartQuality()
 {
 	if (!quality.measured)
@@ -466,7 +403,8 @@ void CustomGameScreen::showStartQuality()
 						 endExecute(QUIT_APPLICATION);
 				 });
 }
-void CustomGameScreen::invalidate()
+
+void CustomGameScreen::invalidatePreview()
 {
 	preview->cancelDrag();
 	validMap = false;
@@ -478,12 +416,15 @@ void CustomGameScreen::invalidate()
 	previewPending = setup.random;
 	previewDue = SDL_GetTicks() + 500;
 	message.clear();
+	invalidate();
 }
+
 std::string CustomGameScreen::colonyLabel(int i) const
 {
 	return std::to_string(i + 1) + " - " +
 		   (i < (int)preview->starts.size() ? colorName(preview->starts[i].color) : tr("Colony"));
 }
+
 void CustomGameScreen::listMaps()
 {
 	std::vector<std::filesystem::path> roots;
@@ -563,6 +504,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 					  tr("Extra colony assignments are retained for larger maps.");
 		else
 			message.clear();
+		invalidate();
 		return true;
 	}
 	catch (const std::exception &)
@@ -570,9 +512,11 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 		preview->setState(MapPreview::State::Failed);
 		validMap = false;
 		message = tr("Could not load this map. Choose another map or retry.");
+		invalidate();
 		return false;
 	}
 }
+
 bool CustomGameScreen::generateMap()
 {
 	// Consume this request even on failure; retry on a new edit or launch, not every frame.
@@ -581,6 +525,7 @@ bool CustomGameScreen::generateMap()
 	if (!setup.validation().empty())
 	{
 		message = tr(setup.validation());
+		invalidate();
 		return false;
 	}
 	try
@@ -678,6 +623,7 @@ bool CustomGameScreen::generateMap()
 		quality = generationResult.quality;
 		randomAttempts = 0;
 		message.clear();
+		invalidate();
 		return true;
 	}
 	catch (const std::exception &error)
@@ -687,110 +633,22 @@ bool CustomGameScreen::generateMap()
 			std::filesystem::remove_all(std::filesystem::path(candidate).parent_path());
 		validMap = false;
 		message = tr("Generation failed. Adjust settings or press Start to retry.");
+		invalidate();
 		return false;
 	}
 }
-void CustomGameScreen::updateLayout()
-{
-	if (gfx)
-	{
-		controls->setScreenPosition(0, 0);
-		controls->setDimensions(gfx->getW(), gfx->getH());
-	}
-}
-void CustomGameScreen::onSDLEvent(SDL_Event *event)
-{
-	if (FrontendLayout::resolve(globalContainer->gfx).singleColumn() &&
-		event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_ESCAPE && !controls->popup.open)
-	{
-		if (phonePage != PhonePage::Main)
-			phonePage = PhonePage::Main;
-		else if (currentTab == groups[2])
-			activateGroup(groups[1]);
-		else if (currentTab == groups[1])
-			activateGroup(groups[0]);
-		else
-			endExecute(CANCEL);
-		return;
-	}
 
-	if (!FrontendLayout::resolve(globalContainer->gfx).singleColumn() && currentTab == groups[0] &&
-		validMap && !controls->popup.open && controls->pressed.empty() &&
-		preview->handlePreviewEvent(event))
-		return;
-	if (controls->handle(event))
-		return;
-	if (event->type == SDL_KEYDOWN && currentTab == groups[0] && !setup.random &&
-		(event->key.keysym.sym == SDLK_UP || event->key.keysym.sym == SDLK_DOWN) &&
-		!mapPaths.empty())
-	{
-		auto found = std::find(mapPaths.begin(), mapPaths.end(), librarySelection[userMaps]);
-		int selected = found == mapPaths.end() ? 0 : int(found - mapPaths.begin());
-		selected = std::clamp(selected + (event->key.keysym.sym == SDLK_UP ? -1 : 1), 0,
-							  int(mapPaths.size()) - 1);
-		if (loadMap(mapPaths[selected]))
-		{
-			auto &region = controls->regions[10 + userMaps];
-			int top = selected * 28;
-			if (top < region.offset)
-				region.offset = top;
-			else if (top + 28 > region.offset + region.box.h)
-				region.offset = top + 28 - region.box.h;
-			controls->focus = "map/entry/" + std::to_string(selected);
-		}
-		return;
-	}
-	if (event->type != SDL_KEYDOWN)
-		return;
-	if (event->key.keysym.mod & KMOD_CTRL)
-	{
-		if (event->key.keysym.sym >= SDLK_1 && event->key.keysym.sym <= SDLK_3)
-		{
-			activateGroup(groups[event->key.keysym.sym - SDLK_1]);
-			controls->resetFocus();
-		}
-	}
-	else if (event->key.keysym.sym == SDLK_ESCAPE)
-		endExecute(CANCEL);
-	else if (event->key.keysym.sym == SDLK_RETURN)
-		onAction(nullptr, BUTTON_SHORTCUT, OK, 0);
-}
-void CustomGameScreen::onAction(Widget *widget, Action action, int code, int value)
-{
-	if (action != BUTTON_RELEASED && action != BUTTON_SHORTCUT)
-		return;
-	if (code == CANCEL)
-		endExecute(CANCEL);
-	// Phone launch is a confirmation of the visible draft. Keyboard shortcuts
-	// must obey the same readiness boundary as the Review action.
-	if (code == OK && FrontendLayout::resolve(globalContainer->gfx).singleColumn() &&
-		(currentTab != groups[2] || phonePage != PhonePage::Main || !validMap || previewBusy() ||
-		 (setup.random && previewRevision != setup.mapRevision)))
-		return;
-	if (code == OK && setup.validation().empty())
-	{
-		if (setup.random && candidates)
-			finishPreview();
-		if (setup.random && (!validMap || previewRevision != setup.mapRevision))
-			if (!generateMap())
-				return;
-		if (validMap)
-		{
-			savePreferences();
-			endExecute(OK);
-		}
-	}
-}
 void CustomGameScreen::onTimer(Uint32 tick)
 {
+	const bool busyBefore = previewBusy();
+	const bool validBefore = validMap;
+	const std::string messageBefore = message;
 	if (candidates)
 		candidates->poll();
-	if (controls->pressed.empty() && !controls->popup.open &&
-		Sint32(tick - preferencesRetryAt) >= 0)
+	if (!host().interacting() && Sint32(tick - preferencesRetryAt) >= 0)
 		savePreferences();
 	// Wait until the last edit settles and a dragged control/menu is released.
-	if (previewPending && setup.random && Sint32(tick - previewDue) >= 0 &&
-		controls->pressed.empty() && !controls->popup.open)
+	if (previewPending && setup.random && Sint32(tick - previewDue) >= 0 && !host().interacting())
 	{
 		// A map the picker showed, or a draft that fails validation, resolves at once; anything
 		// else rolls its candidates off this thread first.
@@ -801,7 +659,10 @@ void CustomGameScreen::onTimer(Uint32 tick)
 	}
 	if (candidates && !candidates->busy())
 		collectCandidates();
+	if (busyBefore != previewBusy() || validBefore != validMap || messageBefore != message)
+		invalidate();
 }
+
 void CustomGameScreen::startCandidates()
 {
 	previewPending = false;
@@ -814,8 +675,7 @@ void CustomGameScreen::startCandidates()
 	candidateRevision = setup.mapRevision;
 	message.clear();
 }
-// The candidates are in: keep the best-scoring one by rolling its seed for the snapshot, or
-// report that none seated every colony. Returns whether a map came of it.
+
 bool CustomGameScreen::collectCandidates()
 {
 	if (!candidates)
@@ -846,7 +706,7 @@ bool CustomGameScreen::collectCandidates()
 			{
 				chosenSeed.reset();
 				++setup.mapRevision;
-				invalidate();
+				invalidatePreview();
 				previewDue = SDL_GetTicks();
 				return false;
 			}
@@ -859,8 +719,7 @@ bool CustomGameScreen::collectCandidates()
 	chosenSeed = best;
 	return generateMap();
 }
-// Wait for candidates in flight and apply them: for a launch that cannot wait for the timer,
-// and for tests that drive the timer by hand.
+
 void CustomGameScreen::finishPreview()
 {
 	while (candidates && candidates->busy())
@@ -871,6 +730,7 @@ void CustomGameScreen::finishPreview()
 	if (candidates)
 		collectCandidates();
 }
+
 void CustomGameScreen::setMapMode(bool random)
 {
 	if (setup.random == random)
@@ -885,7 +745,7 @@ void CustomGameScreen::setMapMode(bool random)
 	if (random)
 	{
 		setup.setCapacity(setup.generator.nbTeams);
-		invalidate();
+		invalidatePreview();
 	}
 	else if (!setup.premadeMap.empty())
 		loadMap(setup.premadeMap);
@@ -905,7 +765,9 @@ void CustomGameScreen::setMapMode(bool random)
 		if (!first.empty())
 			loadMap(first);
 	}
+	invalidate();
 }
+
 void CustomGameScreen::showAIProfile(int colony)
 {
 	std::vector<std::string> labels;
@@ -925,574 +787,132 @@ void CustomGameScreen::showAIProfile(int colony)
 				 });
 }
 
-void CustomGameScreen::paint()
-{
-	// The lobby draws its own panel; a full-window widget is not another panel.
-	if (FrontendTheme::current)
-		FrontendTheme::current->background(gfx, false);
-	else
-		Glob2TabScreen::paint();
-}
 
-void CustomGameScreen::renderLobby()
+Element CustomGameScreen::build(const Presentation &p)
 {
-	if (FrontendLayout::resolve(globalContainer->gfx).singleColumn())
-	{
-		renderPhoneLobby();
-		return;
-	}
-	auto &ui = *controls;
-	const bool touch = FrontendLayout::resolve(globalContainer->gfx).touch;
-	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
-	const int width = int(safe.w), topInset = int(safe.y), height = int(safe.y + safe.h);
-	int w = std::min(width - 32, 1120), x = int(safe.x) + (width - w) / 2;
-	ui.box({x - 8, topInset + 8, w + 16, int(safe.h) - 16}, Color(232, 237, 218), 8);
+	const bool narrow = p.compact() || p.safe.w < p.pt(720);
 	auto speed = globalContainer->settings;
 	speed.gameSpeed = setup.speed;
-	std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
-	std::vector<std::string> details = {
-		setup.random ? tr(GenerationRequest::methodName(setup.generator.method))
-					 : mapHeader.getMapName(),
-		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + tr(setup.format),
-		tr(setup.ruleset)};
+	const std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
+	const std::vector<std::string> details = {
+		setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName(),
+		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + tr(setup.format), tr(setup.ruleset)};
+	std::vector<Element> tabs;
 	for (int i = 0; i < 3; ++i)
 	{
-		int tx = x + i * w / 3;
-		ui.button(
-			"tab/" + std::to_string(i), {tx, topInset + 16, w / 3 - 6, touch ? 48 : 38}, titles[i],
-			[this, i]
-			{
-				activateGroup(groups[i]);
-				controls->resetFocus();
-			},
-			currentTab == groups[i], true, false, width < 800 ? "standard" : "menu");
-		ui.text(tx + 9, topInset + (touch ? 69 : 59), details[i], "little", w / 3 - 20, true);
+		fe::ButtonOptions options;
+		options.selected = currentTab == i;
+		options.role = narrow ? fe::FontRole::Body : fe::FontRole::Heading;
+		tabs.push_back(fe::expanded(fe::button("tab/" + std::to_string(i), narrow ? titles[std::size_t(i)] : titles[std::size_t(i)] + "\n" + details[std::size_t(i)],
+											   [this, i] { selectTab(i); }, options)));
 	}
-	// Clear inactive viewports so wheel/page navigation only affects this tab.
-	for (auto &pair : ui.regions)
-		pair.second.box = {0, 0, 0, 0};
-	int bodyY = topInset + (touch ? 95 : 85), bodyH = height - bodyY - 96;
-	if (currentTab == groups[1])
-		renderPlayers(x, bodyY, w, bodyH);
-	else if (currentTab == groups[2])
-		renderRules(x, bodyY, w, bodyH);
-	else
-		renderMap(x, bodyY, w, bodyH);
-	gfx->setClipRect();
-	gfx->drawLine(x, height - 85, x + w, height - 85, ui.line);
+	Element body = currentTab == 1 ? playersTab(p, narrow) : currentTab == 2 ? rulesTab(p, narrow) : mapTab(p, narrow);
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
 		error = tr("Select a valid map.");
-	ui.text(x + 4, height - 77,
-			tr(setup.format) + "  /  " + std::to_string(setup.activeColonies()) + " " +
-				tr("colonies") + "  /  " + tr(setup.ruleset) + "  /  " + speed.getGameSpeedText(),
-			"little", w - 8);
-	ui.paragraph(x + 4, height - 53, w - 270, error.empty() ? message : tr(error));
-	ui.button(
-		"back", {x + w - 255, height - 52, 80, touch ? 48 : 34}, tr("Back"),
-		[this] { endExecute(CANCEL); }, false, true, true);
-	auto label =
-		!setup.humanColony()
-			? tr(setup.random && !validMap ? "Generate & watch" : "Watch game")
-			: tr(setup.random ? (validMap ? "Play this map" : "Generate & play") : "Start game");
-	ui.button(
-		"start", {x + w - 165, height - 52, 165, touch ? 48 : 34}, label,
-		[this] { onAction(nullptr, BUTTON_SHORTCUT, OK, 0); }, true, error.empty());
+	const std::string summary = tr(setup.format) + "  /  " + std::to_string(setup.activeColonies()) + " " + tr("colonies") + "  /  " +
+								tr(setup.ruleset) + "  /  " + speed.getGameSpeedText();
+	const std::string note = error.empty() ? message : tr(error);
+	const bool ready = error.empty() && (!narrow || (validMap && !previewBusy() && (!setup.random || previewRevision == setup.mapRevision)));
+	const std::string startLabel = !setup.humanColony() ? tr(setup.random && !validMap ? "Generate & watch" : "Watch game")
+													  : tr(setup.random ? (validMap ? "Play this map" : "Generate & play") : "Start game");
+	std::vector<Element> footerParts{fe::caption(summary)};
+	if (!note.empty())
+		footerParts.push_back(fe::paragraph(note, {fe::FontRole::Support}));
+	footerParts.push_back(fe::actions({{"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE},
+									   {"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready}},
+									  p));
+	auto footerColumn = fe::column(std::move(footerParts), {p.pt(6)});
+	fe::CardOptions cardOptions;
+	cardOptions.color = GAGCore::Color(232, 237, 218);
+	cardOptions.padding = p.pt(narrow ? 10 : 16);
+	return fe::center(fe::maxWidth(p.pt(1120), fe::card(fe::column({fe::row(std::move(tabs), {p.pt(6)}), fe::expanded(body), fe::divider(), footerColumn},
+																 {p.pt(8)}),
+													   cardOptions)));
 }
 
-void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
+Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 {
-	auto &ui = *controls;
-	const bool touch = FrontendLayout::resolve(globalContainer->gfx).touch;
-	const int controlH = touch ? 48 : 30;
-	std::vector<std::string> formats = localized({"FFA", "2 vs 2", "You vs all"});
-	int selected = setup.format == "FFA"          ? 0
-				   : setup.format == "2 vs 2"     ? 1
-				   : setup.format == "You vs all" ? 2
-												  : -1;
-	ui.segments("format", {x, y, std::min(w, 450), controlH}, formats, selected,
-				[this](int i) { setup.presetTeams(i); },
-				{true, setup.activeColonies() == 4,
-				 bool(setup.humanColony()) && setup.activeColonies() > 1});
-	if (w > 760)
-		ui.text(x + 470, y + 9,
-				std::to_string(setup.controllerCount()) + " / 12 " + tr("controllers"), "little",
-				w - 475, true);
-	int top = y + controlH + 12, rowH = touch ? 128 : w < 760 ? 80 : 100;
-	ui.beginRegion(1, {x, top, w, h - controlH - 12});
-	int offset = ui.regions[1].offset;
-	for (int i = 0; i < setup.capacity; ++i)
-	{
-		auto &c = setup.colonies[i];
-		int ry = top + i * rowH - offset;
-		ui.box({x, ry, w - 12, rowH - 8}, ui.panel);
-		Color color =
-			i < int(preview->starts.size()) ? preview->starts[i].color : Color(160, 172, 149);
-		ui.box({x + 10, ry + 10, 30, 30}, color, 4);
-		gfx->drawRect(x + 10, ry + 10, 30, 30, ui.ink);
-		auto font = Toolkit::getFont("standard");
-		font->pushStyle(Font::Style(
-			Font::STYLE_NORMAL,
-			Color((int(color.r) * 299 + int(color.g) * 587 + int(color.b) * 114) > 140000 ? 0 : 255,
-				  (int(color.r) * 299 + int(color.g) * 587 + int(color.b) * 114) > 140000 ? 0 : 255,
-				  (int(color.r) * 299 + int(color.g) * 587 + int(color.b) * 114) > 140000 ? 0
-																						  : 255)));
-		gfx->drawString(x + 18, ry + 16, font, std::to_string(i + 1));
-		font->popStyle();
-		ui.text(x + 48, ry + 16, colorName(color), "little", 65);
-		int cx = x + 116, cw = w < 760 ? 100 : 126, teamW = 92;
-		int ax = cx + cw + 8, aw = x + w - 22 - teamW - 8 - ax;
-		std::vector<bool> enabled;
-		for (int j = 0; j < 4; ++j)
-		{
-			auto draft = setup;
-			enabled.push_back(draft.setController(i, (CustomGameSetup::Controller)j));
-		}
-		std::string id = "colony/" + std::to_string(i);
-		ui.dropdown(
-			id + "/controller", {cx, ry + 8, cw, controlH},
-			localized({"You", "AI", "You + AI", "Closed"}), c.controller,
-			[this, i](int value) { setup.setController(i, (CustomGameSetup::Controller)value); },
-			enabled, tr("Shared control needs a free controller slot (maximum 12)."));
-		if (c.controller == CustomGameSetup::Computer || c.controller == CustomGameSetup::Shared)
-		{
-			std::vector<std::string> names;
-			for (int j : AINames::selectionOrder())
-				names.push_back(AINames::getAISelectorText(j));
-			ui.dropdown(
-				id + "/ai", {ax, ry + 8, aw, controlH}, names, AINames::selectionIndex(c.ai),
-				[this, i](int value)
-				{ setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[value]; });
-			ui.button(
-				id + "/info", {x + w - 150, ry + controlH + 14, 128, touch ? 48 : 28},
-				tr("AI strategy"), [this, i] { showAIProfile(i); }, false, true, false, "standard");
-			gfx->drawRect(x + w - 150, ry + controlH + 14, 128, touch ? 48 : 28,
-						  ui.focus == id + "/info" ? ui.ink : ui.line);
-		}
-		else
-			ui.text(
-				ax + 6, ry + 16,
-				tr(c.controller == CustomGameSetup::Human ? "You control this colony." : "Closed"),
-				"little", aw - 10, true);
-		std::vector<std::string> teams;
-		for (int j = 0; j < setup.capacity; ++j)
-			teams.push_back(tr("Team") + " " + std::to_string(j + 1));
-		ui.dropdown(id + "/team", {x + w - 22 - teamW, ry + 8, teamW, controlH}, teams, c.alliance,
-					[this, i](int value)
-					{
-						setup.colonies[i].alliance = value;
-						setup.format = "Custom teams";
-					});
-		auto summary = c.controller == CustomGameSetup::Human ? username
-					   : c.controller == CustomGameSetup::Closed
-						   ? tr("This colony will not join the match.")
-						   : AINames::getAISummary(c.ai);
-		ui.text(cx, ry + 49, summary, "little", w - 278, true);
-		if (c.controller == CustomGameSetup::Shared && rowH > 80)
-			ui.text(cx, ry + 76, tr("You and the AI both issue orders. Uses two controller slots."),
-					"little", w - 150, true);
-	}
-	ui.endRegion(setup.capacity * rowH);
-}
-
-void CustomGameScreen::renderRules(int x, int y, int w, int h)
-{
-	auto &ui = *controls;
-	const bool phone = GAGCore::phonePresentationRequested();
-	const int controlH = phone ? 48 : 29;
-	ui.beginRegion(2, {x, y, w, h});
-	int yy = y - ui.regions[2].offset, startY = yy;
-	yy += ui.paragraph(x, yy, w - 20, tr("Try a ruleset, then make it your own."), "standard",
-					   false, false) +
-		  12;
-	std::vector<std::string> names =
-		localized({"Standard", "Quick clash", "Open book", "Last colony standing"});
-	std::vector<std::string> effects =
-		localized({"Classic colony building",
-				   setup.random ? "8 workers / 2x speed" : "Premade: only speed changes (2x)",
-				   "Start with terrain known", "Win through conquest"});
-	int columns = w >= 800 ? 4 : w < 420 ? 1 : 2, tileW = (w - 12) / columns;
-	for (int i = 0; i < 4; ++i)
-	{
-		int tx = x + (i % columns) * tileW, ty = yy + (i / columns) * 54;
-		ui.button(
-			"ruleset/" + std::to_string(i), {tx, ty, tileW - 7, 48}, "",
-			[this, i]
-			{
-				auto rev = setup.mapRevision;
-				setup.presetRules(i);
-				if (setup.random && rev != setup.mapRevision)
-					invalidate();
-			},
-			tr(setup.ruleset) == names[i]);
-		ui.text(tx + 9, ty + 7, names[i], "standard", tileW - 22);
-		ui.text(tx + 9, ty + 31, effects[i], "little", tileW - 22, true);
-	}
-	yy += ((4 + columns - 1) / columns) * 54 + 6;
-	// Rules are numbered in the order they were added, so a later rule can belong to an earlier
-	// category: list them grouped by category, in each category's first-appearance order, so
-	// every category heading appears once.
-	std::vector<int> order;
-	for (int first = 0; first < int(CustomGameSetup::ruleDefinitions.size()); ++first)
-	{
-		const std::string heading = CustomGameSetup::ruleDefinitions[first].category;
-		bool seen = false;
-		for (int earlier = 0; earlier < first; ++earlier)
-			seen = seen || heading == CustomGameSetup::ruleDefinitions[earlier].category;
-		if (!seen)
-			for (int index = first; index < int(CustomGameSetup::ruleDefinitions.size()); ++index)
-				if (heading == CustomGameSetup::ruleDefinitions[index].category)
-					order.push_back(index);
-	}
-	std::string category;
-	for (int index : order)
-	{
-		auto definition = CustomGameSetup::ruleDefinitions[index];
-		if (category != definition.category)
-		{
-			category = definition.category;
-			if (category != definition.label)
-			{
-				ui.text(x + 4, yy, tr(category), "standard", w - 20);
-				yy += 24;
-			}
-		}
-		const auto label = tr(definition.label) + (setup.ruleChanged(index) ? " *" : "");
-		const int labelHeight =
-			phone ? ui.paragraph(0, 0, w - 32, label, "standard", false, false, false) : 0;
-		ui.box({x, yy, w - 12, phone ? labelHeight + controlH + 24 : 58}, ui.panel);
-		if (phone)
-		{
-			ui.paragraph(x + 10, yy + 8, w - 32, label, "standard", false, false);
-			yy += labelHeight + 12;
-		}
-		else
-			ui.text(x + 10, yy + 8, label, "standard", 170);
-		int fieldX = phone ? x + 8 : x + 182, fieldW = phone ? w - 32 : w - 208;
-		auto apply = [this, index](int value)
-		{
-			if (index == 0)
-				setup.prestige = value == 0;
-			if (index == 1)
-				setup.revealed = value;
-			if (index == 2)
-				setup.locked = value == 0;
-			if (index == 3)
-				setup.speed = value;
-			if (index == 5)
-				setup.noResourceGrowth = value;
-			if (index == 6)
-				setup.resourceScarcity = value;
-			if (index == 7)
-				setup.instantConstruction = value;
-			if (index == 8)
-				setup.stockpileStart = value;
-			if (index == 9)
-				setup.noHunger = value;
-			if (index == 10)
-				setup.unitUpgradesDisabled = value;
-			if (index == 11)
-				setup.glassCannonLevel = value;
-			if (index == 12)
-				setup.unitsFearless = value;
-			if (index == 13)
-				setup.permadeathDisabled = value;
-			if (index == 14)
-				setup.peacefulMode = value;
-			if (index == 15)
-				setup.buildingHpLevel = value;
-			if (index == 17)
-				setup.suddenDeathMinutes = value;
-			setup.ruleset = "Custom";
-		};
-		std::string help;
-		if (index < 3)
-		{
-			auto options = index == 0   ? localized({"Conquest or prestige", "Conquest only"})
-						   : index == 1 ? localized({"Explore as you play", "Terrain revealed"})
-										: localized({"Locked teams", "Can change in game"});
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
-						options,
-						index == 0   ? !setup.prestige
-						: index == 1 ? setup.revealed
-									 : !setup.locked,
-						apply, {}, w < 800 ? "little" : "standard");
-			help = tr(index == 0   ? "Conquest only removes prestige victory; map "
-									 "scripts still apply."
-					  : index == 1 ? "Revealed terrain does not reveal all enemy activity."
-								   : "Choose whether teams can change during the match.");
-		}
-		else if (index == 3)
-		{
-			auto settings = globalContainer->settings;
-			std::vector<std::string> options;
-			for (int i = 0; i <= Settings::GAME_SPEED_MAXIMUM; ++i)
-			{
-				settings.gameSpeed = i;
-				options.push_back(settings.getGameSpeedText());
-			}
-			ui.dropdown("rule/speed", {fieldX, yy + 5, fieldW, controlH}, options, setup.speed,
-						apply);
-			help = tr("Changes the pace of the whole simulation.");
-		}
-		else if (index == 4)
-		{
-			if (setup.random)
-				ui.stepper("rule/workers", {fieldX, yy + 5, 130, controlH},
-						   setup.generator.nbWorkers,
-						   GenerationRequest::control(setup.generator.method, "workers").minimum,
-						   GenerationRequest::control(setup.generator.method, "workers").maximum,
-						   [this](int v)
-						   {
-							   setup.generator.nbWorkers = v;
-							   ++setup.mapRevision;
-							   setup.ruleset = "Custom";
-							   invalidate();
-						   });
-			else
-				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
-			help = tr(setup.random ? "More workers jump-start colony growth. Changes the "
-									 "generated map."
-								   : "Premade maps retain their authored starting units.");
-		}
-		else if (index == 5 || index == 7 || index == 9)
-		{
-			auto options = index == 5   ? localized({"Grow normally", "No growth"})
-						   : index == 7 ? localized({"Normal construction", "Instant"})
-										: localized({"Units get hungry", "No hunger"});
-			bool current = index == 5   ? setup.noResourceGrowth
-						   : index == 7 ? setup.instantConstruction
-										: setup.noHunger;
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
-						options, current, apply, {}, w < 800 ? "little" : "standard");
-			help = tr(index == 5   ? "Resources never grow or spread across the map."
-					  : index == 7 ? "Building sites complete immediately, skipping delivery."
-								   : "Units never grow hungry and never starve.");
-		}
-		else if (index == 6 || index == 8)
-		{
-			std::vector<std::string> options =
-				index == 6 ? localized({"Off (today's growth)", "Scarce (2x slower)",
-										"Very scarce (4x slower)", "Extremely scarce (8x slower)"})
-						   : localized({"None (today's default)", "Small (+50 each)",
-										"Medium (+150 each)", "Large (+300 each)"});
-			int current = index == 6 ? setup.resourceScarcity : setup.stockpileStart;
-			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
-						options, current, apply);
-			help = tr(index == 6 ? "Slows how often resources grow or spread across the map."
-								 : "Seeds each team's shared market/exchange resource pool at "
-								   "game start.");
-		}
-		else if (index == 10 || index == 12 || index == 13 || index == 14)
-		{
-			auto options = index == 10   ? localized({"Trains normally", "No upgrades"})
-						   : index == 12 ? localized({"Retreats when damaged", "Fearless"})
-						   : index == 13 ? localized({"Can die permanently", "No permadeath"})
-										 : localized({"Normal combat", "Peaceful mode"});
-			bool current = index == 10   ? setup.unitUpgradesDisabled
-						   : index == 12 ? setup.unitsFearless
-						   : index == 13 ? setup.permadeathDisabled
-										 : setup.peacefulMode;
-			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
-						options, current, apply, {}, w < 800 ? "little" : "standard");
-			help = tr(index == 10   ? "Units still visit schools but never gain a level."
-					  : index == 12 ? "Units fight to the death instead of retreating to heal."
-					  : index == 13 ? "Units are never permanently lost -- HP just stops at 1."
-									: "Disables all combat between every team.");
-		}
-		else if (index == 11 || index == 15)
-		{
-			std::vector<std::string> options =
-				index == 11
-					? localized({"Off (today's balance)", "Glass cannon x2", "Glass cannon x3"})
-					: localized({"Off (today's HP)", "Fortress x5", "Fortress x10"});
-			int current = index == 11 ? setup.glassCannonLevel : setup.buildingHpLevel;
-			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, controlH},
-						options, current, apply);
-			help = tr(index == 11 ? "Higher tiers deal more damage but have less HP and armor."
-								  : "Higher tiers give every building much more HP.");
-		}
-		else if (index == 16)
-		{
-			if (setup.random)
-			{
-				std::vector<std::string> options =
-					localized({"Standard", "Veteran", "Elite", "Legendary"});
-				ui.dropdown("rule/startingLevel", {fieldX, yy + 5, fieldW, controlH}, options,
-							setup.startingUnitLevel,
-							[this](int v)
-							{
-								setup.startingUnitLevel = v;
-								++setup.mapRevision;
-								setup.ruleset = "Custom";
-								invalidate();
-							});
-			}
-			else
-				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
-			help = tr(setup.random ? "Starting units spawn already leveled up. Changes the "
-									 "generated map."
-								   : "Premade maps retain their authored starting units.");
-		}
-		else
-		{
-			std::vector<std::string> options = localized(
-				{"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"});
-			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
-			const int current =
-				int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) -
-					minutes.begin());
-			ui.dropdown("rule/suddenDeath", {fieldX, yy + 5, fieldW, controlH}, options,
-						current < int(minutes.size()) ? current : 0,
-						[apply, minutes](int v) { apply(minutes[v]); });
-			help = tr("Match ends at the timer; highest prestige at that instant wins.");
-		}
-		if (phone)
-		{
-			yy += 60;
-			yy += ui.paragraph(x + 10, yy, w - 40, help, "standard") + 20;
-		}
-		else
-		{
-			ui.text(x + 10, yy + 39, help, "little", w - 40, true);
-			yy += 65;
-		}
-	}
-	ui.button(
-		"rules/restore", {x, yy, std::min(w - 12, 230), phone ? 48 : 30},
-		tr("Restore standard rules"),
-		[this]
-		{
-			auto rev = setup.mapRevision;
-			setup.presetRules(0);
-			if (setup.random && rev != setup.mapRevision)
-				invalidate();
-		},
-		false, true, true);
-	ui.text(x + 245, yy + 8, tr("* Changed from standard."), "little", w - 270, true);
-	yy += phone ? 56 : 36;
-	ui.endRegion(yy - startY);
-}
-
-void CustomGameScreen::renderMap(int x, int y, int w, int h)
-{
-	auto &ui = *controls;
-	const bool touch = FrontendLayout::resolve(globalContainer->gfx).touch;
-	const int controlH = touch ? 48 : 30;
-	ui.segments("map/mode", {x, y, 300, controlH}, localized({"Premade maps", "Random map"}),
-				setup.random, [this](int value) { setMapMode(value); });
-	int leftW = w < 800 ? 280 : w * 46 / 100;
-	int rightX = x + leftW + 24, rightW = w - leftW - 24;
-	int top = y + controlH + 13;
+	std::vector<Element> left;
+	left.push_back(fe::segments("map/mode", localized({"Premade maps", "Random map"}), setup.random, [this](int value) { setMapMode(value); }));
 	if (!setup.random)
 	{
 		if (separateMapLibraries)
-			ui.segments(
-				"map/library", {x, top, leftW, touch ? 48 : 27},
-				localized({"Built-in maps", "Your maps"}), userMaps,
-				[this](int value)
-				{
-					if (userMaps != bool(value))
-					{
-						userMaps = value;
-						listMaps();
-						if (!librarySelection[userMaps].empty())
-							loadMap(librarySelection[userMaps]);
-					}
-				},
-				{}, "little");
-		else
-			ui.text(x + 4, top + 6, tr("Map"), "little", leftW, true);
-		int region = 10 + userMaps, listTop = top + (touch ? 56 : 35), rowH = touch ? 56 : 28;
-		ui.beginRegion(region, {x, listTop, leftW, h - 78});
-		int yy = listTop - ui.regions[region].offset;
-		for (size_t i = 0; i < mapPaths.size(); ++i)
-			ui.button(
-				"map/entry/" + std::to_string(i), {x, yy + int(i) * rowH, leftW - 12, rowH - 1},
-				mapNames[i], [this, i] { loadMap(mapPaths[i]); },
-				librarySelection[userMaps] == mapPaths[i]);
-		if (mapPaths.empty())
-			ui.paragraph(x + 10, yy + 12, leftW - 25, tr("No maps in this library."));
-		ui.endRegion(std::max(30, int(mapPaths.size()) * rowH));
+			left.push_back(fe::segments("map/library", localized({"Built-in maps", "Your maps"}), userMaps,
+										[this](int value)
+										{
+											if (userMaps != bool(value))
+											{
+												userMaps = value;
+												listMaps();
+												if (!librarySelection[userMaps].empty())
+													loadMap(librarySelection[userMaps]);
+												invalidate();
+											}
+										}));
+		const auto found = std::find(mapPaths.begin(), mapPaths.end(), librarySelection[userMaps]);
+		const int selected = found == mapPaths.end() ? -1 : int(found - mapPaths.begin());
+		fe::ListOptions listOptions;
+		listOptions.visibleRows = narrow ? 8 : 14;
+		listOptions.emptyText = tr("No maps in this library.");
+		listOptions.activate = [this](int) { launch(); };
+		// Each library keeps its own scroll position.
+		left.push_back(fe::listView("map/list/" + std::to_string(userMaps ? 1 : 0), mapNames, selected,
+									[this](int i)
+									{
+										if (i >= 0 && i < int(mapPaths.size()))
+											loadMap(mapPaths[std::size_t(i)]);
+										invalidate();
+									},
+									listOptions));
 	}
 	else
 	{
-		ui.beginRegion(3, {x, top, leftW, h - 43});
-		int yy = top - ui.regions[3].offset, startY = yy;
 		auto &g = setup.generator;
 		auto changed = [this]
 		{
 			chosenSeed.reset();
 			++setup.mapRevision;
-			invalidate();
+			invalidatePreview();
 		};
-		ui.text(x + 4, yy, tr("Landscape"), "little", leftW - 20, true);
-		yy += 18;
-		ui.chooser("generator/landscape", {x, yy, leftW - 16, controlH},
-				   tr(GenerationRequest::methodName(g.method)), [this] { chooseLandscape(); });
-		yy += controlH + 6;
-		// Right under the landscape, before its controls (FEEDBACK 2026-09-14): Reset to defaults,
-		// and beside it Random parameters, which draws every control below at random.
-		{
-			GenerationRequest defaults;
-			defaults.setMethodDefaults(g.method);
-			const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec &&
-									g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
-			const int half = (leftW - 16 - 6) / 2;
-			// The narrow column of the compact layout: a label the standard font cannot fit in
-			// its half takes the small one rather than being cut off.
-			const auto fitting = [half](const std::string &label)
-			{
-				return Toolkit::getFont("standard")->getStringWidth(label) + 16 <= half ? "standard"
-																						: "little";
-			};
-			const std::string reset = tr("Reset to defaults"), random = tr("Random parameters");
-			ui.button(
-				"generator/reset", {x, yy, half, controlH}, reset, [this] { resetParameters(); },
-				false, !atDefaults, true, fitting(reset));
-			ui.button(
-				"generator/random", {x + half + 6, yy, half, controlH}, random,
-				[this] { randomizeParameters(); }, false, true, true, fitting(random));
-			yy += controlH + 8;
-		}
+		left.push_back(fe::field(tr("Landscape"), fe::chooser("generator/landscape", tr(GenerationRequest::methodName(g.method)), [this] { chooseLandscape(); })));
+		GenerationRequest defaults;
+		defaults.setMethodDefaults(g.method);
+		const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec && g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
+		left.push_back(fe::wrap({fe::button("generator/reset", tr("Reset to defaults"), [this] { resetParameters(); }, {false, false, !atDefaults}),
+								 fe::button("generator/random", tr("Random parameters"), [this] { randomizeParameters(); })},
+								{-1, p.pt(150)}));
 		auto discrete = [&](const GenerationRequest::Control &c, const std::string &id)
 		{
-			ui.text(x + 4, yy + 7, tr(c.label), "little", 110, true);
 			std::vector<std::string> options;
 			for (int v : c.values())
-				options.push_back(c.isChoice() ? tr(c.valueLabel(v))
-											   : std::to_string(c.displayValue(v)));
-			ui.dropdown(id, {x + 112, yy, leftW - 128, controlH}, options, c.indexOf(c.get(g)),
-						[this, c, changed](int i)
-						{
-							c.set(setup.generator, c.valueAt(i));
-							if (c.id == "teams")
-								setup.setCapacity(setup.generator.nbTeams);
-							changed();
-						});
-			yy += controlH + 6;
+				options.push_back(c.isChoice() ? tr(c.valueLabel(v)) : std::to_string(c.displayValue(v)));
+			left.push_back(fe::field(tr(c.label), fe::choice(id, options, c.indexOf(c.get(g)),
+															 [this, c, changed](int i)
+															 {
+																 c.set(setup.generator, c.valueAt(i));
+																 if (c.id == "teams")
+																	 setup.setCapacity(setup.generator.nbTeams);
+																 changed();
+															 }),
+									 {"", 160}));
 		};
 		for (const auto &c : GenerationRequest::sharedControls())
 			if (c.id != "workers")
 			{
 				if (c.id == "teams")
 					g.nbTeams = setup.capacity;
-				const char *id = c.id == "width"    ? "generator/width"
-								 : c.id == "height" ? "generator/height"
-													: "generator/colonies";
-				discrete(c, id);
+				discrete(c, c.id == "width" ? "generator/width" : c.id == "height" ? "generator/height" : "generator/colonies");
 			}
-
-		ui.text(x + 4, yy, tr("Starting workers: Game Rules tab."), "little", leftW - 20, true);
-		yy += 27;
+		left.push_back(fe::caption(tr("Starting workers: Game Rules tab.")));
 		for (int section = 0; section < 3; ++section)
 		{
-			auto sectionName = section == 0 ? "Terrain" : section == 1 ? "Resources" : "Layout";
-			ui.button(
-				"generator/section/" + std::to_string(section), {x, yy, leftW - 16, controlH},
-				std::string(expanded[section] ? "-  " : "+  ") + tr(sectionName),
-				[this, section] { expanded[section] = !expanded[section]; }, expanded[section]);
-			yy += controlH + 8;
+			const char *sectionName = section == 0 ? "Terrain" : section == 1 ? "Resources" : "Layout";
+			fe::ButtonOptions header;
+			header.selected = expanded[section];
+			header.alignLeft = true;
+			left.push_back(fe::button("generator/section/" + std::to_string(section), std::string(expanded[section] ? "-  " : "+  ") + tr(sectionName),
+									  [this, section] { expanded[section] = !expanded[section]; }, header));
 			if (!expanded[section])
 				continue;
 			bool any = false;
@@ -1501,16 +921,15 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 				if (static_cast<int>(c.group) != section)
 					continue;
 				any = true;
-				std::string id = "generator/" + c.id;
+				const std::string id = "generator/" + c.id;
 				if (c.isToggle())
 				{
-					ui.checkbox(id, {x, yy, leftW - 16, controlH}, tr(c.label), c.get(g) != 0,
-								[this, c, changed](bool on)
-								{
-									c.set(setup.generator, on ? 1 : 0);
-									changed();
-								});
-					yy += controlH + 6;
+					left.push_back(fe::toggle(id, tr(c.label), c.get(g) != 0,
+											  [this, c, changed](bool on)
+											  {
+												  c.set(setup.generator, on ? 1 : 0);
+												  changed();
+											  }));
 					continue;
 				}
 				if (c.powerOfTwo || !c.allowedValues.empty())
@@ -1518,9 +937,6 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 					discrete(c, id);
 					continue;
 				}
-				ui.text(x + 5, yy, tr(c.label), "little", leftW - 55, true);
-				ui.text(x + leftW - 45, yy, std::to_string(c.get(g)), "little", 35);
-				yy += 18;
 				auto apply = [this, c, changed](int v)
 				{
 					if (c.get(setup.generator) != c.normalize(v))
@@ -1530,105 +946,348 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 					}
 				};
 				if ((c.maximum - c.minimum) / c.step > 8)
-					ui.slider(id, {x + 8, yy, leftW - 32, touch ? 48 : 22},
-							  (c.get(g) - c.minimum) / c.step, 0, (c.maximum - c.minimum) / c.step,
-							  [c, apply](int i) { apply(c.minimum + i * c.step); });
+				{
+					fe::SliderOptions options;
+					options.valueText = std::to_string(c.get(g));
+					options.caption = tr(c.label);
+					left.push_back(fe::slider(id, (c.get(g) - c.minimum) / c.step, 0, (c.maximum - c.minimum) / c.step,
+											  [c, apply](int i) { apply(c.minimum + i * c.step); }, options));
+				}
 				else
-					ui.stepper(id, {x + 8, yy, 130, touch ? 48 : 26}, c.get(g), c.minimum,
-							   c.maximum, apply, c.step);
-				yy += controlH + 6;
+				{
+					fe::StepperOptions options;
+					options.step = c.step;
+					left.push_back(fe::field(tr(c.label), fe::stepper(id, c.get(g), c.minimum, c.maximum, apply, options), {"", 160}));
+				}
 			}
 			if (!any)
-				yy +=
-					ui.paragraph(x + 5, yy, leftW - 22,
-								 tr(section == 1 ? "This landscape uses fixed resource placement."
-												 : "Dimensions and colony count are set above.")) +
-					8;
+				left.push_back(fe::caption(tr(section == 1 ? "This landscape uses fixed resource placement." : "Dimensions and colony count are set above.")));
 		}
-		ui.endRegion(yy - startY + 8);
 	}
-	ui.text(rightX, top,
-			setup.random ? tr(GenerationRequest::methodName(setup.generator.method))
-						 : mapHeader.getMapName(),
-			w < 800 ? "standard" : "menu", rightW);
-	std::string dimensions = validMap       ? std::to_string(preview->getLastWidth()) + " x " +
-												  std::to_string(preview->getLastHeight())
-							 : setup.random ? std::to_string(1 << setup.generator.wDec) + " x " +
-												  std::to_string(1 << setup.generator.hDec)
-											: "";
-	ui.text(rightX, top + 29,
-			dimensions + "  /  " + std::to_string(setup.capacity) + " " + tr("colonies"), "little",
-			rightW, true);
-	// The generated map's start quality (FEEDBACK 2026-09-14): the fairness the lobby ranked its
-	// candidate rolls by, and a small (i) that opens the breakdown behind it. Fairness is the
-	// whole ranking now, so there is no second number to show beside it.
+	auto leftColumn = fe::column(std::move(left), {p.pt(8)});
+
+	std::vector<Element> right;
+	right.push_back(narrow ? fe::paragraph(setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName())
+						   : fe::heading(setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName()));
+	const std::string dimensions = validMap ? std::to_string(preview->getLastWidth()) + " x " + std::to_string(preview->getLastHeight())
+							   : setup.random ? std::to_string(1 << setup.generator.wDec) + " x " + std::to_string(1 << setup.generator.hDec)
+											  : "";
+	std::vector<Element> infoRow{fe::expanded(fe::caption(dimensions + "  /  " + std::to_string(setup.capacity) + " " + tr("colonies")))};
+	// The generated map's start quality: the fairness the lobby ranked its candidate rolls by,
+	// and a small (i) that opens the breakdown behind it.
 	if (setup.random && (validMap || previewBusy()) && quality.measured)
 	{
 		char summary[96];
 		std::snprintf(summary, sizeof summary, "%s %.2f", tr("Fairness").c_str(), quality.fairness);
-		const int sw = Toolkit::getFont("little")->getStringWidth(summary);
-		ui.text(rightX + rightW - sw - (touch ? 58 : 30), top + 29, summary, "little", sw + 2,
-				true);
-		ui.button(
-			"quality/info",
-			{rightX + rightW - (touch ? 50 : 24), top + (touch ? 10 : 26), touch ? 48 : 22,
-			 touch ? 48 : 20},
-			"i", [this] { showStartQuality(); }, false, true, false, "little");
+		infoRow.push_back(fe::caption(summary));
+		infoRow.push_back(fe::button("quality/info", "i", [this] { showStartQuality(); }, {false, false, true, false, false, false, SDLK_UNKNOWN, fe::FontRole::Support, 24}));
 	}
-	// A random map keeps a row under its preview for the Randomize button.
-	const int previewLimit = std::max(1, h - (setup.random ? 210 : 174));
-	int size = std::min(rightW, previewLimit);
-	int previewW = size, previewH = size;
+	right.push_back(fe::row(std::move(infoRow), {p.pt(6), fe::CrossAlign::Center}));
 	// A reroll invalidates the launch snapshot, not the image being displayed.
 	// Keep its geometry, terrain and instructions until the replacement is ready.
 	const bool displayPreview = validMap || (previewBusy() && preview->isThumbnailLoaded());
-	const int mapW = displayPreview ? preview->getLastWidth()
-					 : setup.random ? (1 << setup.generator.wDec)
-									: 0;
-	const int mapH = displayPreview ? preview->getLastHeight()
-					 : setup.random ? (1 << setup.generator.hDec)
-									: 0;
-	if (mapW > 0 && mapH > 0)
-	{
-		const auto fitted = MapPreviewGeometry::fit({0, 0, rightW, previewLimit}, mapW, mapH);
-		previewW = fitted.w;
-		previewH = fitted.h;
-	}
-	int px = rightX + (rightW - previewW) / 2, py = top + 51;
-	int helpHeight = 0;
-	ui.box({px - 3, py - 3, previewW + 6, previewH + 6}, ui.line);
+	const int previewSize = narrow ? 240 : 320;
 	if (displayPreview)
 	{
-		preview->setScreenPosition(px - (gfx->getW() - 640) / 2, py - (gfx->getH() - 480) / 2);
-		preview->setDimensions(previewW, previewH);
-		preview->paint();
-		helpHeight = ui.paragraph(rightX, py + previewH + 7, rightW, tr("Map preview controls"),
-								  "little", true);
+		right.push_back(fe::center(fe::mapPreview("map/preview", *preview, previewSize)));
+		right.push_back(fe::caption(tr("Map preview controls")));
 	}
 	else
 	{
-		ui.box({px, py, previewW, previewH}, Color(211, 223, 197));
-		helpHeight = ui.paragraph(
-			rightX, py + previewH + 7, rightW,
-			tr(previewBusy() ? "Map preview controls"
-							 : "Preview unavailable. Adjust settings or start to retry."),
-			"little", true);
+		fe::CardOptions placeholder;
+		placeholder.color = GAGCore::Color(211, 223, 197);
+		placeholder.shadow = false;
+		placeholder.padding = 0;
+		right.push_back(fe::center(fe::card(fe::sized({p.pt(previewSize), p.pt(previewSize)}, fe::empty()), placeholder)));
+		right.push_back(fe::caption(tr(previewBusy() ? "Map preview controls" : "Preview unavailable. Adjust settings or start to retry.")));
 	}
 	if (setup.random)
+		right.push_back(fe::center(fe::button("map/randomize", tr("Randomize"),
+											  [this]
+											  {
+												  // Same settings, new seed: generateMap draws a fresh root seed on every run.
+												  invalidatePreview();
+												  previewDue = SDL_GetTicks();
+											  },
+											  {false, false, setup.validation().empty() && !previewBusy()})));
+	auto rightColumn = fe::column(std::move(right), {p.pt(8)});
+	if (narrow)
+		return fe::scroll("lobby/map", fe::column({rightColumn, leftColumn}, {p.pt(12)}));
+	return fe::row({fe::expanded(fe::scroll("lobby/map", leftColumn), 11), fe::expanded(fe::scroll("lobby/map/side", rightColumn), 9)},
+				   {p.pt(16), fe::CrossAlign::Stretch});
+}
+
+Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
+{
+	std::vector<Element> parts;
+	const int selectedFormat = setup.format == "FFA" ? 0 : setup.format == "2 vs 2" ? 1 : setup.format == "You vs all" ? 2 : -1;
+	parts.push_back(fe::segments("format", localized({"FFA", "2 vs 2", "You vs all"}), selectedFormat, [this](int i) { setup.presetTeams(i); },
+								 {true, setup.activeColonies() == 4, bool(setup.humanColony()) && setup.activeColonies() > 1}));
+	parts.push_back(fe::caption(std::to_string(setup.controllerCount()) + " / 12 " + tr("controllers")));
+	const auto controllerNames = localized({"You", "AI", "You + AI", "Closed"});
+	for (int i = 0; i < setup.capacity; ++i)
 	{
-		const int buttonW = std::min(rightW, 160);
-		ui.button(
-			"map/randomize",
-			{rightX + (rightW - buttonW) / 2, py + previewH + helpHeight + 17, buttonW,
-			 touch ? 48 : 30},
-			tr("Randomize"),
-			[this]
-			{
-				// Same settings, new seed: generateMap draws a fresh root seed on every run, so this
-				// only has to ask for the preview now instead of after the edit debounce.
-				invalidate();
-				previewDue = SDL_GetTicks();
-			},
-			false, setup.validation().empty() && !previewBusy());
+		auto &c = setup.colonies[i];
+		const GAGCore::Color color = i < int(preview->starts.size()) ? preview->starts[std::size_t(i)].color : GAGCore::Color(160, 172, 149);
+		const std::string id = "colony/" + std::to_string(i);
+		std::vector<bool> enabled;
+		for (int j = 0; j < 4; ++j)
+		{
+			auto draft = setup;
+			enabled.push_back(draft.setController(i, (CustomGameSetup::Controller)j));
+		}
+		fe::ChoiceOptions controllerOptions;
+		controllerOptions.enabled = enabled;
+		controllerOptions.help = tr("Shared control needs a free controller slot (maximum 12).");
+		auto controller = fe::choice(id + "/controller", controllerNames, c.controller,
+									 [this, i](int value) { setup.setController(i, (CustomGameSetup::Controller)value); }, controllerOptions);
+		std::vector<std::string> teams;
+		for (int j = 0; j < setup.capacity; ++j)
+			teams.push_back(tr("Team") + " " + std::to_string(j + 1));
+		auto team = fe::choice(id + "/team", teams, c.alliance,
+							   [this, i](int value)
+							   {
+								   setup.colonies[i].alliance = value;
+								   setup.format = "Custom teams";
+							   });
+		const bool hasAI = c.controller == CustomGameSetup::Computer || c.controller == CustomGameSetup::Shared;
+		Element aiControls;
+		if (hasAI)
+		{
+			std::vector<std::string> names;
+			for (int j : AINames::selectionOrder())
+				names.push_back(AINames::getAISelectorText(j));
+			aiControls = fe::row({fe::expanded(fe::choice(id + "/ai", names, AINames::selectionIndex(c.ai),
+														  [this, i](int value) { setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[std::size_t(value)]; })),
+								  fe::button(id + "/info", tr("AI strategy"), [this, i] { showAIProfile(i); })},
+								 {p.pt(6), fe::CrossAlign::Center});
+		}
+		else
+			aiControls = fe::caption(tr(c.controller == CustomGameSetup::Human ? "You control this colony." : "Closed"));
+		auto identity = fe::row({fe::swatch(color, 30), fe::label(std::to_string(i + 1) + "  " + colorName(color))}, {p.pt(8), fe::CrossAlign::Center});
+		const std::string summary = c.controller == CustomGameSetup::Human ? username
+									: c.controller == CustomGameSetup::Closed ? tr("This colony will not join the match.")
+																			  : AINames::getAISummary(c.ai);
+		std::vector<Element> body;
+		if (narrow)
+			body = {identity, controller, aiControls, team};
+		else
+			body = {fe::row({fe::width(p.pt(150), identity), fe::width(p.pt(150), controller), fe::expanded(aiControls), fe::width(p.pt(120), team)},
+							{p.pt(8), fe::CrossAlign::Center})};
+		body.push_back(fe::caption(summary));
+		if (c.controller == CustomGameSetup::Shared)
+			body.push_back(fe::caption(tr("You and the AI both issue orders. Uses two controller slots.")));
+		fe::CardOptions cardOptions;
+		cardOptions.shadow = false;
+		cardOptions.padding = p.pt(10);
+		parts.push_back(fe::card(fe::column(std::move(body), {p.pt(6)}), cardOptions));
 	}
+	return fe::scroll("lobby/players", fe::column(std::move(parts), {p.pt(8)}));
+}
+
+Element CustomGameScreen::ruleControl(int index, const Presentation &p, std::string &help)
+{
+	auto apply = [this, index](int value)
+	{
+		if (index == 0)
+			setup.prestige = value == 0;
+		if (index == 1)
+			setup.revealed = value;
+		if (index == 2)
+			setup.locked = value == 0;
+		if (index == 3)
+			setup.speed = value;
+		if (index == 5)
+			setup.noResourceGrowth = value;
+		if (index == 6)
+			setup.resourceScarcity = value;
+		if (index == 7)
+			setup.instantConstruction = value;
+		if (index == 8)
+			setup.stockpileStart = value;
+		if (index == 9)
+			setup.noHunger = value;
+		if (index == 10)
+			setup.unitUpgradesDisabled = value;
+		if (index == 11)
+			setup.glassCannonLevel = value;
+		if (index == 12)
+			setup.unitsFearless = value;
+		if (index == 13)
+			setup.permadeathDisabled = value;
+		if (index == 14)
+			setup.peacefulMode = value;
+		if (index == 15)
+			setup.buildingHpLevel = value;
+		if (index == 17)
+			setup.suddenDeathMinutes = value;
+		setup.ruleset = "Custom";
+	};
+	const std::string id = "rule/" + std::to_string(index);
+	if (index < 3)
+	{
+		auto options = index == 0 ? localized({"Conquest or prestige", "Conquest only"})
+					   : index == 1 ? localized({"Explore as you play", "Terrain revealed"})
+									: localized({"Locked teams", "Can change in game"});
+		help = tr(index == 0 ? "Conquest only removes prestige victory; map scripts still apply."
+				  : index == 1 ? "Revealed terrain does not reveal all enemy activity."
+							   : "Choose whether teams can change during the match.");
+		return fe::segments(id, options, index == 0 ? !setup.prestige : index == 1 ? setup.revealed : !setup.locked, apply);
+	}
+	if (index == 3)
+	{
+		auto settings = globalContainer->settings;
+		std::vector<std::string> options;
+		for (int i = 0; i <= Settings::GAME_SPEED_MAXIMUM; ++i)
+		{
+			settings.gameSpeed = i;
+			options.push_back(settings.getGameSpeedText());
+		}
+		help = tr("Changes the pace of the whole simulation.");
+		return fe::choice("rule/speed", options, setup.speed, apply);
+	}
+	if (index == 4)
+	{
+		help = tr(setup.random ? "More workers jump-start colony growth. Changes the generated map." : "Premade maps retain their authored starting units.");
+		if (!setup.random)
+			return fe::caption(tr("Map-defined starting units"));
+		const auto &control = GenerationRequest::control(setup.generator.method, "workers");
+		return fe::stepper("rule/workers", setup.generator.nbWorkers, control.minimum, control.maximum,
+						   [this](int v)
+						   {
+							   setup.generator.nbWorkers = v;
+							   ++setup.mapRevision;
+							   setup.ruleset = "Custom";
+							   invalidatePreview();
+						   });
+	}
+	if (index == 5 || index == 7 || index == 9)
+	{
+		auto options = index == 5 ? localized({"Grow normally", "No growth"})
+					   : index == 7 ? localized({"Normal construction", "Instant"})
+									: localized({"Units get hungry", "No hunger"});
+		const bool current = index == 5 ? setup.noResourceGrowth : index == 7 ? setup.instantConstruction : setup.noHunger;
+		help = tr(index == 5 ? "Resources never grow or spread across the map."
+				  : index == 7 ? "Building sites complete immediately, skipping delivery."
+							   : "Units never grow hungry and never starve.");
+		return fe::segments(id, options, current, apply);
+	}
+	if (index == 6 || index == 8)
+	{
+		auto options = index == 6 ? localized({"Off (today's growth)", "Scarce (2x slower)", "Very scarce (4x slower)", "Extremely scarce (8x slower)"})
+								  : localized({"None (today's default)", "Small (+50 each)", "Medium (+150 each)", "Large (+300 each)"});
+		help = tr(index == 6 ? "Slows how often resources grow or spread across the map."
+							 : "Seeds each team's shared market/exchange resource pool at game start.");
+		return fe::choice(id, options, index == 6 ? setup.resourceScarcity : setup.stockpileStart, apply);
+	}
+	if (index == 10 || index == 12 || index == 13 || index == 14)
+	{
+		auto options = index == 10 ? localized({"Trains normally", "No upgrades"})
+					   : index == 12 ? localized({"Retreats when damaged", "Fearless"})
+					   : index == 13 ? localized({"Can die permanently", "No permadeath"})
+									 : localized({"Normal combat", "Peaceful mode"});
+		const bool current = index == 10 ? setup.unitUpgradesDisabled : index == 12 ? setup.unitsFearless : index == 13 ? setup.permadeathDisabled : setup.peacefulMode;
+		help = tr(index == 10 ? "Units still visit schools but never gain a level."
+				  : index == 12 ? "Units fight to the death instead of retreating to heal."
+				  : index == 13 ? "Units are never permanently lost -- HP just stops at 1."
+								: "Disables all combat between every team.");
+		return fe::segments(id, options, current, apply);
+	}
+	if (index == 11 || index == 15)
+	{
+		auto options = index == 11 ? localized({"Off (today's balance)", "Glass cannon x2", "Glass cannon x3"})
+								   : localized({"Off (today's HP)", "Fortress x5", "Fortress x10"});
+		help = tr(index == 11 ? "Higher tiers deal more damage but have less HP and armor." : "Higher tiers give every building much more HP.");
+		return fe::choice(id, options, index == 11 ? setup.glassCannonLevel : setup.buildingHpLevel, apply);
+	}
+	if (index == 16)
+	{
+		help = tr(setup.random ? "Starting units spawn already leveled up. Changes the generated map." : "Premade maps retain their authored starting units.");
+		if (!setup.random)
+			return fe::caption(tr("Map-defined starting units"));
+		return fe::choice("rule/startingLevel", localized({"Standard", "Veteran", "Elite", "Legendary"}), setup.startingUnitLevel,
+						  [this](int v)
+						  {
+							  setup.startingUnitLevel = v;
+							  ++setup.mapRevision;
+							  setup.ruleset = "Custom";
+							  invalidatePreview();
+						  });
+	}
+	const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
+	const int current = int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) - minutes.begin());
+	help = tr("Match ends at the timer; highest prestige at that instant wins.");
+	return fe::choice("rule/suddenDeath", localized({"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"}),
+					  current < int(minutes.size()) ? current : 0, [apply, minutes](int v) { apply(minutes[std::size_t(v)]); });
+}
+
+Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
+{
+	std::vector<Element> parts;
+	parts.push_back(fe::paragraph(tr("Try a ruleset, then make it your own.")));
+	const auto names = localized({"Standard", "Quick clash", "Open book", "Last colony standing"});
+	const auto effects = localized({"Classic colony building", setup.random ? "8 workers / 2x speed" : "Premade: only speed changes (2x)",
+									"Start with terrain known", "Win through conquest"});
+	std::vector<Element> tiles;
+	for (int i = 0; i < 4; ++i)
+	{
+		fe::ButtonOptions options;
+		options.selected = tr(setup.ruleset) == names[std::size_t(i)];
+		tiles.push_back(fe::button("ruleset/" + std::to_string(i), names[std::size_t(i)] + "\n" + effects[std::size_t(i)],
+								   [this, i]
+								   {
+									   auto rev = setup.mapRevision;
+									   setup.presetRules(i);
+									   if (setup.random && rev != setup.mapRevision)
+										   invalidatePreview();
+								   },
+								   options));
+	}
+	parts.push_back(fe::wrap(std::move(tiles), {-1, p.pt(180)}));
+	// Rules are numbered in the order they were added, so a later rule can belong to an earlier
+	// category: list them grouped by category, in each category's first-appearance order.
+	std::vector<int> order;
+	for (int first = 0; first < int(CustomGameSetup::ruleDefinitions.size()); ++first)
+	{
+		const std::string heading = CustomGameSetup::ruleDefinitions[std::size_t(first)].category;
+		bool seen = false;
+		for (int earlier = 0; earlier < first; ++earlier)
+			seen = seen || heading == CustomGameSetup::ruleDefinitions[std::size_t(earlier)].category;
+		if (!seen)
+			for (int index = first; index < int(CustomGameSetup::ruleDefinitions.size()); ++index)
+				if (heading == CustomGameSetup::ruleDefinitions[std::size_t(index)].category)
+					order.push_back(index);
+	}
+	std::string category;
+	for (int index : order)
+	{
+		const auto definition = CustomGameSetup::ruleDefinitions[std::size_t(index)];
+		if (category != definition.category)
+		{
+			category = definition.category;
+			if (category != definition.label)
+				parts.push_back(fe::padding({0, p.pt(8), 0, 0}, fe::label(tr(category))));
+		}
+		std::string help;
+		auto control = ruleControl(index, p, help);
+		const std::string label = tr(definition.label) + (setup.ruleChanged(index) ? " *" : "");
+		fe::FieldOptions fieldOptions;
+		fieldOptions.help = help;
+		fieldOptions.controlWidth = 360;
+		fe::CardOptions cardOptions;
+		cardOptions.shadow = false;
+		cardOptions.padding = p.pt(10);
+		parts.push_back(fe::card(fe::field(label, control, fieldOptions), cardOptions));
+	}
+	parts.push_back(fe::row({fe::button("rules/restore", tr("Restore standard rules"),
+										[this]
+										{
+											auto rev = setup.mapRevision;
+											setup.presetRules(0);
+											if (setup.random && rev != setup.mapRevision)
+												invalidatePreview();
+										}),
+							 fe::expanded(fe::caption(tr("* Changed from standard.")))},
+							{p.pt(12), fe::CrossAlign::Center}));
+	return fe::scroll("lobby/rules", fe::column(std::move(parts), {p.pt(8)}));
 }

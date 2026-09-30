@@ -62,7 +62,6 @@ AllyTeamWidgetIndexTest.cpp
 
 EditorWidgetLayoutTest.cpp
 
-GUIListSelectionTest.cpp
 
 ScrollWheelTargetTest.cpp
 

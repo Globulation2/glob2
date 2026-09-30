@@ -20,14 +20,12 @@ struct Probe : Screen
     int created = 0, destroyed = 0, paints = 0, inputs = 0, timers = 0;
     Uint32 lastTick = 0;
     bool closeOnCreate = false, closeOnTimer = false;
-    void onAction(Widget*, Action action, int, int) override
+    void onScreenCreated() override
     {
-        if (action == SCREEN_CREATED) {
-            ++created;
-            if (closeOnCreate) endExecute(7);
-        }
-        if (action == SCREEN_DESTROYED) ++destroyed;
+        ++created;
+        if (closeOnCreate) endExecute(7);
     }
+    void onScreenDestroyed() override { ++destroyed; }
     void paint() override { ++paints; }
     void onTimer(Uint32 tick) override
     {
@@ -182,7 +180,6 @@ int main()
     // A child request must return before construction/dispatch starts. The
     // parent stays alive through child completion and resumes on a later frame.
     struct Stacked : Screen {
-        void onAction(Widget*, Action, int, int) override {}
         std::function<void()> input;
         int paints = 0;
         void paint() override { ++paints; }
@@ -275,7 +272,6 @@ int main()
         BorrowingScreen(std::weak_ptr<int> resource, bool& alive, bool complete)
             : resource(resource), aliveDuringDestruction(alive), complete(complete) {}
         ~BorrowingScreen() override { aliveDuringDestruction = !resource.expired(); }
-        void onAction(Widget*, Action, int, int) override {}
         void onTimer(Uint32) override { if (complete) endExecute(0); }
     };
     for (int mode = 0; mode < 3; ++mode) {

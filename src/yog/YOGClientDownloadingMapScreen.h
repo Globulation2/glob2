@@ -1,64 +1,44 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
 #pragma once
-
-
-#include <vector>
-#include "Glob2Screen.h"
-#include <memory>
-#include "YOGDownloadableMapInfo.h"
 #include "YOGClientMapDownloader.h"
-
-namespace GAGGUI
-{
-	class Text;
-	class TextInput;
-	class TextArea;
-	class TextButton;
-	class TabScreen;
-	class Widget;
-	class List;
-	class ProgressBar;
-	class ScreenStack;
-}
+#include "YOGDownloadableMapInfo.h"
+#include "ui/FrontendUI.h"
+#include <memory>
 
 class YOGClient;
 class MapPreview;
-
-using namespace GAGGUI;
-
-///This screen appears when you are downloading a map
-class YOGClientDownloadingMapScreen : public Glob2Screen
+namespace GAGGUI
 {
-public:
+class ScreenStack;
+}
 
-	/// Constructor
-	YOGClientDownloadingMapScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info);
+///Shown while a map downloads from YOG.
+class YOGClientDownloadingMapScreen : public Glob2UI::Screen
+{
+  public:
+	YOGClientDownloadingMapScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo &info);
 	~YOGClientDownloadingMapScreen() override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void onTimer(Uint32 tick) override;
 
-	///Responds to widget events
-	void onAction(Widget *source, Action action, int par1, int par2);
-	///Responds to timer events
-	void onTimer(Uint32 tick);
-	
 	enum
 	{
 		CANCEL,
 		CONNECTIONLOST,
 		FINISHED,
 	};
-private:
-	ScreenStack& screens;
+
+  protected:
+	void onEscape() override { cancel(); }
+
+  private:
+	void cancel();
+	GAGGUI::ScreenStack &screens;
 	YOGDownloadableMapInfo info;
-	MapPreview* preview;
+	std::unique_ptr<MapPreview> preview;
 	std::shared_ptr<YOGClient> client;
-	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapSize;
-	Text *authorName;
-	ProgressBar* downloadStatus;
+	std::string mapName, mapInfo, mapSize, authorName;
+	int downloadPercent = -1;
 	YOGClientMapDownloader downloader;
 };
-
-
-

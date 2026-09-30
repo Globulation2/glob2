@@ -1,211 +1,97 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #include "CreditScreen.h"
 #include "GlobalContainer.h"
 #include "render/UnitAnimation.h"
-#include <iostream>
-#include <string>
-#include <GUIButton.h>
-#include <GUITextArea.h>
-#include <InterfacePresentation.h>
-using namespace GAGGUI;
-#include <Toolkit.h>
-#include <StringTable.h>
-#include <Stream.h>
 #include <FileManager.h>
-using namespace GAGCore;
+#include <Stream.h>
+#include <Toolkit.h>
+#include <iostream>
 
+using namespace Glob2UI;
 
-// New class for an auto-scrolling credit screen.
-
+namespace
+{
 // Credits decorations use worker walking direction 3.
-static constexpr int kWorkerWalkFrameBase = unitAnimationFrame(64, 3, 0);
-static constexpr int kWorkerWalkFrameCount = UNIT_ANIMATION_FRAMES_PER_DIRECTION;
-
-class ScrollingText:public RectangularWidget
-{
-protected:
-	std::string filename;
-	std::string font;
-	std::vector<std::string> text;
-	std::vector<int> lineWidths;
-	int offset;
-	// whether the units sprite contains the worker walk frames; when false,
-	// the '*' decoration is skipped instead of indexing the sprite out of range
-	bool unitFramesAvailable;
-
-	// cache, recomputed on internalInit
-	GAGCore::Font *fontPtr;
-
-public:
-	ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string filename);
-	virtual ~ScrollingText() { }
-	virtual void internalInit(void);
-	virtual void paint(void);
-	virtual void onTimer(Uint32 tick);
-};
-
-////////////////////////////////////////////////
-////////////////////////////////////////////////
-
-
-ScrollingText::ScrollingText(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string filename)
-:RectangularWidget()
-{
-	this->x = x;
-	this->y = y;
-	this->w = w;
-	this->h = h;
-	this->hAlignFlag = hAlign;
-	this->vAlignFlag = vAlign;
-	
-	offset = 0;
-	unitFramesAvailable = false;
-
-	assert(font.size());
-	assert(filename.size());
-	this->font = font;
-	this->filename = filename;
-	fontPtr = NULL;
-	
-	// load text; InputLineStream owns the backend and deletes it in its
-	// destructor, so a stack object releases the file handle even if
-	// readLine() throws
-	InputLineStream inputLineStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
-	if (inputLineStream.isEndOfStream())
-	{
-		std::cerr << "ScrollingText::ScrollingText() : error, can't open file " << filename << std::endl;
-	}
-	else
-	{
-		while (!inputLineStream.isEndOfStream())
-		{	// This is the nice way to do it
-			text.push_back(inputLineStream.readLine());
-		}
-	}
-}
-
-void ScrollingText::internalInit(void)
-{
-	fontPtr = Toolkit::getFont(font.c_str());
-	assert(fontPtr);
-
-	unitFramesAvailable = globalContainer->units
-		&& (globalContainer->units->getFrameCount() >= kWorkerWalkFrameBase + kWorkerWalkFrameCount);
-	if (!unitFramesAvailable)
-		std::cerr << "ScrollingText::internalInit() : warning, units sprite lacks worker walk frames "
-			<< kWorkerWalkFrameBase << ".." << (kWorkerWalkFrameBase + kWorkerWalkFrameCount - 1)
-			<< ", credits decoration disabled" << std::endl;
-
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-	offset = -h + 25;
-	
-	lineWidths.clear();
-	for (size_t i = 0; i < text.size(); i++)
-	{
-		std::string &s = text[i];
-		if (s.size() && s[0]!='\n')
-		{
-			std::string::size_type f = s.find('<');
-			std::string::size_type l = s.rfind('>');
-			// If we can find a "<" and a ">" in this line
-			if ((f != std::string::npos) && (l != std::string::npos))
-			{
-				// Rips off the e-mail addresses
-				s.erase(f, l-f+1);
-			}
-		}
-		lineWidths.push_back(fontPtr->getStringWidth(s.c_str()));
-	}
-}
-
-void ScrollingText::paint()
-{
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-	
-	assert(parent);
-	assert(parent->getSurface());
-
-	int yPos = y;
-	// Mask negative scroll offsets and preserve the eight-scroll-step cycle.
-	const int imgid = kWorkerWalkFrameBase + ((offset & 7) * UNIT_ANIMATION_FRAME_MULTIPLIER);
-
-	for (size_t i = 0; i < text.size(); i++)
-	{
-		std::string s = text[i]; // s is one line of the thingy
-
-		// If the line exists and is not empty
-		if (s.size() && s[0]!='\n')
-		{
- 			std::string::size_type deco = s.find('*');
-			// If we can find a star in this line
-			if (deco != std::string::npos)
-			{
-				if (unitFramesAvailable)
-				{
-					int px = 2*h+(offset-yPos)*4;
-					int py = yPos-offset;
-
-					Sprite *unitSprite=globalContainer->units;
-					unitSprite->setBaseColor(128, 128, 128);
-					int decX = (unitSprite->getW(imgid)-32)>>1;
-					int decY = (unitSprite->getH(imgid)-32)>>1;
-					globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
-				}
-
-				yPos += 20;
-			}
-			else
-				parent->getSurface()->drawString(x + ((w-lineWidths[i])>>1), yPos-offset, fontPtr, s.c_str());
-			yPos += 20;
-		}
-		else
-		{
-			yPos += 6;
-		}
-	}
-}
-
-void ScrollingText::onTimer(Uint32 tick)
-{
-	offset++;
-}
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-
+constexpr int kWorkerWalkFrameBase = unitAnimationFrame(64, 3, 0);
+constexpr int kWorkerWalkFrameCount = UNIT_ANIMATION_FRAMES_PER_DIRECTION;
+} // namespace
 
 CreditScreen::CreditScreen()
 {
-	addWidget(new TextButton(20, 20, 100,  40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Back]"), 0, 27));
-
-	if (phonePresentationRequested())
+	// InputLineStream owns the backend and releases the file even if readLine() throws.
+	GAGCore::InputLineStream input(
+		GAGCore::Toolkit::getFileManager()->openInputStreamBackend("data/authors.txt"));
+	if (input.isEndOfStream())
+		std::cerr << "CreditScreen: can't open data/authors.txt" << std::endl;
+	while (!input.isEndOfStream())
 	{
-		enablePhoneForm();
-		InputLineStream input(
-			Toolkit::getFileManager()->openInputStreamBackend("data/authors.txt"));
-		std::string credits;
-		while (!input.isEndOfStream())
-		{
-			auto line = input.readLine();
-			const auto first = line.find('<'), last = line.rfind('>');
-			if (first != std::string::npos && last != std::string::npos && last >= first)
-				line.erase(first, last - first + 1);
-			if (line.find('*') == std::string::npos)
-				credits += line + "\n";
-		}
-		addWidget(new TextArea(0, 0, 0, 0, ALIGN_FILL, ALIGN_FILL, "standard", true, credits));
+		auto line = input.readLine();
+		// Rip out e-mail addresses.
+		const auto first = line.find('<'), last = line.rfind('>');
+		if (first != std::string::npos && last != std::string::npos && last >= first)
+			line.erase(first, last - first + 1);
+		Line entry;
+		entry.decoration = line.find('*') != std::string::npos;
+		entry.text = entry.decoration ? std::string() : line;
+		lines.push_back(std::move(entry));
 	}
-	else
-		addWidget(
-			new ScrollingText(0, 0, 0, 0, ALIGN_FILL, ALIGN_FILL, "standard", "data/authors.txt"));
 }
 
-void CreditScreen::onAction(Widget *source, Action action, int par1, int par2)
+Element CreditScreen::build(const Presentation &p)
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-		endExecute(par1);
+	auto *units = globalContainer ? globalContainer->units : nullptr;
+	const bool decorations =
+		units && units->getFrameCount() >= kWorkerWalkFrameBase + kWorkerWalkFrameCount;
+	std::vector<Element> rows;
+	// Start below the viewport so the text scrolls in, as the original did.
+	rows.push_back(spacer(p.pt(240)));
+	for (const auto &line : lines)
+	{
+		if (line.decoration)
+		{
+			if (!decorations)
+				continue;
+			rows.push_back(center(canvas("", {p.pt(32), p.pt(32)},
+										 [this, units](Canvas &c, Rect r, const Frame &)
+										 {
+											 const int frame = kWorkerWalkFrameBase +
+															   (walkFrame & 7) * UNIT_ANIMATION_FRAME_MULTIPLIER;
+											 units->setBaseColor(128, 128, 128);
+											 const int dx = (units->getW(frame) - 32) / 2, dy = (units->getH(frame) - 32) / 2;
+											 c.drawSprite({r.x - dx, r.y - dy}, units, frame);
+										 })));
+		}
+		else if (line.text.empty())
+			rows.push_back(spacer(p.pt(6)));
+		else
+			rows.push_back(paragraph(line.text, {FontRole::Body, false, TextAlign::Center}));
+	}
+	rows.push_back(spacer(p.pt(120)));
+	auto body = scroll("credits", column(std::move(rows), {p.pt(4)}), {false, false});
+	return column({expanded(body), actions({{"back", tr("[Back]"), [this] { endExecute(0); }, false, SDLK_ESCAPE}}, p)},
+				  {p.pt(8)});
+}
+
+void CreditScreen::onTimer(Uint32 tick)
+{
+	if (tick - lastStep < 40)
+		return;
+	lastStep = tick;
+	++walkFrame;
+	if (!autoScroll)
+		return;
+	if (auto *credits = host().find("credits"))
+	{
+		if (credits->scrollOffset() >= credits->scrollMaximum())
+			autoScroll = false;
+		else
+			credits->scrollBy(1, host());
+	}
+}
+
+void CreditScreen::onEvent(const SDL_Event &event)
+{
+	if (event.type == SDL_MOUSEWHEEL || event.type == SDL_FINGERMOTION || event.type == SDL_MOUSEBUTTONDOWN)
+		autoScroll = false;
 }

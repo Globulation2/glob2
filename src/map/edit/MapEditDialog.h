@@ -4,41 +4,18 @@
 
 #pragma once
 
-#include "GUIBase.h"
 #include "Team.h"
+#include "ui/FrontendUI.h"
 #include <string>
-#include <HostViewport.h>
-
-namespace GAGCore
-{
-class Sprite;
-class Font;
-} // namespace GAGCore
-using namespace GAGCore;
-namespace GAGGUI
-{
-class OverlayScreen;
-class TextButton;
-class Text;
-class TextInput;
-class ColorButton;
-class MultiTextButton;
-} // namespace GAGGUI
-using namespace GAGGUI;
-class Unit;
 
 class Game;
 
-///This is the map editor menu screen. It has 5 buttons. Its very similar to the in-game main menu
-class MapEditMenuScreen : public OverlayScreen
+///This is the map editor menu screen. It has 6 buttons. Its very similar to the in-game main menu
+class MapEditMenuScreen : public Glob2UI::InGameDialog
 {
   public:
 	MapEditMenuScreen();
-	void drawTouch();
-	bool eventTouch(SDL_Event event);
-	void cancelTouch() { touchHeld = -1; }
-	virtual ~MapEditMenuScreen() {}
-	void onAction(Widget *source, Action action, int par1, int par2);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
 	enum
 	{
@@ -50,15 +27,13 @@ class MapEditMenuScreen : public OverlayScreen
 		QUIT_EDITOR
 	};
 
-  private:
-	std::vector<std::pair<GAGCore::ViewRect, int>> touchControls;
-	int touchHeld = -1;
-	void prepareTouch();
+  protected:
+	void onEscape() override { finish(RETURN_EDITOR); }
 };
 
 ///This is a text info box. It is used primarily for entering the names of the script areas,
 ///however it is generic enough to be recycled for other purposes.
-class AskForTextInput : public OverlayScreen
+class AskForTextInput : public Glob2UI::InGameDialog
 {
   public:
 	enum
@@ -67,46 +42,33 @@ class AskForTextInput : public OverlayScreen
 		CANCEL
 	};
 	AskForTextInput(const std::string &label, const std::string &current);
-	void onAction(Widget *source, Action action, int par1, int par2);
-	std::string getText();
-	void drawTouch();
-	// Explicit viewport supports keyboard-clearance previews and host tests.
-	void drawTouchInViewport(GAGCore::ViewRect safe);
-	bool eventTouch(SDL_Event event);
-	void cancelTouch();
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	// The confirmed text after OK; the original text after Cancel.
+	std::string getText() const;
+	// The draft as typed so far.
+	const std::string &draft() const { return currentText; }
+	void setText(const std::string &value);
+	void confirm();
+
+  protected:
+	void onEscape() override { finish(CANCEL); }
 
   private:
-	friend class GameGUITouchHarness;
-	void prepareTouch();
-	void prepareTouch(GAGCore::ViewRect safe);
-	GAGCore::ViewRect touchBounds, touchInput, touchCancel, touchConfirm;
-	std::string touchPreedit;
-	int touchHeld = -1;
-	Sint64 touchFinger = -1;
-	TextInput *textEntry;
-	TextButton *ok;
-	TextButton *cancel;
-	Text *label;
 	std::string labelText;
-	std::string currentText;
+	std::string originalText, currentText;
 };
 
 ///This is the teams editor screen. This is the editor that allows the map creator to choose alliances and arrange teams
 ///in the map. This is primarily for campaign missions since these settings are overridden for custom games
-class TeamsEditor : public OverlayScreen
+class TeamsEditor : public Glob2UI::InGameDialog
 {
   public:
-	std::string phoneLabel(Widget *widget) const;
-	void drawTouch();
-	bool eventTouch(SDL_Event event);
-	void cancelTouch() { touchHeld = -1; }
-	TeamsEditor(Game *game);
-	virtual ~TeamsEditor() {}
-	void onAction(Widget *source, Action action, int par1, int par2);
-	///Rebuilds the game's GameHeader from scratch out of the widget state
+	explicit TeamsEditor(Game *game);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	///Rebuilds the game's GameHeader from scratch out of the slot state
 	///(it does not mutate the existing header). Active slots are packed
-	///into consecutive player numbers; each slot's ally-team widget index
-	///(0-based) is written back as ally team number widgetIndex + 1, the
+	///into consecutive player numbers; each slot's ally-team index
+	///(0-based) is written back as ally team number index + 1, the
 	///inverse of allyTeamNumberToWidgetIndex().
 	void generateGameHeader();
 
@@ -115,39 +77,25 @@ class TeamsEditor : public OverlayScreen
 		OK,
 		CANCEL
 	};
+	struct Slot
+	{
+		bool active = false;
+		int color = 0, ai = 0, ally = 0;
+	};
+	const Slot &slot(int index) const { return slots[index]; }
+	void setActive(int index, bool active);
+	void setColor(int index, int color);
+	void setAI(int index, int ai);
+	void setAlly(int index, int ally);
+	void confirm();
 
-	///Widget return codes are base + slot index, one base per widget row
-	///kind, so onAction can recover the slot from the code.
-	static constexpr int PLAYER_ACTIVE_BASE = 100;
-	static constexpr int COLOR_BASE = 200;
-	static constexpr int AI_SELECTOR_BASE = 300;
-	static constexpr int ALLY_TEAM_BASE = 400;
+  protected:
+	void onEscape() override { finish(CANCEL); }
+	bool fillHeight() const override { return true; }
+	double maxWidth() const override { return 760; }
 
   private:
-	struct TouchCell
-	{
-		GAGCore::ViewRect bounds;
-		Widget *widget;
-		std::string caption;
-		int slot;
-	};
-	std::vector<TouchCell> touchCells;
-	GAGCore::ViewRect touchBounds, touchRows;
-	double touchOffset = 0, touchMaximum = 0;
-	int touchHeld = -1;
-	GAGCore::ViewPoint touchDown;
-	bool touchMoved = false;
-	void prepareTouch();
 	Game *game;
-
-	//! Player enable/disable buttons
-	OnOffButton *isPlayerActive[Team::MAX_COUNT];
-	///List of the player names
-	Text *playerName[Team::MAX_COUNT];
-	//! Player colors
-	ColorButton *color[Team::MAX_COUNT];
-	//! Player ally teams
-	MultiTextButton *allyTeamNumbers[Team::MAX_COUNT];
-	//! Multi-text button containing an aiSelector
-	MultiTextButton *aiSelector[Team::MAX_COUNT];
+	Slot slots[Team::MAX_COUNT];
+	Glob2UI::Element slotRow(int index, const Glob2UI::Presentation &p, bool compact);
 };

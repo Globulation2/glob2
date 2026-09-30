@@ -1,134 +1,66 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #include "ChooseMapScreen.h"
 #include "FileImport.h"
-#include <ApplicationHost.h>
-#include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
+#include "Game.h"
 #include "GlobalContainer.h"
-#include <FormatableString.h>
-#include <GUIButton.h>
-#include <GUIText.h>
-#include <Toolkit.h>
-#include <StringTable.h>
-#include <Stream.h>
+#include <ApplicationHost.h>
 #include <BinaryStream.h>
+#include <FileManager.h>
+#include <FormatableString.h>
+#include <Stream.h>
+#include <Toolkit.h>
+#include <ctime>
+#include <iostream>
 #include <memory>
 
-#include "Game.h"
-#include "gui/MobileSafeArea.h"
-#include <InterfacePresentation.h>
+using namespace Glob2UI;
 
-ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, bool recurse,
-								 const char *alternateDirectory, const char *alternateExtension,
-								 const bool alternateRecurse)
+ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, bool,
+								 const char *alternateDirectory, const char *alternateExtension, bool)
+	: primary(directory, extension)
 {
-	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
-						Toolkit::getStringTable()->getString("[ok]"), OK, 13);
-	addWidget(ok);
-
-	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
-							Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27);
-	addWidget(cancel);
-
-	fileList = new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-								 "standard", directory, extension, recurse);
-	addWidget(fileList);
-
-	mapPreview =
-		new MapPreview(640 - 20 - 26 - 128, 70, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED);
-	addWidget(mapPreview);
-
-	currentDirectoryMode = DisplayRegular;
-
-	deleteMap = NULL;
-	if (strcmp(directory, "maps") == 0)
+	mapPreview = std::make_unique<MapPreview>();
+	if (std::string(directory) == "maps")
 	{
 		type1 = MAP;
 		type2 = GAME;
-
-		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu",
-						 Toolkit::getStringTable()->getString("[choose map]"));
+		title = tr("[choose map]");
 	}
-	else if (strcmp(directory, "games") == 0)
+	else if (std::string(directory) == "games")
 	{
 		type1 = GAME;
 		type2 = REPLAY;
-
-		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu",
-						 Toolkit::getStringTable()->getString("[choose game]"));
-		deleteMap =
-			new TextButton(250, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu",
-						   Toolkit::getStringTable()->getString("[delete]"), DELETEGAME);
-		addWidget(deleteMap);
-		if (GAGCore::ApplicationHost::canExportFiles())
-		{
-			exportButton =
-				new TextButton(250, 300, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-							   "menu", Toolkit::getStringTable()->getString("[export file]"), 5);
-			addWidget(exportButton);
-		}
+		title = tr("[choose game]");
+		canDelete = true;
+		canExport = GAGCore::ApplicationHost::canExportFiles();
 	}
 	else
 	{
 		type1 = GAME;
 		type2 = NONE;
-
-		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu",
-						 Toolkit::getStringTable()->getString("[choose game]"));
+		title = tr("[choose game]");
 	}
-	addWidget(title);
-	mapName = new Text(440, 60 + 128 + 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
-					   "", 180);
-	addWidget(mapName);
-	mapInfo = new Text(440, 60 + 128 + 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
-					   "", 180);
-	addWidget(mapInfo);
-	mapVersion = new Text(440, 60 + 128 + 75, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-						  "standard", "", 180);
-	addWidget(mapVersion);
-	mapSize = new Text(440, 60 + 128 + 100, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-					   "standard", "", 180);
-	addWidget(mapSize);
-	mapDate = new Text(440, 60 + 128 + 125, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-					   "standard", "", 180);
-	addWidget(mapDate);
-
 	if (alternateDirectory)
 	{
 		assert(type2 != NONE);
-
-		switchType = new TextButton(250, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-									"menu", loadableTypeName(type2).c_str(), SWITCHTYPE, 27);
-		addWidget(switchType);
-
-		alternateFileList =
-			new Glob2FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-							  "standard", alternateDirectory, alternateExtension, alternateRecurse);
-		addWidget(alternateFileList);
-		alternateFileList->visible = false;
+		alternate.emplace(alternateDirectory, alternateExtension ? alternateExtension : "");
 	}
-
 	if (GAGCore::ApplicationHost::canImportFiles())
 	{
-		importButton =
-			new TextButton(20, 470, 85, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-						   "standard", Toolkit::getStringTable()->getString("[import file]"), 6);
-		addWidget(importButton);
-		if (!exportButton)
-		{
-			exportButton = new TextButton(115, 470, 85, 30, ALIGN_SCREEN_CENTERED,
-										  ALIGN_SCREEN_CENTERED, "standard",
-										  Toolkit::getStringTable()->getString("[export file]"), 5);
-			addWidget(exportButton);
-		}
+		canImport = true;
+		canExport = true;
 	}
-	validMapSelected = false;
-	selectedType = NONE;
+	status = title;
 }
 
-ChooseMapScreen::~ChooseMapScreen() {}
+ChooseMapScreen::~ChooseMapScreen() = default;
+
+FileCatalog &ChooseMapScreen::activeCatalog()
+{
+	return showingAlternate && alternate ? *alternate : primary;
+}
 
 bool ChooseMapScreen::importBusy() const
 {
@@ -136,149 +68,194 @@ bool ChooseMapScreen::importBusy() const
 											fileImport->state() == FileImport::State::Persisting));
 }
 
-void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2)
+void ChooseMapScreen::showStatus(const std::string &text)
 {
-	const bool button = action == BUTTON_RELEASED || action == BUTTON_SHORTCUT;
+	status = text;
+	invalidate();
+}
+
+void ChooseMapScreen::clearSelection()
+{
+	validMapSelected = false;
+	selectedType = NONE;
+	mapDate.clear();
+	mapVersion.clear();
+	mapInfo.clear();
+	mapSize.clear();
+	mapName.clear();
+	mapPreview->setMapThumbnail(MapThumbnail());
+	status = title;
+}
+
+bool ChooseMapScreen::selectNamed(const std::string &name)
+{
+	const int index = activeCatalog().indexOf(name);
+	if (index < 0)
+		return false;
+	select(index);
+	return true;
+}
+
+bool ChooseMapScreen::hasPreview() const
+{
+	return mapPreview && mapPreview->isThumbnailLoaded();
+}
+
+void ChooseMapScreen::select(int index)
+{
+	auto &catalog = activeCatalog();
+	activeSelection() = index;
+	// Invalidate the old selection before attempting any fallible file reads.
+	clearSelection();
+	invalidate();
+	if (index < 0 || index >= int(catalog.names().size()))
+		return;
+	const std::string mapFileName = catalog.path(catalog.names()[std::size_t(index)]);
+	try
+	{
+		mapPreview->setMapThumbnail(mapFileName.c_str());
+		auto stream = std::unique_ptr<GAGCore::InputStream>(new GAGCore::BinaryInputStream(
+			GAGCore::Toolkit::getFileManager()->openInflatingInputStreamBackend(mapFileName)));
+		if (stream->isEndOfStream())
+			std::cerr << "ChooseMapScreen: can't open file " << mapFileName << std::endl;
+		else
+		{
+			validMapSelected = mapHeader.load(stream.get());
+			if (!validMapSelected)
+				selectedType = NONE;
+			mapHeader.setMapName(glob2FilenameToName(mapFileName));
+			if (validMapSelected)
+			{
+				updateMapInformation();
+				time_t mtime = GAGCore::Toolkit::getFileManager()->mtime(mapFileName);
+				mapDate = ctime(&mtime);
+				while (!mapDate.empty() && (mapDate.back() == '\n' || mapDate.back() == '\r'))
+					mapDate.pop_back();
+				selectedType = activeType();
+			}
+			else
+				std::cerr << "ChooseMapScreen: invalid map header for map " << mapFileName << std::endl;
+		}
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "ChooseMapScreen: " << e.what() << std::endl;
+		validMapSelected = false;
+		selectedType = NONE;
+	}
+	if (!validMapSelected)
+	{
+		mapPreview->setMapThumbnail(MapThumbnail());
+		status = tr("[Damaged Map]");
+	}
+}
+
+void ChooseMapScreen::updateMapInformation()
+{
+	mapName = mapHeader.getMapName();
+	mapInfo = GAGCore::FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(tr("[teams]"));
+	mapVersion = GAGCore::FormattableString("%0 %1.%2")
+					 .arg(tr("[Version]"))
+					 .arg(mapHeader.getVersionMajor())
+					 .arg(mapHeader.getVersionMinor());
+	mapSize = GAGCore::FormattableString("%0 x %1").arg(mapPreview->getLastWidth()).arg(mapPreview->getLastHeight());
+	validMapSelectedhandler();
+}
+
+MapHeader &ChooseMapScreen::getMapHeader() { return mapHeader; }
+GameHeader &ChooseMapScreen::getGameHeader() { return gameHeader; }
+ChooseMapScreen::LoadableType ChooseMapScreen::getSelectedType() { return selectedType; }
+
+std::string ChooseMapScreen::loadableTypeName(LoadableType type)
+{
+	switch (type)
+	{
+	case GAME:
+		return tr("[the games]");
+	case MAP:
+		return tr("[the maps]");
+	case REPLAY:
+		return tr("[the replays]");
+	case NONE:
+		break;
+	}
+	assert(false);
+	return {};
+}
+
+void ChooseMapScreen::switchType()
+{
+	if (!alternate)
+		return;
+	showingAlternate = !showingAlternate;
+	select(activeSelection());
+}
+
+void ChooseMapScreen::accept()
+{
+	if (validMapSelected)
+		endExecute(OK);
+}
+
+void ChooseMapScreen::cancel()
+{
 	if (importBusy())
 	{
-		if (button && source == cancel &&
-			(!fileImport || fileImport->state() != FileImport::State::Persisting))
+		if (!fileImport || fileImport->state() != FileImport::State::Persisting)
 		{
 			fileSelection.reset();
 			fileImport.reset();
 			GAGCore::ApplicationHost::importChanged("cancelled");
-			showPhoneStatus(title, Toolkit::getStringTable()->getString("[import cancelled]"));
+			showStatus(tr("[import cancelled]"));
 		}
 		return;
 	}
-	if (button && importButton && source == importButton)
-	{
-		if (fileImport && fileImport->canRetry())
-		{
-			fileImport->retryPersistence();
-			updateImportStatus();
-			return;
-		}
-		fileImport.reset();
-		importExtension = activeType() == MAP ? "map" : activeType() == REPLAY ? "replay" : "game";
-		fileSelection = GAGCore::ApplicationHost::selectFile(importExtension);
-		GAGCore::ApplicationHost::importChanged("selecting");
-		showPhoneStatus(title, Toolkit::getStringTable()->getString("[select import file]"));
+	endExecute(CANCEL);
+}
+
+void ChooseMapScreen::deleteSelected()
+{
+	auto &catalog = activeCatalog();
+	const int index = activeSelection();
+	if (index < 0 || index >= int(catalog.names().size()))
 		return;
-	}
-	if (button && source == exportButton && fileImport && fileImport->canRetry())
+	GAGCore::Toolkit::getFileManager()->remove(catalog.path(catalog.names()[std::size_t(index)]));
+	catalog.refresh();
+	const int next = catalog.names().empty() ? -1 : std::min(index, int(catalog.names().size()) - 1);
+	select(next);
+}
+
+void ChooseMapScreen::exportSelected()
+{
+	if (fileImport && fileImport->canRetry())
 	{
 		if (!fileImport->exportFile())
-			showPhoneStatus(title, Toolkit::getStringTable()->getString("[export failed]"));
+			showStatus(tr("[export failed]"));
 		return;
 	}
-	if (action == LIST_ELEMENT_SELECTED)
+	auto &catalog = activeCatalog();
+	const int index = activeSelection();
+	if (index < 0 || index >= int(catalog.names().size()))
+		return;
+	if (!GAGCore::ApplicationHost::exportLocalFile(catalog.path(catalog.names()[std::size_t(index)])))
+		showStatus(tr("[export failed]"));
+}
+
+void ChooseMapScreen::beginImport()
+{
+	if (importBusy())
+		return;
+	if (fileImport && fileImport->canRetry())
 	{
-		Glob2FileList *active = activeFileList();
-		// Invalidate the old selection before attempting any fallible file reads.
-		validMapSelected = false;
-		selectedType = NONE;
-		mapDate->setText("");
-		mapVersion->setText("");
-		mapInfo->setText("");
-		mapSize->setText("");
-		mapName->setText("");
-		mapPreview->setMapThumbnail(MapThumbnail());
-		showPhoneStatus(title, Toolkit::getStringTable()->getString(
-								   type1 == MAP ? "[choose map]" : "[choose game]"));
-		if (active->selection())
-		{
-			std::string mapFileName = active->listToFile(active->getText(par1).c_str());
-
-			try
-			{
-				mapPreview->setMapThumbnail(mapFileName.c_str());
-
-				auto stream = std::unique_ptr<InputStream>(new BinaryInputStream(Toolkit::getFileManager()->openInflatingInputStreamBackend(mapFileName)));
-				if (stream->isEndOfStream())
-				{
-					std::cerr << "ChooseMapScreen::onAction() : error, can't open file "
-							  << mapFileName << std::endl;
-				}
-				else
-				{
-					if (verbose)
-						std::cout << "ChooseMapScreen::onAction : loading map " << mapFileName
-								  << std::endl;
-					validMapSelected = mapHeader.load(stream.get());
-
-					if (!validMapSelected)
-						selectedType = NONE;
-
-					mapHeader.setMapName(glob2FilenameToName(mapFileName));
-					if (validMapSelected)
-					{
-						updateMapInformation();
-
-						time_t mtime = Toolkit::getFileManager()->mtime(mapFileName);
-						mapDate->setText(ctime(&mtime));
-
-						selectedType = activeType();
-					}
-					else
-						std::cerr << "ChooseMapScreen::onAction : invalid map header for map "
-								  << mapFileName << std::endl;
-				}
-			}
-			catch (std::exception &e)
-			{
-				std::cerr << "ChooseMapScreen: " << e.what() << std::endl;
-				validMapSelected = false;
-				selectedType = NONE;
-			}
-			if (!validMapSelected)
-			{
-				mapPreview->setMapThumbnail(MapThumbnail());
-				showPhoneStatus(title, Toolkit::getStringTable()->getString("[Damaged Map]"));
-			}
-		}
+		fileImport->retryPersistence();
+		updateImportStatus();
+		return;
 	}
-	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
-	{
-		if (exportButton && source == exportButton)
-		{
-			auto *active = activeFileList();
-			if (active->selection() &&
-				!GAGCore::ApplicationHost::exportLocalFile(active->listToFile(active->get())))
-				showPhoneStatus(title, Toolkit::getStringTable()->getString("[export failed]"));
-		}
-		else if (source == ok)
-		{
-			// we accept only if a valid map is selected
-			if (validMapSelected)
-				endExecute(OK);
-		}
-		else if (source == cancel)
-		{
-			endExecute(par1);
-		}
-		else if (source == deleteMap)
-		{
-			// if a valid file is selected, delete it
-			Glob2FileList *active = activeFileList();
-			if (auto sel = active->selection())
-			{
-				size_t i = *sel;
-				std::string mapFileName = active->listToFile(active->get().c_str());
-
-				Toolkit::getFileManager()->remove(mapFileName);
-				active->generateList();
-
-				active->setSelection(List::selectionAfterRemoval(i, active->getCount()));
-				active->selectionChanged();
-			}
-		}
-		else if (source == switchType)
-		{
-			setDirectoryMode(currentDirectoryMode == DisplayRegular ? DisplayAlternate
-																	: DisplayRegular);
-		}
-	}
+	fileImport.reset();
+	importExtension = activeType() == MAP ? "map" : activeType() == REPLAY ? "replay" : "game";
+	fileSelection = GAGCore::ApplicationHost::selectFile(importExtension);
+	GAGCore::ApplicationHost::importChanged("selecting");
+	showStatus(tr("[select import file]"));
 }
 
 void ChooseMapScreen::updateImportStatus()
@@ -294,7 +271,7 @@ void ChooseMapScreen::updateImportStatus()
 						  : state == FileImport::State::Succeeded  ? "[import succeeded]"
 						  : fileImport->canRetry()                 ? "[import persistence failed]"
 																   : "[import failed]";
-	showPhoneStatus(title, Toolkit::getStringTable()->getString(message));
+	showStatus(tr(message));
 }
 
 void ChooseMapScreen::onTimer(Uint32)
@@ -308,24 +285,18 @@ void ChooseMapScreen::onTimer(Uint32)
 		{
 			try
 			{
-				fileImport =
-					std::make_unique<FileImport>(fileSelection->takeFile(), importExtension);
+				fileImport = std::make_unique<FileImport>(fileSelection->takeFile(), importExtension);
 			}
 			catch (const std::exception &)
 			{
-				showPhoneStatus(title, Toolkit::getStringTable()->getString("[import failed]"));
+				showStatus(tr("[import failed]"));
 			}
 		}
 		else
 		{
-			GAGCore::ApplicationHost::importChanged(
-				state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "cancelled"
-																				 : "invalid");
-			showPhoneStatus(title,
-							Toolkit::getStringTable()->getString(
-								state == GAGCore::ApplicationHost::FileSelectionState::Cancelled
-									? "[import cancelled]"
-									: "[import failed]"));
+			const bool cancelled = state == GAGCore::ApplicationHost::FileSelectionState::Cancelled;
+			GAGCore::ApplicationHost::importChanged(cancelled ? "cancelled" : "invalid");
+			showStatus(tr(cancelled ? "[import cancelled]" : "[import failed]"));
 		}
 		fileSelection.reset();
 	}
@@ -335,177 +306,47 @@ void ChooseMapScreen::onTimer(Uint32)
 	updateImportStatus();
 	if (fileImport->state() == FileImport::State::Succeeded)
 	{
-		auto *active = activeFileList();
-		active->generateList();
-		const auto name = glob2FilenameToName(fileImport->path());
-		for (unsigned i = 0; i < active->getCount(); ++i)
-			if (active->getText(i) == name)
-			{
-				active->setSelection(i);
-				active->selectionChanged();
-				break;
-			}
+		auto &catalog = activeCatalog();
+		catalog.refresh();
+		select(catalog.indexOf(glob2FilenameToName(fileImport->path())));
 		fileImport.reset();
 	}
 }
 
-void ChooseMapScreen::updateMapInformation()
+Element ChooseMapScreen::build(const Presentation &p)
 {
-	// update map name & info
-	mapName->setText(mapHeader.getMapName());
-	std::string textTemp;
-	textTemp = FormattableString("%0%1")
-				   .arg(mapHeader.getNumberOfTeams())
-				   .arg(Toolkit::getStringTable()->getString("[teams]"));
-	mapInfo->setText(textTemp);
-	textTemp = FormattableString("%0 %1.%2")
-				   .arg(Toolkit::getStringTable()->getString("[Version]"))
-				   .arg(mapHeader.getVersionMajor())
-				   .arg(mapHeader.getVersionMinor());
-	mapVersion->setText(textTemp);
-	textTemp = FormattableString("%0 x %1")
-				   .arg(mapPreview->getLastWidth())
-				   .arg(mapPreview->getLastHeight());
-	mapSize->setText(textTemp);
-
-	// call subclass handler
-	validMapSelectedhandler();
-}
-
-MapHeader &ChooseMapScreen::getMapHeader()
-{
-	return mapHeader;
-}
-
-GameHeader &ChooseMapScreen::getGameHeader()
-{
-	return gameHeader;
-}
-
-ChooseMapScreen::LoadableType ChooseMapScreen::getSelectedType()
-{
-	return selectedType;
-}
-
-Glob2FileList *ChooseMapScreen::activeFileList() const
-{
-	return (currentDirectoryMode == DisplayRegular) ? fileList : alternateFileList;
-}
-
-ChooseMapScreen::LoadableType ChooseMapScreen::activeType() const
-{
-	return (currentDirectoryMode == DisplayRegular) ? type1 : type2;
-}
-
-std::string ChooseMapScreen::loadableTypeName(LoadableType type)
-{
-	switch (type)
-	{
-	case GAME:
-		return Toolkit::getStringTable()->getString("[the games]");
-	case MAP:
-		return Toolkit::getStringTable()->getString("[the maps]");
-	case REPLAY:
-		return Toolkit::getStringTable()->getString("[the replays]");
-	case NONE:
-		break;
-	}
-	assert(false);
-	return {};
-}
-
-void ChooseMapScreen::setDirectoryMode(DirectoryMode newMode)
-{
-	currentDirectoryMode = newMode;
-	const bool regular = (newMode == DisplayRegular);
-	fileList->visible = regular;
-	alternateFileList->visible = !regular;
-	// After switching, the button label points back to the list we just left.
-	switchType->setText(loadableTypeName(regular ? type2 : type1));
-	activeFileList()->selectionChanged();
-}
-
-bool ChooseMapScreen::usesResponsiveViewport() const
-{
-	return phonePresentationRequested();
-}
-void ChooseMapScreen::handleExecutionEvent(SDL_Event event)
-{
-	if (usesResponsiveViewport())
-	{
-		if ((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) &&
-			event.button.which == SDL_TOUCH_MOUSEID)
-			return;
-		if (event.type == SDL_FINGERDOWN || event.type == SDL_FINGERUP ||
-			event.type == SDL_FINGERMOTION)
+	auto &catalog = activeCatalog();
+	const bool busy = importBusy();
+	auto list = listView("files", catalog.names(), activeSelection(), [this](int i) { select(i); },
+						 {{}, {}, {}, [this](int) { accept(); }, {}, 10, tr("[No items]")});
+	std::vector<Element> detailLines;
+	for (const auto &line : {mapName, mapSize, mapInfo, mapVersion, mapDate})
+		if (!line.empty())
+			detailLines.push_back(paragraph(line));
+	auto preview = Glob2UI::mapPreview("preview", *this->mapPreview, 160);
+	auto details = column(std::move(detailLines), {p.pt(4)});
+	std::vector<Element> tools;
+	if (alternate)
+		tools.push_back(button("switch", loadableTypeName(showingAlternate ? type1 : type2), [this] { switchType(); }, {false, false, !busy}));
+	if (canImport)
+		tools.push_back(button("import", tr(fileImport && fileImport->canRetry() ? "[retry save]" : "[import file]"), [this] { beginImport(); }, {false, false, !busy}));
+	if (canExport)
+		tools.push_back(button("export", tr("[export file]"), [this] { exportSelected(); }, {false, false, !busy && (validMapSelected || (fileImport && fileImport->canRetry()))}));
+	if (canDelete)
+		tools.push_back(button("delete", tr("[delete]"), [this] { deleteSelected(); }, {false, false, !busy && validMapSelected, false, false, true}));
+	auto toolRow = tools.empty() ? empty() : wrap(std::move(tools), {-1, p.pt(140)});
+	auto statusLine = status == title ? empty() : paragraph(status, {FontRole::Support, true});
+	Element body = adaptive(
+		[list, preview, details, toolRow, statusLine](const LayoutContext &ctx, Size available)
 		{
-			const auto finger = event.tfinger;
-			const auto kind = event.type;
-			event = {};
-			if (kind == SDL_FINGERMOTION)
-			{
-				event.type = SDL_MOUSEMOTION;
-				event.motion.state = SDL_BUTTON_LMASK;
-				event.motion.x = int(finger.x * getW());
-				event.motion.y = int(finger.y * getH());
-			}
-			else
-			{
-				event.type = kind == SDL_FINGERDOWN ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
-				event.button.button = SDL_BUTTON_LEFT;
-				event.button.x = int(finger.x * getW());
-				event.button.y = int(finger.y * getH());
-			}
-		}
-	}
-	Screen::handleExecutionEvent(event);
-}
-void ChooseMapScreen::paint()
-{
-    fileList->setMinimumRowHeight(usesResponsiveViewport()?44:0);
-    if(alternateFileList) alternateFileList->setMinimumRowHeight(usesResponsiveViewport()?44:0);
-	if (!usesResponsiveViewport())
-	{
-		Glob2Screen::paint();
-		return;
-	}
-	const auto safe = mobileDialogSafe(globalContainer->gfx);
-	const int w = std::min(920, int(safe.w) - 24), x = int(safe.x) + (int(safe.w) - w) / 2;
-	const int top = int(safe.y) + 12, bottom = int(safe.y + safe.h) - 12, footer = bottom - 48;
-	const bool wide = w >= 500;
-	const int previewSize =
-		std::max(64, std::min(wide ? w / 2 - 16 : w / 2,
-							  wide ? footer - top - 104 : (footer - top - 64) / 2));
-	title->setScreenRectangle(x, top, w, 28);
-	const int body = top + 36;
-	const int detailX = wide ? x + w / 2 + 12 : x + previewSize + 12;
-	const int detailW = wide ? w / 2 - 12 : w - previewSize - 12;
-	mapPreview->setScreenRectangle(wide ? detailX : x, body, previewSize, previewSize);
-	const int infoY = wide ? body + previewSize + 8 : body;
-	int row = infoY;
-	for (auto *label : {mapName, mapSize, mapInfo, mapVersion, mapDate})
-	{
-		label->setScreenRectangle(detailX, row, detailW, 22);
-		row += 24;
-		label->visible = row < (wide ? footer - 8 : body + previewSize + 8);
-	}
-	const int listY = wide ? body : body + std::max(previewSize, 48) + 12;
-	const int listW = wide ? w / 2 - 12 : w;
-	const int toolsY = footer - 52;
-	fileList->setScreenRectangle(x, listY, listW, std::max(32, toolsY - listY - 8));
-	if (alternateFileList)
-		alternateFileList->setScreenRectangle(x, listY, listW, std::max(32, toolsY - listY - 8));
-	std::vector<Button *> tools;
-	for (auto *button : {static_cast<Button *>(switchType), static_cast<Button *>(importButton),
-						 static_cast<Button *>(exportButton), deleteMap})
-		if (button && button->visible)
-			tools.push_back(button);
-	for (size_t i = 0; i < tools.size(); ++i)
-		tools[i]->setScreenRectangle(x + int(i) * listW / int(tools.size()), toolsY,
-									 listW / int(tools.size()) - 4, 44);
-	cancel->setScreenRectangle(x, footer, w / 2 - 4, 48);
-	ok->setScreenRectangle(x + w / 2 + 4, footer, w / 2 - 4, 48);
-	SDL_Rect bounds{x, top, w, bottom - top};
-	if (FrontendTheme::current)
-		FrontendTheme::current->background(gfx, true, &bounds);
+			if (available.w < ctx.presentation.pt(640))
+				return scroll("choose/scroll", column({statusLine, row({preview, expanded(details)}, {-1, CrossAlign::Start}), list, toolRow}));
+			auto side = column({preview, details, statusLine});
+			return column({expanded(row({expanded(column({expanded(list), toolRow}), 3), width(ctx.presentation.pt(260), side)}, {-1, CrossAlign::Stretch}))});
+		});
+	return page(title, body,
+				actions({{"ok", tr("[ok]"), [this] { accept(); }, true, SDLK_RETURN, validMapSelected && !busy},
+						 {"cancel", tr("[Cancel]"), [this] { cancel(); }, false, SDLK_ESCAPE}},
+						p),
+				p, 960);
 }

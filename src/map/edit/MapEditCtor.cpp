@@ -276,9 +276,6 @@ MapEdit::MapEdit()
 	lastPlacementX=-1;
 	lastPlacementY=-1;
 
-	menuScreen = NULL;
-	scriptEditor=NULL;
-	teamsEditor=NULL;
 	showingMenuScreen=false;
 	showingLoad=false;
 	showingSave=false;
@@ -297,7 +294,6 @@ MapEdit::MapEdit()
 	selectedUnitGID=NOGUID;
 	selectedBuildingGID=NOGBID;
 
-	areaName=NULL;
 	isShowingAreaName=false;
 	
 	isFertilityOn=false;

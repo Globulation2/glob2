@@ -3,6 +3,8 @@
 #include "MapPreviewGeometry.h"
 #include "GUIMapPreview.h"
 #include "CustomGameScreen.h"
+#include <memory>
+#include "LobbyMapPreview.h"
 #include "GlobalContainer.h"
 #include "Map.h"
 #include "YOGClient.h"
@@ -77,16 +79,6 @@ MapThumbnail terrain(int wDec, int hDec, bool noise = false)
 } // namespace
 struct MapPreviewHarness
 {
-	static void settle(Screen &screen, MapPreview *preview)
-	{
-		screen.dispatchPaint(false);
-		if (preview->transitioning)
-		{
-			preview->transitionPending = false;
-			preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
-			screen.dispatchPaint(false);
-		}
-	}
 	static void codec()
 	{
 		auto image = terrain(9, 8);
@@ -231,25 +223,33 @@ struct MapPreviewHarness
 		assert(!Toolkit::getStringTable()->getString("[Map preview loading]").empty());
 		assert(!Toolkit::getStringTable()->getString("[Map preview drag help]").empty());
 		std::filesystem::create_directories(output);
-		struct SurfaceScreen : Screen
+		// The preview paints into whatever surface its owner hands it; here a
+		// plain menu-coloured background stands in for the framework canvas.
+		auto preview = std::make_unique<MapPreview>();
+		preview->setScreenRectangle(30, 30, 512, 360);
+		auto paintAll = [&]
 		{
-			explicit SurfaceScreen(DrawableSurface *surface) { gfx = surface; }
-			void onAction(Widget *, Action, int, int) override {}
-			void paint() override
+			auto *gfx = globalContainer->gfx;
+			gfx->setClipRect();
+			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color(232, 237, 218));
+			preview->paint(gfx);
+		};
+		auto settle = [&]
+		{
+			paintAll();
+			if (preview->transitioning)
 			{
-				gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), Color(232, 237, 218));
+				preview->transitionPending = false;
+				preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
+				paintAll();
 			}
-		} screen(globalContainer->gfx);
-		auto preview = new MapPreview(30, 30, ALIGN_LEFT, ALIGN_TOP);
-		preview->setDimensions(512, 360);
-		screen.addWidget(preview);
-		screen.dispatchInit();
+		};
 		auto image = terrain(9, 8);
 		preview->setMapThumbnail(image);
 		preview->starts = {{256, 128, Color(255, 0, 0)}};
 		auto capture = [&](const char *name)
 		{
-			settle(screen, preview);
+			settle();
 			globalContainer->gfx->printScreen(output + "/" + name + ".bmp");
 		};
 		auto area = preview->mapArea();
@@ -265,13 +265,13 @@ struct MapPreviewHarness
 			SDL_GetRGB(value, surface->format, &r, &g, &b);
 			return std::array<int, 3>{r, g, b};
 		};
-		screen.dispatchPaint(false);
+		paintAll();
 		assert(preview->transitioning && !preview->transitionPending);
 		assert(
 			(pixel(area.x + area.w / 4, area.y + area.h / 4) == std::array<int, 3>{211, 223, 197}));
 		globalContainer->gfx->printScreen(output + "/fade-in-start.bmp");
 		preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs / 2;
-		screen.dispatchPaint(false);
+		paintAll();
 		const auto fading = pixel(area.x + area.w / 4, area.y + area.h / 4);
 		assert(fading[0] > 0 && fading[0] < 211 && fading[1] > 90 && fading[1] < 223);
 		globalContainer->gfx->printScreen(output + "/fade-in-half.bmp");
@@ -290,13 +290,13 @@ struct MapPreviewHarness
 		event.button.button = SDL_BUTTON_LEFT;
 		event.button.x = area.x + 50;
 		event.button.y = area.y + 50;
-		screen.dispatchEvents(&event);
+		preview->handlePreviewEvent(&event);
 		event = {};
 		event.type = SDL_MOUSEMOTION;
 		event.motion.state = SDL_BUTTON_LMASK;
 		event.motion.x = area.x + 50 + area.w / 2;
 		event.motion.y = area.y + 50 + area.h / 2;
-		screen.dispatchEvents(&event);
+		preview->handlePreviewEvent(&event);
 		capture("wide-dragged");
 		assert(pixel(area.x + area.w / 4, area.y + area.h / 4) == blue);
 		assert(pixel(area.x + 3 * area.w / 4, area.y + area.h / 4) == green);
@@ -304,7 +304,7 @@ struct MapPreviewHarness
 		event = {};
 		event.type = SDL_MOUSEBUTTONUP;
 		event.button.button = SDL_BUTTON_LEFT;
-		screen.dispatchEvents(&event);
+		preview->handlePreviewEvent(&event);
 		assert(!preview->dragging);
 		auto pointUnderMouse = [&]
 		{
@@ -319,14 +319,14 @@ struct MapPreviewHarness
 		event = {};
 		event.type = SDL_MOUSEWHEEL;
 		event.wheel.y = 2;
-		screen.dispatchEvents(&event);
+		preview->handlePreviewEvent(&event);
 		auto zoomedAnchor = pointUnderMouse();
 		assert(std::abs(anchor[0] - zoomedAnchor[0]) < 1e-12 &&
 			   std::abs(anchor[1] - zoomedAnchor[1]) < 1e-12);
 		capture("wide-zoomed");
 		assert(preview->zoom > 1);
 		event.wheel.y = -1;
-		screen.dispatchEvents(&event);
+		preview->handlePreviewEvent(&event);
 		zoomedAnchor = pointUnderMouse();
 		assert(std::abs(anchor[0] - zoomedAnchor[0]) < 1e-12 &&
 			   std::abs(anchor[1] - zoomedAnchor[1]) < 1e-12);
@@ -338,22 +338,22 @@ struct MapPreviewHarness
 		event.button.button = SDL_BUTTON_RIGHT;
 		event.button.x = area.x + 50;
 		event.button.y = area.y + 50;
-		screen.dispatchEvents(&event);
+		preview->handlePreviewEvent(&event);
 		assert(preview->view.offsetX == 0 && preview->view.offsetY == 0 && preview->zoom == 1);
 		preview->resetView();
-		screen.dispatchPaint(false);
+		paintAll();
 		Map flat;
 		flat.setSize(9, 8, GRASS);
 		MapThumbnail grass;
 		grass.loadFromMap(flat);
 		preview->setMapThumbnail(grass);
 		preview->starts = {{256, 128, Color(0, 255, 0)}};
-		screen.dispatchPaint(false);
+		paintAll();
 		const int sampleX = area.x + 3 * area.w / 4, sampleY = area.y + area.h / 4;
 		assert(pixel(sampleX, sampleY) == blue);
 		globalContainer->gfx->printScreen(output + "/cross-fade-start.bmp");
 		preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs / 2;
-		screen.dispatchPaint(false);
+		paintAll();
 		const auto blended = pixel(sampleX, sampleY);
 		assert(blended[1] > 40 && blended[1] < 90 && blended[2] > 0 && blended[2] < 120);
 		const auto marker = pixel(area.x + area.w / 2 - 7, area.y + area.h / 2 - 7);
@@ -366,7 +366,7 @@ struct MapPreviewHarness
 		// Snapshot encoding and fixture construction must not advance this test's clock.
 		preview->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs / 2;
 		preview->setMapThumbnail(water);
-		screen.dispatchPaint(false);
+		paintAll();
 		const auto restarted = pixel(sampleX, sampleY);
 		for (int c = 0; c < 3; ++c)
 			assert(std::abs(restarted[c] - blended[c]) < 12);
@@ -386,13 +386,20 @@ struct MapPreviewHarness
 		capture("online-failed");
 		GAGGUI::ScreenStack screens(*globalContainer->gfx);
 		CustomGameScreen custom(screens);
-		custom.dispatchInit();
-		custom.updateLayout();
-		MapPreview *lobby = nullptr;
-		for (auto widget : custom.widgets)
-			if (auto candidate = dynamic_cast<MapPreview *>(widget))
-				lobby = candidate;
+		custom.beginExecution(globalContainer->gfx);
+		custom.paintFrame(0);
+		MapPreview *lobby = custom.preview.get();
 		assert(lobby);
+		auto settleLobby = [&]
+		{
+			custom.paintFrame(SDL_GetTicks());
+			if (lobby->transitioning)
+			{
+				lobby->transitionPending = false;
+				lobby->transitionStarted = SDL_GetTicks() - MapPreview::TransitionDurationMs - 1;
+				custom.paintFrame(SDL_GetTicks());
+			}
+		};
 		const auto fixture = output + "/selection-fixture.map.gz";
 		std::filesystem::copy_file(glob2PreferGzipReadPath(*Toolkit::getFileManager(), "maps/FourSquares1.map"), fixture,
 								   std::filesystem::copy_options::overwrite_existing);
@@ -407,8 +414,8 @@ struct MapPreviewHarness
 			   << std::chrono::duration<double, std::milli>(cold - start).count()
 			   << "\n20 cached selections ms: "
 			   << std::chrono::duration<double, std::milli>(warm - cold).count() << "\n";
-		custom.activateGroup(custom.groups[0]);
-		settle(custom, lobby);
+		custom.selectTab(0);
+		settleLobby();
 		globalContainer->gfx->printScreen(output + "/custom-colonies.bmp");
 		area = lobby->mapArea();
 		event = {};
@@ -416,19 +423,19 @@ struct MapPreviewHarness
 		event.button.button = SDL_BUTTON_LEFT;
 		event.button.x = area.x + area.w / 2;
 		event.button.y = area.y + area.h / 2;
-		custom.dispatchEvents(&event);
+		custom.handleExecutionEvent(event);
 		event = {};
 		event.type = SDL_MOUSEMOTION;
 		event.motion.state = SDL_BUTTON_LMASK;
 		event.motion.x = area.x + area.w;
 		event.motion.y = area.y + area.h;
-		custom.dispatchEvents(&event);
-		custom.dispatchPaint();
+		custom.handleExecutionEvent(event);
+		custom.paintFrame(SDL_GetTicks());
 		globalContainer->gfx->printScreen(output + "/custom-colonies-wrapped.bmp");
 		event = {};
 		event.type = SDL_MOUSEBUTTONUP;
 		event.button.button = SDL_BUTTON_LEFT;
-		custom.dispatchEvents(&event);
+		custom.handleExecutionEvent(event);
 		custom.setup.random = true;
 		custom.setup.generator.setMethodDefaults(GenerationRequest::eSWAMP);
 		custom.setup.generator.wDec = 9;
@@ -440,7 +447,7 @@ struct MapPreviewHarness
 		assert(snapshot.isLoaded() && snapshot.pixels()->rgb == lobby->thumbnail.pixels()->rgb);
 		std::filesystem::copy_file(glob2GzipWritePath(custom.snapshot), output + "/generated-wide.map.gz",
 								   std::filesystem::copy_options::overwrite_existing);
-		settle(custom, lobby);
+		settleLobby();
 		globalContainer->gfx->printScreen(output + "/custom-wide-colonies.bmp");
 		area = lobby->mapArea();
 		event = {};
@@ -448,26 +455,26 @@ struct MapPreviewHarness
 		event.button.button = SDL_BUTTON_LEFT;
 		event.button.x = area.x + area.w / 2;
 		event.button.y = area.y + area.h / 2;
-		custom.dispatchEvents(&event);
+		custom.handleExecutionEvent(event);
 		event = {};
 		event.type = SDL_MOUSEMOTION;
 		event.motion.state = SDL_BUTTON_LMASK;
 		event.motion.x = area.x + area.w;
 		event.motion.y = area.y + area.h;
-		custom.dispatchEvents(&event);
-		custom.dispatchPaint();
+		custom.handleExecutionEvent(event);
+		custom.paintFrame(SDL_GetTicks());
 		globalContainer->gfx->printScreen(output + "/custom-wide-wrapped.bmp");
 		event = {};
 		event.type = SDL_WINDOWEVENT;
 		event.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
-		custom.dispatchEvents(&event);
+		custom.handleExecutionEvent(event);
 		assert(!lobby->dragging);
 		const auto retained = lobby->thumbnail.pixels();
 		const auto retainedArea = lobby->mapArea();
 		const auto quality = custom.quality;
 		assert(quality.measured && custom.message.empty());
-		custom.invalidate();
-		custom.dispatchPaint(false);
+		custom.invalidatePreview();
+		custom.paintFrame(SDL_GetTicks());
 		const auto loadingArea = lobby->mapArea();
 		assert(!custom.validMap && custom.previewBusy() && custom.message.empty());
 		assert(lobby->thumbnail.pixels() == retained && custom.quality.measured &&
