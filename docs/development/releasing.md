@@ -173,12 +173,19 @@ APKs with the public workflow artifacts before submitting the recipe.
 Play and F-Droid use different signing keys, so Android cannot update an
 installation from one store with an APK from the other. A store switch requires
 uninstalling the installed copy; export or back up saves first.
-Before tagging, test all three builds with `fdroid lint` and `fdroid checkupdates`.
-For the `fdroid build --server` trial, use a disposable copy of the recipe whose
-three `commit` fields point to the reviewed candidate commit SHA; the public tag
-does not exist until these gates pass. Restore the tag references before submitting
-the recipe to `fdroiddata`. Play the candidate on real ARM64 and 32-bit ARM
-devices and an x86_64 emulator. Record APK digests, logs, screenshots, save/load,
+Before tagging, run `fdroid lint` and exercise `fdroid checkupdates` with a
+disposable tag fixture; the update checker cannot discover an unpublished
+public tag. Confirm it generates all three ABI version codes.
+Dispatch `F-Droid buildserver recipe trial` on private `genixpro/glob2-release`
+for each ABI with the exact public candidate commit SHA. It runs the recipe with
+`fdroid build --on-server` inside F-Droid's pinned buildserver image. The trial
+uses a disposable copy of the recipe whose three `commit` fields point to that
+SHA; the public tag does not exist until these gates pass. The source build
+installs the repository's checksum-pinned JDK so its Java bytecode can be
+compared with GitHub's APK. Retain the trial APKs and logs, and restore the tag
+references before submitting the recipe to `fdroiddata`. Play the candidate on
+real ARM64 and 32-bit ARM devices and an x86_64 emulator. Record APK digests,
+logs, screenshots, save/load,
 rotation, lifecycle, keyboard, touch, and editor results under `artifacts/` for
 review. For each ABI, run `python3 mobile/compare_fdroid_apks.py --arch ABI
 --github-apk GITHUB_APK --fdroid-apk FDROID_APK` and review any native library
