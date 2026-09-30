@@ -281,6 +281,8 @@ explored_area_objs = [
   wcdecode_env.Object('MapExploredAreaSaveLoadTest.o', 'MapExploredAreaSaveLoadTest.cpp'),
   wcdecode_env.Object('MapExploredAreaIO-saveload.o', '../src/map/io/MapExploredAreaIO.cpp'),
   wcdecode_env.Object('Map-saveload.o', '../src/map/Map.cpp'),
+  wcdecode_env.Object('BuildingGradientSearch-saveload.o', '../src/map/gradient/BuildingGradientSearch.cpp'),
+  wcdecode_env.Object('PerformanceTelemetry-saveload.o', '../libgag/src/PerformanceTelemetry.cpp'),
   wcdecode_env.Object('MapQuery-saveload.o', '../src/map/MapQuery.cpp'),
   wcdecode_env.Object('MapTerrain-saveload.o', '../src/map/MapTerrain.cpp'),
   wcdecode_env.Object('BitArray-saveload.o', '../src/BitArray.cpp'),
