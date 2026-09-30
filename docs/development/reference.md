@@ -96,8 +96,10 @@ comparing builds; do not pick an old binary by modification time.
 the public `Globulation2/glob2` repository stores the workflow and build code for
 review, but dispatching it there cannot build, sign, upload or publish a release.
 The owner syncs the public changes into the private mirror and starts each release
-there manually. The workflow builds the existing MinGW x64 client, stages its runtime DLLs,
-game assets and GPL license, creates `MicrosoftGame.config` and shell logos, then
+there manually. Merge public `master` into the mirror's `master` so private-only
+release configuration stays in place. The workflow builds the existing MinGW x64
+client, stages its runtime DLLs, game assets and GPL license, creates
+`MicrosoftGame.config` and shell logos, then
 uses the Microsoft GDK to produce an MSIXVC package. The package, encryption key
 blob and validator report are retained as a GitHub Actions artifact. Set `upload`
 to true when dispatching to send that package to an existing Partner Center branch.
