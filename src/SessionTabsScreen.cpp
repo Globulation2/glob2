@@ -88,7 +88,6 @@ fe::Element SessionTabsScreen::build(const fe::Presentation &p)
 	}
 	parts.push_back(fe::expanded(active ? active->build(p) : fe::empty()));
 	fe::CardOptions cardOptions;
-	cardOptions.color = GAGCore::Color(232, 237, 218);
 	cardOptions.padding = p.pt(p.compact() ? 10 : 16);
 	return fe::center(fe::maxWidth(p.pt(1120), fe::card(fe::column(std::move(parts), {p.pt(8)}), cardOptions)));
 }

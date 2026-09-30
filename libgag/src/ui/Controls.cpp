@@ -145,7 +145,7 @@ class Button : public Node
 			if (hovered)
 				frame.canvas.fillRounded(bounds, radius, p.hover.applyAlpha(70));
 			if (pressed)
-				frame.canvas.fillRounded(bounds, radius, GAGCore::Color(92, 130, 71, 55));
+				frame.canvas.fillRounded(bounds, radius, p.pressed);
 			if (!options.flat)
 				frame.canvas.strokeRect(bounds, options.primary ? p.accentInk.applyAlpha(60) : p.line);
 		}

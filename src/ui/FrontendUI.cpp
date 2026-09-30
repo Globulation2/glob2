@@ -46,6 +46,10 @@ const Theme &inGameTheme()
 		c.focus = GAGCore::Color(255, 214, 120);
 		c.scrim = GAGCore::Color(10, 6, 20, 140);
 		c.disabled = GAGCore::Color(52, 38, 70);
+		c.shadow = GAGCore::Color(10, 6, 20, 60);
+		c.pressed = GAGCore::Color(255, 214, 120, 50);
+		c.success = GAGCore::Color(120, 220, 120);
+		c.danger = GAGCore::Color(255, 110, 100);
 		return t;
 	}();
 	return theme;
@@ -73,6 +77,10 @@ const Theme &classicInGameTheme()
 		c.hover = GAGCore::Color(120, 120, 200);
 		c.focus = GAGCore::Color(255, 214, 120);
 		c.disabled = GAGCore::Color(40, 40, 70);
+		c.success = GAGCore::Color(100, 255, 100);
+		c.danger = GAGCore::Color(255, 80, 80);
+		c.pressed = GAGCore::Color(255, 255, 255, 40);
+		c.shadow = GAGCore::Color(0, 0, 0, 0);
 		t.controlHeight = 28;
 		t.radius = 12;
 		t.padding = 10;
@@ -156,7 +164,7 @@ void InGameDialog::paintPanel(Canvas &canvas, Rect panel)
 		UIDialog::paintPanel(canvas, panel);
 		return;
 	}
-	canvas.fillRect(panel, GAGCore::Color(0, 0, 40));
+	canvas.fillRect(panel, theme().palette.paper);
 	auto *surface = canvas.surface();
 	if (surface && GAGGUI::Style::style)
 		GAGGUI::Style::style->drawFrame(surface, panel.x, panel.y, panel.w, panel.h, 0);

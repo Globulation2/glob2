@@ -394,7 +394,7 @@ void CustomGameScreen::showStartQuality()
 	{
 		labels.push_back(colonyLabel(int(i)));
 		colors.push_back(i < preview->starts.size() ? preview->starts[i].color
-													: Color(160, 172, 149));
+													: theme().palette.neutral);
 	}
 	screens.push(std::make_unique<StartQualityScreen>(quality, labels, colors),
 				 [this](GAGGUI::Screen &, int result)
@@ -843,7 +843,6 @@ Element CustomGameScreen::build(const Presentation &p)
 	Element footerColumn = p.touch ? fe::column({fe::column(std::move(summaryParts), {p.pt(4)}), actionRow}, {p.pt(6)})
 								   : fe::row({fe::expanded(fe::column(std::move(summaryParts), {p.pt(4)})), actionRow}, {p.pt(8), fe::CrossAlign::Center});
 	fe::CardOptions cardOptions;
-	cardOptions.color = GAGCore::Color(232, 237, 218);
 	cardOptions.padding = p.pt(narrow ? 10 : 16);
 	auto panel = fe::card(fe::column({fe::row(std::move(tabs), {p.pt(6)}), fe::expanded(body), fe::divider(), footerColumn}, {p.pt(8)}), cardOptions);
 	if (p.touch)
@@ -1034,7 +1033,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 	else
 	{
 		fe::CardOptions placeholder;
-		placeholder.color = GAGCore::Color(211, 223, 197);
+		placeholder.color = theme().palette.placeholder;
 		placeholder.shadow = false;
 		placeholder.padding = 0;
 		right.push_back(fe::center(fe::card(fe::sized({p.pt(previewSize), p.pt(previewSize)}, fe::empty()), placeholder)));
@@ -1076,7 +1075,7 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 	for (int i = 0; i < setup.capacity; ++i)
 	{
 		auto &c = setup.colonies[i];
-		const GAGCore::Color color = i < int(preview->starts.size()) ? preview->starts[std::size_t(i)].color : GAGCore::Color(160, 172, 149);
+		const GAGCore::Color color = i < int(preview->starts.size()) ? preview->starts[std::size_t(i)].color : theme().palette.neutral;
 		const std::string id = "colony/" + std::to_string(i);
 		std::vector<bool> enabled;
 		for (int j = 0; j < 4; ++j)

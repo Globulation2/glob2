@@ -63,7 +63,7 @@ Element MainMenuScreen::build(const Presentation &p)
 	auto action = [&](const char *key, int code, ButtonOptions options)
 	{ return button("menu/" + std::to_string(code), tr(key), choose(code), options); };
 	CardOptions cardOptions;
-	cardOptions.color = GAGCore::Color(230, 231, 210, 248);
+	cardOptions.color = theme().palette.panel.applyAlpha(248);
 	cardOptions.radius = p.pt(10);
 	if (p.touch)
 	{

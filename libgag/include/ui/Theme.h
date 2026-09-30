@@ -36,6 +36,16 @@ struct Palette
 	GAGCore::Color scrim{20, 32, 22, 160};
 	GAGCore::Color disabled{222, 226, 212};
 	GAGCore::Color danger{170, 60, 50};
+	GAGCore::Color success{60, 140, 70};
+	// Drop shadow under cards, panels and popups (alpha included).
+	GAGCore::Color shadow{15, 39, 25, 35};
+	// Tint over a pressed control.
+	GAGCore::Color pressed{92, 130, 71, 55};
+	// Behind everything when no artwork covers the window.
+	GAGCore::Color backdrop{17, 35, 32};
+	// Data placeholders: an unassigned swatch, an image still loading.
+	GAGCore::Color neutral{160, 172, 149};
+	GAGCore::Color placeholder{211, 223, 197};
 };
 
 class Canvas;

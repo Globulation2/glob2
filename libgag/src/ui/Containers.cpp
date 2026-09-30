@@ -599,7 +599,7 @@ class Card : public Wrapper
 		const auto &palette = frame.layout.theme.palette;
 		const int radius = options.radius < 0 ? frame.layout.metrics.radius : options.radius;
 		if (options.shadow)
-			frame.canvas.fillRounded(bounds.translated(2, 3), radius, GAGCore::Color(15, 39, 25, 35));
+			frame.canvas.fillRounded(bounds.translated(2, 3), radius, palette.shadow);
 		frame.canvas.fillRounded(bounds, radius, options.color.value_or(palette.panel));
 		if (options.border)
 			frame.canvas.strokeRect(bounds, *options.border);

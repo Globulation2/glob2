@@ -98,7 +98,7 @@ Element MultiplayerGameScreen::build(const Presentation &p)
 			const bool playerReady = game->isReadyToStart(bp.playerID);
 			fe::TextOptions nameStyle;
 			if (!playerReady)
-				nameStyle.color = GAGCore::Color(255, 64, 64);
+				nameStyle.color = fe::frontendTheme().palette.danger;
 			std::vector<Element> cells;
 			if (bp.teamNumber >= 0 && bp.teamNumber < mh.getNumberOfTeams())
 				cells.push_back(fe::swatch(mh.getBaseTeam(bp.teamNumber).color, 20));

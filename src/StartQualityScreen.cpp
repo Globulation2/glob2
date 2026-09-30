@@ -102,7 +102,7 @@ Element StartQualityScreen::cards(const Presentation &p)
 										 {FontRole::Support, true}));
 			}
 		CardOptions cardOptions;
-		cardOptions.color = GAGCore::Color(225, 231, 209);
+		cardOptions.color = theme().palette.rail;
 		cardOptions.shadow = false;
 		cardOptions.padding = p.pt(10);
 		auto toggleCard = button("quality/colony/" + std::to_string(i), "", [this, i]

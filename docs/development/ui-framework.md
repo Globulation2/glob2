@@ -154,8 +154,9 @@ framework:
 
 ### Theme
 
-`Theme` carries a palette (ink, muted, paper, panel, field, accent, selected,
-focus, scrim, disabled, danger), font roles (Title, Heading, Body, Support,
+`Theme` carries a palette (ink, muted, paper, panel, field, rail, line,
+accent, selected, hover, focus, scrim, disabled, danger, success, shadow,
+pressed, backdrop, neutral, placeholder), font roles (Title, Heading, Body, Support,
 Caption mapped to toolkit font names) and metrics in points. `frontendTheme()`
 is the paper look for menus. In-game dialogs pick their theme from the host:
 `classicInGameTheme()` on pointer hosts is the navy box with the sprite frame
@@ -166,7 +167,12 @@ dialog which one it got, so classic builds omit titles, use `classicButton()`
 and `dialogActions()`, and keep their former fixed widths through
 `maxWidth()`. Controls take colors and sizes from the theme only; a screen
 that needs a color for data (a team swatch) passes it to `swatch()` or
-`TextOptions::color`.
+`TextOptions::color`. Every colour outside gameplay's own HUD palette comes
+from one of the three themes: the old `FrontendTheme` style that paints the
+colony backdrop and paper panel reads the frontend palette rather than
+keeping its own, and screens reach the palette through `theme().palette`.
+The only literals left are data painters (map preview frames, the end-game
+chart) that draw values rather than controls.
 
 ### Hosting a dialog
 

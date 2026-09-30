@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "FrontendTheme.h"
+#include "ui/FrontendUI.h"
 #include "MenuColony.h"
 #include "GlobalContainer.h"
 #include <Toolkit.h>
@@ -22,11 +23,11 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 {
 	current = this;
 	colony = std::make_unique<MenuColony>();
-	textColor = Color(36, 69, 49);
-	highlightColor = Color(67, 116, 75);
-	frameColor = Color(137, 160, 132);
-	listSelectedElementColor = Color(227, 192, 119);
-	backColor = backOverlayColor = Color(230, 231, 210);
+	const auto &palette = Glob2UI::frontendTheme().palette;
+	textColor = palette.ink;
+	highlightColor = palette.hover;
+	frameColor = palette.line;
+	backColor = palette.panel;
 	for (int i = 0; i < 3; ++i)
 		originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
 	fallback = std::make_unique<DrawableSurface>(1, 1);
@@ -100,7 +101,8 @@ void FrontendTheme::onFrame()
 void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *content)
 {
 	const int w = s->getW(), h = s->getH();
-	s->drawFilledRect(0, 0, w, h, Color(17, 35, 32));
+	const auto &palette = Glob2UI::frontendTheme().palette;
+	s->drawFilledRect(0, 0, w, h, palette.backdrop);
 	if (colony->ready())
 		colony->draw(w, h);
 	else if (fallback)
@@ -122,94 +124,28 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 		if (fittedFallback)
 			s->drawSurface(0, 0, fittedFallback.get());
 	}
-	s->drawFilledRect(0, 0, w, h, Color(232, 237, 218, 42));
+	s->drawFilledRect(0, 0, w, h, palette.paper.applyAlpha(42));
 	if (panel)
 	{
 		const SDL_Rect area = content ? *content : SDL_Rect{(w - 640) / 2, (h - 480) / 2, 640, 480};
 		const int x = std::max(0, area.x - 12), y = std::max(0, area.y - 12);
 		const int pw = std::min(w, area.x + area.w + 12) - x,
 				  ph = std::min(h, area.y + area.h + 12) - y;
-		rounded(s, x + 2, y + 3, pw, ph, 10, Color(15, 39, 25, 35));
-		rounded(s, x, y, pw, ph, 10, Color(230, 231, 210, 248));
+		rounded(s, x + 2, y + 3, pw, ph, 10, palette.shadow);
+		rounded(s, x, y, pw, ph, 10, palette.panel.applyAlpha(248));
 	}
 	painted = true;
 }
 void FrontendTheme::drawTextButtonBackground(DrawableSurface *s, int x, int y, int w, int h,
 											 unsigned hi)
 {
-	rounded(s, x, y, w, h, 4, Color(234, 240, 228));
+	const auto &palette = Glob2UI::frontendTheme().palette;
+	rounded(s, x, y, w, h, 4, palette.field);
 	if (hi)
-		rounded(s, x, y, w, h, 4, Color(169, 196, 157, hi / 2));
+		rounded(s, x, y, w, h, 4, palette.hover.applyAlpha(hi / 2));
 }
 void FrontendTheme::drawFrame(DrawableSurface *s, int x, int y, int w, int h, unsigned hi)
 {
 	// Frames are also drawn AFTER list contents; never erase their interior.
 	s->drawRect(x, y, w, h, hi ? highlightColor : frameColor);
-}
-void FrontendTheme::drawOnOffButton(DrawableSurface *s, int x, int y, int w, int h, unsigned hi,
-									bool state)
-{
-	drawTextButtonBackground(s, x, y, w, h, hi);
-	drawFrame(s, x, y, w, h, hi);
-	if (state)
-	{
-		s->drawLine(x + w / 5, y + h / 2, x + w * 2 / 5, y + h * 3 / 4, textColor);
-		s->drawLine(x + w * 2 / 5, y + h * 3 / 4, x + w * 4 / 5, y + h / 4, textColor);
-	}
-}
-void FrontendTheme::drawTriButton(DrawableSurface *s, int x, int y, int w, int h, unsigned hi,
-								  Uint8 state)
-{
-	drawOnOffButton(s, x, y, w, h, hi, state == 1);
-	if (state == 2)
-		s->drawLine(x + w / 4, y + h / 2, x + w * 3 / 4, y + h / 2, textColor);
-}
-void FrontendTheme::drawScrollBar(DrawableSurface *s, int x, int y, int, int h, int pos, int len)
-{
-	const int width = getStyleMetric(STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
-	const int end = getStyleMetric(STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
-	rounded(s, x, y, width, h, 4, Color(202, 218, 196));
-	rounded(s, x + 3, y + end + pos, width - 6, len, 3, frameColor);
-	for (int i = 0; i < 4; ++i)
-	{
-		s->drawLine(x + width / 2 - i, y + end / 2 + i, x + width / 2 + i, y + end / 2 + i,
-					textColor);
-		s->drawLine(x + width / 2 - i, y + h - end / 2 - i, x + width / 2 + i, y + h - end / 2 - i,
-					textColor);
-	}
-}
-void FrontendTheme::drawProgressBar(DrawableSurface *s, int x, int y, int w, int value, int range)
-{
-	const int h = getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
-	rounded(s, x, y, w, h, 4, Color(202, 218, 196));
-	if (range > 0)
-		rounded(s, x, y, int(w * double(std::clamp(value, 0, range)) / range), h, 4,
-				listSelectedElementColor);
-}
-int FrontendTheme::getStyleMetric(StyleMetrics m)
-{
-	// Preserve legacy hit geometry, including widgets initialized before execute.
-	return original->getStyleMetric(m);
-}
-
-void FrontendTheme::drawFieldBackground(DrawableSurface *s, int x, int y, int w, int h)
-{
-	rounded(s, x, y, w, h, 4, Color(234, 240, 228));
-}
-void FrontendTheme::drawSelectionBackground(DrawableSurface *s, int x, int y, int w, int h)
-{
-	s->drawFilledRect(x, y, w, h, listSelectedElementColor);
-}
-bool FrontendTheme::drawSelector(DrawableSurface *s, int x, int y, int w, int h, unsigned value,
-								 unsigned maximum)
-{
-	rounded(s, x, y + h / 2, w, 4, 2, frameColor);
-	const int position = maximum ? int((w - 6) * double(value) / maximum) : 0;
-	rounded(s, x + position, y, 6, h + 4, 3, highlightColor);
-	return true;
-}
-
-void FrontendTheme::drawButtonSelection(DrawableSurface *s, int x, int y, int w, int h)
-{
-	rounded(s, x, y, w, h, 4, Color(227, 192, 119));
 }

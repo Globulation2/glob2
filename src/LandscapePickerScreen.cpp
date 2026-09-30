@@ -413,7 +413,7 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 		// The reason lives in the preview square itself: there is no map to preview for a
 		// disabled landscape, so the square becomes the status message.
 		fe::CardOptions box;
-		box.color = GAGCore::Color(222, 226, 212);
+		box.color = theme().palette.disabled;
 		box.shadow = false;
 		box.padding = p.pt(12);
 		picture = fe::sized({image, image}, fe::card(fe::paragraph(incompatible[std::size_t(i)], {fe::FontRole::Support, true}), box));
@@ -476,7 +476,7 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 	{
 		// Still rolling, or briefly Ready with no surface yet: never a blank square.
 		fe::CardOptions box;
-		box.color = GAGCore::Color(211, 223, 197);
+		box.color = theme().palette.placeholder;
 		box.shadow = false;
 		box.padding = 0;
 		picture = fe::sized({image, image}, fe::card(fe::empty(), box));
@@ -610,7 +610,6 @@ Element LandscapePickerScreen::build(const Presentation &p)
 								p);
 	auto body = compact ? fe::column({fe::expanded(gridElement)}) : fe::column({fe::column(std::move(header), {p.pt(8)}), fe::expanded(gridElement)}, {p.pt(10)});
 	fe::CardOptions cardOptions;
-	cardOptions.color = GAGCore::Color(232, 237, 218);
 	cardOptions.padding = p.pt(compact ? 10 : 16);
 	return fe::center(fe::maxWidth(p.pt(1120), fe::card(fe::column({fe::heading(title), fe::expanded(body), fe::divider(), actionRow}, {p.pt(8)}), cardOptions)));
 }

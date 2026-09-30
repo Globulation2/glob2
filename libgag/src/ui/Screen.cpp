@@ -204,7 +204,7 @@ void UIDialog::paintPanel(Canvas &canvas, Rect panel)
 {
 	const auto &palette = themeValue.palette;
 	const int radius = hostValue.metrics().radius + 4;
-	canvas.fillRounded(panel.translated(2, 3), radius, GAGCore::Color(15, 39, 25, 60));
+	canvas.fillRounded(panel.translated(2, 3), radius, palette.shadow.applyAlpha(60));
 	canvas.fillRounded(panel, radius, palette.panel.applyAlpha(248));
 }
 

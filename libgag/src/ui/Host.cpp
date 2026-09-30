@@ -623,8 +623,7 @@ void Host::paint(Canvas &canvas, Uint32 tick)
 	if (popup && popup->tree)
 	{
 		const auto &palette = themeValue.palette;
-		canvas.fillRounded(popup->bounds.translated(2, 3), metricsValue.radius,
-						   GAGCore::Color(34, 54, 36, 100));
+		canvas.fillRounded(popup->bounds.translated(2, 3), metricsValue.radius, palette.shadow.applyAlpha(100));
 		canvas.fillRounded(popup->bounds, metricsValue.radius, palette.panel);
 		canvas.strokeRect(popup->bounds, palette.muted);
 		Frame popupFrame = frame;

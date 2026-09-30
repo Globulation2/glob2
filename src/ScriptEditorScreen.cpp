@@ -276,7 +276,7 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	fe::TextOptions resultStyle;
 	resultStyle.role = fe::FontRole::Support;
 	if (!compilation.empty())
-		resultStyle.color = compiled ? GAGCore::Color(100, 255, 100) : GAGCore::Color(255, 80, 80);
+		resultStyle.color = compiled ? theme().palette.success : theme().palette.danger;
 	auto position = fe::canvas("script/cursor", {p.pt(120), p.pt(16)},
 							   [this](fe::Canvas &c, fe::Rect r, const fe::Frame &frame)
 							   {
