@@ -293,13 +293,13 @@ screenshots, logs and replay checksums under `artifacts/`.
 release job runs only from the owner's `genixpro/glob2-android-release` mirror on
 `master` after a manual dispatch. This public Android mirror is separate from
 the private mirror used by other platform releases and has owner-only write
-access. Copy reviewed upstream commits into the Android mirror
-when ready, then manually dispatch and approve its workflow. An unprivileged
+access. Copy reviewed upstream commits into the Android mirror when ready,
+then manually dispatch and approve its workflow. An unprivileged
 job installs the pinned Android toolchain and dependencies, assigns a
 time-based Play version code, and builds and verifies the arm64 release bundle.
 A fresh runner receives the unsigned bundle, signs it with the existing Play
-upload key, and uses the Google Play Developer
-API to validate and commit a release on the **internal** track. It does not
+upload key, and uses the Google Play Developer API to validate and commit a
+release on the **internal** track. It does not
 change production or the selected internal tester list. The workflow is
 serialized so two runs cannot update the track concurrently. A rerun gets a
 new version code; Play rejects a code lower than a previously uploaded one.
@@ -344,8 +344,8 @@ syncing them into the mirror: copied code runs with release credentials.
 Public Actions logs and artifacts are visible to everyone. The unsigned bundle
 is retained as an artifact for one day to cross the runner boundary; the signed
 AAB is never uploaded as an artifact. The workflow does not cache build outputs.
-GitHub Actions secret
-redaction is not a substitute for keeping secrets out of logs and artifacts.
+GitHub Actions secret redaction is not a substitute for keeping secrets out of
+logs and artifacts.
 The Play API client and its transitive Python packages are locked to reviewed
 wheel hashes in `mobile/play-api-requirements.txt`; update the lock deliberately
 when upgrading them.
@@ -356,7 +356,8 @@ force pushes and deletion, and require approval from the owner for the
 default workflow token read-only, require full commit SHA pins for actions,
 allow only the four pinned actions used by the release workflow, and require
 approval before any external fork PR workflow runs. Disable unrelated
-workflows in the mirror. The owner's GitHub account remains a critical trust
+workflows in the mirror, and recheck that setting after each upstream sync.
+The owner's GitHub account remains a critical trust
 boundary: protect it with strong two-factor authentication and review every
 upstream commit before syncing code that the release build will execute.
 
@@ -366,18 +367,19 @@ To sync from a local clone of the release mirror, configure `upstream` once as
 ```sh
 git fetch upstream master
 git checkout master
-git merge --ff-only upstream/master
+git merge upstream/master
 git push origin master
 ```
 
-If fast-forwarding fails because the Android mirror diverged, inspect the
-commits and reconcile them deliberately. Do not force-push a release branch.
+The Android mirror has release-specific commits, so merging may require
+conflict resolution. Inspect the commits and resulting tree before pushing.
+Do not force-push a release branch.
 
 After syncing, run **Actions → Android Play internal release → Run workflow**
 in the mirror. The optional release notes are shown to internal testers. The
 run summary records the version code and signed AAB SHA-256; only Play receives
-the signed bundle. Check the internal testing
-track in Play Console for availability; if Play requires a new content or policy
+the signed bundle. Check the internal testing track in Play Console for
+availability; if Play requires a new content or policy
 declaration, complete that in Play Console before rerunning the workflow.
 
 ### Native tests on a connected Android device
