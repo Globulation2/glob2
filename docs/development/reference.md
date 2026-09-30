@@ -131,13 +131,23 @@ from Partner Center:
 | `STORE_PUBLISHER_DISPLAY_NAME` | Publisher display name |
 | `STORE_BRANCH` | Existing Partner Center branch for package upload |
 
-For upload, create a separate Globulation 2 Microsoft Entra tenant and associate
-that tenant with this Partner Center developer account. Register an Entra
-application in that tenant, grant it **Publishing: Read/Write** for this product,
+For upload, associate a Globulation 2 Microsoft Entra tenant with this Partner
+Center developer account. The first release tenant is temporary and uses an
+existing Azure subscription only for its free Entra billing record. Register an
+Entra application in that tenant, grant it **Publishing: Read/Write** for this product,
 and add its tenant ID, application ID and client secret as environment secrets named
 `STORE_TENANT_ID`, `STORE_CLIENT_ID`, and `STORE_CLIENT_SECRET`.
 The `STORE_BRANCH` variable is required for upload. Never add these secrets,
 the environment or a privileged trigger to the public repository.
+
+When a permanent organization tenant is ready, associate it with the same Partner
+Center account, register a new product-scoped publishing application there, and
+replace the three `STORE_*` upload secrets in the private mirror environment.
+Verify an upload with the new credentials before revoking the temporary
+application and removing its Partner Center tenant association. The temporary
+tenant's Entra ID Free billing record cannot be transferred to another billing
+account; this is a credential and Partner Center association change, not a tenant
+transfer. The Store product identity above stays with the Partner Center product.
 
 After syncing the mirror, run the workflow from its **Actions → Windows Store
 release → Run workflow** page on `master`, with a
