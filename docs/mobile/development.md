@@ -268,6 +268,11 @@ python3 mobile/android.py build --arch arm64-v8a --release --amazon-apk \
   --version-code "$(python3 mobile/amazon_release.py version-code)"
 ```
 
+Fire OS 5/6 support is a separate release milestone: lower the Android API
+floor only after updating the build identity and native dependency triplets,
+auditing platform API use, and playing on representative older tablets. Do not
+select those devices in the store until they pass.
+
 `--amazon-apk` checks matching native libraries in both ABIs, the packaged
 asset index, alignment and both native build IDs. It derives `versionName` from
 `PACKAGE_VERSION` in `scons/build_layout.py`. The four version components map
