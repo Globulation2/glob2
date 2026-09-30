@@ -18,7 +18,7 @@ android {
         minSdk toolchain.android.min_api
         targetSdk toolchain.android.compile_api
         versionCode nativeBuild.version_code ?: 1
-        versionName '0.9.5-mobile-dev'
+        versionName nativeBuild.version_name ?: '0.9.5-mobile-dev'
     }
     sourceSets.main {
         jniLibs.srcDirs = ['generated/jniLibs']
