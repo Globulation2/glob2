@@ -317,10 +317,11 @@ One-time account setup is required before the first workflow run:
    address and grant app-level **View app information (read-only)** and
    **Release apps to testing tracks** for `org.globulation2.glob2` only. Do not
    grant production release or account-wide permissions.
-4. In the **private mirror only**, add repository variables
+4. In the **private mirror only**, create a GitHub Actions environment named
+   `google-play-internal` and restrict deployment to `master`. Add environment variables
    `GLOB2_PLAY_WIF_PROVIDER` (the full provider resource name, with numeric
    project number) and `GLOB2_PLAY_SERVICE_ACCOUNT` (the service account email).
-   Add three repository secrets:
+   Add three environment secrets:
 
    | Secret | Value |
    | --- | --- |

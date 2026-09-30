@@ -20,6 +20,7 @@ jobs:
     if: github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     timeout-minutes: 180
+    environment: google-play-internal
     permissions:
       contents: read
       id-token: write
