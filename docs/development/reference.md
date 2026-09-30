@@ -18,6 +18,7 @@ scons                        # default client: debug information, no optimizatio
 scons release=1 server=0       # optimized client, including headless runs
 scons release=1 server=1       # server with the correct stripped library
 scons release=1 package        # macOS signed app bundle and DMG
+scons release=1 bundle         # macOS app bundle without the DMG
 scons -C test                 # rebuild the separate test suite
 (cd test && ./TestsRunner && ./WinningConditionsHarness)
 ```
@@ -55,6 +56,21 @@ scons -C test                 # rebuild the separate test suite
   because it embeds the compilation date and time.
 - `release=1` outside macOS strips binaries (`-s`), so it also drops `-g`: debug
   information there only slowed compilation and multiplied object and cache sizes.
+- To stage a Mac App Store sandbox candidate, run `scons release=1 bundle` and then
+  `python3 darwin/package_app_store.py`. The script copies the bundle to the ignored
+  `artifacts/mac-app-store/Glob2.app`, sets its App Store version and build number,
+  adds Retina icon sizes from the existing 128-pixel artwork, applies
+  `darwin/AppStore.entitlements`, and verifies its signature. Its default
+  ad hoc signature is for local testing. For submission, supply `--identity` with
+  an Apple Distribution identity, `--installer-identity` with a Mac Installer
+  Distribution identity, an App Store provisioning `--profile`, and a unique
+  increasing `--build`; set `--bundle-id` to the registered App ID if it differs
+  from the current bundle ID. The script then makes a signed `.pkg` beside the app.
+  The existing `package` target remains the direct distribution DMG path. Test
+  saves, map import, LAN hosting and YOG connections in the sandboxed app before
+  upload; local signing alone does not establish App Store acceptance. See the
+  [Mac App Store release process](mac-app-store.md) for the manual GitHub Actions
+  workflow and required signing credentials.
 - Keep harness runs out of personal profiles: use the existing disposable-profile
   runners and retain fixtures, seeds, logs and checksums needed to reproduce a result.
 - CI lets independent test steps finish after a failure and records their raw

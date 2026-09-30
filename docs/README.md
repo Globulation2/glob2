@@ -13,6 +13,7 @@ dated reports and pull-request artifacts do not belong here.
 - **Assets:** [third-party attribution](assets/source-attribution.md) and
   [high-resolution artwork provenance](assets/high-resolution/README.md).
 - **Development:** [build and coding reference](development/reference.md),
+  [Mac App Store release](development/mac-app-store.md),
   [headless replays](development/headless-replays.md),
   [performance telemetry](development/performance-telemetry.md),
   [save continuation](development/savegame-continuation.md), and the

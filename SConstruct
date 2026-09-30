@@ -438,7 +438,8 @@ def main():
               
     PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     #packaging for apple
-    if isDarwinPlatform and env["release"] and "package" in COMMAND_LINE_TARGETS:
+    if isDarwinPlatform and env["release"] and any(
+            target in COMMAND_LINE_TARGETS for target in ("bundle", "package")):
         bundle.generate(env)
         dmg.generate(env)
         env.Replace(
@@ -462,9 +463,10 @@ def main():
         # A Dir node, not a string: bundleEmitter looks the app up as a directory,
         # and a string target would already have been created as a File.
         application = env.Bundle(env.Dir(env["BUNDLE_NAME"] + ".app"), env["BUNDLE_BINARIES"])
-        image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)
-        env.Alias("bundle", [application, image])
-        env.Alias("package", [application, image])
+        env.Alias("bundle", application)
+        if "package" in COMMAND_LINE_TARGETS:
+            image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)
+            env.Alias("package", [application, image])
 
         import subprocess
         arch = subprocess.check_output(["uname", "-p"], text=True).strip()
