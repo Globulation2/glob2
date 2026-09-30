@@ -69,7 +69,7 @@ jobs:
           git fetch --no-tags https://github.com/Globulation2/glob2.git \
             "refs/tags/$TAG:refs/tags/$TAG"
           python3 tools/release/release.py check --tag "$TAG"
-      - uses: snapcore/action-build@v1
+      - uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1
         id: snap
       - name: Test installed snap
         env:
@@ -98,7 +98,7 @@ jobs:
           mapfile -t files < <(find artifacts/snap -maxdepth 1 -name 'globulation2_*.snap' -type f)
           test "${#files[@]}" -eq 1
           echo "path=${files[0]}" >> "$GITHUB_OUTPUT"
-      - uses: snapcore/action-publish@v1
+      - uses: snapcore/action-publish@214b86e5ca036ead1668c79afb81e550e6c54d40 # v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         with:

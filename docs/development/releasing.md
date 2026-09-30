@@ -2,11 +2,10 @@
 
 The public `.github/workflows/release.yml` builds packages without publishing.
 The public desktop publication workflows are mirrored to the owner-controlled,
-private `genixpro/glob2-release` repository. Configure release credentials as
+public `genixpro/glob2-release` repository. Configure release credentials as
 restricted GitHub environment secrets there. Keep the workflow and packaging
-definitions public here, and mirror only reviewed commits to the private
-repository. Check the mirror's visibility and branch protection before adding
-credentials.
+definitions public here, and mirror only reviewed commits to the release
+repository.
 Run `publish-desktop.yml` manually with the public `vVERSION` tag to publish the
 GitHub release, publish Snap stable, and propose the Flathub update in that
 order. Each channel retains a separate manual workflow for retries; no
@@ -17,6 +16,10 @@ the same check applies to a re-run's initiator. It then
 checks its required release-repository secret (and the Flathub fork variable)
 and fails if any are missing. The public `release.yml` remains a build-only
 workflow and does not use publication credentials.
+The release repository permits only an explicit list of SHA-pinned actions.
+When changing a release workflow's actions, pin each action to a reviewed
+commit and add only that exact reference to the release repository's allowed
+actions list before running it there.
 The selected public `vVERSION` tag must resolve to the release mirror's HEAD.
 Mirror only reviewed public commits. Review of workflow changes is essential:
 the mirror and dispatch gates alone do not make unreviewed code safe to run.
