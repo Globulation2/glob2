@@ -70,6 +70,7 @@ class FakeAPI:
         if path.endswith('/listings/en_US') and method == 'PUT': return {'recentChanges': 'New maps'}, None
         if path.endswith('/validate'): return {'id': 'edit-42'}, None
         if path == '/edits/edit-42' and method == 'GET': return {'id': 'edit-42'}, 'edit-etag'
+        if path == '/edits/edit-42' and method == 'DELETE': return None, None
         if path.endswith('/commit'): return {'status': 'SUBMITTED'}, None
         raise AssertionError((method, path))
 
@@ -100,6 +101,8 @@ class PublisherTests(ArtifactTests):
         with self.assertRaisesRegex(ValueError, 'must exceed'):
             self.run_publish(api)
         self.assertNotIn('PUT', [call[0] for call in api.calls])
+        self.assertEqual(api.calls[-1][:2], ('DELETE', '/edits/edit-42'))
+        self.assertEqual(api.calls[-1][3], {'If-Match': 'edit-etag'})
 
     def test_replaces_apk_updates_notes_validates_and_commits(self):
         api = FakeAPI()

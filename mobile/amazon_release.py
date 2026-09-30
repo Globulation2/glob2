@@ -182,12 +182,18 @@ def publish(api, apk, manifest, sdk, notes):
         raise ValueError('Amazon did not return an edit ID')
     edit_id = urllib.parse.quote(str(edit['id']), safe='')
     base = '/edits/' + edit_id
+    discarded = False
     try:
         apks, _ = api.request('GET', base + '/apks')
         if not isinstance(apks, list) or len(apks) != 1:
             raise ValueError('Expected exactly one existing APK; inspect Amazon device targeting')
         old = apks[0]
         if int(old['versionCode']) >= metadata['version_code']:
+            _, edit_etag = api.request('GET', base)
+            if not edit_etag:
+                raise ValueError('Amazon versionCode is not higher and the new edit has no ETag for cleanup')
+            api.request('DELETE', base, headers={'If-Match': edit_etag})
+            discarded = True
             raise ValueError('Amazon versionCode must exceed the live version')
         apk_id = urllib.parse.quote(str(old['id']), safe='')
         _, etag = api.request('GET', base + '/apks/' + apk_id)
@@ -211,7 +217,8 @@ def publish(api, apk, manifest, sdk, notes):
         return {'edit_id': edit['id'], 'submission': submitted, 'sha256': metadata['sha256'],
                 'version_code': metadata['version_code'], 'source_commit': metadata['source_commit']}
     except Exception as error:
-        raise ValueError(f'Amazon edit {edit["id"]} remains open: {error}') from error
+        state = 'was discarded' if discarded else 'remains open'
+        raise ValueError(f'Amazon edit {edit["id"]} {state}: {error}') from error
 
 
 def main():
