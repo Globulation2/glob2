@@ -115,7 +115,8 @@ F-Droid's `fdroiddata` project. `mobile/android-release.json` gives the version
 name and base code, and the `armeabi-v7a`, `arm64-v8a`, and `x86_64` APKs use
 `10 * base + 1`, `+ 2`, and `+ 3`, respectively. The `fastlane/metadata/android/`
 tree contains the listing text, icon, per-APK changelogs, and Android screenshots.
-Tagged publication preflight rejects missing listing material. Do not use a
+Release preflight checks all three recipe codes and rejects missing listing
+material. Do not use a
 desktop or browser screenshot as an Android screenshot.
 
 The mobile and release workflows build unsigned APKs and retain them only as
