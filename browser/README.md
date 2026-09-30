@@ -174,9 +174,9 @@ CI builds the browser in parallel jobs. `web-build` compiles the WebAssembly
 client and `web-native` the gateway, router and transport fixtures; both hand
 their outputs to the `web-test` matrix as artifacts, which runs the Chromium
 suite in five shards (split by spec file) beside separate torus, rendering and
-settings-storage jobs, one job each for Firefox and WebKit, six focused WebGL2
-jobs, and the lifecycle suite. Each long WebGL2 reload case runs on its own
-runner; new untagged reload cases run with the match reload group. `web-deploy` checks
+settings-storage jobs, one job each for Firefox and WebKit, five focused WebGL2
+jobs, and the lifecycle suite. The damaged-load case shares a two-worker job
+with viewport checks; new untagged reload cases run with the match reload group. `web-deploy` checks
 self-hosting on its own runner. A spec that needs a native program must use one
 packaged by `web-native`, or add it there.
 The browser test matrix runs at most ten jobs at once so Linux test shards can
