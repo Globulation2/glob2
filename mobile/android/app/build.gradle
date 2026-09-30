@@ -2,7 +2,7 @@ plugins { id 'com.android.application' }
 def toolchain = new groovy.json.JsonSlurper().parse(rootProject.file('glob2-toolchain.json'))
 def nativeBuild = new groovy.json.JsonSlurper().parse(rootProject.file('glob2-build.json'))
 android {
-    namespace 'org.globulation.glob2'
+    namespace 'org.globulation2.glob2'
     compileSdk toolchain.android.compile_api
     ndkVersion toolchain.android.ndk
     buildToolsVersion toolchain.android.build_tools
@@ -13,11 +13,11 @@ android {
     }
     testBuildType nativeBuild.release ? 'release' : 'debug'
     defaultConfig {
-        testInstrumentationRunner 'org.globulation.glob2.TrustInstrumentation'
-        applicationId 'org.globulation.glob2'
+        testInstrumentationRunner 'org.globulation2.glob2.TrustInstrumentation'
+        applicationId 'org.globulation2.glob2'
         minSdk toolchain.android.min_api
         targetSdk toolchain.android.compile_api
-        versionCode 1
+        versionCode nativeBuild.version_code ?: 1
         versionName '0.9.5-mobile-dev'
     }
     sourceSets.main {

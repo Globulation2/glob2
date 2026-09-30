@@ -254,6 +254,109 @@ Release packaging restores gzip assets that AAPT expands and renames, then align
 the APK before signing so compressed maps retain their indexed paths.
 Native startup failures are also written to Android logcat under `SDL/APP`.
 
+### Google Play internal testing
+
+The Play app ID is `org.globulation2.glob2`. The Play upload is a release Android
+App Bundle. Install Android SDK platform 36
+alongside the pinned NDK and build tools. The existing APK commands above remain
+useful for direct device testing. To build the bundle:
+
+```sh
+python3 mobile/android.py bundle --arch arm64-v8a --release --version-code 1
+```
+
+Each subsequent Play upload needs a higher `--version-code`. The bundle command
+restores gzip assets that Android packaging expands, verifies the complete game
+asset index, and checks the packaged native build ID against retained symbols.
+The unsigned bundle is written to
+`build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab`.
+Keep a private upload keystore outside the repository and back it up securely.
+Create the key with Android Studio's **Generate Signed Bundle/APK** flow or
+`keytool`. Set `GLOB2_PLAY_STORE_PASSWORD` and `GLOB2_PLAY_KEY_PASSWORD` in the
+environment using your password manager, then sign the verified bundle:
+
+```sh
+python3 mobile/android.py sign-bundle --arch arm64-v8a --release \
+  --keystore /path/to/private-upload.keystore --key-alias YOUR_ALIAS
+```
+
+Upload `app-release-play.aab` from the same directory to Play Console's **Internal
+testing** track. The development APK key must not be used as the Play upload key.
+Before uploading, use bundletool to generate and install APKs from the bundle,
+verify its `PAGE_ALIGNMENT_16K` setting, and check startup, gameplay, rotation,
+background/resume and save/load on a real device. Keep the generated `.apks`,
+screenshots, logs and replay checksums under `artifacts/`.
+
+### Automated Google Play internal releases
+
+`.github/workflows/android-play-internal.yml` is public for review, but its
+release job runs only from the owner's private `genixpro/glob2-release` mirror
+on `master`. The mirror is a separate private repository: GitHub does not permit
+a private fork of a public repository. Copy reviewed upstream commits into the
+mirror when ready, then manually dispatch its workflow. It installs the pinned
+Android toolchain and dependencies, assigns a
+time-based Play version code, builds and verifies the arm64 release bundle,
+signs it with the existing Play upload key, and uses the Google Play Developer
+API to validate and commit a release on the **internal** track. It does not
+change production or the selected internal tester list. The workflow is
+serialized so two runs cannot update the track concurrently. A rerun gets a
+new version code; Play rejects a code lower than a previously uploaded one.
+
+One-time account setup is required before the first workflow run:
+
+1. In a Google Cloud project, enable the **Google Play Android Developer API**.
+   Create a service account dedicated to Globulation 2 internal releases.
+2. Configure [GitHub Workload Identity Federation](https://github.com/google-github-actions/auth#workload-identity-federation-through-a-service-account)
+   for that service account. Restrict the provider to the **private mirror's**
+   numeric repository ID, `refs/heads/master`, and
+   `genixpro/glob2-release/.github/workflows/android-play-internal.yml`.
+   Grant only that repository identity `roles/iam.workloadIdentityUser` on the
+   service account. Do not create a Google service account key for this workflow.
+3. In Play Console **Users and permissions**, invite the service account's email
+   address and grant app-level **View app information (read-only)** and
+   **Release apps to testing tracks** for `org.globulation2.glob2` only. Do not
+   grant production release or account-wide permissions.
+4. In the **private mirror only**, create a GitHub Actions environment named
+   `google-play-internal` and restrict deployment to `master`. Add environment variables
+   `GLOB2_PLAY_WIF_PROVIDER` (the full provider resource name, with numeric
+   project number) and `GLOB2_PLAY_SERVICE_ACCOUNT` (the service account email).
+   Add three environment secrets:
+
+   | Secret | Value |
+   | --- | --- |
+   | `GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64` | Base64 of the backed-up `glob2-upload.p12` used for the first Play release |
+   | `GLOB2_PLAY_STORE_PASSWORD` | Upload keystore password |
+   | `GLOB2_PLAY_KEY_PASSWORD` | Upload key password |
+
+Keep the original keystore and passwords backed up outside GitHub. The public
+upstream must never receive these secrets or a broad OIDC trust binding. The workflow
+decodes the key to a temporary runner file, signs the AAB, removes that file,
+then authenticates to Play through short-lived GitHub OIDC credentials. Only
+the private mirror's owner should have write access. Do not add pull-request
+triggers or allow arbitrary refs to reach the release job. Review upstream
+changes, especially the workflow, build scripts, and dependency pins, before
+syncing them into the private mirror: copied code runs with release credentials.
+
+To sync from a local clone of the private mirror, configure `upstream` once as
+`https://github.com/Globulation2/glob2.git`, then use:
+
+```sh
+git fetch upstream master
+git checkout master
+git merge --ff-only upstream/master
+git push origin master
+```
+
+If fast-forwarding fails because the private mirror diverged, inspect the
+commits and reconcile them deliberately. Do not force-push a release branch.
+
+After syncing, run **Actions → Android Play internal release → Run workflow**
+in the private mirror. The optional release notes are shown to internal testers. The
+run summary records the version code and signed AAB SHA-256, and the signed
+bundle is retained as a GitHub artifact for 14 days. Check the internal testing
+track in Play Console for availability; if Play requires a new content or policy
+declaration, complete that in Play Console before rerunning the workflow.
+
 ### Native tests on a connected Android device
 
 After configuring the release project above, build the isolated CppUnit dependency
