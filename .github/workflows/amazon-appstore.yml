@@ -33,6 +33,7 @@ jobs:
     outputs:
       commit: ${{ steps.source.outputs.commit }}
       version: ${{ steps.source.outputs.version }}
+      digest: ${{ steps.package.outputs.digest }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -87,6 +88,7 @@ jobs:
           python3 mobile/dependencies.py --arch arm64-v8a --release
           python3 mobile/dependencies.py --arch armeabi-v7a --release
       - name: Build and verify unsigned Fire tablet APK
+        id: package
         env:
           TAG: ${{ inputs.tag }}
           COMMIT: ${{ steps.source.outputs.commit }}
@@ -100,6 +102,7 @@ jobs:
           cp "${apk%.apk}.json" artifacts/amazon-appstore/glob2-fire-unsigned.json
           python3 mobile/amazon_release.py prepare --apk artifacts/amazon-appstore/glob2-fire-unsigned.apk \
             --tag "$TAG" --source-commit "$COMMIT" --output artifacts/amazon-appstore/provenance.json
+          echo "digest=$(sha256sum artifacts/amazon-appstore/glob2-fire-unsigned.apk | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: amazon-fire-${{ steps.source.outputs.commit }}
@@ -143,6 +146,7 @@ jobs:
         env:
           EXPECTED_COMMIT: ${{ needs.build.outputs.commit }}
           EXPECTED_VERSION: ${{ needs.build.outputs.version }}
+          EXPECTED_DIGEST: ${{ needs.build.outputs.digest }}
         run: |
           set -euo pipefail
           dir="$RUNNER_TEMP/amazon-appstore"
@@ -152,6 +156,7 @@ jobs:
           value=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'amazon-appstore/provenance.json').read_text())
           assert value['source_commit']==os.environ['EXPECTED_COMMIT']
           assert value['version_name']==os.environ['EXPECTED_VERSION']
+          assert value['sha256']==os.environ['EXPECTED_DIGEST']
           PY
       - name: Sign verified Fire tablet APK
         env:
