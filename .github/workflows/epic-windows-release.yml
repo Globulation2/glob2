@@ -145,19 +145,17 @@ jobs:
             if (!$expected.ContainsKey($relative)) { throw "Unlisted file: $relative" }
           }
           if (!$expected.ContainsKey('glob2.exe')) { throw 'Missing launcher executable' }
-      - name: Retrieve pinned BuildPatchTool from private release asset
+      - name: Download and verify pinned BuildPatchTool
         shell: pwsh
         env:
-          GH_TOKEN: ${{ github.token }}
           BPT_SHA256: ${{ vars.EPIC_BPT_SHA256 }}
         run: |
           $ErrorActionPreference = 'Stop'
           if ($env:BPT_SHA256 -notmatch '^[0-9a-fA-F]{64}$') { throw 'Set EPIC_BPT_SHA256' }
           $dir = Join-Path $env:RUNNER_TEMP 'bpt'
           New-Item -ItemType Directory -Force $dir | Out-Null
-          gh release download epic-bpt --repo $env:GITHUB_REPOSITORY --pattern BuildPatchTool.zip --dir $dir
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot download private BPT asset' }
           $zip = Join-Path $dir 'BuildPatchTool.zip'
+          Invoke-WebRequest 'https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/BuildPatchTool.zip' -OutFile $zip
           if ((Get-FileHash $zip -Algorithm SHA256).Hash -ine $env:BPT_SHA256) {
             throw 'BuildPatchTool digest mismatch'
           }

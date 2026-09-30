@@ -91,10 +91,11 @@ In the private repository, set `EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`,
 `epic-dev` environment variables. Store `EPIC_BPT_CLIENT_SECRET` as an
 environment secret. Create those BPT credentials from the product's BPT
 Credentials page; EOS credentials are different. Download the current
-BuildPatchTool from Epic, place its ZIP as the private `BuildPatchTool.zip`
-asset on the private `epic-bpt` release, and set `EPIC_BPT_SHA256` to its ZIP
-digest. Verify the archive contains one `BuildPatchTool.exe`. Never put BPT
-credentials or the private tool archive in the public source tree.
+BuildPatchTool from the product's Epic Artifacts and Binaries page and set
+`EPIC_BPT_SHA256` to the ZIP's SHA-256 digest. The upload job downloads from
+Epic's official endpoint and checks this digest before use. An Epic tool
+update intentionally stops the job until its digest is reviewed and refreshed.
+Never put BPT credentials in the public source tree.
 
 After each upload, retain the workflow's staged manifest, version, source
 commit, and BPT log. Install through Epic on a fresh Windows machine and check
