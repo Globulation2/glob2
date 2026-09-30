@@ -10,6 +10,22 @@
 #include "Unit.h"
 #include "MapInternal.h"
 
+#include <algorithm>
+#include <vector>
+
+namespace
+{
+	// Scratch for the crowding box sums. Guard fields of different swim classes
+	// and teams rebuild in parallel (Map::updateTeamAreaGradients, the gradient
+	// pipeline), so the scratch is per thread rather than shared.
+	thread_local std::vector<Uint16> crowdCells;
+	thread_local std::vector<Uint16> paintCells;
+	thread_local std::vector<Uint16> crowdRows;
+	thread_local std::vector<int> crowdColumnSums;
+	thread_local std::vector<size_t> crowdPositions;
+	thread_local std::vector<size_t> guardSeeds;
+}
+
 
 
 // Forbidden / Guard area / Clear area gradients
@@ -115,6 +131,119 @@ void Map::updateForbiddenGradient()
 }
 
 
+// Guard-area balancing. Warrior crowding for the guard gradient: every tile
+// ends up holding the number of the team's warriors within GUARD_CROWD_RADIUS
+// tiles of it. Warrior positions are splatted onto a map-sized grid and
+// box-summed. Warriors inside buildings are not counted; they are not guarding
+// anything.
+bool Map::computeWarriorCrowding(int teamNumber, Uint16 *out) const
+{
+	// Gather positions first: a team without warriors costs one pass over its
+	// unit slots and nothing over the map.
+	crowdPositions.clear();
+	const Team *team = game->teams[teamNumber];
+	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	{
+		const Unit *u = team->myUnits[i];
+		if (!u || u->isDead || u->typeNum != WARRIOR || u->displacement == Unit::DIS_INSIDE)
+			continue;
+		crowdPositions.push_back(coordToIndex(u->posX, u->posY));
+	}
+	if (crowdPositions.empty())
+		return false;
+	std::fill(out, out + size, 0);
+	for (size_t i : crowdPositions)
+		out[i]++;
+	boxSumInPlace(out);
+	return true;
+}
+
+// Box sum over a (2r+1)-square window, in place. A box filter is separable: sum
+// each row over the window, then sum those row sums down each column, and every
+// cell holds the sum of the whole square. Each pass is a sliding window that
+// adds the cell entering and subtracts the one leaving, so the cost is a few
+// operations per cell whatever the radius. Both passes walk memory in row
+// order; the column pass carries one running sum per column across the rows
+// rather than striding down each column. The map is a torus and its sides are
+// powers of two, so the window wraps by masking the index, with no edge cases.
+void Map::boxSumInPlace(Uint16 *grid) const
+{
+	// A window wider than the map would count a cell twice.
+	const int r = std::min<int>(GUARD_CROWD_RADIUS, std::min((int)w - 1, (int)h - 1) / 2);
+	crowdRows.assign(size, 0);
+	// Rows: window [x-r, x+r] slides right; entering x+r+1, leaving x-r.
+	for (int y = 0; y < (int)h; y++)
+	{
+		const size_t row = (size_t)y << wDec;
+		int sum = 0;
+		for (int dx = -r; dx <= r; dx++)
+			sum += grid[row | (size_t)(dx & (int)wMask)];
+		for (int x = 0; x < (int)w; x++)
+		{
+			crowdRows[row | (size_t)x] = (Uint16)sum;
+			sum += grid[row | (size_t)((x + r + 1) & (int)wMask)] - grid[row | (size_t)((x - r) & (int)wMask)];
+		}
+	}
+	// Columns, the same way over the row sums: crowdColumnSums[x] is the running
+	// window sum of column x, advanced one whole row at a time so the sweep
+	// stays row-major and the inner loops vectorise.
+	crowdColumnSums.assign(w, 0);
+	for (int dy = -r; dy <= r; dy++)
+	{
+		const Uint16 *in = &crowdRows[(size_t)(dy & (int)hMask) << wDec];
+		for (int x = 0; x < (int)w; x++)
+			crowdColumnSums[x] += in[x];
+	}
+	for (int y = 0; y < (int)h; y++)
+	{
+		Uint16 *o = grid + ((size_t)y << wDec);
+		const Uint16 *entering = &crowdRows[(size_t)((y + r + 1) & (int)hMask) << wDec];
+		const Uint16 *leaving = &crowdRows[(size_t)((y - r) & (int)hMask) << wDec];
+		for (int x = 0; x < (int)w; x++)
+		{
+			o[x] = (Uint16)crowdColumnSums[x];
+			crowdColumnSums[x] += entering[x] - leaving[x];
+		}
+	}
+}
+
+// Guard-area balancing: painted tiles are the seeds, but not at cost zero. Each
+// carries a crowding cost, warriors nearby per painted tile nearby
+// (MapInternal.h), so Dijkstra gives every tile the best of "distance to an
+// area plus that area's crowding". Two areas then settle where their crowding
+// difference matches the walking distance between them, a larger painted area
+// costs less per warrior and so takes more of them, and an area that is
+// over-full has another area's field running over its painted tiles, which is
+// what lets its warriors find the way out (Map::pathfindArea).
+void Map::seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const
+{
+	// Seeds are the cells the plain seeding left at the goal value: painted and
+	// not blocked. Both box sums are skipped for a team that painted nothing
+	// (the common case) and for a team with no warriors, whose painted tiles
+	// stay at cost zero.
+	guardSeeds.clear();
+	for (size_t i = 0; i < size; i++)
+		if (gradient[i] == GRADIENT_AT_GOAL)
+			guardSeeds.push_back(i);
+	if (guardSeeds.empty())
+		return;
+	crowdCells.resize(size);
+	if (!computeWarriorCrowding(teamNumber, crowdCells.data()))
+		return;
+	paintCells.assign(size, 0);
+	for (size_t i : guardSeeds)
+		paintCells[i] = 1;
+	boxSumInPlace(paintCells.data());
+	for (size_t i : guardSeeds)
+	{
+		// Warriors per painted tile in the window, scaled so that a 25-tile
+		// area pays the full per-warrior cost. paintCells[i] is at least 1: the
+		// seed itself is painted.
+		const int cost = (GUARD_CROWD_COST_PER_WARRIOR * crowdCells[i] * GUARD_CROWD_REFERENCE_AREA) / std::max<int>(1, paintCells[i]);
+		gradient[i] = (Uint16)(GRADIENT_AT_GOAL - std::min(GUARD_CROWD_COST_MAX, cost));
+	}
+}
+
 void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
 	PERF_SCOPE_TIME(AreaGradient);
@@ -151,6 +280,8 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 	}
 	});
 
+	if (game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing))
+		seedGuardAreaCrowding(teamNumber, gradient);
 }
 
 void Map::updateGuardAreasGradient(int teamNumber)

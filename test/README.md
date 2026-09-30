@@ -972,3 +972,14 @@ preferences round trip and the baked-in rule: a new game takes Settings →
 Experiments, its save keeps that set after the setting is turned off, and a fresh
 map then carries nothing. The `Settings` display cases toggle the switch on the
 settings page. See [experimental features](../docs/features/experimental-features.md).
+
+`GuardAreaBalance` (`glob2-engine-tests`, `python3 test/run_tests.py --filter
+'GuardAreaBalance/*'`) runs the real engine on a blank 64x64 map with 24 warriors
+for the `guard-area-balancing` experiment: spawn, drain, patches, size, three
+areas, erase, settled-guard movement, a save/load continuation and the crowding
+box sum against brute force, plus a `[benchmark]` timing case. Its first case
+runs spawn and drain without the experiment and expects the old outcome, which
+proves the gate. Games start with the experiment through
+`glob2test::GameOptions::experiments`; `GameOptions::header` installs the
+one-local-player header and seed they need. Design and numbers:
+[guard-area balancing](../docs/features/guard-area-balancing.md).

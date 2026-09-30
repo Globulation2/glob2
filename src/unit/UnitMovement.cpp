@@ -282,9 +282,24 @@ void Unit::handleMovementAttackingAround()
 		}
 	}
 
-	// if we haven't found anything satisfactory, follow guard area gradients
+	// No enemy in reach: follow the guard field. Outside an area it leads to
+	// the nearest area (under guard-area balancing, nearest once crowding is
+	// counted); inside one it may, under that experiment, lead out of an
+	// over-full area (Map::pathfindArea). Where it gives no move, a warrior
+	// inside an area or in a war flag's range wanders the least explored
+	// painted tiles, and one with no area to go to wanders freely.
 	if (movement == MOV_RANDOM_GROUND)
 	{
+		// "Inside" a guard area is the field's goal value, as it always was.
+		// Under guard-area balancing a crowded area's tiles sit below that
+		// value, so the painted bit is what says inside there.
+		const bool balancing = owner->game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);
+		auto insideGuardArea = [&](int x, int y)
+		{
+			if (balancing)
+				return owner->map->isGuardArea(x, y, owner->me);
+			return owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(x, y)] == GRADIENT_AT_GOAL;
+		};
 		if (!attachedBuilding && owner->map->pathfindArea(Map::AreaKind::Guard, owner->teamNumber, swimClass(), posX, posY, &dx, &dy))
 		{
 			directionFromDxDy();
@@ -293,7 +308,7 @@ void Unit::handleMovementAttackingAround()
 			owner->map->getGlobalGradientDestination(owner->map->getGuardAreasGradient(owner->teamNumber, swimClass()), posX, posY, &targetX, &targetY);
 			validTarget=true;
 		}
-		else if (attachedBuilding || (owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(posX, posY)] == GRADIENT_AT_GOAL))
+		else if (attachedBuilding || insideGuardArea(posX, posY))
 		{
 			// are we into the guard area or war flag, and we have to go to the least known area.
 			int bestExplored = 3*EXPLORED_FRESH;
@@ -313,7 +328,7 @@ void Unit::handleMovementAttackingAround()
 				}
 				else
 				{
-					if (owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(posX + cdx, posY + cdy)] != GRADIENT_AT_GOAL)
+					if (!insideGuardArea(posX + cdx, posY + cdy))
 						continue;
 				}
 				int explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);

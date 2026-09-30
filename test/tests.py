@@ -82,6 +82,7 @@ ENGINE_TESTS = [
     'WindowResizeHarness.cpp',
     'SettingsScreenTest.cpp',
     'SettingsExperimentsTest.cpp',
+    'GuardAreaBalanceTest.cpp',
     'GameSpeedTest.cpp',
     'UIPresentationHarness.cpp',
     'UIIconsTest.cpp',

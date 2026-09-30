@@ -40,6 +40,13 @@ namespace glob2test
 		bool discovered = false;      // reveal the whole map to every team
 		bool clearImmobile = false;   // clear immobile-unit bookkeeping on every tile
 		bool loadDefaultRace = false; // team->race.loadDefault() for each team
+		// Install a GameHeader with one local player per team, the way the game
+		// loader does: orders then apply to the team, painted areas reach the
+		// displayed view, and a save of the game reloads to the same checksums.
+		// The seed and experiments below only take effect with it.
+		bool header = false;
+		Uint32 seed = 1;              // GameHeader otherwise seeds from the wall clock
+		ExperimentSet experiments;    // the experiments the game carries (ExperimentalFeatures.h)
 	};
 
 	// Owns the process-wide GlobalContainer for the scope of a test case. Headless by
