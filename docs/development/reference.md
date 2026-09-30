@@ -92,17 +92,21 @@ comparing builds; do not pick an old binary by modification time.
 ### Windows Store release
 
 `.github/workflows/windows-store-release.yml` is a manual `workflow_dispatch` on
-`windows-2025`. It builds the existing MinGW x64 client, stages its runtime DLLs,
+`windows-2025`. Its sole job is gated to `genixpro/glob2-release` on `master`:
+the public `Globulation2/glob2` repository stores the workflow and build code for
+review, but dispatching it there cannot build, sign, upload or publish a release.
+The owner syncs the public changes into the private mirror and starts each release
+there manually. The workflow builds the existing MinGW x64 client, stages its runtime DLLs,
 game assets and GPL license, creates `MicrosoftGame.config` and shell logos, then
 uses the Microsoft GDK to produce an MSIXVC package. The package, encryption key
 blob and validator report are retained as a GitHub Actions artifact. Set `upload`
 to true when dispatching to send that package to an existing Partner Center branch.
 The workflow does not submit a listing for certification or publish it to retail.
 
-Before the first run, create the Globulation 2 PC game in Partner Center. The
-four identity values below may be entered directly when dispatching a package-only
-run. A repository administrator can also create a GitHub Actions environment
-named `windows-store` and save them as environment variables for later runs:
+Before the first run, create the Globulation 2 PC game in Partner Center. On the
+**private mirror only**, create a GitHub Actions environment named `windows-store`,
+restrict deployment branches to `master`, and set these environment variables
+from Partner Center:
 
 | Variable | Value |
 | --- | --- |
@@ -112,16 +116,15 @@ named `windows-store` and save them as environment variables for later runs:
 | `STORE_PUBLISHER_DISPLAY_NAME` | Publisher display name |
 | `STORE_BRANCH` | Existing Partner Center branch for package upload |
 
-For upload, a repository administrator must set up the `windows-store`
-environment and restrict it to trusted release branches. Register an Entra
-application in the tenant connected to Partner
+For upload, register an Entra application in the tenant connected to Partner
 Center, grant it **Publishing: Read/Write** for this product, and add its tenant
 ID, application ID and client secret as environment secrets named
 `STORE_TENANT_ID`, `STORE_CLIENT_ID`, and `STORE_CLIENT_SECRET`.
-The `STORE_BRANCH` variable is required for upload. Keep this environment
-restricted to trusted maintainers because its secret can upload packages.
+The `STORE_BRANCH` variable is required for upload. Never add these secrets,
+the environment or a privileged trigger to the public repository.
 
-Run the workflow from **Actions → Windows Store release → Run workflow** with a
+After syncing the mirror, run the workflow from its **Actions → Windows Store
+release → Run workflow** page on `master`, with a
 four-part package version greater than previous uploads. Leave `upload` false for
 the first run. Download the artifact and install the MSIXVC on a clean Windows PC
 with Gaming Services; verify launch, sound, saves, settings, uninstall and a
