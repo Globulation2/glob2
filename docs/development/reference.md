@@ -105,7 +105,14 @@ blob and validator report are retained as a GitHub Actions artifact. Set `upload
 to true when dispatching to send that package to an existing Partner Center branch.
 The workflow does not submit a listing for certification or publish it to retail.
 
-Before the first run, create the Globulation 2 PC game in Partner Center. On the
+Before the first run, enroll the publishing account in the **Windows** developer
+program in [Partner Center](https://partner.microsoft.com/dashboard/v2/account-settings/settings/programs),
+then reserve the Globulation 2 name and create its PC game product. The account
+sign-in alone does not grant a Windows publishing
+workspace. Complete Microsoft's developer account verification and any required
+publisher agreement before creating the product. Record the product's Store ID,
+package identity values and package branch from Partner Center; these values
+must come from the created product rather than placeholders. On the
 **private mirror only**, create a GitHub Actions environment named `windows-store`,
 restrict deployment branches to `master`, and set these environment variables
 from Partner Center:
