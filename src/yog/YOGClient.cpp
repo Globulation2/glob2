@@ -2,6 +2,9 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include <iostream>
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
 #include "MultiplayerGame.h"
 #include "AuthMessages.h"
 #include "Version.h"
@@ -66,6 +69,11 @@ void YOGClient::initialize()
 void YOGClient::connect(const std::string& server)
 {
 	initialize();
+#ifdef GLOB2_CHINA_RELEASE
+	// LAN sessions use their discovered host; the public YOG service is excluded.
+	if (server == YOG_SERVER_IP)
+		return;
+#endif
 	const char* gateway = std::getenv("GLOB2_YOG_URL");
     nc.openConnection(server == YOG_SERVER_IP && gateway ? gateway : server, YOG_SERVER_PORT);
 	connectionState = NeedToSendClientInformation;
@@ -664,5 +672,4 @@ std::shared_ptr<YOGClientPlayerListManager> YOGClient::getPlayerListManager()
 {
 	return playerListManager;
 }
-
 

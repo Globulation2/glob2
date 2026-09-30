@@ -246,6 +246,12 @@ ZIP alignment, the signature and APK digest. Store distribution requires separat
 signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.
 Omit `--release` consistently from both dependency and application commands for
 debug builds. An explicit `JAVA_HOME` takes precedence over the task-local JDK.
+Release Android packages use the source package version as `versionName` by
+default; pass `--version-name` to choose a different store-facing value.
+The `--version-code` argument is carried into the generated Gradle project.
+For the separate mainland China local-play configuration, pass `--china` to
+both the dependency and Android packaging commands. The iOS dependency and
+packaging commands accept the same flag.
 
 The asset packager excludes local caches and metadata before writing its index.
 The completed APK is checked against that index and its content digest, so an
@@ -253,6 +259,220 @@ AAPT-filtered or missing file fails the build instead of failing on first launch
 Release packaging restores gzip assets that AAPT expands and renames, then aligns
 the APK before signing so compressed maps retain their indexed paths.
 Native startup failures are also written to Android logcat under `SDL/APP`.
+
+### Amazon Appstore Fire tablet release
+
+The Amazon candidate is one release APK with `arm64-v8a` and `armeabi-v7a`
+libraries. It keeps Android API 26 as its minimum, so the first release can
+target qualified Fire OS 7/8 tablets, not Fire OS 5/6. Build both dependency
+sets, then package the APK from the arm64 configuration:
+
+```sh
+python3 mobile/dependencies.py --arch arm64-v8a --release
+python3 mobile/dependencies.py --arch armeabi-v7a --release
+python3 mobile/android.py build --arch arm64-v8a --release --amazon-apk \
+  --version-code "$(python3 mobile/amazon_release.py version-code)"
+```
+
+Fire OS 5/6 support is a separate release milestone: lower the Android API
+floor only after updating the build identity and native dependency triplets,
+auditing platform API use, and playing on representative older tablets. Do not
+select those devices in the store until they pass.
+
+`--amazon-apk` checks matching native libraries in both ABIs, the packaged
+asset index, alignment and both native build IDs. It derives `versionName` from
+`PACKAGE_VERSION` in `scons/build_layout.py`. The four version components map
+to one increasing Android `versionCode`; never reuse or lower a code already
+submitted to Amazon. A release build remains unsigned until the separate
+release workflow signs it. The local `sign` command above is for developer
+installs and must not be used as a store identity.
+
+The public `.github/workflows/amazon-appstore.yml` runs only when mirrored to
+`genixpro/glob2-release`, which is itself public; its environment secrets are
+private. Its manual dispatch selects a public `vVERSION` tag that resolves to
+the same commit in the release mirror. `build` produces a
+verified unsigned APK without credentials. `candidate` signs it and retains a
+short-lived APK for the first manual console submission. `publish` performs the
+same build and signing, then submits an update through Amazon's App Submission
+API. The workflow does not create the first listing. Protect the release
+repository's `master` branch and release tags in both repositories; restrict dispatch and
+environment access to maintainers. Configure these private environment values:
+
+After the public change and its release tag are reviewed and merged, fetch the
+public tag into the release mirror and push that exact tag ref there. The
+selected tag must be reachable from public `master` and point to the same
+source commit in both repositories. Do not recreate it on the mirror's merge
+commit. Dispatch the workflow from mirror `master` only after that merge is
+present there.
+
+| Name | Type | Purpose |
+| --- | --- | --- |
+| `GLOB2_AMAZON_KEYSTORE_BASE64` | secret | Base64 PKCS#12 upload keystore |
+| `GLOB2_AMAZON_STORE_PASSWORD`, `GLOB2_AMAZON_KEY_PASSWORD` | secrets | Upload-key passwords |
+| `GLOB2_AMAZON_CLIENT_ID`, `GLOB2_AMAZON_CLIENT_SECRET` | secrets | App Submission API security profile |
+| `GLOB2_AMAZON_APP_ID` | variable | App ID from the Developer Console |
+| `GLOB2_AMAZON_CERT_SHA256` | variable | SHA-256 digest of the upload certificate |
+
+Generate the upload keystore on a trusted machine with `keytool -genkeypair
+-storetype PKCS12 -keystore glob2-amazon.p12 -alias glob2-amazon -keyalg RSA
+-keysize 3072 -validity 10000`; enter passwords interactively. Record its
+certificate SHA-256 from `keytool -list -v -keystore glob2-amazon.p12` as 64
+hex digits without colons, back up
+the keystore securely, and encode it for the environment secret without adding
+it to Git or workflow logs. In the Amazon Developer Console, create an App
+Submission API security profile and attach it to that API before storing its
+client ID and secret. The App ID exists only after the first app is created.
+
+Register an Amazon Developer account, complete identity checks, and create the
+first app version in the Developer Console. Use package `org.globulation2.glob2`,
+price Free, and disable optional Amazon DRM. Select only Fire tablets that pass
+qualification. Complete the privacy questionnaire based on the actual network
+and account behavior, and supply a support contact, icon, and Fire-device
+screenshots. Draft listing copy: **Globulation 2** — “Build and guide a colony in
+an open-source real-time strategy game. Set priorities for your workers, gather
+resources, construct buildings, explore maps, and compete with other colonies.”
+Review this copy against the final Fire build and Amazon's listing fields before
+submission. Amazon requires the first version through the console; the API can
+submit later versions. Keep the first signed APK and its certificate identity
+for future update verification.
+
+Before the first submission, play the signed APK on a Fire OS 7 and a Fire OS 8
+tablet, including a 32-bit device where relevant. Check install, start, an
+entire match, touch placement and painting, keyboard/IME entry, audio, rotation,
+background/resume, save/load and network play. Record device models, Fire OS
+versions, screenshots, logs, saves and replay/checksum evidence under
+`artifacts/`, and inspect the supported-device list in the Developer Console.
+After the first version is live, run one controlled API update and check that a
+store-delivered update retains local saves. API review status and rejected
+submissions require console follow-up; the workflow deliberately leaves an
+open edit untouched if a submission fails.
+
+### Google Play internal testing
+
+The Play app ID is `org.globulation2.glob2`. The Play upload is a release Android
+App Bundle. Install Android SDK platform 36
+alongside the pinned NDK and build tools. The existing APK commands above remain
+useful for direct device testing. To build the bundle:
+
+```sh
+python3 mobile/android.py bundle --arch arm64-v8a --release --version-code 1
+```
+
+Each subsequent Play upload needs a higher `--version-code`. The bundle command
+restores gzip assets that Android packaging expands, verifies the complete game
+asset index, and checks the packaged native build ID against retained symbols.
+The unsigned bundle is written to
+`build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab`.
+Keep a private upload keystore outside the repository and back it up securely.
+Create the key with Android Studio's **Generate Signed Bundle/APK** flow or
+`keytool`. Set `GLOB2_PLAY_STORE_PASSWORD` and `GLOB2_PLAY_KEY_PASSWORD` in the
+environment using your password manager, then sign the verified bundle:
+
+```sh
+python3 mobile/android.py sign-bundle --arch arm64-v8a --release \
+  --keystore /path/to/private-upload.keystore --key-alias YOUR_ALIAS
+```
+
+Upload `app-release-play.aab` from the same directory to Play Console's **Internal
+testing** track. The development APK key must not be used as the Play upload key.
+Before uploading, use bundletool to generate and install APKs from the bundle,
+verify its `PAGE_ALIGNMENT_16K` setting, and check startup, gameplay, rotation,
+background/resume and save/load on a real device. Keep the generated `.apks`,
+screenshots, logs and replay checksums under `artifacts/`.
+
+### Automated Google Play internal releases
+
+`.github/workflows/android-play-internal.yml` is public for review, but its
+release job runs only from the owner's public `genixpro/glob2-release` mirror on
+`master` after a manual dispatch. The mirror has owner-only write access and
+hosts the other platform release workflows. Copy reviewed upstream commits into
+the mirror when ready,
+then manually dispatch and approve its workflow. An unprivileged
+job installs the pinned Android toolchain and dependencies, assigns a
+time-based Play version code, and builds and verifies the arm64 release bundle.
+A fresh runner receives the unsigned bundle, signs it with the existing Play
+upload key, and uses the Google Play Developer API to validate and commit a
+release on the **internal** track. It does not
+change production or the selected internal tester list. The workflow is
+serialized so two runs cannot update the track concurrently. A rerun gets a
+new version code; Play rejects a code lower than a previously uploaded one.
+
+One-time account setup is required before the first workflow run:
+
+1. In a Google Cloud project, enable the **Google Play Android Developer API**.
+   Create a service account dedicated to Globulation 2 internal releases.
+2. Configure [GitHub Workload Identity Federation](https://github.com/google-github-actions/auth#workload-identity-federation-through-a-service-account)
+   for that service account. Restrict the provider to the mirror's numeric
+   repository ID, the owner's numeric actor ID, the `workflow_dispatch` event,
+   public visibility, the `google-play-internal` environment, GitHub-hosted runners,
+   `refs/heads/master`, and
+   `genixpro/glob2-release/.github/workflows/android-play-internal.yml`.
+   Grant only that repository identity `roles/iam.workloadIdentityUser` on the
+   service account. Do not create a Google service account key for this workflow.
+3. In Play Console **Users and permissions**, invite the service account's email
+   address and grant app-level **View app information (read-only)** and
+   **Release apps to testing tracks** for `org.globulation2.glob2` only. Do not
+   grant production release or account-wide permissions.
+4. In the **release mirror only**, create a GitHub Actions environment named
+   `google-play-internal`, restrict deployment to `master`, require the owner to
+   approve each run, and disallow administrator bypass. Add environment variables
+   `GLOB2_PLAY_WIF_PROVIDER` (the full provider resource name, with numeric
+   project number) and `GLOB2_PLAY_SERVICE_ACCOUNT` (the service account email).
+   Add three environment secrets:
+
+   | Secret | Value |
+   | --- | --- |
+   | `GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64` | Base64 of the backed-up `glob2-upload.p12` used for the first Play release |
+   | `GLOB2_PLAY_STORE_PASSWORD` | Upload keystore password |
+   | `GLOB2_PLAY_KEY_PASSWORD` | Upload key password |
+
+Keep the original keystore and passwords backed up outside GitHub. The public
+upstream must never receive these secrets or a broad OIDC trust binding. The workflow
+decodes the key to a temporary runner file, signs the AAB, removes that file,
+then authenticates to Play through short-lived GitHub OIDC credentials. Only
+the mirror's owner should have write access. Do not add pull-request
+triggers or allow arbitrary refs to reach the release job. Review upstream
+changes, especially the workflow, build scripts, and dependency pins, before
+syncing them into the mirror: copied code runs with release credentials.
+Public Actions logs and artifacts are visible to everyone. The unsigned bundle
+is retained as an artifact for one day to cross the runner boundary; the signed
+AAB is never uploaded as an artifact. The workflow does not cache build outputs.
+GitHub Actions secret redaction is not a substitute for keeping secrets out of
+logs and artifacts.
+The Play API client and its transitive Python packages are locked to reviewed
+wheel hashes in `mobile/play-api-requirements.txt`; update the lock deliberately
+when upgrading them.
+
+On the mirror, keep the owner as the sole collaborator, protect `master` against
+force pushes and deletion, and require approval from the owner for the
+`google-play-internal` environment without administrator bypass. Keep the
+default workflow token read-only, require full commit SHA pins for release
+actions, and require approval before any external fork PR workflow runs.
+Review every enabled platform workflow and its environment before syncing
+upstream changes. The owner's GitHub account remains a critical trust boundary:
+protect it with strong two-factor authentication and review every upstream
+commit before syncing code that a release build will execute.
+
+To sync from a local clone of the release mirror, configure `upstream` once as
+`https://github.com/Globulation2/glob2.git`, then use:
+
+```sh
+git fetch upstream master
+git checkout master
+git merge upstream/master
+git push origin master
+```
+
+The release mirror has release-specific commits, so merging may require
+conflict resolution. Inspect the commits and resulting tree before pushing.
+Do not force-push a release branch.
+
+After syncing, run **Actions → Android Play internal release → Run workflow**
+in the mirror. The optional release notes are shown to internal testers. The
+run summary records the version code and signed AAB SHA-256; only Play receives
+the signed bundle. Check the internal testing track in Play Console for
+availability; if Play requires a new content or policy
+declaration, complete that in Play Console before rerunning the workflow.
 
 ### Native tests on a connected Android device
 
@@ -302,33 +522,61 @@ Developer account added in Settings > Accounts; the build allows Xcode to create
 or update the provisioning profile for the bundle ID. The generated target is
 included in Xcode archives for TestFlight distribution.
 
-### Internal TestFlight upload
+### TestFlight upload
 
-`.github/workflows/ios-testflight.yml` is manually triggered from GitHub Actions.
-It runs only from `master`, uses the Xcode 27 runner and the registered
-`org.globulation2.glob2` App ID on
+`.github/workflows/ios-testflight.yml` is kept in the public source repository,
+but its upload job runs only when the owner manually dispatches it from `master`
+in `genixpro/glob2-release`. The release mirror is public for free hosted Actions
+runners; only its owner has write access. The job checks the mirror's numeric
+repository ID, owner's actor ID, dispatch event and branch. The owner syncs
+reviewed public source to the mirror and chooses when to run it. Dispatches in
+`Globulation2/glob2` skip the job. The mirror uses the Xcode 27 runner
+and the registered `org.globulation2.glob2` App ID on
 team `CL2MNNYQX3`. Each run builds pinned iOS dependencies from source, compiles
 the game, archives the iPhone app, checks the bundle ID and build number, retains
-matching dSYMs, exports and validates an App Store signed IPA, and uploads an
-internal-only TestFlight build. Distribution signing occurs during export, so
-archiving does not require a registered test device. Its build
-number is `100 × GITHUB_RUN_NUMBER + GITHUB_RUN_ATTEMPT`, so reruns get a new number.
-The uploaded build cannot be submitted for external testing or App Store release.
+matching dSYMs, exports and validates an App Store signed IPA, and uploads a
+TestFlight build. Choose **internal** for an internal-only build, or **external**
+for a build that can be submitted to external TestFlight review. Distribution
+signing occurs during export, so archiving does not require a registered test
+device. Its build
+number is `1,000,000 + 100 × GITHUB_RUN_NUMBER + GITHUB_RUN_ATTEMPT`, so mirror
+runs and reruns get unique numbers after earlier public test uploads.
+An internal-only build cannot be submitted for external testing or App Store
+release. The external choice permits external testing after Apple's beta review;
+it does not publish the app to the App Store.
 
-One-time repository setup requires an App Store Connect **team** API key with
+One-time mirror setup requires an App Store Connect **team** API key with
 permissions to manage signing assets and upload builds. Individual API keys cannot
-access provisioning endpoints. Store the key ID, issuer ID and single-line Base64
-encoding of the downloaded `.p8` private key as repository secrets named
-`IOS_ASC_KEY_ID`, `IOS_ASC_ISSUER_ID` and `IOS_ASC_KEY_P8_BASE64`. Never commit the
-private key or signing certificate. The workflow writes the key only to the
-ephemeral runner, outside the checked-out repository. Configure the app's internal
-TestFlight group for automatic distribution in App Store Connect if testers should
-receive every processed build without another manual step.
+access provisioning endpoints. In the **release mirror**, create an
+`ios-testflight` environment restricted to the `master` branch and store the key
+ID, issuer ID and single-line Base64 encoding of the downloaded `.p8` private
+key there as environment secrets named `IOS_ASC_KEY_ID`, `IOS_ASC_ISSUER_ID` and
+`IOS_ASC_KEY_P8_BASE64`. Do not place release credentials in the upstream
+repository, repository-wide Actions secrets, or source code. Anyone can read
+the public mirror's workflow, logs and artifacts, so none may contain secrets
+or signed upload packages. The workflow writes the key
+only to the ephemeral mirror runner, outside the checked-out repository.
+Configure the app's internal TestFlight group for automatic distribution in App
+Store Connect if testers should receive every processed build without another
+manual step.
 
-The workflow uploads an `.xcarchive` artifact for diagnosis. A successful upload
-means Apple accepted the transfer; Apple processes the build afterward. Check the
-TestFlight build status and any export-compliance questions in App Store Connect
-before expecting testers to install it. Keep the App Store release step separate.
+The iOS Info.plist declares `ITSAppUsesNonExemptEncryption = NO` for the app's
+standard TLS use. This is the owner's export-compliance determination; revisit it
+if the app's encryption changes. The workflow uploads an `.xcarchive` artifact
+for diagnosis. A successful upload means Apple accepted the transfer; Apple
+processes the build afterward. Check the TestFlight build status in App Store
+Connect before expecting testers to install it.
+
+For a family tester without App Store Connect account access, dispatch an
+**external** build from the release mirror. In App Store Connect, complete the
+beta app description, feedback contact and test information, create an external
+tester group, add the processed build and submit it for TestFlight App Review.
+After Apple approves the build, enable a public invitation link for that group
+and share it with the tester. Keep its tester limit small and turn off the link
+when it is no longer needed; anyone with the link can request access while it is
+enabled. Install TestFlight on the iPhone, open the link and accept the invitation.
+Play a real device session before treating the build as release ready. Keep the
+App Store release step separate.
 
 ## Verification
 

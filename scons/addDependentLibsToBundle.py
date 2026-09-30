@@ -5,7 +5,10 @@ import sys
 
 def run(command) :
     print(("\033[32m:: ", command, "\033[0m"))
-    return os.system(command)
+    result = os.system(command)
+    if result:
+        raise RuntimeError("bundle command failed: %s" % command)
+    return result
 def norun(command) :
     print(("\033[31mXX ", command, "\033[0m"))
 
@@ -102,7 +105,13 @@ def addDependentLibsToBundle( bundle ) :
     # one bundled copy
     frameworkFiles = [os.path.join(bundle, "Contents", "Frameworks", lib) for lib, _ in libs]
     for current in binaries + frameworkFiles :
-        for entry, real in resolved.items() :
+        # Only rewrite load commands actually present in this Mach-O. Applying
+        # every known dependency to every file creates thousands of no-op
+        # install_name_tool invocations as the Homebrew dependency tree grows.
+        entries = [line.split()[0] for line in os.popen("otool -L "+current).readlines()[1:]]
+        for entry in entries :
+            real = resolved.get(entry)
+            if real is None : continue
             lib = os.path.basename(real)
             run("install_name_tool -change %(entry)s @executable_path/../Frameworks/%(lib)s %(current)s" % locals() )
     # install_name_tool invalidates whatever signature a Homebrew-built dylib or this

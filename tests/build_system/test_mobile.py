@@ -104,6 +104,52 @@ class DeveloperSigningTests(unittest.TestCase):
                 run.assert_not_called()
 
 
+class PlayBundleAssetTests(unittest.TestCase):
+    def test_signing_rejects_changed_bundle_before_using_key(self):
+        import json
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        import android
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            bundle=root/'build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab'
+            bundle.parent.mkdir(parents=True)
+            bundle.write_bytes(b'changed')
+            bundle.with_suffix('.json').write_text(json.dumps({'sha256':'0'*64}))
+            argv=['android.py','sign-bundle','--release','--keystore',str(root/'key.jks'),'--key-alias','upload']
+            passwords={'GLOB2_PLAY_STORE_PASSWORD':'test','GLOB2_PLAY_KEY_PASSWORD':'test'}
+            with patch.object(android,'ROOT',root), patch.object(sys,'argv',argv), patch.dict('os.environ',passwords), patch('android.subprocess.run') as run:
+                with self.assertRaisesRegex(ValueError,'changed since verification'):
+                    android.main()
+                run.assert_not_called()
+
+    def test_bundle_restores_gzip_assets_and_checks_original_bytes(self):
+        import gzip
+        import hashlib
+        import zipfile
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        from asset_bundle import restore_gzip_assets, verify_apk_assets
+        prefix='base/assets/glob2-bundle/'
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            assets=root/'assets'
+            source=assets/'maps/example.map.gz'
+            source.parent.mkdir(parents=True)
+            source.write_bytes(gzip.compress(b'map contents'))
+            digest=hashlib.sha256()
+            digest.update(b'maps/example.map.gz\0'+hashlib.sha256(source.read_bytes()).digest())
+            bundle=root/'app.aab'
+            with zipfile.ZipFile(bundle,'w') as archive:
+                archive.writestr(prefix+'index.list',digest.hexdigest()+'\nmaps/example.map.gz\n')
+                archive.writestr(prefix+'maps/example.map',b'map contents')
+            self.assertTrue(restore_gzip_assets(bundle,assets,prefix))
+            verify_apk_assets(bundle,prefix)
+            self.assertFalse(restore_gzip_assets(bundle,assets,prefix))
+            with zipfile.ZipFile(bundle,'w') as archive:
+                archive.writestr(prefix+'index.list',digest.hexdigest()+'\nmaps/example.map.gz\n')
+                archive.writestr(prefix+'maps/example.map.gz',b'changed')
+            with self.assertRaises(ValueError): verify_apk_assets(bundle,prefix)
+
+
 class IOSCommandTests(unittest.TestCase):
     def test_incomplete_device_requests_fail_before_sdk_or_build(self):
         sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
@@ -329,3 +375,17 @@ class AndroidSymbolTests(unittest.TestCase):
                 with patch('subprocess.check_output',side_effect=[valid,notes]):
                     with self.assertRaises(ValueError):
                         verify_android_symbols(apk,library,'arm64-v8a','readelf')
+
+    def test_bundle_uses_base_module_native_library(self):
+        import zipfile
+        from mobile_artifacts import verify_android_archive_symbols
+        with tempfile.TemporaryDirectory() as directory:
+            bundle=Path(directory)/'app.aab'
+            member='base/lib/arm64-v8a/libmain.so'
+            with zipfile.ZipFile(bundle,'w') as archive:
+                archive.writestr(member,b'packaged library')
+            library=Path(directory)/'libmain.so'
+            library.write_bytes(b'debug library')
+            notes='Build ID: '+('a'*40)+'\n'
+            with patch('subprocess.check_output',side_effect=[notes,notes]):
+                self.assertEqual(verify_android_archive_symbols(bundle,library,member,'readelf'),'a'*40)

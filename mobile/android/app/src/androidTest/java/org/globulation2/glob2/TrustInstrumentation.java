@@ -1,4 +1,4 @@
-package org.globulation.glob2;
+package org.globulation2.glob2;
 
 import android.app.Activity;
 import android.app.Instrumentation;

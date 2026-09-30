@@ -5,7 +5,10 @@ from addDependentLibsToBundle import addDependentLibsToBundle
 
 def run(command) :
     print(("\033[32m:: ", command, "\033[0m"))
-    return os.system(command)
+    result = os.system(command)
+    if result:
+        raise RuntimeError("bundle command failed: %s" % command)
+    return result
 def norun(command) :
     print(("\033[31mXX ", command, "\033[0m"))
 
@@ -24,9 +27,13 @@ def createBundle(target, source, env) :
     for resdir in env['BUNDLE_RESOURCEDIRS'] :
         # TODO act sensitive to resdir being a scons target. now assuming a string
         run('cp -r %s %s/Contents/Resources/' % (str(resdir), bundleDir) )
+    run('cp COPYING %s/Contents/Resources/' % bundleDir)
+    run('cp docs/assets/source-attribution.md %s/Contents/Resources/' % bundleDir)
     # write Info.plist -- TODO actually write it not copy it
     plistFile = env['BUNDLE_PLIST']
     run('cp %s %s/Contents/Info.plist' % (plistFile, bundleDir) )
+    run('/usr/libexec/PlistBuddy -c "Set :CFBundleVersion %s" %s/Contents/Info.plist' % (env['VERSION'], bundleDir))
+    run('/usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string %s" %s/Contents/Info.plist' % (env['VERSION'], bundleDir))
     # add icon -- TODO generate .icns file from png or svg
     iconFile = env['BUNDLE_ICON']
     run('cp %s %s/Contents/Resources' % (iconFile, bundleDir) )

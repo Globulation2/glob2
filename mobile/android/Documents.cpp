@@ -50,7 +50,7 @@ bool platformExport(const std::string& name, const std::vector<unsigned char>& c
 }
 }
 extern "C" JNIEXPORT void JNICALL
-Java_org_globulation_glob2_Glob2Activity_documentResult(JNIEnv* env, jclass, jlong request, jint status, jbyteArray name, jbyteArray data) {
+Java_org_globulation2_glob2_Glob2Activity_documentResult(JNIEnv* env, jclass, jlong request, jint status, jbyteArray name, jbyteArray data) {
     using namespace GAGCore::ApplicationHost;
     auto result = status == 1 ? FileSelectionState::Selected : status == 2 ? FileSelectionState::Cancelled : FileSelectionState::Failed;
     SelectedFile file;
