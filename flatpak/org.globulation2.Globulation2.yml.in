@@ -94,7 +94,7 @@ modules:
   - name: glob2
     buildsystem: simple
     build-commands:
-      - scons -j2 release=1 server=0 BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
+      - scons -j2 release=1 server=0 CXXFLAGS=-I/app/include LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
       - test -f /app/share/metainfo/org.globulation2.Globulation2.metainfo.xml
       - test -f /app/share/glob2/data/maxima/duel.strategy
     sources:
