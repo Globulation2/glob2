@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include <cmath>
+#include <cstdlib>
 #include "Engine.h"
 #include "ReplayWriter.h"
 #include "GlobalContainer.h"

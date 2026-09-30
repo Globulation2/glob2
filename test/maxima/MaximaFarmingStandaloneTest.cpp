@@ -1,4 +1,6 @@
 #include "Glob2Test.h"
+#include <cmath>
+#include <cstdlib>
 #include "../../src/ai/maxima/AIMaximaFarming.h"
 
 #include <algorithm>

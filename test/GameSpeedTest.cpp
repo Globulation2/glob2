@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Game speed settings, controls and playback; the display cases need OpenGL.
 #include "EngineFixtures.h"
+#include <cmath>
+#include <cstdlib>
 #include "GlobalContainer.h"
 #include "SettingsScreen.h"
 #include "GameGUIDialog.h"

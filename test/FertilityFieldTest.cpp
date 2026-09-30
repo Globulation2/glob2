@@ -2,6 +2,8 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "FertilityFieldTest.h"
+#include <cmath>
+#include <cstdlib>
 
 #include "Map.h"
 #include "map/FertilityField.h"

@@ -9,6 +9,8 @@
 #include "Engine.h"
 #include "FrontendTheme.h"
 #include "EngineFixtures.h"
+#include <cmath>
+#include <cstdlib>
 #include "GlobalContainer.h"
 #include "LandscapePickerScreen.h"
 #include "StartQualityScreen.h"

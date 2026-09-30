@@ -23,9 +23,13 @@
 #include <string>
 #include <vector>
 // Access the scheduler boundary without adding a production testing API.
+// Maxima inherits its runtime privately; -fno-access-control relaxes member access
+// but GCC still rejects the base conversion, so the old wrapper stays for these headers.
+#define private public
 #include "../../src/ai/maxima/AIMaximaRuntime.h"
 #include "../../src/ai/maxima/AIMaxima.h"
 #include "../../src/ai/maxima/AIMaximaSwarmController.h"
+#undef private
 #include "../../src/building/Building.h"
 #include "../../src/game/entities/BuildingType.h"
 #include "../../src/building/IntBuildingType.h"

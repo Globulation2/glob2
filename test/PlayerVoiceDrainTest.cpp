@@ -12,6 +12,7 @@
 // Links only ../src/PlayerVoice.cpp — no SDL / speex / vorbis.
 
 #include "Glob2Test.h"
+#include <cmath>
 
 #include "../src/PlayerVoice.h"
 
