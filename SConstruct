@@ -24,7 +24,7 @@ def establish_options(env):
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
-        opts.Add(PathVariable("INSTALLDIR", "Installation Directory", "./"))
+        opts.Add("INSTALLDIR", "Installation Directory", "./")
     else:
 	    opts.Add("INSTALLDIR", "Installation Directory", "/usr/local/share")
     opts.Add("BINDIR", "Binary Installation Directory", "/usr/local/bin")
@@ -307,6 +307,11 @@ def main():
     # Likewise for SOURCE_DATE_EPOCH, needed by build tools for reproducible builds.
     if 'SOURCE_DATE_EPOCH' in os.environ:
         env['ENV']['SOURCE_DATE_EPOCH'] = os.environ['SOURCE_DATE_EPOCH']
+    # Fedora's package-notes linker spec reads these from the subprocess
+    # environment. SCons otherwise removes them before compiler probes.
+    for name in ('RPM_PACKAGE_NAME', 'RPM_PACKAGE_VERSION', 'RPM_PACKAGE_RELEASE', 'RPM_ARCH'):
+        if name in os.environ:
+            env['ENV'][name] = os.environ[name]
     # Compiler discovery also needs the selected SDK, not just compilation.
     env.Tool('default')
     env['BUILDDIR'] = bdir
@@ -314,6 +319,10 @@ def main():
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
     env["VERSION"] = PACKAGE_VERSION
     establish_options(env)
+    # SCons treats a command-line flag string as one shell argument unless it
+    # is split into a list. Distro RPM macros provide multiple flags at once.
+    for flags in ('CXXFLAGS', 'LINKFLAGS'):
+        env[flags] = env.Split(env[flags])
     # Release builds outside macOS link with -s, which strips debug information
     # from every binary, so compiling it in only slows the build and multiplies
     # the size of object files and compiler caches. -g never changes codegen.
@@ -499,6 +508,9 @@ def main():
         "windows"
     ]
     for target in targets:
+        # Upstream release archives omit the historical Debian packaging files.
+        if target == "debian" and not os.path.isfile("debian/SConscript"):
+            continue
         SConscript(target + "/SConscript", variant_dir = bdir + "/" + target, duplicate = 0)
 
 main()

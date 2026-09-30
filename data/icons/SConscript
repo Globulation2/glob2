@@ -21,3 +21,5 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     env.Alias("install", env["INSTALLDIR"]+"/icons/hicolor/64x64/apps/")
     env.InstallAs(env["INSTALLDIR"]+"/icons/hicolor/128x128/apps/glob2.png", "glob2-icon-128x128.png")
     env.Alias("install", env["INSTALLDIR"]+"/icons/hicolor/128x128/apps/")
+    env.InstallAs(env["INSTALLDIR"]+"/icons/hicolor/256x256/apps/glob2.png", "glob2-icon-256x256.png")
+    env.Alias("install", env["INSTALLDIR"]+"/icons/hicolor/256x256/apps/")
