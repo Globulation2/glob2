@@ -1856,6 +1856,9 @@ jobs:
     timeout-minutes: 60
     strategy:
       fail-fast: false
+      # Leave runner capacity for Linux test shards once the browser build
+      # finishes; all browser cases still run before the required check passes.
+      max-parallel: 10
       matrix:
         include:
           # The main suite keeps file order and includes build-artifact.spec.js
