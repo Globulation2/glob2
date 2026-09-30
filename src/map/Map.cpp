@@ -7,6 +7,8 @@
 #include "Utilities.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "BuildingGradientSearch.h"
+#include <algorithm>
 
 #ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
@@ -93,6 +95,40 @@ Map::~Map(void)
 	clear();
 }
 
+Uint16 *Map::acquireBuildingGradientBuffer()
+{
+	{
+		std::lock_guard<std::mutex> lock(gradientBufferPoolMutex);
+		if (idleGradientBufferCount)
+			return idleGradientBuffers[--idleGradientBufferCount];
+	}
+	return new Uint16[size];
+}
+
+void Map::recycleBuildingGradientBuffer(Uint16 *buffer)
+{
+	if (!buffer) return;
+	{
+		std::lock_guard<std::mutex> lock(gradientBufferPoolMutex);
+		const std::size_t byBytes = size && size <= GRADIENT_BUFFER_POOL_BYTES / sizeof(Uint16)
+			? GRADIENT_BUFFER_POOL_BYTES / (size * sizeof(Uint16)) : 0;
+		const std::size_t limit = std::min(GRADIENT_BUFFER_POOL_SLOTS, byBytes);
+		if (idleGradientBufferCount < limit)
+		{
+			idleGradientBuffers[idleGradientBufferCount++] = buffer;
+			return;
+		}
+	}
+	delete[] buffer;
+}
+
+void Map::clearGradientBufferPool()
+{
+	std::lock_guard<std::mutex> lock(gradientBufferPoolMutex);
+	while (idleGradientBufferCount)
+		delete[] idleGradientBuffers[--idleGradientBufferCount];
+}
+
 void Map::configureCompute(unsigned threads, unsigned experiments)
 {
 	compute.configure(threads);
@@ -103,6 +139,8 @@ void Map::configureCompute(unsigned threads, unsigned experiments)
 void Map::clear()
 {
 	gradientRuntime->pipeline.reset();
+	clearGradientBufferPool();
+	clearBuildingGradientSearchPool();
 	growthCoverage.clear();
 	for (auto &counts : growthCoverageCounts) counts.clear();
 	for (auto &buildings : growthCoverageBuildings) buildings.clear();

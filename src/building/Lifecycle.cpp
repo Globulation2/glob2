@@ -160,8 +160,8 @@ void Building::resetPathfindGradients()
 	dirtyGradients();
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
-		globalGradientSearch[i].reset();
-		delete[] globalGradient[i];
+		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
+		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
 	}
@@ -174,7 +174,7 @@ void Building::resetRoundTripGradients()
 	{
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
-			delete[] roundTripGradient[r][i];
+			owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][i]);
 			roundTripGradient[r][i] = NULL;
 			roundTripGradientStep[r][i] = 0;
 			roundTripGradientUsedStep[r][i] = 0;
@@ -191,14 +191,14 @@ void Building::freeIdleGradients()
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
-			globalGradientSearch[c].reset();
-			delete[] globalGradient[c];
+			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
+			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
 		}
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+IDLE_TICKS<now)
 			{
-				delete[] roundTripGradient[r][c];
+				owner->game->map.recycleBuildingGradientBuffer(roundTripGradient[r][c]);
 				roundTripGradient[r][c] = NULL;
 			}
 	}
@@ -206,7 +206,23 @@ void Building::freeIdleGradients()
 
 void Building::freeGradients()
 {
-	resetPathfindGradients();
+	// Construction, reload and teardown may have no usable owner/map, or the
+	// map may have changed size. Only live invalidations recycle storage.
+	dirtyGradients();
+	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	{
+		globalGradientSearch[i].reset();
+		delete[] globalGradient[i];
+		globalGradient[i] = NULL;
+		gradientGeneration[i] = 0;
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		{
+			delete[] roundTripGradient[r][i];
+			roundTripGradient[r][i] = NULL;
+			roundTripGradientStep[r][i] = 0;
+			roundTripGradientUsedStep[r][i] = 0;
+		}
+	}
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
 		lastGlobalGradientUpdateStepCounter[i] = 0;

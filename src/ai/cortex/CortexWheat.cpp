@@ -13,7 +13,6 @@
 #include "Ressource.h"
 
 #include <climits>
-#include <deque>
 
 // See CortexWheat.h for the design rationale. This is the geometry + reconcile
 // core only; it builds tile sets but emits no Orders.
@@ -22,6 +21,20 @@ namespace Cortex
 {
 	namespace
 	{
+		struct WheatScratch
+		{
+			std::vector<int> fieldTiles;
+			std::vector<int> depth;
+			std::vector<int> queue;
+			std::vector<int> stack;
+			std::vector<unsigned char> seen;
+			std::vector<unsigned char> currentBit;
+			std::vector<int> current;
+		};
+		// A scan completes before its scratch is reused; parallel AI workers get
+		// independent buffers. All logical contents are reset for each scan.
+		thread_local WheatScratch wheatScratch;
+
 		// 4-neighbourhood in a fixed (deterministic) order: N, W, E, S.
 		const int NB_DX[4] = { 0, -1, 1, 0 };
 		const int NB_DY[4] = { -1, 0, 0, 1 };
@@ -80,7 +93,8 @@ namespace Cortex
 		};
 
 		// --- Gather the field tiles. ---
-		std::vector<int> fieldTiles;
+		std::vector<int>& fieldTiles = wheatScratch.fieldTiles;
+		fieldTiles.clear();
 		for (int y = boxMinY; y <= boxMaxY; y++)
 			for (int x = boxMinX; x <= boxMaxX; x++)
 				if (isField(x, y))
@@ -109,8 +123,10 @@ namespace Cortex
 		// walkable, so seeding the centre tile alone would trap the search. Seed every
 		// walkable tile within a small exit radius instead — the inn's exit ring.
 		const int SEED_EXIT_RADIUS = 3;
-		std::vector<int> depth(static_cast<size_t>(w) * h, INT_MAX);
-		std::deque<int> q; // FIFO: all steps cost one walking move, so plain BFS order.
+		std::vector<int>& depth = wheatScratch.depth;
+		depth.assign(static_cast<size_t>(w) * h, INT_MAX);
+		std::vector<int>& q = wheatScratch.queue;
+		q.clear(); // FIFO, drained by index without reallocating deque blocks.
 		for (int seed : consumerSeeds)
 		{
 			if (seed < 0 || seed >= w * h)
@@ -133,10 +149,9 @@ namespace Cortex
 				}
 		}
 
-		while (!q.empty())
+		for (size_t head = 0; head < q.size(); ++head)
 		{
-			const int cur = q.front();
-			q.pop_front();
+			const int cur = q[head];
 			const int cx = cur % w;
 			const int cy = cur / w;
 			const int d = depth[cur];
@@ -192,7 +207,9 @@ namespace Cortex
 
 		// --- Connected components among reachable field wheat (informational). ---
 		{
-			std::vector<bool> seen(static_cast<size_t>(w) * h, false);
+			std::vector<unsigned char>& seen = wheatScratch.seen;
+			seen.assign(static_cast<size_t>(w) * h, 0);
+			std::vector<int>& stack = wheatScratch.stack;
 			for (int y = boxMinY; y <= boxMaxY; y++)
 				for (int x = boxMinX; x <= boxMaxX; x++)
 				{
@@ -201,7 +218,7 @@ namespace Cortex
 					    || depth[idx] == INT_MAX)
 						continue;
 					res.componentCount++;
-					std::deque<int> stack;
+					stack.clear();
 					stack.push_back(idx);
 					seen[idx] = true;
 					while (!stack.empty())
@@ -230,8 +247,10 @@ namespace Cortex
 		// Current = forbidden tiles in the box that are OURS to manage, i.e. minus
 		// our own building footprints (auto-forbidden by the engine,
 		// Game_orders.cpp; tearing those down would foul our own colony).
-		std::vector<bool> currentBit(static_cast<size_t>(w) * h, false);
-		std::vector<int> current;
+		std::vector<unsigned char>& currentBit = wheatScratch.currentBit;
+		currentBit.assign(static_cast<size_t>(w) * h, 0);
+		std::vector<int>& current = wheatScratch.current;
+		current.clear();
 		for (int y = boxMinY; y <= boxMaxY; y++)
 			for (int x = boxMinX; x <= boxMaxX; x++)
 			{

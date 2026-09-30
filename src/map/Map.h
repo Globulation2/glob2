@@ -5,6 +5,7 @@
 #pragma once
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <list>
@@ -84,7 +85,17 @@ class Map
 	mutable ComputeExecutor compute;
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	unsigned computeExperiments = 0;
+	// Storage only: an idle building still drops its field and saved null state.
+	// A fixed slot count avoids allocations in the pool itself.
+	static constexpr std::size_t GRADIENT_BUFFER_POOL_SLOTS = 64;
+	static constexpr std::size_t GRADIENT_BUFFER_POOL_BYTES = 2 * 1024 * 1024;
+	std::array<Uint16 *, GRADIENT_BUFFER_POOL_SLOTS> idleGradientBuffers{};
+	std::size_t idleGradientBufferCount = 0;
+	std::mutex gradientBufferPoolMutex;
+	void clearGradientBufferPool();
 public:
+	Uint16 *acquireBuildingGradientBuffer();
+	void recycleBuildingGradientBuffer(Uint16 *buffer);
 	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
 	enum ComputeExperiment { ComputeAreas = 1, ComputeInitialize = 2, ComputeHiring = 4, ComputeAI = 8 };
 	void configureCompute(unsigned threads, unsigned experiments);
