@@ -1,5 +1,6 @@
 """Checks for the Steam Windows staging helper."""
 
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -51,6 +52,15 @@ class SteamWindowsPackageTests(unittest.TestCase):
         with patch("tools.package_steam_windows.imports", return_value={"missing.dll"}):
             with self.assertRaisesRegex(FileNotFoundError, "missing.dll"):
                 stage(self.source, self.exe, self.runtime, self.root / "depot")
+
+    def test_windows_system_dll_is_not_bundled(self):
+        system32 = self.root / "Windows/System32"
+        system32.mkdir(parents=True)
+        (system32 / "dwrite.dll").write_bytes(b"system")
+        with patch.dict(os.environ, {"WINDIR": str(system32.parent)}):
+            with patch("tools.package_steam_windows.imports", return_value={"dwrite.dll"}):
+                stage(self.source, self.exe, self.runtime, self.root / "depot")
+        self.assertFalse((self.root / "depot/dwrite.dll").exists())
 
 
 if __name__ == "__main__":

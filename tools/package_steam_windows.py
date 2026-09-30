@@ -3,6 +3,7 @@
 
 import argparse
 import hashlib
+import os
 import re
 import shutil
 import subprocess
@@ -30,8 +31,9 @@ def imports(binary: Path) -> set[str]:
     return {name.lower() for name in DLL_PATTERN.findall(result.stdout)}
 
 
-def is_system_dll(name: str) -> bool:
-    return name in SYSTEM_DLLS or name.startswith(("api-ms-win-", "ext-ms-win-"))
+def is_system_dll(name: str, windows_dlls: set[str]) -> bool:
+    return (name in SYSTEM_DLLS or name in windows_dlls or
+            name.startswith(("api-ms-win-", "ext-ms-win-")))
 
 
 def stage(source: Path, executable: Path, runtime: Path, output: Path) -> None:
@@ -54,6 +56,9 @@ def stage(source: Path, executable: Path, runtime: Path, output: Path) -> None:
     shutil.copy2(attribution, output / "source-attribution.md")
 
     available = {path.name.lower(): path for path in runtime.glob("*.dll")}
+    windows_root = Path(os.environ.get("WINDIR", "")) / "System32"
+    windows_dlls = ({path.name.lower() for path in windows_root.glob("*.dll")}
+                    if windows_root.is_dir() else set())
     pending = deque([output / "glob2.exe"])
     scanned = set()
     while pending:
@@ -62,7 +67,7 @@ def stage(source: Path, executable: Path, runtime: Path, output: Path) -> None:
             continue
         scanned.add(binary.name.lower())
         for name in sorted(imports(binary)):
-            if is_system_dll(name) or name in scanned:
+            if is_system_dll(name, windows_dlls) or name in scanned:
                 continue
             dll = available.get(name)
             if dll is None:
