@@ -13,12 +13,13 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data/icons/glob2-icon-128x128.png"
 BACKGROUND = (43, 28, 66, 255)
+IOS_BACKGROUND = (76, 54, 118, 255)
 
 
-def render(source, path, size, fraction, transparent=False):
+def render(source, path, size, fraction, transparent=False, background=BACKGROUND):
     side = round(size * fraction)
     artwork = source.resize((side, side), Image.Resampling.LANCZOS)
-    canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0) if transparent else BACKGROUND)
+    canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0) if transparent else background)
     canvas.alpha_composite(artwork, ((size - side) // 2, (size - side) // 2))
     path.parent.mkdir(parents=True, exist_ok=True)
     (canvas if transparent else canvas.convert("RGB")).save(path)
@@ -50,7 +51,8 @@ def main():
             for scale in scales:
                 pixels = round(size * scale)
                 filename = f"icon-{pixels}.png"
-                render(source, appicon / filename, pixels, .82)
+                render(source, appicon / filename, pixels, .82,
+                       background=IOS_BACKGROUND)
                 entries.append({"idiom": idiom, "size": f"{size}x{size}",
                                 "scale": f"{scale}x", "filename": filename})
     (appicon / "Contents.json").write_text(json.dumps({"images": entries, "info": info}, indent=2) + "\n")
