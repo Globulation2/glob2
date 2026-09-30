@@ -21,11 +21,38 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  context:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require owner-controlled release repository and dispatch
+        env:
+          REPOSITORY_ID: ${{ github.repository_id }}
+          ACTOR_ID: ${{ github.actor_id }}
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [[ "$REPOSITORY_ID" != 1397722696 || "$ACTOR_ID" != 6193625 || "$REF" != refs/heads/master ]]; then
+            echo '::error::Snap publication requires the release repository, its owner account, and master.'
+            exit 1
+          fi
+
+  credentials:
+    needs: context
+    runs-on: ubuntu-24.04
+    environment: snap-release
+    steps:
+      - name: Require Snap Store credentials
+        env:
+          STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$STORE_CREDENTIALS" ]]; then
+            echo '::error::Missing SNAPCRAFT_STORE_CREDENTIALS in the snap-release environment.'
+            exit 1
+          fi
+
   build:
-    if: >-
-      github.repository_id == 1397722696 &&
-      github.actor_id == 6193625 &&
-      github.ref == 'refs/heads/master'
+    needs: credentials
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2

@@ -21,11 +21,38 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  context:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require owner-controlled release repository and dispatch
+        env:
+          REPOSITORY_ID: ${{ github.repository_id }}
+          ACTOR_ID: ${{ github.actor_id }}
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [[ "$REPOSITORY_ID" != 1397722696 || "$ACTOR_ID" != 6193625 || "$REF" != refs/heads/master ]]; then
+            echo '::error::GitHub publication requires the release repository, its owner account, and master.'
+            exit 1
+          fi
+
+  credentials:
+    needs: context
+    runs-on: ubuntu-24.04
+    environment: github-release
+    steps:
+      - name: Require public-release token
+        env:
+          RELEASE_TOKEN: ${{ secrets.PUBLIC_RELEASE_GH_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$RELEASE_TOKEN" ]]; then
+            echo '::error::Missing PUBLIC_RELEASE_GH_TOKEN in the github-release environment.'
+            exit 1
+          fi
+
   packages:
-    if: >-
-      github.repository_id == 1397722696 &&
-      github.actor_id == 6193625 &&
-      github.ref == 'refs/heads/master'
+    needs: credentials
     uses: ./.github/workflows/release.yml
     with:
       tag: ${{ inputs.tag }}

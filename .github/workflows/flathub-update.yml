@@ -21,11 +21,43 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  context:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require owner-controlled release repository and dispatch
+        env:
+          REPOSITORY_ID: ${{ github.repository_id }}
+          ACTOR_ID: ${{ github.actor_id }}
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [[ "$REPOSITORY_ID" != 1397722696 || "$ACTOR_ID" != 6193625 || "$REF" != refs/heads/master ]]; then
+            echo '::error::Flathub publication requires the release repository, its owner account, and master.'
+            exit 1
+          fi
+
+  credentials:
+    needs: context
+    runs-on: ubuntu-24.04
+    environment: flathub-update
+    steps:
+      - name: Require Flathub fork and token
+        env:
+          FORK: ${{ vars.FLATHUB_FORK }}
+          FORK_TOKEN: ${{ secrets.FLATHUB_GH_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$FORK_TOKEN" ]]; then
+            echo '::error::Missing FLATHUB_GH_TOKEN in the flathub-update environment.'
+            exit 1
+          fi
+          if [[ ! "$FORK" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
+            echo '::error::Missing or invalid FLATHUB_FORK variable.'
+            exit 1
+          fi
+
   build:
-    if: >-
-      github.repository_id == 1397722696 &&
-      github.actor_id == 6193625 &&
-      github.ref == 'refs/heads/master'
+    needs: credentials
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
