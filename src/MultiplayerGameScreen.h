@@ -1,43 +1,32 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
-
 #pragma once
-
-#include <vector>
-#include "MultiplayerGame.h"
 #include "AI.h"
+#include "IRCTextMessageHandler.h"
 #include "MapHeader.h"
+#include "MultiplayerGame.h"
+#include "MultiplayerGameEventListener.h"
+#include "SessionTabsScreen.h"
 #include "Team.h"
 #include "YOGClientChatChannel.h"
 #include "YOGClientChatListener.h"
-#include "MultiplayerGameEventListener.h"
-#include "IRCTextMessageHandler.h"
-#include "GUITabScreenWindow.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace GAGGUI
 {
-	class ScreenStack;
-	class Text;
-	class TextArea;
-	class TextInput;
-	class TextButton;
-	class ColorButton;
-	class OnOffButton;
-	class ProgressBar;
+class ScreenStack;
 }
 
-using namespace GAGGUI;
-
-///This screen is the setup screen for a multiplayer game. It functions both for the host
-///and the joined player. It uses the information it gets from the given MultiplayerGame.
-///This doesn't continue displaying irc, it merely keeps it up to date and turns it on/off
-///when starting and finishing games
-class MultiplayerGameScreen : public TabScreenWindow, public YOGClientChatListener, public MultiplayerGameEventListener
+///The setup room for a multiplayer game, for the host and joined players alike. It
+///uses the information it gets from the given MultiplayerGame and keeps IRC in sync.
+class MultiplayerGameScreen : public SessionTab, public YOGClientChatListener, public MultiplayerGameEventListener
 {
-public:
-	///The screen must be provided with the client, the irc connection and the multiplayer game
-	MultiplayerGameScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat = std::shared_ptr<IRCTextMessageHandler>());
-	virtual ~MultiplayerGameScreen();
+  public:
+	MultiplayerGameScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client,
+						  std::shared_ptr<IRCTextMessageHandler> ircChat = std::shared_ptr<IRCTextMessageHandler>());
+	~MultiplayerGameScreen() override;
 
 	enum
 	{
@@ -48,58 +37,25 @@ public:
 		GameCancelled,
 		ServerDisconnected,
 	};
+	std::string title() const override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	void onTimer(Uint32 tick) override;
+	void onActivated() override;
+	bool onEscape() override;
 
-private:
-    ScreenStack& screens;
-    std::shared_ptr<YOGClient> client;
-    void launchScheduledGame();
-	enum
-	{
-		START = 1,
-		CANCEL = 2,
-		OTHEROPTIONS=4,
-		READY=5,
-		
-		COLOR_BUTTONS=32,
-		CLOSE_BUTTONS=64,
-
-
-		ADD_AI = 100
-	};
-
-	void onTimer(Uint32 tick);
-	void onAction(Widget *source, Action action, int par1, int par2);
-
-	void receiveTextMessage(std::shared_ptr<YOGMessage> message);
-
-	void handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event);
-
-	///This function will update the list of joined players
-	void updateJoinedPlayers();
-	void updateVisibleButtons();
-
-	virtual void onActivated();
-
-	TextButton *startButton;
-	TextButton *cancelButton;
-	std::vector<TextButton *> addAI;
-	ColorButton *color[Team::MAX_COUNT];
-	Text *text[Team::MAX_COUNT];
-	TextButton *kickButton[Team::MAX_COUNT];
-	ProgressBar *percentDownloaded;
-	TextButton *otherOptions;
-
-	TextInput *textInput;
-	TextArea *chatWindow;
-
-	OnOffButton *isReady;
-	Text *isReadyText;
-
+  private:
+	GAGGUI::ScreenStack &screens;
+	std::shared_ptr<YOGClient> client;
+	void launchScheduledGame();
+	void receiveTextMessage(std::shared_ptr<YOGMessage> message) override;
+	void handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event) override;
+	void sendChat();
+	void cancel();
+	bool hosting() const { return game->getMultiplayerMode() == MultiplayerGame::HostingGame; }
 	std::shared_ptr<MultiplayerGame> game;
-
-	Text *notReadyText;
-	Text *gameStartWaitingText;
-
 	std::shared_ptr<YOGClientChatChannel> gameChat;
 	std::shared_ptr<IRCTextMessageHandler> ircChat;
+	std::string chatLog, chatDraft;
+	bool ready = false;
+	int downloadPercent = -1;
 };

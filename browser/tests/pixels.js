@@ -69,3 +69,21 @@ async function darkShare(page, clip) {
   }, png.toString('base64'));
 }
 module.exports.darkShare = darkShare;
+
+// The classic in-game dialog buttons: dark text on the gold button sprite.
+async function hasClassicButton(page, clip) {
+  const png = await page.screenshot({clip});
+  return page.evaluate(async base64 => {
+    const blob = await (await fetch('data:image/png;base64,' + base64)).blob();
+    const bitmap = await createImageBitmap(blob);
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width; canvas.height = bitmap.height;
+    const context = canvas.getContext('2d'); context.drawImage(bitmap, 0, 0); bitmap.close();
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let gold = 0;
+    for (let i = 0; i < pixels.length; i += 4)
+      if (pixels[i] > 170 && pixels[i+1] > 140 && pixels[i+2] < 190 && pixels[i] > pixels[i+2] + 30) ++gold;
+    return gold > 50;
+  }, png.toString('base64'));
+}
+module.exports.hasClassicButton = hasClassicButton;

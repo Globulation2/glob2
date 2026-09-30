@@ -1,201 +1,88 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
 #include "YOGRegisterScreen.h"
-
-#include "YOGClientEvent.h"
-#include "YOGClient.h"
-
-
-#include "GUIButton.h"
-#include "GUITextArea.h"
-#include "GUIText.h"
-#include "GUITextInput.h"
-#include "GUIAnimation.h"
-#include "StringTable.h"
-#include "Toolkit.h"
 #include "GlobalContainer.h"
+#include "YOGClient.h"
+#include "YOGClientEvent.h"
 
-
+using namespace Glob2UI;
 using std::static_pointer_cast;
 
 YOGRegisterScreen::YOGRegisterScreen(std::shared_ptr<YOGClient> client)
-	: YOGConnectionScreen(client)
+	: YOGConnectionScreen(client), nickname(globalContainer->settings.getUsername())
 {
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]")));
-	
-	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]"), REGISTER, 13));
-	
-	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true, Toolkit::getStringTable()->getString("[YESTS_CREATED]"));
-	addWidget(statusText);
-	
-	addWidget(new Text(20, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
-	login=new TextInput(20, 290, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), true, 32);
-	addWidget(login);
-	
-	addWidget(new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
-	password=new TextInput(20, 360, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", false, 32, true);
-	addWidget(password);
-	
-	addWidget(new Text(20, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Repeat your password :]")));
-	passwordRepeat=new TextInput(20, 430, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", false, 32, true);
-	addWidget(passwordRepeat);
-	
-	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
-	animation->visible=false;
-	addWidget(animation);
-
 	client->addEventListener(this);
 }
-
-
 
 YOGRegisterScreen::~YOGRegisterScreen()
 {
 	client->removeEventListener(this);
 }
 
-
-
-void YOGRegisterScreen::onAction(Widget *source, Action action, int par1, int par2)
+Element YOGRegisterScreen::build(const Presentation &p)
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (par1==CANCEL)
-		{
-			endExecute(Cancelled);
-		}
-		else if (par1==REGISTER)
-		{
-			if(password->getText() != passwordRepeat->getText())
-			{
-				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_PASSWORDS_DONT_MATCH]"));
-			}
-			else if(password->getText() != "")
-			{
-				//Update the gui
-				animation->show();
-				globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-				statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
-				
-				client->connect(YOG_SERVER_IP);
-				connectionAttemptPending = true;
-			}
-		}
-	}
-	if (action==TEXT_ACTIVATED)
-	{
-		if (source==login)
-		{
-			password->deactivate();
-			passwordRepeat->deactivate();
-		}
-		else if (source==password)
-		{
-			login->deactivate();
-			passwordRepeat->deactivate();
-		}
-		else if (source==passwordRepeat)
-		{
-			login->deactivate();
-			password->deactivate();
-		}
-	}
-	if (action==TEXT_TABBED)
-	{
-		if (login->isActivated() && tabChangeAllowed)
-		{
-			login->deactivate();
-			password->activate();
-			tabChangeAllowed=false;
-		}
-		else if (password->isActivated() && tabChangeAllowed)
-		{
-			password->deactivate();
-			passwordRepeat->activate();
-			tabChangeAllowed=false;
-		}
-		else if (passwordRepeat->isActivated() && tabChangeAllowed)
-		{
-			passwordRepeat->deactivate();
-			login->activate();
-			tabChangeAllowed=false;
-		}
-	}
+	TextFieldOptions secret;
+	secret.password = true;
+	secret.maxLength = 32;
+	TextFieldOptions repeat = secret;
+	repeat.submit = [this](const std::string &) { registerAccount(); };
+	auto body = scroll("register/scroll",
+					   column({statusRow(p),
+							   form({field(tr("[Enter your nickname :]"),
+										   textField("nickname", nickname, [this](const std::string &v) { nickname = v; }, {false, 32, "", {}, true})),
+									 field(tr("[Enter your password :]"),
+										   textField("password", password, [this](const std::string &v) { password = v; }, secret)),
+									 field(tr("[Repeat your password :]"),
+										   textField("repeat", passwordRepeat, [this](const std::string &v) { passwordRepeat = v; }, repeat))})}));
+	return page(tr("[Register]"), body,
+				actions({{"register", tr("[Register]"), [this] { registerAccount(); }, true, SDLK_RETURN, !connecting},
+						 {"cancel", tr("[Cancel]"), [this] { endExecute(Cancelled); }, false, SDLK_ESCAPE}},
+						p),
+				p, 640);
 }
 
-
+void YOGRegisterScreen::registerAccount()
+{
+	if (connecting)
+		return;
+	if (password != passwordRepeat)
+	{
+		setStatus("[YESTS_PASSWORDS_DONT_MATCH]");
+		return;
+	}
+	if (password.empty())
+		return;
+	setConnecting(true);
+	setStatus("[YESTS_CONNECTING]");
+	client->connect(YOG_SERVER_IP);
+	connectionAttemptPending = true;
+}
 
 void YOGRegisterScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
-	Uint8 type = event->getEventType();
-	if(type == YEConnected)
-	{
+	const Uint8 type = event->getEventType();
+	if (type == YEConnected)
 		submitRegistrationCredentials();
-	}
-	else if(type == YEConnectionLost)
-	{ 
-		animation->visible=false;
-		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));
-	}
-	else if(type == YELoginAccepted)
+	else if (type == YEConnectionLost)
 	{
-		animation->visible=false;
-		
+		setConnecting(false);
+		setStatus("[YESTS_CONNECTION_LOST]");
+	}
+	else if (type == YELoginAccepted)
+	{
+		setConnecting(false);
 		endExecute(Connected);
 	}
-	else if(type == YELoginRefused)
+	else if (type == YELoginRefused)
 	{
-		shared_ptr<YOGLoginRefusedEvent> info = static_pointer_cast<YOGLoginRefusedEvent>(event);
-		animation->visible=false;
-		YOGLoginState reason = info->getReason();
-		if(reason == YOGPasswordIncorrect)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]"));
-		}
-		else if(reason == YOGUsernameAlreadyUsed)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]"));
-		}
-		else if(reason == YOGUserNotRegistered)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]"));
-		}
-		else if(reason == YOGClientVersionTooOld)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[network release mismatch]"));
-		}
-		else if(reason == YOGAlreadyAuthenticated)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
-		}
-		else if(reason == YOGUsernameBanned)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]"));
-		}
-		else if(reason == YOGIPAddressBanned)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]"));
-		}
-		else if(reason == YOGNameInvalidSpecialCharacters)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]"));
-		}
-		else if(reason == YOGLoginUnknown)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_UNEXPLAINED]"));
-		}
+		auto info = static_pointer_cast<YOGLoginRefusedEvent>(event);
+		setConnecting(false);
+		reportRefusal(info->getReason());
 		client->disconnect();
 	}
-
 }
-
-
 
 void YOGRegisterScreen::submitRegistrationCredentials()
 {
-	//Submit the registration credentials
-	client->attemptRegistration(login->getText(), password->getText());
+	client->attemptRegistration(nickname, password);
 }
-

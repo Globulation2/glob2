@@ -9,7 +9,7 @@ import subprocess
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = 'org.globulation.glob2'
+PACKAGE = 'org.globulation2.glob2'
 
 
 def main():
@@ -92,7 +92,7 @@ def main():
         for name, arguments in (
             ('failure-services.txt', ('spawn', args.device, 'launchctl', 'list')),
             ('failure-system.log', ('spawn', args.device, 'log', 'show', '--last', '3m', '--style', 'compact',
-                                    '--predicate', 'process == "Glob2" OR eventMessage CONTAINS "org.globulation.glob2"')),
+                                    '--predicate', 'process == "Glob2" OR eventMessage CONTAINS "org.globulation2.glob2"')),
         ):
             try: (output/name).write_text(run(*arguments, timeout=30)[-2*1024*1024:])
             except Exception as diagnostic:

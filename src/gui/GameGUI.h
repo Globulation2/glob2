@@ -21,6 +21,7 @@
 #include "KeyboardManager.h"
 #include "MarkManager.h"
 #include "GameGUIMessageManager.h"
+#include "GameGUIDialog.h"
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
 #include "GameGUIToolManager.h"
@@ -273,6 +274,7 @@ private:
 	bool processGameMenu(SDL_Event *event);
 	bool processScrollableWidget(SDL_Event *event);
 	bool processTypingInput(SDL_Event *event);
+
 	void handleRightClick(void);
 	void handleKey(SDL_Keysym key, bool pressed, bool repeat = false);
 	void toggleTorusView();
@@ -577,11 +579,19 @@ private:
 		IGM_OBJECTIVES,
 		IGM_END_OF_GAME
 	} inGameMenu;
-	/// The single active in-game overlay (main menu, alliances, options, save/load,
+	// The dialog receiving input, if any: the menu, the chat composer or the history.
+	Glob2UI::InGameDialog *activeDialog() const;
+	// Show a dialog as the in-game menu of kind `menu`; it replaces any open one.
+	void openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog> dialog);
+	void closeDialog();
+	void openMainMenu();
+	void openChat();
+	void closeChat();
+	void toggleHistory();
+	void saveGameTo(class LoadSaveDialog &dialog);
+	/// The single active in-game dialog (main menu, alliances, options, save/load,
 	/// objectives, or end-of-game dialog). Non-null iff inGameMenu != IGM_NONE.
-	/// Owned here: reset()/assignment auto-deletes the previous overlay, so callers
-	/// never pair delete with NULL by hand. (Rust port: Option<Box<dyn OverlayScreen>>.)
-	std::unique_ptr<OverlayScreen> gameMenuScreen;
+	std::unique_ptr<Glob2UI::InGameDialog> gameMenuScreen;
 
 	///Denotes the name of the game save for saving,
 	///set on loading the map	
@@ -590,7 +600,7 @@ private:
 	bool hasEndOfGameDialogBeenShown;
 	
 	GameGUIMessageManager messageManager;
-	InGameScrollableHistory* scrollableText;
+	std::unique_ptr<InGameScrollableHistory> scrollableText;
 
 	/// Selects which message-history list a wrapped line is appended to.
 	enum class HistoryList { Game, Chat };
@@ -635,10 +645,8 @@ private:
 	//! with \a indent. Empty input yields an empty output (no lines pushed).
 	void setMultiLine(const std::string &input, std::vector<std::string> *output, std::string indent="");
 	
-	// Typing stuff :
-	InGameTextInput *typingInputScreen;
-	int typingInputScreenPos;
-	int typingInputScreenInc;
+	// The chat composer while a message is being typed.
+	std::unique_ptr<InGameTextInput> typingInputScreen;
 
 	///This manages map marks	
 	MarkManager markManager;

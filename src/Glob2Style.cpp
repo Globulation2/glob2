@@ -11,9 +11,7 @@ Glob2Style::Glob2Style()
 	textColor = Color(255, 255, 255);
 	highlightColor = Color(197, 67, 67);
 	frameColor = Color(226, 208, 148);
-	listSelectedElementColor = Color(170, 170, 240);
 	backColor = Color(0, 0, 0);
-	backOverlayColor = Color(0, 0, 40);
 	
 	sprite = Toolkit::getSprite("data/gfx/guitheme");
 };
@@ -140,36 +138,6 @@ void Glob2Style::drawFrame(DrawableSurface *target, int x, int y, int w, int h, 
 	target->drawSprite(x + w - sprite->getW(19), y + h - sprite->getH(19), sprite, 19);
 }
 
-void Glob2Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength)
-{
-	/*
-		Width of sprites 20, 21 and 22 must be the same
-	*/
-	
-	target->drawSprite(x, y, sprite, 20);
-	target->drawSprite(x, y + h - sprite->getH(22), sprite, 22);
-	
-	// save clip rect
-	int ocrX, ocrY, ocrW, ocrH;
-	target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
-	
-	// scroll background
-	int barBackgroundY = y + sprite->getH(20);
-	int barBackgroundHeight = h - sprite->getH(20) - sprite->getH(22);
-	target->setClipRect(x, barBackgroundY, w, barBackgroundHeight);
-	for (int i = 0; i < barBackgroundHeight; i += sprite->getH(21))
-		target->drawSprite(x, barBackgroundY + i, sprite, 21);
-	
-	// scroll bar
-	int barForegroundY = barBackgroundY + blockPos;
-	int barForegroundHeight = blockLength;
-	target->setClipRect(x, barForegroundY, w, barForegroundHeight);
-	for (int i = 0; i < barForegroundHeight; i += sprite->getH(23))
-		target->drawSprite(x + (sprite->getW(21) - sprite->getW(23)) / 2, barForegroundY + i, sprite, 23);
-	
-	// reset clip rect
-	target->setClipRect(ocrX, ocrY, ocrW, ocrH);
-}
 
 void Glob2Style::drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range)
 {

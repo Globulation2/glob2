@@ -1,230 +1,162 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
+#include "YOGLoginScreen.h"
 #include "GlobalContainer.h"
-#include <GUIAnimation.h>
-#include <GUIButton.h>
-#include <GUITextArea.h>
-#include <GUIText.h>
-#include <GUIText.h>
-#include <GUITextInput.h>
+#include "SessionTabsScreen.h"
 #include "Settings.h"
-#include <StringTable.h>
-#include <Toolkit.h>
-#include "YOGClientEvent.h"
 #include "YOGClient.h"
-#include "YOGClientLobbyScreen.h"
+#include "YOGClientEvent.h"
 #include "YOGClientLobbyScreen.h"
 #include "YOGClientMapDownloadScreen.h"
 #include "YOGClientOptionsScreen.h"
-#include "YOGLoginScreen.h"
 #include "YOGRegisterScreen.h"
 #include <ScreenStack.h>
 
+using namespace Glob2UI;
 using std::static_pointer_cast;
 
-namespace {
-// Tabs must outlive their asynchronous children and be destroyed before their
-// parent removes the remaining widgets. No tab lives on a modal call stack.
-class YOGSessionScreen final : public Glob2TabScreen {
-    YOGClientLobbyScreen lobby;
-    YOGClientOptionsScreen options;
-    YOGClientMapDownloadScreen maps;
-public:
-    YOGSessionScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client)
-        : Glob2TabScreen(true), lobby(this, screens, client), options(this, client),
-          maps(this, screens, client) { enablePhoneForm(); }
-};
-}
-
-YOGLoginScreen::YOGLoginScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client)
-	: YOGConnectionScreen(client), screens(screens)
+namespace
 {
-	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
-	addWidget(new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[login]"), LOGIN, 13));
-	addWidget(new TextButton(440, 300, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Register]"), REGISTER, 13));
-	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[yog]")));
+// Tabs outlive their asynchronous children and are destroyed before the session
+// screen releases the widgets they lent it. No tab lives on a modal call stack.
+class YOGSessionScreen final : public SessionTabsScreen
+{
+	YOGClientLobbyScreen lobby;
+	YOGClientOptionsScreen options;
+	YOGClientMapDownloadScreen maps;
 
-	addWidget(new Text(20, 260, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your nickname :]")));
-	login=new TextInput(20, 290, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), false, 32);
-	addWidget(login);
-	
-	addWidget(new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Enter your password :]")));
-	password=new TextInput(20, 360, 300, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getPasswd().c_str(), true, 32, true);
-	addWidget(password);
-	
-	rememberYogPassword=new OnOffButton(20, 400, 21, 21, ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED, password->getText().length() > 0, NEW_USER);
-	rememberYogPasswordText=new Text(47, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
-		Toolkit::getStringTable()->getString("[Remember YOG password localy]"));
-	addWidget(rememberYogPassword);
-	addWidget(rememberYogPasswordText);
-	
-	statusText=new TextArea(20, 130, 600, 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true, Toolkit::getStringTable()->getString("[YESTS_CREATED]"));
-	addWidget(statusText);
-	
-	animation=new Animation(32, 90, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "data/gfx/rotatingEarth", 0, 20, 2);
-	animation->visible=false;
-	addWidget(animation);
+  public:
+	YOGSessionScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client)
+		: lobby(screens, client), options(client), maps(screens, client)
+	{
+		addTab(&lobby, true);
+		addTab(&options, true);
+		addTab(&maps, true);
+	}
+	~YOGSessionScreen() override
+	{
+		removeTab(&maps);
+		removeTab(&options);
+		removeTab(&lobby);
+	}
+};
+} // namespace
 
+YOGLoginScreen::YOGLoginScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client)
+	: YOGConnectionScreen(client), nickname(globalContainer->settings.getUsername()),
+	  password(globalContainer->settings.getPasswd()), rememberPassword(!password.empty()),
+	  screens(screens)
+{
 	client->addEventListener(this);
 }
 
 YOGLoginScreen::~YOGLoginScreen()
 {
 	client->removeEventListener(this);
-	Toolkit::releaseSprite("data/gfx/rotatingEarth");
-	globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_NORMAL);
 }
 
-void YOGLoginScreen::onAction(Widget *source, Action action, int par1, int par2)
+Element YOGLoginScreen::build(const Presentation &p)
 {
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (par1==CANCEL)
-		{
-			endExecute(Cancelled);
-		}
-		else if (par1==LOGIN)
-		{
-			//Update the gui
-			animation->show();
-			globalContainer->gfx->cursorManager.setNextType(CursorManager::CURSOR_WAIT);
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTING]"));
-			
-			client->connect(YOG_SERVER_IP);
-			connectionAttemptPending = true;
-		}
-		else if (par1==REGISTER)
-		{
-			client->removeEventListener(this);
-			screens.push(std::make_unique<YOGRegisterScreen>(client), [this](Screen&, int rc) {
-				client->addEventListener(this);
-				if(rc == -1) endExecute(-1);
-				else if(rc == YOGRegisterScreen::Connected) showLobby();
-			});
-		}
-	}
-	if (action==TEXT_ACTIVATED)
-	{
-		if (source==login)
-			password->deactivate();
-		else if (source==password)
-			login->deactivate();
-	}
-	if (action==TEXT_TABBED)
-	{
-		if (login->isActivated() && tabChangeAllowed)
-		{
-			login->deactivate();
-			password->activate();
-			tabChangeAllowed=false;
-		}
-		else if (password->isActivated() && tabChangeAllowed)
-		{
-			password->deactivate();
-			login->activate();
-			tabChangeAllowed=false;
-		}
-	}
+	TextFieldOptions passwordOptions;
+	passwordOptions.password = true;
+	passwordOptions.maxLength = 32;
+	passwordOptions.submit = [this](const std::string &) { login(); };
+	auto body = scroll("login/scroll",
+					   column({statusRow(p),
+							   maxWidth(p.pt(320), form({field(tr("[Enter your nickname :]"),
+															   textField("nickname", nickname, [this](const std::string &v) { nickname = v; }, {false, 32}),
+															   {"", 300, true}),
+														 field(tr("[Enter your password :]"),
+															   textField("password", password, [this](const std::string &v) { password = v; }, passwordOptions),
+															   {"", 300, true})})),
+							   toggle("remember", tr("[Remember YOG password localy]"), rememberPassword,
+									  [this](bool v) { rememberPassword = v; })}));
+	return page(tr("[yog]"), body,
+				actions({{"login", tr("[login]"), [this] { login(); }, true, SDLK_RETURN, !connecting},
+						 {"register", tr("[Register]"), [this] { openRegistration(); }, false, SDLK_UNKNOWN, !connecting},
+						 {"cancel", tr("[Cancel]"), [this] { endExecute(Cancelled); }, false, SDLK_ESCAPE}},
+						p),
+				p, 640);
+}
+
+void YOGLoginScreen::login()
+{
+	if (connecting)
+		return;
+	setConnecting(true);
+	setStatus("[YESTS_CONNECTING]");
+	client->connect(YOG_SERVER_IP);
+	connectionAttemptPending = true;
+}
+
+void YOGLoginScreen::openRegistration()
+{
+	client->removeEventListener(this);
+	screens.push(std::make_unique<YOGRegisterScreen>(client),
+				 [this](GAGGUI::Screen &, int rc)
+				 {
+					 client->addEventListener(this);
+					 if (rc == -1)
+						 endExecute(-1);
+					 else if (rc == YOGRegisterScreen::Connected)
+						 lobbyRequested = true;
+				 });
 }
 
 void YOGLoginScreen::handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event)
 {
-	Uint8 type = event->getEventType();
-	if(type == YEConnected)
-	{
+	const Uint8 type = event->getEventType();
+	if (type == YEConnected)
 		submitLoginCredentials();
-	}
-	else if(type == YEConnectionLost)
-	{ 
+	else if (type == YEConnectionLost)
+	{
 		lobbyRequested = false;
-		animation->visible=false;
-		statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_LOST]"));
+		setConnecting(false);
+		setStatus("[YESTS_CONNECTION_LOST]");
 	}
-	else if(type == YELoginAccepted)
+	else if (type == YELoginAccepted)
 	{
-		animation->visible=false;
-		showLobby();
+		setConnecting(false);
+		lobbyRequested = true;
 	}
-	else if(type == YELoginRefused)
+	else if (type == YELoginRefused)
 	{
-		shared_ptr<YOGLoginRefusedEvent> info = static_pointer_cast<YOGLoginRefusedEvent>(event);
-		animation->visible=false;
-		YOGLoginState reason = info->getReason();
-		if(reason == YOGPasswordIncorrect)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]"));
-		}
-		else if(reason == YOGUsernameAlreadyUsed)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]"));
-		}
-		else if(reason == YOGUserNotRegistered)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]"));
-		}
-		else if(reason == YOGClientVersionTooOld)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[network release mismatch]"));
-		}
-		else if(reason == YOGAlreadyAuthenticated)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]"));
-		}
-		else if(reason == YOGUsernameBanned)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]"));
-		}
-		else if(reason == YOGIPAddressBanned)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]"));
-		}
-		else if(reason == YOGNameInvalidSpecialCharacters)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]"));
-		}
-		else if(reason == YOGLoginUnknown)
-		{
-			statusText->setText(Toolkit::getStringTable()->getString("[YESTS_CONNECTION_REFUSED_UNEXPLAINED]"));
-		}
+		auto info = static_pointer_cast<YOGLoginRefusedEvent>(event);
+		setConnecting(false);
+		reportRefusal(info->getReason());
 		client->disconnect();
 	}
 }
 
-
-
 void YOGLoginScreen::submitLoginCredentials()
 {
-	//Save the password
-	if(rememberYogPassword->getState())
+	if (rememberPassword)
 	{
-		globalContainer->settings.setPasswd(password->getText());
-		globalContainer->settings.setUsername(login->getText());
+		globalContainer->settings.setPasswd(password);
+		globalContainer->settings.setUsername(nickname);
 		globalContainer->settings.save();
 	}
-	//Submit the login credentials
-	client->attemptLogin(login->getText(), password->getText());
-}
-
-
-
-void YOGLoginScreen::showLobby()
-{
-	lobbyRequested = true;
+	client->attemptLogin(nickname, password);
 }
 
 void YOGLoginScreen::onTimer(Uint32 tick)
 {
 	YOGConnectionScreen::onTimer(tick);
-	if(!lobbyRequested) return;
+	if (!lobbyRequested)
+		return;
 	lobbyRequested = false;
 	// Login acceptance arrives during listener iteration. Defer changing
 	// listeners and constructing lobby tabs until the network update returns.
 	client->removeEventListener(this);
-	screens.push(std::make_unique<YOGSessionScreen>(screens, client), [this](Screen&, int rc) {
-		if(rc == YOGClientLobbyScreen::ConnectionLost) endExecute(ConnectionLost);
-		else if(rc == -1) endExecute(-1);
-		else endExecute(LoggedIn);
-	});
+	screens.push(std::make_unique<YOGSessionScreen>(screens, client),
+				 [this](GAGGUI::Screen &, int rc)
+				 {
+					 if (rc == YOGClientLobbyScreen::ConnectionLost)
+						 endExecute(ConnectionLost);
+					 else if (rc == -1)
+						 endExecute(-1);
+					 else
+						 endExecute(LoggedIn);
+				 });
 }

@@ -3388,3 +3388,9 @@ Budiž: %0
 Velikost textu dialogů: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Pokračovat ve hře
+[games]
+Hry
+[Add AI]
+Přidat počítač

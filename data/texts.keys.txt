@@ -1691,3 +1691,6 @@
 [Confirm %0]
 [Dialog text size %0]
 [%0 %1]
+[resume game]
+[games]
+[Add AI]

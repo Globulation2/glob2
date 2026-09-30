@@ -14,7 +14,6 @@
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "GUIMessageBox.h"
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
@@ -596,8 +595,9 @@ void Engine::clearReplayState()
 
 void Engine::showMapLoadError()
 {
-	if (!globalContainer->runNoX)
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
+	// Interactive flows run the task through GameLoadScreen, which reports the
+	// failure on the screen stack; the synchronous wrappers only log it.
+	std::cerr << Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]") << std::endl;
 }
 
 void Engine::finalAdjustments(void)

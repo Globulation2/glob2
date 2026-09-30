@@ -41,20 +41,7 @@ void MapPreview::paintOverlay(DrawableSurface *target, MapPreviewGeometry::Rect 
 			}
 	}
 }
-MapPreview::MapPreview(int x, int y, Uint32 ha, Uint32 va)
-	: MapPreview(x, y, ha, va, tr("[Map preview controls]"), "standard")
-{
-}
-MapPreview::MapPreview(int x, int y, Uint32 ha, Uint32 va, const std::string &tip,
-					   const std::string &font)
-	: RectangularWidget(tip, font)
-{
-	this->x = x;
-	this->y = y;
-	hAlignFlag = ha;
-	vAlignFlag = va;
-	w = h = PreviewSize;
-}
+MapPreview::MapPreview() = default;
 MapPreview::~MapPreview()
 {
 	cancelDrag();
@@ -143,18 +130,6 @@ Uint8 MapPreview::transitionAlpha() const
 }
 MapPreviewGeometry::Rect MapPreview::box()
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-	if (hAlignFlag == ALIGN_FILL)
-	{
-		x += (w - this->w) / 2;
-		w = this->w;
-	}
-	if (vAlignFlag == ALIGN_FILL)
-	{
-		y += (h - this->h) / 2;
-		h = this->h;
-	}
 	return {x, y, w, h};
 }
 MapPreviewGeometry::Rect MapPreview::mapArea()
@@ -234,14 +209,13 @@ bool MapPreview::handlePreviewEvent(SDL_Event *e)
 	}
 	return false;
 }
-void MapPreview::paint()
+void MapPreview::paint(DrawableSurface *target)
 {
 	// Keep the layout slot, but paint only the fitted map and its outline.
 	// The menu owns the unused space around rectangular maps.
 	auto b = thumbnail.isLoaded() ? mapArea() : box();
 	if (b.w <= 0 || b.h <= 0)
 		return;
-	auto target = parent->getSurface();
 	int cx, cy, cw, ch;
 	target->getClipRect(&cx, &cy, &cw, &ch);
 	const int left = std::max(cx, b.x), top = std::max(cy, b.y);
@@ -369,5 +343,5 @@ void MapPreview::paint()
 		}
 	}
 	target->setClipRect(cx, cy, cw, ch);
-	Style::style->drawFrame(target, b.x, b.y, b.w, b.h, Color::ALPHA_TRANSPARENT);
+	GAGGUI::Style::style->drawFrame(target, b.x, b.y, b.w, b.h, Color::ALPHA_TRANSPARENT);
 }

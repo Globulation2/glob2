@@ -16,42 +16,11 @@ namespace GAGGUI
 	{
 		textColor = highlightColor = Color(255, 255, 255);
 		frameColor = Color(0, 200, 100);
-		listSelectedElementColor = Color(170, 170, 240);
 		backColor = Color(0, 0, 0);
-		backOverlayColor = Color(0, 0, 40);
 	}
 	
-	void Style::drawOnOffButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, bool state)
-	{
-		drawFrame(target, x, y, w, h, highlight);
-		if (state)
-		{
-			target->drawLine(x+(w/5)+1, y+(h/2),     x+(w/2),     y+4*(h/5)-1, 0, 255, 0);
-			target->drawLine(x+(w/5),   y+(h/2),     x+(w/2),     y+4*(h/5), 0, 255, 0);
-			target->drawLine(x+(w/2),   y+4*(w/5)-1, x+4*(w/5),   y+(h/5), 0, 255, 0);
-			target->drawLine(x+(w/2),   y+4*(w/5),   x+4*(w/5)-1, y+(h/5), 0, 255, 0);
-		}
-	}
-	
-	void Style::drawTriButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, Uint8 state)
-	{
-		drawFrame(target, x, y, w, h, highlight);
-		if (state==1)
-		{
-			target->drawLine(x+(w/5)+1, y+(h/2),     x+(w/2),     y+4*(h/5)-1, 0, 255, 0);
-			target->drawLine(x+(w/5),   y+(h/2),     x+(w/2),     y+4*(h/5), 0, 255, 0);
-			target->drawLine(x+(w/2),   y+4*(w/5)-1, x+4*(w/5),   y+(h/5), 0, 255, 0);
-			target->drawLine(x+(w/2),   y+4*(w/5),   x+4*(w/5)-1, y+(h/5), 0, 255, 0);
-		}
-		else if (state==2)
-		{
-			target->drawLine(x+(w/5),     y+(h/5), x+w-(w/5)-1, y+4*(h/5), 255, 64, 0);
-			target->drawLine(x+w-(w/5)-1, y+(h/5), x+(w/5),     y+4*(h/5), 255, 64, 0);
-			target->drawLine(x+(w/5)+1,   y+(h/5), x+w-(w/5)-2, y+4*(h/5), 255, 64, 0);
-			target->drawLine(x+w-(w/5)-2, y+(h/5), x+(w/5)+1,   y+4*(h/5), 255, 64, 0);
-		}
-	}
-	
+		
+		
 	void Style::drawTextButtonBackground(DrawableSurface *target, int x, int y, int w, int h, unsigned highlight)
 	{
 		drawFrame(target, x, y, w, h, highlight);
@@ -64,31 +33,7 @@ namespace GAGGUI
 			target->drawRect(x+1, y+1, w-2, h-2, frameColor.applyAlpha(highlight));
 	}
 	
-	void Style::drawScrollBar(GAGCore::DrawableSurface *target, int x, int y, int w, int h, int blockPos, int blockLength)
-	{
-		// draw line and arrows
-		target->drawLine(x, y, x, y + h, Style::style->frameColor);
-		target->drawLine(x, y+21, x + w, y+21, Style::style->frameColor);
-		target->drawLine(x, y+h-21, x + w, y+h-21, Style::style->frameColor);
-
-		int j;
-		int baseX = x+10;
-		int baseY1 = y+11;
-		int baseY2 = y+h-11;
-		for (j=7; j>4; j--)
-		{
-			target->drawLine(baseX-j, baseY1+j, baseX+j, baseY1+j, Style::style->highlightColor);
-			target->drawLine(baseX-j, baseY1+j, baseX, baseY1-j, Style::style->highlightColor);
-			target->drawLine(baseX, baseY1-j, baseX+j, baseY1+j, Style::style->highlightColor);
-			target->drawLine(baseX-j, baseY2-j, baseX+j, baseY2-j, Style::style->highlightColor);
-			target->drawLine(baseX-j, baseY2-j, baseX, baseY2+j, Style::style->highlightColor);
-			target->drawLine(baseX, baseY2+j, baseX+j, baseY2-j, Style::style->highlightColor);
-		}
-
-		target->drawFilledRect(x, y+22+blockPos, 17, blockLength, Style::style->highlightColor.applyAlpha(128));
-		target->drawRect(x+1, y+22+blockPos, 17, blockLength, Style::style->highlightColor);
-	}
-	
+		
 	void Style::drawProgressBar(GAGCore::DrawableSurface *target, int x, int y, int w, int value, int range)
 	{
 		int h = getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
@@ -98,7 +43,7 @@ namespace GAGGUI
 		w -= getStyleMetric(STYLE_METRIC_FRAME_LEFT_WIDTH) + getStyleMetric(STYLE_METRIC_FRAME_RIGHT_WIDTH);
 		h -= getStyleMetric(STYLE_METRIC_FRAME_TOP_HEIGHT) + getStyleMetric(STYLE_METRIC_FRAME_BOTTOM_HEIGHT);
 		int len = (value*w)/range;
-		target->drawFilledRect(x, y, len, h, listSelectedElementColor);
+		target->drawFilledRect(x, y, len, h, highlightColor);
 	}
 	
 	int Style::getStyleMetric(StyleMetrics metric)

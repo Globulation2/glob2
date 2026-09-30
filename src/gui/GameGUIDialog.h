@@ -1,127 +1,178 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
+#include "ui/FrontendUI.h"
+#include <GraphicContext.h>
+#include <array>
+#include <optional>
+#include <string>
+#include <vector>
 
-#include <GUIBase.h>
-
-
-using namespace GAGGUI;
-namespace GAGGUI
-{
-	class OnOffButton;
-	class TriButton;
-	class Selector;
-	class Text;
-}
 class GameGUI;
 class GameHeader;
 
-class InGameMainScreen:public OverlayScreen
+// The in-match dialogs. Each is a declarative panel hosted by GameGUI; it ends
+// with finish(code) and GameGUI reads result() to act, so the commands emitted
+// for a choice are unchanged from the classic dialogs.
+
+class InGameMainScreen : public Glob2UI::InGameDialog
 {
-public:
+  public:
 	enum
 	{
 		LOAD_GAME = 0,
 		SAVE_GAME = 1,
 		OPTIONS = 2,
 		RETURN_GAME = 5,
-		QUIT_GAME = 6
+		QUIT_GAME = 6,
+		PAUSE_GAME = 7
 	};
-public:
-	InGameMainScreen(bool isReplay = false);
-	virtual ~InGameMainScreen() { }
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+
+  protected:
+	void onEscape() override { finish(RETURN_GAME); }
+	double maxWidth() const override { return classic() ? 300 : -1; }
+
+  private:
+	bool replay, canSave, paused;
 };
 
-class InGameEndOfGameScreen:public OverlayScreen
+class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 {
-public:
+  public:
 	enum
 	{
 		QUIT = 0,
 		CONTINUE = 1,
 		WATCH_AGAIN = 2
 	};
-public:
-    const std::string title;
-    const bool canContinue;
-    InGameEndOfGameScreen(std::string title, bool canContinue);
-	virtual ~InGameEndOfGameScreen() { }
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	const std::string title;
+	const bool canContinue;
+	InGameEndOfGameScreen(std::string title, bool canContinue, std::optional<GAGCore::Color> teamColor = {},
+						  bool won = false);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+
+  protected:
+	void onEscape() override { finish(canContinue ? CONTINUE : QUIT); }
+	double maxWidth() const override { return classic() ? 300 : -1; }
+
+  private:
+	std::optional<GAGCore::Color> teamColor;
+	bool won;
 };
 
-class GameGUI;
-
-class InGameAllianceScreen:public OverlayScreen
+class InGameAllianceScreen : public Glob2UI::InGameDialog
 {
-public:
+  public:
 	enum
 	{
-		OK = 0,
-		ALLIED = 32,
-		NORMAL_VISION = 64,
-		FOOD_VISION = 96,
-		MARKET_VISION = 128,
-		CHAT= 160
+		OK = 0
 	};
+	// One row per player; the local team's own players are not listed.
+	struct Entry
+	{
+		int player = 0, team = 0;
+		std::string name;
+		GAGCore::Color color;
+		bool alliance = false, normalVision = false, foodVision = false, marketVision = false, chat = false;
+		// Alliance and vision are locked in fixed-team matches.
+		bool diplomacy = true;
+	};
+	explicit InGameAllianceScreen(GameGUI *gameGUI);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	static int countNumberPlayersForLocalTeam(GameHeader &gameHeader, int localteam);
+	Uint32 getAlliedMask() const;
+	Uint32 getEnemyMask() const;
+	Uint32 getExchangeVisionMask() const;
+	Uint32 getFoodVisionMask() const;
+	Uint32 getOtherVisionMask() const;
+	Uint32 getChatMask() const;
+	const std::vector<Entry> &entries() const { return rows; }
+	// Harness entry point: flips one of the five settings of a listed player.
+	enum Setting
+	{
+		Alliance,
+		NormalVision,
+		FoodVision,
+		MarketVision,
+		Chat
+	};
+	void set(int player, Setting setting, bool value);
 
-public:
-	Text *texts[16];
-	OnOffButton *alliance[16];
-	OnOffButton *normalVision[16];
-	OnOffButton *foodVision[16];
-	OnOffButton *marketVision[16];
-	OnOffButton *chat[16];
+  protected:
+	void onEscape() override { finish(OK); }
+	double maxWidth() const override { return classic() ? (rows.size() > 8 ? 580 : 300) : -1; }
+
+  private:
 	GameGUI *gameGUI;
-
-public:
-	InGameAllianceScreen(GameGUI *gameGUI);
-	virtual ~InGameAllianceScreen() { }
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	int countNumberPlayersForLocalTeam(GameHeader& gameHeader, int localteam);
-	Uint32 getAlliedMask(void);
-	Uint32 getEnemyMask(void);
-	Uint32 getExchangeVisionMask(void);
-	Uint32 getFoodVisionMask(void);
-	Uint32 getOtherVisionMask(void);
-	Uint32 getChatMask(void);
-
-protected:
-	void setCorrectValueForPlayer(int i);
+	std::vector<Entry> rows;
+	bool editable = true;
+	int players = 0;
+	// Settings of every player of the local team, kept for the masks.
+	std::array<bool, 16> ownAlliance{}, ownNormal{}, ownFood{}, ownMarket{}, ownChat{};
+	std::array<int, 16> teamOf{};
+	bool &field(Entry &entry, Setting setting) const;
+	// Players of one team share alliance and vision.
+	void mirror(int player, Setting setting);
 };
 
-class InGameOptionScreen:public OverlayScreen
+class InGameOptionScreen : public Glob2UI::InGameDialog
 {
-public:
+  public:
 	enum
 	{
 		OK = 0,
 		MUTE = 1,
 	};
-
-public:
-	Selector *musicVol;
-	Selector *voiceVol;
-	Selector *gameSpeed;
-	OnOffButton* mute;
-	Text *musicVolText;
-	Text *voiceVolText;
-	Text *gameSpeedText;
+	explicit InGameOptionScreen(GameGUI *gameGUI);
+	~InGameOptionScreen() override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	std::string gameSpeedText() const;
 	bool adjustableGameSpeed;
-public:
-	InGameOptionScreen(GameGUI *gameGUI);
-	~InGameOptionScreen();
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	void updateGameSpeedText(void);
+	// Harness entry points mirroring the controls.
+	void setMute(bool value);
+	void setGameSpeed(int speed);
+
+  protected:
+	void onEscape() override { finish(OK); }
+	double maxWidth() const override { return classic() ? 300 : -1; }
+
+  private:
+	GameGUI *gameGUI;
+	void applyVolume();
 };
 
+//! The chat composer shown while typing a message in game: Return sends
+//! (result 0), Escape closes (result 1). Recipients come from the Teams dialog.
+class InGameTextInput : public Glob2UI::InGameDialog
+{
+  public:
+	InGameTextInput();
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
+	std::string getText() const { return text; }
+	void setText(const std::string &value)
+	{
+		text = value;
+		invalidate();
+	}
+
+  protected:
+	bool scrim() const override { return false; }
+	void onEscape() override { finish(1); }
+	double maxWidth() const override { return classic() ? 400 : 560; }
+	GAGGUI::ui::Rect available(const GAGGUI::ui::Presentation &presentation, const GAGGUI::ui::Metrics &metrics) override;
+	GAGGUI::ui::Rect place(GAGGUI::ui::Size measured, GAGGUI::ui::Rect area) override;
+
+  private:
+	std::string text;
+};
 
 ///This screen shows the current objectives of the mission, a mission briefing, and
 ///hints as the mission goes along
-class InGameObjectivesScreen:public OverlayScreen
+class InGameObjectivesScreen : public Glob2UI::InGameDialog
 {
-public:
+  public:
 	enum
 	{
 		OBJECTIVES = 1,
@@ -129,26 +180,25 @@ public:
 		HINTS = 3,
 		OK = 4,
 	};
-	enum
-	{
-		FIRST_TAB = OBJECTIVES,
-		TAB_COUNT = 3,
-	};
-public:
 	//If show briefing is enabled, then the briefing tab will be shown rather than the objectives tab
-	InGameObjectivesScreen(GameGUI* gui, bool showBriefing);
-	virtual ~InGameObjectivesScreen() { }
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-
-	Text* objectives;
-	Text* briefing;
-	Text* hints;
-	///The widgets belonging to each tab, indexed by tab id minus FIRST_TAB
-	std::vector<Widget*> tabWidgets[TAB_COUNT];
-	///Returns the widgets belonging to the given tab (OBJECTIVES, BRIEFING or HINTS)
-	std::vector<Widget*>& widgetsForTab(int tab);
-	///Makes the given tab's widgets visible and hides those of the other tabs
+	InGameObjectivesScreen(GameGUI *gui, bool showBriefing);
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void showTab(int tab);
+	int tab() const { return page; }
+
+  protected:
+	void onEscape() override { finish(OK); }
+	bool fillHeight() const override { return !classic(); }
+	double maxWidth() const override { return classic() ? 450 : -1; }
+
+  private:
+	struct Line
+	{
+		std::string text;
+		int state = -1; // -1 plain, 0 open, 1 complete, 2 failed
+	};
+	int page;
+	std::string briefing;
+	std::vector<Line> primary, secondary, hints;
+	bool hasSecondary = false;
 };
-
-

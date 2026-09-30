@@ -21,8 +21,11 @@ def main():
     parser.add_argument('--developer-dir')
     parser.add_argument('--android-sdk', default=str(ROOT/'build/mobile-tools/android-sdk'))
     parser.add_argument('--release', action='store_true')
+    parser.add_argument('--jobs', type=int, default=6, help='Maximum parallel vcpkg jobs')
     parser.add_argument('--tests', action='store_true', help='Also build isolated Android CppUnit dependencies')
     args = parser.parse_args()
+    if args.jobs < 1:
+        parser.error('--jobs must be positive')
     if args.tests and args.target != "android":
         parser.error("--tests currently supports Android only")
     args.arch = args.arch or ('arm64-v8a' if args.target=='android' else 'arm64')
@@ -58,7 +61,7 @@ def main():
             ndk=json.loads(LOCK.read_text())['android']['ndk']
             env['ANDROID_NDK_HOME']=str(Path(args.android_sdk).resolve()/'ndk'/ndk)
         env.update(VCPKG_DISABLE_METRICS='1',VCPKG_DOWNLOADS=str(ROOT/'build/mobile-tools/downloads'),
-                   VCPKG_BINARY_SOURCES='clear',VCPKG_MAX_CONCURRENCY='6',
+                   VCPKG_BINARY_SOURCES='clear',VCPKG_MAX_CONCURRENCY=str(args.jobs),
                    VCPKG_REGISTRIES_CACHE=str(ROOT/'build/mobile-tools/registries'),TMPDIR=str(output/'tmp'))
         if args.developer_dir: env['DEVELOPER_DIR']=args.developer_dir
         subprocess.run([str(vcpkg/'vcpkg'),'install','--triplet='+triplet,

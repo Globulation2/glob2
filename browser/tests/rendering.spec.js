@@ -1,9 +1,8 @@
 const {clickCreateMap}=require('./editor-controls');
 const {test, expect} = require('@playwright/test');
-const {clickMainMenu,clickSettingsDone,clickCustomGameStart}=require('./main-menu');
+const {clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
-const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
 
 test('WebGL2 draws a playable match and resizes its drawing buffer', async ({page}, info) => {
   test.setTimeout(120000);
@@ -23,7 +22,7 @@ test('WebGL2 draws a playable match and resizes its drawing buffer', async ({pag
   await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
   await page.screenshot({path:info.outputPath('webgl2-match.png')});
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,640,410); await screen(page,'EndGameScreen');
+  await clickControl(page,'quit'); await screen(page,'EndGameScreen');
   expect(errors).toEqual([]);
 });
 
@@ -106,7 +105,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
   }
   await page.screenshot({path:info.outputPath('webgl2-restored.png')});
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,600,500); await screen(page,'EndGameScreen');
+  await clickControl(page,'quit'); await screen(page,'EndGameScreen');
   expect(errors).toEqual([]);
 });
 
@@ -132,15 +131,15 @@ test('WebGL context restoration retains settings, editor and confirmation contro
   await clickMainMenu(page,'settings'); await recover('SettingsScreen');
   await clickSettingsDone(page); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor'); await screen(page,'EditorMainMenu');
-  await click(page,600,300); await screen(page,'NewMapScreen');
+  await clickControl(page,'new-map'); await screen(page,'NewMapScreen');
   await clickCreateMap(page); await recover('MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,600,525); await recover('MessageScreen');
+  await clickControl(page,'quit'); await recover('MessageScreen');
   await page.screenshot({path:info.outputPath('webgl2-restored-editor-dialog.png')});
   await page.locator('#canvas').press('Escape',{delay:80});
   await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});
-  await click(page,600,525); await screen(page,'MessageScreen');
-  await click(page,600,570); await screen(page,'EditorMainMenu');
+  await clickControl(page,'quit'); await screen(page,'MessageScreen');
+  await clickControl(page,'choice/1'); await screen(page,'EditorMainMenu');
   expect(errors).toEqual([]);
 });

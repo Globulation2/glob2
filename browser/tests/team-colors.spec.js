@@ -1,5 +1,5 @@
 const {test, expect} = require('@playwright/test');
-const {clickMainMenu}=require('./main-menu');
+const {clickMainMenu,clickControl,clickListRow}=require('./main-menu');
 
 // Inspect the presented worker sprite, excluding the adjacent colored text.
 // The first tutorial uses the standard red team. This catches a hue shift
@@ -28,14 +28,13 @@ for (const renderer of ['software','webgl2']) {
     if (renderer === 'webgl2') test.setTimeout(120000);
     const screen = name => expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen),
       {timeout: renderer === 'webgl2' ? 60000 : 30000}).toContain(name);
-    const click = (x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
     const entry = new URL(process.env.GLOB2_TEST_ENTRY_PATH || '/', 'http://localhost');
     entry.searchParams.set('renderer',renderer);
     await page.goto(entry.pathname+entry.search);
     await screen('MainMenuScreen');
     expect(await page.evaluate(() => glob2Diagnostics.snapshot().renderer)).toBe(renderer);
     await clickMainMenu(page,'tutorial'); await screen('CampaignMenuScreen');
-    await click(380,270); await click(440,660);
+    await clickListRow(page,'missions',0); await clickControl(page,'start');
     await screen('match');
     for (const width of [1200,1280]) {
       await page.setViewportSize({width,height:900});

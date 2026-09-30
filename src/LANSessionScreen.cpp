@@ -4,8 +4,7 @@
 #include "MessageScreen.h"
 #include "YOGClientGameListManager.h"
 #include <ScreenStack.h>
-#include <GUIButton.h>
-#include <GUIText.h>
+#include "SessionTabsScreen.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <FormatableString.h>
@@ -14,21 +13,21 @@ using namespace GAGGUI;
 using namespace GAGCore;
 namespace
 {
-class LANGameScreen final : public Glob2TabScreen
+class LANGameScreen final : public SessionTabsScreen
 {
 	std::shared_ptr<YOGClient> client;
 	std::shared_ptr<MultiplayerGame> game;
-	MultiplayerGameScreen lobby;
+	MultiplayerGameScreen room;
 
   public:
-	LANGameScreen(ScreenStack &screens, std::shared_ptr<YOGClient> client,
-				  std::shared_ptr<MultiplayerGame> game)
-		: Glob2TabScreen(true), client(client), game(game), lobby(this, screens, game, client)
+	LANGameScreen(ScreenStack &screens, std::shared_ptr<YOGClient> client, std::shared_ptr<MultiplayerGame> game)
+		: client(client), game(game), room(screens, game, client)
 	{
-        enablePhoneForm();
+		addTab(&room, true);
 	}
 	~LANGameScreen() override
 	{
+		removeTab(&room);
 		if (game->getMultiplayerMode() != MultiplayerGame::NoMode)
 			game->leaveGame();
 		client->setMultiplayerGame({});
@@ -40,11 +39,12 @@ LANSessionScreen::LANSessionScreen(ScreenStack &screens, std::shared_ptr<YOGClie
 	: screens(screens), client(std::move(client)), username(std::move(username)),
 	  hostedMap(std::move(hostedMap))
 {
-    enablePhoneForm();
-	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard",
-					   Toolkit::getStringTable()->getString("[connecting to game]")));
-	addWidget(new TextButton(240, 280, 160, 35, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-							 "standard", Toolkit::getStringTable()->getString("[Cancel]"), 0, 27));
+}
+Glob2UI::Element LANSessionScreen::build(const Glob2UI::Presentation &p)
+{
+	using namespace Glob2UI;
+	return page("", center(paragraph(tr("[connecting to game]"), {FontRole::Body, false, TextAlign::Center})),
+				actions({{"cancel", tr("[Cancel]"), [this] { endExecute(0); }, false, SDLK_ESCAPE}}, p), p, 480);
 }
 LANSessionScreen::~LANSessionScreen()
 {
@@ -53,18 +53,13 @@ LANSessionScreen::~LANSessionScreen()
 	client->setMultiplayerGame({});
 	client->disconnect();
 }
-void LANSessionScreen::onAction(Widget *, Action action, int, int)
-{
-	if (action == BUTTON_RELEASED || action == BUTTON_SHORTCUT)
-		endExecute(0);
-}
 void LANSessionScreen::fail(const char *message)
 {
 	stage = Stage::Failed;
 	screens.push(std::make_unique<MessageScreen>(
 					 Toolkit::getStringTable()->getString(message),
 					 std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}),
-				 [this](Screen &, int) { endExecute(1); });
+				 [this](GAGGUI::Screen &, int) { endExecute(1); });
 }
 void LANSessionScreen::onTimer(Uint32 tick)
 {
@@ -124,5 +119,5 @@ void LANSessionScreen::enterLobby()
 		game->joinGame(client->getGameListManager()->getGameList().front().getGameID());
 	stage = Stage::Lobby;
 	screens.push(std::make_unique<LANGameScreen>(screens, client, game),
-				 [this](Screen &, int result) { endExecute(result); });
+				 [this](GAGGUI::Screen &, int result) { endExecute(result); });
 }

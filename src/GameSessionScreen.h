@@ -15,7 +15,6 @@ class GameSessionScreen : public GAGGUI::Screen
   public:
 	GameSessionScreen(GAGGUI::ScreenStack &stack, std::unique_ptr<Engine> engine);
 	~GameSessionScreen() override;
-	void onAction(GAGGUI::Widget *, GAGGUI::Action, int, int) override {}
 	void updateExecution(Uint32 tick) override;
 	void suspendExecution() override;
 	void viewportResized(int oldWidth, int oldHeight, int width, int height) override;

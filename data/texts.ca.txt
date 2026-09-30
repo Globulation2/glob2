@@ -3396,3 +3396,9 @@ OK: %0
 Mida del text dels diàlegs: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Reprèn la partida
+[games]
+Partides
+[Add AI]
+Afegeix IA

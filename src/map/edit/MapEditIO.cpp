@@ -5,7 +5,7 @@
 #include <ApplicationHost.h>
 #include <BinaryStream.h>
 #include <GAG.h>
-#include "GameGUILoadSave.h"
+#include "gui/LoadSaveDialog.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
@@ -16,7 +16,6 @@
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
-#include "GUIMessageBox.h"
 #include "SDLCompat.h"
 
 bool MapEdit::load(const std::string filename)
@@ -88,7 +87,6 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
         hasMapBeenModified = false;
         performAction("close save screen");
     }
-    if(wasPersisting && showingSave && !loadSaveScreen->isPersisting() && phone) phone->showFailure();
     for (auto event : events) {
         if(!(phone && phone->event(event))) {
             GAGCore::GraphicContext::translateMouseEvent(&event);
@@ -134,11 +132,18 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 			performAction("no ressource growth area drag motion");
 	}
 
-    if (showingMenuScreen) menuScreen->dispatchTimer(tick);
-    if (showingLoad || showingSave) loadSaveScreen->dispatchTimer(tick);
-    if (showingScriptEditor) scriptEditor->dispatchTimer(tick);
-    if (showingTeamsEditor) teamsEditor->dispatchTimer(tick);
-    if (isShowingAreaName) areaName->dispatchTimer(tick);
+    if (auto *dialog = activeDialog())
+    {
+        dialog->update(tick);
+        // Browser-native text editing can finish a dialog without an SDL
+        // event; poll its result every frame.
+        if (dialog->finished())
+        {
+            SDL_Event poll{};
+            poll.type = SDL_USEREVENT;
+            delegateMenu(poll);
+        }
+    }
     if (doFullQuit) { editingResult = -1; editing = false; }
     else if (doQuit) {
         doQuit = false;
@@ -157,37 +162,7 @@ void MapEdit::drawEditing()
 	wasMinimapRendered=false;
 	if(phone) {phone->draw();globalContainer->gfx->nextFrame();return;}
 	drawWidgets();
-	if(showingMenuScreen)
-	{
-		globalContainer->gfx->setClipRect();
-		menuScreen->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
-	}
-	if(showingLoad || showingSave)
-	{
-		globalContainer->gfx->setClipRect();
-		loadSaveScreen->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
-	}
-	if(showingScriptEditor)
-	{
-		globalContainer->gfx->setClipRect();
-		scriptEditor->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
-        scriptEditor->drawFileDialog();
-	}
-	if(showingTeamsEditor)
-	{
-		globalContainer->gfx->setClipRect();
-		teamsEditor->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
-	}
-	if(isShowingAreaName)
-	{
-		globalContainer->gfx->setClipRect();
-		areaName->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
-	}
+	drawDialog();
 
 
 	globalContainer->gfx->nextFrame();
@@ -218,7 +193,6 @@ bool MapEdit::finishFertility(bool completed)
             // A local write is not a durable browser save. Keep the editor and
             // its quit intent until the shared save dialog acknowledges it.
             hasMapBeenModified = true;
-            if(phone && !loadSaveScreen->isPersisting()) phone->showFailure();
         } else {
             doQuitAfterLoadSave = false;
             performAction("close save screen");
@@ -241,9 +215,5 @@ void MapEdit::viewportResized(int oldWidth, int oldHeight, int width, int height
          building_view_level1, building_view_level2, building_view_level3, flag_view_tcs,
          flag_view_level1, flag_view_level2, flag_view_level3, flag_view_level4})
         widget->area.y += height - oldHeight;
-    if (showingMenuScreen) menuScreen->viewportResized(oldWidth, oldHeight, width, height);
-    if (showingLoad || showingSave) loadSaveScreen->viewportResized(oldWidth, oldHeight, width, height);
-    if (showingScriptEditor) scriptEditor->viewportResized(oldWidth, oldHeight, width, height);
-    if (showingTeamsEditor) teamsEditor->viewportResized(oldWidth, oldHeight, width, height);
-    if (isShowingAreaName) areaName->viewportResized(oldWidth, oldHeight, width, height);
+    if (auto *dialog = activeDialog()) dialog->cancelInput();
 }

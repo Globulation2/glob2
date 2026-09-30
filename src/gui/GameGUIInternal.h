@@ -9,16 +9,12 @@
 #include <string>
 
 #include <GUIBase.h>
-#include <GUITextInput.h>
 #include <GraphicContext.h>
 
 #include "GlobalContainer.h"
 
 using namespace GAGCore;
 using namespace GAGGUI;
-
-#define TYPING_INPUT_BASE_INC 7
-#define TYPING_INPUT_MAX_POS 46
 
 // These values are manually laid out for readability.
 #define YPOS_BASE_DEFAULT 180
@@ -141,25 +137,4 @@ enum GameGUIGfxId
 	EXCHANGE_BUILDING_ICONS = 21
 };
 
-//! The screen that contains the text input while typing message in game
-class InGameTextInput:public OverlayScreen
-{
-protected:
-	//! the text input widget
-	TextInput *textInput;
-
-public:
-	//! InGameTextInput constructor
-	InGameTextInput(GraphicContext *parentCtx);
-	//! InGameTextInput destructor
-	virtual ~InGameTextInput() { }
-	//! React on action from any widget (but there is only one anyway)
-	virtual void onAction(Widget *source, Action action, int par1, int par2);
-	//! The composer view owns placement; the input retains native IME state.
-    TextInput* composerInput() const { return textInput; }
-	//! Return the text typed
-	std::string getText(void) const { return textInput->getText(); }
-	//! Set the text
-	void setText(const std::string text) const { textInput->setText(text); }
-};
 

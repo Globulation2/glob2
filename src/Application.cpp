@@ -14,37 +14,38 @@
 #include "LANMenuScreen.h"
 #include "YOGLoginScreen.h"
 #include "YOGClient.h"
-#include <GUIText.h>
-#include <GUIButton.h>
+#include "ui/FrontendUI.h"
 
 namespace
 {
 // Keep graphics and the host alive until final writes have reached storage.
 // The gameplay stack is destroyed first, so its destructor writes are included.
-class ShutdownScreen : public Glob2Screen
+class ShutdownScreen : public Glob2UI::Screen
 {
-	GAGGUI::Text *status;
-	GAGGUI::TextButton *retry;
-	GAGGUI::TextButton *leave;
+	std::string status;
+	bool showActions = false;
 	std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
 	bool closing = false;
+	void show(const char *key, bool actions)
+	{
+		status = Glob2UI::tr(key);
+		showActions = actions;
+		invalidate();
+	}
 	void close()
 	{
 		persistence.reset();
 		closing = true;
-		retry->visible = leave->visible = false;
-		status->setText(GAGCore::Toolkit::getStringTable()->getString("[game closed]"));
+		show("[game closed]", false);
 	}
 	void failed()
 	{
 		persistence.reset();
-		status->setText(GAGCore::Toolkit::getStringTable()->getString("[shutdown save failed]"));
-		retry->visible = leave->visible = true;
+		show("[shutdown save failed]", true);
 	}
 	void save()
 	{
-		retry->visible = leave->visible = false;
-		status->setText(GAGCore::Toolkit::getStringTable()->getString("[saving to storage]"));
+		show("[saving to storage]", false);
 		try
 		{
 			if (GAGCore::ApplicationHost::storageRestoreFailed() ||
@@ -64,30 +65,18 @@ class ShutdownScreen : public Glob2Screen
 	}
 
   public:
-	ShutdownScreen()
+	ShutdownScreen() { save(); }
+	Glob2UI::Element build(const Glob2UI::Presentation &p) override
 	{
-		auto &strings = *GAGCore::Toolkit::getStringTable();
-		status = new GAGGUI::Text(20, 230, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard",
-								  strings.getString("[saving to storage]"));
-		retry =
-			new GAGGUI::TextButton(20, 340, 280, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-								   "menu", strings.getString("[retry save]"), 0);
-		leave =
-			new GAGGUI::TextButton(330, 340, 280, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-								   "menu", strings.getString("[quit without saving]"), 1);
-		addWidget(status);
-		addWidget(retry);
-		addWidget(leave);
-		save();
-	}
-	void onAction(GAGGUI::Widget *, GAGGUI::Action action, int choice, int) override
-	{
-		if (persistence || closing || action != GAGGUI::BUTTON_RELEASED)
-			return;
-		if (choice == 0)
-			save();
-		else if (choice == 1)
-			close();
+		using namespace Glob2UI;
+		std::vector<MenuAction> choices;
+		if (showActions && !persistence && !closing)
+		{
+			choices.push_back({"retry", tr("[retry save]"), [this] { save(); }, true});
+			choices.push_back({"leave", tr("[quit without saving]"), [this] { close(); }});
+		}
+		return page("", center(paragraph(status, {FontRole::Body, false, TextAlign::Center})),
+					actions(std::move(choices), p), p, 480);
 	}
 	void onTimer(Uint32) override
 	{

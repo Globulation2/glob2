@@ -3386,3 +3386,9 @@ Bone!: %0
 Dialoga tekstogrando: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Daŭrigi ludon
+[games]
+Ludoj
+[Add AI]
+Aldoni AI

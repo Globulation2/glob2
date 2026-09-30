@@ -1,46 +1,28 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
 #pragma once
-
 #include "YOGConnectionScreen.h"
-
-
-namespace GAGGUI
-{
-	class TextInput;
-}
 
 class YOGRegisterScreen : public YOGConnectionScreen
 {
-public:
-	///Construct with the given YOG client.
-	///The provided client should not yet be connected to YOG.
-	YOGRegisterScreen(std::shared_ptr<YOGClient> client);
-	///Destroy the screen
-	~YOGRegisterScreen();
+  public:
+	///Construct with the given YOG client, which should not yet be connected.
+	explicit YOGRegisterScreen(std::shared_ptr<YOGClient> client);
+	~YOGRegisterScreen() override;
+	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	enum
 	{
 		Cancelled,
 		Connected,
 	};
 
+  protected:
+	void onEscape() override { endExecute(Cancelled); }
 
-private:
-	enum
-	{
-		CANCEL,
-		REGISTER,
-	};
-
-	void onAction(Widget *source, Action action, int par1, int par2) override;
-
+  private:
 	///Responds to YOG events
 	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event) override;
-
-
-	///Submit a registration using the entered credentials
 	void submitRegistrationCredentials();
-
-	TextInput *login, *password, *passwordRepeat;
+	void registerAccount();
+	std::string nickname, password, passwordRepeat;
 };

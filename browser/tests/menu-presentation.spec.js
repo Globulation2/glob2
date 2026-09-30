@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {gameURL,clickMainMenu,clickCustomGameStart,clickResultsSave}=require('./main-menu');
+const {gameURL,clickMainMenu,clickCustomGameStart,clickResultsSave,clickControl,rootBox,controlBox}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
 async function colonyVisible(page) {
@@ -27,12 +27,14 @@ test('menu presentation survives a match and nested menus',async({page},info)=>{
   await clickCustomGameStart(page);
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('Escape',{delay:80});
-  await page.locator('#canvas').click({position:{x:600,y:500},delay:80});
+  await clickControl(page,'quit');
   await screen(page,'EndGameScreen');
   await page.screenshot({path:info.outputPath('results.png')});
   await clickResultsSave(page);
-  await screen(page,'LoadSaveScreen');
-  await expect.poll(()=>require('./pixels').hasDarkText(page,{x:475,y:317,width:250,height:30})).toBe(true);
+  await screen(page,'LoadSaveDialog');
+  // The dialog's title and file list are legible above its name field.
+  const panel=await rootBox(page,'name'), files=await controlBox(page,'files');
+  await expect.poll(()=>require('./pixels').hasLightText(page,{x:panel.x,y:panel.y,width:panel.width,height:Math.max(24,files.y-panel.y)})).toBe(true);
   await page.screenshot({path:info.outputPath('save-replay.png')});
   await page.locator('#canvas').press('Escape',{delay:80});await screen(page,'EndGameScreen');
   await page.locator('#canvas').press('Enter',{delay:80});await screen(page,'CustomGameScreen');

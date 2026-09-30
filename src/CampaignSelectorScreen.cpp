@@ -1,70 +1,49 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
-
 #include "CampaignSelectorScreen.h"
-#include "StringTable.h"
-#include "Toolkit.h"
-#include "Campaign.h"
+#include "ui/FileListing.h"
 #include <cassert>
 
+using namespace Glob2UI;
+
 CampaignSelectorScreen::CampaignSelectorScreen(bool isSelectingSave)
+	: directory(isSelectingSave ? "games" : "campaigns")
 {
-    enablePhoneForm();
-	StringTable& table=*Toolkit::getStringTable();
-	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", table.getString("[choose campaign]"));
-	ok = new TextButton(440, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK, 13);
-	cancel = new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[Cancel]"), CANCEL, 27);
-	if(isSelectingSave)
-		fileList = new FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "games", "txt", false);
+	names = listFiles(directory, "txt");
+}
+
+void CampaignSelectorScreen::select(int index)
+{
+	selected = index;
+	if (selected >= 0)
+	{
+		const auto caption = descriptionCache.getDescription(getCampaignName());
+		description = caption.empty() ? "" : tr(caption);
+	}
 	else
-		fileList = new FileList(20, 60, 180, 400, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "campaigns", "txt", false);
-	fileList->generateList();
-	description = new TextArea(420, 60, 200, 290, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true);
-	
-	addWidget(title);
-	addWidget(ok);
-	addWidget(cancel);
-	addWidget(fileList);
-	addWidget(description);
+		description.clear();
 }
 
-
-
-void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, int par2)
+Element CampaignSelectorScreen::build(const Presentation &p)
 {
-	if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
-	{
-		if (source == ok)
+	auto list = listView("campaigns", names, selected, [this](int i) { select(i); },
+						 {{}, {}, {}, [this](int) { if (selected >= 0) endExecute(OK); }, {}, 10,
+						  tr("[No items]")});
+	auto details = scroll("description", paragraph(description));
+	Element body = adaptive(
+		[list, details](const LayoutContext &ctx, Size available)
 		{
-			// we accept only if a valid map is selected
-			if (fileList->selection())
-				endExecute(OK);
-		}
-		else if (source == cancel)
-		{
-			endExecute(par1);
-		}
-	}
-	if (action == LIST_ELEMENT_SELECTED)
-	{
-		if (fileList->selection())
-		{
-			const auto caption=descriptionCache.getDescription(getCampaignName());
-			description->setText(caption.empty() ? "" : Toolkit::getStringTable()->getString(caption));
-		}
-		else
-		{
-			description->setText("");
-		}
-	}
+			if (available.w < ctx.presentation.pt(560))
+				return column({expanded(list, 3), expanded(details, 2)});
+			return row({expanded(list, 1), expanded(details, 1)}, {-1, CrossAlign::Stretch});
+		});
+	MenuAction ok{"ok", tr("[ok]"), [this] { if (selected >= 0) endExecute(OK); }, true, SDLK_RETURN, selected >= 0};
+	MenuAction cancel{"cancel", tr("[Cancel]"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE};
+	return page(tr("[choose campaign]"), body, actions({ok, cancel}, p), p, 800);
 }
-
-
 
 std::string CampaignSelectorScreen::getCampaignName() const
 {
-	auto sel = fileList->selection();
-	assert(sel);
-	return fileList->fullName(fileList->getText(*sel).c_str())+".txt";
+	assert(selected >= 0 && selected < int(names.size()));
+	return directory + "/" + names[std::size_t(selected)] + ".txt";
 }
-

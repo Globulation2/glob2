@@ -98,7 +98,6 @@ python3 test/run-game-speed-tests.py
 python3 data/check_translations.py --strict
 python3 test/test_translations.py
 python3 test/test_font_coverage.py
-python3 test/test_text_area_layout.py
 ```
 
 The custom harness covers model validation and restoration, canonical map catalog

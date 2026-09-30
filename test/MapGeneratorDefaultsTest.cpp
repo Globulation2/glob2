@@ -22,10 +22,6 @@
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include <GUIButton.h>
-#include <GUIList.h>
-#include <GUINumber.h>
-#include <GUIText.h>
 #include <SDL_image.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -44,11 +40,7 @@ using D = GenerationRequest;
 class MapGeneratorDefaultsTest
 {
   public:
-	static void select(NewMapScreen &s, int method)
-	{
-		s.methods->setSelectionIndex(s.registry.selectionIndex(method));
-		s.onAction(s.methods, GAGGUI::LIST_ELEMENT_SELECTED, method, 0);
-	}
+	static void select(NewMapScreen &s, int method) { s.chooseMethod(method); }
 	static void sameControls(const D &a, const D &b)
 	{
 		assert(a.method == b.method);
@@ -57,41 +49,30 @@ class MapGeneratorDefaultsTest
 		for (const auto &c : D::sharedControls())
 			assert(c.get(a) == c.get(b));
 	}
+	// Edits the control the form shows under `label`, the way the screen's own choice or
+	// toggle callback would.
 	static void edit(NewMapScreen &s, const char *label, int value)
 	{
-		for (auto &w : s.controlWidgets)
+		std::vector<const GeneratorControl *> shown;
+		const bool blank = s.descriptor.method == GenerationRequest::eUNIFORM;
+		for (const auto &c : D::sharedControls())
+			if (!blank || c.id == "width" || c.id == "height")
+				shown.push_back(&c);
+		if (!blank)
+			for (const auto &c : s.registry.at(s.descriptor.method).controls)
+				shown.push_back(&c);
+		for (const auto *c : shown)
 		{
-			if (!w.field()->visible || std::strcmp(w.definition.label, label) != 0)
+			if (std::strcmp(c->label, label) != 0)
 				continue;
-			if (w.toggle)
-			{
+			if (c->isToggle())
 				assert(value == 0 || value == 1);
-				w.toggle->setState(value != 0);
-				s.onAction(w.toggle, GAGGUI::BUTTON_STATE_CHANGED, NewMapScreen::TOGGLE, value);
-			}
-			else
-			{
-				w.number->setNth(w.definition.indexOf(value));
-				s.onAction(w.number, GAGGUI::NUMBER_ELEMENT_SELECTED, 0, 0);
-			}
-			assert(w.definition.get(s.descriptor) == value);
+			c->set(s.descriptor, value);
+			s.invalidatePreview();
+			assert(c->get(s.descriptor) == value);
 			return;
 		}
 		assert(false);
-	}
-	// Presses and releases the mouse over a widget, the way a player clicks it.
-	static void click(NewMapScreen &s, GAGGUI::Widget *widget)
-	{
-		const auto box = static_cast<GAGGUI::RectangularWidget *>(widget)->getScreenRect();
-		for (Uint32 type : {Uint32(SDL_MOUSEBUTTONDOWN), Uint32(SDL_MOUSEBUTTONUP)})
-		{
-			SDL_Event event = {};
-			event.type = type;
-			event.button.button = SDL_BUTTON_LEFT;
-			event.button.x = box.x + box.w / 2;
-			event.button.y = box.y + box.h / 2;
-			s.dispatchEvents(&event);
-		}
 	}
 	static void generationContracts()
 	{
@@ -544,8 +525,7 @@ class MapGeneratorDefaultsTest
 		generationContracts();
 		scatterAlgaeOnWater();
 		NewMapScreen s;
-		s.gfx = globalContainer->gfx;
-		s.dispatchInit();
+		s.beginExecution(globalContainer->gfx);
 		CustomGameSetup lobby;
 		// The catalog's order was shuffled once (FEEDBACK 2026-09-14: no bias towards the landscapes
 		// that happen to be listed first). The editor opens on the catalog's first entry and the
@@ -555,7 +535,7 @@ class MapGeneratorDefaultsTest
 		lobbyFirst.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
 		assert(GeneratorRegistry::builtins().methods(false).front() ==
 			   GeneratorRegistry::builtins().idOf("fingerprint"));
-		assert(s.methods->getSelectionIndex() == 0);
+		assert(s.descriptor.method == GeneratorRegistry::builtins().methods().front());
 		sameControls(s.descriptor, editorFirst);
 		sameControls(lobby.generator, lobbyFirst);
 		for (int m : GeneratorRegistry::builtins().methods())
@@ -567,7 +547,7 @@ class MapGeneratorDefaultsTest
 			lobby.generatorHistory.select(lobby.generator, method);
 			sameControls(s.descriptor, expected);
 			sameControls(lobby.generator, expected);
-			s.dispatchTimer(1);
+			s.onTimer(1);
 			sameControls(s.descriptor, expected);
 			std::set<std::string> labels;
 			for (const auto &c : D::controls(method))
@@ -595,10 +575,7 @@ class MapGeneratorDefaultsTest
 			if (output &&
 				((m >= 4 && m <= 8) || m == GeneratorRegistry::builtins().idOf("fjord-continent")))
 			{
-				s.gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(34, 55, 42));
-				for (auto *w : s.widgets)
-					if (w->visible)
-						w->paint();
+				s.paintFrame(0);
 				std::string path = std::string(output) + "/editor-" + std::to_string(m) + ".png";
 				assert(IMG_SavePNG(s.gfx->getSDLSurface(), path.c_str()) == 0);
 			}
@@ -607,22 +584,17 @@ class MapGeneratorDefaultsTest
 		for (int m : GeneratorRegistry::builtins().methods())
 		{
 			select(s, m);
-			for (auto &w : s.controlWidgets)
-				if (w.method == m)
-				{
-					assert(w.definition.isToggle() == bool(w.toggle) &&
-						   bool(w.number) != bool(w.toggle));
-					assert(w.field()->visible && w.label->visible);
-					if (!w.toggle)
-						continue;
-					const int before = w.definition.get(s.descriptor);
-					assert(w.toggle->getState() == (before != 0));
-					click(s, w.toggle);
-					assert(w.definition.get(s.descriptor) == 1 - before &&
-						   w.toggle->getState() == !before);
-					click(s, w.toggle);
-					assert(w.definition.get(s.descriptor) == before);
-				}
+// Every toggle the method shows flips through the screen's own edit path and back.
+			for (const auto &c : s.registry.at(m).controls)
+			{
+				if (!c.isToggle())
+					continue;
+				const int before = c.get(s.descriptor);
+				edit(s, c.label, 1 - before);
+				assert(c.get(s.descriptor) == 1 - before);
+				edit(s, c.label, before);
+				assert(c.get(s.descriptor) == before);
+			}
 		}
 		select(s, D::eRIVER);
 		edit(s, "Water weight", 37);

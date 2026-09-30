@@ -1,310 +1,208 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
-
+#include "YOGClientMapDownloadScreen.h"
 #include "ChooseMapScreen.h"
-#include <FormatableString.h>
-#include "GlobalContainer.h"
-#include <GUIButton.h>
-#include <GUIList.h>
 #include "GUIMapPreview.h"
-#include "GUINumber.h"
-#include "GUITabScreen.h"
-#include <GUIText.h>
-#include "StringTable.h"
-#include "Toolkit.h"
+#include "GlobalContainer.h"
 #include "TextSort.h"
 #include "YOGClient.h"
-#include "YOGClientMapDownloadScreen.h"
-#include "YOGClientMapUploadScreen.h"
 #include "YOGClientDownloadableMapList.h"
 #include "YOGClientDownloadingMapScreen.h"
+#include "YOGClientMapUploadScreen.h"
 #include "YOGClientRatedMapList.h"
+#include <FormatableString.h>
 #include <ScreenStack.h>
+#include <StringTable.h>
+#include <Toolkit.h>
+#include <algorithm>
 
-using namespace GAGCore;
+namespace fe = Glob2UI;
+using fe::Element;
+using fe::Presentation;
 
-YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<YOGClient> client)
-	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Download Maps]")), client(client), screens(screens)
+YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client) : client(client), screens(screens)
 {
-	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Download Maps]")));
-
-
-	mapList = new List(20, 120, 220, 135, ALIGN_LEFT, ALIGN_FILL, "standard");
-	addWidget(mapList);
-	mapPreview = new MapPreview(72, 130, ALIGN_RIGHT, ALIGN_TOP);
-	addWidget(mapPreview);
-	mapPreview->retry = [this]
-	{
-		if (!mapValid) return;
-		this->client->getDownloadableMapList()->requestThumbnail(mapList->get(), true);
-		updateMapPreview();
-	};
-	mapName=new Text(72, 268+25, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
-	addWidget(mapName);
-	mapInfo=new Text(72, 268+50, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
-	addWidget(mapInfo);
-	mapSize=new Text(72, 268+75, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
-	addWidget(mapSize);
-	mapAuthor=new Text(72, 268+100, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
-	addWidget(mapAuthor);
-	mapRating = new Text(72, 268 + 125, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
-	addWidget(mapRating);
-	mapDownloadSize = new Text(72, 268 + 150, ALIGN_RIGHT, ALIGN_TOP, "standard", "", 180);
-	addWidget(mapDownloadSize);
-	addMap = new TextButton(20, 65, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[upload map]"), ADDMAP);
-	addWidget(new TextButton(20, 15, 180, 40, ALIGN_RIGHT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[quit]"), QUIT, 27));
-	addWidget(addMap);
-	refresh = new TextButton(20, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[refresh map list]"), REFRESHMAPLIST);
-	addWidget(refresh);
-	downloadMap = new TextButton(20, 15, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[Download Map]"), DOWNLOADMAP);
-	addWidget(downloadMap);
-	
-	loadingMapList = new Text(280, 200, ALIGN_LEFT, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[loading map list]"));
-	addWidget(loadingMapList);
-	
-	submitRating = new TextButton(250, 65, 220, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[submit rating]"), SUBMITRATING);
-	addWidget(submitRating);
-	rating = new Number(250, 35, 220, 20, ALIGN_LEFT, ALIGN_BOTTOM, 10, "standard");
-	for(int i=1; i<=10; ++i)
-	{
-		rating->add(i);
-	}
-	rating->setNth(4);
-	addWidget(rating);
-	mapRatedAlready = new Text(250, 65, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[map rated]"));
-	addWidget(mapRatedAlready);
-	submitRating->visible=false;
-	rating->visible=false;
-	mapRatedAlready->visible=false;
-	
-	sortMethodLabel = new Text(250, 120, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Sort By]"));
-	addWidget(sortMethodLabel);
-	sortMethod = new MultiTextButton(250, 140, 100, 25, ALIGN_LEFT, ALIGN_TOP, "standard", "", SORTMETHOD);
-	addWidget(sortMethod);
-	sortMethod->clearTexts();
-	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by name]"));
-	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by size]"));
-	sortMethod->addText(Toolkit::getStringTable()->getString("[sort by rating]"));
-	sortMethod->setIndex(0);
-	
-	validMapSelected=false;
 	client->getDownloadableMapList()->addListener(this);
-	mapValid=false;
-	mapsRequested=false;
 }
 
+YOGClientMapDownloadScreen::~YOGClientMapDownloadScreen() { client->getDownloadableMapList()->removeListener(this); }
 
-YOGClientMapDownloadScreen::~YOGClientMapDownloadScreen()
+std::string YOGClientMapDownloadScreen::title() const { return fe::tr("[Download Maps]"); }
+
+std::string YOGClientMapDownloadScreen::selectedMap() const
 {
-	client->getDownloadableMapList()->removeListener(this);
+	return selected >= 0 && selected < int(mapNames.size()) ? mapNames[std::size_t(selected)] : std::string();
 }
 
-void YOGClientMapDownloadScreen::onTimer(Uint32 tick)
+void YOGClientMapDownloadScreen::onTimer(Uint32)
 {
-	updateVisibility();
+	const bool nowWaiting = client->getDownloadableMapList()->waitingForListFromServer();
+	if (nowWaiting != waiting)
+	{
+		waiting = nowWaiting;
+		refresh();
+	}
 	updateMapPreview();
 }
-
-
-
-void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par1, int par2)
-{
-	TabScreenWindow::onAction(source, action, par1, par2);
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-	{
-		if (par1==QUIT)
-		{
-			endExecute(QUIT);
-			parent->completeEndExecute(QUIT);
-		}
-		else if(par1==ADDMAP)
-		{
-			screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false),
-				[this](Screen& selection, int rc) {
-					if(rc != ChooseMapScreen::OK) return;
-					const auto file = static_cast<ChooseMapScreen&>(selection).getMapHeader().getFileName();
-					screens.push(std::make_unique<YOGClientMapUploadScreen>(screens, client, file),
-						[this](Screen&, int) { requestMaps(); });
-				});
-		}
-		else if (par1==REFRESHMAPLIST)
-		{
-			requestMaps();
-		}
-		else if (par1==DOWNLOADMAP)
-		{
-			if(mapValid)
-			{
-				screens.push(std::make_unique<YOGClientDownloadingMapScreen>(screens, client,
-					client->getDownloadableMapList()->getMap(mapList->get())));
-			}
-		}
-		else if (par1==SUBMITRATING)
-		{
-			client->getDownloadableMapList()->submitRating(mapList->get(), rating->get());
-			client->getRatedMapList()->addRatedMap(mapList->get());
-		}
-		else if (par1==SORTMETHOD)
-		{
-			mapListUpdated();
-		}
-	}
-	if(action == LIST_ELEMENT_SELECTED)
-	{
-		updateMapInfo();
-	}
-}
-
-
 
 void YOGClientMapDownloadScreen::onActivated()
 {
-	if(!mapsRequested)
-	{
+	if (!mapsRequested)
 		requestMaps();
+	if (!mapPreview && session)
+	{
+		mapPreview = std::make_unique<MapPreview>();
+		mapPreview->retry = [this]
+		{
+			if (selectedMap().empty())
+				return;
+			client->getDownloadableMapList()->requestThumbnail(selectedMap(), true);
+			updateMapPreview();
+		};
 	}
-	updateVisibility();
+	refresh();
 }
-
-
 
 void YOGClientMapDownloadScreen::mapListUpdated()
 {
-	int n = mapList->getSelectionIndex();
-	mapList->clear();
+	const std::string previous = selectedMap();
 	std::vector<YOGDownloadableMapInfo> maps = client->getDownloadableMapList()->getDownloadableMapList();
-	std::sort(maps.begin(), maps.end(), MapListSorter(static_cast<MapListSorter::SortMethod>(sortMethod->getIndex())));
-	for(unsigned int i=0; i<maps.size(); ++i)
-	{
-		mapList->addText(maps[i].getMapHeader().getMapName());
-	}
-	mapList->setSelectionIndex(std::min((int)(maps.size())-1, n));
-	updateMapInfo();
+	std::sort(maps.begin(), maps.end(), MapListSorter(static_cast<MapListSorter::SortMethod>(sortMethod)));
+	mapNames.clear();
+	for (const auto &map : maps)
+		mapNames.push_back(map.getMapHeader().getMapName());
+	selected = -1;
+	for (std::size_t i = 0; i < mapNames.size(); ++i)
+		if (mapNames[i] == previous)
+			selected = int(i);
+	updateMapPreview();
+	refresh();
 }
-
 
 void YOGClientMapDownloadScreen::mapThumbnailsUpdated()
 {
-	updateMapInfo();
+	updateMapPreview();
+	refresh();
 }
-
-
 
 void YOGClientMapDownloadScreen::requestMaps()
 {
-	mapList->clear();
-	mapList->setSelectionIndex(-1);
-	updateMapInfo();
-	
-	client->getDownloadableMapList()->requestMapListUpdate();
-	mapsRequested=true;
-}
-
-
-
-void YOGClientMapDownloadScreen::updateMapInfo()
-{
-	mapValid = mapList->selection().has_value();
-
+	mapNames.clear();
+	selected = -1;
 	updateMapPreview();
-	if(mapValid)
-	{
-		YOGDownloadableMapInfo info = client->getDownloadableMapList()->getMap(mapList->get());
-		const MapHeader& mapHeader = info.getMapHeader();
-		// update map name & info
-		mapName->setText(mapHeader.getMapName());
-		std::string textTemp;
-		textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
-		mapInfo->setText(textTemp);
-		textTemp = FormattableString("%0 x %1").arg(info.getWidth()).arg(info.getHeight());
-		mapSize->setText(textTemp);
-		mapAuthor->setText(info.getAuthorName());
-		if(info.getNumberOfRatings() > 5)
-		{
-			textTemp = FormattableString(Toolkit::getStringTable()->getString("[Rated %0]")).arg(info.getRatingTotal() / info.getNumberOfRatings());
-		}
-		else
-		{
-			textTemp = FormattableString(Toolkit::getStringTable()->getString("[Not Enough Ratings]"));
-		}
-		mapRating->setText(textTemp);
-		if(!client->getDownloadableMapList()->getMapThumbnail(mapList->get()).isLoaded())
-		{
-			client->getDownloadableMapList()->requestThumbnail(mapList->get());
-		}
-		textTemp = FormattableString("%0 kb").arg((info.getSize()+512)/1024);
-		mapDownloadSize->setText(textTemp);
-	}
-	else
-	{
-		mapAuthor->setText("");
-		mapInfo->setText("");
-		mapSize->setText("");
-		mapName->setText("");
-		mapRating->setText("");
-		mapDownloadSize->setText("");
-	}
+	client->getDownloadableMapList()->requestMapListUpdate();
+	mapsRequested = true;
+	refresh();
 }
-
-void YOGClientMapDownloadScreen::updateVisibility()
-{
-	if(client->getDownloadableMapList()->waitingForListFromServer())
-	{
-		loadingMapList->visible=isActivated();
-	}
-	else
-	{
-		loadingMapList->visible=false;
-	}
-	if(mapValid)
-	{
-		if(client->getRatedMapList()->isMapRated(mapList->get()))
-		{
-			submitRating->visible=false;
-			rating->visible=false;
-			mapRatedAlready->visible=isActivated();
-		}
-		else
-		{
-			submitRating->visible=isActivated();
-			rating->visible=isActivated();
-			mapRatedAlready->visible=false;
-		}
-	}
-	else
-	{
-		submitRating->visible=false;
-		rating->visible=false;
-		mapRatedAlready->visible=false;
-	}
-}
-
-
 
 void YOGClientMapDownloadScreen::updateMapPreview()
 {
-	if(mapValid)
+	if (!mapPreview)
+		return;
+	const auto name = selectedMap();
+	if (name.empty())
 	{
-		MapThumbnail& thumbnail = client->getDownloadableMapList()->getMapThumbnail(mapList->get());
-		if(thumbnail.isLoaded())
-		{
-			mapPreview->setMapThumbnail(thumbnail);
-		}
-		else
-		{
-			auto state = client->getDownloadableMapList()->getThumbnailState(mapList->get());
-			mapPreview->setState(state == YOGClientDownloadableMapList::ThumbnailState::Failed
-				? MapPreview::State::Failed : MapPreview::State::Loading);
-		}
+		mapPreview->setState(MapPreview::State::Empty);
+		return;
 	}
+	MapThumbnail &thumbnail = client->getDownloadableMapList()->getMapThumbnail(name);
+	if (thumbnail.isLoaded())
+		mapPreview->setMapThumbnail(thumbnail);
 	else
 	{
-	
-		mapPreview->setState(MapPreview::State::Empty);
+		if (client->getDownloadableMapList()->getThumbnailState(name) != YOGClientDownloadableMapList::ThumbnailState::Failed)
+			client->getDownloadableMapList()->requestThumbnail(name);
+		auto state = client->getDownloadableMapList()->getThumbnailState(name);
+		mapPreview->setState(state == YOGClientDownloadableMapList::ThumbnailState::Failed ? MapPreview::State::Failed : MapPreview::State::Loading);
 	}
 }
 
+void YOGClientMapDownloadScreen::uploadMap()
+{
+	screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false),
+				 [this](GAGGUI::Screen &selection, int rc)
+				 {
+					 if (rc != ChooseMapScreen::OK)
+						 return;
+					 const auto file = static_cast<ChooseMapScreen &>(selection).getMapHeader().getFileName();
+					 screens.push(std::make_unique<YOGClientMapUploadScreen>(screens, client, file), [this](GAGGUI::Screen &, int) { requestMaps(); });
+				 });
+}
 
+void YOGClientMapDownloadScreen::downloadSelected()
+{
+	const auto name = selectedMap();
+	if (name.empty())
+		return;
+	screens.push(std::make_unique<YOGClientDownloadingMapScreen>(screens, client, client->getDownloadableMapList()->getMap(name)));
+}
+
+Element YOGClientMapDownloadScreen::build(const Presentation &p)
+{
+	auto &strings = *Toolkit::getStringTable();
+	const auto name = selectedMap();
+	fe::ListOptions listOptions;
+	listOptions.visibleRows = 10;
+	listOptions.emptyText = waiting ? strings.getString("[loading map list]") : fe::tr("[No items]");
+	listOptions.activate = [this](int) { downloadSelected(); };
+	auto list = fe::listView("maps/list", mapNames, selected,
+							 [this](int i)
+							 {
+								 selected = i;
+								 updateMapPreview();
+							 },
+							 listOptions);
+	auto sort = fe::field(strings.getString("[Sort By]"),
+						  fe::choice("maps/sort", {strings.getString("[sort by name]"), strings.getString("[sort by size]"), strings.getString("[sort by rating]")}, sortMethod,
+									 [this](int v)
+									 {
+										 sortMethod = v;
+										 mapListUpdated();
+									 }));
+	std::vector<Element> details;
+	if (mapPreview)
+		details.push_back(fe::center(fe::mapPreview("maps/preview", *mapPreview, 160)));
+	if (!name.empty())
+	{
+		const YOGDownloadableMapInfo info = client->getDownloadableMapList()->getMap(name);
+		const MapHeader &header = info.getMapHeader();
+		details.push_back(fe::label(header.getMapName()));
+		details.push_back(fe::caption(FormattableString("%0%1").arg(header.getNumberOfTeams()).arg(strings.getString("[teams]"))));
+		details.push_back(fe::caption(FormattableString("%0 x %1").arg(info.getWidth()).arg(info.getHeight())));
+		details.push_back(fe::caption(info.getAuthorName()));
+		details.push_back(fe::caption(info.getNumberOfRatings() > 5 ? FormattableString(strings.getString("[Rated %0]")).arg(info.getRatingTotal() / info.getNumberOfRatings())
+																	 : std::string(FormattableString(strings.getString("[Not Enough Ratings]")))));
+		details.push_back(fe::caption(FormattableString("%0 kb").arg((info.getSize() + 512) / 1024)));
+		if (client->getRatedMapList()->isMapRated(name))
+			details.push_back(fe::caption(strings.getString("[map rated]")));
+		else
+			details.push_back(fe::row({fe::expanded(fe::stepper("maps/rating", rating, 1, 10, [this](int v) { rating = v; })),
+									   fe::button("maps/rate", strings.getString("[submit rating]"),
+												  [this, name]
+												  {
+													  client->getDownloadableMapList()->submitRating(name, rating);
+													  client->getRatedMapList()->addRatedMap(name);
+												  })},
+									  {p.pt(6), fe::CrossAlign::Center}));
+	}
+	auto detailColumn = fe::column(std::move(details), {p.pt(6)});
+	auto listColumn = fe::column({sort, list}, {p.pt(6)});
+	Element body = fe::adaptive(
+		[listColumn, detailColumn](const fe::LayoutContext &ctx, fe::Size available) -> fe::Element
+		{
+			if (available.w < ctx.presentation.pt(640))
+				return fe::scroll("maps/scroll", fe::column({listColumn, detailColumn}, {ctx.presentation.pt(12)}));
+			return fe::row({fe::expanded(fe::scroll("maps/scroll", listColumn)), fe::width(ctx.presentation.pt(260), fe::scroll("maps/details", detailColumn))},
+						   {ctx.presentation.pt(16), fe::CrossAlign::Stretch});
+		});
+	return fe::column({fe::expanded(body), fe::divider(),
+					   fe::actions({{"maps/refresh", strings.getString("[refresh map list]"), [this] { requestMaps(); }},
+									{"maps/download", strings.getString("[Download Map]"), [this] { downloadSelected(); }, true, SDLK_UNKNOWN, !name.empty()},
+									{"maps/upload", strings.getString("[upload map]"), [this] { uploadMap(); }},
+									{"maps/quit", strings.getString("[quit]"), [this] { finish(QUIT); }, false, SDLK_ESCAPE}},
+								   p)},
+					  {p.pt(8)});
+}
 
 MapListSorter::MapListSorter(SortMethod sortMethod)
 	: sortMethod(sortMethod)

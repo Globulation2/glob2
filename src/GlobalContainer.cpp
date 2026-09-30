@@ -228,6 +228,9 @@ void GlobalContainer::loadClient(void)
         // Separate frontend aliases avoid changing gameplay/editor font metrics.
         Toolkit::loadFont(fontfile.c_str(), 16, "frontend-body");
         Toolkit::loadFont(fontfile.c_str(), 14, "frontend-support");
+		// Frontend title/caption roles used by the declarative menus.
+		Toolkit::loadFont(fontfile.c_str(), 30, "front-title");
+		Toolkit::loadFont(fontfile.c_str(), 12, "front-caption");
 		menuFont = Toolkit::getFont("menu");
 		menuFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 		standardFont = Toolkit::getFont("standard");

@@ -3384,3 +3384,9 @@ Oke: %0
 Ukuran teks dialog: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Lanjutkan Permainan
+[games]
+Permainan
+[Add AI]
+Tambah AI

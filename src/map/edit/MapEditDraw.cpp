@@ -23,41 +23,9 @@ void MapEdit::draw(Uint64 frameTick)
 	drawMiniMap();
 	wasMinimapRendered=false;
 	drawWidgets();
-	if(showingMenuScreen)
-	{
-		globalContainer->gfx->setClipRect();
-		menuScreen->dispatchTimer(frameTick);
-		menuScreen->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
-	}
-	if(showingLoad || showingSave)
-	{
-		globalContainer->gfx->setClipRect();
-		loadSaveScreen->dispatchTimer(frameTick);
-		loadSaveScreen->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
-	}
-	if(showingScriptEditor)
-	{
-		globalContainer->gfx->setClipRect();
-		scriptEditor->dispatchTimer(frameTick);
-		scriptEditor->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
-	}
-	if(showingTeamsEditor)
-	{
-		globalContainer->gfx->setClipRect();
-		teamsEditor->dispatchTimer(frameTick);
-		teamsEditor->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
-	}
-	if(isShowingAreaName)
-	{
-		globalContainer->gfx->setClipRect();
-		areaName->dispatchTimer(frameTick);
-		areaName->dispatchPaint();
-		globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
-	}
+	if (auto *dialog = activeDialog())
+		dialog->update(Uint32(frameTick));
+	drawDialog();
 }
 
 void MapEdit::drawMap(int sx, int sy, int sw, int sh)

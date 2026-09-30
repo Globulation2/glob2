@@ -1,20 +1,22 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "LandscapePickerScreen.h"
-#include "gui/FrontendLayout.h"
-#include "GlobalContainer.h"
-#include "LobbyControls.h"
 #include "GenerationContext.h"
 #include "GenerationValidation.h"
 #include "GeneratorRegistry.h"
+#include "GlobalContainer.h"
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
 #include <charconv>
-#include <string_view>
 #include <functional>
 #include <map>
 #include <numeric>
 #include <random>
+#include <string_view>
+
+namespace fe = Glob2UI;
+using fe::Element;
+using fe::Presentation;
 
 namespace
 {
@@ -82,29 +84,6 @@ std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vect
 	return requests;
 }
 
-LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vector<Entry> entries,
-											 int selected, SortOrder sortOrder)
-	: title(title), entries(std::move(entries)), tiles(this->entries.size()),
-	  redraws(this->entries.size(), 0), filterCategories(categoriesOf(this->entries)),
-	  filters(filterCategories.size()),
-	  selected(std::clamp(selected, 0, std::max(0, int(this->entries.size()) - 1))),
-	  sortOrder(sortOrder), previewer(requestsOf(this->entries), 1, true)
-{
-	gfx = globalContainer->gfx;
-	controls = new LobbyControls();
-	controls->render = [this]
-	{
-		render();
-		updatePreviewPriority();
-	};
-	controls->focus = "landscape/" + std::to_string(this->selected);
-	addWidget(controls);
-	recomputeIncompatible();
-	rebuild();
-}
-
-LandscapePickerScreen::~LandscapePickerScreen() = default;
-
 void LandscapePickerScreen::recomputeIncompatible()
 {
 	incompatible.assign(entries.size(), {});
@@ -164,9 +143,8 @@ void LandscapePickerScreen::rebuild()
 	}
 	reveal = true;
 	layoutReady = false;
+	invalidate();
 }
-
-void LandscapePickerScreen::onAction(Widget *, Action, int, int) {}
 
 std::optional<std::uint32_t> LandscapePickerScreen::chosenSeed() const
 {
@@ -202,6 +180,7 @@ void LandscapePickerScreen::randomizeParameters()
 		requests.push_back(request);
 	}
 	previewer.restart(std::move(requests));
+	invalidate();
 }
 
 void LandscapePickerScreen::resetParameters()
@@ -224,34 +203,7 @@ void LandscapePickerScreen::resetParameters()
 		requests.push_back(request);
 	}
 	previewer.restart(std::move(requests));
-}
-
-void LandscapePickerScreen::select(int index)
-{
-	if (index < 0 || index >= int(entries.size()))
-		return;
-	selected = index;
-	controls->focus = "landscape/" + std::to_string(index);
-	reveal = true;
-}
-
-void LandscapePickerScreen::confirm()
-{
-	if (chosenSeed().has_value())
-		endExecute(selected);
-}
-
-void LandscapePickerScreen::onTimer(Uint32 tick)
-{
-	// A synchronous host must present the initial layout and leave time for input between
-	// attempts. Native generation runs independently and never needs polling here.
-	if (layoutReady && previewer.threadCount() == 0 && Sint32(tick - nextPreviewTick) >= 0 &&
-		!controls->popup.open)
-	{
-		previewer.poll(viewportSlots);
-		nextPreviewTick = SDL_GetTicks() + 100;
-	}
-	refresh();
+	invalidate();
 }
 
 void LandscapePickerScreen::refresh()
@@ -262,12 +214,11 @@ void LandscapePickerScreen::refresh()
 		const unsigned revision = previewer.revision(i);
 		if (revision == tile.revision)
 			continue;
+		invalidate();
 		tile.preview = previewer.preview(i);
 		tile.revision = tile.preview.revision;
 		if (tile.widget)
 			tile.widget->cancelDrag();
-		if (activePreview == int(i))
-			activePreview = -1;
 		// A random set of parameters the world refused (every seed failed) is drawn again while
 		// draws remain: the sheet should show maps, not failures, and the user asked for variety.
 		if (tile.preview.state == LandscapePreviewer::State::Failed && redraws[i] > 0)
@@ -283,10 +234,9 @@ void LandscapePickerScreen::refresh()
 		{
 			if (!tile.widget)
 			{
-				tile.widget = new MapPreview(0, 0, ALIGN_LEFT, ALIGN_TOP);
-				tile.widget->visible = false;
+				previews.push_back(std::make_unique<MapPreview>());
+				tile.widget = previews.back().get();
 				tile.widget->setAnimateChanges(false);
-				addWidget(tile.widget);
 			}
 			// MapPreview retains CPU pixels and creates surfaces only on a visible paint.
 			tile.widget->setMapThumbnail(tile.preview.thumbnail);
@@ -297,51 +247,109 @@ void LandscapePickerScreen::refresh()
 	}
 }
 
+LandscapePickerScreen::LandscapePickerScreen(const std::string &title, std::vector<Entry> entries, int selected, SortOrder sortOrder)
+	: title(title), entries(std::move(entries)), tiles(this->entries.size()), redraws(this->entries.size(), 0),
+	  filterCategories(categoriesOf(this->entries)), filters(filterCategories.size()),
+	  selected(std::clamp(selected, 0, std::max(0, int(this->entries.size()) - 1))), sortOrder(sortOrder),
+	  previewer(requestsOf(this->entries), 1, true)
+{
+	recomputeIncompatible();
+	rebuild();
+}
+
+LandscapePickerScreen::~LandscapePickerScreen() = default;
+
+void LandscapePickerScreen::select(int index)
+{
+	if (index < 0 || index >= int(entries.size()))
+		return;
+	selected = index;
+	reveal = true;
+	host().focus("landscape/" + std::to_string(index), false);
+	invalidate();
+}
+
+void LandscapePickerScreen::confirm()
+{
+	if (chosenSeed().has_value())
+		endExecute(selected);
+}
+
+void LandscapePickerScreen::onTimer(Uint32 tick)
+{
+	// A synchronous host must present the initial layout and leave time for input between
+	// attempts. Native generation runs independently and never needs polling here.
+	updatePreviewPriority();
+	if (layoutReady && previewer.threadCount() == 0 && Sint32(tick - nextPreviewTick) >= 0 && !host().popupOpen())
+	{
+		previewer.poll(viewportSlots);
+		nextPreviewTick = SDL_GetTicks() + 100;
+	}
+	refresh();
+	if (reveal && selected >= 0)
+	{
+		reveal = false;
+		host().scrollIntoView("landscape/" + std::to_string(selected));
+	}
+}
+
+// Cards nearest the viewport centre roll first; cards in view are the cooperative host's
+// eligible set. Card bounds come from the laid-out tree, so grids and single columns share it.
 void LandscapePickerScreen::updatePreviewPriority()
 {
-	const auto region = controls->regions.find(30);
-	if (region == controls->regions.end())
+	host().layoutIfNeeded();
+	auto *grid = host().find("landscape/grid");
+	if (!grid)
 		return;
-	const auto viewport = region->second.box;
+	const fe::Rect viewport = grid->bounds;
 	std::vector<std::pair<double, std::size_t>> distances;
 	viewportSlots.clear();
-	// Use rendered card bounds so the same scheduler follows grids and single-column layouts.
-	constexpr std::string_view prefix = "landscape/";
-	for (const auto &hit : controls->hits)
+	columns = 1;
+	int firstY = -1;
+	for (int i : visible)
 	{
-		if (hit.region != 30 || !hit.id.starts_with(prefix))
+		auto *card = host().find("landscape/" + std::to_string(i));
+		if (!card)
 			continue;
-		std::size_t index;
-		const char *end = hit.id.data() + hit.id.size();
-		const auto parsed = std::from_chars(hit.id.data() + prefix.size(), end, index);
-		if (parsed.ec != std::errc{} || parsed.ptr != end || index >= entries.size())
-			continue;
-		const double dx = hit.box.x + hit.box.w / 2.0 - viewport.x - viewport.w / 2.0;
-		const double dy = hit.box.y + hit.box.h / 2.0 - viewport.y - viewport.h / 2.0;
-		distances.emplace_back(dx * dx + dy * dy, index);
-		if (hit.box.y < viewport.y + viewport.h && hit.box.y + hit.box.h > viewport.y &&
-			hit.box.x < viewport.x + viewport.w && hit.box.x + hit.box.w > viewport.x)
-			viewportSlots.push_back(index);
+		const fe::Rect box = card->bounds;
+		if (firstY < 0)
+			firstY = box.y;
+		if (box.y == firstY)
+		{
+			int before = 0;
+			for (int j : visible)
+			{
+				auto *other = host().find("landscape/" + std::to_string(j));
+				if (other && other->bounds.y == firstY && other->bounds.x < box.x)
+					++before;
+			}
+			columns = std::max(columns, before + 1);
+		}
+		const double dx = box.x + box.w / 2.0 - viewport.x - viewport.w / 2.0;
+		const double dy = box.y + box.h / 2.0 - viewport.y - viewport.h / 2.0;
+		distances.emplace_back(dx * dx + dy * dy, std::size_t(i));
+		if (box.intersects(viewport))
+			viewportSlots.push_back(std::size_t(i));
 	}
-	std::stable_sort(distances.begin(), distances.end(),
-					 [](const auto &a, const auto &b) { return a.first < b.first; });
+	std::stable_sort(distances.begin(), distances.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
 	std::vector<std::size_t> order;
 	for (const auto &[distance, index] : distances)
 		order.push_back(index);
-	if (!layoutReady || region->second.offset != priorityOffset)
+	const int offset = grid->scrollOffset();
+	if (!layoutReady || offset != priorityOffset)
 		nextPreviewTick = SDL_GetTicks() + 100;
 	if (!layoutReady || order != priorityOrder)
 	{
 		priorityOrder = std::move(order);
 		previewer.prioritize(priorityOrder);
 	}
-	priorityOffset = region->second.offset;
+	priorityOffset = offset;
 	layoutReady = true;
 }
 
-void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
+void LandscapePickerScreen::onEvent(const SDL_Event &event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
 	case SDL_MOUSEMOTION:
 	case SDL_MOUSEWHEEL:
@@ -354,438 +362,257 @@ void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
 	default:
 		break;
 	}
-	if (event->type == SDL_WINDOWEVENT && (event->window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
-										   event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+	if (event.type == SDL_WINDOWEVENT && (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST || event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
 	{
 		layoutReady = false;
 		for (auto &tile : tiles)
 			if (tile.widget)
 				tile.widget->cancelDrag();
-		activePreview = -1;
 	}
-	if (event->type == SDL_MOUSEMOTION)
-	{
-		for (auto &tile : tiles)
-			if (tile.widget)
-				tile.widget->handlePreviewEvent(event);
-		if (activePreview >= 0)
-		{
-			if (!(event->motion.state & SDL_BUTTON_LMASK))
-				activePreview = -1;
-			return;
-		}
-	}
-	if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT &&
-		activePreview >= 0)
-	{
-		tiles[activePreview].widget->handlePreviewEvent(event);
-		activePreview = -1;
-		return;
-	}
-	if (!controls->popup.open && controls->pressed.empty())
-	{
-		const auto clip = controls->regions[30].box;
-		if (event->type == SDL_MOUSEBUTTONDOWN &&
-			(event->button.button == SDL_BUTTON_LEFT || event->button.button == SDL_BUTTON_RIGHT) &&
-			LobbyControls::inside(clip, event->button.x, event->button.y))
-		{
-			for (int i : visible)
-			{
-				auto &tile = tiles[i];
-				if (!tile.widget || tile.preview.state != LandscapePreviewer::State::Ready ||
-					!incompatible[i].empty())
-					continue;
-				const auto area = tile.widget->mapArea();
-				if (!LobbyControls::inside({area.x, area.y, area.w, area.h}, event->button.x,
-										   event->button.y))
-					continue;
-				// Image clicks select; labels and Use confirm. A drag must never launch a choice.
-				if (event->button.button == SDL_BUTTON_LEFT)
-				{
-					selected = int(i);
-					reveal = false;
-					controls->focus = "landscape/" + std::to_string(i);
-					activePreview = int(i);
-				}
-				tile.widget->handlePreviewEvent(event);
-				return;
-			}
-		}
-		// A preview's own scroll-to-zoom is switched off on this sheet (FEEDBACK 2026-09-17: it
-		// competed with scrolling the grid of landscapes itself, so scroll wheel here is always
-		// grid scrolling - never zoom, whether or not the pointer sits over a card's image).
-	}
-	if (event->type == SDL_KEYDOWN && !controls->popup.open)
-	{
-		const auto key = event->key.keysym.sym;
-		if (key == SDLK_ESCAPE)
-		{
-			endExecute(CANCEL);
-			return;
-		}
-		const int step = key == SDLK_LEFT    ? -1
-						 : key == SDLK_RIGHT ? 1
-						 : key == SDLK_UP    ? -columns
-						 : key == SDLK_DOWN  ? columns
-											 : 0;
-		if (step != 0 && !visible.empty())
-		{
-			// step is a position delta in the rendered grid (+-1 across, +-columns up/down), so
-			// it applies to `selected`'s position within the visible, sorted and filtered order,
-			// not to its identity in entries[].
-			const auto at = std::find(visible.begin(), visible.end(), selected);
-			const int pos = at == visible.end() ? 0 : int(at - visible.begin());
-			select(visible[std::clamp(pos + step, 0, int(visible.size()) - 1)]);
-			return;
-		}
-		// Return on a tile, or with nothing focused, confirms; on a button it presses that.
-		if (key == SDLK_RETURN &&
-			(controls->focus.empty() || controls->focus == "landscape/" + std::to_string(selected)))
-		{
-			confirm();
-			return;
-		}
-	}
-	controls->handle(event);
 }
 
-void LandscapePickerScreen::render()
+// Arrow keys move the selection through the visible grid while a card (or nothing) has focus.
+bool LandscapePickerScreen::interceptEvent(const SDL_Event &event)
 {
-	if (FrontendLayout::resolve(globalContainer->gfx).singleColumn())
+	if (event.type != SDL_KEYDOWN || host().popupOpen() || !host().editing().empty())
+		return false;
+	// Only a card or its preview image (or nothing) leaves the arrows to the grid.
+	const auto &focused = host().focused();
+	const bool onTile = focused.rfind("landscape/image/", 0) == 0 ||
+						(focused.rfind("landscape/", 0) == 0 && focused.size() > 10 && std::isdigit(static_cast<unsigned char>(focused[10])));
+	if (!focused.empty() && !onTile)
+		return false;
+	const auto key = event.key.keysym.sym;
+	const int step = key == SDLK_LEFT ? -1 : key == SDLK_RIGHT ? 1 : key == SDLK_UP ? -columns : key == SDLK_DOWN ? columns : 0;
+	if (step != 0 && !visible.empty())
 	{
-		renderPhone();
-		return;
+		const auto at = std::find(visible.begin(), visible.end(), selected);
+		const int pos = at == visible.end() ? 0 : int(at - visible.begin());
+		select(visible[std::size_t(std::clamp(pos + step, 0, int(visible.size()) - 1))]);
+		return true;
 	}
-	auto &ui = *controls;
-	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
-	const int width = int(safe.w), topInset = int(safe.y), height = int(safe.y + safe.h);
-	const int w = std::min(width - 32, 1120), x = int(safe.x) + (width - w) / 2;
-	const bool compact = width < 800;
-	ui.setScreenPosition(0, 0);
-	ui.setDimensions(gfx->getW(), gfx->getH());
-	ui.box({x - 8, topInset + 8, w + 16, int(safe.h) - 16}, Color(232, 237, 218), 8);
-	ui.text(x + 8, topInset + 20, title, compact ? "standard" : "menu", w - 16);
-	const int subtitleY = topInset + (compact ? 46 : 56);
-	const int barY = subtitleY + 6 +
-					 // Not tr(): this replaces an existing translated sentence with one describing
-					 // the new inline size/colony controls below, and there is no translation
-					 // key yet for the new wording (see the sort/filter labels above for the
-					 // same reasoning - catalog and UI-only text added this pass stays plain).
-					 ui.paragraph(x + 8, subtitleY, w - 16,
-								  "Each landscape is shown as a real map at the size and colony "
-								  "count below, which you can change here. Use one to play the "
-								  "map shown.");
+	if (key == SDLK_RETURN || key == SDLK_KP_ENTER)
+	{
+		confirm();
+		return true;
+	}
+	return false;
+}
+
+Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
+{
+	auto &entry = entries[std::size_t(i)];
+	auto &tileState = tiles[std::size_t(i)];
+	const bool enabled = incompatible[std::size_t(i)].empty();
+	const bool current = i == selected;
+	const int image = p.pt(compact ? 150 : 176);
+	Element picture;
+	std::string note;
+	if (!enabled)
+	{
+		// The reason lives in the preview square itself: there is no map to preview for a
+		// disabled landscape, so the square becomes the status message.
+		fe::CardOptions box;
+		box.color = theme().palette.disabled;
+		box.shadow = false;
+		box.padding = p.pt(12);
+		picture = fe::sized({image, image}, fe::card(fe::paragraph(incompatible[std::size_t(i)], {fe::FontRole::Support, true}), box));
+	}
+	else if (tileState.widget && tileState.widget->isThumbnailLoaded())
+	{
+		auto *widget = tileState.widget;
+		widget->markerSize = compact ? 12 : 14;
+		fe::CanvasOptions options;
+		options.pointer = [this, widget, i](fe::PointerPhase phase, fe::Point local, fe::Host &)
+		{
+			// Image presses select; drags pan the preview. A drag never launches a choice.
+			SDL_Event event{};
+			const fe::Point at{widget->getLeft() + local.x, widget->getTop() + local.y};
+			if (phase == fe::PointerPhase::Down)
+			{
+				if (i != selected)
+				{
+					selected = i;
+					reveal = false;
+					invalidate();
+				}
+				event.type = SDL_MOUSEBUTTONDOWN;
+				event.button.button = SDL_BUTTON_LEFT;
+				event.button.x = at.x;
+				event.button.y = at.y;
+			}
+			else if (phase == fe::PointerPhase::Move)
+			{
+				event.type = SDL_MOUSEMOTION;
+				event.motion.state = SDL_BUTTON_LMASK;
+				event.motion.x = at.x;
+				event.motion.y = at.y;
+			}
+			else if (phase == fe::PointerPhase::Up)
+			{
+				event.type = SDL_MOUSEBUTTONUP;
+				event.button.button = SDL_BUTTON_LEFT;
+				event.button.x = at.x;
+				event.button.y = at.y;
+			}
+			else
+			{
+				widget->cancelDrag();
+				return;
+			}
+			widget->handlePreviewEvent(&event);
+		};
+		picture = fe::canvas("landscape/image/" + std::to_string(i), {image, image},
+							 [widget](fe::Canvas &c, fe::Rect r, const fe::Frame &)
+							 {
+								 widget->setScreenRectangle(r.x, r.y, r.w, r.h);
+								 widget->paint(c.surface());
+							 },
+							 options);
+		note = std::to_string(widget->getLastWidth()) + " x " + std::to_string(widget->getLastHeight()) + "  /  " +
+			   std::to_string(widget->starts.size()) + " " + tr("colonies");
+	}
+	else
+	{
+		// Still rolling, or briefly Ready with no surface yet: never a blank square.
+		fe::CardOptions box;
+		box.color = theme().palette.placeholder;
+		box.shadow = false;
+		box.padding = 0;
+		picture = fe::sized({image, image}, fe::card(fe::empty(), box));
+		note = tileState.preview.state == LandscapePreviewer::State::Failed ? tr("Preview unavailable") : tr("Generating preview...");
+	}
+	if (tileState.preview.state == LandscapePreviewer::State::Ready && enabled)
+		note = std::to_string(tileState.preview.width) + " x " + std::to_string(tileState.preview.height) + "  /  " +
+			   std::to_string(tileState.preview.starts.size()) + " " + tr("colonies");
+	fe::ButtonOptions options;
+	options.selected = current;
+	options.enabled = enabled;
+	options.alignLeft = true;
+	options.minHeight = 1;
+	auto action = [this, i]
+	{
+		if (i == selected)
+			confirm();
+		else
+			select(i);
+	};
+	auto content = fe::padding(fe::Insets::all(p.pt(8)), fe::column({fe::center(picture), fe::label(entry.name), fe::caption(note)}, {p.pt(4)}));
+	options.accessibleLabel = entry.name;
+	return fe::stack({fe::button("landscape/" + std::to_string(i), "", action, options), content});
+}
+
+Element LandscapePickerScreen::build(const Presentation &p)
+{
+	const bool compact = p.compact() || p.safe.w < p.pt(800);
+	std::vector<Element> header;
+	header.push_back(fe::paragraph("Each landscape is shown as a real map at the size and colony count below, which you can change here. "
+								   "Use one to play the map shown.",
+								   {fe::FontRole::Support}));
 	// Sort order and tag filters, browsed like a catalog: a category narrows the list to entries
 	// carrying its chosen value (AND across categories; "Any" leaves a category unfiltered).
-	// These are plain catalog labels, not translated (the tags themselves are not localized
-	// strings), unlike the rest of this screen's chrome.
-	const int barH = FrontendLayout::resolve(globalContainer->gfx).touch ? 48 : 28;
-	int barX = x + 8;
-	const int sortW = compact ? 130 : 160;
-	{
-		static const std::vector<std::string> options = {"Random", "Alphabetical"};
-		ui.segments("landscape/sort", {barX, barY, sortW, barH}, options, int(sortOrder),
-					[this](int value)
-					{
-						sortOrder = SortOrder(value);
-						rebuild();
-					});
-		barX += sortW + 8;
-	}
-	const int filterCount = int(filterCategories.size());
-	const int remaining = std::max(0, x + w - 8 - barX);
-	const int filterW = filterCount > 0 ? std::max(84, remaining / filterCount) : 0;
-	for (int c = 0; c < filterCount; ++c)
+	std::vector<Element> bar;
+	bar.push_back(fe::segments("landscape/sort", {"Random", "Alphabetical"}, int(sortOrder),
+							   [this](int value)
+							   {
+								   sortOrder = SortOrder(value);
+								   rebuild();
+							   }));
+	for (int c = 0; c < int(filterCategories.size()); ++c)
 	{
 		// Faceted like a shopping catalog: an option is only offered if it leaves at least one
-		// result once the OTHER active filters are applied too, so picking any shown option can
-		// never empty the sheet (FEEDBACK 2026-09-17). The count after each label is how many
-		// landscapes that choice would leave, "Any" showing how many the other filters alone
-		// allow; the currently chosen value stays listed (at 0) even on the rare frame it would
-		// otherwise have dropped out, so the dropdown never silently loses the person's choice.
+		// result once the OTHER active filters are applied too.
 		int pool = 0;
 		std::map<std::string, int> counts;
-		const std::string prefix = filterCategories[c] + ":";
+		const std::string prefix = filterCategories[std::size_t(c)] + ":";
 		for (int i = 0; i < int(entries.size()); ++i)
 			if (matchesFilters(i, c))
 			{
 				++pool;
-				for (const auto &tag : entries[i].tags)
+				for (const auto &tag : entries[std::size_t(i)].tags)
 					if (tag.compare(0, prefix.size(), prefix) == 0)
 						++counts[tag.substr(prefix.size())];
 			}
-		if (!filters[c].empty())
-			counts.try_emplace(filters[c], 0);
+		if (!filters[std::size_t(c)].empty())
+			counts.try_emplace(filters[std::size_t(c)], 0);
 		std::vector<std::string> values;
-		std::vector<std::string> options{"Any " + tagLabel(filterCategories[c]) + " (" +
-										 std::to_string(pool) + ")"};
+		std::vector<std::string> options{"Any " + tagLabel(filterCategories[std::size_t(c)]) + " (" + std::to_string(pool) + ")"};
 		for (const auto &[value, count] : counts)
 		{
 			values.push_back(value);
 			options.push_back(tagLabel(value) + " (" + std::to_string(count) + ")");
 		}
-		const auto match = std::find(values.begin(), values.end(), filters[c]);
-		const int current =
-			filters[c].empty() || match == values.end() ? 0 : int(match - values.begin()) + 1;
-		ui.dropdown("landscape/filter/" + std::to_string(c), {barX, barY, filterW - 8, barH},
-					options, current,
-					[this, c, values](int index)
-					{
-						filters[c] = index <= 0 ? std::string() : values[std::size_t(index - 1)];
-						rebuild();
-					});
-		barX += filterW;
+		const auto match = std::find(values.begin(), values.end(), filters[std::size_t(c)]);
+		const int current = filters[std::size_t(c)].empty() || match == values.end() ? 0 : int(match - values.begin()) + 1;
+		bar.push_back(fe::choice("landscape/filter/" + std::to_string(c), options, current,
+								 [this, c, values](int index)
+								 {
+									 filters[std::size_t(c)] = index <= 0 ? std::string() : values[std::size_t(index - 1)];
+									 rebuild();
+								 }));
 	}
-	// Map size and colony count, editable right here rather than only inherited from the lobby
-	// behind this sheet (FEEDBACK 2026-09-17: "so that i can instantly see how it impacts all of
-	// the various available maps" - changing either reforms every entry's request and rerolls
-	// every visible preview at once via setShared(), so the whole grid updates together for fast
-	// comparison, the same immediacy "Regenerate all" already has). sharedWDec/HDec/Teams read
-	// back the sheet's current values (uniform across entries[]) so a caller can keep its own
-	// lobby setup showing the same size and count, in both directions, once this sheet closes.
-	const int sizeY = barY + barH + 8;
-	int sizeX = x + 8;
+	// Map size and colony count, editable right here: changing either reforms every entry's
+	// request and rerolls every visible preview at once, so the whole grid updates together.
 	for (const auto &id : {"width", "height", "teams"})
 	{
-		const auto found = std::find_if(GenerationRequest::sharedControls().begin(),
-										GenerationRequest::sharedControls().end(),
+		const auto found = std::find_if(GenerationRequest::sharedControls().begin(), GenerationRequest::sharedControls().end(),
 										[&](const GeneratorControl &c) { return c.id == id; });
 		const auto &control = *found;
-		const int labelW = compact ? 60 : 80, fieldW = compact ? 90 : 110;
-		ui.text(sizeX, sizeY + 7, tr(control.label), "little", labelW, true);
 		std::vector<std::string> options;
 		for (int v : control.values())
 			options.push_back(std::to_string(control.displayValue(v)));
-		ui.dropdown("landscape/" + std::string(id), {sizeX + labelW, sizeY, fieldW, barH}, options,
-					control.indexOf(control.get(entries.front().request)),
-					[this, control](int index) { setShared(control, control.valueAt(index)); });
-		sizeX += labelW + fieldW + 14;
+		bar.push_back(fe::row({fe::caption(tr(control.label)),
+							   fe::expanded(fe::choice("landscape/" + std::string(id), options, control.indexOf(control.get(entries.front().request)),
+													   [this, control](int index) { setShared(control, control.valueAt(index)); }))},
+							  {p.pt(4), fe::CrossAlign::Center}));
 	}
-	const int top = sizeY + barH + 10;
-	const int bottom = height - 66;
-	const int gap = 12, scrollbar = 12;
-	// Card size is fixed by the sheet's own width, never by how many results a filter leaves: a
-	// single match sits at its normal size in an otherwise-empty grid rather than stretching to
-	// fill the row (FEEDBACK 2026-09-17, seen with the tag filters narrowed to one landscape).
-	const int tileMin = compact ? 176 : 200;
-	columns = std::max(1, (w - scrollbar + gap) / (tileMin + gap));
-	const int tileW = (w - scrollbar - gap * (columns - 1)) / columns;
-	const int image = tileW - 16;
-	const int nameH = Toolkit::getFont("standard")->getStringHeight("Ag");
-	const int noteH = Toolkit::getFont("little")->getStringHeight("Ag");
-	const int tileH = 8 + image + 8 + nameH + 4 + noteH + 8;
-	const int stride = tileH + gap;
-	const int rows = (int(visible.size()) + columns - 1) / columns;
-	auto &region = ui.regions[30];
-	if (reveal && selected >= 0)
-	{
-		// Keep the selection in view, for keyboard moves and the initial choice.
-		const auto at = std::find(visible.begin(), visible.end(), selected);
-		const int pos = at == visible.end() ? 0 : int(at - visible.begin());
-		const int ty = (pos / columns) * stride, viewH = bottom - top;
-		region.maximum = std::max(0, rows * stride - gap + 4 - viewH);
-		if (ty < region.offset)
-			region.offset = ty;
-		else if (ty + tileH > region.offset + viewH)
-			region.offset = ty + tileH - viewH;
-		region.offset = std::clamp(region.offset, 0, region.maximum);
-		reveal = false;
-	}
-	ui.beginRegion(30, {x, top, w, bottom - top});
-	const int offset = region.offset;
-	for (std::size_t vi = 0; vi < visible.size(); ++vi)
-	{
-		const int i = visible[vi];
-		const int column = int(vi) % columns, row = int(vi) / columns;
-		const SDL_Rect r{x + column * (tileW + gap), top + row * stride - offset, tileW, tileH};
-		const bool current = i == selected;
-		const bool enabled = incompatible[i].empty();
-		const auto action = [this, i]
-		{
-			if (i == selected)
-				confirm();
-			else
-				select(i);
-		};
-		const SDL_Rect frame{r.x + 8, r.y + 8, image, image};
-		auto &tile = tiles[i];
-		// Update retained widget bounds even off-screen so old hit areas cannot intercept input.
-		if (tile.widget)
-			tile.widget->setScreenPosition(frame.x, frame.y);
-		if (r.y >= bottom || r.y + r.h <= top)
-		{
-			// Keep navigation/hit metadata, but skip text layout, surfaces and draw calls.
-			ui.hits.push_back(
-				{"landscape/" + std::to_string(i), r, ui.clip(), action, enabled, 30});
-			continue;
-		}
-		ui.button("landscape/" + std::to_string(i), r, "", action, current, enabled);
-		std::string note;
-		if (!enabled)
-		{
-			// The reason lives in the preview square itself, not a small caption under the name
-			// (FEEDBACK 2026-09-17: "instead of making the error message so small and underneath
-			// map name, can we move it into the main square block", "because otherwise its
-			// getting cutoff and ellipsed") - there is no map to preview for a disabled landscape
-			// anyway, so the square becomes the status message: paragraph() wraps onto as many
-			// lines as it needs rather than truncating with an ellipsis the way the old one-line
-			// caption did, and starting near the square's top rather than centring vertically
-			// gives it the square's full height to wrap into for a long reason, not just a third
-			// of it. Same muted fill a disabled control elsewhere on this screen already uses.
-			ui.box(frame, Color(222, 226, 212), 3);
-			const int pad = 12;
-			ui.paragraph(frame.x + pad, frame.y + pad, frame.w - 2 * pad, incompatible[i], "little",
-						 true);
-		}
-		else if (tile.widget && tile.widget->isThumbnailLoaded())
-		{
-			tile.widget->setScreenPosition(frame.x, frame.y);
-			tile.widget->setDimensions(frame.w, frame.h);
-			tile.widget->markerSize = compact ? 12 : 14;
-			if (frame.y < bottom && frame.y + frame.h > top)
-				tile.widget->paint();
-			note = std::to_string(tile.widget->getLastWidth()) + " x " +
-				   std::to_string(tile.widget->getLastHeight()) + "  /  " +
-				   std::to_string(tile.widget->starts.size()) + " " + tr("colonies");
-		}
-		else
-		{
-			// An enabled tile with no thumbnail yet is either still rolling (Pending/Generating -
-			// normal right after opening the sheet or after setShared() rerolls every card at
-			// once) or, briefly, Ready with its texture not yet uploaded. Either way this box must
-			// never sit blank with no text at all: a screenshot taken mid-roll (FEEDBACK
-			// 2026-09-17, a few cards showing name-less, reason-less empty squares right after
-			// setting an unusual size/colony count) previously had nothing to show while waiting,
-			// which reads as broken rather than as "still working."
-			const auto &request = entries[i].request;
-			const auto area = MapPreviewGeometry::fit({frame.x, frame.y, frame.w, frame.h},
-													  1 << request.wDec, 1 << request.hDec);
-			ui.box({area.x, area.y, area.w, area.h}, Color(211, 223, 197), 3);
-			note = tile.preview.state == LandscapePreviewer::State::Failed
-					   ? tr("Preview unavailable")
-					   : tr("Generating preview...");
-		}
-		if (tile.preview.state == LandscapePreviewer::State::Ready && enabled)
-			note = std::to_string(tile.preview.width) + " x " +
-				   std::to_string(tile.preview.height) + "  /  " +
-				   std::to_string(tile.preview.starts.size()) + " " + tr("colonies");
-		ui.text(r.x + 8, r.y + 8 + image + 8, entries[i].name, "standard", tileW - 16);
-		ui.text(r.x + 8, r.y + 8 + image + 8 + nameH + 4, note, "little", tileW - 16, true);
-	}
-	ui.endRegion(rows * stride - gap + 4);
-	// A label the standard font cannot fit in its button on a compact screen takes the small one
-	// rather than being cut off.
-	const auto fitting = [](const std::string &label, int width)
-	{
-		return Toolkit::getFont("standard")->getStringWidth(label) + 16 <= width ? "standard"
-																				 : "little";
-	};
-	// The row: Back; Regenerate all; beside it Randomize parameters, the same sheet with every
-	// landscape's parameters drawn at random (the size and colony count stay), for an even wider
-	// spread of maps to pick from; Reset to defaults, the way back; and Use, taking what is left.
-	int bx = x;
-	const auto place = [&](const std::string &id, int width, const std::string &label,
-						   std::function<void()> action)
-	{
-		ui.button(
-			id,
-			{bx, height - 55, width, FrontendLayout::resolve(globalContainer->gfx).touch ? 48 : 34},
-			label, std::move(action), false, true, false, fitting(label, width));
-		bx += width + 10;
-	};
-	place("landscape/back", compact ? 80 : 100, tr("Back"), [this] { endExecute(CANCEL); });
-	place("landscape/regenerate", compact ? 110 : 170, tr("Regenerate all"),
-		  [this] { previewer.regenerate(); });
-	place("landscape/randomize", compact ? 130 : 190, tr("Randomize parameters"),
-		  [this] { randomizeParameters(); });
-	place("landscape/reset", compact ? 110 : 150, tr("Reset to defaults"),
-		  [this] { resetParameters(); });
-	const int useX = bx;
+	header.push_back(fe::wrap(std::move(bar), {p.pt(6), p.pt(140)}));
+	std::vector<Element> cards;
+	for (int i : visible)
+		cards.push_back(tile(i, p, compact));
+	fe::WrapOptions grid;
+	grid.minChildWidth = p.pt(compact ? 150 : 200);
+	grid.gap = p.pt(12);
+	// Narrow screens scroll the controls away with the grid instead of squeezing it.
+	Element gridElement = compact ? fe::scroll("landscape/grid", fe::column({fe::column(std::move(header), {p.pt(8)}), fe::wrap(std::move(cards), grid)}, {p.pt(10)}))
+								  : fe::scroll("landscape/grid", fe::wrap(std::move(cards), grid));
+	if (compact)
+		header.clear();
 	const bool valid = selected >= 0 && selected < int(entries.size());
-	ui.button(
-		"landscape/use",
-		{useX, height - 55, x + w - useX,
-		 FrontendLayout::resolve(globalContainer->gfx).touch ? 48 : 34},
-		tr("Use") + (valid ? " " + entries[selected].name : ""), [this] { confirm(); }, true,
-		valid && chosenSeed().has_value());
-}
-
-bool LandscapePickerScreen::usesResponsiveViewport() const {return GAGCore::phonePresentationRequested();}
-void LandscapePickerScreen::cancelExecutionInput() {controls->cancelTouch();}
-void LandscapePickerScreen::renderPhone()
-{
-	auto &ui = *controls;
-	const auto safe = FrontendLayout::resolve(globalContainer->gfx).safe;
-	const int x = int(safe.x) + 12, w = int(safe.w) - 24;
-	const int top = int(safe.y), bottom = int(safe.y + safe.h);
-	ui.setDimensions(gfx->getW(), gfx->getH());
-	ui.box({int(safe.x) + 4, top + 4, int(safe.w) - 8, int(safe.h) - 8}, Color(232, 237, 218));
-	ui.text(x, top + 12, title, "standard", w - 116);
-	ui.button("landscape/settings", {x + w - 112, top + 8, 112, 48},
-			  tr(settingsOpen ? "Done" : "Settings"),
-			  [this]
-			  {
-				  settingsOpen = !settingsOpen;
-				  controls->regions[30].offset = 0;
-			  });
-	ui.beginRegion(30, {x, top + 64, w, std::max(0, int(safe.h) - 128)});
-	int y = top + 64 - ui.regions[30].offset, start = y;
-	if (settingsOpen)
+	const std::string useLabel = tr("Use") + (valid && !compact ? " " + entries[std::size_t(selected)].name : "");
+	Element actionRow;
+	if (compact)
 	{
-		ui.dropdown("landscape/sort", {x, y, w - 12, 48}, {"Random", "Alphabetical"},
-					int(sortOrder),
-					[this](int v)
-					{
-						sortOrder = SortOrder(v);
-						rebuild();
-					});
-		y += 56;
-		for (const auto &control : GenerationRequest::sharedControls())
-			if (control.id == "width" || control.id == "height" || control.id == "teams")
-			{
-				ui.text(x, y, tr(control.label), "standard", w - 12);
-				y += 28;
-				std::vector<std::string> options;
-				for (int v : control.values())
-					options.push_back(std::to_string(control.displayValue(v)));
-				ui.dropdown("landscape/" + control.id, {x, y, w - 12, 48}, options,
-							control.indexOf(control.get(entries.front().request)),
-							[this, control](int v) { setShared(control, control.valueAt(v)); });
-				y += 60;
-			}
-		ui.button("randomize", {x, y, w - 12, 48}, tr("Randomize"),
-				  [this] { randomizeParameters(); });
-		y += 56;
-		ui.button("reset", {x, y, w - 12, 48}, tr("Reset"), [this] { resetParameters(); });
-		y += 64;
+		// Narrow screens keep Back and Use reachable and fold the sheet-wide actions into a menu.
+		fe::ChoiceOptions more;
+		more.compactLabel = tr("More");
+		auto menu = fe::choice("landscape/more", {tr("Regenerate all"), tr("Randomize parameters"), tr("Reset to defaults")}, -1,
+							   [this](int index)
+							   {
+								   if (index == 0)
+									   previewer.regenerate();
+								   else if (index == 1)
+									   randomizeParameters();
+								   else
+									   resetParameters();
+							   },
+							   more);
+		actionRow = fe::row({fe::button("landscape/back", tr("Back"), [this] { endExecute(CANCEL); }, {false, false, true, false, false, false, SDLK_ESCAPE}),
+							 fe::expanded(menu),
+							 fe::expanded(fe::button("landscape/use", useLabel, [this] { confirm(); }, {true, false, valid && chosenSeed().has_value()}))},
+							{p.pt(6), fe::CrossAlign::Stretch});
 	}
 	else
-		for (int i : visible)
-		{
-			const bool enabled = incompatible[i].empty();
-			auto &tile = tiles[i];
-			const int image = std::min(w - 28, 160);
-			ui.button(
-				"landscape/" + std::to_string(i), {x, y, w - 12, image + 56}, "",
-				[this, i] { select(i); }, i == selected, enabled);
-			if (tile.widget && tile.widget->isThumbnailLoaded() && enabled)
-			{
-				tile.widget->setScreenPosition(x + (w - 12 - image) / 2, y + 8);
-				tile.widget->setDimensions(image, image);
-				if (y + image + 8 > top + 64 && y < bottom - 64)
-					tile.widget->paint();
-			}
-			else
-				ui.paragraph(x + 12, y + 16, w - 40,
-							 enabled ? tr("Generating...") : incompatible[i], "standard");
-			ui.text(x + 12, y + image + 20, entries[i].name, "standard", w - 40);
-			y += image + 64;
-		}
-	ui.endRegion(y - start);
-	gfx->setClipRect();
-	ui.button("cancel", {x, bottom - 56, 88, 48}, tr("Back"), [this] { endExecute(CANCEL); });
-	ui.button("confirm", {x + 96, bottom - 56, w - 96, 48}, tr("Use this landscape"),
-			  [this] { confirm(); }, true, selected >= 0 && incompatible[selected].empty());
+		actionRow = fe::actions({{"landscape/back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE},
+								 {"landscape/regenerate", tr("Regenerate all"), [this] { previewer.regenerate(); }},
+								 {"landscape/randomize", tr("Randomize parameters"), [this] { randomizeParameters(); }},
+								 {"landscape/reset", tr("Reset to defaults"), [this] { resetParameters(); }},
+								 {"landscape/use", useLabel, [this] { confirm(); }, true, SDLK_UNKNOWN, valid && chosenSeed().has_value()}},
+								p);
+	auto body = compact ? fe::column({fe::expanded(gridElement)}) : fe::column({fe::column(std::move(header), {p.pt(8)}), fe::expanded(gridElement)}, {p.pt(10)});
+	fe::CardOptions cardOptions;
+	cardOptions.padding = p.pt(compact ? 10 : 16);
+	return fe::center(fe::maxWidth(p.pt(1120), fe::card(fe::column({fe::heading(title), fe::expanded(body), fe::divider(), actionRow}, {p.pt(8)}), cardOptions)));
 }
 
 // Completion and visual settling are separate: a delivered thumbnail may still
@@ -795,17 +622,12 @@ bool LandscapePickerScreen::presentationSettled() const
 	if (busy())
 		return false;
 	for (int i : visible)
-		if (incompatible[i].empty() && tiles[i].widget)
+		if (incompatible[std::size_t(i)].empty() && tiles[std::size_t(i)].widget)
 		{
-			auto *widget = tiles[i].widget;
-			const auto bounds = widget->getScreenRect();
-			const auto region = controls->regions.find(30);
-			if (region != controls->regions.end())
-			{
-				const auto clip = region->second.box;
-				if (bounds.y + bounds.h <= clip.y || bounds.y >= clip.y + clip.h)
-					continue;
-			}
+			auto *widget = tiles[std::size_t(i)].widget;
+			const bool shown = std::find(viewportSlots.begin(), viewportSlots.end(), std::size_t(i)) != viewportSlots.end();
+			if (!shown)
+				continue;
 			if (widget->getState() != MapPreview::State::Failed && !widget->isPresentationSettled())
 				return false;
 		}

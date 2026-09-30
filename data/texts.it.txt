@@ -3450,3 +3450,9 @@ Ok: %0
 Dimensione testo dei dialoghi: %0%
 [%0 %1]
 %0 %1
+[resume game]
+Riprendi la partita
+[games]
+Partite
+[Add AI]
+Aggiungi IA

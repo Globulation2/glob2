@@ -3,7 +3,6 @@
 
 #include "GameGUIMessageManager.h"
 #include "GlobalContainer.h"
-#include "GUIList.h"
 #include "SDLCompat.h"
 
 InGameMessage::InGameMessage(const std::string& text, const GAGCore::Color& color, int time)
@@ -89,40 +88,40 @@ void GameGUIMessageManager::drawAllChatMessages(int x, int y)
 
 InGameScrollableHistory* GameGUIMessageManager::createScrollableHistoryScreen()
 {
-	return new InGameScrollableHistory(globalContainer->gfx, historyChat);
+	return new InGameScrollableHistory(historyChat);
 }
 
-
-InGameScrollableHistory::InGameScrollableHistory(GraphicContext *context, const std::list<InGameMessage>& messageHistory)
-: OverlayScreen(context, (globalContainer->gfx->getW()-172), 100), history(messageHistory)
+InGameScrollableHistory::InGameScrollableHistory(const std::list<InGameMessage>& messageHistory)
+	: history(messageHistory), lastSize(messageHistory.size())
 {
-	messageList=new List(0, 0, (globalContainer->gfx->getW()-172), 100, 0, 0, "standard");
-	addWidget(messageList);
-	updateList();
-	dispatchInit();
 }
 
-
-
-void InGameScrollableHistory::onAction(Widget *source, Action action, int par1, int par2)
+void InGameScrollableHistory::onUpdate(Uint32)
 {
-
-}
-
-
-void InGameScrollableHistory::onTimer(Uint32 tick)
-{
-	if(lastSize != history.size())
-		updateList();
-}
-
-
-void InGameScrollableHistory::updateList()
-{
-	messageList->clear();
-	for(std::list<InGameMessage>::const_iterator i = history.begin(); i!=history.end(); ++i)
+	if (lastSize != history.size())
 	{
-		messageList->addText(i->getText());
+		lastSize = history.size();
+		invalidate();
 	}
-	lastSize = history.size();
+}
+
+GAGGUI::ui::Rect InGameScrollableHistory::place(GAGGUI::ui::Size measured, GAGGUI::ui::Rect area)
+{
+	const int h = std::min(area.h, measured.h);
+	return {area.x, area.bottom() - h, area.w, h};
+}
+
+Glob2UI::Element InGameScrollableHistory::build(const Glob2UI::Presentation &p)
+{
+	std::string log;
+	for (const auto &message : history)
+		log += message.getText() + "\n";
+	Glob2UI::TextEditorOptions options;
+	options.readOnly = true;
+	options.lines = 6;
+	options.scrollToEnd = true;
+	return Glob2UI::column({Glob2UI::label(Glob2UI::tr("[Message history]"), {Glob2UI::FontRole::Support, true}),
+							Glob2UI::textEditor("history", log, {}, options),
+							dialogActions({{"ok", Glob2UI::tr("[ok]"), [this] { finish(0); }, true, SDLK_ESCAPE}}, p)},
+						   {p.pt(6)});
 }

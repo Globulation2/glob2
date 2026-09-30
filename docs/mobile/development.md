@@ -6,9 +6,10 @@ use host libraries or install into the desktop application's directories.
 
 The phone presentation shares simulation, game orders, settings persistence and
 lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
-`GameGUITouch` owns gameplay gestures and phone panels, while `PhoneForm` adapts
-legacy widget forms. Composed settings and lobby screens supply their own phone
-layouts. Automatic presentation uses available logical space and touch capability
+`GameGUITouch` owns gameplay gestures and phone panels. Menus and dialogs are
+element trees on the declarative UI framework (see the
+[UI framework guide](../development/ui-framework.md)), which adapts one build
+path per screen to phones, tablets and desktops. Automatic presentation uses available logical space and touch capability
 on every host. Settings offers Automatic, Compact and Spacious. Spacious requires
 480 points of map width beside the panel and 480 points of usable height;
 the panel is 288 points for touch and the existing 160 points for mouse controls.
@@ -55,16 +56,17 @@ the same action boxes.
 
 Interactive content uses the host safe rectangle, including Android system bars
 and display cutouts and iOS safe-area insets. Backgrounds may extend edge to edge.
-Use `mobileDialogSafe` (or `FrontendLayout::safe`) for frontend surfaces, fixed
-footers, scroll viewports and dropdown bounds; full window dimensions are only
-appropriate for backgrounds and pointer-coordinate conversion. Gameplay reserves
+The framework's `Presentation::safe` and `Presentation::dialog` rectangles,
+resolved from `mobileDialogSafe`, bound menus, footers, scroll viewports and
+popups; full window dimensions are only appropriate for backgrounds and
+pointer-coordinate conversion. Gameplay reserves
 system insets separately from keyboard occlusion so the camera stays stable.
 
 Insets can change without a window resize. The screen stack refreshes host metrics,
-cancels held input and invalidates layout when this happens. The native presentation
+cancels held input and invalidates layout when this happens. The UI presentation
 harness injects host-point gutters through `mobileSafeInsetsForTesting` and checks
-real selector, lobby, quality, shared menu/form and dropdown bounds with bottom and side navigation
-areas on phones and tablets. Keep this override unset outside tests. Device checks
+every screen and dialog fixture against them on phones, tablets and desktops.
+Keep this override unset outside tests. Device checks
 must also cover Android gesture/three-button navigation and rotation.
 
 ### Gameplay responsibilities and action flow
@@ -95,10 +97,10 @@ must also cover Android gesture/three-button navigation and rotation.
   and replay selections are read-only. Specialized controls share the same panel.
   Worker-slider drags own a local allocation session and emit one command on release;
   a second contact, selection change, focus loss or rotation cancels the preview.
-- `GameGUITouchDialogs.cpp` explicitly composes menu, objectives, alliances, chat
-  and outcome views. The remaining compatibility adapter is limited to unmigrated
-  Options, Save/Load, and message history. File operations keep their existing
-  persistence and error/retry state machines.
+- In-game dialogs (`GameGUIDialog.cpp`, `LoadSaveDialog.cpp` and the message
+  history) are framework dialogs hosted by `GameGUI` on every presentation;
+  touch and desktop render the same tree in the in-match theme. File operations
+  keep their existing persistence and error/retry state machines.
 - `EndGameScreen` owns a chart, metric dropdown, team filters, expansion and replay
   export on both desktop and touch. `EndGameStat` retains history interpretation,
   including explanations for missing measurement coverage. Compact layouts put metric
@@ -143,25 +145,22 @@ These gestures do not change map serialization or construction rules. New input
 patterns should feed the same placement/brush operations and explicitly define
 pointer ownership and cancellation.
 
-Script, briefing and hints use a shared multiline `EditorTouch::TextCanvas`
-with a separate IME composition buffer. When the keyboard leaves little vertical
-space, a compact section/Hide keyboard bar gives the remaining space to the
-canvas; dismissal restores the tabs and commands without losing the draft.
-`ScriptEditorScreen` composes tabs, text
-canvas and command bars; `TeamsEditor` composes parallel rows and real color
-swatches. `MapEditMenuScreen` composes a bounded session menu. These views do not
-scrape desktop widget positions. `EditorFileView` renders bounded file lists and filename editing from the
-`LoadSaveScreen::FilePresentation` model, including busy, retry and export states.
-The same view handles child script-file dialogs; persistence stays in
-`LoadSaveScreen`. Area naming uses `AskForTextInput`’s bounded touch view and native
-UTF-8 input. IME preedit is displayed separately; only explicit confirmation commits
-the draft, and cancellation retains the original name. These editor workflows no
-longer use `PhoneForm`; desktop editor composition remains available independently.
+Script, briefing and hints use the framework text editor with a separate IME
+composition buffer; when the keyboard leaves little vertical space the action
+row folds into the scrolling body without losing the draft. `ScriptEditorScreen`
+composes tabs, editor and command bars; `TeamsEditor` composes rows and real
+color swatches; `MapEditMenuScreen` is a bounded session menu. Save and load use
+`LoadSaveDialog`, which renders the `FilePresentation` model including busy,
+retry and export states and also serves child script-file dialogs. Area naming
+uses `AskForTextInput` with native UTF-8 input. IME preedit is displayed
+separately; only explicit confirmation commits the draft, and cancellation
+retains the original name. `MapEdit` hosts these dialogs on desktop and touch
+alike.
 
 `NewMapScreen` presents Blank/Generated choices and shares the production
 landscape browser with Custom Game. A chosen landscape retains its explicit seed
-and generation parameters. Campaign views and map loading own preview/details
-bounds; `Glob2Screen` fits the shared frontend surface to visible content.
+and generation parameters. Campaign views and map loading lay out preview and
+details through the framework.
 Campaign descriptions own touch cursor placement, swipe scrolling and provisional
 IME text. Campaign lists distinguish completed taps from scrolls. Narrow script
 entry navigation uses large Previous/entry/Next controls with stable script IDs;
@@ -255,6 +254,109 @@ Release packaging restores gzip assets that AAPT expands and renames, then align
 the APK before signing so compressed maps retain their indexed paths.
 Native startup failures are also written to Android logcat under `SDL/APP`.
 
+### Google Play internal testing
+
+The Play app ID is `org.globulation2.glob2`. The Play upload is a release Android
+App Bundle. Install Android SDK platform 36
+alongside the pinned NDK and build tools. The existing APK commands above remain
+useful for direct device testing. To build the bundle:
+
+```sh
+python3 mobile/android.py bundle --arch arm64-v8a --release --version-code 1
+```
+
+Each subsequent Play upload needs a higher `--version-code`. The bundle command
+restores gzip assets that Android packaging expands, verifies the complete game
+asset index, and checks the packaged native build ID against retained symbols.
+The unsigned bundle is written to
+`build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab`.
+Keep a private upload keystore outside the repository and back it up securely.
+Create the key with Android Studio's **Generate Signed Bundle/APK** flow or
+`keytool`. Set `GLOB2_PLAY_STORE_PASSWORD` and `GLOB2_PLAY_KEY_PASSWORD` in the
+environment using your password manager, then sign the verified bundle:
+
+```sh
+python3 mobile/android.py sign-bundle --arch arm64-v8a --release \
+  --keystore /path/to/private-upload.keystore --key-alias YOUR_ALIAS
+```
+
+Upload `app-release-play.aab` from the same directory to Play Console's **Internal
+testing** track. The development APK key must not be used as the Play upload key.
+Before uploading, use bundletool to generate and install APKs from the bundle,
+verify its `PAGE_ALIGNMENT_16K` setting, and check startup, gameplay, rotation,
+background/resume and save/load on a real device. Keep the generated `.apks`,
+screenshots, logs and replay checksums under `artifacts/`.
+
+### Automated Google Play internal releases
+
+`.github/workflows/android-play-internal.yml` is public for review, but its
+release job runs only from the owner's private `genixpro/glob2-release` mirror
+on `master`. The mirror is a separate private repository: GitHub does not permit
+a private fork of a public repository. Copy reviewed upstream commits into the
+mirror when ready, then manually dispatch its workflow. It installs the pinned
+Android toolchain and dependencies, assigns a
+time-based Play version code, builds and verifies the arm64 release bundle,
+signs it with the existing Play upload key, and uses the Google Play Developer
+API to validate and commit a release on the **internal** track. It does not
+change production or the selected internal tester list. The workflow is
+serialized so two runs cannot update the track concurrently. A rerun gets a
+new version code; Play rejects a code lower than a previously uploaded one.
+
+One-time account setup is required before the first workflow run:
+
+1. In a Google Cloud project, enable the **Google Play Android Developer API**.
+   Create a service account dedicated to Globulation 2 internal releases.
+2. Configure [GitHub Workload Identity Federation](https://github.com/google-github-actions/auth#workload-identity-federation-through-a-service-account)
+   for that service account. Restrict the provider to the **private mirror's**
+   numeric repository ID, `refs/heads/master`, and
+   `genixpro/glob2-release/.github/workflows/android-play-internal.yml`.
+   Grant only that repository identity `roles/iam.workloadIdentityUser` on the
+   service account. Do not create a Google service account key for this workflow.
+3. In Play Console **Users and permissions**, invite the service account's email
+   address and grant app-level **View app information (read-only)** and
+   **Release apps to testing tracks** for `org.globulation2.glob2` only. Do not
+   grant production release or account-wide permissions.
+4. In the **private mirror only**, create a GitHub Actions environment named
+   `google-play-internal` and restrict deployment to `master`. Add environment variables
+   `GLOB2_PLAY_WIF_PROVIDER` (the full provider resource name, with numeric
+   project number) and `GLOB2_PLAY_SERVICE_ACCOUNT` (the service account email).
+   Add three environment secrets:
+
+   | Secret | Value |
+   | --- | --- |
+   | `GLOB2_PLAY_UPLOAD_KEYSTORE_BASE64` | Base64 of the backed-up `glob2-upload.p12` used for the first Play release |
+   | `GLOB2_PLAY_STORE_PASSWORD` | Upload keystore password |
+   | `GLOB2_PLAY_KEY_PASSWORD` | Upload key password |
+
+Keep the original keystore and passwords backed up outside GitHub. The public
+upstream must never receive these secrets or a broad OIDC trust binding. The workflow
+decodes the key to a temporary runner file, signs the AAB, removes that file,
+then authenticates to Play through short-lived GitHub OIDC credentials. Only
+the private mirror's owner should have write access. Do not add pull-request
+triggers or allow arbitrary refs to reach the release job. Review upstream
+changes, especially the workflow, build scripts, and dependency pins, before
+syncing them into the private mirror: copied code runs with release credentials.
+
+To sync from a local clone of the private mirror, configure `upstream` once as
+`https://github.com/Globulation2/glob2.git`, then use:
+
+```sh
+git fetch upstream master
+git checkout master
+git merge --ff-only upstream/master
+git push origin master
+```
+
+If fast-forwarding fails because the private mirror diverged, inspect the
+commits and reconcile them deliberately. Do not force-push a release branch.
+
+After syncing, run **Actions → Android Play internal release → Run workflow**
+in the private mirror. The optional release notes are shown to internal testers. The
+run summary records the version code and signed AAB SHA-256, and the signed
+bundle is retained as a GitHub artifact for 14 days. Check the internal testing
+track in Play Console for availability; if Play requires a new content or policy
+declaration, complete that in Play Console before rerunning the workflow.
+
 ### Native tests on a connected Android device
 
 After configuring the release project above, build the isolated CppUnit dependency
@@ -298,20 +400,56 @@ The simulator tools use an isolated device set under
 `build/mobile-tools/ios-simulators`. Device builds use `--environment device` and
 require either `--team TEAM_ID` with local provisioning or `--unsigned` for a
 compile-only build. An unsigned device app cannot be installed. Release symbols
-are retained alongside the application.
+are retained alongside the application. With `--team`, Xcode must have the Apple
+Developer account added in Settings > Accounts; the build allows Xcode to create
+or update the provisioning profile for the bundle ID. The generated target is
+included in Xcode archives for TestFlight distribution.
+
+### Internal TestFlight upload
+
+`.github/workflows/ios-testflight.yml` is kept in the public source repository,
+but its upload job runs only when manually dispatched from `master` in the
+owner-only `genixpro/glob2-release` mirror. The owner syncs the public source and
+workflow to the mirror and chooses when to run it. Dispatches in the public
+`Globulation2/glob2` repository skip the job. The mirror uses the Xcode 27 runner
+and the registered `org.globulation2.glob2` App ID on
+team `CL2MNNYQX3`. Each run builds pinned iOS dependencies from source, compiles
+the game, archives the iPhone app, checks the bundle ID and build number, retains
+matching dSYMs, exports and validates an App Store signed IPA, and uploads an
+internal-only TestFlight build. Distribution signing occurs during export, so
+archiving does not require a registered test device. Its build
+number is `1,000,000 + 100 × GITHUB_RUN_NUMBER + GITHUB_RUN_ATTEMPT`, so mirror
+runs and reruns get unique numbers after earlier public test uploads.
+The uploaded build cannot be submitted for external testing or App Store release.
+
+One-time mirror setup requires an App Store Connect **team** API key with
+permissions to manage signing assets and upload builds. Individual API keys cannot
+access provisioning endpoints. In the **private mirror**, create an
+`ios-testflight` environment restricted to the `master` branch and store the key
+ID, issuer ID and single-line Base64 encoding of the downloaded `.p8` private
+key there as environment secrets named `IOS_ASC_KEY_ID`, `IOS_ASC_ISSUER_ID` and
+`IOS_ASC_KEY_P8_BASE64`. Do not place release credentials in the public
+repository, its Actions secrets, or source code. The workflow writes the key
+only to the ephemeral mirror runner, outside the checked-out repository.
+Configure the app's internal TestFlight group for automatic distribution in App
+Store Connect if testers should receive every processed build without another
+manual step.
+
+The workflow uploads an `.xcarchive` artifact for diagnosis. A successful upload
+means Apple accepted the transfer; Apple processes the build afterward. Check the
+TestFlight build status and any export-compliance questions in App Store Connect
+before expecting testers to install it. Keep the App Store release step separate.
 
 ## Verification
 
 ```sh
 python3 -m unittest discover -s tests/build_system -v
-scons release=1 portable-renderer-test mobile-input-test gameplay-touch-test responsive-menu-test mobile-presentation-test
-python3 test/TouchPresentationStructureTest.py
+scons release=1 portable-renderer-test mobile-input-test gameplay-touch-test ui-presentation-test
 build/darwin/client/release/libgag/src/MobileInputHarness
 build/darwin/client/release/libgag/src/PortableRendererHarness
-mkdir -p artifacts/mobile-ui/gameplay artifacts/mobile-ui/menu artifacts/mobile-ui/presentation
+mkdir -p artifacts/mobile-ui/gameplay artifacts/mobile-ui/presentation
 GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/gameplay" build/darwin/client/release/src/gameplay-touch-test
-GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/menu" build/darwin/client/release/src/responsive-menu-test
-GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/presentation" build/darwin/client/release/src/mobile-presentation-test
+(cd artifacts/mobile-ui/presentation && GLOB2_USER_DATA_DIR="$PWD" SDL_VIDEODRIVER=dummy SDL_RENDER_DRIVER=software ../../../build/darwin/client/release/src/ui-presentation-test capture)
 ```
 
 Substitute the host toolchain directory on Linux or Windows. The renderer harness
@@ -370,9 +508,8 @@ profile. No chat submission, account creation, uploads or personal saves occur. 
 capture tool, not proof that every state is reachable through touch navigation.
 Existing interaction harnesses remain separate. The gallery also records native SDL building drags and
 unfinished zone strokes, and exposes tactical tools, replay controls, open team
-filters and chart-value inspection as separate review states. The decorative menu colony does
-advance: the responsive-menu harness checks both one theme callback per frame
-and increasing simulation ticks over elapsed wall time.
+filters and chart-value inspection as separate review states. The decorative
+menu colony keeps advancing under the menus.
 
 Generated preview captures wait for both worker completion and the real-time
 crossfade. Landscape captures wait for visible cards to settle; their offscreen
@@ -415,47 +552,41 @@ only the reusable tool and its documentation in Git.
 
 ### Frontend layout and interaction policy
 
-`src/gui/FrontendLayout.h` owns frontend device classification. Touch phones have
-a logical short edge below 600 points. Tablets may use two panes at safe widths
-of at least 720 points and heights of at least 480 points. Keyboard occlusion
-reduces the usable rectangle without changing phone classification. This policy
-is separate from the compact gameplay HUD policy and preserves keyboard settings
-on narrow desktop windows.
+`Presentation` (`libgag/include/ui/Presentation.h`) owns frontend device
+classification: the width class is Compact below 600 points and Expanded from
+960, `phone()` is a touch host whose short edge is below 600 points, and
+keyboard occlusion reduces the `dialog` rectangle without changing
+classification. This policy is separate from the compact gameplay HUD policy
+and preserves keyboard settings on narrow desktop windows.
 
-Frontend `PhoneForm` adapters opt into content-sized surfaces; gameplay/editor
-adapters retain their default layout. The measured row geometry controls drawing,
-clipping and hit testing. Dialog text is distinct from interactive fields; the
-Enter-bound action receives primary emphasis rather than the first button in
-layout order (which may be Delete). Stacked settings fields fill their row width. Phone
-settings scroll their heading, category selector, fields, save status and actions;
-a separate Back control commits pending text through the existing save path.
-Category IDs and building-default slots remain stable across presentations.
+Every menu builds one element tree; the framework stacks form fields, folds
+action rows into the scrolling body and wraps action grids on narrow viewports.
+The measured geometry controls drawing, clipping and hit testing. Dialog text
+is distinct from interactive fields; the Enter-bound action receives primary
+emphasis rather than the first button in layout order (which may be Delete).
+Settings scrolls its heading, category selector, fields, save status and
+actions on phones; a separate Back control commits pending text through the
+existing save path. Category IDs and building-default slots remain stable
+across presentations.
 
-Phone custom setup keeps its draft in `CustomGameScreen` while navigating Map,
-Opponents and Review. Map settings and Rules are subpages, not new drafts.
-Launch is disabled until the preview represents the current validated revision;
-keyboard launch follows the same guard. Tablet and desktop share the existing
-model and composed controls. Additional Game Options remains multiplayer-only;
-the obsolete AI Descriptions implementation has been removed.
+Custom setup keeps its draft in `CustomGameScreen` across its Map, Players and
+Rules tabs on every size; there are no separate phone subpages. Launch is
+disabled until the preview represents the current validated revision; keyboard
+launch follows the same guard. Additional Game Options remains
+multiplayer-only.
 
 The gameplay touch harness also exercises German and Japanese inspectors and
 editor actions in small portrait and landscape views, including constrained
 keyboard layouts. Its localized captures stay in the isolated test profile. The
-mobile presentation harness checks safe-area layouts, including editor setup,
-in those languages as well as English. The menu navigation harness targets the
-rendered Cancel control on composed screens and fails if navigation cannot
-finish within 60 seconds.
-
-The mobile presentation harness covers touch dispatch, clipped/scrolling controls,
-whole-row containment, full-width stacked fields, category filtering, narrow
-desktop behavior, keyboard classification, integer slider limits and draft
-preservation. First-viewport checks require visible building entries, an editable
-building slider, and a complete colony row even on small landscape phones. The whole map preview
-must also fit its initial viewport; short landscape uses preview beside actions.
-Building details use the fixed Back control to return to the list; test this
-hierarchy as well as exiting settings. Run it alongside the responsive-menu, gameplay-touch, settings and
+UI presentation harness checks every screen and dialog at phone, tablet and
+desktop viewports, with platform gutters, in touch and pointer presentations:
+interactive elements inside the safe rectangle, minimum touch targets, no
+overlapping controls, unique keys and valid focus after resize. The menu colony
+harness's `navigation` mode drives every menu through the screen stack and back
+out with Escape. Run these alongside the gameplay-touch, settings and
 custom-setup harnesses after shared frontend changes. Preserve the previous
-gallery directory as the visual baseline; feedback keys must never be renumbered.
+gallery directory as the visual baseline; feedback keys must never be
+renumbered.
 
 The capture run also creates `checkpoints/foundation/`, `checkpoints/settings/`
 and `checkpoints/setup/` indexes using the same images and feedback IDs. The

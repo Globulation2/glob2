@@ -1,23 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MessageScreen.h"
-#include <GUITextArea.h>
-#include <GUIButton.h>
 #include <stdexcept>
 
+using namespace Glob2UI;
+
 MessageScreen::MessageScreen(const std::string &message, const std::vector<std::string> &captions)
+	: message(message), captions(captions)
 {
-    enablePhoneForm();
 	if (captions.empty() || captions.size() > 3)
 		throw std::invalid_argument("Messages need one to three choices");
-	addWidget(new GAGGUI::TextArea(20, 100, 600, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
-								   "standard", true, message.c_str()));
-	for (unsigned i = 0; i < captions.size(); ++i)
-		addWidget(new GAGGUI::TextButton(20 + i * 210, 340, 180, 40, ALIGN_SCREEN_CENTERED,
-										 ALIGN_SCREEN_CENTERED, "menu", captions[i], i,
-										 i == captions.size() - 1 ? 27 : 0));
 }
-void MessageScreen::onAction(GAGGUI::Widget *, GAGGUI::Action action, int choice, int)
+
+Element MessageScreen::build(const Presentation &p)
 {
-	if (action == GAGGUI::BUTTON_RELEASED || action == GAGGUI::BUTTON_SHORTCUT)
-		endExecute(choice);
+	std::vector<MenuAction> choices;
+	for (std::size_t i = 0; i < captions.size(); ++i)
+	{
+		MenuAction action{"choice/" + std::to_string(i), captions[i], [this, i] { endExecute(int(i)); }};
+		action.primary = i == 0;
+		action.shortcut = i == 0 ? SDLK_RETURN : i == captions.size() - 1 ? SDLK_ESCAPE : SDLK_UNKNOWN;
+		choices.push_back(std::move(action));
+	}
+	return page("", scroll("message", paragraph(message)), actions(std::move(choices), p), p);
 }

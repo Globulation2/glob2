@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <GUIBase.h>
+#include <GraphicContext.h>
 #include "MapThumbnail.h"
 #include "MapPreviewGeometry.h"
 #include <functional>
-using namespace GAGGUI;
+#include <memory>
+#include <vector>
 using namespace GAGCore;
 
 struct MapStart
@@ -13,7 +14,10 @@ struct MapStart
 	Color color;
 };
 
-class MapPreview : public RectangularWidget
+// A map thumbnail with start markers, zoom and drag: the menus host it in a
+// framework canvas element, the map command paints it into an export surface.
+// The owner sets the rectangle it occupies and hands it the target surface.
+class MapPreview
 {
   public:
 	using Start = MapStart;
@@ -28,11 +32,16 @@ class MapPreview : public RectangularWidget
 		Ready,
 		Failed
 	};
-	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign);
-	MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string &tooltip,
-			   const std::string &tooltipFont);
-	~MapPreview() override;
-	void paint() override;
+	MapPreview();
+	virtual ~MapPreview();
+	//! Paint into target at the rectangle set by setScreenRectangle/setDimensions.
+	void paint(DrawableSurface *target);
+	Sint32 getLeft() const { return x; }
+	Sint32 getTop() const { return y; }
+	Sint32 getWidth() const { return w; }
+	Sint32 getHeight() const { return h; }
+	void setDimensions(int width, int height) { w = width; h = height; }
+	void setScreenRectangle(int nx, int ny, int nw, int nh) { x = nx; y = ny; w = nw; h = nh; }
 	virtual void setMapThumbnail(const std::string &filename);
 	virtual void setMapThumbnail(const MapThumbnail &thumbnail);
 	void setState(State state);
@@ -48,12 +57,8 @@ class MapPreview : public RectangularWidget
 			   (!transitioning || transitionAlpha() == 0);
 	}
 	std::function<void()> retry;
+	//! Mouse events in the preview's own surface coordinates.
 	bool handlePreviewEvent(SDL_Event *event);
-	void onSDLMouseButtonDown(SDL_Event *e) override { handlePreviewEvent(e); }
-	void onSDLMouseButtonUp(SDL_Event *e) override { handlePreviewEvent(e); }
-	void onSDLMouseMotion(SDL_Event *e) override { handlePreviewEvent(e); }
-	void onSDLActive(SDL_Event *e) override { handlePreviewEvent(e); }
-	void onSDLMouseWheel(SDL_Event *e) override { handlePreviewEvent(e); }
 	void cancelDrag();
 	void resetView()
 	{
@@ -64,6 +69,7 @@ class MapPreview : public RectangularWidget
 	MapPreviewGeometry::Rect mapArea();
 
   protected:
+	Sint32 x = 0, y = 0, w = PreviewSize, h = PreviewSize;
 	bool animateChanges = true;
 	virtual void paintOverlay(DrawableSurface *, MapPreviewGeometry::Rect);
 	MapThumbnail thumbnail;

@@ -23,7 +23,7 @@ GlobalContainer* globalContainer=nullptr;
 class SettingsPaintHarness:public SettingsScreen
 {
 public:
-    void draw(GraphicContext *surface){gfx=surface;dispatchInit();paint();for(auto widget:widgets)if(widget->visible)widget->paint();}
+    void draw(GraphicContext *surface){beginExecution(surface);paintFrame(0);endExecute(0);finishExecution();}
 };
 class HighResolutionIntegrationHarness
 {
