@@ -8,9 +8,9 @@ RepoType: git
 Repo: https://github.com/Globulation2/glob2.git
 
 Builds:
-  - versionName: 0.9.5.3
-    versionCode: 905031
-    commit: v0.9.5.3
+  - versionName: 0.9.5.4
+    versionCode: 905041
+    commit: v0.9.5.4
     ndk: 28.2.13676358
     timeout: 10800
     rm:
@@ -31,9 +31,9 @@ Builds:
       - apt-get install -y --no-install-recommends git python3 python3-pip g++ make cmake ninja-build scons pkg-config unzip zip autoconf automake libtool curl perl nasm
     build: python3 mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk $$SDK$$ --android-ndk $$NDK$$
     output: build/fdroid-output.apk
-  - versionName: 0.9.5.3
-    versionCode: 905032
-    commit: v0.9.5.3
+  - versionName: 0.9.5.4
+    versionCode: 905042
+    commit: v0.9.5.4
     ndk: 28.2.13676358
     timeout: 10800
     rm:
@@ -52,9 +52,9 @@ Builds:
       - apt-get install -y --no-install-recommends git python3 python3-pip g++ make cmake ninja-build scons pkg-config unzip zip autoconf automake libtool curl perl nasm
     build: python3 mobile/fdroid_build.py --version-code $$VERCODE$$ --android-sdk $$SDK$$ --android-ndk $$NDK$$
     output: build/fdroid-output.apk
-  - versionName: 0.9.5.3
-    versionCode: 905033
-    commit: v0.9.5.3
+  - versionName: 0.9.5.4
+    versionCode: 905043
+    commit: v0.9.5.4
     ndk: 28.2.13676358
     timeout: 10800
     rm:
@@ -81,5 +81,5 @@ VercodeOperation:
   - 10 * %c + 1
   - 10 * %c + 2
   - 10 * %c + 3
-CurrentVersion: 0.9.5.3
-CurrentVersionCode: 905033
+CurrentVersion: 0.9.5.4
+CurrentVersionCode: 905043
