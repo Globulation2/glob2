@@ -228,7 +228,7 @@
     {
       "id": "game-placement",
       "title": "Building placement preview",
-      "description": "An inn preview awaiting explicit confirmation.",
+      "description": "An inn preview awaiting explicit confirmation; on phones OK sits on the thumb (right) side of the bar.",
       "group": "Gameplay"
     },
     {
@@ -606,8 +606,15 @@
     {
       "id": "game-zone-paint",
       "title": "Zone painting",
-      "description": "Zone brush mode with Paint/Erase and Done; completed strokes remain applied.",
+      "description": "Zone brush mode with Paint/Erase and Done; an unfinished stroke previews the exact cells it will paint, tinted like the zone. Completed strokes remain applied.",
       "group": "Gameplay"
+    },
+    {
+      "id": "game-zoom-drag",
+      "title": "One-finger zoom",
+      "description": "Mid-gesture: tap, then press again and drag. The zoom factor sits above the finger; releasing without travel restores 1:1.",
+      "group": "Gameplay",
+      "availability": "mobile"
     },
     {
       "id": "game-tactical-tools",
