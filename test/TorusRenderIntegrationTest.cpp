@@ -13,6 +13,7 @@
 #undef private
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
+#include "gui/GameGUIViewport.h"
 #include "Engine.h"
 #include "Team.h"
 #include "TorusMapFixture.h"
@@ -28,6 +29,7 @@
 #endif
 #endif
 #include <cassert>
+#include <cmath>
 #include <iostream>
 
 GlobalContainer *globalContainer = nullptr;
@@ -54,6 +56,48 @@ static int run(int argc, char **argv)
         assert(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
+        gui.updateCamera();
+        // A drag beginning on empty ground moves the map with the pointer.
+        // Find an actual empty visible tile so the fixture can change freely.
+        int dragX = -1, dragY = -1;
+        for (int y = 64; y < globalContainer->gfx->getH() - 64 && dragX < 0; y += 24)
+            for (int x = 64; x < globalContainer->gfx->getW() - GAME_GUI_RIGHT_MENU_WIDTH - 64; x += 24)
+            {
+                int tileX, tileY;
+                gui.game.map.displayToMapCaseAligned(gui.mapMouseX(x), gui.mapMouseY(y),
+                    &tileX, &tileY, gui.viewportX, gui.viewportY);
+                bool flagHere = false;
+                for (const auto *flag : gui.localTeam->virtualBuildings)
+                    flagHere |= gui.displayedPosX(*flag) == tileX &&
+                        gui.displayedPosY(*flag) == tileY;
+                if (gui.game.map.getBuilding(tileX, tileY) == NOGBID &&
+                    !flagHere &&
+                    !gui.game.map.isResource(tileX, tileY) &&
+                    gui.game.map.getGroundUnit(tileX, tileY) == NOGUID &&
+                    gui.game.map.getAirUnit(tileX, tileY) == NOGUID)
+                {
+                    dragX = x;
+                    dragY = y;
+                    break;
+                }
+            }
+        assert(dragX >= 0);
+        gui.view.mouseUnit = nullptr;
+        SDL_MouseButtonEvent down{};
+        down.button = SDL_BUTTON_LEFT;
+        down.x = dragX;
+        down.y = dragY;
+        gui.handleMouseButtonDown(down);
+        assert(gui.emptyMapPanPushed);
+        const double originX = gui.camera.originX;
+        gui.handleMouseMotion(dragX + 12, dragY + 8, SDL_BUTTON(SDL_BUTTON_LEFT));
+        assert(std::abs(gui.camera.originX -
+            MapCamera::wrap(originX - 12 / gui.camera.zoom, gui.camera.mapWidth)) < 0.01);
+        gui.handleMouseButtonUp(down);
+        assert(!gui.emptyMapPanPushed);
+        const double releasedX = gui.camera.originX;
+        gui.handleMouseMotion(dragX + 24, dragY + 8, 0);
+        assert(gui.camera.originX == releasedX);
         // Units in the last 15 tiles of a full-world capture must keep their
         // visible copy's position, including movement across either seam.
         Unit *explorer = gui.game.addUnit(0, 0, 0, EXPLORER, 0, 128, 1, 1);

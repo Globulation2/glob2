@@ -358,8 +358,12 @@ GAGCore::CooperativeTask Engine::initGameTask(MapHeader mapHeader, GameHeader ga
 	if (error) {
 		co_return false;
 	}
+	finishGameInit();
+	co_return true;
+}
 
-
+void Engine::finishGameInit()
+{
     const bool offlineSetup = !globalContainer->replaying && !gui.game.gameHeader.hasNetworkPlayer();
     globalContainer->liveSpectating = offlineSetup;
     if(offlineSetup) {
@@ -427,8 +431,39 @@ GAGCore::CooperativeTask Engine::initGameTask(MapHeader mapHeader, GameHeader ga
 			globalContainer->datasetWriter.reset();
 		}
 	}
+}
 
-	co_return true;
+GAGCore::CooperativeTask Engine::initCustomFromBytesTask(MapHeader map, GameHeader players, int localTeam, int speed, std::shared_ptr<std::string> bytes)
+{
+    gui.localPlayer = 0;
+    gui.localTeamNo = localTeam;
+    if (speed >= 0)
+    {
+        previousCustomSpeed = globalContainer->settings.gameSpeed;
+        globalContainer->settings.gameSpeed = speed;
+    }
+    // BinaryInputStream owns and deletes its backend; the copy the backend takes here is
+    // the same one loadTask's file-based sibling pays for on the read side of a real file.
+    auto *backend = new GAGCore::MemoryStreamBackend(bytes->data(), bytes->size());
+    // The memory backend copies its input through write(), leaving its cursor at
+    // the end. Start at the map header, as file-backed streams do.
+    backend->seekFromStart(0);
+    GAGCore::BinaryInputStream stream(backend);
+    bool error = false;
+    try
+    {
+        error = !(co_await gui.loadFromStreamTask(map, players, true, false, false, &stream));
+    }
+    catch (std::exception &e)
+    {
+        std::cerr << "Failed to load the generated map: exception received." << std::endl;
+        error = true;
+    }
+    if (error) {
+        co_return false;
+    }
+    finishGameInit();
+    co_return true;
 }
 
 

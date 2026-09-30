@@ -62,6 +62,10 @@ public:
 	int initCustom(const std::string &gameName);
     GAGCore::CooperativeTask initCustomTask(MapHeader map, GameHeader players, int localTeam, int speed = -1, std::string sourceFileName = {});
     GAGCore::CooperativeTask initCustomTask(std::string filename);
+    /// Same as initCustomTask, but for a game already generated in this process: the bytes
+    /// (produced by Game::save, kept in memory) are read directly, without a round trip
+    /// through a temporary file. Keeps `bytes` alive for the whole coroutine.
+    GAGCore::CooperativeTask initCustomFromBytesTask(MapHeader map, GameHeader players, int localTeam, int speed, std::shared_ptr<std::string> bytes);
     GAGCore::CooperativeTask initCampaignTask(std::string filename, Campaign* campaign = nullptr, std::string mission = {});
     GAGCore::CooperativeTask loadReplayTask(std::string filename);
     void cancelInitialization();
@@ -135,6 +139,9 @@ private:
 	/// needed for when your loading a save game over the internet
 	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	GAGCore::CooperativeTask initGameTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false, std::string sourceFileName=std::string());
+	/// The net engine/replay/checksum/dataset setup shared by every initGameTask variant,
+	/// once gui.game holds a fully loaded game, regardless of where it was loaded from.
+	void finishGameInit();
 
 	/// Reset globalContainer's replay state (replaying flag, replay file name,
 	/// replay reader) so the next game session starts as a normal game.

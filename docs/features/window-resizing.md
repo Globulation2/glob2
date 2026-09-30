@@ -170,6 +170,10 @@ alone is insufficient: every map-space annotation must use the same periodic
 copies. `forEachMapCopy` enumerates translations whose primitive bounds intersect
 the viewport, including negative origins and sprite/radius overhang. Path-line
 endpoints retain their shortest toroidal displacement and move together.
+The map camera's minimum zoom follows the current viewport and map dimensions:
+on a map larger than the view, zooming out stops when one map period fills the
+view in either direction. A map already smaller than the view retains its 1:1
+minimum and its repeated copies.
 
 The follow-up audit covers these drawing paths:
 

@@ -128,6 +128,7 @@ void GameGUI::processEvent(SDL_Event *event)
         lastMouseButtonState = 0;
         viewportSpeedX = viewportSpeedY = 0;
         selectionPushed = false;
+        emptyMapPanPushed = false;
         if (touch) touch->cancel();
         torusView.stopMoving();
         toolManager.cancelDrag(localTeamNo);
@@ -135,7 +136,10 @@ void GameGUI::processEvent(SDL_Event *event)
         torusView.setPointerHeld(false);
     }
     if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT)
+    {
         torusView.setPointerHeld(false);
+        emptyMapPanPushed = false;
+    }
     if (!inputState.hasFocus() && (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ||
         event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP ||
         event->type == SDL_MOUSEMOTION || event->type == SDL_MOUSEWHEEL)) return;
@@ -192,7 +196,26 @@ void GameGUI::processEvent(SDL_Event *event)
 		else if (event->type==SDL_MOUSEWHEEL)
 		{
 			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
-			if (SDL_GetModState() & KMOD_ALT)
+			updateCamera();
+			bool emptyMap = camera.contains(mouseX, mouseY) && mouseY >= 16 &&
+				selectionMode != TOOL_SELECTION && selectionMode != BRUSH_SELECTION &&
+				!selectionPushed && !panPushed && !miniMapPushed;
+			if (emptyMap)
+			{
+				const auto world = camera.screenToWorld(mouseX, mouseY);
+				const int mapX = int(MapCamera::wrap(world.first,
+					game.map.getW() * 32.0)) / 32;
+				const int mapY = int(MapCamera::wrap(world.second,
+					game.map.getH() * 32.0)) / 32;
+				emptyMap = game.map.getBuilding(mapX, mapY) == NOGBID &&
+					game.map.getGroundUnit(mapX, mapY) == NOGUID &&
+					game.map.getAirUnit(mapX, mapY) == NOGUID;
+				if (localTeam)
+					for (auto *flag : localTeam->virtualBuildings)
+						if (displayedPosX(*flag) == mapX && displayedPosY(*flag) == mapY)
+							emptyMap = false;
+			}
+			if ((SDL_GetModState() & KMOD_ALT) || emptyMap)
             {
                 double delta=event->wheel.y;
 #if SDL_VERSION_ATLEAST(2,0,18)
@@ -204,6 +227,8 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 	}
 
+	if (inGameMenu != IGM_NONE || scrollableText)
+		emptyMapPanPushed = false;
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
@@ -324,7 +349,14 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 		else if (globalContainer->replaying && mouseEvent.y >= REPLAY_BAR_Y)
 			handleReplayProgressBarClick(mouseEvent.x, mouseEvent.y, mouseEvent.button);
 		else
+		{
 			handleMapClick(mouseEvent.x, mouseEvent.y, mouseEvent.button);
+			if (emptyMapPanPushed)
+			{
+				panMouseX=mouseEvent.x;
+				panMouseY=mouseEvent.y;
+			}
+		}
 	}
 	else if (button==SDL_BUTTON_MIDDLE)
 	{
@@ -349,7 +381,7 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 {
 	updateCamera();
     if(mouseEvent.button==SDL_BUTTON_LEFT && zoomControlPushed)
-    {zoomControlPushed=false;miniMapPushed=selectionPushed=panPushed=false;return;}
+    {zoomControlPushed=false;miniMapPushed=selectionPushed=emptyMapPanPushed=false;return;}
 	int button=mouseEvent.button;
 	if ((button==SDL_BUTTON_LEFT) && camera.contains(mouseEvent.x,mouseEvent.y) && mouseEvent.y>=16)
 	{
@@ -364,9 +396,14 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 			toolManager.handleMouseUp(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), localTeamNo, viewportX, viewportY, inputState.modifiers());
 		}
 	}
-	miniMapPushed=false;
-	selectionPushed=false;
-	panPushed=false;
+	if (button==SDL_BUTTON_LEFT)
+	{
+		miniMapPushed=false;
+		selectionPushed=false;
+		emptyMapPanPushed=false;
+	}
+	else if (button==SDL_BUTTON_MIDDLE)
+		panPushed=false;
 	// showUnitWorkingToBuilding=false;
 }
 

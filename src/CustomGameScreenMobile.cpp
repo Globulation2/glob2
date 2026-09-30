@@ -373,6 +373,8 @@ void CustomGameScreen::renderPhoneLobby()
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
 		error = tr("Select a valid map.");
+	else if (setup.random && previewBusy())
+		error = tr("Generating preview...");
 	if (!error.empty())
 		ui.text(x, bottom - 76, tr(error), "standard", w, true);
 	ui.button("back", {x, bottom - 52, 88, 48}, tr("Back"),

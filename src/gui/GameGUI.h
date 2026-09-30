@@ -101,6 +101,9 @@ public:
 	/// the map, otherwise it will be ignored
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	GAGCore::CooperativeTask loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, std::string sourceFileName=std::string());
+	//! Same as loadFromHeadersTask, but from an already-open stream: a caller that already
+	//! has the bytes in memory (a freshly generated custom game) skips the file entirely.
+	GAGCore::CooperativeTask loadFromStreamTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, GAGCore::InputStream *stream);
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
     GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, bool ignoreGUIData=false);
@@ -528,6 +531,8 @@ private:
 	bool putMark;
 	//! True if we are panning
 	bool panPushed;
+	//! True while a left-button drag that began on empty map ground is panning
+	bool emptyMapPanPushed = false;
 	//! Coordinate of mouse when began panning
 	int panMouseX, panMouseY;
 	//! Coordinate of viewport when began panning
@@ -722,4 +727,3 @@ private:
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
-

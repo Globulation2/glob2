@@ -147,6 +147,8 @@ class GameGUITouch
 	GAGCore::MobileLayout layout() const;
 	void clampScroll();
 	GAGCore::TouchInput gesture;
+	std::optional<Uint32> lastMapTapTicks;
+	GAGCore::ViewPoint lastMapTapPoint{};
 	std::vector<std::pair<SDL_TouchID, SDL_FingerID>> fingers;
 	bool touchActive = false, interfaceGesture = false, dispatching = false;
 	bool ownerOverlay = false;

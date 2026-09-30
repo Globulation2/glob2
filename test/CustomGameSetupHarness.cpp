@@ -558,7 +558,7 @@ struct CustomGameSetupHarness
 				GAGGUI::ScreenStack screens(*globalContainer->gfx);
 				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap);
-				assert(screen.snapshot.empty() && screen.source.empty());
+				assert(!screen.generatedSnapshot && screen.source.empty());
 				assert(screen.setup.premadeMap == premade);
 				// Switching back restores the premade choice without disturbing teams.
 				screen.setMapMode(false);
@@ -693,7 +693,6 @@ struct CustomGameSetupHarness
 			GAGGUI::ScreenStack screens(*globalContainer->gfx);
 			std::optional<GAGCore::CooperativeTask> load;
 			std::shared_ptr<void> mapFile;
-			std::string source;
 			screens.push(std::make_unique<CustomGameScreen>(screens),
 				[&](GAGGUI::Screen &screen, int result)
 				{
@@ -701,10 +700,17 @@ struct CustomGameSetupHarness
 					auto &selected = static_cast<CustomGameScreen &>(screen);
 					// Like SinglePlayerFlow, read the generated map only after the
 					// stack has destroyed this screen.
-					source = selected.sourceFile();
-					load.emplace(engine.initCustomTask(selected.getMapHeader(), selected.getGameHeader(),
-						selected.getSelectedColor(0), selected.selectedSpeed(), source));
-					mapFile = selected.releaseSnapshot();
+					auto map = selected.getMapHeader();
+					auto players = selected.getGameHeader();
+					auto team = selected.getSelectedColor(0);
+					auto speed = selected.selectedSpeed();
+					if (auto bytes = selected.releaseSnapshot())
+					{
+						load.emplace(engine.initCustomFromBytesTask(map, players, team, speed, bytes));
+						mapFile = bytes;
+					}
+					else
+						load.emplace(engine.initCustomTask(map, players, team, speed, selected.sourceFile()));
 				});
 			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
 			assert(timer);
@@ -724,7 +730,6 @@ struct CustomGameSetupHarness
 			const bool loaded = load && load->run();
 			mapFile.reset();
 			assert(loaded);
-			assert(!std::filesystem::exists(std::filesystem::path(source).parent_path()));
 			assert(driver.next == driver.steps.size());
 			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
 			assert(globalContainer->settings.gameSpeed == 3);
@@ -1019,14 +1024,14 @@ struct CustomGameSetupHarness
     screen.controls->pressed.clear();
     preview();
     assert(screen.validMap && !screen.previewPending);
-    auto first = screen.snapshot;
+    auto first = screen.generatedSnapshot;
     auto revision = screen.previewRevision;
-    assert(std::filesystem::exists(first));
+    assert(first && !first->empty());
     capture("random-preview-640");
     screen.setup.colonies[1].ai = AI::CASTOR;
     screen.setup.presetTeams(1);
     screen.onTimer(SDL_GetTicks() + 1000);
-    assert(screen.previewRevision == revision && screen.sourceFile() == first);
+    assert(screen.previewRevision == revision && screen.generatedSnapshot == first);
     clickControl("generator/water");
     assert(!screen.validMap && screen.setup.mapRevision != revision);
     auto water = screen.setup.generator.options["water"];
@@ -1042,18 +1047,17 @@ struct CustomGameSetupHarness
            screen.setup.colonies[1].alliance);
 
     assert(screen.generateMap());
-    assert(screen.snapshot != first && !std::filesystem::exists(first));
+    assert(screen.generatedSnapshot != first);
     // Randomize rolls the same settings again with a new seed, through the
     // normal preview path, and releases the snapshot it replaces.
     {
       const auto settings = screen.setup.generator;
       const auto mapRevision = screen.setup.mapRevision;
-      const auto replaced = screen.snapshot;
+      const auto replaced = screen.generatedSnapshot;
       clickControl("map/randomize");
       assert(!screen.validMap && screen.previewPending);
       preview();
-      assert(screen.validMap && screen.snapshot != replaced &&
-             !std::filesystem::exists(replaced));
+      assert(screen.validMap && screen.generatedSnapshot != replaced);
       assert(screen.setup.generator.method == settings.method &&
              screen.setup.generator.options == settings.options &&
              screen.setup.mapRevision == mapRevision);
@@ -1581,8 +1585,8 @@ for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
                screen.preview->starts[i].color.b == starts[i].color.b);
       {
         Game shownMap(nullptr);
-        GAGCore::BinaryInputStream in(
-            Toolkit::getFileManager()->openInflatingInputStreamBackend(screen.snapshot));
+        GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(
+            screen.generatedSnapshot->data(), screen.generatedSnapshot->size()));
         assert(shownMap.load(&in) && shownMap.gameHeader.getRandomSeed() == seed);
       }
       capture("landscape-applied");
@@ -1802,7 +1806,8 @@ int main(int argc, char **argv)
 {
 	GlobalContainer globals("glob2-custom-setup-tests");
 	globalContainer = &globals;
-	globals.runNoX = argc < 2 || std::string(argv[1]) == "preview-restart" ||
+	globals.runNoX = argc < 2 || std::string(argv[1]) == "snapshot-load" ||
+				 std::string(argv[1]) == "preview-restart" ||
 					 std::string(argv[1]) == "preview-queue";
 	globals.settings.rememberUnit = false;
 	globals.settings.screenWidth = argc > 2 && (std::string(argv[2]) == "large" || std::string(argv[2]) == "profiles-large") ? 1000 : 640;
@@ -1812,6 +1817,26 @@ int main(int argc, char **argv)
 	if (argc > 3 && (std::string(argv[2]) == "profiles" || std::string(argv[2]) == "profiles-large"))
 		globals.settings.language = argv[3];
 	globals.load();
+	if (argc > 1 && std::string(argv[1]) == "snapshot-load")
+	{
+		Game map(nullptr);
+		GAGCore::BinaryInputStream source(
+			Toolkit::getFileManager()->openInflatingInputStreamBackend("maps/balanced.map.gz"));
+		assert(map.load(&source));
+		CustomGameSetup setup;
+		setup.setCapacity(map.mapHeader.getNumberOfTeams());
+		GameHeader players;
+		setup.writeHeader(players, "snapshot test");
+		map.setGameHeader(players);
+		auto *backend = new GAGCore::MemoryStreamBackend();
+		GAGCore::BinaryOutputStream serialized(backend);
+		map.save(&serialized, true, "Snapshot test");
+		auto bytes = std::make_shared<std::string>(backend->takeContents());
+		Engine engine;
+		assert(engine.initCustomFromBytesTask(map.mapHeader, players, 0, -1, bytes).run());
+		std::cout << "PASS generated map snapshot launches from memory\n";
+		return 0;
+	}
 	if (argc > 1 && std::string(argv[1]) == "preview-queue")
 	{
 		CustomGameSetupHarness::previewPriority();

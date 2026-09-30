@@ -13,6 +13,9 @@
 #include "Integrity.h"
 #include <stdexcept>
 
+// std::min/std::clamp in the teams editor bind this constant by reference.
+const int Team::MAX_COUNT;
+
 Uint32 Team::attackableTeams() const
 {
 	return game->gameHeader.isPeacefulModeEnabled() ? 0 : enemies;

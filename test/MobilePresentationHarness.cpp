@@ -350,13 +350,13 @@ struct MobilePresentationHarness
 			press("tab/1");
 			const auto revision = lobby->setup.mapRevision;
 			const auto seed = lobby->chosenSeed;
-			const auto snapshotPath = lobby->snapshot;
+			const auto snapshotPath = lobby->generatedSnapshot;
 			press("next");
 			require(lobby->currentTab == lobby->groups[2], "Next opens Review");
 			press("back");
 			require(lobby->currentTab == lobby->groups[1], "Back returns to Opponents");
 			require(lobby->setup.mapRevision == revision && lobby->chosenSeed == seed &&
-						lobby->snapshot == snapshotPath,
+						lobby->generatedSnapshot == snapshotPath,
 					"Wizard navigation must not reroll or replace the preview");
 			press("next");
 			press("review/rules");
@@ -525,11 +525,11 @@ struct MobilePresentationHarness
 			} while (lobby->previewBusy() && SDL_GetTicks() - launchWait < 30000);
 			require(lobby->validMap && !lobby->previewBusy(),
 					"Edited generated draft must finish before launch");
-			const auto launchSource = lobby->sourceFile();
-			require(!launchSource.empty() && launchSource == lobby->snapshot,
+			const auto launchSnapshot = lobby->generatedSnapshot;
+			require(launchSnapshot && !launchSnapshot->empty(),
 					"Generated launch owns the currently previewed snapshot");
 			lobby->onAction(nullptr, GAGGUI::BUTTON_SHORTCUT, CustomGameScreen::OK, 0);
-			require(!lobby->isExecutionRunning() && lobby->sourceFile() == launchSource,
+			require(!lobby->isExecutionRunning() && lobby->generatedSnapshot == launchSnapshot,
 					"Launching a generated draft must not replace the preview");
 			stack.frame(nextTick(), {});
 			auto premade = std::make_unique<CustomGameScreen>(stack);
