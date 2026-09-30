@@ -115,28 +115,3 @@ The workflow itself can be checked with `upload` off before adding the release
 secrets. A real signed upload from the release mirror remains the final
 integration test; an ad hoc local build and an unsigned installer package do
 not prove App Store acceptance.
-
-### TestFlight and export compliance
-
-After Apple processes a signed upload, enter **What to Test** on the macOS
-TestFlight build, resolve its export compliance status, and add the build to an
-internal testing group. Add the intended App Store Connect user as an internal
-tester in that group, then accept the TestFlight invitation and install the
-Mac build. This does not submit an App Store version for review or release it.
-
-The optional secure WebSocket client uses OpenSSL for standard TLS outside
-Apple's operating-system encryption. Declare that use accurately in App Store
-Connect. If the app will be distributed in France, Apple requires a French
-encryption declaration; see [Apple's export compliance table](https://developer.apple.com/help/app-store-connect/reference/app-information/export-compliance-documentation-for-encryption).
-The supplier must complete and sign the official declaration and submit the
-required supporting material to ANSSI under its
-[filing instructions](https://cyber.gouv.fr/reglementation/reglementation-identite-confiance-numerique/controles-reglementaires-cryptographie/controle-moyen-de-cryptologie/controle-reglementaire-cryptographie-formulaires/).
-Upload the resulting declaration documentation in App Store Connect and wait
-for Apple's review before distributing the build to testers. Keep personal
-supplier details, signed forms, and Apple approval material outside the public
-repository and public release workflow artifacts.
-
-For the Mac product page, use authentic screenshots from the app at one of
-Apple's accepted Mac sizes. The listing, review notes, and screenshot uploads
-are draft metadata; **Add for Review** and production release are separate
-actions.
