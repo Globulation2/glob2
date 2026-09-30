@@ -102,7 +102,11 @@ BuildPatchTool from the product's Epic Artifacts and Binaries page and set
 `EPIC_BPT_SHA256` to the ZIP's SHA-256 digest. The upload job downloads from
 Epic's official endpoint and checks this digest before use. An Epic tool
 update intentionally stops the job until its digest is reviewed and refreshed.
-Never put BPT credentials in the public source tree.
+Never put BPT credentials in the public source tree or GitHub Actions
+variables. If the client secret is ever stored as a variable or the release
+repository becomes public, delete that variable, make the repository private,
+and rotate the BPT client before uploading. The Epic workflow checks both
+conditions before use.
 
 After each upload, retain the workflow's staged manifest, version, source
 commit, and BPT log. Install through Epic on a fresh Windows machine and check
