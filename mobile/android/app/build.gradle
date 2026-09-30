@@ -17,7 +17,7 @@ android {
         applicationId 'org.globulation.glob2'
         minSdk toolchain.android.min_api
         targetSdk toolchain.android.compile_api
-        versionCode 1
+        versionCode nativeBuild.version_code ?: 1
         versionName '0.9.5-mobile-dev'
     }
     sourceSets.main {

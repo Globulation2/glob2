@@ -255,6 +255,38 @@ Release packaging restores gzip assets that AAPT expands and renames, then align
 the APK before signing so compressed maps retain their indexed paths.
 Native startup failures are also written to Android logcat under `SDL/APP`.
 
+### Google Play internal testing
+
+The Play upload is a release Android App Bundle. Install Android SDK platform 36
+alongside the pinned NDK and build tools. The existing APK commands above remain
+useful for direct device testing. To build the bundle:
+
+```sh
+python3 mobile/android.py bundle --arch arm64-v8a --release --version-code 1
+```
+
+Each subsequent Play upload needs a higher `--version-code`. The bundle command
+restores gzip assets that Android packaging expands, verifies the complete game
+asset index, and checks the packaged native build ID against retained symbols.
+The unsigned bundle is written to
+`build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab`.
+Keep a private upload keystore outside the repository and back it up securely.
+Create the key with Android Studio's **Generate Signed Bundle/APK** flow or
+`keytool`. Set `GLOB2_PLAY_STORE_PASSWORD` and `GLOB2_PLAY_KEY_PASSWORD` in the
+environment using your password manager, then sign the verified bundle:
+
+```sh
+python3 mobile/android.py sign-bundle --arch arm64-v8a --release \
+  --keystore /path/to/private-upload.keystore --key-alias YOUR_ALIAS
+```
+
+Upload `app-release-play.aab` from the same directory to Play Console's **Internal
+testing** track. The development APK key must not be used as the Play upload key.
+Before uploading, use bundletool to generate and install APKs from the bundle,
+verify its `PAGE_ALIGNMENT_16K` setting, and check startup, gameplay, rotation,
+background/resume and save/load on a real device. Keep the generated `.apks`,
+screenshots, logs and replay checksums under `artifacts/`.
+
 ### Native tests on a connected Android device
 
 After configuring the release project above, build the isolated CppUnit dependency

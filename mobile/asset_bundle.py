@@ -18,10 +18,9 @@ def include_asset(relative):
             and not path.name.endswith('~'))
 
 
-def restore_gzip_assets(apk, assets):
-    """Restore gzip files that AAPT expands and renames while packaging assets."""
-    prefix = 'assets/glob2-bundle/'
-    with zipfile.ZipFile(apk) as package:
+def restore_gzip_assets(package_path, assets, prefix='assets/glob2-bundle/'):
+    """Restore gzip files that AAPT expands and renames in an APK or AAB."""
+    with zipfile.ZipFile(package_path) as package:
         packaged = set(package.namelist())
         missing = []
         for source in sorted(assets.rglob('*.gz')):
@@ -34,16 +33,15 @@ def restore_gzip_assets(apk, assets):
                 raise ValueError('AAPT did not package gzip asset as expected: ' + relative)
             missing.append((source, name))
     if missing:
-        with zipfile.ZipFile(apk, 'a') as package:
+        with zipfile.ZipFile(package_path, 'a') as package:
             for source, name in missing:
                 package.write(source, name, compress_type=zipfile.ZIP_STORED)
     return bool(missing)
 
 
-def verify_apk_assets(apk):
-    """Verify the final APK, after AAPT filtering, against its asset identity."""
-    prefix = 'assets/glob2-bundle/'
-    with zipfile.ZipFile(apk) as package:
+def verify_apk_assets(package_path, prefix='assets/glob2-bundle/'):
+    """Verify packaged assets against their identity in an APK or AAB."""
+    with zipfile.ZipFile(package_path) as package:
         lines = package.read(prefix + 'index.list').decode('utf-8').splitlines()
         if not lines or len(lines[0]) != 64:
             raise ValueError('Invalid packaged asset index')
