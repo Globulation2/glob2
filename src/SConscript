@@ -11,6 +11,15 @@ source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+# Shared with test/SConscript: every client object except the entry point, so test
+# binaries link exactly the objects the game was built from and nothing compiles twice.
+if not env['server']:
+    client_cpp_sources = [source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')]
+    client_objects = local.Object(client_cpp_sources)
+    client_object_by_source = dict(zip(client_cpp_sources, client_objects))
+    client_libs = [local.File(source) for source in source_files if not source.endswith('.cpp')]
+    Export('client_objects', 'client_object_by_source', 'client_libs')
+
 if not env['server']:
     ledger_env = local.Clone()
     ledger_env.Append(CCFLAGS=['-UNDEBUG'])
@@ -299,11 +308,6 @@ if not env['server']:
     hunger_test = hunger_env.Program('HungryDefeatHarness', hunger_sources)
     local.Alias('hungry-defeat-test', hunger_test)
 
-if not env['server']:
-    buffer_sources = ['#test/BufferedFileStreamHarness.cpp', '../libgag/src/libgag.a']
-    buffer_test = local.Program('BufferedFileStreamHarness', buffer_sources)
-    local.Alias('buffered-file-test', buffer_test)
-
 # Real engine regression for immobile units and weighted building gradients, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -441,18 +445,6 @@ if not env['server']:
     unit_continuation_test = unit_continuation_env.Program('UnitContinuationHarness', unit_continuation_sources)
     local.Alias('unit-continuation-test', unit_continuation_test)
 
-if not env['server'] and env.get('wss', True):
-    certificate_test = local.Program('MobileCertificateHarness', [
-        local.Object('MobileCertificateHarness.o', '#test/MobileCertificateHarness.cpp'),
-        local.Object('MobileCertificateTrust.o', '#mobile/CertificateTrust.cpp')])
-    local.Alias('mobile-certificate-test', certificate_test)
-
-if not env['server'] and not env.get('mingw'):
-    temporary_test = local.Program('MobileTemporaryFilesHarness', [
-        local.Object('MobileTemporaryFilesHarness.o', '#test/MobileTemporaryFilesHarness.cpp'),
-        local.Object('MobileTemporaryFiles.o', '#mobile/TemporaryFiles.cpp')])
-    local.Alias('mobile-temporary-files-test', temporary_test)
-
 if not env['server']:
     for alias, harness in [('gameplay-touch-test', 'GameGUITouchHarness'), ('ui-presentation-test', 'UIPresentationHarness')]:
         sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -465,15 +457,3 @@ if not env['server']:
     gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
     local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
 
-# Header-only executor: test without the simulation or SDL entry-point shim.
-if not env['server']:
-    compute_env = local.Clone()
-    compute_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
-    compute_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
-    compute_env.Append(CCFLAGS=['-Umain', '-UNDEBUG'])
-    compute_test = compute_env.Program('ComputeExecutorHarness', compute_env.Object('ComputeExecutorHarness.o', '#test/ComputeExecutorHarness.cpp'))
-    local.Alias('compute-executor-test', compute_test)
-
-if not env['server']:
-    pipeline_test = compute_env.Program('GradientPipelineHarness', compute_env.Object('GradientPipelineHarness.o', '#test/GradientPipelineHarness.cpp'))
-    local.Alias('gradient-pipeline-test', pipeline_test)

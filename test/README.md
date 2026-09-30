@@ -1,18 +1,104 @@
 # glob2/test/
 
-The top-level commands below use `build/native-tests` for their executable
-paths. Add `--build=build/native-tests` to those SCons commands and set
-`GLOB2_BUILD_DIR=build/native-tests` for runner scripts, or substitute the
-default `build/<toolchain>/client/release` directory (`darwin`, `linux`, or
-`mingw`). The separate suite built with `scons -C test` keeps its own outputs.
+Native tests are doctest cases compiled into two binaries by the main build, from
+the same objects as the game:
 
-CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exceptions are `GameGUISelectionHarness` and `TerrainResourcesHarness`, which use the top-level `selection-test` and `terrain-test` targets described below.
+| Binary | Links | How it runs |
+| --- | --- | --- |
+| `glob2-unit-tests` | libgag, libusl, a few production sources and the stubs in `test/unit/stubs/` | one process, in-process |
+| `glob2-engine-tests` | every client object except the entry point | one process per test case, each in a disposable profile |
 
+Both are listed in `test/tests.py`, built by `test/SConscript` and land in
+`build/<toolchain>/client/release/test/` (`darwin`, `linux` or `mingw`; `--build=DIR`
+and `GLOB2_BUILD_DIR` override the directory as for the game). The standalone
+programs that remain (`MapGeneratorGoldenTest`, `LANSessionHarness`, the tools under
+`glob2-tools`) come from the `PROGRAMS` table in the same file. The per-harness
+aliases documented below are kept as `LEGACY_ALIASES` for one release; they build
+the binary that now contains the test.
 
-The separate test build also creates `MersenneTwisterTest`, `TriboolTest`, and
-`LocalTimeTest`. Run them after `scons -C test` to check the compatibility
-implementations that replaced Boost's simulation RNG, Echo three-state boolean,
-and persisted YOG timestamps. CI runs these standalone checks on Linux and Windows.
+## Build and run
+
+```sh
+scons -j8 release=1 server=0 tests          # or unit-tests / engine-tests
+python3 test/run_tests.py                   # everything this platform can run
+python3 test/run_tests.py --list --tag display
+python3 test/run_tests.py --binary unit
+python3 test/run_tests.py --filter 'HungryDefeat/*' --verbose
+python3 test/run_tests.py --binary engine --shard 2/4 --junit artifacts/tests/junit.xml
+python3 test/run_tests.py --binary engine --in-process     # fast local loop, no isolation
+python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
+```
+
+`test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--filter`
+(suite/name globs), `--tag`, `--exclude-tag`, `--quick` and `--shard K/N`
+(deterministic by sorted name), then runs each engine case in its own process with
+a fresh `GLOB2_USER_DATA_DIR`, `HOME`, temp directory and SDL's dummy drivers, a
+timeout by tag, output captured and shown only on failure, and a check that the
+profile's preferences were not rewritten. `[display]` cases get a real video driver,
+under `xvfb-run` on Linux without `DISPLAY`; they are skipped on Windows and with
+`--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
+Actions, into the step summary with a `::error file=,line=` annotation per failure.
+`test/test_run_tests.py` covers the runner itself.
+
+Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
+and selects the dummy drivers when the environment does not, so
+`build/darwin/client/release/test/glob2-unit-tests -ts=MapQuery` never touches
+`~/.glob2`. Doctest's own options apply: `-ltc`, `-tc=`, `-ts=`, `-s`, `-r=junit`.
+
+## Writing a test
+
+Include `Glob2Test.h` (unit tests) or `EngineFixtures.h` (engine tests) and use
+doctest's `TEST_SUITE`, `TEST_CASE`, `SUBCASE`, `CHECK`, `REQUIRE`, `CHECK_EQ` and
+`REQUIRE_MESSAGE`. Suites are named after the area (`HungryDefeat`, `MapQuery`,
+`Maxima.Combat`); case names are sentences without commas. Conditions that doctest
+cannot decompose (`a && b`) use `GLOB2_REQUIRE(cond, message)` or `GLOB2_CHECK`.
+Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slow]")`:
+
+| Tag | Meaning |
+| --- | --- |
+| `[display]`, `[display:WxH]` | needs a real window (300 s timeout, xvfb on Linux) |
+| `[slow]` | over a minute (600 s timeout; skipped by `--quick`) |
+| `[network]` | binds loopback sockets; never runs alongside another `[network]` case |
+| `[artifacts]` | writes review evidence under `glob2test::artifactDir()` |
+| `[golden]` | compares against a checked-in text; `--update-fixtures` rewrites it |
+| `[writes-preferences]` | legitimately saves settings |
+| `[maxima]`, `[save-format]` | selection only |
+
+Where a test goes: `glob2-unit-tests` if it needs neither `GlobalContainer` nor any
+client object, otherwise `glob2-engine-tests`. Add the translation unit to
+`UNIT_TESTS` or `ENGINE_TESTS` in `test/tests.py` (with `cxxflags`, `defines` or
+`require={'wss','not-mingw','opengl'}` when needed); CI picks the new cases up on
+the next run. Keep helpers and fixtures inside an anonymous namespace: every test
+file in a binary is one link, so two global `struct World`s collide.
+
+`test/support/Glob2Test.h` provides, in `namespace glob2test`:
+
+- `sourceRoot()`, `fixture("dir/file")`, `inflated("dir/file.gz")` for repository data;
+- `profileDir()`, `TempDir`, `artifactDir()` for scratch and review output;
+- `CapturedStdout` / `CapturedStderr` (no `freopen`), `expectGolden(relative, text)`,
+  `readFile`, `writeFile`, `updatingFixtures()`;
+- `ToolkitScope` for tests that need a `FileManager` without an engine.
+
+`test/support/EngineFixtures.h` adds `HeadlessGlobals` (the RAII `GlobalContainer`
+every headless harness used to bootstrap by hand: `runNoX`, building types, races,
+key actions, the repository on the data path, a seeded simulation RNG; `Options`
+select a real display, string loading, screen size and seed) and `HeadlessGame`
+(a one-colony game on a small grass torus with `addBuilding`, `addUnit`, `step`
+and `checksum`). Unit tests that exercise `Map` without the game reuse the
+`GrassMap` subclass in `test/MapQueryTest.cpp`, which sizes the tile array
+directly instead of calling `Map::setSize`; the `Sector`, `MapHeader`, `Order`,
+`GameGUI`, `Race` and SHA-1 symbols such tests reach are supplied once by
+`test/unit/stubs/`, so every unit test shares one link surface. A test that needs a
+stub replacing a symbol another unit test links for real belongs in the engine
+binary instead.
+
+## Python tests
+
+`test/test_*.py` are `unittest` files; those that need a build take the binary
+path on the command line (`test_map_cli.py`, `test_map_report.py`). The `check_*.py`
+scripts compare full-game traces against retained fixtures and are documented with
+the harness they accompany below. `tests/` at the repository root tests the build
+system and the browser services.
 
 ## Maxima
 
@@ -115,8 +201,8 @@ signal something changed, not just an optimization's timing.
 
 ## Android device execution
 
-The same CppUnit source list and selected client harnesses can run as native
-Android executables on a connected device. See the [device build and runner
+Selected client harnesses can run as native Android executables on a connected
+device. See the [device build and runner
 commands](../docs/mobile/development.md#native-tests-on-a-connected-android-device).
 Shell tests use SDL dummy video and have no audio or Java Activity; installed-APK
 interaction and lifecycle tests are separate. `python3 test/test_mobile_asset_bundle.py`
@@ -504,8 +590,8 @@ scons -j8 release=1 server=0 global-gradient-test
 
 The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
 toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
-It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
-coverage in `TestsRunner`.
+It runs in the Linux CI jobs; the weighted pathfinder has separate `Gradient`
+coverage in `glob2-unit-tests`.
 
 ## Resource-fetch target regression
 
@@ -605,20 +691,11 @@ Older saves do not carry it and load leaves the member at `-1`, the sentinel
 The fixture checks the version-96 round trip, that an unregistered order's `-1`
 survives the `Uint32` on the wire rather than returning as a huge positive key,
 and that a pre-96 stream leaves the sentinel with every following field still
-decoding from the right offset. `BuildingOrder.cpp` is linked against
-`RuntimeBuildingOrderTestStubs.cpp`, which satisfies the `find_location` /
-`passes_conditions` link surface (`globalContainer`, `BuildingsTypes`, `Map`,
-`FlagMap`, `GradientManager`, and the `Constraint` / `Condition` factories) that
-a constraint-free order never reaches at runtime. It needs no profile or display:
-
-```sh
-cd test
-scons -j8 RuntimeBuildingOrderSaveLoadTest
-./RuntimeBuildingOrderSaveLoadTest
-```
-
-Linux CI builds this directory's suite, then runs `./TestsRunner` and every
-`./*Harness` and `./*Test` binary. It reports all failing executables together.
+decoding from the right offset. `test/unit/stubs/RuntimeStubs.cpp` satisfies the
+`find_location` / `passes_conditions` link surface (`BuildingsTypes`, `FlagMap`,
+`GradientManager`, and the `Constraint` / `Condition` factories) that a
+constraint-free order never reaches at runtime. It is the `RuntimeBuildingOrderSaveLoad`
+suite of `glob2-unit-tests`.
 
 ### Native main Settings redesign
 
@@ -728,8 +805,8 @@ See [AI telemetry](../docs/ai/telemetry.md) for the capture/extension contract.
 ## Performance telemetry
 
 ```sh
-scons -j8 release=1 server=0 performance-telemetry-test
-build/native-tests/libgag/src/PerformanceTelemetryHarness
+scons -j8 release=1 server=0 unit-tests
+python3 test/run_tests.py --binary unit --filter 'PerformanceTelemetry/*'
 ```
 
 The injected-clock harness checks online variance, nested timings, exclusion of sleep and
@@ -814,7 +891,7 @@ mkdir -p artifacts/ai-profiles-small artifacts/ai-profiles-large
 An optional language code after the mode (for example, `profiles ja` or
 `profiles-large ar`) captures that catalog, including localized section headings.
 Use `GLOB2_USER_DIR` to isolate captures in a disposable profile. Text wrapping
-for unspaced CJK text and long words is covered by `UILayoutHarness`.
+for unspaced CJK text and long words is covered by the `UILayout` unit suite.
 
 ### Landscape preview scheduling and scrolling
 
@@ -869,8 +946,8 @@ Ordinary UI lines retain their existing sizing behavior.
 
 ## Parallel compute prototype
 
-Build `scons release=1 server=0 compute-executor-test path-gradient-test
-building-gradient-invalidation-test`. `ComputeExecutorHarness` checks exclusive
+Build `scons release=1 server=0 unit-tests path-gradient-test
+building-gradient-invalidation-test`. The `ComputeExecutor` unit suite checks exclusive
 slots, barriers, nested batches, exception propagation, reuse and reconfiguration.
 The path oracle also exercises independent eager/lazy searches at 1/2/4/8 threads;
 the building invalidation harness compares real area/building seed fields and
@@ -886,8 +963,8 @@ and paired CPU/wall-time benchmarking.
 
 ### Delayed gradient pipeline
 
-Build `gradient-pipeline-test` and run `GradientPipelineHarness` from the build's
-`src` directory. The standalone scheduler test varies completion order across
+The `GradientPipeline` unit suite (`python3 test/run_tests.py --binary unit --filter
+'GradientPipeline/*'`) varies completion order across
 0/1/2/4/8 workers and publication delays, checks synchronous supersession, bounded
 buffers, partial thread-creation failure, exception delivery and teardown. It can
 also be compiled directly with ThreadSanitizer without SDL.

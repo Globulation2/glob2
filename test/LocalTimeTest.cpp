@@ -4,22 +4,15 @@
 // (banned IPs, player mute times, hourly game-log names) store times in
 // Boost's text form. Expected strings below are what Boost 1.83 printed.
 
+#include "Glob2Test.h"
 #include "../src/yog/LocalTime.h"
-#include <cstdlib>
-#include <iostream>
 #include <string>
 
 namespace
 {
-int failures = 0;
-
 void check(bool ok, const std::string& what)
 {
-	if (!ok)
-	{
-		std::cerr << "FAIL: " << what << '\n';
-		++failures;
-	}
+	CHECK_MESSAGE(ok, what);
 }
 
 LocalTime at(int year, unsigned month, unsigned day, int h, int m, int s, int us = 0)
@@ -29,7 +22,9 @@ LocalTime at(int year, unsigned month, unsigned day, int h, int m, int s, int us
 }
 }
 
-int main()
+TEST_SUITE("LocalTime")
+{
+TEST_CASE("keeps boost::posix_time's text form; parsing and special values")
 {
 	struct FormatCase
 	{
@@ -94,7 +89,5 @@ int main()
 	check(timeOfDay(at(1969, 12, 31, 23, 0, 0)) == std::chrono::hours(23), "timeOfDay before 1970");
 	check(toString(std::chrono::floor<std::chrono::hours>(at(2026, 9, 29, 14, 59, 59, 1))) == "2026-Sep-29 14:00:00", "hour of game log");
 
-	if (failures)
-		return EXIT_FAILURE;
-	std::cout << "LocalTime keeps boost::posix_time's text form, parsing and special values\n";
+}
 }

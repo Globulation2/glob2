@@ -2,7 +2,6 @@
 import hashlib
 import json
 import os
-import runpy
 from pathlib import Path
 from SCons.Script import Environment, Default, Delete, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, prepare_directory
@@ -84,8 +83,7 @@ def build_mobile(directory, identity, arguments):
             tests['CPPDEFINES'] = ['HAVE_CONFIG_H', 'SDL_MAIN_HANDLED']
             client_objects = [obj for name, obj in zip(files, objects)
                               if name != 'src/Glob2.cpp']
-            harnesses = ('MobileInputHarness', 'MobilePresentationHarness',
-                         'ResponsiveMenuHarness', 'GameGUITouchHarness',
+            harnesses = ('GameGUITouchHarness',
                          'EngineSessionHarness', 'GameGUISelectionHarness',
                          'TerrainResourcesHarness', 'TeamStatsSaveHarness')
             binaries = []
@@ -97,27 +95,6 @@ def build_mobile(directory, identity, arguments):
                 binaries += tests.Program(str(output / 'tests' / harness),
                                           (client_objects if harness != 'MobileInputHarness' else []) + entry)
             env.Alias('android-tests', binaries)
-        if 'android-unit-tests' in COMMAND_LINE_TARGETS:
-            # The same CppUnit suite as `scons -C test`, with an isolated
-            # cross-compiled test dependency (never linked into the game APK).
-            test_arch = {'arm64-v8a': 'arm64', 'armeabi-v7a': 'arm', 'x86_64': 'x64'}[identity['arch']]
-            unit_prefix = Path(arguments.get('cppunit_deps', output / 'test-deps' /
-                                             ('glob2-' + test_arch + '-android')))
-            cppunit = unit_prefix / 'lib/libcppunit.a'
-            if not cppunit.is_file():
-                raise ValueError('Build the Android CppUnit dependency first: ' + str(cppunit))
-            verify_android_library(cppunit, identity['arch'])
-            unit = env.Clone()
-            unit['CPPDEFINES'] = ['HAVE_CONFIG_H', 'SDL_MAIN_HANDLED']
-            unit.Append(CPPPATH=[str(unit_prefix / 'include'), 'src/render'], LIBS=[unit.File(str(cppunit))])
-            names = runpy.run_path('test/cppunit_sources.py')['CPPUNIT_SOURCES']
-            unit_objects = []
-            for name in names:
-                source = os.path.normpath('test/' + name)
-                unit_objects += unit.Object(str(object_root / 'cppunit' / (source + '.o')), source)
-            unit_objects += unit.Object(str(object_root / 'cppunit/main.o'), 'mobile/NativeTestMain.cpp')
-            suite = unit.Program(str(output / 'tests/TestsRunner'), unit_objects)
-            env.Alias('android-unit-tests', suite)
     else:
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()

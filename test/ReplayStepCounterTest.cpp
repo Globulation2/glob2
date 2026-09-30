@@ -21,6 +21,10 @@
 // OrderMessages.cpp are under test; libgag_server.a provides BinaryStream and
 // the stream backends.
 
+#include "Glob2Test.h"
+#include "unit/stubs/OrderStubs.h"
+#include "unit/stubs/GameGUIStubs.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
@@ -36,90 +40,12 @@
 
 using namespace GAGCore;
 
-// --- Stubs ---------------------------------------------------------------
-//
-// ReplayWriter::init takes a GameGUI& only to write the game header, and
-// ReplayReader::loadReplay(stream, true) constructs one only to skip that
-// header. Neither path matters here (the tests use skipToOrders=false and an
-// empty stub header), so provide link-level stand-ins without pulling in the
-// real GameGUI.h include surface. The declaration only has to produce the
-// same mangled names as the real out-of-line members.
-struct DeferredGameSHA1;
-class GameGUI
-{
-public:
-	explicit GameGUI(bool persistPreferences = true);
-	~GameGUI();
-	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const std::string name, DeferredGameSHA1* deferredSHA1 = nullptr);
-};
-GameGUI::GameGUI(bool) {}
-GameGUI::~GameGUI() {}
-bool GameGUI::load(GAGCore::InputStream*, bool) { return false; }
-void GameGUI::save(GAGCore::OutputStream*, const std::string, DeferredGameSHA1*) {}
-
-// Linking the real Order.cpp would drag in every OrderCreate / OrderDelete /
-// OrderModify… deserialize symbol through the switch in Order::getOrder. The
-// replay counter logic only cares about "some real order" vs "NullOrder", so
-// stub the factory down to those two cases.
-Order::Order(void)
-{
-	sender = ORDER_SENDER_NONE;
-	gameCheckSum = ORDER_CHECKSUM_NONE;
-}
-MiscOrder::MiscOrder() : Order() {}
-NullOrder::NullOrder() : MiscOrder() {}
-
-// A payload-less stand-in for "a real player order" — anything whose type is
-// not ORDER_NULL keeps the reader's order loop going.
-class StepTestOrder : public MiscOrder
-{
-public:
-	Uint8 *getData(void) { return NULL; }
-	bool setData(const Uint8*, int, Uint32) { return true; }
-	int getDataLength(void) { return 0; }
-	Uint8 getOrderType(void) { return ORDER_DELETE; }
-};
-
-// Record the requested version because supported replay versions currently
-// decode identically.
-Uint32 lastDecodeVersionMinor = 0;
-
-std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)
-{
-	lastDecodeVersionMinor = versionMinor;
-	if (netDataLength < 1 || netData == NULL)
-		return std::shared_ptr<Order>();
-	if (netData[0] == ORDER_NULL)
-		return std::shared_ptr<Order>(new NullOrder());
-	if (netData[0] == ORDER_DELETE)
-		return std::shared_ptr<Order>(new StepTestOrder());
-	return std::shared_ptr<Order>();
-}
-
-// NetMessage::operator!= anchors the NetMessage vtable so OrderMessages.cpp
-// links without NetMessage.cpp (whose getNetMessage switch would drag in
-// every NetXxx subclass).
-bool NetMessage::operator!=(const NetMessage& rhs) const
-{
-	return !(*this == rhs);
-}
-
-// SHA1 is wired in this project by direct .c-into-.cpp inclusion (see
-// YOGServerPasswordRegistry.cpp); the .h has no extern "C" wrapper, so
-// libgag_server.a's BinaryOutputStream::write references C++-mangled
-// SHA1Update/Init/Final names. Mirror the same trick here.
-#include "../gnupg/sha1.c"
 
 namespace {
 
-int failures = 0;
-
 void check(bool ok, const char* what)
 {
-	std::printf("%s: %s\n", ok ? "PASS" : "FAIL", what);
-	if (!ok)
-		++failures;
+	CHECK_MESSAGE(ok, (what));
 }
 
 // Number of order-less steps between init and the first order in the
@@ -139,8 +65,7 @@ void testWideRoundTrip()
 {
 	// The writer buffers to a file when given a path; a leading '/' bypasses
 	// FileManager (which is not initialised in this harness).
-	const char* tmpdir = std::getenv("TMPDIR");
-	std::string path = std::string(tmpdir ? tmpdir : "/tmp") + "/replay-stepcounter-test.replay";
+	std::string path = (glob2test::profileDir() / "replay-stepcounter-test.replay").string();
 
 	{
 		GameGUI stubGui;
@@ -266,11 +191,9 @@ void testDecodeVersionPlumbing()
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("ReplayStepCounter")
 {
-	testWideRoundTrip();
-	testVersionBounds();
-	testDecodeVersionPlumbing();
-	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
-	return failures == 0 ? 0 : 1;
+	TEST_CASE("WideRoundTrip") { testWideRoundTrip(); }
+	TEST_CASE("VersionBounds") { testVersionBounds(); }
+	TEST_CASE("DecodeVersionPlumbing") { testDecodeVersionPlumbing(); }
 }

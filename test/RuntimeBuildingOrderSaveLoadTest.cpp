@@ -25,19 +25,14 @@
 //
 // Links libgagserver.a for BinaryStream + MemoryStreamBackend.
 
-#include <cstdio>
+#include "Glob2Test.h"
+
 #include <memory>
 #include <SDL.h>
 #include "BinaryStream.h"
 #include "StreamBackend.h"
 #include "Version.h"
 #include "shared_runtime/Runtime.h"
-
-// SHA1 is wired in this project by direct .c-into-.cpp inclusion (see
-// YOGServerPasswordRegistry.cpp); the .h has no extern "C" wrapper, so
-// libgagserver.a's BinaryOutputStream references C++-mangled SHA1 names.
-// Same trick as BulletSaveLoadTest.cpp to satisfy the linker.
-#include "../gnupg/sha1.c"
 
 using namespace GAGCore;
 using AISharedRuntime::Construction::BuildingOrder;
@@ -48,13 +43,9 @@ using AISharedRuntime::Construction::BuildingOrder;
 class RuntimeBuildingOrderSaveLoadTest
 {
 public:
-	static int failures;
-
 	static void check(bool ok, const char* what)
 	{
-		std::printf("%s: %s\n", ok ? "PASS" : "FAIL", what);
-		if (!ok)
-			++failures;
+		CHECK_MESSAGE(ok, (what));
 	}
 
 	static std::unique_ptr<BinaryInputStream> makeInputStream(const MemoryStreamBackend& written)
@@ -134,14 +125,10 @@ public:
 	}
 };
 
-int RuntimeBuildingOrderSaveLoadTest::failures = 0;
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("RuntimeBuildingOrderSaveLoad")
 {
-	RuntimeBuildingOrderSaveLoadTest::testRoundTripCurrentVersion();
-	RuntimeBuildingOrderSaveLoadTest::testUnregisteredOrderRoundTrips();
-	RuntimeBuildingOrderSaveLoadTest::testPre96StreamLeavesSentinel();
-	const int failures = RuntimeBuildingOrderSaveLoadTest::failures;
-	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
-	return failures == 0 ? 0 : 1;
+	TEST_CASE("RoundTripCurrentVersion") { RuntimeBuildingOrderSaveLoadTest::testRoundTripCurrentVersion(); }
+	TEST_CASE("UnregisteredOrderRoundTrips") { RuntimeBuildingOrderSaveLoadTest::testUnregisteredOrderRoundTrips(); }
+	TEST_CASE("Pre96StreamLeavesSentinel") { RuntimeBuildingOrderSaveLoadTest::testPre96StreamLeavesSentinel(); }
 }

@@ -1,30 +1,20 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Layout-engine checks without fonts or a window: fixed-advance text, recording canvas.
+#include "Glob2Test.h"
 #include <ui/Containers.h>
 #include <ui/Controls.h>
 #include <ui/Host.h>
 #include <BrowserTextInput.h>
 #include <cstdio>
-#include <stdexcept>
 #include <vector>
 
 using namespace GAGGUI::ui;
-
-// The harness links no host; browser editing hooks are no-ops here.
-namespace GAGCore
-{
-void browserTextInput(const void *, SDL_Rect, int, int, const std::string &, bool, size_t,
-					  BrowserTextChange, const SDL_Rect *)
-{
-}
-} // namespace GAGCore
 
 namespace
 {
 void require(bool condition, const char *message)
 {
-	if (!condition)
-		throw std::runtime_error(message);
+	GLOB2_REQUIRE(condition, message);
 }
 
 struct RecordingCanvas : Canvas
@@ -454,32 +444,22 @@ void checkInvariants()
 }
 } // namespace
 
-int main()
+TEST_SUITE("UILayout")
 {
-	try
-	{
-		checkGeometry();
-		checkText();
-		checkColumnAndFlex();
-		checkRowCrossAlign();
-		checkParagraphWrapsWithWidth();
-		checkWrapColumns();
-		checkFooterFolds();
-		checkScrollClampAndWheel();
-		checkTapVersusPan();
-		checkPressSurvivesResize();
-		checkFocusAndKeyboard();
-		checkChoicePopup();
-		checkTextField();
-		checkListView();
-		checkAdaptiveAndField();
-		checkInvariants();
-		std::puts("PASS ui layout: geometry, text, containers, footer folding, scrolling, gestures, focus, popups, fields, lists");
-		return 0;
-	}
-	catch (const std::exception &error)
-	{
-		std::fprintf(stderr, "FAIL: %s\n", error.what());
-		return 1;
-	}
+	TEST_CASE("geometry") { checkGeometry(); }
+	TEST_CASE("text") { checkText(); }
+	TEST_CASE("column and flex") { checkColumnAndFlex(); }
+	TEST_CASE("row cross align") { checkRowCrossAlign(); }
+	TEST_CASE("paragraph wraps with width") { checkParagraphWrapsWithWidth(); }
+	TEST_CASE("wrap columns") { checkWrapColumns(); }
+	TEST_CASE("footer folds") { checkFooterFolds(); }
+	TEST_CASE("scroll clamp and wheel") { checkScrollClampAndWheel(); }
+	TEST_CASE("tap versus pan") { checkTapVersusPan(); }
+	TEST_CASE("press survives resize") { checkPressSurvivesResize(); }
+	TEST_CASE("focus and keyboard") { checkFocusAndKeyboard(); }
+	TEST_CASE("choice popup") { checkChoicePopup(); }
+	TEST_CASE("text field") { checkTextField(); }
+	TEST_CASE("list view") { checkListView(); }
+	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }
+	TEST_CASE("invariants") { checkInvariants(); }
 }

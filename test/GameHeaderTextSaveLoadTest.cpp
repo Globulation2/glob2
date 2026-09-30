@@ -16,6 +16,7 @@
 //   2. savePlayerInfo() -> loadPlayerInfo() round-trip stays aligned
 // Links libgag_server.a for TextStream + MemoryStreamBackend.
 
+#include "Glob2Test.h"
 #include <cstdio>
 #include <memory>
 #include <SDL.h>
@@ -27,19 +28,12 @@
 
 using namespace GAGCore;
 
-// Same direct sha1.c inclusion as BasePlayerSaveLoadTest.cpp: libgag_server.a
-// objects reference C++-mangled SHA1 names with no extern "C" wrapper.
-#include "../gnupg/sha1.c"
-
 namespace {
 
-int failures = 0;
 
 void check(bool ok, const char* what)
 {
-	std::printf("%s: %s\n", ok ? "PASS" : "FAIL", what);
-	if (!ok)
-		++failures;
+	CHECK_MESSAGE(ok, (what));
 }
 
 std::unique_ptr<TextInputStream> makeInputStream(const MemoryStreamBackend& written)
@@ -222,11 +216,9 @@ void testBinaryHeaderFormsAndLegacy()
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("GameHeaderTextSaveLoad")
 {
-	testFullRoundTrip();
-	testPlayerInfoRoundTrip();
-	testBinaryHeaderFormsAndLegacy();
-	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
-	return failures == 0 ? 0 : 1;
+	TEST_CASE("FullRoundTrip") { testFullRoundTrip(); }
+	TEST_CASE("PlayerInfoRoundTrip") { testPlayerInfoRoundTrip(); }
+	TEST_CASE("BinaryHeaderFormsAndLegacy") { testBinaryHeaderFormsAndLegacy(); }
 }

@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 /*********************************************************
  *
@@ -17,17 +17,14 @@
  *
  ********************************************************/
 
-class HelloWorldTest: public CPPUNIT_NS::TestCase
+class HelloWorldTest
 {
-CPPUNIT_TEST_SUITE(HelloWorldTest);
-		CPPUNIT_TEST(testHelloWorld);
-	CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp(void)
+	HelloWorldTest()
 	{
 	}
-	void tearDown(void)
+	~HelloWorldTest()
 	{
 	}
 
@@ -37,4 +34,7 @@ protected:
 		std::cout << "Hello, world!" << std::endl;
 	}
 };
-CPPUNIT_TEST_SUITE_REGISTRATION(HelloWorldTest);
+TEST_SUITE("HelloWorld")
+{
+	TEST_CASE_FIXTURE(HelloWorldTest, "HelloWorld") { testHelloWorld(); }
+}

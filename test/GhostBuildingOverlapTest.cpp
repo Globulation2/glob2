@@ -14,7 +14,7 @@
 // and <vector>, and wrappedRangesOverlap is inline, so this links nothing —
 // no globalContainer, no Game, no SDL runtime.
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include "GameGUIGhostBuildingManager.h"
 
@@ -40,14 +40,8 @@ namespace
 	}
 }
 
-class GhostBuildingOverlapTest : public CppUnit::TestFixture
+class GhostBuildingOverlapTest
 {
-	CPPUNIT_TEST_SUITE(GhostBuildingOverlapTest);
-	CPPUNIT_TEST(testMatchesReferenceExhaustively);
-	CPPUNIT_TEST(testEmptyRangeOverlapsNothing);
-	CPPUNIT_TEST(testWrapAroundSeam);
-	CPPUNIT_TEST(testFullAxisRangeOverlapsEverything);
-	CPPUNIT_TEST_SUITE_END();
 
 public:
 	/// The old code and the new code must agree on every input the old code was
@@ -65,7 +59,7 @@ public:
 			{
 				const bool expected = referenceOverlap(aStart, aLen, bStart, bLen, modulus);
 				const bool actual = wrappedRangesOverlap(aStart, aLen, bStart, bLen, modulus);
-				CPPUNIT_ASSERT_EQUAL(expected, actual);
+				CHECK_EQ(expected, actual);
 			}
 		}
 	}
@@ -74,10 +68,10 @@ public:
 	/// falling through to `return false`.
 	void testEmptyRangeOverlapsNothing()
 	{
-		CPPUNIT_ASSERT(!wrappedRangesOverlap(0, 0, 0, 4, 16));
-		CPPUNIT_ASSERT(!wrappedRangesOverlap(0, 4, 0, 0, 16));
-		CPPUNIT_ASSERT(!wrappedRangesOverlap(0, -3, 0, 4, 16));
-		CPPUNIT_ASSERT(!wrappedRangesOverlap(0, 0, 0, 0, 16));
+		CHECK(!wrappedRangesOverlap(0, 0, 0, 4, 16));
+		CHECK(!wrappedRangesOverlap(0, 4, 0, 0, 16));
+		CHECK(!wrappedRangesOverlap(0, -3, 0, 4, 16));
+		CHECK(!wrappedRangesOverlap(0, 0, 0, 0, 16));
 	}
 
 	/// A footprint straddling the map seam must still collide with one sitting
@@ -85,12 +79,12 @@ public:
 	void testWrapAroundSeam()
 	{
 		// {7,0} vs {0,1} on a 8-wide axis: share cell 0.
-		CPPUNIT_ASSERT(wrappedRangesOverlap(0, 2, 7, 2, 8));
-		CPPUNIT_ASSERT(wrappedRangesOverlap(7, 2, 0, 2, 8));
+		CHECK(wrappedRangesOverlap(0, 2, 7, 2, 8));
+		CHECK(wrappedRangesOverlap(7, 2, 0, 2, 8));
 		// {3,4} vs {0,1}: disjoint.
-		CPPUNIT_ASSERT(!wrappedRangesOverlap(0, 2, 3, 2, 8));
+		CHECK(!wrappedRangesOverlap(0, 2, 3, 2, 8));
 		// A negative start is normalised, not treated as disjoint.
-		CPPUNIT_ASSERT(wrappedRangesOverlap(-1, 2, 7, 1, 8));
+		CHECK(wrappedRangesOverlap(-1, 2, 7, 1, 8));
 	}
 
 	/// A footprint as wide as the axis covers it entirely, so nothing can miss it.
@@ -98,10 +92,16 @@ public:
 	{
 		for (int start = 0; start < 8; ++start)
 		{
-			CPPUNIT_ASSERT(wrappedRangesOverlap(0, 8, start, 1, 8));
-			CPPUNIT_ASSERT(wrappedRangesOverlap(start, 1, 0, 8, 8));
+			CHECK(wrappedRangesOverlap(0, 8, start, 1, 8));
+			CHECK(wrappedRangesOverlap(start, 1, 0, 8, 8));
 		}
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(GhostBuildingOverlapTest);
+TEST_SUITE("GhostBuildingOverlap")
+{
+	TEST_CASE_FIXTURE(GhostBuildingOverlapTest, "MatchesReferenceExhaustively") { testMatchesReferenceExhaustively(); }
+	TEST_CASE_FIXTURE(GhostBuildingOverlapTest, "EmptyRangeOverlapsNothing") { testEmptyRangeOverlapsNothing(); }
+	TEST_CASE_FIXTURE(GhostBuildingOverlapTest, "WrapAroundSeam") { testWrapAroundSeam(); }
+	TEST_CASE_FIXTURE(GhostBuildingOverlapTest, "FullAxisRangeOverlapsEverything") { testFullAxisRangeOverlapsEverything(); }
+}

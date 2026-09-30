@@ -6,37 +6,19 @@
 // side cap. Pre-fix tree: TC1, TC2 pass; TC3-TC7 fail (or crash in release).
 // Post-fix tree: all TCs pass and the binary exits 0.
 
+#include "Glob2Test.h"
+
 #include <cstdio>
+#include <string>
 #include <SDL.h>
 #include "Order.h"
 #include "Marshaling.h"
 
-// Minimal stub for the Order base-class constructor. Linking the real
-// Order.cpp would drag in OrderCreate/OrderDelete/MessageOrder/etc.
-// deserialize symbols (via Order::getOrder's switch) which we don't need.
-Order::Order(void)
-{
-	sender = ORDER_SENDER_NONE;
-	gameCheckSum = ORDER_CHECKSUM_NONE;
-}
-
 namespace {
-
-int g_passed = 0;
-int g_failed = 0;
 
 void check(bool cond, const char* tc, const char* what)
 {
-	if (cond)
-	{
-		++g_passed;
-		std::printf("  PASS  %s — %s\n", tc, what);
-	}
-	else
-	{
-		++g_failed;
-		std::printf("  FAIL  %s — %s\n", tc, what);
-	}
+	CHECK_MESSAGE(cond, (std::string(tc) + ": " + what));
 }
 
 void writeHeader(Uint8* buf, Sint16 minX, Sint16 minY, Sint16 maxX, Sint16 maxY)
@@ -136,16 +118,13 @@ void tc7_payloadTooLong()
 
 } // namespace
 
-int main()
+TEST_SUITE("OrderAlterateArea")
 {
-	std::printf("OrderAlterateAreaTest — BH-195 regression\n");
-	tc1_happyPath();
-	tc2_undersizedHeader();
-	tc3_negativeSide();
-	tc4_sideOverCap();
-	tc5_overflowAttack();
-	tc6_payloadTooShort();
-	tc7_payloadTooLong();
-	std::printf("\n%d passed, %d failed\n", g_passed, g_failed);
-	return g_failed == 0 ? 0 : 1;
+	TEST_CASE("well-formed brush accepted") { tc1_happyPath(); }
+	TEST_CASE("undersized header rejected") { tc2_undersizedHeader(); }
+	TEST_CASE("negative side rejected") { tc3_negativeSide(); }
+	TEST_CASE("side over cap rejected") { tc4_sideOverCap(); }
+	TEST_CASE("overflow attack rejected") { tc5_overflowAttack(); }
+	TEST_CASE("payload too short rejected") { tc6_payloadTooShort(); }
+	TEST_CASE("payload too long rejected") { tc7_payloadTooLong(); }
 }

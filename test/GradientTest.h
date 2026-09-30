@@ -3,26 +3,12 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 // Tests for the pathfinding gradients (Map::propagateGradient,
 // Map::directionByGradient, Map::swimClass) on a small toroidal grass map.
-class GradientTest: public CppUnit::TestFixture
+class GradientTest
 {
-	CPPUNIT_TEST_SUITE( GradientTest );
-		CPPUNIT_TEST( testOpenGridIsOctileOnTorus );
-		CPPUNIT_TEST( testObstaclesForcePathAround );
-		CPPUNIT_TEST( testWaterCostsBySwimClass );
-		CPPUNIT_TEST( testUnreachableCellsStayUnreachable );
-		CPPUNIT_TEST( testSeedBelowGoalPropagates );
-		CPPUNIT_TEST( testSeedsBeyondBucketWindow );
-		CPPUNIT_TEST( testMaxCostStopsPropagation );
-		CPPUNIT_TEST( testDirectionPrefersCheapestTotal );
-		CPPUNIT_TEST( testDirectionBlockedNeighbour );
-		CPPUNIT_TEST( testSwimClassFromSpeeds );
-		CPPUNIT_TEST( testRandomFieldsAgainstReference );
-		CPPUNIT_TEST( testMatchesLegacyKernelOnLargeMaps );
-	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void testOpenGridIsOctileOnTorus();

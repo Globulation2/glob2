@@ -10,17 +10,16 @@
 // win/loss — re-insert it at its default-order evaluation position rather
 // than appending. Pre-fix tree fails to LINK (the helper does not exist).
 
+#include "Glob2Test.h"
 #include "WinningConditions.h"
 
-#include <cstdio>
+#include <string>
 #include <list>
 #include <memory>
 #include <vector>
 
 namespace
 {
-	int failures = 0;
-
 	typedef std::list<std::shared_ptr<WinningCondition> > ConditionList;
 
 	std::vector<WinningConditionType> typesOf(const ConditionList& conditions)
@@ -48,23 +47,18 @@ namespace
 	                 const std::vector<WinningConditionType>& expected)
 	{
 		const std::vector<WinningConditionType> actual = typesOf(conditions);
-		if (actual == expected)
-		{
-			std::printf("PASS %s\n", what);
-			return;
-		}
-		++failures;
-		std::printf("FAIL %s\n  expected:", what);
+		std::string expectedText, actualText;
 		for (size_t i = 0; i < expected.size(); ++i)
-			std::printf(" %s", typeName(expected[i]));
-		std::printf("\n  actual:  ");
+			expectedText += std::string(" ") + typeName(expected[i]);
 		for (size_t i = 0; i < actual.size(); ++i)
-			std::printf(" %s", typeName(actual[i]));
-		std::printf("\n");
+			actualText += std::string(" ") + typeName(actual[i]);
+		CHECK_MESSAGE(actual == expected, (std::string(what) + "\n  expected:" + expectedText + "\n  actual:  " + actualText));
 	}
 }
 
-int main()
+TEST_SUITE("WinningConditionPrestigeToggle")
+{
+TEST_CASE("prestige toggle edits only the prestige entry at its default rank")
 {
 	const std::vector<WinningConditionType> defaultOrder =
 		{ WCDeath, WCAllies, WCPrestige, WCScript, WCOpponentsDefeated };
@@ -139,7 +133,5 @@ int main()
 			conditions, { WCDeath, WCAllies, WCPrestige });
 	}
 
-	if (failures == 0)
-		std::printf("all tests passed\n");
-	return failures == 0 ? 0 : 1;
+}
 }

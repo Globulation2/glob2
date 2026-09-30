@@ -1,27 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
-// Stubs for symbols referenced by BuildingOrder.o that
-// RuntimeBuildingOrderSaveLoadTest does not exercise. Only save() and load() are
-// under test; find_location(), passes_conditions() and queue_gradients() live in
-// the same translation unit, so the linker still has to resolve what they call --
-// globalContainer and the building type tables, Map's placement predicate,
-// FlagMap, GradientManager, and the Constraint / Condition factories. Pulling in
-// the real definitions would drag in most of the game.
-//
-// None of these are called at runtime by the test. The Constraint / Condition
-// factories are the closest call: BuildingOrder::load() and save() do reach them,
-// but only once per element of the constraint and condition vectors, and every
-// fixture in the test uses an order with both lists empty.
+// Stubs for symbols referenced by the shared AI runtime's BuildingOrder.o that the
+// save/load unit test does not exercise: find_location(), passes_conditions() and
+// queue_gradients() live in the same translation unit, so the linker still has to
+// resolve the building type tables, FlagMap, GradientManager and the Constraint /
+// Condition factories. The factories are reached only per element of the constraint
+// and condition vectors, and every fixture uses an order with both lists empty.
 
 #include <string>
 #include "shared_runtime/Runtime.h"
-#include "GlobalContainer.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
-#include "Map.h"
-
-GlobalContainer *globalContainer = NULL;
 
 BuildingType *BuildingsTypes::getByType(const std::string &, int, bool)
 {
@@ -32,11 +22,6 @@ const std::string &IntBuildingType::typeFromShortNumber(int)
 {
 	static const std::string none;
 	return none;
-}
-
-bool Map::isHardSpaceForBuilding(int, int, int, int) const
-{
-	return false;
 }
 
 int AISharedRuntime::Construction::FlagMap::get_flag(int, int)

@@ -1,22 +1,25 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Glob2Test.h"
 #include <TouchInput.h>
 #include <MapCamera.h>
 #include <InterfacePresentation.h>
-#include <cstdio>
-#include <stdexcept>
+#include <cmath>
 using namespace GAGCore;
+namespace
+{
 void require(bool value, const char *message)
 {
-	if (!value)
-		throw std::runtime_error(message);
+	GLOB2_REQUIRE(value, message);
 }
 void near(double a, double b)
 {
-	require(std::abs(a - b) < 0.000001, "Coordinate mismatch");
+	CHECK_MESSAGE(std::abs(a - b) < 0.000001, "Coordinate mismatch: " << a << " vs " << b);
 }
-int main()
+}
+TEST_SUITE("MobileInput")
 {
-	try
+TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellation")
+{
 	{
 		require(parsePresentationPreference("") == PresentationPreference::Automatic,
 				"Missing preference defaults to Automatic");
@@ -185,12 +188,6 @@ int main()
 		require(actions.size() == 2, "Device finger IDs collided");
 		touch.down(1, 3, {20, 20});
 		require(touch.move(2, 1, {50, 10}).empty(), "Third finger failed to cancel");
-		std::puts("PASS mobile geometry/input: zoom anchoring, seams, rotation, safe layouts, "
-				  "gestures, cancellation");
 	}
-	catch (const std::exception &error)
-	{
-		std::fprintf(stderr, "FAIL: %s\n", error.what());
-		return 1;
-	}
+}
 }

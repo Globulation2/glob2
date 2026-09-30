@@ -12,6 +12,9 @@
 // subclasses are linked — Order::getOrder and the Order/MiscOrder/NullOrder
 // ctors are stubbed so only OrderMessages.cpp's behaviour is under test.
 
+#include "Glob2Test.h"
+#include "unit/stubs/OrderStubs.h"
+
 #include <cstdio>
 #include <ios>
 #include <memory>
@@ -26,64 +29,12 @@
 
 using namespace GAGCore;
 
-// --- Stubs ---------------------------------------------------------------
-//
-// Linking the real Order.cpp / OrderMisc.cpp would drag in every
-// OrderCreate / OrderDelete / OrderModify… deserialize symbol through the
-// switch in Order::getOrder. We don't need any of them: the bound-check
-// fires before getOrder is called, and the happy path returns a NullOrder
-// which has no payload-shaped state.
-Order::Order(void)
-{
-	sender = ORDER_SENDER_NONE;
-	gameCheckSum = ORDER_CHECKSUM_NONE;
-}
-MiscOrder::MiscOrder() : Order() {}
-NullOrder::NullOrder() : MiscOrder() {}
-
-// NetMessage::operator!= is the only non-pure virtual in NetMessage, so it
-// anchors the vtable. Defining it here lets us link OrderMessages.cpp without
-// pulling in NetMessage.cpp (whose getNetMessage switch would drag in every
-// NetXxx subclass).
-bool NetMessage::operator!=(const NetMessage& rhs) const
-{
-	return !(*this == rhs);
-}
-
-// SHA1 is wired in this project by direct .c-into-.cpp inclusion (see
-// YOGServerPasswordRegistry.cpp); the .h has no extern "C" wrapper, so
-// libgag_server.a's BinaryOutputStream::write references C++-mangled
-// SHA1Update/Init/Final names. Mirror the same trick here to provide the
-// definitions without dragging YOGServerPasswordRegistry into the link.
-#include "../gnupg/sha1.c"
-
-std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 /*versionMinor*/)
-{
-	if (netDataLength < 1 || netData == NULL)
-		return std::shared_ptr<Order>();
-	if (netData[0] == ORDER_NULL)
-		return std::shared_ptr<Order>(new NullOrder());
-	// Anything else: signal "couldn't decode" so decodeData throws.
-	return std::shared_ptr<Order>();
-}
 
 namespace {
 
-int g_passed = 0;
-int g_failed = 0;
-
 void check(bool cond, const char* tc, const char* what)
 {
-	if (cond)
-	{
-		++g_passed;
-		std::printf("  PASS  %s — %s\n", tc, what);
-	}
-	else
-	{
-		++g_failed;
-		std::printf("  FAIL  %s — %s\n", tc, what);
-	}
+	CHECK_MESSAGE(cond, (std::string(tc) + ": " + what));
 }
 
 // Build a BinaryInputStream containing one NetSendOrder envelope:
@@ -208,11 +159,8 @@ void tc2_acceptsValidNullOrder()
 
 } // namespace
 
-int main()
+TEST_SUITE("NetSendOrderDecode")
 {
-	std::printf("NetSendOrderDecodeTest — BH-207 regression\n");
-	tc1_rejectsOversizedSize();
-	tc2_acceptsValidNullOrder();
-	std::printf("\n%d passed, %d failed\n", g_passed, g_failed);
-	return g_failed == 0 ? 0 : 1;
+	TEST_CASE("rejects oversized size before allocating") { tc1_rejectsOversizedSize(); }
+	TEST_CASE("accepts a valid NullOrder envelope") { tc2_acceptsValidNullOrder(); }
 }

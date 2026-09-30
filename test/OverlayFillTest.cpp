@@ -6,18 +6,14 @@
 // attack power) — before the fix the parameter was accepted and dropped, so
 // the Defence overlay only ever visualised geometric footprint, never strength.
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include <vector>
 #include "OverlayFill.h"
 
-class OverlayFillTest: public CPPUNIT_NS::TestCase
+class OverlayFillTest
 {
-CPPUNIT_TEST_SUITE(OverlayFillTest);
-		CPPUNIT_TEST(testSpreadWeightsByValue);
-		CPPUNIT_TEST(testSpreadValueOneMatchesUnitBumpShape);
-		CPPUNIT_TEST(testSpreadNoUint16Overflow);
-	CPPUNIT_TEST_SUITE_END();
+public:
 
 	static const int W = 24;
 	static const int H = 24;
@@ -41,10 +37,10 @@ protected:
 
 		const int centre = 10 * H + 10;
 		// Centre increment is value * (distance - 0/distance) == value*distance.
-		CPPUNIT_ASSERT_EQUAL(static_cast<Uint32>(1 * distance), weak[centre]);
-		CPPUNIT_ASSERT_EQUAL(static_cast<Uint32>(7 * distance), strong[centre]);
+		CHECK_EQ(static_cast<Uint32>(1 * distance), weak[centre]);
+		CHECK_EQ(static_cast<Uint32>(7 * distance), strong[centre]);
 		// Whole field scales linearly with value.
-		CPPUNIT_ASSERT_EQUAL(static_cast<Uint32>(7) * weakMax, strongMax);
+		CHECK_EQ(static_cast<Uint32>(7) * weakMax, strongMax);
 	}
 
 	// With value==1 the weighted kernel reduces to a plain footprint bump, so
@@ -57,8 +53,8 @@ protected:
 		OverlayFill::spreadPoint(12, 12, /*value*/1, distance, W, H, field, max);
 
 		const int centre = 12 * H + 12;
-		CPPUNIT_ASSERT_EQUAL(static_cast<Uint32>(distance), field[centre]);
-		CPPUNIT_ASSERT_EQUAL(field[centre], max);
+		CHECK_EQ(static_cast<Uint32>(distance), field[centre]);
+		CHECK_EQ(field[centre], max);
 	}
 
 	// A cluster of high-power turrets stacked on one tile must accumulate past
@@ -76,9 +72,14 @@ protected:
 
 		const int centre = 10 * H + 10;
 		const Uint32 expected = static_cast<Uint32>(100) * value * distance;
-		CPPUNIT_ASSERT(expected > 65535u); // would have wrapped in a Uint16 field
-		CPPUNIT_ASSERT_EQUAL(expected, field[centre]);
-		CPPUNIT_ASSERT_EQUAL(expected, max);
+		CHECK(expected > 65535u); // would have wrapped in a Uint16 field
+		CHECK_EQ(expected, field[centre]);
+		CHECK_EQ(expected, max);
 	}
 };
-CPPUNIT_TEST_SUITE_REGISTRATION(OverlayFillTest);
+TEST_SUITE("OverlayFill")
+{
+	TEST_CASE_FIXTURE(OverlayFillTest, "SpreadWeightsByValue") { testSpreadWeightsByValue(); }
+	TEST_CASE_FIXTURE(OverlayFillTest, "SpreadValueOneMatchesUnitBumpShape") { testSpreadValueOneMatchesUnitBumpShape(); }
+	TEST_CASE_FIXTURE(OverlayFillTest, "SpreadNoUint16Overflow") { testSpreadNoUint16Overflow(); }
+}

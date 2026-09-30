@@ -11,7 +11,7 @@
 // mismatch would have sent BitArray::set out of bounds (BitArray aborts
 // on that, so this test would fail loudly, not corrupt memory).
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include "BitArray.h"
 #include "Brush.h"
@@ -45,15 +45,9 @@ namespace
 	};
 }
 
-class BrushAccumulatorTest : public CPPUNIT_NS::TestCase
+class BrushAccumulatorTest
 {
-CPPUNIT_TEST_SUITE(BrushAccumulatorTest);
-		CPPUNIT_TEST(testSingleApplication);
-		CPPUNIT_TEST(testNonWrappingStroke);
-		CPPUNIT_TEST(testOppositeSeamWrapsOneRow);
-		CPPUNIT_TEST(testWrapNegativeDelta);
-		CPPUNIT_TEST(testLargeBrushAcrossSeamBothAxes);
-	CPPUNIT_TEST_SUITE_END();
+public:
 
 protected:
 	// Figure 0 is the 1x1 brush: XMinus/YMinus = 0, XPlus/YPlus = 1.
@@ -69,16 +63,16 @@ protected:
 
 		Utilities::BitArray bits;
 		BrushAccumulator::AreaDimensions dim;
-		CPPUNIT_ASSERT(acc.getBitmap(&bits, &dim, &map));
+		CHECK(acc.getBitmap(&bits, &dim, &map));
 
-		CPPUNIT_ASSERT_EQUAL(10, dim.centerX);
-		CPPUNIT_ASSERT_EQUAL(10, dim.centerY);
-		CPPUNIT_ASSERT_EQUAL(0, dim.minX);
-		CPPUNIT_ASSERT_EQUAL(0, dim.minY);
-		CPPUNIT_ASSERT_EQUAL(1, dim.maxX);
-		CPPUNIT_ASSERT_EQUAL(1, dim.maxY);
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), bits.getBitLength());
-		CPPUNIT_ASSERT_EQUAL(true, bits.get(0));
+		CHECK_EQ(10, dim.centerX);
+		CHECK_EQ(10, dim.centerY);
+		CHECK_EQ(0, dim.minX);
+		CHECK_EQ(0, dim.minY);
+		CHECK_EQ(1, dim.maxX);
+		CHECK_EQ(1, dim.maxY);
+		CHECK_EQ(static_cast<size_t>(1), bits.getBitLength());
+		CHECK_EQ(true, bits.get(0));
 	}
 
 	void testNonWrappingStroke(void)
@@ -90,18 +84,18 @@ protected:
 
 		Utilities::BitArray bits;
 		BrushAccumulator::AreaDimensions dim;
-		CPPUNIT_ASSERT(acc.getBitmap(&bits, &dim, &map));
+		CHECK(acc.getBitmap(&bits, &dim, &map));
 
-		CPPUNIT_ASSERT_EQUAL(10, dim.centerX);
-		CPPUNIT_ASSERT_EQUAL(10, dim.centerY);
-		CPPUNIT_ASSERT_EQUAL(0, dim.minX);
-		CPPUNIT_ASSERT_EQUAL(0, dim.minY);
-		CPPUNIT_ASSERT_EQUAL(3, dim.maxX);
-		CPPUNIT_ASSERT_EQUAL(2, dim.maxY);
+		CHECK_EQ(10, dim.centerX);
+		CHECK_EQ(10, dim.centerY);
+		CHECK_EQ(0, dim.minX);
+		CHECK_EQ(0, dim.minY);
+		CHECK_EQ(3, dim.maxX);
+		CHECK_EQ(2, dim.maxY);
 		// 3x2 bitmap: bit (0,0) from the first click, bit (2,1) from the second.
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(6), bits.getBitLength());
+		CHECK_EQ(static_cast<size_t>(6), bits.getBitLength());
 		for (size_t pos = 0; pos < 6; pos++)
-			CPPUNIT_ASSERT_EQUAL(pos == 0 || pos == 5, bits.get(pos));
+			CHECK_EQ(pos == 0 || pos == 5, bits.get(pos));
 	}
 
 	void testOppositeSeamWrapsOneRow(void)
@@ -116,18 +110,18 @@ protected:
 
 		Utilities::BitArray bits;
 		BrushAccumulator::AreaDimensions dim;
-		CPPUNIT_ASSERT(acc.getBitmap(&bits, &dim, &map));
+		CHECK(acc.getBitmap(&bits, &dim, &map));
 
-		CPPUNIT_ASSERT_EQUAL(0, dim.centerX);
-		CPPUNIT_ASSERT_EQUAL(0, dim.centerY);
-		CPPUNIT_ASSERT_EQUAL(-2, dim.minX);
-		CPPUNIT_ASSERT_EQUAL(0, dim.minY);
-		CPPUNIT_ASSERT_EQUAL(3, dim.maxX);
-		CPPUNIT_ASSERT_EQUAL(1, dim.maxY);
+		CHECK_EQ(0, dim.centerX);
+		CHECK_EQ(0, dim.centerY);
+		CHECK_EQ(-2, dim.minX);
+		CHECK_EQ(0, dim.minY);
+		CHECK_EQ(3, dim.maxX);
+		CHECK_EQ(1, dim.maxY);
 		// 5x1 bitmap: cells at offsets -2, 0, +2 => array x 0, 2, 4.
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(5), bits.getBitLength());
+		CHECK_EQ(static_cast<size_t>(5), bits.getBitLength());
 		for (size_t pos = 0; pos < 5; pos++)
-			CPPUNIT_ASSERT_EQUAL(pos % 2 == 0, bits.get(pos));
+			CHECK_EQ(pos % 2 == 0, bits.get(pos));
 	}
 
 	void testWrapNegativeDelta(void)
@@ -141,15 +135,15 @@ protected:
 
 		Utilities::BitArray bits;
 		BrushAccumulator::AreaDimensions dim;
-		CPPUNIT_ASSERT(acc.getBitmap(&bits, &dim, &map));
+		CHECK(acc.getBitmap(&bits, &dim, &map));
 
-		CPPUNIT_ASSERT_EQUAL(30, dim.centerX);
-		CPPUNIT_ASSERT_EQUAL(0, dim.minX);
-		CPPUNIT_ASSERT_EQUAL(3, dim.maxX);
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), bits.getBitLength());
-		CPPUNIT_ASSERT_EQUAL(true, bits.get(0));
-		CPPUNIT_ASSERT_EQUAL(false, bits.get(1));
-		CPPUNIT_ASSERT_EQUAL(true, bits.get(2));
+		CHECK_EQ(30, dim.centerX);
+		CHECK_EQ(0, dim.minX);
+		CHECK_EQ(3, dim.maxX);
+		CHECK_EQ(static_cast<size_t>(3), bits.getBitLength());
+		CHECK_EQ(true, bits.get(0));
+		CHECK_EQ(false, bits.get(1));
+		CHECK_EQ(true, bits.get(2));
 	}
 
 	void testLargeBrushAcrossSeamBothAxes(void)
@@ -166,15 +160,15 @@ protected:
 
 		Utilities::BitArray bits;
 		BrushAccumulator::AreaDimensions dim;
-		CPPUNIT_ASSERT(acc.getBitmap(&bits, &dim, &map));
+		CHECK(acc.getBitmap(&bits, &dim, &map));
 
-		CPPUNIT_ASSERT_EQUAL(1, dim.centerX);
-		CPPUNIT_ASSERT_EQUAL(1, dim.centerY);
-		CPPUNIT_ASSERT_EQUAL(-5, dim.minX);
-		CPPUNIT_ASSERT_EQUAL(-5, dim.minY);
-		CPPUNIT_ASSERT_EQUAL(3, dim.maxX);
-		CPPUNIT_ASSERT_EQUAL(3, dim.maxY);
-		CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(64), bits.getBitLength());
+		CHECK_EQ(1, dim.centerX);
+		CHECK_EQ(1, dim.centerY);
+		CHECK_EQ(-5, dim.minX);
+		CHECK_EQ(-5, dim.minY);
+		CHECK_EQ(3, dim.maxX);
+		CHECK_EQ(3, dim.maxY);
+		CHECK_EQ(static_cast<size_t>(64), bits.getBitLength());
 		for (int y = 0; y < 8; y++)
 		{
 			for (int x = 0; x < 8; x++)
@@ -183,11 +177,17 @@ protected:
 				// the wrapped one fills [0,4]x[0,4]; they overlap in [3,4]^2.
 				const bool inFirst = (x >= 3 && y >= 3);
 				const bool inSecond = (x <= 4 && y <= 4);
-				CPPUNIT_ASSERT_EQUAL(inFirst || inSecond,
-					bits.get(static_cast<size_t>(y * 8 + x)));
+				CHECK_EQ(inFirst || inSecond, bits.get(static_cast<size_t>(y * 8 + x)));
 			}
 		}
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( BrushAccumulatorTest );
+TEST_SUITE("BrushAccumulator")
+{
+	TEST_CASE_FIXTURE(BrushAccumulatorTest, "SingleApplication") { testSingleApplication(); }
+	TEST_CASE_FIXTURE(BrushAccumulatorTest, "NonWrappingStroke") { testNonWrappingStroke(); }
+	TEST_CASE_FIXTURE(BrushAccumulatorTest, "OppositeSeamWrapsOneRow") { testOppositeSeamWrapsOneRow(); }
+	TEST_CASE_FIXTURE(BrushAccumulatorTest, "WrapNegativeDelta") { testWrapNegativeDelta(); }
+	TEST_CASE_FIXTURE(BrushAccumulatorTest, "LargeBrushAcrossSeamBothAxes") { testLargeBrushAcrossSeamBothAxes(); }
+}

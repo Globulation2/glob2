@@ -13,33 +13,29 @@
 // Self-contained: synthesizes its own campaign fixture files in /tmp so the
 // run is independent of the real campaigns/ directory.
 
+#include "Glob2Test.h"
 #include "Campaign.h"
-#include "Toolkit.h"
 
 #include <cstdio>
-#include <cstdlib>
 #include <string>
 
 namespace {
 
-const char* kTmpValid     = "/tmp/glob2_campaign_harness_valid.txt";
-const char* kTmpEmpty     = "/tmp/glob2_campaign_harness_empty.txt";
-const char* kTmpGarbage   = "/tmp/glob2_campaign_harness_garbage.txt";
-const char* kTmpVersion0  = "/tmp/glob2_campaign_harness_v0.txt";
-const char* kTmpVersionHi = "/tmp/glob2_campaign_harness_v999.txt";
-const char* kMissing      = "/tmp/glob2_campaign_harness_does_not_exist.txt";
-
-void writeFile(const char* path, const std::string& content)
+struct Fixtures
 {
-	FILE* f = std::fopen(path, "wb");
-	if (!f) { std::fprintf(stderr, "harness: cannot open %s\n", path); std::exit(2); }
-	if (!content.empty())
-		std::fwrite(content.data(), 1, content.size(), f);
-	std::fclose(f);
-}
+	glob2test::TempDir dir;
+	std::string valid = (dir.path / "valid.txt").string();
+	std::string empty = (dir.path / "empty.txt").string();
+	std::string garbage = (dir.path / "garbage.txt").string();
+	std::string version0 = (dir.path / "v0.txt").string();
+	std::string versionHi = (dir.path / "v999.txt").string();
+	std::string missing = (dir.path / "does_not_exist.txt").string();
+	Fixtures();
+};
 
-void writeFixtures()
+Fixtures::Fixtures()
 {
+	using glob2test::writeFile;
 	const std::string valid =
 		"versionMinor = 84;\n"
 		"campaignName = \"TestCampaign\";\n"
@@ -83,11 +79,11 @@ void writeFixtures()
 		"\t}\n"
 		"}\n"
 		"description = \"campaign description\";\n";
-	writeFile(kTmpValid, valid);
+	writeFile(this->valid, valid);
 
-	writeFile(kTmpEmpty, "");
+	writeFile(empty, "");
 
-	writeFile(kTmpGarbage, "this is not a campaign file at all }} { ;; \xff\xfe\x00 random");
+	writeFile(garbage, "this is not a campaign file at all }} { ;; \xff\xfe\x00 random");
 
 	const std::string v0 =
 		"versionMinor = 0;\n"
@@ -97,7 +93,7 @@ void writeFixtures()
 		"{\n"
 		"\tmapNum = 0;\n"
 		"}\n";
-	writeFile(kTmpVersion0, v0);
+	writeFile(version0, v0);
 
 	const std::string vHi =
 		"versionMinor = 999;\n"
@@ -107,40 +103,36 @@ void writeFixtures()
 		"{\n"
 		"\tmapNum = 0;\n"
 		"}\n";
-	writeFile(kTmpVersionHi, vHi);
-
-	// kMissing: deliberately not created.
-	std::remove(kMissing);
+	writeFile(versionHi, vHi);
+	// missing: deliberately not created.
 }
 
-void runCase(const char* tag, const char* path)
+void expectRejected(const char* tag, const std::string& path)
 {
 	Campaign c;
-	const bool ok = c.load(path);
-	std::printf("%-12s ok=%d name=\"%s\" maps=%zu\n",
-	            tag, ok ? 1 : 0, c.getName().c_str(), c.getMapCount());
+	CHECK_MESSAGE(!c.load(path), (std::string(tag) + ": load must fail"));
 }
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("CampaignLoad")
 {
-	// Silence the parser's cerr noise so the golden output stays deterministic.
-	// TextStream's parser logs to stderr on malformed input; we don't want that
-	// in the diff.
-	std::freopen("/dev/null", "w", stderr);
+	TEST_CASE("load distinguishes valid campaigns from missing or broken files")
+	{
+		// TextStream's parser logs to stderr on malformed input.
+		glob2test::CapturedStderr quiet;
+		glob2test::ToolkitScope toolkit;
+		Fixtures fixtures;
 
-	GAGCore::Toolkit::init("glob2");
-	writeFixtures();
+		Campaign valid;
+		REQUIRE(valid.load(fixtures.valid));
+		CHECK_EQ(valid.getName(), "TestCampaign");
+		CHECK_EQ(valid.getMapCount(), 2u);
 
-	std::printf("# CampaignLoadHarness golden output\n");
-	runCase("valid",    kTmpValid);
-	runCase("missing",  kMissing);
-	runCase("empty",    kTmpEmpty);
-	runCase("garbage",  kTmpGarbage);
-	runCase("version0", kTmpVersion0);
-	runCase("version+", kTmpVersionHi);
-
-	GAGCore::Toolkit::close();
-	return 0;
+		expectRejected("missing", fixtures.missing);
+		expectRejected("empty", fixtures.empty);
+		expectRejected("garbage", fixtures.garbage);
+		expectRejected("version0", fixtures.version0);
+		expectRejected("version+", fixtures.versionHi);
+	}
 }

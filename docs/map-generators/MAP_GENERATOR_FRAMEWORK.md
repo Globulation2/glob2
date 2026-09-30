@@ -1805,8 +1805,8 @@ refusal) and every constant's reason.
   a home and pond each, the kit and crop guarantee), the registry entry, the SConscript line, the
   next unused legacy id and its translation keys with English placeholders. Its golden rows come
   from `MapGeneratorGoldenTest <profile> --update`.
-- The cppunit suite under `test/` (`scons && ./TestsRunner`) covers the rest of the engine and
-  must stay green alongside all of the above.
+- The unit suite (`scons unit-tests && python3 test/run_tests.py --binary unit`) covers the
+  rest of the engine and must stay green alongside all of the above.
 
 Generators validate their own construction results rather than trusting the geometry to always
 succeed: a moat must connect to land at both bridge ends, jagged outlines must leave legal

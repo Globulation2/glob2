@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 glob2 contributors
 
+#include "Glob2Test.h"
 #include "NetGamePlayerManager.h"
 #include "AINames.h"
 #include "BinaryStream.h"
@@ -9,9 +10,6 @@
 
 #include <cstdio>
 #include <vector>
-
-// Match the other stream harnesses' SHA1 linkage.
-#include "../gnupg/sha1.c"
 
 // Only localization is stubbed; exercise the real manager, BasePlayer,
 // GameHeader and binary player-info serialization without a GUI/string table.
@@ -25,15 +23,10 @@ std::string getAIText(int id)
 
 namespace
 {
-int failures = 0;
 
 void check(bool ok, const char* what)
 {
-	if (!ok)
-	{
-		std::printf("FAIL: %s\n", what);
-		++failures;
-	}
+	CHECK_MESSAGE(ok, (what));
 }
 
 bool samePlayer(const BasePlayer& a, const BasePlayer& b)
@@ -154,17 +147,18 @@ void testAllAITypes()
 }
 }
 
-int main()
+TEST_SUITE("NetGamePlayerManager")
 {
-	// Every valid removal position, including slot zero, the last player,
-	// a full lobby and a sole player; both human-only and mixed AI lobbies.
-	for (int count = 1; count <= Team::MAX_COUNT; ++count)
-		for (int removed = 0; removed < count; ++removed)
-			for (bool mixed : {false, true})
-				for (bool invertReady : {false, true})
-					testRemoval(count, removed, mixed, invertReady);
-	testRepeatedRemovalAndRejoin();
-	testAllAITypes();
-	std::printf("NetGamePlayerManagerTest: %d failures\n", failures);
-	return failures == 0 ? 0 : 1;
+	TEST_CASE("Removal")
+	{
+		// Every valid removal position, including slot zero, the last player,
+		// a full lobby and a sole player; both human-only and mixed AI lobbies.
+		for (int count = 1; count <= Team::MAX_COUNT; ++count)
+			for (int removed = 0; removed < count; ++removed)
+				for (bool mixed : {false, true})
+					for (bool invertReady : {false, true})
+						testRemoval(count, removed, mixed, invertReady);
+	}
+	TEST_CASE("RepeatedRemovalAndRejoin") { testRepeatedRemovalAndRejoin(); }
+	TEST_CASE("AllAITypes") { testAllAITypes(); }
 }

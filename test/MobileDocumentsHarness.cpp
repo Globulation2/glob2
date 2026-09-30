@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "Glob2Test.h"
 #include "../mobile/Documents.h"
-#include <cassert>
 #include <thread>
 
 using namespace GAGCore::ApplicationHost;
@@ -11,41 +11,45 @@ bool platformOpen(Request request, const std::string&) { opened = request; retur
 void platformCancel(Request request) { cancelled = request; }
 bool platformExport(const std::string&, const std::vector<unsigned char>&, const std::string&) { return accepting; }
 }
-int main() {
+TEST_SUITE("MobileDocuments")
+{
+TEST_CASE("selection requests; terminal callbacks; validation and export")
+{
     using namespace MobileDocuments;
     auto first = select("map");
     const auto old = opened;
-    assert(first->state() == FileSelectionState::Pending);
+    REQUIRE(first->state() == FileSelectionState::Pending);
     first.reset();
-    assert(cancelled == old);
+    REQUIRE(cancelled == old);
     auto second = select("game");
     const auto current = opened;
     std::thread late([&] { complete(old, FileSelectionState::Selected, {"old.map", {1,2}}); });
     late.join();
-    assert(second->state() == FileSelectionState::Pending);
+    REQUIRE(second->state() == FileSelectionState::Pending);
     std::thread callback([&] { complete(current, FileSelectionState::Selected, {"é😀.game", {3,4,5}}); });
     callback.join();
     complete(current, FileSelectionState::Failed); // First terminal callback wins.
-    assert(second->state() == FileSelectionState::Selected);
+    REQUIRE(second->state() == FileSelectionState::Selected);
     auto file = second->takeFile();
-    assert(file.name == "é😀.game" && file.bytes == std::vector<unsigned char>({3,4,5}));
-    assert(second->takeFile().bytes.empty());
-    assert(second->state() == FileSelectionState::Cancelled);
+    REQUIRE((file.name == "é😀.game" && file.bytes == std::vector<unsigned char>({3,4,5})));
+    REQUIRE(second->takeFile().bytes.empty());
+    REQUIRE(second->state() == FileSelectionState::Cancelled);
     auto invalid = select("map");
     complete(opened, FileSelectionState::Selected, {"../bad.map", {1}});
-    assert(invalid->state() == FileSelectionState::Failed);
+    REQUIRE(invalid->state() == FileSelectionState::Failed);
     auto oversized = select("map");
     complete(opened, FileSelectionState::Selected, {"large.map", std::vector<unsigned char>(maximumBytes + 1)});
-    assert(oversized->state() == FileSelectionState::Failed);
+    REQUIRE(oversized->state() == FileSelectionState::Failed);
     auto cancellation = select("map");
     complete(opened, FileSelectionState::Cancelled);
-    assert(cancellation->state() == FileSelectionState::Cancelled);
+    REQUIRE(cancellation->state() == FileSelectionState::Cancelled);
     accepting = false;
     auto refused = select("map");
-    assert(refused->state() == FileSelectionState::Failed);
-    assert(!exportFile("safe.map", {1}, "failed"));
+    REQUIRE(refused->state() == FileSelectionState::Failed);
+    REQUIRE(!exportFile("safe.map", {1}, "failed"));
     accepting = true;
-    assert(!exportFile("../unsafe.map", {1}, "failed"));
-    assert(exportFile("safe.map", {1}, "failed"));
-    assert(select("../map")->state() == FileSelectionState::Failed);
+    REQUIRE(!exportFile("../unsafe.map", {1}, "failed"));
+    REQUIRE(exportFile("safe.map", {1}, "failed"));
+    REQUIRE(select("../map")->state() == FileSelectionState::Failed);
+}
 }

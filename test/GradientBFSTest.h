@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include <SDL_stdinc.h>
 #include <vector>
@@ -28,17 +28,8 @@ namespace AISharedRuntime { class position; }
 // Friend of AISharedRuntime::Gradients::Gradient (declared in AISharedRuntime.h). Lives in the
 // global namespace because production code only needs a single forward decl
 // to friend it without dragging the cppunit headers into AISharedRuntime.h.
-class GradientBFSTest: public CppUnit::TestFixture
+class GradientBFSTest
 {
-	CPPUNIT_TEST_SUITE( GradientBFSTest );
-		CPPUNIT_TEST( testEmptyQueueIsNoop );
-		CPPUNIT_TEST( testSingleSourceMatchesChebyshev );
-		CPPUNIT_TEST( testWrapAroundSmallGrid );
-		CPPUNIT_TEST( testObstacleNotOverwritten );
-		CPPUNIT_TEST( testMultipleSourcesUseMinimum );
-		CPPUNIT_TEST( testIsolatedCellRemainsUnreachable );
-		CPPUNIT_TEST( testQueueIsDrained );
-	CPPUNIT_TEST_SUITE_END();
 
 public:
 	void testEmptyQueueIsNoop();

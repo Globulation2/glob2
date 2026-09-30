@@ -94,8 +94,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
-            libcppunit-dev
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -159,6 +158,7 @@ jobs:
         id: build_glob2_and_the_regression_harnesses
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
+            unit-tests \
             map-report-test \
             orchard-conversion-test \
             maxima-food-ledger-test \
@@ -188,17 +188,13 @@ jobs:
             savegame-safety-test \
             maxima-continuation-test \
             maxima-relocation-test \
-            buffered-file-test \
             team-stats-save-test \
             unit-continuation-test \
             runtime-continuation-test \
             gradient-invalidation-test \
-            performance-telemetry-test \
             terrain-test \
             global-gradient-test \
             path-gradient-test \
-            compute-executor-test \
-            gradient-pipeline-test \
             nicowar-farming-test \
             ai-save-portability-test \
             lan-test \
@@ -212,15 +208,10 @@ jobs:
             unit-hd-cache-test \
             runtime-pack-check \
             settings-tests \
-            screen-test \
             session-test \
             portable-renderer-test \
-            mobile-input-test \
             gameplay-touch-test \
-            ui-presentation-test \
-            mobile-documents-test \
-            mobile-certificate-test \
-            mobile-temporary-files-test
+            ui-presentation-test
 
       - name: Test Cortex placement equivalence
         id: test_cortex_placement_equivalence
@@ -366,8 +357,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
-            libcppunit-dev
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -379,6 +369,20 @@ jobs:
       - name: Unpack built Linux test programs
         id: unpack_linux_test_programs
         run: tar -xzf linux-test-programs.tar.gz
+
+      - name: Run the unit tests
+        if: ${{ matrix.shard == 4 }}
+        id: run_the_unit_tests
+        continue-on-error: true
+        run: python3 test/run_tests.py --binary unit --build-dir build/linux/client/release --junit artifacts/tests/unit-junit.xml
+      - name: Upload native test results
+        if: ${{ always() && matrix.shard == 4 }}
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-test-results-${{ matrix.runner }}
+          path: artifacts/tests/
+          if-no-files-found: ignore
 
       - name: Test Maxima food ledger
         if: ${{ matrix.shard == 1 }}
@@ -444,29 +448,6 @@ jobs:
           name: tournament-cli-${{ matrix.runner }}
           path: artifacts/tournament-cli/
           if-no-files-found: ignore
-
-      - name: Test torus geometry, picking and cloud coordinates
-        if: ${{ matrix.shard == 4 }}
-        id: test_torus_geometry_picking_and_cloud_coordinates
-        continue-on-error: true
-        run: |
-          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
-          /tmp/torus-geometry
-          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
-          /tmp/torus-picking
-          ${{ matrix.compiler }} -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
-          /tmp/cloud-field
-          ${{ matrix.compiler }} -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
-          /tmp/map-render-geometry
-
-      - name: Test the RNG, tribool and local time that replaced Boost
-        run: |
-          ${{ matrix.compiler }} -std=c++20 -O2 test/MersenneTwisterTest.cpp -o /tmp/mersenne-twister
-          /tmp/mersenne-twister
-          ${{ matrix.compiler }} -std=c++20 -O2 test/TriboolTest.cpp -o /tmp/tribool
-          /tmp/tribool
-          ${{ matrix.compiler }} -std=c++20 -O2 test/LocalTimeTest.cpp -o /tmp/local-time
-          /tmp/local-time
 
       - name: Exercise GPU and software game rendering
         if: ${{ matrix.shard == 4 }}
@@ -550,26 +531,13 @@ jobs:
             xvfb-run -a ./build/linux/client/release/src/point-bar-render-test gl
           SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             ./build/linux/client/release/src/point-bar-render-test software
-      - name: Test nonblocking screen execution
-        if: ${{ matrix.shard == 3 }}
-        id: test_nonblocking_screen_execution
-        continue-on-error: true
-        run: |
-          ./build/linux/client/release/libgag/src/ScreenExecutionHarness
-
-      - name: Test portable rendering and mobile input
+      - name: Test the portable renderer
         if: ${{ matrix.shard == 4 }}
-        id: test_portable_rendering_and_mobile_input
+        id: test_the_portable_renderer
         continue-on-error: true
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
-        run: |
-          python3 test/ci_run_commands.py \
-            --check 'mobile input' ./build/linux/client/release/libgag/src/MobileInputHarness \
-            --check 'mobile documents' ./build/linux/client/release/libgag/src/MobileDocumentsHarness \
-            --check 'mobile certificate' 'python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness' \
-            --check 'mobile temporary files' 'python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness' \
-            --check 'portable renderer' 'xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness'
+        run: xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
       - name: Test incremental engine sessions
         if: ${{ matrix.shard == 1 }}
         id: test_incremental_engine_sessions
@@ -713,24 +681,21 @@ jobs:
         run: |
           python3 test/ci_run_commands.py \
             --check 'savegame safety' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness' \
-            --check 'Maxima continuation' build/linux/client/release/src/MaximaContinuationTest \
-            --check 'buffered file' ./build/linux/client/release/src/BufferedFileStreamHarness
+            --check 'Maxima continuation' build/linux/client/release/src/MaximaContinuationTest
       - name: Test team statistics save compatibility
         if: ${{ matrix.shard == 3 }}
         id: test_team_statistics_save_compatibility
         continue-on-error: true
         run: |
-          build/linux/client/release/libgag/src/PerformanceTelemetryHarness
-          ./build/linux/client/release/src/UnitContinuationHarness
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .
-          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/MapGradientInvalidationTest .
-          python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2
-          python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2
-          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
-          python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/version88.game
-          python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game
+          python3 test/ci_run_commands.py \
+            --check 'unit continuation' ./build/linux/client/release/src/UnitContinuationHarness \
+            --check 'runtime continuation' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/RuntimeContinuationTest .' \
+            --check 'gradient invalidation' 'python3 test/run-savegame-safety-tests.py build/linux/client/release/src/MapGradientInvalidationTest .' \
+            --check 'shared runtime save continuation' 'python3 test/check_shared_runtime_save_continuation.py build/linux/client/release/src/glob2' \
+            --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/linux/client/release/src/glob2' \
+            --check 'team statistics' 'python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .' \
+            --check 'team statistics version 88' 'python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game && python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/version88.game' \
+            --check 'team statistics version 84' 'python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game && python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy /tmp/gd-small-2ai.game'
 
       - name: Verify default gradient schedule against cross-platform checksums
         if: ${{ matrix.shard == 4 }}
@@ -772,8 +737,6 @@ jobs:
         continue-on-error: true
         run: |
           ./build/linux/client/release/src/PathGradientHarness
-          ./build/linux/client/release/src/ComputeExecutorHarness
-          ./build/linux/client/release/src/GradientPipelineHarness
 
       - name: Build and run the global gradient regression
         if: ${{ matrix.shard == 2 }}
@@ -807,7 +770,6 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: 1
           SDL_AUDIODRIVER: dummy
         run: |
-          build/linux/client/release/libgag/src/MobileInputHarness
           timeout 60s xvfb-run -a build/linux/client/release/libgag/src/PortableRendererHarness
           for harness in gameplay-touch-test ui-presentation-test; do
             mkdir -p "artifacts/mobile-ui/$harness"
@@ -984,8 +946,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
-            libcppunit-dev
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -1004,19 +965,6 @@ jobs:
         run: |
           ccache -z
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
-
-      - name: Build the standalone tests
-        id: build_standalone_tests
-        continue-on-error: true
-        working-directory: test
-        run: scons CXX=${{ matrix.compiler }} -j$(nproc)
-
-      - name: Run every standalone test
-        id: run_every_standalone_test
-        continue-on-error: true
-        if: steps.build_standalone_tests.outcome == 'success'
-        working-directory: test
-        run: python3 run-standalone-tests.py
 
       - name: Build the YOG server
         id: build_the_yog_server
@@ -1136,8 +1084,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
-            libcppunit-dev
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -1279,13 +1226,12 @@ jobs:
         id: build_glob2_and_the_regression_harnesses
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \
+            unit-tests \
             map-report-test \
             orchard-conversion-test \
             tournament-compatibility-test \
             clearing-gradient-test \
             path-gradient-test \
-            compute-executor-test \
-            gradient-pipeline-test \
             point-bar-render-test \
             trapped-unit-test \
             hungry-defeat-test \
@@ -1297,8 +1243,7 @@ jobs:
             team-stats-save-test \
             unit-continuation-test \
             runtime-continuation-test \
-            gradient-invalidation-test \
-            performance-telemetry-test
+            gradient-invalidation-test
 
       - name: Test Orchard Commons generation and fruit conversion
         id: test_orchard_commons_generation_and_fruit_conversion
@@ -1313,6 +1258,19 @@ jobs:
         with:
           name: orchard-conversion-windows
           path: artifacts/orchard-conversion/
+          if-no-files-found: ignore
+
+      - name: Run the unit tests
+        id: run_the_unit_tests
+        continue-on-error: true
+        run: python3 test/run_tests.py --binary unit --build-dir build/mingw/client/release --junit artifacts/tests/unit-junit.xml
+      - name: Upload native test results
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-test-results-windows
+          path: artifacts/tests/
           if-no-files-found: ignore
 
       - name: Test map JSON reports
@@ -1348,10 +1306,7 @@ jobs:
         id: verify_weighted_path_gradients_against_the_independent_
         continue-on-error: true
         run: |
-          python3 test/ci_run_commands.py \
-            --check 'path gradient' ./build/mingw/client/release/src/PathGradientHarness.exe \
-            --check 'compute executor' ./build/mingw/client/release/src/ComputeExecutorHarness.exe \
-            --check 'gradient pipeline' ./build/mingw/client/release/src/GradientPipelineHarness.exe
+          ./build/mingw/client/release/src/PathGradientHarness.exe
       - name: Test clearing flag resource bounds
         id: test_clearing_flag_resource_bounds
         continue-on-error: true
@@ -1375,28 +1330,6 @@ jobs:
         continue-on-error: true
         run: |
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TrappedUnitLifecycleTest.exe
-
-      - name: Test torus geometry, picking and cloud coordinates
-        id: test_torus_geometry_picking_and_cloud_coordinates
-        continue-on-error: true
-        run: |
-          g++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
-          /tmp/torus-geometry
-          g++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
-          /tmp/torus-picking
-          g++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
-          /tmp/cloud-field
-          g++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
-          /tmp/map-render-geometry
-
-      - name: Test the RNG, tribool and local time that replaced Boost
-        run: |
-          g++ -std=c++20 -O2 test/MersenneTwisterTest.cpp -o /tmp/mersenne-twister
-          /tmp/mersenne-twister
-          g++ -std=c++20 -O2 test/TriboolTest.cpp -o /tmp/tribool
-          /tmp/tribool
-          g++ -std=c++20 -O2 test/LocalTimeTest.cpp -o /tmp/local-time
-          /tmp/local-time
 
       - name: Build and run the hiring bucket regression
         id: build_and_run_the_hiring_bucket_regression
@@ -1430,17 +1363,15 @@ jobs:
         id: test_team_statistics_save_compatibility
         continue-on-error: true
         run: |
-          build/mingw/client/release/libgag/src/PerformanceTelemetryHarness.exe
-          ./build/mingw/client/release/src/UnitContinuationHarness.exe
-          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/RuntimeContinuationTest.exe .
-          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/MapGradientInvalidationTest.exe .
-          python3 test/check_shared_runtime_save_continuation.py build/mingw/client/release/src/glob2.exe
-          python3 test/maxima/check_save_continuation_fixture.py build/mingw/client/release/src/glob2.exe
-          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TeamStatsSaveHarness.exe .
-          python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy /tmp/version88.game
-          python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy /tmp/gd-small-2ai.game
+          python3 test/ci_run_commands.py \
+            --check 'unit continuation' ./build/mingw/client/release/src/UnitContinuationHarness.exe \
+            --check 'runtime continuation' 'python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/RuntimeContinuationTest.exe .' \
+            --check 'gradient invalidation' 'python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/MapGradientInvalidationTest.exe .' \
+            --check 'shared runtime save continuation' 'python3 test/check_shared_runtime_save_continuation.py build/mingw/client/release/src/glob2.exe' \
+            --check 'Maxima save continuation fixture' 'python3 test/maxima/check_save_continuation_fixture.py build/mingw/client/release/src/glob2.exe' \
+            --check 'team statistics' 'python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TeamStatsSaveHarness.exe .' \
+            --check 'team statistics version 88' 'python3 test/inflate_gzip_fixture.py test/fixtures/team-stats/version88.game.gz /tmp/version88.game && python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy /tmp/version88.game' \
+            --check 'team statistics version 84' 'python3 test/inflate_gzip_fixture.py games/gd-small-2ai.game.gz /tmp/gd-small-2ai.game && python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy /tmp/gd-small-2ai.game'
 
       - name: Verify default gradient schedule against cross-platform checksums
         id: verify_default_gradient_schedule_against_cross_platform

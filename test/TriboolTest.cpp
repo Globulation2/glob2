@@ -4,17 +4,14 @@
 // depend on its three-valued logic, so every operator is checked against the
 // Kleene truth tables that Boost implements.
 
+#include "Glob2Test.h"
 #include "../src/ai/shared_runtime/Tribool.h"
-#include <cstdlib>
-#include <iostream>
 #include <string>
 
 using namespace AISharedRuntime;
 
 namespace
 {
-int failures = 0;
-
 // 0 = false, 1 = true, 2 = indeterminate
 int code(tribool t)
 {
@@ -28,15 +25,13 @@ tribool make(int c)
 
 void check(tribool got, int expected, const std::string& what)
 {
-	if (code(got) != expected)
-	{
-		std::cerr << "FAIL: " << what << " gave " << code(got) << ", expected " << expected << '\n';
-		++failures;
-	}
+	CHECK_MESSAGE(code(got) == expected, what << " gave " << code(got) << ", expected " << expected);
 }
 }
 
-int main()
+TEST_SUITE("Tribool")
+{
+TEST_CASE("follows boost::logic::tribool's three-valued logic")
 {
 	// Rows and columns are false, true, indeterminate.
 	const int notTable[3] = {1, 0, 2};
@@ -86,7 +81,5 @@ int main()
 	t = true;
 	check(t, 1, "assign true");
 
-	if (failures)
-		return EXIT_FAILURE;
-	std::cout << "tribool follows boost::logic::tribool's three-valued logic\n";
+}
 }

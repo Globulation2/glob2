@@ -5,7 +5,7 @@
 // state machine over GameMusicEvents with no SDL / Team / globalContainer
 // dependencies, so this test links only the controller .cpp itself.
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "Glob2Test.h"
 
 #include "../src/gui/GameMusicController.h"
 
@@ -28,40 +28,31 @@ namespace
 	GameMusicEvents nothing() { return GameMusicEvents{}; }
 }
 
-class GameMusicControllerTest: public CPPUNIT_NS::TestCase
+class GameMusicControllerTest
 {
-CPPUNIT_TEST_SUITE(GameMusicControllerTest);
-		CPPUNIT_TEST(testWarEventSetsWarTrackAndTimer);
-		CPPUNIT_TEST(testGoodEventSetsBuildingTrackAndTimer);
-		CPPUNIT_TEST(testTimerDecaysToDefaultTrack);
-		CPPUNIT_TEST(testSimultaneousEventsLastWriterWins);
-		CPPUNIT_TEST(testResetClearsTimers);
-		CPPUNIT_TEST(testNoEventNoTrack);
-		CPPUNIT_TEST(testWarEventOverridesExpiringBuildingTimer);
-	CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp(void) override {}
-	void tearDown(void) override {}
+	GameMusicControllerTest() {}
+	~GameMusicControllerTest() {}
 
 protected:
 	void testWarEventSetsWarTrackAndTimer()
 	{
 		GameMusicController c;
 		auto track = c.tick(warEvent());
-		CPPUNIT_ASSERT(track.has_value());
-		CPPUNIT_ASSERT_EQUAL(MusicTrack::WarEvent, *track);
+		CHECK(track.has_value());
+		CHECK_EQ(MusicTrack::WarEvent, *track);
 		// EVENT_TIMEOUT_TICKS gets set then decremented to 219 in the same tick.
-		CPPUNIT_ASSERT_EQUAL(GameMusicController::EVENT_TIMEOUT_TICKS - 1, c.getWarTimeoutTicks());
+		CHECK_EQ(GameMusicController::EVENT_TIMEOUT_TICKS - 1, c.getWarTimeoutTicks());
 	}
 
 	void testGoodEventSetsBuildingTrackAndTimer()
 	{
 		GameMusicController c;
 		auto track = c.tick(goodEvent());
-		CPPUNIT_ASSERT(track.has_value());
-		CPPUNIT_ASSERT_EQUAL(MusicTrack::BuildingEvent, *track);
-		CPPUNIT_ASSERT_EQUAL(GameMusicController::EVENT_TIMEOUT_TICKS - 1, c.getBuildingTimeoutTicks());
+		CHECK(track.has_value());
+		CHECK_EQ(MusicTrack::BuildingEvent, *track);
+		CHECK_EQ(GameMusicController::EVENT_TIMEOUT_TICKS - 1, c.getBuildingTimeoutTicks());
 	}
 
 	void testTimerDecaysToDefaultTrack()
@@ -77,14 +68,14 @@ protected:
 		for (unsigned i = 0; i < ticksUntilOne; ++i)
 		{
 			auto t = c.tick(nothing());
-			CPPUNIT_ASSERT(!t.has_value());
+			CHECK(!t.has_value());
 		}
 		// Sanity: timer should read 1 at the start of the next tick.
-		CPPUNIT_ASSERT_EQUAL(1u, c.getWarTimeoutTicks());
+		CHECK_EQ(1u, c.getWarTimeoutTicks());
 		auto track = c.tick(nothing());
-		CPPUNIT_ASSERT(track.has_value());
-		CPPUNIT_ASSERT_EQUAL(MusicTrack::InGameDefault, *track);
-		CPPUNIT_ASSERT_EQUAL(0u, c.getWarTimeoutTicks());
+		CHECK(track.has_value());
+		CHECK_EQ(MusicTrack::InGameDefault, *track);
+		CHECK_EQ(0u, c.getWarTimeoutTicks());
 	}
 
 	void testSimultaneousEventsLastWriterWins()
@@ -97,10 +88,10 @@ protected:
 		// Original musicStep does the good-event branch second; that's the
 		// last setNextTrack call before the timeout check, so building wins
 		// when both fire and neither timer is at 1.
-		CPPUNIT_ASSERT(track.has_value());
-		CPPUNIT_ASSERT_EQUAL(MusicTrack::BuildingEvent, *track);
-		CPPUNIT_ASSERT_EQUAL(GameMusicController::EVENT_TIMEOUT_TICKS - 1, c.getWarTimeoutTicks());
-		CPPUNIT_ASSERT_EQUAL(GameMusicController::EVENT_TIMEOUT_TICKS - 1, c.getBuildingTimeoutTicks());
+		CHECK(track.has_value());
+		CHECK_EQ(MusicTrack::BuildingEvent, *track);
+		CHECK_EQ(GameMusicController::EVENT_TIMEOUT_TICKS - 1, c.getWarTimeoutTicks());
+		CHECK_EQ(GameMusicController::EVENT_TIMEOUT_TICKS - 1, c.getBuildingTimeoutTicks());
 	}
 
 	void testResetClearsTimers()
@@ -108,15 +99,15 @@ protected:
 		GameMusicController c;
 		c.tick(warEvent());
 		c.tick(goodEvent());
-		CPPUNIT_ASSERT(c.getWarTimeoutTicks() > 0);
-		CPPUNIT_ASSERT(c.getBuildingTimeoutTicks() > 0);
+		CHECK(c.getWarTimeoutTicks() > 0);
+		CHECK(c.getBuildingTimeoutTicks() > 0);
 		c.reset();
-		CPPUNIT_ASSERT_EQUAL(0u, c.getWarTimeoutTicks());
-		CPPUNIT_ASSERT_EQUAL(0u, c.getBuildingTimeoutTicks());
+		CHECK_EQ(0u, c.getWarTimeoutTicks());
+		CHECK_EQ(0u, c.getBuildingTimeoutTicks());
 		// A reset controller should behave identically to a fresh one — no
 		// stale "timer == 1" transition on the very next tick.
 		auto track = c.tick(nothing());
-		CPPUNIT_ASSERT(!track.has_value());
+		CHECK(!track.has_value());
 	}
 
 	void testNoEventNoTrack()
@@ -125,7 +116,7 @@ protected:
 		for (int i = 0; i < 50; ++i)
 		{
 			auto t = c.tick(nothing());
-			CPPUNIT_ASSERT(!t.has_value());
+			CHECK(!t.has_value());
 		}
 	}
 
@@ -139,11 +130,20 @@ protected:
 		// Drain building timer to read 1 at the start of the next tick.
 		for (unsigned i = 0; i < GameMusicController::EVENT_TIMEOUT_TICKS - 2; ++i)
 			c.tick(nothing());
-		CPPUNIT_ASSERT_EQUAL(1u, c.getBuildingTimeoutTicks());
+		CHECK_EQ(1u, c.getBuildingTimeoutTicks());
 		// Now fire a war event on the same tick the building timer expires.
 		auto track = c.tick(warEvent());
-		CPPUNIT_ASSERT(track.has_value());
-		CPPUNIT_ASSERT_EQUAL(MusicTrack::InGameDefault, *track);
+		CHECK(track.has_value());
+		CHECK_EQ(MusicTrack::InGameDefault, *track);
 	}
 };
-CPPUNIT_TEST_SUITE_REGISTRATION(GameMusicControllerTest);
+TEST_SUITE("GameMusicController")
+{
+	TEST_CASE_FIXTURE(GameMusicControllerTest, "WarEventSetsWarTrackAndTimer") { testWarEventSetsWarTrackAndTimer(); }
+	TEST_CASE_FIXTURE(GameMusicControllerTest, "GoodEventSetsBuildingTrackAndTimer") { testGoodEventSetsBuildingTrackAndTimer(); }
+	TEST_CASE_FIXTURE(GameMusicControllerTest, "TimerDecaysToDefaultTrack") { testTimerDecaysToDefaultTrack(); }
+	TEST_CASE_FIXTURE(GameMusicControllerTest, "SimultaneousEventsLastWriterWins") { testSimultaneousEventsLastWriterWins(); }
+	TEST_CASE_FIXTURE(GameMusicControllerTest, "ResetClearsTimers") { testResetClearsTimers(); }
+	TEST_CASE_FIXTURE(GameMusicControllerTest, "NoEventNoTrack") { testNoEventNoTrack(); }
+	TEST_CASE_FIXTURE(GameMusicControllerTest, "WarEventOverridesExpiringBuildingTimer") { testWarEventOverridesExpiringBuildingTimer(); }
+}

@@ -203,8 +203,9 @@ press and release land on the same element.
 
 ## Verification
 
-- `scons ui-layout-test` builds `test/UILayoutHarness` (in `test/`): pure
-  layout with fixed-advance text and a recording canvas. Measure and arrange,
+- `scons unit-tests` then `python3 test/run_tests.py --binary unit --filter 'UILayout/*'`
+  runs `test/UILayoutHarness.cpp`: pure layout with fixed-advance text and a
+  recording canvas. Measure and arrange,
   adaptive re-choice after resize, footer folding, scroll clamping, wrapping,
   ellipsis, focus order, capture, tap versus pan, popup routing, per-key state
   across rebuilds and text editing.

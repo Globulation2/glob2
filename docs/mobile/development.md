@@ -256,12 +256,12 @@ Native startup failures are also written to Android logcat under `SDL/APP`.
 
 ### Native tests on a connected Android device
 
-After configuring the release project above, build the isolated CppUnit dependency
-and cross-compile the unit suite and client integration harnesses:
+After configuring the release project above, cross-compile the client integration
+harnesses:
 
 ```sh
 python3 mobile/dependencies.py --arch arm64-v8a --release --tests
-scons target=android arch=arm64-v8a release=1 android-tests android-unit-tests -j4
+scons target=android arch=arm64-v8a release=1 android-tests -j4
 python3 mobile/android_device_tests.py --serial DEVICE_SERIAL \
   --android-sdk "$ANDROID_SDK_ROOT" --output artifacts/android/device-tests
 ```
@@ -273,8 +273,7 @@ The runner checks the device ABI, stages stripped binaries and packaged assets i
 an isolated `/data/local/tmp` directory, and records each exit code and log. It
 retains those fixtures for diagnosis and never clears the installed app's data.
 
-The CppUnit source list is shared with the host suite. Integration harnesses reuse
-the production client objects. `mobile/NativeTestMain.cpp` supplies only the
+Integration harnesses reuse the production client objects. `mobile/NativeTestMain.cpp` supplies only the
 shell platform bridges: filesystem assets, SDL main readiness, absent Activity,
 and unavailable audio. SDL dummy video runs without a Java UI. These tests execute
 on the device CPU but do **not** establish real rendering, audio, native keyboard,
@@ -334,8 +333,8 @@ before expecting testers to install it. Keep the App Store release step separate
 
 ```sh
 python3 -m unittest discover -s tests/build_system -v
-scons release=1 portable-renderer-test mobile-input-test gameplay-touch-test ui-presentation-test
-build/darwin/client/release/libgag/src/MobileInputHarness
+scons release=1 unit-tests portable-renderer-test gameplay-touch-test ui-presentation-test
+python3 test/run_tests.py --binary unit --filter 'MobileInput/*' --filter 'MobileDocuments/*'
 build/darwin/client/release/libgag/src/PortableRendererHarness
 mkdir -p artifacts/mobile-ui/gameplay artifacts/mobile-ui/presentation
 GLOB2_USER_DATA_DIR="$PWD/artifacts/mobile-ui/gameplay" build/darwin/client/release/src/gameplay-touch-test

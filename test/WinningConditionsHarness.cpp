@@ -26,6 +26,8 @@
 // changes, rebuild, run, and `diff` the two outputs. Identical output =
 // equivalent behaviour.
 
+#include "Glob2Test.h"
+#include "unit/stubs/MapHeaderStubs.h"
 #include "WinningConditions.h"
 #include "Game.h"
 #include "Team.h"
@@ -36,14 +38,25 @@
 #include <array>
 #include <cstdio>
 #include <cstring>
-
-namespace harness {
-	// Defined in WinningConditionsTestStubs.cpp -- the SGSL stub reads these.
-	extern bool sgslTeamWon[32];
-	extern bool sgslTeamLost[32];
-}
+#include <string>
 
 namespace {
+
+// Every record of the golden stream; compared with test/fixtures/winning-conditions/expected.txt.
+std::string out;
+
+void emit(const char* text)
+{
+	out += text;
+}
+
+template <typename... Args>
+void emit(const char* format, Args... args)
+{
+	char line[256];
+	std::snprintf(line, sizeof line, format, args...);
+	out += line;
+}
 
 constexpr int kMaxTeams = 4;
 
@@ -57,8 +70,8 @@ void clearAll()
 {
 	std::memset(gameStorage, 0, sizeof(gameStorage));
 	std::memset(teamStorage, 0, sizeof(teamStorage));
-	std::memset(harness::sgslTeamWon, 0, sizeof(harness::sgslTeamWon));
-	std::memset(harness::sgslTeamLost, 0, sizeof(harness::sgslTeamLost));
+	std::memset(glob2test::sgsl::teamWon, 0, sizeof(glob2test::sgsl::teamWon));
+	std::memset(glob2test::sgsl::teamLost, 0, sizeof(glob2test::sgsl::teamLost));
 }
 
 void setupTeams(int n)
@@ -95,7 +108,7 @@ void emitWonLost(const char* tag, WinningCondition& cond, int n)
 	{
 		const bool w = cond.hasTeamWon(t, g());
 		const bool l = cond.hasTeamLost(t, g());
-		std::printf("  %s team=%d won=%d lost=%d\n", tag, t, w ? 1 : 0, l ? 1 : 0);
+		emit("  %s team=%d won=%d lost=%d\n", tag, t, w ? 1 : 0, l ? 1 : 0);
 	}
 }
 
@@ -109,7 +122,7 @@ void testDeath()
 		setupTeams(N);
 		for (int i = 0; i < N; ++i)
 			T(i)->isAlive = (aliveMask & (1u << i)) != 0;
-		std::printf("Death/aliveMask=0x%x\n", aliveMask);
+		emit("Death/aliveMask=0x%x\n", aliveMask);
 		WinningConditionDeath wc;
 		emitWonLost("Death", wc, N);
 	}
@@ -131,7 +144,7 @@ void testAllies()
 			setupTeams(N);
 			mutualAlliances(N, ally);
 			if (winner >= 0) T(winner)->hasWon = true;
-			std::printf("Allies/allyMask=0x%x winner=%d\n", ally, winner);
+			emit("Allies/allyMask=0x%x winner=%d\n", ally, winner);
 			WinningConditionAllies wc;
 			emitWonLost("Allies", wc, N);
 		}
@@ -146,7 +159,7 @@ void testAllies()
 		T(1)->allies = T(1)->me;
 		T(2)->allies = T(2)->me;
 		T(1)->hasWon = true;
-		std::printf("Allies/oneWay 0->1, 1 wins\n");
+		emit("Allies/oneWay 0->1, 1 wins\n");
 		WinningConditionAllies wc;
 		emitWonLost("Allies", wc, N);
 	}
@@ -181,7 +194,7 @@ void testPrestige()
 		g()->totalPrestige = c.totalPrestige;
 		g()->prestigeToReach = c.prestigeToReach;
 		for (int i = 0; i < N; ++i) T(i)->prestige = c.teamPrestige[i];
-		std::printf("Prestige/%s total=%d gate=%d prestiges=[%d,%d,%d]\n",
+		emit("Prestige/%s total=%d gate=%d prestiges=[%d,%d,%d]\n",
 		            c.tag, c.totalPrestige, c.prestigeToReach,
 		            c.teamPrestige[0], c.teamPrestige[1], c.teamPrestige[2]);
 		WinningConditionPrestige wc;
@@ -220,7 +233,7 @@ void testSuddenDeath()
 		setupTeams(N);
 		g()->stepCounter = c.stepCounter;
 		for (int i = 0; i < N; ++i) T(i)->prestige = c.teamPrestige[i];
-		std::printf("SuddenDeath/%s step=%u endTick=%u prestiges=[%d,%d,%d]\n",
+		emit("SuddenDeath/%s step=%u endTick=%u prestiges=[%d,%d,%d]\n",
 		            c.tag, c.stepCounter, c.endStepTick,
 		            c.teamPrestige[0], c.teamPrestige[1], c.teamPrestige[2]);
 		WinningConditionSuddenDeath wc;
@@ -242,16 +255,16 @@ void testScript()
 			setupTeams(N);
 			for (int i = 0; i < N; ++i)
 			{
-				harness::sgslTeamWon[i]  = (wMask & (1u << i)) != 0;
-				harness::sgslTeamLost[i] = (lMask & (1u << i)) != 0;
+				glob2test::sgsl::teamWon[i]  = (wMask & (1u << i)) != 0;
+				glob2test::sgsl::teamLost[i] = (lMask & (1u << i)) != 0;
 			}
-			std::printf("Script/wonMask=0x%x lostMask=0x%x\n", wMask, lMask);
+			emit("Script/wonMask=0x%x lostMask=0x%x\n", wMask, lMask);
 			WinningConditionScript wc;
 			emitWonLost("Script", wc, N);
 		}
 	}
 #else
-	std::printf("Script/skipped (YOG_SERVER_ONLY)\n");
+	emit("Script/skipped (YOG_SERVER_ONLY)\n");
 #endif
 }
 
@@ -268,7 +281,7 @@ void testOpponentsDefeated()
 			mutualAlliances(N, ally);
 			for (int i = 0; i < N; ++i)
 				T(i)->hasLost = (lostMask & (1u << i)) != 0;
-			std::printf("OpponentsDefeated/allyMask=0x%x lostMask=0x%x\n", ally, lostMask);
+			emit("OpponentsDefeated/allyMask=0x%x lostMask=0x%x\n", ally, lostMask);
 			WinningConditionOpponentsDefeated wc;
 			emitWonLost("OppDef", wc, N);
 		}
@@ -284,7 +297,7 @@ void testOpponentsDefeated()
 		T(1)->allies = T(1)->me;
 		T(2)->allies = T(2)->me;
 		T(2)->hasLost = true;
-		std::printf("OpponentsDefeated/oneWay 0->1, 2 lost, 1 alive\n");
+		emit("OpponentsDefeated/oneWay 0->1, 2 lost, 1 alive\n");
 		WinningConditionOpponentsDefeated wc;
 		emitWonLost("OppDef", wc, N);
 	}
@@ -300,15 +313,18 @@ void testFactoryOrder()
 	int idx = 0;
 	for (const auto& wc : wcs)
 	{
-		std::printf("DefaultList/%d type=%d\n", idx++, static_cast<int>(wc->getType()));
+		emit("DefaultList/%d type=%d\n", idx++, static_cast<int>(wc->getType()));
 	}
 }
 
 }  // namespace
 
-int main(int /*argc*/, char* /*argv*/[])
+TEST_SUITE("WinningConditions")
 {
-	std::printf("# WinningConditionsHarness golden output\n");
+TEST_CASE("every predicate matches the golden record stream [golden]")
+{
+	out.clear();
+	out += "# WinningConditionsHarness golden output\n";
 	testFactoryOrder();
 	testDeath();
 	testAllies();
@@ -316,5 +332,6 @@ int main(int /*argc*/, char* /*argv*/[])
 	testSuddenDeath();
 	testScript();
 	testOpponentsDefeated();
-	return 0;
+	glob2test::expectGolden("winning-conditions/expected.txt", out);
+}
 }

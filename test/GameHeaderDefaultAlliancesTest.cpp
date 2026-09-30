@@ -14,24 +14,17 @@
 //   4. stale ally numbers from a previous layout are fully reset
 // Links libgag_server.a for the Stream surface GameHeader.cpp pulls in.
 
+#include "Glob2Test.h"
 #include <cstdio>
 #include <SDL.h>
 #include "GameHeader.h"
 
-// Same direct sha1.c inclusion as GameHeaderTextSaveLoadTest.cpp:
-// libgag_server.a objects reference C++-mangled SHA1 names with no
-// extern "C" wrapper.
-#include "../gnupg/sha1.c"
-
 namespace {
 
-int failures = 0;
 
 void check(bool ok, const char* what)
 {
-	std::printf("%s: %s\n", ok ? "PASS" : "FAIL", what);
-	if (!ok)
-		++failures;
+	CHECK_MESSAGE(ok, (what));
 }
 
 // True if every team not listed as human or AI still carries the reset()
@@ -95,15 +88,10 @@ void testStaleLayoutReset()
 
 } // namespace
 
-int main()
+TEST_SUITE("GameHeaderDefaultAlliances")
 {
-	testHumanOnColorZero();
-	testAiSharingHumanColor();
-	testNoHuman();
-	testStaleLayoutReset();
-	if (failures == 0)
-		std::printf("All GameHeaderDefaultAlliancesTest checks passed\n");
-	else
-		std::printf("%d GameHeaderDefaultAlliancesTest check(s) FAILED\n", failures);
-	return failures == 0 ? 0 : 1;
+	TEST_CASE("HumanOnColorZero") { testHumanOnColorZero(); }
+	TEST_CASE("AiSharingHumanColor") { testAiSharingHumanColor(); }
+	TEST_CASE("NoHuman") { testNoHuman(); }
+	TEST_CASE("StaleLayoutReset") { testStaleLayoutReset(); }
 }
