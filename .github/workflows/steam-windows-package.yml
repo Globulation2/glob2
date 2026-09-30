@@ -2,11 +2,14 @@ name: Steam Windows package
 
 on:
   workflow_dispatch:
+  workflow_call:
   pull_request:
     paths:
       - .github/workflows/steam-windows-package.yml
       - tools/package_steam_windows.py
       - test/test_steam_windows_package.py
+      - .github/workflows/steam-windows-upload.yml
+      - docs/development/reference.md
 
 permissions:
   contents: read
