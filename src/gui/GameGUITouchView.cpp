@@ -258,6 +258,8 @@ void GameGUITouch::drawHUD()
 		drawTutorial();
 		drawPanel();
 	}
+	if (statsOpen && !activeDialog())
+		drawStats();
 	drawMinimap();
 	if (!activeDialog())
 	{

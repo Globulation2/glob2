@@ -9,6 +9,9 @@
 #include "GlobalContainer.h"
 #include "OverlayAreas.h"
 #include "render/Minimap.h"
+#include "TeamStat.h"
+#include "TeamStatChart.h"
+#include <FormatableString.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
@@ -19,7 +22,7 @@ bool GameGUITouch::lensVisible() const
 {
 	return lensOpen && usesHUD() && gui.selectionMode == GameGUI::NO_SELECTION &&
 		   gui.displayMode == GameGUI::STAT_TEXT_VIEW && !globalContainer->isViewingGame() && !peekOpen &&
-		   !layout().persistentPanel;
+		   !statsOpen && !layout().persistentPanel;
 }
 
 std::vector<GameGUITouch::Lens> GameGUITouch::lenses() const
@@ -227,4 +230,72 @@ void GameGUITouch::drawPeek()
 		gfx->drawRect(int(b.x), int(b.y), int(b.w), int(b.h), InGameTouchTheme::border);
 		drawPointLabel(b, labels[i], i ? 1.2 : .9);
 	}
+}
+
+// A full-width sheet above the toolbar: close on the far side, metric arrows
+// under the thumb, then counters and the chart.
+GameGUITouch::StatsLayout GameGUITouch::statsLayout() const
+{
+	const auto ui = layout();
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	const double target = InGameTouchTheme::target * unit, gap = 4 * unit;
+	const bool portrait = ui.safe.w <= ui.safe.h;
+	const double height = portrait ? std::min(ui.safe.h * .5, 340 * unit) : ui.world.h - 8 * unit;
+	StatsLayout out;
+	// Landscape sheets are tall, so they stop short of the minimap's column.
+	const double width = portrait ? ui.safe.w : minimapRect().x - 8 * unit - ui.safe.x;
+	out.sheet = {ui.safe.x, ui.actions.y - height, width, height};
+	const bool left = ThumbSide::left();
+	const double y = out.sheet.y + gap;
+	out.close = {left ? out.sheet.x + out.sheet.w - gap - target : out.sheet.x + gap, y, target, target};
+	out.next = {left ? out.sheet.x + gap : out.sheet.x + out.sheet.w - gap - target, y, target, target};
+	out.previous = {left ? out.next.x + target + gap : out.next.x - gap - target, y, target, target};
+	const double titleX = left ? out.previous.x + target + gap : out.close.x + target + gap;
+	const double titleRight = left ? out.close.x - gap : out.previous.x - gap;
+	out.title = {titleX, y, std::max(0.0, titleRight - titleX), target};
+	out.counters = {out.sheet.x + 8 * unit, y + target + gap, out.sheet.w - 16 * unit, 40 * unit};
+	const double chartTop = out.counters.y + out.counters.h + gap;
+	out.chart = {out.sheet.x + 8 * unit, chartTop, out.sheet.w - 16 * unit,
+				 std::max(0.0, out.sheet.y + out.sheet.h - chartTop - 8 * unit)};
+	return out;
+}
+
+void GameGUITouch::drawStats()
+{
+	auto *gfx = globalContainer->gfx;
+	const double unit = gfx->logicalUnitsPerPoint();
+	const auto l = statsLayout();
+	gfx->setClipRect();
+	gfx->drawFilledRect(int(l.sheet.x), int(l.sheet.y), int(l.sheet.w), int(l.sheet.h), InGameTouchTheme::readout);
+	gfx->drawHorzLine(int(l.sheet.x), int(l.sheet.y), int(l.sheet.w), InGameTouchTheme::border);
+	const std::pair<ViewRect, std::string> buttons[] = {{l.close, "×"}, {l.previous, "‹"}, {l.next, "›"}};
+	for (const auto &[r, text] : buttons)
+	{
+		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field);
+		drawPointLabel(r, text, 1.3);
+	}
+	drawPointLabel(l.title, TeamStatChart::metricName(statsMetric), 1.0);
+	const auto *stats = gui.teamStats->getLatestStat();
+	auto tr = [](const char *key) { return std::string(Toolkit::getStringTable()->getString(key)); };
+	const std::string counters =
+		std::string(FormattableString(tr("[Units: %0]")).arg(stats->totalUnit)) + "   " +
+		std::string(FormattableString(tr("[Buildings: %0]")).arg(stats->totalBuilding)) + "   " +
+		std::string(FormattableString(tr("[Food: %0 / %1]")).arg(stats->totalFood).arg(stats->totalFoodCapacity)) +
+		"   " + std::string(FormattableString(tr("[Need food: %0]")).arg(stats->needFood)) + "   " +
+		std::string(FormattableString(tr("[Need healing: %0]")).arg(stats->needHeal));
+	drawPointLabel(l.counters, counters, .7);
+	if (l.chart.w <= 0 || l.chart.h <= 0)
+		return;
+	// The chart is laid out in points and scaled with the rest of the HUD.
+	InGameTouchTheme::TextStyle littleText(globalContainer->littleFont);
+	InGameTouchTheme::TextStyle bodyText(globalContainer->standardFont);
+	SDL_Rect clip{int(l.chart.x), int(l.chart.y), int(l.chart.w), int(l.chart.h)};
+	gfx->setUITransform(unit, l.chart.x, l.chart.y, &clip);
+	TeamStatChart::Options options;
+	options.metric = statsMetric;
+	const int own = gui.localTeamNo;
+	options.shown = [own](int team) { return team == own; };
+	TeamStatChart::paintCurves(gui.game, *gfx, 0, 0, int(l.chart.w / unit), int(l.chart.h / unit), options);
+	gfx->setUITransform();
+	gfx->setClipRect();
 }

@@ -408,6 +408,7 @@ CLIENT_SOURCES = (
     'OrderModify.cpp',
     'OrderMisc.cpp',
     'OverlayAreas.cpp',
+    'TeamStatChart.cpp',
     'OverlayFill.cpp',
     'Player.cpp',
     'game/entities/Race.cpp',

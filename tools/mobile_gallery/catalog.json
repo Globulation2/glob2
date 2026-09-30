@@ -659,6 +659,13 @@
       "availability": "mobile"
     },
     {
+      "id": "game-stats-sheet",
+      "title": "Statistics sheet",
+      "description": "The statistics lens opens a sheet above the toolbar: the end-of-game chart for your own team, metric arrows under the thumb, current counters, and close; pulling it down also closes it.",
+      "group": "Gameplay",
+      "availability": "mobile"
+    },
+    {
       "id": "game-zoom-drag",
       "title": "One-finger zoom",
       "description": "Mid-gesture: tap, then press again and drag. The zoom factor sits above the finger; releasing without travel restores 1:1.",

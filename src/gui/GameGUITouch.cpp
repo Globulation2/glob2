@@ -126,7 +126,7 @@ MobileLayout GameGUITouch::layout() const
 		result.panel = dialLayout(result).bounds;
 	// The compact lens strip replaces the tactical list's drawer.
 	if (lensOpen && usesHUD() && !result.persistentPanel && gui.selectionMode == GameGUI::NO_SELECTION &&
-		gui.displayMode == GameGUI::STAT_TEXT_VIEW && !globalContainer->isViewingGame() && !peekOpen)
+		gui.displayMode == GameGUI::STAT_TEXT_VIEW && !globalContainer->isViewingGame() && !peekOpen && !statsOpen)
 	{
 		const auto rects = lensRects(result);
 		double x0 = rects.front().x, y0 = rects.front().y, x1 = x0, y1 = y0;
@@ -321,6 +321,18 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 				return 41 + i;
 		return 44;
 	}
+	if (usesHUD() && statsOpen && !activeDialog())
+	{
+		const auto stats = statsLayout();
+		if (stats.close.contains(point))
+			return 45;
+		if (stats.previous.contains(point))
+			return 46;
+		if (stats.next.contains(point))
+			return 47;
+		if (stats.sheet.contains(point))
+			return 48;
+	}
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION && controls().contains(point))
 		return 9;
 	if (usesHUD() && gui.selectionMode == GameGUI::BRUSH_SELECTION &&
@@ -376,6 +388,11 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 		targets = peekButtons();
 		targets.insert(targets.begin(), peekRect());
 		return targets;
+	}
+	if (statsOpen)
+	{
+		const auto stats = statsLayout();
+		return {stats.close, stats.previous, stats.next};
 	}
 	if (lensVisible())
 		return lensRects(layout());
@@ -632,6 +649,7 @@ bool GameGUITouch::process(SDL_Event &event)
 					railTouched = hit.index;
 				}
 			}
+			statsDrag = 0;
 			// A still press on the minimap opens the map peek (see prepareDraw).
 			if (ownerRegion == 8)
 				minimapPress = SDL_GetTicks64();
@@ -757,6 +775,13 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 				else
 					panel.axis.endDrag(action.time);
 				clampScroll();
+			}
+			if (usesHUD() && ownerRegion == 48 && action.kind == TouchActionKind::Pan)
+			{
+				// Pulling the statistics sheet down closes it.
+				statsDrag += point.y / globalContainer->gfx->logicalUnitsPerPoint();
+				if (statsDrag > InGameTouchTheme::target)
+					statsOpen = false;
 			}
 			if (action.kind == TouchActionKind::Select && interfaceRegion(point) == ownerRegion)
 				interfaceTap(point);
@@ -983,6 +1008,19 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 {
 	if (activeDialog())
 		return;
+	if (usesHUD() && statsOpen && !peekOpen)
+	{
+		const int region = interfaceRegion(point);
+		if (region >= 45 && region <= 48)
+		{
+			if (region == 45)
+				statsOpen = false;
+			else if (region != 48)
+				statsMetric = (statsMetric + (region == 47 ? 1 : EndOfGameStat::TYPE_NB_STATS - 1)) %
+							  EndOfGameStat::TYPE_NB_STATS;
+			return;
+		}
+	}
 	if (usesHUD() && peekOpen)
 	{
 		const int region = interfaceRegion(point);
@@ -1117,6 +1155,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			if (button < 2)
 			{
 				lensOpen = false;
+				statsOpen = false;
 				const auto mode = button == 0 ? GameGUI::CONSTRUCTION_VIEW : GameGUI::FLAG_VIEW;
 				panelOpen = !(panelOpen && gui.displayMode == mode &&
 							  gui.selectionMode == GameGUI::NO_SELECTION);
@@ -1427,6 +1466,11 @@ void GameGUITouch::menuAction(int action)
 		panelScroll = 0;
 		break;
 	case 3:
+		if (usesHUD() && !layout().persistentPanel && !globalContainer->isViewingGame())
+		{
+			statsOpen = true; // The compact statistics sheet.
+			break;
+		}
 		showStatistics = true;
 		panelOpen = true;
 		gui.clearSelection();

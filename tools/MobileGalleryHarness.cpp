@@ -637,6 +637,9 @@ class MobileGalleryGameplay
 			gui.touch->peekOpen = true;
 			capture("game-map-peek");
 			gui.touch->peekOpen = false;
+			gui.touch->statsOpen = true;
+			capture("game-stats-sheet");
+			gui.touch->statsOpen = false;
 		}
 		gui.touch->lensOpen = false;
 		gui.displayMode = GameGUI::FLAG_VIEW;

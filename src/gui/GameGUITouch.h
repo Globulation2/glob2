@@ -134,6 +134,17 @@ class GameGUITouch
 	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in (thumb side last).
 	void navigatePeek(GAGCore::ViewPoint point);
 	void drawPeek();
+	// Compact statistics: a bottom sheet with the team's history chart (the
+	// end-game chart, own team only), a metric switcher and current counters.
+	bool statsOpen = false;
+	int statsMetric = 0;
+	double statsDrag = 0;
+	struct StatsLayout
+	{
+		GAGCore::ViewRect sheet, close, previous, next, title, counters, chart;
+	};
+	StatsLayout statsLayout() const;
+	void drawStats();
 	void drawBuildPalette();
 	std::vector<std::pair<std::string, int>> tacticalActions() const;
 	void drawTacticalPanel();

@@ -1431,6 +1431,31 @@ class GameGUITouchHarness
 				require(gui.drawHealthFoodBar == bars && gui.touch->lensVisible(), "Lenses stay open while toggled");
 				noOrder();
 				require(gui.orderQueue.empty() && gui.game.checkSum() == checksum, "Lenses change no simulation state");
+				// The statistics lens opens a sheet with the team's history chart.
+				p = at(3);
+				tap(p.x, p.y);
+				require(gui.touch->statsOpen && !gui.touch->lensVisible(), "The statistics lens opens the sheet");
+				const auto stats = gui.touch->statsLayout();
+				require(stats.chart.h >= 100 * unit && stats.sheet.y + stats.sheet.h <= ui.actions.y + 0.5,
+						"The sheet sits above the toolbar with room for the chart");
+				tap(centre(stats.next).x, centre(stats.next).y);
+				require(gui.touch->statsMetric == 1, "The sheet's arrow shows the next metric");
+				tap(centre(stats.previous).x, centre(stats.previous).y);
+				tap(centre(stats.previous).x, centre(stats.previous).y);
+				require(gui.touch->statsMetric == EndOfGameStat::TYPE_NB_STATS - 1, "Metrics wrap around");
+				gui.touch->statsMetric = EndOfGameStat::TYPE_UNITS;
+				gui.drawAll(0);
+				gfx->printScreen(width < height ? "touch-stats-portrait.bmp" : "touch-stats-landscape.bmp");
+				gfx->nextFrame();
+				finger(SDL_FINGERDOWN, 1, centre(stats.title).x, centre(stats.title).y);
+				finger(SDL_FINGERMOTION, 1, centre(stats.title).x, centre(stats.title).y + 80 * unit);
+				finger(SDL_FINGERUP, 1, centre(stats.title).x, centre(stats.title).y + 80 * unit);
+				require(!gui.touch->statsOpen && gui.touch->lensVisible(), "Pulling the sheet down closes it");
+				tap(p.x, p.y);
+				tap(centre(stats.close).x, centre(stats.close).y);
+				require(!gui.touch->statsOpen, "The sheet's close button closes it");
+				noOrder();
+				require(gui.orderQueue.empty() && gui.game.checkSum() == checksum, "Statistics change no simulation state");
 				// The map lens opens the peek: drag to steer, buttons zoom, outside closes.
 				p = at(50);
 				tap(p.x, p.y);

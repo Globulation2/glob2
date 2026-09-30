@@ -43,8 +43,11 @@ Tools button opens a lens strip in the thumb corner instead of the tactical list
 No overlay and the four overlays (mutually exclusive), health bars, statistics,
 the map peek, message history, map marks and chat, each running the same
 `menuAction` as the list. Once the strip closes, a legend in the far corner names
-the active overlay and shows its intensity ramp (`OverlayArea::colorOf`). Spacious
-layouts and replays keep the tactical list;
+the active overlay and shows its intensity ramp (`OverlayArea::colorOf`). The
+statistics lens opens a sheet above the toolbar with the end-of-game chart for the
+player's own team only (opponents' histories stay hidden until the match ends),
+metric arrows under the thumb and current counters; × or pulling it down closes
+it. Spacious layouts and replays keep the tactical list;
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
 leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
@@ -155,7 +158,8 @@ that a drag out of the rail places a building rather than navigating back.
   touch and desktop render the same tree in the in-match theme. File operations
   keep their existing persistence and error/retry state machines.
 - `EndGameScreen` owns a chart, metric dropdown, team filters, expansion and replay
-  export on both desktop and touch. `EndGameStat` retains history interpretation,
+  export on both desktop and touch. The chart itself is `TeamStatChart`, shared with
+  the compact in-match statistics sheet. `EndGameStat` retains history interpretation,
   including explanations for missing measurement coverage. Compact layouts put metric
   and team-filter entry points in one row, with scrollable filters over the plot.
   Axis labels stay outside the curves.
