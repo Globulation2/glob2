@@ -257,7 +257,8 @@ Native startup failures are also written to Android logcat under `SDL/APP`.
 
 ### Google Play internal testing
 
-The Play upload is a release Android App Bundle. Install Android SDK platform 36
+The Play app ID is `org.globulation2.glob2`. The Play upload is a release Android
+App Bundle. Install Android SDK platform 36
 alongside the pinned NDK and build tools. The existing APK commands above remain
 useful for direct device testing. To build the bundle:
 

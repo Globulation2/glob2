@@ -1,4 +1,4 @@
-package org.globulation.glob2;
+package org.globulation2.glob2;
 
 import android.net.http.X509TrustManagerExtensions;
 import java.io.ByteArrayInputStream;

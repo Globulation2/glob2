@@ -1,4 +1,4 @@
-package org.globulation.glob2;
+package org.globulation2.glob2;
 
 import org.libsdl.app.SDLActivity;
 import android.os.Bundle;

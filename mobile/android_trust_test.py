@@ -42,7 +42,7 @@ def main():
     verify_alignment(ROOT, sdk, signed)
     subprocess.run(adb+['install', '-r', str(signed)], check=True)
     result = subprocess.check_output(adb+['shell', 'am', 'instrument', '-w',
-        'org.globulation.glob2.test/org.globulation.glob2.TrustInstrumentation'], text=True, stderr=subprocess.STDOUT, timeout=90)
+        'org.globulation2.glob2.test/org.globulation2.glob2.TrustInstrumentation'], text=True, stderr=subprocess.STDOUT, timeout=90)
     diagnostics = ROOT/'build/mobile-trust-android'
     diagnostics.mkdir(parents=True, exist_ok=True)
     (diagnostics/'instrumentation.log').write_text(result)

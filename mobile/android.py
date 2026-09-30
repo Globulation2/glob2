@@ -79,7 +79,7 @@ def main():
             apk=developer_apk.verified(ROOT,sdk,project) if args.release else project/f'app/build/outputs/apk/{variant}/app-{variant}.apk'
             subprocess.run(adb+['install','-r',str(apk)],check=True)
         else:
-            subprocess.run(adb+['shell','am','start','-n','org.globulation.glob2/.Glob2Activity'],check=True)
+            subprocess.run(adb+['shell','am','start','-n','org.globulation2.glob2/.Glob2Activity'],check=True)
         return
     arch={'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[args.arch]
     prefix=output/'vcpkg-installed'/('glob2-'+arch+'-android')
@@ -87,6 +87,9 @@ def main():
         'android_sdk='+str(sdk),'mobile_deps='+str(prefix),'-j8'],cwd=ROOT,check=True)
     with BuildLock(output):
         # Only refresh the generated source inputs, leaving Gradle build products intact.
+        for source_tree in ('app/src/main/java', 'app/src/androidTest/java'):
+            staged = project/source_tree
+            if staged.exists(): shutil.rmtree(staged)
         shutil.copytree(ROOT/'mobile/android',project,dirs_exist_ok=True)
         shutil.copy2(LOCK,project/'glob2-toolchain.json')
         native_command=[sys.executable,str(ROOT/'mobile/android.py'),'configure','--arch',args.arch,
