@@ -1855,7 +1855,7 @@ jobs:
       fail-fast: false
       # Leave runner capacity for Linux test shards once the browser build
       # finishes; all browser cases still run before the required check passes.
-      max-parallel: 8
+      max-parallel: 10
       matrix:
         include:
           # The main suite keeps file order and includes build-artifact.spec.js
@@ -1891,13 +1891,17 @@ jobs:
           - name: chromium settings storage
             browsers: chromium
             command: xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium
-          - name: chromium 5/5
+          - name: chromium webgl2 replay reload
             browsers: chromium
-            command: xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
+            renderer: webgl2
+            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'
           - name: chromium webgl2 responsive and startup
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium
+          - name: chromium 5/5
+            browsers: chromium
+            command: xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
           - name: webkit
             browsers: webkit
             command: xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js --project=webkit
@@ -1921,10 +1925,6 @@ jobs:
             browsers: chromium
             renderer: webgl2
             command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'
-          - name: chromium webgl2 replay reload
-            browsers: chromium
-            renderer: webgl2
-            command: xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'
     env:
       GLOB2_TEST_RENDERER: ${{ matrix.renderer || 'software' }}
     steps:

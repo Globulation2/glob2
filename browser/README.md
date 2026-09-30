@@ -179,7 +179,7 @@ jobs, and the lifecycle suite. Each long WebGL2 reload case runs on its own
 runner; new untagged reload cases run with the match reload group. `web-deploy` checks
 self-hosting on its own runner. A spec that needs a native program must use one
 packaged by `web-native`, or add it there.
-The browser test matrix runs at most eight jobs at once so Linux test shards can
+The browser test matrix runs at most ten jobs at once so Linux test shards can
 start promptly during a full workflow run.
 
 `web-native` restores the main Ubuntu 24.04 native compiler cache read-only
