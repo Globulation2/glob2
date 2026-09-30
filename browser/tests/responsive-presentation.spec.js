@@ -65,8 +65,9 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(async()=>{const s=await snapshot(page);return [s.width,s.height];}).toEqual([844,390]);
     await matchFrame(page);
     await page.screenshot({path:info.outputPath('phone-gameplay-landscape.png')});
-    // Cancel the retained preview, then save through the responsive dialog.
-    await touchMatch(page,630,366);
+    // Cancel the retained preview (Cancel is the left half; OK sits under the
+    // right thumb), then save through the responsive dialog.
+    await touchMatch(page,210,366);
     await page.locator('#canvas').press('Escape');
     await matchFrame(page);
     await tapControl(page,'save');

@@ -1102,8 +1102,11 @@ class GameGUITouchHarness
 				"Palette tap selects preview-and-confirm");
 		tap(dropX, dropY - 48 * gfx->logicalUnitsPerPoint());
 		noOrder();
-		const auto confirm = gui.touch->controls();
-		tap(confirm.x + confirm.w / 4, confirm.y + confirm.h / 2);
+		const auto confirm = gui.touch->confirmRect(), cancelBox = gui.touch->cancelRect();
+		require(confirm.x > cancelBox.x && confirm.y == cancelBox.y &&
+					confirm.x + confirm.w <= gui.touch->controls().x + gui.touch->controls().w + 0.5,
+				"Phone placement puts OK on the thumb side of the bar");
+		tap(confirm.x + confirm.w / 2, confirm.y + confirm.h / 2);
 		auto tapped = std::dynamic_pointer_cast<OrderCreate>(gui.toolManager.getOrder());
 		require(tapped && std::memcmp(tapped->getData(), dragged->getData(),
 									  dragged->getDataLength()) == 0,

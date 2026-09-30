@@ -58,11 +58,11 @@ void GameGUITouch::drawControls()
 			.9);
 		return;
 	}
-	const int half = int(rect.w / 2);
+	const auto confirm = confirmRect(), cancelBox = cancelRect();
 	gfx->setClipRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h));
-	gfx->drawFilledRect(int(rect.x), int(rect.y), half, int(rect.h),
+	gfx->drawFilledRect(int(confirm.x), int(confirm.y), int(confirm.w), int(confirm.h),
 						Color(preview ? 35 : 55, preview ? 90 : 55, 45, 245));
-	gfx->drawFilledRect(int(rect.x) + half, int(rect.y), int(rect.w) - half, int(rect.h),
+	gfx->drawFilledRect(int(cancelBox.x), int(cancelBox.y), int(cancelBox.w), int(cancelBox.h),
 						Color(100, 35, 35, 245));
 	if (!confirmLabel)
 	{
@@ -82,10 +82,11 @@ void GameGUITouch::drawControls()
 	for (int index = 0; index < 2; ++index)
 	{
 		auto *label = index ? cancelLabel.get() : confirmLabel.get();
-		const double factor = std::min(rect.h * 0.42 / label->getH(), half * 0.8 / label->getW());
+		const auto box = index ? cancelBox : confirm;
+		const double factor = std::min(box.h * 0.42 / label->getH(), box.w * 0.8 / label->getW());
 		const int width = int(label->getW() * factor), height = int(label->getH() * factor);
-		gfx->drawSurface(int(rect.x) + index * half + (half - width) / 2,
-						 int(rect.y) + (int(rect.h) - height) / 2, width, height, label);
+		gfx->drawSurface(int(box.x + (box.w - width) / 2), int(box.y + (box.h - height) / 2), width,
+						 height, label);
 	}
 	gfx->setClipRect();
 }

@@ -163,6 +163,9 @@ class GameGUITouch
 	std::unique_ptr<GAGCore::DrawableSurface> confirmLabel, cancelLabel;
 	GAGCore::ViewRect world() const;
 	GAGCore::ViewRect controls() const;
+	// Placement confirmation halves of controls(); OK sits under the thumb.
+	GAGCore::ViewRect confirmRect() const;
+	GAGCore::ViewRect cancelRect() const;
 	GAGCore::ViewPoint previewCursor() const;
 	void actions(const std::vector<GAGCore::TouchAction> &actions);
 	void interfaceTap(GAGCore::ViewPoint point);

@@ -182,6 +182,24 @@ ViewRect GameGUITouch::controls() const
 	rect.y = globalContainer->gfx->getH() - rect.h;
 	return rect;
 }
+// The phone HUD puts OK on the thumb's side of the bar (right-handed until
+// thumb side becomes a setting); the legacy touch layout keeps OK on the left.
+ViewRect GameGUITouch::confirmRect() const
+{
+	auto rect = controls();
+	rect.w /= 2;
+	if (usesHUD())
+		rect.x += rect.w;
+	return rect;
+}
+ViewRect GameGUITouch::cancelRect() const
+{
+	auto rect = controls();
+	rect.w /= 2;
+	if (!usesHUD())
+		rect.x += rect.w;
+	return rect;
+}
 ViewPoint GameGUITouch::previewCursor() const
 {
 	const auto &map = gui.game.map;
@@ -228,7 +246,7 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION && controls().contains(point))
 		return 9;
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION && controls().contains(point))
-		return point.x < controls().x + controls().w / 2 ? 1 : 2;
+		return confirmRect().contains(point) ? 1 : 2;
 	if (usesHUD())
 	{
 		if (minimapRect().contains(point))
@@ -263,9 +281,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 			{ui.actions.x + i * ui.actions.w / 6, ui.actions.y, ui.actions.w / 6, ui.actions.h});
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION)
 	{
-		const auto rect = controls();
-		targets = {{rect.x, rect.y, rect.w / 2, rect.h},
-				   {rect.x + rect.w / 2, rect.y, rect.w / 2, rect.h}};
+		targets = {confirmRect(), cancelRect()};
 	}
 	const auto content = panelContent();
 	if (showsBuildPalette())
@@ -757,7 +773,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 	if (!gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText &&
 		gui.selectionMode == GameGUI::TOOL_SELECTION && controls().contains(point))
 	{
-		if (point.x < controls().x + controls().w / 2)
+		if (confirmRect().contains(point))
 		{
 			if (commitPlacement())
 			{

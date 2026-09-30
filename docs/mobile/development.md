@@ -99,7 +99,10 @@ must also cover Android gesture/three-button navigation and rotation.
 - `GameGUITouchPlacement.cpp` interprets palette taps and drags. Both commit through
   `GameGUIToolManager::confirmBuilding`, including its existing validation, defaults,
   ghost suppression, and order serialization. A valid drag release places once and
-  restores the palette; a tap selects a movable preview with Confirm/Cancel.
+  restores the palette; a tap selects a movable preview with Confirm/Cancel. In the
+  phone HUD, OK takes the right (thumb) half of the bar and Cancel the left; the
+  legacy touch layout keeps OK on the left. `confirmRect()` and `cancelRect()` are
+  the single source for drawing, hit testing and keyboard focus.
   Both patterns pan continuously while the owning finger stays near an exposed
   map edge. Speed is density- and zoom-aware, and the preview follows the camera.
   Release stops preview-mode panning without committing; a second contact,
