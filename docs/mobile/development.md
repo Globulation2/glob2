@@ -354,7 +354,8 @@ On the mirror, keep the owner as the sole collaborator, protect `master` against
 force pushes and deletion, and require approval from the owner for the
 `google-play-internal` environment without administrator bypass. Keep the
 default workflow token read-only, require full commit SHA pins for actions,
-and require approval before any external fork PR workflow runs. Disable unrelated
+allow only the four pinned actions used by the release workflow, and require
+approval before any external fork PR workflow runs. Disable unrelated
 workflows in the mirror. The owner's GitHub account remains a critical trust
 boundary: protect it with strong two-factor authentication and review every
 upstream commit before syncing code that the release build will execute.
