@@ -399,9 +399,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-dl\tprint the directory search list\n");
 			printf("-s <resolution>\tset resolution and depth (for instance : -s 640x480\n");
 			printf("-u <username>\tspecify a user name\n");
+#ifndef GLOB2_CHINA_RELEASE
 			printf("-y <hostname>\tspecify an alternative hostname for YOG server\n");
 			printf("-daemon\t runs the YOG server\n");
 			printf("-router\t runs the YOG game router\n");
+#endif
 			printf("-nox <game file name> \t runs the game without using the X server\n");
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-test-games\tCreates random games with AI and tests them\n");
@@ -415,7 +417,9 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("\t\t(pair with GLOB2_TEST_SEED for a reproducible scenario)\n");
 			printMapCommandHelp();
 			printf("-test-map-gen\tGenerates random maps endlessly, without gui\n");
+#ifndef GLOB2_CHINA_RELEASE
 			printf("-admin-router Allows you to connect to a YOG router to do administration\n");
+#endif
 			printf("-vs <name>\tsave a videoshot as name\n");
 			printf("-replay <replay file name>\t replay the game stored in the specified file.\n");
 #endif  // !YOG_SERVER_ONLY

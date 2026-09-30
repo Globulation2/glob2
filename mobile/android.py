@@ -21,10 +21,12 @@ def main():
     parser.add_argument('command',choices=['configure','build','bundle','sign','sign-bundle','install','launch'])
     parser.add_argument('--arch',default='arm64-v8a',choices=['arm64-v8a','armeabi-v7a','x86_64'])
     parser.add_argument('--release',action='store_true')
+    parser.add_argument('--china',action='store_true',help='Package the China local-play client')
     parser.add_argument('--android-sdk',default=str(ROOT/'build/mobile-tools/android-sdk'))
     parser.add_argument('--gradle')
     parser.add_argument('--version-code',type=int,default=1,help='Play version code; increase it for each upload')
     parser.add_argument('--amazon-apk',action='store_true',help='Package both ARM ABIs for the Amazon Appstore')
+    parser.add_argument('--version-name',help='Android release version name')
     parser.add_argument('--keystore',type=Path,help='Private upload keystore for sign-bundle')
     parser.add_argument('--key-alias',help='Upload key alias for sign-bundle')
     parser.add_argument('--serial',help='Required for install/launch; never select an arbitrary device')
@@ -34,8 +36,13 @@ def main():
     if args.version_code < 1: raise ValueError('--version-code must be positive')
     if args.amazon_apk and (not args.release or args.arch != 'arm64-v8a' or args.command not in ('configure','build')):
         raise ValueError('--amazon-apk requires an arm64-v8a release configure or build')
+    version_name=args.version_name or (PACKAGE_VERSION if args.release else '0.9.5-mobile-dev')
+    if not version_name or any(ch in version_name for ch in '\r\n'):
+        raise ValueError('--version-name must be nonempty and on one line')
+    if args.amazon_apk and (args.china or version_name != PACKAGE_VERSION):
+        raise ValueError('--amazon-apk requires the standard package and PACKAGE_VERSION')
     if args.command=='bundle' and not args.release: raise ValueError('Play bundles must be release builds')
-    identity=build_identity({'target':'android','arch':args.arch,'release':int(args.release)})
+    identity=build_identity({'target':'android','arch':args.arch,'release':int(args.release),'china':int(args.china)})
     output=ROOT/default_directory(identity)
     project=output/'android-project'
     sdk=Path(args.android_sdk).resolve()
@@ -85,10 +92,11 @@ def main():
             subprocess.run(adb+['shell','am','start','-n','org.globulation2.glob2/.Glob2Activity'],check=True)
         return
     arches=('arm64-v8a','armeabi-v7a') if args.amazon_apk else (args.arch,)
-    outputs={abi:ROOT/default_directory(build_identity({'target':'android','arch':abi,'release':int(args.release)})) for abi in arches}
+    outputs={abi:ROOT/default_directory(build_identity({'target':'android','arch':abi,'release':int(args.release),'china':int(args.china)})) for abi in arches}
     prefixes={abi:outputs[abi]/'vcpkg-installed'/('glob2-'+{'arm64-v8a':'arm64','armeabi-v7a':'arm','x86_64':'x64'}[abi]+'-android') for abi in arches}
     for abi in arches:
         subprocess.run(['scons','target=android','arch='+abi,'release='+str(int(args.release)),
+            'china='+str(int(args.china)),
             'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j8'],cwd=ROOT,check=True)
     with BuildLock(output):
         # Only refresh the generated source inputs, leaving Gradle build products intact.
@@ -100,10 +108,12 @@ def main():
         native_command=[sys.executable,str(ROOT/'mobile/android.py'),'configure','--arch',args.arch,
             '--android-sdk',str(sdk),'--version-code',str(args.version_code)]
         if args.amazon_apk: native_command.append('--amazon-apk')
+        if args.version_name: native_command.extend(['--version-name',args.version_name])
         if args.release: native_command.append('--release')
+        if args.china: native_command.append('--china')
         (project/'glob2-build.json').write_text(json.dumps({'root':str(ROOT),'command':native_command,
             'release':args.release,'version_code':args.version_code,
-            'version_name':PACKAGE_VERSION if args.amazon_apk else '0.9.5-mobile-dev'},indent=2)+'\n')
+            'version_name':version_name},indent=2)+'\n')
         generated=project/'app/generated'
         if generated.exists(): shutil.rmtree(generated)
         generated.mkdir(parents=True)
