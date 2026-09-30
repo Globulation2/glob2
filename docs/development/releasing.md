@@ -23,8 +23,9 @@ actions list before running it there.
 The selected public `vVERSION` tag supplies the game source for every
 publication build. The release mirror's `master` supplies the reviewed workflow
 and the secrets; its HEAD can differ from the public tag because the mirror has
-owner-only changes. `tools/release/release.py check --tag` verifies the checked
-out public source and tag identify the same commit. Mirror only reviewed public
+owner-only changes. Desktop publication uses `tools/release/release.py check
+--tag` to verify the checked-out public source and tag identify the same commit;
+browser publication checks the tag commit and game version directly. Mirror only reviewed public
 commits. Review of workflow changes is essential:
 the mirror and dispatch gates alone do not make unreviewed code safe to run.
 Before tagging a new release, choose an unused version, update
