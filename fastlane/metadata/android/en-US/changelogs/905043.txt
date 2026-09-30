@@ -1,0 +1,1 @@
+Initial Android release of Globulation 2 0.9.5.4. Includes touch controls, map editing, campaigns, and computer opponents.

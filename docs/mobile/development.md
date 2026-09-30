@@ -244,6 +244,18 @@ python3 mobile/android.py launch --arch arm64-v8a --release --serial DEVICE_SERI
 Release builds start unsigned. `sign` uses a local developer key and validates
 ZIP alignment, the signature and APK digest. Store distribution requires separate
 signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.
+The F-Droid build mode adds `--fdroid` to the Android build, sign, install, and
+launch commands. Both F-Droid and Play use `org.globulation2.glob2`. The
+F-Droid release uses
+`mobile/android-release.json` for its static version
+name and base code. The three single-ABI APKs have codes `10 * base + 1` for
+`armeabi-v7a`, `+ 2` for `arm64-v8a`, and `+ 3` for `x86_64`. `build --fdroid` checks the
+APK's package name, version, ABI, alignment, native symbols, and indexed assets.
+`mobile/android_release.py check` verifies the release manifest against the
+desktop package version. The signed output of `sign` is for development and
+device testing; F-Droid signs its own published APKs.
+The two stores use different signing keys, so switching stores requires
+uninstalling the existing app and backing up or exporting saves first.
 Omit `--release` consistently from both dependency and application commands for
 debug builds. An explicit `JAVA_HOME` takes precedence over the task-local JDK.
 Release Android packages use the source package version as `versionName` by

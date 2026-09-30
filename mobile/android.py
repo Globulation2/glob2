@@ -22,9 +22,11 @@ def main():
     parser.add_argument('--arch',default='arm64-v8a',choices=['arm64-v8a','armeabi-v7a','x86_64'])
     parser.add_argument('--release',action='store_true')
     parser.add_argument('--china',action='store_true',help='Package the China local-play client')
+    parser.add_argument('--fdroid',action='store_true',help='Apply F-Droid release codes and unsigned APK checks')
     parser.add_argument('--android-sdk',default=str(ROOT/'build/mobile-tools/android-sdk'))
     parser.add_argument('--gradle')
-    parser.add_argument('--version-code',type=int,default=1,help='Play version code; increase it for each upload')
+    parser.add_argument('--jobs',type=int,default=8,help='SCons native compiler jobs')
+    parser.add_argument('--version-code',type=int,help='Android version code; fixed by the F-Droid release manifest in --fdroid mode')
     parser.add_argument('--amazon-apk',action='store_true',help='Package both ARM ABIs for the Amazon Appstore')
     parser.add_argument('--version-name',help='Android release version name')
     parser.add_argument('--keystore',type=Path,help='Private upload keystore for sign-bundle')
@@ -32,7 +34,25 @@ def main():
     parser.add_argument('--serial',help='Required for install/launch; never select an arbitrary device')
     parser.add_argument('--adb-port',type=int,default=5037,help='ADB server port; use a separate port for isolated emulators')
     args=parser.parse_args()
+    package_name='org.globulation2.glob2'
+    if args.jobs < 1: raise ValueError('--jobs must be positive')
     if not 1<=args.adb_port<=65535: raise ValueError('--adb-port must be between 1 and 65535')
+    if args.fdroid:
+        from android_release import PACKAGE as release_package, release_identity, version_code, verify_apk
+        if release_package != package_name:
+            raise ValueError('F-Droid and Play Android package IDs differ')
+        if not args.release or args.china or args.amazon_apk or args.command in ('bundle','sign-bundle'):
+            raise ValueError('F-Droid requires the standard release APK')
+        expected_code=version_code(args.arch)
+        expected_name=release_identity()['versionName']
+        if args.version_code is not None and args.version_code != expected_code:
+            raise ValueError('F-Droid version code differs from the release manifest')
+        if args.version_name is not None and args.version_name != expected_name:
+            raise ValueError('F-Droid version name differs from the release manifest')
+        args.version_code=expected_code
+        args.version_name=expected_name
+    else:
+        args.version_code=1 if args.version_code is None else args.version_code
     if args.version_code < 1: raise ValueError('--version-code must be positive')
     if args.amazon_apk and (not args.release or args.arch != 'arm64-v8a' or args.command not in ('configure','build')):
         raise ValueError('--amazon-apk requires an arm64-v8a release configure or build')
@@ -90,7 +110,7 @@ def main():
             apk=developer_apk.verified(ROOT,sdk,project) if args.release else project/f'app/build/outputs/apk/{variant}/app-{variant}.apk'
             subprocess.run(adb+['install','-r',str(apk)],check=True)
         else:
-            subprocess.run(adb+['shell','am','start','-n','org.globulation2.glob2/.Glob2Activity'],check=True)
+            subprocess.run(adb+['shell','am','start','-n',package_name+'/org.globulation2.glob2.Glob2Activity'],check=True)
         return
     arches=('arm64-v8a','armeabi-v7a') if args.amazon_apk else (args.arch,)
     base_options={'target':'android','release':int(args.release),'china':int(args.china)}
@@ -101,7 +121,7 @@ def main():
     for abi in arches:
         subprocess.run(['scons','target=android','arch='+abi,'release='+str(int(args.release)),
             'china='+str(int(args.china)),'amazon='+str(int(args.amazon_apk)),
-            'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j8'],cwd=ROOT,check=True)
+            'android_sdk='+str(sdk),'mobile_deps='+str(prefixes[abi]),'-j'+str(args.jobs)],cwd=ROOT,check=True)
     with BuildLock(output):
         # Only refresh the generated source inputs, leaving Gradle build products intact.
         for source_tree in ('app/src/main/java', 'app/src/androidTest/java'):
@@ -110,14 +130,15 @@ def main():
         shutil.copytree(ROOT/'mobile/android',project,dirs_exist_ok=True)
         shutil.copy2(LOCK,project/'glob2-toolchain.json')
         native_command=[sys.executable,str(ROOT/'mobile/android.py'),'configure','--arch',args.arch,
-            '--android-sdk',str(sdk),'--version-code',str(args.version_code)]
+            '--android-sdk',str(sdk),'--jobs',str(args.jobs),'--version-code',str(args.version_code)]
         if args.amazon_apk: native_command.append('--amazon-apk')
         if args.version_name: native_command.extend(['--version-name',args.version_name])
         if args.release: native_command.append('--release')
         if args.china: native_command.append('--china')
+        if args.fdroid: native_command.append('--fdroid')
         (project/'glob2-build.json').write_text(json.dumps({'root':str(ROOT),'command':native_command,
             'release':args.release,'version_code':args.version_code,
-            'version_name':version_name},indent=2)+'\n')
+            'version_name':version_name,'arch':args.arch,'package_name':package_name},indent=2)+'\n')
         generated=project/'app/generated'
         if generated.exists(): shutil.rmtree(generated)
         generated.mkdir(parents=True)
@@ -184,6 +205,9 @@ def main():
                 aligned.unlink(missing_ok=True)
         developer_apk.verify_alignment(ROOT,sdk,apk)
         verify_apk_assets(apk)
+        if args.fdroid:
+            digest=verify_apk(apk,args.arch,sdk)
+            apk.with_suffix('.sha256').write_text(digest+'  '+apk.name+'\n')
         build_ids={abi:verify_android_symbols(apk, outputs[abi]/'lib/libmain.so', abi, readelf) for abi in arches}
         if args.amazon_apk:
             apk.with_suffix('.json').write_text(json.dumps({'sha256':hashlib.sha256(apk.read_bytes()).hexdigest(),

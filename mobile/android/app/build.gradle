@@ -14,11 +14,12 @@ android {
     testBuildType nativeBuild.release ? 'release' : 'debug'
     defaultConfig {
         testInstrumentationRunner 'org.globulation2.glob2.TrustInstrumentation'
-        applicationId 'org.globulation2.glob2'
+        applicationId nativeBuild.package_name
         minSdk toolchain.android.min_api
         targetSdk toolchain.android.compile_api
         versionCode nativeBuild.version_code ?: 1
         versionName nativeBuild.version_name
+        ndk { abiFilters nativeBuild.arch }
     }
     sourceSets.main {
         jniLibs.srcDirs = ['generated/jniLibs']
