@@ -58,14 +58,14 @@ scons -C test                 # rebuild the separate test suite
   information there only slowed compilation and multiplied object and cache sizes.
 - The public Mac pull-request check compiles with `scons release=1` and runs a
   raw-binary command-line smoke test without release signing. On a manual run
-  from the private release mirror's `master`, the workflow runs
+  from the owner-controlled release mirror's `master`, the workflow runs
   `scons release=1 bundle` and then
   `darwin/package_app_store.py`. The script copies the bundle to the ignored
   `artifacts/mac-app-store/Glob2.app`, sets its App Store version and build number,
   adds Retina icon sizes from the existing 128-pixel artwork, applies
   `darwin/AppStore.entitlements`, and verifies its signature. Its App ID defaults
   to the iPhone ID, `org.globulation2.glob2`. When `upload` is selected, the
-  private mirror supplies the Mac distribution identities and provisioning
+  release mirror supplies the Mac distribution identities and provisioning
   profile, then makes a signed `.pkg` beside the app. The existing `package`
   target remains the direct distribution DMG path. Test saves, map import, LAN
   hosting and YOG connections in the sandboxed app before upload; local testing

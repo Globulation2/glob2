@@ -15,7 +15,7 @@ scons release=1 -j2
 
 This compiles the game without packaging or release signing it. On Apple silicon,
 the linker may add an ad hoc signature to the raw executable. To produce a sandboxed
-candidate, use a manual run in the private mirror with `upload` off, then download
+candidate, use a manual run in the release mirror with `upload` off, then download
 that run's app artifact. Check launch, settings, saves, map import, LAN hosting,
 and YOG sign-in and connection. The app's profile data is placed inside its
 sandbox container. Existing direct-distribution profiles in `~/.glob2` do not
@@ -29,14 +29,16 @@ review.
 Keep this workflow and the packaging code in the public `Globulation2/glob2`
 repository. Changes to the workflow, SCons bundle code, or `darwin/` trigger a
 compile and raw-binary smoke test on public pull requests. Public manual runs and
-private mirror pull requests skip the build job. Bundling, sandbox staging, and
-signing occur only on a manual run from the private mirror's `master` branch.
-Both private jobs require GitHub to report the mirror as private; the upload job
-also requires that repository, branch, event, and `upload=true`.
-Do not configure Mac release secrets in the public repository.
+release-mirror pull requests skip the build job. Bundling, sandbox staging, and
+signing occur only on a manual run from the release mirror's `master` branch,
+started and rerun by its owner, `genixpro`. The upload job also requires that
+repository, branch, event, owner, and `upload=true`.
+Do not configure Mac release secrets in the upstream `Globulation2/glob2`
+repository. Keep them in the mirror's restricted `mac-app-store` environment.
 
-For a release, first sync the reviewed public source to the owner-only private
-mirror, `genixpro/glob2-release`, on `master`. The owner then runs **Mac App
+For a release, first sync the reviewed public source to the owner-controlled
+release mirror, `genixpro/glob2-release`, on `master`. The mirror is public;
+keep its write access limited to the owner. The owner then runs **Mac App
 Store release** manually from that mirror's Actions tab. Enter a `build_number`
 larger than every previously uploaded build number. Leave `upload` off to
 compile and smoke-test an ad hoc sandboxed candidate. Set `upload` to true to
@@ -49,11 +51,11 @@ submission are separate actions in App Store Connect.
 Both build paths run on GitHub's arm64 `macos-26` runner with Xcode 26 or newer.
 The public check compiles the game and lists generators from the raw binary. It
 does not run `codesign` or use any release signing identity.
-The private mirror run also bundles the app, stages its sandboxed candidate,
+The release mirror run also bundles the app, stages its sandboxed candidate,
 checks the signature, lists generators, and writes a map in its container. Its
-signed job uses the exact app artifact from that run's build job. Both the source
-app archive and signed `.pkg` are retained as private mirror workflow artifacts
-for 14 days.
+signed job uses the exact app artifact from that run's build job. The unsigned
+source app archive is retained as a release mirror workflow artifact for 14 days.
+The signed `.pkg` is sent to Apple, not published as a public workflow artifact.
 
 ### One-time App Store Connect setup
 
@@ -61,7 +63,7 @@ Add macOS to the existing iPhone App Store Connect record using its registered
 bundle ID, `org.globulation2.glob2`. The App Store staging step writes that ID
 into its app copy; the existing direct-distribution bundle is unchanged. The
 optional mirror repository variable `APPLE_BUNDLE_ID` can override the ID if
-the App Store Connect setup changes. Set these variables only on the private
+the App Store Connect setup changes. Set these variables only on the release
 mirror to the exact names of the certificates imported into the workflow
 keychain:
 
@@ -71,7 +73,7 @@ keychain:
 | `APPLE_INSTALLER_SIGN_IDENTITY` | Mac Installer Distribution identity |
 | `APPLE_PROVIDER_PUBLIC_ID` | Optional App Store Connect provider ID if the API key has multiple providers |
 
-Create the `mac-app-store` GitHub environment **on the private mirror** and
+Create the `mac-app-store` GitHub environment **on the release mirror** and
 restrict deployments to its `master` branch. Add these **environment secrets on
 that mirror only**. Base64 values must be single-line encodings of the original
 binary files; do not commit them to either repository. Required environment
@@ -95,6 +97,6 @@ app; Mac Installer Distribution signs the `.pkg`. The API key authenticates
 certificates, and API key must belong to the same developer team.
 
 The workflow itself can be checked with `upload` off before adding the release
-secrets. A real signed upload from the private mirror remains the final
+secrets. A real signed upload from the release mirror remains the final
 integration test; an ad hoc local build and an unsigned installer package do
 not prove App Store acceptance.

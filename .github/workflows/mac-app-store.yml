@@ -31,24 +31,26 @@ concurrency:
 jobs:
   build:
     name: Build game and test candidate
-    if: ${{ (github.repository == 'Globulation2/glob2' && github.event_name == 'pull_request') || (github.repository == 'genixpro/glob2-release' && github.event.repository.private && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
+    if: ${{ (github.repository == 'Globulation2/glob2' && github.event_name == 'pull_request') || (github.repository == 'genixpro/glob2-release' && github.actor == 'genixpro' && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
     runs-on: macos-26
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 
-      - name: Confirm private mirror release context
+      - name: Confirm owner-controlled mirror release context
         if: ${{ github.repository == 'genixpro/glob2-release' }}
         env:
           RELEASE_REF: ${{ github.ref }}
           RELEASE_REPOSITORY: ${{ github.repository }}
-          RELEASE_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
           RELEASE_EVENT: ${{ github.event_name }}
+          RELEASE_ACTOR: ${{ github.actor }}
+          RELEASE_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
         run: |
           test "$RELEASE_REPOSITORY" = genixpro/glob2-release
-          test "$RELEASE_REPOSITORY_PRIVATE" = true
           test "$RELEASE_REF" = refs/heads/master
           test "$RELEASE_EVENT" = workflow_dispatch
+          test "$RELEASE_ACTOR" = genixpro
+          test "$RELEASE_TRIGGERING_ACTOR" = genixpro
 
       - name: Install macOS build dependencies
         run: |
@@ -59,7 +61,7 @@ jobs:
           test "${sdk_version%%.*}" -ge 26
           test "$(uname -m)" = arm64
 
-      - name: Compile game; bundle only in private mirror
+      - name: Compile game; bundle only in release mirror
         run: |
           openssl="$(brew --prefix openssl@3)"
           if [[ "$GITHUB_REPOSITORY" == genixpro/glob2-release ]]; then
@@ -117,25 +119,27 @@ jobs:
 
   upload:
     name: Sign and upload to App Store Connect
-    if: ${{ github.repository == 'genixpro/glob2-release' && github.event.repository.private && github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.upload }}
+    if: ${{ github.repository == 'genixpro/glob2-release' && github.actor == 'genixpro' && github.triggering_actor == 'genixpro' && github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.upload }}
     needs: build
     runs-on: macos-26
     environment: mac-app-store
     timeout-minutes: 60
     steps:
-      - name: Confirm private mirror release context
+      - name: Confirm owner-controlled mirror release context
         env:
           RELEASE_REPOSITORY: ${{ github.repository }}
-          RELEASE_REPOSITORY_PRIVATE: ${{ github.event.repository.private }}
           RELEASE_REF: ${{ github.ref }}
           RELEASE_EVENT: ${{ github.event_name }}
           RELEASE_UPLOAD: ${{ inputs.upload }}
+          RELEASE_ACTOR: ${{ github.actor }}
+          RELEASE_TRIGGERING_ACTOR: ${{ github.triggering_actor }}
         run: |
           test "$RELEASE_REPOSITORY" = genixpro/glob2-release
-          test "$RELEASE_REPOSITORY_PRIVATE" = true
           test "$RELEASE_REF" = refs/heads/master
           test "$RELEASE_EVENT" = workflow_dispatch
           test "$RELEASE_UPLOAD" = true
+          test "$RELEASE_ACTOR" = genixpro
+          test "$RELEASE_TRIGGERING_ACTOR" = genixpro
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
@@ -205,14 +209,6 @@ jobs:
             --identity "$APP_IDENTITY" \
             --installer-identity "$INSTALLER_IDENTITY" \
             --profile "$RUNNER_TEMP/glob2.provisionprofile"
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ steps.sign.outcome == 'success' }}
-        with:
-          name: mac-app-store-signed-pkg
-          path: artifacts/mac-app-store/signed/Glob2.pkg
-          if-no-files-found: error
-          retention-days: 14
 
       - name: Prepare App Store Connect API key
         env:
