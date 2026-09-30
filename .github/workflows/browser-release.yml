@@ -1,0 +1,119 @@
+name: Publish browser to Google Cloud Storage
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing public vVERSION tag
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: browser-storage-release
+  cancel-in-progress: false
+
+jobs:
+  context:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require owner-controlled release repository and dispatch
+        env:
+          REPOSITORY_ID: ${{ github.repository_id }}
+          ACTOR_ID: ${{ github.actor_id }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [[ "$REPOSITORY_ID" != 1397722696 || "$ACTOR_ID" != 6193625 || "$TRIGGERING_ACTOR" != genixpro || "$EVENT_NAME" != workflow_dispatch || "$REF" != refs/heads/master ]]; then
+            echo '::error::Browser publication requires a manual dispatch from the release repository master by its owner.'
+            exit 1
+          fi
+
+  build:
+    needs: context
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify public tag checkout
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
+          git fetch --no-tags https://github.com/Globulation2/glob2.git \
+            "refs/tags/$TAG:refs/tags/$TAG"
+          python3 tools/release/release.py check --tag "$TAG"
+      - name: Install build dependencies
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
+          sudo apt-get update -qq
+          sudo apt-get install -y scons g++-13 libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+      - name: Build and package browser client
+        run: |
+          set -euo pipefail
+          python3 browser/setup.py
+          scons target=web release=1 -j$(nproc)
+          python3 browser/package-static.py
+          cd build/browser-static
+          sha256sum index* > SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: browser-release
+          path: build/browser-static/
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: browser-release
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      BUCKET: gs://glob2-browser-pharaoh-418820-20260909
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: browser-release
+          path: candidate
+      - name: Verify candidate
+        working-directory: candidate
+        run: |
+          set -euo pipefail
+          sha256sum --check SHA256SUMS
+          test -s index.html
+          for ext in js wasm data; do
+            mapfile -t files < <(find . -maxdepth 1 -type f -name "index-*.$ext")
+            test "${#files[@]}" -eq 1
+            test -s "${files[0]}"
+          done
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          workload_identity_provider: ${{ vars.GLOB2_BROWSER_WIF_PROVIDER }}
+          service_account: ${{ vars.GLOB2_BROWSER_SERVICE_ACCOUNT }}
+          project_id: pharaoh-418820
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3
+      - name: Upload assets then publish entry point
+        run: |
+          set -euo pipefail
+          gcloud storage cp candidate/index-*.js "$BUCKET/" --content-type=text/javascript --cache-control='public,max-age=31536000,immutable'
+          gcloud storage cp candidate/index-*.wasm "$BUCKET/" --content-type=application/wasm --cache-control='public,max-age=31536000,immutable'
+          gcloud storage cp candidate/index-*.data "$BUCKET/" --content-type=application/octet-stream --cache-control='public,max-age=31536000,immutable'
+          gcloud storage cp candidate/index.html "$BUCKET/index.html" --content-type=text/html --cache-control='no-cache,max-age=0,must-revalidate'
+      - name: Summarize publication
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          echo "Published browser release $TAG to $BUCKET" >> "$GITHUB_STEP_SUMMARY"
+          echo 'https://storage.googleapis.com/glob2-browser-pharaoh-418820-20260909/index.html' >> "$GITHUB_STEP_SUMMARY"
