@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master'
+    if: github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor_id == 6193625 && github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     timeout-minutes: 240
     outputs:
