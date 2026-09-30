@@ -310,7 +310,7 @@ One-time account setup is required before the first workflow run:
 2. Configure [GitHub Workload Identity Federation](https://github.com/google-github-actions/auth#workload-identity-federation-through-a-service-account)
    for that service account. Restrict the provider to the mirror's numeric
    repository ID, the owner's numeric actor ID, the `workflow_dispatch` event,
-   the `google-play-internal` environment, GitHub-hosted runners,
+   public visibility, the `google-play-internal` environment, GitHub-hosted runners,
    `refs/heads/master`, and
    `genixpro/glob2-release/.github/workflows/android-play-internal.yml`.
    Grant only that repository identity `roles/iam.workloadIdentityUser` on the
@@ -348,6 +348,15 @@ redaction is not a substitute for keeping secrets out of logs and artifacts.
 The Play API client and its transitive Python packages are locked to reviewed
 wheel hashes in `mobile/play-api-requirements.txt`; update the lock deliberately
 when upgrading them.
+
+On the mirror, keep the owner as the sole collaborator, protect `master` against
+force pushes and deletion, and require approval from the owner for the
+`google-play-internal` environment without administrator bypass. Keep the
+default workflow token read-only, require full commit SHA pins for actions,
+and require approval before any external fork PR workflow runs. Disable unrelated
+workflows in the mirror. The owner's GitHub account remains a critical trust
+boundary: protect it with strong two-factor authentication and review every
+upstream commit before syncing code that the release build will execute.
 
 To sync from a local clone of the release mirror, configure `upstream` once as
 `https://github.com/Globulation2/glob2.git`, then use:
