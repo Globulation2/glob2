@@ -55,8 +55,8 @@ jobs:
         run: |
           openssl="$(brew --prefix openssl@3)"
           scons release=1 bundle -j2 \
-            CXXFLAGS="-g -I$openssl/include" \
-            LINKFLAGS="-g -L$openssl/lib"
+            CXXFLAGS="-I$openssl/include" \
+            LINKFLAGS="-L$openssl/lib"
 
       - name: Stage sandbox candidate
         env:
