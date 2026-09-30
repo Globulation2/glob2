@@ -345,7 +345,7 @@ jobs:
         continue-on-error: true
         run: |
           python3 test/ci_run_commands.py \
-            --check 'map report' 'python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/src/MapReportHarness' \
+            --check 'map report' 'python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/test/MapReportHarness' \
             --check 'map telemetry' 'python3 test/test_map_telemetry.py'
       - name: Upload map JSON reports and command log
         id: upload_map_json_reports_and_command_log
@@ -817,7 +817,8 @@ jobs:
       - name: Run the engine tests
         id: run_the_engine_tests
         continue-on-error: true
-        run: python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release --junit artifacts/tests/engine-junit.xml
+        # The [map-generators] contract stays on Linux, as before this runner existed.
+        run: python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
       - name: Upload native test results
         if: always()
         continue-on-error: true
@@ -832,7 +833,7 @@ jobs:
         continue-on-error: true
         run: |
           python3 test/ci_run_commands.py \
-            --check 'map report' 'python3 test/test_map_report.py build/mingw/client/release/src/glob2.exe build/mingw/client/release/src/MapReportHarness.exe' \
+            --check 'map report' 'python3 test/test_map_report.py build/mingw/client/release/src/glob2.exe build/mingw/client/release/test/MapReportHarness.exe' \
             --check 'map telemetry' 'python3 test/test_map_telemetry.py'
       - name: Upload map JSON reports and command log
         id: upload_map_json_reports_and_command_log

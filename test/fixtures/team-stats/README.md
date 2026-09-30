@@ -15,7 +15,7 @@ stdout exactly against these traces; see the commands in `test/README.md`.
 
 `TeamStatsSaveHarness PROFILE ROOT --write-fixture FILE` generates a fixture
 with the linked engine's writer, as a raw file; gzip it (`gzip -kn6 FILE`) to
-match the repository's checked-in format. `--legacy FILE` prints its
-compatibility trace from a raw file — `test/inflate_gzip_fixture.py` recovers
-one from either checked-in `.gz` fixture first; see `test/README.md`.
+match the repository's checked-in format. The `TeamStatsSave` legacy cases
+inflate each checked-in `.gz` fixture in memory (`glob2test::inflated()`), print
+its compatibility trace and compare it with the golden text; see `test/README.md`.
 Use a disposable profile whose name starts with `glob2-save-test-`.

@@ -81,10 +81,30 @@ class ShardTest(unittest.TestCase):
         self.assertTrue(jobs[0].whole)
         self.assertEqual(run_tests.doctest_filter(jobs[0]), [])
         subset = run_tests.make_jobs(cases[:2], args(), cases)
-        self.assertTrue(subset[0].subset)
-        self.assertEqual(run_tests.doctest_filter(subset[0]),
-                         ['-tc=feeds the last worker,renders the bar [display:1024x768][artifacts]'])
+        self.assertEqual([job.subset for job in subset], [True, True])
+        self.assertEqual(run_tests.doctest_filter(subset[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])
+        self.assertEqual(run_tests.doctest_filter(subset[1]),
+                         ['-tc=renders the bar [display:1024x768][artifacts]', '-ts=PointBar'])
         self.assertFalse(run_tests.make_jobs(cases, args(), cases)[0].subset)
+
+    def test_same_name_in_two_suites_stays_in_its_suite(self):
+        listing = LISTING.replace('<OverallResultsTestCases', '<TestCase name="feeds the last worker" testsuite="InnSwap" '
+                                  'filename="test/InnSwapHarness.cpp" line="3" skipped="false"/>\n  <OverallResultsTestCases')
+        cases = run_tests.parse_listing(listing, 'unit')
+        kept, _ = run_tests.select(cases, args(filter=['InnSwap/*']))
+        jobs = run_tests.make_jobs(kept, args(), cases)
+        self.assertEqual(len(jobs), 1)
+        self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tc=feeds the last worker', '-ts=InnSwap'])
+        foreign = run_tests.Result(jobs[0], 'pass', 0.1, junit=(
+            '<testsuites><testsuite name="x"><testcase classname="test/HungryDefeatHarness.cpp" name="feeds the last worker"/>'
+            '<testcase classname="test/InnSwapHarness.cpp" name="feeds the last worker"/></testsuite></testsuites>'))
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'junit.xml'
+            run_tests.merge_junit([foreign], path)
+            text = path.read_text()
+        self.assertIn('classname="InnSwap"', text)
+        self.assertNotIn('classname="InnSwap" name="feeds the last worker"/><testcase classname="InnSwap"', text)
+        self.assertIn('classname="test/HungryDefeatHarness.cpp"', text)
         engine = run_tests.make_jobs(run_tests.parse_listing(LISTING, 'engine'), args())
         self.assertEqual(len(engine), 4)
         self.assertEqual(run_tests.doctest_filter(engine[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])

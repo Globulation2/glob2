@@ -92,7 +92,10 @@ class Job:
 
     @property
     def label(self):
-        return f'{BINARIES[self.binary]} ({len(self.cases)} cases)' if self.whole else self.cases[0].label
+        if not self.whole:
+            return self.cases[0].label
+        suite = f' {self.cases[0].suite}' if self.subset and self.cases[0].suite else ''
+        return f'{BINARIES[self.binary]}{suite} ({len(self.cases)} cases)'
 
     @property
     def display(self):
@@ -192,7 +195,15 @@ def make_jobs(cases, args, all_cases=None):
             continue
         if kind == 'unit' or args.in_process:
             everything = [case for case in (all_cases or []) if case.binary == kind]
-            jobs.append(Job(kind, mine, whole=True, subset=bool(all_cases) and len(mine) < len(everything)))
+            if all_cases and len(mine) < len(everything):
+                # doctest selects by name and by suite separately, so a filtered run is
+                # one process per suite: -ts= keeps same-named cases of other suites out.
+                by_suite = {}
+                for case in mine:
+                    by_suite.setdefault(case.suite, []).append(case)
+                jobs += [Job(kind, group, whole=True, subset=True) for group in by_suite.values()]
+            else:
+                jobs.append(Job(kind, mine, whole=True))
         else:
             jobs += [Job(kind, [case]) for case in mine]
     return jobs
@@ -200,8 +211,13 @@ def make_jobs(cases, args, all_cases=None):
 
 def doctest_filter(job):
     if job.whole:
+        if not job.subset:
+            return []
         # doctest takes comma-separated name patterns; test names never contain commas.
-        return ['-tc=' + ','.join(case.name for case in job.cases)] if job.subset else []
+        filters = ['-tc=' + ','.join(case.name for case in job.cases)]
+        if job.cases[0].suite:
+            filters.append('-ts=' + job.cases[0].suite)
+        return filters
     case = job.cases[0]
     filters = ['-tc=' + case.name]
     if case.suite:
@@ -344,13 +360,12 @@ def merge_junit(results, path):
                 document = None
             if document is not None:
                 # doctest's JUnit reporter names classes after source files; use suites.
-                # Names repeat across suites, so key by file too.
+                # Names repeat across suites, so key by file and name and never guess.
                 by_file_and_name = {(case.file, case.name): case.suite for case in result.job.cases}
-                by_name = {case.name: case.suite for case in result.job.cases}
                 for testcase in document.iter('testcase'):
                     name = testcase.get('name', '')
                     suite = (by_file_and_name.get((testcase.get('classname', ''), name))
-                             or by_name.get(name) or testcase.get('classname') or 'tests')
+                             or testcase.get('classname') or 'tests')
                     testcase.set('classname', suite)
                     if result.note and not testcase.findall('failure') and not testcase.findall('error'):
                         failure = ET.SubElement(testcase, 'failure', message='run_tests: ' + result.note, type='run_tests')

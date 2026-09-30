@@ -11,8 +11,10 @@ the same objects as the game:
 Both are listed in `test/tests.py`, built by `test/SConscript` and land in
 `build/<toolchain>/client/release/test/` (`darwin`, `linux` or `mingw`; `--build=DIR`
 and `GLOB2_BUILD_DIR` override the directory as for the game). The standalone
-programs that remain (`MapGeneratorGoldenTest`, `LANSessionHarness`, the tools under
-`glob2-tools`) come from the `PROGRAMS` table in the same file. The per-harness
+programs that remain come from the `PROGRAMS` table in the same file
+(`MapReportHarness`, `MenuColonyHarness`, and the `glob2-tools` group) or from
+`src/SConscript` (`MapGeneratorGoldenTest`, `LANSessionHarness`, the transport
+programs and the map generator study tools). The per-harness
 aliases documented below are kept as `LEGACY_ALIASES` for one release; they build
 the binary that now contains the test.
 
@@ -761,7 +763,7 @@ See [map CLI documentation](../docs/map-generators/CLI.md).
 ### Map JSON reports
 
 Build `scons release=1 server=0 map-report-test`, then run
-`python3 test/test_map_report.py build/native-tests/src/glob2 build/native-tests/src/MapReportHarness`
+`python3 test/test_map_report.py build/native-tests/src/glob2 build/native-tests/test/MapReportHarness`
 (add `.exe` to both binaries on Windows). The suite runs without graphics, checks
 the [published report contract](../docs/map-generators/REPORT.md), recomputes fairness
 formulas, and uses analytic maps to check wraparound, disconnected islands, algae

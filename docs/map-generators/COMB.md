@@ -74,7 +74,7 @@ scons release=1 server=0 -j6 build/src/glob2 comb-generator-test
 build/src/glob2 --generate-map comb --seed 7 --width 256 --height 256 --teams 4 \
   --output artifacts/comb/example.map --preview artifacts/comb/example.png \
   --json artifacts/comb/example.json
-build/src/CombGeneratorTest comb-tests "$PWD" artifacts/comb/mechanism
+python3 test/run_tests.py --filter 'CombGenerator/*'
 ```
 
 `CombGeneratorTest` verifies complete-save repeatability with telemetry on/off,
