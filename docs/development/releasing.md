@@ -58,7 +58,8 @@ initiator of a rerun) passes the context gate. This workflow is separate from
 the desktop release orchestrator and has no push, pull-request or reusable
 workflow trigger.
 
-The build job checks out and verifies the public tag, installs the locked
+The build job verifies the exact public tag commit and matching game version
+(without requiring desktop store metadata), installs the locked
 Emscripten SDK, builds `scons target=web release=1`, and packages the client with
 `browser/package-static.py`. Its `browser-release` artifact includes SHA-256
 checksums. The isolated publication job verifies the artifact before using

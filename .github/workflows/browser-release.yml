@@ -52,7 +52,15 @@ jobs:
           [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+)+$ ]]
           git fetch --no-tags https://github.com/Globulation2/glob2.git \
             "refs/tags/$TAG:refs/tags/$TAG"
-          python3 tools/release/release.py check --tag "$TAG"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse "refs/tags/$TAG^{commit}")"
+          python3 - <<'PYTHON'
+          import os, re
+          from pathlib import Path
+          match = re.search(r'^PACKAGE_VERSION = "([0-9]+(?:\.[0-9]+)+)"$',
+                            Path('scons/build_layout.py').read_text(), re.MULTILINE)
+          if match is None or os.environ['TAG'] != 'v' + match.group(1):
+              raise SystemExit('Public tag must match the browser package version')
+          PYTHON
       - name: Install build dependencies
         run: |
           sudo rm -f /etc/apt/sources.list.d/google-chrome.list /etc/apt/sources.list.d/google-chrome.sources
