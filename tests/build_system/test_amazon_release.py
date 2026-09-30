@@ -55,22 +55,29 @@ class ArtifactTests(unittest.TestCase):
 
 
 class FakeAPI:
-    def __init__(self, active=None, old_code=1):
+    def __init__(self, active=None, old_code=1, fail_replace=False):
         self.active, self.old_code = active, old_code
+        self.fail_replace = fail_replace
         self.calls = []
 
     def request(self, method, path, data=None, headers=None):
         self.calls.append((method, path, data, headers))
         if path == '/edits' and method == 'GET': return self.active, None
-        if path == '/edits' and method == 'POST': return {'id': 'edit-42'}, None
+        if path == '/edits' and method == 'POST':
+            self.active = {'id': 'edit-42'}
+            return self.active, None
         if path.endswith('/apks') and method == 'GET': return [{'id': 'apk-1', 'versionCode': self.old_code}], None
         if path.endswith('/apks/apk-1') and method == 'GET': return {'id': 'apk-1'}, 'apk-etag'
-        if path.endswith('/replace'): return {'versionCode': release.version_code()}, None
+        if path.endswith('/replace'):
+            if self.fail_replace: raise ValueError('upload failed')
+            return {'versionCode': release.version_code()}, None
         if path.endswith('/listings/en_US') and method == 'GET': return {'language': 'en_US', 'title': 'Globulation 2'}, 'listing-etag'
         if path.endswith('/listings/en_US') and method == 'PUT': return {'recentChanges': 'New maps'}, None
         if path.endswith('/validate'): return {'id': 'edit-42'}, None
         if path == '/edits/edit-42' and method == 'GET': return {'id': 'edit-42'}, 'edit-etag'
-        if path == '/edits/edit-42' and method == 'DELETE': return None, None
+        if path == '/edits/edit-42' and method == 'DELETE':
+            self.active = None
+            return None, None
         if path.endswith('/commit'): return {'status': 'SUBMITTED'}, None
         raise AssertionError((method, path))
 
@@ -112,6 +119,16 @@ class PublisherTests(ArtifactTests):
                          ['en_US', 'validate', 'edit-42', 'commit'])
         self.assertEqual(api.calls[-1][3], {'If-Match': 'edit-etag'})
         self.assertEqual(json.loads(api.calls[-4][2])['recentChanges'], 'New maps')
+
+    def test_failed_upload_leaves_edit_and_retry_stops_before_upload(self):
+        api = FakeAPI(fail_replace=True)
+        with self.assertRaisesRegex(ValueError, 'remains open: upload failed'):
+            self.run_publish(api)
+        previous = len(api.calls)
+        with self.assertRaisesRegex(ValueError, 'already has an open edit'):
+            self.run_publish(api)
+        self.assertEqual(api.calls[previous:][0][:2], ('GET', '/edits'))
+        self.assertEqual(len(api.calls), previous + 1)
 
 
 if __name__ == '__main__':
