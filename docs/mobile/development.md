@@ -290,14 +290,16 @@ screenshots, logs and replay checksums under `artifacts/`.
 ### Automated Google Play internal releases
 
 `.github/workflows/android-play-internal.yml` is public for review, but its
-release job runs only from the owner's `genixpro/glob2-release` mirror
-on `master`. The mirror is a separate public repository with owner-only write
-access. Copy reviewed upstream commits into the
-mirror when ready, then manually dispatch its workflow. It installs the pinned
-Android toolchain and dependencies, assigns a
-time-based Play version code, builds and verifies the arm64 release bundle,
-signs it with the existing Play upload key, and uses the Google Play Developer
-API to validate and commit a release on the **internal** track. It does not
+release job runs only from the owner's public `genixpro/glob2-release` mirror on
+`master` after a manual dispatch. The mirror has owner-only write access and
+hosts the other platform release workflows. Copy reviewed upstream commits into
+the mirror when ready,
+then manually dispatch and approve its workflow. An unprivileged
+job installs the pinned Android toolchain and dependencies, assigns a
+time-based Play version code, and builds and verifies the arm64 release bundle.
+A fresh runner receives the unsigned bundle, signs it with the existing Play
+upload key, and uses the Google Play Developer API to validate and commit a
+release on the **internal** track. It does not
 change production or the selected internal tester list. The workflow is
 serialized so two runs cannot update the track concurrently. A rerun gets a
 new version code; Play rejects a code lower than a previously uploaded one.
@@ -307,8 +309,10 @@ One-time account setup is required before the first workflow run:
 1. In a Google Cloud project, enable the **Google Play Android Developer API**.
    Create a service account dedicated to Globulation 2 internal releases.
 2. Configure [GitHub Workload Identity Federation](https://github.com/google-github-actions/auth#workload-identity-federation-through-a-service-account)
-   for that service account. Restrict the provider to the **release mirror's**
-   numeric repository ID, `refs/heads/master`, and
+   for that service account. Restrict the provider to the mirror's numeric
+   repository ID, the owner's numeric actor ID, the `workflow_dispatch` event,
+   public visibility, the `google-play-internal` environment, GitHub-hosted runners,
+   `refs/heads/master`, and
    `genixpro/glob2-release/.github/workflows/android-play-internal.yml`.
    Grant only that repository identity `roles/iam.workloadIdentityUser` on the
    service account. Do not create a Google service account key for this workflow.
@@ -317,7 +321,8 @@ One-time account setup is required before the first workflow run:
    **Release apps to testing tracks** for `org.globulation2.glob2` only. Do not
    grant production release or account-wide permissions.
 4. In the **release mirror only**, create a GitHub Actions environment named
-   `google-play-internal` and restrict deployment to `master`. Add environment variables
+   `google-play-internal`, restrict deployment to `master`, require the owner to
+   approve each run, and disallow administrator bypass. Add environment variables
    `GLOB2_PLAY_WIF_PROVIDER` (the full provider resource name, with numeric
    project number) and `GLOB2_PLAY_SERVICE_ACCOUNT` (the service account email).
    Add three environment secrets:
@@ -332,10 +337,28 @@ Keep the original keystore and passwords backed up outside GitHub. The public
 upstream must never receive these secrets or a broad OIDC trust binding. The workflow
 decodes the key to a temporary runner file, signs the AAB, removes that file,
 then authenticates to Play through short-lived GitHub OIDC credentials. Only
-the release mirror's owner should have write access. Do not add pull-request
+the mirror's owner should have write access. Do not add pull-request
 triggers or allow arbitrary refs to reach the release job. Review upstream
 changes, especially the workflow, build scripts, and dependency pins, before
-syncing them into the release mirror: copied code runs with release credentials.
+syncing them into the mirror: copied code runs with release credentials.
+Public Actions logs and artifacts are visible to everyone. The unsigned bundle
+is retained as an artifact for one day to cross the runner boundary; the signed
+AAB is never uploaded as an artifact. The workflow does not cache build outputs.
+GitHub Actions secret redaction is not a substitute for keeping secrets out of
+logs and artifacts.
+The Play API client and its transitive Python packages are locked to reviewed
+wheel hashes in `mobile/play-api-requirements.txt`; update the lock deliberately
+when upgrading them.
+
+On the mirror, keep the owner as the sole collaborator, protect `master` against
+force pushes and deletion, and require approval from the owner for the
+`google-play-internal` environment without administrator bypass. Keep the
+default workflow token read-only, require full commit SHA pins for release
+actions, and require approval before any external fork PR workflow runs.
+Review every enabled platform workflow and its environment before syncing
+upstream changes. The owner's GitHub account remains a critical trust boundary:
+protect it with strong two-factor authentication and review every upstream
+commit before syncing code that a release build will execute.
 
 To sync from a local clone of the release mirror, configure `upstream` once as
 `https://github.com/Globulation2/glob2.git`, then use:
@@ -343,18 +366,19 @@ To sync from a local clone of the release mirror, configure `upstream` once as
 ```sh
 git fetch upstream master
 git checkout master
-git merge --ff-only upstream/master
+git merge upstream/master
 git push origin master
 ```
 
-If fast-forwarding fails because the release mirror diverged, inspect the
-commits and reconcile them deliberately. Do not force-push a release branch.
+The release mirror has release-specific commits, so merging may require
+conflict resolution. Inspect the commits and resulting tree before pushing.
+Do not force-push a release branch.
 
 After syncing, run **Actions → Android Play internal release → Run workflow**
-in the release mirror. The optional release notes are shown to internal testers. The
-run summary records the version code and signed AAB SHA-256, and the signed
-bundle is retained as a GitHub artifact for 14 days. Check the internal testing
-track in Play Console for availability; if Play requires a new content or policy
+in the mirror. The optional release notes are shown to internal testers. The
+run summary records the version code and signed AAB SHA-256; only Play receives
+the signed bundle. Check the internal testing track in Play Console for
+availability; if Play requires a new content or policy
 declaration, complete that in Play Console before rerunning the workflow.
 
 ### Native tests on a connected Android device

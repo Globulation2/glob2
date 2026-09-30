@@ -9,26 +9,25 @@ on:
         default: Automated Globulation 2 internal test build.
         type: string
 
-# Release credentials exist only in the owner's private mirror. The public
-# upstream contains this configuration so it can be reviewed, but cannot run it.
+# Release credentials exist only in the owner's release mirror. Public read
+# access does not grant write access, workflow dispatch, or environment approval.
 concurrency:
   group: android-play-internal
   cancel-in-progress: false
 
 jobs:
-  release:
-    if: github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master'
+  build:
+    if: >-
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/master'
     runs-on: ubuntu-24.04
     timeout-minutes: 180
-    environment: google-play-internal
+    outputs:
+      code: ${{ steps.version.outputs.code }}
     permissions:
       contents: read
-      id-token: write
-    env:
-      CCACHE: 1
-      CCACHE_DIR: /tmp/glob2-android-ccache
-      CCACHE_COMPILERCHECK: content
-      CCACHE_MAXSIZE: 1G
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -36,7 +35,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            scons pkg-config unzip zip autoconf automake libtool ccache python3-venv
+            scons pkg-config unzip zip autoconf automake libtool python3-venv
 
       - name: Install pinned Android tools
         run: |
@@ -61,13 +60,6 @@ jobs:
                          env=env, check=True)
           PY
 
-      - name: Cache Android compiler output
-        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: play-android-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/triplets/**') }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: play-android-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/triplets/**') }}-
-
       - name: Build pinned Android dependencies
         run: python3 mobile/dependencies.py --arch arm64-v8a --release
 
@@ -77,6 +69,36 @@ jobs:
 
       - name: Build and verify Android App Bundle
         run: python3 mobile/android.py bundle --arch arm64-v8a --release --version-code '${{ steps.version.outputs.code }}'
+
+      - name: Hand off unsigned bundle to isolated signing job
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: glob2-unsigned-${{ steps.version.outputs.code }}
+          path: |
+            build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab
+            build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.json
+          if-no-files-found: error
+          retention-days: 1
+
+  release:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    environment: google-play-internal
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Download verified unsigned bundle
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: glob2-unsigned-${{ needs.build.outputs.code }}
+          path: build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release
+
+      - name: Install pinned signing JDK
+        run: python3 mobile/setup_tools.py
 
       - name: Decode private upload key
         env:
@@ -104,14 +126,6 @@ jobs:
         if: always()
         run: rm -f "$RUNNER_TEMP/glob2-upload.p12"
 
-      - name: Upload signed bundle for audit
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: glob2-play-internal-${{ steps.version.outputs.code }}
-          path: build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release-play.aab
-          if-no-files-found: error
-          retention-days: 14
-
       - name: Authenticate to Google Play
         uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
         with:
@@ -121,7 +135,8 @@ jobs:
       - name: Install Google Play API client
         run: |
           python3 -m venv build/play-api-venv
-          build/play-api-venv/bin/python -m pip install --disable-pip-version-check google-api-python-client==2.200.0
+          build/play-api-venv/bin/python -m pip install --disable-pip-version-check \
+            --require-hashes --only-binary=:all: -r mobile/play-api-requirements.txt
 
       - name: Upload and publish to internal testing
         env:
@@ -129,5 +144,5 @@ jobs:
         run: |
           build/play-api-venv/bin/python mobile/play_release.py publish \
             --bundle build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release-play.aab \
-            --version-code '${{ steps.version.outputs.code }}' \
+            --version-code '${{ needs.build.outputs.code }}' \
             --release-notes "$GLOB2_RELEASE_NOTES"
