@@ -69,7 +69,7 @@ parts:
       - libgl1
       - libglu1-mesa
       - libepoxy0
-      - libssl3
+      - libssl3t64
     override-build: |
       craftctl set version="$(python3 tools/release/release.py check)"
       scons -j2 release=1 server=0 \

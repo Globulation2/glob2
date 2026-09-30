@@ -34,10 +34,16 @@ multiplayer play.
 %autosetup -n glob2-%{version}
 
 %build
-scons -j2 release=1 server=0 BINDIR=%{_bindir} INSTALLDIR=%{_datadir} DATADIR=%{_datadir}
+export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
+    RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
+scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
+    BINDIR=%{_bindir} INSTALLDIR=%{_datadir} DATADIR=%{_datadir}
 
 %install
-scons -j2 release=1 server=0 BINDIR=%{buildroot}%{_bindir} \
+export RPM_PACKAGE_NAME=%{name} RPM_PACKAGE_VERSION=%{version} \
+    RPM_PACKAGE_RELEASE=%{release} RPM_ARCH=%{_arch}
+scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}" \
+    BINDIR=%{buildroot}%{_bindir} \
     INSTALLDIR=%{buildroot}%{_datadir} DATADIR=%{_datadir} install
 
 %files

@@ -17,7 +17,9 @@ Before tagging a new release, choose an unused version, update
 existing tag. `tools/release/release.py check --tag` requires the tag and the
 release mirror's HEAD to identify the same commit.
 Build-only runs leave Flatpak off by default while its first listing metadata is
-being prepared; select `build_flatpak` to exercise that recipe. The GitHub
+being prepared; select `build_flatpak` after adding AppStream release notes to
+exercise that recipe. Flathub's linter rejects the current metadata until those
+notes exist. The GitHub
 publication run builds it.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
