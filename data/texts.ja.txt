@@ -3406,3 +3406,25 @@ AIを追加
 警備エリアの分散
 [experiment guard-area-balancing help]
 自由な戦士は最も近い警備エリアに全員集まるのではなく、塗られた警備エリアの間で分散します。大きなエリアほど多くの戦士を受け入れ、混みすぎたエリアからは他のエリアへ少しずつ移動します。
+[settings Touch scrolling]
+タッチスクロール
+[settings List momentum]
+リストの慣性
+[settings How far lists and panels keep scrolling after a flick.]
+フリック後にリストやパネルがどれだけスクロールし続けるか。
+[settings List bounce]
+リストのバウンス
+[settings How much lists and panels stretch past their ends and spring back.]
+リストやパネルが端を越えてどれだけ伸びて戻るか。
+[settings Map momentum]
+マップの慣性
+[settings How far the map keeps panning after a flick.]
+フリック後にマップがどれだけ動き続けるか。
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+タッチスクロールの感触。0 で効果をオフ、50 が既定値です。
+[List momentum]
+リストの慣性
+[List bounce]
+リストのバウンス
+[Map momentum]
+マップの慣性

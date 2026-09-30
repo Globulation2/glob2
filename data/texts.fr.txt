@@ -3420,3 +3420,25 @@ Expérimentations
 Équilibrage des zones de garde
 [experiment guard-area-balancing help]
 Les guerriers libres se répartissent entre les zones de garde peintes au lieu de tous rejoindre la plus proche : une zone plus grande en reçoit davantage, et une zone surpeuplée se vide peu à peu vers les autres.
+[settings Touch scrolling]
+Défilement tactile
+[settings List momentum]
+Élan des listes
+[settings How far lists and panels keep scrolling after a flick.]
+Jusqu'où les listes et panneaux continuent de défiler après un geste.
+[settings List bounce]
+Rebond des listes
+[settings How much lists and panels stretch past their ends and spring back.]
+À quel point les listes et panneaux s'étirent au-delà de leurs bords avant de revenir.
+[settings Map momentum]
+Élan de la carte
+[settings How far the map keeps panning after a flick.]
+Jusqu'où la carte continue de se déplacer après un geste.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Sensation du défilement tactile. 0 désactive un effet ; 50 est la valeur par défaut.
+[List momentum]
+Élan des listes
+[List bounce]
+Rebond des listes
+[Map momentum]
+Élan de la carte

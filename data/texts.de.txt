@@ -3410,3 +3410,25 @@ Experimente
 Ausgleich der Wachbereiche
 [experiment guard-area-balancing help]
 Freie Krieger verteilen sich auf die gemalten Wachbereiche, statt alle den nächsten zu wählen: ein größerer Bereich bekommt mehr von ihnen, und ein überfüllter Bereich dünnt sich zugunsten der anderen aus.
+[settings Touch scrolling]
+Berühren und Scrollen
+[settings List momentum]
+Listen-Schwung
+[settings How far lists and panels keep scrolling after a flick.]
+Wie weit Listen und Panels nach einem Wischen weiterlaufen.
+[settings List bounce]
+Listen-Federung
+[settings How much lists and panels stretch past their ends and spring back.]
+Wie stark sich Listen und Panels über ihr Ende hinaus dehnen und zurückfedern.
+[settings Map momentum]
+Karten-Schwung
+[settings How far the map keeps panning after a flick.]
+Wie weit die Karte nach einem Wischen weiterläuft.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Scrollgefühl bei Berührung. 0 schaltet einen Effekt ab; 50 ist die Voreinstellung.
+[List momentum]
+Listen-Schwung
+[List bounce]
+Listen-Federung
+[Map momentum]
+Karten-Schwung

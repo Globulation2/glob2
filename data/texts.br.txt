@@ -3406,3 +3406,25 @@ Experimentos
 Equilíbrio das áreas de guarda
 [experiment guard-area-balancing help]
 Guerreiros livres se distribuem entre as áreas de guarda pintadas em vez de irem todos para a mais próxima: uma área maior recebe mais deles, e uma área lotada se esvazia aos poucos para as outras.
+[settings Touch scrolling]
+Rolagem por toque
+[settings List momentum]
+Inércia das listas
+[settings How far lists and panels keep scrolling after a flick.]
+Até onde listas e painéis continuam rolando após um deslize.
+[settings List bounce]
+Quique das listas
+[settings How much lists and panels stretch past their ends and spring back.]
+Quanto listas e painéis se esticam além das bordas antes de voltar.
+[settings Map momentum]
+Inércia do mapa
+[settings How far the map keeps panning after a flick.]
+Até onde o mapa continua se movendo após um deslize.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Sensação da rolagem por toque. 0 desliga um efeito; 50 é o padrão.
+[List momentum]
+Inércia das listas
+[List bounce]
+Quique das listas
+[Map momentum]
+Inércia do mapa

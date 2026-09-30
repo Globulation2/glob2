@@ -3410,3 +3410,25 @@ Emoji
 Уравнотежење зона страже
 [experiment guard-area-balancing help]
 Слободни ратници се распоређују између обележених зона страже уместо да сви иду у најближу: већа зона добија више ратника, а препуна зона се постепено празни у остале.
+[settings Touch scrolling]
+Померање додиром
+[settings List momentum]
+Замах листа
+[settings How far lists and panels keep scrolling after a flick.]
+Колико далеко се листе и панели померају након замаха прстом.
+[settings List bounce]
+Одскок листа
+[settings How much lists and panels stretch past their ends and spring back.]
+Колико се листе и панели растежу преко ивице и враћају назад.
+[settings Map momentum]
+Замах мапе
+[settings How far the map keeps panning after a flick.]
+Колико далеко се мапа помера након замаха прстом.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Осећај померања додиром. 0 искључује ефекат; 50 је подразумевано.
+[List momentum]
+Замах листа
+[List bounce]
+Одскок листа
+[Map momentum]
+Замах мапе

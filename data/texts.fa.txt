@@ -3408,3 +3408,25 @@ Emoji
 توازن مناطق نگهبانی
 [experiment guard-area-balancing help]
 جنگجویان آزاد به جای اینکه همه به نزدیک‌ترین منطقه بروند، بین مناطق نگهبانی رنگ‌شده پخش می‌شوند: منطقهٔ بزرگ‌تر تعداد بیشتری می‌گیرد و منطقهٔ بیش از حد پر به‌تدریج به مناطق دیگر خالی می‌شود.
+[settings Touch scrolling]
+پیمایش لمسی
+[settings List momentum]
+شتاب فهرست‌ها
+[settings How far lists and panels keep scrolling after a flick.]
+فهرست‌ها و پنل‌ها پس از یک تلنگر تا کجا به پیمایش ادامه می‌دهند.
+[settings List bounce]
+واجهش فهرست‌ها
+[settings How much lists and panels stretch past their ends and spring back.]
+فهرست‌ها و پنل‌ها چقدر از لبه‌هایشان فراتر کشیده می‌شوند و برمی‌گردند.
+[settings Map momentum]
+شتاب نقشه
+[settings How far the map keeps panning after a flick.]
+نقشه پس از یک تلنگر تا کجا به حرکت ادامه می‌دهد.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+حس پیمایش لمسی. 0 یک جلوه را خاموش می‌کند؛ 50 مقدار پیش‌فرض است.
+[List momentum]
+شتاب فهرست‌ها
+[List bounce]
+واجهش فهرست‌ها
+[Map momentum]
+شتاب نقشه

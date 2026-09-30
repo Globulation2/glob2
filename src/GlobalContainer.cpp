@@ -21,6 +21,7 @@
 #include "DatasetWriter.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
+#include "ScrollTuning.h"
 #endif  // !YOG_SERVER_ONLY
 
 #include "YOGConsts.h"
@@ -58,6 +59,7 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	settings.load();
 
 #ifndef YOG_SERVER_ONLY
+	applyScrollTuning(settings, reducedMotion);
 	runNoX = false;
 	hostServer = false;
 #else

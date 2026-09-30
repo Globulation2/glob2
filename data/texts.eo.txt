@@ -3408,3 +3408,25 @@ Eksperimentoj
 Ekvilibrigo de gardozonoj
 [experiment guard-area-balancing help]
 Liberaj militistoj disiĝas inter la pentritaj gardozonoj anstataŭ ĉiuj iri al la plej proksima: pli granda zono ricevas pli da ili, kaj troplena zono iom post iom malpleniĝas al la aliaj.
+[settings Touch scrolling]
+Tuŝa rulumado
+[settings List momentum]
+Inercio de listoj
+[settings How far lists and panels keep scrolling after a flick.]
+Kiom listoj kaj paneloj plu rulumas post svingo.
+[settings List bounce]
+Resalto de listoj
+[settings How much lists and panels stretch past their ends and spring back.]
+Kiom listoj kaj paneloj streĉiĝas preter siaj randoj antaŭ ol reveni.
+[settings Map momentum]
+Inercio de la mapo
+[settings How far the map keeps panning after a flick.]
+Kiom la mapo plu moviĝas post svingo.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Sento de tuŝa rulumado. 0 malŝaltas efikon; 50 estas la defaŭlto.
+[List momentum]
+Inercio de listoj
+[List bounce]
+Resalto de listoj
+[Map momentum]
+Inercio de la mapo

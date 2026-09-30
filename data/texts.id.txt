@@ -3406,3 +3406,25 @@ Eksperimen
 Penyeimbangan area jaga
 [experiment guard-area-balancing help]
 Prajurit bebas menyebar di antara area jaga yang dilukis alih-alih semuanya ke yang terdekat: area yang lebih besar mendapat lebih banyak, dan area yang terlalu penuh perlahan mengalir ke area lain.
+[settings Touch scrolling]
+Gulir sentuh
+[settings List momentum]
+Momentum daftar
+[settings How far lists and panels keep scrolling after a flick.]
+Seberapa jauh daftar dan panel terus bergulir setelah jentikan.
+[settings List bounce]
+Pantulan daftar
+[settings How much lists and panels stretch past their ends and spring back.]
+Seberapa jauh daftar dan panel meregang melewati ujungnya lalu memantul kembali.
+[settings Map momentum]
+Momentum peta
+[settings How far the map keeps panning after a flick.]
+Seberapa jauh peta terus bergeser setelah jentikan.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Rasa gulir sentuh. 0 mematikan efek; 50 adalah bawaan.
+[List momentum]
+Momentum daftar
+[List bounce]
+Pantulan daftar
+[Map momentum]
+Momentum peta

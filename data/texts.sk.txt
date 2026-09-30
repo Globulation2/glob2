@@ -3418,3 +3418,25 @@ Experimenty
 Vyvažovanie strážnych oblastí
 [experiment guard-area-balancing help]
 Voľní bojovníci sa rozdelia medzi vyznačené strážne oblasti namiesto toho, aby všetci išli do najbližšej: väčšia oblasť ich dostane viac a preplnená oblasť sa postupne vyprázdni do ostatných.
+[settings Touch scrolling]
+Dotykové posúvanie
+[settings List momentum]
+Zotrvačnosť zoznamov
+[settings How far lists and panels keep scrolling after a flick.]
+Ako ďaleko sa zoznamy a panely posúvajú po švihnutí.
+[settings List bounce]
+Odraz zoznamov
+[settings How much lists and panels stretch past their ends and spring back.]
+Ako veľmi sa zoznamy a panely natiahnu za okraj a vrátia späť.
+[settings Map momentum]
+Zotrvačnosť mapy
+[settings How far the map keeps panning after a flick.]
+Ako ďaleko sa mapa posúva po švihnutí.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Pocit z dotykového posúvania. 0 efekt vypne; 50 je predvolená hodnota.
+[List momentum]
+Zotrvačnosť zoznamov
+[List bounce]
+Odraz zoznamov
+[Map momentum]
+Zotrvačnosť mapy

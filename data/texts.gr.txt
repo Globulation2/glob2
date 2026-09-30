@@ -3480,3 +3480,25 @@ CPU %0%
 Εξισορρόπηση ζωνών φρούρησης
 [experiment guard-area-balancing help]
 Οι ελεύθεροι πολεμιστές μοιράζονται στις σχεδιασμένες ζώνες φρούρησης αντί να πηγαίνουν όλοι στην πλησιέστερη: μια μεγαλύτερη ζώνη παίρνει περισσότερους, και μια υπερπλήρης ζώνη αδειάζει σταδιακά προς τις άλλες.
+[settings Touch scrolling]
+Κύλιση με αφή
+[settings List momentum]
+Ορμή λιστών
+[settings How far lists and panels keep scrolling after a flick.]
+Πόσο συνεχίζουν να κυλούν οι λίστες και τα πάνελ μετά από ένα τίναγμα.
+[settings List bounce]
+Αναπήδηση λιστών
+[settings How much lists and panels stretch past their ends and spring back.]
+Πόσο τεντώνονται οι λίστες και τα πάνελ πέρα από τα άκρα τους πριν επιστρέψουν.
+[settings Map momentum]
+Ορμή χάρτη
+[settings How far the map keeps panning after a flick.]
+Πόσο συνεχίζει να κινείται ο χάρτης μετά από ένα τίναγμα.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Αίσθηση της κύλισης με αφή. Το 0 απενεργοποιεί ένα εφέ, το 50 είναι η προεπιλογή.
+[List momentum]
+Ορμή λιστών
+[List bounce]
+Αναπήδηση λιστών
+[Map momentum]
+Ορμή χάρτη

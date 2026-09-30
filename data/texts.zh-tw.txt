@@ -3482,3 +3482,25 @@ CPU %0%
 警戒區均衡
 [experiment guard-area-balancing help]
 空閒的戰士會分散到各個已繪製的警戒區，而不是全部湧向最近的一個：更大的區域獲得更多戰士，過於擁擠的區域會逐漸向其他區域分流。
+[settings Touch scrolling]
+觸控捲動
+[settings List momentum]
+清單慣性
+[settings How far lists and panels keep scrolling after a flick.]
+輕掃後清單與面板繼續捲動的距離。
+[settings List bounce]
+清單回彈
+[settings How much lists and panels stretch past their ends and spring back.]
+清單與面板越過邊緣後拉伸並回彈的程度。
+[settings Map momentum]
+地圖慣性
+[settings How far the map keeps panning after a flick.]
+輕掃後地圖繼續移動的距離。
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+觸控捲動手感。0 關閉該效果；50 為預設值。
+[List momentum]
+清單慣性
+[List bounce]
+清單回彈
+[Map momentum]
+地圖慣性

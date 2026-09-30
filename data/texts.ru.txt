@@ -3408,3 +3408,25 @@ Emoji
 Балансировка зон охраны
 [experiment guard-area-balancing help]
 Свободные воины распределяются между нарисованными зонами охраны, а не идут все в ближайшую: большая зона получает больше воинов, а переполненная постепенно перетекает в остальные.
+[settings Touch scrolling]
+Сенсорная прокрутка
+[settings List momentum]
+Инерция списков
+[settings How far lists and panels keep scrolling after a flick.]
+Как далеко списки и панели продолжают прокрутку после свайпа.
+[settings List bounce]
+Отскок списков
+[settings How much lists and panels stretch past their ends and spring back.]
+Насколько списки и панели растягиваются за край и возвращаются.
+[settings Map momentum]
+Инерция карты
+[settings How far the map keeps panning after a flick.]
+Как далеко карта продолжает движение после свайпа.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Ощущение сенсорной прокрутки. 0 отключает эффект; 50 — значение по умолчанию.
+[List momentum]
+Инерция списков
+[List bounce]
+Отскок списков
+[Map momentum]
+Инерция карты

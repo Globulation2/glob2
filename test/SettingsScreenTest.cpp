@@ -10,6 +10,7 @@
 #include "GameGUIKeyActions.h"
 #include "KeyboardManager.h"
 #include "FileManager.h"
+#include <ScrollPhysics.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <SDL_net.h>
@@ -115,6 +116,19 @@ static void run(int width,int height,bool gl,bool expanded)
         screen.key(SDLK_TAB);screen.key(SDLK_RIGHT);screen.onTimer(SDL_GetTicks()+400);
         REQUIRE(screen.changeSetting("audio.music",123));
         screen.finishInteraction();Settings loaded;loaded.load();REQUIRE((loaded.musicVolume==123 && !loaded.mute));
+        screen.selectCategory(SettingsScreen::Category::Controls);
+        for(const char* id:{"controls.momentum","controls.bounce","controls.mapmomentum"}){
+            REQUIRE(screen.row(id).kind==SettingsScreen::Kind::Slider);REQUIRE(screen.row(id).value=="50%");REQUIRE(screen.row(id).maximum==100);
+        }
+        REQUIRE(screen.changeSetting("controls.momentum",0));REQUIRE(s.touchScrollMomentum==0);REQUIRE(!GAGCore::ScrollPresets::widget().momentum);
+        REQUIRE(screen.changeSetting("controls.bounce",80));REQUIRE(s.touchScrollBounce==80);REQUIRE(GAGCore::ScrollPresets::widget().rubberBandCoefficient>0.56);
+        REQUIRE(screen.changeSetting("controls.mapmomentum",10));REQUIRE(s.mapScrollMomentum==10);REQUIRE(GAGCore::ScrollPresets::mapViewport().decelerationRate<0.998);
+        REQUIRE(screen.row("controls.bounce").value=="80%");
+        screen.onTimer(SDL_GetTicks()+400);loaded.load();
+        REQUIRE((loaded.touchScrollMomentum==0 && loaded.touchScrollBounce==80 && loaded.mapScrollMomentum==10));
+        for(const char* id:{"controls.momentum","controls.bounce","controls.mapmomentum"})REQUIRE(screen.changeSetting(id,50));
+        screen.onTimer(SDL_GetTicks()+400);loaded.load();REQUIRE(loaded.touchScrollMomentum==50);
+        REQUIRE(GAGCore::ScrollPresets::widget().momentum);
         screen.selectCategory(SettingsScreen::Category::Display);
         s.optionFlags|=0x80;REQUIRE(screen.changeSetting("graphics.detail",1));REQUIRE((s.optionFlags & 0x80));
         REQUIRE(screen.changeSetting("graphics.detail",0));REQUIRE(s.optionFlags==0x80);

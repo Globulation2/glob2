@@ -3410,3 +3410,25 @@ Experimente
 Echilibrarea zonelor de gardă
 [experiment guard-area-balancing help]
 Războinicii liberi se împart între zonele de gardă desenate în loc să meargă toți la cea mai apropiată: o zonă mai mare primește mai mulți, iar o zonă supraaglomerată se golește treptat spre celelalte.
+[settings Touch scrolling]
+Derulare tactilă
+[settings List momentum]
+Inerția listelor
+[settings How far lists and panels keep scrolling after a flick.]
+Cât de departe continuă listele și panourile să deruleze după o glisare.
+[settings List bounce]
+Reculul listelor
+[settings How much lists and panels stretch past their ends and spring back.]
+Cât de mult se întind listele și panourile dincolo de margini înainte de a reveni.
+[settings Map momentum]
+Inerția hărții
+[settings How far the map keeps panning after a flick.]
+Cât de departe continuă harta să se miște după o glisare.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Senzația derulării tactile. 0 dezactivează un efect; 50 este valoarea implicită.
+[List momentum]
+Inerția listelor
+[List bounce]
+Reculul listelor
+[Map momentum]
+Inerția hărții

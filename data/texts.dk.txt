@@ -3486,3 +3486,25 @@ Eksperimenter
 Balancering af vagtområder
 [experiment guard-area-balancing help]
 Frie krigere fordeler sig mellem de malede vagtområder i stedet for alle at tage det nærmeste: et større område får flere af dem, og et overfyldt område tyndes ud til de andre.
+[settings Touch scrolling]
+Berøringsrulning
+[settings List momentum]
+Listers fart
+[settings How far lists and panels keep scrolling after a flick.]
+Hvor langt lister og paneler ruller videre efter et svirp.
+[settings List bounce]
+Listers tilbageslag
+[settings How much lists and panels stretch past their ends and spring back.]
+Hvor meget lister og paneler strækkes ud over kanten og fjedrer tilbage.
+[settings Map momentum]
+Kortets fart
+[settings How far the map keeps panning after a flick.]
+Hvor langt kortet flytter sig videre efter et svirp.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Følelsen af berøringsrulning. 0 slår en effekt fra; 50 er standard.
+[List momentum]
+Listers fart
+[List bounce]
+Listers tilbageslag
+[Map momentum]
+Kortets fart

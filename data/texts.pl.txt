@@ -3410,3 +3410,25 @@ Eksperymenty
 Równoważenie stref straży
 [experiment guard-area-balancing help]
 Wolni wojownicy rozdzielają się między namalowane strefy straży, zamiast wszyscy iść do najbliższej: większa strefa dostaje ich więcej, a przepełniona strefa stopniowo opróżnia się do pozostałych.
+[settings Touch scrolling]
+Przewijanie dotykiem
+[settings List momentum]
+Rozpęd list
+[settings How far lists and panels keep scrolling after a flick.]
+Jak daleko listy i panele przewijają się po machnięciu.
+[settings List bounce]
+Odbicie list
+[settings How much lists and panels stretch past their ends and spring back.]
+Jak mocno listy i panele rozciągają się poza krawędź i wracają.
+[settings Map momentum]
+Rozpęd mapy
+[settings How far the map keeps panning after a flick.]
+Jak daleko mapa przesuwa się po machnięciu.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Odczucie przewijania dotykiem. 0 wyłącza efekt; 50 to wartość domyślna.
+[List momentum]
+Rozpęd list
+[List bounce]
+Odbicie list
+[Map momentum]
+Rozpęd mapy

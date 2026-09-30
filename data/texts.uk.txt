@@ -3406,3 +3406,25 @@ Emoji
 Балансування зон охорони
 [experiment guard-area-balancing help]
 Вільні воїни розподіляються між намальованими зонами охорони, а не йдуть усі до найближчої: більша зона отримує більше воїнів, а переповнена поступово перетікає в інші.
+[settings Touch scrolling]
+Сенсорне прокручування
+[settings List momentum]
+Інерція списків
+[settings How far lists and panels keep scrolling after a flick.]
+Як далеко списки й панелі прокручуються після свайпу.
+[settings List bounce]
+Відскок списків
+[settings How much lists and panels stretch past their ends and spring back.]
+Наскільки списки й панелі розтягуються за край і повертаються.
+[settings Map momentum]
+Інерція мапи
+[settings How far the map keeps panning after a flick.]
+Як далеко мапа рухається після свайпу.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Відчуття сенсорного прокручування. 0 вимикає ефект; 50 — типове значення.
+[List momentum]
+Інерція списків
+[List bounce]
+Відскок списків
+[Map momentum]
+Інерція мапи

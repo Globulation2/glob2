@@ -136,6 +136,12 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(gameSpeed);
         READ_PARSED_INT(mobileDialogTextPercent);
         mobileDialogTextPercent=std::clamp(mobileDialogTextPercent,100,150);
+        READ_PARSED_INT(touchScrollMomentum);
+        READ_PARSED_INT(touchScrollBounce);
+        READ_PARSED_INT(mapScrollMomentum);
+        touchScrollMomentum=std::clamp(touchScrollMomentum,0,100);
+        touchScrollBounce=std::clamp(touchScrollBounce,0,100);
+        mapScrollMomentum=std::clamp(mapScrollMomentum,0,100);
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 #ifndef YOG_SERVER_ONLY
@@ -207,6 +213,9 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
         Utilities::streamprintf(stream,"mobileDialogTextPercent=%d\n",mobileDialogTextPercent);
+        Utilities::streamprintf(stream,"touchScrollMomentum=%d\n",touchScrollMomentum);
+        Utilities::streamprintf(stream,"touchScrollBounce=%d\n",touchScrollBounce);
+        Utilities::streamprintf(stream,"mapScrollMomentum=%d\n",mapScrollMomentum);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{

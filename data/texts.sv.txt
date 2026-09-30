@@ -3420,3 +3420,25 @@ Experiment
 Balansering av vaktområden
 [experiment guard-area-balancing help]
 Fria krigare fördelar sig mellan de målade vaktområdena i stället för att alla ta det närmaste: ett större område får fler av dem, och ett överfullt område tunnas ut till de andra.
+[settings Touch scrolling]
+Pekrullning
+[settings List momentum]
+Listornas fart
+[settings How far lists and panels keep scrolling after a flick.]
+Hur långt listor och paneler fortsätter rulla efter ett svep.
+[settings List bounce]
+Listornas studs
+[settings How much lists and panels stretch past their ends and spring back.]
+Hur mycket listor och paneler töjs förbi kanten och fjädrar tillbaka.
+[settings Map momentum]
+Kartans fart
+[settings How far the map keeps panning after a flick.]
+Hur långt kartan fortsätter röra sig efter ett svep.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Känslan i pekrullning. 0 stänger av en effekt; 50 är standard.
+[List momentum]
+Listornas fart
+[List bounce]
+Listornas studs
+[Map momentum]
+Kartans fart
