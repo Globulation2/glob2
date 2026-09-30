@@ -145,7 +145,7 @@ The owner syncs the public changes into the public release mirror and starts eac
 release there manually. Merge public `master` into the mirror's `master` so
 mirror-only release configuration stays in place. The workflow builds the existing MinGW x64
 client, stages its runtime DLLs, game assets and GPL license, creates
-`MicrosoftGame.config` and shell logos, then
+`MicrosoftGame.config`, shell logos and a 1920×1080 splash image, then
 uses the Microsoft GDK to produce an MSIXVC package. With `upload: false`, it
 creates an installable test-signed package and retains the package and validator
 report as a publicly accessible GitHub Actions artifact. With `upload: true`, it

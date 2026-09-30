@@ -165,7 +165,7 @@ void Application::choose(int choice)
 		screens.push(std::make_unique<LANMenuScreen>(screens));
 		break;
 	case MainMenuScreen::MULTIPLAYERS_YOG:
-#ifndef GLOB2_CHINA_RELEASE
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 		screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()));
 #endif
 		break;

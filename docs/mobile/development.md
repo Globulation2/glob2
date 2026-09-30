@@ -291,8 +291,11 @@ floor only after updating the build identity and native dependency triplets,
 auditing platform API use, and playing on representative older tablets. Do not
 select those devices in the store until they pass.
 
-`--amazon-apk` checks matching native libraries in both ABIs, the packaged
-asset index, alignment and both native build IDs. It derives `versionName` from
+`--amazon-apk` builds an isolated Amazon native flavor that hides and blocks
+the public YOG account flow while retaining LAN play. It reuses the standard
+Android dependency builds and checks matching native libraries in both ABIs,
+the packaged asset index, alignment and both native build IDs. It derives
+`versionName` from
 `PACKAGE_VERSION` in `scons/build_layout.py`. The four version components map
 to one increasing Android `versionCode`; never reuse or lower a code already
 submitted to Amazon. A release build remains unsigned until the separate
@@ -300,8 +303,8 @@ release workflow signs it. The local `sign` command above is for developer
 installs and must not be used as a store identity.
 
 The public `.github/workflows/amazon-appstore.yml` runs only when mirrored to
-`genixpro/glob2-release`, which is itself public; its environment secrets are
-private. Its manual dispatch selects a public `vVERSION` tag that resolves to
+the private `genixpro/glob2-release`; its environment secrets remain private.
+Its manual dispatch selects a public `vVERSION` tag that resolves to
 the same commit in the release mirror. `build` produces a
 verified unsigned APK without credentials. `candidate` signs it and retains a
 short-lived APK for the first manual console submission. `publish` performs the
@@ -339,7 +342,8 @@ Register an Amazon Developer account, complete identity checks, and create the
 first app version in the Developer Console. Use package `org.globulation2.glob2`,
 price Free, and disable optional Amazon DRM. Select only Fire tablets that pass
 qualification. Complete the privacy questionnaire based on the actual network
-and account behavior, and supply a support contact, icon, and Fire-device
+and account behavior, link the [Fire tablet privacy policy](amazon-privacy-policy.md),
+and supply a support contact, icon, and Fire-device
 screenshots. Draft listing copy: **Globulation 2** — “Build and guide a colony in
 an open-source real-time strategy game. Set priorities for your workers, gather
 resources, construct buildings, explore maps, and compete with other colonies.”
