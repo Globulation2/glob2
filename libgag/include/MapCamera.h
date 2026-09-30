@@ -5,13 +5,11 @@
 #include <utility>
 
 // Presentation-only camera. All distances are logical pixels, never map tiles.
-// Origins wrap on the torus; visible bounds may span multiple map periods.
+// Origins wrap on the torus; small maps can still span multiple periods.
 class MapCamera
 {
 public:
-    //! Zoom range. At MIN_ZOOM one screen pixel shows four map pixels, so a
-    //! tile is 8 px across and the view holds four times the map it does at 1.
-    static constexpr double MIN_ZOOM = .25, MAX_ZOOM = 3.0;
+    static constexpr double MAX_ZOOM = 3.0;
 
     double zoom = 1, originX = 0, originY = 0;
     double width = 0, height = 0, mapWidth = 0, mapHeight = 0;
@@ -24,18 +22,28 @@ public:
 
     void resize(double w, double h, double mw, double mh, double x=0, double y=0)
     {
-        if (width > 0 && height > 0)
-        {
-            auto center = screenToWorld(offsetX+width / 2, offsetY+height / 2);
-            originX = center.first - w / (2 * zoom);
-            originY = center.second - h / (2 * zoom);
-        }
+        const bool hadViewport = width > 0 && height > 0;
+        const auto center = screenToWorld(offsetX+width / 2, offsetY+height / 2);
         offsetX=x;offsetY=y;
         width = w;
         height = h;
         mapWidth = mw;
         mapHeight = mh;
+        if (zoom < minimumZoom()) zoom = minimumZoom();
+        if (hadViewport)
+        {
+            originX = center.first - w / (2 * zoom);
+            originY = center.second - h / (2 * zoom);
+        }
         normalize();
+    }
+
+    // Stop when either map period just fills its viewport dimension. Maps
+    // already smaller than the viewport retain their existing 1:1 repeats.
+    double minimumZoom() const
+    {
+        if (width <= 0 || height <= 0 || mapWidth <= 0 || mapHeight <= 0) return 1;
+        return std::min(1.0, std::max(width / mapWidth, height / mapHeight));
     }
 
     void normalize()
@@ -60,7 +68,7 @@ public:
     void setZoom(double value, double x, double y)
     {
         auto anchor = screenToWorld(x, y);
-        zoom = std::clamp(value, MIN_ZOOM, MAX_ZOOM);
+        zoom = std::clamp(value, minimumZoom(), MAX_ZOOM);
         originX = anchor.first - (x - offsetX) / zoom;
         originY = anchor.second - (y - offsetY) / zoom;
         normalize();

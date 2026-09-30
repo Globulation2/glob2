@@ -123,6 +123,7 @@ void GameGUI::init()
 
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
+	mapPanPushed=false;
 
 	buildingsChoiceName.clear();
 	buildingsChoiceName.push_back("swarm");
@@ -153,8 +154,6 @@ void GameGUI::init()
 	campaign=NULL;
 	missionName="";
 
-	scrollWheelWorkingChanges=0;
-	scrollWheelStayRangeChanges=0;
 
 	highlights.clear();
 

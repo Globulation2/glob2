@@ -50,11 +50,21 @@ void SinglePlayerFlow::custom()
 					 if (result != CustomGameScreen::OK)
 						 return;
 					 auto &selected = static_cast<CustomGameScreen &>(screen);
-					 launch([map = selected.getMapHeader(), players = selected.getGameHeader(),
-							 team = selected.getSelectedColor(0), speed = selected.selectedSpeed(),
-							 source = selected.sourceFile()](Engine &engine)
-							{ return engine.initCustomTask(map, players, team, speed, source); },
-							true, selected.releaseSnapshot());
+					 auto map = selected.getMapHeader();
+					 auto players = selected.getGameHeader();
+					 auto team = selected.getSelectedColor(0);
+					 auto speed = selected.selectedSpeed();
+					 // A generated map's bytes are already in memory (CustomGameScreen::generateMap):
+					 // read them directly rather than round-tripping through a temporary file. A
+					 // premade map still comes from its real file in the library.
+					 if (auto bytes = selected.releaseSnapshot())
+						 launch([map, players, team, speed, bytes](Engine &engine)
+								{ return engine.initCustomFromBytesTask(map, players, team, speed, bytes); },
+								true, bytes);
+					 else
+						 launch([map, players, team, speed, source = selected.sourceFile()](Engine &engine)
+								{ return engine.initCustomTask(map, players, team, speed, source); },
+								true, nullptr);
 				 });
 }
 

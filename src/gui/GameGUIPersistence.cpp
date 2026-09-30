@@ -55,7 +55,12 @@ GAGCore::CooperativeTask GameGUI::loadFromHeadersTask(MapHeader mapHeader, GameH
 		}
 	}
 
-	bool res = co_await loadTask(stream.get(), ignoreGUIData);
+	co_return co_await loadFromStreamTask(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI, stream.get());
+}
+
+GAGCore::CooperativeTask GameGUI::loadFromStreamTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, GAGCore::InputStream *stream)
+{
+	bool res = co_await loadTask(stream, ignoreGUIData);
 	if (!res)
 		co_return false;
 
@@ -199,6 +204,7 @@ void GameGUI::suspendInput()
 {
     if (touch) touch->cancel(true);
     panPushed=false;
+    mapPanPushed=false;
     torusView.stopMoving();
     torusPointerDown=false;
     torusView.setPointerHeld(false);

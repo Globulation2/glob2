@@ -160,6 +160,7 @@ void GameGUITouch::cancel(bool preservePreview)
 	stroke.cancel();
 	gui.toolManager.cancelDrag(gui.localTeamNo);
 	gesture.cancel();
+	lastMapTapTicks.reset();
 	fingers.clear();
 	ignoreTouchSequence = false;
 	confirmDestroy = false;
@@ -436,7 +437,25 @@ bool GameGUITouch::process(SDL_Event &event)
 	{
 		if (placementHold && placementHold->pointer == key)
 			placementHold.reset();
-		actions(gesture.up(key.first, key.second, {point.x / scale, point.y / scale}));
+		auto changes = gesture.up(key.first, key.second, {point.x / scale, point.y / scale});
+		if (changes.size() == 1 && changes.front().kind == TouchActionKind::Select &&
+			!interfaceGesture && world().contains(point) && !controls().contains(point))
+		{
+			const Uint32 ticks = event.tfinger.timestamp;
+			const double tapRadius = 24 * scale;
+			if (lastMapTapTicks && ticks - *lastMapTapTicks <= 300 &&
+				std::hypot(point.x - lastMapTapPoint.x, point.y - lastMapTapPoint.y) <= tapRadius)
+			{
+				gui.updateCamera();
+				const bool zoomed = gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1),
+					int(point.x), int(point.y));
+				lastMapTapTicks.reset();
+				if (zoomed) changes.clear();
+			}
+			else { lastMapTapTicks = ticks; lastMapTapPoint = point; }
+		}
+		else lastMapTapTicks.reset();
+		actions(changes);
 		std::erase(fingers, key);
 	}
 	return true;
@@ -479,6 +498,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 		}
 		if (action.kind == TouchActionKind::Pan)
 		{
+			lastMapTapTicks.reset();
 			gui.updateCamera();
 			gui.camera.originX -= point.x / gui.camera.zoom;
 			gui.camera.originY -= point.y / gui.camera.zoom;
@@ -490,6 +510,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 		}
 		else if (action.kind == TouchActionKind::Zoom)
 		{
+			lastMapTapTicks.reset();
 			if (action.factor > 0)
 				gui.zoomMap(std::log(action.factor) / std::log(1.1), int(point.x), int(point.y));
 		}

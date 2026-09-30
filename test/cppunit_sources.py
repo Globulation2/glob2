@@ -63,8 +63,6 @@ AllyTeamWidgetIndexTest.cpp
 EditorWidgetLayoutTest.cpp
 
 
-ScrollWheelTargetTest.cpp
-
 BuildingFailureDisplayTest.cpp
 
 OverlayFillTest.cpp

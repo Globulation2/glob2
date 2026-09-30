@@ -535,8 +535,10 @@ private:
 	int relMouseX;
 	///This is the mouse y position relative to its last position
 	int relMouseY;
-	///This boolean states whether we are dragging the screen with the middle mouse button
+	///True while either mouse button is dragging the map camera
 	bool isScrollDragging;
+	bool isLeftScrollDragging;
+	bool isMiddleScrollDragging;
 
 	///the keyboardManager handles keyboard shortcuts
 	KeyboardManager keyboardManager;

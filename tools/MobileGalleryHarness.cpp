@@ -378,7 +378,12 @@ struct MobileGallerySetup
 		stackShot(stack, "setup-preview-error");
 		// Loading/Failed intentionally discard pixels. Restore the actual snapshot,
 		// not just the Ready enum, before capturing any subsequent child pages.
-		lobby->preview->setMapThumbnail(lobby->sourceFile());
+		// generatedSnapshot lives in memory (CustomGameScreen::generateMap); write it to a
+		// disposable scratch file so the string-keyed thumbnail loader can read it back.
+		Toolkit::getFileManager()->writeAtomically("gallery-thumbnail-scratch.map",
+			[&](OutputStream &stream)
+			{ stream.write(lobby->generatedSnapshot->data(), lobby->generatedSnapshot->size(), "bytes"); });
+		lobby->preview->setMapThumbnail("gallery-thumbnail-scratch.map");
 		lobby->invalidate();
 		const auto restored = SDL_GetTicks();
 		do

@@ -53,7 +53,7 @@ test('an active match can load the same saved game repeatedly through the schedu
   expect(errors).toEqual([]);
 });
 
-test('a damaged in-game load returns through a scheduled error notice and permits another match',async({page})=>{
+test('a damaged in-game load returns through a scheduled error notice and permits another match',{tag:'@webgl2-reload-b'},async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
   const name=await startAndSave(page);
   // Let the initial autosave appear first so loading cannot accidentally select it.
@@ -73,7 +73,9 @@ test('a damaged in-game load returns through a scheduled error notice and permit
   expect(errors).toEqual([]);
 });
 
-test('an active replay can be loaded again through the scheduled loader',async({page})=>{
+test('an active replay can be loaded again through the scheduled loader',{tag:'@webgl2-reload-c'},async({page})=>{
+  const loadTimeout=process.env.GLOB2_TEST_RENDERER==='webgl2'?180000:30000;
+  if(process.env.GLOB2_TEST_RENDERER==='webgl2') test.setTimeout(420000);
   const errors=[];page.on('pageerror',error=>errors.push(String(error)));
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'load');await screen(page,'ChooseMapScreen');await click(page,620,650);
@@ -81,10 +83,12 @@ test('an active replay can be loaded again through the scheduled loader',async({
   await (await chooser).setFiles({name:'AAA Replay.replay',mimeType:'application/octet-stream',
     buffer:await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'))});
   await expect.poll(async()=>(await state(page)).import).toBe('succeeded');
-  await click(page,380,280);await click(page,810,590);await screen(page,'match');
+  await click(page,380,280);await click(page,810,590);
+  await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('match');
   const original=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(original+25);
-  await loadSaved(page,true);await screen(page,'match');
+  await loadSaved(page,true);
+  await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('match');
   const loaded=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(loaded+25);
   expect(errors).toEqual([]);

@@ -48,10 +48,11 @@ class CustomGameScreen : public Glob2UI::Screen
 	MapHeader &getMapHeader() { return mapHeader; }
 	GameHeader &getGameHeader();
 	int getSelectedColor(int) { return setup.humanColony().value_or(0); }
+	// A premade map's file path; empty for a generated map (see generatedSnapshot).
 	const std::string &sourceFile() const { return source; }
-	// Hands over a generated map, which this screen would otherwise delete when
-	// destroyed. Releasing the returned owner removes it.
-	std::shared_ptr<void> releaseSnapshot();
+	// Hands over the generated map's serialized bytes (null for a premade map),
+	// which the loader reads directly instead of this screen ever holding them.
+	std::shared_ptr<std::string> releaseSnapshot();
 	void launchFailed()
 	{
 		message = "Could not launch this map. Your setup is retained; try again.";
@@ -75,7 +76,10 @@ class CustomGameScreen : public Glob2UI::Screen
 	CustomGameSetup setup;
 	MapHeader mapHeader;
 	GameHeader gameHeader;
-	std::string username, source, snapshot, message;
+	std::string username, source, message;
+	// Serialized bytes of the last successfully generated map (see generateMap()), read
+	// directly by the loader instead of round-tripping through a temporary file.
+	std::shared_ptr<std::string> generatedSnapshot;
 	std::string lastSavedPreferences;
 	Uint32 preferencesRetryAt = 0;
 	void savePreferences();

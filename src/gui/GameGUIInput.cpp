@@ -23,7 +23,6 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
-#include "ScrollWheelTarget.h"
 #include "Unit.h"
 
 using std::shared_ptr;
@@ -123,6 +122,7 @@ void GameGUI::processEvent(SDL_Event *event)
         lastMouseButtonState = 0;
         viewportSpeedX = viewportSpeedY = 0;
         selectionPushed = false;
+        mapPanPushed = false;
         if (touch) touch->cancel();
         if (auto *dialog = activeDialog()) dialog->cancelInput();
         torusView.stopMoving();
@@ -187,18 +187,16 @@ void GameGUI::processEvent(SDL_Event *event)
 		else if (event->type==SDL_MOUSEWHEEL)
 		{
 			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
-			if (SDL_GetModState() & KMOD_ALT)
-            {
-                double delta=event->wheel.y;
+			double delta=event->wheel.y;
 #if SDL_VERSION_ATLEAST(2,0,18)
-                delta=event->wheel.preciseY;
+			delta=event->wheel.preciseY;
 #endif
-                zoomMap(delta*factor,mouseX,mouseY);
-            }
-            else accumulateScrollWheelDelta(event->wheel.y * factor);
+			zoomMap(delta*factor,mouseX,mouseY);
 		}
 	}
 
+	if (inGameMenu != IGM_NONE || scrollableText)
+		mapPanPushed = false;
 	if (event->type==SDL_MOUSEMOTION)
 	{
 		handleMouseMotion(event->motion.x, event->motion.y, event->motion.state);
@@ -212,29 +210,6 @@ void GameGUI::processEvent(SDL_Event *event)
 		exitGlobCompletely=true;
 		orderQueue.push_back(shared_ptr<Order>(new PlayerQuitsGameOrder(localPlayer)));
 		flushOutgoingAndExit=true;
-	}
-}
-
-// Route one scroll-wheel delta into the pending accumulators. The modifier
-// keys are sampled here, at event time, so deltas scrolled while SHIFT was held
-// are committed to the stay-range accumulator even if SHIFT is released before
-// the frame's flushScrollWheelOrders() runs. The building-type gate is deferred
-// to flush time.
-void GameGUI::accumulateScrollWheelDelta(int delta)
-{
-	if(globalContainer->liveSpectating) return;
-	SDL_Keymod mod = inputState.modifiers();
-	switch (scrollWheelTarget(mod & KMOD_SHIFT, mod & KMOD_CTRL,
-	                          globalContainer->settings.scrollWheelEnabled, mod & KMOD_ALT))
-	{
-	case ScrollWheelTarget::MaxUnitWorking:
-		scrollWheelWorkingChanges += delta;
-		break;
-	case ScrollWheelTarget::UnitStayRange:
-		scrollWheelStayRangeChanges += delta;
-		break;
-	case ScrollWheelTarget::None:
-		break;
 	}
 }
 
@@ -315,7 +290,22 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 		else if (globalContainer->replaying && mouseEvent.y >= REPLAY_BAR_Y)
 			handleReplayProgressBarClick(mouseEvent.x, mouseEvent.y, mouseEvent.button);
 		else
+		{
+			const bool mapGesture = selectionMode != TOOL_SELECTION &&
+				selectionMode != BRUSH_SELECTION && !putMark;
 			handleMapClick(mouseEvent.x, mouseEvent.y, mouseEvent.button);
+			if (mapGesture && camera.contains(mouseEvent.x, mouseEvent.y) &&
+				mouseEvent.y >= 16 && !torusView.active())
+			{
+				// Direct flag grabs still move the flag; other map objects
+				// can start a camera drag.
+				const bool movingFlag = selectionMode == BUILDING_SELECTION && selectionPushed &&
+					selectionBuilding()->type->isVirtual;
+				mapPanPushed = !movingFlag;
+				panMouseX=mouseEvent.x;
+				panMouseY=mouseEvent.y;
+			}
+		}
 	}
 	else if (button==SDL_BUTTON_MIDDLE)
 	{
@@ -324,14 +314,8 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 		panMouseX=mouseEvent.x;
 		panMouseY=mouseEvent.y;
 	}
-	else if (button==4)
-	{
-		accumulateScrollWheelDelta(1);
-	}
-	else if (button==5)
-	{
-		accumulateScrollWheelDelta(-1);
-	}
+	else if (button==4 || button==5)
+		zoomMap(button==4 ? 1 : -1, mouseEvent.x, mouseEvent.y);
 }
 
 // Mouse-button release on the game view (only reached when no in-game menu is
@@ -340,11 +324,12 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 {
 	updateCamera();
     if(mouseEvent.button==SDL_BUTTON_LEFT && zoomControlPushed)
-    {zoomControlPushed=false;miniMapPushed=selectionPushed=panPushed=false;return;}
+    {zoomControlPushed=false;miniMapPushed=selectionPushed=mapPanPushed=false;return;}
 	int button=mouseEvent.button;
 	if ((button==SDL_BUTTON_LEFT) && camera.contains(mouseEvent.x,mouseEvent.y) && mouseEvent.y>=16)
 	{
-		if ((selectionMode==BUILDING_SELECTION) && selectionPushed && selectionBuilding()->type->isVirtual)
+		if (!mapPanPushed && (selectionMode==BUILDING_SELECTION) &&
+			selectionPushed && selectionBuilding()->type->isVirtual)
 		{
 			// update flag
 			moveFlag(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), true);
@@ -355,9 +340,14 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 			toolManager.handleMouseUp(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), localTeamNo, viewportX, viewportY, inputState.modifiers());
 		}
 	}
-	miniMapPushed=false;
-	selectionPushed=false;
-	panPushed=false;
+	if (button==SDL_BUTTON_LEFT)
+	{
+		miniMapPushed=false;
+		selectionPushed=false;
+		mapPanPushed=false;
+	}
+	else if (button==SDL_BUTTON_MIDDLE)
+		panPushed=false;
 	// showUnitWorkingToBuilding=false;
 }
 

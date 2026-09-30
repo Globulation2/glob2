@@ -39,6 +39,8 @@ leave the world visible below short panels. In-game surfaces use `InGameTouchThe
 independent. A completed tap on empty map space dismisses building inspection
 and restores the previous palette state. Tapping another object switches selection;
 panning, cancelled gestures and taps inside the inspector do not dismiss it.
+Two quick taps on the same map position restore 1:1 zoom around that point;
+pinching still adjusts zoom continuously. Touches on controls do not reset zoom.
 In the mobile/touch interface, flags on the flat map also accept selection within 24 screen points of their
 centres, independent of zoom. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.
@@ -175,6 +177,14 @@ and phone/tablet play sessions remain necessary.
 
 Run commands from the repository root. Versions and checksums are pinned in
 `mobile/toolchain.json`, `mobile/android-tools.json` and `mobile/vcpkg.json`.
+
+Android CI opts into the shared `CCACHE=1` compiler wrapper and restores a
+per-architecture cache keyed by the pinned toolchain, dependency manifest and
+triplets. A cache miss still builds normally; ccache checks compiler content and
+source dependencies before reusing an object. Leave `CCACHE` unset when generating
+`compile_commands.json` for source analysis. A newer PR push cancels its older
+Android checks.
+
 Use `python3 mobile/doctor.py android` or `python3 mobile/doctor.py ios` to inspect
 SDK availability. iOS requires the pinned full Xcode 27.0 toolchain;
 `--developer-dir` on the packaging command selects it without changing the

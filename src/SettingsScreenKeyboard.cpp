@@ -29,8 +29,8 @@ void SettingsScreen::buildKeyboard()
     toggle("controls.cursor","Use game cursor","Display the Globulation 2 cursor.",s.screenFlags & GraphicContext::CUSTOMCURSOR,
         [this](int v){changeDisplay([v](Settings& s){if(v)s.screenFlags|=GraphicContext::CUSTOMCURSOR;else s.screenFlags&=~GraphicContext::CUSTOMCURSOR;});});
 #endif
-    toggle("controls.wheel","Scroll wheel enabled",
-        "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",s.scrollWheelEnabled,[this](int v){
+    toggle("controls.wheel","Menu scroll wheel enabled",
+        "Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.",s.scrollWheelEnabled,[this](int v){
             globalContainer->settings.scrollWheelEnabled=v;GAGGUI::Screen::scrollWheelEnabled=v;commit();
         });
     section("Keyboard shortcuts");

@@ -6,6 +6,7 @@ import runpy
 from pathlib import Path
 from SCons.Script import Environment, Default, Delete, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, prepare_directory
+import ccache
 from mobile_toolchain import discover, LOCK
 from mobile_artifacts import verify_android_library, archive_object_name
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
@@ -43,6 +44,8 @@ def build_mobile(directory, identity, arguments):
     environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
         ENV=environment, CC=toolchain['cc'], CXX=toolchain['cxx'], LINK=toolchain['cxx'], AR=toolchain['ar'])
+    if ccache.enabled():
+        ccache.enable(env)
     config = output / 'include/glob2/BuildConfig.h'
     write_if_changed(config, '''#pragma once
 #define PACKAGE "glob2"

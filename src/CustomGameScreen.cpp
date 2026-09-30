@@ -23,7 +23,6 @@
 #include <cstdio>
 #include <filesystem>
 #include <fstream>
-#include <random>
 
 namespace fe = Glob2UI;
 using fe::Element;
@@ -164,6 +163,11 @@ void CustomGameScreen::launch()
 {
 	if (!setup.validation().empty())
 		return;
+	// A random map still resolving in the background: the disabled Start button
+	// and its "Generating preview..." note explain why, instead of blocking here
+	// on finishPreview()'s busy-wait with no visible feedback.
+	if (setup.random && previewBusy())
+		return;
 	if (setup.random && candidates)
 		finishPreview();
 	if (setup.random && (!validMap || previewRevision != setup.mapRevision))
@@ -226,25 +230,12 @@ GameHeader &CustomGameScreen::getGameHeader()
 CustomGameScreen::~CustomGameScreen()
 {
 	savePreferences();
-	if (!snapshot.empty())
-	{
-		std::error_code error;
-		std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path(), error);
-	}
 }
-
-std::shared_ptr<void> CustomGameScreen::releaseSnapshot()
+std::shared_ptr<std::string> CustomGameScreen::releaseSnapshot()
 {
-	if (snapshot.empty())
-		return nullptr;
-	const auto directory = std::filesystem::path(snapshot).parent_path();
-	snapshot.clear();
-	return std::shared_ptr<void>(nullptr,
-								 [directory](void *)
-								 {
-									 std::error_code error;
-									 std::filesystem::remove_all(directory, error);
-								 });
+	if (!setup.random)
+		return {};
+	return std::move(generatedSnapshot);
 }
 
 void CustomGameScreen::savePreferences()
@@ -410,7 +401,7 @@ void CustomGameScreen::invalidatePreview()
 	validMap = false;
 	// Keep the scores belonging to the retained generated preview during a reroll.
 	// A premade map must not inherit scores from an older generated snapshot.
-	if (source != snapshot)
+	if (!setup.random)
 		quality = {};
 	previewRevision = ~0u;
 	previewPending = setup.random;
@@ -484,6 +475,7 @@ bool CustomGameScreen::loadMap(const std::string &requestedPath)
 		mapHeader = entry.header;
 		setup.setCapacity(mapHeader.getNumberOfTeams());
 		source = path;
+		generatedSnapshot.reset();
 		validMap = true;
 		preview->setMapThumbnail(entry.terrain);
 		preview->starts = entry.starts;
@@ -521,7 +513,6 @@ bool CustomGameScreen::generateMap()
 {
 	// Consume this request even on failure; retry on a new edit or launch, not every frame.
 	previewPending = false;
-	std::string candidate;
 	if (!setup.validation().empty())
 	{
 		message = tr(setup.validation());
@@ -530,22 +521,6 @@ bool CustomGameScreen::generateMap()
 	}
 	try
 	{
-		// Private snapshot ownership, never a user map and never a predictable
-		// filename.
-		std::random_device random;
-		std::filesystem::path directory;
-		for (int attempt = 0; attempt < 32; ++attempt)
-		{
-			directory =
-				std::filesystem::temp_directory_path() /
-				("glob2-custom-" + std::to_string(random()) + "-" + std::to_string(random()));
-			if (std::filesystem::create_directory(directory))
-				break;
-			directory.clear();
-		}
-		if (directory.empty())
-			throw std::runtime_error("snapshot directory");
-		candidate = (directory / "preview.map").string();
 		std::unique_ptr<Game> game;
 		GenerationService generator;
 		const auto rootSeed = GenerationContext::randomSeed();
@@ -594,17 +569,15 @@ bool CustomGameScreen::generateMap()
 		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
 		game->setGameHeader(initial);
-		const std::string candidateGzip = glob2GzipWritePath(candidate);
-		const bool snapshotSaved = Toolkit::getFileManager()->writeGzipAtomically(candidateGzip,
-			[&](OutputStream &stream) { game->save(&stream, true, "Random map"); });
-		if (!snapshotSaved)
-			throw std::runtime_error("snapshot");
-		// Keep the actual generated world for rasterization. Only read back its
-		// finalized header (offset and SHA1), not a second whole Game and Map.
-		BinaryInputStream headerStream(
-			Toolkit::getFileManager()->openInflatingInputStreamBackend(candidateGzip));
-		if (!headerStream.isValid() || !mapHeader.load(&headerStream))
-			throw std::runtime_error("snapshot header");
+		// GameLoadScreen reads these bytes directly (Engine::initCustomFromBytesTask): a map
+		// this process just generated and is about to load right back gets no benefit from a
+		// round trip through disk, so the serialized bytes just move to another in-memory owner.
+		auto *memory = new MemoryStreamBackend();
+		BinaryOutputStream saveStream(memory);
+		game->save(&saveStream, true, "Random map");
+		// save() finalizes mapHeader in place (map offset, SHA1) as it writes, so this is
+		// already exactly what re-reading a saved copy of it back would have produced.
+		mapHeader = game->mapHeader;
 		MapThumbnail terrain;
 		terrain.loadFromMap(game->map);
 		if (!terrain.isLoaded())
@@ -614,11 +587,9 @@ bool CustomGameScreen::generateMap()
 		for (int i = 0; i < game->teamsCount(); ++i)
 			preview->starts.push_back(
 				{game->teams[i]->startPosX, game->teams[i]->startPosY, game->teams[i]->color});
-		source = candidateGzip;
+		source.clear();
+		generatedSnapshot = std::make_shared<std::string>(memory->takeContents());
 		validMap = true;
-		if (!snapshot.empty())
-			std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path());
-		snapshot = candidateGzip;
 		previewRevision = setup.mapRevision;
 		quality = generationResult.quality;
 		randomAttempts = 0;
@@ -629,8 +600,6 @@ bool CustomGameScreen::generateMap()
 	catch (const std::exception &error)
 	{
 		std::cerr << "Map preview: " << error.what() << std::endl;
-		if (!candidate.empty())
-			std::filesystem::remove_all(std::filesystem::path(candidate).parent_path());
 		validMap = false;
 		message = tr("Generation failed. Adjust settings or press Start to retry.");
 		invalidate();
@@ -814,6 +783,8 @@ Element CustomGameScreen::build(const Presentation &p)
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
 		error = tr("Select a valid map.");
+	else if (setup.random && previewBusy())
+		error = tr("Generating preview...");
 	const std::string summary = tr(setup.format) + "  /  " + std::to_string(setup.activeColonies()) + " " + tr("colonies") + "  /  " +
 								tr(setup.ruleset) + "  /  " + speed.getGameSpeedText();
 	const std::string note = error.empty() ? message : tr(error);
