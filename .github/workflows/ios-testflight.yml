@@ -1,13 +1,22 @@
-name: iOS internal TestFlight
+name: iOS TestFlight
 
 on:
   workflow_dispatch:
+    inputs:
+      audience:
+        description: TestFlight audience
+        required: true
+        type: choice
+        default: internal
+        options:
+          - internal
+          - external
 
 permissions:
   contents: read
 
 concurrency:
-  group: ios-internal-testflight
+  group: ios-testflight
   cancel-in-progress: false
 
 jobs:
@@ -20,6 +29,7 @@ jobs:
     env:
       TEAM_ID: CL2MNNYQX3
       BUNDLE_ID: org.globulation2.glob2
+      TESTFLIGHT_AUDIENCE: ${{ inputs.audience }}
     steps:
       - uses: actions/checkout@v4
 
@@ -96,6 +106,7 @@ jobs:
           test -d "$source_symbols"
           test "$(plutil -extract CFBundleIdentifier raw "$app/Info.plist")" = "$BUNDLE_ID"
           test "$(plutil -extract CFBundleVersion raw "$app/Info.plist")" = "$BUILD_NUMBER"
+          test "$(plutil -extract ITSAppUsesNonExemptEncryption raw "$app/Info.plist")" = false
           ditto "$source_symbols" "$symbols"
           binary_uuid="$(dwarfdump --uuid "$app/Glob2" | awk '{print $2}')"
           symbol_uuid="$(dwarfdump --uuid "$symbols" | awk '{print $2}')"
@@ -116,7 +127,7 @@ jobs:
               'signingStyle': 'automatic',
               'teamID': os.environ['TEAM_ID'],
               'manageAppVersionAndBuildNumber': False,
-              'testFlightInternalTestingOnly': True,
+              'testFlightInternalTestingOnly': os.environ['TESTFLIGHT_AUDIENCE'] == 'internal',
               'uploadSymbols': True,
           }
           (Path(os.environ['RUNNER_TEMP']) / 'Glob2-ValidateOptions.plist').write_bytes(
@@ -136,12 +147,13 @@ jobs:
           test -s "$app/embedded.mobileprovision"
           test "$(plutil -extract CFBundleIdentifier raw "$app/Info.plist")" = "$BUNDLE_ID"
           test "$(plutil -extract CFBundleVersion raw "$app/Info.plist")" = "$BUILD_NUMBER"
+          test "$(plutil -extract ITSAppUsesNonExemptEncryption raw "$app/Info.plist")" = false
           codesign --verify --deep --strict "$app"
           xcrun altool --validate-app "$ipa" \
             --api-key "$ASC_KEY_ID" --api-issuer "$ASC_ISSUER_ID" \
             --p8-file-path "$ASC_KEY_PATH"
 
-      - name: Upload internal-only build to TestFlight
+      - name: Upload build to TestFlight
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -155,7 +167,7 @@ jobs:
               'signingStyle': 'automatic',
               'teamID': os.environ['TEAM_ID'],
               'manageAppVersionAndBuildNumber': False,
-              'testFlightInternalTestingOnly': True,
+              'testFlightInternalTestingOnly': os.environ['TESTFLIGHT_AUDIENCE'] == 'internal',
               'uploadSymbols': True,
           }
           (Path(os.environ['RUNNER_TEMP']) / 'Glob2-ExportOptions.plist').write_bytes(
