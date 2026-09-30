@@ -1,0 +1,81 @@
+name: Steam Windows package
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-scons
+            mingw-w64-x86_64-SDL2
+            mingw-w64-x86_64-SDL2_image
+            mingw-w64-x86_64-SDL2_net
+            mingw-w64-x86_64-SDL2_ttf
+            mingw-w64-x86_64-libvorbis
+            mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-speex
+            mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-fribidi
+            mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-libepoxy
+            mingw-w64-x86_64-libsystre
+      - uses: actions/checkout@v4
+      - name: Check packaging helper
+        run: python -m unittest discover -s test -p test_steam_windows_package.py
+      - name: Build release client
+        run: scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe
+      - name: Stage Steam depot files
+        run: |
+          python tools/package_steam_windows.py \
+            --source . \
+            --exe build/mingw/client/release/src/glob2.exe \
+            --runtime "$(cygpath -w /mingw64/bin)" \
+            --output artifacts/steam/windows
+      - uses: actions/upload-artifact@v4
+        with:
+          name: glob2-steam-windows-${{ github.sha }}
+          path: artifacts/steam/windows/
+          if-no-files-found: error
+          retention-days: 30
+
+  smoke-test:
+    needs: package
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: fixture
+          sparse-checkout: games/cross-replay.game.gz
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: glob2-steam-windows-${{ github.sha }}
+          path: ${{ runner.temp }}/glob2-depot
+      - name: Run staged game without build tools
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $depot = Join-Path $env:RUNNER_TEMP 'glob2-depot'
+          $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'glob2-profile'
+          $env:GLOB2_ASSET_DIR = $depot
+          Set-Location $depot
+          & .\glob2.exe --nox "$env:GITHUB_WORKSPACE\fixture\games\cross-replay.game.gz" 10 1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

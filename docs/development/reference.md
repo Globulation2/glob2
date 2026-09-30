@@ -37,6 +37,14 @@ scons -C test                 # rebuild the separate test suite
 - `mingw=1` builds natively on Windows; `mingwcross=1` cross-compiles. Dependencies
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
+- The manually triggered **Steam Windows package** workflow builds the MinGW release
+  client and stages `glob2.exe`, its runtime DLL dependency closure, game assets,
+  license, and attribution in one depot folder. A separate Windows job downloads
+  that artifact and runs a short headless game without the build toolchain. Download
+  the `glob2-steam-windows-<commit>` artifact from the workflow run; its contents
+  are the files to place at the root of a Windows Steam depot. The workflow does
+  not upload to Steam or publish a release. Check the result interactively on a
+  clean Windows installation before using it in Steamworks.
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
