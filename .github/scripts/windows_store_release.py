@@ -104,9 +104,9 @@ def main() -> None:
     parser.add_argument("--version", required=True)
     parser.add_argument("--commit", required=True)
     args = parser.parse_args()
-    if (not re.fullmatch(r"[1-9]\d*(?:\.\d+){3}", args.version)
+    if (not re.fullmatch(r"[1-9]\d*(?:\.\d+){2}\.0", args.version)
             or any(int(part) > 65535 for part in args.version.split("."))):
-        parser.error("--version must have four parts of 0..65535 with a nonzero major version")
+        parser.error("--version must have four parts of 0..65535, a nonzero major version, and a zero revision")
     if not re.fullmatch(r"[A-Z0-9]{12}", args.store_id):
         parser.error("--store-id must be the 12-character Partner Center Store ID")
     if not re.fullmatch(r"[0-9a-f]{40}", args.commit):
