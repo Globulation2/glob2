@@ -3,7 +3,7 @@
 
 // Unit test for the pure integer core of the sprite-centering helper
 // (src/gui/SpriteCentering.h). Exercises only centerInBox, which has no
-// SDL/Sprite dependency, so it runs headless in TestsRunner.
+// SDL/Sprite dependency, so it runs headless in glob2-unit-tests.
 
 #include "Glob2Test.h"
 

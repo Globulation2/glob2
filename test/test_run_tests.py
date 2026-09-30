@@ -86,6 +86,11 @@ class ShardTest(unittest.TestCase):
         self.assertEqual(run_tests.doctest_filter(subset[1]),
                          ['-tc=renders the bar [display:1024x768][artifacts]', '-ts=PointBar'])
         self.assertFalse(run_tests.make_jobs(cases, args(), cases)[0].subset)
+        benchmark = run_tests.parse_listing(LISTING.replace('sweeps every landscape [slow]', 'sweeps every landscape [benchmark]'), 'unit')
+        kept, _ = run_tests.select(benchmark, args())
+        self.assertEqual(len(kept), len(benchmark) - 1)
+        job, = run_tests.make_jobs(kept, args(), benchmark)
+        self.assertEqual(run_tests.doctest_filter(job), ['-tce=*[benchmark]*'])
 
     def test_same_name_in_two_suites_stays_in_its_suite(self):
         listing = LISTING.replace('<OverallResultsTestCases', '<TestCase name="feeds the last worker" testsuite="InnSwap" '

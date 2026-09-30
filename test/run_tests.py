@@ -89,6 +89,7 @@ class Job:
     cases: list
     whole: bool = False
     subset: bool = False   # a whole-binary job that must run only its listed cases
+    without_benchmarks: bool = False  # a whole-binary job that skips only the [benchmark] cases
 
     @property
     def label(self):
@@ -195,7 +196,10 @@ def make_jobs(cases, args, all_cases=None):
             continue
         if kind == 'unit' or args.in_process:
             everything = [case for case in (all_cases or []) if case.binary == kind]
-            if all_cases and len(mine) < len(everything):
+            left_out = [case for case in everything if case not in mine]
+            if left_out and all(case.has('benchmark') for case in left_out):
+                jobs.append(Job(kind, mine, whole=True, without_benchmarks=True))
+            elif all_cases and len(mine) < len(everything):
                 # doctest selects by name and by suite separately, so a filtered run is
                 # one process per suite: -ts= keeps same-named cases of other suites out.
                 by_suite = {}
@@ -211,6 +215,8 @@ def make_jobs(cases, args, all_cases=None):
 
 def doctest_filter(job):
     if job.whole:
+        if job.without_benchmarks:
+            return ['-tce=*[benchmark]*']
         if not job.subset:
             return []
         # doctest takes comma-separated name patterns; test names never contain commas.

@@ -54,7 +54,7 @@ namespace
 			+ " n=" + std::to_string(numButtons);
 	}
 
-	/// cppunit can't stream std::optional, so assert on the unwrapped parts.
+	/// doctest cannot stream std::optional, so assert on the unwrapped parts.
 	void assertIndexIs(int expected, std::optional<int> actual, const std::string& msg)
 	{
 		CHECK_MESSAGE(actual.has_value(), (msg));

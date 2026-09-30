@@ -9,7 +9,7 @@
  * pin the exact tile mapping so a port (or future refactor) can be checked
  * against the original C++ behaviour without running a full game.
  *
- * Links only BuildingUtils.cpp (already in TestsRunner's sources) — no Game,
+ * Links only BuildingUtils.cpp (already among the unit binary's sources) — no Game,
  * Team, Map, or globalContainer needed, because turretScanTile is static and
  * touches no instance state.
  *
