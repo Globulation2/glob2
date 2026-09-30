@@ -83,7 +83,7 @@ ratings. Keep illustrated key art distinct from gameplay screenshots. Confirm
 trader, tax, and payout onboarding in the portal before requesting review.
 
 For each candidate, create a public `vVERSION` tag and mirror the reviewed
-Epic workflow to the private repository's protected `master` branch. Dispatch
+Epic workflow to the release repository's protected `master` branch. Dispatch
 `epic-windows-release.yml` there with the tag. Its preflight checks the public
 tag and version, then records the exact public source commit. The packaging
 and smoke-test jobs check out that commit and have no Epic credentials. The
@@ -93,7 +93,7 @@ environment. The workflow uploads to Epic **Dev** only; inspect the launcher
 install, move the candidate through Stage and review, and promote it to Live in
 the portal.
 
-In the private repository, set `EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`,
+In the release repository, set `EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`,
 `EPIC_WINDOWS_ARTIFACT_ID`, `EPIC_BPT_CLIENT_ID`, and `EPIC_BPT_SHA256` as
 `epic-dev` environment variables. Store `EPIC_BPT_CLIENT_SECRET` as an
 environment secret. Create those BPT credentials from the product's BPT
@@ -103,10 +103,12 @@ BuildPatchTool from the product's Epic Artifacts and Binaries page and set
 Epic's official endpoint and checks this digest before use. An Epic tool
 update intentionally stops the job until its digest is reviewed and refreshed.
 Never put BPT credentials in the public source tree or GitHub Actions
-variables. If the client secret is ever stored as a variable or the release
-repository becomes public, delete that variable, make the repository private,
-and rotate the BPT client before uploading. The Epic workflow checks both
-conditions before use.
+variables. The release repository is public, but its `epic-dev` environment
+secret is masked and available only to jobs explicitly using that environment.
+If the client secret is ever stored as a variable, delete that variable and
+rotate the BPT client before uploading. The Epic workflow rejects a
+secret-named variable before use. Review changes to the release workflow and
+environment access before dispatching an upload.
 
 After each upload, retain the workflow's staged manifest, version, source
 commit, and BPT log. Install through Epic on a fresh Windows machine and check
@@ -161,7 +163,7 @@ validation artifacts. They are not GitHub release assets and cannot be installed
 as public releases. A temporary developer signature supports emulator and
 device checks. F-Droid's signature is the sole public F-Droid update channel.
 The reviewed `.github/workflows/fdroid-release-validation.yml` workflow is
-mirrored to private `genixpro/glob2-release` and runs by owner dispatch with
+mirrored to `genixpro/glob2-release` and runs by owner dispatch with
 the exact public candidate commit SHA. Its read-only jobs build all three
 unsigned APKs through
 `mobile/fdroid_build.py`, retain checksums and logs, and launch the x86_64

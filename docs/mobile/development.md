@@ -303,7 +303,7 @@ release workflow signs it. The local `sign` command above is for developer
 installs and must not be used as a store identity.
 
 The public `.github/workflows/amazon-appstore.yml` runs only when mirrored to
-the private `genixpro/glob2-release`; its environment secrets remain private.
+`genixpro/glob2-release`; its environment secrets remain private.
 Its manual dispatch selects a public `vVERSION` tag that resolves to
 the same commit in the release mirror. `build` produces a
 verified unsigned APK without credentials. `candidate` signs it and retains a
