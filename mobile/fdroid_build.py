@@ -3,12 +3,24 @@
 
 import argparse
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
 import sys
 
 from android_release import ABI_CODES, ROOT, verify_apk, version_code
+
+
+def build_environment():
+    env = os.environ.copy()
+    # fdroidserver may export this variable with an empty value. Android NDK
+    # Clang rejects that value even when compiling its CMake probe program.
+    if env.get("SOURCE_DATE_EPOCH") == "":
+        env["SOURCE_DATE_EPOCH"] = subprocess.check_output(
+            ["git", "log", "-1", "--format=%ct"], cwd=ROOT, text=True
+        ).strip()
+    return env
 
 
 def main():
@@ -47,11 +59,12 @@ def main():
     if not ndk_link.exists():
         ndk_link.symlink_to(source_ndk, target_is_directory=True)
     gradle = ROOT / "build/mobile-tools/gradle-8.13/bin/gradle"
-    subprocess.run([sys.executable, "mobile/setup_tools.py", "--gradle-only"], cwd=ROOT, check=True)
+    env = build_environment()
+    subprocess.run([sys.executable, "mobile/setup_tools.py", "--gradle-only"], cwd=ROOT, env=env, check=True)
     subprocess.run([sys.executable, "mobile/dependencies.py", "--arch", arch, "--release", "--jobs", "2",
-                    "--android-sdk", str(sdk)], cwd=ROOT, check=True)
+                    "--android-sdk", str(sdk)], cwd=ROOT, env=env, check=True)
     subprocess.run([sys.executable, "mobile/android.py", "build", "--arch", arch, "--release", "--fdroid", "--jobs", "2",
-                    "--android-sdk", str(sdk), "--gradle", str(gradle)], cwd=ROOT, check=True)
+                    "--android-sdk", str(sdk), "--gradle", str(gradle)], cwd=ROOT, env=env, check=True)
     source = (ROOT / "build/android/device" / arch / str(toolchain["min_api"]) /
               "client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk")
     digest = verify_apk(source, arch, sdk)
