@@ -3222,6 +3222,18 @@ Emoji
 電腦對手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 寬敞配置會在空間足夠時使用側邊面板。精簡配置使用工具列和可展開的面板。
+[settings One-finger zoom]
+單指縮放
+[settings Double-tap the map, hold, then drag to zoom.]
+在地圖上點兩下並按住，然後拖曳即可縮放。
+[settings Platform default]
+系統預設
+[settings Drag up zooms in]
+向上拖曳放大
+[settings Drag down zooms in]
+向下拖曳放大
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 已分配 %0 · 目標 %1
 [Range: %0]

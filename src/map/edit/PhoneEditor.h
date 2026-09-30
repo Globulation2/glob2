@@ -6,6 +6,10 @@
 #include <memory>
 #include <optional>
 #include <set>
+#include <cstdint>
+#include <string>
+#include <utility>
+#include <vector>
 class MapEdit;
 class MapEditorWidget;
 class ValueScrollBox;
@@ -48,6 +52,24 @@ class PhoneEditor
 	std::optional<Drag> drag;
 	std::set<std::pair<Sint64, Sint64>> quarantined;
 	std::vector<GAGCore::ViewPoint> stroke;
+	// One-finger zoom: a completed map tap arms the next contact. A painted tap
+	// waits one double-tap window, since it may be the first half of a zoom.
+	struct DeferredStroke
+	{
+		std::vector<GAGCore::ViewPoint> points;
+		int selection, terrain, figure, type;
+		std::uint64_t ticks;
+	};
+	std::optional<DeferredStroke> deferred;
+	std::optional<Uint32> lastTapTicks;
+	Uint32 eventTicks = 0;
+	std::pair<Sint64, Sint64> touchKey{};
+	GAGCore::ViewPoint lastTapPoint{}, touchStart{}, touchPoint{};
+	bool touchTravelled = false;
+	bool zoomArmed(Uint32 ticks, GAGCore::ViewPoint point) const;
+	bool deferredMatchesTool(const DeferredStroke &candidate) const;
+	void commitDeferred();
+	void drawZoomReadout();
 	void chooseMode(int mode);
 	void paintStroke();
 	void placeAt(GAGCore::ViewPoint point);

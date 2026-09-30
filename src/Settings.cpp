@@ -43,6 +43,7 @@ Settings::Settings()
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
     mobileDialogTextPercent = 100;
+	oneFingerZoomDirection = ONE_FINGER_ZOOM_PLATFORM;
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;
@@ -142,6 +143,9 @@ void Settings::load(std::string filename)
         touchScrollMomentum=std::clamp(touchScrollMomentum,0,100);
         touchScrollBounce=std::clamp(touchScrollBounce,0,100);
         mapScrollMomentum=std::clamp(mapScrollMomentum,0,100);
+		READ_PARSED_INT(oneFingerZoomDirection);
+		oneFingerZoomDirection = std::clamp(oneFingerZoomDirection,
+			int(ONE_FINGER_ZOOM_PLATFORM), int(ONE_FINGER_ZOOM_DOWN_IN));
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 #ifndef YOG_SERVER_ONLY
@@ -216,6 +220,7 @@ bool Settings::save(std::string filename)
         Utilities::streamprintf(stream,"touchScrollMomentum=%d\n",touchScrollMomentum);
         Utilities::streamprintf(stream,"touchScrollBounce=%d\n",touchScrollBounce);
         Utilities::streamprintf(stream,"mapScrollMomentum=%d\n",mapScrollMomentum);
+		Utilities::streamprintf(stream, "oneFingerZoomDirection=%d\n", oneFingerZoomDirection);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
@@ -244,6 +249,19 @@ bool Settings::save(std::string filename)
 }
 
 
+
+bool Settings::dragUpZoomsIn(void) const
+{
+	if (oneFingerZoomDirection == ONE_FINGER_ZOOM_UP_IN)
+		return true;
+	if (oneFingerZoomDirection == ONE_FINGER_ZOOM_DOWN_IN)
+		return false;
+#ifdef __ANDROID__
+	return false;
+#else
+	return true;
+#endif
+}
 
 int Settings::getGameSpeedStepDuration(void) const
 {

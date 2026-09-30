@@ -3146,6 +3146,18 @@ Emoji
 Комп’ютерні суперники
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Просторе компонування використовує бічну панель, якщо вистачає місця. Компактне — панель інструментів і висувні панелі.
+[settings One-finger zoom]
+Масштаб одним пальцем
+[settings Double-tap the map, hold, then drag to zoom.]
+Двічі торкніться мапи, утримуйте й перетягніть, щоб змінити масштаб.
+[settings Platform default]
+Як у системі
+[settings Drag up zooms in]
+Угору — наблизити
+[settings Drag down zooms in]
+Униз — наблизити
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Призначено %0 · Ціль %1
 [Range: %0]

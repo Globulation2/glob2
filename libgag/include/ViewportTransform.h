@@ -10,6 +10,12 @@ struct ViewPoint { double x=0, y=0; };
 struct ViewRect {
     double x=0, y=0, w=0, h=0;
     bool contains(ViewPoint point) const { return point.x>=x && point.y>=y && point.x<x+w && point.y<y+h; }
+    //! Nearest point inside the rectangle; used to keep a drag that leaves a
+    //! control acting on its edge instead of dropping it.
+    ViewPoint clamp(ViewPoint point) const
+    {
+        return {std::clamp(point.x, x, std::max(x, x+w-1e-3)), std::clamp(point.y, y, std::max(y, y+h-1e-3))};
+    }
 };
 class ViewportTransform
 {

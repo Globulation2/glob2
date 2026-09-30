@@ -3146,6 +3146,18 @@ Tự động lưu trò chơi khoảng mỗi phút.
 Đối thủ máy
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Bố cục rộng rãi dùng bảng bên khi đủ chỗ. Bố cục gọn dùng thanh công cụ và các bảng có thể mở rộng.
+[settings One-finger zoom]
+Thu phóng bằng một ngón
+[settings Double-tap the map, hold, then drag to zoom.]
+Chạm hai lần vào bản đồ, giữ rồi kéo để thu phóng.
+[settings Platform default]
+Mặc định hệ thống
+[settings Drag up zooms in]
+Kéo lên để phóng to
+[settings Drag down zooms in]
+Kéo xuống để phóng to
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Đã phân công %0 · Mục tiêu %1
 [Range: %0]

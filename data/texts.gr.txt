@@ -3220,6 +3220,18 @@ Emoji
 Αντίπαλοι υπολογιστή
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Η ευρύχωρη διάταξη χρησιμοποιεί πλευρικό πίνακα όταν υπάρχει χώρος. Η συμπαγής χρησιμοποιεί γραμμή εργαλείων και αναπτυσσόμενους πίνακες.
+[settings One-finger zoom]
+Ζουμ με ένα δάχτυλο
+[settings Double-tap the map, hold, then drag to zoom.]
+Πατήστε δύο φορές στον χάρτη, κρατήστε και σύρετε για ζουμ.
+[settings Platform default]
+Προεπιλογή συστήματος
+[settings Drag up zooms in]
+Σύρσιμο πάνω μεγεθύνει
+[settings Drag down zooms in]
+Σύρσιμο κάτω μεγεθύνει
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Ανατεθειμένοι %0 · Στόχος %1
 [Range: %0]

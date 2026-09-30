@@ -3160,6 +3160,18 @@ Gorde jokoa automatikoki minutuero, gutxi gorabehera.
 Ordenagailuko aurkariak
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Diseinu zabalak alboko panela erabiltzen du lekua dagoenean. Trinkoak tresna-barra eta panel zabalgarriak erabiltzen ditu.
+[settings One-finger zoom]
+Hatz bakarreko zooma
+[settings Double-tap the map, hold, then drag to zoom.]
+Ukitu mapa bi aldiz, eutsi eta arrastatu zooma egiteko.
+[settings Platform default]
+Sistemaren lehenetsia
+[settings Drag up zooms in]
+Gora arrastatuz hurbildu
+[settings Drag down zooms in]
+Behera arrastatuz hurbildu
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Esleituta %0 · Helburua %1
 [Range: %0]

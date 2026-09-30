@@ -103,10 +103,14 @@ class GameGUITouchHarness
 		touch.chooseMode(0);
 		touch.prepare();
 		editor.updateCamera();
+		// Separate interactions are further apart than the double-tap window.
+		const Uint32 separateTouchStep = 400;
+		Uint32 editorTicks = 1000, editorTickStep = separateTouchStep;
 		auto finger = [&](Uint32 kind, int id, GAGCore::ViewPoint p)
 		{
 			SDL_Event event{};
 			event.type = kind;
+			event.tfinger.timestamp = editorTicks += editorTickStep;
 			event.tfinger.touchId = 19;
 			event.tfinger.fingerId = id;
 			event.tfinger.x = p.x / gfx->getW();
@@ -141,6 +145,51 @@ class GameGUITouchHarness
 		touch.event(focus);
 		finger(SDL_FINGERUP, 1, finish);
 		require(checksum() == before, "Focus loss committed an unfinished editor paint stroke");
+		{
+			// A painted tap waits one double-tap window, as it may begin a zoom.
+			finger(SDL_FINGERDOWN, 1, start);
+			finger(SDL_FINGERUP, 1, start);
+			require(checksum() == before && touch.deferred,
+					"Editor paint tap must wait for the double-tap window");
+			SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
+			touch.draw();
+			require(!touch.deferred && checksum() != before,
+					"Editor paint tap must land after the double-tap window");
+			// Two quick taps reset the zoom and paint nothing.
+			before = checksum();
+			const double u = gfx->logicalUnitsPerPoint();
+			editor.camera.setZoom(1.5, finish.x, finish.y);
+			editorTicks += separateTouchStep;
+			editorTickStep = 50;
+			finger(SDL_FINGERDOWN, 1, finish);
+			finger(SDL_FINGERUP, 1, finish);
+			finger(SDL_FINGERDOWN, 1, finish);
+			finger(SDL_FINGERUP, 1, finish);
+			editorTickStep = separateTouchStep;
+			SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
+			touch.draw();
+			require(std::abs(editor.camera.zoom - 1) < 0.001 && checksum() == before,
+					"Editor double tap must reset zoom instead of painting");
+			// Tap, press again and drag up: one-finger zoom, still without painting.
+			globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_UP_IN;
+			editorTicks += separateTouchStep;
+			editorTickStep = 50;
+			finger(SDL_FINGERDOWN, 1, finish);
+			finger(SDL_FINGERUP, 1, finish);
+			finger(SDL_FINGERDOWN, 1, finish);
+			finger(SDL_FINGERMOTION, 1,
+				   {finish.x, finish.y - GAGCore::TouchInput::zoomDoublingPoints / 2 * u});
+			require(touch.touch.zoomDragging(), "Editor zoom drag must show its readout");
+			finger(SDL_FINGERUP, 1,
+				   {finish.x, finish.y - GAGCore::TouchInput::zoomDoublingPoints / 2 * u});
+			editorTickStep = separateTouchStep;
+			SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
+			touch.draw();
+			require(std::abs(editor.camera.zoom - std::sqrt(2.0)) < 0.01 && checksum() == before,
+					"Editor one-finger zoom must follow the finger without painting");
+			globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_PLATFORM;
+			editor.zoomMap(std::log(1.0 / editor.camera.zoom) / std::log(1.1), finish.x, finish.y);
+		}
 		touch.chooseMode(2);
 		touch.prepare();
 		editor.updateCamera();
@@ -493,7 +542,16 @@ class GameGUITouchHarness
 
 		const auto checksum = gui.game.checkSum();
 		Uint32 touchTicks = 1000;
-		Uint32 touchTickStep = 200;
+		// Separate interactions are further apart than the double-tap window
+		// (measured from a release to the next press); double-tap cases lower it.
+		const Uint32 separateTouchStep = 400;
+		Uint32 touchTickStep = separateTouchStep;
+		// Begin a quick sequence (double tap) well after the previous interaction.
+		auto quickTouches = [&]
+		{
+			touchTicks += separateTouchStep;
+			touchTickStep = 50;
+		};
 		auto finger = [&](Uint32 type, int id, float x, float y)
 		{
 			SDL_Event event{};
@@ -512,8 +570,12 @@ class GameGUITouchHarness
 		};
 		auto flag = [&]
 		{ gui.setSelection(GameGUI::TOOL_SELECTION, const_cast<char *>("warflag")); };
-		auto noOrder = [&]
-		{ require(!gui.toolManager.getOrder(), "Navigation or preview emitted a tool order"); };
+		auto noOrder = [&](int line = __builtin_LINE())
+		{
+			require(!gui.toolManager.getOrder(),
+					("Navigation or preview emitted a tool order (harness line " + std::to_string(line) + ")")
+						.c_str());
+		};
 		tap(760, 208);
 		require(gui.selectionMode == GameGUI::TOOL_SELECTION &&
 					gui.toolManager.getBuildingName() == "inn",
@@ -564,7 +626,7 @@ class GameGUITouchHarness
 		touchTickStep = 50;
 		tap(200, 200);
 		tap(200, 200);
-		touchTickStep = 200;
+		touchTickStep = separateTouchStep;
 		require(std::abs(gui.camera.zoom - 1) < 0.001,
 				"Double tap restores 1:1 map zoom");
 		const auto restoredAnchor = gui.camera.screenToWorld(200, 200);
@@ -768,6 +830,195 @@ class GameGUITouchHarness
 			const auto world = gui.touch->worldBounds();
 			require(centerX == gui.camera.tileX() && centerY == gui.camera.tileY(),
 					"Minimap navigation uses the shared normalized camera");
+			{
+				// Dragging on the HUD minimap steers the camera live, clamped at its edge.
+				const double originX = gui.camera.originX, originY = gui.camera.originY;
+				const auto mini = gui.touch->minimapRect();
+				const GAGCore::ViewPoint from{mini.x + mini.w * 0.25, mini.y + mini.h * 0.25},
+					to{mini.x + mini.w * 0.75, mini.y + mini.h * 0.7},
+					outside{mini.x - 60 * unit, mini.y + mini.h * 0.5};
+				finger(SDL_FINGERDOWN, 1, from.x, from.y);
+				finger(SDL_FINGERMOTION, 1, to.x, to.y);
+				const int dragX = gui.viewportX, dragY = gui.viewportY;
+				gui.touch->navigateMinimap(to);
+				require(gui.viewportX == dragX && gui.viewportY == dragY,
+						"Minimap drag must follow the finger");
+				gui.touch->navigateMinimap(from);
+				require(gui.viewportX != dragX || gui.viewportY != dragY,
+						"Minimap drag fixture must move the camera");
+				finger(SDL_FINGERMOTION, 1, outside.x, outside.y);
+				const int edgeX = gui.viewportX, edgeY = gui.viewportY;
+				gui.touch->navigateMinimap(mini.clamp(outside));
+				require(gui.viewportX == edgeX && gui.viewportY == edgeY,
+						"Leaving the minimap must clamp the drag to its edge");
+				finger(SDL_FINGERUP, 1, outside.x, outside.y);
+				noOrder();
+				const int oldX = gui.viewportX, oldY = gui.viewportY;
+				gui.camera.originX = originX;
+				gui.camera.originY = originY;
+				gui.camera.normalize();
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
+				gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
+			}
+			// A visible map spot with nothing selectable around it.
+			auto emptyGround = [&]
+			{
+				for (double y = world.y + 48 * unit; y < world.y + world.h - 24 * unit; y += 16 * unit)
+					for (double x = world.x + 24 * unit; x < world.x + world.w - 24 * unit; x += 16 * unit)
+					{
+						if (gui.touch->interfaceRegion({x, y}) != 0)
+							continue;
+						const int cx = gui.mapMouseX(int(x)) / 32 + gui.viewportX,
+								  cy = gui.mapMouseY(int(y)) / 32 + gui.viewportY;
+						bool clear = true;
+						for (int dy = -1; dy <= 1; ++dy)
+							for (int dx = -1; dx <= 1; ++dx)
+							{
+								const int mx = cx + dx, my = cy + dy;
+								clear = clear && gui.game.map.getBuilding(mx, my) == NOGBID &&
+										!gui.game.map.isResource(mx, my) &&
+										gui.game.map.getGroundUnit(mx, my) == NOGUID &&
+										gui.game.map.getAirUnit(mx, my) == NOGUID;
+							}
+						if (clear)
+							return GAGCore::ViewPoint{x, y};
+					}
+				throw std::runtime_error("No empty ground visible in the phone world");
+			};
+			{
+				// One-finger zoom: tap, press again and drag; direction follows settings.
+				gui.clearSelection();
+				gui.touch->panelOpen = false;
+				const auto spot = emptyGround();
+				const double travel = GAGCore::TouchInput::zoomDoublingPoints / 2 * unit;
+				auto wrapped = [&](std::pair<double, double> a, std::pair<double, double> b)
+				{
+					return std::abs(MapCamera::wrap(a.first, gui.camera.mapWidth) -
+									MapCamera::wrap(b.first, gui.camera.mapWidth)) < 1 &&
+						   std::abs(MapCamera::wrap(a.second, gui.camera.mapHeight) -
+									MapCamera::wrap(b.second, gui.camera.mapHeight)) < 1;
+				};
+				auto armedPress = [&]
+				{
+					gui.camera.setZoom(1, spot.x, spot.y);
+					quickTouches();
+					tap(spot.x, spot.y);
+					finger(SDL_FINGERDOWN, 1, spot.x, spot.y);
+				};
+				for (int direction : {int(Settings::ONE_FINGER_ZOOM_UP_IN), int(Settings::ONE_FINGER_ZOOM_DOWN_IN)})
+				{
+					globalContainer->settings.oneFingerZoomDirection = direction;
+					armedPress();
+					const auto anchor = gui.camera.screenToWorld(spot.x, spot.y);
+					const double end =
+						spot.y + (direction == Settings::ONE_FINGER_ZOOM_UP_IN ? -travel : travel);
+					finger(SDL_FINGERMOTION, 1, spot.x, end);
+					require(gui.touch->gesture.zoomDragging(),
+							"One-finger zoom must show its readout while dragging");
+					if (direction == Settings::ONE_FINGER_ZOOM_UP_IN)
+					{
+						gui.drawAll(0);
+						gfx->printScreen(width < height ? "touch-zoom-drag-portrait.bmp"
+														: "touch-zoom-drag-landscape.bmp");
+						gfx->nextFrame();
+					}
+					finger(SDL_FINGERUP, 1, spot.x, end);
+					touchTickStep = separateTouchStep;
+					require(std::abs(gui.camera.zoom - std::sqrt(2.0)) < 0.01,
+							"One-finger zoom must follow the direction setting");
+					require(wrapped(anchor, gui.camera.screenToWorld(spot.x, spot.y)),
+							"One-finger zoom keeps the pressed world position anchored");
+					noOrder();
+				}
+				globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_UP_IN;
+				armedPress();
+				finger(SDL_FINGERMOTION, 1, spot.x, spot.y - travel / 2);
+				double partial = gui.camera.zoom;
+				require(partial > 1.01, "One-finger zoom fixture must zoom");
+				finger(SDL_FINGERDOWN, 2, spot.x + 80 * unit, spot.y);
+				finger(SDL_FINGERUP, 2, spot.x + 80 * unit, spot.y);
+				finger(SDL_FINGERMOTION, 1, spot.x, spot.y - travel * 1.5);
+				finger(SDL_FINGERUP, 1, spot.x, spot.y - travel * 1.5);
+				touchTickStep = separateTouchStep;
+				require(std::abs(gui.camera.zoom - partial) < 1e-9, "A second finger must end one-finger zoom");
+				armedPress();
+				finger(SDL_FINGERMOTION, 1, spot.x, spot.y - travel / 2);
+				partial = gui.camera.zoom;
+				SDL_Event lost{};
+				lost.type = SDL_WINDOWEVENT;
+				lost.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+				gui.processEvent(&lost);
+				finger(SDL_FINGERMOTION, 1, spot.x, spot.y - travel * 1.5);
+				finger(SDL_FINGERUP, 1, spot.x, spot.y - travel * 1.5);
+				lost.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+				gui.processEvent(&lost);
+				touchTickStep = separateTouchStep;
+				require(std::abs(gui.camera.zoom - partial) < 1e-9 && !gui.touch->gesture.zoomDragging(),
+						"Focus loss must end one-finger zoom");
+				// A tap followed quickly by a sideways drag from the same spot still pans.
+				armedPress();
+				const int panX = gui.viewportX;
+				finger(SDL_FINGERMOTION, 1, spot.x + 64 * unit, spot.y);
+				finger(SDL_FINGERUP, 1, spot.x + 64 * unit, spot.y);
+				touchTickStep = separateTouchStep;
+				require(gui.viewportX != panX && std::abs(gui.camera.zoom - 1) < 1e-9,
+						"A sideways drag after a tap must pan, not zoom");
+				globalContainer->settings.oneFingerZoomDirection = Settings::ONE_FINGER_ZOOM_PLATFORM;
+				gui.camera.setZoom(1, spot.x, spot.y);
+				noOrder();
+			}
+			{
+				// A painted tap waits one double-tap window, since it may begin a zoom.
+				auto brush = [&]
+				{
+					gui.setSelection(GameGUI::BRUSH_SELECTION);
+					gui.toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
+					gui.brush.defaultSelection();
+				};
+				auto forbidden = [&]
+				{ return bool(std::dynamic_pointer_cast<OrderAlterForbidden>(gui.toolManager.getOrder())); };
+				auto drain = [&] { while (gui.toolManager.getOrder()) {} };
+				brush();
+				const auto spot = emptyGround();
+				tap(spot.x, spot.y);
+				require(bool(gui.touch->deferredStroke), "A paint tap must wait for the double-tap window");
+				noOrder();
+				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
+				gui.touch->prepareDraw();
+				require(forbidden(), "A paint tap must land after the double-tap window");
+				drain();
+				gui.camera.setZoom(1.5, spot.x, spot.y);
+				quickTouches();
+				tap(spot.x, spot.y);
+				tap(spot.x, spot.y);
+				touchTickStep = separateTouchStep;
+				require(!gui.touch->deferredStroke, "A double tap while painting must not paint");
+				require(std::abs(gui.camera.zoom - 1) < 0.001,
+						("A double tap while painting must reset zoom (zoom " + std::to_string(gui.camera.zoom) + ")").c_str());
+				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
+				gui.touch->prepareDraw();
+				noOrder();
+				finger(SDL_FINGERDOWN, 1, spot.x, spot.y);
+				finger(SDL_FINGERMOTION, 1, spot.x + 40 * unit, spot.y);
+				finger(SDL_FINGERUP, 1, spot.x + 40 * unit, spot.y);
+				require(forbidden(), "A painted drag must not wait");
+				drain();
+				tap(spot.x, spot.y);
+				const auto bar = gui.touch->controls();
+				tap(bar.x + bar.w * 7 / 8, bar.y + bar.h / 2);
+				require(forbidden(), "A held paint tap must land before Done leaves the brush");
+				require(gui.selectionMode == GameGUI::NO_SELECTION, "Done must leave the brush");
+				drain();
+				brush();
+				tap(spot.x, spot.y);
+				gui.brush.setFigure((gui.brush.getFigure() + 1) % BrushTool::BRUSH_COUNT);
+				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
+				gui.touch->prepareDraw();
+				noOrder();
+				require(!gui.touch->deferredStroke, "A held tap must be dropped when its brush changes");
+				gui.clearSelection();
+			}
 			auto ui = gui.touch->layout();
 			const int cameraX = gui.viewportX, cameraY = gui.viewportY;
 			finger(SDL_FINGERDOWN, 1, ui.panel.x + 2 * unit, ui.panel.y + 70 * unit);

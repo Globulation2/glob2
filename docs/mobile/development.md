@@ -32,15 +32,29 @@ options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
 The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
-alliances and the session menu. The minimap is a separate top-right HUD component;
+alliances and the session menu. The minimap is a separate top-right HUD component.
+Tapping it centres the camera there; dragging keeps steering the camera and clamps
+at the minimap's edge when the finger leaves it;
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
 leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
 independent. A completed tap on empty map space dismisses building inspection
 and restores the previous palette state. Tapping another object switches selection;
 panning, cancelled gestures and taps inside the inspector do not dismiss it.
-Two quick taps on the same map position restore 1:1 zoom around that point;
-pinching still adjusts zoom continuously. Touches on controls do not reset zoom.
+The game is playable with one thumb. A completed map tap arms one-finger zoom for
+the next contact that lands within 300 ms of the release and 24 points of the tap.
+Dragging that contact vertically zooms about the point where it landed, doubling
+per 180 points of travel, with the factor shown above the finger; releasing it
+without travel restores 1:1 zoom there. A contact that sets off mostly sideways
+pans instead, so a quick tap followed by a pan still pans. The drag direction
+follows the platform's map app (Android: drag down zooms in; iOS and desktop:
+drag up zooms in) unless the One-finger zoom setting overrides it. A second finger,
+focus loss or rotation ends the gesture and keeps the zoom reached so far;
+pinching still adjusts zoom continuously. Touches on controls do not arm zoom, and
+placement taps never do. In paint mode a single tap is held for the same window
+before it paints, because it may be the first half of a zoom; drags paint on
+release as before. A held tap lands when the window closes, when any other contact
+begins, or on interruption, and is dropped only if its brush is no longer active.
 In the mobile/touch interface, flags on the flat map also accept selection within 24 screen points of their
 centres, independent of zoom. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.
@@ -127,7 +141,8 @@ strip and horizontally scrolling artwork palette. Terrain and Resources share
 brush operations; Buildings and Flags expose team and level beside the map.
 Individual artwork widgets are reused, never the composed desktop sidebar or
 its minimap. Done leaves the active tool and returns to object selection; Pan
-switches one-finger navigation. Brush opens a visual mask chooser. Pending
+switches one-finger navigation. One-finger zoom, the 1:1 reset and held paint
+taps behave as in gameplay; taps that place buildings or units never arm zoom. Brush opens a visual mask chooser. Pending
 strokes draw their coverage before release without changing the map. Presentation measurements and drag thresholds are point-based
 policies at the top of `PhoneEditor.cpp`.
 

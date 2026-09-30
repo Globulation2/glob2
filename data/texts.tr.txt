@@ -3158,6 +3158,18 @@ Oyunu yaklaşık her dakika otomatik olarak kaydet.
 Yapay zeka rakipleri
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Geniş düzen, yer olduğunda yan panel kullanır. Kompakt düzen, araç çubuğu ve açılır paneller kullanır.
+[settings One-finger zoom]
+Tek parmakla yakınlaştırma
+[settings Double-tap the map, hold, then drag to zoom.]
+Haritaya iki kez dokunun, basılı tutun ve yakınlaştırmak için sürükleyin.
+[settings Platform default]
+Sistem varsayılanı
+[settings Drag up zooms in]
+Yukarı sürüklemek yakınlaştırır
+[settings Drag down zooms in]
+Aşağı sürüklemek yakınlaştırır
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Atanan %0 · Hedef %1
 [Range: %0]

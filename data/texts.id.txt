@@ -3146,6 +3146,18 @@ Simpan permainan secara otomatis kira-kira setiap menit.
 Lawan AI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Tata letak lapang menggunakan panel samping jika ada ruang. Tata letak ringkas menggunakan bilah alat dan panel yang dapat dibuka.
+[settings One-finger zoom]
+Zoom satu jari
+[settings Double-tap the map, hold, then drag to zoom.]
+Ketuk peta dua kali, tahan, lalu seret untuk zoom.
+[settings Platform default]
+Bawaan sistem
+[settings Drag up zooms in]
+Seret ke atas untuk memperbesar
+[settings Drag down zooms in]
+Seret ke bawah untuk memperbesar
+[zoom factor %0]
+%0×
 [Assigned %0 · Target %1]
 Ditugaskan %0 · Target %1
 [Range: %0]

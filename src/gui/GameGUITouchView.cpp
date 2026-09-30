@@ -5,6 +5,7 @@
 // placement session, and action modules; no desktop composed screen is reused.
 #include "GameGUITouch.h"
 #include "InGameTouchTheme.h"
+#include "TouchReadout.h"
 #include "GameGUI.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
@@ -231,6 +232,8 @@ void GameGUITouch::drawHUD()
 		drawPanel();
 	}
 	drawMinimap();
+	if (gesture.zoomDragging())
+		TouchReadout::draw(touchPoint, zoomReadout(), ui.safe);
 	if (activeDialog())
 		return;
 	if (gui.selectionMode == GameGUI::TOOL_SELECTION ||

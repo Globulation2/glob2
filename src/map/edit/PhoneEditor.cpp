@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
 #include "InGameTouchTheme.h"
+#include "gui/TouchReadout.h"
 #include "MapEdit.h"
 #include "PhoneEditor.h"
 #include "MobileSafeArea.h"
@@ -8,6 +9,8 @@
 #include <TouchText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <cmath>
+#include <cstdio>
 using namespace GAGCore;
 namespace
 {
@@ -35,6 +38,8 @@ void PhoneEditor::cancel()
 	held = -1;
 	onMap = false;
 	drag.reset();
+	commitDeferred(); // A completed tap is not undone by an interruption.
+	lastTapTicks.reset();
 	stroke.clear();
 	quarantined.clear();
 	if (auto *dialog = editor.activeDialog())
@@ -245,6 +250,46 @@ void PhoneEditor::paintStroke()
 	editor.performAction(std::string(prefix) + " drag end");
 	stroke.clear();
 }
+bool PhoneEditor::zoomArmed(Uint32 ticks, ViewPoint point) const
+{
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	return lastTapTicks && Uint32(ticks - *lastTapTicks) <= InGameTouchTheme::doubleTapWindowMs &&
+		   std::hypot(point.x - lastTapPoint.x, point.y - lastTapPoint.y) <=
+			   InGameTouchTheme::doubleTapRadius * unit &&
+		   content.contains(point);
+}
+bool PhoneEditor::deferredMatchesTool(const DeferredStroke &candidate) const
+{
+	return candidate.selection == int(editor.selectionMode) &&
+		   candidate.terrain == int(editor.terrainType) &&
+		   candidate.figure == int(editor.brush.getFigure()) &&
+		   candidate.type == int(editor.brush.getType());
+}
+// A held paint tap lands when its window closes, when another contact begins,
+// or on interruption; it is dropped only if its brush is no longer active.
+void PhoneEditor::commitDeferred()
+{
+	if (!deferred)
+		return;
+	auto held = std::move(*deferred);
+	deferred.reset();
+	if (held.points.empty() || !deferredMatchesTool(held))
+		return;
+	auto unfinished = std::move(stroke);
+	stroke = std::move(held.points);
+	paintStroke();
+	stroke = std::move(unfinished);
+}
+void PhoneEditor::drawZoomReadout()
+{
+	if (!touch.zoomDragging())
+		return;
+	char value[16];
+	std::snprintf(value, sizeof(value), "%.1f", editor.camera.zoom);
+	TouchReadout::draw(touchPoint,
+					   GAGCore::FormattableString(Toolkit::getStringTable()->getString("[zoom factor %0]")).arg(value),
+					   safe);
+}
 void PhoneEditor::act(const TouchAction &action)
 {
 	auto *gfx = globalContainer->gfx;
@@ -280,7 +325,19 @@ void PhoneEditor::act(const TouchAction &action)
 		editor.mouseY = int(p.y);
 		stroke.push_back(p);
 		if (action.kind == TouchActionKind::EndStroke)
-			paintStroke();
+		{
+			if (!touchTravelled)
+			{
+				deferred = DeferredStroke{std::move(stroke), int(editor.selectionMode), int(editor.terrainType),
+										  int(editor.brush.getFigure()), int(editor.brush.getType()),
+										  SDL_GetTicks64()};
+				stroke.clear();
+				lastTapTicks = eventTicks;
+				lastTapPoint = p;
+			}
+			else
+				paintStroke();
+		}
 		return;
 	}
 	if (action.kind == TouchActionKind::Pan)
@@ -314,10 +371,18 @@ void PhoneEditor::act(const TouchAction &action)
 		}
 		return;
 	}
+	// MapCamera::wheel steps by 1.1, so a gesture factor converts with that base.
 	if (action.kind == TouchActionKind::Zoom && onMap)
 	{
-		// zoomMap steps are powers of 1.1, so a pinch factor maps 1:1 to zoom.
 		editor.zoomMap(std::log(action.factor) / std::log(1.1), p.x, p.y);
+		return;
+	}
+	if (action.kind == TouchActionKind::ZoomReset && onMap)
+	{
+		editor.updateCamera();
+		if (!editor.zoomMap(std::log(1.0 / editor.camera.zoom) / std::log(1.1), p.x, p.y) && !pan &&
+			content.contains(p))
+			placeAt(p); // Without a zoomable renderer the second tap acts as before.
 		return;
 	}
 	if (action.kind != TouchActionKind::Select || hit(p) != held)
@@ -455,8 +520,19 @@ void PhoneEditor::act(const TouchAction &action)
 		pan = false;
 		return;
 	}
-	if (onMap && !pan && content.contains(p))
-		placeAt(p);
+	if (onMap && content.contains(p))
+	{
+		// Placement taps never arm zoom, so repeated placement stays reliable.
+		const bool placing = editor.selectionMode == MapEdit::PlaceBuilding ||
+							 editor.selectionMode == MapEdit::PlaceUnit;
+		if (!pan)
+			placeAt(p);
+		if (!placing)
+		{
+			lastTapTicks = eventTicks;
+			lastTapPoint = p;
+		}
+	}
 }
 bool PhoneEditor::event(SDL_Event event)
 {
@@ -613,6 +689,17 @@ bool PhoneEditor::event(SDL_Event event)
 		{
 			held = hit(p);
 			onMap = held == -1 && content.contains(p);
+			const bool placing = editor.selectionMode == MapEdit::PlaceBuilding ||
+								 editor.selectionMode == MapEdit::PlaceUnit;
+			const bool zoomDrag = onMap && !placing && zoomArmed(event.common.timestamp, p);
+			if (zoomDrag)
+				deferred.reset(); // That tap was the first half of the zoom.
+			else
+				commitDeferred();
+			lastTapTicks.reset();
+			touchKey = key;
+			touchStart = touchPoint = p;
+			touchTravelled = false;
 			if (held >= 0 && held < int(rows.size()) &&
 				(dynamic_cast<BuildingSelectorWidget *>(rows[held].widget) ||
 				 dynamic_cast<UnitSelector *>(rows[held].widget)))
@@ -625,14 +712,28 @@ bool PhoneEditor::event(SDL_Event event)
 							   editor.selectionMode == MapEdit::RemoveObject ||
 							   editor.selectionMode == MapEdit::ChangeAreas ||
 							   editor.selectionMode == MapEdit::ChangeNoResourceGrowthAreas;
-			touch.setMode(onMap && !pan && paint ? TouchMode::Paint : TouchMode::Navigate);
+			touch.setMode(zoomDrag ? TouchMode::ZoomDrag
+						  : onMap && !pan && paint ? TouchMode::Paint
+												   : TouchMode::Navigate);
+			touch.setZoomDragDirection(globalContainer->settings.dragUpZoomsIn());
 		}
 		actions = touch.down(device, id, {p.x / unit, p.y / unit}, time);
 	}
 	else if (phase == 1)
+	{
+		if (key == touchKey)
+		{
+			touchPoint = p;
+			touchTravelled = touchTravelled || std::hypot(p.x - touchStart.x, p.y - touchStart.y) >=
+												   TouchInput::slop * unit;
+		}
 		actions = touch.move(device, id, {p.x / unit, p.y / unit}, time);
+	}
 	else
+	{
+		eventTicks = event.common.timestamp;
 		actions = touch.up(device, id, {p.x / unit, p.y / unit}, time);
+	}
 	for (const auto &a : actions)
 		act(a);
 	if (phase == 2 && !touch.hasPointers())
@@ -660,6 +761,8 @@ void PhoneEditor::label(ViewRect r, const std::string &text)
 }
 void PhoneEditor::draw()
 {
+	if (deferred && SDL_GetTicks64() - deferred->ticks >= InGameTouchTheme::doubleTapWindowMs)
+		commitDeferred();
 	if (editor.hasDialog())
 	{
 		editor.drawDialog();
@@ -669,6 +772,7 @@ void PhoneEditor::draw()
 	if (inspecting())
 	{
 		drawInspector();
+		drawZoomReadout();
 		return;
 	}
 	auto *gfx = globalContainer->gfx;
@@ -725,6 +829,7 @@ void PhoneEditor::draw()
 								int(3 * unit), editor.game.teams[editor.team]->color);
 	}
 	drawInteractionPreview();
+	drawZoomReadout();
 	if (!tools)
 	{
 		gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h),

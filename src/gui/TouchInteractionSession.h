@@ -30,6 +30,13 @@ struct TouchStrokeSession
 	int team = -1, zone = -1, figure = -1, mode = -1;
 	void cancel() { points.clear(); }
 };
+// A single-tap stroke waits one double-tap window before it paints, because
+// the tap may be the first half of a one-finger zoom. Drags are never held.
+struct TouchDeferredStroke
+{
+	TouchStrokeSession stroke;
+	std::uint64_t ticks = 0; // Wall-clock milliseconds when the tap ended.
+};
 // Slider edits are previewed locally and committed once on release. Cancelling
 // or changing selection therefore never sends a partial allocation command.
 struct TouchAllocationSession

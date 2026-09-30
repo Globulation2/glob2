@@ -73,6 +73,10 @@ class GameGUITouch
 	std::optional<TouchAllocationSession> allocation;
 	bool processAllocationPointer(const SDL_Event &event, GAGCore::ViewPoint point);
 	TouchStrokeSession stroke;
+	std::optional<TouchDeferredStroke> deferredStroke;
+	void replayStroke(const TouchStrokeSession &completed);
+	bool strokeMatchesTool(const TouchStrokeSession &candidate) const;
+	void commitDeferredStroke();
 	bool processPalettePointer(const SDL_Event &event, GAGCore::ViewPoint point);
 	void advancePlacement();
 	void updatePlacementPreview(GAGCore::ViewPoint point);
@@ -138,6 +142,13 @@ class GameGUITouch
 	GAGCore::TouchInput gesture;
 	std::optional<Uint32> lastMapTapTicks;
 	GAGCore::ViewPoint lastMapTapPoint{};
+	// First contact of the current touch sequence, for tap/drag decisions
+	// that the recogniser does not expose (paint taps, zoom feedback).
+	GAGCore::ViewPoint touchStart{}, touchPoint{};
+	bool touchTravelled = false;
+	bool zoomTapArmed(Uint32 ticks, GAGCore::ViewPoint point) const;
+	bool resetZoom(GAGCore::ViewPoint point);
+	std::string zoomReadout() const;
 	std::vector<std::pair<SDL_TouchID, SDL_FingerID>> fingers;
 	bool touchActive = false, interfaceGesture = false, dispatching = false;
 	bool ownerOverlay = false;

@@ -2,6 +2,7 @@
 #include "InGameTouchTheme.h"
 #include "GameGUITouch.h"
 #include <TouchText.h>
+#include <FormatableString.h>
 #include <InterfacePresentation.h>
 #include "MobileSafeArea.h"
 #include "GameGUI.h"
@@ -18,6 +19,7 @@
 #include <StringTable.h>
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #ifdef __ANDROID__
 #include <SDL_system.h>
 #include <jni.h>
@@ -203,6 +205,7 @@ void GameGUITouch::cancel(bool preservePreview)
 	placementHold.reset();
 	allocation.reset();
 	stroke.cancel();
+	commitDeferredStroke(); // A completed tap is not undone by an interruption.
 	gui.toolManager.cancelDrag(gui.localTeamNo);
 	gesture.cancel();
 	stopScrolling();
@@ -472,10 +475,23 @@ bool GameGUITouch::process(SDL_Event &event)
 			ownerDialog = activeDialog();
 			ownerOverlay = gui.typingInputScreen || gui.scrollableText;
 			ownerTool = gui.toolManager.getBuildingName();
-			gesture.setMode(interfaceGesture                                ? TouchMode::Navigate
-							: gui.selectionMode == GameGUI::TOOL_SELECTION  ? TouchMode::Placement
-							: gui.selectionMode == GameGUI::BRUSH_SELECTION ? TouchMode::Paint
-																			: TouchMode::Navigate);
+			touchStart = touchPoint = point;
+			touchTravelled = false;
+			const TouchMode natural = interfaceGesture                                ? TouchMode::Navigate
+									  : gui.selectionMode == GameGUI::TOOL_SELECTION  ? TouchMode::Placement
+									  : gui.selectionMode == GameGUI::BRUSH_SELECTION ? TouchMode::Paint
+																					  : TouchMode::Navigate;
+			// The second contact of a double-tap zooms; any other contact first
+			// lets a waiting paint tap land, so nothing reorders the player's input.
+			const bool zoomDrag = !interfaceGesture && natural != TouchMode::Placement &&
+								  zoomTapArmed(event.tfinger.timestamp, point);
+			if (zoomDrag)
+				deferredStroke.reset(); // That tap was the first half of the zoom.
+			else
+				commitDeferredStroke();
+			lastMapTapTicks.reset();
+			gesture.setMode(zoomDrag ? TouchMode::ZoomDrag : natural);
+			gesture.setZoomDragDirection(globalContainer->settings.dragUpZoomsIn());
 		}
 		if (fingers.empty() && ownerRegion == 0 && gui.selectionMode == GameGUI::TOOL_SELECTION)
 			placementHold = TouchPlacementSession{key, point, gui.toolManager.getBuildingName(),
@@ -490,6 +506,17 @@ bool GameGUITouch::process(SDL_Event &event)
 	{
 		if (placementHold && placementHold->pointer == key)
 			placementHold->pointerPosition = point;
+		// A single finger that landed on the minimap keeps steering the camera,
+		// as a held mouse button does on desktop. Leaving the minimap clamps to
+		// its edge so a fast sweep never drops the drag.
+		if (usesHUD() && ownerRegion == 8 && fingers.size() == 1 && fingers.front() == key)
+			navigateMinimap(minimapRect().clamp(point));
+		if (!fingers.empty() && fingers.front() == key)
+		{
+			touchPoint = point;
+			touchTravelled = touchTravelled || std::hypot(point.x - touchStart.x, point.y - touchStart.y) >=
+													TouchInput::slop * scale;
+		}
 		actions(gesture.move(key.first, key.second, {point.x / scale, point.y / scale}, time));
 	}
 	else
@@ -497,23 +524,26 @@ bool GameGUITouch::process(SDL_Event &event)
 		if (placementHold && placementHold->pointer == key)
 			placementHold.reset();
 		auto changes = gesture.up(key.first, key.second, {point.x / scale, point.y / scale}, time);
-		if (changes.size() == 1 && changes.front().kind == TouchActionKind::Select &&
-			!interfaceGesture && world().contains(point) && !controls().contains(point))
+		// A completed tap on the world arms one-finger zoom for the next contact.
+		const bool worldTap = changes.size() == 1 && !interfaceGesture && world().contains(point) &&
+							  !controls().contains(point);
+		const bool paintTap = worldTap && changes.front().kind == TouchActionKind::EndStroke &&
+							  !touchTravelled && !stroke.points.empty() && strokeMatchesTool(stroke) &&
+							  interfaceRegion(point) == 0;
+		if (paintTap)
 		{
-			const Uint32 ticks = event.tfinger.timestamp;
-			const double tapRadius = 24 * scale;
-			if (lastMapTapTicks && ticks - *lastMapTapTicks <= 300 &&
-				std::hypot(point.x - lastMapTapPoint.x, point.y - lastMapTapPoint.y) <= tapRadius)
-			{
-				gui.updateCamera();
-				const bool zoomed = gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1),
-					int(point.x), int(point.y));
-				lastMapTapTicks.reset();
-				if (zoomed) changes.clear();
-			}
-			else { lastMapTapTicks = ticks; lastMapTapPoint = point; }
+			// Hold a painted tap for one double-tap window; see commitDeferredStroke.
+			deferredStroke = TouchDeferredStroke{stroke, SDL_GetTicks64()};
+			stroke.cancel();
+			changes.clear();
 		}
-		else lastMapTapTicks.reset();
+		if (paintTap || (worldTap && changes.front().kind == TouchActionKind::Select))
+		{
+			lastMapTapTicks = event.tfinger.timestamp;
+			lastMapTapPoint = point;
+		}
+		else
+			lastMapTapTicks.reset();
 		actions(changes);
 		std::erase(fingers, key);
 		if (fingers.empty())
@@ -584,6 +614,12 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			if (action.factor > 0)
 				gui.zoomMap(std::log(action.factor) / std::log(1.1), int(point.x), int(point.y));
 		}
+		else if (action.kind == TouchActionKind::ZoomReset)
+		{
+			// Without a zoomable renderer the second tap still selects, as before.
+			if (!resetZoom(point) && world().contains(point))
+				select(point);
+		}
 		else if (action.kind == TouchActionKind::Preview && world().contains(point) &&
 				 !controls().contains(point))
 		{
@@ -621,23 +657,65 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			else if (action.kind == TouchActionKind::EndStroke)
 			{
 				if (interfaceRegion(point) == 0 && !stroke.points.empty())
-				{
-					for (size_t i = 0; i < stroke.points.size(); ++i)
-					{
-						const auto p = stroke.points[i];
-						if (i == 0)
-							gui.toolManager.handleMouseDown(int(p.x), int(p.y), gui.localTeamNo, 0,
-															0);
-						else
-							gui.toolManager.handleMouseDrag(int(p.x), int(p.y), gui.localTeamNo, 0,
-															0);
-					}
-					gui.toolManager.finishPointerGesture(gui.localTeamNo);
-				}
+					replayStroke(stroke);
 				stroke.cancel();
 			}
 		}
 	}
+}
+
+bool GameGUITouch::zoomTapArmed(Uint32 ticks, ViewPoint point) const
+{
+	return lastMapTapTicks && Uint32(ticks - *lastMapTapTicks) <= InGameTouchTheme::doubleTapWindowMs &&
+		   std::hypot(point.x - lastMapTapPoint.x, point.y - lastMapTapPoint.y) <=
+			   InGameTouchTheme::doubleTapRadius * scale &&
+		   world().contains(point) && !controls().contains(point);
+}
+
+bool GameGUITouch::resetZoom(ViewPoint point)
+{
+	gui.updateCamera();
+	return gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(point.x), int(point.y));
+}
+
+std::string GameGUITouch::zoomReadout() const
+{
+	char value[16];
+	std::snprintf(value, sizeof(value), "%.1f", gui.camera.zoom);
+	return FormattableString(Toolkit::getStringTable()->getString("[zoom factor %0]")).arg(value);
+}
+
+bool GameGUITouch::strokeMatchesTool(const TouchStrokeSession &candidate) const
+{
+	return gui.selectionMode == GameGUI::BRUSH_SELECTION && !globalContainer->isViewingGame() &&
+		   candidate.team == gui.localTeamNo && candidate.zone == gui.toolManager.getZoneType() &&
+		   candidate.figure == int(gui.brush.getFigure()) && candidate.mode == int(gui.brush.getType());
+}
+
+void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
+{
+	for (size_t i = 0; i < completed.points.size(); ++i)
+	{
+		const auto p = completed.points[i];
+		if (i == 0)
+			gui.toolManager.handleMouseDown(int(p.x), int(p.y), gui.localTeamNo, 0, 0);
+		else
+			gui.toolManager.handleMouseDrag(int(p.x), int(p.y), gui.localTeamNo, 0, 0);
+	}
+	gui.toolManager.finishPointerGesture(gui.localTeamNo);
+}
+
+// A held paint tap lands when its double-tap window closes, when any other
+// contact begins, or when input is interrupted. It is dropped only if the
+// brush it was painted with is no longer the active tool.
+void GameGUITouch::commitDeferredStroke()
+{
+	if (!deferredStroke)
+		return;
+	const auto held = std::move(deferredStroke->stroke);
+	deferredStroke.reset();
+	if (!held.points.empty() && strokeMatchesTool(held))
+		replayStroke(held);
 }
 
 void GameGUITouch::interfaceTap(ViewPoint point)
@@ -901,6 +979,9 @@ void GameGUITouch::prepareDraw()
 		return;
 	gui.checkSelection();
 	advancePlacement();
+	if (deferredStroke &&
+		SDL_GetTicks64() - deferredStroke->ticks >= InGameTouchTheme::doubleTapWindowMs)
+		commitDeferredStroke();
 	if (restorePalette && !inspectedBuilding())
 	{
 		panelOpen = previousPanelOpen;
