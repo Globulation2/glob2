@@ -25,6 +25,7 @@ def main():
     parser.add_argument('command',choices=['configure','build','install','launch'])
     parser.add_argument('--environment',default='simulator',choices=['device','simulator'])
     parser.add_argument('--release',action='store_true')
+    parser.add_argument('--china',action='store_true',help='Package the China local-play client')
     parser.add_argument('--build-number',default='1',help='Numeric CFBundleVersion for this build')
     parser.add_argument('--jobs',type=int,default=8,help='Maximum parallel SCons jobs')
     parser.add_argument('--developer-dir')
@@ -47,7 +48,7 @@ def main():
         raise ValueError('Device packaging needs --team with a local signing identity/profile, or --unsigned for compilation without credentials')
     if args.command in ('install','launch') and not args.device:
         raise ValueError('--device is required; never choose an arbitrary device')
-    options={'target':'ios','environment':args.environment,'release':int(args.release)}
+    options={'target':'ios','environment':args.environment,'release':int(args.release),'china':int(args.china)}
     if args.developer_dir: options['developer_dir']=args.developer_dir
     identity=build_identity(options);discover(identity,options)
     output=ROOT/default_directory(identity)

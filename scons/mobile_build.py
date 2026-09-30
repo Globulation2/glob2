@@ -57,7 +57,7 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_MOBILE 1
 #define GLOB2_NATIVE_WSS 1
 #define GLOB2_NO_VOICE 1
-''')
+''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else ''))
     env.Append(CPPPATH=[str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])

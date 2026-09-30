@@ -246,6 +246,12 @@ ZIP alignment, the signature and APK digest. Store distribution requires separat
 signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.
 Omit `--release` consistently from both dependency and application commands for
 debug builds. An explicit `JAVA_HOME` takes precedence over the task-local JDK.
+Release Android packages use the source package version as `versionName` by
+default; pass `--version-name` to choose a different store-facing value.
+The `--version-code` argument is carried into the generated Gradle project.
+For the separate mainland China local-play configuration, pass `--china` to
+both the dependency and Android packaging commands. The iOS dependency and
+packaging commands accept the same flag.
 
 The asset packager excludes local caches and metadata before writing its index.
 The completed APK is checked against that index and its content digest, so an
@@ -290,14 +296,16 @@ screenshots, logs and replay checksums under `artifacts/`.
 ### Automated Google Play internal releases
 
 `.github/workflows/android-play-internal.yml` is public for review, but its
-release job runs only from the owner's private `genixpro/glob2-release` mirror
-on `master`. The mirror is a separate private repository: GitHub does not permit
-a private fork of a public repository. Copy reviewed upstream commits into the
-mirror when ready, then manually dispatch its workflow. It installs the pinned
-Android toolchain and dependencies, assigns a
-time-based Play version code, builds and verifies the arm64 release bundle,
-signs it with the existing Play upload key, and uses the Google Play Developer
-API to validate and commit a release on the **internal** track. It does not
+release job runs only from the owner's public `genixpro/glob2-release` mirror on
+`master` after a manual dispatch. The mirror has owner-only write access and
+hosts the other platform release workflows. Copy reviewed upstream commits into
+the mirror when ready,
+then manually dispatch and approve its workflow. An unprivileged
+job installs the pinned Android toolchain and dependencies, assigns a
+time-based Play version code, and builds and verifies the arm64 release bundle.
+A fresh runner receives the unsigned bundle, signs it with the existing Play
+upload key, and uses the Google Play Developer API to validate and commit a
+release on the **internal** track. It does not
 change production or the selected internal tester list. The workflow is
 serialized so two runs cannot update the track concurrently. A rerun gets a
 new version code; Play rejects a code lower than a previously uploaded one.
@@ -307,8 +315,10 @@ One-time account setup is required before the first workflow run:
 1. In a Google Cloud project, enable the **Google Play Android Developer API**.
    Create a service account dedicated to Globulation 2 internal releases.
 2. Configure [GitHub Workload Identity Federation](https://github.com/google-github-actions/auth#workload-identity-federation-through-a-service-account)
-   for that service account. Restrict the provider to the **private mirror's**
-   numeric repository ID, `refs/heads/master`, and
+   for that service account. Restrict the provider to the mirror's numeric
+   repository ID, the owner's numeric actor ID, the `workflow_dispatch` event,
+   public visibility, the `google-play-internal` environment, GitHub-hosted runners,
+   `refs/heads/master`, and
    `genixpro/glob2-release/.github/workflows/android-play-internal.yml`.
    Grant only that repository identity `roles/iam.workloadIdentityUser` on the
    service account. Do not create a Google service account key for this workflow.
@@ -316,8 +326,9 @@ One-time account setup is required before the first workflow run:
    address and grant app-level **View app information (read-only)** and
    **Release apps to testing tracks** for `org.globulation2.glob2` only. Do not
    grant production release or account-wide permissions.
-4. In the **private mirror only**, create a GitHub Actions environment named
-   `google-play-internal` and restrict deployment to `master`. Add environment variables
+4. In the **release mirror only**, create a GitHub Actions environment named
+   `google-play-internal`, restrict deployment to `master`, require the owner to
+   approve each run, and disallow administrator bypass. Add environment variables
    `GLOB2_PLAY_WIF_PROVIDER` (the full provider resource name, with numeric
    project number) and `GLOB2_PLAY_SERVICE_ACCOUNT` (the service account email).
    Add three environment secrets:
@@ -332,29 +343,48 @@ Keep the original keystore and passwords backed up outside GitHub. The public
 upstream must never receive these secrets or a broad OIDC trust binding. The workflow
 decodes the key to a temporary runner file, signs the AAB, removes that file,
 then authenticates to Play through short-lived GitHub OIDC credentials. Only
-the private mirror's owner should have write access. Do not add pull-request
+the mirror's owner should have write access. Do not add pull-request
 triggers or allow arbitrary refs to reach the release job. Review upstream
 changes, especially the workflow, build scripts, and dependency pins, before
-syncing them into the private mirror: copied code runs with release credentials.
+syncing them into the mirror: copied code runs with release credentials.
+Public Actions logs and artifacts are visible to everyone. The unsigned bundle
+is retained as an artifact for one day to cross the runner boundary; the signed
+AAB is never uploaded as an artifact. The workflow does not cache build outputs.
+GitHub Actions secret redaction is not a substitute for keeping secrets out of
+logs and artifacts.
+The Play API client and its transitive Python packages are locked to reviewed
+wheel hashes in `mobile/play-api-requirements.txt`; update the lock deliberately
+when upgrading them.
 
-To sync from a local clone of the private mirror, configure `upstream` once as
+On the mirror, keep the owner as the sole collaborator, protect `master` against
+force pushes and deletion, and require approval from the owner for the
+`google-play-internal` environment without administrator bypass. Keep the
+default workflow token read-only, require full commit SHA pins for release
+actions, and require approval before any external fork PR workflow runs.
+Review every enabled platform workflow and its environment before syncing
+upstream changes. The owner's GitHub account remains a critical trust boundary:
+protect it with strong two-factor authentication and review every upstream
+commit before syncing code that a release build will execute.
+
+To sync from a local clone of the release mirror, configure `upstream` once as
 `https://github.com/Globulation2/glob2.git`, then use:
 
 ```sh
 git fetch upstream master
 git checkout master
-git merge --ff-only upstream/master
+git merge upstream/master
 git push origin master
 ```
 
-If fast-forwarding fails because the private mirror diverged, inspect the
-commits and reconcile them deliberately. Do not force-push a release branch.
+The release mirror has release-specific commits, so merging may require
+conflict resolution. Inspect the commits and resulting tree before pushing.
+Do not force-push a release branch.
 
 After syncing, run **Actions → Android Play internal release → Run workflow**
-in the private mirror. The optional release notes are shown to internal testers. The
-run summary records the version code and signed AAB SHA-256, and the signed
-bundle is retained as a GitHub artifact for 14 days. Check the internal testing
-track in Play Console for availability; if Play requires a new content or policy
+in the mirror. The optional release notes are shown to internal testers. The
+run summary records the version code and signed AAB SHA-256; only Play receives
+the signed bundle. Check the internal testing track in Play Console for
+availability; if Play requires a new content or policy
 declaration, complete that in Play Console before rerunning the workflow.
 
 ### Native tests on a connected Android device
@@ -405,40 +435,61 @@ Developer account added in Settings > Accounts; the build allows Xcode to create
 or update the provisioning profile for the bundle ID. The generated target is
 included in Xcode archives for TestFlight distribution.
 
-### Internal TestFlight upload
+### TestFlight upload
 
 `.github/workflows/ios-testflight.yml` is kept in the public source repository,
-but its upload job runs only when manually dispatched from `master` in the
-owner-only `genixpro/glob2-release` mirror. The owner syncs the public source and
-workflow to the mirror and chooses when to run it. Dispatches in the public
-`Globulation2/glob2` repository skip the job. The mirror uses the Xcode 27 runner
+but its upload job runs only when the owner manually dispatches it from `master`
+in `genixpro/glob2-release`. The release mirror is public for free hosted Actions
+runners; only its owner has write access. The job checks the mirror's numeric
+repository ID, owner's actor ID, dispatch event and branch. The owner syncs
+reviewed public source to the mirror and chooses when to run it. Dispatches in
+`Globulation2/glob2` skip the job. The mirror uses the Xcode 27 runner
 and the registered `org.globulation2.glob2` App ID on
 team `CL2MNNYQX3`. Each run builds pinned iOS dependencies from source, compiles
 the game, archives the iPhone app, checks the bundle ID and build number, retains
-matching dSYMs, exports and validates an App Store signed IPA, and uploads an
-internal-only TestFlight build. Distribution signing occurs during export, so
-archiving does not require a registered test device. Its build
+matching dSYMs, exports and validates an App Store signed IPA, and uploads a
+TestFlight build. Choose **internal** for an internal-only build, or **external**
+for a build that can be submitted to external TestFlight review. Distribution
+signing occurs during export, so archiving does not require a registered test
+device. Its build
 number is `1,000,000 + 100 × GITHUB_RUN_NUMBER + GITHUB_RUN_ATTEMPT`, so mirror
 runs and reruns get unique numbers after earlier public test uploads.
-The uploaded build cannot be submitted for external testing or App Store release.
+An internal-only build cannot be submitted for external testing or App Store
+release. The external choice permits external testing after Apple's beta review;
+it does not publish the app to the App Store.
 
 One-time mirror setup requires an App Store Connect **team** API key with
 permissions to manage signing assets and upload builds. Individual API keys cannot
-access provisioning endpoints. In the **private mirror**, create an
+access provisioning endpoints. In the **release mirror**, create an
 `ios-testflight` environment restricted to the `master` branch and store the key
 ID, issuer ID and single-line Base64 encoding of the downloaded `.p8` private
 key there as environment secrets named `IOS_ASC_KEY_ID`, `IOS_ASC_ISSUER_ID` and
-`IOS_ASC_KEY_P8_BASE64`. Do not place release credentials in the public
-repository, its Actions secrets, or source code. The workflow writes the key
+`IOS_ASC_KEY_P8_BASE64`. Do not place release credentials in the upstream
+repository, repository-wide Actions secrets, or source code. Anyone can read
+the public mirror's workflow, logs and artifacts, so none may contain secrets
+or signed upload packages. The workflow writes the key
 only to the ephemeral mirror runner, outside the checked-out repository.
 Configure the app's internal TestFlight group for automatic distribution in App
 Store Connect if testers should receive every processed build without another
 manual step.
 
-The workflow uploads an `.xcarchive` artifact for diagnosis. A successful upload
-means Apple accepted the transfer; Apple processes the build afterward. Check the
-TestFlight build status and any export-compliance questions in App Store Connect
-before expecting testers to install it. Keep the App Store release step separate.
+The iOS Info.plist declares `ITSAppUsesNonExemptEncryption = NO` for the app's
+standard TLS use. This is the owner's export-compliance determination; revisit it
+if the app's encryption changes. The workflow uploads an `.xcarchive` artifact
+for diagnosis. A successful upload means Apple accepted the transfer; Apple
+processes the build afterward. Check the TestFlight build status in App Store
+Connect before expecting testers to install it.
+
+For a family tester without App Store Connect account access, dispatch an
+**external** build from the release mirror. In App Store Connect, complete the
+beta app description, feedback contact and test information, create an external
+tester group, add the processed build and submit it for TestFlight App Review.
+After Apple approves the build, enable a public invitation link for that group
+and share it with the tester. Keep its tester limit small and turn off the link
+when it is no longer needed; anyone with the link can request access while it is
+enabled. Install TestFlight on the iPhone, open the link and accept the invitation.
+Play a real device session before treating the build as release ready. Keep the
+App Store release step separate.
 
 ## Verification
 

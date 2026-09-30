@@ -1,18 +1,31 @@
-name: iOS internal TestFlight
+name: iOS TestFlight
 
 on:
   workflow_dispatch:
+    inputs:
+      audience:
+        description: TestFlight audience
+        required: true
+        type: choice
+        default: internal
+        options:
+          - internal
+          - external
 
 permissions:
   contents: read
 
 concurrency:
-  group: ios-internal-testflight
+  group: ios-testflight
   cancel-in-progress: false
 
 jobs:
   upload:
-    if: ${{ github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master' }}
+    if: >-
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/master'
     name: Build, sign, and upload iPhone app
     environment: ios-testflight
     runs-on: xcode-27
@@ -20,8 +33,9 @@ jobs:
     env:
       TEAM_ID: CL2MNNYQX3
       BUNDLE_ID: org.globulation2.glob2
+      TESTFLIGHT_AUDIENCE: ${{ inputs.audience }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Require the default branch
         run: test "$GITHUB_REF" = refs/heads/master
@@ -96,6 +110,7 @@ jobs:
           test -d "$source_symbols"
           test "$(plutil -extract CFBundleIdentifier raw "$app/Info.plist")" = "$BUNDLE_ID"
           test "$(plutil -extract CFBundleVersion raw "$app/Info.plist")" = "$BUILD_NUMBER"
+          test "$(plutil -extract ITSAppUsesNonExemptEncryption raw "$app/Info.plist")" = false
           ditto "$source_symbols" "$symbols"
           binary_uuid="$(dwarfdump --uuid "$app/Glob2" | awk '{print $2}')"
           symbol_uuid="$(dwarfdump --uuid "$symbols" | awk '{print $2}')"
@@ -116,7 +131,7 @@ jobs:
               'signingStyle': 'automatic',
               'teamID': os.environ['TEAM_ID'],
               'manageAppVersionAndBuildNumber': False,
-              'testFlightInternalTestingOnly': True,
+              'testFlightInternalTestingOnly': os.environ['TESTFLIGHT_AUDIENCE'] == 'internal',
               'uploadSymbols': True,
           }
           (Path(os.environ['RUNNER_TEMP']) / 'Glob2-ValidateOptions.plist').write_bytes(
@@ -136,12 +151,13 @@ jobs:
           test -s "$app/embedded.mobileprovision"
           test "$(plutil -extract CFBundleIdentifier raw "$app/Info.plist")" = "$BUNDLE_ID"
           test "$(plutil -extract CFBundleVersion raw "$app/Info.plist")" = "$BUILD_NUMBER"
+          test "$(plutil -extract ITSAppUsesNonExemptEncryption raw "$app/Info.plist")" = false
           codesign --verify --deep --strict "$app"
           xcrun altool --validate-app "$ipa" \
             --api-key "$ASC_KEY_ID" --api-issuer "$ASC_ISSUER_ID" \
             --p8-file-path "$ASC_KEY_PATH"
 
-      - name: Upload internal-only build to TestFlight
+      - name: Upload build to TestFlight
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -155,7 +171,7 @@ jobs:
               'signingStyle': 'automatic',
               'teamID': os.environ['TEAM_ID'],
               'manageAppVersionAndBuildNumber': False,
-              'testFlightInternalTestingOnly': True,
+              'testFlightInternalTestingOnly': os.environ['TESTFLIGHT_AUDIENCE'] == 'internal',
               'uploadSymbols': True,
           }
           (Path(os.environ['RUNNER_TEMP']) / 'Glob2-ExportOptions.plist').write_bytes(
@@ -171,7 +187,7 @@ jobs:
 
       - name: Save archive for diagnosis
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: glob2-ios-archive
           path: artifacts/ios-testflight/Glob2.xcarchive

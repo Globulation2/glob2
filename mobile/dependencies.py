@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--developer-dir')
     parser.add_argument('--android-sdk', default=str(ROOT/'build/mobile-tools/android-sdk'))
     parser.add_argument('--release', action='store_true')
+    parser.add_argument('--china', action='store_true', help='Prepare dependencies for the China client identity')
     parser.add_argument('--jobs', type=int, default=6, help='Maximum parallel vcpkg jobs')
     parser.add_argument('--tests', action='store_true', help='Also build isolated Android CppUnit dependencies')
     args = parser.parse_args()
@@ -30,7 +31,7 @@ def main():
         parser.error("--tests currently supports Android only")
     args.arch = args.arch or ('arm64-v8a' if args.target=='android' else 'arm64')
     options = {'target':args.target, 'arch':args.arch, 'environment':args.environment,
-               'release':int(args.release), 'android_sdk':args.android_sdk}
+               'release':int(args.release), 'china':int(args.china), 'android_sdk':args.android_sdk}
     if args.developer_dir: options['developer_dir']=args.developer_dir
     identity=build_identity(options)
     toolchain=discover(identity,options)

@@ -116,7 +116,9 @@ Element MainMenuScreen::build(const Presentation &p)
 			ButtonOptions back = small;
 			back.shortcut = SDLK_ESCAPE;
 			content.push_back(button("menu/back", tr("[Back]"), [this] { showMore(false); }, back));
+#ifndef GLOB2_CHINA_RELEASE
 			content.push_back(action("[yog]", MULTIPLAYERS_YOG, rowStyle));
+#endif
 #ifndef __EMSCRIPTEN__
 			content.push_back(action("[lan]", MULTIPLAYERS_LAN, rowStyle));
 #endif
@@ -160,7 +162,9 @@ Element MainMenuScreen::build(const Presentation &p)
 	content.push_back(action("[load game]", LOAD_GAME, launch));
 	content.push_back(action("[tutorial]", TUTORIAL, launch));
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
+#ifndef GLOB2_CHINA_RELEASE
 	content.push_back(action("[yog]", MULTIPLAYERS_YOG, utility));
+#endif
 #ifndef __EMSCRIPTEN__
 	content.push_back(action("[lan]", MULTIPLAYERS_LAN, utility));
 #endif
