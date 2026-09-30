@@ -21,6 +21,13 @@
       <caption>An AI-controlled colony with active buildings and units</caption>
     </screenshot>
   </screenshots>
+  <releases>
+    <release version="0.9.5.2" date="2026-09-30">
+      <description>
+        <p>Prepare updated Windows desktop packaging and refresh the loading wordmark.</p>
+      </description>
+    </release>
+  </releases>
   <content_rating type="oars-1.1"/>
   <categories>
     <category>Game</category>
