@@ -262,14 +262,40 @@ input distinguishes taps from pans; a pan scrolls the innermost `scroll` and a
 release outside the pressed element cancels it. Pointer capture guarantees
 press and release land on the same element.
 
+Finger pans on `scroll`, `listView` and `textEditor` (the nodes whose
+`inertial()` is true) have the physics of a native list, driven by
+`GAGCore::ScrollAxis` from `libgag/include/ScrollPhysics.h`:
+
+- the content tracks the finger, and after release coasts with the finger's
+  velocity (a least-squares fit over the last 100 ms; a finger that rests for
+  40 ms before lifting has none) and decelerates at the iOS rate;
+- dragging past either end stretches the content with the iOS rubber band and
+  releasing it springs back with a critically damped spring; a coast that
+  reaches an end hands its velocity to the same spring;
+- a touch on coasting content stops it where it is and is not a tap; the
+  wheel, a scrollbar press, `scrollIntoView`, `scrollToEnd`, a rebuild that
+  moves the content, focus loss and a resize all end the motion.
+
+Nodes keep an `int` offset that is always clamped, which is what
+`NodeState::scroll` persists, plus a transient `overscroll()` displacement that
+is painted and hit-tested but never saved; `scrollTo()` sets the clamped offset
+and `setOverscroll()` the stretch. Mouse drags never coast or stretch, so
+desktop behaviour is unchanged. `Host::animating()` reports a coast or bounce
+in progress and `UIScreen::executionDelay` frames every 16 ms meanwhile.
+The three preference sliders under Settings › Controls (and the in-game
+Options dialog on touch) tune the feel through `GAGCore::scrollTuning()`; 0
+turns momentum or bounce off, 50 is the researched default.
+
 ## Verification
 
 - `scons unit-tests` then `python3 test/run_tests.py --binary unit --filter 'UILayout/*'`
   runs `test/UILayoutHarness.cpp`: pure layout with fixed-advance text and a
   recording canvas. Measure and arrange,
   adaptive re-choice after resize, footer folding, scroll clamping, wrapping,
-  ellipsis, focus order, capture, tap versus pan, popup routing, per-key state
-  across rebuilds and text editing.
+  ellipsis, focus order, capture, tap versus pan, fling, overscroll and bounce
+  (with an explicit clock: event timestamps and `host.update(tick)`), popup
+  routing, per-key state across rebuilds and text editing. The `ScrollPhysics`
+  suite covers the kernel itself.
 - The `UIPresentation` suite in `glob2-engine-tests`
   (`python3 test/run_tests.py --filter 'UIPresentation/*'`) instantiates every
   screen and dialog fixture at phone, tablet and desktop viewports in both touch

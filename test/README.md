@@ -97,6 +97,15 @@ directly instead of calling `Map::setSize`; the `Sector`, `MapHeader`, `Order`,
 stub replacing a symbol another unit test links for real belongs in the engine
 binary instead.
 
+Time in input tests is injected, never read from `SDL_GetTicks`. Event
+timestamps (`event.tfinger.timestamp`, `event.common.timestamp`) and the frame
+clock a test passes to `Host::update(tick)`, `GameGUI::step(events, now)`,
+`GameGUITouch::advanceScroll(now)` or `PhoneEditor::advance(tick)` are the only
+sources the touch scroll physics sees, so a fling, bounce or stopped-finger
+rule is exact and repeatable (`test/ScrollPhysicsTest.cpp`,
+`test/UILayoutHarness.cpp`, `test/GameGUITouchHarness.cpp`). Events without a
+timestamp carry no velocity, which is why older synthetic gestures never coast.
+
 ## Python tests
 
 `test/test_*.py` are `unittest` files; those that need a build take the binary
