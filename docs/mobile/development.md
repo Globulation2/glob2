@@ -246,6 +246,12 @@ ZIP alignment, the signature and APK digest. Store distribution requires separat
 signing arrangements. Use `armeabi-v7a` or `x86_64` for other supported targets.
 Omit `--release` consistently from both dependency and application commands for
 debug builds. An explicit `JAVA_HOME` takes precedence over the task-local JDK.
+Release Android packages use the source package version as `versionName` by
+default; pass `--version-name` to choose a different store-facing value.
+The `--version-code` argument is carried into the generated Gradle project.
+For the separate mainland China local-play configuration, pass `--china` to
+both the dependency and Android packaging commands. The iOS dependency and
+packaging commands accept the same flag.
 
 The asset packager excludes local caches and metadata before writing its index.
 The completed APK is checked against that index and its content digest, so an
