@@ -499,6 +499,9 @@ def main():
         "windows"
     ]
     for target in targets:
+        # Upstream release archives omit the historical Debian packaging files.
+        if target == "debian" and not os.path.isfile("debian/SConscript"):
+            continue
         SConscript(target + "/SConscript", variant_dir = bdir + "/" + target, duplicate = 0)
 
 main()
