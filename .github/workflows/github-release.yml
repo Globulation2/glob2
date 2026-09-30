@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing public vVERSION tag at the mirrored HEAD
+        description: Existing public vVERSION tag
         required: true
         type: string
   workflow_call:
@@ -87,4 +87,4 @@ jobs:
           gh release create "$TAG" --repo Globulation2/glob2 \
             --verify-tag --generate-notes \
             glob2-*.tar.gz glob2-*.zip glob2-*.rpm glob2.flatpak globulation2_*.snap Glob2-*.dmg SHA256SUMS
-          echo "Published GitHub release $TAG from $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "Published GitHub release from public tag $TAG" >> "$GITHUB_STEP_SUMMARY"
