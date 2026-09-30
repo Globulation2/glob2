@@ -5,7 +5,7 @@ import os
 import runpy
 from pathlib import Path
 from SCons.Script import Environment, Default, Delete, COMMAND_LINE_TARGETS
-from build_layout import write_if_changed, prepare_directory
+from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
 import ccache
 from mobile_toolchain import discover, LOCK
 from mobile_artifacts import verify_android_library, archive_object_name
@@ -47,10 +47,10 @@ def build_mobile(directory, identity, arguments):
     if ccache.enabled():
         ccache.enable(env)
     config = output / 'include/glob2/BuildConfig.h'
-    write_if_changed(config, '''#pragma once
+    write_if_changed(config, f'''#pragma once
 #define PACKAGE "glob2"
 #define PACKAGE_NAME "Globulation 2"
-#define PACKAGE_VERSION "0.9.5.0"
+#define PACKAGE_VERSION "{PACKAGE_VERSION}"
 #define PACKAGE_DATA_DIR "."
 #define PACKAGE_SOURCE_DIR "."
 #define PRIMARY_FONT "sans.ttf"
