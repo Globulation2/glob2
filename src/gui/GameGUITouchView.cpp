@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
+#include <algorithm>
 // Presentation-only composition. Input and commands live in the coordinator,
 // placement session, and action modules; no desktop composed screen is reused.
 #include "GameGUITouch.h"
@@ -354,7 +355,7 @@ void GameGUITouch::drawTutorial()
 	const double footerHeight = gui.swallowSpaceKey ? 48 * unit : 0;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w - 48 * unit),
 				  int(std::max(0.0, rect.h - footerHeight))};
-	const size_t first = std::min(tutorialLines.size(), size_t(tutorialScroll / 24));
+	const size_t first = std::min(tutorialLines.size(), size_t(std::max(0.0, tutorialScroll) / 24));
 	gfx->setUITransform(1.0 * unit, rect.x + 8 * unit,
 						rect.y + (8 - tutorialScroll + first * 24) * unit, &clip);
 	const size_t end = std::min(tutorialLines.size(), first + size_t(rect.h / unit / 24) + 1);
@@ -367,7 +368,7 @@ void GameGUITouch::drawTutorial()
 	if (content > textHeight)
 	{
 		gfx->drawFilledRect(int(rect.x + rect.w - 3 * unit),
-							int(rect.y + tutorialScroll * unit * textHeight / content),
+							int(rect.y + std::clamp(tutorialScroll * unit, 0.0, content - textHeight) * textHeight / content),
 							std::max(1, int(2 * unit)), int(textHeight * textHeight / content),
 							Color(170, 185, 190));
 	}

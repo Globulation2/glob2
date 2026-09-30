@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FormatableString.h>
+#include <algorithm>
 #include "InGameTouchTheme.h"
 #include "GameGUITouch.h"
 #include "GameGUI.h"
@@ -224,7 +225,7 @@ void GameGUITouch::drawBuildingActions()
 	const double extent = buildingActionsHeight(content.w / unit) * unit;
 	if (extent > content.h)
 		gfx->drawFilledRect(int(content.x + content.w - 3 * unit),
-							int(content.y + actionScroll * unit * content.h / extent),
+							int(content.y + std::clamp(actionScroll * unit, 0.0, extent - content.h) * content.h / extent),
 							std::max(1, int(2 * unit)),
 							std::max(1, int(content.h * content.h / extent)), Color(170, 185, 190));
 }

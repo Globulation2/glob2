@@ -103,20 +103,65 @@ MobileLayout GameGUITouch::layout() const
 	}
 	return result;
 }
+double GameGUITouch::tutorialMaximum() const
+{
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	return std::max(0.0, tutorialLines.size() * 24.0 - tutorialRect().h / unit + 16 +
+							 (gui.swallowSpaceKey ? 48 : 0));
+}
 void GameGUITouch::clampScroll()
 {
 	const auto content = panelContent();
-	actionScroll =
-		std::clamp(actionScroll, 0.0,
-				   std::max(0.0, buildingActionsHeight(content.w / globalContainer->gfx->logicalUnitsPerPoint()) -
-									 content.h / globalContainer->gfx->logicalUnitsPerPoint()));
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	actionAxis.sync(actionScroll,
+					std::max(0.0, buildingActionsHeight(content.w / unit) - content.h / unit),
+					content.h / unit);
 	const int columns = gui.displayMode == GameGUI::FLAG_VIEW ? int(paletteItems().size()) :
 		std::max(1, int((content.w / unit - 8 + .01) / 60));
 	const double height = showsBuildPalette()
 							  ? std::ceil(paletteItems().size() / double(columns)) * 60 + 8
 							  : tacticalActions().size() * 56;
-	panelScroll = std::clamp(panelScroll, 0.0, std::max(0.0, height - content.h / unit));
+	panelAxis.sync(panelScroll, std::max(0.0, height - content.h / unit), content.h / unit);
+	tutorialAxis.sync(tutorialScroll, tutorialMaximum(), tutorialRect().h / unit);
+}
+void GameGUITouch::stopScrolling()
+{
+	mapMotion.interrupt();
+	panelAxis.axis.interrupt();
+	actionAxis.axis.interrupt();
+	tutorialAxis.axis.interrupt();
+}
+bool GameGUITouch::scrollAnimating() const
+{
+	return mapMotion.isAnimating() || panelAxis.axis.isAnimating() ||
+		   actionAxis.axis.isAnimating() || tutorialAxis.axis.isAnimating();
+}
+Uint64 GameGUITouch::eventTime(const SDL_Event &event) const
+{
+	return widenTicks(event.common.timestamp, lastStepTime);
+}
+void GameGUITouch::advanceScroll(Uint64 now)
+{
+	lastStepTime = now;
+	if (mapMotion.isAnimating())
+	{
+		const auto [dx, dy] = mapMotion.stepDelta(now);
+		if (dx != 0 || dy != 0)
+		{
+			gui.updateCamera();
+			gui.camera.originX += dx / gui.camera.zoom;
+			gui.camera.originY += dy / gui.camera.zoom;
+			gui.camera.normalize();
+			gui.viewportX = gui.camera.tileX();
+			gui.viewportY = gui.camera.tileY();
+		}
+	}
+	if (!usesHUD())
+		return;
+	for (auto *panel : {&panelAxis, &actionAxis, &tutorialAxis})
+		if (panel->axis.isAnimating())
+			panel->axis.step(now);
+	clampScroll();
 }
 GameGUITouch::~GameGUITouch() = default;
 ViewRect GameGUITouch::world() const
@@ -160,6 +205,7 @@ void GameGUITouch::cancel(bool preservePreview)
 	stroke.cancel();
 	gui.toolManager.cancelDrag(gui.localTeamNo);
 	gesture.cancel();
+	stopScrolling();
 	lastMapTapTicks.reset();
 	fingers.clear();
 	ignoreTouchSequence = false;
@@ -322,6 +368,7 @@ bool GameGUITouch::process(SDL_Event &event)
 		pointer.type = motion                              ? SDL_FINGERMOTION
 					   : event.type == SDL_MOUSEBUTTONDOWN ? SDL_FINGERDOWN
 														   : SDL_FINGERUP;
+		pointer.tfinger.timestamp = event.common.timestamp;
 		pointer.tfinger.touchId = -1;
 		pointer.tfinger.fingerId = 0;
 		pointer.tfinger.x =
@@ -380,11 +427,23 @@ bool GameGUITouch::process(SDL_Event &event)
 	ViewPoint point{event.tfinger.x * globalContainer->gfx->getW(),
 					event.tfinger.y * globalContainer->gfx->getH()};
 	const auto key = std::make_pair(event.tfinger.touchId, event.tfinger.fingerId);
+	const Uint64 time = eventTime(event);
 	if (event.type == SDL_FINGERDOWN)
 	{
 		if (fingers.empty())
 		{
 			touchActive = true;
+			// A touch catches coasting content where it is. Presets are re-read
+			// here so the settings sliders apply to the next gesture.
+			stopScrolling();
+			fingerIsTouch = event.tfinger.touchId != -1;
+			GAGCore::ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
+			mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
+			mapMotion.setConfig(mapConfig);
+			const auto hud = fingerIsTouch ? ScrollPresets::hudPanel() : ScrollPresets::mouse();
+			panelAxis.axis.setConfig(hud);
+			actionAxis.axis.setConfig(hud);
+			tutorialAxis.axis.setConfig(hud);
 			gui.viewportSpeedX = gui.viewportSpeedY = 0;
 			gui.lastMouseButtonState = 0;
 			gui.selectionPushed = gui.panPushed = gui.miniMapPushed = false;
@@ -425,19 +484,19 @@ bool GameGUITouch::process(SDL_Event &event)
 			placementHold.reset(); // A navigation gesture cannot resume edge panning.
 		if (std::find(fingers.begin(), fingers.end(), key) == fingers.end())
 			fingers.push_back(key);
-		actions(gesture.down(key.first, key.second, {point.x / scale, point.y / scale}));
+		actions(gesture.down(key.first, key.second, {point.x / scale, point.y / scale}, time));
 	}
 	else if (event.type == SDL_FINGERMOTION)
 	{
 		if (placementHold && placementHold->pointer == key)
 			placementHold->pointerPosition = point;
-		actions(gesture.move(key.first, key.second, {point.x / scale, point.y / scale}));
+		actions(gesture.move(key.first, key.second, {point.x / scale, point.y / scale}, time));
 	}
 	else
 	{
 		if (placementHold && placementHold->pointer == key)
 			placementHold.reset();
-		auto changes = gesture.up(key.first, key.second, {point.x / scale, point.y / scale});
+		auto changes = gesture.up(key.first, key.second, {point.x / scale, point.y / scale}, time);
 		if (changes.size() == 1 && changes.front().kind == TouchActionKind::Select &&
 			!interfaceGesture && world().contains(point) && !controls().contains(point))
 		{
@@ -457,6 +516,14 @@ bool GameGUITouch::process(SDL_Event &event)
 		else lastMapTapTicks.reset();
 		actions(changes);
 		std::erase(fingers, key);
+		if (fingers.empty())
+		{
+			// A touch that stopped a bounce without dragging lets it finish.
+			for (auto *panel : {&panelAxis, &actionAxis, &tutorialAxis})
+				panel->axis.settle(time);
+			if (usesHUD())
+				clampScroll();
+		}
 	}
 	return true;
 }
@@ -472,24 +539,21 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			stroke.cancel();
 			preview.reset();
 			gui.toolManager.cancelDrag(gui.localTeamNo);
+			stopScrolling();
 			continue;
 		}
 		if (interfaceGesture)
 		{
-			if (usesHUD() && ownerRegion == 7 && action.kind == TouchActionKind::Pan)
+			if (usesHUD() && (ownerRegion == 7 || ownerRegion == 3) &&
+				(action.kind == TouchActionKind::Pan || action.kind == TouchActionKind::PanEnd))
 			{
 				const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-				tutorialScroll =
-					std::clamp(tutorialScroll - point.y / unit, 0.0,
-							   std::max(0.0, tutorialLines.size() * 24.0 - tutorialRect().h / unit +
-												 16 + (gui.swallowSpaceKey ? 48 : 0)));
-			}
-			if (usesHUD() && ownerRegion == 3 && action.kind == TouchActionKind::Pan)
-			{
-				if (inspectedBuilding())
-					actionScroll -= point.y / globalContainer->gfx->logicalUnitsPerPoint();
+				clampScroll();
+				auto &panel = ownerRegion == 7 ? tutorialAxis : inspectedBuilding() ? actionAxis : panelAxis;
+				if (action.kind == TouchActionKind::Pan)
+					panel.axis.drag(action.time, -point.y / unit);
 				else
-					panelScroll -= point.y / globalContainer->gfx->logicalUnitsPerPoint();
+					panel.axis.endDrag(action.time);
 				clampScroll();
 			}
 			if (action.kind == TouchActionKind::Select && interfaceRegion(point) == ownerRegion)
@@ -507,7 +571,13 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
 			gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
+			// The same finger motion feeds the release velocity, in logical pixels.
+			if (!mapMotion.isDragging())
+				mapMotion.beginDrag(action.time);
+			mapMotion.drag(action.time, -point.x, -point.y);
 		}
+		else if (action.kind == TouchActionKind::PanEnd)
+			mapMotion.endDrag(action.time);
 		else if (action.kind == TouchActionKind::Zoom)
 		{
 			lastMapTapTicks.reset();

@@ -51,6 +51,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 
 	if (miniMapPushed)
 	{
+		stopViewportMotion();
 		minimapMouseToPos(mx, my, &viewportX, &viewportY, true);
 	}
 	else

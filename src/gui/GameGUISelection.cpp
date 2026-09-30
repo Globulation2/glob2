@@ -230,6 +230,7 @@ void GameGUI::centerViewportOnSelection(void)
 		int oldViewportX = viewportX;
 		int oldViewportY = viewportY;
 
+		stopViewportMotion();
 		viewportX = posX - int(camera.visibleW()/64);
 		viewportY = posY - int(camera.visibleH()/64);
 		viewportX = viewportX & game.map.getMaskW();

@@ -86,6 +86,8 @@ public:
     // Host-supplied events and monotonic time; no event polling in this phase.
     void step(const std::vector<SDL_Event>& events, Uint64 now);
     void suspendInput();
+    // A deliberate viewport jump is coming: stop any touch coasting first.
+    void stopViewportMotion();
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
 	void configureLiveSpectatorView();

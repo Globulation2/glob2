@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <TouchInput.h>
+#include <ScrollPhysics.h>
 #include "TouchInteractionSession.h"
 #include <SDL.h>
 #include <string>
@@ -25,6 +26,13 @@ class GameGUITouch
 	~GameGUITouch();
 	bool process(SDL_Event &event);
 	void cancel(bool preservePreview = false);
+	// Per-frame momentum for the map and the HUD panels; `now` is the frame clock.
+	void advanceScroll(Uint64 now);
+	// Stop the map coasting (a deliberate jump elsewhere is about to move it).
+	void stopMapMotion() { mapMotion.interrupt(); }
+	// Stop every coasting or bouncing surface where it is.
+	void stopScrolling();
+	bool scrollAnimating() const;
 	void prepareDraw();
 	void drawControls();
 	void drawKeyboardFocus();
@@ -118,6 +126,15 @@ class GameGUITouch
 	void drawTutorial();
 	GAGCore::MobileLayout layout() const;
 	void clampScroll();
+	// HUD panel offsets with momentum and bounce; clampScroll() keeps them and
+	// the plain scroll variables in step.
+	GAGCore::TrackedScrollAxis panelAxis, actionAxis, tutorialAxis;
+	GAGCore::ScrollMotion mapMotion;
+	double tutorialMaximum() const;
+	Uint64 lastStepTime = 0;
+	// Momentum only follows real fingers; the synthetic mouse finger drags.
+	bool fingerIsTouch = false;
+	Uint64 eventTime(const SDL_Event &event) const;
 	GAGCore::TouchInput gesture;
 	std::optional<Uint32> lastMapTapTicks;
 	GAGCore::ViewPoint lastMapTapPoint{};
