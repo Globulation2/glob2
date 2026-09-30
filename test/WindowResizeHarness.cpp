@@ -10,7 +10,9 @@
 #include <vector>
 
 using namespace GAGCore;
-static void require(bool ok, const char *why) { GLOB2_REQUIRE(ok, why); }
+namespace
+{
+void require(bool ok, const char *why) { GLOB2_REQUIRE(ok, why); }
 class Context : public GraphicContext
 {
 	std::vector<Color> presentedPixels;
@@ -183,8 +185,6 @@ public:
 		return c;
 	}
 };
-namespace
-{
 void resizeChecks(bool gpu, bool benchmarkMode)
 {
 	Context gfx(gpu);

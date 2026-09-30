@@ -83,7 +83,7 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
             tests = env.Clone()
-            tests['CPPDEFINES'] = ['HAVE_CONFIG_H', 'SDL_MAIN_HANDLED']
+            tests['CPPDEFINES'] = ['HAVE_CONFIG_H']  # TestMain.cpp defines SDL_MAIN_HANDLED itself
             tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
             by_source = dict(zip(files, objects))
             client_objects = [obj for name, obj in by_source.items() if name != 'src/Glob2.cpp']

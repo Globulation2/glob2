@@ -435,8 +435,8 @@ jobs:
           SDL_VIDEODRIVER: dummy
           SDL_AUDIODRIVER: dummy
         run: |
-          ./build/linux/client/release/src/MenuColonyHarness check data/menu/colony.bin
-          ./build/linux/client/release/src/MenuColonyHarness navigation unused
+          ./build/linux/client/release/test/MenuColonyHarness check data/menu/colony.bin
+          ./build/linux/client/release/test/MenuColonyHarness navigation unused
 
       - name: Retain browser/native simulation trace
         if: ${{ matrix.shard == 4 }}

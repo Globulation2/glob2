@@ -127,8 +127,7 @@ static void checkContinuation(int checkpoint)
         restored.game.syncStep(0);
         if (state(restored.game) != expected[i])
         {
-            std::cerr << "Continuation mismatch checkpoint=" << checkpoint << " offset=" << i << '\n';
-            std::abort();
+            FAIL("continuation mismatch checkpoint=" << checkpoint << " offset=" << i);
         }
     }
     REQUIRE(syncRandEngine() == expectedRandom);

@@ -112,7 +112,7 @@ void check(int widthShift, int heightShift, const std::vector<Uint16>& seeds,
 		{
 			std::fprintf(stderr, "PathGradientHarness mismatch case=%" PRIu64 " label=%s shape=%dx%d class=%d cap=%d cell=%zu actual=%u expected=%u\n",
 				cases, label, width, height, swimClass, cap, i, unsigned(actual[i]), unsigned(expected[i]));
-			std::exit(1);
+			FAIL("gradient mismatch at cell " << i << " of case " << cases);
 		}
 		digest = (digest ^ actual[i]) * 1099511628211ULL;
 	}

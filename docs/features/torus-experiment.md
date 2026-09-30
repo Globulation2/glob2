@@ -129,12 +129,13 @@ The software path continues to draw the original surfaces.
 ### Large-map profiling
 
 A loaded-game benchmark is available with
-`scons release=1 opengl=1 torus-render-benchmark`. Run from the repository root:
+`scons release=1 opengl=1 torus-render-benchmark` (part of the `glob2-tools` group).
+Run from the repository root:
 
 ```sh
 GLOB2_USER_DIR="$PWD/experiment/test-profile" SDL_AUDIODRIVER=dummy \
   GLOB2_BENCH_MAP=maps/Oazis.map GLOB2_BENCH_FRAMES=100 \
-  build/src/torus-render-benchmark -g -F -m -s 1280x800
+  build/<toolchain>/client/release/test/torus-render-benchmark -g -F -m -s 1280x800
 ```
 
 The benchmark compares 2D and the torus with and without clouds on the same
@@ -204,8 +205,6 @@ c++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
 Checks cover flat endpoints, periodic seams, bounded camera distance, shared
 navigation, projection/picking round trips during unfolding, nearest-surface
 occlusion, empty-sky misses, world-pixel wrapping, and cloud sampling invariance.
-`test/AlphaMapRenderBenchmark.cpp` compares legacy and batched GL cloud paths;
-it needs SDL2, OpenGL and a display.
 
 The experiment is implemented with compatibility OpenGL, and has been built on
 macOS, Linux (Ubuntu 22.04 and 24.04), and Windows (MinGW-w64).

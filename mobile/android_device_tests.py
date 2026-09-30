@@ -61,6 +61,9 @@ def main():
                 shutil.copy2(library, payload / library.name)
         for name in ('data', 'maps', 'campaigns', 'scripts'):
             shutil.copytree(generated / 'assets/glob2-bundle' / name, payload / name)
+        # Fixture-driven cases resolve everything through glob2test::sourceRoot().
+        shutil.copytree(ROOT / 'games', payload / 'games')
+        shutil.copytree(ROOT / 'test/fixtures', payload / 'test/fixtures')
         command('push', str(payload), remote, stdout=subprocess.DEVNULL)
     for name in names:
         profile = remote + '/profiles/' + name
@@ -70,6 +73,7 @@ def main():
         invocation = ['env', 'LD_LIBRARY_PATH=' + remote, 'SDL_VIDEODRIVER=dummy',
                       'SDL_RENDER_DRIVER=software', 'SDL_AUDIODRIVER=dummy',
                       'GLOB2_USER_DATA_DIR=' + profile, 'GLOB2_ASSET_DIR=' + remote,
+                      'GLOB2_TEST_SOURCE_ROOT=' + remote,
                       'timeout', str(timeout), './' + name] + extra
         shell = ('cd ' + shlex.quote(remote) + ' && mkdir -p ' + shlex.quote(profile) +
                  ' && ' + shlex.join(invocation))
@@ -82,6 +86,8 @@ def main():
             except subprocess.TimeoutExpired as error:
                 code = 124
                 log.write(str(error) + '\n')
+        subprocess.run(adb + ['pull', remote + '/' + name + '.xml', str(output / (name + '.xml'))],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         digest = hashlib.sha256((build / 'tests' / name).read_bytes()).hexdigest()
         summary['tests'].append({'name': name, 'exitCode': code, 'binarySha256': digest})
         (output / 'result.json').write_text(json.dumps(summary, indent=2) + '\n')

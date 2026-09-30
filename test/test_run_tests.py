@@ -80,6 +80,11 @@ class ShardTest(unittest.TestCase):
         self.assertEqual(len(jobs), 1)
         self.assertTrue(jobs[0].whole)
         self.assertEqual(run_tests.doctest_filter(jobs[0]), [])
+        subset = run_tests.make_jobs(cases[:2], args(), cases)
+        self.assertTrue(subset[0].subset)
+        self.assertEqual(run_tests.doctest_filter(subset[0]),
+                         ['-tc=feeds the last worker,renders the bar [display:1024x768][artifacts]'])
+        self.assertFalse(run_tests.make_jobs(cases, args(), cases)[0].subset)
         engine = run_tests.make_jobs(run_tests.parse_listing(LISTING, 'engine'), args())
         self.assertEqual(len(engine), 4)
         self.assertEqual(run_tests.doctest_filter(engine[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])
@@ -137,6 +142,36 @@ class EndToEndTest(unittest.TestCase):
             self.assertIn('::error file=test/NetConnectionHarness.cpp,line=9', result.stdout)
             self.assertIn('2 passed, 1 failed, 1 skipped', result.stdout)
             self.assertTrue(junit.exists())
+
+    def test_reports_preference_writes_and_timeouts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory) / 'build'
+            (build / 'test').mkdir(parents=True)
+            binary = build / 'test' / run_tests.BINARIES['engine']
+            listing = LISTING.replace('\n', '\\n').replace('"', '\\"')
+            binary.write_text('#!/bin/sh\n'
+                              'for a in "$@"; do case "$a" in -ltc) printf "%b" "' + listing + '"; exit 0;; esac; done\n'
+                              'out=""; name=""\n'
+                              'for a in "$@"; do case "$a" in -o=*) out="${a#-o=}";; -tc=*) name="${a#-tc=}";; esac; done\n'
+                              'if [ "$name" = "sweeps every landscape [slow]" ]; then sleep 30; fi\n'
+                              'if [ "$name" = "feeds the last worker" ]; then echo "musicVolume=3" > "$GLOB2_USER_DATA_DIR/preferences.txt"; fi\n'
+                              'echo "<testsuites><testsuite name=\\"x\\"><testcase classname=\\"test/HungryDefeatHarness.cpp\\" name=\\"$name\\"/></testsuite></testsuites>" > "$out"\n'
+                              'exit 0\n')
+            binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
+            junit = Path(directory) / 'junit.xml'
+            result = subprocess.run([sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                                     '--build-dir', str(build), '--no-display', '--junit', str(junit),
+                                     '--artifacts', str(Path(directory) / 'artifacts'), '-j', '2', '--timeout', '2'],
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn('FAIL HungryDefeat/feeds the last worker', result.stdout)
+            self.assertIn('changed the profile preferences', result.stdout)
+            self.assertIn('TIMEOUT MapGeneratorDefaults/sweeps every landscape [slow]', result.stdout)
+            self.assertIn('killed after 2s', result.stdout)
+            self.assertIn('PASS NetConnection/binds a port [network]', result.stdout)
+            text = junit.read_text()
+            self.assertIn('<failure message="run_tests: the test changed the profile preferences', text)
+            self.assertIn('<error message="timeout"', text)
 
 
 if __name__ == '__main__':

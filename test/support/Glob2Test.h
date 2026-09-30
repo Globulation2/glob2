@@ -38,7 +38,8 @@ namespace glob2test
 
 namespace glob2test
 {
-	// Repository root: PACKAGE_SOURCE_DIR from the generated BuildConfig.h.
+	// Repository root: PACKAGE_SOURCE_DIR from the generated BuildConfig.h, or
+	// GLOB2_TEST_SOURCE_ROOT when the binary runs on another machine.
 	std::filesystem::path sourceRoot();
 
 	// test/fixtures/<relative>.
@@ -49,7 +50,8 @@ namespace glob2test
 	std::filesystem::path profileDir();
 
 	// Where a test leaves files a reviewer can download: GLOB2_TEST_ARTIFACTS when the
-	// runner sets it, otherwise artifacts/tests/<suite>/<case> under the source root.
+	// runner sets it for one case, <GLOB2_TEST_ARTIFACTS_ROOT>/<suite>/<case> for a whole
+	// binary, otherwise artifacts/tests/<suite>/<case> under the source root.
 	// Created on first use.
 	std::filesystem::path artifactDir();
 	// artifactDir() as a path relative to the working directory, for harnesses whose

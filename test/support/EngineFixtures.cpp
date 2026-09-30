@@ -93,10 +93,7 @@ namespace glob2test
 	void HeadlessGame::step(int ticks)
 	{
 		for (int i = 0; i < ticks; ++i)
-		{
-			game.syncStep(0);
-			++game.stepCounter;
-		}
+			game.syncStep(0);  // advances stepCounter itself
 	}
 
 	Uint32 HeadlessGame::checksum()

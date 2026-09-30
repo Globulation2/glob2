@@ -12,6 +12,11 @@
 #include <filesystem>
 #include <string>
 #include <system_error>
+#ifdef _WIN32
+#include <process.h>
+#else
+#include <unistd.h>
+#endif
 
 namespace
 {

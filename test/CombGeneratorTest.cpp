@@ -36,11 +36,7 @@ namespace
 {
 void require(bool ok, const std::string &message)
 {
-	if (!ok)
-	{
-		std::fprintf(stderr, "FAIL: %s\n", message.c_str());
-		std::exit(1);
-	}
+	GLOB2_REQUIRE(ok, message);
 }
 std::string serialized(Game &game)
 {

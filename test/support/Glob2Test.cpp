@@ -78,6 +78,10 @@ namespace glob2test
 
 	std::filesystem::path sourceRoot()
 	{
+		// The build host's checkout, unless the binary runs somewhere else (an Android
+		// device, say) and the runner staged data/, maps/, games/ and test/fixtures/.
+		if (const char* env = std::getenv("GLOB2_TEST_SOURCE_ROOT"); env && *env)
+			return std::filesystem::path(env);
 		return std::filesystem::path(PACKAGE_SOURCE_DIR);
 	}
 
@@ -96,10 +100,13 @@ namespace glob2test
 	std::filesystem::path artifactDir()
 	{
 		std::filesystem::path dir;
+		const std::filesystem::path perCase = std::filesystem::path(sanitized(suiteName.empty() ? "no-suite" : suiteName)) / sanitized(caseName);
 		if (const char* env = std::getenv("GLOB2_TEST_ARTIFACTS"); env && *env)
 			dir = env;
+		else if (const char* root = std::getenv("GLOB2_TEST_ARTIFACTS_ROOT"); root && *root)
+			dir = std::filesystem::path(root) / perCase;
 		else
-			dir = sourceRoot() / "artifacts" / "tests" / sanitized(suiteName.empty() ? "no-suite" : suiteName) / sanitized(caseName);
+			dir = sourceRoot() / "artifacts" / "tests" / perCase;
 		std::filesystem::create_directories(dir);
 		return dir;
 	}

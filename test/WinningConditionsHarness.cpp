@@ -16,7 +16,7 @@
 // aligned storage for one Game and N Teams and writes only the fields the
 // predicates consult. The storage is never destructed -- non-trivial member
 // destructors for std::list/std::map etc. on Team and Game are skipped, and
-// the program leaks the storage at exit. WinningConditionsTestStubs.cpp
+// the program leaks the storage at exit. test/unit/stubs/MapHeaderStubs.cpp
 // supplies the few non-inline methods WC.cpp invokes (MapHeader getters and
 // the MapScriptSGSL hooks).
 //

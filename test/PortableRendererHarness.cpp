@@ -12,6 +12,8 @@
 #endif
 
 using namespace GAGCore;
+namespace
+{
 class Context : public GraphicContext
 {
   public:
@@ -170,7 +172,8 @@ void verifyMapBoundaries(unsigned flags)
 	std::printf(
 		"PASS zone borders: backend %u, zoom/offset sweep, joined segments and wrapped copies\n",
 		flags);
-}
+}} // namespace
+
 TEST_SUITE("PortableRenderer")
 {
 TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]")

@@ -20,12 +20,8 @@ exercises compiled application code, not an HTML mockup.
 From the isolated worktree:
 
 ```sh
-scons --build=build/native-tests -j8 release=1 custom-setup-test build/native-tests/src/glob2
-build/native-tests/src/CustomGameSetupHarness
-mkdir -p artifacts/visual-pass/compact artifacts/visual-pass/large
-build/native-tests/src/CustomGameSetupHarness artifacts/visual-pass/compact
-build/native-tests/src/CustomGameSetupHarness artifacts/visual-pass/large large
-build/native-tests/src/CustomGameSetupHarness artifacts/visual-pass/compact ui
+scons --build=build/native-tests -j8 release=1 engine-tests build/native-tests/src/glob2
+python3 test/run_tests.py --build-dir build/native-tests --filter 'CustomGameSetup/*'
 ```
 
 Use deterministic interaction assertions for selection, scrolling, dropdown
@@ -58,9 +54,9 @@ Slovenian, `cz` for Czech, and `dk` for Danish):
 ```sh
 scons --build=build/native-tests -j8 release=1 server=0 menu-colony-harness
 mkdir -p artifacts/localized-lobby
-GLOB2_PREVIEW_LANGUAGE=fr build/native-tests/src/MenuColonyHarness capture custom-rules artifacts/localized-lobby/fr-rules.png 1000 700
-GLOB2_PREVIEW_LANGUAGE=ko build/native-tests/src/MenuColonyHarness capture custom-players artifacts/localized-lobby/ko-players.png 1000 700
-GLOB2_PREVIEW_LANGUAGE=ar build/native-tests/src/MenuColonyHarness capture custom artifacts/localized-lobby/ar-map.png 640 480
+GLOB2_PREVIEW_LANGUAGE=fr build/native-tests/test/MenuColonyHarness capture custom-rules artifacts/localized-lobby/fr-rules.png 1000 700
+GLOB2_PREVIEW_LANGUAGE=ko build/native-tests/test/MenuColonyHarness capture custom-players artifacts/localized-lobby/ko-players.png 1000 700
+GLOB2_PREVIEW_LANGUAGE=ar build/native-tests/test/MenuColonyHarness capture custom artifacts/localized-lobby/ar-map.png 640 480
 ```
 
 These are static rendering checks. Use the custom setup harness above for

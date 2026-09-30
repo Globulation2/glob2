@@ -10,7 +10,7 @@
 //   1. round-trip of the default condition list -> true, types in order
 //   2. unrecognized type tag mid-list -> false, no null in the output
 //   3. size > 0 but stream truncated -> false, no null in the output
-// Reuses WinningConditionsTestStubs.cpp (MapHeader / SGSL stubs) and links
+// Reuses the MapHeader / SGSL stubs in test/unit/stubs/ and links
 // libgag_server.a for BinaryStream + MemoryStreamBackend.
 
 #include "Glob2Test.h"

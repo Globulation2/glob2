@@ -34,11 +34,7 @@ namespace
 {
 void require(bool ok, const char *message)
 {
-	if (!ok)
-	{
-		std::fprintf(stderr, "FAIL: %s\n", message);
-		std::exit(1);
-	}
+	GLOB2_REQUIRE(ok, message);
 }
 // Compare full saves (after their header/content hash has been established),
 // including starting colony state rather than only a visual terrain hash.

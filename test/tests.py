@@ -74,7 +74,7 @@ ENGINE_TESTS = [
     ('HighResolutionIntegrationHarness.cpp', dict(require={'opengl'})),
     'PortableRendererHarness.cpp',
     ('RuntimePackCheck.cpp', dict(require={'opengl'})),
-    'TextRasterHarness.cpp',
+    ('TextRasterHarness.cpp', dict(require={'opengl'})),
     ('TorusRenderIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('UnitHighResolutionCacheTest.cpp', dict(require={'opengl'})),
     ('UnitTeamColorCacheTest.cpp', dict(require={'opengl'})),
@@ -248,6 +248,8 @@ UNIT_STUBS = [
 PROGRAMS = [
     ('MapReportHarness', 'MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', 'maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
+    ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),
+    ('torus-render-benchmark', 'TorusRenderBenchmark.cpp', 'torus-render-benchmark', 'tools'),
 ]
 
 # Old per-harness alias -> test binary. Kept for one release so documented commands and

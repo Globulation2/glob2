@@ -11,7 +11,7 @@
 //     throws std::out_of_range deterministically.
 //
 // Link surface is identical to CampaignSelectionHarness (Campaign.cpp +
-// CampaignLoadTestStubs.cpp against libgag_server).
+// the shared unit stubs in test/unit/stubs/ against libgag_server).
 
 #include "Glob2Test.h"
 #include "Campaign.h"

@@ -175,9 +175,6 @@ namespace
 {
 void aspect(bool gpu)
 {
-#ifndef HAVE_OPENGL
-	if (gpu) { MESSAGE("OpenGL support is not compiled in; skipping"); return; }
-#endif
 	Context context(gpu);
 	if (!gpu) checkSoftwareClipping();
 	for (auto size : {std::pair{640, 480}, {1280, 800}, {800, 1280}, {853, 641}, {480, 270}})
@@ -188,5 +185,7 @@ void aspect(bool gpu)
 TEST_SUITE("FullscreenAspect")
 {
 	TEST_CASE("presentation; clipping; captures and input translation in software rendering [display:1600x1400]") { aspect(false); }
+#ifdef HAVE_OPENGL
 	TEST_CASE("presentation; clipping; captures and input translation in OpenGL [display:1600x1400]") { aspect(true); }
+#endif
 }

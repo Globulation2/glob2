@@ -327,12 +327,8 @@ TEST_SUITE("TextRaster")
 {
 	TEST_CASE("scaled and unscaled text rasterisation [display:1600x1400][artifacts]")
 	{
-#ifndef HAVE_OPENGL
-		MESSAGE("OpenGL support is not compiled in; skipping");
-#else
 		glob2test::ToolkitScope toolkit;
 		Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
 		run(glob2test::artifactDir().string());
-#endif
 	}
 }

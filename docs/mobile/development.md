@@ -260,7 +260,7 @@ After configuring the release project above, cross-compile the two doctest
 binaries (`glob2-unit-tests` and `glob2-engine-tests`, from `test/tests.py`):
 
 ```sh
-python3 mobile/dependencies.py --arch arm64-v8a --release --tests
+python3 mobile/dependencies.py --arch arm64-v8a --release
 scons target=android arch=arm64-v8a release=1 android-tests -j4
 python3 mobile/android_device_tests.py --serial DEVICE_SERIAL \
   --android-sdk "$ANDROID_SDK_ROOT" --output artifacts/android/device-tests

@@ -241,11 +241,11 @@ struct GrassMap : Map {
 
 ### Stubs for `Sector`
 
-Provide a `*TestStubs.cpp` (e.g. `MapQueryTestStubs.cpp`) with empty bodies for `Sector::Sector(Game*)`, `Sector::~Sector`, `Sector::setGame`, `Sector::step`, `Sector::save`, `Sector::load`, `Sector::free`, and `UnitDeathAnimation::UnitDeathAnimation`. `Map.o`'s compiled `setSize` / `setGame` reference `Sector` symbols even though the test never calls them. ~30 lines of stubs avoid pulling all of `Sector.cpp`'s real deps.
+`test/unit/stubs/MapSectorStubs.cpp` (linked into every unit binary through `UNIT_STUBS` in `test/tests.py`) provides empty bodies for `Sector::Sector(Game*)`, `Sector::~Sector`, `Sector::setGame`, `Sector::step`, `Sector::save`, `Sector::load`, `Sector::free`, and `UnitDeathAnimation::UnitDeathAnimation`. `Map.o`'s compiled `setSize` / `setGame` reference `Sector` symbols even though the test never calls them. ~30 lines of stubs avoid pulling all of `Sector.cpp`'s real deps.
 
-### `SConstruct` surgery
+### Build wiring
 
-The predicate test build needed these include paths beyond what existing tests had: `../src/building`, `../src/game/entities`, `../src/team`, `../src/unit`, `../src/gui`, `../src/net`, `../src/net/irc`, `../src/net/message`, `../src/yog`, `../libusl/src`. Linked sources for the predicate test: `Map.cpp`, `MapQuery.cpp`, `MapTerrain.cpp`, `BitArray.cpp`, `Utilities.cpp`, `building/BuildingUtils.cpp`, `unit/UnitUtils.cpp`, plus the stubs.
+Add the translation unit to `UNIT_TESTS` in `test/tests.py`. The production sources the unit binary links (`Map.cpp`, `MapQuery.cpp`, `MapTerrain.cpp`, `BitArray.cpp`, `Utilities.cpp`, `building/BuildingUtils.cpp`, `unit/UnitUtils.cpp`, ...) are listed once in `UNIT_PRODUCTION_SOURCES`; the include paths come from the client build environment, so nothing per-test is needed.
 
 ### Terrain encoding for tests
 

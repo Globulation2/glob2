@@ -88,6 +88,7 @@ class Job:
     binary: str
     cases: list
     whole: bool = False
+    subset: bool = False   # a whole-binary job that must run only its listed cases
 
     @property
     def label(self):
@@ -123,6 +124,7 @@ class Result:
     output: str = ''
     junit: str = ''      # the job's own JUnit document, when it produced one
     profile: str = ''
+    note: str = ''       # a failure the runner found that the JUnit document does not record
 
 
 def parse_tags(name):
@@ -181,14 +183,16 @@ def shard(items, spec):
     return [item for index, item in enumerate(ordered) if index % n == k - 1]
 
 
-def make_jobs(cases, args):
+def make_jobs(cases, args, all_cases=None):
+    """all_cases: the full listing, so a whole-binary job knows when a filter applied."""
     jobs = []
     for kind in ('unit', 'engine'):
         mine = [case for case in cases if case.binary == kind]
         if not mine:
             continue
         if kind == 'unit' or args.in_process:
-            jobs.append(Job(kind, mine, whole=True))
+            everything = [case for case in (all_cases or []) if case.binary == kind]
+            jobs.append(Job(kind, mine, whole=True, subset=bool(all_cases) and len(mine) < len(everything)))
         else:
             jobs += [Job(kind, [case]) for case in mine]
     return jobs
@@ -196,7 +200,8 @@ def make_jobs(cases, args):
 
 def doctest_filter(job):
     if job.whole:
-        return []
+        # doctest takes comma-separated name patterns; test names never contain commas.
+        return ['-tc=' + ','.join(case.name for case in job.cases)] if job.subset else []
     case = job.cases[0]
     filters = ['-tc=' + case.name]
     if case.suite:
@@ -240,10 +245,13 @@ def run_job(job, args, build_dir):
         env['GLOB2_TEST_UPDATE_FIXTURES'] = '1'
     if args.artifacts:
         artifacts = Path(args.artifacts).resolve()
-        if not job.whole:
+        if job.whole:
+            # Every case in the process derives <root>/<suite>/<case> itself.
+            env['GLOB2_TEST_ARTIFACTS_ROOT'] = str(artifacts)
+            env.pop('GLOB2_TEST_ARTIFACTS', None)
+        else:
             case = job.cases[0]
-            artifacts = artifacts / sanitized(case.suite or 'no-suite') / sanitized(case.name)
-        env['GLOB2_TEST_ARTIFACTS'] = str(artifacts)
+            env['GLOB2_TEST_ARTIFACTS'] = str(artifacts / sanitized(case.suite or 'no-suite') / sanitized(case.name))
     command = xvfb_prefix(job) + [str(binary), '-r=junit', f'-o={junit}', '--no-breaks=true'] + doctest_filter(job)
     if args.verbose and job.whole:
         command += ['-s']
@@ -269,15 +277,17 @@ def run_job(job, args, build_dir):
         status = 'fail' if junit.exists() and code == 1 else 'error'
         if status == 'error':
             output += f'\n[run_tests] exit status {code}\n'
+    note = ''
     if status == 'pass' and not job.has('writes-preferences') and not job.whole:
         after = (preferences.read_bytes(), preferences.stat().st_mtime_ns) if preferences.exists() else None
         if after != before:
             status = 'fail'
-            output += '\n[run_tests] the test changed the profile preferences; tag it [writes-preferences] if that is intended\n'
+            note = 'the test changed the profile preferences; tag it [writes-preferences] if that is intended'
+            output += f'\n[run_tests] {note}\n'
     junit_text = junit.read_text(encoding='utf-8', errors='replace') if junit.exists() else ''
     if status != 'pass' and junit_text:
         output += failure_details(junit_text)
-    result = Result(job, status, seconds, output, junit_text, str(root))
+    result = Result(job, status, seconds, output, junit_text, str(root), note)
     if not keep:
         shutil.rmtree(root, ignore_errors=True)
     return result
@@ -334,10 +344,17 @@ def merge_junit(results, path):
                 document = None
             if document is not None:
                 # doctest's JUnit reporter names classes after source files; use suites.
-                suites_by_name = {case.name: case.suite for case in result.job.cases}
+                # Names repeat across suites, so key by file too.
+                by_file_and_name = {(case.file, case.name): case.suite for case in result.job.cases}
+                by_name = {case.name: case.suite for case in result.job.cases}
                 for testcase in document.iter('testcase'):
-                    suite = suites_by_name.get(testcase.get('name', ''), '') or testcase.get('classname') or 'tests'
+                    name = testcase.get('name', '')
+                    suite = (by_file_and_name.get((testcase.get('classname', ''), name))
+                             or by_name.get(name) or testcase.get('classname') or 'tests')
                     testcase.set('classname', suite)
+                    if result.note and not testcase.findall('failure') and not testcase.findall('error'):
+                        failure = ET.SubElement(testcase, 'failure', message='run_tests: ' + result.note, type='run_tests')
+                        failure.text = result.output[-4000:]
                     target = suite_element(suite)
                     target.append(testcase)
                     totals['tests'] += 1
@@ -427,10 +444,10 @@ def main(argv=None):
     kept, skipped = select(cases, args)
     if args.list:
         for case in sorted(kept, key=lambda c: c.label):
-            print(f'{case.label}' + (f'  [{"][".join(case.tags)}]' if case.tags else ''))
+            print(case.label)
         print(f'{len(kept)} cases' + (f', {len(skipped)} need a display' if skipped else ''))
         return 0
-    jobs = shard(make_jobs(kept, args), args.shard)
+    jobs = shard(make_jobs(kept, args, cases), args.shard)
     if args.timeout:
         Job.timeout = property(lambda self, t=args.timeout: t)
     network_lock = threading.Lock()
