@@ -105,14 +105,20 @@ blob and validator report are retained as a GitHub Actions artifact. Set `upload
 to true when dispatching to send that package to an existing Partner Center branch.
 The workflow does not submit a listing for certification or publish it to retail.
 
-Before the first run, enroll the publishing account in the **Windows** developer
-program in [Partner Center](https://partner.microsoft.com/dashboard/v2/account-settings/settings/programs),
-then reserve the Globulation 2 name and create its PC game product. The account
-sign-in alone does not grant a Windows publishing
-workspace. Complete Microsoft's developer account verification and any required
-publisher agreement before creating the product. Record the product's Store ID,
-package identity values and package branch from Partner Center; these values
-must come from the created product rather than placeholders. On the
+The individual Windows developer account for Bradley Arsenault is enrolled, and
+the [Globulation 2 PC game product](https://partner.microsoft.com/en-US/dashboard/products/9PH4FCRMX19F/setup)
+has been reserved in Partner Center. Its package identity and initial package
+branch are:
+
+| Partner Center field | Value |
+| --- | --- |
+| Store ID | `9PH4FCRMX19F` |
+| Package Identity Name | `BradleyArsenault.Globulation2` |
+| Package Identity Publisher | `CN=EBC9B192-6200-443B-BFEB-9B00B0B78F67` |
+| Publisher display name | `Bradley Arsenault` |
+| Package branch | `Main` |
+
+The product has not been submitted for certification. On the
 **private mirror only**, create a GitHub Actions environment named `windows-store`,
 restrict deployment branches to `master`, and set these environment variables
 from Partner Center:
@@ -125,9 +131,10 @@ from Partner Center:
 | `STORE_PUBLISHER_DISPLAY_NAME` | Publisher display name |
 | `STORE_BRANCH` | Existing Partner Center branch for package upload |
 
-For upload, register an Entra application in the tenant connected to Partner
-Center, grant it **Publishing: Read/Write** for this product, and add its tenant
-ID, application ID and client secret as environment secrets named
+For upload, create a separate Globulation 2 Microsoft Entra tenant and associate
+that tenant with this Partner Center developer account. Register an Entra
+application in that tenant, grant it **Publishing: Read/Write** for this product,
+and add its tenant ID, application ID and client secret as environment secrets named
 `STORE_TENANT_ID`, `STORE_CLIENT_ID`, and `STORE_CLIENT_SECRET`.
 The `STORE_BRANCH` variable is required for upload. Never add these secrets,
 the environment or a privileged trigger to the public repository.
