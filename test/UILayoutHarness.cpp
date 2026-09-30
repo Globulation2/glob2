@@ -404,6 +404,19 @@ void checkAdaptiveAndField()
 	require(chosen == 2, "adaptive sees the wide width");
 	a.resize(300, 400);
 	require(chosen == 1, "adaptive re-chooses after resize");
+	// Fields inside an adaptive subtree only exist after layout: editing must
+	// survive the rebuild each edit causes.
+	std::string model = "x";
+	Fixture b([&](const Presentation &) { return adaptive([&](const LayoutContext &, Size) { return textField("name", model, [&](const std::string &v) { model = v; }); }); }, 300, 100);
+	b.click({20, 20});
+	require(b.host.editing() == "name", "tapping a field inside adaptive starts editing");
+	SDL_Event text{};
+	text.type = SDL_TEXTINPUT;
+	std::snprintf(text.text.text, sizeof text.text.text, "%s", "y");
+	b.host.event(text);
+	require(model == "xy", "text input reaches a field inside adaptive");
+	b.host.layoutIfNeeded();
+	require(b.host.editing() == "name", "editing survives the rebuild after an edit");
 }
 
 void checkInvariants()

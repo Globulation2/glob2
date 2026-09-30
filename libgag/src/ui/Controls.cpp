@@ -97,7 +97,7 @@ class Button : public Node
 		this->key = std::move(key);
 	}
 	const char *name() const override { return "button"; }
-	std::string accessibleText() const override { return text; }
+	std::string accessibleText() const override { return text.empty() ? options.accessibleLabel : text; }
 	bool interactive() const override { return true; }
 	bool enabled() const override { return options.enabled; }
 	SDL_Keycode shortcut() const override { return options.shortcut; }
@@ -776,6 +776,9 @@ class TextField : public Node
 	GAGCore::BrowserTextChange browserChange;
 	void bind(Host &host)
 	{
+		if (bound)
+			return;
+		bound = true;
 		auto &state = host.state(key);
 		committed = value;
 		adoptDraft(state);
@@ -824,7 +827,7 @@ class TextField : public Node
 	std::function<void(const std::string &)> change;
 	TextFieldOptions options;
 	std::size_t cursor = 0;
-	bool editing = false, selectAll = false;
+	bool editing = false, selectAll = false, bound = false;
 };
 
 class TextEditor : public Node
@@ -1132,6 +1135,9 @@ class TextEditor : public Node
 	GAGCore::BrowserTextChange browserChange;
 	void bind(Host &host)
 	{
+		if (bound)
+			return;
+		bound = true;
 		browserOwner = &host.state(key);
 		auto callback = change;
 		const std::string k = key;
@@ -1153,7 +1159,7 @@ class TextEditor : public Node
 	std::vector<Line> lines;
 	std::size_t cursor = 0;
 	int offset = 0, maximum = 0, pad = 8, lineGap = 2, lineHeightCached = 16, lastContent = -1;
-	bool follow = false, restored = false;
+	bool follow = false, restored = false, bound = false;
 	const TextMeasurer *measurerForHit = nullptr;
 };
 

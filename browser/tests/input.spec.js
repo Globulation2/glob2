@@ -44,7 +44,7 @@ test('click coordinates stay correct when browser motion delivery is missing',as
   await page.setViewportSize({width:1000,height:700});
   await expect.poll(async()=>(await state(page)).width).toBe(1000);
   await page.locator('#canvas').press('Escape',{delay:80});
-  await expect.poll(async()=>require('./pixels').hasLightText(page,await controlBox(page,'quit'))).toBe(true);
+  await expect.poll(async()=>require('./pixels').hasClassicButton(page,await controlBox(page,'quit'))).toBe(true);
   await clickControl(page,'quit');await screen(page,'EndGameScreen');
 });
 

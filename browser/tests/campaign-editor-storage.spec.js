@@ -24,7 +24,8 @@ test('campaign authoring waits for durable persistence before closing',async({pa
   await clickCampaignFooter(page,true);
   await expect.poll(()=>page.evaluate(()=>typeof window.releaseCampaignWrite)).toBe('function');
   await screen(page,'CampaignEditor');
-  await clickCampaignFooter(page,false); // Cancel cannot complete a pending save.
+  // Cancel is disabled while the save is pending; clicking it changes nothing.
+  await clickCampaignFooter(page,false,{enabled:false});
   await screen(page,'CampaignEditor');
   await page.evaluate(()=>window.releaseCampaignWrite());
   await screen(page,'EditorMainMenu');

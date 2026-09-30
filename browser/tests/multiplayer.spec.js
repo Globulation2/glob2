@@ -265,7 +265,7 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
     // by closing browser contexts while the match is still running.
     for (const target of [page, guest]) {
       await target.locator('#canvas').press('Escape',{delay:80});
-      await expect.poll(async () => require('./pixels').hasLightText(target, await controlBox(target,'quit'))).toBe(true);
+      await expect.poll(async () => require('./pixels').hasClassicButton(target, await controlBox(target,'quit'))).toBe(true);
       await clickControl(target, 'quit');
       await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('EndGameScreen');
       await target.locator('#canvas').press('Enter');
@@ -308,7 +308,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await page.screenshot({path: testInfo.outputPath('native-cross-play.png')});
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(250);
     await page.locator('#canvas').press('Escape',{delay:80});
-    await expect.poll(async () => require('./pixels').hasLightText(page, await controlBox(page,'quit'))).toBe(true);
+    await expect.poll(async () => require('./pixels').hasClassicButton(page, await controlBox(page,'quit'))).toBe(true);
     await clickControl(page, 'quit');
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('EndGameScreen');
     await expect.poll(() => peer.exitCode !== null || peer.signalCode !== null, {timeout:45000}).toBe(true);

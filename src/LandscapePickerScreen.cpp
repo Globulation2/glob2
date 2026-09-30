@@ -498,6 +498,7 @@ Element LandscapePickerScreen::tile(int i, const Presentation &p, bool compact)
 			select(i);
 	};
 	auto content = fe::padding(fe::Insets::all(p.pt(8)), fe::column({fe::center(picture), fe::label(entry.name), fe::caption(note)}, {p.pt(4)}));
+	options.accessibleLabel = entry.name;
 	return fe::stack({fe::button("landscape/" + std::to_string(i), "", action, options), content});
 }
 

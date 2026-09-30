@@ -580,12 +580,13 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 	{
 		TextFieldOptions options;
 		options.maxLength = BasePlayer::MAX_NAME_LENGTH;
-		options.commitOnSubmit = true;
+		// The name is saved as it is typed (debounced), as the browser client
+		// always did; Done and focus loss flush the pending save.
 		auto control = textField(r.id, r.value,
 								 [this](const std::string &value)
 								 {
 									 globalContainer->settings.setUsername(value);
-									 commit();
+									 commit(true);
 								 },
 								 options);
 		return field(r.label, control, {help, p.touch ? 220.0 : 140.0});

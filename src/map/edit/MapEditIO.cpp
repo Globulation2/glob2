@@ -132,7 +132,18 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 			performAction("no ressource growth area drag motion");
 	}
 
-    if (auto *dialog = activeDialog()) dialog->update(tick);
+    if (auto *dialog = activeDialog())
+    {
+        dialog->update(tick);
+        // Browser-native text editing can finish a dialog without an SDL
+        // event; poll its result every frame.
+        if (dialog->finished())
+        {
+            SDL_Event poll{};
+            poll.type = SDL_USEREVENT;
+            delegateMenu(poll);
+        }
+    }
     if (doFullQuit) { editingResult = -1; editing = false; }
     else if (doQuit) {
         doQuit = false;

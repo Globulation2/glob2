@@ -93,7 +93,7 @@ class Host
 	std::function<void()> escape, layoutListener;
 	Element tree;
 	Rect availableRect, rootRect;
-	bool dirty = true, needsLayout = true, built = false;
+	bool dirty = true, needsLayout = true, built = false, rebuilt = false;
 	StateStore store;
 	std::string focusKey, editingKey, pressedKey, capturedKey, panKey, preedit;
 	Node *pressedNode = nullptr;

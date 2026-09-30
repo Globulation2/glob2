@@ -4,7 +4,7 @@
 const {clickControl, clickByLabel, rootBox} = require('./main-menu');
 exports.clickCreateMap = page => clickControl(page, 'create');
 exports.campaignFrame = page => rootBox(page, 'ok');
-exports.clickCampaignFooter = (page, save) => clickControl(page, save ? 'ok' : 'cancel');
+exports.clickCampaignFooter = (page, save, options) => clickControl(page, save ? 'ok' : 'cancel', options);
 
 // The editor's generator chooser now uses the shared landscape catalog. Drive
 // its real sort/navigation controls; the old form's list coordinates no longer

@@ -55,9 +55,40 @@ exports.rootBox = async (page, key) => {
   const corner = css(page, bounds, {x: bounds.root.x + bounds.root.w, y: bounds.root.y + bounds.root.h});
   return {x: origin.x, y: origin.y, width: corner.x - origin.x, height: corner.y - origin.y};
 };
+// Scroll regions publish every row and card, including ones scrolled out of
+// the window; wheel over the owning panel until the control is on screen.
+// A control's "visible" rect is what its scroll regions leave on screen.
+// Game frames are scheduled by the host, not by requestAnimationFrame, so a
+// scroll shows up in the published bounds only after the next game frame.
+const same = (a, b) => a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;
+const shown = bounds => bounds.visible && bounds.visible.w >= Math.min(bounds.w, 8) && bounds.visible.h >= Math.min(bounds.h, 8);
+async function controlOnScreen(page, key, options) {
+  let bounds = await control(page, key, options);
+  for (let attempt = 0; attempt < 60; ++attempt) {
+    if (shown(bounds)) {
+      // Wait until the bounds hold still before clicking.
+      await page.waitForTimeout(150);
+      const again = await control(page, key, options);
+      if (same(again, bounds) && same(again.visible, bounds.visible)) return bounds;
+      bounds = again;
+      continue;
+    }
+    const root = css(page, bounds, {x: bounds.root.x + bounds.root.w / 2, y: bounds.root.y + bounds.root.h / 2});
+    await page.mouse.move(root.x, root.y);
+    await page.mouse.wheel(0, bounds.y + bounds.h / 2 < bounds.root.y + bounds.root.h / 2 ? -120 : 120);
+    await page.waitForTimeout(150);
+    bounds = await control(page, key, options);
+  }
+  throw new Error(`control "${key}" cannot be scrolled into view`);
+}
+// Click the on-screen part of the control.
+function visibleCenter(page, bounds) {
+  const v = shown(bounds) ? bounds.visible : bounds;
+  return css(page, bounds, {x: v.x + v.w / 2, y: v.y + v.h / 2});
+}
 exports.clickControl = async (page, key, options = {}) => {
-  const bounds = await control(page, key, options);
-  return page.locator('#canvas').click({position: center(page, bounds), delay: 80, ...(options.click || {})});
+  const bounds = await controlOnScreen(page, key, options);
+  return page.locator('#canvas').click({position: visibleCenter(page, bounds), delay: 80, ...(options.click || {})});
 };
 exports.tapControl = async (page, key, options = {}) => {
   const bounds = await control(page, key, options);

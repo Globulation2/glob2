@@ -329,8 +329,7 @@ Element page(const std::string &titleText, Element body, Element actionRow, cons
 	if (!p.touch)
 	{
 		// The classic 640x480 paper panel (plus its 12-point margin), centered.
-		// Content taller than the panel scrolls rather than pushing the actions out.
-		parts.push_back(expanded(scroll("page/body", std::move(body))));
+		parts.push_back(expanded(body));
 		parts.push_back(actionRow);
 		CardOptions cardOptions;
 		cardOptions.padding = p.pt(12);

@@ -106,19 +106,10 @@ void Host::layoutIfNeeded()
 		if (!tree)
 			tree = empty();
 		restoreStates();
-		bindTextControls(*this, *tree);
 		dirty = false;
 		built = true;
 		needsLayout = true;
-		if (!focusKey.empty() && !tree->find(focusKey))
-		{
-			focusKey.clear();
-			keyboardFocus = false;
-		}
-		if (!editingKey.empty() && !tree->find(editingKey))
-			endEditing();
-		if (!capturedKey.empty() && !tree->find(capturedKey))
-			capturedKey.clear();
+		rebuilt = true;
 		pressedNode = nullptr;
 	}
 	if (needsLayout && tree)
@@ -130,6 +121,23 @@ void Host::layoutIfNeeded()
 		rootRect = placeFn(measured, availableRect);
 		tree->arrange(ctx, rootRect);
 		needsLayout = false;
+		// Adaptive containers choose their subtree during layout, so the tree is
+		// only complete here: bind text controls (idempotent per node) and drop
+		// focus, editing and capture whose element no longer exists.
+		bindTextControls(*this, *tree);
+		if (rebuilt)
+		{
+			rebuilt = false;
+			if (!focusKey.empty() && !tree->find(focusKey))
+			{
+				focusKey.clear();
+				keyboardFocus = false;
+			}
+			if (!editingKey.empty() && !tree->find(editingKey))
+				endEditing();
+			if (!capturedKey.empty() && !tree->find(capturedKey))
+				capturedKey.clear();
+		}
 		if (popup)
 			layoutPopup();
 	}

@@ -47,6 +47,9 @@ struct ButtonOptions
 	// Minimum height in points; -1 uses the theme control height.
 	double minHeight = -1;
 	std::string tooltip;
+	// Name of a button that shows no text of its own (a picture card), for
+	// diagnostics and harnesses.
+	std::string accessibleLabel;
 };
 Element button(const std::string &key, const std::string &text, std::function<void()> action,
 			   ButtonOptions options = {});

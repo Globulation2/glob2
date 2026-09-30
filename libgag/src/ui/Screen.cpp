@@ -24,25 +24,31 @@ std::string quoted(const std::string &text)
 	}
 	return out + "\"";
 }
-void appendTarget(std::ostringstream &out, bool &first, const std::string &key, Rect r, bool enabled, const std::string &label)
+// Bounds are the element's own; "visible" is the part left after every
+// enclosing scroll region's clip (empty when scrolled out of view).
+void appendTarget(std::ostringstream &out, bool &first, const std::string &key, Rect r, Rect clip, bool enabled, const std::string &label)
 {
 	if (key.empty())
 		return;
+	const Rect v = r.intersect(clip);
 	out << (first ? "" : ",") << quoted(key) << ":{\"x\":" << r.x << ",\"y\":" << r.y << ",\"w\":" << r.w << ",\"h\":" << r.h
+		<< ",\"visible\":{\"x\":" << v.x << ",\"y\":" << v.y << ",\"w\":" << std::max(0, v.w) << ",\"h\":" << std::max(0, v.h) << "}"
 		<< ",\"enabled\":" << (enabled ? "true" : "false") << ",\"label\":" << quoted(label) << "}";
 	first = false;
 }
-void appendTree(std::ostringstream &out, bool &first, Node &root)
+void appendTree(std::ostringstream &out, bool &first, Node &node, Rect clip)
 {
-	root.visit(
-		[&](Node &node)
-		{
-			if (!node.interactive())
-				return;
-			appendTarget(out, first, node.key, node.bounds, node.enabled(), node.accessibleText());
-			for (const auto &target : node.subTargets())
-				appendTarget(out, first, node.key + "/" + target.suffix, target.bounds, node.enabled(), target.label);
-		});
+	if (node.scrollable())
+		clip = clip.intersect(node.bounds);
+	if (node.interactive())
+	{
+		appendTarget(out, first, node.key, node.bounds, clip, node.enabled(), node.accessibleText());
+		for (const auto &target : node.subTargets())
+			appendTarget(out, first, node.key + "/" + target.suffix, target.bounds, clip, node.enabled(), target.label);
+	}
+	for (auto &child : node.children)
+		if (child)
+			appendTree(out, first, *child, clip);
 }
 } // namespace
 
@@ -53,10 +59,11 @@ void publishControls(const void *owner, const Host &host)
 		<< host.rootBounds().x << ",\"y\":" << host.rootBounds().y << ",\"w\":" << host.rootBounds().w << ",\"h\":" << host.rootBounds().h
 		<< "},\"controls\":{";
 	bool first = true;
+	const Rect surface{0, 0, host.presentation().viewport.w, host.presentation().viewport.h};
 	if (auto *root = host.root())
-		appendTree(out, first, *root);
+		appendTree(out, first, *root, surface);
 	if (auto *popup = host.popupRoot())
-		appendTree(out, first, *popup);
+		appendTree(out, first, *popup, surface);
 	out << "}}";
 	GAGCore::ApplicationHost::controlsChanged(owner, out.str().c_str());
 }

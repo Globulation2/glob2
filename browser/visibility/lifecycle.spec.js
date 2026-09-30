@@ -72,7 +72,7 @@ test('background single-player suspends and returns without catching up', async 
     await page.locator('#canvas').press('Escape',{delay:80});
     // The menu does not set the explicit simulation-pause flag. Wait for the
     // presented Quit label instead of treating frame count as menu readiness.
-    await expect.poll(async ()=>require('../tests/pixels').hasLightText(page, await controlBox(page,'quit'))).toBe(true);
+    await expect.poll(async ()=>require('../tests/pixels').hasClassicButton(page, await controlBox(page,'quit'))).toBe(true);
     const frames=(await snapshot()).frames;
     await expect.poll(async ()=>(await snapshot()).frames).toBeGreaterThan(frames+2);
     await clickControl(page,'quit'); await screen('EndGameScreen');

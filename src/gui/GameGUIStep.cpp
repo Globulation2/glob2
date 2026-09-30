@@ -130,6 +130,16 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
         closeDialog();
     if (auto *dialog = activeDialog())
         dialog->update(Uint32(now));
+    // A dialog can finish without an SDL event (browser-native text editing
+    // submits through the host bridge); act on its result every frame.
+    if (gameMenuScreen && gameMenuScreen->finished())
+        processGameMenu(nullptr);
+    if (typingInputScreen && typingInputScreen->finished())
+    {
+        SDL_Event poll{};
+        poll.type = SDL_USEREVENT;
+        processTypingInput(&poll);
+    }
 	PERF_SCOPE_TIME(GUI);
 	SDL_Event mouseMotionEvent;
 	bool wasMouseMotion=false;
