@@ -22,9 +22,9 @@ concurrency:
 
 jobs:
   package:
-    # This workflow is tracked in public, but release jobs run only after the
-    # owner syncs it to the private mirror and dispatches it from master.
-    if: github.event_name == 'workflow_dispatch' && github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master'
+    # The release mirror is public, but only its owner can dispatch this job.
+    # Signing and upload credentials stay in its master-only environment.
+    if: github.event_name == 'workflow_dispatch' && github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.ref == 'refs/heads/master'
     runs-on: windows-2025
     timeout-minutes: 90
     environment: windows-store
@@ -36,18 +36,20 @@ jobs:
       STORE_BRANCH: ${{ vars.STORE_BRANCH }}
       STORE_VERSION: ${{ inputs.version }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: Check Partner Center identity
         shell: pwsh
         run: |
           foreach ($name in @('STORE_ID', 'STORE_IDENTITY_NAME', 'STORE_PUBLISHER', 'STORE_PUBLISHER_DISPLAY_NAME')) {
             if (-not [Environment]::GetEnvironmentVariable($name)) {
-              throw "Configure $name in the private mirror's windows-store GitHub environment."
+              throw "Configure $name in the release mirror's windows-store GitHub environment."
             }
           }
 
-      - uses: msys2/setup-msys2@v2
+      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2
         with:
           msystem: MINGW64
           update: true
@@ -107,6 +109,8 @@ jobs:
       - name: Build and validate MSIXVC package
         id: package
         shell: pwsh
+        env:
+          STORE_UPLOAD: ${{ inputs.upload }}
         run: |
           $tool = Get-ChildItem 'C:\Program Files (x86)\Microsoft GDK' -Recurse -Filter MakePkg.exe |
             Sort-Object FullName -Descending | Select-Object -First 1
@@ -117,24 +121,29 @@ jobs:
           $layout = Join-Path $PWD 'artifacts/windows-store/layout.xml'
           & $tool.FullName genmap /f $layout /d $content
           if ($LASTEXITCODE -ne 0) { throw 'MakePkg genmap failed.' }
-          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos /l
+          # /lt is installable for local testing; /l produces the encrypted
+          # submission package and EKB, which must stay out of public artifacts.
+          $encryption = if ($env:STORE_UPLOAD -eq 'true') { '/l' } else { '/lt' }
+          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos $encryption
           if ($LASTEXITCODE -ne 0) { throw 'MakePkg pack failed.' }
           $package = Get-ChildItem $output -Filter *.msixvc | Select-Object -First 1
           $ekb = Get-ChildItem $output -Filter *.ekb | Select-Object -First 1
           $validator = Get-ChildItem $output -Filter Validator_*.xml | Select-Object -First 1
-          if (-not $package -or -not $ekb -or -not $validator) {
-            throw 'Expected MSIXVC, EKB and submission validator report in the package directory.'
+          if (-not $package -or -not $validator -or ($env:STORE_UPLOAD -eq 'true' -and -not $ekb)) {
+            throw 'Expected MSIXVC, validator report and (for upload) EKB in the package directory.'
           }
           "package_path=$($package.FullName)" >> $env:GITHUB_OUTPUT
           "ekb_path=$($ekb.FullName)" >> $env:GITHUB_OUTPUT
           "validator_path=$($validator.FullName)" >> $env:GITHUB_OUTPUT
 
       - name: Retain package for install testing and review
-        uses: actions/upload-artifact@v4
+        if: ${{ !inputs.upload }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: glob2-windows-store-${{ inputs.version }}
           path: |
-            artifacts/windows-store/package/*
+            artifacts/windows-store/package/*.msixvc
+            artifacts/windows-store/package/Validator_*.xml
             artifacts/windows-store/layout.xml
           if-no-files-found: error
           retention-days: 30
