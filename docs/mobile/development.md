@@ -330,7 +330,8 @@ Register an Amazon Developer account, complete identity checks, and create the
 first app version in the Developer Console. Use package `org.globulation2.glob2`,
 price Free, and disable optional Amazon DRM. Select only Fire tablets that pass
 qualification. Complete the privacy questionnaire based on the actual network
-and account behavior, and supply a support contact, icon, and Fire-device
+and account behavior, link the [Fire tablet privacy policy](amazon-privacy-policy.md),
+and supply a support contact, icon, and Fire-device
 screenshots. Draft listing copy: **Globulation 2** — “Build and guide a colony in
 an open-source real-time strategy game. Set priorities for your workers, gather
 resources, construct buildings, explore maps, and compete with other colonies.”

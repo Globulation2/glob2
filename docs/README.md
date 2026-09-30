@@ -29,7 +29,8 @@ dated reports and pull-request artifacts do not belong here.
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
-  [Android privacy policy](mobile/privacy-policy.md).
+  [Android privacy policy](mobile/privacy-policy.md), and
+  [Amazon Fire tablet privacy policy](mobile/amazon-privacy-policy.md).
 
 - **Browser platform:** [build and play](../browser/README.md),
   [architecture](browser/implementation.md), [storage](browser/storage.md),
