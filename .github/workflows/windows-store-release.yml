@@ -7,6 +7,18 @@ on:
         description: Four-part Store package version (increase for every upload)
         required: true
         default: 1.0.0.0
+      store_id:
+        description: Partner Center Store ID (or configure STORE_ID in the environment)
+        required: false
+      identity_name:
+        description: Partner Center Package Identity Name
+        required: false
+      publisher:
+        description: Partner Center Package Identity Publisher, including CN=
+        required: false
+      publisher_display_name:
+        description: Partner Center Publisher Display Name
+        required: false
       upload:
         description: Upload the package to the configured Partner Center branch
         required: true
@@ -26,10 +38,10 @@ jobs:
     timeout-minutes: 90
     environment: windows-store
     env:
-      STORE_ID: ${{ vars.STORE_ID }}
-      STORE_IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
-      STORE_PUBLISHER: ${{ vars.STORE_PUBLISHER }}
-      STORE_PUBLISHER_DISPLAY_NAME: ${{ vars.STORE_PUBLISHER_DISPLAY_NAME }}
+      STORE_ID: ${{ inputs.store_id || vars.STORE_ID }}
+      STORE_IDENTITY_NAME: ${{ inputs.identity_name || vars.STORE_IDENTITY_NAME }}
+      STORE_PUBLISHER: ${{ inputs.publisher || vars.STORE_PUBLISHER }}
+      STORE_PUBLISHER_DISPLAY_NAME: ${{ inputs.publisher_display_name || vars.STORE_PUBLISHER_DISPLAY_NAME }}
       STORE_BRANCH: ${{ vars.STORE_BRANCH }}
       STORE_VERSION: ${{ inputs.version }}
     steps:
@@ -40,7 +52,7 @@ jobs:
         run: |
           foreach ($name in @('STORE_ID', 'STORE_IDENTITY_NAME', 'STORE_PUBLISHER', 'STORE_PUBLISHER_DISPLAY_NAME')) {
             if (-not [Environment]::GetEnvironmentVariable($name)) {
-              throw "Configure $name in the windows-store GitHub environment before running this workflow."
+              throw "Provide $name as a workflow input or configure it in the windows-store GitHub environment."
             }
           }
 
