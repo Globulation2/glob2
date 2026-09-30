@@ -150,6 +150,14 @@ The mobile and release workflows build unsigned APKs and retain them only as
 validation artifacts. They are not GitHub release assets and cannot be installed
 as public releases. A temporary developer signature supports emulator and
 device checks. F-Droid's signature is the sole public F-Droid update channel.
+The reviewed `.github/workflows/fdroid-release-validation.yml` workflow is
+mirrored to private `genixpro/glob2-release` and runs by owner dispatch with
+the exact public candidate commit SHA. Its read-only jobs build all three
+unsigned APKs through
+`mobile/fdroid_build.py`, retain checksums and logs, and launch the x86_64
+candidate in an emulator. After approval and tagging, dispatch it again with
+the public tag to verify the tag points to that same source commit. Compare its
+APKs with the public workflow artifacts before submitting the recipe.
 Play and F-Droid use different signing keys, so Android cannot update an
 installation from one store with an APK from the other. A store switch requires
 uninstalling the installed copy; export or back up saves first.
