@@ -1,9 +1,9 @@
 {
-  "commit": "aa899d8cc60b7ffe732948231d2d64a97cfa556f",
+  "commit": "8049cc1349797b06e0eb3780d927fa5553f8c4a3",
   "host": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
   "unit_tests": {
-    "shared": 95,
-    "isolated": 95,
+    "shared": 97,
+    "isolated": 97,
     "passed": true
   },
   "builds": {
@@ -40,15 +40,14 @@
   },
   "space": {
     "budget_bytes": 16106127360,
-    "managed_cache_and_bundle_bytes": 4941099008,
+    "managed_cache_and_bundle_bytes": 5064183808,
     "installed_toolchain_bytes": 9132990464,
-    "migration_reclaimed_bytes": 0,
+    "migration_reclaimed_bytes": 902414336,
     "busy_checkouts": [
       "/Users/bradley/.codex/worktrees/68aa/glob2",
       "/Users/bradley/.codex/worktrees/9438/glob2",
       "/Users/bradley/.codex/worktrees/d912/glob2",
-      "/Users/bradley/glob2",
-      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU"
+      "/Users/bradley/glob2"
     ]
   },
   "dependency_timings": {
@@ -70,8 +69,10 @@
   "limits": [
     "Isolated native verification reused existing native object outputs.",
     "No Android/Linux/Windows per-tick comparison or isolated iOS build was completed locally.",
-    "Migration preserved busy and customized installations; no reclaimed disk space is claimed.",
+    "Migration reclaimed 902414336 bytes from one idle checkout, preserving busy and customized installations.",
     "The first iOS smoke launch timed out; the retry passed after a system app launch verified simulator readiness.",
     "CI results are reported separately on the PR."
-  ]
+  ],
+  "pending_refresh": "The supplementary rebuilds begun before master integration were interrupted deliberately; consistent current-head rebuilds are in progress. Completed prior shared-store builds and smoke/checksum evidence remain retained separately.",
+  "completed_build_evidence_commit": "aa899d8cc60b7ffe732948231d2d64a97cfa556f"
 }

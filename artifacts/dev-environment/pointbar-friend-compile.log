@@ -1,0 +1,43 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... (cached) yes
+Checking whether the C++ compiler works... (cached) yes
+Checking for C library SDL2... (cached) yes
+Checking for C library SDL2_ttf... (cached) yes
+Checking for C library SDL2_image... (cached) yes
+Checking for C library SDL2_net... (cached) yes
+Checking for C library speex... (cached) yes
+Checking for C++ header file speex/speex.h... (cached) yes
+Checking for C library vorbisfile... (cached) yes
+Checking for C library vorbis... (cached) yes
+Checking for C library ogg... (cached) yes
+Checking for C++ header file zlib.h... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C++ header file regex.h... (cached) yes
+Checking for C++ header file openssl/ssl.h... (cached) yes
+Checking for C library ssl... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+Using Apple's OpenGL framework
+Using Apple's GLUT framework
+Checking for C library epoxy... (cached) yes
+Checking for C++ header file epoxy/gl.h... (cached) yes
+Checking for C library fribidi... (cached) yes
+Checking for C++ header file fribidi/fribidi.h... (cached) yes
+Checking for C library portaudio... (cached) yes
+Checking for C++ header file portaudio.h... (cached) yes
+         no portaudio
+         no portaudio - although portaudio was found to be installed, you have 
+         no portaudio - to explicitly activate it using: 
+         no portaudio - $ scons --portaudio=true
+         no portaudio - this may not work properly if the version of portaudio
+         no portaudio - is wrong. portaudio is used to allow communicating over VOIP
+         no portaudio
+         no portaudio - if you know of a solution to detect portaudio version
+         no portaudio - let us know at:
+         no portaudio - https://savannah.nongnu.org/bugs/index.php?24668
+         no portaudio
+scons: done reading SConscript files.
+scons: Building targets ...
+/opt/homebrew/bin/ccache g++ -o build/darwin/client/release/test/engine-PointBarRenderTest.o -c -g -std=gnu++20 -Wall -fPIC -O3 -DHAVE_CONFIG_H -DGL_SILENCE_DEPRECATION -D_THREAD_SAFE -DSDL_MAIN_HANDLED -Ibuild/darwin/client/release/include -I/opt/homebrew/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/yog -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/irc -Isrc/net/message -Isrc/sgsl -Isrc/team -Isrc/unit -I/opt/homebrew/include/SDL2 -Itest -Itest/support -Isrc/render -Ilibgag/src test/PointBarRenderTest.cpp
+scons: done building targets.

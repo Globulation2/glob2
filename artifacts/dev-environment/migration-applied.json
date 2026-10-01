@@ -1,7 +1,7 @@
 [
   {
     "checkout": "/Users/bradley/.codex/worktrees/68aa/glob2",
-    "local_bytes": 2084147200,
+    "local_bytes": 2674012160,
     "legacy_browser_bytes": 0,
     "legacy_browser_path": "/Users/bradley/.codex/worktrees/68aa/glob2/tools/browser-emsdk",
     "busy": true,
@@ -12,7 +12,7 @@
   },
   {
     "checkout": "/Users/bradley/.codex/worktrees/9438/glob2",
-    "local_bytes": 246931456,
+    "local_bytes": 1514741760,
     "legacy_browser_bytes": 1997479936,
     "legacy_browser_path": "/Users/bradley/.codex/worktrees/9438/glob2/tools/browser-emsdk",
     "busy": true,
@@ -40,7 +40,7 @@
   },
   {
     "checkout": "/Users/bradley/.codex/worktrees/d912/glob2",
-    "local_bytes": 5838548992,
+    "local_bytes": 5607251968,
     "legacy_browser_bytes": 0,
     "legacy_browser_path": "/Users/bradley/.codex/worktrees/d912/glob2/tools/browser-emsdk",
     "busy": true,
@@ -84,15 +84,23 @@
     "local_bytes": 0,
     "legacy_browser_bytes": 1997381632,
     "legacy_browser_path": "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk",
-    "busy": true,
+    "busy": false,
     "seeded": [],
-    "replaced": [],
-    "reclaimed_bytes": 0,
+    "replaced": [
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/node",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/python",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/bin",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/lib"
+    ],
+    "reclaimed_bytes": 902414336,
     "replacement_candidates": [
       "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/node",
       "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/python",
       "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/bin",
       "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/lib",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/emscripten"
+    ],
+    "customized": [
       "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/emscripten"
     ]
   }
