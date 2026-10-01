@@ -26,7 +26,8 @@ class YOGClientLobbyScreen : public SessionTab, public YOGClientEventListener, p
 {
   public:
 	///The client must be logged in when this is called.
-	YOGClientLobbyScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client);
+	// Offline presentation fixtures can render the lobby without a public IRC connection.
+	YOGClientLobbyScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<YOGClient> client, bool connectIRC = true);
 	~YOGClientLobbyScreen() override;
 	std::string title() const override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

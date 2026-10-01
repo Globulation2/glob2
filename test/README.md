@@ -921,7 +921,9 @@ The `GameGUITouch` and `UIPresentation` cases need a windowing display (Xvfb on
 Linux), run in isolated profiles and copy their screenshots into their artifact
 directories. `UIPresentation` has one case per viewport, so CI shards distribute
 the full screen/presentation/inset sweep and each viewport gets its own timeout
-and failure report. They complement
+and failure report. Its offline lobby fixture renders the production screen
+without starting the public IRC connection, so layout checks do not wait for
+external network timeouts during teardown. They complement
 Android/iOS device playtesting; they do not establish device lifecycle,
 performance, keyboard or cross-platform simulation compatibility.
 
