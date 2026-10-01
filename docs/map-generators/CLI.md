@@ -2,6 +2,10 @@
 
 The normal **client executable** includes map tools. Build with
 `scons release=1 server=0`, then run the examples from the repository root.
+Set `GLOB2_BIN` to the executable for your platform (for example,
+`export GLOB2_BIN="$PWD/build/darwin/client/release/src/glob2"` on macOS,
+`build/linux/client/release/src/glob2` on Linux, or
+`build/mingw/client/release/src/glob2.exe` on Windows).
 An installed client can use the same flags. Previews use the game's existing
 `MapThumbnail` and `MapPreview` widget, shared by the lobby and landscape
 picker. Exports paint that widget into an offscreen software surface with transitions
@@ -24,7 +28,7 @@ For a deliberately asymmetric woodland island with biscuit-shaped bites, see
 ## Generate a map and preview
 
 ```sh
-build/src/glob2 --generate-map coral --seed 7 \
+"$GLOB2_BIN" --generate-map coral --seed 7 \
   --width 256 --height 256 --teams 4 \
   --output artifacts/coral.map --preview artifacts/coral.png
 ```
@@ -49,8 +53,8 @@ as the existing generators; a seed alone is not a cross-platform guarantee.
 ## Preview an existing map or save
 
 ```sh
-build/src/glob2 --preview-map maps/SomeMap.map --output artifacts/map.png
-build/src/glob2 --preview-map /path/to/colony.game --output artifacts/save.png
+"$GLOB2_BIN" --preview-map maps/SomeMap.map --output artifacts/map.png
+"$GLOB2_BIN" --preview-map /path/to/colony.game --output artifacts/save.png
 ```
 
 `--json artifacts/report.json` also works here, alone or alongside the PNG.
@@ -66,12 +70,36 @@ For saved games, markers show the stored colony starts, not current unit positio
 The preview is not a screenshot of the main game view. Renderer changes shared
 with those screens also apply to CLI exports; there is no separate CLI renderer.
 
+## Choose the right image representation
+
+| Representation | Purpose | Contents and usage |
+| --- | --- | --- |
+| **Categorical map image** (`--map-image`, `--export-map-image`) | Edit geography and recreate a playable map | One pixel per underlying terrain-grid location, fixed terrain/resource colors and white colony markers. Use an image editor without antialiasing, then `--import-map-image`. |
+| **Map preview** (`--preview`, `--preview-map`) | Browse, compare and illustrate maps | The lobby's overview renderer, with thumbnail sampling and numbered colony markers. Useful for judging overall geography; its display colors, markers and possible averaging are not the import contract. |
+| **Full map render / game-view screenshot** | Inspect how the map actually appears in play | Terrain transitions, resource sprites and their amounts, buildings and units as rendered by the game. Capture the game view or use a dedicated rendering/debugging tool. This CLI does not add a full game-view renderer. |
+
+Increasing `--preview-scale` enlarges a preview's retained thumbnail pixels; it
+never turns that preview into a detailed game-view render. Terrain-dump diagnostic
+renderers can additionally distinguish mixed shore tiles, but their palettes are
+analysis conventions, not categorical import colors.
+
+Categorical images are a deliberately lossy interchange format. Export/import
+recreates terrain, resource footprints and colony starts rather than restoring an
+entire saved game. Resource quantities and varieties are initialized from the
+import seed; existing buildings, running units, alliances and scripts are not
+encoded. Keep the original `.map` or `.game` when exact state preservation matters.
+For repeatable editing, preserve pixel dimensions, palette colors and distinct
+colony markers; pass matching `--width`, `--height`, `--teams`, and a fixed seed.
+Seam repair is enabled by default. Use `--image-seam-width 0` when the decoded
+geography must remain unstitched; mandatory terrain legality and colony
+initialization still apply.
+
 ## Discover and configure generators
 
 ```sh
-build/src/glob2 --list-map-generators
-build/src/glob2 --list-map-generators maze
-build/src/glob2 --generate-map maze --set cell-shape=1 --teams 6 \
+"$GLOB2_BIN" --list-map-generators
+"$GLOB2_BIN" --list-map-generators maze
+"$GLOB2_BIN" --generate-map maze --set cell-shape=1 --teams 6 \
   --seed 7 --preview artifacts/maze.png
 ```
 
@@ -101,7 +129,7 @@ cell-shape=1
 ```
 
 ```sh
-build/src/glob2 --generate-map maze --config maze.cfg \
+"$GLOB2_BIN" --generate-map maze --config maze.cfg \
   --seed 42 --set cell-shape=0 --preview artifacts/maze.png
 ```
 
@@ -123,8 +151,8 @@ Markers keep the widget's normal pixel size so larger exports reveal more terrai
 around them. The full map remains visible; export scale is not interactive zoom.
 
 ```sh
-build/src/glob2 --preview-map maps/SomeMap.map --output artifacts/map-4x.png --preview-scale 4
-build/src/glob2 --generate-map maze --seed 7 --preview artifacts/map-8x.png --preview-scale 8
+"$GLOB2_BIN" --preview-map maps/SomeMap.map --output artifacts/map-4x.png --preview-scale 4
+"$GLOB2_BIN" --generate-map maze --seed 7 --preview artifacts/map-8x.png --preview-scale 8
 ```
 
 Alternatively, `--preview-size N` (128–4096 pixels) sets the exact longest side
@@ -144,7 +172,7 @@ To compare generators at several sizes, invoke the executable for each image:
 ```sh
 for generator in coral spider-web; do
   for size in 128 256 512; do
-    build/src/glob2 --generate-map "$generator" --seed 7 \
+    "$GLOB2_BIN" --generate-map "$generator" --seed 7 \
       --width "$size" --height "$size" \
       --preview "artifacts/comparison/$generator-$size.png"
   done
@@ -164,3 +192,111 @@ at `generation.telemetry`. Collection is disabled for ordinary generation withou
 validation reconstruction. Existing map/save files do not contain this history. The report schema
 is version 2; check `report_type` before reading snapshot fields. See [telemetry](TELEMETRY.md)
 for the efficient instrumentation API, bulk collector and ad-hoc analysis workflow.
+
+## Import and export flat map images
+
+The client also converts a single opaque PNG into a new playable map. These
+images contain terrain, resource types and colony markers. They approximate the
+geography of a map; they do not preserve saved-game state, existing buildings,
+resource amounts, alliances or scenario scripts. Ordinary previews are unchanged.
+
+```sh
+"$GLOB2_BIN" --generate-map forts --seed 7 --teams 4 \
+  --map-image artifacts/forts-image.png --output artifacts/forts.map
+"$GLOB2_BIN" --export-map-image artifacts/forts.map \
+  --output artifacts/forts-image.png
+"$GLOB2_BIN" --import-map-image artifacts/forts-image.png \
+  --width 256 --height 256 --teams 4 --workers 4 --seed 1 \
+  --output artifacts/imported.map --preview artifacts/imported.png \
+  --json artifacts/imported.json
+```
+
+Exports have one pixel per underlying terrain-grid location, top-left origin,
+without frames, labels or shading. Resource pixels imply grass, except algae
+which implies water. The palette is:
+
+| Meaning | RGB hex |
+| --- | --- |
+| Grass | `#008000` |
+| Sand | `#F0DC8C` |
+| Water | `#0040FF` |
+| Wood | `#004000` |
+| Wheat | `#FFFF00` |
+| Stone | `#808080` |
+| Algae | `#00FFFF` |
+| Papyrus | `#FF00FF` |
+| Cherry | `#FF0000` |
+| Orange | `#FF8000` |
+| Prune | `#8000FF` |
+| Colony marker | `#FFFFFF` |
+
+Import defaults to 256×256, four workers per colony and seed 1. Width/height
+accept 64, 128, 256 or 512 tiles. Input dimensions may differ, but the aspect
+ratio must match and each input axis must be at most 8192 pixels. Every pixel
+must be fully opaque. Source pixels are classified by squared RGB distance to
+the palette; each target cell takes the majority category in its source box.
+Ties use palette order in the table. Smaller images repeat source samples.
+
+Exported colony markers are solid 7×7 white squares centered two tiles right and
+down from the swarm anchor. Import joins white cells with eight-neighbor
+connectivity, including across opposite edges; the unwrapped component centroid,
+rounded to the nearest integer, minus two tiles determines its preferred swarm
+anchor. Components smaller than four target cells are ignored. There must be
+1–12 markers. `--teams` optionally asserts the detected count; it does not add
+colonies. Team order follows component discovery in row order.
+
+Before engine shoreline correction, the importer repairs terrain in a narrow
+strip on each side of both wrap seams. It interpolates signed terrain distances
+along opposing cross-sections, using integer weights and a shared midpoint for
+the two edge cells. Interpolation is skipped on already matching cross-sections, even when another
+part of the same edge differs. The strip defaults to the
+shorter map dimension divided by 32, clamped to 2–12 tiles (8 at 256×256).
+`--image-seam-width 0..16` overrides it; zero preserves decoded edge terrain.
+The two axes are processed in order, using a shared corner profile. After shore
+correction, differing unprotected edge cells are reconciled to sand (all four
+corner cells together), preventing scan-order shore differences. The square within 20 tiles of each colony anchor is protected from interpolation,
+edge reconciliation and resource relocation. Mandatory shoreline legalization
+can still alter terrain or drop illegal resources in that region. This local heuristic can move shorelines or change
+crossings; it does not guarantee continuity for large feature offsets or preserve
+route topology. Engine shores can change cells just beyond the strip.
+
+After terrain rebuilding, legal wood, wheat and algae footprints are interpolated
+across the same seam strip. Stone, fruit and papyrus deposits remain fixed.
+Opposite unprotected resource edge cells are reconciled. The pass preserves each
+resource type's legal tile count **after** terrain legality filtering; it does not
+preserve exact stored amounts, since amounts are inferred afterward. Surplus
+resource labels are removed first, then missing deposits are restored on matching
+terrain, preferring their original positions or the fringe of an existing patch.
+Balancing cannot alter locked edge groups or protected colony supplies. It is
+restricted to initially mismatched cross-sections on either axis, leaving
+unrelated aligned sections untouched. If the greedy pass fails to restore a
+budget in the available strip, all resource stitching is rolled back; terrain
+repair remains. This fallback does not prove that no valid arrangement exists. Protected or fixed deposits may leave
+resource mismatches at the edge. Zero seam width disables both stitching passes.
+
+Only the 7×7 patch around each recovered anchor is cleared and set to grass.
+Overlapping patches fail. Engine shoreline correction and terrain rebuilding
+can alter boundaries; pending resources that cannot legally occupy their final
+tiles are dropped. The swarm and workers must fit within that patch, or import
+fails. The importer does not add starter supplies or guarantee connections between colonies. Imported
+resources use seeded amounts from 1 through the resource type's `sizesCount - 1`,
+as normal generator deposits do. Dense wood/wheat interiors use amounts 2–4;
+fringes also include amount 1. Seed determines amounts, sprite varieties and
+settlement placement. Thus importing an image need not produce a
+balanced or sustainable game.
+
+`--output` is required for image import/export. Import writes normal gzip maps
+and supports normal preview and JSON outputs. Its JSON report adds
+`image_import` with marker counts, ignored marker components, terrain changes,
+cleared resources, dropped resources, `seam_width` and `seam_terrain_changes`
+(terrain cells changed by interpolation before engine shores), and
+`seam_shore_changes` (edge cells reconciled to sand after shore correction),
+`seam_resource_changes` (legal resource labels changed by stitching), and
+`resource_seam_fallback` (true when resource stitching was rolled back). Import failures return nonzero, write
+no map, and, if requested, write an `image_import_failure` JSON containing those
+counts; the error reason is printed on stderr. Terrain changes count underlying
+cells differing from the decoded image, including colony clearing and shores.
+No display or network access is needed for image conversion.
+
+Run `python3 test/test_map_image.py` to verify the conversion contract. Fixtures,
+exported images, maps and command logs are retained under `artifacts/map-image/`.

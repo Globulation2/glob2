@@ -770,6 +770,20 @@ inputs/preferences are unchanged. PNGs, command logs and hashes are retained in
 and checks invalid settings and preferences.
 See [map CLI documentation](../docs/map-generators/CLI.md).
 
+### Flat map images
+
+`python3 test/test_map_image.py [client-binary]` tests the optional image importer
+and exporter without display or network access. It uses only the Python standard
+library and retains command logs and fixtures in `artifacts/map-image/`.
+Checks cover every resource type, bounded mature resource amounts, implicit terrain,
+offset wrap contours, legal resource-budget preservation and seam stitching,
+post-shore seam/corner agreement, protected seam-crossing start markers,
+resizing in both directions, deterministic initialization, four starting workers,
+save/load, dropped shoreline resources, invalid images and colony counts, and
+resolved gzip input/output collisions.
+
+Linux and Windows CI run the native conversion suite.
+
 ### Map JSON reports
 
 Build `scons release=1 server=0 map-report-test`, then run

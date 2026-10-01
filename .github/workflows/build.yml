@@ -363,7 +363,8 @@ jobs:
         run: |
           python3 test/ci_run_commands.py \
             --check 'generation only' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2 --generation-only' \
-            --check 'map CLI' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2'
+            --check 'map CLI' 'python3 test/test_map_cli.py build/linux/client/release/src/glob2' \
+            --check 'map image conversion' 'python3 test/test_map_image.py build/linux/client/release/src/glob2'
       - name: Upload map CLI previews and command log
         id: upload_map_cli_previews_and_command_log
         continue-on-error: true
@@ -371,7 +372,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: map-cli-${{ matrix.runner }}
-          path: artifacts/map-cli/
+          path: |
+            artifacts/map-cli/
+            artifacts/map-image/
 
       - name: Test tournament protocol, AI configuration and main CLI
         if: ${{ matrix.shard == 1 }}
@@ -860,7 +863,10 @@ jobs:
       - name: Test headless map CLI
         id: test_headless_map_cli
         continue-on-error: true
-        run: python3 test/test_map_cli.py build/mingw/client/release/src/glob2.exe
+        run: |
+          python3 test/ci_run_commands.py \
+            --check 'map CLI' 'python3 test/test_map_cli.py build/mingw/client/release/src/glob2.exe' \
+            --check 'map image conversion' 'python3 test/test_map_image.py build/mingw/client/release/src/glob2.exe'
       - name: Upload map CLI previews and command log
         id: upload_map_cli_previews_and_command_log
         continue-on-error: true
@@ -868,7 +874,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: map-cli-windows
-          path: artifacts/map-cli/
+          path: |
+            artifacts/map-cli/
+            artifacts/map-image/
 
       - name: Verify save continuation traces
         id: verify_save_continuation_traces
