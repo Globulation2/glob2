@@ -3,6 +3,7 @@
 
 #include "MapScript.h"
 #include "GameGUI.h"
+#include "FileFormatVersions.h"
 #include <assert.h>
 #include <iostream>
 #include <type_traits>
@@ -44,7 +45,8 @@ bool MapScript::decodeData(GAGCore::InputStream* stream, Uint32 versionMinor)
 	stream->readEnterSection("MapScript");
 	script = stream->readText("script");
 	const Uint8 rawMode = stream->readUint8("mode");
-	if (rawMode != static_cast<Uint8>(USL) && (versionMinor < 124 || rawMode != static_cast<Uint8>(JavaScript)))
+	if (rawMode != static_cast<Uint8>(USL) &&
+		(versionMinor < FILE_FORMAT_VERSION_JAVASCRIPT || rawMode != static_cast<Uint8>(JavaScript)))
 	{
 		std::cerr << "MapScript::decodeData(): unknown map script mode " << static_cast<unsigned>(rawMode) << " (corrupt or newer-version file)." << std::endl;
 		stream->readLeaveSection();

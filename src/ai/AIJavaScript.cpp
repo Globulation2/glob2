@@ -2,6 +2,7 @@
 #include "AIJavaScript.h"
 #include "Player.h"
 #include "Game.h"
+#include "FileFormatVersions.h"
 #include "Order.h"
 #include "script/ScriptOrders.h"
 #include "Stream.h"
@@ -17,7 +18,7 @@ AIJavaScript::AIJavaScript(Player *p)
 }
 bool AIJavaScript::load(GAGCore::InputStream *s, Player *, Sint32 version)
 {
-	if (version < 124)
+	if (version < FILE_FORMAT_VERSION_JAVASCRIPT)
 		return false;
 	s->readEnterSection("JavaScriptAI");
 	if (s->readUint32("profile") != Script::ProfileVersion)
