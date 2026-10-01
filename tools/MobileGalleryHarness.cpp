@@ -53,7 +53,7 @@
 #include "ScriptEditorScreen.h"
 #include <ScreenStack.h>
 #include <Toolkit.h>
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include <charconv>
 #include <stdexcept>
 #include <iostream>
@@ -111,12 +111,12 @@ static void press(GAGGUI::ScreenStack &stack, GAGGUI::ui::UIScreen &screen, cons
 	frame(stack);
 	const auto r = screen.host().bounds(key);
 	SDL_Event down{};
-	down.type = SDL_MOUSEBUTTONDOWN;
+	down.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	down.button.button = SDL_BUTTON_LEFT;
 	down.button.x = r.x + r.w / 2;
 	down.button.y = r.y + r.h / 2;
 	auto up = down;
-	up.type = SDL_MOUSEBUTTONUP;
+	up.type = SDL_EVENT_MOUSE_BUTTON_UP;
 	stack.frame(tick += frameMilliseconds, {down, up});
 	frame(stack);
 }
@@ -184,12 +184,12 @@ struct MobileGallerySetup
 			const auto bounds = view->host().bounds("description");
 			const int x = bounds.x, y = bounds.y;
 			SDL_Event down{};
-			down.type = SDL_FINGERDOWN;
-			down.tfinger.fingerId = 1;
+			down.type = SDL_EVENT_FINGER_DOWN;
+			down.tfinger.fingerID = 1;
 			down.tfinger.x = float(x + 12) / globalContainer->gfx->getW();
 			down.tfinger.y = float(y + 12) / globalContainer->gfx->getH();
 			auto up = down;
-			up.type = SDL_FINGERUP;
+			up.type = SDL_EVENT_FINGER_UP;
 			stack.frame(tick += frameMilliseconds, {down, up});
 		}
 		else
@@ -309,8 +309,8 @@ struct MobileGallerySetup
 			frame(stack);
 			stackShot(stack, std::string("settings-") + categories[i]);
 			SDL_Event pageDown{};
-			pageDown.type = SDL_KEYDOWN;
-			pageDown.key.keysym.sym = SDLK_PAGEDOWN;
+			pageDown.type = SDL_EVENT_KEY_DOWN;
+			pageDown.key.key = SDLK_PAGEDOWN;
 			for (int page = 0; page < 10; ++page)
 				stack.frame(tick += frameMilliseconds, {pageDown});
 			stackShot(stack, std::string("settings-") + categories[i] + "-bottom");
@@ -409,8 +409,8 @@ struct MobileGallerySetup
 			throw std::runtime_error("Landscape previews did not settle within 45 seconds");
 		stackShot(stack, "landscape-picker");
 		SDL_Event escape{};
-		escape.type = SDL_KEYDOWN;
-		escape.key.keysym.sym = SDLK_ESCAPE;
+		escape.type = SDL_EVENT_KEY_DOWN;
+		escape.key.key = SDLK_ESCAPE;
 		stack.frame(tick += frameMilliseconds, {escape});
 		frame(stack);
 		lobby->selectTab(1);
@@ -563,9 +563,9 @@ class MobileGalleryGameplay
 			for (int step = 0; step <= 8; ++step)
 			{
 				SDL_Event event{};
-				event.type = step ? SDL_FINGERMOTION : SDL_FINGERDOWN;
-				event.tfinger.touchId = 8;
-				event.tfinger.fingerId = 1;
+				event.type = step ? SDL_EVENT_FINGER_MOTION : SDL_EVENT_FINGER_DOWN;
+				event.tfinger.touchID = 8;
+				event.tfinger.fingerID = 1;
 				event.tfinger.x = .20f + step * .035f;
 				event.tfinger.y = .50f + std::sin(step * .4f) * .08f;
 				gui.processEvent(&event);
@@ -581,7 +581,7 @@ class MobileGalleryGameplay
 			capture("game-brush-rail");
 			gui.touch->railTouched = -1;
 			gui.touch->zoneUndo = GameGUITouch::ZoneUndo{};
-			gui.touch->zoneUndo->expires = SDL_GetTicks64() + 600000;
+			gui.touch->zoneUndo->expires = SDL_GetTicks() + 600000;
 			capture("game-brush-undo");
 			gui.touch->zoneUndo.reset();
 		}
@@ -603,18 +603,18 @@ class MobileGalleryGameplay
 				SDL_Event event{};
 				event.type = type;
 				event.tfinger.timestamp = ticks += 60;
-				event.tfinger.touchId = 8;
-				event.tfinger.fingerId = 1;
+				event.tfinger.touchID = 8;
+				event.tfinger.fingerID = 1;
 				event.tfinger.x = float(pressX / globalContainer->gfx->getW());
 				event.tfinger.y = float(y / globalContainer->gfx->getH());
 				gui.processEvent(&event);
 			};
-			send(SDL_FINGERDOWN, pressY);
-			send(SDL_FINGERUP, pressY);
+			send(SDL_EVENT_FINGER_DOWN, pressY);
+			send(SDL_EVENT_FINGER_UP, pressY);
 			gui.clearSelection();
 			gui.touch->panelOpen = false;
-			send(SDL_FINGERDOWN, pressY);
-			send(SDL_FINGERMOTION, pressY - area.h * .18);
+			send(SDL_EVENT_FINGER_DOWN, pressY);
+			send(SDL_EVENT_FINGER_MOTION, pressY - area.h * .18);
 			capture("game-zoom-drag");
 			gui.touch->cancel();
 			globalContainer->settings.oneFingerZoomDirection = direction;
@@ -717,15 +717,15 @@ class MobileGalleryGameplay
 						SDL_Event event{};
 						event.type = type;
 						event.tfinger.timestamp = ticks += 60;
-						event.tfinger.touchId = 8;
-						event.tfinger.fingerId = 1;
+						event.tfinger.touchID = 8;
+						event.tfinger.fingerID = 1;
 						event.tfinger.x = float(p.x / globalContainer->gfx->getW());
 						event.tfinger.y = float(p.y / globalContainer->gfx->getH());
 						gui.processEvent(&event);
 					};
 					const double radius = g.rings[arc->ring].middle();
-					send(SDL_FINGERDOWN, TouchDial::point(g, radius, arc->from + 1));
-					send(SDL_FINGERMOTION, TouchDial::point(g, radius, arc->from + (arc->to - arc->from) * .6));
+					send(SDL_EVENT_FINGER_DOWN, TouchDial::point(g, radius, arc->from + 1));
+					send(SDL_EVENT_FINGER_MOTION, TouchDial::point(g, radius, arc->from + (arc->to - arc->from) * .6));
 				}
 			}
 			capture("game-inspector-dial-drag");
@@ -826,20 +826,20 @@ class MobileGalleryGameplay
 			{
 				SDL_Event event{};
 				event.type = eventType;
-				event.tfinger.touchId = 19;
-				event.tfinger.fingerId = 1;
+				event.tfinger.touchID = 19;
+				event.tfinger.fingerID = 1;
 				event.tfinger.x = p.x / gfx->getW();
 				event.tfinger.y = p.y / gfx->getH();
 				gui.processEvent(&event);
 			};
-			pointer(SDL_FINGERDOWN, start);
+			pointer(SDL_EVENT_FINGER_DOWN, start);
 			for (int frame = 0; frame < 12; ++frame)
 			{
 				const double progress = frame / 11.0;
 				const GAGCore::ViewPoint p{start.x + (drop->x - start.x) * progress,
 										   start.y + (drop->y - start.y) * progress};
 				if (frame)
-					pointer(SDL_FINGERMOTION, p);
+					pointer(SDL_EVENT_FINGER_MOTION, p);
 				const auto name =
 					std::string("gesture-build-") + (frame < 10 ? "0" : "") + std::to_string(frame);
 				queueShot(name);
@@ -847,7 +847,7 @@ class MobileGalleryGameplay
 				gfx->drawCircle(int(p.x), int(p.y), int(10 * unit), GAGCore::Color(255, 220, 100));
 				gfx->nextFrame();
 			}
-			pointer(SDL_FINGERUP, *drop);
+			pointer(SDL_EVENT_FINGER_UP, *drop);
 			auto order = std::dynamic_pointer_cast<OrderCreate>(gui.toolManager.getOrder());
 			if (!order || gui.toolManager.getOrder())
 				throw std::runtime_error(
@@ -935,8 +935,8 @@ class MobileGalleryGameplay
 			{
 				SDL_Event event{};
 				event.type = kind;
-				event.tfinger.touchId = 27;
-				event.tfinger.fingerId = 1;
+				event.tfinger.touchID = 27;
+				event.tfinger.fingerID = 1;
 				event.tfinger.x = p.x / gfx->getW();
 				event.tfinger.y = p.y / gfx->getH();
 				editor.advanceEditing({event}, 0);
@@ -1004,15 +1004,15 @@ class MobileGalleryGameplay
 				return count;
 			};
 			const int beforeDrop = buildingCount();
-			pointer(SDL_FINGERDOWN, from);
+			pointer(SDL_EVENT_FINGER_DOWN, from);
 			for (int frame = 0; frame < 12; ++frame)
 			{
 				const double t = frame / 11.;
-				pointer(SDL_FINGERMOTION,
+				pointer(SDL_EVENT_FINGER_MOTION,
 						{from.x + (drop->x - from.x) * t, from.y + (drop->y - from.y) * t});
 				editCapture("gesture-editor-build-" + std::to_string(10 + frame));
 			}
-			pointer(SDL_FINGERUP, *drop);
+			pointer(SDL_EVENT_FINGER_UP, *drop);
 			if (buildingCount() != beforeDrop + 1)
 				throw std::runtime_error(
 					"Editor gesture recording did not place exactly one building");
@@ -1023,15 +1023,15 @@ class MobileGalleryGameplay
 			const GAGCore::ViewPoint a{phone.content.x + phone.content.w * .3,
 									   phone.content.y + phone.content.h * .55};
 			const auto beforePaint = editor.game.checkSum(nullptr, nullptr, nullptr, true);
-			pointer(SDL_FINGERDOWN, a);
+			pointer(SDL_EVENT_FINGER_DOWN, a);
 			GAGCore::ViewPoint b = a;
 			for (int frame = 0; frame < 12; ++frame)
 			{
 				b = {a.x + phone.content.w * .3 * frame / 11., a.y};
-				pointer(SDL_FINGERMOTION, b);
+				pointer(SDL_EVENT_FINGER_MOTION, b);
 				editCapture("gesture-editor-paint-" + std::to_string(10 + frame));
 			}
-			pointer(SDL_FINGERUP, b);
+			pointer(SDL_EVENT_FINGER_UP, b);
 			if (editor.game.checkSum(nullptr, nullptr, nullptr, true) == beforePaint)
 				throw std::runtime_error("Editor paint recording did not change terrain");
 			editCapture("gesture-editor-paint-22");
@@ -1096,7 +1096,7 @@ class MobileGalleryGameplay
 			// The Undo chip a zone stroke leaves, without changing the fixture map.
 			editor.performAction("select forbidden zone");
 			editor.phone->undo = PhoneEditor::EditorUndo{};
-			editor.phone->undo->expires = SDL_GetTicks64() + 600000;
+			editor.phone->undo->expires = SDL_GetTicks() + 600000;
 		}
 		editCapture("editor-brush-undo");
 		if (editor.phone)
@@ -1143,7 +1143,7 @@ class MobileGalleryGameplay
 						   editCapture(name);
 						   child->cancelPresentedFile();
 						   SDL_Event idle{};
-						   idle.type = SDL_USEREVENT;
+						   idle.type = SDL_EVENT_USER;
 						   editor.delegateMenu(idle);
 					   }
 					   for (auto [tab, name] : {std::pair{ScriptEditorScreen::TAB_OBJECTIVES, "objectives"},
@@ -1192,12 +1192,12 @@ int main(int argc, char **argv)
 		std::cerr << "Presentation must be compact or desktop\n";
 		return 2;
 	}
-	SDL_setenv("GLOB2_MOBILE_UI",
+	SDL_setenv_unsafe("GLOB2_MOBILE_UI",
 			   desktopPresentation                                            ? "0"
 			   : argc == 4 && std::string_view(argv[3]).starts_with("touch-") ? argv[3]
 																			  : "1",
 			   1);
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
+	SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 1);
 	try
 	{
 		const int width = dimension(argv[1]), height = dimension(argv[2]);
@@ -1213,12 +1213,12 @@ int main(int argc, char **argv)
 		settings.mute = true;
 		globalContainer->load();
 		settings.setUsername("Review player");
-		if (SDLNet_Init() != 0)
-			throw std::runtime_error(SDLNet_GetError());
+		if (!NET_Init())
+			throw std::runtime_error(SDL_GetError());
 		SDL_SetWindowSize(SDL_GetWindowFromID(globalContainer->gfx->windowID()), width, height);
 		SDL_Event resize{};
-		resize.type = SDL_WINDOWEVENT;
-		resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+		resize.type = SDL_EVENT_WINDOW_RESIZED;
+		resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 		GAGCore::GraphicContext::translateMouseEvent(&resize);
 		{
 			FrontendTheme theme;
@@ -1228,7 +1228,7 @@ int main(int argc, char **argv)
 		}
 		globals.reset();
 		globalContainer = nullptr;
-		SDLNet_Quit();
+		NET_Quit();
 		return 0;
 	}
 	catch (const std::exception &e)

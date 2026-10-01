@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <array>
 
 namespace GAGCore
@@ -11,38 +11,38 @@ class InputState
   public:
 	void observe(const SDL_Event &event)
 	{
-		if (event.type == SDL_WINDOWEVENT)
+		if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST))
 		{
-			if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+			if (event.type == SDL_EVENT_WINDOW_FOCUS_LOST)
 			{
 				clearHeld();
 				focused = false;
 			}
-			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+			else if (event.type == SDL_EVENT_WINDOW_FOCUS_GAINED)
 				focused = true;
 		}
-		if (focused && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP))
+		if (focused && (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP))
 		{
-			const auto code = event.key.keysym.scancode == SDL_SCANCODE_UNKNOWN
-								  ? SDL_GetScancodeFromKey(event.key.keysym.sym)
-								  : event.key.keysym.scancode;
-			if (code > SDL_SCANCODE_UNKNOWN && code < SDL_NUM_SCANCODES)
-				keys[code] = event.type == SDL_KEYDOWN;
-			mods = static_cast<SDL_Keymod>(event.key.keysym.mod);
+			const auto code = event.key.scancode == SDL_SCANCODE_UNKNOWN
+								  ? SDL_GetScancodeFromKey(event.key.key, nullptr)
+								  : event.key.scancode;
+			if (code > SDL_SCANCODE_UNKNOWN && code < SDL_SCANCODE_COUNT)
+				keys[code] = event.type == SDL_EVENT_KEY_DOWN;
+			mods = static_cast<SDL_Keymod>(event.key.mod);
 		}
 	}
 	void clearHeld()
 	{
 		keys.fill(0);
-		mods = KMOD_NONE;
+		mods = SDL_KMOD_NONE;
 	}
 	const Uint8 *keyboard() const { return keys.data(); }
 	SDL_Keymod modifiers() const { return mods; }
 	bool hasFocus() const { return focused; }
 
   private:
-	std::array<Uint8, SDL_NUM_SCANCODES> keys{};
-	SDL_Keymod mods = KMOD_NONE;
+	std::array<Uint8, SDL_SCANCODE_COUNT> keys{};
+	SDL_Keymod mods = SDL_KMOD_NONE;
 	bool focused = true;
 };
 } // namespace GAGCore

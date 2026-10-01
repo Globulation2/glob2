@@ -10,7 +10,7 @@
 #include "TorusPicking.h"
 #include "TorusGeometry.h"
 #include "DynamicClouds.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 // Expose camera and settings widgets for deterministic integration checks.
 #include "TorusView.h"
 #include "SettingsScreen.h"
@@ -90,7 +90,7 @@ static void run(bool gpu, int width, int height)
         gui.handleMouseButtonDown(down);
         REQUIRE(gui.mapPanPushed);
         const double originX = gui.camera.originX;
-        gui.handleMouseMotion(dragX + 12, dragY + 8, SDL_BUTTON(SDL_BUTTON_LEFT));
+        gui.handleMouseMotion(dragX + 12, dragY + 8, SDL_BUTTON_MASK(SDL_BUTTON_LEFT));
         REQUIRE(std::abs(gui.camera.originX -
             MapCamera::wrap(originX - 12 / gui.camera.zoom, gui.camera.mapWidth)) < 0.01);
         gui.handleMouseButtonUp(down);
@@ -130,11 +130,11 @@ static void run(bool gpu, int width, int height)
             gui.handleMouseButtonDown(press);
             REQUIRE(gui.mapPanPushed);
             const double beforePan = gui.camera.originX;
-            gui.handleMouseMotion(x + 12, y + 8, SDL_BUTTON(SDL_BUTTON_LEFT));
+            gui.handleMouseMotion(x + 12, y + 8, SDL_BUTTON_MASK(SDL_BUTTON_LEFT));
             REQUIRE(std::abs(gui.camera.originX -
                 MapCamera::wrap(beforePan - 12 / gui.camera.zoom, gui.camera.mapWidth)) < 0.01);
             SDL_Event release{};
-            release.type = SDL_MOUSEBUTTONUP;
+            release.type = SDL_EVENT_MOUSE_BUTTON_UP;
             release.button.button = SDL_BUTTON_LEFT;
             release.button.x = x;
             release.button.y = y;
@@ -143,10 +143,10 @@ static void run(bool gpu, int width, int height)
             gui.mouseX = x;
             gui.mouseY = y;
             SDL_Event wheel{};
-            wheel.type = SDL_MOUSEWHEEL;
+            wheel.type = SDL_EVENT_MOUSE_WHEEL;
             wheel.wheel.y = 1;
 #if SDL_VERSION_ATLEAST(2,0,18)
-            wheel.wheel.preciseY = 1;
+            wheel.wheel.y = 1;
 #endif
             const double beforeZoom = gui.camera.zoom;
             gui.processEvent(&wheel);
@@ -174,7 +174,7 @@ static void run(bool gpu, int width, int height)
             REQUIRE(!gui.mapPanPushed);
             const double origin = gui.camera.originX;
             const int flagX = gui.displayedPosX(*flag);
-            gui.handleMouseMotion(x + 96, y, SDL_BUTTON(SDL_BUTTON_LEFT));
+            gui.handleMouseMotion(x + 96, y, SDL_BUTTON_MASK(SDL_BUTTON_LEFT));
             REQUIRE(gui.camera.originX == origin);
             REQUIRE(gui.displayedPosX(*flag) != flagX);
             gui.handleMouseButtonUp(press);
@@ -599,7 +599,7 @@ TEST_SUITE("TorusRender")
 	TEST_CASE("game rendering; picking and cache changes in OpenGL [display][writes-preferences]") { TorusRenderIntegrationTest::run(true, 1120, 720); }
 	TEST_CASE("game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]")
 	{
-		SDL_setenv("GLOB2_UI_SCALE", "3", 1);
+		SDL_setenv_unsafe("GLOB2_UI_SCALE", "3", 1);
 		TorusRenderIntegrationTest::run(true, 1920, 1440);
 		glob2test::unsetEnv("GLOB2_UI_SCALE");
 	}

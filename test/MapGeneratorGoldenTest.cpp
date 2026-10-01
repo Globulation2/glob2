@@ -1,3 +1,4 @@
+#include <SDL3/SDL_main.h>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Golden maps and a colony-count sweep for every registered generator.
 //
@@ -32,7 +33,7 @@
 #include "MapGeneratorFrameworkChecks.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <StreamBackend.h>
 #include <Toolkit.h>
 #include <algorithm>

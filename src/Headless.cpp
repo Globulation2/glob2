@@ -93,7 +93,7 @@ void isolateEnvironment()
 		"GLOB2_CORTEX_TRACE", "GLOB2_CORTEX_DECIDE_TRACE", "GLOB2_CORTEX_INN_TRACE",
 		"GLOB2_CHECKSUM_SIDECAR_MAX_TICKS", "CORTEX_DUMP_PERIODIC", "CORTEX_DUMP_OFFENSE",
 		"CORTEX_DUMP_ATTACK", "CORTEX_DUMP_GATES", "CORTEX_DUMP_POSTURE", "CORTEX_DUMP_AMPHIB"};
-	for (const char* key : keys) SDL_setenv(key, "", 1);
+	for (const char* key : keys) SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), key);
 	// getenv-based presence flags need removal, including on Windows.
 	for (const char* key : keys)
 #ifdef WIN32
@@ -104,7 +104,7 @@ void isolateEnvironment()
 }
 void setHeadlessEnvironment(const char* key, const char* value)
 {
-	SDL_setenv(key, value, 1);
+	SDL_setenv_unsafe(key, value, 1);
 #ifdef WIN32
 	// The engine reads these flags with the C runtime's getenv. On Windows,
 	// SDL's environment update does not repopulate the runtime view after the
@@ -454,7 +454,7 @@ int runHeadlessCommand(int argc,char **argv)
 		output=fs::absolute(one(options,"--output-dir"));
 		fs::create_directories(output);
 		fs::create_directories(output / "profile");
-		SDL_setenv("GLOB2_USER_DIR", (output / "profile").string().c_str(), 1);
+		SDL_setenv_unsafe("GLOB2_USER_DIR", (output / "profile").string().c_str(), 1);
 		if(fs::exists(output/"result.json")) throw std::invalid_argument("output directory already contains a result");
 		int code;
 		if(command=="--run-game")
@@ -476,7 +476,7 @@ int runHeadlessCommand(int argc,char **argv)
 					manifest(output);return generated;
 				}
 				options["--map-file"]={glob2GzipWritePath((output/"generated/map-r0.map").string())};
-				SDL_setenv("GLOB2_USER_DIR",(output/"profile").string().c_str(),1);
+				SDL_setenv_unsafe("GLOB2_USER_DIR",(output/"profile").string().c_str(),1);
 			}
 			else if(options.count("--map-seed") || options.count("--param") || options.count("--candidates"))
 				throw std::invalid_argument("generator options require --generator");

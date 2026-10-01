@@ -143,8 +143,8 @@ scons -j8 release=0 server=0 --build=build/tests-asan engine-tests \
 python3 test/run_tests.py --build-dir build/tests-asan --filter 'GameGUISelection/*'
 ```
 
-If Homebrew sdl2-compat cannot locate SDL3 under the macOS sanitizer, prefix
-the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
+Use `GLOB2_SDL3_PREFIX` when building against the pinned SDL3 dependency prefix.
+The native build records its library directory in the runtime search path.
 
 SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
 normal build. This is a direct method regression, not an interactive replay test.

@@ -32,7 +32,7 @@ class Context : public GraphicContext
 #ifdef HAVE_OPENGL
 		// Read the exact frame submitted to the window system. Post-swap GL_FRONT
 		// readback is not reliable on Mesa/Xvfb (it can return an all-black image).
-		SDL_GL_GetDrawableSize(window, &presentedWidth, &presentedHeight);
+		SDL_GetWindowSizeInPixels(window, &presentedWidth, &presentedHeight);
 		presentedPixels.resize(presentedWidth * presentedHeight);
 		GLint previous;
 		glGetIntegerv(GL_READ_BUFFER, &previous);
@@ -136,8 +136,8 @@ public:
 	}
 	void expose(bool otherWindow = false)
 	{
-		SDL_Event event{}; event.type = SDL_WINDOWEVENT;
-		event.window.event = SDL_WINDOWEVENT_EXPOSED;
+		SDL_Event event{}; event.type = SDL_EVENT_WINDOW_RESIZED;
+		event.type = SDL_EVENT_WINDOW_EXPOSED;
 		event.window.windowID = SDL_GetWindowID(window) + (otherWindow ? 1 : 0);
 		pollingEvents = true;
 		watchWindow(this, &event);
@@ -181,9 +181,9 @@ public:
 			y = y * surface->h / windowHeight;
 			require(surface && x >= 0 && x < surface->w && y >= 0 && y < surface->h, "Readback outside software window surface");
 			Uint32 p = 0;
-			const int bytes = surface->format->BytesPerPixel;
+			const int bytes = SDL_BYTESPERPIXEL(surface->format);
 			memcpy(&p, static_cast<char*>(surface->pixels)+y*surface->pitch+x*bytes, bytes);
-			SDL_GetRGBA(p, surface->format, &c.r, &c.g, &c.b, &c.a);
+			SDL_GetRGBA(p, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface), &c.r, &c.g, &c.b, &c.a);
 		}
 		return c;
 	}
@@ -191,9 +191,8 @@ public:
 void resizeChecks(bool gpu, bool benchmarkMode)
 {
 	Context gfx(gpu);
-	SDL_version version;
-	SDL_GetVersion(&version);
-	std::printf("SDL %d.%d.%d; video driver %s\n", version.major, version.minor, version.patch, SDL_GetCurrentVideoDriver());
+	const int version = SDL_GetVersion();
+	std::printf("SDL %d.%d.%d; video driver %s\n", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version), SDL_GetCurrentVideoDriver());
 #ifdef HAVE_OPENGL
 	if (gpu) std::printf("OpenGL %s; renderer %s\n", glGetString(GL_VERSION), glGetString(GL_RENDERER));
 #endif
@@ -259,7 +258,7 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 		while (GraphicContext::pollEvent(&event)) {}
 		require(gfx.getW() == size.first && gfx.getH() == size.second, "Logical size did not follow window");
 		require(gfx.current() == originalContext, "Resize recreated GL context");
-		Sint32 x = size.first-1, y = size.second-1;
+		float x = size.first-1, y = size.second-1;
 		gfx.windowToLogical(x, y);
 		require(x == size.first-1 && y == size.second-1, "Input no longer matches logical size");
 		gfx.setClipRect();
@@ -279,7 +278,7 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 		// the scale back to 1 and nothing is ever stretched. Before this was
 		// fixed, dragging the window down at scale 1.75 gave a 366x274 logical
 		// surface -- narrower than the 368px main menu panel.
-		SDL_setenv("GLOB2_UI_SCALE", "", 1); // an inherited override would win
+		SDL_setenv_unsafe("GLOB2_UI_SCALE", "", 1); // an inherited override would win
 		const Uint32 windowed = GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
 		GraphicContext::setRequestedUiScale(1.75f);
 		gfx.setRes(1280, 960, windowed);

@@ -492,7 +492,7 @@ private:
 	///resynced mouseX/mouseY to the event's own position when this runs.
 	void handleMouseButtonEvent(SDL_Event& event);
 	///Handles a key pressed. For most keys, this means going to the keyboard shortcuts. For the arrow keys, it starts or stops scrolling the map
-	void handleKeyPressed(SDL_Keysym key, bool pressed);
+	void handleKeyPressed(SDL_KeyboardEvent key, bool pressed);
 	///This performs an action in the form of the string. This is where a lot of code goes. As opposed to using separate functions for such a large
 	///number of possible actions, or just inlining them, this system locates them all here, and every small bit has a name as well. It makes debugging
 	///easy in some ways, and it also greatly improves readability. All of the widget "actions" come to here.

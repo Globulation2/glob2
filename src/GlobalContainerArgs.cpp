@@ -364,11 +364,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		{
 			printf("\nGlobulation 2 - %s\n\n", PACKAGE_VERSION);
 			printf("Compiled on %s at %s\n\n", __DATE__, __TIME__);
-			SDL_version v;
-			SDL_VERSION(&v);
-			printf("Compiled with SDL version %d.%d.%d\n", v.major, v.minor, v.patch);
-			SDL_GetVersion(&v);
-			printf("Linked with SDL version %d.%d.%d\n\n", v.major, v.minor, v.patch);
+            const int version = SDL_GetVersion();
+            printf("SDL %d.%d.%d\n", SDL_VERSIONNUM_MAJOR(version), SDL_VERSIONNUM_MINOR(version), SDL_VERSIONNUM_MICRO(version));
 			printf("Featuring :\n");
 			printf("* Map version %d\n", VERSION_MINOR);
 			printf("* Maps up to version %d can still be loaded\n", MINIMUM_VERSION_MINOR);

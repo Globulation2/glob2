@@ -31,21 +31,21 @@ namespace GAGCore
 		return result;
 	}
 
-	int SDLCALL GraphicContext::watchWindow(void *userdata, SDL_Event *event)
+	bool SDLCALL GraphicContext::watchWindow(void *userdata, SDL_Event *event)
 	{
 		auto *gfx = static_cast<GraphicContext *>(userdata);
 		// SDL also invokes watchers for events pushed by other threads.
 		if (SDL_ThreadID() != gfx->eventThread) return 1;
-		if (gfx->pollingEvents && !gfx->presenting && event->type == SDL_WINDOWEVENT
+		if (gfx->pollingEvents && !gfx->presenting && (event->type >= SDL_EVENT_WINDOW_FIRST && event->type <= SDL_EVENT_WINDOW_LAST)
 			&& event->window.windowID == SDL_GetWindowID(gfx->window)
-			&& event->window.event == SDL_WINDOWEVENT_EXPOSED)
+			&& event->type == SDL_EVENT_WINDOW_EXPOSED)
 			gfx->presentLastFrame();
 		return 1;
 	}
 
 	void GraphicContext::releaseFrameCache()
 	{
-		SDL_FreeSurface(frameCache.surface);
+		SDL_DestroySurface(frameCache.surface);
 		#ifdef HAVE_OPENGL
 		if (frameCache.texture) glDeleteTextures(1, &frameCache.texture);
 		#endif
@@ -71,7 +71,7 @@ namespace GAGCore
 		if (optionFlags & USEGPU)
 		{
 			int w, h;
-			SDL_GL_GetDrawableSize(window, &w, &h);
+			SDL_GetWindowSizeInPixels(window, &w, &h);
 			if (w <= 0 || h <= 0) return;
 			// Copy-before-swap works with the legacy GL renderer and needs no FBO extension.
 			glPushAttrib(GL_TEXTURE_BIT | GL_PIXEL_MODE_BIT);
@@ -126,8 +126,8 @@ namespace GAGCore
 		#endif
 		if (!frameCache.surface || frameCache.surface->w != getW() || frameCache.surface->h != getH())
 		{
-			SDL_FreeSurface(frameCache.surface);
-			frameCache.surface = SDL_CreateRGBSurfaceWithFormat(0, getW(), getH(), 32, sdlsurface->format->format);
+			SDL_DestroySurface(frameCache.surface);
+			frameCache.surface = SDL_CreateSurface(getW(), getH(), sdlsurface->format);
 			if (!frameCache.surface)
 			{
 				reportFrameCacheFailure(SDL_GetError());
@@ -136,7 +136,7 @@ namespace GAGCore
 			SDL_SetSurfaceBlendMode(frameCache.surface, SDL_BLENDMODE_NONE);
 		}
 		SDL_SetSurfaceBlendMode(sdlsurface, SDL_BLENDMODE_NONE);
-		if (SDL_BlitSurface(sdlsurface, nullptr, frameCache.surface, nullptr) != 0)
+		if (!SDL_BlitSurface(sdlsurface, nullptr, frameCache.surface, nullptr))
 		{
 			reportFrameCacheFailure(SDL_GetError());
 			return;
@@ -158,7 +158,7 @@ namespace GAGCore
 		if (optionFlags & USEGPU)
 		{
 			int w, h;
-			SDL_GL_GetDrawableSize(window, &w, &h);
+			SDL_GetWindowSizeInPixels(window, &w, &h);
 			if (w <= 0 || h <= 0) return;
 			// Restore actual GL state so the engine's GLState cache remains valid.
 			glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -210,11 +210,11 @@ namespace GAGCore
 		dst.y = (target->h - dst.h) / 2;
 		// An opaque, full-window copy already overwrites every pixel.
 		if (dst.w != target->w || dst.h != target->h)
-			SDL_FillRect(target, nullptr, SDL_MapRGB(target->format, 0, 0, 0));
+			SDL_FillSurfaceRect(target, nullptr, SDL_MapSurfaceRGB(target, 0, 0, 0));
 		if (dst.w == frameCache.surface->w && dst.h == frameCache.surface->h)
 			SDL_BlitSurface(frameCache.surface, nullptr, target, &dst);
 		else
-			SDL_BlitScaled(frameCache.surface, nullptr, target, &dst);
+			SDL_BlitSurfaceScaled(frameCache.surface, nullptr, target, &dst, SDL_SCALEMODE_NEAREST);
 		SDL_UpdateWindowSurface(window);
 	}
 }

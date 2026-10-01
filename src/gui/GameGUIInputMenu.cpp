@@ -106,7 +106,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 	if (!gameMenuScreen)
 		return false;
 	bool consumed = false;
-	if (event && event->type != SDL_USEREVENT)
+	if (event && event->type != SDL_EVENT_USER)
 		consumed = gameMenuScreen->event(*event);
 	if (!gameMenuScreen->finished())
 		return consumed;

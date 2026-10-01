@@ -278,7 +278,7 @@ private:
 	bool processTypingInput(SDL_Event *event);
 
 	void handleRightClick(void);
-	void handleKey(SDL_Keysym key, bool pressed, bool repeat = false);
+	void handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat = false);
 	void toggleTorusView();
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);

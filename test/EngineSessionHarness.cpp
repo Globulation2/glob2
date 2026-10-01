@@ -47,7 +47,7 @@
 #include "Order.h"
 #include "native.h"
 #include "code.h"
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include <iostream>
 #include <filesystem>
 #include <fstream>
@@ -71,7 +71,7 @@ TEST_SUITE("EngineSession")
 		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 800, .height = 600});
 		    // Session regressions use desktop menu coordinates and camera geometry.
 		    // GameGUITouchHarness covers the touch presentation with the same engine.
-		    SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+		    SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
 			{
 				struct TrackedValue : Value
 				{
@@ -116,7 +116,7 @@ TEST_SUITE("EngineSession")
 		        std::cout << "PASS script GC roots, live frames, bytecode constants and interpreter isolation" << std::endl;
 			}
 		    globalContainer->settings.gameSpeed = 0;
-		    require(SDLNet_Init() == 0, "SDL networking init failed");
+		    require(NET_Init(), "SDL networking init failed");
 		    {
 		        // Both fixtures are listed at construction; one is then removed, the other truncated.
 		        for (const char* fixture : {"browser-missing-fixture.map", "browser-corrupt-fixture.map"}) {
@@ -130,7 +130,7 @@ TEST_SUITE("EngineSession")
 		            require(chooser.selectNamed("balanced") && chooser.getSelectedType() == ChooseMapScreen::MAP && chooser.hasPreview(), "Valid map must be selectable");
 		            require(chooser.selectNamed(invalid), "Fixture map must be listed");
 		            require(chooser.getSelectedType() == ChooseMapScreen::NONE && !chooser.hasPreview(), "Failed map read retained the previous selection or preview");
-		            SDL_Event enter{}; enter.type = SDL_KEYDOWN; enter.key.keysym.sym = SDLK_RETURN;
+		            SDL_Event enter{}; enter.type = SDL_EVENT_KEY_DOWN; enter.key.key = SDLK_RETURN;
 		            chooser.handleExecutionEvent(enter);
 		            require(chooser.isExecutionRunning(), "Invalid map was accepted by Enter");
 		            chooser.drawExecution();
@@ -153,7 +153,7 @@ TEST_SUITE("EngineSession")
 		    {
 		        Application application;
 		        SDL_Event quit{};
-		        quit.type = SDL_QUIT;
+		        quit.type = SDL_EVENT_QUIT;
 		        require(application.frame(SDL_GetTicks(), {quit}), "Quit must begin final persistence before returning");
 		        require(application.frame(SDL_GetTicks(), {quit}), "Repeated close must not bypass final persistence");
 		        require(application.frame(SDL_GetTicks(), {}), "Shutdown must present its completion before releasing graphics");
@@ -231,7 +231,7 @@ TEST_SUITE("EngineSession")
 		        auto& gfx = *globalContainer->gfx;
 		        SDL_Window* window = nullptr;
 		        // GlobalContainer can recreate its initial window while applying settings.
-		        // This isolated SDL2 fixture owns a single window; IDs need not start at one.
+		        // This isolated SDL3 fixture owns a single window; IDs need not start at one.
 		        for (Uint32 id = 1; id < 100 && !window; ++id) window = SDL_GetWindowFromID(id);
 		        require(window != nullptr, "No native test window");
 		        const auto windowID = SDL_GetWindowID(window);
@@ -244,10 +244,10 @@ TEST_SUITE("EngineSession")
 		        // Mobile uses the portable renderer, not SDL_GetWindowSurface. Capture
 		        // the actual presentation backend on both platforms.
 		        auto* presented = SDL_LoadBMP((std::string(globalContainer->fileManager->getDir(0)) + "/resize-check.bmp").c_str());
-		        require(presented && presented->pixels && presented->format->BytesPerPixel == 4, "No presented test surface");
+		        require(presented && presented->pixels && SDL_BYTESPERPIXEL(presented->format) == 4, "No presented test surface");
 		        Uint8 red, green, blue;
-		        SDL_GetRGB(*static_cast<Uint32*>(presented->pixels), presented->format, &red, &green, &blue);
-		        SDL_FreeSurface(presented);
+		        SDL_GetRGB(*static_cast<Uint32*>(presented->pixels), SDL_GetPixelFormatDetails(presented->format), SDL_GetSurfacePalette(presented), &red, &green, &blue);
+		        SDL_DestroySurface(presented);
 		        require(red == 255 && green == 0 && blue == 0, "Resized surface was not presented to the window");
 		        require(!gfx.resizeViewport(0, 0) && gfx.getW() == 1200, "Zero viewport invalidated the render target");
 		        require(gfx.resizeViewport(800, 600), "Could not restore test viewport");
@@ -362,7 +362,7 @@ TEST_SUITE("EngineSession")
 		        const auto rng = getSyncRandState();
 		        GAGGUI::ScreenStack cancelled(*globalContainer->gfx);
 		        cancelled.push(std::make_unique<EditorGenerateScreen>(GenerationRequest(), 12345, fixedSlice()));
-		        SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+		        SDL_Event escape{}; escape.type = SDL_EVENT_KEY_DOWN; escape.key.key = SDLK_ESCAPE;
 		        cancelled.frame(0, {escape}); cancelled.frame(1, {});
 		        require(!cancelled.running() && cancelled.result() == 0 && getSyncRandState() == rng,
 		                "Cancelled editor generation must release its state and preserve RNG");
@@ -435,7 +435,7 @@ TEST_SUITE("EngineSession")
 		            if (outcome == 0 && frames == 10) {
 		                reload.suspendExecution();
 		                reload.viewportResized(800,600,800,600);
-		                SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+		                SDL_Event escape{}; escape.type = SDL_EVENT_KEY_DOWN; escape.key.key = SDLK_ESCAPE;
 		                events.push_back(escape);
 		            }
 		            reload.frame(frames, events);
@@ -465,12 +465,12 @@ TEST_SUITE("EngineSession")
 		        bool running;
 		        do {
 		            SDL_Event sentinel{};
-		            sentinel.type = SDL_USEREVENT;
+		            sentinel.type = SDL_EVENT_USER;
 		            sentinel.user.code = 7821;
 		            require(SDL_PushEvent(&sentinel) == 1, "Cannot enqueue host event");
 		            running = engine.stepSession(now, {});
 		            SDL_Event retained{};
-		            require(SDL_PeepEvents(&retained, 1, SDL_GETEVENT, SDL_USEREVENT, SDL_USEREVENT) == 1 &&
+		            require(SDL_PeepEvents(&retained, 1, SDL_GETEVENT, SDL_EVENT_USER, SDL_EVENT_USER) == 1 &&
 		                    retained.user.code == 7821, "Explicit session input must not consume the host queue");
 		            engine.drawSession();
 		            const Uint32 delay = engine.sessionDelay(now);
@@ -494,7 +494,7 @@ TEST_SUITE("EngineSession")
 		                return replay ? engine.loadReplayTask("replays/last_game.replay") : engine.initCampaignTask("maps/balanced.map");
 		            }, fixedSlice()));
 		            for (unsigned frame = 0; frame < 20; ++frame) cancelled.frame(frame, {});
-		            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+		            SDL_Event escape{}; escape.type = SDL_EVENT_KEY_DOWN; escape.key.key = SDLK_ESCAPE;
 		            cancelled.frame(20, {escape}); cancelled.frame(21, {});
 		            require(!cancelled.running() && cancelled.result() == 0, "Game/replay load must accept cancellation");
 		            require(getSyncRandState() == rng && !globalContainer->replaying && !globalContainer->replayReader &&
@@ -543,7 +543,7 @@ TEST_SUITE("EngineSession")
 		        screens.frame(0, {});
 		        original->requestLoad(cancel ? "maps/balanced.map" : "maps/missing-replacement-fixture.map");
 		        screens.frame(33, {}); screens.frame(66, {});
-		        SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+		        SDL_Event escape{}; escape.type = SDL_EVENT_KEY_DOWN; escape.key.key = SDLK_ESCAPE;
 		        screens.frame(99, {escape}); screens.frame(132, {});
 		        require(screens.running() && original->game.checkSum() == checksum && getSyncRandState() == rng,
 		                "Failed or cancelled replacement must preserve the existing map and RNG");
@@ -551,9 +551,9 @@ TEST_SUITE("EngineSession")
 		        require(original->hasDialog() && original->activeDialog(), "Escape must open the editor menu");
 		        original->activeDialog()->draw(0);
 		        const auto quit = original->activeDialog()->host().bounds("quit");
-		        SDL_Event down{}; down.type = SDL_MOUSEBUTTONDOWN; down.button.button = SDL_BUTTON_LEFT;
+		        SDL_Event down{}; down.type = SDL_EVENT_MOUSE_BUTTON_DOWN; down.button.button = SDL_BUTTON_LEFT;
 		        down.button.x = quit.x + quit.w / 2; down.button.y = quit.y + quit.h / 2;
-		        SDL_Event up = down; up.type = SDL_MOUSEBUTTONUP;
+		        SDL_Event up = down; up.type = SDL_EVENT_MOUSE_BUTTON_UP;
 		        screens.frame(198, {down, up}); screens.frame(231, {});
 		        require(original->needsQuitDecision(), "Replacement failure/cancellation must preserve unsaved edits");
 		        screens.stop(); screens.frame(264, {});
@@ -582,8 +582,8 @@ TEST_SUITE("EngineSession")
 		            script.draw(0);
 		            script.fileDialog()->draw(0);
 		            SDL_Event escape{};
-		            escape.type = SDL_KEYDOWN;
-		            escape.key.keysym.sym = SDLK_ESCAPE;
+		            escape.type = SDL_EVENT_KEY_DOWN;
+		            escape.key.key = SDLK_ESCAPE;
 		            script.fileDialog()->event(escape);
 		            require(script.fileDialog()->finished(), "Escape must close the script file dialog");
 		            script.finishFileDialog();
@@ -604,29 +604,29 @@ TEST_SUITE("EngineSession")
 						script.draw(0);
 						const auto r = script.host().bounds(key);
 						SDL_Event event{};
-						event.type = SDL_MOUSEBUTTONDOWN;
+						event.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 						event.button.button = SDL_BUTTON_LEFT;
 						event.button.x = r.x + 8;
 						event.button.y = r.y + 8;
 						script.event(event);
-						event.type = SDL_MOUSEBUTTONUP;
+						event.type = SDL_EVENT_MOUSE_BUTTON_UP;
 						script.event(event);
 					};
 					tapKey("script");
 					const auto before = script.scriptText();
 					SDL_Event composition{};
-					composition.type = SDL_TEXTEDITING;
-					SDL_strlcpy(composition.edit.text, "provisional", sizeof(composition.edit.text));
+					composition.type = SDL_EVENT_TEXT_EDITING;
+					composition.edit.text = "provisional";
 					script.event(composition);
 					SDL_Event key{};
-					key.type = SDL_KEYDOWN;
-					key.key.keysym.sym = SDLK_RETURN;
+					key.type = SDL_EVENT_KEY_DOWN;
+					key.key.key = SDLK_RETURN;
 					script.event(key);
 					require(script.scriptText() == before,
 							"IME preedit or confirmation leaked into the script draft");
 					SDL_Event text{};
-					text.type = SDL_TEXTINPUT;
-					SDL_strlcpy(text.text.text, "draft", sizeof(text.text.text));
+					text.type = SDL_EVENT_TEXT_INPUT;
+					text.text.text = "draft";
 					script.event(text);
 					require(script.scriptText().find("draft") != std::string::npos,
 							"Script canvas did not accept committed text");
@@ -635,7 +635,7 @@ TEST_SUITE("EngineSession")
 							"Script canvas lost multiline editing");
 					script.showTab(ScriptEditorScreen::TAB_HINTS);
 					tapKey("hint/0");
-					SDL_strlcpy(text.text.text, "First line", sizeof(text.text.text));
+					text.text.text = "First line";
 					script.event(text);
 					script.showTab(ScriptEditorScreen::TAB_BRIEFING);
 					require(script.hint(0).find("First line") != std::string::npos,
@@ -646,7 +646,7 @@ TEST_SUITE("EngineSession")
 					script.draw(0);
 					require(script.scriptText() == retainedCode && script.hint(0) == retainedHint,
 							"Tab change modified an editing draft");
-					key.key.keysym.sym = SDLK_ESCAPE;
+					key.key.key = SDLK_ESCAPE;
 					script.event(key);
 					require(script.finished() && script.result() == ScriptEditorScreen::CANCEL,
 							"Script workspace cancellation failed");
@@ -664,26 +664,26 @@ TEST_SUITE("EngineSession")
 					const auto bounds = editor.host().bounds("description");
 					const int x = bounds.x, y = bounds.y, h = bounds.h;
 					auto finger = [&](Uint32 type, int py) {
-						SDL_Event event{}; event.type=type; event.tfinger.fingerId=1;
+						SDL_Event event{}; event.type=type; event.tfinger.fingerID=1;
 						event.tfinger.x=float(x+4)/globalContainer->gfx->getW();
 						event.tfinger.y=float(py)/globalContainer->gfx->getH();
 						editor.handleExecutionEvent(event);
 					};
-					finger(SDL_FINGERDOWN,y+5); finger(SDL_FINGERUP,y+5);
+					finger(SDL_EVENT_FINGER_DOWN,y+5); finger(SDL_EVENT_FINGER_UP,y+5);
 					require(editor.host().editing() == "description", "Campaign description tap did not open text input");
-					SDL_Event composition{}; composition.type=SDL_TEXTEDITING;
-					SDL_strlcpy(composition.edit.text,"provisional",sizeof(composition.edit.text));
+					SDL_Event composition{}; composition.type=SDL_EVENT_TEXT_EDITING;
+					composition.edit.text = "provisional";
 					editor.handleExecutionEvent(composition);
 					require(editor.draftDescription()=="First line\nSecond line", "Campaign preedit changed the draft");
-					SDL_Event text{}; text.type=SDL_TEXTINPUT;
-					SDL_strlcpy(text.text.text,"New\n",sizeof(text.text.text)); editor.handleExecutionEvent(text);
+					SDL_Event text{}; text.type=SDL_EVENT_TEXT_INPUT;
+					text.text.text = "New\n"; editor.handleExecutionEvent(text);
 					require(editor.draftDescription()=="New\nFirst line\nSecond line", "Campaign touch cursor or multiline insertion failed");
 					require(entry.getDescription()=="First line\nSecond line", "Campaign entry changed before confirmation");
 					const auto draft=editor.draftDescription();
-					finger(SDL_FINGERDOWN,y+h-5); finger(SDL_FINGERMOTION,y+5); finger(SDL_FINGERUP,y+5);
+					finger(SDL_EVENT_FINGER_DOWN,y+h-5); finger(SDL_EVENT_FINGER_MOTION,y+5); finger(SDL_EVENT_FINGER_UP,y+5);
 					require(editor.draftDescription()==draft, "Campaign scroll altered its draft");
 					editor.endExecute(CampaignMapEntryEditor::CANCEL); editor.finishExecution();
-					SDL_StopTextInput();
+					SDL_StopTextInput(SDL_GetKeyboardFocus());
 				}
 				const auto originalRng = getSyncRandState();
 				for (const char* stage : {"[Loading units]", "[Loading buildings]", "[Resolving team links]"}) {
@@ -715,7 +715,7 @@ TEST_SUITE("EngineSession")
 		            GAGGUI::ScreenStack screens(*globalContainer->gfx);
 		            screens.push(std::make_unique<EditorLoadScreen>("maps/balanced.map", fixedSlice()));
 		            for (unsigned frame = 0; frame < frames; ++frame) screens.frame(frame, {});
-		            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+		            SDL_Event escape{}; escape.type = SDL_EVENT_KEY_DOWN; escape.key.key = SDLK_ESCAPE;
 		            screens.frame(frames, {escape}); screens.frame(frames + 1, {});
 		            require(!screens.running() && screens.result() == 0, "Partial map loading must accept cancellation");
 		            require(getSyncRandState() == originalRng, "Cancelled load must restore RNG state");
@@ -783,8 +783,8 @@ TEST_SUITE("EngineSession")
 		            GAGGUI::ScreenStack screens(*globalContainer->gfx);
 		            screens.push(std::make_unique<FertilityScreen>(editor.game.map));
 		            SDL_Event escape{};
-		            escape.type = SDL_KEYDOWN;
-		            escape.key.keysym.sym = SDLK_ESCAPE;
+		            escape.type = SDL_EVENT_KEY_DOWN;
+		            escape.key.key = SDLK_ESCAPE;
 		            screens.frame(1000, {escape});
 		            screens.frame(1001, {});
 		            require(!screens.running() && screens.result() == 0, "Fertility screen must accept cancellation");
@@ -793,18 +793,18 @@ TEST_SUITE("EngineSession")
 		        editor.beginEditing();
 		        editor.mapHasBeenModified();
 		        SDL_Event open{};
-		        open.type = SDL_KEYDOWN;
-		        open.key.keysym.sym = SDLK_ESCAPE;
-		        open.key.keysym.scancode = SDL_SCANCODE_ESCAPE;
+		        open.type = SDL_EVENT_KEY_DOWN;
+		        open.key.key = SDLK_ESCAPE;
+		        open.key.scancode = SDL_SCANCODE_ESCAPE;
 		        require(editor.advanceEditing({open}, 1000), "Editor must accept menu input incrementally");
 		        require(editor.hasDialog(), "Escape must open the editor menu");
 		        editor.activeDialog()->draw(0);
 		        const auto quitButton = editor.activeDialog()->host().bounds("quit");
 		        SDL_Event down{};
-		        down.type = SDL_MOUSEBUTTONDOWN;
+		        down.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 		        down.button.button = SDL_BUTTON_LEFT;
 		        down.button.x = quitButton.x + quitButton.w / 2; down.button.y = quitButton.y + quitButton.h / 2;
-		        SDL_Event up = down; up.type = SDL_MOUSEBUTTONUP;
+		        SDL_Event up = down; up.type = SDL_EVENT_MOUSE_BUTTON_UP;
 		        require(editor.advanceEditing({down, up}, 1033) && editor.needsQuitDecision(),
 		                "Modified editor must request an explicit quit decision");
 		        editor.drawEditing();
@@ -817,7 +817,7 @@ TEST_SUITE("EngineSession")
 		        require(!editor.advanceEditing({}, 1165) && editor.editingReturnCode() == 0,
 		                "Discard must finish without advancing or drawing another editor frame");
 		    }
-		    SDLNet_Quit();
+		    NET_Quit();
 		// The engine prints one checksum per completed session; all three must agree.
 		const std::string output = trace.text();
 		std::vector<std::string> checksums;

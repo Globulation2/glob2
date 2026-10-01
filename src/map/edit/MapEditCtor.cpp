@@ -10,7 +10,7 @@
 #include <InterfacePresentation.h>
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 
 MapEdit::MapEdit()

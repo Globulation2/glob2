@@ -7,7 +7,7 @@
 #include "YOGClientGameListManager.h"
 #include "MultiplayerGame.h"
 #include "MultiplayerGameEventListener.h"
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include <iostream>
 #include <stdexcept>
 
@@ -26,10 +26,10 @@ public:
 int main(int argc, char** argv) {
     if (argc != 2 && argc != 4) return 2;
     try {
-        SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
-        SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-        SDL_setenv("GLOB2_CHECKSUM_SIDECAR", "1", 1);
-        if (argc == 4) SDL_setenv("SSL_CERT_FILE", argv[3], 1);
+        SDL_setenv_unsafe("SDL_VIDEODRIVER", "dummy", 1);
+        SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 1);
+        SDL_setenv_unsafe("GLOB2_CHECKSUM_SIDECAR", "1", 1);
+        if (argc == 4) SDL_setenv_unsafe("SSL_CERT_FILE", argv[3], 1);
         globalContainer = new GlobalContainer(argv[1]);
         globalContainer->settings.screenWidth = 800;
         globalContainer->settings.screenHeight = 600;
@@ -41,15 +41,15 @@ int main(int argc, char** argv) {
         // Safety limit: the browser resigns after 250 ticks; normal victory
         // must end this session before the fallback limit.
         globalContainer->automaticEndingSteps = 1000;
-        if (SDLNet_Init() != 0) throw std::runtime_error("Network initialization failed");
+        if (!NET_Init()) throw std::runtime_error("Network initialization failed");
         {
             auto client = std::make_shared<YOGClient>();
             client->connect(argc == 4 ? argv[2] : "127.0.0.1");
             std::shared_ptr<MultiplayerGame> game;
             MatchEvents events;
             bool ready = false;
-            const auto deadline = SDL_GetTicks64() + 60000;
-            while (!events.ended && SDL_GetTicks64() < deadline) {
+            const auto deadline = SDL_GetTicks() + 60000;
+            while (!events.ended && SDL_GetTicks() < deadline) {
                 client->update();
                 if (client->getConnectionState() == YOGClient::WaitingForLoginInformation)
                     client->attemptLogin("transportguest", "fixture-only");
@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
             client->disconnect();
         }
         delete globalContainer; globalContainer = nullptr;
-        SDLNet_Quit();
+        NET_Quit();
         std::cout << "native match complete" << std::endl;
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

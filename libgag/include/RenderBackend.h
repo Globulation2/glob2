@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <memory>
 #include <span>
 

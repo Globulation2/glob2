@@ -224,8 +224,8 @@ void resize(int width, int height)
 	auto *gfx = globalContainer->gfx;
 	SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
 	SDL_Event event{};
-	event.type = SDL_WINDOWEVENT;
-	event.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+	event.type = SDL_EVENT_WINDOW_RESIZED;
+	event.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 	GAGCore::GraphicContext::translateMouseEvent(&event);
 }
 
@@ -359,7 +359,7 @@ void run(const Viewport &viewport)
 	const bool capture = true;
 	for (const char *presentation : {"0", "1"})
 	{
-		SDL_setenv("GLOB2_MOBILE_UI", presentation, 1);
+		SDL_setenv_unsafe("GLOB2_MOBILE_UI", presentation, 1);
 		if (presentation[0] == '0' && viewport.width < 600)
 			continue;
 		resize(viewport.width, viewport.height);
@@ -402,8 +402,8 @@ void run(const Viewport &viewport)
 				for (std::size_t i = 0; fixture.navigable && i < screen->host().focusOrder().size(); ++i)
 				{
 					SDL_Event tab{};
-					tab.type = SDL_KEYDOWN;
-					tab.key.keysym.sym = SDLK_TAB;
+					tab.type = SDL_EVENT_KEY_DOWN;
+					tab.key.key = SDLK_TAB;
 					stack.frame(120 + Uint32(i), {tab});
 				}
 				if (fixture.navigable && screen->host().focused().empty())
@@ -421,7 +421,7 @@ void run(const Viewport &viewport)
 	}
 	GAGCore::mobileSafeInsetsForTesting.reset();
 	theme.reset();
-	SDL_setenv("GLOB2_MOBILE_UI", "0", 1);
+	SDL_setenv_unsafe("GLOB2_MOBILE_UI", "0", 1);
 	glob2test::retainFromProfile(".bmp");
 	std::printf("PASS ui presentation: %d screen/viewport combinations verified\n", checked);
 }

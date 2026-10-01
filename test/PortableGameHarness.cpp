@@ -2,7 +2,7 @@
 #include "EngineFixtures.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include <cstdio>
 #include <stdexcept>
 #include <filesystem>
@@ -12,7 +12,7 @@ TEST_SUITE("PortableGame")
 	TEST_CASE("the portable renderer loads and draws a complete 50-tick game scene")
 	{
 		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 800, .height = 600, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
-		REQUIRE(SDLNet_Init() == 0);
+		REQUIRE(NET_Init());
 		globalContainer->automaticEndingGame=true;
 		globalContainer->automaticEndingSteps=50;
 		globalContainer->automaticGameGlobalEndConditions=true;
@@ -32,6 +32,6 @@ TEST_SUITE("PortableGame")
 		        throw std::runtime_error("Scene screenshot was not produced");
 		    engine.finishSession();
 		}
-		SDLNet_Quit();
+		NET_Quit();
 	}
 }

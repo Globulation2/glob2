@@ -6,7 +6,7 @@
 #include <optional>
 #include <unordered_map>
 
-#include <SDL_types.h>
+#include <SDL3/SDL_stdinc.h>
 
 #include "Ressource.h" // BASIC_COUNT
 #include "UnitConsts.h" // NB_UNIT_TYPE

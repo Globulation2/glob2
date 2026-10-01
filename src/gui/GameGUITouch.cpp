@@ -26,7 +26,7 @@
 #include <cmath>
 #include <cstdio>
 #ifdef __ANDROID__
-#include <SDL_system.h>
+#include <SDL3/SDL_system.h>
 #include <jni.h>
 #endif
 #if defined(__IPHONEOS__)
@@ -179,7 +179,7 @@ bool GameGUITouch::scrollAnimating() const
 }
 Uint64 GameGUITouch::eventTime(const SDL_Event &event) const
 {
-	return widenTicks(event.common.timestamp, lastStepTime);
+	return (event.common.timestamp / SDL_NS_PER_MS);
 }
 void GameGUITouch::advanceScroll(Uint64 now)
 {
@@ -438,14 +438,14 @@ bool GameGUITouch::process(SDL_Event &event)
 {
 	if (dispatching)
 		return false;
-	if (usesHUD() && event.type == SDL_KEYDOWN)
+	if (usesHUD() && event.type == SDL_EVENT_KEY_DOWN)
 	{
-		const auto key = event.key.keysym.sym;
+		const auto key = event.key.key;
 		if (key == SDLK_TAB)
 		{
 			const auto targets = keyboardTargets();
 			if (!targets.empty())
-				keyboardFocus = (keyboardFocus + ((event.key.keysym.mod & KMOD_SHIFT) ? -1 : 1) +
+				keyboardFocus = (keyboardFocus + ((event.key.mod & SDL_KMOD_SHIFT) ? -1 : 1) +
 								 int(targets.size())) %
 								int(targets.size());
 			return true;
@@ -458,12 +458,12 @@ bool GameGUITouch::process(SDL_Event &event)
 			{
 				const auto rect = targets[keyboardFocus];
 				SDL_Event pointer{};
-				pointer.type = SDL_MOUSEBUTTONDOWN;
+				pointer.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 				pointer.button.button = SDL_BUTTON_LEFT;
 				pointer.button.x = int(rect.x + rect.w / 2);
 				pointer.button.y = int(rect.y + rect.h / 2);
 				process(pointer);
-				pointer.type = SDL_MOUSEBUTTONUP;
+				pointer.type = SDL_EVENT_MOUSE_BUTTON_UP;
 				process(pointer);
 			}
 			return true;
@@ -477,18 +477,18 @@ bool GameGUITouch::process(SDL_Event &event)
 			return true;
 		}
 	}
-	if ((event.type == SDL_MOUSEMOTION && event.motion.which == SDL_TOUCH_MOUSEID) ||
-		((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) &&
+	if ((event.type == SDL_EVENT_MOUSE_MOTION && event.motion.which == SDL_TOUCH_MOUSEID) ||
+		((event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_MOUSE_BUTTON_UP) &&
 		 event.button.which == SDL_TOUCH_MOUSEID))
 		return true;
-	if (event.type == SDL_MOUSEBUTTONUP && swallowMouseRelease)
+	if (event.type == SDL_EVENT_MOUSE_BUTTON_UP && swallowMouseRelease)
 	{
 		swallowMouseRelease = false;
 		return true;
 	}
-	if (usesHUD() && event.type == SDL_MOUSEWHEEL)
+	if (usesHUD() && event.type == SDL_EVENT_MOUSE_WHEEL)
 	{
-		int x, y;
+		float x, y;
 		SDL_GetMouseState(&x, &y);
 		GraphicContext::translateMouseCoordinates(x, y);
 		const int region = interfaceRegion({double(x), double(y)});
@@ -504,32 +504,32 @@ bool GameGUITouch::process(SDL_Event &event)
 			return true;
 		}
 	}
-	if (usesHUD() && (event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP ||
-					  event.type == SDL_MOUSEMOTION))
+	if (usesHUD() && (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_MOUSE_BUTTON_UP ||
+					  event.type == SDL_EVENT_MOUSE_MOTION))
 	{
-		if (event.type != SDL_MOUSEMOTION && event.button.button != SDL_BUTTON_LEFT)
+		if (event.type != SDL_EVENT_MOUSE_MOTION && event.button.button != SDL_BUTTON_LEFT)
 			return false;
-		const bool motion = event.type == SDL_MOUSEMOTION;
+		const bool motion = event.type == SDL_EVENT_MOUSE_MOTION;
 		if (motion && !(event.motion.state & SDL_BUTTON_LMASK))
 			return false;
 		SDL_Event pointer{};
-		pointer.type = motion                              ? SDL_FINGERMOTION
-					   : event.type == SDL_MOUSEBUTTONDOWN ? SDL_FINGERDOWN
-														   : SDL_FINGERUP;
+		pointer.type = motion                              ? SDL_EVENT_FINGER_MOTION
+					   : event.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? SDL_EVENT_FINGER_DOWN
+														   : SDL_EVENT_FINGER_UP;
 		pointer.tfinger.timestamp = event.common.timestamp;
-		pointer.tfinger.touchId = -1;
-		pointer.tfinger.fingerId = 0;
+		pointer.tfinger.touchID = -1;
+		pointer.tfinger.fingerID = 0;
 		pointer.tfinger.x =
 			float(motion ? event.motion.x : event.button.x) / globalContainer->gfx->getW();
 		pointer.tfinger.y =
 			float(motion ? event.motion.y : event.button.y) / globalContainer->gfx->getH();
 		return process(pointer);
 	}
-	if (event.type == SDL_WINDOWEVENT && (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
-										  event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED))
+	if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && (event.type == SDL_EVENT_WINDOW_FOCUS_LOST ||
+										  event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED))
 		cancel();
-	if (event.type != SDL_FINGERDOWN && event.type != SDL_FINGERUP &&
-		event.type != SDL_FINGERMOTION)
+	if (event.type != SDL_EVENT_FINGER_DOWN && event.type != SDL_EVENT_FINGER_UP &&
+		event.type != SDL_EVENT_FINGER_MOTION)
 		return false;
 	const ViewPoint pointerPoint{event.tfinger.x * globalContainer->gfx->getW(),
 								 event.tfinger.y * globalContainer->gfx->getH()};
@@ -543,11 +543,11 @@ bool GameGUITouch::process(SDL_Event &event)
 		return true;
 	if (ignoreTouchSequence)
 	{
-		const auto key = std::make_pair(event.tfinger.touchId, event.tfinger.fingerId);
-		if (event.type == SDL_FINGERDOWN &&
+		const auto key = std::make_pair(event.tfinger.touchID, event.tfinger.fingerID);
+		if (event.type == SDL_EVENT_FINGER_DOWN &&
 			std::find(fingers.begin(), fingers.end(), key) == fingers.end())
 			fingers.push_back(key);
-		if (event.type == SDL_FINGERUP)
+		if (event.type == SDL_EVENT_FINGER_UP)
 			std::erase(fingers, key);
 		if (fingers.empty())
 			ignoreTouchSequence = false;
@@ -574,9 +574,9 @@ bool GameGUITouch::process(SDL_Event &event)
 	}
 	ViewPoint point{event.tfinger.x * globalContainer->gfx->getW(),
 					event.tfinger.y * globalContainer->gfx->getH()};
-	const auto key = std::make_pair(event.tfinger.touchId, event.tfinger.fingerId);
+	const auto key = std::make_pair(event.tfinger.touchID, event.tfinger.fingerID);
 	const Uint64 time = eventTime(event);
-	if (event.type == SDL_FINGERDOWN)
+	if (event.type == SDL_EVENT_FINGER_DOWN)
 	{
 		if (fingers.empty())
 		{
@@ -584,7 +584,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			// A touch catches coasting content where it is. Presets are re-read
 			// here so the settings sliders apply to the next gesture.
 			stopScrolling();
-			fingerIsTouch = event.tfinger.touchId != -1;
+			fingerIsTouch = event.tfinger.touchID != -1;
 			GAGCore::ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
 			mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
 			mapMotion.setConfig(mapConfig);
@@ -629,7 +629,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			// The second contact of a double-tap zooms; any other contact first
 			// lets a waiting paint tap land, so nothing reorders the player's input.
 			const bool zoomDrag = !interfaceGesture && natural != TouchMode::Placement &&
-								  zoomTapArmed(event.tfinger.timestamp, point);
+								  zoomTapArmed(event.tfinger.timestamp / SDL_NS_PER_MS, point);
 			if (zoomDrag)
 				deferredStroke.reset(); // That tap was the first half of the zoom.
 			else
@@ -652,11 +652,11 @@ bool GameGUITouch::process(SDL_Event &event)
 			statsDrag = 0;
 			// A still press on the minimap opens the map peek (see prepareDraw).
 			if (ownerRegion == 8)
-				minimapPress = SDL_GetTicks64();
+				minimapPress = SDL_GetTicks();
 			else
 				minimapPress.reset();
 			if (natural == TouchMode::Paint && !zoomDrag && ownerRegion == 0)
-				strokeHold = TouchPlacementSession{key, point, {}, true, {}, point, SDL_GetTicks64(), gui.localTeamNo};
+				strokeHold = TouchPlacementSession{key, point, {}, true, {}, point, SDL_GetTicks(), gui.localTeamNo};
 			else
 				strokeHold.reset();
 		}
@@ -664,14 +664,14 @@ bool GameGUITouch::process(SDL_Event &event)
 			strokeHold.reset(); // A second finger navigates instead of painting.
 		if (fingers.empty() && ownerRegion == 0 && gui.selectionMode == GameGUI::TOOL_SELECTION)
 			placementHold = TouchPlacementSession{key, point, gui.toolManager.getBuildingName(),
-				true, {}, point, SDL_GetTicks64(), gui.localTeamNo};
+				true, {}, point, SDL_GetTicks(), gui.localTeamNo};
 		else
 			placementHold.reset(); // A navigation gesture cannot resume edge panning.
 		if (std::find(fingers.begin(), fingers.end(), key) == fingers.end())
 			fingers.push_back(key);
 		actions(gesture.down(key.first, key.second, {point.x / scale, point.y / scale}, time));
 	}
-	else if (event.type == SDL_FINGERMOTION)
+	else if (event.type == SDL_EVENT_FINGER_MOTION)
 	{
 		if (placementHold && placementHold->pointer == key)
 			placementHold->pointerPosition = point;
@@ -719,13 +719,13 @@ bool GameGUITouch::process(SDL_Event &event)
 		if (paintTap)
 		{
 			// Hold a painted tap for one double-tap window; see commitDeferredStroke.
-			deferredStroke = TouchDeferredStroke{stroke, SDL_GetTicks64()};
+			deferredStroke = TouchDeferredStroke{stroke, SDL_GetTicks()};
 			stroke.cancel();
 			changes.clear();
 		}
 		if (paintTap || (worldTap && changes.front().kind == TouchActionKind::Select))
 		{
-			lastMapTapTicks = event.tfinger.timestamp;
+			lastMapTapTicks = event.tfinger.timestamp / SDL_NS_PER_MS;
 			lastMapTapPoint = point;
 		}
 		else
@@ -923,7 +923,7 @@ void GameGUITouch::replayStroke(const TouchStrokeSession &completed)
 	// Inverse orders in map-aligned blocks of at most 32x32 cells.
 	ZoneUndo undo;
 	undo.zone = completed.zone;
-	undo.expires = SDL_GetTicks64() + InGameTouchTheme::brushUndoMs;
+	undo.expires = SDL_GetTicks() + InGameTouchTheme::brushUndoMs;
 	std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> blocks;
 	for (const auto &[x, y] : changed)
 	{
@@ -1122,8 +1122,8 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		}
 		if (gui.swallowSpaceKey)
 		{
-			SDL_Keysym key{};
-			key.sym = SDLK_SPACE;
+			SDL_KeyboardEvent key{};
+			key.key = SDLK_SPACE;
 			gui.handleKey(key, true);
 		}
 		return;
@@ -1237,12 +1237,12 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 	gui.mouseY = gui.view.mouseY = gui.lastMouseY = int(point.y);
 	dispatching = true;
 	SDL_Event click{};
-	click.type = SDL_MOUSEBUTTONDOWN;
+	click.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	click.button.button = SDL_BUTTON_LEFT;
 	click.button.x = int(point.x);
 	click.button.y = int(point.y);
 	gui.processEvent(&click);
-	click.type = SDL_MOUSEBUTTONUP;
+	click.type = SDL_EVENT_MOUSE_BUTTON_UP;
 	gui.processEvent(&click);
 	dispatching = false;
 	if (usesHUD() && (gui.selectionMode == GameGUI::TOOL_SELECTION ||
@@ -1327,11 +1327,11 @@ void GameGUITouch::prepareDraw()
 	gui.checkSelection();
 	advancePlacement();
 	if (deferredStroke &&
-		SDL_GetTicks64() - deferredStroke->ticks >= InGameTouchTheme::doubleTapWindowMs)
+		SDL_GetTicks() - deferredStroke->ticks >= InGameTouchTheme::doubleTapWindowMs)
 		commitDeferredStroke();
 	if (minimapPress && (touchTravelled || fingers.size() != 1 || ownerRegion != 8))
 		minimapPress.reset();
-	if (minimapPress && SDL_GetTicks64() - *minimapPress >= InGameTouchTheme::peekPressMs)
+	if (minimapPress && SDL_GetTicks() - *minimapPress >= InGameTouchTheme::peekPressMs)
 	{
 		// The press became a request for the large map; its release does nothing.
 		peekOpen = true;
@@ -1343,7 +1343,7 @@ void GameGUITouch::prepareDraw()
 		zoneUndo.reset();
 		brushPan = false;
 	}
-	else if (zoneUndo && SDL_GetTicks64() >= zoneUndo->expires)
+	else if (zoneUndo && SDL_GetTicks() >= zoneUndo->expires)
 		zoneUndo.reset();
 	// A stroke held at a map edge pans, and keeps painting under the still finger.
 	if (strokeHold && !stroke.points.empty() && gui.selectionMode == GameGUI::BRUSH_SELECTION)

@@ -628,26 +628,26 @@ struct CustomGameSetupHarness
 				frames(1);
 				const auto r = top()->host().bounds(key);
 				SDL_Event down{};
-				down.type = SDL_MOUSEBUTTONDOWN;
+				down.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 				down.button.button = SDL_BUTTON_LEFT;
-				down.button.state = SDL_PRESSED;
+				down.button.down = true;
 				down.button.x = r.x + r.w / 2;
 				down.button.y = r.y + r.h / 2;
 				SDL_Event up = down;
-				up.type = SDL_MOUSEBUTTONUP;
-				up.button.state = SDL_RELEASED;
+				up.type = SDL_EVENT_MOUSE_BUTTON_UP;
+				up.button.down = false;
 				frames(1, {down, up});
 				frames(2);
 			};
-			auto key = [&](SDL_Keycode code, SDL_Keymod modifiers = KMOD_NONE, int repeats = 1)
+			auto key = [&](SDL_Keycode code, SDL_Keymod modifiers = SDL_KMOD_NONE, int repeats = 1)
 			{
 				std::cout << "UI step: key " << code << std::endl;
 				for (int i = 0; i < repeats; ++i)
 				{
 					SDL_Event event{};
-					event.type = SDL_KEYDOWN;
-					event.key.keysym.sym = code;
-					event.key.keysym.mod = modifiers;
+					event.type = SDL_EVENT_KEY_DOWN;
+					event.key.key = code;
+					event.key.mod = modifiers;
 					frames(1, {event});
 				}
 				frames(1);
@@ -667,7 +667,7 @@ struct CustomGameSetupHarness
 			click("colony/1/ai");
 			// Select the following row; the profile interaction below moves back once.
 			const int aiSteps = AINames::selectionIndex(AI::NICOWAR) + 1 - AINames::selectionIndex(AI::NUMBI);
-			key(aiSteps >= 0 ? SDLK_DOWN : SDLK_UP, KMOD_NONE, aiSteps >= 0 ? aiSteps : -aiSteps);
+			key(aiSteps >= 0 ? SDLK_DOWN : SDLK_UP, SDL_KMOD_NONE, aiSteps >= 0 ? aiSteps : -aiSteps);
 			key(SDLK_RETURN);
 			click("colony/1/info");
 			{
@@ -676,18 +676,18 @@ struct CustomGameSetupHarness
 				profile->choose(AINames::selectionIndex(AI::NICOWAR));
 				click("profile/use");
 			}
-			key(SDLK_3, KMOD_CTRL);
+			key(SDLK_3, SDL_KMOD_CTRL);
 			click("ruleset/1");
-			key(SDLK_1, KMOD_CTRL);
+			key(SDLK_1, SDL_KMOD_CTRL);
 			click("map/mode/1");
 			for (Uint32 started = SDL_GetTicks(); (!lobby->validMap || lobby->previewBusy()) && SDL_GetTicks() - started < 60000;)
 				frames(1);
 			REQUIRE((lobby->validMap && !lobby->previewBusy()));
-			key(SDLK_2, KMOD_CTRL);
+			key(SDLK_2, SDL_KMOD_CTRL);
 			if (control != CustomGameSetup::Shared)
 			{
 				click("colony/0/controller");
-				key(SDLK_UP, KMOD_NONE, control == CustomGameSetup::Computer ? 1 : 2);
+				key(SDLK_UP, SDL_KMOD_NONE, control == CustomGameSetup::Computer ? 1 : 2);
 				key(SDLK_RETURN);
 			}
 			click("start");
@@ -710,8 +710,8 @@ struct CustomGameSetupHarness
 			if (globalContainer->liveSpectating)
 			{
 				SDL_Event pause = {};
-				pause.type = SDL_KEYDOWN;
-				pause.key.keysym.sym = SDLK_p;
+				pause.type = SDL_EVENT_KEY_DOWN;
+				pause.key.key = SDLK_P;
 				engine.gui.processEvent(&pause);
 				REQUIRE(engine.gui.hardPause);
 				engine.gui.processEvent(&pause);
@@ -836,11 +836,11 @@ struct CustomGameSetupHarness
       screen.onTimer(screen.previewDue);
       screen.finishPreview();
     };
-    auto keyEvent = [&](SDL_Keycode key, Uint16 modifiers = KMOD_NONE) {
+    auto keyEvent = [&](SDL_Keycode key, Uint16 modifiers = SDL_KMOD_NONE) {
       SDL_Event e = {};
-      e.type = SDL_KEYDOWN;
-      e.key.keysym.sym = key;
-      e.key.keysym.mod = modifiers;
+      e.type = SDL_EVENT_KEY_DOWN;
+      e.key.key = key;
+      e.key.mod = modifiers;
       screen.handleExecutionEvent(e);
       paint();
     };
@@ -867,8 +867,8 @@ struct CustomGameSetupHarness
       host.scrollIntoView(id);
       paint();
       const auto r = host.bounds(id);
-      pointerAt(r.x + r.w / 2, r.y + r.h / 2, SDL_MOUSEBUTTONDOWN);
-      pointerAt(r.x + r.w / 2, r.y + r.h / 2, SDL_MOUSEBUTTONUP);
+      pointerAt(r.x + r.w / 2, r.y + r.h / 2, SDL_EVENT_MOUSE_BUTTON_DOWN);
+      pointerAt(r.x + r.w / 2, r.y + r.h / 2, SDL_EVENT_MOUSE_BUTTON_UP);
       paint();
     };
     // Steppers step from their end caps; the middle shows the value.
@@ -878,8 +878,8 @@ struct CustomGameSetupHarness
       paint();
       const auto r = host.bounds(id);
       const int x = direction > 0 ? r.x + r.w - 8 : r.x + 8;
-      pointerAt(x, r.y + r.h / 2, SDL_MOUSEBUTTONDOWN);
-      pointerAt(x, r.y + r.h / 2, SDL_MOUSEBUTTONUP);
+      pointerAt(x, r.y + r.h / 2, SDL_EVENT_MOUSE_BUTTON_DOWN);
+      pointerAt(x, r.y + r.h / 2, SDL_EVENT_MOUSE_BUTTON_UP);
       paint();
     };
     auto scrollOf = [&](const char *key) {
@@ -922,8 +922,8 @@ struct CustomGameSetupHarness
     const int savedOffset = scrollOf("map/list/0");
     {
       const auto list = host.bounds("map/list/0");
-      pointerAt(list.x + 20, list.y + 20, SDL_MOUSEBUTTONDOWN);
-      pointerAt(list.x + 20, list.y + 20, SDL_MOUSEBUTTONUP);
+      pointerAt(list.x + 20, list.y + 20, SDL_EVENT_MOUSE_BUTTON_DOWN);
+      pointerAt(list.x + 20, list.y + 20, SDL_EVENT_MOUSE_BUTTON_UP);
       paint();
     }
     REQUIRE(scrollOf("map/list/0") == savedOffset);
@@ -955,8 +955,8 @@ struct CustomGameSetupHarness
     REQUIRE(screen.setup.colonies[1].ai == AI::NUMBI);
     clickControl("colony/1/ai");
     REQUIRE(host.popupOpen());
-    pointerAt(0, 0, SDL_MOUSEBUTTONDOWN);
-    pointerAt(0, 0, SDL_MOUSEBUTTONUP);
+    pointerAt(0, 0, SDL_EVENT_MOUSE_BUTTON_DOWN);
+    pointerAt(0, 0, SDL_EVENT_MOUSE_BUTTON_UP);
     paint();
     REQUIRE(!host.popupOpen());
     clickControl("format/1");
@@ -1032,11 +1032,11 @@ struct CustomGameSetupHarness
       host.scrollIntoView("generator/water");
       paint();
       const auto slider = host.bounds("generator/water");
-      pointerAt(slider.x + slider.w / 2, slider.y + slider.h / 2, SDL_MOUSEBUTTONDOWN);
+      pointerAt(slider.x + slider.w / 2, slider.y + slider.h / 2, SDL_EVENT_MOUSE_BUTTON_DOWN);
       REQUIRE(host.interacting());
       preview();
       REQUIRE(!screen.validMap);
-      pointerAt(slider.x + slider.w / 2, slider.y + slider.h / 2, SDL_MOUSEBUTTONUP);
+      pointerAt(slider.x + slider.w / 2, slider.y + slider.h / 2, SDL_EVENT_MOUSE_BUTTON_UP);
       paint();
       REQUIRE(!host.interacting());
     }
@@ -1055,7 +1055,7 @@ struct CustomGameSetupHarness
       host.focus("generator/water", true);
       const auto water = screen.setup.generator.options["water"];
       SDL_Event motion = {};
-      motion.type = SDL_MOUSEMOTION;
+      motion.type = SDL_EVENT_MOUSE_MOTION;
       motion.motion.x = 0;
       motion.motion.y = 0;
       screen.handleExecutionEvent(motion);
@@ -1166,8 +1166,8 @@ struct CustomGameSetupHarness
         globalContainer->gfx->printScreen(output + "/start-quality.bmp");
         REQUIRE(breakdown.host().find("back"));
         SDL_Event e = {};
-        e.type = SDL_KEYDOWN;
-        e.key.keysym.sym = SDLK_ESCAPE;
+        e.type = SDL_EVENT_KEY_DOWN;
+        e.key.key = SDLK_ESCAPE;
         breakdown.handleExecutionEvent(e);
         REQUIRE(breakdown.returnCode == StartQualityScreen::BACK);
         breakdown.finishExecution();
@@ -1258,7 +1258,7 @@ struct CustomGameSetupHarness
       // Tab walks off the checkbox and Shift+Tab back onto it, like any other control.
       keyEvent(SDLK_TAB);
       REQUIRE(host.focused() != "generator/lake-connected");
-      keyEvent(SDLK_TAB, KMOD_SHIFT);
+      keyEvent(SDLK_TAB, SDL_KMOD_SHIFT);
       REQUIRE(host.focused() == "generator/lake-connected");
       preview();
       REQUIRE(screen.validMap);
@@ -1294,8 +1294,8 @@ struct CustomGameSetupHarness
       REQUIRE(std::abs(rect.w * mapH - rect.h * mapW) < std::max(mapW, mapH));
       SDL_Surface *bmp = SDL_LoadBMP((output + "/" + name + ".bmp").c_str());
       REQUIRE(bmp);
-      SDL_Surface *rgba = SDL_ConvertSurfaceFormat(bmp, SDL_PIXELFORMAT_RGBA32, 0);
-      SDL_FreeSurface(bmp);
+      SDL_Surface *rgba = SDL_ConvertSurface(bmp, SDL_PIXELFORMAT_RGBA32);
+      SDL_DestroySurface(bmp);
       REQUIRE(rgba);
       auto pixel = [&](int x, int y) {
         REQUIRE((x >= 0 && y >= 0 && x < rgba->w && y < rgba->h));
@@ -1357,7 +1357,7 @@ struct CustomGameSetupHarness
                       start.color.r, start.color.g, start.color.b, swatch[0], swatch[1], swatch[2]);
         REQUIRE((swatch[0] == start.color.r && swatch[1] == start.color.g && swatch[2] == start.color.b));
       }
-      SDL_FreeSurface(rgba);
+      SDL_DestroySurface(rgba);
     }
     puts("PASS rectangular aspect ratios, cropped terrain and colony marker pixels");
     // The landscape picker: every playable landscape previewed on background threads,
@@ -1439,14 +1439,14 @@ struct CustomGameSetupHarness
         const auto r = pickerHost.bounds(id);
         const bool tile = id.size() > 10 && std::isdigit(static_cast<unsigned char>(id[10]));
         const int y = tile ? r.y + r.h - 16 : r.y + r.h / 2;
-        pickerPointer(r.x + r.w / 2, y, SDL_MOUSEBUTTONDOWN);
-        pickerPointer(r.x + r.w / 2, y, SDL_MOUSEBUTTONUP);
+        pickerPointer(r.x + r.w / 2, y, SDL_EVENT_MOUSE_BUTTON_DOWN);
+        pickerPointer(r.x + r.w / 2, y, SDL_EVENT_MOUSE_BUTTON_UP);
         pickerPaint();
       };
       auto pickerKey = [&](SDL_Keycode key) {
         SDL_Event e = {};
-        e.type = SDL_KEYDOWN;
-        e.key.keysym.sym = key;
+        e.type = SDL_EVENT_KEY_DOWN;
+        e.key.key = key;
         picker.handleExecutionEvent(e);
         pickerPaint();
       };
@@ -1489,20 +1489,20 @@ struct CustomGameSetupHarness
         pickerHost.scrollIntoView("landscape/" + std::to_string(other));
         pickerPaint();
         const auto area = widget->mapArea();
-        pickerPointer(area.x + area.w / 3, area.y + area.h / 3, SDL_MOUSEBUTTONDOWN);
+        pickerPointer(area.x + area.w / 3, area.y + area.h / 3, SDL_EVENT_MOUSE_BUTTON_DOWN);
         SDL_Event e = {};
-        e.type = SDL_MOUSEMOTION;
+        e.type = SDL_EVENT_MOUSE_MOTION;
         e.motion.state = SDL_BUTTON_LMASK;
         e.motion.x = area.x + 2 * area.w / 3;
         e.motion.y = area.y + 2 * area.h / 3;
         picker.handleExecutionEvent(e);
         REQUIRE((widget->dragging && widget->view.offsetX > 0 && picker.returnCode == 0));
-        pickerPointer(-20, -20, SDL_MOUSEBUTTONUP);
+        pickerPointer(-20, -20, SDL_EVENT_MOUSE_BUTTON_UP);
         REQUIRE((!widget->dragging && picker.returnCode == 0));
         // The picker intentionally reserves the wheel for grid scrolling, even
         // above a preview. MapPreviewHarness separately checks anchored zoom.
         e = {};
-        e.type = SDL_MOUSEMOTION;
+        e.type = SDL_EVENT_MOUSE_MOTION;
         e.motion.x = area.x + area.w / 2;
         e.motion.y = area.y + area.h / 2;
         picker.handleExecutionEvent(e);
@@ -1514,7 +1514,7 @@ struct CustomGameSetupHarness
         for (int direction : {-1, 1}) {
           const int before = grid->scrollOffset();
           e = {};
-          e.type = SDL_MOUSEWHEEL;
+          e.type = SDL_EVENT_MOUSE_WHEEL;
           e.wheel.y = direction;
           picker.handleExecutionEvent(e);
           pickerPaint();
@@ -1913,9 +1913,9 @@ static void checkPreviewRestart()
     request.wDec = request.hDec = 8;
     request.nbTeams = 4;
     LandscapePreviewer previewer({request}, 1);
-    const auto started = SDL_GetTicks64();
+    const auto started = SDL_GetTicks();
     while (previewer.preview(0).state == LandscapePreviewer::State::Pending &&
-           SDL_GetTicks64() - started < 10000)
+           SDL_GetTicks() - started < 10000)
         SDL_Delay(1);
     // The worker has picked the request up. A preview this small can already have
     // finished (usually Failed: four colonies do not fit), so accept any started state;
@@ -1946,7 +1946,7 @@ static void commonChecks()
 	CustomGameSetupHarness::preferencesOptions();
 	CustomGameSetupHarness::landscapeRandomOrder();
 	CustomGameSetupHarness::previewPriority();
-	REQUIRE(SDLNet_Init() == 0);
+	REQUIRE(NET_Init());
 }
 
 TEST_SUITE("CustomGameSetup")
@@ -1955,7 +1955,7 @@ TEST_SUITE("CustomGameSetup")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));
 		commonChecks();
-	REQUIRE(SDLNet_Init() == 0);
+	REQUIRE(NET_Init());
 	checkPreviewRestart();
 	const auto playableMethods = GeneratorRegistry::builtins().methods(false);
 	for (int method : playableMethods)

@@ -4,7 +4,7 @@
 #ifndef YOG_SERVER_ONLY
 #include <GraphicContext.h>
 #endif
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif

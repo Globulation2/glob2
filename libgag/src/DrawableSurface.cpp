@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <string>
 #include <valarray>
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #ifdef GLOB2_WEBGL2
 #include <set>
 #endif
@@ -24,7 +24,7 @@ namespace GAGCore
 		// display is not necessarily BGRA (the browser uses RGBA), so loaded
 		// and cloned sprites must use the same format as generated surfaces.
 		// WebGL converts to RGBA separately at the texture upload boundary.
-		SDL_Surface *dest = SDL_ConvertSurface(source, &_glFormat, 0);
+		SDL_Surface *dest = SDL_ConvertSurface(source, SDL_PIXELFORMAT_ARGB8888);
 		assert(dest);
 		return dest;
 	}
@@ -76,7 +76,7 @@ namespace GAGCore
 	{
 		if (_gc && _gc->renderer) _gc->renderer->forget(this);
         if (_gc && _gc->softwareRasterizer) _gc->softwareRasterizer->forget(this);
-		SDL_FreeSurface(sdlsurface);
+		SDL_DestroySurface(sdlsurface);
 		freeGPUTexture();
 	}
 
@@ -152,8 +152,8 @@ namespace GAGCore
 			void *pixelsPtr;
 			GLenum pixelFormat;
 			#if defined(GLOB2_WEBGL2)
-            std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> rgba(
-                SDL_ConvertSurfaceFormat(sdlsurface, SDL_PIXELFORMAT_RGBA32, 0), SDL_FreeSurface);
+            std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+                SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
             if (!rgba) return;
             pixelsPtr = rgba->pixels;
             pixelFormat = GL_RGBA;
@@ -266,9 +266,9 @@ namespace GAGCore
 	void DrawableSurface::setRes(int w, int h)
 	{
 		if (sdlsurface)
-			SDL_FreeSurface(sdlsurface);
+			SDL_DestroySurface(sdlsurface);
 
-		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, _glFormat.Rmask, _glFormat.Gmask, _glFormat.Bmask, _glFormat.Amask);
+		sdlsurface = SDL_CreateSurface(w, h, SDL_PIXELFORMAT_ARGB8888);
 		assert(sdlsurface);
 		setClipRect();
 		initTextureSize();
@@ -297,7 +297,7 @@ namespace GAGCore
 		clipRect.w = static_cast<Uint16>(w);
 		clipRect.h = static_cast<Uint16>(h);
 
-		SDL_SetClipRect(sdlsurface, &clipRect);
+		SDL_SetSurfaceClipRect(sdlsurface, &clipRect);
 	}
 
 	void DrawableSurface::setClipRect(void)
@@ -309,25 +309,25 @@ namespace GAGCore
 		clipRect.w = static_cast<Uint16>(sdlsurface->w);
 		clipRect.h = static_cast<Uint16>(sdlsurface->h);
 
-		SDL_SetClipRect(sdlsurface, &clipRect);
+		SDL_SetSurfaceClipRect(sdlsurface, &clipRect);
 	}
 
 	bool DrawableSurface::loadImage(const std::string name)
 	{
 		if (name.size())
 		{
-			SDL_RWops *imageStream;
+			SDL_IOStream *imageStream;
 			if ((imageStream = Toolkit::getFileManager()->open(name, "rb")) != NULL)
 			{
 				SDL_Surface *loadedSurface;
-				loadedSurface = IMG_Load_RW(imageStream, 0);
-				SDL_RWclose(imageStream);
+				loadedSurface = IMG_Load_IO(imageStream, 0);
+				SDL_CloseIO(imageStream);
 				if (loadedSurface)
 				{
 					if (sdlsurface)
-						SDL_FreeSurface(sdlsurface);
+						SDL_DestroySurface(sdlsurface);
 					sdlsurface = convertForUpload(loadedSurface);
-					SDL_FreeSurface(loadedSurface);
+					SDL_DestroySurface(loadedSurface);
 					setClipRect();
 					dirty = true;
 					return true;
@@ -346,7 +346,7 @@ namespace GAGCore
 			float h, s, v;
 			Color c;
 			// Sprite surfaces retain alpha even when the software window has none.
-			SDL_GetRGBA(*mem, sdlsurface->format, &c.r, &c.g, &c.b, &c.a);
+			SDL_GetRGBA(*mem, SDL_GetPixelFormatDetails(sdlsurface->format), SDL_GetSurfacePalette(sdlsurface), &c.r, &c.g, &c.b, &c.a);
 			c.getHSV(&h, &s, &v);
 
 			// shift
@@ -366,7 +366,7 @@ namespace GAGCore
 
 			// set values
 			c.setHSV(h, s, v);
-			*mem = SDL_MapRGBA(sdlsurface->format, c.r, c.g, c.b, c.a);
+			*mem = SDL_MapSurfaceRGBA(sdlsurface, c.r, c.g, c.b, c.a);
 			mem++;
 		}
 		dirty = true;

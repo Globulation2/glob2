@@ -104,7 +104,7 @@ void SettingsScreen::buildGeneral()
 				if (selected >= int(std::size(percents)))
 					selected = 0;
 				choice("display.uiscale", "Interface scale",
-					   "Enlarge menus, text and the sidebar on a high-resolution screen.", selected,
+					   "Multiply the operating system display scale for menus, text and the sidebar.", selected,
 					   labels,
 					   [this](int v)
 					   {

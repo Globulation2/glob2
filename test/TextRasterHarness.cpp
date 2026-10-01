@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include "GraphicContextPrivate.h"
 #include <TrueTypeFont.h>
-#include <SDL_ttf.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -83,12 +83,12 @@ void saveFrame(const std::vector<unsigned char> &pixels, int w, int h, const std
 {
 	if (path.empty())
 		return;
-	SDL_Surface *frame = SDL_CreateRGBSurfaceWithFormatFrom(
-		const_cast<unsigned char *>(pixels.data()), w, h, 32, w * 4, SDL_PIXELFORMAT_RGBA32);
+	SDL_Surface *frame = SDL_CreateSurfaceFrom(w, h, SDL_PIXELFORMAT_RGBA32,
+		const_cast<unsigned char *>(pixels.data()), w * 4);
 	if (!frame)
 		return;
 	SDL_SaveBMP(frame, path.c_str());
-	SDL_FreeSurface(frame);
+	SDL_DestroySurface(frame);
 }
 
 // Draw one line of text on a black frame at a position that lands on the block grid.
@@ -162,10 +162,10 @@ void checkRasterIsPixelExact(const std::vector<unsigned char> &frame, int frameW
 	TTF_Font *reference = TTF_OpenFont((glob2test::sourceRoot() / "data/fonts/sans.ttf").string().c_str(), size);
 	require(reference != NULL, "Could not open the reference font at the scaled size");
 	SDL_Color white{255, 255, 255, 255};
-	SDL_Surface *rendered = TTF_RenderUTF8_Blended(reference, text, white);
+	SDL_Surface *rendered = TTF_RenderText_Blended(reference, text, 0, white);
 	require(rendered != NULL, "Could not rasterise the reference string");
-	SDL_Surface *ink = SDL_ConvertSurfaceFormat(rendered, SDL_PIXELFORMAT_RGBA32, 0);
-	SDL_FreeSurface(rendered);
+	SDL_Surface *ink = SDL_ConvertSurface(rendered, SDL_PIXELFORMAT_RGBA32);
+	SDL_DestroySurface(rendered);
 	require(ink != NULL, "Could not convert the reference string");
 
 	// White on black composites to exactly the glyph coverage, so the frame's red channel
@@ -187,7 +187,7 @@ void checkRasterIsPixelExact(const std::vector<unsigned char> &frame, int frameW
 				worst = std::max(worst, delta);
 			}
 		}
-	SDL_FreeSurface(ink);
+	SDL_DestroySurface(ink);
 	TTF_CloseFont(reference);
 
 	require(compared > 0, "The reference string is empty");

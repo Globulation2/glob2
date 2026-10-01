@@ -2,7 +2,7 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <functional>
 #include <memory>
 #include <vector>

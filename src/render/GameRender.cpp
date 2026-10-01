@@ -21,7 +21,7 @@
 #include "Order.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 
 #include "Brush.h"

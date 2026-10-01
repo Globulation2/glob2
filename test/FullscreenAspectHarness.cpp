@@ -39,9 +39,9 @@ void require(bool condition, const char* message)
 Color pixel(SDL_Surface* surface, int x, int y)
 {
 	Uint32 value = 0;
-	std::memcpy(&value, static_cast<char*>(surface->pixels) + y*surface->pitch + x*surface->format->BytesPerPixel, surface->format->BytesPerPixel);
+	std::memcpy(&value, static_cast<char*>(surface->pixels) + y*surface->pitch + x*SDL_BYTESPERPIXEL(surface->format), SDL_BYTESPERPIXEL(surface->format));
 	Color color;
-	SDL_GetRGB(value, surface->format, &color.r, &color.g, &color.b);
+	SDL_GetRGB(value, SDL_GetPixelFormatDetails(surface->format), SDL_GetSurfacePalette(surface), &color.r, &color.g, &color.b);
 	return color;
 }
 
@@ -132,7 +132,7 @@ void run(Context& context, bool gpu, int w, int h)
 		for (int row=0; row<dh/2; ++row)
 			for (int col=0; col<dw*4; ++col)
 				std::swap(pixels[row*dw*4+col], pixels[(dh-1-row)*dw*4+col]);
-		frame=SDL_CreateRGBSurfaceWithFormatFrom(pixels.data(), dw, dh, 32, dw*4, SDL_PIXELFORMAT_RGBA32);
+		frame=SDL_CreateSurfaceFrom(dw, dh, SDL_PIXELFORMAT_RGBA32, pixels.data(), dw*4);
 		require(glGetError()==GL_NO_ERROR, "OpenGL reported an error");
 #endif
 	}
@@ -149,21 +149,21 @@ void run(Context& context, bool gpu, int w, int h)
 	checkBounds(frame, true, ox+std::lround(200*scale), oy+std::lround(160*scale), std::lround(80*scale), std::lround(60*scale));
 	if (ox>1) require(pixel(frame, 0, frame->h/2).r==0, "Side bar was not cleared");
 	if (oy>1) require(pixel(frame, frame->w/2, 0).r==0, "Top bar was not cleared");
-	if (gpu) SDL_FreeSurface(frame);
+	if (gpu) SDL_DestroySurface(frame);
 
 	float pointScale=std::min(w/640.f, h/480.f);
 	for (auto point : {std::pair{20, 20}, {240, 190}, {620, 460}})
 	{
 		int px=std::lround((w-640*pointScale)/2+point.first*pointScale);
 		int py=std::lround((h-480*pointScale)/2+point.second*pointScale);
-		for (Uint32 type : {SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP})
+		for (Uint32 type : {SDL_EVENT_MOUSE_MOTION, SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP})
 		{
 			SDL_Event event{}; event.type=type;
-			if (type==SDL_MOUSEMOTION) { event.motion.x=px; event.motion.y=py; }
+			if (type==SDL_EVENT_MOUSE_MOTION) { event.motion.x=px; event.motion.y=py; }
 			else { event.button.x=px; event.button.y=py; }
 			GraphicContext::translateMouseEvent(&event);
-			int x=type==SDL_MOUSEMOTION ? event.motion.x : event.button.x;
-			int y=type==SDL_MOUSEMOTION ? event.motion.y : event.button.y;
+			int x=type==SDL_EVENT_MOUSE_MOTION ? event.motion.x : event.button.x;
+			int y=type==SDL_EVENT_MOUSE_MOTION ? event.motion.y : event.button.y;
 			require(std::abs(x-point.first)<=2 && std::abs(y-point.second)<=2, "Mouse event misses rendered target");
 		}
 		GraphicContext::translateMouseCoordinates(px, py);

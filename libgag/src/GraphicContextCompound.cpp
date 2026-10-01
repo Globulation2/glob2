@@ -73,7 +73,7 @@ namespace GAGCore
             if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
             float u0=float(sx)/pixels->w, v0=float(sy)/pixels->h;
             float u1=float(sx+sw)/pixels->w, v1=float(sy+sh)/pixels->h;
-            SDL_Color c{255,255,255,alpha};
+            SDL_FColor c{(255) / 255.0f, (255) / 255.0f, (255) / 255.0f, (alpha) / 255.0f};
             SDL_Vertex a{{x,y},c,{u0,v0}}, b{{x+w,y},c,{u1,v0}}, d{{x,y+h},c,{u0,v1}}, e{{x+w,y+h},c,{u1,v1}};
             const SDL_Vertex vertices[]={a,b,e,a,e,d};
             renderer->triangles(vertices,surface,pixels,surface->dirty);
@@ -213,7 +213,7 @@ namespace GAGCore
             if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
             for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
                 auto vertex = [&](float px,float py,float alpha) {
-                    return SDL_Vertex{{px,py},{color.r,color.g,color.b,Uint8(std::clamp(alpha,0.0f,1.0f)*255)}, {0,0}};
+                    return SDL_Vertex{{px,py},{color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, std::clamp(alpha,0.0f,1.0f)}, {0,0}};
                 };
                 float a=map[j*mapW+i]/1.0f, b=map[j*mapW+i+1]/1.0f;
                 float c=map[(j+1)*mapW+i+1]/1.0f, d=map[(j+1)*mapW+i]/1.0f;
@@ -305,7 +305,7 @@ namespace GAGCore
             if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
             for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
                 auto vertex = [&](float px,float py,float alpha) {
-                    return SDL_Vertex{{px,py},{color.r,color.g,color.b,Uint8(std::clamp(alpha,0.0f,1.0f)*255)}, {0,0}};
+                    return SDL_Vertex{{px,py},{color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, std::clamp(alpha,0.0f,1.0f)}, {0,0}};
                 };
                 float a=map[j*mapW+i]/255.0f, b=map[j*mapW+i+1]/255.0f;
                 float c=map[(j+1)*mapW+i+1]/255.0f, d=map[(j+1)*mapW+i]/255.0f;

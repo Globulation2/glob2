@@ -15,7 +15,7 @@
 #include "Building.h"
 #include "IntBuildingType.h"
 #include "GraphicContext.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -80,12 +80,11 @@ namespace
 		for (int y = 0; y < frame.h; ++y)
 			std::copy_n(frame.data.data() + y * frame.w * 4, frame.w * 4,
 				flipped.data() + (frame.h - 1 - y) * frame.w * 4);
-		auto* surface = SDL_CreateRGBSurfaceWithFormatFrom(flipped.data(), frame.w, frame.h, 32,
-			frame.w * 4, SDL_PIXELFORMAT_RGBA32);
+		auto* surface = SDL_CreateSurfaceFrom(frame.w, frame.h, SDL_PIXELFORMAT_RGBA32, flipped.data(), frame.w * 4);
 		require(surface != nullptr, "wrap the framebuffer for PNG output");
 		require(IMG_SavePNG(surface, (std::string(outputDir) + "/" + name + ".png").c_str()) == 0,
 			"write the PNG");
-		SDL_FreeSurface(surface);
+		SDL_DestroySurface(surface);
 	}
 
 	//! Horizontal extent of everything drawn on the cleared background, in gfx

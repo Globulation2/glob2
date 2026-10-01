@@ -43,7 +43,7 @@ void Engine::prepareRun()
 	{
 		assert(globalContainer->mix==nullptr);
 		printf("nox::game started\n");
-		automaticGameStartTick = SDL_GetTicks64();
+		automaticGameStartTick = SDL_GetTicks();
 	}
 	else
 	{

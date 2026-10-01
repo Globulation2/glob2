@@ -6,7 +6,7 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <assert.h>
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -50,10 +50,10 @@ namespace GAGCore
         packRead=true;packDirectory=directory;packText.clear();
         auto input=Toolkit::getFileManager()->open((directory+"/frames.txt").c_str(),"rb");
         if(!input){std::cerr<<"High-resolution pack unavailable: "<<directory<<std::endl;return false;}
-        const auto size=SDL_RWsize(input);
-        if(size<=0||size>1024*1024){SDL_RWclose(input);std::cerr<<"Invalid high-resolution manifest size"<<std::endl;return false;}
+        const auto size=SDL_GetIOSize(input);
+        if(size<=0||size>1024*1024){SDL_CloseIO(input);std::cerr<<"Invalid high-resolution manifest size"<<std::endl;return false;}
         std::string text(static_cast<size_t>(size),'\0');
-        const auto count=SDL_RWread(input,text.data(),1,text.size());SDL_RWclose(input);
+        const auto count=SDL_ReadIO(input,text.data(),text.size());SDL_CloseIO(input);
         if(count!=text.size())return false;
         std::istringstream header(text);std::string magic;int version=0;header>>magic>>version;
         if(magic!="GLOB2_HIGHRES"||version!=1){std::cerr<<"Unsupported high-resolution pack"<<std::endl;return false;}
@@ -71,8 +71,8 @@ namespace GAGCore
 	
 	bool Sprite::load(const std::string filename)
 	{
-		SDL_RWops *frameStream;
-		SDL_RWops *rotatedStream;
+		SDL_IOStream *frameStream;
+		SDL_IOStream *rotatedStream;
 		unsigned i = 0;
 		
 		this->fileName = filename;
@@ -104,9 +104,9 @@ namespace GAGCore
 			loadExperimentFrame(frameName.str(), frameNameRot.str());
 	
 			if (frameStream)
-				SDL_RWclose(frameStream);
+				SDL_CloseIO(frameStream);
 			if (rotatedStream)
-				SDL_RWclose(rotatedStream);
+				SDL_CloseIO(rotatedStream);
 			i++;
 		}
 		// TODO: How to cache rotated images?
@@ -423,9 +423,9 @@ namespace GAGCore
         {
             auto rw=Toolkit::getFileManager()->open((directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".png").c_str(),"rb");
             if(!rw){reject();return;}
-            auto s=IMG_Load_RW(rw,1);if(!s){reject();return;}
-            if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_FreeSurface(s);reject();return;}
-            levels.emplace_back(new DrawableSurface(s));SDL_FreeSurface(s);
+            auto s=IMG_Load_IO(rw,1);if(!s){reject();return;}
+            if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_DestroySurface(s);reject();return;}
+            levels.emplace_back(new DrawableSurface(s));SDL_DestroySurface(s);
         }
         // The atlas must correspond to this pack's validated frame layers.
         for(int i=0;i<count;++i)for(int y=0;y<experimentImages[i]->getH();++y)
@@ -443,8 +443,8 @@ namespace GAGCore
         // the upload boundary, as DrawableSurface::uploadToTexture does.
 #ifdef GLOB2_WEBGL2
         auto uploadAtlasMip = [&](int mip, DrawableSurface &surface) {
-            std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> rgba(
-                SDL_ConvertSurfaceFormat(surface.sdlsurface, SDL_PIXELFORMAT_RGBA32, 0), SDL_FreeSurface);
+            std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+                SDL_ConvertSurface(surface.sdlsurface, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
             if (!rgba) return false;
             glTexImage2D(GL_TEXTURE_2D, mip, GL_RGBA, rgba->w, rgba->h, 0,
                          GL_RGBA, GL_UNSIGNED_BYTE, rgba->pixels);
@@ -506,14 +506,14 @@ namespace GAGCore
 			{
 				if(name=="-")return nullptr;
 				if(name.find_first_of("/\\:")!=std::string::npos || name.find("..")!=std::string::npos)return nullptr;
-				SDL_RWops *rw=Toolkit::getFileManager()->open((directory+"/"+name).c_str(),"rb");
+				SDL_IOStream *rw=Toolkit::getFileManager()->open((directory+"/"+name).c_str(),"rb");
 				if(!rw)return nullptr;
-				SDL_Surface *surface=IMG_Load_RW(rw,1);if(!surface)return nullptr;
+				SDL_Surface *surface=IMG_Load_IO(rw,1);if(!surface)return nullptr;
 				int lw=original?original->getW():w,lh=original?original->getH():h;
 				int expectedW=dynamicTeamColor?highResolutionTextureSize:lw*scale;
 				int expectedH=dynamicTeamColor?highResolutionTextureSize:lh*scale;
-				if(surface->w!=expectedW||surface->h!=expectedH){SDL_FreeSurface(surface);return nullptr;}
-				auto result=new DrawableSurface(surface);result->highResolutionSampling=true;SDL_FreeSurface(surface);return result;
+				if(surface->w!=expectedW||surface->h!=expectedH){SDL_DestroySurface(surface);return nullptr;}
+				auto result=new DrawableSurface(surface);result->highResolutionSampling=true;SDL_DestroySurface(surface);return result;
 			};
 			auto normal=load(base,images[index]);
 			auto colored=load(team,rotated[index]?rotated[index]->orig:nullptr);
@@ -576,24 +576,24 @@ namespace GAGCore
 		}
 	}
 	
-	void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
+	void Sprite::loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream)
 	{
 		if (frameStream)
 		{
-			SDL_Surface *sprite = IMG_Load_RW(frameStream, 0);
+			SDL_Surface *sprite = IMG_Load_IO(frameStream, 0);
 			assert(sprite);
 			images.push_back(new DrawableSurface(sprite));
-			SDL_FreeSurface(sprite);
+			SDL_DestroySurface(sprite);
 		}
 		else
 			images.push_back(NULL);
 	
 		if (rotatedStream)
 		{
-			SDL_Surface *sprite = IMG_Load_RW(rotatedStream, 0);
+			SDL_Surface *sprite = IMG_Load_IO(rotatedStream, 0);
 			assert(sprite);
 			rotated.push_back(new RotatedImage(new DrawableSurface(sprite)));
-			SDL_FreeSurface(sprite);
+			SDL_DestroySurface(sprite);
 		}
 		else
 			rotated.push_back(NULL);

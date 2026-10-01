@@ -29,7 +29,7 @@
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <Toolkit.h>
 #include <algorithm>
 #include <chrono>

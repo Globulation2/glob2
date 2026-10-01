@@ -9,7 +9,7 @@
 #include "MapEditKeyActions.h"
 #include "FileManager.h"
 #include "Version.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <fstream>
 #include <string>
 #include <utility>
@@ -29,7 +29,7 @@
 #include <set>
 #include "Toolkit.h"
 #include "StringTable.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <filesystem>
 #include "BinaryStream.h"
 #include "StreamBackend.h"

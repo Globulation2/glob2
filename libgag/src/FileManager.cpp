@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <SDL_endian.h>
+#include <SDL3/SDL_endian.h>
 #include <iostream>
 #include <valarray>
 #include <vector>
@@ -196,7 +196,7 @@ namespace GAGCore
 		}
 	}
 	
-	SDL_RWops *FileManager::openWithbackup(const std::string filename, const std::string mode)
+	SDL_IOStream *FileManager::openWithbackup(const std::string filename, const std::string mode)
 	{
 		if (mode.find('w') != std::string::npos)
 		{
@@ -204,7 +204,7 @@ namespace GAGCore
 			backupName += '~';
 			rename(filename.c_str(), backupName.c_str());
 		}
-		return SDL_RWFromFile(filename.c_str(), mode.c_str());
+		return SDL_IOFromFile(filename.c_str(), mode.c_str());
 	}
 	
 	FILE *FileManager::openWithbackupFP(const std::string filename, const std::string mode)
@@ -295,11 +295,11 @@ namespace GAGCore
 		return new FileStreamBackend(NULL);
 	}
 	
-	SDL_RWops *FileManager::open(const std::string filename, const std::string mode)
+	SDL_IOStream *FileManager::open(const std::string filename, const std::string mode)
 	{
 		if (isAbsolutePath(filename))
 		{
-			SDL_RWops *fp = openWithbackup(filename.c_str(), mode.c_str());
+			SDL_IOStream *fp = openWithbackup(filename.c_str(), mode.c_str());
 			if (fp)
 				return fp;
 			return NULL;
@@ -310,7 +310,7 @@ namespace GAGCore
 			path += DIR_SEPARATOR;
 			path += filename;
 	
-			SDL_RWops *fp = openWithbackup(path.c_str(), mode.c_str());
+			SDL_IOStream *fp = openWithbackup(path.c_str(), mode.c_str());
 			if (fp)
 				return fp;
 		}
@@ -370,26 +370,28 @@ namespace GAGCore
 	Uint32 FileManager::checksum(const std::string filename)
 	{
 		Uint32 cs = 0;
-		SDL_RWops *stream = open(filename);
+		SDL_IOStream *stream = open(filename);
 		if (stream)
 		{
-			int length = SDL_RWseek(stream, 0, SEEK_END);
-			SDL_RWseek(stream, 0, SEEK_SET);
+			int length = SDL_SeekIO(stream, 0, SDL_IO_SEEK_END);
+			SDL_SeekIO(stream, 0, SDL_IO_SEEK_SET);
 			
 			int lengthBlock = length & (~0x3);
 			for (int i=0; i<(lengthBlock>>2); i++)
 			{
-				cs ^= SDL_ReadBE32(stream);
+				Uint32 value = 0;
+                if (!SDL_ReadU32BE(stream, &value)) break;
+                cs ^= value;
 				cs = (cs<<31)|(cs>>1);
 			}
 			int lengthRest = length & 0x3;
 			for (int i=0; i<lengthRest; i++)
 			{
 				unsigned char c;
-				SDL_RWread(stream, &c, 1, 1);
+				SDL_ReadIO(stream, &c, 1);
 				cs ^= (static_cast<Uint32>(c))<<(8*i);
 			}
-			SDL_RWclose(stream);
+			SDL_CloseIO(stream);
 		}
 		return cs;
 	}

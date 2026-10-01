@@ -29,7 +29,7 @@
 #include "UnitSkin.h"
 #include "Utilities.h"
 #include "GameGUI.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 
 #include "Brush.h"

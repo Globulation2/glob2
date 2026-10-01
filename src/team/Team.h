@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <SDL_rwops.h>
+#include <SDL3/SDL_iostream.h>
 #include <CooperativeTask.h>
 
 #include <climits>

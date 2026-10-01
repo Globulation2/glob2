@@ -88,7 +88,7 @@ namespace GAGCore
         {
             const float x=left/raster, y=top/raster;
             const float rightEdge=(right+stroke)/raster, bottomEdge=(bottom+stroke)/raster;
-            const SDL_Color ink{color.r,color.g,color.b,color.a};
+            const SDL_FColor ink{(color.r) / 255.0f, (color.g) / 255.0f, (color.b) / 255.0f, (color.a) / 255.0f};
             const SDL_Vertex a{{x,y},ink,{}}, b{{rightEdge,y},ink,{}},
                              c{{rightEdge,bottomEdge},ink,{}}, d{{x,bottomEdge},ink,{}};
             const SDL_Vertex vertices[]{a,b,c,a,c,d};
@@ -145,7 +145,7 @@ namespace GAGCore
         if (uiTransformActive && !renderer && (optionFlags & USEGPU)) {
             SDL_Rect transformed{int(std::floor(x*uiTransformScale+uiTransformX)),int(std::floor(y*uiTransformScale+uiTransformY)),
                 int(std::ceil(w*uiTransformScale)),int(std::ceil(h*uiTransformScale))};
-            SDL_Rect clipped{}; SDL_IntersectRect(&transformed,&uiBounds,&clipped);
+            SDL_Rect clipped{}; SDL_GetRectIntersection(&transformed,&uiBounds,&clipped);
             x=clipped.x;y=clipped.y;w=clipped.w;h=clipped.h;
         }
 #endif
@@ -280,7 +280,7 @@ namespace GAGCore
 	{
         if (renderer) {
             if (w <= 0 || h <= 0) return;
-            SDL_Color c{color.r,color.g,color.b,color.a};
+            SDL_FColor c{(color.r) / 255.0f, (color.g) / 255.0f, (color.b) / 255.0f, (color.a) / 255.0f};
             SDL_Vertex a{{x,y},c,{0,0}}, b{{x+w,y},c,{0,0}}, d{{x,y+h},c,{0,0}}, e{{x+w,y+h},c,{0,0}};
             const SDL_Vertex vertices[] = {a,b,e,a,e,d};
             renderer->triangles(vertices); return;
@@ -331,7 +331,7 @@ namespace GAGCore
             float dx=x2-x1, dy=y2-y1, length=std::hypot(dx,dy);
             if (length == 0) { drawPixel(x1,y1,color); return; }
             float nx=-dy/(2*length), ny=dx/(2*length);
-            SDL_Color c{color.r,color.g,color.b,color.a};
+            SDL_FColor c{(color.r) / 255.0f, (color.g) / 255.0f, (color.b) / 255.0f, (color.a) / 255.0f};
             SDL_Vertex a{{x1+nx,y1+ny},c,{0,0}}, b{{x2+nx,y2+ny},c,{0,0}}, d{{x1-nx,y1-ny},c,{0,0}}, e{{x2-nx,y2-ny},c,{0,0}};
             const SDL_Vertex vertices[] = {a,b,e,a,e,d};
             renderer->triangles(vertices); return;

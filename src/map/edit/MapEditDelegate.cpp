@@ -10,7 +10,7 @@
 #include "ScriptEditorScreen.h"
 #include <sstream>
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 bool MapEdit::hasDialog() const
 {
@@ -52,7 +52,7 @@ void MapEdit::drawDialog()
 void MapEdit::delegateMenu(SDL_Event& event)
 {
 	auto *dialog = activeDialog();
-	if (dialog && event.type != SDL_USEREVENT)
+	if (dialog && event.type != SDL_EVENT_USER)
 		dialog->event(event);
 	if(showingMenuScreen && menuScreen->finished())
 	{
@@ -164,13 +164,13 @@ void MapEdit::handleMapScroll()
 	/* We check that only Control is held to avoid accidentally
 		matching window manager bindings for switching windows
 		and/or desktops. */
-	if (!(modState & (KMOD_ALT|KMOD_SHIFT)))
+	if (!(modState & (SDL_KMOD_ALT|SDL_KMOD_SHIFT)))
 	{
 		/* It violates good abstraction principles that I
 			have to do the calculations in the next two
 			lines.  There should be methods that abstract
 			these computations. */
-		if ((modState & KMOD_CTRL))
+		if ((modState & SDL_KMOD_CTRL))
 		{
 			/* We move by half screens if Control is held while
 				the arrow keys are held.  So we shift by 6

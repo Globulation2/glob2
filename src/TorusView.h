@@ -4,7 +4,7 @@
 #define GLOB2_TORUS_VIEW_H
 #include "TorusPicking.h"
 #include "DynamicClouds.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 class Game;
 
 // Presentation-only state. Never serialized or sent to other players.

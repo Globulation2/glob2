@@ -102,7 +102,7 @@ namespace glob2test
 	std::string readFile(const std::filesystem::path& path);
 	void writeFile(const std::filesystem::path& path, const std::string& text);
 
-	// Portable setenv/unsetenv: mingw has neither, and SDL2 cannot unset.
+	// Portable setenv/unsetenv: SDL3 environment APIs work on every supported platform.
 	void setEnv(const char* name, const char* value);
 	void unsetEnv(const char* name);
 

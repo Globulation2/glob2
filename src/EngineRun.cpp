@@ -17,7 +17,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 #include "team/Team.h"
 #include "TeamStat.h"
 #include "building/IntBuildingType.h"
@@ -760,14 +760,14 @@ bool Engine::finishSession()
 
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
-    beginSession(SDL_GetTicks64());
+    beginSession(SDL_GetTicks());
     while (gui.isRunning) {
-        stepSession(SDL_GetTicks64());
+        stepSession(SDL_GetTicks());
         drawSession();
         if (!globalContainer->runNoX) {
             PerformanceTelemetry::Scope delayTime(session->wasReadyLastTick
                 ? PerformanceTelemetry::Id::Sleep : PerformanceTelemetry::Id::NetworkSleep);
-            GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks64()));
+            GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks()));
         }
     }
     doRunOnceAgain = finishSession();

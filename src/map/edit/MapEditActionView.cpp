@@ -8,7 +8,7 @@
 #include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 bool MapEdit::performViewAction(const std::string& action, int relMouseX, int relMouseY)
 {

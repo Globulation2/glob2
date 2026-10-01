@@ -2,7 +2,7 @@
 #include <ui/Host.h>
 #include <ui/Containers.h>
 #include <ui/Controls.h>
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <algorithm>
 #include <cstdio>
 #include <stdexcept>
@@ -14,8 +14,8 @@ namespace
 const FixedTextMeasurer fallbackMeasurer;
 bool touchMouse(const SDL_Event &event)
 {
-	return (event.type == SDL_MOUSEMOTION && event.motion.which == SDL_TOUCH_MOUSEID) ||
-		   ((event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP) &&
+	return (event.type == SDL_EVENT_MOUSE_MOTION && event.motion.which == SDL_TOUCH_MOUSEID) ||
+		   ((event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_MOUSE_BUTTON_UP) &&
 			event.button.which == SDL_TOUCH_MOUSEID);
 }
 } // namespace
@@ -32,7 +32,7 @@ Host::Host(const Theme &theme, Builder build) : themeValue(theme), build(std::mo
 Host::~Host()
 {
 	if (!editingKey.empty())
-		SDL_StopTextInput();
+		SDL_StopTextInput(SDL_GetKeyboardFocus());
 }
 
 void Host::setMeasurer(const TextMeasurer *value)
@@ -211,9 +211,9 @@ void Host::beginEditing(const std::string &key)
 	focusKey = key;
 	keyboardFocus = false;
 	if (!key.empty())
-		SDL_StartTextInput();
+		SDL_StartTextInput(SDL_GetKeyboardFocus());
 	else
-		SDL_StopTextInput();
+		SDL_StopTextInput(SDL_GetKeyboardFocus());
 	needsLayout = true;
 }
 
@@ -224,7 +224,7 @@ void Host::endEditing(bool cancelled)
 		return;
 	const std::string key = editingKey;
 	editingKey.clear();
-	SDL_StopTextInput();
+	SDL_StopTextInput(SDL_GetKeyboardFocus());
 	needsLayout = true;
 	if (auto *node = find(key))
 		node->blur(*this, cancelled);
@@ -469,41 +469,41 @@ bool Host::event(const SDL_Event &event)
 	layoutIfNeeded();
 	if (touchMouse(event))
 		return true;
-	const GAGCore::Ticks time = GAGCore::widenTicks(event.common.timestamp, lastTick);
+	const GAGCore::Ticks time = (event.common.timestamp / SDL_NS_PER_MS);
 	switch (event.type)
 	{
-	case SDL_FINGERDOWN:
-	case SDL_FINGERMOTION:
-	case SDL_FINGERUP:
+	case SDL_EVENT_FINGER_DOWN:
+	case SDL_EVENT_FINGER_MOTION:
+	case SDL_EVENT_FINGER_UP:
 	{
 		const Point point{int(event.tfinger.x * current.viewport.w),
 						  int(event.tfinger.y * current.viewport.h)};
-		const auto phase = event.type == SDL_FINGERDOWN   ? PointerPhase::Down
-						   : event.type == SDL_FINGERUP ? PointerPhase::Up
+		const auto phase = event.type == SDL_EVENT_FINGER_DOWN   ? PointerPhase::Down
+						   : event.type == SDL_EVENT_FINGER_UP ? PointerPhase::Up
 														  : PointerPhase::Move;
-		pointer(phase, point, event.tfinger.touchId, event.tfinger.fingerId, time);
+		pointer(phase, point, event.tfinger.touchID, event.tfinger.fingerID, time);
 		return true;
 	}
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEBUTTONUP:
+	case SDL_EVENT_MOUSE_BUTTON_DOWN:
+	case SDL_EVENT_MOUSE_BUTTON_UP:
 		if (event.button.button != SDL_BUTTON_LEFT)
 			return false;
-		hover = {event.button.x, event.button.y};
+		hover = {int(event.button.x), int(event.button.y)};
 		hoverValid = true;
-		pointer(event.type == SDL_MOUSEBUTTONDOWN ? PointerPhase::Down : PointerPhase::Up, hover,
+		pointer(event.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? PointerPhase::Down : PointerPhase::Up, hover,
 				-1, 0, time);
 		return true;
-	case SDL_MOUSEMOTION:
-		hover = {event.motion.x, event.motion.y};
+	case SDL_EVENT_MOUSE_MOTION:
+		hover = {int(event.motion.x), int(event.motion.y)};
 		hoverValid = true;
 		pointer(PointerPhase::Move, hover, -1, 0, time);
 		return true;
-	case SDL_MOUSEWHEEL:
+	case SDL_EVENT_MOUSE_WHEEL:
 	{
 		if (!hoverValid)
 			return false;
 		const int direction = event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
-		const int lines = event.wheel.y * direction;
+		const float lines = event.wheel.y * direction;
 		if (lines == 0)
 			return false;
 		cancelInput();
@@ -514,9 +514,9 @@ bool Host::event(const SDL_Event &event)
 		}
 		return false;
 	}
-	case SDL_KEYDOWN:
-		return keyDown({event.key.keysym.sym, event.key.keysym.mod, event.key.repeat != 0});
-	case SDL_TEXTEDITING:
+	case SDL_EVENT_KEY_DOWN:
+		return keyDown({event.key.key, event.key.mod, event.key.repeat != 0});
+	case SDL_EVENT_TEXT_EDITING:
 		// Provisional IME text is shown, never committed; Return while composing
 		// picks a candidate and must not submit the control.
 		if (editingKey.empty())
@@ -524,19 +524,23 @@ bool Host::event(const SDL_Event &event)
 		preedit = event.edit.text;
 		needsLayout = true;
 		return true;
-	case SDL_TEXTINPUT:
+	case SDL_EVENT_TEXT_INPUT:
 		preedit.clear();
 		if (!editingKey.empty())
 			if (auto *node = find(editingKey))
 				return node->textInput(event.text.text, *this);
 		return false;
-	case SDL_WINDOWEVENT:
-		if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+	case SDL_EVENT_WINDOW_RESIZED:
+            case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+            case SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED:
+            case SDL_EVENT_WINDOW_FOCUS_LOST:
+            case SDL_EVENT_WINDOW_FOCUS_GAINED:
+		if (event.type == SDL_EVENT_WINDOW_FOCUS_LOST)
 			cancelInput();
-		else if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+		else if (event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)
 			cancelGestures();
 		return false;
-	case SDL_APP_WILLENTERBACKGROUND:
+	case SDL_EVENT_WILL_ENTER_BACKGROUND:
 		cancelInput();
 		return false;
 	default:

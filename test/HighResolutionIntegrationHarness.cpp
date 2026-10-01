@@ -11,7 +11,7 @@
 #include "SettingsScreen.h"
 #include "Order.h"
 #include "Unit.h"
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #include <FileManager.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -35,8 +35,8 @@ class HighResolutionIntegrationHarness
         glFinish();GLint v[4];glGetIntegerv(GL_VIEWPORT,v);int w=v[2],h=v[3];
         std::vector<unsigned char>a(w*h*4),b(a.size());glReadPixels(v[0],v[1],w,h,GL_RGBA,GL_UNSIGNED_BYTE,a.data());
         for(int y=0;y<h;++y)std::copy_n(a.data()+y*w*4,w*4,b.data()+(h-1-y)*w*4);
-        auto s=SDL_CreateRGBSurfaceWithFormatFrom(b.data(),w,h,32,w*4,SDL_PIXELFORMAT_RGBA32);
-        REQUIRE((s&&IMG_SavePNG(s,((glob2test::artifactDir() / "runtime-check" / (name+".png")).string()).c_str())==0));SDL_FreeSurface(s);
+        auto s=SDL_CreateSurfaceFrom(w, h, SDL_PIXELFORMAT_RGBA32, b.data(), w*4);
+        REQUIRE((s&&IMG_SavePNG(s,((glob2test::artifactDir() / "runtime-check" / (name+".png")).string()).c_str())==0));SDL_DestroySurface(s);
         REQUIRE(glGetError()==GL_NO_ERROR);
     }
     static std::vector<unsigned char> pixels()
@@ -63,7 +63,7 @@ class HighResolutionIntegrationHarness
         auto gfx=globalContainer->gfx;gfx->nextFrame();
         int w,h;auto window=SDL_GL_GetCurrentWindow();
         if(std::string(SDL_GetCurrentVideoDriver())=="cocoa")SDL_GetWindowSize(window,&w,&h);
-        else SDL_GL_GetDrawableSize(window,&w,&h);
+        else SDL_GetWindowSizeInPixels(window,&w,&h);
         REQUIRE(std::abs(gfx->cursorManager.cacheScale-std::min(float(w)/gfx->getW(),float(h)/gfx->getH()))<.001);
     }
     static void checkWrappedSprites()
@@ -183,9 +183,9 @@ public:
                 gui.game.map.displayToMapCaseAligned(gui.mapMouseX(300),gui.mapMouseY(300),&x,&y,gui.viewportX,gui.viewportY);
                 REQUIRE(x==int(MapCamera::wrap(w.first,gui.camera.mapWidth)/32));REQUIRE(y==int(MapCamera::wrap(w.second,gui.camera.mapHeight)/32));
 				const auto orders=gui.orderQueue.size();
-                SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=1;
+                SDL_Event wheel{};wheel.type=SDL_EVENT_MOUSE_WHEEL;wheel.wheel.y=1;
 #if SDL_VERSION_ATLEAST(2,0,18)
-                wheel.wheel.preciseY=.25f;
+                wheel.wheel.y=.25f;
 #endif
 				gui.processEvent(&wheel);REQUIRE(gui.orderQueue.size()==orders);
                 gui.camera.setZoom(zoom,300,300);gui.viewportX=gui.camera.tileX();gui.viewportY=gui.camera.tileY();
@@ -255,25 +255,25 @@ public:
             editor.camera.setZoom(1,300,300);
             editor.viewportX=editor.camera.tileX();editor.viewportY=editor.camera.tileY();
             editor.mouseX=300;editor.mouseY=300;
-            SDL_Event wheel{};wheel.type=SDL_MOUSEWHEEL;wheel.wheel.y=1;
+            SDL_Event wheel{};wheel.type=SDL_EVENT_MOUSE_WHEEL;wheel.wheel.y=1;
 #if SDL_VERSION_ATLEAST(2,0,18)
-            wheel.wheel.preciseY=1;
+            wheel.wheel.y=1;
 #endif
             editor.processEvent(wheel);
             REQUIRE(editor.camera.zoom>1);
-            SDL_Event down{};down.type=SDL_MOUSEBUTTONDOWN;down.button.button=SDL_BUTTON_LEFT;
+            SDL_Event down{};down.type=SDL_EVENT_MOUSE_BUTTON_DOWN;down.button.button=SDL_BUTTON_LEFT;
             down.button.x=300;down.button.y=300;
             editor.processEvent(down);
             REQUIRE((editor.isLeftScrollDragging && editor.isScrollDragging));
             editor.mouseX=1;editor.handleMapScroll();REQUIRE(editor.xSpeed==0);
             editor.mouseX=300;
             const double beforePan=editor.camera.originX;
-            SDL_Event motion{};motion.type=SDL_MOUSEMOTION;motion.motion.x=312;motion.motion.y=308;
-            motion.motion.xrel=12;motion.motion.yrel=8;motion.motion.state=SDL_BUTTON(SDL_BUTTON_LEFT);
+            SDL_Event motion{};motion.type=SDL_EVENT_MOUSE_MOTION;motion.motion.x=312;motion.motion.y=308;
+            motion.motion.xrel=12;motion.motion.yrel=8;motion.motion.state=SDL_BUTTON_MASK(SDL_BUTTON_LEFT);
             editor.processEvent(motion);
             REQUIRE(std::abs(editor.camera.originX-
                 MapCamera::wrap(beforePan-12/editor.camera.zoom,editor.camera.mapWidth))<0.01);
-            SDL_Event up=down;up.type=SDL_MOUSEBUTTONUP;up.button.x=312;up.button.y=308;
+            SDL_Event up=down;up.type=SDL_EVENT_MOUSE_BUTTON_UP;up.button.x=312;up.button.y=308;
             editor.processEvent(up);
             REQUIRE((!editor.isLeftScrollDragging && !editor.isScrollDragging));
             editor.performAction("select forbidden zone");

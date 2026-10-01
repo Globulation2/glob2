@@ -13,7 +13,7 @@
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 void MapEdit::draw(Uint64 frameTick)
 {

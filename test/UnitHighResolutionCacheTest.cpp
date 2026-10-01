@@ -7,7 +7,7 @@
 #include <cmath>
 #include <Toolkit.h>
 #include <GraphicContext.h>
-#include <SDL_image.h>
+#include <SDL3_image/SDL_image.h>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #else
@@ -74,7 +74,7 @@ void run(bool software)
 {
 	// This test compares pixel alignment; lossy S3TC texture blocks obscure
 	// that comparison on Mesa when the two draw paths upload different layers.
-	SDL_setenv("GLOB2_DISABLE_S3TC", "1", 1);
+	SDL_setenv_unsafe("GLOB2_DISABLE_S3TC", "1", 1);
 	glob2test::ToolkitScope toolkit;
 	auto gfx = Toolkit::initGraphic(640, 480, software ? 0 : GraphicContext::USEGPU, "HD unit cache checks");
 	Sprite::setHighResolution(true);

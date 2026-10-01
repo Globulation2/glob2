@@ -19,7 +19,7 @@
 #include <list>
 #include <unordered_map>
 
-#include <SDLCompat.h>
+#include <SDL3/SDL.h>
 
 
 namespace GAGCore
@@ -384,7 +384,7 @@ namespace GAGCore
 		SDL_Window *window = nullptr;
 		unsigned glContextGeneration = 0;
 		SDL_GLContext context = nullptr;
-		SDL_threadID eventThread = 0;
+		SDL_ThreadID eventThread = 0;
 		bool pollingEvents = false;
 		bool presenting = false;
 		bool watchingEvents = false;
@@ -418,7 +418,7 @@ namespace GAGCore
 		void destroyUnitShader();
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
-		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
+		static bool SDLCALL watchWindow(void *userdata, SDL_Event *event);
 		std::unique_ptr<RenderBackend> renderer;
         // Rasterizes transformed passes into the existing software framebuffer.
         std::unique_ptr<RenderBackend> softwareRasterizer;
@@ -491,7 +491,7 @@ namespace GAGCore
 		unsigned long getDrawCallCount() const {return drawCalls;}
 		void resetDrawCallCount(){drawCalls=0;}
 		//! convert window pixel coordinates (as delivered by SDL) to logical coordinates
-		void windowToLogical(Sint32 &x, Sint32 &y);
+		void windowToLogical(float &x, float &y);
 		//! set a GL line width in logical pixels; GL rasterises lines in window pixels, which the viewport does not scale
 		void setScaledLineWidth(float width);
 		//! declare that drawing now goes to an offscreen target with this many of its pixels per logical pixel; 0 restores the window
@@ -500,6 +500,7 @@ namespace GAGCore
 		float getRasterScale(void) {return rasterScale();}
 		//! translate SDL_GetMouseState coordinates through the active context's scaling
 		static void translateMouseCoordinates(int &x, int &y);
+        static void translateMouseCoordinates(float &x, float &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
 		static void translateMouseEvent(SDL_Event *event);
 		//! Pump events at a frame boundary; modal expose callbacks only present a cached frame.
@@ -664,7 +665,7 @@ namespace GAGCore
 		friend class DrawableSurface;
 		// Support functions
 		//! Load a frame from two file pointers
-		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
+		void loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary

@@ -5,7 +5,8 @@
 #ifndef SDL_MAIN_HANDLED
 #define SDL_MAIN_HANDLED
 #endif
-#include <SDL.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "Glob2Test.h"
 
@@ -37,17 +38,17 @@ namespace
 #endif
 			)));
 			std::filesystem::create_directories(selfMadeProfile);
-			SDL_setenv("GLOB2_USER_DATA_DIR", selfMadeProfile.string().c_str(), 1);
+			SDL_setenv_unsafe("GLOB2_USER_DATA_DIR", selfMadeProfile.string().c_str(), 1);
 		}
 		// GLOB2_TEST_DISPLAY=1 (set by the runner for [display] cases) keeps the real
 		// video driver; everything else renders nowhere.
 		const char* display = std::getenv("GLOB2_TEST_DISPLAY");
 		if (!display || !*display || std::string(display) == "0")
 		{
-			SDL_setenv("SDL_VIDEODRIVER", "dummy", 0);
-			SDL_setenv("SDL_RENDER_DRIVER", "software", 0);  // the dummy driver has no accelerated renderer
+			SDL_setenv_unsafe("SDL_VIDEODRIVER", "dummy", 0);
+			SDL_setenv_unsafe("SDL_RENDER_DRIVER", "software", 0);  // the dummy driver has no accelerated renderer
 		}
-		SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
+		SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 0);
 	}
 
 	void teardown()

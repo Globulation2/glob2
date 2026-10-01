@@ -19,7 +19,7 @@ bool GameGUI::torusMapPointer(int x, int y, int &mx, int &my) const
 
 bool GameGUI::handleTorusPointer(const SDL_Event &event)
 {
-    if (event.type != SDL_MOUSEBUTTONDOWN && event.type != SDL_MOUSEBUTTONUP)
+    if (event.type != SDL_EVENT_MOUSE_BUTTON_DOWN && event.type != SDL_EVENT_MOUSE_BUTTON_UP)
         return false;
     if (event.button.button != SDL_BUTTON_LEFT)
         return false;
@@ -31,7 +31,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
     bool hit = onMap && torusMapPointer(event.button.x, event.button.y, mx, my);
     mouseX = event.button.x;
     mouseY = event.button.y;
-    if (event.type == SDL_MOUSEBUTTONDOWN)
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
     {
         torusPointerDown = hit;
         torusView.setPointerHeld(hit);

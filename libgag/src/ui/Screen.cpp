@@ -75,16 +75,16 @@ namespace
 {
 bool quitRequest(const SDL_Event &event)
 {
-	if (event.type == SDL_QUIT)
+	if (event.type == SDL_EVENT_QUIT)
 		return true;
-	if (event.type != SDL_KEYDOWN)
+	if (event.type != SDL_EVENT_KEY_DOWN)
 		return false;
 #ifdef USE_OSX
-	if (event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
+	if (event.key.key == SDLK_Q && (event.key.mod & SDL_KMOD_GUI))
 		return true;
 #endif
 #ifdef USE_WIN32
-	if (event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
+	if (event.key.key == SDLK_F4 && (event.key.mod & SDL_KMOD_ALT))
 		return true;
 #endif
 	return false;
@@ -158,7 +158,7 @@ void UIScreen::handleExecutionEvent(SDL_Event event)
 		endExecute(QUIT_APPLICATION);
 		return;
 	}
-	if (event.type == SDL_MOUSEWHEEL && !scrollWheelEnabled)
+	if (event.type == SDL_EVENT_MOUSE_WHEEL && !scrollWheelEnabled)
 		return;
 	refreshPresentation();
 	if (interceptEvent(event))
