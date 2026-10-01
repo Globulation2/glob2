@@ -191,6 +191,8 @@ use existing player configuration/save mechanisms, and orders use the existing
 multiplayer/replay path. No additional synchronization protocol is introduced.
 Save format 124 uses version-gated loading with minimum save version 58 retained;
 network/YOG protocol 47 rejects older clients; replay minimum remains 123.
+Current saves preserve and validate entity identities and their counters; truncated
+counter tables are rejected, including missing entries for unused entity slots.
 Profile versioning and API-maintenance obligations are in the reference.
 
 ## Verify a change

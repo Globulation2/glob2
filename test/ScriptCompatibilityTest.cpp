@@ -10,6 +10,7 @@
 #include <StreamBackend.h>
 #include <Toolkit.h>
 #include <FileManager.h>
+#include <cstdio>
 
 TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
@@ -107,5 +108,47 @@ TEST_CASE("JavaScript pass assigns valid identities to released saves" *
 				}
 		}
 		CHECK(entities > 0);
+	}
+}
+
+TEST_CASE("JavaScript current saves reject truncated generation tables" *
+		  doctest::test_suite("JavaScriptCompatibility"))
+{
+	glob2test::HeadlessGlobals globals;
+	const auto bytes = glob2test::readFile(
+		glob2test::inflated("javascript/profile1-initial.game.gz"));
+	GAGCore::BinaryInputStream complete(
+		new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+	complete.seekFromStart(0);
+	GameGUI original;
+	REQUIRE(original.game.load(&complete));
+	const auto counterEnd = complete.getPosition();
+	REQUIRE(counterEnd > 4);
+	// The last counter is unused and zero. Partial file reads previously
+	// left zero bytes in place and bypassed the live-identity validation.
+	for (size_t removed : {1, 2, 3, 4})
+	{
+		CAPTURE(removed);
+		const auto truncated = bytes.substr(0, counterEnd - removed);
+		const auto path = glob2test::artifactDir() /
+			("truncated-generations-" + std::to_string(removed) + ".bin");
+		glob2test::writeFile(path, truncated);
+		for (bool file : {false, true})
+		{
+			CAPTURE(file);
+			GAGCore::StreamBackend *backend;
+			if (file)
+			{
+				auto *handle = std::fopen(path.string().c_str(), "rb");
+				REQUIRE(handle);
+				backend = new GAGCore::FileStreamBackend(handle);
+			}
+			else
+				backend = new GAGCore::MemoryStreamBackend(truncated.data(), truncated.size());
+			GAGCore::BinaryInputStream input(backend);
+			input.seekFromStart(0);
+			GameGUI target;
+			CHECK_THROWS_AS(target.game.load(&input), std::ios_base::failure);
+		}
 	}
 }

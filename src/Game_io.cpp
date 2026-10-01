@@ -320,6 +320,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 			players[p]->ai->bindTelemetry();
 	if(versionMinor >= 124)
 	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		stream->readEnterSection("scriptGenerations");
 		for(unsigned i=0;i<scriptGenerations.size();++i){stream->readEnterSection(i);scriptGenerations[i]=stream->readUint32("value");stream->readLeaveSection();}
 		stream->readLeaveSection();
