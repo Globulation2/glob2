@@ -3418,3 +3418,25 @@ Deneyler
 Nöbet alanı dengeleme
 [experiment guard-area-balancing help]
 Serbest savaşçılar hepsi en yakınına gitmek yerine boyanmış nöbet alanları arasında dağılır: daha büyük bir alan daha fazlasını alır ve aşırı dolu bir alan yavaş yavaş diğerlerine boşalır.
+[settings Touch scrolling]
+Dokunmatik kaydırma
+[settings List momentum]
+Liste ivmesi
+[settings How far lists and panels keep scrolling after a flick.]
+Listelerin ve panellerin bir fiskeden sonra ne kadar kaymaya devam ettiği.
+[settings List bounce]
+Liste sekmesi
+[settings How much lists and panels stretch past their ends and spring back.]
+Listelerin ve panellerin kenarlarını ne kadar aşıp geri yaylandığı.
+[settings Map momentum]
+Harita ivmesi
+[settings How far the map keeps panning after a flick.]
+Haritanın bir fiskeden sonra ne kadar kaymaya devam ettiği.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Dokunmatik kaydırma hissi. 0 bir efekti kapatır; 50 varsayılandır.
+[List momentum]
+Liste ivmesi
+[List bounce]
+Liste sekmesi
+[Map momentum]
+Harita ivmesi

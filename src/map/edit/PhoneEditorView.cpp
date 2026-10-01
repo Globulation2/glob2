@@ -80,7 +80,7 @@ void PhoneEditor::prepareInspector()
 		add("[Magic At. Ground]", editor.unitMagicGroundAttackLevelScrollBox);
 	}
 	inspectorMaximum = std::max(0., properties.size() * 72 * u - inspectorBody.h);
-	inspectorScroll = std::clamp(inspectorScroll, 0., inspectorMaximum);
+	syncInspector();
 	for (size_t i = 0; i < properties.size(); ++i)
 		properties[i].rect = {inspectorBody.x, inspectorBody.y + i * 72 * u - inspectorScroll,
 							  inspectorBody.w, 68 * u};

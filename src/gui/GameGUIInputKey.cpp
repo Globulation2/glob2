@@ -78,6 +78,7 @@ void GameGUI::toggleTorusView()
     if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
     torusPointerDown=false;
     torusView.toggle();
+    stopViewportMotion();
     selectionPushed = panPushed = mapPanPushed = miniMapPushed = false;
     viewportSpeedX = viewportSpeedY = 0;
 }
@@ -225,6 +226,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 
 					int sw = globalContainer->gfx->getW();
 					int sh = globalContainer->gfx->getH();
+					stopViewportMotion();
 					viewportX = evX-int(camera.visibleW()/64);
 					viewportY = evY-int(camera.visibleH()/64);
 
@@ -241,6 +243,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 
 				    int sw = globalContainer->gfx->getW();
 					int sh = globalContainer->gfx->getH();
+					stopViewportMotion();
 					viewportX = evX-int(camera.visibleW()/64);
 					viewportY = evY-int(camera.visibleH()/64);
 

@@ -27,6 +27,8 @@ class UIScreen : public Screen
 	void updateExecution(Uint32 tick) override;
 	void handleExecutionEvent(SDL_Event event) override;
 	void drawExecution() override;
+	// Frames come every 16 ms while scrolled content coasts or bounces.
+	Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
 	void viewportResized(int, int, int, int) override;
 	void cancelExecutionInput() override;
 	// Paints once into the current surface without presenting; harness use.

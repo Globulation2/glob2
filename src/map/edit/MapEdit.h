@@ -398,6 +398,8 @@ public:
 	void update();
 
     bool usesPhone() const { return bool(phone); }
+    // Touch content is coasting or bouncing; the screen frames faster meanwhile.
+    bool touchAnimating() const;
     void beginEditing();
     void viewportResized(int oldWidth, int oldHeight, int width, int height);
     void requestLoad(std::string filename) { pendingLoadFilename = std::move(filename); }

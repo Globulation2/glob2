@@ -82,6 +82,11 @@ public:
 	int gameSpeed;
     std::string interfacePresentation = "automatic";
     int mobileDialogTextPercent; // Local UI preference; never part of saves/orders.
+    // Touch scroll feel, 0..100 each: 0 turns the effect off, 50 is the default.
+    // Local presentation preferences; never part of saves or orders.
+    int touchScrollMomentum = 50; // lists, panels and trays keep moving after a flick
+    int touchScrollBounce = 50;   // lists, panels and trays stretch past their ends
+    int mapScrollMomentum = 50;   // game and editor maps keep panning after a flick
 
 	enum
 	{

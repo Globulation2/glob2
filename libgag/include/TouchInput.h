@@ -8,8 +8,11 @@
 namespace GAGCore
 {
 enum class TouchMode { Navigate, Placement, Paint };
-enum class TouchActionKind { Select, Pan, Zoom, Preview, BeginStroke, Stroke, EndStroke, Cancel };
-struct TouchAction { TouchActionKind kind; ViewPoint point; double factor=1; };
+// Pan carries a delta; PanEnd follows the last Pan of a gesture (finger lifted or a
+// second finger changed the gesture) so consumers can release momentum.
+enum class TouchActionKind { Select, Pan, PanEnd, Zoom, Preview, BeginStroke, Stroke, EndStroke, Cancel };
+// `time` is the SDL event timestamp in milliseconds when the caller supplies one.
+struct TouchAction { TouchActionKind kind; ViewPoint point; double factor=1; std::uint64_t time=0; };
 class TouchInput
 {
     using Key=std::pair<std::int64_t,std::int64_t>;
@@ -36,23 +39,23 @@ public:
         return {{TouchActionKind::Cancel,{}}};
     }
     std::vector<TouchAction> setMode(TouchMode selected) { auto actions=cancel();mode=selected;return actions; }
-    std::vector<TouchAction> down(std::int64_t device,std::int64_t finger,ViewPoint point)
+    std::vector<TouchAction> down(std::int64_t device,std::int64_t finger,ViewPoint point,std::uint64_t time=0)
     {
         if(fingers.contains({device,finger})) return {};
         fingers[{device,finger}]={point,point};
-        if(fingers.size()>2) { suppress=true;painting=false;return {{TouchActionKind::Cancel,{}}}; }
+        if(fingers.size()>2) { suppress=true;painting=false;return {{TouchActionKind::Cancel,{},1,time}}; }
         if(suppress) return {};
         if(fingers.size()==2) {
             dragging=true;
-            if(painting) {painting=false;return {{TouchActionKind::Cancel,point}};}
+            if(painting) {painting=false;return {{TouchActionKind::Cancel,point,1,time}};}
             return {};
         }
         dragging=false;
-        if(mode==TouchMode::Placement) return {{TouchActionKind::Preview,point}};
-        if(mode==TouchMode::Paint) {painting=true;return {{TouchActionKind::BeginStroke,point}};}
+        if(mode==TouchMode::Placement) return {{TouchActionKind::Preview,point,1,time}};
+        if(mode==TouchMode::Paint) {painting=true;return {{TouchActionKind::BeginStroke,point,1,time}};}
         return {};
     }
-    std::vector<TouchAction> move(std::int64_t device,std::int64_t finger,ViewPoint point)
+    std::vector<TouchAction> move(std::int64_t device,std::int64_t finger,ViewPoint point,std::uint64_t time=0)
     {
         auto it=fingers.find({device,finger});
         if(it==fingers.end() || suppress) return {};
@@ -60,29 +63,30 @@ public:
         if(fingers.size()==2) {
             auto middle=midpoint();double span=separation();it->second.point=point;
             auto next=midpoint();double nextSpan=separation();
-            std::vector<TouchAction> out{{TouchActionKind::Pan,{next.x-middle.x,next.y-middle.y}}};
-            if(span>=1 && nextSpan>=1) out.push_back({TouchActionKind::Zoom,next,nextSpan/span});
+            std::vector<TouchAction> out{{TouchActionKind::Pan,{next.x-middle.x,next.y-middle.y},1,time}};
+            if(span>=1 && nextSpan>=1) out.push_back({TouchActionKind::Zoom,next,nextSpan/span,time});
             return out;
         }
         it->second.point=point;
-        if(mode==TouchMode::Placement) return {{TouchActionKind::Preview,point}};
-        if(mode==TouchMode::Paint) return {{TouchActionKind::Stroke,point}};
+        if(mode==TouchMode::Placement) return {{TouchActionKind::Preview,point,1,time}};
+        if(mode==TouchMode::Paint) return {{TouchActionKind::Stroke,point,1,time}};
         if(!dragging) {
             if(distance(point,it->second.start)<8) return {};
             dragging=true;previous=it->second.start;
         }
-        return {{TouchActionKind::Pan,{point.x-previous.x,point.y-previous.y}}};
+        return {{TouchActionKind::Pan,{point.x-previous.x,point.y-previous.y},1,time}};
     }
-    std::vector<TouchAction> up(std::int64_t device,std::int64_t finger,ViewPoint point)
+    std::vector<TouchAction> up(std::int64_t device,std::int64_t finger,ViewPoint point,std::uint64_t time=0)
     {
         auto it=fingers.find({device,finger});
         if(it==fingers.end()) return {};
         std::vector<TouchAction> out;
         if(!suppress && fingers.size()==1) {
-            if(painting) out.push_back({TouchActionKind::EndStroke,point});
+            if(painting) out.push_back({TouchActionKind::EndStroke,point,1,time});
             else if(mode==TouchMode::Navigate && !dragging && distance(point,it->second.start)<8)
-                out.push_back({TouchActionKind::Select,point});
+                out.push_back({TouchActionKind::Select,point,1,time});
         }
+        if(!suppress && dragging && !painting) out.push_back({TouchActionKind::PanEnd,point,1,time});
         fingers.erase(it);painting=false;
         if(fingers.empty()) {suppress=false;dragging=false;} else suppress=true;
         return out;

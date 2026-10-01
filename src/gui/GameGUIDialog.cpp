@@ -3,6 +3,7 @@
 
 #include "GameGUIDialog.h"
 #include "FormatableString.h"
+#include "ScrollTuning.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "Player.h"
@@ -462,8 +463,32 @@ Element InGameOptionScreen::build(const Presentation &p)
 								   [this](bool value)
 								   {
 									   globalContainer->reducedMotion = value;
+									   applyScrollTuning(globalContainer->settings, value);
 									   invalidate();
 								   }));
+		// Touch scroll feel, tunable mid-game like volume: 0 is off, 50 the default.
+		struct ScrollSlider
+		{
+			const char *key, *caption;
+			int Settings::*field;
+		};
+		for (const auto &item : {ScrollSlider{"momentum", "[List momentum]", &Settings::touchScrollMomentum},
+								 ScrollSlider{"bounce", "[List bounce]", &Settings::touchScrollBounce},
+								 ScrollSlider{"mapmomentum", "[Map momentum]", &Settings::mapScrollMomentum}})
+		{
+			fe::SliderOptions options;
+			options.caption = fe::tr(item.caption);
+			options.valueText = std::to_string(settings.*item.field) + "%";
+			parts.push_back(fe::slider(item.key, settings.*item.field, 0, 100,
+									   [this, field = item.field](int value)
+									   {
+										   auto &s = globalContainer->settings;
+										   s.*field = std::clamp(value, 0, 100);
+										   applyScrollTuning(s, globalContainer->reducedMotion);
+										   invalidate();
+									   },
+									   options));
+		}
 		const int percent = settings.mobileDialogTextPercent;
 		const int selected = percent >= 150 ? 2 : percent >= 125 ? 1 : 0;
 		std::vector<std::string> sizes;

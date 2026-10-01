@@ -3410,3 +3410,25 @@ Kísérletek
 Őrterületek kiegyensúlyozása
 [experiment guard-area-balancing help]
 A szabad harcosok eloszlanak a kijelölt őrterületek között ahelyett, hogy mind a legközelebbibe mennének: a nagyobb terület többet kap belőlük, a túlzsúfolt terület pedig fokozatosan a többibe ürül.
+[settings Touch scrolling]
+Érintéses görgetés
+[settings List momentum]
+Listák lendülete
+[settings How far lists and panels keep scrolling after a flick.]
+Milyen messzire görögnek tovább a listák és panelek egy pöccintés után.
+[settings List bounce]
+Listák visszapattanása
+[settings How much lists and panels stretch past their ends and spring back.]
+Mennyire nyúlnak túl a listák és panelek a szélükön, mielőtt visszaugranak.
+[settings Map momentum]
+Térkép lendülete
+[settings How far the map keeps panning after a flick.]
+Milyen messzire mozog tovább a térkép egy pöccintés után.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Az érintéses görgetés érzete. 0 kikapcsol egy hatást; 50 az alapértelmezés.
+[List momentum]
+Listák lendülete
+[List bounce]
+Listák visszapattanása
+[Map momentum]
+Térkép lendülete

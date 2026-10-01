@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Element.h"
+#include <ScrollPhysics.h>
 #include <TouchInput.h>
 #include <functional>
 #include <optional>
@@ -72,6 +73,9 @@ class Host
 	bool popupOpen() const { return popup != nullptr; }
 	// A press, drag or popup is in progress; screens defer expensive rebuilds meanwhile.
 	bool interacting() const { return popup != nullptr || !pressedKey.empty() || !capturedKey.empty(); }
+	// Scrolled content is coasting or bouncing after a touch; screens shorten
+	// their frame budget while this holds so the motion stays smooth.
+	bool animating() const { return scrolling && scrolling->axis.isAnimating(); }
 	void scrollIntoView(const std::string &key);
 
 	// Queries, also for harnesses.
@@ -106,6 +110,20 @@ class Host
 	Uint32 lastTick = 0;
 	std::string tooltipKey, tooltipSuppressedKey;
 	Uint32 tooltipSince = 0;
+	// The scrollable an inertial touch drag is moving, kept while it coasts or
+	// bounces. `lastWritten` detects content moved by something else meanwhile.
+	struct ActiveScroll
+	{
+		std::string key;
+		GAGCore::ScrollAxis axis;
+		int lastWritten = 0;
+	};
+	std::optional<ActiveScroll> scrolling;
+	// A touch that stopped coasting content is not also a tap.
+	bool swallowTap = false;
+	void writeScroll();
+	void dropScroll();
+	void settleScroll(GAGCore::Ticks time);
 
 	struct Popup
 	{
@@ -124,8 +142,8 @@ class Host
 	LayoutContext context() const;
 	void saveStates();
 	void restoreStates();
-	void pointer(PointerPhase phase, Point point, std::int64_t device, std::int64_t finger);
-	void apply(const std::vector<GAGCore::TouchAction> &actions, Point point);
+	void pointer(PointerPhase phase, Point point, std::int64_t device, std::int64_t finger, GAGCore::Ticks time);
+	void apply(const std::vector<GAGCore::TouchAction> &actions, Point point, std::int64_t device);
 	Node *interactiveAt(Point point) const;
 	Node *scrollableAt(Point point) const;
 	bool keyDown(const KeyEvent &key);

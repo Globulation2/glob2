@@ -3410,3 +3410,25 @@ Kokeilut
 Vartioalueiden tasapainotus
 [experiment guard-area-balancing help]
 Vapaat soturit jakautuvat maalattujen vartioalueiden kesken sen sijaan, että kaikki menisivät lähimpään: suurempi alue saa heitä enemmän, ja ylitäysi alue harvenee vähitellen muihin.
+[settings Touch scrolling]
+Kosketusvieritys
+[settings List momentum]
+Listojen liike-energia
+[settings How far lists and panels keep scrolling after a flick.]
+Kuinka pitkälle listat ja paneelit jatkavat vieritystä pyyhkäisyn jälkeen.
+[settings List bounce]
+Listojen kimmoisuus
+[settings How much lists and panels stretch past their ends and spring back.]
+Kuinka paljon listat ja paneelit venyvät reunan yli ja palautuvat.
+[settings Map momentum]
+Kartan liike-energia
+[settings How far the map keeps panning after a flick.]
+Kuinka pitkälle kartta jatkaa liikettä pyyhkäisyn jälkeen.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Kosketusvierityksen tuntuma. 0 poistaa tehosteen käytöstä; 50 on oletus.
+[List momentum]
+Listojen liike-energia
+[List bounce]
+Listojen kimmoisuus
+[Map momentum]
+Kartan liike-energia

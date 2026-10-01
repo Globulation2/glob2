@@ -162,13 +162,16 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		require(actions.size() == 1 && actions[0].kind == TouchActionKind::Pan,
 				"Threshold did not start pan");
 		near(actions[0].point.x, 8);
-		require(touch.up(1, 1, {28, 20}).empty(), "Pan released as tap");
+		actions = touch.up(1, 1, {28, 20}, 500);
+		require(actions.size() == 1 && actions[0].kind == TouchActionKind::PanEnd && actions[0].time == 500,
+				"Pan release did not end the pan with its timestamp");
 		touch.down(1, 1, {10, 10});
 		touch.down(1, 2, {30, 10});
 		actions = touch.move(1, 2, {50, 10});
 		require(actions.size() == 2 && actions[1].kind == TouchActionKind::Zoom, "Pinch missing");
 		near(actions[1].factor, 2);
-		touch.up(1, 2, {50, 10});
+		actions = touch.up(1, 2, {50, 10});
+		require(actions.size() == 1 && actions[0].kind == TouchActionKind::PanEnd, "Lifting one of two fingers did not end the pan");
 		require(touch.move(1, 1, {90, 90}).empty(), "Remaining finger moved world");
 		require(touch.up(1, 1, {90, 90}).empty(), "Pinch ended as tap");
 		touch.setMode(TouchMode::Placement);

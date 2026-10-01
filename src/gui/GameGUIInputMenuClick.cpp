@@ -38,6 +38,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			miniMapPushed=true;
 			int oldViewportX = viewportX;
 			int oldViewportY = viewportY;
+			stopViewportMotion();
 			minimapMouseToPos(globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + mx, my, &viewportX, &viewportY, true);
 			viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 		}

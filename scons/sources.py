@@ -658,6 +658,7 @@ GAG_SOURCES = (
     'TextSort.cpp',
     'ApplicationHost.cpp',
     'ScreenStack.cpp',
+    'ScrollPhysics.cpp',
     'ui/TextLayout.cpp',
     'ui/Canvas.cpp',
     'ui/Presentation.cpp',

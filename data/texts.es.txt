@@ -3410,3 +3410,25 @@ Experimentos
 Equilibrio de zonas de guardia
 [experiment guard-area-balancing help]
 Los guerreros libres se reparten entre las zonas de guardia pintadas en lugar de ir todos a la más cercana: una zona más grande recibe más, y una zona saturada se vacía poco a poco hacia las demás.
+[settings Touch scrolling]
+Desplazamiento táctil
+[settings List momentum]
+Inercia de las listas
+[settings How far lists and panels keep scrolling after a flick.]
+Cuánto siguen desplazándose las listas y paneles tras un gesto.
+[settings List bounce]
+Rebote de las listas
+[settings How much lists and panels stretch past their ends and spring back.]
+Cuánto se estiran las listas y paneles más allá de sus extremos antes de volver.
+[settings Map momentum]
+Inercia del mapa
+[settings How far the map keeps panning after a flick.]
+Cuánto sigue moviéndose el mapa tras un gesto.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Sensación del desplazamiento táctil. 0 desactiva un efecto; 50 es el valor predeterminado.
+[List momentum]
+Inercia de las listas
+[List bounce]
+Rebote de las listas
+[Map momentum]
+Inercia del mapa

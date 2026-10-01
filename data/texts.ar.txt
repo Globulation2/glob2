@@ -3408,3 +3408,25 @@ Emoji
 موازنة مناطق الحراسة
 [experiment guard-area-balancing help]
 يتوزع المحاربون الأحرار بين مناطق الحراسة المرسومة بدلاً من التوجه جميعاً إلى الأقرب: تحصل المنطقة الأكبر على عدد أكبر منهم، والمنطقة المكتظة تتناقص لصالح المناطق الأخرى.
+[settings Touch scrolling]
+التمرير باللمس
+[settings List momentum]
+زخم القوائم
+[settings How far lists and panels keep scrolling after a flick.]
+إلى أي مدى تستمر القوائم واللوحات في التمرير بعد النقرة السريعة.
+[settings List bounce]
+ارتداد القوائم
+[settings How much lists and panels stretch past their ends and spring back.]
+مقدار تمدد القوائم واللوحات بعد أطرافها قبل أن تعود.
+[settings Map momentum]
+زخم الخريطة
+[settings How far the map keeps panning after a flick.]
+إلى أي مدى تستمر الخريطة في التحرك بعد النقرة السريعة.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+إحساس التمرير باللمس. 0 يعطل التأثير؛ 50 هو الافتراضي.
+[List momentum]
+زخم القوائم
+[List bounce]
+ارتداد القوائم
+[Map momentum]
+زخم الخريطة

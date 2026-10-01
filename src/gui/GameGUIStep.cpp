@@ -21,6 +21,7 @@
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "LoadSaveDialog.h"
 #include "GameGUIInternal.h"
@@ -251,6 +252,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
         camera.originY+=viewportSpeedY*32/camera.zoom;
         camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 	}
+	if (touch) touch->advanceScroll(now);
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 

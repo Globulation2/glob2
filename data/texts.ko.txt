@@ -3406,3 +3406,25 @@ AI 추가
 경비 구역 분산
 [experiment guard-area-balancing help]
 자유로운 전사들이 가장 가까운 경비 구역에 모두 몰리는 대신 칠해진 경비 구역들 사이에 나뉘어 배치됩니다. 더 큰 구역이 더 많은 전사를 받고, 너무 붐비는 구역은 다른 구역으로 서서히 빠져나갑니다.
+[settings Touch scrolling]
+터치 스크롤
+[settings List momentum]
+목록 관성
+[settings How far lists and panels keep scrolling after a flick.]
+튕긴 뒤 목록과 패널이 얼마나 계속 스크롤되는지.
+[settings List bounce]
+목록 바운스
+[settings How much lists and panels stretch past their ends and spring back.]
+목록과 패널이 끝을 넘어 얼마나 늘어났다가 되돌아오는지.
+[settings Map momentum]
+지도 관성
+[settings How far the map keeps panning after a flick.]
+튕긴 뒤 지도가 얼마나 계속 움직이는지.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+터치 스크롤 감각. 0은 효과를 끄고 50이 기본값입니다.
+[List momentum]
+목록 관성
+[List bounce]
+목록 바운스
+[Map momentum]
+지도 관성

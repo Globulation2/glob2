@@ -3420,3 +3420,25 @@ Esperimentuak
 Zaintza-eremuen oreka
 [experiment guard-area-balancing help]
 Gerlari libreak margotutako zaintza-eremuen artean banatzen dira, guztiak hurbilenera joan beharrean: eremu handiago batek gehiago jasotzen ditu, eta gainezka dagoen eremu bat pixkanaka husten da besteetara.
+[settings Touch scrolling]
+Ukipen bidezko korritzea
+[settings List momentum]
+Zerrenden inertzia
+[settings How far lists and panels keep scrolling after a flick.]
+Zenbat jarraitzen duten zerrendek eta panelek korritzen keinu baten ondoren.
+[settings List bounce]
+Zerrenden errebotea
+[settings How much lists and panels stretch past their ends and spring back.]
+Zenbat luzatzen diren zerrendak eta panelak ertzetatik haratago itzuli aurretik.
+[settings Map momentum]
+Maparen inertzia
+[settings How far the map keeps panning after a flick.]
+Zenbat jarraitzen duen mapak mugitzen keinu baten ondoren.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Ukipen bidezko korritzearen sentsazioa. 0 balioak efektu bat desaktibatzen du; 50 da lehenetsia.
+[List momentum]
+Zerrenden inertzia
+[List bounce]
+Zerrenden errebotea
+[Map momentum]
+Maparen inertzia

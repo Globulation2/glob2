@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <algorithm>
 #include <sstream>
 #include <typeinfo>
 #include <ui/Screen.h>
@@ -164,6 +165,14 @@ void UIScreen::handleExecutionEvent(SDL_Event event)
 		return;
 	hostValue.event(event);
 	onEvent(event);
+}
+
+Uint32 UIScreen::executionDelay(Uint32 now, Uint32 fallback)
+{
+	if (!hostValue.animating())
+		return fallback;
+	const Uint32 elapsed = now - lastTick;
+	return std::min(fallback, elapsed < 16 ? 16 - elapsed : 0);
 }
 
 void UIScreen::viewportResized(int, int, int, int)

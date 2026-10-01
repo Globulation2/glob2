@@ -3406,3 +3406,25 @@ Thử nghiệm
 Cân bằng vùng canh gác
 [experiment guard-area-balancing help]
 Chiến binh rảnh rỗi phân bố giữa các vùng canh gác đã vẽ thay vì tất cả đi đến vùng gần nhất: vùng lớn hơn nhận nhiều hơn, và vùng quá đông dần dần vơi sang các vùng khác.
+[settings Touch scrolling]
+Cuộn bằng cảm ứng
+[settings List momentum]
+Quán tính danh sách
+[settings How far lists and panels keep scrolling after a flick.]
+Danh sách và bảng tiếp tục cuộn bao xa sau một cú lướt.
+[settings List bounce]
+Nảy của danh sách
+[settings How much lists and panels stretch past their ends and spring back.]
+Danh sách và bảng kéo giãn qua mép bao nhiêu rồi bật lại.
+[settings Map momentum]
+Quán tính bản đồ
+[settings How far the map keeps panning after a flick.]
+Bản đồ tiếp tục di chuyển bao xa sau một cú lướt.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Cảm giác cuộn bằng cảm ứng. 0 tắt hiệu ứng; 50 là mặc định.
+[List momentum]
+Quán tính danh sách
+[List bounce]
+Nảy của danh sách
+[Map momentum]
+Quán tính bản đồ

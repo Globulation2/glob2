@@ -3408,3 +3408,25 @@ Experiments
 Guard-area balancing
 [experiment guard-area-balancing help]
 Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others.
+[settings Touch scrolling]
+Touch scrolling
+[settings List momentum]
+List momentum
+[settings How far lists and panels keep scrolling after a flick.]
+How far lists and panels keep scrolling after a flick.
+[settings List bounce]
+List bounce
+[settings How much lists and panels stretch past their ends and spring back.]
+How much lists and panels stretch past their ends and spring back.
+[settings Map momentum]
+Map momentum
+[settings How far the map keeps panning after a flick.]
+How far the map keeps panning after a flick.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Touch scrolling feel. 0 turns an effect off; 50 is the default.
+[List momentum]
+List momentum
+[List bounce]
+List bounce
+[Map momentum]
+Map momentum

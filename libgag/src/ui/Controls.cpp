@@ -902,13 +902,23 @@ class TextEditor : public Node
 	bool focusable() const override { return true; }
 	bool stateful() const override { return true; }
 	bool scrollable() const override { return true; }
+	bool inertial() const override { return true; }
 	bool clipsChildren() const override { return true; }
 	int scrollOffset() const override { return offset; }
 	int scrollMaximum() const override { return maximum; }
+	int overscroll() const override { return over; }
+	void setOverscroll(int pixels, Host &host) override
+	{
+		if (pixels == over)
+			return;
+		over = pixels;
+		host.relayout();
+	}
 	void restore(const NodeState &state, const LayoutContext &) override
 	{
 		cursor = std::min(state.cursor, value.size());
 		offset = state.scroll;
+		over = 0;
 		restored = state.detail != 0;
 	}
 	void save(NodeState &state) const override
@@ -917,14 +927,16 @@ class TextEditor : public Node
 		state.scroll = offset;
 		state.detail = 1;
 	}
-	void scrollBy(int pixels, Host &host) override
+	void scrollBy(int pixels, Host &host) override { scrollTo(offset + pixels, host); }
+	int scrollTo(int pixels, Host &host) override
 	{
-		const int next = std::clamp(offset + pixels, 0, maximum);
+		const int next = std::clamp(pixels, 0, maximum);
 		if (next != offset)
 		{
 			offset = next;
 			host.relayout();
 		}
+		return offset;
 	}
 	void tap(Point point, Host &host) override
 	{
@@ -934,7 +946,7 @@ class TextEditor : public Node
 		// Place the cursor at the tapped glyph.
 		const auto &m = *measurerForHit;
 		const int lineHeight = m.lineHeight(FontRole::Body) + lineGap;
-		const int line = std::clamp((point.y - bounds.y - pad + offset) / std::max(1, lineHeight), 0, int(lines.size()) - 1);
+		const int line = std::clamp((point.y - bounds.y - pad + offset + over) / std::max(1, lineHeight), 0, int(lines.size()) - 1);
 		if (lines.empty())
 		{
 			cursor = 0;
@@ -1167,7 +1179,7 @@ class TextEditor : public Node
 		}
 		const int lineHeight = m.lineHeight(FontRole::Body) + lineGap;
 		frame.canvas.pushClip(bounds.inset(1));
-		int y = bounds.y + pad - offset;
+		int y = bounds.y + pad - offset - over;
 		for (std::size_t i = 0; i < lines.size(); ++i, y += lineHeight)
 		{
 			if (y + lineHeight < bounds.y || y > bounds.bottom())
@@ -1215,7 +1227,7 @@ class TextEditor : public Node
 	TextEditorOptions options;
 	std::vector<Line> lines;
 	std::size_t cursor = 0;
-	int offset = 0, maximum = 0, pad = 8, lineGap = 2, lineHeightCached = 16, lastContent = -1;
+	int offset = 0, over = 0, maximum = 0, pad = 8, lineGap = 2, lineHeightCached = 16, lastContent = -1;
 	bool follow = false, restored = false, bound = false;
 	const TextMeasurer *measurerForHit = nullptr;
 };
@@ -1236,12 +1248,22 @@ class ListView : public Node
 	bool interactive() const override { return true; }
 	bool stateful() const override { return true; }
 	bool scrollable() const override { return true; }
+	bool inertial() const override { return true; }
 	bool clipsChildren() const override { return true; }
 	int scrollOffset() const override { return offset; }
 	int scrollMaximum() const override { return maximum; }
+	int overscroll() const override { return over; }
+	void setOverscroll(int pixels, Host &host) override
+	{
+		if (pixels == over)
+			return;
+		over = pixels;
+		host.relayout();
+	}
 	void restore(const NodeState &state, const LayoutContext &) override
 	{
 		offset = state.scroll;
+		over = 0;
 		revealed = state.detail == selected + 1;
 	}
 	void save(NodeState &state) const override
@@ -1249,20 +1271,22 @@ class ListView : public Node
 		state.scroll = offset;
 		state.detail = selected + 1;
 	}
-	void scrollBy(int pixels, Host &host) override
+	void scrollBy(int pixels, Host &host) override { scrollTo(offset + pixels, host); }
+	int scrollTo(int pixels, Host &host) override
 	{
-		const int next = std::clamp(offset + pixels, 0, maximum);
+		const int next = std::clamp(pixels, 0, maximum);
 		if (next != offset)
 		{
 			offset = next;
 			host.relayout();
 		}
+		return offset;
 	}
 	int rowAt(Point point) const
 	{
 		if (rowHeight <= 0)
 			return -1;
-		const int index = (point.y - bounds.y + offset) / rowHeight;
+		const int index = (point.y - bounds.y + offset + over) / rowHeight;
 		return index >= 0 && index < int(items.size()) ? index : -1;
 	}
 	bool rowEnabled(int index) const { return options.enabled.empty() || options.enabled[std::size_t(index)]; }
@@ -1271,7 +1295,7 @@ class ListView : public Node
 		std::vector<SubTarget> rows;
 		for (int i = 0; rowHeight > 0 && i < int(items.size()); ++i)
 		{
-			const Rect row{bounds.x, bounds.y + i * rowHeight - offset, bounds.w, rowHeight};
+			const Rect row{bounds.x, bounds.y + i * rowHeight - offset - over, bounds.w, rowHeight};
 			if (row.bottom() > bounds.y && row.y < bounds.bottom())
 				rows.push_back({std::to_string(i), row, items[std::size_t(i)]});
 		}
@@ -1378,7 +1402,7 @@ class ListView : public Node
 			frame.canvas.text({bounds.x + mt.gap, bounds.y + mt.gap}, FontRole::Body, ellipsize(m, FontRole::Body, options.emptyText, bounds.w - 2 * mt.gap), p.muted);
 		for (int i = 0; i < int(items.size()); ++i)
 		{
-			const Rect row{bounds.x + 1, bounds.y + i * rowHeight - offset, bounds.w - 2 - barSpace, rowHeight};
+			const Rect row{bounds.x + 1, bounds.y + i * rowHeight - offset - over, bounds.w - 2 - barSpace, rowHeight};
 			if (row.bottom() < bounds.y || row.y > bounds.bottom())
 				continue;
 			const bool ok = rowEnabled(i);
@@ -1439,7 +1463,7 @@ class ListView : public Node
 	int selected;
 	std::function<void(int)> select;
 	ListOptions options;
-	int rowHeight = 24, checkWidth = 0, offset = 0, maximum = 0, grab = 0, lastScrollbar = 6;
+	int rowHeight = 24, checkWidth = 0, offset = 0, over = 0, maximum = 0, grab = 0, lastScrollbar = 6;
 	bool revealed = false;
 };
 

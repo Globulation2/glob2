@@ -200,6 +200,11 @@ void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height
     if (auto *dialog = activeDialog()) dialog->cancelInput();
 }
 
+void GameGUI::stopViewportMotion()
+{
+    if (touch) touch->stopMapMotion();
+}
+
 void GameGUI::suspendInput()
 {
     if (touch) touch->cancel(true);

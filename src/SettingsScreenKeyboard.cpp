@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
+#include "ScrollTuning.h"
 #include "GameGUIKeyActions.h"
 #include <GUIBase.h>
 #include "MapEditKeyActions.h"
@@ -33,6 +34,20 @@ void SettingsScreen::buildKeyboard()
         "Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.",s.scrollWheelEnabled,[this](int v){
             globalContainer->settings.scrollWheelEnabled=v;GAGGUI::Screen::scrollWheelEnabled=v;commit();
         });
+    section("Touch scrolling");
+    info(tr("Touch scrolling feel. 0 turns an effect off; 50 is the default."));
+    struct ScrollSlider{const char* id,*label,*help;int Settings::*field;};
+    for(const auto& slider:{
+        ScrollSlider{"controls.momentum","List momentum","How far lists and panels keep scrolling after a flick.",&Settings::touchScrollMomentum},
+        ScrollSlider{"controls.bounce","List bounce","How much lists and panels stretch past their ends and spring back.",&Settings::touchScrollBounce},
+        ScrollSlider{"controls.mapmomentum","Map momentum","How far the map keeps panning after a flick.",&Settings::mapScrollMomentum}}){
+        auto& r=add(slider.id,Kind::Slider,tr(slider.label),tr(slider.help));
+        r.number=s.*slider.field;r.maximum=100;r.value=std::to_string(r.number)+"%";
+        r.change=[this,field=slider.field](int v){
+            auto& s=globalContainer->settings;s.*field=std::clamp(v,0,100);
+            applyScrollTuning(s,globalContainer->reducedMotion);commit(true);
+        };
+    }
     section("Keyboard shortcuts");
     for(int i=0;i<2;++i){
         button("keys.mode."+std::to_string(i),tr(i?"Map editor":"Game"),[this,i]{shortcutMode=i?MapEditShortcuts:GameGUIShortcuts;},int(shortcutMode)==i);

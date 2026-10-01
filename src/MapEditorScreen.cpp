@@ -94,7 +94,9 @@ void MapEditorScreen::drawExecution()
 Uint32 MapEditorScreen::executionDelay(Uint32 now, Uint32)
 {
 	const Uint32 elapsed = now - lastFrame;
-	return elapsed < 33 ? 33 - elapsed : 0;
+	// Touch content coasting or bouncing frames at 16 ms so it stays smooth.
+	const Uint32 budget = editor && editor->touchAnimating() ? 16 : 33;
+	return elapsed < budget ? budget - elapsed : 0;
 }
 
 void MapEditorScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)

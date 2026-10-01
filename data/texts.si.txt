@@ -3410,3 +3410,25 @@ Poskusi
 Uravnoteženje stražarskih območij
 [experiment guard-area-balancing help]
 Prosti bojevniki se porazdelijo med narisana stražarska območja, namesto da bi vsi šli v najbližje: večje območje jih dobi več, prenatrpano pa se postopoma prazni v druga.
+[settings Touch scrolling]
+Drsenje z dotikom
+[settings List momentum]
+Zagon seznamov
+[settings How far lists and panels keep scrolling after a flick.]
+Kako daleč se seznami in plošče še premikajo po hitrem potegu.
+[settings List bounce]
+Odboj seznamov
+[settings How much lists and panels stretch past their ends and spring back.]
+Koliko se seznami in plošče raztegnejo čez rob in odbijejo nazaj.
+[settings Map momentum]
+Zagon zemljevida
+[settings How far the map keeps panning after a flick.]
+Kako daleč se zemljevid še premika po hitrem potegu.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Občutek drsenja z dotikom. 0 izklopi učinek; 50 je privzeto.
+[List momentum]
+Zagon seznamov
+[List bounce]
+Odboj seznamov
+[Map momentum]
+Zagon zemljevida

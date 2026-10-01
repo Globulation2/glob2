@@ -31,9 +31,9 @@ void PhoneEditor::cancel()
 		editor.performAction("unselect");
 	brushOpen = false;
 	touch.cancel();
+	stopScrolling();
 	held = -1;
 	onMap = false;
-	panX = panY = 0;
 	drag.reset();
 	stroke.clear();
 	quarantined.clear();
@@ -100,9 +100,48 @@ void PhoneEditor::prepare()
 		extent += width + 4 * unit;
 	}
 	maximum = std::max(0., extent - tray.w);
-	offset = std::clamp(offset, 0., maximum);
+	syncTray();
 	for (auto &row : rows)
 		row.rect.x += tray.x - offset;
+}
+void PhoneEditor::syncTray() { trayAxis.sync(offset, maximum, tray.w); }
+void PhoneEditor::syncInspector() { inspectorAxis.sync(inspectorScroll, inspectorMaximum, inspectorBody.h); }
+void PhoneEditor::stopScrolling()
+{
+	mapMotion.interrupt();
+	trayAxis.axis.interrupt();
+	inspectorAxis.axis.interrupt();
+}
+bool PhoneEditor::animating() const
+{
+	return mapMotion.isAnimating() || trayAxis.axis.isAnimating() || inspectorAxis.axis.isAnimating();
+}
+void PhoneEditor::advance(Uint32 tick)
+{
+	lastTick = tick;
+	if (mapMotion.isAnimating())
+	{
+		const auto [dx, dy] = mapMotion.stepDelta(tick);
+		if (dx != 0 || dy != 0)
+		{
+			editor.updateCamera();
+			editor.camera.originX += dx / editor.camera.zoom;
+			editor.camera.originY += dy / editor.camera.zoom;
+			editor.camera.normalize();
+			editor.viewportX = editor.camera.tileX() & editor.game.map.wMask;
+			editor.viewportY = editor.camera.tileY() & editor.game.map.hMask;
+		}
+	}
+	if (trayAxis.axis.isAnimating())
+	{
+		trayAxis.axis.step(tick);
+		trayAxis.publish(offset);
+	}
+	if (inspectorAxis.axis.isAnimating())
+	{
+		inspectorAxis.axis.step(tick);
+		inspectorAxis.publish(inspectorScroll);
+	}
 }
 void PhoneEditor::clearTool()
 {
@@ -214,6 +253,16 @@ void PhoneEditor::act(const TouchAction &action)
 	if (action.kind == TouchActionKind::Cancel)
 	{
 		stroke.clear();
+		stopScrolling();
+		return;
+	}
+	if (action.kind == TouchActionKind::PanEnd)
+	{
+		mapMotion.endDrag(action.time);
+		trayAxis.axis.endDrag(action.time);
+		inspectorAxis.axis.endDrag(action.time);
+		syncTray();
+		syncInspector();
 		return;
 	}
 	if (action.kind == TouchActionKind::BeginStroke || action.kind == TouchActionKind::Stroke ||
@@ -238,26 +287,37 @@ void PhoneEditor::act(const TouchAction &action)
 	{
 		if (inspecting() && !onMap)
 		{
-			inspectorScroll = std::clamp(inspectorScroll - p.y, 0., inspectorMaximum);
+			syncInspector();
+			inspectorAxis.axis.drag(action.time, -p.y);
+			syncInspector();
 			return;
 		}
 		if (!onMap && held >= 0)
-			offset = std::clamp(offset - p.x, 0., maximum);
+		{
+			syncTray();
+			trayAxis.axis.drag(action.time, -p.x);
+			syncTray();
+		}
 		else if (onMap)
 		{
-			panX -= p.x / (32 * editor.camera.zoom);
-			panY -= p.y / (32 * editor.camera.zoom);
-			const int dx = int(panX), dy = int(panY);
-			panX -= dx;
-			panY -= dy;
-			editor.viewportX = (editor.viewportX + dx) & editor.game.map.wMask;
-			editor.viewportY = (editor.viewportY + dy) & editor.game.map.hMask;
+			// Subpixel panning through the camera, as in the game; the tile
+			// viewport is derived from it.
+			editor.updateCamera();
+			editor.camera.originX -= p.x / editor.camera.zoom;
+			editor.camera.originY -= p.y / editor.camera.zoom;
+			editor.camera.normalize();
+			editor.viewportX = editor.camera.tileX() & editor.game.map.wMask;
+			editor.viewportY = editor.camera.tileY() & editor.game.map.hMask;
+			if (!mapMotion.isDragging())
+				mapMotion.beginDrag(action.time);
+			mapMotion.drag(action.time, -p.x, -p.y);
 		}
 		return;
 	}
 	if (action.kind == TouchActionKind::Zoom && onMap)
 	{
-		editor.zoomMap(std::log(action.factor) / std::log(1.2), p.x, p.y);
+		// zoomMap steps are powers of 1.1, so a pinch factor maps 1:1 to zoom.
+		editor.zoomMap(std::log(action.factor) / std::log(1.1), p.x, p.y);
 		return;
 	}
 	if (action.kind != TouchActionKind::Select || hit(p) != held)
@@ -465,6 +525,19 @@ bool PhoneEditor::event(SDL_Event event)
 	}
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	const auto key = std::make_pair(device, id);
+	const Uint64 time = widenTicks(event.common.timestamp, lastTick);
+	if (phase == 0 && !touch.hasPointers() && !drag)
+	{
+		// A touch catches coasting content where it is; presets are re-read so
+		// the settings sliders apply to the next gesture.
+		stopScrolling();
+		fingerIsTouch = device != -1;
+		ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
+		mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
+		mapMotion.setConfig(mapConfig);
+		trayAxis.axis.setConfig(fingerIsTouch ? ScrollPresets::editorTray() : ScrollPresets::mouse());
+		inspectorAxis.axis.setConfig(fingerIsTouch ? ScrollPresets::hudPanel() : ScrollPresets::mouse());
+	}
 	if (!quarantined.empty())
 	{
 		if (phase == 0)
@@ -499,7 +572,11 @@ bool PhoneEditor::event(SDL_Event event)
 			else
 			{
 				drag->browsing = true;
-				offset = std::clamp(offset - (p.x - drag->start.x), 0., maximum);
+				syncTray();
+				if (!trayAxis.axis.isDragging())
+					trayAxis.axis.beginDrag(time);
+				trayAxis.axis.drag(time, -(p.x - drag->start.x));
+				syncTray();
 				drag->start = p;
 			}
 		}
@@ -519,6 +596,11 @@ bool PhoneEditor::event(SDL_Event event)
 			{
 				editor.performAction(drag->widget->action);
 				pan = false;
+			}
+			if (drag->browsing)
+			{
+				trayAxis.axis.endDrag(time);
+				syncTray();
 			}
 			drag.reset();
 		}
@@ -545,14 +627,22 @@ bool PhoneEditor::event(SDL_Event event)
 							   editor.selectionMode == MapEdit::ChangeNoResourceGrowthAreas;
 			touch.setMode(onMap && !pan && paint ? TouchMode::Paint : TouchMode::Navigate);
 		}
-		actions = touch.down(device, id, {p.x / unit, p.y / unit});
+		actions = touch.down(device, id, {p.x / unit, p.y / unit}, time);
 	}
 	else if (phase == 1)
-		actions = touch.move(device, id, {p.x / unit, p.y / unit});
+		actions = touch.move(device, id, {p.x / unit, p.y / unit}, time);
 	else
-		actions = touch.up(device, id, {p.x / unit, p.y / unit});
+		actions = touch.up(device, id, {p.x / unit, p.y / unit}, time);
 	for (const auto &a : actions)
 		act(a);
+	if (phase == 2 && !touch.hasPointers())
+	{
+		// A touch that stopped a bounce without dragging lets it finish.
+		trayAxis.axis.settle(time);
+		inspectorAxis.axis.settle(time);
+		syncTray();
+		syncInspector();
+	}
 	return true;
 }
 void PhoneEditor::label(ViewRect r, const std::string &text)

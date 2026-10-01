@@ -3418,3 +3418,25 @@ Funcions experimentals
 Equilibri de les zones de guàrdia
 [experiment guard-area-balancing help]
 Els guerrers lliures es reparteixen entre les zones de guàrdia pintades en lloc d'anar tots a la més propera: una zona més gran en rep més, i una zona massa plena es buida a poc a poc cap a les altres.
+[settings Touch scrolling]
+Desplaçament tàctil
+[settings List momentum]
+Inèrcia de les llistes
+[settings How far lists and panels keep scrolling after a flick.]
+Fins on continuen desplaçant-se les llistes i els panells després d'un gest.
+[settings List bounce]
+Rebot de les llistes
+[settings How much lists and panels stretch past their ends and spring back.]
+Quant s'estiren les llistes i els panells més enllà dels seus extrems abans de tornar.
+[settings Map momentum]
+Inèrcia del mapa
+[settings How far the map keeps panning after a flick.]
+Fins on continua movent-se el mapa després d'un gest.
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+Sensació del desplaçament tàctil. 0 desactiva un efecte; 50 és el valor per defecte.
+[List momentum]
+Inèrcia de les llistes
+[List bounce]
+Rebot de les llistes
+[Map momentum]
+Inèrcia del mapa
