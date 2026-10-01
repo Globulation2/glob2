@@ -1,6 +1,6 @@
 app-id: org.globulation2.Globulation2
 runtime: org.gnome.Platform
-runtime-version: '50'
+runtime-version: '51'
 sdk: org.gnome.Sdk
 command: glob2
 rename-icon: glob2

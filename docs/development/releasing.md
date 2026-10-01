@@ -39,9 +39,10 @@ public source commit contained in that checkout. Tagged publication builds pin
 the selected public tag. The GitHub publication run builds Flatpak.
 Publication also requires matching AppStream release notes and a hosted gameplay
 screenshot. A native Linux capture of the active menu colony is in
-`data/screenshots/`; its `master` URL is in the AppStream metadata. Keep that
-path stable and confirm the URL resolves before publication. Add the
-release notes once the release candidate is settled. The
+`data/screenshots/`; the AppStream metadata pins its URL to the commit that
+introduced it so Flathub can mirror a stable image. Confirm the URL resolves
+before publication, and pin any replacement screenshot to its own commit. Add
+the release notes once the release candidate is settled. The
 256x256 application icon is derived from the existing desktop artwork and is
 installed with other icon sizes.
 Flathub reads the AppStream screenshot from the installed metainfo file. The
@@ -174,16 +175,19 @@ with permission to create releases in `Globulation2/glob2`. The
 
 The Flatpak recipe in `flatpak/org.globulation2.Globulation2.yml.in` pins every
 third-party source and is rendered with the selected commit. Once its package
-and metadata pass Flathub's build and review requirements, submit the rendered
-manifest to Flathub under `org.globulation2.Globulation2`. Flathub publishes
-from its own manifest repository after its review; a GitHub release cannot
-directly publish to Flathub. Once the Flathub app repository exists, create a
+and metadata pass Flathub's build and lint checks, fork `flathub/flathub` with
+its `new-pr` branch, add the rendered manifest at the fork's top level, and
+submit a first-listing PR targeting `new-pr` under
+`org.globulation2.Globulation2`. Do this only for a selected stable release
+candidate: acceptance creates the public listing. Flathub publishes from its
+own manifest repository after its review; a GitHub release cannot directly
+publish to Flathub. Once the Flathub app repository exists, create a
 writable fork and set `FLATHUB_FORK` (an `owner/repository` GitHub Actions
 variable) and `FLATHUB_GH_TOKEN` (a secret with permission to push that fork and
-open a PR). `flathub-update.yml` then opens a Flathub update PR. A Flathub maintainer must
-review and merge it; the workflow does not bypass that review. Keep the
-upstream AppStream metadata in `data/` updated with each release's notes and
-screenshots.
+open a PR). `flathub-update.yml` then opens a Flathub update PR. A Flathub
+maintainer must review and merge it; the workflow does not bypass that review.
+Keep the upstream AppStream metadata in `data/` updated with each release's
+notes and screenshots.
 
 ## Distribution maintainers
 
