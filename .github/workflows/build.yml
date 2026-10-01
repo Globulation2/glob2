@@ -1128,7 +1128,7 @@ jobs:
           # This source embeds __DATE__ and __TIME__. Refresh it after restoring
           # objects so the binary still reports the current compilation time.
           rm -f build/emscripten/client/release/obj/src/GlobalContainerArgs.cpp.o
-          scons target=web release=1 web-tests -j$(nproc)
+          scons target=web release=1 web-tests build/emscripten/client/release/index.html -j$(nproc)
           ccache -s -v
       - name: Save WebAssembly object tree
         id: save_webassembly_object_tree
@@ -1167,6 +1167,10 @@ jobs:
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm
             build/emscripten/client/release/index.data
+            build/emscripten/client/release/script-tests.html
+            build/emscripten/client/release/script-tests.js
+            build/emscripten/client/release/script-tests.wasm
+            build/emscripten/client/release/script-tests.data
       - uses: actions/upload-artifact@v4
         id: upload_artifact_2
         continue-on-error: true
