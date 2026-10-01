@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include "AuthMessages.h"
 #include "OrderMessages.h"
 #include "Order.h"
@@ -12,6 +13,24 @@
 #include <FileManager.h>
 #include <cstdio>
 #include <TextStream.h>
+
+TEST_CASE("JavaScript test profile uses SDL environment ownership" *
+		  doctest::test_suite("JavaScriptCompatibility"))
+{
+	const auto original = glob2test::profileDir();
+	const auto outer = original / "environment-outer";
+	const auto inner = original / "environment-inner";
+	{
+		glob2test::ScopedEnvironment outerProfile("GLOB2_USER_DATA_DIR", outer.string().c_str());
+		CHECK(glob2test::profileDir() == outer);
+		{
+			glob2test::ScopedEnvironment innerProfile("GLOB2_USER_DATA_DIR", inner.string().c_str());
+			CHECK(glob2test::profileDir() == inner);
+		}
+		CHECK(glob2test::profileDir() == outer);
+	}
+	CHECK(glob2test::profileDir() == original);
+}
 
 TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))

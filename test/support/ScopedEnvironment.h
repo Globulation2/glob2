@@ -14,7 +14,7 @@ class ScopedEnvironment
 public:
 	ScopedEnvironment(const char *name, const char *value) : name(name)
 	{
-		if (const char *previous = std::getenv(name))
+		if (const char *previous = SDL_getenv(name))
 			original = previous;
 		if (SDL_setenv(name, value, 1) != 0)
 			throw std::runtime_error("Cannot set test environment variable " + this->name);

@@ -28,7 +28,7 @@ std::filesystem::path selfMadeProfile;
 
 void install()
 {
-	const char *profile = std::getenv("GLOB2_USER_DATA_DIR");
+	const char *profile = SDL_getenv("GLOB2_USER_DATA_DIR");
 	if (!profile || !*profile)
 	{
 		selfMadeProfile = std::filesystem::temp_directory_path() /
@@ -44,7 +44,7 @@ void install()
 	}
 	// GLOB2_TEST_DISPLAY=1 (set by the runner for [display] cases) keeps the real
 	// video driver; everything else renders nowhere.
-	const char *display = std::getenv("GLOB2_TEST_DISPLAY");
+	const char *display = SDL_getenv("GLOB2_TEST_DISPLAY");
 	if (!display || !*display || std::string(display) == "0")
 	{
 		SDL_setenv("SDL_VIDEODRIVER", "dummy", 0);
@@ -58,7 +58,7 @@ void teardown()
 {
 	if (selfMadeProfile.empty())
 		return;
-	const char *keep = std::getenv("GLOB2_TEST_KEEP_PROFILE");
+	const char *keep = SDL_getenv("GLOB2_TEST_KEEP_PROFILE");
 	if (keep && *keep && std::string(keep) != "0")
 		return;
 	std::error_code ignored;
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 #endif
 				 SDL_GetPlatform(), sizeof(void *) * 8);
 	std::fprintf(stderr, "GLOB2_TEST_PROVENANCE %s\n", GLOB2_TEST_PROVENANCE_JSON);
-	if (const char *artifacts = std::getenv("GLOB2_TEST_ARTIFACTS_ROOT"))
+	if (const char *artifacts = SDL_getenv("GLOB2_TEST_ARTIFACTS_ROOT"))
 	{
 		std::filesystem::create_directories(artifacts);
 		std::ofstream proof(std::filesystem::path(artifacts) / "build-provenance.json");
