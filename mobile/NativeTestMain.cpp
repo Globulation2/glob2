@@ -56,6 +56,17 @@ extern "C" SDL_AudioStream *SDL_OpenAudioDeviceStream(SDL_AudioDeviceID, const S
 extern "C" void *SDL_GetAndroidJNIEnv() { return nullptr; }
 extern "C" void *SDL_GetAndroidActivity() { return nullptr; }
 
+// SDL3 pumps Android lifecycle events independently of the video driver. A
+// native shell has no JVM to initialize that queue; polling it spins on the
+// absent lifecycle semaphore. Drain the real SDL event queue without the OS
+// pump so synthetic input and application-loop tests still exercise routing.
+// Installed APKs do not link this file and retain normal lifecycle pumping.
+extern "C" bool SDL_PollEvent(SDL_Event *event)
+{
+    if (!event) return SDL_HasEvents(SDL_EVENT_FIRST, SDL_EVENT_LAST);
+    return SDL_PeepEvents(event, 1, SDL_GETEVENT, SDL_EVENT_FIRST, SDL_EVENT_LAST) > 0;
+}
+
 __attribute__((constructor)) static void prepareNativeTest()
 {
     SDL_SetMainReady();
