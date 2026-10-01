@@ -698,6 +698,15 @@ namespace GAGCore
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary
+    public:
+        // Immutable native image access for terrain cache preparation. Team layers
+        // need separate composition and therefore are not cacheable here.
+        DrawableSurface* nativeFrame(unsigned index) const
+        {
+            return index < images.size() && index < rotated.size() && !rotated[index] ? images[index] : nullptr;
+        }
+
+    protected:
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
 		//! One bit per 32-phase block, recomputed whenever the HD layer arrays

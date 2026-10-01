@@ -30,6 +30,7 @@
 
 
 #include "GameRenderInternal.h"
+#include "SoftwareTerrainCache.h"
 #include "PerformanceTelemetry.h"
 
 // Map rendering orchestrator and shared helpers. Split from Game_render.cpp.
@@ -141,6 +142,42 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 	return false;
 }
 
+namespace
+{
+bool drawPreparedWater(const GameRenderFrame &frame, const SoftwareTerrainCache &cache, int time)
+{
+	if (frame.left != 0 || frame.top != 0)
+		return false;
+
+	auto *water = frame.water.nativeFrame(0);
+	if (water)
+	{
+		PERF_SCOPE_TIME(Water);
+		const int startX = -(((frame.viewportX << 5) + time / 2) % 512);
+		const int startY = -((frame.viewportY << 5) % 512);
+        // Include the original pass's overshoot outside the logical viewport.
+        // Fractional transforms can bring those pixels back inside the target.
+        const SDL_Rect bounds{startX, startY,
+            ((frame.width - startX + 511) / 512) * 512,
+            ((frame.height - startY + 511) / 512) * 512};
+        const auto regions = cache.waterRegions(bounds);
+        for (int y = startY; y < frame.height; y += 512)
+            for (int x = startX; x < frame.width; x += 512)
+            {
+                const SDL_Rect tile{x, y, 512, 512};
+                // Keep the complete source mapping: cropping before scaling
+                // would restart nearest-neighbor sampling at coverage edges.
+                if (std::any_of(regions.begin(), regions.end(), [&](const SDL_Rect &region) {
+                    return SDL_HasIntersection(&tile, &region);
+                })) frame.target.drawSurface(x, y, water);
+            }
+		return true;
+	}
+
+	return false;
+}
+} // namespace
+
 void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX,
 				   int viewportY, int localTeam, ViewState &view, Uint32 drawOptions,
 				   std::set<Building *> *visibleBuildings,
@@ -174,8 +211,45 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 														   : teams[localTeam]->me,
 						  !(globalContainer->gfx->getOptionFlags() &
 							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
-	drawMapWater(sw, sh, viewportX, viewportY, time);
-	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+	// Prepare coverage before water, keeping scene ordering independent of the
+	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
+	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only
+	// transformed CPU passes, where batching and per-pixel opaque copies help.
+	const bool cacheEligible = frame.software && frame.target.hasPortableRenderer();
+	if (cacheEligible && !softwareTerrainCache)
+	{
+		try
+		{
+			softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+		}
+		catch (const std::bad_alloc &)
+		{ /* Keep the uncached renderer available under memory pressure. */
+		}
+	}
+	bool cached =
+		cacheEligible && softwareTerrainCache &&
+		softwareTerrainCache->prepare(map, frame.terrain, frame.left, frame.top, frame.right,
+									  frame.bottom, frame.viewportX, frame.viewportY,
+									  frame.visibleTeams, frame.options & DRAW_WHOLE_MAP);
+	bool coveredWater = false;
+	try
+	{
+		if (cached)
+			coveredWater = drawPreparedWater(frame, *softwareTerrainCache, time);
+	}
+	catch (const std::bad_alloc &)
+	{
+		cached = false;
+	}
+	if (!coveredWater)
+		drawMapWater(sw, sh, viewportX, viewportY, time);
+	if (cached)
+	{
+		PERF_SCOPE_TIME(Terrain);
+		softwareTerrainCache->draw(frame.target);
+	}
+	else
+		drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 
 	// Pass adapters keep the two coordinate conventions in one place. Individual
 	// layers still own their visibility decisions and their original draw order.

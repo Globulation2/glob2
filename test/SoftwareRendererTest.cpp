@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "render/SoftwareTerrainCache.h"
 #include <RenderBackend.h>
 #include <SurfaceRaster.h>
 #include <FileManager.h>
@@ -7,6 +8,8 @@
 #include <cmath>
 #include <cstring>
 #include <memory>
+#include <limits>
+#include <stdexcept>
 #include <vector>
 
 namespace GAGCore
@@ -178,13 +181,14 @@ TEST_SUITE("SoftwareRenderer")
 		// Geometry ignores source SDL modulation; explicit vertex opacity wins.
 		SDL_SetSurfaceColorMod(source.get(), 127, 79, 191);
 		SDL_SetSurfaceAlphaMod(source.get(), 79);
-		for (Uint8 alpha : {0, 63, 127, 128, 255})
+		for (float scale : {1.f, 2.f})
+        for (Uint8 alpha : {0, 63, 127, 128, 255})
 		{
 			for (auto *target : {expected.get(), actual.get()})
 				SDL_FillRect(target, nullptr, 0xff376b91);
 			for (auto *backend : {reference.get(), optimized.get()})
 			{
-				backend->transform(1, 3, 2, nullptr);
+				backend->transform(scale, 3, 2, nullptr);
 				backend->blit(source.get(), source.get(), 1, false, SDL_Rect{1, 1, 6, 6},
 							  SDL_FRect{2, 2, 6, 6}, alpha);
 				backend->fill(SDL_FRect{11, 3, 9, 11}, SDL_Color{151, 89, 43, alpha});
@@ -266,5 +270,108 @@ TEST_SUITE("SoftwareRenderer")
 			CHECK(eg == ag);
 			CHECK(eb == ab);
 		}
+	}
+	TEST_CASE("terrain cache matches integer-transformed coastlines and discovery across wraps and "
+			  "mutations "
+			  "[display][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 2, .discovered = true});
+		auto &game = fixture.game;
+		game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+		for (int y = 0; y < 32; ++y)
+			for (int x = 0; x < 32; ++x)
+				game.map.setTerrain(x, y, (x + y * 32) % 272);
+		auto compare = [&](int vx, int vy, int team)
+		{
+			const auto checksum = fixture.checksum();
+			std::vector<Uint32> expected;
+			for (bool enabled : {false, true})
+			{
+				game.softwareTerrainCache->enabled = enabled;
+				globals->gfx->setClipRect();
+				globals->gfx->drawFilledRect(0, 0, 640, 480, Color(11, 22, 33));
+				Game::ViewState view;
+				globals->gfx->beginMapTransform(1, 1, 1, 0, 0, 640, 480);
+				game.drawMap(0, 0, 640, 480, 0, 0, vx, vy, team, view, Game::DRAW_NO_CLOUD_LAYER,
+							 nullptr, nullptr, true);
+				globals->gfx->endMapTransform();
+				auto image = snapshot(globals->gfx->getSDLSurface());
+				if (!enabled)
+					expected = std::move(image);
+				else
+					CHECK(image == expected);
+			}
+			CHECK(fixture.checksum() == checksum);
+			CHECK(game.softwareTerrainCache->bytes() <= SoftwareTerrainCache::Budget);
+		};
+		compare(0, 0, 0);
+		compare(29, 30, 0);
+		compare(29, 30, 1);
+        for (int phase : {16, 511, 512, 913})
+        {
+            game.mapAnimationTime = phase;
+            compare(29, 30, 0);
+        }
+		game.map.unsetMapDiscovered();
+		game.map.setMapDiscovered(0, 0, 16, 32, game.teams[0]->me);
+		game.map.setMapDiscovered(16, 0, 16, 32, game.teams[1]->me);
+		compare(29, 30, 0);
+		compare(29, 30, 1);
+		auto *asset = globals->terrain->nativeFrame(0);
+		REQUIRE(asset);
+		asset->drawPixel(0, 0, Color(17, 33, 51, 127));
+		compare(29, 30, 0);
+		game.map.setTerrain(0, 0, 256);
+		compare(29, 30, 1);
+		game.map.setSize(8, 8, GRASS);
+		game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+		for (int chunk = 0; chunk < 40; ++chunk)
+		{
+			REQUIRE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 15, 15,
+													   (chunk % 16) * 16, (chunk / 16) * 16,
+													   game.teams[0]->me, true));
+			CHECK(game.softwareTerrainCache->bytes() <= SoftwareTerrainCache::Budget);
+		}
+		CHECK_FALSE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 127, 127,
+													   0, 0, game.teams[0]->me, true));
+		game.map.setSize(4, 4, GRASS);
+		game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+		compare(0, 0, 0);
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				game.map.setTerrain(x, y, 256);
+		REQUIRE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 159, 159, 0,
+												   0, game.teams[0]->me, true));
+		const auto coverage = game.softwareTerrainCache->waterRegions(SDL_Rect{0, 0, 5120, 5120});
+		REQUIRE(coverage.size() == 1);
+		CHECK(coverage[0].w == 5120);
+		CHECK(coverage[0].h == 5120);
+		// Fragmented opaque islands exercise the 64-region bookkeeping cap.
+		// One canonical chunk is repeated, so the pixel budget stays bounded.
+		int opaqueId = -1;
+		for (int id = 0; id < 256; ++id)
+			if (globals->terrain->nativeFrame(id)->hasOpaquePixels())
+			{
+				opaqueId = id;
+				break;
+			}
+		REQUIRE(opaqueId >= 0);
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				game.map.setTerrain(x, y, (x % 2 == 0 && y % 2 == 0) ? opaqueId : 256);
+		REQUIRE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 159, 159, 0,
+												   0, game.teams[0]->me, true));
+		const auto fragmented = game.softwareTerrainCache->waterRegions(SDL_Rect{0, 0, 5120, 5120});
+		REQUIRE(fragmented.size() == 1);
+		CHECK(fragmented[0].w == 5120);
+		CHECK(fragmented[0].h == 5120);
+		for (int y = 0; y < 16; ++y)
+			for (int x = 0; x < 16; ++x)
+				game.map.setTerrain(x, y, opaqueId);
+		REQUIRE(game.softwareTerrainCache->prepare(game.map, *globals->terrain, 0, 0, 15, 15, 0, 0,
+												   game.teams[0]->me, true));
+		CHECK(game.softwareTerrainCache->waterRegions(SDL_Rect{0, 0, 512, 512}).empty());
+
 	}
 }

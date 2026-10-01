@@ -6,6 +6,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Building.h"
+#include "render/SoftwareTerrainCache.h"
 #include <RenderBackend.h>
 #include <stdexcept>
 #include <cmath>
@@ -89,6 +90,9 @@ class SoftwareRenderBenchmark
 				glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), path));
 			if (!gui.load(&stream, true))
 				throw std::runtime_error("Cannot load benchmark save");
+			gui.game.softwareTerrainCache = std::make_unique<SoftwareTerrainCache>();
+			if (const char *c = getenv("PROFILE_TERRAIN_CACHE"))
+				gui.game.softwareTerrainCache->enabled = atoi(c) != 0;
 			gui.localPlayer = gui.localTeamNo = 0;
 			gui.adjustLocalTeam();
 			gui.adjustInitialViewport();
@@ -154,6 +158,7 @@ class SoftwareRenderBenchmark
 			}
 			std::vector<double> draw, present;
 			RenderOperations initialOps{};
+			std::uint64_t initialHits = 0, initialRebuilds = 0;
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();
 			const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
@@ -164,6 +169,8 @@ class SoftwareRenderBenchmark
 				{
 					c0 = cpu();
 					initialOps = gfx->backendOperations();
+					initialHits = gui.game.softwareTerrainCache->cacheHits();
+					initialRebuilds = gui.game.softwareTerrainCache->cacheRebuilds();
 					PerformanceTelemetry::collector().reset();
 				}
 				Uint64 a = SDL_GetPerformanceCounter();
@@ -207,6 +214,11 @@ class SoftwareRenderBenchmark
 				   (unsigned long long)(ops.blits - initialOps.blits),
 				   (unsigned long long)(ops.fills - initialOps.fills),
 				   (unsigned long long)(ops.triangles - initialOps.triangles));
+			printf("terrain_cache bytes=%zu hits=%llu rebuilds=%llu\n",
+				   gui.game.softwareTerrainCache->bytes(),
+				   (unsigned long long)(gui.game.softwareTerrainCache->cacheHits() - initialHits),
+				   (unsigned long long)(gui.game.softwareTerrainCache->cacheRebuilds() -
+										initialRebuilds));
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);
 			if (const char *p = getenv("PROFILE_CAPTURE"))

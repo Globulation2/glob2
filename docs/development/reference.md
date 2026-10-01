@@ -530,6 +530,26 @@ backend tracks its own uploaded revision; opacity classification is cached again
 content revision. Code that edits pixels through `getSDLSurface()` must call
 `markPixelsChanged()` afterward. This includes raw SDL copies and external rasterizers.
 
+`GameRenderFrame` groups the viewport, assets, visibility and draw options inside the
+existing game rendering entry point. `Game::softwareTerrainCache` is transient presentation
+state: 16×16 tile chunks, at most 32 MiB of pixel storage, least-recently-used eviction.
+The cache is used during transformed software passes. Ordinary native drawing keeps
+its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
+transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
+chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha scans
+over transparent chunk holes. Views are destroyed before their backing chunk.
+Each chunk validates exact terrain IDs, the existing discovery decisions and source
+content revisions. It stores raw color/alpha, so coastlines blend over animated water
+once. Map replacement clears the cache; editor terrain changes and visible-team changes
+are detected during preparation. Resources, actors, fog and overlays keep their existing
+passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
+boundaries. A complete animated water tile is omitted only when all of it is covered;
+partially covered tiles retain their original source mapping and animation phase.
+Coverage includes the original water pass's overshoot outside the viewport, which a
+transform can bring onscreen. Fragmented coverage falls back to the full pass after
+64 rectangles. Oversized working sets and allocation failures use
+uncached terrain. None of these caches enter saves, simulation checksums or orders.
+
 Build the opt-in saved-game benchmark with optimized production objects:
 
 ```sh
