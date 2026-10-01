@@ -86,10 +86,10 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 	// set the clipping rectangle
 	globalContainer->gfx->setClipRect( 0, REPLAY_BAR_Y - 4, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT + 4);
 
-	// draw menu background, black if low speed graphics, transparent otherwise
+	// Draw the selected panel background.
 	if (drawBackground)
 	{
-		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+		if (!globalContainer->settings.translucentPanels)
 			globalContainer->gfx->drawFilledRect( 0, REPLAY_BAR_Y, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT, 0, 0, 0);
 		else
 			globalContainer->gfx->drawFilledRect( 0, REPLAY_BAR_Y, REPLAY_BAR_WIDTH, REPLAY_BAR_HEIGHT, 0, 0, 40, 180);

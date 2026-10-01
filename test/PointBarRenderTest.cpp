@@ -16,7 +16,7 @@
 #endif
 
 
-// Matches the global friend declared by Game.
+// This is the global class granted private rendering access by Game's friend declaration.
 class PointBarRenderTest
 {
 public:

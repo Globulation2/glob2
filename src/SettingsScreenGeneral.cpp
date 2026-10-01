@@ -22,7 +22,7 @@ void SettingsScreen::buildGeneral()
 	{
 		info(tr("Choose how the game looks on your screen."));
 #ifndef GLOB2_MOBILE
-		if (!touchLayout)
+		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
 		{
 			// Mobile uses the OS-managed viewport and portable renderer.
 			section("Display");
@@ -37,57 +37,14 @@ void SettingsScreen::buildGeneral()
 							   if (v)
 							   {
 								   s.screenFlags |= GraphicContext::FULLSCREEN;
-								   s.screenFlags &= ~GraphicContext::RESIZABLE;
 							   }
 							   else
 							   {
 								   s.screenFlags &= ~GraphicContext::FULLSCREEN;
-								   s.screenFlags |= GraphicContext::RESIZABLE;
 							   }
 						   });
 				   });
-			const auto modes = globalContainer->gfx->listVideoModes();
-			std::vector<std::pair<int, int>> sizes;
-			std::vector<std::string> names;
-			std::vector<bool> windowOnly;
-			auto append = [&](int w, int h, bool restricted)
-			{
-				if (std::find(sizes.begin(), sizes.end(), std::make_pair(w, h)) != sizes.end())
-					return;
-				sizes.emplace_back(w, h);
-				windowOnly.push_back(restricted);
-				names.push_back(std::to_string(w) + " × " + std::to_string(h) +
-								(restricted ? " — " + tr("Windowed only") : ""));
-			};
-			for (auto m : modes)
-				append(m.w, m.h, false);
-			for (auto size : std::vector<std::pair<int, int>>{
-					 {640, 480}, {800, 600}, {1024, 768}, {1280, 1024}, {1600, 1200}})
-				append(size.first, size.second, true);
-			append(s.screenWidth, s.screenHeight, true);
-			int selected = std::find(sizes.begin(), sizes.end(),
-									 std::make_pair(s.screenWidth, s.screenHeight)) -
-						   sizes.begin();
-			choice("display.resolution", "Resolution",
-				   "Window-only sizes also switch the game to windowed mode.", selected, names,
-				   [this, sizes, windowOnly](int v)
-				   {
-					   if (v < 0 || v >= int(sizes.size()))
-						   return;
-					   changeDisplay(
-						   [=](Settings &s)
-						   {
-							   s.screenWidth = sizes[v].first;
-							   s.screenHeight = sizes[v].second;
-							   if (windowOnly[v])
-							   {
-								   s.screenFlags &= ~GraphicContext::FULLSCREEN;
-								   s.screenFlags |= GraphicContext::RESIZABLE;
-							   }
-						   });
-				   });
-			form.back().value =
-				std::to_string(s.screenWidth) + " × " + std::to_string(s.screenHeight);
+
 			{
 				// 0 follows the desktop; the rest are the scales desktops actually offer.
 				static const int percents[] = {0, 100, 125, 150, 175, 200, 250, 300};
@@ -113,8 +70,8 @@ void SettingsScreen::buildGeneral()
 					   });
 			}
 			info(FormattableString(tr("Current display %0 %1 %2 %3"))
-					 .arg(globalContainer->gfx->getW())
-					 .arg(globalContainer->gfx->getH())
+					 .arg(globalContainer->gfx->getDrawableW())
+					 .arg(globalContainer->gfx->getDrawableH())
 					 .arg((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 							  ? "OpenGL"
 							  : tr("Software"))
@@ -128,31 +85,42 @@ void SettingsScreen::buildGeneral()
 		}
 #endif
 		section("Artwork & effects");
-		choice("graphics.detail", "Graphics detail",
-			   "Reduced detail disables clouds and their shadows, simplifies magic effects, and "
-			   "reduces transparency.",
-			   bool(s.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX),
-			   {tr("Full"), tr("Reduced")},
-			   [this](int v)
-			   {
-				   auto &flags = globalContainer->settings.optionFlags;
-				   if (v)
-					   flags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
-				   else
-					   flags &= ~GlobalContainer::OPTION_LOW_SPEED_GFX;
-				   commit();
-			   });
-#ifndef GLOB2_MOBILE
-		if (!touchLayout)
+		auto effect = [this, &s](const char *id, const char *label, const char *help,
+								 bool Settings::*field)
 		{
-			toggle("graphics.artwork", "High-resolution artwork",
+			toggle(id, label, help, s.*field, [this, field](int v)
+			{
+				globalContainer->settings.*field = v != 0;
+				commit();
+			});
+		};
+		auto appearance = [this, &s](const char *id, const char *label, const char *help,
+									 bool Settings::*field, const char *off, const char *on)
+		{
+			choice(id, label, help, s.*field, {tr(off), tr(on)}, [this, field](int v)
+			{
+				globalContainer->settings.*field = v != 0;
+				commit();
+			});
+		};
+		effect("graphics.clouds", "Clouds", "Show cloud cover above the map.", &Settings::clouds);
+		effect("graphics.shadows", "Cloud shadows", "Show cloud shadows on the ground independently of cloud cover.", &Settings::cloudShadows);
+		effect("graphics.particles", "Building particles", "Show smoke and other building particles.", &Settings::buildingParticles);
+		appearance("graphics.magic", "Magic effects", "Choose animated magic effects or a simple visible effect.", &Settings::fullMagicEffects, "Simple", "Full");
+#ifndef GLOB2_MOBILE
+		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
+		{
+			choice("graphics.artwork", "Artwork",
 				   "Apply artwork on the next game or editor load (OpenGL).",
-				   s.highResolutionArtwork,
+				   s.highResolutionArtwork, {tr("Original"), tr("High resolution")},
 				   [this](int v)
 				   {
 					   globalContainer->settings.highResolutionArtwork = v;
 					   commit();
 				   });
+			const bool gpu = bool(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU);
+			form.back().enabled = gpu;
+			if (!gpu) form.back().help = tr("Requires the OpenGL renderer. Your saved choice is retained.");
 			toggle("graphics.torus", "Automatic torus view",
 				   "Automatically show the torus overview while moving around the map (OpenGL).",
 				   s.automaticTorus,
@@ -161,6 +129,38 @@ void SettingsScreen::buildGeneral()
 					   globalContainer->settings.automaticTorus = v;
 					   commit();
 				   });
+			form.back().enabled = gpu;
+			if (!gpu) form.back().help = tr("Requires the OpenGL renderer. Your saved choice is retained.");
+		}
+#endif
+		section("Interface appearance");
+		appearance("graphics.panels", "Panels", "Choose translucent or opaque interface panels.", &Settings::translucentPanels, "Opaque", "Translucent");
+		choice("display.textsize", "Text size", "Enlarge interface text without changing the map scale.",
+			   s.mobileDialogTextPercent >= 150 ? 2 : s.mobileDialogTextPercent >= 125 ? 1 : 0,
+			   {"100 %", "125 %", "150 %"}, [this](int v)
+			   {
+				   globalContainer->settings.mobileDialogTextPercent = 100 + v * 25;
+				   commit();
+			   });
+		choice("display.presentation", "Interface layout",
+			   "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
+			   int(parsePresentationPreference(s.interfacePresentation)),
+			   {tr("Automatic"), tr("Compact"), tr("Spacious")},
+			   [this](int v)
+			   {
+				   presentationPreference =
+					   static_cast<PresentationPreference>(std::clamp(v, 0, 2));
+				   globalContainer->settings.interfacePresentation =
+					   presentationPreferenceName(presentationPreference);
+				   commit();
+			   });
+		section("Advanced graphics");
+		appearance("graphics.paths", "Path lines", "Choose translucent or opaque unit path lines.", &Settings::translucentPathLines, "Opaque", "Translucent");
+		effect("graphics.indicators", "Smooth progress indicators", "Smooth the moving edges of progress indicators.", &Settings::smoothProgressIndicators);
+		effect("graphics.animation", "Decorative interface animation", "Animate victory artwork. Reduced motion also disables this animation.", &Settings::decorativeAnimations);
+#ifndef GLOB2_MOBILE
+		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
+		{
 			choice("graphics.renderer", "Renderer", "Changing the renderer requires a restart.",
 				   bool(s.screenFlags & GraphicContext::USEGPU), {tr("Software"), "OpenGL"},
 				   [this](int v)
@@ -180,18 +180,6 @@ void SettingsScreen::buildGeneral()
 #endif
 		}
 #endif
-		choice("display.presentation", "Interface layout",
-			   "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
-			   int(parsePresentationPreference(s.interfacePresentation)),
-			   {tr("Automatic"), tr("Compact"), tr("Spacious")},
-			   [this](int v)
-			   {
-				   presentationPreference =
-					   static_cast<PresentationPreference>(std::clamp(v, 0, 2));
-				   globalContainer->settings.interfacePresentation =
-					   presentationPreferenceName(presentationPreference);
-				   commit();
-			   });
 		if (touchLayout)
 			choice("display.zoomdrag", "One-finger zoom", "Double-tap the map, hold, then drag to zoom.",
 				   s.oneFingerZoomDirection,

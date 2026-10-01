@@ -65,11 +65,16 @@ namespace GAGCore
                     glBegin(GL_QUADS);
                     for (const auto &quad : quads)
                     {
-                        glColor3ub(quad.color.r, quad.color.g, quad.color.b);
-                        glVertex2f(quad.x, quad.y);
-                        glVertex2f(quad.x + quad.w, quad.y);
-                        glVertex2f(quad.x + quad.w, quad.y + quad.h);
-                        glVertex2f(quad.x, quad.y + quad.h);
+                        // Emscripten interleaves immediate-mode attributes: each
+                        // vertex needs a color entry, even when a quad is uniform.
+                        const auto vertex = [&](float x, float y) {
+                            glColor3ub(quad.color.r, quad.color.g, quad.color.b);
+                            glVertex2f(x, y);
+                        };
+                        vertex(quad.x, quad.y);
+                        vertex(quad.x + quad.w, quad.y);
+                        vertex(quad.x + quad.w, quad.y + quad.h);
+                        vertex(quad.x, quad.y + quad.h);
                     }
                     glEnd();
                 }
@@ -268,6 +273,7 @@ namespace GAGCore
 #endif
 		if(mapTransformActive){x=mapClipX;y=mapClipY;w=mapClipW;h=mapClipH;}
 		DrawableSurface::setClipRect(x, y, w, h);
+		if (nativeSoftware) SDL_SetClipRect(sdlsurface, nullptr);
         if (renderer) renderer->clip(mapTransformActive ? nullptr : &clipRect);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
@@ -286,6 +292,13 @@ namespace GAGCore
 				sw = static_cast<int>(sw * scale + 0.5f);
 				sh = static_cast<int>(sh * scale + 0.5f);
 			}
+			if (nativeDesktop)
+			{
+				const double xScale=double(drawableW)/getW(), yScale=double(drawableH)/getH();
+				sx=int(std::lround(clipRect.x*xScale)); sy=int(std::lround((getH()-clipRect.y-clipRect.h)*yScale));
+				sw=int(std::lround((clipRect.x+clipRect.w)*xScale))-sx;
+				sh=int(std::lround((getH()-clipRect.y)*yScale))-sy;
+			}
 			glScissor(sx, sy, sw, sh);
 		}
 		#endif
@@ -302,6 +315,7 @@ namespace GAGCore
 #endif
 		if(mapTransformActive){setClipRect(mapClipX,mapClipY,mapClipW,mapClipH);return;}
 		DrawableSurface::setClipRect();
+		clipRect = SDL_Rect{0,0,getW(),getH()};
         if (renderer) renderer->clip(nullptr);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)

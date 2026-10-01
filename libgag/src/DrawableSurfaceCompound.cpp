@@ -110,6 +110,21 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+		if (surface == _gc && _gc->nativeSoftware)
+		{
+			_gc->renderer->flush();
+			SDL_Rect source{int(double(sx)*surface->sdlsurface->w/surface->getW()),
+				int(double(sy)*surface->sdlsurface->h/surface->getH()),
+				int(double(sw)*surface->sdlsurface->w/surface->getW()),
+				int(double(sh)*surface->sdlsurface->h/surface->getH())};
+			SDL_Rect dest{x,y,sw,sh};
+			SDL_SetSurfaceBlendMode(surface->sdlsurface, alpha==Color::ALPHA_OPAQUE ? SDL_BLENDMODE_NONE : SDL_BLENDMODE_BLEND);
+			SDL_SetSurfaceAlphaMod(surface->sdlsurface,alpha);
+			SDL_BlitScaled(surface->sdlsurface, &source, sdlsurface, &dest);
+			SDL_SetSurfaceAlphaMod(surface->sdlsurface,255);
+			dirty=true;
+			return;
+		}
 		if (alpha == Color::ALPHA_OPAQUE)
 		{
 			#ifdef HAVE_OPENGL

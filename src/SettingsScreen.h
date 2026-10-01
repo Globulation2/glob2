@@ -73,8 +73,6 @@ class SettingsScreen : public Glob2UI::Screen
 	void finishInteraction();
 	bool saveFailed() const { return failed; }
 	bool restartRequired() const;
-	bool displayConfirmationPending() const;
-	void confirmDisplay(bool keep);
 	void done();
 	void abandon();
 
@@ -90,8 +88,7 @@ class SettingsScreen : public Glob2UI::Screen
 		None,
 		Binding,
 		Conflict,
-		Restore,
-		Display
+		Restore
 	};
 	Category current = Category::Display;
 	Modal modal = Modal::None;
@@ -100,13 +97,12 @@ class SettingsScreen : public Glob2UI::Screen
 	int buildingTab = 0;
 	bool failed = false, settingsDirty = false;
 	std::array<bool, 2> keyboardDirty{};
-	Uint32 saveAt = 0, displayDeadline = 0;
+	Uint32 saveAt = 0;
 	// Acknowledges the latest writes; native persistence completes immediately.
 	std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
 	// done() was called and is waiting on persistence to resolve before endExecute().
 	bool closing = false;
 	bool displayError = false;
-	Settings previousDisplay;
 	Row picker;
 	KeyboardManager gameKeys, editorKeys;
 	ShortcutMode shortcutMode = GameGUIShortcuts;
