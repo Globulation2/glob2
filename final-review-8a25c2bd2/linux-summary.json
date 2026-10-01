@@ -1,0 +1,258 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "saveVersion": 125,
+  "minimumSaveVersion": 58,
+  "networkProtocol": 48,
+  "replayMinimum": 123,
+  "lanes": [
+    {
+      "lane": "linux-gcc13",
+      "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+      "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+      "archive": "linux-gcc13-8a25c2b.tar.gz",
+      "archiveBytes": 166735390,
+      "archiveSha256": "bc6877b5b334bdb4da94a60503bcdba5874f85f034f229c5062873cce4fae4fc",
+      "archivedFiles": 628,
+      "parts": [
+        {
+          "file": "linux-gcc13-8a25c2b.tar.gz.part-001",
+          "bytes": 83886080,
+          "sha256": "728be961d7395715d7822d3e8b42105d90c9be26a16bca1bf22450b055fde79f"
+        },
+        {
+          "file": "linux-gcc13-8a25c2b.tar.gz.part-002",
+          "bytes": 82849310,
+          "sha256": "9307c5f614feea7fca90adb5d54b29554ef6870d84bef3f31d17248d8a57c3fe"
+        }
+      ],
+      "tests": {
+        "build": 0,
+        "focusedMaster124": 0,
+        "corpus": 0,
+        "cliContinuations": 0,
+        "released": 0,
+        "releasedParallelAI": 0,
+        "master124Baseline": 0,
+        "ui": 0
+      },
+      "master124Baseline": {
+        "fixtureSha256": "55b972bb3c22b9238645d3f6f33479c0259868baefb2f487808201b7d3758ed5",
+        "comparison": "complete sidecar bytes including aggregate and every tick/team/entity field",
+        "excludedMetadata": null,
+        "baselineRevision": "723590eccd7d3ec5495214e78635b69233491a98",
+        "expectedSha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+        "actualSha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+        "matching": true,
+        "ticks": 128
+      },
+      "master124ResumedBaselines": {
+        "fresh128MatchesEntireOriginalBaseline": true,
+        "genuine124CheckpointResumeMatchesEntireOriginalBaseline": true,
+        "new125CheckpointResumeMatchesEveryOriginalTeamEntityField": true,
+        "new125AggregateXors": [
+          "00800000"
+        ],
+        "ticks": 128,
+        "resumeBoundary": 64,
+        "legacyLimitation": "Castor resets unsaved boot/project/cache state; original resumed baseline differs from uninterrupted game beginningtick85. This check preserves original behavior and does not claim uninterrupted==resumed."
+      },
+      "sharedCorpus": {
+        "unitCases": 21,
+        "engineCases": 33,
+        "comparisonArtifacts": 60,
+        "linuxPeerComparisonAccepted": true,
+        "macComparisonAccepted": true
+      },
+      "ui": {
+        "selected": true,
+        "cases": 15,
+        "scriptEditorCases": 9,
+        "uiPresentationCases": 6,
+        "binarySha256": "f63b92117c7734182999022354c9939fec73de6060e5e6deae661c5742b04419",
+        "producerProof": "linux-gcc13-ui-producer.log"
+      }
+    },
+    {
+      "lane": "linux-gcc15",
+      "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+      "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+      "archive": "linux-gcc15-8a25c2b.tar.gz",
+      "archiveBytes": 15018619,
+      "archiveSha256": "b832785ace3a1b7fe075c55525bbd373e909a4100ae51e70d6c3690e06dfc74a",
+      "archivedFiles": 310,
+      "parts": [
+        {
+          "file": "linux-gcc15-8a25c2b.tar.gz",
+          "bytes": 15018619,
+          "sha256": "b832785ace3a1b7fe075c55525bbd373e909a4100ae51e70d6c3690e06dfc74a"
+        }
+      ],
+      "tests": {
+        "build": 0,
+        "focusedMaster124": 0,
+        "corpus": 0,
+        "cliContinuations": 0,
+        "released": 0,
+        "releasedParallelAI": 0,
+        "master124Baseline": 0,
+        "ui": null
+      },
+      "master124Baseline": {
+        "fixtureSha256": "55b972bb3c22b9238645d3f6f33479c0259868baefb2f487808201b7d3758ed5",
+        "comparison": "complete sidecar bytes including aggregate and every tick/team/entity field",
+        "excludedMetadata": null,
+        "baselineRevision": "723590eccd7d3ec5495214e78635b69233491a98",
+        "expectedSha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+        "actualSha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+        "matching": true,
+        "ticks": 128
+      },
+      "master124ResumedBaselines": {
+        "fresh128MatchesEntireOriginalBaseline": true,
+        "genuine124CheckpointResumeMatchesEntireOriginalBaseline": true,
+        "new125CheckpointResumeMatchesEveryOriginalTeamEntityField": true,
+        "new125AggregateXors": [
+          "00800000"
+        ],
+        "ticks": 128,
+        "resumeBoundary": 64,
+        "legacyLimitation": "Castor resets unsaved boot/project/cache state; original resumed baseline differs from uninterrupted game beginningtick85. This check preserves original behavior and does not claim uninterrupted==resumed."
+      },
+      "sharedCorpus": {
+        "unitCases": 21,
+        "engineCases": 33,
+        "comparisonArtifacts": 60,
+        "linuxPeerComparisonAccepted": true,
+        "macComparisonAccepted": true
+      },
+      "ui": {
+        "selected": false,
+        "reason": "not selected; corpus, CLI and released suites ran"
+      }
+    },
+    {
+      "lane": "linux-clang18",
+      "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+      "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+      "archive": "linux-clang18-8a25c2b.tar.gz",
+      "archiveBytes": 15011569,
+      "archiveSha256": "e82e7ced00571d612e9ee7ba821ea1d834f7cf2b4e9bc74a8534903975af04c0",
+      "archivedFiles": 309,
+      "parts": [
+        {
+          "file": "linux-clang18-8a25c2b.tar.gz",
+          "bytes": 15011569,
+          "sha256": "e82e7ced00571d612e9ee7ba821ea1d834f7cf2b4e9bc74a8534903975af04c0"
+        }
+      ],
+      "tests": {
+        "build": 0,
+        "focusedMaster124": 0,
+        "corpus": 0,
+        "cliContinuations": 0,
+        "released": 0,
+        "releasedParallelAI": 0,
+        "master124Baseline": 0,
+        "ui": null
+      },
+      "master124Baseline": {
+        "fixtureSha256": "55b972bb3c22b9238645d3f6f33479c0259868baefb2f487808201b7d3758ed5",
+        "comparison": "complete sidecar bytes including aggregate and every tick/team/entity field",
+        "excludedMetadata": null,
+        "baselineRevision": "723590eccd7d3ec5495214e78635b69233491a98",
+        "expectedSha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+        "actualSha256": "b83b6bfaebe2677f4b83eaf7d20a3fd38470393aba660be6883162cbbfde5278",
+        "matching": true,
+        "ticks": 128
+      },
+      "master124ResumedBaselines": {
+        "fresh128MatchesEntireOriginalBaseline": true,
+        "genuine124CheckpointResumeMatchesEntireOriginalBaseline": true,
+        "new125CheckpointResumeMatchesEveryOriginalTeamEntityField": true,
+        "new125AggregateXors": [
+          "00800000"
+        ],
+        "ticks": 128,
+        "resumeBoundary": 64,
+        "legacyLimitation": "Castor resets unsaved boot/project/cache state; original resumed baseline differs from uninterrupted game beginningtick85. This check preserves original behavior and does not claim uninterrupted==resumed."
+      },
+      "sharedCorpus": {
+        "unitCases": 21,
+        "engineCases": 33,
+        "comparisonArtifacts": 60,
+        "linuxPeerComparisonAccepted": true,
+        "macComparisonAccepted": true
+      },
+      "ui": {
+        "selected": false,
+        "reason": "not selected; corpus, CLI and released suites ran"
+      }
+    }
+  ],
+  "sharedProof": {
+    "comparisonArtifactsPerLane": 60,
+    "linuxPeerComparisonsAccepted": true,
+    "macComparisonsAccepted": true,
+    "finalPackageEligible": true
+  },
+  "cliFixtures": {
+    "fixtures": [
+      "profile1",
+      "realistic-profile1"
+    ],
+    "ticks": 256,
+    "workers": [
+      1,
+      4
+    ],
+    "resumeBoundaries": {
+      "profile1": [
+        128
+      ],
+      "realistic-profile1": [
+        32,
+        64,
+        96,
+        128,
+        224
+      ]
+    },
+    "samePlatformSaveReplayBytesMatch": true
+  },
+  "releasedCompatibility": {
+    "defaultAndParallelAIPassed": true,
+    "v108CheckpointContinuationPassed": true,
+    "genuineMaster124": {
+      "revision": "723590eccd7d3ec5495214e78635b69233491a98",
+      "fixtureSha256": "55b972bb3c22b9238645d3f6f33479c0259868baefb2f487808201b7d3758ed5",
+      "ticks": 128,
+      "actualAIExecution": true,
+      "allThreeCompleteSidecarsMatch": true,
+      "excludedMetadata": null,
+      "originalResumedBaselinesPassedAllLanes": true,
+      "resumeBoundary": 64,
+      "genuine124CheckpointFullBytesMatch": true,
+      "saved125CheckpointEveryEntityFieldMatches": true,
+      "saved125AggregateXor": "00800000",
+      "classificationPackage": "master124-upstream-resume-classification-package.json",
+      "legacyLimitation": "Castor resumes reset unsaved boot/project/cache state, as in original master. Original resumed and uninterrupted baselines differ beginning tick85; this pass preserves that behavior."
+    },
+    "limits": "Retained released fixtures and acceptance boundaries; not every historical save/replay."
+  },
+  "archiveVerification": {
+    "allMemberHashesMatchOriginals": true,
+    "members": 1247,
+    "fileHashManifest": "linux-file-hashes.json",
+    "rawEvidenceRetention": "Complete original raw lane artifacts remain on isolated hosts; complete compressed archives verified locally. Operational profiles and duplicate binaries excluded."
+  },
+  "windowsVagrantGate": {
+    "complete": false,
+    "designatedVM": "glob2-windows-11-test",
+    "alternateVM": "glob2-store-windows-11-test",
+    "states": "both aborted",
+    "sshWinRM": "forwarded ports refuse connections",
+    "actions": "Read-only inspection only; no restart, poweroff, KVM or unrelated VM mutation."
+  },
+  "reviewConclusion": "No unresolved blocking findings in assigned engine, identity, transaction, presentation, compatibility and runner review; trusted developer scripts, not a comprehensive hostile-script security audit."
+}

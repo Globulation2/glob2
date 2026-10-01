@@ -1,0 +1,14 @@
+Rebased final source 8a25c2bd2440e99246171967a31c68dc15917f95 read-only VM gate audit
+AuditUTC 2026-10-01T16:08:22.513114+00:00
+showvminfoExit 0
+name="glob2-windows-11-test"
+VMState="aborted"
+VMStateChangeTime="2026-10-01T10:45:17.000000000"
+Forwarding(0)="ssh,tcp,127.0.0.1,2203,,22"
+Forwarding(1)="tcp53389,tcp,127.0.0.1,2200,,3389"
+Forwarding(2)="winrm,tcp,127.0.0.1,2201,,5985"
+Forwarding(3)="winrm-ssl,tcp,127.0.0.1,2202,,5986"
+LocalForwardPort 2203 ConnectionRefusedError [Errno 111] Connection refused
+LocalForwardPort 2201 ConnectionRefusedError [Errno 111] Connection refused
+LocalForwardPort 2202 ConnectionRefusedError [Errno 111] Connection refused
+No restart, poweroff, KVM operation, guest provisioning or unrelated VM mutation performed.

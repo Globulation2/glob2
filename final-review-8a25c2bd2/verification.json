@@ -1,0 +1,43 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "sourceStatus": [],
+  "sourceBundlePrerequisite": "af675415598f125ad7daca4619ef6d81c0186a89",
+  "publicationScope": "Partial first evidence publication: Linux3, MacUI, original master124 fresh/resumed classification; other final platforms and CI pending publication.",
+  "verifiedArchives": [
+    {
+      "label": "linux-gcc13",
+      "members": 628,
+      "archiveSha256": "bc6877b5b334bdb4da94a60503bcdba5874f85f034f229c5062873cce4fae4fc",
+      "allMemberHashesMatch": true
+    },
+    {
+      "label": "linux-gcc15",
+      "members": 310,
+      "archiveSha256": "b832785ace3a1b7fe075c55525bbd373e909a4100ae51e70d6c3690e06dfc74a",
+      "allMemberHashesMatch": true
+    },
+    {
+      "label": "linux-clang18",
+      "members": 309,
+      "archiveSha256": "e82e7ced00571d612e9ee7ba821ea1d834f7cf2b4e9bc74a8534903975af04c0",
+      "allMemberHashesMatch": true
+    },
+    {
+      "label": "macos-ui",
+      "members": 318,
+      "archiveSha256": "22d6d0dbe61d96aef7af4d11c514856f52dc542f2d7704dd2a7ed3b81ca29638",
+      "allMemberHashesMatch": true
+    },
+    {
+      "label": "upstream723-classification-not-candidate-source",
+      "members": 49,
+      "archiveSha256": "7708873689c6a6332b5a913c0d37d78523c42afda7e477851c4054bcbce70720",
+      "allMemberHashesMatch": true
+    }
+  ],
+  "upstreamOriginMembers": 21,
+  "sourceCheckoutHEAD": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceIndexSha256Before": "e54ec45936ced4c328f8fb8db2a513c8f69f72850eb12f6af75339a949703860",
+  "allPublishedFilesBelow95MiB": true
+}

@@ -1,0 +1,21 @@
+{
+  "archive": "master124-upstream-resume-classification.tar.gz",
+  "archiveBytes": 101906696,
+  "archiveSha256": "7708873689c6a6332b5a913c0d37d78523c42afda7e477851c4054bcbce70720",
+  "members": 49,
+  "allMemberHashesVerified": true,
+  "upstreamRevision": "723590eccd7d3ec5495214e78635b69233491a98",
+  "candidateRevision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "parts": [
+    {
+      "file": "master124-upstream-resume-classification.tar.gz.part-001",
+      "bytes": 83886080,
+      "sha256": "3c39990ee2a6e8c65616cd286f0a02fb05c72a490b8ab3016f55a5a4142e47c0"
+    },
+    {
+      "file": "master124-upstream-resume-classification.tar.gz.part-002",
+      "bytes": 18020616,
+      "sha256": "504630805b47f2d03b6af1eb7ad2dab876d76a64b320797534c23f8fb8c9a025"
+    }
+  ]
+}

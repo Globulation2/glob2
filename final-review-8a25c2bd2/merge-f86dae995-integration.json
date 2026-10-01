@@ -1,0 +1,51 @@
+{
+  "source": {
+    "revision": "f86dae9955c497092ea5147cd4543904397e1b00",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "efabbf9080a0e5044e1289c0fb93bbd6eb1517ff1092088bff0528552b7f0378"
+  },
+  "parents": [
+    "8a25c2bd2440e99246171967a31c68dc15917f95",
+    "f1c15bfeb1e10ac73caaa4289f0d5790ea3a91eb"
+  ],
+  "validatedScriptingRevision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "unchangedPaths": [
+    "src/script",
+    "src/ai/AIJavaScript.cpp",
+    "src/ai/AIJavaScript.h",
+    "third_party/quickjs-ng",
+    "third_party/openlibm",
+    "test/fixtures/javascript",
+    "src/Game_sync.cpp",
+    "src/Version.h",
+    "src/unit",
+    "src/building",
+    "src/team",
+    "src/map/Map.cpp",
+    "src/map/io"
+  ],
+  "unchangedProofCommand": [
+    "git",
+    "diff",
+    "--exit-code",
+    "8a25c2bd2440e99246171967a31c68dc15917f95",
+    "HEAD",
+    "--",
+    "src/script",
+    "src/ai/AIJavaScript.cpp",
+    "src/ai/AIJavaScript.h",
+    "third_party/quickjs-ng",
+    "third_party/openlibm",
+    "test/fixtures/javascript",
+    "src/Game_sync.cpp",
+    "src/Version.h",
+    "src/unit",
+    "src/building",
+    "src/team",
+    "src/map/Map.cpp",
+    "src/map/io"
+  ],
+  "mergeConflict": "test/tests.py: retain both scripting cases and upstream OpaqueRectangleBatchTest with its -fno-access-control flag",
+  "changesFromValidatedRevision": " .github/workflows/build.yml           |  16 +-\n docs/development/reference.md         |  54 +++\n docs/map-generators/CLI.md            | 156 +++++++-\n docs/map-generators/README.md         |   2 +\n libgag/include/OpaqueRectangleBatch.h |  23 ++\n libgag/src/GraphicContextDraw.cpp     | 134 ++++++-\n scons/sources.py                      |   1 +\n src/DynamicClouds.h                   |  12 +\n src/LandscapePickerScreen.cpp         |   2 +-\n src/MapCommand.cpp                    | 106 +++++-\n src/MapImage.cpp                      | 681 ++++++++++++++++++++++++++++++++++\n src/MapImage.h                        |  24 ++\n src/gui/GameGUIDraw.cpp               |   7 +-\n src/map/edit/MapEditDraw.cpp          |   5 +-\n src/render/GameRender.cpp             |   2 +\n src/render/GameRenderTerrain.cpp      |  10 +-\n test/CustomGameSetupHarness.cpp       |   2 +-\n test/MapRenderGeometryTest.cpp        |  21 ++\n test/OpaqueRectangleBatchTest.cpp     | 159 ++++++++\n test/PointBarRenderTest.cpp           |   5 +\n test/README.md                        |  14 +\n test/TorusRenderBenchmark.cpp         | 221 +++++++++--\n test/test_map_image.py                | 291 +++++++++++++++\n test/tests.py                         |   1 +\n 24 files changed, 1881 insertions(+), 68 deletions(-)\n"
+}

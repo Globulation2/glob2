@@ -1,0 +1,66 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "selectedCases": 15,
+  "engineBinarySha256": "7b53e892066854deb3b9f0dcc9005950e4706d1585e45a61809ab66a366cf64b",
+  "proofs": [
+    {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "",
+        "CPPDEFINES": "HAVE_CONFIG_H GL_SILENCE_DEPRECATION _THREAD_SAFE SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3",
+        "LINKFLAGS": "-g -Wall -O3 -Wl,-framework,Cocoa"
+      },
+      "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+      "sourceStatus": [],
+      "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991"
+    }
+  ],
+  "producerProofOrigin": "Completed shared-corpus execution of the identical engine executable; UI runner retains JUnit and command but discards successful stdout",
+  "archiveSha256": "22d6d0dbe61d96aef7af4d11c514856f52dc542f2d7704dd2a7ed3b81ca29638",
+  "archiveBytes": 165570445,
+  "memberCount": 318,
+  "chunks": [
+    {
+      "file": "macos-ui.tar.gz.part000",
+      "bytes": 41943040,
+      "sha256": "a34dc3bdd22cbec3c69c0dd202d5c2621fe5ba0cba9949fe8446d7eadf1e6286"
+    },
+    {
+      "file": "macos-ui.tar.gz.part001",
+      "bytes": 41943040,
+      "sha256": "245fd4bc866d4ef4b470a764d4837b5028c958b074c55c2d989f1dbf0bb7b135"
+    },
+    {
+      "file": "macos-ui.tar.gz.part002",
+      "bytes": 41943040,
+      "sha256": "8a23b8f2fcf21925b8376e6da1af5ca0bec47542a7c43f93a81180161b5c4d2d"
+    },
+    {
+      "file": "macos-ui.tar.gz.part003",
+      "bytes": 39741325,
+      "sha256": "686876da76822b7c35714977e6c722d99b6f593aae9023f22caf0178ddb7374d"
+    }
+  ],
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "build/darwin/client/release",
+    "--binary",
+    "engine",
+    "--filter",
+    "ScriptEditor/*",
+    "--filter",
+    "UIPresentation/*",
+    "--in-process",
+    "-j1",
+    "--junit",
+    "artifacts/rebase-validation/final/macos-ui/junit.xml",
+    "--artifacts",
+    "artifacts/rebase-validation/final/macos-ui",
+    "--keep-profiles"
+  ]
+}

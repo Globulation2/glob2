@@ -1,0 +1,47 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "summary": "linux-summary.json",
+  "linuxArchives": [
+    [
+      {
+        "file": "linux-gcc13-8a25c2b.tar.gz.part-001",
+        "bytes": 83886080,
+        "sha256": "728be961d7395715d7822d3e8b42105d90c9be26a16bca1bf22450b055fde79f"
+      },
+      {
+        "file": "linux-gcc13-8a25c2b.tar.gz.part-002",
+        "bytes": 82849310,
+        "sha256": "9307c5f614feea7fca90adb5d54b29554ef6870d84bef3f31d17248d8a57c3fe"
+      }
+    ],
+    [
+      {
+        "file": "linux-gcc15-8a25c2b.tar.gz",
+        "bytes": 15018619,
+        "sha256": "b832785ace3a1b7fe075c55525bbd373e909a4100ae51e70d6c3690e06dfc74a"
+      }
+    ],
+    [
+      {
+        "file": "linux-clang18-8a25c2b.tar.gz",
+        "bytes": 15011569,
+        "sha256": "e82e7ced00571d612e9ee7ba821ea1d834f7cf2b4e9bc74a8534903975af04c0"
+      }
+    ]
+  ],
+  "strictMacComparisons": [
+    "compare-linux-gcc13-to-macos-arm64.json",
+    "compare-linux-gcc15-to-macos-arm64.json",
+    "compare-linux-clang18-to-macos-arm64.json"
+  ],
+  "legacyAIOriginalFreshAndResumeProof": "master124-upstream-resume-classification-package.json",
+  "legacyAIOriginalFreshAndResumeProofMembers": 49,
+  "legacyAILimitation": "Castor resumes reset unsaved boot/project/cache state, as in original master. Original resumed and uninterrupted baselines differ beginning tick85; this pass preserves that behavior.",
+  "archiveVerification": {
+    "linuxMembers": 1247,
+    "classificationMembers": 49,
+    "allFileHashesVerified": true
+  },
+  "checksums": "linux-SHA256SUMS"
+}

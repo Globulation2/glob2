@@ -1,0 +1,22 @@
+GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H _REENTRANT SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wall -O3 -s -fwhole-program"}, "revision": "8a25c2bd2440e99246171967a31c68dc15917f95", "sourceStatus": [], "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991"}
+[doctest] listing all test case names
+===============================================================================
+JavaScript maps reopen in the editor without resetting live globals
+Script language drafts survive switching and invalid JavaScript cannot commit
+Cancelling script drafts preserves the source, globals and scenario text
+Editor saves and reloads the selected JavaScript map mode and source [display][artifacts]
+JavaScript script file dialogs use js and leave loading as a draft
+JavaScript file loading preserves embedded NULs for validation
+Editing legacy SGSL retains the released USL and SGSL payload pairing
+JavaScript to SGSL prepares both runtimes before committing
+Script language dropdown selects JavaScript on desktop and phone [display][artifacts]
+every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]
+every screen lays out; navigates and captures at fullhd across presentations and insets [display:1600x1400][artifacts][slow]
+===============================================================================
+[doctest] unskipped test cases passing the current filters: 15
+f63b92117c7734182999022354c9939fec73de6060e5e6deae661c5742b04419  build/linux/client/release/test/glob2-engine-tests
