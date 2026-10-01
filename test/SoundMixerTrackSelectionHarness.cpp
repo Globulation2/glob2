@@ -36,7 +36,7 @@
 #include <cstdio>
 #include <string>
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "FileManager.h"
 #include "Toolkit.h"
@@ -92,10 +92,10 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 {
 	const std::string dataDir = glob2test::sourceRoot().string();
 
-	// The dummy driver gives a real SDL_OpenAudio without needing hardware, so
+	// The dummy driver gives a real SDL_OpenAudioDeviceStream without needing hardware, so
 	// the muted-start / unmute path below is the production one.
-	SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
-	REQUIRE_MESSAGE(SDL_InitSubSystem(SDL_INIT_AUDIO) == 0, (SDL_GetError()));
+	SDL_setenv_unsafe("SDL_AUDIODRIVER", "dummy", 1);
+	REQUIRE_MESSAGE(SDL_InitSubSystem(SDL_INIT_AUDIO), (SDL_GetError()));
 
 	glob2test::ToolkitScope toolkit;
 	GAGCore::Toolkit::getFileManager()->addDir(dataDir);
@@ -138,8 +138,8 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 
 		// Park SDL's callback thread so the fade checks below are the only
 		// thing advancing the state machine.
-		SDL_PauseAudio(1);
-		SDL_LockAudio();
+		SDL_PauseAudioDevice(SDL_GetAudioStreamDevice(mix.audioStream));
+		SDL_LockAudioStream(mix.audioStream);
 
 		// --- 3. a fade spans the full FADE_SAMPLE_COUNT ------------------
 		beginCrossfade(mix, MusicTrack::InGameDefault, MusicTrack::BuildingEvent);
@@ -191,7 +191,7 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 		check(mix.pendingTrack == -1, "stopMusic clears a queued change");
 		check(mix.mode == SoundMixer::MODE_STOP, "stopMusic starts the fade out");
 
-		SDL_UnlockAudio();
+		SDL_UnlockAudioStream(mix.audioStream);
 	}
 
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);

@@ -6,7 +6,7 @@
 #include "LocalTime.h"
 #include <memory>
 #include <tuple>
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include <vector>
 
 class NetSendFileInformation;

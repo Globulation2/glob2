@@ -4,7 +4,7 @@
 #pragma once
 
 #include "LANGameInformation.h"
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 
 ///This class allows for subnet broadcasting (hosting a LAN game)
 class NetBroadcaster
@@ -28,9 +28,9 @@ public:
 	void enableBroadcasting();
 private:
 	LANGameInformation info;
-	UDPsocket socket;
-	UDPsocket localsocket;
-	Uint64 lastTime;
+	NET_DatagramSocket *socket = nullptr;
+	NET_Address *localaddress = nullptr;
+	Uint64 lastTime = 0;
 	Uint32 timer;
 };
 

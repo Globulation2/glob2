@@ -12,7 +12,7 @@
 #include "YOGServerGame.h"
 #include "YOGServer.h"
 #include "YOGServerPlayer.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 
 YOGServer::YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, bool embeddedRouter)
 	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), administrator(this), playerInfos(this), routerManager(*this), router(embeddedRouter ? std::make_unique<YOGServerRouter>("localhost") : nullptr), maps(this), scoreCalculator(this)
@@ -104,7 +104,7 @@ void YOGServer::update()
 	maps.update();
 	fileDistributionManager.update();
 	
-	Uint64 t = SDL_GetTicks64();
+	Uint64 t = SDL_GetTicks();
 	if(organizedGameTimeEnabled)
 	{
 		if(t > organizedGameBroadcastTime)
@@ -138,9 +138,9 @@ int YOGServer::run()
 	{
 		const int speed = 20;
 		Uint64 startTick, endTick;
-		startTick = SDL_GetTicks64();
+		startTick = SDL_GetTicks();
 		update();
-		endTick=SDL_GetTicks64();
+		endTick=SDL_GetTicks();
 		int remaining = std::max<Sint64>(speed - static_cast<Sint64>(endTick) + static_cast<Sint64>(startTick), 0);
 		SDL_Delay(remaining);
 	}

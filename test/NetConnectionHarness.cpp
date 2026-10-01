@@ -37,7 +37,7 @@ public:
 int main(int argc, char** argv) {
     try {
         if (argc == 3 && std::string(argv[1]) == "--serve") {
-            require(SDL_Init(0) == 0 && SDLNet_Init() == 0, "SDL network init failed");
+            require(SDL_Init(0) && NET_Init(), "SDL network init failed");
             globalContainer = new GlobalContainer(argv[2]);
             YOGServer server(YOGRequirePassword, YOGMultipleGames);
             require(server.isListening(), "YOG test port is already occupied");
@@ -110,16 +110,16 @@ int main(int argc, char** argv) {
         connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
         connection.sendMessage(std::make_shared<NetAttemptLogin>(std::string(70000, 'x'), ""));
         require(!connection.isConnected(), "Oversized frame length was truncated");
-        if (argc == 2) {
-            require(SDL_Init(0) == 0 && SDLNet_Init() == 0, "SDL network init failed");
+        if (argc == 2 || (argc == 3 && std::string(argv[1]) != "--serve")) {
+            require(SDL_Init(0) && NET_Init(), "SDL network init failed");
             {
                 NetListener listener(static_cast<Uint16>(std::stoi(argv[1])));
                 require(listener.isListening(), "Loopback listener failed");
-                NetConnection client("127.0.0.1", static_cast<Uint16>(std::stoi(argv[1]))), server;
+                NetConnection client(argc == 3 ? argv[2] : "127.0.0.1", static_cast<Uint16>(std::stoi(argv[1]))), server;
                 client.sendMessage(original); // Queue before connection completion.
                 bool accepted = false, echoed = false;
-                const auto deadline = SDL_GetTicks64() + 5000;
-                while (SDL_GetTicks64() < deadline && !echoed) {
+                const auto deadline = SDL_GetTicks() + 5000;
+                while (SDL_GetTicks() < deadline && !echoed) {
                     if (!accepted) accepted = listener.attemptConnection(server);
                     client.update();
                     if (auto message = server.getMessage()) server.sendMessage(message);
@@ -127,11 +127,12 @@ int main(int argc, char** argv) {
                     SDL_Delay(1);
                 }
                 require(accepted && echoed, "Native TCP message round trip failed");
+                require(server.getIPAddress().find("::ffff:") != 0, "Mapped IPv4 peer was not canonicalized");
                 // A one-way burst must drain without waiting for replies between frames.
-                const auto burstStart = SDL_GetTicks64();
+                const auto burstStart = SDL_GetTicks();
                 for (unsigned i = 0; i < 200; ++i) client.sendMessage(original);
                 unsigned delivered = 0;
-                while (delivered < 200 && SDL_GetTicks64() - burstStart < 1000) {
+                while (delivered < 200 && SDL_GetTicks() - burstStart < 1000) {
                     while (auto message = server.getMessage()) {
                         require(*message == *original, "TCP burst changed a message");
                         ++delivered;
@@ -140,7 +141,49 @@ int main(int argc, char** argv) {
                 }
                 require(delivered == 200, "TCP burst stalled waiting for unrelated incoming traffic");
             }
-            SDLNet_Quit(); SDL_Quit();
+            {
+                // An overlong DNS label fails locally without depending on a public resolver.
+                auto failing = makeNetTransport();
+                failing->open(std::string(256, 'x') + ".invalid", 7489);
+                const auto timeout = SDL_GetTicks() + 5000;
+                while (failing->state() == NetTransport::State::Connecting && SDL_GetTicks() < timeout)
+                    SDL_Delay(1);
+                require(failing->state() == NetTransport::State::Closed, "DNS failure did not close transport");
+                auto cancelled = makeNetTransport();
+                cancelled->open("192.0.2.1", 7489);
+                const auto start = SDL_GetTicks();
+                cancelled->close();
+                require(SDL_GetTicks() - start < 1000 && cancelled->state() == NetTransport::State::Closed,
+                        "Connection cancellation blocked or retained a live transport");
+            }
+            {
+                // Keep an accepted peer unread so SDL_net itself must queue writes.
+                NET_Server *listener = NET_CreateServer(nullptr, static_cast<Uint16>(std::stoi(argv[1])), 0);
+                require(listener != nullptr, "Backpressure listener failed");
+                auto sender = makeNetTransport();
+                sender->open(argc == 3 ? argv[2] : "127.0.0.1", static_cast<Uint16>(std::stoi(argv[1])));
+                NET_StreamSocket *peer = nullptr;
+                const auto timeout = SDL_GetTicks() + 5000;
+                while ((!peer || sender->state() == NetTransport::State::Connecting) && SDL_GetTicks() < timeout) {
+                    if (!peer) require(NET_AcceptClient(listener, &peer), "Backpressure accept failed");
+                    SDL_Delay(1);
+                }
+                require(peer && sender->state() == NetTransport::State::Connected, "Backpressure connection failed");
+                bool bounded = false;
+                for (unsigned i = 0; i < 1000 && !bounded; ++i) {
+                    bounded = !sender->send(std::vector<uint8_t>(64 * 1024, 42));
+                    SDL_Delay(1);
+                }
+                require(bounded, "Stalled writes exceeded the bounded transport queue");
+                NET_DestroyStreamSocket(peer);
+                const auto disconnected = SDL_GetTicks() + 5000;
+                while (sender->state() != NetTransport::State::Closed && SDL_GetTicks() < disconnected)
+                    SDL_Delay(1);
+                require(sender->state() == NetTransport::State::Closed, "Peer disconnect retained transport");
+                sender->close();
+                NET_DestroyServer(listener);
+            }
+            NET_Quit(); SDL_Quit();
         }
         std::cout << "PASS: shared framing, malformed input, queue limits, queued greeting and TCP round trip\n";
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }

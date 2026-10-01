@@ -30,19 +30,11 @@ void NetListener::startListening(Uint16 nport)
 {
 	if(!listening)
 	{
-		IPaddress address;
-		if(SDLNet_ResolveHost(&address, NULL, nport) == -1)
-		{
-			if(verbose)
-				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
-			listening=false;
-		}
-		
-		socket=SDLNet_TCP_Open(&address);
+		socket = NET_CreateServer(nullptr, nport, 0);
 		if(!socket)
 		{
 			if(verbose)
-				std::cout<<"NetListener::startListening:"<<SDLNet_GetError()<<std::endl;
+				std::cout<<"NetListener::startListening:"<<SDL_GetError()<<std::endl;
 			listening=false;
 		}
 		else
@@ -60,7 +52,7 @@ void NetListener::startListening(Uint16 nport)
 void NetListener::stopListening()
 {
 	if(listening)
-		SDLNet_TCP_Close(socket);
+		NET_DestroyServer(socket);
 	listening=false;
 }
 

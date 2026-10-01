@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include <SDL_net.h>
+#include <SDL3_net/SDL_net.h>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -25,6 +25,6 @@ class NetTransport
 	virtual bool send(std::vector<uint8_t> bytes) = 0;
 	virtual bool receive(std::vector<uint8_t> &bytes) = 0;
 	// Ownership transfers only on success. Only native TCP supports accepting.
-	virtual bool accept(TCPsocket socket) { return false; }
+	virtual bool accept(NET_StreamSocket *socket) { return false; }
 };
 std::unique_ptr<NetTransport> makeNetTransport();

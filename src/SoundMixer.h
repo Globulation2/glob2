@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <SDL.h>
-#include <SDL_audio.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_audio.h>
 #include <vorbis/codec.h>
 #include <vorbis/vorbisfile.h>
 #include <vector>
@@ -40,6 +40,7 @@ public:
 	//! Guarded by SDL_LockAudio, like mode and fadePos.
 	int pendingTrack;
 	bool soundEnabled;
+    SDL_AudioStream *audioStream = nullptr;
 	unsigned musicVolume;
 	unsigned voiceVolume;
 	

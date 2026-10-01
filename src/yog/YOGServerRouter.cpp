@@ -11,7 +11,7 @@
 #include "YOGServerGameRouter.h"
 #include "YOGServerRouter.h"
 #include "YOGServerRouterPlayer.h"
-#include "SDLCompat.h"
+#include <SDL3/SDL.h>
 #include <sstream>
 
 using namespace GAGCore;
@@ -119,9 +119,9 @@ int YOGServerRouter::run()
 	{
 		const int speed = 25;
 		Uint64 startTick, endTick;
-		startTick = SDL_GetTicks64();
+		startTick = SDL_GetTicks();
 		update();
-		endTick=SDL_GetTicks64();
+		endTick=SDL_GetTicks();
 		int remaining = std::max<Sint64>(speed - static_cast<Sint64>(endTick) + static_cast<Sint64>(startTick), 0);
 		SDL_Delay(remaining);
 		

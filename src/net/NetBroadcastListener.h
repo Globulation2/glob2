@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "SDL_net.h"
+#include <SDL3_net/SDL_net.h>
 #include "LANGameInformation.h"
 #include <vector>
 
@@ -31,10 +31,10 @@ public:
 	///Disables listening
 	void disableListening();
 private:
-	UDPsocket socket;
+	NET_DatagramSocket *socket = nullptr;
 	std::vector<LANGameInformation> games;
 	std::vector<int> timeouts;
-	std::vector<IPaddress> addresses;
+	std::vector<std::string> addresses;
 	Uint64 lastTime;
 };
 

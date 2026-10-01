@@ -6,7 +6,8 @@
 #include "Order.h"
 #include "BinaryStream.h"
 #include "StreamBackend.h"
-#include "SDLCompat.h" // for SDL_GetTicks64 fallback
+#include <SDL3/SDL.h>
+#include <vector>
 
 using namespace GAGCore;
 
@@ -37,7 +38,7 @@ void NetBroadcaster::update()
 {
 	if(socket)
 	{
-		Uint64 time = SDL_GetTicks64();
+		Uint64 time = SDL_GetTicks();
 		if((static_cast<Sint64>(time) - static_cast<Sint64>(lastTime)) >= 500 )
 		{
 			MemoryStreamBackend* msb = new MemoryStreamBackend;
@@ -48,26 +49,16 @@ void NetBroadcaster::update()
 			Uint32 length = msb->getPosition();
 			msb->seekFromStart(0);
 
-			UDPpacket* packet = SDLNet_AllocPacket(length+NET_FRAME_LENGTH_PREFIX_BYTES);
-			packet->len = length+NET_FRAME_LENGTH_PREFIX_BYTES;
-			SDLNet_Write16(length, packet->data);
-			msb->read(packet->data+NET_FRAME_LENGTH_PREFIX_BYTES, length);
-			int result = SDLNet_UDP_Send(socket, 0, packet);
-			if(!result)
-			{
-				printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
-			}
-			
-			result = SDLNet_UDP_Send(localsocket, 0, packet);
-			if(!result)
-			{
-				printf("SDLNet_UDP_Send: %s\n", SDLNet_GetError());
-			}
-			
 
-			delete bos;
-			SDLNet_FreePacket(packet);
-			
+            if (length <= 65535) {
+                std::vector<Uint8> packet(length + NET_FRAME_LENGTH_PREFIX_BYTES);
+                packet[0] = length >> 8; packet[1] = length & 255;
+                msb->read(packet.data() + NET_FRAME_LENGTH_PREFIX_BYTES, length);
+                NET_SendDatagram(socket, nullptr, LAN_BROADCAST_PORT, packet.data(), packet.size());
+                if (localaddress) NET_SendDatagram(socket, localaddress, LAN_BROADCAST_PORT, packet.data(), packet.size());
+            }
+            delete bos;
+
 			lastTime = lastTime + 500;
 			timer -= 1;
 		}
@@ -78,40 +69,29 @@ void NetBroadcaster::update()
 
 void NetBroadcaster::disableBroadcasting()
 {
-	SDLNet_UDP_Unbind(socket, 0);
-	SDLNet_UDP_Close(socket);
-	
-	SDLNet_UDP_Unbind(localsocket, 0);
-	SDLNet_UDP_Close(localsocket);
+    if (socket) NET_DestroyDatagramSocket(socket);
+    if (localaddress) NET_UnrefAddress(localaddress);
+    socket = nullptr; localaddress = nullptr;
 }
-
-
 
 void NetBroadcaster::enableBroadcasting()
 {
-	socket=SDLNet_UDP_Open(0);
-	if(!socket)
-	{
-		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
-		exit(2);
-	}
-	localsocket=SDLNet_UDP_Open(0);
-	if(!localsocket)
-	{
-		printf("SDLNet_UDP_Open: %s\n", SDLNet_GetError());
-		exit(2);
-	}
-	IPaddress address;
-	address.port = LAN_BROADCAST_PORT;
-	//192.168.255.255
-	address.host = 0xFFFFA8C0;
-	SDLNet_UDP_Bind(socket, 0, &address);
-	
-	IPaddress localaddress;
-	SDLNet_ResolveHost(&localaddress, "127.0.0.1", LAN_BROADCAST_PORT);
-	SDLNet_UDP_Bind(localsocket, 0, &localaddress);
-	
-	lastTime = SDL_GetTicks64();
+#ifdef __EMSCRIPTEN__
+    // Browser transport is WebSocket-only; no native LAN datagram support.
+    return;
+#endif
+    disableBroadcasting();
+    NET_Address *ipv4 = NET_ResolveHostname("0.0.0.0");
+    if (ipv4 && NET_WaitUntilResolved(ipv4, 1000) == NET_SUCCESS) {
+        SDL_PropertiesID props = SDL_CreateProperties();
+        SDL_SetBooleanProperty(props, NET_PROP_DATAGRAM_SOCKET_ALLOW_BROADCAST_BOOLEAN, true);
+        socket = NET_CreateDatagramSocket(ipv4, 0, props);
+        SDL_DestroyProperties(props);
+    }
+    if (ipv4) NET_UnrefAddress(ipv4);
+    localaddress = NET_ResolveHostname("127.0.0.1");
+    if (localaddress && NET_WaitUntilResolved(localaddress, 1000) != NET_SUCCESS) {
+        NET_UnrefAddress(localaddress); localaddress = nullptr;
+    }
+    lastTime = SDL_GetTicks();
 }
-
-

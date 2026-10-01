@@ -40,7 +40,7 @@ public:
 protected:
     friend class NetListener;
     /// Accepts one connection from the native SDL listener when available.
-    bool attemptConnection(TCPsocket& serverSocket);
+    bool attemptConnection(NET_Server * serverSocket);
 private:
     std::unique_ptr<NetTransport> transport;
     std::queue<std::shared_ptr<NetMessage>> received;

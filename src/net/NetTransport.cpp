@@ -24,57 +24,62 @@ class TcpTransport final : public NetTransport
 	std::deque<std::vector<uint8_t>> incoming, outgoing;
 	size_t incomingBytes = 0, outgoingBytes = 0;
 
-	void run(TCPsocket socket, std::string host, uint16_t port)
+	void run(NET_StreamSocket *socket, std::string host, uint16_t port)
 	{
-		if (!socket)
-		{
-			IPaddress address{};
-			if (SDLNet_ResolveHost(&address, host.c_str(), port) == 0 && !stop)
-				socket = SDLNet_TCP_Open(&address);
-		}
-		auto set = SDLNet_AllocSocketSet(1);
-		if (socket && set && SDLNet_TCP_AddSocket(set, socket) >= 0 && !stop)
-		{
-			status = State::Connected;
-			while (!stop)
-			{
-				std::vector<uint8_t> bytes;
-				{
-					std::lock_guard lock(mutex);
-					if (!outgoing.empty())
-					{
-						bytes = std::move(outgoing.front());
-						outgoing.pop_front();
-						outgoingBytes -= bytes.size();
-					}
-				}
-				if (!bytes.empty() &&
-					SDLNet_TCP_Send(socket, bytes.data(), bytes.size()) != int(bytes.size()))
-					break;
-				// Drain output promptly while still checking input between writes.
-				const int ready = SDLNet_CheckSockets(set, bytes.empty() ? 10 : 0);
-				if (ready < 0)
-					break;
-				if (ready && SDLNet_SocketReady(socket))
-				{
-					std::array<uint8_t, chunkLimit> buffer;
-					const int size = SDLNet_TCP_Recv(socket, buffer.data(), buffer.size());
-					if (size <= 0)
-						break;
-					std::lock_guard lock(mutex);
-					if (incomingBytes + size > queueLimit)
-						break;
-					incoming.emplace_back(buffer.begin(), buffer.begin() + size);
-					incomingBytes += size;
-				}
-			}
-		}
-		if (socket)
-			SDLNet_TCP_Close(socket);
-		if (set)
-			SDLNet_FreeSocketSet(set);
-		status = State::Closed;
-	}
+
+        if (!socket)
+        {
+            NET_Address *address = NET_ResolveHostname(host.c_str());
+            if (address) {
+                while (!stop && NET_GetAddressStatus(address) == NET_WAITING)
+                    NET_WaitUntilResolved(address, 10);
+                if (!stop && NET_GetAddressStatus(address) == NET_SUCCESS)
+                    socket = NET_CreateClient(address, port, 0);
+                NET_UnrefAddress(address);
+            }
+        }
+        if (socket) {
+            while (!stop && NET_GetConnectionStatus(socket) == NET_WAITING)
+                NET_WaitUntilConnected(socket, 10);
+        }
+        if (socket && !stop && NET_GetConnectionStatus(socket) == NET_SUCCESS)
+        {
+            status = State::Connected;
+            while (!stop)
+            {
+                bool wrote = false;
+                {
+                    std::lock_guard lock(mutex);
+                    const int pending = NET_GetStreamSocketPendingWrites(socket);
+                    if (pending < 0) break;
+                    // outgoingBytes includes both our queue and SDL_net's queue.
+                    size_t queued = 0;
+                    for (const auto &bytes : outgoing) queued += bytes.size();
+                    outgoingBytes = queued + static_cast<size_t>(pending);
+                    if (!outgoing.empty()) {
+                        auto &bytes = outgoing.front();
+                        if (!NET_WriteToStreamSocket(socket, bytes.data(), static_cast<int>(bytes.size()))) break;
+                        outgoing.pop_front();
+                        wrote = true;
+                    }
+                }
+                std::array<uint8_t, chunkLimit> buffer;
+                const int size = NET_ReadFromStreamSocket(socket, buffer.data(), buffer.size());
+                if (size < 0) break;
+                if (size) {
+                    std::lock_guard lock(mutex);
+                    if (incomingBytes + size > queueLimit) break;
+                    incoming.emplace_back(buffer.begin(), buffer.begin() + size);
+                    incomingBytes += size;
+                } else if (!wrote) {
+                    void *sockets[] = {socket};
+                    if (NET_WaitUntilInputAvailable(sockets, 1, 10) < 0) break;
+                }
+            }
+        }
+        if (socket) NET_DestroyStreamSocket(socket);
+        status = State::Closed;
+    }
 
   public:
 	~TcpTransport() override { close(); }
@@ -85,7 +90,7 @@ class TcpTransport final : public NetTransport
 		status = State::Connecting;
 		worker = std::thread([this, host, port] { run(nullptr, host, port); });
 	}
-	bool accept(TCPsocket socket) override
+	bool accept(NET_StreamSocket *socket) override
 	{
 		close();
 		stop = false;
@@ -163,7 +168,7 @@ class NativeTransport final : public NetTransport
 	{
 		return selected && selected->receive(bytes);
 	}
-	bool accept(TCPsocket socket) override
+	bool accept(NET_StreamSocket *socket) override
 	{
 		close();
 		selected = std::make_unique<TcpTransport>();
