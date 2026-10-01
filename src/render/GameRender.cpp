@@ -177,12 +177,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 
 
-	// compute and draw cloud shadow if we are in high quality
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	// Compute once for the independently selected cloud layers.
+	if (globalContainer->settings.cloudShadows || (globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER)))
 	{
 		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
-		           !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
-		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
+		           globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
+		if (globalContainer->settings.cloudShadows)
+			ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
@@ -192,8 +193,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
 
 
-	// draw cloud overlay if we are in high quality
-	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	// Draw clouds above the world independently of shadows.
+	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && globalContainer->settings.clouds)
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
 
 	// Draw units that are off the screen for the selected building

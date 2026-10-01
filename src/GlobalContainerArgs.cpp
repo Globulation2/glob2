@@ -290,11 +290,11 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 
 		else if (strcmp(argv[i], "-l")==0)
 		{
-			settings.optionFlags |= OPTION_LOW_SPEED_GFX;
+			settings.setGraphicsDetail(false);
 		}
 		else if (strcmp(argv[i], "-h")==0)
 		{
-			settings.optionFlags &= ~OPTION_LOW_SPEED_GFX;
+			settings.setGraphicsDetail(true);
 		}
 		else if (strcmp(argv[i], "-m")==0)
 		{
@@ -388,8 +388,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-c/-C\tenable/disable custom cursor\n");
 			printf("-f/-F\tset/clear full screen\n");
 			printf("-g/-G\tenable/disable OpenGL acceleration (GPU use)\n");
-			printf("-h\thigh speed graphics: max of transparency effects\n");
-			printf("-l\tlow speed graphics: disable some transparency effects\n");
+			printf("-h\tfull graphics: enable all detail effects\n");
+			printf("-l\treduced graphics: simplify all detail effects\n");
 			printf("-m/-M\tmute/unmute the sound (both music and speech)\n");
 			printf("-r/-R\tset/clear resizable window\n");
 			printf("-sgsl\tedit SGSL script in the map editor (default)\n");

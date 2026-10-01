@@ -309,4 +309,5 @@ TEST_SUITE("WindowResize")
 	TEST_CASE("cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]") { resizeChecks(false, false); }
 	TEST_CASE("cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]") { resizeChecks(true, false); }
 	TEST_CASE("presentation benchmark [benchmark][display]") { resizeChecks(true, true); }
+	TEST_CASE("software presentation benchmark [benchmark][display]") { resizeChecks(false, true); }
 }

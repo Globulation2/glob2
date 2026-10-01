@@ -81,6 +81,7 @@ ENGINE_TESTS = [
     ('UnitTeamShaderTest.cpp', dict(require={'opengl'})),
     'WindowResizeHarness.cpp',
     'SettingsScreenTest.cpp',
+    'SettingsGraphicsTest.cpp',
     'SettingsExperimentsTest.cpp',
     'GuardAreaBalanceTest.cpp',
     'GameSpeedTest.cpp',

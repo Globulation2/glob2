@@ -275,12 +275,33 @@ void run(bool gpu)
 
 	// A complete production map frame catches the separate virtual-flag pass.
 	unit->validTarget=false;
-	globals->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
+	globals->settings.setGraphicsDetail(false);
 	clear();
 	game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
 	capturePixels(gfx);
 	SDL_Surface *baseline=SDL_ConvertSurface(gfx->getSDLSurface(),gfx->getSDLSurface()->format,0);
 	REQUIRE(baseline);
+	if (gpu)
+	{
+		const auto checksum = game.checkSum();
+		std::vector<std::vector<Uint8>> layers;
+		for (auto [clouds, shadows] : {std::pair{false,false}, std::pair{true,false}, std::pair{false,true}, std::pair{true,true}})
+		{
+			globals->settings.clouds = clouds;
+			globals->settings.cloudShadows = shadows;
+			clear();
+			game.drawMap(0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP, nullptr, nullptr, true);
+			capturePixels(gfx);
+			auto *pixels = gfx->getSDLSurface();
+			const auto *begin = static_cast<const Uint8*>(pixels->pixels);
+			layers.emplace_back(begin, begin + pixels->pitch * pixels->h);
+			REQUIRE(game.checkSum() == checksum);
+		}
+		REQUIRE(layers[0] != layers[1]); REQUIRE(layers[0] != layers[2]);
+		REQUIRE(layers[1] != layers[3]); REQUIRE(layers[2] != layers[3]);
+		globals->settings.setGraphicsDetail(false);
+		std::cout << "PASS independent cloud layers preserve simulation checksum\n";
+	}
 	auto *flag=game.addBuilding(3,3,globals->buildingsTypes.getTypeNum("warflag",0,false),0);
 	REQUIRE(flag); flag->unitStayRange=1; view.selectedBuilding=flag;
 	clear();

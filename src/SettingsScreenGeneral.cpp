@@ -128,31 +128,42 @@ void SettingsScreen::buildGeneral()
 		}
 #endif
 		section("Artwork & effects");
-		choice("graphics.detail", "Graphics detail",
-			   "Reduced detail disables clouds and their shadows, simplifies magic effects, and "
-			   "reduces transparency.",
-			   bool(s.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX),
-			   {tr("Full"), tr("Reduced")},
-			   [this](int v)
-			   {
-				   auto &flags = globalContainer->settings.optionFlags;
-				   if (v)
-					   flags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
-				   else
-					   flags &= ~GlobalContainer::OPTION_LOW_SPEED_GFX;
-				   commit();
-			   });
+		auto effect = [this, &s](const char *id, const char *label, const char *help,
+								 bool Settings::*field)
+		{
+			toggle(id, label, help, s.*field, [this, field](int v)
+			{
+				globalContainer->settings.*field = v != 0;
+				commit();
+			});
+		};
+		auto appearance = [this, &s](const char *id, const char *label, const char *help,
+									 bool Settings::*field, const char *off, const char *on)
+		{
+			choice(id, label, help, s.*field, {tr(off), tr(on)}, [this, field](int v)
+			{
+				globalContainer->settings.*field = v != 0;
+				commit();
+			});
+		};
+		effect("graphics.clouds", "Clouds", "Show cloud cover above the map.", &Settings::clouds);
+		effect("graphics.shadows", "Cloud shadows", "Show cloud shadows on the ground independently of cloud cover.", &Settings::cloudShadows);
+		effect("graphics.particles", "Building particles", "Show smoke and other building particles.", &Settings::buildingParticles);
+		appearance("graphics.magic", "Magic effects", "Choose animated magic effects or a simple visible effect.", &Settings::fullMagicEffects, "Simple", "Full");
 #ifndef GLOB2_MOBILE
 		if (!touchLayout)
 		{
-			toggle("graphics.artwork", "High-resolution artwork",
+			choice("graphics.artwork", "Artwork",
 				   "Apply artwork on the next game or editor load (OpenGL).",
-				   s.highResolutionArtwork,
+				   s.highResolutionArtwork, {tr("Original"), tr("High resolution")},
 				   [this](int v)
 				   {
 					   globalContainer->settings.highResolutionArtwork = v;
 					   commit();
 				   });
+			const bool gpu = bool(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU);
+			form.back().enabled = gpu;
+			if (!gpu) form.back().help = tr("Requires the OpenGL renderer. Your saved choice is retained.");
 			toggle("graphics.torus", "Automatic torus view",
 				   "Automatically show the torus overview while moving around the map (OpenGL).",
 				   s.automaticTorus,
@@ -161,6 +172,38 @@ void SettingsScreen::buildGeneral()
 					   globalContainer->settings.automaticTorus = v;
 					   commit();
 				   });
+			form.back().enabled = gpu;
+			if (!gpu) form.back().help = tr("Requires the OpenGL renderer. Your saved choice is retained.");
+		}
+#endif
+		section("Interface appearance");
+		appearance("graphics.panels", "Panels", "Choose translucent or opaque interface panels.", &Settings::translucentPanels, "Opaque", "Translucent");
+		choice("display.textsize", "Text size", "Enlarge interface text without changing the map scale.",
+			   s.mobileDialogTextPercent >= 150 ? 2 : s.mobileDialogTextPercent >= 125 ? 1 : 0,
+			   {"100 %", "125 %", "150 %"}, [this](int v)
+			   {
+				   globalContainer->settings.mobileDialogTextPercent = 100 + v * 25;
+				   commit();
+			   });
+		choice("display.presentation", "Interface layout",
+			   "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
+			   int(parsePresentationPreference(s.interfacePresentation)),
+			   {tr("Automatic"), tr("Compact"), tr("Spacious")},
+			   [this](int v)
+			   {
+				   presentationPreference =
+					   static_cast<PresentationPreference>(std::clamp(v, 0, 2));
+				   globalContainer->settings.interfacePresentation =
+					   presentationPreferenceName(presentationPreference);
+				   commit();
+			   });
+		section("Advanced graphics");
+		appearance("graphics.paths", "Path lines", "Choose translucent or opaque unit path lines.", &Settings::translucentPathLines, "Opaque", "Translucent");
+		effect("graphics.indicators", "Smooth progress indicators", "Smooth the moving edges of progress indicators.", &Settings::smoothProgressIndicators);
+		effect("graphics.animation", "Decorative interface animation", "Animate victory artwork. Reduced motion also disables this animation.", &Settings::decorativeAnimations);
+#ifndef GLOB2_MOBILE
+		if (!touchLayout)
+		{
 			choice("graphics.renderer", "Renderer", "Changing the renderer requires a restart.",
 				   bool(s.screenFlags & GraphicContext::USEGPU), {tr("Software"), "OpenGL"},
 				   [this](int v)

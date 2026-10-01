@@ -71,6 +71,17 @@ public:
 	bool rememberUnit;
 	bool scrollWheelEnabled;
 	bool highResolutionArtwork;
+	// Local rendering preferences; never serialized into games or orders.
+	bool clouds;
+	bool cloudShadows;
+	bool buildingParticles;
+	bool fullMagicEffects;
+	bool translucentPanels;
+	bool translucentPathLines;
+	bool smoothProgressIndicators;
+	bool decorativeAnimations;
+	void setGraphicsDetail(bool full);
+	static constexpr Uint32 LEGACY_LOW_DETAIL = 0x1;
 	/// Periodically saves the game in progress as "Auto save".
 	bool autosaveGames;
 	/// Experimental features to bake into every new game this player starts or

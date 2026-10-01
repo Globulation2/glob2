@@ -141,7 +141,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// draw magic animation
 	if (unit->magicActionAnimation)
 	{
-		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+		if (!globalContainer->settings.fullMagicEffects)
 		{
 			globalContainer->gfx->drawSprite(px+16-(globalContainer->magiceffect->getW(0)>>1), py+16-(globalContainer->magiceffect->getH(0)>>1), globalContainer->magiceffect, 0);
 		}
@@ -271,7 +271,7 @@ void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int s
 			py += 16;
 			forEachMapCopy(std::min(px,targetX), std::min(py,targetY), std::max(px,targetX), std::max(py,targetY),
 				map.getW()*32, map.getH()*32, sw, sh, [&](int offsetX, int offsetY) {
-					const Uint8 alpha = (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) ? 255 : 128;
+					const Uint8 alpha = (!globalContainer->settings.translucentPathLines) ? 255 : 128;
 					globalContainer->gfx->drawLine(px+offsetX, py+offsetY, targetX+offsetX, targetY+offsetY, 250, 250, 250, alpha);
 				});
 		}

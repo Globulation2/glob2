@@ -130,8 +130,20 @@ static void run(int width,int height,bool gl,bool expanded)
         screen.onTimer(SDL_GetTicks()+400);loaded.load();REQUIRE(loaded.touchScrollMomentum==50);
         REQUIRE(GAGCore::ScrollPresets::widget().momentum);
         screen.selectCategory(SettingsScreen::Category::Display);
-        s.optionFlags|=0x80;REQUIRE(screen.changeSetting("graphics.detail",1));REQUIRE((s.optionFlags & 0x80));
-        REQUIRE(screen.changeSetting("graphics.detail",0));REQUIRE(s.optionFlags==0x80);
+        s.optionFlags |= 0x80;
+        for (const char* id : {"graphics.clouds", "graphics.shadows", "graphics.particles", "graphics.magic", "graphics.panels", "graphics.paths", "graphics.indicators", "graphics.animation"}) {
+            REQUIRE(screen.changeSetting(id,0)); REQUIRE(s.optionFlags==0x80);
+            REQUIRE(screen.changeSetting(id,1)); REQUIRE(s.optionFlags==0x80);
+        }
+        REQUIRE((s.clouds && s.cloudShadows && s.buildingParticles && s.fullMagicEffects));
+        REQUIRE(screen.changeSetting("graphics.clouds",0));
+        REQUIRE((!s.clouds && s.cloudShadows && s.highResolutionArtwork==originalArtwork));
+        Settings effectSaved; effectSaved.load(); REQUIRE((!effectSaved.clouds && effectSaved.cloudShadows));
+        for (int index : {1,2,0}) {
+            REQUIRE(screen.changeSetting("display.textsize",index));
+            Settings savedText; savedText.load(); REQUIRE(savedText.mobileDialogTextPercent==100+25*index);
+            screen.capture(output+"/text-size-"+std::to_string(index)+".bmp");
+        }
         REQUIRE(screen.row("graphics.renderer").kind==SettingsScreen::Kind::Choice);
         screen.activateSetting("graphics.renderer");screen.key(SDLK_ESCAPE);
         screen.capture(output+"/graphics-renderer.bmp");
@@ -232,12 +244,12 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(s.highResolutionArtwork==originalArtwork);
         screen.selectCategory(SettingsScreen::Category::Display);
         screen.changeSetting("graphics.artwork",!originalArtwork);
-        Settings saved;saved.load();REQUIRE(saved.highResolutionArtwork==!originalArtwork);
+        Settings saved;saved.load();REQUIRE(saved.highResolutionArtwork==(gl ? !originalArtwork : originalArtwork));
         screen.changeSetting("graphics.artwork",originalArtwork);
         screen.selectCategory(SettingsScreen::Category::Display);
         const bool previousTorus=s.automaticTorus;
         screen.changeSetting("graphics.torus",!previousTorus);
-        saved.load();REQUIRE(saved.automaticTorus==!previousTorus);
+        saved.load();REQUIRE(saved.automaticTorus==(gl ? !previousTorus : previousTorus));
         screen.changeSetting("graphics.torus",previousTorus);
         for (const auto& [value,name] : std::vector<std::pair<int,std::string>>{{1,"compact"},{2,"spacious"},{0,"automatic"}}) {
             REQUIRE(screen.changeSetting("display.presentation",value));

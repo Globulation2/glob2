@@ -439,7 +439,7 @@ static void run(bool gpu, int width, int height)
                 std::cout << "Torus selection markers passed\n";
             }
             // Test navigation separately from the expensive cloud layer.
-            globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
+            globalContainer->settings.setGraphicsDetail(false);
             for (int i = 0; i < 20; ++i)
             {
                 view.setViewport((x + 3) & gui.game.map.getMaskW(), (y + 5) & gui.game.map.getMaskH());

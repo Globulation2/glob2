@@ -231,3 +231,21 @@ selection, path-line, effect, flag, ghost, particle and marker implementations e
 fail the corresponding pixel checks. Restoring the old settings visibility policy
 also fails. These checks cover rendering and UI behavior; they do not replace the
 separate Windows modal-resize and multiplayer acceptance tests.
+
+## Independent graphics effects
+
+Display settings expose artwork, clouds, cloud shadows, building particles and
+Full/Simple magic separately. Interface panels can be opaque or translucent.
+Advanced graphics contains path-line transparency, smooth progress indicators,
+decorative victory animation and renderer selection. Clouds and shadows can be
+selected independently. All effect choices apply immediately; artwork applies
+when loading a game or editor. HD artwork and automatic torus view require OpenGL;
+unavailable controls retain their saved choices.
+
+Old Full/Reduced preferences initialize missing individual choices to their former
+values. Explicit individual choices take precedence. The command-line `-h` and
+`-l` shortcuts still select the former Full and Reduced effects together.
+
+Text size (100%, 125%, 150%) adjusts frontend interface text independently of
+interface/map scale in both desktop and touch layouts. It shares the saved
+`mobileDialogTextPercent` preference with the in-game dialog text-size control.
