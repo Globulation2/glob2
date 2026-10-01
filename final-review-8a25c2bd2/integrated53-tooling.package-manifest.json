@@ -1,0 +1,38 @@
+{
+  "revision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+  "dirty": false,
+  "sourceStatus": [],
+  "sourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4",
+  "group": "integrated53-tooling",
+  "scope": "Bounded Python/tooling/translation checks and source equality; runtime evidence retained separately.",
+  "files": {
+    "integrated53-bounded-tooling-summary.json": {
+      "bytes": 2036,
+      "sha256": "fe94f6ad1b62806a3f1a2c929c687e6b7bbd1fede7b80746e531690e4428778f"
+    },
+    "integrated53-python-checks.log": {
+      "bytes": 136,
+      "sha256": "ac501819b3320b5f28050b78000bb63e7b21c6a0873f8a22e1210f838f8a3d77"
+    },
+    "integrated53-translations-strict.json": {
+      "bytes": 130466,
+      "sha256": "cf0adbeafd01fcbbb7682ba910486f21275ef411604c19974b30062f406cbcd2"
+    },
+    "integrated53-scripting-unchanged.json": {
+      "bytes": 21067,
+      "sha256": "e7153ee2597f1cb8c9f2e3de05598cf03f950c5382f77ae0c8cafc393d8c2991"
+    },
+    "source.json": {
+      "bytes": 191,
+      "sha256": "2903552233d1270ae1425d05f39318ad3b748f41ff26548836fc632ad1c69946"
+    },
+    "integration.json": {
+      "bytes": 6760,
+      "sha256": "c99719e9c46aa9a30062d22010b9eae0d9757a9406badfdb276c70a2e1842c15"
+    },
+    "coverage-limits.json": {
+      "bytes": 1251,
+      "sha256": "72e7cd74396bc3ee73282524261afbe3e457953cc31c6d1fe0b47ba9bc726c73"
+    }
+  }
+}

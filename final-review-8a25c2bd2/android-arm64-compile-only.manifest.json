@@ -1,0 +1,76 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "dirty": false,
+  "sourceStatus": [],
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "lane": "android-arm64-compile-only",
+  "abi": "arm64-v8a",
+  "api": 24,
+  "status": "COMPILE ONLY",
+  "producerBuild": {
+    "compiler": "/Users/bradley/glob2/build/mobile-tools/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-fPIC -g -O2",
+      "CPPDEFINES": "HAVE_CONFIG_H",
+      "CXXFLAGS": "-std=gnu++20 -fexceptions",
+      "LINKFLAGS": "-Wl,--no-undefined -Wl,--build-id=sha1 -Wl,-z,max-page-size=16384"
+    },
+    "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+    "sourceStatus": [],
+    "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991"
+  },
+  "binaries": [
+    {
+      "repositoryPath": "build/android/device/arm64-v8a/24/client/release/tests/glob2-unit-tests",
+      "bytes": 83085128,
+      "sha256": "8471df36a98062cca15f1dd47c386dd1e29cf48fdd51146970de3ccef31e320d",
+      "elfClass": 2,
+      "elfMachine": 183,
+      "compiledProducerStringVerified": true,
+      "executed": false
+    },
+    {
+      "repositoryPath": "build/android/device/arm64-v8a/24/client/release/tests/glob2-engine-tests",
+      "bytes": 354995640,
+      "sha256": "8595dee81ead851d8167805db6656f468e966461179fc28f06230ea61e17c137",
+      "elfClass": 2,
+      "elfMachine": 183,
+      "compiledProducerStringVerified": true,
+      "executed": false
+    }
+  ],
+  "compilerVersion": "Android (13624864, +pgo, -bolt, +lto, -mlgo, based on r530567e) clang version 19.0.1 (https://android.googlesource.com/toolchain/llvm-project 97a699bf4812a18fb657c2779f5296a4ab2694d2)\nTarget: aarch64-unknown-linux-android24\nThread model: posix\nInstalledDir: /Users/bradley/glob2/build/mobile-tools/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/darwin-x86_64/bin\n",
+  "compilerDriverSha256": "cf489e3486ede2515e94dc69adc641daf2b0f8fd5abe8ad71f475dae5db52976",
+  "buildCompletionMarkerVerified": true,
+  "runtimeExecuted": false,
+  "acceptanceEligible": false,
+  "physicalDeviceAcceptance": false,
+  "comparableArtifactCount": 0,
+  "limitation": "Successful cross-compilation and embedded producer identity verified. No physical-device runtime, numeric, simulation or continuation acceptance is claimed.",
+  "fixtureHashes": {
+    "test/fixtures/javascript/README.md": "c47d2f092aa07e64d00623b6e7773ddd655e948935dbe82da5304179e2cae4f1",
+    "test/fixtures/javascript/ai-realistic.js": "5c07eb0da4cf5431ee13b1a646fbc44d9c8da9266367a5aae1d7a7b8f7b4fedf",
+    "test/fixtures/javascript/ai.js": "573a8a2706a140dceb4e3f7ad631ff3207dfa50b508ba6d69ea8854fc0b2ef2a",
+    "test/fixtures/javascript/global-number-corpus.js": "579592a35233542b5c2c327a5edb57b4dfe68181ed4660a21b3d941191b13472",
+    "test/fixtures/javascript/global-numbers-profile1.txt": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f",
+    "test/fixtures/javascript/map-realistic.js": "2dd886a8ee823bc7529d23ee0296d64e1e5dcc5ef76b7da8594c9ee497d589d3",
+    "test/fixtures/javascript/map.js": "b789a81ddce067b9ec094ba03bd13de6d9439150a6aa6ad0872de4288a00f224",
+    "test/fixtures/javascript/master-v124-experiments.game.gz": "55b972bb3c22b9238645d3f6f33479c0259868baefb2f487808201b7d3758ed5",
+    "test/fixtures/javascript/numeric-corpus.js": "b455fc13c728dc109604745f5d89dccc7299a9518b6a3da29ef4d00d0d2237ac",
+    "test/fixtures/javascript/numeric-profile1.txt": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac",
+    "test/fixtures/javascript/profile1-256.checksums.gz": "1352462590ef0d47b5b71742ef126bd48678d63c6c1cf96888fb3b86ab9035eb",
+    "test/fixtures/javascript/profile1-initial.game.gz": "5d3264136360c2cbe50947c1e680ead0703c14279d4987a05db94482e75ad0eb",
+    "test/fixtures/javascript/realistic-economy-0.txt": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576",
+    "test/fixtures/javascript/realistic-economy-1.txt": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6",
+    "test/fixtures/javascript/realistic-economy-2.txt": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4",
+    "test/fixtures/javascript/realistic-economy-3.txt": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631",
+    "test/fixtures/javascript/realistic-profile1-256.checksums.gz": "f32bd9fe0a5b81bec5759fa181407e8db5a0b3e7f29da406a6dca11ea18c29a6",
+    "test/fixtures/javascript/realistic-profile1-initial.game.gz": "b1394f861f2bbf3ab399c1e355c61baed936506155a39a64834c0f36e61e6516",
+    "test/fixtures/javascript/realistic-survey-0.txt": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682",
+    "test/fixtures/javascript/realistic-survey-1.txt": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3",
+    "test/fixtures/javascript/realistic-survey-2.txt": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd",
+    "test/fixtures/javascript/realistic-survey-3.txt": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2",
+    "test/fixtures/javascript/released-v123.replay.gz": "0b1079b16961738b2ac2223eff9da26c6d9f1aa5b26cfe7c16f1581b463d6d24"
+  }
+}

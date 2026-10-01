@@ -1,0 +1,41 @@
+{
+  "archives": [
+    {
+      "group": "android-arm64-compile-only",
+      "members": 9,
+      "archiveSha256": "0810e58075be28b7fec15b1612d832079a9080afbc73b46b12532e4f41337b52",
+      "sourceIdentity": {
+        "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+        "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+        "status": "COMPILE ONLY",
+        "runtimeExecuted": false,
+        "physicalDeviceAcceptance": false
+      }
+    },
+    {
+      "group": "android-armv7-compile-only",
+      "members": 9,
+      "archiveSha256": "1004dd56ff98ce539b516f8e120f7c9ee5ad38ec7ae28a5e77d27c30f8527bd4",
+      "sourceIdentity": {
+        "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+        "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+        "status": "COMPILE ONLY",
+        "runtimeExecuted": false,
+        "physicalDeviceAcceptance": false
+      }
+    },
+    {
+      "group": "integrated53-tooling",
+      "members": 7,
+      "archiveSha256": "383b237433bfa16246d0a17e88772dc02be893ead41c5d02fbc5ae45b255b93c",
+      "sourceIdentity": {
+        "revision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+        "dirty": false,
+        "sourceStatus": [],
+        "sourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4"
+      }
+    }
+  ],
+  "sourceHEADUnchanged": true,
+  "sourceIndexUnchanged": true
+}

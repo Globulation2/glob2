@@ -35,3 +35,8 @@ Appended independently hash-verified native CI (1174 files) and Linux Chromium/F
 
 Retained all three actual superseded599 WebGL2 UI failures: replay reload, match reload and damaged-save load. The archive includes original logs, trace ZIPs, screenshots, error contexts, diagnostic explanation and source association. Every failure aborted in immediate-mode rectangle batching with “numVertices must be an integer”. These are failed historical evidence, not final acceptance. The corrected53d integration emits one colour attribute per vertex and is undergoing the same production browser checks without raised timeouts or skipped cases.
 
+
+## compile-and-tooling
+
+Added independently verified Android ARM64 and ARMv7 compile-only evidence for exact8a. These records retain compiler/configuration, correct ELF ABI, embedded compiled producer identity and executable hashes. They explicitly set runtimeExecuted=false, physicalDeviceAcceptance=false and acceptanceEligible=false. Neither archive substitutes for missing physical Android reruns. Also added bounded tooling/source/translation checks for exact53d/source60f140:36 Python regressions pass, strict catalog audit has no structural errors/untranslated entries outside pending,10 selected syntax checks pass, and168 scripting/runtime/API/docs/vendor/fixture files are byte-identical to8a. Final53d production browser/CI acceptance is still pending.
+

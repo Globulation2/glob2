@@ -1,0 +1,58 @@
+{
+  "revision": "8a25c2bd2440e99246171967a31c68dc15917f95",
+  "sourceTreeSha256": "1540813995310acf88924c167bbb9c80525eb9d5cd7fe4a421d8e7ee5b49a991",
+  "status": "COMPILE ONLY",
+  "runtimeExecuted": false,
+  "physicalDeviceAcceptance": false,
+  "archive": "android-arm64-compile-only.tar.gz",
+  "archiveBytes": 72300,
+  "archiveSha256": "0810e58075be28b7fec15b1612d832079a9080afbc73b46b12532e4f41337b52",
+  "verifiedFileCount": 9,
+  "files": {
+    "COMPILE-ONLY-MANIFEST.json": {
+      "repositoryPath": "artifacts/rebase-validation/final/package-staging/android-arm64-compile-only.manifest.json",
+      "sha256": "fea515720401fc1d5db3b1fa6c3e2f96e80089c89b78a3fb825859547d03e3a6",
+      "bytes": 5279
+    },
+    "build-config/BuildConfig.h": {
+      "repositoryPath": "build/android/device/arm64-v8a/24/client/release/include/glob2/BuildConfig.h",
+      "sha256": "6ee1b5dd150b3652e9ebc8925ef753b5e5daa96e198a0b0e9170ba7f42cf9820",
+      "bytes": 275
+    },
+    "build-config/TestBuildProvenance.h": {
+      "repositoryPath": "build/android/device/arm64-v8a/24/client/release/include/glob2/TestBuildProvenance.h",
+      "sha256": "ec1413158f42ae18249854c02f9d84352eb4e7ffa692f58b24af4899b5e7f4cc",
+      "bytes": 682
+    },
+    "build.log": {
+      "repositoryPath": "artifacts/rebase-validation/final/android-arm64-build.log",
+      "sha256": "a295a3107e2910c33acc030e35986dd94a322602f0e6e2e4c7898d500761f281",
+      "bytes": 2302881
+    },
+    "reproduction/mobile/android.py": {
+      "repositoryPath": "mobile/android.py",
+      "sha256": "f7e4a6883595660e398b3154ccb3bd0cf0966d2d28655cafeba3de5033c109bc",
+      "bytes": 15332
+    },
+    "reproduction/mobile/android_device_tests.py": {
+      "repositoryPath": "mobile/android_device_tests.py",
+      "sha256": "1d840d222dd3871ad21d4f1eecd1951024444a3be514c2693f187f0a3c35924f",
+      "bytes": 9836
+    },
+    "reproduction/package-android-arm-compile-only.py": {
+      "repositoryPath": "artifacts/rebase-validation/package-android-arm-compile-only.py",
+      "sha256": "1917bb59fa63a72cafef03cbc8b925dbdb724e2eb225b2b7553f4a7315781a76",
+      "bytes": 6062
+    },
+    "reproduction/scons/javascript.py": {
+      "repositoryPath": "scons/javascript.py",
+      "sha256": "9e6a965f6c1baa9982fef0a685051344fb40c7b274e489f0edccf8311c6c1dc1",
+      "bytes": 2792
+    },
+    "reproduction/test/build_provenance.py": {
+      "repositoryPath": "test/build_provenance.py",
+      "sha256": "7c4328d10de89e7e019721126c2a0a801181ef0810d44cb953e33978f7f1331b",
+      "bytes": 2867
+    }
+  }
+}
