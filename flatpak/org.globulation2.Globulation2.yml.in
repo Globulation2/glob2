@@ -97,6 +97,7 @@ modules:
       - scons -j2 release=1 server=0 CXXFLAGS="-I/app/include -I/app/include/SDL2" LINKFLAGS=-L/app/lib BINDIR=/app/bin INSTALLDIR=/app/share DATADIR=/app/share install
       - test -f /app/share/metainfo/org.globulation2.Globulation2.metainfo.xml
       - test -f /app/share/glob2/data/maxima/duel.strategy
+      - test -f /app/share/glob2/data/usl/Language/Runtime/Control.usl
     sources:
       - type: git
         url: https://github.com/Globulation2/glob2.git
