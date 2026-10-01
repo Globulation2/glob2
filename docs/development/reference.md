@@ -497,7 +497,18 @@ never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
 
-## Software rendering profiling
+## Software rendering architecture and profiling
+
+
+`GraphicContext` remains the drawing facade and retains existing capability queries.
+It owns the accelerated backend and software backend independently; transformed passes
+borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend factory
+in `SoftwareRenderBackend.cpp` retains SDL's existing triangle rasterizer during this
+structural extraction. Sprite blits and rectangle fills are explicit backend operations,
+still implemented using the original triangles.
+`RenderBackend.cpp` contains the accelerated SDL implementation and its texture uploads.
+
+
 
 Build the opt-in saved-game benchmark with optimized production objects:
 

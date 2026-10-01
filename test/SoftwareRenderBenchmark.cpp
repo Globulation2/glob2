@@ -6,6 +6,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Building.h"
+#include <RenderBackend.h>
 #include <stdexcept>
 #include <cmath>
 #include "FileManager.h"
@@ -152,6 +153,7 @@ class SoftwareRenderBenchmark
 				PerformanceTelemetry::collector().reset();
 			}
 			std::vector<double> draw, present;
+			RenderOperations initialOps{};
 			double c0 = 0;
 			double freq = SDL_GetPerformanceFrequency();
 			const auto checksum = gui.game.checkSum(nullptr, nullptr, nullptr, true);
@@ -161,6 +163,7 @@ class SoftwareRenderBenchmark
 				if (i == 0)
 				{
 					c0 = cpu();
+					initialOps = gfx->backendOperations();
 					PerformanceTelemetry::collector().reset();
 				}
 				Uint64 a = SDL_GetPerformanceCounter();
@@ -199,6 +202,11 @@ class SoftwareRenderBenchmark
 			output("present", present);
 			printf("process_cpu_ms_per_frame=%.4f\n", totalCpu * 1000 / frames);
 			fflush(stdout);
+			auto ops = gfx->backendOperations();
+			printf("backend_ops blits=%llu fills=%llu triangles=%llu\n",
+				   (unsigned long long)(ops.blits - initialOps.blits),
+				   (unsigned long long)(ops.fills - initialOps.fills),
+				   (unsigned long long)(ops.triangles - initialOps.triangles));
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);
 			if (const char *p = getenv("PROFILE_CAPTURE"))

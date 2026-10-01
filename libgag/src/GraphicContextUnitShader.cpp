@@ -205,8 +205,8 @@ namespace GAGCore
 	{
 		if (!unitShaderProgram)
 			return false;
-		if (base && base->dirty) base->uploadToTexture();
-		if (team && team->dirty) team->uploadToTexture();
+		if (base && base->glUploadedRevision != base->contentRevision()) base->uploadToTexture();
+		if (team && team->glUploadedRevision != team->contentRevision()) team->uploadToTexture();
 		if ((base && !base->texture) || (team && !team->texture))
 			return false;
 

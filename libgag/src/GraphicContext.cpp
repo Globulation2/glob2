@@ -288,7 +288,8 @@ namespace GAGCore
 		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
 		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
 		cursorManager.releaseNativeCursor();
-		renderer.reset();
+		renderer = nullptr;
+        portableRenderer.reset();
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
 		releaseFrameCache();
 		freeOwnedSurface();
@@ -428,6 +429,14 @@ namespace GAGCore
 
 	void GraphicContext::freeOwnedSurface(void)
 	{
+        if (softwareTransform)
+        {
+            if (softwareRasterizer) softwareRasterizer->flush();
+            renderer = nullptr;
+            softwareTransform = false;
+            mapTransformActive = uiTransformActive = false;
+            mapScale = 1;
+        }
         softwareRasterizer.reset();
 		if (ownsSurface && sdlsurface)
 			SDL_FreeSurface(sdlsurface);
@@ -827,7 +836,8 @@ namespace GAGCore
 #endif
 		if (context) SDL_GL_DeleteContext(context);
 		context = nullptr;
-		renderer.reset();
+		renderer = nullptr;
+        portableRenderer.reset();
 		freeOwnedSurface();
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -847,7 +857,8 @@ namespace GAGCore
 		drawableW = windowW;
 		drawableH = windowH;
 		if (flags & PORTABLEGPU) {
-            renderer = makeSDLRenderBackend(window, logicalW, logicalH);
+            portableRenderer = makeSDLRenderBackend(window, logicalW, logicalH);
+            renderer = portableRenderer.get();
             if (!renderer) {
                 std::cerr << "Cannot initialize portable renderer: " << SDL_GetError() << std::endl;
                 return false;
@@ -1018,7 +1029,6 @@ namespace GAGCore
 				cursorManager.update(cursorScale);
 			}
 
-
             if (renderer) {
                 if (!pendingScreenshot.empty()) {
                     std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> pixels(renderer->capture(), SDL_FreeSurface);
@@ -1037,8 +1047,10 @@ namespace GAGCore
 			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();
 			#endif
 			cacheFrame();
-			if (optionFlags & USEGPU) swapBuffers();
-			else presentLastFrame();
+			if (optionFlags & USEGPU)
+				swapBuffers();
+			else
+				presentLastFrame();
 		}
 	}
 
@@ -1046,10 +1058,14 @@ namespace GAGCore
 	{
 		PERF_SCOPE_TIME(Screenshot);
 		SDL_Surface *toPrintSurface = NULL;
-        if (renderer) { pendingScreenshot=filename; return; }
+		if (renderer)
+		{
+			pendingScreenshot = filename;
+			return;
+		}
 
-		// Fetch the surface to print
-		#ifdef HAVE_OPENGL
+	// Fetch the surface to print
+#ifdef HAVE_OPENGL
 		std::unique_ptr<DrawableSurface> toPrint = nullptr;
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
@@ -1059,7 +1075,7 @@ namespace GAGCore
 			toPrintSurface = toPrint->sdlsurface;
 		}
 		else
-		#endif
+#endif
 			toPrintSurface = sdlsurface;
 
 		// Print it using virtual filesystem
