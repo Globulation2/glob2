@@ -711,10 +711,11 @@ jobs:
         if: ${{ needs.linux-build.result == 'success' }}
         with:
           name: linux-test-programs-${{ matrix.runner }}
+          path: artifacts/ci-native
       - name: Unpack built Linux test programs
         id: unpack_linux_test_programs
         if: ${{ needs.linux-build.result == 'success' }}
-        run: tar -xzf linux-test-programs.tar.gz
+        run: tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
 
       # Reads the main job's cache and never saves on the standalone path.
       - name: Restore the compiler cache
