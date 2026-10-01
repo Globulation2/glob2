@@ -44,4 +44,10 @@ struct TouchAllocationSession
 	TouchPlacementSession::Pointer pointer;
 	GAGCore::ViewRect track;
 	int building = -1, team = -1, requested = 0;
+	// Dial sliders: which value (workers, a unit ratio or a flag range), the
+	// sweep the value spans, and the contact for the readout above the finger.
+	int kind = 6, value = 0, maximum = 0, ring = 0;
+	bool polar = false;
+	double sweepFrom = 0, sweepTo = 0;
+	GAGCore::ViewPoint position;
 };

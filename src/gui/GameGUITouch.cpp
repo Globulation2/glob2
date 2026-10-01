@@ -85,7 +85,11 @@ MobileLayout GameGUITouch::layout() const
 											 result.actions.y, ThumbSide::left());
 		}
 	}
-	if ((result.persistentPanel || panelOpen) && inspectedBuilding())
+	// Compact inspectors are the thumb dial; its bounds are set once the layout
+	// is in drawable units below.
+	const bool dial = (result.persistentPanel || panelOpen) && inspectedBuilding() &&
+					  !result.persistentPanel && usesHUD();
+	if ((result.persistentPanel || panelOpen) && inspectedBuilding() && !dial)
 	{
 		// Use horizontal room before introducing overflow. Ordinary inspectors
 		// fit completely; only genuinely constrained/large-text views scroll.
@@ -115,6 +119,8 @@ MobileLayout GameGUITouch::layout() const
 		rect->w *= unit;
 		rect->h *= unit;
 	}
+	if (dial && gui.selectionMode != GameGUI::BRUSH_SELECTION)
+		result.panel = dialLayout(result).bounds;
 	return result;
 }
 double GameGUITouch::tutorialMaximum() const
@@ -191,7 +197,8 @@ void GameGUITouch::syncGestureExclusion()
 	if (usesHUD() && !activeDialog())
 	{
 		const auto ui = layout();
-		if (showsBuildPalette() && paletteRail(ui) && ui.panel.w > 0 && ui.panel.h > 0)
+		if (((showsBuildPalette() && paletteRail(ui)) || (inspectedBuilding() && !ui.persistentPanel)) &&
+			ui.panel.w > 0 && ui.panel.h > 0)
 			wanted.push_back(ui.panel);
 	}
 	auto same = [](const ViewRect &a, const ViewRect &b)
@@ -294,7 +301,14 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		if (header.contains(point) &&
 			point.x >= header.x + header.w - 48 * globalContainer->gfx->logicalUnitsPerPoint())
 			return 38;
-		if (layout().panel.contains(point))
+		// The dial answers only on its rings, chips and header; the map shows
+		// (and stays tappable) between them.
+		if (inspectedBuilding() && usesDial())
+		{
+			if (header.contains(point) || dialRegionAt(point))
+				return 3;
+		}
+		else if (layout().panel.contains(point))
 			return 3;
 		if (tutorialRect().contains(point))
 			return 7;
@@ -329,6 +343,12 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 			if (content.contains({rect.x + rect.w / 2, rect.y + rect.h / 2}))
 				targets.push_back(rect);
 		}
+	}
+	else if (inspectedBuilding() && usesDial())
+	{
+		for (const auto &region : dialRegions())
+			if (region.part != DialRegion::Arc)
+				targets.push_back(region.box);
 	}
 	else if (inspectedBuilding())
 	{
@@ -1048,6 +1068,7 @@ void GameGUITouch::prepareDraw()
 	{
 		confirmDestroy = false;
 		actionScroll = 0;
+		ratioType = 0;
 		lastInspectedBuilding = inspectedBuilding();
 	}
 	if (usesHUD())

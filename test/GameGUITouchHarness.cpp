@@ -1296,6 +1296,17 @@ class GameGUITouchHarness
 		require(building->type->maxUnitWorking > 0, "Allocation fixture must accept workers");
 		auto actionPoint = [&](int kind, int value, int side = 0)
 		{
+			if (gui.touch->usesDial())
+			{
+				// The phone dial: ratios apply to the unit type chosen at its chips.
+				gui.drawAll(0);
+				gfx->nextFrame();
+				if (kind == 0)
+					gui.touch->ratioType = value;
+				const auto p = gui.touch->dialActionPoint(kind, value, side);
+				require(p.x >= 0, "Building action must be on the dial");
+				return p;
+			}
 			for (int attempt = 0; attempt < 30; ++attempt)
 			{
 				gui.drawAll(0);
@@ -1489,21 +1500,51 @@ class GameGUITouchHarness
 					"Rapid allocation taps use pending values and the shared order format");
 			require(building->maxUnitWorking == authoritative && gui.game.checkSum() == simulation,
 					"Allocation UI must not change authoritative simulation state");
-			const auto track = gui.touch->buildingActionRect(0);
-			const float startX = track.x + track.w / 2, endX = track.x + track.w - 60 * unit;
-			finger(SDL_FINGERDOWN, 1, startX, rowY);
-			finger(SDL_FINGERMOTION, 1, endX, rowY);
+			// Drag along the worker slider: the phone dial's outer arc, or the row track.
+			GAGCore::ViewPoint slideFrom, slideTo;
+			int slideValue = -1;
+			if (gui.touch->usesDial())
+			{
+				const auto g = gui.touch->dialLayout(gui.touch->layout()).geometry;
+				const auto regions = gui.touch->dialRegions();
+				const auto arc = std::find_if(regions.begin(), regions.end(), [](const auto &r)
+											  { return r.part == GameGUITouch::DialRegion::Arc && r.action.kind == 6; });
+				require(arc != regions.end(), "The dial has a worker slider");
+				slideFrom = TouchDial::point(g, g.rings[arc->ring].middle(), (arc->from + arc->to) / 2);
+				slideTo = TouchDial::point(g, g.rings[arc->ring].middle(), arc->to - 2);
+				slideValue = TouchDial::value(arc->to - 2, arc->sliderFrom, arc->sliderTo, arc->maximum);
+			}
+			else
+			{
+				const auto track = gui.touch->buildingActionRect(0);
+				slideFrom = {track.x + track.w / 2, rowY};
+				slideTo = {track.x + track.w - 60 * unit, rowY};
+			}
+			finger(SDL_FINGERDOWN, 1, slideFrom.x, slideFrom.y);
+			finger(SDL_FINGERMOTION, 1, slideTo.x, slideTo.y);
 			require(gui.touch->allocation && gui.orderQueue.empty(),
 					"Slider drag previews without intermediate orders");
-			finger(SDL_FINGERUP, 1, endX, rowY);
+			if (gui.touch->usesDial())
+			{
+				gui.drawAll(0);
+				gfx->printScreen(width < height ? "touch-dial-drag-portrait.bmp" : "touch-dial-drag-landscape.bmp");
+				gfx->nextFrame();
+			}
+			finger(SDL_FINGERUP, 1, slideTo.x, slideTo.y);
 			require(!gui.touch->allocation && gui.orderQueue.size() == 1,
 					"Slider release sends exactly one allocation order");
+			if (slideValue >= 0)
+			{
+				auto slid = std::dynamic_pointer_cast<OrderModifyBuilding>(gui.orderQueue.front());
+				require(slid && slid->numberRequested == slideValue,
+						"The dial requests the worker count under the thumb");
+			}
 			gui.orderQueue.clear();
-			finger(SDL_FINGERDOWN, 1, startX, rowY);
-			finger(SDL_FINGERMOTION, 1, endX, rowY);
-			finger(SDL_FINGERDOWN, 2, startX, rowY);
-			finger(SDL_FINGERUP, 1, endX, rowY);
-			finger(SDL_FINGERUP, 2, startX, rowY);
+			finger(SDL_FINGERDOWN, 1, slideFrom.x, slideFrom.y);
+			finger(SDL_FINGERMOTION, 1, slideTo.x, slideTo.y);
+			finger(SDL_FINGERDOWN, 2, slideFrom.x, slideFrom.y);
+			finger(SDL_FINGERUP, 1, slideTo.x, slideTo.y);
+			finger(SDL_FINGERUP, 2, slideFrom.x, slideFrom.y);
 			require(!gui.touch->allocation && gui.orderQueue.empty(),
 					"Second finger cancels slider without an order");
 			gui.drawAll(0);
@@ -1661,12 +1702,62 @@ class GameGUITouchHarness
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 			openActions(swarm);
-			const auto content = gui.touch->panelContent();
-			for (size_t i = 0; i < gui.touch->buildingActions().size(); ++i)
+			if (gui.touch->usesDial())
 			{
-				const auto box = gui.touch->buildingActionRect(i);
-				require(box.y >= content.y && box.y + box.h <= content.y + content.h,
-						"Swarm controls must fit without inspector scrolling");
+				const auto ui = gui.touch->layout();
+				const auto regions = gui.touch->dialRegions();
+				require(regions.size() >= 3 + 3 + 3 + NB_UNIT_TYPE,
+						"Swarm dial offers workers, a ratio slider, priority and unit choices");
+				for (const auto &region : regions)
+				{
+					const auto &box = region.box;
+					require(box.x >= ui.safe.x - 0.5 && box.x + box.w <= ui.safe.x + ui.safe.w + 0.5 &&
+								box.y >= ui.safe.y - 0.5 && box.y + box.h <= ui.actions.y + 0.5,
+							("Every dial control lies inside the safe area above the toolbar (kind " +
+							 std::to_string(region.action.kind) + " part " + std::to_string(int(region.part)) +
+							 " box " + std::to_string(box.x) + "," + std::to_string(box.y) + " " +
+							 std::to_string(box.w) + "x" + std::to_string(box.h) + " safe " +
+							 std::to_string(ui.safe.x) + "," + std::to_string(ui.safe.y) + " " +
+							 std::to_string(ui.safe.w) + "x" + std::to_string(ui.safe.h) + " bar " +
+							 std::to_string(ui.actions.y) + ")")
+								.c_str());
+					const auto g = gui.touch->dialLayout(ui).geometry;
+					const auto centre =
+						region.ring < 0 ? GAGCore::ViewPoint{box.x + box.w / 2, box.y + box.h / 2}
+										: TouchDial::point(g, g.rings[region.ring].middle(), (region.from + region.to) / 2);
+					require(gui.touch->interfaceRegion(centre) == 3, "Every dial control answers touch");
+				}
+				// The Thumb side setting mirrors the dial into the bottom-left corner.
+				globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
+				gui.drawAll(0);
+				const auto mirrored = gui.touch->dialLayout(gui.touch->layout());
+				require(mirrored.geometry.mirrored && std::abs(mirrored.geometry.center.x - ui.safe.x) < 0.5,
+						"A left thumb mirrors the dial into the bottom-left corner");
+				for (const auto &region : gui.touch->dialRegions())
+					require(region.box.x >= ui.safe.x - 0.5 && region.box.x + region.box.w <= ui.safe.x + ui.safe.w + 0.5,
+							"Mirrored dial controls stay on screen");
+				gfx->printScreen(width < height ? "touch-dial-left-portrait.bmp" : "touch-dial-left-landscape.bmp");
+				gfx->nextFrame();
+				globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
+				gui.drawAll(0);
+				// Choosing a unit type at its chip points the ratio slider at it.
+				for (int type = NB_UNIT_TYPE - 1; type >= 0; --type)
+				{
+					const auto chip = gui.touch->dialActionPoint(9, type, 0);
+					tap(chip.x, chip.y);
+					require(gui.touch->ratioType == type && gui.orderQueue.empty(),
+							"A unit chip selects the ratio the dial edits, without an order");
+				}
+			}
+			else
+			{
+				const auto content = gui.touch->panelContent();
+				for (size_t i = 0; i < gui.touch->buildingActions().size(); ++i)
+				{
+					const auto box = gui.touch->buildingActionRect(i);
+					require(box.y >= content.y && box.y + box.h <= content.y + content.h,
+							"Swarm controls must fit without inspector scrolling");
+				}
 			}
 			gfx->printScreen(width < height ? "touch-swarm-portrait.bmp"
 											: "touch-swarm-landscape.bmp");
@@ -1804,6 +1895,24 @@ class GameGUITouchHarness
 			building->constructionResultState = Building::NO_CONSTRUCTION;
 			gui.clearSelection();
 			gui.touch->panelOpen = false;
+		}
+		{
+			// Spacious tablets keep the side panel's rows; only compact phones get the dial.
+			SDL_setenv("GLOB2_MOBILE_UI", "touch-spacious", 1);
+			const int oldW = gfx->getW(), oldH = gfx->getH();
+			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), 1024, 768);
+			SDL_Event resized{};
+			resized.type = SDL_WINDOWEVENT;
+			resized.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+			GAGCore::GraphicContext::translateMouseEvent(&resized);
+			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
+			openActions(swarm);
+			require(gui.touch->layout().persistentPanel && !gui.touch->usesDial() &&
+						gui.touch->buildingActionRect(0).w > 0,
+					"Spacious layouts keep the rectangular inspector");
+			gui.clearSelection();
+			gui.touch->panelOpen = false;
+			SDL_setenv("GLOB2_MOBILE_UI", "1", 1);
 		}
 
 		for (const auto *key : {"[Actions]", "[Info]", "[Minimap]", "[Fast forward]",

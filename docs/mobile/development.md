@@ -67,11 +67,24 @@ row by row from the corner so the first choice sits nearest the thumb. The rail
 is inset from the side edge, and a rail taller than its space scrolls toward the
 thumb. The Thumb side setting (right by default) mirrors the rail and the
 placement bar; corner-anchored components mirror through `ThumbSide`, never on
-their own. Inspectors group production ratios side by
-side and use horizontal room for worker/priority and action controls. Ordinary
-phone inspectors fit without scrolling; overflow remains available for constrained
-safe areas and enlarged interfaces. Drawing, hit testing and slider geometry use
-the same action boxes.
+their own.
+
+On compact layouts the building inspector is a thumb dial: concentric quarter
+rings centred on the thumb's bottom corner, assigned outward-in by presence —
+workers (0–20), then a swarm's unit ratio or a flag's range, then priority as three
+segments (Low at the bottom, High at the top). Sliders run from the toolbar end
+(zero) toward the top, stopping short of the screen edge, with − and + pads at
+their ends; a drag previews the value above the thumb and sends one order on
+release, and a thin ink arc on the worker ring shows who is assigned. Unit-type
+choices (which ratio the slider edits), clearing resources, flag requirements,
+repair/upgrade and Destroy (with its confirmation) are chips on the far side of
+the dial, Destroy lowest. The read-only identity header sits under the minimap in
+portrait and beside the dial in landscape. Rings shrink to fit small screens; the
+map stays visible and tappable between rings. `dialRegions()` is the single
+source for drawing, hit testing, keyboard focus and the harness, and every change
+uses the same requests and orders as the Spacious row inspector, whose rows group
+production ratios side by side and share one set of action boxes for drawing, hit
+testing and slider geometry.
 
 ### Safe areas
 
@@ -123,8 +136,10 @@ that a drag out of the rail places a building rather than navigating back.
   reading pending values through `GameGUI::displayed*` and using shared request
   methods for allocation, priority, range, construction and destruction. Enemy
   and replay selections are read-only. Specialized controls share the same panel.
-  Worker-slider drags own a local allocation session and emit one command on release;
-  a second contact, selection change, focus loss or rotation cancels the preview.
+  Slider drags (workers, and on the dial a unit ratio or flag range) own a local
+  allocation session and emit one command on release; a second contact, selection
+  change, focus loss or rotation cancels the preview. `GameGUITouchDial.cpp` and
+  `TouchDial.h` hold the dial's layout, regions and sector drawing.
 - In-game dialogs (`GameGUIDialog.cpp`, `LoadSaveDialog.cpp` and the message
   history) are framework dialogs hosted by `GameGUI` on every presentation;
   touch and desktop render the same tree in the in-match theme. File operations

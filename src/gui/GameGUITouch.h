@@ -3,6 +3,7 @@
 #include <TouchInput.h>
 #include <ScrollPhysics.h>
 #include "TouchInteractionSession.h"
+#include "TouchDial.h"
 #include <SDL.h>
 #include <string>
 #include <optional>
@@ -108,6 +109,34 @@ class GameGUITouch
 	double buildingActionsHeight(double width) const;
 	void drawBuildingActions();
 	void tapBuildingAction(GAGCore::ViewPoint point);
+	void applyDiscreteAction(Building &building, const BuildingAction &row);
+	void setRatio(Building &building, int type, int value);
+	// Compact (phone) inspectors are a thumb dial: concentric quarter rings in
+	// the thumb corner for workers, priority and a ratio or range, with chips
+	// for discrete choices and actions. Spacious panels keep the row list.
+	struct DialLayout
+	{
+		TouchDial::Geometry geometry;
+		GAGCore::ViewRect header, chips, bounds;
+		bool portrait = true;
+	};
+	struct DialRegion
+	{
+		enum Part { Arc, Minus, Plus, Segment, Chip } part = Chip;
+		BuildingAction action;
+		int ring = -1, maximum = 0;
+		double from = 0, to = 0; // Sweep angles covered by the region.
+		double sliderFrom = 0, sliderTo = 0; // Sweep of the whole slider (Arc only).
+		GAGCore::ViewRect box;	// Chips; a thumb-sized box around ring regions.
+	};
+	bool usesDial() const;
+	DialLayout dialLayout(const GAGCore::MobileLayout &ui) const;
+	std::vector<DialRegion> dialRegions() const;
+	std::optional<DialRegion> dialRegionAt(GAGCore::ViewPoint point) const;
+	GAGCore::ViewPoint dialActionPoint(int kind, int value, int side) const;
+	void tapDial(Building &building, const DialRegion &region, GAGCore::ViewPoint point);
+	void drawDial();
+	int ratioType = 0; // Unit type whose swarm ratio the dial's inner ring edits.
 	int heldActionKind = -1, heldActionValue = 0;
 	std::string heldActionLabel;
 	bool heldActionConfirmation = false;

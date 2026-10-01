@@ -241,6 +241,30 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 		if (event.type != SDL_FINGERDOWN || !fingers.empty() || placement || activeDialog() ||
 			!building)
 			return false;
+		if (usesDial())
+		{
+			// Dial sliders: workers on the outer ring, a unit ratio or flag range
+			// on the inner ring. The value follows the thumb's angle.
+			const auto region = dialRegionAt(point);
+			if (!region || region->part != DialRegion::Arc ||
+				(region->action.kind != 6 && region->action.kind != 0 && region->action.kind != 8))
+				return false;
+			TouchAllocationSession session{pointer, {}, building->gid, gui.localTeamNo};
+			session.kind = region->action.kind;
+			session.value = region->action.value;
+			session.maximum = region->maximum;
+			session.ring = region->ring;
+			session.polar = true;
+			session.sweepFrom = region->sliderFrom;
+			session.sweepTo = region->sliderTo;
+			session.requested = session.kind == 6   ? gui.displayedMaxUnitWorking(*building)
+								: session.kind == 8 ? gui.displayedUnitStayRange(*building)
+													: gui.displayedRatio(*building)[session.value];
+			allocation = session;
+		}
+	}
+	if (!allocation)
+	{
 		const auto row = actionAt(point);
 		auto content = panelContent();
 		const auto rows = buildingActions();
@@ -273,6 +297,33 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 		allocation.reset();
 		return true;
 	}
+	if (allocation->polar)
+	{
+		const auto g = dialLayout(layout()).geometry;
+		const auto polar = TouchDial::polar(g, point);
+		allocation->position = point;
+		if (polar)
+			allocation->requested =
+				TouchDial::value(polar->angle, allocation->sweepFrom, allocation->sweepTo, allocation->maximum);
+		if (event.type == SDL_FINGERUP)
+		{
+			// Commit once, if the thumb is still near its ring; a release
+			// elsewhere abandons the preview.
+			const auto &ring = g.rings[allocation->ring];
+			const double tolerance = InGameTouchTheme::target / 2;
+			if (polar && polar->radius >= ring.inner - tolerance && polar->radius <= ring.outer + tolerance)
+			{
+				if (allocation->kind == 6)
+					gui.requestWorkerAllocation(*building, allocation->requested);
+				else if (allocation->kind == 8)
+					gui.requestFlagRange(*building, allocation->requested);
+				else
+					setRatio(*building, allocation->value, allocation->requested);
+			}
+			allocation.reset();
+		}
+		return true;
+	}
 	allocation->requested = int(std::lround(
 		std::clamp((point.x - allocation->track.x) / std::max(1.0, allocation->track.w), 0.0, 1.0) *
 		MAX_UNIT_WORKING));
@@ -287,6 +338,13 @@ bool GameGUITouch::processAllocationPointer(const SDL_Event &event, ViewPoint po
 }
 std::optional<GameGUITouch::BuildingAction> GameGUITouch::actionAt(ViewPoint point) const
 {
+	if (usesDial())
+	{
+		if (inspectedBuilding())
+			if (const auto region = dialRegionAt(point))
+				return region->action;
+		return std::nullopt;
+	}
 	const auto content = panelContent();
 	const auto rows = buildingActions();
 	if (!content.contains(point))
@@ -304,6 +362,16 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 	auto *b = inspectedBuilding();
 	if (!b || b->owner != gui.localTeam || globalContainer->isViewingGame())
 		return;
+	if (usesDial())
+	{
+		const auto region = dialRegionAt(point);
+		if (!region || region->action.kind != heldActionKind || region->action.value != heldActionValue ||
+			heldActionConfirmation != confirmDestroy ||
+			(region->action.kind == 3 && region->action.label != heldActionLabel))
+			return;
+		tapDial(*b, *region, point);
+		return;
+	}
 	const auto picked = actionAt(point);
 	if (!picked || picked->kind != heldActionKind || picked->value != heldActionValue ||
 		heldActionConfirmation != confirmDestroy)
@@ -346,15 +414,27 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
 		if (point.y < content.y + InGameTouchTheme::ratioLabel * unit)
 			return;
 		const int delta = point.x < content.x + content.w / 2 ? -1 : 1;
-		auto values = gui.displayedRatio(*b);
-		const int next = std::clamp(values[row.value] + delta, 0, int(MAX_RATIO_RANGE));
-		if (next == values[row.value])
-			return;
-		values[row.value] = next;
-		gui.pendingFor(b->gid).pendingRatio = values;
-		gui.orderQueue.push_back(std::make_shared<OrderModifySwarm>(b->gid, values.data()));
+		setRatio(*b, row.value, gui.displayedRatio(*b)[row.value] + delta);
 	}
-	else if (row.kind == 1)
+	else
+		applyDiscreteAction(*b, row);
+}
+void GameGUITouch::setRatio(Building &building, int type, int value)
+{
+	auto values = gui.displayedRatio(building);
+	const int next = std::clamp(value, 0, int(MAX_RATIO_RANGE));
+	if (next == values[type])
+		return;
+	values[type] = next;
+	gui.pendingFor(building.gid).pendingRatio = values;
+	gui.orderQueue.push_back(std::make_shared<OrderModifySwarm>(building.gid, values.data()));
+}
+// Clearing resources, flag requirements, construction and destruction: the
+// same orders from the row list and the dial.
+void GameGUITouch::applyDiscreteAction(Building &building, const BuildingAction &row)
+{
+	auto *b = &building;
+	if (row.kind == 1)
 	{
 		std::array<bool, BASIC_COUNT> values;
 		bool wire[BASIC_COUNT];
