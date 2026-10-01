@@ -186,6 +186,35 @@ class StoreTests(unittest.TestCase):
         )
         self.assertEqual(command.returncode, 0, command.stderr)
 
+    def test_warm_dependency_setup_can_run_during_an_active_build(self):
+        from build_layout import build_identity
+
+        identity = build_identity({"target": "android", "release": 1})
+        prefix = store.dependency_prefix(self.a, identity, "compiler")
+        prefix.mkdir(parents=True)
+        (prefix / "lib.a").write_bytes(b"validated archive")
+        (prefix / "manifest.json").write_text(
+            json.dumps(
+                {
+                    "identity": identity,
+                    "toolchain": "compiler",
+                    "archives": {
+                        "lib.a": hashlib.sha256(b"validated archive").hexdigest()
+                    },
+                }
+            )
+        )
+        code = "import sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);import dependencies;dependencies.ROOT=Path(sys.argv[2]);dependencies.discover=lambda *args:{'fingerprint':'compiler'};sys.argv=['dependencies.py','--release'];sys.exit(dependencies.main())"
+        command = subprocess.run(
+            [sys.executable, "-c", code, str(ROOT / "mobile"), str(self.a)],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=15,
+        )
+        self.assertEqual(command.returncode, 0, command.stderr)
+        self.assertIn(str(prefix), command.stdout)
+
     def test_checksum_install_atomic_and_rejects_unverified_directory(self):
         import tarfile
 

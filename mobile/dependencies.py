@@ -113,6 +113,14 @@ def main():
     final = dependency_prefix(ROOT, identity, toolchain["fingerprint"], lease=False)
     output = ROOT / default_directory(identity)
     output.mkdir(parents=True, exist_ok=True)
+    if not isolated():
+        # Warm setup is a reader, so it can reuse a bundle while another
+        # checkout is compiling or packaging from the same immutable files.
+        with Lease(final):
+            if (final / "manifest.json").is_file():
+                validate_bundle(final, identity, toolchain["fingerprint"])
+                print("Dependency prefix:", final)
+                return 0
     guard = BuildLock(output) if isolated() else Lease(final, exclusive=True)
     with guard:
         if (final / "manifest.json").is_file():
