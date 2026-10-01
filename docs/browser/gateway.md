@@ -28,8 +28,9 @@ browser Origins against `GLOB2_ALLOWED_ORIGINS`. Origin checks supplement the
 existing YOG login and game protocol; they are not authentication.
 
 Network protocol 49 requires these endpoints and versioned router registration.
-Older clients and raw-TCP servers need a coordinated upgrade. Save/map format
-124, minimum save version 58, and replay acceptance remain unchanged. Existing
+Older clients and raw-TCP servers need a coordinated upgrade. This transport
+change preserves the upstream save format 125, minimum save version 58, and
+replay minimum version 123. Existing
 accounts and maps retain their storage format. Native lobby chat stays on YOG;
 the optional plaintext IRC connection is disabled.
 

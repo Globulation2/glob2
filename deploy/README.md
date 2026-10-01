@@ -188,7 +188,7 @@ recreate services. To rotate a CA, first deploy a trust bundle containing both
 roots, replace service identities, then retire the old root. The provisioning
 helper creates a fresh isolated CA; it does not perform in-place rotation.
 
-Network protocol 48 needs a coordinated client/server cutover. Do not fall back
+Network protocol 49 needs a coordinated client/server cutover. Do not fall back
 to raw TCP or deploy mixed protocol versions. Keep an isolated backup for
 rollback; stop/drain before replacing images. The default public YOG hostname
 must pass certificate, login, map-transfer, and cross-play qualification before

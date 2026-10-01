@@ -19,7 +19,7 @@ successful authentication. Invalid transitions close the connection. A rejected
 password leaves the client able to retry; rejection is not authentication.
 
 Protocol version 41 adds the versioned server greeting and symmetric admission.
-Protocol 48 requires direct WSS endpoints and versioned private router
+Protocol 49 requires direct WSS endpoints and versioned private router
 registration. Clients, lobby, and router must cut over together; production
 raw TCP listeners and the translation gateway are removed.
 This transport change leaves the save and replay format versions unchanged. Both older and newer protocol numbers are refused before
