@@ -117,7 +117,7 @@ class AndroidReleaseTests(unittest.TestCase):
             with zipfile.ZipFile(apk, "w") as package:
                 for name in ("libmain.so", "libc++_shared.so", "libSDL2.so", "libextra.so"):
                     package.writestr("lib/arm64-v8a/" + name, b"native")
-            with self.assertRaisesRegex(ValueError, "pinned dependency manifest"):
+            with mock.patch.dict("os.environ", {"GLOB2_DEV_MODE":"isolated"}), self.assertRaisesRegex(ValueError, "pinned dependency manifest"):
                 android_release.verify_apk(apk, "arm64-v8a", root, root=root)
 
     def test_monitor_state_transitions(self):

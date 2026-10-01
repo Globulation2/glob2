@@ -8,6 +8,7 @@ import plistlib
 import shutil
 import subprocess
 import sys
+from dev_paths import dependency_prefix
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
 from build_layout import build_identity, default_directory, write_if_changed
 from mobile_toolchain import ROOT, discover
@@ -65,7 +66,7 @@ def main():
             command=['xcrun','devicectl','device']+(['install','app','--device',args.device,str(app)] if args.command=='install' else ['process','launch','--device',args.device,BUNDLE_ID])
         subprocess.run(command,env=env,check=True);return
     triplet='glob2-arm64-ios'+('-simulator' if args.environment=='simulator' else '')
-    prefix=output/'vcpkg-installed'/triplet
+    prefix=dependency_prefix(ROOT, identity, discover(identity,options)['fingerprint'])
     if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with mobile/dependencies.py --target ios --environment '+args.environment)
     scons=shutil.which('scons')
     if not scons: raise ValueError('SCons is required')

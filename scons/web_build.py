@@ -15,7 +15,8 @@ PORTS = ['--use-port=sdl2', '--use-port=sdl2_image:formats=png,jpg',
 def build_web(directory, identity, arguments):
     root = Path.cwd()
     output = Path(directory).resolve()
-    sdk = Path(arguments.get('emsdk', os.environ.get('EMSDK', root / 'tools/browser-emsdk'))).resolve()
+    from dev_store import browser_sdk, cache, isolated, key, command_path
+    sdk = browser_sdk(root, arguments.get('emsdk', os.environ.get('EMSDK')))
     compiler = sdk / 'upstream/emscripten/em++'
     lock = json.loads((root / 'browser/toolchain.json').read_text())
     if not compiler.exists():
@@ -27,12 +28,21 @@ def build_web(directory, identity, arguments):
     emscripten = compiler.parent
     build_environment = dict(os.environ)
     # Cache is target/config-specific, including port downloads and compiled system libraries.
-    build_environment['EM_CACHE'] = str(output / 'cache')
-    build_environment['EM_PORTS'] = str(output / 'ports')
+    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json'], PORTS)) if not isolated() else output
+    build_environment['EM_CACHE'] = str(shared_cache / 'cache')
+    build_environment['EM_PORTS'] = str(shared_cache / 'ports')
+    # emsdk's template derives paths from EM_CONFIG; anchor it to the selected
+    # immutable SDK while keeping the generated build configuration local.
+    if not os.environ.get('EM_CONFIG') and (sdk / '.emscripten').is_file():
+        configuration = (sdk / '.emscripten').read_text()
+        configuration = '\n'.join('emsdk_path = ' + repr(str(sdk))
+            if line.startswith('emsdk_path =') else line for line in configuration.splitlines()) + '\n'
+        write_if_changed(output / '.emscripten', configuration)
+        build_environment['EM_CONFIG'] = str(output / '.emscripten')
     build_environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
-                      ENV=build_environment, CC=str(emscripten / 'emcc'), CXX=str(compiler),
-                      LINK=str(compiler), AR=str(emscripten / 'emar'), RANLIB=str(emscripten / 'emranlib'))
+                      ENV=build_environment, CC=command_path(emscripten / 'emcc'), CXX=command_path(compiler),
+                      LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
     env['PROGSUFFIX'] = '.html'
     config = output / 'include/glob2/BuildConfig.h'
     write_if_changed(config, f'''#pragma once

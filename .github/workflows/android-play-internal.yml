@@ -15,6 +15,9 @@ concurrency:
   group: android-play-internal
   cancel-in-progress: false
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 jobs:
   build:
     if: >-
@@ -47,9 +50,12 @@ jobs:
           python3 - <<'PY'
           import json, os, pathlib, subprocess
           root = pathlib.Path.cwd()
-          sdk = root / 'build/mobile-tools/android-sdk'
+          import sys; sys.path.insert(0, str(root/'scons'))
+          from dev_store import paths
+          dev=paths(root)
+          sdk=pathlib.Path(dev['android_sdk'])
           lock = json.loads((root / 'mobile/toolchain.json').read_text())['android']
-          java = root / 'build/mobile-tools/jdk-17.0.20.1+1'
+          java=pathlib.Path(dev['java_home'])
           env = dict(os.environ, JAVA_HOME=str(java), ANDROID_HOME=str(sdk), ANDROID_SDK_ROOT=str(sdk))
           manager = sdk / 'cmdline-tools/19.0/bin/sdkmanager'
           subprocess.run([str(manager), f'--sdk_root={sdk}', '--licenses'],

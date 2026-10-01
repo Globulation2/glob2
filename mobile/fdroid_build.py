@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 
+from dev_paths import mobile_tools
 from android_release import ABI_CODES, ROOT, verify_apk, version_code
 
 
@@ -25,6 +26,7 @@ def build_environment():
 
 
 def main():
+    os.environ['GLOB2_DEV_MODE']='isolated'
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version-code", type=int, required=True)
     parser.add_argument("--android-sdk", type=Path, required=True)
@@ -66,8 +68,8 @@ def main():
     jdk = json.loads((ROOT / "mobile/android-tools.json").read_text())[
         f"jdk-{platform.system()}-{platform.machine()}"
     ]
-    env["JAVA_HOME"] = str(ROOT / "build/mobile-tools" / jdk["directory"] / jdk["java_home"])
-    gradle = ROOT / "build/mobile-tools/gradle-8.13/bin/gradle"
+    env["JAVA_HOME"] = str(mobile_tools(ROOT) / jdk["directory"] / jdk["java_home"])
+    gradle = mobile_tools(ROOT) / "gradle-8.13/bin/gradle"
     subprocess.run([sys.executable, "mobile/dependencies.py", "--arch", arch, "--release", "--jobs", "2",
                     "--android-sdk", str(sdk)], cwd=ROOT, env=env, check=True)
     subprocess.run([sys.executable, "mobile/android.py", "build", "--arch", arch, "--release", "--fdroid", "--jobs", "2",

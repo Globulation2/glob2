@@ -18,6 +18,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 jobs:
   changes:
     name: Select relevant checks

@@ -26,6 +26,9 @@ concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 jobs:
   preflight:
     runs-on: ubuntu-24.04
@@ -111,7 +114,7 @@ jobs:
         run: |
           python3 mobile/setup_ndk.py
           python3 mobile/setup_tools.py
-          sdk="$PWD/build/mobile-tools/android-sdk"
+          sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
             'platforms;android-36' 'build-tools;35.0.0' platform-tools
@@ -119,7 +122,7 @@ jobs:
         run: |
           set -o pipefail
           code="$(python3 mobile/android_release.py code --arch '${{ matrix.arch }}')"
-          sdk="$PWD/build/mobile-tools/android-sdk"
+          sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
           python3 mobile/fdroid_build.py --version-code "$code" --android-sdk "$sdk" \
             --android-ndk "$sdk/ndk/28.2.13676358" 2>&1 \
             | tee "build/android-${{ matrix.arch }}-build.log"

@@ -4,6 +4,7 @@
 import argparse
 import hashlib
 import json
+from dev_paths import android_sdk
 from pathlib import Path
 import zipfile
 
@@ -21,8 +22,9 @@ def main():
     parser.add_argument("--arch", choices=tuple(ABI_CODES), required=True)
     parser.add_argument("--github-apk", type=Path, required=True)
     parser.add_argument("--fdroid-apk", type=Path, required=True)
-    parser.add_argument("--android-sdk", type=Path, default=ROOT / "build/mobile-tools/android-sdk")
+    parser.add_argument("--android-sdk", type=Path, default=None)
     args = parser.parse_args()
+    args.android_sdk=android_sdk(ROOT,args.android_sdk)
     github_digest = verify_apk(args.github_apk, args.arch, args.android_sdk)
     fdroid_digest = verify_apk(args.fdroid_apk, args.arch, args.android_sdk)
     github = contents(args.github_apk)
