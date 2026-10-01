@@ -4,6 +4,7 @@ vcpkg_from_github(
     REF "release-${VERSION}"
     SHA512 d7587b3c45f15825eb59d9b06c1d3b31849b2556399be9b105a4930cc113dab99bc65093f73d4eea22d24c4e34284da4f95c9f4efbf1f5eccdc3427f4c94ca94
     HEAD_REF main
+    PATCHES mingw-io-names.patch
 )
 
 vcpkg_cmake_configure(

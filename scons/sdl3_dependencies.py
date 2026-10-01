@@ -32,7 +32,7 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None):
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
-    identity = {'configuration': 3, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
+    identity = {'configuration': 4, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
                 'platform': platform.platform(), 'machine': platform.machine()}
     manifest = prefix / 'sdl3-manifest.json'
     libraries = ('SDL3', 'SDL3_image', 'SDL3_ttf', 'SDL3_net')
@@ -50,6 +50,16 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None):
         if not source.exists():
             with tarfile.open(archive) as package:
                 package.extractall(work, filter='data')
+        if name == 'SDL_net':
+            # Same MinGW portability patch as the pinned vcpkg overlay. SDL_net
+            # 3.2.0 names its Winsock helpers read/write, colliding with io.h.
+            implementation = source / 'src/SDL_net.c'
+            contents = implementation.read_text()
+            if 'static int write(SOCKET' in contents:
+                contents = contents.replace('static int write(SOCKET', 'static int SDLNetWrite(SOCKET')
+                contents = contents.replace('static int read(SOCKET', 'static int SDLNetRead(SOCKET')
+                contents = contents.replace("// WSAPoll doesn't exist", "// Glob2 portability patch: keep private Winsock helpers distinct from MinGW I/O.\n#define write SDLNetWrite\n#define read SDLNetRead\n\n// WSAPoll doesn't exist")
+                implementation.write_text(contents)
         output = work / (source.name + '-build')
         command = ['cmake', '-S', str(source), '-B', str(output),
                    '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_INSTALL_PREFIX=' + str(prefix),
