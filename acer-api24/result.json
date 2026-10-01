@@ -1,0 +1,38 @@
+{
+  "testedSourceCommit": "80052990ac69f806671f9e2789082327f7277253",
+  "finalSourceCommit": "b0e7bc825f7587b731468ba7f2621d80bc39c0c9",
+  "device": {
+    "model": "Acer B1-7A0",
+    "android": "7.0",
+    "api": 24,
+    "abi": "arm64-v8a"
+  },
+  "passed": [
+    "API24 native dependency rebuild",
+    "release APK build and developer signature verification",
+    "physical-device installation",
+    "main menu rendering",
+    "custom-game map preview",
+    "match rendering and moving units",
+    "save dialog opens",
+    "70 build-system tests",
+    "release APK rebuild after rebase onto master"
+  ],
+  "limits": [
+    "Device disconnected before save/load and lifecycle verification",
+    "Audio and networking were not verified",
+    "No per-tick cross-platform checksum comparison",
+    "Only arm64-v8a tested locally; other ABIs await CI",
+    "Default 256x256 game reached 100% in-game CPU meter; user reported poor playability",
+    "Installed APK was tested before the final rebase; rebased APK build passed but was not installed"
+  ],
+  "finalUnsignedApkSha256": "83e52e5bca1da5e29adeab9ca8747938ce8ff3f9906315c16c9753d3fe978cb7",
+  "commands": [
+    "python3 mobile/dependencies.py --arch arm64-v8a --release --jobs 6",
+    "python3 mobile/android.py build --arch arm64-v8a --release --jobs 8",
+    "python3 mobile/android.py sign --arch arm64-v8a --release",
+    "python3 mobile/android.py install --arch arm64-v8a --release --serial DEVICE_SERIAL",
+    "python3 mobile/android.py launch --arch arm64-v8a --release --serial DEVICE_SERIAL",
+    "python3 -m unittest discover -s tests/build_system"
+  ]
+}
