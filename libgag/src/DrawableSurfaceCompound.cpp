@@ -3,6 +3,7 @@
 
 #include "GraphicContextPrivate.h"
 #include <Toolkit.h>
+#include <SurfaceRaster.h>
 #include <FileManager.h>
 #include <algorithm>
 #include <assert.h>
@@ -204,7 +205,7 @@ namespace GAGCore
 			else
 			{
 			#endif // HAVE_OPENGL
-				// well, we *hope* SDL is faster than a handmade code
+				// SDL handles native copies; verified opacity avoids unnecessary blending.
 				SDL_Rect sr, dr;
 				sr.x = static_cast<Sint16>(sx);
 				sr.y = static_cast<Sint16>(sy);
@@ -214,7 +215,7 @@ namespace GAGCore
 				dr.y = static_cast<Sint16>(y);
 				dr.w = static_cast<Uint16>(sw);
 				dr.h = static_cast<Uint16>(sh);
-				SDL_BlitSurface(surface->sdlsurface, &sr, sdlsurface, &dr);
+				SurfaceRaster::blit(sdlsurface, surface->sdlsurface, sr, dr, alpha, surface->hasOpaquePixels(), SurfaceRaster::BlitBlend::Native);
 			#ifdef HAVE_OPENGL
 			}
 			#endif // HAVE_OPENGL
@@ -233,73 +234,8 @@ namespace GAGCore
 			assert((sw > 0) && (sx + sw <= surface->getW()));
 			assert((sh > 0) && (sy + sh <= surface->getH()));
 
-			// clip
-			if (x < clipRect.x)
-			{
-				int diff = clipRect.x - x;
-				sw -= diff;
-				sx += diff;
-				x = clipRect.x;
-			}
-			if (y < 0)
-			{
-				int diff = clipRect.y - y;
-				sh -= diff;
-				sy += diff;
-				y = clipRect.y;
-			}
-			if (x + sw >= clipRect.x + clipRect.w)
-			{
-				sw = clipRect.x + clipRect.w - x;
-			}
-			if (y + sh >= clipRect.y + clipRect.h)
-			{
-				sh = clipRect.y + clipRect.h - y;
-			}
-			if ((sw <= 0) || (sh <= 0))
-				return;
-
-			// draw
-			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-			Uint32 alphaShift = 0;
-			#else
-			Uint32 alphaShift = 24;
-			#endif
-			for (int dy = 0; dy < sh; dy++)
-			{
-				Uint32 *memSrc = ((Uint32 *)surface->sdlsurface->pixels) + (sy + dy)*(surface->sdlsurface->pitch>>2) + sx;
-				Uint32 *memDest = ((Uint32 *)sdlsurface->pixels) + (y + dy)*(sdlsurface->pitch>>2) + x;
-				int dw = sw;
-				do
-				{
-					Uint32 srcValue = *memSrc++;
-					// x/255 exactly (not x>>8, which is x/256): (x+1+(x>>8))>>8 for a
-					// scalar x, or the same identity applied per lane -- masking the
-					// shifted correction back onto 0x00FF00FF keeps each 16-bit lane's
-					// carry from leaking into its neighbour. A single blend's 1/256
-					// bias is invisible, but repeated alpha draws onto the same pixels
-					// compound it into a visible darkening of the sprite's whole
-					// bounding box, including its transparent edges. Covered by
-					// test/DrawableSurfaceBlendTest.cpp.
-					Uint32 alphaProduct = ((srcValue >> alphaShift) & 0xFF) * alpha;
-					Uint32 srcAlpha = (alphaProduct + 1 + (alphaProduct >> 8)) >> 8;
-					Uint32 destAlpha = 255 - srcAlpha;
-					Uint32 srcPreMult0 =  (srcValue & 0x00FF00FF) * srcAlpha;
-					Uint32 srcPreMult1 = ((srcValue >> 8) & 0x00FF00FF) * srcAlpha;
-
-					Uint32 destValue = *memDest;
-					Uint32 destPreMult0 =  (destValue & 0x00FF00FF) * destAlpha;
-					Uint32 destPreMult1 = ((destValue >> 8) & 0x00FF00FF) * destAlpha;
-
-					destPreMult0 += srcPreMult0;
-					destPreMult1 += srcPreMult1;
-					destPreMult0 += 0x00010001 + ((destPreMult0 >> 8) & 0x00FF00FF);
-					destPreMult1 += 0x00010001 + ((destPreMult1 >> 8) & 0x00FF00FF);
-
-					*memDest++ = ((destPreMult0 >> 8) & 0x00FF00FF) | (destPreMult1 & 0xFF00FF00);
-				}
-				while (--dw);
-			}
+            SurfaceRaster::blit(sdlsurface, surface->sdlsurface, SDL_Rect{sx, sy, sw, sh},
+                SDL_Rect{x, y, sw, sh}, alpha, false, SurfaceRaster::BlitBlend::Native);
 		}
 		markPixelsChanged();
 	}
@@ -318,15 +254,11 @@ namespace GAGCore
 			drawSurface(x, y, surface, sx, sy, sw, sh, alpha);
 			return;
 		}
-		// Stretch nearest-neighbour, as the GPU path samples. SDL clips to
-		// clipRect and blends the source's per-pixel alpha, modulated by alpha.
+		// Sample nearest pixel centers before clipping, preserving the source
+        // mapping at fractional sizes. The raster operation restores SDL state.
 		SDL_Rect sr = {sx, sy, sw, sh};
 		SDL_Rect dr = {x, y, w, h};
-		if (alpha != Color::ALPHA_OPAQUE)
-			SDL_SetSurfaceAlphaMod(surface->sdlsurface, alpha);
-		SDL_BlitScaled(surface->sdlsurface, &sr, sdlsurface, &dr);
-		if (alpha != Color::ALPHA_OPAQUE)
-			SDL_SetSurfaceAlphaMod(surface->sdlsurface, Color::ALPHA_OPAQUE);
+        SurfaceRaster::blit(sdlsurface, surface->sdlsurface, sr, dr, alpha, surface->hasOpaquePixels(), SurfaceRaster::BlitBlend::Surface);
 		markPixelsChanged();
 	}
 

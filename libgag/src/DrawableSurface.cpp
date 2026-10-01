@@ -9,6 +9,8 @@
 #include <string>
 #include <valarray>
 #include <SDL_image.h>
+#include <SurfaceRaster.h>
+#include <stdexcept>
 #ifdef GLOB2_WEBGL2
 #include <set>
 #endif
@@ -29,7 +31,15 @@ namespace GAGCore
 		return dest;
 	}
 
-    bool DrawableSurface::hasOpaquePixels() { return false; }
+    bool DrawableSurface::hasOpaquePixels()
+    {
+        if (opacityRevision != pixelRevision)
+        {
+            opaquePixels = SurfaceRaster::opaque(sdlsurface);
+            opacityRevision = pixelRevision;
+        }
+        return opaquePixels;
+    }
 
 	// Drawable surface
 	DrawableSurface::DrawableSurface(const std::string &imageFileName)
@@ -236,7 +246,7 @@ namespace GAGCore
 			}
 		}
 		#endif
-		glUploadedRevision = contentRevision();
+		glUploadedRevision = pixelRevision;
 	}
 
 	void DrawableSurface::freeGPUTexture(void)
@@ -271,7 +281,7 @@ namespace GAGCore
 			SDL_FreeSurface(sdlsurface);
 
 		sdlsurface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32, _glFormat.Rmask, _glFormat.Gmask, _glFormat.Bmask, _glFormat.Amask);
-		assert(sdlsurface);
+		if (!sdlsurface) throw std::runtime_error(SDL_GetError());
 		setClipRect();
 		initTextureSize();
 		markPixelsChanged();

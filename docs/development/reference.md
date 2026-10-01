@@ -499,16 +499,36 @@ a supported open-file checker and is conservatively skipped there.
 
 ## Software rendering architecture and profiling
 
-
 `GraphicContext` remains the drawing facade and retains existing capability queries.
 It owns the accelerated backend and software backend independently; transformed passes
-borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend factory
-in `SoftwareRenderBackend.cpp` retains SDL's existing triangle rasterizer during this
-structural extraction. Sprite blits and rectangle fills are explicit backend operations,
-still implemented using the original triangles.
+borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend
+in `SoftwareRenderBackend.cpp` implements sprite blits and rectangle fills directly on
+its borrowed framebuffer. It creates SDL's software renderer only when general triangle
+geometry is needed, and flushes that queue before direct writes or target replacement.
+Large existing images expanded past 512 pixels, including water, retain SDL geometry
+rasterization because its
+fixed-point overflow behavior is visible at some transformed sizes. Borrowed terrain
+run views use direct rasterization: they replace small tiles and must not acquire that
+large-triangle behavior. Correcting the legacy large-image appearance needs separate
+visual acceptance.
 `RenderBackend.cpp` contains the accelerated SDL implementation and its texture uploads.
 
+`SurfaceRaster.cpp` owns pixel arithmetic. Native opaque sprites use clipped row copies (or SDL for format conversion) only
+when their pixels are verified opaque and draw opacity is 255. Other native sprites retain
+the existing blending arithmetic. Scaled blits sample nearest source pixel centers from
+the original destination rectangle; clipping cannot change sampling. Transformed
+rectangles round both endpoints with `floor(edge + 0.5)` and derive their size afterward,
+so adjacent tiles share a boundary at fractional zoom. This can change fractional-scale
+sampling and boundary placement by one output pixel. Source blend/alpha modulation is
+restored after each operation. Transformed primitives preserve SDL triangle blending
+rounding, including independent source/destination truncation for textured draws. Native
+rectangle alpha arithmetic retains the legacy `/256` rounding. Sprite modulation uses
+exact `/255` arithmetic and zero-alpha sprite pixels leave the destination untouched.
 
+Surface content revisions are independent of texture upload revisions. Each accelerated
+backend tracks its own uploaded revision; opacity classification is cached against the
+content revision. Code that edits pixels through `getSDLSurface()` must call
+`markPixelsChanged()` afterward. This includes raw SDL copies and external rasterizers.
 
 Build the opt-in saved-game benchmark with optimized production objects:
 

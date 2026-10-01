@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#include <SurfaceRaster.h>
 #include <algorithm>
 #include <cstdlib>
 
@@ -72,67 +73,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
-		// clip
-		if (x < clipRect.x)
-		{
-			w -= clipRect.x - x;
-			x = clipRect.x;
-		}
-		if (y < clipRect.y)
-		{
-			h -= clipRect.y - y;
-			y = clipRect.y;
-		}
-		if (x + w >= clipRect.x + clipRect.w)
-		{
-			w = clipRect.x + clipRect.w - x;
-		}
-		if (y + h >= clipRect.y + clipRect.h)
-		{
-			h = clipRect.y + clipRect.h - y;
-		}
-		if ((w <= 0) || (h <= 0))
-			return;
-
-		// draw
-		if (color.a == Color::ALPHA_OPAQUE)
-		{
-			Uint32 colorValue = color.pack();
-			for (int dy = y; dy < y + h; dy++)
-			{
-				Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + dy*(sdlsurface->pitch>>2) + x;
-				int dw = w;
-				do
-				{
-					*mem++ = colorValue;
-				}
-				while (--dw);
-			}
-		}
-		else
-		{
-			Uint32 a = color.a;
-			Uint32 na = 255 - a;
-			Uint32 colorValue = color.applyAlpha(Color::ALPHA_OPAQUE).pack();
-			Uint32 colorPreMult0 = (colorValue & 0x00FF00FF) * a;
-			Uint32 colorPreMult1 = ((colorValue >> 8) & 0x00FF00FF) * a;
-
-			for (int dy = y; dy < y + h; dy++)
-			{
-				Uint32 *mem = ((Uint32 *)sdlsurface->pixels) + dy*(sdlsurface->pitch>>2) + x;
-				int dw = w;
-				do
-				{
-					Uint32 surfaceValue = *mem;
-					Uint32 surfacePreMult0 = (surfaceValue & 0x00FF00FF) * na;
-					Uint32 surfacePreMult1 = ((surfaceValue >> 8) & 0x00FF00FF) * na;
-					surfacePreMult0 += colorPreMult0;
-					surfacePreMult1 += colorPreMult1;
-					*mem++ = ((surfacePreMult0 >> 8) & 0x00FF00FF) | (surfacePreMult1 & 0xFF00FF00);
-				}
-				while (--dw);
-			}
-		}
+        SurfaceRaster::fill(sdlsurface, SDL_Rect{x, y, w, h}, color.applyAlpha(Color::ALPHA_OPAQUE).pack(), color.a);
 		markPixelsChanged();
 	}
 

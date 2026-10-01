@@ -652,6 +652,7 @@ GAG_SOURCES = (
     'BackgroundFileWriter.cpp',
     'RenderBackend.cpp',
     'SoftwareRenderBackend.cpp',
+    'SurfaceRaster.cpp',
     'GraphicContextMobile.cpp',
     'BinaryStream.cpp',
     'CursorManager.cpp',
