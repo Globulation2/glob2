@@ -102,12 +102,14 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
   catch(error){waitError=error;}
   // Retain partial logs and any exported data before reporting a timeout.
   // An unresponsive page must not prevent the host from retaining its evidence.
+  let collectionTimer;
   const result=await Promise.race([
     page.evaluate(()=>({exit:window.corpusExit,error:window.corpusError,
       files:window.corpusFiles||{},log:window.engineLog})).catch(error=>
         ({exit:null,error:String(error),files:{},log:progress})),
-    new Promise(resolve=>setTimeout(()=>resolve({exit:null,
-      error:'Timed out collecting page evidence',files:{},log:progress}),5000))]);
+    new Promise(resolve=>{collectionTimer=setTimeout(()=>resolve({exit:null,
+      error:'Timed out collecting page evidence',files:{},log:progress}),waitError?5000:60000);})]);
+  clearTimeout(collectionTimer);
   for(const [relative,base64] of Object.entries(result.files)){
     const destination=path.join(output,relative);
     fs.mkdirSync(path.dirname(destination),{recursive:true});
