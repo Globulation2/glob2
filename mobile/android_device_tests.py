@@ -23,6 +23,7 @@ BINARIES = ('glob2-unit-tests', 'glob2-engine-tests')
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--serial', required=True)
+    parser.add_argument('--adb-port', type=int, default=5037, help='Explicit ADB server port for an isolated emulator')
     parser.add_argument('--android-sdk', type=Path, required=True)
     parser.add_argument('--arch', choices=('arm64-v8a', 'armeabi-v7a', 'x86_64'), default='arm64-v8a')
     parser.add_argument('--output', type=Path, default=ROOT / 'artifacts/android/device-tests')
@@ -31,7 +32,7 @@ def main():
     parser.add_argument('--suite', help='doctest suite selector, e.g. JavaScript*')
     parser.add_argument('--keep-remote', action='store_true')
     args = parser.parse_args()
-    adb = [str(args.android_sdk / 'platform-tools/adb'), '-s', args.serial]
+    adb = [str(args.android_sdk / 'platform-tools/adb'), '-P', str(args.adb_port), '-s', args.serial]
     def command(*parts, **kwargs):
         return subprocess.run(adb + list(parts), check=True, **kwargs)
     if subprocess.check_output(adb + ['get-state'], text=True).strip() != 'device':

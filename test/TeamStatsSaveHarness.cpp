@@ -65,6 +65,13 @@ struct TeamStatsMeasurementFixture
 	Game &game = gui.game;
 	TeamStatsMeasurementFixture()
 	{
+        if (glob2test::currentTestSuite() == "JavaScriptLifecycle")
+        {
+            // Both the serialized game seed and live simulation stream must
+            // be explicit; defaults otherwise depend on time and test order.
+            game.gameHeader.setRandomSeed(19);
+            setSyncRandSeed(19);
+        }
 		game.map.setSize(5, 5, GRASS);
 		game.map.setGame(&game);
 		for (int t = 0; t < 2; ++t)

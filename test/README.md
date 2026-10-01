@@ -1059,3 +1059,11 @@ replay bytes must match. Build success and simulator-only runs are insufficient.
 CI retains evidence even when execution fails; unavailable devices/signing leave
 those platform gates incomplete. See the [fixture notes](fixtures/javascript/README.md)
 for the exact frozen worlds, seeds and intended draft profile corrections.
+
+`python3 test/check_javascript_evidence.py REFERENCE CANDIDATE --output artifacts/js-comparison.json`
+compares shared numeric/data values, complete traces and decoded save payloads,
+requiring the same artifact inventory. It excludes only MapHeader SHA1 from save
+payloads. Review each runner manifest to establish matching source revisions and
+successful execution before treating matching hashes as acceptance evidence.
+Use `mobile/ios_script_tests.py` with an explicit device identifier and, for a
+simulator, an owned `--simulator-set` to install, run and retrieve the separate app.

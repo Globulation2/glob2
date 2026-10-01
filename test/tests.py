@@ -25,6 +25,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
     'ScriptRealisticTest.cpp',
@@ -346,7 +347,7 @@ def scripting_entries():
     cases. Its unrelated registered cases are excluded by the JavaScript* suite
     filter. Both desktop binaries and Android use the full registry above.
     """
-    selected = {'ScriptIntegrationTest.cpp', 'ScriptPresentationTest.cpp',
+    selected = {'ScriptCompatibilityTest.cpp', 'ScriptIntegrationTest.cpp', 'ScriptPresentationTest.cpp',
                 'ScriptRealisticTest.cpp', 'ScriptSessionTest.cpp', 'ScriptSimulationTest.cpp',
                 'TeamStatsSaveHarness.cpp', 'ScriptRuntimeTest.cpp', 'ScriptNumericTest.cpp'}
     return [entry for entry in ENGINE_TESTS + UNIT_TESTS

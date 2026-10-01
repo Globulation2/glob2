@@ -40,7 +40,7 @@ jobs:
         run: python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
 
   linux-build:
-    name: linux build (${{ matrix.image }})
+    name: linux build (${{ matrix.image }}, ${{ matrix.compiler }})
     needs: changes
     if: ${{ needs.changes.outputs.native == 'true' }}
 
@@ -69,9 +69,15 @@ jobs:
           - image: ubuntu:22.04
             runner: ubuntu-22.04
             compiler: g++-11
+            c_compiler: gcc-11
           - image: ubuntu:24.04
             runner: ubuntu-24.04
             compiler: g++-13
+            c_compiler: gcc-13
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: clang-18
+            c_compiler: clang-18
     steps:
       - name: Install dependencies
         id: install_dependencies
@@ -159,7 +165,7 @@ jobs:
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses
         run: |
-          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
+          scons CC=${{ matrix.c_compiler }} CXX=${{ matrix.compiler == 'clang-18' && 'clang++-18' || matrix.compiler }} -j$(nproc) release=1 server=0 build/linux/client/release/src/glob2 \
             unit-tests \
             engine-tests \
             maxima-strategy-dump \
