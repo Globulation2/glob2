@@ -2,6 +2,7 @@
 #include "Glob2Test.h"
 #include "script/ScriptRuntime.h"
 #include "quickjs.h"
+#include <algorithm>
 #include <bit>
 #include <cmath>
 #include <iostream>
