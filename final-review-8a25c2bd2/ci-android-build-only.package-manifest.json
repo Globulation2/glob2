@@ -1,0 +1,694 @@
+{
+  "headRevision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+  "ciActualCheckoutRevision": "41fd3a584a4ede4c47101a0000c5c83cc72d0fc7",
+  "headAndCheckoutGitTree": "24fa97640a10dc1b989af316559e6bf12b38095b",
+  "associatedNormalizedSourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4",
+  "sourceAssociation": "Logs show actual virtual-merge checkout41fd; GitHub commit API shows its complete Git tree equals53d. Local clean53d source identity supplies the matching normalized tree hash. Checkout revision is retained, not relabeled.",
+  "workflowRunId": 36912648725,
+  "workflowRunUrl": "https://github.com/Globulation2/glob2/actions/runs/36912648725",
+  "status": "BUILD ONLY",
+  "buildConclusion": "success",
+  "sharedJavaScriptCorpusExecuted": false,
+  "determinismAcceptance": false,
+  "physicalDeviceAcceptance": false,
+  "storePublication": false,
+  "jobs": [
+    {
+      "completedAt": "2026-10-01T20:00:34Z",
+      "conclusion": "success",
+      "databaseId": 110538850470,
+      "name": "Android release APK (x86_64)",
+      "startedAt": "2026-10-01T19:44:08Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-01T19:44:11Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-01T19:44:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:45:18Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "startedAt": "2026-10-01T19:44:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:45:18Z",
+          "conclusion": "success",
+          "name": "Validate Android release contract and F-Droid listing",
+          "number": 3,
+          "startedAt": "2026-10-01T19:45:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:46:15Z",
+          "conclusion": "success",
+          "name": "Install build utilities",
+          "number": 4,
+          "startedAt": "2026-10-01T19:45:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:46:16Z",
+          "conclusion": "success",
+          "name": "Check build isolation and artifact validation",
+          "number": 5,
+          "startedAt": "2026-10-01T19:46:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:46:45Z",
+          "conclusion": "success",
+          "name": "Install verified NDK",
+          "number": 6,
+          "startedAt": "2026-10-01T19:46:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:47:11Z",
+          "conclusion": "success",
+          "name": "Install pinned Android packaging tools",
+          "number": 7,
+          "startedAt": "2026-10-01T19:46:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:50:55Z",
+          "conclusion": "success",
+          "name": "Build pinned target dependencies",
+          "number": 8,
+          "startedAt": "2026-10-01T19:47:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:50:57Z",
+          "conclusion": "success",
+          "name": "Restore Android compiler cache",
+          "number": 9,
+          "startedAt": "2026-10-01T19:50:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:50:57Z",
+          "conclusion": "success",
+          "name": "Reset Android compiler cache statistics",
+          "number": 10,
+          "startedAt": "2026-10-01T19:50:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:58:40Z",
+          "conclusion": "success",
+          "name": "Compile and stage native application",
+          "number": 11,
+          "startedAt": "2026-10-01T19:50:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:58:40Z",
+          "conclusion": "success",
+          "name": "Verify release package",
+          "number": 12,
+          "startedAt": "2026-10-01T19:58:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:09Z",
+          "conclusion": "success",
+          "name": "Exercise x86_64 release APK in an emulator",
+          "number": 13,
+          "startedAt": "2026-10-01T19:58:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:09Z",
+          "conclusion": "success",
+          "name": "Report Android compiler cache",
+          "number": 14,
+          "startedAt": "2026-10-01T20:00:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:10Z",
+          "conclusion": "success",
+          "name": "Keep Android cache entries used by this run",
+          "number": 15,
+          "startedAt": "2026-10-01T20:00:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:19Z",
+          "conclusion": "success",
+          "name": "Save Android compiler cache",
+          "number": 16,
+          "startedAt": "2026-10-01T20:00:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:22Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 17,
+          "startedAt": "2026-10-01T20:00:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:30Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 18,
+          "startedAt": "2026-10-01T20:00:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:30Z",
+          "conclusion": "success",
+          "name": "Summarize CI failures",
+          "number": 19,
+          "startedAt": "2026-10-01T20:00:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:31Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 38,
+          "startedAt": "2026-10-01T20:00:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T20:00:31Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 39,
+          "startedAt": "2026-10-01T20:00:31Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/Globulation2/glob2/actions/runs/36912648725/job/110538850470"
+    },
+    {
+      "completedAt": "2026-10-01T19:37:27Z",
+      "conclusion": "success",
+      "databaseId": 110538850645,
+      "name": "Android release APK (armeabi-v7a)",
+      "startedAt": "2026-10-01T19:18:53Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-01T19:18:54Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-01T19:18:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:20:04Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "startedAt": "2026-10-01T19:18:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:20:04Z",
+          "conclusion": "success",
+          "name": "Validate Android release contract and F-Droid listing",
+          "number": 3,
+          "startedAt": "2026-10-01T19:20:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:20:35Z",
+          "conclusion": "success",
+          "name": "Install build utilities",
+          "number": 4,
+          "startedAt": "2026-10-01T19:20:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:20:36Z",
+          "conclusion": "success",
+          "name": "Check build isolation and artifact validation",
+          "number": 5,
+          "startedAt": "2026-10-01T19:20:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:20:55Z",
+          "conclusion": "success",
+          "name": "Install verified NDK",
+          "number": 6,
+          "startedAt": "2026-10-01T19:20:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:21:12Z",
+          "conclusion": "success",
+          "name": "Install pinned Android packaging tools",
+          "number": 7,
+          "startedAt": "2026-10-01T19:20:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:25:54Z",
+          "conclusion": "success",
+          "name": "Build pinned target dependencies",
+          "number": 8,
+          "startedAt": "2026-10-01T19:21:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:25:55Z",
+          "conclusion": "success",
+          "name": "Restore Android compiler cache",
+          "number": 9,
+          "startedAt": "2026-10-01T19:25:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:25:55Z",
+          "conclusion": "success",
+          "name": "Reset Android compiler cache statistics",
+          "number": 10,
+          "startedAt": "2026-10-01T19:25:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:08Z",
+          "conclusion": "success",
+          "name": "Compile and stage native application",
+          "number": 11,
+          "startedAt": "2026-10-01T19:25:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:09Z",
+          "conclusion": "success",
+          "name": "Verify release package",
+          "number": 12,
+          "startedAt": "2026-10-01T19:37:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:09Z",
+          "conclusion": "skipped",
+          "name": "Exercise x86_64 release APK in an emulator",
+          "number": 13,
+          "startedAt": "2026-10-01T19:37:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:09Z",
+          "conclusion": "success",
+          "name": "Report Android compiler cache",
+          "number": 14,
+          "startedAt": "2026-10-01T19:37:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:09Z",
+          "conclusion": "success",
+          "name": "Keep Android cache entries used by this run",
+          "number": 15,
+          "startedAt": "2026-10-01T19:37:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:12Z",
+          "conclusion": "success",
+          "name": "Save Android compiler cache",
+          "number": 16,
+          "startedAt": "2026-10-01T19:37:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:16Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 17,
+          "startedAt": "2026-10-01T19:37:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:26Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 18,
+          "startedAt": "2026-10-01T19:37:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:26Z",
+          "conclusion": "success",
+          "name": "Summarize CI failures",
+          "number": 19,
+          "startedAt": "2026-10-01T19:37:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:26Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 38,
+          "startedAt": "2026-10-01T19:37:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:37:26Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 39,
+          "startedAt": "2026-10-01T19:37:26Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/Globulation2/glob2/actions/runs/36912648725/job/110538850645"
+    },
+    {
+      "completedAt": "2026-10-01T19:44:04Z",
+      "conclusion": "success",
+      "databaseId": 110538850800,
+      "name": "Android release APK (arm64-v8a)",
+      "startedAt": "2026-10-01T19:24:41Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-01T19:24:43Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-01T19:24:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:12Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "startedAt": "2026-10-01T19:24:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:12Z",
+          "conclusion": "success",
+          "name": "Validate Android release contract and F-Droid listing",
+          "number": 3,
+          "startedAt": "2026-10-01T19:26:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:32Z",
+          "conclusion": "success",
+          "name": "Install build utilities",
+          "number": 4,
+          "startedAt": "2026-10-01T19:26:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:33Z",
+          "conclusion": "success",
+          "name": "Check build isolation and artifact validation",
+          "number": 5,
+          "startedAt": "2026-10-01T19:26:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:53Z",
+          "conclusion": "success",
+          "name": "Install verified NDK",
+          "number": 6,
+          "startedAt": "2026-10-01T19:26:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:27:19Z",
+          "conclusion": "success",
+          "name": "Install pinned Android packaging tools",
+          "number": 7,
+          "startedAt": "2026-10-01T19:26:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:32:08Z",
+          "conclusion": "success",
+          "name": "Build pinned target dependencies",
+          "number": 8,
+          "startedAt": "2026-10-01T19:27:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:32:10Z",
+          "conclusion": "success",
+          "name": "Restore Android compiler cache",
+          "number": 9,
+          "startedAt": "2026-10-01T19:32:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:32:10Z",
+          "conclusion": "success",
+          "name": "Reset Android compiler cache statistics",
+          "number": 10,
+          "startedAt": "2026-10-01T19:32:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:43:46Z",
+          "conclusion": "success",
+          "name": "Compile and stage native application",
+          "number": 11,
+          "startedAt": "2026-10-01T19:32:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:43:46Z",
+          "conclusion": "success",
+          "name": "Verify release package",
+          "number": 12,
+          "startedAt": "2026-10-01T19:43:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:43:46Z",
+          "conclusion": "skipped",
+          "name": "Exercise x86_64 release APK in an emulator",
+          "number": 13,
+          "startedAt": "2026-10-01T19:43:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:43:46Z",
+          "conclusion": "success",
+          "name": "Report Android compiler cache",
+          "number": 14,
+          "startedAt": "2026-10-01T19:43:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:43:46Z",
+          "conclusion": "success",
+          "name": "Keep Android cache entries used by this run",
+          "number": 15,
+          "startedAt": "2026-10-01T19:43:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:43:49Z",
+          "conclusion": "success",
+          "name": "Save Android compiler cache",
+          "number": 16,
+          "startedAt": "2026-10-01T19:43:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:43:52Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 17,
+          "startedAt": "2026-10-01T19:43:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:44:03Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@v4",
+          "number": 18,
+          "startedAt": "2026-10-01T19:43:52Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:44:03Z",
+          "conclusion": "success",
+          "name": "Summarize CI failures",
+          "number": 19,
+          "startedAt": "2026-10-01T19:44:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:44:03Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 38,
+          "startedAt": "2026-10-01T19:44:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:44:03Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 39,
+          "startedAt": "2026-10-01T19:44:03Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/Globulation2/glob2/actions/runs/36912648725/job/110538850800"
+    }
+  ],
+  "publishedArtifacts": [
+    {
+      "id": 11191450664,
+      "node_id": "MDg6QXJ0aWZhY3QxMTE5MTQ1MDY2NA==",
+      "name": "android-x86_64-release-apk",
+      "size_in_bytes": 57620847,
+      "url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11191450664",
+      "archive_download_url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11191450664/zip",
+      "expired": false,
+      "digest": "sha256:ad923e0ed92bca14b5ce3a9ee15a30ebdc26d709ca40de388c49bea8787f1345",
+      "created_at": "2026-10-01T20:00:22Z",
+      "updated_at": "2026-10-01T20:00:22Z",
+      "expires_at": "2026-12-30T19:13:09Z",
+      "workflow_run": {
+        "id": 36912648725,
+        "repository_id": 230307566,
+        "head_repository_id": 230307566,
+        "head_branch": "codex/javascript-foundation",
+        "head_sha": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5"
+      }
+    },
+    {
+      "id": 11191301128,
+      "node_id": "MDg6QXJ0aWZhY3QxMTE5MTMwMTEyOA==",
+      "name": "android-x86_64-diagnostics",
+      "size_in_bytes": 1902271,
+      "url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11191301128",
+      "archive_download_url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11191301128/zip",
+      "expired": false,
+      "digest": "sha256:788d62c77005d080126e413459072e386119ea327e6cd743d3c4c83dc5cffaf3",
+      "created_at": "2026-10-01T20:00:30Z",
+      "updated_at": "2026-10-01T20:00:30Z",
+      "expires_at": "2026-12-30T19:13:09Z",
+      "workflow_run": {
+        "id": 36912648725,
+        "repository_id": 230307566,
+        "head_repository_id": 230307566,
+        "head_branch": "codex/javascript-foundation",
+        "head_sha": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5"
+      }
+    },
+    {
+      "id": 11190570135,
+      "node_id": "MDg6QXJ0aWZhY3QxMTE5MDU3MDEzNQ==",
+      "name": "android-arm64-v8a-release-apk",
+      "size_in_bytes": 56728248,
+      "url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11190570135",
+      "archive_download_url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11190570135/zip",
+      "expired": false,
+      "digest": "sha256:a2ce844cc8ad58d8ff7579b5074587095ea308d9d19f4863084361d49d137929",
+      "created_at": "2026-10-01T19:43:52Z",
+      "updated_at": "2026-10-01T19:43:52Z",
+      "expires_at": "2026-12-30T19:13:09Z",
+      "workflow_run": {
+        "id": 36912648725,
+        "repository_id": 230307566,
+        "head_repository_id": 230307566,
+        "head_branch": "codex/javascript-foundation",
+        "head_sha": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5"
+      }
+    },
+    {
+      "id": 11190390409,
+      "node_id": "MDg6QXJ0aWZhY3QxMTE5MDM5MDQwOQ==",
+      "name": "android-arm64-v8a-diagnostics",
+      "size_in_bytes": 1912129,
+      "url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11190390409",
+      "archive_download_url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11190390409/zip",
+      "expired": false,
+      "digest": "sha256:12abb543a3e1d4fc8992ae50a46dd3cd299d6a3695374b9cbe776f696eee64b0",
+      "created_at": "2026-10-01T19:44:03Z",
+      "updated_at": "2026-10-01T19:44:03Z",
+      "expires_at": "2026-12-30T19:13:09Z",
+      "workflow_run": {
+        "id": 36912648725,
+        "repository_id": 230307566,
+        "head_repository_id": 230307566,
+        "head_branch": "codex/javascript-foundation",
+        "head_sha": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5"
+      }
+    },
+    {
+      "id": 11189802563,
+      "node_id": "MDg6QXJ0aWZhY3QxMTE4OTgwMjU2Mw==",
+      "name": "android-armeabi-v7a-release-apk",
+      "size_in_bytes": 55388956,
+      "url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11189802563",
+      "archive_download_url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11189802563/zip",
+      "expired": false,
+      "digest": "sha256:29b304b92aa39ba435adb98eb4d8d4250d4cb88838eb301f2368a9e357128d54",
+      "created_at": "2026-10-01T19:37:15Z",
+      "updated_at": "2026-10-01T19:37:15Z",
+      "expires_at": "2026-12-30T19:13:09Z",
+      "workflow_run": {
+        "id": 36912648725,
+        "repository_id": 230307566,
+        "head_repository_id": 230307566,
+        "head_branch": "codex/javascript-foundation",
+        "head_sha": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5"
+      }
+    },
+    {
+      "id": 11189017867,
+      "node_id": "MDg6QXJ0aWZhY3QxMTE4OTAxNzg2Nw==",
+      "name": "android-armeabi-v7a-diagnostics",
+      "size_in_bytes": 1969622,
+      "url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11189017867",
+      "archive_download_url": "https://api.github.com/repos/Globulation2/glob2/actions/artifacts/11189017867/zip",
+      "expired": false,
+      "digest": "sha256:79d1720aec60b455b0bb5ed2af1a9eba2811c1a7b25389c63e4b0df285e98c92",
+      "created_at": "2026-10-01T19:37:26Z",
+      "updated_at": "2026-10-01T19:37:26Z",
+      "expires_at": "2026-12-30T19:13:09Z",
+      "workflow_run": {
+        "id": 36912648725,
+        "repository_id": 230307566,
+        "head_repository_id": 230307566,
+        "head_branch": "codex/javascript-foundation",
+        "head_sha": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5"
+      }
+    }
+  ],
+  "publishedArtifactDigestsAreZipDigests": true,
+  "uploadedExecutableArchivesDuplicated": false,
+  "directCompiledProducerProvenanceAvailable": false,
+  "validationDetail": "All three unsigned release APK builds/package checks passed. x86_64 workflow also performs its ordinary APK emulator smoke; the shared JavaScript corpus and physical-device acceptance are not executed by this workflow.",
+  "diagnosticZipDigestsVerified": [
+    {
+      "artifactId": 11191301128,
+      "sha256": "788d62c77005d080126e413459072e386119ea327e6cd743d3c4c83dc5cffaf3"
+    },
+    {
+      "artifactId": 11190390409,
+      "sha256": "12abb543a3e1d4fc8992ae50a46dd3cd299d6a3695374b9cbe776f696eee64b0"
+    },
+    {
+      "artifactId": 11189017867,
+      "sha256": "79d1720aec60b455b0bb5ed2af1a9eba2811c1a7b25389c63e4b0df285e98c92"
+    }
+  ]
+}
