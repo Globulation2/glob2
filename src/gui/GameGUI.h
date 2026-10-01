@@ -436,8 +436,11 @@ private:
 	//! move of the same flag still in the queue, and shows the flag there at once.
 	void queueFlagMove(Building &flag, int x, int y, bool drop);
 	//! The local team's flag at a viewport-relative map point: an exact tile hit,
-	//! or with `forgiving` the nearest flag within the touch selection radius.
-	Building *flagAt(int mx, int my, bool forgiving);
+	//! or else the nearest flag whose tile centre is within `reachPoints` screen
+	//! points (0 for exact hits only).
+	Building *flagAt(int mx, int my, double reachPoints);
+	//! The touch reach around flags for a contact at a screen point, in points.
+	double flagReachAt(double screenX, double screenY) const;
 	//! One viewport has moved and a flag or a brush is selected, update its position
 	void dragStep(int mx, int my, int button);
 	//! on each step, check if we have won or lost

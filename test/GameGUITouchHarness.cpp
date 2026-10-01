@@ -1741,6 +1741,25 @@ class GameGUITouchHarness
 			gui.localTeam->virtualBuildings = {rangeFlag};
 			rangeFlag->posX = rangeFlag->posY = 2;
 			gui.view.mouseUnit = nullptr;
+			{
+				// The reach is 30 points in the middle of the screen and grows to 36
+				// at its edges and corners, where thumbs are least accurate.
+				const double unit = gfx->logicalUnitsPerPoint();
+				const double w = gfx->getW(), h = gfx->getH();
+				auto close = [](double a, double b) { return std::abs(a - b) < 1e-6; };
+				require(close(gui.flagReachAt(w / 2, h / 2), InGameTouchTheme::flagReach) ||
+							std::min(w, h) / 2 < InGameTouchTheme::flagReachEdgeBand * unit,
+						"Flags reach 30 points in the middle of the screen");
+				require(close(gui.flagReachAt(0, h / 2), InGameTouchTheme::flagReachEdge) &&
+							close(gui.flagReachAt(w, h), InGameTouchTheme::flagReachEdge),
+						"Flags reach 36 points at the screen's edges and corners");
+				const double halfway = gui.flagReachAt(w / 2, InGameTouchTheme::flagReachEdgeBand / 2 * unit);
+				require(close(halfway, (InGameTouchTheme::flagReach + InGameTouchTheme::flagReachEdge) / 2) ||
+							w / 2 < InGameTouchTheme::flagReachEdgeBand * unit,
+						"The reach grows linearly across the edge band");
+				require(gui.flagReachAt(w / 2, 10 * unit) > gui.flagReachAt(w / 2, 60 * unit),
+						"Closer to the edge reaches further");
+			}
 			for (double zoom : {.33, .5, 1.})
 			{
 				gui.camera.zoom = zoom;
@@ -1772,8 +1791,13 @@ class GameGUITouchHarness
 							gui.selectionBuilding() == building,
 						"Expanded flag hits must not steal direct building selection");
 				gui.game.map.setBuilding(mapX, mapY, 1, 1, NOGBID);
+				// 28 points is inside the reach anywhere on screen, 40 beyond it everywhere.
 				gui.clearSelection();
-				gui.handleMapClick(int(center.first + 30 * unit), y, SDL_BUTTON_LEFT);
+				gui.handleMapClick(int(center.first + 28 * unit), y, SDL_BUTTON_LEFT);
+				require(gui.selectionMode == GameGUI::BUILDING_SELECTION && gui.selectionBuilding() == rangeFlag,
+						"A click 28 points from a flag selects it at every zoom");
+				gui.clearSelection();
+				gui.handleMapClick(int(center.first + 40 * unit), y, SDL_BUTTON_LEFT);
 				require(gui.selectionMode != GameGUI::BUILDING_SELECTION,
 						"Clicks outside the halo must not select a flag");
 
@@ -2627,7 +2651,7 @@ class GameGUITouchHarness
 	// coasts and rubber-bands, a mouse drag has no momentum, and nothing reaches
 	// the simulation. Time is explicit: event timestamps and gui.step(now).
 	// Flags move by dragging them on touch. A contact on a flag, or within the
-	// 24-point reach that selects flags, carries the flag and never pans the map;
+	// 30-point reach that selects flags, carries the flag and never pans the map;
 	// a tap still selects; a second finger or an interruption puts the flag back.
 	static void flagDragging()
 	{
@@ -2786,7 +2810,7 @@ class GameGUITouchHarness
 			settle();
 			const int afterX = flag->posX;
 
-			// Within the 24-point reach, the grab keeps its offset: no jump to the finger.
+			// Within the reach, the grab keeps its offset: no jump to the finger.
 			start = centre();
 			const GAGCore::ViewPoint beside{start.x + 18 * unit, start.y};
 			require(tileAt(beside.x, beside.y) != std::pair{flag->posX, flag->posY} ||
@@ -2803,6 +2827,13 @@ class GameGUITouchHarness
 					"A grab just beside the flag carries it by the finger's travel");
 			require(camera() == cameraBefore, "A grab beside the flag must not pan the map");
 			settle();
+
+			// 28 points from the flag still grabs it anywhere on screen; 40 never does.
+			start = centre();
+			require(gui.touch->grabbableFlag({start.x + 28 * unit, start.y}) == flag,
+					"A contact 28 points from a flag grabs it");
+			require(!gui.touch->grabbableFlag({start.x + 40 * unit, start.y}),
+					"A contact 40 points from a flag pans instead");
 
 			// A small wobble below the tap threshold is still a tap: it selects.
 			start = centre();

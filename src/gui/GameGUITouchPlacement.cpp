@@ -150,8 +150,8 @@ void GameGUITouch::advancePlacement()
 }
 
 // The local team's flag a new contact should carry instead of panning: one on
-// the touched tile, or on the phone HUD the nearest within the same 24-point
-// reach that selects flags. As with selection, that reach never claims a unit
+// the touched tile, or on the phone HUD the nearest within the same reach that
+// selects flags (InGameTouchTheme::flagReach). As with selection, that reach never claims a unit
 // or a building directly under the finger.
 Building *GameGUITouch::grabbableFlag(ViewPoint point)
 {
@@ -162,7 +162,7 @@ Building *GameGUITouch::grabbableFlag(ViewPoint point)
 	if (!gui.camera.contains(int(point.x), int(point.y)))
 		return nullptr;
 	const int mx = gui.mapMouseX(int(point.x)), my = gui.mapMouseY(int(point.y));
-	if (auto *flag = gui.flagAt(mx, my, false))
+	if (auto *flag = gui.flagAt(mx, my, 0))
 		return flag;
 	if (!usesHUD() || unitAt(point))
 		return nullptr;
@@ -170,7 +170,7 @@ Building *GameGUITouch::grabbableFlag(ViewPoint point)
 	gui.game.map.displayToMapCaseAligned(mx, my, &tileX, &tileY, gui.viewportX, gui.viewportY);
 	if (gui.game.map.getBuilding(tileX, tileY) != NOGBID)
 		return nullptr;
-	return gui.flagAt(mx, my, true);
+	return gui.flagAt(mx, my, gui.flagReachAt(point.x, point.y));
 }
 
 Building *GameGUITouch::draggedFlag() const

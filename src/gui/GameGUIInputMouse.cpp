@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <algorithm>
 
 #include <SDL_keycode.h>
 
@@ -16,6 +17,7 @@
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
+#include "InGameTouchTheme.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -90,20 +92,27 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	dragStep(mx, my, button);
 }
 
-Building *GameGUI::flagAt(int mx, int my, bool forgiving)
+double GameGUI::flagReachAt(double screenX, double screenY) const
+{
+	auto *gfx = globalContainer->gfx;
+	const double unit = gfx->logicalUnitsPerPoint();
+	const double edge = std::min({screenX, screenY, gfx->getW() - screenX, gfx->getH() - screenY}) / unit;
+	const double toward = std::clamp(1 - edge / InGameTouchTheme::flagReachEdgeBand, 0.0, 1.0);
+	return InGameTouchTheme::flagReach + (InGameTouchTheme::flagReachEdge - InGameTouchTheme::flagReach) * toward;
+}
+
+Building *GameGUI::flagAt(int mx, int my, double reachPoints)
 {
 	int mapX, mapY;
 	game.map.displayToMapCaseAligned(mx, my, &mapX, &mapY, viewportX, viewportY);
 	for (Building *flag : localTeam->virtualBuildings)
 		if (displayedPosX(*flag)==mapX && displayedPosY(*flag)==mapY)
 			return flag;
-	if (!forgiving)
+	if (reachPoints <= 0)
 		return nullptr;
-	// 24 points on screen, whatever the zoom, measured to the flag's tile centre
-	// across the map's wrap.
-	constexpr double flagSelectionRadiusPoints = 24;
-	const double radius = flagSelectionRadiusPoints *
-		globalContainer->gfx->logicalUnitsPerPoint() / camera.zoom;
+	// Screen points whatever the zoom, measured to the flag's tile centre across
+	// the map's wrap.
+	const double radius = reachPoints * globalContainer->gfx->logicalUnitsPerPoint() / camera.zoom;
 	double nearestDistance = radius * radius;
 	Building *nearest = nullptr;
 	const double worldX = mx + viewportX * 32., worldY = my + viewportY * 32.;
@@ -132,6 +141,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 {
 	updateCamera();
 	if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
+	const double flagReach=flagReachAt(mx, my);
 	if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
 	if (selectionMode==TOOL_SELECTION)
 	{
@@ -157,7 +167,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 		selectionPushedPosX=mapX;
 		selectionPushedPosY=mapY;
 		// check for flag first
-		if (Building *flag=flagAt(mx, my, false))
+		if (Building *flag=flagAt(mx, my, 0))
 		{
 			setSelection(BUILDING_SELECTION, flag);
 			selectionPushed=true;
@@ -169,7 +179,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
         if (touch->usesHUD() && !torusView.active() && !view.mouseUnit &&
             game.map.getBuilding(mapX, mapY) == NOGBID)
         {
-            if (Building *nearest=flagAt(mx, my, true))
+            if (Building *nearest=flagAt(mx, my, flagReach))
             {
                 setSelection(BUILDING_SELECTION, nearest);
                 // A forgiving selection click must not move the flag onto the

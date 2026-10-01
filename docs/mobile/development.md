@@ -68,8 +68,13 @@ placement taps never do. In paint mode a single tap is held for the same window
 before it paints, because it may be the first half of a zoom; drags paint on
 release as before. A held tap lands when the window closes, when any other contact
 begins, or on interruption, and is dropped only if its brush is no longer active.
-In the mobile/touch interface, flags on the flat map also accept selection within 24 screen points of their
-centres, independent of zoom. Exact flag hits retain priority; the extra halo
+In the mobile/touch interface, flags on the flat map also accept selection within 30 screen points of their
+centres, independent of zoom, growing linearly to 36 points within 96 points of a
+screen edge. Points follow the platform's density-independent unit, so 30 points
+is a circle of about 9.5 mm on any phone: the target size one-handed thumb taps
+stop improving at (Parhi, Karlson and Bederson, 2006). Thumbs are least accurate
+near edges and corners (Hoober), hence the larger reach there. The constants
+live in `InGameTouchTheme.h`. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.
 Desktop mouse selection retains its original exact-tile hit area.
 On touch, a contact that lands on one of the player's flags, or within that
