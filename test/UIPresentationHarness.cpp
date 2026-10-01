@@ -48,6 +48,7 @@
 #include <ScreenStack.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <SDL3_net/SDL_net.h>
 #include <cstdio>
 #include <functional>
 #include <set>
@@ -356,6 +357,13 @@ void run(const Viewport &viewport)
 	glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,
 	                                  .screenFlags = GAGCore::GraphicContext::PORTABLEGPU | GAGCore::GraphicContext::RESIZABLE};
 	glob2test::HeadlessGlobals globals(options);
+	// This sweep constructs LAN discovery screens, just as Glob2::run does
+	// after network initialization. SDL3_net resolvers require initialized
+	// synchronization even when no connection is made by the fixture.
+	struct NetworkScope {
+		NetworkScope() { REQUIRE(NET_Init()); }
+		~NetworkScope() { NET_Quit(); }
+	} network;
 	auto theme = std::make_unique<FrontendTheme>();
 	int checked = 0;
 	const bool capture = true;
