@@ -24,6 +24,7 @@ the binary that now contains the test.
 scons -j8 release=1 server=0 tests          # or unit-tests / engine-tests
 python3 test/run_tests.py                   # everything this platform can run
 python3 test/run_tests.py --list --tag display
+python3 test/run_tests.py --fullscreen --tag display      # opt in to fullscreen transitions
 python3 test/run_tests.py --binary unit
 python3 test/run_tests.py --filter 'HungryDefeat/*' --verbose
 python3 test/run_tests.py --binary engine --shard 2/4 --junit artifacts/tests/junit.xml
@@ -42,6 +43,14 @@ can recreate contexts without racing X server reinitialization; they are skipped
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
 `test/test_run_tests.py` covers the runner itself.
+
+Standard runs keep display tests windowed. The HD artwork integration test's
+fullscreen camera-continuity checks and the text raster test's fullscreen
+downscaling check run only with `--fullscreen`; all their windowed checks still
+run by default, including with `--in-process`. Linux CI enables `--fullscreen`
+under its virtual display. To opt in when invoking a test binary directly, set
+`GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
+its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
 Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
 and selects the dummy drivers when the environment does not, so

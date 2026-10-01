@@ -139,6 +139,32 @@ class JunitTest(unittest.TestCase):
 
 @unittest.skipIf(os.name == 'nt', 'uses a shell script as the fake binary')
 class EndToEndTest(unittest.TestCase):
+    def test_fullscreen_requires_explicit_opt_in_even_in_process(self):
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory) / 'build'
+            (build / 'test').mkdir(parents=True)
+            binary = build / 'test' / run_tests.BINARIES['engine']
+            listing = LISTING.replace('\n', '\\n').replace('"', '\\"')
+            binary.write_text('#!/bin/sh\n'
+                              'for a in "$@"; do case "$a" in -ltc) printf "%b" "' + listing + '"; exit 0;; esac; done\n'
+                              'test "$GLOB2_TEST_FULLSCREEN" = "$EXPECTED_FULLSCREEN" || exit 9\n'
+                              'for a in "$@"; do case "$a" in -o=*) echo "<testsuites/>" > "${a#-o=}";; esac; done\n')
+            binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
+            for in_process in (False, True):
+                for fullscreen in (False, True):
+                    with self.subTest(in_process=in_process, fullscreen=fullscreen):
+                        command = [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                                   '--build-dir', str(build), '--filter', 'HungryDefeat/*',
+                                   '--junit', str(Path(directory) / 'junit.xml')]
+                        if in_process:
+                            command.append('--in-process')
+                        if fullscreen:
+                            command.append('--fullscreen')
+                        result = subprocess.run(command, capture_output=True, text=True,
+                                                env=dict(os.environ, GLOB2_TEST_FULLSCREEN='1',
+                                                         EXPECTED_FULLSCREEN='1' if fullscreen else '0'))
+                        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_runs_a_fake_binary_per_case(self):
         with tempfile.TemporaryDirectory() as directory:
             build = Path(directory) / 'build'

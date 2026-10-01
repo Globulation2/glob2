@@ -269,6 +269,11 @@ void run(const std::string &outputDir)
 	{
 		// Fullscreen keeps the desktop's size, so asking for more than it has is what reduces.
 		const bool oversized = attempt.first == 1.0f;
+		if (oversized && !glob2test::fullscreenEnabled())
+		{
+			std::puts("SKIP fullscreen text downscaling: enable with --fullscreen");
+			continue;
+		}
 		const int w = oversized ? windowW * 3 : windowW, h = oversized ? windowH * 3 : windowH;
 		const Uint32 flags = GraphicContext::USEGPU | (oversized ? GraphicContext::FULLSCREEN : 0);
 		GraphicContext::setRequestedUiScale(attempt.first);
