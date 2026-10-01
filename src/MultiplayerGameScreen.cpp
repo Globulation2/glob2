@@ -2,6 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "MultiplayerGameScreen.h"
+#include "YOGServer.h"
 #include "AINames.h"
 #include "CustomGameOtherOptions.h"
 #include "Engine.h"
@@ -114,6 +115,14 @@ Element MultiplayerGameScreen::build(const Presentation &p)
 			players.push_back(fe::caption(fe::tr("[open]")));
 	}
 	std::vector<Element> side;
+    if (auto server = client->getGameServer(); server && server->networkConfig().lan) {
+        const auto pairing = server->networkConfig().lobbyEndpoint;
+        side.push_back(fe::paragraph(fe::tr("[lan share pairing]")));
+        side.push_back(fe::paragraph(pairing, {fe::FontRole::Support}));
+        side.push_back(fe::button("lan/copy-pairing", fe::tr("[lan copy pairing]"), [pairing] {
+            SDL_SetClipboardText(pairing.c_str());
+        }));
+    }
 	if (!gh.getExperiments().empty())
 		side.push_back(fe::paragraph(fe::tr("[Experiments set by the host]") + ": " + experimentLabelList(gh.getExperiments()),
 									 {fe::FontRole::Support}));
@@ -202,6 +211,10 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(std::shared_ptr<Multiplay
 		finish(StartedGame);
 		game->leaveGame();
 	}
+    else if (type == MGEGameStartRefused)
+        screens.push(std::make_unique<MessageScreen>(
+            fe::tr("[network start refused]"),
+            std::vector<std::string>{fe::tr("[ok]")}));
 	else if (type == MGEGameRefused)
 		finish(GameRefused);
 	else if (type == MGEKickedByHost)

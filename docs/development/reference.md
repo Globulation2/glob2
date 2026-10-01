@@ -71,8 +71,7 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include SDL2/net/ttf/image, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
-  zlib, fribidi and pcre; PortAudio is optional. The native secure WebSocket client
-  (`wss=1`, the default) and the browser gateway also need OpenSSL and the header-only
+  zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client, server, and router) require OpenSSL and the header-only
   Boost.Beast and Boost.Asio; nothing else uses Boost.
 - `CCACHE=1` opts into the shared compiler cache. Unset it when generating
   `compile_commands.json`; do not add `CCACHE_SLOPPINESS` settings that weaken
@@ -131,7 +130,7 @@ the shared `MapPreview` widget on an offscreen software surface; all map CLI
 outputs can run headlessly. Preview scale defaults to 2×; 4× and 8× are available.
 
 Test runners use the current host’s native release directory. Set
-`GLOB2_BUILD_DIR` when using `--build`, a debug build, or `wss=0` (whose client
+`GLOB2_BUILD_DIR` when using `--build` or a debug build (whose client
 role directory is `client-tcp`). Pass explicit binary paths to CLI tools when
 comparing builds; do not pick an old binary by modification time.
 

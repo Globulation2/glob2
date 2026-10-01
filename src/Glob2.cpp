@@ -449,8 +449,7 @@ int Glob2::run(int argc, char *argv[])
 
 
 #ifdef GLOB2_ROUTER_ONLY
-	const char* lobbyHost = std::getenv("GLOB2_YOG_HOST");
-	YOGServerRouter router(lobbyHost ? lobbyHost : "127.0.0.1");
+	YOGServerRouter router;
 	int routerResult = router.run();
 	delete globalContainer;
 	return routerResult;
@@ -555,7 +554,12 @@ int main(int argc, char *argv[])
 #endif
 
 	Glob2 glob2;
-	int result = glob2.run(argc, argv);
+	int result;
+    try { result = glob2.run(argc, argv); }
+    catch (const std::exception& error) {
+        fprintf(stderr, "Glob2 startup failed: %s\n", error.what());
+        return 1;
+    }
 	if (result != Glob2::HOSTED_RUN) GAGCore::ApplicationHost::exited(result);
 	return result == Glob2::HOSTED_RUN ? 0 : result;
 }

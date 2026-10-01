@@ -236,8 +236,8 @@ for released format-124 saves and assigns entity identities when loading formats
 58–124. Format-125 saves preserve and validate stored identities and generation
 counters; truncated counter tables are rejected, including missing entries for
 unused entity slots. The minimum save version remains 58.
-Network/YOG protocol 48 retains the released client acceptance boundary; older
-protocols are rejected. The replay minimum remains 123. Scripting profile 1 is a
+Network/YOG protocol 49 combines the scripting wire format with mandatory WSS;
+older protocols are rejected. The replay minimum remains 123. Scripting profile 1 is a
 separate unpublished contract; its number does not negotiate either engine gate.
 Profile versioning and API-maintenance obligations are in the reference.
 

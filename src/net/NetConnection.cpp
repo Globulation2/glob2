@@ -96,14 +96,3 @@ void NetConnection::sendMessage(std::shared_ptr<NetMessage> message) {
     flushOutgoing();
 }
 const std::string& NetConnection::getIPAddress() const { return address; }
-bool NetConnection::attemptConnection(TCPsocket& listener) {
-    TCPsocket socket = SDLNet_TCP_Accept(listener);
-    if (!socket) return false;
-    const auto* peer = SDLNet_TCP_GetPeerAddress(socket);
-    const auto* ip = reinterpret_cast<const unsigned char*>(&peer->host);
-    address = std::to_string(ip[0]) + "." + std::to_string(ip[1]) + "." + std::to_string(ip[2]) + "." + std::to_string(ip[3]);
-    closeConnection();
-    if (transport->accept(socket)) return true;
-    SDLNet_TCP_Close(socket);
-    return false;
-}

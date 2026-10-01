@@ -1,40 +1,35 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Copyright (C) 2007 Bradley Arsenault
-
 #pragma once
-
-#include "SDL_net.h"
-#include "LANGameInformation.h"
+#include <SDL_net.h>
+#include <string>
 #include <vector>
-
-///This listens for sub-net broadcasts (finding a LAN game)
+struct LANDiscoveredHost
+{
+	std::string identifier, endpoint;
+	Uint64 lastSeen = 0;
+};
 class NetBroadcastListener
 {
-public:
-	///Constructs a NetBroadcastListener, and begins listening
+  public:
 	NetBroadcastListener();
-
 	~NetBroadcastListener();
-
-	///Updates the broadcast listener
 	void update();
-
-	///Gets a list of all the LAN games
-	const std::vector<LANGameInformation>& getLANGames();
-
-	///Gets the IP address for the given lan game
-	std::string getIPAddress(size_t num);
-	
-	///Enables listening
+	const std::vector<LANDiscoveredHost> &getLANHosts() const
+	{
+		return hosts;
+	}
+	std::string getIPAddress(size_t index) const
+	{
+		return hosts.at(index).endpoint;
+	}
+	bool isListening() const
+	{
+		return socket != nullptr;
+	}
 	void enableListening();
-	
-	///Disables listening
 	void disableListening();
-private:
-	UDPsocket socket;
-	std::vector<LANGameInformation> games;
-	std::vector<int> timeouts;
-	std::vector<IPaddress> addresses;
-	Uint64 lastTime;
-};
 
+  private:
+	UDPsocket socket = nullptr;
+	std::vector<LANDiscoveredHost> hosts;
+};

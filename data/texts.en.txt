@@ -3512,3 +3512,25 @@ Animate victory artwork. Reduced motion also disables this animation.
 Text size
 [settings Enlarge interface text without changing the map scale.]
 Enlarge interface text without changing the map scale.
+[lan pairing field]
+Host pairing string (or trusted WSS URL)
+[lan pairing connect]
+Pair and connect
+[lan discovery instructions]
+Select a host, then paste its pairing string to verify its identity.
+[lan discovery unavailable]
+LAN discovery is unavailable. Check local network permission or paste a host pairing string.
+[lan discovered host %0]
+Discovered host %0 — pair to view games
+[lan share pairing]
+Share this pairing string with guests to verify this LAN session:
+[lan copy pairing]
+Copy pairing string
+[lan connection unavailable]
+Unable to reach the LAN host. Check local network permission and the host pairing string.
+[lan connection verification failed %0]
+Unable to verify or connect to the LAN host: %0
+[network start refused]
+The server refused to start this game. Check player readiness or reconnect after the server update.
+[lan lobby endpoint required]
+Use the host lobby endpoint

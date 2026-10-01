@@ -13,6 +13,8 @@ TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",
     "test/NativeMultiplayerPeer.cpp",
     "test/WssTransportHarness.cpp",
+    "test/WssListenerHarness.cpp",
+    "test/LANDiscoveryHarness.cpp",
     "test/run-network-transport-tests.py",
 }
 
@@ -46,7 +48,7 @@ def classify(paths):
             browser = True
             deployment = True
             continue
-        if path.startswith(("tests/gateway/", "tests/transport/")):
+        if path.startswith(("tests/transport/",)):
             browser = True
             continue
         if path.startswith("test/") and path not in {

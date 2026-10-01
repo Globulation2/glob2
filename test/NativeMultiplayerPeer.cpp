@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
         if (SDLNet_Init() != 0) throw std::runtime_error("Network initialization failed");
         {
             auto client = std::make_shared<YOGClient>();
-            client->connect(argc == 4 ? argv[2] : "127.0.0.1");
+            client->connect(argc >= 3 ? argv[2] : YOG_SERVER_IP);
             std::shared_ptr<MultiplayerGame> game;
             MatchEvents events;
             bool ready = false;

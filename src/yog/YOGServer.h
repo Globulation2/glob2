@@ -5,6 +5,8 @@
 
 #include <memory>
 #include "NetListener.h"
+#include "NetworkConfig.h"
+#include "ServerControl.h"
 #include "YOGConsts.h"
 #include "YOGGameInfo.h"
 #include "YOGPlayerSessionInfo.h"
@@ -48,6 +50,8 @@ public:
 
 	///If the attempt to bind to the local port failed, this will be false
 	bool isListening();
+    bool canStartNewGame() const { return !draining && routerManager.hasRouter(); }
+    const NetworkConfig& networkConfig() const { return configuration; }
 
 	///This is the main update function. This must be called frequently (many times per
 	///second) in order to give fast response times and low latency for the users.
@@ -156,6 +160,9 @@ private:
 	Uint64 organizedGameBroadcastTime;
 	static const bool organizedGameTimeEnabled = false;
 
+	NetworkConfig configuration;
+    std::unique_ptr<ServerDataLock> dataLock;
+    bool draining = false;
 	NetListener nl;
 	std::shared_ptr<NetBroadcaster> broadcaster;
 	std::shared_ptr<NetConnection> new_connection;

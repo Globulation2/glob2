@@ -5,6 +5,7 @@
 #include "YOGClientGameListManager.h"
 #include <ScreenStack.h>
 #include "SessionTabsScreen.h"
+#include "YOGServer.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <FormatableString.h>
@@ -71,8 +72,13 @@ void LANSessionScreen::onTimer(Uint32 tick)
 	if ((!client->isConnecting() && !client->isConnected()) ||
 		Uint32(tick - *stageStarted) >= 10000)
 	{
-		fail("[Can't connect, can't find host]");
-		return;
+		stage = Stage::Failed;
+        auto error = client->getConnectionError();
+        screens.push(std::make_unique<MessageScreen>(error.empty() ?
+            Glob2UI::tr("[lan connection unavailable]") :
+            std::string(FormattableString(Glob2UI::tr("[lan connection verification failed %0]")).arg(error)),
+            std::vector<std::string>{Glob2UI::tr("[ok]")}), [this](GAGGUI::Screen&, int) { endExecute(1); });
+        return;
 	}
 	const auto connection = client->getConnectionState();
 	if (stage == Stage::Greeting && connection == YOGClient::WaitingForLoginInformation)

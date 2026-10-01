@@ -93,11 +93,11 @@ TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
-	CHECK(NET_PROTOCOL_VERSION == 48);
-	CHECK(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 48);
+	CHECK(NET_PROTOCOL_VERSION == 49);
+	CHECK(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 49);
 	// Exercise the production client handshake branch; transport remains
 	// disconnected, and only the server-information message is injected.
-	for (Uint16 version : {47, 48, 49})
+	for (Uint16 version : {48, 49, 50})
 	{
 		CAPTURE(version);
 		YOGClient client;
@@ -107,7 +107,7 @@ TEST_CASE("JavaScript pass retains network protocol acceptance boundaries" *
 		info->netVersion = version;
 		client.nc.received.push(info);
 		client.update();
-		if (version == 48)
+		if (version == 49)
 		{
 			CHECK(client.getConnectionState() == YOGClient::WaitingForLoginInformation);
 			CHECK(client.getPlayerID() == 19);

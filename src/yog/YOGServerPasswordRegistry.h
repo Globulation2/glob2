@@ -23,6 +23,7 @@ public:
 
 	///This resets a players password
 	void resetPlayersPassword(const std::string& username);
+    void flush() { flushPasswords(); }
 	
 private:
 	///Writes the passwords and usernames to a text file

@@ -14,7 +14,7 @@ class BuildLayoutTests(unittest.TestCase):
     def test_all_supported_configurations_have_distinct_directories(self):
         configurations = []
         for release, host in itertools.product(('0','1'), ('darwin','linux','windows')):
-            for role in ('client','server','router','gateway'):
+            for role in ('client','server','router'):
                 configurations.append(build_identity({'release':release,'role':role}, host))
         configurations += [build_identity({'target':'web','release':release}) for release in ('0','1')]
         directories = [default_directory(c) for c in configurations]
