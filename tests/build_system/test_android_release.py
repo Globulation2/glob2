@@ -109,7 +109,7 @@ class AndroidReleaseTests(unittest.TestCase):
                 target = root / path
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / path).read_bytes())
-            manifest = (root / "build/android/device/arm64-v8a/26/client/release/vcpkg-installed"
+            manifest = (root / "build/android/device/arm64-v8a/24/client/release/vcpkg-installed"
                         / "glob2-arm64-android/manifest.json")
             manifest.parent.mkdir(parents=True)
             manifest.write_text(json.dumps({"archives": {"lib/libSDL2.so": "digest"}}))

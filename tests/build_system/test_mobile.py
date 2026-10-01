@@ -111,7 +111,7 @@ class PlayBundleAssetTests(unittest.TestCase):
         import android
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)
-            bundle=root/'build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab'
+            bundle=root/'build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/bundle/release/app-release.aab'
             bundle.parent.mkdir(parents=True)
             bundle.write_bytes(b'changed')
             bundle.with_suffix('.json').write_text(json.dumps({'sha256':'0'*64}))
@@ -180,9 +180,17 @@ class IOSCommandTests(unittest.TestCase):
 
 
 class MobileBuildTests(unittest.TestCase):
+    def test_android_seven_is_the_default_minimum(self):
+        import json
+        root = Path(__file__).resolve().parents[2]
+        minimum = json.loads((root/'mobile/toolchain.json').read_text())['android']['min_api']
+        self.assertEqual(minimum, 24)
+        self.assertEqual(build_identity({'target':'android'})['api'], str(minimum))
+        self.assertEqual(build_identity({'target':'android', 'api':'24'})['api'], '24')
+
     def test_each_mobile_configuration_has_its_own_directory(self):
         options = [dict(target='android', arch=arch, api=api, release=release)
-            for arch, api, release in itertools.product(('arm64-v8a', 'armeabi-v7a', 'x86_64'), ('26','35'), ('0','1'))]
+            for arch, api, release in itertools.product(('arm64-v8a', 'armeabi-v7a', 'x86_64'), ('24','26','35'), ('0','1'))]
         options += [dict(target='ios', environment=env, deployment=api, release=release)
             for env, api, release in itertools.product(('device','simulator'), ('15.0','16.0'), ('0','1'))]
         paths = [default_directory(build_identity(args)) for args in options]
@@ -204,7 +212,7 @@ class MobileBuildTests(unittest.TestCase):
     def test_invalid_targets_fail_without_probing_host(self):
         invalid = [dict(target='android', role='server'), dict(target='ios', mingw='1'),
             dict(target='android', arch='arm64'), dict(target='ios', arch='x86_64'),
-            dict(target='android', api='25'), dict(target='android', api='../26'),
+            dict(target='android', api='23'), dict(target='android', api='../26'),
             dict(target='ios', deployment='14.0'), dict(target='ios', deployment='../15.0'),
             dict(target='android', environment='simulator'), dict(target='ios', profile='1'),
             dict(target='android', amazon='1'), dict(target='ios', release='1', amazon='1'),

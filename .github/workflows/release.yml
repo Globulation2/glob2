@@ -123,7 +123,7 @@ jobs:
           python3 mobile/fdroid_build.py --version-code "$code" --android-sdk "$sdk" \
             --android-ndk "$sdk/ndk/28.2.13676358" 2>&1 \
             | tee "build/android-${{ matrix.arch }}-build.log"
-          apk="build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
+          apk="build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
           python3 mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
       - name: Launch x86_64 release candidate in an emulator
         if: matrix.arch == 'x86_64'
@@ -148,9 +148,9 @@ jobs:
         with:
           name: android-${{ matrix.arch }}-release-validation
           path: |
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.sha256
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json
+            build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
+            build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.sha256
+            build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json
             build/fdroid-output.apk
             build/mobile-smoke/**
             build/mobile-emulator.log

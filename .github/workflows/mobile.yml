@@ -82,7 +82,7 @@ jobs:
             | tee "build/android-${{ matrix.arch }}-build.log"
       - name: Verify release package
         run: |
-          apk="build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
+          apk="build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk"
           python3 mobile/android_release.py verify-apk --arch '${{ matrix.arch }}' --apk "$apk"
       - name: Exercise x86_64 release APK in an emulator
         if: matrix.arch == 'x86_64'
@@ -119,9 +119,9 @@ jobs:
         with:
           name: android-${{ matrix.arch }}-release-apk
           path: |
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.sha256
-            build/android/device/${{ matrix.arch }}/26/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json
+            build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.apk
+            build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.sha256
+            build/android/device/${{ matrix.arch }}/24/client/release/android-project/app/build/outputs/apk/release/app-release-unsigned.symbols.json
             build/mobile-smoke/**
             build/mobile-emulator.log
             build/android-${{ matrix.arch }}-build.log

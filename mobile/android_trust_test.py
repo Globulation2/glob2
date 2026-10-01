@@ -25,7 +25,7 @@ def main():
     adb = [str(sdk/'platform-tools/adb'), '-P', str(args.adb_port), '-s', args.serial]
     actual = subprocess.check_output(adb+['emu', 'avd', 'name'], text=True).splitlines()[0]
     if actual != args.avd: raise ValueError('Selected emulator belongs to another AVD')
-    output = ROOT/f'build/android/device/{args.arch}/26/client/release'
+    output = ROOT/f'build/android/device/{args.arch}/24/client/release'
     project = output/'android-project'
     env = java_environment(ROOT)
     env.update(GRADLE_USER_HOME=str(tools/'gradle-home'), ANDROID_USER_HOME=str(tools/'android-user'), TMPDIR=str(output/'tmp'))
