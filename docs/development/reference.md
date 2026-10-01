@@ -368,7 +368,18 @@ For unused-include cleanup, generate `compile_commands.json` and use
 `tools/remove-unused-includes.py`; do not apply blind bulk fixes. Rebuild client,
 server and affected tests, then verify behavior-preserving simulation changes as above.
 
-## Software rendering profiling
+## Software rendering architecture and profiling
+
+
+`GraphicContext` remains the drawing facade and retains existing capability queries.
+It owns the accelerated backend and software backend independently; transformed passes
+borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend factory
+in `SoftwareRenderBackend.cpp` retains SDL's existing triangle rasterizer during this
+structural extraction. Sprite blits and rectangle fills are explicit backend operations,
+still implemented using the original triangles.
+`RenderBackend.cpp` contains the accelerated SDL implementation and its texture uploads.
+
+
 
 Build the opt-in saved-game benchmark with optimized production objects:
 

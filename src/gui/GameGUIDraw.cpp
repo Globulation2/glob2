@@ -1,3 +1,4 @@
+#include <RenderStateScope.h>
 #include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -371,7 +372,7 @@ void GameGUI::drawOverlayInfos(void)
 	if (!torusView.active())
 	{
 		updateCamera();
-		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
+		GAGCore::MapTransformScope mapPass(*globalContainer->gfx, camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, SDL_Rect{int(camera.offsetX), std::max(16, int(camera.offsetY)), int(camera.visibleW()*camera.zoom), int(camera.visibleH()*camera.zoom)-std::max(0,16-int(camera.offsetY))});
 
 		if (selectionMode==TOOL_SELECTION)
 		{
@@ -438,7 +439,6 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 
-		globalContainer->gfx->endMapTransform();
 	}
 	// draw message List
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
@@ -614,7 +614,7 @@ void GameGUI::drawAll(int team)
 	GAGCore::ApplicationHost::overviewDrawn(drewTorus);
 	if (!drewTorus)
 	{
-		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
+		GAGCore::MapTransformScope mapPass(*globalContainer->gfx, camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, SDL_Rect{int(camera.offsetX), std::max(16, int(camera.offsetY)), int(camera.visibleW()*camera.zoom), int(camera.visibleH()*camera.zoom)-std::max(0,16-int(camera.offsetY))});
 		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		{
 			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
@@ -636,7 +636,6 @@ void GameGUI::drawAll(int team)
 		///Draw ghost buildings
 		if (!globalContainer->isViewingGame()) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 
-		globalContainer->gfx->endMapTransform();
 	}
 	// if paused, tint the game area
 	if (gamePaused)

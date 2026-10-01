@@ -628,6 +628,7 @@ GAG_SOURCES = (
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
     'RenderBackend.cpp',
+    'SoftwareRenderBackend.cpp',
     'GraphicContextMobile.cpp',
     'BinaryStream.cpp',
     'CursorManager.cpp',

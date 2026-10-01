@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "GraphicContextPrivate.h"
+#include <RenderBackend.h>
 #include <algorithm>
 #include <cassert>
 
@@ -144,6 +145,11 @@ namespace GAGCore
 		frameCache.valid = true;
 		frameCache.failureReported = false;
 	}
+
+    RenderOperations GraphicContext::backendOperations() const
+    {
+        return portableRenderer ? portableRenderer->operations() : softwareRasterizer ? softwareRasterizer->operations() : RenderOperations{};
+    }
 
 	void GraphicContext::swapBuffers()
 	{

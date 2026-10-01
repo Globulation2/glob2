@@ -29,6 +29,8 @@ namespace GAGCore
 		return dest;
 	}
 
+    bool DrawableSurface::hasOpaquePixels() { return false; }
+
 	// Drawable surface
 	DrawableSurface::DrawableSurface(const std::string &imageFileName)
 	{
@@ -53,7 +55,7 @@ namespace GAGCore
 		assert(sdlsurface);
 		setClipRect();
 		allocateTexture();
-		dirty = true;
+		markPixelsChanged();
 	}
 
     size_t DrawableSurface::allocatedTextureBytes()
@@ -74,7 +76,7 @@ namespace GAGCore
 
 	DrawableSurface::~DrawableSurface(void)
 	{
-		if (_gc && _gc->renderer) _gc->renderer->forget(this);
+		if (_gc && _gc->portableRenderer) _gc->portableRenderer->forget(this);
         if (_gc && _gc->softwareRasterizer) _gc->softwareRasterizer->forget(this);
 		SDL_FreeSurface(sdlsurface);
 		freeGPUTexture();
@@ -234,7 +236,7 @@ namespace GAGCore
 			}
 		}
 		#endif
-		dirty = false;
+		glUploadedRevision = contentRevision();
 	}
 
 	void DrawableSurface::freeGPUTexture(void)
@@ -272,7 +274,7 @@ namespace GAGCore
 		assert(sdlsurface);
 		setClipRect();
 		initTextureSize();
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::getClipRect(int *x, int *y, int *w, int *h)
@@ -329,7 +331,7 @@ namespace GAGCore
 					sdlsurface = convertForUpload(loadedSurface);
 					SDL_FreeSurface(loadedSurface);
 					setClipRect();
-					dirty = true;
+					markPixelsChanged();
 					return true;
 				}
 			}
@@ -369,7 +371,7 @@ namespace GAGCore
 			*mem = SDL_MapRGBA(sdlsurface->format, c.r, c.g, c.b, c.a);
 			mem++;
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 }
 

@@ -37,7 +37,7 @@ namespace GAGCore
 
 			*mem = ((surfacePreMult0 >> 8) & 0x00FF00FF) | (surfacePreMult1 & 0xFF00FF00);
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::drawPixel(float x, float y, const Color& color)
@@ -133,7 +133,7 @@ namespace GAGCore
 				while (--dw);
 			}
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::drawFilledRect(float x, float y, float w, float h, const Color& color)
@@ -211,7 +211,7 @@ namespace GAGCore
 			}
 			while (--l);
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::_drawHorzLine(int x, int y, int l, const Color& color)
@@ -276,7 +276,7 @@ namespace GAGCore
 			}
 			while (--l);
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::drawLine(int x1, int y1, int x2, int y2, const Color& _color)

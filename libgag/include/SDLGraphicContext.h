@@ -13,6 +13,7 @@
 #include <valarray>
 #include <memory>
 #include <optional>
+#include <cstdint>
 
 #include <set>
 #include <tuple>
@@ -25,6 +26,7 @@
 namespace GAGCore
 {
     class RenderBackend;
+    struct RenderOperations;
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{
@@ -171,7 +173,9 @@ namespace GAGCore
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
 		//! this surface has been modified since latest blit
-		bool dirty;
+		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
+        std::uint64_t pixelRevision = 1, opacityRevision = 0;
+        bool opaquePixels = false;
 		bool highResolutionSampling=false;
 		//! texture index if GPU (GL) is used
 		unsigned int texture=0;
@@ -223,6 +227,9 @@ namespace GAGCore
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
 		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+        std::uint64_t contentRevision() const { return pixelRevision; }
+        void markPixelsChanged() { ++pixelRevision; }
+        bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
@@ -419,7 +426,8 @@ namespace GAGCore
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
 		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
-		std::unique_ptr<RenderBackend> renderer;
+		std::unique_ptr<RenderBackend> portableRenderer;
+        RenderBackend* renderer = nullptr; // Borrowed active backend; ownership stays in the two unique_ptrs.
         // Rasterizes transformed passes into the existing software framebuffer.
         std::unique_ptr<RenderBackend> softwareRasterizer;
         bool softwareTransform=false;
@@ -506,7 +514,8 @@ namespace GAGCore
 		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
-		virtual void nextFrame(void);
+        RenderOperations backendOperations() const;
+        virtual void nextFrame(void);
 		//! This function does not work for GraphicContext
 		virtual bool loadImage(const std::string name) { return false; }
 		//! This function does not work for GraphicContext

@@ -181,6 +181,48 @@ void verifyMapBoundaries(unsigned flags)
 
 TEST_SUITE("PortableRenderer")
 {
+TEST_CASE("software targets resize and destroy safely during an active transform [display]")
+{
+    for (int iteration = 0; iteration < 4; ++iteration)
+    {
+        GraphicContext context(64, 48, 0, "Software target lifetime test");
+        context.setUITransform(1.25f, 0.5f, 0.5f);
+        context.drawLine(0.f, 0.f, 20.f, 15.f, Color(255, 0, 0));
+        if (iteration % 2)
+        {
+            REQUIRE(context.resizeViewport(80, 60));
+            context.setUITransform(1.5f, 1.f, 1.f);
+            context.drawLine(0.f, 0.f, 20.f, 15.f, Color(0, 255, 0));
+        }
+        // Deliberately leave fallback geometry queued and the transform active.
+        // Owners must flush before releasing the borrowed framebuffer.
+    }
+}
+
+TEST_CASE("each accelerated backend uploads surface revisions independently [display]")
+{
+    GraphicContext context(64, 48, 0, "Surface revision test");
+    DrawableSurface sprite(16, 16);
+    sprite.drawFilledRect(0, 0, 16, 16, Color(0, 255, 0));
+    using Window = std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)>;
+    Window first(SDL_CreateWindow("First upload", 0, 0, 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
+    Window second(SDL_CreateWindow("Second upload", 0, 0, 64, 48, SDL_WINDOW_HIDDEN), SDL_DestroyWindow);
+    REQUIRE(first); REQUIRE(second);
+    auto a = makeSDLRenderBackend(first.get(), 64, 48);
+    auto b = makeSDLRenderBackend(second.get(), 64, 48);
+    REQUIRE(a); REQUIRE(b);
+    const auto draw = [&](RenderBackend& backend, int red, int green, int blue)
+    {
+        backend.blit(&sprite, sprite.getSDLSurface(), sprite.contentRevision(), sprite.hasOpaquePixels(),
+            SDL_Rect{0, 0, 16, 16}, SDL_FRect{0, 0, 16, 16}, 255);
+        std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> image(backend.capture(), SDL_FreeSurface);
+        expect(image.get(), image->w * 8 / 64, image->h * 8 / 48, red, green, blue);
+    };
+    draw(*a, 0, 255, 0); draw(*b, 0, 255, 0);
+    sprite.drawFilledRect(0, 0, 16, 16, Color(0, 0, 255));
+    draw(*a, 0, 0, 255); draw(*b, 0, 0, 255);
+}
+
 TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]")
 {
 	verifyMapBoundaries(0);

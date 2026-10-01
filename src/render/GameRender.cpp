@@ -29,6 +29,7 @@
 
 
 #include "GameRenderInternal.h"
+#include "PerformanceTelemetry.h"
 
 // Map rendering orchestrator and shared helpers. Split from Game_render.cpp.
 
@@ -44,11 +45,6 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
-		/*globalContainer->gfx->drawHorzLine(x, y, maxLength*3+1, 32, 32, 32);
-		globalContainer->gfx->drawHorzLine(x, y+barWidth+1, maxLength*3+1, 32, 32, 32);
-		for (int i=0; i<maxLength+1; i++)
-			globalContainer->gfx->drawVertLine(x+i*3, y+1, barWidth, 32, 32, 32);
-		*/
 		globalContainer->gfx->drawFilledRect(x, y, maxLength*3+1, barWidth+2, 0, 0, 0);
 
 		if (orientation==LEFT_TO_RIGHT)
@@ -74,11 +70,6 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	}
 	else if ((orientation==BOTTOM_TO_TOP) || (orientation==TOP_TO_BOTTOM))
 	{
-		/*globalContainer->gfx->drawVertLine(x, y, maxLength*3+1, 32, 32, 32);
-		globalContainer->gfx->drawVertLine(x+barWidth+1, y, maxLength*3+1, 32, 32, 32);
-		for (int i=0; i<maxLength+1; i++)
-			globalContainer->gfx->drawHorzLine(x+1, y+i*3, barWidth, 32, 32, 32);
-		*/
 		globalContainer->gfx->drawFilledRect(x, y, barWidth+2, maxLength*3+1, 0, 0, 0);
 
 		if (orientation==TOP_TO_BOTTOM)
@@ -140,7 +131,7 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 
 	if((x >= left-1 && x <= right) || (x+map.getW() >= left-1 && x+map.getW() <= right))
 	{
-		if((y >= top-1 && y <= bot) || (y+map.getH() >= top-1 && y+map.getH() <= bot))
+		if ((y >= top - 1 && y <= bot) || (y + map.getH() >= top - 1 && y + map.getH() <= bot))
 		{
 			return true;
 		}
@@ -148,46 +139,78 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 	return false;
 }
 
-
-
-void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX,
+				   int viewportY, int localTeam, ViewState &view, Uint32 drawOptions,
+				   std::set<Building *> *visibleBuildings,
+				   const BuildingGuiStateMap *buildingGuiState, bool animationsPaused,
+				   int cloudGridLimit)
 {
 	// Frozen while paused, so the water and the clouds hold still with the rest.
 	int &time = mapAnimationTime;
 	static DynamicClouds ds(&globalContainer->settings);
-	int left=(sx>>5);
-	int top=(sy>>5);
-	int right=((sx+sw+31)>>5);
-	int bot=((sy+sh+31)>>5);
+	int left = (sx >> 5);
+	int top = (sy >> 5);
+	int right = ((sx + sw + 31) >> 5);
+	int bot = ((sy + sh + 31) >> 5);
 
 	if (!animationsPaused)
 		time++;
+	GameRenderFrame frame{*globalContainer->gfx,
+						  *globalContainer->terrain,
+						  *globalContainer->terrainWater,
+						  left,
+						  top,
+						  right,
+						  bot,
+						  sw,
+						  sh,
+						  viewportX,
+						  viewportY,
+						  localTeam,
+						  drawOptions,
+						  globalContainer->isViewingGame() ? globalContainer->replayVisibleTeams
+														   : teams[localTeam]->me,
+						  !(globalContainer->gfx->getOptionFlags() &
+							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapResources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings, buildingGuiState);
-	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
+
+	// Pass adapters keep the two coordinate conventions in one place. Individual
+	// layers still own their visibility decisions and their original draw order.
+	const auto tilePass = [&](auto method)
+	{
+		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.viewportX,
+						frame.viewportY, frame.localTeam, frame.options);
+	};
+	const auto scenePass = [&](auto method, auto &&...state)
+	{
+		(this->*method)(frame.left, frame.top, frame.right, frame.bottom, frame.width, frame.height,
+						frame.viewportX, frame.viewportY, frame.localTeam, frame.options, state...);
+	};
+
+	tilePass(&Game::drawMapResources);
+	scenePass(&Game::drawMapGroundUnits, view);
+	scenePass(&Game::drawMapDebugAreas, view);
+	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState);
+	scenePass(&Game::drawMapAirUnits, view);
+	if ((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
 
-	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-
+	scenePass(&Game::drawMapBulletsExplosionsDeathAnimations);
 
 	// compute and draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
 		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
-		           !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
+				   !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
-	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	scenePass(&Game::drawMapFogOfWar);
+	scenePass(&Game::drawMapAreas);
+	scenePass(&Game::drawMapOverlayMaps);
 
-	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
+	scenePass(&Game::drawUnitPathLines, view);
 
 
 	// draw cloud overlay if we are in high quality

@@ -280,10 +280,8 @@ namespace GAGCore
 	{
         if (renderer) {
             if (w <= 0 || h <= 0) return;
-            SDL_Color c{color.r,color.g,color.b,color.a};
-            SDL_Vertex a{{x,y},c,{0,0}}, b{{x+w,y},c,{0,0}}, d{{x,y+h},c,{0,0}}, e{{x+w,y+h},c,{0,0}};
-            const SDL_Vertex vertices[] = {a,b,e,a,e,d};
-            renderer->triangles(vertices); return;
+            renderer->fill(SDL_FRect{x,y,w,h}, SDL_Color{color.r,color.g,color.b,color.a});
+            return;
         }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)

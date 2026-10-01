@@ -286,7 +286,7 @@ namespace GAGCore
 				while (--dw);
 			}
 		}
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
@@ -312,7 +312,7 @@ namespace GAGCore
 		SDL_BlitScaled(surface->sdlsurface, &sr, sdlsurface, &dr);
 		if (alpha != Color::ALPHA_OPAQUE)
 			SDL_SetSurfaceAlphaMod(surface->sdlsurface, Color::ALPHA_OPAQUE);
-		dirty = true;
+		markPixelsChanged();
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
