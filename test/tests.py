@@ -78,8 +78,9 @@ ENGINE_TESTS = [
     ('EnteringUnitDrawHarness.cpp', dict(require={'opengl'})),
     ('FailingUnitMarkersHarness.cpp', dict(require={'opengl'})),
     'FullscreenAspectHarness.cpp',
-    ('HighResolutionIntegrationHarness.cpp', dict(require={'opengl'})),
+    'HighResolutionIntegrationHarness.cpp',
     'PortableRendererHarness.cpp',
+    'SoftwareRendererTest.cpp',
     ('RuntimePackCheck.cpp', dict(require={'opengl'})),
     ('TextRasterHarness.cpp', dict(require={'opengl'})),
     ('TorusRenderIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -270,6 +271,7 @@ PROGRAMS = [
     ('MapReportHarness', 'MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', 'maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
     ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),
+    ('SoftwareRenderBenchmark', 'SoftwareRenderBenchmark.cpp', 'software-render-benchmark', 'tools'),
     ('torus-render-benchmark', 'TorusRenderBenchmark.cpp', 'torus-render-benchmark', 'tools'),
 ]
 

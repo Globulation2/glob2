@@ -13,6 +13,7 @@
 #include <valarray>
 #include <memory>
 #include <optional>
+#include <cstdint>
 
 #include <set>
 #include <tuple>
@@ -25,6 +26,8 @@
 namespace GAGCore
 {
     class RenderBackend;
+    class SoftwareFramePresenter;
+    struct RenderOperations;
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{
@@ -170,8 +173,11 @@ namespace GAGCore
 		std::optional<TextureInfo> textureInfo;
 		//! The clipping rect, we do not draw outside it
 		SDL_Rect clipRect;
-		//! this surface has been modified since latest blit
-		bool dirty;
+		// Content revisions are never consumed by drawing. Each backend remembers
+		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
+		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
+        std::uint64_t pixelRevision = 1, opacityRevision = 0;
+        bool opaquePixels = false;
 		bool highResolutionSampling=false;
 		//! texture index if GPU (GL) is used
 		unsigned int texture=0;
@@ -223,6 +229,10 @@ namespace GAGCore
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
 		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+        std::uint64_t contentRevision() const { return pixelRevision; }
+        virtual void prepareDraw() {}
+        void markPixelsChanged() { ++pixelRevision; }
+        bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
@@ -414,6 +424,8 @@ namespace GAGCore
 		void reportFrameCacheFailure(const char *reason);
 		void releaseFrameCache();
 		void cacheFrame();
+        std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
+        void prepareDraw() override;
 		void presentLastFrame();
 		// GLSL 1.20 program that recolors a sprite's unrotated team layer on the
 		// GPU (same HSV hue shift as DrawableSurface::shiftHSV) and combines it
@@ -431,7 +443,8 @@ namespace GAGCore
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
 		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
-		std::unique_ptr<RenderBackend> renderer;
+		std::unique_ptr<RenderBackend> portableRenderer;
+        RenderBackend* renderer = nullptr; // Borrowed active backend; ownership stays in the two unique_ptrs.
         // Rasterizes transformed passes into the existing software framebuffer.
         std::unique_ptr<RenderBackend> softwareRasterizer;
         bool softwareTransform=false;
@@ -527,7 +540,11 @@ namespace GAGCore
 		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
-		virtual void nextFrame(void);
+		enum class FrameMode { FullRedraw, PreserveContent };
+        void beginFrame(FrameMode mode = FrameMode::PreserveContent);
+        RenderOperations backendOperations() const;
+        SDL_Surface* completedFrame() const;
+        virtual void nextFrame(void);
 		//! This function does not work for GraphicContext
 		virtual bool loadImage(const std::string name) { return false; }
 		//! This function does not work for GraphicContext
@@ -689,6 +706,15 @@ namespace GAGCore
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary
+    public:
+        // Immutable native image access for terrain cache preparation. Team layers
+        // need separate composition and therefore are not cacheable here.
+        DrawableSurface* nativeFrame(unsigned index) const
+        {
+            return index < images.size() && index < rotated.size() && !rotated[index] ? images[index] : nullptr;
+        }
+
+    protected:
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
 		//! One bit per 32-phase block, recomputed whenever the HD layer arrays

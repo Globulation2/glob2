@@ -496,3 +496,127 @@ paths and need compatibility links or updated scripts before cleanup. Migration
 never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
+
+## Software rendering architecture and profiling
+
+`GraphicContext` remains the drawing facade and retains existing capability queries.
+It owns the accelerated backend and software backend independently; transformed passes
+borrow them through scoped transform/clip state (`RenderStateScope.h`). The CPU backend
+in `SoftwareRenderBackend.cpp` implements sprite blits and rectangle fills directly on
+its borrowed framebuffer. It creates SDL's software renderer only when general triangle
+geometry is needed, and flushes that queue before direct writes or target replacement.
+Large existing images expanded past 512 pixels, including water, retain SDL geometry
+rasterization because its fixed-point overflow behavior is visible at some transformed
+sizes. Borrowed terrain run views use direct rasterization: they replace small tiles and must not acquire that
+large-triangle behavior. Correcting the legacy large-image appearance needs separate
+visual acceptance.
+`RenderBackend.cpp` contains the accelerated SDL implementation and its texture uploads.
+
+`SurfaceRaster.cpp` owns pixel arithmetic. Unscaled sprites use opaque copies only
+when their pixels are verified opaque and draw opacity is 255; other sprites use the
+conservative blending path. Native drawing preserves the existing draw-opacity arithmetic. Fully unclipped native
+scaling uses SDL's optimized nearest scaler without classifying mutable UI surfaces.
+Clipped and transformed blits sample nearest source pixel centers from
+the original destination rectangle; clipping cannot change sampling. Transformed
+rectangles round both endpoints with `floor(edge + 0.5)` and derive their size afterward,
+so adjacent tiles share a boundary at fractional zoom. This can change fractional-scale
+sampling and boundary placement by one output pixel. Source blend/alpha modulation is
+restored after each operation. Transformed primitives preserve SDL triangle blending
+rounding, including independent source/destination truncation for textured draws. Native
+rectangle alpha arithmetic retains the legacy `/256` rounding. Sprite modulation uses
+exact `/255` arithmetic and zero-alpha sprite pixels leave the destination untouched.
+
+Surface content revisions are independent of texture upload revisions. Each accelerated
+backend tracks its own uploaded revision; opacity classification is cached against the
+content revision. Code that edits pixels through `getSDLSurface()` must call
+`markPixelsChanged()` afterward. This includes raw SDL copies and external rasterizers.
+
+`GameRenderFrame` groups the viewport, assets, visibility and draw options inside the
+existing game rendering entry point. `Game::softwareTerrainCache` is transient presentation
+state: 16×16 tile chunks, at most 32 MiB of pixel storage, least-recently-used eviction.
+The cache is used during transformed software passes. Ordinary native drawing keeps
+its per-tile opaque copies, avoiding full-chunk blending of mixed alpha. Within a
+transformed chunk, adjacent opaque tiles become borrowed surface views over the raw
+chunk pixels. Coastlines retain individual source blits, avoiding repeated alpha scans
+over transparent chunk holes. Views are destroyed before their backing chunk.
+Each chunk validates exact terrain IDs, the existing discovery decisions and source
+content revisions. It stores raw color/alpha, so coastlines blend over animated water
+once. Map replacement clears the cache; editor terrain changes and visible-team changes
+are detected during preparation. Resources, actors, fog and overlays keep their existing
+passes. Water coverage subtracts only verified opaque terrain rectangles, including discovery
+boundaries. A complete animated water tile is omitted only when all of it is covered;
+partially covered tiles retain their original source mapping and animation phase.
+Coverage includes the original water pass's overshoot outside the viewport, which a
+transform can bring onscreen. Fragmented coverage falls back to the full pass after
+64 rectangles. Oversized working sets and allocation failures use
+uncached terrain. None of these caches enter saves, simulation checksums or orders.
+
+`SoftwareFramePresenter` owns two framebuffers and retains the completed one for exposure
+repaint. `beginFrame(FullRedraw)` rotates without a retention copy. Partial updates,
+including legacy callers that begin implicitly on their first drawing operation, copy
+the completed frame into the next drawing target. Target rotation flushes queued work
+and rebinds the software backend. Resize retains the old completed image until the first
+replacement frame completes. Letterboxing and minimized-window handling remain in the
+window presentation boundary; failed spare-buffer allocation uses the prior frame-cache
+copy path. `completedFrame()` provides the retained software image; normal screenshot
+requests continue to capture the current drawing frame.
+
+Build the opt-in saved-game benchmark with optimized production objects:
+
+```sh
+scons release=1 server=0 opengl=0 software-render-benchmark
+PROFILE_SAVE=artifacts/software-renderer/initial.game.gz PROFILE_ZOOM=0.5 \
+  PROFILE_FRAMES=240 PROFILE_WARMUP=30 PROFILE_NO_PRESENT=1 PROFILE_CPU_SCOPES=1 \
+  GLOB2_USER_DATA_DIR=artifacts/software-renderer/profile \
+  build/darwin/client/release/test/SoftwareRenderBenchmark -G -s 1280x800 -m -F
+```
+
+Use the appropriate `linux`/`mingw` build directory or an explicit `--build=DIR`.
+Resolution is the existing `-s WxH` argument, measured in framebuffer pixels.
+The benchmark disables HiDPI by default so the workload does not change with the
+monitor density. `PROFILE_NATIVE_DISPLAY=1` retains native Retina/HiDPI presentation. `PROFILE_OFFSET_X/Y` add logical-pixel camera
+offsets; `PROFILE_FRACTION=1` adds a half-pixel horizontal offset. `PROFILE_VISIBLE=1`
+shows the window; omit `PROFILE_NO_PRESENT` to include presentation. `PROFILE_CAPTURE`
+names an output BMP. `PROFILE_TERRAIN_CACHE=0` isolates primitive performance without
+adding a user graphics setting. The harness reports population, wall-time mean/median/p95,
+process CPU time, optional thread CPU stage costs, backend operation counts, cache memory
+and cache hit/rebuild counts. It also checks that drawing preserves the simulation checksum.
+Run captured fixtures from early, mid and late games; keep generated saves and profiles
+under ignored `artifacts/`. To advance a saved initial game into population fixtures,
+use the existing structured runner with its saved seed and orders, for example:
+
+```sh
+GLOB2_USER_DATA_DIR=artifacts/software-renderer/fixture-profile \
+  build/darwin/client/release/src/glob2 --run-game \
+  --load-game "$PWD/artifacts/software-renderer/initial.game.gz" --ticks 12000 \
+  --save every:6000 --save final --telemetry checksums \
+  --output-dir "$PWD/artifacts/software-renderer/populated"
+```
+
+Keep the initial save, generated checkpoints and runner metadata together. Fixture
+population matters more than the tick label; a late game can have fewer surviving units.
+
+For paired measurements, preserve a baseline benchmark executable before rebuilding and
+run at least seven alternating pairs on the same fixtures, resolution and hardware:
+
+```sh
+python3 tools/software_render_benchmark.py \
+  --baseline artifacts/software-renderer/baseline/SoftwareRenderBenchmark \
+  --candidate build/darwin/client/release/test/SoftwareRenderBenchmark \
+  --save artifacts/software-renderer/initial.game.gz --save artifacts/software-renderer/mid.game.gz \
+  --save artifacts/software-renderer/late.game.gz --repeat 7 \
+  --output artifacts/software-renderer/comparison
+```
+
+The runner records raw logs/captures, exact commands and CPU distributions for native,
+half, double and fractional-offset scenarios. Use `--no-terrain-cache` for the primitive
+phase; compare the same binary with `--baseline-no-terrain-cache` to isolate caching.
+Use `--present --visible --scenario native --baseline-preserve-frame` with the same
+binary to measure the retention-copy savings. `PROFILE_PRESERVE_FRAME=1` begins each
+benchmark frame in preserve-content mode before the full redraw. Keep other heavy
+work off the measurement machine. On macOS, `sample PID SECONDS -file artifacts/profile.txt`
+can identify CPU stacks; Linux `perf` and Windows profiling tools can sample the same
+opt-in executable. Timing thresholds are review criteria, not CI assertions. Run
+`SoftwareRenderer`, `PortableRenderer`, `WindowResize`, `MapRenderResize` and
+`HighResolutionIntegration` suites on supported SDL/platform builds, retain before/after
+captures, and report unavailable platform and maintainer-playtesting coverage explicitly.

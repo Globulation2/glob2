@@ -1143,3 +1143,13 @@ exception. CI retains these artifacts even when verification fails.
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording
 provenance failures; those comparisons do not satisfy the final acceptance gate.
+
+## Software renderer
+
+The opt-in `software-render-benchmark` tool profiles loaded games through the production
+software renderer. It is part of `glob2-tools`, not a CI timing threshold. See
+[Software rendering architecture and profiling](../docs/development/reference.md#software-rendering-architecture-and-profiling)
+for fixture capture, paired CPU measurements and diagnostic overrides. The
+`SoftwareRenderer` suite checks raster sampling, ordering, opacity revisions and
+terrain-cache correctness; `PortableRenderer`, `WindowResize`, `MapRenderResize` and
+`HighResolutionIntegration` cover the shared facade and window lifecycle.
