@@ -12,7 +12,7 @@
 // through GameGUIToolManager. Cancelling a session cannot emit game orders.
 struct TouchPlacementSession
 {
-	using Pointer = std::pair<std::int64_t, std::int64_t>;
+	using Pointer = std::pair<std::uint64_t, std::uint64_t>;
 	Pointer pointer;
 	GAGCore::ViewPoint origin;
 	std::string building;

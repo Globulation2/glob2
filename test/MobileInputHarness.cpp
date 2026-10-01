@@ -249,6 +249,23 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 }
 }
 
+TEST_SUITE("MobileInput")
+{
+TEST_CASE("opaque SDL3 touch identifiers retain their high bits")
+{
+    const std::uint64_t device = (std::uint64_t{1} << 63) + 17;
+    const std::uint64_t finger = (std::uint64_t{1} << 63) + 31;
+    TouchInput input;
+    CHECK(input.down(device, finger, {100, 100}).empty());
+    CHECK(input.up(device + 1, finger, {100, 100}).empty());
+    const auto actions = input.up(device, finger, {100, 100});
+    REQUIRE(actions.size() == 1);
+    CHECK(actions[0].kind == TouchActionKind::Select);
+    near(actions[0].point.x, 100);
+    near(actions[0].point.y, 100);
+}
+}
+
 TEST_SUITE("DisplayScale")
 {
 TEST_CASE("OS scaling composes with preferences without doubling pixel density")

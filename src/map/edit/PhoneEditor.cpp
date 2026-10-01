@@ -668,7 +668,8 @@ bool PhoneEditor::event(SDL_Event event)
 	prepare();
 	ViewPoint p;
 	int phase = -1;
-	Sint64 device = -1, id = 0;
+	SDL_TouchID device = SDL_MOUSE_TOUCHID;
+	SDL_FingerID id = 0;
 	switch (event.type)
 	{
 	case SDL_EVENT_FINGER_DOWN:
@@ -725,7 +726,7 @@ bool PhoneEditor::event(SDL_Event event)
 		// A touch catches coasting content where it is; presets are re-read so
 		// the settings sliders apply to the next gesture.
 		stopScrolling();
-		fingerIsTouch = device != -1;
+		fingerIsTouch = device != SDL_MOUSE_TOUCHID;
 		ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
 		mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
 		mapMotion.setConfig(mapConfig);

@@ -311,7 +311,7 @@ Node *Host::scrollableAt(Point point) const
 	return root->hitTest(point, [](const Node &n) { return n.scrollable(); });
 }
 
-void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point, std::int64_t device)
+void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point, std::uint64_t device)
 {
 	for (const auto &action : actions)
 	{
@@ -341,7 +341,7 @@ void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point, 
 				// A mouse drag follows the pointer and stops with it; a finger
 				// gets momentum and bounce. Content stopped mid-bounce by this
 				// touch keeps its stretch and continues from there.
-				axis.setConfig(device == -1 ? GAGCore::ScrollPresets::mouse() : GAGCore::ScrollPresets::widget());
+				axis.setConfig(device == SDL_MOUSE_TOUCHID ? GAGCore::ScrollPresets::mouse() : GAGCore::ScrollPresets::widget());
 				axis.setBounds(0, node->scrollMaximum(), node->bounds.h);
 				if (axis.overscroll() == 0)
 					axis.setOffset(node->scrollOffset());
@@ -393,7 +393,7 @@ void Host::apply(const std::vector<GAGCore::TouchAction> &actions, Point point, 
 	}
 }
 
-void Host::pointer(PointerPhase phase, Point point, std::int64_t device, std::int64_t finger, GAGCore::Ticks time)
+void Host::pointer(PointerPhase phase, Point point, std::uint64_t device, std::uint64_t finger, GAGCore::Ticks time)
 {
 	layoutIfNeeded();
 	if (phase == PointerPhase::Down)
@@ -460,8 +460,8 @@ void Host::pointer(PointerPhase phase, Point point, std::int64_t device, std::in
 
 void Host::tapAt(Point point)
 {
-	pointer(PointerPhase::Down, point, -1, 0, lastTick);
-	pointer(PointerPhase::Up, point, -1, 0, lastTick);
+	pointer(PointerPhase::Down, point, SDL_MOUSE_TOUCHID, 0, lastTick);
+	pointer(PointerPhase::Up, point, SDL_MOUSE_TOUCHID, 0, lastTick);
 }
 
 bool Host::event(const SDL_Event &event)
@@ -491,12 +491,12 @@ bool Host::event(const SDL_Event &event)
 		hover = {int(event.button.x), int(event.button.y)};
 		hoverValid = true;
 		pointer(event.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? PointerPhase::Down : PointerPhase::Up, hover,
-				-1, 0, time);
+				SDL_MOUSE_TOUCHID, 0, time);
 		return true;
 	case SDL_EVENT_MOUSE_MOTION:
 		hover = {int(event.motion.x), int(event.motion.y)};
 		hoverValid = true;
-		pointer(PointerPhase::Move, hover, -1, 0, time);
+		pointer(PointerPhase::Move, hover, SDL_MOUSE_TOUCHID, 0, time);
 		return true;
 	case SDL_EVENT_MOUSE_WHEEL:
 	{
