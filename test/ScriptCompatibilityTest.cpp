@@ -301,7 +301,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 		glob2test::writeFile(glob2test::artifactDir() / name, result);
 		return result;
 	};
-	const auto legacyTrace = continueGame(legacy.game, "master124-world-fields.txt");
+	const auto legacyTrace = continueGame(legacy.game, "master124-world-fields.value");
 	// Reload resets the production RNG to the snapshot, rather than letting
 	// the first continuation's process-global stream influence the second.
 	GAGCore::BinaryInputStream upgradedInput(
@@ -313,7 +313,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 	CHECK(upgraded.game.gameHeader.getExperiments() == legacy.game.gameHeader.getExperiments());
 	CHECK(upgraded.game.scriptGenerations == identities);
 	checkIdentities(upgraded.game);
-	const auto upgradedTrace = continueGame(upgraded.game, "master125-world-fields.txt");
+	const auto upgradedTrace = continueGame(upgraded.game, "master125-world-fields.value");
 	CHECK(upgradedTrace == legacyTrace);
 	CHECK(upgraded.game.scriptGenerations == legacy.game.scriptGenerations);
 }
