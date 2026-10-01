@@ -600,8 +600,10 @@ ones in-process, and records each exit code, log and JUnit report. It retains
 those fixtures for diagnosis and never clears the installed app's data.
 
 The engine binary reuses the production client objects. `mobile/NativeTestMain.cpp` supplies only the
-shell platform bridges: filesystem assets, SDL main readiness, absent Activity,
-and unavailable audio. SDL dummy video runs without a Java UI. These tests execute
+shell platform bridges: filesystem assets, SDL main readiness, explicit app
+metadata, absent Activity, and unavailable audio. SDL3 renderer creation waits
+for a Java Activity, so native dummy-video tools retain software rendering.
+These tests execute
 on the device CPU but do **not** establish real rendering, audio, native keyboard,
 IME composition, lifecycle or physical gesture comfort. Test those separately in
 the installed APK, including rotation, background/resume, save/load and editor

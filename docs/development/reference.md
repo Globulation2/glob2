@@ -76,6 +76,8 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   SCons with `GLOB2_SDL3_PREFIX=$PWD/build/sdl3/native/prefix`. This prefix takes
   precedence over host SDL libraries. Mobile builds use the checked-in vcpkg
   overlay ports; browser builds compile the same SDL releases with Emscripten.
+  Installed Linux executables use a literal `$ORIGIN/../lib/glob2` runtime path
+  so the packaged SDL libraries resolve outside the dependency build directory.
   Keep dependency hashes, manifests and platform packaging in sync when updating
   the pins. Native Linux installation also stages the SDL3 shared libraries.
   SDL3, SDL3_image, SDL3_ttf and SDL3_net use the zlib license; their notices

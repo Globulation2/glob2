@@ -591,7 +591,11 @@ namespace GAGCore
         const char* selectedRenderer = SDL_getenv_unsafe("GLOB2_RENDERER");
         if (selectedRenderer && std::string(selectedRenderer) == "sdl") flags |= PORTABLEGPU;
 #ifdef GLOB2_MOBILE
-        flags |= PORTABLEGPU | RESIZABLE;
+        // Android's SDL3 renderer requires an active Java Activity even with
+        // dummy video. Keep native shell tools on the existing software path.
+        const char *videoDriver = SDL_GetCurrentVideoDriver();
+        if (!videoDriver || std::string(videoDriver) != "dummy") flags |= PORTABLEGPU;
+        flags |= RESIZABLE;
 #endif
         if (flags & PORTABLEGPU) flags &= ~USEGPU;
 		optionFlags = flags;
