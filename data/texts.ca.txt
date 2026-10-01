@@ -84,6 +84,10 @@ AIWarrush
 Un constructor eficaç que desplega forces d’atac entrenades.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Un controlador que utilitza un mòdul de codi JavaScript integrat.
 [Alga]
 Algues
 [algae]

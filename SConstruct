@@ -20,6 +20,7 @@ isDarwinPlatform = sys.platform=='darwin'
 
 def establish_options(env):
     opts = Variables()
+    opts.Add("CC", "C compiler", env["CC"])
     opts.Add("CXX", "C++ compiler", env["CXX"])
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
@@ -448,6 +449,7 @@ def main():
     PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     PackTar(env["TARFILE"], Glob("datasrc/icons/tabler/*"))
     PackTar(env["TARFILE"], Split("tools/icons/export_tabler.cjs libgag/include/ui/Icon.h"))
+    PackTar(env["TARFILE"], [p for p in sorted(__import__("glob").glob("third_party/**/*", recursive=True)) if os.path.isfile(p)])
     #packaging for apple
     if isDarwinPlatform and env["release"] and any(
             target in COMMAND_LINE_TARGETS for target in ("bundle", "package")):

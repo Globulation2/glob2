@@ -84,6 +84,10 @@ Warrush
 Vahva rakentaja, joka lähettää koulutettuja hyökkäysjoukkoja.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Ohjain, joka käyttää upotettua JavaScript-lähdekoodimoduulia.
 [Alga]
 Levä
 [algae]

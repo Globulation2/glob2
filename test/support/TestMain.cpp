@@ -8,10 +8,12 @@
 #include <SDL.h>
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "Glob2Test.h"
+#include <glob2/TestBuildProvenance.h>
 
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <string>
 #include <system_error>
 #ifdef _WIN32
@@ -22,49 +24,73 @@
 
 namespace
 {
-	std::filesystem::path selfMadeProfile;
+std::filesystem::path selfMadeProfile;
 
-	void install()
+void install()
+{
+	const char *profile = SDL_getenv("GLOB2_USER_DATA_DIR");
+	if (!profile || !*profile)
 	{
-		const char* profile = std::getenv("GLOB2_USER_DATA_DIR");
-		if (!profile || !*profile)
-		{
-			selfMadeProfile = std::filesystem::temp_directory_path() / ("glob2-tests-" + std::to_string(static_cast<long long>(
+		selfMadeProfile = std::filesystem::temp_directory_path() /
+						  ("glob2-tests-" + std::to_string(static_cast<long long>(
 #ifdef _WIN32
-				_getpid()
+												_getpid()
 #else
-				getpid()
+												getpid()
 #endif
-			)));
-			std::filesystem::create_directories(selfMadeProfile);
-			SDL_setenv("GLOB2_USER_DATA_DIR", selfMadeProfile.string().c_str(), 1);
-		}
-		// GLOB2_TEST_DISPLAY=1 (set by the runner for [display] cases) keeps the real
-		// video driver; everything else renders nowhere.
-		const char* display = std::getenv("GLOB2_TEST_DISPLAY");
-		if (!display || !*display || std::string(display) == "0")
-		{
-			SDL_setenv("SDL_VIDEODRIVER", "dummy", 0);
-			SDL_setenv("SDL_RENDER_DRIVER", "software", 0);  // the dummy driver has no accelerated renderer
-		}
-		SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
+													)));
+		std::filesystem::create_directories(selfMadeProfile);
+		SDL_setenv("GLOB2_USER_DATA_DIR", selfMadeProfile.string().c_str(), 1);
 	}
-
-	void teardown()
+	// GLOB2_TEST_DISPLAY=1 (set by the runner for [display] cases) keeps the real
+	// video driver; everything else renders nowhere.
+	const char *display = SDL_getenv("GLOB2_TEST_DISPLAY");
+	if (!display || !*display || std::string(display) == "0")
 	{
-		if (selfMadeProfile.empty()) return;
-		const char* keep = std::getenv("GLOB2_TEST_KEEP_PROFILE");
-		if (keep && *keep && std::string(keep) != "0") return;
-		std::error_code ignored;
-		std::filesystem::remove_all(selfMadeProfile, ignored);
+		SDL_setenv("SDL_VIDEODRIVER", "dummy", 0);
+		SDL_setenv("SDL_RENDER_DRIVER", "software",
+				   0); // the dummy driver has no accelerated renderer
 	}
+	SDL_setenv("SDL_AUDIODRIVER", "dummy", 0);
 }
 
-int main(int argc, char** argv)
+void teardown()
+{
+	if (selfMadeProfile.empty())
+		return;
+	const char *keep = SDL_getenv("GLOB2_TEST_KEEP_PROFILE");
+	if (keep && *keep && std::string(keep) != "0")
+		return;
+	std::error_code ignored;
+	std::filesystem::remove_all(selfMadeProfile, ignored);
+}
+} // namespace
+
+int main(int argc, char **argv)
 {
 	// Line-buffered output interleaves correctly with doctest's reporter when captured.
 	std::setvbuf(stdout, nullptr, _IOLBF, 0);
 	std::setvbuf(stderr, nullptr, _IOLBF, 0);
+	std::fprintf(stderr, "GLOB2_TEST_BUILD compiler=%s platform=%s pointer_bits=%zu\n",
+#ifdef __VERSION__
+				 __VERSION__,
+#else
+				 "unknown",
+#endif
+				 SDL_GetPlatform(), sizeof(void *) * 8);
+	std::fprintf(stderr, "GLOB2_TEST_PROVENANCE %s\n", GLOB2_TEST_PROVENANCE_JSON);
+	if (const char *artifacts = SDL_getenv("GLOB2_TEST_ARTIFACTS_ROOT"))
+	{
+		std::filesystem::create_directories(artifacts);
+		std::ofstream proof(std::filesystem::path(artifacts) / "build-provenance.json");
+		proof << GLOB2_TEST_PROVENANCE_JSON << '\n';
+		proof.close();
+		if (!proof)
+		{
+			std::fprintf(stderr, "Cannot retain test build provenance in %s\n", artifacts);
+			return 1;
+		}
+	}
 	SDL_SetMainReady();
 	install();
 	doctest::Context context(argc, argv);

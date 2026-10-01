@@ -42,6 +42,8 @@
 [AIWarrush]
 [AICabino-Description]
 [AICabino]
+[AIJavaScript]
+[AIJavaScript-Description]
 [Alga]
 [algae]
 [alliances]

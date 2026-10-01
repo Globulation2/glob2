@@ -8,6 +8,7 @@ from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
 import ccache
 from mobile_toolchain import discover, LOCK
 from mobile_artifacts import verify_android_library, archive_object_name
+from javascript import javascript_objects, numeric_guard
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
 
@@ -68,9 +69,15 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_NO_VOICE 1
 ''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
         + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else ''))
-    env.Append(CPPPATH=[str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
+    env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
+    if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
+        from test_provenance import register_test_provenance
+        provenance_header = register_test_provenance(env, output)
+    strict = env.Clone()
+    strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
+    script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
     files = ['src/' + name for name in CLIENT_SOURCES if name not in ('VoiceRecorder.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
     if identity['target'] == 'ios':
         files.remove('src/Glob2.cpp')
@@ -83,7 +90,8 @@ def build_mobile(directory, identity, arguments):
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         env.Append(CPPDEFINES=['main=SDL_main'])
-        objects = [env.SharedObject(str(object_root / (name + '.o')), name) for name in files]
+        objects = [(strict if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp' else env).SharedObject(str(object_root / (name + '.o')), name) for name in files] + script_objects
+        numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
         program = env.SharedLibrary(str(output / 'lib/main'), objects)
         if 'android-tests' in COMMAND_LINE_TARGETS:
             # Cross-compile the two doctest binaries from test/tests.py as Android PIE
@@ -97,9 +105,9 @@ def build_mobile(directory, identity, arguments):
             tests['CPPDEFINES'] = ['HAVE_CONFIG_H']  # TestMain.cpp defines SDL_MAIN_HANDLED itself
             tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
             by_source = dict(zip(files, objects))
-            client_objects = [obj for name, obj in by_source.items() if name != 'src/Glob2.cpp']
+            client_objects = [obj for name, obj in by_source.items() if name != 'src/Glob2.cpp'] + script_objects
             library_objects = [obj for name, obj in by_source.items()
-                               if name.startswith('libgag/') or name.startswith('libusl/')]
+                               if name.startswith('libgag/') or name.startswith('libusl/')] + script_objects
 
             def available(options):
                 required = options.get('require', ())
@@ -119,7 +127,10 @@ def build_mobile(directory, identity, arguments):
                         compile_env.Append(CPPDEFINES=options.get('defines', []))
                     path = source[1:] if source.startswith('#') else 'test/' + source
                     name = prefix + path.replace('/', '_').rsplit('.', 1)[0]
-                    out += compile_env.Object(str(object_root / 'tests' / (name + '.o')), path)
+                    targets = compile_env.Object(str(object_root / 'tests' / (name + '.o')), path)
+                    if source.endswith('TestMain.cpp'):
+                        compile_env.Depends(targets, provenance_header)
+                    out += targets
                 return out
 
             def production_objects(entries):
@@ -145,11 +156,34 @@ def build_mobile(directory, identity, arguments):
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
-        objects = [(objc if name == 'mobile/ios/Documents.mm' else env).Object(str(object_root / archive_object_name(name)), name) for name in files]
+        objects = [(objc if name == 'mobile/ios/Documents.mm' else strict if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp' else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
+        numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
         # ar replaces matching members but otherwise retains obsolete names.
         # Recreate this owned output so renamed/removed sources cannot survive.
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]
         program = env.StaticLibrary(str(output / 'lib/glob2'), objects)
+        if 'ios-tests' in COMMAND_LINE_TARGETS:
+            import sys
+            sys.path.insert(0, os.path.abspath('test'))
+            import tests as registry
+            tests = env.Clone()
+            tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
+            test_objects = []
+            for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries():
+                source, options = (entry, {}) if isinstance(entry, str) else entry
+                local = tests.Clone()
+                local.Append(CXXFLAGS=options.get('cxxflags', []))
+                local.Append(CPPDEFINES=options.get('defines', []))
+                if source == 'support/TestMain.cpp':
+                    local.Append(CPPDEFINES=[('main', 'glob2ScriptTestMain')])
+                path = 'test/' + source
+                targets = local.Object(str(object_root / 'tests' / archive_object_name(path)), path)
+                if source.endswith('TestMain.cpp'):
+                    local.Depends(targets, provenance_header)
+                test_objects += targets
+            harness = env.StaticLibrary(str(output / 'lib/glob2-script-tests'), objects + test_objects)
+            env.Alias('ios-tests', harness)
+
     env.Depends(objects, [str(config), str(LOCK), str(manifest)])
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))
     env.Alias('compile_commands.json', database)

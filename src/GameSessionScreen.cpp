@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameSessionScreen.h"
 #include "Engine.h"
+#include "script/ScriptRuntime.h"
 #include "GameLoadScreen.h"
 #include "MessageScreen.h"
 #include "GlobalContainer.h"
@@ -22,6 +23,29 @@ GameSessionScreen::~GameSessionScreen()
 }
 
 void GameSessionScreen::updateExecution(Uint32 tick)
+{
+	try
+	{
+		updateExecutionImpl(tick);
+	}
+	catch (const Script::SessionFailure &failure)
+	{
+		engine->abortSession();
+		engine->restoreCursor();
+		started = false;
+		finished = true;
+		input.clear();
+		if (globalContainer->mix)
+			globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
+		stack.push(std::make_unique<MessageScreen>(std::string("Game stopped: ") + failure.what() +
+													   "\nReview the embedded JavaScript and its "
+													   "resource use before restarting this game.",
+												   std::vector<std::string>{"OK"}),
+				   [this](GAGGUI::Screen &, int) { endExecute(0); });
+	}
+}
+
+void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 {
 	if (!isExecutionRunning() || finished)
 		return;
@@ -81,7 +105,7 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 								   auto &strings = *GAGCore::Toolkit::getStringTable();
 								   stack.push(
 									   std::make_unique<MessageScreen>(
-										   strings.getString("[ERROR_CANT_LOAD_MAP]"),
+										   static_cast<GameLoadScreen &>(loading).failureMessage(),
 										   std::vector<std::string>{strings.getString("[ok]")}),
 									   [this](GAGGUI::Screen &, int choice)
 									   { endExecute(choice); });

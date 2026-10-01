@@ -84,6 +84,10 @@ IAWarrush
 Um construtor forte que coloca em campo forças de ataque treinadas.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Um controlador que utiliza um módulo de código JavaScript incorporado.
 [Alga]
 Algas
 [algae]

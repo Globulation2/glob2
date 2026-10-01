@@ -84,6 +84,10 @@ AIWarrush
 Вешт градитељ који шаље обучене нападачке снаге.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Контролер који користи уграђени модул изворног кода JavaScript.
 [Alga]
 Алге
 [algae]

@@ -84,6 +84,10 @@ AIWarrush
 Spreten graditelj, ki uporablja izurjene napadalne sile.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Krmilnik, ki uporablja vgrajen modul izvorne kode JavaScript.
 [Alga]
 Alga
 [algae]

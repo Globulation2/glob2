@@ -2,6 +2,7 @@
 // Real game rendering regression. Run with an isolated GLOB2_USER_DIR and
 // either -g (OpenGL) or -G (software). No desktop input is generated.
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include <vector>
 #include <algorithm>
 #include <utility>
@@ -628,8 +629,7 @@ TEST_SUITE("TorusRender")
 	TEST_CASE("game rendering; picking and cache changes in OpenGL [display][writes-preferences]") { TorusRenderIntegrationTest::run(true, 1120, 720); }
 	TEST_CASE("game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]")
 	{
-		SDL_setenv("GLOB2_UI_SCALE", "3", 1);
+		glob2test::ScopedEnvironment scale("GLOB2_UI_SCALE", "3");
 		TorusRenderIntegrationTest::run(true, 1920, 1440);
-		glob2test::unsetEnv("GLOB2_UI_SCALE");
 	}
 }

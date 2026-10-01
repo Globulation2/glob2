@@ -84,6 +84,10 @@ AIWarrush
 Silný stavitel, který nasazuje vycvičené útočné síly.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Řadič používající vložený modul zdrojového kódu JavaScript.
 [Alga]
 Řasy
 [algae]

@@ -92,6 +92,10 @@ Warrush
 Pembangun kuat yang menurunkan pasukan penyerang terlatih.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Pengendali yang menggunakan modul kode sumber JavaScript tertanam.
 [Alga]
 Ganggang
 [algae]

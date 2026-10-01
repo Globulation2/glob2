@@ -26,6 +26,8 @@ def main():
     parser.add_argument('command',choices=['configure','build','install','launch'])
     parser.add_argument('--environment',default='simulator',choices=['device','simulator'])
     parser.add_argument('--release',action='store_true')
+    parser.add_argument('--script-tests',action='store_true',help='Build the separate production scripting test app')
+    parser.add_argument('--mobile-deps',type=Path,help='Read-only dependency prefix to reuse')
     parser.add_argument('--china',action='store_true',help='Package the China local-play client')
     parser.add_argument('--build-number',default='1',help='Numeric CFBundleVersion for this build')
     parser.add_argument('--jobs',type=int,default=8,help='Maximum parallel SCons jobs')
@@ -53,37 +55,43 @@ def main():
     if args.developer_dir: options['developer_dir']=args.developer_dir
     identity=build_identity(options);discover(identity,options)
     output=ROOT/default_directory(identity)
-    project=output/'xcode-project';configuration='Release' if args.release else 'Debug'
+    product='Glob2ScriptTests' if args.script_tests else 'Glob2'
+    bundle_id=BUNDLE_ID+'.script-tests' if args.script_tests else BUNDLE_ID
+    project=output/('xcode-script-tests' if args.script_tests else 'xcode-project');configuration='Release' if args.release else 'Debug'
     sdk='iphonesimulator' if args.environment=='simulator' else 'iphoneos'
-    app=project/'build'/(configuration+'-'+sdk)/'Glob2.app'
+    app=project/'build'/(configuration+'-'+sdk)/(product+'.app')
     (output/'tmp').mkdir(parents=True,exist_ok=True)
     env=dict(os.environ,TMPDIR=str(output/'tmp'),TMP=str(output/'tmp'),TEMP=str(output/'tmp'))
     if args.developer_dir: env['DEVELOPER_DIR']=args.developer_dir
     if args.command in ('install','launch'):
         if args.environment=='simulator':
-            command=['xcrun','simctl','--set',str(Path(args.simulator_set).resolve()),args.command,args.device,str(app) if args.command=='install' else BUNDLE_ID]
+            command=['xcrun','simctl','--set',str(Path(args.simulator_set).resolve()),args.command,args.device,str(app) if args.command=='install' else bundle_id]
         else:
-            command=['xcrun','devicectl','device']+(['install','app','--device',args.device,str(app)] if args.command=='install' else ['process','launch','--device',args.device,BUNDLE_ID])
+            command=['xcrun','devicectl','device']+(['install','app','--device',args.device,str(app)] if args.command=='install' else ['process','launch','--device',args.device,bundle_id])
         subprocess.run(command,env=env,check=True);return
     triplet='glob2-arm64-ios'+('-simulator' if args.environment=='simulator' else '')
-    prefix=dependency_prefix(ROOT, identity, discover(identity,options)['fingerprint'])
+    prefix=args.mobile_deps.resolve() if args.mobile_deps else dependency_prefix(ROOT, identity, discover(identity,options)['fingerprint'])
     if not (prefix/'manifest.json').exists(): raise ValueError('Build iOS dependencies first with mobile/dependencies.py --target ios --environment '+args.environment)
     scons=shutil.which('scons')
     if not scons: raise ValueError('SCons is required')
     command=[scons]+[str(k)+'='+str(v) for k,v in options.items()]+['mobile_deps='+str(prefix),'-j'+str(args.jobs)]
+    if args.script_tests: command += ['ios-tests']
     subprocess.run(command,cwd=ROOT,env=env,check=True)
     project.mkdir(parents=True,exist_ok=True)
     info=plistlib.loads((ROOT/'mobile/ios/Info.plist.in').read_bytes())
     if info['CFBundleIdentifier'] != BUNDLE_ID:
         raise ValueError('iOS Info.plist bundle ID does not match the Xcode project')
+    info['CFBundleIdentifier']=bundle_id
+    info['CFBundleExecutable']=product
+    info['CFBundleName']='Glob2 Script Tests' if args.script_tests else info['CFBundleName']
     info['CFBundleVersion']=args.build_number
     write_if_changed(project/'Info.plist',plistlib.dumps(info).decode())
     manifest=json.loads((prefix/'manifest.json').read_text())
     include=[output/'include',prefix/'include',prefix/'include/SDL2']+[ROOT/p for p in INCLUDE_DIRECTORIES]
-    libraries=[output/'lib/libglob2.a']+[prefix/p for p in manifest['archives']]
+    libraries=[output/('lib/libglob2-script-tests.a' if args.script_tests else 'lib/libglob2.a')]+[prefix/p for p in manifest['archives']]
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',
-        'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/'src/Glob2.cpp')+')',
+        'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/('mobile/ios/ScriptTests.mm' if args.script_tests else 'src/Glob2.cpp'))+')',
         'install(TARGETS Glob2 BUNDLE DESTINATION Applications)',
         'target_compile_definitions(Glob2 PRIVATE HAVE_CONFIG_H)',
         'target_include_directories(Glob2 PRIVATE '+' '.join(map(cmake_quote,include))+')',
@@ -93,6 +101,17 @@ def main():
         'target_link_options(Glob2 PRIVATE -ObjC)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER '+BUNDLE_ID+' XCODE_ATTRIBUTE_INSTALL_PATH /Applications XCODE_ATTRIBUTE_SKIP_INSTALL NO XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(project/'Info.plist')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
+    if args.script_tests:
+        import hashlib
+        provenance = {'revision': subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+                      'dirty': bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip()),
+                      'identity': identity, 'toolchain': manifest['toolchain'],
+                      'fixtureHashes': {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                                        for p in sorted((ROOT/'test/fixtures/javascript').rglob('*')) if p.is_file()}}
+        metadata = project/'scripting-build.json'
+        write_if_changed(metadata,json.dumps(provenance,indent=2)+'\n')
+        lines += ['target_sources(Glob2 PRIVATE '+cmake_quote(metadata)+')',
+                  'set_source_files_properties('+cmake_quote(metadata)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)']
     # Xcode compiles the catalog and merges its icon metadata into Info.plist.
     icons=ROOT/'mobile/ios/Assets.xcassets'
     lines += [
@@ -101,11 +120,19 @@ def main():
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
     for framework in ('UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
-    for folder in ('data','maps','campaigns','scripts'):
+    if args.script_tests:
+        lines += ['set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)']
+        lines += ['target_link_options(Glob2 PRIVATE '+cmake_quote('-Wl,-force_load,'+str(output/'lib/libglob2-script-tests.a'))+')']
+    for folder in (('data','maps','campaigns','scripts','games','test/fixtures') if args.script_tests else ('data','maps','campaigns','scripts')):
         for resource in sorted((ROOT/folder).rglob('*')):
             if resource.is_file():
                 lines.append('target_sources(Glob2 PRIVATE '+cmake_quote(resource)+')')
                 lines.append('set_source_files_properties('+cmake_quote(resource)+' PROPERTIES MACOSX_PACKAGE_LOCATION '+cmake_quote(resource.relative_to(ROOT).parent)+')')
+    if args.script_tests:
+        # Rename CMake target tokens only; resource paths such as data/usl/Glob2
+        # are source assets and must keep their names.
+        import re
+        lines=[re.sub(r'(?<=[ (])Glob2(?=[ )])',product,line).replace(BUNDLE_ID,bundle_id) for line in lines]
     write_if_changed(project/'CMakeLists.txt','\n'.join(lines)+'\n')
     configure=[args.cmake,'-G','Xcode','-S',str(project),'-B',str(project/'build'),'-DCMAKE_SYSTEM_NAME=iOS',
         '-DCMAKE_XCODE_ATTRIBUTE_CACHE_ROOT='+str(output/'xcode-cache'),
@@ -119,7 +146,7 @@ def main():
         configure+=['-DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=YES','-DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM='+args.team]
     else: raise ValueError('Device packaging needs --team with a local signing identity/profile, or --unsigned for compilation without credentials')
     subprocess.run(configure,env=env,check=True)
-    print('Xcode project:',project/'build/Glob2.xcodeproj')
+    print('Xcode project:',project/'build'/(product+'.xcodeproj'))
     if args.command=='build':
         # Xcode archive may leave an app symlink into its temporary archive tree.
         if app.is_symlink(): app.unlink()

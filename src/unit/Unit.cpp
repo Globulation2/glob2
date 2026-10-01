@@ -24,6 +24,7 @@ Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 {
 	init(x, y, gid, typeNum, team, level);
+	scriptIdentity = owner->game->allocateScriptIdentity(false, gid);
 }
 
 void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
@@ -344,6 +345,7 @@ void Unit::syncStep(void)
 
 void Unit::resetAtLevel(Sint32 newLevel)
 {
+	// Reset abilities and activity without changing this entity's identity.
 	init(posX, posY, gid, typeNum, owner, newLevel);
 }
 

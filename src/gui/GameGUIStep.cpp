@@ -288,7 +288,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 
 	// TODO: die with SGSL
 	// Check if the text being displayed has changed, and if it has, add it to the history box
-	if(game.sgslScript.isTextShown && game.sgslScript.textShown != previousSGSLText)
+	if(game.legacyScriptActive() && game.sgslScript.isTextShown && game.sgslScript.textShown != previousSGSLText)
 	{
 		publishMessageHistoryLines(game.sgslScript.textShown, HistoryList::Chat,
 			Color(255, 255, 255), kHistoryOnlyTimeoutMs, kScriptTextContinuationIndent);

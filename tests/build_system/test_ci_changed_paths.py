@@ -2,6 +2,9 @@
 
 import importlib.util
 from pathlib import Path
+import re
+import subprocess
+from types import SimpleNamespace
 import unittest
 
 
@@ -35,6 +38,20 @@ class ChangedPathsTest(unittest.TestCase):
             native=True, browser=False, map_generators=False,
             deployment=False, cross_platform=False,
         )
+
+    def test_shared_scripting_changes_run_native_browser_and_comparison(self):
+        for path in ("test/ScriptRuntimeTest.cpp", "test/ScriptSimulationTest.cpp",
+                     "test/ScriptEditorTest.cpp", "test/support/ScriptCorpus.h",
+                     "test/fixtures/javascript/numeric-corpus.js",
+                     "test/fixtures/javascript/profile1-initial.game.gz",
+                     "test/check_javascript_corpus.py", "test/check_javascript.py",
+                     "test/check_javascript_evidence.py", "test/build_provenance.py",
+                     "test/support/TestMain.cpp"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=True, browser=True, map_generators=False,
+                    deployment=False, cross_platform=True,
+                )
 
     def test_golden_table_only_runs_golden_job(self):
         self.assert_jobs(
@@ -103,6 +120,99 @@ class ChangedPathsTest(unittest.TestCase):
             [], native=True, browser=True, map_generators=True, cross_platform=True,
             deployment=True,
         )
+
+    def test_downloaded_native_archives_do_not_dirty_source_provenance(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / ".github/workflows/build.yml").read_text()
+        archives = re.findall(r"run: tar -xzf (\S+)", workflow)
+        self.assertTrue(archives, "No native archive consumers found")
+        for archive in archives:
+            with self.subTest(archive=archive):
+                result = subprocess.run(
+                    ["git", "check-ignore", "--no-index", archive], cwd=root,
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0,
+                                 f"Downloaded archive would become a source input: {archive}")
+
+    def test_workspace_compiler_caches_do_not_dirty_source_provenance(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / ".github/workflows/build.yml").read_text()
+        caches = re.findall(r"CCACHE_DIR:\s*\$\{\{ github.workspace \}\}([^\n]+)", workflow)
+        self.assertTrue(caches, "No workspace compiler cache configuration found")
+        for cache in caches:
+            path = cache.strip().replace("\\", "/").lstrip("/") + "/probe"
+            with self.subTest(path=path):
+                result = subprocess.run(
+                    ["git", "check-ignore", "--no-index", path], cwd=root,
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0,
+                                 f"Generated compiler cache would become a source input: {path}")
+
+    def test_windows_cache_writes_require_authorized_event_and_successful_build(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        for job, build in (("windows", "build_glob2_and_the_regression_harnesses"),
+                           ("windows-server", "build_the_yog_server")):
+            block = workflow.split(f"  {job}:\n", 1)[1].split("\n  # The browser checks", 1)[0]
+            if job == "windows":
+                block = block.split("\n  windows-server:", 1)[0]
+            for step in ("Drop cache entries this run did not use", "Save the compiler cache"):
+                guard = re.search(r"      - name: " + re.escape(step) +
+                                  r"\n.*?        if: \$\{\{ (.*?) \}\}", block, re.S).group(1)
+                expected = ("!cancelled() && steps.cache_ready.outcome == 'success' && "
+                            f"steps.{build}.outcome == 'success' && "
+                            "((github.event_name == 'push' && github.ref == 'refs/heads/master') "
+                            "|| github.event_name == 'workflow_dispatch')")
+                self.assertEqual(guard, expected)
+                expression = guard.replace("!cancelled()", "not cancelled").replace("&&", "and").replace("||", "or")
+                for event, ref, built, cancelled, allowed in (
+                    ("pull_request", "refs/pull/478/merge", "success", False, False),
+                    ("push", "refs/heads/codex/javascript-foundation", "success", False, False),
+                    ("workflow_dispatch", "refs/heads/codex/javascript-foundation", "success", False, True),
+                    ("push", "refs/heads/master", "success", False, True),
+                    ("workflow_dispatch", "refs/heads/master", "failure", False, False),
+                    ("workflow_dispatch", "refs/heads/master", "success", True, False),
+                ):
+                    with self.subTest(job=job, step=step, event=event, built=built, cancelled=cancelled):
+                        context = {
+                            "cancelled": cancelled,
+                            "github": SimpleNamespace(event_name=event, ref=ref),
+                            "steps": SimpleNamespace(cache_ready=SimpleNamespace(outcome="success"),
+                                                     **{build: SimpleNamespace(outcome=built)}),
+                        }
+                        # Evaluate only the exact, asserted expression above.
+                        self.assertEqual(eval(expression, {"__builtins__": {}}, context), allowed)
+
+    def test_windows_git_newline_policy_is_pinned_before_cache_and_build(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        for job, build in (("windows", "Build glob2 and the regression harnesses"),
+                           ("windows-server", "Build the YOG server")):
+            block = workflow.split(f"  {job}:\n", 1)[1].split("\n  # The browser checks", 1)[0]
+            if job == "windows":
+                block = block.split("\n  windows-server:", 1)[0]
+            with self.subTest(job=job):
+                checkout = block.index("      - uses: actions/checkout@v4")
+                pin = block.index("        run: git config --local core.autocrlf true")
+                cache = block.index("      - name: Restore the compiler cache")
+                compile = block.index(f"      - name: {build}")
+                self.assertLess(checkout, pin)
+                self.assertLess(pin, cache)
+                self.assertLess(cache, compile)
+                self.assertEqual(block.count("git config --local core.autocrlf true"), 1)
+
+    def test_javascript_evidence_steps_are_visible_to_ci_failure_summary(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        for name, identifier in (
+            ("Execute shared JavaScript corpus", "execute_shared_javascript_corpus"),
+            ("Verify frozen JavaScript simulation profile", "verify_frozen_javascript_simulation_profile"),
+        ):
+            with self.subTest(step=name):
+                definitions = re.findall(r"      - name: " + re.escape(name) +
+                                         r"\n(.*?)(?=      - |\n  \w|\Z)", workflow, re.S)
+                self.assertEqual(len(definitions), 2, "Expected Linux and Windows evidence steps")
+                for definition in definitions:
+                    self.assertIn(f"        id: {identifier}\n", definition)
 
 
 if __name__ == "__main__":

@@ -84,6 +84,10 @@ V (Vision): نشان دادن محل همه‌ی ساختمانها
 سازنده‌ای قدرتمند که نیروهای مهاجم آموزش‌دیده به میدان می‌آورد.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+کنترل‌گری که از یک ماژول کد منبع JavaScript تعبیه‌شده استفاده می‌کند.
 [Alga]
 جلبک
 [algae]

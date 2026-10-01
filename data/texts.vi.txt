@@ -92,6 +92,10 @@ Warrush
 Giỏi xây dựng và triển khai lực lượng tấn công đã huấn luyện.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Bộ điều khiển sử dụng mô-đun mã nguồn JavaScript nhúng.
 [Alga]
 Tảo
 [algae]

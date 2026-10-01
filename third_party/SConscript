@@ -1,0 +1,5 @@
+Import('env')
+from javascript import javascript_objects
+objects = javascript_objects(env, '', env['release'])
+library = env.StaticLibrary('Glob2JavaScript', objects)
+Return('library')

@@ -3,6 +3,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #pragma once
+#include <array>
 #include <CooperativeTask.h>
 
 #include <iostream>
@@ -196,6 +197,10 @@ public:
 
 	/// Advanced the map script and checks conditions
 	void scriptSyncStep();
+	// JavaScript is the selected scenario runtime. Preserve the serialized SGSL
+	// payload, but leave its execution and presentation dormant in this mode.
+	bool legacyScriptActive() const { return mapscript.getMapScriptMode() != MapScript::JavaScript; }
+	int legacyScriptTimer() const { return legacyScriptActive() ? sgslScript.getMainTimer() : 0; }
 
 	/// Updates total prestige stats
 	void prestigeSyncStep();
@@ -417,6 +422,8 @@ public:
 	};
 
 	Uint32 stepCounter;
+	std::array<Uint32, 2 * Team::MAX_COUNT * 1024> scriptGenerations{};
+	Uint32 allocateScriptIdentity(bool building, Uint16 gid);
 	int totalPrestige;
 	int prestigeToReach;
 	bool totalPrestigeReached;

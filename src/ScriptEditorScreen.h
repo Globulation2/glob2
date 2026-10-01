@@ -3,6 +3,7 @@
 
 #pragma once
 #include "ui/FrontendUI.h"
+#include <array>
 #include <memory>
 #include <string>
 
@@ -34,6 +35,14 @@ class ScriptEditorScreen : public Glob2UI::InGameDialog
 
 	explicit ScriptEditorScreen(Game *game);
 	~ScriptEditorScreen() override;
+	enum class Language
+	{
+		SGSL,
+		USL,
+		JavaScript
+	};
+	Language language() const { return selectedLanguage; }
+	void selectLanguage(Language language);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	// Semantic entry points shared with harnesses.
 	void showTab(int tab);
@@ -41,6 +50,7 @@ class ScriptEditorScreen : public Glob2UI::InGameDialog
 	bool compile() { return testCompile(); }
 	void confirm();
 	void loadSave(bool isLoad, const char *dir, const char *ext);
+	void loadSave(bool isLoad);
 	// The open script file dialog, if any; the owner routes input to it and
 	// calls finishFileDialog() once it completes.
 	LoadSaveDialog *fileDialog() const { return files.get(); }
@@ -59,7 +69,9 @@ class ScriptEditorScreen : public Glob2UI::InGameDialog
 
   private:
 	bool testCompile();
-	bool useUSL() const;
+	const char *scriptExtension() const;
+	Language selectedLanguage;
+	std::array<std::string, 3> scriptDrafts;
 	std::string script, compilation;
 	bool compiled = false;
 	std::string primary[8], secondary[8], hints[8], briefing;
@@ -71,7 +83,8 @@ class ScriptEditorScreen : public Glob2UI::InGameDialog
 	std::unique_ptr<LoadSaveDialog> files;
 	bool loadingScript = false;
 	Glob2UI::Element scriptTab(const Glob2UI::Presentation &p);
-	Glob2UI::Element entriesTab(const Glob2UI::Presentation &p, std::string *entries, const std::string &prefix, int firstNumber);
+	Glob2UI::Element entriesTab(const Glob2UI::Presentation &p, std::string *entries,
+								const std::string &prefix, int firstNumber);
 };
 
 //! Turn a full virtual script path into its display name.

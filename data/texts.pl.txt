@@ -84,6 +84,10 @@ AIWarrush
 Sprawny budowniczy wystawiający wyszkolone siły szturmowe.
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+Kontroler korzystający z osadzonego modułu kodu JavaScript.
 [Alga]
 Algi
 [algae]

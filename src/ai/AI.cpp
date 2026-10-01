@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "AI.h"
+#include "AIJavaScript.h"
 #include "AIMaxima.h"
 #include "Player.h"
 #include "Utilities.h"
@@ -59,6 +60,9 @@ AI::AI(ImplementationID implementationID, Player *player)
 		break;
 		case CABINO:
 			aiImplementation=new Cabino::AICabino(player);
+		break;
+		case JAVASCRIPT:
+			aiImplementation=new AIJavaScript(player);
 		break;
 		default:
 			assert(false);
@@ -192,6 +196,10 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		break;
 		case CABINO:
 			aiImplementation=new Cabino::AICabino(stream, player, versionMinor);
+		break;
+		case JAVASCRIPT:
+			aiImplementation=new AIJavaScript(player);
+			if(!aiImplementation->load(stream,player,versionMinor)) return false;
 		break;
 		default:
 			fprintf(stderr, "AI id %d does not exist, you probably try to load a map from a more recent version of glob2.\n", implementationID);

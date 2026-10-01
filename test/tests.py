@@ -25,6 +25,13 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'ScriptIntegrationTest.cpp',
+    'ScriptPresentationTest.cpp',
+    'ScriptEditorTest.cpp',
+    'ScriptRealisticTest.cpp',
+    ('ScriptSessionTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('ScriptSimulationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'BuildingExpelHarness.cpp',
     'BuildingGradientInvalidationHarness.cpp',
     'FetchApportionmentHarness.cpp',
@@ -96,6 +103,8 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'ScriptRuntimeTest.cpp',
+    'ScriptNumericTest.cpp',
     ('OpaqueRectangleBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
@@ -187,6 +196,8 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/script/ScriptValue.cpp',
+    '#src/script/ScriptRuntime.cpp',
     '#src/BitArray.cpp',
     '#src/Brush.cpp',
     '#src/BrushCoverage.cpp',
@@ -330,3 +341,17 @@ LEGACY_ALIASES = {
     'screen-test': 'glob2-unit-tests',
     'ui-layout-test': 'glob2-unit-tests',
 }
+
+
+def scripting_entries():
+    """Shared in-process corpus for browser and the standalone iOS test app.
+
+    TeamStatsSaveHarness owns the production conversion fixture and lifecycle
+    cases. Its unrelated registered cases are excluded by the JavaScript* suite
+    filter. Both desktop binaries and Android use the full registry above.
+    """
+    selected = {'ScriptCompatibilityTest.cpp', 'ScriptIntegrationTest.cpp', 'ScriptPresentationTest.cpp',
+                'ScriptRealisticTest.cpp', 'ScriptSessionTest.cpp', 'ScriptSimulationTest.cpp',
+                'TeamStatsSaveHarness.cpp', 'ScriptRuntimeTest.cpp', 'ScriptNumericTest.cpp'}
+    return [entry for entry in ENGINE_TESTS + UNIT_TESTS
+            if (entry if isinstance(entry, str) else entry[0]) in selected]

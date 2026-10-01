@@ -6,6 +6,7 @@
 using namespace GAGCore;
 
 #include "MapScriptUSL.h"
+#include <utility>
 #include "usl.h"
 #include "interpreter.h"
 #include "GameGUI.h"
@@ -114,6 +115,12 @@ MapScriptUSL::~MapScriptUSL()
 	
 }
 
+void MapScriptUSL::swap(MapScriptUSL& other) noexcept
+{
+	usl.swap(other.usl);
+	std::swap(error, other.error);
+}
+
 
 void MapScriptUSL::encodeData(GAGCore::OutputStream* stream) const
 {
@@ -169,12 +176,15 @@ bool MapScriptUSL::compileCode(const std::string& code)
 			else
 			{
 				cerr << "MapScriptUSL::compileCode(): Cannot open script directory " << *dir << endl;
+				error = MapScriptError(0, 0, std::string("Cannot open USL runtime directory: ") + *dir);
 				return false;
 			}
 		}
 		catch(Exception& e)
 		{
 			cerr << "MapScriptUSL::compileCode(): Error in usl runtime file " << e.position << " : " << e.what() << endl;
+			error = MapScriptError(e.position.line, e.position.column,
+				std::string("Error in USL runtime: ") + e.what());
 			return false;
 		}
 		++dir;
@@ -211,4 +221,3 @@ void MapScriptUSL::syncStep(GameGUI *gui)
 		usl->run(stepsMax);
 	#endif
 }
-

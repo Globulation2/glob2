@@ -8,7 +8,7 @@
 
 void GameGUI::enableBuildingsChoice(const std::string &name)
 {
-	for (size_t i=0; i<buildingsChoiceName.size(); ++i)
+	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
 		if (name == buildingsChoiceName[i])
 			buildingsChoiceState[i] = true;
@@ -17,7 +17,7 @@ void GameGUI::enableBuildingsChoice(const std::string &name)
 
 void GameGUI::disableBuildingsChoice(const std::string &name)
 {
-	for (size_t i=0; i<buildingsChoiceName.size(); ++i)
+	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
 		if (name == buildingsChoiceName[i])
 			buildingsChoiceState[i] = false;
@@ -26,17 +26,17 @@ void GameGUI::disableBuildingsChoice(const std::string &name)
 
 bool GameGUI::isBuildingEnabled(const std::string &name)
 {
-	for (size_t i=0; i<buildingsChoiceName.size(); ++i)
+	for (size_t i = 0; i < buildingsChoiceName.size(); ++i)
 	{
 		if (name == buildingsChoiceName[i])
-                  return buildingsChoiceState[i];
+			return buildingsChoiceState[i];
 	}
-	assert (false);
+	assert(false);
 }
 
 void GameGUI::enableFlagsChoice(const std::string &name)
 {
-	for (size_t i=0; i<flagsChoiceName.size(); ++i)
+	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
 		if (name == flagsChoiceName[i])
 			flagsChoiceState[i] = true;
@@ -45,7 +45,7 @@ void GameGUI::enableFlagsChoice(const std::string &name)
 
 void GameGUI::disableFlagsChoice(const std::string &name)
 {
-	for (size_t i=0; i<flagsChoiceName.size(); ++i)
+	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
 		if (name == flagsChoiceName[i])
 			flagsChoiceState[i] = false;
@@ -54,25 +54,26 @@ void GameGUI::disableFlagsChoice(const std::string &name)
 
 bool GameGUI::isFlagEnabled(const std::string &name)
 {
-	for (size_t i=0; i<flagsChoiceName.size(); ++i)
+	for (size_t i = 0; i < flagsChoiceName.size(); ++i)
 	{
 		if (name == flagsChoiceName[i])
-                  return flagsChoiceState[i];
+			return flagsChoiceState[i];
 	}
-        assert (false);
+	assert(false);
 }
 
 void GameGUI::enableGUIElement(int id)
 {
-	hiddenGUIElements &= ~(1<<id);
+	hiddenGUIElements &= ~(1 << id);
 }
 
 void GameGUI::disableGUIElement(int id)
 {
-	if (globalContainer->replaying) return;
+	if (globalContainer->replaying)
+		return;
 
-	hiddenGUIElements |= (1<<id);
-	if (displayMode==id)
+	hiddenGUIElements |= (1 << id);
+	if (displayMode == id)
 		nextDisplayMode();
 }
 
@@ -80,6 +81,15 @@ void GameGUI::showScriptText(const std::string &text)
 {
 	scriptText = text;
 	scriptTextUpdated = true;
+}
+
+void GameGUI::setScriptPresentationText(std::string text, bool publishHistory)
+{
+	if (scriptText != text)
+	{
+		scriptText.swap(text);
+		scriptTextUpdated = publishHistory && !scriptText.empty();
+	}
 }
 
 void GameGUI::showScriptTextTr(const std::string &text, const std::string &lang)
@@ -91,47 +101,44 @@ void GameGUI::showScriptTextTr(const std::string &text, const std::string &lang)
 void GameGUI::hideScriptText()
 {
 	scriptText.clear();
+	scriptTextUpdated = false;
 }
 
 void GameGUI::setCpuLoad(int s)
 {
-	smoothedCPULoad[smoothedCPUPos]=s;
-	smoothedCPUPos=(smoothedCPUPos+1) % SMOOTHED_CPU_SIZE;
+	smoothedCPULoad[smoothedCPUPos] = s;
+	smoothedCPUPos = (smoothedCPUPos + 1) % SMOOTHED_CPU_SIZE;
 }
 
-
-
-void GameGUI::setCampaignGame(Campaign& campaign, const std::string& missionName)
+void GameGUI::setCampaignGame(Campaign &campaign, const std::string &missionName)
 {
-	this->campaign=&campaign;
-	this->missionName=missionName;
+	this->campaign = &campaign;
+	this->missionName = missionName;
 }
-
-
 
 void GameGUI::updateHighlightInGame()
 {
 	game.highlightUnitType = 0;
-	if(highlights.find(HighlightWorkers) != highlights.end())
+	if (highlights.find(HighlightWorkers) != highlights.end())
 	{
-		game.highlightUnitType |= 1<<WORKER;
+		game.highlightUnitType |= 1 << WORKER;
 	}
-	if(highlights.find(HighlightExplorers) != highlights.end())
+	if (highlights.find(HighlightExplorers) != highlights.end())
 	{
-		game.highlightUnitType |= 1<<EXPLORER;
+		game.highlightUnitType |= 1 << EXPLORER;
 	}
-	if(highlights.find(HighlightWarriors) != highlights.end())
+	if (highlights.find(HighlightWarriors) != highlights.end())
 	{
-		game.highlightUnitType |= 1<<WARRIOR;
+		game.highlightUnitType |= 1 << WARRIOR;
 	}
 
 	game.highlightBuildingType = 0;
 
-	for(int i=0; i<IntBuildingType::NB_BUILDING; ++i)
+	for (int i = 0; i < IntBuildingType::NB_BUILDING; ++i)
 	{
-		if(highlights.find(HighlightBuildingOnMap + i) != highlights.end())
+		if (highlights.find(HighlightBuildingOnMap + i) != highlights.end())
 		{
-			game.highlightBuildingType |= 1<<(i);
+			game.highlightBuildingType |= 1 << (i);
 		}
 	}
 }

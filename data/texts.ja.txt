@@ -92,6 +92,10 @@ Warrush
 建設に強く、訓練された攻撃部隊を送り出します。
 [AICabino]
 Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+埋め込まれた JavaScript ソースモジュールを使用するコントローラー。
 [Alga]
 藻
 [algae]

@@ -120,7 +120,7 @@ Element MultiplayerGameScreen::build(const Presentation &p)
 	if (readyToGo && hosting())
 	{
 		std::vector<Element> ais;
-		for (std::size_t i = 1; i < AI::SIZE; ++i)
+		for (std::size_t i = 1; i < AI::JAVASCRIPT; ++i)
 			ais.push_back(fe::button("ai/" + std::to_string(i), AINames::getAIText(int(i)), [this, i] { game->addAIPlayer((AI::ImplementationID)i); }));
 		side.push_back(fe::label(fe::tr("[Add AI]")));
 		side.push_back(fe::wrap(std::move(ais), {-1, p.pt(140)}));
@@ -225,7 +225,7 @@ void MultiplayerGameScreen::launchScheduledGame()
 					 {
 						 game->sessionEnded(false);
 						 if (result == 2)
-							 screens.push(std::make_unique<MessageScreen>(fe::tr("[ERROR_CANT_LOAD_MAP]"), std::vector<std::string>{fe::tr("[ok]")}));
+							 screens.push(std::make_unique<MessageScreen>(static_cast<GameLoadScreen &>(load).failureMessage(), std::vector<std::string>{fe::tr("[ok]")}));
 						 return;
 					 }
 					 auto engine = static_cast<GameLoadScreen &>(load).takeEngine();
