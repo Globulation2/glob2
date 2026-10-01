@@ -5,6 +5,7 @@
 
 #include "LANGameInformation.h"
 #include <SDL3_net/SDL_net.h>
+#include <vector>
 
 ///This class allows for subnet broadcasting (hosting a LAN game)
 class NetBroadcaster
@@ -29,6 +30,7 @@ public:
 private:
 	LANGameInformation info;
 	NET_DatagramSocket *socket = nullptr;
+	std::vector<NET_DatagramSocket *> broadcastSockets;
 	NET_Address *localaddress = nullptr;
 	Uint64 lastTime = 0;
 	Uint32 timer;

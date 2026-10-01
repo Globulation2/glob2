@@ -97,9 +97,13 @@ is capped at 1 MiB, and the decoded-message queue at 256 messages. Oversized,
 empty, unknown, truncated, or trailing-data messages close the connection. The
 initial greeting is retained while the asynchronous connection opens.
 
-Run `scons release=1 transport-test`, then the `net-connection-test` executable
-with an unused local TCP port to cover framing, rejected packets, queue limits,
-outbound limits, credential-log redaction, and a real TCP round trip. The Playwright multiplayer test uses that executable's
+Run `scons release=1 transport-test`, then `python3 test/run-network-transport-tests.py`
+to cover framing, rejected packets, queue limits, credential-log redaction,
+IPv4/IPv6/hostname round trips, DNS failure, cancellation, stalled writes and
+disconnects. It also checks the unchanged IPv4 LAN advertisement format,
+discovery and malformed datagram rejection. Native servers use dual-stack SDL3_net
+listeners; pending SDL3_net writes count toward the transport buffer limit.
+LAN discovery remains IPv4-only. The Playwright multiplayer test uses that executable's
 isolated YOG fixture and the actual gateway, with real login controls and observed
 wire messages. It also enters and leaves the lobby with an isolated fixture
 account and saves a lobby screenshot. Match tests create a room through the

@@ -6,6 +6,11 @@
 #include <utility>
 #include <exception>
 #include "NetListener.h"
+#include "NetBroadcastListener.h"
+#include "NetBroadcaster.h"
+#include "NetConsts.h"
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 #include "message/AuthMessages.h"
 #include "message/RegistrationMessages.h"
 #include "message/RouterAdminMessages.h"
@@ -19,6 +24,55 @@
 GlobalContainer* globalContainer = nullptr;
 namespace {
 void require(bool value, const char* message) { if (!value) throw std::runtime_error(message); }
+void checkLanDatagrams()
+{
+    NetBroadcastListener listener;
+    NET_Address *loopback = NET_ResolveHostname("127.0.0.1");
+    require(loopback && NET_WaitUntilResolved(loopback, 1000) == NET_SUCCESS, "LAN loopback resolution failed");
+    NET_DatagramSocket *sender = NET_CreateDatagramSocket(loopback, 0, 0);
+    require(sender != nullptr, "LAN datagram sender failed");
+    LANGameInformation info;
+    info.getGameInformation().setGameName("SDL3 LAN fixture");
+    auto *backend = new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream stream(backend);
+    info.encodeData(&stream);
+    const size_t length = backend->getPosition();
+    std::vector<uint8_t> packet(length + 2);
+    packet[0] = length >> 8; packet[1] = length & 255;
+    backend->seekFromStart(0); backend->read(packet.data() + 2, length);
+    auto send = [&](const std::vector<uint8_t> &bytes) {
+        require(NET_SendDatagram(sender, loopback, LAN_BROADCAST_PORT, bytes.data(), bytes.size()),
+                "LAN datagram send failed");
+        const auto deadline = SDL_GetTicks() + 100;
+        do { listener.update(); SDL_Delay(1); } while (SDL_GetTicks() < deadline);
+    };
+    send({0});
+    send({0, 2, 0});
+    send({0, 1, 0}); // Valid outer length, truncated game information.
+    auto trailing = packet;
+    trailing.push_back(0);
+    trailing[0] = (length + 1) >> 8; trailing[1] = (length + 1) & 255;
+    send(trailing);
+    require(listener.getLANGames().empty(), "Malformed LAN advertisement entered the game list");
+    send(packet); // The unchanged length-prefixed SDL2 advertisement format.
+    require(listener.getLANGames().size() == 1 &&
+            listener.getLANGames()[0].getGameInformation() == info.getGameInformation() &&
+            listener.getIPAddress(0) == "127.0.0.1", "Legacy LAN advertisement was not discovered");
+    {
+        info.getGameInformation().setGameName("SDL3 broadcaster fixture");
+        NetBroadcaster broadcaster(info);
+        const auto deadline = SDL_GetTicks() + 1500;
+        while (SDL_GetTicks() < deadline &&
+               (listener.getLANGames().empty() || listener.getLANGames()[0].getGameInformation().getGameName() != "SDL3 broadcaster fixture")) {
+            broadcaster.update(); listener.update(); SDL_Delay(1);
+        }
+        require(!listener.getLANGames().empty() &&
+                listener.getLANGames()[0].getGameInformation().getGameName() == "SDL3 broadcaster fixture",
+                "SDL3 broadcaster did not preserve IPv4 LAN discovery");
+    }
+    NET_DestroyDatagramSocket(sender);
+    NET_UnrefAddress(loopback);
+}
 class FakeTransport : public NetTransport {
 public:
     State current = State::Closed;
@@ -183,6 +237,7 @@ int main(int argc, char** argv) {
                 sender->close();
                 NET_DestroyServer(listener);
             }
+            checkLanDatagrams();
             NET_Quit(); SDL_Quit();
         }
         std::cout << "PASS: shared framing, malformed input, queue limits, queued greeting and TCP round trip\n";

@@ -36,7 +36,7 @@ void NetBroadcaster::broadcast(LANGameInformation& ainfo)
 	
 void NetBroadcaster::update()
 {
-	if(socket)
+	if(socket || !broadcastSockets.empty())
 	{
 		Uint64 time = SDL_GetTicks();
 		if((static_cast<Sint64>(time) - static_cast<Sint64>(lastTime)) >= 500 )
@@ -54,8 +54,9 @@ void NetBroadcaster::update()
                 std::vector<Uint8> packet(length + NET_FRAME_LENGTH_PREFIX_BYTES);
                 packet[0] = length >> 8; packet[1] = length & 255;
                 msb->read(packet.data() + NET_FRAME_LENGTH_PREFIX_BYTES, length);
-                NET_SendDatagram(socket, nullptr, LAN_BROADCAST_PORT, packet.data(), packet.size());
-                if (localaddress) NET_SendDatagram(socket, localaddress, LAN_BROADCAST_PORT, packet.data(), packet.size());
+                for (auto *broadcastSocket : broadcastSockets)
+                    NET_SendDatagram(broadcastSocket, nullptr, LAN_BROADCAST_PORT, packet.data(), packet.size());
+                if (socket && localaddress) NET_SendDatagram(socket, localaddress, LAN_BROADCAST_PORT, packet.data(), packet.size());
             }
             delete bos;
 
@@ -69,6 +70,8 @@ void NetBroadcaster::update()
 
 void NetBroadcaster::disableBroadcasting()
 {
+    for (auto *broadcastSocket : broadcastSockets) NET_DestroyDatagramSocket(broadcastSocket);
+    broadcastSockets.clear();
     if (socket) NET_DestroyDatagramSocket(socket);
     if (localaddress) NET_UnrefAddress(localaddress);
     socket = nullptr; localaddress = nullptr;
@@ -81,17 +84,26 @@ void NetBroadcaster::enableBroadcasting()
     return;
 #endif
     disableBroadcasting();
-    NET_Address *ipv4 = NET_ResolveHostname("0.0.0.0");
-    if (ipv4 && NET_WaitUntilResolved(ipv4, 1000) == NET_SUCCESS) {
-        SDL_PropertiesID props = SDL_CreateProperties();
-        SDL_SetBooleanProperty(props, NET_PROP_DATAGRAM_SOCKET_ALLOW_BROADCAST_BOOLEAN, true);
-        socket = NET_CreateDatagramSocket(ipv4, 0, props);
-        SDL_DestroyProperties(props);
+    // SDL_net requires a concrete interface for an IPv4-only broadcast socket.
+    // Binding nullptr would also enable IPv6 multicast discovery, whose protocol
+    // is deliberately outside this migration.
+    SDL_PropertiesID props = SDL_CreateProperties();
+    SDL_SetBooleanProperty(props, NET_PROP_DATAGRAM_SOCKET_ALLOW_BROADCAST_BOOLEAN, true);
+    NET_Address **addresses = NET_GetLocalAddresses(nullptr);
+    if (addresses) {
+        for (auto **address = addresses; *address; ++address) {
+            const char *text = NET_GetAddressString(*address);
+            if (!text || SDL_strchr(text, ':') || SDL_strncmp(text, "127.", 4) == 0) continue;
+            if (auto *broadcastSocket = NET_CreateDatagramSocket(*address, 0, props))
+                broadcastSockets.push_back(broadcastSocket);
+        }
     }
-    if (ipv4) NET_UnrefAddress(ipv4);
+    NET_FreeLocalAddresses(addresses);
+    SDL_DestroyProperties(props);
     localaddress = NET_ResolveHostname("127.0.0.1");
     if (localaddress && NET_WaitUntilResolved(localaddress, 1000) != NET_SUCCESS) {
         NET_UnrefAddress(localaddress); localaddress = nullptr;
     }
+    if (localaddress) socket = NET_CreateDatagramSocket(localaddress, 0, 0);
     lastTime = SDL_GetTicks();
 }
