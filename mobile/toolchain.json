@@ -2,7 +2,7 @@
   "schema": 1,
   "android": {
     "ndk": "28.2.13676358",
-    "min_api": 26,
+    "min_api": 24,
     "compile_api": 36,
     "build_tools": "35.0.0",
     "jdk": 17,

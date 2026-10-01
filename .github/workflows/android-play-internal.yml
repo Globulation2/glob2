@@ -75,8 +75,8 @@ jobs:
         with:
           name: glob2-unsigned-${{ steps.version.outputs.code }}
           path: |
-            build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab
-            build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.json
+            build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/bundle/release/app-release.aab
+            build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/bundle/release/app-release.json
           if-no-files-found: error
           retention-days: 1
 
@@ -95,7 +95,7 @@ jobs:
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: glob2-unsigned-${{ needs.build.outputs.code }}
-          path: build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release
+          path: build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/bundle/release
 
       - name: Install pinned signing JDK
         run: python3 mobile/setup_tools.py
@@ -143,6 +143,6 @@ jobs:
           GLOB2_RELEASE_NOTES: ${{ inputs.release_notes }}
         run: |
           build/play-api-venv/bin/python mobile/play_release.py publish \
-            --bundle build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release-play.aab \
+            --bundle build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/bundle/release/app-release-play.aab \
             --version-code '${{ needs.build.outputs.code }}' \
             --release-notes "$GLOB2_RELEASE_NOTES"

@@ -221,6 +221,11 @@ installed and review both the adaptive foreground and opaque icon before committ
 
 ## Android
 
+Android builds support Android 7.0 (API 24) and newer. The application,
+native dependencies and APK minimum must use the same minimum API; changing only
+the APK manifest does not backport native libraries. Newer Java APIs need guarded
+fallbacks. Keep the current compile/target SDK when supporting older devices.
+
 Install Python, SCons, Git, make, autotools and pkg-config. Bootstrap the pinned
 NDK and packaging tools, then build target dependencies and stage the project:
 
@@ -275,8 +280,8 @@ Native startup failures are also written to Android logcat under `SDL/APP`.
 ### Amazon Appstore Fire tablet release
 
 The Amazon candidate is one release APK with `arm64-v8a` and `armeabi-v7a`
-libraries. It keeps Android API 26 as its minimum, so the first release can
-target qualified Fire OS 7/8 tablets, not Fire OS 5/6. Build both dependency
+libraries and an Android 7.0 (API 24) minimum. Amazon release qualification
+remains limited to Fire OS 7/8 tablets; Fire OS 5/6 are not qualified. Build both dependency
 sets, then package the APK from the arm64 configuration:
 
 ```sh
@@ -378,7 +383,7 @@ Each subsequent Play upload needs a higher `--version-code`. The bundle command
 restores gzip assets that Android packaging expands, verifies the complete game
 asset index, and checks the packaged native build ID against retained symbols.
 The unsigned bundle is written to
-`build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/bundle/release/app-release.aab`.
+`build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/bundle/release/app-release.aab`.
 Keep a private upload keystore outside the repository and back it up securely.
 Create the key with Android Studio's **Generate Signed Bundle/APK** flow or
 `keytool`. Set `GLOB2_PLAY_STORE_PASSWORD` and `GLOB2_PLAY_KEY_PASSWORD` in the

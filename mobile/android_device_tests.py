@@ -36,7 +36,7 @@ def main():
     abis = subprocess.check_output(adb + ['shell', 'getprop', 'ro.product.cpu.abilist'], text=True)
     if args.arch not in abis.strip().split(','):
         raise RuntimeError('Device does not support ' + args.arch)
-    build = ROOT / f'build/android/device/{args.arch}/26/client/release'
+    build = ROOT / f'build/android/device/{args.arch}/24/client/release'
     names = args.binary or BINARIES
     for name in names:
         if not (build / 'tests' / name).is_file():

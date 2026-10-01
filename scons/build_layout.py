@@ -38,9 +38,9 @@ def build_identity(arguments, host=None):
         if environment not in ('device', 'simulator') or (target == 'android' and environment != 'device'):
             raise ValueError('environment must be device, or simulator for iOS')
         if target == 'android':
-            api = str(arguments.get('api', '26'))
-            if not api.isdecimal() or int(api) < 26:
-                raise ValueError('Android api must be an integer >= 26')
+            api = str(arguments.get('api', '24'))
+            if not api.isdecimal() or int(api) < 24:
+                raise ValueError('Android api must be an integer >= 24')
         else:
             api = str(arguments.get('deployment', '15.0'))
             import re
