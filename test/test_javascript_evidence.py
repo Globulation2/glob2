@@ -62,6 +62,24 @@ class ProvenanceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'conversion continuation'):
                 inventory(root)
 
+    def test_touching_unchanged_tracked_input_preserves_clean_identity(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            def git(*args):
+                subprocess.run(['git', '-C', str(root), *args], check=True,
+                               stdout=subprocess.DEVNULL)
+            git('config', 'user.email', 'test@example.invalid')
+            git('config', 'user.name', 'Test')
+            path = root / 'runtime.cpp'
+            path.write_text('unchanged source')
+            git('add', '.')
+            git('commit', '-qm', 'fixture')
+            before = source_identity(root)
+            path.write_text('unchanged source')
+            self.assertEqual(before, source_identity(root))
+            self.assertEqual(before, source_identity(root))
+
     def test_checkout_symlinks_and_crlf_have_identical_clean_identity(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'original'

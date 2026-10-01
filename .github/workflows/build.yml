@@ -211,15 +211,16 @@ jobs:
         if: steps.build_glob2_and_the_regression_harnesses.outcome == 'success'
         run: |
           test -x build/linux/client/release/src/glob2
+          mkdir -p artifacts/ci-native
           find build/linux/client/release -type f \( -perm /111 -o -name '*.so*' \) -print0 |
-            tar --null -czf linux-test-programs.tar.gz -T -
+            tar --null -czf artifacts/ci-native/linux-test-programs.tar.gz -T -
       - uses: actions/upload-artifact@v4
         id: upload_linux_test_programs
         if: steps.package_linux_test_programs.outcome == 'success'
 
         with:
           name: linux-test-programs-${{ matrix.runner }}${{ matrix.compiler == 'clang-18' && '-clang-18' || '' }}
-          path: linux-test-programs.tar.gz
+          path: artifacts/ci-native/linux-test-programs.tar.gz
           retention-days: 2
           if-no-files-found: error
 
@@ -344,9 +345,10 @@ jobs:
         id: download_linux_test_programs
         with:
           name: linux-test-programs-${{ matrix.runner }}
+          path: artifacts/ci-native
       - name: Unpack built Linux test programs
         id: unpack_linux_test_programs
-        run: tar -xzf linux-test-programs.tar.gz
+        run: tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
 
       - name: Run the unit tests
         if: ${{ matrix.shard == 4 }}
@@ -1280,7 +1282,8 @@ jobs:
         id: package_the_programs_the_browser_tests_drive
         if: steps.build_gateway.outcome == 'success' && steps.build_transport_integration_fixture.outcome == 'success'
         run: |
-          tar -czf web-native.tar.gz \
+          mkdir -p artifacts/ci-native
+          tar -czf artifacts/ci-native/web-native.tar.gz \
             build/linux/client/release/src/glob2 \
             build/linux/client/release/src/net-connection-test \
             build/linux/client/release/src/native-multiplayer-peer \
@@ -1306,7 +1309,7 @@ jobs:
           name: web-native
           retention-days: 3
           if-no-files-found: error
-          path: web-native.tar.gz
+          path: artifacts/ci-native/web-native.tar.gz
 
       - name: Summarize CI failures
         if: always()
@@ -1451,9 +1454,10 @@ jobs:
         id: actions_download_artifact_v4_2
         with:
           name: web-native
+          path: artifacts/ci-native
       - name: Unpack the native programs
         id: unpack_the_native_programs
-        run: tar -xzf web-native.tar.gz
+        run: tar -xzf artifacts/ci-native/web-native.tar.gz
       - uses: actions/setup-node@v4
         id: actions_setup_node_v4_1
         with:
@@ -1516,13 +1520,13 @@ jobs:
         id: actions_download_artifact_v4_1
         with:
           pattern: browser-determinism-*
-          path: traces
+          path: artifacts/ci-traces
       - name: Compare every per-tick trace across Linux, Windows and WebAssembly
         id: compare_every_per_tick_trace_across_linux_windows_and_w
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          traces = sorted(path for path in Path('traces').rglob('*.checksums')
+          traces = sorted(path for path in Path('artifacts/ci-traces').rglob('*.checksums')
                           if path.name in {'native.replay.checksums', 'wasm.replay.checksums'})
           assert len(traces) == 4, f'Expected four platform traces, got {traces}'
           reference = traces[0].read_bytes()
@@ -1535,14 +1539,14 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           pattern: javascript-profile-*
-          path: scripting
+          path: artifacts/ci-scripting
       - name: Compare shared scripting results across native builds and every browser
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import subprocess
-          native = sorted(Path('scripting').glob('*/javascript-corpus'))
-          browsers = sorted(path.parent for path in Path('traces').glob('*/script-corpus/*/manifest.json'))
+          native = sorted(Path('artifacts/ci-scripting').glob('*/javascript-corpus'))
+          browsers = sorted(path.parent for path in Path('artifacts/ci-traces').glob('*/script-corpus/*/manifest.json'))
           assert any('mingw' in path.parts[-2] for path in native), 'Missing Windows scripting evidence'
           assert any('linux' in path.parts[-2] for path in native), 'Missing Linux scripting evidence'
           assert {path.name for path in browsers} == {'chromium', 'firefox', 'webkit'}, browsers

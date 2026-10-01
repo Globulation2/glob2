@@ -2,6 +2,8 @@
 
 import importlib.util
 from pathlib import Path
+import re
+import subprocess
 import unittest
 
 
@@ -117,6 +119,20 @@ class ChangedPathsTest(unittest.TestCase):
             [], native=True, browser=True, map_generators=True, cross_platform=True,
             deployment=True,
         )
+
+    def test_downloaded_native_archives_do_not_dirty_source_provenance(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / ".github/workflows/build.yml").read_text()
+        archives = re.findall(r"run: tar -xzf (\S+)", workflow)
+        self.assertTrue(archives, "No native archive consumers found")
+        for archive in archives:
+            with self.subTest(archive=archive):
+                result = subprocess.run(
+                    ["git", "check-ignore", "--no-index", archive], cwd=root,
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0,
+                                 f"Downloaded archive would become a source input: {archive}")
 
 
 if __name__ == "__main__":
