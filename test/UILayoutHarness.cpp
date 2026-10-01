@@ -107,7 +107,7 @@ struct Fixture
 	{
 		SDL_Event e{};
 		e.type = type;
-		e.common.timestamp = (clock) * SDL_NS_PER_MS;
+		e.common.timestamp = SDL_MS_TO_NS(clock);
 		if (type == SDL_EVENT_MOUSE_MOTION)
 		{
 			e.motion.x = p.x;
@@ -130,7 +130,7 @@ struct Fixture
 	{
 		SDL_Event e{};
 		e.type = type;
-		e.tfinger.timestamp = (clock) * SDL_NS_PER_MS;
+		e.tfinger.timestamp = SDL_MS_TO_NS(clock);
 		e.tfinger.touchID = 1;
 		e.tfinger.fingerID = 1;
 		e.tfinger.x = float(p.x) / presentation.viewport.w;

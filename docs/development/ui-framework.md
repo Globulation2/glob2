@@ -50,8 +50,10 @@ two themes, translation and shared page builders. Screens contain a model and a
    the arranged rectangle.
 9. **Dialogs are hosted, never looped.** A `UIDialog` is driven by its owner
    (`GameGUI`, `MapEdit`, `EndGameScreen`, a parent screen) through
-   `event()`, `update()`, `draw()` and `finished()/result()`. There is no
-   nested event loop and no captured background; the scrim and panel are
+   `event()`, `update()`, `draw()` and `finished()/result()`.
+   Mouse events passed to `event()` already use the owner's logical
+   coordinates; its input boundary converts SDL window coordinates once.
+   There is no nested event loop and no captured background; the scrim and panel are
    painted onto the owner's surface each frame.
 10. **Keep harness entry points semantic.** Expose what a test needs as a
     method on the screen (`selectTab`, `setServer`, `confirm`) rather than

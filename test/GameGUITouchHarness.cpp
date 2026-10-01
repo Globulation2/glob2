@@ -112,7 +112,7 @@ class GameGUITouchHarness
 		{
 			SDL_Event event{};
 			event.type = kind;
-			event.tfinger.timestamp = (editorTicks += editorTickStep) * SDL_NS_PER_MS;
+			event.tfinger.timestamp = SDL_MS_TO_NS(editorTicks += editorTickStep);
 			event.tfinger.touchID = 19;
 			event.tfinger.fingerID = id;
 			event.tfinger.x = p.x / gfx->getW();
@@ -658,7 +658,7 @@ class GameGUITouchHarness
 		{
 			SDL_Event event{};
 			event.type = type;
-			event.tfinger.timestamp = (touchTicks += touchTickStep) * SDL_NS_PER_MS;
+			event.tfinger.timestamp = SDL_MS_TO_NS(touchTicks += touchTickStep);
 			event.tfinger.touchID = 7;
 			event.tfinger.fingerID = id;
 			event.tfinger.x = x / globalContainer->gfx->getW();
@@ -2647,7 +2647,7 @@ class GameGUITouchHarness
 		{
 			SDL_Event event{};
 			event.type = type;
-			event.tfinger.timestamp = (now) * SDL_NS_PER_MS;
+			event.tfinger.timestamp = SDL_MS_TO_NS(now);
 			event.tfinger.touchID = 7;
 			event.tfinger.fingerID = 1;
 			event.tfinger.x = x / gfx->getW();
@@ -2821,7 +2821,7 @@ class GameGUITouchHarness
 		{
 			SDL_Event event{};
 			event.type = type;
-			event.common.timestamp = (now) * SDL_NS_PER_MS;
+			event.common.timestamp = SDL_MS_TO_NS(now);
 			if (type == SDL_EVENT_MOUSE_MOTION)
 			{
 				event.motion.x = x;
@@ -2872,7 +2872,7 @@ class GameGUITouchHarness
 		{
 			SDL_Event event{};
 			event.type = kind;
-			event.tfinger.timestamp = (tick) * SDL_NS_PER_MS;
+			event.tfinger.timestamp = SDL_MS_TO_NS(tick);
 			event.tfinger.touchID = 19;
 			event.tfinger.fingerID = id;
 			event.tfinger.x = p.x / gfx->getW();
@@ -3019,7 +3019,7 @@ class GameGUITouchHarness
 		// A mouse drag on the tray (device -1) neither stretches nor coasts.
 		SDL_Event mouse{};
 		mouse.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
-		mouse.common.timestamp = (tick) * SDL_NS_PER_MS;
+		mouse.common.timestamp = SDL_MS_TO_NS(tick);
 		mouse.button.button = SDL_BUTTON_LEFT;
 		mouse.button.x = int(at.x);
 		mouse.button.y = int(at.y);
@@ -3029,14 +3029,14 @@ class GameGUITouchHarness
 			frame(16);
 			SDL_Event motion{};
 			motion.type = SDL_EVENT_MOUSE_MOTION;
-			motion.common.timestamp = (tick) * SDL_NS_PER_MS;
+			motion.common.timestamp = SDL_MS_TO_NS(tick);
 			motion.motion.x = int(at.x - 20 * unit * i);
 			motion.motion.y = int(at.y);
 			touch.event(motion);
 			require(touch.offset == trayEnd, "A mouse drag past the end does not stretch the tray");
 		}
 		mouse.type = SDL_EVENT_MOUSE_BUTTON_UP;
-		mouse.common.timestamp = (tick) * SDL_NS_PER_MS;
+		mouse.common.timestamp = SDL_MS_TO_NS(tick);
 		mouse.button.x = int(at.x - 80 * unit);
 		touch.event(mouse);
 		require(!touch.animating() && touch.offset == trayEnd, "A mouse drag has no momentum");
