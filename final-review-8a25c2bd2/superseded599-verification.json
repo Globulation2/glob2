@@ -1,0 +1,26 @@
+{
+  "archives": [
+    {
+      "group": "ci-native-599",
+      "members": 1174,
+      "archiveSha256": "a7e22a6a9a380f05a2d12b5e05e62e5385ddbce2569694da4e77895e2bc0088e",
+      "sourceIdentity": {
+        "prHeadRevision": "59904fb4719144621c00ed185b7d9d507287e4ec",
+        "actualExecutedRevision": "8eea9d953f4462de97711b58de296896df34a01e",
+        "sourceTreeSha256": "17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690"
+      }
+    },
+    {
+      "group": "linux-browsers-599",
+      "members": 332,
+      "archiveSha256": "fbdaaee2641f6682b59c1ca658a0b1493aaf57ca6c7efc252b4177f60ef5b9a7",
+      "sourceIdentity": {
+        "prHeadRevision": "59904fb4719144621c00ed185b7d9d507287e4ec",
+        "actualExecutedRevision": "8eea9d953f4462de97711b58de296896df34a01e",
+        "sourceTreeSha256": "17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690"
+      }
+    }
+  ],
+  "sourceHEADUnchanged": true,
+  "sourceIndexUnchanged": true
+}

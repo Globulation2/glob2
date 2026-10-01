@@ -25,3 +25,8 @@ Appended exact8a iOS ARM64 Simulator145-member evidence, all60 shared artifacts 
 The Android phones are absent from MacADB and read-onlyUSB inspection of bothLinuxhosts; the Acer webcam on devlaptop is not the Acer tablet. WindowsVagrant and physicaliOS remain unavailable. No personal ADB/VM state was changed.
 
 The final599 chunk filenames match the filenames in candidate-59904fb47-package.json. Concatenate the two linux-gcc13-59904fb47.tar.gz.part-* files in order, then verify the reconstructed archive hash before extracting.
+
+## superseded599
+
+Appended independently hash-verified native CI (1174 files) and Linux Chromium/Firefox/WebKit numerical/runtime execution (332 files) for PR head59904fb4719144621c00ed185b7d9d507287e4ec, actual clean synthetic CI revision8eea9d953f4462de97711b58de296896df34a01e, identical Git tree and canonical source hash17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690. All four native lanes and the three shared60-artifact browser comparisons passed. This candidate was superseded: separate full WebGL2 UI replay/match reload tests exposed an upstream rectangle-batching abort, so599 is NOT final UI acceptance and the full build run was cancelled after the next source push. The exact failure logs/traces are retained separately. The batching correction now emits a colour per vertex and has also landed upstream. Current combined53d16aa37 includes that upstream fix and latest graphics settings; its build/UI verification is pending. Previous README references to599 as final/pending are historical, not current acceptance claims. Older8a platform executions keep their actual producer identities.
+
