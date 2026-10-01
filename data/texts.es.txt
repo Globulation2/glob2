@@ -3072,8 +3072,6 @@ Minimapa
 Avance rápido
 [Hide keyboard]
 Ocultar teclado
-[Dialog text size]
-Tamaño del texto de los diálogos
 [Player slot]
 Puesto de jugador
 [Team color]
@@ -3412,8 +3410,6 @@ Probabilidad de ganar: %0 · Aptitud: %1
 Nivel mínimo necesario: %0
 [Confirm %0]
 Aceptar: %0
-[Dialog text size %0]
-Tamaño del texto de los diálogos: %0%
 [%0 %1]
 %0 %1
 [resume game]
