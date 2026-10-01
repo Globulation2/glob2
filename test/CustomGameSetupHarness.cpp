@@ -1847,7 +1847,10 @@ static void checkPreviewRestart()
     while (previewer.preview(0).state == LandscapePreviewer::State::Pending &&
            SDL_GetTicks64() - started < 10000)
         SDL_Delay(1);
-    REQUIRE(previewer.preview(0).state == LandscapePreviewer::State::Generating);
+    // The worker has picked the request up. A preview this small can already have
+    // finished (usually Failed: four colonies do not fit), so accept any started state;
+    // restart must leave nothing busy either way.
+    REQUIRE(previewer.preview(0).state != LandscapePreviewer::State::Pending);
     previewer.restart({});
     REQUIRE((!previewer.busy() && previewer.finished() == 0));
     // Destruction joins the in-flight worker after restart has removed its slot.
