@@ -21,6 +21,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 jobs:
   android-release-apk:
     name: Android release APK (${{ matrix.arch }})
@@ -55,7 +58,7 @@ jobs:
       - name: Install pinned Android packaging tools
         run: |
           python3 mobile/setup_tools.py
-          sdk="$PWD/build/mobile-tools/android-sdk"
+          sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
             'platforms;android-36' 'build-tools;35.0.0' platform-tools

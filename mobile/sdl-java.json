@@ -1,0 +1,6 @@
+{
+  "version": "2.30.10",
+  "url": "https://github.com/libsdl-org/SDL/archive/refs/tags/release-2.30.10.tar.gz",
+  "sha512": "ad5aa45e1da6f347d9e310317b08ea7de9a8973e1f0d9d9a41a21dce8b25f87dba77ff5451e597241d2688c2ebe6dd5ae4fff6b650c326e1e9b8ff7d24f07d6f",
+  "directory": "SDL-release-2.30.10"
+}

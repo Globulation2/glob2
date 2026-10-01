@@ -25,6 +25,9 @@ concurrency:
   group: amazon-appstore
   cancel-in-progress: false
 
+env:
+  GLOB2_DEV_MODE: isolated
+
 jobs:
   build:
     if: github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor_id == 6193625 && github.ref == 'refs/heads/master'
@@ -72,11 +75,14 @@ jobs:
           python3 - <<'PY'
           import json, os, pathlib, subprocess
           root=pathlib.Path.cwd()
-          sdk=root/'build/mobile-tools/android-sdk'
+          import sys; sys.path.insert(0, str(root/'scons'))
+          from dev_store import paths
+          dev=paths(root)
+          sdk=pathlib.Path(dev['android_sdk'])
           lock=json.loads((root/'mobile/toolchain.json').read_text())['android']
           tools=json.loads((root/'mobile/android-tools.json').read_text())
           jdk=tools['jdk-Linux-x86_64']
-          java=root/'build/mobile-tools'/jdk['directory']/jdk['java_home']
+          java=pathlib.Path(dev['java_home'])
           env=dict(os.environ, JAVA_HOME=str(java), ANDROID_HOME=str(sdk), ANDROID_SDK_ROOT=str(sdk))
           manager=sdk/'cmdline-tools/19.0/bin/sdkmanager'
           subprocess.run([str(manager),f'--sdk_root={sdk}','--licenses'],input='y\n'*100,text=True,env=env,check=True)
@@ -131,11 +137,14 @@ jobs:
           python3 - <<'PY'
           import json, os, pathlib, subprocess
           root=pathlib.Path.cwd()
-          sdk=root/'build/mobile-tools/android-sdk'
+          import sys; sys.path.insert(0, str(root/'scons'))
+          from dev_store import paths
+          dev=paths(root)
+          sdk=pathlib.Path(dev['android_sdk'])
           lock=json.loads((root/'mobile/toolchain.json').read_text())['android']
           tools=json.loads((root/'mobile/android-tools.json').read_text())
           jdk=tools['jdk-Linux-x86_64']
-          java=root/'build/mobile-tools'/jdk['directory']/jdk['java_home']
+          java=pathlib.Path(dev['java_home'])
           env=dict(os.environ,JAVA_HOME=str(java),ANDROID_HOME=str(sdk),ANDROID_SDK_ROOT=str(sdk))
           manager=sdk/'cmdline-tools/19.0/bin/sdkmanager'
           subprocess.run([str(manager),f'--sdk_root={sdk}','--licenses'],input='y\n'*100,text=True,env=env,check=True)

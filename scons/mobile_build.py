@@ -18,13 +18,20 @@ def build_mobile(directory, identity, arguments):
     dependency_identity = dict(identity)
     dependency_identity.pop('amazon', None)
     toolchain = discover(dependency_identity, arguments)
-    prefix = Path(arguments.get('mobile_deps', output / 'deps')).resolve()
+    from dev_store import dependency_prefix, dependency_key, command_path, adopt
+    prefix = adopt(arguments['mobile_deps']) if arguments.get('mobile_deps') else dependency_prefix(Path.cwd(), dependency_identity, toolchain['fingerprint'])
     manifest = prefix / 'manifest.json'
     if not manifest.is_file():
         raise ValueError(f'Missing cross-compiled dependency manifest {manifest}; see docs/mobile/development.md. Host libraries are never used.')
     dependencies = json.loads(manifest.read_text())
     if dependencies.get('identity') != dependency_identity or dependencies.get('toolchain') != toolchain['fingerprint']:
         raise ValueError('Mobile dependencies belong to a different target/compiler configuration')
+    if dependencies.get('dependency_key') and dependencies['dependency_key'] != dependency_key(Path.cwd(), dependency_identity, toolchain['fingerprint']):
+        raise ValueError('Mobile dependency inputs changed; rebuild dependencies')
+    for name, digest in dependencies.get('files', {}).items():
+        path=(prefix/name).resolve()
+        if not path.is_relative_to(prefix) or not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=digest:
+            raise ValueError('Mobile dependency checksum mismatch: '+str(path))
     artifacts = dependencies.get('archives', {})
     if not artifacts:
         raise ValueError('Mobile dependency manifest has no verified archives')
@@ -46,7 +53,7 @@ def build_mobile(directory, identity, arguments):
         environment.pop(name, None)
     environment.update(TMPDIR=str(output / 'tmp'), TMP=str(output / 'tmp'), TEMP=str(output / 'tmp'))
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
-        ENV=environment, CC=toolchain['cc'], CXX=toolchain['cxx'], LINK=toolchain['cxx'], AR=toolchain['ar'])
+        ENV=environment, CC=command_path(toolchain['cc']), CXX=command_path(toolchain['cxx']), LINK=command_path(toolchain['cxx']), AR=command_path(toolchain['ar']))
     if ccache.enabled():
         ccache.enable(env)
     config = output / 'include/glob2/BuildConfig.h'

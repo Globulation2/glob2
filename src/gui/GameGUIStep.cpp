@@ -52,29 +52,32 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	if ((displayedPosX(*selBuild)!=posX)
 		||(displayedPosY(*selBuild)!=posY)
 		||(drop && (selectionPushedPosX!=posX || selectionPushedPosY!=posY)))
+		queueFlagMove(*selBuild, posX, posY, drop);
+}
+
+void GameGUI::queueFlagMove(Building &flag, int x, int y, bool drop)
+{
+	Uint16 gid=flag.gid;
+	shared_ptr<OrderMoveFlag> oms(new OrderMoveFlag(gid, x, y, drop));
+	// First, we check if another move of the same flag is already in the "orderQueue".
+	bool found=false;
+	for (std::list<shared_ptr<Order> >::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
 	{
-		Uint16 gid=selBuild->gid;
-		shared_ptr<OrderMoveFlag> oms(new OrderMoveFlag(gid, posX, posY, drop));
-		// First, we check if another move of the same flag is already in the "orderQueue".
-		bool found=false;
-		for (std::list<shared_ptr<Order> >::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
+		if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG))
 		{
-			if ( ((*it)->getOrderType()==ORDER_MOVE_FLAG))
+			if(static_pointer_cast<OrderMoveFlag>(*it)->gid==gid)
 			{
-				if(static_pointer_cast<OrderMoveFlag>(*it)->gid==gid)
-				{
-					(*it) = oms;
-					found=true;
-					break;
-				}
+				(*it) = oms;
+				found=true;
+				break;
 			}
 		}
-		if (!found)
-			orderQueue.push_back(oms);
-		BuildingGuiState& s = pendingFor(gid);
-		s.pendingPosX = posX;
-		s.pendingPosY = posY;
 	}
+	if (!found)
+		orderQueue.push_back(oms);
+	BuildingGuiState& s = pendingFor(gid);
+	s.pendingPosX = x;
+	s.pendingPosY = y;
 }
 
 void GameGUI::dragStep(int mx, int my, int button)

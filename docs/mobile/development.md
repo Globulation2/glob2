@@ -1,8 +1,8 @@
 # Mobile builds and interface
 
 Android and iOS use the shared game sources and SDL renderer. The mobile targets
-have isolated toolchains, dependency archives and output directories; they do not
-use host libraries or install into the desktop application's directories.
+share pinned tool installations and validated dependency bundles across worktrees,
+with isolated build outputs and simulator state; they do not use host libraries or install into the desktop application's directories.
 
 The phone presentation shares simulation, game orders, settings persistence and
 lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
@@ -68,11 +68,24 @@ placement taps never do. In paint mode a single tap is held for the same window
 before it paints, because it may be the first half of a zoom; drags paint on
 release as before. A held tap lands when the window closes, when any other contact
 begins, or on interruption, and is dropped only if its brush is no longer active.
-In the mobile/touch interface, flags on the flat map also accept selection within 24 screen points of their
-centres, independent of zoom. Exact flag hits retain priority; the extra halo
+In the mobile/touch interface, flags on the flat map also accept selection within 30 screen points of their
+centres, independent of zoom, growing linearly to 36 points within 96 points of a
+screen edge. Points follow the platform's density-independent unit, so 30 points
+is a circle of about 9.5 mm on any phone: the target size one-handed thumb taps
+stop improving at (Parhi, Karlson and Bederson, 2006). Thumbs are least accurate
+near edges and corners (Hoober), hence the larger reach there. The constants
+live in `InGameTouchTheme.h`. Exact flag hits retain priority; the extra halo
 does not override direct unit/building hits and chooses the nearest flag.
-Halo clicks select without moving the flag; direct flag grabs retain dragging.
 Desktop mouse selection retains its original exact-tile hit area.
+On touch, a contact that lands on one of the player's flags, or within that
+same reach, carries the flag instead of panning the map, including straight
+after a tap. Below the tap threshold it is still a tap and selects the flag.
+Past it the flag follows the finger at the offset it was grabbed, so a grab
+beside the flag never makes it jump. It pans the map at a world edge and lands
+with one dropped move order on release. Over the HUD the flag waits where it
+last was. A second finger, focus loss or rotation returns it to where it was
+grabbed and ignores the rest of the touch. Spectators and replays only pan.
+The torus view keeps panning, as its selection has no touch reach.
 On compact layouts the build and flag palettes are a rail rising from the
 bottom corner under the thumb: two columns of buildings in portrait (four in
 landscape), flags and zones in one column (one row in landscape), filled
@@ -316,6 +329,9 @@ NDK and packaging tools, then build target dependencies and stage the project:
 ```sh
 python3 mobile/setup_ndk.py
 python3 mobile/setup_tools.py
+sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
+python3 tools/dev_environment.py sdkmanager -- --licenses
+python3 mobile/setup_tools.py --sdk-packages
 python3 mobile/dependencies.py --arch arm64-v8a --release
 python3 mobile/android.py configure --arch arm64-v8a --release
 ```
@@ -346,7 +362,14 @@ device testing; F-Droid signs its own published APKs.
 The two stores use different signing keys, so switching stores requires
 uninstalling the existing app and backing up or exporting saves first.
 Omit `--release` consistently from both dependency and application commands for
-debug builds. An explicit `JAVA_HOME` takes precedence over the task-local JDK.
+debug builds. An explicit `JAVA_HOME` takes precedence over the shared pinned JDK.
+`--android-sdk PATH` selects an explicit matching SDK; ambient Android SDK variables
+do not replace the managed default. Use `GLOB2_DEV_MODE=isolated` for checkout-local
+tools and uncached dependency builds, including independent release verification.
+See [development storage](../development/reference.md#shared-development-storage)
+for overrides, cache budgets, reporting, and migration. Completed dependency
+bundles include pinned SDL Java sources; packaging never needs discarded vcpkg
+build intermediates.
 Release Android packages use the source package version as `versionName` by
 default; pass `--version-name` to choose a different store-facing value.
 The `--version-code` argument is carried into the generated Gradle project.

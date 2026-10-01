@@ -19,6 +19,14 @@ inline const GAGCore::Color zonePreviewEdge[3] = {{255, 150, 140}, {160, 190, 25
 inline const GAGCore::Color erasePreview{20, 14, 30, 140};
 inline constexpr double textScale = 1.0;
 inline constexpr double target = 48;
+// Reach of a flag's forgiving hit zone, for selecting and for touch grabs: the
+// radius around its tile centre, independent of zoom. 30 points makes a circle
+// of about 9.5 mm, the size one-handed thumb taps stop improving at (Parhi,
+// Karlson and Bederson, 2006). Thumbs are least accurate near the screen's edges
+// and corners (Hoober), so within the band the reach grows linearly to 36.
+inline constexpr double flagReach = 30;
+inline constexpr double flagReachEdge = 36;
+inline constexpr double flagReachEdgeBand = 96;
 inline constexpr double inspectorRow = 44;
 inline constexpr double inspectorHeader = 40;
 inline constexpr double ratioRow = 64;

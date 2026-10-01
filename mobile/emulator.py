@@ -8,6 +8,8 @@ import platform
 import subprocess
 import sys
 from developer_apk import java_environment
+from dev_paths import android_sdk
+from dev_store import android_java_command
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -29,7 +31,7 @@ def main():
     if not 1024<=args.adb_port<=65535 or args.adb_port in (5037,args.port,args.port+1):
         raise ValueError('Choose a separate unprivileged ADB port, outside the emulator console/transport ports')
     lock=json.loads((ROOT/'mobile/emulator.json').read_text())
-    tools=ROOT/'build/mobile-tools';sdk=tools/'android-sdk'
+    tools=ROOT/'build/mobile-tools';sdk=android_sdk(ROOT)
     env=java_environment(ROOT)
     env.pop('ADB_SERVER_SOCKET',None)
     env.pop('ANDROID_SERIAL',None)
@@ -64,7 +66,7 @@ def main():
         if (avd/'config.ini').exists():
             print('Existing task-local AVD:',avd);return
         package='system-images;android-'+str(lock['api'])+';'+lock['tag']+';'+args.arch
-        subprocess.run([str(sdk/'cmdline-tools/19.0/bin/avdmanager'),'create','avd','--name',name,
+        subprocess.run(android_java_command(sdk,'avdmanager',env)+['create','avd','--name',name,
             '--package',package,'--path',str(avd)],input='no\n',text=True,env=env,check=True)
         # A small deterministic surface avoids spending hosted CPU rendering a
         # default high-density handset before the startup checks can run.
