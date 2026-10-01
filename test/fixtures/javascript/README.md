@@ -7,7 +7,7 @@ controllers and an omniscient JavaScript map script. It embeds `ai.js` and
 
 `profile1-256.checksums.gz` records every simulation tick through tick 256.
 The scripts exercise visibility-filtered observations, whole-map queries,
-private RNG streams, explicit state, gameplay orders, large trig inputs and
+private RNG streams, automatically saved globals, gameplay orders, large trig inputs and
 subnormal Math results. These are compatibility fixtures, not benchmarks.
 Changing them requires explaining the intended profile or simulation change.
 
@@ -29,12 +29,17 @@ The `realistic-{economy,survey}-*.txt` files freeze four callbacks on a focused
 32×32 production-engine world. `numeric-corpus.js` covers all exposed Math methods,
 parsing/coercion/formatting, IEEE edge cases and fixed-seed vectors; finite numbers
 in its golden text use hexadecimal binary64 bits. Non-finite script results are
-recorded as observable strings because persisted numbers must be finite.
+recorded as observable strings because returned data requires finite numbers; global snapshots also preserve non-finite numbers.
 
 These additions intentionally expand draft profile 1 coverage. The reproduced
 `hypot(1.2154874465220262, 1.8249387819142753)` disagreement now expects pinned bits `40018a97b64ae2d6` on every
 platform. No fixture preserves the erroneous platform-dependent result. The
-original 256-tick fixture remains unchanged.
+two draft initial saves now embed simple scripts with persistent top-level
+variables. Their traces are regenerated because source bytes and automatic
+global snapshots participate in checksums. Map, seeds, orders and released
+non-JavaScript behavior remain unchanged; numeric and realistic returned-data
+goldens are retained. Global regression cases cover live contexts, restore,
+aliases/cycles, undefined, signed zero, property attributes and rejection rollback.
 
 `JavaScriptSimulation` runs both 256-tick fixtures through the production Engine,
 with real AI callbacks, one/four workers, save/resume at ticks 32 and 128, and

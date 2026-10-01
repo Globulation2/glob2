@@ -34,7 +34,8 @@
       ],
       "patches": [
         "patches/quickjs-ng-0001-profile.patch",
-        "patches/quickjs-ng-0002-second-pass.patch"
+        "patches/quickjs-ng-0002-second-pass.patch",
+        "patches/quickjs-ng-0003-persistent-globals.patch"
       ]
     },
     {

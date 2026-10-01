@@ -21,24 +21,23 @@ selection control.
 - [AI example](../../examples/javascript/ai.js) and
   [scenario example](../../examples/javascript/scenario.js): standalone modules.
   The [map-reading example](../../examples/javascript/map-read.js) records visible
-  wheat near an owned unit without copying a whole map into state.
+  wheat near an owned unit in automatically saved variables.
 - [Compatibility fixture](../../test/fixtures/javascript/README.md): reproducible
   numeric, per-tick and save-continuation verification.
 
 ## Write a script
 
-A single synchronous module exports `step(ctx, state)` and optionally
-`init(ctx, state)`. An AI returns one order or nothing; a map script returns an
-array of effects or nothing. Both receive the same read API, with different
-host-enforced visibility. There are no imports or external module dependencies.
+Declare a synchronous `step(ctx)` or `main(ctx)` function. An AI returns one
+order or nothing; a map script returns an array of effects or nothing. Both use
+the same runtime and read API, with different host-enforced visibility. Ordinary
+top-level variables persist automatically; there is no required state object or
+initialization callback. `export` is optional. Imports are unavailable.
 
 ```javascript
-export function init(ctx, state) {
-  state.decisions = 0;
-}
+let decisions = 0;
 
-export function step(ctx, state) {
-  state.decisions++;
+function step(ctx) {
+  decisions++;
   const buildings = ctx.game.buildings({team: ctx.myTeam, limit: 50});
   const building = buildings.find(b => !b.virtual && b.workers !== 2);
   return building ? {type: 'workers', building, workers: 2} : null;
@@ -59,7 +58,7 @@ glob2 --check-script /absolute/path/to/source.js
 ```
 
 This only compiles/resolves the module: it does not evaluate module code, verify
-that `step` exists, execute callbacks, or validate returned orders/effects. Those
+that `step` or `main` exists, execute callbacks, or validate returned orders/effects. Those
 checks occur during a game. A successful compile check is not a gameplay test.
 
 To replace a map's USL script, write a new map:
@@ -85,19 +84,36 @@ by `glob2-js/1\n`. Map source and runtime state live in the existing MapScript
 payload in JavaScript mode. Saves/replays carry source, not external filenames
 or machine-specific bytecode.
 
-## Callback lifecycle and state
+## Callback lifecycle and globals
 
-Each invocation creates a fresh runtime, evaluates the module, optionally calls
-`init`, then calls `step` with the same context and state object. Initialization
-occurs on the first invocation and is marked complete only after a successful
-commit. Module variables, closures and changes to built-ins disappear after the
-invocation. Use module-level constants freely, but keep ongoing memory in `state`.
+Each AI and map script owns a persistent runtime. Source evaluates once, then
+`step(ctx)` is called at the existing callback cadence; `main(ctx)` is used when
+no `step` function exists. The engine supplies a fresh context for each call.
+Top-level `let`, `const` and `var` bindings, including mutable objects declared
+with `const`, retain their values. Each script is isolated from other scripts.
 
-`state` starts as `{}`. Mutate its properties; replacing your local `state`
-parameter does not replace the host's root object. `init` must return
-`null`/`undefined`. An AI `step` returns one order record or `null`/`undefined`;
-a map `step` returns an effect array or `null`/`undefined`. Returning state is
-not how to persist it.
+The engine automatically snapshots global data after a successful callback and
+stores it with the game. Loading evaluates the original source and restores its
+bindings before the next callback. Source initialization must be deterministic
+and cannot query the world or draw randomness: use `ctx` inside the callback.
+Built-ins and the global object are frozen; declare your script's variables at
+top level instead of attaching properties to `globalThis` or built-ins. Names
+beginning with `__glob2_` are reserved for the engine.
+
+Global data supports plain objects and arrays, including aliases, cycles, sparse
+arrays, property attributes, undefined and non-finite numbers. Null prototypes,
+property order, extensibility and signed zero survive save/load. Symbol keys,
+accessors, custom prototypes, class definitions/instances, Map/Set instances and host context
+objects cannot be retained globally. Functions must remain unchanged definitions
+from the source and may close over top-level variables. Functions with private
+closure locals, or functions created during a callback, cannot be saved;
+move their memory to top-level variables. Source functions are frozen and
+recreated on load; interpreter pointers and executable bytecode are not saved.
+
+An AI callback returns one order record or `null`/`undefined`; a map callback
+returns an effect array or `null`/`undefined`. Return values describe effects,
+not persistent memory. Unsavable global data fails with a diagnostic before any
+orders or effects commit.
 
 AI callbacks follow the existing AI order polling schedule; paused or eliminated
 controllers are not polled. Map callbacks run at the existing world-logic cadence,
@@ -107,7 +123,7 @@ require a game with a mission/GUI context; normal headless Engine sessions suppl
 one. AI observation history is recorded during simulation, even between decisions,
 and disabled/eliminated controllers stop recording it.
 
-State, query arguments and returned results use a restricted data format:
+Query arguments and returned results use a restricted data format:
 
 | Supported | Rejected at the boundary |
 | --- | --- |
@@ -116,9 +132,9 @@ State, query arguments and returned results use a restricted data format:
 | Plain records, including null-prototype records | Class instances, custom prototypes, getters/setters, cycles, Map/Set instances |
 
 Map/Set and other permitted objects may be used temporarily during a callback;
-convert them to ordinary arrays/records before saving or returning them. Shared
-acyclic values are copied as trees, so identity/aliasing does not survive a
-callback. Property order, string content and signed zero do survive save/load.
+convert them to ordinary arrays/records before returning them. Returned
+acyclic values are copied as trees; global snapshots preserve aliases and cycles.
+Property order, string content and signed zero do survive save/load.
 Read records also have a null prototype; consult the reference for safe property
 checks and missing-field behavior.
 
@@ -133,7 +149,7 @@ callback state, and is not rolled back with a rejected decision.
 ## Failures and debugging
 
 Invalid read arguments throw a catchable JavaScript `TypeError`. Catch ordinary
-query errors inside the script if recovery is useful. Returned state and
+query errors inside the script if recovery is useful. Global snapshots and returned
 orders/effects are validated **after** `step` returns, so script code cannot
 catch those host validation errors. A rejected AI decision disables that
 controller, logs a diagnostic and produces no order; later polls also produce
@@ -156,9 +172,9 @@ There is no injected `console` or logging API in profile 1.
 | Limit | Profile 1 |
 | --- | --- |
 | Source | 128 KiB; embedded NUL rejected |
-| Encoded persistent state / result | 1 MiB per value; conversion accounting also applies across callback data |
+| Encoded globals snapshot / result | 1 MiB per value; conversion accounting also applies across callback data |
 | Data nesting | 256 levels |
-| Work | 1,000,000 deterministic units per invocation, shared by compilation, evaluation, init, step and conversion |
+| Work | 1,000,000 deterministic units per callback including conversion/snapshot; source startup and save restoration each have separate budgets |
 | QuickJS heap | 32 MiB |
 | Native data accounting | 32 MiB, cumulative conservative fixed weights across ABIs |
 | Interpreter call depth | 256; physical stack budget is a fatal fallback |
@@ -170,8 +186,8 @@ operations. Container/string entry charges are linear; string searches charge
 actual coerced lengths, and sorting/output charge comparisons/emitted characters.
 Large requests can exceed budgets below their individual dimension limits.
 Budgets are not wall-clock timeouts and are not dynamically sized from hidden
-world contents. A fresh runtime resets invocation budgets; persistent state has
-its own save/load limits.
+world contents. Each callback resets work and conversion budgets; the retained heap stays
+within its fixed limit. Global snapshots have their own save/load limits.
 
 Ordinary synchronous JavaScript syntax and full Math are supported within the
 profile. Transcendental operations and exponentiation use the vendored math subset

@@ -511,6 +511,7 @@ JS_EXTERN void JS_SetRuntimeInfo(JSRuntime *rt, const char *info);
 /* use 0 to disable memory limit */
 /* Glob2: sticky native resource failure, even when script catches the exception. */
 JS_EXTERN bool JS_Glob2HostFailure(JSRuntime *rt);
+
 JS_EXTERN void JS_SetMemoryLimit(JSRuntime *rt, size_t limit);
 JS_EXTERN void JS_SetDumpFlags(JSRuntime *rt, uint64_t flags);
 JS_EXTERN uint64_t JS_GetDumpFlags(JSRuntime *rt);
@@ -1237,6 +1238,11 @@ JS_EXTERN void JS_SetModuleNormalizeFunc2(JSRuntime *rt,
 /* return the import.meta object of a module */
 JS_EXTERN JSValue JS_GetImportMeta(JSContext *ctx, JSModuleDef *m);
 JS_EXTERN JSAtom JS_GetModuleName(JSContext *ctx, JSModuleDef *m);
+/* Host-only access to persistent script module bindings. */
+JS_EXTERN JSValue JS_Glob2ModuleBindings(JSContext *ctx, JSModuleDef *module);
+JS_EXTERN int JS_Glob2RestoreModuleBindings(JSContext *ctx, JSModuleDef *module,
+                                           JSValueConst bindings);
+JS_EXTERN int JS_Glob2ModuleFunction(JSContext *ctx, JSModuleDef *module, JSValueConst value);
 JS_EXTERN JSValue JS_GetModuleNamespace(JSContext *ctx, JSModuleDef *m);
 
 /* associate a JSValue to a C module */

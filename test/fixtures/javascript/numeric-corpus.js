@@ -1,5 +1,6 @@
+let batch=0, batchCount=0, mathMethods=[], results=[];
 // Profile 1: observable results, including non-finite values and signed zero.
-export function step(ctx, state) {
+function step(ctx) {
   const rows = [];
   const record = (name, value) => rows.push([name, typeof value === 'number' && !Number.isFinite(value)
     ? (Number.isNaN(value) ? 'NaN' : value < 0 ? '-Infinity' : 'Infinity') : value]);
@@ -12,14 +13,14 @@ export function step(ctx, state) {
   let seed = 0x4a535031;
   const next = () => { seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5; return seed >>> 0; };
   for (let i=0;i<32;i++) edges.push((1+next()/4294967296)*2**((next()%2098)-1074)*(next()&1?-1:1));
-  const batch=state.batch??0;
-  state.batchCount=unary.length+Math.ceil(edges.length/8)+1;
+  batch=ctx.tick;
+  batchCount=unary.length+Math.ceil(edges.length/8)+1;
   if (batch<unary.length) {
     const method=unary[batch];
     edges.forEach((x,i) => record(`${method}/${i}`,Math[method](x)));
   }
   edges.forEach((x,i) => {
-    if (batch<unary.length || batch>=state.batchCount-1 || Math.floor(i/8)!==batch-unary.length) return;
+    if (batch<unary.length || batch>=batchCount-1 || Math.floor(i/8)!==batch-unary.length) return;
     const y = edges[(i*7+3)%edges.length];
     record(`atan2/${i}`,Math.atan2(x,y)); record(`hypot/${i}`,Math.hypot(x,y,Number.MIN_VALUE));
     record(`pow/${i}`,Math.pow(x,y)); record(`power-operator/${i}`,x**y);
@@ -31,7 +32,7 @@ export function step(ctx, state) {
     record(`fixed/${i}`,x.toFixed(17)); record(`precision/${i}`,x.toPrecision(17));
     record(`exponential/${i}`,x.toExponential(17)); record(`json/${i}`,JSON.stringify(x));
   });
-  if (batch===state.batchCount-1) {
+  if (batch===batchCount-1) {
   record('hypot/architecture-regression',Math.hypot(1.2154874465220262,1.8249387819142753));
   record('hypot/decision',Math.hypot(1.2154874465220262,1.8249387819142753)===2.192672180328695);
   record('hypot/no-arguments',Math.hypot()); record('hypot/inf-nan',Math.hypot(Infinity,NaN));
@@ -48,7 +49,7 @@ export function step(ctx, state) {
   for (const text of ['-0','0.1','4.9406564584124654e-324','1.7976931348623157e308','1e309','1e-999'])
     record(`JSON.parse/${text}`,JSON.parse(text));
   }
-  state.mathMethods=Object.getOwnPropertyNames(Math).filter(k=>typeof Math[k]==='function').sort();
-  state.results=rows;
+  mathMethods=Object.getOwnPropertyNames(Math).filter(k=>typeof Math[k]==='function').sort();
+  results=rows;
   return null;
 }

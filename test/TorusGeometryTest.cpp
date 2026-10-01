@@ -111,10 +111,10 @@ TEST_CASE("planar endpoints; seams; ring geometry; navigation and hovering camer
                 CameraAngles camera = {yaw, pitch};
                 REQUIRE(projectSkyDirection(worldDirection, camera, roll, 80, 65, 18, sky));
                 auto view = rotate(worldDirection, camera);
-                float far = 1000000000;
-                float w = 1 - view.z * far * roll / 18;
-                REQUIRE(std::abs(sky.x - view.x * far * 80 / w) < .2f);
-                REQUIRE(std::abs(sky.y - view.y * far * 65 / w) < .2f);
+                float farDistance = 1000000000;
+                float w = 1 - view.z * farDistance * roll / 18;
+                REQUIRE(std::abs(sky.x - view.x * farDistance * 80 / w) < .2f);
+                REQUIRE(std::abs(sky.y - view.y * farDistance * 65 / w) < .2f);
                 Point zoomed;
                 REQUIRE(projectSkyDirection(worldDirection, camera, roll, 160, 130, 18, zoomed));
                 REQUIRE(distance(zoomed, {sky.x * 2, sky.y * 2, 0}) < .001f);

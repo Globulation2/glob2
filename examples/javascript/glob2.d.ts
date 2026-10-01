@@ -5,10 +5,10 @@
  * Read records are detached null-prototype objects; optional fields are absent,
  * not null. Embedded sources execute automatically as trusted developer code.
  * Limits are reliability/determinism safeguards, not malicious-code protection.
- * Persistent data must not contain undefined or non-finite numbers.
+ * Top-level variables persist automatically. Global snapshots preserve ordinary
+ * object graphs; query/result data must not contain undefined or non-finite numbers.
  */
 export type Data = null | boolean | number | string | Data[] | {[key: string]: Data};
-export type State = {[key: string]: Data};
 
 /** Unit/building namespaces are separate. New/reused slots and conversion get a
  * fresh generation; reset, upgrade and repair preserve identity. Deletion makes
@@ -222,7 +222,6 @@ export type Effect =
   /** IDs 0..3 are panels, 4 is accepted but reserved. */
   {type: 'guiElement'; id: 0 | 1 | 2 | 3 | 4; enabled: boolean};
 
-/** init and step share one invocation; state properties persist only on success. */
-export type Init = (ctx: Context, state: State) => void | null;
-export type AIStep = (ctx: Context, state: State) => Order | void;
-export type MapStep = (ctx: Context, state: State) => Effect[] | null | void;
+/** Declare step or main. Top-level variables persist only on successful commits. */
+export type AIStep = (ctx: Context) => Order | void;
+export type MapStep = (ctx: Context) => Effect[] | null | void;

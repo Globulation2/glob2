@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
+#include <thread>
 using namespace Script;
 namespace
 {
@@ -16,6 +17,10 @@ Result execute(const std::string &source, Value state = Value::object(), bool in
 	h.team = 0;
 	h.random = [] { return 123456789u; };
 	h.query = [](const auto &, const auto &, const QueryBudget &) { return Value::array(); };
+	state.fields.erase(std::remove_if(state.fields.begin(), state.fields.end(),
+									  [](const auto &field)
+									  { return field.first == "__glob2_globals"; }),
+					   state.fields.end());
 	return makeRuntime()->invoke(source, state, initialize, h);
 }
 void rejects(const std::string &source)
@@ -58,7 +63,7 @@ TEST_CASE("JavaScript persistent value encoding and Unicode" *
 	GLOB2_REQUIRE(unicodeNext.state.get("ok").number == 1, "JavaScript contract");
 }
 
-TEST_CASE("JavaScript fresh contexts and explicit state" * doctest::test_suite("JavaScriptRuntime"))
+TEST_CASE("JavaScript legacy draft callback argument" * doctest::test_suite("JavaScriptRuntime"))
 {
 	auto result = execute(
 		"let hidden=0; export function init(ctx,s){s.started=true;} export function "
@@ -258,4 +263,186 @@ TEST_CASE("JavaScript hypot ARM64 and x86-64 regression" * doctest::test_suite("
 	CHECK(std::bit_cast<std::uint64_t>(result.state.get("hypot").number) ==
 		  UINT64_C(0x40018a97b64ae2d6));
 	CHECK(result.state.get("branch").number == 1);
+}
+
+TEST_CASE("JavaScript globals persist and restore without an explicit state object" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	const std::string source = R"(
+let calls = 0;
+const memory = {ticks: []};
+function step(ctx) {
+  calls++;
+  memory.ticks.push(ctx.tick);
+  return {calls, ticks: memory.ticks.slice(), arguments: arguments.length};
+}
+)";
+	Host host;
+	auto runtime = makeRuntime();
+	Value snapshot = Value::object();
+	for (unsigned tick = 0; tick < 4; ++tick)
+	{
+		host.tick = tick;
+		auto result = runtime->invoke(source, snapshot, tick == 0, host);
+		CHECK(result.effects.get("calls").number == tick + 1);
+		CHECK(result.effects.get("ticks").items.size() == tick + 1);
+		CHECK(result.effects.get("arguments").number == 1);
+		snapshot = Value::decode(result.state.encode());
+		if (tick == 1)
+			runtime = makeRuntime();
+	}
+}
+
+TEST_CASE("JavaScript main restores aliases cycles undefined and numeric globals" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	const std::string source = R"(
+var count = 0;
+let value = {n: 0};
+const alias = value;
+let absent;
+const special = [-0, NaN, Infinity, -Infinity];
+value.self = value;
+const increment = () => ++count;
+function main(ctx) {
+  value.n++;
+  return {count: increment(), n: alias.n,
+    same: value === alias && value.self === value,
+    absent: absent === undefined,
+    numbers: Object.is(special[0], -0) && Number.isNaN(special[1]) &&
+      special[2] === Infinity && special[3] === -Infinity};
+}
+)";
+	Host host;
+	Value snapshot = Value::object();
+	for (unsigned tick = 0; tick < 4; ++tick)
+	{
+		auto result = makeRuntime()->invoke(source, snapshot, tick == 0, host);
+		CHECK(result.effects.get("count").number == tick + 1);
+		CHECK(result.effects.get("n").number == tick + 1);
+		CHECK(result.effects.get("same").number == 1);
+		CHECK(result.effects.get("absent").number == 1);
+		CHECK(result.effects.get("numbers").number == 1);
+		snapshot = Value::decode(result.state.encode());
+	}
+}
+
+TEST_CASE("JavaScript rejected callbacks roll back global mutations" *
+		  doctest::test_suite("JavaScriptTransactions"))
+{
+	const std::string source = R"(
+let calls = 0;
+function step(ctx) {
+  calls++;
+  if (ctx.tick === 2) throw new Error('rejected');
+  return {calls};
+}
+)";
+	Host host;
+	auto runtime = makeRuntime();
+	auto accepted = runtime->invoke(source, Value::object(), true, host);
+	host.tick = 2;
+	CHECK_THROWS(runtime->invoke(source, accepted.state, false, host));
+	host.tick = 3;
+	auto resumed = runtime->invoke(source, accepted.state, false, host);
+	CHECK(resumed.effects.get("calls").number == 2);
+	// A host can reject an otherwise valid return before committing its effects.
+	auto rejected = runtime->invoke(source, resumed.state, false, host);
+	runtime->discard();
+	auto retry = runtime->invoke(source, resumed.state, false, host);
+	CHECK(retry.state.encode() == rejected.state.encode());
+}
+
+TEST_CASE("JavaScript global object descriptors survive save and restore" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	const std::string source = R"(
+const items = [];
+items.length = 4;
+items[2] = {count: 0};
+Object.defineProperty(items[2], 'hidden', {value: 19, enumerable: false});
+Object.seal(items[2]);
+const dictionary = Object.create(null);
+dictionary.item = items[2];
+function step(ctx) {
+  items[2].count++;
+  return {count: items[2].count, hole: !(0 in items), length: items.length,
+    hidden: items[2].hidden, sealed: Object.isSealed(items[2]),
+    enumerable: Object.keys(items[2]).length === 1,
+    nullPrototype: Object.getPrototypeOf(dictionary) === null && dictionary.item === items[2]};
+}
+)";
+	Host host;
+	Value snapshot = Value::object();
+	for (unsigned tick = 0; tick < 3; ++tick)
+	{
+		auto result = makeRuntime()->invoke(source, snapshot, tick == 0, host);
+		CHECK(result.effects.get("count").number == tick + 1);
+		CHECK(result.effects.get("hole").number == 1);
+		CHECK(result.effects.get("length").number == 4);
+		CHECK(result.effects.get("hidden").number == 19);
+		CHECK(result.effects.get("sealed").number == 1);
+		CHECK(result.effects.get("enumerable").number == 1);
+		CHECK(result.effects.get("nullPrototype").number == 1);
+		snapshot = Value::decode(result.state.encode());
+	}
+}
+
+TEST_CASE("JavaScript unsaveable global values fail explicitly" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	rejects("let counter=(()=>{let n=0;return ()=>++n;})(); function step(){return counter();}");
+	rejects("let callback;function step(){callback=()=>1;}");
+	rejects("class Counter {static #n=0;static next(){return ++this.#n;}} function step(){return "
+			"Counter.next();}");
+	rejects("let data;function step(){data=new Map();}");
+	rejects("let data;function step(){data=new (class {})();}");
+	rejects("function step(){Math.extra=1;}");
+}
+
+#ifndef __EMSCRIPTEN__
+TEST_CASE("JavaScript persistent contexts can migrate between serial workers" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	auto runtime = makeRuntime();
+	const std::string source = "let calls=0; function step(){return {calls:++calls};}";
+	Host host;
+	Result first;
+	std::exception_ptr failure;
+	std::thread worker(
+		[&]
+		{
+			try
+			{
+				first = runtime->invoke(source, Value::object(), true, host);
+			}
+			catch (...)
+			{
+				failure = std::current_exception();
+			}
+		});
+	worker.join();
+	if (failure)
+		std::rethrow_exception(failure);
+	auto second = runtime->invoke(source, first.state, false, host);
+	CHECK(first.effects.get("calls").number == 1);
+	CHECK(second.effects.get("calls").number == 2);
+}
+#endif
+
+TEST_CASE("JavaScript malformed automatic global snapshots are rejected" *
+		  doctest::test_suite("JavaScriptRuntime"))
+{
+	Host host;
+	const std::string source = "let count=0;function step(){return {count:++count};}";
+	auto saved = makeRuntime()->invoke(source, Value::object(), true, host).state;
+	auto corrupted = saved;
+	corrupted.set("__glob2_globals", Value::object());
+	CHECK_THROWS(makeRuntime()->invoke(source, corrupted, false, host));
+	corrupted = saved;
+	auto graph = corrupted.get("__glob2_globals");
+	graph.fields.erase(graph.fields.begin());
+	corrupted.set("__glob2_globals", graph);
+	CHECK_THROWS(makeRuntime()->invoke(source, corrupted, false, host));
+	CHECK(makeRuntime()->invoke(source, saved, false, host).effects.get("count").number == 2);
 }

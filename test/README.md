@@ -1019,7 +1019,8 @@ Build `unit-tests engine-tests` with SCons and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`
 (use the build directory for your platform).
 The runtime harness checks capability restrictions, deterministic work exhaustion,
-state encoding and exact Math output bits. The integration harness checks AI
+automatic global snapshots, aliases/cycles, reload/rejection rollback, serial
+worker migration and exact Math output bits. The integration harness checks AI
 visibility/ownership and transactional scenario effects and continuation. Run
 `python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check`
 with a fresh output directory for the frozen per-tick profile trace, worker

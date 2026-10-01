@@ -22,7 +22,7 @@ entity objects, pathfinding queries or direct mutation methods.
   game. Nested arrays are ordinary arrays.
 - An absent optional field reads as `undefined`. It is different from a present
   field containing `null`, `false`, zero or an empty array. Do not save an absent
-  field as `undefined` in persistent state: omit it or use `null` explicitly.
+  field as `undefined` in returned data: omit it or use `null` explicitly. Global variables can contain undefined.
 - A hidden, dead, missing or stale entity lookup returns `null`. Malformed query
   arguments throw a JavaScript `TypeError`. Unsupported scenario queries also
   throw in AI scripts. Budget and failure behavior is described in the guide.
@@ -63,7 +63,7 @@ of passing `undefined`, which is not supported boundary data.
 Lists have stable ascending team/slot order. Offset skips **visible results**,
 not hidden slots; a zero limit returns an empty array. Each list call has a
 fixed work charge as well as charges for its returned records. Read small pages
-and distribute large scans across callbacks using explicit state.
+and distribute large scans across callbacks using persistent top-level variables.
 
 ```javascript
 const page = ctx.game.buildings({team: ctx.myTeam, offset: 0, limit: 50});
@@ -234,10 +234,13 @@ reference. `game.unit({id: tile.groundUnit})` returns `null` because it lacks a
 generation. Empty occupants use `65535`, **not** `null` or zero.
 
 ```javascript
-const tiles = ctx.game.map.region(10, 20, 8, 6);
-const wheat = tiles.filter(t => t.visible && t.resource.type === 1);
-// A resource may be eternal with amount zero: test type !== 255 for presence.
-state.wheatTiles = wheat.map(t => ({x: t.x, y: t.y, amount: t.resource.amount}));
+let wheatTiles = [];
+function step(ctx) {
+  const tiles = ctx.game.map.region(10, 20, 8, 6);
+  const wheat = tiles.filter(t => t.visible && t.resource.type === 1);
+  // A resource may be eternal with amount zero: test type !== 255 for presence.
+  wheatTiles = wheat.map(t => ({x: t.x, y: t.y, amount: t.resource.amount}));
+}
 ```
 
 ## Numeric values

@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <cfenv>
 #include <cmath>
+#include <map>
+#include <bit>
+#include <charconv>
 #include <set>
 #include <string_view>
 #include <stdexcept>
@@ -20,7 +23,7 @@ struct Environment
 	std::uint64_t fuel = FuelLimit;
 	std::size_t dataBytes = 0, nativeBytes = 0;
 	bool hostFailed = false;
-	std::set<void *> ancestors;
+	std::set<void *> ancestors, frozen;
 	explicit Environment(Host *h) : host(h)
 	{
 		try
@@ -87,6 +90,47 @@ struct Environment
 		recordPrototype = get(object.get(), "prototype");
 		JSValueOwner math(ctx, get(global.get(), "Math"));
 		set(math.get(), "random", JS_NewCFunction(ctx, random, "random", 0));
+	}
+	void freeze(JSValueConst value, unsigned depth = 0)
+	{
+		if (!JS_IsObject(value) || !frozen.insert(JS_VALUE_GET_PTR(value)).second)
+			return;
+		if (depth > 64)
+			throw std::runtime_error("Source function/prototype nesting limit exceeded");
+		charge(1);
+		JSEnumerationOwner enumeration(ctx);
+		if (JS_GetOwnPropertyNames(ctx, &enumeration.keys, &enumeration.count, value,
+								   JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK) < 0)
+			fail();
+		charge(enumeration.count);
+		for (unsigned i = 0; i < enumeration.count; ++i)
+		{
+			JSPropertyOwner property(ctx);
+			if (JS_GetOwnProperty(ctx, &property.descriptor, value, enumeration.keys[i].atom) < 0)
+				fail();
+			freeze(property.descriptor.value, depth + 1);
+			freeze(property.descriptor.getter, depth + 1);
+			freeze(property.descriptor.setter, depth + 1);
+		}
+		JSValueOwner global(ctx, JS_GetGlobalObject(ctx));
+		JSValueOwner object(ctx, get(global.get(), "Object"));
+		JSValueOwner function(ctx, get(object.get(), "freeze"));
+		JSValue args[] = {value};
+		JSValueOwner result(ctx, JS_Call(ctx, function.get(), JS_UNDEFINED, 1, args));
+		if (JS_IsException(result.get()))
+			fail();
+	}
+	void begin(Host *next)
+	{
+		if (std::fegetround() != FE_TONEAREST)
+			throw HostFailure("Unsupported floating point rounding mode");
+		// AI work can move between workers. Calls on one runtime are serial,
+		// but QuickJS's physical-stack guard must use the calling thread.
+		JS_UpdateStackTop(runtime);
+		host = next;
+		fuel = FuelLimit;
+		dataBytes = nativeBytes = 0;
+		ancestors.clear();
 	}
 	JSValue get(JSValueConst object, const char *name)
 	{
@@ -419,8 +463,18 @@ struct Environment
 		if (source.size() > SourceLimit || source.find('\0') != std::string::npos)
 			throw std::runtime_error("Invalid or oversized JavaScript source");
 		charge(source.size());
-		JSValueOwner code(ctx, JS_Eval(ctx, source.data(), source.size(), "<glob2-script>",
-									   JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY));
+		// A plain script needs only a step(ctx) or main(ctx) declaration. Compile
+		// as a module so top-level let/const/var bindings have script ownership.
+		const std::string moduleSource = source + R"(
+export function __glob2_step(ctx, legacy) {
+  if (typeof step === 'function') return step.length > 1 ? step(ctx, legacy) : step(ctx);
+  if (typeof main === 'function') return main.length > 1 ? main(ctx, legacy) : main(ctx);
+  throw new TypeError('Script must declare step(ctx) or main(ctx)');
+}
+)";
+		JSValueOwner code(ctx,
+						  JS_Eval(ctx, moduleSource.data(), moduleSource.size(), "<glob2-script>",
+								  JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY));
 		if (JS_IsException(code.get()))
 			fail();
 		if (JS_ResolveModule(ctx, code.get()) < 0)
@@ -428,6 +482,243 @@ struct Environment
 		return code.release();
 	}
 };
+// Data graphs are portable engine values. Aliases, cycles, undefined, signed
+// zero and property attributes survive restoring into a newly evaluated module.
+// Functions are stable source definitions, addressed by binding name.
+class GlobalsCodec
+{
+	Environment &e;
+	JSValueConst definitions;
+	std::map<void *, unsigned> objects;
+	Value nodes = Value::array();
+	std::map<void *, std::string> functions;
+
+	Value token(JSValueConst value, unsigned depth)
+	{
+		e.charge(1);
+		if (depth > DepthLimit)
+			throw std::runtime_error("Global data nesting limit exceeded");
+		if (JS_IsUndefined(value))
+		{
+			Value tagged = Value::array();
+			tagged.items.emplace_back("undefined");
+			return tagged;
+		}
+		if (!JS_IsObject(value))
+		{
+			if (JS_IsNumber(value))
+			{
+				double number;
+				if (JS_ToFloat64(e.ctx, &number, value) < 0)
+					e.fail();
+				if (!std::isfinite(number))
+				{
+					const auto bits = std::bit_cast<std::uint64_t>(number);
+					std::string text(16, '0');
+					for (unsigned i = 0; i < 16; ++i)
+						text[i] = "0123456789abcdef"[(bits >> (4 * (15 - i))) & 15];
+					Value tagged = Value::array();
+					tagged.items = {Value("number"), Value(text)};
+					return tagged;
+				}
+			}
+			return e.fromJS(value);
+		}
+		void *identity = JS_VALUE_GET_PTR(value);
+		if (JS_IsFunction(e.ctx, value))
+		{
+			auto function = functions.find(identity);
+			if (function == functions.end())
+				throw std::runtime_error("Global functions must be unchanged source definitions; "
+										 "captured local closures are not saveable");
+			Value reference = Value::array();
+			reference.items = {Value("function"), Value(function->second)};
+			return reference;
+		}
+		const bool array = JS_IsArray(value);
+		if (JS_IsProxy(value) || (JS_GetClassID(value) != 1 && !array))
+			throw std::runtime_error("Persistent globals require plain objects and arrays");
+		JSValueOwner prototype(e.ctx, JS_GetPrototype(e.ctx, value));
+		if (JS_IsException(prototype.get()))
+			e.fail();
+		if (array && !JS_IsNull(prototype.get()))
+		{
+			JSValueOwner global(e.ctx, JS_GetGlobalObject(e.ctx));
+			JSValueOwner constructor(e.ctx, e.get(global.get(), "Array"));
+			JSValueOwner ordinary(e.ctx, e.get(constructor.get(), "prototype"));
+			if (JS_VALUE_GET_PTR(prototype.get()) != JS_VALUE_GET_PTR(ordinary.get()))
+				throw std::runtime_error("Persistent arrays cannot have custom prototypes");
+		}
+		if (!array && !JS_IsNull(prototype.get()) &&
+			JS_VALUE_GET_PTR(prototype.get()) != JS_VALUE_GET_PTR(e.recordPrototype))
+			throw std::runtime_error("Persistent global objects cannot have custom prototypes");
+		Value reference = Value::array();
+		auto existing = objects.find(identity);
+		if (existing != objects.end())
+		{
+			reference.items = {Value("ref"), Value(existing->second)};
+			return reference;
+		}
+		e.chargeNative(NativeValueCost + 4 * NativeFieldCost);
+		unsigned id = nodes.items.size();
+		objects.emplace(identity, id);
+		nodes.items.push_back(Value());
+		reference.items = {Value("ref"), Value(id)};
+		Value node =
+			Value::object().set("array", array).set("nullPrototype", JS_IsNull(prototype.get()));
+		Value properties = Value::array();
+		JSEnumerationOwner enumeration(e.ctx);
+		if (JS_GetOwnPropertyNames(e.ctx, &enumeration.keys, &enumeration.count, value,
+								   JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK) < 0)
+			e.fail();
+		e.charge(enumeration.count);
+		for (unsigned i = 0; i < enumeration.count; ++i)
+		{
+			JSPropertyOwner property(e.ctx);
+			e.property(property, value, enumeration.keys[i].atom);
+			e.chargeNative(NativeFieldCost + 3 * NativeValueCost);
+			Value entry = Value::array();
+			entry.items = {Value(e.key(enumeration.keys[i].atom)),
+						   token(property.descriptor.value, depth + 1),
+						   Value(property.descriptor.flags & JS_PROP_C_W_E)};
+			properties.items.push_back(std::move(entry));
+		}
+		node.set("properties", std::move(properties));
+		// Extensibility is part of observable state, too.
+		int extensible = JS_IsExtensible(e.ctx, value);
+		if (extensible < 0)
+			e.fail();
+		node.set("extensible", extensible != 0);
+		nodes.items[id] = std::move(node);
+		return reference;
+	}
+
+  public:
+	GlobalsCodec(Environment &environment, JSValueConst initial)
+		: e(environment), definitions(initial)
+	{
+		JSEnumerationOwner enumeration(e.ctx);
+		if (JS_GetOwnPropertyNames(e.ctx, &enumeration.keys, &enumeration.count, initial,
+								   JS_GPN_STRING_MASK) < 0)
+			e.fail();
+		for (unsigned i = 0; i < enumeration.count; ++i)
+		{
+			JSValueOwner value(e.ctx, JS_GetProperty(e.ctx, initial, enumeration.keys[i].atom));
+			if (JS_IsException(value.get()))
+				e.fail();
+			if (JS_IsFunction(e.ctx, value.get()))
+				functions.emplace(JS_VALUE_GET_PTR(value.get()), e.key(enumeration.keys[i].atom));
+		}
+	}
+	Value capture(JSValueConst root)
+	{
+		auto reference = token(root, 0);
+		return Value::object().set("root", std::move(reference)).set("nodes", std::move(nodes));
+	}
+	JSValue restore(const Value &snapshot)
+	{
+		const auto &saved = snapshot.get("nodes");
+		if (saved.kind != Value::Array || saved.items.size() > StateLimit)
+			throw std::runtime_error("Invalid global snapshot nodes");
+		std::vector<JSValueOwner> values;
+		values.reserve(saved.items.size());
+		for (const auto &node : saved.items)
+		{
+			e.charge(1);
+			if (node.kind != Value::Object || node.get("array").kind != Value::Boolean ||
+				node.get("nullPrototype").kind != Value::Boolean ||
+				node.get("extensible").kind != Value::Boolean)
+				throw std::runtime_error("Invalid global snapshot object");
+			values.emplace_back(e.ctx,
+								node.get("array").number
+									? JS_NewArray(e.ctx)
+									: JS_NewObjectProto(e.ctx, node.get("nullPrototype").number
+																   ? JS_NULL
+																   : e.recordPrototype));
+			if (JS_IsException(values.back().get()))
+				e.fail();
+			if (node.get("array").number && node.get("nullPrototype").number &&
+				JS_SetPrototype(e.ctx, values.back().get(), JS_NULL) < 0)
+				e.fail();
+		}
+		auto decode = [&](const Value &value) -> JSValue
+		{
+			e.charge(1);
+			if (value.kind != Value::Array)
+				return e.toJS(value);
+			if (value.items.size() == 1 && value.items[0].text == "undefined")
+				return JS_UNDEFINED;
+			if (value.items.size() != 2 || value.items[0].kind != Value::String)
+				throw std::runtime_error("Invalid global snapshot reference");
+			if (value.items[0].text == "ref")
+			{
+				const auto &id = value.items[1];
+				if (id.kind != Value::Number || id.number < 0 || id.number >= values.size() ||
+					static_cast<unsigned>(id.number) != id.number)
+					throw std::runtime_error("Invalid global snapshot object reference");
+				return JS_DupValue(e.ctx, values[unsigned(id.number)].get());
+			}
+			if (value.items[0].text == "function" && value.items[1].kind == Value::String)
+			{
+				const auto &name = value.items[1].text;
+				JSAtomOwner atom(e.ctx, JS_NewAtomLen(e.ctx, name.data(), name.size()));
+				if (atom.get() == JS_ATOM_NULL)
+					e.fail();
+				auto function = JS_GetProperty(e.ctx, definitions, atom.get());
+				if (JS_IsException(function))
+					e.fail();
+				if (!JS_IsFunction(e.ctx, function))
+				{
+					JS_FreeValue(e.ctx, function);
+					throw std::runtime_error("Invalid global snapshot function reference");
+				}
+				return function;
+			}
+			if (value.items[0].text == "number" && value.items[1].kind == Value::String)
+			{
+				const auto &text = value.items[1].text;
+				std::uint64_t bits;
+				auto parsed = std::from_chars(text.data(), text.data() + text.size(), bits, 16);
+				if (text.size() != 16 || parsed.ec != std::errc() ||
+					parsed.ptr != text.data() + text.size())
+					throw std::runtime_error("Invalid global snapshot number bits");
+				const auto number = std::bit_cast<double>(bits);
+				if (std::isfinite(number))
+					throw std::runtime_error("Invalid global snapshot non-finite number");
+				return JS_NewFloat64(e.ctx, number);
+			}
+			throw std::runtime_error("Invalid global snapshot tag");
+		};
+		for (unsigned i = 0; i < saved.items.size(); ++i)
+		{
+			const auto &properties = saved.items[i].get("properties");
+			if (properties.kind != Value::Array)
+				throw std::runtime_error("Invalid global snapshot properties");
+			std::set<std::string> names;
+			for (const auto &entry : properties.items)
+			{
+				e.chargeNative(NativeFieldCost);
+				if (entry.kind != Value::Array || entry.items.size() != 3 ||
+					entry.items[0].kind != Value::String || entry.items[2].kind != Value::Number ||
+					entry.items[2].number < 0 || entry.items[2].number > JS_PROP_C_W_E ||
+					static_cast<int>(entry.items[2].number) != entry.items[2].number ||
+					!names.insert(entry.items[0].text).second)
+					throw std::runtime_error("Invalid global snapshot property");
+				JSAtomOwner atom(e.ctx, JS_NewAtomLen(e.ctx, entry.items[0].text.data(),
+													  entry.items[0].text.size()));
+				if (atom.get() == JS_ATOM_NULL ||
+					JS_DefinePropertyValue(e.ctx, values[i].get(), atom.get(),
+										   decode(entry.items[1]), int(entry.items[2].number)) < 0)
+					e.fail();
+			}
+			if (!saved.items[i].get("extensible").number &&
+				JS_PreventExtensions(e.ctx, values[i].get()) < 0)
+				e.fail();
+		}
+		return decode(snapshot.get("root"));
+	}
+};
+
 class QuickRuntime : public Runtime
 {
 	static void evaluate(Environment &environment, JSValueOwner &code)
@@ -461,6 +752,54 @@ class QuickRuntime : public Runtime
 		return result;
 	}
 
+	struct Live
+	{
+		Environment environment{nullptr};
+		JSModuleDef *module = nullptr;
+		std::unique_ptr<JSValueOwner> exports, definitions;
+		std::string source, candidate;
+		explicit Live(const std::string &text) : source(text)
+		{
+			auto &e = environment;
+			JSValueOwner global(e.ctx, JS_GetGlobalObject(e.ctx));
+			e.freeze(global.get());
+			JSValueOwner code(e.ctx, e.compile(text));
+			module = static_cast<JSModuleDef *>(JS_VALUE_GET_PTR(code.get()));
+			evaluate(e, code);
+			exports = std::make_unique<JSValueOwner>(e.ctx, JS_GetModuleNamespace(e.ctx, module));
+			JSValueOwner initial(e.ctx, JS_Glob2ModuleBindings(e.ctx, module));
+			definitions = std::make_unique<JSValueOwner>(e.ctx, JS_NewObjectProto(e.ctx, JS_NULL));
+			if (JS_IsException(exports->get()) || JS_IsException(initial.get()) ||
+				JS_IsException(definitions->get()))
+				e.fail();
+			JSEnumerationOwner enumeration(e.ctx);
+			if (JS_GetOwnPropertyNames(e.ctx, &enumeration.keys, &enumeration.count, initial.get(),
+									   JS_GPN_STRING_MASK) < 0)
+				e.fail();
+			for (unsigned i = 0; i < enumeration.count; ++i)
+			{
+				JSValueOwner value(e.ctx,
+								   JS_GetProperty(e.ctx, initial.get(), enumeration.keys[i].atom));
+				if (JS_IsException(value.get()))
+					e.fail();
+				if (JS_IsFunction(e.ctx, value.get()))
+				{
+					int persistent = JS_Glob2ModuleFunction(e.ctx, module, value.get());
+					if (persistent < 0)
+						e.fail();
+					if (!persistent)
+						throw std::runtime_error("Global functions cannot capture private local "
+												 "state; use top-level variables");
+					e.freeze(value.get());
+					if (JS_DefinePropertyValue(e.ctx, definitions->get(), enumeration.keys[i].atom,
+											   value.release(), JS_PROP_C_W_E) < 0)
+						e.fail();
+				}
+			}
+		}
+	};
+	std::unique_ptr<Live> live;
+
   public:
 	void validate(const std::string &source) override
 	{
@@ -474,40 +813,120 @@ class QuickRuntime : public Runtime
 			throw HostFailure("Native allocation failed while validating JavaScript");
 		}
 	}
-
+	void discard() noexcept override { live.reset(); }
+	Value inspectGlobals() override
+	{
+		if (!live)
+			return Value::object();
+		auto &e = live->environment;
+		e.begin(nullptr);
+		JSValueOwner bindings(e.ctx, JS_Glob2ModuleBindings(e.ctx, live->module));
+		JSValueOwner data(e.ctx, JS_NewObjectProto(e.ctx, JS_NULL));
+		if (JS_IsException(bindings.get()) || JS_IsException(data.get()))
+			e.fail();
+		JSEnumerationOwner enumeration(e.ctx);
+		if (JS_GetOwnPropertyNames(e.ctx, &enumeration.keys, &enumeration.count, bindings.get(),
+								   JS_GPN_STRING_MASK) < 0)
+			e.fail();
+		for (unsigned i = 0; i < enumeration.count; ++i)
+		{
+			JSValueOwner value(e.ctx,
+							   JS_GetProperty(e.ctx, bindings.get(), enumeration.keys[i].atom));
+			if (JS_IsException(value.get()))
+				e.fail();
+			if (!JS_IsFunction(e.ctx, value.get()) && !JS_IsUndefined(value.get()))
+				if (JS_DefinePropertyValue(e.ctx, data.get(), enumeration.keys[i].atom,
+										   value.release(), JS_PROP_C_W_E) < 0)
+					e.fail();
+		}
+		return e.fromJS(data.get());
+	}
 	Result invoke(const std::string &source, const Value &state, bool initialize,
 				  Host &host) override
 	{
-		Environment environment(&host);
-		auto *ctx = environment.ctx;
-		JSValueOwner code(ctx, environment.compile(source));
-		auto *module = static_cast<JSModuleDef *>(JS_VALUE_GET_PTR(code.get()));
-		evaluate(environment, code);
-		JSValueOwner exports(ctx, JS_GetModuleNamespace(ctx, module));
-		if (JS_IsException(exports.get()))
-			environment.fail();
-		JSValueOwner context(ctx, environment.context());
-		JSValueOwner scriptState(ctx, environment.toJS(state));
-		if (JS_IsException(scriptState.get()))
-			environment.fail();
-		if (initialize)
+		try
 		{
-			auto result =
-				call(environment, exports.get(), "init", context.get(), scriptState.get(), true);
-			if (!JS_IsUndefined(result.get()) && !JS_IsNull(result.get()))
-				throw std::runtime_error("init must not return effects");
+			const auto encoded = state.encode();
+			const bool rebuild = !live || live->source != source || live->candidate != encoded;
+			if (rebuild)
+				live = std::make_unique<Live>(source);
+			auto &e = live->environment;
+			e.begin(nullptr);
+			auto *ctx = e.ctx;
+			GlobalsCodec codec(e, live->definitions->get());
+			if (rebuild && state.get("__glob2_globals").kind != Value::Null)
+			{
+				JSValueOwner restored(ctx, codec.restore(state.get("__glob2_globals")));
+				if (!JS_IsObject(restored.get()) || JS_GetClassID(restored.get()) != 1)
+					throw std::runtime_error("Invalid global snapshot bindings");
+				JSValueOwner current(ctx, JS_Glob2ModuleBindings(ctx, live->module));
+				if (JS_IsException(current.get()))
+					e.fail();
+				JSEnumerationOwner expected(ctx), actual(ctx);
+				if (JS_GetOwnPropertyNames(ctx, &expected.keys, &expected.count, current.get(),
+										   JS_GPN_STRING_MASK) < 0 ||
+					JS_GetOwnPropertyNames(ctx, &actual.keys, &actual.count, restored.get(),
+										   JS_GPN_STRING_MASK) < 0)
+					e.fail();
+				e.charge(expected.count);
+				if (expected.count != actual.count)
+					throw std::runtime_error("Global snapshot bindings differ from script source");
+				for (unsigned i = 0; i < expected.count; ++i)
+				{
+					JSPropertyOwner property(ctx);
+					int present = JS_GetOwnProperty(ctx, &property.descriptor, restored.get(),
+													expected.keys[i].atom);
+					if (present < 0)
+						e.fail();
+					if (!present)
+						throw std::runtime_error("Global snapshot binding is missing");
+				}
+				if (JS_Glob2RestoreModuleBindings(ctx, live->module, restored.get()) < 0)
+					e.fail();
+			}
+			e.begin(&host);
+			// Retain the old draft argument for embedded draft scripts. New scripts
+			// use ordinary bindings. Do not copy the automatic snapshot here.
+			Value legacy = Value::object();
+			for (const auto &field : state.fields)
+				if (field.first != "__glob2_globals")
+					legacy.fields.push_back(field);
+			JSValueOwner context(ctx, e.context());
+			JSValueOwner scriptState(ctx, e.toJS(legacy));
+			if (initialize)
+			{
+				auto result =
+					call(e, live->exports->get(), "init", context.get(), scriptState.get(), true);
+				if (!JS_IsUndefined(result.get()) && !JS_IsNull(result.get()))
+					throw std::runtime_error("init must not return effects");
+			}
+			auto effects = call(e, live->exports->get(), "__glob2_step", context.get(),
+								scriptState.get(), false);
+			if (e.hostFailed || JS_Glob2HostFailure(e.runtime))
+				throw HostFailure("JavaScript native resource limit exhausted");
+			if (!e.fuel)
+				throw std::runtime_error("JavaScript work budget exhausted");
+			Result result{e.fromJS(scriptState.get()),
+						  JS_IsUndefined(effects.get()) ? Value() : e.fromJS(effects.get())};
+			JSValueOwner bindings(ctx, JS_Glob2ModuleBindings(ctx, live->module));
+			if (JS_IsException(bindings.get()))
+				e.fail();
+			result.state.set("__glob2_globals", codec.capture(bindings.get()));
+			live->candidate = result.state.encode();
+			result.effects.encode();
+			e.host = nullptr;
+			return result;
 		}
-		auto effects =
-			call(environment, exports.get(), "step", context.get(), scriptState.get(), false);
-		if (environment.hostFailed || JS_Glob2HostFailure(environment.runtime))
-			throw HostFailure("JavaScript native resource limit exhausted");
-		if (!environment.fuel)
-			throw std::runtime_error("JavaScript work budget exhausted");
-		Result result{environment.fromJS(scriptState.get()),
-					  JS_IsUndefined(effects.get()) ? Value() : environment.fromJS(effects.get())};
-		result.state.encode();
-		result.effects.encode();
-		return result;
+		catch (const std::bad_alloc &)
+		{
+			discard();
+			throw HostFailure("Native allocation failed in persistent JavaScript runtime");
+		}
+		catch (...)
+		{
+			discard();
+			throw;
+		}
 	}
 };
 } // namespace

@@ -22,6 +22,7 @@ bool AIJavaScript::load(GAGCore::InputStream *s, Player *, Sint32 version)
 	s->readEnterSection("JavaScriptAI");
 	if (s->readUint32("profile") != Script::ProfileVersion)
 		throw std::runtime_error("Unsupported JavaScript AI profile");
+	runtime->discard();
 	state = Script::Value::decode(s->readText("state"));
 	initialized = s->readUint8("initialized");
 	disabled = s->readUint8("disabled");
@@ -67,16 +68,19 @@ std::shared_ptr<Order> AIJavaScript::getOrder()
 	}
 	catch (const Script::HostFailure &)
 	{
+		runtime->discard();
 		restoreRandom(checkpoint);
 		throw;
 	}
 	catch (const std::bad_alloc &)
 	{
+		runtime->discard();
 		restoreRandom(checkpoint);
 		throw Script::HostFailure("Native allocation failed in JavaScript controller");
 	}
 	catch (const std::exception &ex)
 	{
+		runtime->discard();
 		restoreRandom(checkpoint);
 		// Prepare the diagnostic and fallback before publishing disabled state.
 		try

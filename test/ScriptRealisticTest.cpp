@@ -11,7 +11,7 @@
 TEST_CASE("JavaScript realistic economic planner and scenario survey" *
 		  doctest::test_suite("JavaScriptRealistic"))
 {
-	glob2test::HeadlessGlobals globals({.seed=19});
+	glob2test::HeadlessGlobals globals({.seed = 19});
 	glob2test::HeadlessGame world({.teams = 2, .discovered = true, .loadDefaultRace = true});
 	auto *home = world.addBuilding("swarm", 6, 6);
 	world.addBuilding("inn", 12, 12);
@@ -46,29 +46,32 @@ TEST_CASE("JavaScript realistic economic planner and scenario survey" *
 		auto source = glob2test::readFile(glob2test::fixture(
 			team < 0 ? "javascript/map-realistic.js" : "javascript/ai-realistic.js"));
 		auto state = Script::Value::object();
+		auto runtime = Script::makeRuntime();
 		for (int tick = 0; tick < 4; ++tick)
 		{
 			CAPTURE(tick);
 			host.tick = world.game.stepCounter;
 			observations.observe();
-			auto result = Script::makeRuntime()->invoke(source, state, tick == 0, host);
+			auto result = runtime->invoke(source, state, tick == 0, host);
+			auto data = runtime->inspectGlobals();
 			auto label = std::string(team < 0 ? "realistic-survey-" : "realistic-economy-") +
 						 std::to_string(tick);
 			glob2test::script::retain(
-				label,
-				Script::Value::object().set("state", result.state).set("effects", result.effects));
+				label, Script::Value::object().set("state", data).set("effects", result.effects));
 			if (team >= 0)
 			{
 				auto accepted = Script::order(world.game, team, result.effects);
 				REQUIRE(accepted->getOrderType() == ORDER_MODIFY_BUILDING);
 				accepted->sender = 0;
 				world.game.executeOrder(accepted, -1);
-				CHECK(home->maxUnitWorking == result.state.get("metrics").get("workers").number);
-				REQUIRE(result.state.get("scores").items.size() > 0);
+				CHECK(home->maxUnitWorking == data.get("metrics").get("workers").number);
+				REQUIRE(data.get("scores").items.size() > 0);
 			}
 			else
-				CHECK(result.state.get("colonies").items.size() == 3);
+				CHECK(data.get("colonies").items.size() == 3);
 			state = Script::Value::decode(result.state.encode());
+			if (tick == 1)
+				runtime = Script::makeRuntime();
 			world.step();
 		}
 	}

@@ -43,7 +43,9 @@ Native search, sorting and output charges remain in the operations themselves.
 
 `javascript-vendor.json` records the exact upstream commits, tag-archive SHA256s,
 retained files and ordered patch series. The first patch for each dependency
-reproduces the original profile fork; the second records this engineering pass.
+reproduces the original profile fork; later patches record the engineering pass
+and host-only module-binding access for automatic global persistence. No heap
+pointers or executable bytecode are serialized.
 Run `python3 tools/javascript/verify-vendor.py` to download the pinned archives,
 verify their hashes, reconstruct retained sources in temporary storage and reject
 unexplained differences. `--archives /path/to/archives` uses previously downloaded

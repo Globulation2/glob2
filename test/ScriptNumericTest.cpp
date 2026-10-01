@@ -21,12 +21,14 @@ TEST_CASE("JavaScript shared numeric corpus" * doctest::test_suite("JavaScriptNu
 	for (unsigned batch = 0; batch < batches; ++batch)
 	{
 		CAPTURE(batch);
-		auto result = Script::makeRuntime()->invoke(
-			source, Script::Value::object().set("batch", batch), false, host);
-		batches = result.state.integer("batchCount", 1, 100);
-		total += result.state.get("results").items.size();
-		CHECK(result.effects.kind == Script::Value::Null);
-		results.items.push_back(std::move(result.state));
+		host.tick = batch;
+		auto runtime = Script::makeRuntime();
+		runtime->invoke(source, Script::Value::object(), false, host);
+		auto data = runtime->inspectGlobals();
+		batches = data.integer("batchCount", 1, 100);
+		total += data.get("results").items.size();
+
+		results.items.push_back(std::move(data));
 	}
 	REQUIRE(total > 2000);
 	glob2test::script::retain("numeric-profile1", results);

@@ -43,6 +43,9 @@ class Runtime
 	virtual Result invoke(const std::string &source, const Value &state, bool initialize,
 						  Host &host) = 0;
 	virtual void validate(const std::string &source) = 0;
+	virtual void discard() noexcept {}
+	// Diagnostic/test view of ordinary global data; snapshots preserve graphs.
+	virtual Value inspectGlobals() { return Value::object(); }
 };
 std::unique_ptr<Runtime> makeRuntime();
 } // namespace Script

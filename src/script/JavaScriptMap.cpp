@@ -241,6 +241,7 @@ void applyInterface(PresentedInterface &&shown, GameGUI &gui, bool publishHistor
 } // namespace
 void JavaScriptMap::reset()
 {
+	runtime->discard();
 	state = Value::object();
 	presentation = Value::object();
 	initialized = false;
@@ -287,7 +288,7 @@ void JavaScriptMap::step(const std::string &source, GameGUI &gui)
 		auto prepared = prepareEffects(result.effects, presentation, gui.game);
 		auto shown = prepareInterface(prepared.presentation);
 		// No potentially allocating work follows: publish the entire accepted
-		// callback (effects, explicit state, presentation and private RNG).
+		// callback (effects, global snapshot, presentation and private RNG).
 		commitEffects(prepared, gui.game);
 		state = std::move(result.state);
 		presentation = std::move(prepared.presentation);
@@ -296,18 +297,21 @@ void JavaScriptMap::step(const std::string &source, GameGUI &gui)
 	}
 	catch (const std::bad_alloc &)
 	{
+		runtime->discard();
 		random = checkpoint;
 		seeded = wasSeeded;
 		throw HostFailure("Native allocation failed in JavaScript scenario");
 	}
 	catch (const HostFailure &)
 	{
+		runtime->discard();
 		random = checkpoint;
 		seeded = wasSeeded;
 		throw;
 	}
 	catch (const std::exception &failure)
 	{
+		runtime->discard();
 		random = checkpoint;
 		seeded = wasSeeded;
 		throw ScenarioFailure(failure.what());
@@ -329,6 +333,7 @@ void JavaScriptMap::load(GAGCore::InputStream *s)
 	s->readEnterSection("JavaScriptMap");
 	if (s->readUint32("profile") != ProfileVersion)
 		throw std::runtime_error("Unsupported map JavaScript profile");
+	runtime->discard();
 	state = Value::decode(s->readText("state"));
 	presentation = Value::decode(s->readText("presentation"));
 	initialized = s->readUint8("initialized");

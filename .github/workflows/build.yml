@@ -1153,8 +1153,8 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-wasm-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
-      # The four files the browser tests serve. The test jobs restore them to
-      # the same directory the Playwright web server reads.
+      # Serve the game and scripting harness; retain compiler identity for the
+      # scripting evidence collected by the browser test jobs.
       - uses: actions/upload-artifact@v4
         id: upload_artifact_1
         continue-on-error: true
@@ -1163,6 +1163,7 @@ jobs:
           retention-days: 3
           if-no-files-found: error
           path: |
+            build/emscripten/client/release/identity.json
             build/emscripten/client/release/index.html
             build/emscripten/client/release/index.js
             build/emscripten/client/release/index.wasm

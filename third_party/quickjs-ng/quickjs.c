@@ -31587,6 +31587,78 @@ static int js_create_module_bytecode_function(JSContext *ctx, JSModuleDef *m)
     return -1;
 }
 
+/* Glob2 host-only persistence. Module bindings retain lexical identity; the
+   host snapshots data, never executable bytecode or interpreter pointers. */
+JSValue JS_Glob2ModuleBindings(JSContext *ctx, JSModuleDef *m)
+{
+    JSObject *p = JS_VALUE_GET_OBJ(m->func_obj);
+    JSFunctionBytecode *b = p->u.func.function_bytecode;
+    if (js_glob2_charge(ctx, b->closure_var_count) < 0)
+        return JS_EXCEPTION;
+    JSValue result = JS_NewObjectProto(ctx, JS_NULL);
+    if (JS_IsException(result))
+        return result;
+    for (int i = 0; i < b->closure_var_count; i++) {
+        JSClosureVar *cv = &b->closure_var[i];
+        if (cv->closure_type != JS_CLOSURE_MODULE_DECL)
+            continue;
+        if (JS_DefinePropertyValue(ctx, result, cv->var_name,
+                                  JS_DupValue(ctx, *p->u.func.var_refs[i]->pvalue),
+                                  JS_PROP_C_W_E) < 0) {
+            JS_FreeValue(ctx, result);
+            return JS_EXCEPTION;
+        }
+    }
+    return result;
+}
+
+int JS_Glob2RestoreModuleBindings(JSContext *ctx, JSModuleDef *m, JSValueConst bindings)
+{
+    JSObject *p = JS_VALUE_GET_OBJ(m->func_obj);
+    JSFunctionBytecode *b = p->u.func.function_bytecode;
+    if (js_glob2_charge(ctx, b->closure_var_count) < 0)
+        return -1;
+    for (int i = 0; i < b->closure_var_count; i++) {
+        JSClosureVar *cv = &b->closure_var[i];
+        if (cv->closure_type != JS_CLOSURE_MODULE_DECL)
+            continue;
+        JSValue value = JS_GetProperty(ctx, bindings, cv->var_name);
+        if (JS_IsException(value))
+            return -1;
+        set_value(ctx, p->u.func.var_refs[i]->pvalue, value);
+    }
+    return 0;
+}
+
+int JS_Glob2ModuleFunction(JSContext *ctx, JSModuleDef *m, JSValueConst value)
+{
+    JSObject *module = JS_VALUE_GET_OBJ(m->func_obj);
+    JSObject *p = JS_VALUE_GET_OBJ(value);
+    if (p->class_id == JS_CLASS_C_FUNCTION)
+        return true;
+    if (p->class_id != JS_CLASS_BYTECODE_FUNCTION)
+        return false;
+    JSFunctionBytecode *b = p->u.func.function_bytecode;
+    /* Home objects and derived constructors can carry hidden class state. */
+    if (p->u.func.home_object || b->need_home_object || b->is_derived_class_constructor)
+        return false;
+    JSFunctionBytecode *mb = module->u.func.function_bytecode;
+    for (int i = 0; i < b->closure_var_count; i++) {
+        if (js_glob2_charge(ctx, mb->closure_var_count) < 0)
+            return -1;
+        bool found = false;
+        for (int j = 0; j < mb->closure_var_count; j++) {
+            if (p->u.func.var_refs[i] == module->u.func.var_refs[j]) {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+            return false;
+    }
+    return true;
+}
+
 /* must be done before js_link_module() because of cyclic references */
 static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
 {
