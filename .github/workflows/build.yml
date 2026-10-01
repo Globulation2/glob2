@@ -837,12 +837,17 @@ jobs:
         id: build_glob2_and_the_regression_harnesses
         run: |
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \
             unit-tests \
             engine-tests \
             map-report-test
+          # MSYS2 starts each step with its own PATH; colocate the pinned
+          # SDL DLLs so Windows can load the client and every harness directly.
+          for directory in build/mingw/client/release/src build/mingw/client/release/test; do
+            cp build/sdl3-ci/prefix/bin/*.dll "$directory/"
+          done
 
       - name: Run the unit tests
         id: run_the_unit_tests
@@ -1011,7 +1016,7 @@ jobs:
         id: build_the_yog_server
         run: |
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
 
