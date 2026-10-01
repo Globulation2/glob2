@@ -87,6 +87,7 @@ def archive(destination, tag=None):
             "SConstruct", "scons/build_layout.py", "data/glob2.desktop",
             "data/org.globulation2.Globulation2.metainfo.xml",
             "data/screenshots/globulation2-gameplay.png",
+            "data/usl/Language/Runtime/Control.usl",
             "data/fonts/sans.ttf", "maps/SmallForTwo.map.gz")}
         missing = required - names
         if missing:
@@ -104,6 +105,7 @@ def verify_install(stage):
         "usr/share/icons/hicolor/256x256/apps/glob2.png",
         "usr/share/glob2/data/fonts/sans.ttf",
         "usr/share/glob2/data/maxima/duel.strategy",
+        "usr/share/glob2/data/usl/Language/Runtime/Control.usl",
         "usr/share/glob2/data/gfx/ressource0.png",
         "usr/share/glob2/maps/SmallForTwo.map.gz",
         "usr/share/glob2/campaigns/Tutorial_Campaign.txt",

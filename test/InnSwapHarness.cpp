@@ -78,20 +78,20 @@ static void theLaterBookerTradesWithTheOneItWouldCross()
 	World world;
 	Building* a = world.addInn(4, 8, 1);
 	Building* b = world.addInn(44, 8, 10);
-	Unit* far = world.addHungryWorker(20, 9);
-	Unit* near = world.addHungryWorker(8, 9);
+	Unit* farWorker = world.addHungryWorker(20, 9);
+	Unit* nearWorker = world.addHungryWorker(8, 9);
 	require(world.game.integrity(), "scenario setup is consistent");
 
 	// Units look for food at the end of their current action.
-	for (int i = 0; i < 100 && !(far->attachedBuilding && near->attachedBuilding); ++i)
+	for (int i = 0; i < 100 && !(farWorker->attachedBuilding && nearWorker->attachedBuilding); ++i)
 		world.game.syncStep(0);
 
-	require(far->activity == Unit::ACT_UPGRADING && far->destinationPurpose == FEED, "the far unit goes to eat");
-	require(near->activity == Unit::ACT_UPGRADING && near->destinationPurpose == FEED, "the near unit goes to eat");
-	require(near->attachedBuilding == a && near->targetBuilding == a, "the near unit ends up with the near inn");
-	require(far->attachedBuilding == b && far->targetBuilding == b, "the far unit ends up with the far inn");
-	require(World::booked(a, near) && !World::booked(a, far), "inn A's guest list follows");
-	require(World::booked(b, far) && !World::booked(b, near), "inn B's guest list follows");
+	require(farWorker->activity == Unit::ACT_UPGRADING && farWorker->destinationPurpose == FEED, "the far unit goes to eat");
+	require(nearWorker->activity == Unit::ACT_UPGRADING && nearWorker->destinationPurpose == FEED, "the near unit goes to eat");
+	require(nearWorker->attachedBuilding == a && nearWorker->targetBuilding == a, "the near unit ends up with the near inn");
+	require(farWorker->attachedBuilding == b && farWorker->targetBuilding == b, "the far unit ends up with the far inn");
+	require(World::booked(a, nearWorker) && !World::booked(a, farWorker), "inn A's guest list follows");
+	require(World::booked(b, farWorker) && !World::booked(b, nearWorker), "inn B's guest list follows");
 	require(a->unitsInside.size() == 1 && b->unitsInside.size() == 1, "each inn keeps one booking");
 	require(world.game.integrity(), "integrity after the swap");
 
@@ -100,13 +100,13 @@ static void theLaterBookerTradesWithTheOneItWouldCross()
 	for (int i = 0; i < 3000 && !(nearAte && farAte); ++i)
 	{
 		world.game.syncStep(0);
-		nearAte |= near->displacement == Unit::DIS_INSIDE && near->attachedBuilding == a;
-		farAte |= far->displacement == Unit::DIS_INSIDE && far->attachedBuilding == b;
+		nearAte |= nearWorker->displacement == Unit::DIS_INSIDE && nearWorker->attachedBuilding == a;
+		farAte |= farWorker->displacement == Unit::DIS_INSIDE && farWorker->attachedBuilding == b;
 	}
 	if (!(nearAte && farAte))
 		std::fprintf(stderr, "near: act=%d dis=%d att=%p dead=%d hp=%d | far: act=%d dis=%d att=%p dead=%d hp=%d (a=%p b=%p)\n",
-			near->activity, near->displacement, (void*)near->attachedBuilding, near->isDead, near->hp,
-			far->activity, far->displacement, (void*)far->attachedBuilding, far->isDead, far->hp, (void*)a, (void*)b);
+			nearWorker->activity, nearWorker->displacement, (void*)nearWorker->attachedBuilding, nearWorker->isDead, nearWorker->hp,
+			farWorker->activity, farWorker->displacement, (void*)farWorker->attachedBuilding, farWorker->isDead, farWorker->hp, (void*)a, (void*)b);
 	require(nearAte, "the near unit eats at inn A");
 	require(farAte, "the far unit eats at inn B");
 	std::puts("PASS a later booker trades inns with the team mate it would have crossed");
