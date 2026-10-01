@@ -1012,6 +1012,9 @@ one-local-player header and seed they need. Design and numbers:
 
 ## JavaScript
 
+See the [scripting guide](../docs/development/javascript.md) and
+[API reference](../docs/development/javascript-api.md) for the public boundary.
+
 Build `unit-tests engine-tests` with SCons and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`
 (use the build directory for your platform).

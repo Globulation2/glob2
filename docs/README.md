@@ -18,7 +18,8 @@ dated reports and pull-request artifacts do not belong here.
   [menus and dialogs on the declarative UI framework](development/ui-framework.md),
   [release packaging](development/releasing.md),
   [headless replays](development/headless-replays.md),
-  [JavaScript scripting](development/javascript.md),
+  [JavaScript scripting](development/javascript.md) and
+  [API reference](development/javascript-api.md),
   [performance telemetry](development/performance-telemetry.md),
   [save continuation](development/savegame-continuation.md), and the
   [historical architecture overview](development/legacy-architecture.txt).

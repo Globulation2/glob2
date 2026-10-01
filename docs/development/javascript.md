@@ -1,172 +1,201 @@
 # JavaScript scripting
 
-The optional JavaScript AI and map-script backend uses vendored QuickJS-NG and
-OpenLibm. Existing AIs and USL/SGSL maps retain their existing execution paths.
-This first version provides developer commands; the game menus do not expose a
-JavaScript selection control.
+Glob2's optional JavaScript AI and map-script backend uses vendored QuickJS-NG
+and OpenLibm. It exposes copied game observations and accepts validated existing
+orders or scenario effects. Existing AIs and USL/SGSL maps retain their execution
+paths. This version provides developer commands; menus have no JavaScript
+selection control.
 
-## Loading sources
+## Documentation and examples
 
-Compile-check a synchronous module with `glob2 --check-script source.js`.
-To replace a map's USL script, use
-`glob2 --attach-map-script input.map source.js output.map`; the tool writes a new
-gzip map and refuses to overwrite an existing output. SGSL is a separate legacy
-script payload and is preserved. For a new structured headless game, pass
-`--map-script source.js`, or select `--player javascript --ai-script 0:source.js`
-(with equivalent options for each other player). These options accompany the
-usual `--run-game` map, seed, player and output options documented in
-[distributed tournaments](../tools/tournaments.md).
+- [API reference](javascript-api.md): every exposed method and field, visibility,
+  numeric values, sentinels, argument ranges, orders and scenario effects.
+- [TypeScript declarations](../../examples/javascript/glob2.d.ts): editor/type
+  information for the same boundary. Scripts themselves must be JavaScript.
+- [AI example](../../examples/javascript/ai.js) and
+  [scenario example](../../examples/javascript/scenario.js): standalone modules.
+  The [map-reading example](../../examples/javascript/map-read.js) records visible
+  wheat near an owned unit without copying a whole map into state.
+- [Compatibility fixture](../../test/fixtures/javascript/README.md): reproducible
+  numeric, per-tick and save-continuation verification.
 
-Use absolute source paths with structured headless commands on macOS, whose
-normal startup changes the working directory to the app resource directory.
+## Write a script
 
-AI source is embedded in each player's existing GameHeader AI configuration,
-prefixed by `glob2-js/1\n`. Map source and runtime state live in the existing
-MapScript payload, with a new JavaScript mode. Saves/replays therefore carry
-source rather than machine-dependent bytecode or external filenames. Source
-options are unavailable when resuming with `--load-game`.
+A single synchronous module exports `step(ctx, state)` and optionally
+`init(ctx, state)`. An AI returns one order or nothing; a map script returns an
+array of effects or nothing. Both receive the same read API, with different
+host-enforced visibility. There are no imports or external module dependencies.
 
-Modules export `step(ctx, state)` and optionally `init(ctx, state)`. Initialization
-runs before the first successful step. `init` returns null/undefined; an AI step
-returns one order descriptor or null, and a map step returns an array of effects
-or null. See [AI example](../../examples/javascript/ai.js) and
-[scenario example](../../examples/javascript/scenario.js).
+```javascript
+export function init(ctx, state) {
+  state.decisions = 0;
+}
 
-Each callback receives a fresh runtime: module variables, closures and modified
-built-ins disappear between callbacks. Only mutations to `state` persist. State
-supports null, booleans, finite numbers, strings, dense arrays and plain records;
-cycles, accessors, symbols, functions and other objects are rejected. Record key
-order and signed zero survive saves. Unsupported state or effects reject the
-whole callback, including its RNG consumption.
+export function step(ctx, state) {
+  state.decisions++;
+  const buildings = ctx.game.buildings({team: ctx.myTeam, limit: 50});
+  const building = buildings.find(b => !b.virtual && b.workers !== 2);
+  return building ? {type: 'workers', building, workers: 2} : null;
+}
+```
 
-## Read API and visibility
+Map scripts use `ctx.myTeam === -1`, can inspect the whole map and return scenario
+effects, for example `[{type: 'message', text: 'Welcome!'}]`. AI scripts read only
+permitted observations and can issue orders only for their own team. Changing
+context properties cannot grant additional capabilities.
 
-`ctx.tick` is the simulation tick and `ctx.myTeam` is the AI's team, or -1 for a
-map script. `ctx.random()` and `Math.random()` use the same private deterministic
-controller RNG. They do not consume the simulation RNG. AI controllers use the
-existing per-player AI stream; map scripts use a separately seeded, persisted
-stream. Terrain history uses lazily allocated indexed chunks, and disabled or
-eliminated controllers stop recording observations.
+## Load and check sources
 
-| Query on `ctx.game` | Result |
+Compile-check syntax and profile restrictions:
+
+```sh
+glob2 --check-script /absolute/path/to/source.js
+```
+
+This only compiles/resolves the module: it does not evaluate module code, verify
+that `step` exists, execute callbacks, or validate returned orders/effects. Those
+checks occur during a game. A successful compile check is not a gameplay test.
+
+To replace a map's USL script, write a new map:
+
+```sh
+glob2 --attach-map-script input.map /absolute/path/to/source.js output.map
+```
+
+The tool writes gzip data and refuses to overwrite an existing output. SGSL is a
+separate legacy payload and is preserved. For a new structured headless game,
+use `--run-game` with `--map-script /absolute/path/to/source.js`, or
+`--player javascript --ai-script 0:/absolute/path/to/ai.js` (and equivalent
+source options for other JavaScript players). See
+[distributed tournaments](../tools/tournaments.md) for complete map, seed,
+player and output commands.
+
+Use absolute source paths for structured commands on macOS, whose normal startup
+changes the working directory to the app resource directory. Source options are
+unavailable when resuming with `--load-game`: the save supplies its embedded code.
+
+AI source lives in each player's existing GameHeader AI configuration, prefixed
+by `glob2-js/1\n`. Map source and runtime state live in the existing MapScript
+payload in JavaScript mode. Saves/replays carry source, not external filenames
+or machine-specific bytecode.
+
+## Callback lifecycle and state
+
+Each invocation creates a fresh runtime, evaluates the module, optionally calls
+`init`, then calls `step` with the same context and state object. Initialization
+occurs on the first invocation and is marked complete only after a successful
+commit. Module variables, closures and changes to built-ins disappear after the
+invocation. Use module-level constants freely, but keep ongoing memory in `state`.
+
+`state` starts as `{}`. Mutate its properties; replacing your local `state`
+parameter does not replace the host's root object. `init` must return
+`null`/`undefined`. An AI `step` returns one order record or `null`/`undefined`;
+a map `step` returns an effect array or `null`/`undefined`. Returning state is
+not how to persist it.
+
+AI callbacks follow the existing AI order polling schedule; paused or eliminated
+controllers are not polled. Map callbacks run at the existing world-logic cadence,
+currently when `ctx.tick % 32 === 0` in normal simulation. Neither should assume
+one callback per tick or use the callback count as elapsed time. Map callbacks
+require a game with a mission/GUI context; normal headless Engine sessions supply
+one. AI observation history is recorded during simulation, even between decisions,
+and disabled/eliminated controllers stop recording it.
+
+State, query arguments and returned results use a restricted data format:
+
+| Supported | Rejected at the boundary |
 | --- | --- |
-| `teams()` | Team IDs/alive status; own-team economy/alliance data, or all teams for maps |
-| `units({team,offset,limit}?)`, `buildings({team,offset,limit}?)` | Stable team/slot order, filtered by capability |
-| `unit({id,generation})`, `building({id,generation})` | Entity or null for hidden, missing or stale references |
-| `buildingTypes()` | Static building variants with ID, name, level, size, site/virtual flags, capacities |
-| `map.width`, `map.height` | Toroidal dimensions |
-| `map.tile(x,y)` | Terrain/resource observation with visible/explored/observedTick |
-| `map.region(x,y,width,height)` | Row-major tile array; maximum dimensions 256, subject to work budget |
-| `objectives()`, `hints()`, `interface()` | Scenario-only objective, hint and presentation records |
+| `null`, booleans, finite numbers, strings | `undefined` within records/arrays, NaN, infinities, BigInt, symbols, functions |
+| Dense ordinary arrays | Holes, named array properties, accessors |
+| Plain records, including null-prototype records | Class instances, custom prototypes, getters/setters, cycles, Map/Set instances |
 
-Owned entities expose operational information (unit activity/targets and building
-workers, resources, production and flag settings). Opponents expose only the
-visible entity subset, never hidden targets or production/economy internals.
-AI unit visibility follows fog of war and excludes units inside buildings;
-cloaked enemy buildings are excluded. Hidden entity lookups return null even if
-the script knows their IDs. Entity references include a generation to prevent a recycled ID silently
-referring to a new unit or building. References use the existing engine slot generations.
+Map/Set and other permitted objects may be used temporarily during a callback;
+convert them to ordinary arrays/records before saving or returning them. Shared
+acyclic values are copied as trees, so identity/aliasing does not survive a
+callback. Property order, string content and signed zero do survive save/load.
+Read records also have a null prototype; consult the reference for safe property
+checks and missing-field behavior.
 
-Entity-list offsets count only visible results in stable team/slot order; limits
-bound the returned page. Use pages for large rosters. Native query construction
-charges each returned record before allocating it.
+`ctx.random()` and `Math.random()` share a private deterministic stream. They do
+not consume simulation randomness. AI controllers use the existing per-player
+AI stream; map scripts have a separately seeded, persisted stream. A successful
+callback commits its state and RNG alongside the accepted order/effects.
+Rejected results roll back state and RNG consumption; map effect batches are
+validated before application. Observation history is recorded world data, not
+callback state, and is not rolled back with a rejected decision.
 
-AI terrain queries retain the last observed terrain/resources with their tick;
-an unseen tile contains no terrain/resource data. Current occupants are returned
-only for currently visible tiles. Coordinates wrap around the map. Observations
-are copied data: modifying returned records cannot change the game. Map scripts
-see current terrain and all entities. This is an explicit capability selected by
-the host, never a flag the script can grant itself.
+## Failures and debugging
 
-## Gameplay orders
+Invalid read arguments throw a catchable JavaScript `TypeError`. Catch ordinary
+query errors inside the script if recovery is useful. Returned state and
+orders/effects are validated **after** `step` returns, so script code cannot
+catch those host validation errors. A rejected AI decision disables that
+controller, logs a diagnostic and produces no order; later polls also produce
+no order. The disabled status and diagnostic survive saves. Map-script failures
+stop the session rather than silently skipping scenario logic.
 
-All building-targeted orders take a `building` reference from the read API and
-require ownership and matching generation. Worker requests are 0..20; production
-ratios are 0..16, matching the GUI controls. Integer fields are range checked.
-Orders pass through the game's existing order execution path.
+Work exhaustion cannot be bypassed by catching the exception. Native allocation,
+QuickJS heap exhaustion and physical-stack failure are fatal host failures,
+even if JavaScript catches the initial error; they propagate as session errors
+instead of choosing a machine-dependent gameplay outcome. Use small entity pages
+and map regions, avoid storing whole observation snapshots, and compare `ctx.tick`
+for scheduling. Exception messages are diagnostics, not stable API identifiers.
+There is no injected `console` or logging API in profile 1.
 
-| `type` | Additional fields |
+## Runtime profile and determinism
+
+| Limit | Profile 1 |
 | --- | --- |
-| `create` | `buildingType`, `x`, `y`, `workers`, `futureWorkers`; flags also `range` |
-| `workers` | `workers` |
-| `delete`, `cancelDelete` | None |
-| `construction` | `workers`, `futureWorkers` |
-| `cancelConstruction` | `workers` |
-| `priority` | `priority` (-1, 0, 1) |
-| `production` | Three `ratios` (swarm only) |
-| `exchange` | `receiveMask`, `sendMask` (market only) |
-| `range`, `minimumLevel` | `range` or `level` (flag only) |
-| `moveFlag` | `x`, `y` |
-| `clearingResources` | Five resource booleans; stone (index 3) must be false (clearing flag only) |
-| `forbidden`, `guardArea`, `clearArea` | `x`, `y`, `width`, `height`, row-major boolean `mask`, `mode` (1 add, 2 remove) |
+| Source | 128 KiB; embedded NUL rejected |
+| Encoded persistent state / result | 1 MiB per value; conversion accounting also applies across callback data |
+| Data nesting | 256 levels |
+| Work | 1,000,000 deterministic units per invocation, shared by compilation, evaluation, init, step and conversion |
+| QuickJS heap | 32 MiB |
+| Native data accounting | 32 MiB, cumulative conservative fixed weights across ABIs |
+| Interpreter call depth | 256; physical stack budget is a fatal fallback |
+| Native recursive parsing/traversal | 64 guarded calls |
+| Map effects | At most 256 per invocation |
 
-Creation accepts level-zero construction-site variants or virtual flags from
-`buildingTypes()`. Scenario building restrictions are enforced when the engine
-executes creation, including orders from other controllers.
+Work meters interpreter dispatch, lexing, queries, conversions and native
+operations. Container/string entry charges are linear; string searches charge
+actual coerced lengths, and sorting/output charge comparisons/emitted characters.
+Large requests can exceed budgets below their individual dimension limits.
+Budgets are not wall-clock timeouts and are not dynamically sized from hidden
+world contents. A fresh runtime resets invocation budgets; persistent state has
+its own save/load limits.
 
-## Scenario effects
+Ordinary synchronous JavaScript syntax and full Math are supported within the
+profile. Transcendental operations and exponentiation use the vendored math subset
+with strict floating-point compilation and round-to-nearest. There is no filesystem,
+network, clock, OS binding, module loader or host pointer exposure. Dynamic code
+compilation, regular expressions, BigInt, async/await and promises are unavailable.
+Date, Proxy, weak references, typed arrays and shared memory are omitted.
 
-Map callbacks return up to 256 effect records. The complete batch is validated
-before applying any effect. Presentation state is authoritative independently of
-local GUI settings and is restored through saves.
+This is an in-process interpreter sandbox, not OS process isolation. Maintaining
+the pinned interpreter is part of maintaining the boundary. Rerun hostile-script
+regressions when updating dependencies or extending the host API.
 
-| `type` | Fields |
-| --- | --- |
-| `message` | `text` |
-| `messageTranslated` | `language`, `text` |
-| `hideMessage` | None |
-| `objective` | Zero-based `id`, `action`: complete/incomplete/failed/hidden/visible |
-| `hint` | Zero-based `id`, `visible` |
-| `buildingChoice`, `flagChoice` | `name`, `enabled` |
-| `guiElement` | `id` (0..4), `enabled` |
+Map source/state, RNG, presentation/objectives/hints and entity generation counters
+participate in checksums when JavaScript map scripts are active. AI sources/state
+use existing player configuration/save mechanisms, and orders use the existing
+multiplayer/replay path. No additional synchronization protocol is introduced.
+Save format 124 uses version-gated loading with minimum save version 58 retained;
+network/YOG protocol 47 rejects older clients; replay minimum remains 123.
+Profile versioning and API-maintenance obligations are in the reference.
 
-Building names are swarm, inn, hospital, racetrack, swimmingpool, barracks,
-school, defencetower, stonewall and market; flags are explorationflag, warflag
-and clearingflag. Spawning entities and changing terrain are outside this profile.
+## Verify a change
 
-## Determinism and sandbox boundaries
+Build `unit-tests engine-tests` with SCons, then run:
 
-Profile 1 limits source to 128 KiB, persistent state to 1 MiB, data nesting to 256,
-native recursive parsing/traversal to 64 guarded calls, each invocation to one
-million deterministic work units and the QuickJS heap to 32 MiB. The engine
-meters bytecode dispatch, lexing, native container operations,
-queries and data conversion. Containers and strings receive linear entry charges;
-native
-string searches charge actual coerced lengths, and sorting/output charge their
-comparisons and emitted characters. Conservative operation charges mean large
-arrays or region reads may exhaust the budget before their dimensions
-reach the maximum. Native data construction/conversion and saved-state decoding
-also use a 32 MiB accounting budget with fixed conservative weights across ABIs.
-Sparse/accessor arrays are validated before allocating native output storage.
-Limits do not depend on elapsed time or hidden world contents.
+```sh
+python3 test/run_tests.py --filter 'JavaScript*/*'
+python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check
+```
 
-There is no filesystem, network, clock, OS binding, module loader or host pointer
-exposure. Dynamic compilation, regular expressions, BigInt, async/await and
-promises are unavailable to scripts. Date, Proxy, weak references, typed arrays
-and shared memory are omitted. Ordinary synchronous JavaScript syntax and full
-Math are supported; transcendental operations and exponentiation use the vendored
-math subset with strict floating-point compilation and round-to-nearest.
-
-This is an in-process interpreter sandbox. A native interpreter vulnerability
-can compromise the process; the JavaScript boundary is not OS process isolation.
-Keep vendored dependencies patched and rerun the hostile-script regression suite
-when changing the runtime or host API. Deterministic failures disable the AI with
-a diagnostic; map failures stop the session. Host allocation/physical stack
-failures propagate as fatal session errors rather than silently choosing a
-machine-dependent gameplay outcome.
-
-Map script state, RNG, effects and entity generation counters participate in
-simulation checksums when JavaScript map scripts are active. AI sources/state
-use existing player configuration/save mechanisms and orders use the existing
-multiplayer/replay path; no additional synchronization protocol is introduced.
-The save format is version 124 with version-gated reading of older files and the
-previous minimum save version retained. Network protocol 47 rejects old clients.
-
-Build `unit-tests engine-tests` with SCons, then run the `JavaScriptRuntime` and
-`JavaScriptIntegration` suites with `test/run_tests.py --filter 'JavaScript*/*'`.
-Numeric tests compare exact IEEE double bits. The frozen
-[test fixture](../../test/fixtures/javascript/README.md) checks complete per-tick
-traces and worker/save continuation; integration tests cover fog of
-war, stale terrain, ownership, scenario rollback and continuation. Changes that
-can affect simulation still require matching per-tick checksums across supported
-platforms; successful builds alone do not establish cross-platform determinism.
+Use a fresh output directory for the frozen check. Runtime tests compare exact
+IEEE double bits and exercise sandbox/resource failures. Integration tests cover
+fog of war, stale terrain/references, ownership, orders, scenario rollback and
+continuation. The frozen fixture compares complete tick traces, worker-count
+equivalence, replays, saves and resumed execution. Changes affecting simulation
+still require matching per-tick checksums across supported platforms; successful
+builds alone do not establish cross-platform determinism.
