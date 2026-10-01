@@ -1,4 +1,5 @@
 #include "MapZoomControls.h"
+#include "DynamicClouds.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2022-2023 Nathan Mills
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -41,7 +42,9 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		drawOptions |= Game::DRAW_OVERLAY;
 	}
 
-	game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, team, view, drawOptions);
+	game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, team, view, drawOptions, nullptr, nullptr, false,
+        DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),
+            globalContainer->settings.cloudPatchSize, camera.zoom));
 
 	if(selectionMode==EditingBuilding && camera.contains(mouseX,mouseY) && mouseY>=16)
 	{

@@ -5,6 +5,7 @@ Every engine test case runs in its own process with a disposable profile, dummy 
 drivers unless it is tagged [display], a timeout and captured output shown only on
 failure. The unit binary runs in one process. Results are merged into one JUnit file
 and, under GitHub Actions, into the step summary with per-failure annotations.
+Fullscreen checks within display cases run only with --fullscreen.
 
 Tags are bracketed words at the end of a test-case name:
   [display]        needs a real window; xvfb on Linux, skipped on Windows and --no-display
@@ -258,6 +259,8 @@ def run_job(job, args, build_dir):
                TMPDIR=str(root), TMP=str(root), TEMP=str(root), SDL_AUDIODRIVER='dummy')
     env.pop('GLOB2_MOBILE_UI', None)
     env.pop('GLOB2_USER_DIR', None)
+    # Always override inherited opt-in: a standard run must not take over the desktop.
+    env['GLOB2_TEST_FULLSCREEN'] = '1' if args.fullscreen else '0'
     if job.display:
         env['GLOB2_TEST_DISPLAY'] = '1'
         env.pop('SDL_VIDEODRIVER', None)
@@ -445,6 +448,7 @@ def main(argv=None):
     parser.add_argument('--timeout', type=int, default=None, help='override every timeout, in seconds')
     parser.add_argument('--in-process', action='store_true', help='run the engine binary as one process')
     parser.add_argument('--no-display', action='store_true', help='skip [display] cases')
+    parser.add_argument('--fullscreen', action='store_true', help='enable fullscreen checks within [display] cases (takes over the desktop; prefer a virtual display)')
     parser.add_argument('--quick', action='store_true', help='skip [slow] cases')
     parser.add_argument('--update-fixtures', action='store_true', help='rewrite [golden] fixtures instead of checking them')
     parser.add_argument('--junit', type=Path, default=ROOT / 'artifacts' / 'tests' / 'junit.xml')

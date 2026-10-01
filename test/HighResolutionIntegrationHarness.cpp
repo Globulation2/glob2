@@ -207,10 +207,14 @@ public:
             const auto orders=gui.orderQueue.size();SDL_MouseButtonEvent button{};button.button=SDL_BUTTON_LEFT;button.x=gfx->getW()-160+8+44;button.y=gfx->getH()-15;
             gui.handleMouseButtonDown(button);double after=gui.camera.zoom;gui.handleMouseButtonUp(button);
             REQUIRE((after==1&&gui.camera.zoom==after&&gui.orderQueue.size()==orders));
-            auto center=gui.camera.screenToWorld(gui.camera.width/2,gui.camera.height/2);
-            REQUIRE(gfx->toggleFullscreen());gui.updateCamera();gui.drawAll(0);capture(hd?"fullscreen-hd":"fullscreen-original");
-            auto fullscreenCenter=gui.camera.screenToWorld(gui.camera.width/2,gui.camera.height/2);
-            REQUIRE(center==fullscreenCenter);REQUIRE(gfx->toggleFullscreen());
+            if (glob2test::fullscreenEnabled())
+            {
+                auto center=gui.camera.screenToWorld(gui.camera.width/2,gui.camera.height/2);
+                REQUIRE(gfx->toggleFullscreen());gui.updateCamera();gui.drawAll(0);capture(hd?"fullscreen-hd":"fullscreen-original");
+                auto fullscreenCenter=gui.camera.screenToWorld(gui.camera.width/2,gui.camera.height/2);
+                REQUIRE(center==fullscreenCenter);REQUIRE(gfx->toggleFullscreen());
+            }
+            else std::cout<<"SKIP fullscreen camera continuity: enable with --fullscreen\n";
             for(int tick=0;tick<50;++tick)
             {
                 gui.game.syncStep(0);auto sum=gui.game.checkSum(nullptr,nullptr,nullptr,true);

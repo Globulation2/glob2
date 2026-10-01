@@ -62,14 +62,13 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
-			if (
+			if ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
 					map.isMapPartiallyDiscovered(
 							x+viewportX-1,
 							y+viewportY-1,
 							x+viewportX+1,
 							y+viewportY+1,
-							visibleTeams) ||
-				((drawOptions & DRAW_WHOLE_MAP) != 0))
+							visibleTeams))
 			{
 				// draw terrain
 				int id=map.getTerrain(x+viewportX, y+viewportY);
@@ -98,14 +97,13 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
-			if (
+			if ((drawOptions & DRAW_WHOLE_MAP) != 0 ||
 				map.isMapPartiallyDiscovered(
 						x+viewportX-1,
 						y+viewportY-1,
 						x+viewportX+1,
 						y+viewportY+1,
-						visibleTeams) ||
-				((drawOptions & DRAW_WHOLE_MAP) != 0))
+						visibleTeams))
 			{
 				const auto& r = map.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)

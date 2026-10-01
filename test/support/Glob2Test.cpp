@@ -168,6 +168,12 @@ namespace glob2test
 		return value && *value && std::string(value) != "0";
 	}
 
+	bool fullscreenEnabled()
+	{
+		const char* value = std::getenv("GLOB2_TEST_FULLSCREEN");
+		return value && std::string(value) == "1";
+	}
+
 	void expectGolden(const std::string& relative, const std::string& actual)
 	{
 		const std::filesystem::path path = fixture(relative);

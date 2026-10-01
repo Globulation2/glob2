@@ -26,6 +26,7 @@
 
 #include "Brush.h"
 #include "DynamicClouds.h"
+#include <OpaqueRectangleBatch.h>
 
 
 #include "GameRenderInternal.h"
@@ -41,6 +42,7 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	// drawing a status bar must not abort gameplay or spill outside the bar.
 	actLength = std::clamp(actLength, 0, maxLength);
 	secondActLength = std::clamp(secondActLength, 0, maxLength - actLength);
+	GAGCore::OpaqueRectangleBatch rectangles(globalContainer->gfx);
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{

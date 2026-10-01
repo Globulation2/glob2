@@ -2,6 +2,7 @@
 #include <Environment.h>
 #include "MapCommand.h"
 #include "MapReport.h"
+#include "MapImage.h"
 #include "GUIMapPreview.h"
 #include "Glob2Style.h"
 #include <SDL3_image/SDL_image.h>
@@ -142,7 +143,8 @@ void writeJsonReport(const std::string &path, const std::string &report)
 bool endsWithGz(const std::string &path)
 {
 	static const std::string suffix = ".gz";
-	return path.size() >= suffix.size() && path.compare(path.size() - suffix.size(), suffix.size(), suffix) == 0;
+	return path.size() >= suffix.size() &&
+		   path.compare(path.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 bool samePath(const std::string &a, const std::string &b)
 {
@@ -219,7 +221,8 @@ void exportPreview(const Game &game, const std::string &path, int size, int scal
 bool isMapCommand(const char *arg)
 {
 	const std::string s = arg;
-	return s == "--generate-map" || s == "--preview-map" || s == "--list-map-generators";
+	return s == "--generate-map" || s == "--preview-map" || s == "--list-map-generators" ||
+		   s == "--export-map-image" || s == "--import-map-image";
 }
 void printMapCommandHelp()
 {
@@ -230,6 +233,12 @@ void printMapCommandHelp()
 		   "    [--config file] [--set key=value ...] [--seed N]\n"
 		   "    [--width tiles] [--height tiles] [--teams N] [--workers N]\n"
 		   "  --preview-map <file.map|file.game> [--output file.png] [--json report.json]\n"
+		   "  --export-map-image <file.map|file.game> --output image.png\n"
+		   "  --import-map-image <image.png> --output file.map [--preview file.png] [--json "
+		   "report.json]\n"
+		   "    [--width tiles] [--height tiles] [--teams N] [--workers N] [--seed N]\n"
+		   "    [--image-seam-width 0..16] (default: map short side / 32, clamped 2..12)\n"
+		   "  --generate-map <generator> --map-image image.png [other outputs/settings]\n"
 		   "  --list-map-generators [generator]  List IDs, or settings and allowed values\n"
 		   "Preview scale: --preview-scale 2|4|8 (default 2, relative to retained thumbnail "
 		   "pixels).\n"
@@ -261,10 +270,13 @@ int runMapCommand(int argc, char **argv)
 		if (argc < 3 || std::string(argv[2]).rfind("--", 0) == 0)
 			throw std::runtime_error("Missing generator or input path; use " + mode + " --help");
 		const bool generate = mode == "--generate-map";
-		std::string output, preview, config, json;
+		const bool importing = mode == "--import-map-image";
+		const bool exporting = mode == "--export-map-image";
+		const bool writesMap = generate || importing;
+		std::string output, preview, config, json, mapImage;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
-		int previewSize = 0, previewScale = 2;
+		int previewSize = 0, previewScale = 2, imageSeamWidth = -1;
 		bool sizeSpecified = false, scaleSpecified = false;
 		for (int i = 3; i < argc; ++i)
 		{
@@ -283,14 +295,22 @@ int runMapCommand(int argc, char **argv)
 				output = value;
 			else if (arg == "--json")
 				json = value;
-			else if (arg == "--preview" && generate)
+			else if (arg == "--preview" && writesMap)
 				preview = value;
+			else if (arg == "--map-image" && generate)
+				mapImage = value;
+			else if (arg == "--image-seam-width" && importing)
+			{
+				const auto n = number(value);
+				if (n > 16) throw std::runtime_error("Image seam width must be 0..16 tiles");
+				imageSeamWidth = int(n);
+			}
 			else if (arg == "--config" && generate)
 				config = value;
 			else if (arg == "--set" && generate)
 				setting(overrides, value);
-			else if (generate && (arg == "--seed" || arg == "--width" || arg == "--height" ||
-								  arg == "--teams" || arg == "--workers"))
+			else if (writesMap && (arg == "--seed" || arg == "--width" || arg == "--height" ||
+								   arg == "--teams" || arg == "--workers"))
 				overrides[arg.substr(2)] = value;
 			else if (arg == "--preview-scale")
 			{
@@ -313,19 +333,31 @@ int runMapCommand(int argc, char **argv)
 			else
 				throw std::runtime_error("Unknown option for " + mode + ": " + arg);
 		}
-		if (!generate)
+		if (!writesMap && !exporting)
 			preview = output;
-		if (output.empty() && preview.empty() && json.empty())
+		if ((importing || exporting) && output.empty())
+			throw std::runtime_error("Image import/export requires --output");
+		if (output.empty() && preview.empty() && json.empty() && mapImage.empty())
 			throw std::runtime_error("Specify an output path; use " + mode + " --help");
 		if ((sizeSpecified || scaleSpecified) && preview.empty())
 			throw std::runtime_error("Preview size/scale requires a PNG output");
 		if (sizeSpecified && scaleSpecified)
 			throw std::runtime_error("Choose --preview-size or --preview-scale, not both");
-		if ((generate && samePath(output, preview)) || (!generate && samePath(argv[2], preview)) ||
-			samePath(config, output) || samePath(config, preview) || samePath(json, config) ||
-			samePath(json, output) || samePath(json, preview) ||
-			(!generate && samePath(json, argv[2])))
-			throw std::runtime_error("Input, config, map, PNG and JSON paths must be distinct");
+		// Compare the actual gzip destination as well as the user-supplied name.
+		std::vector<std::string> paths{output, writesMap ? preview : "", config, json, mapImage};
+		if (!generate)
+		{
+			paths.push_back(argv[2]);
+			if (!importing && !endsWithGz(argv[2]) &&
+				std::filesystem::exists(std::string(argv[2]) + ".gz"))
+				paths.push_back(std::string(argv[2]) + ".gz");
+		}
+		if (writesMap && !output.empty() && !endsWithGz(output))
+			paths.push_back(glob2GzipWritePath(output));
+		for (size_t a = 0; a < paths.size(); ++a)
+			for (size_t b = a + 1; b < paths.size(); ++b)
+				if (samePath(paths[a], paths[b]))
+					throw std::runtime_error("Input and output paths must be distinct");
 		GenerationRequest request;
 		if (generate)
 		{
@@ -361,6 +393,12 @@ int runMapCommand(int argc, char **argv)
 				settings[entry.first] = entry.second;
 			configure(request, settings);
 		}
+		if (importing)
+		{
+			request.setMethodDefaults(GenerationRequest::eUNIFORM);
+			request.seed = 1;
+			configure(request, overrides);
+		}
 		struct ClearGlobal
 		{
 			~ClearGlobal() { globalContainer = nullptr; }
@@ -376,6 +414,7 @@ int runMapCommand(int argc, char **argv)
 		Race::loadDefault();
 		Game game(nullptr);
 		GenerationResult result;
+		MapImageImportReport imageReport;
 		if (generate)
 		{
 			result = GenerationService().generate(game, request, !json.empty());
@@ -386,6 +425,23 @@ int runMapCommand(int argc, char **argv)
 				throw std::runtime_error(result.diagnostic());
 			}
 			std::cout << result.diagnostic() << "\n";
+		}
+		else if (importing)
+		{
+			const int expected = overrides.count("teams") ? int(number(overrides.at("teams"))) : 0;
+			try
+			{
+				importMapImage(game, argv[2], request, expected, imageReport, imageSeamWidth);
+			}
+			catch (...)
+			{
+				if (!json.empty())
+					writeJsonReport(json,
+									"{\"report_type\":\"image_import_failure\",\"image_import\":" +
+										imageReport.json() + "}\n");
+				throw;
+			}
+			std::cout << "Image import: " << imageReport.json() << "\n";
 		}
 		else
 		{
@@ -401,9 +457,23 @@ int runMapCommand(int argc, char **argv)
 				throw std::runtime_error("Cannot load map/save: " + inputPath);
 		}
 		// Analyze the original snapshot before any serializer updates its header metadata.
-		const std::string report = json.empty() ? ""
-												: describeMap(game, generate ? &request : nullptr,
-															  generate ? &result : nullptr);
+		std::string report = json.empty() ? ""
+										  : describeMap(game, generate ? &request : nullptr,
+														generate ? &result : nullptr);
+		if (importing && !report.empty())
+		{
+			const auto closing = report.find_last_of('}');
+			if (closing == std::string::npos)
+				throw std::runtime_error("Cannot append image import details to map report");
+			report.insert(closing, ",\"image_import\":" + imageReport.json());
+		}
+		if (exporting || !mapImage.empty())
+		{
+			const std::string destination = exporting ? output : mapImage;
+			parentDirectory(destination);
+			exportMapImage(game, destination);
+			std::cout << "Map image: " << destination << "\n";
+		}
 		if (!preview.empty())
 		{
 			parentDirectory(preview);
@@ -411,7 +481,7 @@ int runMapCommand(int argc, char **argv)
 			std::cout << "Preview: " << preview << " (" << game.map.getW() << "x" << game.map.getH()
 					  << " tiles)\n";
 		}
-		if (generate && !output.empty())
+		if (writesMap && !output.empty())
 			saveMap(game, output, std::filesystem::path(output).stem().string());
 		if (!json.empty())
 			writeJsonReport(json, report);

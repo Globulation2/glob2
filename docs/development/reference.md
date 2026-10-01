@@ -249,6 +249,60 @@ See Microsoft's [PC packaging guide](https://learn.microsoft.com/en-us/gaming/gd
 [MakePkg reference](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg),
 and [Package Uploader setup](https://github.com/microsoft/PackageUploader).
 
+## Renderer stress measurements
+
+`torus-render-benchmark` uses the production loaded-map renderer. Its optional
+flat-map fixture places real workers,
+explorers and warriors in distinct visible cells at the camera's minimum zoom.
+Run from the repository root with an isolated profile:
+
+```sh
+scons release=1 server=0 torus-render-benchmark
+mkdir -p artifacts/render-profile
+GLOB2_USER_DATA_DIR="$PWD/artifacts/render-profile/profile" \
+GLOB2_BENCH_FLAT=1 GLOB2_BENCH_SIZE=256x256 GLOB2_BENCH_UNITS=1000 \
+GLOB2_BENCH_FRAMES=300 GLOB2_BENCH_CAPTURE=artifacts/render-profile/frame.ppm \
+build/darwin/client/release/test/torus-render-benchmark -g -F -m -s 1280x800
+```
+
+Use the current host's release directory on Linux/Windows. `GLOB2_BENCH_MODE`
+selects `2D no clouds` or `2D clouds`; otherwise both run. Set
+`GLOB2_BENCH_VISIBLE=1` to show and present the completed fixture.
+`GLOB2_BENCH_NATIVE_CLOUD_DETAIL=1` restores the original dense cloud grid for
+a controlled comparison. `GLOB2_BENCH_BARS=1` adds health/food bars. Unit count
+zero measures the same terrain without units. Retain executable hashes, commands,
+GPU identity, logs and captures with before/after comparisons. The flat fixture
+checks that rendering leaves the simulation checksum unchanged.
+
+For an AI match, replace `GLOB2_BENCH_SIZE` and `GLOB2_BENCH_UNITS` with
+`GLOB2_BENCH_GAME=/absolute/path/to/checkpoint.game.gz`. The saved players and
+entities are retained. `GLOB2_BENCH_AI_TICKS=N` advances their AI orders and
+simulation for a fixed warmup before measurements. `GLOB2_BENCH_MIN_UNITS=N`
+first adds units on free cells until that population is reached; the log separates
+the checkpoint's natural population from this deliberately seeded stress case.
+`GLOB2_BENCH_FULL_MAP=1` fits the complete map, including on nonsquare viewports,
+and can go below the interactive camera's minimum zoom.
+`GLOB2_BENCH_CAMERA_SWEEP=1` repeatedly changes zoom and pans across wrap seams.
+Sweep measurements mix those view sizes; use a fixed camera for paired timings.
+
+Timings include GPU completion (`glFinish`) and exclude frame presentation, AI,
+input and simulation work. They are renderer measurements, not whole-game FPS.
+POSIX builds also report process CPU time separately from elapsed time.
+Scope timings separately report CPU submission and overlap; do not sum inclusive
+scopes. The fixture is native OpenGL only; mobile uses the SDL portable renderer,
+so desktop results do not qualify Android/iOS hardware performance.
+
+Cloud patches in the flat game and editor views now use a coarser, world-anchored
+lattice when zooming out to half size or smaller. Patches retain at most their configured
+1:1 size on screen; normal zoom keeps the original sampling. The field and animation
+time remain unchanged, but distant clouds have less fine detail. The torus view
+retains its separate sampling budget.
+
+Point bars batch opaque fills within each bar using bounded OpenGL or SDL geometry
+submissions. OpenGL outlines and translucent fills preserve their original order;
+software surfaces retain their existing path. Full-map terrain and resource passes
+skip fog discovery queries when `DRAW_WHOLE_MAP` already makes every tile visible.
+
 ## Simulation verification and diagnostics
 
 A `Team` is a colony; a `Player` controls a team, and several players can share one.

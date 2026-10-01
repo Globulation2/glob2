@@ -1,13 +1,130 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <cmath>
-#include <cassert>
-#include <algorithm>
 #include "GraphicContextPrivate.h"
+#include "OpaqueRectangleBatch.h"
+
+#include <algorithm>
+#include <cassert>
+#include <cmath>
+#include <exception>
+#include <stdexcept>
+#include <vector>
 
 namespace GAGCore
 {
+    namespace
+    {
+        // Rendering is confined to the active context's presentation thread.
+        // Scratch storage is reused across bars and bounded by the flush limit.
+        class RectangleBatchState
+        {
+        public:
+            static constexpr size_t maxRectangles = 4096;
+
+            bool owns(const GraphicContext *context) const { return owner == context; }
+
+            void begin(GraphicContext *context)
+            {
+                if (owner) throw std::logic_error("Rectangle batch scopes cannot nest");
+                owner = context;
+            }
+
+            bool append(float x, float y, float w, float h, const Color &color, RenderBackend *backend)
+            {
+                const bool startsSubmission = quads.empty();
+                renderer = backend;
+                quads.push_back({x, y, w, h, color});
+                if (quads.size() == maxRectangles) flush();
+                return startsSubmission;
+            }
+
+            void flush()
+            {
+                if (quads.empty()) return;
+                if (renderer)
+                {
+                    vertices.clear();
+                    vertices.reserve(quads.size() * 6);
+                    for (const auto &quad : quads)
+                    {
+                        const SDL_Color color{quad.color.r, quad.color.g, quad.color.b, 255};
+                        const SDL_Vertex a{{quad.x, quad.y}, color, {}},
+                                         b{{quad.x + quad.w, quad.y}, color, {}},
+                                         c{{quad.x + quad.w, quad.y + quad.h}, color, {}},
+                                         d{{quad.x, quad.y + quad.h}, color, {}};
+                        vertices.insert(vertices.end(), {a, b, c, a, c, d});
+                    }
+                    renderer->triangles(vertices);
+                }
+#ifdef HAVE_OPENGL
+                else
+                {
+                    glState.doBlend(false);
+                    glState.doTexture(false);
+                    glBegin(GL_QUADS);
+                    for (const auto &quad : quads)
+                    {
+                        glColor3ub(quad.color.r, quad.color.g, quad.color.b);
+                        glVertex2f(quad.x, quad.y);
+                        glVertex2f(quad.x + quad.w, quad.y);
+                        glVertex2f(quad.x + quad.w, quad.y + quad.h);
+                        glVertex2f(quad.x, quad.y + quad.h);
+                    }
+                    glEnd();
+                }
+#endif
+                quads.clear();
+            }
+
+            void discard() noexcept
+            {
+                quads.clear();
+                vertices.clear();
+                owner = nullptr;
+                renderer = nullptr;
+            }
+
+            void finish()
+            {
+                try { flush(); }
+                catch (...) { discard(); throw; }
+                discard();
+            }
+
+        private:
+            struct Quad { float x, y, w, h; Color color; };
+            GraphicContext *owner = nullptr;
+            RenderBackend *renderer = nullptr;
+            std::vector<Quad> quads;
+            std::vector<SDL_Vertex> vertices;
+        };
+
+        RectangleBatchState rectangleBatch;
+    }
+
+    OpaqueRectangleBatch::OpaqueRectangleBatch(GraphicContext *context)
+    {
+        bool enabled = context->hasPortableRenderer();
+#ifdef HAVE_OPENGL
+        enabled = enabled || (context->getOptionFlags() & GraphicContext::USEGPU);
+#endif
+        if (enabled)
+        {
+            rectangleBatch.begin(context);
+            active = true;
+        }
+    }
+
+    OpaqueRectangleBatch::~OpaqueRectangleBatch() noexcept(false)
+    {
+        if (!active) return;
+        // A failed drawing operation has already aborted this pass. Discard its
+        // queued geometry instead of risking a second exception during unwinding.
+        if (std::uncaught_exceptions() > 0) rectangleBatch.discard();
+        else rectangleBatch.finish();
+    }
+
 	void GraphicContext::beginMapTransform(float zoom,float x,float y,int cx,int cy,int cw,int ch)
 	{
         if (zoom!=1 || x!=0 || y!=0) beginSoftwareTransform();
@@ -240,6 +357,7 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
+			if (rectangleBatch.owns(this)) rectangleBatch.flush();
 			// state change
 			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glState.doBlend(true);
@@ -278,6 +396,16 @@ namespace GAGCore
 
 	void GraphicContext::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
+        if (rectangleBatch.owns(this))
+        {
+            if (renderer && (w <= 0 || h <= 0)) return;
+            if (color.a == Color::ALPHA_OPAQUE)
+            {
+                if (rectangleBatch.append(x, y, w, h, color, renderer.get())) ++drawCalls;
+                return;
+            }
+            rectangleBatch.flush();
+        }
         if (renderer) {
             if (w <= 0 || h <= 0) return;
             SDL_FColor c{(color.r) / 255.0f, (color.g) / 255.0f, (color.b) / 255.0f, (color.a) / 255.0f};
