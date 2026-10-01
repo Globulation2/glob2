@@ -36,6 +36,7 @@ Glob2-*.dmg
 /docs/**/evidence/
 /docs/**/validation/
 /tools/browser-emsdk/
+/tools/.glob2-locks/
 /build-browser/
 /build-browser.log
 /build-*-support.log

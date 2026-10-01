@@ -1,5 +1,6 @@
 """Regression checks for evidence provenance and Android transfer failures."""
 import importlib.util
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -16,6 +17,31 @@ spec.loader.exec_module(android)
 
 
 class ProvenanceTests(unittest.TestCase):
+    def test_isolated_tool_lease_does_not_change_source_identity(self):
+        spec = importlib.util.spec_from_file_location('dev_store', ROOT / 'scons/dev_store.py')
+        store = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(store)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            def git(*args):
+                subprocess.run(['git', '-C', str(root), *args], check=True,
+                               stdout=subprocess.DEVNULL)
+            git('config', 'user.email', 'test@example.invalid')
+            git('config', 'user.name', 'Test')
+            (root / '.gitignore').write_bytes((ROOT / '.gitignore').read_bytes())
+            git('add', '.gitignore')
+            git('commit', '-qm', 'fixture')
+            before = source_identity(root)
+            with patch.dict(os.environ, {'GLOB2_DEV_MODE': 'isolated'}):
+                lease = store.Lease(root / 'tools/browser-emsdk', track_use=False)
+                try:
+                    self.assertEqual(before, source_identity(root))
+                    (root / 'tools/new-source.js').write_text('const value = 1;')
+                    self.assertTrue(source_identity(root)['dirty'])
+                finally:
+                    lease.close()
+
     def test_clean_runner_cannot_relabel_stale_binary(self):
         source = {'revision': 'new', 'dirty': False, 'sourceTreeSha256': 'new-bytes'}
         stale = dict(source, revision='old', sourceTreeSha256='old-bytes')
