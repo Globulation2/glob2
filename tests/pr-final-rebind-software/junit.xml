@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="PortableRenderer"><testcase classname="PortableRenderer" name="each accelerated backend uploads surface revisions independently [display]" time="0.398699" status="run" />
+  <testcase classname="PortableRenderer" name="live scale retains portable viewport ownership [display]" time="0.311032" status="run" />
+  <testcase classname="PortableRenderer" name="software targets resize and destroy safely during an active transform [display]" time="0.440737" status="run" />
+  <testcase classname="PortableRenderer" name="zone boundaries; UI transforms and portable rendering paths [display]" time="2.25807" status="run" />
+  </testsuite><testsuite name="SoftwareRenderer"><testcase classname="SoftwareRenderer" name="native display scaling preserves direct pixels through lazy geometry and target rotation" time="0.00015" status="run" />
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="1.05254" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.57109" status="run" />
+  </testsuite></testsuites>

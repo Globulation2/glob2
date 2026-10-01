@@ -1,0 +1,10 @@
+PASS SoftwareRenderer/native display scaling preserves direct pixels through lazy geometry and target rotation (0.0s)
+PASS PortableRenderer/live scale retains portable viewport ownership [display] (0.4s)
+PASS PortableRenderer/each accelerated backend uploads surface revisions independently [display] (0.4s)
+PASS PortableRenderer/software targets resize and destroy safely during an active transform [display] (0.5s)
+PASS WindowResize/native display and live preferences in software [display] (0.7s)
+PASS WindowResize/cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400] (1.2s)
+PASS PortableRenderer/zone boundaries; UI transforms and portable rendering paths [display] (2.3s)
+
+7 passed, 0 failed, 0 skipped (5.6s of test time)
+[run_tests] JUnit report: artifacts/software-optimization/pr-final-rebind-software/junit.xml (7 cases)

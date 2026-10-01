@@ -4,7 +4,7 @@ Evidence for [PR #496](https://github.com/Globulation2/glob2/pull/496). This bra
 
 ## Reproduction
 
-Build optimized software clients at those source revisions, using separate build directories and disposable user profiles. The original baseline uses the local profiling harness that the PR promotes to `test/SoftwareRenderBenchmark.cpp`; its original harness source is available in the benchmark commit `fbfdddf8f`. Match the drawing-only measurement loop and warmup parameters described in the PR development reference. Capture the baseline before switching implementations.
+Build optimized software clients at those source revisions, using separate build directories and disposable user profiles. The original baseline uses the local profiling harness that the PR promotes to `test/SoftwareRenderBenchmark.cpp`; its exact original source is in `baseline-harness/SoftwareProfile.cpp`. On baseline source, cherry-pick the tooling-only commit `fbfdddf8f`, replace `test/SoftwareRenderBenchmark.cpp` with that original harness, and build `software-render-benchmark`. This changes tooling only, retaining baseline production renderer objects. Match the drawing-only measurement loop and warmup parameters described in the PR development reference. Capture the baseline before switching implementations.
 
 ```sh
 scons release=1 server=0 opengl=0 software-render-benchmark engine-tests
@@ -33,3 +33,16 @@ Apple M3, macOS 26.6.2, SDL2-compat 2.32.70 over SDL3 3.4.14. Concurrent develop
 - Decompressed final save: `3e9cfdb5f620adde197bce3d8236adbfc8b7ebc4b019d69736ec57e3b094d2f3`
 
 `original-verification.json` is the original development manifest. Some early intermediate phase measurements are retained there for traceability; use the completed cohorts in `profiles/` for accepted performance claims. Rejected experimental logs are excluded.
+
+## Rebased follow-up validation
+
+The candidate at `2253ec09d` fixes native-display workload drift by disabling HiDPI in the benchmark by default. Native-display lifecycle tests retain HiDPI. `profiles/pr-fixed-pixel-pairs` contains seven new alternating pairs against the original baseline with fixed 1280×800 framebuffers, 240 measured frames and 30 warmup frames. Concurrent debug builds add timing noise. Native and double-zoom first-pair captures are exactly equal.
+
+- native: 3.2653 → 2.3529 CPU ms/frame (1.39×).
+- half: 28.7060 → 4.9345 CPU ms/frame (5.82×).
+- double: 14.5902 → 2.5059 CPU ms/frame (5.82×).
+- fractional: 29.3126 → 3.0273 CPU ms/frame (9.68×).
+
+Rebased checks: 23 focused software cases and 28 OpenGL-enabled cases passed. Final target-binding hardening recomputes native scaling for differently sized replacement surfaces; its targeted follow-up results are included when completed. Platform CI may still be queued; no Linux/Windows runtime equivalence or maintainer playtesting is asserted.
+
+Final review fix at `9fdf99b8c`: differently sized native target replacement preserves scale agreement between direct and fallback drawing. Seven affected software lifecycle/portable checks and the OpenGL-enabled native target regression passed. The fixed-pixel benchmark path retains the measured behavior.

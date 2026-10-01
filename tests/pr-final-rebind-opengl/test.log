@@ -1,0 +1,4 @@
+PASS SoftwareRenderer/native display scaling preserves direct pixels through lazy geometry and target rotation (0.1s)
+
+1 passed, 0 failed, 0 skipped (0.1s of test time)
+[run_tests] JUnit report: artifacts/software-optimization/pr-final-rebind-opengl/junit.xml (1 cases)
