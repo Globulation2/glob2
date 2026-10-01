@@ -159,6 +159,7 @@ namespace GAGCore
 
     void GraphicContext::drawMapCopies(int pw,int ph,int vw,int vh,const std::function<void()> &draw)
     {
+		if (renderer) prepareDraw();
         draw();
         if (renderer && pw>0 && ph>0) {
             SDL_Rect bounds{mapClipX,mapClipY,mapClipW,mapClipH};
@@ -189,6 +190,7 @@ namespace GAGCore
 
     void GraphicContext::drawMapBoundary(int x1, int y1, int x2, int y2, const Color& color)
     {
+		if (renderer) prepareDraw();
         assert(x1 == x2 || y1 == y2);
         // Snap in the actual raster target, then return to world coordinates.
         // Include periodic-copy translation: wrapped maps need the same pixel
@@ -327,6 +329,7 @@ namespace GAGCore
 
 	void GraphicContext::drawPixel(int x, int y, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawPixel(float(x), float(y), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -338,6 +341,7 @@ namespace GAGCore
 
 	void GraphicContext::drawPixel(float x, float y, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x, y, 1.0f, 1.0f, color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -350,6 +354,7 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(int x, int y, int w, int h, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawRect(float(x), float(y), float(w), float(h), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -361,6 +366,7 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(float x, float y, float w, float h, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             if (w <= 0 || h <= 0) return;
             drawFilledRect(x,y,w,1.0f,color);
@@ -399,6 +405,7 @@ namespace GAGCore
 
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(float(x), float(y), float(w), float(h), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -415,11 +422,12 @@ namespace GAGCore
             if (renderer && (w <= 0 || h <= 0)) return;
             if (color.a == Color::ALPHA_OPAQUE)
             {
-                if (rectangleBatch.append(x, y, w, h, color, renderer.get())) ++drawCalls;
+                if (rectangleBatch.append(x, y, w, h, color, renderer)) ++drawCalls;
                 return;
             }
             rectangleBatch.flush();
         }
+		if (renderer) prepareDraw();
         if (renderer) {
             if (w <= 0 || h <= 0) return;
             renderer->fill(SDL_FRect{x,y,w,h}, SDL_Color{color.r,color.g,color.b,color.a});
@@ -456,6 +464,7 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawLine(float(x1), float(y1), float(x2), float(y2), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -467,6 +476,7 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             float dx=x2-x1, dy=y2-y1, length=std::hypot(dx,dy);
             if (length == 0) { drawPixel(x1,y1,color); return; }
@@ -529,6 +539,7 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(int x, int y, int radius, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawCircle(float(x), float(y), float(radius), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -540,6 +551,7 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(float x, float y, float radius, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             if (radius <= 0) return;
             int segments=std::max(12, int(std::ceil(radius*2)));
@@ -585,21 +597,25 @@ namespace GAGCore
 	// compat... this is there because it sems gcc is not able to do function overloading with several levels of inheritance
 	void GraphicContext::drawPixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderer) prepareDraw();
 		drawPixel(x, y, Color(r, g, b, a));
 	}
 
 	void GraphicContext::drawRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderer) prepareDraw();
 		drawRect(x, y, w, h, Color(r, g, b, a));
 	}
 
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderer) prepareDraw();
 		drawFilledRect(x, y, w, h, Color(r, g, b, a));
 	}
 
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderer) prepareDraw();
 		drawLine(x1, y1, x2, y2, Color(r, g, b, a));
 	}
 
@@ -608,6 +624,7 @@ namespace GAGCore
 	// adjacent lines (charts, sliders, training bars) leave gaps between them.
 	void GraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x,y,1, l,Color(r,g,b,a)); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -619,6 +636,7 @@ namespace GAGCore
 
 	void GraphicContext::drawVertLine(int x, int y, int l, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x,y,1, l,color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -630,6 +648,7 @@ namespace GAGCore
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x,y,l, 1,Color(r,g,b,a)); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -641,6 +660,7 @@ namespace GAGCore
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, const Color& color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawFilledRect(x,y,l, 1,color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
@@ -652,6 +672,7 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		if (renderer) prepareDraw();
 		drawCircle(x, y, radius, Color(r, g, b, a));
 	}
 }

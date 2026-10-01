@@ -174,10 +174,14 @@ class SoftwareRenderBenchmark
 					PerformanceTelemetry::collector().reset();
 				}
 				Uint64 a = SDL_GetPerformanceCounter();
+				// Isolate the retention-copy cost without a production graphics setting.
+				if (getenv("PROFILE_PRESERVE_FRAME"))
+					gfx->beginFrame(GraphicContext::FrameMode::PreserveContent);
 				if (std::string(mode) == "gui")
 					gui.drawAll(0);
 				else
 				{
+					gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 					gfx->setClipRect();
 					gui.game.drawMap(0, 0, gfx->getW() - 160, gfx->getH(), 0, 0, gui.viewportX,
 									 gui.viewportY, 0, gui.view, Game::DRAW_AREA);

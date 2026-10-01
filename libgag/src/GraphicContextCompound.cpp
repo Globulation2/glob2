@@ -14,26 +14,31 @@ namespace GAGCore
 {
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
 		drawSurface(x, y, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
 		drawSurface(x, y, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
 		drawSurface(x, y, w, h, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
 		drawSurface(x, y, w, h, surface, surface->getTexX(), surface->getTexY(), surface->getW(), surface->getH(), alpha);
 	}
 
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawSurface(float(x),float(y),float(sw),float(sh),surface,sx,sy,sw,sh,alpha); return; }
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
@@ -45,6 +50,7 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawSurface(float(x),float(y),float(sw),float(sh),surface,sx,sy,sw,sh,alpha); return; }
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
@@ -56,6 +62,7 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
         if (renderer) { drawSurface(float(x),float(y),float(w),float(h),surface,sx,sy,sw,sh,alpha); return; }
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
@@ -67,6 +74,7 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             if (w <= 0 || h <= 0 || sw <= 0 || sh <= 0) return;
             auto* pixels=surface->getSDLSurface();
@@ -205,6 +213,7 @@ namespace GAGCore
 
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
             for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
@@ -297,6 +306,7 @@ namespace GAGCore
 
 	void GraphicContext::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
+		if (renderer) prepareDraw();
         if (renderer) {
             if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
             for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {

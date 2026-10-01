@@ -78,10 +78,12 @@ namespace GAGCore
 	}
 	void DrawableSurface::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		prepareDraw();
 		 _drawVertLine(x, y, l, Color(r, g, b, a));
 	}
 	void DrawableSurface::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+		prepareDraw();
 		_drawHorzLine(x, y, l, Color(r, g, b, a));
 	}
 	void DrawableSurface::drawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
@@ -111,6 +113,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+		prepareDraw();
 		if (surface == _gc && _gc->nativeSoftware)
 		{
 			_gc->renderer->flush();
@@ -123,7 +126,7 @@ namespace GAGCore
 			SDL_SetSurfaceAlphaMod(surface->sdlsurface,alpha);
 			SDL_BlitScaled(surface->sdlsurface, &source, sdlsurface, &dest);
 			SDL_SetSurfaceAlphaMod(surface->sdlsurface,255);
-			dirty=true;
+			markPixelsChanged();
 			return;
 		}
 		if (alpha == Color::ALPHA_OPAQUE)
@@ -247,6 +250,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha)
 	{
+		prepareDraw();
 		if ((w <= 0) || (h <= 0) || (sw <= 0) || (sh <= 0))
 			return;
 		if ((w == sw) && (h == sh))
@@ -258,7 +262,7 @@ namespace GAGCore
         // mapping at fractional sizes. The raster operation restores SDL state.
 		SDL_Rect sr = {sx, sy, sw, sh};
 		SDL_Rect dr = {x, y, w, h};
-        SurfaceRaster::blit(sdlsurface, surface->sdlsurface, sr, dr, alpha, surface->hasOpaquePixels(), SurfaceRaster::BlitBlend::Surface);
+        SurfaceRaster::blit(sdlsurface, surface->sdlsurface, sr, dr, alpha, false, SurfaceRaster::BlitBlend::Surface);
 		markPixelsChanged();
 	}
 

@@ -2,13 +2,13 @@
 #include "EngineFixtures.h"
 #include "render/SoftwareTerrainCache.h"
 #include <RenderBackend.h>
+#include <SoftwareFramePresenter.h>
 #include <SurfaceRaster.h>
 #include <FileManager.h>
 #include <array>
 #include <cmath>
 #include <cstring>
 #include <memory>
-#include <limits>
 #include <stdexcept>
 #include <vector>
 
@@ -182,20 +182,20 @@ TEST_SUITE("SoftwareRenderer")
 		SDL_SetSurfaceColorMod(source.get(), 127, 79, 191);
 		SDL_SetSurfaceAlphaMod(source.get(), 79);
 		for (float scale : {1.f, 2.f})
-        for (Uint8 alpha : {0, 63, 127, 128, 255})
-		{
-			for (auto *target : {expected.get(), actual.get()})
-				SDL_FillRect(target, nullptr, 0xff376b91);
-			for (auto *backend : {reference.get(), optimized.get()})
+			for (Uint8 alpha : {0, 63, 127, 128, 255})
 			{
-				backend->transform(scale, 3, 2, nullptr);
-				backend->blit(source.get(), source.get(), 1, false, SDL_Rect{1, 1, 6, 6},
-							  SDL_FRect{2, 2, 6, 6}, alpha);
-				backend->fill(SDL_FRect{11, 3, 9, 11}, SDL_Color{151, 89, 43, alpha});
-				backend->flush();
+				for (auto *target : {expected.get(), actual.get()})
+					SDL_FillRect(target, nullptr, 0xff376b91);
+				for (auto *backend : {reference.get(), optimized.get()})
+				{
+					backend->transform(scale, 3, 2, nullptr);
+					backend->blit(source.get(), source.get(), 1, false, SDL_Rect{1, 1, 6, 6},
+								  SDL_FRect{2, 2, 6, 6}, alpha);
+					backend->fill(SDL_FRect{11, 3, 9, 11}, SDL_Color{151, 89, 43, alpha});
+					backend->flush();
+				}
+				CHECK(snapshot(actual.get()) == snapshot(expected.get()));
 			}
-			CHECK(snapshot(actual.get()) == snapshot(expected.get()));
-		}
 	}
 	TEST_CASE("geometry-reference blits preserve mixed pixel formats and source modulation")
 	{
@@ -271,6 +271,41 @@ TEST_SUITE("SoftwareRenderer")
 			CHECK(eb == ab);
 		}
 	}
+	TEST_CASE("presenter rotates full frames and preserves completed pixels during partial updates")
+	{
+		auto callerOwned = pixels(4, 4);
+
+		const auto failAllocation = [](Uint32, int, int, int, Uint32) -> SDL_Surface *
+		{
+			SDL_SetError("Injected spare-buffer allocation failure");
+			return nullptr;
+		};
+		// Failure leaves the caller's framebuffer available for legacy retention.
+		CHECK_THROWS_AS((SoftwareFramePresenter{callerOwned.get(), failAllocation}),
+						std::runtime_error);
+		SDL_FillRect(callerOwned.get(), nullptr, 0xff112233);
+		CHECK(pixel(callerOwned.get(), 0, 0) == 0xff112233);
+
+		auto initial = pixels(32, 32);
+		SDL_FillRect(initial.get(), nullptr, 0xff123456);
+		SoftwareFramePresenter presenter(initial.release());
+		auto *first = presenter.begin(false);
+		presenter.complete();
+		auto *second = presenter.begin(false);
+		CHECK(first != second);
+		CHECK(presenter.completed() == first);
+		SDL_FillRect(second, nullptr, 0xff654321);
+		CHECK(pixel(presenter.completed(), 3, 3) == 0xff123456);
+		presenter.complete();
+		auto *partial = presenter.begin(true);
+		CHECK(partial == first);
+		CHECK(pixel(partial, 3, 3) == 0xff654321);
+		SDL_Rect area{0, 0, 4, 4};
+		SDL_FillRect(partial, &area, 0xffabcdef);
+		CHECK(pixel(presenter.completed(), 1, 1) == 0xff654321);
+		presenter.complete();
+		CHECK(pixel(presenter.completed(), 1, 1) == 0xffabcdef);
+	}
 	TEST_CASE("terrain cache matches integer-transformed coastlines and discovery across wraps and "
 			  "mutations "
 			  "[display][artifacts]")
@@ -308,11 +343,11 @@ TEST_SUITE("SoftwareRenderer")
 		compare(0, 0, 0);
 		compare(29, 30, 0);
 		compare(29, 30, 1);
-        for (int phase : {16, 511, 512, 913})
-        {
-            game.mapAnimationTime = phase;
-            compare(29, 30, 0);
-        }
+		for (int phase : {16, 511, 512, 913})
+		{
+			game.mapAnimationTime = phase;
+			compare(29, 30, 0);
+		}
 		game.map.unsetMapDiscovered();
 		game.map.setMapDiscovered(0, 0, 16, 32, game.teams[0]->me);
 		game.map.setMapDiscovered(16, 0, 16, 32, game.teams[1]->me);
@@ -373,5 +408,13 @@ TEST_SUITE("SoftwareRenderer")
 												   game.teams[0]->me, true));
 		CHECK(game.softwareTerrainCache->waterRegions(SDL_Rect{0, 0, 512, 512}).empty());
 
+		const auto capture =
+			glob2test::artifactDirFromWorkingDirectory() + "/transformed-software.bmp";
+		globals->gfx->setUITransform(1.3f, 5, 5, nullptr);
+		globals->gfx->drawFilledRect(0, 0, 16, 16, Color(0, 255, 0));
+		globals->gfx->printScreen(capture);
+		globals->gfx->setUITransform();
+		globals->gfx->nextFrame();
+		CHECK(std::filesystem::exists(capture));
 	}
 }

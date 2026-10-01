@@ -152,7 +152,7 @@ public:
 	}
 	void recursiveExpose() { presenting = true; expose(); require(presenting, "Reentrant guard lost"); presenting = false; }
 	SDL_GLContext current() { return context; }
-	bool cached() { return frameCache.valid; }
+	bool cached() { return frameCache.valid || (softwarePresenter && completedFrame()); }
 	void checkTextureLimitRecovery()
 	{
 		const int maximum = frameCache.maximumTextureSize;

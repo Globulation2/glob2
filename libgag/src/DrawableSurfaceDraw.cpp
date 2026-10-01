@@ -10,6 +10,7 @@ namespace GAGCore
 {
 	void DrawableSurface::drawPixel(int x, int y, const Color& color)
 	{
+		prepareDraw();
 		// clip
 		if ((x<clipRect.x) || (x>=clipRect.x+clipRect.w) || (y<clipRect.y) || (y>=clipRect.y+clipRect.h))
 			return;
@@ -54,6 +55,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawRect(int x, int y, int w, int h, const Color& color)
 	{
+		prepareDraw();
 		_drawHorzLine(x, y, w, color);
 		_drawHorzLine(x, y+h-1, w, color);
 		_drawVertLine(x, y, h, color);
@@ -73,6 +75,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
+		prepareDraw();
         SurfaceRaster::fill(sdlsurface, SDL_Rect{x, y, w, h}, color.applyAlpha(Color::ALPHA_OPAQUE).pack(), color.a);
 		markPixelsChanged();
 	}
@@ -222,6 +225,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawLine(int x1, int y1, int x2, int y2, const Color& _color)
 	{
+		prepareDraw();
 		// we want to modify the color
 		Color color = _color;
 
@@ -408,11 +412,13 @@ namespace GAGCore
 
 	void DrawableSurface::drawVertLine(int x, int y, int l, const Color& color)
 	{
+		prepareDraw();
 		 _drawVertLine(x, y, l, color);
 	}
 
 	void DrawableSurface::drawHorzLine(int x, int y, int l, const Color& color)
 	{
+		prepareDraw();
 		_drawHorzLine(x, y, l, color);
 	}
 }
