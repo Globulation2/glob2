@@ -1,0 +1,16 @@
+{
+  "archives": [
+    {
+      "group": "ci-native-53d",
+      "members": 1310,
+      "archiveSha256": "14228237f0d34d17dbdd5b049b19b2106ee930996df9be4fd7b184632773078e",
+      "sourceIdentity": {
+        "prHeadRevision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+        "actualExecutedRevision": "41fd3a584a4ede4c47101a0000c5c83cc72d0fc7",
+        "sourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4"
+      }
+    }
+  ],
+  "sourceHEADUnchanged": true,
+  "sourceIndexUnchanged": true
+}
