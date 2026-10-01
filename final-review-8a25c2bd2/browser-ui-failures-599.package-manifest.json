@@ -1,0 +1,347 @@
+{
+  "prHeadRevision": "59904fb4719144621c00ed185b7d9d507287e4ec",
+  "actualExecutedRevision": "8eea9d953f4462de97711b58de296896df34a01e",
+  "sourceTreeSha256": "17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690",
+  "ciRun": 36903579424,
+  "status": "Failed candidate. Historical diagnosis evidence; no final UI acceptance.",
+  "failure": "All three scheduled load tests abort in the first main-menu draw because upstream rectangle batching emits color once per quad instead of once per vertex for Emscripten immediate GL emulation.",
+  "correctedLaterSource": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5; corrected UI test execution pending.",
+  "files": {
+    "chromium-webgl2-replay-reload/diagnosis.txt": {
+      "bytes": 1642,
+      "sha256": "f2cda4e759afed18a7723a2a16f3a7767c70593862fa874a7116221f373bdde0"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/index.html": {
+      "bytes": 562143,
+      "sha256": "c890598aa94a92657bb5057d025a36c2f1aeb5618438665896055d5300d3ca04"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/codeMirrorModule.-QdMvsKi.css": {
+      "bytes": 6251,
+      "sha256": "20be824a82832b62cc04642d31da3c609fd280b23f1cdcb1e622c4f40aac5ab8"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/uiMode.CU5KtEkS.js": {
+      "bytes": 38057,
+      "sha256": "0c0dc5e0c822c27e60420a5c1659683fda89398f1561e43608f9d829eafdc197"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/index.html": {
+      "bytes": 2363,
+      "sha256": "139ac80123fb450cfc0631296e9f01463313ca2fec961b3a247ec6c9528447a2"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/snapshot.B_Jk1wbt.js": {
+      "bytes": 650,
+      "sha256": "d4d09e05451d107d8e1a6bbd041405fe518b9fd2833890e4ebaaad83b7f554f5"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/defaultSettingsView.Bqk9acqE.css": {
+      "bytes": 107049,
+      "sha256": "cd1d3c277d4962246ed92d7d42734c5ffed6bac5c499232693f9c8331b71801f"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/codicon.DCmgc-ay.ttf": {
+      "bytes": 80340,
+      "sha256": "0f1d5219934e96e83b8db162d60b4d8c09b5de1e7d38031cbafe4a3c0f2889c9"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/snapshot.html": {
+      "bytes": 389,
+      "sha256": "c608c8899c95c5a74d3f556e20146c3d852b9df85ae2854c659a7cc773c9b727"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/index.B4cLoZK3.js": {
+      "bytes": 6628,
+      "sha256": "7b96efd541639738a8d46e4b6ba9780ffaf57a5c104db66764e0cec46d9f64e8"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/index.B_TqY17P.css": {
+      "bytes": 2055,
+      "sha256": "08a212fcacae1866f44f065654afcc4c7d03409c68c74b3315c5bda17a0ca003"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/uiMode.CyMfwkXJ.css": {
+      "bytes": 54590,
+      "sha256": "fb403cf0b07007bc1d771e29737f7408924da300e2fab8b289a3ef2e8fc08d7b"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/xtermModule.kHJ-D0s7.css": {
+      "bytes": 2853,
+      "sha256": "0dd60056134e6a2994a86b59a1e9789b9f04e92924da109aef8c923acaf08ce5"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/manifest.webmanifest": {
+      "bytes": 429,
+      "sha256": "d8540500603a32a39fe7e5a0375dc0f9ebafd11118e06a846db7efc608223ab9"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/sw.bundle.js": {
+      "bytes": 95459,
+      "sha256": "37b230329280e28e32b03df20738d2ed3bfd0ea45b408a69213158bb8400adb3"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/uiMode.html": {
+      "bytes": 727,
+      "sha256": "c6e92923ea7f2b617db3a2128ac8889c6c1461a77764651588e0111b729c3a3d"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/playwright-logo.svg": {
+      "bytes": 5033,
+      "sha256": "6b0a4367bdeab10995bc239278f04c68c10e48adbec15e799e01909a0d66dcb9"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/data/dab702bee8dbb0aab25582d7e3af37297b7fdc53.md": {
+      "bytes": 7460,
+      "sha256": "e5e9cdbdc8e250f0f45bda49cb16169dc6cec87780d7817159b1961b3e6dfa15"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/data/d0ae0fbe707b10c8db11e139db68f4d95531c694.zip": {
+      "bytes": 3429584,
+      "sha256": "a20f257e3f1d80a2264a5dd3a60e101ad43d109f25d2efbcce5523238c84ca4c"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/data/1080bb4fa083e186b3a00d073134c79973be3cd3.png": {
+      "bytes": 1406761,
+      "sha256": "f3f2ac58d53ed3a8356588ec9fd2c1a633b6a4c1f5709cdb4ca462b4b7f5e007"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/assets/urlMatch-L3liM589.js": {
+      "bytes": 2510,
+      "sha256": "1bc6321e32d11c31a452bc75896f0b344e6153321854d9f1658818be7f845c16"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/assets/defaultSettingsView-Ds6CBOo0.js": {
+      "bytes": 654294,
+      "sha256": "0b48f13034cfa075338cc0839f212297d22cadab9219d9699d161d2b18c79019"
+    },
+    "chromium-webgl2-replay-reload/browser-test-report/trace/assets/codeMirrorModule-BbkfBe3n.js": {
+      "bytes": 307393,
+      "sha256": "274b964242426bf4e1c662a84f6345d8a99f67821caa508fb12c52e2d1dfd48c"
+    },
+    "chromium-webgl2-replay-reload/browser-test-results/session-reload-an-active-r-a8445-hrough-the-scheduled-loader-chromium/test-failed-1.png": {
+      "bytes": 1406761,
+      "sha256": "f3f2ac58d53ed3a8356588ec9fd2c1a633b6a4c1f5709cdb4ca462b4b7f5e007"
+    },
+    "chromium-webgl2-replay-reload/browser-test-results/session-reload-an-active-r-a8445-hrough-the-scheduled-loader-chromium/trace.zip": {
+      "bytes": 3429584,
+      "sha256": "a20f257e3f1d80a2264a5dd3a60e101ad43d109f25d2efbcce5523238c84ca4c"
+    },
+    "chromium-webgl2-replay-reload/browser-test-results/session-reload-an-active-r-a8445-hrough-the-scheduled-loader-chromium/error-context.md": {
+      "bytes": 7460,
+      "sha256": "e5e9cdbdc8e250f0f45bda49cb16169dc6cec87780d7817159b1961b3e6dfa15"
+    },
+    "chromium-webgl2-replay-reload.log": {
+      "bytes": 132730,
+      "sha256": "c291232e9c2d58192beddc4b824f0faabb73485a367edc203c49dfd3dfb227d0"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/index.html": {
+      "bytes": 561499,
+      "sha256": "ac1e464a5bd0e062cf9f136e412c9b8e5a6ff3090e26d8d3d0ddceeb78d85cd0"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/codeMirrorModule.-QdMvsKi.css": {
+      "bytes": 6251,
+      "sha256": "20be824a82832b62cc04642d31da3c609fd280b23f1cdcb1e622c4f40aac5ab8"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/uiMode.CU5KtEkS.js": {
+      "bytes": 38057,
+      "sha256": "0c0dc5e0c822c27e60420a5c1659683fda89398f1561e43608f9d829eafdc197"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/index.html": {
+      "bytes": 2363,
+      "sha256": "139ac80123fb450cfc0631296e9f01463313ca2fec961b3a247ec6c9528447a2"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/snapshot.B_Jk1wbt.js": {
+      "bytes": 650,
+      "sha256": "d4d09e05451d107d8e1a6bbd041405fe518b9fd2833890e4ebaaad83b7f554f5"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/defaultSettingsView.Bqk9acqE.css": {
+      "bytes": 107049,
+      "sha256": "cd1d3c277d4962246ed92d7d42734c5ffed6bac5c499232693f9c8331b71801f"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/codicon.DCmgc-ay.ttf": {
+      "bytes": 80340,
+      "sha256": "0f1d5219934e96e83b8db162d60b4d8c09b5de1e7d38031cbafe4a3c0f2889c9"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/snapshot.html": {
+      "bytes": 389,
+      "sha256": "c608c8899c95c5a74d3f556e20146c3d852b9df85ae2854c659a7cc773c9b727"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/index.B4cLoZK3.js": {
+      "bytes": 6628,
+      "sha256": "7b96efd541639738a8d46e4b6ba9780ffaf57a5c104db66764e0cec46d9f64e8"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/index.B_TqY17P.css": {
+      "bytes": 2055,
+      "sha256": "08a212fcacae1866f44f065654afcc4c7d03409c68c74b3315c5bda17a0ca003"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/uiMode.CyMfwkXJ.css": {
+      "bytes": 54590,
+      "sha256": "fb403cf0b07007bc1d771e29737f7408924da300e2fab8b289a3ef2e8fc08d7b"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/xtermModule.kHJ-D0s7.css": {
+      "bytes": 2853,
+      "sha256": "0dd60056134e6a2994a86b59a1e9789b9f04e92924da109aef8c923acaf08ce5"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/manifest.webmanifest": {
+      "bytes": 429,
+      "sha256": "d8540500603a32a39fe7e5a0375dc0f9ebafd11118e06a846db7efc608223ab9"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/sw.bundle.js": {
+      "bytes": 95459,
+      "sha256": "37b230329280e28e32b03df20738d2ed3bfd0ea45b408a69213158bb8400adb3"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/uiMode.html": {
+      "bytes": 727,
+      "sha256": "c6e92923ea7f2b617db3a2128ac8889c6c1461a77764651588e0111b729c3a3d"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/playwright-logo.svg": {
+      "bytes": 5033,
+      "sha256": "6b0a4367bdeab10995bc239278f04c68c10e48adbec15e799e01909a0d66dcb9"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/data/104778a9a7225bc38e00f8e933770dc1dfef87fa.zip": {
+      "bytes": 3040980,
+      "sha256": "20a617cda6c41c559aa589bb373990132dbe34365fdeea60d2cf8d07d09c2a93"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/data/1080bb4fa083e186b3a00d073134c79973be3cd3.png": {
+      "bytes": 1406761,
+      "sha256": "f3f2ac58d53ed3a8356588ec9fd2c1a633b6a4c1f5709cdb4ca462b4b7f5e007"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/data/15d585a4a822d7d8cf5f196b1b9adda6be0fd2b9.md": {
+      "bytes": 7480,
+      "sha256": "0636cbce6383ae2dc06a13ecb03f7d27b555e7308b453eda34ba791d17340e3b"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/assets/urlMatch-L3liM589.js": {
+      "bytes": 2510,
+      "sha256": "1bc6321e32d11c31a452bc75896f0b344e6153321854d9f1658818be7f845c16"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/assets/defaultSettingsView-Ds6CBOo0.js": {
+      "bytes": 654294,
+      "sha256": "0b48f13034cfa075338cc0839f212297d22cadab9219d9699d161d2b18c79019"
+    },
+    "chromium-webgl2-match-reload/browser-test-report/trace/assets/codeMirrorModule-BbkfBe3n.js": {
+      "bytes": 307393,
+      "sha256": "274b964242426bf4e1c662a84f6345d8a99f67821caa508fb12c52e2d1dfd48c"
+    },
+    "chromium-webgl2-match-reload/browser-test-results/session-reload-an-active-m-2778b-hrough-the-scheduled-loader-chromium/test-failed-1.png": {
+      "bytes": 1406761,
+      "sha256": "f3f2ac58d53ed3a8356588ec9fd2c1a633b6a4c1f5709cdb4ca462b4b7f5e007"
+    },
+    "chromium-webgl2-match-reload/browser-test-results/session-reload-an-active-m-2778b-hrough-the-scheduled-loader-chromium/trace.zip": {
+      "bytes": 3040980,
+      "sha256": "20a617cda6c41c559aa589bb373990132dbe34365fdeea60d2cf8d07d09c2a93"
+    },
+    "chromium-webgl2-match-reload/browser-test-results/session-reload-an-active-m-2778b-hrough-the-scheduled-loader-chromium/error-context.md": {
+      "bytes": 7480,
+      "sha256": "0636cbce6383ae2dc06a13ecb03f7d27b555e7308b453eda34ba791d17340e3b"
+    },
+    "chromium-webgl2-match-reload.log": {
+      "bytes": 130052,
+      "sha256": "db1f4769eca33b4838b73c4068c69dbc20cea56540120daa1a249f09e60377ad"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/index.html": {
+      "bytes": 561511,
+      "sha256": "c1103d4ff918a6bc572e8d94e12a13026dde7fb04714db4c116623049e239a94"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/codeMirrorModule.-QdMvsKi.css": {
+      "bytes": 6251,
+      "sha256": "20be824a82832b62cc04642d31da3c609fd280b23f1cdcb1e622c4f40aac5ab8"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/uiMode.CU5KtEkS.js": {
+      "bytes": 38057,
+      "sha256": "0c0dc5e0c822c27e60420a5c1659683fda89398f1561e43608f9d829eafdc197"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/index.html": {
+      "bytes": 2363,
+      "sha256": "139ac80123fb450cfc0631296e9f01463313ca2fec961b3a247ec6c9528447a2"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/snapshot.B_Jk1wbt.js": {
+      "bytes": 650,
+      "sha256": "d4d09e05451d107d8e1a6bbd041405fe518b9fd2833890e4ebaaad83b7f554f5"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/defaultSettingsView.Bqk9acqE.css": {
+      "bytes": 107049,
+      "sha256": "cd1d3c277d4962246ed92d7d42734c5ffed6bac5c499232693f9c8331b71801f"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/codicon.DCmgc-ay.ttf": {
+      "bytes": 80340,
+      "sha256": "0f1d5219934e96e83b8db162d60b4d8c09b5de1e7d38031cbafe4a3c0f2889c9"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/snapshot.html": {
+      "bytes": 389,
+      "sha256": "c608c8899c95c5a74d3f556e20146c3d852b9df85ae2854c659a7cc773c9b727"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/index.B4cLoZK3.js": {
+      "bytes": 6628,
+      "sha256": "7b96efd541639738a8d46e4b6ba9780ffaf57a5c104db66764e0cec46d9f64e8"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/index.B_TqY17P.css": {
+      "bytes": 2055,
+      "sha256": "08a212fcacae1866f44f065654afcc4c7d03409c68c74b3315c5bda17a0ca003"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/uiMode.CyMfwkXJ.css": {
+      "bytes": 54590,
+      "sha256": "fb403cf0b07007bc1d771e29737f7408924da300e2fab8b289a3ef2e8fc08d7b"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/xtermModule.kHJ-D0s7.css": {
+      "bytes": 2853,
+      "sha256": "0dd60056134e6a2994a86b59a1e9789b9f04e92924da109aef8c923acaf08ce5"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/manifest.webmanifest": {
+      "bytes": 429,
+      "sha256": "d8540500603a32a39fe7e5a0375dc0f9ebafd11118e06a846db7efc608223ab9"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/sw.bundle.js": {
+      "bytes": 95459,
+      "sha256": "37b230329280e28e32b03df20738d2ed3bfd0ea45b408a69213158bb8400adb3"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/uiMode.html": {
+      "bytes": 727,
+      "sha256": "c6e92923ea7f2b617db3a2128ac8889c6c1461a77764651588e0111b729c3a3d"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/playwright-logo.svg": {
+      "bytes": 5033,
+      "sha256": "6b0a4367bdeab10995bc239278f04c68c10e48adbec15e799e01909a0d66dcb9"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/data/959ac84636b2e9bcbfcc65d2eab65975a4f8084a.md": {
+      "bytes": 7485,
+      "sha256": "a1831fb6cef94a1629db95b4d7bd6ecfaa4e9556549303a401ce9f04c4800b0b"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/data/1080bb4fa083e186b3a00d073134c79973be3cd3.png": {
+      "bytes": 1406761,
+      "sha256": "f3f2ac58d53ed3a8356588ec9fd2c1a633b6a4c1f5709cdb4ca462b4b7f5e007"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/data/e27be958c8fa76eca00197e3dda63c6263edcb52.zip": {
+      "bytes": 3727166,
+      "sha256": "8e6ee6f1fe47c01589e18614858c052f68f8f1117f9df8813f94a2a79273418b"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/assets/urlMatch-L3liM589.js": {
+      "bytes": 2510,
+      "sha256": "1bc6321e32d11c31a452bc75896f0b344e6153321854d9f1658818be7f845c16"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/assets/defaultSettingsView-Ds6CBOo0.js": {
+      "bytes": 654294,
+      "sha256": "0b48f13034cfa075338cc0839f212297d22cadab9219d9699d161d2b18c79019"
+    },
+    "chromium-webgl2-damaged-load/browser-test-report/trace/assets/codeMirrorModule-BbkfBe3n.js": {
+      "bytes": 307393,
+      "sha256": "274b964242426bf4e1c662a84f6345d8a99f67821caa508fb12c52e2d1dfd48c"
+    },
+    "chromium-webgl2-damaged-load/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/test-failed-1.png": {
+      "bytes": 1406761,
+      "sha256": "f3f2ac58d53ed3a8356588ec9fd2c1a633b6a4c1f5709cdb4ca462b4b7f5e007"
+    },
+    "chromium-webgl2-damaged-load/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/trace.zip": {
+      "bytes": 3727166,
+      "sha256": "8e6ee6f1fe47c01589e18614858c052f68f8f1117f9df8813f94a2a79273418b"
+    },
+    "chromium-webgl2-damaged-load/browser-test-results/session-reload-a-damaged-i-af2ed-e-and-permits-another-match-chromium/error-context.md": {
+      "bytes": 7485,
+      "sha256": "a1831fb6cef94a1629db95b4d7bd6ecfaa4e9556549303a401ce9f04c4800b0b"
+    },
+    "chromium-webgl2-damaged-load.log": {
+      "bytes": 129830,
+      "sha256": "083eb8cdab805395e5a4c479fca6cc4458dfd588ca3578e1b24c8fb453c5f359"
+    },
+    "status.json": {
+      "bytes": 57530,
+      "sha256": "e36680fe2745c520f8fb0c8a3c00042093f911ae646b371aca86020a91b6abed"
+    },
+    "selection.log": {
+      "bytes": 16404,
+      "sha256": "e5e83acd3904190b47ecc470b47fe92dc9c80e68b7000a8430c41e40081f7078"
+    },
+    "source-association.json": {
+      "bytes": 885,
+      "sha256": "fbd53974d8e3cfaab54c07900ade31a013e50dd9803a18ba5d507fcca0aab717"
+    },
+    "github-pr-head-commit.json": {
+      "bytes": 1168,
+      "sha256": "6d7656e2239a8671166710d5cb9876a89aeca868abbc656f9b7df235902e50cb"
+    },
+    "github-synthetic-merge-commit.json": {
+      "bytes": 2619,
+      "sha256": "fcf9272dbb09a4244456b18bea0a05426e169c5e4a3f5916906af43b2d6df2b1"
+    }
+  }
+}

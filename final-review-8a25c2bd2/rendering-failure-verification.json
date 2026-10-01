@@ -1,0 +1,16 @@
+{
+  "archives": [
+    {
+      "group": "browser-ui-failures-599",
+      "members": 85,
+      "archiveSha256": "9a8457f6d13635b3d7cc799380f4d450d3bf58853916bc25bf82ad19f6f1355f",
+      "sourceIdentity": {
+        "prHeadRevision": "59904fb4719144621c00ed185b7d9d507287e4ec",
+        "actualExecutedRevision": "8eea9d953f4462de97711b58de296896df34a01e",
+        "failedCandidate": true
+      }
+    }
+  ],
+  "sourceHEADUnchanged": true,
+  "sourceIndexUnchanged": true
+}

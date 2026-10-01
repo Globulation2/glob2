@@ -30,3 +30,8 @@ The final599 chunk filenames match the filenames in candidate-59904fb47-package.
 
 Appended independently hash-verified native CI (1174 files) and Linux Chromium/Firefox/WebKit numerical/runtime execution (332 files) for PR head59904fb4719144621c00ed185b7d9d507287e4ec, actual clean synthetic CI revision8eea9d953f4462de97711b58de296896df34a01e, identical Git tree and canonical source hash17dd05be8a2826c649762874c64b42234509c986ed4e616b3c132507f5fa6690. All four native lanes and the three shared60-artifact browser comparisons passed. This candidate was superseded: separate full WebGL2 UI replay/match reload tests exposed an upstream rectangle-batching abort, so599 is NOT final UI acceptance and the full build run was cancelled after the next source push. The exact failure logs/traces are retained separately. The batching correction now emits a colour per vertex and has also landed upstream. Current combined53d16aa37 includes that upstream fix and latest graphics settings; its build/UI verification is pending. Previous README references to599 as final/pending are historical, not current acceptance claims. Older8a platform executions keep their actual producer identities.
 
+
+## rendering-failure
+
+Retained all three actual superseded599 WebGL2 UI failures: replay reload, match reload and damaged-save load. The archive includes original logs, trace ZIPs, screenshots, error contexts, diagnostic explanation and source association. Every failure aborted in immediate-mode rectangle batching with “numVertices must be an integer”. These are failed historical evidence, not final acceptance. The corrected53d integration emits one colour attribute per vertex and is undergoing the same production browser checks without raised timeouts or skipped cases.
+
