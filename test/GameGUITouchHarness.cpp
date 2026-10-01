@@ -554,6 +554,8 @@ class GameGUITouchHarness
 		load.draw(0);
 		const auto model = load.filePresentation();
 		INFO("File-list fixture: " << model.files.size() << " entries, selection " << model.selected);
+		INFO("Fixture source: " << glob2test::sourceRoot() << ", source maps exist: "
+			 << std::filesystem::exists(glob2test::sourceRoot() / "maps/balanced.map.gz"));
 		require(model.files.size() > 1 && model.selected == -1, "File interaction fixture requires a file list");
 		const auto list = load.host().bounds("files");
 		require(list.h >= 44 * u, "File list must keep full touch rows");
