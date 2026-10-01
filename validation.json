@@ -1,0 +1,207 @@
+{
+  "sourceRevision": "96f4537891928f86e82093c90af8172136012d32",
+  "dirty": false,
+  "executedPlatformCombinations": 14,
+  "additionalCI": "Ubuntu 22.04/GCC 11, Ubuntu 24.04/GCC 13 and Clang 18 CI corpora also match",
+  "comparisons": [
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/macos-rosetta-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/linux-gcc13-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/linux-gcc15-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/linux-clang-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/ios-simulator-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/android-acer-arm64-v8a-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/android-acer-armeabi-v7a-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/android-samsung-arm64-v8a-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/android-samsung-armeabi-v7a-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/android-emulator-x64-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/browser-chromium-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/browser-firefox-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/browser-webkit-96f453789",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/ci-linux-gcc11-96f453789/javascript-corpus",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/ci-linux-gcc13-96f453789/javascript-corpus",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    },
+    {
+      "reference": "artifacts/javascript-globals/macos-arm64-96f453789",
+      "candidate": "artifacts/javascript-globals/ci-linux-clang18-96f453789/javascript-corpus",
+      "comparedArtifacts": 44,
+      "referenceRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "candidateRevision": "96f4537891928f86e82093c90af8172136012d32",
+      "provenanceIssues": [],
+      "acceptanceEligible": true,
+      "excludedSaveMetadata": "MapHeader SHA1 only",
+      "differences": {}
+    }
+  ],
+  "versionContract": {
+    "save": 124,
+    "minimumSave": 58,
+    "network": 47,
+    "minimumReplay": 123
+  },
+  "globalsContract": "Persistent top-level variables; automatic graph snapshots. Source functions recreated; arbitrary private closure/class/opaque state rejected.",
+  "requiredIncompleteGates": [
+    "Windows execution in the existing Vagrant VM: restart approval pending after VirtualBox internal failure",
+    "Physical iOS: Xcode account/profile and paired normal-mode device unavailable",
+    "Full latest-revision CI completion",
+    "Fresh independent maintainer review"
+  ],
+  "ciRun": "https://github.com/Globulation2/glob2/actions/runs/36840997720",
+  "crossPlatformSaveExclusion": "20-byte MapHeader SHA1 only",
+  "releasedCheckpointExclusion": "Version-dependent aggregate only; every stored team/entity record compared",
+  "actualLegacySaveFixtureVersions": [
+    88,
+    108,
+    121
+  ],
+  "minimumVersion58Coverage": "Constant boundary checked; no v58 historical fixture available",
+  "browserBaseline": "All three complete 1500-tick browser traces equal native bytes"
+}
