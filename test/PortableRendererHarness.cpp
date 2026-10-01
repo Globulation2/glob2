@@ -29,6 +29,7 @@ class Context : public GraphicContext
 	void resizeWindow(int width, int height)
 	{
 		SDL_SetWindowSize(window, width, height);
+		GLOB2_REQUIRE(SDL_SyncWindow(window), "Window resize must settle before layout assertions");
 		updateWindowSize();
 	}
 	Uint32 windowID() const { return SDL_GetWindowID(window); }
@@ -406,6 +407,7 @@ TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]
 		require(context.getH() == 1420 && probe->changes == 3,
 				"A modal round trip must restore and notify the game viewport");
 		SDL_SetWindowSize(SDL_GetWindowFromID(context.windowID()), 568, 320);
+		GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(context.windowID())), "Window resize must settle before layout assertions");
 		SDL_Event resize{};
 		resize.type = SDL_EVENT_WINDOW_RESIZED;
 		resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;

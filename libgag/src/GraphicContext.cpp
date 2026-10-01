@@ -522,9 +522,14 @@ namespace GAGCore
         if (w == windowW && h == windowH && logicalW == getW() && logicalH == getH()) return true;
         SDL_Surface* replacement = SDL_CreateSurface(logicalW, logicalH, SDL_PIXELFORMAT_ARGB8888);
         if (!replacement) return false;
+        // This API updates presentation immediately; SDL3 resize requests can
+        // otherwise still be pending when we read the window geometry below.
+        if (!SDL_SetWindowSize(window, w, h) || !SDL_SyncWindow(window)) {
+            SDL_DestroySurface(replacement);
+            return false;
+        }
         // SDL may invalidate its borrowed window surface when changing size.
         freeOwnedSurface();
-        SDL_SetWindowSize(window, w, h);
         requestedW = w;
         requestedH = h;
         sdlsurface = replacement;

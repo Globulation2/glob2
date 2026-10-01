@@ -224,6 +224,7 @@ void resize(int width, int height)
 {
 	auto *gfx = globalContainer->gfx;
 	SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+	GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 	SDL_Event event{};
 	event.type = SDL_EVENT_WINDOW_RESIZED;
 	event.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;

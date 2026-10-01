@@ -553,6 +553,7 @@ class GameGUITouchHarness
 		load.attach(*gfx);
 		load.draw(0);
 		const auto model = load.filePresentation();
+		INFO("File-list fixture: " << model.files.size() << " entries, selection " << model.selected);
 		require(model.files.size() > 1 && model.selected == -1, "File interaction fixture requires a file list");
 		const auto list = load.host().bounds("files");
 		require(list.h >= 44 * u, "File list must keep full touch rows");
@@ -894,6 +895,7 @@ class GameGUITouchHarness
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 			SDL_Event resize{};
 			resize.type = SDL_EVENT_WINDOW_RESIZED;
 			resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
@@ -1830,6 +1832,7 @@ class GameGUITouchHarness
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 			SDL_Event resized{};
 			resized.type = SDL_EVENT_WINDOW_RESIZED;
 			resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
@@ -2088,6 +2091,7 @@ class GameGUITouchHarness
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 			SDL_Event resized{};
 			resized.type = SDL_EVENT_WINDOW_RESIZED;
 			resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
@@ -2293,6 +2297,7 @@ class GameGUITouchHarness
 			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "touch-spacious", 1);
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), 1024, 768);
+			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 			SDL_Event resized{};
 			resized.type = SDL_EVENT_WINDOW_RESIZED;
 			resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
@@ -2330,6 +2335,7 @@ class GameGUITouchHarness
 		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
 		{
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 			SDL_Event resized{};
 			resized.type = SDL_EVENT_WINDOW_RESIZED;
 			resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
@@ -2465,6 +2471,7 @@ class GameGUITouchHarness
 			{
 				const int oldWidth = gfx->getW(), oldHeight = gfx->getH();
 				SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+				GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 				SDL_Event resize{};
 				resize.type = SDL_EVENT_WINDOW_RESIZED;
 				resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
@@ -2533,6 +2540,7 @@ class GameGUITouchHarness
 		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
 		{
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 			SDL_Event resized{};
 			resized.type = SDL_EVENT_WINDOW_RESIZED;
 			resized.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
@@ -2738,6 +2746,7 @@ class GameGUITouchHarness
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
+			GLOB2_REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())), "Window resize must settle before layout assertions");
 			SDL_Event resize{};
 			resize.type = SDL_EVENT_WINDOW_RESIZED;
 			resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;

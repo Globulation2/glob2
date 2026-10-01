@@ -82,7 +82,10 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   are installed from the dependency prefix alongside packaged runtimes.
 - Interface scale is a multiplier on the operating system display scale;
   automatic means a multiplier of one. Monitor and OS scale changes update the
-  layout during play. `GLOB2_UI_SCALE` overrides the window-coordinate scale
+  layout during play. SDL3 window resize requests can complete asynchronously;
+  `GraphicContext::resizeViewport` synchronizes its immediate geometry update,
+  and display harnesses must synchronize before asserting resized layouts.
+  `GLOB2_UI_SCALE` overrides the window-coordinate scale
   directly. This changes the sizing of existing explicit scale preferences.
 - Native TCP connections accept IPv4, IPv6 and hostnames; servers listen on both
   address families when available. LAN discovery remains IPv4-only. Browser
