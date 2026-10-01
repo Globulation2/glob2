@@ -50,9 +50,18 @@ struct ButtonOptions
 	// Name of a button that shows no text of its own (a picture card), for
 	// diagnostics and harnesses.
 	std::string accessibleLabel;
+	IconRef icon;
+	double iconSize = 20;
 };
 Element button(const std::string &key, const std::string &text, std::function<void()> action,
 			   ButtonOptions options = {});
+
+struct IconOptions
+{
+	double size = 20;
+	std::optional<GAGCore::Color> color;
+};
+Element icon(IconRef asset, IconOptions options = {});
 
 Element toggle(const std::string &key, const std::string &text, bool value,
 			   std::function<void(bool)> change, bool enabled = true);

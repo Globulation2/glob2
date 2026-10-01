@@ -146,6 +146,61 @@ void SurfaceCanvas::drawSurface(Rect d, GAGCore::DrawableSurface *surface, unsig
 		target.drawSurface(d.x, d.y, d.w, d.h, surface, alpha);
 }
 
+void SurfaceCanvas::drawIcon(Rect destination, const IconAsset &asset, GAGCore::Color color)
+{
+	if (destination.empty() || !asset.available())
+		return;
+	auto *context = dynamic_cast<GAGCore::GraphicContext *>(&target);
+	const double rasterScale = context ? context->getRasterScale() : 1;
+	const int required =
+		int(std::ceil(std::max(destination.w, destination.h) * std::max(1.0, rasterScale)));
+	const IconAsset::Raster *chosen = &asset.rasters.back();
+	for (const auto &raster : asset.rasters)
+		if (raster.pixels >= required)
+		{
+			chosen = &raster;
+			break;
+		}
+	if (!chosen->surface)
+		return;
+	const std::uint32_t rgba = (std::uint32_t(color.r) << 24) | (std::uint32_t(color.g) << 16) |
+							   (std::uint32_t(color.b) << 8) | color.a;
+	const auto key = std::make_pair(chosen->pixels, rgba);
+	auto found = asset.colours.find(key);
+	if (found == asset.colours.end())
+	{
+		SDL_Surface *mask =
+			SDL_ConvertSurfaceFormat(chosen->surface->getSDLSurface(), SDL_PIXELFORMAT_RGBA32, 0);
+		if (!mask)
+			return;
+		if (SDL_LockSurface(mask) != 0)
+		{
+			SDL_FreeSurface(mask);
+			return;
+		}
+		for (int y = 0; y < mask->h; ++y)
+		{
+			auto *row =
+				reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(mask->pixels) + y * mask->pitch);
+			for (int x = 0; x < mask->w; ++x)
+			{
+				Uint8 r, g, b, a;
+				SDL_GetRGBA(row[x], mask->format, &r, &g, &b, &a);
+				row[x] = SDL_MapRGBA(mask->format, color.r, color.g, color.b,
+									 Uint8(unsigned(a) * color.a / 255));
+			}
+		}
+		SDL_UnlockSurface(mask);
+		SDL_SetSurfaceBlendMode(mask, SDL_BLENDMODE_BLEND);
+		auto tinted = std::make_shared<GAGCore::DrawableSurface>(mask);
+		SDL_FreeSurface(mask);
+		if (asset.colours.size() >= 64)
+			asset.colours.clear();
+		found = asset.colours.emplace(key, std::move(tinted)).first;
+	}
+	drawSurface(destination, found->second.get(), 255);
+}
+
 void SurfaceCanvas::drawSprite(Point at, GAGCore::Sprite *sprite, int frame)
 {
 	if (!sprite || frame < 0 || frame >= sprite->getFrameCount())

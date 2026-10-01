@@ -5,6 +5,7 @@
 #include <GraphicContext.h>
 #include <algorithm>
 #include <cmath>
+#include <stdexcept>
 
 namespace GAGGUI::ui
 {
@@ -95,9 +96,14 @@ class Button : public Node
 		: text(std::move(text)), action(std::move(action)), options(options)
 	{
 		this->key = std::move(key);
+		if (this->text.empty() && options.icon && options.accessibleLabel.empty())
+			throw std::invalid_argument("ui: icon-only button requires an accessible label");
+		if (options.icon && !options.icon->available() && this->text.empty())
+			this->text = options.accessibleLabel;
 	}
 	const char *name() const override { return "button"; }
 	std::string accessibleText() const override { return text.empty() ? options.accessibleLabel : text; }
+	std::string tooltipText() const override { return options.tooltip; }
 	bool interactive() const override { return true; }
 	bool enabled() const override { return options.enabled; }
 	SDL_Keycode shortcut() const override { return options.shortcut; }
@@ -105,6 +111,7 @@ class Button : public Node
 	{
 		if (!options.enabled)
 			return;
+		host.dismissTooltip(key);
 		auto callback = action;
 		host.invalidate();
 		if (callback)
@@ -119,10 +126,16 @@ class Button : public Node
 	Size measure(const LayoutContext &ctx, Constraints c) override
 	{
 		const int pad = ctx.metrics.padding;
-		const int natural = ctx.text.width(options.role, text) + 2 * pad;
+		const int iconWidth =
+			options.icon && options.icon->available() ? ctx.presentation.pt(options.iconSize) : 0;
+		const int extra = iconWidth + (iconWidth && !text.empty() ? ctx.presentation.pt(6) : 0);
+		const int natural = ctx.text.width(options.role, text) + extra + 2 * pad;
 		const int width = c.boundedW() ? std::min(natural, c.maxW) : natural;
-		const auto block = layoutText(ctx.text, options.role, text, std::max(1, width - 2 * ctx.metrics.halfGap), ctx.metrics.lineGap);
-		const int height = std::max(minHeight(ctx), block.height + 2 * ctx.metrics.halfGap);
+		const auto block =
+			layoutText(ctx.text, options.role, text,
+					   std::max(1, width - 2 * ctx.metrics.halfGap - extra), ctx.metrics.lineGap);
+		const int height =
+			std::max(minHeight(ctx), std::max(block.height, iconWidth) + 2 * ctx.metrics.halfGap);
 		return c.clamp({width, height});
 	}
 	void paint(Frame &frame) override
@@ -150,12 +163,33 @@ class Button : public Node
 				frame.canvas.strokeRect(bounds, options.primary ? p.accentInk.applyAlpha(60) : p.line);
 		}
 		const auto &m = frame.canvas.measurer();
-		const int inset = frame.layout.metrics.halfGap * 2;
-		const Rect textRect = bounds.inset(Insets::symmetric(inset, frame.layout.metrics.halfGap));
-		const auto block = layoutText(m, options.role, text, std::max(1, textRect.w), frame.layout.metrics.lineGap);
+		const int inset = frame.layout.metrics.halfGap * (text.empty() && options.icon ? 1 : 2);
+		Rect textRect = bounds.inset(Insets::symmetric(inset, frame.layout.metrics.halfGap));
+		const bool hasIcon = options.icon && options.icon->available();
+		const int side = hasIcon ? std::min({frame.layout.presentation.pt(options.iconSize),
+											 std::max(0, textRect.w), std::max(0, textRect.h)})
+								 : 0;
+		const int extra = side + (side && !text.empty() ? frame.layout.presentation.pt(6) : 0);
+		const auto block = layoutText(m, options.role, text, std::max(1, textRect.w - extra),
+									  frame.layout.metrics.lineGap);
 		GAGCore::Color ink = options.primary || classic ? p.accentInk : inkFor(frame, options.enabled, false);
 		if (options.danger && options.enabled)
 			ink = p.danger;
+		if (hasIcon)
+		{
+			int textWidth = 0;
+			for (const auto &line : block.lines)
+				textWidth = std::max(textWidth, m.width(options.role, line));
+			const int start = options.alignLeft
+								  ? textRect.x
+								  : textRect.x + std::max(0, (textRect.w - extra - textWidth) / 2);
+			frame.canvas.drawIcon({start, bounds.y + (bounds.h - side) / 2, side, side},
+								  *options.icon, ink);
+			textRect.x = start + extra;
+			textRect.w = std::max(0, bounds.right() - inset - textRect.x);
+			if (!options.alignLeft)
+				textRect.w = textWidth;
+		}
 		drawLines(frame, textRect, options.role, block.lines,
 				  options.alignLeft ? TextAlign::Left : TextAlign::Center, ink,
 				  frame.layout.metrics.lineGap);
@@ -1611,6 +1645,37 @@ Element heading(const std::string &text) { return std::make_shared<Paragraph>(te
 Element title(const std::string &text) { return std::make_shared<Paragraph>(text, TextOptions{FontRole::Title}); }
 Element caption(const std::string &text, bool muted) { return std::make_shared<Paragraph>(text, TextOptions{FontRole::Support, muted}); }
 Element paragraph(const std::string &text, TextOptions options) { return std::make_shared<Paragraph>(text, options); }
+namespace
+{
+class IconNode : public Node
+{
+	IconRef asset;
+	IconOptions options;
+
+  public:
+	IconNode(IconRef asset, IconOptions options) : asset(std::move(asset)), options(options) {}
+	const char *name() const override { return "icon"; }
+	Size measure(const LayoutContext &ctx, Constraints c) override
+	{
+		const int side = ctx.presentation.pt(options.size);
+		return c.clamp({side, side});
+	}
+	void paint(Frame &frame) override
+	{
+		if (!asset || !asset->available())
+			return;
+		const int side = std::min(bounds.w, bounds.h);
+		frame.canvas.drawIcon(
+			{bounds.x + (bounds.w - side) / 2, bounds.y + (bounds.h - side) / 2, side, side},
+			*asset, options.color.value_or(frame.layout.theme.palette.ink));
+	}
+};
+} // namespace
+Element icon(IconRef asset, IconOptions options)
+{
+	return std::make_shared<IconNode>(std::move(asset), options);
+}
+
 Element button(const std::string &key, const std::string &text, std::function<void()> action, ButtonOptions options)
 {
 	return std::make_shared<Button>(key, text, std::move(action), options);

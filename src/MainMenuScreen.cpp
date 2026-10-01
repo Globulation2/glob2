@@ -61,7 +61,46 @@ Element MainMenuScreen::build(const Presentation &p)
 {
 	auto choose = [this](int code) { return [this, code] { endExecute(code); }; };
 	auto action = [&](const char *key, int code, ButtonOptions options)
-	{ return button("menu/" + std::to_string(code), tr(key), choose(code), options); };
+	{
+		if (code == GAME_SETUP)
+		{
+			options.icon = uiIcon(UIIcon::Settings);
+		}
+		if (code == EDITOR)
+			options.icon = uiIcon(UIIcon::Editor);
+		if (code == LOAD_GAME)
+			options.icon = uiIcon(UIIcon::LoadGame);
+		if (p.touch)
+		{
+			switch (code)
+			{
+			case CUSTOM:
+				options.icon = uiIcon(UIIcon::CustomGame);
+				break;
+			case CAMPAIGN:
+				options.icon = uiIcon(UIIcon::Campaign);
+				break;
+			case TUTORIAL:
+				options.icon = uiIcon(UIIcon::Tutorial);
+				break;
+			case MULTIPLAYERS_YOG:
+				options.icon = uiIcon(UIIcon::Online);
+				break;
+			case MULTIPLAYERS_LAN:
+				options.icon = uiIcon(UIIcon::LAN);
+				break;
+			case CREDITS:
+				options.icon = uiIcon(UIIcon::Credits);
+				break;
+			case QUIT:
+				options.icon = uiIcon(UIIcon::Quit);
+				break;
+			default:
+				break;
+			}
+		}
+		return button("menu/" + std::to_string(code), tr(key), choose(code), options);
+	};
 	CardOptions cardOptions;
 	cardOptions.color = theme().palette.panel.applyAlpha(248);
 	cardOptions.radius = p.pt(10);
@@ -72,12 +111,11 @@ Element MainMenuScreen::build(const Presentation &p)
 		const int w = std::min(p.pt(440), p.safe.w - p.pt(24));
 		const int panelHeight = std::min(p.safe.h - p.pt(24), p.pt(more ? 596 : 420));
 		loadWordmark(std::max(64, w - p.pt(140)));
-		ButtonOptions gear;
-		gear.role = FontRole::Body;
-		gear.minHeight = 48;
-		auto header = row({expanded(wordmark ? image(wordmark.get(), {false}) : title("Globulation 2")),
-						   button("menu/settings", tr("[settings]"), choose(GAME_SETUP), gear)},
-						  {p.pt(8), CrossAlign::Center});
+		auto header =
+			row({expanded(wordmark ? image(wordmark.get(), {false}) : title("Globulation 2")),
+				 compactButton("menu/settings", tr("[settings]"), UIIcon::Settings,
+							   choose(GAME_SETUP), p)},
+				{p.pt(8), CrossAlign::Center});
 		ButtonOptions rowStyle;
 		rowStyle.alignLeft = true;
 		rowStyle.minHeight = 56;
@@ -85,6 +123,8 @@ Element MainMenuScreen::build(const Presentation &p)
 		primaryStyle.primary = true;
 		ButtonOptions small;
 		small.minHeight = 48;
+		ButtonOptions moreStyle = small;
+		moreStyle.icon = uiIcon(UIIcon::More);
 		std::vector<Element> content;
 		if (!more)
 		{
@@ -96,10 +136,12 @@ Element MainMenuScreen::build(const Presentation &p)
 				WrapOptions grid;
 				grid.maxColumns = 2;
 				grid.minChildWidth = 1;
-				content.push_back(wrap({action("[campaign]", CAMPAIGN, small), action("[load game]", LOAD_GAME, small),
-										action("[tutorial]", TUTORIAL, small),
-										button("menu/more", tr("[More]"), [this] { showMore(true); }, small)},
-									   grid));
+				content.push_back(wrap(
+					{action("[campaign]", CAMPAIGN, small), action("[load game]", LOAD_GAME, small),
+					 action("[tutorial]", TUTORIAL, small),
+					 button(
+						 "menu/more", tr("[More]"), [this] { showMore(true); }, moreStyle)},
+					grid));
 			}
 			else
 			{
@@ -108,13 +150,15 @@ Element MainMenuScreen::build(const Presentation &p)
 				content.push_back(action("[load game]", LOAD_GAME, rowStyle));
 				content.push_back(action("[tutorial]", TUTORIAL, rowStyle));
 				content.push_back(spacer(p.pt(4)));
-				content.push_back(button("menu/more", tr("[More]"), [this] { showMore(true); }, small));
+				content.push_back(
+					button("menu/more", tr("[More]"), [this] { showMore(true); }, moreStyle));
 			}
 		}
 		else
 		{
 			ButtonOptions back = small;
 			back.shortcut = SDLK_ESCAPE;
+			back.icon = uiIcon(UIIcon::Back);
 			content.push_back(button("menu/back", tr("[Back]"), [this] { showMore(false); }, back));
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 			content.push_back(action("[yog]", MULTIPLAYERS_YOG, rowStyle));

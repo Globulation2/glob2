@@ -4,8 +4,8 @@ Import('env')
 Import("PackTar")
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
-    for file in os.listdir("."):
-        if file.find(".txt") != -1:
+    for file in sorted(os.listdir(env.Dir(".").srcnode().abspath)):
+        if file.endswith(".txt"):
             PackTar(env["TARFILE"], file)
             env.Install(env["INSTALLDIR"] + "/glob2/data", file)
         

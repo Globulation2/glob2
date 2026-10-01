@@ -7,6 +7,7 @@
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL.h>
+#include <ui/Canvas.h>
 #include <cstdlib>
 #include <iostream>
 using namespace GAGCore;
@@ -22,6 +23,54 @@ struct Inspect : GraphicContext
 		return r; // background and probe are greyscale; any channel matches
 	}
 };
+namespace
+{
+void checkIconRendering(unsigned flags)
+{
+	glob2test::ToolkitScope toolkit;
+	auto *gfx = Toolkit::initGraphic(64, 64, flags, "icon rendering");
+	{
+		using namespace GAGGUI::ui;
+		Theme theme;
+		auto presentation = Presentation::forSurface(64, 64);
+		SurfaceCanvas canvas(*gfx, theme, presentation);
+		IconAsset asset;
+		asset.name = "probe";
+		for (int pixels : {20, 40})
+		{
+			SDL_Surface *rawMask =
+				SDL_CreateRGBSurfaceWithFormat(0, pixels, pixels, 32, SDL_PIXELFORMAT_RGBA32);
+			GLOB2_REQUIRE(rawMask, "icon raster and tint contract");
+			SDL_FillRect(rawMask, nullptr, SDL_MapRGBA(rawMask->format, 255, 255, 255, 128));
+			auto raster = std::make_shared<DrawableSurface>(rawMask);
+			SDL_FreeSurface(rawMask);
+			asset.rasters.push_back({pixels, raster});
+		}
+		const Color tint(30, 60, 90, 128);
+		canvas.drawIcon({0, 0, 24, 24}, asset, tint);
+		GLOB2_REQUIRE(asset.colours.size() == 1 && asset.colours.begin()->first.first == 40,
+					  "icon raster and tint contract");
+		auto cached = asset.colours.begin()->second;
+		SDL_Surface *surface = cached->getSDLSurface();
+		SDL_LockSurface(surface);
+		Uint8 r, g, b, a;
+		SDL_GetRGBA(*static_cast<Uint32 *>(surface->pixels), surface->format, &r, &g, &b, &a);
+		SDL_UnlockSurface(surface);
+		GLOB2_REQUIRE(r == 30 && g == 60 && b == 90 && a == 64, "icon raster and tint contract");
+		canvas.drawIcon({24, 0, 24, 24}, asset, tint);
+		GLOB2_REQUIRE(asset.colours.begin()->second == cached, "icon raster and tint contract");
+		canvas.drawIcon({0, 24, 20, 20}, asset, tint);
+		const bool needsLargeRaster = gfx->getRasterScale() > 1;
+		GLOB2_REQUIRE(asset.colours.size() == (needsLargeRaster ? 1u : 2u),
+					  "icon raster and tint contract");
+		GLOB2_REQUIRE(asset.colours.begin()->first.first == (needsLargeRaster ? 40 : 20),
+					  "icon raster and tint contract");
+		for (int i = 0; i < 100; ++i)
+			canvas.drawIcon({0, 0, 24, 24}, asset, Color(i, 0, 0));
+		GLOB2_REQUIRE(asset.colours.size() <= 64, "icon raster and tint contract");
+	}
+}
+} // namespace
 TEST_SUITE("DrawableSurfaceBlend")
 {
 TEST_CASE("software alpha blend stays accurate under stacked draws")
@@ -59,5 +108,13 @@ TEST_CASE("software alpha blend stays accurate under stacked draws")
 	std::cout << "converged=" << (int)stable << " after 5 more passes=" << (int)restable << std::endl;
 	REQUIRE(std::abs(stable - restable) <= 1);
 
+}
+TEST_CASE("icon masks preserve resolution alpha and bounded recolours")
+{
+	checkIconRendering(0);
+}
+TEST_CASE("portable icon masks preserve resolution alpha and bounded recolours [display]")
+{
+	checkIconRendering(GraphicContext::PORTABLEGPU);
 }
 }

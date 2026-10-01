@@ -692,4 +692,4 @@
       "reason": "The frontend adapts phone and tablet composition separately. Desktop captures use mouse controls at 1280\u00d7800 and 1920\u00d71080. Language variants, accessibility scales and device-specific input combinations remain outside this image matrix."
     }
   ]
-}\n
+}

@@ -52,6 +52,7 @@ class Host
 	void update(Uint32 tick);
 	void paint(Canvas &canvas, Uint32 tick);
 	void cancelInput();
+	void dismissTooltip(const std::string &key);
 	// Drop captures and pans but keep a pending press (window resize, presentation change).
 	void cancelGestures();
 
@@ -103,6 +104,8 @@ class Host
 	Point hover, downPoint;
 	GAGCore::TouchInput touch;
 	Uint32 lastTick = 0;
+	std::string tooltipKey, tooltipSuppressedKey;
+	Uint32 tooltipSince = 0;
 
 	struct Popup
 	{

@@ -13,6 +13,38 @@ namespace Glob2UI
 {
 using namespace GAGGUI::ui;
 
+enum class UIIcon
+{
+	Settings,
+	Editor,
+	LoadGame,
+	Display,
+	Audio,
+	Gameplay,
+	Buildings,
+	Controls,
+	Player,
+	CustomGame,
+	Campaign,
+	Tutorial,
+	Online,
+	LAN,
+	Credits,
+	Quit,
+	Back,
+	More,
+	Send,
+	Close,
+	Refresh,
+	Info,
+	Count
+};
+IconRef uiIcon(UIIcon icon);
+// Familiar toolbar actions: a named 48-point icon button on touch, text on pointer hosts.
+Element compactButton(const std::string &key, const std::string &label, UIIcon icon,
+					  std::function<void()> action, const Presentation &p,
+					  ButtonOptions options = {});
+
 const Theme &frontendTheme();
 // The dark purple in-match look of the touch HUD.
 const Theme &inGameTheme();

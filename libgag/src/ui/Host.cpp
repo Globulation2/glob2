@@ -628,6 +628,12 @@ void Host::update(Uint32 tick)
 	layoutIfNeeded();
 }
 
+void Host::dismissTooltip(const std::string &key)
+{
+	tooltipSuppressedKey = key;
+	tooltipKey.clear();
+}
+
 void Host::paint(Canvas &canvas, Uint32 tick)
 {
 	layoutIfNeeded();
@@ -659,6 +665,52 @@ void Host::paint(Canvas &canvas, Uint32 tick)
 	if (keyboardFocus && !focusKey.empty() && !popup)
 		if (auto *node = find(focusKey))
 			canvas.strokeRect(node->bounds.inset(-metricsValue.focusRing + 1), themeValue.palette.focus);
+	Node *tip = nullptr;
+	if (!popup && pressedKey.empty())
+	{
+		if (keyboardFocus)
+			tip = focusedNode();
+		else if (current.hover && hoverValid)
+			tip = interactiveAt(hover);
+	}
+	const std::string candidate =
+		tip && tip->enabled() && !tip->tooltipText().empty() ? tip->key : "";
+	if (candidate != tooltipSuppressedKey)
+		tooltipSuppressedKey.clear();
+	if (candidate != tooltipKey)
+	{
+		tooltipKey = candidate;
+		tooltipSince = tick;
+	}
+	if (!candidate.empty() && candidate != tooltipSuppressedKey &&
+		Uint32(tick - tooltipSince) >= 600)
+	{
+		const auto &p = themeValue.palette;
+		const int pad = current.pt(8);
+		const int maxWidth = std::max(1, std::min(current.pt(280), current.safe.w) - 2 * pad);
+		const auto text = layoutText(canvas.measurer(), FontRole::Support, tip->tooltipText(),
+									 maxWidth, metricsValue.lineGap);
+		int width = 0;
+		for (const auto &line : text.lines)
+			width = std::max(width, canvas.measurer().width(FontRole::Support, line));
+		const int w = std::min(current.safe.w, width + 2 * pad),
+				  h = std::min(current.safe.h, text.height + 2 * pad);
+		const int x = std::clamp(tip->bounds.x, current.safe.x, current.safe.right() - w);
+		const int proposedY = tip->bounds.bottom() + current.pt(4);
+		const int y = std::clamp(
+			proposedY + h <= current.safe.bottom() ? proposedY : tip->bounds.y - h - current.pt(4),
+			current.safe.y, current.safe.bottom() - h);
+		canvas.pushClip(current.safe);
+		canvas.fillRounded({x, y, w, h}, metricsValue.radius, p.panel);
+		canvas.strokeRect({x, y, w, h}, p.line);
+		int lineY = y + pad;
+		for (const auto &line : text.lines)
+		{
+			canvas.text({x + pad, lineY}, FontRole::Support, line, p.ink);
+			lineY += canvas.measurer().lineHeight(FontRole::Support) + metricsValue.lineGap;
+		}
+		canvas.popClip();
+	}
 	if (debugOverlay)
 		tree->visit(
 			[&](Node &node)
