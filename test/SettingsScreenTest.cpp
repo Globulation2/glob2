@@ -97,9 +97,8 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(screen.row("graphics.torus").kind==SettingsScreen::Kind::Toggle);
         screen.capture(output+"/window-mode-dropdown.bmp");
         screen.key(SDLK_DOWN);screen.key(SDLK_ESCAPE);
-        REQUIRE((screen.row("display.mode").number==windowMode && !screen.displayConfirmationPending()));
-        screen.activateSetting("display.resolution");
-        screen.capture(output+"/resolution-dropdown.bmp");screen.key(SDLK_ESCAPE);
+        REQUIRE((screen.row("display.mode").number==windowMode && !screen.restartRequired()));
+        for (const auto& row : screen.rows()) REQUIRE(row.id != "display.resolution");
         screen.selectCategory(SettingsScreen::Category::Gameplay);
         for(const auto& row:screen.rows())REQUIRE((row.id!="graphics.torus" && row.id!="gameplay.torus"));
         screen.selectCategory(SettingsScreen::Category::Buildings);
@@ -142,6 +141,8 @@ static void run(int width,int height,bool gl,bool expanded)
         for (int index : {1,2,0}) {
             REQUIRE(screen.changeSetting("display.textsize",index));
             Settings savedText; savedText.load(); REQUIRE(savedText.mobileDialogTextPercent==100+25*index);
+            screen.paintFrame(SDL_GetTicks());
+            screen.host().scrollIntoView("display.textsize");
             screen.capture(output+"/text-size-"+std::to_string(index)+".bmp");
         }
         REQUIRE(screen.row("graphics.renderer").kind==SettingsScreen::Kind::Choice);
@@ -151,21 +152,22 @@ static void run(int width,int height,bool gl,bool expanded)
             REQUIRE(screen.changeSetting("graphics.renderer",0));REQUIRE(screen.restartRequired());
             loaded.load();REQUIRE(!(loaded.screenFlags & GraphicContext::USEGPU));
             REQUIRE(screen.changeSetting("graphics.renderer",1));REQUIRE(!screen.restartRequired());
-        }else{
-            int oldWidth=s.screenWidth;
-            auto resolution=screen.row("display.resolution");int index=-1;
-            for(size_t i=0;i<resolution.choices.size();++i)if(resolution.choices[i].rfind("800 × 600",0)==0)index=i;
-            REQUIRE(index>=0);
-            screen.failNextDisplay=true;REQUIRE(screen.changeSetting("display.resolution",index));
-            REQUIRE((!screen.displayConfirmationPending() && globalContainer->gfx->getW()==oldWidth));
-            REQUIRE(screen.changeSetting("display.resolution",index));
-            REQUIRE(screen.displayConfirmationPending());REQUIRE(s.screenWidth==oldWidth);
-            screen.capture(output+"/display-confirm.bmp");
-            screen.confirmDisplay(false);REQUIRE(globalContainer->gfx->getW()==oldWidth);
-            screen.changeSetting("display.resolution",index);screen.onTimer(SDL_GetTicks()+16000);
-            REQUIRE((!screen.displayConfirmationPending() && globalContainer->gfx->getW()==oldWidth));
-            screen.changeSetting("display.resolution",index);screen.confirmDisplay(true);loaded.load();REQUIRE(loaded.screenWidth==800);
         }
+        {
+            const auto previousFlags=s.screenFlags;
+            screen.failNextDisplay=true;
+            REQUIRE(screen.changeSetting("display.mode",1));
+            REQUIRE(s.screenFlags==previousFlags);
+            REQUIRE(screen.changeSetting("display.mode",1));
+            REQUIRE((globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+            REQUIRE((s.screenFlags & ~GraphicContext::FULLSCREEN)==(previousFlags & ~GraphicContext::FULLSCREEN));
+            loaded.load(); REQUIRE((loaded.screenFlags & GraphicContext::FULLSCREEN));
+            REQUIRE(!screen.restartRequired());
+            REQUIRE(screen.changeSetting("display.mode",0));
+            REQUIRE(!(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+            loaded.load(); REQUIRE(!(loaded.screenFlags & GraphicContext::FULLSCREEN));
+        }
+
         {
             // The collapsed control shows the chosen entry, not the scale in use.
             auto scale=screen.row("display.uiscale");
@@ -174,8 +176,8 @@ static void run(int width,int height,bool gl,bool expanded)
             REQUIRE((index>=0 && screen.changeSetting("display.uiscale",index)));
             REQUIRE(screen.row("display.uiscale").value=="175 %");
             loaded.load();REQUIRE(loaded.uiScale==175);
-            // Software mode applies it in place; a GPU context waits for a restart.
-            REQUIRE(screen.restartRequired()==bool(s.screenFlags & GraphicContext::USEGPU));
+            // Both renderers change scale without a context restart.
+            REQUIRE(!screen.restartRequired());
             screen.capture(output+"/interface-scale.bmp");
             REQUIRE(screen.changeSetting("display.uiscale",0));
             REQUIRE((screen.row("display.uiscale").value.rfind("Match the desktop",0)==0 && !screen.restartRequired()));
@@ -273,10 +275,10 @@ static void run(int width,int height,bool gl,bool expanded)
 // sizes, one software renderer and the expanded English wording.
 TEST_SUITE("Settings")
 {
-	TEST_CASE("layout; persistence; display confirmation; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(640, 480, true, false); }
-	TEST_CASE("layout; persistence; display confirmation; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(800, 600, true, false); }
-	TEST_CASE("layout; persistence; display confirmation; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(1000, 700, true, false); }
-	TEST_CASE("layout; persistence; display confirmation; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(1280, 900, true, false); }
-	TEST_CASE("layout; persistence; display confirmation; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]") { run(1000, 700, false, false); }
-	TEST_CASE("layout; persistence; display confirmation; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(640, 480, true, true); }
+	TEST_CASE("layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(640, 480, true, false); }
+	TEST_CASE("layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(800, 600, true, false); }
+	TEST_CASE("layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(1000, 700, true, false); }
+	TEST_CASE("layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(1280, 900, true, false); }
+	TEST_CASE("layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]") { run(1000, 700, false, false); }
+	TEST_CASE("layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(640, 480, true, true); }
 }

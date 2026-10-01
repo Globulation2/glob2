@@ -64,6 +64,7 @@ void verifyUITransform(unsigned flags)
 	require(x == 90 && y == 40 && w == 50 && h == 50, "Transform must restore the caller's clip");
 	context.setClipRect();
 	context.drawFilledRect(10, 10, 4, 4, Color(0, 255, 0));
+	if (!(flags & GraphicContext::USEGPU)) context.nextFrame();
 	SDL_Surface *pixels = context.getSDLSurface();
 #ifdef HAVE_OPENGL
 	if (flags & GraphicContext::USEGPU)
@@ -80,9 +81,9 @@ void verifyUITransform(unsigned flags)
 		return;
 	}
 #endif
-	expect(pixels, 110, 60, 255, 0, 0);
-	expect(pixels, 118, 60, 0, 0, 0);
-	expect(pixels, 12, 12, 0, 255, 0);
+	expect(pixels, 110*pixels->w/context.getW(), 60*pixels->h/context.getH(), 255, 0, 0);
+	expect(pixels, 118*pixels->w/context.getW(), 60*pixels->h/context.getH(), 0, 0, 0);
+	expect(pixels, 12*pixels->w/context.getW(), 12*pixels->h/context.getH(), 0, 255, 0);
 }
 // Check the production primitive, not an approximation of its geometry.
 class BoundaryContext : public GraphicContext
@@ -181,6 +182,22 @@ void verifyMapBoundaries(unsigned flags)
 
 TEST_SUITE("PortableRenderer")
 {
+TEST_CASE("live scale retains portable viewport ownership [display]")
+{
+	GraphicContext::setRequestedUiScale(1);
+	Context context;
+	const auto window=context.windowID();
+	const int pixelsW=context.getDrawableW(),pixelsH=context.getDrawableH();
+	require(context.setUiScale(1.25f),"Portable live scale failed");
+	require(context.windowID()==window && !context.isNativeDesktop(),"Scale replaced portable viewport ownership");
+	require(context.getW()==256 && context.getH()==192,"Portable logical scale was not applied");
+	require(context.getDrawableW()==pixelsW && context.getDrawableH()==pixelsH,"Scale changed native output dimensions");
+	context.setClipRect(); context.drawFilledRect(0,0,context.getW(),context.getH(),Color(255,0,0));
+	auto *pixels=context.capture(); expect(pixels,pixels->w-2,pixels->h-2,255,0,0); SDL_FreeSurface(pixels);
+	require(context.setUiScale(1),"Portable scale restore failed");
+	GraphicContext::setRequestedUiScale(0);
+}
+
 TEST_CASE("zone boundaries; UI transforms and portable rendering paths [display]")
 {
 	verifyMapBoundaries(0);

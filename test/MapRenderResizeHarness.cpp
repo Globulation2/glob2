@@ -427,39 +427,26 @@ void run(bool gpu)
 	for(int width : {640,1200,1800})
 	{
 		resize(width, &settings);
-		const std::string dimensions=std::to_string(gfx->getW())+" × "+std::to_string(gfx->getH());
+		const std::string dimensions=std::to_string(gfx->getDrawableW())+" × "+std::to_string(gfx->getDrawableH());
 		const std::string expected=Toolkit::getStringTable()->getString("[settings Current display]")+": "+dimensions;
 		bool found=false;
 		for(const auto& row:settings.rows()) if(row.kind==SettingsScreen::Kind::Info && row.label.find(expected)==0) found=true;
 		REQUIRE(found);
 	}
 	std::cout << "PASS Settings display label follows native window resizing\n";
-	REQUIRE(settingRow("display.resolution").enabled);
-	settings.selectCategory(SettingsScreen::Category::Controls);
 	for(const auto& row:settings.rows()) REQUIRE(row.id!="display.resolution");
+	settings.selectCategory(SettingsScreen::Category::Controls);
 	settings.selectCategory(SettingsScreen::Category::Display);
-	REQUIRE(settingRow("display.resolution").enabled);
-	// Save a pending GPU mode without recreating the dummy software window.
-	globals->settings.screenFlags |= GraphicContext::USEGPU;
 	REQUIRE(settings.changeSetting("display.mode",1));
+	REQUIRE((gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
 	REQUIRE((globals->settings.screenFlags & GraphicContext::FULLSCREEN));
 	settings.selectCategory(SettingsScreen::Category::Controls);
 	settings.selectCategory(SettingsScreen::Category::Display);
 	REQUIRE(settingRow("display.mode").number==1);
-	const auto resolutions=settingRow("display.resolution");
-	REQUIRE(!resolutions.choices.empty());
-	const auto choice=resolutions.choices.front();
-	const auto separator=choice.find(" × ");REQUIRE(separator!=std::string::npos);
-	const int chosenW=std::stoi(choice),chosenH=std::stoi(choice.substr(separator+4));
-	const std::string windowOnly=Toolkit::getStringTable()->getString("[settings Windowed only]");
-	REQUIRE(settings.changeSetting("display.resolution",0));
-	REQUIRE((globals->settings.screenWidth==chosenW && globals->settings.screenHeight==chosenH));
-	REQUIRE(bool(globals->settings.screenFlags & GraphicContext::FULLSCREEN)==(choice.find(windowOnly)==std::string::npos));
 	REQUIRE(settings.changeSetting("display.mode",0));
-	REQUIRE(!(globals->settings.screenFlags & GraphicContext::FULLSCREEN));
-	REQUIRE(settingRow("display.resolution").enabled);
-	globals->settings.screenFlags=GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
-	std::cout << "PASS resolution restrictions, pending display choices and category switching\n";
+	REQUIRE(!(gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+	std::cout << "PASS native fullscreen, absent resolution presets and category switching\n";
+
 	Settings savedSettings;savedSettings.load();
 	REQUIRE(!(savedSettings.screenFlags & GraphicContext::FULLSCREEN));
 	settings.abandon();

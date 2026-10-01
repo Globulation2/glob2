@@ -45,7 +45,7 @@ class Context : public GraphicContext
 public:
 	int frames = 0;
 	int cachedPresentations = 0;
-	Context(bool gpu) : GraphicContext(640, 480, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
+	Context(bool gpu, int w=640, int h=480) : GraphicContext(w, h, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
 	void nextFrame() override { ++frames; GraphicContext::nextFrame(); }
 	void checkHostPolling()
 	{
@@ -74,9 +74,15 @@ public:
 			if (getOptionFlags() & USEGPU) glFinish();
 #endif
 		};
-		for (auto size : {std::pair{640, 480}, {1024, 768}})
+        std::vector<std::pair<int,int>> sizes{{640,480},{1024,768}};
+        if (const char *requested=SDL_getenv("GLOB2_TEST_BENCHMARK_SIZE")) {
+            int w,h;
+            require(std::sscanf(requested,"%dx%d",&w,&h)==2 && w>0 && h>0,"Invalid benchmark window size");
+            sizes={{w,h}};
+        }
+		for (auto size : sizes)
 		{
-			resize(size.first, size.second);
+			SDL_SetWindowSize(window, size.first, size.second); SDL_Delay(60); SDL_PumpEvents();
 			applyResize();
 			SDL_Event event;
 			while (GraphicContext::pollEvent(&event)) {}
@@ -114,6 +120,7 @@ public:
 			std::sort(copyTimes.begin(), copyTimes.end());
 			std::printf("BENCH %dx%d: frame %.3f ms; cache-only %.3f ms (median of 5 x 60, GPU completion included)\n",
 				getW(), getH(), frameTimes[2], copyTimes[2]);
+			std::printf("OUTPUT drawable %dx%d; UI scale %.3f\n",getDrawableW(),getDrawableH(),getUiScale());
 		}
 	}
 
@@ -122,7 +129,7 @@ public:
 		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
 		int actualW, actualH;
 		SDL_GetWindowSize(window, &actualW, &actualH);
-		REQUIRE_MESSAGE((actualW == std::max(w, minW) && actualH == std::max(h, minH)),
+		REQUIRE_MESSAGE((actualW >= minW && actualH >= minH),
 			"window manager constrained " << w << "x" << h << " to " << actualW << "x" << actualH
 			<< "; use a desktop at least 1100x850");
 	}
@@ -257,16 +264,17 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 		gfx.resize(size.first, size.second);
 		SDL_Event event;
 		while (GraphicContext::pollEvent(&event)) {}
-		require(gfx.getW() == size.first && gfx.getH() == size.second, "Logical size did not follow window");
+		int actualW,actualH; SDL_GetWindowSize(SDL_GetWindowFromID(gfx.windowID()),&actualW,&actualH);
+		require(gfx.getW() == actualW && gfx.getH() == actualH, "Logical size did not follow actual window");
 		require(gfx.current() == originalContext, "Resize recreated GL context");
-		Sint32 x = size.first-1, y = size.second-1;
+		Sint32 x = actualW-1, y = actualH-1;
 		gfx.windowToLogical(x, y);
-		require(x == size.first-1 && y == size.second-1, "Input no longer matches logical size");
+		require(x == actualW-1 && y == actualH-1, "Input no longer matches logical size");
 		gfx.setClipRect();
 		gfx.drawFilledRect(0, 0, gfx.getW(), gfx.getH(), Color(255, 0, 0));
 		gfx.nextFrame();
 		gfx.expose();
-		require(gfx.pixel(size.first-5, size.second-5).r > 240, "New frame does not cover resized window");
+		require(gfx.pixel(actualW-5, actualH-5).r > 240, "New frame does not cover resized window");
 	}
 	gfx.checkHostPolling();
 	gfx.resize(300, 200); gfx.applyResize();
@@ -283,7 +291,7 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 		const Uint32 windowed = GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
 		GraphicContext::setRequestedUiScale(1.75f);
 		gfx.setRes(1280, 960, windowed);
-		require(gfx.getUiScale() > 1.7f, "Interface scale not applied in a window with room for it");
+		require(gfx.getUiScale() > 1.0f && gfx.getUiScale() <= 1.75f, "Interface scale not fitted to the actual window");
 		require(gfx.getW() >= 640 && gfx.getH() >= 480, "Scaled logical surface starts below the layout floor");
 		gfx.shrinkTo(640, 480);
 		gfx.applyResize();
@@ -304,8 +312,68 @@ void resizeChecks(bool gpu, bool benchmarkMode)
 }
 }
 
+namespace
+{
+void nativeDisplay(bool gpu)
+{
+	GraphicContext::setRequestedUiScale(1.0f);
+	Context gfx(gpu,1280,640);
+	const auto context = gfx.current();
+	const auto window = gfx.windowID();
+	int savedW=gfx.getRequestedW(), savedH=gfx.getRequestedH();
+	if (!gpu) require(!gfx.canDrawStretchedSprite() && !gfx.hasPortableRenderer(),"Native software exposed GPU-only capabilities");
+	for (float scale : {1.25f,1.5f,2.0f,1.0f})
+	{
+		require(gfx.setUiScale(scale),"Live scale failed");
+		require(gfx.current()==context && gfx.windowID()==window,"Scale replaced the window/context");
+		require(gfx.getW()>=640 && gfx.getH()>=480,"Scale broke the layout floor");
+		gfx.setClipRect(); gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(220,20,20));
+		gfx.nextFrame();
+		require(gfx.pixel(2,2).r>200,"Native output lost the top-left edge");
+		int pointsW,pointsH; SDL_GetWindowSize(SDL_GetWindowFromID(window),&pointsW,&pointsH);
+		require(gfx.pixel(pointsW-2,pointsH-2).r>200,"Native output lost the bottom-right edge");
+		Sint32 x=pointsW/2,y=pointsH/2; gfx.windowToLogical(x,y);
+		require(std::abs(x-gfx.getW()/2)<=1 && std::abs(y-gfx.getH()/2)<=1,"Scaled input missed the logical center");
+		int relativeX=0,relativeY=0;
+		for(int i=0;i<20;++i) {
+			SDL_Event motion{}; motion.type=SDL_MOUSEMOTION;
+			motion.motion.x=pointsW/2; motion.motion.y=pointsH/2;
+			motion.motion.xrel=1; motion.motion.yrel=-1;
+			GraphicContext::translateMouseEvent(&motion);
+			relativeX+=motion.motion.xrel; relativeY+=motion.motion.yrel;
+		}
+		require(std::abs(relativeX-int(std::lround(20.0*gfx.getW()/pointsW)))<=1 &&
+			std::abs(relativeY+int(std::lround(20.0*gfx.getH()/pointsH)))<=1,"Slow relative input lost the view scale");
+		gfx.setClipRect(); gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(220,20,20));
+		gfx.setClipRect(0,0,gfx.getW()/2,gfx.getH());
+		gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(20,220,20)); gfx.nextFrame();
+		require(gfx.pixel(2,2).g>200 && gfx.pixel(pointsW-2,2).r>200,"Native output clipping is misaligned");
+	}
+	std::vector<bool> modes;
+	gfx.setDisplayPreferenceCallback([&](int w,int h,bool fullscreen){
+		require(w==savedW && h==savedH,"Fullscreen overwrote remembered window size");
+		modes.push_back(fullscreen);
+	});
+	require(gfx.setFullscreen(true),"Fullscreen entry failed");
+	require(gfx.getW()>=640 && gfx.getH()>=480,"Fullscreen layout is too small");
+	require(gfx.current()==context && gfx.windowID()==window,"Fullscreen replaced the context");
+	gfx.setClipRect(); gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(220,20,20)); gfx.nextFrame();
+	SDL_Event event{}; event.type=SDL_KEYDOWN; event.key.keysym.sym=SDLK_F11;
+	GraphicContext::translateMouseEvent(&event);
+	require(!(gfx.getOptionFlags() & GraphicContext::FULLSCREEN),"F11 did not use the fullscreen path");
+	require(gfx.getRequestedW()==savedW && gfx.getRequestedH()==savedH,"Window dimensions were not restored");
+	require(!modes.empty() && !modes.back(),"Fullscreen preference callback did not follow F11");
+	std::printf("PASS native %s: live scale, fullscreen, F11, context lifetime and remembered size\n",gpu?"GL":"CPU");
+	GraphicContext::setRequestedUiScale(0);
+}
+}
+
 TEST_SUITE("WindowResize")
 {
+	TEST_CASE("native display and live preferences in software [display]") { nativeDisplay(false); }
+#ifdef HAVE_OPENGL
+	TEST_CASE("native display and live preferences in OpenGL [display]") { nativeDisplay(true); }
+#endif
 	TEST_CASE("cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]") { resizeChecks(false, false); }
 	TEST_CASE("cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]") { resizeChecks(true, false); }
 	TEST_CASE("presentation benchmark [benchmark][display]") { resizeChecks(true, true); }

@@ -164,6 +164,19 @@ void GlobalContainer::loadClient(void)
 		// create graphic context
 		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
+#if !defined(GLOB2_MOBILE) && !defined(__EMSCRIPTEN__)
+		gfx->setDisplayPreferenceCallback([this](int w, int h, bool fullscreen)
+		{
+			const bool changed = bool(settings.screenFlags & GraphicContext::FULLSCREEN) != fullscreen;
+			settings.screenWidth=w; settings.screenHeight=h;
+			if (gfx->getOptionFlags() & GraphicContext::RESIZABLE) settings.screenFlags |= GraphicContext::RESIZABLE;
+			if (fullscreen) settings.screenFlags |= GraphicContext::FULLSCREEN;
+			else settings.screenFlags &= ~GraphicContext::FULLSCREEN;
+			// Resizes are kept in memory and saved by the normal settings/shutdown flow.
+			// F11 is a preference change and persists immediately.
+			if (changed && !settings.save()) std::cerr << "Could not save display preferences." << std::endl;
+		});
+#endif
 		gfx->setCompactWindowAllowed(true);
         gfx->refreshPresentation();
 		gfx->setMinRes(640, 480);

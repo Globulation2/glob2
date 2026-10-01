@@ -397,7 +397,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("\n");
 			printf("-d <directory>\tadd a directory to the directory search list\n");
 			printf("-dl\tprint the directory search list\n");
-			printf("-s <resolution>\tset resolution and depth (for instance : -s 640x480\n");
+			printf("-s <width>x<height>\tset initial window size (for instance: -s 800x600\n");
 			printf("-u <username>\tspecify a user name\n");
 #ifndef GLOB2_CHINA_RELEASE
 			printf("-y <hostname>\tspecify an alternative hostname for YOG server\n");

@@ -2,8 +2,13 @@
 
 Windowed mode follows the OS window dimensions when `RESIZABLE` is enabled
 (`-r`; `-R` disables it). SDL enforces the minimum 640 x 480 game size. Desktop
-fullscreen retains its selected logical resolution and aspect-preserving scaling.
-Windows requires SDL 2.30 or newer; startup checks the runtime version.
+fullscreen fills the current desktop at native drawable resolution. Saved width/height
+and `-s WIDTHxHEIGHT` specify the remembered initial window size. Resolution selection
+is removed; old fullscreen dimensions never set the raster target.
+Windows requires SDL 2.30 or newer; startup checks the runtime version. Software
+HiDPI output requires SDL 2.26 or newer, whose window surfaces expose drawable
+pixels rather than window points. See SDL’s
+[pixel-size API](https://wiki.libsdl.org/SDL2/SDL_GetWindowSizeInPixels).
 
 ## Event and rendering ownership
 
@@ -26,8 +31,11 @@ FBO extension. Its texture wrapping also supports Windows' GL 1.1 GDI renderer.
 Cached presentation saves/restores GL attributes and matrices, so
 the engine's state cache remains valid. If a frame exceeds the device's maximum
 texture size, cached GL presentation is unavailable; normal rendering continues.
-The software path owns its logical drawing surface and caches a completed copy;
-it reacquires SDL's window surface for each presentation. Neither backend depends
+The desktop software path owns a native-pixel drawing surface and caches a completed copy;
+logical primitives, sprites and glyphs rasterize directly into this surface using
+the existing software backend when output scaling is needed. Normal frames are
+presented without enlarging a completed logical framebuffer. The backend
+reacquires SDL's window surface for each presentation. Neither backend depends
 on the default back buffer or SDL-owned surface surviving a resize.
 
 Watchers are removed and frame caches discarded before window/context destruction
@@ -79,8 +87,7 @@ Enable "Show window contents while dragging" in Windows Performance Options as
 well as full-window dragging in the RDP client. The client setting alone did not
 override the guest's disabled visual effect.
 
-For a repeatable native modal-loop exercise, run
-`WindowResizeHarness gl interactive` (Escape exits). Drag the window edges and use
+For a native modal-loop exercise, run the client, drag the window edges and use
 the Windows system menu's Size command to hold the modal loop open. The harness
 logs cached presentations and checks that the normal frame count stays unchanged
 inside the event pump. This passed in the Windows VM: one sustained sizing session
@@ -89,12 +96,15 @@ and maximize/restore also retained the image and resumed normal drawing.
 
 ## Presentation benchmark and polish
 
-`WindowResizeHarness software benchmark` and `WindowResizeHarness gl benchmark`
+The `WindowResize` software/GL presentation benchmark cases (`--filter
+'WindowResize/*presentation benchmark*' --tag benchmark`)
 measure a frame containing two opaque rectangles, with test pixel readback disabled.
 Each result is the median of five batches of 60 frames after a warm-up batch.
 GL requests swap interval zero and waits for GPU completion; the separate
 cache-only measurement includes that completion wait. These are presentation
 microbenchmarks, not gameplay frame rates, and the two timings are not additive.
+Set `GLOB2_TEST_BENCHMARK_SIZE=WIDTHxHEIGHT` to compare the same actual window
+dimensions across revisions; the output also records native drawable dimensions.
 
 A release build on `pharaoh-dev-1.local`, X11/Xvfb (1280 x 1024), SDL 2.32.10,
 and Mesa 26.0.8 llvmpipe produced this comparison against `02bb97db4`:
@@ -153,8 +163,7 @@ OpenGL. This acceptance pass required no production code changes.
   Both full-client tutorial backends also passed minimize/taskbar-restore.
 - GL fullscreen startup and settings-button input passed. Software switched
   windowed -> fullscreen -> windowed live and retained working controls.
-  GL display-setting changes retain master's existing restart requirement;
-  they are not live fullscreen switches.
+  GL display-setting changes required restart in that tested revision.
 
 Physical Windows GPU drivers and mixed-DPI multi-monitor transitions remain
 unverified hardware coverage, rather than known failures. The resize cache's
@@ -188,10 +197,33 @@ The follow-up audit covers these drawing paths:
 | Main-view map markers | Repeat the marker and preserve clipping; minimap markers and lifetime updates remain single. |
 | Minimap, offscreen arrows, mouse placement previews, screen-space messages and clouds | Keep their existing view-specific behavior; these are not duplicated as map objects. |
 
-Resolution presets now appear only when fullscreen is selected, including after
-switching settings tabs. Desktop fullscreen scales the selected logical resolution,
-so standard logical sizes no longer need the old “no fullscreen” marker. Windowed
-mode follows the OS dimensions and ignores resolution-list selection events.
+Windowed/Fullscreen and F11 share a live desktop-fullscreen transition, retaining
+windowed dimensions and restoring state on failure. Interface scale applies live
+without recreating the window or graphics context. Renderer changes require restart.
+
+`GraphicContext` distinguishes window points, drawable pixels and logical layout.
+Layout divides actual window dimensions by the effective interface scale; OpenGL
+uses the complete native drawable viewport. Input and clipping compose this output
+scale with existing map transforms. Minimized/zero-sized outputs retain the last
+valid target; a failed allocation also leaves that target intact.
+
+Automatic scale uses per-window DPI on Windows, macOS window points (backing density
+only affects rasterization), and Linux Xft desktop scale with native drawable density.
+Density is not multiplied into layout twice. Display/DPI events refresh metrics.
+`GLOB2_UI_SCALE` continues to override automatic/manual scale. Manual percentages
+enlarge the whole view, with the existing minimum layout floor; map zoom remains
+separate. Mobile and browser viewport ownership is unchanged.
+
+The Windows acceptance results above describe the earlier implementation. Linux
+X11/Mesa and macOS Retina regression checks cover native fullscreen, live scale
+changes, input and clipping in both renderers, with independent glyph-raster comparisons. Windows
+native-display acceptance, Wayland and physical mixed-DPI display changes still
+need platform review. Background macOS tests use
+`SDL_VIDEO_MAC_FULLSCREEN_SPACES=0` for desktop fullscreen. SDL2-compat 2.32.70
+can report success without applying a fullscreen Space in a background process.
+Native fullscreen Spaces need a focused application play check. The transition
+confirms SDL’s resulting mode before persisting it and restores state on failure.
+A maintainer should play the native-display result before merging because fullscreen layout and text sharpness visibly change.
 
 ### Permanent regression coverage
 

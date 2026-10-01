@@ -95,6 +95,13 @@ public:
     }
     void clear() { check(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)); check(SDL_RenderClear(renderer)); }
     void logicalSize(int width, int height) override { check(SDL_RenderSetLogicalSize(renderer, width, height)); clear(); }
+    void nativeLogicalSize(int width, int height) override
+    {
+        int pixelsW, pixelsH; outputSize(pixelsW, pixelsH);
+        check(SDL_RenderSetLogicalSize(renderer, 0, 0));
+        check(SDL_RenderSetScale(renderer, float(pixelsW) / width, float(pixelsH) / height));
+        clear();
+    }
     void flush() override { check(SDL_RenderFlush(renderer)); }
     void present() override { SDL_RenderPresent(renderer); clear(); }
     void outputSize(int& width, int& height) override { check(SDL_GetRendererOutputSize(renderer, &width, &height)); }

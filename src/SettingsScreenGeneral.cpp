@@ -22,7 +22,7 @@ void SettingsScreen::buildGeneral()
 	{
 		info(tr("Choose how the game looks on your screen."));
 #ifndef GLOB2_MOBILE
-		if (!touchLayout)
+		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
 		{
 			// Mobile uses the OS-managed viewport and portable renderer.
 			section("Display");
@@ -37,57 +37,14 @@ void SettingsScreen::buildGeneral()
 							   if (v)
 							   {
 								   s.screenFlags |= GraphicContext::FULLSCREEN;
-								   s.screenFlags &= ~GraphicContext::RESIZABLE;
 							   }
 							   else
 							   {
 								   s.screenFlags &= ~GraphicContext::FULLSCREEN;
-								   s.screenFlags |= GraphicContext::RESIZABLE;
 							   }
 						   });
 				   });
-			const auto modes = globalContainer->gfx->listVideoModes();
-			std::vector<std::pair<int, int>> sizes;
-			std::vector<std::string> names;
-			std::vector<bool> windowOnly;
-			auto append = [&](int w, int h, bool restricted)
-			{
-				if (std::find(sizes.begin(), sizes.end(), std::make_pair(w, h)) != sizes.end())
-					return;
-				sizes.emplace_back(w, h);
-				windowOnly.push_back(restricted);
-				names.push_back(std::to_string(w) + " × " + std::to_string(h) +
-								(restricted ? " — " + tr("Windowed only") : ""));
-			};
-			for (auto m : modes)
-				append(m.w, m.h, false);
-			for (auto size : std::vector<std::pair<int, int>>{
-					 {640, 480}, {800, 600}, {1024, 768}, {1280, 1024}, {1600, 1200}})
-				append(size.first, size.second, true);
-			append(s.screenWidth, s.screenHeight, true);
-			int selected = std::find(sizes.begin(), sizes.end(),
-									 std::make_pair(s.screenWidth, s.screenHeight)) -
-						   sizes.begin();
-			choice("display.resolution", "Resolution",
-				   "Window-only sizes also switch the game to windowed mode.", selected, names,
-				   [this, sizes, windowOnly](int v)
-				   {
-					   if (v < 0 || v >= int(sizes.size()))
-						   return;
-					   changeDisplay(
-						   [=](Settings &s)
-						   {
-							   s.screenWidth = sizes[v].first;
-							   s.screenHeight = sizes[v].second;
-							   if (windowOnly[v])
-							   {
-								   s.screenFlags &= ~GraphicContext::FULLSCREEN;
-								   s.screenFlags |= GraphicContext::RESIZABLE;
-							   }
-						   });
-				   });
-			form.back().value =
-				std::to_string(s.screenWidth) + " × " + std::to_string(s.screenHeight);
+
 			{
 				// 0 follows the desktop; the rest are the scales desktops actually offer.
 				static const int percents[] = {0, 100, 125, 150, 175, 200, 250, 300};
@@ -113,8 +70,8 @@ void SettingsScreen::buildGeneral()
 					   });
 			}
 			info(FormattableString(tr("Current display %0 %1 %2 %3"))
-					 .arg(globalContainer->gfx->getW())
-					 .arg(globalContainer->gfx->getH())
+					 .arg(globalContainer->gfx->getDrawableW())
+					 .arg(globalContainer->gfx->getDrawableH())
 					 .arg((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 							  ? "OpenGL"
 							  : tr("Software"))
@@ -151,7 +108,7 @@ void SettingsScreen::buildGeneral()
 		effect("graphics.particles", "Building particles", "Show smoke and other building particles.", &Settings::buildingParticles);
 		appearance("graphics.magic", "Magic effects", "Choose animated magic effects or a simple visible effect.", &Settings::fullMagicEffects, "Simple", "Full");
 #ifndef GLOB2_MOBILE
-		if (!touchLayout)
+		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
 		{
 			choice("graphics.artwork", "Artwork",
 				   "Apply artwork on the next game or editor load (OpenGL).",
@@ -202,7 +159,7 @@ void SettingsScreen::buildGeneral()
 		effect("graphics.indicators", "Smooth progress indicators", "Smooth the moving edges of progress indicators.", &Settings::smoothProgressIndicators);
 		effect("graphics.animation", "Decorative interface animation", "Animate victory artwork. Reduced motion also disables this animation.", &Settings::decorativeAnimations);
 #ifndef GLOB2_MOBILE
-		if (!touchLayout)
+		if (!touchLayout || globalContainer->gfx->isNativeDesktop())
 		{
 			choice("graphics.renderer", "Renderer", "Changing the renderer requires a restart.",
 				   bool(s.screenFlags & GraphicContext::USEGPU), {tr("Software"), "OpenGL"},
