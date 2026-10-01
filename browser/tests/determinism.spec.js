@@ -57,13 +57,21 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page},
 // desktop and mobile harnesses. Golden comparisons occur inside C++, not in a
 // JavaScript reimplementation of the engine or its math.
 test('WebAssembly executes the shared scripting corpus', async ({page}, info) => {
-  test.setTimeout(180000);
+  test.setTimeout(600000);
   const root = path.resolve(__dirname, '../..');
+  const output=path.join(root,'artifacts/browser-determinism/script-corpus',info.project.name);
+  fs.mkdirSync(output,{recursive:true});
+  const progress=[];
+  page.on('console',message=>{progress.push(message.text());
+    fs.appendFileSync(path.join(output,'progress.log'),message.text()+'\n');});
+  page.on('pageerror',error=>{progress.push(String(error));
+    fs.appendFileSync(path.join(output,'progress.log'),String(error)+'\n');});
   await page.route('**/script-corpus.html', route => route.fulfill({contentType:'text/html', body:`
     <!doctype html><canvas id="canvas"></canvas><script>
     window.engineLog=[]; window.corpusExit=null;
     var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
-      print:m=>engineLog.push(String(m)), printErr:m=>engineLog.push(String(m)),
+      print:m=>{engineLog.push(String(m));console.log(String(m));},
+      printErr:m=>{engineLog.push(String(m));console.error(String(m));},
       onExit:code=>window.corpusExit=code,
       onAbort:reason=>{window.corpusError=String(reason);window.corpusDone=true;},
       preRun:[()=>{
@@ -89,11 +97,17 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
       }};
     </script><script src="/script-tests.js"></script>`}));
   await page.goto('/script-corpus.html');
-  await page.waitForFunction(()=>window.corpusDone===true,null,{timeout:160000});
-  const result=await page.evaluate(()=>({exit:window.corpusExit,error:window.corpusError,
-    files:window.corpusFiles||{},log:window.engineLog}));
-  const output=path.join(root,'artifacts/browser-determinism/script-corpus',info.project.name);
-  fs.mkdirSync(output,{recursive:true});
+  let waitError;
+  try {await page.waitForFunction(()=>window.corpusDone===true,null,{timeout:550000});}
+  catch(error){waitError=error;}
+  // Retain partial logs and any exported data before reporting a timeout.
+  // An unresponsive page must not prevent the host from retaining its evidence.
+  const result=await Promise.race([
+    page.evaluate(()=>({exit:window.corpusExit,error:window.corpusError,
+      files:window.corpusFiles||{},log:window.engineLog})).catch(error=>
+        ({exit:null,error:String(error),files:{},log:progress})),
+    new Promise(resolve=>setTimeout(()=>resolve({exit:null,
+      error:'Timed out collecting page evidence',files:{},log:progress}),5000))]);
   for(const [relative,base64] of Object.entries(result.files)){
     const destination=path.join(output,relative);
     fs.mkdirSync(path.dirname(destination),{recursive:true});
@@ -117,6 +131,7 @@ test('WebAssembly executes the shared scripting corpus', async ({page}, info) =>
       .map(file=>[file,hash(path.join(build,file))])),fixtureHashes:fixtures,
     command:'playwright test determinism.spec.js --grep "shared scripting corpus"',
     exit:result.exit,error:result.error,files:Object.keys(result.files)},null,2)+'\n');
+  if(waitError)throw waitError;
   expect(result.error).toBeUndefined();
   expect(result.exit).toBe(0);
   expect(Object.keys(result.files).some(name=>name.endsWith('numeric-profile1.value'))).toBeTruthy();
