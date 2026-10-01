@@ -288,7 +288,7 @@ def migrate(apply=False, extra=(), validation=None):
                     and json.loads(proof.read_text()) == expected
                 ):
                     item["replacement_candidates"].append(str(candidate))
-        if apply and receipt and not item["busy"]:
+        if apply and receipt and local.is_dir() and not item["busy"]:
             target_tools = Path(receipt["tools"])
             if target_tools.is_dir():
                 from build_layout import BuildLock

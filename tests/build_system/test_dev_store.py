@@ -453,9 +453,20 @@ class StoreTests(unittest.TestCase):
         }
         cli.migrate_browser(self.a, item, receipt, True)
         self.assertFalse((local / "node").is_symlink())
-        item["busy"] = False
-        with patch.object(cli, "busy", return_value=False):
-            cli.migrate_browser(self.a, item, receipt, True)
+        tools = store.mobile_tools(self.a, False)
+        tools.mkdir(parents=True)
+        receipt.update({"tools": str(tools), "toolchain_key": tools.name})
+        receipt["checks"].update({"android-packaging": 0, "build-system-tests": 0})
+        validation = self.base / "validation.json"
+        validation.write_text(json.dumps(receipt))
+        self.assertFalse((self.a / "build/mobile-tools").exists())
+        with (
+            patch.object(cli, "ROOT", self.a),
+            patch.object(cli, "checkouts", return_value=[self.a]),
+            patch.object(cli, "artifacts", return_value=[]),
+            patch.object(cli, "busy", return_value=False),
+        ):
+            item = cli.migrate(apply=True, validation=validation)[0]
         self.assertEqual((local / "node").resolve(), target / "node")
         self.assertGreater(item["reclaimed_bytes"], 0)
         self.assertFalse((local / "upstream/emscripten").is_symlink())
