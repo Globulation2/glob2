@@ -27,14 +27,22 @@ def home():
     if platform.system() == "Darwin":
         return Path.home() / "Library/Application Support/Glob2/Development"
     if os.name == "nt":
-        return (
-            Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local"))
-            / "Glob2/Development"
+        variable, fallback, suffix = (
+            "LOCALAPPDATA",
+            Path.home() / "AppData/Local",
+            "Glob2/Development",
         )
-    return (
-        Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
-        / "glob2/development"
-    )
+    else:
+        variable, fallback, suffix = (
+            "XDG_DATA_HOME",
+            Path.home() / ".local/share",
+            "glob2/development",
+        )
+    value = os.environ.get(variable)
+    base = Path(value) if value else fallback
+    # XDG data directories must be absolute. Invalid defaults must never make
+    # the shared store depend on the current checkout's working directory.
+    return (base if base.is_absolute() else fallback) / suffix
 
 
 def key(root, files, extra=None):

@@ -82,27 +82,42 @@ class StoreTests(unittest.TestCase):
             self.assertNotEqual(store.android_sdk(self.a), Path("/ambient"))
 
     def test_platform_defaults(self):
+        concrete_path = type(self.base)
         with (
-            patch.dict(os.environ, {}, clear=True),
-            patch.object(store.platform, "system", return_value="Darwin"),
+            patch.object(store, "Path", concrete_path),
+            patch.object(concrete_path, "home", return_value=self.base),
         ):
-            self.assertEqual(
-                store.home(),
-                Path.home() / "Library/Application Support/Glob2/Development",
-            )
-        with (
-            patch.dict(os.environ, {"XDG_DATA_HOME": str(self.base)}, clear=True),
-            patch.object(store.platform, "system", return_value="Linux"),
-        ):
-            self.assertEqual(store.home(), self.base / "glob2/development")
-        with (
-            patch.dict(os.environ, {"LOCALAPPDATA": str(self.base)}, clear=True),
-            patch.object(store.os, "name", "nt"),
-            patch.object(store.platform, "system", return_value="Windows"),
-            patch.object(store, "Path", type(self.base)),
-        ):
-            # pathlib cannot instantiate WindowsPath on POSIX; home uses the imported concrete Path class.
-            self.assertEqual(store.home(), self.base / "Glob2/Development")
+            with (
+                patch.dict(os.environ, {}, clear=True),
+                patch.object(store.platform, "system", return_value="Darwin"),
+            ):
+                self.assertEqual(
+                    store.home(),
+                    self.base / "Library/Application Support/Glob2/Development",
+                )
+            for value in (str(self.base), "", "relative-data"):
+                with (
+                    patch.dict(os.environ, {"XDG_DATA_HOME": value}, clear=True),
+                    patch.object(store.platform, "system", return_value="Linux"),
+                    patch.object(store.os, "name", "posix"),
+                ):
+                    base = (
+                        self.base
+                        if value == str(self.base)
+                        else self.base / ".local/share"
+                    )
+                    self.assertEqual(store.home(), base / "glob2/development")
+                with (
+                    patch.dict(os.environ, {"LOCALAPPDATA": value}, clear=True),
+                    patch.object(store.os, "name", "nt"),
+                    patch.object(store.platform, "system", return_value="Windows"),
+                ):
+                    base = (
+                        self.base
+                        if value == str(self.base)
+                        else self.base / "AppData/Local"
+                    )
+                    self.assertEqual(store.home(), base / "Glob2/Development")
 
     def test_dependency_keys_include_compiler_triplets_manifest_and_sdl(self):
         identity = {
