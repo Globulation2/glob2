@@ -360,7 +360,7 @@ test('YOG admission enforces greeting, exact version, authentication and retry o
   const version = Number((await readFile(path.join(root,'src/Version.h'),'utf8')).match(/^#define NET_PROTOCOL_VERSION (\d+)/m)[1]);
   await page.goto('/');
   for (const scenario of ['old version','future version','login before greeting','registration before greeting',
-      'room before greeting','oversized map catalogue','room before login','repeated greeting','repeated login','greeting after login','retry login']) {
+      'room before greeting','oversized map catalogue','room before login','repeated greeting','repeated login','greeting after login','start without room','retry login']) {
     const result = await page.evaluate(({endpoint,version,scenario}) => new Promise((resolve,reject) => {
       const socket = new WebSocket(endpoint); socket.binaryType='arraybuffer';
       let pending = new Uint8Array(), done=false, opened=false;
@@ -402,6 +402,7 @@ test('YOG admission enforces greeting, exact version, authentication and retry o
           }else if(body[0]===4){
             if(scenario==='repeated login')login('fixture-only');
             else if(scenario==='greeting after login')hello(0);
+            else if(scenario==='start without room')send([30]);
             else if(scenario==='retry login')finish();
             else finish(new Error('Unauthorized login accepted: '+scenario));
           }
@@ -415,7 +416,7 @@ test('YOG admission enforces greeting, exact version, authentication and retry o
     const types=result.map(body=>body[0]);
     if(scenario.endsWith('version')) {
       expect(result).toContainEqual([7,5]);expect(types).not.toContain(10);
-    }else if(['repeated login','greeting after login','retry login'].includes(scenario)) {
+    }else if(['repeated login','greeting after login','start without room','retry login'].includes(scenario)) {
       expect(types.filter(type=>type===4)).toHaveLength(1);
       if(scenario==='retry login')expect(types).toContain(7);
     }else {
