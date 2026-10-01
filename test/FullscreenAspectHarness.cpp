@@ -16,7 +16,8 @@ namespace {
 class Context : public GraphicContext
 {
 public:
-	Context(bool gpu) : GraphicContext(640, 480, gpu ? USEGPU : 0, "Glob2 aspect regression") {}
+	Context(bool gpu, bool fullscreen = false)
+        : GraphicContext(640, 480, (gpu ? USEGPU : 0) | (fullscreen ? FULLSCREEN : 0), "Glob2 aspect regression") {}
 	void resize(int w, int h)
 	{
 		if (windowW == w && windowH == h) return;
@@ -178,9 +179,26 @@ namespace
 void aspect(bool gpu)
 {
 	Context context(gpu);
+#ifdef HAVE_OPENGL
+    if (gpu) {
+        GLdouble projection[16];
+        glGetDoublev(GL_PROJECTION_MATRIX, projection);
+        CHECK(projection[0] == doctest::Approx(2.0 / context.getW()));
+        CHECK(projection[5] == doctest::Approx(-2.0 / context.getH()));
+    }
+#endif
 	if (!gpu) checkSoftwareClipping();
 	for (auto size : {std::pair{640, 480}, {1280, 800}, {800, 1280}, {853, 641}, {480, 270}})
 		run(context, gpu, size.first, size.second);
+#ifdef HAVE_OPENGL
+    if (gpu && glob2test::fullscreenEnabled()) {
+        Context fullscreen(true, true);
+        GLdouble projection[16];
+        glGetDoublev(GL_PROJECTION_MATRIX, projection);
+        CHECK(projection[0] == doctest::Approx(2.0 / fullscreen.getW()));
+        CHECK(projection[5] == doctest::Approx(-2.0 / fullscreen.getH()));
+    }
+#endif
 }
 }
 

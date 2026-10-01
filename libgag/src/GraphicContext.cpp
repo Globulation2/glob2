@@ -519,7 +519,6 @@ namespace GAGCore
         const int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
         const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
         if (w == windowW && h == windowH && logicalW == getW() && logicalH == getH()) return true;
-        const auto format = sdlsurface->format;
         SDL_Surface* replacement = SDL_CreateSurface(logicalW, logicalH, SDL_PIXELFORMAT_ARGB8888);
         if (!replacement) return false;
         // SDL may invalidate its borrowed window surface when changing size.
@@ -578,9 +577,9 @@ namespace GAGCore
 			uiScale = static_cast<float>(w) / floorW;
 		if (h < static_cast<int>(floorH * uiScale))
 			uiScale = static_cast<float>(h) / floorH;
-		uiScale = std::max(1.0f, uiScale);
-		const int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
-		const int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
+		uiScale = std::max(std::min(1.0f, wantedUiScale), uiScale);
+		int logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
+		int logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
 
 		// set flags
         const char* selectedRenderer = SDL_getenv_unsafe("GLOB2_RENDERER");
@@ -645,6 +644,12 @@ namespace GAGCore
             wantedUiScale = uiScale = newScale;
             applyWindowMinimumSize();
         }
+        // The new window can be on a different display from the old context.
+        // Allocate its initial surface using that display's scale even when the
+        // window is fixed-size and updateWindowSize will preserve its geometry.
+        logicalW = std::max(1, static_cast<int>(w / uiScale + 0.5f));
+        logicalH = std::max(1, static_cast<int>(h / uiScale + 0.5f));
+        fixedLogicalW = logicalW; fixedLogicalH = logicalH;
 		drawableW = windowW;
 		drawableH = windowH;
 		if (flags & PORTABLEGPU) {
@@ -733,7 +738,7 @@ namespace GAGCore
 			{
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
-				glOrtho(0, logicalW, logicalH, 0, -1, 1);
+				glOrtho(0, getW(), getH(), 0, -1, 1);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
 				glGetIntegerv(GL_MAX_TEXTURE_SIZE, &frameCache.maximumTextureSize);
