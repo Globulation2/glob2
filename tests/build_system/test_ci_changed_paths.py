@@ -134,6 +134,21 @@ class ChangedPathsTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 0,
                                  f"Downloaded archive would become a source input: {archive}")
 
+    def test_workspace_compiler_caches_do_not_dirty_source_provenance(self):
+        root = SCRIPT.parents[2]
+        workflow = (root / ".github/workflows/build.yml").read_text()
+        caches = re.findall(r"CCACHE_DIR:\s*\$\{\{ github.workspace \}\}([^\n]+)", workflow)
+        self.assertTrue(caches, "No workspace compiler cache configuration found")
+        for cache in caches:
+            path = cache.strip().replace("\\", "/").lstrip("/") + "/probe"
+            with self.subTest(path=path):
+                result = subprocess.run(
+                    ["git", "check-ignore", "--no-index", path], cwd=root,
+                    capture_output=True, text=True,
+                )
+                self.assertEqual(result.returncode, 0,
+                                 f"Generated compiler cache would become a source input: {path}")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -19,6 +19,7 @@ experiment/
 .DS_Store
 compile_commands.json
 .cache/
+/.ccache/
 Glob2.app/
 Glob2-*.dmg
 /.tmp
