@@ -1,0 +1,1419 @@
+{
+  "revision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+  "sourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4",
+  "dirty": false,
+  "platform": "Linux x86-64: Ubuntu22.04 pinned Emscripten4.0.15 Docker compiler, Ubuntu24.04 Playwright1.63.0-noble Docker browsers, therig.local",
+  "buildImageDigest": "sha256:27bc6267cb285223b8aebb7627bfebae7cb3ad2aaa0d5923b8aa5321793033e8",
+  "browserImageDigest": "sha256:eff16c30e6f3f4af0a03fa4b706120d5e9b0891c344a27d64559aff5900a4a27",
+  "uiCasesPassed": 3,
+  "determinismCasesPassed": 6,
+  "sharedComparedArtifactsEach": 60,
+  "baselineTicks": 1500,
+  "account": "Exact final53d localLinux production WASM build passed all three WebGL match/damaged/replay load regressions and all six browser baseline/shared cases with unchanged timeouts/retries0. Three strict same-revision native comparisons are eligible. CI synthetic41fd source association and original revision-mismatch report are separate; no manifest relabeling. Docker SDK image contains no Git checkout metadata; immutable image digest and actual Emscripten/LLVM compiler commits are retained. Interrupted redundant Mac build is development-only. Raw WASM files are hashed in served-bundle.json, rebuildable from published exact source/config; no Mac browser execution claim.",
+  "files": {
+    "browser-linux/baseline-verification.json": {
+      "bytes": 669,
+      "sha256": "f2cf78cb6682b756ac371e9f27254d302dd8ba1d5b9ad433166766ab4e11832c"
+    },
+    "browser-linux/build-linux.sh": {
+      "bytes": 740,
+      "sha256": "721afac679af749276463d1ad16faa9eca0708c23d31b63a74aee8a0702d4533"
+    },
+    "browser-linux/comparisons/chromium-vs-head53d.json": {
+      "bytes": 469,
+      "sha256": "fa2de18adc39fa23e4ecde4fb497b5a7002b8f3383d37598cd235552b4f1c924"
+    },
+    "browser-linux/comparisons/firefox-vs-head53d.json": {
+      "bytes": 468,
+      "sha256": "c5344b3b3a05f56e24888a783573a4924026cac2b5b89cf6386d694c3f719ffb"
+    },
+    "browser-linux/comparisons/webkit-vs-head53d.json": {
+      "bytes": 467,
+      "sha256": "6b47adfe25af37e0315ad9b0af0fd0438f5341ab36518bbd30e4d956b38f8f43"
+    },
+    "browser-linux/container-cleanup-and-source.log": {
+      "bytes": 181,
+      "sha256": "50dc9e30889613f13f731f9cba54fcfd37466167a197f292866002d0a1922006"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-1.bin": {
+      "bytes": 804016,
+      "sha256": "ae064928f4d4d915f0555afbf4a054bdd1d0947e2269bcce771f246c240e8b5b"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-2.bin": {
+      "bytes": 804015,
+      "sha256": "4cbd70f3d458874ffd2e2baaf7b07310bf81ca9a5960e449f66ecf7db734cb77"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-3.bin": {
+      "bytes": 804014,
+      "sha256": "57ff89468b7090959a0a6236ee09148df774388bf959cf436620064b57bb3c9d"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-4.bin": {
+      "bytes": 804013,
+      "sha256": "7fd68a55a7fdea4f2abe9d4e56b9eb39fd63ce40ad767f639495ffc0a14e3fc9"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-upgraded.game": {
+      "bytes": 1479477,
+      "sha256": "5215a9b7dd523a11b2152f5b9cd895e2761012ae1d4925b6612c1bb0c16d8f85"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-world-fields.value": {
+      "bytes": 112166,
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master125-world-fields.value": {
+      "bytes": 112166,
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptIntegration/JavaScript_orders_execute_and_survive_save_load/supported-orders.game": {
+      "bytes": 603590,
+      "sha256": "6d644fefa0b1de0a2873abb3dd9a5b68ea372a8ee34405832834983f19aa198d"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptLifecycle/Scripting_building_completion_upgrade_and_repair_preserve_identity/lifecycle.game": {
+      "bytes": 595885,
+      "sha256": "a91bd9c743b7354029c1cef8cc46d6aaf22cc6e119fff035d845706e20b865b3"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptLifecycle/Scripting_conversion_allocates_fresh_identity_in_a_reused_destination_slot/lifecycle.game": {
+      "bytes": 596243,
+      "sha256": "87788f2086d0e93347c4dc0607d22de21bc16aa4abe35f8a5f981af3ebe0bcee"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptLifecycle/Scripting_conversion_back_never_resurrects_the_original_reference/lifecycle.game": {
+      "bytes": 597640,
+      "sha256": "cdf63342de586de7e3a97e230b110fc9c4724ba6511a684b561b117745fc67c3"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptLifecycle/Scripting_editor_deletion_and_reuse_never_revive_a_reference/lifecycle.game": {
+      "bytes": 596229,
+      "sha256": "61a1aea43811a9ff963c20c5f3e0258157ebc0c5f634b0f8d488ff34a118ccfe"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptLifecycle/Scripting_identity_survives_conversion_and_save_load/lifecycle.game": {
+      "bytes": 596243,
+      "sha256": "a98cc197daec59aa67cede947fc7f07cabd3215380a4cde6858f48daaa83d6c9"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptLifecycle/Scripting_normal_death_invalidates_lookup_before_cleanup_and_slot_reuse/lifecycle.game": {
+      "bytes": 604607,
+      "sha256": "84f0e9185eb5b5563510aaa6eff8f790ec60a92181a611a976eae0559e37da34"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.txt": {
+      "bytes": 372219,
+      "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.value": {
+      "bytes": 103890,
+      "sha256": "5220d8c67375eba774f6d97b7d224b4b79f792944dcb43b04af6ef6320978c68"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.txt": {
+      "bytes": 24685,
+      "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.value": {
+      "bytes": 3965,
+      "sha256": "e792b307328eadd0031daef9511eb8c09a468d3d862f30b3a58e0632dd335812"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.txt": {
+      "bytes": 6262,
+      "sha256": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.value": {
+      "bytes": 1764,
+      "sha256": "a803885f80eeeab5d66f5fa53c3fc92c19f292bbc8056be8265f65d59b6cdba5"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.txt": {
+      "bytes": 6262,
+      "sha256": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.value": {
+      "bytes": 1764,
+      "sha256": "21655cdf8e94b46fb0c5198372c3ed4cc56e1e1552d75889c5b8dee8ad1c7a14"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.txt": {
+      "bytes": 6262,
+      "sha256": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.value": {
+      "bytes": 1764,
+      "sha256": "61dc26baa53aef1ef9701158191c46f387819f662d0b4cb2be6c3a621faa1785"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.txt": {
+      "bytes": 6262,
+      "sha256": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.value": {
+      "bytes": 1764,
+      "sha256": "be88a19fd3257ded47f1f15aa1f133ae240b2cd3e52f08699a81b7be1ec5d67e"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.txt": {
+      "bytes": 1059,
+      "sha256": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.value": {
+      "bytes": 401,
+      "sha256": "c7a9d3e386e73b01cb91d70719547dfb58c7b01777e9af1d877beccb00c6fcf8"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.txt": {
+      "bytes": 1059,
+      "sha256": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.value": {
+      "bytes": 401,
+      "sha256": "f9bb4ebc7186a1867af65b32404e85c388e43df51815a08b3c13efff6fd7aea5"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.txt": {
+      "bytes": 1059,
+      "sha256": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.value": {
+      "bytes": 401,
+      "sha256": "b7411f705983f7ea2c6593ebf4636a04fd5a9d9bfd4d15e0d470f67c3db0a095"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.txt": {
+      "bytes": 1059,
+      "sha256": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.value": {
+      "bytes": 401,
+      "sha256": "4df083ebe4b589d14b092f9da636823fa48f0b84cb20d9dc8699d8cc639612ae"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSession/JavaScript_initialization_errors_reach_headless_and_UI_load_diagnostics/invalid-embedded-ai.game": {
+      "bytes": 804126,
+      "sha256": "7678eeabd263502176612b2dc4cd64488353bca9e079612cdbcd44e3ed8aa7fb"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/conversion-initial.game": {
+      "bytes": 656647,
+      "sha256": "6e824d8351f7bf7f0607f74474fd6723c1d9ca9b064a83a4202a2f192001a59c"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/final.game": {
+      "bytes": 738696,
+      "sha256": "929d57c7584a810713e4a2c452e6d6d373c45811d9e7154943b71a80fbb37bc8"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/conversion-0.game": {
+      "bytes": 662704,
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/conversion-0.game": {
+      "bytes": 662704,
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/final.game": {
+      "bytes": 963529,
+      "sha256": "30297776623dbc140c73bcedc8f44ee9823a9d9d4104a195f1e100cedd3c1c70"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/final.game": {
+      "bytes": 971835,
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay": {
+      "bytes": 976248,
+      "sha256": "01d75d7108166a33ab454db17192432e77cb60401b99f63d088b6bd9e48bb40b"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay.checksums": {
+      "bytes": 198164,
+      "sha256": "499b031f0f8929aa6c6833dc7bcfadc3289238472dd3f80014c47695a78de866"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/final.game": {
+      "bytes": 971835,
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay": {
+      "bytes": 979001,
+      "sha256": "f1e17c4b463099beaf3e6a72f948e3d03d624d4e8c252ae120daf8571539616a"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay.checksums": {
+      "bytes": 346772,
+      "sha256": "b84b114281f43ef9b08f97e41e7844ce1a79366ae1f793ed5b1c806523b1c7dc"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-128.game": {
+      "bytes": 971624,
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-32.game": {
+      "bytes": 970921,
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/final.game": {
+      "bytes": 971835,
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay": {
+      "bytes": 817006,
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-128.game": {
+      "bytes": 971624,
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-32.game": {
+      "bytes": 970921,
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/final.game": {
+      "bytes": 971835,
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay": {
+      "bytes": 817006,
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/final.game": {
+      "bytes": 970280,
+      "sha256": "68ef95d1a4b1225d711d765e5727e5d171612060b253f7b6ba169fefaba9042f"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/final.game": {
+      "bytes": 978586,
+      "sha256": "3b8ac2249e13d733d1935351e6d593b093b314a86e3e8e4452674664923bcb18"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay": {
+      "bytes": 981312,
+      "sha256": "225212c7fb03f82bfbd8e66175cff92ed825ad9c1002441902bc56ace50e5786"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay.checksums": {
+      "bytes": 198164,
+      "sha256": "93ebea3e0bc20944f2427e5a74a1ed161c3358e3ba11ebe6f5855802af113315"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/final.game": {
+      "bytes": 978586,
+      "sha256": "9a155ac1c408c1963be98f9f28c89642baa1433c295ad27c9e1489ea43f5cb04"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay": {
+      "bytes": 983504,
+      "sha256": "788688c661ba6ff2c6adc8dda524386b7b62270c237c90c485010c4ef89e22d8"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay.checksums": {
+      "bytes": 346772,
+      "sha256": "8a92fe5db5c6940388a653c9ed6d6904b6dbf024f2cfced296d1ead86af6e7ff"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-128.game": {
+      "bytes": 977768,
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-32.game": {
+      "bytes": 977224,
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/final.game": {
+      "bytes": 978586,
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay": {
+      "bytes": 811587,
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-128.game": {
+      "bytes": 977768,
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-32.game": {
+      "bytes": 977224,
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/final.game": {
+      "bytes": 978586,
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay": {
+      "bytes": 811587,
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214"
+    },
+    "browser-linux/corpora/chromium/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/chromium/corpus/build-provenance.json": {
+      "bytes": 1113,
+      "sha256": "806389eb17bec9875d1300603cf66606635b6dda3461659dbf8497cf263d26f9"
+    },
+    "browser-linux/corpora/chromium/manifest.json": {
+      "bytes": 15522,
+      "sha256": "d755afba847cbe17ee4e5a9536256f060c9c55a82e9703cb67828d16597adb6f"
+    },
+    "browser-linux/corpora/chromium/progress.log": {
+      "bytes": 14245,
+      "sha256": "45f6d1ec4f30e9cafaa4a77256485b4a5cf911ddbec394cd443b6d5e3a17b8a8"
+    },
+    "browser-linux/corpora/chromium/run.log": {
+      "bytes": 14036,
+      "sha256": "fbad2b0a9766635b6164c7c9a8d1f7eab784640491668f0162d5df2374c66ce9"
+    },
+    "browser-linux/corpora/chromium/tests.xml": {
+      "bytes": 8216,
+      "sha256": "68d18099835d3c6996368a77af5eb2e4e0edb57c51f04a22f298dcb92f194aab"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-1.bin": {
+      "bytes": 804016,
+      "sha256": "ae064928f4d4d915f0555afbf4a054bdd1d0947e2269bcce771f246c240e8b5b"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-2.bin": {
+      "bytes": 804015,
+      "sha256": "4cbd70f3d458874ffd2e2baaf7b07310bf81ca9a5960e449f66ecf7db734cb77"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-3.bin": {
+      "bytes": 804014,
+      "sha256": "57ff89468b7090959a0a6236ee09148df774388bf959cf436620064b57bb3c9d"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-4.bin": {
+      "bytes": 804013,
+      "sha256": "7fd68a55a7fdea4f2abe9d4e56b9eb39fd63ce40ad767f639495ffc0a14e3fc9"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-upgraded.game": {
+      "bytes": 1479477,
+      "sha256": "5215a9b7dd523a11b2152f5b9cd895e2761012ae1d4925b6612c1bb0c16d8f85"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-world-fields.value": {
+      "bytes": 112166,
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master125-world-fields.value": {
+      "bytes": 112166,
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptIntegration/JavaScript_orders_execute_and_survive_save_load/supported-orders.game": {
+      "bytes": 603590,
+      "sha256": "6d644fefa0b1de0a2873abb3dd9a5b68ea372a8ee34405832834983f19aa198d"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptLifecycle/Scripting_building_completion_upgrade_and_repair_preserve_identity/lifecycle.game": {
+      "bytes": 595885,
+      "sha256": "a91bd9c743b7354029c1cef8cc46d6aaf22cc6e119fff035d845706e20b865b3"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptLifecycle/Scripting_conversion_allocates_fresh_identity_in_a_reused_destination_slot/lifecycle.game": {
+      "bytes": 596243,
+      "sha256": "87788f2086d0e93347c4dc0607d22de21bc16aa4abe35f8a5f981af3ebe0bcee"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptLifecycle/Scripting_conversion_back_never_resurrects_the_original_reference/lifecycle.game": {
+      "bytes": 597640,
+      "sha256": "cdf63342de586de7e3a97e230b110fc9c4724ba6511a684b561b117745fc67c3"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptLifecycle/Scripting_editor_deletion_and_reuse_never_revive_a_reference/lifecycle.game": {
+      "bytes": 596229,
+      "sha256": "61a1aea43811a9ff963c20c5f3e0258157ebc0c5f634b0f8d488ff34a118ccfe"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptLifecycle/Scripting_identity_survives_conversion_and_save_load/lifecycle.game": {
+      "bytes": 596243,
+      "sha256": "a98cc197daec59aa67cede947fc7f07cabd3215380a4cde6858f48daaa83d6c9"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptLifecycle/Scripting_normal_death_invalidates_lookup_before_cleanup_and_slot_reuse/lifecycle.game": {
+      "bytes": 604607,
+      "sha256": "84f0e9185eb5b5563510aaa6eff8f790ec60a92181a611a976eae0559e37da34"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.txt": {
+      "bytes": 372219,
+      "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.value": {
+      "bytes": 103890,
+      "sha256": "5220d8c67375eba774f6d97b7d224b4b79f792944dcb43b04af6ef6320978c68"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.txt": {
+      "bytes": 24685,
+      "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.value": {
+      "bytes": 3965,
+      "sha256": "e792b307328eadd0031daef9511eb8c09a468d3d862f30b3a58e0632dd335812"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.txt": {
+      "bytes": 6262,
+      "sha256": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.value": {
+      "bytes": 1764,
+      "sha256": "a803885f80eeeab5d66f5fa53c3fc92c19f292bbc8056be8265f65d59b6cdba5"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.txt": {
+      "bytes": 6262,
+      "sha256": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.value": {
+      "bytes": 1764,
+      "sha256": "21655cdf8e94b46fb0c5198372c3ed4cc56e1e1552d75889c5b8dee8ad1c7a14"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.txt": {
+      "bytes": 6262,
+      "sha256": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.value": {
+      "bytes": 1764,
+      "sha256": "61dc26baa53aef1ef9701158191c46f387819f662d0b4cb2be6c3a621faa1785"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.txt": {
+      "bytes": 6262,
+      "sha256": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.value": {
+      "bytes": 1764,
+      "sha256": "be88a19fd3257ded47f1f15aa1f133ae240b2cd3e52f08699a81b7be1ec5d67e"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.txt": {
+      "bytes": 1059,
+      "sha256": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.value": {
+      "bytes": 401,
+      "sha256": "c7a9d3e386e73b01cb91d70719547dfb58c7b01777e9af1d877beccb00c6fcf8"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.txt": {
+      "bytes": 1059,
+      "sha256": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.value": {
+      "bytes": 401,
+      "sha256": "f9bb4ebc7186a1867af65b32404e85c388e43df51815a08b3c13efff6fd7aea5"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.txt": {
+      "bytes": 1059,
+      "sha256": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.value": {
+      "bytes": 401,
+      "sha256": "b7411f705983f7ea2c6593ebf4636a04fd5a9d9bfd4d15e0d470f67c3db0a095"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.txt": {
+      "bytes": 1059,
+      "sha256": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.value": {
+      "bytes": 401,
+      "sha256": "4df083ebe4b589d14b092f9da636823fa48f0b84cb20d9dc8699d8cc639612ae"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSession/JavaScript_initialization_errors_reach_headless_and_UI_load_diagnostics/invalid-embedded-ai.game": {
+      "bytes": 804126,
+      "sha256": "7678eeabd263502176612b2dc4cd64488353bca9e079612cdbcd44e3ed8aa7fb"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/conversion-initial.game": {
+      "bytes": 656647,
+      "sha256": "6e824d8351f7bf7f0607f74474fd6723c1d9ca9b064a83a4202a2f192001a59c"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/final.game": {
+      "bytes": 738696,
+      "sha256": "929d57c7584a810713e4a2c452e6d6d373c45811d9e7154943b71a80fbb37bc8"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/conversion-0.game": {
+      "bytes": 662704,
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/conversion-0.game": {
+      "bytes": 662704,
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/final.game": {
+      "bytes": 963529,
+      "sha256": "30297776623dbc140c73bcedc8f44ee9823a9d9d4104a195f1e100cedd3c1c70"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/final.game": {
+      "bytes": 971835,
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay": {
+      "bytes": 976248,
+      "sha256": "01d75d7108166a33ab454db17192432e77cb60401b99f63d088b6bd9e48bb40b"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay.checksums": {
+      "bytes": 198164,
+      "sha256": "499b031f0f8929aa6c6833dc7bcfadc3289238472dd3f80014c47695a78de866"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/final.game": {
+      "bytes": 971835,
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay": {
+      "bytes": 979001,
+      "sha256": "f1e17c4b463099beaf3e6a72f948e3d03d624d4e8c252ae120daf8571539616a"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay.checksums": {
+      "bytes": 346772,
+      "sha256": "b84b114281f43ef9b08f97e41e7844ce1a79366ae1f793ed5b1c806523b1c7dc"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-128.game": {
+      "bytes": 971624,
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-32.game": {
+      "bytes": 970921,
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/final.game": {
+      "bytes": 971835,
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay": {
+      "bytes": 817006,
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-128.game": {
+      "bytes": 971624,
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-32.game": {
+      "bytes": 970921,
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/final.game": {
+      "bytes": 971835,
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay": {
+      "bytes": 817006,
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/final.game": {
+      "bytes": 970280,
+      "sha256": "68ef95d1a4b1225d711d765e5727e5d171612060b253f7b6ba169fefaba9042f"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/final.game": {
+      "bytes": 978586,
+      "sha256": "3b8ac2249e13d733d1935351e6d593b093b314a86e3e8e4452674664923bcb18"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay": {
+      "bytes": 981312,
+      "sha256": "225212c7fb03f82bfbd8e66175cff92ed825ad9c1002441902bc56ace50e5786"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay.checksums": {
+      "bytes": 198164,
+      "sha256": "93ebea3e0bc20944f2427e5a74a1ed161c3358e3ba11ebe6f5855802af113315"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/final.game": {
+      "bytes": 978586,
+      "sha256": "9a155ac1c408c1963be98f9f28c89642baa1433c295ad27c9e1489ea43f5cb04"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay": {
+      "bytes": 983504,
+      "sha256": "788688c661ba6ff2c6adc8dda524386b7b62270c237c90c485010c4ef89e22d8"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay.checksums": {
+      "bytes": 346772,
+      "sha256": "8a92fe5db5c6940388a653c9ed6d6904b6dbf024f2cfced296d1ead86af6e7ff"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-128.game": {
+      "bytes": 977768,
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-32.game": {
+      "bytes": 977224,
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/final.game": {
+      "bytes": 978586,
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay": {
+      "bytes": 811587,
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-128.game": {
+      "bytes": 977768,
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-32.game": {
+      "bytes": 977224,
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/final.game": {
+      "bytes": 978586,
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay": {
+      "bytes": 811587,
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214"
+    },
+    "browser-linux/corpora/firefox/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/firefox/corpus/build-provenance.json": {
+      "bytes": 1113,
+      "sha256": "806389eb17bec9875d1300603cf66606635b6dda3461659dbf8497cf263d26f9"
+    },
+    "browser-linux/corpora/firefox/manifest.json": {
+      "bytes": 15513,
+      "sha256": "b739fd8ed79ec8aac112921766021ae4fe747899b1d729dcf76b9b2628143cee"
+    },
+    "browser-linux/corpora/firefox/progress.log": {
+      "bytes": 14245,
+      "sha256": "45f6d1ec4f30e9cafaa4a77256485b4a5cf911ddbec394cd443b6d5e3a17b8a8"
+    },
+    "browser-linux/corpora/firefox/run.log": {
+      "bytes": 14036,
+      "sha256": "fbad2b0a9766635b6164c7c9a8d1f7eab784640491668f0162d5df2374c66ce9"
+    },
+    "browser-linux/corpora/firefox/tests.xml": {
+      "bytes": 8209,
+      "sha256": "c8f91a881a0aaca36d58ef70bd2a46f71b073ee736b766f058eab59a5524e0e9"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-1.bin": {
+      "bytes": 804016,
+      "sha256": "ae064928f4d4d915f0555afbf4a054bdd1d0947e2269bcce771f246c240e8b5b"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-2.bin": {
+      "bytes": 804015,
+      "sha256": "4cbd70f3d458874ffd2e2baaf7b07310bf81ca9a5960e449f66ecf7db734cb77"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-3.bin": {
+      "bytes": 804014,
+      "sha256": "57ff89468b7090959a0a6236ee09148df774388bf959cf436620064b57bb3c9d"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-4.bin": {
+      "bytes": 804013,
+      "sha256": "7fd68a55a7fdea4f2abe9d4e56b9eb39fd63ce40ad767f639495ffc0a14e3fc9"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-upgraded.game": {
+      "bytes": 1479477,
+      "sha256": "5215a9b7dd523a11b2152f5b9cd895e2761012ae1d4925b6612c1bb0c16d8f85"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-world-fields.value": {
+      "bytes": 112166,
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master125-world-fields.value": {
+      "bytes": 112166,
+      "sha256": "baaf3063c26f0a26ea54bbc3ae9418bc4f4847e549d77ea3018f3064384a7f1a"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptIntegration/JavaScript_orders_execute_and_survive_save_load/supported-orders.game": {
+      "bytes": 603590,
+      "sha256": "6d644fefa0b1de0a2873abb3dd9a5b68ea372a8ee34405832834983f19aa198d"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptLifecycle/Scripting_building_completion_upgrade_and_repair_preserve_identity/lifecycle.game": {
+      "bytes": 595885,
+      "sha256": "a91bd9c743b7354029c1cef8cc46d6aaf22cc6e119fff035d845706e20b865b3"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptLifecycle/Scripting_conversion_allocates_fresh_identity_in_a_reused_destination_slot/lifecycle.game": {
+      "bytes": 596243,
+      "sha256": "87788f2086d0e93347c4dc0607d22de21bc16aa4abe35f8a5f981af3ebe0bcee"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptLifecycle/Scripting_conversion_back_never_resurrects_the_original_reference/lifecycle.game": {
+      "bytes": 597640,
+      "sha256": "cdf63342de586de7e3a97e230b110fc9c4724ba6511a684b561b117745fc67c3"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptLifecycle/Scripting_editor_deletion_and_reuse_never_revive_a_reference/lifecycle.game": {
+      "bytes": 596229,
+      "sha256": "61a1aea43811a9ff963c20c5f3e0258157ebc0c5f634b0f8d488ff34a118ccfe"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptLifecycle/Scripting_identity_survives_conversion_and_save_load/lifecycle.game": {
+      "bytes": 596243,
+      "sha256": "a98cc197daec59aa67cede947fc7f07cabd3215380a4cde6858f48daaa83d6c9"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptLifecycle/Scripting_normal_death_invalidates_lookup_before_cleanup_and_slot_reuse/lifecycle.game": {
+      "bytes": 604607,
+      "sha256": "84f0e9185eb5b5563510aaa6eff8f790ec60a92181a611a976eae0559e37da34"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.txt": {
+      "bytes": 372219,
+      "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.value": {
+      "bytes": 103890,
+      "sha256": "5220d8c67375eba774f6d97b7d224b4b79f792944dcb43b04af6ef6320978c68"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.txt": {
+      "bytes": 24685,
+      "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.value": {
+      "bytes": 3965,
+      "sha256": "e792b307328eadd0031daef9511eb8c09a468d3d862f30b3a58e0632dd335812"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.txt": {
+      "bytes": 6262,
+      "sha256": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.value": {
+      "bytes": 1764,
+      "sha256": "a803885f80eeeab5d66f5fa53c3fc92c19f292bbc8056be8265f65d59b6cdba5"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.txt": {
+      "bytes": 6262,
+      "sha256": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.value": {
+      "bytes": 1764,
+      "sha256": "21655cdf8e94b46fb0c5198372c3ed4cc56e1e1552d75889c5b8dee8ad1c7a14"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.txt": {
+      "bytes": 6262,
+      "sha256": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.value": {
+      "bytes": 1764,
+      "sha256": "61dc26baa53aef1ef9701158191c46f387819f662d0b4cb2be6c3a621faa1785"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.txt": {
+      "bytes": 6262,
+      "sha256": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.value": {
+      "bytes": 1764,
+      "sha256": "be88a19fd3257ded47f1f15aa1f133ae240b2cd3e52f08699a81b7be1ec5d67e"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.txt": {
+      "bytes": 1059,
+      "sha256": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.value": {
+      "bytes": 401,
+      "sha256": "c7a9d3e386e73b01cb91d70719547dfb58c7b01777e9af1d877beccb00c6fcf8"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.txt": {
+      "bytes": 1059,
+      "sha256": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.value": {
+      "bytes": 401,
+      "sha256": "f9bb4ebc7186a1867af65b32404e85c388e43df51815a08b3c13efff6fd7aea5"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.txt": {
+      "bytes": 1059,
+      "sha256": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.value": {
+      "bytes": 401,
+      "sha256": "b7411f705983f7ea2c6593ebf4636a04fd5a9d9bfd4d15e0d470f67c3db0a095"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.txt": {
+      "bytes": 1059,
+      "sha256": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.value": {
+      "bytes": 401,
+      "sha256": "4df083ebe4b589d14b092f9da636823fa48f0b84cb20d9dc8699d8cc639612ae"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSession/JavaScript_initialization_errors_reach_headless_and_UI_load_diagnostics/invalid-embedded-ai.game": {
+      "bytes": 804126,
+      "sha256": "7678eeabd263502176612b2dc4cd64488353bca9e079612cdbcd44e3ed8aa7fb"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/conversion-initial.game": {
+      "bytes": 656647,
+      "sha256": "6e824d8351f7bf7f0607f74474fd6723c1d9ca9b064a83a4202a2f192001a59c"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/final.game": {
+      "bytes": 738696,
+      "sha256": "929d57c7584a810713e4a2c452e6d6d373c45811d9e7154943b71a80fbb37bc8"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/conversion-0.game": {
+      "bytes": 662704,
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/conversion-0.game": {
+      "bytes": 662704,
+      "sha256": "5b3fd2397816a2cc5df044a0023f75e34cd40903db34a75b4c6875222bd2cd17"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/final.game": {
+      "bytes": 760565,
+      "sha256": "0165b6da64508e0a8a56f08df1c4e3639d11cde0d4263e999b960aa06999029f"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay": {
+      "bytes": 671931,
+      "sha256": "e1cb89f870e201ae1d3c57e338bf1798d152e8f0ca0f9d54c78fbeb390a6e252"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay.checksums": {
+      "bytes": 217108,
+      "sha256": "d1d61a9602234149e94dffe3561f053668bb1b85ced665c49154bfa546ff1faf"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/final.game": {
+      "bytes": 963529,
+      "sha256": "30297776623dbc140c73bcedc8f44ee9823a9d9d4104a195f1e100cedd3c1c70"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/final.game": {
+      "bytes": 971835,
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay": {
+      "bytes": 976248,
+      "sha256": "01d75d7108166a33ab454db17192432e77cb60401b99f63d088b6bd9e48bb40b"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay.checksums": {
+      "bytes": 198164,
+      "sha256": "499b031f0f8929aa6c6833dc7bcfadc3289238472dd3f80014c47695a78de866"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/final.game": {
+      "bytes": 971835,
+      "sha256": "c318027cd0f7bd5d2f75aeea2388b8729c42997e29f76041cd12912153cd3cdc"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay": {
+      "bytes": 979001,
+      "sha256": "f1e17c4b463099beaf3e6a72f948e3d03d624d4e8c252ae120daf8571539616a"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay.checksums": {
+      "bytes": 346772,
+      "sha256": "b84b114281f43ef9b08f97e41e7844ce1a79366ae1f793ed5b1c806523b1c7dc"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-128.game": {
+      "bytes": 971624,
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-32.game": {
+      "bytes": 970921,
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/final.game": {
+      "bytes": 971835,
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay": {
+      "bytes": 817006,
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-128.game": {
+      "bytes": 971624,
+      "sha256": "f90813043c5ab4ff9494262c9b815162d74e4241d56d31a3ba18001a1c7ac26a"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-32.game": {
+      "bytes": 970921,
+      "sha256": "d04edab6d41baf8495fb7680fad9ad6e48d4656691250abe9b196da890cd7b02"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/final.game": {
+      "bytes": 971835,
+      "sha256": "6e336d1f3aa2f929460f15dd3797cd6ef4f2e9e7b9570f6326942cff7652423b"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay": {
+      "bytes": 817006,
+      "sha256": "1a8d1883759b68ba29a3e4b17b5e19847d766a3a1e866b2bd33f7ffe6d8ea10b"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "8ffdfa9e17047f093cd66af1ff895cb96e40538737777de0cecfbd46fa08d4f6"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/final.game": {
+      "bytes": 970280,
+      "sha256": "68ef95d1a4b1225d711d765e5727e5d171612060b253f7b6ba169fefaba9042f"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/final.game": {
+      "bytes": 978586,
+      "sha256": "3b8ac2249e13d733d1935351e6d593b093b314a86e3e8e4452674664923bcb18"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay": {
+      "bytes": 981312,
+      "sha256": "225212c7fb03f82bfbd8e66175cff92ed825ad9c1002441902bc56ace50e5786"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay.checksums": {
+      "bytes": 198164,
+      "sha256": "93ebea3e0bc20944f2427e5a74a1ed161c3358e3ba11ebe6f5855802af113315"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/final.game": {
+      "bytes": 978586,
+      "sha256": "9a155ac1c408c1963be98f9f28c89642baa1433c295ad27c9e1489ea43f5cb04"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay": {
+      "bytes": 983504,
+      "sha256": "788688c661ba6ff2c6adc8dda524386b7b62270c237c90c485010c4ef89e22d8"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay.checksums": {
+      "bytes": 346772,
+      "sha256": "8a92fe5db5c6940388a653c9ed6d6904b6dbf024f2cfced296d1ead86af6e7ff"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-128.game": {
+      "bytes": 977768,
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-32.game": {
+      "bytes": 977224,
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/final.game": {
+      "bytes": 978586,
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay": {
+      "bytes": 811587,
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-128.game": {
+      "bytes": 977768,
+      "sha256": "2381c22426622c65419d925bf9d1fef013549011ebf80b2e7cfb624ce82215a4"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-32.game": {
+      "bytes": 977224,
+      "sha256": "71be4dd4e6f0e4a4acd8b8613d08630fea3a74c7e5b09ed9d70d3d4a14b7eb1c"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/final.game": {
+      "bytes": 978586,
+      "sha256": "f57aba5a32399a1d62ead1185bc51859b4c3b67564d06894fffb9c2fc813dea4"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay": {
+      "bytes": 811587,
+      "sha256": "81eed4896c1feb6e5b96cfc17ff4148830088a85b4a55d3f481bb16875dbc214"
+    },
+    "browser-linux/corpora/webkit/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay.checksums": {
+      "bytes": 396308,
+      "sha256": "5cd18fbcb540ca079c58842f9733760d10290785bc01163873fd213986cb7f0c"
+    },
+    "browser-linux/corpora/webkit/corpus/build-provenance.json": {
+      "bytes": 1113,
+      "sha256": "806389eb17bec9875d1300603cf66606635b6dda3461659dbf8497cf263d26f9"
+    },
+    "browser-linux/corpora/webkit/manifest.json": {
+      "bytes": 15511,
+      "sha256": "10a6c80ab36e1f9d90b611b8f23a22a8905ec17c20b4aab1f9bd917f8cfe72b7"
+    },
+    "browser-linux/corpora/webkit/progress.log": {
+      "bytes": 14245,
+      "sha256": "45f6d1ec4f30e9cafaa4a77256485b4a5cf911ddbec394cd443b6d5e3a17b8a8"
+    },
+    "browser-linux/corpora/webkit/run.log": {
+      "bytes": 14036,
+      "sha256": "fbad2b0a9766635b6164c7c9a8d1f7eab784640491668f0162d5df2374c66ce9"
+    },
+    "browser-linux/corpora/webkit/tests.xml": {
+      "bytes": 8201,
+      "sha256": "ca7485fbf81ff3272e5ea6cff689dfb7289dc5fe4edf3e188c817d67c5f960d6"
+    },
+    "browser-linux/environment.log": {
+      "bytes": 2312,
+      "sha256": "1bb7ff36b69b1a76f6c395f18ae168bf7dd8051f2456a6ff68a1cc47a439b630"
+    },
+    "browser-linux/execution.json": {
+      "bytes": 1519,
+      "sha256": "51d5334f455a62f13937ef49827357d3d66720476671e76890c0a3df1210392d"
+    },
+    "browser-linux/exit.txt": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "browser-linux/http.log": {
+      "bytes": 2163,
+      "sha256": "f56a7a537b6fbbaee0ec442e757835b18261ec8459a07139fe1909cfc0af3de2"
+    },
+    "browser-linux/npm-ci.log": {
+      "bytes": 285,
+      "sha256": "5f6569c400e83f01d9713dc167d2266485f71138441e4d9d3964d507c236748e"
+    },
+    "browser-linux/npm-prewarm.log": {
+      "bytes": 285,
+      "sha256": "5aa763affca91ffec2a1993dc9bd5fdb318a6065633c6499471b8abd0e001363"
+    },
+    "browser-linux/playwright-report/index.html": {
+      "bytes": 521603,
+      "sha256": "2b26de412f59cc755eefeb348724658ad07586c9ebf375a27dd401e549d25953"
+    },
+    "browser-linux/playwright-results/.last-run.json": {
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    "browser-linux/playwright-results/determinism-WebAssembly-pr-38b1f-e-per-tick-simulation-trace-chromium/wasm.replay.checksums": {
+      "bytes": 3647512,
+      "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+    },
+    "browser-linux/playwright-results/determinism-WebAssembly-pr-38b1f-e-per-tick-simulation-trace-firefox/wasm.replay.checksums": {
+      "bytes": 3647512,
+      "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+    },
+    "browser-linux/playwright-results/determinism-WebAssembly-pr-38b1f-e-per-tick-simulation-trace-webkit/wasm.replay.checksums": {
+      "bytes": 3647512,
+      "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+    },
+    "browser-linux/playwright.config.cjs": {
+      "bytes": 306,
+      "sha256": "28be822006caf1e9d4cdd6e3aaafe4f477b4fe8f18ee1afe0b24f723ab98f68b"
+    },
+    "browser-linux/run.sh": {
+      "bytes": 1607,
+      "sha256": "9e0a0d008e8e03f41554f1e66c43bd963f7dff81a562c01380eabd185d18b0d9"
+    },
+    "browser-linux/served-bundle.json": {
+      "bytes": 2297,
+      "sha256": "08c98def11b4f4826676a3da277f926802eb8cf4ae4038144056a0d570583b41"
+    },
+    "browser-linux/source-after.json": {
+      "bytes": 181,
+      "sha256": "50dc9e30889613f13f731f9cba54fcfd37466167a197f292866002d0a1922006"
+    },
+    "browser-linux/tests.log": {
+      "bytes": 760,
+      "sha256": "57061e209dfaede7f8d5692e20ae1507ad4c6d2e7a44221acd7d25d91cc51a3c"
+    },
+    "browser-linux/ui-exit.txt": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "browser-linux/ui-playwright-report/index.html": {
+      "bytes": 540035,
+      "sha256": "c21ee4a77d2295a4200e2ca45621e2b2df9cee2c633f46772ecf0541f2aa43cb"
+    },
+    "browser-linux/ui-playwright-results/.last-run.json": {
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    "browser-linux/ui-tests.log": {
+      "bytes": 704,
+      "sha256": "9b3e1e1756e8b67cfbcda1483918368cfbfbb3d51d032d23c6321dfd0b827784"
+    },
+    "browser-linux/verify-bundle.py": {
+      "bytes": 941,
+      "sha256": "4d35f6febc4474c534d0a242506e1c1418ad71bd882c940829de888d123a1926"
+    },
+    "web-linux/build.log": {
+      "bytes": 11083743,
+      "sha256": "027ed1d01e81b51194b0a57a6d72a7169e7ad7e0f9f14bf1055084df8f204e16"
+    },
+    "web-linux/bundle-hashes.txt": {
+      "bytes": 434,
+      "sha256": "16993b882d30b6e111c9909f5234102cc5e08760a10d63ecf235e7b7e5069bc9"
+    },
+    "web-linux/environment.log": {
+      "bytes": 1338,
+      "sha256": "00d1237fa90a76965d0263163c993a6eec6b202857af647ed553d1addc4b21e0"
+    },
+    "web-linux/producer-and-bundle-verification.log": {
+      "bytes": 2297,
+      "sha256": "08c98def11b4f4826676a3da277f926802eb8cf4ae4038144056a0d570583b41"
+    },
+    "web-linux/sdk-source-and-compiler.log": {
+      "bytes": 841,
+      "sha256": "47672f921762786c78dd5e2f77ee2db74db7bf9ad7880f899f7b4ca032c06eb7"
+    },
+    "web-linux/source-after.json": {
+      "bytes": 181,
+      "sha256": "50dc9e30889613f13f731f9cba54fcfd37466167a197f292866002d0a1922006"
+    },
+    "web-linux/source-before.json": {
+      "bytes": 181,
+      "sha256": "50dc9e30889613f13f731f9cba54fcfd37466167a197f292866002d0a1922006"
+    },
+    "integration.json": {
+      "bytes": 6760,
+      "sha256": "c99719e9c46aa9a30062d22010b9eae0d9757a9406badfdb276c70a2e1842c15"
+    },
+    "ci/source-association.json": {
+      "bytes": 546,
+      "sha256": "c2d6aa794145c81d8879b55772531a8ba12975b1c9992536d5617d28ec8e6944"
+    },
+    "ci/head-git-commit.json": {
+      "bytes": 1627,
+      "sha256": "de03c84cfcacc42482eedcebdd6b6858c3c77071d62c662d5b5012f1fcba7ba6"
+    },
+    "ci/synthetic-git-commit.json": {
+      "bytes": 2822,
+      "sha256": "34c45902a69f2d81903f847ead90f40962a87c1a3a164125bb6375a232831d0a"
+    },
+    "ci/comparisons/gcc11-vs-head53d.json": {
+      "bytes": 523,
+      "sha256": "7862533451fe273074ce9c89bfeda37a69c61f42ff506f2e9aa7bb9c7158cfd5"
+    },
+    "web-local/build-linux.sh": {
+      "bytes": 740,
+      "sha256": "721afac679af749276463d1ad16faa9eca0708c23d31b63a74aee8a0702d4533"
+    },
+    "web-local/run.sh": {
+      "bytes": 1607,
+      "sha256": "9e0a0d008e8e03f41554f1e66c43bd963f7dff81a562c01380eabd185d18b0d9"
+    },
+    "web-local/playwright.config.cjs": {
+      "bytes": 306,
+      "sha256": "28be822006caf1e9d4cdd6e3aaafe4f477b4fe8f18ee1afe0b24f723ab98f68b"
+    },
+    "web-local/verify-bundle.py": {
+      "bytes": 941,
+      "sha256": "4d35f6febc4474c534d0a242506e1c1418ad71bd882c940829de888d123a1926"
+    },
+    "web-local/linux-container-image-and-state.json": {
+      "bytes": 9112,
+      "sha256": "9d9111f460eeebf3d02d1d63f39cdfcc8d7af5038ff672940fc733df8a4b8e18"
+    },
+    "web-local/remote-emsdk-image.log": {
+      "bytes": 759,
+      "sha256": "15b55c69c5977a9eea02e2393d047784514c719d312eddb04e44fc2314e64000"
+    },
+    "web-local/linux-container-build.log": {
+      "bytes": 11085613,
+      "sha256": "98dd59a9ddc772b6436b63ff9865f681b62e674c22277e3479194a0fcc928671"
+    },
+    "web-local/linux-browser-container-run.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "web-local/mac-build-interruption.json": {
+      "bytes": 2269,
+      "sha256": "f9c69962cc4afb414272b16935231d94f9caaae033fe419c016f722dc90c0368"
+    },
+    "inputs/browser/package-lock.json": {
+      "bytes": 1654,
+      "sha256": "80965faa2a040a1254443dd24dac3403220f7f3ba6ba0bd0035622bc277b571d"
+    },
+    "inputs/browser/playwright.config.js": {
+      "bytes": 1493,
+      "sha256": "aaab930760a8b329d1c66b860e70c2efb268a87e5c16efe3c2bec605e7fb437f"
+    },
+    "inputs/browser/toolchain.json": {
+      "bytes": 91,
+      "sha256": "3c68309a9e41df83e7086a7415a99a07e727fe2c2a84c56e897bbeb5a74411d5"
+    },
+    "inputs/browser/tests/determinism.spec.js": {
+      "bytes": 8832,
+      "sha256": "c568c85fc97c35866eef72d6a1a57a3c914e57acc284dd96879dbc5a5f456107"
+    },
+    "inputs/browser/tests/session-reload.spec.js": {
+      "bytes": 5885,
+      "sha256": "ec9a3a587b48d234771f2c7c7aece982a1cc16326fc93b6e4269b168bb3c221c"
+    },
+    "inputs/browser/tests/main-menu.js": {
+      "bytes": 10874,
+      "sha256": "2bfece0832cdb9b2b5a67fc86067237d91bb6bdd1a0ae084ee34fda5d7d157b7"
+    },
+    "inputs/browser/tests/fixtures/cross-replay.replay": {
+      "bytes": 748434,
+      "sha256": "27978a5a1b781cb4df42404007e605723a8527e333f3b0ac804441f00d204530"
+    },
+    "inputs/test/build_provenance.py": {
+      "bytes": 2867,
+      "sha256": "7c4328d10de89e7e019721126c2a0a801181ef0810d44cb953e33978f7f1331b"
+    },
+    "inputs/test/check_javascript_evidence.py": {
+      "bytes": 6007,
+      "sha256": "8bd0865ec13537999fb18224c0178335651f23b36ecfae1d09db81151f37d89e"
+    },
+    "inputs/libgag/src/GraphicContextDraw.cpp": {
+      "bytes": 24400,
+      "sha256": "90bdbc44f2ad2e8e4e933a0b168a36abefcdb1afb0f297cb3902220da5310cab"
+    },
+    "inputs/test/fixtures/javascript/README.md": {
+      "bytes": 6548,
+      "sha256": "c47d2f092aa07e64d00623b6e7773ddd655e948935dbe82da5304179e2cae4f1"
+    },
+    "inputs/test/fixtures/javascript/ai-realistic.js": {
+      "bytes": 1574,
+      "sha256": "5c07eb0da4cf5431ee13b1a646fbc44d9c8da9266367a5aae1d7a7b8f7b4fedf"
+    },
+    "inputs/test/fixtures/javascript/ai.js": {
+      "bytes": 356,
+      "sha256": "573a8a2706a140dceb4e3f7ad631ff3207dfa50b508ba6d69ea8854fc0b2ef2a"
+    },
+    "inputs/test/fixtures/javascript/global-number-corpus.js": {
+      "bytes": 616,
+      "sha256": "579592a35233542b5c2c327a5edb57b4dfe68181ed4660a21b3d941191b13472"
+    },
+    "inputs/test/fixtures/javascript/global-numbers-profile1.txt": {
+      "bytes": 24685,
+      "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f"
+    },
+    "inputs/test/fixtures/javascript/map-realistic.js": {
+      "bytes": 1253,
+      "sha256": "2dd886a8ee823bc7529d23ee0296d64e1e5dcc5ef76b7da8594c9ee497d589d3"
+    },
+    "inputs/test/fixtures/javascript/map.js": {
+      "bytes": 376,
+      "sha256": "b789a81ddce067b9ec094ba03bd13de6d9439150a6aa6ad0872de4288a00f224"
+    },
+    "inputs/test/fixtures/javascript/master-v124-experiments.game.gz": {
+      "bytes": 78408,
+      "sha256": "55b972bb3c22b9238645d3f6f33479c0259868baefb2f487808201b7d3758ed5"
+    },
+    "inputs/test/fixtures/javascript/numeric-corpus.js": {
+      "bytes": 3530,
+      "sha256": "b455fc13c728dc109604745f5d89dccc7299a9518b6a3da29ef4d00d0d2237ac"
+    },
+    "inputs/test/fixtures/javascript/numeric-profile1.txt": {
+      "bytes": 372219,
+      "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac"
+    },
+    "inputs/test/fixtures/javascript/profile1-256.checksums.gz": {
+      "bytes": 30962,
+      "sha256": "1352462590ef0d47b5b71742ef126bd48678d63c6c1cf96888fb3b86ab9035eb"
+    },
+    "inputs/test/fixtures/javascript/profile1-initial.game.gz": {
+      "bytes": 32940,
+      "sha256": "5d3264136360c2cbe50947c1e680ead0703c14279d4987a05db94482e75ad0eb"
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-0.txt": {
+      "bytes": 6262,
+      "sha256": "db429443b96acb1c48ab40a43032d396c89afe1d80bcbfa0d89c1290b3193576"
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-1.txt": {
+      "bytes": 6262,
+      "sha256": "8aaaa821965262ebf0a05a1e0d4bf93fb075e1a7533b34d1f1b1bb96b9bb52f6"
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-2.txt": {
+      "bytes": 6262,
+      "sha256": "1d2df787047b04efe4b012654f7fe65526c8f51b4531bf0b33c727c94c4fdcf4"
+    },
+    "inputs/test/fixtures/javascript/realistic-economy-3.txt": {
+      "bytes": 6262,
+      "sha256": "88776e570f5d636259dfba94ccc7a661f4aadcd534b02645dd7f5e97b8685631"
+    },
+    "inputs/test/fixtures/javascript/realistic-profile1-256.checksums.gz": {
+      "bytes": 26945,
+      "sha256": "f32bd9fe0a5b81bec5759fa181407e8db5a0b3e7f29da406a6dca11ea18c29a6"
+    },
+    "inputs/test/fixtures/javascript/realistic-profile1-initial.game.gz": {
+      "bytes": 34082,
+      "sha256": "b1394f861f2bbf3ab399c1e355c61baed936506155a39a64834c0f36e61e6516"
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-0.txt": {
+      "bytes": 1059,
+      "sha256": "a233e335a432d393cc358d7f27186d389183b3be40f5f55abd2d74a40e9dd682"
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-1.txt": {
+      "bytes": 1059,
+      "sha256": "e122d807cd9868d44be267f1088cbe2d2c1ee348223472c7c41e49fe4dafd8f3"
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-2.txt": {
+      "bytes": 1059,
+      "sha256": "929807fe728b7418359289449cc637cc331aff6ab13ab48dc03b63dd2d1ad7fd"
+    },
+    "inputs/test/fixtures/javascript/realistic-survey-3.txt": {
+      "bytes": 1059,
+      "sha256": "bf6d49b7f266c402c629b43bf3c9f6c1ee1ac560150ef7cc47e71b5edc7402a2"
+    },
+    "inputs/test/fixtures/javascript/released-v123.replay.gz": {
+      "bytes": 31263,
+      "sha256": "0b1079b16961738b2ac2223eff9da26c6d9f1aa5b26cfe7c16f1581b463d6d24"
+    }
+  }
+}
