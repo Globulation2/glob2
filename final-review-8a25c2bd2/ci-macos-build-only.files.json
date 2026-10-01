@@ -1,0 +1,64 @@
+{
+  "headRevision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+  "ciActualCheckoutRevision": "41fd3a584a4ede4c47101a0000c5c83cc72d0fc7",
+  "associatedNormalizedSourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4",
+  "status": "BUILD ONLY",
+  "physicalDeviceAcceptance": false,
+  "storePublication": false,
+  "archive": "ci-macos-build-only.tar.gz",
+  "archiveBytes": 1570527,
+  "archiveSha256": "9b6819f0c563aeb86559219f4487a814299950b83c4654fbb4e183f4ba34a6b6",
+  "verifiedFileCount": 10,
+  "files": {
+    "ci-final-head-commit.json": {
+      "repositoryPath": "/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/final/ci-final-head-commit.json",
+      "sha256": "baa80f1fd1bbe113b335c1d1c733f367feb020003e3c9cbdee9e68c011fd3463",
+      "bytes": 236243
+    },
+    "ci-final-pr-merge-commit.json": {
+      "repositoryPath": "/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/final/ci-final-pr-merge-commit.json",
+      "sha256": "e9a771c5d867c76753d09368938d667489c885567a66c0cd5654185a4929c91c",
+      "bytes": 998071
+    },
+    "ci-macos-build-only-artifacts.json": {
+      "repositoryPath": "/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/final/ci-macos-build-only-artifacts.json",
+      "sha256": "244563f989470892c537c9a4622920af0d228ee4528f7d00c64a06d6cd95856c",
+      "bytes": 32
+    },
+    "ci-macos-build-only-config.json": {
+      "repositoryPath": "/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/final/ci-macos-build-only-config.json",
+      "sha256": "3b7b8dbde7ba28b7a5815590ba0efda7480a108024c55ee5069792886c720ec6",
+      "bytes": 601351
+    },
+    "ci-macos-build-only-status.json": {
+      "repositoryPath": "/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/final/ci-macos-build-only-status.json",
+      "sha256": "8c7863cfac67a3ae9df7f0efb838741f83fc001212147c3183ed9bb54f35db16",
+      "bytes": 3000
+    },
+    "ci-macos-build-only.log": {
+      "repositoryPath": "/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/final/ci-macos-build-only.log",
+      "sha256": "f6d685bf32ec14bae6ee4bb101da8348fafee05565bda844655cd7c8c6425359",
+      "bytes": 22831890
+    },
+    "ci-macos-build-only.package-manifest.json": {
+      "repositoryPath": "/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/final/package-staging/ci-macos-build-only.package-manifest.json",
+      "sha256": "e93bb5762d75f5e2c020354ddab890f5528f9a353f31c0a3a0aa8274b4ef59de",
+      "bytes": 5455
+    },
+    "reproduction/build_provenance.py": {
+      "repositoryPath": "/tmp/glob2-pr478-merge-final/test/build_provenance.py",
+      "sha256": "7c4328d10de89e7e019721126c2a0a801181ef0810d44cb953e33978f7f1331b",
+      "bytes": 2867
+    },
+    "reproduction/package-ci-build-only.py": {
+      "repositoryPath": "/Users/bradley/.codex/worktrees/d912/glob2/artifacts/rebase-validation/package-ci-build-only.py",
+      "sha256": "ff527656c8a9f603b0d67fe677fa14d2cb1b4b19d1b1985f9ecc5a4dff47b9ba",
+      "bytes": 7822
+    },
+    "workflow.yml": {
+      "repositoryPath": "/tmp/glob2-pr478-merge-final/.github/workflows/mac-app-store.yml",
+      "sha256": "64497255dc30e95d09c314018a31b011bf932f9ed343bcde5c6f8301d4afb036",
+      "bytes": 10896
+    }
+  }
+}

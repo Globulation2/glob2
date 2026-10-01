@@ -1,0 +1,142 @@
+{
+  "headRevision": "53d16aa37ae35748bf5b1458f79d0eba55fb3ab5",
+  "ciActualCheckoutRevision": "41fd3a584a4ede4c47101a0000c5c83cc72d0fc7",
+  "headAndCheckoutGitTree": "24fa97640a10dc1b989af316559e6bf12b38095b",
+  "associatedNormalizedSourceTreeSha256": "60f140b19fbb3bd5dd2a82433435b911fb4b8f7575062d58d1df330c999a80b4",
+  "sourceAssociation": "Logs show actual virtual-merge checkout41fd; GitHub commit API shows its complete Git tree equals53d. Local clean53d source identity supplies the matching normalized tree hash. Checkout revision is retained, not relabeled.",
+  "workflowRunId": 36912648746,
+  "workflowRunUrl": "https://github.com/Globulation2/glob2/actions/runs/36912648746",
+  "status": "BUILD ONLY",
+  "buildConclusion": "success",
+  "sharedJavaScriptCorpusExecuted": false,
+  "determinismAcceptance": false,
+  "physicalDeviceAcceptance": false,
+  "storePublication": false,
+  "jobs": [
+    {
+      "completedAt": "2026-10-01T19:26:52Z",
+      "conclusion": "success",
+      "databaseId": 110538850057,
+      "name": "Build game and test candidate",
+      "startedAt": "2026-10-01T19:15:21Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-01T19:15:23Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-01T19:15:22Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:15:32Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+          "number": 2,
+          "startedAt": "2026-10-01T19:15:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:15:32Z",
+          "conclusion": "skipped",
+          "name": "Confirm owner-controlled mirror release context",
+          "number": 3,
+          "startedAt": "2026-10-01T19:15:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:15:59Z",
+          "conclusion": "success",
+          "name": "Install macOS build dependencies",
+          "number": 4,
+          "startedAt": "2026-10-01T19:15:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:46Z",
+          "conclusion": "success",
+          "name": "Compile game; bundle only in release mirror",
+          "number": 5,
+          "startedAt": "2026-10-01T19:15:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:47Z",
+          "conclusion": "success",
+          "name": "Smoke test public compiled game",
+          "number": 6,
+          "startedAt": "2026-10-01T19:26:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:47Z",
+          "conclusion": "skipped",
+          "name": "Stage sandbox candidate",
+          "number": 7,
+          "startedAt": "2026-10-01T19:26:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:47Z",
+          "conclusion": "skipped",
+          "name": "Smoke test sandboxed candidate",
+          "number": 8,
+          "startedAt": "2026-10-01T19:26:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:47Z",
+          "conclusion": "skipped",
+          "name": "Archive app for signing job",
+          "number": 9,
+          "startedAt": "2026-10-01T19:26:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:47Z",
+          "conclusion": "skipped",
+          "name": "Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "number": 10,
+          "startedAt": "2026-10-01T19:26:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:48Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+          "number": 20,
+          "startedAt": "2026-10-01T19:26:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-01T19:26:51Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "startedAt": "2026-10-01T19:26:48Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/Globulation2/glob2/actions/runs/36912648746/job/110538850057"
+    },
+    {
+      "completedAt": "2026-10-01T19:26:52Z",
+      "conclusion": "skipped",
+      "databaseId": 110544506302,
+      "name": "Sign and upload to App Store Connect",
+      "startedAt": "2026-10-01T19:26:53Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/Globulation2/glob2/actions/runs/36912648746/job/110544506302"
+    }
+  ],
+  "publishedArtifacts": [],
+  "publishedArtifactDigestsAreZipDigests": true,
+  "uploadedExecutableArchivesDuplicated": false,
+  "directCompiledProducerProvenanceAvailable": false,
+  "validationDetail": "Successful production build and map-generator CLI listing smoke only. Sandbox packaging, signing and App Store upload skipped.",
+  "executableSha256": null,
+  "executableDigestLimitation": "Run uploaded no executable artifacts and printed no executable digest.",
+  "compilerVersionLimitation": "No compiler --version output; exact compiler drivers, flags, Xcode/runner-image lines and workflow retained in logs/config."
+}
