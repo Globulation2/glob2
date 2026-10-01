@@ -1,0 +1,23 @@
+{
+  "checkouts": [
+    "checkout-a",
+    "checkout-b"
+  ],
+  "commands": [
+    "python3 browser/setup.py",
+    "python3 mobile/dependencies.py --arch arm64-v8a --release --jobs 4"
+  ],
+  "exit_codes": {
+    "tools": {
+      "a": 0,
+      "b": 0
+    },
+    "dependencies": {
+      "a": 0,
+      "b": 0
+    }
+  },
+  "same_sdk": "/Users/bradley/Library/Application Support/Glob2/Development/toolchains/emscripten/Darwin-arm64-88a621bc131cd4954413aa39",
+  "same_dependencies": "Dependency prefix: /Users/bradley/Library/Application Support/Glob2/Development/dependencies/Darwin-arm64-d9e1eb7e70e5a107d2eadaef",
+  "notes": "Both warm dependency commands ran while the Android compilation held a read lease on this bundle."
+}

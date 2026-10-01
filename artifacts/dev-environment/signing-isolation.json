@@ -1,0 +1,17 @@
+{
+  "results": [
+    {
+      "checkout": "checkout-a",
+      "keystore": "checkout-a/build/mobile-tools/android-user/debug.keystore",
+      "keystore_sha256": "f69bef98f6587478401e22bf9cb7903ccb00f513caf8aa417fdfa0d12448d813",
+      "apk": "checkout-a/build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk"
+    },
+    {
+      "checkout": "checkout-b",
+      "keystore": "checkout-b/build/mobile-tools/android-user/debug.keystore",
+      "keystore_sha256": "26849143545bbb427e4ca7ee64d31906dcd70739de2b7b4d1ffec96d64a180fc",
+      "apk": "checkout-b/build/android/device/arm64-v8a/24/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk"
+    }
+  ],
+  "different_keys": true
+}

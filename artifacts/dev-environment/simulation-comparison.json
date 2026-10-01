@@ -1,0 +1,16 @@
+{
+  "fixture": "games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "sha256": {
+    "native_shared": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43",
+    "native_isolated": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43",
+    "browser": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43",
+    "ios_simulator": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "all_equal": true,
+  "limits": [
+    "Isolated native verification reused existing native object outputs.",
+    "No Android/Linux/Windows per-tick comparison or isolated iOS build was completed locally."
+  ]
+}

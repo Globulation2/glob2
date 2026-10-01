@@ -1,0 +1,99 @@
+[
+  {
+    "checkout": "/Users/bradley/.codex/worktrees/68aa/glob2",
+    "local_bytes": 2084147200,
+    "legacy_browser_bytes": 0,
+    "legacy_browser_path": "/Users/bradley/.codex/worktrees/68aa/glob2/tools/browser-emsdk",
+    "busy": true,
+    "seeded": [],
+    "replaced": [],
+    "reclaimed_bytes": 0,
+    "replacement_candidates": []
+  },
+  {
+    "checkout": "/Users/bradley/.codex/worktrees/9438/glob2",
+    "local_bytes": 246931456,
+    "legacy_browser_bytes": 1997479936,
+    "legacy_browser_path": "/Users/bradley/.codex/worktrees/9438/glob2/tools/browser-emsdk",
+    "busy": true,
+    "seeded": [],
+    "replaced": [],
+    "reclaimed_bytes": 0,
+    "replacement_candidates": [
+      "/Users/bradley/.codex/worktrees/9438/glob2/tools/browser-emsdk/node",
+      "/Users/bradley/.codex/worktrees/9438/glob2/tools/browser-emsdk/python",
+      "/Users/bradley/.codex/worktrees/9438/glob2/tools/browser-emsdk/upstream/bin",
+      "/Users/bradley/.codex/worktrees/9438/glob2/tools/browser-emsdk/upstream/lib",
+      "/Users/bradley/.codex/worktrees/9438/glob2/tools/browser-emsdk/upstream/emscripten"
+    ]
+  },
+  {
+    "checkout": "/Users/bradley/.codex/worktrees/android-pixel6-build/glob2",
+    "local_bytes": 0,
+    "legacy_browser_bytes": 0,
+    "legacy_browser_path": "/Users/bradley/.codex/worktrees/android-pixel6-build/glob2/tools/browser-emsdk",
+    "busy": false,
+    "seeded": [],
+    "replaced": [],
+    "reclaimed_bytes": 0,
+    "replacement_candidates": []
+  },
+  {
+    "checkout": "/Users/bradley/.codex/worktrees/d912/glob2",
+    "local_bytes": 5838548992,
+    "legacy_browser_bytes": 0,
+    "legacy_browser_path": "/Users/bradley/.codex/worktrees/d912/glob2/tools/browser-emsdk",
+    "busy": true,
+    "seeded": [
+      "gradle-8.13-bin.zip",
+      "OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.20.1_1.tar.gz",
+      "commandlinetools-mac-13114758_latest.zip",
+      "android-ndk-r28c-darwin.zip",
+      "emulator-darwin_aarch64-15917651.zip",
+      "arm64-v8a-35_r02.zip"
+    ],
+    "replaced": [],
+    "reclaimed_bytes": 0,
+    "replacement_candidates": []
+  },
+  {
+    "checkout": "/Users/bradley/glob2",
+    "local_bytes": 8570662912,
+    "legacy_browser_bytes": 1998602240,
+    "legacy_browser_path": "/Users/bradley/glob2/tools/browser-emsdk",
+    "busy": true,
+    "seeded": [],
+    "replaced": [],
+    "reclaimed_bytes": 0,
+    "replacement_candidates": [
+      "/Users/bradley/glob2/build/mobile-tools/gradle-8.13",
+      "/Users/bradley/glob2/build/mobile-tools/jdk-17.0.20.1+1",
+      "/Users/bradley/glob2/build/mobile-tools/android-sdk/cmdline-tools/19.0",
+      "/Users/bradley/glob2/build/mobile-tools/android-sdk/ndk/28.2.13676358",
+      "/Users/bradley/glob2/build/mobile-tools/android-sdk/emulator",
+      "/Users/bradley/glob2/build/mobile-tools/android-sdk/system-images/android-35/default/arm64-v8a",
+      "/Users/bradley/glob2/tools/browser-emsdk/node",
+      "/Users/bradley/glob2/tools/browser-emsdk/python",
+      "/Users/bradley/glob2/tools/browser-emsdk/upstream/bin",
+      "/Users/bradley/glob2/tools/browser-emsdk/upstream/lib",
+      "/Users/bradley/glob2/tools/browser-emsdk/upstream/emscripten"
+    ]
+  },
+  {
+    "checkout": "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU",
+    "local_bytes": 0,
+    "legacy_browser_bytes": 1997381632,
+    "legacy_browser_path": "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk",
+    "busy": true,
+    "seeded": [],
+    "replaced": [],
+    "reclaimed_bytes": 0,
+    "replacement_candidates": [
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/node",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/python",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/bin",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/lib",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU/tools/browser-emsdk/upstream/emscripten"
+    ]
+  }
+]

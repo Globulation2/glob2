@@ -1,0 +1,14 @@
+{
+  "fixture": "games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "trace_sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43",
+  "command": [
+    "/Users/bradley/.codex/worktrees/68aa/glob2/build/darwin/client/release/src/glob2",
+    "--nox",
+    "/Users/bradley/.codex/worktrees/68aa/glob2/games/cross-replay.game.gz",
+    "1500",
+    "1"
+  ]
+}

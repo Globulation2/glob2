@@ -1,0 +1,412 @@
+Detecting compiler hash for triplet arm64-osx...
+Compiler found: /usr/bin/c++
+Detecting compiler hash for triplet glob2-arm64-ios-simulator...
+Compiler found: /usr/bin/c++
+The following packages will be built and installed:
+  * boost-algorithm:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-algorithm/16fe704598a261d9766b1d6eb3a483f468ab6cac
+  * boost-align:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-align/c8dc52b5f1feedf8b14e93d23d6d6e719d269c0e
+  * boost-array:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-array/6259bc62d2fa5980736b9365bb69fb242269b0e2
+    boost-asio:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-asio/ce757138eb7af2b214f21e2680814777b580b325
+  * boost-assert:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-assert/89ff4d2e2e735c492f4f186ef5d08c27a33af0b7
+    boost-beast:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-beast/ce6db020fd6f96d0340dc88560cf05ac4c4402cc
+  * boost-bind:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-bind/4779d27870e250fbe6fc8b7a05d911cacb8aae60
+  * boost-cmake:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-cmake/453705350fbd0a8dbdbbdd06e8f368baa30b131b
+  * boost-concept-check:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-concept-check/e55931d7c2bc2b33a2cf49d6ced511e2e209bdd2
+  * boost-config:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-config/762b2f284c48416310b5d05c4028716803ec2043
+  * boost-container:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-container/5a0b49ee85c27c39ef25631cfdbd5d3ad1149310
+  * boost-container-hash:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-container-hash/2903e8d987be9e6c2d367298452cca9900f87f8e
+  * boost-context:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-context/306765f81ddde7b69509b45679f1ea40e61ee87e
+  * boost-conversion:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-conversion/41fb2eb0dd4203ced5645d9e659253e642d6848c
+  * boost-core:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-core/d978b719a8e14adce4d804ab5371e357afed9687
+  * boost-coroutine:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-coroutine/8e8c55041bd950518602014556a780c71e806470
+    boost-date-time:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-date-time/1369ed0885ac49e0798a74ae9d74190658364ed6
+  * boost-describe:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-describe/d2a4fc640014f7442932464d954ad44b302e41c3
+  * boost-detail:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-detail/180c83d347dfd34afc12f69f5ca7d9e75b9681bf
+  * boost-dynamic-bitset:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-dynamic-bitset/51d054aab9c1c50259e253c4cc02114d661a4f4f
+  * boost-endian:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-endian/41ac0a7472ea5f242d1df7874ff39f6c64123c0a
+  * boost-exception:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-exception/3c99e4a65f9f64580c5601219d05dac6f54bc0ab
+  * boost-function:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-function/6c633bb26db4be00c4d2aaacbb36493cce90edae
+  * boost-function-types:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-function-types/13e0fd21c39949a145a90a001eb01d95c10e6cd9
+  * boost-functional:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-functional/1a149e24ca42cbda3040781ebb9a4a634ccccfba
+  * boost-fusion:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-fusion/7fca552578f4e09ce194b1bf0d6f25bac435907b
+  * boost-headers:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-headers/c01b4dd603c01edf1940f0df3f6498f51c8acda1
+  * boost-integer:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-integer/944979527cd3e9b158f6d4fa27174a154b756f44
+  * boost-intrusive:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-intrusive/fdd697cf75e1c4151548b2a5df0cd17376999534
+  * boost-io:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-io/381228ce40062d70c8a56afaafed81710a1ff743
+  * boost-iterator:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-iterator/8b9a0e755f202cc140222722f4292daf54ff582b
+    boost-lambda:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-lambda/2d8080f6e41b95cd9f13ddecfdc4db12bbb72994
+  * boost-lexical-cast:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-lexical-cast/0a36777f88db58f8d69f5e0727e3603c29e67c63
+    boost-logic:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-logic/5909374a447c242f80b0921ac3ada302ba42732c
+    boost-math:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-math/690873bedff0687ce992ee4e67a1fcd35efff094
+  * boost-move:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-move/2ec65ea9d8386c7364647e10ce8eeeb809be40b9
+  * boost-mp11:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-mp11/46e636f8b4c3d8baad6af94f37838a84bf2a3ad7
+  * boost-mpl:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-mpl/42387dab4931df9bfd20d869b92d7c6855900a93
+  * boost-numeric-conversion:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-numeric-conversion/d7c5fdc151bf418c8b4c7e8df69306797ea12f63
+  * boost-optional:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-optional/1401709a35e73abf6581ee9eab32ae2b71a7fa0f
+  * boost-pool:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-pool/fae207f1642a362cab7ed2d17550bf776ca99a93
+  * boost-predef:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-predef/955dda784a843bfb85d7c17343666c5ccf0f8642
+  * boost-preprocessor:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-preprocessor/a086ddc6ee105650c442c1d40438b1670e3248b4
+    boost-random:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-random/28837a21143c7896257a2714036769302199b030
+  * boost-range:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-range/92192fe61d14a9c421db7c3ed640e7b35f9685a4
+  * boost-regex:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-regex/9318a93a93511ef643cf511123f7be253b27cb66
+  * boost-smart-ptr:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-smart-ptr/a5ab980fbf31a3a2a95cadf878c42cfdf7e5449f
+  * boost-static-assert:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-static-assert/47f251620a2037084eb2d8ac0e6ff3601523e42a
+  * boost-static-string:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-static-string/582bee8fec9374c28c43d8d42f7dcc0e360e3998
+  * boost-system:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-system/7c85bcb721e1a1cc3bd96660476a30c0eba11f8f
+  * boost-throw-exception:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-throw-exception/4b282c6d95bbb3e399592f9eb87b8f420d34b3b5
+  * boost-tokenizer:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-tokenizer/b7b01a69aaf4f53a6e97eb141790cb96222f69d6
+  * boost-tuple:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-tuple/b04ebfe07fa6c45bf2e0dd35a9fec10add1b6ef9
+  * boost-type-index:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-type-index/bde43caf92370cdc6b55d296f0641e1b9a516885
+  * boost-type-traits:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-type-traits/fe39918134d7cdeec3dc248cd6075bc792039ce5
+  * boost-typeof:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-typeof/dbef6caf417e0c2ec880da9e9a6d4094a750e970
+  * boost-uninstall:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-uninstall/f7397719df120125cafecc8000deb3d2a0d5c7af
+  * boost-unordered:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-unordered/3016f6768a087d2f7a5629edae86d00c67191f1f
+  * boost-utility:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-utility/ee6600d9dea03593efcc67d0862d7d14807bd14d
+  * boost-variant2:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-variant2/da8c7998e31bf676c2efbce08f4e7cb41066dfe2
+  * boost-winapi:glob2-arm64-ios-simulator@1.86.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/boost-winapi/d75ae8aec7f6af51c19a6301a05194616da25145
+  * brotli:glob2-arm64-ios-simulator@1.1.0#1 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/brotli/4e5b5ae1ad26c80535c893cc0307121f0398549e
+  * bzip2[core,tool]:glob2-arm64-ios-simulator@1.0.8#6 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/bzip2/2d029da682847c5ebdc54e4dbea001331a02207e
+  * freetype[brotli,bzip2,core,png,zlib]:glob2-arm64-ios-simulator@2.13.3 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/freetype/8a2c633dcc14eaabdb31cf4637242f4e3c2f3fa2
+  * libjpeg-turbo:glob2-arm64-ios-simulator@3.1.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/libjpeg-turbo/8286a6351f59be7eed5e924d32c3a419d0612ee9
+  * libogg:glob2-arm64-ios-simulator@1.3.5#1 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/libogg/98e27727c32704393494d32615c25b7b16eb3067
+  * libpng:glob2-arm64-ios-simulator@1.6.44 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/libpng/bda480fe3c3cef1113fe8bfdecda127a5b3b2a77
+    libvorbis:glob2-arm64-ios-simulator@1.3.7#3 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/libvorbis/23d11198ff2df7a3af54f1c4645ef71a141f2a85
+    openssl:glob2-arm64-ios-simulator@3.4.0 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/openssl/ce504a83eb9627d54f1cffdb497a6bf5bd970d18
+    sdl2:glob2-arm64-ios-simulator@2.30.10 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/sdl2/c34f21447296be501bab81979e8d0698264b48c3
+    sdl2-image[core,libjpeg-turbo]:glob2-arm64-ios-simulator@2.8.2#2 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/sdl2-image/61b91c7aa89e01e237616121222f98e505a6d44b
+    sdl2-net:glob2-arm64-ios-simulator@2.2.0#3 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/sdl2-net/f735d9ac81c56778c5a317db55d1c1f2cce78e87
+    sdl2-ttf:glob2-arm64-ios-simulator@2.22.0#1 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/sdl2-ttf/f37d3fd61ea556591921d6faca01c9e309e4a091
+  * vcpkg-boost:arm64-osx@2024-05-15 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/vcpkg-boost/aca8ab6ec76d120c4482a629de23cad5ad7e4643
+  * vcpkg-cmake:arm64-osx@2024-04-23 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake/e74aa1e8f93278a8e71372f1fa08c3df420eb840
+  * vcpkg-cmake-config:arm64-osx@2024-05-23 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake-config/97a63e4bc1a17422ffe4eff71da53b4b561a7841
+  * vcpkg-cmake-get-vars:arm64-osx@2024-09-22 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/vcpkg-cmake-get-vars/f23148add155147f3d95ae622d3b0031beb25acf
+    zlib:glob2-arm64-ios-simulator@1.3.1 -- /Users/bradley/.codex/worktrees/68aa/glob2/build/ios/simulator/arm64/15.0/client/release/dependency-staging-q5ij9qu9/vcpkg-buildtrees/versioning_/versions/zlib/3f05e04b9aededb96786a911a16193cdb711f0c9
+Additional packages (*) will be modified to complete this operation.
+Restored 78 package(s) from /Users/bradley/Library/Application Support/Glob2/Development/caches/vcpkg-binary in 9.3 s. Use --debug to see more details.
+Installing 1/78 vcpkg-cmake-config:arm64-osx@2024-05-23...
+Elapsed time to handle vcpkg-cmake-config:arm64-osx: 6.17 ms
+vcpkg-cmake-config:arm64-osx package ABI: 0775636269f7e3a638a86f9b971b65975b66c89215997282c4b89b46e768869a
+Installing 2/78 vcpkg-cmake:arm64-osx@2024-04-23...
+Elapsed time to handle vcpkg-cmake:arm64-osx: 4.97 ms
+vcpkg-cmake:arm64-osx package ABI: 67550bbd8a4585ccccf10d02d2fe2f78a26698c10391cb457e6c87e123defa84
+Installing 3/78 vcpkg-boost:arm64-osx@2024-05-15...
+Elapsed time to handle vcpkg-boost:arm64-osx: 10.3 ms
+vcpkg-boost:arm64-osx package ABI: 198aaeaa4c622ee0177be5718564a1e6a30e015854cded43fdd2f0acb9f01063
+Installing 4/78 boost-uninstall:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-uninstall:glob2-arm64-ios-simulator: 3.12 ms
+boost-uninstall:glob2-arm64-ios-simulator package ABI: 0ae98246c84293112852f7010a12ba0c3407ffbb912093da47758f2c58e9ed28
+Installing 5/78 boost-cmake:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-cmake:glob2-arm64-ios-simulator: 17 ms
+boost-cmake:glob2-arm64-ios-simulator package ABI: 0fe6e72f4ca87306549680675bb18b42b92e7250491e3f728fc3ced6c941bc1d
+Installing 6/78 boost-headers:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-headers:glob2-arm64-ios-simulator: 5.76 ms
+boost-headers:glob2-arm64-ios-simulator package ABI: b9ad891839d1eba178abec6053883b1d2af73dd1b96389a9c227487fd2fdb159
+Installing 7/78 boost-config:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-config:glob2-arm64-ios-simulator: 1.5 s
+boost-config:glob2-arm64-ios-simulator package ABI: 420521f257b3043b5265a3dd3e875d419dea04f6c5d958f4bde2fa6ea486ecba
+Installing 8/78 boost-assert:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-assert:glob2-arm64-ios-simulator: 9.33 ms
+boost-assert:glob2-arm64-ios-simulator package ABI: 247195b1c216736ec55b99f9106801d1ad55c21f40e3eb89cd196a1be7782c7a
+Installing 9/78 boost-throw-exception:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-throw-exception:glob2-arm64-ios-simulator: 6.42 ms
+boost-throw-exception:glob2-arm64-ios-simulator package ABI: ab13a7859154d8d53bd0424070c003ccc72feba7b6cdcaf11c8b819f1116b1ee
+Installing 10/78 boost-predef:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-predef:glob2-arm64-ios-simulator: 1.1 s
+boost-predef:glob2-arm64-ios-simulator package ABI: 0f9ae6e3ac2a67d822d0e24e62562d76c339a7780c7386a8ea364fcaf0521663
+Installing 11/78 boost-winapi:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-winapi:glob2-arm64-ios-simulator: 789 ms
+boost-winapi:glob2-arm64-ios-simulator package ABI: cc3b32b589acdc2d1bca632804bd841cb188b743a3886fc50ef892b5f0472aac
+Installing 12/78 boost-mp11:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-mp11:glob2-arm64-ios-simulator: 412 ms
+boost-mp11:glob2-arm64-ios-simulator package ABI: e1eb9289c9f19f2ade28d7055228291116a4b64edd5bffa8e809f74fad71e240
+Installing 13/78 boost-variant2:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-variant2:glob2-arm64-ios-simulator: 6.93 ms
+boost-variant2:glob2-arm64-ios-simulator package ABI: d54179ade1722280d5671b2145e459859ceaa6f64f7272cdd39a85fdab677b97
+Installing 14/78 boost-system:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-system:glob2-arm64-ios-simulator: 67.9 ms
+boost-system:glob2-arm64-ios-simulator package ABI: 8f5a1fc3ca2a67a147d1df7cb60f8ec9e0e4e38f82bd818a5ae39eec445a5304
+Installing 15/78 boost-static-assert:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-static-assert:glob2-arm64-ios-simulator: 6.09 ms
+boost-static-assert:glob2-arm64-ios-simulator package ABI: b112b72d5c76f84900ae95c2d4f753d013120ee565f706ba7523f15562ad9559
+Installing 16/78 boost-type-traits:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-type-traits:glob2-arm64-ios-simulator: 1.3 s
+boost-type-traits:glob2-arm64-ios-simulator package ABI: 9f19404c76a0ab573d3bc467a2cd9ef026458e697e984ec9b6d3801b21574eab
+Installing 17/78 boost-preprocessor:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-preprocessor:glob2-arm64-ios-simulator: 1.8 s
+boost-preprocessor:glob2-arm64-ios-simulator package ABI: d7413fba37af548f2b71c506b380238642f447e261c53c0cbf40328cbdc266a5
+Installing 18/78 boost-io:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-io:glob2-arm64-ios-simulator: 9.13 ms
+boost-io:glob2-arm64-ios-simulator package ABI: 89fffef7f299c59f04bf959ddd2def925cb3b5a7ff1ed810687a935fe7037c83
+Installing 19/78 boost-core:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-core:glob2-arm64-ios-simulator: 358 ms
+boost-core:glob2-arm64-ios-simulator package ABI: 3cb597a44cedff1e09ea2a84dc1f4d8cc71672b54c1c79a60aa38ec02deff2c7
+Installing 20/78 boost-utility:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-utility:glob2-arm64-ios-simulator: 72.5 ms
+boost-utility:glob2-arm64-ios-simulator package ABI: 69f3bced03b7dad2295e42b114bb4495d2d0568f3178a33c0d3f4f71cb863483
+Installing 21/78 boost-move:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-move:glob2-arm64-ios-simulator: 187 ms
+boost-move:glob2-arm64-ios-simulator package ABI: 1a7b8662f4fce3249d570e835a7c197dc90b2c35c2ae398d5157a73caecb4215
+Installing 22/78 boost-smart-ptr:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-smart-ptr:glob2-arm64-ios-simulator: 757 ms
+boost-smart-ptr:glob2-arm64-ios-simulator package ABI: 2e5e48fbcdd17a41cbc9ee69663a85155d4852dc43f2e2258645c3d3553dea3f
+Installing 23/78 boost-detail:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-detail:glob2-arm64-ios-simulator: 125 ms
+boost-detail:glob2-arm64-ios-simulator package ABI: bf12e8900b7151c126cd3a75d90f7ced01bf7542f6e1595affcbc65267f4f8fd
+Installing 24/78 boost-optional:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-optional:glob2-arm64-ios-simulator: 15.4 ms
+boost-optional:glob2-arm64-ios-simulator package ABI: db9ba1f5709f7196d60f6b949f823dd490ff044eb4c649937c99b4ffcbc1d19b
+Installing 25/78 boost-mpl:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-mpl:glob2-arm64-ios-simulator: 5.2 s
+boost-mpl:glob2-arm64-ios-simulator package ABI: 60782e3725b5294bf79ce645ceec46faba3b9d1a3778b2bd739dc9f79cfd925e
+Installing 26/78 boost-typeof:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-typeof:glob2-arm64-ios-simulator: 395 ms
+boost-typeof:glob2-arm64-ios-simulator package ABI: 322a69c32ab62b4c6d072d02c4d0fdf58d2b6d37d9aeb1b6c53d9c4ab9cdf240
+Installing 27/78 boost-tuple:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-tuple:glob2-arm64-ios-simulator: 11.6 ms
+boost-tuple:glob2-arm64-ios-simulator package ABI: 8a9f7ff773ff358d241e83a90574cb9be0b204e8079ffc8b37d0d1ad39337320
+Installing 28/78 boost-function-types:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-function-types:glob2-arm64-ios-simulator: 161 ms
+boost-function-types:glob2-arm64-ios-simulator package ABI: e26089151ee38ec912327cc00890526277ff0238fa5a406ad4238b4d381c2e62
+Installing 29/78 boost-bind:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-bind:glob2-arm64-ios-simulator: 14.3 ms
+boost-bind:glob2-arm64-ios-simulator package ABI: 4fff2ed81a1f5f7401bd361d1f9e2280c0059661e5421106e5b024c6b1865050
+Installing 30/78 boost-function:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-function:glob2-arm64-ios-simulator: 125 ms
+boost-function:glob2-arm64-ios-simulator package ABI: bcfd3f2d7db360badfdf28e310310300cb71f81f2a5f8a40e8c17d8c84485226
+Installing 31/78 boost-functional:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-functional:glob2-arm64-ios-simulator: 11.6 ms
+boost-functional:glob2-arm64-ios-simulator package ABI: 1d1db0b24635661dce779f1197c420ca6f95d70cc80916d9c0d48cabd946a78b
+Installing 32/78 boost-describe:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-describe:glob2-arm64-ios-simulator: 28.8 ms
+boost-describe:glob2-arm64-ios-simulator package ABI: 671416f1ebd88f8b8dc58305d95a8585fd3282971dcb55c8b81efee203152a73
+Installing 33/78 boost-container-hash:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-container-hash:glob2-arm64-ios-simulator: 97.4 ms
+boost-container-hash:glob2-arm64-ios-simulator package ABI: 0cfa8555812b7d9adee03b48e5b69a8a7d2c5e6582a5a0b71a93e178717539b7
+Installing 34/78 boost-fusion:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-fusion:glob2-arm64-ios-simulator: 5.3 s
+boost-fusion:glob2-arm64-ios-simulator package ABI: 89ac7f1914652a5aebe9f4eac33d84ee25a972282c786faa5e9b5122380a0b93
+Installing 35/78 boost-concept-check:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-concept-check:glob2-arm64-ios-simulator: 75.7 ms
+boost-concept-check:glob2-arm64-ios-simulator package ABI: e6403b23535d7ff6cf9dd4da18f9836bf2bb1154b9e97dd5d1d4238ac2bc211e
+Installing 36/78 boost-iterator:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-iterator:glob2-arm64-ios-simulator: 80.6 ms
+boost-iterator:glob2-arm64-ios-simulator package ABI: a3a33f6dd876d17b49d4630951cb9c2bad32d4e682ad381454d001ce767b23bf
+Installing 37/78 boost-tokenizer:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-tokenizer:glob2-arm64-ios-simulator: 9.58 ms
+boost-tokenizer:glob2-arm64-ios-simulator package ABI: c4aa7f4aae714f03b4a75236e73e141abfeb016cac771465a7f39afb3a498a94
+Installing 38/78 boost-integer:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-integer:glob2-arm64-ios-simulator: 416 ms
+boost-integer:glob2-arm64-ios-simulator package ABI: f10bda074d1ab0d28be167eabae8c7e975fbec96f76234c361859e06097a2dbe
+Installing 39/78 boost-regex:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-regex:glob2-arm64-ios-simulator: 285 ms
+boost-regex:glob2-arm64-ios-simulator package ABI: d2aa63094f5085793fc36d81c4df419e1b224ea66bcfccacc08b912bccef8088
+Installing 40/78 boost-conversion:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-conversion:glob2-arm64-ios-simulator: 44.6 ms
+boost-conversion:glob2-arm64-ios-simulator package ABI: 69392d540a7ade3a4e7776798583a4dd16eff1d670c7bf12c294feab229af59d
+Installing 41/78 boost-array:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-array:glob2-arm64-ios-simulator: 12.2 ms
+boost-array:glob2-arm64-ios-simulator package ABI: 6cc92547af6795104f5e624c05c305d1b2c0f7813fdf046b0e76b3a231a85d95
+Installing 42/78 boost-range:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-range:glob2-arm64-ios-simulator: 298 ms
+boost-range:glob2-arm64-ios-simulator package ABI: 26b45b72d8bbb47f7fb19c6b3372026b1bd2de14fe2e291363fcf99b9b71879a
+Installing 43/78 boost-numeric-conversion:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-numeric-conversion:glob2-arm64-ios-simulator: 373 ms
+boost-numeric-conversion:glob2-arm64-ios-simulator package ABI: 6dd42d144d2fa60a8c8ebea371e4f69c6cdc0507d06a78d4824498f6dfe22338
+Installing 44/78 boost-intrusive:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-intrusive:glob2-arm64-ios-simulator: 523 ms
+boost-intrusive:glob2-arm64-ios-simulator package ABI: 139b7a716327cd2cc8b5544da1be0952973daf585d128240a3ea2b98aa2f2f03
+Installing 45/78 boost-container:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-container:glob2-arm64-ios-simulator: 939 ms
+boost-container:glob2-arm64-ios-simulator package ABI: a18b8e52eb6e3bbbca6e5eb6b7ed6986435402e70addffc44b8e1692586d146d
+Installing 46/78 boost-lexical-cast:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-lexical-cast:glob2-arm64-ios-simulator: 21.7 ms
+boost-lexical-cast:glob2-arm64-ios-simulator package ABI: 09186c0019ec8db889d907deead8494e6123844fb885d53a13d650400a6f8717
+Installing 47/78 boost-unordered:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-unordered:glob2-arm64-ios-simulator: 582 ms
+boost-unordered:glob2-arm64-ios-simulator package ABI: 8c240407d9307ee1cd4c0f8aae3ff1de7b9ee2bc61d5612fa8b2c6a645503f00
+Installing 48/78 boost-exception:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-exception:glob2-arm64-ios-simulator: 146 ms
+boost-exception:glob2-arm64-ios-simulator package ABI: 1103d5fb63868f4b34042d8ae22846b223761de6409707b9f9c248d3a649d714
+Installing 49/78 boost-algorithm:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-algorithm:glob2-arm64-ios-simulator: 510 ms
+boost-algorithm:glob2-arm64-ios-simulator package ABI: d4709d7f76c5a0f7069f27ad79201b971243cf35105e11de281dd02c4ea09140
+Installing 50/78 boost-date-time:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-date-time:glob2-arm64-ios-simulator: 591 ms
+boost-date-time:glob2-arm64-ios-simulator package ABI: 4cc34bcf1c2a5e06045bea9281c98069711d2a5826d622f3160ce23c1994b667
+Installing 51/78 boost-pool:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-pool:glob2-arm64-ios-simulator: 39.1 ms
+boost-pool:glob2-arm64-ios-simulator package ABI: 1a820faed0f77141adcd4a8a5ce8abc377d1c1a75cc76ae01e20ee1e0e8c8157
+Installing 52/78 boost-context:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-context:glob2-arm64-ios-simulator: 241 ms
+boost-context:glob2-arm64-ios-simulator package ABI: b24434ac2f5eb47b0e00899bdc60b40addd067ba25c3b74c77864177dcdee195
+Installing 53/78 boost-coroutine:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-coroutine:glob2-arm64-ios-simulator: 140 ms
+boost-coroutine:glob2-arm64-ios-simulator package ABI: aedaee15b5de39cc5d0aa383556ac904e4b9efff1dea60b5696509f07f71babf
+Installing 54/78 boost-align:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-align:glob2-arm64-ios-simulator: 422 ms
+boost-align:glob2-arm64-ios-simulator package ABI: bbadf78585c15d3f87fac660952b4694102f7b9d16f059245bf49acb46cc5fce
+Installing 55/78 boost-asio:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-asio:glob2-arm64-ios-simulator: 3.1 s
+boost-asio:glob2-arm64-ios-simulator package ABI: 8176af082772dce003c0538a76bc9bd5cb2d19b69e9f1be13f25d797bab5c904
+Installing 56/78 boost-type-index:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-type-index:glob2-arm64-ios-simulator: 243 ms
+boost-type-index:glob2-arm64-ios-simulator package ABI: e4c98f2bf2de1d625b3753ab4d6c010f6981c6b5745b6c0b56e69f96915662f9
+Installing 57/78 boost-static-string:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-static-string:glob2-arm64-ios-simulator: 12.1 ms
+boost-static-string:glob2-arm64-ios-simulator package ABI: 08b405d09bc6d7a4e26b00b6256de6082dc6cf98f17519f7b140ad25e1fe10c9
+Installing 58/78 boost-logic:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-logic:glob2-arm64-ios-simulator: 128 ms
+boost-logic:glob2-arm64-ios-simulator package ABI: 89c3373ca15e45025c26cf35e910b22bcfe40bc13dd13906a0455e1db0016cb4
+Installing 59/78 boost-endian:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-endian:glob2-arm64-ios-simulator: 39.9 ms
+boost-endian:glob2-arm64-ios-simulator package ABI: 3991ba1d7fa0d7206268141c176120ea933a398e8393f80ab6087adb326dc254
+Installing 60/78 boost-beast:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-beast:glob2-arm64-ios-simulator: 1.5 s
+boost-beast:glob2-arm64-ios-simulator package ABI: 9a20c845781dde01c1afc7c07036b77ca387a93a8995a1c25ebfbbb1147d16cf
+Installing 61/78 boost-lambda:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-lambda:glob2-arm64-ios-simulator: 249 ms
+boost-lambda:glob2-arm64-ios-simulator package ABI: 5be642ce0380e2562ebdd4030c5ebd3ad68155fbe4c544ef0dc7616e103b6df5
+Installing 62/78 boost-dynamic-bitset:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-dynamic-bitset:glob2-arm64-ios-simulator: 218 ms
+boost-dynamic-bitset:glob2-arm64-ios-simulator package ABI: 277429282328faa7be0b5a56f4fcc38fccd899b62703265e943c1505443626db
+Installing 63/78 boost-random:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-random:glob2-arm64-ios-simulator: 80.6 ms
+boost-random:glob2-arm64-ios-simulator package ABI: 329c65a233430666e59eafbf4811c23c62b7b6594b74b5a46a77f917a73aacbb
+Installing 64/78 boost-math:glob2-arm64-ios-simulator@1.86.0...
+Elapsed time to handle boost-math:glob2-arm64-ios-simulator: 2.3 s
+boost-math:glob2-arm64-ios-simulator package ABI: 4fc4a4b5f706a5c8613d8c8b805f1a0d2b8ee9790de946cc2031d29f9c770bec
+Installing 65/78 libogg:glob2-arm64-ios-simulator@1.3.5#1...
+Elapsed time to handle libogg:glob2-arm64-ios-simulator: 16.8 ms
+libogg:glob2-arm64-ios-simulator package ABI: 979ceb0314836e7fc4c9af7f68a425fc806c83356d795b7a2ff563b5e2dc17f1
+Installing 66/78 libvorbis:glob2-arm64-ios-simulator@1.3.7#3...
+Elapsed time to handle libvorbis:glob2-arm64-ios-simulator: 308 ms
+libvorbis:glob2-arm64-ios-simulator package ABI: f355bf297158c4f359176fcad624d5343bc5c293e007c4a712bf303c54616927
+Installing 67/78 vcpkg-cmake-get-vars:arm64-osx@2024-09-22...
+Elapsed time to handle vcpkg-cmake-get-vars:arm64-osx: 11.5 ms
+vcpkg-cmake-get-vars:arm64-osx package ABI: a6f5014f6a1ba139ddb0a814968f36f06c1cdbc5f5064effd6515794c723df30
+Installing 68/78 openssl:glob2-arm64-ios-simulator@3.4.0...
+Elapsed time to handle openssl:glob2-arm64-ios-simulator: 899 ms
+openssl:glob2-arm64-ios-simulator package ABI: 79bf58a2b5d6e443bbbeeb6edb2b87efe1ac688348bc7f77d8052f04612ee079
+Installing 69/78 sdl2:glob2-arm64-ios-simulator@2.30.10...
+Elapsed time to handle sdl2:glob2-arm64-ios-simulator: 377 ms
+sdl2:glob2-arm64-ios-simulator package ABI: a504045da872878f8c79ac4fc95c2e667a3dce549de2d42fae602285cb6529df
+Installing 70/78 libjpeg-turbo:glob2-arm64-ios-simulator@3.1.0...
+Elapsed time to handle libjpeg-turbo:glob2-arm64-ios-simulator: 251 ms
+libjpeg-turbo:glob2-arm64-ios-simulator package ABI: 3f58faa5958eec5fb89adb2e73fd43fa3563cf3b93e9ac72b07c00db7b2fa415
+Installing 71/78 zlib:glob2-arm64-ios-simulator@1.3.1...
+Elapsed time to handle zlib:glob2-arm64-ios-simulator: 15.9 ms
+zlib:glob2-arm64-ios-simulator package ABI: afd9d6282d71ce509a3a1fb8f339afa6e91903e60ea6ab1a00853b8f77f85780
+Installing 72/78 libpng:glob2-arm64-ios-simulator@1.6.44...
+Elapsed time to handle libpng:glob2-arm64-ios-simulator: 155 ms
+libpng:glob2-arm64-ios-simulator package ABI: 283dd813ee1b5baf8559291822f8303f1b0f2991083afd0dce87b8f5a7964477
+Installing 73/78 sdl2-image[core,libjpeg-turbo]:glob2-arm64-ios-simulator@2.8.2#2...
+Elapsed time to handle sdl2-image:glob2-arm64-ios-simulator: 232 ms
+sdl2-image:glob2-arm64-ios-simulator package ABI: 88f7240bc4ce6889bbf22c817d0a37b93921355280ce8ce922de88cef11f046e
+Installing 74/78 sdl2-net:glob2-arm64-ios-simulator@2.2.0#3...
+Elapsed time to handle sdl2-net:glob2-arm64-ios-simulator: 14 ms
+sdl2-net:glob2-arm64-ios-simulator package ABI: 0188b4c3522b5d58ed77ffa49cf236fa97f3ef0bb220f4cd44b58f262852b38b
+Installing 75/78 bzip2[core,tool]:glob2-arm64-ios-simulator@1.0.8#6...
+Elapsed time to handle bzip2:glob2-arm64-ios-simulator: 191 ms
+bzip2:glob2-arm64-ios-simulator package ABI: b9e4df429a0bb979ea3aa1f1ce1c3776814bf9eb92e150605994d36a054f2f0d
+Installing 76/78 brotli:glob2-arm64-ios-simulator@1.1.0#1...
+Elapsed time to handle brotli:glob2-arm64-ios-simulator: 268 ms
+brotli:glob2-arm64-ios-simulator package ABI: 333ac9785f401369873ec94938176d6e421c1095e5ebcb34b8ef8c1f4d820b4b
+Installing 77/78 freetype[brotli,bzip2,core,png,zlib]:glob2-arm64-ios-simulator@2.13.3...
+Elapsed time to handle freetype:glob2-arm64-ios-simulator: 126 ms
+freetype:glob2-arm64-ios-simulator package ABI: e76806066dce6dc3bafaa56404e2743358e47a8398c52309e632ab12dccf98d3
+Installing 78/78 sdl2-ttf:glob2-arm64-ios-simulator@2.22.0#1...
+Elapsed time to handle sdl2-ttf:glob2-arm64-ios-simulator: 15.5 ms
+sdl2-ttf:glob2-arm64-ios-simulator package ABI: 6d37a1c38d3473bd93469b98968f0c4b9fc99b9f812b3d7b68be0bcbff2b88f9
+Total install time: 36 s
+boost-date-time provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+boost-logic provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_logic CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::logic)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-lambda provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_lambda CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::lambda)
+
+boost-random provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_random CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::random)
+
+boost-math provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_math CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::math)
+
+The package libvorbis provides CMake targets:
+
+    # Vorbis reference encoder and decoder, low-level API
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbis)
+
+    # Audio stream decoding and basic manipulation, high-level API
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbisfile)
+
+    # Convenience API for setting up an encoding environment
+    find_package(Vorbis CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE Vorbis::vorbisenc)
+
+openssl is compatible with built-in CMake targets:
+
+  find_package(OpenSSL REQUIRED)
+  target_link_libraries(main PRIVATE OpenSSL::SSL)
+  target_link_libraries(main PRIVATE OpenSSL::Crypto)
+
+sdl2 provides CMake targets:
+
+    find_package(SDL2 CONFIG REQUIRED)
+    target_link_libraries(main
+        PRIVATE
+        $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+        $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+    )
+
+The package zlib is compatible with built-in CMake targets:
+
+    find_package(ZLIB REQUIRED)
+    target_link_libraries(main PRIVATE ZLIB::ZLIB)
+
+sdl2-image provides CMake targets:
+
+    find_package(SDL2_image CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:SDL2_image::SDL2_image>,SDL2_image::SDL2_image,SDL2_image::SDL2_image-static>)
+
+sdl2-net provides CMake targets:
+
+    find_package(SDL2_net CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:SDL2_net::SDL2_net>,SDL2_net::SDL2_net,SDL2_net::SDL2_net-static>)
+
+sdl2-ttf provides CMake targets:
+
+    find_package(SDL2_ttf CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:SDL2_ttf::SDL2_ttf>,SDL2_ttf::SDL2_ttf,SDL2_ttf::SDL2_ttf-static>)
+
+Dependency prefix: /Users/bradley/Library/Application Support/Glob2/Development/dependencies/Darwin-arm64-6d817b7f70bfd11de79fb251

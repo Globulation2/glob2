@@ -1,0 +1,8 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::running 1 times 1500 steps:
+nox::game started
+nox::gui.game.checkSum() = dd7dac86
+automaticEndingGame ended: 1500 ticks, 1 minutes, 0 seconds
+GLOB2_GAME_END ticks=1500 winner_team=-1 seed=42 map="SmallForTwo" orders=46 players=team0:local,team1:Nicowar,team0:Econo
+org.globulation2.glob2: 76275
+PASS iOS native/browser simulation trace 4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43

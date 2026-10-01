@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/determinism.spec.js:8:1 › WebAssembly produces a complete per-tick simulation trace (8.5s)
+
+  1 passed (18.0s)

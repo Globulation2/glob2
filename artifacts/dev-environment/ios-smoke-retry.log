@@ -1,0 +1,14 @@
+simctl list devices --json
+simctl spawn BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 launchctl list
+simctl terminate BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 org.globulation2.glob2
+simctl launch --stdout=/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation-retry/startup-stdout.txt --stderr=/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation-retry/startup-stderr.txt BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 org.globulation2.glob2
+simctl io BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 screenshot /Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation-retry/startup.png
+simctl launch BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 com.apple.Preferences
+simctl launch BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 org.globulation2.glob2
+simctl io BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 screenshot /Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation-retry/resumed.png
+simctl terminate BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 org.globulation2.glob2
+simctl launch --stdout=/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation-retry/relaunched-stdout.txt --stderr=/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation-retry/relaunched-stderr.txt BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 org.globulation2.glob2
+simctl io BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 screenshot /Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation-retry/relaunched.png
+simctl terminate BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 com.apple.Preferences
+simctl terminate BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 org.globulation2.glob2
+PASS native startup and bundled assets, retained-process background/resume, termination and fresh-process relaunch

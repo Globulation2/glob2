@@ -1,0 +1,20 @@
+{
+  "fixture": "games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "trace_sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43",
+  "command": [
+    "xcrun",
+    "simctl",
+    "--set",
+    "/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-tools/validation-ios-simulators",
+    "launch",
+    "--console",
+    "BAFC7394-33ED-44F3-8FAD-8B899E07C9E2",
+    "org.globulation2.glob2",
+    "--nox",
+    "/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-tools/validation-ios-simulators/BAFC7394-33ED-44F3-8FAD-8B899E07C9E2/data/Containers/Data/Application/914C2C1F-3619-47E7-B0B8-8320D88BE9E0/Documents/dev-store-validation/cross-replay.game.gz",
+    "1500",
+    "1"
+  ]
+}

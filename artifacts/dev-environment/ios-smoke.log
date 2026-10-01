@@ -1,0 +1,42 @@
+simctl list devices --json
+simctl spawn BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 launchctl list
+simctl launch --stdout=/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation/startup-stdout.txt --stderr=/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation/startup-stderr.txt BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 org.globulation2.glob2
+simctl spawn BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 launchctl list
+simctl spawn BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 log show --last 3m --style compact --predicate process == "Glob2" OR eventMessage CONTAINS "org.globulation2.glob2"
+simctl io BAFC7394-33ED-44F3-8FAD-8B899E07C9E2 screenshot /Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation/failure.png
+Traceback (most recent call last):
+  File "/Users/bradley/.codex/worktrees/68aa/glob2/mobile/ios_smoke.py", line 124, in <module>
+    if __name__ == '__main__': main()
+                               ~~~~^^
+  File "/Users/bradley/.codex/worktrees/68aa/glob2/mobile/ios_smoke.py", line 71, in main
+    first, paths = start('startup'); ready(paths); screenshot('startup')
+                   ~~~~~^^^^^^^^^^^
+  File "/Users/bradley/.codex/worktrees/68aa/glob2/mobile/ios_smoke.py", line 52, in start
+    result = run('launch', *options, args.device, PACKAGE)
+  File "/Users/bradley/.codex/worktrees/68aa/glob2/mobile/ios_smoke.py", line 34, in run
+    result = subprocess.check_output(command + list(arguments), text=True, stderr=subprocess.STDOUT, timeout=args.command_timeout if timeout is None else timeout)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 473, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+               **kwargs).stdout
+               ^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['xcrun', 'simctl', '--set', '/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-tools/validation-ios-simulators', 'launch', '--stdout=/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation/startup-stdout.txt', '--stderr=/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-smoke-ios-validation/startup-stderr.txt', 'BAFC7394-33ED-44F3-8FAD-8B899E07C9E2', 'org.globulation2.glob2']' timed out after 180 seconds
+Traceback (most recent call last):
+  File "<stdin>", line 5, in <module>
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['python3', 'mobile/ios_smoke.py', '--device', 'BAFC7394-33ED-44F3-8FAD-8B899E07C9E2', '--simulator-set', '/Users/bradley/.codex/worktrees/68aa/glob2/build/mobile-tools/validation-ios-simulators', '--output', 'build/mobile-smoke-ios-validation']' returned non-zero exit status 1.

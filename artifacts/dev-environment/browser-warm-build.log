@@ -1,0 +1,6 @@
+scons: Reading SConscript files ...
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `build/emscripten/client/release/index.html' is up to date.
+Building compilation database build/emscripten/client/release/compile_commands.json
+scons: done building targets.

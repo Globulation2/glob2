@@ -1,0 +1,9 @@
+{
+  "device": "BAFC7394-33ED-44F3-8FAD-8B899E07C9E2",
+  "checks": [
+    "native startup and bundled assets",
+    "retained-process background/resume",
+    "termination and fresh-process relaunch"
+  ],
+  "passed": true
+}

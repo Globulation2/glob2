@@ -1,0 +1,17 @@
+{
+  "tools": "/Users/bradley/Library/Application Support/Glob2/Development/toolchains/mobile/Darwin-arm64-8dbf18a4a97410f6b6a92b4a",
+  "toolchain_key": "Darwin-arm64-8dbf18a4a97410f6b6a92b4a",
+  "browser_sdk": "/Users/bradley/Library/Application Support/Glob2/Development/toolchains/emscripten/Darwin-arm64-88a621bc131cd4954413aa39",
+  "checks": {
+    "android-packaging": 0,
+    "build-system-tests": 0,
+    "browser-build": 0,
+    "ios-packaging": 0
+  },
+  "logs": {
+    "android-packaging": "android-build.log",
+    "ios-packaging": "ios-build.log",
+    "browser-build": "browser-build.log",
+    "build-system-tests": "unit-final.log"
+  }
+}

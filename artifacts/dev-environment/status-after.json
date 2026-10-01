@@ -1,0 +1,100 @@
+{
+  "paths": {
+    "home": "/Users/bradley/Library/Application Support/Glob2/Development",
+    "mode": "shared",
+    "mobile_tools": "/Users/bradley/Library/Application Support/Glob2/Development/toolchains/mobile/Darwin-arm64-8dbf18a4a97410f6b6a92b4a",
+    "android_sdk": "/Users/bradley/Library/Application Support/Glob2/Development/toolchains/mobile/Darwin-arm64-8dbf18a4a97410f6b6a92b4a/android-sdk",
+    "java_home": "/Users/bradley/Library/Application Support/Glob2/Development/toolchains/mobile/Darwin-arm64-8dbf18a4a97410f6b6a92b4a/jdk-17.0.20.1+1/Contents/Home",
+    "gradle": "/Users/bradley/Library/Application Support/Glob2/Development/toolchains/mobile/Darwin-arm64-8dbf18a4a97410f6b6a92b4a/gradle-8.13/bin/gradle",
+    "browser_sdk": "/Users/bradley/Library/Application Support/Glob2/Development/toolchains/emscripten/Darwin-arm64-88a621bc131cd4954413aa39",
+    "budget_bytes": 16106127360
+  },
+  "cache_entries": [
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/caches/sdl-source-2.30.10-ad5aa45e1da6f347d9e31031",
+      "bytes": 82800640,
+      "last_use": 1790875332.837224
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/caches/ccache",
+      "bytes": 228016128,
+      "last_use": 1790875977.62157
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/caches/gradle-8.13",
+      "bytes": 463626240,
+      "last_use": 1790878834.252492
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/caches/emscripten-Darwin-arm64-a48e0697794115abc6c32a16",
+      "bytes": 453365760,
+      "last_use": 1790874066.620144
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/caches/vcpkg-binary",
+      "bytes": 105316352,
+      "last_use": 1790875373.908338
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/caches/vcpkg-registries",
+      "bytes": 0,
+      "last_use": 1790875373.9081
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/caches/downloads",
+      "bytes": 2709544960,
+      "last_use": 1790878715.106
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/dependencies/Darwin-arm64-e93694d5e82cf89fab129d9e",
+      "bytes": 179904512,
+      "last_use": 1790871634.9159088
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/dependencies/Darwin-arm64-6d817b7f70bfd11de79fb251",
+      "bytes": 179654656,
+      "last_use": 1790878220.845003
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/dependencies/Darwin-arm64-3956d6ba1a6062666b9efcb1",
+      "bytes": 269434880,
+      "last_use": 1790875049.0125806
+    },
+    {
+      "path": "/Users/bradley/Library/Application Support/Glob2/Development/dependencies/Darwin-arm64-d9e1eb7e70e5a107d2eadaef",
+      "bytes": 269434880,
+      "last_use": 1790878873.122664
+    }
+  ],
+  "installed_toolchains_bytes": 9132990464,
+  "checkout_build_bytes": 8515067904,
+  "checkout_artifacts_bytes": 326737920,
+  "simulator_state_bytes": 694018048,
+  "external_storage": [
+    {
+      "name": "legacy_ccache",
+      "path": "/Users/bradley/Library/Caches/ccache",
+      "bytes": 4185448448
+    },
+    {
+      "name": "npm",
+      "path": "/Users/bradley/.npm",
+      "bytes": 2366705664
+    },
+    {
+      "name": "playwright",
+      "path": "/Users/bradley/Library/Caches/ms-playwright",
+      "bytes": 4416471040
+    },
+    {
+      "name": "legacy_gradle",
+      "path": "/Users/bradley/.gradle",
+      "bytes": 2028474368
+    },
+    {
+      "name": "global_android_sdk",
+      "path": "/opt/homebrew/share/android-commandlinetools",
+      "bytes": 12229517312
+    }
+  ]
+}

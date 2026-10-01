@@ -1,0 +1,11 @@
+{
+  "serial": "emulator-5588",
+  "avd": "glob2-api35-arm64",
+  "checks": [
+    "native startup and bundled assets",
+    "retained-process background/resume",
+    "landscape/portrait rotation",
+    "force-stop and fresh-process relaunch"
+  ],
+  "passed": true
+}

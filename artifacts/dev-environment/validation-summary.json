@@ -1,0 +1,77 @@
+{
+  "commit": "aa899d8cc60b7ffe732948231d2d64a97cfa556f",
+  "host": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "unit_tests": {
+    "shared": 95,
+    "isolated": 95,
+    "passed": true
+  },
+  "builds": {
+    "native_release": 0,
+    "native_isolated_warm": 0,
+    "browser_release": 0,
+    "browser_warm": 0,
+    "android_arm64_release": 0,
+    "android_arm64_warm": 0,
+    "ios_simulator_release": 0,
+    "ios_simulator_warm": 0
+  },
+  "smoke": {
+    "android": {
+      "serial": "emulator-5588",
+      "avd": "glob2-api35-arm64",
+      "checks": [
+        "native startup and bundled assets",
+        "retained-process background/resume",
+        "landscape/portrait rotation",
+        "force-stop and fresh-process relaunch"
+      ],
+      "passed": true
+    },
+    "ios": {
+      "device": "BAFC7394-33ED-44F3-8FAD-8B899E07C9E2",
+      "checks": [
+        "native startup and bundled assets",
+        "retained-process background/resume",
+        "termination and fresh-process relaunch"
+      ],
+      "passed": true
+    }
+  },
+  "space": {
+    "budget_bytes": 16106127360,
+    "managed_cache_and_bundle_bytes": 4941099008,
+    "installed_toolchain_bytes": 9132990464,
+    "migration_reclaimed_bytes": 0,
+    "busy_checkouts": [
+      "/Users/bradley/.codex/worktrees/68aa/glob2",
+      "/Users/bradley/.codex/worktrees/9438/glob2",
+      "/Users/bradley/.codex/worktrees/d912/glob2",
+      "/Users/bradley/glob2",
+      "/Users/bradley/glob2-claude/.claude/worktrees/bridge-cse_01TJcTApcw1VZVsH2UGCKEfU"
+    ]
+  },
+  "dependency_timings": {
+    "android": {
+      "source_install": "54 min (some existing ABI cache hits)",
+      "full_binary_restore": "15 s",
+      "warm_install_total": "46 s"
+    },
+    "ios": {
+      "source_install": "55 min (4 existing ABI cache hits)",
+      "full_binary_restore": "9.3 s",
+      "warm_install_total": "36 s"
+    },
+    "conditions": "Concurrent builds on this machine caused substantial CPU contention; these are observed install timings, not controlled benchmarks."
+  },
+  "review": {
+    "scoped_second_agent_review": "Locking, pruning, SDL source publication, warm readers, and migration reviewed; reported issues fixed; no remaining blockers raised."
+  },
+  "limits": [
+    "Isolated native verification reused existing native object outputs.",
+    "No Android/Linux/Windows per-tick comparison or isolated iOS build was completed locally.",
+    "Migration preserved busy and customized installations; no reclaimed disk space is claimed.",
+    "The first iOS smoke launch timed out; the retry passed after a system app launch verified simulator readiness.",
+    "CI results are reported separately on the PR."
+  ]
+}
