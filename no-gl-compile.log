@@ -1,0 +1,1 @@
+PASS: rectangle batch implementation and regressions compile with HAVE_OPENGL disabled.
