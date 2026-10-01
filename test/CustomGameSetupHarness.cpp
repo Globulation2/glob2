@@ -1385,7 +1385,7 @@ struct CustomGameSetupHarness
       picker.beginExecution(globalContainer->gfx);
       auto &pickerHost = picker.host();
       auto pickerPaint = [&] { picker.paintFrame(SDL_GetTicks()); };
-      REQUIRE((picker.previewer.threadCount() == 1 && picker.busy()));
+      REQUIRE((picker.previewer.threadCount() == 2 && picker.busy()));
       pickerPaint(); // placeholders while every tile is still pending
       globalContainer->gfx->printScreen(output + "/landscape-picker-pending.bmp");
       // Cards in view roll first, and scrolling the grid moves that eligible set with it.
