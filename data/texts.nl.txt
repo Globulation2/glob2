@@ -3184,6 +3184,14 @@ Systeemstandaard
 Omhoog slepen zoomt in
 [settings Drag down zooms in]
 Omlaag slepen zoomt in
+[settings Thumb side]
+Duimzijde
+[settings Phone controls gather in this bottom corner.]
+Op de telefoon staan de bedieningselementen in deze onderhoek.
+[settings Right]
+Rechts
+[settings Left]
+Links
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

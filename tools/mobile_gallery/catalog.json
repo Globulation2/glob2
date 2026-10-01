@@ -210,20 +210,27 @@
     {
       "id": "game-build",
       "title": "Build drawer \u00b7 top",
-      "description": "Construction palette at its initial scroll position.",
+      "description": "Construction palette at its initial scroll position. Phones show a rail rising from the thumb corner with the first choice nearest the thumb; Spacious tablets keep the side grid.",
       "group": "Gameplay"
     },
     {
       "id": "game-build-bottom",
       "title": "Build drawer \u00b7 bottom",
-      "description": "Construction palette at its maximum scroll position.",
+      "description": "Construction palette at its maximum scroll position; a phone rail that fits its space does not scroll.",
       "group": "Gameplay"
     },
     {
       "id": "game-flags",
       "title": "Flags & zones",
-      "description": "Dedicated icon palette for flags and zone tools; the minimap is a separate HUD component.",
+      "description": "Dedicated icon palette for flags and zone tools, one rail column in portrait and one row in landscape; the minimap is a separate HUD component.",
       "group": "Gameplay"
+    },
+    {
+      "id": "game-build-left-thumb",
+      "title": "Build drawer \u00b7 left thumb",
+      "description": "The Thumb side setting mirrors the rail and placement bar into the bottom-left corner.",
+      "group": "Gameplay",
+      "availability": "mobile"
     },
     {
       "id": "game-placement",

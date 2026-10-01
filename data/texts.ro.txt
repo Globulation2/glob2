@@ -3160,6 +3160,14 @@ Implicit sistem
 Tragerea în sus mărește
 [settings Drag down zooms in]
 Tragerea în jos mărește
+[settings Thumb side]
+Partea degetului mare
+[settings Phone controls gather in this bottom corner.]
+Pe telefon, comenzile se grupează în acest colț de jos.
+[settings Right]
+Dreapta
+[settings Left]
+Stânga
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

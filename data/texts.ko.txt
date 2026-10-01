@@ -3156,6 +3156,14 @@ Emoji
 위로 드래그하면 확대
 [settings Drag down zooms in]
 아래로 드래그하면 확대
+[settings Thumb side]
+엄지 방향
+[settings Phone controls gather in this bottom corner.]
+휴대전화에서는 조작 버튼이 이 아래쪽 모서리에 모입니다.
+[settings Right]
+오른쪽
+[settings Left]
+왼쪽
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

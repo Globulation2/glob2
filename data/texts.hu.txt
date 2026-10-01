@@ -3160,6 +3160,14 @@ Rendszer alapértelmezése
 Felfelé húzás nagyít
 [settings Drag down zooms in]
 Lefelé húzás nagyít
+[settings Thumb side]
+Hüvelykujj oldala
+[settings Phone controls gather in this bottom corner.]
+Telefonon a kezelőszervek ebben az alsó sarokban gyűlnek össze.
+[settings Right]
+Jobb
+[settings Left]
+Bal
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

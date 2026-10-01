@@ -30,6 +30,13 @@ inline constexpr double paletteWidth = 248;
 inline constexpr double tutorialLine = 24;
 inline constexpr double paletteCell = 56;
 inline constexpr double gap = 4;
+// The phone palette rail: columns in portrait (buildings, flags) and landscape,
+// and its distance from the thumb-side edge, which keeps drags out of the
+// system back-gesture strip.
+inline constexpr int railColumnsPortrait = 2;
+inline constexpr int railColumnsLandscape = 4;
+inline constexpr int railMaximumRows = 6;
+inline constexpr double railInset = 12;
 inline constexpr double dragThreshold = 8;
 inline constexpr double fingerLift = 48;
 inline constexpr double edgePanMargin = 24;

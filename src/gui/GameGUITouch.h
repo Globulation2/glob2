@@ -66,6 +66,11 @@ class GameGUITouch
 	};
 	std::vector<PaletteItem> paletteItems() const;
 	GAGCore::ViewRect paletteItemRect(size_t index) const;
+	// Compact phones show the palette as a rail rising from the thumb corner;
+	// the persistent (Spacious) panel keeps its top-down grid.
+	bool paletteRail(const GAGCore::MobileLayout &ui) const;
+	int paletteColumns(const GAGCore::MobileLayout &ui) const;
+	double paletteScrollSign() const;
 	std::optional<PaletteItem> paletteItemAt(GAGCore::ViewPoint point) const;
 	std::optional<TouchPlacementSession> placement;
 	// Preview contact pans while held; releasing it never commits construction.
@@ -129,6 +134,11 @@ class GameGUITouch
 	void prepareTutorial();
 	void drawTutorial();
 	GAGCore::MobileLayout layout() const;
+	// Edge-hugging controls the host is asked to keep free of system gestures;
+	// synchronised only when the set changes.
+	std::vector<GAGCore::ViewRect> gestureExclusion;
+	int gestureExclusionUpdates = 0;
+	void syncGestureExclusion();
 	void clampScroll();
 	// HUD panel offsets with momentum and bounce; clampScroll() keeps them and
 	// the plain scroll variables in step.

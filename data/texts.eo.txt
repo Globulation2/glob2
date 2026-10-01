@@ -3158,6 +3158,14 @@ Laŭ la sistemo
 Treni supren zomas pli proksimen
 [settings Drag down zooms in]
 Treni malsupren zomas pli proksimen
+[settings Thumb side]
+Flanko de la dikfingro
+[settings Phone controls gather in this bottom corner.]
+La telefonaj regiloj kolektiĝas en ĉi tiu malsupra angulo.
+[settings Right]
+Dekstre
+[settings Left]
+Maldekstre
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

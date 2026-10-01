@@ -44,6 +44,20 @@ public final class Glob2Activity extends SDLActivity {
         });
     }
 
+    // Called by the native game thread. Controls that hug a side edge (the
+    // phone palette rail) ask Android 10+ not to start a Back gesture there.
+    // Rectangles are window pixels, four values each: left, top, right, bottom.
+    public void setGestureExclusion(int[] rects) {
+        final int[] values = rects == null ? new int[0] : rects.clone();
+        runOnUiThread(() -> {
+            if (Build.VERSION.SDK_INT < 29 || mLayout == null || isFinishing() || isDestroyed()) return;
+            java.util.List<android.graphics.Rect> list = new java.util.ArrayList<>();
+            for (int i = 0; i + 3 < values.length; i += 4)
+                list.add(new android.graphics.Rect(values[i], values[i + 1], values[i + 2], values[i + 3]));
+            mLayout.setSystemGestureExclusionRects(list);
+        });
+    }
+
     private static volatile int[] uiInsets = new int[] {0, 0, 0, 0};
     public static int[] getUiInsets() { return uiInsets; }
     private static volatile int keyboardInset = 0;

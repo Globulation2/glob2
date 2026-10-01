@@ -3170,6 +3170,14 @@ Sistemaren lehenetsia
 Gora arrastatuz hurbildu
 [settings Drag down zooms in]
 Behera arrastatuz hurbildu
+[settings Thumb side]
+Erpuruaren aldea
+[settings Phone controls gather in this bottom corner.]
+Telefonoko kontrolak beheko izkina honetan biltzen dira.
+[settings Right]
+Eskuina
+[settings Left]
+Ezkerra
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

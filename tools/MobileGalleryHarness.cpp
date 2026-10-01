@@ -543,6 +543,14 @@ class MobileGalleryGameplay
 		gui.displayMode = GameGUI::FLAG_VIEW;
 		gui.touch->panelScroll = 0;
 		capture("game-flags");
+		if (!desktopPresentation)
+		{
+			gui.displayMode = GameGUI::CONSTRUCTION_VIEW;
+			globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
+			capture("game-build-left-thumb");
+			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
+			gui.displayMode = GameGUI::FLAG_VIEW;
+		}
 		gui.setSelection(GameGUI::BRUSH_SELECTION);
 		gui.brush.defaultSelection();
 		gui.toolManager.activateZoneTool(GameGUIToolManager::ZoneType(1));

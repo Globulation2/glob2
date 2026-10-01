@@ -3168,6 +3168,14 @@ Sistem varsayılanı
 Yukarı sürüklemek yakınlaştırır
 [settings Drag down zooms in]
 Aşağı sürüklemek yakınlaştırır
+[settings Thumb side]
+Başparmak tarafı
+[settings Phone controls gather in this bottom corner.]
+Telefonda kontroller bu alt köşede toplanır.
+[settings Right]
+Sağ
+[settings Left]
+Sol
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

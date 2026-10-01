@@ -3156,6 +3156,14 @@ Emoji
 向上拖动放大
 [settings Drag down zooms in]
 向下拖动放大
+[settings Thumb side]
+拇指侧
+[settings Phone controls gather in this bottom corner.]
+手机上的控件会集中在这个下方角落。
+[settings Right]
+右侧
+[settings Left]
+左侧
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

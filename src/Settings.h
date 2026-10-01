@@ -95,6 +95,13 @@ public:
 		ONE_FINGER_ZOOM_DOWN_IN = 2,
 	};
 	int oneFingerZoomDirection;
+	/// Bottom corner the phone controls gather in; local UI preference.
+	enum ThumbSide
+	{
+		THUMB_RIGHT = 0,
+		THUMB_LEFT = 1,
+	};
+	int thumbSide;
 	/// Resolves the platform default: Google Maps (Android) zooms in on a
 	/// downward drag, Apple Maps and others on an upward drag.
 	bool dragUpZoomsIn(void) const;

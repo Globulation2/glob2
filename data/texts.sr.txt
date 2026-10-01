@@ -3160,6 +3160,14 @@ Emoji
 Превлачење нагоре увећава
 [settings Drag down zooms in]
 Превлачење надоле увећава
+[settings Thumb side]
+Страна палца
+[settings Phone controls gather in this bottom corner.]
+На телефону се контроле окупљају у овом доњем углу.
+[settings Right]
+Десно
+[settings Left]
+Лево
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

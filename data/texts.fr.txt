@@ -3140,6 +3140,14 @@ Par défaut du système
 Glisser vers le haut zoome
 [settings Drag down zooms in]
 Glisser vers le bas zoome
+[settings Thumb side]
+Côté du pouce
+[settings Phone controls gather in this bottom corner.]
+Les commandes sur téléphone se regroupent dans ce coin inférieur.
+[settings Right]
+Droite
+[settings Left]
+Gauche
 [zoom factor %0]
 %0×
 [More]

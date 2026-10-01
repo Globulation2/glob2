@@ -3160,6 +3160,14 @@ Domyślne systemu
 Przeciągnij w górę, aby przybliżyć
 [settings Drag down zooms in]
 Przeciągnij w dół, aby przybliżyć
+[settings Thumb side]
+Strona kciuka
+[settings Phone controls gather in this bottom corner.]
+Na telefonie przyciski gromadzą się w tym dolnym rogu.
+[settings Right]
+Prawa
+[settings Left]
+Lewa
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

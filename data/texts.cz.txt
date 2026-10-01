@@ -3160,6 +3160,14 @@ Výchozí systému
 Tažením nahoru přiblížit
 [settings Drag down zooms in]
 Tažením dolů přiblížit
+[settings Thumb side]
+Strana palce
+[settings Phone controls gather in this bottom corner.]
+Ovládací prvky na telefonu se soustředí do tohoto dolního rohu.
+[settings Right]
+Vpravo
+[settings Left]
+Vlevo
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -55,9 +55,10 @@ test.describe('responsive mixed input',()=>{
     await expect.poll(async()=>(await snapshot(page)).tick).toBeGreaterThan(tick);
     expect((await snapshot(page)).screenClass).toContain('GameSessionScreen');
     await page.screenshot({path:info.outputPath('phone-gameplay-mouse.png')});
-    // A real touch selects the first icon in the content-sized palette.
+    // A real touch selects the first icon of the palette rail, the bottom cell
+    // nearest the right thumb.
     await touchMatch(page,32,820);
-    await touchMatch(page,50,698);
+    await touchMatch(page,346,764);
     await touchMatch(page,195,400);
     await page.screenshot({path:info.outputPath('phone-placement-preview.png')});
     await page.setViewportSize({width:844,height:390});

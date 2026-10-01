@@ -3160,6 +3160,14 @@ Järjestelmän oletus
 Ylös vetäminen lähentää
 [settings Drag down zooms in]
 Alas vetäminen lähentää
+[settings Thumb side]
+Peukalon puoli
+[settings Phone controls gather in this bottom corner.]
+Puhelimessa säätimet kootaan tähän alakulmaan.
+[settings Right]
+Oikea
+[settings Left]
+Vasen
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

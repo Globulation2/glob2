@@ -3156,6 +3156,14 @@ Mặc định hệ thống
 Kéo lên để phóng to
 [settings Drag down zooms in]
 Kéo xuống để phóng to
+[settings Thumb side]
+Phía ngón cái
+[settings Phone controls gather in this bottom corner.]
+Trên điện thoại, các nút điều khiển tập trung ở góc dưới này.
+[settings Right]
+Phải
+[settings Left]
+Trái
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

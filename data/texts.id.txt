@@ -3156,6 +3156,14 @@ Bawaan sistem
 Seret ke atas untuk memperbesar
 [settings Drag down zooms in]
 Seret ke bawah untuk memperbesar
+[settings Thumb side]
+Sisi ibu jari
+[settings Phone controls gather in this bottom corner.]
+Kontrol ponsel berkumpul di sudut bawah ini.
+[settings Right]
+Kanan
+[settings Left]
+Kiri
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

@@ -3232,6 +3232,14 @@ Emoji
 向上拖曳放大
 [settings Drag down zooms in]
 向下拖曳放大
+[settings Thumb side]
+拇指側
+[settings Phone controls gather in this bottom corner.]
+手機上的控制項會集中在這個下方角落。
+[settings Right]
+右側
+[settings Left]
+左側
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]

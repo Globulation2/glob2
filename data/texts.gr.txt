@@ -3230,6 +3230,14 @@ Emoji
 Σύρσιμο πάνω μεγεθύνει
 [settings Drag down zooms in]
 Σύρσιμο κάτω μεγεθύνει
+[settings Thumb side]
+Πλευρά αντίχειρα
+[settings Phone controls gather in this bottom corner.]
+Τα χειριστήρια στο τηλέφωνο συγκεντρώνονται σε αυτή την κάτω γωνία.
+[settings Right]
+Δεξιά
+[settings Left]
+Αριστερά
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]
