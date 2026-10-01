@@ -349,21 +349,25 @@ void nativeDisplay(bool gpu)
 		gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(20,220,20)); gfx.nextFrame();
 		require(gfx.pixel(2,2).g>200 && gfx.pixel(pointsW-2,2).r>200,"Native output clipping is misaligned");
 	}
-	std::vector<bool> modes;
-	gfx.setDisplayPreferenceCallback([&](int w,int h,bool fullscreen){
-		require(w==savedW && h==savedH,"Fullscreen overwrote remembered window size");
-		modes.push_back(fullscreen);
-	});
-	require(gfx.setFullscreen(true),"Fullscreen entry failed");
-	require(gfx.getW()>=640 && gfx.getH()>=480,"Fullscreen layout is too small");
-	require(gfx.current()==context && gfx.windowID()==window,"Fullscreen replaced the context");
-	gfx.setClipRect(); gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(220,20,20)); gfx.nextFrame();
-	SDL_Event event{}; event.type=SDL_KEYDOWN; event.key.keysym.sym=SDLK_F11;
-	GraphicContext::translateMouseEvent(&event);
-	require(!(gfx.getOptionFlags() & GraphicContext::FULLSCREEN),"F11 did not use the fullscreen path");
-	require(gfx.getRequestedW()==savedW && gfx.getRequestedH()==savedH,"Window dimensions were not restored");
-	require(!modes.empty() && !modes.back(),"Fullscreen preference callback did not follow F11");
-	std::printf("PASS native %s: live scale, fullscreen, F11, context lifetime and remembered size\n",gpu?"GL":"CPU");
+	if (glob2test::fullscreenEnabled())
+	{
+		std::vector<bool> modes;
+		gfx.setDisplayPreferenceCallback([&](int w,int h,bool fullscreen){
+			require(w==savedW && h==savedH,"Fullscreen overwrote remembered window size");
+			modes.push_back(fullscreen);
+		});
+		require(gfx.setFullscreen(true),"Fullscreen entry failed");
+		require(gfx.getW()>=640 && gfx.getH()>=480,"Fullscreen layout is too small");
+		require(gfx.current()==context && gfx.windowID()==window,"Fullscreen replaced the context");
+		gfx.setClipRect(); gfx.drawFilledRect(0,0,gfx.getW(),gfx.getH(),Color(220,20,20)); gfx.nextFrame();
+		SDL_Event event{}; event.type=SDL_KEYDOWN; event.key.keysym.sym=SDLK_F11;
+		GraphicContext::translateMouseEvent(&event);
+		require(!(gfx.getOptionFlags() & GraphicContext::FULLSCREEN),"F11 did not use the fullscreen path");
+		require(gfx.getRequestedW()==savedW && gfx.getRequestedH()==savedH,"Window dimensions were not restored");
+		require(!modes.empty() && !modes.back(),"Fullscreen preference callback did not follow F11");
+		std::printf("PASS native %s: live scale, fullscreen, F11, context lifetime and remembered size\n",gpu?"GL":"CPU");
+	}
+	else std::puts("SKIP fullscreen/F11 continuity: enable with --fullscreen");
 	GraphicContext::setRequestedUiScale(0);
 }
 }

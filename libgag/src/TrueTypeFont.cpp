@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <cmath>
 #include <iostream>
+#include <utility>
 
 #ifdef HAVE_FRIBIDI
 #include <fribidi/fribidi.h>
@@ -19,6 +20,26 @@
 
 namespace GAGCore
 {
+namespace
+{
+// Convert cached glyph dimensions to logical units using the exact output
+// transform. Rounded layout axes may have slightly different pixel densities.
+std::pair<float, float> glyphDrawSize(float width, float height, float rasterScale, bool scaled)
+{
+	if (!scaled) return {width, height};
+	const float correction = rasterScale / _gc->textRenderScale();
+	width *= correction;
+	height *= correction;
+	if (_gc->isNativeDesktop())
+	{
+		const float sx = float(_gc->getDrawableW()) / _gc->getW();
+		const float sy = float(_gc->getDrawableH()) / _gc->getH();
+		width *= std::min(sx, sy) / sx;
+		height *= std::min(sx, sy) / sy;
+	}
+	return {width, height};
+}
+}
 TrueTypeFont::TrueTypeFont()
 {
 	init();
@@ -384,23 +405,7 @@ void TrueTypeFont::drawString(DrawableSurface *surface, int x, int y, int w, con
 	if (data == NULL)
 		return;
 	DrawableSurface *s = data->s;
-	// Drawn at the raster's own size, from the same origin as before, so no glyph is
-	// resampled. The reported width stays the authored one, which the raster matches to
-	// within the rounding the font applies differently at every size.
-	// Cache dimensions use the integer font size; the current screen transform can
-	// differ slightly. Convert back to logical units using that exact transform so
-	// each raster pixel still occupies one device pixel when the cache is reused.
-	const float correction = scaled ? renderScale / _gc->textRenderScale() : 1.0f;
-	float dw = data->drawW * correction, dh = data->drawH * correction;
-	if (scaled && _gc->isNativeDesktop())
-	{
-		// Integer layout dimensions can round each output axis differently.
-		// Compensate for that difference so glyph pixels stay one-to-one.
-		const float sx=float(_gc->getDrawableW())/_gc->getW();
-		const float sy=float(_gc->getDrawableH())/_gc->getH();
-		dw *= std::min(sx,sy)/sx;
-		dh *= std::min(sx,sy)/sy;
-	}
+	const auto [dw, dh] = glyphDrawSize(data->drawW, data->drawH, renderScale, scaled);
 
 	// render
 	if (w)
@@ -433,20 +438,7 @@ void TrueTypeFont::drawString(DrawableSurface *surface, float x, float y, float 
 	if (data == NULL)
 		return;
 	DrawableSurface *s = data->s;
-	// Cache dimensions use the integer font size; the current screen transform can
-	// differ slightly. Convert back to logical units using that exact transform so
-	// each raster pixel still occupies one device pixel when the cache is reused.
-	const float correction = scaled ? renderScale / _gc->textRenderScale() : 1.0f;
-	float dw = data->drawW * correction, dh = data->drawH * correction;
-	if (scaled && _gc->isNativeDesktop())
-	{
-		// Integer layout dimensions can round each output axis differently.
-		// Compensate for that difference so glyph pixels stay one-to-one.
-		const float sx=float(_gc->getDrawableW())/_gc->getW();
-		const float sy=float(_gc->getDrawableH())/_gc->getH();
-		dw *= std::min(sx,sy)/sx;
-		dh *= std::min(sx,sy)/sy;
-	}
+	const auto [dw, dh] = glyphDrawSize(data->drawW, data->drawH, renderScale, scaled);
 
 	// render
 	if (w != 0.0f)

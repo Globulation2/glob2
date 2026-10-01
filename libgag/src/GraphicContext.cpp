@@ -313,10 +313,9 @@ namespace GAGCore
 
 	float GraphicContext::textRenderScale(void)
 	{
-        // Both GPU backends draw glyph textures directly to the output. Include
-        // the local UI transform: touch controls can enlarge text independently
-        // of the window's logical-to-drawable scale. Pure software composition
-        // still cannot preserve more pixels than its destination surface.
+        // GPU and native software backends rasterize glyphs at output density.
+        // Include the local UI transform used by enlarged touch controls.
+        // Unscaled software surfaces retain their authored raster size.
         if (!renderer && !(optionFlags & USEGPU)) return 1.0f;
         const float outputScale = softwareTransform ? 1.0f : drawableScale();
         const float scale = outputScale * (uiTransformActive ? uiTransformScale : 1.0f);

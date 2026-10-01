@@ -180,18 +180,6 @@ void SettingsScreen::buildGeneral()
 #endif
 		}
 #endif
-		choice("display.presentation", "Interface layout",
-			   "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
-			   int(parsePresentationPreference(s.interfacePresentation)),
-			   {tr("Automatic"), tr("Compact"), tr("Spacious")},
-			   [this](int v)
-			   {
-				   presentationPreference =
-					   static_cast<PresentationPreference>(std::clamp(v, 0, 2));
-				   globalContainer->settings.interfacePresentation =
-					   presentationPreferenceName(presentationPreference);
-				   commit();
-			   });
 		if (touchLayout)
 			choice("display.zoomdrag", "One-finger zoom", "Double-tap the map, hold, then drag to zoom.",
 				   s.oneFingerZoomDirection,
