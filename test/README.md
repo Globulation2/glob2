@@ -1033,7 +1033,11 @@ equivalence and full-game saved continuation.
 `python3 test/run_tests.py --filter 'ScriptEditor/*'` checks the map editor's
 SGSL/USL/JavaScript language selection, draft compilation and cancellation,
 `.js` load/save, embedded map source/mode round trips, and dropdown interaction
-with captures on desktop and both phone orientations.
+with captures on desktop and both phone orientations. It also exercises a real
+USL runtime resource failure during JavaScript-to-SGSL confirmation, verifies
+that both live programs survive the failure, and executes the committed SGSL
+program after its preparation objects are destroyed. SGSL exchange coverage
+checks story owner pointers in both resulting runtimes.
 
 The named `JavaScriptNumbers`, `JavaScriptTransactions`, `JavaScriptLifecycle`,
 `JavaScriptRealistic`, `JavaScriptPresentation`, `JavaScriptSession` and
@@ -1050,8 +1054,11 @@ build-time source revision and content hash; runners reject binaries built from
 a different source tree. The shared comparator also requires identical normalized
 Git source hashes across platforms. Git blob normalization accounts for checkout
 line endings and symlink representations; modified and untracked inputs still
-make development builds ineligible for the clean revision gate. A clean runner checkout alone does not establish binary
-provenance. The native corpus runner requires a clean
+make development builds ineligible for the clean revision gate. Manifests retain
+the actual Git status entries, and CI records checkout status before and after
+compilation, so unexpected dirty inputs can be diagnosed without relaxing that
+gate. A clean runner checkout alone does not establish binary provenance.
+The native corpus runner requires a clean
 committed revision; `--allow-dirty` is for development evidence only. Use fresh
 output directories and compare identical final revisions across platforms.
 

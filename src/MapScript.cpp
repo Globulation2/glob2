@@ -78,7 +78,7 @@ void MapScript::setMapScript(const std::string& newScript)
 }
 
 
-void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode)
+void MapScript::setMapScriptMode(MapScript::MapScriptMode newMode) noexcept
 {
 	mode = newMode;
 	if (mode == JavaScript && gui)
@@ -111,24 +111,40 @@ bool MapScript::compileCode()
 bool MapScript::replaceSource(MapScriptMode newMode, const std::string& newScript,
 							 MapScriptError& error)
 {
-	MapScript candidate(gui);
+	auto candidate = prepareSource(newMode, newScript, error);
+	if (!candidate)
+		return false;
+	commitPrepared(*candidate);
+	return true;
+}
+
+std::unique_ptr<MapScript> MapScript::prepareSource(MapScriptMode newMode,
+		const std::string& newScript, MapScriptError& error) const
+{
+	auto candidate = std::make_unique<MapScript>(gui);
 	// Preparing a draft must not clear the GUI's legacy space-wait flags.
 	// The public mode setter applies that presentation change only on commit.
-	candidate.mode = newMode;
-	candidate.script = newScript;
-	if (!candidate.compileCode())
+	candidate->mode = newMode;
+	candidate->script = newScript;
+	if (!candidate->compileCode())
 	{
-		error = candidate.getError();
-		return false;
+		error = candidate->getError();
+		return nullptr;
 	}
+	return candidate;
+}
+
+void MapScript::commitPrepared(MapScript& candidate) noexcept
+{
+	assert(gui == candidate.gui);
 	static_assert(std::is_nothrow_swappable_v<Script::JavaScriptMap>);
 	static_assert(std::is_nothrow_swappable_v<MapScriptError>);
 	script.swap(candidate.script);
 	usl.swap(candidate.usl);
 	std::swap(javascript, candidate.javascript);
 	std::swap(jsError, candidate.jsError);
-	setMapScriptMode(newMode);
-	return true;
+	std::swap(mode, candidate.mode);
+	setMapScriptMode(mode);
 }
 
 const MapScriptError& MapScript::getError() const

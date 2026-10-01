@@ -338,7 +338,9 @@ public:
 	void removeTeam(int n);
 
 	void reset(void);
-	bool isTextShown;
+	//! Exchange prepared runtimes; rebind each story to its resulting owner.
+	void swap(MapScriptSGSL& other) noexcept;
+	bool isTextShown = false;
 	std::string textShown;
 	
 	//! source code of the script
@@ -367,7 +369,7 @@ private:
 
 	Functions functions;
 
-	int mainTimer;
+	int mainTimer = 0;
 	std::vector<bool> hasWon, hasLost;
 
 	std::vector<Story> stories;

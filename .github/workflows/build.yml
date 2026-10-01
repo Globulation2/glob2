@@ -847,6 +847,24 @@ jobs:
           ccache -z
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
+      - name: Record Windows checkout before compilation
+        run: |
+          mkdir -p artifacts/windows-source
+          {
+            command -v git
+            git --version
+            git config --show-origin --get-regexp '^core\.(symlinks|filemode|autocrlf)$' || true
+            git status --porcelain=v1 --untracked-files=all
+          } > artifacts/windows-source/before-build.log 2>&1
+          cat artifacts/windows-source/before-build.log
+
+      - name: Retain Windows checkout diagnostics before compilation
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: windows-source-before-build
+          path: artifacts/windows-source/before-build.log
+
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses
         run: |
@@ -854,6 +872,19 @@ jobs:
             unit-tests \
             engine-tests \
             map-report-test
+
+      - name: Record Windows checkout after compilation
+        if: ${{ !cancelled() && steps.actions_checkout_v4_1.outcome == 'success' }}
+        run: |
+          mkdir -p artifacts/windows-source
+          {
+            command -v git
+            git --version
+            git config --show-origin --get-regexp '^core\.(symlinks|filemode|autocrlf)$' || true
+            git status --porcelain=v1 --untracked-files=all
+            git diff --summary
+          } > artifacts/windows-source/after-build.log 2>&1
+          cat artifacts/windows-source/after-build.log
 
       - name: Execute shared JavaScript corpus
         run: python3 test/check_javascript_corpus.py --build-dir build/mingw/client/release --output artifacts/javascript-corpus
@@ -869,6 +900,7 @@ jobs:
           path: |
             artifacts/javascript-profile
             artifacts/javascript-corpus
+            artifacts/windows-source
 
       - name: Run the unit tests
         id: run_the_unit_tests
@@ -958,14 +990,16 @@ jobs:
 
       # Keep only what this run compiled or reused (a hit refreshes an entry's
       # timestamp), so a save never carries older commits' objects forward.
+      # Master pushes and authenticated manual runs may retain successful builds.
+      # Ordinary PRs only restore caches; later test failures do not discard objects.
       - name: Drop cache entries this run did not use
         id: drop_cache_entries_this_run_did_not_use
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
         run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
 
       - name: Save the compiler cache
         id: save_the_compiler_cache
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.build_glob2_and_the_regression_harnesses.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -1048,14 +1082,16 @@ jobs:
 
       # Keep only what this run compiled or reused (a hit refreshes an entry's
       # timestamp), so a save never carries older commits' objects forward.
+      # Master pushes and authenticated manual runs may retain successful builds.
+      # Ordinary PRs only restore caches; later test failures do not discard objects.
       - name: Drop cache entries this run did not use
         id: drop_cache_entries_this_run_did_not_use
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.build_the_yog_server.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
         run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
 
       - name: Save the compiler cache
         id: save_the_compiler_cache
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.build_the_yog_server.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}

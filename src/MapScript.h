@@ -4,6 +4,7 @@
 #pragma once
 
 #include "SDL.h"
+#include <memory>
 #include <string>
 #include "MapScriptUSL.h"
 #include "script/JavaScriptMap.h"
@@ -53,7 +54,7 @@ public:
 	MapScriptMode getMapScriptMode() const { return mode; }
 	
 	///This sets the current map script mode
-	void setMapScriptMode(MapScriptMode newMode);
+	void setMapScriptMode(MapScriptMode newMode) noexcept;
 	
 	///This compiles the code and returns false on error.
 	///Both USL and JavaScript compile through their respective backends.
@@ -61,6 +62,12 @@ public:
 	///Compile a replacement separately, then commit its source and runtime together.
 	///Failure leaves the active source, mode and saved globals unchanged.
 	bool replaceSource(MapScriptMode newMode, const std::string& newScript, MapScriptError& error);
+	///Prepare without changing this map; null means a compilation failure.
+	std::unique_ptr<MapScript> prepareSource(MapScriptMode newMode, const std::string& newScript,
+											MapScriptError& error) const;
+	///Commit a successfully prepared candidate for this same GUI, without allocating.
+	///The candidate receives the previous backend and owns its eventual destruction.
+	void commitPrepared(MapScript& candidate) noexcept;
 
 	///This returns the error
 	const MapScriptError& getError() const;

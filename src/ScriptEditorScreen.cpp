@@ -139,61 +139,62 @@ void ScriptEditorScreen::showTab(int tab)
 
 bool ScriptEditorScreen::testCompile()
 {
-	if (selectedLanguage == Language::JavaScript)
+	try
 	{
-		try
+		if (selectedLanguage == Language::JavaScript)
 		{
 			Script::makeRuntime()->validate(script);
 			compiled = true;
 			compilation = "Compilation success";
 		}
-		catch (const std::exception &error)
+		else if (selectedLanguage == Language::USL)
 		{
-			compiled = false;
-			compilation = error.what();
-		}
-	}
-	else if (selectedLanguage == Language::USL)
-	{
-		// Compile a draft without changing the map's source, mode or saved globals.
-		MapScript candidate(game->gui);
-		candidate.setMapScript(script);
-		if (candidate.compileCode())
-		{
-			compiled = true;
-			compilation = "Compilation success";
-		}
-		else
-		{
-			MapScriptError error = candidate.getError();
-			compiled = false;
-			compilation = FormattableString("Error at %0:%1: %2")
-							  .arg(error.getLine())
-							  .arg(error.getColumn())
-							  .arg(error.getMessage());
-		}
-	}
-	else
-	{
-		MapScriptSGSL candidate;
-		const ErrorReport er = candidate.compileScript(game, script.c_str());
-		if (er.type == ErrorReport::ET_OK)
-		{
-			compiled = true;
-			compilation = "Compilation success";
+			// Compile a draft without changing the map's source, mode or saved globals.
+			MapScript candidate(game->gui);
+			candidate.setMapScript(script);
+			if (candidate.compileCode())
+			{
+				compiled = true;
+				compilation = "Compilation success";
+			}
+			else
+			{
+				MapScriptError error = candidate.getError();
+				compiled = false;
+				compilation = FormattableString("Error at %0:%1: %2")
+								  .arg(error.getLine())
+								  .arg(error.getColumn())
+								  .arg(error.getMessage());
+			}
 		}
 		else
 		{
-			compiled = false;
-			compilation = FormattableString("Compilation failure : %0:%1:(%2):%3")
-							  .arg(er.line + 1)
-							  .arg(er.col)
-							  .arg(er.pos)
-							  .arg(er.getErrorString());
-			host().state("script").cursor =
-				std::min<std::size_t>(std::size_t(std::max(0, int(er.pos))), script.size());
+			MapScriptSGSL candidate;
+			const ErrorReport er = candidate.compileScript(game, script.c_str());
+			if (er.type == ErrorReport::ET_OK)
+			{
+				compiled = true;
+				compilation = "Compilation success";
+			}
+			else
+			{
+				compiled = false;
+				compilation = FormattableString("Compilation failure : %0:%1:(%2):%3")
+								  .arg(er.line + 1)
+								  .arg(er.col)
+								  .arg(er.pos)
+								  .arg(er.getErrorString());
+				host().state("script").cursor =
+					std::min<std::size_t>(std::size_t(std::max(0, int(er.pos))), script.size());
+			}
 		}
 	}
+	catch (const std::exception& error)
+	{
+		compiled = false;
+		compilation = error.what();
+	}
+
 	invalidate();
 	return compiled;
 }
@@ -203,11 +204,11 @@ void ScriptEditorScreen::confirm()
 	//Load the script
 	if (!testCompile())
 		return;
-	if (selectedLanguage != Language::SGSL)
+	try
 	{
-		MapScriptError error;
-		try
+		if (selectedLanguage != Language::SGSL)
 		{
+			MapScriptError error;
 			if (!mapScript->replaceSource(selectedLanguage == Language::JavaScript
 											 ? MapScript::JavaScript : MapScript::USL, script, error))
 			{
@@ -217,30 +218,46 @@ void ScriptEditorScreen::confirm()
 				return;
 			}
 		}
-		catch (const std::exception& error)
+		else
 		{
-			compiled = false;
-			compilation = error.what();
-			invalidate();
-			return;
+			MapScriptSGSL candidate;
+			candidate.sourceCode = script;
+			const ErrorReport error = candidate.compileScript(game);
+			if (error.type != ErrorReport::ET_OK)
+			{
+				compiled = false;
+				compilation = error.getErrorString();
+				invalidate();
+				return;
+			}
+			// Prepare the inactive empty USL backend before replacing either live
+			// script. An unavailable USL runtime must not destroy working JS globals.
+			// Released USL+SGSL maps retain their existing USL backend when edited.
+			std::unique_ptr<MapScript> emptyUSL;
+			if (mapScript->getMapScriptMode() == MapScript::JavaScript)
+			{
+				MapScriptError error;
+				emptyUSL = mapScript->prepareSource(MapScript::USL, "", error);
+				if (!emptyUSL)
+				{
+					compiled = false;
+					compilation = error.getMessage();
+					invalidate();
+					return;
+				}
+			}
+			// Every allocation and compilation has finished. Both swaps are noexcept.
+			sgslMapScript->swap(candidate);
+			if (emptyUSL)
+				mapScript->commitPrepared(*emptyUSL);
 		}
 	}
-	else
+	catch (const std::exception& error)
 	{
-		std::string committedSource = script;
-		const ErrorReport error = sgslMapScript->compileScript(game, script.c_str());
-		if (error.type != ErrorReport::ET_OK)
-		{
-			compiled = false;
-			compilation = error.getErrorString();
-			invalidate();
-			return;
-		}
-		// Selecting SGSL stops JavaScript. Released maps may deliberately pair
-		// USL with SGSL, so editing that legacy payload must retain their USL.
-		if (mapScript->getMapScriptMode() == MapScript::JavaScript)
-			mapScript->reset();
-		sgslMapScript->sourceCode.swap(committedSource);
+		compiled = false;
+		compilation = error.what();
+		invalidate();
+		return;
 	}
 
 	//Load the objectives

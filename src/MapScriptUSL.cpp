@@ -176,12 +176,15 @@ bool MapScriptUSL::compileCode(const std::string& code)
 			else
 			{
 				cerr << "MapScriptUSL::compileCode(): Cannot open script directory " << *dir << endl;
+				error = MapScriptError(0, 0, std::string("Cannot open USL runtime directory: ") + *dir);
 				return false;
 			}
 		}
 		catch(Exception& e)
 		{
 			cerr << "MapScriptUSL::compileCode(): Error in usl runtime file " << e.position << " : " << e.what() << endl;
+			error = MapScriptError(e.position.line, e.position.column,
+				std::string("Error in USL runtime: ") + e.what());
 			return false;
 		}
 		++dir;

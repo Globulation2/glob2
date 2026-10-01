@@ -5,7 +5,10 @@
 #include "gui/LoadSaveDialog.h"
 #include <Toolkit.h>
 #include <FileManager.h>
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 #include <algorithm>
+#include <fstream>
 #include <tuple>
 
 using Language = ScriptEditorScreen::Language;
@@ -228,39 +231,6 @@ TEST_CASE("JavaScript file loading preserves embedded NULs for validation" *
 	CHECK(world.game.mapscript.getMapScript().empty());
 }
 
-TEST_CASE("Failed prepared map replacements preserve active globals and language" *
-		  doctest::test_suite("ScriptEditor"))
-{
-	glob2test::HeadlessGlobals globals;
-	glob2test::HeadlessGame world;
-	auto &map = world.game.mapscript;
-	map.setMapScriptMode(MapScript::JavaScript);
-	map.setMapScript("let calls=0; function step(ctx) { calls++; return []; }");
-	REQUIRE(map.compileCode());
-	map.syncStep(&world.gui);
-	const auto source = map.getMapScript();
-	const auto checksum = map.checkSum();
-	MapScriptError error;
-	CHECK_FALSE(map.replaceSource(MapScript::USL, "this is not valid USL !!!!", error));
-	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
-	CHECK(map.getMapScript() == source);
-	CHECK(map.checkSum() == checksum);
-	CHECK_FALSE(map.replaceSource(MapScript::JavaScript, "function step( {", error));
-	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
-	CHECK(map.getMapScript() == source);
-	CHECK(map.checkSum() == checksum);
-	REQUIRE(map.replaceSource(MapScript::USL, "", error));
-	CHECK(map.getMapScriptMode() == MapScript::USL);
-	CHECK(map.getMapScript().empty());
-	world.gui.setIsSpaceSet(true);
-	CHECK_FALSE(map.replaceSource(MapScript::JavaScript, "function step( {", error));
-	CHECK(map.getMapScriptMode() == MapScript::USL);
-	CHECK(map.getMapScript().empty());
-	CHECK(world.gui.isSpaceSet());
-	REQUIRE(map.replaceSource(MapScript::JavaScript, source, error));
-	CHECK_FALSE(world.gui.isSpaceSet());
-}
-
 TEST_CASE("Editing legacy SGSL retains the released USL and SGSL payload pairing" *
 		  doctest::test_suite("ScriptEditor"))
 {
@@ -280,6 +250,80 @@ TEST_CASE("Editing legacy SGSL retains the released USL and SGSL payload pairing
 	CHECK(map.getMapScriptMode() == MapScript::USL);
 	CHECK(map.getMapScript() == source);
 	CHECK(world.game.sgslScript.sourceCode == editor.scriptText());
+}
+
+TEST_CASE("JavaScript to SGSL prepares both runtimes before committing" *
+		  doctest::test_suite("ScriptEditor"))
+{
+	glob2test::GlobalsOptions options;
+	options.loadStrings = true;
+	glob2test::HeadlessGlobals globals(options);
+	glob2test::HeadlessGame world;
+	auto& legacy = world.game.sgslScript;
+	legacy.sourceCode = R"(show("Retained legacy") timer(9) space)";
+	REQUIRE(legacy.compileScript(&world.game).type == ErrorReport::ET_OK);
+	legacy.syncStep(&world.gui);
+	auto legacySnapshot = [&] {
+		auto* storage = new GAGCore::MemoryStreamBackend;
+		GAGCore::BinaryOutputStream output(storage);
+		legacy.save(&output, &world.game);
+		return storage->takeContents();
+	};
+	const auto retainedLegacy = legacySnapshot();
+	auto& map = world.game.mapscript;
+	map.setMapScriptMode(MapScript::JavaScript);
+	map.setMapScript("let calls=0; function step(ctx) { calls++; return []; }");
+	REQUIRE(map.compileCode());
+	map.syncStep(&world.gui);
+	const auto source = map.getMapScript();
+	const auto checksum = map.checkSum();
+	const auto legacyChecksum = legacy.checkSum();
+	world.game.missionBriefing = "Retain briefing on failed preparation";
+	ScriptEditorScreen editor(&world.game);
+	editor.selectLanguage(Language::SGSL);
+	editor.setScriptText(R"(show("Committed legacy") timer(3) win(0) space)");
+
+	// A real broken runtime resource makes even an empty USL backend fail to
+	// prepare. The overlay is disposable; neither installed nor tracked data changes.
+	glob2test::TempDir overlay("broken-usl-runtime");
+	const auto badRuntime = overlay.path / "data/usl/Language/Runtime/invalid-editor-runtime.usl";
+	std::filesystem::create_directories(badRuntime.parent_path());
+	{
+		std::ofstream file(badRuntime);
+		file << "this is not valid USL !!!!";
+		REQUIRE(file.good());
+	}
+	GAGCore::Toolkit::getFileManager()->addDir(overlay.path.string());
+	editor.confirm();
+	CHECK_FALSE(editor.finished());
+	CHECK(editor.compilationText().find("USL runtime") != std::string::npos);
+	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
+	CHECK(map.getMapScript() == source);
+	CHECK(map.checkSum() == checksum);
+	CHECK(legacy.checkSum() == legacyChecksum);
+	CHECK(legacySnapshot() == retainedLegacy);
+	CHECK(world.game.missionBriefing == "Retain briefing on failed preparation");
+	CHECK_FALSE(world.game.legacyScriptActive());
+
+	std::filesystem::remove(badRuntime);
+	editor.confirm();
+	REQUIRE(editor.finished());
+	CHECK(map.getMapScriptMode() == MapScript::USL);
+	CHECK(map.getMapScript().empty());
+	CHECK(map.checkSum() == 0);
+	CHECK(legacy.sourceCode == editor.scriptText());
+	CHECK(world.game.legacyScriptActive());
+	// confirm() destroyed both candidates. Story owner pointers must now refer
+	// to the live SGSL object for its presentation, timer and win state writes.
+	world.game.scriptSyncStep();
+	CHECK(legacy.isTextShown);
+	CHECK(legacy.textShown == "Committed legacy");
+	CHECK(legacy.getMainTimer() == 3);
+	CHECK_FALSE(legacy.hasTeamWon(0)); // SGSL delays victory until its timer expires.
+	for (int tick = 0; tick < 3; ++tick)
+		world.game.scriptSyncStep();
+	CHECK(legacy.getMainTimer() == 0);
+	CHECK(legacy.hasTeamWon(0));
 }
 
 TEST_CASE("Script language dropdown selects JavaScript on desktop and phone [display][artifacts]" *

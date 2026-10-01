@@ -5,6 +5,7 @@
 #include "WinningConditions.h"
 #include <FileManager.h>
 #include <Toolkit.h>
+#include <fstream>
 
 struct ScriptPresentationFixture
 {
@@ -177,4 +178,85 @@ TEST_CASE("JavaScript does not advance or display a retained SGSL timer" *
 	mapScript.reset();
 	world.game.scriptSyncStep();
 	CHECK(world.game.legacyScriptTimer() == 8);
+}
+
+
+TEST_CASE("Failed prepared map replacements preserve active globals and language" *
+		  doctest::test_suite("JavaScriptPresentation"))
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world;
+	auto &map = world.game.mapscript;
+	map.setMapScriptMode(MapScript::JavaScript);
+	map.setMapScript("let calls=0; function step(ctx) { calls++; return []; }");
+	REQUIRE(map.compileCode());
+	map.syncStep(&world.gui);
+	const auto source = map.getMapScript();
+	const auto checksum = map.checkSum();
+	MapScriptError error;
+	glob2test::TempDir overlay("broken-usl-preparation");
+	const auto badRuntime = overlay.path / "data/usl/Language/Runtime/invalid-prepared-runtime.usl";
+	std::filesystem::create_directories(badRuntime.parent_path());
+	{
+		std::ofstream file(badRuntime);
+		file << "this is not valid USL !!!!";
+		REQUIRE(file.good());
+	}
+	GAGCore::Toolkit::getFileManager()->addDir(overlay.path.string());
+	CHECK_FALSE(map.prepareSource(MapScript::USL, "", error));
+	CHECK(error.getMessage().find("USL runtime") != std::string::npos);
+	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
+	CHECK(map.getMapScript() == source);
+	CHECK(map.checkSum() == checksum);
+	std::filesystem::remove(badRuntime);
+	CHECK_FALSE(map.replaceSource(MapScript::USL, "this is not valid USL !!!!", error));
+	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
+	CHECK(map.getMapScript() == source);
+	CHECK(map.checkSum() == checksum);
+	CHECK_FALSE(map.replaceSource(MapScript::JavaScript, "function step( {", error));
+	CHECK(map.getMapScriptMode() == MapScript::JavaScript);
+	CHECK(map.getMapScript() == source);
+	CHECK(map.checkSum() == checksum);
+	REQUIRE(map.replaceSource(MapScript::USL, "", error));
+	CHECK(map.getMapScriptMode() == MapScript::USL);
+	CHECK(map.getMapScript().empty());
+	world.gui.setIsSpaceSet(true);
+	CHECK_FALSE(map.replaceSource(MapScript::JavaScript, "function step( {", error));
+	CHECK(map.getMapScriptMode() == MapScript::USL);
+	CHECK(map.getMapScript().empty());
+	CHECK(world.gui.isSpaceSet());
+	REQUIRE(map.replaceSource(MapScript::JavaScript, source, error));
+	CHECK_FALSE(world.gui.isSpaceSet());
+}
+
+TEST_CASE("Prepared SGSL exchanges rebind stories in both runtimes" *
+		  doctest::test_suite("JavaScriptPresentation"))
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world;
+	MapScriptSGSL first;
+	MapScriptSGSL second;
+	first.sourceCode = R"(show("First") timer(7) win(0) space)";
+	second.sourceCode = R"(show("Second") timer(4) loose(0) space)";
+	REQUIRE(first.compileScript(&world.game).type == ErrorReport::ET_OK);
+	REQUIRE(second.compileScript(&world.game).type == ErrorReport::ET_OK);
+	first.swap(second);
+	first.syncStep(&world.gui);
+	CHECK(first.textShown == "Second");
+	CHECK(first.getMainTimer() == 4);
+	CHECK(first.hasTeamLost(0));
+	CHECK_FALSE(first.hasTeamWon(0));
+	CHECK_FALSE(second.isTextShown);
+	CHECK(second.getMainTimer() == 0);
+	second.syncStep(&world.gui);
+	CHECK(second.textShown == "First");
+	CHECK(second.getMainTimer() == 7);
+	CHECK_FALSE(second.hasTeamWon(0));
+	for (int tick = 0; tick < 7; ++tick)
+		second.syncStep(&world.gui);
+	CHECK(second.getMainTimer() == 0);
+	CHECK(second.hasTeamWon(0));
+	CHECK_FALSE(second.hasTeamLost(0));
+	CHECK(first.getMainTimer() == 4);
+	CHECK(first.textShown == "Second");
 }

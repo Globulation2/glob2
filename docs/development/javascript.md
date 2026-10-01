@@ -71,8 +71,10 @@ saving the map embeds them. JavaScript maps reopen with JavaScript selected,
 regardless of the legacy default-language setting. **Load** and **Save** use
 `.js` files while JavaScript is selected. Switching languages keeps separate
 drafts until the dialog closes; compilation and file loading leave the map
-unchanged until OK. JavaScript and USL replacements are compiled separately before committing;
-failed compilation preserves the active source, language and saved globals.
+unchanged until OK. Replacements are compiled separately before committing;
+failed preparation preserves the active sources, language and saved globals,
+including when changing from JavaScript to SGSL. That transition prepares both
+the SGSL program and an empty USL backend before replacing either live runtime.
 SGSL remains a separate legacy payload: its source is retained
 while JavaScript is selected, but it does not execute or present text/timers then.
 Choosing **SGSL** and pressing OK clears an active JavaScript map runtime and

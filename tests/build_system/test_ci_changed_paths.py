@@ -4,6 +4,7 @@ import importlib.util
 from pathlib import Path
 import re
 import subprocess
+from types import SimpleNamespace
 import unittest
 
 
@@ -148,6 +149,40 @@ class ChangedPathsTest(unittest.TestCase):
                 )
                 self.assertEqual(result.returncode, 0,
                                  f"Generated compiler cache would become a source input: {path}")
+
+    def test_windows_cache_writes_require_authorized_event_and_successful_build(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        for job, build in (("windows", "build_glob2_and_the_regression_harnesses"),
+                           ("windows-server", "build_the_yog_server")):
+            block = workflow.split(f"  {job}:\n", 1)[1].split("\n  # The browser checks", 1)[0]
+            if job == "windows":
+                block = block.split("\n  windows-server:", 1)[0]
+            for step in ("Drop cache entries this run did not use", "Save the compiler cache"):
+                guard = re.search(r"      - name: " + re.escape(step) +
+                                  r"\n.*?        if: \$\{\{ (.*?) \}\}", block, re.S).group(1)
+                expected = ("!cancelled() && steps.cache_ready.outcome == 'success' && "
+                            f"steps.{build}.outcome == 'success' && "
+                            "((github.event_name == 'push' && github.ref == 'refs/heads/master') "
+                            "|| github.event_name == 'workflow_dispatch')")
+                self.assertEqual(guard, expected)
+                expression = guard.replace("!cancelled()", "not cancelled").replace("&&", "and").replace("||", "or")
+                for event, ref, built, cancelled, allowed in (
+                    ("pull_request", "refs/pull/478/merge", "success", False, False),
+                    ("push", "refs/heads/codex/javascript-foundation", "success", False, False),
+                    ("workflow_dispatch", "refs/heads/codex/javascript-foundation", "success", False, True),
+                    ("push", "refs/heads/master", "success", False, True),
+                    ("workflow_dispatch", "refs/heads/master", "failure", False, False),
+                    ("workflow_dispatch", "refs/heads/master", "success", True, False),
+                ):
+                    with self.subTest(job=job, step=step, event=event, built=built, cancelled=cancelled):
+                        context = {
+                            "cancelled": cancelled,
+                            "github": SimpleNamespace(event_name=event, ref=ref),
+                            "steps": SimpleNamespace(cache_ready=SimpleNamespace(outcome="success"),
+                                                     **{build: SimpleNamespace(outcome=built)}),
+                        }
+                        # Evaluate only the exact, asserted expression above.
+                        self.assertEqual(eval(expression, {"__builtins__": {}}, context), allowed)
 
 
 if __name__ == "__main__":

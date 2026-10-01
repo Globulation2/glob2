@@ -10,6 +10,7 @@
 #include <iostream>
 #include <optional>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <Stream.h>
@@ -31,6 +32,26 @@ std::optional<int> mapAreaNumber(const Game *game, const std::string &name)
 MapScriptSGSL::~MapScriptSGSL(void)
 {
 	
+}
+
+void MapScriptSGSL::swap(MapScriptSGSL& other) noexcept
+{
+	std::swap(isTextShown, other.isTextShown);
+	textShown.swap(other.textShown);
+	sourceCode.swap(other.sourceCode);
+	functions.swap(other.functions);
+	std::swap(mainTimer, other.mainTimer);
+	hasWon.swap(other.hasWon);
+	hasLost.swap(other.hasLost);
+	stories.swap(other.stories);
+	areas.swap(other.areas);
+	flags.swap(other.flags);
+	// Stories use their owner for timers, areas, flags and scenario actions.
+	// Rebind both vectors: the replaced runtime also lives until its owner dies.
+	for (auto& story : stories)
+		story.mapscript = this;
+	for (auto& story : other.stories)
+		story.mapscript = &other;
 }
 
 bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
