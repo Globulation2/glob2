@@ -74,7 +74,7 @@ def main():
                       'SDL_RENDER_DRIVER=software', 'SDL_AUDIODRIVER=dummy',
                       'GLOB2_USER_DATA_DIR=' + profile, 'GLOB2_ASSET_DIR=' + remote,
                       'GLOB2_TEST_SOURCE_ROOT=' + remote,
-                      'timeout', str(timeout), './' + name] + extra
+                      'timeout', '-k', '5', str(timeout), './' + name] + extra
         shell = ('cd ' + shlex.quote(remote) + ' && mkdir -p ' + shlex.quote(profile) +
                  ' && ' + shlex.join(invocation))
         # Stream to disk so long-running suites remain diagnosable mid-run.
