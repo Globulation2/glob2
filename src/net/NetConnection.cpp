@@ -4,22 +4,9 @@
 #include "NetConnection.h"
 #include "NetMessage.h"
 #include <BinaryStream.h>
-#include <StreamBackend.h>
+#include "PacketInput.h"
 #include <stdexcept>
 
-namespace {
-// Legacy MemoryStreamBackend supplies zeros on overread. Network payloads must
-// fail closed instead of allowing truncated messages to acquire default fields.
-class PacketInput final : public GAGCore::MemoryStreamBackend {
-    size_t length;
-public:
-    PacketInput(const void* bytes, size_t size) : MemoryStreamBackend(bytes, size), length(size) { seekFromStart(0); }
-    void read(void* bytes, size_t size) override {
-        if (size > length - getPosition()) throw std::runtime_error("Truncated network message");
-        MemoryStreamBackend::read(bytes, size);
-    }
-};
-}
 NetConnection::NetConnection() : NetConnection(makeNetTransport()) {}
 NetConnection::NetConnection(std::unique_ptr<NetTransport> selected) : transport(std::move(selected)) {
     if (!transport) throw std::invalid_argument("Network transport is required");

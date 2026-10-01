@@ -5,7 +5,7 @@
 #include "NetConsts.h"
 #include "Order.h"
 #include "BinaryStream.h"
-#include "StreamBackend.h"
+#include "PacketInput.h"
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <sstream>
@@ -49,10 +49,11 @@ void NetBroadcastListener::update()
                 NET_DestroyDatagram(packet); packet = nullptr; continue;
             }
             try {
-                auto *msb = new MemoryStreamBackend(packet->buf + NET_FRAME_LENGTH_PREFIX_BYTES, length);
+                auto *msb = new PacketInput(packet->buf + NET_FRAME_LENGTH_PREFIX_BYTES, length);
                 BinaryInputStream bis(msb);
                 LANGameInformation info;
                 info.decodeData(&bis);
+                if (msb->getPosition() != length) throw std::runtime_error("Invalid LAN advertisement length");
                 auto found = std::find(addresses.begin(), addresses.end(), address);
                 if (found == addresses.end()) {
                     addresses.push_back(address); games.push_back(info); timeouts.push_back(1500);
