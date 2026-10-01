@@ -180,9 +180,11 @@ jobs:
         run: python3 tools/javascript/verify-vendor.py
 
       - name: Execute shared JavaScript corpus
+        id: execute_shared_javascript_corpus
         run: python3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/javascript-corpus
 
       - name: Verify frozen JavaScript simulation profile
+        id: verify_frozen_javascript_simulation_profile
         run: python3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile
 
       - name: Retain released simulation compatibility evidence
@@ -892,9 +894,11 @@ jobs:
           cat artifacts/windows-source/after-build.log
 
       - name: Execute shared JavaScript corpus
+        id: execute_shared_javascript_corpus
         run: python3 test/check_javascript_corpus.py --build-dir build/mingw/client/release --output artifacts/javascript-corpus
 
       - name: Verify frozen JavaScript simulation profile
+        id: verify_frozen_javascript_simulation_profile
         run: python3 test/check_javascript.py build/mingw/client/release/src/glob2.exe --output artifacts/javascript-profile
 
       - name: Upload JavaScript simulation evidence

@@ -201,6 +201,19 @@ class ChangedPathsTest(unittest.TestCase):
                 self.assertLess(cache, compile)
                 self.assertEqual(block.count("git config --local core.autocrlf true"), 1)
 
+    def test_javascript_evidence_steps_are_visible_to_ci_failure_summary(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        for name, identifier in (
+            ("Execute shared JavaScript corpus", "execute_shared_javascript_corpus"),
+            ("Verify frozen JavaScript simulation profile", "verify_frozen_javascript_simulation_profile"),
+        ):
+            with self.subTest(step=name):
+                definitions = re.findall(r"      - name: " + re.escape(name) +
+                                         r"\n(.*?)(?=      - |\n  \w|\Z)", workflow, re.S)
+                self.assertEqual(len(definitions), 2, "Expected Linux and Windows evidence steps")
+                for definition in definitions:
+                    self.assertIn(f"        id: {identifier}\n", definition)
+
 
 if __name__ == "__main__":
     unittest.main()
