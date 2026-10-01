@@ -65,11 +65,16 @@ namespace GAGCore
                     glBegin(GL_QUADS);
                     for (const auto &quad : quads)
                     {
-                        glColor3ub(quad.color.r, quad.color.g, quad.color.b);
-                        glVertex2f(quad.x, quad.y);
-                        glVertex2f(quad.x + quad.w, quad.y);
-                        glVertex2f(quad.x + quad.w, quad.y + quad.h);
-                        glVertex2f(quad.x, quad.y + quad.h);
+                        // Emscripten interleaves immediate-mode attributes: each
+                        // vertex needs a color entry, even when a quad is uniform.
+                        const auto vertex = [&](float x, float y) {
+                            glColor3ub(quad.color.r, quad.color.g, quad.color.b);
+                            glVertex2f(x, y);
+                        };
+                        vertex(quad.x, quad.y);
+                        vertex(quad.x + quad.w, quad.y);
+                        vertex(quad.x + quad.w, quad.y + quad.h);
+                        vertex(quad.x, quad.y + quad.h);
                     }
                     glEnd();
                 }
