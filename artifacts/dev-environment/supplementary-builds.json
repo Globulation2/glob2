@@ -1,0 +1,29 @@
+{
+  "status": "deliberately interrupted after merge",
+  "reason": "Completed platform builds and smoke/runtime validation are retained; supplementary rebuilds after unrelated master integration were not completed and are not counted as passed. Current-head CI remains tracked on the PR.",
+  "source_head": "8049cc1349797b06e0eb3780d927fa5553f8c4a3",
+  "processes": [
+    29478,
+    29479,
+    29480,
+    29481,
+    29504,
+    29543,
+    30761,
+    34089,
+    34112,
+    34114,
+    34850,
+    34851,
+    35015,
+    35026,
+    35027,
+    35029,
+    35033,
+    35034,
+    35043,
+    35045,
+    35049,
+    35051
+  ]
+}

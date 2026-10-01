@@ -40,7 +40,7 @@
   },
   "space": {
     "budget_bytes": 16106127360,
-    "managed_cache_and_bundle_bytes": 5064183808,
+    "managed_cache_and_bundle_bytes": 5088882688,
     "installed_toolchain_bytes": 9132990464,
     "migration_reclaimed_bytes": 902414336,
     "busy_checkouts": [
@@ -73,6 +73,36 @@
     "The first iOS smoke launch timed out; the retry passed after a system app launch verified simulator readiness.",
     "CI results are reported separately on the PR."
   ],
-  "pending_refresh": "The supplementary rebuilds begun before master integration were interrupted deliberately; consistent current-head rebuilds are in progress. Completed prior shared-store builds and smoke/checksum evidence remain retained separately.",
-  "completed_build_evidence_commit": "aa899d8cc60b7ffe732948231d2d64a97cfa556f"
+  "completed_build_evidence_commit": "aa899d8cc60b7ffe732948231d2d64a97cfa556f",
+  "merge_commit": "cfd022c080fb699abcad86793ed1b6bdb94c2404",
+  "supplementary_current_head_builds": {
+    "status": "deliberately interrupted after merge",
+    "reason": "Completed platform builds and smoke/runtime validation are retained; supplementary rebuilds after unrelated master integration were not completed and are not counted as passed. Current-head CI remains tracked on the PR.",
+    "source_head": "8049cc1349797b06e0eb3780d927fa5553f8c4a3",
+    "processes": [
+      29478,
+      29479,
+      29480,
+      29481,
+      29504,
+      29543,
+      30761,
+      34089,
+      34112,
+      34114,
+      34850,
+      34851,
+      35015,
+      35026,
+      35027,
+      35029,
+      35033,
+      35034,
+      35043,
+      35045,
+      35049,
+      35051
+    ]
+  },
+  "ci_snapshot": "ci-final.json: current-head full matrix still in progress at merge; no completed current-head full matrix claimed."
 }
