@@ -998,3 +998,11 @@ the default game's per-100-tick checksums with
 `glob2test::GameOptions::experiments`; `GameOptions::header` installs the
 one-local-player header and seed they need. Design and numbers:
 [guard-area balancing](../docs/features/guard-area-balancing.md).
+
+The opt-in `software-render-benchmark` tool profiles loaded games through the production
+software renderer. It is part of `glob2-tools`, not a CI timing threshold. See
+[Software rendering architecture and profiling](../docs/development/reference.md#software-rendering-architecture-and-profiling)
+for fixture capture, paired CPU measurements and diagnostic overrides. The
+`SoftwareRenderer` suite checks raster sampling, ordering, opacity revisions and
+terrain-cache correctness; `PortableRenderer`, `WindowResize`, `MapRenderResize` and
+`HighResolutionIntegration` cover the shared facade and window lifecycle.

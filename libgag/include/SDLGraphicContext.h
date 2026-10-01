@@ -26,6 +26,7 @@
 namespace GAGCore
 {
     class RenderBackend;
+    class SoftwareFramePresenter;
     struct RenderOperations;
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
@@ -228,6 +229,7 @@ namespace GAGCore
 		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
         std::uint64_t contentRevision() const { return pixelRevision; }
+        virtual void prepareDraw() {}
         void markPixelsChanged() { ++pixelRevision; }
         bool hasOpaquePixels();
 		static size_t allocatedTextureBytes();
@@ -409,6 +411,8 @@ namespace GAGCore
 		void reportFrameCacheFailure(const char *reason);
 		void releaseFrameCache();
 		void cacheFrame();
+        std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
+        void prepareDraw() override;
 		void presentLastFrame();
 		// GLSL 1.20 program that recolors a sprite's unrotated team layer on the
 		// GPU (same HSV hue shift as DrawableSurface::shiftHSV) and combines it
@@ -514,7 +518,10 @@ namespace GAGCore
 		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
+		enum class FrameMode { FullRedraw, PreserveContent };
+        void beginFrame(FrameMode mode = FrameMode::PreserveContent);
         RenderOperations backendOperations() const;
+        SDL_Surface* completedFrame() const;
         virtual void nextFrame(void);
 		//! This function does not work for GraphicContext
 		virtual bool loadImage(const std::string name) { return false; }

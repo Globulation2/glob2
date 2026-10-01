@@ -3,6 +3,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "GraphicContextPrivate.h"
+#include <SoftwareFramePresenter.h>
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
@@ -285,6 +286,7 @@ namespace GAGCore
 		renderer = nullptr;
         portableRenderer.reset();
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
+        watchingEvents = false;
 		releaseFrameCache();
 		freeOwnedSurface();
 #ifdef HAVE_OPENGL
@@ -397,6 +399,18 @@ namespace GAGCore
             mapScale = 1;
         }
         softwareRasterizer.reset();
+        // Retain the last completed image across a resize until the replacement
+        // framebuffer completes its first frame. No retention allocation is needed.
+        if (watchingEvents && softwarePresenter)
+        {
+            if (auto* completed = softwarePresenter->takeCompleted())
+            {
+                SDL_FreeSurface(frameCache.surface);
+                frameCache.surface = completed;
+                frameCache.valid = true;
+            }
+        }
+        softwarePresenter.reset();
 		if (ownsSurface && sdlsurface)
 			SDL_FreeSurface(sdlsurface);
 		sdlsurface = NULL;
@@ -858,22 +872,43 @@ namespace GAGCore
 				cursorManager.update(cursorScale);
 			}
 
-            if (renderer) {
-                if (!pendingScreenshot.empty()) {
-                    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> pixels(renderer->capture(), SDL_FreeSurface);
-                    bool saved=false;
-                    for (size_t i=0;i<Toolkit::getFileManager()->getDirCount();++i) {
-                        auto path=Toolkit::getFileManager()->getDir(i)+DIR_SEPARATOR_S+pendingScreenshot;
-                        if(SDL_SaveBMP(pixels.get(),path.c_str())==0) {saved=true;break;}
-                    }
-                    if(!saved) std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
-                    pendingScreenshot.clear();
-                }
-                renderer->present(); return;
-            }
-			#ifdef HAVE_OPENGL
-			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();
-			#endif
+			// A transformed software pass may end before nextFrame. Keep the
+			// request independent of the borrowed active-backend pointer.
+			if (!pendingScreenshot.empty())
+			{
+				std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> pixels(
+					renderer ? renderer->capture()
+							 : SDL_ConvertSurfaceFormat(sdlsurface, SDL_PIXELFORMAT_RGBA32, 0),
+					SDL_FreeSurface);
+				bool saved = false;
+				if (pixels)
+					for (size_t i = 0; i < Toolkit::getFileManager()->getDirCount(); ++i)
+					{
+						auto path = Toolkit::getFileManager()->getDir(i) + DIR_SEPARATOR_S +
+									pendingScreenshot;
+						if (SDL_SaveBMP(pixels.get(), path.c_str()) == 0)
+						{
+							saved = true;
+							break;
+						}
+					}
+				if (!saved)
+					std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
+				pendingScreenshot.clear();
+			}
+			if (renderer)
+			{
+				if (renderer == portableRenderer.get())
+				{
+					renderer->present();
+					return;
+				}
+				renderer->flush();
+			}
+#ifdef HAVE_OPENGL
+			if (optionFlags & USEGPU)
+				Sprite::checkAllSpritesDrawn();
+#endif
 			cacheFrame();
 			if (optionFlags & USEGPU)
 				swapBuffers();

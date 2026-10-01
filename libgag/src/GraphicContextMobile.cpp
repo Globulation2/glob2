@@ -105,6 +105,7 @@ namespace GAGCore {
 
 void GraphicContext::beginSoftwareTransform()
 {
+    prepareDraw();
     if (renderer || (optionFlags & USEGPU)) return;
     if (!softwareRasterizer) softwareRasterizer=makeSoftwareRenderBackend(sdlsurface);
     renderer=softwareRasterizer.get();softwareTransform=true;
