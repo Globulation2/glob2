@@ -11,23 +11,35 @@ if not env['server']:
     local.Append(CPPPATH=['#third_party/quickjs-ng'])
     source_files += [node.abspath for node in js_library]
 
+# Host numeric conversion must use the same strict boundary as the interpreter.
+strict = local.Clone()
+strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
+strict_sources = [source for source in source_files
+                  if source.endswith('.cpp') and (source.startswith('script/') or source == 'ai/AIJavaScript.cpp')]
+from javascript import numeric_guard
+strict_objects = dict(zip(strict_sources, [strict.Object(source)[0] for source in strict_sources]))
+numeric_guard(strict, list(strict_objects.values()))
+# Resolve these sources explicitly so Program does not compile them with generic flags.
+program_sources = [strict_objects.get(source, source) for source in source_files]
+
 #Add libgag and USL, not as a library, but as an object
 source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
-p1 = local.Program("glob2", source_files)
+p1 = local.Program("glob2", program_sources + ["../libgag/src/libgag.a", "../libusl/src/libusl.a"])
 
 # Shared with test/SConscript: every client object except the entry point, so test
 # binaries link exactly the objects the game was built from and nothing compiles twice.
 if not env['server']:
     client_cpp_sources = [source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')]
-    client_objects = local.Object(client_cpp_sources)
+    client_objects = [strict_objects[source] if source in strict_objects else local.Object(source)[0]
+                      for source in client_cpp_sources]
     client_object_by_source = dict(zip(client_cpp_sources, client_objects))
     client_libs = [local.File(source) for source in source_files if not source.endswith('.cpp')]
     Export('client_objects', 'client_object_by_source', 'client_libs')
 
 
 if not env['server']:
-    lan_sources = [source for source in source_files if source != 'Glob2.cpp']
+    lan_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
     lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
@@ -44,15 +56,15 @@ if not env['server']:
     for alias, target in [('map-generator-study', 'MapGeneratorStudy'),
                           ('map-generator-golden-test', 'MapGeneratorGoldenTest'),
                           ('map-generator-profile-fixture', 'MapGeneratorProfileFixture')]:
-        sources = [source for source in source_files if source != 'Glob2.cpp']
+        sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
         sources += local.Object(target + '.o', '#test/' + target + '.cpp')
         local.Alias(alias, local.Program(target, sources))
 if not env['server']:
-    transport_sources = [source for source in source_files if source != 'Glob2.cpp']
+    transport_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
     transport_sources += local.Object('NetConnectionHarness.o', '#test/NetConnectionHarness.cpp')
     transport_test = local.Program('net-connection-test', transport_sources)
     local.Alias('transport-test', transport_test)
-    peer_sources = [source for source in source_files if source != 'Glob2.cpp']
+    peer_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
     peer_sources += local.Object('NativeMultiplayerPeer.o', '#test/NativeMultiplayerPeer.cpp')
     peer_test = local.Program('native-multiplayer-peer', peer_sources)
     local.Alias('transport-test', peer_test)
@@ -87,7 +99,7 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
 
 # Offline production-screen capture for the mobile design review gallery.
 if not env['server']:
-    gallery_sources = [source for source in source_files if source != 'Glob2.cpp']
+    gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
     gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
     local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
 

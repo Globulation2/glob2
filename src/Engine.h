@@ -102,6 +102,8 @@ public:
     void beginSession(Uint64 now);
     bool stepSession(Uint64 now);
     bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
+    // Stop a failed session before control returns to its host.
+    void abortSession() noexcept;
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
     struct PendingLoad { std::string filename; bool replay; };
@@ -139,6 +141,7 @@ public:
 	static void applyLocalExperiments(GameHeader &header, const MapHeader &map);
 	
 private:
+    bool stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events);
 	/// Initiates a game, provided the map and game header. This initiates the net
 	/// as well. When setGameHeader is true, the gameHeader given will replace the
 	/// one loaded with the map. When ignore GUI info is set, the game will ignore

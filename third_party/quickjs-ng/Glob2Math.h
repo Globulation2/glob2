@@ -2,6 +2,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+double glob2_math_hypot(double, double);
 double glob2_math_acos(double);
 double glob2_math_acosh(double);
 double glob2_math_asin(double);

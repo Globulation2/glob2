@@ -1,0 +1,3133 @@
+--- a/include/openlibm_math.h
++++ b/include/openlibm_math.h
+@@ -158,18 +158,18 @@
+  */
+ #if __BSD_VISIBLE || __XSI_VISIBLE
+ #define	M_E		2.7182818284590452354	/* e */
+-#define	M_LOG2E		1.4426950408889634074	/* log 2e */
+-#define	M_LOG10E	0.43429448190325182765	/* log 10e */
+-#define	M_LN2		0.69314718055994530942	/* log e2 */
+-#define	M_LN10		2.30258509299404568402	/* log e10 */
++#define	M_LOG2E		1.4426950408889634074	/* glob2_math_log 2e */
++#define	M_LOG10E	0.43429448190325182765	/* glob2_math_log 10e */
++#define	M_LN2		0.69314718055994530942	/* glob2_math_log e2 */
++#define	M_LN10		2.30258509299404568402	/* glob2_math_log e10 */
+ #define	M_PI		3.14159265358979323846	/* pi */
+ #define	M_PI_2		1.57079632679489661923	/* pi/2 */
+ #define	M_PI_4		0.78539816339744830962	/* pi/4 */
+ #define	M_1_PI		0.31830988618379067154	/* 1/pi */
+ #define	M_2_PI		0.63661977236758134308	/* 2/pi */
+-#define	M_2_SQRTPI	1.12837916709551257390	/* 2/sqrt(pi) */
+-#define	M_SQRT2		1.41421356237309504880	/* sqrt(2) */
+-#define	M_SQRT1_2	0.70710678118654752440	/* 1/sqrt(2) */
++#define	M_2_SQRTPI	1.12837916709551257390	/* 2/glob2_math_sqrt(pi) */
++#define	M_SQRT2		1.41421356237309504880	/* glob2_math_sqrt(2) */
++#define	M_SQRT1_2	0.70710678118654752440	/* 1/glob2_math_sqrt(2) */
+ 
+ #define	MAXFLOAT	((float)3.40282346638528860e+38)
+ 
+@@ -219,45 +219,45 @@
+ OLM_DLLEXPORT int	__signbitf(float) __pure2;
+ OLM_DLLEXPORT int	__signbitl(long double) __pure2;
+ 
+-OLM_DLLEXPORT double	acos(double);
+-OLM_DLLEXPORT double	asin(double);
+-OLM_DLLEXPORT double	atan(double);
+-OLM_DLLEXPORT double	atan2(double, double);
+-OLM_DLLEXPORT double	cos(double);
+-OLM_DLLEXPORT double	sin(double);
+-OLM_DLLEXPORT double	tan(double);
+-
+-OLM_DLLEXPORT double	cosh(double);
+-OLM_DLLEXPORT double	sinh(double);
+-OLM_DLLEXPORT double	tanh(double);
+-
+-OLM_DLLEXPORT double	exp(double);
+-OLM_DLLEXPORT double	frexp(double, int *);	/* fundamentally !__pure2 */
++OLM_DLLEXPORT double	glob2_math_acos(double);
++OLM_DLLEXPORT double	glob2_math_asin(double);
++OLM_DLLEXPORT double	glob2_math_atan(double);
++OLM_DLLEXPORT double	glob2_math_atan2(double, double);
++OLM_DLLEXPORT double	glob2_math_cos(double);
++OLM_DLLEXPORT double	glob2_math_sin(double);
++OLM_DLLEXPORT double	glob2_math_tan(double);
++
++OLM_DLLEXPORT double	glob2_math_cosh(double);
++OLM_DLLEXPORT double	glob2_math_sinh(double);
++OLM_DLLEXPORT double	glob2_math_tanh(double);
++
++OLM_DLLEXPORT double	glob2_math_exp(double);
++OLM_DLLEXPORT double	glob2_math_frexp(double, int *);	/* fundamentally !__pure2 */
+ OLM_DLLEXPORT double	ldexp(double, int);
+-OLM_DLLEXPORT double	log(double);
+-OLM_DLLEXPORT double	log10(double);
+-OLM_DLLEXPORT double	modf(double, double *);	/* fundamentally !__pure2 */
+-
+-OLM_DLLEXPORT double	pow(double, double);
+-OLM_DLLEXPORT double	sqrt(double);
+-
+-OLM_DLLEXPORT double	ceil(double);
+-OLM_DLLEXPORT double	fabs(double) __pure2;
+-OLM_DLLEXPORT double	floor(double);
+-OLM_DLLEXPORT double	fmod(double, double);
++OLM_DLLEXPORT double	glob2_math_log(double);
++OLM_DLLEXPORT double	glob2_math_log10(double);
++OLM_DLLEXPORT double	glob2_math_modf(double, double *);	/* fundamentally !__pure2 */
++
++OLM_DLLEXPORT double	glob2_math_pow(double, double);
++OLM_DLLEXPORT double	glob2_math_sqrt(double);
++
++OLM_DLLEXPORT double	glob2_math_ceil(double);
++OLM_DLLEXPORT double	glob2_math_fabs(double) __pure2;
++OLM_DLLEXPORT double	glob2_math_floor(double);
++OLM_DLLEXPORT double	glob2_math_fmod(double, double);
+ 
+ /*
+  * These functions are not in C90.
+  */
+ #if __BSD_VISIBLE || __ISO_C_VISIBLE >= 1999 || __XSI_VISIBLE
+-OLM_DLLEXPORT double	acosh(double);
+-OLM_DLLEXPORT double	asinh(double);
+-OLM_DLLEXPORT double	atanh(double);
+-OLM_DLLEXPORT double	cbrt(double);
++OLM_DLLEXPORT double	glob2_math_acosh(double);
++OLM_DLLEXPORT double	glob2_math_asinh(double);
++OLM_DLLEXPORT double	glob2_math_atanh(double);
++OLM_DLLEXPORT double	glob2_math_cbrt(double);
+ OLM_DLLEXPORT double	erf(double);
+ OLM_DLLEXPORT double	erfc(double);
+ OLM_DLLEXPORT double	exp2(double);
+-OLM_DLLEXPORT double	expm1(double);
++OLM_DLLEXPORT double	glob2_math_expm1(double);
+ OLM_DLLEXPORT double	fma(double, double, double);
+ OLM_DLLEXPORT double	hypot(double, double);
+ OLM_DLLEXPORT int	ilogb(double) __pure2;
+@@ -266,8 +266,8 @@
+ OLM_DLLEXPORT double	lgamma(double);
+ OLM_DLLEXPORT long long llrint(double);
+ OLM_DLLEXPORT long long llround(double);
+-OLM_DLLEXPORT double	log1p(double);
+-OLM_DLLEXPORT double	log2(double);
++OLM_DLLEXPORT double	glob2_math_log1p(double);
++OLM_DLLEXPORT double	glob2_math_log2(double);
+ OLM_DLLEXPORT double	logb(double);
+ OLM_DLLEXPORT long	lrint(double);
+ OLM_DLLEXPORT long	lround(double);
+@@ -288,16 +288,16 @@
+ #endif /* __BSD_VISIBLE || __XSI_VISIBLE */
+ 
+ #if __BSD_VISIBLE || __ISO_C_VISIBLE >= 1999
+-OLM_DLLEXPORT double	copysign(double, double) __pure2;
++OLM_DLLEXPORT double	glob2_math_copysign(double, double) __pure2;
+ OLM_DLLEXPORT double	fdim(double, double);
+ OLM_DLLEXPORT double	fmax(double, double) __pure2;
+ OLM_DLLEXPORT double	fmin(double, double) __pure2;
+ OLM_DLLEXPORT double	nearbyint(double);
+ OLM_DLLEXPORT double	round(double);
+ OLM_DLLEXPORT double	scalbln(double, long);
+-OLM_DLLEXPORT double	scalbn(double, int);
++OLM_DLLEXPORT double	glob2_math_scalbn(double, int);
+ OLM_DLLEXPORT double	tgamma(double);
+-OLM_DLLEXPORT double	trunc(double);
++OLM_DLLEXPORT double	glob2_math_trunc(double);
+ #endif
+ 
+ /*
+--- a/src/e_acos.c
++++ b/src/e_acos.c
+@@ -14,28 +14,28 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_acos.c,v 1.13 2008/07/31 22:41:26 das Exp $");
+ 
+-/* __ieee754_acos(x)
++/* glob2_math___ieee754_acos(x)
+  * Method :                  
+- *	acos(x)  = pi/2 - asin(x)
+- *	acos(-x) = pi/2 + asin(x)
++ *	glob2_math_acos(x)  = pi/2 - glob2_math_asin(x)
++ *	glob2_math_acos(-x) = pi/2 + glob2_math_asin(x)
+  * For |x|<=0.5
+- *	acos(x) = pi/2 - (x + x*x^2*R(x^2))	(see asin.c)
++ *	glob2_math_acos(x) = pi/2 - (x + x*x^2*R(x^2))	(see glob2_math_asin.c)
+  * For x>0.5
+- * 	acos(x) = pi/2 - (pi/2 - 2asin(sqrt((1-x)/2)))
+- *		= 2asin(sqrt((1-x)/2))  
+- *		= 2s + 2s*z*R(z) 	...z=(1-x)/2, s=sqrt(z)
++ * 	glob2_math_acos(x) = pi/2 - (pi/2 - 2asin(glob2_math_sqrt((1-x)/2)))
++ *		= 2asin(glob2_math_sqrt((1-x)/2))  
++ *		= 2s + 2s*z*R(z) 	...z=(1-x)/2, s=glob2_math_sqrt(z)
+  *		= 2f + (2c + 2s*z*R(z))
+  *     where f=hi part of s, and c = (z-f*f)/(s+f) is the correction term
+- *     for f so that f+c ~ sqrt(z).
++ *     for f so that f+c ~ glob2_math_sqrt(z).
+  * For x<-0.5
+- *	acos(x) = pi - 2asin(sqrt((1-|x|)/2))
+- *		= pi - 0.5*(s+s*z*R(z)), where z=(1-|x|)/2,s=sqrt(z)
++ *	glob2_math_acos(x) = pi - 2asin(glob2_math_sqrt((1-|x|)/2))
++ *		= pi - 0.5*(s+s*z*R(z)), where z=(1-|x|)/2,s=glob2_math_sqrt(z)
+  *
+  * Special cases:
+  *	if x is NaN, return x itself;
+  *	if |x|>1, return NaN with invalid signal.
+  *
+- * Function needed: sqrt
++ * Function needed: glob2_math_sqrt
+  */
+ 
+ #include <float.h>
+@@ -62,7 +62,7 @@
+ qS4 =  7.70381505559019352791e-02; /* 0x3FB3B8C5, 0xB12E9282 */
+ 
+ OLM_DLLEXPORT double
+-__ieee754_acos(double x)
++glob2_math___ieee754_acos(double x)
+ {
+ 	double z,p,q,r,w,s,c,df;
+ 	int32_t hx,ix;
+@@ -72,10 +72,10 @@
+ 	    u_int32_t lx;
+ 	    GET_LOW_WORD(lx,x);
+ 	    if(((ix-0x3ff00000)|lx)==0) {	/* |x|==1 */
+-		if(hx>0) return 0.0;		/* acos(1) = 0  */
+-		else return pi+2.0*pio2_lo;	/* acos(-1)= pi */
++		if(hx>0) return 0.0;		/* glob2_math_acos(1) = 0  */
++		else return pi+2.0*pio2_lo;	/* glob2_math_acos(-1)= pi */
+ 	    }
+-	    return (x-x)/(x-x);		/* acos(|x|>1) is NaN */
++	    return (x-x)/(x-x);		/* glob2_math_acos(|x|>1) is NaN */
+ 	}
+ 	if(ix<0x3fe00000) {	/* |x| < 0.5 */
+ 	    if(ix<=0x3c600000) return pio2_hi+pio2_lo;/*if|x|<2**-57*/
+@@ -88,13 +88,13 @@
+ 	    z = (one+x)*0.5;
+ 	    p = z*(pS0+z*(pS1+z*(pS2+z*(pS3+z*(pS4+z*pS5)))));
+ 	    q = one+z*(qS1+z*(qS2+z*(qS3+z*qS4)));
+-	    s = sqrt(z);
++	    s = glob2_math_sqrt(z);
+ 	    r = p/q;
+ 	    w = r*s-pio2_lo;
+ 	    return pi - 2.0*(s+w);
+ 	} else {			/* x > 0.5 */
+ 	    z = (one-x)*0.5;
+-	    s = sqrt(z);
++	    s = glob2_math_sqrt(z);
+ 	    df = s;
+ 	    SET_LOW_WORD(df,0);
+ 	    c  = (z-df*df)/(s+df);
+@@ -107,5 +107,4 @@
+ }
+ 
+ #if LDBL_MANT_DIG == 53
+-openlibm_weak_reference(acos, acosl);
+ #endif
+--- a/src/e_acosh.c
++++ b/src/e_acosh.c
+@@ -15,18 +15,18 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_acosh.c,v 1.9 2008/02/22 02:30:34 das Exp $");
+ 
+-/* __ieee754_acosh(x)
++/* glob2_math___ieee754_acosh(x)
+  * Method :
+  *	Based on 
+- *		acosh(x) = log [ x + sqrt(x*x-1) ]
++ *		glob2_math_acosh(x) = glob2_math_log [ x + glob2_math_sqrt(x*x-1) ]
+  *	we have
+- *		acosh(x) := log(x)+ln2,	if x is large; else
+- *		acosh(x) := log(2x-1/(sqrt(x*x-1)+x)) if x>2; else
+- *		acosh(x) := log1p(t+sqrt(2.0*t+t*t)); where t=x-1.
++ *		glob2_math_acosh(x) := glob2_math_log(x)+ln2,	if x is large; else
++ *		glob2_math_acosh(x) := glob2_math_log(2x-1/(glob2_math_sqrt(x*x-1)+x)) if x>2; else
++ *		glob2_math_acosh(x) := glob2_math_log1p(t+glob2_math_sqrt(2.0*t+t*t)); where t=x-1.
+  *
+  * Special cases:
+- *	acosh(x) is NaN with signal if x<1.
+- *	acosh(NaN) is NaN without signal.
++ *	glob2_math_acosh(x) is NaN with signal if x<1.
++ *	glob2_math_acosh(NaN) is NaN without signal.
+  */
+ 
+ #include <float.h>
+@@ -39,7 +39,7 @@
+ ln2	= 6.93147180559945286227e-01;  /* 0x3FE62E42, 0xFEFA39EF */
+ 
+ OLM_DLLEXPORT double
+-__ieee754_acosh(double x)
++glob2_math___ieee754_acosh(double x)
+ {
+ 	double t;
+ 	int32_t hx;
+@@ -51,18 +51,17 @@
+ 	    if(hx >=0x7ff00000) {	/* x is inf of NaN */
+ 	        return x+x;
+ 	    } else 
+-		return __ieee754_log(x)+ln2;	/* acosh(huge)=log(2x) */
++		return glob2_math___ieee754_log(x)+ln2;	/* glob2_math_acosh(huge)=glob2_math_log(2x) */
+ 	} else if(((hx-0x3ff00000)|lx)==0) {
+-	    return 0.0;			/* acosh(1) = 0 */
++	    return 0.0;			/* glob2_math_acosh(1) = 0 */
+ 	} else if (hx > 0x40000000) {	/* 2**28 > x > 2 */
+ 	    t=x*x;
+-	    return __ieee754_log(2.0*x-one/(x+sqrt(t-one)));
++	    return glob2_math___ieee754_log(2.0*x-one/(x+glob2_math_sqrt(t-one)));
+ 	} else {			/* 1<x<2 */
+ 	    t = x-one;
+-	    return log1p(t+sqrt(2.0*t+t*t));
++	    return glob2_math_log1p(t+glob2_math_sqrt(2.0*t+t*t));
+ 	}
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(acosh, acoshl);
+ #endif
+--- a/src/e_asin.c
++++ b/src/e_asin.c
+@@ -14,27 +14,27 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_asin.c,v 1.15 2011/02/10 07:37:50 das Exp $");
+ 
+-/* __ieee754_asin(x)
++/* glob2_math___ieee754_asin(x)
+  * Method :                  
+- *	Since  asin(x) = x + x^3/6 + x^5*3/40 + x^7*15/336 + ...
+- *	we approximate asin(x) on [0,0.5] by
+- *		asin(x) = x + x*x^2*R(x^2)
++ *	Since  glob2_math_asin(x) = x + x^3/6 + x^5*3/40 + x^7*15/336 + ...
++ *	we approximate glob2_math_asin(x) on [0,0.5] by
++ *		glob2_math_asin(x) = x + x*x^2*R(x^2)
+  *	where
+- *		R(x^2) is a rational approximation of (asin(x)-x)/x^3 
++ *		R(x^2) is a rational approximation of (glob2_math_asin(x)-x)/x^3 
+  *	and its remez error is bounded by
+- *		|(asin(x)-x)/x^3 - R(x^2)| < 2^(-58.75)
++ *		|(glob2_math_asin(x)-x)/x^3 - R(x^2)| < 2^(-58.75)
+  *
+  *	For x in [0.5,1]
+- *		asin(x) = pi/2-2*asin(sqrt((1-x)/2))
+- *	Let y = (1-x), z = y/2, s := sqrt(z), and pio2_hi+pio2_lo=pi/2;
++ *		glob2_math_asin(x) = pi/2-2*glob2_math_asin(glob2_math_sqrt((1-x)/2))
++ *	Let y = (1-x), z = y/2, s := glob2_math_sqrt(z), and pio2_hi+pio2_lo=pi/2;
+  *	then for x>0.98
+- *		asin(x) = pi/2 - 2*(s+s*z*R(z))
++ *		glob2_math_asin(x) = pi/2 - 2*(s+s*z*R(z))
+  *			= pio2_hi - (2*(s+s*z*R(z)) - pio2_lo)
+  *	For x<=0.98, let pio4_hi = pio2_hi/2, then
+  *		f = hi part of s;
+- *		c = sqrt(z) - f = (z-f*f)/(s+f) 	...f+c=sqrt(z)
++ *		c = glob2_math_sqrt(z) - f = (z-f*f)/(s+f) 	...f+c=glob2_math_sqrt(z)
+  *	and
+- *		asin(x) = pi/2 - 2*(s+s*z*R(z))
++ *		glob2_math_asin(x) = pi/2 - 2*(s+s*z*R(z))
+  *			= pio4_hi+(pio4-2s)-(2s*z*R(z)-pio2_lo)
+  *			= pio4_hi+(pio4-2f)-(2s*z*R(z)-(pio2_lo+2c))
+  *
+@@ -68,7 +68,7 @@
+ qS4 =  7.70381505559019352791e-02; /* 0x3FB3B8C5, 0xB12E9282 */
+ 
+ OLM_DLLEXPORT double
+-__ieee754_asin(double x)
++glob2_math___ieee754_asin(double x)
+ {
+ 	double t=0.0,w,p,q,c,r,s;
+ 	int32_t hx,ix;
+@@ -78,9 +78,9 @@
+ 	    u_int32_t lx;
+ 	    GET_LOW_WORD(lx,x);
+ 	    if(((ix-0x3ff00000)|lx)==0)
+-		    /* asin(1)=+-pi/2 with inexact */
++		    /* glob2_math_asin(1)=+-pi/2 with inexact */
+ 		return x*pio2_hi+x*pio2_lo;	
+-	    return (x-x)/(x-x);		/* asin(|x|>1) is NaN */   
++	    return (x-x)/(x-x);		/* glob2_math_asin(|x|>1) is NaN */   
+ 	} else if (ix<0x3fe00000) {	/* |x|<0.5 */
+ 	    if(ix<0x3e500000) {		/* if |x| < 2**-26 */
+ 		if(huge+x>one) return x;/* return x with inexact if x!=0*/
+@@ -92,11 +92,11 @@
+ 	    return x+x*w;
+ 	}
+ 	/* 1> |x|>= 0.5 */
+-	w = one-fabs(x);
++	w = one-glob2_math_fabs(x);
+ 	t = w*0.5;
+ 	p = t*(pS0+t*(pS1+t*(pS2+t*(pS3+t*(pS4+t*pS5)))));
+ 	q = one+t*(qS1+t*(qS2+t*(qS3+t*qS4)));
+-	s = sqrt(t);
++	s = glob2_math_sqrt(t);
+ 	if(ix>=0x3FEF3333) { 	/* if |x| > 0.975 */
+ 	    w = p/q;
+ 	    t = pio2_hi-(2.0*(s+s*w)-pio2_lo);
+@@ -113,5 +113,4 @@
+ }
+ 
+ #if LDBL_MANT_DIG == 53
+-openlibm_weak_reference(asin, asinl);
+ #endif
+--- a/src/e_atan2.c
++++ b/src/e_atan2.c
+@@ -15,9 +15,9 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_atan2.c,v 1.14 2008/08/02 19:17:00 das Exp $");
+ 
+-/* __ieee754_atan2(y,x)
++/* glob2_math___ieee754_atan2(y,x)
+  * Method :
+- *	1. Reduce y to positive by atan2(y,x)=-atan2(-y,x).
++ *	1. Reduce y to positive by glob2_math_atan2(y,x)=-glob2_math_atan2(-y,x).
+  *	2. Reduce x to positive by (if x and y are unexceptional): 
+  *		ARG (x+iy) = arctan(y/x)   	   ... if x > 0,
+  *		ARG (x+iy) = pi - arctan[y/(-x)]   ... if x < 0,
+@@ -58,7 +58,7 @@
+ pi_lo   = 1.2246467991473531772E-16; /* 0x3CA1A626, 0x33145C07 */
+ 
+ OLM_DLLEXPORT double
+-__ieee754_atan2(double y, double x)
++glob2_math___ieee754_atan2(double y, double x)
+ {
+ 	double z;
+ 	int32_t k,m,hx,hy,ix,iy;
+@@ -71,16 +71,16 @@
+ 	if(((ix|((lx|-lx)>>31))>0x7ff00000)||
+ 	   ((iy|((ly|-ly)>>31))>0x7ff00000))	/* x or y is NaN */
+ 	   return x+y;
+-	if(hx==0x3ff00000&&lx==0) return atan(y);   /* x=1.0 */
++	if(hx==0x3ff00000&&lx==0) return glob2_math_atan(y);   /* x=1.0 */
+ 	m = ((hy>>31)&1)|((hx>>30)&2);	/* 2*sign(x)+sign(y) */
+ 
+     /* when y = 0 */
+ 	if((iy|ly)==0) {
+ 	    switch(m) {
+ 		case 0: 
+-		case 1: return y; 	/* atan(+-0,+anything)=+-0 */
+-		case 2: return  pi+tiny;/* atan(+0,-anything) = pi */
+-		case 3: return -pi-tiny;/* atan(-0,-anything) =-pi */
++		case 1: return y; 	/* glob2_math_atan(+-0,+anything)=+-0 */
++		case 2: return  pi+tiny;/* glob2_math_atan(+0,-anything) = pi */
++		case 3: return -pi-tiny;/* glob2_math_atan(-0,-anything) =-pi */
+ 	    }
+ 	}
+     /* when x = 0 */
+@@ -90,17 +90,17 @@
+ 	if(ix==0x7ff00000) {
+ 	    if(iy==0x7ff00000) {
+ 		switch(m) {
+-		    case 0: return  pi_o_4+tiny;/* atan(+INF,+INF) */
+-		    case 1: return -pi_o_4-tiny;/* atan(-INF,+INF) */
+-		    case 2: return  3.0*pi_o_4+tiny;/*atan(+INF,-INF)*/
+-		    case 3: return -3.0*pi_o_4-tiny;/*atan(-INF,-INF)*/
++		    case 0: return  pi_o_4+tiny;/* glob2_math_atan(+INF,+INF) */
++		    case 1: return -pi_o_4-tiny;/* glob2_math_atan(-INF,+INF) */
++		    case 2: return  3.0*pi_o_4+tiny;/*glob2_math_atan(+INF,-INF)*/
++		    case 3: return -3.0*pi_o_4-tiny;/*glob2_math_atan(-INF,-INF)*/
+ 		}
+ 	    } else {
+ 		switch(m) {
+-		    case 0: return  zero  ;	/* atan(+...,+INF) */
+-		    case 1: return -zero  ;	/* atan(-...,+INF) */
+-		    case 2: return  pi+tiny  ;	/* atan(+...,-INF) */
+-		    case 3: return -pi-tiny  ;	/* atan(-...,-INF) */
++		    case 0: return  zero  ;	/* glob2_math_atan(+...,+INF) */
++		    case 1: return -zero  ;	/* glob2_math_atan(-...,+INF) */
++		    case 2: return  pi+tiny  ;	/* glob2_math_atan(+...,-INF) */
++		    case 3: return -pi-tiny  ;	/* glob2_math_atan(-...,-INF) */
+ 		}
+ 	    }
+ 	}
+@@ -114,16 +114,15 @@
+ 	    m&=1;
+ 	}
+ 	else if(hx<0&&k<-60) z=0.0; 	/* 0 > |y|/x > -2**-60 */
+-	else z=atan(fabs(y/x));		/* safe to do y/x */
++	else z=glob2_math_atan(glob2_math_fabs(y/x));		/* safe to do y/x */
+ 	switch (m) {
+-	    case 0: return       z  ;	/* atan(+,+) */
+-	    case 1: return      -z  ;	/* atan(-,+) */
+-	    case 2: return  pi-(z-pi_lo);/* atan(+,-) */
++	    case 0: return       z  ;	/* glob2_math_atan(+,+) */
++	    case 1: return      -z  ;	/* glob2_math_atan(-,+) */
++	    case 2: return  pi-(z-pi_lo);/* glob2_math_atan(+,-) */
+ 	    default: /* case 3 */
+-	    	    return  (z-pi_lo)-pi;/* atan(-,-) */
++	    	    return  (z-pi_lo)-pi;/* glob2_math_atan(-,-) */
+ 	}
+ }
+ 
+ #if LDBL_MANT_DIG == 53
+-openlibm_weak_reference(atan2, atan2l);
+ #endif
+--- a/src/e_atanh.c
++++ b/src/e_atanh.c
+@@ -15,21 +15,21 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_atanh.c,v 1.8 2008/02/22 02:30:34 das Exp $");
+ 
+-/* __ieee754_atanh(x)
++/* glob2_math___ieee754_atanh(x)
+  * Method :
+- *    1.Reduced x to positive by atanh(-x) = -atanh(x)
++ *    1.Reduced x to positive by glob2_math_atanh(-x) = -glob2_math_atanh(x)
+  *    2.For x>=0.5
+  *                  1              2x                          x
+- *	atanh(x) = --- * log(1 + -------) = 0.5 * log1p(2 * --------)
++ *	glob2_math_atanh(x) = --- * glob2_math_log(1 + -------) = 0.5 * glob2_math_log1p(2 * --------)
+  *                  2             1 - x                      1 - x
+  *	
+  * 	For x<0.5
+- *	atanh(x) = 0.5*log1p(2x+2x*x/(1-x))
++ *	glob2_math_atanh(x) = 0.5*glob2_math_log1p(2x+2x*x/(1-x))
+  *
+  * Special cases:
+- *	atanh(x) is NaN if |x| > 1 with signal;
+- *	atanh(NaN) is that NaN with no signal;
+- *	atanh(+-1) is +-INF with signal.
++ *	glob2_math_atanh(x) is NaN if |x| > 1 with signal;
++ *	glob2_math_atanh(NaN) is that NaN with no signal;
++ *	glob2_math_atanh(+-1) is +-INF with signal.
+  *
+  */
+ 
+@@ -42,7 +42,7 @@
+ static const double zero = 0.0;
+ 
+ OLM_DLLEXPORT double
+-__ieee754_atanh(double x)
++glob2_math___ieee754_atanh(double x)
+ {
+ 	double t;
+ 	int32_t hx,ix;
+@@ -57,12 +57,11 @@
+ 	SET_HIGH_WORD(x,ix);
+ 	if(ix<0x3fe00000) {		/* x < 0.5 */
+ 	    t = x+x;
+-	    t = 0.5*log1p(t+t*x/(one-x));
++	    t = 0.5*glob2_math_log1p(t+t*x/(one-x));
+ 	} else 
+-	    t = 0.5*log1p((x+x)/(one-x));
++	    t = 0.5*glob2_math_log1p((x+x)/(one-x));
+ 	if(hx>=0) return t; else return -t;
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(atanh, atanhl);
+ #endif
+--- a/src/e_cosh.c
++++ b/src/e_cosh.c
+@@ -14,25 +14,25 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_cosh.c,v 1.10 2011/10/21 06:28:47 das Exp $");
+ 
+-/* __ieee754_cosh(x)
++/* glob2_math___ieee754_cosh(x)
+  * Method : 
+- * mathematically cosh(x) if defined to be (exp(x)+exp(-x))/2
+- *	1. Replace x by |x| (cosh(x) = cosh(-x)). 
++ * mathematically glob2_math_cosh(x) if defined to be (glob2_math_exp(x)+glob2_math_exp(-x))/2
++ *	1. Replace x by |x| (glob2_math_cosh(x) = glob2_math_cosh(-x)). 
+  *	2. 
+- *		                                        [ exp(x) - 1 ]^2 
+- *	    0        <= x <= ln2/2  :  cosh(x) := 1 + -------------------
+- *			       			           2*exp(x)
++ *		                                        [ glob2_math_exp(x) - 1 ]^2 
++ *	    0        <= x <= ln2/2  :  glob2_math_cosh(x) := 1 + -------------------
++ *			       			           2*glob2_math_exp(x)
+  *
+- *		                                  exp(x) +  1/exp(x)
+- *	    ln2/2    <= x <= 22     :  cosh(x) := -------------------
++ *		                                  glob2_math_exp(x) +  1/glob2_math_exp(x)
++ *	    ln2/2    <= x <= 22     :  glob2_math_cosh(x) := -------------------
+  *			       			          2
+- *	    22       <= x <= lnovft :  cosh(x) := exp(x)/2 
+- *	    lnovft   <= x <= ln2ovft:  cosh(x) := exp(x/2)/2 * exp(x/2)
+- *	    ln2ovft  <  x	    :  cosh(x) := huge*huge (overflow)
++ *	    22       <= x <= lnovft :  glob2_math_cosh(x) := glob2_math_exp(x)/2 
++ *	    lnovft   <= x <= ln2ovft:  glob2_math_cosh(x) := glob2_math_exp(x/2)/2 * glob2_math_exp(x/2)
++ *	    ln2ovft  <  x	    :  glob2_math_cosh(x) := huge*huge (overflow)
+  *
+  * Special cases:
+- *	cosh(x) is |x| if x is +INF, -INF, or NaN.
+- *	only cosh(0)=1 is exact for finite x.
++ *	glob2_math_cosh(x) is |x| if x is +INF, -INF, or NaN.
++ *	only glob2_math_cosh(0)=1 is exact for finite x.
+  */
+ 
+ #include <float.h>
+@@ -43,7 +43,7 @@
+ static const double one = 1.0, half=0.5, huge = 1.0e300;
+ 
+ OLM_DLLEXPORT double
+-__ieee754_cosh(double x)
++glob2_math___ieee754_cosh(double x)
+ {
+ 	double t,w;
+ 	int32_t ix;
+@@ -55,31 +55,30 @@
+     /* x is INF or NaN */
+ 	if(ix>=0x7ff00000) return x*x;	
+ 
+-    /* |x| in [0,0.5*ln2], return 1+expm1(|x|)^2/(2*exp(|x|)) */
++    /* |x| in [0,0.5*ln2], return 1+glob2_math_expm1(|x|)^2/(2*glob2_math_exp(|x|)) */
+ 	if(ix<0x3fd62e43) {
+-	    t = expm1(fabs(x));
++	    t = glob2_math_expm1(glob2_math_fabs(x));
+ 	    w = one+t;
+-	    if (ix<0x3c800000) return w;	/* cosh(tiny) = 1 */
++	    if (ix<0x3c800000) return w;	/* glob2_math_cosh(tiny) = 1 */
+ 	    return one+(t*t)/(w+w);
+ 	}
+ 
+-    /* |x| in [0.5*ln2,22], return (exp(|x|)+1/exp(|x|)/2; */
++    /* |x| in [0.5*ln2,22], return (glob2_math_exp(|x|)+1/glob2_math_exp(|x|)/2; */
+ 	if (ix < 0x40360000) {
+-		t = __ieee754_exp(fabs(x));
++		t = glob2_math___ieee754_exp(glob2_math_fabs(x));
+ 		return half*t+half/t;
+ 	}
+ 
+-    /* |x| in [22, log(maxdouble)] return half*exp(|x|) */
+-	if (ix < 0x40862E42)  return half*__ieee754_exp(fabs(x));
++    /* |x| in [22, glob2_math_log(maxdouble)] return half*glob2_math_exp(|x|) */
++	if (ix < 0x40862E42)  return half*glob2_math___ieee754_exp(glob2_math_fabs(x));
+ 
+-    /* |x| in [log(maxdouble), overflowthresold] */
++    /* |x| in [glob2_math_log(maxdouble), overflowthresold] */
+ 	if (ix<=0x408633CE)
+-	    return __ldexp_exp(fabs(x), -1);
++	    return glob2_math___ldexp_exp(glob2_math_fabs(x), -1);
+ 
+-    /* |x| > overflowthresold, cosh(x) overflow */
++    /* |x| > overflowthresold, glob2_math_cosh(x) overflow */
+ 	return huge*huge;
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(cosh, coshl);
+ #endif
+--- a/src/e_exp.c
++++ b/src/e_exp.c
+@@ -13,7 +13,7 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_exp.c,v 1.14 2011/10/21 06:26:38 das Exp $");
+ 
+-/* __ieee754_exp(x)
++/* glob2_math___ieee754_exp(x)
+  * Returns the exponential of x.
+  *
+  * Method
+@@ -26,10 +26,10 @@
+  *      Here r will be represented as r = hi-lo for better 
+  *	accuracy.
+  *
+- *   2. Approximation of exp(r) by a special rational function on
++ *   2. Approximation of glob2_math_exp(r) by a special rational function on
+  *	the interval [0,0.34658]:
+  *	Write
+- *	    R(r**2) = r*(exp(r)+1)/(exp(r)-1) = 2 + r*r/6 - r**4/360 + ...
++ *	    R(r**2) = r*(glob2_math_exp(r)+1)/(glob2_math_exp(r)-1) = 2 + r*r/6 - r**4/360 + ...
+  *      We use a special Remes algorithm on [0,0.34658] to generate 
+  * 	a polynomial of degree 5 to approximate R. The maximum error 
+  *	of this polynomial approximation is bounded by 2**-59. In
+@@ -40,9 +40,9 @@
+  *	    |                  5          |     -59
+  *	    | 2.0+P1*z+...+P5*z   -  R(z) | <= 2 
+  *	    |                             |
+- *	The computation of exp(r) thus becomes
++ *	The computation of glob2_math_exp(r) thus becomes
+  *                             2*r
+- *		exp(r) = 1 + -------
++ *		glob2_math_exp(r) = 1 + -------
+  *		              R - r
+  *                                 r*R1(r)	
+  *		       = 1 + r + ----------- (for better accuracy)
+@@ -51,14 +51,14 @@
+  *			         2       4             10
+  *		R1(r) = r - (P1*r  + P2*r  + ... + P5*r   ).
+  *	
+- *   3. Scale back to obtain exp(x):
++ *   3. Scale back to obtain glob2_math_exp(x):
+  *	From step 1, we have
+- *	   exp(x) = 2^k * exp(r)
++ *	   glob2_math_exp(x) = 2^k * glob2_math_exp(r)
+  *
+  * Special cases:
+- *	exp(INF) is INF, exp(NaN) is NaN;
+- *	exp(-INF) is 0, and
+- *	for finite argument, only exp(0)=1 is exact.
++ *	glob2_math_exp(INF) is INF, glob2_math_exp(NaN) is NaN;
++ *	glob2_math_exp(-INF) is 0, and
++ *	for finite argument, only glob2_math_exp(0)=1 is exact.
+  *
+  * Accuracy:
+  *	according to an error analysis, the error is always less than
+@@ -66,8 +66,8 @@
+  *
+  * Misc. info.
+  *	For IEEE double 
+- *	    if x >  7.09782712893383973096e+02 then exp(x) overflow
+- *	    if x < -7.45133219101941108420e+02 then exp(x) underflow
++ *	    if x >  7.09782712893383973096e+02 then glob2_math_exp(x) overflow
++ *	    if x < -7.45133219101941108420e+02 then glob2_math_exp(x) underflow
+  *
+  * Constants:
+  * The hexadecimal values are the intended ones for the following 
+@@ -102,7 +102,7 @@
+ twom1000= 9.33263618503218878990e-302;     /* 2**-1000=0x01700000,0*/
+ 
+ OLM_DLLEXPORT double
+-__ieee754_exp(double x)	/* default IEEE double exp */
++glob2_math___ieee754_exp(double x)	/* default IEEE double glob2_math_exp */
+ {
+ 	double y,hi=0.0,lo=0.0,c,t,twopk;
+ 	int32_t k=0,xsb;
+@@ -119,13 +119,13 @@
+ 		GET_LOW_WORD(lx,x);
+ 		if(((hx&0xfffff)|lx)!=0)
+ 		     return x+x; 		/* NaN */
+-		else return (xsb==0)? x:0.0;	/* exp(+-inf)={inf,0} */
++		else return (xsb==0)? x:0.0;	/* glob2_math_exp(+-inf)={inf,0} */
+ 	    }
+ 	    if(x > o_threshold) return huge*huge; /* overflow */
+ 	    if(x < u_threshold) return twom1000*twom1000; /* underflow */
+ 	}
+ 
+-        /* this implementation gives 2.7182818284590455 for exp(1.0),
++        /* this implementation gives 2.7182818284590455 for glob2_math_exp(1.0),
+            which is well within the allowable error. however,
+            2.718281828459045 is closer to the true value so we prefer that
+            answer, given that 1.0 is such an important argument value. */
+@@ -167,5 +167,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(exp, expl);
+ #endif
+--- a/src/e_fmod.c
++++ b/src/e_fmod.c
+@@ -15,7 +15,7 @@
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_fmod.c,v 1.10 2008/02/22 02:30:34 das Exp $");
+ 
+ /* 
+- * __ieee754_fmod(x,y)
++ * glob2_math___ieee754_fmod(x,y)
+  * Return x mod y in exact arithmetic
+  * Method: shift and subtract
+  */
+@@ -27,7 +27,7 @@
+ static const double one = 1.0, Zero[] = {0.0, -0.0,};
+ 
+ OLM_DLLEXPORT double
+-__ieee754_fmod(double x, double y)
++glob2_math___ieee754_fmod(double x, double y)
+ {
+ 	int32_t n,hx,hy,hz,ix,iy,sx,i;
+ 	u_int32_t lx,ly,lz;
+@@ -92,7 +92,7 @@
+ 	    }
+ 	}
+ 
+-    /* fix point fmod */
++    /* fix point glob2_math_fmod */
+ 	n = ix - iy;
+ 	while(n--) {
+ 	    hz=hx-hy;lz=lx-ly; if(lx<ly) hz -= 1;
+--- a/src/e_hypot.c
++++ /dev/null
+@@ -1,131 +0,0 @@
+-
+-/* @(#)e_hypot.c 1.3 95/01/18 */
+-/*
+- * ====================================================
+- * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+- *
+- * Developed at SunSoft, a Sun Microsystems, Inc. business.
+- * Permission to use, copy, modify, and distribute this
+- * software is freely granted, provided that this notice 
+- * is preserved.
+- * ====================================================
+- */
+-
+-#include "cdefs-compat.h"
+-//__FBSDID("$FreeBSD: src/lib/msun/src/e_hypot.c,v 1.14 2011/10/15 07:00:28 das Exp $");
+-
+-/* __ieee754_hypot(x,y)
+- *
+- * Method :                  
+- *	If (assume round-to-nearest) z=x*x+y*y 
+- *	has error less than sqrt(2)/2 ulp, than 
+- *	sqrt(z) has error less than 1 ulp (exercise).
+- *
+- *	So, compute sqrt(x*x+y*y) with some care as 
+- *	follows to get the error below 1 ulp:
+- *
+- *	Assume x>y>0;
+- *	(if possible, set rounding to round-to-nearest)
+- *	1. if x > 2y  use
+- *		x1*x1+(y*y+(x2*(x+x1))) for x*x+y*y
+- *	where x1 = x with lower 32 bits cleared, x2 = x-x1; else
+- *	2. if x <= 2y use
+- *		t1*y1+((x-y)*(x-y)+(t1*y2+t2*y))
+- *	where t1 = 2x with lower 32 bits cleared, t2 = 2x-t1, 
+- *	y1= y with lower 32 bits chopped, y2 = y-y1.
+- *		
+- *	NOTE: scaling may be necessary if some argument is too 
+- *	      large or too tiny
+- *
+- * Special cases:
+- *	hypot(x,y) is INF if x or y is +INF or -INF; else
+- *	hypot(x,y) is NAN if x or y is NAN.
+- *
+- * Accuracy:
+- * 	hypot(x,y) returns sqrt(x^2+y^2) with error less 
+- * 	than 1 ulps (units in the last place) 
+- */
+-
+-#include <float.h>
+-#include <openlibm_math.h>
+-
+-#include "math_private.h"
+-
+-OLM_DLLEXPORT double
+-__ieee754_hypot(double x, double y)
+-{
+-	double a,b,t1,t2,y1,y2,w;
+-	int32_t j,k,ha,hb;
+-
+-	GET_HIGH_WORD(ha,x);
+-	ha &= 0x7fffffff;
+-	GET_HIGH_WORD(hb,y);
+-	hb &= 0x7fffffff;
+-	if(hb > ha) {a=y;b=x;j=ha; ha=hb;hb=j;} else {a=x;b=y;}
+-	a = fabs(a);
+-	b = fabs(b);
+-	if((ha-hb)>0x3c00000) {return a+b;} /* x/y > 2**60 */
+-	k=0;
+-	if(ha > 0x5f300000) {	/* a>2**500 */
+-	   if(ha >= 0x7ff00000) {	/* Inf or NaN */
+-	       u_int32_t low;
+-	       /* Use original arg order iff result is NaN; quieten sNaNs. */
+-	       w = fabs(x+0.0)-fabs(y+0.0);
+-	       GET_LOW_WORD(low,a);
+-	       if(((ha&0xfffff)|low)==0) w = a;
+-	       GET_LOW_WORD(low,b);
+-	       if(((hb^0x7ff00000)|low)==0) w = b;
+-	       return w;
+-	   }
+-	   /* scale a and b by 2**-600 */
+-	   ha -= 0x25800000; hb -= 0x25800000;	k += 600;
+-	   SET_HIGH_WORD(a,ha);
+-	   SET_HIGH_WORD(b,hb);
+-	}
+-	if(hb < 0x20b00000) {	/* b < 2**-500 */
+-	    if(hb <= 0x000fffff) {	/* subnormal b or 0 */
+-	        u_int32_t low;
+-		GET_LOW_WORD(low,b);
+-		if((hb|low)==0) return a;
+-		t1=0;
+-		SET_HIGH_WORD(t1,0x7fd00000);	/* t1=2^1022 */
+-		b *= t1;
+-		a *= t1;
+-		k -= 1022;
+-	    } else {		/* scale a and b by 2^600 */
+-	        ha += 0x25800000; 	/* a *= 2^600 */
+-		hb += 0x25800000;	/* b *= 2^600 */
+-		k -= 600;
+-		SET_HIGH_WORD(a,ha);
+-		SET_HIGH_WORD(b,hb);
+-	    }
+-	}
+-    /* medium size a and b */
+-	w = a-b;
+-	if (w>b) {
+-	    t1 = 0;
+-	    SET_HIGH_WORD(t1,ha);
+-	    t2 = a-t1;
+-	    w  = sqrt(t1*t1-(b*(-b)-t2*(a+t1)));
+-	} else {
+-	    a  = a+a;
+-	    y1 = 0;
+-	    SET_HIGH_WORD(y1,hb);
+-	    y2 = b - y1;
+-	    t1 = 0;
+-	    SET_HIGH_WORD(t1,ha+0x00100000);
+-	    t2 = a - t1;
+-	    w  = sqrt(t1*y1-(w*(-w)-(t1*y2+t2*b)));
+-	}
+-	if(k!=0) {
+-	    u_int32_t high;
+-	    t1 = 1.0;
+-	    GET_HIGH_WORD(high,t1);
+-	    SET_HIGH_WORD(t1,high+(k<<20));
+-	    return t1*w;
+-	} else return w;
+-}
+-
+-#if LDBL_MANT_DIG == 53
+-openlibm_weak_reference(hypot, hypotl);
+-#endif
+--- a/src/e_log.c
++++ b/src/e_log.c
+@@ -14,16 +14,16 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_log.c,v 1.15 2008/03/29 16:37:59 das Exp $");
+ 
+-/* __ieee754_log(x)
++/* glob2_math___ieee754_log(x)
+  * Return the logrithm of x
+  *
+  * Method :                  
+  *   1. Argument Reduction: find k and f such that 
+  *			x = 2^k * (1+f), 
+- *	   where  sqrt(2)/2 < 1+f < sqrt(2) .
++ *	   where  glob2_math_sqrt(2)/2 < 1+f < glob2_math_sqrt(2) .
+  *
+- *   2. Approximation of log(1+f).
+- *	Let s = f/(2+f) ; based on log(1+f) = log(1+s) - log(1-s)
++ *   2. Approximation of glob2_math_log(1+f).
++ *	Let s = f/(2+f) ; based on glob2_math_log(1+f) = glob2_math_log(1+s) - glob2_math_log(1-s)
+  *		 = 2s + 2/3 s**3 + 2/5 s**5 + .....,
+  *	     	 = 2s + s*R
+  *      We use a special Reme algorithm on [0,0.1716] to generate 
+@@ -38,21 +38,21 @@
+  *	    | Lg1*s +...+Lg7*s    -  R(z) | <= 2 
+  *	    |                             |
+  *	Note that 2s = f - s*f = f - hfsq + s*hfsq, where hfsq = f*f/2.
+- *	In order to guarantee error in log below 1ulp, we compute log
++ *	In order to guarantee error in glob2_math_log below 1ulp, we compute glob2_math_log
+  *	by
+- *		log(1+f) = f - s*(f - R)	(if f is not too large)
+- *		log(1+f) = f - (hfsq - s*(hfsq+R)).	(better accuracy)
++ *		glob2_math_log(1+f) = f - s*(f - R)	(if f is not too large)
++ *		glob2_math_log(1+f) = f - (hfsq - s*(hfsq+R)).	(better accuracy)
+  *	
+- *	3. Finally,  log(x) = k*ln2 + log(1+f).  
++ *	3. Finally,  glob2_math_log(x) = k*ln2 + glob2_math_log(1+f).  
+  *			    = k*ln2_hi+(f-(hfsq-(s*(hfsq+R)+k*ln2_lo)))
+  *	   Here ln2 is split into two floating point number: 
+  *			ln2_hi + ln2_lo,
+  *	   where n*ln2_hi is always exact for |n| < 2000.
+  *
+  * Special cases:
+- *	log(x) is NaN with signal if x < 0 (including -INF) ; 
+- *	log(+INF) is +INF; log(0) is -INF with signal;
+- *	log(NaN) is that NaN with no signal.
++ *	glob2_math_log(x) is NaN with signal if x < 0 (including -INF) ; 
++ *	glob2_math_log(+INF) is +INF; glob2_math_log(0) is -INF with signal;
++ *	glob2_math_log(NaN) is that NaN with no signal.
+  *
+  * Accuracy:
+  *	according to an error analysis, the error is always less than
+@@ -85,7 +85,7 @@
+ static const double zero   =  0.0;
+ 
+ OLM_DLLEXPORT double
+-__ieee754_log(double x)
++glob2_math___ieee754_log(double x)
+ {
+ 	double hfsq,f,s,z,R,w,t1,t2,dk;
+ 	int32_t k,hx,i,j;
+@@ -96,8 +96,8 @@
+ 	k=0;
+ 	if (hx < 0x00100000) {			/* x < 2**-1022  */
+ 	    if (((hx&0x7fffffff)|lx)==0) 
+-		return -two54/zero;		/* log(+-0)=-inf */
+-	    if (hx<0) return (x-x)/zero;	/* log(-#) = NaN */
++		return -two54/zero;		/* glob2_math_log(+-0)=-inf */
++	    if (hx<0) return (x-x)/zero;	/* glob2_math_log(-#) = NaN */
+ 	    k -= 54; x *= two54; /* subnormal number, scale up x */
+ 	    GET_HIGH_WORD(hx,x);
+ 	} 
+@@ -142,5 +142,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(log, logl);
+ #endif
+--- a/src/e_log10.c
++++ b/src/e_log10.c
+@@ -18,7 +18,7 @@
+  * Return the base 10 logarithm of x.  See e_log.c and k_log.h for most
+  * comments.
+  *
+- *    log10(x) = (f - 0.5*f*f + k_log1p(f)) / ln10 + k * log10(2)
++ *    glob2_math_log10(x) = (f - 0.5*f*f + k_log1p(f)) / ln10 + k * glob2_math_log10(2)
+  * in not-quite-routine extra precision.
+  */
+ 
+@@ -38,7 +38,7 @@
+ static const double zero   =  0.0;
+ 
+ OLM_DLLEXPORT double
+-__ieee754_log10(double x)
++glob2_math___ieee754_log10(double x)
+ {
+ 	double f,hfsq,hi,lo,r,val_hi,val_lo,w,y,y2;
+ 	int32_t i,k,hx;
+@@ -49,14 +49,14 @@
+ 	k=0;
+ 	if (hx < 0x00100000) {			/* x < 2**-1022  */
+ 	    if (((hx&0x7fffffff)|lx)==0)
+-		return -two54/zero;		/* log(+-0)=-inf */
+-	    if (hx<0) return (x-x)/zero;	/* log(-#) = NaN */
++		return -two54/zero;		/* glob2_math_log(+-0)=-inf */
++	    if (hx<0) return (x-x)/zero;	/* glob2_math_log(-#) = NaN */
+ 	    k -= 54; x *= two54; /* subnormal number, scale up x */
+ 	    GET_HIGH_WORD(hx,x);
+ 	}
+ 	if (hx >= 0x7ff00000) return x+x;
+ 	if (hx == 0x3ff00000 && lx == 0)
+-	    return zero;			/* log(1) = +0 */
++	    return zero;			/* glob2_math_log(1) = +0 */
+ 	k += (hx>>20)-1023;
+ 	hx &= 0x000fffff;
+ 	i = (hx+0x95f64)&0x100000;
+@@ -77,8 +77,8 @@
+ 
+ 	/*
+ 	 * Extra precision in for adding y*log10_2hi is not strictly needed
+-	 * since there is no very large cancellation near x = sqrt(2) or
+-	 * x = 1/sqrt(2), but we do it anyway since it costs little on CPUs
++	 * since there is no very large cancellation near x = glob2_math_sqrt(2) or
++	 * x = 1/glob2_math_sqrt(2), but we do it anyway since it costs little on CPUs
+ 	 * with some parallelism and it reduces the error for many args.
+ 	 */
+ 	w = y2 + val_hi;
+@@ -89,5 +89,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(log10, log10l);
+ #endif
+--- a/src/e_log2.c
++++ b/src/e_log2.c
+@@ -20,7 +20,7 @@
+  *
+  * This reduces x to {k, 1+f} exactly as in e_log.c, then calls the kernel,
+  * then does the combining and scaling steps
+- *    log2(x) = (f - 0.5*f*f + k_log1p(f)) / ln2 + k
++ *    glob2_math_log2(x) = (f - 0.5*f*f + k_log1p(f)) / ln2 + k
+  * in not-quite-routine extra precision.
+  */
+ 
+@@ -38,7 +38,7 @@
+ static const double zero   =  0.0;
+ 
+ OLM_DLLEXPORT double
+-__ieee754_log2(double x)
++glob2_math___ieee754_log2(double x)
+ {
+ 	double f,hfsq,hi,lo,r,val_hi,val_lo,w,y;
+ 	int32_t i,k,hx;
+@@ -49,14 +49,14 @@
+ 	k=0;
+ 	if (hx < 0x00100000) {			/* x < 2**-1022  */
+ 	    if (((hx&0x7fffffff)|lx)==0)
+-		return -two54/zero;		/* log(+-0)=-inf */
+-	    if (hx<0) return (x-x)/zero;	/* log(-#) = NaN */
++		return -two54/zero;		/* glob2_math_log(+-0)=-inf */
++	    if (hx<0) return (x-x)/zero;	/* glob2_math_log(-#) = NaN */
+ 	    k -= 54; x *= two54; /* subnormal number, scale up x */
+ 	    GET_HIGH_WORD(hx,x);
+ 	}
+ 	if (hx >= 0x7ff00000) return x+x;
+ 	if (hx == 0x3ff00000 && lx == 0)
+-	    return zero;			/* log(1) = +0 */
++	    return zero;			/* glob2_math_log(1) = +0 */
+ 	k += (hx>>20)-1023;
+ 	hx &= 0x000fffff;
+ 	i = (hx+0x95f64)&0x100000;
+@@ -69,7 +69,7 @@
+ 
+ 	/*
+ 	 * f-hfsq must (for args near 1) be evaluated in extra precision
+-	 * to avoid a large cancellation when x is near sqrt(2) or 1/sqrt(2).
++	 * to avoid a large cancellation when x is near glob2_math_sqrt(2) or 1/glob2_math_sqrt(2).
+ 	 * This is fairly efficient since f-hfsq only depends on f, so can
+ 	 * be evaluated in parallel with R.  Not combining hfsq with R also
+ 	 * keeps R small (though not as small as a true `lo' term would be),
+@@ -82,7 +82,7 @@
+ 	 * avoided as a side effect of the optimization of combining the
+ 	 * Dekker splitting step with the clear-low-bits step.
+ 	 *
+-	 * y must (for args near sqrt(2) and 1/sqrt(2)) be added in extra
++	 * y must (for args near glob2_math_sqrt(2) and 1/glob2_math_sqrt(2)) be added in extra
+ 	 * precision to avoid a very large cancellation when x is very near
+ 	 * these values.  Unlike the above cancellations, this problem is
+ 	 * specific to base 2.  It is strange that adding +-1 is so much
+@@ -112,5 +112,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(log2, log2l);
+ #endif
+--- a/src/e_pow.c
++++ b/src/e_pow.c
+@@ -12,16 +12,16 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_pow.c,v 1.14 2011/10/21 06:26:07 das Exp $");
+ 
+-/* __ieee754_pow(x,y) return x**y
++/* glob2_math___ieee754_pow(x,y) return x**y
+  *
+  *		      n
+  * Method:  Let x =  2   * (1+f)
+- *	1. Compute and return log2(x) in two pieces:
+- *		log2(x) = w1 + w2,
++ *	1. Compute and return glob2_math_log2(x) in two pieces:
++ *		glob2_math_log2(x) = w1 + w2,
+  *	   where w1 has 53-24 = 29 bit trailing zeros.
+- *	2. Perform y*log2(x) = n+y' by simulating muti-precision 
++ *	2. Perform y*glob2_math_log2(x) = n+y' by simulating muti-precision 
+  *	   arithmetic, where |y'|<=0.5.
+- *	3. Return x**y = 2**n*exp(y'*log2)
++ *	3. Return x**y = 2**n*glob2_math_exp(y'*glob2_math_log2)
+  *
+  * Special cases:
+  *	1.  (anything) ** 0  is 1
+@@ -45,8 +45,8 @@
+  *	19. (-anything except 0 and inf) ** (non-integer) is NAN
+  *
+  * Accuracy:
+- *	pow(x,y) returns x**y nearly rounded. In particular
+- *			pow(integer,integer)
++ *	glob2_math_pow(x,y) returns x**y nearly rounded. In particular
++ *			glob2_math_pow(integer,integer)
+  *	always returns the correct integer provided it is 
+  *	representable.
+  *
+@@ -72,7 +72,7 @@
+ two53	=  9007199254740992.0,	/* 0x43400000, 0x00000000 */
+ huge	=  1.0e300,
+ tiny    =  1.0e-300,
+-	/* poly coefs for (3/2)*(log(x)-2s-2/3*s**3 */
++	/* poly coefs for (3/2)*(glob2_math_log(x)-2s-2/3*s**3 */
+ L1  =  5.99999999999994648725e-01, /* 0x3FE33333, 0x33333303 */
+ L2  =  4.28571428578550184252e-01, /* 0x3FDB6DB6, 0xDB6FABFF */
+ L3  =  3.33333329818377432918e-01, /* 0x3FD55555, 0x518F264D */
+@@ -87,7 +87,7 @@
+ lg2  =  6.93147180559945286227e-01, /* 0x3FE62E42, 0xFEFA39EF */
+ lg2_h  =  6.93147182464599609375e-01, /* 0x3FE62E43, 0x00000000 */
+ lg2_l  = -1.90465429995776804525e-09, /* 0xBE205C61, 0x0CA86C39 */
+-ovt =  8.0085662595372944372e-0017, /* -(1024-log2(ovfl+.5ulp)) */
++ovt =  8.0085662595372944372e-0017, /* -(1024-glob2_math_log2(ovfl+.5ulp)) */
+ cp    =  9.61796693925975554329e-01, /* 0x3FEEC709, 0xDC3A03FD =2/(3ln2) */
+ cp_h  =  9.61796700954437255859e-01, /* 0x3FEEC709, 0xE0000000 =(float)cp */
+ cp_l  = -7.02846165095275826516e-09, /* 0xBE3E2FE0, 0x145B01F5 =tail of cp_h*/
+@@ -96,7 +96,7 @@
+ ivln2_l  =  1.92596299112661746887e-08; /* 0x3E54AE0B, 0xF85DDF44 =1/ln2 tail*/
+ 
+ OLM_DLLEXPORT double
+-__ieee754_pow(double x, double y)
++glob2_math___ieee754_pow(double x, double y)
+ {
+ 	double z,ax,z_h,z_l,p_h,p_l;
+ 	double y1,t1,t2,r,s,t,u,v,w;
+@@ -160,11 +160,11 @@
+             }
+ 	    if(hy==0x3fe00000) {             /* y is  0.5 */
+ 		if(hx>=0)	/* x >= +0 */
+-                    return sqrt(x);
++                    return glob2_math_sqrt(x);
+ 	    }
+ 	}
+ 
+-	ax   = fabs(x);
++	ax   = glob2_math_fabs(x);
+     /* special value of x */
+ 	if(lx==0) {
+ 	    if(ix==0x7ff00000||ix==0||ix==0x3ff00000){
+@@ -202,7 +202,7 @@
+ 	    if(ix<0x3fefffff) return (hy<0)? s*huge*huge:s*tiny*tiny;
+ 	    if(ix>0x3ff00000) return (hy>0)? s*huge*huge:s*tiny*tiny;
+ 	/* now |1-x| is tiny <= 2**-20, suffice to compute 
+-	   log(x) by x-x^2/2+x^3/3-x^4/4 */
++	   glob2_math_log(x) by x-x^2/2+x^3/3-x^4/4 */
+ 	    t = ax-one;		/* t has 20 trailing zeros */
+ 	    w = (t*t)*(0.5-t*(0.3333333333333333333333-t*0.25));
+ 	    u = ivln2_h*t;	/* ivln2_h has 21 sig. bits */
+@@ -220,8 +220,8 @@
+ 	    j  = ix&0x000fffff;
+ 	/* determine interval */
+ 	    ix = j|0x3ff00000;		/* normalize ix */
+-	    if(j<=0x3988E) k=0;		/* |x|<sqrt(3/2) */
+-	    else if(j<0xBB67A) k=1;	/* |x|<sqrt(3)   */
++	    if(j<=0x3988E) k=0;		/* |x|<glob2_math_sqrt(3/2) */
++	    else if(j<0xBB67A) k=1;	/* |x|<glob2_math_sqrt(3)   */
+ 	    else {k=0;n+=1;ix -= 0x00100000;}
+ 	    SET_HIGH_WORD(ax,ix);
+ 
+@@ -236,7 +236,7 @@
+ 	    SET_HIGH_WORD(t_h,((ix>>1)|0x20000000)+0x00080000+(k<<18));
+ 	    t_l = ax - (t_h-bp[k]);
+ 	    s_l = v*((u-s_h*t_h)-s_h*t_l);
+-	/* compute log(ax) */
++	/* compute glob2_math_log(ax) */
+ 	    s2 = ss*ss;
+ 	    r = s2*s2*(L1+s2*(L2+s2*(L3+s2*(L4+s2*(L5+s2*L6)))));
+ 	    r += s_l*(s_h+ss);
+@@ -251,9 +251,9 @@
+ 	    p_h = u+v;
+ 	    SET_LOW_WORD(p_h,0);
+ 	    p_l = v-(p_h-u);
+-	    z_h = cp_h*p_h;		/* cp_h+cp_l = 2/(3*log2) */
++	    z_h = cp_h*p_h;		/* cp_h+cp_l = 2/(3*glob2_math_log2) */
+ 	    z_l = cp_l*p_h+p_l*cp+dp_l[k];
+-	/* log2(ax) = (ss+..)*2/(3*log2) = n + dp_h + z_h + z_l */
++	/* glob2_math_log2(ax) = (ss+..)*2/(3*glob2_math_log2) = n + dp_h + z_h + z_l */
+ 	    t = (double)n;
+ 	    t1 = (((z_h+z_l)+dp_h[k])+t);
+ 	    SET_LOW_WORD(t1,0);
+@@ -307,11 +307,10 @@
+ 	z  = one-(r-z);
+ 	GET_HIGH_WORD(j,z);
+ 	j += (n<<20);
+-	if((j>>20)<=0) z = scalbn(z,n);	/* subnormal output */
++	if((j>>20)<=0) z = glob2_math_scalbn(z,n);	/* subnormal output */
+ 	else SET_HIGH_WORD(z,j);
+ 	return s*z;
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(pow, powl);
+ #endif
+--- a/src/e_rem_pio2.c
++++ b/src/e_rem_pio2.c
+@@ -16,10 +16,10 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_rem_pio2.c,v 1.22 2011/06/19 17:07:58 kargl Exp $");
+ 
+-/* __ieee754_rem_pio2(x,y)
++/* glob2_math___ieee754_rem_pio2(x,y)
+  * 
+  * return the remainder of x rem pi/2 in y[0]+y[1] 
+- * use __kernel_rem_pio2()
++ * use glob2_math___kernel_rem_pio2()
+  */
+ 
+ #include <float.h>
+@@ -49,7 +49,7 @@
+ pio2_3t =  8.47842766036889956997e-32; /* 0x397B839A, 0x252049C1 */
+ 
+ __inline int
+-__ieee754_rem_pio2(double x, double *y)
++glob2_math___ieee754_rem_pio2(double x, double *y)
+ {
+ 	double z,w,t,r,fn;
+ 	double tx[3],ty[2];
+@@ -166,7 +166,7 @@
+ 	if(ix>=0x7ff00000) {		/* x is inf or NaN */
+ 	    y[0]=y[1]=x-x; return 0;
+ 	}
+-    /* set z = scalbn(|x|,ilogb(x)-23) */
++    /* set z = glob2_math_scalbn(|x|,ilogb(x)-23) */
+ 	GET_LOW_WORD(low,x);
+ 	e0 	= (ix>>20)-1046;	/* e0 = ilogb(z)-23; */
+ 	INSERT_WORDS(z, ix - ((int32_t)(e0<<20)), low);
+@@ -177,7 +177,7 @@
+ 	tx[2] = z;
+ 	nx = 3;
+ 	while(tx[nx-1]==zero) nx--;	/* skip zero term */
+-	n  =  __kernel_rem_pio2(tx,ty,e0,nx,1);
++	n  =  glob2_math___kernel_rem_pio2(tx,ty,e0,nx,1);
+ 	if(hx<0) {y[0] = -ty[0]; y[1] = -ty[1]; return -n;}
+ 	y[0] = ty[0]; y[1] = ty[1]; return n;
+ }
+--- a/src/e_sinh.c
++++ b/src/e_sinh.c
+@@ -14,22 +14,22 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_sinh.c,v 1.11 2011/10/21 06:28:47 das Exp $");
+ 
+-/* __ieee754_sinh(x)
++/* glob2_math___ieee754_sinh(x)
+  * Method : 
+- * mathematically sinh(x) if defined to be (exp(x)-exp(-x))/2
+- *	1. Replace x by |x| (sinh(-x) = -sinh(x)). 
++ * mathematically glob2_math_sinh(x) if defined to be (glob2_math_exp(x)-glob2_math_exp(-x))/2
++ *	1. Replace x by |x| (glob2_math_sinh(-x) = -glob2_math_sinh(x)). 
+  *	2. 
+  *		                                    E + E/(E+1)
+- *	    0        <= x <= 22     :  sinh(x) := --------------, E=expm1(x)
++ *	    0        <= x <= 22     :  glob2_math_sinh(x) := --------------, E=glob2_math_expm1(x)
+  *			       			        2
+  *
+- *	    22       <= x <= lnovft :  sinh(x) := exp(x)/2 
+- *	    lnovft   <= x <= ln2ovft:  sinh(x) := exp(x/2)/2 * exp(x/2)
+- *	    ln2ovft  <  x	    :  sinh(x) := x*shuge (overflow)
++ *	    22       <= x <= lnovft :  glob2_math_sinh(x) := glob2_math_exp(x)/2 
++ *	    lnovft   <= x <= ln2ovft:  glob2_math_sinh(x) := glob2_math_exp(x/2)/2 * glob2_math_exp(x/2)
++ *	    ln2ovft  <  x	    :  glob2_math_sinh(x) := x*shuge (overflow)
+  *
+  * Special cases:
+- *	sinh(x) is |x| if x is +INF, -INF, or NaN.
+- *	only sinh(0)=0 is exact for finite x.
++ *	glob2_math_sinh(x) is |x| if x is +INF, -INF, or NaN.
++ *	only glob2_math_sinh(0)=0 is exact for finite x.
+  */
+ 
+ #include <float.h>
+@@ -40,7 +40,7 @@
+ static const double one = 1.0, shuge = 1.0e307;
+ 
+ OLM_DLLEXPORT double
+-__ieee754_sinh(double x)
++glob2_math___ieee754_sinh(double x)
+ {
+ 	double t,h;
+ 	int32_t ix,jx;
+@@ -57,23 +57,22 @@
+     /* |x| in [0,22], return sign(x)*0.5*(E+E/(E+1))) */
+ 	if (ix < 0x40360000) {		/* |x|<22 */
+ 	    if (ix<0x3e300000) 		/* |x|<2**-28 */
+-		if(shuge+x>one) return x;/* sinh(tiny) = tiny with inexact */
+-	    t = expm1(fabs(x));
++		if(shuge+x>one) return x;/* glob2_math_sinh(tiny) = tiny with inexact */
++	    t = glob2_math_expm1(glob2_math_fabs(x));
+ 	    if(ix<0x3ff00000) return h*(2.0*t-t*t/(t+one));
+ 	    return h*(t+t/(t+one));
+ 	}
+ 
+-    /* |x| in [22, log(maxdouble)] return 0.5*exp(|x|) */
+-	if (ix < 0x40862E42)  return h*__ieee754_exp(fabs(x));
++    /* |x| in [22, glob2_math_log(maxdouble)] return 0.5*glob2_math_exp(|x|) */
++	if (ix < 0x40862E42)  return h*glob2_math___ieee754_exp(glob2_math_fabs(x));
+ 
+-    /* |x| in [log(maxdouble), overflowthresold] */
++    /* |x| in [glob2_math_log(maxdouble), overflowthresold] */
+ 	if (ix<=0x408633CE)
+-	    return h*2.0*__ldexp_exp(fabs(x), -1);
++	    return h*2.0*glob2_math___ldexp_exp(glob2_math_fabs(x), -1);
+ 
+-    /* |x| > overflowthresold, sinh(x) overflow */
++    /* |x| > overflowthresold, glob2_math_sinh(x) overflow */
+ 	return x*shuge;
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(sinh, sinhl);
+ #endif
+--- a/src/e_sqrt.c
++++ b/src/e_sqrt.c
+@@ -14,19 +14,19 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/e_sqrt.c,v 1.11 2008/03/02 01:47:58 das Exp $");
+ 
+-/* __ieee754_sqrt(x)
+- * Return correctly rounded sqrt.
++/* glob2_math___ieee754_sqrt(x)
++ * Return correctly rounded glob2_math_sqrt.
+  *           ------------------------------------------
+- *	     |  Use the hardware sqrt if you have one |
++ *	     |  Use the hardware glob2_math_sqrt if you have one |
+  *           ------------------------------------------
+  * Method: 
+  *   Bit by bit method using integer arithmetic. (Slow, but portable) 
+  *   1. Normalization
+  *	Scale x to y in [1,4) with even powers of 2: 
+  *	find an integer k such that  1 <= (y=x*2^(2k)) < 4, then
+- *		sqrt(x) = 2^k * sqrt(y)
++ *		glob2_math_sqrt(x) = 2^k * glob2_math_sqrt(y)
+  *   2. Bit by bit computation
+- *	Let q  = sqrt(y) truncated to i bit after binary point (q = 1),
++ *	Let q  = glob2_math_sqrt(y) truncated to i bit after binary point (q = 1),
+  *	     i							 0
+  *                                     i+1         2
+  *	    s  = 2*q , and	y  =  2   * ( y - q  ).		(1)
+@@ -75,10 +75,10 @@
+  *	equal to huge for some floating point number "huge" and "tiny".
+  *		
+  * Special cases:
+- *	sqrt(+-0) = +-0 	... exact
+- *	sqrt(inf) = inf
+- *	sqrt(-ve) = NaN		... with invalid signal
+- *	sqrt(NaN) = NaN		... with invalid signal for signaling NaN
++ *	glob2_math_sqrt(+-0) = +-0 	... exact
++ *	glob2_math_sqrt(inf) = inf
++ *	glob2_math_sqrt(-ve) = NaN		... with invalid signal
++ *	glob2_math_sqrt(NaN) = NaN		... with invalid signal for signaling NaN
+  *
+  * Other methods : see the appended file at the end of the program below.
+  *---------------
+@@ -92,7 +92,7 @@
+ static	const double	one	= 1.0, tiny=1.0e-300;
+ 
+ OLM_DLLEXPORT double
+-__ieee754_sqrt(double x)
++glob2_math___ieee754_sqrt(double x)
+ {
+ 	double z;
+ 	int32_t sign = (int)0x80000000;
+@@ -103,14 +103,14 @@
+ 
+     /* take care of Inf and NaN */
+ 	if((ix0&0x7ff00000)==0x7ff00000) {			
+-	    return x*x+x;		/* sqrt(NaN)=NaN, sqrt(+inf)=+inf
+-					   sqrt(-inf)=sNaN */
++	    return x*x+x;		/* glob2_math_sqrt(NaN)=NaN, glob2_math_sqrt(+inf)=+inf
++					   glob2_math_sqrt(-inf)=sNaN */
+ 	} 
+     /* take care of zero */
+ 	if(ix0<=0) {
+-	    if(((ix0&(~sign))|ix1)==0) return x;/* sqrt(+-0) = +-0 */
++	    if(((ix0&(~sign))|ix1)==0) return x;/* glob2_math_sqrt(+-0) = +-0 */
+ 	    else if(ix0<0)
+-		return (x-x)/(x-x);		/* sqrt(-ve) = sNaN */
++		return (x-x)/(x-x);		/* glob2_math_sqrt(-ve) = sNaN */
+ 	}
+     /* normalize x */
+ 	m = (ix0>>20);
+@@ -132,10 +132,10 @@
+ 	}
+ 	m >>= 1;	/* m = [m/2] */
+ 
+-    /* generate sqrt(x) bit by bit */
++    /* generate glob2_math_sqrt(x) bit by bit */
+ 	ix0 += ix0 + ((ix1&sign)>>31);
+ 	ix1 += ix1;
+-	q = q1 = s0 = s1 = 0;	/* [q,q1] = sqrt(x) */
++	q = q1 = s0 = s1 = 0;	/* [q,q1] = glob2_math_sqrt(x) */
+ 	r = 0x00200000;		/* r = moving bit from right to left */
+ 
+ 	while(r!=0) {
+@@ -189,7 +189,6 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(sqrt, sqrtl);
+ #endif
+ 
+ /*
+@@ -198,9 +197,9 @@
+ (This is a copy of a drafted paper by Prof W. Kahan 
+ and K.C. Ng, written in May, 1986)
+ 
+-	Two algorithms are given here to implement sqrt(x) 
++	Two algorithms are given here to implement glob2_math_sqrt(x) 
+ 	(IEEE double precision arithmetic) in software.
+-	Both supply sqrt(x) correctly rounded. The first algorithm (in
++	Both supply glob2_math_sqrt(x) correctly rounded. The first algorithm (in
+ 	Section A) uses newton iterations and involves four divisions.
+ 	The second one uses reciproot iterations to avoid division, but
+ 	requires more multiplications. Both algorithms need the ability
+@@ -211,7 +210,7 @@
+ 	subtract and logical AND operations upon 32-bit words is needed
+ 	too, though not part of the standard.
+ 
+-A.  sqrt(x) by Newton Iteration
++A.  glob2_math_sqrt(x) by Newton Iteration
+ 
+    (1)	Initial approximation
+ 
+@@ -230,15 +229,15 @@
+ 	     ------------------------  	     ------------------------
+ 
+ 	By performing shifts and subtracts on x0 and x1 (both regarded
+-	as integers), we obtain an 8-bit approximation of sqrt(x) as
++	as integers), we obtain an 8-bit approximation of glob2_math_sqrt(x) as
+ 	follows.
+ 
+ 		k  := (x0>>1) + 0x1ff80000;
+-		y0 := k - T1[31&(k>>15)].	... y ~ sqrt(x) to 8 bits
++		y0 := k - T1[31&(k>>15)].	... y ~ glob2_math_sqrt(x) to 8 bits
+ 	Here k is a 32-bit integer and T1[] is an integer array containing
+ 	correction terms. Now magically the floating value of y (y's
+ 	leading 32-bit word is y0, the value of its trailing word is 0)
+-	approximates sqrt(x) to almost 8-bit.
++	approximates glob2_math_sqrt(x) to almost 8-bit.
+ 
+ 	Value of T1:
+ 	static int T1[32]= {
+@@ -250,7 +249,7 @@
+     (2)	Iterative refinement
+ 
+ 	Apply Heron's rule three times to y, we have y approximates 
+-	sqrt(x) to within 1 ulp (Unit in the Last Place):
++	glob2_math_sqrt(x) to within 1 ulp (Unit in the Last Place):
+ 
+ 		y := (y+x/y)/2		... almost 17 sig. bits
+ 		y := (y+x/y)/2		... almost 35 sig. bits
+@@ -260,8 +259,8 @@
+ 	Remark 1.
+ 	    Another way to improve y to within 1 ulp is:
+ 
+-		y := (y+x/y)		... almost 17 sig. bits to 2*sqrt(x)
+-		y := y - 0x00100006	... almost 18 sig. bits to sqrt(x)
++		y := (y+x/y)		... almost 17 sig. bits to 2*glob2_math_sqrt(x)
++		y := y - 0x00100006	... almost 18 sig. bits to glob2_math_sqrt(x)
+ 
+ 				2
+ 			    (x-y )*y
+@@ -295,12 +294,12 @@
+ 		    if(z=y) {
+ 		        I := i;	 ... restore inexact flag
+ 		        R := r;  ... restore rounded mode
+-		        return sqrt(x):=y.
++		        return glob2_math_sqrt(x):=y.
+ 		    } else {
+ 			z := z - ulp;	... special rounding
+ 		    }
+ 		}
+-		i := TRUE;		... sqrt(x) is inexact
++		i := TRUE;		... glob2_math_sqrt(x) is inexact
+ 		If (r=RN) then z=z+ulp	... rounded-to-nearest
+ 		If (r=RP) then {	... round-toward-+inf
+ 		    y = y+ulp; z=z+ulp;
+@@ -309,7 +308,7 @@
+ 		y0:=y0-0x00100000;	... y := y/2 is correctly rounded.
+ 	        I := i;	 		... restore inexact flag
+ 	        R := r;  		... restore rounded mode
+-	        return sqrt(x):=y.
++	        return glob2_math_sqrt(x):=y.
+ 		    
+     (4)	Special cases
+ 
+@@ -317,22 +316,22 @@
+ 	Square root of a negative number is NaN with invalid signal.
+ 
+ 
+-B.  sqrt(x) by Reciproot Iteration
++B.  glob2_math_sqrt(x) by Reciproot Iteration
+ 
+    (1)	Initial approximation
+ 
+ 	Let x0 and x1 be the leading and the trailing 32-bit words of
+ 	a floating point number x (in IEEE double format) respectively
+ 	(see section A). By performing shifs and subtracts on x0 and y0,
+-	we obtain a 7.8-bit approximation of 1/sqrt(x) as follows.
++	we obtain a 7.8-bit approximation of 1/glob2_math_sqrt(x) as follows.
+ 
+ 	    k := 0x5fe80000 - (x0>>1);
+-	    y0:= k - T2[63&(k>>14)].	... y ~ 1/sqrt(x) to 7.8 bits
++	    y0:= k - T2[63&(k>>14)].	... y ~ 1/glob2_math_sqrt(x) to 7.8 bits
+ 
+ 	Here k is a 32-bit integer and T2[] is an integer array 
+ 	containing correction terms. Now magically the floating
+ 	value of y (y's leading 32-bit word is y0, the value of
+-	its trailing word y1 is set to zero) approximates 1/sqrt(x)
++	its trailing word y1 is set to zero) approximates 1/glob2_math_sqrt(x)
+ 	to almost 7.8-bit.
+ 
+ 	Value of T2:
+@@ -349,22 +348,22 @@
+     (2)	Iterative refinement
+ 
+ 	Apply Reciproot iteration three times to y and multiply the
+-	result by x to get an approximation z that matches sqrt(x)
++	result by x to get an approximation z that matches glob2_math_sqrt(x)
+ 	to about 1 ulp. To be exact, we will have 
+-		-1ulp < sqrt(x)-z<1.0625ulp.
++		-1ulp < glob2_math_sqrt(x)-z<1.0625ulp.
+ 	
+ 	... set rounding mode to Round-to-nearest
+-	   y := y*(1.5-0.5*x*y*y)	... almost 15 sig. bits to 1/sqrt(x)
+-	   y := y*((1.5-2^-30)+0.5*x*y*y)... about 29 sig. bits to 1/sqrt(x)
++	   y := y*(1.5-0.5*x*y*y)	... almost 15 sig. bits to 1/glob2_math_sqrt(x)
++	   y := y*((1.5-2^-30)+0.5*x*y*y)... about 29 sig. bits to 1/glob2_math_sqrt(x)
+ 	... special arrangement for better accuracy
+-	   z := x*y			... 29 bits to sqrt(x), with z*y<1
+-	   z := z + 0.5*z*(1-z*y)	... about 1 ulp to sqrt(x)
++	   z := x*y			... 29 bits to glob2_math_sqrt(x), with z*y<1
++	   z := z + 0.5*z*(1-z*y)	... about 1 ulp to glob2_math_sqrt(x)
+ 
+ 	Remark 2. The constant 1.5-2^-30 is chosen to bias the error so that
+ 	(a) the term z*y in the final iteration is always less than 1; 
+ 	(b) the error in the final result is biased upward so that
+-		-1 ulp < sqrt(x) - z < 1.0625 ulp
+-	    instead of |sqrt(x)-z|<1.03125ulp.
++		-1 ulp < glob2_math_sqrt(x) - z < 1.0625 ulp
++	    instead of |glob2_math_sqrt(x)-z|<1.03125ulp.
+ 
+     (3)	Final adjustment
+ 
+@@ -413,7 +412,7 @@
+ 	    I := i or (k&j) or ((k&(j+j+1))!=(x1&3));
+ 	}
+ 	R:= r		... restore rounded mode
+-	return sqrt(x):=z.
++	return glob2_math_sqrt(x):=z.
+ 
+ 	If multiplication is cheaper then the foregoing red tape, the 
+ 	Inexact flag can be evaluated by
+--- a/src/fpmath.h
++++ b/src/fpmath.h
+@@ -86,11 +86,11 @@
+ 	struct {
+ #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+ 		unsigned int	man	:23;
+-		unsigned int	exp	:8;
++		unsigned int	glob2_math_exp	:8;
+ 		unsigned int	sign	:1;
+ #else /* _BIG_ENDIAN */
+ 		unsigned int	sign	:1;
+-		unsigned int	exp	:8;
++		unsigned int	glob2_math_exp	:8;
+ 		unsigned int	man	:23;
+ #endif
+ 	} bits;
+@@ -107,14 +107,14 @@
+ 		unsigned int	manl	:32;
+ #endif
+ 		unsigned int	manh	:20;
+-		unsigned int	exp	:11;
++		unsigned int	glob2_math_exp	:11;
+ 		unsigned int	sign	:1;
+ #if __FLOAT_WORD_ORDER__ == __ORDER_BIG_ENDIAN__
+ 		unsigned int	manl	:32;
+ #endif
+ #else /* _BIG_ENDIAN */
+ 		unsigned int	sign	:1;
+-		unsigned int	exp	:11;
++		unsigned int	glob2_math_exp	:11;
+ 		unsigned int	manh	:20;
+ 		unsigned int	manl	:32;
+ #endif
+--- a/src/k_cos.c
++++ b/src/k_cos.c
+@@ -15,40 +15,40 @@
+ //__FBSDID("$FreeBSD: src/lib/msun/src/k_cos.c,v 1.12 2008/02/19 12:54:14 bde Exp $");
+ 
+ /*
+- * __kernel_cos( x,  y )
+- * kernel cos function on [-pi/4, pi/4], pi/4 ~ 0.785398164
++ * glob2_math___kernel_cos( x,  y )
++ * kernel glob2_math_cos function on [-pi/4, pi/4], pi/4 ~ 0.785398164
+  * Input x is assumed to be bounded by ~pi/4 in magnitude.
+  * Input y is the tail of x. 
+  *
+  * Algorithm
+- *	1. Since cos(-x) = cos(x), we need only to consider positive x.
++ *	1. Since glob2_math_cos(-x) = glob2_math_cos(x), we need only to consider positive x.
+  *	2. if x < 2^-27 (hx<0x3e400000 0), return 1 with inexact if x!=0.
+- *	3. cos(x) is approximated by a polynomial of degree 14 on
++ *	3. glob2_math_cos(x) is approximated by a polynomial of degree 14 on
+  *	   [0,pi/4]
+  *		  	                 4            14
+- *	   	cos(x) ~ 1 - x*x/2 + C1*x + ... + C6*x
++ *	   	glob2_math_cos(x) ~ 1 - x*x/2 + C1*x + ... + C6*x
+  *	   where the remez error is
+  *	
+  * 	|              2     4     6     8     10    12     14 |     -58
+- * 	|cos(x)-(1-.5*x +C1*x +C2*x +C3*x +C4*x +C5*x  +C6*x  )| <= 2
++ * 	|glob2_math_cos(x)-(1-.5*x +C1*x +C2*x +C3*x +C4*x +C5*x  +C6*x  )| <= 2
+  * 	|    					               | 
+  * 
+  * 	               4     6     8     10    12     14 
+  *	4. let r = C1*x +C2*x +C3*x +C4*x +C5*x  +C6*x  , then
+- *	       cos(x) ~ 1 - x*x/2 + r
+- *	   since cos(x+y) ~ cos(x) - sin(x)*y 
+- *			  ~ cos(x) - x*y,
+- *	   a correction term is necessary in cos(x) and hence
+- *		cos(x+y) = 1 - (x*x/2 - (r - x*y))
++ *	       glob2_math_cos(x) ~ 1 - x*x/2 + r
++ *	   since glob2_math_cos(x+y) ~ glob2_math_cos(x) - glob2_math_sin(x)*y 
++ *			  ~ glob2_math_cos(x) - x*y,
++ *	   a correction term is necessary in glob2_math_cos(x) and hence
++ *		glob2_math_cos(x+y) = 1 - (x*x/2 - (r - x*y))
+  *	   For better accuracy, rearrange to
+- *		cos(x+y) ~ w + (tmp + (r-x*y))
++ *		glob2_math_cos(x+y) ~ w + (tmp + (r-x*y))
+  *	   where w = 1 - x*x/2 and tmp is a tiny correction term
+  *	   (1 - x*x/2 == w + tmp exactly in infinite precision).
+  *	   The exactness of w + tmp in infinite precision depends on w
+  *	   and tmp having the same precision as x.  If they have extra
+  *	   precision due to compiler bugs, then the extra precision is
+  *	   only good provided it is retained in all terms of the final
+- *	   expression for cos().  Retention happens in all cases tested
++ *	   expression for glob2_math_cos().  Retention happens in all cases tested
+  *	   under FreeBSD, so don't pessimize things by forcibly clipping
+  *	   any extra precision in w.
+  */
+@@ -67,7 +67,7 @@
+ C6  = -1.13596475577881948265e-11; /* 0xBDA8FAE9, 0xBE8838D4 */
+ 
+ OLM_DLLEXPORT double
+-__kernel_cos(double x, double y)
++glob2_math___kernel_cos(double x, double y)
+ {
+ 	double hz,z,r,w;
+ 
+--- a/src/k_exp.c
++++ b/src/k_exp.c
+@@ -36,7 +36,7 @@
+ static const double kln2 =  1246.97177782734161156;	/* k * ln2 */
+ 
+ /*
+- * Compute exp(x), scaled to avoid spurious overflow.  An exponent is
++ * Compute glob2_math_exp(x), scaled to avoid spurious overflow.  An exponent is
+  * returned separately in 'expt'.
+  *
+  * Input:  ln(DBL_MAX) <= x < ln(2 * DBL_MAX / DBL_MIN_DENORM) ~= 1454.91
+@@ -49,12 +49,12 @@
+ 	u_int32_t hx;
+ 
+ 	/*
+-	 * We use exp(x) = exp(x - kln2) * 2**k, carefully chosen to
+-	 * minimize |exp(kln2) - 2**k|.  We also scale the exponent of
++	 * We use glob2_math_exp(x) = glob2_math_exp(x - kln2) * 2**k, carefully chosen to
++	 * minimize |glob2_math_exp(kln2) - 2**k|.  We also scale the exponent of
+ 	 * exp_x to MAX_EXP so that the result can be multiplied by
+ 	 * a tiny number without losing accuracy due to denormalization.
+ 	 */
+-	exp_x = exp(x - kln2);
++	exp_x = glob2_math_exp(x - kln2);
+ 	GET_HIGH_WORD(hx, exp_x);
+ 	*expt = (hx >> 20) - (0x3ff + 1023) + k;
+ 	SET_HIGH_WORD(exp_x, (hx & 0xfffff) | ((0x3ff + 1023) << 20));
+@@ -62,7 +62,7 @@
+ }
+ 
+ /*
+- * __ldexp_exp(x, expt) and __ldexp_cexp(x, expt) compute exp(x) * 2**expt.
++ * glob2_math___ldexp_exp(x, expt) and glob2_math___ldexp_cexp(x, expt) compute glob2_math_exp(x) * 2**expt.
+  * They are intended for large arguments (real part >= ln(DBL_MAX))
+  * where care is needed to avoid overflow.
+  *
+@@ -72,7 +72,7 @@
+  */
+ 
+ OLM_DLLEXPORT double
+-__ldexp_exp(double x, int expt)
++glob2_math___ldexp_exp(double x, int expt)
+ {
+ 	double exp_x, scale;
+ 	int ex_expt;
+@@ -84,7 +84,7 @@
+ }
+ 
+ OLM_DLLEXPORT double complex
+-__ldexp_cexp(double complex z, int expt)
++glob2_math___ldexp_cexp(double complex z, int expt)
+ {
+ 	double x, y, exp_x, scale1, scale2;
+ 	int ex_expt, half_expt;
+@@ -103,6 +103,6 @@
+ 	half_expt = expt - half_expt;
+ 	INSERT_WORDS(scale2, (0x3ff + half_expt) << 20, 0);
+ 
+-	return (CMPLX(cos(y) * exp_x * scale1 * scale2,
+-	    sin(y) * exp_x * scale1 * scale2));
++	return (CMPLX(glob2_math_cos(y) * exp_x * scale1 * scale2,
++	    glob2_math_sin(y) * exp_x * scale1 * scale2));
+ }
+--- a/src/k_log.h
++++ b/src/k_log.h
+@@ -16,7 +16,7 @@
+ 
+ /*
+  * k_log1p(f):
+- * Return log(1+f) - f for 1+f in ~[sqrt(2)/2, sqrt(2)].
++ * Return glob2_math_log(1+f) - f for 1+f in ~[glob2_math_sqrt(2)/2, glob2_math_sqrt(2)].
+  *
+  * The following describes the overall strategy for computing
+  * logarithms in base e.  The argument reduction and adding the final
+@@ -26,10 +26,10 @@
+  * Method :                  
+  *   1. Argument Reduction: find k and f such that 
+  *			x = 2^k * (1+f), 
+- *	   where  sqrt(2)/2 < 1+f < sqrt(2) .
++ *	   where  glob2_math_sqrt(2)/2 < 1+f < glob2_math_sqrt(2) .
+  *
+- *   2. Approximation of log(1+f).
+- *	Let s = f/(2+f) ; based on log(1+f) = log(1+s) - log(1-s)
++ *   2. Approximation of glob2_math_log(1+f).
++ *	Let s = f/(2+f) ; based on glob2_math_log(1+f) = glob2_math_log(1+s) - glob2_math_log(1-s)
+  *		 = 2s + 2/3 s**3 + 2/5 s**5 + .....,
+  *	     	 = 2s + s*R
+  *      We use a special Reme algorithm on [0,0.1716] to generate 
+@@ -44,21 +44,21 @@
+  *	    | Lg1*s +...+Lg7*s    -  R(z) | <= 2 
+  *	    |                             |
+  *	Note that 2s = f - s*f = f - hfsq + s*hfsq, where hfsq = f*f/2.
+- *	In order to guarantee error in log below 1ulp, we compute log
++ *	In order to guarantee error in glob2_math_log below 1ulp, we compute glob2_math_log
+  *	by
+- *		log(1+f) = f - s*(f - R)	(if f is not too large)
+- *		log(1+f) = f - (hfsq - s*(hfsq+R)).	(better accuracy)
++ *		glob2_math_log(1+f) = f - s*(f - R)	(if f is not too large)
++ *		glob2_math_log(1+f) = f - (hfsq - s*(hfsq+R)).	(better accuracy)
+  *	
+- *	3. Finally,  log(x) = k*ln2 + log(1+f).  
++ *	3. Finally,  glob2_math_log(x) = k*ln2 + glob2_math_log(1+f).  
+  *			    = k*ln2_hi+(f-(hfsq-(s*(hfsq+R)+k*ln2_lo)))
+  *	   Here ln2 is split into two floating point number: 
+  *			ln2_hi + ln2_lo,
+  *	   where n*ln2_hi is always exact for |n| < 2000.
+  *
+  * Special cases:
+- *	log(x) is NaN with signal if x < 0 (including -INF) ; 
+- *	log(+INF) is +INF; log(0) is -INF with signal;
+- *	log(NaN) is that NaN with no signal.
++ *	glob2_math_log(x) is NaN with signal if x < 0 (including -INF) ; 
++ *	glob2_math_log(+INF) is +INF; glob2_math_log(0) is -INF with signal;
++ *	glob2_math_log(NaN) is that NaN with no signal.
+  *
+  * Accuracy:
+  *	according to an error analysis, the error is always less than
+--- a/src/k_logf.h
++++ b/src/k_logf.h
+@@ -17,7 +17,7 @@
+  */
+ 
+ static const float
+-/* |(log(1+s)-log(1-s))/s - Lg(s)| < 2**-34.24 (~[-4.95e-11, 4.97e-11]). */
++/* |(glob2_math_log(1+s)-glob2_math_log(1-s))/s - Lg(s)| < 2**-34.24 (~[-4.95e-11, 4.97e-11]). */
+ Lg1 =      0xaaaaaa.0p-24,	/* 0.66666662693 */
+ Lg2 =      0xccce13.0p-25,	/* 0.40000972152 */
+ Lg3 =      0x91e9ee.0p-25,	/* 0.28498786688 */
+--- a/src/k_rem_pio2.c
++++ b/src/k_rem_pio2.c
+@@ -15,10 +15,10 @@
+ //__FBSDID("$FreeBSD: src/lib/msun/src/k_rem_pio2.c,v 1.11 2008/02/25 11:43:20 bde Exp $");
+ 
+ /*
+- * __kernel_rem_pio2(x,y,e0,nx,prec)
++ * glob2_math___kernel_rem_pio2(x,y,e0,nx,prec)
+  * double x[],y[]; int e0,nx,prec;
+  * 
+- * __kernel_rem_pio2 return the last three digits of N with 
++ * glob2_math___kernel_rem_pio2 return the last three digits of N with 
+  *		y = x - N*pi/2
+  * so that |y| < pi/2.
+  *
+@@ -39,9 +39,9 @@
+  *
+  *		Example of breaking a double positive z into x[0]+x[1]+x[2]:
+  *			e0 = ilogb(z)-23
+- *			z  = scalbn(z,-e0)
++ *			z  = glob2_math_scalbn(z,-e0)
+  *		for i = 0,1,2
+- *			x[i] = floor(z)
++ *			x[i] = glob2_math_floor(z)
+  *			z    = (z-x[i])*2**24
+  *
+  *
+@@ -72,7 +72,7 @@
+  *			3	113 bits (quad)
+  *
+  * External function:
+- *	double scalbn(), floor();
++ *	double glob2_math_scalbn(), glob2_math_floor();
+  *
+  *
+  * Here is the description of some local variables:
+@@ -291,7 +291,7 @@
+ twon24  =  5.96046447753906250000e-08; /* 0x3E700000, 0x00000000 */
+ 
+ OLM_DLLEXPORT int
+-__kernel_rem_pio2(double *x, double *y, int e0, int nx, int prec)
++glob2_math___kernel_rem_pio2(double *x, double *y, int e0, int nx, int prec)
+ {
+ 	int32_t jz,jx,jv,jp,jk,carry,n,iq[20],i,j,k,m,q0,ih;
+ 	double z,fw,f[20],fq[20],q[20];
+@@ -325,8 +325,8 @@
+ 	}
+ 
+     /* compute n */
+-	z  = scalbn(z,q0);		/* actual value of z */
+-	z -= 8.0*floor(z*0.125);		/* trim off integer >= 8 */
++	z  = glob2_math_scalbn(z,q0);		/* actual value of z */
++	z -= 8.0*glob2_math_floor(z*0.125);		/* trim off integer >= 8 */
+ 	n  = (int32_t) z;
+ 	z -= (double)n;
+ 	ih = 0;
+@@ -358,7 +358,7 @@
+ 	    }
+ 	    if(ih==2) {
+ 		z = one - z;
+-		if(carry!=0) z -= scalbn(one,q0);
++		if(carry!=0) z -= glob2_math_scalbn(one,q0);
+ 	    }
+ 	}
+ 
+@@ -384,7 +384,7 @@
+ 	    jz -= 1; q0 -= 24;
+ 	    while(iq[jz]==0) { jz--; q0-=24;}
+ 	} else { /* break z into 24-bit if necessary */
+-	    z = scalbn(z,-q0);
++	    z = glob2_math_scalbn(z,-q0);
+ 	    if(z>=two24) { 
+ 		fw = (double)((int32_t)(twon24*z));
+ 		iq[jz] = (int32_t)(z-two24*fw);
+@@ -394,7 +394,7 @@
+ 	}
+ 
+     /* convert integer "bit" chunk to floating-point value */
+-	fw = scalbn(one,q0);
++	fw = glob2_math_scalbn(one,q0);
+ 	for(i=jz;i>=0;i--) {
+ 	    q[i] = fw*(double)iq[i]; fw*=twon24;
+ 	}
+--- a/src/k_sin.c
++++ b/src/k_sin.c
+@@ -14,34 +14,34 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/k_sin.c,v 1.11 2008/02/19 12:54:14 bde Exp $");
+ 
+-/* __kernel_sin( x, y, iy)
+- * kernel sin function on ~[-pi/4, pi/4] (except on -0), pi/4 ~ 0.7854
++/* glob2_math___kernel_sin( x, y, iy)
++ * kernel glob2_math_sin function on ~[-pi/4, pi/4] (except on -0), pi/4 ~ 0.7854
+  * Input x is assumed to be bounded by ~pi/4 in magnitude.
+  * Input y is the tail of x.
+  * Input iy indicates whether y is 0. (if iy=0, y assume to be 0). 
+  *
+  * Algorithm
+- *	1. Since sin(-x) = -sin(x), we need only to consider positive x. 
+- *	2. Callers must return sin(-0) = -0 without calling here since our
++ *	1. Since glob2_math_sin(-x) = -glob2_math_sin(x), we need only to consider positive x. 
++ *	2. Callers must return glob2_math_sin(-0) = -0 without calling here since our
+  *	   odd polynomial is not evaluated in a way that preserves -0.
+- *	   Callers may do the optimization sin(x) ~ x for tiny x.
+- *	3. sin(x) is approximated by a polynomial of degree 13 on
++ *	   Callers may do the optimization glob2_math_sin(x) ~ x for tiny x.
++ *	3. glob2_math_sin(x) is approximated by a polynomial of degree 13 on
+  *	   [0,pi/4]
+  *		  	         3            13
+- *	   	sin(x) ~ x + S1*x + ... + S6*x
++ *	   	glob2_math_sin(x) ~ x + S1*x + ... + S6*x
+  *	   where
+  *	
+- * 	|sin(x)         2     4     6     8     10     12  |     -58
++ * 	|glob2_math_sin(x)         2     4     6     8     10     12  |     -58
+  * 	|----- - (1+S1*x +S2*x +S3*x +S4*x +S5*x  +S6*x   )| <= 2
+  * 	|  x 					           | 
+  * 
+- *	4. sin(x+y) = sin(x) + sin'(x')*y
+- *		    ~ sin(x) + (1-x*x/2)*y
++ *	4. glob2_math_sin(x+y) = glob2_math_sin(x) + glob2_math_sin'(x')*y
++ *		    ~ glob2_math_sin(x) + (1-x*x/2)*y
+  *	   For better accuracy, let 
+  *		     3      2      2      2      2
+  *		r = x *(S2+x *(S3+x *(S4+x *(S5+x *S6))))
+  *	   then                   3    2
+- *		sin(x) = x + (S1*x + (x *(r-y/2)+y))
++ *		glob2_math_sin(x) = x + (S1*x + (x *(r-y/2)+y))
+  */
+ 
+ #include <openlibm_math.h>
+@@ -58,7 +58,7 @@
+ S6  =  1.58969099521155010221e-10; /* 0x3DE5D93A, 0x5ACFD57C */
+ 
+ OLM_DLLEXPORT double
+-__kernel_sin(double x, double y, int iy)
++glob2_math___kernel_sin(double x, double y, int iy)
+ {
+ 	double z,r,v,w;
+ 
+--- a/src/k_tan.c
++++ b/src/k_tan.c
+@@ -14,39 +14,39 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/k_tan.c,v 1.13 2008/02/22 02:30:35 das Exp $");
+ 
+-/* __kernel_tan( x, y, k )
+- * kernel tan function on ~[-pi/4, pi/4] (except on -0), pi/4 ~ 0.7854
++/* glob2_math___kernel_tan( x, y, k )
++ * kernel glob2_math_tan function on ~[-pi/4, pi/4] (except on -0), pi/4 ~ 0.7854
+  * Input x is assumed to be bounded by ~pi/4 in magnitude.
+  * Input y is the tail of x.
+- * Input k indicates whether tan (if k = 1) or -1/tan (if k = -1) is returned.
++ * Input k indicates whether glob2_math_tan (if k = 1) or -1/glob2_math_tan (if k = -1) is returned.
+  *
+  * Algorithm
+- *	1. Since tan(-x) = -tan(x), we need only to consider positive x.
+- *	2. Callers must return tan(-0) = -0 without calling here since our
++ *	1. Since glob2_math_tan(-x) = -glob2_math_tan(x), we need only to consider positive x.
++ *	2. Callers must return glob2_math_tan(-0) = -0 without calling here since our
+  *	   odd polynomial is not evaluated in a way that preserves -0.
+- *	   Callers may do the optimization tan(x) ~ x for tiny x.
+- *	3. tan(x) is approximated by a odd polynomial of degree 27 on
++ *	   Callers may do the optimization glob2_math_tan(x) ~ x for tiny x.
++ *	3. glob2_math_tan(x) is approximated by a odd polynomial of degree 27 on
+  *	   [0,0.67434]
+  *		  	         3             27
+- *	   	tan(x) ~ x + T1*x + ... + T13*x
++ *	   	glob2_math_tan(x) ~ x + T1*x + ... + T13*x
+  *	   where
+  *
+- * 	        |tan(x)         2     4            26   |     -59.2
++ * 	        |glob2_math_tan(x)         2     4            26   |     -59.2
+  * 	        |----- - (1+T1*x +T2*x +.... +T13*x    )| <= 2
+  * 	        |  x 					|
+  *
+- *	   Note: tan(x+y) = tan(x) + tan'(x)*y
+- *		          ~ tan(x) + (1+x*x)*y
+- *	   Therefore, for better accuracy in computing tan(x+y), let
++ *	   Note: glob2_math_tan(x+y) = glob2_math_tan(x) + glob2_math_tan'(x)*y
++ *		          ~ glob2_math_tan(x) + (1+x*x)*y
++ *	   Therefore, for better accuracy in computing glob2_math_tan(x+y), let
+  *		     3      2      2       2       2
+  *		r = x *(T2+x *(T3+x *(...+x *(T12+x *T13))))
+  *	   then
+  *		 		    3    2
+- *		tan(x+y) = x + (T1*x + (x *(r+y)+y))
++ *		glob2_math_tan(x+y) = x + (T1*x + (x *(r+y)+y))
+  *
+  *      4. For x in [0.67434,pi/4],  let y = pi/4 - x, then
+- *		tan(x) = tan(pi/4-y) = (1-tan(y))/(1+tan(y))
+- *		       = 1 - 2*(tan(y) - (tan(y)^2)/(1+tan(y)))
++ *		glob2_math_tan(x) = glob2_math_tan(pi/4-y) = (1-glob2_math_tan(y))/(1+glob2_math_tan(y))
++ *		       = 1 - 2*(glob2_math_tan(y) - (glob2_math_tan(y)^2)/(1+glob2_math_tan(y)))
+  */
+ 
+ #include <openlibm_math.h>
+@@ -78,7 +78,7 @@
+ /* INDENT ON */
+ 
+ double
+-__kernel_tan(double x, double y, int iy) {
++glob2_math___kernel_tan(double x, double y, int iy) {
+ 	double z, r, v, w, s;
+ 	int32_t ix, hx;
+ 
+--- a/src/math_private.h
++++ b/src/math_private.h
+@@ -284,22 +284,22 @@
+  * We rename functions here to improve other sources' diffability
+  * against fdlibm.
+  */
+-#define	__ieee754_sqrt	sqrt
+-#define	__ieee754_acos	acos
+-#define	__ieee754_acosh	acosh
+-#define	__ieee754_log	log
+-#define	__ieee754_log2	log2
+-#define	__ieee754_atanh	atanh
+-#define	__ieee754_asin	asin
+-#define	__ieee754_atan2	atan2
+-#define	__ieee754_exp	exp
+-#define	__ieee754_cosh	cosh
+-#define	__ieee754_fmod	fmod
+-#define	__ieee754_pow	pow
++#define	glob2_math___ieee754_sqrt	glob2_math_sqrt
++#define	glob2_math___ieee754_acos	glob2_math_acos
++#define	glob2_math___ieee754_acosh	glob2_math_acosh
++#define	glob2_math___ieee754_log	glob2_math_log
++#define	glob2_math___ieee754_log2	glob2_math_log2
++#define	glob2_math___ieee754_atanh	glob2_math_atanh
++#define	glob2_math___ieee754_asin	glob2_math_asin
++#define	glob2_math___ieee754_atan2	glob2_math_atan2
++#define	glob2_math___ieee754_exp	glob2_math_exp
++#define	glob2_math___ieee754_cosh	glob2_math_cosh
++#define	glob2_math___ieee754_fmod	glob2_math_fmod
++#define	glob2_math___ieee754_pow	glob2_math_pow
+ #define	__ieee754_lgamma lgamma
+ #define	__ieee754_lgamma_r lgamma_r
+-#define	__ieee754_log10	log10
+-#define	__ieee754_sinh	sinh
++#define	glob2_math___ieee754_log10	glob2_math_log10
++#define	glob2_math___ieee754_sinh	glob2_math_sinh
+ #define	__ieee754_hypot	hypot
+ #define	__ieee754_j0	j0
+ #define	__ieee754_j1	j1
+@@ -334,18 +334,18 @@
+ #define	__ieee754_remainderf remainderf
+ 
+ /* fdlibm kernel function */
+-int	__kernel_rem_pio2(double*,double*,int,int,int);
++int	glob2_math___kernel_rem_pio2(double*,double*,int,int,int);
+ 
+ /* double precision kernel functions */
+ #ifdef INLINE_REM_PIO2
+ __inline
+ #endif
+-int	__ieee754_rem_pio2(double,double*);
+-double	__kernel_sin(double,double,int);
+-double	__kernel_cos(double,double);
+-double	__kernel_tan(double,double,int);
+-double	__ldexp_exp(double,int);
+-double complex __ldexp_cexp(double complex,int);
++int	glob2_math___ieee754_rem_pio2(double,double*);
++double	glob2_math___kernel_sin(double,double,int);
++double	glob2_math___kernel_cos(double,double);
++double	glob2_math___kernel_tan(double,double,int);
++double	glob2_math___ldexp_exp(double,int);
++double complex glob2_math___ldexp_cexp(double complex,int);
+ 
+ /* float precision kernel functions */
+ #ifdef INLINE_REM_PIO2F
+--- a/src/math_private_openbsd.h
++++ b/src/math_private_openbsd.h
+@@ -115,7 +115,7 @@
+ #ifdef __LP64__
+     int padh:32;
+ #endif
+-    int exp:16;
++    int glob2_math_exp:16;
+     int padl:16;
+     u_int32_t msw;
+     u_int32_t lsw;
+@@ -132,7 +132,7 @@
+   struct {
+     u_int32_t lsw;
+     u_int32_t msw;
+-    int exp:16;
++    int glob2_math_exp:16;
+     int padl:16;
+ #ifdef __LP64__
+     int padh:32;
+@@ -148,7 +148,7 @@
+ do {								\
+   ieee_extended_shape_type ew_u;				\
+   ew_u.value = (d);						\
+-  (se) = ew_u.parts.exp;					\
++  (se) = ew_u.parts.glob2_math_exp;					\
+   (ix0) = ew_u.parts.msw;					\
+   (ix1) = ew_u.parts.lsw;					\
+ } while (0)
+@@ -158,7 +158,7 @@
+ #define SET_LDOUBLE_WORDS(d,se,ix0,ix1)				\
+ do {								\
+   ieee_extended_shape_type iw_u;				\
+-  iw_u.parts.exp = (se);					\
++  iw_u.parts.glob2_math_exp = (se);					\
+   iw_u.parts.msw = (ix0);					\
+   iw_u.parts.lsw = (ix1);					\
+   (d) = iw_u.value;						\
+@@ -189,7 +189,7 @@
+ do {								\
+   ieee_extended_shape_type ge_u;				\
+   ge_u.value = (d);						\
+-  (se) = ge_u.parts.exp;					\
++  (se) = ge_u.parts.glob2_math_exp;					\
+ } while (0)
+ 
+ /* Set exponent of a long double from an int.  */
+@@ -198,7 +198,7 @@
+ do {								\
+   ieee_extended_shape_type se_u;				\
+   se_u.value = (d);						\
+-  se_u.parts.exp = (se);					\
++  se_u.parts.glob2_math_exp = (se);					\
+   (d) = se_u.value;						\
+ } while (0)
+ 
+--- a/src/s_asinh.c
++++ b/src/s_asinh.c
+@@ -13,15 +13,15 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_asinh.c,v 1.9 2008/02/22 02:30:35 das Exp $");
+ 
+-/* asinh(x)
++/* glob2_math_asinh(x)
+  * Method :
+  *	Based on
+- *		asinh(x) = sign(x) * log [ |x| + sqrt(x*x+1) ]
++ *		glob2_math_asinh(x) = sign(x) * glob2_math_log [ |x| + glob2_math_sqrt(x*x+1) ]
+  *	we have
+- *	asinh(x) := x  if  1+x*x=1,
+- *		 := sign(x)*(log(x)+ln2)) for large |x|, else
+- *		 := sign(x)*log(2|x|+1/(|x|+sqrt(x*x+1))) if|x|>2, else
+- *		 := sign(x)*log1p(|x| + x^2/(1 + sqrt(1+x^2)))
++ *	glob2_math_asinh(x) := x  if  1+x*x=1,
++ *		 := sign(x)*(glob2_math_log(x)+ln2)) for large |x|, else
++ *		 := sign(x)*glob2_math_log(2|x|+1/(|x|+glob2_math_sqrt(x*x+1))) if|x|>2, else
++ *		 := sign(x)*glob2_math_log1p(|x| + x^2/(1 + glob2_math_sqrt(1+x^2)))
+  */
+ 
+ #include <float.h>
+@@ -35,7 +35,7 @@
+ huge=  1.00000000000000000000e+300;
+ 
+ OLM_DLLEXPORT double
+-asinh(double x)
++glob2_math_asinh(double x)
+ {
+ 	double t,w;
+ 	int32_t hx,ix;
+@@ -46,17 +46,16 @@
+ 	    if(huge+x>one) return x;	/* return x inexact except 0 */
+ 	}
+ 	if(ix>0x41b00000) {	/* |x| > 2**28 */
+-	    w = __ieee754_log(fabs(x))+ln2;
++	    w = glob2_math___ieee754_log(glob2_math_fabs(x))+ln2;
+ 	} else if (ix>0x40000000) {	/* 2**28 > |x| > 2.0 */
+-	    t = fabs(x);
+-	    w = __ieee754_log(2.0*t+one/(__ieee754_sqrt(x*x+one)+t));
++	    t = glob2_math_fabs(x);
++	    w = glob2_math___ieee754_log(2.0*t+one/(glob2_math___ieee754_sqrt(x*x+one)+t));
+ 	} else {		/* 2.0 > |x| > 2**-28 */
+ 	    t = x*x;
+-	    w =log1p(fabs(x)+t/(one+__ieee754_sqrt(one+t)));
++	    w =glob2_math_log1p(glob2_math_fabs(x)+t/(one+glob2_math___ieee754_sqrt(one+t)));
+ 	}
+ 	if(hx>0) return w; else return -w;
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(asinh, asinhl);
+ #endif
+--- a/src/s_atan.c
++++ b/src/s_atan.c
+@@ -13,18 +13,18 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_atan.c,v 1.13 2011/02/10 07:37:50 das Exp $");
+ 
+-/* atan(x)
++/* glob2_math_atan(x)
+  * Method
+- *   1. Reduce x to positive by atan(x) = -atan(-x).
++ *   1. Reduce x to positive by glob2_math_atan(x) = -glob2_math_atan(-x).
+  *   2. According to the integer k=4t+0.25 chopped, t=x, the argument
+  *      is further reduced to one of the following intervals and the
+  *      arctangent of t is evaluated by the corresponding formula:
+  *
+- *      [0,7/16]      atan(x) = t-t^3*(a1+t^2*(a2+...(a10+t^2*a11)...)
+- *      [7/16,11/16]  atan(x) = atan(1/2) + atan( (t-0.5)/(1+t/2) )
+- *      [11/16.19/16] atan(x) = atan( 1 ) + atan( (t-1)/(1+t) )
+- *      [19/16,39/16] atan(x) = atan(3/2) + atan( (t-1.5)/(1+1.5t) )
+- *      [39/16,INF]   atan(x) = atan(INF) + atan( -1/t )
++ *      [0,7/16]      glob2_math_atan(x) = t-t^3*(a1+t^2*(a2+...(a10+t^2*a11)...)
++ *      [7/16,11/16]  glob2_math_atan(x) = glob2_math_atan(1/2) + glob2_math_atan( (t-0.5)/(1+t/2) )
++ *      [11/16.19/16] glob2_math_atan(x) = glob2_math_atan( 1 ) + glob2_math_atan( (t-1)/(1+t) )
++ *      [19/16,39/16] glob2_math_atan(x) = glob2_math_atan(3/2) + glob2_math_atan( (t-1.5)/(1+1.5t) )
++ *      [39/16,INF]   glob2_math_atan(x) = glob2_math_atan(INF) + glob2_math_atan( -1/t )
+  *
+  * Constants:
+  * The hexadecimal values are the intended ones for the following
+@@ -39,17 +39,17 @@
+ #include "math_private.h"
+ 
+ static const double atanhi[] = {
+-  4.63647609000806093515e-01, /* atan(0.5)hi 0x3FDDAC67, 0x0561BB4F */
+-  7.85398163397448278999e-01, /* atan(1.0)hi 0x3FE921FB, 0x54442D18 */
+-  9.82793723247329054082e-01, /* atan(1.5)hi 0x3FEF730B, 0xD281F69B */
+-  1.57079632679489655800e+00, /* atan(inf)hi 0x3FF921FB, 0x54442D18 */
++  4.63647609000806093515e-01, /* glob2_math_atan(0.5)hi 0x3FDDAC67, 0x0561BB4F */
++  7.85398163397448278999e-01, /* glob2_math_atan(1.0)hi 0x3FE921FB, 0x54442D18 */
++  9.82793723247329054082e-01, /* glob2_math_atan(1.5)hi 0x3FEF730B, 0xD281F69B */
++  1.57079632679489655800e+00, /* glob2_math_atan(inf)hi 0x3FF921FB, 0x54442D18 */
+ };
+ 
+ static const double atanlo[] = {
+-  2.26987774529616870924e-17, /* atan(0.5)lo 0x3C7A2B7F, 0x222F65E2 */
+-  3.06161699786838301793e-17, /* atan(1.0)lo 0x3C81A626, 0x33145C07 */
+-  1.39033110312309984516e-17, /* atan(1.5)lo 0x3C700788, 0x7AF0CBBD */
+-  6.12323399573676603587e-17, /* atan(inf)lo 0x3C91A626, 0x33145C07 */
++  2.26987774529616870924e-17, /* glob2_math_atan(0.5)lo 0x3C7A2B7F, 0x222F65E2 */
++  3.06161699786838301793e-17, /* glob2_math_atan(1.0)lo 0x3C81A626, 0x33145C07 */
++  1.39033110312309984516e-17, /* glob2_math_atan(1.5)lo 0x3C700788, 0x7AF0CBBD */
++  6.12323399573676603587e-17, /* glob2_math_atan(inf)lo 0x3C91A626, 0x33145C07 */
+ };
+ 
+ static const double aT[] = {
+@@ -71,7 +71,7 @@
+ huge   = 1.0e300;
+ 
+ OLM_DLLEXPORT double
+-atan(double x)
++glob2_math_atan(double x)
+ {
+ 	double w,s1,s2,z;
+ 	int32_t ix,hx,id;
+@@ -92,7 +92,7 @@
+ 	    }
+ 	    id = -1;
+ 	} else {
+-	x = fabs(x);
++	x = glob2_math_fabs(x);
+ 	if (ix < 0x3ff30000) {		/* |x| < 1.1875 */
+ 	    if (ix < 0x3fe60000) {	/* 7/16 <=|x|<11/16 */
+ 		id = 0; x = (2.0*x-one)/(2.0+x);
+@@ -120,5 +120,4 @@
+ }
+ 
+ #if LDBL_MANT_DIG == 53
+-openlibm_weak_reference(atan, atanl);
+ #endif
+--- a/src/s_cbrt.c
++++ b/src/s_cbrt.c
+@@ -19,14 +19,14 @@
+ 
+ #include "math_private.h"
+ 
+-/* cbrt(x)
++/* glob2_math_cbrt(x)
+  * Return cube root of x
+  */
+ static const u_int32_t
+ 	B1 = 715094163, /* B1 = (1023-1023/3-0.03306235651)*2**20 */
+ 	B2 = 696219795; /* B2 = (1023-1023/3-54/3-0.03306235651)*2**20 */
+ 
+-/* |1/cbrt(x) - p(x)| < 2**-23.5 (~[-7.93e-8, 7.929e-8]). */
++/* |1/glob2_math_cbrt(x) - p(x)| < 2**-23.5 (~[-7.93e-8, 7.929e-8]). */
+ static const double
+ P0 =  1.87595182427177009643,		/* 0x3ffe03e6, 0x0f61e692 */
+ P1 = -1.88497979543377169875,		/* 0xbffe28e0, 0x92f02420 */
+@@ -35,7 +35,7 @@
+ P4 =  0.145996192886612446982;		/* 0x3fc2b000, 0xd4e4edd7 */
+ 
+ OLM_DLLEXPORT double
+-cbrt(double x)
++glob2_math_cbrt(double x)
+ {
+ 	int32_t	hx;
+ 	union {
+@@ -49,11 +49,11 @@
+ 	EXTRACT_WORDS(hx,low,x);
+ 	sign=hx&0x80000000; 		/* sign= sign(x) */
+ 	hx  ^=sign;
+-	if(hx>=0x7ff00000) return(x+x); /* cbrt(NaN,INF) is itself */
++	if(hx>=0x7ff00000) return(x+x); /* glob2_math_cbrt(NaN,INF) is itself */
+ 
+     /*
+-     * Rough cbrt to 5 bits:
+-     *    cbrt(2**e*(1+m) ~= 2**(e/3)*(1+(e%3+m)/3)
++     * Rough glob2_math_cbrt to 5 bits:
++     *    glob2_math_cbrt(2**e*(1+m) ~= 2**(e/3)*(1+(e%3+m)/3)
+      * where e is integral and >= 0, m is real and in [0, 1), and "/" and
+      * "%" are integer division and modulus with rounding towards minus
+      * infinity.  The RHS is always >= the LHS and has a maximum relative
+@@ -68,7 +68,7 @@
+      */
+ 	if(hx<0x00100000) { 		/* zero or subnormal? */
+ 	    if((hx|low)==0)
+-		return(x);		/* cbrt(0) is itself */
++		return(x);		/* glob2_math_cbrt(0) is itself */
+ 	    SET_HIGH_WORD(t,0x43500000); /* set t= 2**54 */
+ 	    t*=x;
+ 	    GET_HIGH_WORD(high,t);
+@@ -77,11 +77,11 @@
+ 	    INSERT_WORDS(t,sign|(hx/3+B1),0);
+ 
+     /*
+-     * New cbrt to 23 bits:
+-     *    cbrt(x) = t*cbrt(x/t**3) ~= t*P(t**3/x)
+-     * where P(r) is a polynomial of degree 4 that approximates 1/cbrt(r)
++     * New glob2_math_cbrt to 23 bits:
++     *    glob2_math_cbrt(x) = t*glob2_math_cbrt(x/t**3) ~= t*P(t**3/x)
++     * where P(r) is a polynomial of degree 4 that approximates 1/glob2_math_cbrt(r)
+      * to within 2**-23.5 when |r - 1| < 1/10.  The rough approximation
+-     * has produced t such than |t/cbrt(x) - 1| ~< 1/32, and cubing this
++     * has produced t such than |t/glob2_math_cbrt(x) - 1| ~< 1/32, and cubing this
+      * gives us bounds for r = t**3/x.
+      *
+      * Try to optimize for parallel evaluation as in k_tanf.c.
+@@ -91,7 +91,7 @@
+ 
+     /*
+      * Round t away from zero to 23 bits (sloppily except for ensuring that
+-     * the result is larger in magnitude than cbrt(x) but not much more than
++     * the result is larger in magnitude than glob2_math_cbrt(x) but not much more than
+      * 2 23-bit ulps larger).  With rounding towards zero, the error bound
+      * would be ~5/6 instead of ~4/6.  With a maximum error of 2 23-bit ulps
+      * in the rounded t, the infinite-precision error in the Newton
+@@ -114,5 +114,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(cbrt, cbrtl);
+ #endif
+--- a/src/s_ceil.c
++++ b/src/s_ceil.c
+@@ -14,12 +14,12 @@
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_ceil.c,v 1.11 2008/02/15 07:01:40 bde Exp $");
+ 
+ /*
+- * ceil(x)
++ * glob2_math_ceil(x)
+  * Return x rounded toward -inf to integral value
+  * Method:
+  *	Bit twiddling.
+  * Exception:
+- *	Inexact flag raised if x not equal to ceil(x).
++ *	Inexact flag raised if x not equal to glob2_math_ceil(x).
+  */
+ 
+ #include <float.h>
+@@ -30,7 +30,7 @@
+ static const double huge = 1.0e300;
+ 
+ OLM_DLLEXPORT double
+-ceil(double x)
++glob2_math_ceil(double x)
+ {
+ 	int32_t i0,i1,j0;
+ 	u_int32_t i,j;
+@@ -73,5 +73,4 @@
+ }
+ 
+ #if LDBL_MANT_DIG == 53
+-openlibm_weak_reference(ceil, ceill);
+ #endif
+--- a/src/s_copysign.c
++++ b/src/s_copysign.c
+@@ -14,8 +14,8 @@
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_copysign.c,v 1.10 2008/02/22 02:30:35 das Exp $");
+ 
+ /*
+- * copysign(double x, double y)
+- * copysign(x,y) returns a value with the magnitude of x and
++ * glob2_math_copysign(double x, double y)
++ * glob2_math_copysign(x,y) returns a value with the magnitude of x and
+  * with the sign bit of y.
+  */
+ 
+@@ -24,7 +24,7 @@
+ #include "math_private.h"
+ 
+ OLM_DLLEXPORT double
+-copysign(double x, double y)
++glob2_math_copysign(double x, double y)
+ {
+ 	u_int32_t hx,hy;
+ 	GET_HIGH_WORD(hx,x);
+--- a/src/s_cos.c
++++ b/src/s_cos.c
+@@ -13,21 +13,21 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_cos.c,v 1.13 2011/02/10 07:37:50 das Exp $");
+ 
+-/* cos(x)
++/* glob2_math_cos(x)
+  * Return cosine function of x.
+  *
+  * kernel function:
+- *	__kernel_sin		... sine function on [-pi/4,pi/4]
+- *	__kernel_cos		... cosine function on [-pi/4,pi/4]
+- *	__ieee754_rem_pio2	... argument reduction routine
++ *	glob2_math___kernel_sin		... sine function on [-pi/4,pi/4]
++ *	glob2_math___kernel_cos		... cosine function on [-pi/4,pi/4]
++ *	glob2_math___ieee754_rem_pio2	... argument reduction routine
+  *
+  * Method.
+- *      Let S,C and T denote the sin, cos and tan respectively on
++ *      Let S,C and T denote the glob2_math_sin, glob2_math_cos and glob2_math_tan respectively on
+  *	[-PI/4, +PI/4]. Reduce the argument x to y1+y2 = x-k*pi/2
+  *	in [-pi/4 , +pi/4], and let n = k mod 4.
+  *	We have
+  *
+- *          n        sin(x)      cos(x)        tan(x)
++ *          n        glob2_math_sin(x)      glob2_math_cos(x)        glob2_math_tan(x)
+  *     ----------------------------------------------------------
+  *	    0	       S	   C		 T
+  *	    1	       C	  -S		-1/T
+@@ -36,7 +36,7 @@
+  *     ----------------------------------------------------------
+  *
+  * Special cases:
+- *      Let trig be any of sin, cos, or tan.
++ *      Let trig be any of glob2_math_sin, glob2_math_cos, or glob2_math_tan.
+  *      trig(+-INF)  is NaN, with signals;
+  *      trig(NaN)    is that NaN;
+  *
+@@ -52,7 +52,7 @@
+ //#include "e_rem_pio2.c"
+ 
+ OLM_DLLEXPORT double
+-cos(double x)
++glob2_math_cos(double x)
+ {
+ 	double y[2],z=0.0;
+ 	int32_t n, ix;
+@@ -63,27 +63,26 @@
+     /* |x| ~< pi/4 */
+ 	ix &= 0x7fffffff;
+ 	if(ix <= 0x3fe921fb) {
+-	    if(ix<0x3e46a09e)			/* if x < 2**-27 * sqrt(2) */
++	    if(ix<0x3e46a09e)			/* if x < 2**-27 * glob2_math_sqrt(2) */
+ 		if(((int)x)==0) return 1.0;	/* generate inexact */
+-	    return __kernel_cos(x,z);
++	    return glob2_math___kernel_cos(x,z);
+ 	}
+ 
+-    /* cos(Inf or NaN) is NaN */
++    /* glob2_math_cos(Inf or NaN) is NaN */
+ 	else if (ix>=0x7ff00000) return x-x;
+ 
+     /* argument reduction needed */
+ 	else {
+-	    n = __ieee754_rem_pio2(x,y);
++	    n = glob2_math___ieee754_rem_pio2(x,y);
+ 	    switch(n&3) {
+-		case 0: return  __kernel_cos(y[0],y[1]);
+-		case 1: return -__kernel_sin(y[0],y[1],1);
+-		case 2: return -__kernel_cos(y[0],y[1]);
++		case 0: return  glob2_math___kernel_cos(y[0],y[1]);
++		case 1: return -glob2_math___kernel_sin(y[0],y[1],1);
++		case 2: return -glob2_math___kernel_cos(y[0],y[1]);
+ 		default:
+-		        return  __kernel_sin(y[0],y[1],1);
++		        return  glob2_math___kernel_sin(y[0],y[1],1);
+ 	    }
+ 	}
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(cos, cosl);
+ #endif
+--- a/src/s_expm1.c
++++ b/src/s_expm1.c
+@@ -13,8 +13,8 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_expm1.c,v 1.12 2011/10/21 06:26:38 das Exp $");
+ 
+-/* expm1(x)
+- * Returns exp(x)-1, the exponential of x minus 1.
++/* glob2_math_expm1(x)
++ * Returns glob2_math_exp(x)-1, the exponential of x minus 1.
+  *
+  * Method
+  *   1. Argument reduction:
+@@ -25,15 +25,15 @@
+  *      Here a correction term c will be computed to compensate
+  *	the error in r when rounded to a floating-point number.
+  *
+- *   2. Approximating expm1(r) by a special rational function on
++ *   2. Approximating glob2_math_expm1(r) by a special rational function on
+  *	the interval [0,0.34658]:
+  *	Since
+- *	    r*(exp(r)+1)/(exp(r)-1) = 2+ r^2/6 - r^4/360 + ...
++ *	    r*(glob2_math_exp(r)+1)/(glob2_math_exp(r)-1) = 2+ r^2/6 - r^4/360 + ...
+  *	we define R1(r*r) by
+- *	    r*(exp(r)+1)/(exp(r)-1) = 2+ r^2/6 * R1(r*r)
++ *	    r*(glob2_math_exp(r)+1)/(glob2_math_exp(r)-1) = 2+ r^2/6 * R1(r*r)
+  *	That is,
+- *	    R1(r**2) = 6/r *((exp(r)+1)/(exp(r)-1) - 2/r)
+- *		     = 6/r * ( 1 + 2.0*(1/(exp(r)-1) - 1/r))
++ *	    R1(r**2) = 6/r *((glob2_math_exp(r)+1)/(glob2_math_exp(r)-1) - 2/r)
++ *		     = 6/r * ( 1 + 2.0*(1/(glob2_math_exp(r)-1) - 1/r))
+  *		     = 1 - r^2/60 + r^4/2520 - r^6/100800 + ...
+  *      We use a special Reme algorithm on [0,0.347] to generate
+  * 	a polynomial of degree 5 in r*r to approximate R1. The
+@@ -51,47 +51,47 @@
+  *	    | 1.0+Q1*z+...+Q5*z   -  R1(z) | <= 2
+  *	    |                              |
+  *
+- *	expm1(r) = exp(r)-1 is then computed by the following
++ *	glob2_math_expm1(r) = glob2_math_exp(r)-1 is then computed by the following
+  * 	specific way which minimize the accumulation rounding error:
+  *			       2     3
+  *			      r     r    [ 3 - (R1 + R1*r/2)  ]
+- *	      expm1(r) = r + --- + --- * [--------------------]
++ *	      glob2_math_expm1(r) = r + --- + --- * [--------------------]
+  *		              2     2    [ 6 - r*(3 - R1*r/2) ]
+  *
+  *	To compensate the error in the argument reduction, we use
+- *		expm1(r+c) = expm1(r) + c + expm1(r)*c
+- *			   ~ expm1(r) + c + r*c
++ *		glob2_math_expm1(r+c) = glob2_math_expm1(r) + c + glob2_math_expm1(r)*c
++ *			   ~ glob2_math_expm1(r) + c + r*c
+  *	Thus c+r*c will be added in as the correction terms for
+- *	expm1(r+c). Now rearrange the term to avoid optimization
++ *	glob2_math_expm1(r+c). Now rearrange the term to avoid optimization
+  * 	screw up:
+  *		        (      2                                    2 )
+  *		        ({  ( r    [ R1 -  (3 - R1*r/2) ]  )  }    r  )
+- *	 expm1(r+c)~r - ({r*(--- * [--------------------]-c)-c} - --- )
++ *	 glob2_math_expm1(r+c)~r - ({r*(--- * [--------------------]-c)-c} - --- )
+  *	                ({  ( 2    [ 6 - r*(3 - R1*r/2) ]  )  }    2  )
+  *                      (                                             )
+  *
+  *		   = r - E
+- *   3. Scale back to obtain expm1(x):
++ *   3. Scale back to obtain glob2_math_expm1(x):
+  *	From step 1, we have
+- *	   expm1(x) = either 2^k*[expm1(r)+1] - 1
+- *		    = or     2^k*[expm1(r) + (1-2^-k)]
++ *	   glob2_math_expm1(x) = either 2^k*[glob2_math_expm1(r)+1] - 1
++ *		    = or     2^k*[glob2_math_expm1(r) + (1-2^-k)]
+  *   4. Implementation notes:
+  *	(A). To save one multiplication, we scale the coefficient Qi
+  *	     to Qi*2^i, and replace z by (x^2)/2.
+- *	(B). To achieve maximum accuracy, we compute expm1(x) by
++ *	(B). To achieve maximum accuracy, we compute glob2_math_expm1(x) by
+  *	  (i)   if x < -56*ln2, return -1.0, (raise inexact if x!=inf)
+  *	  (ii)  if k=0, return r-E
+  *	  (iii) if k=-1, return 0.5*(r-E)-0.5
+  *        (iv)	if k=1 if r < -0.25, return 2*((r+0.5)- E)
+  *	       	       else	     return  1.0+2.0*(r-E);
+- *	  (v)   if (k<-2||k>56) return 2^k(1-(E-r)) - 1 (or exp(x)-1)
++ *	  (v)   if (k<-2||k>56) return 2^k(1-(E-r)) - 1 (or glob2_math_exp(x)-1)
+  *	  (vi)  if k <= 20, return 2^k((1-2^-k)-(E-r)), else
+  *	  (vii) return 2^k(1-((E+2^-k)-r))
+  *
+  * Special cases:
+- *	expm1(INF) is INF, expm1(NaN) is NaN;
+- *	expm1(-INF) is -1, and
+- *	for finite argument, only expm1(0)=0 is exact.
++ *	glob2_math_expm1(INF) is INF, glob2_math_expm1(NaN) is NaN;
++ *	glob2_math_expm1(-INF) is -1, and
++ *	for finite argument, only glob2_math_expm1(0)=0 is exact.
+  *
+  * Accuracy:
+  *	according to an error analysis, the error is always less than
+@@ -99,7 +99,7 @@
+  *
+  * Misc. info.
+  *	For IEEE double
+- *	    if x >  7.09782712893383973096e+02 then expm1(x) overflow
++ *	    if x >  7.09782712893383973096e+02 then glob2_math_expm1(x) overflow
+  *
+  * Constants:
+  * The hexadecimal values are the intended ones for the following
+@@ -129,7 +129,7 @@
+ Q5  =  -2.01099218183624371326e-07; /* BE8AFDB7 6E09C32D */
+ 
+ OLM_DLLEXPORT double
+-expm1(double x)
++glob2_math_expm1(double x)
+ {
+ 	double y,hi,lo,c,t,e,hxs,hfx,r1,twopk;
+ 	int32_t k,xsb;
+@@ -147,7 +147,7 @@
+ 		    GET_LOW_WORD(low,x);
+ 		    if(((hx&0xfffff)|low)!=0)
+ 		         return x+x; 	 /* NaN */
+-		    else return (xsb==0)? x:-1.0;/* exp(+-inf)-1={inf,-1} */
++		    else return (xsb==0)? x:-1.0;/* glob2_math_exp(+-inf)-1={inf,-1} */
+ 	        }
+ 	        if(x > o_threshold) return huge*huge; /* overflow */
+ 	    }
+@@ -195,7 +195,7 @@
+ 	       	if(x < -0.25) return -2.0*(e-(x+0.5));
+ 	       	else 	      return  one+2.0*(x-e);
+ 	    }
+-	    if (k <= -2 || k>56) {   /* suffice to return exp(x)-1 */
++	    if (k <= -2 || k>56) {   /* suffice to return glob2_math_exp(x)-1 */
+ 	        y = one-(e-x);
+ 		if (k == 1024) y = y*2.0*0x1p1023;
+ 		else y = y*twopk;
+@@ -217,5 +217,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(expm1, expm1l);
+ #endif
+--- a/src/s_fabs.c
++++ b/src/s_fabs.c
+@@ -11,7 +11,7 @@
+  */
+ 
+ /*
+- * fabs(x) returns the absolute value of x.
++ * glob2_math_fabs(x) returns the absolute value of x.
+  */
+ 
+ #include <openlibm_math.h>
+@@ -19,7 +19,7 @@
+ #include "math_private.h"
+ 
+ OLM_DLLEXPORT double
+-fabs(double x)
++glob2_math_fabs(double x)
+ {
+ 	u_int32_t high;
+ 	GET_HIGH_WORD(high,x);
+--- a/src/s_floor.c
++++ b/src/s_floor.c
+@@ -14,12 +14,12 @@
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_floor.c,v 1.11 2008/02/15 07:01:40 bde Exp $");
+ 
+ /*
+- * floor(x)
++ * glob2_math_floor(x)
+  * Return x rounded toward -inf to integral value
+  * Method:
+  *	Bit twiddling.
+  * Exception:
+- *	Inexact flag raised if x not equal to floor(x).
++ *	Inexact flag raised if x not equal to glob2_math_floor(x).
+  */
+ 
+ #include <float.h>
+@@ -30,7 +30,7 @@
+ static const double huge = 1.0e300;
+ 
+ OLM_DLLEXPORT double
+-floor(double x)
++glob2_math_floor(double x)
+ {
+ 	int32_t i0,i1,j0;
+ 	u_int32_t i,j;
+@@ -74,5 +74,4 @@
+ }
+ 
+ #if LDBL_MANT_DIG == 53
+-openlibm_weak_reference(floor, floorl);
+ #endif
+--- a/src/s_frexp.c
++++ b/src/s_frexp.c
+@@ -15,12 +15,12 @@
+ 
+ /*
+  * for non-zero x
+- *	x = frexp(arg,&exp);
++ *	x = glob2_math_frexp(arg,&glob2_math_exp);
+  * return a double fp quantity x such that 0.5 <= |x| <1.0
+- * and the corresponding binary exponent "exp". That is
+- *	arg = x*2^exp.
+- * If arg is inf, 0.0, or NaN, then frexp(arg,&exp) returns arg
+- * with *exp=0.
++ * and the corresponding binary exponent "glob2_math_exp". That is
++ *	arg = x*2^glob2_math_exp.
++ * If arg is inf, 0.0, or NaN, then glob2_math_frexp(arg,&glob2_math_exp) returns arg
++ * with *glob2_math_exp=0.
+  */
+ 
+ #include <float.h>
+@@ -32,7 +32,7 @@
+ two54 =  1.80143985094819840000e+16; /* 0x43500000, 0x00000000 */
+ 
+ OLM_DLLEXPORT double
+-frexp(double x, int *eptr)
++glob2_math_frexp(double x, int *eptr)
+ {
+ 	int32_t hx, ix, lx;
+ 	EXTRACT_WORDS(hx,lx,x);
+@@ -52,5 +52,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(frexp, frexpl);
+ #endif
+--- a/src/s_log1p.c
++++ b/src/s_log1p.c
+@@ -13,22 +13,22 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_log1p.c,v 1.10 2008/03/29 16:37:59 das Exp $");
+ 
+-/* double log1p(double x)
++/* double glob2_math_log1p(double x)
+  *
+  * Method :
+  *   1. Argument Reduction: find k and f such that
+  *			1+x = 2^k * (1+f),
+- *	   where  sqrt(2)/2 < 1+f < sqrt(2) .
++ *	   where  glob2_math_sqrt(2)/2 < 1+f < glob2_math_sqrt(2) .
+  *
+  *      Note. If k=0, then f=x is exact. However, if k!=0, then f
+  *	may not be representable exactly. In that case, a correction
+  *	term is need. Let u=1+x rounded. Let c = (1+x)-u, then
+- *	log(1+x) - log(u) ~ c/u. Thus, we proceed to compute log(u),
++ *	glob2_math_log(1+x) - glob2_math_log(u) ~ c/u. Thus, we proceed to compute glob2_math_log(u),
+  *	and add back the correction term c/u.
+- *	(Note: when x > 2**53, one can simply return log(x))
++ *	(Note: when x > 2**53, one can simply return glob2_math_log(x))
+  *
+- *   2. Approximation of log1p(f).
+- *	Let s = f/(2+f) ; based on log(1+f) = log(1+s) - log(1-s)
++ *   2. Approximation of glob2_math_log1p(f).
++ *	Let s = f/(2+f) ; based on glob2_math_log(1+f) = glob2_math_log(1+s) - glob2_math_log(1-s)
+  *		 = 2s + 2/3 s**3 + 2/5 s**5 + .....,
+  *	     	 = 2s + s*R
+  *      We use a special Reme algorithm on [0,0.1716] to generate
+@@ -43,20 +43,20 @@
+  *	    | Lp1*s +...+Lp7*s    -  R(z) | <= 2
+  *	    |                             |
+  *	Note that 2s = f - s*f = f - hfsq + s*hfsq, where hfsq = f*f/2.
+- *	In order to guarantee error in log below 1ulp, we compute log
++ *	In order to guarantee error in glob2_math_log below 1ulp, we compute glob2_math_log
+  *	by
+- *		log1p(f) = f - (hfsq - s*(hfsq+R)).
++ *		glob2_math_log1p(f) = f - (hfsq - s*(hfsq+R)).
+  *
+- *	3. Finally, log1p(x) = k*ln2 + log1p(f).
++ *	3. Finally, glob2_math_log1p(x) = k*ln2 + glob2_math_log1p(f).
+  *		 	     = k*ln2_hi+(f-(hfsq-(s*(hfsq+R)+k*ln2_lo)))
+  *	   Here ln2 is split into two floating point number:
+  *			ln2_hi + ln2_lo,
+  *	   where n*ln2_hi is always exact for |n| < 2000.
+  *
+  * Special cases:
+- *	log1p(x) is NaN with signal if x < -1 (including -INF) ;
+- *	log1p(+INF) is +INF; log1p(-1) is -INF with signal;
+- *	log1p(NaN) is that NaN with no signal.
++ *	glob2_math_log1p(x) is NaN with signal if x < -1 (including -INF) ;
++ *	glob2_math_log1p(+INF) is +INF; glob2_math_log1p(-1) is -INF with signal;
++ *	glob2_math_log1p(NaN) is that NaN with no signal.
+  *
+  * Accuracy:
+  *	according to an error analysis, the error is always less than
+@@ -68,12 +68,12 @@
+  * compiler will convert from decimal to binary accurately enough
+  * to produce the hexadecimal values shown.
+  *
+- * Note: Assuming log() return accurate answer, the following
+- * 	 algorithm can be used to compute log1p(x) to within a few ULP:
++ * Note: Assuming glob2_math_log() return accurate answer, the following
++ * 	 algorithm can be used to compute glob2_math_log1p(x) to within a few ULP:
+  *
+  *		u = 1+x;
+  *		if(u==1.0) return x ; else
+- *			   return log(u)*(x/(u-1.0));
++ *			   return glob2_math_log(u)*(x/(u-1.0));
+  *
+  *	 See HP-15C Advanced Functions Handbook, p.193.
+  */
+@@ -98,7 +98,7 @@
+ static const double zero = 0.0;
+ 
+ OLM_DLLEXPORT double
+-log1p(double x)
++glob2_math_log1p(double x)
+ {
+ 	double hfsq,f,c,s,z,R,u;
+ 	int32_t k,hx,hu,ax;
+@@ -107,10 +107,10 @@
+ 	ax = hx&0x7fffffff;
+ 
+ 	k = 1;
+-	if (hx < 0x3FDA827A) {			/* 1+x < sqrt(2)+ */
++	if (hx < 0x3FDA827A) {			/* 1+x < glob2_math_sqrt(2)+ */
+ 	    if(ax>=0x3ff00000) {		/* x <= -1.0 */
+-		if(x==-1.0) return -two54/zero; /* log1p(-1)=+inf */
+-		else return (x-x)/(x-x);	/* log1p(x<-1)=NaN */
++		if(x==-1.0) return -two54/zero; /* glob2_math_log1p(-1)=+inf */
++		else return (x-x)/(x-x);	/* glob2_math_log1p(x<-1)=NaN */
+ 	    }
+ 	    if(ax<0x3e200000) {			/* |x| < 2**-29 */
+ 		if(two54+x>zero			/* raise inexact */
+@@ -120,7 +120,7 @@
+ 		    return x - x*x*0.5;
+ 	    }
+ 	    if(hx>0||hx<=((int32_t)0xbfd2bec4)) {
+-		k=0;f=x;hu=1;}		/* sqrt(2)/2- <= 1+x < sqrt(2)+ */
++		k=0;f=x;hu=1;}		/* glob2_math_sqrt(2)/2- <= 1+x < glob2_math_sqrt(2)+ */
+ 	}
+ 	if (hx >= 0x7ff00000) return x+x;
+ 	if(k!=0) {
+@@ -138,13 +138,13 @@
+ 	    }
+ 	    hu &= 0x000fffff;
+ 	    /*
+-	     * The approximation to sqrt(2) used in thresholds is not
++	     * The approximation to glob2_math_sqrt(2) used in thresholds is not
+ 	     * critical.  However, the ones used above must give less
+ 	     * strict bounds than the one here so that the k==0 case is
+ 	     * never reached from here, since here we have committed to
+ 	     * using the correction term but don't use it if k==0.
+ 	     */
+-	    if(hu<0x6a09e) {			/* u ~< sqrt(2) */
++	    if(hu<0x6a09e) {			/* u ~< glob2_math_sqrt(2) */
+ 	        SET_HIGH_WORD(u,hu|0x3ff00000);	/* normalize u */
+ 	    } else {
+ 	        k += 1;
+@@ -175,5 +175,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(log1p, log1pl);
+ #endif
+--- a/src/s_modf.c
++++ b/src/s_modf.c
+@@ -11,7 +11,7 @@
+  */
+ 
+ /*
+- * modf(double x, double *iptr)
++ * glob2_math_modf(double x, double *iptr)
+  * return fraction part of x, and return x's integral part in *iptr.
+  * Method:
+  *	Bit twiddling.
+@@ -27,7 +27,7 @@
+ static const double one = 1.0;
+ 
+ OLM_DLLEXPORT double
+-modf(double x, double *iptr)
++glob2_math_modf(double x, double *iptr)
+ {
+ 	int32_t i0,i1,j0;
+ 	u_int32_t i;
+--- a/src/s_scalbn.c
++++ b/src/s_scalbn.c
+@@ -11,8 +11,8 @@
+  */
+ 
+ /*
+- * scalbn (double x, int n)
+- * scalbn(x,n) returns x* 2**n  computed by  exponent
++ * glob2_math_scalbn (double x, int n)
++ * glob2_math_scalbn(x,n) returns x* 2**n  computed by  exponent
+  * manipulation rather than by actually performing an
+  * exponentiation or a multiplication.
+  */
+@@ -31,7 +31,7 @@
+ tiny   = 1.0e-300;
+ 
+ OLM_DLLEXPORT double
+-scalbn (double x, int n)
++glob2_math_scalbn (double x, int n)
+ {
+ 	int32_t k,hx,lx;
+ 	EXTRACT_WORDS(hx,lx,x);
+@@ -45,13 +45,13 @@
+ 	    }
+         if (k==0x7ff) return x+x;		/* NaN or Inf */
+         k = k+n;
+-        if (k >  0x7fe) return huge*copysign(huge,x); /* overflow  */
++        if (k >  0x7fe) return huge*glob2_math_copysign(huge,x); /* overflow  */
+         if (k > 0) 				/* normal result */
+ 	    {SET_HIGH_WORD(x,(hx&0x800fffff)|(k<<20)); return x;}
+         if (k <= -54) {
+             if (n > 50000) 	/* in case integer overflow in n+k */
+-		return huge*copysign(huge,x);	/*overflow*/
+-	    else return tiny*copysign(tiny,x); 	/*underflow*/
++		return huge*glob2_math_copysign(huge,x);	/*overflow*/
++	    else return tiny*glob2_math_copysign(tiny,x); 	/*underflow*/
+         } 
+ 	k += 54;				/* subnormal result */
+ 	SET_HIGH_WORD(x,(hx&0x800fffff)|(k<<20));
+@@ -59,8 +59,5 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(scalbn, ldexpl);
+-openlibm_weak_reference(scalbn, scalbnl);
+ #endif
+ 
+-openlibm_strong_reference(scalbn, ldexp);
+--- a/src/s_sin.c
++++ b/src/s_sin.c
+@@ -13,21 +13,21 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_sin.c,v 1.13 2011/02/10 07:37:50 das Exp $");
+ 
+-/* sin(x)
++/* glob2_math_sin(x)
+  * Return sine function of x.
+  *
+  * kernel function:
+- *	__kernel_sin		... sine function on [-pi/4,pi/4]
+- *	__kernel_cos		... cose function on [-pi/4,pi/4]
+- *	__ieee754_rem_pio2	... argument reduction routine
++ *	glob2_math___kernel_sin		... sine function on [-pi/4,pi/4]
++ *	glob2_math___kernel_cos		... cose function on [-pi/4,pi/4]
++ *	glob2_math___ieee754_rem_pio2	... argument reduction routine
+  *
+  * Method.
+- *      Let S,C and T denote the sin, cos and tan respectively on
++ *      Let S,C and T denote the glob2_math_sin, glob2_math_cos and glob2_math_tan respectively on
+  *	[-PI/4, +PI/4]. Reduce the argument x to y1+y2 = x-k*pi/2
+  *	in [-pi/4 , +pi/4], and let n = k mod 4.
+  *	We have
+  *
+- *          n        sin(x)      cos(x)        tan(x)
++ *          n        glob2_math_sin(x)      glob2_math_cos(x)        glob2_math_tan(x)
+  *     ----------------------------------------------------------
+  *	    0	       S	   C		 T
+  *	    1	       C	  -S		-1/T
+@@ -36,7 +36,7 @@
+  *     ----------------------------------------------------------
+  *
+  * Special cases:
+- *      Let trig be any of sin, cos, or tan.
++ *      Let trig be any of glob2_math_sin, glob2_math_cos, or glob2_math_tan.
+  *      trig(+-INF)  is NaN, with signals;
+  *      trig(NaN)    is that NaN;
+  *
+@@ -52,7 +52,7 @@
+ //#include "e_rem_pio2.c"
+ 
+ OLM_DLLEXPORT double
+-sin(double x)
++glob2_math_sin(double x)
+ {
+ 	double y[2],z=0.0;
+ 	int32_t n, ix;
+@@ -65,25 +65,24 @@
+ 	if(ix <= 0x3fe921fb) {
+ 	    if(ix<0x3e500000)			/* |x| < 2**-26 */
+ 	       {if((int)x==0) return x;}	/* generate inexact */
+-	    return __kernel_sin(x,z,0);
++	    return glob2_math___kernel_sin(x,z,0);
+ 	}
+ 
+-    /* sin(Inf or NaN) is NaN */
++    /* glob2_math_sin(Inf or NaN) is NaN */
+ 	else if (ix>=0x7ff00000) return x-x;
+ 
+     /* argument reduction needed */
+ 	else {
+-	    n = __ieee754_rem_pio2(x,y);
++	    n = glob2_math___ieee754_rem_pio2(x,y);
+ 	    switch(n&3) {
+-		case 0: return  __kernel_sin(y[0],y[1],1);
+-		case 1: return  __kernel_cos(y[0],y[1]);
+-		case 2: return -__kernel_sin(y[0],y[1],1);
++		case 0: return  glob2_math___kernel_sin(y[0],y[1],1);
++		case 1: return  glob2_math___kernel_cos(y[0],y[1]);
++		case 2: return -glob2_math___kernel_sin(y[0],y[1],1);
+ 		default:
+-			return -__kernel_cos(y[0],y[1]);
++			return -glob2_math___kernel_cos(y[0],y[1]);
+ 	    }
+ 	}
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(sin, sinl);
+ #endif
+--- a/src/s_tan.c
++++ b/src/s_tan.c
+@@ -13,20 +13,20 @@
+ #include "cdefs-compat.h"
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_tan.c,v 1.13 2011/02/10 07:37:50 das Exp $");
+ 
+-/* tan(x)
++/* glob2_math_tan(x)
+  * Return tangent function of x.
+  *
+  * kernel function:
+- *	__kernel_tan		... tangent function on [-pi/4,pi/4]
+- *	__ieee754_rem_pio2	... argument reduction routine
++ *	glob2_math___kernel_tan		... tangent function on [-pi/4,pi/4]
++ *	glob2_math___ieee754_rem_pio2	... argument reduction routine
+  *
+  * Method.
+- *      Let S,C and T denote the sin, cos and tan respectively on
++ *      Let S,C and T denote the glob2_math_sin, glob2_math_cos and glob2_math_tan respectively on
+  *	[-PI/4, +PI/4]. Reduce the argument x to y1+y2 = x-k*pi/2
+  *	in [-pi/4 , +pi/4], and let n = k mod 4.
+  *	We have
+  *
+- *          n        sin(x)      cos(x)        tan(x)
++ *          n        glob2_math_sin(x)      glob2_math_cos(x)        glob2_math_tan(x)
+  *     ----------------------------------------------------------
+  *	    0	       S	   C		 T
+  *	    1	       C	  -S		-1/T
+@@ -35,7 +35,7 @@
+  *     ----------------------------------------------------------
+  *
+  * Special cases:
+- *      Let trig be any of sin, cos, or tan.
++ *      Let trig be any of glob2_math_sin, glob2_math_cos, or glob2_math_tan.
+  *      trig(+-INF)  is NaN, with signals;
+  *      trig(NaN)    is that NaN;
+  *
+@@ -51,7 +51,7 @@
+ //#include "e_rem_pio2.c"
+ 
+ OLM_DLLEXPORT double
+-tan(double x)
++glob2_math_tan(double x)
+ {
+ 	double y[2],z=0.0;
+ 	int32_t n, ix;
+@@ -64,20 +64,19 @@
+ 	if(ix <= 0x3fe921fb) {
+ 	    if(ix<0x3e400000)			/* x < 2**-27 */
+ 		if((int)x==0) return x;		/* generate inexact */
+-	    return __kernel_tan(x,z,1);
++	    return glob2_math___kernel_tan(x,z,1);
+ 	}
+ 
+-    /* tan(Inf or NaN) is NaN */
++    /* glob2_math_tan(Inf or NaN) is NaN */
+ 	else if (ix>=0x7ff00000) return x-x;		/* NaN */
+ 
+     /* argument reduction needed */
+ 	else {
+-	    n = __ieee754_rem_pio2(x,y);
+-	    return __kernel_tan(y[0],y[1],1-((n&1)<<1)); /*   1 -- n even
++	    n = glob2_math___ieee754_rem_pio2(x,y);
++	    return glob2_math___kernel_tan(y[0],y[1],1-((n&1)<<1)); /*   1 -- n even
+ 							-1 -- n odd */
+ 	}
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(tan, tanl);
+ #endif
+--- a/src/s_tanh.c
++++ b/src/s_tanh.c
+@@ -19,22 +19,22 @@
+  * Method :
+  *				       x    -x
+  *				      e  - e
+- *	0. tanh(x) is defined to be -----------
++ *	0. glob2_math_tanh(x) is defined to be -----------
+  *				       x    -x
+  *				      e  + e
+- *	1. reduce x to non-negative by tanh(-x) = -tanh(x).
+- *	2.  0      <= x <  2**-28 : tanh(x) := x with inexact if x != 0
++ *	1. reduce x to non-negative by glob2_math_tanh(-x) = -glob2_math_tanh(x).
++ *	2.  0      <= x <  2**-28 : glob2_math_tanh(x) := x with inexact if x != 0
+  *					        -t
+- *	    2**-28 <= x <  1      : tanh(x) := -----; t = expm1(-2x)
++ *	    2**-28 <= x <  1      : glob2_math_tanh(x) := -----; t = glob2_math_expm1(-2x)
+  *					       t + 2
+  *						     2
+- *	    1      <= x <  22     : tanh(x) := 1 - -----; t = expm1(2x)
++ *	    1      <= x <  22     : glob2_math_tanh(x) := 1 - -----; t = glob2_math_expm1(2x)
+  *						   t + 2
+- *	    22     <= x <= INF    : tanh(x) := 1.
++ *	    22     <= x <= INF    : glob2_math_tanh(x) := 1.
+  *
+  * Special cases:
+- *	tanh(NaN) is NaN;
+- *	only tanh(0)=0 is exact for finite argument.
++ *	glob2_math_tanh(NaN) is NaN;
++ *	only glob2_math_tanh(0)=0 is exact for finite argument.
+  */
+ 
+ #include <float.h>
+@@ -45,7 +45,7 @@
+ static const double one = 1.0, two = 2.0, tiny = 1.0e-300, huge = 1.0e300;
+ 
+ OLM_DLLEXPORT double
+-tanh(double x)
++glob2_math_tanh(double x)
+ {
+ 	double t,z;
+ 	int32_t jx,ix;
+@@ -55,20 +55,20 @@
+ 
+     /* x is INF or NaN */
+ 	if(ix>=0x7ff00000) {
+-	    if (jx>=0) return one/x+one;    /* tanh(+-inf)=+-1 */
+-	    else       return one/x-one;    /* tanh(NaN) = NaN */
++	    if (jx>=0) return one/x+one;    /* glob2_math_tanh(+-inf)=+-1 */
++	    else       return one/x-one;    /* glob2_math_tanh(NaN) = NaN */
+ 	}
+ 
+     /* |x| < 22 */
+ 	if (ix < 0x40360000) {		/* |x|<22 */
+ 	    if (ix<0x3e300000) {	/* |x|<2**-28 */
+-		if(huge+x>one) return x; /* tanh(tiny) = tiny with inexact */
++		if(huge+x>one) return x; /* glob2_math_tanh(tiny) = tiny with inexact */
+ 	    }
+ 	    if (ix>=0x3ff00000) {	/* |x|>=1  */
+-		t = expm1(two*fabs(x));
++		t = glob2_math_expm1(two*glob2_math_fabs(x));
+ 		z = one - two/(t+two);
+ 	    } else {
+-	        t = expm1(-two*fabs(x));
++	        t = glob2_math_expm1(-two*glob2_math_fabs(x));
+ 	        z= -t/(t+two);
+ 	    }
+     /* |x| >= 22, return +-1 */
+@@ -79,5 +79,4 @@
+ }
+ 
+ #if (LDBL_MANT_DIG == 53)
+-openlibm_weak_reference(tanh, tanhl);
+ #endif
+--- a/src/s_trunc.c
++++ b/src/s_trunc.c
+@@ -14,12 +14,12 @@
+ //__FBSDID("$FreeBSD: src/lib/msun/src/s_trunc.c,v 1.4 2008/02/22 02:27:34 das Exp $");
+ 
+ /*
+- * trunc(x)
++ * glob2_math_trunc(x)
+  * Return x rounded toward 0 to integral value
+  * Method:
+  *	Bit twiddling.
+  * Exception:
+- *	Inexact flag raised if x not equal to trunc(x).
++ *	Inexact flag raised if x not equal to glob2_math_trunc(x).
+  */
+ 
+ #include <float.h>
+@@ -30,7 +30,7 @@
+ static const double huge = 1.0e300;
+ 
+ OLM_DLLEXPORT double
+-trunc(double x)
++glob2_math_trunc(double x)
+ {
+ 	int32_t i0,i1,j0;
+ 	u_int32_t i;
+@@ -63,5 +63,4 @@
+ }
+ 
+ #if LDBL_MANT_DIG == 53
+-openlibm_weak_reference(trunc, truncl);
+ #endif

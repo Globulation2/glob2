@@ -326,8 +326,8 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
         for(int t=0;t<mapHeader.getNumberOfTeams();++t)for(int i=0;i<1024;++i)
         {
             auto* u=teams[t]->myUnits[i];auto* b=teams[t]->myBuildings[i];
-            if(u && (!u->scriptIdentity || u->scriptIdentity>scriptGenerations[t*1024+i]))throw std::runtime_error("Invalid unit script identity");
-            if(b && (!b->scriptIdentity || b->scriptIdentity>scriptGenerations[Team::MAX_COUNT*1024+t*1024+i]))throw std::runtime_error("Invalid building script identity");
+            if(u && (!u->scriptIdentity || u->scriptIdentity!=scriptGenerations[t*1024+i]))throw std::runtime_error("Invalid unit script identity");
+            if(b && (!b->scriptIdentity || b->scriptIdentity!=scriptGenerations[Team::MAX_COUNT*1024+t*1024+i]))throw std::runtime_error("Invalid building script identity");
         }
 	}
 	gameSection.commit();

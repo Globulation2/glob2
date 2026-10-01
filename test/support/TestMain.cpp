@@ -65,6 +65,13 @@ int main(int argc, char** argv)
 	// Line-buffered output interleaves correctly with doctest's reporter when captured.
 	std::setvbuf(stdout, nullptr, _IOLBF, 0);
 	std::setvbuf(stderr, nullptr, _IOLBF, 0);
+    std::printf("GLOB2_TEST_BUILD compiler=%s platform=%s pointer_bits=%zu\n",
+#ifdef __VERSION__
+        __VERSION__,
+#else
+        "unknown",
+#endif
+        SDL_GetPlatform(),sizeof(void*)*8);
 	SDL_SetMainReady();
 	install();
 	doctest::Context context(argc, argv);

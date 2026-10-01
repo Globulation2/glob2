@@ -1018,9 +1018,44 @@ See the [scripting guide](../docs/development/javascript.md) and
 Build `unit-tests engine-tests` with SCons and run
 `python3 test/run_tests.py --build-dir build/darwin/client/release --filter 'JavaScript*/*'`
 (use the build directory for your platform).
-The runtime harness checks sandbox restrictions, deterministic work exhaustion,
+The runtime harness checks capability restrictions, deterministic work exhaustion,
 state encoding and exact Math output bits. The integration harness checks AI
 visibility/ownership and transactional scenario effects and continuation. Run
 `python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check`
 with a fresh output directory for the frozen per-tick profile trace, worker
 equivalence and full-game saved continuation.
+
+
+The named `JavaScriptNumbers`, `JavaScriptTransactions`, `JavaScriptLifecycle`,
+`JavaScriptRealistic`, `JavaScriptPresentation`, `JavaScriptSession` and
+`JavaScriptSimulation` suites run alongside runtime/integration cases. The shared
+corpus includes real map-reading economic planners and a scenario survey with
+transcendental math, private RNG, returned data and executed orders. Browser and
+iOS harnesses link the same production objects and select these suites; Android
+uses the same native test registry.
+
+`python3 test/check_javascript_corpus.py --build-dir BUILD --output artifacts/js-corpus`
+retains numeric bits, serialized results, simulation traces, saves, replays, logs,
+JUnit results, source/fixture hashes and compiler metadata. It requires a clean
+committed revision; `--allow-dirty` is for development evidence only. Use fresh
+output directories and compare identical final revisions across platforms.
+
+Android: build `android-tests` for API 24 and the selected ABI, then run
+`python3 mobile/android_device_tests.py --android-sdk SDK --serial SERIAL --arch ABI --suite 'JavaScript*' --output artifacts/js-android`.
+The runner uses disposable shell directories, retrieves artifacts even after
+failure and never accesses installed game data. iOS: build the separate app with
+`python3 mobile/ios.py build --environment simulator --release --script-tests`;
+for a device use `--environment device --team TEAM`. Its bundle identifier is
+`org.globulation2.glob2.script-tests`, and evidence is exported in its own
+Documents/ScriptingEvidence directory. Simulator evidence does not satisfy the
+physical-device gate. Browser: build `web-tests` and run the shared corpus case in
+`browser/tests/determinism.spec.js`; evidence is under
+`artifacts/browser-determinism/script-corpus/`.
+
+Cross-platform acceptance requires identical numeric/data results and complete
+per-tick traces, plus decoded save payloads. Exclude only documented MapHeader
+SHA1 metadata when save histories differ. Same-platform equal-history save and
+replay bytes must match. Build success and simulator-only runs are insufficient.
+CI retains evidence even when execution fails; unavailable devices/signing leave
+those platform gates incomplete. See the [fixture notes](fixtures/javascript/README.md)
+for the exact frozen worlds, seeds and intended draft profile corrections.

@@ -6,22 +6,43 @@
 #include <stdexcept>
 namespace Script
 {
-class HostFailure: public std::runtime_error { public: using std::runtime_error::runtime_error; };
+class SessionFailure : public std::runtime_error
+{
+  public:
+	using std::runtime_error::runtime_error;
+};
+// Fatal machine-resource failures and deterministic scenario errors both end
+// the session, but remain distinguishable to diagnostics and tests.
+class HostFailure : public SessionFailure
+{
+  public:
+	using SessionFailure::SessionFailure;
+};
+class ScenarioFailure : public SessionFailure
+{
+  public:
+	using SessionFailure::SessionFailure;
+};
 struct Host
 {
- unsigned tick=0;
- unsigned width=0,height=0;
- int team=-1;
- std::function<Value(const std::string&,const std::vector<Value>&,const QueryBudget&)> query;
- std::function<unsigned()> random;
+	unsigned tick = 0;
+	unsigned width = 0, height = 0;
+	int team = -1;
+	std::function<Value(const std::string &, const std::vector<Value> &, const QueryBudget &)>
+		query;
+	std::function<unsigned()> random;
 };
-struct Result { Value state, effects; };
+struct Result
+{
+	Value state, effects;
+};
 class Runtime
 {
-public:
- virtual ~Runtime()=default;
- virtual Result invoke(const std::string& source,const Value& state,bool initialize,Host& host)=0;
- virtual void validate(const std::string& source)=0;
+  public:
+	virtual ~Runtime() = default;
+	virtual Result invoke(const std::string &source, const Value &state, bool initialize,
+						  Host &host) = 0;
+	virtual void validate(const std::string &source) = 0;
 };
 std::unique_ptr<Runtime> makeRuntime();
-}
+} // namespace Script

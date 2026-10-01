@@ -61,6 +61,7 @@ class GameGUITouch;
 class GameGUI
 {
 	friend struct CustomGameSetupHarness;
+	friend struct ScriptPresentationFixture;
     friend class TorusRenderIntegrationTest;
     TorusView torusView;
     bool torusPointerDown = false;
@@ -147,6 +148,7 @@ public:
 	void setSwallowSpaceKey(bool value) { swallowSpaceKey=value; }
 	
 	void showScriptText(const std::string &text);
+	void setScriptPresentationText(std::string text, bool publishHistory = true);
 	void showScriptTextTr(const std::string &text, const std::string &lang);
 	void hideScriptText();
 

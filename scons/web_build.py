@@ -3,9 +3,9 @@ from pathlib import Path
 import json
 import os
 import subprocess
-from SCons.Script import Environment, Default, Value, GetOption, Action
+from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed, PACKAGE_VERSION
-from javascript import javascript_objects
+from javascript import javascript_objects, numeric_guard
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
 PORTS = ['--use-port=sdl2', '--use-port=sdl2_image:formats=png,jpg',
@@ -69,11 +69,37 @@ def build_web(directory, identity, arguments):
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
     files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp']
-    objects = [env.Object(str(output / 'obj' / (f + '.o')), f) for f in files]
+    strict = env.Clone()
+    strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
+    objects = [(strict if f.startswith('src/script/') or f == 'src/ai/AIJavaScript.cpp' else env)
+               .Object(str(output / 'obj' / (f + '.o')), f) for f in files]
+    numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
     objects += javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
     env.Requires(objects, ports)
     env.Depends(objects, str(config))
     program = env.Program(str(output / 'index.html'), objects)
+    if 'web-tests' in COMMAND_LINE_TARGETS:
+        import sys
+        sys.path.insert(0, str(root / 'test'))
+        import tests as registry
+        tests = env.Clone()
+        tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
+        tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
+                               '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
+        test_objects = []
+        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries():
+            source, options = (entry, {}) if isinstance(entry, str) else entry
+            local = tests.Clone()
+            local.Append(CXXFLAGS=options.get('cxxflags', []))
+            local.Append(CPPDEFINES=options.get('defines', []))
+            path = 'test/' + source
+            test_objects += local.Object(str(output / 'obj/tests' / (path + '.o')), path)
+        production = [obj for name, obj in zip(files, objects) if name != 'src/Glob2.cpp']
+        production += objects[len(files):]
+        harness = tests.Program(str(output / 'script-tests.html'), production + test_objects)
+        tests.SideEffect([str(output / ('script-tests.' + extension)) for extension in ('js', 'wasm', 'data')], harness)
+        env.Alias('web-tests', harness)
+
     env.Depends(program, ['browser/shell.html', 'browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/toolchain.json'])
     env.Depends(program, [str(p) for directory in ('data','maps','campaigns','scripts')
                          for p in Path(directory).rglob('*') if p.is_file()])

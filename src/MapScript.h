@@ -65,6 +65,7 @@ public:
 	///Execute a step of script corresponding to a step of the game engine
 	void syncStep(GameGUI *gui);
 
+	void restorePresentation(GameGUI& gui) const;
 	Uint32 checkSum() const;
 	bool buildingAllowed(const std::string& name,bool flag) const;
 

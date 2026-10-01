@@ -31,6 +31,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include "Version.h"
+#include "script/ScriptRuntime.h"
 #include <stdexcept>
 
 using std::shared_ptr;
@@ -661,6 +662,49 @@ bool Engine::stepSession(Uint64 now)
 }
 
 bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
+{
+ try { return stepSessionImpl(now,events); }
+ catch(const Script::SessionFailure&) { abortSession(); throw; }
+ catch(const std::bad_alloc&)
+ {
+  abortSession();
+  throw Script::HostFailure("Native allocation failed during the game session");
+ }
+}
+
+void Engine::abortSession() noexcept
+{
+    gui.isRunning = false;
+    gui.toLoadGameFileName.clear();
+    if (multiplayer)
+    {
+        try
+        {
+            multiplayer->setGameResult(YOGGameResultQuitGame);
+            multiplayer->leaveGame();
+        }
+        catch (...)
+        {
+            std::cerr << "Failed to send multiplayer termination; closing local session\n";
+        }
+    }
+    try { teardownSession(); }
+    catch (...)
+    {
+        std::cerr << "Failure while closing game resources; session cannot continue\n";
+        if (multiplayer) multiplayer->setNetEngine(nullptr);
+        net.reset();
+        multiplayer.reset();
+        checksumSidecar.reset();
+        globalContainer->datasetWriter.reset();
+    }
+    session.reset();
+    sessionInput.clear();
+    globalContainer->replayWriter.reset();
+    PerformanceTelemetry::collector().reset();
+}
+
+bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
 {
     if (!session) throw std::logic_error("No active engine session");
     if (!gui.isRunning) return false;

@@ -40,6 +40,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <math.h>
+#include "Glob2Math.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -399,7 +400,7 @@ static inline double fromfp16(uint16_t v) {
             d += 1;
             e -= 15;
         }
-        d = scalbn(d, e);
+        d = glob2_math_scalbn(d, e);
     }
     s = (v & 0x8000) ? -1.0 : 1.0;
     return d * s;
@@ -410,7 +411,7 @@ static inline uint16_t tofp16(double d) {
     double t;
     int e;
     s = 0;
-    if (copysign(1, d) < 0) { // preserve sign when |d| is negative zero
+    if (glob2_math_copysign(1, d) < 0) { // preserve sign when |d| is negative zero
         d = -d;
         s = 0x8000;
     }
@@ -420,7 +421,7 @@ static inline uint16_t tofp16(double d) {
         return s | 0x7C01;
     if (d == 0)
         return s | 0;
-    d = 2 * frexp(d, &e);
+    d = 2 * glob2_math_frexp(d, &e);
     e--;
     if (e > 15)
         return s | 0x7C00; // out of range, return +/-infinity
@@ -428,7 +429,7 @@ static inline uint16_t tofp16(double d) {
         d = 0;
         e = 0;
     } else if (e < -14) {
-        d = scalbn(d, e + 14);
+        d = glob2_math_scalbn(d, e + 14);
         e = 0;
     } else {
         d -= 1;

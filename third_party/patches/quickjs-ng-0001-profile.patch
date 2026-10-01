@@ -1,0 +1,1033 @@
+--- /dev/null
++++ b/Glob2Math.h
+@@ -0,0 +1,38 @@
++#pragma once
++#ifdef __cplusplus
++extern "C" {
++#endif
++double glob2_math_acos(double);
++double glob2_math_acosh(double);
++double glob2_math_asin(double);
++double glob2_math_asinh(double);
++double glob2_math_atan(double);
++double glob2_math_atan2(double, double);
++double glob2_math_atanh(double);
++double glob2_math_cos(double);
++double glob2_math_cosh(double);
++double glob2_math_exp(double);
++double glob2_math_expm1(double);
++double glob2_math_fabs(double);
++double glob2_math_floor(double);
++double glob2_math_ceil(double);
++double glob2_math_fmod(double, double);
++double glob2_math_frexp(double, int *);
++double glob2_math_log(double);
++double glob2_math_log1p(double);
++double glob2_math_log2(double);
++double glob2_math_log10(double);
++double glob2_math_modf(double, double *);
++double glob2_math_pow(double, double);
++double glob2_math_scalbn(double, int);
++double glob2_math_sin(double);
++double glob2_math_sinh(double);
++double glob2_math_sqrt(double);
++double glob2_math_tan(double);
++double glob2_math_tanh(double);
++double glob2_math_trunc(double);
++double glob2_math_cbrt(double);
++double glob2_math_copysign(double, double);
++#ifdef __cplusplus
++}
++#endif
+--- a/quickjs.c
++++ b/quickjs.c
+@@ -45,6 +45,7 @@
+ #include "cutils.h"
+ #include "list.h"
+ #include "quickjs.h"
++#include "Glob2Math.h"
+ #include "libregexp.h"
+ #include "dtoa.h"
+ 
+@@ -335,6 +336,8 @@
+ } JSClass;
+ 
+ struct JSRuntime {
++    bool glob2_host_failure;
++    unsigned glob2_native_depth;
+     JSMallocFunctions mf;
+     JSMallocState malloc_state;
+     JSArenaState arena_state;
+@@ -553,7 +556,7 @@
+ 
+ /* must be large enough to have a negligible runtime cost and small
+    enough to call the interrupt callback often. */
+-#define JS_INTERRUPT_COUNTER_INIT 10000
++#define JS_INTERRUPT_COUNTER_INIT 1
+ 
+ struct JSContext {
+     JSGCObjectHeader header; /* must come first */
+@@ -1412,6 +1415,7 @@
+ static void free_property(JSRuntime *rt, JSProperty *pr, int prop_flags);
+ static int JS_ToBigInt64Free(JSContext *ctx, int64_t *pres, JSValue val);
+ static JSValue JS_ThrowStackOverflow(JSContext *ctx);
++static int js_glob2_charge(JSContext *ctx, uint64_t count);
+ static JSValue JS_ThrowTypeErrorRevokedProxy(JSContext *ctx);
+ static JSValue js_proxy_getPrototypeOf(JSContext *ctx, JSValueConst obj);
+ static int js_proxy_setPrototypeOf(JSContext *ctx, JSValueConst obj,
+@@ -2876,7 +2880,7 @@
+     ctx->error_stack_trace_limit = js_int32(10);
+     init_list_head(&ctx->loaded_modules);
+     // TODO(bnoordhuis) use getrandom() etc.
+-    ctx->random_state = js__gettimeofday_us();
++    ctx->random_state = 1; /* Glob2 deterministic hash seed; script RNG is supplied by host. */
+     // the state must be non zero
+     if (ctx->random_state == 0)
+         ctx->random_state = 1;
+@@ -4619,6 +4623,8 @@
+ {
+     if (to <= from)
+         return 0;
++    if (js_glob2_charge(s->ctx, to - from) < 0)
++        return string_buffer_set_error(s);
+     if (p->is_wide_char)
+         return string_buffer_write16(s, str16(p) + from, to - from);
+     else
+@@ -5504,6 +5510,10 @@
+             JS_FreeValue(ctx, op1);
+             return JS_EXCEPTION;
+         }
++    }
++
++    if (js_glob2_charge(ctx, (uint64_t)string_rope_get_len(op1) + string_rope_get_len(op2)) < 0) {
++        JS_FreeValue(ctx, op1); JS_FreeValue(ctx, op2); return JS_EXCEPTION;
+     }
+ 
+     /* normal concatenation for short strings */
+@@ -6284,7 +6294,7 @@
+         n_alloc_props = JS_PROP_INITIAL_SIZE;
+         hash_size = JS_PROP_INITIAL_HASH_SIZE;
+     } else {
+-        hash_bits = 32 - clz32(n_alloc_props - 1); /* ceil(log2(radix)) */
++        hash_bits = 32 - clz32(n_alloc_props - 1); /* glob2_math_ceil(glob2_math_log2(radix)) */
+         hash_size = 1 << hash_bits;
+     }
+     proto = object_or_null(proto_val);
+@@ -8222,7 +8232,7 @@
+     else if (d > INT32_MAX)
+         stack_trace_limit = INT32_MAX;
+     else
+-        stack_trace_limit = fabs(d);
++        stack_trace_limit = glob2_math_fabs(d);
+ 
+     // Restore current exception.
+     JS_Throw(ctx, saved_exception);
+@@ -8556,8 +8566,11 @@
+     }
+ }
+ 
++bool JS_Glob2HostFailure(JSRuntime *rt) { return rt->glob2_host_failure; }
++
+ JSValue JS_ThrowOutOfMemory(JSContext *ctx)
+ {
++    ctx->rt->glob2_host_failure = true;
+     JSRuntime *rt = ctx->rt;
+     if (!rt->in_out_of_memory) {
+         rt->in_out_of_memory = true;
+@@ -8569,6 +8582,7 @@
+ 
+ static JSValue JS_ThrowStackOverflow(JSContext *ctx)
+ {
++    ctx->rt->glob2_host_failure = true;
+     return JS_ThrowRangeError(ctx, "Maximum call stack size exceeded");
+ }
+ 
+@@ -8670,6 +8684,23 @@
+     } else {
+         return 0;
+     }
++}
++
++/* Glob2: charge actual native work, including generated output and array-like lengths. */
++static int js_glob2_enter(JSContext *ctx)
++{
++    if (ctx->rt->glob2_native_depth >= 64) {
++        JS_ThrowInterrupted(ctx);
++        return -1;
++    }
++    ++ctx->rt->glob2_native_depth;
++    return 0;
++}
++
++static int js_glob2_charge(JSContext *ctx, uint64_t count)
++{
++    while (count--) if (js_poll_interrupts(ctx) < 0) return -1;
++    return 0;
+ }
+ 
+ /* return -1 (exception) or true/false */
+@@ -9933,6 +9964,7 @@
+ static JSAtom JS_ValueToAtomInternal(JSContext *ctx, JSValueConst val,
+                                      int flags)
+ {
++    if (JS_IsString(val) && js_glob2_charge(ctx, string_rope_get_len(val)) < 0) return JS_ATOM_NULL;
+     JSAtom atom;
+     uint32_t tag;
+     tag = JS_VALUE_GET_TAG(val);
+@@ -9951,6 +9983,7 @@
+         if (JS_VALUE_GET_TAG(str) == JS_TAG_SYMBOL) {
+             atom = js_symbol_to_atom(ctx, str);
+         } else {
++            if (js_glob2_charge(ctx, JS_VALUE_GET_STRING(str)->len) < 0) { JS_FreeValue(ctx, str); return JS_ATOM_NULL; }
+             atom = JS_NewAtomStr(ctx, JS_VALUE_GET_STRING(str));
+         }
+     }
+@@ -13486,10 +13519,10 @@
+         return NULL;
+     }
+     n_digits = n_digits1;
+-    log2_radix = 32 - clz32(radix - 1); /* ceil(log2(radix)) */
++    log2_radix = 32 - clz32(radix - 1); /* glob2_math_ceil(glob2_math_log2(radix)) */
+     /* compute the maximum number of limbs */
+     if (radix == 10) {
+-        n_bits = (n_digits * 27 + 7) / 8; /* >= ceil(n_digits * log2(10)) */
++        n_bits = (n_digits * 27 + 7) / 8; /* >= glob2_math_ceil(n_digits * glob2_math_log2(10)) */
+     } else {
+         n_bits = n_digits * log2_radix;
+     }
+@@ -13664,7 +13697,7 @@
+             memcpy(tmp->tab, r->tab, r->len * sizeof(r->tab[0]));
+             r = tmp;
+         }
+-        log2_radix = 31 - clz32(radix); /* floor(log2(radix)) */
++        log2_radix = 31 - clz32(radix); /* glob2_math_floor(glob2_math_log2(radix)) */
+         n_bits = r->len * JS_LIMB_BITS - js_limb_clz(r->tab[r->len - 1]);
+         /* n_digits is exact only if radix is a power of
+            two. Otherwise it is >= the exact number of digits */
+@@ -13984,6 +14017,10 @@
+             const char *p;
+             size_t len;
+ 
++            if (js_glob2_charge(ctx, string_rope_get_len(val)) < 0) {
++                JS_FreeValue(ctx, val);
++                return JS_EXCEPTION;
++            }
+             str = JS_ToCStringLen(ctx, &len, val);
+             JS_FreeValue(ctx, val);
+             if (!str)
+@@ -14107,7 +14144,7 @@
+                 ret = js_int32(0);
+             } else {
+                 /* convert -0 to +0 */
+-                d = trunc(d) + 0.0;
++                d = glob2_math_trunc(d) + 0.0;
+                 ret = js_number(d);
+             }
+         }
+@@ -14272,7 +14309,7 @@
+             int e;
+             d = JS_VALUE_GET_FLOAT64(val);
+             u.d = d;
+-            /* we avoid doing fmod(x, 2^64) */
++            /* we avoid doing glob2_math_fmod(x, 2^64) */
+             e = (u.u64 >> 52) & 0x7ff;
+             if (likely(e <= (1023 + 62))) {
+                 /* fast case */
+@@ -14338,7 +14375,7 @@
+             int e;
+             d = JS_VALUE_GET_FLOAT64(val);
+             u.d = d;
+-            /* we avoid doing fmod(x, 2^32) */
++            /* we avoid doing glob2_math_fmod(x, 2^32) */
+             e = (u.u64 >> 52) & 0x7ff;
+             if (likely(e <= (1023 + 30))) {
+                 /* fast case */
+@@ -14488,8 +14525,8 @@
+ 
+ static bool is_safe_integer(double d)
+ {
+-    return isfinite(d) && floor(d) == d &&
+-        fabs(d) <= (double)MAX_SAFE_INTEGER;
++    return isfinite(d) && glob2_math_floor(d) == d &&
++        glob2_math_fabs(d) <= (double)MAX_SAFE_INTEGER;
+ }
+ 
+ int JS_ToIndex(JSContext *ctx, uint64_t *plen, JSValueConst val)
+@@ -14524,7 +14561,7 @@
+         return false;
+     if (unlikely(JS_ToFloat64(ctx, &d, val)))
+         return -1;
+-    return isfinite(d) && floor(d) == d;
++    return isfinite(d) && glob2_math_floor(d) == d;
+ }
+ 
+ static bool JS_NumberIsNegativeOrMinusZero(JSContext *ctx, JSValueConst val)
+@@ -14597,6 +14634,8 @@
+     size_t len;
+ 
+     tag = JS_VALUE_GET_NORM_TAG(val);
++    if (JS_IsString(val) && js_glob2_charge(ctx, string_rope_get_len(val)) < 0)
++        return JS_EXCEPTION;
+     switch(tag) {
+     case JS_TAG_STRING:
+         return js_dup(val);
+@@ -15031,12 +15070,12 @@
+ {
+     double d;
+ 
+-    if (unlikely(!isfinite(b)) && fabs(a) == 1) {
++    if (unlikely(!isfinite(b)) && glob2_math_fabs(a) == 1) {
+         /* not compatible with IEEE 754 */
+         d = NAN;
+     } else {
+         JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+-        d = pow(a, b);
++        d = glob2_math_pow(a, b);
+         JS_X87_FPCW_RESTORE(fpcw);
+     }
+     return d;
+@@ -15469,7 +15508,7 @@
+         case OP_mod:
+             if (v1 < 0 || v2 <= 0) {
+                 JS_X87_FPCW_SAVE_AND_ADJUST(fpcw);
+-                sp[-2] = js_number(fmod(v1, v2));
++                sp[-2] = js_number(glob2_math_fmod(v1, v2));
+                 JS_X87_FPCW_RESTORE(fpcw);
+                 return 0;
+             } else {
+@@ -15546,7 +15585,7 @@
+             dr = d1 / d2;
+             break;
+         case OP_mod:
+-            dr = fmod(d1, d2);
++            dr = glob2_math_fmod(d1, d2);
+             break;
+         case OP_pow:
+             dr = js_math_pow(d1, d2);
+@@ -15967,6 +16006,9 @@
+     tag2 = JS_VALUE_GET_NORM_TAG(op2);
+ 
+     if (tag_is_string(tag1) && tag_is_string(tag2)) {
++        if (js_glob2_charge(ctx, (uint64_t)string_rope_get_len(op1) + string_rope_get_len(op2)) < 0) {
++            JS_FreeValue(ctx, op1); JS_FreeValue(ctx, op2); goto exception;
++        }
+         if (tag1 == JS_TAG_STRING && tag2 == JS_TAG_STRING) {
+             res = js_string_compare(JS_VALUE_GET_STRING(op1),
+                                     JS_VALUE_GET_STRING(op2));
+@@ -16254,6 +16296,9 @@
+ 
+     tag1 = JS_VALUE_GET_NORM_TAG(op1);
+     tag2 = JS_VALUE_GET_NORM_TAG(op2);
++    if (tag_is_string(tag1) && tag_is_string(tag2) &&
++        js_glob2_charge(ctx, (uint64_t)string_rope_get_len(op1) + string_rope_get_len(op2)) < 0)
++        return false;
+     switch(tag1) {
+     case JS_TAG_BOOL:
+         if (tag1 != tag2) {
+@@ -17848,6 +17893,31 @@
+                                   JSValueConst this_obj,
+                                   int argc, JSValueConst *argv, int flags)
+ {
++    /* Bound native operations independently of host speed. No getters are run. */
++    for (int glob2_i = -1; glob2_i < argc; ++glob2_i) {
++        JSValueConst glob2_v = glob2_i < 0 ? this_obj : argv[glob2_i];
++        uint64_t glob2_n = 0;
++        if (JS_IsString(glob2_v)) glob2_n = string_rope_get_len(glob2_v);
++        else if (JS_IsObject(glob2_v)) {
++            JSObject *glob2_p = JS_VALUE_GET_OBJ(glob2_v);
++            if (glob2_p->class_id == JS_CLASS_ARRAY) {
++                JSValue glob2_length = JS_GetProperty(ctx, glob2_v, JS_ATOM_length);
++                uint32_t glob2_len = 0;
++                JS_ToUint32(ctx, &glob2_len, glob2_length);
++                JS_FreeValue(ctx, glob2_length);
++                glob2_n = glob2_len;
++            } else if (glob2_p->class_id == JS_CLASS_MAP || glob2_p->class_id == JS_CLASS_SET) {
++                glob2_n = glob2_p->u.map_state->record_count;
++            } else glob2_n = glob2_p->shape->prop_count;
++        }
++        if (glob2_n > 1000000) { JS_ThrowInterrupted(ctx); return JS_EXCEPTION; }
++        /* Actual searches, comparisons, recursive traversals and output are
++           charged where performed. Linear container entry charges also bound
++           native Map/Set probes without penalizing ordinary growing sets. */
++        glob2_n = 1 + glob2_n;
++        while (glob2_n--) if (js_poll_interrupts(ctx)) return JS_EXCEPTION;
++    }
++
+     JSRuntime *rt = ctx->rt;
+     JSCFunctionType func;
+     JSObject *p;
+@@ -18059,7 +18129,7 @@
+ #endif
+ 
+ #if !DIRECT_DISPATCH
+-#define SWITCH(pc)      DUMP_BYTECODE_OR_DONT(pc) switch (opcode = *pc++)
++#define SWITCH(pc)      if (js_poll_interrupts(ctx)) goto exception; DUMP_BYTECODE_OR_DONT(pc) switch (opcode = *pc++)
+ #define CASE(op)        case op
+ #define DEFAULT         default
+ #define BREAK           break
+@@ -18070,12 +18140,15 @@
+ #include "quickjs-opcode.h"
+         [ OP_COUNT ... 255 ] = &&case_default
+     };
+-#define SWITCH(pc)      DUMP_BYTECODE_OR_DONT(pc) __extension__ ({ goto *dispatch_table[opcode = *pc++]; });
++#define SWITCH(pc)      if (js_poll_interrupts(ctx)) goto exception; DUMP_BYTECODE_OR_DONT(pc) __extension__ ({ goto *dispatch_table[opcode = *pc++]; });
+ #define CASE(op)        case_ ## op
+ #define DEFAULT         case_default
+ #define BREAK           SWITCH(pc)
+ #endif
+ 
++    unsigned glob2_depth = 0;
++    for (JSStackFrame *glob2_frame = rt->current_stack_frame; glob2_frame; glob2_frame = glob2_frame->prev_frame)
++        if (++glob2_depth >= 256) { JS_ThrowInterrupted(caller_ctx); return JS_EXCEPTION; }
+     if (js_poll_interrupts(caller_ctx))
+         return JS_EXCEPTION;
+     if (unlikely(JS_VALUE_GET_TAG(func_obj) != JS_TAG_OBJECT)) {
+@@ -22860,6 +22933,8 @@
+ 
+ static __exception int js_parse_regexp(JSParseState *s)
+ {
++    return js_parse_error(s, "Regular expressions are disabled");
++
+     const uint8_t *p, *p_next;
+     bool in_class;
+     StringBuffer b_s, *b = &b_s;
+@@ -23086,6 +23161,8 @@
+ 
+ static __exception int next_token(JSParseState *s)
+ {
++    if (js_poll_interrupts(s->ctx)) return -1;
++
+     const uint8_t *p, *p_next;
+     int c;
+     bool ident_has_escape;
+@@ -23696,7 +23773,8 @@
+             p++;
+     }
+     s->token.val = TOK_NUMBER;
+-    s->token.u.num.val = js_float64(strtod((const char *)p_start, NULL));
++    s->token.u.num.val = js_atof(s->ctx, (const char *)p_start, NULL, 10, 0);
++    if (JS_IsException(s->token.u.num.val)) return -1;
+     *pp = p;
+     return 0;
+ }
+@@ -23738,6 +23816,7 @@
+ 
+ static __exception int json_next_token(JSParseState *s)
+ {
++    if (js_poll_interrupts(s->ctx) < 0) return -1;
+     const uint8_t *p, *p_next;
+     int c;
+     JSAtom atom;
+@@ -24748,6 +24827,7 @@
+ /* Note: all the fields are already sealed except length */
+ static int seal_template_obj(JSContext *ctx, JSValue obj)
+ {
++
+     JSObject *p;
+     JSShapeProperty *prs;
+ 
+@@ -24971,6 +25051,7 @@
+     } else if (s->token.val == TOK_NUMBER) {
+         JSValue val;
+         val = s->token.u.num.val;
++
+         name = JS_ValueToAtom(s->ctx, val);
+         if (name == JS_ATOM_NULL)
+             goto fail;
+@@ -26605,7 +26686,24 @@
+ 
+ /* Return -1 if error, 0 if no initializer, 1 if an initializer is
+    present at the top level. */
++static int js_parse_destructuring_element_glob2_impl(JSParseState *s, int tok,
++                                          bool is_arg, bool hasval,
++                                          int has_ellipsis, // tri-state
++                                          bool allow_initializer,
++                                          bool export_flag);
+ static int js_parse_destructuring_element(JSParseState *s, int tok,
++                                          bool is_arg, bool hasval,
++                                          int has_ellipsis, // tri-state
++                                          bool allow_initializer,
++                                          bool export_flag)
++{
++    if (js_glob2_enter(s->ctx) < 0) return -1;
++    int result = js_parse_destructuring_element_glob2_impl(s, tok, is_arg, hasval, has_ellipsis, allow_initializer, export_flag);
++    --s->ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static int js_parse_destructuring_element_glob2_impl(JSParseState *s, int tok,
+                                           bool is_arg, bool hasval,
+                                           int has_ellipsis, // tri-state
+                                           bool allow_initializer,
+@@ -27086,6 +27184,8 @@
+         {
+             JSValue val;
+             val = s->token.u.num.val;
++            if (JS_IsBigInt(val)) return js_parse_error(s, "BigInt is disabled");
++
+ 
+             if (JS_VALUE_GET_TAG(val) == JS_TAG_INT) {
+                 emit_op(s, OP_push_i32);
+@@ -27318,6 +27418,7 @@
+         }
+         break;
+     case TOK_IMPORT:
++        return js_parse_error(s, "Imports are disabled");
+         if (next_token(s))
+             return -1;
+         if (s->token.val == '.') {
+@@ -27827,7 +27928,16 @@
+                                     bool export_flag);
+ 
+ /* allowed parse_flags: PF_POW_ALLOWED, PF_POW_FORBIDDEN */
++static __exception int js_parse_unary_glob2_impl(JSParseState *s, int parse_flags);
+ static __exception int js_parse_unary(JSParseState *s, int parse_flags)
++{
++    if (js_glob2_enter(s->ctx) < 0) { return -1; }
++    int result = js_parse_unary_glob2_impl(s, parse_flags);
++    --s->ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static __exception int js_parse_unary_glob2_impl(JSParseState *s, int parse_flags)
+ {
+     int op;
+ 
+@@ -27904,6 +28014,7 @@
+         parse_flags = 0;
+         break;
+     case TOK_AWAIT:
++        return js_parse_error(s, "await is disabled");
+         if (!(s->cur_func->func_kind & JS_FUNC_ASYNC))
+             return js_parse_error(s, "unexpected 'await' keyword");
+         if (!s->cur_func->in_function_body)
+@@ -28216,7 +28327,16 @@
+ }
+ 
+ /* allowed parse_flags: PF_IN_ACCEPTED */
++static __exception int js_parse_assign_expr2_glob2_impl(JSParseState *s, int parse_flags);
+ static __exception int js_parse_assign_expr2(JSParseState *s, int parse_flags)
++{
++    if (js_glob2_enter(s->ctx) < 0) { return -1; }
++    int result = js_parse_assign_expr2_glob2_impl(s, parse_flags);
++    --s->ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static __exception int js_parse_assign_expr2_glob2_impl(JSParseState *s, int parse_flags)
+ {
+     int opcode, op, scope;
+     JSAtom name0 = JS_ATOM_NULL;
+@@ -29385,7 +29505,18 @@
+     }
+ }
+ 
++static __exception int js_parse_statement_or_decl_glob2_impl(JSParseState *s,
++                                                  int decl_mask);
+ static __exception int js_parse_statement_or_decl(JSParseState *s,
++                                                  int decl_mask)
++{
++    if (js_glob2_enter(s->ctx) < 0) { return -1; }
++    int result = js_parse_statement_or_decl_glob2_impl(s, decl_mask);
++    --s->ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static __exception int js_parse_statement_or_decl_glob2_impl(JSParseState *s,
+                                                   int decl_mask)
+ {
+     JSContext *ctx = s->ctx;
+@@ -29477,6 +29608,7 @@
+             goto fail;
+         break;
+     case TOK_AWAIT:
++        js_parse_error(s, "Await is disabled"); goto fail;
+         /* Check for 'await using' declaration */
+         if (s->cur_func->func_kind & JS_FUNC_ASYNC) {
+             JSParsePos pos;
+@@ -29646,6 +29778,7 @@
+             if (s->token.val == '(') {
+                 js_parse_skip_parens_token(s, &bits, false);
+             } else if (s->token.val == TOK_AWAIT) {
++                js_parse_error(s, "Await is disabled"); goto fail;
+                 if (!(s->cur_func->func_kind & JS_FUNC_ASYNC)) {
+                     js_parse_error(s, "for await is only valid in asynchronous functions");
+                     goto fail;
+@@ -32806,6 +32939,7 @@
+ 
+ static __exception int js_parse_import(JSParseState *s)
+ {
++    return js_parse_error(s, "Imports are disabled");
+     JSContext *ctx = s->ctx;
+     JSModuleDef *m = s->cur_func->module;
+     JSAtom local_name, import_name, module_name;
+@@ -37390,6 +37524,15 @@
+ 
+ /* func_name must be JS_ATOM_NULL for JS_PARSE_FUNC_STATEMENT and
+    JS_PARSE_FUNC_EXPR, JS_PARSE_FUNC_ARROW and JS_PARSE_FUNC_VAR */
++static __exception int js_parse_function_decl2_glob2_impl(JSParseState *s,
++                                               JSParseFunctionEnum func_type,
++                                               JSFunctionKindEnum func_kind,
++                                               JSAtom func_name,
++                                               const uint8_t *ptr,
++                                               int function_line_num,
++                                               int function_col_num,
++                                               JSParseExportEnum export_flag,
++                                               JSFunctionDef **pfd);
+ static __exception int js_parse_function_decl2(JSParseState *s,
+                                                JSParseFunctionEnum func_type,
+                                                JSFunctionKindEnum func_kind,
+@@ -37400,6 +37543,23 @@
+                                                JSParseExportEnum export_flag,
+                                                JSFunctionDef **pfd)
+ {
++    if (js_glob2_enter(s->ctx) < 0) { return -1; }
++    int result = js_parse_function_decl2_glob2_impl(s, func_type, func_kind, func_name, ptr, function_line_num, function_col_num, export_flag, pfd);
++    --s->ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static __exception int js_parse_function_decl2_glob2_impl(JSParseState *s,
++                                               JSParseFunctionEnum func_type,
++                                               JSFunctionKindEnum func_kind,
++                                               JSAtom func_name,
++                                               const uint8_t *ptr,
++                                               int function_line_num,
++                                               int function_col_num,
++                                               JSParseExportEnum export_flag,
++                                               JSFunctionDef **pfd)
++{
++    if (func_kind & JS_FUNC_ASYNC) return js_parse_error(s, "Async functions are disabled");
+     JSContext *ctx = s->ctx;
+     JSFunctionDef *fd = s->cur_func;
+     bool is_expr;
+@@ -37554,6 +37714,7 @@
+     /* fd->in_function_body == false prevents yield/await during the parsing
+        of the arguments in generator/async functions. They are parsed as
+        regular identifiers for other function kinds. */
++    if (func_kind & JS_FUNC_ASYNC) { js_parse_error(s, "Async functions are disabled"); goto fail; }
+     fd->func_kind = func_kind;
+     fd->func_type = func_type;
+ 
+@@ -42373,6 +42534,8 @@
+ static JSValue js_function_constructor(JSContext *ctx, JSValueConst new_target,
+                                        int argc, JSValueConst *argv, int magic)
+ {
++    return JS_ThrowTypeError(ctx, "Dynamic code generation is disabled");
++
+     JSFunctionKindEnum func_kind = magic;
+     int i, n, ret;
+     JSValue s, proto, obj = JS_UNDEFINED;
+@@ -42449,7 +42612,8 @@
+         *pres = 0;
+         return -1;
+     }
+-    return JS_ToUint32Free(ctx, pres, len_val);
++    if (JS_ToUint32Free(ctx, pres, len_val) < 0) return -1;
++    return js_glob2_charge(ctx, *pres);
+ }
+ 
+ static __exception int js_get_length64(JSContext *ctx, int64_t *pres,
+@@ -42461,7 +42625,8 @@
+         *pres = 0;
+         return -1;
+     }
+-    return JS_ToLengthFree(ctx, pres, len_val);
++    if (JS_ToLengthFree(ctx, pres, len_val) < 0) return -1;
++    return js_glob2_charge(ctx, (uint64_t)*pres);
+ }
+ 
+ static __exception int js_set_length64(JSContext *ctx, JSValueConst obj,
+@@ -42615,7 +42780,7 @@
+             if (isnan(d)) {
+                 d = 0.0;
+             } else {
+-                d = trunc(d);
++                d = glob2_math_trunc(d);
+                 if (d <= (double)arg_count)
+                     d = 0.0;
+                 else
+@@ -44576,12 +44741,29 @@
+     return JS_EXCEPTION;
+ }
+ 
++static int64_t JS_FlattenIntoArray_glob2_impl(JSContext *ctx, JSValueConst target,
++                                   JSValueConst source, int64_t sourceLen,
++                                   int64_t targetIndex, int depth,
++                                   JSValueConst mapperFunction,
++                                   JSValueConst thisArg);
+ static int64_t JS_FlattenIntoArray(JSContext *ctx, JSValueConst target,
+                                    JSValueConst source, int64_t sourceLen,
+                                    int64_t targetIndex, int depth,
+                                    JSValueConst mapperFunction,
+                                    JSValueConst thisArg)
+ {
++    if (js_glob2_enter(ctx) < 0) { return -1; }
++    int64_t result = JS_FlattenIntoArray_glob2_impl(ctx, target, source, sourceLen, targetIndex, depth, mapperFunction, thisArg);
++    --ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static int64_t JS_FlattenIntoArray_glob2_impl(JSContext *ctx, JSValueConst target,
++                                   JSValueConst source, int64_t sourceLen,
++                                   int64_t targetIndex, int depth,
++                                   JSValueConst mapperFunction,
++                                   JSValueConst thisArg)
++{
+     JSValue element;
+     int64_t sourceIndex, elementLen;
+     int present, is_array;
+@@ -44592,6 +44774,7 @@
+     }
+ 
+     for (sourceIndex = 0; sourceIndex < sourceLen; sourceIndex++) {
++        if (js_poll_interrupts(ctx) < 0) return -1;
+         present = JS_TryGetPropertyInt64(ctx, source, sourceIndex, &element);
+         if (present < 0)
+             return -1;
+@@ -44742,6 +44925,8 @@
+                 goto exception;
+             bp->str = JS_VALUE_GET_STRING(str);
+         }
++        if (js_glob2_charge(ctx, 1 + (uint64_t)ap->str->len + bp->str->len) < 0)
++            goto exception;
+         cmp = js_string_compare(ap->str, bp->str);
+     }
+     if (cmp != 0)
+@@ -45462,7 +45647,7 @@
+             d = NAN;
+             if (JS_IsNumber(argv[0]) && JS_ToFloat64(ctx, &d, argv[0]))
+                 goto fail;
+-            if (!isfinite(d) || trunc(d) != d) {
++            if (!isfinite(d) || glob2_math_trunc(d) != d) {
+                 JS_ThrowTypeError(ctx, "%s is not an integral number", name);
+                 goto fail;
+             }
+@@ -45502,7 +45687,7 @@
+                 goto range_error;
+             if (isfinite(dlimit) && dlimit > MAX_SAFE_INTEGER)
+                 goto range_error;
+-            dlimit = trunc(dlimit);
++            dlimit = glob2_math_trunc(dlimit);
+             if (dlimit < 0)
+                 goto range_error;
+             // +Infinity means "no limit"; use MAX_SAFE_INTEGER
+@@ -45739,7 +45924,7 @@
+             goto fail;
+         }
+         JS_ToFloat64(ctx, &d, argv[1]); // cannot fail
+-        if (isnan(d) || (isfinite(d) && trunc(d) != d)) {
++        if (isnan(d) || (isfinite(d) && glob2_math_trunc(d) != d)) {
+             JS_ThrowTypeError(ctx, "not an integral number");
+             goto fail;
+         }
+@@ -46657,7 +46842,7 @@
+         return JS_EXCEPTION;
+     if (f < 0 || f > 100)
+         return JS_ThrowRangeError(ctx, "invalid number of digits");
+-    if (fabs(d) >= 1e21)
++    if (glob2_math_fabs(d) >= 1e21)
+         flags = JS_DTOA_FORMAT_FREE;
+     else
+         flags = JS_DTOA_FORMAT_FRAC;
+@@ -47286,16 +47471,19 @@
+     return -1;
+ }
+ 
+-static int string_indexof(JSString *p1, JSString *p2, int from)
++static int string_indexof(JSContext *ctx, JSString *p1, JSString *p2, int from)
+ {
+     /* assuming 0 <= from <= p1->len */
+     int c, i, j, len1 = p1->len, len2 = p2->len;
++    if (js_glob2_charge(ctx, len1 - from + 1) < 0)
++        return -2;
+     if (len2 == 0)
+         return from;
+     for (i = from, c = string_get(p2, 0); i + len2 <= len1; i = j + 1) {
+         j = string_indexof_char(p1, c, i);
+         if (j < 0 || j + len2 > len1)
+             break;
++        if (js_glob2_charge(ctx, len2) < 0) return -2;
+         if (!string_cmp(p1, p2, j + 1, 1, len2 - 1))
+             return j;
+     }
+@@ -47436,6 +47624,7 @@
+     ret = -1;
+     if (len >= v_len && inc * (stop - start) >= 0) {
+         for (i = start;; i += inc) {
++            if (js_glob2_charge(ctx, 1 + (uint64_t)v_len) < 0) goto fail;
+             if (!string_cmp(p, p1, i, 0, v_len)) {
+                 ret = i;
+                 break;
+@@ -47502,6 +47691,7 @@
+     }
+     if (start >= 0 && start <= stop) {
+         for (i = start;; i++) {
++            if (js_glob2_charge(ctx, 1 + (uint64_t)v_len) < 0) goto fail;
+             if (!string_cmp(p, p1, i, 0, v_len)) {
+                 ret = 1;
+                 break;
+@@ -47771,7 +47961,8 @@
+             else
+                 pos = endOfLastMatch + 1;
+         } else {
+-            pos = string_indexof(sp, searchp, endOfLastMatch);
++            pos = string_indexof(ctx, sp, searchp, endOfLastMatch);
++            if (pos == -2) goto exception;
+         }
+         if (pos < 0) {
+             if (is_first) {
+@@ -47882,7 +48073,8 @@
+     }
+     q = p;
+     for (q = p; (q += !r) <= s - r - !r; q = p = e + r) {
+-        e = string_indexof(sp, rp, q);
++        e = string_indexof(ctx, sp, rp, q);
++        if (e == -2) goto exception;
+         if (e < 0)
+             break;
+         T = js_sub_string(ctx, sp, p, e);
+@@ -48036,6 +48228,7 @@
+         JS_ThrowRangeError(ctx, "invalid string length");
+         goto fail3;
+     }
++    if (js_glob2_charge(ctx, (uint64_t)n) < 0) goto fail3;
+     if (string_buffer_init(ctx, b, n))
+         goto fail3;
+     n -= len;
+@@ -48099,6 +48292,7 @@
+         JS_ThrowRangeError(ctx, "invalid string length");
+         goto fail;
+     }
++    if (js_glob2_charge(ctx, (uint64_t)n * len) < 0) goto fail;
+     if (string_buffer_init2(ctx, b, n * len, p->is_wide_char))
+         goto fail;
+     if (len == 1) {
+@@ -48714,7 +48908,7 @@
+         if (JS_ToFloat64(ctx, &r, argv[0]))
+             return JS_EXCEPTION;
+         if (argc == 1) {
+-            r = fabs(r);
++            r = glob2_math_fabs(r);
+         } else {
+             /* use the built-in function to minimize precision loss */
+             for (i = 1; i < argc; i++) {
+@@ -49042,31 +49236,31 @@
+    - avoid initializing data with dynamic library entry points.
+    - avoid some overhead if the call can be inlined at compile or link time.
+  */
+-static double js_math_fabs(double d) { return fabs(d); }
+-static double js_math_floor(double d) { return floor(d); }
+-static double js_math_ceil(double d) { return ceil(d); }
+-static double js_math_sqrt(double d) { return sqrt(d); }
+-static double js_math_acos(double d) { return acos(d); }
+-static double js_math_asin(double d) { return asin(d); }
+-static double js_math_atan(double d) { return atan(d); }
+-static double js_math_atan2(double a, double b) { return atan2(a, b); }
+-static double js_math_cos(double d) { return cos(d); }
+-static double js_math_exp(double d) { return exp(d); }
+-static double js_math_log(double d) { return log(d); }
+-static double js_math_sin(double d) { return sin(d); }
+-static double js_math_tan(double d) { return tan(d); }
+-static double js_math_trunc(double d) { return trunc(d); }
+-static double js_math_cosh(double d) { return cosh(d); }
+-static double js_math_sinh(double d) { return sinh(d); }
+-static double js_math_tanh(double d) { return tanh(d); }
+-static double js_math_acosh(double d) { return acosh(d); }
+-static double js_math_asinh(double d) { return asinh(d); }
+-static double js_math_atanh(double d) { return atanh(d); }
+-static double js_math_expm1(double d) { return expm1(d); }
+-static double js_math_log1p(double d) { return log1p(d); }
+-static double js_math_log2(double d) { return log2(d); }
+-static double js_math_log10(double d) { return log10(d); }
+-static double js_math_cbrt(double d) { return cbrt(d); }
++static double js_math_fabs(double d) { return glob2_math_fabs(d); }
++static double js_math_floor(double d) { return glob2_math_floor(d); }
++static double js_math_ceil(double d) { return glob2_math_ceil(d); }
++static double js_math_sqrt(double d) { return glob2_math_sqrt(d); }
++static double js_math_acos(double d) { return glob2_math_acos(d); }
++static double js_math_asin(double d) { return glob2_math_asin(d); }
++static double js_math_atan(double d) { return glob2_math_atan(d); }
++static double js_math_atan2(double a, double b) { return glob2_math_atan2(a, b); }
++static double js_math_cos(double d) { return glob2_math_cos(d); }
++static double js_math_exp(double d) { return glob2_math_exp(d); }
++static double js_math_log(double d) { return glob2_math_log(d); }
++static double js_math_sin(double d) { return glob2_math_sin(d); }
++static double js_math_tan(double d) { return glob2_math_tan(d); }
++static double js_math_trunc(double d) { return glob2_math_trunc(d); }
++static double js_math_cosh(double d) { return glob2_math_cosh(d); }
++static double js_math_sinh(double d) { return glob2_math_sinh(d); }
++static double js_math_tanh(double d) { return glob2_math_tanh(d); }
++static double js_math_acosh(double d) { return glob2_math_acosh(d); }
++static double js_math_asinh(double d) { return glob2_math_asinh(d); }
++static double js_math_atanh(double d) { return glob2_math_atanh(d); }
++static double js_math_expm1(double d) { return glob2_math_expm1(d); }
++static double js_math_log1p(double d) { return glob2_math_log1p(d); }
++static double js_math_log2(double d) { return glob2_math_log2(d); }
++static double js_math_log10(double d) { return glob2_math_log10(d); }
++static double js_math_cbrt(double d) { return glob2_math_cbrt(d); }
+ 
+ static const JSCFunctionListEntry js_math_funcs[] = {
+     JS_CFUNC_MAGIC_DEF("min", 2, js_math_min_max, 0 ),
+@@ -51026,7 +51220,16 @@
+ }
+ 
+ /* 'pr' can be NULL */
++static JSValue json_parse_value_glob2_impl(JSParseState *s, JSONParseRecord *pr);
+ static JSValue json_parse_value(JSParseState *s, JSONParseRecord *pr)
++{
++    if (js_glob2_enter(s->ctx) < 0) { if (pr) pr->value = JS_UNDEFINED; return JS_EXCEPTION; }
++    JSValue result = json_parse_value_glob2_impl(s, pr);
++    --s->ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static JSValue json_parse_value_glob2_impl(JSParseState *s, JSONParseRecord *pr)
+ {
+     JSContext *ctx = s->ctx;
+     JSValue val = JS_NULL;
+@@ -51167,6 +51370,7 @@
+         break;
+     case TOK_NUMBER:
+         val = s->token.u.num.val;
++
+         if (pr) {
+             json_parse_record_init_primitive(ctx, pr, val,
+                                              s->token.ptr - s->buf_start,
+@@ -51246,7 +51450,20 @@
+ }
+ 
+ /* if pr != NULL, then pr->value = holder by construction */
++static JSValue internalize_json_property_glob2_impl(JSContext *ctx, JSValueConst holder,
++                                         JSAtom name, JSValueConst reviver,
++                                         const char *text_str, JSONParseRecord *pr);
+ static JSValue internalize_json_property(JSContext *ctx, JSValueConst holder,
++                                         JSAtom name, JSValueConst reviver,
++                                         const char *text_str, JSONParseRecord *pr)
++{
++    if (js_glob2_enter(ctx) < 0) { return JS_EXCEPTION; }
++    JSValue result = internalize_json_property_glob2_impl(ctx, holder, name, reviver, text_str, pr);
++    --ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static JSValue internalize_json_property_glob2_impl(JSContext *ctx, JSValueConst holder,
+                                          JSAtom name, JSValueConst reviver,
+                                          const char *text_str, JSONParseRecord *pr)
+ {
+@@ -51531,7 +51748,20 @@
+     return JS_EXCEPTION;
+ }
+ 
++static int js_json_to_str_glob2_impl(JSContext *ctx, JSONStringifyContext *jsc,
++                          JSValueConst holder, JSValue val,
++                          JSValueConst indent);
+ static int js_json_to_str(JSContext *ctx, JSONStringifyContext *jsc,
++                          JSValueConst holder, JSValue val,
++                          JSValueConst indent)
++{
++    if (js_glob2_enter(ctx) < 0) { JS_FreeValue(ctx, val); return -1; }
++    int result = js_json_to_str_glob2_impl(ctx, jsc, holder, val, indent);
++    --ctx->rt->glob2_native_depth;
++    return result;
++}
++
++static int js_json_to_str_glob2_impl(JSContext *ctx, JSONStringifyContext *jsc,
+                           JSValueConst holder, JSValue val,
+                           JSValueConst indent)
+ {
+@@ -51546,6 +51776,9 @@
+     sep1 = JS_UNDEFINED;
+     tab = JS_UNDEFINED;
+     prop = JS_UNDEFINED;
++
++    if (js_glob2_charge(ctx, 1 + (JS_IsString(val) ? string_rope_get_len(val) : 0)) < 0)
++        goto exception;
+ 
+     if (js_check_stack_overflow(ctx->rt, 0)) {
+         JS_ThrowStackOverflow(ctx);
+@@ -57416,7 +57649,7 @@
+ 
+ static double time_clip(double t) {
+     if (t >= -8.64e15 && t <= 8.64e15)
+-        return trunc(t) + 0.0;  /* convert -0 to +0 */
++        return glob2_math_trunc(t) + 0.0;  /* convert -0 to +0 */
+     else
+         return NAN;
+ }
+@@ -57435,8 +57668,8 @@
+     y = fields[0];
+     m = fields[1];
+     dt = fields[2];
+-    ym = y + floor(m / 12);
+-    mn = fmod(m, 12);
++    ym = y + glob2_math_floor(m / 12);
++    mn = glob2_math_fmod(m, 12);
+     if (mn < 0)
+         mn += 12;
+     if (ym < -271821 || ym > 275760)
+@@ -57530,7 +57763,7 @@
+             return JS_EXCEPTION;
+         if (!isfinite(a))
+             res = false;
+-        fields[first_field + i] = trunc(a);
++        fields[first_field + i] = glob2_math_trunc(a);
+     }
+ 
+     if (!res)
+@@ -57713,7 +57946,7 @@
+                 return JS_EXCEPTION;
+             if (!isfinite(a))
+                 break;
+-            fields[i] = trunc(a);
++            fields[i] = glob2_math_trunc(a);
+             if (i == 0 && fields[0] >= 0 && fields[0] < 100)
+                 fields[0] += 1900;
+         }
+@@ -57751,7 +57984,7 @@
+             return JS_EXCEPTION;
+         if (!isfinite(a))
+             return JS_NAN;
+-        fields[i] = trunc(a);
++        fields[i] = glob2_math_trunc(a);
+         if (i == 0 && fields[0] >= 0 && fields[0] < 100)
+             fields[0] += 1900;
+     }
+@@ -58270,7 +58503,7 @@
+         return JS_NAN;
+     else
+         /* assuming -8.64e15 <= v <= -8.64e15 */
+-        return js_int64(getTimezoneOffset((int64_t)trunc(v)));
++        return js_int64(getTimezoneOffset((int64_t)glob2_math_trunc(v)));
+ }
+ 
+ static JSValue js_date_getTime(JSContext *ctx, JSValueConst this_val,
+@@ -58308,7 +58541,7 @@
+     if (isnan(y))
+         return JS_SetThisTimeValue(ctx, this_val, y);
+     if (isfinite(y)) {
+-        y = trunc(y);
++        y = glob2_math_trunc(y);
+         if (y >= 0 && y < 100)
+             y += 1900;
+     }
+@@ -62703,7 +62936,7 @@
+         case JS_TAG_FLOAT64: // accepted if and only if fraction == 0.0
+             d = JS_VALUE_GET_FLOAT64(argv[0]);
+             if (isfinite(d))
+-                if (0 == modf(d, &d))
++                if (0 == glob2_math_modf(d, &d))
+                     break;
+             // fallthru
+         default:
+--- a/quickjs.h
++++ b/quickjs.h
+@@ -509,6 +509,8 @@
+ /* info lifetime must exceed that of rt */
+ JS_EXTERN void JS_SetRuntimeInfo(JSRuntime *rt, const char *info);
+ /* use 0 to disable memory limit */
++/* Glob2: sticky native resource failure, even when script catches the exception. */
++JS_EXTERN bool JS_Glob2HostFailure(JSRuntime *rt);
+ JS_EXTERN void JS_SetMemoryLimit(JSRuntime *rt, size_t limit);
+ JS_EXTERN void JS_SetDumpFlags(JSRuntime *rt, uint64_t flags);
+ JS_EXTERN uint64_t JS_GetDumpFlags(JSRuntime *rt);

@@ -1,14 +1,18 @@
 /**
- * Glob2 synchronous JavaScript profile 1; declarations only, no runtime module.
+ * Glob2 synchronous, unpublished JavaScript profile 1; declarations only, no runtime module.
  * Reference: docs/development/javascript-api.md. Execute plain JavaScript sources:
  * imports, TypeScript syntax and runtime enum exports are not available.
  * Read records are detached null-prototype objects; optional fields are absent,
- * not null. Persistent data must not contain undefined or non-finite numbers.
+ * not null. Embedded sources execute automatically as trusted developer code.
+ * Limits are reliability/determinism safeguards, not malicious-code protection.
+ * Persistent data must not contain undefined or non-finite numbers.
  */
 export type Data = null | boolean | number | string | Data[] | {[key: string]: Data};
 export type State = {[key: string]: Data};
 
-/** Unit/building namespaces are separate. Preserve both fields across callbacks. */
+/** Unit/building namespaces are separate. New/reused slots and conversion get a
+ * fresh generation; reset, upgrade and repair preserve identity. Deletion makes
+ * lookup return null. Save/load preserves current-format identity pairs. */
 export interface EntityRef { id: number; generation: number }
 export type UnitType = 0 | 1 | 2; // worker, explorer, warrior
 export type Priority = -1 | 0 | 1; // low, normal, high

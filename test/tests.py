@@ -26,6 +26,10 @@ ENGINE_SUPPORT = [
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
     'ScriptIntegrationTest.cpp',
+    'ScriptPresentationTest.cpp',
+    'ScriptRealisticTest.cpp',
+    ('ScriptSessionTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('ScriptSimulationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'BuildingExpelHarness.cpp',
     'BuildingGradientInvalidationHarness.cpp',
     'FetchApportionmentHarness.cpp',
@@ -97,6 +101,7 @@ ENGINE_TESTS = [
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
     'ScriptRuntimeTest.cpp',
+    'ScriptNumericTest.cpp',
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',
@@ -332,3 +337,17 @@ LEGACY_ALIASES = {
     'screen-test': 'glob2-unit-tests',
     'ui-layout-test': 'glob2-unit-tests',
 }
+
+
+def scripting_entries():
+    """Shared in-process corpus for browser and the standalone iOS test app.
+
+    TeamStatsSaveHarness owns the production conversion fixture and lifecycle
+    cases. Its unrelated registered cases are excluded by the JavaScript* suite
+    filter. Both desktop binaries and Android use the full registry above.
+    """
+    selected = {'ScriptIntegrationTest.cpp', 'ScriptPresentationTest.cpp',
+                'ScriptRealisticTest.cpp', 'ScriptSessionTest.cpp', 'ScriptSimulationTest.cpp',
+                'TeamStatsSaveHarness.cpp', 'ScriptRuntimeTest.cpp', 'ScriptNumericTest.cpp'}
+    return [entry for entry in ENGINE_TESTS + UNIT_TESTS
+            if (entry if isinstance(entry, str) else entry[0]) in selected]

@@ -52,3 +52,59 @@ test('WebAssembly produces a complete per-tick simulation trace', async ({page},
     trace_sha256: crypto.createHash('sha256').update(trace).digest('hex'),
   }, null, 2) + '\n');
 });
+
+// The same production-runtime cases and realistic engine observations used by
+// desktop and mobile harnesses. Golden comparisons occur inside C++, not in a
+// JavaScript reimplementation of the engine or its math.
+test('WebAssembly executes the shared scripting corpus', async ({page}, info) => {
+  test.setTimeout(180000);
+  const root = path.resolve(__dirname, '../..');
+  await page.route('**/script-corpus.html', route => route.fulfill({contentType:'text/html', body:`
+    <!doctype html><canvas id="canvas"></canvas><script>
+    window.engineLog=[]; window.corpusExit=null;
+    var Module={noInitialRun:true,canvas:document.getElementById('canvas'),
+      print:m=>engineLog.push(String(m)), printErr:m=>engineLog.push(String(m)),
+      onExit:code=>window.corpusExit=code,
+      onAbort:reason=>{window.corpusError=String(reason);window.corpusDone=true;},
+      preRun:[()=>{
+        FS.mkdirTree('/evidence/profile');
+        ENV.GLOB2_TEST_SOURCE_ROOT='/'; ENV.GLOB2_USER_DATA_DIR='/evidence/profile';
+        ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/corpus';
+      }],
+      onRuntimeInitialized(){
+        try { const result=Module.callMain(['--test-suite=JavaScript*','--reporters=junit','--out=/evidence/tests.xml']);
+          if(window.corpusExit===null) window.corpusExit=result??0;
+        } catch(error){window.corpusError=String(error);}
+        const files={};
+        function collect(directory){for(const name of FS.readdir(directory)){
+          if(name==='.'||name==='..'||name==='profile')continue;
+          const file=directory+'/'+name;
+          if(FS.isDir(FS.stat(file).mode)){collect(file);continue;}
+          const bytes=FS.readFile(file); let binary='';
+          for(let offset=0;offset<bytes.length;offset+=32768)
+            binary+=String.fromCharCode(...bytes.subarray(offset,offset+32768));
+          files[file.substring('/evidence/'.length)]=btoa(binary);
+        }}
+        collect('/evidence');window.corpusFiles=files;window.corpusDone=true;
+      }};
+    </script><script src="/script-tests.js"></script>`}));
+  await page.goto('/script-corpus.html');
+  await page.waitForFunction(()=>window.corpusDone===true,null,{timeout:160000});
+  const result=await page.evaluate(()=>({exit:window.corpusExit,error:window.corpusError,
+    files:window.corpusFiles||{},log:window.engineLog}));
+  const output=path.join(root,'artifacts/browser-determinism/script-corpus',info.project.name);
+  fs.mkdirSync(output,{recursive:true});
+  for(const [relative,base64] of Object.entries(result.files)){
+    const destination=path.join(output,relative);
+    fs.mkdirSync(path.dirname(destination),{recursive:true});
+    fs.writeFileSync(destination,Buffer.from(base64,'base64'));
+  }
+  fs.writeFileSync(path.join(output,'run.log'),result.log.join('\n'));
+  const revision=require('node:child_process').execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
+  fs.writeFileSync(path.join(output,'manifest.json'),JSON.stringify({revision,browser:info.project.name,
+    exit:result.exit,error:result.error,files:Object.keys(result.files)},null,2)+'\n');
+  expect(result.error).toBeUndefined();
+  expect(result.exit).toBe(0);
+  expect(Object.keys(result.files).some(name=>name.endsWith('numeric-profile1.value'))).toBeTruthy();
+  expect(Object.keys(result.files).some(name=>name.endsWith('realistic-economy-3.value'))).toBeTruthy();
+});

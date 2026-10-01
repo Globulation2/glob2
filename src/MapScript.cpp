@@ -127,3 +127,8 @@ bool MapScript::buildingAllowed(const std::string& name,bool flag) const
 {
  return mode!=JavaScript || javascript.buildingAllowed(name,flag);
 }
+
+void MapScript::restorePresentation(GameGUI& target) const
+{
+ if (mode == JavaScript) javascript.present(target, false);
+}

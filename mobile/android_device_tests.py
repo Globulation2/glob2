@@ -27,6 +27,9 @@ def main():
     parser.add_argument('--arch', choices=('arm64-v8a', 'armeabi-v7a', 'x86_64'), default='arm64-v8a')
     parser.add_argument('--output', type=Path, default=ROOT / 'artifacts/android/device-tests')
     parser.add_argument('--binary', action='append', choices=BINARIES)
+    parser.add_argument('--mobile-deps', type=Path, help='Dependency prefix used to link the test binaries')
+    parser.add_argument('--suite', help='doctest suite selector, e.g. JavaScript*')
+    parser.add_argument('--keep-remote', action='store_true')
     args = parser.parse_args()
     adb = [str(args.android_sdk / 'platform-tools/adb'), '-s', args.serial]
     def command(*parts, **kwargs):
@@ -48,19 +51,37 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     summary = {'serial': args.serial, 'arch': args.arch, 'remoteDirectory': remote,
                'mode': 'native Android CPU with SDL dummy video; no JVM or audio device',
-               'tests': []}
+               'suite': args.suite or '*', 'tests': []}
+    summary['revision'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+    summary['dirty'] = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip())
+    summary['device'] = {key: subprocess.check_output(adb + ['shell', 'getprop', key], text=True).strip()
+                         for key in ('ro.product.model', 'ro.build.version.release', 'ro.build.version.sdk', 'ro.product.cpu.abilist')}
+    summary['fixtureHashes'] = {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                                for p in sorted((ROOT / 'test/fixtures/javascript').rglob('*')) if p.is_file()}
     with tempfile.TemporaryDirectory(prefix='glob2-device-tests-') as directory:
         payload = Path(directory)
         for name in names:
             subprocess.run([str(prebuilt / 'bin/llvm-strip'), '--strip-debug', '-o',
                             str(payload / name), str(build / 'tests' / name)], check=True)
             (payload / name).chmod(0o755)
-        generated = build / 'android-project/app/generated'
-        for library in (generated / 'jniLibs' / args.arch).glob('*.so'):
-            if library.name != 'libmain.so':
-                shutil.copy2(library, payload / library.name)
+        # Shell test executables do not require an APK or generated Gradle
+        # assets. Stage native dependencies and repository fixtures directly.
+        prefix = args.mobile_deps
+        if prefix is None:
+            candidates = [build / 'deps'] + list((build / 'vcpkg-installed').glob('glob2-*'))
+            prefix = next((p for p in candidates if (p / 'manifest.json').is_file()), None)
+        if prefix is None:
+            raise RuntimeError('Specify --mobile-deps for the linked dependency prefix')
+        dependencies = json.loads((prefix / 'manifest.json').read_text())
+        summary['dependencies'] = dependencies
+        for filename in dependencies['archives']:
+            if filename.endswith('.so'):
+                shutil.copy2(prefix / filename, payload / Path(filename).name)
+        triple = {'arm64-v8a': 'aarch64-linux-android', 'armeabi-v7a': 'arm-linux-androideabi',
+                  'x86_64': 'x86_64-linux-android'}[args.arch]
+        shutil.copy2(prebuilt / 'sysroot/usr/lib' / triple / 'libc++_shared.so', payload / 'libc++_shared.so')
         for name in ('data', 'maps', 'campaigns', 'scripts'):
-            shutil.copytree(generated / 'assets/glob2-bundle' / name, payload / name)
+            shutil.copytree(ROOT / name, payload / name)
         # Fixture-driven cases resolve everything through glob2test::sourceRoot().
         shutil.copytree(ROOT / 'games', payload / 'games')
         shutil.copytree(ROOT / 'test/fixtures', payload / 'test/fixtures')
@@ -69,11 +90,14 @@ def main():
         profile = remote + '/profiles/' + name
         # Cases that open a window are for the desktop runner; keep the rest in-process.
         extra = ['-tce=*[display*', '-r=junit', '-o=' + remote + '/' + name + '.xml']
+        if args.suite:
+            extra += ['--test-suite=' + args.suite]
         timeout = 600
         invocation = ['env', 'LD_LIBRARY_PATH=' + remote, 'SDL_VIDEODRIVER=dummy',
                       'SDL_RENDER_DRIVER=software', 'SDL_AUDIODRIVER=dummy',
                       'GLOB2_USER_DATA_DIR=' + profile, 'GLOB2_ASSET_DIR=' + remote,
                       'GLOB2_TEST_SOURCE_ROOT=' + remote,
+                      'GLOB2_TEST_ARTIFACTS_ROOT=' + remote + '/artifacts',
                       'timeout', str(timeout), './' + name] + extra
         shell = ('cd ' + shlex.quote(remote) + ' && mkdir -p ' + shlex.quote(profile) +
                  ' && ' + shlex.join(invocation))
@@ -92,6 +116,10 @@ def main():
         summary['tests'].append({'name': name, 'exitCode': code, 'binarySha256': digest})
         (output / 'result.json').write_text(json.dumps(summary, indent=2) + '\n')
         print(('PASS' if code == 0 else 'FAIL') + ': ' + name, flush=True)
+    # Retrieve all corpus bits, saves and traces, including failed-case evidence.
+    subprocess.run(adb + ['pull', remote + '/artifacts', str(output / 'corpus')], check=False)
+    if not args.keep_remote and not any(test['exitCode'] for test in summary['tests']):
+        command('shell', 'rm -rf ' + shlex.quote(remote))
     # Keep remote fixtures for failure diagnosis. Never remove application data.
     if any(test['exitCode'] for test in summary['tests']):
         raise SystemExit(1)

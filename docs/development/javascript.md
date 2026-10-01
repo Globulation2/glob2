@@ -3,7 +3,13 @@
 Glob2's optional JavaScript AI and map-script backend uses vendored QuickJS-NG
 and OpenLibm. It exposes copied game observations and accepts validated existing
 orders or scenario effects. Existing AIs and USL/SGSL maps retain their execution
-paths. This version provides developer commands; menus have no JavaScript
+paths. Scripts are **trusted developer code**. Loading a map, save or replay
+with embedded JavaScript executes it automatically, without an enablement setting
+or permission prompt. Review embedded sources before using files from an untrusted
+origin. Capability restrictions and resource limits support predictable execution
+and reliability; they do not protect the process against malicious scripts.
+
+This version provides developer commands; menus have no JavaScript
 selection control.
 
 ## Documentation and examples
@@ -137,7 +143,10 @@ stop the session rather than silently skipping scenario logic.
 Work exhaustion cannot be bypassed by catching the exception. Native allocation,
 QuickJS heap exhaustion and physical-stack failure are fatal host failures,
 even if JavaScript catches the initial error; they propagate as session errors
-instead of choosing a machine-dependent gameplay outcome. Use small entity pages
+instead of choosing a machine-dependent gameplay outcome. Fatal failures close
+the active session, disconnect multiplayer, produce an actionable GUI diagnostic
+and return failure in headless execution. A lockstep session must never resume
+after a fatal scripting failure. Use small entity pages
 and map regions, avoid storing whole observation snapshots, and compare `ctx.tick`
 for scheduling. Exception messages are diagnostics, not stable API identifiers.
 There is no injected `console` or logging API in profile 1.
@@ -171,9 +180,10 @@ network, clock, OS binding, module loader or host pointer exposure. Dynamic code
 compilation, regular expressions, BigInt, async/await and promises are unavailable.
 Date, Proxy, weak references, typed arrays and shared memory are omitted.
 
-This is an in-process interpreter sandbox, not OS process isolation. Maintaining
-the pinned interpreter is part of maintaining the boundary. Rerun hostile-script
-regressions when updating dependencies or extending the host API.
+The interpreter runs in the game process. Maintaining the pinned interpreter is
+part of maintaining this trusted-code integration. Rerun capability and resource
+regressions when updating dependencies or extending the host API. This work is
+not a comprehensive security audit.
 
 Map source/state, RNG, presentation/objectives/hints and entity generation counters
 participate in checksums when JavaScript map scripts are active. AI sources/state
@@ -193,9 +203,50 @@ python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-c
 ```
 
 Use a fresh output directory for the frozen check. Runtime tests compare exact
-IEEE double bits and exercise sandbox/resource failures. Integration tests cover
+IEEE double bits and exercise capability/resource failures. Integration tests cover
 fog of war, stale terrain/references, ownership, orders, scenario rollback and
-continuation. The frozen fixture compares complete tick traces, worker-count
+continuation. The shared corpus includes realistic economic planners and a toroidal map survey
+that read production observations, calculate scores and return persisted data and
+orders. The frozen fixtures compare complete tick traces, worker-count
 equivalence, replays, saves and resumed execution. Changes affecting simulation
 still require matching per-tick checksums across supported platforms; successful
 builds alone do not establish cross-platform determinism.
+
+### Numeric implementation inventory
+
+All profile numbers are IEEE binary64; integer fast paths implement the same
+JavaScript semantics. Runtime startup requires round-to-nearest. Interpreter,
+pinned math and first-party host conversion objects use `-fno-fast-math` and
+`-ffp-contract=off`. The build checks their undefined symbols with
+`tools/javascript/check-math-symbols.py`; unexpected platform math or numeric
+parsing dependencies fail the build. There are currently no exceptions.
+
+| Script-reachable operation | Implementation |
+| --- | --- |
+| `Math.abs`, `floor`, `ceil`, `trunc`, `sqrt` | Namespaced OpenLibm 0.8.8 |
+| `acos`, `asin`, `atan`, `atan2`, `cos`, `sin`, `tan` | Namespaced OpenLibm, including argument reduction |
+| `exp`, `expm1`, `log`, `log1p`, `log2`, `log10`, `pow`, `cbrt` | Namespaced OpenLibm; QuickJS supplies JavaScript `pow` special cases |
+| `cosh`, `sinh`, `tanh`, `acosh`, `asinh`, `atanh` | Namespaced OpenLibm |
+| `Math.hypot` | QuickJS variadic accumulation with pinned OpenLibm binary `hypot` |
+| `Math.round`, `sign`, `min`, `max`, `imul`, `clz32`, `sumPrecise` | Pinned QuickJS interpreter algorithms; `round` uses pinned `floor` |
+| `Math.fround`, `f16round` | Interpreter conversions; half conversion uses pinned `frexp`, `scalbn`, `copysign` |
+| `Math.random`, `ctx.random` | Persisted host private RNG, exactly representable integer-to-double scaling |
+| Math constants, numeric literals | Pinned literal values and QuickJS dtoa parser |
+| `+`, `-`, `*`, `/`, unary signs, increment/decrement | Strict IEEE arithmetic with interpreter coercion and integer fast paths |
+| `%`, `**` | Pinned OpenLibm `fmod` and JavaScript exponentiation wrapper |
+| Bitwise operations, shifts, integer conversion | Interpreter integer operations and explicit truncation/wrapping |
+| Comparisons, equality, boolean conversion, Number predicates | Interpreter coercion, comparisons and classification |
+| `Number`, unary `+`, `parseFloat`, `parseInt`, JSON numeric parsing | Pinned interpreter and dtoa parsing; no host `strtod` |
+| `String(number)`, number `toString`/`toFixed`/`toPrecision`/`toExponential`, JSON numeric output, implicit numeric string conversion | Pinned dtoa formatting and interpreter radix/rounding logic |
+| Host query/order integers, finite-data validation, save encoding | Range checks, exact bounded integer casts, classification and binary bit encoding; no host decimal formatting |
+
+The numeric corpus covers every exposed Math method, coercion, parsing and
+formatting, signed zero, subnormals, overflow/underflow, large arguments, rounding
+boundaries and fixed-seed vectors. It compares finite result bits and observable
+non-finite behavior. This is executed evidence for the tested vectors and builds,
+not a proof covering all possible scripts or inputs.
+
+Profile 1 remains unpublished while these defects are corrected. The former
+platform-dependent `hypot` result is intentionally replaced by the pinned result;
+its ARM64/x86-64 reproducer is retained as a regression. Released save, replay and
+network acceptance gates remain independent of this draft profile.

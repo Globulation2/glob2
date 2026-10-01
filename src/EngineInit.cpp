@@ -588,7 +588,7 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 	// Finally, initialise the Game. If the map embedded in the replay fails
 	// to load, drop the replay state committed above so the next game
 	// session starts as a normal game.
-	bool loaded = co_await initGameTask(mapHeader, gameHeader, true, false, true);
+	bool loaded = co_await initGameTask(mapHeader, gameHeader, true, false, true, fileName);
 	if (!loaded)
 	{
 		clearReplayState();

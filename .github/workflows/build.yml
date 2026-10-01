@@ -168,6 +168,12 @@ jobs:
             lan-test \
             menu-colony-harness
 
+      - name: Reconstruct scripting vendors
+        run: python3 tools/javascript/verify-vendor.py
+
+      - name: Execute shared JavaScript corpus
+        run: python3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/javascript-corpus
+
       - name: Verify frozen JavaScript simulation profile
         run: python3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile
 
@@ -176,7 +182,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: javascript-profile-linux-${{ matrix.compiler }}
-          path: artifacts/javascript-profile
+          path: |
+            artifacts/javascript-profile
+            artifacts/javascript-corpus
 
       - name: Test Maxima strategy configuration and policies
         id: test_maxima_strategy_configuration_and_policies
@@ -833,6 +841,9 @@ jobs:
             engine-tests \
             map-report-test
 
+      - name: Execute shared JavaScript corpus
+        run: python3 test/check_javascript_corpus.py --build-dir build/mingw/client/release --output artifacts/javascript-corpus
+
       - name: Verify frozen JavaScript simulation profile
         run: python3 test/check_javascript.py build/mingw/client/release/src/glob2.exe --output artifacts/javascript-profile
 
@@ -841,7 +852,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: javascript-profile-mingw
-          path: artifacts/javascript-profile
+          path: |
+            artifacts/javascript-profile
+            artifacts/javascript-corpus
 
       - name: Run the unit tests
         id: run_the_unit_tests
@@ -1098,7 +1111,7 @@ jobs:
           # This source embeds __DATE__ and __TIME__. Refresh it after restoring
           # objects so the binary still reports the current compilation time.
           rm -f build/emscripten/client/release/obj/src/GlobalContainerArgs.cpp.o
-          scons target=web release=1 -j$(nproc)
+          scons target=web release=1 web-tests -j$(nproc)
           ccache -s -v
       - name: Save WebAssembly object tree
         id: save_webassembly_object_tree
@@ -1441,7 +1454,7 @@ jobs:
         continue-on-error: true
         with:
           name: browser-determinism-wasm-${{ strategy.job-index }}
-          path: artifacts/browser-determinism/wasm/
+          path: artifacts/browser-determinism/
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         id: upload_artifact_2

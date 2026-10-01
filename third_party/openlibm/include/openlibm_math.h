@@ -259,7 +259,7 @@ OLM_DLLEXPORT double	erfc(double);
 OLM_DLLEXPORT double	exp2(double);
 OLM_DLLEXPORT double	glob2_math_expm1(double);
 OLM_DLLEXPORT double	fma(double, double, double);
-OLM_DLLEXPORT double	hypot(double, double);
+OLM_DLLEXPORT double	glob2_math_hypot(double, double);
 OLM_DLLEXPORT int	ilogb(double) __pure2;
 OLM_DLLEXPORT int	(isinf)(double) __pure2;
 OLM_DLLEXPORT int	(isnan)(double) __pure2;

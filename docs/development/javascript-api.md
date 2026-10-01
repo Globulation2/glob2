@@ -1,6 +1,7 @@
 # JavaScript API reference — profile 1
 
-This is the contract for the implemented JavaScript boundary. Start with the
+This is the contract for the implemented, unpublished JavaScript profile 1.
+Embedded sources execute automatically and must be trusted developer code. Start with the
 [scripting guide](javascript.md) for loading, callbacks, persistence and failures.
 The [TypeScript declarations](../../examples/javascript/glob2.d.ts) mirror these
 shapes for editors; the runtime executes JavaScript, not TypeScript. Only the
@@ -77,7 +78,11 @@ IDs identify native engine slots, with separate unit and building namespaces.
 An `EntityRef` is `{id: number, generation: number}`; list records already contain
 both fields and can be passed directly as references. IDs are accepted in
 `0..65535`; IDs outside the entity slot domain return `null`. Generations change
-when a slot is reused. Preserve the returned pair; never invent a generation or
+for each new entity, slot reuse and conversion into the destination team/slot.
+Converting back cannot restore an earlier reference. Level resets, upgrades,
+repairs and ordinary state changes preserve identity. Deletion invalidates lookup.
+Current saves preserve and validate live identities and generation counters;
+older saves receive identities during version-gated loading. Preserve the returned pair; never invent a generation or
 assume an ID still identifies the same entity after loading or a later callback.
 A missing or nonnumeric generation returns `null`; a missing/invalid ID throws.
 
@@ -344,6 +349,11 @@ Building-choice names: `swarm`, `inn`, `hospital`, `racetrack`, `swimmingpool`,
 engine creation orders, including orders from other controllers. GUI visibility
 and translated-message display still follow the existing GUI/replay behavior;
 the script's persisted presentation state does not depend on local settings.
+The GUI resolves the exact language translation before comparing the displayed
+message. History receives a message only when that displayed text changes to a
+nonempty message; unchanged callbacks do not repeat it. Loading restores the
+persisted message, choices and hidden elements without running a callback or
+publishing a duplicate history entry. Leaving the session clears its presentation.
 There are no spawn, terrain-write, objective-create or gameplay-order effects.
 
 ## Maintaining the boundary

@@ -101,6 +101,7 @@ void GameGUI::init()
 	chatMask=0xFFFFFFFF;
 	hasSpaceBeenClicked=false;
 	swallowSpaceKey=false;
+	scriptText.clear();
 	scriptTextUpdated = false;
 
 	viewportSpeedX=0;

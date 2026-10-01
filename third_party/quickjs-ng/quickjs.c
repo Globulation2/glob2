@@ -7862,14 +7862,14 @@ void JS_ComputeMemoryUsage(JSRuntime *rt, JSMemoryUsage *s)
                              1 - p->is_wide_char);
         }
     }
-    s->str_count = round(mem.str_count);
-    s->str_size = round(mem.str_size);
+    s->str_count = glob2_math_floor(mem.str_count + 0.5);
+    s->str_size = glob2_math_floor(mem.str_size + 0.5);
     s->js_func_count = mem.js_func_count;
-    s->js_func_size = round(mem.js_func_size);
+    s->js_func_size = glob2_math_floor(mem.js_func_size + 0.5);
     s->js_func_code_size = mem.js_func_code_size;
     s->js_func_pc2line_count = mem.js_func_pc2line_count;
     s->js_func_pc2line_size = mem.js_func_pc2line_size;
-    s->memory_used_count += round(mem.memory_used_count) +
+    s->memory_used_count += glob2_math_floor(mem.memory_used_count + 0.5) +
         s->atom_count + s->str_count +
         s->obj_count + s->shape_count +
         s->js_func_count + s->js_func_pc2line_count;
@@ -14443,7 +14443,13 @@ static int JS_ToUint8ClampFree(JSContext *ctx, int32_t *pres, JSValue val)
                 else if (d > 255)
                     res = 255;
                 else
-                    res = lrint(d);
+                    {
+                    /* Uint8Clamp: round to nearest, ties to even, without
+                       consulting the platform rounding-mode implementation. */
+                    res = (int)d;
+                    if (d - res > 0.5 || (d - res == 0.5 && (res & 1)))
+                        res++;
+                    }
             }
         }
         break;
@@ -48914,7 +48920,7 @@ static JSValue js_math_hypot(JSContext *ctx, JSValueConst this_val,
             for (i = 1; i < argc; i++) {
                 if (JS_ToFloat64(ctx, &a, argv[i]))
                     return JS_EXCEPTION;
-                r = hypot(r, a);
+                r = glob2_math_hypot(r, a);
             }
         }
     }

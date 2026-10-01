@@ -300,7 +300,7 @@ irint(double x)
 #define	__ieee754_lgamma_r lgamma_r
 #define	glob2_math___ieee754_log10	glob2_math_log10
 #define	glob2_math___ieee754_sinh	glob2_math_sinh
-#define	__ieee754_hypot	hypot
+#define	glob2_math___ieee754_hypot	glob2_math_hypot
 #define	__ieee754_j0	j0
 #define	__ieee754_j1	j1
 #define	__ieee754_y0	y0

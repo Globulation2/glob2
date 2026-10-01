@@ -10,7 +10,7 @@ Local changes namespace OpenLibm public math symbols, redirect QuickJS numeric
 operations to that subset, meter interpreter dispatch, and reject dynamic
 Function compilation and regular-expression literals. Build both libraries with
 strict floating-point flags. Upstream updates require rerunning the scripting
-security, numeric, continuation and cross-platform suites.
+capability/resource, numeric, continuation and cross-platform suites.
 
 OpenLibm compatibility aliases are removed so no system math symbol is exported.
 QuickJS also uses a fixed context hash seed, a deterministic 256-frame recursion
@@ -40,3 +40,17 @@ comparisons and emitted string-buffer characters are metered within operations.
 
 String/number coercion charges actual string lengths after object conversion.
 Native search, sorting and output charges remain in the operations themselves.
+
+`javascript-vendor.json` records the exact upstream commits, tag-archive SHA256s,
+retained files and ordered patch series. The first patch for each dependency
+reproduces the original profile fork; the second records this engineering pass.
+Run `python3 tools/javascript/verify-vendor.py` to download the pinned archives,
+verify their hashes, reconstruct retained sources in temporary storage and reject
+unexplained differences. `--archives /path/to/archives` uses previously downloaded
+`quickjs-ng.tar.gz` and `openlibm.tar.gz`. The command never edits the checkout.
+
+OpenLibm `hypot` is retained and namespaced alongside the other double routines.
+Half-number conversion and clamped integer rounding also avoid system math.
+The build checks interpreter, math and host conversion objects for unexpected
+platform numeric symbols. The operation inventory and trusted-code assumptions
+are maintained in [the scripting guide](../docs/development/javascript.md).
