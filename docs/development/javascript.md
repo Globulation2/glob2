@@ -61,7 +61,18 @@ This only compiles/resolves the module: it does not evaluate module code, verify
 that `step` or `main` exists, execute callbacks, or validate returned orders/effects. Those
 checks occur during a game. A successful compile check is not a gameplay test.
 
-To replace a map's USL script, write a new map:
+In the map editor, open the scenario editor, choose the **Map script** tab,
+and select **JavaScript** in the language dropdown. The editor supplies a simple
+`step(ctx)` starter for a new script. **Compile** (or F9) checks syntax without
+executing the script. **OK** compiles and commits the selected source and mode;
+saving the map embeds them. JavaScript maps reopen with JavaScript selected,
+regardless of the legacy default-language setting. **Load** and **Save** use
+`.js` files while JavaScript is selected. Switching languages keeps separate
+drafts until the dialog closes; compilation and file loading leave the map
+unchanged until OK. SGSL remains a separate legacy payload and is preserved
+when editing USL or JavaScript.
+
+To replace a map's USL script from the command line, write a new map:
 
 ```sh
 glob2 --attach-map-script input.map /absolute/path/to/source.js output.map

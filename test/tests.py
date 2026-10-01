@@ -28,6 +28,7 @@ ENGINE_TESTS = [
     ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
+    'ScriptEditorTest.cpp',
     'ScriptRealisticTest.cpp',
     ('ScriptSessionTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('ScriptSimulationTest.cpp', dict(cxxflags=['-fno-access-control'])),

@@ -1027,6 +1027,11 @@ with a fresh output directory for the frozen per-tick profile trace, worker
 equivalence and full-game saved continuation.
 
 
+`python3 test/run_tests.py --filter 'ScriptEditor/*'` checks the map editor's
+SGSL/USL/JavaScript language selection, draft compilation and cancellation,
+`.js` load/save, embedded map source/mode round trips, and dropdown interaction
+with captures on desktop and both phone orientations.
+
 The named `JavaScriptNumbers`, `JavaScriptTransactions`, `JavaScriptLifecycle`,
 `JavaScriptRealistic`, `JavaScriptPresentation`, `JavaScriptSession` and
 `JavaScriptSimulation` suites run alongside runtime/integration cases. The shared
