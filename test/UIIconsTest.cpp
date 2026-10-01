@@ -2,12 +2,14 @@
 #include "Glob2Test.h"
 #include "ui/FrontendUI.h"
 #include <stdexcept>
+#include <Toolkit.h>
 
 TEST_SUITE("UIIcons")
 {
 	TEST_CASE("all semantic icons have the pinned raster sizes")
 	{
 		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::initGraphic(64, 64, 0, "icon assets");
 		for (int i = 0; i < int(Glob2UI::UIIcon::Count); ++i)
 		{
 			auto asset = Glob2UI::uiIcon(Glob2UI::UIIcon(i));
@@ -27,6 +29,7 @@ TEST_SUITE("UIIcons")
 	TEST_CASE("aliases share live assets and the cache releases unused graphics resources")
 	{
 		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::initGraphic(64, 64, 0, "icon assets");
 		auto info = Glob2UI::uiIcon(Glob2UI::UIIcon::Info);
 		CHECK(Glob2UI::uiIcon(Glob2UI::UIIcon::Credits) == info);
 		std::weak_ptr<const GAGGUI::ui::IconAsset> weak = info;
