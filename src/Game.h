@@ -3,6 +3,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #pragma once
+#include <array>
 #include <CooperativeTask.h>
 
 #include <iostream>
@@ -417,6 +418,8 @@ public:
 	};
 
 	Uint32 stepCounter;
+	std::array<Uint32, 2 * Team::MAX_COUNT * 1024> scriptGenerations{};
+	Uint32 allocateScriptIdentity(bool building, Uint16 gid);
 	int totalPrestige;
 	int prestigeToReach;
 	bool totalPrestigeReached;

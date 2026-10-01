@@ -25,6 +25,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    'ScriptIntegrationTest.cpp',
     'BuildingExpelHarness.cpp',
     'BuildingGradientInvalidationHarness.cpp',
     'FetchApportionmentHarness.cpp',
@@ -95,6 +96,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'ScriptRuntimeTest.cpp',
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',
@@ -185,6 +187,8 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
+    '#src/script/ScriptValue.cpp',
+    '#src/script/ScriptRuntime.cpp',
     '#src/BitArray.cpp',
     '#src/Brush.cpp',
     '#src/BrushCoverage.cpp',

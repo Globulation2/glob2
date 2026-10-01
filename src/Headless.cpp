@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Headless.h"
+#include "script/ScriptCommand.h"
+#include "script/ScriptValue.h"
 #include "PerformanceTelemetry.h"
 #include "Engine.h"
 #include "GlobalContainer.h"
@@ -196,7 +198,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--alliance","--win-condition","--game-seed","--experiment"})
+			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(Engine::loadGameHeader(saved).getNumberOfPlayers()==0) throw std::invalid_argument("saved game has no players");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
@@ -273,8 +275,21 @@ struct HeadlessRunner
 				}
 				else if(!overrides[p].empty()) throw std::invalid_argument("AI has no runtime parameters: " + players[p]);
 			}
+			std::set<int> scriptedPlayers;
+			for(const auto& assignment:many(options,"--ai-script"))
+			{
+				const auto colon=assignment.find(':');if(colon==std::string::npos)throw std::invalid_argument("Expected --ai-script player:source.js");
+				int p=integer(assignment.substr(0,colon),0,players.size()-1);
+				if(!scriptedPlayers.insert(p).second || BasePlayer::implementationIdFromPlayerType(header.getBasePlayer(p).type)!=AI::JAVASCRIPT)throw std::invalid_argument("AI script requires a unique JavaScript player");
+				header.setAIConfig(p,Script::config(Script::readSource(assignment.substr(colon+1))));
+			}
+			for(size_t p=0;p<players.size();++p)if(BasePlayer::implementationIdFromPlayerType(header.getBasePlayer(p).type)==AI::JAVASCRIPT && !scriptedPlayers.count(p))throw std::invalid_argument("JavaScript player requires --ai-script");
 			engine.gui.localPlayer=0;engine.gui.localTeamNo=0;
 			if(engine.initGame(map,header,true,false,false,mapFile)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot initialize map");
+		}
+		if(options.count("--map-script"))
+		{
+			auto& script=engine.gui.game.mapscript;script.setMapScriptMode(MapScript::JavaScript);script.setMapScript(Script::readSource(one(options,"--map-script")));if(!script.compileCode())throw std::invalid_argument(script.getError().getMessage());
 		}
 		const unsigned computeThreads = integer(one(options, "--compute-threads",
 			std::to_string(defaultAIThreadCount(engine.gui.game))), 1, 64);
@@ -440,7 +455,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

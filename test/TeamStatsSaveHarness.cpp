@@ -776,7 +776,7 @@ static void measurementReplayBoundaries()
 	require(REPLAY_MINIMUM_VERSION_MINOR == 123 && NET_PROTOCOL_VERSION == 47 &&
 				YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 47,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -931,7 +931,7 @@ static void aiTelemetryScenarios()
 	for (int i = 0; i < AI::SIZE; ++i)
 	{
 		// Runtime settings belong to a controller implementation on master.
-		g.gameHeader.setAIConfig(0, "");
+		g.gameHeader.setAIConfig(0, i==AI::JAVASCRIPT?"glob2-js/1\nexport function step(){return null;}":"");
 		AI controller(static_cast<AI::ImplementationID>(i), g.players[0]);
 		require(controller.aiImplementation->telemetrySchema() == schema(i),
 				"every AI publishes its schema through the standard interface");

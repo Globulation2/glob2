@@ -34,6 +34,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// identity
 	gid = stream->readUint16("gid");
+	scriptIdentity=versionMinor >= 124 ? stream->readUint32("scriptIdentity") : owner->game->allocateScriptIdentity(false,gid);
 	this->owner = owner;
 	isDead = stream->readSint32("isDead");
 	diagnosticDeathCause = GameplayMeasurements::UNKNOWN;
@@ -153,6 +154,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 
 	// identity
 	stream->writeUint16(gid, "gid");
+	stream->writeUint32(scriptIdentity, "scriptIdentity");
 	stream->writeSint32(isDead, "isDead");
 	stream->writeSint32(diagnosticDeathCause, "diagnosticDeathCause");
 

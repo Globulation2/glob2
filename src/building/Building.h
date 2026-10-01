@@ -145,6 +145,7 @@ class Building : public BuildingUtils
 	///configured multiplier. Use this instead of reading type->hpMax
 	///directly anywhere the result affects simulation or display.
 	int getEffectiveMaxHp(void) const;
+	Sint32 getMaxUnitWorkingFuture() const { return maxUnitWorkingFuture; }
 	///Same rule, for type->hpInit.
 	int getEffectiveInitHp(void) const;
 	///Same rule, for type->hpInc: a site delivered in full must still reach
@@ -551,6 +552,7 @@ public:
 	Sint32 priority;
 
 	// identity
+	Uint32 scriptIdentity = 0; // Stable scripting identity; excluded from legacy simulation checksums.
 	Uint16 gid; // for reservation see GIDtoID() and GIDtoTeam().
 	Team *owner;
 

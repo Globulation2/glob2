@@ -12,6 +12,9 @@
 #include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "AIJavaScript.h"
+#include "AI.h"
+#include "Player.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -151,6 +154,9 @@ void Game::syncStep(Sint32 localTeam)
 			teams[i]->syncStep();
 
 		map.syncStep(stepCounter);
+		for(int p=0;p<gameHeader.getNumberOfPlayers();++p)
+			if(players[p] && players[p]->ai && players[p]->ai->implementationID==AI::JAVASCRIPT)
+				static_cast<AIJavaScript*>(players[p]->ai->aiImplementation)->observe();
 
 		syncRand();
 

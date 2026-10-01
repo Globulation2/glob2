@@ -38,6 +38,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	// identity
 	this->gid=gid;
 	owner=team;
+	scriptIdentity=owner->game->allocateScriptIdentity(false,gid);
 	isDead=false;
 
 	// position
@@ -344,7 +345,9 @@ void Unit::syncStep(void)
 
 void Unit::resetAtLevel(Sint32 newLevel)
 {
+	const Uint32 identity=scriptIdentity;
 	init(posX, posY, gid, typeNum, owner, newLevel);
+	scriptIdentity=identity;
 }
 
 void Unit::setWorkerLevel(Sint32 newLevel)

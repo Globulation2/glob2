@@ -8,6 +8,7 @@ from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
 import ccache
 from mobile_toolchain import discover, LOCK
 from mobile_artifacts import verify_android_library, archive_object_name
+from javascript import javascript_objects
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
 
@@ -61,9 +62,10 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_NO_VOICE 1
 ''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
         + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else ''))
-    env.Append(CPPPATH=[str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
+    env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL2')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
+    script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
     files = ['src/' + name for name in CLIENT_SOURCES if name not in ('VoiceRecorder.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
     if identity['target'] == 'ios':
         files.remove('src/Glob2.cpp')
@@ -76,7 +78,7 @@ def build_mobile(directory, identity, arguments):
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         env.Append(CPPDEFINES=['main=SDL_main'])
-        objects = [env.SharedObject(str(object_root / (name + '.o')), name) for name in files]
+        objects = [env.SharedObject(str(object_root / (name + '.o')), name) for name in files] + script_objects
         program = env.SharedLibrary(str(output / 'lib/main'), objects)
         if 'android-tests' in COMMAND_LINE_TARGETS:
             # Cross-compile the two doctest binaries from test/tests.py as Android PIE
@@ -90,9 +92,9 @@ def build_mobile(directory, identity, arguments):
             tests['CPPDEFINES'] = ['HAVE_CONFIG_H']  # TestMain.cpp defines SDL_MAIN_HANDLED itself
             tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
             by_source = dict(zip(files, objects))
-            client_objects = [obj for name, obj in by_source.items() if name != 'src/Glob2.cpp']
+            client_objects = [obj for name, obj in by_source.items() if name != 'src/Glob2.cpp'] + script_objects
             library_objects = [obj for name, obj in by_source.items()
-                               if name.startswith('libgag/') or name.startswith('libusl/')]
+                               if name.startswith('libgag/') or name.startswith('libusl/')] + script_objects
 
             def available(options):
                 required = options.get('require', ())
@@ -138,7 +140,7 @@ def build_mobile(directory, identity, arguments):
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
-        objects = [(objc if name == 'mobile/ios/Documents.mm' else env).Object(str(object_root / archive_object_name(name)), name) for name in files]
+        objects = [(objc if name == 'mobile/ios/Documents.mm' else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
         # ar replaces matching members but otherwise retains obsolete names.
         # Recreate this owned output so renamed/removed sources cannot survive.
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]

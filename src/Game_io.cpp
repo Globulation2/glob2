@@ -158,6 +158,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 
 	///Clears any previous game
 	clearGame();
+	mapscript.reset();
 	mapHeader.reset();
 	gameHeader.reset();
 
@@ -317,6 +318,18 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	for (int p = 0; p < gameHeader.getNumberOfPlayers(); ++p)
 		if (players[p] && players[p]->ai)
 			players[p]->ai->bindTelemetry();
+	if(versionMinor >= 124)
+	{
+		stream->readEnterSection("scriptGenerations");
+		for(unsigned i=0;i<scriptGenerations.size();++i){stream->readEnterSection(i);scriptGenerations[i]=stream->readUint32("value");stream->readLeaveSection();}
+		stream->readLeaveSection();
+        for(int t=0;t<mapHeader.getNumberOfTeams();++t)for(int i=0;i<1024;++i)
+        {
+            auto* u=teams[t]->myUnits[i];auto* b=teams[t]->myBuildings[i];
+            if(u && (!u->scriptIdentity || u->scriptIdentity>scriptGenerations[t*1024+i]))throw std::runtime_error("Invalid unit script identity");
+            if(b && (!b->scriptIdentity || b->scriptIdentity>scriptGenerations[Team::MAX_COUNT*1024+t*1024+i]))throw std::runtime_error("Invalid building script identity");
+        }
+	}
 	gameSection.commit();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
@@ -631,6 +644,10 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 		map.saveRuntimeState(stream);
 	}
 
+	stream->writeEnterSection("scriptGenerations");
+	for(unsigned i=0;i<scriptGenerations.size();++i){stream->writeEnterSection(i);stream->writeUint32(scriptGenerations[i],"value");stream->writeLeaveSection();}
+	stream->writeLeaveSection();
+
 	Uint8 sha1[SHA1_BYTE_LEN];
 	for(int i=0; i<SHA1_BYTE_LEN; ++i)
 		sha1[i]=0;
@@ -711,6 +728,11 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	cs=rotr1(cs);
 
 	Uint32 scriptCs=sgslScript.checkSum();
+	if(mapscript.getMapScriptMode()==MapScript::JavaScript)
+ {
+  scriptCs ^= mapscript.checkSum();
+  for(auto generation:scriptGenerations)scriptCs=(scriptCs^generation)*16777619u;
+ }
 	cs^=scriptCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(scriptCs);// [4+t*20+p*2]

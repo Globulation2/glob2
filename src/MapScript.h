@@ -6,6 +6,7 @@
 #include "SDL.h"
 #include <string>
 #include "MapScriptUSL.h"
+#include "script/JavaScriptMap.h"
 
 #include "MapScriptError.h"
 
@@ -24,11 +25,14 @@ public:
 	///Enumerates the different modes the map script may be
 	enum MapScriptMode
 	{
-		USL=1
+		USL=1,
+		JavaScript=2
 	};
 
 	///Constructs the MapScript
 	MapScript(GameGUI* gui);
+	///Clear all script state before loading another map, including pre-USL maps.
+	void reset();
 
 	///Encodes this MapScript into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
@@ -52,8 +56,7 @@ public:
 	void setMapScriptMode(MapScriptMode newMode);
 	
 	///This compiles the code and returns false on error.
-	///USL is the only mode; an unknown mode (unreachable after decodeData
-	///validation) fails deterministically rather than falling off the end.
+	///Both USL and JavaScript compile through their respective backends.
 	bool compileCode();
 
 	///This returns the error
@@ -62,9 +65,14 @@ public:
 	///Execute a step of script corresponding to a step of the game engine
 	void syncStep(GameGUI *gui);
 
+	Uint32 checkSum() const;
+	bool buildingAllowed(const std::string& name,bool flag) const;
+
 private:
 	std::string script;
 	MapScriptMode mode;
 	MapScriptUSL usl;
+	Script::JavaScriptMap javascript;
+	GameGUI* gui;
+	MapScriptError jsError;
 };
-

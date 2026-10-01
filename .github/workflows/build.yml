@@ -168,6 +168,16 @@ jobs:
             lan-test \
             menu-colony-harness
 
+      - name: Verify frozen JavaScript simulation profile
+        run: python3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile
+
+      - name: Upload JavaScript simulation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: javascript-profile-linux-${{ matrix.compiler }}
+          path: artifacts/javascript-profile
+
       - name: Test Maxima strategy configuration and policies
         id: test_maxima_strategy_configuration_and_policies
         continue-on-error: true
@@ -822,6 +832,16 @@ jobs:
             unit-tests \
             engine-tests \
             map-report-test
+
+      - name: Verify frozen JavaScript simulation profile
+        run: python3 test/check_javascript.py build/mingw/client/release/src/glob2.exe --output artifacts/javascript-profile
+
+      - name: Upload JavaScript simulation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: javascript-profile-mingw
+          path: artifacts/javascript-profile
 
       - name: Run the unit tests
         id: run_the_unit_tests

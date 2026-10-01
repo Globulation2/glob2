@@ -6,6 +6,11 @@ Import('env')
 if not env.get('wss', True):
     source_files.remove('net/WssTransport.cpp')
 local = env.Clone()
+if not env['server']:
+    js_library = SConscript('#third_party/SConscript', variant_dir=Dir('#' + env['BUILDDIR'] + '/third_party'), duplicate=0, exports={'env': env})
+    local.Append(CPPPATH=['#third_party/quickjs-ng'])
+    source_files += [node.abspath for node in js_library]
+
 #Add libgag and USL, not as a library, but as an object
 source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")

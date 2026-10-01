@@ -9,6 +9,7 @@
 #define VERSION_MINOR 124
 // version 124 adds the experiments list to GameHeader (Settings > Experiments), baked into
 //             every new game. The default simulation is unchanged, so replays from 123 still play.
+//             Optional deterministic JavaScript scripts and entity identities are added below.
 // version 123 scopes invalidation and bounds escape refresh; Numbi uses its AI RNG.
 // version 122 gives each shared-runtime controller a private gradient manager.
 // Econo and Nicowar decisions no longer depend on another controller's cache.
@@ -158,6 +159,7 @@
 //Clients with older versions than this will be rejected
 #define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 47
 // version 47 GameHeader carries the experiments list; older clients would misread it.
+//            Optional JavaScript source/configuration and save identities are added below.
 // version 46 uses scoped invalidation, escape refresh and corrected Numbi RNG.
 // version 45 separates shared-runtime gradient caches in mixed-client games.
 // version 44 keeps clients with different AI random streams out of mixed games.

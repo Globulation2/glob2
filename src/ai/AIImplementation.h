@@ -60,6 +60,8 @@ class AIImplementation
 public:
 	// Bound by the owning AI when the implementation is created or loaded.
 	void setRandomEngine(MersenneTwister &engine) { randomEngine = &engine; }
+	MersenneTwister snapshotRandom() const { assert(randomEngine); return *randomEngine; }
+	void restoreRandom(const MersenneTwister& state) { assert(randomEngine); *randomEngine=state; }
 	Uint32 random() const { assert(randomEngine); return (*randomEngine)(); }
   AITelemetry::Sink telemetry;
   virtual void captureTelemetry() {}
